@@ -1,113 +1,189 @@
-Return-Path: <cgroups+bounces-925-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-926-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B56080F96A
-	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 22:32:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A64EC80F99C
+	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 22:44:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBE831C20D5D
-	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 21:32:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B00D1F2174F
+	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 21:44:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E90764142;
-	Tue, 12 Dec 2023 21:32:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40B2664148;
+	Tue, 12 Dec 2023 21:43:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iurCXjmM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SFTB2Hcd"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0916765A9E
-	for <cgroups@vger.kernel.org>; Tue, 12 Dec 2023 21:32:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FFA5C433AD
-	for <cgroups@vger.kernel.org>; Tue, 12 Dec 2023 21:32:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702416759;
-	bh=mfEW7Jo7qwzsMBHWmcox+E4i/5RV7VxXJqvDtAte4Y4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=iurCXjmMTiNWcT6JXNwQ2WjwtRQu0gEcGPsFUjV39XCd8Mq/xT0qR0gFDZmPn2kx4
-	 p69HydF5iz89VyCEhjoGRL/3ttSjdVJl2GEE7zoGGN5BWHD0LDKTgyJ+rsSiACKgY4
-	 9pFPkOscKtqapzzG9GqUuqJwPy1Di2rjZszdd4ao4X8JI9HT9JsChTUG+iLTMhcI+i
-	 7ZmbSejEBVcGEDQ0P81NFJCTmdb2T9q4iantr9pLcyoc6xusyeLCAa72iHAuZCaiyZ
-	 l/VBjc36HCU+sDESkHfm6XA3QSeSi/NJuicozbREArV2NmLrTyloTAAeIfOrtXHELT
-	 JbmJJ8j3OEukQ==
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-28ae217726fso28555a91.0
-        for <cgroups@vger.kernel.org>; Tue, 12 Dec 2023 13:32:39 -0800 (PST)
-X-Gm-Message-State: AOJu0Yy4K+IKyOre1M8Og9SPV80XgCmtMZpSdLjA2Uu8OeWXENxnWBl1
-	pGkIQ7/RrC/dErKcfjbSDkO4w9KvBl8lRyFVnNgbSg==
-X-Google-Smtp-Source: AGHT+IGlVCqZJncPdqqBPXo0+sqvyKBlHQlD1C+GbTv+WgaSKSNQbps5gPlwHn8M31pDWV1qZTMqmVQodyQZH8b40zE=
-X-Received: by 2002:a17:90b:fcd:b0:28a:beae:454a with SMTP id
- gd13-20020a17090b0fcd00b0028abeae454amr1348327pjb.25.1702416758683; Tue, 12
- Dec 2023 13:32:38 -0800 (PST)
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C3AAAB;
+	Tue, 12 Dec 2023 13:43:52 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5c6bd3100fcso3278143a12.3;
+        Tue, 12 Dec 2023 13:43:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1702417432; x=1703022232; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=NYFGcvpC2a9QSpzB8tRAV/ZTOG8iYLcCMIlAxh09bmk=;
+        b=SFTB2Hcd4DX6QFV5OwJngSJA4yTgce33EDXqcUzDogJ3DLCI8yQXQcB3axppwVl4g5
+         ELf1KTY6wtm1W17rSOOwVU4S3XY40c2UC7uV/bDGWFE2WyS+EkS76kOWMvjPlGaerJTt
+         rjSSlKN+8HfZ8aa5GyiQ3jI+ws59OroILyJumJw2UBXZgP4NObJmRCVqWfiJpsB8ourT
+         5YZWJiU4ZC1g5DUZBd9zGBs+Yq3nXyaKJQdXxVKJPYgvAWq1gFqV56rSI/OZlc00iuTv
+         5ghqfzwZnbOqQ830Pwd92jh8NOpaGEPTA/GeTjblmPLImpwVgA1VCGaT3JJlFwr1hs/8
+         ZDig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702417432; x=1703022232;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NYFGcvpC2a9QSpzB8tRAV/ZTOG8iYLcCMIlAxh09bmk=;
+        b=Xq1NgLcrlU+nfk/ujEZ6Hz2Ihqz/PCynpSDT0DCqZeoFO6Zbv2cOOyuceOiS4tscQV
+         hhJ5Y7VORGgLDJzoO762baZ4PpTQ8gQ1aCwvfan7d06EyZiX0iIwZcJyPChs08RlS2Z0
+         TKIG0sO/hNHgvs0Zve2dg/A1/l+4PSx7pf7TqB/F6p6Tychga/KCGuMZcOE9dJsy9kWa
+         dTIObE7nD0d4AtL4VBsfgihOl3Gj3DzGU2WkE0Bnjn3Zdh+iCjnAUDJCoyB1pdzap62o
+         hSbxNdMR0Y95QlokkX1vsTxMcJoQjCgTwwLxkPq44cLY2/nh0h++j2PkDJMKRi/pqOfE
+         SZ3Q==
+X-Gm-Message-State: AOJu0Yw2cYXAPrURtWiuPOPS/6ObYtoK7ACwrXRTT3QTqennkSMmcmpW
+	4/IQwrAvy4b41Hr/Ju8tt7c=
+X-Google-Smtp-Source: AGHT+IEDWWFSu/2HO7omc9rG7/wpgLn5lEP9tPOE8jeGHF9ecMnMo2w9mQ+i6UiCvYTNQM2v7hVLxA==
+X-Received: by 2002:a17:902:ab45:b0:1d3:46f6:8046 with SMTP id ij5-20020a170902ab4500b001d346f68046mr743839plb.27.1702417431594;
+        Tue, 12 Dec 2023 13:43:51 -0800 (PST)
+Received: from dschatzberg-fedora-PF3DHTBV ([2620:10d:c090:500::5:671e])
+        by smtp.gmail.com with ESMTPSA id i11-20020a17090332cb00b001d0ab572458sm9024911plr.121.2023.12.12.13.43.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Dec 2023 13:43:51 -0800 (PST)
+Date: Tue, 12 Dec 2023 16:43:48 -0500
+From: Dan Schatzberg <schatzberg.dan@gmail.com>
+To: Chris Li <chrisl@kernel.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH V3 1/1] mm: add swapiness= arg to memory.reclaim
+Message-ID: <ZXjUFMwlz3P+4Nmk@dschatzberg-fedora-PF3DHTBV>
+References: <20231211140419.1298178-1-schatzberg.dan@gmail.com>
+ <20231211140419.1298178-2-schatzberg.dan@gmail.com>
+ <CAF8kJuOhwjZZWab1poi1rPiV4u8O1CEZSO0cO23+aewt6S74-g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231211140419.1298178-1-schatzberg.dan@gmail.com>
- <20231211140419.1298178-2-schatzberg.dan@gmail.com> <CAJD7tkZQ2aakT8M2bTg0bp4sDtrGYv_4i4Z4z3KBerfxZ9qFWA@mail.gmail.com>
- <ZXjQLXJViHX7kMnV@dschatzberg-fedora-PF3DHTBV>
-In-Reply-To: <ZXjQLXJViHX7kMnV@dschatzberg-fedora-PF3DHTBV>
-From: Chris Li <chrisl@kernel.org>
-Date: Tue, 12 Dec 2023 13:32:27 -0800
-X-Gmail-Original-Message-ID: <CAF8kJuO7eM5EJPJaw0eh3r8QZdchjpsLxKE3BQ64Z_U9gXomaA@mail.gmail.com>
-Message-ID: <CAF8kJuO7eM5EJPJaw0eh3r8QZdchjpsLxKE3BQ64Z_U9gXomaA@mail.gmail.com>
-Subject: Re: [PATCH V3 1/1] mm: add swapiness= arg to memory.reclaim
-To: Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc: Yosry Ahmed <yosryahmed@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Huan Yang <link@vivo.com>, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, Tejun Heo <tj@kernel.org>, 
-	Zefan Li <lizefan.x@bytedance.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@redhat.com>, Matthew Wilcox <willy@infradead.org>, 
-	Kefeng Wang <wangkefeng.wang@huawei.com>, 
-	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>, Yue Zhao <findns94@gmail.com>, 
-	Hugh Dickins <hughd@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAF8kJuOhwjZZWab1poi1rPiV4u8O1CEZSO0cO23+aewt6S74-g@mail.gmail.com>
 
-Hi Dan,
-
-On Tue, Dec 12, 2023 at 1:27=E2=80=AFPM Dan Schatzberg <schatzberg.dan@gmai=
-l.com> wrote:
->
-> > > +       while ((start =3D strsep(&buf, " ")) !=3D NULL) {
-> > > +               if (!strlen(start))
-> > > +                       continue;
-> > > +               switch (match_token(start, if_tokens, args)) {
-> > > +               case MEMORY_RECLAIM_SWAPPINESS:
-> > > +                       if (match_int(&args[0], &swappiness))
-> > > +                               return -EINVAL;
-> > > +                       if (swappiness < 0 || swappiness > 200)
+On Mon, Dec 11, 2023 at 05:06:54PM -0800, Chris Li wrote:
+> Hi Dan,
+> 
+> Thank you for the patch.
+> 
+> On Mon, Dec 11, 2023 at 6:04 AM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
 > >
-> > I am not a fan of extending the hardcoded 0 and 200 values, and now
-> > the new -1 value. Maybe it's time to create constants for the min and
-> > max swappiness values instead of hardcoding them everywhere? This can
-> > be a separate preparatory patch. Then, -1 (or any invalid value) can
-> > also be added as a constant with a useful name, instead of passing -1
-> > to all other callers.
+> > Allow proactive reclaimers to submit an additional swappiness=<val>
+> > argument to memory.reclaim. This overrides the global or per-memcg
+> > swappiness setting for that reclaim attempt.
+> 
+> I am curious what prompted you to develop this patch. I understand
+> what this patch does, just want to know more of your background story
+> why this is needed.
+
+I wrote about this in some detail in the cover letter (0/1). Take a
+look and let me know if the rationale is still unclear.
+
+> Instead of passing -1, maybe we can use mem_cgroup_swappiness(memcg);
+>
+
+Yeah this makes sense, I'll go ahead and make that change and
+eliminate the -1.
+
+> >                                 nr_reclaims--;
+> >                         continue;
+> >                 }
+> > @@ -6895,6 +6896,16 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
+> >         return nbytes;
+> >  }
 > >
-> > This should make the code a little bit more readable and easier to exte=
-nd.
->
-> I'm not sure I understand the concern. This check just validates that
-> the swappiness value inputted is between 0 and 200 (inclusive)
-> otherwise the interface returns -EINVAL. Are you just concerned that
-> these constants are not named explicitly so they can be reused
-> elsewhere in the code?
->
+> > +enum {
+> > +       MEMORY_RECLAIM_SWAPPINESS = 0,
+> > +       MEMORY_RECLAIM_NULL,
+> > +};
+> > +
+> > +static const match_table_t if_tokens = {
+> 
+> What this is called "if_tokens"? I am trying to figure out what "if" refers to.
 
-I think the concern is why 200? Why not 400 or 600?
+I used the same logic as in "mm: Add nodes= arg to memory.reclaim". I
+can just call it tokens.
 
-The user might write bigger values and expect the reclaim to work with
-those values.
-If there is some hard coded limit enforced somewhere else so writing
-more than 200 does not make sense. It would be nice to have those
-other places reference this limit as well. Thus give 200 a name and
-use it in other places of the code as well.
+> 
+> > +       { MEMORY_RECLAIM_SWAPPINESS, "swappiness=%d"},
+> > +       { MEMORY_RECLAIM_NULL, NULL },
+> > +};
+> > +
+> 
+> Do we foresee a lot of tunable for the try to free page? I see. You
+> want to use match_token() to do the keyword parsing.
 
-Chris
+See below
+
+> 
+> >  static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+> >                               size_t nbytes, loff_t off)
+> >  {
+> > @@ -6902,12 +6913,33 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+> >         unsigned int nr_retries = MAX_RECLAIM_RETRIES;
+> >         unsigned long nr_to_reclaim, nr_reclaimed = 0;
+> >         unsigned int reclaim_options;
+> > -       int err;
+> > +       char *old_buf, *start;
+> > +       substring_t args[MAX_OPT_ARGS];
+> > +       int swappiness = -1;
+> >
+> >         buf = strstrip(buf);
+> > -       err = page_counter_memparse(buf, "", &nr_to_reclaim);
+> > -       if (err)
+> > -               return err;
+> > +
+> > +       old_buf = buf;
+> > +       nr_to_reclaim = memparse(buf, &buf) / PAGE_SIZE;
+> > +       if (buf == old_buf)
+> > +               return -EINVAL;
+> > +
+> > +       buf = strstrip(buf);
+> > +
+> > +       while ((start = strsep(&buf, " ")) != NULL) {
+> > +               if (!strlen(start))
+> > +                       continue;
+> > +               switch (match_token(start, if_tokens, args)) {
+> > +               case MEMORY_RECLAIM_SWAPPINESS:
+> > +                       if (match_int(&args[0], &swappiness))
+> > +                               return -EINVAL;
+> > +                       if (swappiness < 0 || swappiness > 200)
+> 
+> Agree with Yosry on the 200 magic value.
+> 
+> I am also wondering if there is an easier way to just parse one
+> keyword. Will using strcmp("swappiness=") be a bad idea? I haven't
+> tried it myself though.
+
+As above, "mm: Add nodes= arg to memory.reclaim" was previously in the
+mm tree doing it this way, so I duplicated it. I think given that
+there have been lots of discussions about extending this interface,
+this match table has some potential future value and I don't see a
+major downside to using it in favor of strcmp.
 
