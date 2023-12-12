@@ -1,52 +1,53 @@
-Return-Path: <cgroups+bounces-920-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-922-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCBBD80F8F9
-	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 22:17:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE18280F8FF
+	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 22:18:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 773A3281F78
-	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 21:17:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B7ED1C20D9E
+	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 21:18:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ADAA65A9E;
-	Tue, 12 Dec 2023 21:17:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E1666414F;
+	Tue, 12 Dec 2023 21:17:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="L4UAFUOZ"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="WOZlfRw9"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80DC7CF
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49F3D2
 	for <cgroups@vger.kernel.org>; Tue, 12 Dec 2023 13:17:44 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-7b72d574399so254926139f.0
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso5114511a12.3
         for <cgroups@vger.kernel.org>; Tue, 12 Dec 2023 13:17:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google; t=1702415864; x=1703020664; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Zc6KTpAZSdY8QpoD6ndRxHT3SVEvXG+4LeuNbqJOvg=;
-        b=L4UAFUOZAH3mEUJ0dYkraext6N+7dmrPBKQ07Zrkvg0EipGpro+00z8Kf/u6eTav0e
-         ce0D3+DrURn7ueMVVDjugihrDkYrnlD+QKI9UKTbV2XHjM6LOsa7wtRs4TNUKXRf/Ei+
-         Ofe/ZfWwt4z57P1hMbbpm/rviheqp6NahsHM4=
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=f0qCHVo7XzgiM/gOkeUKMtC009iJZbF6DLauLv10AR0=;
+        b=WOZlfRw9wQcJVZU/DcREddJjA4kuDbVQF2DFHbCFVR9mI7ZlShplJ0MQo8eOvD8B/p
+         hD+hgaEgYfIlJXfDf0IJUF+OWGiCFz3h/TKZ8EV61Pz/sg3alLeUsJV6UdZGWx2PP1rI
+         63gDiQTni9P+W5M4ftrKbVUksn0xHUKES0A+A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1702415864; x=1703020664;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+Zc6KTpAZSdY8QpoD6ndRxHT3SVEvXG+4LeuNbqJOvg=;
-        b=iq/YKmtj1PruGLE+OthPh0tRG/NIGiV6BsOQYj6zhPqzdeEgZIxyio8H5nSEUkZJ+G
-         QPmK0/dpX+itziXoGYqMe1ECz8rJnx8RjxWPRzk+qRgJVQiDMB2sdOJP3/1NgXdapOUd
-         APHjNFYCE7h9Yuz6HoIcQSK0JWasTyF9gSR3EJglhXWw+NlocOwpk50lmYrBJvjc+h0a
-         MMYTB8SYGowWXpHQslwyhXN5uIyX0i3AXIo/CHU6AskIydIS7hfrK/zik+ury9q+euJr
-         ogExJuYSC9fFQ3axACESp4E66bz62tqhuyKN6y+dMrxPt0Mj5cgqhMCkSEhdWHxDjNg4
-         h2ww==
-X-Gm-Message-State: AOJu0YzleZhUasECMdttAdjJER2qN6V8TXb65snLIB8urGKbQIYbsK8f
-	oiedBp84Idkf3E7KJU1GjEMg7g==
-X-Google-Smtp-Source: AGHT+IEvDlyQAlbj5kZpcUy0l69R3KnPJJrpfmKzdIY3kCQw6u1d63ztJ2FRYEW2wthGdpMi+t5zWQ==
-X-Received: by 2002:a05:6e02:1526:b0:35d:59a2:2bb with SMTP id i6-20020a056e02152600b0035d59a202bbmr10427390ilu.91.1702415863911;
-        Tue, 12 Dec 2023 13:17:43 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=f0qCHVo7XzgiM/gOkeUKMtC009iJZbF6DLauLv10AR0=;
+        b=DMk2szF/IL0gMjlTJwYsRmquLoYnZN7puNYxa0PERD/pgEiZ3RgKlZ5hcwnYXe3SIG
+         p86LueUTSCkfSwc0Xg0m15dsZAqe7d0ELu+6eQE1ituGHQQ/iixM1PssRH18qr/lMu0E
+         Pu1vdSNStorzafirfrIdnsjpUy+06poAWW9D0rle18jCHIbPPbMb32olozjKxAtzZhEk
+         dt5eYiNHv/PAxzVaFKadm6FKm1yfmfsVK95RulBC+IO1QpNWR7j7PqjrgTQkrD/VAmsI
+         bt3ul+YRFDANKuO16udR+v6xpB/PCONatbeABS/IjNpG2Rz2+xf1DIHOFQ55Zb18ufJJ
+         bomg==
+X-Gm-Message-State: AOJu0YxMHJi/By8I64D/qCTd6EgsKH0l8gGvJZt0shKC2MwFcy5figHf
+	v0uWcWTd+c9ZondUKOgyxEki5g==
+X-Google-Smtp-Source: AGHT+IH0jtWZUf2hGPaaxQrJqxuBCy5YRYRX5P8B4FrkUSNzU8QibCISdfs+bItVAVMNJIeIAj6vqQ==
+X-Received: by 2002:a05:6a20:1483:b0:18c:9855:e949 with SMTP id o3-20020a056a20148300b0018c9855e949mr5672480pzi.15.1702415864415;
+        Tue, 12 Dec 2023 13:17:44 -0800 (PST)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id i4-20020a63cd04000000b005c1ce3c960bsm8681954pgg.50.2023.12.12.13.17.41
+        by smtp.gmail.com with ESMTPSA id t14-20020a63eb0e000000b005ac384b71cbsm8583878pgh.60.2023.12.12.13.17.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 12 Dec 2023 13:17:41 -0800 (PST)
 From: Kees Cook <keescook@chromium.org>
@@ -62,62 +63,76 @@ Cc: Kees Cook <keescook@chromium.org>,
 	cgroups@vger.kernel.org,
 	bpf@vger.kernel.org,
 	linux-hardening@vger.kernel.org
-Subject: [PATCH v3 0/3] kernfs: Convert from strlcpy() to strscpy()
-Date: Tue, 12 Dec 2023 13:17:37 -0800
-Message-Id: <20231212211606.make.155-kees@kernel.org>
+Subject: [PATCH v3 1/3] kernfs: Convert kernfs_walk_ns() from strlcpy() to strscpy()
+Date: Tue, 12 Dec 2023 13:17:38 -0800
+Message-Id: <20231212211741.164376-1-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231212211606.make.155-kees@kernel.org>
+References: <20231212211606.make.155-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1166; i=keescook@chromium.org;
- h=from:subject:message-id; bh=25MytgNAUZhUM008DbLRMGuucWR15FZ+JfVwwxo9GpI=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBleM3zNEJ6ozMonZeoBQXI8on6XfsVYmsQsgluk
- o1wQ+Ga48OJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZXjN8wAKCRCJcvTf3G3A
- JsNPEACp/RHtIqnnV4mPRZIPFgXSZFVF1HvucA+ryrSi+/fpmEwvxufPyzuDwgNvNgXbvTi2AHk
- SyV/uJMDv/6gbhfFVhyvE60Wb0MqH5vRCJJkLHJjqd5QmFaLOZwMgbdsX0BkMhwE3sgnXH0+x/0
- rBmVvY+oMp2+nxQqmUeUCHg9v7ohxjEDc7cJUXQw1ohErQHEFgL/I3+etO2/t/XqLDC4b7/iZAW
- uCV5mIOpBOml+3+QYCaRLL5sIvpTOB8uzkgoELY+dOPfkH9qz0qTf6rW3lq/Hl8O756SsZdAf9s
- piPFzMgt6R6FoK+gsbWiO9pnRYVYVhXp6ZWdpx3zI4ftuMvbuqrfrrqRhAwt5igfahudw4qarQg
- npD/uktNC5EBbJc1DBbpHxukXKawE2ANI7oarahhLNx5r5hhSeW24mhApPa/Y4wz/Oo4to/4SqR
- C9JNMxmVvt3cIVjg1bq+4Z+qCQVzVEa5pJsYt1OvmtJXUonqsX8/8D2GSOFwReXk64SVsPoLIEl
- 8V5SbrwZWj9Yswt1XA+josJR+CoAiZYQPNx2CbO5yc3xQNJNkg1bnVzy81o0+xQVtI/ZFtTit3n
- Ra2HxpF7JkjcUUDSwLJMq72OZMpGQ/NaMYcgjfrL+eD8X/C2kAShjRuuqk+UCSbcgiIA/+7ZknX
- KxURH9O 1QW+s3Sw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1627; i=keescook@chromium.org;
+ h=from:subject; bh=KaMikVVf9IlMYxhWSymwvYJ80Grx9jhkkXD92Gcwols=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBleM3zg8fq+Kgz91M5MgN0iGKTEy9c1pTW6k2g3
+ Om7gwyq3vSJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZXjN8wAKCRCJcvTf3G3A
+ JiEbD/9sPG6e4XUmGL/t2yQxqs/Tot72LHnqAm/mN/d6Ly5AAAqHsoFvek/mQG8wTg0lCNknNj1
+ YF1q7adAapgFepvZU8OXC+tWuPzPLcG3o8K6Sgkeir5yl9fwIzvjt/J0dJZoYYENLHghz4BAKXi
+ rzcIQJGt+KoQ1kgGjloXVMlL9LG0DZtXjSoBCd9a5u77yL2JMD/XxJt/ttDsxn52o+ts7JLolAo
+ YKyCkIpgJbBrALTTmUjiOCIh1UJzxnQFkN2EtES96fjl+CVDIg/8tmBk5AZZDTh66MQ75dbLi6I
+ +1n+T71e3pcJDw97P1Hfd7QmLBAQSSNgTD8DemX7IVA52zA01seskFB9mwF/8GYRzvm1TJisAqM
+ PeNcVIyvLDfy1ahMBfJszaBkCqnOmmwjVGfSLGhtq93fVgtjaD4zfyP0UtsNFTVVbjQ9tU84hev
+ 7dd6XddCX4RE6UvGt8qoPYZRUlkfb84C+zWvymEA2Gn/eaq8y5odSWRlXl3WFPW3XDvilS4fER6
+ qrMi85l+bsuNtfTSIwl/x6YCRX3j3zmPwmaI6n8VA3xjMNARhArAAAdpCpG2TjocSWY1ZOID5OX
+ xUkJTCaX7P1h/qoC1gVn2OIdWrbRnbsAXSNrAplbX1sBjWSnBCAUqNNmxw93lDSSn/pSyBZGigO UaMJYSmjnQJhdiw==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
-Hi,
+strlcpy() reads the entire source buffer first. This read may exceed
+the destination size limit. This is both inefficient and can lead
+to linear read overflows if a source string is not NUL-terminated[1].
+Additionally, it returns the size of the source string, not the
+resulting size of the destination string. In an effort to remove strlcpy()
+completely[2], replace strlcpy() here with strscpy().
 
-One of the last users of strlcpy() is kernfs, which has some complex
-calling hierarchies that needed to be carefully examined. This series
-refactors the strlcpy() calls into strscpy() calls, and bubbles up all
-changes in return value checking for callers. Future work in kernfs and
-sysfs will see the replacement of open-coded string handling with the
-seq_buf API, but we need to do one thing at a time.
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy [1]
+Link: https://github.com/KSPP/linux/issues/89 [2]
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Azeem Shaikh <azeemshaikh38@gmail.com>
+Link: https://lore.kernel.org/r/20231116192127.1558276-1-keescook@chromium.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ fs/kernfs/dir.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thanks!
-
--kees
-
-v3: don't need to account for scnprintf() returning negative (christophe.jaillet)
-v2: https://lore.kernel.org/all/20231130200937.it.424-kees@kernel.org/
-v1: https://lore.kernel.org/linux-hardening/20231116191718.work.246-kees@kernel.org/
-
-Kees Cook (3):
-  kernfs: Convert kernfs_walk_ns() from strlcpy() to strscpy()
-  kernfs: Convert kernfs_name_locked() from strlcpy() to strscpy()
-  kernfs: Convert kernfs_path_from_node_locked() from strlcpy() to
-    strscpy()
-
- fs/kernfs/dir.c           | 50 +++++++++++++++++++--------------------
- kernel/cgroup/cgroup-v1.c |  2 +-
- kernel/cgroup/cgroup.c    |  4 ++--
- kernel/cgroup/cpuset.c    |  2 +-
- 4 files changed, 29 insertions(+), 29 deletions(-)
-
+diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+index 8b2bd65d70e7..37353901ede1 100644
+--- a/fs/kernfs/dir.c
++++ b/fs/kernfs/dir.c
+@@ -850,16 +850,16 @@ static struct kernfs_node *kernfs_walk_ns(struct kernfs_node *parent,
+ 					  const unsigned char *path,
+ 					  const void *ns)
+ {
+-	size_t len;
++	ssize_t len;
+ 	char *p, *name;
+ 
+ 	lockdep_assert_held_read(&kernfs_root(parent)->kernfs_rwsem);
+ 
+ 	spin_lock_irq(&kernfs_pr_cont_lock);
+ 
+-	len = strlcpy(kernfs_pr_cont_buf, path, sizeof(kernfs_pr_cont_buf));
++	len = strscpy(kernfs_pr_cont_buf, path, sizeof(kernfs_pr_cont_buf));
+ 
+-	if (len >= sizeof(kernfs_pr_cont_buf)) {
++	if (len < 0) {
+ 		spin_unlock_irq(&kernfs_pr_cont_lock);
+ 		return NULL;
+ 	}
 -- 
 2.34.1
 
