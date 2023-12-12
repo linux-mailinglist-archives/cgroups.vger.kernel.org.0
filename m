@@ -1,300 +1,148 @@
-Return-Path: <cgroups+bounces-919-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-923-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89E7C80F8F6
-	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 22:17:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D159C80F955
+	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 22:27:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0388E282004
-	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 21:17:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7189EB20F87
+	for <lists+cgroups@lfdr.de>; Tue, 12 Dec 2023 21:27:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 521C265A8F;
-	Tue, 12 Dec 2023 21:17:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C7586412D;
+	Tue, 12 Dec 2023 21:27:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="EBII8CWq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iUHJL12h"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50E8A7
-	for <cgroups@vger.kernel.org>; Tue, 12 Dec 2023 13:17:42 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1d098b87eeeso54945325ad.0
-        for <cgroups@vger.kernel.org>; Tue, 12 Dec 2023 13:17:42 -0800 (PST)
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3CBECA;
+	Tue, 12 Dec 2023 13:27:14 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-5c701bd9a3cso1547329a12.0;
+        Tue, 12 Dec 2023 13:27:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1702415862; x=1703020662; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YgP6QDGYW90+EPtUKh6hhExTw/nr/8L1WXYuh71GNlI=;
-        b=EBII8CWqTewHCYUKQvaukG1zWeJjB2pl/RbMg+j8fFcvUq11md9ygurXaQ0F8RZJRd
-         QN9d/19YNp3UbZ8oh9br9LCWCn2S3HP6xRQ592cXogzBEjuqKMlAo7D2tjJgS0BmhQwY
-         x3edF44sbx8FhzObBflU+lF0Lssb3eOq3JnHc=
+        d=gmail.com; s=20230601; t=1702416434; x=1703021234; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=mGU0tRhB9g2my+2/cE06clpBuE4ux9GMlKQnA88vmOY=;
+        b=iUHJL12hkaQpYvJQ51GOvvbzu/A/N0rTuQ9psB+2rNSXP6LkUljAEAFJGzmUzqsd8Y
+         k19JbyOQNfT4Cb1i5H5juVQW+aDQl8g6TysUlVJ+HcGsjN4JK15r/Hdz65Ps0bTchMFB
+         yMzrgeYCM86VOtVueS2DBBZcM9kprpwSXoaGyz9WSrEyzC+RLKZzasF+ZgXBNh9YR7V8
+         ANk7Q7yDQZQq5vYJe+b8Pxu0cjlRdfFmbAWSP+BqfujUNIkTbO+HMGuhztFmS0LNIoUD
+         7koDQSw/GioKmImtedBeLSVhELItrkvMSk8u2V9lldI2A4ZCLO8j1FR7MNw0edwU0DUl
+         ig/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702415862; x=1703020662;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YgP6QDGYW90+EPtUKh6hhExTw/nr/8L1WXYuh71GNlI=;
-        b=gtIuIDQLA587xRYET9A929XDgPiQ4qQ6lJPOJGGwQMQfK8Or0kKrpE9es4zlE1zL8+
-         YvJDzC9qwdL/dtnNrksydShPWiuB8blsUNOy6pqrgU6neNWNVZv1l5DU1oRt1WFPffrj
-         x9ZBFmtUfgFmzCICFjWJGmQYiu3PH2XCfW7XoJnW2Z+mhufVZZ3fvLHq5+o1bql5VIXe
-         TK/YXG3zywQxUtI2xWx++XH1/6qtWIesn+DQMEDtMGO71b8TSEeZ9DlzTjioYKUnXeJS
-         ApIkDWRE9zzbUHd0b1sGURu2QaRN4XMjkxJeEhXSYM0acGl3aQVVBSuTsu+BMJlVfQKl
-         coow==
-X-Gm-Message-State: AOJu0Yyf3TVoxIm2MzS5E7f0bOERRXZm5NQv0Ugm/F6vYAj7Hv7vM9iw
-	de/SL+AIaNKxuUcmIR1bdo1XRA==
-X-Google-Smtp-Source: AGHT+IFjDgIDgEDyV0NYMtC7wrznCUmiU5/lWSweOP8HyZzQAO0+By9K4rXrnLgAr+Ii7qKKdIvgKg==
-X-Received: by 2002:a17:902:e74e:b0:1cc:5e1b:98b5 with SMTP id p14-20020a170902e74e00b001cc5e1b98b5mr7270093plf.66.1702415862230;
-        Tue, 12 Dec 2023 13:17:42 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id g14-20020a1709029f8e00b001cf7c07be50sm9052322plq.58.2023.12.12.13.17.41
+        d=1e100.net; s=20230601; t=1702416434; x=1703021234;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mGU0tRhB9g2my+2/cE06clpBuE4ux9GMlKQnA88vmOY=;
+        b=JzdV0RzQov9nK0dE9tZioMWR0GOF/nyHxWgeI3YrZ0wmMcP9oBcgrOyNXIqqnNtyvz
+         oX2BK3rhWM+jW9aJ2P5E6HNBHuSVtxgRTKDatDfD6SyymIG+oo94ZdzPWnN2ZbnimXZs
+         M2OqmRZgQeSVra5BIaC70X+Ylu5EFTuB2rpZtf5B53uP2HBfXZj+/jYjPc0Zr3HeMUFH
+         T1hWwaMyelgkpM6jDLucUbDvAMALJXhGImcC2+wlGcFGyN+ip62+j3XWbu8aSQgM8H3h
+         nCfnJIw4Bmxfa7fAtoQAfuZMHX0nOoExnBw6emwqrHm+N79UtDQ10F65e9RztRv4EaD9
+         cGHw==
+X-Gm-Message-State: AOJu0Yw+un8AUMSWFyOZJblRxKk3LAnv2l3zJA/FrH115xQmVmUh/1sg
+	ocKga8EYNZlVQxbK3gzJ8Fc=
+X-Google-Smtp-Source: AGHT+IEOqV6YioHzLz+CMzevAybZpWI90BvWGUhoOK81GcGWs2eSGpaD9M4nWE3MXP3iEb5BjRySyQ==
+X-Received: by 2002:a05:6a20:3d1e:b0:18f:b870:e9b3 with SMTP id y30-20020a056a203d1e00b0018fb870e9b3mr3562327pzi.121.1702416433791;
+        Tue, 12 Dec 2023 13:27:13 -0800 (PST)
+Received: from dschatzberg-fedora-PF3DHTBV ([2620:10d:c090:500::5:671e])
+        by smtp.gmail.com with ESMTPSA id z21-20020a656115000000b0059d219cb359sm7504411pgu.9.2023.12.12.13.27.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Dec 2023 13:17:41 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Kees Cook <keescook@chromium.org>,
-	Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Waiman Long <longman@redhat.com>,
-	cgroups@vger.kernel.org,
-	Azeem Shaikh <azeemshaikh38@gmail.com>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH v3 3/3] kernfs: Convert kernfs_path_from_node_locked() from strlcpy() to strscpy()
-Date: Tue, 12 Dec 2023 13:17:40 -0800
-Message-Id: <20231212211741.164376-3-keescook@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231212211606.make.155-kees@kernel.org>
-References: <20231212211606.make.155-kees@kernel.org>
+        Tue, 12 Dec 2023 13:27:13 -0800 (PST)
+Date: Tue, 12 Dec 2023 16:27:09 -0500
+From: Dan Schatzberg <schatzberg.dan@gmail.com>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Huan Yang <link@vivo.com>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+	Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>, Chris Li <chrisl@kernel.org>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH V3 1/1] mm: add swapiness= arg to memory.reclaim
+Message-ID: <ZXjQLXJViHX7kMnV@dschatzberg-fedora-PF3DHTBV>
+References: <20231211140419.1298178-1-schatzberg.dan@gmail.com>
+ <20231211140419.1298178-2-schatzberg.dan@gmail.com>
+ <CAJD7tkZQ2aakT8M2bTg0bp4sDtrGYv_4i4Z4z3KBerfxZ9qFWA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8042; i=keescook@chromium.org;
- h=from:subject; bh=shZXUYfHvcn83JB9rTJeaRzUZqZ1UgzjWRrQTVCVtxU=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBleM30G+t8NV/vyHSFzjkC+K+Zj47yXA4kAs33K
- S4H3DoxNmuJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZXjN9AAKCRCJcvTf3G3A
- JkyTEAConGhiBLHsocQ8sbSwq6RTnjeVAFv2A72J5kJK8MHW3sFiydk6ragXK0H4NjhddAT6k9R
- Iwpc+sAMeXtC5LSHlbkxzwxmAmTpvdZ0+HkpGNofYnO1GRBS2tNZQBx2xovmaBZGLhI3uL1S2Mf
- uFy1jEp7IRjwOUbM1zHWV4bM+TLIxRHQDtwtec7aUCS9kz92muBO+LZI8wOqu3//0chhPA/oJYK
- OmIQjfULUR5a/IzcHJAYVXdcRoDKXwclSWSFPM/lbR+ZX7XOdatfwteancUB7mA3VqMASoK6jzD
- /WWodvOyGvMywKDybb9iVwPwLdcDqi6f6YRwUsKHrO1PU0X/vaRreWv0AW+McpdjcGDDak159n5
- dLG/EkNlTRggxw61NNRmjuUIplvXSnvWAMjv1qumw8iiEzajnLTxs+d3rF7yWOneFFWz8cuucBs
- T6q984RP+2VM4dWIU9dRcdMhF4+sfRiXBnCq95xZcrcakrbEqaZ1G6JMiaKn+pTpTGFBrSw9CAT
- 91oa2XERahlLlqpV8VMm0QS8tptziqLPqdU3+jQq45xdbDLw4g26B01O8G9PkgXEBkYxNXi2CfE
- mc85dyxzgFB/wBjBPh0kEN9HaDc4FwRSQ25SkObRCYaStboeynzw51FRZV/pJz/aF6MJJlMUqNu aYQ0Cy79yRW6wZg==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkZQ2aakT8M2bTg0bp4sDtrGYv_4i4Z4z3KBerfxZ9qFWA@mail.gmail.com>
 
-One of the last remaining users of strlcpy() in the kernel is
-kernfs_path_from_node_locked(), which passes back the problematic "length
-we _would_ have copied" return value to indicate truncation.  Convert the
-chain of all callers to use the negative return value (some of which
-already doing this explicitly). All callers were already also checking
-for negative return values, so the risk to missed checks looks very low.
+On Mon, Dec 11, 2023 at 11:41:24AM -0800, Yosry Ahmed wrote:
+> On Mon, Dec 11, 2023 at 6:04 AM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
+> 
+> contains* the*
+> 
+> I think this statement was only important because no keys were
+> supported, so I think we can remove it completely and rely on
+> documenting the supported keys below like other interfaces, see my
+> next comment.
+> 
+> > +       to reclaim.
+> >
+> >         Example::
+> >
+> > @@ -1304,6 +1304,17 @@ PAGE_SIZE multiple when read back.
+> >         This means that the networking layer will not adapt based on
+> >         reclaim induced by memory.reclaim.
+> >
+> > +       This file also allows the user to specify the swappiness value
+> > +       to be used for the reclaim. For example:
+> > +
+> > +         echo "1G swappiness=60" > memory.reclaim
+> > +
+> > +       The above instructs the kernel to perform the reclaim with
+> > +       a swappiness value of 60. Note that this has the same semantics
+> > +       as the vm.swappiness sysctl - it sets the relative IO cost of
+> > +       reclaiming anon vs file memory but does not allow for reclaiming
+> > +       specific amounts of anon or file memory.
+> > +
+> 
+> Can we instead follow the same format used by other nested-keyed files
+> (e.g. io.max)? This usually involves a table of supported keys and
+> such.
 
-In this analysis, it was found that cgroup1_release_agent() actually
-didn't handle the "too large" condition, so this is technically also a
-bug fix. :)
+Thanks, both are good suggestions. Will address these.
 
-Here's the chain of callers, and resolution identifying each one as now
-handling the correct return value:
+> > +       while ((start = strsep(&buf, " ")) != NULL) {
+> > +               if (!strlen(start))
+> > +                       continue;
+> > +               switch (match_token(start, if_tokens, args)) {
+> > +               case MEMORY_RECLAIM_SWAPPINESS:
+> > +                       if (match_int(&args[0], &swappiness))
+> > +                               return -EINVAL;
+> > +                       if (swappiness < 0 || swappiness > 200)
+> 
+> I am not a fan of extending the hardcoded 0 and 200 values, and now
+> the new -1 value. Maybe it's time to create constants for the min and
+> max swappiness values instead of hardcoding them everywhere? This can
+> be a separate preparatory patch. Then, -1 (or any invalid value) can
+> also be added as a constant with a useful name, instead of passing -1
+> to all other callers.
+> 
+> This should make the code a little bit more readable and easier to extend.
 
-kernfs_path_from_node_locked()
-        kernfs_path_from_node()
-                pr_cont_kernfs_path()
-                        returns void
-                kernfs_path()
-                        sysfs_warn_dup()
-                                return value ignored
-                        cgroup_path()
-                                blkg_path()
-                                        bfq_bic_update_cgroup()
-                                                return value ignored
-                                TRACE_IOCG_PATH()
-                                        return value ignored
-                                TRACE_CGROUP_PATH()
-                                        return value ignored
-                                perf_event_cgroup()
-                                        return value ignored
-                                task_group_path()
-                                        return value ignored
-                                damon_sysfs_memcg_path_eq()
-                                        return value ignored
-                                get_mm_memcg_path()
-                                        return value ignored
-                                lru_gen_seq_show()
-                                        return value ignored
-                        cgroup_path_from_kernfs_id()
-                                return value ignored
-                cgroup_show_path()
-                        already converted "too large" error to negative value
-                cgroup_path_ns_locked()
-                        cgroup_path_ns()
-                                bpf_iter_cgroup_show_fdinfo()
-                                        return value ignored
-                                cgroup1_release_agent()
-                                        wasn't checking "too large" error
-                        proc_cgroup_show()
-                                already converted "too large" to negative value
-
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Zefan Li <lizefan.x@bytedance.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Waiman Long <longman@redhat.com>
-Cc: cgroups@vger.kernel.org
-Co-developed-by: Azeem Shaikh <azeemshaikh38@gmail.com>
-Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
-Link: https://lore.kernel.org/r/20231116192127.1558276-3-keescook@chromium.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- fs/kernfs/dir.c           | 34 +++++++++++++++++-----------------
- kernel/cgroup/cgroup-v1.c |  2 +-
- kernel/cgroup/cgroup.c    |  4 ++--
- kernel/cgroup/cpuset.c    |  2 +-
- 4 files changed, 21 insertions(+), 21 deletions(-)
-
-diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-index 8c0e5442597e..8ec73f6cf6ec 100644
---- a/fs/kernfs/dir.c
-+++ b/fs/kernfs/dir.c
-@@ -127,7 +127,7 @@ static struct kernfs_node *kernfs_common_ancestor(struct kernfs_node *a,
-  *
-  * [3] when @kn_to is %NULL result will be "(null)"
-  *
-- * Return: the length of the full path.  If the full length is equal to or
-+ * Return: the length of the constructed path.  If the path would have been
-  * greater than @buflen, @buf contains the truncated path with the trailing
-  * '\0'.  On error, -errno is returned.
-  */
-@@ -138,16 +138,17 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
- 	struct kernfs_node *kn, *common;
- 	const char parent_str[] = "/..";
- 	size_t depth_from, depth_to, len = 0;
-+	ssize_t copied;
- 	int i, j;
- 
- 	if (!kn_to)
--		return strlcpy(buf, "(null)", buflen);
-+		return strscpy(buf, "(null)", buflen);
- 
- 	if (!kn_from)
- 		kn_from = kernfs_root(kn_to)->kn;
- 
- 	if (kn_from == kn_to)
--		return strlcpy(buf, "/", buflen);
-+		return strscpy(buf, "/", buflen);
- 
- 	common = kernfs_common_ancestor(kn_from, kn_to);
- 	if (WARN_ON(!common))
-@@ -158,18 +159,19 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
- 
- 	buf[0] = '\0';
- 
--	for (i = 0; i < depth_from; i++)
--		len += strlcpy(buf + len, parent_str,
--			       len < buflen ? buflen - len : 0);
-+	for (i = 0; i < depth_from; i++) {
-+		copied = strscpy(buf + len, parent_str, buflen - len);
-+		if (copied < 0)
-+			return copied;
-+		len += copied;
-+	}
- 
- 	/* Calculate how many bytes we need for the rest */
- 	for (i = depth_to - 1; i >= 0; i--) {
- 		for (kn = kn_to, j = 0; j < i; j++)
- 			kn = kn->parent;
--		len += strlcpy(buf + len, "/",
--			       len < buflen ? buflen - len : 0);
--		len += strlcpy(buf + len, kn->name,
--			       len < buflen ? buflen - len : 0);
-+
-+		len += scnprintf(buf + len, buflen - len, "/%s", kn->name);
- 	}
- 
- 	return len;
-@@ -214,7 +216,7 @@ int kernfs_name(struct kernfs_node *kn, char *buf, size_t buflen)
-  * path (which includes '..'s) as needed to reach from @from to @to is
-  * returned.
-  *
-- * Return: the length of the full path.  If the full length is equal to or
-+ * Return: the length of the constructed path.  If the path would have been
-  * greater than @buflen, @buf contains the truncated path with the trailing
-  * '\0'.  On error, -errno is returned.
-  */
-@@ -265,12 +267,10 @@ void pr_cont_kernfs_path(struct kernfs_node *kn)
- 	sz = kernfs_path_from_node(kn, NULL, kernfs_pr_cont_buf,
- 				   sizeof(kernfs_pr_cont_buf));
- 	if (sz < 0) {
--		pr_cont("(error)");
--		goto out;
--	}
--
--	if (sz >= sizeof(kernfs_pr_cont_buf)) {
--		pr_cont("(name too long)");
-+		if (sz == -E2BIG)
-+			pr_cont("(name too long)");
-+		else
-+			pr_cont("(error)");
- 		goto out;
- 	}
- 
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index 76db6c67e39a..9cb00ebe9ac6 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -802,7 +802,7 @@ void cgroup1_release_agent(struct work_struct *work)
- 		goto out_free;
- 
- 	ret = cgroup_path_ns(cgrp, pathbuf, PATH_MAX, &init_cgroup_ns);
--	if (ret < 0 || ret >= PATH_MAX)
-+	if (ret < 0)
- 		goto out_free;
- 
- 	argv[0] = agentbuf;
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 4b9ff41ca603..8d2674c6aaef 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1893,7 +1893,7 @@ int cgroup_show_path(struct seq_file *sf, struct kernfs_node *kf_node,
- 	len = kernfs_path_from_node(kf_node, ns_cgroup->kn, buf, PATH_MAX);
- 	spin_unlock_irq(&css_set_lock);
- 
--	if (len >= PATH_MAX)
-+	if (len == -E2BIG)
- 		len = -ERANGE;
- 	else if (len > 0) {
- 		seq_escape(sf, buf, " \t\n\\");
-@@ -6301,7 +6301,7 @@ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
- 		if (cgroup_on_dfl(cgrp) || !(tsk->flags & PF_EXITING)) {
- 			retval = cgroup_path_ns_locked(cgrp, buf, PATH_MAX,
- 						current->nsproxy->cgroup_ns);
--			if (retval >= PATH_MAX)
-+			if (retval == -E2BIG)
- 				retval = -ENAMETOOLONG;
- 			if (retval < 0)
- 				goto out_unlock;
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 615daaf87f1f..fb29158ae825 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -4941,7 +4941,7 @@ int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
- 	retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
- 				current->nsproxy->cgroup_ns);
- 	css_put(css);
--	if (retval >= PATH_MAX)
-+	if (retval == -E2BIG)
- 		retval = -ENAMETOOLONG;
- 	if (retval < 0)
- 		goto out_free;
--- 
-2.34.1
-
+I'm not sure I understand the concern. This check just validates that
+the swappiness value inputted is between 0 and 200 (inclusive)
+otherwise the interface returns -EINVAL. Are you just concerned that
+these constants are not named explicitly so they can be reused
+elsewhere in the code?
 
