@@ -1,96 +1,113 @@
-Return-Path: <cgroups+bounces-944-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-945-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7ACA811980
-	for <lists+cgroups@lfdr.de>; Wed, 13 Dec 2023 17:31:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB16E8119AD
+	for <lists+cgroups@lfdr.de>; Wed, 13 Dec 2023 17:38:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9178281AE9
-	for <lists+cgroups@lfdr.de>; Wed, 13 Dec 2023 16:31:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71E6BB20F80
+	for <lists+cgroups@lfdr.de>; Wed, 13 Dec 2023 16:38:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3715224B5C;
-	Wed, 13 Dec 2023 16:31:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8773C364AB;
+	Wed, 13 Dec 2023 16:38:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BF7mb5WI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NzLYDsBP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E88CBAC
-	for <cgroups@vger.kernel.org>; Wed, 13 Dec 2023 08:31:38 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-552231d9c1dso1119649a12.0
-        for <cgroups@vger.kernel.org>; Wed, 13 Dec 2023 08:31:38 -0800 (PST)
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F18688E;
+	Wed, 13 Dec 2023 08:38:38 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1d348653591so11433665ad.1;
+        Wed, 13 Dec 2023 08:38:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702485097; x=1703089897; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bvHJ0z24yDBLH5ChK6i87dshEacgvg+vBs2gjaCwRnQ=;
-        b=BF7mb5WIanen9cgY2ta05QujVVJjxb5e0Mi2sDtiCvYm6L8Xc7ox2BFgsA2AjiPZPW
-         y6JjHUPjuofMN35/ddPXjSzm2VQnzJtLfIf7/J3uJot69pt9GJnKaf4xIrrQAp5rOFq4
-         wizV07a87fLhLgUo9gKGqySAHFVYoaffyKsZHfdB+dI4gdnUHZITvKGiLXf2hQhktYEE
-         LnIXl0fxsDf4rPZU51ecE8KjNMTAyR/FHRS3RIBU4y8JSRQ5PzQE0Mq6knbtPh8rfi2x
-         /6vIQbvTucsXjWd5sIHwTvIr5syznJqbPsYM/wThlXV2gnSg6ztwwSbpXCHhd9SnLini
-         qOGQ==
+        d=gmail.com; s=20230601; t=1702485518; x=1703090318; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=WngvNIIdUAOImz6VKCR6KlDDLoKgFI0GBra4+hjHdaY=;
+        b=NzLYDsBPHGzS50irHggm2iGtEK3B4zIDR0Bq+Uc0Yv6/W5Tpp4LCsJn1MxEErCUNJ+
+         MTgsiDSJzhWpDuEQPfpN2GWEl0GbqzqKUrm7WEpPbByTIXYH5dbReQAi3GXZn0yroXMI
+         x2vKWxSDFr0t3xs2AoAdC/odWnsiqbLQvCB5jcBeOoymtfTRgFJF2KXDdvtC8QCasbnN
+         NY5Weu5dmhKIhyjxJ165kthOjz3+zoo53I8NB4/vKWfqr8HVE3eq1MczJ4jnhG2TJcan
+         BpltIBFY0BsCnL8qP0m+j0GpL4Xr2BQZxQXZ742USicR3YvBQDm7fqhTkE4mvhFSqaXk
+         aoyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702485097; x=1703089897;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bvHJ0z24yDBLH5ChK6i87dshEacgvg+vBs2gjaCwRnQ=;
-        b=qb2cS1hE6+ciIgbjZNjX8Y0KKEP0RPGTvY7MWrvUpZJd35KF0Ox6BCTt+a89El41FH
-         zP8AeuWnS5mnfKr5l1N7XyyoGcS0sv8rpSOv80dFqpfRVh1HEFZ73yoXVZdc0KiNmtXJ
-         eEhdqEdXVnlfPcfyBpoFNgCYA/g7IsJHp/2D+LgeshUEcDaXedapzi9BNLD9L9gfjPug
-         gH3bLcKRnId4fKLeEtGDvHSav9EhAViJDtIb0JbKFPKYetxkTwRN91jo4V0lhFzzXci2
-         ovtHubkwSMXLcokkjP/blZPR9P2a5sd+BkEo45d4lRy96FKEtRT90WvgYSzzN+1zwKZF
-         3ksA==
-X-Gm-Message-State: AOJu0YxSGIK5YnsNjrcYXZ9WVmopXdjMI0qjxVRpDqhHs5J6phYCMXC8
-	o3CPsm3RT7UjGMi1rG86R/gk3IL66Cg2LqyIHlB90A==
-X-Google-Smtp-Source: AGHT+IGoQhgQhqCoHUeW9X0vV2ZDD9hgbqpFaW5uYHpMo8yALDWbSlq0ea0S1odZVzXp3mV+23C/+m2URiXRYMbQIig=
-X-Received: by 2002:a17:906:749e:b0:a22:fbdf:867c with SMTP id
- e30-20020a170906749e00b00a22fbdf867cmr647419ejl.128.1702485097270; Wed, 13
- Dec 2023 08:31:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702485518; x=1703090318;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WngvNIIdUAOImz6VKCR6KlDDLoKgFI0GBra4+hjHdaY=;
+        b=K800IrK64mE0Ew6GYDR2t02M0fDrBFg9l3YhTgbY4u5ZoDpuXO3hSCVr5qBSrkfPtK
+         2S+ZD2A390ebOWPXzLgfso2TmG/BDvarbPXALl4QsfATc5r0dAqtb/AA0mehgFwpz5Q6
+         JGBY7M6gNNxxlf3Zrg9Zyxz8xEjHdcbcDpn6QrZtA78RxQY0jQ5UlRdqIGPGsr4vwJBU
+         n+e6QLwICRFy5t3jiHO52WORTwCXIU4HU8zJNTlD+dW0jlAU65GHoRun65VqRU1WkXYX
+         BJ2l6vMSxFNkuTLJqyKP2HEzFO85LGNvpnBAPQIhsUElAcD7EMmZ+VvdHE1MW7xyE3BV
+         F2Sg==
+X-Gm-Message-State: AOJu0Yz/8cQzqNhlXt+njLRzfxGYzsHpxKNtOgWSIXOm+C7NwRklS6TZ
+	2QjMegyb6etjzrs82fS6XNw=
+X-Google-Smtp-Source: AGHT+IG40cDam0iwIQQ0yixGvC12xVks7Auh91vEMpA9cC4FQkIMzHTpnOC5tJomQzgVmo/Fg54fjQ==
+X-Received: by 2002:a17:902:e887:b0:1d3:3768:90a0 with SMTP id w7-20020a170902e88700b001d3376890a0mr3641678plg.40.1702485518164;
+        Wed, 13 Dec 2023 08:38:38 -0800 (PST)
+Received: from dschatzberg-fedora-PF3DHTBV ([2620:10d:c090:500::5:4500])
+        by smtp.gmail.com with ESMTPSA id az4-20020a170902a58400b001c71ec1866fsm10810814plb.258.2023.12.13.08.38.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Dec 2023 08:38:37 -0800 (PST)
+Date: Wed, 13 Dec 2023 11:38:33 -0500
+From: Dan Schatzberg <schatzberg.dan@gmail.com>
+To: Yu Zhao <yuzhao@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH V4 2/2] mm: add swapiness= arg to memory.reclaim
+Message-ID: <ZXneCaeJjHvFvecK@dschatzberg-fedora-PF3DHTBV>
+References: <20231213013807.897742-1-schatzberg.dan@gmail.com>
+ <20231213013807.897742-3-schatzberg.dan@gmail.com>
+ <CAOUHufarKA5-NGErYzvqeKKJze1XSUcMx4ntBHx2jmAUeqAioA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231213130414.353244-1-yosryahmed@google.com>
- <ZXnHSPuaVW913iVZ@casper.infradead.org> <CAJD7tkbuyyGNjhLcZfzBYBX+BSUCvBbMpUPyzgHcRPTM4jL9Gg@mail.gmail.com>
- <ZXnQCaficsZC2bN4@casper.infradead.org> <CAJD7tkY8xxfYFuP=4vFm7A+p7LqUEzdcFdPjhogccGPTjqsSKg@mail.gmail.com>
- <ZXnabMOjwASD+RO9@casper.infradead.org> <CAJD7tkaUGw9mo88xSiTNhVC6EKkzvaJOh=nOwY6WYcG+skQynQ@mail.gmail.com>
- <ZXnbZlrOmrapIpb4@casper.infradead.org>
-In-Reply-To: <ZXnbZlrOmrapIpb4@casper.infradead.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 13 Dec 2023 08:31:00 -0800
-Message-ID: <CAJD7tkbjNZ=16vj4uR3BVeTzaJUR2_PCMs+zF_uT+z+DYpaDZw@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: remove direct use of __memcg_kmem_uncharge_page
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOUHufarKA5-NGErYzvqeKKJze1XSUcMx4ntBHx2jmAUeqAioA@mail.gmail.com>
 
-On Wed, Dec 13, 2023 at 8:27=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Wed, Dec 13, 2023 at 08:24:04AM -0800, Yosry Ahmed wrote:
-> > I doubt an extra compound_head() will matter in that path, but if you
-> > feel strongly about it that's okay. It's a nice cleanup that's all.
->
-> i don't even understand why you think it's a nice cleanup.
+On Tue, Dec 12, 2023 at 07:05:36PM -0700, Yu Zhao wrote:
+> On Tue, Dec 12, 2023 at 6:39 PM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
+> >
+> > Allow proactive reclaimers to submit an additional swappiness=<val>
+> > argument to memory.reclaim. This overrides the global or per-memcg
+> > swappiness setting for that reclaim attempt.
+> >
+> > For example:
+> >
+> > echo "2M swappiness=0" > /sys/fs/cgroup/memory.reclaim
+> >
+> > will perform reclaim on the rootcg with a swappiness setting of 0 (no
+> > swap) regardless of the vm.swappiness sysctl setting.
+> >
+> > Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
+> 
+> NAK.
+> 
+> Please initialize new variables properly and test code changes
+> thoroughly before submission.
 
-free_pages_prepare() is directly calling __memcg_kmem_uncharge_page()
-instead of memcg_kmem_uncharge_page(), and open-coding checks that
-already exist in both of them to avoid the unnecessary function call
-if possible. I think this should be the job of
-memcg_kmem_uncharge_page(), but it's currently missing the
-PageMemcgKmem() check (which is in __memcg_kmem_uncharge_page()).
-
-So I think moving that check to the wrapper allows
-free_pages_prepare() to call memcg_kmem_uncharge_page() and without
-worrying about those memcg-specific checks.
+Could you be a bit more specific? The patch is compiling and working
+locally but perhaps there's some configuration or behavior that I
+haven't been testing.
 
