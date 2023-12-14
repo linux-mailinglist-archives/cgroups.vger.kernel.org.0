@@ -1,148 +1,255 @@
-Return-Path: <cgroups+bounces-962-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-963-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 574F08139F7
-	for <lists+cgroups@lfdr.de>; Thu, 14 Dec 2023 19:28:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8567F813A91
+	for <lists+cgroups@lfdr.de>; Thu, 14 Dec 2023 20:17:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 130FD282332
-	for <lists+cgroups@lfdr.de>; Thu, 14 Dec 2023 18:28:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BF20283046
+	for <lists+cgroups@lfdr.de>; Thu, 14 Dec 2023 19:17:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0404B68B89;
-	Thu, 14 Dec 2023 18:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09CF8692B0;
+	Thu, 14 Dec 2023 19:17:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tX6h8nLb"
+	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="ZprlJCGr"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB2B112
-	for <cgroups@vger.kernel.org>; Thu, 14 Dec 2023 10:28:38 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-a1e35c2807fso1116917966b.3
-        for <cgroups@vger.kernel.org>; Thu, 14 Dec 2023 10:28:38 -0800 (PST)
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54ECC6978B
+	for <cgroups@vger.kernel.org>; Thu, 14 Dec 2023 19:17:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-425860bf009so61165591cf.2
+        for <cgroups@vger.kernel.org>; Thu, 14 Dec 2023 11:17:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702578517; x=1703183317; darn=vger.kernel.org;
+        d=soleen.com; s=google; t=1702581441; x=1703186241; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lH4CLT11soXgvi/oQe5hBTiRESQ8UWLQkTtFerePfus=;
-        b=tX6h8nLb1kYr8Fz4Aask5U8JKI7e50dBBD+xcXQhmoqLhmp8LfoWHORUw/kn+gw97E
-         gAv0lMfGOyKT2bSf/Ms0umF0YWrGKyXpsNwSnHefmlw/dceZhXJVOESB8OHnmuBB0MSz
-         cBKtmp3DZQ7VFkF1BsQSGeNAznQsY7Zle2g/BTA0B7XCV3jBYWUiTjrFrX32IQMe0a6I
-         VChW/DqiaxlBoVeMxlIO7fEcCHPpNWnkcvCoeb/lxEeRhj5aKbBvoZUCFcLCmuJO4TdL
-         bHW4auLthuMvzhVnLjWkMBesRGSKoV+vGiAXH18GRplVkxivED/+WR81qjuPln+3lfD2
-         cBOw==
+        bh=O2wAVapsX3d4Wu5zcLkO1Y9GXGGh0W89rcgF3jgTa1I=;
+        b=ZprlJCGrVSIpyUiDmp2/IzTG6YFUGMyWp9w+Ix9/Vj2z3UtQz6rlen2BjAWSlirmBy
+         nv79chpSvzOUg+bsKPB0SLk1O5HCCC0KKuwg0wSlyI5ky2A0b3pFl+naX28MxmWx8kYM
+         kcXSOpRLqDe56ncRyS/kqAGl4M/A4ZwjCZfTy/QV8piACkozLHePd0iEY3COnM3+PxOp
+         7v6mcLVGFjGFYNGQW2BK1ZTxwqhciMzzrIvjxAGDoj3sdF6p8zfGjXbfnMdYSv3EpiFy
+         rBF4w2t32Z0cTgi3L1IvRNPcr+ycvFAaMq9vON6sbKX6R6Fh1SX2MO4EU1JHMxtqav4x
+         vvDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702578517; x=1703183317;
+        d=1e100.net; s=20230601; t=1702581441; x=1703186241;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lH4CLT11soXgvi/oQe5hBTiRESQ8UWLQkTtFerePfus=;
-        b=rhr6QxRzMnftZB8y+NQlp+D1bu3LGAA7TMuCBg2p+F6tRHu5tRWjQ6b9I+96wUpy9Y
-         KspQqhjGxX+zI2SrAa1rbIwxP1aZiCyMwDW7y45LXyNLB3XY5lq4A5E/FroBtasKjm/4
-         st79r1DQBhIX80v//ADA0aVCfb84Vz8lJ1/adscehAlLe+9vdkRIcLcuXFrP8BHZfUuo
-         n/I/nHRZ1WnkilG5ZU3/Iaxr5R+l9grjGi5WJhPQ6DZNcI9j/IS5xIOOgJKSJ5SvHFjN
-         /Rvsvomaz2Mwa3ap6zGdbTIyvCqnygHqhRszcDzafBdAFMLqO11CpmPR+aXVv9zv+j17
-         65Pg==
-X-Gm-Message-State: AOJu0YwBBBYGZN478mk4AnSwPwt7ehqkCJ7lCaa0BJDtsy2GHZfnfbLW
-	X/hvsvpBc7Q6tEuwVynUgdrIvJYxjvskKHHtjORO+A==
-X-Google-Smtp-Source: AGHT+IHRwu9vWZ1HNkcpck/GZz1PmTPXDUEpaeLXHi9jKbPJ12eb2WfPX3ltH5XMfAwVgTTcxoc64P3ITxj2/N55KrE=
-X-Received: by 2002:a17:907:962a:b0:a1d:53d8:427e with SMTP id
- gb42-20020a170907962a00b00a1d53d8427emr6349710ejc.119.1702578517047; Thu, 14
- Dec 2023 10:28:37 -0800 (PST)
+        bh=O2wAVapsX3d4Wu5zcLkO1Y9GXGGh0W89rcgF3jgTa1I=;
+        b=Zfk3Eyj2lA8sSOrolQp/9r6hevzbbb0hTodYehcUEv/sx1xS3dgJ3XiJG+5KChrJZB
+         u4zV8kRH3ABe61Rn9l+HdbzA4rhLi9u+UEGcacaXGCfyeONZCTCUxu6iZF1aBWblh7u0
+         y470SAZ9XK1ocGfDhPMsv5JFPNmdCt2eBvbh3QKYZ3tJ/nMmphIdd/pmS7DOUEcBZtPp
+         8Ok6lX1sO3LgxfEVHn5RNtv3f0uq+MHvpTc1GrmtkHR8618WZJ0TnyiiQFDIrMwCARen
+         D9K/8ktKlqsTQIrKUidSmiMgQHNrNYplvGI4imQD+ys/lgCkykhlhObFAaCWLS1/D7ky
+         EvTw==
+X-Gm-Message-State: AOJu0YyxkunKAh1C9ItgBwUmjDdsEwUvEE9Hc76yrIlJuIm3bqgmPFka
+	oemCJrni2gFWgCkEDEqphAEjyCocMN4DYKjAbRWvKw==
+X-Google-Smtp-Source: AGHT+IFzRCB9Md6JcXtZ2Es25f4UOuYMeLP9Itx6hDPrn436g7L6e3bJmetcIjga0ApETmdpPvmDW7XHrih7qp2afIE=
+X-Received: by 2002:a05:622a:452:b0:423:a4f6:9aa2 with SMTP id
+ o18-20020a05622a045200b00423a4f69aa2mr12441941qtx.6.1702581441062; Thu, 14
+ Dec 2023 11:17:21 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231213013807.897742-1-schatzberg.dan@gmail.com>
- <20231213013807.897742-3-schatzberg.dan@gmail.com> <ZXq_H4St_NSEFkcD@tiehlicka>
- <ZXtH5T+/qs+dUqrz@dschatzberg-fedora-PF3DHTBV>
-In-Reply-To: <ZXtH5T+/qs+dUqrz@dschatzberg-fedora-PF3DHTBV>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Thu, 14 Dec 2023 10:28:01 -0800
-Message-ID: <CAJD7tkYAzW-8isZFjAaebrw8s4-h1LCRtZV-HckHa5_A-2oY7A@mail.gmail.com>
-Subject: Re: [PATCH V4 2/2] mm: add swapiness= arg to memory.reclaim
-To: Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc: Michal Hocko <mhocko@suse.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Huan Yang <link@vivo.com>, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, Tejun Heo <tj@kernel.org>, 
-	Zefan Li <lizefan.x@bytedance.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
-	Matthew Wilcox <willy@infradead.org>, Kefeng Wang <wangkefeng.wang@huawei.com>, 
-	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+References: <20231130201504.2322355-1-pasha.tatashin@soleen.com>
+ <20231130201504.2322355-2-pasha.tatashin@soleen.com> <776e17af-ae25-16a0-f443-66f3972b00c0@google.com>
+In-Reply-To: <776e17af-ae25-16a0-f443-66f3972b00c0@google.com>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Thu, 14 Dec 2023 14:16:44 -0500
+Message-ID: <CA+CK2bA8iJ_w8CSx2Ed=d2cVSujrC0-TpO7U9j+Ow-gfk1nyfQ@mail.gmail.com>
+Subject: Re: [PATCH v2 01/10] iommu/vt-d: add wrapper functions for page allocations
+To: David Rientjes <rientjes@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, alim.akhtar@samsung.com, 
+	alyssa@rosenzweig.io, asahi@lists.linux.dev, baolu.lu@linux.intel.com, 
+	bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net, 
+	david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
+	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
+	joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
+	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
+	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
+	rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
+	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, 
+	tj@kernel.org, tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, 
+	will@kernel.org, yu-cheng.yu@intel.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 14, 2023 at 10:22=E2=80=AFAM Dan Schatzberg
-<schatzberg.dan@gmail.com> wrote:
+On Thu, Dec 14, 2023 at 12:58=E2=80=AFPM David Rientjes <rientjes@google.co=
+m> wrote:
 >
-> On Thu, Dec 14, 2023 at 09:38:55AM +0100, Michal Hocko wrote:
-> > On Tue 12-12-23 17:38:03, Dan Schatzberg wrote:
-> > > Allow proactive reclaimers to submit an additional swappiness=3D<val>
-> > > argument to memory.reclaim. This overrides the global or per-memcg
-> > > swappiness setting for that reclaim attempt.
-> >
-> > You are providing the usecase in the cover letter and Andrew usually
-> > appends that to the first patch in the series. I think it would be
-> > better to have the usecase described here.
-> >
-> > [...]
-> > > @@ -1304,6 +1297,18 @@ PAGE_SIZE multiple when read back.
-> > >     This means that the networking layer will not adapt based on
-> > >     reclaim induced by memory.reclaim.
-> > >
-> > > +The following nested keys are defined.
-> > > +
-> > > +     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D            =3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > +     swappiness            Swappiness value to reclaim with
-> > > +     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D            =3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > +
-> > > +   Specifying a swappiness value instructs the kernel to perform
-> > > +   the reclaim with that swappiness value. Note that this has the
-> > > +   same semantics as the vm.swappiness sysctl - it sets the
-> >
-> > same semantics as vm.swappiness applied to memcg reclaim with all the
-> > existing limitations and potential future extensions.
+> On Thu, 30 Nov 2023, Pasha Tatashin wrote:
 >
-> Thanks, will make this change.
+> > diff --git a/drivers/iommu/iommu-pages.h b/drivers/iommu/iommu-pages.h
+> > new file mode 100644
+> > index 000000000000..2332f807d514
+> > --- /dev/null
+> > +++ b/drivers/iommu/iommu-pages.h
+> > @@ -0,0 +1,199 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +/*
+> > + * Copyright (c) 2023, Google LLC.
+> > + * Pasha Tatashin <pasha.tatashin@soleen.com>
+> > + */
+> > +
+> > +#ifndef __IOMMU_PAGES_H
+> > +#define __IOMMU_PAGES_H
+> > +
+> > +#include <linux/vmstat.h>
+> > +#include <linux/gfp.h>
+> > +#include <linux/mm.h>
+> > +
+> > +/*
+> > + * All page allocation that are performed in the IOMMU subsystem must =
+use one of
+> > + * the functions below.  This is necessary for the proper accounting a=
+s IOMMU
+> > + * state can be rather large, i.e. multiple gigabytes in size.
+> > + */
+> > +
+> > +/**
+> > + * __iommu_alloc_pages_node - allocate a zeroed page of a given order =
+from
+> > + * specific NUMA node.
+> > + * @nid: memory NUMA node id
 >
-> >
-> > > +   relative IO cost of reclaiming anon vs file memory but does
-> > > +   not allow for reclaiming specific amounts of anon or file memory.
-> > > +
-> > >    memory.peak
-> > >     A read-only single value file which exists on non-root
-> > >     cgroups.
-> >
-> > The biggest problem with the implementation I can see, and others have
-> > pointed out the same, is how fragile this is. You really have to check
-> > the code and _every_ place which defines scan_control to learn that
-> > mem_cgroup_shrink_node, reclaim_clean_pages_from_list,
-> > reclaim_folio_list, lru_gen_seq_write, try_to_free_pages, balance_pgdat=
-,
-> > shrink_all_memory and __node_reclaim. I have only checked couple of
-> > them, like direct reclaim and kswapd and none of them really sets up
-> > swappiness to the default memcg nor global value. So you effectively en=
-d
-> > up with swappiness =3D=3D 0.
-> >
-> > While the review can point those out it is quite easy to break and you
-> > will only learn about that very indirectly. I think it would be easier
-> > to review and maintain if you go with a pointer that would fallback to
-> > mem_cgroup_swappiness() if NULL which will be the case for every
-> > existing reclaimer except memory.reclaim with swappiness value.
->
-> I agree. My initial implementation used a pointer for this
-> reason. I'll switch this back. Just to be clear - I still need to
-> initialize scan_control.swappiness in all these other places right? It
-> appears to mostly be stack-initialized which means it has
-> indeterminate value, not necessarily zero.
+> NUMA_NO_NODE if no locality requirements?
 
-My understanding is that in a partially initialized struct,
-uninitialized members default to 0, but I am not a C expert :)
+If no locality is required, there is a better interface:
+__iommu_alloc_pages(). That one will also take a look at the calling
+process policies to determine the proper NUMA node when nothing is
+specified. However, when policies should be ignored, and no locality
+required, NUMA_NO_NODE can be passed.
+
+>
+> > + * @gfp: buddy allocator flags
+> > + * @order: page order
+> > + *
+> > + * returns the head struct page of the allocated page.
+> > + */
+> > +static inline struct page *__iommu_alloc_pages_node(int nid, gfp_t gfp=
+,
+> > +                                                 int order)
+> > +{
+> > +     struct page *pages;
+>
+> s/pages/page/ here and later in this file.
+
+In this file, where there a page with an "order", I reference it with
+"pages", when no order (i.e. order =3D 0), I reference it with "page"
+
+I.e.: __iommu_alloc_page vs. __iommu_alloc_pages
+
+>
+> > +
+> > +     pages =3D alloc_pages_node(nid, gfp | __GFP_ZERO, order);
+> > +     if (!pages)
+>
+> unlikely()?
+
+Will add it.
+
+>
+> > +             return NULL;
+> > +
+> > +     return pages;
+> > +}
+> > +
+> > +/**
+> > + * __iommu_alloc_pages - allocate a zeroed page of a given order.
+> > + * @gfp: buddy allocator flags
+> > + * @order: page order
+> > + *
+> > + * returns the head struct page of the allocated page.
+> > + */
+> > +static inline struct page *__iommu_alloc_pages(gfp_t gfp, int order)
+> > +{
+> > +     struct page *pages;
+> > +
+> > +     pages =3D alloc_pages(gfp | __GFP_ZERO, order);
+> > +     if (!pages)
+> > +             return NULL;
+> > +
+> > +     return pages;
+> > +}
+> > +
+> > +/**
+> > + * __iommu_alloc_page_node - allocate a zeroed page at specific NUMA n=
+ode.
+> > + * @nid: memory NUMA node id
+> > + * @gfp: buddy allocator flags
+> > + *
+> > + * returns the struct page of the allocated page.
+> > + */
+> > +static inline struct page *__iommu_alloc_page_node(int nid, gfp_t gfp)
+> > +{
+> > +     return __iommu_alloc_pages_node(nid, gfp, 0);
+> > +}
+> > +
+> > +/**
+> > + * __iommu_alloc_page - allocate a zeroed page
+> > + * @gfp: buddy allocator flags
+> > + *
+> > + * returns the struct page of the allocated page.
+> > + */
+> > +static inline struct page *__iommu_alloc_page(gfp_t gfp)
+> > +{
+> > +     return __iommu_alloc_pages(gfp, 0);
+> > +}
+> > +
+> > +/**
+> > + * __iommu_free_pages - free page of a given order
+> > + * @pages: head struct page of the page
+>
+> I think "pages" implies more than one page, this is just a (potentially
+> compound) page?
+
+Yes, more than one page, basically, when order may be > 0.
+
+> > +/**
+> > + * iommu_free_page - free page
+> > + * @virt: virtual address of the page to be freed.
+> > + */
+> > +static inline void iommu_free_page(void *virt)
+> > +{
+> > +     iommu_free_pages(virt, 0);
+> > +}
+> > +
+> > +/**
+> > + * iommu_free_pages_list - free a list of pages.
+> > + * @pages: the head of the lru list to be freed.
+>
+> Document the locking requirements for this?
+
+Thank you for the review. I will add info about locking requirements,
+in fact they are very relaxed.
+
+These pages are added to the list by unmaps or remaps operation in
+Intel IOMMU implementation. These calls assume that whoever is doing
+those operations has exclusive access to the VA range in the page
+table of that operation. The pages in this freelist only belong to the
+former page-tables from the IOVA range for those operations.
+
+> > + */
+> > +static inline void iommu_free_pages_list(struct list_head *pages)
+> > +{
+> > +     while (!list_empty(pages)) {
+> > +             struct page *p =3D list_entry(pages->prev, struct page, l=
+ru);
+> > +
+> > +             list_del(&p->lru);
+> > +             put_page(p);
+> > +     }
+> > +}
 
