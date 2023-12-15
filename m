@@ -1,146 +1,279 @@
-Return-Path: <cgroups+bounces-965-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-966-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 677A48143F5
-	for <lists+cgroups@lfdr.de>; Fri, 15 Dec 2023 09:50:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70EAD814CFE
+	for <lists+cgroups@lfdr.de>; Fri, 15 Dec 2023 17:26:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2261E284978
-	for <lists+cgroups@lfdr.de>; Fri, 15 Dec 2023 08:50:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9431A1C23A99
+	for <lists+cgroups@lfdr.de>; Fri, 15 Dec 2023 16:26:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7BC215AC2;
-	Fri, 15 Dec 2023 08:50:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87C3F3C48A;
+	Fri, 15 Dec 2023 16:26:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LRSPraK2";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LRSPraK2"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="XOczaScQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF08E171BB;
-	Fri, 15 Dec 2023 08:50:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0E7351F824;
-	Fri, 15 Dec 2023 08:50:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1702630211; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=McsMtbDm05lM4zhgzbK/C+1NH2Bzs0Vl9JYrVkxmnLk=;
-	b=LRSPraK2OCLpToxyONL0SdyNenyouJL/gdv9/0WXVjh7HrNmlhXPF8omNwwwpCJehIuisr
-	rekj1bECE8d8eVUP/i3BQeFxgNNqEP8yd75CAV9nv6IPwobQzNNjhAL/CEkGv8vjhDKFEd
-	3rCEOdzSkZCDfbgr8oVcw4UC5ZAJxIE=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1702630211; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=McsMtbDm05lM4zhgzbK/C+1NH2Bzs0Vl9JYrVkxmnLk=;
-	b=LRSPraK2OCLpToxyONL0SdyNenyouJL/gdv9/0WXVjh7HrNmlhXPF8omNwwwpCJehIuisr
-	rekj1bECE8d8eVUP/i3BQeFxgNNqEP8yd75CAV9nv6IPwobQzNNjhAL/CEkGv8vjhDKFEd
-	3rCEOdzSkZCDfbgr8oVcw4UC5ZAJxIE=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DC382137D4;
-	Fri, 15 Dec 2023 08:50:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id bANZM0ITfGWCQwAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Fri, 15 Dec 2023 08:50:10 +0000
-Date: Fri, 15 Dec 2023 09:50:04 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH V4 2/2] mm: add swapiness= arg to memory.reclaim
-Message-ID: <ZXwTPAUn27ShARMG@tiehlicka>
-References: <20231213013807.897742-1-schatzberg.dan@gmail.com>
- <20231213013807.897742-3-schatzberg.dan@gmail.com>
- <ZXq_H4St_NSEFkcD@tiehlicka>
- <ZXtH5T+/qs+dUqrz@dschatzberg-fedora-PF3DHTBV>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 520A93C479
+	for <cgroups@vger.kernel.org>; Fri, 15 Dec 2023 16:26:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A498C433C8;
+	Fri, 15 Dec 2023 16:26:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1702657576;
+	bh=h5pZbNK7t4x2MDwr/F0/j3jfnTQONyskm/JKzTOaNb8=;
+	h=Subject:To:From:Date:From;
+	b=XOczaScQ/y8t4ZO62VYn6Xqc8ek7rjYQrgMHfhmDVi4Bb56mEV4b9Da52PSLu0jpT
+	 WMmEpnPtiUeyxWVJsUKdvh2tV79HBAsmya2lqY4lcXQe6CepdC58sotXcdO6klKsnM
+	 NIFllrSc5kA28JJ5anrqwg7R5Rw+ngxiakFOv8W0=
+Subject: patch "kernfs: Convert kernfs_path_from_node_locked() from strlcpy() to" added to driver-core-testing
+To: keescook@chromium.org,azeemshaikh38@gmail.com,cgroups@vger.kernel.org,gregkh@linuxfoundation.org,hannes@cmpxchg.org,lizefan.x@bytedance.com,longman@redhat.com,tj@kernel.org
+From: <gregkh@linuxfoundation.org>
+Date: Fri, 15 Dec 2023 17:26:11 +0100
+Message-ID: <2023121511-perjurer-encircle-109e@gregkh>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXtH5T+/qs+dUqrz@dschatzberg-fedora-PF3DHTBV>
-X-Spam-Score: 0.36
-X-Spam-Flag: NO
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [1.57 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.33)[75.99%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 R_RATELIMIT(0.00)[to_ip_from(RLhyf994aoi9gdt4d63rk4ux49)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[19];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[cmpxchg.org,linux.dev,google.com,vivo.com,vger.kernel.org,kvack.org,kernel.org,bytedance.com,lwn.net,linux-foundation.org,redhat.com,infradead.org,huawei.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: *
-X-Spam-Score: 1.57
-Authentication-Results: smtp-out2.suse.de;
-	none
+Content-Type: text/plain; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 8bit
 
-On Thu 14-12-23 13:22:29, Dan Schatzberg wrote:
-> On Thu, Dec 14, 2023 at 09:38:55AM +0100, Michal Hocko wrote:
-[...]
-> > While the review can point those out it is quite easy to break and you
-> > will only learn about that very indirectly. I think it would be easier
-> > to review and maintain if you go with a pointer that would fallback to
-> > mem_cgroup_swappiness() if NULL which will be the case for every
-> > existing reclaimer except memory.reclaim with swappiness value.
-> 
-> I agree. My initial implementation used a pointer for this
-> reason. I'll switch this back. Just to be clear - I still need to
-> initialize scan_control.swappiness in all these other places right?
 
-No. They will just get initialized to 0. All you need to make sure is
-that the swappiness is used consistently. I would propose something like
-scan_control_swappiness() (or sc_swappiness) which would actually do
+This is a note to let you know that I've just added the patch titled
 
-	if (sc->swappiness)
-		return sc->swappiness;
-	return mem_cgroup_swappiness(sc->target_mem_cgroup);
+    kernfs: Convert kernfs_path_from_node_locked() from strlcpy() to
 
-and then make sure that mem_cgroup_swappiness is never used directly.
+to my driver-core git tree which can be found at
+    git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git
+in the driver-core-testing branch.
 
+The patch will show up in the next release of the linux-next tree
+(usually sometime within the next 24 hours during the week.)
+
+The patch will be merged to the driver-core-next branch sometime soon,
+after it passes testing, and the merge window is open.
+
+If you have any questions about this process, please let me know.
+
+
+From ff6d413b0b59466e5acf2e42f294b1842ae130a1 Mon Sep 17 00:00:00 2001
+From: Kees Cook <keescook@chromium.org>
+Date: Tue, 12 Dec 2023 13:17:40 -0800
+Subject: kernfs: Convert kernfs_path_from_node_locked() from strlcpy() to
+ strscpy()
+
+One of the last remaining users of strlcpy() in the kernel is
+kernfs_path_from_node_locked(), which passes back the problematic "length
+we _would_ have copied" return value to indicate truncation.  Convert the
+chain of all callers to use the negative return value (some of which
+already doing this explicitly). All callers were already also checking
+for negative return values, so the risk to missed checks looks very low.
+
+In this analysis, it was found that cgroup1_release_agent() actually
+didn't handle the "too large" condition, so this is technically also a
+bug fix. :)
+
+Here's the chain of callers, and resolution identifying each one as now
+handling the correct return value:
+
+kernfs_path_from_node_locked()
+        kernfs_path_from_node()
+                pr_cont_kernfs_path()
+                        returns void
+                kernfs_path()
+                        sysfs_warn_dup()
+                                return value ignored
+                        cgroup_path()
+                                blkg_path()
+                                        bfq_bic_update_cgroup()
+                                                return value ignored
+                                TRACE_IOCG_PATH()
+                                        return value ignored
+                                TRACE_CGROUP_PATH()
+                                        return value ignored
+                                perf_event_cgroup()
+                                        return value ignored
+                                task_group_path()
+                                        return value ignored
+                                damon_sysfs_memcg_path_eq()
+                                        return value ignored
+                                get_mm_memcg_path()
+                                        return value ignored
+                                lru_gen_seq_show()
+                                        return value ignored
+                        cgroup_path_from_kernfs_id()
+                                return value ignored
+                cgroup_show_path()
+                        already converted "too large" error to negative value
+                cgroup_path_ns_locked()
+                        cgroup_path_ns()
+                                bpf_iter_cgroup_show_fdinfo()
+                                        return value ignored
+                                cgroup1_release_agent()
+                                        wasn't checking "too large" error
+                        proc_cgroup_show()
+                                already converted "too large" to negative value
+
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Waiman Long <longman@redhat.com>
+Cc:  <cgroups@vger.kernel.org>
+Co-developed-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+Link: https://lore.kernel.org/r/20231116192127.1558276-3-keescook@chromium.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://lore.kernel.org/r/20231212211741.164376-3-keescook@chromium.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ fs/kernfs/dir.c           | 34 +++++++++++++++++-----------------
+ kernel/cgroup/cgroup-v1.c |  2 +-
+ kernel/cgroup/cgroup.c    |  4 ++--
+ kernel/cgroup/cpuset.c    |  2 +-
+ 4 files changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+index d23bf7883b08..bce1d7ac95ca 100644
+--- a/fs/kernfs/dir.c
++++ b/fs/kernfs/dir.c
+@@ -127,7 +127,7 @@ static struct kernfs_node *kernfs_common_ancestor(struct kernfs_node *a,
+  *
+  * [3] when @kn_to is %NULL result will be "(null)"
+  *
+- * Return: the length of the full path.  If the full length is equal to or
++ * Return: the length of the constructed path.  If the path would have been
+  * greater than @buflen, @buf contains the truncated path with the trailing
+  * '\0'.  On error, -errno is returned.
+  */
+@@ -138,16 +138,17 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
+ 	struct kernfs_node *kn, *common;
+ 	const char parent_str[] = "/..";
+ 	size_t depth_from, depth_to, len = 0;
++	ssize_t copied;
+ 	int i, j;
+ 
+ 	if (!kn_to)
+-		return strlcpy(buf, "(null)", buflen);
++		return strscpy(buf, "(null)", buflen);
+ 
+ 	if (!kn_from)
+ 		kn_from = kernfs_root(kn_to)->kn;
+ 
+ 	if (kn_from == kn_to)
+-		return strlcpy(buf, "/", buflen);
++		return strscpy(buf, "/", buflen);
+ 
+ 	common = kernfs_common_ancestor(kn_from, kn_to);
+ 	if (WARN_ON(!common))
+@@ -158,18 +159,19 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
+ 
+ 	buf[0] = '\0';
+ 
+-	for (i = 0; i < depth_from; i++)
+-		len += strlcpy(buf + len, parent_str,
+-			       len < buflen ? buflen - len : 0);
++	for (i = 0; i < depth_from; i++) {
++		copied = strscpy(buf + len, parent_str, buflen - len);
++		if (copied < 0)
++			return copied;
++		len += copied;
++	}
+ 
+ 	/* Calculate how many bytes we need for the rest */
+ 	for (i = depth_to - 1; i >= 0; i--) {
+ 		for (kn = kn_to, j = 0; j < i; j++)
+ 			kn = kn->parent;
+-		len += strlcpy(buf + len, "/",
+-			       len < buflen ? buflen - len : 0);
+-		len += strlcpy(buf + len, kn->name,
+-			       len < buflen ? buflen - len : 0);
++
++		len += scnprintf(buf + len, buflen - len, "/%s", kn->name);
+ 	}
+ 
+ 	return len;
+@@ -214,7 +216,7 @@ int kernfs_name(struct kernfs_node *kn, char *buf, size_t buflen)
+  * path (which includes '..'s) as needed to reach from @from to @to is
+  * returned.
+  *
+- * Return: the length of the full path.  If the full length is equal to or
++ * Return: the length of the constructed path.  If the path would have been
+  * greater than @buflen, @buf contains the truncated path with the trailing
+  * '\0'.  On error, -errno is returned.
+  */
+@@ -265,12 +267,10 @@ void pr_cont_kernfs_path(struct kernfs_node *kn)
+ 	sz = kernfs_path_from_node(kn, NULL, kernfs_pr_cont_buf,
+ 				   sizeof(kernfs_pr_cont_buf));
+ 	if (sz < 0) {
+-		pr_cont("(error)");
+-		goto out;
+-	}
+-
+-	if (sz >= sizeof(kernfs_pr_cont_buf)) {
+-		pr_cont("(name too long)");
++		if (sz == -E2BIG)
++			pr_cont("(name too long)");
++		else
++			pr_cont("(error)");
+ 		goto out;
+ 	}
+ 
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index 76db6c67e39a..9cb00ebe9ac6 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -802,7 +802,7 @@ void cgroup1_release_agent(struct work_struct *work)
+ 		goto out_free;
+ 
+ 	ret = cgroup_path_ns(cgrp, pathbuf, PATH_MAX, &init_cgroup_ns);
+-	if (ret < 0 || ret >= PATH_MAX)
++	if (ret < 0)
+ 		goto out_free;
+ 
+ 	argv[0] = agentbuf;
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index a844b421fd83..4bc8183b669f 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -1893,7 +1893,7 @@ int cgroup_show_path(struct seq_file *sf, struct kernfs_node *kf_node,
+ 	len = kernfs_path_from_node(kf_node, ns_cgroup->kn, buf, PATH_MAX);
+ 	spin_unlock_irq(&css_set_lock);
+ 
+-	if (len >= PATH_MAX)
++	if (len == -E2BIG)
+ 		len = -ERANGE;
+ 	else if (len > 0) {
+ 		seq_escape(sf, buf, " \t\n\\");
+@@ -6278,7 +6278,7 @@ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
+ 		if (cgroup_on_dfl(cgrp) || !(tsk->flags & PF_EXITING)) {
+ 			retval = cgroup_path_ns_locked(cgrp, buf, PATH_MAX,
+ 						current->nsproxy->cgroup_ns);
+-			if (retval >= PATH_MAX)
++			if (retval == -E2BIG)
+ 				retval = -ENAMETOOLONG;
+ 			if (retval < 0)
+ 				goto out_unlock;
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 615daaf87f1f..fb29158ae825 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -4941,7 +4941,7 @@ int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
+ 	retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
+ 				current->nsproxy->cgroup_ns);
+ 	css_put(css);
+-	if (retval >= PATH_MAX)
++	if (retval == -E2BIG)
+ 		retval = -ENAMETOOLONG;
+ 	if (retval < 0)
+ 		goto out_free;
 -- 
-Michal Hocko
-SUSE Labs
+2.43.0
+
+
 
