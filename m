@@ -1,117 +1,90 @@
-Return-Path: <cgroups+bounces-968-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-969-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47CB18151B0
-	for <lists+cgroups@lfdr.de>; Fri, 15 Dec 2023 22:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 40E0C815891
+	for <lists+cgroups@lfdr.de>; Sat, 16 Dec 2023 10:49:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC66A1F2606C
-	for <lists+cgroups@lfdr.de>; Fri, 15 Dec 2023 21:12:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCA1D1F25A22
+	for <lists+cgroups@lfdr.de>; Sat, 16 Dec 2023 09:49:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88B9347F7A;
-	Fri, 15 Dec 2023 21:11:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80DCF14291;
+	Sat, 16 Dec 2023 09:49:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="N6wBlilf"
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="pAbTiIRE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47638563A6
-	for <cgroups@vger.kernel.org>; Fri, 15 Dec 2023 21:11:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-20308664c13so714265fac.3
-        for <cgroups@vger.kernel.org>; Fri, 15 Dec 2023 13:11:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1702674715; x=1703279515; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=b9KJ+4BbcKeSEG7077PFa7FVZHENUrxS+8ivlb7RAxY=;
-        b=N6wBlilfI55+czR8cmZ6G0UtIUVB0bXS/J8gqZ7UM8gyFPhprH55om1aQkAYd/i0ey
-         8u3McsxGkx7smNVvNhmwVXU4cSM1MQXM12tjl2Vu2s0gn0aAvZ67W7yJXfBjlyKY/qoT
-         MZEnUf7RV29cPfcPyqHiGrV+GA0/e+QFdZUcyIPg53U5I0i+dxOWo2J6l/Cq5lsKJsVC
-         trjpTAOGuNYPhDUQeR3L8e9Vrzyx0/VnySWOR0eM+nuTM/vg8xiElSOn4a9IuzBTfQ+f
-         CFl+xVEosabj7YSjngBL7c1C75lZl7pTBNFy9MyGLUXlt8XRnrKZtW8aM7zsL4g0BRvU
-         DHxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702674715; x=1703279515;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=b9KJ+4BbcKeSEG7077PFa7FVZHENUrxS+8ivlb7RAxY=;
-        b=bonX3SJzsnoDJLCcQeDMeSm8ZwrXHQwVqCWLLnUELV1LmDgTtIHnGOXF/ZfzC+cUUE
-         chwdspuXc4D3rpW9hhrlPrDWd2kdeoRJcgBjW2QjOu+DyNObeh0entLIilLGBWPbAPwp
-         WCU3RcGb1Stce+GNWct6/b8kJg+rZsB9/s5HNCHI8cZpFjccbN/VyqNoo77FA4LPd94D
-         A31QpaFI8fYQX+CZ5l0IrIylR0xCZZ64bNQD7MfAB1mW3igc3ilfcr33Xh8btKb4zCDf
-         KQb9oheYxfltHIOQkMrXmUYI3NoJp1t2hjOUiS588o1parCcFwq8nRkiDUXIU/hU0DKf
-         oFdA==
-X-Gm-Message-State: AOJu0Yz7hAdWQiMcfGx6WGxEhXynN5kXV3SqVySYUEX/BAb7iEwBGydD
-	Sywy4ByS1tNb4Rj0NM9P0WIEQN3PZKBG68p4pqtaNA==
-X-Google-Smtp-Source: AGHT+IFHrLpndT4XCwAesdcyNwQf00aMOvX02D4/8uxdog8acvbjKfsi57jpp2aqEyynfGVCKlt0IXuLjUhCsHgb3nk=
-X-Received: by 2002:a05:6870:c09:b0:203:7ccc:b6e8 with SMTP id
- le9-20020a0568700c0900b002037cccb6e8mr1214533oab.25.1702674715317; Fri, 15
- Dec 2023 13:11:55 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5CCE13ACA
+	for <cgroups@vger.kernel.org>; Sat, 16 Dec 2023 09:49:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4Ssgz65dcdzDqM4;
+	Sat, 16 Dec 2023 09:39:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1702719570; bh=nX71/Bk+1gCmO8q2up8c+yLNSVk3hfpJKxRQxt684XA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pAbTiIRE7d7W0GlvSqQ0vB6KLJd39Oo4ctmkr0TEEVcCAEXv66x5Kye1/bCmvZHEM
+	 2pcyzyaSztCegm4sCOUciC1vKHFH6VuEwlubmatRHaLSzqk8DOtd7VYjGhA2ZnLX3X
+	 ZTgNzxPlnJWDRfmF2FdF45CeMpqESCiRCM3tNaE8=
+X-Riseup-User-ID: 167AA9AA7492077BA3AC2819434F35829004FA977D1DDE28811C60B2370BDBC7
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4Ssgz45dXZzJq6R;
+	Sat, 16 Dec 2023 09:39:28 +0000 (UTC)
+Date: Sat, 16 Dec 2023 09:39:26 +0000
+From: donoban <donoban@riseup.net>
+To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: cgroups@vger.kernel.org
+Subject: Re: EOPNOTSUPP while trying to enable memory on
+ cgroup.subtree_control
+Message-ID: <n3x2las2haaqhjwhnwje4j4qaqsofioegqptic3x747zwnp6ym@i5jpplof5uan>
+References: <rare3lakkfrp7lkcfosuhivot6vuwuuwkgj74bbzmsjjpgwkt7@udo2e6layb3d>
+ <6alnige6ue22honr2a5a3k255ikvosanp2f4za3musgseadzki@6alspejj3hvp>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231130201504.2322355-1-pasha.tatashin@soleen.com>
- <20231130201504.2322355-11-pasha.tatashin@soleen.com> <c0d23d3e-39e6-57af-fd38-eb1b885d7da4@google.com>
-In-Reply-To: <c0d23d3e-39e6-57af-fd38-eb1b885d7da4@google.com>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Fri, 15 Dec 2023 16:11:18 -0500
-Message-ID: <CA+CK2bD0Wz8mzB_BGKEYKCHRJKKVwr0CPK7OOC0tD_Sxi5Rp5g@mail.gmail.com>
-Subject: Re: [PATCH v2 10/10] iommu: account IOMMU allocated memory
-To: David Rientjes <rientjes@google.com>
-Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
-	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
-	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
-	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
-	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
-	joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
-	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
-	rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
-	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, 
-	tj@kernel.org, tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, 
-	will@kernel.org, yu-cheng.yu@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6alnige6ue22honr2a5a3k255ikvosanp2f4za3musgseadzki@6alspejj3hvp>
 
-> > diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> > index 3f85254f3cef..e004e05a7cde 100644
-> > --- a/Documentation/admin-guide/cgroup-v2.rst
-> > +++ b/Documentation/admin-guide/cgroup-v2.rst
-> > @@ -1418,7 +1418,7 @@ PAGE_SIZE multiple when read back.
-> >         sec_pagetables
-> >               Amount of memory allocated for secondary page tables,
-> >               this currently includes KVM mmu allocations on x86
-> > -             and arm64.
-> > +             and arm64 and IOMMU page tables.
->
-> Hmm, if existing users are parsing this field and alerting when it exceeds
-> an expected value (a cloud provider, let's say), is it safe to add in a
-> whole new set of page tables?
->
-> I understand the documentation allows for it, but I think potential impact
-> on userspace would be more interesting.
+On Thu, Dec 07, 2023 at 05:37:06PM +0100, Michal Koutný wrote:
+> Hello.
+> 
+> It does. Memory controller cannot be passed down to a threaded subtree (i.e. you
+> only get memcg for the whole `docker` subtree) because memory controller
+> is not threaded (e.g. two threads that share memory space but could be
+> in two different cgroups make no sense for such a controller).
+> 
+> > Any clue? Is there some bug here or could be some problem with kernel
+> > build/config?
+> 
+> And why your cgroup subtree is threaded? I suspect because of some
+> threaded controllers were passed down [1] the tree while there are also some
+> internal node processes (see cgroups(7) paragraph beginning with: "The
+> second way of creating a threaded subtree").
+> 
+> To get out of this, your docker(?) needs to migrate all processes down
+> from `docker` cgroup before enabling the memory controller.
+> 
 
-Hi David,
+Hi!
 
-This is something that was discussed at LPC'23. I also was proposing a
-separate counter for iommu page tables, but it was noted that we
-specifically have sec_pagetables called this way to include all non
-regular CPU page tables, and we should therefore account for them
-together.
+Thanks for the reply and excuse me the delay, all that I investigated
+seemed correctly so I was still thinking that there was something wrong
+in the kernel....
 
-Please also see this discussion from the previous version of this patch series:
-https://lore.kernel.org/all/CAJD7tkb1FqTqwONrp2nphBDkEamQtPCOFm0208H3tp0Gq2OLMQ@mail.gmail.com/
-
-Pasha
+But finally the problem is not docker, is openrc who creates initially
+'/sys/fs/cgroup/docker'. Avoiding that both openrc and docker use the
+same path fixes the problem.
 
