@@ -1,59 +1,59 @@
-Return-Path: <cgroups+bounces-984-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-985-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1033181A69E
-	for <lists+cgroups@lfdr.de>; Wed, 20 Dec 2023 19:01:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B06E81AB11
+	for <lists+cgroups@lfdr.de>; Thu, 21 Dec 2023 00:32:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 345AB1C22DBB
-	for <lists+cgroups@lfdr.de>; Wed, 20 Dec 2023 18:01:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 301971C2267D
+	for <lists+cgroups@lfdr.de>; Wed, 20 Dec 2023 23:32:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF9A481AC;
-	Wed, 20 Dec 2023 18:01:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC9734AF6C;
+	Wed, 20 Dec 2023 23:32:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="McLTJGE+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IXisQJzW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F157E482C0;
-	Wed, 20 Dec 2023 18:01:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D7C24A9A9;
+	Wed, 20 Dec 2023 23:32:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7b7fdde8b56so68352539f.1;
-        Wed, 20 Dec 2023 10:01:09 -0800 (PST)
+Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3bb6ed2b913so120669b6e.2;
+        Wed, 20 Dec 2023 15:32:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703095269; x=1703700069; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1703115131; x=1703719931; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZJzSEoEvuif1BDrUFvDqH2tIiQ4fF92h4jSTRbuCOLY=;
-        b=McLTJGE+ItI6rlKoV6vOnN1Un5vqxwZEGotVNwruyLVspye9agmwHxPueIg09rK5z5
-         Gc6dcV3vZy+wWZ2TRaTroLxiapbwqmKSO6GTAm4/zokm7CbQruu/uPhX41DDp1BXxuiW
-         VcpgtnjZTSOMABQ60d1owN9ll57QLp2sHutcHPIjo63dh61KWsJpvYUd9MuHjARH5YPq
-         t/hKz6VRZCznUCisAPAaOuftcKwwR2oAEDNL4yVjByujmD2NMS2qLA5TZz9bdM0MQtp8
-         UMIOOtqfu6RkIEWjjFLgitgOQfHsBcbmqwwKh+uY9H2anADF0Rn0s1hPtvag1kpKhu95
-         ME2A==
+        bh=JafTjfhsfvTQO5zxFRDVKmKyIqXWE2U91+So3wUJ3Ds=;
+        b=IXisQJzWEkIywi31J8fkqcG1MP5aDJyOu4k39eQfjVzFXurcvjnvgdMElE8tFbWiRV
+         yLxWA5l7jevFQGOaCzPmWNj9Z7JFh675fr2qG2BgtWAJ0VlIM9JntPYDK0/xJMiCfa0K
+         dc0lqvyIwQmvxj/J58qs0nRuCgzPEvWasHTuFdGdlczUeTo44d6OfAaSncdVO22tFa4C
+         2OLRWHbaw3NPTOYUcY//VYdmFU6GmoNrC4DIr4slLhIDP6NorLcMVQbVk0CtUUUBHrcF
+         RxDIzkzwnbyoCM3JTUu/BmtLH4ku0vV6Nd7OwmsKfY/kbpfOT3uaQkQIuTVwAzkewxk2
+         jQRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703095269; x=1703700069;
+        d=1e100.net; s=20230601; t=1703115131; x=1703719931;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZJzSEoEvuif1BDrUFvDqH2tIiQ4fF92h4jSTRbuCOLY=;
-        b=JqcSSJAutbZmlDHw2GM1px8t4L737fES1a4LDinFFM2Z3K+9uo3XeWnMMwpnCTut98
-         k+8mkE1VCQlM9W5EQUBPesEiogDD7cGChV/06zCU1jHCddkqI2Y0nS15tfX9PApsumFE
-         hMjWw64zXkQa6bl3IrNtcusFnwiOpIxlT7sr51GTF0A6/NiXMrtBFhj/qR90UZGhgemA
-         p5azigbhRt+OW6OX4RguDaO6EM+7skUFg3oU7qeKmwuEwLEdI7VriR+xJR7mWYmzX2l/
-         nwihjNlOgTTAmD4jxlezOLxO7dvDlDj5vFoX5OiH7rG/7HLo8q1/zYnFNCQjnbKmDy9D
-         UlFQ==
-X-Gm-Message-State: AOJu0YwSh35WTsg3Z6PohRfMnLnvj1yWQawspzLcPD3FJHWg7h0wjF5h
-	PinNcnmxXApcWqcduV37l05RSlBP6e5wwLEvaj0=
-X-Google-Smtp-Source: AGHT+IFyV8d2RNp2PDX4fUdZmr5runKhc8tqWt5xHA/RVVcp4rAfS4is9TW8I+KHHVVp9KONswzhGSHykb5YQalhmzs=
-X-Received: by 2002:a05:6602:2c53:b0:7b3:9356:665 with SMTP id
- x19-20020a0566022c5300b007b393560665mr27215712iov.4.1703095268836; Wed, 20
- Dec 2023 10:01:08 -0800 (PST)
+        bh=JafTjfhsfvTQO5zxFRDVKmKyIqXWE2U91+So3wUJ3Ds=;
+        b=ov6DQHJwMdbY8jOvDA0c4Y4/HhhTKMdemegBp1BXQESedcl0hurULjueCMMDZTPQDx
+         Np9JH/Me9JPLwBEGSkJy7bLYEn3bLOZvlqNwinR3DH5139lmmpaX5uUQfgrUzkRfiajj
+         Iy0i1pq/TdrovsJv1usqkI4aeu9FcjMPwLODMbPZJPS/EJuLTARnVAj69x1fpBzquHjl
+         +UGNWmIYV7/V1zOk/dX/F2iy8DwPcuiUKveX7pyO/Qc7GblvF0omC5dHqREv7JCM9oSU
+         Paml+ox2KW66sPXbCY+qxIXZ/sX705otHZ/LUGT6FVmZXS8VSv7l8CYMzVkay+jdjvxA
+         VnoA==
+X-Gm-Message-State: AOJu0YwEXzbuFuRyzUlJ0ICKokHBsdBSPwRs0JB0531q/nkHsmoK+HfC
+	8YsRLliBkuigtAAXVuAJlyLQFT3BeEJyDbLSgJU=
+X-Google-Smtp-Source: AGHT+IE7F7f9ZxYZNbVnj1WH6ig3zM1ey1dAod+eyQrL/iDUt24tcMWaF+2JysLJAf8U2EW0SGNoGYJxDAp9AV8ZBOs=
+X-Received: by 2002:a05:6358:c3a3:b0:170:21ef:3e71 with SMTP id
+ fl35-20020a056358c3a300b0017021ef3e71mr322479rwb.42.1703115130989; Wed, 20
+ Dec 2023 15:32:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -62,14 +62,14 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <61273e5e9b490682388377c20f52d19de4a80460.1703054559.git.baolin.wang@linux.alibaba.com>
 In-Reply-To: <61273e5e9b490682388377c20f52d19de4a80460.1703054559.git.baolin.wang@linux.alibaba.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Wed, 20 Dec 2023 10:00:57 -0800
-Message-ID: <CAKEwX=N9zXX9GZWT9v_wuJB0Sbj27U6qeV6iz+CrJ362j_mY7Q@mail.gmail.com>
+From: Yang Shi <shy828301@gmail.com>
+Date: Wed, 20 Dec 2023 15:31:58 -0800
+Message-ID: <CAHbLzkqhS3Qyz2xrnfx0iY5sPq+91NJfXv-MYqCJ5XpQC+bnXw@mail.gmail.com>
 Subject: Re: [PATCH] mm: memcg: fix split queue list crash when large folio migration
 To: Baolin Wang <baolin.wang@linux.alibaba.com>
 Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org, 
 	roman.gushchin@linux.dev, shakeelb@google.com, muchun.song@linux.dev, 
-	david@redhat.com, ying.huang@intel.com, shy828301@gmail.com, ziy@nvidia.com, 
+	nphamcs@gmail.com, david@redhat.com, ying.huang@intel.com, ziy@nvidia.com, 
 	linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
@@ -128,16 +128,16 @@ old
 ed
 > under the wrong split queue lock protection, resulting in a list crash as=
  above.
-
-Ah this is tricky. I think you're right - the old folio's memcg is
-used to get the deferred split queue, and we cleared it here :)
-
 >
 > After the migration, the old folio is going to be freed, so we can remove=
  it
 > from the split queue in mem_cgroup_migrate() a bit earlier before clearin=
 g the
 > memcg data to avoid getting incorrect split queue.
+
+Nice catch! The fix looks good to me. Reviewed-by: Yang Shi
+<shy828301@gmail.com>
+
 >
 > Fixes: 85ce2c517ade ("memcontrol: only transfer the memcg data for migrat=
 ion")
@@ -185,10 +185,6 @@ n, so
 > +        */
 > +       if (folio_test_large(old) && folio_test_large_rmappable(old))
 > +               folio_undo_large_rmappable(old);
-
-This looks reasonable to me :)
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
-
 >         old->memcg_data =3D 0;
 >  }
 >
