@@ -1,179 +1,146 @@
-Return-Path: <cgroups+bounces-977-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-978-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4DE9817C98
-	for <lists+cgroups@lfdr.de>; Mon, 18 Dec 2023 22:24:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 568268198D7
+	for <lists+cgroups@lfdr.de>; Wed, 20 Dec 2023 07:52:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C42FD1C22389
-	for <lists+cgroups@lfdr.de>; Mon, 18 Dec 2023 21:24:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88DCE1C216C5
+	for <lists+cgroups@lfdr.de>; Wed, 20 Dec 2023 06:52:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BBEF740A2;
-	Mon, 18 Dec 2023 21:24:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h8Ubogei"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE6F716421;
+	Wed, 20 Dec 2023 06:52:07 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F6AA42361;
-	Mon, 18 Dec 2023 21:24:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702934688; x=1734470688;
-  h=cc:references:subject:to:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=mqgrmvBtHedkNI0LE/BC0GzzPcNrQtoOXK9vjdIUqhg=;
-  b=h8UbogeiEpkYDXFqU7b9QCXDUMy+31Q8LvGGzhz+1GcRdzOaIlqhpaYE
-   uhmIlKkoQZ4wLYzm0KUnjTVPPGR7VOIlcobTeji1WYGnK64brPiqOwDe7
-   yZe3M83KxDB/kKF+EZ/7cQWXFvnMrUVEKvOWCS4OmZYemnT0BEfyER7UH
-   5rgtzl7ky/oQ9ax1zeJJzmYck6xizD7/LPs35fSaueVeQGSBOzLiFNz0i
-   3Q1YYa7AwZb1AXdSC2jbeh8wq8Bixq1SlRYeV+xv/IGA0KOueTodnFaK7
-   Mr5WWwxGsYJd24+dG7F6rJ2tyhHXP8d8IDJjgcMghQDhcTZAVYYbOC2PF
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="9015487"
-X-IronPort-AV: E=Sophos;i="6.04,286,1695711600"; 
-   d="scan'208";a="9015487"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Dec 2023 13:24:47 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10928"; a="725479292"
-X-IronPort-AV: E=Sophos;i="6.04,286,1695711600"; 
-   d="scan'208";a="725479292"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.124.145.138])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 18 Dec 2023 13:24:44 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "sean.j.christopherson@intel.com"
- <sean.j.christopherson@intel.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
- "yangjie@microsoft.com" <yangjie@microsoft.com>
-References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
- <20231030182013.40086-10-haitao.huang@linux.intel.com>
- <c8fc40dc56b853fbff14ba22db197c80a6d31820.camel@intel.com>
- <op.2e0yod2lwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <431c5d7f5aee7d11ec2e8aa2e526fde438fa53b4.camel@intel.com>
- <op.2ftmyampwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <3c27bca678c1b041920a14a7da0d958c9861ebca.camel@intel.com>
- <op.2f0eo8r1wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <73ed579be8ad81835df1c309b7c69b491b7f2c8e.camel@intel.com>
-Subject: Re: [PATCH v6 09/12] x86/sgx: Restructure top-level EPC reclaim
- function
-To: "Mehta, Sohil" <sohil.mehta@intel.com>, "jarkko@kernel.org"
- <jarkko@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
- <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>, "tj@kernel.org"
- <tj@kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>, "tglx@linutronix.de"
- <tglx@linutronix.de>, "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bp@alien8.de"
- <bp@alien8.de>, "Huang, Kai" <kai.huang@intel.com>
-Date: Mon, 18 Dec 2023 15:24:40 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FDCE16403;
+	Wed, 20 Dec 2023 06:52:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0VytDXe5_1703055119;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VytDXe5_1703055119)
+          by smtp.aliyun-inc.com;
+          Wed, 20 Dec 2023 14:52:00 +0800
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+To: akpm@linux-foundation.org
+Cc: hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	shakeelb@google.com,
+	muchun.song@linux.dev,
+	nphamcs@gmail.com,
+	david@redhat.com,
+	ying.huang@intel.com,
+	shy828301@gmail.com,
+	ziy@nvidia.com,
+	baolin.wang@linux.alibaba.com,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org
+Subject: [PATCH] mm: memcg: fix split queue list crash when large folio migration
+Date: Wed, 20 Dec 2023 14:51:40 +0800
+Message-Id: <61273e5e9b490682388377c20f52d19de4a80460.1703054559.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2f523elowjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <73ed579be8ad81835df1c309b7c69b491b7f2c8e.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Transfer-Encoding: 8bit
 
-On Sun, 17 Dec 2023 19:44:56 -0600, Huang, Kai <kai.huang@intel.com> wrote:
+When running autonuma with enabling multi-size THP, I encountered the following
+kernel crash issue:
 
->
->> >
->> > The point is, with or w/o this patch, you can only reclaim 16 EPC  
->> pages
->> > in one
->> > function call (as you have said you are going to remove
->> > SGX_NR_TO_SCAN_MAX,
->> > which is a cipher to both of us).  The only difference I can see is,
->> > with this
->> > patch, you can have multiple calls of "isolate" and then call the
->> > "do_reclaim"
->> > once.
->> >
->> > But what's the good of having the "isolate" if the "do_reclaim" can  
->> only
->> > reclaim
->> > 16 pages anyway?
->> >
->> > Back to my last reply, are you afraid of any LRU has less than 16  
->> pages
->> > to
->> > "isolate", therefore you need to loop LRUs of descendants to get 16?
->> > Cause I
->> > really cannot think of any other reason why you are doing this.
->> >
->> >
->>
->> I think I see your point. By capping pages reclaimed per cycle to 16,
->> there is not much difference even if those 16 pages are spread in  
->> separate
->> LRUs . The difference is only significant when we ever raise that cap.  
->> To
->> preserve the current behavior of ewb loops independent on number of LRUs
->> to loop through for each reclaiming cycle, regardless of the exact value
->> of the page cap, I would still think current approach in the patch is
->> reasonable choice.  What do you think?
->
-> To me I won't bother to do that.  Having less than 16 pages in one LRU is
-> *extremely rare* that should never happen in practice.  It's pointless  
-> to make
-> such code adjustment at this stage.
->
-> Let's focus on enabling functionality first.  When you have some real
-> performance issue that is related to this, we can come back then.
->
-> Btw, I think you need to step back even further.  IIUC the whole  
-> multiple LRU
-> thing isn't mandatory in this initial support.
->
-> Please (again) take a look at the comments from Dave and Michal:
->
-> https://lore.kernel.org/lkml/7a1a5125-9da2-47b6-ba0f-cf24d84df16b@intel.com/#t
-> https://lore.kernel.org/lkml/yz44wukoic3syy6s4fcrngagurkjhe2hzka6kvxbajdtro3fwu@zd2ilht7wcw3/
+[  134.290216] list_del corruption. prev->next should be fffff9ad42e1c490,
+but was dead000000000100. (prev=fffff9ad42399890)
+[  134.290877] kernel BUG at lib/list_debug.c:62!
+[  134.291052] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+[  134.291210] CPU: 56 PID: 8037 Comm: numa01 Kdump: loaded Tainted:
+G            E      6.7.0-rc4+ #20
+[  134.291649] RIP: 0010:__list_del_entry_valid_or_report+0x97/0xb0
+......
+[  134.294252] Call Trace:
+[  134.294362]  <TASK>
+[  134.294440]  ? die+0x33/0x90
+[  134.294561]  ? do_trap+0xe0/0x110
+......
+[  134.295681]  ? __list_del_entry_valid_or_report+0x97/0xb0
+[  134.295842]  folio_undo_large_rmappable+0x99/0x100
+[  134.296003]  destroy_large_folio+0x68/0x70
+[  134.296172]  migrate_folio_move+0x12e/0x260
+[  134.296264]  ? __pfx_remove_migration_pte+0x10/0x10
+[  134.296389]  migrate_pages_batch+0x495/0x6b0
+[  134.296523]  migrate_pages+0x1d0/0x500
+[  134.296646]  ? __pfx_alloc_misplaced_dst_folio+0x10/0x10
+[  134.296799]  migrate_misplaced_folio+0x12d/0x2b0
+[  134.296953]  do_numa_page+0x1f4/0x570
+[  134.297121]  __handle_mm_fault+0x2b0/0x6c0
+[  134.297254]  handle_mm_fault+0x107/0x270
+[  134.300897]  do_user_addr_fault+0x167/0x680
+[  134.304561]  exc_page_fault+0x65/0x140
+[  134.307919]  asm_exc_page_fault+0x22/0x30
 
-Thanks for raising this. Actually my understanding the above discussion  
-was mainly about not doing reclaiming by killing enclaves, i.e., I assumed  
-"reclaiming" within that context only meant for that particular kind.
+The reason for the crash is that, the commit 85ce2c517ade ("memcontrol: only
+transfer the memcg data for migration") removed the charging and uncharging
+operations of the migration folios and cleared the memcg data of the old folio.
 
-As Mikko pointed out, without reclaiming per-cgroup, the max limit of each  
-cgroup needs to accommodate the peak usage of enclaves within that cgroup.  
-That may be inconvenient for practical usage and limits could be forced to  
-be set larger than necessary to run enclaves performantly. For example, we  
-can observe following undesired consequences comparing a system with  
-current kernel loaded with enclaves whose total peak usage is greater than  
-the EPC capacity.
+During the subsequent release process of the old large folio in destroy_large_folio(),
+if the large folio needs to be removed from the split queue, an incorrect split
+queue can be obtained (which is pgdat->deferred_split_queue) because the old
+folio's memcg is NULL now. This can lead to list operations being performed
+under the wrong split queue lock protection, resulting in a list crash as above.
 
-1) If a user wants to load the same exact enclaves but in separate  
-cgroups, then the sum of cgroup limits must be higher than the capacity  
-and the system will end up doing the same old global reclaiming as it is  
-currently doing. Cgroup is not useful at all for isolating EPC  
-consumptions.
+After the migration, the old folio is going to be freed, so we can remove it
+from the split queue in mem_cgroup_migrate() a bit earlier before clearing the
+memcg data to avoid getting incorrect split queue.
 
-2) To isolate impact of usage of each cgroup on other cgroups and yet  
-still being able to load each enclave, the user basically has to carefully  
-plan to ensure the sum of cgroup max limits, i.e., the sum of peak usage  
-of enclaves, is not reaching over the capacity. That means no  
-over-commiting allowed and the same system may not be able to load as many  
-enclaves as with current kernel.
+Fixes: 85ce2c517ade ("memcontrol: only transfer the memcg data for migration")
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+---
+ mm/huge_memory.c |  2 +-
+ mm/memcontrol.c  | 11 +++++++++++
+ 2 files changed, 12 insertions(+), 1 deletion(-)
 
-@Dave and @Michal, Your thoughts? Or could you confirm we should not do  
-reclaim per cgroup at
-all?
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 6be1a380a298..c50dc2e1483f 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -3124,7 +3124,7 @@ void folio_undo_large_rmappable(struct folio *folio)
+ 	spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+ 	if (!list_empty(&folio->_deferred_list)) {
+ 		ds_queue->split_queue_len--;
+-		list_del(&folio->_deferred_list);
++		list_del_init(&folio->_deferred_list);
+ 	}
+ 	spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
+ }
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index ae8c62c7aa53..e66e0811cccc 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7575,6 +7575,17 @@ void mem_cgroup_migrate(struct folio *old, struct folio *new)
+ 
+ 	/* Transfer the charge and the css ref */
+ 	commit_charge(new, memcg);
++	/*
++	 * If the old folio a large folio and is in the split queue, it needs
++	 * to be removed from the split queue now, in case getting an incorrect
++	 * split queue in destroy_large_folio() after the memcg of the old folio
++	 * is cleared.
++	 *
++	 * In addition, the old folio is about to be freed after migration, so
++	 * removing from the split queue a bit earlier seems reasonable.
++	 */
++	if (folio_test_large(old) && folio_test_large_rmappable(old))
++		folio_undo_large_rmappable(old);
+ 	old->memcg_data = 0;
+ }
+ 
+-- 
+2.39.3
 
-If confirmed as desired, then this series can stop at patch 4.
-
-Thanks
-Haitao
 
