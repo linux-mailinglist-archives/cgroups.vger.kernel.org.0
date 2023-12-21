@@ -1,204 +1,207 @@
-Return-Path: <cgroups+bounces-986-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-987-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9E4381AC76
-	for <lists+cgroups@lfdr.de>; Thu, 21 Dec 2023 03:01:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D52481AEF7
+	for <lists+cgroups@lfdr.de>; Thu, 21 Dec 2023 07:56:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4736A1F23462
-	for <lists+cgroups@lfdr.de>; Thu, 21 Dec 2023 02:01:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B143B1C22C41
+	for <lists+cgroups@lfdr.de>; Thu, 21 Dec 2023 06:56:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92F309474;
-	Thu, 21 Dec 2023 02:01:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30205BA38;
+	Thu, 21 Dec 2023 06:56:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fvl5fdhk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b2bfbSOH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0619C945A;
-	Thu, 21 Dec 2023 02:01:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDBBC2C6;
+	Thu, 21 Dec 2023 06:56:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7b7fdde8b54so12756439f.1;
-        Wed, 20 Dec 2023 18:01:25 -0800 (PST)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5c66b093b86so1181919a12.0;
+        Wed, 20 Dec 2023 22:56:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703124085; x=1703728885; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7uprnz/jjYuy4jWp8M6YseVkbWg8KRWXhaIAky0jmfE=;
-        b=fvl5fdhkGCMSY4JACtoE5vZEE0OZ5mvM5hc/zaI0tobA2ZmXV0w5QWqYAXIhfvhdR3
-         qzee0RVDbtCM6+9YCwFYnS+/mP+MQdmFdg19YU15PCKZC+6VjmXgqkwL/g4KjsfW4Ibk
-         0odUQKp38Rqic+FTfD+FLUUhzBq3F4lW1DGqJXJpLNI+/g85mA+D2qVwZECHiUhbtbjd
-         1C4pxbpuBXD+u94iW/HadP649b/wmqI14iI1JJE0cr2YQr9QLdWc8bLcHPbxhF8ZUxQH
-         xoKGZKIgzltMwZMGS6eRkB9B1CcmJkerTpE2ztDeV5dj1kBcszWdZSmXYX7gNDIj7/65
-         l0GA==
+        d=gmail.com; s=20230601; t=1703141802; x=1703746602; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UEtEt++hhmQprHsmNzuao+3x/xY9EBfmLNIQ2caP2ME=;
+        b=b2bfbSOHrtWP0FEqxOX3TCEXIUNR/0OlKn0bQy/LMmibG8bwl2DuxcUVlIy4kJ9Wlu
+         C4apg1zHM4eGgWPj8w4pUmJi9qgZVGbU6fUxN1xbn2t5VQqIV9q5AzV8ecvWhlDGAGNT
+         UQZNi3FOhz5IKGO1SSCBI+cpmadqgypxcWeUnoI2uP9qVhu4L3RbqpJFETxbqNe+cwlR
+         ryCc7NHp3jrhoDrM7/VVDDXN7gQjN6IGbaY1qRin/ykPpfbwDkeY5yjrNKeH4c/Q+IaV
+         tP4maWxruf6R4NMxRe7zu75xs8DSLffkSuJ3XEjpYdfOwk02fxU4L6iQ37qqcW9Xl/+/
+         4w0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703124085; x=1703728885;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7uprnz/jjYuy4jWp8M6YseVkbWg8KRWXhaIAky0jmfE=;
-        b=QmkDB2coY1A7hecqxdYSm8mnXFiM4d6nQDmU7iktU+AYFQPiQjuSxiGzPRXIyb2nn6
-         E0r13MTApr1wtySm71cq0kTYVojFFlRjFb7yVfTqf2Oq7Vu6fCRrtXa+1cjB2j6dJwQT
-         iP0hl1pUVFDg1H3mPCudWX6vnXRR25qwx2TI/aJU3xwjtH1wIrTAdAWyuOe4Zsdb4wpt
-         IfAbBVnare7cGOAWHQ/dwnfaBV+rzi4Nj52epboRdRkUyFD+5TVi8WqkPZwO1POF0fvL
-         3bbAUcw9gbI1KVCH8xAuT3b4eiZGRofXBGtttYVGjbLJmximCtfejLWYGJRvGpQYFtjU
-         wsjA==
-X-Gm-Message-State: AOJu0YxPh0MDMn7wQPtygLkLttPWqW/4j5+Znwrg3YO0Iz20hAsxTtq7
-	ztzT3qrV6rf6lDYokq4K3l6PhDFMkU/zz0XMqX0=
-X-Google-Smtp-Source: AGHT+IHR51LjiWdOebtbBexnDeSV//C/Noc4zDv9CvLklzYhekwRS6kGUobGMBJIQkMj3Tu/WQhPg+zbFBnbMgKV5YM=
-X-Received: by 2002:a6b:3f56:0:b0:7b9:232c:eeb3 with SMTP id
- m83-20020a6b3f56000000b007b9232ceeb3mr2763300ioa.6.1703124084910; Wed, 20 Dec
- 2023 18:01:24 -0800 (PST)
+        d=1e100.net; s=20230601; t=1703141802; x=1703746602;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UEtEt++hhmQprHsmNzuao+3x/xY9EBfmLNIQ2caP2ME=;
+        b=bYQCjwaEmzTkp1eLGLA83lHWGnfNV5/TnfLKC3ZH74XG2e1zY2SGizyOA2wOXbuOGI
+         A+Nrq64+3ZnvcUBakGSj1WxwDLJWn4Bp1nmN8pYurOAV7HmeaCT6dlurGz7TZb/FGtW6
+         bO1fXKXvc0CheCl7BZFrtHSHkLSuZfSM06FMmEPIUQRNPLJGI3iCIOn5yP3T+fbTX/KT
+         NmA7lwsCYySVKLV3EgxteKglc/w9jogDyH6LyWWcrNlZ1XyrChhPZnWT1H0uTGeHGLtB
+         nG6tGgPctBfgI3n4lx8cweEHQmGPPndomYCLtbhs8u0H5byvOx/lbrrmEKHpzLWBV6iv
+         pynw==
+X-Gm-Message-State: AOJu0YxQ4b8bYMK3fx3NSZN0cfaIQi/dMabfr5o/gtZvuPt7gSL7Ua5B
+	FGHjfHs18h3HaCYegFRUi5s=
+X-Google-Smtp-Source: AGHT+IGOcBb85kPB2NAjer3W1zoymTt2tLScYSZwOMMxzAbb+/4OGwChG9GHN9fy0S6j858l24HXEw==
+X-Received: by 2002:a17:90a:df14:b0:28b:bdf1:fd25 with SMTP id gp20-20020a17090adf1400b0028bbdf1fd25mr313549pjb.11.1703141801836;
+        Wed, 20 Dec 2023 22:56:41 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id so17-20020a17090b1f9100b0028658c6209dsm4890665pjb.2.2023.12.20.22.56.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Dec 2023 22:56:41 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id E694B101D8A8C; Thu, 21 Dec 2023 13:56:36 +0700 (WIB)
+Date: Thu, 21 Dec 2023 13:56:36 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Max Kellermann <max.kellermann@ionos.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux CGroups <cgroups@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] kernel/cgroup: use kernfs_create_dir_ns()
+Message-ID: <ZYPhpKOewFkYIDFL@archie.me>
+References: <20231208093310.297233-1-max.kellermann@ionos.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231220152653.3273778-1-schatzberg.dan@gmail.com> <20231220152653.3273778-2-schatzberg.dan@gmail.com>
-In-Reply-To: <20231220152653.3273778-2-schatzberg.dan@gmail.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Wed, 20 Dec 2023 18:01:14 -0800
-Message-ID: <CAKEwX=NppvrRFLJzksQ5noHmWHEfWmyiVA2DyhMcY3Lh9dgJ3w@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] mm: add defines for min/max swappiness
-To: Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, Tejun Heo <tj@kernel.org>, 
-	Zefan Li <lizefan.x@bytedance.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	Kefeng Wang <wangkefeng.wang@huawei.com>, SeongJae Park <sj@kernel.org>, 
-	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>, Yue Zhao <findns94@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="MF3osqI6+GUgm1Na"
+Content-Disposition: inline
+In-Reply-To: <20231208093310.297233-1-max.kellermann@ionos.com>
+
+
+--MF3osqI6+GUgm1Na
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 20, 2023 at 7:27=E2=80=AFAM Dan Schatzberg <schatzberg.dan@gmai=
-l.com> wrote:
->
-> We use the constants 0 and 200 in a few places in the mm code when
-> referring to the min and max swappiness. This patch adds MIN_SWAPPINESS
-> and MAX_SWAPPINESS #defines to improve clarity. There are no functional
-> changes.
->
-> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
-> ---
->  include/linux/swap.h |  2 ++
->  mm/memcontrol.c      |  2 +-
->  mm/vmscan.c          | 14 +++++++-------
->  3 files changed, 10 insertions(+), 8 deletions(-)
->
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index f6dd6575b905..e2ab76c25b4a 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -407,6 +407,8 @@ extern unsigned long try_to_free_pages(struct zonelis=
-t *zonelist, int order,
->
->  #define MEMCG_RECLAIM_MAY_SWAP (1 << 1)
->  #define MEMCG_RECLAIM_PROACTIVE (1 << 2)
-> +#define MIN_SWAPPINESS 0
-> +#define MAX_SWAPPINESS 200
->  extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *mem=
-cg,
->                                                   unsigned long nr_pages,
->                                                   gfp_t gfp_mask,
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index b226090fd906..fbe9f02dd206 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -4337,7 +4337,7 @@ static int mem_cgroup_swappiness_write(struct cgrou=
-p_subsys_state *css,
->  {
->         struct mem_cgroup *memcg =3D mem_cgroup_from_css(css);
->
-> -       if (val > 200)
-> +       if (val > MAX_SWAPPINESS)
->                 return -EINVAL;
->
->         if (!mem_cgroup_is_root(memcg))
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 9dd8977de5a2..d91963e2d47f 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -183,7 +183,7 @@ struct scan_control {
->  #endif
->
->  /*
-> - * From 0 .. 200.  Higher means more swappy.
-> + * From 0 .. MAX_SWAPPINESS.  Higher means more swappy.
->   */
->  int vm_swappiness =3D 60;
->
-> @@ -2403,7 +2403,7 @@ static void get_scan_count(struct lruvec *lruvec, s=
-truct scan_control *sc,
->         ap =3D swappiness * (total_cost + 1);
->         ap /=3D anon_cost + 1;
->
-> -       fp =3D (200 - swappiness) * (total_cost + 1);
-> +       fp =3D (MAX_SWAPPINESS - swappiness) * (total_cost + 1);
->         fp /=3D file_cost + 1;
->
->         fraction[0] =3D ap;
-> @@ -4400,7 +4400,7 @@ static int get_type_to_scan(struct lruvec *lruvec, =
-int swappiness, int *tier_idx
->  {
->         int type, tier;
->         struct ctrl_pos sp, pv;
-> -       int gain[ANON_AND_FILE] =3D { swappiness, 200 - swappiness };
-> +       int gain[ANON_AND_FILE] =3D { swappiness, MAX_SWAPPINESS - swappi=
-ness };
->
->         /*
->          * Compare the first tier of anon with that of file to determine =
-which
-> @@ -4436,7 +4436,7 @@ static int isolate_folios(struct lruvec *lruvec, st=
-ruct scan_control *sc, int sw
->         /*
->          * Try to make the obvious choice first. When anon and file are b=
-oth
->          * available from the same generation, interpret swappiness 1 as =
-file
-> -        * first and 200 as anon first.
-> +        * first and MAX_SWAPPINESS as anon first.
->          */
->         if (!swappiness)
->                 type =3D LRU_GEN_FILE;
-> @@ -4444,7 +4444,7 @@ static int isolate_folios(struct lruvec *lruvec, st=
-ruct scan_control *sc, int sw
->                 type =3D LRU_GEN_ANON;
->         else if (swappiness =3D=3D 1)
->                 type =3D LRU_GEN_FILE;
-> -       else if (swappiness =3D=3D 200)
-> +       else if (swappiness =3D=3D MAX_SWAPPINESS)
->                 type =3D LRU_GEN_ANON;
->         else
->                 type =3D get_type_to_scan(lruvec, swappiness, &tier);
-> @@ -5398,9 +5398,9 @@ static int run_cmd(char cmd, int memcg_id, int nid,=
- unsigned long seq,
->
->         lruvec =3D get_lruvec(memcg, nid);
->
-> -       if (swappiness < 0)
-> +       if (swappiness < MIN_SWAPPINESS)
->                 swappiness =3D get_swappiness(lruvec, sc);
-> -       else if (swappiness > 200)
-> +       else if (swappiness > MAX_SWAPPINESS)
->                 goto done;
->
->         switch (cmd) {
+On Fri, Dec 08, 2023 at 10:33:09AM +0100, Max Kellermann wrote:
+> By passing the fsugid to kernfs_create_dir_ns(), we don't need
+> cgroup_kn_set_ugid() any longer.  That function was added for exactly
+> this purpose by commit 49957f8e2a43 ("cgroup: newly created dirs and
+> files should be owned by the creator").
+>=20
+> Eliminating this piece of duplicate code means we benefit from future
+> improvements to kernfs_create_dir_ns(); for example, both are lacking
+> S_ISGID support currently, which my next patch will add to
+> kernfs_create_dir_ns().  It cannot (easily) be added to
+> cgroup_kn_set_ugid() because we can't dereference struct kernfs_iattrs
+> from there.
+>=20
+> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+> Acked-by: Tejun Heo <tj@kernel.org>
 > --
-> 2.39.3
->
+> v1 -> v2: 12-digit commit id
+> ---
+>  kernel/cgroup/cgroup.c | 31 ++++---------------------------
+>  1 file changed, 4 insertions(+), 27 deletions(-)
+>=20
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index 4b9ff41ca603..a844b421fd83 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -4169,20 +4169,6 @@ static struct kernfs_ops cgroup_kf_ops =3D {
+>  	.seq_show		=3D cgroup_seqfile_show,
+>  };
+> =20
+> -/* set uid and gid of cgroup dirs and files to that of the creator */
+> -static int cgroup_kn_set_ugid(struct kernfs_node *kn)
+> -{
+> -	struct iattr iattr =3D { .ia_valid =3D ATTR_UID | ATTR_GID,
+> -			       .ia_uid =3D current_fsuid(),
+> -			       .ia_gid =3D current_fsgid(), };
+> -
+> -	if (uid_eq(iattr.ia_uid, GLOBAL_ROOT_UID) &&
+> -	    gid_eq(iattr.ia_gid, GLOBAL_ROOT_GID))
+> -		return 0;
+> -
+> -	return kernfs_setattr(kn, &iattr);
+> -}
+> -
+>  static void cgroup_file_notify_timer(struct timer_list *timer)
+>  {
+>  	cgroup_file_notify(container_of(timer, struct cgroup_file,
+> @@ -4195,25 +4181,18 @@ static int cgroup_add_file(struct cgroup_subsys_s=
+tate *css, struct cgroup *cgrp,
+>  	char name[CGROUP_FILE_NAME_MAX];
+>  	struct kernfs_node *kn;
+>  	struct lock_class_key *key =3D NULL;
+> -	int ret;
+> =20
+>  #ifdef CONFIG_DEBUG_LOCK_ALLOC
+>  	key =3D &cft->lockdep_key;
+>  #endif
+>  	kn =3D __kernfs_create_file(cgrp->kn, cgroup_file_name(cgrp, cft, name),
+>  				  cgroup_file_mode(cft),
+> -				  GLOBAL_ROOT_UID, GLOBAL_ROOT_GID,
+> +				  current_fsuid(), current_fsgid(),
+>  				  0, cft->kf_ops, cft,
+>  				  NULL, key);
+>  	if (IS_ERR(kn))
+>  		return PTR_ERR(kn);
+> =20
+> -	ret =3D cgroup_kn_set_ugid(kn);
+> -	if (ret) {
+> -		kernfs_remove(kn);
+> -		return ret;
+> -	}
+> -
+>  	if (cft->file_offset) {
+>  		struct cgroup_file *cfile =3D (void *)css + cft->file_offset;
+> =20
+> @@ -5616,7 +5595,9 @@ static struct cgroup *cgroup_create(struct cgroup *=
+parent, const char *name,
+>  		goto out_cancel_ref;
+> =20
+>  	/* create the directory */
+> -	kn =3D kernfs_create_dir(parent->kn, name, mode, cgrp);
+> +	kn =3D kernfs_create_dir_ns(parent->kn, name, mode,
+> +				  current_fsuid(), current_fsgid(),
+> +				  cgrp, NULL);
+>  	if (IS_ERR(kn)) {
+>  		ret =3D PTR_ERR(kn);
+>  		goto out_stat_exit;
+> @@ -5761,10 +5742,6 @@ int cgroup_mkdir(struct kernfs_node *parent_kn, co=
+nst char *name, umode_t mode)
+>  	 */
+>  	kernfs_get(cgrp->kn);
+> =20
+> -	ret =3D cgroup_kn_set_ugid(cgrp->kn);
+> -	if (ret)
+> -		goto out_destroy;
+> -
+>  	ret =3D css_populate_dir(&cgrp->self);
+>  	if (ret)
+>  		goto out_destroy;
 
-Sorry for being late to the party :) Was preoccupied with zswap convos.
+No noticeable regressions with this patch applied.
 
-Hmm these are all the occurrences of 0 and 200 (in the context of
-swappiness) I can dig out. So, FWIW:
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--MF3osqI6+GUgm1Na
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZYPhnwAKCRD2uYlJVVFO
+o90vAQDDn55gsGPiaCKeuPg75TssDbT5TrTVA4bncC2D1RsxcAEAxMKDFyns+uYR
+wZ6IxDR+1liL6ADVLXNTLi1xVPi5OA8=
+=FLCG
+-----END PGP SIGNATURE-----
+
+--MF3osqI6+GUgm1Na--
 
