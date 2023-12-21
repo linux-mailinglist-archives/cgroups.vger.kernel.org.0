@@ -1,153 +1,267 @@
-Return-Path: <cgroups+bounces-988-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-989-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE1B481AEFC
-	for <lists+cgroups@lfdr.de>; Thu, 21 Dec 2023 07:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BDB081B280
+	for <lists+cgroups@lfdr.de>; Thu, 21 Dec 2023 10:36:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E104A1C20B04
-	for <lists+cgroups@lfdr.de>; Thu, 21 Dec 2023 06:57:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F8031C23BE9
+	for <lists+cgroups@lfdr.de>; Thu, 21 Dec 2023 09:36:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9668BA39;
-	Thu, 21 Dec 2023 06:57:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19DC1446A2;
+	Thu, 21 Dec 2023 09:30:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E+xU+aV/"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AgAxTj55";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="AgAxTj55"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77A7ABA33;
-	Thu, 21 Dec 2023 06:57:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6d9389583edso459411b3a.0;
-        Wed, 20 Dec 2023 22:57:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703141863; x=1703746663; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FSSFqrzbHEXNTzMZg0vJmST5AGzDIOxvv040iEauRhs=;
-        b=E+xU+aV/dKhCET38amSmg5SKsSaIqBziuq4XitAkh+Di9WD+J1Q9uQPXgnaTpeAvnm
-         Sp6/kfmYcGf/M/SVhgE/0+ldkgN1ebRGmDYv0RdQi2onZo7p5CeP7T+Y/WB4pLwIgwuz
-         NnT4v1mAhamC0cyPClu/kqffLN/drzSyMrj+3qQp6fxCGr515Z2fDdPWHfxMFo/7wTMQ
-         V6IEgqSn35UXOtMGZNO0n9VXAUkVfmGBSpslB3BbkGHiOTd/42gj4N9K7jopQ7E4Up2c
-         CDaqVApzfiL9l/maKSwQgUyZCr3G4harDVni6WNuGb1llDn504DKYOLCXBMjqEnZRkY8
-         s5FQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703141863; x=1703746663;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FSSFqrzbHEXNTzMZg0vJmST5AGzDIOxvv040iEauRhs=;
-        b=u3TdQ7Pg0gvQxjENKLR+ZckddDCFiDsSjJ1EWgCvib1ZuafHzxagiMapN8XERfMjWh
-         Z7Zn0g5kwzs9VTUlZGkLDSSYMVKA0TGl1PO+LSgfXA3wxIMN6sFmM6jMi6sgZZfJhufp
-         kUg4D7iVBr9l3zyqRNLsp0aCIOA24XS0cwHl4uO8lqGi+/E7+cnjsf9KcuKy60ASb8vU
-         rCQs0mcoK956Rz4pE4FHTntJDLln9+QEDQTt7AgzWzaUw9IzFLTbE68jSFbJtUvxBArk
-         krkqcjdmBY5VRhjTTjX+6rSUVj2wyIuX8TsdWHc8eHBm+8VybgMIR/wUAJzecOmTYnxF
-         P48Q==
-X-Gm-Message-State: AOJu0YzebwQWIkrEQCKH4++FFaYJBezI3lk9vwIs520mInyoDvoDoJZZ
-	dU7f4MPIxRXKzPS7xuz1Q+uISTRjzulOHw==
-X-Google-Smtp-Source: AGHT+IH54dPx3DWE19yj91lbFk3++PIHUvL3+l0d1KoJu1by96ITRjHnYYJrTjmEtmTxfeVnlMreZQ==
-X-Received: by 2002:a05:6a20:9151:b0:194:efaa:8762 with SMTP id x17-20020a056a20915100b00194efaa8762mr1050438pzc.87.1703141862608;
-        Wed, 20 Dec 2023 22:57:42 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id y10-20020a170902700a00b001d3b308aff2sm838231plk.129.2023.12.20.22.57.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Dec 2023 22:57:42 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-	id EC03B101D8A8C; Thu, 21 Dec 2023 13:57:37 +0700 (WIB)
-Date: Thu, 21 Dec 2023 13:57:37 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Max Kellermann <max.kellermann@ionos.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] fs/kernfs/dir: obey S_ISGID
-Message-ID: <ZYPh4T21-6DAbxq5@archie.me>
-References: <20231208093310.297233-1-max.kellermann@ionos.com>
- <20231208093310.297233-2-max.kellermann@ionos.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E420D4F8B4;
+	Thu, 21 Dec 2023 09:30:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3AA9F1FB5E;
+	Thu, 21 Dec 2023 09:30:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1703151000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H4HSDhkn3mbzmn+HYU4/3nbaXxmpHuloAKvKi9O9PuU=;
+	b=AgAxTj55I08NGUtiw7xFFRpCJA9QY9GYswORVLiK6V8E/0xB8HJFqZg7nkUOPXh+xTjrtF
+	itfvWm1l5RiV7Yp/cQ0k17lUCDF+jZh9y1zcEZsDNVwHBRFx0Qp4yApRMvZXqkpK1CabC7
+	JuC/t2PNhuMfCWcaCH3mDiJgqGnZyo0=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1703151000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H4HSDhkn3mbzmn+HYU4/3nbaXxmpHuloAKvKi9O9PuU=;
+	b=AgAxTj55I08NGUtiw7xFFRpCJA9QY9GYswORVLiK6V8E/0xB8HJFqZg7nkUOPXh+xTjrtF
+	itfvWm1l5RiV7Yp/cQ0k17lUCDF+jZh9y1zcEZsDNVwHBRFx0Qp4yApRMvZXqkpK1CabC7
+	JuC/t2PNhuMfCWcaCH3mDiJgqGnZyo0=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EC01213725;
+	Thu, 21 Dec 2023 09:29:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id MaiZNpcFhGU2MgAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Thu, 21 Dec 2023 09:29:59 +0000
+Date: Thu, 21 Dec 2023 10:29:59 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Yosry Ahmed <yosryahmed@google.com>, Huan Yang <link@vivo.com>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	SeongJae Park <sj@kernel.org>,
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+	Nhat Pham <nphamcs@gmail.com>, Yue Zhao <findns94@gmail.com>
+Subject: Re: [PATCH v5 2/2] mm: add swapiness= arg to memory.reclaim
+Message-ID: <ZYQFlynE7CU_Fjoc@tiehlicka>
+References: <20231220152653.3273778-1-schatzberg.dan@gmail.com>
+ <20231220152653.3273778-3-schatzberg.dan@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="cWO6PprgJ1tduci0"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231208093310.297233-2-max.kellermann@ionos.com>
+In-Reply-To: <20231220152653.3273778-3-schatzberg.dan@gmail.com>
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-1.31 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_RATELIMIT(0.00)[to_ip_from(RLsgd6kpfonsu388crrfsk7e3y)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[19];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[cmpxchg.org,linux.dev,google.com,vivo.com,vger.kernel.org,kvack.org,kernel.org,bytedance.com,lwn.net,linux-foundation.org,huawei.com,gmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=AgAxTj55
+X-Spam-Score: -1.31
+X-Rspamd-Queue-Id: 3AA9F1FB5E
 
+On Wed 20-12-23 07:26:51, Dan Schatzberg wrote:
+> Allow proactive reclaimers to submit an additional swappiness=<val>
+> argument to memory.reclaim. This overrides the global or per-memcg
+> swappiness setting for that reclaim attempt.
+> 
+> For example:
+> 
+> echo "2M swappiness=0" > /sys/fs/cgroup/memory.reclaim
+> 
+> will perform reclaim on the rootcg with a swappiness setting of 0 (no
+> swap) regardless of the vm.swappiness sysctl setting.
+> 
+> Userspace proactive reclaimers use the memory.reclaim interface to
+> trigger reclaim. The memory.reclaim interface does not allow for any way
+> to effect the balance of file vs anon during proactive reclaim. The only
+> approach is to adjust the vm.swappiness setting. However, there are a
+> few reasons we look to control the balance of file vs anon during
+> proactive reclaim, separately from reactive reclaim:
+> 
+> * Swapout should be limited to manage SSD write endurance. In near-OOM
+> situations we are fine with lots of swap-out to avoid OOMs. As these are
+> typically rare events, they have relatively little impact on write
+> endurance. However, proactive reclaim runs continuously and so its
+> impact on SSD write endurance is more significant. Therefore it is
+> desireable to control swap-out for proactive reclaim separately from
+> reactive reclaim
+> 
+> * Some userspace OOM killers like systemd-oomd[1] support OOM killing on
+> swap exhaustion. This makes sense if the swap exhaustion is triggered
+> due to reactive reclaim but less so if it is triggered due to proactive
+> reclaim (e.g. one could see OOMs when free memory is ample but anon is
+> just particularly cold). Therefore, it's desireable to have proactive
+> reclaim reduce or stop swap-out before the threshold at which OOM
+> killing occurs.
+> 
+> In the case of Meta's Senpai proactive reclaimer, we adjust
+> vm.swappiness before writes to memory.reclaim[2]. This has been in
+> production for nearly two years and has addressed our needs to control
+> proactive vs reactive reclaim behavior but is still not ideal for a
+> number of reasons:
+> 
+> * vm.swappiness is a global setting, adjusting it can race/interfere
+> with other system administration that wishes to control vm.swappiness.
+> In our case, we need to disable Senpai before adjusting vm.swappiness.
+> 
+> * vm.swappiness is stateful - so a crash or restart of Senpai can leave
+> a misconfigured setting. This requires some additional management to
+> record the "desired" setting and ensure Senpai always adjusts to it.
+> 
+> With this patch, we avoid these downsides of adjusting vm.swappiness
+> globally.
 
---cWO6PprgJ1tduci0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thank you for extending the changelog with usecases!
 
-On Fri, Dec 08, 2023 at 10:33:10AM +0100, Max Kellermann wrote:
-> Handling of S_ISGID is usually done by inode_init_owner() in all other
-> filesystems, but kernfs doesn't use that function.  In kernfs, struct
-> kernfs_node is the primary data structure, and struct inode is only
-> created from it on demand.  Therefore, inode_init_owner() can't be
-> used and we need to imitate its behavior.
->=20
-> S_ISGID support is useful for the cgroup filesystem; it allows
-> subtrees managed by an unprivileged process to retain a certain owner
-> gid, which then enables sharing access to the subtree with another
-> unprivileged process.
->=20
-> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
-> Acked-by: Tejun Heo <tj@kernel.org>
-> --
-> v1 -> v2: minor coding style fix (comment)
+> [1]https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd.service.html
+> [2]https://github.com/facebookincubator/oomd/blob/main/src/oomd/plugins/Senpai.cpp#L585-L598
+> 
+> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
 > ---
->  fs/kernfs/dir.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->=20
-> diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-> index 8b2bd65d70e7..62d39ecf0a46 100644
-> --- a/fs/kernfs/dir.c
-> +++ b/fs/kernfs/dir.c
-> @@ -676,6 +676,18 @@ struct kernfs_node *kernfs_new_node(struct kernfs_no=
-de *parent,
->  {
->  	struct kernfs_node *kn;
-> =20
-> +	if (parent->mode & S_ISGID) {
-> +		/* this code block imitates inode_init_owner() for
-> +		 * kernfs
-> +		 */
-> +
-> +		if (parent->iattr)
-> +			gid =3D parent->iattr->ia_gid;
-> +
-> +		if (flags & KERNFS_DIR)
-> +			mode |=3D S_ISGID;
-> +	}
-> +
->  	kn =3D __kernfs_new_node(kernfs_root(parent), parent,
->  			       name, mode, uid, gid, flags);
->  	if (kn) {
+>  Documentation/admin-guide/cgroup-v2.rst | 18 ++++----
+>  include/linux/swap.h                    |  3 +-
+>  mm/memcontrol.c                         | 56 ++++++++++++++++++++-----
+>  mm/vmscan.c                             | 13 +++++-
+>  4 files changed, 69 insertions(+), 21 deletions(-)
 
-No noticeable regressions with this patch applied.
+LGTM
+Acked-by: Michal Hocko <mhocko@suse.com.
 
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+Just one minor thing. It would be really great to prevent from potential
+incorrect use of mem_cgroup_swappiness. This should be internal function
+to memcg. Now, having scan_control internal to vmscan.c makes that
+harder and moving it out to swap.h or internal.h sounds overreaching.
 
---=20
-An old man doll... just what I always wanted! - Clara
+We could do this at least to reduce those mistakes. I can make it a
+proper patch if this seems reasonable or you can fold it into your patch
+directly.
+--- 
 
---cWO6PprgJ1tduci0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZYPh4QAKCRD2uYlJVVFO
-o26ZAP4r4J3I/Nd9h7weNBy5Qw8g6Kgy2tV9RcfYL4qS36KoeQEA3T33VwzqzLb0
-gitkBNYZ6MQltYWRNtkpj0zs3bzuyg4=
-=eiS0
------END PGP SIGNATURE-----
-
---cWO6PprgJ1tduci0--
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index f98dff23b758..5f3a182e9515 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -92,8 +92,10 @@ struct scan_control {
+ 	unsigned long	anon_cost;
+ 	unsigned long	file_cost;
+ 
+-	/* Swappiness value for reclaim. NULL will fall back to per-memcg/global value */
++#ifdef CONFIG_MEMCG
++	/* Swappiness value for reclaim. Always use sc_swappiness()! */
+ 	int *swappiness;
++#endif
+ 
+ 	/* Can active folios be deactivated as part of reclaim? */
+ #define DEACTIVATE_ANON 1
+@@ -230,6 +232,13 @@ static bool writeback_throttling_sane(struct scan_control *sc)
+ #endif
+ 	return false;
+ }
++
++static int sc_swappiness(struct scan_control *sc, struct mem_cgroup *memcg)
++{
++	if (sc->swappiness)
++		return *sc->swappiness;
++	return mem_cgroup_swappiness(memcg);
++}
+ #else
+ static bool cgroup_reclaim(struct scan_control *sc)
+ {
+@@ -245,6 +254,10 @@ static bool writeback_throttling_sane(struct scan_control *sc)
+ {
+ 	return true;
+ }
++static int sc_swappiness(struct scan_control *sc, struct mem_cgroup *memcg)
++{
++	return READ_ONCE(vm_swappiness);
++}
+ #endif
+ 
+ static void set_task_reclaim_state(struct task_struct *task,
+@@ -2330,8 +2343,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+ 	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+ 	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
+ 	unsigned long anon_cost, file_cost, total_cost;
+-	int swappiness = sc->swappiness ?
+-		*sc->swappiness : mem_cgroup_swappiness(memcg);
++	int swappiness = sc_swappiness(sc, memcg);
+ 	u64 fraction[ANON_AND_FILE];
+ 	u64 denominator = 0;	/* gcc */
+ 	enum scan_balance scan_balance;
+@@ -2612,10 +2624,7 @@ static int get_swappiness(struct lruvec *lruvec, struct scan_control *sc)
+ 	    mem_cgroup_get_nr_swap_pages(memcg) < MIN_LRU_BATCH)
+ 		return 0;
+ 
+-	if (sc->swappiness)
+-		return *sc->swappiness;
+-
+-	return mem_cgroup_swappiness(memcg);
++	return sc_swappiness(sc, memcg);
+ }
+ 
+ static int get_nr_gens(struct lruvec *lruvec, int type)
+-- 
+Michal Hocko
+SUSE Labs
 
