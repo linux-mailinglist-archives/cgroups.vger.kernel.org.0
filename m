@@ -1,75 +1,128 @@
-Return-Path: <cgroups+bounces-998-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-999-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76C3981C4F2
-	for <lists+cgroups@lfdr.de>; Fri, 22 Dec 2023 07:15:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EB0981C923
+	for <lists+cgroups@lfdr.de>; Fri, 22 Dec 2023 12:31:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 987B71C220BF
-	for <lists+cgroups@lfdr.de>; Fri, 22 Dec 2023 06:15:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2221C2859CB
+	for <lists+cgroups@lfdr.de>; Fri, 22 Dec 2023 11:31:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35C896FC2;
-	Fri, 22 Dec 2023 06:15:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F661171B6;
+	Fri, 22 Dec 2023 11:31:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="hPTYSxJ6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N2DorK30"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFF45B664;
-	Fri, 22 Dec 2023 06:15:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E43C1C433C9;
-	Fri, 22 Dec 2023 06:15:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1703225720;
-	bh=o34cTG3PLEzDraS+QQ0GYDod+AXopLJCVpOjWSq9VxY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hPTYSxJ6q/QYHzctslnCdQKQejYkiQIWnjTqwwogPxm+3mHkI6lj0PAJ1aLZ0gQZX
-	 tLCs2apfhBf5tjvzzaY0hBF/zBXGfBegVBVAHfKnUKly4LZG+IXAzMvMyXpNWqlt+E
-	 OTX4SkZiGE/i2GWPAAzsw/9esVagC+CDceyW1wOM=
-Date: Fri, 22 Dec 2023 07:15:17 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: Max Kellermann <max.kellermann@ionos.com>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] kernel/cgroup: use kernfs_create_dir_ns()
-Message-ID: <2023122207-faceless-despair-af43@gregkh>
-References: <20231208093310.297233-1-max.kellermann@ionos.com>
- <ZYSuR5cxkDh9Vrpt@mtj.duckdns.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DCF8168B6;
+	Fri, 22 Dec 2023 11:31:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6d0a679fca7so1061435b3a.2;
+        Fri, 22 Dec 2023 03:31:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703244685; x=1703849485; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VQ5p6copPkHpf57S6j1DWHnc40HA5s5ja2uE8OM/MkU=;
+        b=N2DorK30OGBAOTiR92htCxEmirL+5YeDAes/ZCs09utTgdHAKnDjZmv+vAvkyngFiF
+         v15i2F8VlIAnBv8sCbhVOFq4L/FlGg2ULrb28IHEoCkVf0/9OwfUBx9zXmJWeQDBS6WY
+         GfOhmfUlWcGbp8dQ5XMoKXwvAsxT9IlhyewJc3ToE+58gBogOhWxRMbRI47+Eix8R6vI
+         P3Vu2EuUuqW3Y9c5IPFgRq+u0ctmxAwRoQWrJbsG2zr8xK49JPSQkGclRH0PwNzS62Xm
+         uuKOzntq+to1KapjJoPCPxTCNBiVt2Rel36EhfaAGWspI1ueWx2DIirVer4k5SVobfSq
+         nA0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703244685; x=1703849485;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VQ5p6copPkHpf57S6j1DWHnc40HA5s5ja2uE8OM/MkU=;
+        b=rEj6Q2P4wEiRr6uI4LUSNIEIzW9lpkOtxsybWBFJD4deIJvUNTRjrupPLejkcsvOcr
+         el8Rzhrz8WJKu/O9bCVF+itd/KtS2eyNns3segAWWTWU6ZC03ZYD4aZpuSvaTOQnBh3H
+         wnVUZY07AipZG1b2GvaBCjH5IzkXm0bjie590/WUhZvCCjyHumTTNVPnzAeNTvyBMR7L
+         bMgWQg7+zLDXeaGrm5gQSZNjeQW5JCZXs2rUUL6OqNYAhPDVmAaJKvtZj4Ycg99Ctqb8
+         4Rm0ARhRn3f1wmdSGqei+ur9HhqDRqhluF570rC++p/uqkMUFFYubvdVMRdotpUcHIRZ
+         W2Gw==
+X-Gm-Message-State: AOJu0YxRGoRkL9XoAEoiQmEF5QIm3Rs3Qd+kffxadbfYqMniUI4esb+k
+	CQ8tDbObln9HVnEQtYdwGuQ=
+X-Google-Smtp-Source: AGHT+IGBmahAdWW0Y36UPK6OE+VYKOoHkFIROJXf09qCeuyOo2UJow8Onzdcrx06aBKMndMxYGCMag==
+X-Received: by 2002:a05:6a20:9144:b0:194:aced:f16e with SMTP id x4-20020a056a20914400b00194acedf16emr812968pzc.1.1703244685472;
+        Fri, 22 Dec 2023 03:31:25 -0800 (PST)
+Received: from vultr.guest ([149.28.194.201])
+        by smtp.gmail.com with ESMTPSA id l2-20020a170903244200b001d0cd9e4248sm3232881pls.196.2023.12.22.03.31.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 22 Dec 2023 03:31:25 -0800 (PST)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: ast@kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	tj@kernel.org,
+	lizefan.x@bytedance.com,
+	hannes@cmpxchg.org
+Cc: bpf@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH bpf-next 0/4] bpf: Add bpf_iter_cpumask 
+Date: Fri, 22 Dec 2023 11:30:58 +0000
+Message-Id: <20231222113102.4148-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZYSuR5cxkDh9Vrpt@mtj.duckdns.org>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 22, 2023 at 06:29:43AM +0900, Tejun Heo wrote:
-> On Fri, Dec 08, 2023 at 10:33:09AM +0100, Max Kellermann wrote:
-> > By passing the fsugid to kernfs_create_dir_ns(), we don't need
-> > cgroup_kn_set_ugid() any longer.  That function was added for exactly
-> > this purpose by commit 49957f8e2a43 ("cgroup: newly created dirs and
-> > files should be owned by the creator").
-> > 
-> > Eliminating this piece of duplicate code means we benefit from future
-> > improvements to kernfs_create_dir_ns(); for example, both are lacking
-> > S_ISGID support currently, which my next patch will add to
-> > kernfs_create_dir_ns().  It cannot (easily) be added to
-> > cgroup_kn_set_ugid() because we can't dereference struct kernfs_iattrs
-> > from there.
-> > 
-> > Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
-> > Acked-by: Tejun Heo <tj@kernel.org>
-> 
-> Applied to cgroup/for-6.8. Greg, can you please take the second patch?
+Three new kfuncs, namely bpf_iter_cpumask_{new,next,destroy}, have been
+added for the new bpf_iter_cpumask functionality. These kfuncs enable the
+iteration of percpu data, such as runqueues, psi_group_cpu, and more.
 
-Both are already in my tree, thanks.
+Additionally, a new kfunc, bpf_cpumask_set_from_pid, has been introduced to
+specify the cpumask for iteration. This function retrieves the cpumask from
+a specific task, facilitating the iteration of percpu data associated with
+these CPUs.
 
-greg k-h
+In our specific use case, we leverage the cgroup iterator to traverse
+percpu data, subsequently exposing it to userspace through a seq file.
+Refer to the test cases in patch #4 for further context and examples.
+
+Moreover, this patchset incorporates a change in the cgroup subsystem,
+ensuring consistent access to PSI for all cgroups via the struct cgroup.
+
+Changes:
+- bpf: Add new bpf helper bpf_for_each_cpu
+  https://lwn.net/ml/bpf/20230801142912.55078-1-laoar.shao@gmail.com/
+
+Yafang Shao (4):
+  cgroup, psi: Init PSI of root cgroup to psi_system
+  bpf: Add bpf_iter_cpumask kfuncs
+  bpf: Add new kfunc bpf_cpumask_set_from_pid
+  selftests/bpf: Add selftests for cpumask iter
+
+ include/linux/psi.h                                |   2 +-
+ kernel/bpf/cpumask.c                               |  65 ++++++++++
+ kernel/cgroup/cgroup.c                             |   5 +-
+ .../selftests/bpf/prog_tests/cpumask_iter.c        | 132 +++++++++++++++++++++
+ tools/testing/selftests/bpf/progs/cpumask_common.h |   4 +
+ .../selftests/bpf/progs/test_cpumask_iter.c        |  50 ++++++++
+ 6 files changed, 256 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/cpumask_iter.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_cpumask_iter.c
+
+-- 
+1.8.3.1
+
 
