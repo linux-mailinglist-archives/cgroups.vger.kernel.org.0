@@ -1,109 +1,142 @@
-Return-Path: <cgroups+bounces-1046-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1047-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E88381F92E
-	for <lists+cgroups@lfdr.de>; Thu, 28 Dec 2023 15:37:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E013B820A53
+	for <lists+cgroups@lfdr.de>; Sun, 31 Dec 2023 08:28:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1CEB71F2271C
-	for <lists+cgroups@lfdr.de>; Thu, 28 Dec 2023 14:37:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 953842833C5
+	for <lists+cgroups@lfdr.de>; Sun, 31 Dec 2023 07:28:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56610DDD0;
-	Thu, 28 Dec 2023 14:37:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAA73185D;
+	Sun, 31 Dec 2023 07:28:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="Eb6bljNs"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="ELwpUcpY"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.15.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B51CCA50
-	for <cgroups@vger.kernel.org>; Thu, 28 Dec 2023 14:37:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-427e83601c4so10203341cf.0
-        for <cgroups@vger.kernel.org>; Thu, 28 Dec 2023 06:37:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1703774244; x=1704379044; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=VU21beHWoGJM/Oi2NFAV2MrwGlZZbvr3br6yMg4QftQ=;
-        b=Eb6bljNs2u44uqRtI3F141CcYYeJZC3I7ik1RRd01ohigNe0el8ZFd7Cnff6P4p5FO
-         aZAK6iTT9No1CYD8uJVofrbZE0hzm2tvFCR4F5VzJqv+AAV4p8dX7L9h4BpcNOXTe1/7
-         tpFSx98985TYua2Vzxoz4ao2I/2RsU0xL1A1Td4tHxbb4ylKrN7eXDL5mYKP+Tthw+Br
-         d9KV9wJqK0aPta7Mn4fLNoJ8+B6MOdlZNgDY2zK7EBeCCQtP5N5vWkeLWnyHYvENIiAq
-         f4PnXZt0fAiMifTf0Nfiecxl9T0/Og7/UUnXkTJVM7sUy4KojKg3/+Kt+V8Q9Bx952Wa
-         rECA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703774244; x=1704379044;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VU21beHWoGJM/Oi2NFAV2MrwGlZZbvr3br6yMg4QftQ=;
-        b=OvUB46BOIp4saeWeM17DDeBEcbfJdxKcNcssOywuXpyu9f6GYrVlEdJA3RsuiTffRB
-         b9p04E+4UQIwMoxKulcD3uLGFap2sK91qo3ZSXAVViSHmq5X3Wi9IE2OLtY86aF416sd
-         xyiqu66TWs5ApfDPo7vonHM8xTpHar7mq6tVPDPTXKMkJKhb6fLaJgIDGStoQ2hbJG5X
-         pQaFp8GbskNbGrB2GDq9XtngirDgdglT7wUGmfdHANcwHEDo3Xhbi8NBIfVtRJgDSdR3
-         T219ul3UBXMlQns40r2I8VuhQmQLSIJ0hb8wArx7A4ncetmAe8DN/wU1418CF39Yz4EZ
-         wWVw==
-X-Gm-Message-State: AOJu0YyNWexCtuP9kzu40D3GrHSpkm81fy/vwkMfudGZWs5HegmQ0sh4
-	y6T4uLtQPS4gS8TDM03o8P2tx1Xl8aflNeBVz+eGhEf0lkuJlQ==
-X-Google-Smtp-Source: AGHT+IG/UmSKlDQRlBa0+Is4JntOVZHhkiYS93o0FbAPPReWbU+HuVGCau4VX0GkprQKsQRXjMZhGZwl3l+vLHMY8rQ=
-X-Received: by 2002:ac8:7f54:0:b0:41e:a62b:3d18 with SMTP id
- g20-20020ac87f54000000b0041ea62b3d18mr11492563qtk.59.1703774244502; Thu, 28
- Dec 2023 06:37:24 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C55C17C2;
+	Sun, 31 Dec 2023 07:28:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1704007702; x=1704612502; i=markus.elfring@web.de;
+	bh=PcBUvluZb/BvdgF7ktzLibEt8A6a4VGufG/N/XU2tBU=;
+	h=X-UI-Sender-Class:Date:To:Cc:From:Subject;
+	b=ELwpUcpYPoNstTo91UNCbohC7BFOMxxWrqAkEmEOqjWz3nqiDvzL2I3euvfKyNmI
+	 nPi3A5ivgBq/LZiGsIH+l6YnzuXg1opvuAi7X/4VvtW7ALscdj5B/jiaihEIzg0lz
+	 VORijwlqpsLv+KQaO2212muYJ6Cg9HbiH2txaffdryuEpvzZ7xoU0z08mFzTcL4ox
+	 fF8zl/KPXt/VQjrzzIs3E03Qxl3P27dx7FEcVQ7sRTvlHWN3wOEyREq5yBH0YydYI
+	 fbAACO6kC25hBxQ7qjDYWo1MaXkovH0U3VBByJSjb0IKAGyhK9namzw9ZeDnWb9Va
+	 LA0hLj24xtUhjcSbZQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MkVwo-1qxSnY0oKE-00mBMi; Sun, 31
+ Dec 2023 08:28:22 +0100
+Message-ID: <53be5f98-6359-48b5-955e-fd203d99d3cb@web.de>
+Date: Sun, 31 Dec 2023 08:28:08 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231226200205.562565-1-pasha.tatashin@soleen.com> <ZYv3BIeEgY8LnH7U@archie.me>
-In-Reply-To: <ZYv3BIeEgY8LnH7U@archie.me>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Thu, 28 Dec 2023 09:36:48 -0500
-Message-ID: <CA+CK2bCSB46sZUrx+jsCCtGb-DFUuU9wvCaTamYtKnDAaG9eVA@mail.gmail.com>
-Subject: Re: [PATCH v3 00/10] IOMMU memory observability
-To: Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
-	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
-	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
-	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
-	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
-	joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
-	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
-	rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
-	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, 
-	tj@kernel.org, tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, 
-	will@kernel.org, yu-cheng.yu@intel.com, rientjes@google.com, 
-	Josh Don <joshdon@google.com>, YouHong Li <liyouhong@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+To: cgroups@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
+ Waiman Long <longman@redhat.com>, Zefan Li <lizefan.x@bytedance.com>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] cgroup/cpuset: Adjust exception handling in
+ generate_sched_domains()
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:pgnSzo2W+vneiGpO38IiNDAlEaIXKSMMACiIapp8BWsnXekDcdT
+ PbTKnujXFwSFjr6dNhr2LWeXpGIYfELudkL0U/datOqgwQAGOG/p9DwHtGBFh/9TQQafMBx
+ pd+MTC5ua7UFSk/OLfcvENKiCpoFoOWzzkxvHQ+qqoVir1t+VcPONx+YOK5gSR+1EnqEaYv
+ 0Fq2o9AvO1SPmzhnL2LyA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:MF8NwxLMoUE=;Vth/hMGB+E6eKMV2W7MGJ4MxLZ9
+ hf387lQW9S4mRbLHw+Wk1eXh7IbH+bgBJcy+74ziZppgtw0VnnxAe5jSfvj68WT4yCJJ/Nwvc
+ BWJ8IKnFwUDWr2Kk70SQv2jfBC3WA6dZPSjPXCb+esuBBnLv4YTDuBhQigtyV+y0Za3A10B7A
+ yxAq/Fk+Jmim1yWVSd5OBavzsMkvdSjw9V3xIz5/cVckRMsEIgheJT3wFUqxKTZNpG5t32mcD
+ ggFRvYvU2FysZZp0bB6dShfetu8WG1oot+Kw62+/MVsh35d8/UKxNvZu1nmD1aQC5kPFwh19n
+ TEmjEgHyRG2oPSMt5VXucXMoHBS6l+HuGcI1OUk917w28P1DWe5nXfCuhhrZHp5IFPvGXtaRe
+ MPUjozzfWjDMuT5F7TKq4A/rICf6lRPeWfhSB1brZp8x72mfmQX3E4hmM0RN3SPku4Fro6kjt
+ VPN8BRJJP+jg/+KqDgIYxt7OC1L9F9oHSMtJ9xALb9kv7ftI5A14kT/9u5E8m5RcZfBfUq7Ob
+ 4TrJM7zUO4dImuHeG7tmPDlDeKTrH2RhgBCia8zAlLdHTh9h59+MWSXsD6QP6Frl1ZkkRnhYc
+ B76CGZ6ZHAyKp31HgPvYCYw6SOoXHzKc2BWKRGFXu1gaborbduJsWr02wcmKT7wnXORtwM/Ul
+ dCRVeLp1kzUfsFUq4iC8Cj2ve5zwMG+zly/IfCUpF4q7Fdu2AxS/zJsC6Kvom89eGf8twuRb6
+ 4jdUSIsetjqDbx910SJ/COQuAeUSNqHW0w/6HO7YQMYmsjYE34UAxFrGOVbGAJUDrRP616MyE
+ AgikrA491MEz8xjVuqhULxPJ/BrThtIt4OrEZz8nnv5YIrTf3j79DA+CKuryk/mx5MeXcEKeT
+ 7z35aZi/HPSiirS9mGKOQ4ychsjertrc23Jb4ZLEVaRdgUobNWgsbRFS3Fv8APXd+S5im2PiT
+ uy8gWQ==
 
-> > This series encorporates suggestions that came from the discussion
-> > at LPC [2].
-> > ----------------------------------------------------------------------
-> > [1] https://github.com/soleen/iova_stress
-> > [2] https://lpc.events/event/17/contributions/1466
-> > ----------------------------------------------------------------------
-> > Previous versions
-> > v1: https://lore.kernel.org/all/20231128204938.1453583-1-pasha.tatashin@soleen.com
-> > v2: https://lore.kernel.org/linux-mm/20231130201504.2322355-1-pasha.tatashin@soleen.com
-> > ----------------------------------------------------------------------
-> >
->
-> First of all, Merry Christmas and Happy New Year for all!
->
-> And for this series, no observable regressions when booting the kernel with
-> the series applied.
->
-> Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Sun, 31 Dec 2023 08:00:31 +0100
 
-Thank you for testing.
+Two resource allocation failures triggered further actions
+over the label =E2=80=9Cdone=E2=80=9D so far.
 
-Pasha
+* Jump to the statement =E2=80=9Cndoms =3D 1;=E2=80=9D in three cases dire=
+ctly
+  by using the label =E2=80=9Cset_ndoms=E2=80=9D instead.
+
+* Delete an assignment for the variable =E2=80=9Cndoms=E2=80=9D in one if =
+branch.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ kernel/cgroup/cpuset.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index ba36c073304a..29ccd52eb45c 100644
+=2D-- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -973,10 +973,9 @@ static int generate_sched_domains(cpumask_var_t **dom=
+ains,
+
+ 	/* Special case for the 99% of systems with one, full, sched domain */
+ 	if (root_load_balance && !top_cpuset.nr_subparts) {
+-		ndoms =3D 1;
+ 		doms =3D alloc_sched_domains(ndoms);
+ 		if (!doms)
+-			goto done;
++			goto set_ndoms;
+
+ 		dattr =3D kmalloc(sizeof(struct sched_domain_attr), GFP_KERNEL);
+ 		if (dattr) {
+@@ -986,12 +985,12 @@ static int generate_sched_domains(cpumask_var_t **do=
+mains,
+ 		cpumask_and(doms[0], top_cpuset.effective_cpus,
+ 			    housekeeping_cpumask(HK_TYPE_DOMAIN));
+
+-		goto done;
++		goto set_ndoms;
+ 	}
+
+ 	csa =3D kmalloc_array(nr_cpusets(), sizeof(cp), GFP_KERNEL);
+ 	if (!csa)
+-		goto done;
++		goto set_ndoms;
+ 	csn =3D 0;
+
+ 	rcu_read_lock();
+@@ -1123,6 +1122,7 @@ static int generate_sched_domains(cpumask_var_t **do=
+mains,
+ 	 * See comments in partition_sched_domains().
+ 	 */
+ 	if (doms =3D=3D NULL)
++set_ndoms:
+ 		ndoms =3D 1;
+
+ 	*domains    =3D doms;
+=2D-
+2.43.0
+
 
