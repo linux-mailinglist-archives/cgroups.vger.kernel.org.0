@@ -1,66 +1,70 @@
-Return-Path: <cgroups+bounces-1060-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1061-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83C4F82317D
-	for <lists+cgroups@lfdr.de>; Wed,  3 Jan 2024 17:49:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD54E823181
+	for <lists+cgroups@lfdr.de>; Wed,  3 Jan 2024 17:50:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E2041F23E37
-	for <lists+cgroups@lfdr.de>; Wed,  3 Jan 2024 16:49:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30132287363
+	for <lists+cgroups@lfdr.de>; Wed,  3 Jan 2024 16:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 720A91BDFA;
-	Wed,  3 Jan 2024 16:49:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35FA51C68F;
+	Wed,  3 Jan 2024 16:49:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aJiaCM98"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kqBfK335"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B850C1BDEA;
-	Wed,  3 Jan 2024 16:49:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98D051BDE3;
+	Wed,  3 Jan 2024 16:49:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6dbbc637df7so7010411a34.2;
-        Wed, 03 Jan 2024 08:49:08 -0800 (PST)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dbe87cbc052so1500964276.2;
+        Wed, 03 Jan 2024 08:49:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704300547; x=1704905347; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7YOxkBSsy8gVCBj2wU1um2RFxkUEv6eBM3fBzmTk6ZQ=;
-        b=aJiaCM98BnS3fYhsCP3DsODw3GPWi4RbCFzT0gmuuuKo72cWhg4JvGRymxn+Q3+dlj
-         kH/47gDzHjwK0Fw8IB44F0RC+4Qjy+pFd0UAqkDgYgMQHja9l8OD0FDO/g8KOdjWWZ82
-         ZV+eNEuQt1IKQwWel28JZzcuRXz+jEW4DpzWP++IhdO/oEBM3xsG7LoDG6IVdPHxC3VJ
-         id7GLk+n3wyHnytpdgIGrIF2N+WxcOFp0iwZtGSdNvM6czMln0WxaIVCIi4dlc1mMAyI
-         RVSYz8c770XcEqIqIesEk+TvR9mnzduf5APsxm91kXyStSASBIe7uavEF/YoBcE76YRZ
-         S7Bw==
+        d=gmail.com; s=20230601; t=1704300555; x=1704905355; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lwZZYWh+e0yk/cuTVxoiseyhi+aiBF9zz0tdKJ/4vMs=;
+        b=kqBfK335h0wkxsSw38j2vQvPlktEv1Gwb5XiT31bJjqgMFS1/CQFoVOn4Q4PrqBoBt
+         hfx1ntKGVABM1TPc5ZytAv5lMuHE3U46OfpHlW0uCM2JI5whZoMLGu4KQoRN+m6DB2X0
+         urw9plMiz9AaoUYFlegISzmVJ3aIDansCn3g+T56g405Kw6EQxmeNMkedwL0uaunbm9R
+         yayCKzCiqW+AEkTeOPqUaRX/wSaHVKQF904+5pX9ImQzyGXwMjPCUuAH4H2XDN+MR3ul
+         lBdNNwrOggTQt7NK/SSbYabhCBSD+MYhpgETJqtFsEk8ncBMuzYNUCzVTiPGHG/mPofe
+         Gxog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704300547; x=1704905347;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7YOxkBSsy8gVCBj2wU1um2RFxkUEv6eBM3fBzmTk6ZQ=;
-        b=JpW1C5ZRz8xCTS0Qz4k8qWaWM5qC65LarxcDKnqHi4nVAs/xLTZm6KtKd7s99nNu/2
-         0bIXZ8ZFcWskYpnwmK7atvunJCsOLTGeD1ajAsWsQU51DZxG+hWh6233LgkiyNrttAkW
-         DEPqvHJl6g2sAmFlUNW9RUCEPBdnl3vy/2HPgYSh43INq5KMdd3xVaLghdVRaq9CpGTL
-         5QKDbtOseOwf9II8o45YUoxq62fc/my2HOz92dan2qu9Ulu3HounSLkeDNVdEdWZSTco
-         jieEH17GG7OT1RQxzmbXKGxb/CMxh/ZstdaHFnuYrIJxuNeHAzR3vg/o3Uo6DqPJEl7+
-         xk9g==
-X-Gm-Message-State: AOJu0YwhJGi79cN9RlK0B0UBqltoUL5aBBvQEcPsNAsvNVp/jdz1qQXj
-	d+d16VLh7VgkUZbXCW8J0Ww=
-X-Google-Smtp-Source: AGHT+IFLNd6r4sLlBUDIfHH5k+tFiPZb3cLEvcFpPURN1hrp6Tu+pnN5zSuJjq33t8jB9TXNfanpxg==
-X-Received: by 2002:a9d:63d6:0:b0:6db:b08d:67b6 with SMTP id e22-20020a9d63d6000000b006dbb08d67b6mr12936091otl.53.1704300547484;
-        Wed, 03 Jan 2024 08:49:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704300555; x=1704905355;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lwZZYWh+e0yk/cuTVxoiseyhi+aiBF9zz0tdKJ/4vMs=;
+        b=NqBgC2vm4DkgGJTSjk/ChPzKsbftIGsYg5sV2QnvTFkcQF+qG348xEjgTCPjwrpeY7
+         HmAhhSppo2QaolVal+5POCp8lXhB2TiHPLmxiYcd0vNgSmDFMCY2lXT5kCb3/ZHqNMWD
+         QTE+4Lj+ofX1plOdS206ROpw37xWm090o/R+/Tx8fRUrjK+M2TI2j0EslORTOMD4sDKX
+         kZda8deF3ZlToCUHAg5CH8lpMDsya97XAE+rQP10KxdB0Yz99c6kIvg/upX2jJYN2yiW
+         8ZpY21Kw7rZruHU+FsGST+ypaiQ1v1/BuT8Sxl1zlIeT8HHogFYDRIQAXKwrfDh5B0li
+         xlqg==
+X-Gm-Message-State: AOJu0YwqcM7QNoHODPPjrrqiQV8Gjl2+so9+oz03g52tithIqdEaZQ5i
+	31+JjOms3sDsIcIbOGF83sE=
+X-Google-Smtp-Source: AGHT+IGe4cxlLsn+e6P2JdgSr5WbR+2RuPxygGamlYxVp3FhQSYsh7zg529zAFbjlkOVWnvfCaAsxw==
+X-Received: by 2002:a25:ef52:0:b0:dbe:a003:a24a with SMTP id w18-20020a25ef52000000b00dbea003a24amr971520ybm.56.1704300555318;
+        Wed, 03 Jan 2024 08:49:15 -0800 (PST)
 Received: from localhost ([2620:10d:c091:400::5:fcab])
-        by smtp.gmail.com with ESMTPSA id k15-20020ac8478f000000b004240481cee0sm14234406qtq.58.2024.01.03.08.49.06
+        by smtp.gmail.com with ESMTPSA id ci10-20020a05622a260a00b00427f1eeddccsm7362030qtb.38.2024.01.03.08.49.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jan 2024 08:49:07 -0800 (PST)
+        Wed, 03 Jan 2024 08:49:15 -0800 (PST)
 From: Dan Schatzberg <schatzberg.dan@gmail.com>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org,
 	linux-mm@kvack.org,
+	David Rientjes <rientjes@google.com>,
+	Chris Li <chrisl@kernel.org>,
+	Nhat Pham <nphamcs@gmail.com>,
 	Tejun Heo <tj@kernel.org>,
 	Zefan Li <lizefan.x@bytedance.com>,
 	Johannes Weiner <hannes@cmpxchg.org>,
@@ -70,17 +74,18 @@ Cc: linux-kernel@vger.kernel.org,
 	Shakeel Butt <shakeelb@google.com>,
 	Muchun Song <muchun.song@linux.dev>,
 	David Hildenbrand <david@redhat.com>,
-	Chris Li <chrisl@kernel.org>,
 	Matthew Wilcox <willy@infradead.org>,
 	Kefeng Wang <wangkefeng.wang@huawei.com>,
 	Dan Schatzberg <schatzberg.dan@gmail.com>,
-	Yosry Ahmed <yosryahmed@google.com>,
 	Yue Zhao <findns94@gmail.com>,
+	Yosry Ahmed <yosryahmed@google.com>,
 	Hugh Dickins <hughd@google.com>
-Subject: [PATCH v6 0/2] Add swappiness argument to memory.reclaim
-Date: Wed,  3 Jan 2024 08:48:35 -0800
-Message-Id: <20240103164841.2800183-1-schatzberg.dan@gmail.com>
+Subject: [PATCH v6 1/2] mm: add defines for min/max swappiness
+Date: Wed,  3 Jan 2024 08:48:36 -0800
+Message-Id: <20240103164841.2800183-2-schatzberg.dan@gmail.com>
 X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20240103164841.2800183-1-schatzberg.dan@gmail.com>
+References: <20240103164841.2800183-1-schatzberg.dan@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -89,105 +94,108 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Changes since V5:
-  * Made the scan_control behavior limited to proactive reclaim explicitly
-  * created sc_swappiness helper to reduce chance of mis-use
+We use the constants 0 and 200 in a few places in the mm code when
+referring to the min and max swappiness. This patch adds MIN_SWAPPINESS
+and MAX_SWAPPINESS #defines to improve clarity. There are no functional
+changes.
 
-Changes since V4:
-  * Fixed some initialization bugs by reverting back to a pointer for swappiness
-  * Added some more caveats to the behavior of swappiness in documentation
+Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
+Acked-by: David Rientjes <rientjes@google.com>
+Acked-by: Chris Li <chrisl@kernel.org>
+Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+---
+ include/linux/swap.h |  2 ++
+ mm/memcontrol.c      |  2 +-
+ mm/vmscan.c          | 14 +++++++-------
+ 3 files changed, 10 insertions(+), 8 deletions(-)
 
-Changes since V3:
-  * Added #define for MIN_SWAPPINESS and MAX_SWAPPINESS
-  * Added explicit calls to mem_cgroup_swappiness
-
-Changes since V2:
-  * No functional change
-  * Used int consistently rather than a pointer
-
-Changes since V1:
-  * Added documentation
-
-This patch proposes augmenting the memory.reclaim interface with a
-swappiness=<val> argument that overrides the swappiness value for that instance
-of proactive reclaim.
-
-Userspace proactive reclaimers use the memory.reclaim interface to trigger
-reclaim. The memory.reclaim interface does not allow for any way to effect the
-balance of file vs anon during proactive reclaim. The only approach is to adjust
-the vm.swappiness setting. However, there are a few reasons we look to control
-the balance of file vs anon during proactive reclaim, separately from reactive
-reclaim:
-
-* Swapout should be limited to manage SSD write endurance. In near-OOM
-  situations we are fine with lots of swap-out to avoid OOMs. As these are
-  typically rare events, they have relatively little impact on write endurance.
-  However, proactive reclaim runs continuously and so its impact on SSD write
-  endurance is more significant. Therefore it is desireable to control swap-out
-  for proactive reclaim separately from reactive reclaim
-
-* Some userspace OOM killers like systemd-oomd[1] support OOM killing on swap
-  exhaustion. This makes sense if the swap exhaustion is triggered due to
-  reactive reclaim but less so if it is triggered due to proactive reclaim (e.g.
-  one could see OOMs when free memory is ample but anon is just particularly
-  cold). Therefore, it's desireable to have proactive reclaim reduce or stop
-  swap-out before the threshold at which OOM killing occurs.
-
-In the case of Meta's Senpai proactive reclaimer, we adjust vm.swappiness before
-writes to memory.reclaim[2]. This has been in production for nearly two years
-and has addressed our needs to control proactive vs reactive reclaim behavior
-but is still not ideal for a number of reasons:
-
-* vm.swappiness is a global setting, adjusting it can race/interfere with other
-  system administration that wishes to control vm.swappiness. In our case, we
-  need to disable Senpai before adjusting vm.swappiness.
-
-* vm.swappiness is stateful - so a crash or restart of Senpai can leave a
-  misconfigured setting. This requires some additional management to record the
-  "desired" setting and ensure Senpai always adjusts to it.
-
-With this patch, we avoid these downsides of adjusting vm.swappiness globally.
-
-Previously, this exact interface addition was proposed by Yosry[3]. In response,
-Roman proposed instead an interface to specify precise file/anon/slab reclaim
-amounts[4]. More recently Huan also proposed this as well[5] and others
-similarly questioned if this was the proper interface.
-
-Previous proposals sought to use this to allow proactive reclaimers to
-effectively perform a custom reclaim algorithm by issuing proactive reclaim with
-different settings to control file vs anon reclaim (e.g. to only reclaim anon
-from some applications). Responses argued that adjusting swappiness is a poor
-interface for custom reclaim.
-
-In contrast, I argue in favor of a swappiness setting not as a way to implement
-custom reclaim algorithms but rather to bias the balance of anon vs file due to
-differences of proactive vs reactive reclaim. In this context, swappiness is the
-existing interface for controlling this balance and this patch simply allows for
-it to be configured differently for proactive vs reactive reclaim.
-
-Specifying explicit amounts of anon vs file pages to reclaim feels inappropriate
-for this prupose. Proactive reclaimers are un-aware of the relative age of file
-vs anon for a cgroup which makes it difficult to manage proactive reclaim of
-different memory pools. A proactive reclaimer would need some amount of anon
-reclaim attempts separate from the amount of file reclaim attempts which seems
-brittle given that it's difficult to observe the impact.
-
-[1]https://www.freedesktop.org/software/systemd/man/latest/systemd-oomd.service.html
-[2]https://github.com/facebookincubator/oomd/blob/main/src/oomd/plugins/Senpai.cpp#L585-L598
-[3]https://lore.kernel.org/linux-mm/CAJD7tkbDpyoODveCsnaqBBMZEkDvshXJmNdbk51yKSNgD7aGdg@mail.gmail.com/
-[4]https://lore.kernel.org/linux-mm/YoPHtHXzpK51F%2F1Z@carbon/
-[5]https://lore.kernel.org/lkml/20231108065818.19932-1-link@vivo.com/
-
-Dan Schatzberg (2):
-  mm: add defines for min/max swappiness
-  mm: add swapiness= arg to memory.reclaim
-
- Documentation/admin-guide/cgroup-v2.rst | 18 +++++---
- include/linux/swap.h                    |  5 ++-
- mm/memcontrol.c                         | 58 ++++++++++++++++++++-----
- mm/vmscan.c                             | 39 ++++++++++++-----
- 4 files changed, 90 insertions(+), 30 deletions(-)
-
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index f6dd6575b905..e2ab76c25b4a 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -407,6 +407,8 @@ extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+ 
+ #define MEMCG_RECLAIM_MAY_SWAP (1 << 1)
+ #define MEMCG_RECLAIM_PROACTIVE (1 << 2)
++#define MIN_SWAPPINESS 0
++#define MAX_SWAPPINESS 200
+ extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+ 						  unsigned long nr_pages,
+ 						  gfp_t gfp_mask,
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index b226090fd906..fbe9f02dd206 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -4337,7 +4337,7 @@ static int mem_cgroup_swappiness_write(struct cgroup_subsys_state *css,
+ {
+ 	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+ 
+-	if (val > 200)
++	if (val > MAX_SWAPPINESS)
+ 		return -EINVAL;
+ 
+ 	if (!mem_cgroup_is_root(memcg))
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 9dd8977de5a2..d91963e2d47f 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -183,7 +183,7 @@ struct scan_control {
+ #endif
+ 
+ /*
+- * From 0 .. 200.  Higher means more swappy.
++ * From 0 .. MAX_SWAPPINESS.  Higher means more swappy.
+  */
+ int vm_swappiness = 60;
+ 
+@@ -2403,7 +2403,7 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
+ 	ap = swappiness * (total_cost + 1);
+ 	ap /= anon_cost + 1;
+ 
+-	fp = (200 - swappiness) * (total_cost + 1);
++	fp = (MAX_SWAPPINESS - swappiness) * (total_cost + 1);
+ 	fp /= file_cost + 1;
+ 
+ 	fraction[0] = ap;
+@@ -4400,7 +4400,7 @@ static int get_type_to_scan(struct lruvec *lruvec, int swappiness, int *tier_idx
+ {
+ 	int type, tier;
+ 	struct ctrl_pos sp, pv;
+-	int gain[ANON_AND_FILE] = { swappiness, 200 - swappiness };
++	int gain[ANON_AND_FILE] = { swappiness, MAX_SWAPPINESS - swappiness };
+ 
+ 	/*
+ 	 * Compare the first tier of anon with that of file to determine which
+@@ -4436,7 +4436,7 @@ static int isolate_folios(struct lruvec *lruvec, struct scan_control *sc, int sw
+ 	/*
+ 	 * Try to make the obvious choice first. When anon and file are both
+ 	 * available from the same generation, interpret swappiness 1 as file
+-	 * first and 200 as anon first.
++	 * first and MAX_SWAPPINESS as anon first.
+ 	 */
+ 	if (!swappiness)
+ 		type = LRU_GEN_FILE;
+@@ -4444,7 +4444,7 @@ static int isolate_folios(struct lruvec *lruvec, struct scan_control *sc, int sw
+ 		type = LRU_GEN_ANON;
+ 	else if (swappiness == 1)
+ 		type = LRU_GEN_FILE;
+-	else if (swappiness == 200)
++	else if (swappiness == MAX_SWAPPINESS)
+ 		type = LRU_GEN_ANON;
+ 	else
+ 		type = get_type_to_scan(lruvec, swappiness, &tier);
+@@ -5398,9 +5398,9 @@ static int run_cmd(char cmd, int memcg_id, int nid, unsigned long seq,
+ 
+ 	lruvec = get_lruvec(memcg, nid);
+ 
+-	if (swappiness < 0)
++	if (swappiness < MIN_SWAPPINESS)
+ 		swappiness = get_swappiness(lruvec, sc);
+-	else if (swappiness > 200)
++	else if (swappiness > MAX_SWAPPINESS)
+ 		goto done;
+ 
+ 	switch (cmd) {
 -- 
 2.39.3
 
