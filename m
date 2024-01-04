@@ -1,128 +1,100 @@
-Return-Path: <cgroups+bounces-1079-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1080-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6BC98248C4
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 20:13:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCDB38248E6
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 20:20:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 575ED2820D6
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 19:13:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B341282776
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 19:19:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 719DB2C192;
-	Thu,  4 Jan 2024 19:13:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F37232C19C;
+	Thu,  4 Jan 2024 19:19:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="F/ZnFVg7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AhoD7/69"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE6B82C1B3
-	for <cgroups@vger.kernel.org>; Thu,  4 Jan 2024 19:13:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6dc02ab3cc9so512793a34.3
-        for <cgroups@vger.kernel.org>; Thu, 04 Jan 2024 11:13:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1704395583; x=1705000383; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/+vYEuDAPJ/iEdESxX2pInRN4g9EPXyQ5h9FSdd/4u4=;
-        b=F/ZnFVg7p6RCRwo6c599coMU7gxw34TnRuIn9tv4NSDTLCFyNIcCycMnVBIoSBhUaf
-         5VePqzrdqqOPRKKkraOQpG8XlgFm3zjmU3ROzjemte9baJ4kCqNNrgdAqngJeCHvlLMT
-         ccN+J71GjNlNUYaCcvaMn9xh9mjC0xYx+SwN4B6qr/yTTMnZRYvNOhLp64UX+NkJd/Vy
-         YSkeOW4R3gS7ZDU8/YKly32rHGE+xlyTcPg4qLxF5bOlnB3yUbFqy9azk3VRBB7HpFXx
-         waNjhIskVtiY0gZZye1eBD20fLHFMqL1LxWwap0rGSneRmh7FVOv1Qc8SWhK/C/qEkoW
-         tynA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704395583; x=1705000383;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/+vYEuDAPJ/iEdESxX2pInRN4g9EPXyQ5h9FSdd/4u4=;
-        b=f0lwHibPlM3A1OvVu3n+Xk6McVA6ST50MJa4IkERdtFjkUzKt+JDPrE6C5fhB41A1a
-         FJdlHh5Jrh1CM5CEHK2vgMUcx/v0dOpxkA5LivhbFWmiCOCI8XX+Iv6Yb5vMc8vp/VGc
-         brMbaalf+4dpEhFzQq2xhbukfjjQckiP2A8/Y/giAx7ZhVz+gqP/XrCNy89LxE63SA6B
-         ypSEleA6U4aAFhp7OFQsvhpGrNwcD5lhS97zo5O6NFI5yLP3bw8+uxnSQJ9Yy8G8vmj9
-         gpKCr2WMvCVk2bf/C87kikYd1KxhwccVeyY87OfCMvulfV4K92Rj146CgPvso89+1cCO
-         kBeQ==
-X-Gm-Message-State: AOJu0Yy145QgCarppHts98tv3kOmMufUSf4KXoc0u0YHSGj3jy7TQyb1
-	V4qIDMbZIKLd3FaujAFlFDBkDtlUfI7d/L1Z2XQz5aMNUUyp9w==
-X-Google-Smtp-Source: AGHT+IF/5x1qWEeEN53jwIdamLjEry3P/nE1f12xa2taaKft/YlEJdrBP6aDzExJ1bDcrqKpemuFKkiIEAFmrNQGE5k=
-X-Received: by 2002:a05:6358:8828:b0:174:b7f2:51db with SMTP id
- hv40-20020a056358882800b00174b7f251dbmr1188037rwb.19.1704395582852; Thu, 04
- Jan 2024 11:13:02 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B66B22C194;
+	Thu,  4 Jan 2024 19:19:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF910C433CA;
+	Thu,  4 Jan 2024 19:19:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704395994;
+	bh=TzkztMPde2JWtmqHozGMznhfMwCoSJkyBXAFGHMfTXg=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=AhoD7/69l6FQZ03ugH8x76tNj6z5BNaAk7lpWKN+aBdvls2cstLH8jtMuNjLIlMlf
+	 kE2zYzI2YjXFHqE+vktBfPrEViikX31vepZi1H4J1qwx4fOZvjF4W+gHEqFRKEt/9S
+	 jTiah/k2OK5ZYnq+YW4m0twe4HLPPxnURjqGZ2ifNyifPGM0tmErJ9Nw7PupW9eVI5
+	 FO48Ywt9xnRhqDvqwwGw8FJXCNetljbsBLDWV80oA1QskX50LxW0cp08Izb5NZjGvN
+	 nI4JOwT5lSEMJxCOFzuMhSF80DAz7xzFR4V/L6YbTT2VL5mzaMxdvLqoPi6owfOJnL
+	 +DQp7ZYTgGcLg==
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20231226200205.562565-1-pasha.tatashin@soleen.com>
- <eqkpplwwyeqqd356ka3g6isaoboe62zrii77krsb7zwzmvdusr@5i3lzfhpt2xe>
- <CA+CK2bBE1bQuqZy3cbWiv8V3vJ8YNJZRayp6Wv-j2_9i37XT4g@mail.gmail.com> <eng4vwaci5hwlicszgcld6uny55vll2bfs3vp2yjbjf3exhamg@zf6yc2uhax7w>
-In-Reply-To: <eng4vwaci5hwlicszgcld6uny55vll2bfs3vp2yjbjf3exhamg@zf6yc2uhax7w>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Thu, 4 Jan 2024 14:12:26 -0500
-Message-ID: <CA+CK2bCUGepLLA2Hsmq00XEhPzLWPb5CjzY_UPT0qWSKastjAQ@mail.gmail.com>
-Subject: Re: [PATCH v3 00/10] IOMMU memory observability
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
-	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
-	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
-	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
-	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
-	joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
-	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
-	rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
-	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, 
-	tj@kernel.org, tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, 
-	will@kernel.org, yu-cheng.yu@intel.com, rientjes@google.com
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 04 Jan 2024 21:19:47 +0200
+Message-Id: <CY65YBFIQA5T.3HZ78VUGKCH40@suppilovahvero>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>,
+ "anakrish@microsoft.com" <anakrish@microsoft.com>,
+ "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>, "Li,
+ Zhiquan1" <zhiquan1.li@intel.com>, "yangjie@microsoft.com"
+ <yangjie@microsoft.com>
+Subject: Re: [PATCH v6 09/12] x86/sgx: Restructure top-level EPC reclaim
+ function
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
+ <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>, "tj@kernel.org"
+ <tj@kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
+ <kai.huang@intel.com>, "Dave Hansen" <dave.hansen@intel.com>
+X-Mailer: aerc 0.15.2
+References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
+ <20231030182013.40086-10-haitao.huang@linux.intel.com>
+ <c8fc40dc56b853fbff14ba22db197c80a6d31820.camel@intel.com>
+ <op.2e0yod2lwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <431c5d7f5aee7d11ec2e8aa2e526fde438fa53b4.camel@intel.com>
+ <op.2ftmyampwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <3c27bca678c1b041920a14a7da0d958c9861ebca.camel@intel.com>
+ <op.2f0eo8r1wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <73ed579be8ad81835df1c309b7c69b491b7f2c8e.camel@intel.com>
+ <op.2f523elowjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <4b28fc01-50cf-469b-8161-7d56b863b42b@intel.com>
+ <op.2g1d81fqwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2g1d81fqwjvjmi@hhuan26-mobl.amr.corp.intel.com>
 
-On Thu, Jan 4, 2024 at 12:04=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.co=
-m> wrote:
+On Thu Jan 4, 2024 at 9:11 PM EET, Haitao Huang wrote:
+> > The key question here is whether we want the SGX VM to be complex and
+> > more like the real VM or simple when a cgroup hits its limit.  Right?
+> >
 >
-> On Thu, Jan 04, 2024 at 11:29:43AM -0500, Pasha Tatashin <pasha.tatashin@=
-soleen.com> wrote:
-> > Thank you for taking a look at this. The two patches [1] [2] which add
-> > GFP_KERNEL_ACCOUNT were sent separate from this series at request of
-> > reviewers:
->
-> Ah, I didn't catch that.
->
-> Though, I mean the patch 02/10 calls iommu_alloc_pages() with GFP_KERNEL
-> (and not a passed gfp from iommu_map).
-> Then patch 09/10 accounts all iommu_alloc_pages() under NR_IOMMU_PAGES.
->
-> I think there is a difference between what's shown NR_IOMMU_PAGES and
-> what will have __GFP_ACCOUNT because of that.
->
-> I.e. is it the intention that this difference is not subject to
-> limiting?
+> Although it's fair to say the majority of complexity of this series is in=
+ =20
+> support for reclaiming per cgroup, I think it's manageable and much less =
+=20
+> than real VM after we removed the enclave killing parts: the only extra =
+=20
+> effort is to track pages in separate list and reclaim them in separately =
+=20
+> as opposed to track in on global list and reclaim together. The main =20
+> reclaiming loop code is still pretty much the same as before.
 
-Yes, we will have a difference between GFP_ACCOUNT and what
-NR_IOMMU_PAGES shows. GFP_ACCOUNT is set only where it makes sense to
-charge to user processes, i.e. IOMMU Page Tables, but there more IOMMU
-shared data that should not really be charged to a specific process.
-The charged and uncharged data will be visible via /proc/vmstat
-nr_iommu_pages field.
+I'm not seeing any unmanageable complexity on SGX side, and also
+cgroups specific changes are somewhat clean to me at least...
 
-Pasha
-
->
-> (Note: I'm not familiar with iommu code and moreover I'm only looking at
-> the two patch sets, not the complete code applied. So you may correct my
-> reasoning.)
->
->
-> Thanks,
-> Michal
+BR, Jarkko
 
