@@ -1,93 +1,94 @@
-Return-Path: <cgroups+bounces-1084-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1085-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46F33824A8B
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 22:58:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 951EB824BAA
+	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 00:07:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6E211F2544E
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 21:58:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AA901F234CA
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 23:07:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B9862C857;
-	Thu,  4 Jan 2024 21:57:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCA0E2D04B;
+	Thu,  4 Jan 2024 23:06:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HbdfzHOn"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="dXzU8xE1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32012C850;
-	Thu,  4 Jan 2024 21:57:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6d98ce84e18so699872b3a.3;
-        Thu, 04 Jan 2024 13:57:52 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7496D2C6BB
+	for <cgroups@vger.kernel.org>; Thu,  4 Jan 2024 23:06:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7bb06f56fe9so14266239f.0
+        for <cgroups@vger.kernel.org>; Thu, 04 Jan 2024 15:06:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704405472; x=1705010272; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=egHS+o8XmTRrz6Xl0CS5lT3RaLGscP5yKRKwuMkxu20=;
-        b=HbdfzHOnhF0SMEdkzTVBeEXZYBShqGFA2EvcJsHC5I2GBP8NOoEmw7LMqh5J2Tm7sN
-         bFq4nAnj1954lAd3RBLpaGr0SkoEGd6vJ+C60iubG4y7Dy6B+vDeX0IjxtnNRbafzxaT
-         42e2O2k8hhnIY5TVwfUSwqg7p7aTgbevlNLny9JHfYBm52PZJE9rSW7jiU42IBpcPMqU
-         TiFImo0u6LJJwIabpvQ3MFQ2LNjLin2JcUJLnbCf7So1XbuEc9miHE+J36to5qLeMmop
-         KOrVIwtsdANdLx4dZDlrA+3KGJr8OH1fd22bu+4v8Pvh5928f061OZJuKJowXWhogbhi
-         4stA==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1704409608; x=1705014408; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=b3dqk0Ff5KxkGnHBKa5j/udiyY23Ohwl6jdUCl4DaB4=;
+        b=dXzU8xE1lqQl2K7qBNp3a3sUpSqmuTJxjsd4bnp3v497vyejefnaPCwiohBtsBc/0f
+         FKWeuorH/FAvl5raJJYxDNmer4qPEFy2AV6asWQm+8kSLhQd6WXxCsw8tDboeKaHz7jT
+         A0p2zzkqyZW3j5Dktq5cHhtZ0nrEpOe1cGZDtaAUsqffDykLlILtJ5a4WOr3AKvvdiId
+         dBx1NWOhTFBO6WHzD4rJlDEKdKNhWWTEsnbQWKKYrYd5XjTmhREOmqo/kHaZsJCw13OB
+         pmDkJubfmaPu+BMU32t7bz4J3XdVTp1F0DBRe6g6GFU6QmJqDuWphshDVGmNuZ+Yurbk
+         gzrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704405472; x=1705010272;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=egHS+o8XmTRrz6Xl0CS5lT3RaLGscP5yKRKwuMkxu20=;
-        b=UCysPV11bhEiUTREuHNKPOqlqdFdzGR/FBApNsozduwF53u3TFJCArkgHO9rEYcwbY
-         f0frQE45cPkIF+yDALSxbGru15gcdLVRTlnTwnidD9h3jFk6eft1APfaAopf373ayoHV
-         5kv++4AezIZMLhF9lNyOgP89lQnMg4Zlqqu83NTljPQtOgwdSyxTs5o7RsGDtpeGkljv
-         dGA+21S6OV/eEjwjwe/msN5WZ36Aj/abkGF8gMYzPG6QWAuswZk41nIpLq7KpNxJFjTI
-         qN+YYwOLPb/GLNXAqkyK1M3PXDg7VHXsRPVYUVeznIfiKjvvxcFYqcvUwonJeVF4m/IY
-         rv+Q==
-X-Gm-Message-State: AOJu0YxEbJlfDsFougeV/sRTn7HEbnut7OHo0ZjiexFboWW0h28NvUl/
-	OrtuXuqbQbPw35yMG0mPfYc=
-X-Google-Smtp-Source: AGHT+IFjNZNufWHFTZQUVgsfqz2Mj/lvykqlgUgeQzS16YBpxT0iO7eliCi/lNUAkH396cD4SlGf3w==
-X-Received: by 2002:a05:6a00:1949:b0:6da:e0a:9b19 with SMTP id s9-20020a056a00194900b006da0e0a9b19mr1332223pfk.63.1704405472083;
-        Thu, 04 Jan 2024 13:57:52 -0800 (PST)
-Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
-        by smtp.gmail.com with ESMTPSA id y14-20020aa79e0e000000b006da04f1b884sm128318pfq.105.2024.01.04.13.57.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jan 2024 13:57:51 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 4 Jan 2024 11:57:50 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Daniel Vacek <neelx@redhat.com>
-Cc: Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
-	cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] blk-cgroup: clean up after commit f1c006f1c685
-Message-ID: <ZZcp3nKecqfxxH4Z@mtj.duckdns.org>
-References: <20240104180031.148148-1-neelx@redhat.com>
+        d=1e100.net; s=20230601; t=1704409608; x=1705014408;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=b3dqk0Ff5KxkGnHBKa5j/udiyY23Ohwl6jdUCl4DaB4=;
+        b=VN7B4GrxqksTZEEsLec1O107iy56evNs9Cdbhzj3gV3xNjbU0ogCQ0t4jcS1PSNVEH
+         J5Wr8BiiYg/FmWXog5ctbYGgw4IW6NTXVDzdI9mXUeJ9aachKV+s67qQY/mep0grs9o3
+         u/8/AIkEQBbFl3K/ALS/NLjI5ru2hKXkzOtsSAwyYZPbv2xGkVhR6FSSpTXyrgxg1xC7
+         /PkglH/X1jj9IA8F36VoHj9uNWl6ap/AwdjCsTFoP9TcXJUetuSsV9taujTBkAf0jPlx
+         2A3oSVgC1K+UY294vE1xWiBjYBxgJ8zOXHccvp/rMUd5nl2FGd7J8EEPaIftf9kVUhwW
+         yfBg==
+X-Gm-Message-State: AOJu0YwCm9A5cGpzWuHurma+QwNfJ0r5hQmCM8cfiNrtjrKXkw5p72/J
+	kaTkw3GnNE0XLg7S2fJzBNgJZp/0il6DdA==
+X-Google-Smtp-Source: AGHT+IGgccmdncGNoX+25kh9DYA4Gbp7Q5ZjvFowunHoL6hvtLSnc3FlWD4tNyBMo/lEb+prYIa2fA==
+X-Received: by 2002:a92:c56a:0:b0:35f:b1d8:433f with SMTP id b10-20020a92c56a000000b0035fb1d8433fmr2502382ilj.3.1704409608642;
+        Thu, 04 Jan 2024 15:06:48 -0800 (PST)
+Received: from [192.168.1.150] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id b1-20020a63eb41000000b005aa800c149bsm199646pgk.39.2024.01.04.15.06.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Jan 2024 15:06:47 -0800 (PST)
+Message-ID: <3de0c147-0a6e-47ad-90dd-cc624da6200b@kernel.dk>
+Date: Thu, 4 Jan 2024 16:06:46 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] blk-cgroup: clean up after commit f1c006f1c685
+Content-Language: en-US
+To: Daniel Vacek <neelx@redhat.com>, Tejun Heo <tj@kernel.org>,
+ Josef Bacik <josef@toxicpanda.com>
+Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240104180031.148148-1-neelx@redhat.com>
+From: Jens Axboe <axboe@kernel.dk>
 In-Reply-To: <20240104180031.148148-1-neelx@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 04, 2024 at 07:00:30PM +0100, Daniel Vacek wrote:
+On 1/4/24 11:00 AM, Daniel Vacek wrote:
 > Commit f1c006f1c685 moved deletion of the list blkg->q_node
 > from blkg_destroy() to blkg_free_workfn(). Clean up the now
 > useless variable.
-> 
-> Signed-off-by: Daniel Vacek <neelx@redhat.com>
 
-Acked-by: Tejun Heo <tj@kernel.org>
-
-Thanks.
+I'll fix up your commit this time, but please take a look at
+your title and tell me if you think it's a good one? Not
+very descriptive, is it.
 
 -- 
-tejun
+Jens Axboe
+
+
 
