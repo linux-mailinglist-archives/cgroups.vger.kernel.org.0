@@ -1,163 +1,100 @@
-Return-Path: <cgroups+bounces-1076-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1077-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 683308246D6
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 18:04:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CAF78247E4
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 19:00:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 688111C23CE5
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 17:04:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1630CB2175D
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 18:00:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844E0286B1;
-	Thu,  4 Jan 2024 17:04:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10E7228DB8;
+	Thu,  4 Jan 2024 18:00:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="K3Rgv7W7";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="t7RtALx4"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DWsokt0/"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D88E28699;
-	Thu,  4 Jan 2024 17:04:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4716028DB0
+	for <cgroups@vger.kernel.org>; Thu,  4 Jan 2024 18:00:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1704391242;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=eu5YlIQJDTB29F9zBZ6QeUpQq4Hsfh0LpNOdwuB2ABY=;
+	b=DWsokt0/4B46TDZoy9dpogWVquYyrEGyXKasD0ZfBinD5MESWeYP5hi1LrkgYom9kJPQ2I
+	LMCdKmFevfJKNx4Owz9i04lq+b6t1Vxbib6dIXpWAcFADZ7EoYgJg4AunReQmbI+3HH8Vm
+	gyorhzcy08rCh3AKwSwQWrsTQ5QSk7Q=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-453-dDr8HvIjMzSUfG-Lahkm_w-1; Thu,
+ 04 Jan 2024 13:00:38 -0500
+X-MC-Unique: dDr8HvIjMzSUfG-Lahkm_w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A22F01F821;
-	Thu,  4 Jan 2024 17:04:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704387859; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ipK/226LRJDTM3FDOd68E2idK7q9JRqvu+4u/g3wH50=;
-	b=K3Rgv7W7sta/rNDtR0eZIZmZNKZUs0KubO9/2GP3vpEH7iAUILQfJvyKtKMy6kd/voBYGU
-	BgK5F8KgWvEAUx4gmMDTSX+gF09v9SZxutGU/aR8dqTee7V8PS/jkZ9U/flaNILNZC0EoL
-	V5CaUtevifWroaAiZir/Abo2a+5JkNk=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704387857; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ipK/226LRJDTM3FDOd68E2idK7q9JRqvu+4u/g3wH50=;
-	b=t7RtALx4OLAwYM1NSnnPIxj9u/urq88xoeMObBg2yBueCWbTplQCDwM9XjKaKTlCZNXWSb
-	8UvcDmIESZxi2Pw4v1s1yqzQRAaW2t4k3Dss65JDw5QjtwUxXXp9gRl3D1T+jt99x7U8C4
-	0fdzJJvtaZzf2609O9HT7+10cFgFQc8=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 726B213722;
-	Thu,  4 Jan 2024 17:04:17 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id MsmyGxHllmWDaAAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Thu, 04 Jan 2024 17:04:17 +0000
-Date: Thu, 4 Jan 2024 18:04:16 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, 
-	alyssa@rosenzweig.io, asahi@lists.linux.dev, baolu.lu@linux.intel.com, 
-	bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
-	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, iommu@lists.linux.dev, 
-	jernej.skrabec@gmail.com, jonathanh@nvidia.com, joro@8bytes.org, 
-	krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
-	lizefan.x@bytedance.com, marcan@marcan.st, mhiramat@kernel.org, m.szyprowski@samsung.com, 
-	paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
-	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org, 
-	tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, will@kernel.org, 
-	yu-cheng.yu@intel.com, rientjes@google.com
-Subject: Re: [PATCH v3 00/10] IOMMU memory observability
-Message-ID: <eng4vwaci5hwlicszgcld6uny55vll2bfs3vp2yjbjf3exhamg@zf6yc2uhax7w>
-References: <20231226200205.562565-1-pasha.tatashin@soleen.com>
- <eqkpplwwyeqqd356ka3g6isaoboe62zrii77krsb7zwzmvdusr@5i3lzfhpt2xe>
- <CA+CK2bBE1bQuqZy3cbWiv8V3vJ8YNJZRayp6Wv-j2_9i37XT4g@mail.gmail.com>
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E32323806739;
+	Thu,  4 Jan 2024 18:00:37 +0000 (UTC)
+Received: from metal.redhat.com (unknown [10.45.224.239])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 5E0661121306;
+	Thu,  4 Jan 2024 18:00:36 +0000 (UTC)
+From: Daniel Vacek <neelx@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Jens Axboe <axboe@kernel.dk>
+Cc: Daniel Vacek <neelx@redhat.com>,
+	cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] blk-cgroup: clean up after commit f1c006f1c685
+Date: Thu,  4 Jan 2024 19:00:30 +0100
+Message-ID: <20240104180031.148148-1-neelx@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="22fntkpk3vilmqk6"
-Content-Disposition: inline
-In-Reply-To: <CA+CK2bBE1bQuqZy3cbWiv8V3vJ8YNJZRayp6Wv-j2_9i37XT4g@mail.gmail.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.43
-X-Spamd-Result: default: False [-1.43 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 URIBL_BLOCKED(0.00)[soleen.com:email];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 BAYES_HAM(-0.03)[55.23%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[44];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[soleen.com:email];
-	 SIGNED_PGP(-2.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,samsung.com,rosenzweig.io,lists.linux.dev,linux.intel.com,google.com,vger.kernel.org,lwn.net,redhat.com,infradead.org,cmpxchg.org,sntech.de,gmail.com,nvidia.com,8bytes.org,linaro.org,kvack.org,lists.infradead.org,bytedance.com,marcan.st,kernel.org,arm.com,sholland.org,amd.com,svenpeter.dev,csie.org,intel.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
+Commit f1c006f1c685 moved deletion of the list blkg->q_node
+from blkg_destroy() to blkg_free_workfn(). Clean up the now
+useless variable.
 
---22fntkpk3vilmqk6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Daniel Vacek <neelx@redhat.com>
+---
+ block/blk-cgroup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-On Thu, Jan 04, 2024 at 11:29:43AM -0500, Pasha Tatashin <pasha.tatashin@soleen.com> wrote:
-> Thank you for taking a look at this. The two patches [1] [2] which add
-> GFP_KERNEL_ACCOUNT were sent separate from this series at request of
-> reviewers:
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 4b48c2c440981..2f39bd7cb6db5 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -575,13 +575,13 @@ static void blkg_destroy(struct blkcg_gq *blkg)
+ static void blkg_destroy_all(struct gendisk *disk)
+ {
+ 	struct request_queue *q = disk->queue;
+-	struct blkcg_gq *blkg, *n;
++	struct blkcg_gq *blkg;
+ 	int count = BLKG_DESTROY_BATCH_SIZE;
+ 	int i;
+ 
+ restart:
+ 	spin_lock_irq(&q->queue_lock);
+-	list_for_each_entry_safe(blkg, n, &q->blkg_list, q_node) {
++	list_for_each_entry(blkg, &q->blkg_list, q_node) {
+ 		struct blkcg *blkcg = blkg->blkcg;
+ 
+ 		if (hlist_unhashed(&blkg->blkcg_node))
+-- 
+2.43.0
 
-Ah, I didn't catch that.
-
-Though, I mean the patch 02/10 calls iommu_alloc_pages() with GFP_KERNEL
-(and not a passed gfp from iommu_map).
-Then patch 09/10 accounts all iommu_alloc_pages() under NR_IOMMU_PAGES.
-
-I think there is a difference between what's shown NR_IOMMU_PAGES and
-what will have __GFP_ACCOUNT because of that.
-
-I.e. is it the intention that this difference is not subject to
-limiting?
-
-(Note: I'm not familiar with iommu code and moreover I'm only looking at
-the two patch sets, not the complete code applied. So you may correct my
-reasoning.)
-
-
-Thanks,
-Michal
-
---22fntkpk3vilmqk6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZZblDgAKCRAGvrMr/1gc
-jiwfAQCSCpFQriEKwkEB8UUxOA9LFBhZfPl+l6lvTbTvghQXmQEAh2ukMdYInk9Z
-KYebGDty+dxGKeNxW6aKFLuxo9UKywg=
-=e+tC
------END PGP SIGNATURE-----
-
---22fntkpk3vilmqk6--
 
