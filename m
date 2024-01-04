@@ -1,130 +1,132 @@
-Return-Path: <cgroups+bounces-1068-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1069-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 988A8823A25
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 02:18:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8C74823AA9
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 03:31:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2FF20B21D43
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 01:18:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4BF281C24A87
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 02:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4C4A641;
-	Thu,  4 Jan 2024 01:18:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C0671FC1;
+	Thu,  4 Jan 2024 02:31:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tLgBSnCT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MN0hFII9"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECC1FA5F
-	for <cgroups@vger.kernel.org>; Thu,  4 Jan 2024 01:18:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so6613a12.0
-        for <cgroups@vger.kernel.org>; Wed, 03 Jan 2024 17:18:23 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 996F54C6F;
+	Thu,  4 Jan 2024 02:30:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-680d2ec3459so492916d6.0;
+        Wed, 03 Jan 2024 18:30:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1704331102; x=1704935902; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1704335457; x=1704940257; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+eOihVzL+EVjsPhR8JjZLVk3UHy9SeIcu5m/iOFaAv0=;
-        b=tLgBSnCTFWUrfSu+3Z61hCZ3Zesj0TDji1cH007BaCsdaQAgEnLOtGtr3WDEOtacjz
-         oi4F6/ZuXSZ7/aBvcdY4l9P5MLBiS6k9lMy0yXH9r2ygQnczljbQUAOuIcn8nKmgZPvt
-         hHI8hcxfdmoKR4JbW/3wgTYnZckjT4OQHbXqPJrM5Rxefnny8wx+8Z8YAE6pw6tqzUrI
-         vON5y+VA1ozp9TNr2fAeyFzuElKQePxetOizGqFZ6rsYQjgxeIaKbNI8pySckNNX/y8v
-         793LN79BJQnmTf96iNe9xMhvEsb3UUX4ZOCOrIKIhgrUoJqn/0+oWlnbGJNDtpEBoEsG
-         zP5Q==
+        bh=zaX0io2OQun/Pp4EgdPG087ieZrRGz8lcO07PFjXakw=;
+        b=MN0hFII9o0sBCTZ4Gl4LjzIwtW+nL+J8z3M3Upz7HT12z7PF38H8P778z+tPymMgv6
+         pAIksk6/GkOI6DtNhw/kxP00zo6A4VXTwxY5i+yco0MrSjo8yeF6YsiF3qerD0YFapQH
+         q+/PzDP9gl3FVMDU0VI3OjJzKhxsvEvxdLkhY++l54H0iJYIVYad2PfE3w1BQBKugO/Q
+         /2bZJrR8PUIjE02q8axKFRBebBgd5eK1LwVjxyxA2BhVrfx8dp9SWlz+s2dVkBIYcI+0
+         NXCivTZSWfRJhNl1AqHT3f7/hfOoPgGnRIQORdJPwcXEV58wSGlDpjYo4OrdkWWhGrLs
+         XaYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704331102; x=1704935902;
+        d=1e100.net; s=20230601; t=1704335457; x=1704940257;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+eOihVzL+EVjsPhR8JjZLVk3UHy9SeIcu5m/iOFaAv0=;
-        b=sRpgmlMxC35YYVH04bKXn3aaveg/MSyoASS3eVP2L6nbAfWt4kllYqYfs8AiWcuuNE
-         z+PIL4NMtDSd/QJLBBqnpKeeq9iH+4pokw0H4taby8XIXzhSCwRhDYVWD2fsxtntgznc
-         A2XEg6j34VJB1IEHz7yZehWtNTbFp5L65koWuA66sSLxhNHO8RSxYoeixfTdwTuW0mu4
-         P508P2wsrpTkSoNAR4poAw8FSush89sr72HNemP+54D1PfSnnlS3HsZYAuxiL3CfG8WL
-         9b9bMxYJ/ln6LRxc4WoXzFM24nkdG1wTocH6yHbxzPVqmqTXUdCx/zr4IRuJASCSSJSU
-         VGmg==
-X-Gm-Message-State: AOJu0YxbIYdxI0YAmsI5mJ/vaw/Yoo+IYQ1anxggCAzS1Qi9A4PJeGN4
-	1orH2UNvQZp5CZd2wr5JgZy29wlxnL92VxOT1WFwmRjTVnlW
-X-Google-Smtp-Source: AGHT+IHkDaYXx3vIf2LQ/rTC9gJtpfrx24b7Zag7MbADMq8MnjXCdGVLkz4I2hDjvet/5H2gw+LHsrFnWNOczjuZXIQ=
-X-Received: by 2002:aa7:d412:0:b0:557:15d:b784 with SMTP id
- z18-20020aa7d412000000b00557015db784mr16278edq.2.1704331102029; Wed, 03 Jan
- 2024 17:18:22 -0800 (PST)
+        bh=zaX0io2OQun/Pp4EgdPG087ieZrRGz8lcO07PFjXakw=;
+        b=AzX8A2FhdwpjNaxuy3C+1CUepQFP7k94aG26mfq/Iqg349vyFIBjB/H/zuIOR6Pkm0
+         WQd8ddjSnUqeHw2QlP0I+AcZTYpXs4r7EvR7q+e20ya+caU9lyNwoi9eU7/Bo/NaWxoT
+         Q+SGDo+9ACyHJM90ebPTeI+tr9L96+KS4OVOJath05eA6HQqdVgMFTwmrdOgAxZxcyH8
+         4HrI8tAUuvBHOuqcocUdXQ4XojVAUHk9p7ddBM92bI5hbQIN3iC0V4sUyEAwPc5MFftK
+         EmJ/eaJ5uPwyRp8bYcAeX6mMZTWlyKRPigvsUxE66AIE9wWgLA3FZrWFqujrqiVaFkxN
+         asUA==
+X-Gm-Message-State: AOJu0YwFkdiyFUnbrFyZPS8kePBTpJnh4F5ncC5CpdIS1fGRLYHeyq2k
+	DuliiN78vzQ4lKtVh0vbaJEMRKyufgIdcF8be4Q=
+X-Google-Smtp-Source: AGHT+IFuINDAv9mtDrWMP1tbzBMpslXmW8kaV0qcemoLgyF1ECbqaSPBkq0J0+mLj05/6f7Qwdq7yuoxULFlSvynzKw=
+X-Received: by 2002:a05:6214:2b90:b0:680:d21c:c87b with SMTP id
+ kr16-20020a0562142b9000b00680d21cc87bmr2362202qvb.8.1704335457476; Wed, 03
+ Jan 2024 18:30:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103164841.2800183-1-schatzberg.dan@gmail.com>
- <20240103164841.2800183-3-schatzberg.dan@gmail.com> <CAOUHufZ-hTwdiy7eYgJWo=CHyPbdxTX60hxjPmwa9Ox6FXMYQQ@mail.gmail.com>
- <ZZWlT5wmDaMceSlQ@dschatzberg-fedora-PC0Y6AEN>
-In-Reply-To: <ZZWlT5wmDaMceSlQ@dschatzberg-fedora-PC0Y6AEN>
-From: Yu Zhao <yuzhao@google.com>
-Date: Wed, 3 Jan 2024 18:17:44 -0700
-Message-ID: <CAOUHufZNx7=Oufp5RrJ=GDHDN6RhcZtkBOHeKYbXFzPwVDejXA@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] mm: add swapiness= arg to memory.reclaim
-To: Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	Yosry Ahmed <yosryahmed@google.com>, Michal Hocko <mhocko@suse.com>, 
-	David Rientjes <rientjes@google.com>, Chris Li <chrisl@kernel.org>, Tejun Heo <tj@kernel.org>, 
-	Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
-	Muchun Song <muchun.song@linux.dev>, David Hildenbrand <david@redhat.com>, 
-	Matthew Wilcox <willy@infradead.org>, Kefeng Wang <wangkefeng.wang@huawei.com>, 
-	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+References: <20231222113102.4148-1-laoar.shao@gmail.com> <20231222113102.4148-3-laoar.shao@gmail.com>
+ <CAEf4BzbvPFYx3JpUaKnpG=HaNheQkJbUfaTd=DW0GbYi4A-A7A@mail.gmail.com>
+In-Reply-To: <CAEf4BzbvPFYx3JpUaKnpG=HaNheQkJbUfaTd=DW0GbYi4A-A7A@mail.gmail.com>
+From: Yafang Shao <laoar.shao@gmail.com>
+Date: Thu, 4 Jan 2024 10:30:21 +0800
+Message-ID: <CALOAHbCU57P54Ocx=PH-afu26K5pJK6cPvSyF9KStWcFe+Ov7Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] bpf: Add bpf_iter_cpumask kfuncs
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, jolsa@kernel.org, tj@kernel.org, lizefan.x@bytedance.com, 
+	hannes@cmpxchg.org, bpf@vger.kernel.org, cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 3, 2024 at 11:20=E2=80=AFAM Dan Schatzberg <schatzberg.dan@gmai=
-l.com> wrote:
+On Wed, Jan 3, 2024 at 6:13=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Wed, Jan 03, 2024 at 10:19:40AM -0700, Yu Zhao wrote:
-> [...]
-> > > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > > index d91963e2d47f..394e0dd46b2e 100644
-> > > --- a/mm/vmscan.c
-> > > +++ b/mm/vmscan.c
-> > > @@ -92,6 +92,11 @@ struct scan_control {
-> > >         unsigned long   anon_cost;
-> > >         unsigned long   file_cost;
-> > >
-> > > +#ifdef CONFIG_MEMCG
-> > > +       /* Swappiness value for proactive reclaim. Always use sc_swap=
-piness()! */
-> > > +       int *proactive_swappiness;
-> > > +#endif
+> On Fri, Dec 22, 2023 at 3:31=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com=
+> wrote:
 > >
-> > Why is proactive_swappiness still a pointer? The whole point of the
-> > previous conversation is that sc->proactive can tell whether
-> > sc->swappiness is valid or not, and that's less awkward than using a
-> > pointer.
+> > Add three new kfuncs for bpf_iter_cpumask.
+> > - bpf_iter_cpumask_new
+> > - bpf_iter_cpumask_next
+> > - bpf_iter_cpumask_destroy
+> >
+> > These new kfuncs facilitate the iteration of percpu data, such as
+> > runqueues, psi_cgroup_cpu, and more.
+> >
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > ---
+> >  kernel/bpf/cpumask.c | 48 ++++++++++++++++++++++++++++++++++++++++++++=
+++++
+> >  1 file changed, 48 insertions(+)
+> >
+> > diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
+> > index 2e73533..4ae07a4 100644
+> > --- a/kernel/bpf/cpumask.c
+> > +++ b/kernel/bpf/cpumask.c
+> > @@ -422,6 +422,51 @@ __bpf_kfunc u32 bpf_cpumask_weight(const struct cp=
+umask *cpumask)
+> >         return cpumask_weight(cpumask);
+> >  }
+> >
+> > +struct bpf_iter_cpumask {
+> > +       __u64 __opaque[2];
+> > +} __aligned(8);
+> > +
+> > +struct bpf_iter_cpumask_kern {
+> > +       struct cpumask *mask;
+> > +       int *cpu;
+> > +} __aligned(8);
+> > +
+> > +__bpf_kfunc u32 bpf_iter_cpumask_new(struct bpf_iter_cpumask *it, stru=
+ct cpumask *mask)
+> > +{
+> > +       struct bpf_iter_cpumask_kern *kit =3D (void *)it;
+> > +
+> > +       kit->cpu =3D bpf_mem_alloc(&bpf_global_ma, sizeof(*kit->cpu));
 >
-> It's the same reason as before - zero initialization ensures that the
-> pointer is NULL which tells us if it's valid or not. Proactive reclaim
-> might not set swappiness and you need to distinguish swappiness of 0
-> and not-set. See this discussion with Michal:
->
-> https://lore.kernel.org/linux-mm/ZZUizpTWOt3gNeqR@tiehlicka/
->
-> > Also why the #ifdef here? I don't see the point for a small stack
-> > variable. Otherwise wouldn't we want to do this for sc->proactive as
-> > well?
->
-> This was Michal's request and it feels similar to your rationale for
-> naming it proactive_swappiness - it's just restricting the interface
-> down to the only use-cases. I'd be fine with doing the same in
-> sc->proactive as a subsequent patch.
->
-> See https://lore.kernel.org/linux-mm/ZZUhBoTNgL3AUK3f@tiehlicka/
+> why dynamic memory allocation of 4 bytes?... just have `int cpu;`
+> field in bpf_iter_cpumask_kern?
 
-Also regarding #ifdef, quoting Documentation/process/4.Coding.rst:
-"As a general rule, #ifdef use should be confined to header files
-whenever possible."
+Will do it. Thanks for your suggestion.
+
+--=20
+Regards
+Yafang
 
