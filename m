@@ -1,139 +1,128 @@
-Return-Path: <cgroups+bounces-1078-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1079-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB0BD8248B8
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 20:11:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6BC98248C4
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 20:13:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD82F1C21696
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 19:11:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 575ED2820D6
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 19:13:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 449542C191;
-	Thu,  4 Jan 2024 19:11:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 719DB2C192;
+	Thu,  4 Jan 2024 19:13:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kaVJ8KjB"
+	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="F/ZnFVg7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED7A28E26;
-	Thu,  4 Jan 2024 19:11:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704395482; x=1735931482;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=DBk487czzork4gcCBMCfVeAOw7RW7zZUuFillY2fezs=;
-  b=kaVJ8KjBBZYQ4Nn30niCl6ol+HZ9+vAiIW7yxqbQdKUyAN1h/FAq9p/8
-   W9TRWcvITUihqT6QBKMRWAIAhRCyoNJHo8JJehMpVbbfvQVQz4qmlNcwD
-   Hw7gqzjYTPkBfnO3PWMmLP3LKnUN3d5i/DEGslJC+TBDfX8o8/wueSWd2
-   A4GsAnBODRMac6tq8EmCKBWqwSbIw+Ftg+XRe0y60FLS7INNGB5xS5odS
-   3haix0LBHS25ETisC3bRSXn0r1RFEondJ3XmwnlOsfp/hkAafyzPARt3F
-   GJySZmf6Lz8+gUeSPG87QoU6VNmxhdc/ghlIlmx72xQgptQKmHOkspq46
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="4710001"
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="4710001"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 11:11:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
-   d="scan'208";a="22602012"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 04 Jan 2024 11:11:18 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "Mehta, Sohil" <sohil.mehta@intel.com>, "jarkko@kernel.org"
- <jarkko@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
- <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>, "tj@kernel.org"
- <tj@kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>, "tglx@linutronix.de"
- <tglx@linutronix.de>, "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bp@alien8.de"
- <bp@alien8.de>, "Huang, Kai" <kai.huang@intel.com>, "Dave Hansen"
- <dave.hansen@intel.com>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "sean.j.christopherson@intel.com"
- <sean.j.christopherson@intel.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
- "yangjie@microsoft.com" <yangjie@microsoft.com>
-Subject: Re: [PATCH v6 09/12] x86/sgx: Restructure top-level EPC reclaim
- function
-References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
- <20231030182013.40086-10-haitao.huang@linux.intel.com>
- <c8fc40dc56b853fbff14ba22db197c80a6d31820.camel@intel.com>
- <op.2e0yod2lwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <431c5d7f5aee7d11ec2e8aa2e526fde438fa53b4.camel@intel.com>
- <op.2ftmyampwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <3c27bca678c1b041920a14a7da0d958c9861ebca.camel@intel.com>
- <op.2f0eo8r1wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <73ed579be8ad81835df1c309b7c69b491b7f2c8e.camel@intel.com>
- <op.2f523elowjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <4b28fc01-50cf-469b-8161-7d56b863b42b@intel.com>
-Date: Thu, 04 Jan 2024 13:11:15 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE6B82C1B3
+	for <cgroups@vger.kernel.org>; Thu,  4 Jan 2024 19:13:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6dc02ab3cc9so512793a34.3
+        for <cgroups@vger.kernel.org>; Thu, 04 Jan 2024 11:13:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google; t=1704395583; x=1705000383; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/+vYEuDAPJ/iEdESxX2pInRN4g9EPXyQ5h9FSdd/4u4=;
+        b=F/ZnFVg7p6RCRwo6c599coMU7gxw34TnRuIn9tv4NSDTLCFyNIcCycMnVBIoSBhUaf
+         5VePqzrdqqOPRKKkraOQpG8XlgFm3zjmU3ROzjemte9baJ4kCqNNrgdAqngJeCHvlLMT
+         ccN+J71GjNlNUYaCcvaMn9xh9mjC0xYx+SwN4B6qr/yTTMnZRYvNOhLp64UX+NkJd/Vy
+         YSkeOW4R3gS7ZDU8/YKly32rHGE+xlyTcPg4qLxF5bOlnB3yUbFqy9azk3VRBB7HpFXx
+         waNjhIskVtiY0gZZye1eBD20fLHFMqL1LxWwap0rGSneRmh7FVOv1Qc8SWhK/C/qEkoW
+         tynA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704395583; x=1705000383;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/+vYEuDAPJ/iEdESxX2pInRN4g9EPXyQ5h9FSdd/4u4=;
+        b=f0lwHibPlM3A1OvVu3n+Xk6McVA6ST50MJa4IkERdtFjkUzKt+JDPrE6C5fhB41A1a
+         FJdlHh5Jrh1CM5CEHK2vgMUcx/v0dOpxkA5LivhbFWmiCOCI8XX+Iv6Yb5vMc8vp/VGc
+         brMbaalf+4dpEhFzQq2xhbukfjjQckiP2A8/Y/giAx7ZhVz+gqP/XrCNy89LxE63SA6B
+         ypSEleA6U4aAFhp7OFQsvhpGrNwcD5lhS97zo5O6NFI5yLP3bw8+uxnSQJ9Yy8G8vmj9
+         gpKCr2WMvCVk2bf/C87kikYd1KxhwccVeyY87OfCMvulfV4K92Rj146CgPvso89+1cCO
+         kBeQ==
+X-Gm-Message-State: AOJu0Yy145QgCarppHts98tv3kOmMufUSf4KXoc0u0YHSGj3jy7TQyb1
+	V4qIDMbZIKLd3FaujAFlFDBkDtlUfI7d/L1Z2XQz5aMNUUyp9w==
+X-Google-Smtp-Source: AGHT+IF/5x1qWEeEN53jwIdamLjEry3P/nE1f12xa2taaKft/YlEJdrBP6aDzExJ1bDcrqKpemuFKkiIEAFmrNQGE5k=
+X-Received: by 2002:a05:6358:8828:b0:174:b7f2:51db with SMTP id
+ hv40-20020a056358882800b00174b7f251dbmr1188037rwb.19.1704395582852; Thu, 04
+ Jan 2024 11:13:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2g1d81fqwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <4b28fc01-50cf-469b-8161-7d56b863b42b@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+References: <20231226200205.562565-1-pasha.tatashin@soleen.com>
+ <eqkpplwwyeqqd356ka3g6isaoboe62zrii77krsb7zwzmvdusr@5i3lzfhpt2xe>
+ <CA+CK2bBE1bQuqZy3cbWiv8V3vJ8YNJZRayp6Wv-j2_9i37XT4g@mail.gmail.com> <eng4vwaci5hwlicszgcld6uny55vll2bfs3vp2yjbjf3exhamg@zf6yc2uhax7w>
+In-Reply-To: <eng4vwaci5hwlicszgcld6uny55vll2bfs3vp2yjbjf3exhamg@zf6yc2uhax7w>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Thu, 4 Jan 2024 14:12:26 -0500
+Message-ID: <CA+CK2bCUGepLLA2Hsmq00XEhPzLWPb5CjzY_UPT0qWSKastjAQ@mail.gmail.com>
+Subject: Re: [PATCH v3 00/10] IOMMU memory observability
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
+	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
+	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
+	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
+	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
+	joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
+	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
+	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
+	rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
+	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, 
+	tj@kernel.org, tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, 
+	will@kernel.org, yu-cheng.yu@intel.com, rientjes@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Dave,
-
-On Wed, 03 Jan 2024 10:37:35 -0600, Dave Hansen <dave.hansen@intel.com>  
-wrote:
-
-> On 12/18/23 13:24, Haitao Huang wrote:> @Dave and @Michal, Your
-> thoughts? Or could you confirm we should not
->> do reclaim per cgroup at all?
-> What's the benefit of doing reclaim per cgroup?  Is that worth the extra
-> complexity?
+On Thu, Jan 4, 2024 at 12:04=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
 >
-
-Without reclaiming per cgroup, then we have to always set the limit to  
-enclave's peak usage. This may not be efficient utilization as in many  
-cases each enclave can perform fine with EPC limit set less than peak.  
-Basically each group can not give up some pages for greater good without  
-dying :-)
-
-Also with enclaves enabled with EDMM, the peak usage is not static so hard  
-to determine upfront. Hence it might be an operation/deployment  
-inconvenience.
-
-In case of over-committing (sum of limits > total capacity), one cgroup at  
-peak usage may require swapping pages out in a different cgroup if system  
-is overloaded at that time.
-
-> The key question here is whether we want the SGX VM to be complex and
-> more like the real VM or simple when a cgroup hits its limit.  Right?
+> On Thu, Jan 04, 2024 at 11:29:43AM -0500, Pasha Tatashin <pasha.tatashin@=
+soleen.com> wrote:
+> > Thank you for taking a look at this. The two patches [1] [2] which add
+> > GFP_KERNEL_ACCOUNT were sent separate from this series at request of
+> > reviewers:
 >
-
-Although it's fair to say the majority of complexity of this series is in  
-support for reclaiming per cgroup, I think it's manageable and much less  
-than real VM after we removed the enclave killing parts: the only extra  
-effort is to track pages in separate list and reclaim them in separately  
-as opposed to track in on global list and reclaim together. The main  
-reclaiming loop code is still pretty much the same as before.
-
-
-> If stopping at patch 5 and having less code is even remotely an option,
-> why not do _that_?
+> Ah, I didn't catch that.
 >
-I hope I described limitations clear enough above.
-If those are OK with users and also make it acceptable for merge quickly,  
-I'm happy to do that :-)
+> Though, I mean the patch 02/10 calls iommu_alloc_pages() with GFP_KERNEL
+> (and not a passed gfp from iommu_map).
+> Then patch 09/10 accounts all iommu_alloc_pages() under NR_IOMMU_PAGES.
+>
+> I think there is a difference between what's shown NR_IOMMU_PAGES and
+> what will have __GFP_ACCOUNT because of that.
+>
+> I.e. is it the intention that this difference is not subject to
+> limiting?
 
-Thanks
-Haitao
+Yes, we will have a difference between GFP_ACCOUNT and what
+NR_IOMMU_PAGES shows. GFP_ACCOUNT is set only where it makes sense to
+charge to user processes, i.e. IOMMU Page Tables, but there more IOMMU
+shared data that should not really be charged to a specific process.
+The charged and uncharged data will be visible via /proc/vmstat
+nr_iommu_pages field.
+
+Pasha
+
+>
+> (Note: I'm not familiar with iommu code and moreover I'm only looking at
+> the two patch sets, not the complete code applied. So you may correct my
+> reasoning.)
+>
+>
+> Thanks,
+> Michal
 
