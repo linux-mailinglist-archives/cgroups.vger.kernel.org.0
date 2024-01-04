@@ -1,100 +1,139 @@
-Return-Path: <cgroups+bounces-1077-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1078-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CAF78247E4
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 19:00:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB0BD8248B8
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 20:11:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1630CB2175D
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 18:00:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD82F1C21696
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 19:11:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10E7228DB8;
-	Thu,  4 Jan 2024 18:00:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 449542C191;
+	Thu,  4 Jan 2024 19:11:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DWsokt0/"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kaVJ8KjB"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4716028DB0
-	for <cgroups@vger.kernel.org>; Thu,  4 Jan 2024 18:00:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1704391242;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=eu5YlIQJDTB29F9zBZ6QeUpQq4Hsfh0LpNOdwuB2ABY=;
-	b=DWsokt0/4B46TDZoy9dpogWVquYyrEGyXKasD0ZfBinD5MESWeYP5hi1LrkgYom9kJPQ2I
-	LMCdKmFevfJKNx4Owz9i04lq+b6t1Vxbib6dIXpWAcFADZ7EoYgJg4AunReQmbI+3HH8Vm
-	gyorhzcy08rCh3AKwSwQWrsTQ5QSk7Q=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-453-dDr8HvIjMzSUfG-Lahkm_w-1; Thu,
- 04 Jan 2024 13:00:38 -0500
-X-MC-Unique: dDr8HvIjMzSUfG-Lahkm_w-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E32323806739;
-	Thu,  4 Jan 2024 18:00:37 +0000 (UTC)
-Received: from metal.redhat.com (unknown [10.45.224.239])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 5E0661121306;
-	Thu,  4 Jan 2024 18:00:36 +0000 (UTC)
-From: Daniel Vacek <neelx@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Jens Axboe <axboe@kernel.dk>
-Cc: Daniel Vacek <neelx@redhat.com>,
-	cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] blk-cgroup: clean up after commit f1c006f1c685
-Date: Thu,  4 Jan 2024 19:00:30 +0100
-Message-ID: <20240104180031.148148-1-neelx@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED7A28E26;
+	Thu,  4 Jan 2024 19:11:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704395482; x=1735931482;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=DBk487czzork4gcCBMCfVeAOw7RW7zZUuFillY2fezs=;
+  b=kaVJ8KjBBZYQ4Nn30niCl6ol+HZ9+vAiIW7yxqbQdKUyAN1h/FAq9p/8
+   W9TRWcvITUihqT6QBKMRWAIAhRCyoNJHo8JJehMpVbbfvQVQz4qmlNcwD
+   Hw7gqzjYTPkBfnO3PWMmLP3LKnUN3d5i/DEGslJC+TBDfX8o8/wueSWd2
+   A4GsAnBODRMac6tq8EmCKBWqwSbIw+Ftg+XRe0y60FLS7INNGB5xS5odS
+   3haix0LBHS25ETisC3bRSXn0r1RFEondJ3XmwnlOsfp/hkAafyzPARt3F
+   GJySZmf6Lz8+gUeSPG87QoU6VNmxhdc/ghlIlmx72xQgptQKmHOkspq46
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10943"; a="4710001"
+X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
+   d="scan'208";a="4710001"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2024 11:11:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,331,1695711600"; 
+   d="scan'208";a="22602012"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 04 Jan 2024 11:11:18 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "Mehta, Sohil" <sohil.mehta@intel.com>, "jarkko@kernel.org"
+ <jarkko@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
+ <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>, "tj@kernel.org"
+ <tj@kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>, "tglx@linutronix.de"
+ <tglx@linutronix.de>, "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "bp@alien8.de"
+ <bp@alien8.de>, "Huang, Kai" <kai.huang@intel.com>, "Dave Hansen"
+ <dave.hansen@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "sean.j.christopherson@intel.com"
+ <sean.j.christopherson@intel.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "yangjie@microsoft.com" <yangjie@microsoft.com>
+Subject: Re: [PATCH v6 09/12] x86/sgx: Restructure top-level EPC reclaim
+ function
+References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
+ <20231030182013.40086-10-haitao.huang@linux.intel.com>
+ <c8fc40dc56b853fbff14ba22db197c80a6d31820.camel@intel.com>
+ <op.2e0yod2lwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <431c5d7f5aee7d11ec2e8aa2e526fde438fa53b4.camel@intel.com>
+ <op.2ftmyampwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <3c27bca678c1b041920a14a7da0d958c9861ebca.camel@intel.com>
+ <op.2f0eo8r1wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <73ed579be8ad81835df1c309b7c69b491b7f2c8e.camel@intel.com>
+ <op.2f523elowjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <4b28fc01-50cf-469b-8161-7d56b863b42b@intel.com>
+Date: Thu, 04 Jan 2024 13:11:15 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2g1d81fqwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <4b28fc01-50cf-469b-8161-7d56b863b42b@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-Commit f1c006f1c685 moved deletion of the list blkg->q_node
-from blkg_destroy() to blkg_free_workfn(). Clean up the now
-useless variable.
+Hi Dave,
 
-Signed-off-by: Daniel Vacek <neelx@redhat.com>
----
- block/blk-cgroup.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Wed, 03 Jan 2024 10:37:35 -0600, Dave Hansen <dave.hansen@intel.com>  
+wrote:
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 4b48c2c440981..2f39bd7cb6db5 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -575,13 +575,13 @@ static void blkg_destroy(struct blkcg_gq *blkg)
- static void blkg_destroy_all(struct gendisk *disk)
- {
- 	struct request_queue *q = disk->queue;
--	struct blkcg_gq *blkg, *n;
-+	struct blkcg_gq *blkg;
- 	int count = BLKG_DESTROY_BATCH_SIZE;
- 	int i;
- 
- restart:
- 	spin_lock_irq(&q->queue_lock);
--	list_for_each_entry_safe(blkg, n, &q->blkg_list, q_node) {
-+	list_for_each_entry(blkg, &q->blkg_list, q_node) {
- 		struct blkcg *blkcg = blkg->blkcg;
- 
- 		if (hlist_unhashed(&blkg->blkcg_node))
--- 
-2.43.0
+> On 12/18/23 13:24, Haitao Huang wrote:> @Dave and @Michal, Your
+> thoughts? Or could you confirm we should not
+>> do reclaim per cgroup at all?
+> What's the benefit of doing reclaim per cgroup?  Is that worth the extra
+> complexity?
+>
 
+Without reclaiming per cgroup, then we have to always set the limit to  
+enclave's peak usage. This may not be efficient utilization as in many  
+cases each enclave can perform fine with EPC limit set less than peak.  
+Basically each group can not give up some pages for greater good without  
+dying :-)
+
+Also with enclaves enabled with EDMM, the peak usage is not static so hard  
+to determine upfront. Hence it might be an operation/deployment  
+inconvenience.
+
+In case of over-committing (sum of limits > total capacity), one cgroup at  
+peak usage may require swapping pages out in a different cgroup if system  
+is overloaded at that time.
+
+> The key question here is whether we want the SGX VM to be complex and
+> more like the real VM or simple when a cgroup hits its limit.  Right?
+>
+
+Although it's fair to say the majority of complexity of this series is in  
+support for reclaiming per cgroup, I think it's manageable and much less  
+than real VM after we removed the enclave killing parts: the only extra  
+effort is to track pages in separate list and reclaim them in separately  
+as opposed to track in on global list and reclaim together. The main  
+reclaiming loop code is still pretty much the same as before.
+
+
+> If stopping at patch 5 and having less code is even remotely an option,
+> why not do _that_?
+>
+I hope I described limitations clear enough above.
+If those are OK with users and also make it acceptable for merge quickly,  
+I'm happy to do that :-)
+
+Thanks
+Haitao
 
