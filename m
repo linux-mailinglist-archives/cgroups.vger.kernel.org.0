@@ -1,81 +1,91 @@
-Return-Path: <cgroups+bounces-1071-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1072-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA3A9823F43
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 11:09:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AED08240D2
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 12:42:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A348286761
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 10:09:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B59AB23F66
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jan 2024 11:42:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51B4020B29;
-	Thu,  4 Jan 2024 10:09:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1324F2134F;
+	Thu,  4 Jan 2024 11:41:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kkhryevb";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kkhryevb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eUsluLSF"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C5F20B02;
-	Thu,  4 Jan 2024 10:09:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2AD2D1F7E5;
-	Thu,  4 Jan 2024 10:09:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704362948; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bND18w68yzB2SgjbqiPCCcEMkHhbzrkW11rEOW63lmg=;
-	b=kkhryevbbiV0D/EU/gER1KJNG+R06H3r7PcmthuHyTwNtFIn0GCC6HkICP/Y8+g6ugOzVj
-	bcwSJoHEHIBitu9DctaXEX7JpiZTb7yiupXVzMYRdd+cxiEOn4IcdBsLweKAzfPD6VMiRZ
-	0HghKhYaGXDsvM5R98amuFP6ZAnROyM=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704362948; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bND18w68yzB2SgjbqiPCCcEMkHhbzrkW11rEOW63lmg=;
-	b=kkhryevbbiV0D/EU/gER1KJNG+R06H3r7PcmthuHyTwNtFIn0GCC6HkICP/Y8+g6ugOzVj
-	bcwSJoHEHIBitu9DctaXEX7JpiZTb7yiupXVzMYRdd+cxiEOn4IcdBsLweKAzfPD6VMiRZ
-	0HghKhYaGXDsvM5R98amuFP6ZAnROyM=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EC6F5137E8;
-	Thu,  4 Jan 2024 10:09:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ubvJNsODlmVvbAAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Thu, 04 Jan 2024 10:09:07 +0000
-Date: Thu, 4 Jan 2024 11:09:07 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	Yosry Ahmed <yosryahmed@google.com>,
-	David Rientjes <rientjes@google.com>, Chris Li <chrisl@kernel.org>,
-	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	David Hildenbrand <david@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH v6 2/2] mm: add swapiness= arg to memory.reclaim
-Message-ID: <ZZaDw1Fak_q9BnW-@tiehlicka>
-References: <20240103164841.2800183-1-schatzberg.dan@gmail.com>
- <20240103164841.2800183-3-schatzberg.dan@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 569EE20DFD;
+	Thu,  4 Jan 2024 11:41:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a28a6cef709so46494366b.1;
+        Thu, 04 Jan 2024 03:41:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704368514; x=1704973314; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=li47kl6w5F7Kdkk2+B7xCgguinxHCXOI6fH+waqV0VM=;
+        b=eUsluLSFb0ZwCqSuyVR8w5deP1BLi3HKsdmEhwOD+U2V2K+dCE74ayLb5PD8CwLDm4
+         PlitD0rSdTsUY8541WXGMyQZI/P1hw4hBjimN0syFJEfrNNX+Z3xFQp2rSKy9ZN31wZD
+         3i3aht1bulhiNFpZYdpEnpYPN/oxH6quAMWDyj6YXkPT4n/543Sg+Rezh+niBwHs+stF
+         W3mVdZ+vtj+sRmpVQ3HUlaMJaMt62w5el9YRTU4Uwl6HfOx/xwXG938T5dGEFwA+99xC
+         RIzhvkxq0peup8MTESdCmVMBZipvpS0/OI0PiQabSOO9sO+JI/+JGffnz1CxeENqgVSQ
+         DFrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704368514; x=1704973314;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=li47kl6w5F7Kdkk2+B7xCgguinxHCXOI6fH+waqV0VM=;
+        b=oJJozvXMOKnJzRLbLUdRsjeTBSjGu55s3eXPjtQCpbo+/E/TpP/0z6Lz8UCr89jejG
+         nW6cUSgDtCcWVItoW6UB7hjY6+L/4SvUEO05EhdZWilAAV/NFxysHY16jRi2Ka1bWp6J
+         F/iIwDK9M05pxP/NMg4ZbTufSuoEXwIst4yd2ZjgA1SL0H11SkoU/RgJWAZ1I/4ZcnJp
+         MMh5/ZNyT5a0q0PuM7IejEcZrjjggOgFRLfWAzfvHBSeYYFUFq5TC0iQR1avKbUJ8wjI
+         nii/geLrOg1uUgD48EvYio3db1yBA5WmZF07qnwRm7tuV+iww/bQLnkr7pYh0yseTbVQ
+         zL0g==
+X-Gm-Message-State: AOJu0YyAcliWHweOa+5w85bDGyuj0SaYbSeyK9oj/1mTDQ2+mg0JYYto
+	hXdieozXZ+cCTNTYY3EunDA=
+X-Google-Smtp-Source: AGHT+IFrFEjJWJoSGpDPpDjTuLdY+CFN4tGrhsg3QTmtjCcI4AMtsTnvEFP18v2XfpFjbFbUiq++MA==
+X-Received: by 2002:a17:906:231a:b0:a28:b774:62d9 with SMTP id l26-20020a170906231a00b00a28b77462d9mr261239eja.62.1704368514369;
+        Thu, 04 Jan 2024 03:41:54 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id o16-20020a170906601000b00a26dc8ec78dsm10999304ejj.147.2024.01.04.03.41.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Jan 2024 03:41:54 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Thu, 4 Jan 2024 12:41:51 +0100
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: benjamin.tissoires@redhat.com, hawk@kernel.org, edumazet@google.com,
+	alexandre.torgue@foss.st.com, ebiggers@kernel.org, tj@kernel.org,
+	rostedt@goodmis.org, shuah@kernel.org, martin.lau@linux.dev,
+	ast@kernel.org, fw@strlen.de, kuba@kernel.org, pablo@netfilter.org,
+	jikos@kernel.org, john.fastabend@gmail.com,
+	mcoquelin.stm32@gmail.com, mhiramat@kernel.org,
+	yonghong.song@linux.dev, Herbert Xu <herbert@gondor.apana.org.au>,
+	dsahern@kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com,
+	pabeni@redhat.com, steffen.klassert@secunet.com,
+	daniel@iogearbox.net, tytso@mit.edu, andrii@kernel.org,
+	davem@davemloft.net, kadlec@netfilter.org, song@kernel.org,
+	alexei.starovoitov@gmail.com, olsajiri@gmail.com,
+	quentin@isovalent.com, alan.maguire@oracle.com, memxor@gmail.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	mathieu.desnoyers@efficios.com, mykolal@fb.com,
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+	fsverity@lists.linux.dev, bpf@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, linux-kselftest@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH bpf-next 2/2] bpf: treewide: Annotate BPF kfuncs in BTF
+Message-ID: <ZZaZf_8RuX2xqZGf@krava>
+References: <cover.1704324602.git.dxu@dxuuu.xyz>
+ <68d5598e5708dfe3370406cd5c946565ca4b50f1.1704324602.git.dxu@dxuuu.xyz>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -84,86 +94,69 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240103164841.2800183-3-schatzberg.dan@gmail.com>
-X-Spam-Level: *******
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=kkhryevb
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.51 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLsgd6kpfonsu388crrfsk7e3y)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[20];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,vger.kernel.org,kvack.org,google.com,kernel.org,bytedance.com,cmpxchg.org,lwn.net,linux.dev,redhat.com,infradead.org,huawei.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -1.51
-X-Rspamd-Queue-Id: 2AD2D1F7E5
-X-Spam-Flag: NO
+In-Reply-To: <68d5598e5708dfe3370406cd5c946565ca4b50f1.1704324602.git.dxu@dxuuu.xyz>
 
-On Wed 03-01-24 08:48:37, Dan Schatzberg wrote:
-[...]
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index d91963e2d47f..394e0dd46b2e 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -92,6 +92,11 @@ struct scan_control {
->  	unsigned long	anon_cost;
->  	unsigned long	file_cost;
+On Wed, Jan 03, 2024 at 04:31:56PM -0700, Daniel Xu wrote:
+
+SNIP
+
+> diff --git a/include/linux/btf_ids.h b/include/linux/btf_ids.h
+> index 88f914579fa1..771e29762a2d 100644
+> --- a/include/linux/btf_ids.h
+> +++ b/include/linux/btf_ids.h
+> @@ -8,6 +8,9 @@ struct btf_id_set {
+>  	u32 ids[];
+>  };
 >  
-> +#ifdef CONFIG_MEMCG
-> +	/* Swappiness value for proactive reclaim. Always use sc_swappiness()! */
-> +	int *proactive_swappiness;
-> +#endif
+> +/* This flag implies BTF_SET8 holds kfunc(s) */
+> +#define BTF_SET8_KFUNC		(1 << 0)
 > +
->  	/* Can active folios be deactivated as part of reclaim? */
->  #define DEACTIVATE_ANON 1
->  #define DEACTIVATE_FILE 2
-> @@ -227,6 +232,13 @@ static bool writeback_throttling_sane(struct scan_control *sc)
->  #endif
->  	return false;
->  }
-> +
-> +static int sc_swappiness(struct scan_control *sc, struct mem_cgroup *memcg)
-> +{
-> +	if (sc->proactive && sc->proactive_swappiness)
-> +		return *sc->proactive_swappiness;
-> +	return mem_cgroup_swappiness(memcg);
-> +}
+>  struct btf_id_set8 {
+>  	u32 cnt;
+>  	u32 flags;
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 51e8b4bee0c8..b8ba00a4179f 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -7769,6 +7769,9 @@ static int __register_btf_kfunc_id_set(enum btf_kfunc_hook hook,
+>  	struct btf *btf;
+>  	int ret, i;
+>  
+> +	/* All kfuncs need to be tagged as such in BTF */
+> +	WARN_ON(!(kset->set->flags & BTF_SET8_KFUNC));
 
-If you really want to make this sc->proactive bound then do not use
-CONFIG_MEMCG as sc->proactive is not guarded either.
+__register_btf_kfunc_id_set gets called also from the 'hooks' path:
 
-I do not think that sc->proactive check is really necessary. A pure NULL
-check is sufficient to have a valid and self evident code that is future
-proof. But TBH this is not the most important aspect of the patch to
-spend much more time discussing. Either go with sc->proactive but make
-it config space consistent or simply rely on NULL check (with or without
-MEMCG guard as both are valid options).
+  bpf_mptcp_kfunc_init
+    register_btf_fmodret_id_set
+      __register_btf_kfunc_id_set
 
--- 
-Michal Hocko
-SUSE Labs
+so it will hit the warn.. it should be probably in the register_btf_kfunc_id_set ?
+
+also given that we can have modules calling register_btf_kfunc_id_set,
+should we just return error instead of the warn?
+
+SNIP
+
+> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> index 91907b321f91..32972334cd50 100644
+> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> @@ -341,7 +341,7 @@ static struct bin_attribute bin_attr_bpf_testmod_file __ro_after_init = {
+>  	.write = bpf_testmod_test_write,
+>  };
+>  
+> -BTF_SET8_START(bpf_testmod_common_kfunc_ids)
+> +BTF_SET8_START(bpf_testmod_common_kfunc_ids, BTF_SET8_KFUNC)
+>  BTF_ID_FLAGS(func, bpf_iter_testmod_seq_new, KF_ITER_NEW)
+>  BTF_ID_FLAGS(func, bpf_iter_testmod_seq_next, KF_ITER_NEXT | KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_iter_testmod_seq_destroy, KF_ITER_DESTROY)
+
+we need to change also bpf_testmod_check_kfunc_ids set
+
+jirka
+
+> -- 
+> 2.42.1
+> 
 
