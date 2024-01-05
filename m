@@ -1,157 +1,149 @@
-Return-Path: <cgroups+bounces-1093-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1094-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A774825118
-	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 10:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 304068255F5
+	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 15:44:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C5631C22F12
-	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 09:45:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA6BB1C23258
+	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 14:44:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2BE4249F3;
-	Fri,  5 Jan 2024 09:45:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C1B62DF87;
+	Fri,  5 Jan 2024 14:44:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="p1Gvid2Y";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Tqecptw3"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H3VHuMCq"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE16524201;
-	Fri,  5 Jan 2024 09:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id F05761F850;
-	Fri,  5 Jan 2024 09:45:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704447908; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WjMAyVdiebrt/Q0pS2dmmJub9qx0XoEkNWeuoUlkfwo=;
-	b=p1Gvid2Yx7rB6xquGDuCYppBhbc/gAtKc0wrv0gBT50BqlzJK8hTKFQrytCCjyOzHWLfbE
-	Y2XGpbQrz1c7Q21Zex4/mE+1dqaHMGda58PuiBXIVOfXVJlhO8bcPm8+xGa+sclP5720lq
-	1jW4vWn0cOfeFiuLR8q9NrkKVPpNXnk=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704447907; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WjMAyVdiebrt/Q0pS2dmmJub9qx0XoEkNWeuoUlkfwo=;
-	b=Tqecptw3BTnIUZiudoZwWXFz8DvrhvVQ0cdCR01ZJWtLoMYC076yGW/+VYDFm0jYgsOFWe
-	9XhBmBIqpkC/1O3YAtp2rYCgoCC3vXVrS9ggqVEcJJ0V4NRKYrrUJNQcVQxP0nnzdtm9Dk
-	/+AT7ckcg18sWIFSJ0Q9pX8pMUvyYqg=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D8D5413C99;
-	Fri,  5 Jan 2024 09:45:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id P5C6NKPPl2WQUgAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Fri, 05 Jan 2024 09:45:07 +0000
-Date: Fri, 5 Jan 2024 10:45:02 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D4088F4A;
+	Fri,  5 Jan 2024 14:44:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1704465868; x=1736001868;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GgyqztMwZYzha76gD8nEpDu6CYIYIn6/9uBQgpVtcd0=;
+  b=H3VHuMCqLzpWDuDUdPn3dJ8oeNays+0LcK+DBYdf16WWTZsGkxWSnM2t
+   0gehmoFGc7Y2Iy5xDqakRkvwk1j3QTBaJEStzmTykjAd/dk4JH+tsdQzq
+   ZQhNKSWHJ4WD5fSirCN+a3Kw7GzocICclOKruvbT5eu5ibNqQkikXvqUe
+   IY2+BsEjIbW9WFiSShPWfABQA774f7XjAsdfIIo5ZtZ2Wt6V1t3BLUfM4
+   hhB3zhCd1fxei1ijvNlMEZ1LJibPf7+9mwDdIXnDOwSQ8RYK+jM33HyNi
+   T8Kh79j4JmjgBPhZJqGWFWYpPOqwE+J6/mLp4p/wYCoG8RuBxrMrO8zYi
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="394691374"
+X-IronPort-AV: E=Sophos;i="6.04,334,1695711600"; 
+   d="scan'208";a="394691374"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 06:43:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,334,1695711600"; 
+   d="scan'208";a="22508281"
+Received: from lmurph2-mobl1.ger.corp.intel.com (HELO himmelriiki) ([10.252.51.171])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 06:43:32 -0800
+Date: Fri, 5 Jan 2024 16:43:23 +0200
+From: Mikko Ylinen <mikko.ylinen@linux.intel.com>
 To: Haitao Huang <haitao.huang@linux.intel.com>
-Cc: jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org, 
-	cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
-	hpa@zytor.com, sohil.mehta@intel.com, zhiquan1.li@intel.com, 
-	kristen@linux.intel.com, seanjc@google.com, zhanb@microsoft.com, anakrish@microsoft.com, 
-	mikko.ylinen@linux.intel.com, yangjie@microsoft.com
-Subject: Re: [PATCH v6 01/12] cgroup/misc: Add per resource callbacks for CSS
- events
-Message-ID: <5qfjx2vvirtffkro5u6zdbbwia2bhhbjxwgij2igdnxk5hysaq@kpqboajvuzbc>
-References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
- <20231030182013.40086-2-haitao.huang@linux.intel.com>
+Cc: "Mehta, Sohil" <sohil.mehta@intel.com>,
+	"jarkko@kernel.org" <jarkko@kernel.org>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+	"hpa@zytor.com" <hpa@zytor.com>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"tj@kernel.org" <tj@kernel.org>,
+	"mkoutny@suse.com" <mkoutny@suse.com>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"bp@alien8.de" <bp@alien8.de>, "Huang, Kai" <kai.huang@intel.com>,
+	Dave Hansen <dave.hansen@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Zhang, Bo" <zhanb@microsoft.com>,
+	"kristen@linux.intel.com" <kristen@linux.intel.com>,
+	"anakrish@microsoft.com" <anakrish@microsoft.com>,
+	"sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
+	"Li, Zhiquan1" <zhiquan1.li@intel.com>,
+	"yangjie@microsoft.com" <yangjie@microsoft.com>
+Subject: Re: [PATCH v6 09/12] x86/sgx: Restructure top-level EPC reclaim
+ function
+Message-ID: <ZZgVi7rHAAzyzbz5@himmelriiki>
+References: <c8fc40dc56b853fbff14ba22db197c80a6d31820.camel@intel.com>
+ <op.2e0yod2lwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <431c5d7f5aee7d11ec2e8aa2e526fde438fa53b4.camel@intel.com>
+ <op.2ftmyampwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <3c27bca678c1b041920a14a7da0d958c9861ebca.camel@intel.com>
+ <op.2f0eo8r1wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <73ed579be8ad81835df1c309b7c69b491b7f2c8e.camel@intel.com>
+ <op.2f523elowjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <4b28fc01-50cf-469b-8161-7d56b863b42b@intel.com>
+ <op.2g1d81fqwjvjmi@hhuan26-mobl.amr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="gkycr2ejudi4nnse"
-Content-Disposition: inline
-In-Reply-To: <20231030182013.40086-2-haitao.huang@linux.intel.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-2.90 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 SIGNED_PGP(-2.00)[];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 BAYES_HAM(-0.00)[19.25%];
-	 ARC_NA(0.00)[];
-	 URIBL_BLOCKED(0.00)[intel.com:email];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[20];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.90
-
-
---gkycr2ejudi4nnse
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <op.2g1d81fqwjvjmi@hhuan26-mobl.amr.corp.intel.com>
 
-On Mon, Oct 30, 2023 at 11:20:02AM -0700, Haitao Huang <haitao.huang@linux.=
-intel.com> wrote:
-> From: Kristen Carlson Accardi <kristen@linux.intel.com>
->=20
-> The misc cgroup controller (subsystem) currently does not perform
-> resource type specific action for Cgroups Subsystem State (CSS) events:
-> the 'css_alloc' event when a cgroup is created and the 'css_free' event
-> when a cgroup is destroyed.
->=20
-> Define callbacks for those events and allow resource providers to
-> register the callbacks per resource type as needed. This will be
-> utilized later by the EPC misc cgroup support implemented in the SGX
-> driver.
+On Thu, Jan 04, 2024 at 01:11:15PM -0600, Haitao Huang wrote:
+> Hi Dave,
+> 
+> On Wed, 03 Jan 2024 10:37:35 -0600, Dave Hansen <dave.hansen@intel.com>
+> wrote:
+> 
+> > On 12/18/23 13:24, Haitao Huang wrote:> @Dave and @Michal, Your
+> > thoughts? Or could you confirm we should not
+> > > do reclaim per cgroup at all?
+> > What's the benefit of doing reclaim per cgroup?  Is that worth the extra
+> > complexity?
+> > 
+> 
+> Without reclaiming per cgroup, then we have to always set the limit to
+> enclave's peak usage. This may not be efficient utilization as in many cases
+> each enclave can perform fine with EPC limit set less than peak. Basically
+> each group can not give up some pages for greater good without dying :-)
 
-I notice now that the callbacks are per resource and per cgroup.
-I think that is an overkill that complicates misc_cg allocation code
-with parent's callbacks while freeing is done by own callbacks.
-It's possibly too much liberal to keep objects' lifecycle understandable
-in the long term too.=20
++1. this is exactly my thinking too. The per cgroup reclaiming is
+important for the containers use case we are working on. I also think
+it makes the limit more meaningful: the per-container pool of EPC pages
+to use (which is independent of the enclave size).
 
-For some uniformity, I'd suggest struct blkcg_policy array in
-block/blk-cgroup.c as the precedent. (Perhaps indexed with static enum
-misc_res_type instead of dynamic index assignment as
-blkcg_policy_registeer() does.)
+> 
+> Also with enclaves enabled with EDMM, the peak usage is not static so hard
+> to determine upfront. Hence it might be an operation/deployment
+> inconvenience.
+> 
+> In case of over-committing (sum of limits > total capacity), one cgroup at
+> peak usage may require swapping pages out in a different cgroup if system is
+> overloaded at that time.
+> 
+> > The key question here is whether we want the SGX VM to be complex and
+> > more like the real VM or simple when a cgroup hits its limit.  Right?
+> > 
+> 
+> Although it's fair to say the majority of complexity of this series is in
+> support for reclaiming per cgroup, I think it's manageable and much less
+> than real VM after we removed the enclave killing parts: the only extra
+> effort is to track pages in separate list and reclaim them in separately as
+> opposed to track in on global list and reclaim together. The main reclaiming
+> loop code is still pretty much the same as before.
+> 
+> 
+> > If stopping at patch 5 and having less code is even remotely an option,
+> > why not do _that_?
+> > 
+> I hope I described limitations clear enough above.
+> If those are OK with users and also make it acceptable for merge quickly,
 
-I hope you don't really need per-cgroup callbacks :-)
+You explained the gaps very well already. I don't think the simple
+version without per-cgroup reclaiming is enough for the container case.
 
-Michal
-
---gkycr2ejudi4nnse
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZZfPnAAKCRAGvrMr/1gc
-jiP8AP0Q8YvyVS22t8yNx/wVtFr60JLTA5zAgGTIFU7k+w/G+AEA9Jr2ZtxN0QWV
-FYzPie0m1EL3RCqoPrIQleZGYmOfMAw=
-=d7Pm
------END PGP SIGNATURE-----
-
---gkycr2ejudi4nnse--
+Mikko
 
