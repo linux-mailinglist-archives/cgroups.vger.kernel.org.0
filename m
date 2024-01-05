@@ -1,53 +1,53 @@
-Return-Path: <cgroups+bounces-1099-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1100-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6385D825983
-	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 18:57:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3C00825A1A
+	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 19:29:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E195A1F24357
-	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 17:57:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46A8428606E
+	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 18:29:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79517328CD;
-	Fri,  5 Jan 2024 17:57:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80CF7358A0;
+	Fri,  5 Jan 2024 18:29:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QZhkoUoO"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CBs5OSGq"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACE05328CA;
-	Fri,  5 Jan 2024 17:57:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F30235887;
+	Fri,  5 Jan 2024 18:29:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704477426; x=1736013426;
+  t=1704479347; x=1736015347;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=1MT2jTPeBSJ57twgUkjXstNbDoV/TaGJIBY2sv5XpsU=;
-  b=QZhkoUoOjgWRC7KVJyevieaKM19lUiuF9R4wMeg7GF+Z+gVEx+ooBUkJ
-   14LubKR3o5hL6ojJscMXTrnVbTu1nrZLyh5faIDLK2xty62aGaX+zuKV5
-   H8tf/J1Jb+HyWoFuT7l5gwz6fU9Fyj8nuLftNMCIyUfMFk3e3FyNXbQ8h
-   2VamarkBckd4SER3zyjZXidPioyY9r3xeSNh4vEq3tQSJBiUExIYBiQ1N
-   cRzrs9euAb9OT/i4kb0N4fw9kDNlZX+kuW8lFxvPeT6Z73vnKGOG552fR
-   r3S7GylxfNBokKoFHsY01AS5iRpr+XV+sP8yOhQWuOqiQepLd9LIrFKEJ
+  bh=B1cGgk2x4GOJQVRsb0t9LqqD4V45rFbkA/2x1daK9v0=;
+  b=CBs5OSGqs5zxXGVgwHGgrVR0Ydx6SPYLlt/6J5TS1h5IFsc5Kz7C4Mdy
+   nbqJv3AqqT8bU8969wkJwsqMh+xHTrV5USskbEFy/ctjDjtCqS2ZMxNMx
+   ztM6Ttu4xcyn30y7gr8VHmnfP5Uxj30F4gvu9bXtymZ2ks/Ld5EmQWaaC
+   9WxjuUU1OtNgZ635f/MYvna6Bhr+HEvhR80TGzz+XHlJxE9o9WZ9xlU5l
+   Aj04PME1PWEOrxRtl4ui51ZDqbmVKc65mKFZaYpNmQwDcNoS0PQoEcBHJ
+   WIjkIdqeusWXhTFX1qV93mNvDefOTruyZL6ubcyPw00f4Ao0oPZvkGkW9
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="382526872"
+X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="4925947"
 X-IronPort-AV: E=Sophos;i="6.04,334,1695711600"; 
-   d="scan'208";a="382526872"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 09:57:05 -0800
+   d="scan'208";a="4925947"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 10:29:06 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="924276110"
+X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="954018550"
 X-IronPort-AV: E=Sophos;i="6.04,334,1695711600"; 
-   d="scan'208";a="924276110"
+   d="scan'208";a="954018550"
 Received: from sbidasar-mobl.amr.corp.intel.com (HELO [10.209.42.45]) ([10.209.42.45])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 09:57:04 -0800
-Message-ID: <0f3ae753-031f-4f33-b577-8c863b4621a1@intel.com>
-Date: Fri, 5 Jan 2024 09:57:03 -0800
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 10:29:05 -0800
+Message-ID: <772cb101-33e3-4b55-a311-142b22575e7c@intel.com>
+Date: Fri, 5 Jan 2024 10:29:05 -0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,7 +55,7 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 07/12] x86/sgx: Introduce EPC page states
+Subject: Re: [PATCH v6 00/12] Add Cgroup support for SGX EPC memory
 Content-Language: en-US
 To: Haitao Huang <haitao.huang@linux.intel.com>, jarkko@kernel.org,
  dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
@@ -64,9 +64,8 @@ To: Haitao Huang <haitao.huang@linux.intel.com>, jarkko@kernel.org,
  hpa@zytor.com, sohil.mehta@intel.com
 Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
  zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com, Sean Christopherson <sean.j.christopherson@intel.com>
+ yangjie@microsoft.com
 References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
- <20231030182013.40086-8-haitao.huang@linux.intel.com>
 From: Dave Hansen <dave.hansen@intel.com>
 Autocrypt: addr=dave.hansen@intel.com; keydata=
  xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
@@ -111,53 +110,54 @@ Autocrypt: addr=dave.hansen@intel.com; keydata=
  MTsCeQDdjpgHsj+P2ZDeEKCbma4m6Ez/YWs4+zDm1X8uZDkZcfQlD9NldbKDJEXLIjYWo1PH
  hYepSffIWPyvBMBTW2W5FRjJ4vLRrJSUoEfJuPQ3vW9Y73foyo/qFoURHO48AinGPZ7PC7TF
  vUaNOTjKedrqHkaOcqB185ahG2had0xnFsDPlx5y
-In-Reply-To: <20231030182013.40086-8-haitao.huang@linux.intel.com>
+In-Reply-To: <20231030182013.40086-1-haitao.huang@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 10/30/23 11:20, Haitao Huang wrote:
-> @@ -527,16 +530,13 @@ void sgx_mark_page_reclaimable(struct sgx_epc_page *page)
->  int sgx_unmark_page_reclaimable(struct sgx_epc_page *page)
->  {
->  	spin_lock(&sgx_global_lru.lock);
-> -	if (page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED) {
-> -		/* The page is being reclaimed. */
-> -		if (list_empty(&page->list)) {
-> -			spin_unlock(&sgx_global_lru.lock);
-> -			return -EBUSY;
-> -		}
-> -
-> -		list_del(&page->list);
-> -		page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
-> +	if (sgx_epc_page_reclaim_in_progress(page->flags)) {
-> +		spin_unlock(&sgx_global_lru.lock);
-> +		return -EBUSY;
->  	}
-> +
-> +	list_del(&page->list);
-> +	sgx_epc_page_reset_state(page);
+There's very little about how the LRU design came to be in this cover
+letter.  Let's add some details.
 
-I want to know how much if this series is basically line-for-line
-abstraction shifting like:
+How's this?
 
--	page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
-+	sgx_epc_page_reset_state(page);
+Writing this up, I'm a lot more convinced that this series is, in
+general, taking the right approach.  I honestly don't see any other
+alternatives.  As much as I'd love to do something stupidly simple like
+just killing enclaves at the moment they hit the limit, that would be a
+horrid experience for users _and_ a departure from what the existing
+reclaim support does.
 
-versus actually adding complexity.  That way, I might be able to offer
-some advice on where this can be pared down.  That's really hard to do
-with the current series.
+That said, there's still a lot of work do to do refactor this series.
+It's in need of some love to make it more clear what is going on and to
+making the eventual switch over to per-cgroup LRUs more gradual.  Each
+patch in the series is still doing way too much, _especially_ in patch 10.
 
-Please don't just "introduce new page states".  This should have first
-abstracted out the sgx_epc_page_reclaim_in_progress() operation, using
-the list_empty() check as the implementation.
+==
 
-Then, in a separate patch, introduce the concept of the "reclaim in
-progress" flag and finally flip the implementation over.
+The existing EPC memory management aims to be a miniature version of the
+core VM where EPC memory can be overcommitted and reclaimed.  EPC
+allocations can wait for reclaim.  The alternative to waiting would have
+been to send a signal and let the enclave die.
 
-Ditto for the sgx_epc_page_reset_state() abstraction.  It should have
-been introduced separately as a concept and then have the implementation
-changed.
+This series attempts to implement that same logic for cgroups, for the
+same reasons: it's preferable to wait for memory to become available and
+let reclaim happen than to do things that are fatal to enclaves.
 
-On in to patch 10 (which is much too big) which introduces the
-sgx_lru_list() abstraction.
+There is currently a global reclaimable page SGX LRU list.  That list
+(and the existing scanning algorithm) is essentially useless for doing
+reclaim when a cgroup hits its limit because the cgroup's pages are
+scattered around that LRU.  It is unspeakably inefficient to scan a
+linked list with millions of entries for what could be dozens of pages
+from a cgroup that needs reclaim.
+
+Even if unspeakably slow reclaim was accepted, the existing scanning
+algorithm only picks a few pages off the head of the global LRU.  It
+would either need to hold the list locks for unreasonable amounts of
+time, or be taught to scan the list in pieces, which has its own challenges.
+
+tl;dr: An cgroup hitting its limit should be as similar as possible to
+the system running out of EPC memory.  The only two choices to implement
+that are nasty changes the existing LRU scanning algorithm, or to add
+new LRUs.  The result: Add a new LRU for each cgroup and scans those
+instead.  Replace the existing global cgroup with the root cgroup's LRU
+(only when this new support is compiled in, obviously).
 
