@@ -1,83 +1,74 @@
-Return-Path: <cgroups+bounces-1092-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1093-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA1B582507F
-	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 10:03:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A774825118
+	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 10:45:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A8CAB21B43
-	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 09:03:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C5631C22F12
+	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 09:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC1F722EF9;
-	Fri,  5 Jan 2024 09:02:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2BE4249F3;
+	Fri,  5 Jan 2024 09:45:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LOl7umdX";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="oXf6BzBU"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="p1Gvid2Y";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Tqecptw3"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADBC022F04;
-	Fri,  5 Jan 2024 09:02:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE16524201;
+	Fri,  5 Jan 2024 09:45:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C4C9D21F4F;
-	Fri,  5 Jan 2024 09:02:18 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id F05761F850;
+	Fri,  5 Jan 2024 09:45:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704445339; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1704447908; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/Hmj9D9VfyQx+ZfVXhsSYh7Uls173247uQLnYHxXG1M=;
-	b=LOl7umdXMasBBJC+adYeUl4Qi2+31gpUnZx2Dszu/570f6w9mSpa5Zj2pQL35AmskmGqPM
-	bRGrv8eW8BsoW3ia+yEWFtC0eKHgC6MUnRuXnnLFT3B0EOt4qzWhLqyTowMGBaNBPaCyEI
-	ginbt+IEW3mLW7T0tgfzQTVplxmymGQ=
+	bh=WjMAyVdiebrt/Q0pS2dmmJub9qx0XoEkNWeuoUlkfwo=;
+	b=p1Gvid2Yx7rB6xquGDuCYppBhbc/gAtKc0wrv0gBT50BqlzJK8hTKFQrytCCjyOzHWLfbE
+	Y2XGpbQrz1c7Q21Zex4/mE+1dqaHMGda58PuiBXIVOfXVJlhO8bcPm8+xGa+sclP5720lq
+	1jW4vWn0cOfeFiuLR8q9NrkKVPpNXnk=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1704445338; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1704447907; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/Hmj9D9VfyQx+ZfVXhsSYh7Uls173247uQLnYHxXG1M=;
-	b=oXf6BzBUGOHvQ67mDKNH8+c9QYm0uiGfDeK4Ufa8ynqSMGwJKittfVFmT+4clTun94BiM9
-	zEnRGSQskkF33k+CycmilhUBqsV+8Aw6RSsF4gcF7o1WH7RzsB2jc/9clyNEy65noVfvVK
-	WrhQcDV6UJKqajwr2AxsXuroJXVKJpU=
+	bh=WjMAyVdiebrt/Q0pS2dmmJub9qx0XoEkNWeuoUlkfwo=;
+	b=Tqecptw3BTnIUZiudoZwWXFz8DvrhvVQ0cdCR01ZJWtLoMYC076yGW/+VYDFm0jYgsOFWe
+	9XhBmBIqpkC/1O3YAtp2rYCgoCC3vXVrS9ggqVEcJJ0V4NRKYrrUJNQcVQxP0nnzdtm9Dk
+	/+AT7ckcg18sWIFSJ0Q9pX8pMUvyYqg=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 93371137E8;
-	Fri,  5 Jan 2024 09:02:18 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D8D5413C99;
+	Fri,  5 Jan 2024 09:45:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id zoe2I5rFl2VvRgAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Fri, 05 Jan 2024 09:02:18 +0000
-Date: Fri, 5 Jan 2024 10:02:17 +0100
+	id P5C6NKPPl2WQUgAAD6G6ig
+	(envelope-from <mkoutny@suse.com>); Fri, 05 Jan 2024 09:45:07 +0000
+Date: Fri, 5 Jan 2024 10:45:02 +0100
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, 
-	alyssa@rosenzweig.io, asahi@lists.linux.dev, baolu.lu@linux.intel.com, 
-	bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
-	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, iommu@lists.linux.dev, 
-	jernej.skrabec@gmail.com, jonathanh@nvidia.com, joro@8bytes.org, 
-	krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
-	lizefan.x@bytedance.com, marcan@marcan.st, mhiramat@kernel.org, m.szyprowski@samsung.com, 
-	paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
-	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org, 
-	tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, will@kernel.org, 
-	yu-cheng.yu@intel.com, rientjes@google.com
-Subject: Re: [PATCH v3 00/10] IOMMU memory observability
-Message-ID: <elsuzdcx2qpnazvz2ayzmco4ctms5ci3iet3k7ggbjt3p2pfk2@tvr3plow26oi>
-References: <20231226200205.562565-1-pasha.tatashin@soleen.com>
- <eqkpplwwyeqqd356ka3g6isaoboe62zrii77krsb7zwzmvdusr@5i3lzfhpt2xe>
- <CA+CK2bBE1bQuqZy3cbWiv8V3vJ8YNJZRayp6Wv-j2_9i37XT4g@mail.gmail.com>
- <eng4vwaci5hwlicszgcld6uny55vll2bfs3vp2yjbjf3exhamg@zf6yc2uhax7w>
- <CA+CK2bCUGepLLA2Hsmq00XEhPzLWPb5CjzY_UPT0qWSKastjAQ@mail.gmail.com>
+To: Haitao Huang <haitao.huang@linux.intel.com>
+Cc: jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org, 
+	linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org, 
+	cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	hpa@zytor.com, sohil.mehta@intel.com, zhiquan1.li@intel.com, 
+	kristen@linux.intel.com, seanjc@google.com, zhanb@microsoft.com, anakrish@microsoft.com, 
+	mikko.ylinen@linux.intel.com, yangjie@microsoft.com
+Subject: Re: [PATCH v6 01/12] cgroup/misc: Add per resource callbacks for CSS
+ events
+Message-ID: <5qfjx2vvirtffkro5u6zdbbwia2bhhbjxwgij2igdnxk5hysaq@kpqboajvuzbc>
+References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
+ <20231030182013.40086-2-haitao.huang@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -85,80 +76,82 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="p5ofvbvnu5dmxsky"
+	protocol="application/pgp-signature"; boundary="gkycr2ejudi4nnse"
 Content-Disposition: inline
-In-Reply-To: <CA+CK2bCUGepLLA2Hsmq00XEhPzLWPb5CjzY_UPT0qWSKastjAQ@mail.gmail.com>
+In-Reply-To: <20231030182013.40086-2-haitao.huang@linux.intel.com>
 X-Spam-Level: 
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=oXf6BzBU
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-5.22 / 50.00];
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-2.90 / 50.00];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	 TO_DN_SOME(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLn3qdfh3r5akp7hsapswoh51s)];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
 	 NEURAL_HAM_SHORT(-0.20)[-1.000];
 	 SIGNED_PGP(-2.00)[];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 BAYES_HAM(-0.11)[66.01%];
+	 BAYES_HAM(-0.00)[19.25%];
 	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 URIBL_BLOCKED(0.00)[suse.com:dkim,soleen.com:email];
+	 URIBL_BLOCKED(0.00)[intel.com:email];
 	 FROM_HAS_DN(0.00)[];
-	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
 	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
 	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[44];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 RCPT_COUNT_TWELVE(0.00)[20];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,samsung.com,rosenzweig.io,lists.linux.dev,linux.intel.com,google.com,vger.kernel.org,lwn.net,redhat.com,infradead.org,cmpxchg.org,sntech.de,gmail.com,nvidia.com,8bytes.org,linaro.org,kvack.org,lists.infradead.org,bytedance.com,marcan.st,kernel.org,arm.com,sholland.org,amd.com,svenpeter.dev,csie.org,intel.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam-Score: -5.22
-X-Rspamd-Queue-Id: C4C9D21F4F
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Level: 
 X-Spam-Flag: NO
+X-Spam-Score: -2.90
 
 
---p5ofvbvnu5dmxsky
+--gkycr2ejudi4nnse
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 04, 2024 at 02:12:26PM -0500, Pasha Tatashin <pasha.tatashin@soleen.com> wrote:
-> Yes, we will have a difference between GFP_ACCOUNT and what
-> NR_IOMMU_PAGES shows. GFP_ACCOUNT is set only where it makes sense to
-> charge to user processes, i.e. IOMMU Page Tables, but there more IOMMU
-> shared data that should not really be charged to a specific process.
+On Mon, Oct 30, 2023 at 11:20:02AM -0700, Haitao Huang <haitao.huang@linux.=
+intel.com> wrote:
+> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>=20
+> The misc cgroup controller (subsystem) currently does not perform
+> resource type specific action for Cgroups Subsystem State (CSS) events:
+> the 'css_alloc' event when a cgroup is created and the 'css_free' event
+> when a cgroup is destroyed.
+>=20
+> Define callbacks for those events and allow resource providers to
+> register the callbacks per resource type as needed. This will be
+> utilized later by the EPC misc cgroup support implemented in the SGX
+> driver.
 
-I see. I'd suggest adding this explanation to commit 10/10 message
-(perhaps with some ballpark numbers of pages). In order to have a
-reference and understadning if someone decided to charge (and limit) all
-in the future.
+I notice now that the callbacks are per resource and per cgroup.
+I think that is an overkill that complicates misc_cg allocation code
+with parent's callbacks while freeing is done by own callbacks.
+It's possibly too much liberal to keep objects' lifecycle understandable
+in the long term too.=20
 
-Thanks,
+For some uniformity, I'd suggest struct blkcg_policy array in
+block/blk-cgroup.c as the precedent. (Perhaps indexed with static enum
+misc_res_type instead of dynamic index assignment as
+blkcg_policy_registeer() does.)
+
+I hope you don't really need per-cgroup callbacks :-)
+
 Michal
 
---p5ofvbvnu5dmxsky
+--gkycr2ejudi4nnse
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZZfFiAAKCRAGvrMr/1gc
-jvXNAQC/s1r4INt0DOMzuMTQyF7r+E2pYEbj7Prf+TyU1lbn7QD/bVGBlsIv9kpI
-Hr5Fq+4l1uV/keTc7yErY9BpbizGVQ0=
-=aBiM
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZZfPnAAKCRAGvrMr/1gc
+jiP8AP0Q8YvyVS22t8yNx/wVtFr60JLTA5zAgGTIFU7k+w/G+AEA9Jr2ZtxN0QWV
+FYzPie0m1EL3RCqoPrIQleZGYmOfMAw=
+=d7Pm
 -----END PGP SIGNATURE-----
 
---p5ofvbvnu5dmxsky--
+--gkycr2ejudi4nnse--
 
