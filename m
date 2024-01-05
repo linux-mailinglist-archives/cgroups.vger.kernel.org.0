@@ -1,115 +1,162 @@
-Return-Path: <cgroups+bounces-1097-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1098-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFCA28256B1
-	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 16:34:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E1948258B8
+	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 17:56:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57256284E57
-	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 15:34:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E573DB228C9
+	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 16:56:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E0522E650;
-	Fri,  5 Jan 2024 15:34:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC01831A7E;
+	Fri,  5 Jan 2024 16:55:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen.com header.i=@soleen.com header.b="EFV5pVvH"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="Acz4kIcq";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="K9BYb8iT"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wnew3-smtp.messagingengine.com (wnew3-smtp.messagingengine.com [64.147.123.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09AE92E63A
-	for <cgroups@vger.kernel.org>; Fri,  5 Jan 2024 15:34:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-427f5cc49afso8406701cf.2
-        for <cgroups@vger.kernel.org>; Fri, 05 Jan 2024 07:34:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1704468855; x=1705073655; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0TY2tK1Et5681qdWkhQWK7TKRb/9setDuVBnoXVgexU=;
-        b=EFV5pVvHiQnqoV9y7BQQq9nRu87mykB2Rai0EIP6qviKgt54hRLI0m9de01VYYt1AX
-         q0UwruXuBCSkrZCZRieqIg7+aevZFSab5kMlO8Jyz2nDpiDlf/Z5Ukub/JzndhhJtuUo
-         8kGZeGqt2vARqYzwIXSAOAVHTNbUBANkLmINPM45sLwhjIxuoA54PLpdUVLS8OMKrfs/
-         qzvQsiIlQ3xMVnvhcKlrxWcl2v9Kgmy7yj69GVJBQLRDbzjkgug6Q4E1c8eG94U3uNhw
-         18Iyqmj1bzy1OkC8j1mxXToPWjmVekiW0bfg8cpp/1/3GgrRhENtdnle6+I78mggTVZE
-         ioaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704468855; x=1705073655;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0TY2tK1Et5681qdWkhQWK7TKRb/9setDuVBnoXVgexU=;
-        b=hW5QGSxEsi6P8/Cd/TeppXdlkZut/P1nlzDe4I1Yl0cX5F/weGTiVK+NDBGDlPML+Z
-         dEYS6O1l7O4g+L9OHPb8OkXG1bOUBQ7wZFGP/BXLks0kCzXWa6Ol3X7KDiOv1bhZbaX+
-         FGY8Ai/zB8xpHe4LUt1YajKBlN027jBBbbF42lFjNCT/RWVmJ1Xc1ZFm+IIrpvpMtKPL
-         /yoRUloymWdvUju1tlIjVh6OP1mo2Jcg40XZHo+Uk7HEbUtY159O3U1xGMz/SgbgLkjq
-         jRXfkoI2bZ11rmBghzcNgJ2GpYtGE2GsE5beIF3PbAXQye+XhZQA8XVSabbpEwny2EWj
-         71Ew==
-X-Gm-Message-State: AOJu0Yy692mLTdxeRPoG89FZN0fSukwUaIhHfwgS2dXwzYCTdffsJVSt
-	Mp5qiLKq2Mn920C4hD0d0uOBA/c07yJ0Bz6Wf4pY2SnKZUIeZQ==
-X-Google-Smtp-Source: AGHT+IHfTfqU5MoKE0X4xG8QNmKPONd8jiakcdkHu4vud6eBZ8WvRO+n1CsOMpfQPwUC05tcfTICXquuDV0OuNZPOR0=
-X-Received: by 2002:a05:622a:1349:b0:429:791f:9708 with SMTP id
- w9-20020a05622a134900b00429791f9708mr909674qtk.35.1704468854882; Fri, 05 Jan
- 2024 07:34:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4E9A2E823;
+	Fri,  5 Jan 2024 16:55:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailnew.west.internal (Postfix) with ESMTP id 643F82B002FE;
+	Fri,  5 Jan 2024 11:55:50 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 05 Jan 2024 11:55:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1704473749; x=1704480949; bh=QW7jt9Lu7f
+	ke8mG4lP5bYmPmDvOXPBpGzIUDBHIekTk=; b=Acz4kIcq6y/rMD3GdA7cQZFH/X
+	t+UCDk8kiRTwuEzv4ajq3EDfufkIZkO8rGAkbX3sbhxHt16W2NOVO6gW2gQHxnZr
+	G4znBN6j8ey0yPSzv+AlK6ZSJwteCnfW3d+5qDl/eg2aJTqU9Tgdw3YjZEKbWiiA
+	xDjCkNbH8TatuNfFUavrE+ffldAtLl1v9baWSzFGVpUeiYCRlCeZGSoqIOyzPHvn
+	QzvCgTBrCyaLUW/MlTUJL8Udfek55UMpp0KfgTZyqMYearp0x1HoJW30AG1RainQ
+	7jUdJb7RD7OtoMFP4EUhEya/MWTwpfUkkKqXxvWzEKPyF0P6ySZ4aWmCm73g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1704473749; x=1704480949; bh=QW7jt9Lu7fke8mG4lP5bYmPmDvOX
+	PBpGzIUDBHIekTk=; b=K9BYb8iThvNsRc3uDbU2A4HF+NqmpozLE145a0RZM6s+
+	HlSs93vsFRPOZ4j+D7yanP8AH1MORLgVIUDI/smsj0tgQHb1QcdzskIXumAkTdaI
+	aYWKtH9GM5E2idjjTXJdHaRlRm+zABDB8nY9iGIO+T3ni/GGWRr3B/rAtlNxTMAa
+	442AnTkTIKtZDG71QbRbhfRDzlUBII9A+3MGR239UuUry3gcSCza/5J8eBt8YfDp
+	qSaUg0ncHYhXvJ5JLZQ2x+uSxOHpqddfG6B+3/DQ4dtJ8Bvy8Eo4uJ9FwtXpOXbS
+	lAKesJFuhuTY1UEqKamWKqMwsebhP2LexY2pyWEAjQ==
+X-ME-Sender: <xms:kzSYZaaAy3dR9G7HtiXxWg4Zxmeum0A9kFX20liLaKbR07SHFcyxcg>
+    <xme:kzSYZdYGOayfCataHnEAMMKquFtux6p39JzrR3A07WSDo0A-s4okO5JaDREMOkZsI
+    mghom6qS61yd_6_bg>
+X-ME-Received: <xmr:kzSYZU-FFGlFxqtZW9JrU1DfOghSBraArHdWeqKl_bYBn4B9XbhJJcaTjNPSd7Gh34QiYd3oUUZRytJdmx23CPk7Jxq8EIEzMnNLQ-s>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdegledgleduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    gfrhhlucfvnfffucdljedtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddt
+    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
+    cuggftrfgrthhtvghrnhepvdefkeetuddufeeigedtheefffekuedukeehudffudfffffg
+    geeitdetgfdvhfdvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:kzSYZcooOdkX-X1KqvlBh60yFjwUF6ho3KRoF4sCW1I-TfmvCqZcQA>
+    <xmx:kzSYZVqed9r_UIcFbBgVtpyedquDrgSmBEtX74gK0NVzOv-CO9t0Wg>
+    <xmx:kzSYZaTkEQUWNf-X1GtvBv5FK6CVlonQJvKyRbPer6PmkJB9Vt_cTA>
+    <xmx:lTSYZXSsnZAjmPDbBJ3T6sdwqsgrrVfZBsEsu-lv1wIgRfR5oMP26phlS_0>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 5 Jan 2024 11:55:44 -0500 (EST)
+Date: Fri, 5 Jan 2024 09:55:43 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: alexandre.torgue@foss.st.com, benjamin.tissoires@redhat.com,
+ 	lizefan.x@bytedance.com, Herbert Xu <herbert@gondor.apana.org.au>,
+ dsahern@kernel.org, 	hannes@cmpxchg.org, rostedt@goodmis.org,
+ mcoquelin.stm32@gmail.com, 	pablo@netfilter.org, martin.lau@linux.dev,
+ edumazet@google.com, daniel@iogearbox.net, 	ebiggers@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, 	hawk@kernel.org,
+ steffen.klassert@secunet.com, jikos@kernel.org, kuba@kernel.org,
+ 	fw@strlen.de, ast@kernel.org, song@kernel.org, pabeni@redhat.com,
+ 	shuah@kernel.org, tytso@mit.edu, tj@kernel.org, kadlec@netfilter.org,
+ 	davem@davemloft.net, mhiramat@kernel.org, andrii@kernel.org,
+ 	alexei.starovoitov@gmail.com, quentin@isovalent.com,
+ alan.maguire@oracle.com, memxor@gmail.com, 	kpsingh@kernel.org,
+ sdf@google.com, haoluo@google.com, 	mathieu.desnoyers@efficios.com,
+ mykolal@fb.com, linux-input@vger.kernel.org,
+ 	linux-kernel@vger.kernel.org, fsverity@lists.linux.dev,
+ bpf@vger.kernel.org, 	cgroups@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ 	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+ linux-kselftest@vger.kernel.org,
+ 	linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH bpf-next v2 3/3] bpf: treewide: Annotate BPF kfuncs in BTF
+Message-ID: <4tsn6x45gh3vgdst3ozzmxori5gzylvpx6btxue6sbsmx7siok@6wajzdgwxfpa>
+References: <cover.1704422454.git.dxu@dxuuu.xyz>
+ <a923e3809955bdfd2bc8d6a103c20e01f1636dbc.1704422454.git.dxu@dxuuu.xyz>
+ <ZZgcJTdwMZHglPtr@krava>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231226200205.562565-1-pasha.tatashin@soleen.com>
- <eqkpplwwyeqqd356ka3g6isaoboe62zrii77krsb7zwzmvdusr@5i3lzfhpt2xe>
- <CA+CK2bBE1bQuqZy3cbWiv8V3vJ8YNJZRayp6Wv-j2_9i37XT4g@mail.gmail.com>
- <eng4vwaci5hwlicszgcld6uny55vll2bfs3vp2yjbjf3exhamg@zf6yc2uhax7w>
- <CA+CK2bCUGepLLA2Hsmq00XEhPzLWPb5CjzY_UPT0qWSKastjAQ@mail.gmail.com> <elsuzdcx2qpnazvz2ayzmco4ctms5ci3iet3k7ggbjt3p2pfk2@tvr3plow26oi>
-In-Reply-To: <elsuzdcx2qpnazvz2ayzmco4ctms5ci3iet3k7ggbjt3p2pfk2@tvr3plow26oi>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Fri, 5 Jan 2024 10:33:38 -0500
-Message-ID: <CA+CK2bD7gPP6TFR_sYPd=4U4yYrYHNu=qMLJdT+kgT_gbz6wBQ@mail.gmail.com>
-Subject: Re: [PATCH v3 00/10] IOMMU memory observability
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
-	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
-	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
-	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
-	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
-	joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
-	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
-	rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
-	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, 
-	tj@kernel.org, tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, 
-	will@kernel.org, yu-cheng.yu@intel.com, rientjes@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZZgcJTdwMZHglPtr@krava>
 
-On Fri, Jan 5, 2024 at 4:02=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.com=
-> wrote:
->
-> On Thu, Jan 04, 2024 at 02:12:26PM -0500, Pasha Tatashin <pasha.tatashin@=
-soleen.com> wrote:
-> > Yes, we will have a difference between GFP_ACCOUNT and what
-> > NR_IOMMU_PAGES shows. GFP_ACCOUNT is set only where it makes sense to
-> > charge to user processes, i.e. IOMMU Page Tables, but there more IOMMU
-> > shared data that should not really be charged to a specific process.
->
-> I see. I'd suggest adding this explanation to commit 10/10 message
-> (perhaps with some ballpark numbers of pages). In order to have a
-> reference and understadning if someone decided to charge (and limit) all
-> in the future.
+On Fri, Jan 05, 2024 at 04:11:33PM +0100, Jiri Olsa wrote:
+> On Thu, Jan 04, 2024 at 07:45:49PM -0700, Daniel Xu wrote:
+> 
+> SNIP
+> 
+> > diff --git a/fs/verity/measure.c b/fs/verity/measure.c
+> > index bf7a5f4cccaf..3969d54158d1 100644
+> > --- a/fs/verity/measure.c
+> > +++ b/fs/verity/measure.c
+> > @@ -159,9 +159,9 @@ __bpf_kfunc int bpf_get_fsverity_digest(struct file *file, struct bpf_dynptr_ker
+> >  
+> >  __bpf_kfunc_end_defs();
+> >  
+> > -BTF_SET8_START(fsverity_set_ids)
+> > +BTF_KFUNCS_START(fsverity_set_ids)
+> >  BTF_ID_FLAGS(func, bpf_get_fsverity_digest, KF_TRUSTED_ARGS)
+> > -BTF_SET8_END(fsverity_set_ids)
+> > +BTF_KFUNCS_END(fsverity_set_ids)
+> >  
+> >  static int bpf_get_fsverity_digest_filter(const struct bpf_prog *prog, u32 kfunc_id)
+> >  {
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 51e8b4bee0c8..8cc718f37a9d 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -7802,6 +7802,10 @@ int register_btf_kfunc_id_set(enum bpf_prog_type prog_type,
+> >  {
+> >  	enum btf_kfunc_hook hook;
+> >  
+> > +	/* All kfuncs need to be tagged as such in BTF */
+> > +	if (WARN_ON(!(kset->set->flags & BTF_SET8_KFUNCS)))
+> > +		return -EINVAL;
+> 
+> having the warning for module with wrong set8 flags seems wrong to me,
+> I think we should trigger the warn only for kernel calls.. by adding
+> kset->owner check in the condition above
 
-Sure, I will update the commit log in 10/10 with this info if we will have =
-v4.
+Just checking:
 
-Pasha
+The reasoning is that =m and out-of-tree modules can and should check
+return code, right?
 
->
-> Thanks,
-> Michal
+And =y modules or vmlinux-based registrations do not check return code,
+so WARN() is necessary?
+
+If so, I'd agree.
+
+[..]
+
+Thanks,
+Daniel
 
