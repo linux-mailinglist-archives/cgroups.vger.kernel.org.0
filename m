@@ -1,87 +1,91 @@
-Return-Path: <cgroups+bounces-1094-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1095-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 304068255F5
-	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 15:44:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75B48825662
+	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 16:11:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA6BB1C23258
-	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 14:44:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B8DE284980
+	for <lists+cgroups@lfdr.de>; Fri,  5 Jan 2024 15:11:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C1B62DF87;
-	Fri,  5 Jan 2024 14:44:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFFFB2E627;
+	Fri,  5 Jan 2024 15:11:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H3VHuMCq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PG3pndaW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D4088F4A;
-	Fri,  5 Jan 2024 14:44:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704465868; x=1736001868;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GgyqztMwZYzha76gD8nEpDu6CYIYIn6/9uBQgpVtcd0=;
-  b=H3VHuMCqLzpWDuDUdPn3dJ8oeNays+0LcK+DBYdf16WWTZsGkxWSnM2t
-   0gehmoFGc7Y2Iy5xDqakRkvwk1j3QTBaJEStzmTykjAd/dk4JH+tsdQzq
-   ZQhNKSWHJ4WD5fSirCN+a3Kw7GzocICclOKruvbT5eu5ibNqQkikXvqUe
-   IY2+BsEjIbW9WFiSShPWfABQA774f7XjAsdfIIo5ZtZ2Wt6V1t3BLUfM4
-   hhB3zhCd1fxei1ijvNlMEZ1LJibPf7+9mwDdIXnDOwSQ8RYK+jM33HyNi
-   T8Kh79j4JmjgBPhZJqGWFWYpPOqwE+J6/mLp4p/wYCoG8RuBxrMrO8zYi
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="394691374"
-X-IronPort-AV: E=Sophos;i="6.04,334,1695711600"; 
-   d="scan'208";a="394691374"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 06:43:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,334,1695711600"; 
-   d="scan'208";a="22508281"
-Received: from lmurph2-mobl1.ger.corp.intel.com (HELO himmelriiki) ([10.252.51.171])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 06:43:32 -0800
-Date: Fri, 5 Jan 2024 16:43:23 +0200
-From: Mikko Ylinen <mikko.ylinen@linux.intel.com>
-To: Haitao Huang <haitao.huang@linux.intel.com>
-Cc: "Mehta, Sohil" <sohil.mehta@intel.com>,
-	"jarkko@kernel.org" <jarkko@kernel.org>,
-	"x86@kernel.org" <x86@kernel.org>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-	"hpa@zytor.com" <hpa@zytor.com>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"tj@kernel.org" <tj@kernel.org>,
-	"mkoutny@suse.com" <mkoutny@suse.com>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"bp@alien8.de" <bp@alien8.de>, "Huang, Kai" <kai.huang@intel.com>,
-	Dave Hansen <dave.hansen@intel.com>,
-	"seanjc@google.com" <seanjc@google.com>,
-	"Zhang, Bo" <zhanb@microsoft.com>,
-	"kristen@linux.intel.com" <kristen@linux.intel.com>,
-	"anakrish@microsoft.com" <anakrish@microsoft.com>,
-	"sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>,
-	"Li, Zhiquan1" <zhiquan1.li@intel.com>,
-	"yangjie@microsoft.com" <yangjie@microsoft.com>
-Subject: Re: [PATCH v6 09/12] x86/sgx: Restructure top-level EPC reclaim
- function
-Message-ID: <ZZgVi7rHAAzyzbz5@himmelriiki>
-References: <c8fc40dc56b853fbff14ba22db197c80a6d31820.camel@intel.com>
- <op.2e0yod2lwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <431c5d7f5aee7d11ec2e8aa2e526fde438fa53b4.camel@intel.com>
- <op.2ftmyampwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <3c27bca678c1b041920a14a7da0d958c9861ebca.camel@intel.com>
- <op.2f0eo8r1wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <73ed579be8ad81835df1c309b7c69b491b7f2c8e.camel@intel.com>
- <op.2f523elowjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <4b28fc01-50cf-469b-8161-7d56b863b42b@intel.com>
- <op.2g1d81fqwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F37AB2E3F9;
+	Fri,  5 Jan 2024 15:11:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2cd0d05838fso19733751fa.1;
+        Fri, 05 Jan 2024 07:11:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1704467498; x=1705072298; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0jvwWQN/4UcpzgDB9Dn1kP+j0A1/ex5/bFC8KQNDn3Y=;
+        b=PG3pndaWch0kpQQ4uz03Ea42EX3tDvibJ5UG/iOfVorNRvJc3jStI3kfc1CEW9jS58
+         IBqupqwjkcvvWJdVDjqSBMdPKF7L12JR4tOm7pF2aJmgsH+VLRYycFy8mH3fZiOVuax1
+         YmNHl2jGNsLZf8RRHvMi9VX/E51ds7yz4l0mh3DoNEkhLAfsNzDN1toP9WJxTRoGdgve
+         JI+JrVd3JxF09Ypq4Z8j5vON+1GrTWz4NtFONgOMQzv5yp0JbTij7VFzEQl68gkpp9/W
+         Epu1nUJbPLEKm7olI50ShrzrY5dtlkxbHUMr875/inR2t8P0LCiD51zCAp2qNHn4CA5P
+         61jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704467498; x=1705072298;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0jvwWQN/4UcpzgDB9Dn1kP+j0A1/ex5/bFC8KQNDn3Y=;
+        b=MLr2XuLtC5iiBgUQcZknbDA09sPCWq/ShEqH1gbKzFjhPFNiWBrtvBmqMciE6CN2kf
+         tlNGYR1jUMcpbcsu7UeTfztRAYoSAH7iexOUKFyHglHonIxX85XsivR97ypoQTKdeVw6
+         RhUARaMsGFFmhAxB6R98bpLRROVCQNajZFh+9H0OIah9/eHnq0RhoOrObHM8IZ6lmCgT
+         VzhDUSO12UytFCnCEXc8XwcAnMzpKejNnvSkGQOcvvz5BmnxFTisJntIjNkrLJA732dJ
+         AKVr2jad4/ngO9KwMvBQI9BUNFbGLj+mqzNKbS/1KfLVQXYcTahZXFEATFOKZnzLO2e9
+         panw==
+X-Gm-Message-State: AOJu0YwyPf2kQTxRlHw0KIxA59I7bxOtnzPGLb954QJFRZKIaYZfxMFw
+	buvG6q2lXcmL8NKKDC8etFY=
+X-Google-Smtp-Source: AGHT+IFfGsd7OhjOyharZSVfOb2cwd7D3hSDlT4qWYQ2gJAsNlPcjNmo0EWFSODi+SQP2gAcMZ+9jA==
+X-Received: by 2002:ac2:58e3:0:b0:50e:3714:b420 with SMTP id v3-20020ac258e3000000b0050e3714b420mr959191lfo.9.1704467497642;
+        Fri, 05 Jan 2024 07:11:37 -0800 (PST)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id b1-20020a170906490100b00a26b36311ecsm986048ejq.146.2024.01.05.07.11.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Jan 2024 07:11:36 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 5 Jan 2024 16:11:33 +0100
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: alexandre.torgue@foss.st.com, benjamin.tissoires@redhat.com,
+	lizefan.x@bytedance.com, Herbert Xu <herbert@gondor.apana.org.au>,
+	dsahern@kernel.org, hannes@cmpxchg.org, rostedt@goodmis.org,
+	mcoquelin.stm32@gmail.com, pablo@netfilter.org,
+	martin.lau@linux.dev, edumazet@google.com, daniel@iogearbox.net,
+	ebiggers@kernel.org, yonghong.song@linux.dev,
+	john.fastabend@gmail.com, hawk@kernel.org,
+	steffen.klassert@secunet.com, jikos@kernel.org, kuba@kernel.org,
+	fw@strlen.de, ast@kernel.org, song@kernel.org, pabeni@redhat.com,
+	shuah@kernel.org, tytso@mit.edu, tj@kernel.org,
+	kadlec@netfilter.org, davem@davemloft.net, mhiramat@kernel.org,
+	andrii@kernel.org, alexei.starovoitov@gmail.com, olsajiri@gmail.com,
+	quentin@isovalent.com, alan.maguire@oracle.com, memxor@gmail.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	mathieu.desnoyers@efficios.com, mykolal@fb.com,
+	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+	fsverity@lists.linux.dev, bpf@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, linux-kselftest@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH bpf-next v2 3/3] bpf: treewide: Annotate BPF kfuncs in BTF
+Message-ID: <ZZgcJTdwMZHglPtr@krava>
+References: <cover.1704422454.git.dxu@dxuuu.xyz>
+ <a923e3809955bdfd2bc8d6a103c20e01f1636dbc.1704422454.git.dxu@dxuuu.xyz>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -90,60 +94,50 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <op.2g1d81fqwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <a923e3809955bdfd2bc8d6a103c20e01f1636dbc.1704422454.git.dxu@dxuuu.xyz>
 
-On Thu, Jan 04, 2024 at 01:11:15PM -0600, Haitao Huang wrote:
-> Hi Dave,
-> 
-> On Wed, 03 Jan 2024 10:37:35 -0600, Dave Hansen <dave.hansen@intel.com>
-> wrote:
-> 
-> > On 12/18/23 13:24, Haitao Huang wrote:> @Dave and @Michal, Your
-> > thoughts? Or could you confirm we should not
-> > > do reclaim per cgroup at all?
-> > What's the benefit of doing reclaim per cgroup?  Is that worth the extra
-> > complexity?
-> > 
-> 
-> Without reclaiming per cgroup, then we have to always set the limit to
-> enclave's peak usage. This may not be efficient utilization as in many cases
-> each enclave can perform fine with EPC limit set less than peak. Basically
-> each group can not give up some pages for greater good without dying :-)
+On Thu, Jan 04, 2024 at 07:45:49PM -0700, Daniel Xu wrote:
 
-+1. this is exactly my thinking too. The per cgroup reclaiming is
-important for the containers use case we are working on. I also think
-it makes the limit more meaningful: the per-container pool of EPC pages
-to use (which is independent of the enclave size).
+SNIP
 
-> 
-> Also with enclaves enabled with EDMM, the peak usage is not static so hard
-> to determine upfront. Hence it might be an operation/deployment
-> inconvenience.
-> 
-> In case of over-committing (sum of limits > total capacity), one cgroup at
-> peak usage may require swapping pages out in a different cgroup if system is
-> overloaded at that time.
-> 
-> > The key question here is whether we want the SGX VM to be complex and
-> > more like the real VM or simple when a cgroup hits its limit.  Right?
-> > 
-> 
-> Although it's fair to say the majority of complexity of this series is in
-> support for reclaiming per cgroup, I think it's manageable and much less
-> than real VM after we removed the enclave killing parts: the only extra
-> effort is to track pages in separate list and reclaim them in separately as
-> opposed to track in on global list and reclaim together. The main reclaiming
-> loop code is still pretty much the same as before.
-> 
-> 
-> > If stopping at patch 5 and having less code is even remotely an option,
-> > why not do _that_?
-> > 
-> I hope I described limitations clear enough above.
-> If those are OK with users and also make it acceptable for merge quickly,
+> diff --git a/fs/verity/measure.c b/fs/verity/measure.c
+> index bf7a5f4cccaf..3969d54158d1 100644
+> --- a/fs/verity/measure.c
+> +++ b/fs/verity/measure.c
+> @@ -159,9 +159,9 @@ __bpf_kfunc int bpf_get_fsverity_digest(struct file *file, struct bpf_dynptr_ker
+>  
+>  __bpf_kfunc_end_defs();
+>  
+> -BTF_SET8_START(fsverity_set_ids)
+> +BTF_KFUNCS_START(fsverity_set_ids)
+>  BTF_ID_FLAGS(func, bpf_get_fsverity_digest, KF_TRUSTED_ARGS)
+> -BTF_SET8_END(fsverity_set_ids)
+> +BTF_KFUNCS_END(fsverity_set_ids)
+>  
+>  static int bpf_get_fsverity_digest_filter(const struct bpf_prog *prog, u32 kfunc_id)
+>  {
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 51e8b4bee0c8..8cc718f37a9d 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -7802,6 +7802,10 @@ int register_btf_kfunc_id_set(enum bpf_prog_type prog_type,
+>  {
+>  	enum btf_kfunc_hook hook;
+>  
+> +	/* All kfuncs need to be tagged as such in BTF */
+> +	if (WARN_ON(!(kset->set->flags & BTF_SET8_KFUNCS)))
+> +		return -EINVAL;
 
-You explained the gaps very well already. I don't think the simple
-version without per-cgroup reclaiming is enough for the container case.
+having the warning for module with wrong set8 flags seems wrong to me,
+I think we should trigger the warn only for kernel calls.. by adding
+kset->owner check in the condition above
 
-Mikko
+jirka
+
+> +
+>  	hook = bpf_prog_type_to_kfunc_hook(prog_type);
+>  	return __register_btf_kfunc_id_set(hook, kset);
+>  }
+
+SNIP
 
