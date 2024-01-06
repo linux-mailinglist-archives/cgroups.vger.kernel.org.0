@@ -1,130 +1,162 @@
-Return-Path: <cgroups+bounces-1103-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1104-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ED3C825DBA
-	for <lists+cgroups@lfdr.de>; Sat,  6 Jan 2024 02:45:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F48F82610B
+	for <lists+cgroups@lfdr.de>; Sat,  6 Jan 2024 19:25:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 881461C23574
-	for <lists+cgroups@lfdr.de>; Sat,  6 Jan 2024 01:45:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B97352826CA
+	for <lists+cgroups@lfdr.de>; Sat,  6 Jan 2024 18:25:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82748137C;
-	Sat,  6 Jan 2024 01:45:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35788DDD0;
+	Sat,  6 Jan 2024 18:24:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ARAFEXx0"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="nSlxfYqt";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="b3+3KpJV"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE90A136F;
-	Sat,  6 Jan 2024 01:45:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704505537; x=1736041537;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=I7ISMq5q/B01ovQP1nPBuwY/StwXPNKBMHk+gR7gvYU=;
-  b=ARAFEXx0RqAecQeGLXCaCMAKjIXuUYM9fKXb8bHfDxHqy8776jO7q+M7
-   I45hx1Yddpl1lNo6DfeKrldqMBy0ifmKeeA04e5A6Zlgvt+Oy7A76v/Pg
-   TJcWVnz998neg7W1LQtuz4zw+VtMz5/d952ai0MB5KTSFTJoNo9lm7/pS
-   d9/Kt1zcbDbh35wEo61YRBMSjldIQ5kTImXlgqzuTnWVL0/1/QQUsKCEH
-   Fc5Lm8L4FZjKHUooHqh/IiN7JlUcKZfkodFWqQ1npWYB2QO6V93CzAZOk
-   8Inqb0rHse3r/Rf1iSaFRz8F8n3pXN/1o8Chm20HJ4kCLuQ5TOR/cI9+h
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="396510003"
-X-IronPort-AV: E=Sophos;i="6.04,335,1695711600"; 
-   d="scan'208";a="396510003"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2024 17:45:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10944"; a="899805978"
-X-IronPort-AV: E=Sophos;i="6.04,335,1695711600"; 
-   d="scan'208";a="899805978"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 05 Jan 2024 17:45:23 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
- mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
- x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com, "Dave Hansen"
- <dave.hansen@intel.com>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com, "Sean Christopherson" <sean.j.christopherson@intel.com>
-Subject: Re: [PATCH v6 07/12] x86/sgx: Introduce EPC page states
-References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
- <20231030182013.40086-8-haitao.huang@linux.intel.com>
- <0f3ae753-031f-4f33-b577-8c863b4621a1@intel.com>
-Date: Fri, 05 Jan 2024 19:45:23 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0FB7D517;
+	Sat,  6 Jan 2024 18:24:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailout.nyi.internal (Postfix) with ESMTP id BEEB15C01F7;
+	Sat,  6 Jan 2024 13:24:49 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sat, 06 Jan 2024 13:24:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm1; t=1704565489; x=1704651889; bh=O+QqJr2WAb6rnS5d3f3K/
+	DUa8bao3pdF0ZTmvmSXi54=; b=nSlxfYqtTJQDcbNuLTrQgszS9JWQG78owNAi+
+	zSEhkctan19C4FEG6xx31H7/uqLhr7cesA1k19u3yPWoTqEsjFQ9yXkYWzOwcrCc
+	uVFm073ba2P4po8CIj0KsQmKiUvyewqrtgGGHYuCsQh9sG9wTVHadAUo0quCq9nh
+	3wn4b3d1hbj+B/ZBZzqNQciP6TjHgoc98zJcDMj167R+hteCx5QxTdQFWmXVzzZW
+	dLZHp2yX3SB79f2KkARUikb1eP9u23YNh795fdJ0UznpK3VR5tdEnA4s15gPY+yc
+	m8kLTyYiJGEIqc1JEboSKWqEtD7xjep48oIUYT69ow17Gai6A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1704565489; x=1704651889; bh=O+QqJr2WAb6rnS5d3f3K/DUa8bao
+	3pdF0ZTmvmSXi54=; b=b3+3KpJVeWQPqqPw2/XyIgSWVprhEDWFog7zIhj7juCB
+	2fghtEDXjtChsmjRYm5But8IKubV1CNa4oc4t8RnFO9oYn0LRNPBXCZSj+uBMyoS
+	hqCbZqfAaWnezgz2I9YNwPlBKGmW+OwMM5TKxf+m1k5XACoJwnYaulFkWJXWIeuC
+	G4wTyt1bBYVR3EFQPep8tJMmwO2Z8w/GPAloXq3sTltOn9ht5D9dBpVImQ3kjoaF
+	Kl0wD++fiJfxAfJraal4lPmjZxrlq5azZ6HzjJk0lPs0xKwIWbnwmcNllJA6r0i8
+	Bziwb2eIGshtU8+n9i4yL+sn1ttsvey9hwKh4kj2eQ==
+X-ME-Sender: <xms:8JqZZTa2LWzgZ0-GmgqS5LmLiABXTJV-q6m5pw2KEf52kA-_v2wfMA>
+    <xme:8JqZZSY16TYAWdOZIuP8yKWF5XRgyCIaZj9hCtazJgvb_WXDJT9OoLmN_FIlP23Tb
+    sL0h3wKj1DmLsm58g>
+X-ME-Received: <xmr:8JqZZV8ddNHA1F0_QGF1cpRCX1fLuMSzgKqs_Fg3sXfaUgOpYFT_S3HHautwyc1OmhIwEyCsPi3RRo61vZxpwY8y-vSDxy2GkEZ98QEvFqVpPA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdehuddguddutdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdefhedmnecujfgurhephf
+    fvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougig
+    uhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepffffgeejudehlefgtdduke
+    eijefggeehheejgfeijeevveetieevueekgfehkeejnecuffhomhgrihhnpehgihhthhhu
+    sgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:8JqZZZpHSzujnehtNM-9w6SM6ebZxdJiLRzNQZcPYUXvIr1FXoFm8Q>
+    <xmx:8JqZZeqcnauyVxfA1Rp6P8hO1PAbhin9VwCYuUjW_KX7IU7bSpqbDg>
+    <xmx:8JqZZfSntMFC9PDiV8fngNBCBp68lp9CgFnySiCgnfTcNGT64YxhQQ>
+    <xmx:8ZqZZSZbzVDin2kRmp_SLX1xW7XThP5VlZBJyX2zJfv-05ftzvGpwQ>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 6 Jan 2024 13:24:47 -0500 (EST)
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: linux-input@vger.kernel.org,
+	coreteam@netfilter.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	netfilter-devel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	fsverity@lists.linux.dev,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	cgroups@vger.kernel.org,
+	alexei.starovoitov@gmail.com,
+	olsajiri@gmail.com,
+	quentin@isovalent.com,
+	alan.maguire@oracle.com,
+	memxor@gmail.com
+Subject: [PATCH bpf-next v3 0/3] Annotate kfuncs in .BTF_ids section
+Date: Sat,  6 Jan 2024 11:24:07 -0700
+Message-ID: <cover.1704565248.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2g3q5xxfwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <0f3ae753-031f-4f33-b577-8c863b4621a1@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Transfer-Encoding: 8bit
 
-On Fri, 05 Jan 2024 11:57:03 -0600, Dave Hansen <dave.hansen@intel.com>  
-wrote:
+=== Description ===
 
-> On 10/30/23 11:20, Haitao Huang wrote:
->> @@ -527,16 +530,13 @@ void sgx_mark_page_reclaimable(struct  
->> sgx_epc_page *page)
->>  int sgx_unmark_page_reclaimable(struct sgx_epc_page *page)
->>  {
->>  	spin_lock(&sgx_global_lru.lock);
->> -	if (page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED) {
->> -		/* The page is being reclaimed. */
->> -		if (list_empty(&page->list)) {
->> -			spin_unlock(&sgx_global_lru.lock);
->> -			return -EBUSY;
->> -		}
->> -
->> -		list_del(&page->list);
->> -		page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
->> +	if (sgx_epc_page_reclaim_in_progress(page->flags)) {
->> +		spin_unlock(&sgx_global_lru.lock);
->> +		return -EBUSY;
->>  	}
->> +
->> +	list_del(&page->list);
->> +	sgx_epc_page_reset_state(page);
->
-> I want to know how much if this series is basically line-for-line
-> abstraction shifting like:
->
-> -	page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
-> +	sgx_epc_page_reset_state(page);
->
-> versus actually adding complexity.  That way, I might be able to offer
-> some advice on where this can be pared down.  That's really hard to do
-> with the current series.
->
-> Please don't just "introduce new page states".  This should have first
-> abstracted out the sgx_epc_page_reclaim_in_progress() operation, using
-> the list_empty() check as the implementation.
->
-> Then, in a separate patch, introduce the concept of the "reclaim in
-> progress" flag and finally flip the implementation over.
->
-> Ditto for the sgx_epc_page_reset_state() abstraction.  It should have
-> been introduced separately as a concept and then have the implementation
-> changed.
->
-> On in to patch 10 (which is much too big) which introduces the
-> sgx_lru_list() abstraction.
->
+This is a bpf-treewide change that annotates all kfuncs as such inside
+.BTF_ids. This annotation eventually allows us to automatically generate
+kfunc prototypes from bpftool.
 
-Sure. I'll try to refactor according to this plan.
-Thanks
-Haitao
+We store this metadata inside a yet-unused flags field inside struct
+btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
+
+More details about the full chain of events are available in commit 3's
+description.
+
+The accompanying pahole changes (still needs some cleanup) can be viewed
+here on this "frozen" branch [0].
+
+[0]: https://github.com/danobi/pahole/tree/kfunc_btf-mailed
+
+=== Changelog ===
+
+Changes from v2:
+* Only WARN() for vmlinux kfuncs
+
+Changes from v1:
+* Move WARN_ON() up a call level
+* Also return error when kfunc set is not properly tagged
+* Use BTF_KFUNCS_START/END instead of flags
+* Rename BTF_SET8_KFUNC to BTF_SET8_KFUNCS
+
+Daniel Xu (3):
+  bpf: btf: Support flags for BTF_SET8 sets
+  bpf: btf: Add BTF_KFUNCS_START/END macro pair
+  bpf: treewide: Annotate BPF kfuncs in BTF
+
+ drivers/hid/bpf/hid_bpf_dispatch.c            |  8 +++----
+ fs/verity/measure.c                           |  4 ++--
+ include/linux/btf_ids.h                       | 21 +++++++++++++++----
+ kernel/bpf/btf.c                              |  8 +++++++
+ kernel/bpf/cpumask.c                          |  4 ++--
+ kernel/bpf/helpers.c                          |  8 +++----
+ kernel/bpf/map_iter.c                         |  4 ++--
+ kernel/cgroup/rstat.c                         |  4 ++--
+ kernel/trace/bpf_trace.c                      |  8 +++----
+ net/bpf/test_run.c                            |  8 +++----
+ net/core/filter.c                             | 16 +++++++-------
+ net/core/xdp.c                                |  4 ++--
+ net/ipv4/bpf_tcp_ca.c                         |  4 ++--
+ net/ipv4/fou_bpf.c                            |  4 ++--
+ net/ipv4/tcp_bbr.c                            |  4 ++--
+ net/ipv4/tcp_cubic.c                          |  4 ++--
+ net/ipv4/tcp_dctcp.c                          |  4 ++--
+ net/netfilter/nf_conntrack_bpf.c              |  4 ++--
+ net/netfilter/nf_nat_bpf.c                    |  4 ++--
+ net/xfrm/xfrm_interface_bpf.c                 |  4 ++--
+ net/xfrm/xfrm_state_bpf.c                     |  4 ++--
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  8 +++----
+ 22 files changed, 81 insertions(+), 60 deletions(-)
+
+-- 
+2.42.1
+
 
