@@ -1,95 +1,128 @@
-Return-Path: <cgroups+bounces-1107-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1108-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42CDE826A78
-	for <lists+cgroups@lfdr.de>; Mon,  8 Jan 2024 10:16:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 254518276BE
+	for <lists+cgroups@lfdr.de>; Mon,  8 Jan 2024 18:58:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC5221F20F52
-	for <lists+cgroups@lfdr.de>; Mon,  8 Jan 2024 09:16:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 512CE1C22440
+	for <lists+cgroups@lfdr.de>; Mon,  8 Jan 2024 17:58:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37C1411C80;
-	Mon,  8 Jan 2024 09:16:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82FEA5576B;
+	Mon,  8 Jan 2024 17:52:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=isovalent.com header.i=@isovalent.com header.b="MzNX37sC"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="QCuiJ8OT";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="HW+5pS6p"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B578E12B99
-	for <cgroups@vger.kernel.org>; Mon,  8 Jan 2024 09:15:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=isovalent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=isovalent.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a28da6285c1so278736966b.0
-        for <cgroups@vger.kernel.org>; Mon, 08 Jan 2024 01:15:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent.com; s=google; t=1704705356; x=1705310156; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TQw0PBv7H3F9npAXhHpc/yO+0aZTdw3iW7XYRioBY9M=;
-        b=MzNX37sCftG06J7zDqRoVr0ASbCiDMbrmnnww9QwIfjHn6v305+3yC4sf5ZhItJ/P9
-         dWgD/FpnTIJwHE4ksSWe0LyKUd6OfMRRTu2GsW3LrzyYIlk1hIm1lWPPTQTB7KlqL7yN
-         TZ4o5IaKMtV94FWQY6kwJIi2YrmviStlCIrez+Ok7YKHBE61mw9794RlBmRCxk8r8RUL
-         VrdvaM3wBX128iDc7clv/XxbWwBql1tdTSo4hEdAuX6o0HA2yEC1qaVMYbdyxbkpNlPz
-         Usmp583j3JFO42mG5KGuZPz8LDrv6DbVyXe7CC8l1Vt6gXrWdave70ArygI0WAZ/X/pQ
-         wOmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704705356; x=1705310156;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TQw0PBv7H3F9npAXhHpc/yO+0aZTdw3iW7XYRioBY9M=;
-        b=l0rpEZe5c539xo44J85GyRM1F3I4GXqN2qIPtGSgezPTLPsIFB0TEWmV9K0w1fyt81
-         4ZnJ2XkzWk10UqtDEiY9klYcLF6bEi3x14B0Xwzsx1LMlCxmvwPmw+v8MCOs4stogIHc
-         ff0FQCQZhqKEkud0hUehzIhAdIcuzXFAaVdKwasO70PdxfVcyqqqokHvIO5NhtOqm0Yp
-         eAns2HT/a03ijvNkLtuQjjXALziyQkGlEEqI4/AZqx9Lipr4iuVSZyslkfmNX5jDIz1W
-         k5IBNY4ObUSCQf3bX+/VM5Y2zCFEcF5d3dJNzgUascH4GHkuMZd/f6KBmJYs2wcW+mQO
-         2SkQ==
-X-Gm-Message-State: AOJu0YykNcqqbZoroV6cvyrCw3+4viOR09UBznvQYfUBPHcOczkOgeF1
-	IHqvCHSAdsUA8vcEVqeQLjf3htvhqCnA10e522Ucd0YvVchm6Q==
-X-Google-Smtp-Source: AGHT+IF5FdPBR02bei/X14Ub000OcoVXRo17m86hQ2MPBeQuC7hWG3H6v1jptH9g+ATyuoxWlGDUexOGIPMl6jmv1Ns=
-X-Received: by 2002:a17:906:1797:b0:a28:bd9c:8363 with SMTP id
- t23-20020a170906179700b00a28bd9c8363mr3034170eje.57.1704705356043; Mon, 08
- Jan 2024 01:15:56 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 735C854BF7;
+	Mon,  8 Jan 2024 17:52:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.west.internal (Postfix) with ESMTP id C2DC53200D00;
+	Mon,  8 Jan 2024 12:52:53 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 08 Jan 2024 12:52:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1704736373;
+	 x=1704822773; bh=U5vHpLovxHw2jLbFSMwbVDfMhB5fX3K4zCUa0DIZn9Q=; b=
+	QCuiJ8OTr3lnfrzIujxwe/TZfLN1UIxB9lhaB8yim94u+mOcHro7SQ0ObxmjGCj4
+	Tb5u0npdf4GTBeVq7Cz2aFXmNa+QaEhiPOPcYSTHw5bxB+WNwzuSL0IBboyPK2jL
+	RzROivW2MUr5bdEzhDn/fpTjaPkhuKq7Y2O2FlIsGTSQ9/BiKUju+JyX8yMRXGxy
+	4JPkPMqkebAGZ6X5Oy2CJOJRzQ+gue9Cqa/+eZVCp0qB+sAUPlgY+jxbyGXJVYhe
+	X8V375V1byyUcuQNDBOBnTK7GBHSMhaLYEUU1U0iaoBJMrNlJHxV6qxUG3wMq5B0
+	uH7MPtSQ6xQmfd7oR7iFQQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1704736373; x=
+	1704822773; bh=U5vHpLovxHw2jLbFSMwbVDfMhB5fX3K4zCUa0DIZn9Q=; b=H
+	W+5pS6p8StQO1iOCpRMUGETWwegLC/itEkr0WC7HcpACh+OG0OM0TAGa2hkvGwaP
+	5qvYy2mXuiO0tnh4P2u0crfFK96diRxzgDdqyWzqT/FYexQukTZ6mnUCLxYEbIIM
+	4VlhkzufmFARICF16ChUFz/yOoBP+iZekdv0UswKOkpjR6BNq5VapPZOg1q2qT/C
+	5PveKLQu44B16jB0rftks3B649wadrnfVLj2ZAxOpu0DO54vzbm8rXKi4m1mMfQ9
+	/eYc+hn5aySPRTAK8Hg9gCA/LLAcGWZE7njvQ556WjGBHBu6qQhslWNzlDUkyO8K
+	iQsL/YuJcDENA1Msf1eVA==
+X-ME-Sender: <xms:dDacZcuDTXN6lIEB8WcOO16Pq_Tb_ovk8QZo9ds7l0Lpb-hT7fKQlg>
+    <xme:dDacZZebg42EFk_Dte7vA-bggeXbFkekpX81XBWPhF---MbikwU4NEQAq_cbaMZyt
+    GDLFMocQhEF5-vUZA>
+X-ME-Received: <xmr:dDacZXxBZ9cQLWYl6jdfdcpCufgtDH1LcuUb3pmhHdXoOlL94QlkfynIuxozVxZlTsp7KYObYheOxk2Q_1uOjqeGruABsR5zL19sbLc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdehjedguddtgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
+    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
+    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
+    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:dTacZfO1_6ZhFSPZ7zYR_vaSkrh9xyqkFLtjv5fayG8ZpCbkP8Qaxg>
+    <xmx:dTacZc-OoIoBjtWs99QJ3JVhf7MeRx8huVlrpOGlzP4IbiCQjrWwAg>
+    <xmx:dTacZXVkZfDjbk7VxlH_D6LS-Uq5m97mwmnDhWMv7x4tSBRugNGqbw>
+    <xmx:dTacZcOHJTHi1jhIyuq6e13SVSM7x8VZNsMZkqqn0mrcGx9wqqEgzA>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 8 Jan 2024 12:52:51 -0500 (EST)
+Date: Mon, 8 Jan 2024 10:52:49 -0700
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: Lorenz Bauer <lorenz.bauer@isovalent.com>
+Cc: linux-input@vger.kernel.org, coreteam@netfilter.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-trace-kernel@vger.kernel.org, fsverity@lists.linux.dev, 
+	bpf@vger.kernel.org, netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
+	cgroups@vger.kernel.org, alexei.starovoitov@gmail.com, olsajiri@gmail.com, 
+	quentin@isovalent.com, alan.maguire@oracle.com, memxor@gmail.com
+Subject: Re: [PATCH bpf-next v3 0/3] Annotate kfuncs in .BTF_ids section
+Message-ID: <6t5bei3t2gwhuycu6ewftrgfuuyfhs26euymkysefqyfabgupa@3od5pe6ajybo>
+References: <cover.1704565248.git.dxu@dxuuu.xyz>
+ <CAN+4W8gPeQ2OjoYLKXsNPyhSVTB+vcSaS3Xzw=-M9Rf5MXfKPg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1704565248.git.dxu@dxuuu.xyz>
-In-Reply-To: <cover.1704565248.git.dxu@dxuuu.xyz>
-From: Lorenz Bauer <lorenz.bauer@isovalent.com>
-Date: Mon, 8 Jan 2024 10:15:45 +0100
-Message-ID: <CAN+4W8gPeQ2OjoYLKXsNPyhSVTB+vcSaS3Xzw=-M9Rf5MXfKPg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 0/3] Annotate kfuncs in .BTF_ids section
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: linux-input@vger.kernel.org, coreteam@netfilter.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	netfilter-devel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, fsverity@lists.linux.dev, 
-	bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com, cgroups@vger.kernel.org, 
-	alexei.starovoitov@gmail.com, olsajiri@gmail.com, quentin@isovalent.com, 
-	alan.maguire@oracle.com, memxor@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAN+4W8gPeQ2OjoYLKXsNPyhSVTB+vcSaS3Xzw=-M9Rf5MXfKPg@mail.gmail.com>
 
-On Sat, Jan 6, 2024 at 7:25=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> =3D=3D=3D Description =3D=3D=3D
->
-> This is a bpf-treewide change that annotates all kfuncs as such inside
-> .BTF_ids. This annotation eventually allows us to automatically generate
-> kfunc prototypes from bpftool.
->
-> We store this metadata inside a yet-unused flags field inside struct
-> btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
+Hi Lorenz,
 
-This is great, thanks for tackling this. With yout patches we can
-figure out the full set of kfuncs. Is there a way to extend it so that
-we can tell which program context a kfunc can be called from?
+On Mon, Jan 08, 2024 at 10:15:45AM +0100, Lorenz Bauer wrote:
+> On Sat, Jan 6, 2024 at 7:25 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> >
+> > === Description ===
+> >
+> > This is a bpf-treewide change that annotates all kfuncs as such inside
+> > .BTF_ids. This annotation eventually allows us to automatically generate
+> > kfunc prototypes from bpftool.
+> >
+> > We store this metadata inside a yet-unused flags field inside struct
+> > btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
+> 
+> This is great, thanks for tackling this. With yout patches we can
+> figure out the full set of kfuncs. Is there a way to extend it so that
+> we can tell which program context a kfunc can be called from?
+
+I think a potential approach would be to extend BTF_ID_FLAGS() with some
+more flags if we want to continue with .BTF_ids parsing technique. But
+it has some issues with program-type-less helpers that are associated with
+attachpoints as well as struct_ops helpers.
+
+Since it looks like we're in rather early stages of program-type-less
+world, maybe it'd be good to defer solving this problem until more use
+cases are established and we can find a good cut point to design around.
+Even with uapi helpers there was no way before.
+
+Thanks,
+Daniel
 
