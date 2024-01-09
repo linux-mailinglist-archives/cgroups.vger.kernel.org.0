@@ -1,261 +1,175 @@
-Return-Path: <cgroups+bounces-1109-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1110-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BEB7827D63
-	for <lists+cgroups@lfdr.de>; Tue,  9 Jan 2024 04:37:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46B2382910A
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jan 2024 00:55:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92BC01C22B17
-	for <lists+cgroups@lfdr.de>; Tue,  9 Jan 2024 03:37:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1B01B23D8C
+	for <lists+cgroups@lfdr.de>; Tue,  9 Jan 2024 23:55:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E4D3FFF;
-	Tue,  9 Jan 2024 03:37:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76B103E492;
+	Tue,  9 Jan 2024 23:54:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SEc/OzOn"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fRDd3Gmz"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ECE3259D;
-	Tue,  9 Jan 2024 03:37:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1704771453; x=1736307453;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=5jyuMJax7bmYWl+lCmULXdHEsvXolm204ScVfBGcp5Y=;
-  b=SEc/OzOnLEFwlyPyVwUszzInE1xla+gQQvqlQQ6VREsAUDZyDsJvA3/u
-   GNmGpf4gWsR4LiGJcZxh2+IbOgCaD+bifiv96eQ1IbtbWmSmPkIUEeMgw
-   G+bKI7QWFvY/ZOY5o9IolSQhfUsioecfiOxXa7QDd+fffXzk6ZE0amAxP
-   3UdtMLWqimbCXLrCv8vYlR6TW0/m/QmLcOB7XyS34uqRFRHvh4pF4NbtN
-   OUskKX4XXcYVycUGmdjyI6L3n6K59+1DihKo1O1SEtlJlMXZfdg6SfjKo
-   xK1VnbVMKPOeq2tbr1zDySyxsQ+e0W0TA+nnynZ/4gaFZc5hBkjch5la3
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="5440704"
-X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
-   d="scan'208";a="5440704"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2024 19:37:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10947"; a="731328961"
-X-IronPort-AV: E=Sophos;i="6.04,181,1695711600"; 
-   d="scan'208";a="731328961"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 08 Jan 2024 19:37:28 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
- linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
- cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- hpa@zytor.com, sohil.mehta@intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com
-Subject: Re: [PATCH v6 01/12] cgroup/misc: Add per resource callbacks for CSS
- events
-References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
- <20231030182013.40086-2-haitao.huang@linux.intel.com>
- <CWZO1RHFPIS6.P82WIOYW54YP@kernel.org>
-Date: Mon, 08 Jan 2024 21:37:26 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04863E483
+	for <cgroups@vger.kernel.org>; Tue,  9 Jan 2024 23:54:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40e4afe9ea7so9005e9.1
+        for <cgroups@vger.kernel.org>; Tue, 09 Jan 2024 15:54:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1704844493; x=1705449293; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=s8TS1nLrUKAIFkkWa3SxEx8yDQZVgIO6/irtFJFIovg=;
+        b=fRDd3Gmz+q4QVgB9cK9jFwrWYbFNR1wbJQP7XGWDQgwcpVjyPO4OWeX4B3MA04wlR6
+         nVRrJZT+ireW+2dwHo5eiNzYHfqVMSeh2/fGcX0haBHLT01dS83XH6ldP2O8HDxALIww
+         7pqm80vFJL+ZFqnTbzSTbFVBar3/mq7F5NFnKrAqoiFGkALB4sFNw8Mmvsb8FKNpytDc
+         V4/LVK7A00ycnUVoGrKGGsFA7+KpH6dQC9OtFH8YETm6MTvSCufZH56xWex5Lfxxit90
+         fsPwFViVw0NVrtxkg+RHpjUR2JABfA/WpzXOUYCC2j/vevLWAkj5BRAd2ap6etZDtuk2
+         xCjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704844493; x=1705449293;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=s8TS1nLrUKAIFkkWa3SxEx8yDQZVgIO6/irtFJFIovg=;
+        b=SxbphYW5oZC+aQYKXBN50F8uxgOFIuAjl8vRto7Fx0A7Qgf745/jMsRtZklLD9u59L
+         lDm5s5hGaYlZ6Mdvo7ytedewfcD4ORvswbqtnk3TyMzQ00yslTs9CZUMBWL2QjyMyquk
+         K9NLRJsXH0BGdpLEAmbHVaEOgMqAWPDsSg45kgJM6EVVOrRvAXjBsR82LIAELA6eGl3k
+         houJlt0Oo8x32OjcVH/Z9yp3rcD2iB0ewgjnKBJRnW/Z1/OTypyY9BbnnSOt+3iIL7ii
+         ATimKQFhcumhbpM8BcsiLZTgkfWpfPCd7SjoSxRmdtHR/CEwapr9EWEa81DrXdDjLezk
+         USgA==
+X-Gm-Message-State: AOJu0YwQWnl4ryCU1xpvSk81dvXtPlPe1ivXpBEy/zDZTCau4be/Ud00
+	DbxhN2e+8sujLMoSWlDNbN6xJ7EDCx11EXti0qLGztdRmgHR
+X-Google-Smtp-Source: AGHT+IHnVyCz6SSfqCzYFM+Jm12othHqlyx9vavQpdTKez22yrHgvpFo4duCvDoolAcTA2kj8bvDBtUqSdv5GmLPHQM=
+X-Received: by 2002:a05:600c:5118:b0:40d:887b:6979 with SMTP id
+ o24-20020a05600c511800b0040d887b6979mr102042wms.0.1704844492708; Tue, 09 Jan
+ 2024 15:54:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2g9gcoz5wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <CWZO1RHFPIS6.P82WIOYW54YP@kernel.org>
-User-Agent: Opera Mail/1.0 (Win32)
+References: <20240103164841.2800183-1-schatzberg.dan@gmail.com>
+ <20240103164841.2800183-3-schatzberg.dan@gmail.com> <CAOUHufZ-hTwdiy7eYgJWo=CHyPbdxTX60hxjPmwa9Ox6FXMYQQ@mail.gmail.com>
+ <ZZWlT5wmDaMceSlQ@dschatzberg-fedora-PC0Y6AEN> <ZZYE36e0BFFzi0X3@google.com> <ZZZw5NSEFNYwbjZM@tiehlicka>
+In-Reply-To: <ZZZw5NSEFNYwbjZM@tiehlicka>
+From: Yu Zhao <yuzhao@google.com>
+Date: Tue, 9 Jan 2024 16:54:15 -0700
+Message-ID: <CAOUHufbEuAWwz-51tq6OB7SPJ8W3UJ9Roq2-yXesWAbmzstdKw@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] mm: add swapiness= arg to memory.reclaim
+To: Michal Hocko <mhocko@suse.com>
+Cc: Dan Schatzberg <schatzberg.dan@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	Yosry Ahmed <yosryahmed@google.com>, David Rientjes <rientjes@google.com>, 
+	Chris Li <chrisl@kernel.org>, Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Jonathan Corbet <corbet@lwn.net>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, David Hildenbrand <david@redhat.com>, 
+	Matthew Wilcox <willy@infradead.org>, Kefeng Wang <wangkefeng.wang@huawei.com>, 
+	Yue Zhao <findns94@gmail.com>, Hugh Dickins <hughd@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 15 Nov 2023 14:25:59 -0600, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
+On Thu, Jan 4, 2024 at 1:48=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
+:
+>
+> On Wed 03-01-24 18:07:43, Yu Zhao wrote:
+> > On Wed, Jan 03, 2024 at 01:19:59PM -0500, Dan Schatzberg wrote:
+> > > On Wed, Jan 03, 2024 at 10:19:40AM -0700, Yu Zhao wrote:
+> > > [...]
+> > > > > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > > > > index d91963e2d47f..394e0dd46b2e 100644
+> > > > > --- a/mm/vmscan.c
+> > > > > +++ b/mm/vmscan.c
+> > > > > @@ -92,6 +92,11 @@ struct scan_control {
+> > > > >         unsigned long   anon_cost;
+> > > > >         unsigned long   file_cost;
+> > > > >
+> > > > > +#ifdef CONFIG_MEMCG
+> > > > > +       /* Swappiness value for proactive reclaim. Always use sc_=
+swappiness()! */
+> > > > > +       int *proactive_swappiness;
+> > > > > +#endif
+> > > >
+> > > > Why is proactive_swappiness still a pointer? The whole point of the
+> > > > previous conversation is that sc->proactive can tell whether
+> > > > sc->swappiness is valid or not, and that's less awkward than using =
+a
+> > > > pointer.
+> > >
+> > > It's the same reason as before - zero initialization ensures that the
+> > > pointer is NULL which tells us if it's valid or not. Proactive reclai=
+m
+> > > might not set swappiness and you need to distinguish swappiness of 0
+> > > and not-set. See this discussion with Michal:
+> > >
+> > > https://lore.kernel.org/linux-mm/ZZUizpTWOt3gNeqR@tiehlicka/
+> >
+> >  static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+> >                               size_t nbytes, loff_t off)
+> >  {
+> >         struct mem_cgroup *memcg =3D mem_cgroup_from_css(of_css(of));
+> >         unsigned int nr_retries =3D MAX_RECLAIM_RETRIES;
+> >         unsigned long nr_to_reclaim, nr_reclaimed =3D 0;
+> > +       int swappiness =3D -1;
+> > ...
+> >                 reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
+> >                                         min(nr_to_reclaim - nr_reclaime=
+d, SWAP_CLUSTER_MAX),
+> > -                                       GFP_KERNEL, reclaim_options);
+> > +                                       GFP_KERNEL, reclaim_options,
+> > +                                       swappiness);
+> >
+> > ...
+> >
+> > +static int sc_swappiness(struct scan_control *sc, struct mem_cgroup *m=
+emcg)
+> > +{
+> > +       return sc->proactive && sc->proactive_swappiness > -1 ?
+> > +              sc->proactive_swappiness : mem_cgroup_swappiness(memcg);
+> > +}
+>
+> Tpo be completely honest I really fail to see why this is such a hot
+> discussion point. To be completely clear both approaches are feasible.
 
-> On Mon Oct 30, 2023 at 8:20 PM EET, Haitao Huang wrote:
->> From: Kristen Carlson Accardi <kristen@linux.intel.com>
->>
->> The misc cgroup controller (subsystem) currently does not perform
->> resource type specific action for Cgroups Subsystem State (CSS) events:
->> the 'css_alloc' event when a cgroup is created and the 'css_free' event
->> when a cgroup is destroyed.
->>
->> Define callbacks for those events and allow resource providers to
->> register the callbacks per resource type as needed. This will be
->> utilized later by the EPC misc cgroup support implemented in the SGX
->> driver.
->>
->> Also add per resource type private data for those callbacks to store and
->> access resource specific data.
->>
->> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
->> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
->> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->> ---
->> V6:
->> - Create ops struct for per resource callbacks (Jarkko)
->> - Drop max_write callback (Dave, Michal)
->> - Style fixes (Kai)
->> ---
->>  include/linux/misc_cgroup.h | 14 ++++++++++++++
->>  kernel/cgroup/misc.c        | 27 ++++++++++++++++++++++++---
->>  2 files changed, 38 insertions(+), 3 deletions(-)
->>
->> diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
->> index e799b1f8d05b..5dc509c27c3d 100644
->> --- a/include/linux/misc_cgroup.h
->> +++ b/include/linux/misc_cgroup.h
->> @@ -27,16 +27,30 @@ struct misc_cg;
->>
->>  #include <linux/cgroup.h>
->>
->> +/**
->> + * struct misc_operations_struct: per resource callback ops.
->> + * @alloc: invoked for resource specific initialization when cgroup is  
->> allocated.
->> + * @free: invoked for resource specific cleanup when cgroup is  
->> deallocated.
->> + */
->> +struct misc_operations_struct {
->> +	int (*alloc)(struct misc_cg *cg);
->> +	void (*free)(struct misc_cg *cg);
->> +};
->
-> Maybe just misc_operations, or even misc_ops?
->
+Feasible but not equal.
 
-With Michal's suggestion to make ops per-resource-type, I'll rename this  
-misc_res_ops  (I was following vm_operations_struct as example)
+> The main argument for NULL check based approach is that it is less error
+> prone from an incorrect ussage because any bug becomes obvious.
 
->> +
->>  /**
->>   * struct misc_res: Per cgroup per misc type resource
->>   * @max: Maximum limit on the resource.
->>   * @usage: Current usage of the resource.
->>   * @events: Number of times, the resource limit exceeded.
->> + * @priv: resource specific data.
->> + * @misc_ops: resource specific operations.
->>   */
->>  struct misc_res {
->>  	u64 max;
->>  	atomic64_t usage;
->>  	atomic64_t events;
->> +	void *priv;
->
-> priv is the wrong patch, it just confuses the overall picture heere.
-> please move it to 04/12. Let's deal with the callbacks here.
->
+Any bug becomes *fatal*, and fatal isn't only obvious but also hurts
+in production systems.
 
-Ok
+This was the reason for going through the trouble switching from
+VM_BUG_ON() to VM_WARN_ON() and documenting it in
+Documentation/process/coding-style.rst:
 
->> +	const struct misc_operations_struct *misc_ops;
->>  };
->
-> misc_ops would be at least consistent with this, as misc_res also has an
-> acronym.
->
->>
->>  /**
->> diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
->> index 79a3717a5803..d971ede44ebf 100644
->> --- a/kernel/cgroup/misc.c
->> +++ b/kernel/cgroup/misc.c
->> @@ -383,23 +383,37 @@ static struct cftype misc_cg_files[] = {
->>  static struct cgroup_subsys_state *
->>  misc_cg_alloc(struct cgroup_subsys_state *parent_css)
->>  {
->> +	struct misc_cg *parent_cg, *cg;
->>  	enum misc_res_type i;
->> -	struct misc_cg *cg;
->> +	int ret;
->>
->>  	if (!parent_css) {
->> -		cg = &root_cg;
->> +		parent_cg = cg = &root_cg;
->>  	} else {
->>  		cg = kzalloc(sizeof(*cg), GFP_KERNEL);
->>  		if (!cg)
->>  			return ERR_PTR(-ENOMEM);
->> +		parent_cg = css_misc(parent_css);
->>  	}
->>
->>  	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
->>  		WRITE_ONCE(cg->res[i].max, MAX_NUM);
->>  		atomic64_set(&cg->res[i].usage, 0);
->> +		if (parent_cg->res[i].misc_ops && parent_cg->res[i].misc_ops->alloc)  
->> {
->> +			ret = parent_cg->res[i].misc_ops->alloc(cg);
->> +			if (ret)
->> +				goto alloc_err;
->
-> The patch set only has a use case for both operations defined - any
-> partial combinations should never be allowed.
->
-> To enforce this invariant you could create a set of operations (written
-> out of top of my head):
->
-> static int misc_res_init(struct misc_res *res, struct misc_ops *ops)
-> {
-> 	if (!misc_ops->alloc) {
-> 		pr_err("%s: alloc missing\n", __func__);
-> 		return -EINVAL;
-> 	}
->
-> 	if (!misc_ops->free) {
-> 		pr_err("%s: free missing\n", __func__);
-> 		return -EINVAL;
-> 	}
->
-> 	res->misc_ops = misc_ops;
-> 	return 0;
-> }
->
-> static inline int misc_res_alloc(struct misc_cg *cg, struct misc_res  
-> *res)
-> {
-> 	int ret;
->
-> 	if (!res->misc_ops)
-> 		return 0;
-> 	
-> 	return res->misc_ops->alloc(cg);
-> }
->
-> static inline void misc_res_free(struct misc_cg *cg, struct misc_res  
-> *res)
-> {
-> 	int ret;
->
-> 	if (!res->misc_ops)
-> 		return 0;
-> 	
-> 	return res->misc_ops->alloc(cg);
-> }
->
-> Now if anything has misc_ops, it will also always have *both* callback,
-> and nothing half-baked gets in.
->
-> The above loops would be then:
->
-> 	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
-> 		WRITE_ONCE(cg->res[i].max, MAX_NUM);
-> 		atomic64_set(&cg->res[i].usage, 0);
-> 		ret = misc_res_alloc(&parent_cg->res[i]);
-> 		if (ret)
-> 			goto alloc_err;
->
-> Cleaner and better guards for state consistency. In 04/12 you need to
-> then call misc_res_init() instead of direct assignment.
->
-> BR, Jarkko
+22) Do not crash the kernel
+---------------------------
 
-Will combine these with the use of a static operations array suggested by  
-Michal.
+In general, the decision to crash the kernel belongs to the user, rather
+than to the kernel developer.
 
-Thanks
-Haitao
+Isn't?
+
+> If we
+> use any other special constant a missing initialization would be much
+> harder to spot because they would be subtle behavior change.
+>
+> Are there really any strong arguments to go against this "default
+> initialization is safe" policy?
+
+Just wanted to point out an alternative. Fine details (best practices)
+matter to me.
 
