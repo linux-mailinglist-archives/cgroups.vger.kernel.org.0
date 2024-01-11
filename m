@@ -1,74 +1,51 @@
-Return-Path: <cgroups+bounces-1126-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1127-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBF3782B53B
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jan 2024 20:35:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10C2F82B542
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jan 2024 20:38:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 70DB51F25776
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jan 2024 19:35:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95039B242C8
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jan 2024 19:38:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FC6055C31;
-	Thu, 11 Jan 2024 19:35:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C189F55E5A;
+	Thu, 11 Jan 2024 19:38:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="iWYDUfYn"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aKqrocxJ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F5D115E9B
-	for <cgroups@vger.kernel.org>; Thu, 11 Jan 2024 19:35:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4279b73b5feso36198531cf.3
-        for <cgroups@vger.kernel.org>; Thu, 11 Jan 2024 11:35:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1705001701; x=1705606501; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VLoXRmz2jBVaQs8TX4snXcztzXaT+m5gtz1vw2oxIw0=;
-        b=iWYDUfYnXIuC8PfBkQWyPVUiy2cu9JTJ+OR/df8SZoXasPU3MKPsFIm19Ovpz+UhwJ
-         hwQN9IsQL65LHg5nxVAnvSchR+z558t491IR3SLPD1Z0ZBw5HtQU5Hky33WKRiqPv4Qt
-         dQ0ohJvXZzRDwieEJE4P5eWdYmfjIWJGHACXzXRobNDCCFUdTr38z0Xyhs2KFLis26Sx
-         q2j0px1MB6AT84I7I74u3Jox/0/X18iR9yUghLdG4F6tA9gFdrC/G+NcHwDaWnoUye7f
-         /duwc1p0SdqTQ084hqoiUVTz4D6QzVzLJHYiJKX1V59lw2U8W+yo5sNxUqbNlZWXaCNh
-         UMMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705001701; x=1705606501;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VLoXRmz2jBVaQs8TX4snXcztzXaT+m5gtz1vw2oxIw0=;
-        b=LGXnGNbszicDFt/5+PttQSJASvVjdmp4x6ANZg6KBhTRwgEG6ICsHD+3Ch5AUv68eR
-         EPXuuYn9psrrKJy4+BKHY/0T6ZddEnNGemEXpGi/jD/jDHwEWsMAQlKvPpaNift1L+Nj
-         puDKzansWGSaa+SlCD9w/vDFP4ohqd2vd7CNB/ctRbQx6xDzKJnH5f4+5fHuReRcekks
-         0ebceGCjobVijcElaUY0pKGEmxfcpRlEVp5RHwZE7C5QXFl4AH7DBNQANs+aP78jw1Ra
-         nD3KJHr/Jbng3+BUr//YMtrcOrBfvtFROlFBB6q+orxFhitDWYxyoGKW7qDTCM4y+n/g
-         58uA==
-X-Gm-Message-State: AOJu0YxyHLDadNIJFtsKyaos6+VmpUcz753zcUvPB5qDNjaP8kRUcN+s
-	3+MmsCNGtLJrOqGnFiIU7gXcwbIEQbr5WQ==
-X-Google-Smtp-Source: AGHT+IESiYzdGU2J3mDzGCqM8eHwuxSUQZhi4LkEdizH4HGTmPHVoeaPSKuBs0rCmbRj/VfaedM62A==
-X-Received: by 2002:a05:622a:180b:b0:425:89a1:b2ec with SMTP id t11-20020a05622a180b00b0042589a1b2ecmr320301qtc.100.1705001700666;
-        Thu, 11 Jan 2024 11:35:00 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id ks8-20020ac86208000000b00427f2baf6e8sm670093qtb.93.2024.01.11.11.35.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jan 2024 11:35:00 -0800 (PST)
-Date: Thu, 11 Jan 2024 14:34:59 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A012D53E16
+	for <cgroups@vger.kernel.org>; Thu, 11 Jan 2024 19:38:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 11 Jan 2024 11:38:09 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1705001894;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AkzHYxZFi5ouVgT0zy5KypNsq0w5WgyR676jLiAHwes=;
+	b=aKqrocxJT78AHVgmOO5soM2yx71m9o2ggWeLQjfztX924iW2TgDw28QtJUVRZYt8QmtNG6
+	87sj4n+fiAcuKSoXUZ860OXIsqOwxI0lmA2YIG6B3SjjCE6lIVUror/SA3V5ivkRQQ9QJC
+	/HDzAPXkD3DwzkMT/LiYgwtKl8anBbA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Johannes Weiner <hannes@cmpxchg.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
 	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH 3/4] memcg: Use a folio in get_mctgt_type
-Message-ID: <20240111193459.GB424308@cmpxchg.org>
-References: <20240111181219.3462852-1-willy@infradead.org>
- <20240111181219.3462852-4-willy@infradead.org>
+	Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
+	Dan Schatzberg <schatzberg.dan@gmail.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcontrol: don't throttle dying tasks on memory.high
+Message-ID: <ZaBDoRr90kPNMrv7@P9FQF9L96D>
+References: <20240111132902.389862-1-hannes@cmpxchg.org>
+ <ZaAsbwFP-ttYNwIe@P9FQF9L96D>
+ <20240111192807.GA424308@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -77,15 +54,98 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240111181219.3462852-4-willy@infradead.org>
+In-Reply-To: <20240111192807.GA424308@cmpxchg.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Jan 11, 2024 at 06:12:18PM +0000, Matthew Wilcox (Oracle) wrote:
-> Replace seven calls to compound_head() with one.  We still use the
-> page as page_mapped() is different from folio_mapped().
+On Thu, Jan 11, 2024 at 02:28:07PM -0500, Johannes Weiner wrote:
+> On Thu, Jan 11, 2024 at 09:59:11AM -0800, Roman Gushchin wrote:
+> > On Thu, Jan 11, 2024 at 08:29:02AM -0500, Johannes Weiner wrote:
+> > > While investigating hosts with high cgroup memory pressures, Tejun
+> > > found culprit zombie tasks that had were holding on to a lot of
+> > > memory, had SIGKILL pending, but were stuck in memory.high reclaim.
+> > > 
+> > > In the past, we used to always force-charge allocations from tasks
+> > > that were exiting in order to accelerate them dying and freeing up
+> > > their rss. This changed for memory.max in a4ebf1b6ca1e ("memcg:
+> > > prohibit unconditional exceeding the limit of dying tasks"); it noted
+> > > that this can cause (userspace inducable) containment failures, so it
+> > > added a mandatory reclaim and OOM kill cycle before forcing charges.
+> > > At the time, memory.high enforcement was handled in the userspace
+> > > return path, which isn't reached by dying tasks, and so memory.high
+> > > was still never enforced by dying tasks.
+> > > 
+> > > When c9afe31ec443 ("memcg: synchronously enforce memory.high for large
+> > > overcharges") added synchronous reclaim for memory.high, it added
+> > > unconditional memory.high enforcement for dying tasks as well. The
+> > > callstack shows that this path is where the zombie is stuck in.
+> > > 
+> > > We need to accelerate dying tasks getting past memory.high, but we
+> > > cannot do it quite the same way as we do for memory.max: memory.max is
+> > > enforced strictly, and tasks aren't allowed to move past it without
+> > > FIRST reclaiming and OOM killing if necessary. This ensures very small
+> > > levels of excess. With memory.high, though, enforcement happens lazily
+> > > after the charge, and OOM killing is never triggered. A lot of
+> > > concurrent threads could have pushed, or could actively be pushing,
+> > > the cgroup into excess. The dying task will enter reclaim on every
+> > > allocation attempt, with little hope of restoring balance.
+> > > 
+> > > To fix this, skip synchronous memory.high enforcement on dying tasks
+> > > altogether again. Update memory.high path documentation while at it.
+> > 
+> > It makes total sense to me.
+> > Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+> 
+> Thanks
+> 
+> > However if tasks can stuck for a long time in the "high reclaim" state,
+> > shouldn't we also handle the case when tasks are being killed during the
+> > reclaim? E. g. something like this (completely untested):
+> 
+> Yes, that's probably a good idea.
+> 
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index c4c422c81f93..9f971fc6aae8 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -2465,6 +2465,9 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
+> >                     READ_ONCE(memcg->memory.high))
+> >                         continue;
+> > 
+> > +               if (task_is_dying())
+> > +                       break;
+> > +
+> >                 memcg_memory_event(memcg, MEMCG_HIGH);
+> > 
+> >                 psi_memstall_enter(&pflags);
+> 
+> I think we can skip this one. The loop is for traversing from the
+> charging cgroup to the one that has memory.high set and breached, and
+> then reclaim it. It's not expected to run multiple reclaims.
 
-Only seven, eh? :) For the 4 patches:
+Yes, the next one is probably enough (hard to say for me without knowing
+exactly where whose dying processes are getting stuck - you should have
+actual stacktraces I guess).
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> 
+> > @@ -2645,6 +2648,9 @@ void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+> >         current->memcg_nr_pages_over_high = 0;
+> > 
+> >  retry_reclaim:
+> > +       if (task_is_dying())
+> > +               return;
+> > +
+> >         /*
+> >          * The allocating task should reclaim at least the batch size, but for
+> >          * subsequent retries we only want to do what's necessary to prevent oom
+> 
+> Yeah this is the better place for this check.
+> 
+> How about this?
 
-Thanks
+Looks really good to me!
+
+I actually thought about moving the check into mem_cgroup_handle_over_high(),
+and you already did it in this version.
+
+Thanks!
 
