@@ -1,262 +1,174 @@
-Return-Path: <cgroups+bounces-1115-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1116-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B4C982A19C
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jan 2024 20:55:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E287382AFAB
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jan 2024 14:29:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD5F51C21619
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jan 2024 19:55:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10CD41C236CC
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jan 2024 13:29:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 139B54E1D9;
-	Wed, 10 Jan 2024 19:55:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DAF9171B8;
+	Thu, 11 Jan 2024 13:29:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U3fJXjHd"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="2EUhicx7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C56BB4E1BA;
-	Wed, 10 Jan 2024 19:55:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F7E5C433C7;
-	Wed, 10 Jan 2024 19:55:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704916530;
-	bh=KwO40mF2TaGoN9OywGDTZ0ebE2f6XtctCT+Z4+jxzak=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=U3fJXjHdIbN5pHeqJe99LWZstSLQomhmaZKWvn8P4G9sF0cCXE+MEV/W3mUYiEzhI
-	 +R5ZoG/uPY2cUchRVtyDdPQVpwi9uNj/sWgmJ1y3bwS1ycrTfK66BjmN48RniJrpK5
-	 XTWrQCDXo9wUjHBOFJIsLPJepaqkqlYl8Lj9xiu8yGYiO3UzOLYbLfH6PSC+6cjxR/
-	 s9gltdJ523USV1DL0Ily/xIyv9G6aMHgIFALMQSVt899aCyVXZUuS2+/CRKTaELt+D
-	 uasHmHF9U8uY4QdKzdepD8N5yL+3GTm6htCVv/ePcjhzO416aJUjuOvLB0wVWbrzmb
-	 oHp31IMyt04jg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DC39171A2
+	for <cgroups@vger.kernel.org>; Thu, 11 Jan 2024 13:29:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-78314e00350so464433785a.1
+        for <cgroups@vger.kernel.org>; Thu, 11 Jan 2024 05:29:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1704979748; x=1705584548; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VmAACpAT+7XgSF5ovEqoKHBY0dChYojGZwUF1rmaV+s=;
+        b=2EUhicx7PYvj8p7RaBSLF+XCz4h0MwSSrc0nCNj2iS+B+1CkRGwTaqBbRXf/SZez4s
+         m2RFuoKCJw4aKZvdwjofibVnGL3Mc+yTZXm5JUTFuT0l4ZWNX6nAZ1Yn4cu182PTOw7w
+         yJQORX8DkbOAIwUPdAPBZTxNXTTchC+7CullkrwmmwTOqvIM6uTW68VJvcbecXh/adpe
+         11hEJwmRtRKHbsTPlV2Ph/mcjTCHszIdRG0rXSewlF9j7sUpVEnM9GRTU3hF1hzCRzNU
+         WY/0najjK5kPEVtKDNrAlcDVIG7EqlSferpeibpF6SDUdN89cWvjtzIDOAOU3FeX9QDF
+         0EZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1704979748; x=1705584548;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VmAACpAT+7XgSF5ovEqoKHBY0dChYojGZwUF1rmaV+s=;
+        b=pDjt0GoVOE0ljEaope4M322EFMpbbZ/x+fsAw4a8LHSNJuh/zt5+HS9QhBxlAwa+7R
+         CsLq4yh8waRJFUiYW/S6xq1lNcBepKY5njV/0hsYJAd61Uu9HvMlMrAZAmwc3UZDoU1q
+         58AyowZOahPYHh8YLic/xb6nvDYgkXz756xyj5yOZFuL1iOXMPmskJW1noIG6a9Akw9e
+         e5CtDqGX1UB+sRIETbwkbUwqS2v3BnG5dOau5HvRVgVJJxmFffs4tREB2ZUm/bANnwZO
+         b6nvyeQ3+45wWwRlCIGNm13Z6TfOPz5w4XWSGnt6zMKoTGuzH3TE3HHOyt143rUflSB7
+         3TOw==
+X-Gm-Message-State: AOJu0YyvKA1plJCR9oGrskW94CvmXmnbB+bWH1nsXbhVhIkY5MgPXK5N
+	6ZijLT/w9Bh4Im+9m6wmsz9njJsMah+UVw==
+X-Google-Smtp-Source: AGHT+IGb0E1FwTgNxq1HVe0jtfGI6qy/+AuYBoa6OQKhuzykwVNnO6P23dEQOxol/x1Lne9ldG9BZQ==
+X-Received: by 2002:a05:6214:c4b:b0:67f:143d:b8ca with SMTP id r11-20020a0562140c4b00b0067f143db8camr1202969qvj.44.1704979747934;
+        Thu, 11 Jan 2024 05:29:07 -0800 (PST)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id f7-20020a05621400c700b0067fa1179b57sm296884qvs.131.2024.01.11.05.29.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jan 2024 05:29:07 -0800 (PST)
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Tejun Heo <tj@kernel.org>,
+	Dan Schatzberg <schatzberg.dan@gmail.com>,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: memcontrol: don't throttle dying tasks on memory.high
+Date: Thu, 11 Jan 2024 08:29:02 -0500
+Message-ID: <20240111132902.389862-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 10 Jan 2024 21:55:24 +0200
-Message-Id: <CYBAGUN08GGW.1WHQOHZ7XUHL9@suppilovahvero>
-To: "Haitao Huang" <haitao.huang@linux.intel.com>,
- <dave.hansen@linux.intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
- <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
- <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
- <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
- <sohil.mehta@intel.com>
-Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
- <zhanb@microsoft.com>, <anakrish@microsoft.com>,
- <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>
-Subject: Re: [PATCH v6 01/12] cgroup/misc: Add per resource callbacks for
- CSS events
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.15.2
-References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
- <20231030182013.40086-2-haitao.huang@linux.intel.com>
- <CWZO1RHFPIS6.P82WIOYW54YP@kernel.org>
- <op.2g9gcoz5wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <op.2g9gcoz5wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Tue Jan 9, 2024 at 5:37 AM EET, Haitao Huang wrote:
-> On Wed, 15 Nov 2023 14:25:59 -0600, Jarkko Sakkinen <jarkko@kernel.org> =
-=20
-> wrote:
->
-> > On Mon Oct 30, 2023 at 8:20 PM EET, Haitao Huang wrote:
-> >> From: Kristen Carlson Accardi <kristen@linux.intel.com>
-> >>
-> >> The misc cgroup controller (subsystem) currently does not perform
-> >> resource type specific action for Cgroups Subsystem State (CSS) events=
-:
-> >> the 'css_alloc' event when a cgroup is created and the 'css_free' even=
-t
-> >> when a cgroup is destroyed.
-> >>
-> >> Define callbacks for those events and allow resource providers to
-> >> register the callbacks per resource type as needed. This will be
-> >> utilized later by the EPC misc cgroup support implemented in the SGX
-> >> driver.
-> >>
-> >> Also add per resource type private data for those callbacks to store a=
-nd
-> >> access resource specific data.
-> >>
-> >> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-> >> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
-> >> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> >> ---
-> >> V6:
-> >> - Create ops struct for per resource callbacks (Jarkko)
-> >> - Drop max_write callback (Dave, Michal)
-> >> - Style fixes (Kai)
-> >> ---
-> >>  include/linux/misc_cgroup.h | 14 ++++++++++++++
-> >>  kernel/cgroup/misc.c        | 27 ++++++++++++++++++++++++---
-> >>  2 files changed, 38 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
-> >> index e799b1f8d05b..5dc509c27c3d 100644
-> >> --- a/include/linux/misc_cgroup.h
-> >> +++ b/include/linux/misc_cgroup.h
-> >> @@ -27,16 +27,30 @@ struct misc_cg;
-> >>
-> >>  #include <linux/cgroup.h>
-> >>
-> >> +/**
-> >> + * struct misc_operations_struct: per resource callback ops.
-> >> + * @alloc: invoked for resource specific initialization when cgroup i=
-s =20
-> >> allocated.
-> >> + * @free: invoked for resource specific cleanup when cgroup is =20
-> >> deallocated.
-> >> + */
-> >> +struct misc_operations_struct {
-> >> +	int (*alloc)(struct misc_cg *cg);
-> >> +	void (*free)(struct misc_cg *cg);
-> >> +};
-> >
-> > Maybe just misc_operations, or even misc_ops?
-> >
->
-> With Michal's suggestion to make ops per-resource-type, I'll rename this =
-=20
-> misc_res_ops  (I was following vm_operations_struct as example)
->
-> >> +
-> >>  /**
-> >>   * struct misc_res: Per cgroup per misc type resource
-> >>   * @max: Maximum limit on the resource.
-> >>   * @usage: Current usage of the resource.
-> >>   * @events: Number of times, the resource limit exceeded.
-> >> + * @priv: resource specific data.
-> >> + * @misc_ops: resource specific operations.
-> >>   */
-> >>  struct misc_res {
-> >>  	u64 max;
-> >>  	atomic64_t usage;
-> >>  	atomic64_t events;
-> >> +	void *priv;
-> >
-> > priv is the wrong patch, it just confuses the overall picture heere.
-> > please move it to 04/12. Let's deal with the callbacks here.
-> >
->
-> Ok
->
-> >> +	const struct misc_operations_struct *misc_ops;
-> >>  };
-> >
-> > misc_ops would be at least consistent with this, as misc_res also has a=
-n
-> > acronym.
-> >
-> >>
-> >>  /**
-> >> diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
-> >> index 79a3717a5803..d971ede44ebf 100644
-> >> --- a/kernel/cgroup/misc.c
-> >> +++ b/kernel/cgroup/misc.c
-> >> @@ -383,23 +383,37 @@ static struct cftype misc_cg_files[] =3D {
-> >>  static struct cgroup_subsys_state *
-> >>  misc_cg_alloc(struct cgroup_subsys_state *parent_css)
-> >>  {
-> >> +	struct misc_cg *parent_cg, *cg;
-> >>  	enum misc_res_type i;
-> >> -	struct misc_cg *cg;
-> >> +	int ret;
-> >>
-> >>  	if (!parent_css) {
-> >> -		cg =3D &root_cg;
-> >> +		parent_cg =3D cg =3D &root_cg;
-> >>  	} else {
-> >>  		cg =3D kzalloc(sizeof(*cg), GFP_KERNEL);
-> >>  		if (!cg)
-> >>  			return ERR_PTR(-ENOMEM);
-> >> +		parent_cg =3D css_misc(parent_css);
-> >>  	}
-> >>
-> >>  	for (i =3D 0; i < MISC_CG_RES_TYPES; i++) {
-> >>  		WRITE_ONCE(cg->res[i].max, MAX_NUM);
-> >>  		atomic64_set(&cg->res[i].usage, 0);
-> >> +		if (parent_cg->res[i].misc_ops && parent_cg->res[i].misc_ops->alloc=
-) =20
-> >> {
-> >> +			ret =3D parent_cg->res[i].misc_ops->alloc(cg);
-> >> +			if (ret)
-> >> +				goto alloc_err;
-> >
-> > The patch set only has a use case for both operations defined - any
-> > partial combinations should never be allowed.
-> >
-> > To enforce this invariant you could create a set of operations (written
-> > out of top of my head):
-> >
-> > static int misc_res_init(struct misc_res *res, struct misc_ops *ops)
-> > {
-> > 	if (!misc_ops->alloc) {
-> > 		pr_err("%s: alloc missing\n", __func__);
-> > 		return -EINVAL;
-> > 	}
-> >
-> > 	if (!misc_ops->free) {
-> > 		pr_err("%s: free missing\n", __func__);
-> > 		return -EINVAL;
-> > 	}
-> >
-> > 	res->misc_ops =3D misc_ops;
-> > 	return 0;
-> > }
-> >
-> > static inline int misc_res_alloc(struct misc_cg *cg, struct misc_res =
-=20
-> > *res)
-> > {
-> > 	int ret;
-> >
-> > 	if (!res->misc_ops)
-> > 		return 0;
-> > =09
-> > 	return res->misc_ops->alloc(cg);
-> > }
-> >
-> > static inline void misc_res_free(struct misc_cg *cg, struct misc_res =
-=20
-> > *res)
-> > {
-> > 	int ret;
-> >
-> > 	if (!res->misc_ops)
-> > 		return 0;
-> > =09
-> > 	return res->misc_ops->alloc(cg);
-> > }
-> >
-> > Now if anything has misc_ops, it will also always have *both* callback,
-> > and nothing half-baked gets in.
-> >
-> > The above loops would be then:
-> >
-> > 	for (i =3D 0; i < MISC_CG_RES_TYPES; i++) {
-> > 		WRITE_ONCE(cg->res[i].max, MAX_NUM);
-> > 		atomic64_set(&cg->res[i].usage, 0);
-> > 		ret =3D misc_res_alloc(&parent_cg->res[i]);
-> > 		if (ret)
-> > 			goto alloc_err;
-> >
-> > Cleaner and better guards for state consistency. In 04/12 you need to
-> > then call misc_res_init() instead of direct assignment.
-> >
-> > BR, Jarkko
->
-> Will combine these with the use of a static operations array suggested by=
- =20
-> Michal.
+While investigating hosts with high cgroup memory pressures, Tejun
+found culprit zombie tasks that had were holding on to a lot of
+memory, had SIGKILL pending, but were stuck in memory.high reclaim.
 
-OK, great, thanks!
+In the past, we used to always force-charge allocations from tasks
+that were exiting in order to accelerate them dying and freeing up
+their rss. This changed for memory.max in a4ebf1b6ca1e ("memcg:
+prohibit unconditional exceeding the limit of dying tasks"); it noted
+that this can cause (userspace inducable) containment failures, so it
+added a mandatory reclaim and OOM kill cycle before forcing charges.
+At the time, memory.high enforcement was handled in the userspace
+return path, which isn't reached by dying tasks, and so memory.high
+was still never enforced by dying tasks.
 
-BR, Jarkko
+When c9afe31ec443 ("memcg: synchronously enforce memory.high for large
+overcharges") added synchronous reclaim for memory.high, it added
+unconditional memory.high enforcement for dying tasks as well. The
+callstack shows that this path is where the zombie is stuck in.
+
+We need to accelerate dying tasks getting past memory.high, but we
+cannot do it quite the same way as we do for memory.max: memory.max is
+enforced strictly, and tasks aren't allowed to move past it without
+FIRST reclaiming and OOM killing if necessary. This ensures very small
+levels of excess. With memory.high, though, enforcement happens lazily
+after the charge, and OOM killing is never triggered. A lot of
+concurrent threads could have pushed, or could actively be pushing,
+the cgroup into excess. The dying task will enter reclaim on every
+allocation attempt, with little hope of restoring balance.
+
+To fix this, skip synchronous memory.high enforcement on dying tasks
+altogether again. Update memory.high path documentation while at it.
+
+Fixes: c9afe31ec443 ("memcg: synchronously enforce memory.high for large overcharges")
+Reported-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/memcontrol.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 73692cd8c142..aca879995022 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2603,8 +2603,9 @@ static unsigned long calculate_high_delay(struct mem_cgroup *memcg,
+ }
+ 
+ /*
+- * Scheduled by try_charge() to be executed from the userland return path
+- * and reclaims memory over the high limit.
++ * Reclaims memory over the high limit. Called directly from
++ * try_charge() when possible, but also scheduled to be called from
++ * the userland return path where reclaim is always able to block.
+  */
+ void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ {
+@@ -2673,6 +2674,9 @@ void mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ 	}
+ 
+ 	/*
++	 * Reclaim didn't manage to push usage below the limit, slow
++	 * this allocating task down.
++	 *
+ 	 * If we exit early, we're guaranteed to die (since
+ 	 * schedule_timeout_killable sets TASK_KILLABLE). This means we don't
+ 	 * need to account for any ill-begotten jiffies to pay them off later.
+@@ -2867,8 +2871,22 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 		}
+ 	} while ((memcg = parent_mem_cgroup(memcg)));
+ 
++	/*
++	 * Reclaim is scheduled for the userland return path already,
++	 * but also attempt synchronous reclaim to avoid excessive
++	 * overrun while the task is still inside the kernel. If this
++	 * is successful, the return path will see it when it rechecks
++	 * the overage, and simply bail out.
++	 *
++	 * Skip if the task is already dying, though. Unlike
++	 * memory.max, memory.high enforcement isn't as strict, and
++	 * there is no OOM killer involved, which means the excess
++	 * could already be much bigger (and still growing) than it
++	 * could for memory.max; the dying task could get stuck in
++	 * fruitless reclaim for a long time, which isn't desirable.
++	 */
+ 	if (current->memcg_nr_pages_over_high > MEMCG_CHARGE_BATCH &&
+-	    !(current->flags & PF_MEMALLOC) &&
++	    !(current->flags & PF_MEMALLOC) && !task_is_dying() &&
+ 	    gfpflags_allow_blocking(gfp_mask)) {
+ 		mem_cgroup_handle_over_high(gfp_mask);
+ 	}
+-- 
+2.43.0
+
 
