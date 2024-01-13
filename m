@@ -1,150 +1,120 @@
-Return-Path: <cgroups+bounces-1138-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1139-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91ABD82C6A4
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jan 2024 22:28:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42B0682CCE3
+	for <lists+cgroups@lfdr.de>; Sat, 13 Jan 2024 14:57:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E96528775A
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jan 2024 21:28:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF6F91F22824
+	for <lists+cgroups@lfdr.de>; Sat, 13 Jan 2024 13:57:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15170168D9;
-	Fri, 12 Jan 2024 21:28:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CC712135D;
+	Sat, 13 Jan 2024 13:57:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DqOmpaSf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aEZlhzbu"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ED4315AFA
-	for <cgroups@vger.kernel.org>; Fri, 12 Jan 2024 21:28:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d47fae33e0so36845ad.0
-        for <cgroups@vger.kernel.org>; Fri, 12 Jan 2024 13:28:06 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA07821113;
+	Sat, 13 Jan 2024 13:57:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a2c179aa5c4so384528266b.0;
+        Sat, 13 Jan 2024 05:57:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705094886; x=1705699686; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ulXxKHR6+R96Ym936Wr/tcnuVWt4HjQnt79btAUo6a0=;
-        b=DqOmpaSf/B1pXGXUqfS3pKupk9Wld7SexcnXm/77qKem3y5KONGoZJYkjuWR/PVeri
-         v09eOUWkkfqDjHhqjwdZwJTGXssy9BR3RseUfcGG550Dp21t7JGectP8tvgbiofs9ZcA
-         McQMWmsX7Er8A1+FB2IDsP0yG35NKjUtax0gRkhuP47zWFtZVuKPGQWREYUGP4c8OX9n
-         KBxjXzUfJRdeVsHNza3HgxvGyOW56vyweKJKPFw10T9i/u2Ei8iVs6efeGp2vUzOzpiw
-         /xweuYCzF8+6sNRTRGT2h05CUbAwKZkTYDoij+vTPZ+X34fPjlP8N9JHaeSUECpiKQf5
-         MB1Q==
+        d=gmail.com; s=20230601; t=1705154263; x=1705759063; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PGE1HEJ5ixxTvOXVNxbbYY7sOdvQr1NpAqO6gUYLh08=;
+        b=aEZlhzbuh4VFbItmMYKxfYHzvAwezxQ72V8VbwSa3g2pnsRc0mi1xrF0c2AznuUXwc
+         BJokau6Tlj72I3E3GC3GeRuNsGi2elNDjWnjAwhxUnub0gGGsmIV8RptUwm9DS4198b+
+         9bcTkY0oNaQOiKshEmC8vbw1maBpVjdNlYIO7jdlpzn+1rX/qpSDtPm5VBUXihACvvCI
+         igCjIlJMp6gtdIpmOqnwP03yP+op1I3/KfFOj6HiKZJouw0ejX1F/mpHaO7EVW0zoyFN
+         Bt08xk92AtZrM3fpJ22N4PoVCTMewA352nCZUZzqlf7bBAw80c3vt0pccG0YogCLefAX
+         8mWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705094886; x=1705699686;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ulXxKHR6+R96Ym936Wr/tcnuVWt4HjQnt79btAUo6a0=;
-        b=wC31HLqIk3Aj9EqWUR1aAy+vKop/Ecz0lCMCc5t/Kt9IbCLVMxfp3Yo8/onvoE1GKF
-         fA3mbehcv7AwcQ6Wz1O1pqwTfafgnRXnfkbZnYFKHI2ZOLHCCy4nlosLBgWV4pVXoVSE
-         sUQZCLukc8BvDvwtPMm7NXqHwQ+ACmxsVqd0yuTY/FSg0itHF8H7RBbn4ueIRBny8PXY
-         I2Za1KwwMtlFiU4AAV1E9+hfNRo1DRryAlR+uFPTQYZad2wzMftfnJeIxKSsHOfhU8Lh
-         QSWG8BxJws9E25/VgE15sDmWSohc3VWPoNOJHnJ7oBp1gCSDmM6Jb+Qml+AfyDB9n9Z6
-         0+ug==
-X-Gm-Message-State: AOJu0YzAH6IeHjNu/4UhsMHFVe3KssdG5F3oQ0WBd5+eeb3McUEPO9Jw
-	x0f8RZNYBMFNNSWdptqsm+Q/65tvRo9BM8PxJwdjrdm5oCar
-X-Google-Smtp-Source: AGHT+IHTke8Gkj+PF60nPCJXSujK1CjK+FPxEcsD43yT9XaiGsxSwmhN8j5WvcvtGmrPhj7ZMJslu5DxyXB0dGIAeOY=
-X-Received: by 2002:a17:902:e54b:b0:1d3:c36b:4833 with SMTP id
- n11-20020a170902e54b00b001d3c36b4833mr460116plf.27.1705094885609; Fri, 12 Jan
- 2024 13:28:05 -0800 (PST)
+        d=1e100.net; s=20230601; t=1705154263; x=1705759063;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PGE1HEJ5ixxTvOXVNxbbYY7sOdvQr1NpAqO6gUYLh08=;
+        b=AjXDxe0byr1rZ/QgUCURCH6+r/gh6ngdPXDwWBsTXr62OMj+epLO7uNCpk+tDLxkkL
+         4EfM103SAJBUUZBr3Kszbu/zMYTZPvYNUL3bFZ/FVzlPoD0nzU1tGa1xRY1Yi6xIw/bD
+         UXZtqw3EyiIm14h2jJZjdnZxIruGvPaybM+Yepqbkn1ma2EluHA3LMwEgUWbfEDEAJ2L
+         t06RyN2MIafbSwIH8RH33Uaq6acT1zKJOdl/8X9qHqWOcvH7BHvbqK2uiretTDqfvb5k
+         Tj3k/u1sQv277L0BUla4I2Kii1s4U30C3U1WOZMunvZAnwQaCifQ3mJ++DGxAmFLzGmN
+         WBKA==
+X-Gm-Message-State: AOJu0YzAXUKt422fjnYSnVLlWKTkkrdkxmTZh8fpUq4MUl1O7Cr7mFYG
+	sar8Mo4oLEOvDWf8REg5gl4=
+X-Google-Smtp-Source: AGHT+IFMOIYDYiCqRWjRhgVi6B2d5peHDNTF2jXuwvHB8FKts87L7ld0sC7DRk8qiddMgjxRgmPzDw==
+X-Received: by 2002:a17:906:15c3:b0:a2b:1a80:7b72 with SMTP id l3-20020a17090615c300b00a2b1a807b72mr1514786ejd.30.1705154262796;
+        Sat, 13 Jan 2024 05:57:42 -0800 (PST)
+Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
+        by smtp.gmail.com with ESMTPSA id b4-20020a170906150400b00a2a37f63216sm2950887ejd.171.2024.01.13.05.57.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 13 Jan 2024 05:57:42 -0800 (PST)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Sat, 13 Jan 2024 14:57:40 +0100
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: Jiri Olsa <olsajiri@gmail.com>, linux-input@vger.kernel.org,
+	coreteam@netfilter.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	fsverity@lists.linux.dev, bpf@vger.kernel.org,
+	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+	cgroups@vger.kernel.org, alexei.starovoitov@gmail.com,
+	quentin@isovalent.com, alan.maguire@oracle.com, memxor@gmail.com
+Subject: Re: [PATCH bpf-next v3 0/3] Annotate kfuncs in .BTF_ids section
+Message-ID: <ZaKW1AghwUnVz_c4@krava>
+References: <cover.1704565248.git.dxu@dxuuu.xyz>
+ <ZaFm13GyXUukcnkm@krava>
+ <2dhmwvfnnqnlrui2qcr5fob54gdsuse5caievct42trvvia6qe@p24nymz3uttv>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240111132902.389862-1-hannes@cmpxchg.org> <ZaAsbwFP-ttYNwIe@P9FQF9L96D>
- <20240111192807.GA424308@cmpxchg.org> <CALvZod6eb2uPPW+y=CnB_KumOW-MJjqJK=zOqfzwwJ-JX9eP0g@mail.gmail.com>
- <ZaGoSdNpouolFHdT@P9FQF9L96D.corp.robot.car>
-In-Reply-To: <ZaGoSdNpouolFHdT@P9FQF9L96D.corp.robot.car>
-From: Shakeel Butt <shakeelb@google.com>
-Date: Fri, 12 Jan 2024 13:27:54 -0800
-Message-ID: <CALvZod5nLdpLgweBU0MtsMzBK=vTnJnRgr5FAhku3d=Atw1Cow@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcontrol: don't throttle dying tasks on memory.high
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>, 
-	Dan Schatzberg <schatzberg.dan@gmail.com>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2dhmwvfnnqnlrui2qcr5fob54gdsuse5caievct42trvvia6qe@p24nymz3uttv>
 
-On Fri, Jan 12, 2024 at 1:00=E2=80=AFPM Roman Gushchin <roman.gushchin@linu=
-x.dev> wrote:
->
-> On Fri, Jan 12, 2024 at 11:04:06AM -0800, Shakeel Butt wrote:
-> > On Thu, Jan 11, 2024 at 11:28=E2=80=AFAM Johannes Weiner <hannes@cmpxch=
-g.org> wrote:
-> > >
-> > [...]
-> > >
-> > > From 6124a13cb073f5ff06b9c1309505bc937d65d6e5 Mon Sep 17 00:00:00 200=
-1
-> > > From: Johannes Weiner <hannes@cmpxchg.org>
-> > > Date: Thu, 11 Jan 2024 07:18:47 -0500
-> > > Subject: [PATCH] mm: memcontrol: don't throttle dying tasks on memory=
-.high
-> > >
-> > > While investigating hosts with high cgroup memory pressures, Tejun
-> > > found culprit zombie tasks that had were holding on to a lot of
-> > > memory, had SIGKILL pending, but were stuck in memory.high reclaim.
-> > >
-> > > In the past, we used to always force-charge allocations from tasks
-> > > that were exiting in order to accelerate them dying and freeing up
-> > > their rss. This changed for memory.max in a4ebf1b6ca1e ("memcg:
-> > > prohibit unconditional exceeding the limit of dying tasks"); it noted
-> > > that this can cause (userspace inducable) containment failures, so it
-> > > added a mandatory reclaim and OOM kill cycle before forcing charges.
-> > > At the time, memory.high enforcement was handled in the userspace
-> > > return path, which isn't reached by dying tasks, and so memory.high
-> > > was still never enforced by dying tasks.
-> > >
-> > > When c9afe31ec443 ("memcg: synchronously enforce memory.high for larg=
-e
-> > > overcharges") added synchronous reclaim for memory.high, it added
-> > > unconditional memory.high enforcement for dying tasks as well. The
-> > > callstack shows that this path is where the zombie is stuck in.
-> > >
-> > > We need to accelerate dying tasks getting past memory.high, but we
-> > > cannot do it quite the same way as we do for memory.max: memory.max i=
-s
-> > > enforced strictly, and tasks aren't allowed to move past it without
-> > > FIRST reclaiming and OOM killing if necessary. This ensures very smal=
-l
-> > > levels of excess. With memory.high, though, enforcement happens lazil=
-y
-> > > after the charge, and OOM killing is never triggered. A lot of
-> > > concurrent threads could have pushed, or could actively be pushing,
-> > > the cgroup into excess. The dying task will enter reclaim on every
-> > > allocation attempt, with little hope of restoring balance.
-> > >
-> > > To fix this, skip synchronous memory.high enforcement on dying tasks
-> > > altogether again. Update memory.high path documentation while at it.
-> > >
-> > > Fixes: c9afe31ec443 ("memcg: synchronously enforce memory.high for la=
-rge overcharges")
-> > > Reported-by: Tejun Heo <tj@kernel.org>
-> > > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> >
-> > Acked-by: Shakeel Butt <shakeelb@google.com>
-> >
-> > I am wondering if you have seen or suspected a similar issue but for
-> > remote memcg charging. For example pageout on a global reclaim which
-> > has to allocate buffers for some other memcg.
->
-> You mean dying tasks entering a direct reclaim mode?
-> Or kswapd being stuck in the reclaim path?
+On Fri, Jan 12, 2024 at 01:03:59PM -0700, Daniel Xu wrote:
+> On Fri, Jan 12, 2024 at 05:20:39PM +0100, Jiri Olsa wrote:
+> > On Sat, Jan 06, 2024 at 11:24:07AM -0700, Daniel Xu wrote:
+> > > === Description ===
+> > > 
+> > > This is a bpf-treewide change that annotates all kfuncs as such inside
+> > > .BTF_ids. This annotation eventually allows us to automatically generate
+> > > kfunc prototypes from bpftool.
+> > > 
+> > > We store this metadata inside a yet-unused flags field inside struct
+> > > btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
+> > > 
+> > > More details about the full chain of events are available in commit 3's
+> > > description.
+> > > 
+> > > The accompanying pahole changes (still needs some cleanup) can be viewed
+> > > here on this "frozen" branch [0].
+> > 
+> > so the plan is to have bpftool support to generate header file
+> > with detected kfuncs?
+> 
+> Yep, that's the major use case. But I see other use cases as well like
 
-No, a normal task (not dying and not kswapd) doing global reclaim and
-may have to do pageout which may trigger allocation of buffer head in
-folio_alloc_buffers(). We increase current->memcg_nr_pages_over_high
-irrespective of current in target memcg or not. Basically I just want
-to know if this is a real concern or can be ignored for now.
+ok, any chance you could already include it in the patchset?
+would be a great way to test this.. maybe we could change
+selftests to use that
+
+thanks,
+jirka
+
+
+> precision probing of kfuncs. Rather than guess and check which progs can
+> load (in the event of backwards incompatible kfunc changes), programs
+> can look at kfunc type signature thru BTF.
 
