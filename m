@@ -1,139 +1,164 @@
-Return-Path: <cgroups+bounces-1141-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1142-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C0E782CE59
-	for <lists+cgroups@lfdr.de>; Sat, 13 Jan 2024 20:49:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3B4D82CEAE
+	for <lists+cgroups@lfdr.de>; Sat, 13 Jan 2024 22:05:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B36AB21048
-	for <lists+cgroups@lfdr.de>; Sat, 13 Jan 2024 19:49:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA98C283ABC
+	for <lists+cgroups@lfdr.de>; Sat, 13 Jan 2024 21:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E69D6ADE;
-	Sat, 13 Jan 2024 19:49:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD66210796;
+	Sat, 13 Jan 2024 21:05:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WwoW5vCB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rYV8Ky+6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAE6B63CB;
-	Sat, 13 Jan 2024 19:49:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-40e72d26a40so474075e9.2;
-        Sat, 13 Jan 2024 11:49:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1705175357; x=1705780157; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1HammmbmKVZr2MOKZbNt/I1t0w3fHw/pSzTd2SPHXwE=;
-        b=WwoW5vCBL3h7lbECyKBVHtgbzwX8+k72jbjt8QU74bmUO1szbPbgdDO2fFvvSTRwk5
-         h2rVvPFaFrRji/ACDztJZT5LswOYqwPWe8wymYmtiIWMiK+NI/aSeLx1y8hdURHAnvrb
-         FNmxXQkmTwrvuiZhz/iieE7npT6qYW6fOoSFUga/2xaVHx0Jy+mG+6Sk32CvFn0DzxvF
-         XJ1ecKOR4SVW3wlwtBD28G8pzpZ3fKy64CA8Sro3Xd0/AA/lHFNzS2juL7lXIrW1T0VK
-         A6ast1EpGUSHvWqPhB0lC7A0ggroAGkpv+dWgIGji1BPEy2gZP3WgPy4GiIxi28Ta3xv
-         jHaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705175357; x=1705780157;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1HammmbmKVZr2MOKZbNt/I1t0w3fHw/pSzTd2SPHXwE=;
-        b=k9BaPTk8SaUyxVLcXhcaz6fRsC4/v34K2injmUrbNu9EJQBoJpqVsKOb76IrcaGAGy
-         xswuPk8J37Ja8CHreJF/hJyNs8TBq6vcGQbgpbodVaH66bGmL/WDCgFAkV6aa2ZxtWNu
-         RRwTrBgp6AQcY4gZt4VPnfITL4JSmJisPe1D1dBpp+LbJ0aGxutsX6W0PKfG3UWGtPjT
-         JvKHxTATIIiROoPCwvgLmKkY2HVJLcAu3i6b7LJQz3MaO8aT/65qtgXGO2UuTZTvJswH
-         GoBPiybL/B7n3mL+NfpR8BumsCEhNmAUKaMepUvjNwm2M0qQN+HJNLv/OC5txvKmsHq+
-         Qw0A==
-X-Gm-Message-State: AOJu0YzNTQ6x55Nk4ZEfkwC1BlhUPnX+k7juvmXuM9Z4qXIUVs9nNF3b
-	WyQ8+3c5l6pFHsKpkCcWTvQ=
-X-Google-Smtp-Source: AGHT+IGB6b1STgkpJhSgj3KuApjLbo2cpOqH+Lo8IF+ZLe2NNqtVVUnWy/HbRsbdtahuuLtgdZIrFQ==
-X-Received: by 2002:a1c:7510:0:b0:40e:50e9:9b0c with SMTP id o16-20020a1c7510000000b0040e50e99b0cmr1665802wmc.181.1705175356706;
-        Sat, 13 Jan 2024 11:49:16 -0800 (PST)
-Received: from krava (ip-94-113-247-30.net.vodafone.cz. [94.113.247.30])
-        by smtp.gmail.com with ESMTPSA id a22-20020a05600c349600b0040d83ab2ecdsm10412099wmq.21.2024.01.13.11.49.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Jan 2024 11:49:16 -0800 (PST)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sat, 13 Jan 2024 20:49:14 +0100
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: Jiri Olsa <olsajiri@gmail.com>, linux-input@vger.kernel.org,
-	coreteam@netfilter.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	fsverity@lists.linux.dev, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-	cgroups@vger.kernel.org, alexei.starovoitov@gmail.com,
-	quentin@isovalent.com, alan.maguire@oracle.com, memxor@gmail.com
-Subject: Re: [PATCH bpf-next v3 0/3] Annotate kfuncs in .BTF_ids section
-Message-ID: <ZaLpOoi9qu1f-u5B@krava>
-References: <cover.1704565248.git.dxu@dxuuu.xyz>
- <ZaFm13GyXUukcnkm@krava>
- <2dhmwvfnnqnlrui2qcr5fob54gdsuse5caievct42trvvia6qe@p24nymz3uttv>
- <ZaKW1AghwUnVz_c4@krava>
- <nhpt647n2djmthtdkqzrfbpeuqkhfy567rt7qyqtymxejncbgr@4tpiyxy2sbcm>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D180107A6;
+	Sat, 13 Jan 2024 21:05:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86632C433C7;
+	Sat, 13 Jan 2024 21:04:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705179900;
+	bh=ux54uZJWkkoZPaHx5sQX6OQDNhSpfNHWw1t1XFJcD8w=;
+	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
+	b=rYV8Ky+6NziqG3w22urj/CYOfZu/nLd+f3GZpyP+b35d4r+ZbLzAbY+zmq9BM7gd9
+	 mIFtAAaRQ+j/xDVLJXr7OfT6W21TKrbUM6AFG1bffoOPCNzbeFFHwc63J0hGnWXNUN
+	 YrnhEF0Mt6Nk36cqXS01+6x5mD/XIzcZOXUflI6VbRqZ9LzWcecWP0DJKxPNC1zOUl
+	 YiwL+bMUooPZqwLoNX4OlVfJrCHIhM0JYX48nhRbPV78iuMjI0PFZwG2zaXLCA/TK6
+	 TgSsq2EfvmWclH++2bZpaHe0UhKDyTHbpA5pWWoR+d//iyJmU5pKBp4hg3wjW+Yar9
+	 scLX6fY1SYfiA==
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <nhpt647n2djmthtdkqzrfbpeuqkhfy567rt7qyqtymxejncbgr@4tpiyxy2sbcm>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Sat, 13 Jan 2024 23:04:54 +0200
+Message-Id: <CYDVTPABVUJK.1BTJY8YUF9WPI@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
+ <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>, "tj@kernel.org"
+ <tj@kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
+ <kai.huang@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>,
+ "anakrish@microsoft.com" <anakrish@microsoft.com>,
+ "sean.j.christopherson@intel.com" <sean.j.christopherson@intel.com>, "Li,
+ Zhiquan1" <zhiquan1.li@intel.com>, "yangjie@microsoft.com"
+ <yangjie@microsoft.com>
+Subject: Re: [PATCH v6 09/12] x86/sgx: Restructure top-level EPC reclaim
+ function
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+X-Mailer: aerc 0.16.0
+References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
+ <20231030182013.40086-10-haitao.huang@linux.intel.com>
+ <c8fc40dc56b853fbff14ba22db197c80a6d31820.camel@intel.com>
+ <op.2e0yod2lwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <431c5d7f5aee7d11ec2e8aa2e526fde438fa53b4.camel@intel.com>
+ <op.2ftmyampwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <3c27bca678c1b041920a14a7da0d958c9861ebca.camel@intel.com>
+ <op.2f0eo8r1wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <73ed579be8ad81835df1c309b7c69b491b7f2c8e.camel@intel.com>
+ <op.2hf1t7sywjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2hf1t7sywjvjmi@hhuan26-mobl.amr.corp.intel.com>
 
-On Sat, Jan 13, 2024 at 09:17:44AM -0700, Daniel Xu wrote:
-> Hi Jiri,
-> 
-> On Sat, Jan 13, 2024 at 02:57:40PM +0100, Jiri Olsa wrote:
-> > On Fri, Jan 12, 2024 at 01:03:59PM -0700, Daniel Xu wrote:
-> > > On Fri, Jan 12, 2024 at 05:20:39PM +0100, Jiri Olsa wrote:
-> > > > On Sat, Jan 06, 2024 at 11:24:07AM -0700, Daniel Xu wrote:
-> > > > > === Description ===
-> > > > > 
-> > > > > This is a bpf-treewide change that annotates all kfuncs as such inside
-> > > > > .BTF_ids. This annotation eventually allows us to automatically generate
-> > > > > kfunc prototypes from bpftool.
-> > > > > 
-> > > > > We store this metadata inside a yet-unused flags field inside struct
-> > > > > btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
-> > > > > 
-> > > > > More details about the full chain of events are available in commit 3's
-> > > > > description.
-> > > > > 
-> > > > > The accompanying pahole changes (still needs some cleanup) can be viewed
-> > > > > here on this "frozen" branch [0].
-> > > > 
-> > > > so the plan is to have bpftool support to generate header file
-> > > > with detected kfuncs?
-> > > 
-> > > Yep, that's the major use case. But I see other use cases as well like
-> > 
-> > ok, any chance you could already include it in the patchset?
-> > would be a great way to test this.. maybe we could change
-> > selftests to use that
-> 
-> I haven't start working on that code yet, but I can.
-> 
-> Here is my plan FWIW:
-> 
-> 1. Bump minimum required pahole version up. Or feature probe for
->    kfunc decl tag support. Whatever is the standard practice here.
-> 
-> 2. Teach bpftool to dump kfunc prototypes, guarded behind a flag.
-> 
-> 3. Flip bpftool flag on in selftest build and remove all manual kfunc
->    prototypes atomically in 1 commit.
-> 
-> I thought it'd be nicer to do it incrementally given all the moving
-> pieces. But if we want to land it all at once that is ok by me too.
+On Fri Jan 12, 2024 at 7:07 PM EET, Haitao Huang wrote:
+> On Sun, 17 Dec 2023 19:44:56 -0600, Huang, Kai <kai.huang@intel.com> wrot=
+e:
+>
+> >
+> >> >
+> >> > The point is, with or w/o this patch, you can only reclaim 16 EPC =
+=20
+> >> pages
+> >> > in one
+> >> > function call (as you have said you are going to remove
+> >> > SGX_NR_TO_SCAN_MAX,
+> >> > which is a cipher to both of us).  The only difference I can see is,
+> >> > with this
+> >> > patch, you can have multiple calls of "isolate" and then call the
+> >> > "do_reclaim"
+> >> > once.
+> >> >
+> >> > But what's the good of having the "isolate" if the "do_reclaim" can =
+=20
+> >> only
+> >> > reclaim
+> >> > 16 pages anyway?
+> >> >
+> >> > Back to my last reply, are you afraid of any LRU has less than 16 =
+=20
+> >> pages
+> >> > to
+> >> > "isolate", therefore you need to loop LRUs of descendants to get 16?
+> >> > Cause I
+> >> > really cannot think of any other reason why you are doing this.
+> >> >
+> >> >
+> >>
+> >> I think I see your point. By capping pages reclaimed per cycle to 16,
+> >> there is not much difference even if those 16 pages are spread in =20
+> >> separate
+> >> LRUs . The difference is only significant when we ever raise that cap.=
+ =20
+> >> To
+> >> preserve the current behavior of ewb loops independent on number of LR=
+Us
+> >> to loop through for each reclaiming cycle, regardless of the exact val=
+ue
+> >> of the page cap, I would still think current approach in the patch is
+> >> reasonable choice.  What do you think?
+> >
+> > To me I won't bother to do that.  Having less than 16 pages in one LRU =
+is
+> > *extremely rare* that should never happen in practice.  It's pointless =
+=20
+> > to make
+> > such code adjustment at this stage.
+> >
+> > Let's focus on enabling functionality first.  When you have some real
+> > performance issue that is related to this, we can come back then.
+> >
+>
+> I have done some rethinking about this and realize this does save quite =
+=20
+> some significant work: without breaking out isolation part from =20
+> sgx_reclaim_pages(), I can remove the changes to use a list for isolated =
+=20
+> pages, and no need to introduce "state" such as RECLAIM_IN_PROGRESS. Abou=
+t =20
+> 1/3 of changes for per-cgroup reclamation will be gone.
+>
+> So I think I'll go this route now. The only downside may be performance i=
+f =20
+> a enclave spreads its pages in different cgroups and even that is minimum=
+ =20
+> impact as we limit reclamation to 16 pages a time. Let me know if someone=
+ =20
+> feel strongly we need dealt with that and see some other potential issues=
+ =20
+> I may have missed.
 
-I think it'd be best to try the whole thing before we merge the change
-to pahole.. I guess the tests changes can come later, but would be great
-to try the kfunc dump and make sure it works as expected
+We could deal with possible performance regression later on (if there
+is need). I mean there should we a workload first that would so that
+sort stimulus...
 
-jirka
+> Thanks
+>
+> Haitao
+
+BR, Jarkko
 
