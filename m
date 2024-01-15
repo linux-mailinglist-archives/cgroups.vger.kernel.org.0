@@ -1,61 +1,62 @@
-Return-Path: <cgroups+bounces-1146-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1147-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B624182D37D
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jan 2024 04:49:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2767282D4DA
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jan 2024 09:04:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E81B1C20AB5
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jan 2024 03:49:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3E7DB209A3
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jan 2024 08:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 452F41874;
-	Mon, 15 Jan 2024 03:49:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57AC86FA6;
+	Mon, 15 Jan 2024 08:04:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LzoUNv4L"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WiQxGCzN"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76A701842
-	for <cgroups@vger.kernel.org>; Mon, 15 Jan 2024 03:49:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B9C6FA1
+	for <cgroups@vger.kernel.org>; Mon, 15 Jan 2024 08:04:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Content-Type: text/plain;
 	charset=us-ascii
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1705290581;
+	t=1705305840;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8pdqooBRNRG8xhD7RtuZdDMFytmkOMTAPnRjl9s6aRY=;
-	b=LzoUNv4L8rCprnbUopJFyobK8/ugRm07sdEUX69Ib6+d4KxGe2oSndYFlZlWC972/1uVPl
-	jyW2FTEoUN1tmFoLXNLWG5mbUBcSOlkvhdZTEUEIaVf7duqDYfLfGLNhwYYItny7OknaDY
-	RbVmamsIg5Iy6sGiE+zVVkhJHVd8/Po=
+	bh=QnJRRtZ/PoGush4Hndog/3Wt84Ao78Pcw/n6BWyMsIs=;
+	b=WiQxGCzNTnwiRRS0lE3uNApwhnUUEU7+3sftcj2K80ZCBKpdE+PNWajDtkKP3ldsUQokgS
+	PlDC8afOFTqqF6v0fFmgoj3igMeQwB8VFmF+Fi0d3JYw/pgqg1aPQjIR1F/lpGwU9aqC1r
+	1NopgrQt1PetzjAK4pxymB6usIC1GUo=
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Subject: Re: [PATCH 2/4] memcg: Return the folio in union mc_target
+Subject: Re: [PATCH 1/4] memcg: Convert mem_cgroup_move_charge_pte_range() to
+ use a folio
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20240111181219.3462852-3-willy@infradead.org>
-Date: Mon, 15 Jan 2024 11:49:09 +0800
+In-Reply-To: <20240111181219.3462852-2-willy@infradead.org>
+Date: Mon, 15 Jan 2024 16:03:22 +0800
 Cc: Andrew Morton <akpm@linux-foundation.org>,
  Johannes Weiner <hannes@cmpxchg.org>,
  Michal Hocko <mhocko@kernel.org>,
  Roman Gushchin <roman.gushchin@linux.dev>,
  Shakeel Butt <shakeelb@google.com>,
  cgroups@vger.kernel.org,
- linux-mm@kvack.org
+ Linux-MM <linux-mm@kvack.org>
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <BB0449C5-B0D0-46B4-BF5F-DD32378ED047@linux.dev>
+Message-Id: <07B48A08-BFCC-4FD1-BAE9-3C6F1B4B9755@linux.dev>
 References: <20240111181219.3462852-1-willy@infradead.org>
- <20240111181219.3462852-3-willy@infradead.org>
+ <20240111181219.3462852-2-willy@infradead.org>
 To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 X-Migadu-Flow: FLOW_OUT
 
@@ -64,9 +65,11 @@ X-Migadu-Flow: FLOW_OUT
 > On Jan 12, 2024, at 02:12, Matthew Wilcox (Oracle) =
 <willy@infradead.org> wrote:
 >=20
-> All users of target.page convert it to the folio, so we can just =
-return
-> the folio directly and save a few calls to compound_head().
+> Remove many calls to compound_head() by calling page_folio() once at
+> the start of each stanza which receives a struct page from 'target'.
+> There should be no change in behaviour here as all the called =
+functions
+> start out by converting the page to its folio.
 >=20
 > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
