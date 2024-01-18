@@ -1,183 +1,160 @@
-Return-Path: <cgroups+bounces-1171-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1172-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E8A7830F90
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jan 2024 23:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A232831567
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jan 2024 10:04:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 717A81C23BAF
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jan 2024 22:56:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8A201C22A11
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jan 2024 09:04:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5556D1E88B;
-	Wed, 17 Jan 2024 22:56:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 524F013ADC;
+	Thu, 18 Jan 2024 09:04:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CZ9bAi6I"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="q0utVZF0";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="lK5Ihehp"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB38E1DA4C
-	for <cgroups@vger.kernel.org>; Wed, 17 Jan 2024 22:56:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C1DF12E41;
+	Thu, 18 Jan 2024 09:04:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705532188; cv=none; b=m22qLpK8cUSPuyLPM6WEL/Mm5F59t9kBfEpYmfKlt/b/0HcJ4MddFziE6q9AXY/NmmMUVlJtlu7gQ84SWB/HoLgnGSQg9qW+vNjSLBrCqr6AE3kOK/6VciIAn0211heRMwYAnyoZcTTKPV9yNUlTxPY3bT3JUHmtHdR8Nvrqqtc=
+	t=1705568676; cv=none; b=Dq87nOGQcpBNHEADlrdmZcky48NBC4SUz7aMf2O83JSJuiRGQ5AJ81WrROHunQxSvfn8T+LM0DRv3z3snrQ46TGiv0NN3MNyZG7GFfvR1063KImbhMtJ6DNziM8dGP+GtBtdvThfnkleLfTi3XQwDzAgYKRYHM5GTpVgQJi3b08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705532188; c=relaxed/simple;
-	bh=Da11o87IOuakB6YpOGtRihXwB6ybYLPyw0iqr8MnkDY=;
-	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:MIME-Version:
-	 References:In-Reply-To:From:Date:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding; b=LA2Ul25QUc5nH5tZXfDU71whJJpHeCQztr3dXAGFKA9Y8MAyr1JONXPUuxfq8nl8YP/RynbyjkQB3xeyopYobjZu2sAyupVzNxI8jDGqbP5PgnnaOHljzD6WcsNTXiu0AsrdZ9flx+qdt1NQJbCOcRoejlD9pYPc74XJKEF6k+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CZ9bAi6I; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-429bdb17616so406501cf.0
-        for <cgroups@vger.kernel.org>; Wed, 17 Jan 2024 14:56:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705532185; x=1706136985; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bGcgRuVseEOV3oC1VpSFRFC5b02XYAyQRuzT8bO3Zzs=;
-        b=CZ9bAi6IFm7q3PcdXGEDltOARPGPos+xATI1G8oimI5D+1fxv1j6SJfrlw5Rf0HmJO
-         eMN7jxXhQCZp7AtVrRQ+0BxyuvDkotEF0itXMlPMV3jml2ZtUuKvueT08XVaVul8vGVX
-         Jegvq/C4m8+MLf76ufoxI2F2dQ1XPxJKtK1mv491W2Fwo5W5Uc55Blu016rBFHDZGc9Q
-         TFH/taHu5M/XXS7N2CVOzODU300URkDjAnz9ZOuKB9ULSkDwTLoK73jUr47hl+R7SM4g
-         Zb7Nu/EUUww5waWwRKSDev5dY7X21ANgctowWT8AUwG8LaDjAzeZ3exlvCvrbNS0Yz9d
-         PS3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705532185; x=1706136985;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bGcgRuVseEOV3oC1VpSFRFC5b02XYAyQRuzT8bO3Zzs=;
-        b=xNCaEXqYkkE39tpMXPsndnpDIsQqbYjq2mMoP4W8g6YZ3W8ZaeeSk7A9Bt3yfOz13l
-         IaTwE1nsBTDpdQSCyVlA1OxUmECHyhcQkpUCLp/0HJsVAbkj6Y0AtTnsZ2GKikmUT+KT
-         MvyMrm03I37s46kks2dNfj93mHMuj6evRmse9W9DMDVM/AsXDprnaDmqVodszzlF5g1s
-         687d8aB+MZw4Ro9nP3w5srpmnLKkSCPjJChQtWQN1IDz+D9+/kpMkJux2MlJHNXgnpXQ
-         BuX6VfOAIqj0BDUUcgyPVzOu0B4m5t8Sq4T/8VUlBnFRBgXwIKYqhF2niQBczxz/PHdQ
-         kAbw==
-X-Gm-Message-State: AOJu0YyIHqvYVi6r19JlGO/x6sOY2aKIWi1GwdD1qZyHZMQSHooC8qjV
-	yw1RuS67URkVt47aASvFlw4IXBj7p5qIDkUP+v8HvMvokcEIWBwgLsLfDLfk3j5xM32Q0rv1iIR
-	DWGMTcl9NIhxTUm1L6la4Ub5f5ebto8ym96FW
-X-Google-Smtp-Source: AGHT+IF1P30PiLjC2CQWqrwirPzdBqiOUoNxTHpv9JcFeNcMRLyFct/qjqhKxCmRPW8qqdV7EHPEaNFhiWXXS9AKCwA=
-X-Received: by 2002:a05:622a:5c99:b0:42a:101b:61b0 with SMTP id
- ge25-20020a05622a5c9900b0042a101b61b0mr418353qtb.2.1705532185394; Wed, 17 Jan
- 2024 14:56:25 -0800 (PST)
+	s=arc-20240116; t=1705568676; c=relaxed/simple;
+	bh=Lx9tonMV0p2LmGJzOUVmxlBkhvvyPY8HKeuAJPQh4ks=;
+	h=Received:DKIM-Signature:DKIM-Signature:Received:Received:Date:
+	 From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:X-Spamd-Result:X-Rspamd-Server:
+	 X-Rspamd-Queue-Id:X-Spam-Level:X-Spam-Score:X-Spam-Flag; b=r6/ZBXmghL1pSTCZT60clqnakMvobrTNWlDGoYucKNIFVQpFIE/r8s44BQi5y7P8DKQnEMUbmRGTe+GUuL4ztb+NqITNXMFG3jgHKjvs9oEAGmJeTGyF8Kg9EmZETngJbRfmcWyhKtVNcnil9Qd+5/8YedTc/U9l9gIdWEhfaeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=q0utVZF0; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=lK5Ihehp; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4FA5922049;
+	Thu, 18 Jan 2024 09:04:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705568672; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Lx9tonMV0p2LmGJzOUVmxlBkhvvyPY8HKeuAJPQh4ks=;
+	b=q0utVZF0O92nhdxl2kE4a6MZyKsKAtvwi2N/IkUkbVsotX2YQISspqe6TosRHNUqMz6vvd
+	UMuwMgDMufs7dSmREmYrsR45+gZH1uOI5mW655ZZuwG2jbpRKj7+1wxZXy69NcoCfWoU51
+	qrMnarvLlmNUaTJEwYqtrWXp9d++Yew=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1705568671; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Lx9tonMV0p2LmGJzOUVmxlBkhvvyPY8HKeuAJPQh4ks=;
+	b=lK5IhehpmssMnTKxdBPOWJ6FwenHO4AUxX3t+ItSvSa8aQd1liz32rxnFfsuF4P4mEVXmm
+	x5N5wbY5N+SOGshCLSfORkSdYDJbvlOiTfwb0Q+su98rU52Qwz5S/b/9EF680lLKga9eTF
+	uE2CvXGmtfCRkv5pLJThqB1Ki728rMA=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E026113874;
+	Thu, 18 Jan 2024 09:04:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id PpbYNZ7pqGXBMQAAD6G6ig
+	(envelope-from <mkoutny@suse.com>); Thu, 18 Jan 2024 09:04:30 +0000
+Date: Thu, 18 Jan 2024 10:04:29 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Josh Poimboeuf <jpoimboe@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
+	Shakeel Butt <shakeelb@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org, 
+	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, 
+	Vasily Averin <vasily.averin@linux.dev>, Waiman Long <longman@redhat.com>, 
+	Muchun Song <muchun.song@linux.dev>, Jiri Kosina <jikos@kernel.org>, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org
+Subject: Re: [PATCH RFC 4/4] mitigations: Add flock cache accounting to
+ 'mitigations=off'
+Message-ID: <dxd775xvo2r4vonmpvzb6sgrwgfqrsvekqabyh4mjljgrqzecj@eiubz4t2lepu>
+References: <cover.1705507931.git.jpoimboe@kernel.org>
+ <3e803d5aee5dd1f4c738f0de1e839e6cfcb9dc41.1705507931.git.jpoimboe@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1705507931.git.jpoimboe@kernel.org> <ac84a832feba5418e1b58d1c7f3fe6cc7bc1de58.1705507931.git.jpoimboe@kernel.org>
- <6667b799702e1815bd4e4f7744eddbc0bd042bb7.camel@kernel.org>
- <20240117193915.urwueineol7p4hg7@treble> <CAHk-=wg_CoTOfkREgaQQA6oJ5nM9ZKYrTn=E1r-JnvmQcgWpSg@mail.gmail.com>
- <CALvZod6LgX-FQOGgNBmoRACMBK4GB+K=a+DYrtExcuGFH=J5zQ@mail.gmail.com> <ZahSlnqw9yRo3d1v@P9FQF9L96D.corp.robot.car>
-In-Reply-To: <ZahSlnqw9yRo3d1v@P9FQF9L96D.corp.robot.car>
-From: Shakeel Butt <shakeelb@google.com>
-Date: Wed, 17 Jan 2024 14:56:11 -0800
-Message-ID: <CALvZod4V3QTULTW5QxgqCbDpNtVO6fXzta33HR7GN=L2LUU26g@mail.gmail.com>
-Subject: Re: [PATCH RFC 1/4] fs/locks: Fix file lock cache accounting, again
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Josh Poimboeuf <jpoimboe@kernel.org>, 
-	Vlastimil Babka <vbabka@suse.cz>, Jeff Layton <jlayton@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org, 
-	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, Vasily Averin <vasily.averin@linux.dev>, 
-	Michal Koutny <mkoutny@suse.com>, Waiman Long <longman@redhat.com>, 
-	Muchun Song <muchun.song@linux.dev>, Jiri Kosina <jikos@kernel.org>, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="u4b4gqso4ihknobk"
+Content-Disposition: inline
+In-Reply-To: <3e803d5aee5dd1f4c738f0de1e839e6cfcb9dc41.1705507931.git.jpoimboe@kernel.org>
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=lK5Ihehp
+X-Spamd-Result: default: False [-4.08 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[17];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 SIGNED_PGP(-2.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.17)[70.01%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 4FA5922049
+X-Spam-Level: 
+X-Spam-Score: -4.08
+X-Spam-Flag: NO
 
-On Wed, Jan 17, 2024 at 2:20=E2=80=AFPM Roman Gushchin <roman.gushchin@linu=
-x.dev> wrote:
->
-> On Wed, Jan 17, 2024 at 01:02:19PM -0800, Shakeel Butt wrote:
-> > On Wed, Jan 17, 2024 at 12:21=E2=80=AFPM Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > On Wed, 17 Jan 2024 at 11:39, Josh Poimboeuf <jpoimboe@kernel.org> wr=
-ote:
-> > > >
-> > > > That's a good point.  If the microbenchmark isn't likely to be even
-> > > > remotely realistic, maybe we should just revert the revert until if=
-/when
-> > > > somebody shows a real world impact.
-> > > >
-> > > > Linus, any objections to that?
-> > >
-> > > We use SLAB_ACCOUNT for much more common allocations like queued
-> > > signals, so I would tend to agree with Jeff that it's probably just
-> > > some not very interesting microbenchmark that shows any file locking
-> > > effects from SLAB_ALLOC, not any real use.
-> > >
-> > > That said, those benchmarks do matter. It's very easy to say "not
-> > > relevant in the big picture" and then the end result is that
-> > > everything is a bit of a pig.
-> > >
-> > > And the regression was absolutely *ENORMOUS*. We're not talking "a fe=
-w
-> > > percent". We're talking a 33% regression that caused the revert:
-> > >
-> > >    https://lore.kernel.org/lkml/20210907150757.GE17617@xsang-OptiPlex=
--9020/
-> > >
-> > > I wish our SLAB_ACCOUNT wasn't such a pig. Rather than account every
-> > > single allocation, it would be much nicer to account at a bigger
-> > > granularity, possibly by having per-thread counters first before
-> > > falling back to the obj_cgroup_charge. Whatever.
-> > >
-> > > It's kind of stupid to have a benchmark that just allocates and
-> > > deallocates a file lock in quick succession spend lots of time
-> > > incrementing and decrementing cgroup charges for that repeated
-> > > alloc/free.
-> > >
-> > > However, that problem with SLAB_ACCOUNT is not the fault of file
-> > > locking, but more of a slab issue.
-> > >
-> > > End result: I think we should bring in Vlastimil and whoever else is
-> > > doing SLAB_ACCOUNT things, and have them look at that side.
-> > >
-> > > And then just enable SLAB_ACCOUNT for file locks. But very much look
-> > > at silly costs in SLAB_ACCOUNT first, at least for trivial
-> > > "alloc/free" patterns..
-> > >
-> > > Vlastimil? Who would be the best person to look at that SLAB_ACCOUNT
-> > > thing? See commit 3754707bcc3e (Revert "memcg: enable accounting for
-> > > file lock caches") for the history here.
-> > >
-> >
-> > Roman last looked into optimizing this code path. I suspect
-> > mod_objcg_state() to be more costly than obj_cgroup_charge(). I will
-> > try to measure this path and see if I can improve it.
->
-> It's roughly an equal split between mod_objcg_state() and obj_cgroup_char=
-ge().
-> And each is comparable (by order of magnitude) to the slab allocation cos=
-t
-> itself. On the free() path a significant cost comes simple from reading
-> the objcg pointer (it's usually a cache miss).
->
-> So I don't see how we can make it really cheap (say, less than 5% overhea=
-d)
-> without caching pre-accounted objects.
 
-Maybe this is what we want. Now we are down to just SLUB, maybe such
-caching of pre-accounted objects can be in SLUB layer and we can
-decide to keep this caching per-kmem-cache opt-in or always on.
+--u4b4gqso4ihknobk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
-> I thought about merging of charge and stats handling paths, which _maybe_=
- can
-> shave off another 20-30%, but there still will be a double-digit% account=
-ing
-> overhead.
->
-> I'm curious to hear other ideas and suggestions.
->
-> Thanks!
+On Wed, Jan 17, 2024 at 08:14:46AM -0800, Josh Poimboeuf <jpoimboe@kernel.org> wrote:
+> Allow flock cache accounting to be disabled with 'mitigations=off', as
+> it fits the profile for that option: trusted user space combined with a
+> performance-impacting mitigation.
+
+Note that some other kernel objects that don't have any other tight
+limit are already charged too (but their charging likely did not stand
+out in any performance regression tests).
+In the situation you describe, users can already pass
+`cgroup.memory=nokmem` and get rid of charging overhead in general.
+
+IOW, if flock objects are charged, there already is a boot option to
+turn off such behavior.
+
+Regards,
+Michal
+
+--u4b4gqso4ihknobk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZajpkQAKCRAGvrMr/1gc
+jnI1AQCbThmyZZHc0yb1sSU87kRYGU6A+8Qm5wtthTdtlNoPuwEAnOxavnxMkLvy
+VhsoAek+ajhMUjJp7v03BI1OEx2X/AA=
+=LaB0
+-----END PGP SIGNATURE-----
+
+--u4b4gqso4ihknobk--
 
