@@ -1,120 +1,126 @@
-Return-Path: <cgroups+bounces-1179-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1180-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE2028354B4
-	for <lists+cgroups@lfdr.de>; Sun, 21 Jan 2024 07:14:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 899108357F6
+	for <lists+cgroups@lfdr.de>; Sun, 21 Jan 2024 22:44:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED9BC1F2371E
-	for <lists+cgroups@lfdr.de>; Sun, 21 Jan 2024 06:14:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD58F28195F
+	for <lists+cgroups@lfdr.de>; Sun, 21 Jan 2024 21:44:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2557236135;
-	Sun, 21 Jan 2024 06:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 749D2381D8;
+	Sun, 21 Jan 2024 21:44:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zFC7YGFg"
 X-Original-To: cgroups@vger.kernel.org
-Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E02FBF0;
-	Sun, 21 Jan 2024 06:13:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0EA823DB
+	for <cgroups@vger.kernel.org>; Sun, 21 Jan 2024 21:44:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705817636; cv=none; b=eWYu4SHn3nyFVC+EN9gLnP/ZYp20DC6532WbPH26l9qocIOzEza9nHe3Ovt7KA+NVh8BX9oq6RN2SNy1HAN90SGEjGllcBJj8wTCnsbSRjQ71wTwnSE2BuBrz+G9PQuiOZWfFFPek56/+H+xp5YkL4QCXWVkI3VxuZEYtvodw9E=
+	t=1705873472; cv=none; b=r0bJlxX8efIItJ74eWMSXX4NeWQ37IyUt93oZrkmrL/VOtkFL3cQGZ50v5wA9lFVKNVv6cPVi31LFw5tWtcvo3h4hCNA+Cjf1e7i0eL/RInvjp6i2pLDWQRLGSf4YuhuPfn9sQLrnjtEtqIQCXCqD+kDhDATtqJIfGLvnQXBxK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705817636; c=relaxed/simple;
-	bh=zWi6IXc9w1aSdxovTTnpQLwjJKktzyOvnzXmRiOlmvg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uOe5oMU6slMF0A2ygmDZf2cIhTiSWZ0+clNnrqQtfOYCwcER2oOW5TNh0duRuQeXkd65PM5T4x/A6oRIIWirzm8QkcG5z2fIP4CKcXAUZjMX+Cia6UVmMwmx5hhBtgDcZf2NOOO7uGVzRlso8/Nw4HD/jT7mphwa4DO5+fjR5HQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ict.ac.cn; spf=pass smtp.mailfrom=ict.ac.cn; arc=none smtp.client-ip=159.226.251.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ict.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ict.ac.cn
-Received: from localhost.localdomain (unknown [125.59.207.199])
-	by APP-05 (Coremail) with SMTP id zQCowAD3_moQtqxlgCh9CA--.59803S2;
-	Sun, 21 Jan 2024 14:13:39 +0800 (CST)
-From: lixinyu20s@ict.ac.cn
-To: linux-kernel@vger.kernel.org
-Cc: linux-doc@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	tj@kernel.org,
-	Xinyu Li <lixinyu20s@ict.ac.cn>
-Subject: [PATCH] docs: cgroup-v1: add missing code-block tags
-Date: Sun, 21 Jan 2024 14:13:36 +0800
-Message-Id: <20240121061336.3500233-1-lixinyu20s@ict.ac.cn>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1705873472; c=relaxed/simple;
+	bh=6sK28xbIZX8Pa42yZVUnnO4tegkf3aHV2JBuABAaq9s=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=SCCQEOgNjW6dJniWbC8qHQdxR3RI9/vbZ7+l3GiFmMh1u6j/T55QJZPhk3jpkptVlOrSYZGgLLmScucHMiHxUxL69tmA2s2pQInxUM7uxCuf2Nk8eItFkD8CC406bB9fxDgz+54rSye860Rllg8wc/+yIyl1soSYOoSgGBmbwJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zFC7YGFg; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbe053d5d91so3227283276.2
+        for <cgroups@vger.kernel.org>; Sun, 21 Jan 2024 13:44:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1705873470; x=1706478270; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=42CVSiV7dgut5spnJTiZryp5KS2ThmG9GG1m+AnlGQk=;
+        b=zFC7YGFgTUSe4o8g7OvYXif2sQvVT8ZClTIuaKc5LJbfZPUwj/ia+tc4XAQRJquY9q
+         205RcDZZul8Q3IZUaPVh04dj9IBR1iFBTWrtaEFWMILFl7/lx4IU4/xtIaWaen4XDdse
+         hxUsvjE9OTGhh4C1N07zqJvrJiCsHkaSMgzDMExE0WUJgLroFYBLCxM2xGS7Lm7ZMC5m
+         8GirrynXqk6AwZ1s2Lar2rkbHW7hwKJPV3MnHYS1rikEbf+skHmvx6YZlsxcNUEa966N
+         uTMx3w/7taxXjailSNpL7eakJ9JolsxbmXxZwYTLRADC/OcJS+GH/dQh2pbzZUt02U9a
+         iyug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705873470; x=1706478270;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=42CVSiV7dgut5spnJTiZryp5KS2ThmG9GG1m+AnlGQk=;
+        b=gyuRPoWWtIhT3QJyEhH53rD4PqxZniiOZY92/k9m06nNKlslzSICg5gS4prKLmT0Td
+         WeYjpUhk8xnQ+z2cpqCgAAht/SojuvyvTHiWvw2lHZECMBB6BvFgB/Sf7nZYtL7T6oQS
+         gbiSRfGQAG88Uo/fcwXUuYMdBuE397g6eB75T5hMcaAaWcAnyyds6i8WwBX2OL3cHvh5
+         CMyhRcKYpz29F7Q7ekMgKv2p2bJH14R3qNedE6GEKrIxSOf7BvdE2jPSJTrHyuFMYJ6G
+         0gZPhs0B8WLa1j7PoWGzWPUPF8y5pkcvjbPwQW8PgO47ZJOfJb2u/JifVGBGqMLufBKN
+         DMSA==
+X-Gm-Message-State: AOJu0Yzoo7+FcdTpMvTYIP4VwdU+VKsayj1yvDhU4n0oAdokUBOZZDcH
+	asYaGRkvM6v2nn6Jr22EqKddVh14w7XNlsUeOc/MPa/yinTqJ31su21dmXaEa3D9STqcwlVj8vQ
+	tv2jiWaiPs8Hjkg==
+X-Google-Smtp-Source: AGHT+IEMyWh2JilAlDoiXR/SNFCsaW7XcaXIO9/SLICkIU9rA3hmvI/12jiPGRRnzJ4MSPZQr0BFbytoIkLdrTs=
+X-Received: from tj-virt.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5683])
+ (user=tjmercier job=sendgmr) by 2002:a25:8204:0:b0:dc2:2179:5f30 with SMTP id
+ q4-20020a258204000000b00dc221795f30mr1531560ybk.1.1705873469887; Sun, 21 Jan
+ 2024 13:44:29 -0800 (PST)
+Date: Sun, 21 Jan 2024 21:44:12 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zQCowAD3_moQtqxlgCh9CA--.59803S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF18tFyfurWDAF15WrW5GFg_yoW8Cr1Upr
-	9rJryakw13GF9Fkr4xAa1DZr17tw1kWrWj9ryxJw4fGrnxW34xWryIgr1Yqws7ur4fJay8
-	ZrW7XF9Ivr4jg3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvI14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j
-	6r4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
-	0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-	0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4kE6xkIj40Ew7xC
-	0wCY02Avz4vE5cC_GF1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
-	IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
-	6r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
-	IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv
-	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf
-	9x0JUrGYLUUUUU=
-X-CM-SenderInfo: pol0x0t1xsi2g6lf3hldfou0/
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.429.g432eaa2c6b-goog
+Message-ID: <20240121214413.833776-1-tjmercier@google.com>
+Subject: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during proactive reclaim"
+From: "T.J. Mercier" <tjmercier@google.com>
+To: tjmercier@google.com, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: android-mm@google.com, yuzhao@google.com, yangyifei03@kuaishou.com, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-From: Xinyu Li <lixinyu20s@ict.ac.cn>
+This reverts commit 0388536ac29104a478c79b3869541524caec28eb.
 
-Hugetlb.rst lacks two code-block tags, causing a formatting issue.
+Proactive reclaim on the root cgroup is 10x slower after this patch when
+MGLRU is enabled, and completion times for proactive reclaim on much
+smaller non-root cgroups take ~30% longer (with or without MGLRU). With
+root reclaim before the patch, I observe average reclaim rates of
+~70k pages/sec before try_to_free_mem_cgroup_pages starts to fail and
+the nr_retries counter starts to decrement, eventually ending the
+proactive reclaim attempt. After the patch the reclaim rate is
+consistently ~6.6k pages/sec due to the reduced nr_pages value causing
+scan aborts as soon as SWAP_CLUSTER_MAX pages are reclaimed. The
+proactive reclaim doesn't complete after several minutes because
+try_to_free_mem_cgroup_pages is still capable of reclaiming pages in
+tiny SWAP_CLUSTER_MAX page chunks and nr_retries is never decremented.
 
-Signed-off-by: Xinyu Li <lixinyu20s@ict.ac.cn>
+The docs for memory.reclaim say, "the kernel can over or under reclaim
+from the target cgroup" which this patch was trying to fix. Revert it
+until a less costly solution is found.
+
+Signed-off-by: T.J. Mercier <tjmercier@google.com>
 ---
- .../admin-guide/cgroup-v1/hugetlb.rst         | 20 +++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ mm/memcontrol.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/admin-guide/cgroup-v1/hugetlb.rst b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
-index 0fa724d82abb..493a8e386700 100644
---- a/Documentation/admin-guide/cgroup-v1/hugetlb.rst
-+++ b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
-@@ -65,10 +65,12 @@ files include::
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index e4c8735e7c85..cee536c97151 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6956,8 +6956,8 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+ 			lru_add_drain_all();
  
- 1. Page fault accounting
+ 		reclaimed = try_to_free_mem_cgroup_pages(memcg,
+-					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
+-					GFP_KERNEL, reclaim_options);
++						nr_to_reclaim - nr_reclaimed,
++						GFP_KERNEL, reclaim_options);
  
--hugetlb.<hugepagesize>.limit_in_bytes
--hugetlb.<hugepagesize>.max_usage_in_bytes
--hugetlb.<hugepagesize>.usage_in_bytes
--hugetlb.<hugepagesize>.failcnt
-+::
-+
-+  hugetlb.<hugepagesize>.limit_in_bytes
-+  hugetlb.<hugepagesize>.max_usage_in_bytes
-+  hugetlb.<hugepagesize>.usage_in_bytes
-+  hugetlb.<hugepagesize>.failcnt
- 
- The HugeTLB controller allows users to limit the HugeTLB usage (page fault) per
- control group and enforces the limit during page fault. Since HugeTLB
-@@ -82,10 +84,12 @@ getting SIGBUS.
- 
- 2. Reservation accounting
- 
--hugetlb.<hugepagesize>.rsvd.limit_in_bytes
--hugetlb.<hugepagesize>.rsvd.max_usage_in_bytes
--hugetlb.<hugepagesize>.rsvd.usage_in_bytes
--hugetlb.<hugepagesize>.rsvd.failcnt
-+::
-+
-+  hugetlb.<hugepagesize>.rsvd.limit_in_bytes
-+  hugetlb.<hugepagesize>.rsvd.max_usage_in_bytes
-+  hugetlb.<hugepagesize>.rsvd.usage_in_bytes
-+  hugetlb.<hugepagesize>.rsvd.failcnt
- 
- The HugeTLB controller allows to limit the HugeTLB reservations per control
- group and enforces the controller limit at reservation time and at the fault of
+ 		if (!reclaimed && !nr_retries--)
+ 			return -EAGAIN;
 -- 
-2.34.1
+2.43.0.429.g432eaa2c6b-goog
 
 
