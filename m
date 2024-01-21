@@ -1,150 +1,120 @@
-Return-Path: <cgroups+bounces-1178-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1179-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FA9A83279C
-	for <lists+cgroups@lfdr.de>; Fri, 19 Jan 2024 11:24:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE2028354B4
+	for <lists+cgroups@lfdr.de>; Sun, 21 Jan 2024 07:14:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8467CB23440
-	for <lists+cgroups@lfdr.de>; Fri, 19 Jan 2024 10:24:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED9BC1F2371E
+	for <lists+cgroups@lfdr.de>; Sun, 21 Jan 2024 06:14:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2923A3C6A6;
-	Fri, 19 Jan 2024 10:24:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tUnyka1z"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2557236135;
+	Sun, 21 Jan 2024 06:13:56 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C352D3C693;
-	Fri, 19 Jan 2024 10:24:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E02FBF0;
+	Sun, 21 Jan 2024 06:13:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705659875; cv=none; b=Ee9QJKCx0km0WBg/+7oI1oSGStf+tMf6QhHFMFMYAENUl6h13upBsyIsJhwVr6A+vtMnRYeKXAvmrsoCc3Vp7OOdcGt51oiZObO19yvwiB9NHHOty+Y5WHB0q8Rj7qQWX0ddWLLXHFAoh5Z/Bssy1LRX/3fgUbrpoDppoTNkRfE=
+	t=1705817636; cv=none; b=eWYu4SHn3nyFVC+EN9gLnP/ZYp20DC6532WbPH26l9qocIOzEza9nHe3Ovt7KA+NVh8BX9oq6RN2SNy1HAN90SGEjGllcBJj8wTCnsbSRjQ71wTwnSE2BuBrz+G9PQuiOZWfFFPek56/+H+xp5YkL4QCXWVkI3VxuZEYtvodw9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705659875; c=relaxed/simple;
-	bh=1JTZbN5qh9CT0H6mxkpOji2eqTwX6brav/2vU7IADqY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mmileMnakmbfjnRHiA5qOMQzPS7IV5Tp1e+w4owR/fC5Iis8Vr0HpnchHRm6A1PbevdKLFONqWS2fZS/kWUMzCFYOKybaLxqcSLONYvYFgWxWMFKBd3NR8fBlEs/nq6Vml0Z/PNRvnPdwzJreuHI7f2EJ2umvdOJoGahlMttOE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tUnyka1z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ABBAC433F1;
-	Fri, 19 Jan 2024 10:24:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705659875;
-	bh=1JTZbN5qh9CT0H6mxkpOji2eqTwX6brav/2vU7IADqY=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=tUnyka1zdEsMcGr0V3gN/gUgHN0bguQ9TLw7nUFX/7fn6ybsx1BktWgGc0xNHLjl/
-	 SvRzF8Gq9PfNJd02epxrJ5++PeV1VC6ajBQVcQIhd5Mm5mQIdnbWFm91ITdtFWfizo
-	 yEBab6oTUeAjecNq/BAOSY7N2fjEY1/BOOrTNHDLqg9Z0Fd3hA5ZJrIAXiAZoKqZ9U
-	 UqjZexiv/FLTaQStfc2v5R2bv0AFx169ErX7s2LMSPofJqGgOXxJr9GPH4cz+vEHoF
-	 t8YN+FLBrbJjDWDEJu7rhvsz1ITB76G7ZUqCw2DrKZ9nspCJ8XbpA5G+5v11U7kgzU
-	 HZwj1KeVkRZjw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id C29F2CE114A; Fri, 19 Jan 2024 02:24:34 -0800 (PST)
-Date: Fri, 19 Jan 2024 02:24:34 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
-	Ryan Phillips <rphillips@redhat.com>,
-	Brent Rowsell <browsell@redhat.com>, Peter Hunt <pehunt@redhat.com>,
-	Cestmir Kalina <ckalina@redhat.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	Alex Gladkov <agladkov@redhat.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>, Phil Auld <pauld@redhat.com>,
-	Paul Gortmaker <paul.gortmaker@windriver.com>,
-	Daniel Bristot de Oliveira <bristot@kernel.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Costa Shulyupin <cshulyup@redhat.com>
-Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
- partitions
-Message-ID: <ad806d7c-91ec-4659-9348-1b0bb42dd417@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240117163511.88173-1-longman@redhat.com>
+	s=arc-20240116; t=1705817636; c=relaxed/simple;
+	bh=zWi6IXc9w1aSdxovTTnpQLwjJKktzyOvnzXmRiOlmvg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uOe5oMU6slMF0A2ygmDZf2cIhTiSWZ0+clNnrqQtfOYCwcER2oOW5TNh0duRuQeXkd65PM5T4x/A6oRIIWirzm8QkcG5z2fIP4CKcXAUZjMX+Cia6UVmMwmx5hhBtgDcZf2NOOO7uGVzRlso8/Nw4HD/jT7mphwa4DO5+fjR5HQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ict.ac.cn; spf=pass smtp.mailfrom=ict.ac.cn; arc=none smtp.client-ip=159.226.251.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ict.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ict.ac.cn
+Received: from localhost.localdomain (unknown [125.59.207.199])
+	by APP-05 (Coremail) with SMTP id zQCowAD3_moQtqxlgCh9CA--.59803S2;
+	Sun, 21 Jan 2024 14:13:39 +0800 (CST)
+From: lixinyu20s@ict.ac.cn
+To: linux-kernel@vger.kernel.org
+Cc: linux-doc@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	tj@kernel.org,
+	Xinyu Li <lixinyu20s@ict.ac.cn>
+Subject: [PATCH] docs: cgroup-v1: add missing code-block tags
+Date: Sun, 21 Jan 2024 14:13:36 +0800
+Message-Id: <20240121061336.3500233-1-lixinyu20s@ict.ac.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240117163511.88173-1-longman@redhat.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:zQCowAD3_moQtqxlgCh9CA--.59803S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF18tFyfurWDAF15WrW5GFg_yoW8Cr1Upr
+	9rJryakw13GF9Fkr4xAa1DZr17tw1kWrWj9ryxJw4fGrnxW34xWryIgr1Yqws7ur4fJay8
+	ZrW7XF9Ivr4jg3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvI14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j
+	6r4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+	0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+	0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4kE6xkIj40Ew7xC
+	0wCY02Avz4vE5cC_GF1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2
+	IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v2
+	6r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2
+	IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv
+	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf
+	9x0JUrGYLUUUUU=
+X-CM-SenderInfo: pol0x0t1xsi2g6lf3hldfou0/
 
-On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long wrote:
-> This patch series is based on the RFC patch from Frederic [1]. Instead
-> of offering RCU_NOCB as a separate option, it is now lumped into a
-> root-only cpuset.cpus.isolation_full flag that will enable all the
-> additional CPU isolation capabilities available for isolated partitions
-> if set. RCU_NOCB is just the first one to this party. Additional dynamic
-> CPU isolation capabilities will be added in the future.
-> 
-> The first 2 patches are adopted from Federic with minor twists to fix
-> merge conflicts and compilation issue. The rests are for implementing
-> the new cpuset.cpus.isolation_full interface which is essentially a flag
-> to globally enable or disable full CPU isolation on isolated partitions.
-> On read, it also shows the CPU isolation capabilities that are currently
-> enabled. RCU_NOCB requires that the rcu_nocbs option be present in
-> the kernel boot command line. Without that, the rcu_nocb functionality
-> cannot be enabled even if the isolation_full flag is set. So we allow
-> users to check the isolation_full file to verify that if the desired
-> CPU isolation capability is enabled or not.
-> 
-> Only sanity checking has been done so far. More testing, especially on
-> the RCU side, will be needed.
+From: Xinyu Li <lixinyu20s@ict.ac.cn>
 
-There has been some discussion of simplifying the (de-)offloading code
-to handle only offline CPUs.  Along with some discussion of eliminating
-the (de-)offloading capability altogehter.
+Hugetlb.rst lacks two code-block tags, causing a formatting issue.
 
-We clearly should converge on the capability to be provided before
-exposing this to userspace.  ;-)
+Signed-off-by: Xinyu Li <lixinyu20s@ict.ac.cn>
+---
+ .../admin-guide/cgroup-v1/hugetlb.rst         | 20 +++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-							Thanx, Paul
+diff --git a/Documentation/admin-guide/cgroup-v1/hugetlb.rst b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
+index 0fa724d82abb..493a8e386700 100644
+--- a/Documentation/admin-guide/cgroup-v1/hugetlb.rst
++++ b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
+@@ -65,10 +65,12 @@ files include::
+ 
+ 1. Page fault accounting
+ 
+-hugetlb.<hugepagesize>.limit_in_bytes
+-hugetlb.<hugepagesize>.max_usage_in_bytes
+-hugetlb.<hugepagesize>.usage_in_bytes
+-hugetlb.<hugepagesize>.failcnt
++::
++
++  hugetlb.<hugepagesize>.limit_in_bytes
++  hugetlb.<hugepagesize>.max_usage_in_bytes
++  hugetlb.<hugepagesize>.usage_in_bytes
++  hugetlb.<hugepagesize>.failcnt
+ 
+ The HugeTLB controller allows users to limit the HugeTLB usage (page fault) per
+ control group and enforces the limit during page fault. Since HugeTLB
+@@ -82,10 +84,12 @@ getting SIGBUS.
+ 
+ 2. Reservation accounting
+ 
+-hugetlb.<hugepagesize>.rsvd.limit_in_bytes
+-hugetlb.<hugepagesize>.rsvd.max_usage_in_bytes
+-hugetlb.<hugepagesize>.rsvd.usage_in_bytes
+-hugetlb.<hugepagesize>.rsvd.failcnt
++::
++
++  hugetlb.<hugepagesize>.rsvd.limit_in_bytes
++  hugetlb.<hugepagesize>.rsvd.max_usage_in_bytes
++  hugetlb.<hugepagesize>.rsvd.usage_in_bytes
++  hugetlb.<hugepagesize>.rsvd.failcnt
+ 
+ The HugeTLB controller allows to limit the HugeTLB reservations per control
+ group and enforces the controller limit at reservation time and at the fault of
+-- 
+2.34.1
 
-> [1] https://lore.kernel.org/lkml/20220525221055.1152307-1-frederic@kernel.org/
-> 
-> Frederic Weisbecker (2):
->   rcu/nocb: Pass a cpumask instead of a single CPU to offload/deoffload
->   rcu/nocb: Prepare to change nocb cpumask from CPU-hotplug protected
->     cpuset caller
-> 
-> Waiman Long (6):
->   rcu/no_cb: Add rcu_nocb_enabled() to expose the rcu_nocb state
->   cgroup/cpuset: Better tracking of addition/deletion of isolated CPUs
->   cgroup/cpuset: Add cpuset.cpus.isolation_full
->   cgroup/cpuset: Enable dynamic rcu_nocb mode on isolated CPUs
->   cgroup/cpuset: Document the new cpuset.cpus.isolation_full control
->     file
->   cgroup/cpuset: Update test_cpuset_prs.sh to handle
->     cpuset.cpus.isolation_full
-> 
->  Documentation/admin-guide/cgroup-v2.rst       |  24 ++
->  include/linux/rcupdate.h                      |  15 +-
->  kernel/cgroup/cpuset.c                        | 237 ++++++++++++++----
->  kernel/rcu/rcutorture.c                       |   6 +-
->  kernel/rcu/tree_nocb.h                        | 118 ++++++---
->  .../selftests/cgroup/test_cpuset_prs.sh       |  23 +-
->  6 files changed, 337 insertions(+), 86 deletions(-)
-> 
-> -- 
-> 2.39.3
-> 
 
