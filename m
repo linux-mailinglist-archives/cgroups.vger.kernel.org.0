@@ -1,93 +1,81 @@
-Return-Path: <cgroups+bounces-1183-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1184-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D41D5836915
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jan 2024 16:53:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8109C836B8C
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jan 2024 17:48:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 058591C23683
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jan 2024 15:53:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79CD61C2504E
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jan 2024 16:48:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 318F93D559;
-	Mon, 22 Jan 2024 15:08:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CF5C3FE54;
+	Mon, 22 Jan 2024 15:20:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Vt73Fi4M";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Vt73Fi4M"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BfN0cFW6";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BfN0cFW6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A4374B5D2;
-	Mon, 22 Jan 2024 15:08:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95CF03FE4B;
+	Mon, 22 Jan 2024 15:20:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705936085; cv=none; b=qKLlkOrV2zLkXD5irrhiqLiEKNDnSwXcaMo5273jijxCRPa3eRmmu5RJ/H6vsJM29Dheq4lqb+5I5HgFTgKjXtQpkP04/vdJst+H2p1rb9LY9F68bjCQBsd2UbJH01CFdI60uE0QTmzpkWOYcH+tCeswHWz0qbageP5gHJRKTOs=
+	t=1705936837; cv=none; b=nRdQROowWwqZ8pXdomf3njPtxBApafIyHUKM0bNQ6Pfx376P4xhhRW6WuIkyYOcfUxbe8bJNaO5frwNrU1OZow2XAR+kZWyrlf9sMJNnZf/glbW+dZBDpmCTvIRoaYbHRcYDgA6Oj8MhVItxbLuy0jY6TXGQ4NnFS2hXFN9sax4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705936085; c=relaxed/simple;
-	bh=4fYcXhWiSJkRIg6Ip7urrvrUSXMdsY9G0tmUF8/+f4s=;
+	s=arc-20240116; t=1705936837; c=relaxed/simple;
+	bh=fVQWgn6dMqT65ij7t8YeQ++AxrnBH2Z/fCv+edloKhg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NNfKb719+3M+hKu6+L5EljWn8dU0KL357DlyS7TqpQFZRwGZf8IQ1CB8RRk6uwHI8XUYxF/zZkQXLuU4AtD5cQ48uI1b1r6HKOcFggi4beyeKVLBjXecSFoadx7tActgTrcODiQriJ9DW1b5S5ZsbJLNqMf1eDNxpx45FI0ZzEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Vt73Fi4M; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Vt73Fi4M; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=vA2i6PxLHfZ650OaRs+YnVy0xmqnAtoD8BljTAux+GD9EDWNoijlgiJfIZzzVVSmS0o0Dct3VPZySmVNWfdvDurw6SLesenjbRNZnUJi+eHsZC+xcv2kI+rwoJTQAV9mN6+Y/9OBja2vsStFqOYkxEkholigkqQ5Bt4jmcYKcYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BfN0cFW6; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BfN0cFW6; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 065781FC07;
-	Mon, 22 Jan 2024 15:08:00 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A497321FD4;
+	Mon, 22 Jan 2024 15:20:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705936080; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1705936832; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4fYcXhWiSJkRIg6Ip7urrvrUSXMdsY9G0tmUF8/+f4s=;
-	b=Vt73Fi4MXs9fhjCF+W13yZlgGJsMKcIyp7vNlFUQs8CZf06PhXzd4sYXvo6iQLN3kdss75
-	yxXbdsT6u9j7YX1kBBdoamwNEMzhqOu9EoH0Z8OQg6fr+YxHO29NYuosqo/k3E9wic4q4b
-	ARFTkK7bq0IcHQE0Ka91kbR3qrm+tfI=
+	bh=uI8H29046lEwAQaOE9IkKlCQkju2vmSs/MhQpFiaPtI=;
+	b=BfN0cFW6Ucd4aMQdhtVQZBZPSYYOf8yTXNjWs9Yt1e3RVCU9MYF/u0BQLFDEqbZCCAsSM3
+	cp+GEseEUKQn/4pro5nCyDA8Z9Vll5zOtxQkatPnUGk6G7CtDPIPRQROyuC342ETucdNsS
+	wRJP1ACqRz+G2k0V5aAuku0KL2oDx1Y=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1705936080; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1705936832; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4fYcXhWiSJkRIg6Ip7urrvrUSXMdsY9G0tmUF8/+f4s=;
-	b=Vt73Fi4MXs9fhjCF+W13yZlgGJsMKcIyp7vNlFUQs8CZf06PhXzd4sYXvo6iQLN3kdss75
-	yxXbdsT6u9j7YX1kBBdoamwNEMzhqOu9EoH0Z8OQg6fr+YxHO29NYuosqo/k3E9wic4q4b
-	ARFTkK7bq0IcHQE0Ka91kbR3qrm+tfI=
+	bh=uI8H29046lEwAQaOE9IkKlCQkju2vmSs/MhQpFiaPtI=;
+	b=BfN0cFW6Ucd4aMQdhtVQZBZPSYYOf8yTXNjWs9Yt1e3RVCU9MYF/u0BQLFDEqbZCCAsSM3
+	cp+GEseEUKQn/4pro5nCyDA8Z9Vll5zOtxQkatPnUGk6G7CtDPIPRQROyuC342ETucdNsS
+	wRJP1ACqRz+G2k0V5aAuku0KL2oDx1Y=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ACD86136A4;
-	Mon, 22 Jan 2024 15:07:58 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8808D136A4;
+	Mon, 22 Jan 2024 15:20:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id s81AKM6ErmW9YgAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Mon, 22 Jan 2024 15:07:58 +0000
-Date: Mon, 22 Jan 2024 16:07:57 +0100
+	id mP41IMCHrmU1ZwAAD6G6ig
+	(envelope-from <mkoutny@suse.com>); Mon, 22 Jan 2024 15:20:32 +0000
+Date: Mon, 22 Jan 2024 16:20:31 +0100
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Frederic Weisbecker <frederic@kernel.org>, 
-	Jonathan Corbet <corbet@lwn.net>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>, Joel Fernandes <joel@joelfernandes.org>, 
-	Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>, 
-	Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>, 
-	Ryan Phillips <rphillips@redhat.com>, Brent Rowsell <browsell@redhat.com>, 
-	Peter Hunt <pehunt@redhat.com>, Cestmir Kalina <ckalina@redhat.com>, 
-	Nicolas Saenz Julienne <nsaenz@kernel.org>, Alex Gladkov <agladkov@redhat.com>, 
-	Marcelo Tosatti <mtosatti@redhat.com>, Phil Auld <pauld@redhat.com>, 
-	Paul Gortmaker <paul.gortmaker@windriver.com>, Daniel Bristot de Oliveira <bristot@kernel.org>, 
-	Juri Lelli <juri.lelli@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Costa Shulyupin <cshulyup@redhat.com>
-Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
- partitions
-Message-ID: <bql5g22ovp2dm33llmq5oxpmuuhysvdyppj7j6xvrm643xuniv@pkqrwvmqzneh>
-References: <20240117163511.88173-1-longman@redhat.com>
+To: Shakeel Butt <shakeelb@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, 
+	Jan Kara <jack@suse.cz>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: writeback: ratelimit stat flush from
+ mem_cgroup_wb_stats
+Message-ID: <jazycqhefxn6oigmt6mitn2cfoonscbdwqxy5g7gs2j74w3ia5@qwcu3v7kmk4h>
+References: <20240118184235.618164-1-shakeelb@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -95,73 +83,77 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="btekknw55nvxl4ky"
+	protocol="application/pgp-signature"; boundary="nypkyt5neisq55gd"
 Content-Disposition: inline
-In-Reply-To: <20240117163511.88173-1-longman@redhat.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-0.21 / 50.00];
+In-Reply-To: <20240118184235.618164-1-shakeelb@google.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=BfN0cFW6
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.12 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.01)[51.13%];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	 FROM_HAS_DN(0.00)[];
 	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 R_RATELIMIT(0.00)[to_ip_from(RL6j1h7wxugqfdyj8pnx7tibp9)];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[36];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
 	 SIGNED_PGP(-2.00)[];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+,1:+,2:~];
 	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[kernel.org,bytedance.com,cmpxchg.org,lwn.net,quicinc.com,joelfernandes.org,joshtriplett.org,gmail.com,goodmis.org,efficios.com,stgolabs.net,vger.kernel.org,redhat.com,windriver.com,infradead.org];
 	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: 
+	 BAYES_HAM(-0.01)[47.96%]
+X-Spam-Score: -3.12
+X-Rspamd-Queue-Id: A497321FD4
 X-Spam-Flag: NO
-X-Spam-Score: -0.21
 
 
---btekknw55nvxl4ky
+--nypkyt5neisq55gd
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Hello Waiman.
+Hello.
 
-On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long <longman@redhat.com> wrote:
-> This patch series is based on the RFC patch from Frederic [1]. Instead
-> of offering RCU_NOCB as a separate option, it is now lumped into a
-> root-only cpuset.cpus.isolation_full flag that will enable all the
-> additional CPU isolation capabilities available for isolated partitions
-> if set. RCU_NOCB is just the first one to this party. Additional dynamic
-> CPU isolation capabilities will be added in the future.
+On Thu, Jan 18, 2024 at 06:42:35PM +0000, Shakeel Butt <shakeelb@google.com=
+> wrote:
+> One of our workloads (Postgres 14) has regressed when migrated from 5.10
+> to 6.1 upstream kernel. The regression can be reproduced by sysbench's
+> oltp_write_only benchmark.
+> It seems like the always on rstat flush in
+> mem_cgroup_wb_stats() is causing the regression.
 
-IIUC this is similar to what I suggested back in the day and you didn't
-consider it [1]. Do I read this right that you've changed your mind?
+Is the affected benchmark running in a non-root cgroup?
 
-(It's fine if you did, I'm only asking to follow the heading of cpuset
-controller.)
+I'm asking whether this would warrant a=20
+  Fixes: fd25a9e0e23b ("memcg: unify memcg stat flushing")=20
+that introduced the global flush (in v6.1) but it was removed later in=20
+  7d7ef0a4686a ("mm: memcg: restore subtree stats flushing")=20
+(so v6.8 could be possibly unaffected).
 
 Thanks,
 Michal
 
-[1] https://lore.kernel.org/r/58c87587-417b-1498-185f-1db6bb612c82@redhat.com/
-
---btekknw55nvxl4ky
+--nypkyt5neisq55gd
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZa6EywAKCRAGvrMr/1gc
-jnziAQDeS/BPCM9qEVgM7AdJJ1sdTzQsMQ5YiQ3EnDS8nw0THQD+IlhGeiHOP8eY
-Fif9SqmbUs3GzGds3uUPWNBUWQDsjws=
-=EAx6
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZa6HuQAKCRAGvrMr/1gc
+jv0KAP49hs1sQx/Itdzma7JXdOKCH4l9eewELaaWxrVCyuoC0AEA3fgaAGcdTEMr
+hwYxaHAKsxG38pb+QxHQjbOhmP/afgI=
+=9ZXF
 -----END PGP SIGNATURE-----
 
---btekknw55nvxl4ky--
+--nypkyt5neisq55gd--
 
