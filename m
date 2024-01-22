@@ -1,121 +1,230 @@
-Return-Path: <cgroups+bounces-1202-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1203-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D560D8371CE
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jan 2024 20:05:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FA26837390
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jan 2024 21:14:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57BF9B2C019
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jan 2024 18:53:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25826B22544
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jan 2024 20:14:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 668B8482E3;
-	Mon, 22 Jan 2024 18:19:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C27FD40BE5;
+	Mon, 22 Jan 2024 20:14:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CDSOMCTL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fpDahR7F"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB261481AB
-	for <cgroups@vger.kernel.org>; Mon, 22 Jan 2024 18:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 799E63DB86;
+	Mon, 22 Jan 2024 20:14:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705947565; cv=none; b=Q1T5ikGOBxhjPp6LCdMQ2yjZ1UPFJgCYYEikWX0TqxuPcXzvTFY67sJEQZjFulXnhrzPtITv5n6DwggAZllQUpNpZAvXqhBVKGFpw/hyH0r57K79BeU8+afMecjJO38knTnFz/lmgOnJSPG1/+BVEgXO5q5CRgNMdukuxmZ88Jg=
+	t=1705954447; cv=none; b=Xb4h19ehP7MCmtf0kjRNkXxpmlVuAeadgmZJ6PfuDz5E49o+cshQAH5HUgIFWO3qQmdFRep4Wi//jvJCR2qy4HBfEXS4XKtwz1wIdEKCJwE3Fjuajb23J7Umx4ppy3k4EMloMbSql3vLNma0qmIR9vrHassVrOkEPdoniQ4v19M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705947565; c=relaxed/simple;
-	bh=h4PO0st/1IuYHBIEltga1Ivy97tEPnri+qjxZXMW6hM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PAyu8JQoMcJpfSLH+Td09HVztPtohdygM2vr8AQCFwvilv55sOx73cl+hpy9smxke14LNuuPOdLNtifPHMsl8CeNzDWmQ1r37AUToGL1bCZL1v62PYzpPh8hMbutD5Z3uytaUOz/UHtnbFMtmhbozwrMJ28Le1GmLvt89EB6fVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CDSOMCTL; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d5ce88b51cso11225ad.0
-        for <cgroups@vger.kernel.org>; Mon, 22 Jan 2024 10:19:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705947562; x=1706552362; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p0Y9E+3pzP2s+EQdBjSE77FjET8jy9DFccLp3B3IzFI=;
-        b=CDSOMCTLhpdPfghCsAKPFwC+4ARoHxLhob5RAo9m2XPGn96aumgVKHx1DKfEPioDTp
-         B9WUp68IdZmQvFHk7vvIGpE+zVdoaCdjlsCMAdFBfoxpGjorsTOHvjQqiFzntala1Xza
-         +G4Sgrxjt5AgAwewPkAjIErxJl09TCdGafkLG8qVJI4J2mgFhtQbeW+t3jyGbPoEvpWG
-         ZBqErZgwLzeOJ4+gK6kZwpxh2AhcWftYeuMVaAWEOJUI2ZKA7EcIq3Onof2nZ5EI/ucT
-         RobNz5DxN+cZavhGqrwnrME+Koj2pD6EJRcIftUUed9yjx+DIlXzNe1ZQQISkVfodvf3
-         cB7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705947562; x=1706552362;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p0Y9E+3pzP2s+EQdBjSE77FjET8jy9DFccLp3B3IzFI=;
-        b=dZzxMH4OXukuvjJEo38GarSk3R+AkKojB6bVkAJOpGoTPP5qOf6gjeyevgJTEQunoY
-         DxEU538zlzakvET5oFM0p0gRUskSUCXZFulBDxGpCJn4C9FmgXFxNPFIABsPVb9oc/Bv
-         6t8o9qknn4l/PLTF1+elEGlUDLilJnequ6LgGFlfsnSaqZkBi23o2RboXwH5RkibtvTw
-         xHpCodsUtcEi4J1Uampv1ZcszqAQhGnt/3ThuSwcQTxMb14CX5GeF/g3ec/r2p//1myb
-         dYIKFuNUUhFmATDXqQWyrlHIv+hP11gUKnTpxB6gfcbRE9dV1SdAH/LgTnHT0ewch+oQ
-         eIrw==
-X-Gm-Message-State: AOJu0YwC5RFnw0poMIDnqbKH4lnFR2imrnxG2MaQN5hqQwkFC3YwKMfg
-	WDvkp2AcjUwwmmfpmGXg/MAh9ZRkkzh76Vty/fb4ZieUjv70
-X-Google-Smtp-Source: AGHT+IFeVSUQFJ2B79/oJNPkrOM8pRveuwd/OkPvv+mFDyuckhWdMgfmz1t4fln+zp+sRW8MxNoLyC5nZnyI1h1DfJY=
-X-Received: by 2002:a17:902:fb46:b0:1d6:fb94:10d5 with SMTP id
- lf6-20020a170902fb4600b001d6fb9410d5mr10331plb.27.1705947562078; Mon, 22 Jan
- 2024 10:19:22 -0800 (PST)
+	s=arc-20240116; t=1705954447; c=relaxed/simple;
+	bh=rUyMHHkZu6cL7ZgVe6OfxVcmPIxgxyB7LlB31VSOuhk=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=aPqKsQZO9g5t4l8dwHIfMoZ57g4fOZxKy0dKVGmxIcjJ9a5JuIZ5SQXs4OQS4QHN99Q+CDGEHlEF45fDLHzYvRRGhGQwz4km2/liHoMouNU/EIYeHoGO3NlmIgDoS7tTSGWMcYl9f3GAuvcmvhDGid5XJYVBNrbXml2jJaGFKA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fpDahR7F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59974C43394;
+	Mon, 22 Jan 2024 20:14:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705954447;
+	bh=rUyMHHkZu6cL7ZgVe6OfxVcmPIxgxyB7LlB31VSOuhk=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=fpDahR7FxoiZI53jeO5qmiFN5pjBSQfhKukLU+OStAMY4NSUCzIWlyZuWJtxgX8F6
+	 9lqu7nnNRxa/jjeL4qlLEcjucjF2VRi0pL5H3+kMDFXnL3l3hBar7ejEqDMn4IXrCV
+	 L3Dq3vGaDjaMH8tsniDwViGDeRNm41xzHIf4zrQg7gHwpI+mkNmOXFqVZAW/ZL+1Oe
+	 zYpvuxb9A5VhDmaJdKVEQRheUF6iixy+ERnfDeprerHnHK5+PIjm3/pXimYIyFLCBg
+	 i22Ox036aIg3G+t2QGZ2U9rj8n1ON/Z0gFPTtVhhqIE5gOMIAZ2Re2hTzYvn8A3FcD
+	 M8G6z4Ow3Pjaw==
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240118184235.618164-1-shakeelb@google.com> <jazycqhefxn6oigmt6mitn2cfoonscbdwqxy5g7gs2j74w3ia5@qwcu3v7kmk4h>
-In-Reply-To: <jazycqhefxn6oigmt6mitn2cfoonscbdwqxy5g7gs2j74w3ia5@qwcu3v7kmk4h>
-From: Shakeel Butt <shakeelb@google.com>
-Date: Mon, 22 Jan 2024 10:19:10 -0800
-Message-ID: <CALvZod4XUrQMxptBo56Fm6-ETQy_DtVq-g4NKokVvSyGwDOnxg@mail.gmail.com>
-Subject: Re: [PATCH] mm: writeback: ratelimit stat flush from mem_cgroup_wb_stats
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Michal Hocko <mhocko@kernel.org>, 
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 22 Jan 2024 22:14:01 +0200
+Message-Id: <CYLIDNAH2GKZ.2GZXE5Z7EXKSI@suppilovahvero>
+Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+ <zhanb@microsoft.com>, <anakrish@microsoft.com>,
+ <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>
+Subject: Re: [PATCH v7 01/15] cgroup/misc: Add per resource callbacks for
+ CSS events
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>,
+ <dave.hansen@linux.intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
+ <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+ <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+ <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+ <sohil.mehta@intel.com>
+X-Mailer: aerc 0.15.2
+References: <20240122172048.11953-1-haitao.huang@linux.intel.com>
+ <20240122172048.11953-2-haitao.huang@linux.intel.com>
+In-Reply-To: <20240122172048.11953-2-haitao.huang@linux.intel.com>
 
-On Mon, Jan 22, 2024 at 7:20=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
-m> wrote:
+On Mon Jan 22, 2024 at 7:20 PM EET, Haitao Huang wrote:
+> From: Kristen Carlson Accardi <kristen@linux.intel.com>
 >
-> Hello.
+> The misc cgroup controller (subsystem) currently does not perform
+> resource type specific action for Cgroups Subsystem State (CSS) events:
+> the 'css_alloc' event when a cgroup is created and the 'css_free' event
+> when a cgroup is destroyed.
 >
-> On Thu, Jan 18, 2024 at 06:42:35PM +0000, Shakeel Butt <shakeelb@google.c=
-om> wrote:
-> > One of our workloads (Postgres 14) has regressed when migrated from 5.1=
-0
-> > to 6.1 upstream kernel. The regression can be reproduced by sysbench's
-> > oltp_write_only benchmark.
-> > It seems like the always on rstat flush in
-> > mem_cgroup_wb_stats() is causing the regression.
+> Define callbacks for those events and allow resource providers to
+> register the callbacks per resource type as needed. This will be
+> utilized later by the EPC misc cgroup support implemented in the SGX
+> driver.
 >
-> Is the affected benchmark running in a non-root cgroup?
+> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> ---
+> V7:
+> - Make ops one per resource type and store them in array (Michal)
+> - Rename the ops struct to misc_res_ops, and enforce the constraints of r=
+equired callback
+> functions (Jarkko)
+> - Moved addition of priv field to patch 4 where it was used first. (Jarkk=
+o)
 >
-> I'm asking whether this would warrant a
->   Fixes: fd25a9e0e23b ("memcg: unify memcg stat flushing")
-> that introduced the global flush (in v6.1) but it was removed later in
->   7d7ef0a4686a ("mm: memcg: restore subtree stats flushing")
-> (so v6.8 could be possibly unaffected).
+> V6:
+> - Create ops struct for per resource callbacks (Jarkko)
+> - Drop max_write callback (Dave, Michal)
+> - Style fixes (Kai)
+> ---
+>  include/linux/misc_cgroup.h | 11 +++++++
+>  kernel/cgroup/misc.c        | 60 +++++++++++++++++++++++++++++++++++--
+>  2 files changed, 68 insertions(+), 3 deletions(-)
 >
+> diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
+> index e799b1f8d05b..0806d4436208 100644
+> --- a/include/linux/misc_cgroup.h
+> +++ b/include/linux/misc_cgroup.h
+> @@ -27,6 +27,16 @@ struct misc_cg;
+> =20
+>  #include <linux/cgroup.h>
+> =20
+> +/**
+> + * struct misc_res_ops: per resource type callback ops.
+> + * @alloc: invoked for resource specific initialization when cgroup is a=
+llocated.
+> + * @free: invoked for resource specific cleanup when cgroup is deallocat=
+ed.
+> + */
+> +struct misc_res_ops {
+> +	int (*alloc)(struct misc_cg *cg);
+> +	void (*free)(struct misc_cg *cg);
+> +};
+> +
+>  /**
+>   * struct misc_res: Per cgroup per misc type resource
+>   * @max: Maximum limit on the resource.
+> @@ -56,6 +66,7 @@ struct misc_cg {
+> =20
+>  u64 misc_cg_res_total_usage(enum misc_res_type type);
+>  int misc_cg_set_capacity(enum misc_res_type type, u64 capacity);
+> +int misc_cg_set_ops(enum misc_res_type type, const struct misc_res_ops *=
+ops);
+>  int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg, u64 =
+amount);
+>  void misc_cg_uncharge(enum misc_res_type type, struct misc_cg *cg, u64 a=
+mount);
+> =20
+> diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
+> index 79a3717a5803..b8c32791334c 100644
+> --- a/kernel/cgroup/misc.c
+> +++ b/kernel/cgroup/misc.c
+> @@ -39,6 +39,9 @@ static struct misc_cg root_cg;
+>   */
+>  static u64 misc_res_capacity[MISC_CG_RES_TYPES];
+> =20
+> +/* Resource type specific operations */
+> +static const struct misc_res_ops *misc_res_ops[MISC_CG_RES_TYPES];
+> +
+>  /**
+>   * parent_misc() - Get the parent of the passed misc cgroup.
+>   * @cgroup: cgroup whose parent needs to be fetched.
+> @@ -105,6 +108,36 @@ int misc_cg_set_capacity(enum misc_res_type type, u6=
+4 capacity)
+>  }
+>  EXPORT_SYMBOL_GPL(misc_cg_set_capacity);
+> =20
+> +/**
+> + * misc_cg_set_ops() - set resource specific operations.
+> + * @type: Type of the misc res.
+> + * @ops: Operations for the given type.
+> + *
+> + * Context: Any context.
+> + * Return:
+> + * * %0 - Successfully registered the operations.
+> + * * %-EINVAL - If @type is invalid, or the operations missing any requi=
+red callbacks.
+> + */
+> +int misc_cg_set_ops(enum misc_res_type type, const struct misc_res_ops *=
+ops)
+> +{
+> +	if (!valid_type(type))
+> +		return -EINVAL;
+> +
+> +	if (!ops->alloc) {
+> +		pr_err("%s: alloc missing\n", __func__);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!ops->free) {
+> +		pr_err("%s: free missing\n", __func__);
+> +		return -EINVAL;
+> +	}
+> +
+> +	misc_res_ops[type] =3D ops;
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(misc_cg_set_ops);
+> +
+>  /**
+>   * misc_cg_cancel_charge() - Cancel the charge from the misc cgroup.
+>   * @type: Misc res type in misc cg to cancel the charge from.
+> @@ -383,23 +416,37 @@ static struct cftype misc_cg_files[] =3D {
+>  static struct cgroup_subsys_state *
+>  misc_cg_alloc(struct cgroup_subsys_state *parent_css)
+>  {
+> +	struct misc_cg *parent_cg, *cg;
+>  	enum misc_res_type i;
+> -	struct misc_cg *cg;
+> +	int ret;
+> =20
+>  	if (!parent_css) {
+> -		cg =3D &root_cg;
+> +		parent_cg =3D cg =3D &root_cg;
+>  	} else {
+>  		cg =3D kzalloc(sizeof(*cg), GFP_KERNEL);
+>  		if (!cg)
+>  			return ERR_PTR(-ENOMEM);
+> +		parent_cg =3D css_misc(parent_css);
+>  	}
+> =20
+>  	for (i =3D 0; i < MISC_CG_RES_TYPES; i++) {
+>  		WRITE_ONCE(cg->res[i].max, MAX_NUM);
+>  		atomic64_set(&cg->res[i].usage, 0);
+> +		if (misc_res_ops[i]) {
+> +			ret =3D misc_res_ops[i]->alloc(cg);
+> +			if (ret)
+> +				goto alloc_err;
 
-Yes, the benchmark and the workload were running in non-root cgroups.
+So I'd consider pattern like this to avoid repetition:
 
-Regarding the Fixes, please note that the regression was still there
-with 7d7ef0a4686a ("mm: memcg: restore subtree stats flushing"), so I
-would say that our first conversion to rstat infra would most probably
-have the issue as well which was 2d146aa3aa84 ("mm: memcontrol: switch
-to rstat").
+			if (ret) {
+				__misc_cg_free(cg);
+				return PERR_PTR(ret);
+			}
 
-So, the following fixes tag makes sense to me:
+and call __misc_cg_free() also in misc_cg_free().
 
-Fixes: 2d146aa3aa84 ("mm: memcontrol: switch to rstat")
+BR, Jarkko
 
