@@ -1,199 +1,121 @@
-Return-Path: <cgroups+bounces-1201-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1202-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7A72836F5C
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jan 2024 19:14:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D560D8371CE
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jan 2024 20:05:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B134290E73
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jan 2024 18:14:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57BF9B2C019
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jan 2024 18:53:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB4C83E462;
-	Mon, 22 Jan 2024 17:38:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 668B8482E3;
+	Mon, 22 Jan 2024 18:19:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yPCF1fbJ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CDSOMCTL"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C6CD405D4
-	for <cgroups@vger.kernel.org>; Mon, 22 Jan 2024 17:38:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB261481AB
+	for <cgroups@vger.kernel.org>; Mon, 22 Jan 2024 18:19:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705945119; cv=none; b=S3dbI2fo89QR7XQHvhMIHZKrM4IoUxuLcPQuNpxxfsr0eIDZITJKPAFShY3xrqx2iO/y4P3NkMtFDprxKHfXoBakB997bWZuZDLWsO3gXNDYqAj0aZy6GGLShPSC1xeN0pU+0jEtmLOSs4q4p5BRItfuJvPFjgZhwdqg9pLHwmM=
+	t=1705947565; cv=none; b=Q1T5ikGOBxhjPp6LCdMQ2yjZ1UPFJgCYYEikWX0TqxuPcXzvTFY67sJEQZjFulXnhrzPtITv5n6DwggAZllQUpNpZAvXqhBVKGFpw/hyH0r57K79BeU8+afMecjJO38knTnFz/lmgOnJSPG1/+BVEgXO5q5CRgNMdukuxmZ88Jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705945119; c=relaxed/simple;
-	bh=lx13kHG0tJJSdUreOeJdloyx12tNITbn9wmXA6Zx684=;
+	s=arc-20240116; t=1705947565; c=relaxed/simple;
+	bh=h4PO0st/1IuYHBIEltga1Ivy97tEPnri+qjxZXMW6hM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KWCgUIgmyYyKtCX25E42TnkD4XKSGT06QuuLPegrsxUM+2++QblGyUJ3TTc9Z2AXbD7rz/AK1jYbkVIBjKKYXf0Xu4wGPLdx5O5P/RgwaxijZMo+3mDsfHi6AII+TambC5GGknBIX8S9WLyPd8Nit7iG2X1Sb9ONTKdtGCTPHPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yPCF1fbJ; arc=none smtp.client-ip=209.85.214.177
+	 To:Cc:Content-Type; b=PAyu8JQoMcJpfSLH+Td09HVztPtohdygM2vr8AQCFwvilv55sOx73cl+hpy9smxke14LNuuPOdLNtifPHMsl8CeNzDWmQ1r37AUToGL1bCZL1v62PYzpPh8hMbutD5Z3uytaUOz/UHtnbFMtmhbozwrMJ28Le1GmLvt89EB6fVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CDSOMCTL; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d72d240c69so253915ad.1
-        for <cgroups@vger.kernel.org>; Mon, 22 Jan 2024 09:38:38 -0800 (PST)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d5ce88b51cso11225ad.0
+        for <cgroups@vger.kernel.org>; Mon, 22 Jan 2024 10:19:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705945117; x=1706549917; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1705947562; x=1706552362; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5UuQsVtmQQmr5HjqyMtyAk8R8Y84z4aC4k61fXm7dcc=;
-        b=yPCF1fbJt88udfi4IbYvyaXYX1RwZVyFK5gY8d4VgFcIHQfE23M7XwhosOmHMl7BSw
-         1f2ch0AVVFdaRvBeDfwm1Dx3LPBiol/n1wR7FJJuAo5L6FDFzvUlHz1gV6X5bPTy1Kmx
-         RKhjIETiDmyPys3CDehoYWfEpHESDMTCapSKiGdGka7ryTwq/zKsrJqHCsMbu+yVxXlA
-         49lYvZyMLr7jiTPTi/pmV/HGwBC+sOJv9BVuM2L3UTGKoH1ffNCyTzQfpoVteKAulTit
-         kiPRTYXLk7smW4XpMxCIX25uXX/RsApCHtPRHd7o4ihYa9OBLGk9EX7cdiupmcQmgTiK
-         DKJg==
+        bh=p0Y9E+3pzP2s+EQdBjSE77FjET8jy9DFccLp3B3IzFI=;
+        b=CDSOMCTLhpdPfghCsAKPFwC+4ARoHxLhob5RAo9m2XPGn96aumgVKHx1DKfEPioDTp
+         B9WUp68IdZmQvFHk7vvIGpE+zVdoaCdjlsCMAdFBfoxpGjorsTOHvjQqiFzntala1Xza
+         +G4Sgrxjt5AgAwewPkAjIErxJl09TCdGafkLG8qVJI4J2mgFhtQbeW+t3jyGbPoEvpWG
+         ZBqErZgwLzeOJ4+gK6kZwpxh2AhcWftYeuMVaAWEOJUI2ZKA7EcIq3Onof2nZ5EI/ucT
+         RobNz5DxN+cZavhGqrwnrME+Koj2pD6EJRcIftUUed9yjx+DIlXzNe1ZQQISkVfodvf3
+         cB7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705945117; x=1706549917;
+        d=1e100.net; s=20230601; t=1705947562; x=1706552362;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5UuQsVtmQQmr5HjqyMtyAk8R8Y84z4aC4k61fXm7dcc=;
-        b=rZFtwJzoYNrERGLkN+FDd3Sb9K+vCtu2QzsgjchCELPwok71xntFXjLQZqbpZ59hW/
-         k5QRvvNVeACqeSygfpW0aW+io0RR5h34vNp0hnMzlgeritV+ZLtLlZr3sNmiiPGaAMQ8
-         +5nD6KlAJOTocQw+g1BQrozwwrwoYiD7Kb50rqTS5gUSZ7Dft8/cAhOtLyB7kIGU0Y59
-         0tCMBeMleUIPf05L7TnkOTo7uVaTiqocpW5xNf+MNrpcC7fL0uspY/PBkTdiVR9NypY3
-         yiSWA6aUtEDHs8HzSntVfSQJtyGgHjNOz/P0a5YwCUgDGDuKx0QPwUR398Y+0UgS+obF
-         05kg==
-X-Gm-Message-State: AOJu0YzidtHClNSlsOqbLsr3fJmqhpBGckaYTYTxPJV/XrmUl7Ff+eXn
-	SmKI+Qgnl1+N1cPpct/43C3CW4wLYRnYzvJO1R6blfowruAKT+Y1A9fgKYFqmptPTfq5Y9gVUBH
-	yp/up2psX3hWx7gOyCOhf+U07IGqXqhq/ED/7
-X-Google-Smtp-Source: AGHT+IFYv5tHX1WQPl3UKkucHmsgclS/9mQvJ8BtkspQnHW8INm/bfJkBEp88NMt7Nyb4tbGmP3GUFNzcPfeUEN4+yY=
-X-Received: by 2002:a17:902:e747:b0:1d6:f66b:1057 with SMTP id
- p7-20020a170902e74700b001d6f66b1057mr2985plf.28.1705945117286; Mon, 22 Jan
- 2024 09:38:37 -0800 (PST)
+        bh=p0Y9E+3pzP2s+EQdBjSE77FjET8jy9DFccLp3B3IzFI=;
+        b=dZzxMH4OXukuvjJEo38GarSk3R+AkKojB6bVkAJOpGoTPP5qOf6gjeyevgJTEQunoY
+         DxEU538zlzakvET5oFM0p0gRUskSUCXZFulBDxGpCJn4C9FmgXFxNPFIABsPVb9oc/Bv
+         6t8o9qknn4l/PLTF1+elEGlUDLilJnequ6LgGFlfsnSaqZkBi23o2RboXwH5RkibtvTw
+         xHpCodsUtcEi4J1Uampv1ZcszqAQhGnt/3ThuSwcQTxMb14CX5GeF/g3ec/r2p//1myb
+         dYIKFuNUUhFmATDXqQWyrlHIv+hP11gUKnTpxB6gfcbRE9dV1SdAH/LgTnHT0ewch+oQ
+         eIrw==
+X-Gm-Message-State: AOJu0YwC5RFnw0poMIDnqbKH4lnFR2imrnxG2MaQN5hqQwkFC3YwKMfg
+	WDvkp2AcjUwwmmfpmGXg/MAh9ZRkkzh76Vty/fb4ZieUjv70
+X-Google-Smtp-Source: AGHT+IFeVSUQFJ2B79/oJNPkrOM8pRveuwd/OkPvv+mFDyuckhWdMgfmz1t4fln+zp+sRW8MxNoLyC5nZnyI1h1DfJY=
+X-Received: by 2002:a17:902:fb46:b0:1d6:fb94:10d5 with SMTP id
+ lf6-20020a170902fb4600b001d6fb9410d5mr10331plb.27.1705947562078; Mon, 22 Jan
+ 2024 10:19:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1705507931.git.jpoimboe@kernel.org> <ac84a832feba5418e1b58d1c7f3fe6cc7bc1de58.1705507931.git.jpoimboe@kernel.org>
- <6667b799702e1815bd4e4f7744eddbc0bd042bb7.camel@kernel.org>
- <20240117193915.urwueineol7p4hg7@treble> <CAHk-=wg_CoTOfkREgaQQA6oJ5nM9ZKYrTn=E1r-JnvmQcgWpSg@mail.gmail.com>
- <CALvZod6LgX-FQOGgNBmoRACMBK4GB+K=a+DYrtExcuGFH=J5zQ@mail.gmail.com>
- <ZahSlnqw9yRo3d1v@P9FQF9L96D.corp.robot.car> <CALvZod4V3QTULTW5QxgqCbDpNtVO6fXzta33HR7GN=L2LUU26g@mail.gmail.com>
- <CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com>
-In-Reply-To: <CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com>
+References: <20240118184235.618164-1-shakeelb@google.com> <jazycqhefxn6oigmt6mitn2cfoonscbdwqxy5g7gs2j74w3ia5@qwcu3v7kmk4h>
+In-Reply-To: <jazycqhefxn6oigmt6mitn2cfoonscbdwqxy5g7gs2j74w3ia5@qwcu3v7kmk4h>
 From: Shakeel Butt <shakeelb@google.com>
-Date: Mon, 22 Jan 2024 09:38:23 -0800
-Message-ID: <CALvZod6tCb=3+W18V7kntjJZBRMigGnyPQGjQK0no9Q1KmpcRQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 1/4] fs/locks: Fix file lock cache accounting, again
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>, Josh Poimboeuf <jpoimboe@kernel.org>, 
-	Vlastimil Babka <vbabka@suse.cz>, Jeff Layton <jlayton@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org, 
-	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, Vasily Averin <vasily.averin@linux.dev>, 
-	Michal Koutny <mkoutny@suse.com>, Waiman Long <longman@redhat.com>, 
-	Muchun Song <muchun.song@linux.dev>, Jiri Kosina <jikos@kernel.org>, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org
+Date: Mon, 22 Jan 2024 10:19:10 -0800
+Message-ID: <CALvZod4XUrQMxptBo56Fm6-ETQy_DtVq-g4NKokVvSyGwDOnxg@mail.gmail.com>
+Subject: Re: [PATCH] mm: writeback: ratelimit stat flush from mem_cgroup_wb_stats
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, Jan Kara <jack@suse.cz>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Michal Hocko <mhocko@kernel.org>, 
+	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
-
-On Sun, Jan 21, 2024 at 9:16=E2=80=AFPM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Mon, Jan 22, 2024 at 7:20=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
 >
-> On Wed, 17 Jan 2024 at 14:56, Shakeel Butt <shakeelb@google.com> wrote:
-> > >
-> > > So I don't see how we can make it really cheap (say, less than 5% ove=
-rhead)
-> > > without caching pre-accounted objects.
-> >
-> > Maybe this is what we want. Now we are down to just SLUB, maybe such
-> > caching of pre-accounted objects can be in SLUB layer and we can
-> > decide to keep this caching per-kmem-cache opt-in or always on.
+> Hello.
 >
-> So it turns out that we have another case of SLAB_ACCOUNT being quite
-> a big expense, and it's actually the normal - but failed - open() or
-> execve() case.
+> On Thu, Jan 18, 2024 at 06:42:35PM +0000, Shakeel Butt <shakeelb@google.c=
+om> wrote:
+> > One of our workloads (Postgres 14) has regressed when migrated from 5.1=
+0
+> > to 6.1 upstream kernel. The regression can be reproduced by sysbench's
+> > oltp_write_only benchmark.
+> > It seems like the always on rstat flush in
+> > mem_cgroup_wb_stats() is causing the regression.
 >
-> See the thread at
+> Is the affected benchmark running in a non-root cgroup?
 >
->     https://lore.kernel.org/all/CAHk-=3Dwhw936qzDLBQdUz-He5WK_0fRSWwKAjtb=
-VsMGfX70Nf_Q@mail.gmail.com/
->
-> and to see the effect in profiles, you can use this EXTREMELY stupid
-> test program:
->
->     #include <fcntl.h>
->
->     int main(int argc, char **argv)
->     {
->         for (int i =3D 0; i < 10000000; i++)
->                 open("nonexistent", O_RDONLY);
->     }
->
-> where the point of course is that the "nonexistent" pathname doesn't
-> actually exist (so don't create a file called that for the test).
->
-> What happens is that open() allocates a 'struct file *' early from the
-> filp kmem_cache, which has SLAB_ACCOUNT set. So we'll do accounting
-> for it, failt the pathname open, and free it again, which uncharges
-> the accounting.
->
-> Now, in this case, I actually have a suggestion: could we please just
-> make SLAB_ACCOUNT be something that we do *after* the allocation, kind
-> of the same way the zeroing works?
->
-> IOW, I'd love to get rid of slab_pre_alloc_hook() entirely, and make
-> slab_post_alloc_hook() do all the "charge the memcg if required".
->
-> Obviously that means that now a failure to charge the memcg would have
-> to then de-allocate things, but that's an uncommon path and would be
-> marked unlikely and not be in the hot path at all.
->
-> Now, the reason I would prefer that is that the *second* step would be to
->
->  (a) expose a "kmem_cache_charge()" function that takes a
-> *non*-accounted slab allocation, and turns it into an accounted one
-> (and obviously this is why you want to do everything in the post-alloc
-> hook: just try to share this code)
->
->  (b) remote the SLAB_ACCOUNT from the filp_cachep, making all file
-> allocations start out unaccounted.
->
->  (c) when we have *actually* looked up the pathname and open the file
-> successfully, at *that* point we'd do a
->
->         error =3D kmem_cache_charge(filp_cachep, file);
->
->     in do_dentry_open() to turn the unaccounted file pointer into an
-> accounted one (and if that fails, we do the cleanup and free it, of
-> course, exactly like we do when file_get_write_access() fails)
->
-> which means that now the failure case doesn't unnecessarily charge the
-> allocation that never ends up being finalized.
->
-> NOTE! I think this would clean up mm/slub.c too, simply because it
-> would get rid of that memcg_slab_pre_alloc_hook() entirely, and get
-> rid of the need to carry the "struct obj_cgroup **objcgp" pointer
-> along until the post-alloc hook: everything would be done post-alloc.
->
-> The actual kmem_cache_free() code already deals with "this slab hasn't
-> been accounted" because it obviously has to deal with allocations that
-> were done without __GFP_ACCOUNT anyway. So there's no change needed on
-> the freeing path, it already has to handle this all gracefully.
->
-> I may be missing something, but it would seem to have very little
-> downside, and fix a case that actually is visible right now.
+> I'm asking whether this would warrant a
+>   Fixes: fd25a9e0e23b ("memcg: unify memcg stat flushing")
+> that introduced the global flush (in v6.1) but it was removed later in
+>   7d7ef0a4686a ("mm: memcg: restore subtree stats flushing")
+> (so v6.8 could be possibly unaffected).
 >
 
-Thanks for the idea. Actually I had a discussion with Vlastimil at LPC
-'22 on a similar idea but for a different problem i.e. allocation in
-irq context or more specifically charging sockets for incoming TCP
-connections. If you see inet_csk_accept() we solved this for TCP
-memory by charging at accept() syscall but the kernel memory holding
-socket is still uncharged.
+Yes, the benchmark and the workload were running in non-root cgroups.
 
-So, I think having the framework you suggested would help more
-use-cases. I will take a stab at this in the next couple of days
-(sorry stuck in some other stuff atm).
+Regarding the Fixes, please note that the regression was still there
+with 7d7ef0a4686a ("mm: memcg: restore subtree stats flushing"), so I
+would say that our first conversion to rstat infra would most probably
+have the issue as well which was 2d146aa3aa84 ("mm: memcontrol: switch
+to rstat").
 
-thanks,
-Shakeel
+So, the following fixes tag makes sense to me:
+
+Fixes: 2d146aa3aa84 ("mm: memcontrol: switch to rstat")
 
