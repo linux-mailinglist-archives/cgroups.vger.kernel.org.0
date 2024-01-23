@@ -1,116 +1,131 @@
-Return-Path: <cgroups+bounces-1212-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1213-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37A1E838578
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 03:42:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0FD5838707
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 06:51:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4648292C53
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 02:42:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52E4B1F24776
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 05:51:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A3939AF5;
-	Tue, 23 Jan 2024 02:25:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F7CB525B;
+	Tue, 23 Jan 2024 05:51:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lliGD1VC"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CqSXp1iC"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B92472AD38
-	for <cgroups@vger.kernel.org>; Tue, 23 Jan 2024 02:25:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A8B14C6C
+	for <cgroups@vger.kernel.org>; Tue, 23 Jan 2024 05:50:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705976738; cv=none; b=lgo+hxI2tLGXOehkMwbb8KhXVCydWqVckoJh9lLZE4+2WoyZMtW40SYmnLjriMWnOhXFAIq6Xs9ODenpPQjcYCIzrcpQJeyKP2lVAT3BInlRPD9alK0ah7SCSiPW+whJQNA5cH9r5eMYBYNA377lWfnrgWULF594zsxNssWNZUY=
+	t=1705989060; cv=none; b=PepOukIqBX13QCBmdEgIfbcKWXzsy+zfldh/XlUFBMd4JvpWHbS09jWtZXCZ2g0Ij3zskeiNOJX0bV43b9gymnp1Kd8MOiK4dII2C15gixzJRM6oI5psrKRIlah1Qqb9Mdfm2V6Uxf+yp3iiWmmKBnBfm5i/e/IoAhPyLLru4bE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705976738; c=relaxed/simple;
-	bh=ysRcFbGQ5p/ls5XIwFIv22IFWYlKtkPn5NUDI0tHdHQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=keEC1kQ+TWzt1TGFk4DpSCazVwq/l85Z/hjT6+oyNq03v+imPklsKwxa7U6pScQ3Vlm13tMgx3bcVTOfI674JeZQVbwYVfBfTkpz6u95TvnTYQstUeHmKSjE2SfV2JLgNgxOgh5aH3kRtMdLT8L/f1p48go7O9BjiuN04ZhSlt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lliGD1VC; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-40e865bccb4so17065e9.0
-        for <cgroups@vger.kernel.org>; Mon, 22 Jan 2024 18:25:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705976734; x=1706581534; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ysRcFbGQ5p/ls5XIwFIv22IFWYlKtkPn5NUDI0tHdHQ=;
-        b=lliGD1VCRuggr1DlJeull3ZCzM0uVTNquBzTj0DNvKtfIn2omgOFNQuwVkPD8LQtTJ
-         JdIkP7SfeEFLnHeKle3fDQVYOHi9HMec4SU43utpLojbZINz0y85FfvEJFWyiJA/6yer
-         kY/0hQYOOTSo8NtbC8y+zLryQRL4yNzcc+JAly1O588Cq9vaBr5PGqKyLeT44pgjK0ry
-         1E79Yg6k63ukYWzCEb4jvnLVCq9V9Ws7kmC+BeNjtZkTH2zBL7+yEF9k6ALYL1ul+k3e
-         jbnavJgBT1dvgBs4A4mUGu4CS6JV85I6Vek3ldg+JVDvQ7T/BLc2EU8PFmXgDHfbST29
-         Sz2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705976734; x=1706581534;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ysRcFbGQ5p/ls5XIwFIv22IFWYlKtkPn5NUDI0tHdHQ=;
-        b=O+lblrlgaBQlw6c8YbBF79rnShUv0W4dFtJMALYz57JXjAgBSoFe0rRaF7CyH7WsER
-         9Y7XUdWBiPGwWZgeuBh2h4f+tktdbiqCWJgrETqWg9fC59E+oAUfBBWUhmiwOThQNJf7
-         VUHSezB0wtX0+3yH99GYzMpbcHdoGpb1szFkDobcHYZ4NW2uid060mPPCgM8hcDmHomE
-         4iELpxA0GqdM4zmwBmTVzRz2DcX/IDUyMTX+zlARZ01QRP0iqeuw7W+vewT0OwmDGI1q
-         lj+eegAFWIOwIEg0HhhUMNd9la+gtJemyxbNTa4Vdy4V5SPpoWXqYyah7fePf4+Qzu+o
-         QW0g==
-X-Gm-Message-State: AOJu0Yw49VSjVUelVnL7EKTZI3ZY515CYsskvdJdbp0Fo0LJvAU0egey
-	xEooWBgQqbizhrp4HfTHSm1+UGWgXihTUWP7sSf0DjUBico+f032f4sQTN49OHjMHLX0ASbK9d7
-	pDF0lxGS8cZjOpZKddAo7ktptzgjORkLFBJz4
-X-Google-Smtp-Source: AGHT+IEpcicRjFt4pPgD8o1zSRn4vyWZTcoaq8n3EvRlQyVYjfHUDtqLfz/XZTt7bFDYztKnzWDndT4W5ULijtyHiyc=
-X-Received: by 2002:a05:600c:1d14:b0:40e:490c:48a9 with SMTP id
- l20-20020a05600c1d1400b0040e490c48a9mr56750wms.3.1705976733713; Mon, 22 Jan
- 2024 18:25:33 -0800 (PST)
+	s=arc-20240116; t=1705989060; c=relaxed/simple;
+	bh=uUGqYPWkqLqAuYLajkHeoiaksi8vyt5EtObg/cfEv0A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WFJal/IKWS51iEcGUwOlr6HBNdL0i9AaFGJni/MURaYWaeM/P1wg93oyV57RVcGC3CC0EaDulnRwx2o8PUDV0lB9CcoM8MpwQCKa1ylGvgRpB0Zw+wVszKKrViH4mO453dmorkHJoTF7mMxwnotN8TdGM1yHyO/68Pdq427znss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CqSXp1iC; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1705989057;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=H+rMK0KBBnQyaHb54gBf8clNL10ejkmGqcBgOHn7Pt4=;
+	b=CqSXp1iCdSiNyjaubxzTh/Pgj+kOn2Vq7JlrhewGX/NrkqrteyRlp4kXK/yKdhc6eFlZXB
+	mlLOnvnqaQrihRSFlbbm7saVO6gsikZ2fGthj9oJrK9FgnoCLBwXnj+n/Bvt6PjURu/vEN
+	q9+pU3sWUdfCAD89gZpStPEJQuf0iOY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-375-JHn3VzyfMY6lUkIpG0Vk8Q-1; Tue, 23 Jan 2024 00:50:48 -0500
+X-MC-Unique: JHn3VzyfMY6lUkIpG0Vk8Q-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9386885A588;
+	Tue, 23 Jan 2024 05:50:46 +0000 (UTC)
+Received: from [10.22.8.107] (unknown [10.22.8.107])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id D71B9492BC6;
+	Tue, 23 Jan 2024 05:50:40 +0000 (UTC)
+Message-ID: <8075b1d2-1260-4f1d-a757-dc991d95710c@redhat.com>
+Date: Mon, 22 Jan 2024 21:50:40 -0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240121214413.833776-1-tjmercier@google.com>
-In-Reply-To: <20240121214413.833776-1-tjmercier@google.com>
-From: Yu Zhao <yuzhao@google.com>
-Date: Mon, 22 Jan 2024 19:24:56 -0700
-Message-ID: <CAOUHufa9BySrKZ5ws9xJoEsdUfbErb4V=2=JSm-dB9B7zMyJbQ@mail.gmail.com>
-Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
- proactive reclaim"
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com, 
-	yangyifei03@kuaishou.com, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
+ partitions
+Content-Language: en-US
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Frederic Weisbecker <frederic@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+ Joel Fernandes <joel@joelfernandes.org>,
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>,
+ Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
+ cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
+ Ryan Phillips <rphillips@redhat.com>, Brent Rowsell <browsell@redhat.com>,
+ Peter Hunt <pehunt@redhat.com>, Cestmir Kalina <ckalina@redhat.com>,
+ Nicolas Saenz Julienne <nsaenz@kernel.org>,
+ Alex Gladkov <agladkov@redhat.com>, Marcelo Tosatti <mtosatti@redhat.com>,
+ Phil Auld <pauld@redhat.com>, Paul Gortmaker <paul.gortmaker@windriver.com>,
+ Daniel Bristot de Oliveira <bristot@kernel.org>,
+ Juri Lelli <juri.lelli@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Costa Shulyupin <cshulyup@redhat.com>
+References: <20240117163511.88173-1-longman@redhat.com>
+ <bql5g22ovp2dm33llmq5oxpmuuhysvdyppj7j6xvrm643xuniv@pkqrwvmqzneh>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <bql5g22ovp2dm33llmq5oxpmuuhysvdyppj7j6xvrm643xuniv@pkqrwvmqzneh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-On Sun, Jan 21, 2024 at 2:44=E2=80=AFPM T.J. Mercier <tjmercier@google.com>=
- wrote:
->
-> This reverts commit 0388536ac29104a478c79b3869541524caec28eb.
->
-> Proactive reclaim on the root cgroup is 10x slower after this patch when
-> MGLRU is enabled, and completion times for proactive reclaim on much
-> smaller non-root cgroups take ~30% longer (with or without MGLRU). With
-> root reclaim before the patch, I observe average reclaim rates of
-> ~70k pages/sec before try_to_free_mem_cgroup_pages starts to fail and
-> the nr_retries counter starts to decrement, eventually ending the
-> proactive reclaim attempt. After the patch the reclaim rate is
-> consistently ~6.6k pages/sec due to the reduced nr_pages value causing
-> scan aborts as soon as SWAP_CLUSTER_MAX pages are reclaimed. The
-> proactive reclaim doesn't complete after several minutes because
-> try_to_free_mem_cgroup_pages is still capable of reclaiming pages in
-> tiny SWAP_CLUSTER_MAX page chunks and nr_retries is never decremented.
->
-> The docs for memory.reclaim say, "the kernel can over or under reclaim
-> from the target cgroup" which this patch was trying to fix. Revert it
-> until a less costly solution is found.
->
-> Signed-off-by: T.J. Mercier <tjmercier@google.com>
 
-Fixes: 0388536ac291 ("mm:vmscan: fix inaccurate reclaim during
-proactive reclaim")
-Cc: <stable@vger.kernel.org>
+On 1/22/24 10:07, Michal Koutný wrote:
+> Hello Waiman.
+>
+> On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long <longman@redhat.com> wrote:
+>> This patch series is based on the RFC patch from Frederic [1]. Instead
+>> of offering RCU_NOCB as a separate option, it is now lumped into a
+>> root-only cpuset.cpus.isolation_full flag that will enable all the
+>> additional CPU isolation capabilities available for isolated partitions
+>> if set. RCU_NOCB is just the first one to this party. Additional dynamic
+>> CPU isolation capabilities will be added in the future.
+> IIUC this is similar to what I suggested back in the day and you didn't
+> consider it [1]. Do I read this right that you've changed your mind?
+
+I didn't said that we were not going to do this at the time. It's just 
+that more evaluation will need to be done before we are going to do 
+this. I was also looking to see if there were use cases where such 
+capabilities were needed. Now I am aware that such use cases do exist 
+and we should start looking into it.
+
+>
+> (It's fine if you did, I'm only asking to follow the heading of cpuset
+> controller.)
+
+OK, the title of the cover-letter may be too specific. I will make it 
+more general in the next version.
+
+Cheers,
+Longman
+
 
