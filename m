@@ -1,181 +1,173 @@
-Return-Path: <cgroups+bounces-1218-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1219-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE202838A62
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 10:33:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D65CD8390A6
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 14:58:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42BEDB238E4
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 09:33:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 341DCB260BF
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 13:58:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A91859B5D;
-	Tue, 23 Jan 2024 09:33:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBE135F840;
+	Tue, 23 Jan 2024 13:58:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="S+BrXl9K";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="S+BrXl9K"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0Twv+Y4Y"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FA8959B4C;
-	Tue, 23 Jan 2024 09:33:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 354915F565
+	for <cgroups@vger.kernel.org>; Tue, 23 Jan 2024 13:58:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706002420; cv=none; b=AW5dlAvX5/9XJ3j6YG1rSTE3EHwUg1YXMlyCsrOYSHVWBmozGppQhtTLeip12OCZbVbPq1/Eq/MByxJV0kO1119C0HIRdlm/enFCqUeQFDQEqhhvwzeYChT34V7nLuzb0U3BM7/uLTKi3JFwoKs1yXBlrt8DJ6F5Y/IVfrv5MPA=
+	t=1706018299; cv=none; b=iHEx9HnJS97mQiN7FQDQjxd2JU71DN+x9jCq4Ux+ix/0HhfGUH+r+25d+kVeMcZQQLEkG6wjBsoFJFuoWgORy7suwDNs1URcj9sUz9J4w4bJFKhV1aYvq5C7av19A0B3dGz8BVXhrG7cMg/kwhWx1IoWt3n6nwSotY41FJQqPqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706002420; c=relaxed/simple;
-	bh=2KnS/m/aJXF9pgC7sa33Pkk2SdNYQMgvjyWG/WyoxTs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FqMPnLs3ItmhDv5lsRW81fvzHegP85mwv4+l9VsqzC5/d2braGMMR82/VGdw0Ecvc8r1wYi9igxjkWiLETxWJRuUUQ6v9SrW0g8SUsqVPF3LdGSsbebJFQ1gBso4tLVurBENLX5n7RFNaUJfOGyBoD3QX+IPh8/tBy/RMwGOqV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=S+BrXl9K; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=S+BrXl9K; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3249622177;
-	Tue, 23 Jan 2024 09:33:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706002417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vr0dVSL74POTu+Iy/t8VsndcOHjm5FnK2rIR21aIjBA=;
-	b=S+BrXl9K9p1cn9yvSqLBO6VScZ2ywrf6is1PxTTlOrOQLKR/o1eBgNPpxkLlrCuQiXFQQl
-	ppba9WHp4P1Rk+Xl+nS5t5H/PqltWHfRSpGhUke8SVx0Y9i2fBBGEWEMzWKRzzqxG8e32f
-	9YiuDQWiNDXvvemyB6ndXo393rAodMo=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706002417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vr0dVSL74POTu+Iy/t8VsndcOHjm5FnK2rIR21aIjBA=;
-	b=S+BrXl9K9p1cn9yvSqLBO6VScZ2ywrf6is1PxTTlOrOQLKR/o1eBgNPpxkLlrCuQiXFQQl
-	ppba9WHp4P1Rk+Xl+nS5t5H/PqltWHfRSpGhUke8SVx0Y9i2fBBGEWEMzWKRzzqxG8e32f
-	9YiuDQWiNDXvvemyB6ndXo393rAodMo=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 13D05136A4;
-	Tue, 23 Jan 2024 09:33:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id bXbOAfGHr2VMBwAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Tue, 23 Jan 2024 09:33:37 +0000
-Date: Tue, 23 Jan 2024 10:33:36 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com,
-	yuzhao@google.com, yangyifei03@kuaishou.com,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
- proactive reclaim"
-Message-ID: <Za-H8NNW9bL-I4gj@tiehlicka>
-References: <20240121214413.833776-1-tjmercier@google.com>
+	s=arc-20240116; t=1706018299; c=relaxed/simple;
+	bh=MS6bYrlmg0t1k95bdrFkYhGX+I6eMjeZeyKcqKwleE4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Z2uewN3n9ptBVg4llZJRJiSIifB/k0H1EIp3CcvTNkiUWszJEJlWNk30Y5Gbfg1lGrLJZ2tCTbBV/+Xc9xbdAJ1sNYq68MKm+ccCpghgN36btlnWTuuWeFoWh+mIUXAxSXeC+lNprOD054UMoa15rO8VSv4SRGPazXQRLGaghHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0Twv+Y4Y; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5ff7a098ab8so34577277b3.3
+        for <cgroups@vger.kernel.org>; Tue, 23 Jan 2024 05:58:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1706018297; x=1706623097; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Unn/XUQhMtWV3m5yOooWqaet1YVy9czMl29ZsBMY8K0=;
+        b=0Twv+Y4YDQOI97H6c99AC3CHrW0Pp1o/zZOPWqbU7TjUP7yhclHcXscZuf2Nqnf+id
+         qR1zhi8PFpeDTRvUdHjZF5bNUFXizXyY3v1rXkSJEUhEIDQ6a+JPY672NEYN4urdXklq
+         Le3BXd9pfp6A7Tu+mtkwJQwxpGgwN1jirjZxOI1PWleN+DH9TPwTvRcUyAn4EUXGOwqE
+         bp6nlGdJO6GiwTh/2jMF8+bNX6cshFCSM9hyPhGMc432TjYi9DlG7wFXXeVZrs67/J5O
+         NYUPn79HhauzTjVRAc5r4gjDrLamSa1kX8GZWsRgy8+F2n6CtchVd6i2jsa02oy2uiZ0
+         xQ4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706018297; x=1706623097;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Unn/XUQhMtWV3m5yOooWqaet1YVy9czMl29ZsBMY8K0=;
+        b=sI9wLh/ICLVeErlo/1/MCRBkPt0ur0OM01CVDazVC/SWLGbXPxQjYJW/E+99GTfKSg
+         TqsgIILqMV0SPTlXp5ApFvZ0OCGQBCOYthRqfvKxTld6Ww3+RpDYthk4Mo8VKG890zQ1
+         Ip4mgW87vOeCfhTox9puModANqSNR1GKYsfJ3WJkNcbye5aTiKd/yAcR0kDaXkARZn5I
+         lMldwqnA71l88MgFV5c/xl6ogwF412eOEJRsqaOq7xogKWaHxd9VNd0iXtQhOTl1Lpzn
+         z8V0B+tgl1joiuzM+mz9YGLRGmfB9DEPnxCLug5sy5a0jWpIiOi178ArK8fw5rmgYMlf
+         DPYg==
+X-Gm-Message-State: AOJu0YwI+GyNy3ajdN3zsXKfbJQGJ45a8jbMmx28bBds7OfY+27vmlpj
+	3V6nkSQDkKCJUNgVp5UBHt15qqnVWo+jp0I6uNvKjWde3KGTpketAFTFLkUk9EDvlvzWsHmxQSE
+	HCl9CCuQNsJy1P2yC0B6t/XQaXs3CKT3AsviA
+X-Google-Smtp-Source: AGHT+IHY/qLbl37tVuFXj90DELM5aSYNnxau4XIsFG7zlEDgdKDus8DEj9COcAlaZJwjLiawQKFxgWu4UxLMxlUfQSY=
+X-Received: by 2002:a81:840b:0:b0:600:769:179f with SMTP id
+ u11-20020a81840b000000b006000769179fmr2815522ywf.17.1706018296914; Tue, 23
+ Jan 2024 05:58:16 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240121214413.833776-1-tjmercier@google.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=S+BrXl9K
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -3.01
-X-Rspamd-Queue-Id: 3249622177
-X-Spam-Flag: NO
+References: <20240121214413.833776-1-tjmercier@google.com> <Za-H8NNW9bL-I4gj@tiehlicka>
+In-Reply-To: <Za-H8NNW9bL-I4gj@tiehlicka>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Tue, 23 Jan 2024 05:58:05 -0800
+Message-ID: <CABdmKX2K4MMe9rsKfWi9RxUS5G1RkLVzuUkPnovt5O2hqVmbWA@mail.gmail.com>
+Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
+ proactive reclaim"
+To: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com, yuzhao@google.com, 
+	yangyifei03@kuaishou.com, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun 21-01-24 21:44:12, T.J. Mercier wrote:
-> This reverts commit 0388536ac29104a478c79b3869541524caec28eb.
-> 
-> Proactive reclaim on the root cgroup is 10x slower after this patch when
-> MGLRU is enabled, and completion times for proactive reclaim on much
-> smaller non-root cgroups take ~30% longer (with or without MGLRU).
+On Tue, Jan 23, 2024 at 1:33=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Sun 21-01-24 21:44:12, T.J. Mercier wrote:
+> > This reverts commit 0388536ac29104a478c79b3869541524caec28eb.
+> >
+> > Proactive reclaim on the root cgroup is 10x slower after this patch whe=
+n
+> > MGLRU is enabled, and completion times for proactive reclaim on much
+> > smaller non-root cgroups take ~30% longer (with or without MGLRU).
+>
+> What is the reclaim target in these pro-active reclaim requests?
 
-What is the reclaim target in these pro-active reclaim requests?
+Two targets:
+1) /sys/fs/cgroup/memory.reclaim
+2) /sys/fs/cgroup/uid_0/memory.reclaim (a bunch of Android system services)
 
-> With
-> root reclaim before the patch, I observe average reclaim rates of
-> ~70k pages/sec before try_to_free_mem_cgroup_pages starts to fail and
-> the nr_retries counter starts to decrement, eventually ending the
-> proactive reclaim attempt.
+Note that lru_gen_shrink_node is used for 1, but shrink_node_memcgs is
+used for 2.
 
-Do I understand correctly that the reclaim target is over estimated and
-you expect that the reclaim process breaks out early>
+The 10x comes from the rate of reclaim (~70k pages/sec vs ~6.6k
+pages/sec) for 1. After this revert the root reclaim took only about
+10 seconds. Before the revert it's still running after about 3 minutes
+using a core at 100% the whole time, and I'm too impatient to wait
+longer to record times for comparison.
 
-> After the patch the reclaim rate is
-> consistently ~6.6k pages/sec due to the reduced nr_pages value causing
-> scan aborts as soon as SWAP_CLUSTER_MAX pages are reclaimed. The
-> proactive reclaim doesn't complete after several minutes because
-> try_to_free_mem_cgroup_pages is still capable of reclaiming pages in
-> tiny SWAP_CLUSTER_MAX page chunks and nr_retries is never decremented.
+The 30% comes from the average of a few runs for 2:
+Before revert:
+$ adb wait-for-device && sleep 120 && adb root && adb shell -t 'time
+echo "" > /sys/fs/cgroup/uid_0/memory.reclaim'
+restarting adbd as root
+    0m09.69s real     0m00.00s user     0m09.19s system
 
-I do not understand this part. How does a smaller reclaim target manages
-to have reclaimed > 0 while larger one doesn't?
- 
-> The docs for memory.reclaim say, "the kernel can over or under reclaim
-> from the target cgroup" which this patch was trying to fix. Revert it
-> until a less costly solution is found.
-> 
-> Signed-off-by: T.J. Mercier <tjmercier@google.com>
-> ---
->  mm/memcontrol.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index e4c8735e7c85..cee536c97151 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6956,8 +6956,8 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
->  			lru_add_drain_all();
->  
->  		reclaimed = try_to_free_mem_cgroup_pages(memcg,
-> -					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
-> -					GFP_KERNEL, reclaim_options);
-> +						nr_to_reclaim - nr_reclaimed,
-> +						GFP_KERNEL, reclaim_options);
->  
->  		if (!reclaimed && !nr_retries--)
->  			return -EAGAIN;
-> -- 
-> 2.43.0.429.g432eaa2c6b-goog
-> 
+After revert:
+$ adb wait-for-device && sleep 120 && adb root && adb shell -t 'time
+echo "" > /sys/fs/cgroup/uid_0/memory.reclaim'
+    0m07.31s real     0m00.00s user     0m06.44s system
 
--- 
-Michal Hocko
-SUSE Labs
+
+It's actually a bigger difference for smaller reclaim amounts:
+Before revert:
+$ adb wait-for-device && sleep 120 && adb root && adb shell -t 'time
+echo "3G" > /sys/fs/cgroup/uid_0/memory.reclaim'
+    0m12.04s real     0m00.00s user     0m11.48s system
+
+After revert:
+$ adb wait-for-device && sleep 120 && adb root && adb shell -t 'time
+echo "3G" > /sys/fs/cgroup/uid_0/memory.reclaim'
+    0m06.65s real     0m00.00s user     0m05.91s system
+
+> > With
+> > root reclaim before the patch, I observe average reclaim rates of
+> > ~70k pages/sec before try_to_free_mem_cgroup_pages starts to fail and
+> > the nr_retries counter starts to decrement, eventually ending the
+> > proactive reclaim attempt.
+>
+> Do I understand correctly that the reclaim target is over estimated and
+> you expect that the reclaim process breaks out early
+
+Yes. I expect memory_reclaim to fail at some point when it becomes
+difficult/impossible to reclaim pages where I specify a large amount
+to reclaim. The ask here is, "please reclaim as much as possible from
+this cgroup, but don't take all day". But it takes minutes to get
+there on the root cgroup, working SWAP_CLUSTER_MAX pages at a time.
+
+> > After the patch the reclaim rate is
+> > consistently ~6.6k pages/sec due to the reduced nr_pages value causing
+> > scan aborts as soon as SWAP_CLUSTER_MAX pages are reclaimed. The
+> > proactive reclaim doesn't complete after several minutes because
+> > try_to_free_mem_cgroup_pages is still capable of reclaiming pages in
+> > tiny SWAP_CLUSTER_MAX page chunks and nr_retries is never decremented.
+>
+> I do not understand this part. How does a smaller reclaim target manages
+> to have reclaimed > 0 while larger one doesn't?
+
+They both are able to make progress. The main difference is that a
+single iteration of try_to_free_mem_cgroup_pages with MGLRU ends soon
+after it reclaims nr_to_reclaim, and before it touches all memcgs. So
+a single iteration really will reclaim only about SWAP_CLUSTER_MAX-ish
+pages with MGLRU. WIthout MGLRU the memcg walk is not aborted
+immediately after nr_to_reclaim is reached, so a single call to
+try_to_free_mem_cgroup_pages can actually reclaim thousands of pages
+even when sc->nr_to_reclaim is 32. (I.E. MGLRU overreclaims less.)
+https://lore.kernel.org/lkml/20221201223923.873696-1-yuzhao@google.com/
 
