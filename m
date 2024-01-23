@@ -1,173 +1,261 @@
-Return-Path: <cgroups+bounces-1219-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1220-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D65CD8390A6
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 14:58:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB11483942A
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 17:05:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 341DCB260BF
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 13:58:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B8F529136C
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 16:05:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBE135F840;
-	Tue, 23 Jan 2024 13:58:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D0C6612E1;
+	Tue, 23 Jan 2024 16:04:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0Twv+Y4Y"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Uluhp6u6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 354915F565
-	for <cgroups@vger.kernel.org>; Tue, 23 Jan 2024 13:58:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF4262A02;
+	Tue, 23 Jan 2024 16:04:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706018299; cv=none; b=iHEx9HnJS97mQiN7FQDQjxd2JU71DN+x9jCq4Ux+ix/0HhfGUH+r+25d+kVeMcZQQLEkG6wjBsoFJFuoWgORy7suwDNs1URcj9sUz9J4w4bJFKhV1aYvq5C7av19A0B3dGz8BVXhrG7cMg/kwhWx1IoWt3n6nwSotY41FJQqPqQ=
+	t=1706025886; cv=none; b=BJ68h7z1zsBEvSMzLBrxsqI+nNZPJONFQVFs2VFlUnZwESTta7Qcsb2YrvGWwovh/FaVR787BmX8UE2SfHIVVck9odjziKlVKv+tkwUnkDNb7xHCM1mMgYAtaLcrxvPu4VFbOpsAi4AuFTrk5Pnjb4Ta2zpLHfhA8uBa/IWOQsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706018299; c=relaxed/simple;
-	bh=MS6bYrlmg0t1k95bdrFkYhGX+I6eMjeZeyKcqKwleE4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Z2uewN3n9ptBVg4llZJRJiSIifB/k0H1EIp3CcvTNkiUWszJEJlWNk30Y5Gbfg1lGrLJZ2tCTbBV/+Xc9xbdAJ1sNYq68MKm+ccCpghgN36btlnWTuuWeFoWh+mIUXAxSXeC+lNprOD054UMoa15rO8VSv4SRGPazXQRLGaghHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0Twv+Y4Y; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-5ff7a098ab8so34577277b3.3
-        for <cgroups@vger.kernel.org>; Tue, 23 Jan 2024 05:58:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706018297; x=1706623097; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Unn/XUQhMtWV3m5yOooWqaet1YVy9czMl29ZsBMY8K0=;
-        b=0Twv+Y4YDQOI97H6c99AC3CHrW0Pp1o/zZOPWqbU7TjUP7yhclHcXscZuf2Nqnf+id
-         qR1zhi8PFpeDTRvUdHjZF5bNUFXizXyY3v1rXkSJEUhEIDQ6a+JPY672NEYN4urdXklq
-         Le3BXd9pfp6A7Tu+mtkwJQwxpGgwN1jirjZxOI1PWleN+DH9TPwTvRcUyAn4EUXGOwqE
-         bp6nlGdJO6GiwTh/2jMF8+bNX6cshFCSM9hyPhGMc432TjYi9DlG7wFXXeVZrs67/J5O
-         NYUPn79HhauzTjVRAc5r4gjDrLamSa1kX8GZWsRgy8+F2n6CtchVd6i2jsa02oy2uiZ0
-         xQ4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706018297; x=1706623097;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Unn/XUQhMtWV3m5yOooWqaet1YVy9czMl29ZsBMY8K0=;
-        b=sI9wLh/ICLVeErlo/1/MCRBkPt0ur0OM01CVDazVC/SWLGbXPxQjYJW/E+99GTfKSg
-         TqsgIILqMV0SPTlXp5ApFvZ0OCGQBCOYthRqfvKxTld6Ww3+RpDYthk4Mo8VKG890zQ1
-         Ip4mgW87vOeCfhTox9puModANqSNR1GKYsfJ3WJkNcbye5aTiKd/yAcR0kDaXkARZn5I
-         lMldwqnA71l88MgFV5c/xl6ogwF412eOEJRsqaOq7xogKWaHxd9VNd0iXtQhOTl1Lpzn
-         z8V0B+tgl1joiuzM+mz9YGLRGmfB9DEPnxCLug5sy5a0jWpIiOi178ArK8fw5rmgYMlf
-         DPYg==
-X-Gm-Message-State: AOJu0YwI+GyNy3ajdN3zsXKfbJQGJ45a8jbMmx28bBds7OfY+27vmlpj
-	3V6nkSQDkKCJUNgVp5UBHt15qqnVWo+jp0I6uNvKjWde3KGTpketAFTFLkUk9EDvlvzWsHmxQSE
-	HCl9CCuQNsJy1P2yC0B6t/XQaXs3CKT3AsviA
-X-Google-Smtp-Source: AGHT+IHY/qLbl37tVuFXj90DELM5aSYNnxau4XIsFG7zlEDgdKDus8DEj9COcAlaZJwjLiawQKFxgWu4UxLMxlUfQSY=
-X-Received: by 2002:a81:840b:0:b0:600:769:179f with SMTP id
- u11-20020a81840b000000b006000769179fmr2815522ywf.17.1706018296914; Tue, 23
- Jan 2024 05:58:16 -0800 (PST)
+	s=arc-20240116; t=1706025886; c=relaxed/simple;
+	bh=DZh35DyC6FHYWUcZPRMJlKZaRbb6awdzQL3Ie3ptU0k=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=arCzmObJRATc+sVzNx/nUhR6Sgr0nTBxk7L5lJ2Ja2kvDjdlk8eOLjeILWq0I6uwqLiR9Rrc7O+aLAGY0zOVikAp0VugpdLZ/8PQSgHf0XSbCG6GSE1CyV3Z/d5pVaFicVtvEcLSfF8O+YBCxRiGD9ifuMIb9I4/TVWNq+rwdcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Uluhp6u6; arc=none smtp.client-ip=134.134.136.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706025884; x=1737561884;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=DZh35DyC6FHYWUcZPRMJlKZaRbb6awdzQL3Ie3ptU0k=;
+  b=Uluhp6u6LMMbONVY6MmR52EINvo1NVWdnxyYGYeCLPAtJbVEqJZXxnDU
+   C4NjPmWqjhrtlx5UhpdMS0JXmbAl1qFrIzXFGg0TvLQmvFF+/d4vpGKjX
+   cQVl1Y7KQiCSBDlDDGE7Sh5/FQN4aoNp3/rXXoK9qXkrYeswwG4W9zKv1
+   4uJLi93Z04DIGk+2HqgVbcdBVLy244YtDBMUFrQRz63TziQ3wmKTQD7jj
+   scRTQ8osNA8IcJuVcpuVIwv/wk8VpBVJS3PvHp40nbT0o8rp2cl4FUBtN
+   iMdpwYWS1VYEsT4gCxC63pIc2Mb2z2czEq1A84X5OzOooW8VTPDRmsNq1
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="391985955"
+X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
+   d="scan'208";a="391985955"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 08:04:43 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="876389590"
+X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
+   d="scan'208";a="876389590"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 23 Jan 2024 08:04:40 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
+ linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+ cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ hpa@zytor.com, sohil.mehta@intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com
+Subject: Re: [PATCH v7 04/15] x86/sgx: Implement basic EPC misc cgroup
+ functionality
+References: <20240122172048.11953-1-haitao.huang@linux.intel.com>
+ <20240122172048.11953-5-haitao.huang@linux.intel.com>
+ <CYLIJZZJON62.24BNN310T3B2F@suppilovahvero>
+Date: Tue, 23 Jan 2024 10:04:40 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240121214413.833776-1-tjmercier@google.com> <Za-H8NNW9bL-I4gj@tiehlicka>
-In-Reply-To: <Za-H8NNW9bL-I4gj@tiehlicka>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Tue, 23 Jan 2024 05:58:05 -0800
-Message-ID: <CABdmKX2K4MMe9rsKfWi9RxUS5G1RkLVzuUkPnovt5O2hqVmbWA@mail.gmail.com>
-Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
- proactive reclaim"
-To: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com, yuzhao@google.com, 
-	yangyifei03@kuaishou.com, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2h0b9dglwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <CYLIJZZJON62.24BNN310T3B2F@suppilovahvero>
+User-Agent: Opera Mail/1.0 (Win32)
 
-On Tue, Jan 23, 2024 at 1:33=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
+On Mon, 22 Jan 2024 14:25:53 -0600, Jarkko Sakkinen <jarkko@kernel.org>  
+wrote:
+
+> On Mon Jan 22, 2024 at 7:20 PM EET, Haitao Huang wrote:
+>> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>>
+>> SGX Enclave Page Cache (EPC) memory allocations are separate from normal
+>> RAM allocations, and are managed solely by the SGX subsystem. The
+>> existing cgroup memory controller cannot be used to limit or account for
+>> SGX EPC memory, which is a desirable feature in some environments.  For
+>> example, in a Kubernates environment, a user can request certain EPC
+>> quota for a pod but the orchestrator can not enforce the quota to limit
+>> runtime EPC usage of the pod without an EPC cgroup controller.
+>>
+>> Utilize the misc controller [admin-guide/cgroup-v2.rst, 5-9. Misc] to
+>> limit and track EPC allocations per cgroup. Earlier patches have added
+>> the "sgx_epc" resource type in the misc cgroup subsystem. Add basic
+>> support in SGX driver as the "sgx_epc" resource provider:
+>>
+>> - Set "capacity" of EPC by calling misc_cg_set_capacity()
+>> - Update EPC usage counter, "current", by calling charge and uncharge
+>> APIs for EPC allocation and deallocation, respectively.
+>> - Setup sgx_epc resource type specific callbacks, which perform
+>> initialization and cleanup during cgroup allocation and deallocation,
+>> respectively.
+>>
+>> With these changes, the misc cgroup controller enables user to set a  
+>> hard
+>> limit for EPC usage in the "misc.max" interface file. It reports current
+>> usage in "misc.current", the total EPC memory available in
+>> "misc.capacity", and the number of times EPC usage reached the max limit
+>> in "misc.events".
+>>
+>> For now, the EPC cgroup simply blocks additional EPC allocation in
+>> sgx_alloc_epc_page() when the limit is reached. Reclaimable pages are
+>> still tracked in the global active list, only reclaimed by the global
+>> reclaimer when the total free page count is lower than a threshold.
+>>
+>> Later patches will reorganize the tracking and reclamation code in the
+>> global reclaimer and implement per-cgroup tracking and reclaiming.
+>>
+>> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
 >
-> On Sun 21-01-24 21:44:12, T.J. Mercier wrote:
-> > This reverts commit 0388536ac29104a478c79b3869541524caec28eb.
-> >
-> > Proactive reclaim on the root cgroup is 10x slower after this patch whe=
-n
-> > MGLRU is enabled, and completion times for proactive reclaim on much
-> > smaller non-root cgroups take ~30% longer (with or without MGLRU).
+> For consistency sake I'd also add co-developed-by for Kristen. This is
+> at least the format suggested by kernel documentation.
 >
-> What is the reclaim target in these pro-active reclaim requests?
-
-Two targets:
-1) /sys/fs/cgroup/memory.reclaim
-2) /sys/fs/cgroup/uid_0/memory.reclaim (a bunch of Android system services)
-
-Note that lru_gen_shrink_node is used for 1, but shrink_node_memcgs is
-used for 2.
-
-The 10x comes from the rate of reclaim (~70k pages/sec vs ~6.6k
-pages/sec) for 1. After this revert the root reclaim took only about
-10 seconds. Before the revert it's still running after about 3 minutes
-using a core at 100% the whole time, and I'm too impatient to wait
-longer to record times for comparison.
-
-The 30% comes from the average of a few runs for 2:
-Before revert:
-$ adb wait-for-device && sleep 120 && adb root && adb shell -t 'time
-echo "" > /sys/fs/cgroup/uid_0/memory.reclaim'
-restarting adbd as root
-    0m09.69s real     0m00.00s user     0m09.19s system
-
-After revert:
-$ adb wait-for-device && sleep 120 && adb root && adb shell -t 'time
-echo "" > /sys/fs/cgroup/uid_0/memory.reclaim'
-    0m07.31s real     0m00.00s user     0m06.44s system
-
-
-It's actually a bigger difference for smaller reclaim amounts:
-Before revert:
-$ adb wait-for-device && sleep 120 && adb root && adb shell -t 'time
-echo "3G" > /sys/fs/cgroup/uid_0/memory.reclaim'
-    0m12.04s real     0m00.00s user     0m11.48s system
-
-After revert:
-$ adb wait-for-device && sleep 120 && adb root && adb shell -t 'time
-echo "3G" > /sys/fs/cgroup/uid_0/memory.reclaim'
-    0m06.65s real     0m00.00s user     0m05.91s system
-
-> > With
-> > root reclaim before the patch, I observe average reclaim rates of
-> > ~70k pages/sec before try_to_free_mem_cgroup_pages starts to fail and
-> > the nr_retries counter starts to decrement, eventually ending the
-> > proactive reclaim attempt.
+>> ---
+>> V7:
+>> - Use a static for root cgroup (Kai)
+>> - Wrap epc_cg field in sgx_epc_page struct with #ifdef (Kai)
+>> - Correct check for charge API return (Kai)
+>> - Start initialization in SGX device driver init (Kai)
+>> - Remove unneeded BUG_ON (Kai)
+>> - Split  sgx_get_current_epc_cg() out of sgx_epc_cg_try_charge() (Kai)
+>>
+>> V6:
+>> - Split the original large patch"Limit process EPC usage with misc
+>> cgroup controller"  and restructure it (Kai)
+>> ---
+>>  arch/x86/Kconfig                     | 13 +++++
+>>  arch/x86/kernel/cpu/sgx/Makefile     |  1 +
+>>  arch/x86/kernel/cpu/sgx/epc_cgroup.c | 79 ++++++++++++++++++++++++++++
+>>  arch/x86/kernel/cpu/sgx/epc_cgroup.h | 73 +++++++++++++++++++++++++
+>>  arch/x86/kernel/cpu/sgx/main.c       | 52 +++++++++++++++++-
+>>  arch/x86/kernel/cpu/sgx/sgx.h        |  5 ++
+>>  include/linux/misc_cgroup.h          |  2 +
+>>  7 files changed, 223 insertions(+), 2 deletions(-)
+>>  create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>>  create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.h
+>>
+>> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+>> index 5edec175b9bf..10c3d1d099b2 100644
+>> --- a/arch/x86/Kconfig
+>> +++ b/arch/x86/Kconfig
+>> @@ -1947,6 +1947,19 @@ config X86_SGX
+>>
+>>  	  If unsure, say N.
+>>
+>> +config CGROUP_SGX_EPC
+>> +	bool "Miscellaneous Cgroup Controller for Enclave Page Cache (EPC)  
+>> for Intel SGX"
+>> +	depends on X86_SGX && CGROUP_MISC
+>> +	help
+>> +	  Provides control over the EPC footprint of tasks in a cgroup via
+>> +	  the Miscellaneous cgroup controller.
+>> +
+>> +	  EPC is a subset of regular memory that is usable only by SGX
+>> +	  enclaves and is very limited in quantity, e.g. less than 1%
+>> +	  of total DRAM.
+>> +
+>> +	  Say N if unsure.
+>> +
+>>  config X86_USER_SHADOW_STACK
+>>  	bool "X86 userspace shadow stack"
+>>  	depends on AS_WRUSS
+>> diff --git a/arch/x86/kernel/cpu/sgx/Makefile  
+>> b/arch/x86/kernel/cpu/sgx/Makefile
+>> index 9c1656779b2a..12901a488da7 100644
+>> --- a/arch/x86/kernel/cpu/sgx/Makefile
+>> +++ b/arch/x86/kernel/cpu/sgx/Makefile
+>> @@ -4,3 +4,4 @@ obj-y += \
+>>  	ioctl.o \
+>>  	main.o
+>>  obj-$(CONFIG_X86_SGX_KVM)	+= virt.o
+>> +obj-$(CONFIG_CGROUP_SGX_EPC)	       += epc_cgroup.o
+>> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.c  
+>> b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>> new file mode 100644
+>> index 000000000000..938695816a9e
+>> --- /dev/null
+>> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>> @@ -0,0 +1,79 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +// Copyright(c) 2022 Intel Corporation.
+>> +
+>> +#include <linux/atomic.h>
+>> +#include <linux/kernel.h>
+>> +#include "epc_cgroup.h"
+>> +
+>> +static struct sgx_epc_cgroup epc_cg_root;
+>> +
+>> +/**
+>> + * sgx_epc_cgroup_try_charge() - try to charge cgroup for a single EPC  
+>> page
+>> + *
+>> + * @epc_cg:	The EPC cgroup to be charged for the page.
+>> + * Return:
+>> + * * %0 - If successfully charged.
+>> + * * -errno - for failures.
+>> + */
+>> +int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
+>> +{
+>> +	if (!epc_cg)
+>> +		return -EINVAL;
 >
-> Do I understand correctly that the reclaim target is over estimated and
-> you expect that the reclaim process breaks out early
-
-Yes. I expect memory_reclaim to fail at some point when it becomes
-difficult/impossible to reclaim pages where I specify a large amount
-to reclaim. The ask here is, "please reclaim as much as possible from
-this cgroup, but don't take all day". But it takes minutes to get
-there on the root cgroup, working SWAP_CLUSTER_MAX pages at a time.
-
-> > After the patch the reclaim rate is
-> > consistently ~6.6k pages/sec due to the reduced nr_pages value causing
-> > scan aborts as soon as SWAP_CLUSTER_MAX pages are reclaimed. The
-> > proactive reclaim doesn't complete after several minutes because
-> > try_to_free_mem_cgroup_pages is still capable of reclaiming pages in
-> > tiny SWAP_CLUSTER_MAX page chunks and nr_retries is never decremented.
+> Is there legit flow where the function is called with nil?
 >
-> I do not understand this part. How does a smaller reclaim target manages
-> to have reclaimed > 0 while larger one doesn't?
+>> +
+>> +	return  misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg,  
+>> PAGE_SIZE);
+>               ~
+> 	      extra space
+>
+>> +}
+>> +
+>> +/**
+>> + * sgx_epc_cgroup_uncharge() - uncharge a cgroup for an EPC page
+>> + * @epc_cg:	The charged epc cgroup
+>> + */
+>> +void sgx_epc_cgroup_uncharge(struct sgx_epc_cgroup *epc_cg)
+>> +{
+>> +	if (!epc_cg)
+>> +		return;
+>
+> If there was, this function also should have a return value (i.e. return
+> -EINVAL).
+>
+> This API does not look good tbh.
+>
+> Perhaps you want to emit error message in both functions? Now there is
+> asymmetry that other goes silent and other returns error. I'm neither
+> not sure why exactly -EINVAL was picked (does not mean the same that
+> I would ultimately oppose picking that).
+>
+>
+Good points.
+I'll remove the NULL check for both cases. They should not happen if  
+kernel is configured with EPC cgroup. There are separate versions when EPC  
+cgroup disabled.
 
-They both are able to make progress. The main difference is that a
-single iteration of try_to_free_mem_cgroup_pages with MGLRU ends soon
-after it reclaims nr_to_reclaim, and before it touches all memcgs. So
-a single iteration really will reclaim only about SWAP_CLUSTER_MAX-ish
-pages with MGLRU. WIthout MGLRU the memcg walk is not aborted
-immediately after nr_to_reclaim is reached, so a single call to
-try_to_free_mem_cgroup_pages can actually reclaim thousands of pages
-even when sc->nr_to_reclaim is 32. (I.E. MGLRU overreclaims less.)
-https://lore.kernel.org/lkml/20221201223923.873696-1-yuzhao@google.com/
+Thanks for your quick response.
+Haitao
 
