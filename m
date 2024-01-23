@@ -1,189 +1,248 @@
-Return-Path: <cgroups+bounces-1221-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1222-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2718083948B
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 17:19:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC70A83948D
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 17:19:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93952B232A8
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 16:19:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EA4F28A702
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 16:19:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 541796281F;
-	Tue, 23 Jan 2024 16:19:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6781564A8A;
+	Tue, 23 Jan 2024 16:19:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="IHAU3ilv";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="IHAU3ilv"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SB7sFiAG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 547395F545;
-	Tue, 23 Jan 2024 16:19:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A446281F;
+	Tue, 23 Jan 2024 16:19:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706026750; cv=none; b=nilZRNCLtKPYsWzevR6WtPY1cxr2wC96WhtCbo19If/JF622p21wKeDLMzHREXPVdyAdBiXy2PJqP5NQ4JIWK15hWUJbMRaYx5sb8L4tnnjTDEPa280PzWAwHP+t6O4yqHxo2H5kHan/nV2CzDDXWN65IftlX/NZmRvmdaoz6x0=
+	t=1706026760; cv=none; b=q+feC5LvqDJDadZyXqsBl3vdfr1t8kYsmIXKD6p5lc4KQOp/n/twVr81N6RXpWP33JDWBdSB/s3gsfN53VcuhsbuEFAD25fOOs4F/C81bhQkQYtUoapZdtxF7VeAHfvMFg0be27SgFYGU6JIs7fv+1dc5BeZ4eTB0O7jKzIQm3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706026750; c=relaxed/simple;
-	bh=dKY7sL5Xosek6KNvxiHatF7GmQzsHJmHkbUoHmhPiFM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VHBZAmG8FFT+arcdnOowL4ib+e/f86RhoHNZ7NgrcZiGAY27kG/UWD4L0NOwcAARiV+OHcjyw6VM4Z95VjPejI7sy81N48H91ef5AQITL74NRgI6dnPBSI0t9jq+L+x0OKN8btEw3y8PpfhdOxNnjwZiqhyJdYKqEG31lDG5YoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=IHAU3ilv; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=IHAU3ilv; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3D0B92244D;
-	Tue, 23 Jan 2024 16:19:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706026745; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uAy3ketzvRMwRbLQUV4pgMQkbDKQ5GdBAhMyiIwhx+k=;
-	b=IHAU3ilv6nTkpi9HeEfp8+omCcPYaW1FIBDOIsxiTVqRUdx/FGWxsCpgppOePQMF2hGuWI
-	ABZjfXd8UO3dpBHWqtRIBvu6aD0sQaB/plj0mhDz42owfX2XGI82iBUbOGy8uvSNPbwbB1
-	N3FnnAxdZyQOpCTKoXlMVkAgJTTrO78=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706026745; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uAy3ketzvRMwRbLQUV4pgMQkbDKQ5GdBAhMyiIwhx+k=;
-	b=IHAU3ilv6nTkpi9HeEfp8+omCcPYaW1FIBDOIsxiTVqRUdx/FGWxsCpgppOePQMF2hGuWI
-	ABZjfXd8UO3dpBHWqtRIBvu6aD0sQaB/plj0mhDz42owfX2XGI82iBUbOGy8uvSNPbwbB1
-	N3FnnAxdZyQOpCTKoXlMVkAgJTTrO78=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 18A7E136A4;
-	Tue, 23 Jan 2024 16:19:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EpzeAfnmr2UTCQAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Tue, 23 Jan 2024 16:19:05 +0000
-Date: Tue, 23 Jan 2024 17:19:00 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com,
-	yuzhao@google.com, yangyifei03@kuaishou.com,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
- proactive reclaim"
-Message-ID: <Za_m9Pymh0y-lzgX@tiehlicka>
-References: <20240121214413.833776-1-tjmercier@google.com>
- <Za-H8NNW9bL-I4gj@tiehlicka>
- <CABdmKX2K4MMe9rsKfWi9RxUS5G1RkLVzuUkPnovt5O2hqVmbWA@mail.gmail.com>
+	s=arc-20240116; t=1706026760; c=relaxed/simple;
+	bh=/ApKXRNT1KVzfZ6kukPu6+bsMy5rMlGsIXDqu39eeD0=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=LJud2HBqPv4ydoSrakrUPjIiE1TWPfOMbLEF8FxES0CeJoQD5mCXFK7C6ktNbdtMJ3ord5jFh09v0rg4thpqj1LoSKe2iCDfIXjVICGBRtqzARDCkBVEG2/WEBahIxPuvKaLQHTuTXjBVLBrWUS9degV8AUAfjmhBgKQFjxvYSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SB7sFiAG; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706026758; x=1737562758;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=/ApKXRNT1KVzfZ6kukPu6+bsMy5rMlGsIXDqu39eeD0=;
+  b=SB7sFiAGg2GIzzEjnxSQT/Wbv3WaQhF3gTN9j48AZG7Z9sN8UOpPfPcQ
+   MNZo8y8EeJcUl9bbf6dz/jLy3rxuXOCNmJSGhdh3bGI8d1sTr+kmigTom
+   u4To5fIQj3t4vMB/yikFB1xz5hWDXr5XFPXtwH88XcS7TQb4xdHMNWmfF
+   +tIWcHqxxrTzTGmcmwFzgpeX90vvm6EC36lnfrAMG6MgsifD1eYptvHhM
+   wgJ2uk97X0LJv9OTWfOOQ6B041IvI13ncvrPiqayyL8Gzy80HZdbLcEg6
+   BlXlIQOrICXzdzxCZrb8fGLGMDF4jCygJMOrVgKIk2NNRIJnIDVbGOqJg
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="15086993"
+X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
+   d="scan'208";a="15086993"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 08:19:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,214,1701158400"; 
+   d="scan'208";a="34455278"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 23 Jan 2024 08:19:15 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
+ linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+ cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ hpa@zytor.com, sohil.mehta@intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com
+Subject: Re: [PATCH v7 01/15] cgroup/misc: Add per resource callbacks for CSS
+ events
+References: <20240122172048.11953-1-haitao.huang@linux.intel.com>
+ <20240122172048.11953-2-haitao.huang@linux.intel.com>
+ <CYLIDNAH2GKZ.2GZXE5Z7EXKSI@suppilovahvero>
+Date: Tue, 23 Jan 2024 10:19:11 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABdmKX2K4MMe9rsKfWi9RxUS5G1RkLVzuUkPnovt5O2hqVmbWA@mail.gmail.com>
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=IHAU3ilv
-X-Spamd-Result: default: False [-4.81 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 3D0B92244D
-X-Spam-Level: 
-X-Spam-Score: -4.81
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2h0cx9pdwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <CYLIDNAH2GKZ.2GZXE5Z7EXKSI@suppilovahvero>
+User-Agent: Opera Mail/1.0 (Win32)
 
-On Tue 23-01-24 05:58:05, T.J. Mercier wrote:
-> On Tue, Jan 23, 2024 at 1:33 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Sun 21-01-24 21:44:12, T.J. Mercier wrote:
-> > > This reverts commit 0388536ac29104a478c79b3869541524caec28eb.
-> > >
-> > > Proactive reclaim on the root cgroup is 10x slower after this patch when
-> > > MGLRU is enabled, and completion times for proactive reclaim on much
-> > > smaller non-root cgroups take ~30% longer (with or without MGLRU).
-> >
-> > What is the reclaim target in these pro-active reclaim requests?
-> 
-> Two targets:
-> 1) /sys/fs/cgroup/memory.reclaim
-> 2) /sys/fs/cgroup/uid_0/memory.reclaim (a bunch of Android system services)
+On Mon, 22 Jan 2024 14:14:01 -0600, Jarkko Sakkinen <jarkko@kernel.org>  
+wrote:
 
-OK, I was not really clear. I was curious about nr_to_reclaim. 
- 
-> Note that lru_gen_shrink_node is used for 1, but shrink_node_memcgs is
-> used for 2.
-> 
-> The 10x comes from the rate of reclaim (~70k pages/sec vs ~6.6k
-> pages/sec) for 1. After this revert the root reclaim took only about
-> 10 seconds. Before the revert it's still running after about 3 minutes
-> using a core at 100% the whole time, and I'm too impatient to wait
-> longer to record times for comparison.
-> 
-> The 30% comes from the average of a few runs for 2:
-> Before revert:
-> $ adb wait-for-device && sleep 120 && adb root && adb shell -t 'time
-> echo "" > /sys/fs/cgroup/uid_0/memory.reclaim'
-
-Ohh, so you want to reclaim all of it (resp. as much as possible).
-
-[...]
-
-> > > After the patch the reclaim rate is
-> > > consistently ~6.6k pages/sec due to the reduced nr_pages value causing
-> > > scan aborts as soon as SWAP_CLUSTER_MAX pages are reclaimed. The
-> > > proactive reclaim doesn't complete after several minutes because
-> > > try_to_free_mem_cgroup_pages is still capable of reclaiming pages in
-> > > tiny SWAP_CLUSTER_MAX page chunks and nr_retries is never decremented.
-> >
-> > I do not understand this part. How does a smaller reclaim target manages
-> > to have reclaimed > 0 while larger one doesn't?
-> 
-> They both are able to make progress. The main difference is that a
-> single iteration of try_to_free_mem_cgroup_pages with MGLRU ends soon
-> after it reclaims nr_to_reclaim, and before it touches all memcgs. So
-> a single iteration really will reclaim only about SWAP_CLUSTER_MAX-ish
-> pages with MGLRU. WIthout MGLRU the memcg walk is not aborted
-> immediately after nr_to_reclaim is reached, so a single call to
-> try_to_free_mem_cgroup_pages can actually reclaim thousands of pages
-> even when sc->nr_to_reclaim is 32. (I.E. MGLRU overreclaims less.)
-> https://lore.kernel.org/lkml/20221201223923.873696-1-yuzhao@google.com/
-
-OK, I do see how try_to_free_mem_cgroup_pages might over reclaim but I
-do not really follow how increasing the batch actually fixes the issue
-that there is always progress being made and therefore memory_reclaim
-takes ages to terminates?
--- 
-Michal Hocko
-SUSE Labs
+> On Mon Jan 22, 2024 at 7:20 PM EET, Haitao Huang wrote:
+>> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>>
+>> The misc cgroup controller (subsystem) currently does not perform
+>> resource type specific action for Cgroups Subsystem State (CSS) events:
+>> the 'css_alloc' event when a cgroup is created and the 'css_free' event
+>> when a cgroup is destroyed.
+>>
+>> Define callbacks for those events and allow resource providers to
+>> register the callbacks per resource type as needed. This will be
+>> utilized later by the EPC misc cgroup support implemented in the SGX
+>> driver.
+>>
+>> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> ---
+>> V7:
+>> - Make ops one per resource type and store them in array (Michal)
+>> - Rename the ops struct to misc_res_ops, and enforce the constraints of  
+>> required callback
+>> functions (Jarkko)
+>> - Moved addition of priv field to patch 4 where it was used first.  
+>> (Jarkko)
+>>
+>> V6:
+>> - Create ops struct for per resource callbacks (Jarkko)
+>> - Drop max_write callback (Dave, Michal)
+>> - Style fixes (Kai)
+>> ---
+>>  include/linux/misc_cgroup.h | 11 +++++++
+>>  kernel/cgroup/misc.c        | 60 +++++++++++++++++++++++++++++++++++--
+>>  2 files changed, 68 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
+>> index e799b1f8d05b..0806d4436208 100644
+>> --- a/include/linux/misc_cgroup.h
+>> +++ b/include/linux/misc_cgroup.h
+>> @@ -27,6 +27,16 @@ struct misc_cg;
+>>
+>>  #include <linux/cgroup.h>
+>>
+>> +/**
+>> + * struct misc_res_ops: per resource type callback ops.
+>> + * @alloc: invoked for resource specific initialization when cgroup is  
+>> allocated.
+>> + * @free: invoked for resource specific cleanup when cgroup is  
+>> deallocated.
+>> + */
+>> +struct misc_res_ops {
+>> +	int (*alloc)(struct misc_cg *cg);
+>> +	void (*free)(struct misc_cg *cg);
+>> +};
+>> +
+>>  /**
+>>   * struct misc_res: Per cgroup per misc type resource
+>>   * @max: Maximum limit on the resource.
+>> @@ -56,6 +66,7 @@ struct misc_cg {
+>>
+>>  u64 misc_cg_res_total_usage(enum misc_res_type type);
+>>  int misc_cg_set_capacity(enum misc_res_type type, u64 capacity);
+>> +int misc_cg_set_ops(enum misc_res_type type, const struct misc_res_ops  
+>> *ops);
+>>  int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg,  
+>> u64 amount);
+>>  void misc_cg_uncharge(enum misc_res_type type, struct misc_cg *cg, u64  
+>> amount);
+>>
+>> diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
+>> index 79a3717a5803..b8c32791334c 100644
+>> --- a/kernel/cgroup/misc.c
+>> +++ b/kernel/cgroup/misc.c
+>> @@ -39,6 +39,9 @@ static struct misc_cg root_cg;
+>>   */
+>>  static u64 misc_res_capacity[MISC_CG_RES_TYPES];
+>>
+>> +/* Resource type specific operations */
+>> +static const struct misc_res_ops *misc_res_ops[MISC_CG_RES_TYPES];
+>> +
+>>  /**
+>>   * parent_misc() - Get the parent of the passed misc cgroup.
+>>   * @cgroup: cgroup whose parent needs to be fetched.
+>> @@ -105,6 +108,36 @@ int misc_cg_set_capacity(enum misc_res_type type,  
+>> u64 capacity)
+>>  }
+>>  EXPORT_SYMBOL_GPL(misc_cg_set_capacity);
+>>
+>> +/**
+>> + * misc_cg_set_ops() - set resource specific operations.
+>> + * @type: Type of the misc res.
+>> + * @ops: Operations for the given type.
+>> + *
+>> + * Context: Any context.
+>> + * Return:
+>> + * * %0 - Successfully registered the operations.
+>> + * * %-EINVAL - If @type is invalid, or the operations missing any  
+>> required callbacks.
+>> + */
+>> +int misc_cg_set_ops(enum misc_res_type type, const struct misc_res_ops  
+>> *ops)
+>> +{
+>> +	if (!valid_type(type))
+>> +		return -EINVAL;
+>> +
+>> +	if (!ops->alloc) {
+>> +		pr_err("%s: alloc missing\n", __func__);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	if (!ops->free) {
+>> +		pr_err("%s: free missing\n", __func__);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	misc_res_ops[type] = ops;
+>> +	return 0;
+>> +}
+>> +EXPORT_SYMBOL_GPL(misc_cg_set_ops);
+>> +
+>>  /**
+>>   * misc_cg_cancel_charge() - Cancel the charge from the misc cgroup.
+>>   * @type: Misc res type in misc cg to cancel the charge from.
+>> @@ -383,23 +416,37 @@ static struct cftype misc_cg_files[] = {
+>>  static struct cgroup_subsys_state *
+>>  misc_cg_alloc(struct cgroup_subsys_state *parent_css)
+>>  {
+>> +	struct misc_cg *parent_cg, *cg;
+>>  	enum misc_res_type i;
+>> -	struct misc_cg *cg;
+>> +	int ret;
+>>
+>>  	if (!parent_css) {
+>> -		cg = &root_cg;
+>> +		parent_cg = cg = &root_cg;
+>>  	} else {
+>>  		cg = kzalloc(sizeof(*cg), GFP_KERNEL);
+>>  		if (!cg)
+>>  			return ERR_PTR(-ENOMEM);
+>> +		parent_cg = css_misc(parent_css);
+>>  	}
+>>
+>>  	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
+>>  		WRITE_ONCE(cg->res[i].max, MAX_NUM);
+>>  		atomic64_set(&cg->res[i].usage, 0);
+>> +		if (misc_res_ops[i]) {
+>> +			ret = misc_res_ops[i]->alloc(cg);
+>> +			if (ret)
+>> +				goto alloc_err;
+>
+> So I'd consider pattern like this to avoid repetition:
+>
+> 			if (ret) {
+> 				__misc_cg_free(cg);
+> 				return PERR_PTR(ret);
+> 			}
+>
+> and call __misc_cg_free() also in misc_cg_free().
+>
+Will change to do that.
+Thanks
+Haitao
 
