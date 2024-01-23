@@ -1,123 +1,71 @@
-Return-Path: <cgroups+bounces-1216-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1217-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 404F383889D
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 09:13:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B00B9838968
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 09:46:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE4A1281DB0
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 08:13:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50E1E1F2B2D3
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jan 2024 08:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D23C56472;
-	Tue, 23 Jan 2024 08:12:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 231735786E;
+	Tue, 23 Jan 2024 08:46:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="A0D1hSU1"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="D6iyN1EW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB7A556452
-	for <cgroups@vger.kernel.org>; Tue, 23 Jan 2024 08:12:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B0DD57316;
+	Tue, 23 Jan 2024 08:46:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705997576; cv=none; b=UuykhTelzhfX0f1xNoLZl0w12pMO0PDPq77CtEj9elNGAZk0iCgG7WMP2PkEQDDUeh1g8DQa9BiZXPlyw1uLboPJqnGtMIrSqLyfIeBzHv++B42KOeXJYMkwnrfJIj4YL6hrL94MCiil7NL+RHtMtOvORB5Gzpb6G8dfeq7aPSs=
+	t=1705999592; cv=none; b=tBaOg/gjdD4spUkomwDo0crrZSV5nvIJOaAj8zka+Zr3eD8QiAzBOVU2Qa87EmT6Xqy1wjCLtM7GqNBElVZMbkvTWK/f3+S1poD4LJ9PCXrIt2kPwr4/Hmr8gbYmcTqwvDti6yw1LCEjhMlMgKzIXbBmouTHAspk6khvlREsTZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705997576; c=relaxed/simple;
-	bh=R7RQ/PfRCLCtq5n5pcF6Xl5ipxi0QZFoalAKE+tfwB8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jfRBncgW1oqtGBid6iNqxKDJLeTJYDgibTqckrZ/zUVAbx0T0Al+ELIJGFGi+PhnwV5aqF8+EGiBugbYEhIRKC54P3/0lQHVr/2oPDSIrYTxsc5Fp9qW8TvjXz4qNjNm3dqGuJa17AeBUWAQSK7pEDXxfbqhRcUAcOusuSXKNvg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=A0D1hSU1; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d71b62fa87so22086135ad.0
-        for <cgroups@vger.kernel.org>; Tue, 23 Jan 2024 00:12:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1705997574; x=1706602374; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=inxZJymqVSs5ffJSXOVp5zCbMBHlALxa4MBGgugNy3w=;
-        b=A0D1hSU1MCduEjtZVDWLL9LU5Tc15v33sxmMMxOfG2aAERztpLuwKI0Iy+MDB1+p4b
-         aWCfZqiQrhJEJBqmt7gLewBHqXT/0irvj3kh+LmCG3th4Ret+ZFYereZTmMtLlk9kxlC
-         IoQidMYULLOvEwslwfuDuVGfbuFv3HHM14zvJJNHH3L1anHVMS4fB064re7FPIayZIEC
-         EbMsDBvs14Ts7t60gkSidSiDLQm0oXmvgZhYbUsjbcy+zUa+QtISh6ZYhOQh2O+fcEWb
-         yE1xUjwb/95BOOwloY+7HvwncB4/0Kyaijltj1WznQB6SiErBdvL5yJ3CwyIxq7zVsax
-         VhPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705997574; x=1706602374;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=inxZJymqVSs5ffJSXOVp5zCbMBHlALxa4MBGgugNy3w=;
-        b=VagVIPM/ecqBq3w9QKyJ0WQnEH56mH07AcCAmKB53PsMQB7VSvFedDN++kmNa4IWeU
-         zrcdJYFdsmWNJUaMdjymu3C8E7R1VAUeoAhCqAmQmYCCbDtuTeHCs4rWrmCkRf3TWbTh
-         G0hdDojRh9l4plndQNQAoLBTCxgOKCfkBKhvbv5XlGWdlRUwGQDAZDPlMdSSg8/pgngy
-         1nlx6G9EbiwsMeB6A6pTno354eyNwORsjzJrrVMx8uhg6HJlRh59iyTcVcbIHXYDPOwZ
-         au9xoRz9irlu/hlRyTnuDAvmp+y8fBjc7XORBgaBzd6BZH1zvp+JLzFbZXMDXYccCBXL
-         l5XQ==
-X-Gm-Message-State: AOJu0YyS3SHBBYzJccmFPXOba0lPkjyOrWsFK8fbGVrndK4HPAsy5Buq
-	cwKBFKzZ+3CpPOL+vVV2Z1jhg8H5BclDyCOn96dEdTIDs/FDf67r66A9Ysax768=
-X-Google-Smtp-Source: AGHT+IFm8k6VzAwvXCSNbOrkx9mrdc5qgT4K4r8v61fd8ma+XY3H46IblYtRR1lMGCX/HBClqr/TBw==
-X-Received: by 2002:a17:902:cec4:b0:1d7:7583:6d1c with SMTP id d4-20020a170902cec400b001d775836d1cmr88475plg.16.1705997574253;
-        Tue, 23 Jan 2024 00:12:54 -0800 (PST)
-Received: from ubuntu-yizhou.default.svc.cluster.local ([101.127.248.173])
-        by smtp.gmail.com with ESMTPSA id x9-20020a170902e04900b001d73f1fbdd9sm3911643plx.154.2024.01.23.00.12.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 00:12:53 -0800 (PST)
-From: Tang Yizhou <yizhou.tang@shopee.com>
-X-Google-Original-From: Tang Yizhou
-To: tj@kernel.org,
-	axboe@kernel.dk
-Cc: linux-block@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	chunguang.xu@shopee.com,
-	Tang Yizhou <yizhou.tang@shopee.com>
-Subject: [PATCH] blk-throttle: Eliminate redundant checks for data direction
-Date: Tue, 23 Jan 2024 16:12:48 +0800
-Message-Id: <20240123081248.3752878-1-yizhou.tang@shopee.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1705999592; c=relaxed/simple;
+	bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UWBy8pbdEEmDg8RNgLS+4SVuvLd8AJzCueNDX+wZVcvBFKUzy5QRNHNrbYv4zulYimSngSu80kzHn3S6hizWCjbkRa5EMv+S/pVzMBqBSZIrFE+Q69mMVAIhOh8LY4R4QrTT/qi5Qck9t8vq00Pk/diQTMgDjE0fMYsA2HoQIsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=D6iyN1EW; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=D6iyN1EWmmMw2R0pqSUNme4xDL
+	UvmpKetVaKS+eeWapPSFD8YqOeYMaPf0jCnW8rL3M9hnqG/ekImj2UsO5xS4EURLl7X4aWzAoMq3G
+	EfWx2xDrVAT4Vv3kmgLmiNNvNEcchk5bKbhonvH/qij/dQOZVybk0ILxMM/EXeFoYMrK+7Gf5NKYI
+	x1lbZx/tHMW716TCozDMR3ZN3xlwhXdPg3OTBfCk/SMiT3vu+YEnCQ2Q/FM+k1wZs9M5hsd14uakV
+	NUI+Ruxe0VFn8AsBpHFONAGvBln/97K+cRbLm0lMttUVm+ZsbksRn7QX2is1jzB48BXqTUSNXCeLx
+	YZX8xsiw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rSCQO-00FcWD-0C;
+	Tue, 23 Jan 2024 08:46:28 +0000
+Date: Tue, 23 Jan 2024 00:46:28 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Tang Yizhou <yizhou.tang@shopee.com>
+Cc: tj@kernel.org, axboe@kernel.dk, linux-block@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	chunguang.xu@shopee.com
+Subject: Re: [PATCH] blk-throttle: Eliminate redundant checks for data
+ direction
+Message-ID: <Za985ElMjsCWPwY3@infradead.org>
+References: <20240123081248.3752878-1-yizhou.tang@shopee.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240123081248.3752878-1-yizhou.tang@shopee.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-From: Tang Yizhou <yizhou.tang@shopee.com>
+Looks good:
 
-After calling throtl_peek_queued(), the data direction can be determined so
-there is no need to call bio_data_dir() to check the direction again.
-
-Signed-off-by: Tang Yizhou <yizhou.tang@shopee.com>
----
- block/blk-throttle.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 16f5766620a4..2ad4f6cd465b 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -1098,7 +1098,7 @@ static int throtl_dispatch_tg(struct throtl_grp *tg)
- 	while ((bio = throtl_peek_queued(&sq->queued[READ])) &&
- 	       tg_may_dispatch(tg, bio, NULL)) {
- 
--		tg_dispatch_one_bio(tg, bio_data_dir(bio));
-+		tg_dispatch_one_bio(tg, READ);
- 		nr_reads++;
- 
- 		if (nr_reads >= max_nr_reads)
-@@ -1108,7 +1108,7 @@ static int throtl_dispatch_tg(struct throtl_grp *tg)
- 	while ((bio = throtl_peek_queued(&sq->queued[WRITE])) &&
- 	       tg_may_dispatch(tg, bio, NULL)) {
- 
--		tg_dispatch_one_bio(tg, bio_data_dir(bio));
-+		tg_dispatch_one_bio(tg, WRITE);
- 		nr_writes++;
- 
- 		if (nr_writes >= max_nr_writes)
--- 
-2.25.1
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
