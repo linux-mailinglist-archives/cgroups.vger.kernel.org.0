@@ -1,153 +1,254 @@
-Return-Path: <cgroups+bounces-1233-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1234-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EACB983B357
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jan 2024 21:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 20AF283B48E
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jan 2024 23:15:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B64B1C2215A
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jan 2024 20:54:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36E6F1C22987
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jan 2024 22:15:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C984134750;
-	Wed, 24 Jan 2024 20:54:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F1F135409;
+	Wed, 24 Jan 2024 22:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FiZ+MbSY"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P898nAg8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B4C5134737
-	for <cgroups@vger.kernel.org>; Wed, 24 Jan 2024 20:54:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2984132C15
+	for <cgroups@vger.kernel.org>; Wed, 24 Jan 2024 22:15:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706129674; cv=none; b=E6cLEc+5NCzvMhnl6E15CGFFlvlQWlzD2dnvg65P5xU323BJUXPY+wvIWoBJiaiYwydLzY/ns/OHya46tjC5M/dOf9ZLhrtVWrHHQMb37db/IvSy/RxN1zbTuC4Z3f4gPNvSMMIgPqVfEtcFKMLqj/hFottyjWkwAVwWkiWbRqc=
+	t=1706134521; cv=none; b=HBs88LHg7vJN1emIngtDstLDkNnmx0EllOjX54tofN/NGbsygVy2S2LLL45ufaWSTBngG3OfneIkTGeXiGpj0ISARiQEFCe0vg6eHbowwyZ7JOfuw++NNSCj6tBvZNeL+YtH55iprKluEakhmcQ/vwNWTxkOu9j8nrDUEGI6tUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706129674; c=relaxed/simple;
-	bh=8PpHpDGTvd15z1lyjwFnCzu8+TWE5IPpOUUlHpqfM8g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bW3MpML7OrE0SieK7MheJclMW00F+LV4GotWPww6YKmLKZHBB+mNOGEADxc+XECEltTEpJKaQ/hOcgSXtZKdch7KOaeoeButqhyr94tMs8W4bCln5+9fWaHY6uoxKDKs0qrDpG5NTYy9+MyexVSg9Ab8XPsvrIfVUGd/xYUzgIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FiZ+MbSY; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a277339dcf4so655558666b.2
-        for <cgroups@vger.kernel.org>; Wed, 24 Jan 2024 12:54:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706129670; x=1706734470; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8PpHpDGTvd15z1lyjwFnCzu8+TWE5IPpOUUlHpqfM8g=;
-        b=FiZ+MbSYqFFf7hsqNZCFjGDz5HvIHlgjw8V+yyavc5t+5M5ryzgM9ywZOLHLEysz9N
-         14F5oOhWBaE3YrZjwAjdTa9CvJq8/tN+9LaQFW40uyfVXuDrIXbdfweNX8GExJ79Uj0i
-         5/fTprhLFkppv1r5GP5mQG9fM9kD332Qk+tRIf1X3xPD8xqUJgjIyvM65edcz3kSUFwF
-         /hwFiaL7PyFYcKaY82xZMi8Kltc40G0tznxItB/zhLyHSf7RUgH15y6Myv6IHpyyspGG
-         nK67m+jKjjltwAxgQSp6arAw+konL172NPfokMiEtVLpkRcAxzFe/mmctMhW2onctpgj
-         XZbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706129670; x=1706734470;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8PpHpDGTvd15z1lyjwFnCzu8+TWE5IPpOUUlHpqfM8g=;
-        b=nem6Wn+7UR1OjtnSkoUIhGeXEtEzuSN/nOEkwu0kZdz4qure1WL9CHDdbtVEsKpjT7
-         GL9hU4iUJecRMGaLnYrFNiIY8Sr1RvTbW3hizkB5p6tTPxFfpwQSGLCo97eFz4yF+2mB
-         rlwvvrSfS/39zBOwoxmdRv/i4BJNKIpD4OEtvpz7YrJtIFHHe+KVvmaWrR8+8LIQ3PDd
-         c7JGKr+p4/RhMqEdD0zxt9RM3qGSBu3YJ1fhl1pg9NjURmSv/CZsMcs2oXoGMauQPmPN
-         PCyy/Tl6GzV2qcqH2haLXdn8z+1E2IOLmsEUDMQr5QYunARGt0LWyhj3VCBOAqB5k8cj
-         Zo9w==
-X-Gm-Message-State: AOJu0YxEdZmiDHYOXMjnb7K9n3U0APVMZkNyz2s0Ee4alApTUI7xIw47
-	UoH0W9UzhAJvy0B6Afy3xIQAtLbalctzIio1TGHVDmB+oKQEzoM0aWLfzPDgIaoKbLTjkjB28MA
-	e3j8htl1ctieJ1RZxpSmCB3RFsBEMb/I6NvDv
-X-Google-Smtp-Source: AGHT+IFQWuIM/i4iz3prv5tuO7tWXlBOX7HrLWHwiZ4AjwTkkZqPJOMU3T7di+dK4PngjAfTyy/+XdKG5uJUYqGzGjE=
-X-Received: by 2002:a17:907:c5c4:b0:a31:524f:60e4 with SMTP id
- ts4-20020a170907c5c400b00a31524f60e4mr333052ejc.38.1706129670335; Wed, 24 Jan
- 2024 12:54:30 -0800 (PST)
+	s=arc-20240116; t=1706134521; c=relaxed/simple;
+	bh=fHTNngpBMSC2XVv3ZsIsrgi6dYyptrv3ZEO0XCwBSYg=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=MxJYGZf2udMpUjcIVw6lgSTCKKb3c5n8BTsXN2scleE0koeDSVGYCYJnRzQ3QCv6y7+MPLLxmIMzSeG3kmu8KORBsrsij4CjY4bko7VK5W8CpblX1cLUSC4RNjkdxeJFIk6nZtj+2Jb7h7esRRuNFEBfP7w727B1zGUqPlMv5kw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=P898nAg8; arc=none smtp.client-ip=134.134.136.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706134519; x=1737670519;
+  h=date:from:to:cc:subject:message-id;
+  bh=fHTNngpBMSC2XVv3ZsIsrgi6dYyptrv3ZEO0XCwBSYg=;
+  b=P898nAg89QMIoNdnJ+8bPkXz9EZToBpPJaVii/VMfASkqtS5/mYptilH
+   nsEJe6X3YtsuQU3J6c8jvtPKIrkZ21GZTVQfUF17AGW865F7e/XN1DDKa
+   ZzcfdqcJa1fvtdQgdSbkV6y7LSFV+1SDpgICMaqAznD+5mfobJKUsT+og
+   2MJ6LSkH76Cs48qkdmwD5aPmezQPRF94GYcNOgpe/1g+FF54xpwASqtVp
+   TT+02xGPpLcF2M3Bhb9vDfRs4u1A14I6zGQrncGU8+RQmPHlEYzcbgaRl
+   zQnSleGJfX+zoFVxidQ0Ay6sCVZgCm11VJMPiEqvyye9a9myaU5GknINh
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="466271065"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="466271065"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2024 14:15:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="856855525"
+X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
+   d="scan'208";a="856855525"
+Received: from lkp-server01.sh.intel.com (HELO 961aaaa5b03c) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 24 Jan 2024 14:15:16 -0800
+Received: from kbuild by 961aaaa5b03c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rSlWc-0008U5-34;
+	Wed, 24 Jan 2024 22:15:14 +0000
+Date: Thu, 25 Jan 2024 06:15:05 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ 8d4c171f451d384f3a287eb14bd60825d0b2381b
+Message-ID: <202401250603.ghoeyaq0-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240124100023.660032-1-yosryahmed@google.com> <CALvZod5+S5RLt5t=+ZvrRgOkAhNvC9mJo1SE7r6Ms1LRodV3RQ@mail.gmail.com>
-In-Reply-To: <CALvZod5+S5RLt5t=+ZvrRgOkAhNvC9mJo1SE7r6Ms1LRodV3RQ@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 24 Jan 2024 12:53:52 -0800
-Message-ID: <CAJD7tkYR8-Xo566=KwxiZDJVOqG0NvYCo0jwg59Loqd22CwCuA@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: optimize parent iteration in memcg_rstat_updated()
-To: Shakeel Butt <shakeelb@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, kernel test robot <oliver.sang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 24, 2024 at 9:38=E2=80=AFAM Shakeel Butt <shakeelb@google.com> =
-wrote:
->
-> On Wed, Jan 24, 2024 at 2:00=E2=80=AFAM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> > In memcg_rstat_updated(), we iterate the memcg being updated and its
-> > parents to update memcg->vmstats_percpu->stats_updates in the fast path
-> > (i.e. no atomic updates). According to my math, this is 3 memory loads
-> > (and potentially 3 cache misses) per memcg:
-> > - Load the address of memcg->vmstats_percpu.
-> > - Load vmstats_percpu->stats_updates (based on some percpu calculation)=
-.
-> > - Load the address of the parent memcg.
-> >
-> > Avoid most of the cache misses by caching a pointer from each struct
-> > memcg_vmstats_percpu to its parent on the corresponding CPU. In this
-> > case, for the first memcg we have 2 memory loads (same as above):
-> > - Load the address of memcg->vmstats_percpu.
-> > - Load vmstats_percpu->stats_updates (based on some percpu calculation)=
-.
-> >
-> > Then for each additional memcg, we need a single load to get the
-> > parent's stats_updates directly. This reduces the number of loads from
-> > O(3N) to O(2+N) -- where N is the number of memcgs we need to iterate.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: 8d4c171f451d384f3a287eb14bd60825d0b2381b  docs: cgroup-v1: add missing code-block tags
 
-This is actually O(1+N) not O(2+N). Every memcg needs one load, and
-the first one needs an extra load.
+elapsed time: 1459m
 
-> >
-> > Additionally, stash a pointer to memcg->vmstats in each struct
-> > memcg_vmstats_percpu such that we can access the atomic counter that al=
-l
-> > CPUs fold into, memcg->vmstats->stats_updates.
-> > memcg_should_flush_stats() is changed to memcg_vmstats_needs_flush() to
-> > accept a struct memcg_vmstats pointer accordingly.
-> >
-> > In struct memcg_vmstats_percpu, make sure both pointers together with
-> > stats_updates live on the same cacheline. Finally, update
-> > mem_cgroup_alloc() to take in a parent pointer and initialize the new
-> > cache pointers on each CPU. The percpu loop in mem_cgroup_alloc() may
-> > look concerning, but there are multiple similar loops in the cgroup
-> > creation path (e.g. cgroup_rstat_init()), most of which are hidden
-> > within alloc_percpu().
-> >
-> > According to Oliver's testing [1], this fixes multiple 30-38%
-> > regressions in vm-scalability, will-it-scale-tlb_flush2, and
-> > will-it-scale-fallocate1. This comes at a cost of 2 more pointers per
-> > CPU (<2KB on a machine with 128 CPUs).
-> >
-> > [1] https://lore.kernel.org/lkml/ZbDJsfsZt2ITyo61@xsang-OptiPlex-9020/
-> >
-> > Fixes: 8d59d2214c23 ("mm: memcg: make stats flushing threshold per-memc=
-g")
-> > Tested-by: kernel test robot <oliver.sang@intel.com>
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > Closes: https://lore.kernel.org/oe-lkp/202401221624.cb53a8ca-oliver.san=
-g@intel.com
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> > ---
->
-> Nice work.
->
-> Acked-by: Shakeel Butt <shakeelb@google.com>
+configs tested: 164
+configs skipped: 3
 
-Thanks!
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240124   gcc  
+arc                   randconfig-002-20240124   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                          ixp4xx_defconfig   clang
+arm                            mps2_defconfig   gcc  
+arm                   randconfig-001-20240124   clang
+arm                   randconfig-002-20240124   clang
+arm                   randconfig-003-20240124   clang
+arm                   randconfig-004-20240124   clang
+arm                           sunxi_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240124   clang
+arm64                 randconfig-002-20240124   clang
+arm64                 randconfig-003-20240124   clang
+arm64                 randconfig-004-20240124   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240124   gcc  
+csky                  randconfig-002-20240124   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240124   clang
+hexagon               randconfig-002-20240124   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20240124   clang
+i386         buildonly-randconfig-002-20240124   clang
+i386         buildonly-randconfig-003-20240124   clang
+i386         buildonly-randconfig-004-20240124   clang
+i386         buildonly-randconfig-005-20240124   clang
+i386         buildonly-randconfig-006-20240124   clang
+i386                                defconfig   gcc  
+i386                  randconfig-001-20240124   clang
+i386                  randconfig-002-20240124   clang
+i386                  randconfig-003-20240124   clang
+i386                  randconfig-004-20240124   clang
+i386                  randconfig-005-20240124   clang
+i386                  randconfig-006-20240124   clang
+i386                  randconfig-011-20240124   gcc  
+i386                  randconfig-012-20240124   gcc  
+i386                  randconfig-013-20240124   gcc  
+i386                  randconfig-014-20240124   gcc  
+i386                  randconfig-015-20240124   gcc  
+i386                  randconfig-016-20240124   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240124   gcc  
+loongarch             randconfig-002-20240124   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   clang
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240124   gcc  
+nios2                 randconfig-002-20240124   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240124   gcc  
+parisc                randconfig-002-20240124   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   clang
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc               randconfig-001-20240124   clang
+powerpc               randconfig-002-20240124   clang
+powerpc               randconfig-003-20240124   clang
+powerpc64             randconfig-001-20240124   clang
+powerpc64             randconfig-002-20240124   clang
+powerpc64             randconfig-003-20240124   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   clang
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20240124   clang
+riscv                 randconfig-002-20240124   clang
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20240124   gcc  
+s390                  randconfig-002-20240124   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240124   gcc  
+sh                    randconfig-002-20240124   gcc  
+sparc                            allmodconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240124   gcc  
+sparc64               randconfig-002-20240124   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240124   clang
+um                    randconfig-002-20240124   clang
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240125   gcc  
+x86_64       buildonly-randconfig-002-20240125   gcc  
+x86_64       buildonly-randconfig-003-20240125   gcc  
+x86_64       buildonly-randconfig-004-20240125   gcc  
+x86_64       buildonly-randconfig-005-20240125   gcc  
+x86_64       buildonly-randconfig-006-20240125   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240125   clang
+x86_64                randconfig-002-20240125   clang
+x86_64                randconfig-003-20240125   clang
+x86_64                randconfig-004-20240125   clang
+x86_64                randconfig-005-20240125   clang
+x86_64                randconfig-006-20240125   clang
+x86_64                randconfig-011-20240125   gcc  
+x86_64                randconfig-012-20240125   gcc  
+x86_64                randconfig-013-20240125   gcc  
+x86_64                randconfig-014-20240125   gcc  
+x86_64                randconfig-015-20240125   gcc  
+x86_64                randconfig-016-20240125   gcc  
+x86_64                randconfig-071-20240125   gcc  
+x86_64                randconfig-072-20240125   gcc  
+x86_64                randconfig-073-20240125   gcc  
+x86_64                randconfig-074-20240125   gcc  
+x86_64                randconfig-075-20240125   gcc  
+x86_64                randconfig-076-20240125   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240124   gcc  
+xtensa                randconfig-002-20240124   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
