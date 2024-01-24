@@ -1,141 +1,168 @@
-Return-Path: <cgroups+bounces-1231-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1232-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C37A483B04B
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jan 2024 18:45:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AE8C83B051
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jan 2024 18:46:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7292EB24DC7
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jan 2024 17:38:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8083A1C22851
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jan 2024 17:46:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A53CC7F7F5;
-	Wed, 24 Jan 2024 17:38:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEB3E1272CB;
+	Wed, 24 Jan 2024 17:46:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lpF5jWzx"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HMyTAmrs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D4ACF4EF
-	for <cgroups@vger.kernel.org>; Wed, 24 Jan 2024 17:38:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DBCA1272A5
+	for <cgroups@vger.kernel.org>; Wed, 24 Jan 2024 17:46:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706117912; cv=none; b=bb8wrEM9cjilxzyw7WmgyNpuRPiTiaw+uz6Usgj4mw91Mk6Axvxi8X8OChW3w4rnuNUcCU3KcgUGN8qbV2w/avvX0dMQ4yWKCLXwqEz3J7dLGIp+O5tyeqQCuH+fUoJlzFKWrztcd/ylWxh/ef/8R+88EDmRYKVWj0pDEF7nHQQ=
+	t=1706118397; cv=none; b=btc2nG6HdFsHlT3/rPvAuG3/g2seUhXysdwps2ueDOLtZl/qndkFJQ+4aAA0sEusZrfuLM/+9wTJ6ZCdI1l/krSTX4kEDwmUC7pcy3OTvKTPbVXKU2fcUhU5jefBzHk+XAbzHx1DoWYMeZj6rwgkwRQpGfxr73zxvN8yfmBtRSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706117912; c=relaxed/simple;
-	bh=yJ/BKkfpXJzgeyNiHaKMu/CgCnQKf/dgognXWBGDJRs=;
+	s=arc-20240116; t=1706118397; c=relaxed/simple;
+	bh=85X4MSVhu6FZyouQ/Vf2EMa2KnP6pI2T2c6pSfjhuGs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=G6uCMsUaRr2xG5y5zs0VSTR0ONmv5Abt3H/R40J9aSf2r4UJJvgi8rXzXNrN8U0+E6UgnswOVMBUnkV64IisW33zk3I1iRSo342n5wT0nfsGffIUzzqywUveIvL6SYL12MjnJhrKG7QXQYB9D0BI8usw+44AqD0hvzItbHq7pJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lpF5jWzx; arc=none smtp.client-ip=209.85.214.179
+	 To:Cc:Content-Type; b=mEq3IFcUU44Zgu9NGcUYJFckk2Tdb2AbLKU0ypp9oYuF4heSSoKo5H8UQXcIlBwGFaeh51kvJoCEpY+HwcrVueG7Tk58/bYeSwkRVU06OOD+JDMgIyvWK0iLRtAkoBkKVjw6vRWPSXtzNuG0lbARqR8LbwXfb8IQAA6ySdQCXIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HMyTAmrs; arc=none smtp.client-ip=209.85.128.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d76f1e3e85so2375ad.0
-        for <cgroups@vger.kernel.org>; Wed, 24 Jan 2024 09:38:30 -0800 (PST)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5ffb528dc8dso33742037b3.1
+        for <cgroups@vger.kernel.org>; Wed, 24 Jan 2024 09:46:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706117910; x=1706722710; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706118395; x=1706723195; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yJ/BKkfpXJzgeyNiHaKMu/CgCnQKf/dgognXWBGDJRs=;
-        b=lpF5jWzxTcpFc2COD2Q4RapamyszvZxdwd0bsZg/HrnlfOdVIDIffTbWB1o/BIWmvr
-         MN5A6AvmJbCDvWMWV8TOtNI2rCvv7Sw3NbyhBQ5AxTS8UrdTpn1SJvuLth28j8tHDSRI
-         G2fwQg2QoYI5Z7rICBx6JLCP/Oflqet6iVbSsuoNG/fram0WXqnyXOd50B4XBlHeFv/8
-         Al0APVU4jlXMtGMAM+9KbFA9ajOQi1Y9e10C/gfsyhFF0PwOZAnJ4NWRNQ4otvcdgHj6
-         ypI22zdRz7nDlGm2v6R+0ntIkCqwtYHwVql6M8MHQYOypPoBmJoowJw/gKycs/FjI7B4
-         HvrQ==
+        bh=ZcrjU1rXiL0wUCSwbKfLMXGroLa5TBhUecGAmJobD/I=;
+        b=HMyTAmrsiXetH6P5VydKM0Vcw4WVkpfcVzjQh2vRhvBmUwYiHkShOidKwUJT/soYI2
+         XaSxIODvBaYvS3536EVYAH/wD+/YoCnELYv3QIIS9rzO4oSik9O/Dq2fWlqpFMtB6NcC
+         /TcMFDI2Q1h/qEQ7DowwDupEFChFwUbSncRzkBWerK5leK6WadX+qAeaDcCP8QKSUnhU
+         ntcujFh0XHmUw3Zjg48PGFCojMs5KLBoPbjnCqaBpOX4OG+xvijnOMjAVYURmcEZDi4q
+         1Wmc5ZkhZw8hhcuM/vfZ2B3KL3VvHJW0GXJ8RAIGuvh0uBPBCRwD1PeByazGUkA+0/wD
+         JkDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706117910; x=1706722710;
+        d=1e100.net; s=20230601; t=1706118395; x=1706723195;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yJ/BKkfpXJzgeyNiHaKMu/CgCnQKf/dgognXWBGDJRs=;
-        b=QDqiLlPTXfSbC6uSVU7KRmyCmHbbTlUpDJYhSwD7A471tmKljnxOM66YLh3JfurVcL
-         mdJXRWErLZrIZxoNPhrkFlYrt2fKwTAghxl+lyMFAvw8x2crOuYCeKCaVJIrp3QVepvF
-         Nv83VG+YjroZwtVjot3KeI1CMe0F/FfcauDvfC0U7o48ZopEteQr7NheYNB6Kcw6Q+DT
-         rSkGkg2App5xAUaMghB9wAfIrMrJBKIU2AZJIcEf5Hc740tDK/duVr489Cb/E3p7QZ3r
-         lg2+WFPzBatAmlGZkynZAHwLQSNuQq0GZblFkFPdOsXicXbAw9HkxiURtYF6uLTcOCMD
-         tDVQ==
-X-Gm-Message-State: AOJu0Ywoysc5UV9kAvpWRDQk1cKOHbFWDqCDOeRhClhAa1WViFJjfOUX
-	FhQNdZdelctLQ5488HmnKd565hPx69AH/bw/73yuAwHNZ9hrwK4wzRr1lYIBXkcM7RMmABNNqqT
-	a4LvJhkMRdiv0HCLcYW/jYFhJYGin4oiSKnLB
-X-Google-Smtp-Source: AGHT+IFB5hVm3nPtQ1RkStaM3t/gRxrS+28Wx2F0onfV8o6fOhomKTu7ndT8c1ooAvc+cAfwWvFudUBaqRv9FcYZ8EE=
-X-Received: by 2002:a17:902:db04:b0:1d7:246c:2fc1 with SMTP id
- m4-20020a170902db0400b001d7246c2fc1mr216102plx.26.1706117910167; Wed, 24 Jan
- 2024 09:38:30 -0800 (PST)
+        bh=ZcrjU1rXiL0wUCSwbKfLMXGroLa5TBhUecGAmJobD/I=;
+        b=BJrOevtlvw8j9M/uBkYrBIvbd9BIgaJ/qfR3A8GVGR496Uj6eKjUhbmfw/N4WkoOP1
+         ajsxOTsTZT1bgi4WmAJhOjX9hbNguBehVQ6oemyhG8WK5Kyy6wFon57VdRDRKgNVOxx6
+         yQLiohBqHstnKX1SpgAn2tzBMFw2NX0wfizLB8GW6i/Rmg2QG8Y6VJj854gawxJE2cBy
+         oCsv9fwyrvjNy0hQVleIJHKcLpCyDnpLb1CDVa7RBBHw6sboZuuqWQBPqmNKdMZiQbFo
+         nfQ0+lkBWCiCU0kNwN0Toq1q3BA5sBTXmbq1TjW3Jsw9h2K2a99ElnbMPFxCs86pF1HA
+         IHlA==
+X-Gm-Message-State: AOJu0Yw6N6VSQgQKyd1S01IsY2eCs/tY6O1oNqi5dbxd0TKwe0Qn1qRq
+	uaFx2Cu92c/32rNck1l/aeW8pHtDlUQ5hpla6mDaoFzCmKJhx99OkIpW0CTHQnaMH0i+iZv9/cD
+	xs6XAoq1J4M4mfpbUbourJKvIKF0Rl7Jupjjy
+X-Google-Smtp-Source: AGHT+IGzutMsHILIshINx/VyFhlmwzviKnVmCZccXt19IOpc00/Klu99g2L+eiYhp7VbIDr/mDW1lxNH0NqhwmeCZNM=
+X-Received: by 2002:a81:ae21:0:b0:5ff:a961:d91c with SMTP id
+ m33-20020a81ae21000000b005ffa961d91cmr19539ywh.1.1706118394850; Wed, 24 Jan
+ 2024 09:46:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240124100023.660032-1-yosryahmed@google.com>
-In-Reply-To: <20240124100023.660032-1-yosryahmed@google.com>
-From: Shakeel Butt <shakeelb@google.com>
-Date: Wed, 24 Jan 2024 09:38:18 -0800
-Message-ID: <CALvZod5+S5RLt5t=+ZvrRgOkAhNvC9mJo1SE7r6Ms1LRodV3RQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: optimize parent iteration in memcg_rstat_updated()
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, kernel test robot <oliver.sang@intel.com>
+References: <20240121214413.833776-1-tjmercier@google.com> <Za-H8NNW9bL-I4gj@tiehlicka>
+ <CABdmKX2K4MMe9rsKfWi9RxUS5G1RkLVzuUkPnovt5O2hqVmbWA@mail.gmail.com> <20240123164819.GB1745986@cmpxchg.org>
+In-Reply-To: <20240123164819.GB1745986@cmpxchg.org>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Wed, 24 Jan 2024 09:46:23 -0800
+Message-ID: <CABdmKX1uDsnFSG2YCyToZHD2R+A9Vr=SKeLgSqPocUgWd16+XA@mail.gmail.com>
+Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
+ proactive reclaim"
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com, yuzhao@google.com, 
+	yangyifei03@kuaishou.com, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 24, 2024 at 2:00=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
+On Tue, Jan 23, 2024 at 8:48=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
 >
-> In memcg_rstat_updated(), we iterate the memcg being updated and its
-> parents to update memcg->vmstats_percpu->stats_updates in the fast path
-> (i.e. no atomic updates). According to my math, this is 3 memory loads
-> (and potentially 3 cache misses) per memcg:
-> - Load the address of memcg->vmstats_percpu.
-> - Load vmstats_percpu->stats_updates (based on some percpu calculation).
-> - Load the address of the parent memcg.
+> The revert isn't a straight-forward solution.
 >
-> Avoid most of the cache misses by caching a pointer from each struct
-> memcg_vmstats_percpu to its parent on the corresponding CPU. In this
-> case, for the first memcg we have 2 memory loads (same as above):
-> - Load the address of memcg->vmstats_percpu.
-> - Load vmstats_percpu->stats_updates (based on some percpu calculation).
+> The patch you're reverting fixed conventional reclaim and broke
+> MGLRU. Your revert fixes MGLRU and breaks conventional reclaim.
 >
-> Then for each additional memcg, we need a single load to get the
-> parent's stats_updates directly. This reduces the number of loads from
-> O(3N) to O(2+N) -- where N is the number of memcgs we need to iterate.
+> On Tue, Jan 23, 2024 at 05:58:05AM -0800, T.J. Mercier wrote:
+> > They both are able to make progress. The main difference is that a
+> > single iteration of try_to_free_mem_cgroup_pages with MGLRU ends soon
+> > after it reclaims nr_to_reclaim, and before it touches all memcgs. So
+> > a single iteration really will reclaim only about SWAP_CLUSTER_MAX-ish
+> > pages with MGLRU. WIthout MGLRU the memcg walk is not aborted
+> > immediately after nr_to_reclaim is reached, so a single call to
+> > try_to_free_mem_cgroup_pages can actually reclaim thousands of pages
+> > even when sc->nr_to_reclaim is 32. (I.E. MGLRU overreclaims less.)
+> > https://lore.kernel.org/lkml/20221201223923.873696-1-yuzhao@google.com/
 >
-> Additionally, stash a pointer to memcg->vmstats in each struct
-> memcg_vmstats_percpu such that we can access the atomic counter that all
-> CPUs fold into, memcg->vmstats->stats_updates.
-> memcg_should_flush_stats() is changed to memcg_vmstats_needs_flush() to
-> accept a struct memcg_vmstats pointer accordingly.
->
-> In struct memcg_vmstats_percpu, make sure both pointers together with
-> stats_updates live on the same cacheline. Finally, update
-> mem_cgroup_alloc() to take in a parent pointer and initialize the new
-> cache pointers on each CPU. The percpu loop in mem_cgroup_alloc() may
-> look concerning, but there are multiple similar loops in the cgroup
-> creation path (e.g. cgroup_rstat_init()), most of which are hidden
-> within alloc_percpu().
->
-> According to Oliver's testing [1], this fixes multiple 30-38%
-> regressions in vm-scalability, will-it-scale-tlb_flush2, and
-> will-it-scale-fallocate1. This comes at a cost of 2 more pointers per
-> CPU (<2KB on a machine with 128 CPUs).
->
-> [1] https://lore.kernel.org/lkml/ZbDJsfsZt2ITyo61@xsang-OptiPlex-9020/
->
-> Fixes: 8d59d2214c23 ("mm: memcg: make stats flushing threshold per-memcg"=
-)
-> Tested-by: kernel test robot <oliver.sang@intel.com>
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Closes: https://lore.kernel.org/oe-lkp/202401221624.cb53a8ca-oliver.sang@=
-intel.com
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
+> Is that a feature or a bug?
 
-Nice work.
+Feature!
 
-Acked-by: Shakeel Butt <shakeelb@google.com>
+>  * 1. Memcg LRU only applies to global reclaim, and the round-robin incre=
+menting
+>  *    of their max_seq counters ensures the eventual fairness to all elig=
+ible
+>  *    memcgs. For memcg reclaim, it still relies on mem_cgroup_iter().
+>
+> If it bails out exactly after nr_to_reclaim, it'll overreclaim
+> less. But with steady reclaim in a complex subtree, it will always hit
+> the first cgroup returned by mem_cgroup_iter() and then bail. This
+> seems like a fairness issue.
+
+Right. Because the memcg LRU is maintained in pg_data_t and not in
+each cgroup, I think we are currently forced to have the iteration
+across all child memcgs for non-root memcg reclaim for fairness.
+
+> We should figure out what the right method for balancing fairness with
+> overreclaim is, regardless of reclaim implementation. Because having
+> two different approaches and reverting dependent things back and forth
+> doesn't make sense.
+>
+> Using an LRU to rotate through memcgs over multiple reclaim cycles
+> seems like a good idea. Why is this specific to MGLRU? Shouldn't this
+> be a generic piece of memcg infrastructure?
+
+It would be pretty sweet if it were. I haven't tried to measure this
+part in isolation, but I know we had to abandon attempts to use
+per-app memcgs in the past (2018?) because the perf overhead was too
+much. In recent tests where this feature is used, I see some perf
+gains which I think are probably attributable to this.
+
+> Then there is the question of why there is an LRU for global reclaim,
+> but not for subtree reclaim. Reclaiming a container with multiple
+> subtrees would benefit from the fairness provided by a container-level
+> LRU order just as much; having fairness for root but not for subtrees
+> would produce different reclaim and pressure behavior, and can cause
+> regressions when moving a service from bare-metal into a container.
+>
+> Figuring out these differences and converging on a method for cgroup
+> fairness would be the better way of fixing this. Because of the
+> regression risk to the default reclaim implementation, I'm inclined to
+> NAK this revert.
+
+In the meantime, instead of a revert how about changing the batch size
+geometrically instead of the SWAP_CLUSTER_MAX constant:
+
+                reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
+-                                       min(nr_to_reclaim -
+nr_reclaimed, SWAP_CLUSTER_MAX),
++                                       (nr_to_reclaim - nr_reclaimed)/2,
+                                        GFP_KERNEL, reclaim_options);
+
+I think that should address the overreclaim concern (it was mentioned
+that the upper bound of overreclaim was 2 * request), and this should
+also increase the reclaim rate for root reclaim with MGLRU closer to
+what it was before.
 
