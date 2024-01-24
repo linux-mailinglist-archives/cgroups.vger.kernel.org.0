@@ -1,173 +1,141 @@
-Return-Path: <cgroups+bounces-1230-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1231-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DE1483AF66
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jan 2024 18:15:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C37A483B04B
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jan 2024 18:45:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 424431C22D83
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jan 2024 17:15:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7292EB24DC7
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jan 2024 17:38:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BC8F7E78F;
-	Wed, 24 Jan 2024 17:14:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A53CC7F7F5;
+	Wed, 24 Jan 2024 17:38:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CPeAVYvT"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lpF5jWzx"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F2FF7E784
-	for <cgroups@vger.kernel.org>; Wed, 24 Jan 2024 17:14:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D4ACF4EF
+	for <cgroups@vger.kernel.org>; Wed, 24 Jan 2024 17:38:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706116495; cv=none; b=YnouUOQQQtiTngiL2HBvO581eDLY7EFTKcIufvNQSHftPk5Yq/woNuNUr/WJXUx5SkPBz2vb0hBVf54S6mgtPXFzFpBVTBBtW1fmWGcyhWbZpWDHIioiK+Mko7QQHthf/fcWQJL7PhJNdC3p132ygyJ/aSsXqTgOlK4uQQCVthA=
+	t=1706117912; cv=none; b=bb8wrEM9cjilxzyw7WmgyNpuRPiTiaw+uz6Usgj4mw91Mk6Axvxi8X8OChW3w4rnuNUcCU3KcgUGN8qbV2w/avvX0dMQ4yWKCLXwqEz3J7dLGIp+O5tyeqQCuH+fUoJlzFKWrztcd/ylWxh/ef/8R+88EDmRYKVWj0pDEF7nHQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706116495; c=relaxed/simple;
-	bh=L+uKNZ2WLPla/ZZDd2j6xgzXzpDBrpy/IS7/1AiSgck=;
+	s=arc-20240116; t=1706117912; c=relaxed/simple;
+	bh=yJ/BKkfpXJzgeyNiHaKMu/CgCnQKf/dgognXWBGDJRs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FfB9tLRG7ucZ/CVnDaHkXH95C0jrw/2mFRqSke/f8LQpVAgsxsBPP76WXVnQzBGqaSlA3rEPkg/cISf6zmWUZ9k4six2sS7YToZ8D+2JnkBXaSoBeh+Dfhf3DesIq/JYNTb7PMyeLS1G5idQhatdv7kfiq7ehH+mQ2YPof+bgvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CPeAVYvT; arc=none smtp.client-ip=209.85.219.181
+	 To:Cc:Content-Type; b=G6uCMsUaRr2xG5y5zs0VSTR0ONmv5Abt3H/R40J9aSf2r4UJJvgi8rXzXNrN8U0+E6UgnswOVMBUnkV64IisW33zk3I1iRSo342n5wT0nfsGffIUzzqywUveIvL6SYL12MjnJhrKG7QXQYB9D0BI8usw+44AqD0hvzItbHq7pJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lpF5jWzx; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc25099b084so3791804276.0
-        for <cgroups@vger.kernel.org>; Wed, 24 Jan 2024 09:14:54 -0800 (PST)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d76f1e3e85so2375ad.0
+        for <cgroups@vger.kernel.org>; Wed, 24 Jan 2024 09:38:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706116493; x=1706721293; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706117910; x=1706722710; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=L+uKNZ2WLPla/ZZDd2j6xgzXzpDBrpy/IS7/1AiSgck=;
-        b=CPeAVYvTubcUE0/pvNwCEz8yfdrflu1o9zIVOin0UVri8VWAA100tK8PukmKo/zQLE
-         ODxhSrpP6ZfYEnnAIEMXWB5W+5dOPzYzNnSCplOYRjc7mT9+vvM/GuPCAR/jEdboF0A8
-         TqdjgQxfPsqzCOyhuADmaextTaRgWvFxxWMsjIDI/27svjYhQCYsj1LnnBQw6z6V6TyJ
-         lmEhGDwPenhcluRGaO77d5GwlZP2N63+GtOTnbEaK6X8tmEPPNxUqDFGSsIwzt1+r8RJ
-         UZLk6W+JaMY7stoehrX6mkAwKAb0ptVm7gztmTjkAIVRIV5tQ12HC9plcx0p/Ip+om6L
-         waKg==
+        bh=yJ/BKkfpXJzgeyNiHaKMu/CgCnQKf/dgognXWBGDJRs=;
+        b=lpF5jWzxTcpFc2COD2Q4RapamyszvZxdwd0bsZg/HrnlfOdVIDIffTbWB1o/BIWmvr
+         MN5A6AvmJbCDvWMWV8TOtNI2rCvv7Sw3NbyhBQ5AxTS8UrdTpn1SJvuLth28j8tHDSRI
+         G2fwQg2QoYI5Z7rICBx6JLCP/Oflqet6iVbSsuoNG/fram0WXqnyXOd50B4XBlHeFv/8
+         Al0APVU4jlXMtGMAM+9KbFA9ajOQi1Y9e10C/gfsyhFF0PwOZAnJ4NWRNQ4otvcdgHj6
+         ypI22zdRz7nDlGm2v6R+0ntIkCqwtYHwVql6M8MHQYOypPoBmJoowJw/gKycs/FjI7B4
+         HvrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706116493; x=1706721293;
+        d=1e100.net; s=20230601; t=1706117910; x=1706722710;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=L+uKNZ2WLPla/ZZDd2j6xgzXzpDBrpy/IS7/1AiSgck=;
-        b=miYk0v+pGHEEwFfnZ8Ciy3UuZCdkl1ltpX0yDwImAwlRvfSIsWp43iBh4LM/cEyRIf
-         d8P0YWHvHp2PFdnU6iC6aRF39zzhECzaw6prTD3zfO+2LXH5XSS7RhvRE636PrXlWqyi
-         vpQHNWKhQE/hwUgfk3/tR4v4cS8H1V1KfiZt8ybEka4MvM2fImiCoswdiXqMUZxAYqWj
-         vS+9vcCw99Uk4jt87gIN9m1Kdn47TgycmnWYbnw795ruzsjL+An8PnaJc3SRnEMKlvaP
-         CosyF4TQW7oGOsNy1lEtlSL8zn9Um2aIN5LQO5JYYXbiHNFCQRZOIFh7zIPsaKi8WQEZ
-         HMEA==
-X-Gm-Message-State: AOJu0YzXVZ+N/OTIPl4XMM70l1tRj1QfqXnU6avDFbZlANuUGT0VSkFa
-	aSUn377d7EuAvjz1vXwD9vWLLAzlkWm6LgQi9i6joWumkp+Ros55Vunibje2OZa3jViUxamXWXP
-	NVlJGWy8T10V7SzFtMkR1eCBYbX+hkdSshgI/
-X-Google-Smtp-Source: AGHT+IEyp81Xa3DtWhJJgEOzKJKQ9s20e1ls6AY//91B3LGvmFlTYsSm8FpcvIUZCb4scVB2oR6nq9DljRkSRMJJDKE=
-X-Received: by 2002:a25:c78f:0:b0:dc2:2f4f:757 with SMTP id
- w137-20020a25c78f000000b00dc22f4f0757mr978740ybe.7.1706116492806; Wed, 24 Jan
- 2024 09:14:52 -0800 (PST)
+        bh=yJ/BKkfpXJzgeyNiHaKMu/CgCnQKf/dgognXWBGDJRs=;
+        b=QDqiLlPTXfSbC6uSVU7KRmyCmHbbTlUpDJYhSwD7A471tmKljnxOM66YLh3JfurVcL
+         mdJXRWErLZrIZxoNPhrkFlYrt2fKwTAghxl+lyMFAvw8x2crOuYCeKCaVJIrp3QVepvF
+         Nv83VG+YjroZwtVjot3KeI1CMe0F/FfcauDvfC0U7o48ZopEteQr7NheYNB6Kcw6Q+DT
+         rSkGkg2App5xAUaMghB9wAfIrMrJBKIU2AZJIcEf5Hc740tDK/duVr489Cb/E3p7QZ3r
+         lg2+WFPzBatAmlGZkynZAHwLQSNuQq0GZblFkFPdOsXicXbAw9HkxiURtYF6uLTcOCMD
+         tDVQ==
+X-Gm-Message-State: AOJu0Ywoysc5UV9kAvpWRDQk1cKOHbFWDqCDOeRhClhAa1WViFJjfOUX
+	FhQNdZdelctLQ5488HmnKd565hPx69AH/bw/73yuAwHNZ9hrwK4wzRr1lYIBXkcM7RMmABNNqqT
+	a4LvJhkMRdiv0HCLcYW/jYFhJYGin4oiSKnLB
+X-Google-Smtp-Source: AGHT+IFB5hVm3nPtQ1RkStaM3t/gRxrS+28Wx2F0onfV8o6fOhomKTu7ndT8c1ooAvc+cAfwWvFudUBaqRv9FcYZ8EE=
+X-Received: by 2002:a17:902:db04:b0:1d7:246c:2fc1 with SMTP id
+ m4-20020a170902db0400b001d7246c2fc1mr216102plx.26.1706117910167; Wed, 24 Jan
+ 2024 09:38:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240121214413.833776-1-tjmercier@google.com> <Za-H8NNW9bL-I4gj@tiehlicka>
- <CABdmKX2K4MMe9rsKfWi9RxUS5G1RkLVzuUkPnovt5O2hqVmbWA@mail.gmail.com> <Za_m9Pymh0y-lzgX@tiehlicka>
-In-Reply-To: <Za_m9Pymh0y-lzgX@tiehlicka>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Wed, 24 Jan 2024 09:14:40 -0800
-Message-ID: <CABdmKX3kPXAv18+AezoqAeb3ALCbLxcth+ZHv2jZGXsZG5C6hw@mail.gmail.com>
-Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
- proactive reclaim"
-To: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com, yuzhao@google.com, 
-	yangyifei03@kuaishou.com, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
+References: <20240124100023.660032-1-yosryahmed@google.com>
+In-Reply-To: <20240124100023.660032-1-yosryahmed@google.com>
+From: Shakeel Butt <shakeelb@google.com>
+Date: Wed, 24 Jan 2024 09:38:18 -0800
+Message-ID: <CALvZod5+S5RLt5t=+ZvrRgOkAhNvC9mJo1SE7r6Ms1LRodV3RQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcg: optimize parent iteration in memcg_rstat_updated()
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, kernel test robot <oliver.sang@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 23, 2024 at 8:19=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
+On Wed, Jan 24, 2024 at 2:00=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
 >
-> On Tue 23-01-24 05:58:05, T.J. Mercier wrote:
-> > On Tue, Jan 23, 2024 at 1:33=E2=80=AFAM Michal Hocko <mhocko@suse.com> =
-wrote:
-> > >
-> > > On Sun 21-01-24 21:44:12, T.J. Mercier wrote:
-> > > > This reverts commit 0388536ac29104a478c79b3869541524caec28eb.
-> > > >
-> > > > Proactive reclaim on the root cgroup is 10x slower after this patch=
- when
-> > > > MGLRU is enabled, and completion times for proactive reclaim on muc=
-h
-> > > > smaller non-root cgroups take ~30% longer (with or without MGLRU).
-> > >
-> > > What is the reclaim target in these pro-active reclaim requests?
-> >
-> > Two targets:
-> > 1) /sys/fs/cgroup/memory.reclaim
-> > 2) /sys/fs/cgroup/uid_0/memory.reclaim (a bunch of Android system servi=
-ces)
+> In memcg_rstat_updated(), we iterate the memcg being updated and its
+> parents to update memcg->vmstats_percpu->stats_updates in the fast path
+> (i.e. no atomic updates). According to my math, this is 3 memory loads
+> (and potentially 3 cache misses) per memcg:
+> - Load the address of memcg->vmstats_percpu.
+> - Load vmstats_percpu->stats_updates (based on some percpu calculation).
+> - Load the address of the parent memcg.
 >
-> OK, I was not really clear. I was curious about nr_to_reclaim.
+> Avoid most of the cache misses by caching a pointer from each struct
+> memcg_vmstats_percpu to its parent on the corresponding CPU. In this
+> case, for the first memcg we have 2 memory loads (same as above):
+> - Load the address of memcg->vmstats_percpu.
+> - Load vmstats_percpu->stats_updates (based on some percpu calculation).
 >
-> > Note that lru_gen_shrink_node is used for 1, but shrink_node_memcgs is
-> > used for 2.
-> >
-> > The 10x comes from the rate of reclaim (~70k pages/sec vs ~6.6k
-> > pages/sec) for 1. After this revert the root reclaim took only about
-> > 10 seconds. Before the revert it's still running after about 3 minutes
-> > using a core at 100% the whole time, and I'm too impatient to wait
-> > longer to record times for comparison.
-> >
-> > The 30% comes from the average of a few runs for 2:
-> > Before revert:
-> > $ adb wait-for-device && sleep 120 && adb root && adb shell -t 'time
-> > echo "" > /sys/fs/cgroup/uid_0/memory.reclaim'
+> Then for each additional memcg, we need a single load to get the
+> parent's stats_updates directly. This reduces the number of loads from
+> O(3N) to O(2+N) -- where N is the number of memcgs we need to iterate.
 >
-> Ohh, so you want to reclaim all of it (resp. as much as possible).
+> Additionally, stash a pointer to memcg->vmstats in each struct
+> memcg_vmstats_percpu such that we can access the atomic counter that all
+> CPUs fold into, memcg->vmstats->stats_updates.
+> memcg_should_flush_stats() is changed to memcg_vmstats_needs_flush() to
+> accept a struct memcg_vmstats pointer accordingly.
 >
-Right, the main use-case here is we decide an application should be
-backgrounded and its cgroup frozen. Before freezing, reclaim as much
-as possible so that the frozen processes' RAM use is as low as
-possible while they're dormant.
+> In struct memcg_vmstats_percpu, make sure both pointers together with
+> stats_updates live on the same cacheline. Finally, update
+> mem_cgroup_alloc() to take in a parent pointer and initialize the new
+> cache pointers on each CPU. The percpu loop in mem_cgroup_alloc() may
+> look concerning, but there are multiple similar loops in the cgroup
+> creation path (e.g. cgroup_rstat_init()), most of which are hidden
+> within alloc_percpu().
+>
+> According to Oliver's testing [1], this fixes multiple 30-38%
+> regressions in vm-scalability, will-it-scale-tlb_flush2, and
+> will-it-scale-fallocate1. This comes at a cost of 2 more pointers per
+> CPU (<2KB on a machine with 128 CPUs).
+>
+> [1] https://lore.kernel.org/lkml/ZbDJsfsZt2ITyo61@xsang-OptiPlex-9020/
+>
+> Fixes: 8d59d2214c23 ("mm: memcg: make stats flushing threshold per-memcg"=
+)
+> Tested-by: kernel test robot <oliver.sang@intel.com>
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202401221624.cb53a8ca-oliver.sang@=
+intel.com
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> ---
 
-> [...]
->
-> > > > After the patch the reclaim rate is
-> > > > consistently ~6.6k pages/sec due to the reduced nr_pages value caus=
-ing
-> > > > scan aborts as soon as SWAP_CLUSTER_MAX pages are reclaimed. The
-> > > > proactive reclaim doesn't complete after several minutes because
-> > > > try_to_free_mem_cgroup_pages is still capable of reclaiming pages i=
-n
-> > > > tiny SWAP_CLUSTER_MAX page chunks and nr_retries is never decrement=
-ed.
-> > >
-> > > I do not understand this part. How does a smaller reclaim target mana=
-ges
-> > > to have reclaimed > 0 while larger one doesn't?
-> >
-> > They both are able to make progress. The main difference is that a
-> > single iteration of try_to_free_mem_cgroup_pages with MGLRU ends soon
-> > after it reclaims nr_to_reclaim, and before it touches all memcgs. So
-> > a single iteration really will reclaim only about SWAP_CLUSTER_MAX-ish
-> > pages with MGLRU. WIthout MGLRU the memcg walk is not aborted
-> > immediately after nr_to_reclaim is reached, so a single call to
-> > try_to_free_mem_cgroup_pages can actually reclaim thousands of pages
-> > even when sc->nr_to_reclaim is 32. (I.E. MGLRU overreclaims less.)
-> > https://lore.kernel.org/lkml/20221201223923.873696-1-yuzhao@google.com/
->
-> OK, I do see how try_to_free_mem_cgroup_pages might over reclaim but I
-> do not really follow how increasing the batch actually fixes the issue
-> that there is always progress being made and therefore memory_reclaim
-> takes ages to terminates?
+Nice work.
 
-Oh, because the page reclaim rate with a small batch is just much
-lower than with a very large batch. We have to restart reclaim from
-fresh each time a batch is completed before we get to a place where
-we're actually freeing/swapping pages again. That setup cost is
-amortized over many more pages with a large batch size, but appears to
-be pretty significant for small batch sizes.
+Acked-by: Shakeel Butt <shakeelb@google.com>
 
