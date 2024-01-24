@@ -1,140 +1,182 @@
-Return-Path: <cgroups+bounces-1225-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1226-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB0AA83A012
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jan 2024 04:29:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68B6183A382
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jan 2024 08:50:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96EB21F2957C
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jan 2024 03:29:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0801E1F216AC
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jan 2024 07:50:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4220E6123;
-	Wed, 24 Jan 2024 03:29:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 785D9168DF;
+	Wed, 24 Jan 2024 07:50:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D/NWX0IE"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="d9yJYnB8";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="d9yJYnB8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D72F1381;
-	Wed, 24 Jan 2024 03:29:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.31
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66440168D7;
+	Wed, 24 Jan 2024 07:50:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706066949; cv=none; b=DMpVQYDdqm+79JSKa0Yo/hw3aT94t6qbQxMYmJeNJ5C/U8x4fUdacBNoKRTvGWa3BTsjnZiEnYrzLC7503HYjC4GMqmf2GZkmKexI3GSP0P0Yf8W5vENLfP9Rr5w9cS/RO0ZusBKZLG+R2gn4+CPNtGZmEkQHcTvioeSVdmVEm8=
+	t=1706082649; cv=none; b=bVNvzbjUJ+P4oX2QlB9bxfooCA9+FMBxpkmt1dSBOB49xlNmrw3QDKUE4KDYjA785xlUQStxcHvQDE/fJRD/zbXMMcpujj0MaXxQ+p1QQfQHlDOs3dnmDXXvTxAiN83X5Eju2raAPF4ORMwiP4+o/rSMuJ+BphxGEYPeNySu7tM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706066949; c=relaxed/simple;
-	bh=LEKebXaU68il7ohv0EYVm0bpFq9dmjW5BYBJT6VpT8E=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=Tlpn1vRYtrOhQSClihDoDaABVotQoMezJFneoEUToZIE72U8pprgx4wNimfDBHybRFA2Q4HRO2uuG4NnRg1l+TVpxdv69XQsF8U2R6HsFTq9mj6MOgLEdBiriEoGuNn9RxK3Q7wjdWI4Brh4rdaWSBpTlIMlZQWXp5qKYLieqVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=D/NWX0IE; arc=none smtp.client-ip=134.134.136.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706066947; x=1737602947;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=LEKebXaU68il7ohv0EYVm0bpFq9dmjW5BYBJT6VpT8E=;
-  b=D/NWX0IEjq+FluU77bRl1pe5ooB7wdWhx3Z63suva+c1WuIfXQWSUEOt
-   DOzwCuBHa/ZLUOejgI1qvs45RnhnQXcaclGGNB3xbHm0IAIdzNl9oYfYg
-   NdvidBC/XPglqlS3qePuFI0OAN0p6yXGkYchIli6WvN+WkblDBVbjND0W
-   bOZkaKuFv9wre+PV488NBvDvoL09XE9+EfY+so/qx6trfsduNqehdooGW
-   t1WdaUlWE+hCuYhB8pYOx6BHzD2FnEm3f0f2Cc61JOMKRXI9Wg6tVSSs5
-   Sbh9JUk0ounTqNcwCWszzSZCfAA2oAneWNJ48WgaRGUbElaQ4Tb9Gf5eO
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10962"; a="466002819"
-X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
-   d="scan'208";a="466002819"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jan 2024 19:29:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,215,1701158400"; 
-   d="scan'208";a="1765232"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 23 Jan 2024 19:29:04 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
- linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
- cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- hpa@zytor.com, sohil.mehta@intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com
-Subject: Re: [PATCH v7 04/15] x86/sgx: Implement basic EPC misc cgroup
- functionality
-References: <20240122172048.11953-1-haitao.huang@linux.intel.com>
- <20240122172048.11953-5-haitao.huang@linux.intel.com>
- <CYLIJZZJON62.24BNN310T3B2F@suppilovahvero>
-Date: Tue, 23 Jan 2024 21:29:03 -0600
+	s=arc-20240116; t=1706082649; c=relaxed/simple;
+	bh=cC2LHOBYxvF1gJoW39qXQupPj84QBL5OBB3dmmbB0Y4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XQYwz3/s64p1+KZUafpobl1iZajrXwRGY2dQOiSAWkOmJH8usnoz1UKk+SBnKJmbPSFkLi06T/tZPKTsV/T3OJXImAD5NfpzHKxxcUUZGCzosxaKX24uD6VMCeAr4CcAZalLPxCzywWHRroNePs3cGipyVJtdJJjjd+DrWerH9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=d9yJYnB8; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=d9yJYnB8; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2C8D021EB6;
+	Wed, 24 Jan 2024 07:50:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706082644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sUY8xqCzF/ho9H6VnM7nIW3YTPMmxBLu+pNBzIkIdWc=;
+	b=d9yJYnB8gVI3nNOhaiezeRXyIDCwE3OFGeee6sYMbH9eTyPTWPGRq6gf/75o5M7uWPSftQ
+	1ItK3LWFd4chp+82V2UIy8EDmTrYn42Lv1IelQop4bBQJMiUBj8ICT99u3/PMD1maW8bMe
+	wPcoLOpfnPIdANtQ1Q6tjip8lUE7k4Q=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706082644; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sUY8xqCzF/ho9H6VnM7nIW3YTPMmxBLu+pNBzIkIdWc=;
+	b=d9yJYnB8gVI3nNOhaiezeRXyIDCwE3OFGeee6sYMbH9eTyPTWPGRq6gf/75o5M7uWPSftQ
+	1ItK3LWFd4chp+82V2UIy8EDmTrYn42Lv1IelQop4bBQJMiUBj8ICT99u3/PMD1maW8bMe
+	wPcoLOpfnPIdANtQ1Q6tjip8lUE7k4Q=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 098771333E;
+	Wed, 24 Jan 2024 07:50:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id vhqROlPBsGWhXAAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Wed, 24 Jan 2024 07:50:43 +0000
+Date: Wed, 24 Jan 2024 08:50:43 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: "T.J. Mercier" <tjmercier@google.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com,
+	yuzhao@google.com, yangyifei03@kuaishou.com,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
+ proactive reclaim"
+Message-ID: <ZbDBU_1BcLkKmLbA@tiehlicka>
+References: <20240121214413.833776-1-tjmercier@google.com>
+ <Za-H8NNW9bL-I4gj@tiehlicka>
+ <CABdmKX2K4MMe9rsKfWi9RxUS5G1RkLVzuUkPnovt5O2hqVmbWA@mail.gmail.com>
+ <20240123164819.GB1745986@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2h07ypcmwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <CYLIJZZJON62.24BNN310T3B2F@suppilovahvero>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240123164819.GB1745986@cmpxchg.org>
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=d9yJYnB8
+X-Spamd-Result: default: False [-2.81 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 2C8D021EB6
+X-Spam-Level: 
+X-Spam-Score: -2.81
+X-Spam-Flag: NO
 
-On Mon, 22 Jan 2024 14:25:53 -0600, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
+On Tue 23-01-24 11:48:19, Johannes Weiner wrote:
+> The revert isn't a straight-forward solution.
+> 
+> The patch you're reverting fixed conventional reclaim and broke
+> MGLRU. Your revert fixes MGLRU and breaks conventional reclaim.
+> 
+> On Tue, Jan 23, 2024 at 05:58:05AM -0800, T.J. Mercier wrote:
+> > They both are able to make progress. The main difference is that a
+> > single iteration of try_to_free_mem_cgroup_pages with MGLRU ends soon
+> > after it reclaims nr_to_reclaim, and before it touches all memcgs. So
+> > a single iteration really will reclaim only about SWAP_CLUSTER_MAX-ish
+> > pages with MGLRU. WIthout MGLRU the memcg walk is not aborted
+> > immediately after nr_to_reclaim is reached, so a single call to
+> > try_to_free_mem_cgroup_pages can actually reclaim thousands of pages
+> > even when sc->nr_to_reclaim is 32. (I.E. MGLRU overreclaims less.)
+> > https://lore.kernel.org/lkml/20221201223923.873696-1-yuzhao@google.com/
+> 
+> Is that a feature or a bug?
+> 
+>  * 1. Memcg LRU only applies to global reclaim, and the round-robin incrementing
+>  *    of their max_seq counters ensures the eventual fairness to all eligible
+>  *    memcgs. For memcg reclaim, it still relies on mem_cgroup_iter().
+> 
+> If it bails out exactly after nr_to_reclaim, it'll overreclaim
+> less. But with steady reclaim in a complex subtree, it will always hit
+> the first cgroup returned by mem_cgroup_iter() and then bail. This
+> seems like a fairness issue.
 
-> On Mon Jan 22, 2024 at 7:20 PM EET, Haitao Huang wrote:
->> From: Kristen Carlson Accardi <kristen@linux.intel.com>
->>
->> SGX Enclave Page Cache (EPC) memory allocations are separate from normal
->> RAM allocations, and are managed solely by the SGX subsystem. The
->> existing cgroup memory controller cannot be used to limit or account for
->> SGX EPC memory, which is a desirable feature in some environments.  For
->> example, in a Kubernates environment, a user can request certain EPC
->> quota for a pod but the orchestrator can not enforce the quota to limit
->> runtime EPC usage of the pod without an EPC cgroup controller.
->>
->> Utilize the misc controller [admin-guide/cgroup-v2.rst, 5-9. Misc] to
->> limit and track EPC allocations per cgroup. Earlier patches have added
->> the "sgx_epc" resource type in the misc cgroup subsystem. Add basic
->> support in SGX driver as the "sgx_epc" resource provider:
->>
->> - Set "capacity" of EPC by calling misc_cg_set_capacity()
->> - Update EPC usage counter, "current", by calling charge and uncharge
->> APIs for EPC allocation and deallocation, respectively.
->> - Setup sgx_epc resource type specific callbacks, which perform
->> initialization and cleanup during cgroup allocation and deallocation,
->> respectively.
->>
->> With these changes, the misc cgroup controller enables user to set a  
->> hard
->> limit for EPC usage in the "misc.max" interface file. It reports current
->> usage in "misc.current", the total EPC memory available in
->> "misc.capacity", and the number of times EPC usage reached the max limit
->> in "misc.events".
->>
->> For now, the EPC cgroup simply blocks additional EPC allocation in
->> sgx_alloc_epc_page() when the limit is reached. Reclaimable pages are
->> still tracked in the global active list, only reclaimed by the global
->> reclaimer when the total free page count is lower than a threshold.
->>
->> Later patches will reorganize the tracking and reclamation code in the
->> global reclaimer and implement per-cgroup tracking and reclaiming.
->>
->> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
->> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
->> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
->> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
->> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->
-> For consistency sake I'd also add co-developed-by for Kristen. This is
-> at least the format suggested by kernel documentation.
->
-She is the "From Author", so only Signed-off-by is needed for her  
-according to the second example in the doc[1]?
+Agreed. We would need to re-introduce something like we used to have
+before 1ba6fc9af35bf.
 
-Thanks
-Haitao
-[1]https://docs.kernel.org/process/submitting-patches.html#when-to-use-acked-by-cc-and-co-developed-by
+> We should figure out what the right method for balancing fairness with
+> overreclaim is, regardless of reclaim implementation. Because having
+> two different approaches and reverting dependent things back and forth
+> doesn't make sense.
+
+Absolutely agreed!
+
+> Using an LRU to rotate through memcgs over multiple reclaim cycles
+> seems like a good idea. Why is this specific to MGLRU? Shouldn't this
+> be a generic piece of memcg infrastructure?
+> 
+> Then there is the question of why there is an LRU for global reclaim,
+> but not for subtree reclaim. Reclaiming a container with multiple
+> subtrees would benefit from the fairness provided by a container-level
+> LRU order just as much; having fairness for root but not for subtrees
+> would produce different reclaim and pressure behavior, and can cause
+> regressions when moving a service from bare-metal into a container.
+> 
+> Figuring out these differences and converging on a method for cgroup
+> fairness would be the better way of fixing this. Because of the
+> regression risk to the default reclaim implementation, I'm inclined to
+> NAK this revert.
+
+I do agree that a simple revert doesn't seem to be the way to go.
+
+-- 
+Michal Hocko
+SUSE Labs
 
