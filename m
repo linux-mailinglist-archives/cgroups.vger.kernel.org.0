@@ -1,115 +1,122 @@
-Return-Path: <cgroups+bounces-1246-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1247-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE04C83E3D6
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jan 2024 22:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 674FE83E3E3
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jan 2024 22:28:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AA1B28737C
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jan 2024 21:21:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23C48287670
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jan 2024 21:28:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7E9249F4;
-	Fri, 26 Jan 2024 21:21:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4381324A02;
+	Fri, 26 Jan 2024 21:28:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kSbqh9Wd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MXv0mHLg"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1102724B29
-	for <cgroups@vger.kernel.org>; Fri, 26 Jan 2024 21:21:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04C23249F9
+	for <cgroups@vger.kernel.org>; Fri, 26 Jan 2024 21:28:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706304063; cv=none; b=LPyewVAExN7OUrCFO0D4O+82L/hmevQPh/qB3QH9X2AGLhllgmvWuUwb3LOZQyMX69TUW3TumCiK9WMP5Zkqjc0sMTcN6dp0iwdx0O4yO8p5oBrZmy/GnJVhAA8QQLkvjz0zzmxRmbc4Ww8MRTHPJ37vHRzGKkOwvONg5O7zOLA=
+	t=1706304516; cv=none; b=Kl7Q0aRUyZ/1BEdTXnMjs4htE5RvQWSshqcpUSrgIb3xQu3YJHOA28PSQlhALSsXWRssp/vqIBqTy7Dv56QLDOH4MKBfsc6vvVRRC9SKNabkiH38bQbdSPKVAHFepWZaY+ADyFEN4nvTPM/xi+L9m4SIDprlIFDhfiy/Ng1xe48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706304063; c=relaxed/simple;
-	bh=jqSQ6/JqtbJ7/Z4GvmSnpd6osmjgOZaJXviYh+bhU2c=;
+	s=arc-20240116; t=1706304516; c=relaxed/simple;
+	bh=YPfJESNx63f8gXc8lRLZ4SNiww8xBncvURRDWEv5tbo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RkVO9J0I7a2WrBYcQwNDgC8f8VuJuLSlEKYpHLbYGt3Y72FFujet9EZNM75wkooUQGz08/z0c19+FZdwKQDMKA6uI/jViaeHCWjIwbZDYOQtO1WwASeCDnH0q7CMyq5CO9HXVWA8oCCBvs4h15XRVO4cgO5tN3ZSirl7VU0eZcE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kSbqh9Wd; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5fc2e997804so9249477b3.3
-        for <cgroups@vger.kernel.org>; Fri, 26 Jan 2024 13:21:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706304061; x=1706908861; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jqSQ6/JqtbJ7/Z4GvmSnpd6osmjgOZaJXviYh+bhU2c=;
-        b=kSbqh9WdjGyT1UGrfEzwGQc8VI/hk3+HrnAM61tz+aUJq0sRga23uPUefTE6HEtWKB
-         148wRpWZ0WUpPPee25txZoKouZJYjxeOCLAMJxu/w9cGdsJ+1bNi3FwNoGVoXRh+O3eW
-         59gZSzYfSa+RfJ2mamEaowm3nJH8zZgsMM9okKNqOEC00MiJoHKrgxrsDC9Brh4aBwvj
-         b9yLQcgu0l8OSdv2ew/IAodBzAgVCC6vc9gLoTk4LPhkecNoNPxSGWecDGyitN6WQbIu
-         AEHdD9Q65kN4R1PE9zZz6kUX6W5L0crbpE2FuN21EnPBsk+Up5vTw0X7w1XKhFzYUwPQ
-         rSfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706304061; x=1706908861;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jqSQ6/JqtbJ7/Z4GvmSnpd6osmjgOZaJXviYh+bhU2c=;
-        b=DVIcvtplTsb5lt4pYNCfWggQirThWg11dYcj2eJA0VAoRQn5tNtEc4/yMF0OHJKWos
-         sVCmjP7m6aDPesDFI76eHXjRErUa28icvqMVXHvg0rwJkWgSH33g6FFtjF5GQlM7VaRk
-         xlu4qCPMYXtYCCzwmHVfXIFh0Tb/J4zFIF2LINg4z4Zs1/vyh5BWTkhswgJgE0nKT8UQ
-         J1cnJrJO4yInz8e3UGMibMOsP8Z7It8S3xMg2qCZv9m7QhJ0AinCLDYm8Zq2y91yuvRq
-         KzCpP9GFuwOtuOGo76oUeJhipjb92B0y+uCDaUH+8inFo0aX6XBIkP/0dHvqufvEVVsR
-         Gyrg==
-X-Gm-Message-State: AOJu0YyAMiof+KaBb6GbPUg51V3F/3OvDQYauVONohdpbyZ0y/ypTiNn
-	c0iF1vajCg7ViimAWkC9IW8k7qudaufUjZnI5Irls3X+NqcLMdPOHbO4vWix6sa7SYSsM1p0g8i
-	qZnlNo2wlTSScab9rdSoUbAaldMELDN9KbdLpOCkN0g/7tOiC3lZ+Bl5V/g==
-X-Google-Smtp-Source: AGHT+IEInO9IEFlzJRr6meAiSq4E2PgTyFNhUdgistQTybmuwE3VxXUiMiP/g5jRNnh4t1nO1wKJjTxi1oFnyckHOss=
-X-Received: by 2002:a05:690c:f8d:b0:5eb:3851:2bba with SMTP id
- df13-20020a05690c0f8d00b005eb38512bbamr522536ywb.41.1706304059761; Fri, 26
- Jan 2024 13:20:59 -0800 (PST)
+	 To:Cc:Content-Type; b=UpnHsytD0sWvtg8VhOv0WJZnlicxjkt2UPIuUKcU0CdF1XB9k1F0YkXLEKThiZjznbzhJrP1dc0Hva3IjD1DSplYBxz+02r7LCM/xAornhU5r5zNTGh72AIzkratHPMAfA8n43jyivt5aty+WibFW9kca+fbkX0JUCsdI6Zt6jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MXv0mHLg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 975F8C43142
+	for <cgroups@vger.kernel.org>; Fri, 26 Jan 2024 21:28:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1706304515;
+	bh=YPfJESNx63f8gXc8lRLZ4SNiww8xBncvURRDWEv5tbo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=MXv0mHLgFzPXzyJ+cXnF0NEHqEVMZis5J3xCyKd/vUQ+sNHMTeOvo5/UiRtp2prgn
+	 3W/Ekzx29ky6ERqEG0FCD5c6Ax2AAJbBymQJM+C2XVk0rB5/CW42DI8ekyEPrBRgTJ
+	 Yqww8uOrdI/9wrwSyWcdaYFXqfOdoVOyWi5kA7B2gIpzbcjEiukdn/CrhmcXkxn0Bw
+	 5xB52zJNgfDqQyfu23v4p6ZkQ9QhiLlxF5utjPu5p4kRaffbFWCjmyECdEyz0Iosfj
+	 ECliNn6S60owiB5Y3Dt7zuQUzi8wKpJ+RVoa08wc4iNDVH2z0tQOTXHHNP4ZS4f+TQ
+	 QNW4TQCmxSN7w==
+Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7bfd0546d60so14107539f.3
+        for <cgroups@vger.kernel.org>; Fri, 26 Jan 2024 13:28:35 -0800 (PST)
+X-Gm-Message-State: AOJu0YzMEf7cejPby58NXCsOdxNHsKfFNaYCzverrJsJEsJTmTeRHKzV
+	h0bYVIN5cRykXVs6oN4cLj8ZZORJUKulXhS8QraNWqZgN6l1apUtH5w/JdDjiY7bqMsRRhMaIQS
+	8ItirDiqKbblwqku8lr5kq1bsRvQ2DEm7hBfe
+X-Google-Smtp-Source: AGHT+IGNlb8VMURjwURcB5NRJcTClkW/oSCzBM4dOU+vxLvtNdJmhdWtiahxnT4JY+ITOetdOigrlYtfxWOip3LQdxU=
+X-Received: by 2002:a92:d388:0:b0:361:98e2:90b1 with SMTP id
+ o8-20020a92d388000000b0036198e290b1mr437960ilo.20.1706304514841; Fri, 26 Jan
+ 2024 13:28:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240126203353.1163059-1-tjmercier@google.com> <20240126210642.GK1567330@cmpxchg.org>
-In-Reply-To: <20240126210642.GK1567330@cmpxchg.org>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Fri, 26 Jan 2024 13:20:48 -0800
-Message-ID: <CABdmKX2mZwVHSvJekT8UNt2a0WiiNnTTW-ZV=ZHvx0D1PoJuhQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcg: Don't periodically flush stats when memcg is disabled
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com, 
+References: <20240126211927.1171338-1-tjmercier@google.com>
+In-Reply-To: <20240126211927.1171338-1-tjmercier@google.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Fri, 26 Jan 2024 13:28:23 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuPLS_1m0=4vmV8fyrQ5N6yCt-2eufBkBSF=nECsb3pU2Q@mail.gmail.com>
+Message-ID: <CAF8kJuPLS_1m0=4vmV8fyrQ5N6yCt-2eufBkBSF=nECsb3pU2Q@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: memcg: Don't periodically flush stats when memcg
+ is disabled
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com, 
 	Minchan Kim <minchan@google.com>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 26, 2024 at 1:06=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Fri, Jan 26, 2024 at 08:33:52PM +0000, T.J. Mercier wrote:
-> > The root memcg is onlined even when memcg is disabled. When it's online=
-d
-> > a 2 second periodic stat flush is started, but no stat flushing is
-> > required when memcg is disabled because there can be no child memcgs.
-> > Most calls to flush memcg stats are avoided when memcg is disabled as a
-> > result of the mem_cgroup_disabled check [1] added in [2], but the
-> > periodic flushing started in mem_cgroup_css_online is not. Skip it.
-> >
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
-tree/mm/memcontrol.c?h=3Dv6.8-rc1#n753
-> > [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
-commit/?id=3D7d7ef0a4686abe43cd76a141b340a348f45ecdf2
-> >
-> > Fixes: aa48e47e3906 ("memcg: infrastructure to flush memcg stats")
-> > Reported-by: Minchan Kim <minchan@google.com>
-> > Signed-off-by: T.J. Mercier <tjmercier@google.com>
->
-> With what Shakeel pointed out resolved:
->
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Hi T.J.
 
-Thanks Shakeel and Johannes. v2 is here, hopefully fixed up correctly:
-https://lore.kernel.org/all/20240126211927.1171338-1-tjmercier@google.com/
+Acked-by: Chris Li <chrisl@kernel.org>
+
+Chris
+
+
+On Fri, Jan 26, 2024 at 1:19=E2=80=AFPM T.J. Mercier <tjmercier@google.com>=
+ wrote:
+>
+> The root memcg is onlined even when memcg is disabled. When it's onlined
+> a 2 second periodic stat flush is started, but no stat flushing is
+> required when memcg is disabled because there can be no child memcgs.
+> Most calls to flush memcg stats are avoided when memcg is disabled as a
+> result of the mem_cgroup_disabled check added in 7d7ef0a4686a
+> ("mm: memcg: restore subtree stats flushing"), but the periodic flushing
+> started in mem_cgroup_css_online is not. Skip it.
+>
+> Fixes: aa48e47e3906 ("memcg: infrastructure to flush memcg stats")
+> Reported-by: Minchan Kim <minchan@google.com>
+> Signed-off-by: T.J. Mercier <tjmercier@google.com>
+> Acked-by: Shakeel Butt <shakeelb@google.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> ---
+>  mm/memcontrol.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index e4c8735e7c85..bad8f9dfc9ab 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5586,7 +5586,7 @@ static int mem_cgroup_css_online(struct cgroup_subs=
+ys_state *css)
+>         if (alloc_shrinker_info(memcg))
+>                 goto offline_kmem;
+>
+> -       if (unlikely(mem_cgroup_is_root(memcg)))
+> +       if (unlikely(mem_cgroup_is_root(memcg)) && !mem_cgroup_disabled()=
+)
+>                 queue_delayed_work(system_unbound_wq, &stats_flush_dwork,
+>                                    FLUSH_TIME);
+>         lru_gen_online_memcg(memcg);
+> --
+> 2.43.0.429.g432eaa2c6b-goog
+>
+>
 
