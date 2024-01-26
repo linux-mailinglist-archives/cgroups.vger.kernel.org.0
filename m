@@ -1,126 +1,126 @@
-Return-Path: <cgroups+bounces-1238-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1239-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AC4883DE88
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jan 2024 17:21:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 08F7483DECE
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jan 2024 17:34:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DDFA1C21797
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jan 2024 16:21:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C3011C2350D
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jan 2024 16:34:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F76F1D54C;
-	Fri, 26 Jan 2024 16:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AD1E1DFD2;
+	Fri, 26 Jan 2024 16:34:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="E85DPW04"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="iG3pWC+W"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3433A1869;
-	Fri, 26 Jan 2024 16:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D69711DA3F
+	for <cgroups@vger.kernel.org>; Fri, 26 Jan 2024 16:34:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706286091; cv=none; b=ke/HyvOH5L5gUYHkulXmiq2WxqloO+4cU7eRKwpKbdxPmsN0KtLxpeF7SyzJV36E/pjhvpTr+RnDgbYPd1T6eewiPXjgcJicakXxpf5fzACuFLZ8W8b040H26xNSIXDQoq7DBoXaCajah0zYTwQ5tP9F3nd+3DHXots9bik+jw0=
+	t=1706286862; cv=none; b=IwqV2OP8PIEuGhClkyiaT3gunH/oyzznvIAxwR/i24aZROcT3L31I3VZxIBYhoydTIoLQGyua8LEScjr20OP2AdQJgqok4itGuNfLpiQmr+Y4RUirw6xjEOXM9AkPSdoWbP2tV1HtZlwG1o3X2JSR2e/fG6WvrQxvDqr+X2XJdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706286091; c=relaxed/simple;
-	bh=qADy1ppHLODrkpaiBhX12RYbvSDcazYVsUJT8jx33Cg=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=NM05dWjxd4uVqEWFiWyHuauhRkEe9557oAWyQM/JFYw0RZgspEyQNp6nHCEh+MYVsrbZnHU3Y6zwkUH/B55d5701ITQ/WJ1zON7PPJhaPYZZha3OPGfVPJ5tujaZHrjY8kbFPp7bhKCF13zNTuvc5LqGnAoBEpt8RNvGGXbxSc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=E85DPW04; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706286090; x=1737822090;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=qADy1ppHLODrkpaiBhX12RYbvSDcazYVsUJT8jx33Cg=;
-  b=E85DPW04VnbFN3dcBqFdJuz4rTChKdl44hw9MK/poVgt15CZ6zffeQ5+
-   kz68KSAozXYrxOh4J4GSKOYk5Y3P8Kbwcyv6ALIreNk80PVqgvrBGPGi7
-   5c59d5f6hCljNtrYJ3t6kh1Kspt+86x1nEpY/c9ZbVdnZnQ+igbGsyhnH
-   kSkdVu/BEYFsRWTxKTpDqlP/QOR/UWNEfO2qwmtQo5ZPkFE8/9c1Zsr6c
-   I0A/Y0qBEREEVtxoLAWiv7eCulAncw8gaiBJD5mJZS7D43pZdW2buHZo1
-   Mg1v/iY5ey5TV5jPwldTOznABQK797WAt+YTXfKla9NcCb97hA/fJW1Dg
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="9884190"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="9884190"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2024 08:21:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10964"; a="857438086"
-X-IronPort-AV: E=Sophos;i="6.05,216,1701158400"; 
-   d="scan'208";a="857438086"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 26 Jan 2024 08:21:25 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "hpa@zytor.com" <hpa@zytor.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
- <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
- <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
- <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
- <kai.huang@intel.com>
-Cc: "kristen@linux.intel.com" <kristen@linux.intel.com>,
- "yangjie@microsoft.com" <yangjie@microsoft.com>, "Li, Zhiquan1"
- <zhiquan1.li@intel.com>, "seanjc@google.com" <seanjc@google.com>,
- "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>, "Zhang, Bo"
- <zhanb@microsoft.com>, "anakrish@microsoft.com" <anakrish@microsoft.com>
-Subject: Re: [PATCH v7 09/15] x86/sgx: Charge mem_cgroup for per-cgroup
- reclamation
-References: <20240122172048.11953-1-haitao.huang@linux.intel.com>
- <20240122172048.11953-10-haitao.huang@linux.intel.com>
- <195eff7f2814b918a570b8c2c9e21288ac9df4b7.camel@intel.com>
-Date: Fri, 26 Jan 2024 10:21:22 -0600
+	s=arc-20240116; t=1706286862; c=relaxed/simple;
+	bh=017GdyE1IE2uKm0Y+x/yCoiXpG39BJE37eyLPVYEpnI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lijjQupkUxH9yYRN6TxvEDC0J4zRRm475c4+zrpkyO+z6gfEeadBVs5qJ/E4XqpmYh6keVoX+/K7zaDuONH8NZ5JmLgg8XmMiaRotoSbV0cqSaquuB6FefgVVOCYK8k3fE1Zzvx1SP9fhm6Qb086p10UaWXSlKNNgoDXn8f1s9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=iG3pWC+W; arc=none smtp.client-ip=209.85.160.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-42a7aa96669so4316431cf.3
+        for <cgroups@vger.kernel.org>; Fri, 26 Jan 2024 08:34:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706286858; x=1706891658; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OKRWQpKoDhVi11EbJncjcZq8dzTJ4ms1gdUVmVL1vMo=;
+        b=iG3pWC+W+7NC04JDOnObeYobCnyM9DRLB24VDrbC+Pt70FMUeYFoGYjkHvhAvuRtL+
+         IZziTrbWWuL5mnqhEAMPZq/nl+pLNwZubHhGumprMq5CnaGx/19DQKsTQRW5DObEN4YG
+         Mh37uC2O1Xo+vgF3mIWIMTVAvp9uN7s45X3rfkA6Cf1Zfu5KhTsZxBzJs6QTLBYI7EZD
+         bIkFiXYtuc/geI2CdHRQ5lwlFQGgB7SdqR39Qqi5OwEPSHNfu9l0jUbCaA6ANBusTsfW
+         b2Nhhx3VjgRyJ8IrXB3bRu0Dp3BFLRzHKiiJaJ/6kdeYT4vTnyWrqgP32FmS+aD/n/KQ
+         qDkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706286858; x=1706891658;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OKRWQpKoDhVi11EbJncjcZq8dzTJ4ms1gdUVmVL1vMo=;
+        b=pHlifOk55mKJyME7/CIwxC8t3tfe7mCo2V2qJ7wb9wDC4BcAgCObGuAGLa1rMJZszj
+         wALPXBGyiF4rx+/CzVgLl4peVpRQupEWf3DDd8Mx6gszdkaLuQXt2iEKJ57Es7ti8aLO
+         RLUwR3fYvguN6VEdBPfg1J+lkcB+brzn2U19m/G80S7VEdtqHhozJOsM/a+yXNG4Nghv
+         WFSiio5+klgwhNupqnqDid6b/wzK8C6kkPWyxgxiSyKsp5eHy4OHxiSwBQY8j0rttSOC
+         gR71JU7b8HgKcW8fGby4c438+9mVqUYUjsd7gGHWC3ccSH+rXjzyskSW90nOCJogroIX
+         iR1g==
+X-Gm-Message-State: AOJu0Yzq35HCeGvZO6+hhpy83nKeeQx2xNFp2O7TbcKOUNtQaeYfbHkf
+	VZaspr4us/8txUbcurRCzcvGXcFPjqsmKTtKmOzTyEGk/lL50w85pEdQv9o80prHV8RMmmxiUBS
+	i
+X-Google-Smtp-Source: AGHT+IGUR0dOLRsatsRzJjXg2S4qZHwNs1TSu/FR2bKyi/XH0DHAoB6rSk6mIGDhkpJJg+zzwH+lTA==
+X-Received: by 2002:ac8:5710:0:b0:42a:504b:67ac with SMTP id 16-20020ac85710000000b0042a504b67acmr107263qtw.68.1706286858505;
+        Fri, 26 Jan 2024 08:34:18 -0800 (PST)
+Received: from localhost ([2620:10d:c091:400::5:271e])
+        by smtp.gmail.com with ESMTPSA id hh10-20020a05622a618a00b00428346b88bfsm640126qtb.65.2024.01.26.08.34.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jan 2024 08:34:17 -0800 (PST)
+Date: Fri, 26 Jan 2024 11:34:01 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Michal Hocko <mhocko@suse.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com,
+	yuzhao@google.com, yangyifei03@kuaishou.com,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
+ proactive reclaim"
+Message-ID: <20240126163401.GJ1567330@cmpxchg.org>
+References: <20240121214413.833776-1-tjmercier@google.com>
+ <Za-H8NNW9bL-I4gj@tiehlicka>
+ <CABdmKX2K4MMe9rsKfWi9RxUS5G1RkLVzuUkPnovt5O2hqVmbWA@mail.gmail.com>
+ <20240123164819.GB1745986@cmpxchg.org>
+ <CABdmKX1uDsnFSG2YCyToZHD2R+A9Vr=SKeLgSqPocUgWd16+XA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2h5w1w0awjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <195eff7f2814b918a570b8c2c9e21288ac9df4b7.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABdmKX1uDsnFSG2YCyToZHD2R+A9Vr=SKeLgSqPocUgWd16+XA@mail.gmail.com>
 
-On Fri, 26 Jan 2024 08:37:25 -0600, Huang, Kai <kai.huang@intel.com> wrote:
+On Wed, Jan 24, 2024 at 09:46:23AM -0800, T.J. Mercier wrote:
+> In the meantime, instead of a revert how about changing the batch size
+> geometrically instead of the SWAP_CLUSTER_MAX constant:
+> 
+>                 reclaimed = try_to_free_mem_cgroup_pages(memcg,
+> -                                       min(nr_to_reclaim -
+> nr_reclaimed, SWAP_CLUSTER_MAX),
+> +                                       (nr_to_reclaim - nr_reclaimed)/2,
+>                                         GFP_KERNEL, reclaim_options);
+> 
+> I think that should address the overreclaim concern (it was mentioned
+> that the upper bound of overreclaim was 2 * request), and this should
+> also increase the reclaim rate for root reclaim with MGLRU closer to
+> what it was before.
 
->
->>
->> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->> Reported-by: Mikko Ylinen <mikko.ylinen@linux.intel.com>
->> ---
->
-> Non-technical staff:
->
-> I believe checkpatch requires you to have a "Closes" tag after  
-> "Reported-by"
-> otherwise it complains something like this:
->
->   WARNING: Reported-by: should be immediately followed by Closes: with a  
-> URL
->   to the report
->
-> Not sure how strict this rule is, but seems you forgot to run checkpatch  
-> so just
-> a reminder.
+Hahaha. Would /4 work for you?
 
-Yeah I did remember run checkpatch this time and last time :-)
-Here is what I see from documentation[1]:"The tag should be followed by a  
-Closes: tag pointing to the report, unless the report is not available on  
-the web". So it seems to allow exceptions.
-Mikko mentioned this issue to me in private IM so this is not available on  
-web.
+I genuinely think the idea is worth a shot. /4 would give us a bit
+more margin for error, since the bailout/fairness cutoffs have changed
+back and forth over time. And it should still give you a reasonable
+convergence on MGLRU.
 
-Thanks
-Haitao
+try_to_free_reclaim_pages() already does max(nr_to_reclaim,
+SWAP_CLUSTER_MAX) which will avoid the painful final approach loops
+the integer division would produce on its own.
 
-https://docs.kernel.org/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
+Please add a comment mentioning the compromise between the two reclaim
+implementations though.
 
