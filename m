@@ -1,152 +1,176 @@
-Return-Path: <cgroups+bounces-1248-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1249-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DE0B83EB68
-	for <lists+cgroups@lfdr.de>; Sat, 27 Jan 2024 07:18:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1809F83FBBA
+	for <lists+cgroups@lfdr.de>; Mon, 29 Jan 2024 02:24:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA6762843E1
-	for <lists+cgroups@lfdr.de>; Sat, 27 Jan 2024 06:18:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CEC01C21B7E
+	for <lists+cgroups@lfdr.de>; Mon, 29 Jan 2024 01:24:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E1414A8E;
-	Sat, 27 Jan 2024 06:18:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97CE6D535;
+	Mon, 29 Jan 2024 01:24:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Z9l+dhbg"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="Sp/P9ZFJ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="toSTS5fI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 850CC13AC7
-	for <cgroups@vger.kernel.org>; Sat, 27 Jan 2024 06:18:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 056A0D515;
+	Mon, 29 Jan 2024 01:24:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706336289; cv=none; b=P5omZne8AvOEF8bsOMRk/7HmSzR2Sdfs1qM79shhYL0LYWYgh6bvP+0uIak8OrRyefTRdDkqCGXwxBVdb2Ipxa0Uiil1QwPv0Edhrf1tjUqqPvrrj/SYsibqWFFToG9zIPJdq1ImsK8W5LXfmLrOB8kBP3UnIjZIScO5j907Tps=
+	t=1706491464; cv=none; b=k7nF5f0u5nzgQc4LyZsEGJ0r62sZaaPT6e04HS1OQEP0xoCS1OCgJhCCM43IkXVmWHNt+qDt5z0g4URljhVjn8dwM0kxgBEqzU1Yg8O4Lg1fqHBO7Nrk9FWwB865n09YrOaBZiYVvZyGZtowuwj/U/n/Bj1TnorL4M8UEAiVLg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706336289; c=relaxed/simple;
-	bh=w1/OgqChEj6StyqlrSu+Vzw7cQuKvUK042Bi/JTM83w=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ebO8GFOFChHN37sy3NlB2fKIo50aPG50IXtaTwF4//YIzEQGGSeXdBqbmcJP01bfEz9KI1AfAWbHY3Xqc7l5mrtCIZ5yAOineZLVs6OT20MKCm++wrSuMo/wXI96+G9EJqVSrU68SQ6m1zQMSNjEjejkjbDuonyPb8MA5to/urM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Z9l+dhbg; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-55d418c5ca1so3030a12.1
-        for <cgroups@vger.kernel.org>; Fri, 26 Jan 2024 22:18:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706336286; x=1706941086; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rQS8ABsYVYk+vXzULL6wVLsWJRItyzMNzDk9tNnAZhk=;
-        b=Z9l+dhbguPn2nvzsDvFFauhRtnuLgvL0IcyvcZjffL5MOAMn+oeMIjBR/RyVGFK4sJ
-         Nm5mXOUTbR4Rf1VF1GLNxsDknU7tkCJtxaC9p5QFivTHzSwCFtXndZMtxO6zybi4zPbO
-         gosWSzD8bzMOS7gSYn1RiDwAl9uB2eFUPtFRqdh26m9qsb248pfdQ/ajaVAOpMZP2Xeu
-         xwTe9QBLTV/QGUNIhmC76T5ReizHSFuCfPgyN8OIwkrGlizzOOWk6Kzm8PuN4yHRGVl7
-         OVar4vmb3r/dviwuXbOwlKvBBS6uU4NW+3qaARFZ1e26oTHGdye8o92jCb48CMtvnAz5
-         JInw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706336286; x=1706941086;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rQS8ABsYVYk+vXzULL6wVLsWJRItyzMNzDk9tNnAZhk=;
-        b=pGHFL6Q7V1dXM15UYrEZTi3g/3LegcbuAUXxDSF0NdtR/TxERxI15o84eSXq+YgXGZ
-         +bNVLvBE3DD49Gdu3dH5ZJFLup/TZjuARd6DjVXqefYQmxhGn17JenSkXCAMzMRx1BY5
-         Xm5nLd/S3JcW/5G3Zl3hY+BOok+SOCkvtyCo5IbZegILKJIzB/IQ7XOYFxOMXmlSvmOS
-         fgQv47RCXWWaV427wRN3ycpBNVrUwvhNDSNbwxpndWV9FBoJckuz3GSJ6oBUeIyg55Qa
-         QOz5su3MONe2UVNH0D+2qLmC3RgdVn/73932RxnTgTz//D8ccSJgLpS74BfFsr6aTvUf
-         OIVg==
-X-Gm-Message-State: AOJu0YycEwDjIkP8R5Tvs8pQnBfDAnhHZeXI/hQsm0yunbhEVqIUAEYb
-	sHmF7r7bLzlenqVEmB97HLLVzOpP7HW70gXBepGrTtbtBbQQIu6QGAGriWiCTZ0Q1GcY5OH6Kgy
-	KUMWYxrezrQtuk1O0LY9ft/5O0iry2Z7dvXYn
-X-Google-Smtp-Source: AGHT+IEC/ffY0/I5b9O6s6DxqO/WeV7hfBpt/L89V/jFI/rxF/SDPYan36q5Xk+Jeuh9WDU6CfTsaVmCB0AJFAzvT0s=
-X-Received: by 2002:a05:6402:2281:b0:55e:b62f:6eb6 with SMTP id
- cw1-20020a056402228100b0055eb62f6eb6mr27532edb.3.1706336285548; Fri, 26 Jan
- 2024 22:18:05 -0800 (PST)
+	s=arc-20240116; t=1706491464; c=relaxed/simple;
+	bh=kQEe3sxHRS25R01Huae1wLO1VdyUa7hma2vI+TmJQuw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=exqo8w9XMcTruA7bYtaIu9paCGKyTt8AILpdfuy4KCx/c1TKaqn/3151u44By+F2Jc5rM+IQbQ7gU+HZHVDhAVhfaMep8Rq6YmN9KM0qi4BQ+fUHTKxBEOckf7uD7NoqtuA1KiEN6+STIyWhCBKebAsmhLArA8IUCA61Qv/uYKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=Sp/P9ZFJ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=toSTS5fI; arc=none smtp.client-ip=64.147.123.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailout.west.internal (Postfix) with ESMTP id 9954E3200ABB;
+	Sun, 28 Jan 2024 20:24:19 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Sun, 28 Jan 2024 20:24:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm2; t=1706491459; x=1706577859; bh=UASoXhX4PTY3QDklhg97M
+	HiJ1GxNYruI0l1hSTsM1IQ=; b=Sp/P9ZFJkQIEHfcvNH4pxlWQcJTVOu3NARJrb
+	QU0vlJmpM4nohk3iDeQEo/Uuk1NtXdRe9TzUPuLVLZwihZ2nMpR1SaHdOFYdPeJr
+	zyyOLJHWmQv7wFfiklp11U0lm+k97FGE2W734EFNtr2HA1l0VDW6mjxCvSRt+cv2
+	Jz2l6Sncb1dytEyLi2GEvXGQ8aodcH4vddVYUfcqlyPdggq74hiSUGoZkM9NARAL
+	grjLqJgJe/RfIVPH+Fxq0yr0PsDuKjMfahjqvFerrDmJPT3klD1YJQ4f8hx5H2my
+	hiIvvxRm3KeWyQfKVuh8g6GeiEUxoxvfTxyklE1gB/WGbzKRA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706491459; x=1706577859; bh=UASoXhX4PTY3QDklhg97MHiJ1GxN
+	YruI0l1hSTsM1IQ=; b=toSTS5fIeqME+j6fCgQl7sXWi2TbaNbgcEYAv/FUpQCi
+	ojINcUtIFRCemYQFFUCw9KMt6lbUje5JxS9ppMq3UONrtbV910ynaSb71OoD+HR9
+	MskHaANtEDpX/5ZHaX0tU+6v3twRjwEl6fh9aWg3iJaQzjt41KBNs7OnsV5nkZUf
+	9Gf8uMy5g2kYfJaAOtwMMELWFbjTIAF79KrHS0lZ5rR+jWV+YW/iswh8WhA3oYi3
+	iEncy2kWOFdpaGrtvFoMJ0nG9xynxVzhhwcsP7Sl9yD5qe/JLLH1f5gG1Q8jBSZK
+	VLY7S7aDF71kp6q6/qfmcapQgHbU65dYB5oHy/DKQw==
+X-ME-Sender: <xms:Qv62ZdjsQSYWbTlKTLSEqMzzeUVWsCelA_UpwRQPxO1pbHXMb9VtDw>
+    <xme:Qv62ZSAE8nNVyjnQSVjZrXsWge5dcgOFoP5891x2RYn4LJanvbYpqiM9jdLBQJ1P_
+    62DAc7xuFK7DVJxvA>
+X-ME-Received: <xmr:Qv62ZdHZoFIBgCnLzmLD3S7ZxEXX2DyqstxMiOMW2vy6EYK23Jj0mlqAdYVy07CZeSgvbkqi47Kp8joEaorqp0d-f4OR9TxCKAtWAHu_Fqg1hA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtfedgfeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpefhvf
+    fufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihu
+    segugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpeffffegjeduheelgfdtudekie
+    ejgfegheehjefgieejveevteeiveeukefgheekjeenucffohhmrghinhepghhithhhuhgs
+    rdgtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:Qv62ZSTwvQHw03v-B2f1Bae6pN4fJB-3Qs8pCTG6pZi9wB0IlqrCtg>
+    <xmx:Qv62ZaxbEzm0olNmw8XT6u5Hgp2K4DFcOrRD_Mo1YqOS2_wuDmHRhA>
+    <xmx:Qv62ZY4sEd0MomoUDEp5-KW2l923PFpKcPYCM2P57eJmietEO2dsGA>
+    <xmx:Q_62Zfhc89QQ1-UiKEW_sidKxkm0BIiyi8TNBF-Dz_bCocdzYVhFcg>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 28 Jan 2024 20:24:17 -0500 (EST)
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: linux-trace-kernel@vger.kernel.org,
+	coreteam@netfilter.org,
+	bpf@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-kselftest@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	fsverity@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	netfilter-devel@vger.kernel.org,
+	alexei.starovoitov@gmail.com,
+	olsajiri@gmail.com,
+	quentin@isovalent.com,
+	alan.maguire@oracle.com,
+	memxor@gmail.com
+Subject: [PATCH bpf-next v4 0/3] Annotate kfuncs in .BTF_ids section
+Date: Sun, 28 Jan 2024 18:24:05 -0700
+Message-ID: <cover.1706491398.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240121214413.833776-1-tjmercier@google.com> <Za-H8NNW9bL-I4gj@tiehlicka>
- <CABdmKX2K4MMe9rsKfWi9RxUS5G1RkLVzuUkPnovt5O2hqVmbWA@mail.gmail.com> <20240123164819.GB1745986@cmpxchg.org>
-In-Reply-To: <20240123164819.GB1745986@cmpxchg.org>
-From: Yu Zhao <yuzhao@google.com>
-Date: Fri, 26 Jan 2024 23:17:26 -0700
-Message-ID: <CAOUHufa68Tm0OpWkzC_VQYAEGtgaAwkJQqztOFwBqYrDD=1T+g@mail.gmail.com>
-Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
- proactive reclaim"
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: "T.J. Mercier" <tjmercier@google.com>, Michal Hocko <mhocko@suse.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com, 
-	yangyifei03@kuaishou.com, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 23, 2024 at 9:48=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> The revert isn't a straight-forward solution.
->
-> The patch you're reverting fixed conventional reclaim and broke
-> MGLRU. Your revert fixes MGLRU and breaks conventional reclaim.
+=== Description ===
 
-This is not true -- the patch reverted regressed the active/inactive
-LRU too, on execution time.
+This is a bpf-treewide change that annotates all kfuncs as such inside
+.BTF_ids. This annotation eventually allows us to automatically generate
+kfunc prototypes from bpftool.
 
-Quoting the commit message: "completion times for proactive reclaim on
-much smaller non-root cgroups take ~30% longer (with or without
-MGLRU)."
+We store this metadata inside a yet-unused flags field inside struct
+btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
 
-And I wouldn't call the original patch a fix -- it shifted the problem
-from space to time, which at best is a tradeoff.
+More details about the full chain of events are available in commit 3's
+description.
 
-> On Tue, Jan 23, 2024 at 05:58:05AM -0800, T.J. Mercier wrote:
-> > They both are able to make progress. The main difference is that a
-> > single iteration of try_to_free_mem_cgroup_pages with MGLRU ends soon
-> > after it reclaims nr_to_reclaim, and before it touches all memcgs. So
-> > a single iteration really will reclaim only about SWAP_CLUSTER_MAX-ish
-> > pages with MGLRU. WIthout MGLRU the memcg walk is not aborted
-> > immediately after nr_to_reclaim is reached, so a single call to
-> > try_to_free_mem_cgroup_pages can actually reclaim thousands of pages
-> > even when sc->nr_to_reclaim is 32. (I.E. MGLRU overreclaims less.)
-> > https://lore.kernel.org/lkml/20221201223923.873696-1-yuzhao@google.com/
->
-> Is that a feature or a bug?
->
->  * 1. Memcg LRU only applies to global reclaim, and the round-robin incre=
-menting
->  *    of their max_seq counters ensures the eventual fairness to all elig=
-ible
->  *    memcgs. For memcg reclaim, it still relies on mem_cgroup_iter().
->
-> If it bails out exactly after nr_to_reclaim, it'll overreclaim
-> less. But with steady reclaim in a complex subtree, it will always hit
-> the first cgroup returned by mem_cgroup_iter() and then bail. This
-> seems like a fairness issue.
->
-> We should figure out what the right method for balancing fairness with
-> overreclaim is, regardless of reclaim implementation. Because having
-> two different approaches and reverting dependent things back and forth
-> doesn't make sense.
->
-> Using an LRU to rotate through memcgs over multiple reclaim cycles
-> seems like a good idea. Why is this specific to MGLRU? Shouldn't this
-> be a generic piece of memcg infrastructure?
->
-> Then there is the question of why there is an LRU for global reclaim,
-> but not for subtree reclaim. Reclaiming a container with multiple
-> subtrees would benefit from the fairness provided by a container-level
-> LRU order just as much; having fairness for root but not for subtrees
-> would produce different reclaim and pressure behavior, and can cause
-> regressions when moving a service from bare-metal into a container.
->
-> Figuring out these differences and converging on a method for cgroup
-> fairness would be the better way of fixing this. Because of the
-> regression risk to the default reclaim implementation, I'm inclined to
-> NAK this revert.
+The accompanying pahole and bpftool changes can be viewed
+here on these "frozen" branches [0][1].
+
+[0]: https://github.com/danobi/pahole/tree/kfunc_btf-v3-mailed
+[1]: https://github.com/danobi/linux/tree/kfunc_bpftool-mailed
+
+=== Changelog ===
+
+Changes from v3:
+* Rebase to bpf-next and add missing annotation on new kfunc
+
+Changes from v2:
+* Only WARN() for vmlinux kfuncs
+
+Changes from v1:
+* Move WARN_ON() up a call level
+* Also return error when kfunc set is not properly tagged
+* Use BTF_KFUNCS_START/END instead of flags
+* Rename BTF_SET8_KFUNC to BTF_SET8_KFUNCS
+
+Daniel Xu (3):
+  bpf: btf: Support flags for BTF_SET8 sets
+  bpf: btf: Add BTF_KFUNCS_START/END macro pair
+  bpf: treewide: Annotate BPF kfuncs in BTF
+
+ Documentation/bpf/kfuncs.rst                  |  8 +++----
+ drivers/hid/bpf/hid_bpf_dispatch.c            |  8 +++----
+ fs/verity/measure.c                           |  4 ++--
+ include/linux/btf_ids.h                       | 21 +++++++++++++++----
+ kernel/bpf/btf.c                              |  8 +++++++
+ kernel/bpf/cpumask.c                          |  4 ++--
+ kernel/bpf/helpers.c                          |  8 +++----
+ kernel/bpf/map_iter.c                         |  4 ++--
+ kernel/cgroup/rstat.c                         |  4 ++--
+ kernel/trace/bpf_trace.c                      |  8 +++----
+ net/bpf/test_run.c                            |  8 +++----
+ net/core/filter.c                             | 20 +++++++++---------
+ net/core/xdp.c                                |  4 ++--
+ net/ipv4/bpf_tcp_ca.c                         |  4 ++--
+ net/ipv4/fou_bpf.c                            |  4 ++--
+ net/ipv4/tcp_bbr.c                            |  4 ++--
+ net/ipv4/tcp_cubic.c                          |  4 ++--
+ net/ipv4/tcp_dctcp.c                          |  4 ++--
+ net/netfilter/nf_conntrack_bpf.c              |  4 ++--
+ net/netfilter/nf_nat_bpf.c                    |  4 ++--
+ net/xfrm/xfrm_interface_bpf.c                 |  4 ++--
+ net/xfrm/xfrm_state_bpf.c                     |  4 ++--
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  8 +++----
+ 23 files changed, 87 insertions(+), 66 deletions(-)
+
+-- 
+2.42.1
+
 
