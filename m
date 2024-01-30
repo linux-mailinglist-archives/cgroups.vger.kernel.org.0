@@ -1,229 +1,234 @@
-Return-Path: <cgroups+bounces-1275-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1276-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F38B842232
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jan 2024 12:05:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 283248427F8
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jan 2024 16:24:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FB771F2E523
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jan 2024 11:05:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46E2BB215B7
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jan 2024 15:24:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9276C66B47;
-	Tue, 30 Jan 2024 11:05:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B943682D71;
+	Tue, 30 Jan 2024 15:23:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="upl+k7v2";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bA274UEq";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="upl+k7v2";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bA274UEq"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Lca1CCHr"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E07066B4C;
-	Tue, 30 Jan 2024 11:04:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706612701; cv=none; b=ZXcb+SM8NsXLvJe0WRkLHKlsQ6YcEFryNUR28JmOjo0tFoPozgCMUrxJ52A0SYekPZ9nBrl93zljvUsm2IadbNjCu6Ghfi40bf9DOQ0eGhVMeodBW+MNisa6SYm/f4q6bz1dIzN45OUj+anRpRdAt34WqGK6Sp/24Sl2SJl/Lzc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706612701; c=relaxed/simple;
-	bh=PdeoMiYgUER3iysKvji/sSX8mFKzGpxS1nsIZk+d188=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=dfHVzTKq/eFwrO3w/58It+v/I+2bEf016Va8qwYDg6J94/NI/UR3sAwhONucvjilSFhsIc55KTL75/9BYI/i2IcFkoYyiV6I8cGvCorheWniy0bdFRXuO1gN+iJPHIy72ES8iE4T49TC1yRHUlINSMMhpHwiDMyD5sH+bng677E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=upl+k7v2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bA274UEq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=upl+k7v2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bA274UEq; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 98AFC1F842;
-	Tue, 30 Jan 2024 11:04:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706612697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UKC3VT/yxm8QuquH0mJbFZHi45tefg50JMHGoP/3fP8=;
-	b=upl+k7v2jgC8e/LOcqed3oJ7nMEKZZwBBVVFePzAUZivut0SOR3ayyCUaQEkqeOtEU2wlN
-	EBECpioeOmWyyQ9aYCJ1GVRZDjTtNrEhDbND7YGNXMzI1rFjXrKUwRXZDhIbx8XMzjYOOU
-	FJ3AJS2RJq+ToBlBmw7fxgdaMHJy/SI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706612697;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UKC3VT/yxm8QuquH0mJbFZHi45tefg50JMHGoP/3fP8=;
-	b=bA274UEqLWuoPqTyOiMkMod8zh206bkz2t3SI/Lg/j24OKwKuIzwxprbxrwonjFXWwe5qr
-	bOS/gUc8alVD1JCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706612697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UKC3VT/yxm8QuquH0mJbFZHi45tefg50JMHGoP/3fP8=;
-	b=upl+k7v2jgC8e/LOcqed3oJ7nMEKZZwBBVVFePzAUZivut0SOR3ayyCUaQEkqeOtEU2wlN
-	EBECpioeOmWyyQ9aYCJ1GVRZDjTtNrEhDbND7YGNXMzI1rFjXrKUwRXZDhIbx8XMzjYOOU
-	FJ3AJS2RJq+ToBlBmw7fxgdaMHJy/SI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706612697;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UKC3VT/yxm8QuquH0mJbFZHi45tefg50JMHGoP/3fP8=;
-	b=bA274UEqLWuoPqTyOiMkMod8zh206bkz2t3SI/Lg/j24OKwKuIzwxprbxrwonjFXWwe5qr
-	bOS/gUc8alVD1JCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6F88012FF7;
-	Tue, 30 Jan 2024 11:04:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id pETmGtnXuGVMPQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 30 Jan 2024 11:04:57 +0000
-Message-ID: <8fc59462-2940-4e60-95f1-2955a8c24ea0@suse.cz>
-Date: Tue, 30 Jan 2024 12:04:57 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA3D8811E0;
+	Tue, 30 Jan 2024 15:23:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.7
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706628208; cv=fail; b=lmT/m0lt1dBAa6NfstrAXKyaLQuYfxxZIO0rmWYqeQhgT5meVq272Yer4mFK6yG6SLG0XnQERq1ayvxoAObTE1q424UJucUE1qAE0c5y6zyhHNjN806z65cdZspEcqnVKLucF5Ay19Frf8AdgSNQJVMdJPzqhTeDPESt7s2Z9EM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706628208; c=relaxed/simple;
+	bh=oUV1F8lWcqndslM7Mvgxqjsv7KPAhYLlcW1Hqn8ITGs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=EedmtVcr9EkVewBJyAy0dBsvhzESmtfna6nW7uoV73PYCf8FfetJeLyA8BlXm7MrRpn+YnGMyUslEwidGkAL+ohPjs/UtVhbWW0Gpqq9jo+n+oWovBUXOOg36HhEpBFkd5QUdCovDOmEkgVRbg1/mVmfJnjrY/0XS9JY/TUWDtQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Lca1CCHr; arc=fail smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706628207; x=1738164207;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=oUV1F8lWcqndslM7Mvgxqjsv7KPAhYLlcW1Hqn8ITGs=;
+  b=Lca1CCHrjFGaSC0v4QoohguNi+Gv64AcBrCzGF5ZgbAMWUvS6ob05Gv7
+   dEVZpW9O++z6sEA54M3cssLOHJ+OLyJBb9smw9E4Mve8Yp6NssU2fIdVp
+   t/dq7vO1fu1BTWWLibJ2daxWf/lT0b+Z1Yvs9WXJAxp7eXqrjVFDaxqQl
+   0G6glYna3t8wW8cGlIjwGh9go0IeL9RIcCYu0BPM8ED9uKs6h7NGC3udb
+   dli12kv62LHRMwvPycpXX8JftLz/6nSGHFulKNX0Hhq2KNtIwMWP1PYEI
+   VQ5q6xbGbtlRcxTZQvVn5Hv+rFHyoJQmovSTIVSQHTj+aBGAsbBispN7a
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10968"; a="24782157"
+X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
+   d="scan'208";a="24782157"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 07:22:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,230,1701158400"; 
+   d="scan'208";a="22463075"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 Jan 2024 07:22:23 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 30 Jan 2024 07:22:22 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 30 Jan 2024 07:22:22 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.101)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 30 Jan 2024 07:22:22 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jJ8z7WdlGWtxVAJ1wgk4fkomvBdYgFJI36aRzPz4kKnIitR2T1aT/i4Akd/0Zw8J1U5+2wBLv+6dOmV8RIwmxxzyebinVAg5DA8H9T34wf91VXaDTWbIRma7ybsbMaTSVOsFEaVOlVJrbqjMb9Dy00f1XvsYr9QKLbAwT6eGdU7hH7XivJRL3q160t15+zs+lFKbf4qwFMw0sK/aue+2zOR0bpbGrkz9MSuDuQSaA2FSjf+iRUqU/yBMuqwFk5meeichFLa2OEzInswO/pR6ArQw4QafU7bzMDZ7CmGbIoznRFG6TZZxprM/+dehcvTjx+t3om+MRXMOiEzdCneoSQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AD0nDsZgnHV+K3ruAFHLIBjC7TDy7jUELJHyWXMUcys=;
+ b=cVoHot6RDBy2GI/JWjl/rwzR9t+/cQog8QojOrCWNsNx99M5FYWc1LuEm93tMYYjaI+2i5QN0KSsqmQV526v69AiHpDHlv52k27oTo5iH+4NkmayNBH4iLH6mx1GME5vK52/9EWoznkXRzgKl9TEfjsEgPHDOrirOpA8bW0PxWq7goHAwB0mXbVf+sXbheEnNSY7S7gVKbxZyQYFV9cpaXVY6gaS1Hj7rPFqu876f2MBBDdoKiTSZhPiqRyZx49vslKIuStq+sT4Y+XV0hlpe5EpnYuFjlVa4LnpzQd/gl+ozzxdEb2ghXbWw8+JN+B4/qvURixp3Aif+lTuLJ1uRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by SA1PR11MB7110.namprd11.prod.outlook.com (2603:10b6:806:2b3::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7228.32; Tue, 30 Jan
+ 2024 15:22:17 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::124d:fbd5:113b:16ec]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::124d:fbd5:113b:16ec%4]) with mapi id 15.20.7228.029; Tue, 30 Jan 2024
+ 15:22:17 +0000
+From: "Huang, Kai" <kai.huang@intel.com>
+To: Haitao Huang <haitao.huang@linux.intel.com>, "jarkko@kernel.org"
+	<jarkko@kernel.org>, "dave.hansen@linux.intel.com"
+	<dave.hansen@linux.intel.com>, "tj@kernel.org" <tj@kernel.org>,
+	"mkoutny@suse.com" <mkoutny@suse.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-sgx@vger.kernel.org"
+	<linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "tglx@linutronix.de"
+	<tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de"
+	<bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>, "Mehta, Sohil"
+	<sohil.mehta@intel.com>
+CC: "Li, Zhiquan1" <zhiquan1.li@intel.com>, "kristen@linux.intel.com"
+	<kristen@linux.intel.com>, "seanjc@google.com" <seanjc@google.com>, "Zhang,
+ Bo" <zhanb@microsoft.com>, "anakrish@microsoft.com" <anakrish@microsoft.com>,
+	"mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+	"yangjie@microsoft.com" <yangjie@microsoft.com>, "chrisyan@microsoft.com"
+	<chrisyan@microsoft.com>
+Subject: RE: [PATCH v8 04/15] x86/sgx: Implement basic EPC misc cgroup
+ functionality
+Thread-Topic: [PATCH v8 04/15] x86/sgx: Implement basic EPC misc cgroup
+ functionality
+Thread-Index: AQHaUyGOl9vfNFvwQEi7DaOozhX++bDyd+Mw
+Date: Tue, 30 Jan 2024 15:22:14 +0000
+Message-ID: <BL1PR11MB59784620554CDAD5E2C2BF45F77D2@BL1PR11MB5978.namprd11.prod.outlook.com>
+References: <20240130020938.10025-1-haitao.huang@linux.intel.com>
+ <20240130020938.10025-5-haitao.huang@linux.intel.com>
+In-Reply-To: <20240130020938.10025-5-haitao.huang@linux.intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|SA1PR11MB7110:EE_
+x-ms-office365-filtering-correlation-id: 627b2990-ed2a-4472-5584-08dc21a73d40
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Mufuw/+xICGhP1ndMTH6xOqFO/2bdxfsC41ogLpjgdWYx/mjJp7bE6rk9utBSz9E4/XJnxLUTGcPuPsmdH/MVdXl/I9tA4K3KVsVm9o5tua+wfe4W8FRkuBW06xpDmG4i2ZTUQrewqunjCHXyFrrrzQj+obhS9vcVqKbOGphEoXv+yaEWm7o49vyf4P3QzINYBgq6zGfHED8x6aQrwSDJ1pt1PMzfBqLRid2TZJrebEadB9ra5Up9F91+aQIyUY99JCKsPRM/hVCl0VEfmclPr7+Oeb/R4bxaIB+RyCi07p/TbAvBJQDITqvGRQgimuDM6Xiq2t4i4BGY8mpT4/Ud1ximWJ6OVBf30yqU2BZ2QSyCIu6ntOuT697mckp7Z385vJJ7iGEUlAboFHPpGdsjjh1Wr+PHSxJFo9BqdKB4xmwspOD83NLEbewJ8VFBKlwyO9p7pg82mfQCeEeQj+480bUbhtQVGWuGNnjjB9L0SKT80O1nSPDQ3s2LADU8yGAhk3b3oTndhadeYEUla4HfN6i3GVMpx3Z+ReAAvBePZQYyAANasGcMLEUPzH2yoXhCkSiHPgN4BfuSAP9/ixUrJ/yau6FT5Tx0KmKfihOHGpyBXz95B7+B/0tYMWKjpvb
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(376002)(39860400002)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799012)(41300700001)(82960400001)(38100700002)(122000001)(55016003)(110136005)(66946007)(66446008)(316002)(76116006)(86362001)(6506007)(54906003)(6636002)(7696005)(8676002)(66476007)(8936002)(921011)(64756008)(33656002)(9686003)(5660300002)(7416002)(52536014)(478600001)(4326008)(45080400002)(26005)(71200400001)(2906002)(6666004)(66556008)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?sW2oVbiat7Ftp2/s8JTyYn5SuKxUvvm7oBqtxcBr7IRp1o3Xc2IQZUQb8582?=
+ =?us-ascii?Q?zmjKV7Ewyv+eX5fNK11KUatj7OR7kQg774pgRkYKbP6I3Zzbu2wgABZINw2y?=
+ =?us-ascii?Q?2qFScVle9dkQ8WdhsWqbaQFU+6Y45UrxlUQGMSoBarW1rD7izFCf0FZYFXOX?=
+ =?us-ascii?Q?O3t+1+ZswJBxsBelP4LnXOvkgJg7u0b0QigPpmY7GRDElz6mQaR/Uq32i4kc?=
+ =?us-ascii?Q?YR5tFiV+KVLmFI2agicTeAIzW//15TW0FBttnZqW5wkOMz9Iuk4jPxhXz2RC?=
+ =?us-ascii?Q?zMD/PMM81qMzLOYfIgVhr4rSBH+CIVHCYbgfL3IQqZhrNbaUpQ+ESAw+GukK?=
+ =?us-ascii?Q?ZJ7Aiw8nTuU993Qr2czoFBD0fZ/zDcMVE0REpaKFhM3+zucrdYSUop7liA21?=
+ =?us-ascii?Q?JJrmuRNWeGQuB35nyPRQJ3WPovGh6rjV9lPrXwLxAKtwpMf147CxkKstU2v8?=
+ =?us-ascii?Q?AUS2a6AN6bmHaiQrwr0dxxmV+F73GNtZP2V4h0wOSugjdtK5gkt1hF0OgghI?=
+ =?us-ascii?Q?LCEwFgnzboEA2K0TAEQYny0w+Hcw0gjpejd01DGxYWXlnBWOuxVRAabM0qi3?=
+ =?us-ascii?Q?9NfkSVUPX/4nULRC9YtLyC/FIPiX9nNYbcSBf6KrgYj7W9VwzCeq3XD28t7Y?=
+ =?us-ascii?Q?1M6WU6GkcCujUcQiuaJV5diIsVsb/rNjeESHphqlx6p86AnJLpu0eBon5JDi?=
+ =?us-ascii?Q?igbB3uTSm58wU6PWVqOv0g01nVAmxW2CGA/+yilegZmYQyXq3WtXanhPOwky?=
+ =?us-ascii?Q?XPeqJw73XJYhbfrvc6G4wCNAObnZFIEkR+OThboVaOS6wM87kwEFvFksNhOD?=
+ =?us-ascii?Q?E3xuZXqTm+MpUvZORIbxth8QqwPsB307F0T3pGuYIVZfMvgjYCQd+smENvPv?=
+ =?us-ascii?Q?+cCHChYOdrqKJA3nCwJia+Pm/xJUkjhUWZwSthu448NYfBlDX38JO0EnCkBE?=
+ =?us-ascii?Q?6jcd6UowFYO/yeNZ0DbkeT39s+raAGXM42jt6ry8v8mPmdhMzbJmOxFJLyG4?=
+ =?us-ascii?Q?8IoMLbYtyRH6P2JaNuIbFTg1fAvBDXxiqWe2YPMi3pvkcm5iUm5IqnJbn1O9?=
+ =?us-ascii?Q?1GAPiUoL/HqhZhwbFNigZvx/ODq0DkJLgNwsRv1h87sctu3Vrcz9wpHi8+Jt?=
+ =?us-ascii?Q?DqmN4cjk61E5BM67iykQi0eCxfJnIHN9Uv3Tsvc6T8Iut9baPm3gkqJqrsQQ?=
+ =?us-ascii?Q?yQMI3R7t//9XaUi66CCTvhiaIlnE5bsCM9v8znIGQrxS5p81gq5lxORuOSnm?=
+ =?us-ascii?Q?u04z6mQQ/Afn+w0jpIErD4eF85tpYsiywK679LdhA3Qfj2B1ThP0zjvNLqQa?=
+ =?us-ascii?Q?kFQCP8Cm3tOutaob1Ikl6wAy4fb6NAdXMOwNCKqvCXJj2BC+V1jrXxmcsE3/?=
+ =?us-ascii?Q?BNfHZTX204C8VNyxFPpAZNEjK1NPZtUSnld3+2o/jYcsgjLr45SZaH80A+Ke?=
+ =?us-ascii?Q?hKg+HT0ioTL3fnBy5Z57YWJI5lSnqAQPWDdgPXReoomFKUYKQG9Dgbyw6PWn?=
+ =?us-ascii?Q?Xa/v++ZqGe2CITTx9FYLKEFO6pATFtVRADdVKlwTOKI5wkMHQqFB0exwA01D?=
+ =?us-ascii?Q?9pREVaa5rLMvQWQzRibERpo2V/m6R8N+UGXXvaEv?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 1/4] fs/locks: Fix file lock cache accounting, again
-From: Vlastimil Babka <vbabka@suse.cz>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
- Shakeel Butt <shakeelb@google.com>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Jeff Layton <jlayton@kernel.org>,
- Chuck Lever <chuck.lever@oracle.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, linux-kernel@vger.kernel.org,
- Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
- Vasily Averin <vasily.averin@linux.dev>, Michal Koutny <mkoutny@suse.com>,
- Waiman Long <longman@redhat.com>, Muchun Song <muchun.song@linux.dev>,
- Jiri Kosina <jikos@kernel.org>, cgroups@vger.kernel.org, linux-mm@kvack.org,
- Howard McLauchlan <hmclauchlan@fb.com>, bpf <bpf@vger.kernel.org>
-References: <cover.1705507931.git.jpoimboe@kernel.org>
- <ac84a832feba5418e1b58d1c7f3fe6cc7bc1de58.1705507931.git.jpoimboe@kernel.org>
- <6667b799702e1815bd4e4f7744eddbc0bd042bb7.camel@kernel.org>
- <20240117193915.urwueineol7p4hg7@treble>
- <CAHk-=wg_CoTOfkREgaQQA6oJ5nM9ZKYrTn=E1r-JnvmQcgWpSg@mail.gmail.com>
- <CALvZod6LgX-FQOGgNBmoRACMBK4GB+K=a+DYrtExcuGFH=J5zQ@mail.gmail.com>
- <ZahSlnqw9yRo3d1v@P9FQF9L96D.corp.robot.car>
- <CALvZod4V3QTULTW5QxgqCbDpNtVO6fXzta33HR7GN=L2LUU26g@mail.gmail.com>
- <CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com>
- <6d5bb852-8703-4abf-a52b-90816bccbd7f@suse.cz>
-Content-Language: en-US
-In-Reply-To: <6d5bb852-8703-4abf-a52b-90816bccbd7f@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-3.09 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[20];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -3.09
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 627b2990-ed2a-4472-5584-08dc21a73d40
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2024 15:22:14.7549
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PieDWbcswV/RlQFNhQeoIu3ACJVW3OpeQ2rmFIYZMcjjXF5BWRcxbfJQpJ8cUXQXVrbzQm5GLkdRUCg0Ph1x6g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB7110
+X-OriginatorOrg: intel.com
 
-On 1/26/24 10:50, Vlastimil Babka wrote:
-> On 1/22/24 06:10, Linus Torvalds wrote:
->> On Wed, 17 Jan 2024 at 14:56, Shakeel Butt <shakeelb@google.com> wrote:
->>> >
->>> > So I don't see how we can make it really cheap (say, less than 5% overhead)
->>> > without caching pre-accounted objects.
->>>
->>> Maybe this is what we want. Now we are down to just SLUB, maybe such
->>> caching of pre-accounted objects can be in SLUB layer and we can
->>> decide to keep this caching per-kmem-cache opt-in or always on.
->> 
->> So it turns out that we have another case of SLAB_ACCOUNT being quite
->> a big expense, and it's actually the normal - but failed - open() or
->> execve() case.
->> 
->> See the thread at
->> 
->>     https://lore.kernel.org/all/CAHk-=whw936qzDLBQdUz-He5WK_0fRSWwKAjtbVsMGfX70Nf_Q@mail.gmail.com/
->> 
->> and to see the effect in profiles, you can use this EXTREMELY stupid
->> test program:
->> 
->>     #include <fcntl.h>
->> 
->>     int main(int argc, char **argv)
->>     {
->>         for (int i = 0; i < 10000000; i++)
->>                 open("nonexistent", O_RDONLY);
->>     }
-> 
-> This reminded me I can see should_failslab() in the profiles (1.43% plus the
-> overhead in its caller) even if it does nothing at all, and it's completely
-> unconditional since commit 4f6923fbb352 ("mm: make should_failslab always
-> available for fault injection").
-> 
-> We discussed it briefly when Jens tried to change it in [1] to depend on
-> CONFIG_FAILSLAB again. But now I think it should be even possible to leave
-> it always available, but behind a static key. BPF or whoever else uses these
-> error injection hooks would have to track how many users of them are active
-> and manage the static key accordingly. Then it could be always available,
-> but have no overhead when there's no active user? Other similars hooks could
-> benefit from such an approach too?
-> 
-> [1]
-> https://lore.kernel.org/all/e01e5e40-692a-519c-4cba-e3331f173c82@kernel.dk/#t
+>  struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)  {
+> +	struct sgx_epc_cgroup *epc_cg;
+>  	struct sgx_epc_page *page;
+> +	int ret;
+> +
+> +	epc_cg =3D sgx_get_current_epc_cg();
+> +	ret =3D sgx_epc_cgroup_try_charge(epc_cg);
+> +	if (ret) {
+> +		sgx_put_epc_cg(epc_cg);
+> +		return ERR_PTR(ret);
+> +	}
+>=20
+>  	for ( ; ; ) {
+>  		page =3D __sgx_alloc_epc_page();
+> @@ -567,8 +578,10 @@ struct sgx_epc_page *sgx_alloc_epc_page(void
+> *owner, bool reclaim)
+>  			break;
+>  		}
+>=20
+> -		if (list_empty(&sgx_active_page_list))
+> -			return ERR_PTR(-ENOMEM);
+> +		if (list_empty(&sgx_active_page_list)) {
+> +			page =3D ERR_PTR(-ENOMEM);
+> +			break;
+> +		}
 
-Just for completeness, with the hunk below I've seen some 2% improvement on
-the test program from Linus.
-Of course something needs to operate the static key and I'm not familiar
-enough with bpf and related machinery whether it's tracking users of the
-injection points already where the static key toggling could be hooked.
+(Sorry for replying from Outlook because I am in travel for Chinese New Yea=
+r.)
 
-diff --git a/mm/slub.c b/mm/slub.c
-index 2ef88bbf56a3..da07b358d092 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -3750,6 +3750,8 @@ noinline int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
- }
- ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
- 
-+static DEFINE_STATIC_KEY_FALSE(failslab_enabled);
-+
- static __fastpath_inline
- struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
-                                       struct list_lru *lru,
-@@ -3760,8 +3762,10 @@ struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
- 
-        might_alloc(flags);
- 
--       if (unlikely(should_failslab(s, flags)))
--               return NULL;
-+       if (static_branch_unlikely(&failslab_enabled)) {
-+               if (unlikely(should_failslab(s, flags)))
-+                       return NULL;
-+       }
- 
-        if (unlikely(!memcg_slab_pre_alloc_hook(s, lru, objcgp, size, flags)))
-                return NULL;
+Perhaps I am missing something but I don't understand this change.
 
+An empty sgx_active_page_list means you cannot reclaim any page from it, so=
+ why need to break?
 
+>=20
+>  		if (!reclaim) {
+>  			page =3D ERR_PTR(-EBUSY);
+> @@ -580,10 +593,25 @@ struct sgx_epc_page *sgx_alloc_epc_page(void
+> *owner, bool reclaim)
+>  			break;
+>  		}
+>=20
+> +		/*
+> +		 * Need to do a global reclamation if cgroup was not full but
+> free
+> +		 * physical pages run out, causing __sgx_alloc_epc_page() to
+> fail.
+> +		 */
+>  		sgx_reclaim_pages();
+>  		cond_resched();
+>  	}
 
+And why adding this comment, especially in this patch?
+
+I don't see it brings additional clarity because there's only global reclai=
+m now, no matter whether cgroup is enabled or not.=20
 
