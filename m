@@ -1,80 +1,79 @@
-Return-Path: <cgroups+bounces-1256-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1257-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D060841812
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jan 2024 02:02:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 278F8841816
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jan 2024 02:05:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1FEB4B22282
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jan 2024 01:02:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6856CB221A7
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jan 2024 01:05:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFA352EAF7;
-	Tue, 30 Jan 2024 01:02:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC16B2E821;
+	Tue, 30 Jan 2024 01:05:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4gNubVh4"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UbDicfoP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B7836118
-	for <cgroups@vger.kernel.org>; Tue, 30 Jan 2024 01:02:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19D5D36114
+	for <cgroups@vger.kernel.org>; Tue, 30 Jan 2024 01:05:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706576549; cv=none; b=MsrH0FzCLIRZI1b1R7Hkk5b6cTvQ1/O2D/4ENeUfcowEfPfdZOaNONdSKL5fNblrReAvU99zLQZYfu75pgFSPIixcM8pqmGlc/akeRgI/+Q2WRrN7SV2DM8r42hS7d9OfrRaZWowdRT0YzQON+IPiZ6tFm+j78PiqigDpeQVsGo=
+	t=1706576738; cv=none; b=SfoL+YWOC9sqF86/d88MWiLTJjfkVDzx5ZIy+gXJGbHHCIMg18iQzL4oYWl1JAX4wxiTeLSpD8UxqkYqhbZOx1dkuQnFMeSNxNiw8nVx3Ad/+61xEM81tj+1ntq1EVDncItBPeIYynvz8DwHzkGj/DV+/GuDtiNSogMqlwBmunE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706576549; c=relaxed/simple;
-	bh=eQQVzNpyQ4k5C+OR/TJK6umpga8oG0wdB6/rTvPba3w=;
+	s=arc-20240116; t=1706576738; c=relaxed/simple;
+	bh=bP5uiJ/5RnXIvoYIehfl5o60E8dgpUf1Hp3tp0SJCB4=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=KeS0L5qErPeks4xWVJ3NdFYkQwNudMN0tAbYcbU7n4aMHT1ro4cdWX2NmkypgAoxBINyzQHa/GKEb0XUxo54/oWW4pmlNsaPS4FyM87JxEo9jwzl5HkRhIMpSfOlvwIgqMBdv8sP5dLETfy1/Vopt5Whc8sxI3950cPCR1tADCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4gNubVh4; arc=none smtp.client-ip=209.85.219.202
+	 To:Cc:Content-Type; b=LN4svDS+q5yun2cHXjxZ6a9iSUjsjLUQD3danFeK/kw9x+Cm90265aYQsxA29q6AiVtpdM9DvzB7qUgE8TQsnDFANL4lBHMIUVVqRsP5t0NssRuPmAii6AAbEbllIcpk1zLmmQw+m7H0DTXVN8K6l+QwKDwNqfyPDCFbWnXT408=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UbDicfoP; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc374283d67so6410939276.3
-        for <cgroups@vger.kernel.org>; Mon, 29 Jan 2024 17:02:27 -0800 (PST)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6477d2cbcso4404289276.3
+        for <cgroups@vger.kernel.org>; Mon, 29 Jan 2024 17:05:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706576546; x=1707181346; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1706576736; x=1707181536; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lZSrdH5I7u0zNwSNWZORF6UyHmXuWHBABDMeAreYwGg=;
-        b=4gNubVh4qRFO+lhGWbIuVgh5rnqbJRuGzjjRSX7xmZVcszTSU32INZingPc31W6b/p
-         OghHyj7zOAgQMgavQPFkEgSKxMIADtV8vRyaS8UnCeoTU2wDBK0JCQ5hVjPoPh/L4Ycz
-         +sJVn309MBFmhmtjiTHwvu37afaZ1PcsWEIKZ92zQDv+p3PGP9oTdKC2butNLMOWsRDB
-         YAr2kQlqe9tPBU7yoOYRGaujI3bpIX59FZoifRSbTs58dFTymPu6MimQnNIGkSgOV551
-         clk6qfEe708stggE0XnDWmc9a8fxuxZHTLaWs6rFMGSjD2FzgRGTRwxMMxPot/lEtVAa
-         IliA==
+        bh=vw6COnvcr34EckSRXJ+rxQe1Z7hZfWxJzyine5oZCQQ=;
+        b=UbDicfoPxA64JJMREM06iQh5KwpgEscQp+x60KNeOkS7y64t/IST6S9Ap+Y84PIwYp
+         U+xvHOTQgnIKHa+JDDZIX4d+iw7xt+mY4EcmpJjTOsvN58ggL44ndH/PRXrFFF2Z/gZk
+         9F/9EREBaJFl1q13NTVxNCh42pq9P2gU4zEHXVABkt2LOwPOu+SpOCl0XbB41d0IytM7
+         Zt1h/IjeAYS4wJV1L9wmv4qrfuEl38vbO1Qu8GQnOZAa7F7iuylWr06K7nRc2xc1YszC
+         7b+n8jqygaUNcNNHf6yk6N3+BzahUjy1Vo5NYxt7yhgO4Q2tVphmRXc1FcIJ+Vm/Dlmi
+         yjMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706576546; x=1707181346;
+        d=1e100.net; s=20230601; t=1706576736; x=1707181536;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lZSrdH5I7u0zNwSNWZORF6UyHmXuWHBABDMeAreYwGg=;
-        b=ZbPB0W2yU0jDmVK0OJfaoVELsf+4rYjwaEkFtMUNCYZ23KtG/9Au00uyFZW9QEOINr
-         AH7pBZ+/M/7mKL6q98uljg2VuOCm8QF66lrNczHll/Az0YIuL4BpHHEHakhP6socuLkj
-         75BXiNhHhMFmFZL4GcAPx+s8eEjRxtGWK3EsZnBBRubf7Knxh+hcsqdaX5ZT9jXvK9lm
-         A/La7+3nFs6dRdvh8B8drNbDQI4P2bIG1ucF7Zr000+NKugsRTfAKwORUd53ux7MGEu2
-         eTNv/miBZyDu3sFyxPwqD4Nusp9NKEevKr7jkFgB9U+5QMIi+LRqgpT/zuWerD9DZbAT
-         9HRQ==
-X-Gm-Message-State: AOJu0Ywilr3ZPHJxtWYyeTvN+ypX5XdAK9FoThBYWt7SO28Fj09QDtSe
-	S/Ir0OrsLwTcUvGmrPni7q05D8YfRD76Umyl5vCrkzDW54PZmnqp9ufR8coYG3hd3S/p6MjTOPB
-	CduflH15RRNTystuicw==
-X-Google-Smtp-Source: AGHT+IE9Mh60TagYwcbyXda/9IpvEZ5n8YwuyQK5UTl98rhZse04NPXV79Dk78e5oca4DqkUwxuVBrGZG2ciKDSn
+        bh=vw6COnvcr34EckSRXJ+rxQe1Z7hZfWxJzyine5oZCQQ=;
+        b=oHtSJc2h82lN1LnpdawLQKE3pr+v4ZtitJ4CMZuUsn6PjMlmmmlPETJVC8uA5bWOF8
+         fdpFzd6HvurPIv19hijeHz0H5gSedohOxFm0xUff0meEWTShvr7A3hBKLO83qFGlDGrf
+         7nnshm5Uf/9CLyVbD6VINigpZRFCLBHQxbOZKs3IozRbyKUZJ//SZAYnqXpVG6pqJglA
+         TnNLJzxrPLXcDWdlD8KKaAsA2GE9cRGWrH55hkIwHIfyUdvOc3XKhxyxyqfrVPDnmVcU
+         YjoqCR+cYL+nT51fK0la3Easn8rtCLmRPrn88N7UVIaiJCM7XlEROVwTHzsagTRnaKLS
+         sZvw==
+X-Gm-Message-State: AOJu0YzKxvCJU7mmh8cRqPkJ+X0yldN7znitEIkZzH/m1/vThZu78EO8
+	yUMfE0y7OafcqFphQ+Tj3BVS2HADy5PoMf30S5C52p7jgKg4YNNX/4MOuH4XU1gUCjMfJHq9XLc
+	+AUHEF/4fT5S067wk7Q==
+X-Google-Smtp-Source: AGHT+IGe0NvY4HXE6eFA0hpwVc6vgidpZ8bbGhfiv2RgcaV8cAbmIjcxpghn/hAx94smBwwzRwWCzi/M/FDlWP05
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:2405:b0:dc2:6501:f42 with SMTP
- id dr5-20020a056902240500b00dc265010f42mr2482352ybb.5.1706576546597; Mon, 29
- Jan 2024 17:02:26 -0800 (PST)
-Date: Tue, 30 Jan 2024 01:02:24 +0000
-In-Reply-To: <20240129224542.162599-2-nphamcs@gmail.com>
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:2503:b0:dc2:661d:11fc with
+ SMTP id dt3-20020a056902250300b00dc2661d11fcmr390539ybb.8.1706576736085; Mon,
+ 29 Jan 2024 17:05:36 -0800 (PST)
+Date: Tue, 30 Jan 2024 01:05:34 +0000
+In-Reply-To: <20240129224542.162599-3-nphamcs@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20240129224542.162599-1-nphamcs@gmail.com> <20240129224542.162599-2-nphamcs@gmail.com>
-Message-ID: <ZbhKoJ5BcP_RhMt4@google.com>
-Subject: Re: [PATCH 1/3] selftests: zswap: add zswap selftest file to zswap
- maintainer entry
+References: <20240129224542.162599-1-nphamcs@gmail.com> <20240129224542.162599-3-nphamcs@gmail.com>
+Message-ID: <ZbhLXoOw8Zs2AQ7X@google.com>
+Subject: Re: [PATCH 2/3] selftests: fix the zswap invasive shrink test
 From: Yosry Ahmed <yosryahmed@google.com>
 To: Nhat Pham <nphamcs@gmail.com>
 Cc: akpm@linux-foundation.org, shuah@kernel.org, hannes@cmpxchg.org, 
@@ -83,33 +82,17 @@ Cc: akpm@linux-foundation.org, shuah@kernel.org, hannes@cmpxchg.org,
 	linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="us-ascii"
 
-On Mon, Jan 29, 2024 at 02:45:40PM -0800, Nhat Pham wrote:
-> Make it easier for contributors to find the zswap maintainers when they
-> update the zswap tests.
+On Mon, Jan 29, 2024 at 02:45:41PM -0800, Nhat Pham wrote:
+> The zswap no invasive shrink selftest breaks because we rename the zswap
+> writeback counter (see [1]). Fix the test.
 > 
+> [1]: https://patchwork.kernel.org/project/linux-kselftest/patch/20231205193307.2432803-1-nphamcs@gmail.com/
+> 
+> Fixes: a697dc2be925 ("selftests: cgroup: update per-memcg zswap writeback selftest")
+
+Looks like this should go into v6.8 too.
+
 > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 
-I guess I had to check the zswap tests at some point :)
-
-Acked-by: Yosry Ahmed <yosryahmed@google.com> 
-
-> ---
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index fecebfc4c0dc..5f60faaefaf2 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -24396,6 +24396,7 @@ F:	include/linux/zpool.h
->  F:	include/linux/zswap.h
->  F:	mm/zpool.c
->  F:	mm/zswap.c
-> +F:	tools/testing/selftests/cgroup/test_zswap.c
->  
->  THE REST
->  M:	Linus Torvalds <torvalds@linux-foundation.org>
-> -- 
-> 2.39.3
-> 
+Acked-by: Yosry Ahmed <yosryahmed@google.com>
 
