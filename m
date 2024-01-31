@@ -1,60 +1,59 @@
-Return-Path: <cgroups+bounces-1284-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1285-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B213B8432CF
-	for <lists+cgroups@lfdr.de>; Wed, 31 Jan 2024 02:35:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD0FF84330E
+	for <lists+cgroups@lfdr.de>; Wed, 31 Jan 2024 02:59:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E46141C2408A
-	for <lists+cgroups@lfdr.de>; Wed, 31 Jan 2024 01:35:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 841C2286180
+	for <lists+cgroups@lfdr.de>; Wed, 31 Jan 2024 01:59:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF11915AF;
-	Wed, 31 Jan 2024 01:35:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D593A2F2D;
+	Wed, 31 Jan 2024 01:59:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LjXRAQ4o"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fBs6QA+2"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12C281366;
-	Wed, 31 Jan 2024 01:35:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD4BC4C89;
+	Wed, 31 Jan 2024 01:59:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706664926; cv=none; b=pvLOMNRnLqOmdd6ARrnWZkYOj5Ci8Bxbu4m1sSFAEelFOZI7ziIoj/iH/bgqN2TWzVseF47BYpK3jknOzL678tW38wb1JeMIA5xiX0TslQ/wfQwSSAh3CqVo93+bnh+rbvHfm8u1owDVEpTQ9eMP7R5et2EU3Sk5z7KHrp5/n60=
+	t=1706666377; cv=none; b=b9QOkctJ3/RVZdKIUf+AXDKvuX1MJdst8I+iHe35s5cZ26pR/HcYgKBaEnbsEVXzPHg+5E11a590v6IRUXsaqzu9g15+zqO6Lnprv6rA2OwnHXhKwT3GqovqsOiRhuPcHz+cslaKSojff07vkpgmZYvLr6etM+IsTA8ugatZBhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706664926; c=relaxed/simple;
-	bh=z6jD8l1Em8qa7RDF9PSVWG8Ir6YPDxlM6YsVako70uA=;
+	s=arc-20240116; t=1706666377; c=relaxed/simple;
+	bh=vSwvUDof3a2+ogxMMuAxYWAPXW2RjzXJdbU0/Iel/0A=;
 	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=FMIkuFaHyhEoGKFARzMt6nQbKrLuUi06akjfPb04XZqs+DQK7lY4iuojZ8t6hjh8cgHpAto+x4i9UMElQON1vInEfQxIwO3HB2J3upq+SFwzX5/QurJSqjW2/zxIWxdfWfKm/brEcMMjuy3igdn4RSZbvrIkp0aC7BnPYij5xTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LjXRAQ4o; arc=none smtp.client-ip=134.134.136.65
+	 Message-ID:In-Reply-To; b=ZpfOHDWrvJnKB4BBDM3iQ0knQvFQIiRDc4X1jiIJA6wpZMJDDnfh65SC+zt/rSywbGJt5jSBsTw7RL5CTRfb1eR5ot/ZskxEc5YI+s2PeAblGeELlFFKR+Pbhv28UdyIseJ8GVdnZ6vYNcK8/l3NDp1ETHHVw9noqNKi+Ek+p9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fBs6QA+2; arc=none smtp.client-ip=192.198.163.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706664925; x=1738200925;
+  t=1706666376; x=1738202376;
   h=to:cc:subject:references:date:mime-version:
    content-transfer-encoding:from:message-id:in-reply-to;
-  bh=z6jD8l1Em8qa7RDF9PSVWG8Ir6YPDxlM6YsVako70uA=;
-  b=LjXRAQ4oNfnvIjPlT5+suV5SUXzXxxQ18NL167Kc+RMadgMibhIe2I53
-   SCkfXDkVErFGGcnH+mRgydExi8EtAaIjFrdG5NQ89ujH4YYIOCz4yHGso
-   HQyElbA9T5lcJ8von+4RQKqru11wR23aERv46tqx0j27xQX7Mm6MSKf+V
-   UzRsAYoSHjlHlv8WLsDAjQg8YcgbrV7J8Vs/JGjivi7U5OUYqhske33hv
-   ZP11JUgboukNdRseW1hx3fWb0loYxZtaBzX6KJp5APzwRGCK1YYI1QBMR
-   4i9Crs4B0KPsj4LZNQES4xOOEv9FpuOOnnmK5QDea7ysxAw8o1h+qzspC
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="407171252"
+  bh=vSwvUDof3a2+ogxMMuAxYWAPXW2RjzXJdbU0/Iel/0A=;
+  b=fBs6QA+2IyErVtYkUyLtvXGkP2BfKDwSugAYfVg69bZazmGSea5un2tY
+   iNewPtuuA17/KJe3bqHSIr4jocULK62fldEXNl4Nr27vB9uj965w0iCr/
+   jvoNaRnVDw4VPLKqNeYBpgBdtHJywbwaz7PuXD+HZihYBqkzkaE+Ch2Dt
+   PBtRIssmGvXvfcUL1MrChkgKV+eUMBJbHpobp76U9vIahaEkX3M3Kt3dK
+   Ftc2qIMyVYelHeWXK75Y/Hfl2bq7d+Gpn0lvXBLgTaSk3p+vMwNlTw0vn
+   OJiBOtCKm8lPcfSxIZLR5Ax6pb02eEdlNgP3QQfGkwbJCWpNLk3BKMzqY
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="10206762"
 X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="407171252"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 17:35:24 -0800
+   d="scan'208";a="10206762"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 17:59:35 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="907699187"
 X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
-   d="scan'208";a="907699187"
+   d="scan'208";a="30078195"
 Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 30 Jan 2024 17:35:21 -0800
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 30 Jan 2024 17:59:29 -0800
 Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
 To: "jarkko@kernel.org" <jarkko@kernel.org>, "dave.hansen@linux.intel.com"
  <dave.hansen@linux.intel.com>, "tj@kernel.org" <tj@kernel.org>,
@@ -71,9 +70,10 @@ Cc: "Li, Zhiquan1" <zhiquan1.li@intel.com>, "kristen@linux.intel.com"
  "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
  "yangjie@microsoft.com" <yangjie@microsoft.com>, "chrisyan@microsoft.com"
  <chrisyan@microsoft.com>
-Subject: Re: [PATCH v8 07/15] x86/sgx: Expose sgx_reclaim_pages() for cgroup
-References: <20240130020938.10025-1-haitao.huang@linux.intel.com> <20240130020938.10025-8-haitao.huang@linux.intel.com> <BL1PR11MB5978A8E4B6E1DC4CC0159FD0F77D2@BL1PR11MB5978.namprd11.prod.outlook.com>
-Date: Tue, 30 Jan 2024 19:35:19 -0600
+Subject: Re: [PATCH v8 04/15] x86/sgx: Implement basic EPC misc cgroup
+ functionality
+References: <20240130020938.10025-1-haitao.huang@linux.intel.com> <20240130020938.10025-5-haitao.huang@linux.intel.com> <BL1PR11MB59784620554CDAD5E2C2BF45F77D2@BL1PR11MB5978.namprd11.prod.outlook.com>
+Date: Tue, 30 Jan 2024 19:59:26 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -83,75 +83,83 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 From: "Haitao Huang" <haitao.huang@linux.intel.com>
 Organization: Intel
-Message-ID: <op.2id1c5n3wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <BL1PR11MB5978A8E4B6E1DC4CC0159FD0F77D2@BL1PR11MB5978.namprd11.prod.outlook.com>
+Message-ID: <op.2id2hcvkwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <BL1PR11MB59784620554CDAD5E2C2BF45F77D2@BL1PR11MB5978.namprd11.prod.outlook.com>
 User-Agent: Opera Mail/1.0 (Win32)
 
-On Tue, 30 Jan 2024 09:39:44 -0600, Huang, Kai <kai.huang@intel.com> wrote:
+On Tue, 30 Jan 2024 09:22:14 -0600, Huang, Kai <kai.huang@intel.com> wrote:
 
->> + * @lru:	The LRU from which pages are reclaimed.
->> + * @nr_to_scan: Pointer to the target number of pages to scan, must be  
->> less
->> than
->> + *		SGX_NR_TO_SCAN.
->> + * Return:	Number of pages reclaimed.
->>   */
->> -static void sgx_reclaim_pages(void)
->> +unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru, unsigned
->> +int *nr_to_scan)
->
-> Since the function is now returning the number of reclaimed pages, why  
-> do you need to make the @nr_to_scan as pointer?
->
-> Cannot the caller just adjust @nr_to_scan when calling this function  
-> based on how many pages have reclaimed?
->
-> I am not even sure whether you need @nr_to_scan at all because as we  
-> discussed I think it's just extremely rare you need to pass "<  
-> SGX_NR_TO_SCAN" to this function.
->
-> Even if you need, you can always choose to try to reclaim SGX_NR_TO_SCAN  
-> pages.
->
-
-I tested with that approach and found we can only target number of pages  
-attempted to reclaim not pages actually reclaimed due to the uncertainty  
-of how long it takes to reclaim pages. Besides targeting number of scanned  
-pages for each cycle is also what the ksgxd does.
-
-If we target actual number of pages, sometimes it just takes too long. I  
-saw more timeouts with the default time limit when running parallel  
-selftests.
-
-We also need return number of pages actually reclaimed as indication to  
-caller whether we actually reclaimed any pages at all. The caller, e.g.,  
-sgx_epc_cg_try_charge(), then can decide to schedule() or continue next  
-step which usually is allocation of the page.
-
-> [...]
->
+>>  struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)  {
+>> +	struct sgx_epc_cgroup *epc_cg;
+>>  	struct sgx_epc_page *page;
+>> +	int ret;
+>> +
+>> +	epc_cg = sgx_get_current_epc_cg();
+>> +	ret = sgx_epc_cgroup_try_charge(epc_cg);
+>> +	if (ret) {
+>> +		sgx_put_epc_cg(epc_cg);
+>> +		return ERR_PTR(ret);
+>> +	}
 >>
->> +static void sgx_reclaim_pages_global(void) {
->> +	unsigned int nr_to_scan = SGX_NR_TO_SCAN;
->> +
->> +	sgx_reclaim_pages(&sgx_global_lru, &nr_to_scan); }
->> +
+>>  	for ( ; ; ) {
+>>  		page = __sgx_alloc_epc_page();
+>> @@ -567,8 +578,10 @@ struct sgx_epc_page *sgx_alloc_epc_page(void
+>> *owner, bool reclaim)
+>>  			break;
+>>  		}
+>>
+>> -		if (list_empty(&sgx_active_page_list))
+>> -			return ERR_PTR(-ENOMEM);
+>> +		if (list_empty(&sgx_active_page_list)) {
+>> +			page = ERR_PTR(-ENOMEM);
+>> +			break;
+>> +		}
 >
-> I think this function doesn't look sane at all when you have @nr_to_scan  
-> being a pointer?
+> (Sorry for replying from Outlook because I am in travel for Chinese New  
+> Year.)
+>
+> Perhaps I am missing something but I don't understand this change.
+>
+> An empty sgx_active_page_list means you cannot reclaim any page from it,  
+> so why need to break?
 >
 
-You will see the pointer being used later for cgroup worker.
+This is to avoid any escape for sgx_put_epc_cg(), which is added in this  
+version.
 
-> I am also not sure whether this function is needed -- if we don't add  
-> @nr_to_scan to sgx_reclaim_pages(), then this function is basically:
+>>
+>>  		if (!reclaim) {
+>>  			page = ERR_PTR(-EBUSY);
+>> @@ -580,10 +593,25 @@ struct sgx_epc_page *sgx_alloc_epc_page(void
+>> *owner, bool reclaim)
+>>  			break;
+>>  		}
+>>
+>> +		/*
+>> +		 * Need to do a global reclamation if cgroup was not full but
+>> free
+>> +		 * physical pages run out, causing __sgx_alloc_epc_page() to
+>> fail.
+>> +		 */
+>>  		sgx_reclaim_pages();
+>>  		cond_resched();
+>>  	}
 >
-> 	sgx_reclaim_pages(&sgx_global_lru);
+> And why adding this comment, especially in this patch?
+>
+> I don't see it brings additional clarity because there's only global  
+> reclaim now, no matter whether cgroup is enabled or not.
 >
 
-As indicated in the commit message, this wrapper is getting ready for  
-doing global reclamation from root cgroup. You will see it changed later.
+True there is only global reclamation at the moment. The comment intended  
+to help clarify why we can get here when try_charge() passes. It at least  
+took me some thinking to realize that fact so I put it here to help remind  
+this can happen even for cases that try_charge() passes. (In some earlier  
+debugging for some concurrent issues, I actually tried mistakenly to  
+remove this path hoping to narrow down some causes but made situation  
+worse.)
 
+I can remove if no one thinks this is needed.
 
 Thanks
 Haitao
