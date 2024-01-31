@@ -1,160 +1,158 @@
-Return-Path: <cgroups+bounces-1283-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1284-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA966842F3A
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jan 2024 22:56:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B213B8432CF
+	for <lists+cgroups@lfdr.de>; Wed, 31 Jan 2024 02:35:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE72F1C244A7
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jan 2024 21:56:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E46141C2408A
+	for <lists+cgroups@lfdr.de>; Wed, 31 Jan 2024 01:35:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 476117D3EF;
-	Tue, 30 Jan 2024 21:56:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF11915AF;
+	Wed, 31 Jan 2024 01:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="NPOWjrkO"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LjXRAQ4o"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6A314AAA
-	for <cgroups@vger.kernel.org>; Tue, 30 Jan 2024 21:56:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12C281366;
+	Wed, 31 Jan 2024 01:35:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.134.136.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706651790; cv=none; b=RudP1F72Z2j0w/4WENmn2ZnPgpfl0lY9q+UnN/8RVmgSqhwrBWmisFfAcsHgDrnGi2xs5EfbZSmAy26spQ4KI5rTjBorn9Jy3uGOmlMIHtWnQoJM7e7+7G2DJW8hH9siUTwZetL6U9GkOlKonzXdwqu4t6do+2aUdXYY+5BMoMo=
+	t=1706664926; cv=none; b=pvLOMNRnLqOmdd6ARrnWZkYOj5Ci8Bxbu4m1sSFAEelFOZI7ziIoj/iH/bgqN2TWzVseF47BYpK3jknOzL678tW38wb1JeMIA5xiX0TslQ/wfQwSSAh3CqVo93+bnh+rbvHfm8u1owDVEpTQ9eMP7R5et2EU3Sk5z7KHrp5/n60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706651790; c=relaxed/simple;
-	bh=QFF3g8SJ4OiMza5Xx+W6HjoPtXkMrCk0w56SdKoVm3E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CLVNaNEKsJkE9c45CBkhSYIR0dGnY8Nn7eW308vGGFA0YquqjW6dQi0bnQ4VNWn9tl2EaeRgU7Kz5l4GbXSe7ZIhb+hHpGbaYnf0FDqwOpSMZM38aCXcxiIcD+SYj20JIsURULGAXLDW45IZaNUgqGb8quy6kIi6kShH62gVOig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=NPOWjrkO; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-68c53ed6c56so13100006d6.3
-        for <cgroups@vger.kernel.org>; Tue, 30 Jan 2024 13:56:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706651786; x=1707256586; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=zUwitgcZ8PysFOK/IjV63sunJlwofoIw/gZSZx3mTw0=;
-        b=NPOWjrkOnfgF8bI7jvihkIPTJu13w3AKmOzC6OtMmjjq0My81atY0FPGwutJpJ7cFZ
-         5q+UP8E4EP68OysIHXPvvARU5NlRGWUEzCxAcwFdo2VflztzgRE3o7QDkZgPjTYIy5Pu
-         Ro3whZW3ldQXFFOfmMwil4DNc+AF9RMkm5rQGgZb8uGYgEdo2NfKzXlzwmPvqFhc++hx
-         1JcUgQL8ers4696kfJSPMI0D/J9IcYWYstHLNHX07A1gKIx0YHvk8sNYHijSBregHI4a
-         86lt9aceAOzKlS8qza1i3F78SroqUWfOLs6zNxJ3PxSVvWfEmAyY1DAh/8NA7b70qLMe
-         MREw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706651786; x=1707256586;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zUwitgcZ8PysFOK/IjV63sunJlwofoIw/gZSZx3mTw0=;
-        b=UJxOfQ49RmGsIvw3NKSSheK7dHCSKkPEMAyWlZmEjbsONTIxxTAa61/6bpiaO7huqt
-         AclEw62Ou+qgjKtJPZ1Z4MrXrvpBy2U3o4F1kmpLqfBkeaQ4oF9U3fu5nCs7qZfzPYjo
-         TxPhEX8aqLiS39JGLMX3eLW/e3w6proycSZlRUIoTQ2X3C8YPjBZUUmo/wT+zwsS+xmD
-         FARIDxvqOSZ5D7KJZyMibMCNRFBn/3yyGU55D+gb9Ct8K+EtUp8XWZHE1mOu2PQhFzwZ
-         BujLI0yhFbojQhE+ZVCtgo9AYFN1x2DEj1Y+hwA+gzn9j68aQECXPJ7CNikoRTGybh1Q
-         /TIw==
-X-Gm-Message-State: AOJu0YyKu2jh4OqNArW3Jte9ydWxbrRN9POai5gB/UtoIBYG17t66v9/
-	JfEZcuTY89ylk/bQqDiyCKIVZJrFycs2SXD3+PNH9x6BmNZKbvAAm3ZiwL66yIY=
-X-Google-Smtp-Source: AGHT+IEaHZUxi5O8j8Bxm1H1MuCEcZ4girsG/PslfOcIwAPmfhwFr0mToEqN3itXQuBrFZ8Ns2nPOw==
-X-Received: by 2002:ad4:5ecf:0:b0:686:309d:8915 with SMTP id jm15-20020ad45ecf000000b00686309d8915mr9823848qvb.6.1706651786531;
-        Tue, 30 Jan 2024 13:56:26 -0800 (PST)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id pj3-20020a0562144b0300b0068c68437655sm362333qvb.115.2024.01.30.13.56.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jan 2024 13:56:26 -0800 (PST)
-Date: Tue, 30 Jan 2024 16:56:25 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: Michal Hocko <mhocko@suse.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com,
-	yuzhao@google.com, yangyifei03@kuaishou.com,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "mm:vmscan: fix inaccurate reclaim during
- proactive reclaim"
-Message-ID: <20240130215625.GA970164@cmpxchg.org>
-References: <20240121214413.833776-1-tjmercier@google.com>
- <Za-H8NNW9bL-I4gj@tiehlicka>
- <CABdmKX2K4MMe9rsKfWi9RxUS5G1RkLVzuUkPnovt5O2hqVmbWA@mail.gmail.com>
- <20240123164819.GB1745986@cmpxchg.org>
- <CABdmKX1uDsnFSG2YCyToZHD2R+A9Vr=SKeLgSqPocUgWd16+XA@mail.gmail.com>
- <20240126163401.GJ1567330@cmpxchg.org>
- <CABdmKX0pbOn+PDYQwQC=FA6gThSG0H59+ja52vAEPq80jbaWGA@mail.gmail.com>
- <CABdmKX3Jv1O-ppJAS-oi96Mcc6E3xsD-rwoeNU=jKU9wNDODVA@mail.gmail.com>
+	s=arc-20240116; t=1706664926; c=relaxed/simple;
+	bh=z6jD8l1Em8qa7RDF9PSVWG8Ir6YPDxlM6YsVako70uA=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=FMIkuFaHyhEoGKFARzMt6nQbKrLuUi06akjfPb04XZqs+DQK7lY4iuojZ8t6hjh8cgHpAto+x4i9UMElQON1vInEfQxIwO3HB2J3upq+SFwzX5/QurJSqjW2/zxIWxdfWfKm/brEcMMjuy3igdn4RSZbvrIkp0aC7BnPYij5xTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LjXRAQ4o; arc=none smtp.client-ip=134.134.136.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706664925; x=1738200925;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=z6jD8l1Em8qa7RDF9PSVWG8Ir6YPDxlM6YsVako70uA=;
+  b=LjXRAQ4oNfnvIjPlT5+suV5SUXzXxxQ18NL167Kc+RMadgMibhIe2I53
+   SCkfXDkVErFGGcnH+mRgydExi8EtAaIjFrdG5NQ89ujH4YYIOCz4yHGso
+   HQyElbA9T5lcJ8von+4RQKqru11wR23aERv46tqx0j27xQX7Mm6MSKf+V
+   UzRsAYoSHjlHlv8WLsDAjQg8YcgbrV7J8Vs/JGjivi7U5OUYqhske33hv
+   ZP11JUgboukNdRseW1hx3fWb0loYxZtaBzX6KJp5APzwRGCK1YYI1QBMR
+   4i9Crs4B0KPsj4LZNQES4xOOEv9FpuOOnnmK5QDea7ysxAw8o1h+qzspC
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="407171252"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="407171252"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2024 17:35:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10969"; a="907699187"
+X-IronPort-AV: E=Sophos;i="6.05,231,1701158400"; 
+   d="scan'208";a="907699187"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 30 Jan 2024 17:35:21 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "jarkko@kernel.org" <jarkko@kernel.org>, "dave.hansen@linux.intel.com"
+ <dave.hansen@linux.intel.com>, "tj@kernel.org" <tj@kernel.org>,
+ "mkoutny@suse.com" <mkoutny@suse.com>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "tglx@linutronix.de"
+ <tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de"
+ <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "Huang, Kai" <kai.huang@intel.com>
+Cc: "Li, Zhiquan1" <zhiquan1.li@intel.com>, "kristen@linux.intel.com"
+ <kristen@linux.intel.com>, "seanjc@google.com" <seanjc@google.com>, "Zhang,
+ Bo" <zhanb@microsoft.com>, "anakrish@microsoft.com" <anakrish@microsoft.com>,
+ "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "yangjie@microsoft.com" <yangjie@microsoft.com>, "chrisyan@microsoft.com"
+ <chrisyan@microsoft.com>
+Subject: Re: [PATCH v8 07/15] x86/sgx: Expose sgx_reclaim_pages() for cgroup
+References: <20240130020938.10025-1-haitao.huang@linux.intel.com> <20240130020938.10025-8-haitao.huang@linux.intel.com> <BL1PR11MB5978A8E4B6E1DC4CC0159FD0F77D2@BL1PR11MB5978.namprd11.prod.outlook.com>
+Date: Tue, 30 Jan 2024 19:35:19 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABdmKX3Jv1O-ppJAS-oi96Mcc6E3xsD-rwoeNU=jKU9wNDODVA@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2id1c5n3wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <BL1PR11MB5978A8E4B6E1DC4CC0159FD0F77D2@BL1PR11MB5978.namprd11.prod.outlook.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-On Tue, Jan 30, 2024 at 12:58:12PM -0800, T.J. Mercier wrote:
-> On Fri, Jan 26, 2024 at 8:41 AM T.J. Mercier <tjmercier@google.com> wrote:
-> >
-> > On Fri, Jan 26, 2024 at 8:34 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > >
-> > > On Wed, Jan 24, 2024 at 09:46:23AM -0800, T.J. Mercier wrote:
-> > > > In the meantime, instead of a revert how about changing the batch size
-> > > > geometrically instead of the SWAP_CLUSTER_MAX constant:
-> > > >
-> > > >                 reclaimed = try_to_free_mem_cgroup_pages(memcg,
-> > > > -                                       min(nr_to_reclaim -
-> > > > nr_reclaimed, SWAP_CLUSTER_MAX),
-> > > > +                                       (nr_to_reclaim - nr_reclaimed)/2,
-> > > >                                         GFP_KERNEL, reclaim_options);
-> > > >
-> > > > I think that should address the overreclaim concern (it was mentioned
-> > > > that the upper bound of overreclaim was 2 * request), and this should
-> > > > also increase the reclaim rate for root reclaim with MGLRU closer to
-> > > > what it was before.
-> > >
-> > > Hahaha. Would /4 work for you?
-> > >
-> > > I genuinely think the idea is worth a shot. /4 would give us a bit
-> > > more margin for error, since the bailout/fairness cutoffs have changed
-> > > back and forth over time. And it should still give you a reasonable
-> > > convergence on MGLRU.
-> > >
-> > > try_to_free_reclaim_pages() already does max(nr_to_reclaim,
-> > > SWAP_CLUSTER_MAX) which will avoid the painful final approach loops
-> > > the integer division would produce on its own.
-> > >
-> > > Please add a comment mentioning the compromise between the two reclaim
-> > > implementations though.
-> >
-> > I'll try it out and get back to you. :)
-> 
-> Right, so (nr_to_reclaim - nr_reclaimed)/4 looks pretty good to me:
-> 
-> root - full reclaim       pages/sec   time (sec)
-> pre-0388536ac291      :    68047        10.46
-> post-0388536ac291     :    13742        inf
-> (reclaim-reclaimed)/4 :    67352        10.51
-> 
-> /uid_0 - 1G reclaim       pages/sec   time (sec)  overreclaim (MiB)
-> pre-0388536ac291      :    258822       1.12            107.8
-> post-0388536ac291     :    105174       2.49            3.5
-> (reclaim-reclaimed)/4 :    233396       1.12            -7.4
-> 
-> /uid_0 - full reclaim     pages/sec   time (sec)
-> pre-0388536ac291      :    72334        7.09
-> post-0388536ac291     :    38105        14.45
-> (reclaim-reclaimed)/4 :    72914        6.96
-> 
-> So I'll put up a new patch.
+On Tue, 30 Jan 2024 09:39:44 -0600, Huang, Kai <kai.huang@intel.com> wrote:
 
-That looks great, thanks for giving it a shot.
+>> + * @lru:	The LRU from which pages are reclaimed.
+>> + * @nr_to_scan: Pointer to the target number of pages to scan, must be  
+>> less
+>> than
+>> + *		SGX_NR_TO_SCAN.
+>> + * Return:	Number of pages reclaimed.
+>>   */
+>> -static void sgx_reclaim_pages(void)
+>> +unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru, unsigned
+>> +int *nr_to_scan)
+>
+> Since the function is now returning the number of reclaimed pages, why  
+> do you need to make the @nr_to_scan as pointer?
+>
+> Cannot the caller just adjust @nr_to_scan when calling this function  
+> based on how many pages have reclaimed?
+>
+> I am not even sure whether you need @nr_to_scan at all because as we  
+> discussed I think it's just extremely rare you need to pass "<  
+> SGX_NR_TO_SCAN" to this function.
+>
+> Even if you need, you can always choose to try to reclaim SGX_NR_TO_SCAN  
+> pages.
+>
 
-Looking forward to your patch.
+I tested with that approach and found we can only target number of pages  
+attempted to reclaim not pages actually reclaimed due to the uncertainty  
+of how long it takes to reclaim pages. Besides targeting number of scanned  
+pages for each cycle is also what the ksgxd does.
+
+If we target actual number of pages, sometimes it just takes too long. I  
+saw more timeouts with the default time limit when running parallel  
+selftests.
+
+We also need return number of pages actually reclaimed as indication to  
+caller whether we actually reclaimed any pages at all. The caller, e.g.,  
+sgx_epc_cg_try_charge(), then can decide to schedule() or continue next  
+step which usually is allocation of the page.
+
+> [...]
+>
+>>
+>> +static void sgx_reclaim_pages_global(void) {
+>> +	unsigned int nr_to_scan = SGX_NR_TO_SCAN;
+>> +
+>> +	sgx_reclaim_pages(&sgx_global_lru, &nr_to_scan); }
+>> +
+>
+> I think this function doesn't look sane at all when you have @nr_to_scan  
+> being a pointer?
+>
+
+You will see the pointer being used later for cgroup worker.
+
+> I am also not sure whether this function is needed -- if we don't add  
+> @nr_to_scan to sgx_reclaim_pages(), then this function is basically:
+>
+> 	sgx_reclaim_pages(&sgx_global_lru);
+>
+
+As indicated in the commit message, this wrapper is getting ready for  
+doing global reclamation from root cgroup. You will see it changed later.
+
+
+Thanks
+Haitao
 
