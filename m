@@ -1,278 +1,140 @@
-Return-Path: <cgroups+bounces-1297-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1298-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8284845369
-	for <lists+cgroups@lfdr.de>; Thu,  1 Feb 2024 10:08:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B99EF84596D
+	for <lists+cgroups@lfdr.de>; Thu,  1 Feb 2024 14:57:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1E50B2617B
-	for <lists+cgroups@lfdr.de>; Thu,  1 Feb 2024 09:08:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63717281EFD
+	for <lists+cgroups@lfdr.de>; Thu,  1 Feb 2024 13:57:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D5BF15AACD;
-	Thu,  1 Feb 2024 09:08:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B2E25D460;
+	Thu,  1 Feb 2024 13:57:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Yi0HgEBy"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="PQLAbFzt";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="PQLAbFzt"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B222015AAAA
-	for <cgroups@vger.kernel.org>; Thu,  1 Feb 2024 09:08:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA2FC5CDD8;
+	Thu,  1 Feb 2024 13:57:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706778519; cv=none; b=rrZ9uKxLBtP0LHrMV0YJmZcoGq4bosc1F6/lejfkAN+qWDSpVn6SZ1LFJOIj0GUwZfF+PN+H6xgCNLFQj0+TNkrx1TBpEcqbdJmyIkjWDJl7mJfTO8Cvd7plnI6b6asEr5bNf/QqgTlU5wKpiJwH92iWnjBs/7y8PjIiLJjIQjI=
+	t=1706795847; cv=none; b=F0JP8u3Lf0AlhGI/chX3QyxeDIV3oX/Az84qBJW2ur3uMr5TOMZjuCoCY6bTitooOqSXMIroOzroZ4Ekm9jnvJphrXscXYVqYbY5XHhSZIOfyKVqcSfu6tD7qjQq4WBWLUUYiokCUdeA16I8TgX/K6pQGnKBnlwWdMm6yzMkKro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706778519; c=relaxed/simple;
-	bh=ruPq2pvkVk8s24AfuKHQzLcgDuuIniLumwcZJ8iyy3A=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=n3nHtErEaEByfLQuaHI0pqsqXqtTaZTDxOVNx27fouwYxZi1HceQ3zls2FRmbJcY4j19YqhREJrpuIE641kstsFWRQwduPFyaFaqAkXRcqPTzjBOpT2ftLEFMTmW0pmNot0xZxguvQ4Dpxbik6CUYlD04yVF4X2jQxlWO7gaOJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Yi0HgEBy; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60402c8d651so12472397b3.3
-        for <cgroups@vger.kernel.org>; Thu, 01 Feb 2024 01:08:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706778516; x=1707383316; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PyPRSJB8R7sstDIzxYvvLOQP9nz0Xs4tmV9kMbdp44Y=;
-        b=Yi0HgEBypSrfhcSIHIr19OeVet4Sd/Q20A6xGxzPj6qgBCLXCGe0iisIBZh0Gg/Z/V
-         BqDBQ3VAxjO+9DGqoUmldOXdzfpYy2HR6lA/LHTqRAyIxcF1oiPnLXt2yesTEbWjgZYK
-         nx+ORVSL+JJcbcwl216iT6AtKzulXobY85PHVHyNXuLS9uEQkeuCNYDjvP2Q1DP3cUlU
-         jWQplqsag0enGZ0S9Nsu+YdymLDR5DwZl66/hCUScKYd2gQ2JatZB8xPcAfAifpw6nVk
-         4MLqagyaLQEGzTeCFOLcnU2SfH8GOtnHZvCFOIrQzK3+ZcqnaK0n3xT/eGPQTkB7t9uR
-         BfsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706778516; x=1707383316;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PyPRSJB8R7sstDIzxYvvLOQP9nz0Xs4tmV9kMbdp44Y=;
-        b=HJLBhDsZu+2zGWYRjspwFSivFOts8irw+8daq81Fc5q2Zx/N8SieJSE7M4LfNIK8Tn
-         R99uL7xVpursEsfrrZ8fH42uaKvDlpIwcVDjF6li+zRjhQMk1ygwibPIuycTT4kN5Zmy
-         +BeBFC/QOLVSEl1pUa38jHOZwCP8uQx+f4U19N9aO+CxDf65hywAtB2WawWmKFEZVyHX
-         /2bR5wbKeNyh9azqRfkY+8wH5MLzYMRBBZRLT317BtbcEorwjm1++eeWkfIOS2RF2LK7
-         qWVHmZJ2vIcURcRjd/3WDjRFd6I1KPHl3r4BsgPDRk4GP/W6Z9iJu0pGfLYsjBSThXvp
-         WJ0A==
-X-Gm-Message-State: AOJu0Yx5n9niwc88Nw//ctTrykGa3TKeh78EI1HIGxpX1SojsqMQxgVF
-	xgQDO3GRXYazPU7krZi+D3CmqQKLmLWOiwcjtxXFvPoZE8imDA+idTMSHAjScSFPAcJ2qRSbvGv
-	xMgGyALslLzsuOIbSpw==
-X-Google-Smtp-Source: AGHT+IEal3S+0/LT8L/+ihFESpfF3v8jase7MpGggk1/LchQ6suhlyF5F50sZ3ZPPJU5OFZDNh2MSLQST8IUcSCG
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:690c:ec5:b0:5ee:2b5:7d75 with SMTP
- id cs5-20020a05690c0ec500b005ee02b57d75mr276209ywb.8.1706778516753; Thu, 01
- Feb 2024 01:08:36 -0800 (PST)
-Date: Thu, 1 Feb 2024 09:08:34 +0000
-In-Reply-To: <20240201032718.1968208-4-nphamcs@gmail.com>
+	s=arc-20240116; t=1706795847; c=relaxed/simple;
+	bh=2m6rRqMt8QCSHWwoNoBeNn1DPvb5rzoixdRUuk/jPJ0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XSrtNyV7C8CqK6gJ0ShPMPjZXfPY1MmOG3XDtgUcg8IRiWnD3ljhM2QhCc72oq/IQ2QTSQCTGFJ1jcMub1l56zA95226+eRQqLhA4cAqOqo3YXssnG45VojXQjLGQBDjmO97dJl06zXhp5s7giZHOL8vLKhJRh3CUNJSbvoyO9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=PQLAbFzt; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=PQLAbFzt; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from blackpad (unknown [10.100.12.75])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A84E51FB83;
+	Thu,  1 Feb 2024 13:57:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706795843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fst3aRufxJr0rB3Ah1VL5pp6dKU4WyR76KU19pMYREY=;
+	b=PQLAbFztYbBgxaasVRpxcOj6DsBbGHYiXm5TRBjWaK9ScDigefcGsrARMWnSdx2QpPan6j
+	pZaaihD1N7EDLjec5v/4GL6dVrlk/kpWnCypMcQj3jH8kpdp6b4E0y3VI3UqBfcnQpT0K6
+	z++SlRgeush0Y4iV3EH4IF6zUuP7yJI=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706795843; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fst3aRufxJr0rB3Ah1VL5pp6dKU4WyR76KU19pMYREY=;
+	b=PQLAbFztYbBgxaasVRpxcOj6DsBbGHYiXm5TRBjWaK9ScDigefcGsrARMWnSdx2QpPan6j
+	pZaaihD1N7EDLjec5v/4GL6dVrlk/kpWnCypMcQj3jH8kpdp6b4E0y3VI3UqBfcnQpT0K6
+	z++SlRgeush0Y4iV3EH4IF6zUuP7yJI=
+Date: Thu, 1 Feb 2024 14:57:22 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com, yuzhao@google.com, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcg: Use larger chunks for proactive reclaim
+Message-ID: <q3m42iuxahsjrskuio3ajz2edrisiw56cwy2etx2jyht5l7jzq@ttbsrvgu4mvl>
+References: <20240131162442.3487473-1-tjmercier@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240201032718.1968208-1-nphamcs@gmail.com> <20240201032718.1968208-4-nphamcs@gmail.com>
-Message-ID: <Zbtfku0wVGXBHDTD@google.com>
-Subject: Re: [PATCH v2 3/3] selftests: add zswapin and no zswap tests
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: akpm@linux-foundation.org, riel@surriel.com, shuah@kernel.org, 
-	hannes@cmpxchg.org, tj@kernel.org, lizefan.x@bytedance.com, 
-	roman.gushchin@linux.dev, linux-mm@kvack.org, kernel-team@meta.com, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="lz6s2q5edho5n2za"
+Content-Disposition: inline
+In-Reply-To: <20240131162442.3487473-1-tjmercier@google.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-1.75 / 50.00];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 SIGNED_PGP(-2.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_COUNT_ZERO(0.00)[0];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 BAYES_HAM(-0.05)[59.23%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -1.75
 
-Hey Nhat,
 
-I have a few more comments, sorry for not catching everything the first
-time around.
+--lz6s2q5edho5n2za
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Adding Roman to CC.
+Hello.
 
-On Wed, Jan 31, 2024 at 07:27:18PM -0800, Nhat Pham wrote:
-> Add a selftest to cover the zswapin code path, allocating more memory
-> than the cgroup limit to trigger swapout/zswapout, then reading the
-> pages back in memory several times. This is inspired by a recently
-> encountered kernel crash on the zswapin path in our internal kernel,
-> which went undetected because of a lack of test coverage for this path.
-> 
-> Add a selftest to verify that when memory.zswap.max = 0, no pages can go
-> to the zswap pool for the cgroup.
-> 
-> Suggested-by: Rik van Riel <riel@surriel.com>
-> Suggested-by: Yosry Ahmed <yosryahmed@google.com>
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> ---
->  tools/testing/selftests/cgroup/test_zswap.c | 97 +++++++++++++++++++++
->  1 file changed, 97 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
-> index 32ce975b21d1..14d1f18f1098 100644
-> --- a/tools/testing/selftests/cgroup/test_zswap.c
-> +++ b/tools/testing/selftests/cgroup/test_zswap.c
-> @@ -60,6 +60,27 @@ static long get_zswpout(const char *cgroup)
->  	return cg_read_key_long(cgroup, "memory.stat", "zswpout ");
->  }
->  
-> +static int allocate_bytes_and_read(const char *cgroup, void *arg)
+On Wed, Jan 31, 2024 at 04:24:41PM +0000, "T.J. Mercier" <tjmercier@google.=
+com> wrote:
+>  		reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
+> -					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
+> +					max((nr_to_reclaim - nr_reclaimed) / 4,
+> +					    (nr_to_reclaim - nr_reclaimed) % 4),
 
-I think allocate_and_read_bytes() is easier to read, but I don't feel
-strongly about it.
+The 1/4 factor looks like magic.=20
 
-> +{
-> +	size_t size = (size_t)arg;
-> +	char *mem = (char *)malloc(size);
-> +	int ret = 0;
-> +
-> +	if (!mem)
-> +		return -1;
-> +	for (int i = 0; i < size; i += 4095)
-> +		mem[i] = 'a';
+Commit 0388536ac291 says:
+| In theory, the amount of reclaimed would be in [request, 2 * request).
 
-cgroup_util.h defines PAGE_SIZE, see alloc_anon() for example.
+Doesn't this suggest 1/2 as a better option? (I didn't pursue the
+theory.)
 
-On that note, alloc_anon() is awfully close to allocate_bytes() below,
-perhaps we should consolidate them. The only difference I see is that
-alloc_anon() does not check for the allocation failure, but a lot of
-functions in cgroup_helpers.c don't, so it seems intentional for
-simplification.
+Also IMO importantly, when nr_to_reclaim - nr_reclaimed is less than 8,
+the formula gives arbitrary (unrelated to delta's magnitude) values.
 
-> +
-> +	/* go through the allocated memory to (z)swap in and out pages */
-> +	for (int i = 0; i < size; i += 4095) {
-> +		if (mem[i] != 'a')
-> +			ret = -1;
-> +	}
-> +
-> +	free(mem);
-> +	return ret;
-> +}
-> +
->  static int allocate_bytes(const char *cgroup, void *arg)
->  {
->  	size_t size = (size_t)arg;
-> @@ -133,6 +154,80 @@ static int test_zswap_usage(const char *root)
->  	return ret;
->  }
->  
-> +/*
-> + * Check that when memory.zswap.max = 0, no pages can go to the zswap pool for
-> + * the cgroup.
-> + */
-> +static int test_swapin_nozswap(const char *root)
-> +{
-> +	int ret = KSFT_FAIL;
-> +	char *test_group;
-> +	long zswpout;
-> +
-> +	/* Set up */
+Regards,
+Michal
 
-I think this comment is unnecessary.
+--lz6s2q5edho5n2za
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +	test_group = cg_name(root, "no_zswap_test");
-> +
-> +	if (!test_group)
-> +		goto out;
-> +	if (cg_create(test_group))
-> +		goto out;
-> +	if (cg_write(test_group, "memory.max", "8M"))
-> +		goto out;
-> +	/* Disable zswap */
+-----BEGIN PGP SIGNATURE-----
 
-I think this comment is unnecessary.
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZbujQAAKCRAGvrMr/1gc
+jiEnAQCQGBITdwktnX+PB1XMOwtBDaDA8QEg/Imo7oFBWH8AMwEAsK96LQZSYVCP
+vXmosthBsfuwtAklzkEeE5PYQsmvKgw=
+=hhY/
+-----END PGP SIGNATURE-----
 
-> +	if (cg_write(test_group, "memory.zswap.max", "0"))
-> +		goto out;
-> +
-> +	/* Allocate and read more than memory.max to trigger swapin */
-> +	if (cg_run(test_group, allocate_bytes_and_read, (void *)MB(32)))
-> +		goto out;
-> +
-> +	/* Verify that no zswap happened */
-
-If we want to be really meticulous, we can verify that we did swap out,
-but not to zswap. IOW, we can check memory.swap.current or something.
-
-> +	zswpout = get_zswpout(test_group);
-> +	if (zswpout < 0) {
-> +		ksft_print_msg("Failed to get zswpout\n");
-> +		goto out;
-> +	} else if (zswpout > 0) {
-
-nit: This can be a separate if condition, I think it would be more
-inline with the style of separate consecutive if blocks we are
-following.
-
-> +		ksft_print_msg(
-> +			"Pages should not go to zswap when memory.zswap.max = 0\n");
-
-We can probably avoid the line break with something more concise, for
-example:
-"zswapout > 0 when zswap is disabled"
-or "zswapout > 0 when memory.zswap.max = 0"
-
-> +		goto out;
-> +	}
-> +	ret = KSFT_PASS;
-> +
-> +out:
-> +	cg_destroy(test_group);
-> +	free(test_group);
-> +	return ret;
-> +}
-> +
-> +/* Simple test to verify the (z)swapin code paths */
-> +static int test_zswapin_no_limit(const char *root)
-
-I think test_zswapin() is enough to be distinct from
-test_swapin_nozswap(). The limit is not a factor here AFAICT.
-
-> +{
-> +	int ret = KSFT_FAIL;
-> +	char *test_group;
-> +
-> +	/* Set up */
-
-I think this comment is unnecessary.
-
-> +	test_group = cg_name(root, "zswapin_test");
-> +	if (!test_group)
-> +		goto out;
-> +	if (cg_create(test_group))
-> +		goto out;
-> +	if (cg_write(test_group, "memory.max", "8M"))
-> +		goto out;
-> +	if (cg_write(test_group, "memory.zswap.max", "max"))
-> +		goto out;
-> +
-> +	/* Allocate and read more than memory.max to trigger (z)swap in */
-> +	if (cg_run(test_group, allocate_bytes_and_read, (void *)MB(32)))
-> +		goto out;
-
-We should probably check for a positive zswapin here, no?
-
-> +
-> +	ret = KSFT_PASS;
-> +
-> +out:
-> +	cg_destroy(test_group);
-> +	free(test_group);
-> +	return ret;
-> +}
-> +
->  /*
->   * When trying to store a memcg page in zswap, if the memcg hits its memory
->   * limit in zswap, writeback should affect only the zswapped pages of that
-> @@ -309,6 +404,8 @@ struct zswap_test {
->  	const char *name;
->  } tests[] = {
->  	T(test_zswap_usage),
-> +	T(test_swapin_nozswap),
-> +	T(test_zswapin_no_limit),
->  	T(test_no_kmem_bypass),
->  	T(test_no_invasive_cgroup_shrink),
->  };
-> -- 
-> 2.39.3
+--lz6s2q5edho5n2za--
 
