@@ -1,50 +1,87 @@
-Return-Path: <cgroups+bounces-1292-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1293-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C96298448B3
-	for <lists+cgroups@lfdr.de>; Wed, 31 Jan 2024 21:20:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76B0F844FA7
+	for <lists+cgroups@lfdr.de>; Thu,  1 Feb 2024 04:27:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59FB31F26872
-	for <lists+cgroups@lfdr.de>; Wed, 31 Jan 2024 20:20:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3381D2828CC
+	for <lists+cgroups@lfdr.de>; Thu,  1 Feb 2024 03:27:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04CAB3FE46;
-	Wed, 31 Jan 2024 20:20:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D15B03A8C9;
+	Thu,  1 Feb 2024 03:27:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j2uVbYHm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NTNkcnsD"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 900B73FB1E;
-	Wed, 31 Jan 2024 20:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3661C2119;
+	Thu,  1 Feb 2024 03:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706732429; cv=none; b=kxmt7KKeMn0gxIgfhcXzC9wmyQ1+V/Vcjx2z19LcoRJ/RkQTrD7rGWxTTfrhwhjieI1DeuS6Zvso8vInLFe5AgPR/dR91vL+wDuiHgEY39fp3/G9el7KZ49dNN2tl9fTz4NX6cZ195R3nuGnojHAyce2VTt+gqkaFIrNVV894qM=
+	t=1706758041; cv=none; b=HN6XlXlaJrGneE+aSe/ju6X+5EeownvCH/FQI6jaOpt0ytF2NtYo+YtaKDnAfyAH0jaJUC4JYEkiMtu4IgGPGWofr7PreUW/fxaO0Xd+sqonmpvktE7L//SZzYuzpC1fZIy9Oh6T+v5rMxyFguvNo2C4j3BXQUEoyLwtEBQ4t9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706732429; c=relaxed/simple;
-	bh=5n2GPaqqGywO7Qry4eYZWTM4oFGQUDmGZmFT4fN7rrA=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=V5tk5twx4UxIbCwcBA7Dtjb6dijhsYCcR6BOXxpBk74eKp1vPXTq55COUdt2Vv3sQJ29/ijPYfm/d/4EnZ/XZHyob+wsuSGj6GtEHq82HCpGz/L/uQ5G4tUQhq3XdOj4lB4SN+YNpsJWMzFqBwP+yVnKr0ZUlfZFNipfpvn9flY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j2uVbYHm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1644BC43399;
-	Wed, 31 Jan 2024 20:20:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1706732429;
-	bh=5n2GPaqqGywO7Qry4eYZWTM4oFGQUDmGZmFT4fN7rrA=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=j2uVbYHmJ0BNlBHTdgUBgToOHPf+Qp4+Unj1DhM4x0CdZn1Tp36nyKi13zJ4NsBIr
-	 //0kQJg6fwsnmWQYfnR2CZSUXvSIpo3/iGgYh/XaFnVL1jU0DTgM8QBNto5qWBWVDS
-	 vcqbDp7/vd0zLOGyh5KfD4vVhxPymWXNSaVHEQnaHcADHr+VtdaF38ZzDPzu6o8zPU
-	 fWEGnzHYcE7+2/JhZaS3ZIov8rGKSfUD63SwZdSAHH3lFpglQsA/0G3nIPMWrFeXm3
-	 9frtgxX17A8LyAlpcuY9DlRurZmEwHMKebMLzPTzZHfIKjiacmWjriWBzUTbkx54sG
-	 53m66RsqvuGaQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F2F56DC99E4;
-	Wed, 31 Jan 2024 20:20:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1706758041; c=relaxed/simple;
+	bh=ejPuBjH+Meun1WpT8qRRnvEgK1DbqRgZjIZrVQYBjEs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=D9WmtzpfKSmfIcHb92v8RpI6dKAXIFDFjGaH+7SZXs44rkmjyJpBmLPQGNzJmxo+5er8ZpSnGKMlj3zBxp7RA038LkVKGxlhUj6HESAGpPY6BHLJUKbHmZSaR4ER5ViqoF6eZbOie/cI/IPmE5UYTe08V71k7/sclNGRIqlEqbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NTNkcnsD; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-42a9f4935a6so12596591cf.1;
+        Wed, 31 Jan 2024 19:27:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706758039; x=1707362839; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ml7lE/7jOU9DhBBfBhymR3i9jaBtoqE5+xDv3Ffc69o=;
+        b=NTNkcnsD/sTqfc096H6qvRCBfeN/Ee5Uj1GlgbELxXAar96iFjmaU0oMm+XHPZq/73
+         e65NHKLFgt4vcMczrj3vds5b9KyggLSbhHSrViwZg8U7iM9Ge9KJApweXvwYx8Q3H/FH
+         9Rw33Jqxuq/bxKE4B3G0hXLKLgUXMGGHPbelN3gucDTnDvF0GGT09XgJ+Bkr7uQGgtfa
+         J7bjnUi3QaJAQid5+iV5CHE6tTlGE0XajbBmF81lfnBX4J6NlZhiBHpmvgQENAaAbKXG
+         sJ7p8QNii+EopCGxLu98MzOKudbsT0BbKc9Dkxa89MktBoUkKmrFqAXkWhruNuEU20hp
+         7npQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706758039; x=1707362839;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ml7lE/7jOU9DhBBfBhymR3i9jaBtoqE5+xDv3Ffc69o=;
+        b=G1EmIclvWw7R6q9U/MaqMbHhajPFxw2ggMQvzctx4TWD7ciy3snqA8SongDDg9ZyBD
+         CtURwWPQ67dfrlfoF7bd6eV3moVG1fLsIC+v6Zk64tQnLGkjJx9xL0YJ8vaU5069+7R1
+         rduWrpstESk8Ys2ePBx5901KqS+WVTIx/XldIzD1SOQsNruCxxdVCgLkfNP4YP5XxZsI
+         cPqBjVJoUs113sCEzHtPLJC0TA9gwipEj6gqXul8A7BetF2hs3aW7oGfB8EoMb28vPji
+         twx7jrBJGBiRRPcxdZ3inFObSBAEFh0BDav2KGPbg4+XaFmr2cjbT7BDS6gHd8MkOLE4
+         4Dbw==
+X-Gm-Message-State: AOJu0Ywi+PX9NEGWgGlldqFFX0houBwPYpp647S8hbtItQn8rt8FYKHG
+	nGTWfCjr47E6298lyVMG3qowIZ/O43maKaGTf4UUh+65Dz05qHKN
+X-Google-Smtp-Source: AGHT+IEj9kMOOz+9SCiW2EFu9sHCzGgG9Bm0j5cHeHsr2RTAMIxEm31fZoadkKxBZYvSGCiyk91YUA==
+X-Received: by 2002:ac8:5b8e:0:b0:42a:b06e:84db with SMTP id a14-20020ac85b8e000000b0042ab06e84dbmr4152150qta.12.1706758038978;
+        Wed, 31 Jan 2024 19:27:18 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCVpTlPL6phPPb+F7RFeSGIoQuPnkjXlvQfb8HqNdJ4jYPm8PVJUa5m61jo4k8SE//F5PoXQ9pjMADDhOYjImRj7nPzH6C+CP/IZlAXFJErzvq9Cn4P9AJnw9bJrQLV+5hPiGvzPi8hIzSn2jw4uMdlpiLcZprTyFgza/bHExC9KacugdVAr2VgE9Jr8syfRmjKd+sQbYHjGkQqbk9EyBLNLUO6wJdXslBVnwylTsXzqERmmlhXtFReTgf9H/LotUrDhimvCmWTOApBUNkdoZ4gX9KpIXYPZm1s1rItuELqRfqGSLs/8Uo0ANL3ejopexusS8dJ0gLbMPeNP3iMtrdh5TX2dWG5kx90G4cQ79KdTGXf/ck0K
+Received: from localhost (fwdproxy-nao-001.fbsv.net. [2a03:2880:23ff:1::face:b00c])
+        by smtp.gmail.com with ESMTPSA id eh10-20020a05622a578a00b0042a40e3ca9fsm3941273qtb.85.2024.01.31.19.27.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 19:27:18 -0800 (PST)
+From: Nhat Pham <nphamcs@gmail.com>
+To: akpm@linux-foundation.org
+Cc: riel@surriel.com,
+	shuah@kernel.org,
+	hannes@cmpxchg.org,
+	yosryahmed@google.com,
+	tj@kernel.org,
+	lizefan.x@bytedance.com,
+	linux-mm@kvack.org,
+	kernel-team@meta.com,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH v2 0/3] fix and extend zswap kselftests
+Date: Wed, 31 Jan 2024 19:27:15 -0800
+Message-Id: <20240201032718.1968208-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -52,52 +89,33 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v4 0/3] Annotate kfuncs in .BTF_ids section
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170673242899.4502.6917209613478941432.git-patchwork-notify@kernel.org>
-Date: Wed, 31 Jan 2024 20:20:28 +0000
-References: <cover.1706491398.git.dxu@dxuuu.xyz>
-In-Reply-To: <cover.1706491398.git.dxu@dxuuu.xyz>
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: linux-trace-kernel@vger.kernel.org, coreteam@netfilter.org,
- bpf@vger.kernel.org, linux-input@vger.kernel.org, cgroups@vger.kernel.org,
- netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
- fsverity@lists.linux.dev, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, netfilter-devel@vger.kernel.org,
- alexei.starovoitov@gmail.com, olsajiri@gmail.com, quentin@isovalent.com,
- alan.maguire@oracle.com, memxor@gmail.com
 
-Hello:
+Changelog:
+v2:
+	* Make the swapin test also checks for zswap usage (patch 3)
+	  (suggested by Yosry Ahmed)
+	* Some test simplifications/cleanups (patch 3)
+	  (suggested by Yosry Ahmed).
 
-This series was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
+Fix a broken zswap kselftest due to cgroup zswap writeback counter
+renaming, and add 2 zswap kselftests, one to cover the (z)swapin case,
+and another to check that no zswapping happens when the cgroup limit is
+0.
 
-On Sun, 28 Jan 2024 18:24:05 -0700 you wrote:
-> === Description ===
-> 
-> This is a bpf-treewide change that annotates all kfuncs as such inside
-> .BTF_ids. This annotation eventually allows us to automatically generate
-> kfunc prototypes from bpftool.
-> 
-> We store this metadata inside a yet-unused flags field inside struct
-> btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
-> 
-> [...]
+Also, add the zswap kselftest file to zswap maintainer entry so that
+get_maintainers script can find zswap maintainers.
 
-Here is the summary with links:
-  - [bpf-next,v4,1/3] bpf: btf: Support flags for BTF_SET8 sets
-    https://git.kernel.org/bpf/bpf-next/c/79b47344bbc5
-  - [bpf-next,v4,2/3] bpf: btf: Add BTF_KFUNCS_START/END macro pair
-    https://git.kernel.org/bpf/bpf-next/c/2747e0ee57c2
-  - [bpf-next,v4,3/3] bpf: treewide: Annotate BPF kfuncs in BTF
-    https://git.kernel.org/bpf/bpf-next/c/6e7769e6419f
+Nhat Pham (3):
+  selftests: zswap: add zswap selftest file to zswap maintainer entry
+  selftests: fix the zswap invasive shrink test
+  selftests: add zswapin and no zswap tests
 
-You are awesome, thank you!
+ MAINTAINERS                                 |  1 +
+ tools/testing/selftests/cgroup/test_zswap.c | 99 ++++++++++++++++++++-
+ 2 files changed, 99 insertions(+), 1 deletion(-)
+
+
+base-commit: 3a92c45e4ba694381c46994f3fde0d8544a2088b
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+2.39.3
 
