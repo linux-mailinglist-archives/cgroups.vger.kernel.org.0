@@ -1,140 +1,131 @@
-Return-Path: <cgroups+bounces-1322-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1323-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05B7E847C62
-	for <lists+cgroups@lfdr.de>; Fri,  2 Feb 2024 23:39:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CBA0847C6B
+	for <lists+cgroups@lfdr.de>; Fri,  2 Feb 2024 23:41:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 591041F25EEB
-	for <lists+cgroups@lfdr.de>; Fri,  2 Feb 2024 22:39:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7055B259C9
+	for <lists+cgroups@lfdr.de>; Fri,  2 Feb 2024 22:41:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBDCA126F27;
-	Fri,  2 Feb 2024 22:39:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DD2A8595D;
+	Fri,  2 Feb 2024 22:41:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="o00Pc3vh";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LvzGCXdz"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="KWtg7Ex0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C3A85933;
-	Fri,  2 Feb 2024 22:39:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4616D83A14
+	for <cgroups@vger.kernel.org>; Fri,  2 Feb 2024 22:41:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706913578; cv=none; b=VJgPOowh6QO8vWmUsLrKEirbahd3K9pSWqvGueO5JKXBBik2nOWA1pDk9tfhXCiCw97EpRhyRIBA1f6TpxV657u1OAOYfSZHfTTXr50JqUkLYI/WLYmkkGfa2EPlzx0RVm/bqoHIgY/xyE2YrqxgKfpPtimKVSula4K/uLBhO1M=
+	t=1706913687; cv=none; b=Xy1TYW4yK6evBumQrYYmJgUAIo7HcpALvzX35h8mIH/skWNZ7Tk9XD5LPbIX0F2gNGtr1Wu0WVfWkNk5+8Hhu141YodGvOS3sGO9uW/f4GBTg//f/e3ERgsjCTt7YjfbjOVUtzOaOIda8ynCS5tDtGF/r06lvV/DlkND0cGGbio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706913578; c=relaxed/simple;
-	bh=bCfFQwrE4UL1PKl+LeclfJETuW45xBZgfwbXOew24q8=;
+	s=arc-20240116; t=1706913687; c=relaxed/simple;
+	bh=IEZ+Nc8EucSRu9Eu3hl0AOl89SOH+36zLs8bdUcKiKs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nMQM4UzZcIDug9KYaZGtb8/v5ml92l5WPgsAowbyzTAMQ2lSToiqBNTGwhxQqXm3c4x5DiRkF2CL4k0grqOWS0pqNZpx9mBJHPC7jGuSr/OO2K8uZ/qT/hOFpQ5pRKg3A7/yGhwQGbZAg/CyFrgElWuUxOki+U+usGLnuU8/H4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=o00Pc3vh; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=LvzGCXdz; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E9BE31F7A1;
-	Fri,  2 Feb 2024 22:39:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706913572; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bCfFQwrE4UL1PKl+LeclfJETuW45xBZgfwbXOew24q8=;
-	b=o00Pc3vhT/8ojuKDWrSL4FR8mVTZgyFICtMOAhjKvC/laJcrnSTqF/WbWFfrUQdYM60ZA5
-	iCs0SjDYquSjs6tn55Gkrys8NF5yNZuxmq8wqLBuj/MI0VGGfBMIqEddWXffAV4Jg9QvRR
-	CRAAEuDaj5XW016PgvnhSmuRcrIsfhk=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1706913571; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bCfFQwrE4UL1PKl+LeclfJETuW45xBZgfwbXOew24q8=;
-	b=LvzGCXdznaw+pWLdKAHRAavGrwObeHlndQqMfus2+pnPxZPoYNDhF3c87fCd/xoisedgfh
-	wHfQRTzglfyboLQHsqkZSje4OuPVvAEuJKGyUQbV4pAqHJ7zAUvNdOHmd2MV0DbrMpk4Xj
-	Q8bqes4dlFs3/XNWDYSSILAbLslIXu0=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B62CA13A58;
-	Fri,  2 Feb 2024 22:39:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Wz88KyNvvWUsEwAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Fri, 02 Feb 2024 22:39:31 +0000
-Date: Fri, 2 Feb 2024 23:39:30 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, android-mm@google.com, 
-	Minchan Kim <minchan@google.com>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH v2] mm: memcg: Don't periodically flush stats when
- memcg is disabled
-Message-ID: <rlm36iypckvxol2edyr25jyo4imvlidtepbcjdaa2ouvwh3wjq@pqyuk3v2jesb>
-References: <20240126211927.1171338-1-tjmercier@google.com>
- <ufczw2a3urgi6pi6apzkic5zgquxy2mxls6g2tjfjjkttk3tni@yowqxhlqkz56>
- <CABdmKX1b2GjrUmgTEq+tgwdYyqp_2qhs1G5AHBeKCNSfdbO8Eg@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WMvF2LLl+pzmnHtkwPfFMMN+yE60ahb+MUOcOiBAJ5vQIpuVaaTQvQAQZ+MT8PyYThaUDsyQi2mP34Nkrk5TEvoOU17YVE7J2pg+cu3YYUalUwC5qgTnpPZs+WOl/ry6DrER3N3azoj+MPKpsSPqUGYXrEvk2hbPLbNfGOr14SY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=KWtg7Ex0; arc=none smtp.client-ip=209.85.219.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-680b1335af6so32356676d6.1
+        for <cgroups@vger.kernel.org>; Fri, 02 Feb 2024 14:41:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1706913683; x=1707518483; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=TN/MFntii2sGtHOWJtEU34VYQvygXApI1VfgAn1sM3I=;
+        b=KWtg7Ex0KNWBMTATm4G/Bd3AV4lTTI2ZoTA09vyMhEhPvRBjTOSjiETZO7AfDgmead
+         GLud/GxGXX7vlLnz2iGxmaTaSpyoW8nVPPqYC1kmr0Nxq3oygamZPr8a2BAKKFZRigHh
+         uTF82ITept6/XWybPs99vFj0s3wz+8adazM5xze9wb3B07BKG1EuempT5q0/RRBcLAHT
+         Wa1Wgu0mx+asd1qOP/EkKFMo3FmUQ16N2hC+h1mVmziATXGPe5+0WmSGfVUYCzrZBW8k
+         lavxZGZlZAAQBkAVLPyaWgPlZpgmrdMgVwl0Jf+PvX8jnG9aXuBa6JEmAt53G5epNGjP
+         tDCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706913683; x=1707518483;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TN/MFntii2sGtHOWJtEU34VYQvygXApI1VfgAn1sM3I=;
+        b=ZpI7RGlXBxWjXeckm9d/wZHmTsFfERRaqlpJ1uhnwItAhMk8flYmamYekEitvew9Pi
+         Zcir4Zlg47Q9J+fAeW6lpCDLe5PgBFXrkdN5vwjwPGeaSKkdIxzI/TdjFnCQQZQhLUYe
+         kXl57Sy+k1scVQRlDwa1vZCotjmRH/9Wo+tjR+5vPY5Io5CZ2FWEU1sqNoiXz2Nl7YjQ
+         Sl9+DWxZJFjKuiB5dNm+df2+SvVKM4HdWh2/0sihEs9sna4rjL/veppSDAKPUQQzk5FJ
+         8xdQZkJACWtvarylGShwxIN4KwymhGXBpzYMB1VCHUF8e5XiuzTyrVCTpG94wv+sxkdT
+         We7A==
+X-Gm-Message-State: AOJu0YzBtF9zzDb7RlAtqwj5y/yTzbFJRK3ZjqricRhsow1SNllIvq3L
+	fdsHAOGB65CFf6SKUHuIE3QOx5iTDnA1f6flU9Y8g8MvC7sJE3BZz6hpYj3hfIw=
+X-Google-Smtp-Source: AGHT+IFLtRQYT2Z/5m6+iLpanPS2x7zIBRaj9Bd9wy7efYS0sCiA8TlEtuF7MnxBC+vxylljcXB5wA==
+X-Received: by 2002:a05:6214:7f0:b0:68c:8266:32e6 with SMTP id bp16-20020a05621407f000b0068c826632e6mr36083qvb.22.1706913682992;
+        Fri, 02 Feb 2024 14:41:22 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCX4bWvYAwUQZC6rHbZggqmXwNlF8A8uqOOd7ksYY2NMdBx0z09rVQSuT2l9M1pmbaeyFfYGVf3rG81eK51QwwlptZAV59nVNqYjWn5Vab9Eu7phEt3j5kkc5EhwoJ0zJ3YUUxb0iK4141MzksdO3SdDx31lCIy/Z7weoTBOhLzujWgKuvLBmzG1VOUYm0avgbZblW9FgN5Qg0qgtZVCgpSOEuKzWEKxPnTrSR0+iRjZnMIGzVt4co+4pH9IRVc6P6GHtwTb7CB+hLi5ZRCx3vfikIgF1FryOMXH7bRjBl8rlaP5pLNi24AkCOKoJNuMcOSJWU+Z+ceA1RSJAsUio19r/UwAkf1xlE09OGkAsHHPjLRVJbBFCDHK89PVIgf/K1FjHz0zfthh3M9jtoYqIz9mj5r8yCFBbJlq8g+i3HuJdslKhg==
+Received: from localhost ([2600:380:8c43:7b07:78d7:9d13:1945:dc14])
+        by smtp.gmail.com with ESMTPSA id qm18-20020a056214569200b0068c67e305edsm1207270qvb.49.2024.02.02.14.41.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 14:41:22 -0800 (PST)
+Date: Fri, 2 Feb 2024 17:41:17 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: "T.J. Mercier" <tjmercier@google.com>, Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com,
+	yuzhao@google.com, mkoutny@suse.com, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm: memcg: Use larger batches for proactive reclaim
+Message-ID: <20240202224117.GA341862@cmpxchg.org>
+References: <20240202221026.1055122-1-tjmercier@google.com>
+ <CAJD7tkZh=M58Avfwx_D+UEXy6mm18Zx_hVKn8Gb8-+8-JQQfWw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CABdmKX1b2GjrUmgTEq+tgwdYyqp_2qhs1G5AHBeKCNSfdbO8Eg@mail.gmail.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=LvzGCXdz
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.07 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.06)[61.75%]
-X-Spam-Score: -1.07
-X-Rspamd-Queue-Id: E9BE31F7A1
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkZh=M58Avfwx_D+UEXy6mm18Zx_hVKn8Gb8-+8-JQQfWw@mail.gmail.com>
 
-On Thu, Feb 01, 2024 at 01:02:04PM -0800, "T.J. Mercier" <tjmercier@google.com> wrote:
-> It does blow up, but not how I was expecting. There's a null pointer
-> dereference inside find_css_set when trying to get a css pointer for
-> the memory controller, I think because the allocation in
-> cgroup_init_subsys is skipped:
+On Fri, Feb 02, 2024 at 02:13:20PM -0800, Yosry Ahmed wrote:
+> On Fri, Feb 2, 2024 at 2:10 PM T.J. Mercier <tjmercier@google.com> wrote:
+> > @@ -6965,6 +6965,9 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+> >         while (nr_reclaimed < nr_to_reclaim) {
+> >                 unsigned long reclaimed;
+> >
+> > +               /* Will converge on zero, but reclaim enforces a minimum */
+> > +               unsigned long batch_size = (nr_to_reclaim - nr_reclaimed) / 4;
+> > +
+> >                 if (signal_pending(current))
+> >                         return -EINTR;
+> >
+> > @@ -6977,7 +6980,7 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+> >                         lru_add_drain_all();
+> >
+> >                 reclaimed = try_to_free_mem_cgroup_pages(memcg,
+> > -                                       min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
+> > +                                       batch_size,
+> >                                         GFP_KERNEL, reclaim_options);
+> 
+> I think the above two lines should now fit into one.
 
-Thanks for trying! I suspected it won't be easy. At the same time I
-suspected there must be a hook for your purpose -- after looking at
-cpuset, I was reminded of cgroup_subsys.bind callback.
-What about triggering periodic flush in that callback? (memcg doesn't
-implement it yet but cgroup_init() takes it into account.)
-It would take any dwork activation out of mem_cgroup_css_online() and it
-seems cleaner. (Ideally, the flush could be disabled again when memcg
-root is unmounted again. (That's impossible and practically unused but
-that's why consider callback approach cleaner. Of course, your original
-guard serves the purpose too.))
+Yeah might as well compact that again. The newline in the declarations
+is a bit unusual for this codebase as well, and puts the comment sort
+of away from the "reclaim" it refers to. This?
 
-Regards,
-Michal
+		/* Will converge on zero, but reclaim enforces a minimum */
+		batch_size = (nr_to_reclaim - nr_reclaimed) / 4;
+
+		reclaimed = try_to_free_mem_cgroup_pages(memcg, batch_size,
+					GFP_KERNEL, reclaim_options);
+
+But agreed, it's all just nitpickety nickpicking. :)
+
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
