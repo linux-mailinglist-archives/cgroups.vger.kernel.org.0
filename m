@@ -1,153 +1,141 @@
-Return-Path: <cgroups+bounces-1315-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1316-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D3D9847754
-	for <lists+cgroups@lfdr.de>; Fri,  2 Feb 2024 19:25:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C7398479E0
+	for <lists+cgroups@lfdr.de>; Fri,  2 Feb 2024 20:47:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64BE21C20CC4
-	for <lists+cgroups@lfdr.de>; Fri,  2 Feb 2024 18:25:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D10C2884AC
+	for <lists+cgroups@lfdr.de>; Fri,  2 Feb 2024 19:47:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E9B8152E1D;
-	Fri,  2 Feb 2024 18:22:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3973280608;
+	Fri,  2 Feb 2024 19:47:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="F9OZVisQ"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KZhG4cPm";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KZhG4cPm"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B9AC152DFD
-	for <cgroups@vger.kernel.org>; Fri,  2 Feb 2024 18:22:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F67980600;
+	Fri,  2 Feb 2024 19:46:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706898169; cv=none; b=rZ7rfI8le04Hg6iqb1I9DHjoHvB32K9wAanb1pZCphrHYSUlA8YJq/yh4NdKFMm53Yo0KQgx3wemsYIxGIqmpeIwwl7+ef47JqWi993YKz+NcJjcGqle8t3FfGNTICaovv/UQ7XjhoPsKvbCQeNeWFkKegxfsSvigx3/l+Pie4Y=
+	t=1706903221; cv=none; b=ESxnsynj6Sm+W+OeU9K5p78afWpO0nyoecum/KUwbJb6R9pxR6MkxZyed00+PIosArmpDeZwRuZmW3C6PzZcJzPsTCRH19ztCJzi8nDiBxzRqpz/umiBsmFbsJx4JL8MzEvsSyFX03xyRhOyeRFvycvwjC+0VJzJ93YIXoJ+IFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706898169; c=relaxed/simple;
-	bh=5ZVyar9au3uXcBd6Rum3RbOscF4rzj84T3kzSFo1sFE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cUgMNhQY9DuejcbhFj3N6MNs4wM6KhKPLVmPsZiOG+FT7s6vqO1M5wOUFCOP0o9ANdZCOl60addaaHvhirml1qB555m0k+Z/OTt0a9DCiukV/7z13Hf3f8vVnSFZQgq+crTO/Gm4ndi7no4Y9flO6BEILysMd3o6QqvJTVyuDzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=F9OZVisQ; arc=none smtp.client-ip=209.85.210.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6e117e0fee8so1264929a34.2
-        for <cgroups@vger.kernel.org>; Fri, 02 Feb 2024 10:22:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706898166; x=1707502966; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5Vgtnno6wkR+VkAzje/RiytvB0nk1FOGbedoxkxlBHI=;
-        b=F9OZVisQvYwJkT+o0qAZ3HXBOa+MH3FfmmRCmb3deMbyH3bwvfgZUv6+TZs72q7ACg
-         wJQhHs+WCyLJBQ9pr++aMhtwqB1YPIevYaMG5RLwWRV5aJSroVXjXNw9eqCgMksZDRDT
-         f3sygMXu33s46AmUQ3mHConxZo8hg7w5p8FykMMXbfDM8uoIpb0Nl3LTSMixkHjKYp4p
-         ZDuv1QnOfYC1LZFkSW5NvIQxmdHFEN1Zk3E7DX6SSnB+fXRXmbA34/DFdtnWfI5OnOsN
-         CJPTW1hSi30EVOt68O5yhC/PPp5t7cHjbWGVccsd7XPpfLCYu1ZvLtwl3YkxHdUgwGde
-         TwXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706898166; x=1707502966;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5Vgtnno6wkR+VkAzje/RiytvB0nk1FOGbedoxkxlBHI=;
-        b=bH2FAUVulyon4Ir/2qmi+6AtKJGFTdc+0b3hFZfy36GxGarMMpBUhT/TWT2uJJb/dX
-         mj5WJCzhF7IrDDMHZX9Nmw1UHeGFRxc6PoN26Et+dp4lKQAF6h9if7La+YdemfFVmN1d
-         HQAj41jx+nL/5KAeku09xdYeBpuu6THtK/h8J4uywS7KE9kyXvfkPHatP/OnjIIT8QBU
-         ldYg39/z10P32qmFlbSM/KybFvi1HkzjCaXFNL2+wdrVbhwqWlG7eCqgasDXvOptjKOH
-         5kpc2UTax5kvMtUKk9hGvhNfZ4XdWh1+v+U36tfScmmDYLI+FvHSUCXCvpzTosLA6Y61
-         yvnQ==
-X-Gm-Message-State: AOJu0Yw9q1Jtc/0JZyb9w/wSAVyDKDgUfb5eW/Ztkge0izLc/BEIEvKu
-	pk2mMCEFieOHJ9RBvGwkSE09VwxrlEYFVv2ApBBNF36OTK06WiAjmhWEeYn0KQdvAgB2vme+fZj
-	j6JBthmEOixbP0mUWOEejARTFUIVXusSedNfC
-X-Google-Smtp-Source: AGHT+IGcU+EKjFdt3AgFAbkSPSfwDQmkDe3lffsGg4gSwfWzSHPSCNHR2D8ZEri2mw0YLTGlB0gcT19xB71Pgzgw4qk=
-X-Received: by 2002:a9d:7302:0:b0:6dd:ecaa:3aea with SMTP id
- e2-20020a9d7302000000b006ddecaa3aeamr10041878otk.1.1706898166366; Fri, 02 Feb
- 2024 10:22:46 -0800 (PST)
+	s=arc-20240116; t=1706903221; c=relaxed/simple;
+	bh=/K/q1pAHfeWX2TgaZYj9FVR8OkRJYUi+zBTaXcCAwak=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BMC0TaWvw72rD4t5iV7EcL520LcHDGADzGS0ZlZgUssi8fSiVdaaXM34W7lMDh0cGNwI5IAOyaHauzIwskc3dYOgiMr+Lm4c7uSlhKMZ8PpdoIxOYvWyrQRQnCXYzvBSl6N8yHLnuyUk/fxPiRIIibqZbPgoeNKQrSrTq5g2ILg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KZhG4cPm; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KZhG4cPm; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from blackpad (unknown [10.100.12.75])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 25C80220CA;
+	Fri,  2 Feb 2024 19:46:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706903217; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/K/q1pAHfeWX2TgaZYj9FVR8OkRJYUi+zBTaXcCAwak=;
+	b=KZhG4cPm+x8iqhu3SDSqCd1O8OkNf4/Y9/+dkIVjBoo62GL+dcYLip/E0uO21QVnf2GR3H
+	FiGOvWS20IQuzbXbQDUA4fVAKl0S4lWQh0IXWx2WpsTKiEBJjrbKJZW16ggJjWRASKc+NC
+	3R6Dp5uimqKb8VzZvtytrXR+B/OWCr0=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1706903217; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/K/q1pAHfeWX2TgaZYj9FVR8OkRJYUi+zBTaXcCAwak=;
+	b=KZhG4cPm+x8iqhu3SDSqCd1O8OkNf4/Y9/+dkIVjBoo62GL+dcYLip/E0uO21QVnf2GR3H
+	FiGOvWS20IQuzbXbQDUA4fVAKl0S4lWQh0IXWx2WpsTKiEBJjrbKJZW16ggJjWRASKc+NC
+	3R6Dp5uimqKb8VzZvtytrXR+B/OWCr0=
+Date: Fri, 2 Feb 2024 20:46:56 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Efly Young <yangyifei03@kuaishou.com>, hannes@cmpxchg.org, 
+	akpm@linux-foundation.org, android-mm@google.com, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, 
+	roman.gushchin@linux.dev, shakeelb@google.com, yuzhao@google.com
+Subject: Re: Re: Re: [PATCH] mm: memcg: Use larger chunks for proactive
+ reclaim
+Message-ID: <bycpbzvo2fpd2qrrl7ipnzrsyun7hg5tjlqouafuosxxlxfml5@vpbl6kl74hx5>
+References: <20240201153428.GA307226@cmpxchg.org>
+ <20240202050247.45167-1-yangyifei03@kuaishou.com>
+ <vofidz4pzybyxoozjrmuqhycm2aji6inp6lkgd3fakyv5jqsjr@pleoj7ljsxhi>
+ <CABdmKX2KsxVExVWzysc_fQagGkYWhqRF00KxNxjpVWovHHip+Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201153428.GA307226@cmpxchg.org> <20240202050247.45167-1-yangyifei03@kuaishou.com>
- <vofidz4pzybyxoozjrmuqhycm2aji6inp6lkgd3fakyv5jqsjr@pleoj7ljsxhi>
-In-Reply-To: <vofidz4pzybyxoozjrmuqhycm2aji6inp6lkgd3fakyv5jqsjr@pleoj7ljsxhi>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Fri, 2 Feb 2024 10:22:34 -0800
-Message-ID: <CABdmKX2KsxVExVWzysc_fQagGkYWhqRF00KxNxjpVWovHHip+Q@mail.gmail.com>
-Subject: Re: Re: [PATCH] mm: memcg: Use larger chunks for proactive reclaim
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Efly Young <yangyifei03@kuaishou.com>, hannes@cmpxchg.org, akpm@linux-foundation.org, 
-	android-mm@google.com, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, 
-	roman.gushchin@linux.dev, shakeelb@google.com, yuzhao@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gwdtcq3kwf5cetlv"
+Content-Disposition: inline
+In-Reply-To: <CABdmKX2KsxVExVWzysc_fQagGkYWhqRF00KxNxjpVWovHHip+Q@mail.gmail.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [-1.88 / 50.00];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 SIGNED_PGP(-2.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_COUNT_ZERO(0.00)[0];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 BAYES_HAM(-0.18)[70.38%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -1.88
+
+
+--gwdtcq3kwf5cetlv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 2, 2024 at 2:15=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.com=
-> wrote:
->
-> On Fri, Feb 02, 2024 at 01:02:47PM +0800, Efly Young <yangyifei03@kuaisho=
-u.com> wrote:
-> > > Looking at the code, I'm not quite sure if this can be read this
-> > > literally. Efly might be able to elaborate, but we do a full loop of
-> > > all nodes and cgroups in the tree before checking nr_to_reclaimed, an=
-d
-> > > rely on priority level for granularity. So request size and complexit=
-y
-> > > of the cgroup tree play a role. I don't know where the exact factor
-> > > two would come from.
-> >
-> > I'm sorry that this conclusion may be arbitrary. It might just only sui=
-t
-> > for my case. In my case, I traced it loop twice every time before check=
-ing
-> > nr_reclaimed, and it reclaimed less than my request size(1G) every time=
-.
-> > So I think the upper bound is 2 * request. But now it seems that this i=
-s
-> > related to cgroup tree I constucted and my system status and my request
-> > size(a relatively large chunk). So there are many influencing factors,
-> > a specific upper bound is not accurate.
->
-> Alright, thanks for the background.
->
-> > > IMO it's more accurate to phrase it like this:
-> > >
-> > > Reclaim tries to balance nr_to_reclaim fidelity with fairness across
-> > > nodes and cgroups over which the pages are spread. As such, the bigge=
-r
-> > > the request, the bigger the absolute overreclaim error. Historic
-> > > in-kernel users of reclaim have used fixed, small request batches to
-> > > approach an appropriate reclaim rate over time. When we reclaim a use=
-r
-> > > request of arbitrary size, use decaying batches to manage error while
-> > > maintaining reasonable throughput.
->
-> Hm, decay...
-> So shouldn't the formula be
->   nr_pages =3D delta <=3D SWAP_CLUSTER_MAX ? delta : (delta + 3*SWAP_CLUS=
-TER_MAX) / 4
-> where
->   delta =3D nr_to_reclaim - nr_reclaimed
-> ?
-> (So that convergence for smaller deltas is same like original- and other
-> reclaims while conservative factor is applied for effectivity of higher
-> user requests.)
+On Fri, Feb 02, 2024 at 10:22:34AM -0800, "T.J. Mercier" <tjmercier@google.=
+com> wrote:
+> So all of these should be more or less equivalent:
+> delta <=3D SWAP_CLUSTER_MAX ? delta : (delta + 3*SWAP_CLUSTER_MAX) / 4
+> max((nr_to_reclaim - nr_reclaimed) / 4, (nr_to_reclaim - nr_reclaimed) % =
+4)
+> (nr_to_reclaim - nr_reclaimed) / 4 + 4
+> (nr_to_reclaim - nr_reclaimed) / 4
+>=20
+> I was just trying to avoid putting in a 0 for the request size with the m=
+od.
 
-Tapering out at 32 instead of 4 doesn't make much difference in
-practice because of how far off the actually reclaimed amount can be
-from the request size. We're talking thousands of pages of error for a
-request size of a few megs, and hundreds of pages of error for
-requests less than 100 pages.
+The third variant would be simpler then. Modulo looks weird.
 
-So all of these should be more or less equivalent:
-delta <=3D SWAP_CLUSTER_MAX ? delta : (delta + 3*SWAP_CLUSTER_MAX) / 4
-max((nr_to_reclaim - nr_reclaimed) / 4, (nr_to_reclaim - nr_reclaimed) % 4)
-(nr_to_reclaim - nr_reclaimed) / 4 + 4
-(nr_to_reclaim - nr_reclaimed) / 4
+Oh, and I just realized that try_to_free_mem_cgroup_pages() does
+max(nr_pages, SWAP_CLUSTER_MAX). Then I'd vote for the fourth variant +
+possible comment about harmless 0.
+(I'm sorry if this was discussed before.)
 
-I was just trying to avoid putting in a 0 for the request size with the mod=
-.
+Michal
+
+--gwdtcq3kwf5cetlv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZb1GrgAKCRAGvrMr/1gc
+jpaqAP9PQEKb5U00/7EvIWgO4mSe3xgJFzSEakWK6ZzZcedHxQD7Br+GIkc1yt7s
+uBEhvGPzYvygslFDhyZVTQXlOueoaAs=
+=ArmI
+-----END PGP SIGNATURE-----
+
+--gwdtcq3kwf5cetlv--
 
