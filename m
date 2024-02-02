@@ -1,296 +1,156 @@
-Return-Path: <cgroups+bounces-1325-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1326-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B00DC847CED
-	for <lists+cgroups@lfdr.de>; Sat,  3 Feb 2024 00:09:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DE07847D3A
+	for <lists+cgroups@lfdr.de>; Sat,  3 Feb 2024 00:39:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66D88289D32
-	for <lists+cgroups@lfdr.de>; Fri,  2 Feb 2024 23:09:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 629BE1C216E5
+	for <lists+cgroups@lfdr.de>; Fri,  2 Feb 2024 23:39:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA15712C7F9;
-	Fri,  2 Feb 2024 23:09:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5128712D74B;
+	Fri,  2 Feb 2024 23:39:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Oti5Grmb"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MA6NxgHm"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1D1126F2E;
-	Fri,  2 Feb 2024 23:09:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E3F812D742
+	for <cgroups@vger.kernel.org>; Fri,  2 Feb 2024 23:39:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706915351; cv=none; b=RY/cVo60Sf2Y2iHg0xmQHW/6f4QxcvXdC7JlWs2htcRikVL4Y1mU2j3jP95bnPBjDi3P2Ru1yW6nIvpzX0/mpsXJ8KFUfc3bVHdPtxOrppLSCDYtUjtzQ1RfSb8qBfOiciJ/+BJdrCC38pI2PmyEYkt3W4LNQ88WZj2ZYaVKKpA=
+	t=1706917155; cv=none; b=sZAkoOMadjIED9yg/fLlNCeHfzRZ2VO6fDgMWoEwaufcVy84DqKtkITWGhvcLYzl8thAVVB3v9FE2xrZLbvpNUEHINDtZVp6CYSKT/2Ej5dsUFnFwPLZInXoAuyomeJ1foFYV5pLcEie1jhWH9NLKOFWvHBk7o6QTvweQyR6pi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706915351; c=relaxed/simple;
-	bh=Wo7+jDfk5sZHf8MlrGXUXrmEpHHugcRqmAit0yROqao=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SAk5EXHev6d39bB0XVN6DpaLApfwzIgpZk4fKpGuQhiAWLmGQqgNCUlr0MlKDKv9/AZaZPwvIo8/S1/2u3aq+QKykL91aZAiWKe3X7EeRvJj3KX8PLzJSIUOHKwzt6EfJwZdRPyulMbiLx8WqUN9gvXgWwAmxnx7w4VhAq6YOtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Oti5Grmb; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d73066880eso22707665ad.3;
-        Fri, 02 Feb 2024 15:09:09 -0800 (PST)
+	s=arc-20240116; t=1706917155; c=relaxed/simple;
+	bh=b/a8qvwV9kIhW3YeFIwfOR6mUCUXJlmI3P0+Ee2g9P0=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=qYPRGow6IrKQZ76eAG174cdJHYdTeICh69RuJ0QF6HfK3GJgxlj/TnmE04i+j96Xri19QZi8bjS6WaS0KM2E0+uRHOII2anbq/vX2UqbVZUzsrO78U1sEaR0JeovmESBQjm+0ctuW+Nf9hESFRvf+O0aXYeA5zf6doAeA5kykIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MA6NxgHm; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-5fc6463b0edso44588777b3.0
+        for <cgroups@vger.kernel.org>; Fri, 02 Feb 2024 15:39:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706915349; x=1707520149; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ns/bvPkKWqK4cT5hwWAJS7KQis8SRbW6Visd6BLTiUI=;
-        b=Oti5Grmb+FX3pffdtZQhqx/Tdi7NzpBBggod79wgb9rLNDFh/ZhoWUKAX6bKD/InbI
-         VtrsuECkASUfC7nwkKwB6DTR5f2CKqYw3iN44mSfTjY8UYOX3lXqtRY/ZQw2yoSC4CzH
-         znsNzQC+unksr8nEFMtHPGAbOAcU/ogQ3eE8OupkZn3f8VIU1HlX5UjsM1akkKVyUCF9
-         M2HpPPq0LYRwRXQ/7MrX812nQkLH6moptx+83fn8OGnaSuM4eSprJsKhXkFvWKyVdkU8
-         xG14TBQah2G/jpSTx2whi0E/qrWb9hChs09fE8RxEdtm1UxtoPa144Ur9RnGqe0RJpa3
-         UdzA==
+        d=google.com; s=20230601; t=1706917152; x=1707521952; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=veXaKfSzJPhWO3q5P8DCJsJwSlDKBS//G1+RUPv9jb0=;
+        b=MA6NxgHm95/FnMoo6tnArTU6LMsVmBrFv5m2lfJrsCKoq8pjMwcdwHeaLDNRMGw7fy
+         SrYVMO2v8SCIfvl7OTz2+TUCJu5qUyS5/ZSE5mYALe7mUN0ahLrvVhGcmm7z+r8ENPwQ
+         G5TEtajy8+pTlX0NIvyn3dqfpslI37FRNtRiIaXjG9R7Q1xGepKBKAW3PfHcn5fa1OCm
+         bxVQUPata8/ZxWCRFSQ4h/+xwgoqW3vpIGxSkxAANNvbBYmTrk1Yk5BJUeMkMmdmVuwt
+         VxW99H6ZWl+BWtCePQBZ/6mHoMmsbHHdzv6deO/Tk9K5xm1dsHxm2kkfP0HEKnvryLcy
+         UXBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706915349; x=1707520149;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1706917152; x=1707521952;
+        h=content-transfer-encoding:cc:to:from:subject:message-id
+         :mime-version:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ns/bvPkKWqK4cT5hwWAJS7KQis8SRbW6Visd6BLTiUI=;
-        b=IIyZAwUD6hrnLwWowj7TCQj3ka+HjAeIK1BCcIjbDWYspeqktsVDEAFXmDtKa5uFJC
-         BfCMMUNp9HdM4McEsB5CkNelkz/C89/ev3psbiNZmjBmVON8cgKZvxT4Gg0GPoLkXpu4
-         q3fdlkZ33B9IXd/joT4SWZ42hihXJfwmgpODzps5KIKgy4JkCeHxtcZrGbmdm716A5G3
-         4/T13wrMQOdlnV7BkQmiaegKNCZysGdtw+OQCa5PozphDv1jivUj4LibfsV5I7A5BLDG
-         lCx9KmjTT0Zr5MdSNYA2FTWE2cfb9FgLMDZTw/tcpt+0IFmhosbklTJfIlV0edZ7ra6L
-         c71g==
-X-Gm-Message-State: AOJu0YyzvhhN1H8eWGv1JoHVz9PSFJXNLlGu0t8lOJJgLWVS1nIwJi+E
-	3QncgSz2tyI8x2uCv2P+Wah4qxyUHacPmBwCxwTFws+SznUIcKbC
-X-Google-Smtp-Source: AGHT+IFxxTOrsdYhKRWr9e6jHbv8TCklGcEQIE8BSnW/BV4FuD23/hWYjE901pv5pKGyJLGFlLZjBQ==
-X-Received: by 2002:a17:902:b194:b0:1d5:c08e:52eb with SMTP id s20-20020a170902b19400b001d5c08e52ebmr8168069plr.65.1706915348583;
-        Fri, 02 Feb 2024 15:09:08 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCXh8AopKfi/YqWmfKiAwlQ/PCijITod0oFhPh7EZgbe4IqqVCTYplEzVZLk725jsEN7/jjrF3+q6jwqjZIAWgtFJwhn9qmdKmzSh1WTQWyzKIR3Vu1RR9VOQ/mVdMEOrdQtYnhjryw1mdCQexA9JgKi6G6x/jm8n0qLhDny1Uyh9vw8IV8OyRb46UVpGGduitQ9ram54QIx/Q4+QDflTEF+IDMbGP6LDutZoBqdGyGeIDaHWDuGJjeQGgpi3kWxY6Mxokz3ztlOAqOGqeQDd+PFxUQapdW8eUtWM9krlaYdDID3UIGv6Ao+xrLQWDCxkdxkdWrDdbxlfq5IiqlrLk7HA0UnJpJ4jkFfgWd75iHDEi8ZdxAD0XE06DRBlvejpEon3X1Owg03SqEYrAL6rJdyOqiuNnhveN6rok4raRhfJSFqktdoCqF5aru6yMErGbiCNxd0+0aDnqt1T1XYbEGqcirlu5DKCtQ6o6ulW7Vylya1gXBRqZMMo8UuNV9ealWnc8Uf9Vfw1XOhHZ4j41gYSibJO6X/qQ9m3wUuH/DVujlBkGxKAkVqWMc+Wc4KsIxm/EtloqOHI0LTPMMffFTsW5xMa5t9igm/5IU1NvJ0UaL1KXIbvnzxQdLod4WO3cP7eM+SLAzmpsRCYZ37BA3OS0HH2DSw/vYCAqccICCfyklhIqIq0wBZrEXbqubqWvBOtecAaQ==
-Received: from surya ([70.134.61.176])
-        by smtp.gmail.com with ESMTPSA id c9-20020a170902d48900b001d9557f6c04sm2086428plg.267.2024.02.02.15.09.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 15:09:08 -0800 (PST)
-Date: Fri, 2 Feb 2024 15:09:05 -0800
-From: Manu Bretelle <chantr4@gmail.com>
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: linux-trace-kernel@vger.kernel.org, coreteam@netfilter.org,
-	bpf@vger.kernel.org, linux-input@vger.kernel.org,
-	cgroups@vger.kernel.org, netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
-	fsverity@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	netfilter-devel@vger.kernel.org, alexei.starovoitov@gmail.com,
-	olsajiri@gmail.com, quentin@isovalent.com, alan.maguire@oracle.com,
-	memxor@gmail.com, vmalik@redhat.com
-Subject: Re: [PATCH bpf-next v4 0/3] Annotate kfuncs in .BTF_ids section
-Message-ID: <Zb12EZt0BAKOPBk/@surya>
-References: <cover.1706491398.git.dxu@dxuuu.xyz>
+        bh=veXaKfSzJPhWO3q5P8DCJsJwSlDKBS//G1+RUPv9jb0=;
+        b=Y3BBnRcuH8mVhWBBWXr4i5nFxPCTrVPLBJr5Dnh7OAqReHYLQIZFlKlJAGSzQVgbYw
+         8inedVwilLVmC20hLUSPsKaRceD3kh/RaEUdKR+wVfWVhy533Y4b6HtPLe3MCvPrOUYd
+         h/7Zyuf2Lel0eh7vu2tofvDTcATCyjcovl/LrL6HGpk71+rnDB6EbTO180E7qogbdBlv
+         2jESP2ETZohEyqrMMtZ2WK9nUCuHC5rILHWNfFKUj5q5YueX1nfaR/07DNFkLOdvSFI1
+         9+ZbvXqBtn82j+XHAQ5Wnoic1/VRl26RZr6puBdc4twFhWMjsy5bcYT1z0eTifgThOjq
+         jdUg==
+X-Gm-Message-State: AOJu0YzW/mstnu3DOwHmrYLnTQSPDB82oZJG6A4T5sxMwY11Bhcvn5oZ
+	A9QQrui/C+3YwSifUPE4RiVc5AiBVDSyGym7TNZjdtsg8Z2t3rrEPSIKMmPBNfz8H0GjZd++i5H
+	8DdEwwR0aXi0hjA==
+X-Google-Smtp-Source: AGHT+IFAHDWilRDUNp18USGdlO197DzaUkAANlq86p66ok+T+jL1OSQ36fvym0+hihK8eIJ6qbraq0B31Ub1h+M=
+X-Received: from tj-virt.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5683])
+ (user=tjmercier job=sendgmr) by 2002:a05:6902:2306:b0:dc2:5130:198f with SMTP
+ id do6-20020a056902230600b00dc25130198fmr197728ybb.5.1706917152524; Fri, 02
+ Feb 2024 15:39:12 -0800 (PST)
+Date: Fri,  2 Feb 2024 23:38:54 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1706491398.git.dxu@dxuuu.xyz>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
+Message-ID: <20240202233855.1236422-1-tjmercier@google.com>
+Subject: [PATCH v3] mm: memcg: Use larger batches for proactive reclaim
+From: "T.J. Mercier" <tjmercier@google.com>
+To: tjmercier@google.com, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Efly Young <yangyifei03@kuaishou.com>
+Cc: android-mm@google.com, yuzhao@google.com, mkoutny@suse.com, 
+	Yosry Ahmed <yosryahmed@google.com>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jan 28, 2024 at 06:24:05PM -0700, Daniel Xu wrote:
-> === Description ===
-> 
-> This is a bpf-treewide change that annotates all kfuncs as such inside
-> .BTF_ids. This annotation eventually allows us to automatically generate
-> kfunc prototypes from bpftool.
-> 
-> We store this metadata inside a yet-unused flags field inside struct
-> btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
-> 
-> More details about the full chain of events are available in commit 3's
-> description.
-> 
-> The accompanying pahole and bpftool changes can be viewed
-> here on these "frozen" branches [0][1].
-> 
-> [0]: https://github.com/danobi/pahole/tree/kfunc_btf-v3-mailed
-> [1]: https://github.com/danobi/linux/tree/kfunc_bpftool-mailed
+Before 388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactive
+reclaim") we passed the number of pages for the reclaim request directly
+to try_to_free_mem_cgroup_pages, which could lead to significant
+overreclaim. After 0388536ac291 the number of pages was limited to a
+maximum 32 (SWAP_CLUSTER_MAX) to reduce the amount of overreclaim.
+However such a small batch size caused a regression in reclaim
+performance due to many more reclaim start/stop cycles inside
+memory_reclaim.
 
+Reclaim tries to balance nr_to_reclaim fidelity with fairness across
+nodes and cgroups over which the pages are spread. As such, the bigger
+the request, the bigger the absolute overreclaim error. Historic
+in-kernel users of reclaim have used fixed, small sized requests to
+approach an appropriate reclaim rate over time. When we reclaim a user
+request of arbitrary size, use decaying batch sizes to manage error while
+maintaining reasonable throughput.
 
-I hit a similar issue to [0] on master
-943b043aeecc ("selftests/bpf: Fix bench runner SIGSEGV")
- when cross-compiling on x86_64 (LE) to s390x (BE).
-I do have CONFIG_DEBUG_INFO_BTF enable and the issue would not trigger if
-I disabled CONFIG_DEBUG_INFO_BTF (and with the fix mentioned in [0]).
+root - full reclaim       pages/sec   time (sec)
+pre-0388536ac291      :    68047        10.46
+post-0388536ac291     :    13742        inf
+(reclaim-reclaimed)/4 :    67352        10.51
 
-What seems to happen is that `tools/resolve_btfids` is ran in the context of the
-host endianess and if I printk before the WARN_ON:
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index ef380e546952..a9ed7a1a4936 100644
-  --- a/kernel/bpf/btf.c
-  +++ b/kernel/bpf/btf.c
-  @@ -8128,6 +8128,7 @@ int register_btf_kfunc_id_set(enum bpf_prog_type prog_type,
-           * WARN() for initcall registrations that do not check errors.
-           */
-          if (!(kset->set->flags & BTF_SET8_KFUNCS)) {
-  +        printk("Flag 0x%08X, expected 0x%08X\n", kset->set->flags, BTF_SET8_KFUNCS);
-                  WARN_ON(!kset->owner);
-                  return -EINVAL;
-          }
+/uid_0 - 1G reclaim       pages/sec   time (sec)  overreclaim (MiB)
+pre-0388536ac291      :    258822       1.12            107.8
+post-0388536ac291     :    105174       2.49            3.5
+(reclaim-reclaimed)/4 :    233396       1.12            -7.4
 
-the boot logs would show:
-  Flag 0x01000000, expected 0x00000001
+/uid_0 - full reclaim     pages/sec   time (sec)
+pre-0388536ac291      :    72334        7.09
+post-0388536ac291     :    38105        14.45
+(reclaim-reclaimed)/4 :    72914        6.96
 
-The issue did not happen prior to
-6f3189f38a3e ("bpf: treewide: Annotate BPF kfuncs in BTF")
-has only 0 was written before.
+Fixes: 0388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactive re=
+claim")
+Signed-off-by: T.J. Mercier <tjmercier@google.com>
+Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-It seems [1] will be addressing cross-compilation, but it did not fix it as is
-by just applying on top of master, so probably some of the changes will also need
-to be ported to `tools/include/linux/btf_ids.h`?
+---
+v3: Formatting fixes per Yosry Ahmed and Johannes Weiner. No functional
+changes.
+v2: Simplify the request size calculation per Johannes Weiner and Michal Ko=
+utn=C3=BD
 
-A hacky workaround to cross-compilation I have is to apply:
+ mm/memcontrol.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-  diff --git a/tools/bpf/resolve_btfids/Makefile b/tools/bpf/resolve_btfids/Makefile
-  index 4b8079f294f6..b706e7ab066f 100644
-  --- a/tools/bpf/resolve_btfids/Makefile
-  +++ b/tools/bpf/resolve_btfids/Makefile
-  @@ -22,10 +22,10 @@ HOST_OVERRIDES := AR="$(HOSTAR)" CC="$(HOSTCC)" LD="$(HOSTLD)" ARCH="$(HOSTARCH)
-                    CROSS_COMPILE="" EXTRA_CFLAGS="$(HOSTCFLAGS)"
-   RM      ?= rm
-  -HOSTCC  ?= gcc
-  -HOSTLD  ?= ld
-  -HOSTAR  ?= ar
-  -CROSS_COMPILE =
-  +HOSTCC  = $(CC)
-  +HOSTLD  = $(LD)
-  +HOSTAR  = $(AR)
-  +#CROSS_COMPILE =
-   OUTPUT ?= $(srctree)/tools/bpf/resolve_btfids/
-  @@ -56,16 +56,16 @@ $(OUTPUT) $(OUTPUT)/libsubcmd $(LIBBPF_OUT):
-   $(SUBCMDOBJ): fixdep FORCE | $(OUTPUT)/libsubcmd
-          $(Q)$(MAKE) -C $(SUBCMD_SRC) OUTPUT=$(SUBCMD_OUT) \
-  -                   DESTDIR=$(SUBCMD_DESTDIR) $(HOST_OVERRIDES) prefix= subdir= \
-  +                   DESTDIR=$(SUBCMD_DESTDIR) prefix= subdir= \
-                      $(abspath $@) install_headers
-   $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(LIBBPF_OUT)
-          $(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC) OUTPUT=$(LIBBPF_OUT)    \
-  -                   DESTDIR=$(LIBBPF_DESTDIR) $(HOST_OVERRIDES) prefix= subdir= \
-  +                   DESTDIR=$(LIBBPF_DESTDIR) prefix= subdir= \
-                      $(abspath $@) install_headers
-  -LIBELF_FLAGS := $(shell $(HOSTPKG_CONFIG) libelf --cflags 2>/dev/null)
-  -LIBELF_LIBS  := $(shell $(HOSTPKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
-  +LIBELF_FLAGS := $(shell $(PKG_CONFIG) libelf --cflags 2>/dev/null)
-  +LIBELF_LIBS  := $(shell $(PKG_CONFIG) libelf --libs 2>/dev/null || echo -lelf)
-   HOSTCFLAGS_resolve_btfids += -g \
-             -I$(srctree)/tools/include \
-  @@ -84,7 +84,7 @@ $(BINARY_IN): fixdep FORCE prepare | $(OUTPUT)
-   $(BINARY): $(BPFOBJ) $(SUBCMDOBJ) $(BINARY_IN)
-          $(call msg,LINK,$@)
-  -       $(Q)$(HOSTCC) $(BINARY_IN) $(KBUILD_HOSTLDFLAGS) -o $@ $(BPFOBJ) $(SUBCMDOBJ) $(LIBS)
-  +       $(Q)$(CC) $(BINARY_IN) $(KBUILD_HOSTLDFLAGS) -o $@ $(BPFOBJ) $(SUBCMDOBJ) $(LIBS)
-   clean_objects := $(wildcard $(OUTPUT)/*.o                \
-                               $(OUTPUT)/.*.o.cmd           \
-  diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-  index a38a3001527c..5cd193c04448 100644
-  --- a/tools/testing/selftests/bpf/Makefile
-  +++ b/tools/testing/selftests/bpf/Makefile
-  @@ -171,7 +171,7 @@ INCLUDE_DIR := $(SCRATCH_DIR)/include
-   BPFOBJ := $(BUILD_DIR)/libbpf/libbpf.a
-   ifneq ($(CROSS_COMPILE),)
-   HOST_BUILD_DIR         := $(BUILD_DIR)/host
-  -HOST_SCRATCH_DIR       := $(OUTPUT)/host-tools
-  +HOST_SCRATCH_DIR       := $(SCRATCH_DIR)
-   HOST_INCLUDE_DIR       := $(HOST_SCRATCH_DIR)/include
-   else
-   HOST_BUILD_DIR         := $(BUILD_DIR)
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 46d8d02114cf..f6ab61128869 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6976,9 +6976,11 @@ static ssize_t memory_reclaim(struct kernfs_open_fil=
+e *of, char *buf,
+ 		if (!nr_retries)
+ 			lru_add_drain_all();
+=20
++		/* Will converge on zero, but reclaim enforces a minimum */
++		unsigned long batch_size =3D (nr_to_reclaim - nr_reclaimed) / 4;
++
+ 		reclaimed =3D try_to_free_mem_cgroup_pages(memcg,
+-					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
+-					GFP_KERNEL, reclaim_options);
++					batch_size, GFP_KERNEL, reclaim_options);
+=20
+ 		if (!reclaimed && !nr_retries--)
+ 			return -EAGAIN;
+--=20
+2.43.0.594.gd9cf4e227d-goog
 
-This causes `resolve_btfids` to be compiled in the target endianess and gets
-magically run provided that the hosts has `qemu-s390x-static` and a functional
-binfmt_misc [2] on the host, but having this using host architecture per [1]
-is likely better.
-
-Here are steps to reproduce the issue on Ubuntu 23.10 and assuming
-danobi/vmtest [3] is installed:
-
-  XPLATFORM="s390x"
-  XARCH="s390"
-  # Set up repo for s390x
-  cat <<EOF >> /etc/apt/sources.list.d/s390x.list
-  deb [arch=s390x] http://ports.ubuntu.com/ubuntu-ports  mantic main restricted
-  deb [arch=s390x] http://ports.ubuntu.com/ubuntu-ports  mantic-updates main restricted
-  EOF
-  sudo dpkg --add-architecture s390x
-  
-  apt install qemu-system-s390x qemu-user-static g{cc,++}-"${XARCH}-linux-gnu" {libelf-dev,libssl-dev,pkgconf}:s390x
-  
-  KBUILD_OUTPUT_DIR="/tmp/kbuild-${XPLATFORM}"
-  mkdir "${KBUILD_OUTPUT_DIR}"
-  cat tools/testing/selftests/bpf/config{,.vm,.${XPLATFORM}} > ${KBUILD_OUTPUT_DIR}/.config
-  
-  make ARCH="${XARCH}" CROSS_COMPILE="${XPLATFORM}-linux-gnu-" O="${KBUILD_OUTPUT_DIR}"  -j$((4 * $(nproc))) olddefconfig
-  make ARCH="${XARCH}" CROSS_COMPILE="${XPLATFORM}-linux-gnu-" O="${KBUILD_OUTPUT_DIR}"  -j$((4 * $(nproc))) all
-  
-  # No need for a s390x ubuntu 23.10 rootfs, we only care about booting the kernel
-  vmtest -k "${KBUILD_OUTPUT_DIR}/arch/s390/boot/bzImage" -a s390x "uname -m" | cat
-
-
-For the chroot route, see [4].
-
-[0] https://lore.kernel.org/linux-kernel/20240201155339.2b5936be@canb.auug.org.au/T/
-[1] https://lore.kernel.org/bpf/cover.1706717857.git.vmalik@redhat.com/
-[2] https://en.wikipedia.org/wiki/Binfmt_misc
-[3] https://github.com/danobi/vmtest
-[4] https://chantra.github.io/bpfcitools/bpf-cross-compile.html
-
-Manu
-
-> 
-> === Changelog ===
-> 
-> Changes from v3:
-> * Rebase to bpf-next and add missing annotation on new kfunc
-> 
-> Changes from v2:
-> * Only WARN() for vmlinux kfuncs
-> 
-> Changes from v1:
-> * Move WARN_ON() up a call level
-> * Also return error when kfunc set is not properly tagged
-> * Use BTF_KFUNCS_START/END instead of flags
-> * Rename BTF_SET8_KFUNC to BTF_SET8_KFUNCS
-> 
-> Daniel Xu (3):
->   bpf: btf: Support flags for BTF_SET8 sets
->   bpf: btf: Add BTF_KFUNCS_START/END macro pair
->   bpf: treewide: Annotate BPF kfuncs in BTF
-> 
->  Documentation/bpf/kfuncs.rst                  |  8 +++----
->  drivers/hid/bpf/hid_bpf_dispatch.c            |  8 +++----
->  fs/verity/measure.c                           |  4 ++--
->  include/linux/btf_ids.h                       | 21 +++++++++++++++----
->  kernel/bpf/btf.c                              |  8 +++++++
->  kernel/bpf/cpumask.c                          |  4 ++--
->  kernel/bpf/helpers.c                          |  8 +++----
->  kernel/bpf/map_iter.c                         |  4 ++--
->  kernel/cgroup/rstat.c                         |  4 ++--
->  kernel/trace/bpf_trace.c                      |  8 +++----
->  net/bpf/test_run.c                            |  8 +++----
->  net/core/filter.c                             | 20 +++++++++---------
->  net/core/xdp.c                                |  4 ++--
->  net/ipv4/bpf_tcp_ca.c                         |  4 ++--
->  net/ipv4/fou_bpf.c                            |  4 ++--
->  net/ipv4/tcp_bbr.c                            |  4 ++--
->  net/ipv4/tcp_cubic.c                          |  4 ++--
->  net/ipv4/tcp_dctcp.c                          |  4 ++--
->  net/netfilter/nf_conntrack_bpf.c              |  4 ++--
->  net/netfilter/nf_nat_bpf.c                    |  4 ++--
->  net/xfrm/xfrm_interface_bpf.c                 |  4 ++--
->  net/xfrm/xfrm_state_bpf.c                     |  4 ++--
->  .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  8 +++----
->  23 files changed, 87 insertions(+), 66 deletions(-)
-> 
-> -- 
-> 2.42.1
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
