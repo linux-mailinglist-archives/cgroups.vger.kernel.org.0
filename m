@@ -1,59 +1,59 @@
-Return-Path: <cgroups+bounces-1312-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1313-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57C408474E5
-	for <lists+cgroups@lfdr.de>; Fri,  2 Feb 2024 17:35:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4F48847568
+	for <lists+cgroups@lfdr.de>; Fri,  2 Feb 2024 17:53:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1500D285395
-	for <lists+cgroups@lfdr.de>; Fri,  2 Feb 2024 16:35:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B667B2D82A
+	for <lists+cgroups@lfdr.de>; Fri,  2 Feb 2024 16:52:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35EC61487DD;
-	Fri,  2 Feb 2024 16:34:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD1C14A4D4;
+	Fri,  2 Feb 2024 16:52:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Cpnnbu+K"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LQCciCfU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E8057C6E9;
-	Fri,  2 Feb 2024 16:34:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C969814A4EC;
+	Fri,  2 Feb 2024 16:52:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706891676; cv=none; b=VP7LOWww4MDwugF6dCcWjEV8GaWUX3ZlQcC3MF5zgMzn4jhice5PasoZe/1uyBINxapYmPoQYyro3Bgjv6PmXZ5NLOK4afH1kUdomfVV0/24M8741u1hcSH6KtGvUP2zhMzsiDFEbDXydWagzb750pmgCfBANueBQbUAyuyBcPU=
+	t=1706892746; cv=none; b=o/NaY5058QPilt+ofBL4I7E2wEu96fKwMhjtldgiQEpm7xWDMm++EjZ4rGkFL8a0UJJna9JHPxahaB8g7CsR+SVjKuVnyQ7bI1gtH1IX5MvqN8mMVItTEh6tZHeT7PVg5tOlqvQWlvbgIAj/it1zyAy0fOsoiGGalOFIatl17ME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706891676; c=relaxed/simple;
-	bh=b2ZLcg7YJ/dyepz/uVVFTYoYTOKVDQ4haDq9y0IB7yw=;
+	s=arc-20240116; t=1706892746; c=relaxed/simple;
+	bh=HzgDzI/Ge9eFvWVgikaxYZfFSROrOdcCMT23siR2Q6o=;
 	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=q7ArQQFTjBg9dZBx3tTrnzRYNsXs3lIt60z++1BYlsFrrrKPn3W6VByF2iJTvifkmyucLkCT3A4rWtMY/P4NXAmgyogxlfYqU8FiE1E+ih5yJxz/y/NXe2CBe9YcMVz3RVHlGvMpjIcTvscJzNXIz323jRjvg8nzriDGftBajQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Cpnnbu+K; arc=none smtp.client-ip=198.175.65.10
+	 Message-ID:In-Reply-To; b=qiYSeYdsG7NMeAWcp7YGSFJtBdqDc+r4/NaLh4U3A+CAyzp9BQ4tdLIjEvdnmecbUss25/n6DYH+ZAJzD/HlA9dbXo5Uc3iePCfPH+c5dbKtld4K3vD7Rhpt388FY3j6Hw3jxGbP4dHkzf2Rbh1GLLthd6a3RfCCYDAN+dYabPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LQCciCfU; arc=none smtp.client-ip=192.198.163.19
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706891674; x=1738427674;
+  t=1706892741; x=1738428741;
   h=to:cc:subject:references:date:mime-version:
    content-transfer-encoding:from:message-id:in-reply-to;
-  bh=b2ZLcg7YJ/dyepz/uVVFTYoYTOKVDQ4haDq9y0IB7yw=;
-  b=Cpnnbu+KVRXqrAkSVjDn0TaB6BG3FDgZUYE82VRTpyTqSX1+oTBnB9qR
-   xwGH9PXqG1qfWIzwwingZSyEEZ72mbtnmWm9OTKtjfMn0x7SFOpXCENoI
-   5Z/hRyHoGV5VGM1FkttZ3cNDmiy93rIcJHtnbYsG2/a3VSkAMq1nSvixs
-   Mb85ApP9GKK9HJG/cYBNXFKquu1uYCPhCUIvFQRBptddFj449CuEyK5Wq
-   XqAGPtulOFyIX3pSfLSlcwu4h5T6tmwjYMIXvaOblO4+HIvGtb0WZ+LN7
-   U+4DVzQm0fXVtHQWRvVx5kgkzGww0cZnAySs1VcgbL2Lu3lD38e5yj6Re
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="17604796"
+  bh=HzgDzI/Ge9eFvWVgikaxYZfFSROrOdcCMT23siR2Q6o=;
+  b=LQCciCfUe7id/mI1xZw4oEdn51ZVVKlNNI29SfutAVYE83VXu+DI8eEb
+   +e9gHAiZpOcssBeugERBY9KqzSKhnwm9sM2o5JewkhR9Vz/2tpvepMN5L
+   WH9GF9Lrv+bmkFVZmNz0n6KUgKSYpUSftW2rmdRLPwr2uEKi4xn9Gk7nY
+   TUGukvG6CbRiQY3bb6UJBErXn+gZV4QdkP7HoZJ4MHmu9W2AOdflmhEcC
+   YynHR0pyrX59sce/RQjnTNrhfFHYo7hrRInKVBeB8ehsoNy9AfNMmdQeH
+   CegEs7jQLjQmaftmGtnjhyppqjwAjlnBVsrgezmynSGJwVZIel/zV6kFJ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="102604"
 X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="17604796"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 08:34:33 -0800
+   d="scan'208";a="102604"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 08:52:17 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="122759"
+   d="scan'208";a="435399"
 Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 02 Feb 2024 08:34:31 -0800
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 02 Feb 2024 08:52:15 -0800
 Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
 To: dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
  linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
@@ -62,12 +62,12 @@ To: dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
 Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
  zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
  yangjie@microsoft.com, chrisyan@microsoft.com
-Subject: Re: [PATCH v8 01/15] cgroup/misc: Add per resource callbacks for CSS
- events
+Subject: Re: [PATCH v8 05/15] x86/sgx: Add sgx_epc_lru_list to encapsulate LRU
+ list
 References: <20240130020938.10025-1-haitao.huang@linux.intel.com>
- <20240130020938.10025-2-haitao.huang@linux.intel.com>
- <CYU4P2CYNVSK.1UECAD4N86P8Z@suppilovahvero>
-Date: Fri, 02 Feb 2024 10:34:29 -0600
+ <20240130020938.10025-6-haitao.huang@linux.intel.com>
+ <CYU4S0Y9SVZ2.2G9RM5Y3K28XI@suppilovahvero>
+Date: Fri, 02 Feb 2024 10:52:12 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -77,58 +77,52 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 From: "Haitao Huang" <haitao.huang@linux.intel.com>
 Organization: Intel
-Message-ID: <op.2iiwbrjpwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <CYU4P2CYNVSK.1UECAD4N86P8Z@suppilovahvero>
+Message-ID: <op.2iiw5ajmwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <CYU4S0Y9SVZ2.2G9RM5Y3K28XI@suppilovahvero>
 User-Agent: Opera Mail/1.0 (Win32)
 
-On Thu, 01 Feb 2024 17:24:40 -0600, Jarkko Sakkinen <jarkko@kernel.org>  
+On Thu, 01 Feb 2024 17:28:32 -0600, Jarkko Sakkinen <jarkko@kernel.org>  
 wrote:
 
 > On Tue Jan 30, 2024 at 4:09 AM EET, Haitao Huang wrote:
->> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> From: Sean Christopherson <sean.j.christopherson@intel.com>
 >>
->> The misc cgroup controller (subsystem) currently does not perform
->> resource type specific action for Cgroups Subsystem State (CSS) events:
->> the 'css_alloc' event when a cgroup is created and the 'css_free' event
->> when a cgroup is destroyed.
+>> Introduce a data structure to wrap the existing reclaimable list and its
+>> spinlock. Each cgroup later will have one instance of this structure to
+>> track EPC pages allocated for processes associated with the same cgroup.
+>> Just like the global SGX reclaimer (ksgxd), an EPC cgroup reclaims pages
+>> from the reclaimable list in this structure when its usage reaches near
+>> its limit.
 >>
->> Define callbacks for those events and allow resource providers to
->> register the callbacks per resource type as needed. This will be
->> utilized later by the EPC misc cgroup support implemented in the SGX
->> driver.
+>> Use this structure to encapsulate the LRU list and its lock used by the
+>> global reclaimer.
 >>
+>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Co-developed-by: Kristen Carlson Accardi <kristen@linux.intel.com>
 >> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
 >> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
 >> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->> ---
->> V8:
->> - Abstract out _misc_cg_res_free() and _misc_cg_res_alloc() (Jarkko)
->> V7:
->> - Make ops one per resource type and store them in array (Michal)
->> - Rename the ops struct to misc_res_ops, and enforce the constraints of  
->> required callback
->> functions (Jarkko)
->> - Moved addition of priv field to patch 4 where it was used first.  
->> (Jarkko)
->>
->> V6:
->> - Create ops struct for per resource callbacks (Jarkko)
->> - Drop max_write callback (Dave, Michal)
->> - Style fixes (Kai)
 >
-> This version looks nice and smooth:
+> I'd put author as last sob but that said I'm not sure if there is rigid
+> rule to do so. Thus not saying must here.
+>
+
+The documentation says "the ordering of Signed-off-by: tags should reflect  
+the chronological history of the patch insofar as possible, regardless of  
+whether the author is attributed via From: or Co-developed-by:. Notably,  
+the last Signed-off-by: must always be that of the developer submitting  
+the patch."
+
+So this should be OK.
+[...]
+>>  struct sgx_epc_page *__sgx_alloc_epc_page(void);
+>>  void sgx_free_epc_page(struct sgx_epc_page *page);
+>>
 >
 > Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 >
 > BR, Jarkko
 >
-Thanks Jarkko!
-
-@tj, I had your Reviewed-by tags previously but dropped it due to some  
-changes for refactoring suggested by other reviewers. Could you take a  
-look at patches 1-2 for MiscController and confirm if I can have your  
-Reviewed-by tags again?
-Thanks
-
+Thank you!
 Haitao
 
