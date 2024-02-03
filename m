@@ -1,177 +1,137 @@
-Return-Path: <cgroups+bounces-1332-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1333-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61D96847E3C
-	for <lists+cgroups@lfdr.de>; Sat,  3 Feb 2024 02:36:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 323508481C4
+	for <lists+cgroups@lfdr.de>; Sat,  3 Feb 2024 05:21:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE281B26941
-	for <lists+cgroups@lfdr.de>; Sat,  3 Feb 2024 01:36:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA9191F26721
+	for <lists+cgroups@lfdr.de>; Sat,  3 Feb 2024 04:21:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28BD523C9;
-	Sat,  3 Feb 2024 01:36:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 494223CF6A;
+	Sat,  3 Feb 2024 04:13:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TpVskmD+"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SpiDVxQj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EC1E1FB2
-	for <cgroups@vger.kernel.org>; Sat,  3 Feb 2024 01:36:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 986B1125C4
+	for <cgroups@vger.kernel.org>; Sat,  3 Feb 2024 04:13:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706924192; cv=none; b=kI6NsUY50a0zVIg9Gda3Q0RMuVMSPn+DTu/nzensDmTjWkNSX7yOtf114qKOuwUmZZfFAgjyyh+BbRgLS+TWY1QhAUybpnbX7NH4kU5ViBSSjCnCHMK0+HI9z+xPbD2oNT3OopCy1QxEN6HwsssaRoiS9q0Oj4PUkaybM6BD7LI=
+	t=1706933619; cv=none; b=ZPDLnkvu+PbjUlfyBDjUdSbMO1wyswcUEk/cR7No9624U/48ilJmuZS2wx8jUUsURjm/4gBQnbZHkoI1E82zsc/AerZR8vWymsnwvc1JuwaS89O99lzQaJHbmtWd2JioW+W4U8TaE7YnR2vslamS7AjrkCwAYEpoPYdutlroIrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706924192; c=relaxed/simple;
-	bh=Hf6uyk3PkhlfPyC3HRqmW4VM5M44oxj62qu0PS7I3jk=;
+	s=arc-20240116; t=1706933619; c=relaxed/simple;
+	bh=aukrydltDtElqxloaQOiwp7MBnZYxbVEKC7CRknU2oE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jyHGVpa6WC51nlRE6ICHV2KgA/M5Kk/+n9E3ODQjZCA0qFzhm7bXtpQ89R+oVivWPn6hKKcOoM1mYwRojbt+vNpz9LjQqlSanCLdlAdVH78AA1YpfJag96QWs18dYwH98C53drTf7pkjagLWn8266HsWzjMcva1QMseVhQvlNw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TpVskmD+; arc=none smtp.client-ip=209.85.218.48
+	 To:Cc:Content-Type; b=Psh+2fDdbNWZr2Qoa+HURYEAuORYlSJs2POaem4QfN1u00fn6zujO5h9+hiclT6OwZgoLMYpLxj4jfcKEF9iRuXpl70Q4VRkm/BNs3eYk9jm0BAztqyLmz77mpX48J1r0/Hpe51yHznEUMwbx7T91QAJ1godbZbq6N3Brudkne4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SpiDVxQj; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a35b32bd055so342228866b.2
-        for <cgroups@vger.kernel.org>; Fri, 02 Feb 2024 17:36:30 -0800 (PST)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d5ce88b51cso111575ad.0
+        for <cgroups@vger.kernel.org>; Fri, 02 Feb 2024 20:13:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706924188; x=1707528988; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=+ZtJdSb7EI9zmC17ta56Eu+wHYjQhwSEAchKE32W20c=;
-        b=TpVskmD+gga1/dXm1v3DEPQN+/3QUZ2KjZC8QrTCoDjmIot4QuOKBGcCgjag+YMphE
-         BEwDcnrHJyoH0Y9wWoWr7am2FPPDr/P6rI2K9Epwke5tR62hBJMIUMZd7dRQoL0AMWzr
-         CGIqsB5T8GgOieFornDqQelozvoDRr4n9VDO1rEtbbBKSSmo9dwSZImdN+Luei2xyTck
-         j8zZxUm7+BEZegQ1m2rY2bqHRFnMk0v1fB4yvVrfrP7DWICSpzr+VO/y3ZzciLZeKx8k
-         Yk4psBLjtdwIbersIKf3mH2wAh9+hhDsqRyFBZJhrZIjCf1mA/WAcyYkejghdxE1uY/w
-         4yyA==
+        d=google.com; s=20230601; t=1706933617; x=1707538417; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q2yFEK+mYkeNhR2BjzLuPlzJOrsqLmK/m4AY7BXlyUI=;
+        b=SpiDVxQjyLF6yj2FkBYdnNxUiyWlv5++g5kOenmNxSjP/0GcE4bR1pjVf+PmTzrstR
+         OaQAbd4QiBULdAgP0XE7dCTIqhHaWuffPQjsJQP8dpLh10hRVyk4uy+YVt0aIeZwSXbt
+         eqiebem7/ao2F2g9vmolHqz0uNkU33qqeAO2LkHFVmK42Wy9ujKEX2Rlns+ry2zIGzHA
+         ey3QQU8I4mhqXZ4WmYsexlt28hwidUCG5puc9YbS6isHIi8whXpDEcz5GgzjviIe4Hw7
+         2ZhY5kJAS3yxf0P+dDOaFMzkcfbO62xg9B9Da6qxTKgAP+3R8eSzm7tyA9ga8320j06E
+         28Gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706924188; x=1707528988;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+ZtJdSb7EI9zmC17ta56Eu+wHYjQhwSEAchKE32W20c=;
-        b=pOVBFTpwEpuP5EVj6hhedcU0q3fPlOyxr7uOch+gqR1iYmZcsnnqNj7E+ec6xhbx7A
-         O1SVCCBHX5f9HtGRrdqG6eP3uhwoWhwOE0uTW1fcQKL5tJnODQJGT2/vwS6UDRtZk44s
-         yu+Qx6qLPt6Ab3w+5gyZrwoVN7IUhujtbPg+7XVNmqndvdEOzpNsTTI/Fnrq+AZpo4uL
-         gSAWlR13dAm7AsNfzfTWldXKxB/eY1ngdUt561bl8vpgO4ptmR05JTgUFlJ2hRRWb/LT
-         Zzx5Ez4Op6TvQPgnl9A+1bYoXfaD4quHjrVegZqEhy7cU/dfBrlgZ5oiaMVqYT8x1kM+
-         wgFw==
-X-Gm-Message-State: AOJu0Yzleokme5SOlgQVF1A6zEybWWhyY/HBdeJRVR6GnKKMQGg1j5QY
-	DLhcYcd3RWV4u+Sf7KPtOoxb21jntFOiIhpUg873ds1LpCQ1NzCf3poCDfv9DzfprWCctj7fkZ8
-	jgMP35M+A6mx430MHAtG9o3du1TRrGSAb3jsr
-X-Google-Smtp-Source: AGHT+IESunm6BBZ+RT4xmmTLaeoG0U7tcSgV83ArDerCBOVGM3/ZzMDno9Ecy/mHegvx1S4l6wD5GMMFI3eEWh5MYUU=
-X-Received: by 2002:a17:906:36cd:b0:a36:55d5:2364 with SMTP id
- b13-20020a17090636cd00b00a3655d52364mr2781404ejc.21.1706924188353; Fri, 02
- Feb 2024 17:36:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1706933617; x=1707538417;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q2yFEK+mYkeNhR2BjzLuPlzJOrsqLmK/m4AY7BXlyUI=;
+        b=gs6y6CnIjtdom1/Na7H5+oYQ1cpmTwr8W8JAIsFc7e63rar2X8Us6EkKLVa8rXNR14
+         VWWza0F47HUlQuOPa1F+sEwPlaLotYpxMDtKBPSsNdG+YJGlC67n34LbyC5sWAjsGkxD
+         WyaPO3PmQ4J6Rwf7mC0U70LyTxYSHUESuzTexN2zaIBtgAWkNtf3SEd9ZLtSt+rJhPW4
+         DmbN6JRBJct3lWLK5a4D2yY44xrxnve6WJaqP+xd2UbAmZkdbUMGQaqcJGSCL5qLfAHt
+         fv3YUKum/uOhOyzbiTZZLNKSNS0vBr/hin3OSLrCQ+1yqTJ1duDdkrNyKMpiY0R/dNdU
+         txxA==
+X-Gm-Message-State: AOJu0YzQfWlg9ej/1gyeIt5kIfAUxIveV2YRYGuD0c+3B4XA5TH9IcsJ
+	L8NooL8NPRtc0EB9RP4UCiIBhKGfvyYVGz6JvJ6aUsTo5kSk8oQcYvrnaeznLXWRznS8kIvlOG/
+	iImfG9lGrJcIgMrrNeXJhEqY4MyJBZQFqzst5
+X-Google-Smtp-Source: AGHT+IEXZ2m5Xf+Jq/IxEHekpp8yz7CV9DXXuRHGWySYbl1JdXoC1ci2EfBWU768Wr4PgkIw8BuZP6TEIYdpLWFpPwo=
+X-Received: by 2002:a17:902:e750:b0:1d7:6ebd:3867 with SMTP id
+ p16-20020a170902e75000b001d76ebd3867mr74632plf.1.1706933616692; Fri, 02 Feb
+ 2024 20:13:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201032718.1968208-1-nphamcs@gmail.com> <20240201032718.1968208-4-nphamcs@gmail.com>
- <Zbtfku0wVGXBHDTD@google.com> <CAKEwX=PH5abBFCjYHL+d99v8MMwiASqP83aF2vSv1iwezX3UHA@mail.gmail.com>
-In-Reply-To: <CAKEwX=PH5abBFCjYHL+d99v8MMwiASqP83aF2vSv1iwezX3UHA@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 2 Feb 2024 17:35:49 -0800
-Message-ID: <CAJD7tkbu+nGMuvkK3B9-Ekt9+P_wtwOM1A_9cAM0wLM7trO+CQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] selftests: add zswapin and no zswap tests
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: akpm@linux-foundation.org, riel@surriel.com, shuah@kernel.org, 
-	hannes@cmpxchg.org, tj@kernel.org, lizefan.x@bytedance.com, 
-	roman.gushchin@linux.dev, linux-mm@kvack.org, kernel-team@meta.com, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
+References: <20240203003414.1067730-1-yosryahmed@google.com>
+In-Reply-To: <20240203003414.1067730-1-yosryahmed@google.com>
+From: Shakeel Butt <shakeelb@google.com>
+Date: Fri, 2 Feb 2024 20:13:24 -0800
+Message-ID: <CALvZod6pKLhLm6v7da1sm_axvSR07f_buOc9czRfLb5mpzOanw@mail.gmail.com>
+Subject: Re: [PATCH mm-hotfixes-unstable] mm: memcg: fix struct
+ memcg_vmstats_percpu size and alignment
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Greg Thelen <gthelen@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> > > +{
-> > > +     size_t size = (size_t)arg;
-> > > +     char *mem = (char *)malloc(size);
-> > > +     int ret = 0;
-> > > +
-> > > +     if (!mem)
-> > > +             return -1;
-> > > +     for (int i = 0; i < size; i += 4095)
-> > > +             mem[i] = 'a';
-> >
-> > cgroup_util.h defines PAGE_SIZE, see alloc_anon() for example.
-> >
-> > On that note, alloc_anon() is awfully close to allocate_bytes() below,
-> > perhaps we should consolidate them. The only difference I see is that
-> > alloc_anon() does not check for the allocation failure, but a lot of
-> > functions in cgroup_helpers.c don't, so it seems intentional for
-> > simplification.
+On Fri, Feb 2, 2024 at 4:34=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com> =
+wrote:
 >
-> Hmm I didn't know about this function. I think it was Domenico who
-> added allocate_bytes() for the initial zswap tests, and I've just been
-> piggybacking on it ever since:
-> https://github.com/torvalds/linux/commit/d9cfaf405b8ffe2c716b1ce4c82e0a19d50951da
+> Commit da10d7e140196 ("mm: memcg: optimize parent iteration in
+> memcg_rstat_updated()") added two additional pointers to the end of
+> struct memcg_vmstats_percpu with CACHELINE_PADDING to put them in a
+> separate cacheline. This caused the struct size to increase from 1200 to
+> 1280 on my config (80 extra bytes instead of 16).
 >
-> I can send a separate patch to clean this up later :) Doesn't seem that bad.
-
-SGTM.
-
-[..]
-> >
-> > > +     if (cg_write(test_group, "memory.zswap.max", "0"))
-> > > +             goto out;
-> > > +
-> > > +     /* Allocate and read more than memory.max to trigger swapin */
-> > > +     if (cg_run(test_group, allocate_bytes_and_read, (void *)MB(32)))
-> > > +             goto out;
-> > > +
-> > > +     /* Verify that no zswap happened */
-> >
-> > If we want to be really meticulous, we can verify that we did swap out,
-> > but not to zswap. IOW, we can check memory.swap.current or something.
+> Upon revisiting, the relevant struct members do not need to be on a
+> separate cacheline, they just need to fit in a single one. This is a
+> percpu struct, so there shouldn't be any contention on that cacheline
+> anyway. Move the members to the beginning of the struct and cachealign
+> the first member. Add a comment about the members that need to fit
+> together in a cacheline.
 >
-> Hmm would memory.swap.current go back to 0 once the memory-in-swap is
-> freed? It doesn't seem like we have any counters at the cgroup level
-> for swapout/swapin events. Maybe such counters were not useful enough
-> to justify the extra overhead of maintaining them? :)
+> The struct size is now 1216 on my config with this change.
 >
-> Anyway, I think checking zswpout should probably be enough here.
-> That's the spirit of the test anyway - make absolutely sure that no
-> zswap-out happened.
-
-The test is making sure that even though we used real swap, we did not
-use zswap. In other words, we may see a false positive if something
-goes wrong and we don't swap anything at all. I know I am probably
-being paranoid here :)
-
-How about we check memory.swap.peak?
-
-[..]
-> > > +     test_group = cg_name(root, "zswapin_test");
-> > > +     if (!test_group)
-> > > +             goto out;
-> > > +     if (cg_create(test_group))
-> > > +             goto out;
-> > > +     if (cg_write(test_group, "memory.max", "8M"))
-> > > +             goto out;
-> > > +     if (cg_write(test_group, "memory.zswap.max", "max"))
-> > > +             goto out;
-> > > +
-> > > +     /* Allocate and read more than memory.max to trigger (z)swap in */
-> > > +     if (cg_run(test_group, allocate_bytes_and_read, (void *)MB(32)))
-> > > +             goto out;
-> >
-> > We should probably check for a positive zswapin here, no?
+> Fixes: da10d7e140196 ("mm: memcg: optimize parent iteration in memcg_rsta=
+t_updated()")
+> Reported-by: Greg Thelen <gthelen@google.com>
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> ---
+>  mm/memcontrol.c | 19 +++++++++----------
+>  1 file changed, 9 insertions(+), 10 deletions(-)
 >
-> Oh right. I'll just do a quick check here:
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index d9ca0fdbe4ab0..09f09f37e397e 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -621,6 +621,15 @@ static inline int memcg_events_index(enum vm_event_i=
+tem idx)
+>  }
 >
-> zswpin = cg_read_key_long(test_group, "memory.stat", "zswpin ");
-> if (zswpin < 0) {
->    ksft_print_msg("Failed to get zswpin\n");
->    goto out;
-> }
->
-> if (zswpin == 0) {
->    ksft_print_msg("zswpin should not be 0\n");
->    goto out;
-> }
+>  struct memcg_vmstats_percpu {
+> +       /* Stats updates since the last flush */
+> +       unsigned int                    stats_updates ____cacheline_align=
+ed;
 
-SGTM.
+Why do you need ____cacheline_aligned here? From what I understand for
+the previous patch you want stats_updates, parent and vmstats on the
+same cacheline, right?
 
-Thanks!
+I would say just remove the CACHELINE_PADDING() from the previous
+patch and we are good.
+
+In the followup I plan to add usage of __cacheline_group_begin() and
+__cacheline_group_end() usage in memcg code. If you want, take a stab
+at it.
 
