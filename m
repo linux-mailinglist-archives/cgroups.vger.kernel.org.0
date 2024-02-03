@@ -1,168 +1,348 @@
-Return-Path: <cgroups+bounces-1329-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1330-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E84C847DED
-	for <lists+cgroups@lfdr.de>; Sat,  3 Feb 2024 01:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41BAF847DF0
+	for <lists+cgroups@lfdr.de>; Sat,  3 Feb 2024 01:40:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76FE01C20DB1
-	for <lists+cgroups@lfdr.de>; Sat,  3 Feb 2024 00:39:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 666F11C22C12
+	for <lists+cgroups@lfdr.de>; Sat,  3 Feb 2024 00:40:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A43E7EC;
-	Sat,  3 Feb 2024 00:39:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DFDF64E;
+	Sat,  3 Feb 2024 00:40:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GtW/VJdI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E1RnFX3p"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f182.google.com (mail-il1-f182.google.com [209.85.166.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD841626;
-	Sat,  3 Feb 2024 00:39:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F6FC6FB6;
+	Sat,  3 Feb 2024 00:40:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706920771; cv=none; b=TG8tzQQ0QWb7Xgn8RfSm08wKhyBZzjfR4ZWNzrsKLEofFphkJ1V3ZzQy+AmvXBAEc8rMKW7878++FzeDUH4f5jO7vwqY/D0koN35ptrUheTzt+K6mPAsxEG3KkMiDc15BU0WkiHty7SHu4Io7FwvGMOCKRi5ckZTK0+4iQOKd+Y=
+	t=1706920806; cv=none; b=YZNA6p5QXnD6y8XF1QDYxO4O+6ODae7CJZ/lDZ2kebN3rkPwTX1gGT4f4m4ZJ65U/+Tsvg2NuikfF7G82UH5vFRAd41R2ATVnzM9kHSFfnFmWICEKcxfvNJSPL7N0ypsVEm/U5qkm7kXCjCh1SEzhnhKVmImbw2qsBk0YkIK5sE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706920771; c=relaxed/simple;
-	bh=PI5AaiKImIamke2x947YdZTAG/oLNmB8JsTt9OqkWnY=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=APAN6N5beJxCv4jIWdgPy003okHyrJ/vNG1R/UYDexCSArzZfiQLOrk+h+4mMmxfAccB5W77U1UFsMpcEDItm1WRF3NSqulIAS8teuR3iw1MlDztZZ0ksl+rBKW0l/NOo/U5p/JC5omsFnom9y30rtaM5VDIV1BZ9PTFPfpBYV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GtW/VJdI; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1706920770; x=1738456770;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=PI5AaiKImIamke2x947YdZTAG/oLNmB8JsTt9OqkWnY=;
-  b=GtW/VJdI2uxj/WtyVlMGg8bw89z/01P4fBWhvlqCM914eCED7Y9ay0+6
-   4scKg5N13sVliGI30uC2vGBxn9umOPZzWmAImFRq1dBImOMz000ma1gHO
-   JvMKzBJmM42oed8aWBpMsIhGJlO3+s8KV2XraBAGYyrDEKHc+XY7u071u
-   jMjr6BsapaBgGPV9ZJTPUtdDWDKFJW2XTXMLwvZA8Y9sSXC480KFKb/mB
-   fVA98lpoA4cqFNIM2D193fMRKI0kkyv2aPxR0UdkEWs8k8bqeE9nXhNVc
-   8LYG7hCMu8cDSIE4oV0im7vQSqH/aNO5E5033rN06sFWBfMa0KbbR+rVg
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="25728920"
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="25728920"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 16:39:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
-   d="scan'208";a="223174"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 02 Feb 2024 16:39:25 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
- mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
- x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com, "Tim Chen"
- <tim.c.chen@linux.intel.com>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com
-Subject: Re: [PATCH v7 09/15] x86/sgx: Charge mem_cgroup for per-cgroup
- reclamation
-References: <20240122172048.11953-1-haitao.huang@linux.intel.com>
- <20240122172048.11953-10-haitao.huang@linux.intel.com>
- <ca25d3462944dcea553665d7c85903cdd6a846bc.camel@linux.intel.com>
-Date: Fri, 02 Feb 2024 18:39:23 -0600
+	s=arc-20240116; t=1706920806; c=relaxed/simple;
+	bh=hY9D3IvgVlygL48OZ0YO4gZgMH1F6qxN5QAYMCEfR/k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=a8uifXmltN6gEKe3vHfho+4rPcNleGcljDY3NQl6PBXsMBFPQ6V8vrYsBpyQlh98mu/ctra4LQB8Xig4g223T2dhS+Vy6lseiw9l8NuMAiHG8g2DbWaI2YC0KtJRTRyeQ0m4+BXmTSsZJJ80Cwhb09ch+4GlHLktFz/TjtlrMhw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E1RnFX3p; arc=none smtp.client-ip=209.85.166.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f182.google.com with SMTP id e9e14a558f8ab-3638eb3ead6so10371155ab.0;
+        Fri, 02 Feb 2024 16:40:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706920803; x=1707525603; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yPmEee8EW9ZVTqL0gdWpHjFhQp8lEG44ByVdqeX0Gus=;
+        b=E1RnFX3p0qXFhB/yWyu9fbC8gdVyuTqplMHyWaE60mwt1HkLbTNMEyDctAkPwRENys
+         zLDgTqiSzzfuaHPqcZkhJZEB03N6LbOmHN41MtbNyCNEAdWxds/933pyNyXjV+p3l1Go
+         8A/z6gQRAPCG+/ToxXih1yQBfdOShfzvYyTzrCC6m/oqqZLjyhiW3VlHRC9OwZ53+pGz
+         HzoB7/BB7OC5bdjssciuNLw1TNAn7inE4FMPM+00iuz1ew5Beq35P2HjygXqnrq6B7y8
+         7MVWDL+CBTkADgArLkqq4toZCtlsY3xxnnR1s9/9SvflH6WnvH7wWni9LLv2loJxtLCW
+         mXFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706920803; x=1707525603;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yPmEee8EW9ZVTqL0gdWpHjFhQp8lEG44ByVdqeX0Gus=;
+        b=bxE7y66DvSMKWeta2QrbzUtKasbHkMEUVcUZiiGS86T2QiRP0e4JQFvddpDiZ5PWui
+         gK7xSNVZAK9LHGpwTd/hGFu91x2eWIycLRv6UMasiK9DfhoXUTEBImHdJ+xd8NqUOXCt
+         s32RHwy3JXQmzLcoFUoplK3kuVBdfmQIiU/H7kWsEkVvXf0db4IWRqN1aNPtjCSRZOkD
+         +63TwoHoJd2dzc4kf1v1VQmS410lkGyjsuOytTP1rFaJCsamA53syGnYJuhdaq7rTSXV
+         oRafYdaY0o8U4TsTQupTpBvP1ce4YyMYoiZdZkUprd+Jxu1+M9IzPouutnVo85mpT1M8
+         4XqA==
+X-Gm-Message-State: AOJu0YxqNT8cctP+A4aaeDvMTTzlQy61sR8p3Qi+dY7AStdusx4w7V3l
+	UukXkd98VriB0X0/+KaNaEWBXCwQalIxjybGUhdTT4TuQgD2YckpqUofCG9yALpUOMGd5N1FMf3
+	MdZRPVr0JUjHZh87QR7fKo5AA3KQ=
+X-Google-Smtp-Source: AGHT+IFgqdwHEV8JgvmsaWSumu8uHPzWdEdZa0O2YyVDQXw0gYpAVHhFLtVsDIFjRN0/CAeQGvTso/hxPnI2oKTHPOc=
+X-Received: by 2002:a92:c9cc:0:b0:363:b641:cd7f with SMTP id
+ k12-20020a92c9cc000000b00363b641cd7fmr2599920ilq.8.1706920803622; Fri, 02 Feb
+ 2024 16:40:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2ijirxjlwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <ca25d3462944dcea553665d7c85903cdd6a846bc.camel@linux.intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+References: <20240201032718.1968208-1-nphamcs@gmail.com> <20240201032718.1968208-4-nphamcs@gmail.com>
+ <Zbtfku0wVGXBHDTD@google.com>
+In-Reply-To: <Zbtfku0wVGXBHDTD@google.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Fri, 2 Feb 2024 16:39:52 -0800
+Message-ID: <CAKEwX=PH5abBFCjYHL+d99v8MMwiASqP83aF2vSv1iwezX3UHA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] selftests: add zswapin and no zswap tests
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: akpm@linux-foundation.org, riel@surriel.com, shuah@kernel.org, 
+	hannes@cmpxchg.org, tj@kernel.org, lizefan.x@bytedance.com, 
+	roman.gushchin@linux.dev, linux-mm@kvack.org, kernel-team@meta.com, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Tim,
-On Fri, 02 Feb 2024 17:45:05 -0600, Tim Chen <tim.c.chen@linux.intel.com>  
+On Thu, Feb 1, 2024 at 1:08=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com> =
 wrote:
+>
+> Hey Nhat,
+>
+> I have a few more comments, sorry for not catching everything the first
+> time around.
 
-> On Mon, 2024-01-22 at 09:20 -0800, Haitao Huang wrote:
->>
->> @@ -1047,29 +1037,38 @@ static struct mem_cgroup  
->> *sgx_encl_get_mem_cgroup(struct sgx_encl *encl)
->>   * @encl:	an enclave pointer
->>   * @page_index:	enclave page index
->>   * @backing:	data for accessing backing storage for the page
->> + * @indirect:	in ksgxd or EPC cgroup work queue context
->> + *
->> + * Create a backing page for loading data back into an EPC page with  
->> ELDU. This function takes
->> + * a reference on a new backing page which must be dropped with a  
->> corresponding call to
->> + * sgx_encl_put_backing().
->>   *
->> - * When called from ksgxd, sets the active memcg from one of the
->> - * mms in the enclave's mm_list prior to any backing page allocation,
->> - * in order to ensure that shmem page allocations are charged to the
->> - * enclave.  Create a backing page for loading data back into an EPC  
->> page with
->> - * ELDU.  This function takes a reference on a new backing page which
->> - * must be dropped with a corresponding call to sgx_encl_put_backing().
->> + * When @indirect is true, sets the active memcg from one of the mms  
->> in the enclave's mm_list
->> + * prior to any backing page allocation, in order to ensure that shmem  
->> page allocations are
->> + * charged to the enclave.
->>   *
->>   * Return:
->>   *   0 on success,
->>   *   -errno otherwise.
->>   */
->>  int sgx_encl_alloc_backing(struct sgx_encl *encl, unsigned long  
->> page_index,
->> -			   struct sgx_backing *backing)
->> +			   struct sgx_backing *backing, bool indirect)
->>  {
->> -	struct mem_cgroup *encl_memcg = sgx_encl_get_mem_cgroup(encl);
->> -	struct mem_cgroup *memcg = set_active_memcg(encl_memcg);
->> +	struct mem_cgroup *encl_memcg;
->> +	struct mem_cgroup *memcg;
->>  	int ret;
->>
->> +	if (indirect) {
->> +		encl_memcg = sgx_encl_get_mem_cgroup(encl);
->> +		memcg = set_active_memcg(encl_memcg);
->> +	}
->> +
->>  	ret = __sgx_encl_get_backing(encl, page_index, backing);
->>
->> -	set_active_memcg(memcg);
->> -	mem_cgroup_put(encl_memcg);
->> +	if (indirect) {
->> +		set_active_memcg(memcg);
->> +		mem_cgroup_put(encl_memcg);
->> +	}
->>
->
->
-> You can reduce the number of if statements to make the logic
-> simpler.  Something like
->
-> 	if (!indirect)
-> 		return __sgx_encl_get_backing(encl, page_index, backing);
->
-> 	encl_memcg = sgx_encl_get_mem_cgroup(encl);
-> 	memcg = set_active_memcg(encl_memcg);
-> 	ret = __sgx_encl_get_backing(encl, page_index, backing);
-> 	set_active_memcg(memcg);
-> 	mem_cgroup_put(encl_memcg);
->
->>  	return ret;
->
-> Tim
->
+No worries :)
 
-Yes, will do.
-Thanks
-Haitao
+>
+> Adding Roman to CC.
+>
+> On Wed, Jan 31, 2024 at 07:27:18PM -0800, Nhat Pham wrote:
+> > Add a selftest to cover the zswapin code path, allocating more memory
+> > than the cgroup limit to trigger swapout/zswapout, then reading the
+> > pages back in memory several times. This is inspired by a recently
+> > encountered kernel crash on the zswapin path in our internal kernel,
+> > which went undetected because of a lack of test coverage for this path.
+> >
+> > Add a selftest to verify that when memory.zswap.max =3D 0, no pages can=
+ go
+> > to the zswap pool for the cgroup.
+> >
+> > Suggested-by: Rik van Riel <riel@surriel.com>
+> > Suggested-by: Yosry Ahmed <yosryahmed@google.com>
+> > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+> > ---
+> >  tools/testing/selftests/cgroup/test_zswap.c | 97 +++++++++++++++++++++
+> >  1 file changed, 97 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testin=
+g/selftests/cgroup/test_zswap.c
+> > index 32ce975b21d1..14d1f18f1098 100644
+> > --- a/tools/testing/selftests/cgroup/test_zswap.c
+> > +++ b/tools/testing/selftests/cgroup/test_zswap.c
+> > @@ -60,6 +60,27 @@ static long get_zswpout(const char *cgroup)
+> >       return cg_read_key_long(cgroup, "memory.stat", "zswpout ");
+> >  }
+> >
+> > +static int allocate_bytes_and_read(const char *cgroup, void *arg)
+>
+> I think allocate_and_read_bytes() is easier to read, but I don't feel
+> strongly about it.
+
+Ah you're right. I'll fix that in the next version.
+
+>
+> > +{
+> > +     size_t size =3D (size_t)arg;
+> > +     char *mem =3D (char *)malloc(size);
+> > +     int ret =3D 0;
+> > +
+> > +     if (!mem)
+> > +             return -1;
+> > +     for (int i =3D 0; i < size; i +=3D 4095)
+> > +             mem[i] =3D 'a';
+>
+> cgroup_util.h defines PAGE_SIZE, see alloc_anon() for example.
+>
+> On that note, alloc_anon() is awfully close to allocate_bytes() below,
+> perhaps we should consolidate them. The only difference I see is that
+> alloc_anon() does not check for the allocation failure, but a lot of
+> functions in cgroup_helpers.c don't, so it seems intentional for
+> simplification.
+
+Hmm I didn't know about this function. I think it was Domenico who
+added allocate_bytes() for the initial zswap tests, and I've just been
+piggybacking on it ever since:
+https://github.com/torvalds/linux/commit/d9cfaf405b8ffe2c716b1ce4c82e0a19d5=
+0951da
+
+I can send a separate patch to clean this up later :) Doesn't seem that bad=
+.
+
+>
+> > +
+> > +     /* go through the allocated memory to (z)swap in and out pages */
+> > +     for (int i =3D 0; i < size; i +=3D 4095) {
+> > +             if (mem[i] !=3D 'a')
+> > +                     ret =3D -1;
+> > +     }
+> > +
+> > +     free(mem);
+> > +     return ret;
+> > +}
+> > +
+> >  static int allocate_bytes(const char *cgroup, void *arg)
+> >  {
+> >       size_t size =3D (size_t)arg;
+> > @@ -133,6 +154,80 @@ static int test_zswap_usage(const char *root)
+> >       return ret;
+> >  }
+> >
+> > +/*
+> > + * Check that when memory.zswap.max =3D 0, no pages can go to the zswa=
+p pool for
+> > + * the cgroup.
+> > + */
+> > +static int test_swapin_nozswap(const char *root)
+> > +{
+> > +     int ret =3D KSFT_FAIL;
+> > +     char *test_group;
+> > +     long zswpout;
+> > +
+> > +     /* Set up */
+>
+> I think this comment is unnecessary.
+
+Fair!
+
+>
+> > +     test_group =3D cg_name(root, "no_zswap_test");
+> > +
+> > +     if (!test_group)
+> > +             goto out;
+> > +     if (cg_create(test_group))
+> > +             goto out;
+> > +     if (cg_write(test_group, "memory.max", "8M"))
+> > +             goto out;
+> > +     /* Disable zswap */
+>
+> I think this comment is unnecessary.
+
+Fair!
+
+>
+> > +     if (cg_write(test_group, "memory.zswap.max", "0"))
+> > +             goto out;
+> > +
+> > +     /* Allocate and read more than memory.max to trigger swapin */
+> > +     if (cg_run(test_group, allocate_bytes_and_read, (void *)MB(32)))
+> > +             goto out;
+> > +
+> > +     /* Verify that no zswap happened */
+>
+> If we want to be really meticulous, we can verify that we did swap out,
+> but not to zswap. IOW, we can check memory.swap.current or something.
+
+Hmm would memory.swap.current go back to 0 once the memory-in-swap is
+freed? It doesn't seem like we have any counters at the cgroup level
+for swapout/swapin events. Maybe such counters were not useful enough
+to justify the extra overhead of maintaining them? :)
+
+Anyway, I think checking zswpout should probably be enough here.
+That's the spirit of the test anyway - make absolutely sure that no
+zswap-out happened.
+
+>
+> > +     zswpout =3D get_zswpout(test_group);
+> > +     if (zswpout < 0) {
+> > +             ksft_print_msg("Failed to get zswpout\n");
+> > +             goto out;
+> > +     } else if (zswpout > 0) {
+>
+> nit: This can be a separate if condition, I think it would be more
+> inline with the style of separate consecutive if blocks we are
+> following.
+
+Yeah now that you point out the inconsistency, it starts to bug my
+brain too :) I'll fix it in the next version.
+
+>
+> > +             ksft_print_msg(
+> > +                     "Pages should not go to zswap when memory.zswap.m=
+ax =3D 0\n");
+>
+> We can probably avoid the line break with something more concise, for
+> example:
+> "zswapout > 0 when zswap is disabled"
+> or "zswapout > 0 when memory.zswap.max =3D 0"
+>
+> > +             goto out;
+> > +     }
+> > +     ret =3D KSFT_PASS;
+> > +
+> > +out:
+> > +     cg_destroy(test_group);
+> > +     free(test_group);
+> > +     return ret;
+> > +}
+> > +
+> > +/* Simple test to verify the (z)swapin code paths */
+> > +static int test_zswapin_no_limit(const char *root)
+>
+> I think test_zswapin() is enough to be distinct from
+> test_swapin_nozswap(). The limit is not a factor here AFAICT.
+
+Fair.
+
+>
+> > +{
+> > +     int ret =3D KSFT_FAIL;
+> > +     char *test_group;
+> > +
+> > +     /* Set up */
+>
+> I think this comment is unnecessary.
+
+Fair.
+
+>
+> > +     test_group =3D cg_name(root, "zswapin_test");
+> > +     if (!test_group)
+> > +             goto out;
+> > +     if (cg_create(test_group))
+> > +             goto out;
+> > +     if (cg_write(test_group, "memory.max", "8M"))
+> > +             goto out;
+> > +     if (cg_write(test_group, "memory.zswap.max", "max"))
+> > +             goto out;
+> > +
+> > +     /* Allocate and read more than memory.max to trigger (z)swap in *=
+/
+> > +     if (cg_run(test_group, allocate_bytes_and_read, (void *)MB(32)))
+> > +             goto out;
+>
+> We should probably check for a positive zswapin here, no?
+
+Oh right. I'll just do a quick check here:
+
+zswpin =3D cg_read_key_long(test_group, "memory.stat", "zswpin ");
+if (zswpin < 0) {
+   ksft_print_msg("Failed to get zswpin\n");
+   goto out;
+}
+
+if (zswpin =3D=3D 0) {
+   ksft_print_msg("zswpin should not be 0\n");
+   goto out;
+}
+
+
+>
+> > +
+> > +     ret =3D KSFT_PASS;
+> > +
+> > +out:
+> > +     cg_destroy(test_group);
+> > +     free(test_group);
+> > +     return ret;
+> > +}
+> > +
+> >  /*
+> >   * When trying to store a memcg page in zswap, if the memcg hits its m=
+emory
+> >   * limit in zswap, writeback should affect only the zswapped pages of =
+that
+> > @@ -309,6 +404,8 @@ struct zswap_test {
+> >       const char *name;
+> >  } tests[] =3D {
+> >       T(test_zswap_usage),
+> > +     T(test_swapin_nozswap),
+> > +     T(test_zswapin_no_limit),
+> >       T(test_no_kmem_bypass),
+> >       T(test_no_invasive_cgroup_shrink),
+> >  };
+> > --
+> > 2.39.3
 
