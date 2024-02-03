@@ -1,147 +1,168 @@
-Return-Path: <cgroups+bounces-1328-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1329-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18C00847DE1
-	for <lists+cgroups@lfdr.de>; Sat,  3 Feb 2024 01:34:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E84C847DED
+	for <lists+cgroups@lfdr.de>; Sat,  3 Feb 2024 01:39:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB5401F2B969
-	for <lists+cgroups@lfdr.de>; Sat,  3 Feb 2024 00:34:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76FE01C20DB1
+	for <lists+cgroups@lfdr.de>; Sat,  3 Feb 2024 00:39:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D11E6622;
-	Sat,  3 Feb 2024 00:34:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A43E7EC;
+	Sat,  3 Feb 2024 00:39:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IeAPXW0V"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GtW/VJdI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D5EC6FAE
-	for <cgroups@vger.kernel.org>; Sat,  3 Feb 2024 00:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD841626;
+	Sat,  3 Feb 2024 00:39:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706920458; cv=none; b=Iw6cJDKzpq6+aR5o4sUFMdIlWSEQPt0KxC85u3J+67uxC1ftF2qshyOKkIp4gBvXD5MTzTcbHnj/Zkk3k/fsH1Dt6hOCIVuFpKXDQH3C+mpArUIgeFS6CETtp9+Z87QJ/a+xPKsKHZmr8q5502JYwbnK7J4/AiyGkaimTCWEepE=
+	t=1706920771; cv=none; b=TG8tzQQ0QWb7Xgn8RfSm08wKhyBZzjfR4ZWNzrsKLEofFphkJ1V3ZzQy+AmvXBAEc8rMKW7878++FzeDUH4f5jO7vwqY/D0koN35ptrUheTzt+K6mPAsxEG3KkMiDc15BU0WkiHty7SHu4Io7FwvGMOCKRi5ckZTK0+4iQOKd+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706920458; c=relaxed/simple;
-	bh=Z/cm2m18PsL8Vu1wWGOW1aO61N6+BbgnM41QboNb6Z0=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=W9KrZstmAu874AULxdxbIZ3RowsibHzLDF6NSnzbWN+GJYzkVXlaH9ReaGj+6RnTnDh0Cm7Wj8t46d2Q2VBzuqL1KYNItanvKbdV2eI9yzmQZDQWdiYd4BEvU19dgy1s01SjFTzv1oEtmFpvomVM1X7E9dFNLbcyUdaTK24nPKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IeAPXW0V; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60403a678f2so44863857b3.3
-        for <cgroups@vger.kernel.org>; Fri, 02 Feb 2024 16:34:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1706920456; x=1707525256; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BCDzdkXKmcCm4b3zn1uKLp7BZ6kePV4TL8d+mF4c+RU=;
-        b=IeAPXW0VuvfS+wjiPjpLv4EX+pkt7nF/1G9Xrk/CuA8qsO3RVnx8Ab2dxNpI+IWjX3
-         9+W00wk+3rbi4v0p21xPZJcDqr14iP7/YXGdUTw+sK6UUDO9jukrZ6VPMRU6JNPfMRX3
-         TJHd+TyI7LWtyxAVjKX1UIG/+bddyHwaNwurbQ2DFfUCuUrFQxMvKwkVtm7allXaGF2a
-         L4B4rZc530n0Wt2TDbynOrpWJsqSNuy3JiQSc8RM0BaXQhFSUCKkzfw9rH3dcWzfOXdE
-         Jz+jC8uEb6vM4fxrt41EOe4KTg+PPU2vagp4VvjX4sgS5o6KJ6f9VLX2rXC4azD8L3Do
-         n0BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706920456; x=1707525256;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BCDzdkXKmcCm4b3zn1uKLp7BZ6kePV4TL8d+mF4c+RU=;
-        b=oVJ+mt9GmD2sz0R83hOhjUMvdMDvPxo5TiKZUyl9muDzWvJ1iP69e45t6wKAgzxfoi
-         qd3sfWoGtdDNGu8D2NhwkKIOCUIJA+iHdnQbl/+Bwu7uCPbaMTH60ckQ78ES6hcRQqo4
-         IgVwNYdOgT+zvy8TMNJvAvXUhGIIAAV1+qk/ZflFTt69OcPzKPEQXaVQZ8fKKtax9lEq
-         Df+qngneYlLYHJ1E20UseP9huMPc3nwHh9K8ZwmbDoAQOx2lkhxQqCcM7fkV0S9JflK5
-         DDlK108M1K0xqozPePQqrhR8TidC77d59J6CciusgAuX6qZgdxWITuqAO6gc+M8oc9AZ
-         lRZw==
-X-Gm-Message-State: AOJu0Ywc35cYef72jRCQ/sppgv4ffB5s3xVpyud4uDUgGU1lrLmgRVtr
-	xxU2EBkZiYjnM4JS9rE2HcNgs+6FZFlymHyGnHOMIRs0Sa3QP/U+N/CrIZVZZyoAI4eOTIbS/l6
-	0N+rqOeib0UCqavIf4Q==
-X-Google-Smtp-Source: AGHT+IFD+IjFOQHibdEZhu5cMU8oPxcS9RMVwqQhE2xvOJKOdLFApGCusY2fdfTuFLUq9U4BvkSau2GMSgc0xy0p
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:2192:b0:dc6:fec4:1c26 with
- SMTP id dl18-20020a056902219200b00dc6fec41c26mr37502ybb.1.1706920456138; Fri,
- 02 Feb 2024 16:34:16 -0800 (PST)
-Date: Sat,  3 Feb 2024 00:34:13 +0000
+	s=arc-20240116; t=1706920771; c=relaxed/simple;
+	bh=PI5AaiKImIamke2x947YdZTAG/oLNmB8JsTt9OqkWnY=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=APAN6N5beJxCv4jIWdgPy003okHyrJ/vNG1R/UYDexCSArzZfiQLOrk+h+4mMmxfAccB5W77U1UFsMpcEDItm1WRF3NSqulIAS8teuR3iw1MlDztZZ0ksl+rBKW0l/NOo/U5p/JC5omsFnom9y30rtaM5VDIV1BZ9PTFPfpBYV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GtW/VJdI; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1706920770; x=1738456770;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=PI5AaiKImIamke2x947YdZTAG/oLNmB8JsTt9OqkWnY=;
+  b=GtW/VJdI2uxj/WtyVlMGg8bw89z/01P4fBWhvlqCM914eCED7Y9ay0+6
+   4scKg5N13sVliGI30uC2vGBxn9umOPZzWmAImFRq1dBImOMz000ma1gHO
+   JvMKzBJmM42oed8aWBpMsIhGJlO3+s8KV2XraBAGYyrDEKHc+XY7u071u
+   jMjr6BsapaBgGPV9ZJTPUtdDWDKFJW2XTXMLwvZA8Y9sSXC480KFKb/mB
+   fVA98lpoA4cqFNIM2D193fMRKI0kkyv2aPxR0UdkEWs8k8bqeE9nXhNVc
+   8LYG7hCMu8cDSIE4oV0im7vQSqH/aNO5E5033rN06sFWBfMa0KbbR+rVg
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10971"; a="25728920"
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="25728920"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2024 16:39:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.05,238,1701158400"; 
+   d="scan'208";a="223174"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 02 Feb 2024 16:39:25 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
+ mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+ x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com, "Tim Chen"
+ <tim.c.chen@linux.intel.com>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com
+Subject: Re: [PATCH v7 09/15] x86/sgx: Charge mem_cgroup for per-cgroup
+ reclamation
+References: <20240122172048.11953-1-haitao.huang@linux.intel.com>
+ <20240122172048.11953-10-haitao.huang@linux.intel.com>
+ <ca25d3462944dcea553665d7c85903cdd6a846bc.camel@linux.intel.com>
+Date: Fri, 02 Feb 2024 18:39:23 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-Message-ID: <20240203003414.1067730-1-yosryahmed@google.com>
-Subject: [PATCH mm-hotfixes-unstable] mm: memcg: fix struct
- memcg_vmstats_percpu size and alignment
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeelb@google.com>, 
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>, 
-	Greg Thelen <gthelen@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2ijirxjlwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <ca25d3462944dcea553665d7c85903cdd6a846bc.camel@linux.intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-Commit da10d7e140196 ("mm: memcg: optimize parent iteration in
-memcg_rstat_updated()") added two additional pointers to the end of
-struct memcg_vmstats_percpu with CACHELINE_PADDING to put them in a
-separate cacheline. This caused the struct size to increase from 1200 to
-1280 on my config (80 extra bytes instead of 16).
+Hi Tim,
+On Fri, 02 Feb 2024 17:45:05 -0600, Tim Chen <tim.c.chen@linux.intel.com>  
+wrote:
 
-Upon revisiting, the relevant struct members do not need to be on a
-separate cacheline, they just need to fit in a single one. This is a
-percpu struct, so there shouldn't be any contention on that cacheline
-anyway. Move the members to the beginning of the struct and cachealign
-the first member. Add a comment about the members that need to fit
-together in a cacheline.
+> On Mon, 2024-01-22 at 09:20 -0800, Haitao Huang wrote:
+>>
+>> @@ -1047,29 +1037,38 @@ static struct mem_cgroup  
+>> *sgx_encl_get_mem_cgroup(struct sgx_encl *encl)
+>>   * @encl:	an enclave pointer
+>>   * @page_index:	enclave page index
+>>   * @backing:	data for accessing backing storage for the page
+>> + * @indirect:	in ksgxd or EPC cgroup work queue context
+>> + *
+>> + * Create a backing page for loading data back into an EPC page with  
+>> ELDU. This function takes
+>> + * a reference on a new backing page which must be dropped with a  
+>> corresponding call to
+>> + * sgx_encl_put_backing().
+>>   *
+>> - * When called from ksgxd, sets the active memcg from one of the
+>> - * mms in the enclave's mm_list prior to any backing page allocation,
+>> - * in order to ensure that shmem page allocations are charged to the
+>> - * enclave.  Create a backing page for loading data back into an EPC  
+>> page with
+>> - * ELDU.  This function takes a reference on a new backing page which
+>> - * must be dropped with a corresponding call to sgx_encl_put_backing().
+>> + * When @indirect is true, sets the active memcg from one of the mms  
+>> in the enclave's mm_list
+>> + * prior to any backing page allocation, in order to ensure that shmem  
+>> page allocations are
+>> + * charged to the enclave.
+>>   *
+>>   * Return:
+>>   *   0 on success,
+>>   *   -errno otherwise.
+>>   */
+>>  int sgx_encl_alloc_backing(struct sgx_encl *encl, unsigned long  
+>> page_index,
+>> -			   struct sgx_backing *backing)
+>> +			   struct sgx_backing *backing, bool indirect)
+>>  {
+>> -	struct mem_cgroup *encl_memcg = sgx_encl_get_mem_cgroup(encl);
+>> -	struct mem_cgroup *memcg = set_active_memcg(encl_memcg);
+>> +	struct mem_cgroup *encl_memcg;
+>> +	struct mem_cgroup *memcg;
+>>  	int ret;
+>>
+>> +	if (indirect) {
+>> +		encl_memcg = sgx_encl_get_mem_cgroup(encl);
+>> +		memcg = set_active_memcg(encl_memcg);
+>> +	}
+>> +
+>>  	ret = __sgx_encl_get_backing(encl, page_index, backing);
+>>
+>> -	set_active_memcg(memcg);
+>> -	mem_cgroup_put(encl_memcg);
+>> +	if (indirect) {
+>> +		set_active_memcg(memcg);
+>> +		mem_cgroup_put(encl_memcg);
+>> +	}
+>>
+>
+>
+> You can reduce the number of if statements to make the logic
+> simpler.  Something like
+>
+> 	if (!indirect)
+> 		return __sgx_encl_get_backing(encl, page_index, backing);
+>
+> 	encl_memcg = sgx_encl_get_mem_cgroup(encl);
+> 	memcg = set_active_memcg(encl_memcg);
+> 	ret = __sgx_encl_get_backing(encl, page_index, backing);
+> 	set_active_memcg(memcg);
+> 	mem_cgroup_put(encl_memcg);
+>
+>>  	return ret;
+>
+> Tim
+>
 
-The struct size is now 1216 on my config with this change.
-
-Fixes: da10d7e140196 ("mm: memcg: optimize parent iteration in memcg_rstat_updated()")
-Reported-by: Greg Thelen <gthelen@google.com>
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
----
- mm/memcontrol.c | 19 +++++++++----------
- 1 file changed, 9 insertions(+), 10 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index d9ca0fdbe4ab0..09f09f37e397e 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -621,6 +621,15 @@ static inline int memcg_events_index(enum vm_event_item idx)
- }
- 
- struct memcg_vmstats_percpu {
-+	/* Stats updates since the last flush */
-+	unsigned int			stats_updates ____cacheline_aligned;
-+
-+	/* Cached pointers for fast iteration in memcg_rstat_updated() */
-+	struct memcg_vmstats_percpu	*parent;
-+	struct memcg_vmstats		*vmstats;
-+
-+	/* The above should fit a single cacheline for memcg_rstat_updated() */
-+
- 	/* Local (CPU and cgroup) page state & events */
- 	long			state[MEMCG_NR_STAT];
- 	unsigned long		events[NR_MEMCG_EVENTS];
-@@ -632,16 +641,6 @@ struct memcg_vmstats_percpu {
- 	/* Cgroup1: threshold notifications & softlimit tree updates */
- 	unsigned long		nr_page_events;
- 	unsigned long		targets[MEM_CGROUP_NTARGETS];
--
--	/* Fit members below in a single cacheline for memcg_rstat_updated() */
--	CACHELINE_PADDING(_pad1_);
--
--	/* Stats updates since the last flush */
--	unsigned int		stats_updates;
--
--	/* Cached pointers for fast iteration in memcg_rstat_updated() */
--	struct memcg_vmstats_percpu	*parent;
--	struct memcg_vmstats		*vmstats;
- };
- 
- struct memcg_vmstats {
--- 
-2.43.0.594.gd9cf4e227d-goog
-
+Yes, will do.
+Thanks
+Haitao
 
