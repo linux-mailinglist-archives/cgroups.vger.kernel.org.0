@@ -1,109 +1,223 @@
-Return-Path: <cgroups+bounces-1344-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1345-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 452C184A063
-	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 18:16:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10C6684A297
+	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 19:43:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C42291F235CB
-	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 17:16:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 359761C220D6
+	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 18:43:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7227405FF;
-	Mon,  5 Feb 2024 17:16:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A09ED481AE;
+	Mon,  5 Feb 2024 18:43:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="xKBvo8yv"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LDCODIf9"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C38A44C6B
-	for <cgroups@vger.kernel.org>; Mon,  5 Feb 2024 17:16:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFCDF47F74
+	for <cgroups@vger.kernel.org>; Mon,  5 Feb 2024 18:43:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707153391; cv=none; b=W7Yl6Pu4Ilf9TQLt82X4AC1yzkzng5CTMs3XgcmszmWrllhCzXKYBW752IMhN4o3ileGp+uNWR280Ri0JWMi5LTHKMcQ2UvNW/dfVzkP3ULQdNRMozkEdJVO/eu2v54FSECuy5nLjkClABhDhXNRqoji638QnFmCd2BWmnwN5Fo=
+	t=1707158589; cv=none; b=KbFHz8CYToZCUVy9Mxs2Np5Mi1fW8cjpvstpHoh998mlmWXh+cT0BrqcJvpljPomxwLVNICHoLbYivabzAD7AuczB1R/KJRoHYiEfpVneBeqF63ebmPPfblSGStMAGeS6GGpjTXIwIxldP/kan3kkvOzt+4+XkBP/JN7iUPscf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707153391; c=relaxed/simple;
-	bh=piaR+OlvSafD8F9Muj4jdMl0CtYQbMZ6TzkK428/s98=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=pb8f7QL+xqwS8ySJWIYAfGIPIJ/KuVa1MmMmlkaqqx5ySJ22L7+tigHgG+KtGzWPtGkUsyzejKnFpZ3gQIeUQ6Lemqnb1+TPMnOFruBMabgC4fRan41kZbeBVcHi4LROPB/NYPvnEnDsC3olPqSefyJRp+AFVK/0m0OagmSP/78=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=xKBvo8yv; arc=none smtp.client-ip=209.85.166.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-363bfee81e4so2495745ab.1
-        for <cgroups@vger.kernel.org>; Mon, 05 Feb 2024 09:16:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1707153388; x=1707758188; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Sn9JODr/JoAaSiGEhGpmDiigEzzGF4d02eSYaBgfml0=;
-        b=xKBvo8yvMUDgPC0HrVnmgUyPwvNnjCn76URLRnB8xXGKiE4Of33of9UHg99IwH+y7z
-         5xFE+QhGN0c3y6dGdWcUx5m3H9/KqX2N7/e82jrHve1Oj9ynr6kKTNFJh2Q+YmbnpkgH
-         8gbsQBcInn1FSEXw54Gfw27csdMEeK8JgQHUgP1y9v8G1pM/TrT/b7E6ZIRaZJn+F4fn
-         I+W4kUTezPMz1xtdKJI64VKIH0lMVnnljJTRiS4UJAfzQ+JAAKVomchNScMAbuSkKcj1
-         +15iHAxDnJRV1e4Zwn7A60fwL/sc8jEfjv689CCvqyiGNOZaFcNdU4ksgpKqEI396iDr
-         Q5ow==
+	s=arc-20240116; t=1707158589; c=relaxed/simple;
+	bh=lxH2UkoXhtlULl/zvh0je1dal/ztpt8QeP0kl4G+Vbs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EVUcBe9LeB9ivdMPA0Dghvd0j/GeD9F2xPJkFcW6QYPC6iNtPneB67v91frBDJXIQYWBqNObVrNuXdjejS1bNaZmXAn6TmTLa/lVpa4uZ1KNLkAW1wukPsZoGI//q9NQKka07BP1d8XkJ0RHlPAOc5ncSGN+aoQavUtkhGpp77k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LDCODIf9; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707158586;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LNq6oubwXmqe6ItjQ33y0Ud8zzbj1+GnKVYTNf0QWt4=;
+	b=LDCODIf9ltZ3tRdTQPs5OvjJ9JL43He9NN9YqsGnbJtT6u/qL5S3ZMpQ0HD79pWk4AbMSW
+	OJIZG+zxzO71W5CApXODc7rJ61/FGwjhpExp16DjTzBUH8aJmqcLEIWZoBgufcogbkxFii
+	oo/awuUIvYCHYJXvOPUT3QjGUufmV4A=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-187-JOv9ltT7NrSxahkmaZBDnQ-1; Mon, 05 Feb 2024 13:43:05 -0500
+X-MC-Unique: JOv9ltT7NrSxahkmaZBDnQ-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a26f2da3c7bso275923266b.0
+        for <cgroups@vger.kernel.org>; Mon, 05 Feb 2024 10:43:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707153388; x=1707758188;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Sn9JODr/JoAaSiGEhGpmDiigEzzGF4d02eSYaBgfml0=;
-        b=uJvbEbTQ8zLGmUF8bjg0E1HV2Az1AF3PB/lrLpo7TBBIHkq/TnzBzbo+gmJRBOo2z9
-         yf9vFmSP47DnruBEK8KKGgIiMB5WAHem6X+OSht5ULdUXTlb+Hm1Bvk7c0kwW066FqLj
-         fCAC4ro2TO4nG9FyxWe6SYdJ89uVKGR8DHU5RsOTDIn5LDhnTh5C2F9kPYhXj5IobqQl
-         kMa1dRoneKPm1c+eTY8Y0FuGHH6IjzzT/XEsGkuztE0jucdeMdtVqoUUPFh5dj2OmylU
-         PhytUN1weRCJJm2SdPfKPKgvjDkyMIpOhYwKsRnJqJnIWtFlL6XnEynpL1IM4uSC1w8W
-         QJ3g==
-X-Forwarded-Encrypted: i=1; AJvYcCVKgWNwtfPLKqBnUbCSzbkALGtAPIWrGat6R84alvgyrkT0FyL8z1N9FC3YKeWe9dAfas+qxhtO2Y+ypQzk8TcVXxxzdW9M3g==
-X-Gm-Message-State: AOJu0YzVfC405Rf2lNveVzyCbthnDiuwrrnFxlxH9nFE1nAmTNs0mIO0
-	4oszOa3sxpJ/YZYDeh04U4hRE/jxAPTkakSc/uyoV02p1x+rTyE+VSYpnqilZoY=
-X-Google-Smtp-Source: AGHT+IF9xzHnKqV2+QFxIe4MP6yuw8AhazZJSLemHsDNED3aABwGp5oU+CSGl6UoDPC7tTCpMoE/ew==
-X-Received: by 2002:a92:c26c:0:b0:363:b9d6:126a with SMTP id h12-20020a92c26c000000b00363b9d6126amr439549ild.1.1707153388555;
-        Mon, 05 Feb 2024 09:16:28 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCUrkCvJqfZ0mquUR3S2ekjLknyUXgZyySSTKgxjk3t4MKFUWRnYDJOteX+ZDPI/odTvcid6HF38RUeLjVNFyblhKXUOvxqEoxyKT+tBJhoJkKAqBpME3YIv+Z7DsnuEKv/RupbOLoeyJF33JZnX1n1Q4dVot2qvM/El75dYZSwE8laH4uuthX8oowiYTS4UIEli4Ok3wLs=
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id k1-20020a056e0205a100b00363c4838148sm26844ils.24.2024.02.05.09.16.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 09:16:27 -0800 (PST)
-From: Jens Axboe <axboe@kernel.dk>
-To: tj@kernel.org, Tang Yizhou <yizhou.tang@shopee.com>
-Cc: linux-block@vger.kernel.org, cgroups@vger.kernel.org, 
- linux-kernel@vger.kernel.org, chunguang.xu@shopee.com
-In-Reply-To: <20240123081248.3752878-1-yizhou.tang@shopee.com>
-References: <20240123081248.3752878-1-yizhou.tang@shopee.com>
-Subject: Re: [PATCH] blk-throttle: Eliminate redundant checks for data
- direction
-Message-Id: <170715338749.494668.12422641038980561010.b4-ty@kernel.dk>
-Date: Mon, 05 Feb 2024 10:16:27 -0700
+        d=1e100.net; s=20230601; t=1707158584; x=1707763384;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LNq6oubwXmqe6ItjQ33y0Ud8zzbj1+GnKVYTNf0QWt4=;
+        b=QPaeJZdMMP6XPaoDNVpoxX0mKkvVoD/ZBkOJMjrkXhFg5WQxzWbhzYS7qixslyAIv9
+         wouNHZfoeck7FlTnLn2TRM/bNYnO4/gjkwCqBQRen0XHV+Nm1sOWzocypYOW2RzauB8m
+         fm3KrAOIN1KiPLT0VkmIN6YmUbmy2+KJu1tGkYj8RC7Mwu0f3pdxpXFAFJ3RD3sYzc7v
+         UcNh+NuDKqevtmpV6kEgcA4ThUnMkCbTyMpe4Q7WysgCR2j0/qhE9rjCkIttaP4XKg7x
+         1/qLI8G8x0m2eVPNMaZKPMVNZShts6gaSLwy6bDFSuZi5FAjikIdk4V9JzGdvRsuFExC
+         cOcA==
+X-Gm-Message-State: AOJu0Yx4bHaaNBomoELJeZjSF/GPN1XvP0voIBIf6dNtwJqP3r1TZQi/
+	WR9V29W3TYOEoFNCZOgBGwMVuPRTNTNm5sEs/XzBUx5/1m0yf3AzhPDX1PYqG8VWlIhq5HQGOv3
+	VNf3DUdNVCGMlF5s5XvqPbLAgdaLrmGF5OsFVVgA4c4PigjqTlMKo0Q==
+X-Received: by 2002:a17:906:c291:b0:a32:b376:489d with SMTP id r17-20020a170906c29100b00a32b376489dmr228567ejz.21.1707158584052;
+        Mon, 05 Feb 2024 10:43:04 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHBJJqi+E8gTHS8rAQpA+gl5qKoCPXD/0rXi7vARpqh0DWv7P2ivFSjS3co7lz7OUOuk2D9Nw==
+X-Received: by 2002:a17:906:c291:b0:a32:b376:489d with SMTP id r17-20020a170906c29100b00a32b376489dmr228552ejz.21.1707158583686;
+        Mon, 05 Feb 2024 10:43:03 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCW/539QzZ3CsCBd/dh6u4+Lu0RJ/lNp9RpJ+QdlVC2XRNNKX6VqeLJj50ZJA+N90OsJClBVsg5JNJx2ats/acge24t52SP1Khtr1Zb4g78xgsfghwaFLj1f6AJtfVo6O317uL1HzzNqXxmpy7ECqBJEptEIkKBxTFpYeMwuFd+BML/Xrojv2jMMXM9fitkLsKBmdYff02rTHIy1/9RYeW9KdA+vBiMMFajtXpJ9V3LInGlCjYjlUDdXOvBtO5I7hA45drv3aKenosx8u4UyB41Mz1PLz7aLENeuLx+D1O2uqJitQ5WY2/MWQsxC4hRsJLrtQSEiVEO//auoefGKYicIZXYmMBpZyobmMO+U5/AI7JRZNB4SrfhxFR3pafp6m1NPrmYlSeKc08AuIyTHk9ANC0tpyeniQJ3jCv+QnMgmLtM/kn+0P+/bRaYeDZ6d8IRlYLtr+o3sXelQ5sLfNPgIJKCnYmIVFOljcVjx7+ZUhFi0fAaUSSYmOH5KO46artcSjNhj82irK/HCSLEyg8UvWscGqbKXPwX22XgIsaFBiaZQJE98IoKW/FK5HPxvcKxRAW/5/iKxgZhKCM8KtX0dQCkHll57HIUiJSjrmPsVcn0ucLRS3jgg9lsPvnuDItmph5A4CJHwTnHeAe/8NIIZ8VBicJlP78Sc2dSEOj28GuudM2rMQLEK9T4bEzynKCV2zDJ0K6FcH+gAF302k7BBiiWiEivB
+Received: from [192.168.0.159] (185-219-167-205-static.vivo.cz. [185.219.167.205])
+        by smtp.gmail.com with ESMTPSA id t26-20020a1709066bda00b00a353d1a19a9sm121768ejs.191.2024.02.05.10.43.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Feb 2024 10:43:03 -0800 (PST)
+Message-ID: <afb2fc66-abb4-4010-8120-ada7a6881f89@redhat.com>
+Date: Mon, 5 Feb 2024 19:43:02 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v4 0/3] Annotate kfuncs in .BTF_ids section
+Content-Language: en-US
+To: Manu Bretelle <chantr4@gmail.com>, Jiri Olsa <olsajiri@gmail.com>
+Cc: Daniel Xu <dxu@dxuuu.xyz>, linux-trace-kernel@vger.kernel.org,
+ coreteam@netfilter.org, bpf@vger.kernel.org, linux-input@vger.kernel.org,
+ cgroups@vger.kernel.org, netdev@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-kselftest@vger.kernel.org,
+ linux-doc@vger.kernel.org, fsverity@lists.linux.dev,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ netfilter-devel@vger.kernel.org, alexei.starovoitov@gmail.com,
+ quentin@isovalent.com, alan.maguire@oracle.com, memxor@gmail.com
+References: <cover.1706491398.git.dxu@dxuuu.xyz> <Zb12EZt0BAKOPBk/@surya>
+ <Zb5QWCw3Tg26_MDa@krava> <Zb6Jt30bNcNhM6zR@surya>
+From: Viktor Malik <vmalik@redhat.com>
+In-Reply-To: <Zb6Jt30bNcNhM6zR@surya>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.5-dev-2aabd
 
-
-On Tue, 23 Jan 2024 16:12:48 +0800, Tang Yizhou wrote:
-> After calling throtl_peek_queued(), the data direction can be determined so
-> there is no need to call bio_data_dir() to check the direction again.
+On 2/3/24 19:45, Manu Bretelle wrote:
+> On Sat, Feb 03, 2024 at 03:40:24PM +0100, Jiri Olsa wrote:
+>> On Fri, Feb 02, 2024 at 03:09:05PM -0800, Manu Bretelle wrote:
+>>> On Sun, Jan 28, 2024 at 06:24:05PM -0700, Daniel Xu wrote:
+>>>> === Description ===
+>>>>
+>>>> This is a bpf-treewide change that annotates all kfuncs as such inside
+>>>> .BTF_ids. This annotation eventually allows us to automatically generate
+>>>> kfunc prototypes from bpftool.
+>>>>
+>>>> We store this metadata inside a yet-unused flags field inside struct
+>>>> btf_id_set8 (thanks Kumar!). pahole will be taught where to look.
+>>>>
+>>>> More details about the full chain of events are available in commit 3's
+>>>> description.
+>>>>
+>>>> The accompanying pahole and bpftool changes can be viewed
+>>>> here on these "frozen" branches [0][1].
+>>>>
+>>>> [0]: https://github.com/danobi/pahole/tree/kfunc_btf-v3-mailed
+>>>> [1]: https://github.com/danobi/linux/tree/kfunc_bpftool-mailed
+>>>
+>>>
+>>> I hit a similar issue to [0] on master
+>>> 943b043aeecc ("selftests/bpf: Fix bench runner SIGSEGV")
+>>>  when cross-compiling on x86_64 (LE) to s390x (BE).
+>>> I do have CONFIG_DEBUG_INFO_BTF enable and the issue would not trigger if
+>>> I disabled CONFIG_DEBUG_INFO_BTF (and with the fix mentioned in [0]).
+>>>
+>>> What seems to happen is that `tools/resolve_btfids` is ran in the context of the
+>>> host endianess and if I printk before the WARN_ON:
+>>> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+>>> index ef380e546952..a9ed7a1a4936 100644
+>>>   --- a/kernel/bpf/btf.c
+>>>   +++ b/kernel/bpf/btf.c
+>>>   @@ -8128,6 +8128,7 @@ int register_btf_kfunc_id_set(enum bpf_prog_type prog_type,
+>>>            * WARN() for initcall registrations that do not check errors.
+>>>            */
+>>>           if (!(kset->set->flags & BTF_SET8_KFUNCS)) {
+>>>   +        printk("Flag 0x%08X, expected 0x%08X\n", kset->set->flags, BTF_SET8_KFUNCS);
+>>>                   WARN_ON(!kset->owner);
+>>>                   return -EINVAL;
+>>>           }
+>>>
+>>> the boot logs would show:
+>>>   Flag 0x01000000, expected 0x00000001
+>>>
+>>> The issue did not happen prior to
+>>> 6f3189f38a3e ("bpf: treewide: Annotate BPF kfuncs in BTF")
+>>> has only 0 was written before.
+>>>
+>>> It seems [1] will be addressing cross-compilation, but it did not fix it as is
+>>> by just applying on top of master, so probably some of the changes will also need
+>>> to be ported to `tools/include/linux/btf_ids.h`?
+>>
+>> the fix in [1] is fixing flags in set8's pairs, but not the global flags
+>>
+>> it looks like Viktor's fix should now also swap that as well? like in the
+>> change below on top of Viktor's changes (untested)
+>>
+>> jirka
+>>
+>>
+>> ---
+>> diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids/main.c
+>> index d01603ef6283..c44d57fec390 100644
+>> --- a/tools/bpf/resolve_btfids/main.c
+>> +++ b/tools/bpf/resolve_btfids/main.c
+>> @@ -706,6 +706,8 @@ static int sets_patch(struct object *obj)
+>>  			 * correctly translate everything.
+>>  			 */
+>>  			if (need_bswap) {
+>> +				set8->flags = bswap_32(set8->flags);
+>> +
+>>  				for (i = 0; i < cnt; i++) {
+>>  					set8->pairs[i].flags =
+>>  						bswap_32(set8->pairs[i].flags);
+>>
+> 
+> That should work. Here are a few tests I ran:
+> 
+> $ md5sum /tmp/kbuild-s390x/vmlinux.*
+> eb658e51e089f3c5b2c8909a29dc9997  /tmp/kbuild-s390x/vmlinux.a
+> # plain vmlinux before running resolv_btfids (all 0s)
+> ea907cd46a1a73b8276b5f2a82af00ca  /tmp/kbuild-s390x/vmlinux.before_resolv
+> # x86_64 resolv_btfids on master without Viktor's patch
+> 980a40c3a3ff563d1c2d1ebdd5071a23  /tmp/kbuild-s390x/vmlinux.resolv_native
+> # x86_64 resolv_btfids on master with Viktor's patch
+> b986d19e242719ebea41c578235da662  /tmp/kbuild-s390x/vmlinux.resolv_native_patch_viktor
+> # x86_64 resolv_btfids on master with Viktor's patch and your suggested patch
+> 4edd8752ff01129945bd442689b1927b  /tmp/kbuild-s390x/vmlinux.resolv_native_patch_viktor_patched
+> # s390x resolv_btfids run with qemu-s390x-static
+> 4edd8752ff01129945bd442689b1927b  /tmp/kbuild-s390x/vmlinux.resolv_s390x
 > 
 > 
+> and some hexdiff of those binaries:
+> 
+> 
+> # difference between master's native build and s390x build.... has byte swapping for set8 and others
+> diff -ruN <(xxd /tmp/kbuild-s390x/vmlinux.resolv_s390x) <(xxd /tmp/kbuild-s390x/vmlinux.resolv_native) > diff_s390x_native.diff
+> https://gist.github.com/chantra/c3d58637a08a6f7340953dc155bb18cc
+> 
+> # difference betwee Viktor's version and  s390x build.... squinting my eyes I only see the global set8 is missing
+> diff -ruN <(xxd /tmp/kbuild-s390x/vmlinux.resolv_s390x) <(xxd /tmp/kbuild-s390x/vmlinux.resolv_native_patch_viktor) > diff_s390x_native_viktor.diff
+> https://gist.github.com/chantra/61cfff02b456ae72d3c0161ce1897097
 
-Applied, thanks!
+Thanks for the testing Manu!
 
-[1/1] blk-throttle: Eliminate redundant checks for data direction
-      commit: 3bca7640b4c50621b94365a1746f4b86116fec56
+Jiri's suggested fix is now a part of [1].
 
-Best regards,
--- 
-Jens Axboe
+Viktor
 
+[1] https://lore.kernel.org/bpf/cover.1707157553.git.vmalik@redhat.com/
 
+> 
+> Have a good weekend all!
+> 
+> Manu
+> 
 
 
