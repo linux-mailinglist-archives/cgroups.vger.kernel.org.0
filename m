@@ -1,421 +1,148 @@
-Return-Path: <cgroups+bounces-1365-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1367-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEE0784A870
-	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 23:02:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3519984A882
+	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 23:05:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D225A1C291FD
-	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 22:02:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C81B71F2CBB7
+	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 22:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EBDC14E2EE;
-	Mon,  5 Feb 2024 21:06:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F2AC1AB812;
+	Mon,  5 Feb 2024 21:16:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UzZGloKS"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="k2QTPAlp";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="k2QTPAlp"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7DF814A0A9;
-	Mon,  5 Feb 2024 21:06:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E7451AB806;
+	Mon,  5 Feb 2024 21:16:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707167212; cv=none; b=kWLOujLFw93IhPxHFKxWoY9VL88wACqsMcKAwgmfBfDKkS2tzRbeVPBD5j5zZCdSdWgVe5CzhWfh6dpb9sWV9CvnS5MRhUv3F9c5dl3jJ9a7/8SHDMrwIr2U5AT1MSTHnTZ/IzpNwXUce+4LtgGa+ELA1GCpES4KGvJfejZRxKI=
+	t=1707167799; cv=none; b=l55TFodvNvHpU+AIfFiBJdfyuY3NRr4x1sNPYz9cZdhHex0csTlMJQLqSs9eZIqE9tcRuY/+ahDGpnXKWNyQxxp0QGBZeyh+2J4EKrM0xHA/bl8jQFZCFT5ypfc6oUPXtl/vr0NkR689iDh6hFWPwr4hWosLUrAHfhaDiPm/tvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707167212; c=relaxed/simple;
-	bh=yOWHglLZ1B+fQRkP+rpuHciUQYdwgtTPy4iyogRW/R4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PHluMNNaGr49WYLXLbXmwZ3FQEN/4ZGYBWSRqmAPprybNEFFwtUzlNsl7mBAck+7iEKUmu6zOrzSNkq3DgpnsJ4LOswPx2/P6ta8xkepdH/Q5SMw57EA9uscqoemXzP0BUtY0H3gmQSEtgPChhNbODqP3yqCJryyksStBFWXFoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UzZGloKS; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707167211; x=1738703211;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=yOWHglLZ1B+fQRkP+rpuHciUQYdwgtTPy4iyogRW/R4=;
-  b=UzZGloKSrmVOGb1qfscDN3gNpii5iGbxGBfR4H9WH0UuvsVxAKyh6mVl
-   k0eurpiaDj5xcg95eKWH2cbmU2Y2k7sxjZAUEQFsTTjdpDJqRYgp0rOGv
-   6oj9BNOrr2iLPcbNT86Gdj5V8yG7e/2hFyF4n05sNkJcSTTV2E/ASvZOJ
-   Xks8T9DUBO4yjf9YaL8zg9f2ekxOacTCiXNCn04N4ut2oE2H745Q5nie1
-   +nfMXILcWH1PnesgdwIdyk/d8tbKzPlGIRfiW7zbku4dikc2sxzPKIM1c
-   FxfYSIdN0UdFG+T/RPdsjOvmfqYdBefvKsXNj4Ca7nFfVk9bzU9QNhOqX
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="11960485"
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="11960485"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 13:06:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="38245658"
-Received: from b4969161e530.jf.intel.com ([10.165.56.46])
-  by orviesa001.jf.intel.com with ESMTP; 05 Feb 2024 13:06:43 -0800
-From: Haitao Huang <haitao.huang@linux.intel.com>
-To: jarkko@kernel.org,
-	dave.hansen@linux.intel.com,
-	tj@kernel.org,
-	mkoutny@suse.com,
-	linux-kernel@vger.kernel.org,
-	linux-sgx@vger.kernel.org,
-	x86@kernel.org,
-	cgroups@vger.kernel.org,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	hpa@zytor.com,
-	sohil.mehta@intel.com,
-	tim.c.chen@linux.intel.com
-Cc: zhiquan1.li@intel.com,
-	kristen@linux.intel.com,
-	seanjc@google.com,
-	zhanb@microsoft.com,
-	anakrish@microsoft.com,
-	mikko.ylinen@linux.intel.com,
-	yangjie@microsoft.com,
-	chrisyan@microsoft.com
-Subject: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup testing
-Date: Mon,  5 Feb 2024 13:06:38 -0800
-Message-Id: <20240205210638.157741-16-haitao.huang@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240205210638.157741-1-haitao.huang@linux.intel.com>
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+	s=arc-20240116; t=1707167799; c=relaxed/simple;
+	bh=w+LuAn4eMxEN1OrwnjXfkUZofNi+HXJroO9FLryNtL4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D4v8WBqwuh/JcQzY9v/cCXx/sR9ShlmsxKgb9891QHFrk//HQMjc/kAkCucbYUow/5SIJt4SsEVzGneuzJp+yahnbrYEQ74KJFIIAJ3d0xh36IKnLdYs6LcmscWFxAoT1ELi9kMEk47vG1IOKYs2rCbGbJdPjWahcKmq5ao1BIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=k2QTPAlp; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=k2QTPAlp; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 52B1021FB3;
+	Mon,  5 Feb 2024 21:16:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707167795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UqjQ8uzPWkoXvaP3jSmRX0mX+6vg7iSnhNElmOf67RA=;
+	b=k2QTPAlpUZx9xWdcIwXtXXDq0RS18tpEXYVMAwgeXgBnBYJefWMYQ93JLDFkCalSq3ycUy
+	VZAEpeop+Dxd1H2y4UYD/k2bR0lxrH87nVnAGgfJdz4CSRW/671XL7U+K2ActeCA0IKwI6
+	nBokQeUPwfSSneyy/npR/ngpYbv+j+0=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707167795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UqjQ8uzPWkoXvaP3jSmRX0mX+6vg7iSnhNElmOf67RA=;
+	b=k2QTPAlpUZx9xWdcIwXtXXDq0RS18tpEXYVMAwgeXgBnBYJefWMYQ93JLDFkCalSq3ycUy
+	VZAEpeop+Dxd1H2y4UYD/k2bR0lxrH87nVnAGgfJdz4CSRW/671XL7U+K2ActeCA0IKwI6
+	nBokQeUPwfSSneyy/npR/ngpYbv+j+0=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2F00A132DD;
+	Mon,  5 Feb 2024 21:16:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id tIwCCTNQwWWHUwAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Mon, 05 Feb 2024 21:16:35 +0000
+Date: Mon, 5 Feb 2024 22:16:34 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com,
+	yuzhao@google.com, mkoutny@suse.com,
+	Yosry Ahmed <yosryahmed@google.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm: memcg: Use larger batches for proactive reclaim
+Message-ID: <ZcFQMru5_oATGbuP@tiehlicka>
+References: <20240202233855.1236422-1-tjmercier@google.com>
+ <ZcC7Kgew3GDFNIux@tiehlicka>
+ <CABdmKX3HbSxX6zLF4z3f+=Ybiq1bA71jckkeHv5QJxAjSexgaA@mail.gmail.com>
+ <ZcE5n9cTdTGJChmq@tiehlicka>
+ <CABdmKX0Du2F+bko=hjLBqdQO-bJSFcG3y1Bbuu2v6J8aVB39sw@mail.gmail.com>
+ <ZcFG2JoXI7i8XzQY@tiehlicka>
+ <CABdmKX0t1LXj80Awe20TrmY5gQB6v2E4bGfW8WXr2i84o+k6ow@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABdmKX0t1LXj80Awe20TrmY5gQB6v2E4bGfW8WXr2i84o+k6ow@mail.gmail.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [0.28 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.12)[66.62%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: 0.28
 
-The scripts rely on cgroup-tools package from libcgroup [1].
+On Mon 05-02-24 12:47:47, T.J. Mercier wrote:
+> On Mon, Feb 5, 2024 at 12:36 PM Michal Hocko <mhocko@suse.com> wrote:
+[...]
+> > This of something like
+> > timeout $TIMEOUT echo $TARGET > $MEMCG_PATH/memory.reclaim
+> > where timeout acts as a stop gap if the reclaim cannot finish in
+> > TIMEOUT.
+> 
+> Yeah I get the desired behavior, but using sc->nr_reclaimed to achieve
+> it is what's bothering me.
 
-To run selftests for epc cgroup:
+I am not really happy about this subtlety. If we have a better way then
+let's do it. Better in its own patch, though.
 
-sudo ./run_epc_cg_selftests.sh
+> It's already wired up that way though, so if you want to make this
+> change now then I can try to test for the difference using really
+> large reclaim targets.
 
-To watch misc cgroup 'current' changes during testing, run this in a
-separate terminal:
+Yes, please. If you want it a separate patch then no objection from me
+of course. If you do no like the nr_to_reclaim bailout then maybe we can
+go with a simple break out flag in scan_control.
 
-./watch_misc_for_tests.sh current
-
-With different cgroups, the script starts one or multiple concurrent SGX
-selftests, each to run one unclobbered_vdso_oversubscribed test.  Each
-of such test tries to load an enclave of EPC size equal to the EPC
-capacity available on the platform. The script checks results against
-the expectation set for each cgroup and reports success or failure.
-
-The script creates 3 different cgroups at the beginning with following
-expectations:
-
-1) SMALL - intentionally small enough to fail the test loading an
-enclave of size equal to the capacity.
-2) LARGE - large enough to run up to 4 concurrent tests but fail some if
-more than 4 concurrent tests are run. The script starts 4 expecting at
-least one test to pass, and then starts 5 expecting at least one test
-to fail.
-3) LARGER - limit is the same as the capacity, large enough to run lots of
-concurrent tests. The script starts 8 of them and expects all pass.
-Then it reruns the same test with one process randomly killed and
-usage checked to be zero after all process exit.
-
-The script also includes a test with low mem_cg limit and LARGE sgx_epc
-limit to verify that the RAM used for per-cgroup reclamation is charged
-to a proper mem_cg.
-
-[1] https://github.com/libcgroup/libcgroup/blob/main/README
-
-Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
----
-V7:
-- Added memcontrol test.
-
-V5:
-- Added script with automatic results checking, remove the interactive
-script.
-- The script can run independent from the series below.
----
- .../selftests/sgx/run_epc_cg_selftests.sh     | 246 ++++++++++++++++++
- .../selftests/sgx/watch_misc_for_tests.sh     |  13 +
- 2 files changed, 259 insertions(+)
- create mode 100755 tools/testing/selftests/sgx/run_epc_cg_selftests.sh
- create mode 100755 tools/testing/selftests/sgx/watch_misc_for_tests.sh
-
-diff --git a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-new file mode 100755
-index 000000000000..e027bf39f005
---- /dev/null
-+++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-@@ -0,0 +1,246 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright(c) 2023 Intel Corporation.
-+
-+TEST_ROOT_CG=selftest
-+cgcreate -g misc:$TEST_ROOT_CG
-+if [ $? -ne 0 ]; then
-+    echo "# Please make sure cgroup-tools is installed, and misc cgroup is mounted."
-+    exit 1
-+fi
-+TEST_CG_SUB1=$TEST_ROOT_CG/test1
-+TEST_CG_SUB2=$TEST_ROOT_CG/test2
-+# We will only set limit in test1 and run tests in test3
-+TEST_CG_SUB3=$TEST_ROOT_CG/test1/test3
-+TEST_CG_SUB4=$TEST_ROOT_CG/test4
-+
-+cgcreate -g misc:$TEST_CG_SUB1
-+cgcreate -g misc:$TEST_CG_SUB2
-+cgcreate -g misc:$TEST_CG_SUB3
-+cgcreate -g misc:$TEST_CG_SUB4
-+
-+# Default to V2
-+CG_MISC_ROOT=/sys/fs/cgroup
-+CG_MEM_ROOT=/sys/fs/cgroup
-+CG_V1=0
-+if [ ! -d "/sys/fs/cgroup/misc" ]; then
-+    echo "# cgroup V2 is in use."
-+else
-+    echo "# cgroup V1 is in use."
-+    CG_MISC_ROOT=/sys/fs/cgroup/misc
-+    CG_MEM_ROOT=/sys/fs/cgroup/memory
-+    CG_V1=1
-+fi
-+
-+CAPACITY=$(grep "sgx_epc" "$CG_MISC_ROOT/misc.capacity" | awk '{print $2}')
-+# This is below number of VA pages needed for enclave of capacity size. So
-+# should fail oversubscribed cases
-+SMALL=$(( CAPACITY / 512 ))
-+
-+# At least load one enclave of capacity size successfully, maybe up to 4.
-+# But some may fail if we run more than 4 concurrent enclaves of capacity size.
-+LARGE=$(( SMALL * 4 ))
-+
-+# Load lots of enclaves
-+LARGER=$CAPACITY
-+echo "# Setting up limits."
-+echo "sgx_epc $SMALL" > $CG_MISC_ROOT/$TEST_CG_SUB1/misc.max
-+echo "sgx_epc $LARGE" >  $CG_MISC_ROOT/$TEST_CG_SUB2/misc.max
-+echo "sgx_epc $LARGER" > $CG_MISC_ROOT/$TEST_CG_SUB4/misc.max
-+
-+timestamp=$(date +%Y%m%d_%H%M%S)
-+
-+test_cmd="./test_sgx -t unclobbered_vdso_oversubscribed"
-+
-+wait_check_process_status() {
-+    local pid=$1
-+    local check_for_success=$2  # If 1, check for success;
-+                                # If 0, check for failure
-+    wait "$pid"
-+    local status=$?
-+
-+    if [[ $check_for_success -eq 1 && $status -eq 0 ]]; then
-+        echo "# Process $pid succeeded."
-+        return 0
-+    elif [[ $check_for_success -eq 0 && $status -ne 0 ]]; then
-+        echo "# Process $pid returned failure."
-+        return 0
-+    fi
-+    return 1
-+}
-+
-+wait_and_detect_for_any() {
-+    local pids=("$@")
-+    local check_for_success=$1  # If 1, check for success;
-+                                # If 0, check for failure
-+    local detected=1 # 0 for success detection
-+
-+    for pid in "${pids[@]:1}"; do
-+        if wait_check_process_status "$pid" "$check_for_success"; then
-+            detected=0
-+            # Wait for other processes to exit
-+        fi
-+    done
-+
-+    return $detected
-+}
-+
-+echo "# Start unclobbered_vdso_oversubscribed with SMALL limit, expecting failure..."
-+# Always use leaf node of misc cgroups so it works for both v1 and v2
-+# these may fail on OOM
-+cgexec -g misc:$TEST_CG_SUB3 $test_cmd >cgtest_small_$timestamp.log 2>&1
-+if [[ $? -eq 0 ]]; then
-+    echo "# Fail on SMALL limit, not expecting any test passes."
-+    cgdelete -r -g misc:$TEST_ROOT_CG
-+    exit 1
-+else
-+    echo "# Test failed as expected."
-+fi
-+
-+echo "# PASSED SMALL limit."
-+
-+echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with LARGE limit,
-+        expecting at least one success...."
-+
-+pids=()
-+for i in {1..4}; do
-+    (
-+        cgexec -g misc:$TEST_CG_SUB2 $test_cmd >cgtest_large_positive_$timestamp.$i.log 2>&1
-+    ) &
-+    pids+=($!)
-+done
-+
-+
-+if wait_and_detect_for_any 1 "${pids[@]}"; then
-+    echo "# PASSED LARGE limit positive testing."
-+else
-+    echo "# Failed on LARGE limit positive testing, no test passes."
-+    cgdelete -r -g misc:$TEST_ROOT_CG
-+    exit 1
-+fi
-+
-+echo "# Start 5 concurrent unclobbered_vdso_oversubscribed tests with LARGE limit,
-+        expecting at least one failure...."
-+pids=()
-+for i in {1..5}; do
-+    (
-+        cgexec -g misc:$TEST_CG_SUB2 $test_cmd >cgtest_large_negative_$timestamp.$i.log 2>&1
-+    ) &
-+    pids+=($!)
-+done
-+
-+if wait_and_detect_for_any 0 "${pids[@]}"; then
-+    echo "# PASSED LARGE limit negative testing."
-+else
-+    echo "# Failed on LARGE limit negative testing, no test fails."
-+    cgdelete -r -g misc:$TEST_ROOT_CG
-+    exit 1
-+fi
-+
-+echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with LARGER limit,
-+        expecting no failure...."
-+pids=()
-+for i in {1..8}; do
-+    (
-+        cgexec -g misc:$TEST_CG_SUB4 $test_cmd >cgtest_larger_$timestamp.$i.log 2>&1
-+    ) &
-+    pids+=($!)
-+done
-+
-+if wait_and_detect_for_any 0 "${pids[@]}"; then
-+    echo "# Failed on LARGER limit, at least one test fails."
-+    cgdelete -r -g misc:$TEST_ROOT_CG
-+    exit 1
-+else
-+    echo "# PASSED LARGER limit tests."
-+fi
-+
-+echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with LARGER limit,
-+      randomly kill one, expecting no failure...."
-+pids=()
-+for i in {1..8}; do
-+    (
-+        cgexec -g misc:$TEST_CG_SUB4 $test_cmd >cgtest_larger_kill_$timestamp.$i.log 2>&1
-+    ) &
-+    pids+=($!)
-+done
-+
-+sleep $((RANDOM % 10 + 5))
-+
-+# Randomly select a PID to kill
-+RANDOM_INDEX=$((RANDOM % 8))
-+PID_TO_KILL=${pids[RANDOM_INDEX]}
-+
-+kill $PID_TO_KILL
-+echo "# Killed process with PID: $PID_TO_KILL"
-+
-+any_failure=0
-+for pid in "${pids[@]}"; do
-+    wait "$pid"
-+    status=$?
-+    if [ "$pid" != "$PID_TO_KILL" ]; then
-+        if [[ $status -ne 0 ]]; then
-+	    echo "# Process $pid returned failure."
-+            any_failure=1
-+        fi
-+    fi
-+done
-+
-+if [[ $any_failure -ne 0 ]]; then
-+    echo "# Failed on random killing, at least one test fails."
-+    cgdelete -r -g misc:$TEST_ROOT_CG
-+    exit 1
-+fi
-+echo "# PASSED LARGER limit test with a process randomly killed."
-+
-+cgcreate -g memory:$TEST_CG_SUB2
-+if [ $? -ne 0 ]; then
-+    echo "# Failed creating memory controller."
-+    cgdelete -r -g misc:$TEST_ROOT_CG
-+    exit 1
-+fi
-+MEM_LIMIT_TOO_SMALL=$((CAPACITY - 2 * LARGE))
-+
-+if [[ $CG_V1 -eq 0 ]]; then
-+    echo "$MEM_LIMIT_TOO_SMALL" > $CG_MEM_ROOT/$TEST_CG_SUB2/memory.max
-+else
-+    echo "$MEM_LIMIT_TOO_SMALL" > $CG_MEM_ROOT/$TEST_CG_SUB2/memory.limit_in_bytes
-+    echo "$MEM_LIMIT_TOO_SMALL" > $CG_MEM_ROOT/$TEST_CG_SUB2/memory.memsw.limit_in_bytes
-+fi
-+
-+echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with LARGE EPC limit,
-+        and too small RAM limit, expecting all failures...."
-+pids=()
-+for i in {1..4}; do
-+    (
-+        cgexec -g memory:$TEST_CG_SUB2 -g misc:$TEST_CG_SUB2 $test_cmd \
-+               >cgtest_large_oom_$timestamp.$i.log 2>&1
-+    ) &
-+    pids+=($!)
-+done
-+
-+if wait_and_detect_for_any 1 "${pids[@]}"; then
-+    echo "# Failed on tests with memcontrol, some tests did not fail."
-+    cgdelete -r -g misc:$TEST_ROOT_CG
-+    if [[ $CG_V1 -ne 0 ]]; then
-+        cgdelete -r -g memory:$TEST_ROOT_CG
-+    fi
-+    exit 1
-+else
-+    echo "# PASSED LARGE limit tests with memcontrol."
-+fi
-+
-+sleep 2
-+
-+USAGE=$(grep '^sgx_epc' "$CG_MISC_ROOT/$TEST_ROOT_CG/misc.current" | awk '{print $2}')
-+if [ "$USAGE" -ne 0 ]; then
-+    echo "# Failed: Final usage is $USAGE, not 0."
-+else
-+    echo "# PASSED leakage check."
-+    echo "# PASSED ALL cgroup limit tests, cleanup cgroups..."
-+fi
-+cgdelete -r -g misc:$TEST_ROOT_CG
-+if [[ $CG_V1 -ne 0 ]]; then
-+     cgdelete -r -g memory:$TEST_ROOT_CG
-+fi
-+echo "# done."
-diff --git a/tools/testing/selftests/sgx/watch_misc_for_tests.sh b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
-new file mode 100755
-index 000000000000..dbd38f346e7b
---- /dev/null
-+++ b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
-@@ -0,0 +1,13 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright(c) 2023 Intel Corporation.
-+
-+if [ -z "$1" ]
-+  then
-+    echo "No argument supplied, please provide 'max', 'current' or 'events'"
-+    exit 1
-+fi
-+
-+watch -n 1 "find /sys/fs/cgroup -wholename */test*/misc.$1 -exec sh -c \
-+    'echo \"\$1:\"; cat \"\$1\"' _ {} \;"
-+
+Thanks!
 -- 
-2.25.1
-
+Michal Hocko
+SUSE Labs
 
