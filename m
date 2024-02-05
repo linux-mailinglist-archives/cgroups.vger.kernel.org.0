@@ -1,59 +1,59 @@
-Return-Path: <cgroups+bounces-1358-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1355-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF66C84A861
-	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 23:00:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C951D84A85A
+	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 23:00:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 62CCE1F2B2B9
-	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 22:00:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BA2728F982
+	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 22:00:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6602B1482E1;
-	Mon,  5 Feb 2024 21:06:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9448E14462B;
+	Mon,  5 Feb 2024 21:06:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KTxT9ezv"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bUwyv+Rn"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A02144623;
-	Mon,  5 Feb 2024 21:06:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FF4B1420AF;
+	Mon,  5 Feb 2024 21:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707167208; cv=none; b=HleW/Ed9+nnNxOgcxs0g1QHTPpibngUMaqalcu9GgU+aecRIRBzuev/oL2TBa4En5d3ValGWdsdGAckCnnO2dYPcSVV8QrefAhLFfyQxuinS9SBxAVshgebDlhyvyazue/vZkK3wDUn4mj+Al4AG6Mv1N0t9zA1RIIT8niWKZno=
+	t=1707167206; cv=none; b=njntB9HB3fYkuH93iCmZNC97RkvirOK1SHyCCTySzeLhg75IJ3PbUcV5r3DWO7Fr/m7Hhx0iHRX8zLzz5thl07JlEC+Z1dQVTBevrOR1uqplz1qt2iKY3Cu7GkbZGMmVUYFBZWuSILJT14qOZyxbX5ZRlCEDiDWIh5l0wBC19Mc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707167208; c=relaxed/simple;
-	bh=ZwhQ8rGrkYGE4Cq6ve+NL1Ph2G7gIbD0pcvXlPmoUGk=;
+	s=arc-20240116; t=1707167206; c=relaxed/simple;
+	bh=CT/6JGPWjxMvj1JlVfSUdNt8xUVPb/vuGjvVCy3cR3A=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hWeMbXWm42akiC94f+xvjLDDS4mVmzHk7Yz4sIOKVatiOrwl0whz+1I7IcAuPFhbuBqN5L/jvK4bVqknIhGIX58fjCS1q1s4SEa1qaGN9INr+2zE9YHb4mtfRPAphZ2L3FAKxyvEWUmE2Bm5xeoaE8V+Gz+U9p8nR+qzXRD2PNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KTxT9ezv; arc=none smtp.client-ip=198.175.65.12
+	 MIME-Version; b=e4kjBPdEaOu8ZmrjmYFDGFUP87jKFHqhb5pviXMOzDN0q+jalTU/l1/wpIOVpLluvOXkU9F+BiUNaXjeX3syUh2mk4b2u7xZ2A1DB0ulqGrSsNlpVt5ZxQeGAZSd1fG5F5JjG/bYSaAW0sOX8aXdu1hsD+wS8+Ray6fRgcbnCVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bUwyv+Rn; arc=none smtp.client-ip=198.175.65.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1707167207; x=1738703207;
+  t=1707167205; x=1738703205;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=ZwhQ8rGrkYGE4Cq6ve+NL1Ph2G7gIbD0pcvXlPmoUGk=;
-  b=KTxT9ezvpZkqHitPMfWqbTTaF5hgBlYrBjMD89MSZgHAeRLrLr/Gs9xx
-   IZwTOD2fIEm+hdsKl9vZn4abwlB4mPHvCb4L7dVRC8AF2Lx2/fPaU3tg0
-   nEP2l4ymoKotnPDLlfKH4TwhtfKQTNO6UPvrSDbrJI8A9ebWERSlalaEC
-   r+dyjGBjXPz1/m2iPCtOqf+UDUWmacBXDTcnUnrE2rBZyzttgsqkx9u7/
-   yCzsD8ksXMWW9nLjAjn0/7+gfuSIv/T2ULSK8Os0IbPVW8E80oxq9iUH8
-   NVY0uiWp4Ms3JmRirtGx522w91FDoaaTTM53Y8KmNy0FUR8f9dZgF5IOA
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="11960418"
+  bh=CT/6JGPWjxMvj1JlVfSUdNt8xUVPb/vuGjvVCy3cR3A=;
+  b=bUwyv+RnH+DRRmqLnpFZgHr+OfrwCta70LbJqLfCBMgZIECsc4X3BDc+
+   YHvOEVkbeBBB+86NdLhu5cpbQwQB2scLzHY8WYMDC7NCCWNMjhEwYKXEr
+   KAsH7fpFyaZOK09T02P9NubsprXkg/hbnyP5z3nqmPBBVs2nn1Hw8U9Wj
+   P+aJXMP+PoVQSLn5787psHlwWhQH1WDENgKuLQTw0QOGrD9GjurkL3HCk
+   Wt+xqm71yfK8U5igcGfoRj2TrTqGIpjGzxDkHQREO7Fh2mRr0h6hayvoW
+   nQfN/9ZyYZRzER8CJpDp7s+hbTBYDTTtZ0KqGaCjyS3YFj4EV3af+OLRX
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10975"; a="11960403"
 X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="11960418"
+   d="scan'208";a="11960403"
 Received: from orviesa001.jf.intel.com ([10.64.159.141])
   by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2024 13:06:42 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.05,245,1701158400"; 
-   d="scan'208";a="38245622"
+   d="scan'208";a="38245626"
 Received: from b4969161e530.jf.intel.com ([10.165.56.46])
-  by orviesa001.jf.intel.com with ESMTP; 05 Feb 2024 13:06:40 -0800
+  by orviesa001.jf.intel.com with ESMTP; 05 Feb 2024 13:06:41 -0800
 From: Haitao Huang <haitao.huang@linux.intel.com>
 To: jarkko@kernel.org,
 	dave.hansen@linux.intel.com,
@@ -77,9 +77,9 @@ Cc: zhiquan1.li@intel.com,
 	mikko.ylinen@linux.intel.com,
 	yangjie@microsoft.com,
 	chrisyan@microsoft.com
-Subject: [PATCH v9 05/15] x86/sgx: Add sgx_epc_lru_list to encapsulate LRU list
-Date: Mon,  5 Feb 2024 13:06:28 -0800
-Message-Id: <20240205210638.157741-6-haitao.huang@linux.intel.com>
+Subject: [PATCH v9 06/15] x86/sgx: Abstract tracking reclaimable pages in LRU
+Date: Mon,  5 Feb 2024 13:06:29 -0800
+Message-Id: <20240205210638.157741-7-haitao.huang@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240205210638.157741-1-haitao.huang@linux.intel.com>
 References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
@@ -91,190 +91,112 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+From: Kristen Carlson Accardi <kristen@linux.intel.com>
 
-Introduce a data structure to wrap the existing reclaimable list and its
-spinlock. Each cgroup later will have one instance of this structure to
-track EPC pages allocated for processes associated with the same cgroup.
-Just like the global SGX reclaimer (ksgxd), an EPC cgroup reclaims pages
-from the reclaimable list in this structure when its usage reaches near
-its limit.
+The functions, sgx_{mark,unmark}_page_reclaimable(), manage the tracking
+of reclaimable EPC pages: sgx_mark_page_reclaimable() adds a newly
+allocated page into the global LRU list while
+sgx_unmark_page_reclaimable() does the opposite. Abstract the hard coded
+global LRU references in these functions to make them reusable when
+pages are tracked in per-cgroup LRUs.
 
-Use this structure to encapsulate the LRU list and its lock used by the
-global reclaimer.
+Create a helper, sgx_lru_list(), that returns the LRU that tracks a given
+EPC page. It simply returns the global LRU now, and will later return
+the LRU of the cgroup within which the EPC page was allocated. Replace
+the hard coded global LRU with a call to this helper.
 
+Next patches will first get the cgroup reclamation flow ready while
+keeping pages tracked in the global LRU and reclaimed by ksgxd before we
+make the switch in the end for sgx_lru_list() to return per-cgroup
+LRU.
+
+Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
 Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Co-developed-by: Kristen Carlson Accardi <kristen@linux.intel.com>
 Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
 Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
 Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-Cc: Sean Christopherson <seanjc@google.com>
 Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 ---
-V6:
-- removed introduction to unreclaimables in commit message.
-
-V4:
-- Removed unneeded comments for the spinlock and the non-reclaimables.
-(Kai, Jarkko)
-- Revised the commit to add introduction comments for unreclaimables and
-multiple LRU lists.(Kai)
-- Reordered the patches: delay all changes for unreclaimables to
-later, and this one becomes the first change in the SGX subsystem.
-
-V3:
-- Removed the helper functions and revised commit messages.
+V7:
+- Split this out from the big patch, #10 in V6. (Dave, Kai)
 ---
- arch/x86/kernel/cpu/sgx/main.c | 39 +++++++++++++++++-----------------
- arch/x86/kernel/cpu/sgx/sgx.h  | 15 +++++++++++++
- 2 files changed, 35 insertions(+), 19 deletions(-)
+ arch/x86/kernel/cpu/sgx/main.c | 30 ++++++++++++++++++------------
+ 1 file changed, 18 insertions(+), 12 deletions(-)
 
 diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index c32f18b70c73..912959c7ecc9 100644
+index 912959c7ecc9..a131aa985c95 100644
 --- a/arch/x86/kernel/cpu/sgx/main.c
 +++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -28,10 +28,9 @@ static DEFINE_XARRAY(sgx_epc_address_space);
- 
- /*
-  * These variables are part of the state of the reclaimer, and must be accessed
-- * with sgx_reclaimer_lock acquired.
-+ * with sgx_global_lru.lock acquired.
+@@ -32,6 +32,11 @@ static DEFINE_XARRAY(sgx_epc_address_space);
   */
--static LIST_HEAD(sgx_active_page_list);
--static DEFINE_SPINLOCK(sgx_reclaimer_lock);
-+static struct sgx_epc_lru_list sgx_global_lru;
+ static struct sgx_epc_lru_list sgx_global_lru;
  
++static inline struct sgx_epc_lru_list *sgx_lru_list(struct sgx_epc_page *epc_page)
++{
++	return &sgx_global_lru;
++}
++
  static atomic_long_t sgx_nr_free_pages = ATOMIC_LONG_INIT(0);
  
-@@ -306,13 +305,13 @@ static void sgx_reclaim_pages(void)
- 	int ret;
- 	int i;
- 
--	spin_lock(&sgx_reclaimer_lock);
-+	spin_lock(&sgx_global_lru.lock);
- 	for (i = 0; i < SGX_NR_TO_SCAN; i++) {
--		if (list_empty(&sgx_active_page_list))
-+		epc_page = list_first_entry_or_null(&sgx_global_lru.reclaimable,
-+						    struct sgx_epc_page, list);
-+		if (!epc_page)
- 			break;
- 
--		epc_page = list_first_entry(&sgx_active_page_list,
--					    struct sgx_epc_page, list);
- 		list_del_init(&epc_page->list);
- 		encl_page = epc_page->owner;
- 
-@@ -324,7 +323,7 @@ static void sgx_reclaim_pages(void)
- 			 */
- 			epc_page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
- 	}
--	spin_unlock(&sgx_reclaimer_lock);
-+	spin_unlock(&sgx_global_lru.lock);
- 
- 	for (i = 0; i < cnt; i++) {
- 		epc_page = chunk[i];
-@@ -347,9 +346,9 @@ static void sgx_reclaim_pages(void)
- 		continue;
- 
- skip:
--		spin_lock(&sgx_reclaimer_lock);
--		list_add_tail(&epc_page->list, &sgx_active_page_list);
--		spin_unlock(&sgx_reclaimer_lock);
-+		spin_lock(&sgx_global_lru.lock);
-+		list_add_tail(&epc_page->list, &sgx_global_lru.reclaimable);
-+		spin_unlock(&sgx_global_lru.lock);
- 
- 		kref_put(&encl_page->encl->refcount, sgx_encl_release);
- 
-@@ -380,7 +379,7 @@ static void sgx_reclaim_pages(void)
- static bool sgx_should_reclaim(unsigned long watermark)
- {
- 	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
--	       !list_empty(&sgx_active_page_list);
-+	       !list_empty(&sgx_global_lru.reclaimable);
- }
- 
- /*
-@@ -432,6 +431,8 @@ static bool __init sgx_page_reclaimer_init(void)
- 
- 	ksgxd_tsk = tsk;
- 
-+	sgx_lru_init(&sgx_global_lru);
-+
- 	return true;
- }
- 
-@@ -507,10 +508,10 @@ struct sgx_epc_page *__sgx_alloc_epc_page(void)
-  */
- void sgx_mark_page_reclaimable(struct sgx_epc_page *page)
- {
--	spin_lock(&sgx_reclaimer_lock);
-+	spin_lock(&sgx_global_lru.lock);
- 	page->flags |= SGX_EPC_PAGE_RECLAIMER_TRACKED;
--	list_add_tail(&page->list, &sgx_active_page_list);
--	spin_unlock(&sgx_reclaimer_lock);
-+	list_add_tail(&page->list, &sgx_global_lru.reclaimable);
-+	spin_unlock(&sgx_global_lru.lock);
+ /* Nodes with one or more EPC sections. */
+@@ -500,25 +505,24 @@ struct sgx_epc_page *__sgx_alloc_epc_page(void)
  }
  
  /**
-@@ -525,18 +526,18 @@ void sgx_mark_page_reclaimable(struct sgx_epc_page *page)
+- * sgx_mark_page_reclaimable() - Mark a page as reclaimable
++ * sgx_mark_page_reclaimable() - Mark a page as reclaimable and track it in a LRU.
+  * @page:	EPC page
+- *
+- * Mark a page as reclaimable and add it to the active page list. Pages
+- * are automatically removed from the active list when freed.
+  */
+ void sgx_mark_page_reclaimable(struct sgx_epc_page *page)
+ {
+-	spin_lock(&sgx_global_lru.lock);
++	struct sgx_epc_lru_list *lru = sgx_lru_list(page);
++
++	spin_lock(&lru->lock);
+ 	page->flags |= SGX_EPC_PAGE_RECLAIMER_TRACKED;
+-	list_add_tail(&page->list, &sgx_global_lru.reclaimable);
+-	spin_unlock(&sgx_global_lru.lock);
++	list_add_tail(&page->list, &lru->reclaimable);
++	spin_unlock(&lru->lock);
+ }
+ 
+ /**
+- * sgx_unmark_page_reclaimable() - Remove a page from the reclaim list
++ * sgx_unmark_page_reclaimable() - Remove a page from its tracking LRU
+  * @page:	EPC page
+  *
+- * Clear the reclaimable flag and remove the page from the active page list.
++ * Clear the reclaimable flag if set and remove the page from its LRU.
+  *
+  * Return:
+  *   0 on success,
+@@ -526,18 +530,20 @@ void sgx_mark_page_reclaimable(struct sgx_epc_page *page)
   */
  int sgx_unmark_page_reclaimable(struct sgx_epc_page *page)
  {
--	spin_lock(&sgx_reclaimer_lock);
-+	spin_lock(&sgx_global_lru.lock);
+-	spin_lock(&sgx_global_lru.lock);
++	struct sgx_epc_lru_list *lru = sgx_lru_list(page);
++
++	spin_lock(&lru->lock);
  	if (page->flags & SGX_EPC_PAGE_RECLAIMER_TRACKED) {
  		/* The page is being reclaimed. */
  		if (list_empty(&page->list)) {
--			spin_unlock(&sgx_reclaimer_lock);
-+			spin_unlock(&sgx_global_lru.lock);
+-			spin_unlock(&sgx_global_lru.lock);
++			spin_unlock(&lru->lock);
  			return -EBUSY;
  		}
  
  		list_del(&page->list);
  		page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
  	}
--	spin_unlock(&sgx_reclaimer_lock);
-+	spin_unlock(&sgx_global_lru.lock);
+-	spin_unlock(&sgx_global_lru.lock);
++	spin_unlock(&lru->lock);
  
  	return 0;
  }
-@@ -578,7 +579,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
- 			break;
- 		}
- 
--		if (list_empty(&sgx_active_page_list)) {
-+		if (list_empty(&sgx_global_lru.reclaimable)) {
- 			page = ERR_PTR(-ENOMEM);
- 			break;
- 		}
-diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index a898d86dead0..0e99e9ae3a67 100644
---- a/arch/x86/kernel/cpu/sgx/sgx.h
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -88,6 +88,21 @@ static inline void *sgx_get_epc_virt_addr(struct sgx_epc_page *page)
- 	return section->virt_addr + index * PAGE_SIZE;
- }
- 
-+/*
-+ * Contains EPC pages tracked by the global reclaimer (ksgxd) or an EPC
-+ * cgroup.
-+ */
-+struct sgx_epc_lru_list {
-+	spinlock_t lock;
-+	struct list_head reclaimable;
-+};
-+
-+static inline void sgx_lru_init(struct sgx_epc_lru_list *lru)
-+{
-+	spin_lock_init(&lru->lock);
-+	INIT_LIST_HEAD(&lru->reclaimable);
-+}
-+
- struct sgx_epc_page *__sgx_alloc_epc_page(void);
- void sgx_free_epc_page(struct sgx_epc_page *page);
- 
 -- 
 2.25.1
 
