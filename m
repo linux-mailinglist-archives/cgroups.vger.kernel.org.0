@@ -1,219 +1,109 @@
-Return-Path: <cgroups+bounces-1343-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1344-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9CDD8497E6
-	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 11:40:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 452C184A063
+	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 18:16:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FE962868A3
-	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 10:40:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C42291F235CB
+	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 17:16:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9251755E;
-	Mon,  5 Feb 2024 10:40:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7227405FF;
+	Mon,  5 Feb 2024 17:16:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RXedL9vU";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RXedL9vU"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="xKBvo8yv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9294F17581;
-	Mon,  5 Feb 2024 10:40:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C38A44C6B
+	for <cgroups@vger.kernel.org>; Mon,  5 Feb 2024 17:16:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707129647; cv=none; b=CNhLtXEtBe/pkWStFjqm889j42TGa7QenbFlZwTs7NKPPXP3pWxxswpjaP+YrxITnf/TFBmgGwkDW+AQ62dESB+EtWx4pT7CKNXkM3JEgnXReCJBVPylqAE5zNonB3Qq9K7sLVlFNW5DeI7P5VEspP24lrnuygaieNe0TnyMYag=
+	t=1707153391; cv=none; b=W7Yl6Pu4Ilf9TQLt82X4AC1yzkzng5CTMs3XgcmszmWrllhCzXKYBW752IMhN4o3ileGp+uNWR280Ri0JWMi5LTHKMcQ2UvNW/dfVzkP3ULQdNRMozkEdJVO/eu2v54FSECuy5nLjkClABhDhXNRqoji638QnFmCd2BWmnwN5Fo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707129647; c=relaxed/simple;
-	bh=9YZSEeWXeoLQgpLT/zkhzH4CoQDzzd4C+BWVfb1NVWc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RPnH+T0ZPw3zVeDzCVaN83JxbAsZ48r06G8UnYG0fV+03+EAXwhphN8fxu+ea/thgaWDSlNcM+6xNCHanK26NinXTMSLyatuDHVxjmXuD06sr0HGDQQBkXDEdKJ/ji37DQMUFJJVZZ8kh/vsJ9OWv1VtiYcVtUuTrsxGd9jaV1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RXedL9vU; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RXedL9vU; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 61E251F8BA;
-	Mon,  5 Feb 2024 10:40:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707129643; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BKBcU6YqpKLkMWFaxv08QTXYXsDD02PgmQ2I1AtJz+o=;
-	b=RXedL9vUcEuWj1kOAGQude6sI1XZvW3JH8Vha6feqQkRxz7fk56UU8KSiB/LhqI32Gcpmf
-	YnUBZy8SMZqfGjJ4m6ejuFCmM4r4xwN5wjnfV+no2W7go7Uz7bna5jsW5Hls/LI2vkkcAF
-	S5vFe2Og5HMOTzYUnm1zUNb49ciJZpQ=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707129643; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BKBcU6YqpKLkMWFaxv08QTXYXsDD02PgmQ2I1AtJz+o=;
-	b=RXedL9vUcEuWj1kOAGQude6sI1XZvW3JH8Vha6feqQkRxz7fk56UU8KSiB/LhqI32Gcpmf
-	YnUBZy8SMZqfGjJ4m6ejuFCmM4r4xwN5wjnfV+no2W7go7Uz7bna5jsW5Hls/LI2vkkcAF
-	S5vFe2Og5HMOTzYUnm1zUNb49ciJZpQ=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 43A1B132DD;
-	Mon,  5 Feb 2024 10:40:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Gv15DSu7wGWUMwAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Mon, 05 Feb 2024 10:40:43 +0000
-Date: Mon, 5 Feb 2024 11:40:42 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com,
-	yuzhao@google.com, mkoutny@suse.com,
-	Yosry Ahmed <yosryahmed@google.com>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mm: memcg: Use larger batches for proactive reclaim
-Message-ID: <ZcC7Kgew3GDFNIux@tiehlicka>
-References: <20240202233855.1236422-1-tjmercier@google.com>
+	s=arc-20240116; t=1707153391; c=relaxed/simple;
+	bh=piaR+OlvSafD8F9Muj4jdMl0CtYQbMZ6TzkK428/s98=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=pb8f7QL+xqwS8ySJWIYAfGIPIJ/KuVa1MmMmlkaqqx5ySJ22L7+tigHgG+KtGzWPtGkUsyzejKnFpZ3gQIeUQ6Lemqnb1+TPMnOFruBMabgC4fRan41kZbeBVcHi4LROPB/NYPvnEnDsC3olPqSefyJRp+AFVK/0m0OagmSP/78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=xKBvo8yv; arc=none smtp.client-ip=209.85.166.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-363bfee81e4so2495745ab.1
+        for <cgroups@vger.kernel.org>; Mon, 05 Feb 2024 09:16:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1707153388; x=1707758188; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Sn9JODr/JoAaSiGEhGpmDiigEzzGF4d02eSYaBgfml0=;
+        b=xKBvo8yvMUDgPC0HrVnmgUyPwvNnjCn76URLRnB8xXGKiE4Of33of9UHg99IwH+y7z
+         5xFE+QhGN0c3y6dGdWcUx5m3H9/KqX2N7/e82jrHve1Oj9ynr6kKTNFJh2Q+YmbnpkgH
+         8gbsQBcInn1FSEXw54Gfw27csdMEeK8JgQHUgP1y9v8G1pM/TrT/b7E6ZIRaZJn+F4fn
+         I+W4kUTezPMz1xtdKJI64VKIH0lMVnnljJTRiS4UJAfzQ+JAAKVomchNScMAbuSkKcj1
+         +15iHAxDnJRV1e4Zwn7A60fwL/sc8jEfjv689CCvqyiGNOZaFcNdU4ksgpKqEI396iDr
+         Q5ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707153388; x=1707758188;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Sn9JODr/JoAaSiGEhGpmDiigEzzGF4d02eSYaBgfml0=;
+        b=uJvbEbTQ8zLGmUF8bjg0E1HV2Az1AF3PB/lrLpo7TBBIHkq/TnzBzbo+gmJRBOo2z9
+         yf9vFmSP47DnruBEK8KKGgIiMB5WAHem6X+OSht5ULdUXTlb+Hm1Bvk7c0kwW066FqLj
+         fCAC4ro2TO4nG9FyxWe6SYdJ89uVKGR8DHU5RsOTDIn5LDhnTh5C2F9kPYhXj5IobqQl
+         kMa1dRoneKPm1c+eTY8Y0FuGHH6IjzzT/XEsGkuztE0jucdeMdtVqoUUPFh5dj2OmylU
+         PhytUN1weRCJJm2SdPfKPKgvjDkyMIpOhYwKsRnJqJnIWtFlL6XnEynpL1IM4uSC1w8W
+         QJ3g==
+X-Forwarded-Encrypted: i=1; AJvYcCVKgWNwtfPLKqBnUbCSzbkALGtAPIWrGat6R84alvgyrkT0FyL8z1N9FC3YKeWe9dAfas+qxhtO2Y+ypQzk8TcVXxxzdW9M3g==
+X-Gm-Message-State: AOJu0YzVfC405Rf2lNveVzyCbthnDiuwrrnFxlxH9nFE1nAmTNs0mIO0
+	4oszOa3sxpJ/YZYDeh04U4hRE/jxAPTkakSc/uyoV02p1x+rTyE+VSYpnqilZoY=
+X-Google-Smtp-Source: AGHT+IF9xzHnKqV2+QFxIe4MP6yuw8AhazZJSLemHsDNED3aABwGp5oU+CSGl6UoDPC7tTCpMoE/ew==
+X-Received: by 2002:a92:c26c:0:b0:363:b9d6:126a with SMTP id h12-20020a92c26c000000b00363b9d6126amr439549ild.1.1707153388555;
+        Mon, 05 Feb 2024 09:16:28 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCUrkCvJqfZ0mquUR3S2ekjLknyUXgZyySSTKgxjk3t4MKFUWRnYDJOteX+ZDPI/odTvcid6HF38RUeLjVNFyblhKXUOvxqEoxyKT+tBJhoJkKAqBpME3YIv+Z7DsnuEKv/RupbOLoeyJF33JZnX1n1Q4dVot2qvM/El75dYZSwE8laH4uuthX8oowiYTS4UIEli4Ok3wLs=
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id k1-20020a056e0205a100b00363c4838148sm26844ils.24.2024.02.05.09.16.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 09:16:27 -0800 (PST)
+From: Jens Axboe <axboe@kernel.dk>
+To: tj@kernel.org, Tang Yizhou <yizhou.tang@shopee.com>
+Cc: linux-block@vger.kernel.org, cgroups@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, chunguang.xu@shopee.com
+In-Reply-To: <20240123081248.3752878-1-yizhou.tang@shopee.com>
+References: <20240123081248.3752878-1-yizhou.tang@shopee.com>
+Subject: Re: [PATCH] blk-throttle: Eliminate redundant checks for data
+ direction
+Message-Id: <170715338749.494668.12422641038980561010.b4-ty@kernel.dk>
+Date: Mon, 05 Feb 2024 10:16:27 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240202233855.1236422-1-tjmercier@google.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=RXedL9vU
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -4.01
-X-Rspamd-Queue-Id: 61E251F8BA
-X-Spam-Flag: NO
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.5-dev-2aabd
 
-On Fri 02-02-24 23:38:54, T.J. Mercier wrote:
-> Before 388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactive
-> reclaim") we passed the number of pages for the reclaim request directly
-> to try_to_free_mem_cgroup_pages, which could lead to significant
-> overreclaim. After 0388536ac291 the number of pages was limited to a
-> maximum 32 (SWAP_CLUSTER_MAX) to reduce the amount of overreclaim.
-> However such a small batch size caused a regression in reclaim
-> performance due to many more reclaim start/stop cycles inside
-> memory_reclaim.
 
-You have mentioned that in one of the previous emails but it is good to
-mention what is the source of that overhead for the future reference.
- 
-> Reclaim tries to balance nr_to_reclaim fidelity with fairness across
-> nodes and cgroups over which the pages are spread. As such, the bigger
-> the request, the bigger the absolute overreclaim error. Historic
-> in-kernel users of reclaim have used fixed, small sized requests to
-> approach an appropriate reclaim rate over time. When we reclaim a user
-> request of arbitrary size, use decaying batch sizes to manage error while
-> maintaining reasonable throughput.
-
-These numbers are with MGLRU or the default reclaim implementation?
- 
-> root - full reclaim       pages/sec   time (sec)
-> pre-0388536ac291      :    68047        10.46
-> post-0388536ac291     :    13742        inf
-> (reclaim-reclaimed)/4 :    67352        10.51
+On Tue, 23 Jan 2024 16:12:48 +0800, Tang Yizhou wrote:
+> After calling throtl_peek_queued(), the data direction can be determined so
+> there is no need to call bio_data_dir() to check the direction again.
 > 
-> /uid_0 - 1G reclaim       pages/sec   time (sec)  overreclaim (MiB)
-> pre-0388536ac291      :    258822       1.12            107.8
-> post-0388536ac291     :    105174       2.49            3.5
-> (reclaim-reclaimed)/4 :    233396       1.12            -7.4
 > 
-> /uid_0 - full reclaim     pages/sec   time (sec)
-> pre-0388536ac291      :    72334        7.09
-> post-0388536ac291     :    38105        14.45
-> (reclaim-reclaimed)/4 :    72914        6.96
-> 
-> Fixes: 0388536ac291 ("mm:vmscan: fix inaccurate reclaim during proactive reclaim")
-> Signed-off-by: T.J. Mercier <tjmercier@google.com>
-> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> 
-> ---
-> v3: Formatting fixes per Yosry Ahmed and Johannes Weiner. No functional
-> changes.
-> v2: Simplify the request size calculation per Johannes Weiner and Michal Koutný
-> 
->  mm/memcontrol.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 46d8d02114cf..f6ab61128869 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6976,9 +6976,11 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
->  		if (!nr_retries)
->  			lru_add_drain_all();
->  
-> +		/* Will converge on zero, but reclaim enforces a minimum */
-> +		unsigned long batch_size = (nr_to_reclaim - nr_reclaimed) / 4;
 
-This doesn't fit into the existing coding style. I do not think there is
-a strong reason to go against it here.
+Applied, thanks!
 
-> +
->  		reclaimed = try_to_free_mem_cgroup_pages(memcg,
-> -					min(nr_to_reclaim - nr_reclaimed, SWAP_CLUSTER_MAX),
-> -					GFP_KERNEL, reclaim_options);
-> +					batch_size, GFP_KERNEL, reclaim_options);
+[1/1] blk-throttle: Eliminate redundant checks for data direction
+      commit: 3bca7640b4c50621b94365a1746f4b86116fec56
 
-Also with the increased reclaim target do we need something like this?
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 4f9c854ce6cc..94794cf5ee9f 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1889,7 +1889,7 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
- 
- 		/* We are about to die and free our memory. Return now. */
- 		if (fatal_signal_pending(current))
--			return SWAP_CLUSTER_MAX;
-+			return sc->nr_to_reclaim;
- 	}
- 
- 	lru_add_drain();
->  
->  		if (!reclaimed && !nr_retries--)
->  			return -EAGAIN;
-> -- 
-> 2.43.0.594.gd9cf4e227d-goog
-
+Best regards,
 -- 
-Michal Hocko
-SUSE Labs
+Jens Axboe
+
+
+
 
