@@ -1,148 +1,125 @@
-Return-Path: <cgroups+bounces-1367-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1368-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3519984A882
-	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 23:05:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9EF184A995
+	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 23:56:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C81B71F2CBB7
-	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 22:05:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F8B31F2753E
+	for <lists+cgroups@lfdr.de>; Mon,  5 Feb 2024 22:56:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F2AC1AB812;
-	Mon,  5 Feb 2024 21:16:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91DED1EF1A;
+	Mon,  5 Feb 2024 22:56:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="k2QTPAlp";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="k2QTPAlp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yy94LXHD"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E7451AB806;
-	Mon,  5 Feb 2024 21:16:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E45DC1DA4F;
+	Mon,  5 Feb 2024 22:56:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707167799; cv=none; b=l55TFodvNvHpU+AIfFiBJdfyuY3NRr4x1sNPYz9cZdhHex0csTlMJQLqSs9eZIqE9tcRuY/+ahDGpnXKWNyQxxp0QGBZeyh+2J4EKrM0xHA/bl8jQFZCFT5ypfc6oUPXtl/vr0NkR689iDh6hFWPwr4hWosLUrAHfhaDiPm/tvQ=
+	t=1707173772; cv=none; b=KwPD6+CBFlrd7x77EECxF7HAQbOBEI0YidLW2LDtYszAgMxqOQHz2yHoqHYNFbWxL1uMKjS+DDQgt/sHaEeJtNFRZsPL3zgDT2+TpvmVWV3KWEb3KZxywil9YIwivK+Aw85FcY2qDm1+XiOZaQbfo0nPP3pN7mUhrIrl9EiKnk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707167799; c=relaxed/simple;
-	bh=w+LuAn4eMxEN1OrwnjXfkUZofNi+HXJroO9FLryNtL4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D4v8WBqwuh/JcQzY9v/cCXx/sR9ShlmsxKgb9891QHFrk//HQMjc/kAkCucbYUow/5SIJt4SsEVzGneuzJp+yahnbrYEQ74KJFIIAJ3d0xh36IKnLdYs6LcmscWFxAoT1ELi9kMEk47vG1IOKYs2rCbGbJdPjWahcKmq5ao1BIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=k2QTPAlp; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=k2QTPAlp; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 52B1021FB3;
-	Mon,  5 Feb 2024 21:16:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707167795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UqjQ8uzPWkoXvaP3jSmRX0mX+6vg7iSnhNElmOf67RA=;
-	b=k2QTPAlpUZx9xWdcIwXtXXDq0RS18tpEXYVMAwgeXgBnBYJefWMYQ93JLDFkCalSq3ycUy
-	VZAEpeop+Dxd1H2y4UYD/k2bR0lxrH87nVnAGgfJdz4CSRW/671XL7U+K2ActeCA0IKwI6
-	nBokQeUPwfSSneyy/npR/ngpYbv+j+0=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707167795; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UqjQ8uzPWkoXvaP3jSmRX0mX+6vg7iSnhNElmOf67RA=;
-	b=k2QTPAlpUZx9xWdcIwXtXXDq0RS18tpEXYVMAwgeXgBnBYJefWMYQ93JLDFkCalSq3ycUy
-	VZAEpeop+Dxd1H2y4UYD/k2bR0lxrH87nVnAGgfJdz4CSRW/671XL7U+K2ActeCA0IKwI6
-	nBokQeUPwfSSneyy/npR/ngpYbv+j+0=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2F00A132DD;
-	Mon,  5 Feb 2024 21:16:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id tIwCCTNQwWWHUwAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Mon, 05 Feb 2024 21:16:35 +0000
-Date: Mon, 5 Feb 2024 22:16:34 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com,
-	yuzhao@google.com, mkoutny@suse.com,
-	Yosry Ahmed <yosryahmed@google.com>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mm: memcg: Use larger batches for proactive reclaim
-Message-ID: <ZcFQMru5_oATGbuP@tiehlicka>
-References: <20240202233855.1236422-1-tjmercier@google.com>
- <ZcC7Kgew3GDFNIux@tiehlicka>
- <CABdmKX3HbSxX6zLF4z3f+=Ybiq1bA71jckkeHv5QJxAjSexgaA@mail.gmail.com>
- <ZcE5n9cTdTGJChmq@tiehlicka>
- <CABdmKX0Du2F+bko=hjLBqdQO-bJSFcG3y1Bbuu2v6J8aVB39sw@mail.gmail.com>
- <ZcFG2JoXI7i8XzQY@tiehlicka>
- <CABdmKX0t1LXj80Awe20TrmY5gQB6v2E4bGfW8WXr2i84o+k6ow@mail.gmail.com>
+	s=arc-20240116; t=1707173772; c=relaxed/simple;
+	bh=cVSB2Axlocc54DEhrkoIJ/p7tDjCzcZXwIbB+OQi5cU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ggAxilAWrGlxw7un9XakWlQFgGZtadYItMFrq5Kcss6nQIqZnXJEu98nfIUPAGgQXbxyYKYIE1kOdgmXkpfGWvGcZtI4scLnQ8oYfbzCvjQvPPqj4t6oveMifZqIaacfbLmFNmyZQzf6QVGsl956Qwvo2y7bebByycNeXOVZLNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yy94LXHD; arc=none smtp.client-ip=209.85.222.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-783d4b3ad96so317729785a.3;
+        Mon, 05 Feb 2024 14:56:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707173769; x=1707778569; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TGdyPa7Pf/Y7EOUem+E2iwIgjOxOpmm5HyY7qygEzks=;
+        b=Yy94LXHDNDh377q1S31UE8UPlqhySVt5gsmMQAFmyzGZMk9BpctS0K8Mvav/2OkiRu
+         3wVIAXEoAXGsL3kbYRnzl8dH18P2Sd6shdJ/1P0aNstoYZvAcQjAP14s5A08MPM+b3au
+         pBrJN/jGYBDhswo9+d6lRuuMW5OO1kcQR8w6pnCf0n1RkQrDk93Qqi1tgPnS16Oe0eM2
+         RrG4aTL8cRFS/gfxUVD3z6CHDvuV6evj1VhfZtojmH16bFHBRQifdDYGORAMCvOpBiZt
+         OBBqg+3CSYnF+wwCq8smI3SokMkvzhhswi9EC4BN70QPkabqmYs5uE0jd7UtlSh2nC0d
+         xlrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707173769; x=1707778569;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TGdyPa7Pf/Y7EOUem+E2iwIgjOxOpmm5HyY7qygEzks=;
+        b=B1uFAN6IGFu6/iEWqyWkZQy67kNNgQs8J6DyU1P1ss/tbz50szK4UO3z/qbm1QScOP
+         lQXgZWYkIFJIU+sDIvUENO9ySrJI86g8mm+HQIBrwPFwnrARPY2PAWCS7UKdJ5yZuuho
+         iM+4+NX+VpQXYP8gqrf9GjuF/wPVxQIwjLo/gMa31ceUHALJaoBdlRf8z96YDqdcfreR
+         2liAfbHymrnmZCHVgtQuRJnzD4j5m2UgdJ8VxUo5EMs83mwfUoQGDO5iFm6zn+C/xVLo
+         XxCIjY43n6HR8eJr3olMuvaVdaOCOkFSZ5D7lMrCEgksm2DDExrCxWiw4hJlQVuIFQlQ
+         /RHw==
+X-Gm-Message-State: AOJu0Yyd73sFyEkAj9ukEDs2BzbfFvJn5mqvEpptSRNYZore4WjrltQ4
+	D9FDvS2Nk+cV72z+fe8mkCjB4gvhO8ihD3vnr+NP7F9W1+lur7tr
+X-Google-Smtp-Source: AGHT+IGfKgXtdhTde5jttlEus/aYY1VrLcbaT3SzAbrDsR2jr1jMh14fzNUl3l8jyMk7UlYIteSyoA==
+X-Received: by 2002:a05:6214:20a8:b0:68c:9307:3021 with SMTP id 8-20020a05621420a800b0068c93073021mr995244qvd.47.1707173769636;
+        Mon, 05 Feb 2024 14:56:09 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCW7v8PF1XGBVOPoV/mq8PqMOogCMRrSc680TooUNtMA8rTz/Bsl7IMunpZ1x0OfJtfBnYBMT5FPPrEzwlDkYiPJOgEwvLjmeHj+ufIsoHk3REU1CulcwJ+JHFl8sPgLs9RMcQB9bwrMLy+OH4Ao5nNoinytQ84nQa8zQyDVp9JFjeVnXA5OrTlgVz9lP3etUHSgsDOSonjCLd1q74MFSgHgW36WPbWt+3exSlO2jV4GX2aWn3Y0yL0OgdsIlDeT5UTOi9uWSp2SAiNwOFSfvCelGTz8qqg8M/y82EuTI7aVHIxC+OLZPGq4XjoPt8amG4yXftmCC+vHaIJExAFnUh8I7ZxoWpBJp+jWpcDNWGFNsP9xAHrdRopUqPcLe/AkQkO70XUw/NuJxxhNTE6i5CQ=
+Received: from localhost (fwdproxy-nao-006.fbsv.net. [2a03:2880:23ff:6::face:b00c])
+        by smtp.gmail.com with ESMTPSA id ez4-20020ad45904000000b0068ca41d6c26sm421459qvb.78.2024.02.05.14.56.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Feb 2024 14:56:09 -0800 (PST)
+From: Nhat Pham <nphamcs@gmail.com>
+To: akpm@linux-foundation.org
+Cc: riel@surriel.com,
+	shuah@kernel.org,
+	hannes@cmpxchg.org,
+	yosryahmed@google.com,
+	tj@kernel.org,
+	lizefan.x@bytedance.com,
+	roman.gushchin@linux.dev,
+	linux-mm@kvack.org,
+	kernel-team@meta.com,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH v3 0/3] fix and extend zswap kselftests
+Date: Mon,  5 Feb 2024 14:56:05 -0800
+Message-Id: <20240205225608.3083251-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABdmKX0t1LXj80Awe20TrmY5gQB6v2E4bGfW8WXr2i84o+k6ow@mail.gmail.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [0.28 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.12)[66.62%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: 0.28
 
-On Mon 05-02-24 12:47:47, T.J. Mercier wrote:
-> On Mon, Feb 5, 2024 at 12:36 PM Michal Hocko <mhocko@suse.com> wrote:
-[...]
-> > This of something like
-> > timeout $TIMEOUT echo $TARGET > $MEMCG_PATH/memory.reclaim
-> > where timeout acts as a stop gap if the reclaim cannot finish in
-> > TIMEOUT.
-> 
-> Yeah I get the desired behavior, but using sc->nr_reclaimed to achieve
-> it is what's bothering me.
+Changelog:
+v3:
+	* More cleanup (patch 3) (suggested by Yosry Ahmed).
+	* Check swap peak in swapin test
+v2:
+	* Make the swapin test also checks for zswap usage (patch 3)
+	  (suggested by Yosry Ahmed)
+	* Some test simplifications/cleanups (patch 3)
+	  (suggested by Yosry Ahmed).
 
-I am not really happy about this subtlety. If we have a better way then
-let's do it. Better in its own patch, though.
+Fix a broken zswap kselftest due to cgroup zswap writeback counter
+renaming, and add 2 zswap kselftests, one to cover the (z)swapin case,
+and another to check that no zswapping happens when the cgroup limit is
+0.
 
-> It's already wired up that way though, so if you want to make this
-> change now then I can try to test for the difference using really
-> large reclaim targets.
+Also, add the zswap kselftest file to zswap maintainer entry so that
+get_maintainers script can find zswap maintainers.
 
-Yes, please. If you want it a separate patch then no objection from me
-of course. If you do no like the nr_to_reclaim bailout then maybe we can
-go with a simple break out flag in scan_control.
+Nhat Pham (3):
+  selftests: zswap: add zswap selftest file to zswap maintainer entry
+  selftests: fix the zswap invasive shrink test
+  selftests: add zswapin and no zswap tests
 
-Thanks!
+ MAINTAINERS                                 |   1 +
+ tools/testing/selftests/cgroup/test_zswap.c | 122 +++++++++++++++++++-
+ 2 files changed, 121 insertions(+), 2 deletions(-)
+
+
+base-commit: 91f3daa1765ee4e0c89987dc25f72c40f07af34d
 -- 
-Michal Hocko
-SUSE Labs
+2.39.3
 
