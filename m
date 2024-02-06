@@ -1,137 +1,148 @@
-Return-Path: <cgroups+bounces-1378-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1379-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B00A684ACF2
-	for <lists+cgroups@lfdr.de>; Tue,  6 Feb 2024 04:36:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 178EA84AD33
+	for <lists+cgroups@lfdr.de>; Tue,  6 Feb 2024 05:02:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D00CC1C21910
-	for <lists+cgroups@lfdr.de>; Tue,  6 Feb 2024 03:36:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3954F1C22A12
+	for <lists+cgroups@lfdr.de>; Tue,  6 Feb 2024 04:02:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96A60745E8;
-	Tue,  6 Feb 2024 03:34:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5944B2F46;
+	Tue,  6 Feb 2024 04:01:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Gtj+G9zP"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="U9+Yh2Lz"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9535E1AB7FE
-	for <cgroups@vger.kernel.org>; Tue,  6 Feb 2024 03:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 985B7745DB
+	for <cgroups@vger.kernel.org>; Tue,  6 Feb 2024 04:01:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707190458; cv=none; b=F3Zo94T/CgbkzQa1UmYJzl5PJ0sYMK82GSCcF9FyZDpdAO7Nyp6uTFhyAMZISDcfOIMYjKAC90lrxlaRQHNxI0yNYyeOQspdJ7RakzOU1PJzGwC2BmouTrB9vBVkVvI/nK1btxHHXnWYomIdtD8DLkcMubJTWl3wPyD1sMMnFWo=
+	t=1707192115; cv=none; b=DhQ08hKnlWzwIvFSVcKGu3Uu4lHZVNVSyzYmeOpURhSfRqlMls9V/yUTCVBKjFHdBkpC9bw/8NyiS+BVb5nNaQrXGm3alpCS2Hsy/g4751hhOlDsSeCLh1S8ZJsXHWMgCI3OPSXHGAci0CgSGWc/uNyH2jgQEg00mwvKq8ieMrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707190458; c=relaxed/simple;
-	bh=PNw2iLzuybp0jBooGQx1juicSurQByiCCcIVDS94gyc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C6MLRwicEfUNLpSENhQnjkMbWG+XiTVJWwx++4J58gdtOEKUCWEf86owMJ3tWdnDosX3l9YiH5eQOCoUmoif2m0IA6QSdaOFwsaWKuTYdkZDeYPwkrQpmzzCeafEkKznVjUy+g0B1c6ZvhbGj+W99oK4ykeMOhqCWyJMR6Fy9c4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Gtj+G9zP; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707190455;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r9/uLStjJcIhGW52K/80oEddP3W96cPFPcB5HwECMxo=;
-	b=Gtj+G9zPLgJAA1eHq+i1AA12m3SJz5lfGLJHpSUkwtEnrXeGJ1K1V9pbaAmEqwNgotsUYv
-	ktcnMqlw7M3WKBXyAIGTbhUoghDg73PKwL/MnY8bTXUG68xCETGpKKVHSvXYYP1wdv7C65
-	Vi8BvYgJw2KXtkbeQDVkkp/iUebjTF8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-207-L9T3BKjyNVmbkVwjn4kmDQ-1; Mon,
- 05 Feb 2024 22:34:08 -0500
-X-MC-Unique: L9T3BKjyNVmbkVwjn4kmDQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1A8C03C025C4;
-	Tue,  6 Feb 2024 03:33:51 +0000 (UTC)
-Received: from [10.22.17.212] (unknown [10.22.17.212])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 5E98C2166B31;
-	Tue,  6 Feb 2024 03:34:04 +0000 (UTC)
-Message-ID: <32bc1403-49da-445a-8c00-9686a3b0d6a3@redhat.com>
-Date: Mon, 5 Feb 2024 22:34:06 -0500
+	s=arc-20240116; t=1707192115; c=relaxed/simple;
+	bh=XYPlJCC6y1QEgjgTJDcgPQGNblckOrO8DnCFLZ9O1hA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gyVxxNUx7ShsTUddED9yeMG88D2WX61WQ61KfwLiFMwYmTM/YY8iFSdibUtiwhpMM3iqB60mpU0jw+2WTuxf1iG1pvuJp+nW1mhF+sxei411DdVCsZEZOkRDRj1Wbk3lWwBmljKUQczmrx459hn8sLNVdAdjHOQblfPNi0LGEJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=U9+Yh2Lz; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc6d54def6fso4858513276.3
+        for <cgroups@vger.kernel.org>; Mon, 05 Feb 2024 20:01:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1707192112; x=1707796912; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XYPlJCC6y1QEgjgTJDcgPQGNblckOrO8DnCFLZ9O1hA=;
+        b=U9+Yh2LzENEgO683BoA8DFNrvx5VEhXXcKowOZj12XwL6R7BCO+QaCYu34je+8410l
+         EPug61MkYI7pmtccf+b64z5q0kTv5sUha49lcKqsrEEA2TfaTFDRMWlf5hN2aVSbgiri
+         Ju/Tbzn6d+K103ejfHCu4W8cjBR52EN15AW7qj+I1FiE+or1Jtq9FJlmwteftH4BICZA
+         kEKmfc7yz4AzHVfV284G+3V16Od52O5ja1ipO6I47i18F90y+8tCYy/nnISKXIuiS6Jo
+         E1/kU3YVKo13ogLrgWxlCkBfjDVCuAwM75s/BuQW8n86Hw7WWk3+6ehEMAqwUrZfz0Yl
+         QZOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707192112; x=1707796912;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XYPlJCC6y1QEgjgTJDcgPQGNblckOrO8DnCFLZ9O1hA=;
+        b=YwSWUmDko9kMMfIVb6eKKnz7yPk/nD9yMTFIY1OTpEy6mBkAEWnjZh+C/dDoCcvLrw
+         zwxR8NsJrLFayj0jT4l60RsVYVWuSrB1P5z2UyJPckIgi8obXvia4XrYguCUodT9BjiC
+         FU/+LASFJMz580Orhu9/b1IkXQeNmwzMzfAKoN9A3ygmI5jW8M/msjmCdzd77I/LDvHO
+         iZ0N35C/9ThZmvsebQ7cbyNgCPkAoyc0maotRv5EoS+TxJVrhYI5xAAGDvduLJmlgO1v
+         UPNt8JHzmmjOhGPWlBrofF84i9cbO1CxMfu2yEmTMuxg9Qf4DO157HQp5BS0fwj5WyCw
+         afIg==
+X-Gm-Message-State: AOJu0YznFzBnGnRAgyXhAzSbDGGOUvbZeJXM1ElRfWrJSPT3p2BExhST
+	ArwnlEpCCXZH7x17dRK4tv+ZgON/0hYoptvn+WJq6Zkfkue0iNbrub+Wb+E5yVhACz/fDgSaTk/
+	F8JSFNu1A9dPjaSVrU0v9DJ+H8UA5nLWgyatt
+X-Google-Smtp-Source: AGHT+IHQs+XI0qiDLBdYO6OpEO2UI/si9y8p5hNXubv9yjzLeMiJXV7WVmkKgnzX2Iyq1NZxVBG50KqKIm+Dezq7+1g=
+X-Received: by 2002:a25:b10d:0:b0:dc2:554f:ef41 with SMTP id
+ g13-20020a25b10d000000b00dc2554fef41mr503561ybj.13.1707192112288; Mon, 05 Feb
+ 2024 20:01:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Do we still need SLAB_MEM_SPREAD (and possibly others)?
-Content-Language: en-US
-To: Chengming Zhou <chengming.zhou@linux.dev>,
- "Song, Xiongwei" <Xiongwei.Song@windriver.com>,
- "Christoph Lameter (Ampere)" <cl@linux.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>, Yosry Ahmed <yosryahmed@google.com>,
- Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Zefan Li <lizefan.x@bytedance.com>, Kees Cook <keescook@chromium.org>,
- David Rientjes <rientjes@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
- Chengming Zhou <zhouchengming@bytedance.com>,
- Zheng Yejian <zhengyejian1@huawei.com>,
- "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
-References: <20240131172027.10f64405@gandalf.local.home>
- <CAJD7tkYCrFAXLey-WK8k1Nkt4SoUQ00GWNjU43HJgaLqycBm7Q@mail.gmail.com>
- <61af19ca-5f9a-40da-a04d-b04ed27b8754@suse.cz>
- <698633db-b066-4f75-b201-7b785819277b@linux.dev>
- <PH0PR11MB519280092AA66FAE6BB3FACEEC402@PH0PR11MB5192.namprd11.prod.outlook.com>
- <fb8161d9-16c0-da8c-09ee-905e39ae199b@linux.com>
- <PH0PR11MB5192FC6A7AA3CB84BA3BC7E6EC462@PH0PR11MB5192.namprd11.prod.outlook.com>
- <da2417c0-49f1-4674-95f9-297d6cd9e0fa@redhat.com>
- <2efa10b2-6732-4aa5-98ae-34053a5838ee@redhat.com>
- <f5e918d6-e0a0-4233-b2c1-58505f5e8655@linux.dev>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <f5e918d6-e0a0-4233-b2c1-58505f5e8655@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+References: <20240202233855.1236422-1-tjmercier@google.com>
+ <ZcC7Kgew3GDFNIux@tiehlicka> <CABdmKX3HbSxX6zLF4z3f+=Ybiq1bA71jckkeHv5QJxAjSexgaA@mail.gmail.com>
+ <ZcE5n9cTdTGJChmq@tiehlicka> <CABdmKX0Du2F+bko=hjLBqdQO-bJSFcG3y1Bbuu2v6J8aVB39sw@mail.gmail.com>
+ <ZcFG2JoXI7i8XzQY@tiehlicka> <CABdmKX0t1LXj80Awe20TrmY5gQB6v2E4bGfW8WXr2i84o+k6ow@mail.gmail.com>
+ <ZcFQMru5_oATGbuP@tiehlicka>
+In-Reply-To: <ZcFQMru5_oATGbuP@tiehlicka>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Mon, 5 Feb 2024 20:01:40 -0800
+Message-ID: <CABdmKX35GV3VFar0_pNR_vAXLpvxo+APALXMharsXh6TO+0mrQ@mail.gmail.com>
+Subject: Re: [PATCH v3] mm: memcg: Use larger batches for proactive reclaim
+To: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Efly Young <yangyifei03@kuaishou.com>, 
+	android-mm@google.com, yuzhao@google.com, mkoutny@suse.com, 
+	Yosry Ahmed <yosryahmed@google.com>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Feb 5, 2024 at 1:16=E2=80=AFPM Michal Hocko <mhocko@suse.com> wrote=
+:
+>
+> On Mon 05-02-24 12:47:47, T.J. Mercier wrote:
+> > On Mon, Feb 5, 2024 at 12:36=E2=80=AFPM Michal Hocko <mhocko@suse.com> =
+wrote:
+> [...]
+> > > This of something like
+> > > timeout $TIMEOUT echo $TARGET > $MEMCG_PATH/memory.reclaim
+> > > where timeout acts as a stop gap if the reclaim cannot finish in
+> > > TIMEOUT.
+> >
+> > Yeah I get the desired behavior, but using sc->nr_reclaimed to achieve
+> > it is what's bothering me.
+>
+> I am not really happy about this subtlety. If we have a better way then
+> let's do it. Better in its own patch, though.
+>
+> > It's already wired up that way though, so if you want to make this
+> > change now then I can try to test for the difference using really
+> > large reclaim targets.
+>
+> Yes, please. If you want it a separate patch then no objection from me
+> of course. If you do no like the nr_to_reclaim bailout then maybe we can
+> go with a simple break out flag in scan_control.
+>
+> Thanks!
 
-On 2/5/24 22:25, Chengming Zhou wrote:
-> On 2024/2/6 11:20, Waiman Long wrote:
->> On 2/5/24 22:16, Waiman Long wrote:
->>> On 2/5/24 20:46, Song, Xiongwei wrote:
->>>> Adding the maintainers of cpuset of cgroup.
->>>>
->>>>> On Sun, 4 Feb 2024, Song, Xiongwei wrote:
->>>>>
->>>>>> Once SLAB_MEM_SPREAD is removed, IMO, cpuset.memory_spread_slab is useless.
->>>>> SLAB_MEM_SPREAD does not do anything anymore. SLUB relies on the
->>>>> "spreading" via the page allocator memory policies instead of doing its
->>>>> own like SLAB used to do.
->>>>>
->>>>> What does FILE_SPREAD_SLAB do? Dont see anything there either.
->>>> The FILE_SPREAD_SLAB flag is used by cpuset.memory_spread_slab with read/write operations:
->>>>
->>>> In kernel/cgroup/cpuset.c,
->>>> static struct cftype legacy_files[] = {
->>>> ... snip ...
->>>>           {
->>>>                   .name = "memory_spread_slab",
->>>>                   .read_u64 = cpuset_read_u64,
->>>>                   .write_u64 = cpuset_write_u64,
->>>>                   .private = FILE_SPREAD_SLAB,
->>>>           },
->>>> ... snip ...
->>>> };
->>> It looks like that memory_spread_slab may have effect only on the slab allocator. With the removal of the slab allocator, memory_spread_slab is now a no-op. However, the memory_spread_slab cgroupfs file is an externally visible API. So we can't just remove it as it may break existing applications. We can certainly deprecate it and advise users not to use it.
->> BTW, cpuset doesn't use SLAB_MEM_SPREAD directly. Instead it set the task's PFA_SPREAD_SLAB and let other subsystems test it to act appropriately. Other than cpuset, the latest upstream kernel doesn't check or use this flag at all.
->>
-> Ok, get it. So cpuset_do_slab_mem_spread() can be removed, but
-> this cpuset file interface and PFA_SPREAD_SLAB will be keeped.
+It's a bit difficult to test under the too_many_isolated check, so I
+moved the fatal_signal_pending check outside and tried with that.
+Performing full reclaim on the /uid_0 cgroup with a 250ms delay before
+SIGKILL, I got an average of 16ms better latency with
+sc->nr_to_reclaim across 20 runs ignoring one 1s outlier with
+SWAP_CLUSTER_MAX.
 
-Yes, for now.
+The return values from memory_reclaim are different since with
+sc->nr_to_reclaim we "succeed" and don't reach the signal_pending
+check to return -EINTR, but I don't think it matters since the return
+code is 137 (SIGKILL) in both cases.
 
-Cheers,
-Longman
+With SWAP_CLUSTER_MAX there was an outlier at nearly 1s, and in
+general the latency numbers were noiser: 2% RSD vs 13% RSD. I'm
+guessing that's a function of nr_to_scan being occasionally much less
+than SWAP_CLUSTER_MAX causing nr[lru] to drain slowly. But it could
+also have simply been scheduled out more often at the cond_resched in
+shrink_lruvec, and that would help explain the 1s outlier. I don't
+have enough debug info on the outlier to say much more.
 
+With sc->nr_to_reclaim, the largest sc->nr_reclaimed value I saw was
+about 2^53 for a sc->nr_to_reclaim of 2^51, but for large memcg
+hierarchies I think it's possible to get more than that. There were
+only 15 cgroups under /uid_0. This is the only thing that gives me
+pause, since we could touch more than 2k cgroups in
+shrink_node_memcgs, each one adding 4 * 2^51, potentially overflowing
+sc->nr_to_reclaim. Looks testable but I didn't get to it.
 
