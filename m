@@ -1,220 +1,130 @@
-Return-Path: <cgroups+bounces-1400-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1401-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8858384D016
-	for <lists+cgroups@lfdr.de>; Wed,  7 Feb 2024 18:43:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B61D84D371
+	for <lists+cgroups@lfdr.de>; Wed,  7 Feb 2024 22:06:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1767A2810CA
-	for <lists+cgroups@lfdr.de>; Wed,  7 Feb 2024 17:43:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1455D1C21EE9
+	for <lists+cgroups@lfdr.de>; Wed,  7 Feb 2024 21:06:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FD52127B79;
-	Wed,  7 Feb 2024 17:41:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92B45127B67;
+	Wed,  7 Feb 2024 21:06:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=soleen.com header.i=@soleen.com header.b="arnOFxU5"
+	dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b="gZLbPrCv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA37786AD4
-	for <cgroups@vger.kernel.org>; Wed,  7 Feb 2024 17:41:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB2FE127B53
+	for <cgroups@vger.kernel.org>; Wed,  7 Feb 2024 21:06:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707327685; cv=none; b=I8N4D06yRJGWBGQ4M4WvQfq2VP2PJiA5Yy5TEJVrfA8OcFPy8iFwjvaW0aSQIubQ0bsHz8WiTzfAupi1sLiB3ib8QlyD2+Mg3R6L2ruS39IGlup/bE6Vb/RGh9UFEuqKqRGO4jrvAsvVIrbs+ZNmc5ZcVqT3ib2RYYmHmgi4S34=
+	t=1707340000; cv=none; b=kc01QwUfVPeUq2n80vPhFfiomyvgcsQTMS71RZJc5B79unvbhbY6VErC2MvuhT3XqkWzEJmNenJejkoUBEvnUVfN0TEnxnKFLZLQ4OwJmeq/3Ho7B+d6YPTq1wdnhwbAYTntTgB4sfXPcQk6P4vvjwKprEuUcxacSZaRrSSM4YA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707327685; c=relaxed/simple;
-	bh=PHns6xqLyHWVS2RFXaEsGlNTnkb0vFPfE2pekEJ/kfI=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LUonKjjZqg3ukW/CcO3YtJVHK0cdPpdgAuJWiJH3lWJvyE91EPg6m1Lr/s0P//DWlWmE09I/X0T9k4Aaa0LAscgNkzusADMDzAC0rnrZkvVgzQCRkS51xW0akcItZpw49XHzVkiWg94rVzn96voBhUcA4a/PtdP7LWA5n3rofTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com; spf=none smtp.mailfrom=soleen.com; dkim=fail (0-bit key) header.d=soleen.com header.i=@soleen.com header.b=arnOFxU5 reason="key not found in DNS"; arc=none smtp.client-ip=209.85.222.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=soleen.com
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-783def87c8cso46581085a.0
-        for <cgroups@vger.kernel.org>; Wed, 07 Feb 2024 09:41:21 -0800 (PST)
+	s=arc-20240116; t=1707340000; c=relaxed/simple;
+	bh=kfCF66+nsP3XZFTo8GwalkScCc4V7eApC34k00p2TZI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=I7xvouS0VUlA5HasOMom+VciLNEQz+0U/+DtWqQzwmC54QuZy50u7OeNVUXwsNKl54jNSrrZvLbFrY6L17QF1yfnCY6cwjvDrWIho/EeVQzccRCbo+zH/HT6W7RdonNdnjrJCusK8p++xMocBNyE/CAeY4zxlKnRfZlL3tastyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=fail smtp.mailfrom=vimeo.com; dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b=gZLbPrCv; arc=none smtp.client-ip=209.85.167.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=vimeo.com
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3bb9b28acb4so838213b6e.2
+        for <cgroups@vger.kernel.org>; Wed, 07 Feb 2024 13:06:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google; t=1707327680; x=1707932480; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HrRTSlkta7nD8c1SJPx3AxPn1tn9y9LkFmhcOlF4lks=;
-        b=arnOFxU5cn85jYFGkJUyCJxEvYG2g4lb29V0lw7lYx6dhVbOMMj1ZJLlqlx++DPplJ
-         iilZAVjOvPgm///IjM6he5GyyUZ7k3FcvE1QswXro+J9VEWwR1FGRxzCU6YM1IfibVR4
-         YrLd3Uzl+fzzLH/OijQWbSNVnurl9YVsX9kotUtzYq11B+3sbIrdtPD1c3vE8qIvxeHj
-         m3+G8hf4JtneUetc3xoxy4KLQzIMQFKKPE2tnD4nga1XRdrJaxP8+zoWuFrqGuEs9wgn
-         vDi7CaXbMmWjW5JPft9hlCObEl5wpy78Zo/G3gbKEUbekgswPzzmphP7LisVOoqurr6t
-         8Tnw==
+        d=vimeo.com; s=google; t=1707339998; x=1707944798; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NchtCtztTYgLVk31R6XXB+U98ZPDL1AD+o55ip7WTnY=;
+        b=gZLbPrCvgHu/1S3PNVV7VNGkZK4GUtWwndnwsnVg0IYtf+6D/5cc6xtcFuI/D18KRK
+         iS1RHfHBuTqtWF13P5KSgR9ktQZn99sBhWXuUNm09XW3154ruHUltQCUL+0KONTyXs+B
+         AHO0iupgzeJ4GLmlqVH8ptQ43rxdOql2bwNWU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707327680; x=1707932480;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1707339998; x=1707944798;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HrRTSlkta7nD8c1SJPx3AxPn1tn9y9LkFmhcOlF4lks=;
-        b=sY8VIdkWn93gsy6PAQbtjRwhAtLpTkuO5vBda5BqBfejm7aI03n29kqQwbcsEdaqSo
-         jwUgjNVDTJIb7ALBczH9EeqgjQL0cs0y5tHk4ay6AyTFDPapmi/F1t/m7vCazSGaB+TG
-         hJaZfvkyvj+4lMIGWzN/nsIlOTP9RtS6Bn4FgoERWQcJqrgTub3qJ0ZW0F+RXUtVJ4zu
-         XwQvlpUg419C062pTxAOBdiCoDp6b7Jab29bfMJD3x3x4PnLnDaBF7pMSM5JaDxpEHWB
-         Uj1OhHMnE4mPV9P0N1Go+YjpkdnA9WwTFyZsZWbAYvIOopPudpI8vvaT7ZV7Cu9g2DD2
-         jh0Q==
-X-Gm-Message-State: AOJu0YxYLGbXdP4+9KtVrBPWA8ZMpcaOzeJKTi74x0qFPnDuYUCWRLjF
-	q6+x6tEPOciXPCIROwV1W8+HZTwR14ijBgV1AOq+Jqo3s0Tnp2FNaPWsNSt+rMc=
-X-Google-Smtp-Source: AGHT+IHhb+pueaISZV6Y8tJp2t2CFo0mWlpmACo7IYuyoV1N2oy7KZrIG0XVhtVG+SmB5cwuhpqy+Q==
-X-Received: by 2002:a05:620a:12c8:b0:785:3887:de18 with SMTP id e8-20020a05620a12c800b007853887de18mr6401324qkl.65.1707327679899;
-        Wed, 07 Feb 2024 09:41:19 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUCDfKWFIl6QUubNKHOK+J/TQZfBk6GOATQV7+UROelHHizxj2bMScNb5yjy+7wEKvrKAVO938EhFK3MDp4QvVuIEMns3aJNEfZ4lLhVczSUx4hYdn3X7Qx8HTpAiobpDi+dY9UU0JFYWP3sxFQVS1xxl7fcBVSx0blttAqIQWkGbtG/8OFxy5YJX+xNhtsJb3t9pvZsef+YcrlQh+9z7K1HEh5YIvRBqpPod3dD8oKW9DDybH9+3HAaHHBY8iiIHdHyvvhg/Qqh/tY8U66rdo6r4QvsxgmBFMyxznrxlOPKUwMUFVhM2YvFghVr6hKgb6KzPzIvg28q6LrAw8lD7weD0eI2MrfirCmooqnAA/zgK7D0KurMOIDpabn9VkUHuhE88OEKQ8h62/Wa2gdcl4YDdMkJY4DDjELGulQmsDVBCrUtil9loYc5aX8Gh2jq/ztHo3kv5ymJnfZ/h7e7WZdfaZvxSbUL64wc23AYR/EczgayCdZpmGXX2jQE3/KPfSIPAL6DXV6qvHIwUWL4vG18mc7tiVYDE//uM4hJo7eMbISiBgH4sundju5RQWqxyjeA3VcVHj+VPU4vBDpsrZVdnHRZeaGTV3rwC8oZXb19D/7KR1Wm7euJ76N5bgFnA7vjZhfsEp+F03DZsEUpCkkLYMsxrQWrLbAZIy488QP+Zdz41QqcwwktLByJIdIxAeRSxHxin8RRSgrxaqXRKius9NFl4oDbRCD6svZoHMd4UnX0vfYrQ0s8umvFi83/7gbRVCzXY4TP8NJFByhRuhTVTALB1EBu6ny+PtNXEQLdFexeijpQwT5/ahI+mpZ9ajMM7oM3At8FGk5pnU/BL1Nonz5Y8fjdV6tPG/C5Zk6RhURg9qAf+9R8Omad1eFWXxT9K6yqaix3pq9xGAZ8o3pF+xFI149xhPQNCmvLnHRgEmJUeIIm7boC4KgdrC5bBoaux
- c6ozrLySOAxoy5JAAUBKnlhPctpWnwmvtfHeBXAM+mRt1+c/cu3MhP0MSUMt9WZHns3r/985c1KNIPq0blR6t+yh5SOQk7YDqh0wPxUpt4Kax6NjryE1iCgR1+E5QeDElNdAVf+hiKcPe5+DO4dGivJK8C2DQW1E5U+dX94X2hiWwHcHd0IHOFqpQBMw3MYyXVibLuxNZq6E5ml+47r+bMOyL/Bqfi3ViLUhztHQ6nikGjlZcsJYY7JUssc0W5vg58IiiHspK92+rwN2jGd4sH3ALx4bgyCF0SF9flcBEtXUjRUNSmob4ETrVkz7HKMS7If6nnJcyM0Vbo0UMoOZmd5knYt1xz+hu+YULQesXnetGwV4BBbVo0WA5dRc2eIzIsQXmdql1aXqiSjGCn5mug3+d3TEVV9PvmDpKEou6WN731U4KQNAZjHoQUf6UFZNlFysQJQPL4NE73c76duMdmUXiGxzZFehKgNvB7y4Wu+1/j
-Received: from soleen.c.googlers.com.com (249.240.85.34.bc.googleusercontent.com. [34.85.240.249])
-        by smtp.gmail.com with ESMTPSA id e10-20020a37db0a000000b007854018044bsm696310qki.134.2024.02.07.09.41.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Feb 2024 09:41:19 -0800 (PST)
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-To: akpm@linux-foundation.org,
-	alim.akhtar@samsung.com,
-	alyssa@rosenzweig.io,
-	asahi@lists.linux.dev,
-	baolu.lu@linux.intel.com,
-	bhelgaas@google.com,
-	cgroups@vger.kernel.org,
-	corbet@lwn.net,
-	david@redhat.com,
-	dwmw2@infradead.org,
-	hannes@cmpxchg.org,
-	heiko@sntech.de,
-	iommu@lists.linux.dev,
-	jernej.skrabec@gmail.com,
-	jonathanh@nvidia.com,
-	joro@8bytes.org,
-	krzysztof.kozlowski@linaro.org,
-	linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-sunxi@lists.linux.dev,
-	linux-tegra@vger.kernel.org,
-	lizefan.x@bytedance.com,
-	marcan@marcan.st,
-	mhiramat@kernel.org,
-	m.szyprowski@samsung.com,
-	pasha.tatashin@soleen.com,
-	paulmck@kernel.org,
-	rdunlap@infradead.org,
-	robin.murphy@arm.com,
-	samuel@sholland.org,
-	suravee.suthikulpanit@amd.com,
-	sven@svenpeter.dev,
-	thierry.reding@gmail.com,
-	tj@kernel.org,
-	tomas.mudrunka@gmail.com,
-	vdumpa@nvidia.com,
-	wens@csie.org,
-	will@kernel.org,
-	yu-cheng.yu@intel.com,
-	rientjes@google.com,
-	bagasdotme@gmail.com,
-	mkoutny@suse.com
-Subject: [PATCH v4 10/10] iommu: account IOMMU allocated memory
-Date: Wed,  7 Feb 2024 17:41:02 +0000
-Message-ID: <20240207174102.1486130-11-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.43.0.594.gd9cf4e227d-goog
-In-Reply-To: <20240207174102.1486130-1-pasha.tatashin@soleen.com>
-References: <20240207174102.1486130-1-pasha.tatashin@soleen.com>
+        bh=NchtCtztTYgLVk31R6XXB+U98ZPDL1AD+o55ip7WTnY=;
+        b=H8fVMSwRY3nraYC6JaQ9gzlCZkOzFUCh9FjuwUbH/wtl98/Vi9Bja59esqhlcs6Io4
+         dFZ7cBAWw9PpIL7lBb9QtoUsMxb0C7y5PkV9TLRe+de3Vu+AB32jIBpGI+Q/Tp4Nz16d
+         9N2y4V5nMoWmXXbwi3Z92GDNxNyjbCv2qpsc4xW7SV3dJLXVVWaOUhSiJPCMUXYimqhp
+         fj7fwjyjjg17enhntf/NYTuc9dLTcrYEHe+NOhFd8UTyKLuPG+E7zBCVh9HjVIBxLRVU
+         rFCb7P0M3kTHiXIbwiVznFWE3WXBnz9I6nozIWYLhnGj+u/95WvnIpO2wDtS7UTkKjgf
+         41pQ==
+X-Gm-Message-State: AOJu0Yx8Ksf1pulyAwTQMYYtI8790dOVWJs6TglJvgAEhrHVLlZRH9cf
+	+5e4Ydi5LMtnMrj3sKvjARfG5vcJXuIqq7b/R6z8rjsF10apwKFSf/GhK4HWKSbYwlHV0lBuHTU
+	ZveKJTjWkJ8gDbFgPsf+lv1UPSFgF6eg7pcH7iw==
+X-Google-Smtp-Source: AGHT+IFHJ8RzBy8kDruajhclKaKc5G+oGuGhBt6+ikiR1rVtLI1ZIksnvJc+jThp9pyXy+1XUd/hTd9KJKxiBGbCd0Y=
+X-Received: by 2002:a05:6358:d09b:b0:179:1f6:4775 with SMTP id
+ jc27-20020a056358d09b00b0017901f64775mr3847995rwb.31.1707339997647; Wed, 07
+ Feb 2024 13:06:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231204194156.2411672-1-davidf@vimeo.com>
+In-Reply-To: <20231204194156.2411672-1-davidf@vimeo.com>
+From: David Finkel <davidf@vimeo.com>
+Date: Wed, 7 Feb 2024 16:06:26 -0500
+Message-ID: <CAFUnj5PjgQM8G=s2TxJS73_GnytOACog8PFuzASgYNfLH2Uo-w@mail.gmail.com>
+Subject: Re: [PATCH] mm, memcg: cg2 memory{.swap,}.peak write handlers
+To: Muchun Song <muchun.song@linux.dev>
+Cc: core-services@vimeo.com, Jonathan Corbet <corbet@lwn.net>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeelb@google.com>, Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-In order to be able to limit the amount of memory that is allocated
-by IOMMU subsystem, the memory must be accounted.
+Did I miss a reviewer on this change?
 
-Account IOMMU as part of the secondary pagetables as it was discussed
-at LPC.
+I've clearly missed the window for 6.8, but it would be nice to get
+this into a staging branch for 6.9.
 
-The value of SecPageTables now contains mmeory allocation by IOMMU
-and KVM.
+(I can definitely rebase and re-mail if necessary)
 
-There is a difference between GFP_ACCOUNT and what NR_IOMMU_PAGES shows.
-GFP_ACCOUNT is set only where it makes sense to charge to user
-processes, i.e. IOMMU Page Tables, but there more IOMMU shared data
-that should not really be charged to a specific process.
+Thanks,
+David Finkel
 
-Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-Acked-by: David Rientjes <rientjes@google.com>
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 2 +-
- Documentation/filesystems/proc.rst      | 4 ++--
- drivers/iommu/iommu-pages.h             | 2 ++
- include/linux/mmzone.h                  | 2 +-
- 4 files changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 17e6e9565156..15f80fea8df7 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1432,7 +1432,7 @@ PAGE_SIZE multiple when read back.
- 	  sec_pagetables
- 		Amount of memory allocated for secondary page tables,
- 		this currently includes KVM mmu allocations on x86
--		and arm64.
-+		and arm64 and IOMMU page tables.
- 
- 	  percpu (npn)
- 		Amount of memory used for storing per-cpu kernel
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 104c6d047d9b..604b2dccdc5a 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -1110,8 +1110,8 @@ KernelStack
- PageTables
-               Memory consumed by userspace page tables
- SecPageTables
--              Memory consumed by secondary page tables, this currently
--              currently includes KVM mmu allocations on x86 and arm64.
-+              Memory consumed by secondary page tables, this currently includes
-+              KVM mmu and IOMMU allocations on x86 and arm64.
- NFS_Unstable
-               Always zero. Previous counted pages which had been written to
-               the server, but has not been committed to stable storage.
-diff --git a/drivers/iommu/iommu-pages.h b/drivers/iommu/iommu-pages.h
-index 7336f976b641..e3eb93857a73 100644
---- a/drivers/iommu/iommu-pages.h
-+++ b/drivers/iommu/iommu-pages.h
-@@ -27,6 +27,7 @@ static inline void __iommu_alloc_account(struct page *page, int order)
- 	const long pgcnt = 1l << order;
- 
- 	mod_node_page_state(page_pgdat(page), NR_IOMMU_PAGES, pgcnt);
-+	mod_lruvec_page_state(page, NR_SECONDARY_PAGETABLE, pgcnt);
- }
- 
- /**
-@@ -39,6 +40,7 @@ static inline void __iommu_free_account(struct page *page, int order)
- 	const long pgcnt = 1l << order;
- 
- 	mod_node_page_state(page_pgdat(page), NR_IOMMU_PAGES, -pgcnt);
-+	mod_lruvec_page_state(page, NR_SECONDARY_PAGETABLE, -pgcnt);
- }
- 
- /**
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index bb6bc504915a..a18edcf12d53 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -202,7 +202,7 @@ enum node_stat_item {
- 	NR_KERNEL_SCS_KB,	/* measured in KiB */
- #endif
- 	NR_PAGETABLE,		/* used for pagetables */
--	NR_SECONDARY_PAGETABLE, /* secondary pagetables, e.g. KVM pagetables */
-+	NR_SECONDARY_PAGETABLE, /* secondary pagetables, KVM & IOMMU */
- #ifdef CONFIG_IOMMU_SUPPORT
- 	NR_IOMMU_PAGES,		/* # of pages allocated by IOMMU */
- #endif
--- 
-2.43.0.594.gd9cf4e227d-goog
+On Mon, Dec 4, 2023 at 2:42=E2=80=AFPM David Finkel <davidf@vimeo.com> wrot=
+e:
+>
+> Other mechanisms for querying the peak memory usage of either a process
+> or v1 memory cgroup allow for resetting the high watermark. Restore
+> parity with those mechanisms.
+>
+> For example:
+>  - Any write to memory.max_usage_in_bytes in a cgroup v1 mount resets
+>    the high watermark.
+>  - writing "5" to the clear_refs pseudo-file in a processes's proc
+>    directory resets the peak RSS.
+>
+> This change copies the cgroup v1 behavior so any write to the
+> memory.peak and memory.swap.peak pseudo-files reset the high watermark
+> to the current usage.
+>
+> This behavior is particularly useful for work scheduling systems that
+> need to track memory usage of worker processes/cgroups per-work-item.
+> Since memory can't be squeezed like CPU can (the OOM-killer has
+> opinions), these systems need to track the peak memory usage to compute
+> system/container fullness when binpacking workitems.
+>
+> Signed-off-by: David Finkel <davidf@vimeo.com>
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst       | 20 +++---
+>  mm/memcontrol.c                               | 23 ++++++
+>  .../selftests/cgroup/test_memcontrol.c        | 72 ++++++++++++++++---
+>  3 files changed, 99 insertions(+), 16 deletions(-)
 
+
+--=20
+David Finkel
+Senior Principal Software Engineer, Core Services
 
