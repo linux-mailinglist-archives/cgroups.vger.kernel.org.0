@@ -1,187 +1,251 @@
-Return-Path: <cgroups+bounces-1387-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1388-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AD5F84CD2D
-	for <lists+cgroups@lfdr.de>; Wed,  7 Feb 2024 15:48:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3C7D84CDFA
+	for <lists+cgroups@lfdr.de>; Wed,  7 Feb 2024 16:28:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C98DC1F23559
-	for <lists+cgroups@lfdr.de>; Wed,  7 Feb 2024 14:48:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BCEA1F265BE
+	for <lists+cgroups@lfdr.de>; Wed,  7 Feb 2024 15:28:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 127CA7762B;
-	Wed,  7 Feb 2024 14:47:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A68FA7F7F6;
+	Wed,  7 Feb 2024 15:28:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="icYajaCA"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RK8a8e4Z";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RK8a8e4Z"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C127D3E6;
-	Wed,  7 Feb 2024 14:47:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BAAC77632;
+	Wed,  7 Feb 2024 15:28:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707317269; cv=none; b=t/AfrvzZKvEJfMvQ0/MXJLmniPCW0FUVaTQbLtFq1SPiwdPoV6FGdMX+FKiKKTJKWryV8X8VIvXqYKv5OCpufvwziFz4o5FwpPlohjp2uH9HKcqUvnpvZ8M9q2whbqJiZy09a0N+VdbkQrzaGGVYsP50ed7zDVTvOsxIDPM2kzQ=
+	t=1707319697; cv=none; b=YNBbK83ZYXMjituQwBAEsZCj2WdXMeBM+J4jErsf//tyrK+uoxQQib3vayURcxeS8FA4t3j+LmMbpQ6YzAJc3FmnBk4iB2GXcFtvOGwqq8VUBOrNqhn9glVabvP5VdxexP/nsDxDSKO7ATHp/PgxtBECNusZKXEuuEy9amWufjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707317269; c=relaxed/simple;
-	bh=dqeS7RKaqg5NSBHC9tqAZ0jlOtvjCCV80N050qidhz4=;
+	s=arc-20240116; t=1707319697; c=relaxed/simple;
+	bh=/36nrJK68EJQBsi4yiMFWfZ0Cp659YPZW57SH3sThAw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HzRYVwZOikh7PXvTpnuv/06Xu2fFITQA/EscgbNhWI5kfxylcErZiV/1PxlIryufU3rJnoZvIAr4aIQmDhl6b/8pnBpQ2Z2cFm4wPcMxSxIvyU36uZIu6wu/4mG4wKQDKvVQMT+A4rIm0lvfKnBhZYek5fsNYsl7TkK7K6SNJmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=icYajaCA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B241DC433C7;
-	Wed,  7 Feb 2024 14:47:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707317269;
-	bh=dqeS7RKaqg5NSBHC9tqAZ0jlOtvjCCV80N050qidhz4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=icYajaCA2tFuTuC9D1SNlZkAipRaQApzHfHrIPO4rCmYFsJxTQhhfFshiqBzaCWju
-	 y12CJHYXvQttTjw5qpXSAtyLcfMStuhpTAyRQEhLzToFX0NrTqDP81kOhE2wMFrQpM
-	 HQB9k4CEAY9lkMSxxC4tQYBwQ1ilFaMSUNmfR1zqzAlallx3LLJP2zBl/kNfc8/tvz
-	 7y6rbmy/s3mgvrPkcOT9x/RJ0buI/rNL47I4cQaFBkfRU1n/g7tiArc81Jx7KqxO5w
-	 ySeNZCGRyg6jIOTOdyZoouhyyFlMC3z9ynle0GLAdzOCw7gKdklno1RqDO4QEusQcT
-	 XVhPLhZv65j0w==
-Date: Wed, 7 Feb 2024 15:47:46 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Marcelo Tosatti <mtosatti@redhat.com>
-Cc: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Shuah Khan <shuah@kernel.org>,
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, Mrunal Patel <mpatel@redhat.com>,
-	Ryan Phillips <rphillips@redhat.com>,
-	Brent Rowsell <browsell@redhat.com>, Peter Hunt <pehunt@redhat.com>,
-	Cestmir Kalina <ckalina@redhat.com>,
-	Nicolas Saenz Julienne <nsaenz@kernel.org>,
-	Alex Gladkov <agladkov@redhat.com>, Phil Auld <pauld@redhat.com>,
-	Paul Gortmaker <paul.gortmaker@windriver.com>,
-	Daniel Bristot de Oliveira <bristot@kernel.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Costa Shulyupin <cshulyup@redhat.com>
-Subject: Re: [RFC PATCH 0/8] cgroup/cpuset: Support RCU_NOCB on isolated
- partitions
-Message-ID: <ZcOYEkHCoh75R-LA@localhost.localdomain>
-References: <20240117163511.88173-1-longman@redhat.com>
- <ZagJPoEsLZ6Dg-NG@mtj.duckdns.org>
- <5ee5bf79-6cdc-4d1b-a19f-f0d5165a5f16@redhat.com>
- <ZcIsd6fjgmsb2dxr@localhost.localdomain>
- <ZcKFRqrUh5tTbsaJ@tpad>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qHK6cHQZP5ra+Ceb21OhxUVHjKkpv2bHZPAYVsh5CrLzULWcAW+iRF/x0NTm4t0SE1UViwF0pgim6n9B4VTL/RaWNt6uRIY2dAk/nv9kdSeIFXyw3MScHB3myCYBaNjlq9O5KGyGDIqjHY2b/JvRmWeYtRMHSVU5Lk0j6Bay1BA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RK8a8e4Z; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RK8a8e4Z; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from blackpad (unknown [10.100.12.75])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 572E01F78D;
+	Wed,  7 Feb 2024 15:28:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707319693; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JG/hj8s6PyM2n6N1CqZ5VTCYc2mwIugAjTnkUwcdcHA=;
+	b=RK8a8e4Z1cunI2tPdDFEaFnnzYSULcUPJtvRoMPGmqGqp5oJelwkP28/gyweQP9ldjXZCX
+	Bl9t30qarBFPMrxG073RbyhJRFuBm1rYMlJHZUHxS/7au/8YH/2HFEwbAeyrc4PMiPNP/D
+	cDdITAmsvkMn5PRcFMl/ShLK+GzLOIc=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707319693; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JG/hj8s6PyM2n6N1CqZ5VTCYc2mwIugAjTnkUwcdcHA=;
+	b=RK8a8e4Z1cunI2tPdDFEaFnnzYSULcUPJtvRoMPGmqGqp5oJelwkP28/gyweQP9ldjXZCX
+	Bl9t30qarBFPMrxG073RbyhJRFuBm1rYMlJHZUHxS/7au/8YH/2HFEwbAeyrc4PMiPNP/D
+	cDdITAmsvkMn5PRcFMl/ShLK+GzLOIc=
+Date: Wed, 7 Feb 2024 16:28:12 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Cc: Intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Zefan Li <lizefan.x@bytedance.com>, 
+	Dave Airlie <airlied@redhat.com>, Daniel Vetter <daniel.vetter@ffwll.ch>, 
+	Rob Clark <robdclark@chromium.org>, =?utf-8?B?U3TDqXBoYW5l?= Marchesin <marcheu@chromium.org>, 
+	"T . J . Mercier" <tjmercier@google.com>, Kenny.Ho@amd.com, 
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>, Brian Welty <brian.welty@intel.com>, 
+	Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Subject: Re: [RFC 6/8] cgroup/drm: Introduce weight based drm cgroup control
+Message-ID: <lisfkz7wwhwwe3wkc76ufemlotaguuxslymtz6gxfreu62u65z@dsa3zpaxtjo3>
+References: <20231024160727.282960-1-tvrtko.ursulin@linux.intel.com>
+ <20231024160727.282960-7-tvrtko.ursulin@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="apxwvyorjkqn4u25"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZcKFRqrUh5tTbsaJ@tpad>
+In-Reply-To: <20231024160727.282960-7-tvrtko.ursulin@linux.intel.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -2.90
+X-Spamd-Result: default: False [-2.90 / 50.00];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-0.999];
+	 RCPT_COUNT_TWELVE(0.00)[17];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email];
+	 SIGNED_PGP(-2.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_COUNT_ZERO(0.00)[0];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 MID_RHS_NOT_FQDN(0.50)[]
+X-Spam-Flag: NO
 
-Le Tue, Feb 06, 2024 at 04:15:18PM -0300, Marcelo Tosatti a écrit :
-> On Tue, Feb 06, 2024 at 01:56:23PM +0100, Frederic Weisbecker wrote:
-> > Le Wed, Jan 17, 2024 at 12:15:07PM -0500, Waiman Long a écrit :
-> > > 
-> > > On 1/17/24 12:07, Tejun Heo wrote:
-> > > > Hello,
-> > > > 
-> > > > On Wed, Jan 17, 2024 at 11:35:03AM -0500, Waiman Long wrote:
-> > > > > The first 2 patches are adopted from Federic with minor twists to fix
-> > > > > merge conflicts and compilation issue. The rests are for implementing
-> > > > > the new cpuset.cpus.isolation_full interface which is essentially a flag
-> > > > > to globally enable or disable full CPU isolation on isolated partitions.
-> > > > I think the interface is a bit premature. The cpuset partition feature is
-> > > > already pretty restrictive and makes it really clear that it's to isolate
-> > > > the CPUs. I think it'd be better to just enable all the isolation features
-> > > > by default. If there are valid use cases which can't be served without
-> > > > disabling some isolation features, we can worry about adding the interface
-> > > > at that point.
-> > > 
-> > > My current thought is to make isolated partitions act like isolcpus=domain,
-> > > additional CPU isolation capabilities are optional and can be turned on
-> > > using isolation_full. However, I am fine with making all these turned on by
-> > > default if it is the consensus.
-> > 
-> > Right it was the consensus last time I tried. Along with the fact that mutating
-> > this isolation_full set has to be done on offline CPUs to simplify the whole
-> > picture.
-> > 
-> > So lemme try to summarize what needs to be done:
-> > 
-> > 1) An all-isolation feature file (that is, all the HK_TYPE_* things) on/off for
-> >   now. And if it ever proves needed, provide a way later for more finegrained
-> >   tuning.
-> > 
-> > 2) This file must only apply to offline CPUs because it avoids migrations and
-> >   stuff.
-> > 
-> > 3) I need to make RCU NOCB tunable only on offline CPUs, which isn't that much
-> >    changes.
-> > 
-> > 4) HK_TYPE_TIMER:
-> >    * Wrt. timers in general, not much needs to be done, the CPUs are
-> >      offline. But:
-> >    * arch/x86/kvm/x86.c does something weird
-> >    * drivers/char/random.c might need some care
-> >    * watchdog needs to be (de-)activated
-> >    
-> > 5) HK_TYPE_DOMAIN:
-> >    * This one I fear is not mutable, this is isolcpus...
-> 
-> Except for HK_TYPE_DOMAIN, i have never seen anyone use any of this
-> flags.
 
-HK_TYPE_DOMAIN is used by isolcpus=domain,....
-HK_TYPE_MANAGED_IRQ is used by isolcpus=managed_irq,...
+--apxwvyorjkqn4u25
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All the others (except HK_TYPE_SCHED) are used by nohz_full=
+Hello.
 
-Thanks.
+(I hope I'm replying to the latest iteration and it has some validitiy
+still. Sorry for my late reply. Few points caught my attention.)
 
-> 
-> > 
-> > 6) HK_TYPE_MANAGED_IRQ:
-> >    * I prefer not to think about it :-)
-> > 
-> > 7) HK_TYPE_TICK:
-> >    * Maybe some tiny ticks internals to revisit, I'll check that.
-> >    * There is a remote tick to take into consideration, but again the
-> >      CPUs are offline so it shouldn't be too complicated.
-> > 
-> > 8) HK_TYPE_WQ:
-> >    * Fortunately we already have all the mutable interface in place.
-> >      But we must make it live nicely with the sysfs workqueue affinity
-> >      files.
-> > 
-> > 9) HK_FLAG_SCHED:
-> >    * Oops, this one is ignored by nohz_full/isolcpus, isn't it?
-> >    Should be removed?
-> > 
-> > 10) HK_TYPE_RCU:
-> >     * That's point 3) and also some kthreads to affine, which leads us
-> >      to the following in HK_TYPE_KTHREAD:
-> > 
-> > 11) HK_FLAG_KTHREAD:
-> >     * I'm guessing it's fine as long as isolation_full is also an
-> >       isolated partition. Then unbound kthreads shouldn't run there.
-> > 
-> > 12) HK_TYPE_MISC:
-> >     * Should be fine as ILB isn't running on offline CPUs.
-> > 
-> > Thanks.
-> > 
-> > 
-> 
+On Tue, Oct 24, 2023 at 05:07:25PM +0100, Tvrtko Ursulin <tvrtko.ursulin@li=
+nux.intel.com> wrote:
+> @@ -15,10 +17,28 @@ struct drm_cgroup_state {
+>  	struct cgroup_subsys_state css;
+> =20
+>  	struct list_head clients;
+> +
+> +	unsigned int weight;
+> +
+> +	unsigned int sum_children_weights;
+> +
+> +	bool over;
+> +	bool over_budget;
+> +
+> +	u64 per_s_budget_us;
+
+Nit: sounds reversed (cf USEC_PER_SEC).
+
+> +static int drmcg_period_ms =3D 2000;
+> +module_param(drmcg_period_ms, int, 0644);
+> +
+
+cgroup subsystems as loadable modules were abandoded long time ago.
+I'm not sure if this works as expected then.
+The common way is __seutp(), see for instance __setup() in mm/memcontrol.c
+
+> +static bool __start_scanning(unsigned int period_us)
+=2E..
+> +	css_for_each_descendant_post(node, &root->css) {
+> +		struct drm_cgroup_state *drmcs =3D css_to_drmcs(node);
+> +		struct drm_cgroup_state *parent;
+> +		u64 active;
+> +
+> +		if (!css_tryget_online(node))
+> +			goto out;
+> +		if (!node->parent) {
+> +			css_put(node);
+> +			continue;
+> +		}
+
+I think the parent check can go first witout put'ting (RCU is enough for
+node).
+
+> +		if (!css_tryget_online(node->parent)) {
+> +			css_put(node);
+> +			goto out;
+> +		}
+
+Online parent is implied onlined node. So this can be removed.
+
+=2E..
+> +
+> +		css_put(node);
+> +	}
+
+I wonder if the first passes could be implemented with rstat flushing
+and then only invoke signalling based on the data. (As that's
+best-effort).
+
+> +
+> +	/*
+> +	 * 4th pass - send out over/under budget notifications.
+> +	 */
+> +	css_for_each_descendant_post(node, &root->css) {
+> +		struct drm_cgroup_state *drmcs =3D css_to_drmcs(node);
+> +
+> +		if (!css_tryget_online(node))
+> +			goto out_retry;
+> +
+> +		if (drmcs->over || drmcs->over_budget)
+> +			drmcs_signal_budget(drmcs,
+> +					    drmcs->active_us,
+> +					    drmcs->per_s_budget_us);
+> +		drmcs->over_budget =3D drmcs->over;
+> +
+> +		css_put(node);
+> +	}
+
+>  static struct cgroup_subsys_state *
+> @@ -82,6 +365,7 @@ drmcs_alloc(struct cgroup_subsys_state *parent_css)
+> =20
+>  	if (!parent_css) {
+>  		drmcs =3D &root_drmcs.drmcs;
+> +		INIT_DELAYED_WORK(&root_drmcs.scan_work, scan_worker);
+
+This reminds me discussion
+https://lore.kernel.org/lkml/rlm36iypckvxol2edyr25jyo4imvlidtepbcjdaa2ouvwh=
+3wjq@pqyuk3v2jesb/
+
+I.e. worker needn't be initialized if controller is "invisible".
+
+> +static void drmcs_attach(struct cgroup_taskset *tset)
+> +{
+> +	struct drm_cgroup_state *old =3D old_drmcs;
+> +	struct cgroup_subsys_state *css;
+> +	struct drm_file *fpriv, *next;
+> +	struct drm_cgroup_state *new;
+> +	struct task_struct *task;
+> +	bool migrated =3D false;
+> +
+> +	if (!old)
+> +		return;
+> +
+> +	task =3D cgroup_taskset_first(tset, &css);
+> +	new =3D css_to_drmcs(task_css(task, drm_cgrp_id));
+> +	if (new =3D=3D old)
+> +		return;
+> +
+> +	mutex_lock(&drmcg_mutex);
+> +
+> +	list_for_each_entry_safe(fpriv, next, &old->clients, clink) {
+> +		cgroup_taskset_for_each(task, css, tset) {
+> +			struct cgroup_subsys_state *old_css;
+> +
+> +			if (task->flags & PF_KTHREAD)
+> +				continue;
+
+I'm curious, is this because of particular kthreads? Or would it fail
+somehow below? (Like people should not migrate kthreads normally, so
+their expectation cannot be high.)
+
+Michal
+
+--apxwvyorjkqn4u25
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZcOhiQAKCRAGvrMr/1gc
+juaFAP4gCQo3QiiI2lNlSE/BJ+GheTQygLXENfdfwal35LU3EwEAo1qL7Nqz3cT2
+vM5wWH7kk9+bxFqs+xgymjg3vKXu8QU=
+=aJfV
+-----END PGP SIGNATURE-----
+
+--apxwvyorjkqn4u25--
 
