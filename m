@@ -1,69 +1,70 @@
-Return-Path: <cgroups+bounces-1477-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1478-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DED38521AD
-	for <lists+cgroups@lfdr.de>; Mon, 12 Feb 2024 23:45:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7258F8521BE
+	for <lists+cgroups@lfdr.de>; Mon, 12 Feb 2024 23:49:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 434141F22BD4
-	for <lists+cgroups@lfdr.de>; Mon, 12 Feb 2024 22:45:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC2EB1F22FE4
+	for <lists+cgroups@lfdr.de>; Mon, 12 Feb 2024 22:49:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE4E44E1B5;
-	Mon, 12 Feb 2024 22:45:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A434EB29;
+	Mon, 12 Feb 2024 22:49:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PtdQpm+C"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="IE7oNZWe"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E4CB4DA19
-	for <cgroups@vger.kernel.org>; Mon, 12 Feb 2024 22:45:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34FF64E1CA
+	for <cgroups@vger.kernel.org>; Mon, 12 Feb 2024 22:49:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707777943; cv=none; b=rAiv37Nwxrl3ZyOqoSVTv5yr0a7ZKo6woMVIKvcKI5QZL8LI8RidOxJV8vmSBfEpvW6AWac2Kn2113UatfZSAiPYGmxRuAdwxtfe41FWPr9MscYlZ7Zqgt680R6KP2Mb2lr9zkdSalMd7BbaYDLQpYDPhndUoVctG7N84NoPEAI=
+	t=1707778178; cv=none; b=ua0CqZcobA8BVcYPu1hFMCS39WaYK00+OvBIbY0IZorsX1oIggM/79DsEohVw9p2R4fDw1yX4Qed8g8JLLIP5l9ecl7JgQeuas4wJYV1UQyQJoNeJ4atHwmVKpCe/0XjCVRwvQ3TZqwYqajyAlBSJaZs1HSggnE8muhOKB29mNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707777943; c=relaxed/simple;
-	bh=Lqi+dtaPDt0Cdp8tkYw4ZeZ7cvsn7QQVayGZiang7cg=;
+	s=arc-20240116; t=1707778178; c=relaxed/simple;
+	bh=jJ7Q+uAzBM/2QUtMSW3fMxfNQj/NahTWX0hTiFl7U4E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TGhM+fbRpcRixGvd2bdICVOgDrg6jC97Fxa28rwGIzAlmBNWzsmh3fCPPiZBLHBx+7KF9SdOpm4UOx6nQCtmRiuMCQUxvC0o5dMWeCiSgr02djz75jj8KX5jsYhWm97mjakwSjxYhFFSEvdmumgtUR5V35+yh83by8EnH4HHDhw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=PtdQpm+C; arc=none smtp.client-ip=209.85.210.46
+	 Content-Type:Content-Disposition:In-Reply-To; b=MS5ASEax5uCLr/gEBmMvOcOns4PwmN2INFeGeOI5cc5qaJk9REtMSJ5IDK6FoHzz/pCvYa908W9Y6uBv5cWRfIh/vytaEHxz2i+3epqZC9wByYNkWUVEJQZvomoJHR0gqZCYiCdAybsipKNtQPo0i6/sT3MBqzZ/dimPvpNF5Jc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=IE7oNZWe; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6e2df04c812so215892a34.3
-        for <cgroups@vger.kernel.org>; Mon, 12 Feb 2024 14:45:41 -0800 (PST)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d751bc0c15so32745755ad.2
+        for <cgroups@vger.kernel.org>; Mon, 12 Feb 2024 14:49:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707777941; x=1708382741; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1707778175; x=1708382975; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=M9x0GXj1drWEZHiTvKM8aFvDBLB5BYp9bLGNurXOzwk=;
-        b=PtdQpm+C24YhPzBvsh4VLhtbz8qSZM4nDhdlXlO50cL5rfoNWIYqmLDMQUi8bh3gJI
-         vZU3wGoBksl9jBMgito711zFJUdjiHzzWt2DDz5m5suZxamdPBHvpa+T8tsZhOnFB63Y
-         SKAl+YwD51kRDmRfiRrR6Vb+Ic02/lX/R0LOo=
+        bh=xx+E2mv21N0lU1zbrbyeE8PV+0+SQ7K7DmnAXJKKlPc=;
+        b=IE7oNZWeS73+rgfvuVW0cw0U6tpbZYbfeOHUiV8+WVWzTj3n6S6ROeEBzcCVScF81V
+         qCz4l5KUih2yz5w9S/++VzLJHY4duzNWfKuR1tzi+Y7MmJ3DFCLRrpH5s35lBmK1fvzz
+         AGvopWt5YlUBzDOyScAuQnBlPvx46X2011z+M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707777941; x=1708382741;
+        d=1e100.net; s=20230601; t=1707778175; x=1708382975;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=M9x0GXj1drWEZHiTvKM8aFvDBLB5BYp9bLGNurXOzwk=;
-        b=vDVcD5/kYRABfnSA4eqeTNhMvfAbbpQhKpYGznbJkD8kjKywt0gVviGderYfXDxWGg
-         GNyGjlBsYj3ilV+K6VmAjYHHHmKKLFWwkck1aN/RT9BuY4ZAoRdDCnLiAUpDtBCWRtaB
-         RwquyJuKYC2M7yGMboZqlFYtn0+4MY97HVQ8GWiIHHzd1KQFVBLNEhKZicsz7J50Wvo8
-         P3ILRVVde5Le3pLTSPPDlZYZagugGyzLuTgcY722nRSOCdrPpZFJjl2J705rIuVdCEzU
-         ljAHTkPhP11NeB6UF823yhMHTNl5ushdXqhe15A9IrmsEkjrNQFQzLM9wXRJth5fZwCL
-         nSxw==
-X-Gm-Message-State: AOJu0YwJRMhS8QXBgIrVgpS3BsYctHhdeelSd38Si8MYFV65BNez/S6E
-	mKc76U7FeIAs11OxjKuyC1+05z3YoyJ82iVOQ/I5XWEd6wf5JFsbXgn0zFgLEA==
-X-Google-Smtp-Source: AGHT+IGuY9FmZ07bxpDu9dvbVIeyQS0ooYEchWwZGi6xaPkWpNmcABhEn8slFi/ITrVyu8oP/VENLw==
-X-Received: by 2002:a05:6871:521f:b0:21a:43e6:9479 with SMTP id ht31-20020a056871521f00b0021a43e69479mr6494394oac.25.1707777941191;
-        Mon, 12 Feb 2024 14:45:41 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU5F04iljKWgIhFX67fz6I0jBA29fs1KValNbI20GQ721akFaZZswko9rHZyanWImombY2MRxlAp7+1vnmOqFP7q3t71cIchW8bu03KW0mwMJ09EDhrMyT10XPJaH9Bzb53bFzuM4BfNnrmZpnY5B+/fkfb74fuUtg23PbdKoYURrf6KUG8I3oX19u7Tt+W5BZUjko7u4hrdj9G7NJMAZUxEfnlfmwQybY2KYzaip7/GPxsca5fxpskYZOzkyWm7W5EXnVeqie8w9GlyWjw+1HLCFKyvdODwZ1IAzj8OJmSifxvqrB+SJgeRE6+2anrYiQ5CQ3OjrlZ9MbV4U+AsezFTvbF6SHAGsCB9zkYD6wuU10oKJx6qhY3nZcIWpFrTI0zoVY91oEChX9Ilp0TaOpzYN6r/7qCg0nZllRlWzOLnsd/YEQdhMMJ6gLqwfDgNp2YRYlwnaQXK0Pw/BArGG70FUDSnkDDzFfQyOMSqoQNMuO+6IPIGk7ltANLWIORmwbgcT2nIrOcqp01sEzZA0WJvdCTUITvforW3LWpoZE0x07bDes7lpFpCZanVON8HwRF9g5REXHwY5BM3xpjm9HkhaLKOuRcm0MVmwEXk+H3VpM0Mv5NVf91BClEFo+/4ig+2QwEfLffPJ1oQuLBUNtltszsmR2I850mAt2Cr1muh7xK43zUA2hQPHmJRY2OSYWwRbDxjUCzVMOxgXPe2IHMYsDVzu6vfog4TBGWlcB6TbpX8ZqcbQ==
+        bh=xx+E2mv21N0lU1zbrbyeE8PV+0+SQ7K7DmnAXJKKlPc=;
+        b=OiGTUfRPfxmdEVBce0pv6MSadzql/sRrdq1Yo8N7/4n8Cx532MqufemJUZUgInUfso
+         TNMrZn86D36Y7pD0L+lbMFr6PZkUTifs62bkc9M7BWAKjNr/eXB8VZqcek8A4uqTeufN
+         wnaY5hpcG4suJ82oKrEBGb7gpH6FKeZHqjm+xlCwofOYctt9RVZFY6M6Uoo0BFcTNzRz
+         dxDIOPDpES+H1rAXvjaX8m8JB2nrlM6jeHjA1NkDdtfqK6/LoY68nY8EGJh8o5GoTkkr
+         0HaOtsnhT8oSnJknyiRl/wFS5OLtXE0QU6+lzhBNVT2r1RNXi5OfoVxWYhu/P9790Mjp
+         ayyw==
+X-Forwarded-Encrypted: i=1; AJvYcCXuUoaLePFQKQ7jtAYK12IRBF+/YyGlRsJgxhGOYr/BJAfQXK0DPRTdndJoIWxFWC8b6YqYwIcVgxdvOJkqQQ8vWDUCh4CrZg==
+X-Gm-Message-State: AOJu0YzmumPEyNRW2lweE9/PaxYLYAleYwiQUU76MZcdBME2U4Lhkn41
+	lVdtJKN5Cvnin5mCph/Of32QKe0JgOMUp5lIZYLRbtmpa+GG/bZz9SNNWZE7UQ==
+X-Google-Smtp-Source: AGHT+IFhdBwz0gkUHXypIGqz/59W5VQq7xXUv7g5AJuySlRLjNX5zZEVE7mi47XR/49TsBREqCstWw==
+X-Received: by 2002:a17:902:f54e:b0:1d9:4544:ed22 with SMTP id h14-20020a170902f54e00b001d94544ed22mr9047716plf.42.1707778175450;
+        Mon, 12 Feb 2024 14:49:35 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUasX8XpzsSiDZ5/EFiO7pro9PNRyHSQqtLX17pXnFY6qHBIb3d0CatX0NjldJ2PIwuY8MFElGCiBNMf1vy8L++HSYbuXBJ6AZvmBWue0hbc7GGdbfvzgL1xNSjTfM9X5+ku0Yd02eXA1Fb287VhTjN4I3F2u/jh5y1xCVgzJR9RKBSTcdsL3dVakoYqC0QGWEcuLIvThYkH09TucQGniMYD9Hy5lpNpuDkIKRIrZtqX15u2ENuIryu60uAgOeNnkC5z9phPyK8U3UIEyEbopJ6O3xKqIXBCuCXLKQSuMwCOAUdQUY8u0MEx4lSn60txGtd6/rcMmjHo8BlE4D91TT5e/PtYivpmNWde+QdxXxO1g1J8Wxp6AjdZqiQvCuJspekBpiI1yois+s9psLLwVurUsoM08nC9VIoLWscj4RAQo7eqcvr3M/CWVxf2Eqf5S5e7dRIGH/475snDdZDbxLykVvtNsfHe0jxNnhuKfMo/sgOqTnAi4/31NC2A/8ttOA3uIN0T5OED1gvzRtZoCCSI4TE8FmGVQHQT09FvO3sHnVyrkDAVSQn6xJiJwRws4QIv4z+F2OLLPP5Yqumj94miFYqmOEEptLqMEb4FNByAGeMRWfIsD5mNQx16rkqPDgxn774LFEHt6u9Rf4B8f4eRWOBTslPPY54XfDRLRhyP9CZDOq2ZhfiJSPdfj6kiDCOaj+DqIgsHECinmKRBHYLRPse782vR1gbs1q6Ldg0Jn9FP81oaA==
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id t16-20020a63b250000000b005cfbf96c733sm987037pgo.30.2024.02.12.14.45.40
+        by smtp.gmail.com with ESMTPSA id s13-20020a17090330cd00b001d8d56a8b9fsm846040plc.105.2024.02.12.14.49.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 14:45:40 -0800 (PST)
-Date: Mon, 12 Feb 2024 14:45:40 -0800
+        Mon, 12 Feb 2024 14:49:34 -0800 (PST)
+Date: Mon, 12 Feb 2024 14:49:34 -0800
 From: Kees Cook <keescook@chromium.org>
 To: Suren Baghdasaryan <surenb@google.com>
 Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
@@ -93,11 +94,11 @@ Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
 	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
 	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
 	cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 33/35] codetag: debug: mark codetags for reserved
- pages as empty
-Message-ID: <202402121445.B6EDB95@keescook>
+Subject: Re: [PATCH v3 34/35] codetag: debug: introduce OBJEXTS_ALLOC_FAIL to
+ mark failed slab_ext allocations
+Message-ID: <202402121448.AF0AA8E@keescook>
 References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-34-surenb@google.com>
+ <20240212213922.783301-35-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -106,16 +107,138 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240212213922.783301-34-surenb@google.com>
+In-Reply-To: <20240212213922.783301-35-surenb@google.com>
 
-On Mon, Feb 12, 2024 at 01:39:19PM -0800, Suren Baghdasaryan wrote:
-> To avoid debug warnings while freeing reserved pages which were not
-> allocated with usual allocators, mark their codetags as empty before
-> freeing.
+On Mon, Feb 12, 2024 at 01:39:20PM -0800, Suren Baghdasaryan wrote:
+> If slabobj_ext vector allocation for a slab object fails and later on it
+> succeeds for another object in the same slab, the slabobj_ext for the
+> original object will be NULL and will be flagged in case when
+> CONFIG_MEM_ALLOC_PROFILING_DEBUG is enabled.
+> Mark failed slabobj_ext vector allocations using a new objext_flags flag
+> stored in the lower bits of slab->obj_exts. When new allocation succeeds
+> it marks all tag references in the same slabobj_ext vector as empty to
+> avoid warnings implemented by CONFIG_MEM_ALLOC_PROFILING_DEBUG checks.
+> 
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> ---
+>  include/linux/memcontrol.h |  4 +++-
+>  mm/slab.h                  | 25 +++++++++++++++++++++++++
+>  mm/slab_common.c           | 22 +++++++++++++++-------
+>  3 files changed, 43 insertions(+), 8 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 2b010316016c..f95241ca9052 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -365,8 +365,10 @@ enum page_memcg_data_flags {
+>  #endif /* CONFIG_MEMCG */
+>  
+>  enum objext_flags {
+> +	/* slabobj_ext vector failed to allocate */
+> +	OBJEXTS_ALLOC_FAIL = __FIRST_OBJEXT_FLAG,
+>  	/* the next bit after the last actual flag */
+> -	__NR_OBJEXTS_FLAGS  = __FIRST_OBJEXT_FLAG,
+> +	__NR_OBJEXTS_FLAGS  = (__FIRST_OBJEXT_FLAG << 1),
+>  };
+>  
+>  #define OBJEXTS_FLAGS_MASK (__NR_OBJEXTS_FLAGS - 1)
+> diff --git a/mm/slab.h b/mm/slab.h
+> index cf332a839bf4..7bb3900f83ef 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -586,9 +586,34 @@ static inline void mark_objexts_empty(struct slabobj_ext *obj_exts)
+>  	}
+>  }
+>  
+> +static inline void mark_failed_objexts_alloc(struct slab *slab)
+> +{
+> +	slab->obj_exts = OBJEXTS_ALLOC_FAIL;
 
-How do these get their codetags to begin with? Regardless:
+Uh, does this mean slab->obj_exts is suddenly non-NULL? Is everything
+that accesses obj_exts expecting this?
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+-Kees
+
+> +}
+> +
+> +static inline void handle_failed_objexts_alloc(unsigned long obj_exts,
+> +			struct slabobj_ext *vec, unsigned int objects)
+> +{
+> +	/*
+> +	 * If vector previously failed to allocate then we have live
+> +	 * objects with no tag reference. Mark all references in this
+> +	 * vector as empty to avoid warnings later on.
+> +	 */
+> +	if (obj_exts & OBJEXTS_ALLOC_FAIL) {
+> +		unsigned int i;
+> +
+> +		for (i = 0; i < objects; i++)
+> +			set_codetag_empty(&vec[i].ref);
+> +	}
+> +}
+> +
+> +
+>  #else /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
+>  
+>  static inline void mark_objexts_empty(struct slabobj_ext *obj_exts) {}
+> +static inline void mark_failed_objexts_alloc(struct slab *slab) {}
+> +static inline void handle_failed_objexts_alloc(unsigned long obj_exts,
+> +			struct slabobj_ext *vec, unsigned int objects) {}
+>  
+>  #endif /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
+>  
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index d5f75d04ced2..489c7a8ba8f1 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -214,29 +214,37 @@ int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+>  			gfp_t gfp, bool new_slab)
+>  {
+>  	unsigned int objects = objs_per_slab(s, slab);
+> -	unsigned long obj_exts;
+> -	void *vec;
+> +	unsigned long new_exts;
+> +	unsigned long old_exts;
+> +	struct slabobj_ext *vec;
+>  
+>  	gfp &= ~OBJCGS_CLEAR_MASK;
+>  	/* Prevent recursive extension vector allocation */
+>  	gfp |= __GFP_NO_OBJ_EXT;
+>  	vec = kcalloc_node(objects, sizeof(struct slabobj_ext), gfp,
+>  			   slab_nid(slab));
+> -	if (!vec)
+> +	if (!vec) {
+> +		/* Mark vectors which failed to allocate */
+> +		if (new_slab)
+> +			mark_failed_objexts_alloc(slab);
+> +
+>  		return -ENOMEM;
+> +	}
+>  
+> -	obj_exts = (unsigned long)vec;
+> +	new_exts = (unsigned long)vec;
+>  #ifdef CONFIG_MEMCG
+> -	obj_exts |= MEMCG_DATA_OBJEXTS;
+> +	new_exts |= MEMCG_DATA_OBJEXTS;
+>  #endif
+> +	old_exts = slab->obj_exts;
+> +	handle_failed_objexts_alloc(old_exts, vec, objects);
+>  	if (new_slab) {
+>  		/*
+>  		 * If the slab is brand new and nobody can yet access its
+>  		 * obj_exts, no synchronization is required and obj_exts can
+>  		 * be simply assigned.
+>  		 */
+> -		slab->obj_exts = obj_exts;
+> -	} else if (cmpxchg(&slab->obj_exts, 0, obj_exts)) {
+> +		slab->obj_exts = new_exts;
+> +	} else if (cmpxchg(&slab->obj_exts, old_exts, new_exts) != old_exts) {
+>  		/*
+>  		 * If the slab is already in use, somebody can allocate and
+>  		 * assign slabobj_exts in parallel. In this case the existing
+> -- 
+> 2.43.0.687.g38aa6559b0-goog
+> 
 
 -- 
 Kees Cook
