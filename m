@@ -1,70 +1,69 @@
-Return-Path: <cgroups+bounces-1476-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1477-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBBF18521A8
-	for <lists+cgroups@lfdr.de>; Mon, 12 Feb 2024 23:43:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DED38521AD
+	for <lists+cgroups@lfdr.de>; Mon, 12 Feb 2024 23:45:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E084C1C21F74
-	for <lists+cgroups@lfdr.de>; Mon, 12 Feb 2024 22:43:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 434141F22BD4
+	for <lists+cgroups@lfdr.de>; Mon, 12 Feb 2024 22:45:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DE1D4F611;
-	Mon, 12 Feb 2024 22:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE4E44E1B5;
+	Mon, 12 Feb 2024 22:45:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lZIRA38y"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PtdQpm+C"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 854024EB5C
-	for <cgroups@vger.kernel.org>; Mon, 12 Feb 2024 22:43:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E4CB4DA19
+	for <cgroups@vger.kernel.org>; Mon, 12 Feb 2024 22:45:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707777807; cv=none; b=l0YzugtfQAoPvaWVyvIL8lyNTFUTsyWKm3S9y0gX+wPK+nIoIrVbFJSxbtbewrLZDcfwEl2a9kQeFGHSSZYR6aJjHqP+1ZrHiWMCwQDNyVu+h7Yio7G2pcAfmh/R0qoVuTj0L7dd0kR7AlYiuh1GucEWns+oVCgXmz2Gkb72wnQ=
+	t=1707777943; cv=none; b=rAiv37Nwxrl3ZyOqoSVTv5yr0a7ZKo6woMVIKvcKI5QZL8LI8RidOxJV8vmSBfEpvW6AWac2Kn2113UatfZSAiPYGmxRuAdwxtfe41FWPr9MscYlZ7Zqgt680R6KP2Mb2lr9zkdSalMd7BbaYDLQpYDPhndUoVctG7N84NoPEAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707777807; c=relaxed/simple;
-	bh=ZRXcT6h1io+pAz7R5dW+T/d2U31m8Pyk0TbI2mbrBog=;
+	s=arc-20240116; t=1707777943; c=relaxed/simple;
+	bh=Lqi+dtaPDt0Cdp8tkYw4ZeZ7cvsn7QQVayGZiang7cg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RhzXtj2qyK6fuI+011qUOS9fggzAGsbjQ+ljyFBwJhAcJsRVzAFt6DKMUfpBUeDgTO0+7LPXJreUm6SwWD74NSwUkXOH1bcbSsm1lra9T/nVoZDWORJhsa6MByIKblzi5/JSNqPTzcAMA80Pydb3X2F00LuOcV0Hy1Z0fthuqEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=lZIRA38y; arc=none smtp.client-ip=209.85.210.180
+	 Content-Type:Content-Disposition:In-Reply-To; b=TGhM+fbRpcRixGvd2bdICVOgDrg6jC97Fxa28rwGIzAlmBNWzsmh3fCPPiZBLHBx+7KF9SdOpm4UOx6nQCtmRiuMCQUxvC0o5dMWeCiSgr02djz75jj8KX5jsYhWm97mjakwSjxYhFFSEvdmumgtUR5V35+yh83by8EnH4HHDhw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=PtdQpm+C; arc=none smtp.client-ip=209.85.210.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e09a890341so1525029b3a.3
-        for <cgroups@vger.kernel.org>; Mon, 12 Feb 2024 14:43:24 -0800 (PST)
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6e2df04c812so215892a34.3
+        for <cgroups@vger.kernel.org>; Mon, 12 Feb 2024 14:45:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707777804; x=1708382604; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1707777941; x=1708382741; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lHfbSvdCb97XCfftcH6VJtR+XcLQrp5kkgikwsWfekY=;
-        b=lZIRA38yhH4sVSnXUtFKw6wI5cs0/CdNpabdM36ZqJHOc2wkKgmadNElm1JkkmTDBA
-         a49m3Ao84M5nRf9uC9Uc3RI2Mye5RUXZlGOioiCIvedOw9beMcHEfoGQMn2X34q27Nii
-         6BzR2ohKvwWcgX0ToaNy4jGxlncFdXHkzeab8=
+        bh=M9x0GXj1drWEZHiTvKM8aFvDBLB5BYp9bLGNurXOzwk=;
+        b=PtdQpm+C24YhPzBvsh4VLhtbz8qSZM4nDhdlXlO50cL5rfoNWIYqmLDMQUi8bh3gJI
+         vZU3wGoBksl9jBMgito711zFJUdjiHzzWt2DDz5m5suZxamdPBHvpa+T8tsZhOnFB63Y
+         SKAl+YwD51kRDmRfiRrR6Vb+Ic02/lX/R0LOo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707777804; x=1708382604;
+        d=1e100.net; s=20230601; t=1707777941; x=1708382741;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lHfbSvdCb97XCfftcH6VJtR+XcLQrp5kkgikwsWfekY=;
-        b=BiOX+Jr0RRWZVHXk65fQhqK8hLd8VpTM/D/gzYzRP9met7cgca9YLnC1vjsi54jaEZ
-         BHeJrDivw/rDzXPaz8qQhl+/5rbgAQHrII/lZlM1MJ94AldMxhua0y8v7mF5vW7agF2j
-         hwYIUq7D5HHpnG9MhN05Gra56Z7LpvJpnNNMwzowHSQ5pN/l1bhY7WO9/A4q/cWS16M/
-         xGwTMBzdrvJcOk8Ig2C9q/dXaMYkfzti141LYSe+bOmI6tYPo3GtkFJoyZCuyozzCUab
-         sh2mWTn5g6MOEQvIkB5ZpSfeQJjQLVUETr/s8agOwQvv3gO6PGXsjHKT3XPelwbJ8YsP
-         uCBw==
-X-Forwarded-Encrypted: i=1; AJvYcCV5FmMniU/vVXVE+ASdHjw9YJVGAZxoHTeMnj1h8rFa6F6Sj70W/XUI2KMOSEksJKX6Uxo7bHDdm/9inOgqrIqw8FpDl2jwXg==
-X-Gm-Message-State: AOJu0YxlPu9V9wHarM6lKhUWCr0lCR4lMN0tyvtsl50FJ6DTQiUV4X0I
-	R8pN3ElYT5EV2LyDkT6qIIGuR7l1dCZNIexa/fgwphVGsucA2atdpU96wL+YYA==
-X-Google-Smtp-Source: AGHT+IE1SUWbi7xbPMjzdFosvgBZwOYGjAgNpaBRfn1FeSiVT2f0mVT31t9sRlHoWVQBsJKxte0gDA==
-X-Received: by 2002:a05:6a20:9f06:b0:19e:a3da:7199 with SMTP id mk6-20020a056a209f0600b0019ea3da7199mr6793407pzb.57.1707777803818;
-        Mon, 12 Feb 2024 14:43:23 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVw2sYVJTSy8mTs4gLDRJJ8x6daiYTcqQV4AOqAc4AZrdWyoi6sVmXghyKPYB/yl0jgjMrp5uzTHB3mEPgTng1/keWfLYlsgax6bhlEVKPPbSPWbRudgsXKaj5srGLDsbluUL6CTivqVH4yeswYovvlFoLTG5xxP9FSE01Rt8ekhJbYBPfAqZcybccklpohUxN8Jmi2Z+mryKjfWFqG8cz7hBAwDXG2/CKA7ixcoyDbUKyRIHv5ipb6PqLkFrE4X6Y60iJBYeTXbtgKpwF2F+CON95Q9TWgRX5oDPk5hZCsjblvzwzllW+sXe7AhESfRHDlwYRbaEKHsuKY19Vpv34euKQwV/avHQqW6P5xp6TmS9dxmjZ364wtvlTKK+HSQowZnZ+uxopskDHQsV0qLNa/0x0DfSFTsOEbVYTvyhoQRFWFuun/EWKXMuy1qBhGEd3Kxl1AlUHjJ5Yb0VK4DfhkL5a2H4B5EOXwxjGISfD3fNakcZHAGDDlo+fstSMuq7U3l1JjZ4VUd2yoyf4zRLShIeKzdplmtj4FDAM+uNCU2VvR6rMQ8hXSukrN7GcnT4nxCtqxPtR54+04pNmdOBnUw3Mf14xsdK9A2hpHGvF8gStLe+kD+4ZUQEd4nkPRSUtC3zyGWFgRq++5pE47tyamw5Uc/RemgBCL5sTV/51AlKmkMNQyK0JnKzcMJrPpE01p+0Qr25Wo2ooot1he55Q5+UCuNsDNzLex4908ESZTGV1rwHz3BQ==
+        bh=M9x0GXj1drWEZHiTvKM8aFvDBLB5BYp9bLGNurXOzwk=;
+        b=vDVcD5/kYRABfnSA4eqeTNhMvfAbbpQhKpYGznbJkD8kjKywt0gVviGderYfXDxWGg
+         GNyGjlBsYj3ilV+K6VmAjYHHHmKKLFWwkck1aN/RT9BuY4ZAoRdDCnLiAUpDtBCWRtaB
+         RwquyJuKYC2M7yGMboZqlFYtn0+4MY97HVQ8GWiIHHzd1KQFVBLNEhKZicsz7J50Wvo8
+         P3ILRVVde5Le3pLTSPPDlZYZagugGyzLuTgcY722nRSOCdrPpZFJjl2J705rIuVdCEzU
+         ljAHTkPhP11NeB6UF823yhMHTNl5ushdXqhe15A9IrmsEkjrNQFQzLM9wXRJth5fZwCL
+         nSxw==
+X-Gm-Message-State: AOJu0YwJRMhS8QXBgIrVgpS3BsYctHhdeelSd38Si8MYFV65BNez/S6E
+	mKc76U7FeIAs11OxjKuyC1+05z3YoyJ82iVOQ/I5XWEd6wf5JFsbXgn0zFgLEA==
+X-Google-Smtp-Source: AGHT+IGuY9FmZ07bxpDu9dvbVIeyQS0ooYEchWwZGi6xaPkWpNmcABhEn8slFi/ITrVyu8oP/VENLw==
+X-Received: by 2002:a05:6871:521f:b0:21a:43e6:9479 with SMTP id ht31-20020a056871521f00b0021a43e69479mr6494394oac.25.1707777941191;
+        Mon, 12 Feb 2024 14:45:41 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCU5F04iljKWgIhFX67fz6I0jBA29fs1KValNbI20GQ721akFaZZswko9rHZyanWImombY2MRxlAp7+1vnmOqFP7q3t71cIchW8bu03KW0mwMJ09EDhrMyT10XPJaH9Bzb53bFzuM4BfNnrmZpnY5B+/fkfb74fuUtg23PbdKoYURrf6KUG8I3oX19u7Tt+W5BZUjko7u4hrdj9G7NJMAZUxEfnlfmwQybY2KYzaip7/GPxsca5fxpskYZOzkyWm7W5EXnVeqie8w9GlyWjw+1HLCFKyvdODwZ1IAzj8OJmSifxvqrB+SJgeRE6+2anrYiQ5CQ3OjrlZ9MbV4U+AsezFTvbF6SHAGsCB9zkYD6wuU10oKJx6qhY3nZcIWpFrTI0zoVY91oEChX9Ilp0TaOpzYN6r/7qCg0nZllRlWzOLnsd/YEQdhMMJ6gLqwfDgNp2YRYlwnaQXK0Pw/BArGG70FUDSnkDDzFfQyOMSqoQNMuO+6IPIGk7ltANLWIORmwbgcT2nIrOcqp01sEzZA0WJvdCTUITvforW3LWpoZE0x07bDes7lpFpCZanVON8HwRF9g5REXHwY5BM3xpjm9HkhaLKOuRcm0MVmwEXk+H3VpM0Mv5NVf91BClEFo+/4ig+2QwEfLffPJ1oQuLBUNtltszsmR2I850mAt2Cr1muh7xK43zUA2hQPHmJRY2OSYWwRbDxjUCzVMOxgXPe2IHMYsDVzu6vfog4TBGWlcB6TbpX8ZqcbQ==
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id je17-20020a170903265100b001d9351f63d4sm836249plb.68.2024.02.12.14.43.23
+        by smtp.gmail.com with ESMTPSA id t16-20020a63b250000000b005cfbf96c733sm987037pgo.30.2024.02.12.14.45.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 14:43:23 -0800 (PST)
-Date: Mon, 12 Feb 2024 14:43:22 -0800
+        Mon, 12 Feb 2024 14:45:40 -0800 (PST)
+Date: Mon, 12 Feb 2024 14:45:40 -0800
 From: Kees Cook <keescook@chromium.org>
 To: Suren Baghdasaryan <surenb@google.com>
 Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
@@ -94,11 +93,11 @@ Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
 	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
 	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
 	cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 35/35] MAINTAINERS: Add entries for code tagging and
- memory allocation profiling
-Message-ID: <202402121443.C131BA80@keescook>
+Subject: Re: [PATCH v3 33/35] codetag: debug: mark codetags for reserved
+ pages as empty
+Message-ID: <202402121445.B6EDB95@keescook>
 References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-36-surenb@google.com>
+ <20240212213922.783301-34-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -107,64 +106,16 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240212213922.783301-36-surenb@google.com>
+In-Reply-To: <20240212213922.783301-34-surenb@google.com>
 
-On Mon, Feb 12, 2024 at 01:39:21PM -0800, Suren Baghdasaryan wrote:
-> From: Kent Overstreet <kent.overstreet@linux.dev>
-> 
-> The new code & libraries added are being maintained - mark them as such.
-> 
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> ---
->  MAINTAINERS | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 73d898383e51..6da139418775 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5210,6 +5210,13 @@ S:	Supported
->  F:	Documentation/process/code-of-conduct-interpretation.rst
->  F:	Documentation/process/code-of-conduct.rst
->  
-> +CODE TAGGING
-> +M:	Suren Baghdasaryan <surenb@google.com>
-> +M:	Kent Overstreet <kent.overstreet@linux.dev>
-> +S:	Maintained
-> +F:	include/linux/codetag.h
-> +F:	lib/codetag.c
-> +
->  COMEDI DRIVERS
->  M:	Ian Abbott <abbotti@mev.co.uk>
->  M:	H Hartley Sweeten <hsweeten@visionengravers.com>
-> @@ -14056,6 +14063,15 @@ F:	mm/memblock.c
->  F:	mm/mm_init.c
->  F:	tools/testing/memblock/
->  
-> +MEMORY ALLOCATION PROFILING
-> +M:	Suren Baghdasaryan <surenb@google.com>
-> +M:	Kent Overstreet <kent.overstreet@linux.dev>
-> +S:	Maintained
-> +F:	include/linux/alloc_tag.h
-> +F:	include/linux/codetag_ctx.h
-> +F:	lib/alloc_tag.c
-> +F:	lib/pgalloc_tag.c
+On Mon, Feb 12, 2024 at 01:39:19PM -0800, Suren Baghdasaryan wrote:
+> To avoid debug warnings while freeing reserved pages which were not
+> allocated with usual allocators, mark their codetags as empty before
+> freeing.
 
-Any mailing list to aim at? linux-mm maybe?
-
-Regardless:
+How do these get their codetags to begin with? Regardless:
 
 Reviewed-by: Kees Cook <keescook@chromium.org>
-
-
-> +
->  MEMORY CONTROLLER DRIVERS
->  M:	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->  L:	linux-kernel@vger.kernel.org
-> -- 
-> 2.43.0.687.g38aa6559b0-goog
-> 
 
 -- 
 Kees Cook
