@@ -1,46 +1,46 @@
-Return-Path: <cgroups+bounces-1426-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1427-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61FA9851E30
-	for <lists+cgroups@lfdr.de>; Mon, 12 Feb 2024 20:55:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A11D851E33
+	for <lists+cgroups@lfdr.de>; Mon, 12 Feb 2024 20:56:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 145E0284F20
-	for <lists+cgroups@lfdr.de>; Mon, 12 Feb 2024 19:55:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B7A91C21CF2
+	for <lists+cgroups@lfdr.de>; Mon, 12 Feb 2024 19:56:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8192F47A70;
-	Mon, 12 Feb 2024 19:55:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 305F947A6F;
+	Mon, 12 Feb 2024 19:56:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hLfU70b5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fBjPuaiQ"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 334B447A40;
-	Mon, 12 Feb 2024 19:55:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAC5D47A63;
+	Mon, 12 Feb 2024 19:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707767753; cv=none; b=G8ocK+2r01qpBg1j/5Y55uRd8SDBFlNSYPnCRYZHjTZYLDlh89oAzwxAnMhPb4Tsy+d09BKTECxdXtyR1q1rU1HOJd0eNFKFbCbOwz9W0Jo7P9seBsslRCBOBQo3BiXvitIh55J/0dcBpoNLMC20+AYhAOouTrAM3gRi7PSZ5sw=
+	t=1707767807; cv=none; b=FYgeVF0bd2LNOZxHR/g9sFoPreq84Mvdu5j8C/IsJjj7Ta3L0Iy5z0sPp1cU2J090+Q6Qc+5tz2p3zgq5kdSDvM6Ua0pM2AbZRhH17tNr7eIn7og5EhWZ1Do4Wntgo0IgjgYkXzfypaz0mtJwS6KqMgVQRLhei3oeyJWwVc6Iug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707767753; c=relaxed/simple;
-	bh=2L6MssMGXP7U0+Xe93Y5e9SpF/neBQBhwJxnYGmvuM8=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=FJtQT3cZa4t+RluFYJ+/BKf8TISfNgPlMzWPUoIKjGFAUQUp2pUtxYyqzLc0kSB3a8/AbjM7O8LKHd0Otpkno5zuiMLxGbtM3IcvAt5JZvdtqv//cPIe7NHFIqkOvsCmG0SrG6s2S+BN2pMjDV6TpW+oqh9XhrKUBI/klqVMI/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hLfU70b5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B42EC433C7;
-	Mon, 12 Feb 2024 19:55:47 +0000 (UTC)
+	s=arc-20240116; t=1707767807; c=relaxed/simple;
+	bh=dmVX8i40tnB9ewS4UawWwIEkd+FyBOxmlrA+K6xKYOE=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
+	 References:In-Reply-To; b=nw9rR4GCqHn8+7t2aJ6eMS0ByUAERj1X/Knhk1fil6mMN3kNF7XP1M0xLcbW1dY0MyfGalTCIFnwIkbfGTtxoeKvCxlCqvJSwQ7pDPSOlZ7+BTqPg0c+5QqAXDUqfSZ2Z7fiaABffsTswp5QEZWM4k4GwrWqLTxMfcZf4Z5DsxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fBjPuaiQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00B4CC433F1;
+	Mon, 12 Feb 2024 19:56:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707767752;
-	bh=2L6MssMGXP7U0+Xe93Y5e9SpF/neBQBhwJxnYGmvuM8=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=hLfU70b5NZcSgpce5iJAQVonPR1XdL+wvLI5GFLYgVG5WNhWqPspqW9s4W0Izb3DY
-	 M6g+kxHCGhjKPax6Ya3qGPKEwF4daFdDbDcmTBdATF9KhKIyI4+DwS0zIcMMzNkRNw
-	 kSM4xumtL+zwjPzb/eNrgS+jCDYVgIzE+3H8fhdXH8BDCu2mKDZIW5r9DjorzFeT36
-	 4doNKuCS00Y7dLQsWAtDd9LW5/F2Ss1QcxdCdyp2DLpzi55nTS5Q45s7WxN4ONBdgy
-	 VPXwXFKgSFQq7ZhNffKv0NBCz7UdqBe8pcD4QSJfcH2Ngz26iPQhD+KJUya0ZQfuZ7
-	 uX/AW66dZzpmA==
+	s=k20201202; t=1707767806;
+	bh=dmVX8i40tnB9ewS4UawWwIEkd+FyBOxmlrA+K6xKYOE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fBjPuaiQGQ6Hz7D7U/V25N7rwnkmbY0aRQz5R2YdCQXauO+59x7nfy5SXkEInwI1K
+	 /8igDEFdeAYl2VIQQgoEdDZ+DzgG4lO/M4PuAEOOUJej6fZkiabDg4LJSlJnTirNsK
+	 H6LtFfnZn+R6zRaxOkoE44Gm8Exwu21uzkoC1ys1RifRxElY1qLb5U73PQx4ozHrUA
+	 2iJYg1yVn4xQ3reVg279w6Z3h/s+xvi5NPQm4bxwQ+43+btXeWf375yECveTzEMZcz
+	 CcjGHUpZrLXhCrY9VHUxytD4F43e6s0wxmr8KS/Q/dSdrgyjSYrOeMql9UpUYhfkZ2
+	 0LYHQW7plpdzA==
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -49,14 +49,8 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date: Mon, 12 Feb 2024 21:55:46 +0200
-Message-Id: <CZ3D53XFVXAW.25EK0ZBFH3HV2@kernel.org>
-Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
- <zhanb@microsoft.com>, <anakrish@microsoft.com>,
- <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
- <chrisyan@microsoft.com>
-Subject: Re: [PATCH v9 10/15] x86/sgx: Add EPC reclamation in cgroup
- try_charge()
+Date: Mon, 12 Feb 2024 21:56:40 +0200
+Message-Id: <CZ3D5SNJ8O14.2AQBOPEH3DFSG@kernel.org>
 From: "Jarkko Sakkinen" <jarkko@kernel.org>
 To: "Haitao Huang" <haitao.huang@linux.intel.com>,
  <dave.hansen@linux.intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
@@ -64,26 +58,28 @@ To: "Haitao Huang" <haitao.huang@linux.intel.com>,
  <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
  <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
  <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
+Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+ <zhanb@microsoft.com>, <anakrish@microsoft.com>,
+ <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
+ <chrisyan@microsoft.com>
+Subject: Re: [PATCH v9 11/15] x86/sgx: Abstract check for global reclaimable
+ pages
 X-Mailer: aerc 0.16.0
 References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-11-haitao.huang@linux.intel.com>
-In-Reply-To: <20240205210638.157741-11-haitao.huang@linux.intel.com>
+ <20240205210638.157741-12-haitao.huang@linux.intel.com>
+In-Reply-To: <20240205210638.157741-12-haitao.huang@linux.intel.com>
 
 On Mon Feb 5, 2024 at 11:06 PM EET, Haitao Huang wrote:
 > From: Kristen Carlson Accardi <kristen@linux.intel.com>
 >
-> When the EPC usage of a cgroup is near its limit, the cgroup needs to
-> reclaim pages used in the same cgroup to make room for new allocations.
-> This is analogous to the behavior that the global reclaimer is triggered
-> when the global usage is close to total available EPC.
->
-> Add a Boolean parameter for sgx_epc_cgroup_try_charge() to indicate
-> whether synchronous reclaim is allowed or not. And trigger the
-> synchronous/asynchronous reclamation flow accordingly.
->
-> Note at this point, all reclaimable EPC pages are still tracked in the
-> global LRU and per-cgroup LRUs are empty. So no per-cgroup reclamation
-> is activated yet.
+> To determine if any page available for reclamation at the global level,
+> only checking for emptiness of the global LRU is not adequate when pages
+> are tracked in multiple LRUs, one per cgroup. For this purpose, create a
+> new helper, sgx_can_reclaim(), currently only checks the global LRU,
+> later will check emptiness of LRUs of all cgroups when per-cgroup
+> tracking is turned on. Replace all the checks of the global LRU,
+> list_empty(&sgx_global_lru.reclaimable), with calls to
+> sgx_can_reclaim().
 >
 > Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
 > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
@@ -91,72 +87,54 @@ On Mon Feb 5, 2024 at 11:06 PM EET, Haitao Huang wrote:
 > Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
 > Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
 > ---
-> V7:
+> v7:
 > - Split this out from the big patch, #10 in V6. (Dave, Kai)
 > ---
->  arch/x86/kernel/cpu/sgx/epc_cgroup.c | 26 ++++++++++++++++++++++++--
->  arch/x86/kernel/cpu/sgx/epc_cgroup.h |  4 ++--
->  arch/x86/kernel/cpu/sgx/main.c       |  2 +-
->  3 files changed, 27 insertions(+), 5 deletions(-)
+>  arch/x86/kernel/cpu/sgx/main.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 >
-> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.c b/arch/x86/kernel/cpu/s=
-gx/epc_cgroup.c
-> index d399fda2b55e..abf74fdb12b4 100644
-> --- a/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-> @@ -184,13 +184,35 @@ static void sgx_epc_cgroup_reclaim_work_func(struct=
- work_struct *work)
->  /**
->   * sgx_epc_cgroup_try_charge() - try to charge cgroup for a single EPC p=
-age
->   * @epc_cg:	The EPC cgroup to be charged for the page.
-> + * @reclaim:	Whether or not synchronous reclaim is allowed
->   * Return:
->   * * %0 - If successfully charged.
->   * * -errno - for failures.
->   */
-> -int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
-> +int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg, bool reclai=
-m)
+> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/mai=
+n.c
+> index 2279ae967707..6b0c26cac621 100644
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -37,6 +37,11 @@ static inline struct sgx_epc_lru_list *sgx_lru_list(st=
+ruct sgx_epc_page *epc_pag
+>  	return &sgx_global_lru;
+>  }
+> =20
+
+/*
+ * Description
+ */
+> +static inline bool sgx_can_reclaim(void)
+> +{
+> +	return !list_empty(&sgx_global_lru.reclaimable);
+> +}
+> +
+>  static atomic_long_t sgx_nr_free_pages =3D ATOMIC_LONG_INIT(0);
+> =20
+>  /* Nodes with one or more EPC sections. */
+> @@ -398,7 +403,7 @@ unsigned int sgx_reclaim_pages(struct sgx_epc_lru_lis=
+t *lru, unsigned int *nr_to
+>  static bool sgx_should_reclaim(unsigned long watermark)
 >  {
-> -	return misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg, PAGE_SIZE);
-> +	for (;;) {
-> +		if (!misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg,
-> +					PAGE_SIZE))
-> +			break;
-> +
-> +		if (sgx_epc_cgroup_lru_empty(epc_cg->cg))
-> +			return -ENOMEM;
-> + +		if (signal_pending(current))
-> +			return -ERESTARTSYS;
-> +
-> +		if (!reclaim) {
-> +			queue_work(sgx_epc_cg_wq, &epc_cg->reclaim_work);
-> +			return -EBUSY;
-> +		}
-> +
-> +		if (!sgx_epc_cgroup_reclaim_pages(epc_cg->cg, false))
-> +			/* All pages were too young to reclaim, try again a little later */
-> +			schedule();
-
-This will be total pain to backtrack after a while when something
-needs to be changed so there definitely should be inline comments
-addressing each branch condition.
-
-I'd rethink this as:
-
-1. Create static __sgx_epc_cgroup_try_charge() for addressing single
-   iteration with the new "reclaim" parameter.
-2. Add a new sgx_epc_group_try_charge_reclaim() function.
-
-There's a bit of redundancy with sgx_epc_cgroup_try_charge() and
-sgx_epc_cgroup_try_charge_reclaim() because both have almost the
-same loop calling internal __sgx_epc_cgroup_try_charge() with
-different parameters. That is totally acceptable.
-
-Please also add my suggested-by.
-
-BR, Jarkko
+>  	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
+> -	       !list_empty(&sgx_global_lru.reclaimable);
+> +		sgx_can_reclaim();
+>  }
+> =20
+>  static void sgx_reclaim_pages_global(bool indirect)
+> @@ -601,7 +606,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, =
+bool reclaim)
+>  			break;
+>  		}
+> =20
+> -		if (list_empty(&sgx_global_lru.reclaimable)) {
+> +		if (!sgx_can_reclaim()) {
+>  			page =3D ERR_PTR(-ENOMEM);
+>  			break;
+>  		}
 
 BR, Jarkko
 
