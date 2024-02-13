@@ -1,69 +1,70 @@
-Return-Path: <cgroups+bounces-1488-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1489-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90AF385255E
-	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 02:13:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2249B852566
+	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 02:13:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00C3D1F24E84
-	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 01:13:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2BD21F24EE7
+	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 01:13:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5537A4207A;
-	Tue, 13 Feb 2024 00:29:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828AD79E1;
+	Tue, 13 Feb 2024 00:31:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jxHJvnaz"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="IjXhgRtM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A5D942AA8
-	for <cgroups@vger.kernel.org>; Tue, 13 Feb 2024 00:29:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 134A028EF
+	for <cgroups@vger.kernel.org>; Tue, 13 Feb 2024 00:31:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707784192; cv=none; b=ZTN8V+WpFZMO+FFn3H1Zofo3ke/XQRwmgvO+Rl1liqr4L8wTs5N9WQboRQ5jvcEBLkO8eQWYwKHpim+RG8JCrlpSOKvGqeqIsPLZUEzzsVSkxAOdq732QnnEWjRarsf7QbrpZji0XNDJpGCRgNq8XUhNjHusrtljRFjXERofREY=
+	t=1707784278; cv=none; b=LfZE4cpfgZDlrwwnO8GSZIzjzhYA6Snv28u9T4T8Wrb5fF2zBXzlNofwi6ADeBjwGbjbEjMI3O1ESCbvKP9tmp6EZyMZOhLSZifzaNs9o3ZVWaemnMqOwvHnPl6KPgd3qVCSCrYwyFui4Q+W0p09u5WMDmbYCB7K06WW7jTaRBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707784192; c=relaxed/simple;
-	bh=i7DhwlNZbfI88wM5HL3Wb4UfNpC0zihYetLYTTKTM4o=;
+	s=arc-20240116; t=1707784278; c=relaxed/simple;
+	bh=mNvkRhiyjJq1dsRwNB7SCDE/0DcmbqdFX7FIWlgw6qo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R/rNi3ceGgu3oDcxmobu7I7iTWhDsgBgbt7tFGMgC9HZAYtLRSAMnmN67Q+2G3suK+Tr3J0CI36T+OQTDOla9gbPKmaczE8gOWDGAOvwCXoPMgaN56jIZZUv+AMi173Kg+zKEDQcmsf/wubnp/Ssaaz0g2dOCrz9UwHG2fPKrsc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=jxHJvnaz; arc=none smtp.client-ip=209.85.214.169
+	 Content-Type:Content-Disposition:In-Reply-To; b=leRAEw1K3Fk75Wsbp001urZbmMRkJK/+iuMKjzo+ZsSzTia2XOI3xZd8BTV4ezIayTEdrnmlelGpTTrlRRB9T0XWSF/Ij6FEFWHGIK8VyKj+bZrbRYRSuOixDcFoTmdK4Tj2kVCIL0+YzdMBPe45ghYUlkj0a5mrG53nMn+HwlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=IjXhgRtM; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d751bc0c15so33336965ad.2
-        for <cgroups@vger.kernel.org>; Mon, 12 Feb 2024 16:29:50 -0800 (PST)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e0507eb60cso2418692b3a.3
+        for <cgroups@vger.kernel.org>; Mon, 12 Feb 2024 16:31:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1707784190; x=1708388990; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1707784275; x=1708389075; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DKs+1yTn2Kh2ROZPp6elsN7agahGkRma180U23twrOk=;
-        b=jxHJvnazAsBR9YXg0Lti9Uq+sKEDcMaqmCt3QQp9dTbURgxF9JcDh0Z6a15H8bpk+5
-         0j5dRsQ2Y8mD7keGH6fVd3gp5IwOsy6enXs20EtjFFBdiZcsTlHlHXagA6iIWsmo2jv7
-         6xBzFlnbwfJ2agJCf+t0AVuXFH8I46uXX1+v0=
+        bh=flZnqd6/OOEmgqviJI0+73E/bOCz1vKp47Qn2/+ubUU=;
+        b=IjXhgRtMIyUa1NFnp+Vp8P0i7g6V44gTGf6f9691xvdCR0dPBM2YGTq0ybNhVsEzpc
+         vhBDTK8bjhYwZmff/R8zsp7hVx5Wv02lzlOT0WauPFcM6UBzr/m3F5uE4uZbQdFHmG6c
+         BjMhYLlBgaqfSGw9AqTYS4SU1KGIDXVz4HARc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707784190; x=1708388990;
+        d=1e100.net; s=20230601; t=1707784275; x=1708389075;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DKs+1yTn2Kh2ROZPp6elsN7agahGkRma180U23twrOk=;
-        b=s0k+P5dGs8ltJLEW0x6Zjm1l+J35xppwKIqvTR7JLn/4JFaBsFdcpOGoK2NLoCWFXf
-         Rm3BuP7ZzJXE8DbHwxP/8FLnOl8wIwdl3XO/dZMr7QlGd6v23WPZ7d0cDxdT+sQk5k13
-         OHOgpHGoWfAvMJIUg6zEYRSACuNa4Re/uGnJ5Uxq2b8My680y7vuS0WN7R9a4Q27YL4u
-         1JZe2exekfAUzn2MyUNeVmEJScGhs4PE86wypNBnIfA/e78tqkaejC2HMltOgaRQ8M1v
-         dQNPTuqNNXt8AUyw3DPJ4/ejmZobY5RR8UCv3axwqA9Ka2xQ/my5RRAw9Hgy3M5cGIo0
-         5fzQ==
-X-Gm-Message-State: AOJu0YwZYEtWnBRhB7eWOSlHJ4kdtMDfZZrvW09wJznwqMndHP88R2Bj
-	8b+mEtbSSmtd6x6WtdXTPndvPJYfJR1yVKnfSB2UafaM33EcyhhXbViMvGdgIw==
-X-Google-Smtp-Source: AGHT+IHwo9JREPBJ3sxdF8GWr7reDb+peYhSjWEF2iPVp+uKldnx5Wi4BPoJAaVADJtH3tNhLI+aog==
-X-Received: by 2002:a17:902:eb8e:b0:1d9:9774:7e8a with SMTP id q14-20020a170902eb8e00b001d997747e8amr9851611plg.24.1707784190141;
-        Mon, 12 Feb 2024 16:29:50 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXI9rzAigYfhPKNt2n4dwbGS6kodvPrUI6WvXfXxDiWl3qz/Yc6hc8PAI3K5+rhuv7VxneIKL1WTi5hS4PYL9zwmQTG26bCSqQP7n5E7qPtPrlkUxAI6X4+qQrQ+0nKE2khQ5hZnzEcn6l+hh8JRZ8mCK3LUbyV2vZxvjUkn/aavw99paadErkUqPpGKvxRRQUsKJMaX8cQtKdBdqeT8ZCl9KyrO97VqHfypO6wjAKaIg+kHpkf1XRclb9ti00RIJtRs7PpPk+wPwZIdGL7AKnHLuY5YZCc0OIFgsS0jEvVrPcoGcjJ9Ue5iAd2lxuG7mSnwNeX52eQdflyPh/+G3bVmItPWPDYFVFGC+wTxtusr+022g1GTuiVtIygFYTjmkMSHdiVeoq6fgy8MMz5BbJmEythjE7zmVfycZruphKS5r1FAcbNX9/lhCqGcmrfbAR4LUr+713U/Ljz6fP1ce02j1LOvCNJ7bskwAXmwFtFiIpuIx+mm/pRNajn7VYvpTd9/ZW/ANkl+1wWLyNEMPk+OjedV1ket+elHAFMO8YFMRdaCI2m0rUXNAoGKiYwKDIoNG/8YT0fFGMC144zHkdz/s7sXzvHw/M0A0uiVmKOajiPvcWMoYINIqjMBn6uDqHRLhVGOxNz2qKCnuffsUEdBtR3m/DPnJYWAri4M7xFds5VxOA163n/4pQMYgjKBy6Czmt2ymeIzD+8HeJ6dmyfBDvZSKOdtY1AKpPsi3uHCrCHxPtlnw==
+        bh=flZnqd6/OOEmgqviJI0+73E/bOCz1vKp47Qn2/+ubUU=;
+        b=NSne2qvDf0HqaGGBUSH45U/rTrlPFUW5GA9fK5EFUxOuvYESjQy8oUfND3j8/iVmVk
+         tld4eaD1vOE94uH0OcPG2BztCclv4Ca0Ouq24aMiYX63A7iTSYiETrI/AeV26/PZUZ9A
+         zOvxCreCDI6SNmaPaw1QYWm3XuIU097aYroQ/JnQmSFQEjb6QW5tkcna/wYS3MeYMarD
+         I488ipUUumEiNqdEKIUGSbGAsyu/6N3KlSLiO8XTthzK0yAmexiZ2K73rCDf4w9PZJcd
+         q4W0DwvTT+SyJHRk0ioGIymNrlwbvx5z0C50a0IgQShZVBipIZruLh0Je1pEDpdX4X+y
+         iXbw==
+X-Forwarded-Encrypted: i=1; AJvYcCVSf0gZZBzRoTOEi86xPzoIWrSn6OfnEaw5cnZbLL4NthIQDCnphn61h6pNjFot7r7vxCrotVwHzHXD8RzYuAhlmKaeZ1PP6Q==
+X-Gm-Message-State: AOJu0Yw5/bwEVTohmkDZmXksyP/TrvjjPcy6jy1kEFcFlUygTLTDFImf
+	PNjQqY7cA6mGPsWc0OTBpTAYrRlVntYqwB8BjQDMsk4TKfo49MPqx8uiDacwEw==
+X-Google-Smtp-Source: AGHT+IHsEPTpCmxVYDDW4VNRs2b8vcpDA5pedBCL8vEwt1Ggt87wDXOPZix8VtuDgH+3BmZUWUlZIg==
+X-Received: by 2002:aa7:82cf:0:b0:6e0:532a:d5f4 with SMTP id f15-20020aa782cf000000b006e0532ad5f4mr8655990pfn.27.1707784275520;
+        Mon, 12 Feb 2024 16:31:15 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVin3ur0Lo35hIyXtrtSV/cxI4vE5dmFtYD7ma+HtymCNeVZ2kkanG/e5r7jRI36pyWBjot8aUQYx6+p6LxLQnTNSm6weM6lZK91Z+2GZNgFWSN1ZeGPUdII18cHDDsVeHwP11mF9V5Cx7kzsoj1L4MeBLF1x4j/5G3iuwVW/cTP1lf4+jBzT6BusTtY+yb9OGjtgQsofJ3OkNeTsayYI6YnYoZKrbYP+SHJhtSllHfModJO/AP/ecndTCmiLycnsruuY+Z40gfK+ULp/KuzCJadwMupixtnYmRy1qpaieFOXGBmUxKVebYBQ0gaBO4gCxV5LZFueIZuKXFN1hKsPJNUcqwQAcizpIU/tBevp8sdiOcfLOYzHw+qiVJ5y0NJXKlMkVOcYTz8gNCo2Trtk3ICusgR7eUFM9ClFTEXbX5b6LW+RJ/ig/7J0FeSsOgfn3w7cYxkYi1mdkcSJqxdN9sljTmLw1cIEQpfmCmqGt7ZJwcUfz23XgPMMkH71ZPnZetjfaB08ugB7risf0yWGIFil3W8xnDYSDsWINLekmP/5pikpXr/SqTlI/kZtFx+R/Y7TJBg8XH8Khjudt2EkinnfvJOM9iaWgaRsupKFap50ol2vCniI0xkB+mMpzAvI1TnOxHZV03YgDwM1rGiJW/RCt7Rwyl0PU01O+eYaViHIiyZq9bR2CK5gDad7BWj2SfRdv7IqqyEtq4V00x9ZYyIPD3WstNoZqvyyTnQ8AXIH01cMXd3g==
 Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id k3-20020a170902e90300b001db3361bc1dsm164880pld.102.2024.02.12.16.29.49
+        by smtp.gmail.com with ESMTPSA id r16-20020aa78b90000000b006e0dd50b0d0sm2678139pfd.8.2024.02.12.16.31.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Feb 2024 16:29:49 -0800 (PST)
-Date: Mon, 12 Feb 2024 16:29:48 -0800
+        Mon, 12 Feb 2024 16:31:15 -0800 (PST)
+Date: Mon, 12 Feb 2024 16:31:14 -0800
 From: Kees Cook <keescook@chromium.org>
 To: Suren Baghdasaryan <surenb@google.com>
 Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
@@ -93,9 +94,11 @@ Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
 	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
 	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
 	cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-Message-ID: <202402121602.CC62228@keescook>
+Subject: Re: [PATCH v3 23/35] mm/slub: Mark slab_free_freelist_hook()
+ __always_inline
+Message-ID: <202402121631.5954CFB@keescook>
 References: <20240212213922.783301-1-surenb@google.com>
+ <20240212213922.783301-24-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -104,48 +107,19 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240212213922.783301-1-surenb@google.com>
+In-Reply-To: <20240212213922.783301-24-surenb@google.com>
 
-On Mon, Feb 12, 2024 at 01:38:46PM -0800, Suren Baghdasaryan wrote:
-> Low overhead [1] per-callsite memory allocation profiling. Not just for debug
-> kernels, overhead low enough to be deployed in production.
+On Mon, Feb 12, 2024 at 01:39:09PM -0800, Suren Baghdasaryan wrote:
+> From: Kent Overstreet <kent.overstreet@linux.dev>
+> 
+> It seems we need to be more forceful with the compiler on this one.
 
-What's the plan for things like devm_kmalloc() and similar relatively
-simple wrappers? I was thinking it would be possible to reimplement at
-least devm_kmalloc() with size and flags changing helper a while back:
+Sure, but why?
 
-https://lore.kernel.org/all/202309111428.6F36672F57@keescook/
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 
-I suspect it could be possible to adapt the alloc_hooks wrapper in this
-series similarly:
-
-#define alloc_hooks_prep(_do_alloc, _do_prepare, _do_finish,		\
-			  ctx, size, flags)				\
-({									\
-	typeof(_do_alloc) _res;						\
-	DEFINE_ALLOC_TAG(_alloc_tag, _old);				\
-	ssize_t _size = (size);						\
-	size_t _usable = _size;						\
-	gfp_t _flags = (flags);						\
-									\
-	_res = _do_prepare(ctx, &_size, &_flags);			\
-	if (!IS_ERR_OR_NULL(_res)					\
-		_res = _do_alloc(_size, _flags);			\
-	if (!IS_ERR_OR_NULL(_res)					\
-		_res = _do_finish(ctx, _usable, _size, _flags, _res);	\
-	_res;								\
-})
-
-#define devm_kmalloc(dev, size, flags)					\
-	alloc_hooks_prep(kmalloc, devm_alloc_prep, devm_alloc_finish,	\
-			 dev, size, flags)
-
-And devm_alloc_prep() and devm_alloc_finish() adapted from the URL
-above.
-
-And _do_finish instances could be marked with __realloc_size(2)
-
--Kees
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
 -- 
 Kees Cook
