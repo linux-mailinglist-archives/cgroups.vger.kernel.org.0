@@ -1,107 +1,136 @@
-Return-Path: <cgroups+bounces-1511-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1512-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A6748536BC
-	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 18:02:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98EC685378D
+	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 18:26:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 357E22871ED
-	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 17:02:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B06A1F25D13
+	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 17:26:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2D815FBBF;
-	Tue, 13 Feb 2024 17:02:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zioZcQgq"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D285FF09;
+	Tue, 13 Feb 2024 17:26:37 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406B55DF18
-	for <cgroups@vger.kernel.org>; Tue, 13 Feb 2024 17:02:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF1035F54E;
+	Tue, 13 Feb 2024 17:26:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707843726; cv=none; b=HIo5wmFaKAmibJWGpGNqi3z2MpKTzDasaWIyZvCm2l3oIr0XED6yi3aC/tSUxVZD3gjitUtj6F0Ox5cv6jtwKinJQznruF32yjlRNJNSfILFb8kTH5CvT086rpuHgMIH5La5DcB6vxlj6hmfAz5SZ2yIQypQYkiB/nbxqKDvB+k=
+	t=1707845197; cv=none; b=R1bYXXkVa4eSjI5bzrWNcIqyHTGQ7e5foFalkIsNMZLrsAbs1RpzkqLm2DcpwV3EbmMTRUQIIbK4tp+kFybwcvXJ+GDnNJHlbG3QjLbafVbjNFjtfzmxqnK6W/kt+dkTy4hYGkHi2Dx0Zs1o1BF8Y/RZHBhl8U7j6M5PmDwuNMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707843726; c=relaxed/simple;
-	bh=kFEBmVzCDcc62ul2nmKiFx/x08WUXookmiLkT3RdZO0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VIzsKKTT6vM4p0kwZc3n6Uw8Nlpyg+ZLbwg+P4mgE7OuEU1Um7NDILuB3PEhn5wV0sTATa5auayy1eTDjZ2cyVpeixTWuftzQmp0b1qiR79kDsZhGqcWYLVJGsmN7v2FbIpYqE4RebXbMs5t7F1J3Ru3IYIcBSNKcElVGtIM6ec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zioZcQgq; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d93b982761so198675ad.0
-        for <cgroups@vger.kernel.org>; Tue, 13 Feb 2024 09:02:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707843722; x=1708448522; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kFEBmVzCDcc62ul2nmKiFx/x08WUXookmiLkT3RdZO0=;
-        b=zioZcQgq7/WCb6Z/hQB31I/sflRJ/ulSI1vmWzT1VBEJF5MOUay+zZ7jQB8bJkjkMk
-         p4IcdQE6x5dOZt9LbGEcGS1kK1Il2t0r5PWpxvLVX3pTKojOWfsIDetMNM6WvS+zB/sa
-         /LFfXdkqqFmMtWN5v68nGMXP1RWapNMaVzefWWDeAa/S9585RbPc/W2NDqF8RuQUXiNY
-         eOZMnqLgx0Fcex0VZAxZE9oc7lXh1wAE/PbwjEm8sc9EEZ31NrvjkaRMl8b2NRatJdUY
-         /d025YhQ/oQp9HiMmDkGtbx9Dq4IdaeYhqmPsxW8yLLzWH2jrvD2/av52h+fn71wCOuj
-         cq6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707843722; x=1708448522;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kFEBmVzCDcc62ul2nmKiFx/x08WUXookmiLkT3RdZO0=;
-        b=GYMIcBE0yY5gwR6taxUjhteo+U18oVovL/0gA6TeUM5v466o4DWhXcQlP1sPpO+EQ/
-         nquewPO92XyJ1utrCGxAYS52kJTrfIhoBb764ISIJ0O5U7viCy0hhov3IQNjwL3n2BBG
-         TIi7Ou0+POm4FCwKveCu3cETCPtipXzKbcLHaGuFImNCPvcTtmGO1ucA8Avl0lnLRuJP
-         mPYkxB4vMoIZwA8Hfx/aBnrKbv+8ELIR9Y2QL97ceId+h/Wpmt/zZ7W9coJ6RA2OsmTV
-         EGhdF6ERfq3rtHmz+L2v7KRp0kuzuHxBzVvXdnVeqTuvJIvNR9pEp2cV5p5fQlofUPR6
-         BSSA==
-X-Forwarded-Encrypted: i=1; AJvYcCWwV3u0EuE+CT0WBWnS3ROhBXw0Ms5ZjFWUqLeINa9Q7rW/0qPcwZFy74cb75NAX0rtG+XQe3G/GyRvK7vbIE1/OJSglBGp6Q==
-X-Gm-Message-State: AOJu0Yz39KEhdfUYI3+lGwqtubptC/nmQqLmjEHi3pFhWrA6zyoL/4h0
-	OBOWHKANt2dzQMWGn8iYN2ih6Zn+F79nZXYwPnc0Z8Jix5yfDReCjOfsBPqc5/YAp2MN0QX8N7O
-	bzJxLDMLzMnKuv/4O4OgQidHBS0GoV3aS/h+2
-X-Google-Smtp-Source: AGHT+IFgCqv/XRtoQtQ4/r0rGFzG9aCmFONaMnDDOPnOxPjhaUUFtNH2qle/Tw8GsuonJ5SI6Oo7o2+2OwCK/Zu/4Dc=
-X-Received: by 2002:a17:903:33c7:b0:1d8:d90d:c9ae with SMTP id
- kc7-20020a17090333c700b001d8d90dc9aemr20118plb.1.1707843722210; Tue, 13 Feb
- 2024 09:02:02 -0800 (PST)
+	s=arc-20240116; t=1707845197; c=relaxed/simple;
+	bh=R4W/x6sdikq9L5mixsfBJrQlDgWaZ0hlbKehGewQpgE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Bpv+ETvxc3uxOp4XmDz1Cw1ZpprtDQkn21HxeeumLOTto2Pwqc4ZcK9AdTuuAt1RoKaCGiTYqnsIVqcm1sTphAFRNZOgFzk8+0q3Tp/T7m2zYuNFIB+FzecHVP5kv7kvriGoBM9WcbuUF/jrm+6O2B42GsQCL+MpSZroLNydico=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 724E71FB;
+	Tue, 13 Feb 2024 09:27:15 -0800 (PST)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 155943F5A1;
+	Tue, 13 Feb 2024 09:26:27 -0800 (PST)
+Message-ID: <b008bd2d-a189-481f-917d-bb045c43cb07@arm.com>
+Date: Tue, 13 Feb 2024 17:26:26 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213081634.3652326-1-hannes@cmpxchg.org>
-In-Reply-To: <20240213081634.3652326-1-hannes@cmpxchg.org>
-From: Shakeel Butt <shakeelb@google.com>
-Date: Tue, 13 Feb 2024 09:01:48 -0800
-Message-ID: <CALvZod7wqfy63cis_v_D_9gpOS=3A2cS5J-LHq0WUrhVQOum8Q@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcontrol: clarify swapaccount=0 deprecation warning
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, =?UTF-8?Q?Jonas_Sch=C3=A4fer?= <jonas@wielicki.name>, 
-	Narcis Garcia <debianlists@actiu.net>, Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 01/10] iommu/vt-d: add wrapper functions for page
+ allocations
+Content-Language: en-GB
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io,
+ asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com,
+ cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com,
+ dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de,
+ iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com,
+ joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+ linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st,
+ mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org,
+ rdunlap@infradead.org, samuel@sholland.org, suravee.suthikulpanit@amd.com,
+ sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org,
+ tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, will@kernel.org,
+ yu-cheng.yu@intel.com, rientjes@google.com, bagasdotme@gmail.com,
+ mkoutny@suse.com
+References: <20240207174102.1486130-1-pasha.tatashin@soleen.com>
+ <20240207174102.1486130-2-pasha.tatashin@soleen.com>
+ <8ce2cd7b-7702-45aa-b4c8-25a01c27ed83@arm.com>
+ <CA+CK2bC=XyUhoSP9f0XBqEnQ-P5mMT2U=5dfzRSc9C=2b+bstQ@mail.gmail.com>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <CA+CK2bC=XyUhoSP9f0XBqEnQ-P5mMT2U=5dfzRSc9C=2b+bstQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 13, 2024 at 12:16=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.or=
-g> wrote:
->
-> The swapaccount deprecation warning is throwing false positives. Since
-> we deprecated the knob and defaulted to enabling, the only reports
-> we've been getting are from folks that set swapaccount=3D1. While this
-> is a nice affirmation that always-enabling was the right choice, we
-> certainly don't want to warn when users request the supported mode.
->
-> Only warn when disabling is requested, and clarify the warning.
->
-> Fixes: b25806dcd3d5 ("mm: memcontrol: deprecate swapaccounting=3D0 mode")
-> Cc: stable@vger.kernel.org
-> Reported-by: "Jonas Sch=C3=A4fer" <jonas@wielicki.name>
-> Reported-by: Narcis Garcia <debianlists@actiu.net>
-> Suggested-by: Yosry Ahmed <yosryahmed@google.com>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+On 10/02/2024 2:21 am, Pasha Tatashin wrote:
+[...]
+>>> +/**
+>>> + * iommu_alloc_pages_node - allocate a zeroed page of a given order from
+>>> + * specific NUMA node.
+>>> + * @nid: memory NUMA node id
+>>> + * @gfp: buddy allocator flags
+>>> + * @order: page order
+>>> + *
+>>> + * returns the virtual address of the allocated page
+>>> + */
+>>> +static inline void *iommu_alloc_pages_node(int nid, gfp_t gfp, int order)
+>>> +{
+>>> +     struct page *page = __iommu_alloc_pages_node(nid, gfp, order);
+>>> +
+>>> +     if (unlikely(!page))
+>>> +             return NULL;
+>>
+>> As a general point I'd prefer to fold these checks into the accounting
+>> function itself rather than repeat them all over.
+> 
+> For the free functions this saves a few cycles by not repeating this
+> check again inside __free_pages(), to keep things symmetrical it makes
+> sense to keep __iomu_free_account and __iomu_alloc_account the same.
+> With the other clean-up there are not that many of these checks left.
 
-Acked-by: Shakeel Butt <shakeelb@google.com>
+__free_pages() doesn't accept NULL, so __iommu_free_pages() shouldn't 
+need a check; free_pages() does, but correspondingly iommu_free_pages() 
+needs its own check up-front to avoid virt_to_page(NULL); either way it 
+means there are no callers of iommu_free_account() who should be passing 
+NULL.
+
+The VA-returning allocators of course need to avoid page_address(NULL), 
+so I clearly made this comment in the wrong place to begin with, oops. 
+In the end I guess that will leave __iommu_alloc_pages() as the only 
+caller of iommu_alloc_account() who doesn't already need to handle their 
+own NULL. OK, I'm convinced, apologies for having to bounce it off you 
+to work it through :)
+
+>>> + */
+>>> +static inline void *iommu_alloc_page_node(int nid, gfp_t gfp)
+>>> +{
+>>> +     return iommu_alloc_pages_node(nid, gfp, 0);
+>>> +}
+>>
+>> TBH I'm not entirely convinced that saving 4 characters per invocation
+>> times 11 invocations makes this wrapper worthwhile :/
+> 
+> Let's keep them. After the clean-up that you suggested, there are
+> fewer functions left in this file, but I think that it is cleaner to
+> keep these remaining, as it is beneficial to easily distinguish when
+> exactly one page is allocated vs when multiple are allocated via code
+> search.
+
+But is it, really? It's not at all obvious to me *why* it would be 
+significantly interesting to distinguish fixed order-0 allocations from 
+higher-order or variable-order (which may still be 0) ones. After all, 
+there's no regular alloc_page_node() wrapper, yet plenty more callers of 
+alloc_pages_node(..., 0) :/
+
+Thanks,
+Robin.
 
