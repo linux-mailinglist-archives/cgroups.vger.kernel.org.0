@@ -1,167 +1,169 @@
-Return-Path: <cgroups+bounces-1504-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1505-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C828F852CE8
-	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 10:49:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0FB0853073
+	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 13:24:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68EC7B2582D
-	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 09:49:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD29E1C20BAF
+	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 12:24:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B83D4487B6;
-	Tue, 13 Feb 2024 09:42:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4FEB3D99E;
+	Tue, 13 Feb 2024 12:24:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="PxGx4mjI";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="DllEvvoi"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="oPNMu0/3";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="oPNMu0/3"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D374B4CE18;
-	Tue, 13 Feb 2024 09:42:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9875A3D54D;
+	Tue, 13 Feb 2024 12:24:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707817352; cv=none; b=B/kapRszbY/j7EIpDmtbKbtpeeeSSDi9q5xDcshbcrzpwoNaocT9Z+Q/QWKZfwbtPeZChYpIeIe2f7nDQSYI3pjGxkUPFvsMwDtd371AepLVPfsphXzjTSPDZLYetOtNuXIFg19XXK3IZsN4YslY35s56xV4/4T8GcenJibVv24=
+	t=1707827060; cv=none; b=MjomBmL9hWZIn8O0IV04LYrGCrDyNhTyinNP9Lf8fUYMDW1sboG0yAU/9TWOCqtVEmi+9FTYqqQe0hGYL2Xr0gqXbbWZu9kUVI/1leuKyP+8GyKpWYwMZyytwxflaLONH0XC4UYz8n25Dx8mQDV609Rc6JS6/GCv1jtHTcQOC1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707817352; c=relaxed/simple;
-	bh=E1fFov0gm3FcTflVmoUjwoUZ3Umb2yAAIG80SuNXqfI=;
+	s=arc-20240116; t=1707827060; c=relaxed/simple;
+	bh=KM6zxaaoOFSyFZ5noXN1PyDk4COINjZTnbDT7nk2jc4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GY5IOqsB3bhjJMvi3q1Fv3XxB/G9DWtHBxdiudaZd6HqJgXakHf1eWh/sz/zJtaA9znBe01rLmBBoM88+dPcSc4cRi3GliAROuEZzjv7RgylzHyTtTbdw1/Wx+epUXv8mgiy+wtevDMxWEUhIxXqiEFHjDg/7kvyZfWrnT68BkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=PxGx4mjI; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=DllEvvoi; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=nMROOOTTV6lrv4shUBU+r4D0+Omp/kAQe8tHl6VSmKumRzuuypBqZ9ZOKctQVpPmTnPnVfwoTJOJ5a4iBFHAqpupYxocioQPsPh7iNF13zxe0oeieoI+FCx1TROhqYg083xLwv1xMCx5r5qhA2aL+3M0JmgxhIaugBrXSi5KIls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=oPNMu0/3; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=oPNMu0/3; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id ED45F1FC81;
-	Tue, 13 Feb 2024 09:42:27 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B2D4722206;
+	Tue, 13 Feb 2024 12:24:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707817348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1707827056; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=e2Ltw12kqpA6OxvwDncuH/HwlbdCgZy0yfwT2wFnJeI=;
-	b=PxGx4mjIyTfC5qkijDQ3F7ewptxWcNNvw/5AwqogaCDSrwUGuiddySK7UNzHm5ZyUI5yju
-	3OpEPOPoimtCqrbNiO9m96DBgvQuZ9/Kx6hub8QfM6HItxfNsvsJApA0jAJz+CYCrprns0
-	uFLipUkmHrCUtIv2sxyogGEGQ9X2hQY=
+	bh=zXbOiQIN7neMTyajtp5U/4Xc00nM1Z7564QKlnGLw3E=;
+	b=oPNMu0/3kyHrjKXlmWcSVvIaXSDVbOqkAyBWw+GM976X053z77ogsr0EDbHX/7ytpQYyy9
+	SyG7mHOiNYd83sIJtiREPWMY5thldH58zWZvsioUSDVozZuC7lw84nRpXvaSjzQ83Bc875
+	OeMyCboEUx7oHjBoCcViZ4MERhSiPOw=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707817347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1707827056; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=e2Ltw12kqpA6OxvwDncuH/HwlbdCgZy0yfwT2wFnJeI=;
-	b=DllEvvoiBQpim82m7fFn3FEJrkiQnFxNNdXKl0fo3lcDWOuJ74M5VE2PvNGKT/I8MKfDqS
-	jBf5tlEEwBWkRCpNPEbbX2pM/W6iuhj02h4Kt/3bW70l3jjkYwTBFbTsbKHMx3GB51gwLG
-	nj5nBNP9jAzq8GcP6An2pi5nYT1O0tk=
+	bh=zXbOiQIN7neMTyajtp5U/4Xc00nM1Z7564QKlnGLw3E=;
+	b=oPNMu0/3kyHrjKXlmWcSVvIaXSDVbOqkAyBWw+GM976X053z77ogsr0EDbHX/7ytpQYyy9
+	SyG7mHOiNYd83sIJtiREPWMY5thldH58zWZvsioUSDVozZuC7lw84nRpXvaSjzQ83Bc875
+	OeMyCboEUx7oHjBoCcViZ4MERhSiPOw=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D4C1A13A69;
-	Tue, 13 Feb 2024 09:42:27 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8BA931370C;
+	Tue, 13 Feb 2024 12:24:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id B5n2MIM5y2UOXQAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Tue, 13 Feb 2024 09:42:27 +0000
-Date: Tue, 13 Feb 2024 10:42:27 +0100
+	id 4rhuIXBfy2WUCAAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Tue, 13 Feb 2024 12:24:16 +0000
+Date: Tue, 13 Feb 2024 13:24:11 +0100
 From: Michal Hocko <mhocko@suse.com>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Shakeel Butt <shakeelb@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Jonas =?iso-8859-1?Q?Sch=E4fer?= <jonas@wielicki.name>,
-	Narcis Garcia <debianlists@actiu.net>,
-	Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [PATCH] mm: memcontrol: clarify swapaccount=0 deprecation warning
-Message-ID: <Zcs5g8ILg9WXfZYm@tiehlicka>
-References: <20240213081634.3652326-1-hannes@cmpxchg.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, vbabka@suse.cz,
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
+	corbet@lwn.net, void@manifault.com, peterz@infradead.org,
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
+	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
+	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+	paulmck@kernel.org, pasha.tatashin@soleen.com,
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 00/35] Memory allocation profiling
+Message-ID: <Zctfa2DvmlTYSfe8@tiehlicka>
+References: <20240212213922.783301-1-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240213081634.3652326-1-hannes@cmpxchg.org>
-Authentication-Results: smtp-out2.suse.de;
-	none
+In-Reply-To: <20240212213922.783301-1-surenb@google.com>
 X-Spam-Level: 
-X-Spam-Score: -0.80
-X-Spamd-Result: default: False [-0.80 / 50.00];
-	 ARC_NA(0.00)[];
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b="oPNMu0/3"
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.07 / 50.00];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_GT_50(0.00)[73];
 	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.06)[60.75%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,linux.dev,suse.cz,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[28.71%]
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Score: -3.07
+X-Rspamd-Queue-Id: B2D4722206
 X-Spam-Flag: NO
 
-On Tue 13-02-24 03:16:34, Johannes Weiner wrote:
-> The swapaccount deprecation warning is throwing false positives. Since
-> we deprecated the knob and defaulted to enabling, the only reports
-> we've been getting are from folks that set swapaccount=1. While this
-> is a nice affirmation that always-enabling was the right choice, we
-> certainly don't want to warn when users request the supported mode.
-> 
-> Only warn when disabling is requested, and clarify the warning.
-> 
-> Fixes: b25806dcd3d5 ("mm: memcontrol: deprecate swapaccounting=0 mode")
-> Cc: stable@vger.kernel.org
-> Reported-by: "Jonas Schäfer" <jonas@wielicki.name>
-> Reported-by: Narcis Garcia <debianlists@actiu.net>
-> Suggested-by: Yosry Ahmed <yosryahmed@google.com>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+On Mon 12-02-24 13:38:46, Suren Baghdasaryan wrote:
+[...]
+> We're aiming to get this in the next merge window, for 6.9. The feedback
+> we've gotten has been that even out of tree this patchset has already
+> been useful, and there's a significant amount of other work gated on the
+> code tagging functionality included in this patchset [2].
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+I suspect it will not come as a surprise that I really dislike the
+implementation proposed here. I will not repeat my arguments, I have
+done so on several occasions already. 
 
-Thanks!
+Anyway, I didn't go as far as to nak it even though I _strongly_ believe
+this debugging feature will add a maintenance overhead for a very long
+time. I can live with all the downsides of the proposed implementation
+_as long as_ there is a wider agreement from the MM community as this is
+where the maintenance cost will be payed. So far I have not seen (m)any
+acks by MM developers so aiming into the next merge window is more than
+little rushed. 
 
-> ---
->  mm/memcontrol.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 1ed40f9d3a27..107ec5d36819 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -7971,9 +7971,13 @@ bool mem_cgroup_swap_full(struct folio *folio)
->  
->  static int __init setup_swap_account(char *s)
->  {
-> -	pr_warn_once("The swapaccount= commandline option is deprecated. "
-> -		     "Please report your usecase to linux-mm@kvack.org if you "
-> -		     "depend on this functionality.\n");
-> +	bool res;
-> +
-> +	if (!kstrtobool(s, &res) && !res)
-> +		pr_warn_once("The swapaccount=0 commdandline option is deprecated "
-> +			     "in favor of configuring swap control via cgroupfs. "
-> +			     "Please report your usecase to linux-mm@kvack.org if you "
-> +			     "depend on this functionality.\n");
->  	return 1;
->  }
->  __setup("swapaccount=", setup_swap_account);
-> -- 
-> 2.43.0
-
+>  81 files changed, 2126 insertions(+), 695 deletions(-)
 -- 
 Michal Hocko
 SUSE Labs
