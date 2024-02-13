@@ -1,203 +1,168 @@
-Return-Path: <cgroups+bounces-1503-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1504-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51A79852B38
-	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 09:30:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C828F852CE8
+	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 10:49:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FF1E1C215E6
-	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 08:30:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68EC7B2582D
+	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 09:49:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECE1719452;
-	Tue, 13 Feb 2024 08:30:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B83D4487B6;
+	Tue, 13 Feb 2024 09:42:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JiyRDzmV"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="PxGx4mjI";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="DllEvvoi"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0316218026;
-	Tue, 13 Feb 2024 08:30:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D374B4CE18;
+	Tue, 13 Feb 2024 09:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707813014; cv=none; b=cwPAZn1fQ7WLNwALdks5lm2zLDLTIMz4XCKDO7ArwXzAlwocuYkswtPKr/IbnvrnLgglJU0fPoKMQaBzWbM9cwpKnuOKnuWXYPR5eO5V2QwEKBtqrR3Pk1/Wqd0PwnVvnwKI8NliA4AVP782fvjBtV8taz0bBo5dwNiHTjwX7MA=
+	t=1707817352; cv=none; b=B/kapRszbY/j7EIpDmtbKbtpeeeSSDi9q5xDcshbcrzpwoNaocT9Z+Q/QWKZfwbtPeZChYpIeIe2f7nDQSYI3pjGxkUPFvsMwDtd371AepLVPfsphXzjTSPDZLYetOtNuXIFg19XXK3IZsN4YslY35s56xV4/4T8GcenJibVv24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707813014; c=relaxed/simple;
-	bh=CloOXvX3e3OyBad9i8X+MAxCoHVaXSE6mAVeTadKyHs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o+7IfvuQr97sZeghIUE6MQ74ClueY4Y+b5rkDQirpEe0ZA1NXbcsKoNjiQ12cLg7YWTfkSjeilbAsm1qpZFnNWO/9sKe7nQGgTOe0+H5ESSzvf+NQkHsYp8VNWx62Yae7kvc8cBo85E+yOFd5i8MkhtYNsaE9MbarrZbcql0IqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JiyRDzmV; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a3cc8f0c97fso166320166b.0;
-        Tue, 13 Feb 2024 00:30:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707813011; x=1708417811; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UVoibj/kriuj68qpqrmYwyDO76NZZTUK51M4zJowuXg=;
-        b=JiyRDzmVtu7qFQSJxeuvH1GlrRsg59b8das0TSoIaX8WccaN+jvM1iJZKtIUPwsMiZ
-         AMZNs1Nzx1dczXdWoYmm+P3jj5AYvJPfMUs1xTIvftcCGASTCl2yvBfNPzYKZ8xrMTht
-         E57/K5j9P/K3t251uiGjoEWv54IwVcSTFmGhZtq62vltUugmllsugdXLc/kwts5WOZQQ
-         XreW0+YUznNJpOjuS25jM/fxzlvjoHZg6Wn0pBFD3dQueNyT1gnuPK+J48aylm7jYFfQ
-         zRVnLc4bVfMr9XoDXWRB0EY7Np34Gndmd2sRCqhtiui4GJ08PkblcYKvA6DEv0ZPJgV9
-         kcGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707813011; x=1708417811;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UVoibj/kriuj68qpqrmYwyDO76NZZTUK51M4zJowuXg=;
-        b=Rv+lvl+2DW4cd9qiT5Tf7l5As08KL+lcXqONynVOMj6OQlCK2x86j2B72oHQ6Mm6ss
-         HwlzoGbX5+pQAJEj/9Y419P3NVAUyD0KYkg8VJGkObu6nG+NfN4xoqoKh43CMoBtU4Wg
-         TEo2Zjq7V2Jqjo995T9PN06VMOC+vg77ZXATVpFEz6iQuEjk70dwo4q29jx+rtPrRG0I
-         BeGxD/nJ8Zj+5i70UTSbyZkD0D0ERrQg+s7bEqUoEb4Dm1iFxnMn3w9T3xsKsRxBzI9q
-         wY6st2zgRqS16mTulB524e1qHKLmInpA5x811YoNWEWWbLrTo74LrVGgOEQk36MOJ5ZO
-         qXfg==
-X-Forwarded-Encrypted: i=1; AJvYcCWA1hs6PDRQ1h1OZR+exmK0KURerX4V9Efp5TEodOGFqEZcqNvX4lgJt3Mott8y3jMATfvs7dOnE2SfT+FFyo0H1I5exvh/lFpy0S15DB0Pr4ck7yFpASQEDQwkwLkaBoh/ogwgSSoo1Y1IBlIqfEl7ku/kSKwE+mpRP5gdQJu/CvvG86GGV8QYA+IZpIUAJf2y4wNUUjk0ve28DI3b5mYaJj6IZjVbcdkhxv05HDTkl7uzc4vSjnpQU3ERm1CdxzyGrLUXspgqTI3r8Mq+r20iYxgeJNMCxzKOVw==
-X-Gm-Message-State: AOJu0YyuL57iGlEW0ulwhRQRKH71OmmoFuARWVgVEbvNp8lNUybDq1Vj
-	eJDLOWWP9mzu6ynO53znCYAQ7OIlo4XPPMn84M96nceQsT3Fn9txBYBlTpjjsSHpGx02Hn9TNYA
-	CfLaMr55O+MGIB96D732oMq5xs4A=
-X-Google-Smtp-Source: AGHT+IGx/YbYc3+LQ8reBTPjQn19LHdQNalJWBrwb4F8AS6CetNmE5OP52aorlUQ8qqrg2PWp0Ni3QIDkvdkx5+GGkc=
-X-Received: by 2002:a17:907:7896:b0:a3d:704:d688 with SMTP id
- ku22-20020a170907789600b00a3d0704d688mr613690ejc.47.1707813011047; Tue, 13
- Feb 2024 00:30:11 -0800 (PST)
+	s=arc-20240116; t=1707817352; c=relaxed/simple;
+	bh=E1fFov0gm3FcTflVmoUjwoUZ3Umb2yAAIG80SuNXqfI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GY5IOqsB3bhjJMvi3q1Fv3XxB/G9DWtHBxdiudaZd6HqJgXakHf1eWh/sz/zJtaA9znBe01rLmBBoM88+dPcSc4cRi3GliAROuEZzjv7RgylzHyTtTbdw1/Wx+epUXv8mgiy+wtevDMxWEUhIxXqiEFHjDg/7kvyZfWrnT68BkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=PxGx4mjI; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=DllEvvoi; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id ED45F1FC81;
+	Tue, 13 Feb 2024 09:42:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707817348; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e2Ltw12kqpA6OxvwDncuH/HwlbdCgZy0yfwT2wFnJeI=;
+	b=PxGx4mjIyTfC5qkijDQ3F7ewptxWcNNvw/5AwqogaCDSrwUGuiddySK7UNzHm5ZyUI5yju
+	3OpEPOPoimtCqrbNiO9m96DBgvQuZ9/Kx6hub8QfM6HItxfNsvsJApA0jAJz+CYCrprns0
+	uFLipUkmHrCUtIv2sxyogGEGQ9X2hQY=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707817347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e2Ltw12kqpA6OxvwDncuH/HwlbdCgZy0yfwT2wFnJeI=;
+	b=DllEvvoiBQpim82m7fFn3FEJrkiQnFxNNdXKl0fo3lcDWOuJ74M5VE2PvNGKT/I8MKfDqS
+	jBf5tlEEwBWkRCpNPEbbX2pM/W6iuhj02h4Kt/3bW70l3jjkYwTBFbTsbKHMx3GB51gwLG
+	nj5nBNP9jAzq8GcP6An2pi5nYT1O0tk=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D4C1A13A69;
+	Tue, 13 Feb 2024 09:42:27 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id B5n2MIM5y2UOXQAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Tue, 13 Feb 2024 09:42:27 +0000
+Date: Tue, 13 Feb 2024 10:42:27 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Shakeel Butt <shakeelb@google.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Jonas =?iso-8859-1?Q?Sch=E4fer?= <jonas@wielicki.name>,
+	Narcis Garcia <debianlists@actiu.net>,
+	Yosry Ahmed <yosryahmed@google.com>
+Subject: Re: [PATCH] mm: memcontrol: clarify swapaccount=0 deprecation warning
+Message-ID: <Zcs5g8ILg9WXfZYm@tiehlicka>
+References: <20240213081634.3652326-1-hannes@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-2-surenb@google.com>
- <CAHp75Vek3DEYLHnpUDBo_bYSd-ksN_66=LQ5s0Z+EhnNvhybpw@mail.gmail.com>
-In-Reply-To: <CAHp75Vek3DEYLHnpUDBo_bYSd-ksN_66=LQ5s0Z+EhnNvhybpw@mail.gmail.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Tue, 13 Feb 2024 10:29:34 +0200
-Message-ID: <CAHp75VcftSPtAjOH-96wdyVhAYWAbOzZtfgm6J2Vwt1=-QTb=Q@mail.gmail.com>
-Subject: Re: [PATCH v3 01/35] lib/string_helpers: Add flags param to string_get_size()
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org, Andy Shevchenko <andy@kernel.org>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, 
-	Paul Mackerras <paulus@samba.org>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
-	=?UTF-8?Q?Noralf_Tr=C3=B8nnes?= <noralf@tronnes.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240213081634.3652326-1-hannes@cmpxchg.org>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -0.80
+X-Spamd-Result: default: False [-0.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[28.71%]
+X-Spam-Flag: NO
 
-On Tue, Feb 13, 2024 at 10:26=E2=80=AFAM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Mon, Feb 12, 2024 at 11:39=E2=80=AFPM Suren Baghdasaryan <surenb@googl=
-e.com> wrote:
-> >
-> > From: Kent Overstreet <kent.overstreet@linux.dev>
-> >
-> > The new flags parameter allows controlling
-> >  - Whether or not the units suffix is separated by a space, for
-> >    compatibility with sort -h
-> >  - Whether or not to append a B suffix - we're not always printing
-> >    bytes.
+On Tue 13-02-24 03:16:34, Johannes Weiner wrote:
+> The swapaccount deprecation warning is throwing false positives. Since
+> we deprecated the knob and defaulted to enabling, the only reports
+> we've been getting are from folks that set swapaccount=1. While this
+> is a nice affirmation that always-enabling was the right choice, we
+> certainly don't want to warn when users request the supported mode.
+> 
+> Only warn when disabling is requested, and clarify the warning.
+> 
+> Fixes: b25806dcd3d5 ("mm: memcontrol: deprecate swapaccounting=0 mode")
+> Cc: stable@vger.kernel.org
+> Reported-by: "Jonas Schäfer" <jonas@wielicki.name>
+> Reported-by: Narcis Garcia <debianlists@actiu.net>
+> Suggested-by: Yosry Ahmed <yosryahmed@google.com>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-And you effectively missed to _add_ the test cases for the modified code.
-Formal NAK for this, the rest is discussable, the absence of tests is not.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->
-> It seems most of my points from the previous review were refused...
->
-> ...
->
-> You can move the below under --- cutter, so it won't pollute the git hist=
-ory.
->
-> > Cc: Andy Shevchenko <andy@kernel.org>
-> > Cc: Michael Ellerman <mpe@ellerman.id.au>
-> > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> > Cc: Paul Mackerras <paulus@samba.org>
-> > Cc: "Michael S. Tsirkin" <mst@redhat.com>
-> > Cc: Jason Wang <jasowang@redhat.com>
-> > Cc: "Noralf Tr=C3=B8nnes" <noralf@tronnes.org>
-> > Cc: Jens Axboe <axboe@kernel.dk>
-> > ---
->
-> ...
->
-> > --- a/include/linux/string_helpers.h
-> > +++ b/include/linux/string_helpers.h
-> > @@ -17,14 +17,13 @@ static inline bool string_is_terminated(const char =
-*s, int len)
->
-> ...
->
-> > -/* Descriptions of the types of units to
-> > - * print in */
-> > -enum string_size_units {
-> > -       STRING_UNITS_10,        /* use powers of 10^3 (standard SI) */
-> > -       STRING_UNITS_2,         /* use binary powers of 2^10 */
-> > +enum string_size_flags {
-> > +       STRING_SIZE_BASE2       =3D (1 << 0),
-> > +       STRING_SIZE_NOSPACE     =3D (1 << 1),
-> > +       STRING_SIZE_NOBYTES     =3D (1 << 2),
-> >  };
->
-> Do not kill documentation, I already said that. Or i.o.w. document this.
-> Also the _SIZE is ambigous (if you don't want UNITS, use SIZE_FORMAT.
->
-> Also why did you kill BASE10 here? (see below as well)
->
-> ...
->
-> > --- a/lib/string_helpers.c
-> > +++ b/lib/string_helpers.c
-> > @@ -19,11 +19,17 @@
-> >  #include <linux/string.h>
-> >  #include <linux/string_helpers.h>
-> >
-> > +enum string_size_units {
-> > +       STRING_UNITS_10,        /* use powers of 10^3 (standard SI) */
-> > +       STRING_UNITS_2,         /* use binary powers of 2^10 */
-> > +};
->
-> Why do we need this duplication?
->
-> ...
->
-> > +       enum string_size_units units =3D flags & flags & STRING_SIZE_BA=
-SE2
-> > +               ? STRING_UNITS_2 : STRING_UNITS_10;
->
-> Double flags check is redundant.
+Thanks!
 
+> ---
+>  mm/memcontrol.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 1ed40f9d3a27..107ec5d36819 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -7971,9 +7971,13 @@ bool mem_cgroup_swap_full(struct folio *folio)
+>  
+>  static int __init setup_swap_account(char *s)
+>  {
+> -	pr_warn_once("The swapaccount= commandline option is deprecated. "
+> -		     "Please report your usecase to linux-mm@kvack.org if you "
+> -		     "depend on this functionality.\n");
+> +	bool res;
+> +
+> +	if (!kstrtobool(s, &res) && !res)
+> +		pr_warn_once("The swapaccount=0 commdandline option is deprecated "
+> +			     "in favor of configuring swap control via cgroupfs. "
+> +			     "Please report your usecase to linux-mm@kvack.org if you "
+> +			     "depend on this functionality.\n");
+>  	return 1;
+>  }
+>  __setup("swapaccount=", setup_swap_account);
+> -- 
+> 2.43.0
 
-
---=20
-With Best Regards,
-Andy Shevchenko
+-- 
+Michal Hocko
+SUSE Labs
 
