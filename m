@@ -1,138 +1,163 @@
-Return-Path: <cgroups+bounces-1496-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1497-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 382A185277C
-	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 03:20:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CB138527BA
+	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 04:22:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B78681F2626D
-	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 02:20:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE1ADB22C66
+	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 03:22:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF3565CBD;
-	Tue, 13 Feb 2024 02:20:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB1908F65;
+	Tue, 13 Feb 2024 03:21:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4Jrb9xtg"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WD7+87SC"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A66F617CD
-	for <cgroups@vger.kernel.org>; Tue, 13 Feb 2024 02:20:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E278BFC;
+	Tue, 13 Feb 2024 03:21:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707790829; cv=none; b=KLYohah9PblsJsxSsBBy7nwo2m17E7yaW7hybWnA0s+UOOv53vLxzrRTcI0sTnqQFoV+T1EkYW2CbXJZi94DfdaKZrG78ECLCa0d3FkFc2ZKvpN2KBHFKzFBtt8KZkBpTCCNODEH/TTibnxMDEVJgqP+UIcInfs7U1bjKN2YlJk=
+	t=1707794513; cv=none; b=G+iyDHQVoI4H1+yHjOpaQrQJGvEGAXEIcIx4mWOLuU6pPgi0M4dBh1Hc86pHDT8CbRQ2b9NTFn3OjUMFk7bv/fhzS7ZbQtDkWWohZfd3W+oweZMk7ftoKUohDTRhKYRLxH82O+iDd0lPCCA/uxbAKTXdZyUvK2VI7t9Uaaz0rdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707790829; c=relaxed/simple;
-	bh=S9sbRuvYiarABejv+1FZRtHjtyC1exllh7yCDkk639Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AJ6h8pJGEMabsRJpca0N6gSgLc0cLePvMDIlmabAly/F+8LgWfmG53DHfk/Rj72UooSRhpaPl8rpfhleZGGnvKhcS98xyDawCUUAkKAHjJ0rMQyoeEjh1wOzJY9wSmUiZUM9Q2tE+D0vRD2rT8bMofgbGmUhzFhiPacupyxEzUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4Jrb9xtg; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dcc6fc978ddso189581276.0
-        for <cgroups@vger.kernel.org>; Mon, 12 Feb 2024 18:20:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707790825; x=1708395625; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S9sbRuvYiarABejv+1FZRtHjtyC1exllh7yCDkk639Q=;
-        b=4Jrb9xtgZZd68Cd8qtWKkms3W8lyscetML+GV9VkniajxjX00oCm8vO3er0J1tOJYG
-         KXV6U73T7/ahxivChBXpV+Epa+r+05A2t154aRf14aPl3XbChON6p22PKWX4U7vAzS9o
-         brwAToX8177IfGEf9W+XIqe1YPvjrVvfL9p54qZ1sWP3PGzpzREqC3UGYZKQKBZySG2k
-         Ww0YUiGkRHSadsneVBJVnVGSj/Fif1gMg/8vv70xOYtj2wcjiPng2kr+bKGBZYgVzATG
-         OKxyy6fQiAVrWs5pOrlgKVY84DYPBwXY7IoUnb6KCj+HNchnZ6OPi4x27n09k46FAdxz
-         ByRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707790825; x=1708395625;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=S9sbRuvYiarABejv+1FZRtHjtyC1exllh7yCDkk639Q=;
-        b=PmI6G6mA3hIfrLlX5nwTtkrYdoo44cfYf5DvjByB6rWWd9PL1tEo2ZE4HD00TbW/RQ
-         rf1C5YSH0daShBr5RboEq/jsZpHRroaAjsdCBzYtZ7Aj0FsGxUF3sHhO35Lg4VjktQiq
-         ZK5XXI6JROkNumKOBJjDny3wuGSw7G/Addz6vHYWiF9IovPYj940IUZ+CPXECBRxOLo5
-         mlOppywcjwLgakbgJodIhSR+mIhmcjk7IDhT8gVNMZt1vhuRUYztzzkUYMEY0Hu8eD6+
-         8oZwB4KgYyVPaxNtrjcVY1gCLrcd/YFjRMmrqmnh1U2VySMDBOUOnS9+WKz4ThbKLZwv
-         jJuQ==
-X-Gm-Message-State: AOJu0YyichOX0sRzuqjimbqAZrF47GEFs91exiwfcligim3/ZNEkpj2C
-	A7kVQKuoOg9me+f1rNdEF+9u6gwhk2h5QUm9qLzwPECqwLA8B953uz8EVfKCkDzJg5MyGkDXWw0
-	vdZYut+2jDuH8CA6uwWdA82ZCRPxQHUE50aTP
-X-Google-Smtp-Source: AGHT+IF7VIKyAprzsQj97Z263Qoier3okujGUFo7m34RyS9jjnxf5dSV3vlCD/UI6jUXKLUqELRXLl2excxB7HnDSlw=
-X-Received: by 2002:a25:df91:0:b0:dc6:de93:7929 with SMTP id
- w139-20020a25df91000000b00dc6de937929mr863370ybg.26.1707790825358; Mon, 12
- Feb 2024 18:20:25 -0800 (PST)
+	s=arc-20240116; t=1707794513; c=relaxed/simple;
+	bh=COC+DgrRwbOsMKFiXhxGIvmheeowK1HumSOtDo0gkkc=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=SepHE84sR4B1OX9KprxyEAtecCGsViJD2ihd0frR1RHpY3CD7AO73z+XxigyhxlydqXs3+rxW+3ZIu65nH4NhE27dESZR+UUzQl6nRqoHDHvlQHzP8Lnr02DcQrKdo/Jv82JTjVg0oGZGbrM+u9wbKGvSivzEEG2KsVuTITwHHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WD7+87SC; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1707794512; x=1739330512;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=COC+DgrRwbOsMKFiXhxGIvmheeowK1HumSOtDo0gkkc=;
+  b=WD7+87SCjTdrGx6z19Nt0fti1JFFp0jyyzOu7Ma53VCv0Pt6BflsmpSB
+   3d3VbhfIpsGi0p+lby9avWFhN+uE7SuRQN9YdU2NbFNMzBpCRN4JGPxTb
+   DS9xqQjT6U/3Eyze9hx003+5ywDvxiAGPTis216KUeypUpA8PcJHXQdrJ
+   nxIPR1a204Arj1FzwwQwscMPpPW6IhVmdT/AssHJaa5S63A8c08Xzsxai
+   0gkgvsBailO0b3/Bab3pc+fMXKs3dOa4pQb72AQCLwqfIoNJfIJfwH/Mv
+   5DGzQiovCnMrjDBQL6pdJMZFJvo4YYKnMiJV6wEWPEOKkXDh+VX2brUrx
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10982"; a="1944980"
+X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
+   d="scan'208";a="1944980"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2024 19:21:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,155,1705392000"; 
+   d="scan'208";a="7402632"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 12 Feb 2024 19:21:49 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
+ linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+ cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ hpa@zytor.com, sohil.mehta@intel.com, tim.c.chen@linux.intel.com, "Jarkko
+ Sakkinen" <jarkko@kernel.org>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+Subject: Re: [PATCH v9 09/15] x86/sgx: Charge mem_cgroup for per-cgroup
+ reclamation
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-10-haitao.huang@linux.intel.com>
+ <CZ3CXPOLZEI8.C6AJ9W0W07A9@kernel.org>
+Date: Mon, 12 Feb 2024 21:21:47 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-6-surenb@google.com>
- <202402121413.94791C74D5@keescook>
-In-Reply-To: <202402121413.94791C74D5@keescook>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Mon, 12 Feb 2024 18:20:13 -0800
-Message-ID: <CAJuCfpGkdAy58nR02_PSVXc4=R3faRUL-7Hack3R_aWmAgk5HA@mail.gmail.com>
-Subject: Re: [PATCH v3 05/35] mm: introduce slabobj_ext to support slab object extensions
-To: Kees Cook <keescook@chromium.org>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, ndesaulniers@google.com, 
-	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com, 
-	ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, 
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
-	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
-	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com, 
-	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
-	kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2i18ylk5wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <CZ3CXPOLZEI8.C6AJ9W0W07A9@kernel.org>
+User-Agent: Opera Mail/1.0 (Win32)
 
-On Mon, Feb 12, 2024 at 2:14=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
-rote:
->
-> On Mon, Feb 12, 2024 at 01:38:51PM -0800, Suren Baghdasaryan wrote:
-> > Currently slab pages can store only vectors of obj_cgroup pointers in
-> > page->memcg_data. Introduce slabobj_ext structure to allow more data
-> > to be stored for each slab object. Wrap obj_cgroup into slabobj_ext
-> > to support current functionality while allowing to extend slabobj_ext
-> > in the future.
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->
-> It looks like this doesn't change which buckets GFP_KERNEL_ACCOUNT comes
-> out of, is that correct? I'd love it if we didn't have separate buckets
-> so GFP_KERNEL and GFP_KERNEL_ACCOUNT came from the same pools (so that
-> the randomized pools would cover GFP_KERNEL_ACCOUNT ...)
+On Mon, 12 Feb 2024 13:46:06 -0600, Jarkko Sakkinen <jarkko@kernel.org>  
+wrote:
 
-This should not affect KMEM accounting in any way. We are simply
-changing the vector of obj_cgroup objects to hold complex objects
-which can contain more fields in addition to the original obj_cgroup
-(in our case it's the codetag reference).
-Unless I misunderstood your question?
+> On Mon Feb 5, 2024 at 11:06 PM EET, Haitao Huang wrote:
+>> Enclave Page Cache(EPC) memory can be swapped out to regular system
+>
+> "Enclave Page Cache (EPC)"
+>                    ~
+>
+Will fix.
 
+[...]
+>>  int sgx_encl_alloc_backing(struct sgx_encl *encl, unsigned long  
+>> page_index,
+>> -			   struct sgx_backing *backing)
+>> +			   struct sgx_backing *backing, bool indirect)
 >
-> Regardless:
+> Boolean parameters should be avoided when possible because they confuse
+> in the call sites.
 >
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+>>  {
+>> -	struct mem_cgroup *encl_memcg = sgx_encl_get_mem_cgroup(encl);
+>> -	struct mem_cgroup *memcg = set_active_memcg(encl_memcg);
+>> +	struct mem_cgroup *encl_memcg;
+>> +	struct mem_cgroup *memcg;
+>>  	int ret;
+>>
+>> -	ret = __sgx_encl_get_backing(encl, page_index, backing);
+>> +	if (!indirect)
+>> +		return  __sgx_encl_get_backing(encl, page_index, backing);
 >
-> --
-> Kees Cook
+> If a call is either in heead or tail of the code block, then
+> obviously better option is to make __sgx_encl_get_backing()
+> as non-static sgx_encl_get_backing() and call it in those
+> call sites that would call this with "false".
+>
+> I.e. you need a new patch where this preparation is done.
+>
+
+This would actually require more intrusive changes to the call stack for  
+global and cgroup reclaim:
+
+{sgx_epc_cgroup_reclaim_pages(),sgx_reclaim_pages_global()}->sgx_reclaim_pages()[->sgx_reclaimer_write()]->sgx_encl_alloc_backing()
+
+We need make two versions of each of those functions.
+It'd be especially complicated in refactoring sgx_reclaim_pages() for two  
+versions.
+
+I now double checked the history of current_is_ksgxd()[1], it seemed the  
+intent was to replace "current->mm == NULL" criteria so it is more obvious  
+we are running in ksgxd.
+
+@Dave, @Kristen,
+
+Can we restore the original criteria like below so it works for the cgroup  
+work-queues?
+
+bool current_is_ksgxd(void)
+{
+	return current == ksgxd_tsk;
+}
+
+--->
+
+bool current_is_kthread(void)
+{
+	return current->mm == NULL;	
+}
+
+I'm not experienced in this area and not sure how reliable it is to use  
+current->mm == NULL for kthread and work-queues. But it would eliminate  
+the need for the boolean parameter.
+
+Would appreciate the input.
+
+Haitao
+
+[1]https://lore.kernel.org/linux-sgx/9c269c70-35fe-a1a4-34c9-b1e62ab3bb3b@intel.com/
 
