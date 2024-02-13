@@ -1,135 +1,134 @@
-Return-Path: <cgroups+bounces-1499-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1500-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C864852AB9
-	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 09:17:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4305C852AC5
+	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 09:19:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD476284965
-	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 08:17:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A343AB2337A
+	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 08:19:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6D2F179AE;
-	Tue, 13 Feb 2024 08:16:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D5D01C680;
+	Tue, 13 Feb 2024 08:17:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="JTDqkXlM"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aQC6uG1A"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 377182232D
-	for <cgroups@vger.kernel.org>; Tue, 13 Feb 2024 08:16:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E949249EF
+	for <cgroups@vger.kernel.org>; Tue, 13 Feb 2024 08:17:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707812204; cv=none; b=AkiEFVfYtii8XGWBOSj5WfvBlu+eW6CPBcPwMYVd8WhVHW/bZi6LPCBPi5lIMDpfRwjRNKLnhW/ARXbT3uwaPYJUwEmhP9XovKCwZJ+Qn8PqT6Mhr8CHJtlPT8/gE8lLlrYD9Q1NR0vpHprqeWgqrFdwV7EacFnyb/iqIn46Uy8=
+	t=1707812242; cv=none; b=bLnOTllTLfiDv1+CD5MLgp/R+D0pru6FCSewEuQeAkDzHNBoWVKzjO2VTlnfG1CdNzaOk279w27VV2zCNaQw+zORAgVOIotKWqRdZlqObH01RVEAOqOxcmfj/Qk9n+Qu7Q9A6s1hB6D8wNlrTzXDYvUPmR8W+O52uslmRSF3WDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707812204; c=relaxed/simple;
-	bh=pUSVavZmcjyYbi6RShnaW6jH3HO+mvOqqtpuCzNxeUU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KHG/eNQt6fA6QlqNAzP+O0vbRTYk9yt0CV6Dlpe/dk/gGplm7M0hGwY9agk5u5FAAxPkaVXJNUYCLrAjezLXQbHaXeB9bT1wkOoFYPOzQBlM3sXTwHO/D2xhoRBa5ea9FlwM2b5YCilYBsu/Md+mOGHp4Er8E2J9CelW2jS7Io8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=JTDqkXlM; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d74045c463so31974515ad.3
-        for <cgroups@vger.kernel.org>; Tue, 13 Feb 2024 00:16:40 -0800 (PST)
+	s=arc-20240116; t=1707812242; c=relaxed/simple;
+	bh=k0dlcOpqCeQ859XsaJEpqmX/eHez3ZKf32wZRP8twEM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rH+jg23hS933+QpuXnrdcfWsjbDJPhEEvgCmIpvSxTdV1uEiAMV6HzNsFzhuf2ch2DpoHCQvQXbdn6BwHCA5gfGZSYOZpXwnRM4lDYPWCBAZu20Tp5XI63YaeOa/Tiv/dWHK2w7d+m1wbUTLWn2Js3WhF92JiZWx6o4iOcTp1mg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aQC6uG1A; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dc74e33fe1bso3986880276.0
+        for <cgroups@vger.kernel.org>; Tue, 13 Feb 2024 00:17:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1707812200; x=1708417000; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=K+aOrCJIUWm9gZNxG5N0dygbdBPzUIeW3edWmhaMQB0=;
-        b=JTDqkXlMw3oFhGhOQ+xYUcspUqxYWHU+vROYhHI1RV/tvZww1CAalRYRXImLPYCbMU
-         b9S24yMYmRMWfo0DUT0kDz2zvhJ3Zwf2Q26tu2nfbdD1xBHahtB9vJDOQOVmucph3Hla
-         sIkq6LU1CgouoGHOOD32v1BnW6/MsKeq/P2LJTD2rEnD12OS0hrvCVC7qch7hZj46Xdr
-         6AY9zXv+axAXLrYnDGLxqDVY4BFMCqs5NQwDdOcXouGeZgFfAOkzx9/5Qok6jKVl3jIE
-         qKW5O6whncjCORccYbwfKlBXBst0tPljWEsG2YeaWWaRve46RYbftEcNzCXXsYctEhkq
-         ekQg==
+        d=google.com; s=20230601; t=1707812239; x=1708417039; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hC5Sp72DpOGszEFoskDK+zxBIS3uARFrNh6dT/DOYpw=;
+        b=aQC6uG1AXej3oTFT3m2fKoYa7LYFxfuAxPkLfo/+dHttTZeAGK1ACiZfvHg7uw0Mk1
+         NyffctXcL4SO7EBLTKauvlsluF9l45qqYYS/KQONb+jIPCiLK+c+WbNi/zBkjJmV5iQn
+         WsnqaAKYBSrfSkW7fXdosoOrkNwAzcUp43y8upwgTF2pjdBLkjHiuPGOfOCToa6iDsSZ
+         CavdtF6mFt5fTzar38xQes3PQzi0/e6CRsAp0GocFdrTQFzMDfarix1y1+EUFBjx1Fx0
+         EFHr6x3Um7GcCahg2w7MywWIgN9lVJvVg/DnGOrIZQvRXVxFAH/k3iDSS1SZW7/xRNNz
+         zarQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707812200; x=1708417000;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=K+aOrCJIUWm9gZNxG5N0dygbdBPzUIeW3edWmhaMQB0=;
-        b=td89b9Fg0SCN3SMh1OpqZj9Ytgmu/skTu+fsATVf+eGuRjSEAtAIYgN8amblBsOBqQ
-         EtYLk8M8CtTU2nsLUvjT5gsIUr7xClSfuYn4MGySFc3zY5xcLBbrdmVqn+SNKclB6FYJ
-         to4FVSYd3feQyUnqFqL/JUM3SnvYEbaIqlE5Ffjj8ehCEqS0Z8DAjQWSc0/GUoh6NdnC
-         yRDsfZS35MypUAJ6trudhW/lXZUeAc19gJEasnj5iGZTx4bQIhGLCEgDEMm2vVCpHjj/
-         azifFjx64EShz973Qyp26hj2ZEc8rZ4BquKHWATh5XwZYG3QPRLifHvzq1Y6fU3l94th
-         rfEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV7DsDsFWUrSMj2vGTmyM2Oerc8874Nu/8DLzIkwcN7aqlEdbf/k9J1OCXKf1P8I/5xzqH5FN5hxXeAn8HoOYjIQoHZMJgGAA==
-X-Gm-Message-State: AOJu0YzAT2I2wSN4zqIev9LcZSqVBnztKM+aqM0o+bds2B4xJpeqODNW
-	fQie8ndiJKqGhp7E2ZhGMb66CR8WinAzCN7kv1axCGjThZtbSNcnkgxerLPIYFw=
-X-Google-Smtp-Source: AGHT+IHN30FOf76CIlJ70s4RXG08RhVc6llnrHToPYD4rI38cBg1UPCeufOMlRlWoRo7BYjOTkacFg==
-X-Received: by 2002:a17:902:784e:b0:1d9:bf92:f51e with SMTP id e14-20020a170902784e00b001d9bf92f51emr7463057pln.49.1707812200433;
-        Tue, 13 Feb 2024 00:16:40 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVYaiB4sJIlOpc7RRe3eZfg5f90Re+8kea9EJomeq8BGe9OkX8RGdoQT5J50iUT4DchvymvZt2277c1SRur2DQ9jXLBwtcktzhgrlV8inuxHYziucR2B3sGPqnetqihS6EsrH4vMPkRLcDzps4GERHVa7pMGkDlYVF9fe0RjRJEDGeIzxi+CowcX9zmvVf6CbZN9mnquFaARgFq73e3EWur064bF3Vyf4CdaWMcDfkM9NP2V5jTy4dwJuDUoyk2WDbt9ZwEE7n8lmxvTOAypu74vdH4h6mdc8bLm9YECEK4pmm48e0YFKKW2tuS
-Received: from localhost ([2620:10d:c091:400::5:b0f])
-        by smtp.gmail.com with ESMTPSA id kq5-20020a170903284500b001d8ecf5ff6csm129187plb.147.2024.02.13.00.16.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 00:16:39 -0800 (PST)
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeelb@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	=?UTF-8?q?Jonas=20Sch=C3=A4fer?= <jonas@wielicki.name>,
-	Narcis Garcia <debianlists@actiu.net>,
-	Yosry Ahmed <yosryahmed@google.com>
-Subject: [PATCH] mm: memcontrol: clarify swapaccount=0 deprecation warning
-Date: Tue, 13 Feb 2024 03:16:34 -0500
-Message-ID: <20240213081634.3652326-1-hannes@cmpxchg.org>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1707812239; x=1708417039;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hC5Sp72DpOGszEFoskDK+zxBIS3uARFrNh6dT/DOYpw=;
+        b=P0o3eX6r28wheESrUjwUISP8cFN9C4DlG7kCXtc1xe5XaXaM8OXwph/cXiuesP3tNC
+         sQjuzgU1dJP6///GfxXotuMCCbv0ekn+meXT9ybke4IZLmSkJR58ryNxStYPmM5h7pyH
+         JoCtWAZrcFQgghdTZyX4AwAn3q+dNryAi0VLlyNqCUv2J3HLyegznbM6KRfRrt85eKeW
+         poYY8t+wD0QePYXSi+RB4HbG2gptp2jWCeo50pDnrotWOc1XxZWh1Kn5tAlr3h4iKUn9
+         qHl4MMcbmTi5d9EY4WJQo9fgA2sLd7S8LLCd9vf0nvj6VcD82ZBuntDK4z9pBcLiAp7L
+         NZqQ==
+X-Gm-Message-State: AOJu0Yy1OhawahGEoSoEMnTUD6hKxYjcrAcXmnAmoAZl9b3vLluhjDw/
+	bIaJkWUNBoXwUB1Ocuu7WETtgoXrYRgxbL517lyMNGT/B9KY3Fh/tGiMvwqnQKj1t6LEKR38IMX
+	amHXxvCaN/bHw29wpNe1I9oWpOl+peLoQQZ9/
+X-Google-Smtp-Source: AGHT+IHjpakmjDseMf+FthsBajS4lohi+4SNf65A0StZavoAeiHzVp/HPng86atAuU0FiQuCDBbDYkv0F+8/PL8mBAs=
+X-Received: by 2002:a25:6841:0:b0:dcd:24b6:1aee with SMTP id
+ d62-20020a256841000000b00dcd24b61aeemr45209ybc.47.1707812238953; Tue, 13 Feb
+ 2024 00:17:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-32-surenb@google.com>
+ <202402121606.687E798B@keescook> <20240212192242.44493392@gandalf.local.home> <wvn5hh63omtqvs4e3jy7vfu7fvkikkzkhqbmcd7vdtmm7jta7s@qjagmjwle2z3>
+In-Reply-To: <wvn5hh63omtqvs4e3jy7vfu7fvkikkzkhqbmcd7vdtmm7jta7s@qjagmjwle2z3>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Tue, 13 Feb 2024 00:17:04 -0800
+Message-ID: <CAJuCfpE2hMx4rUSex3rX_wWiGOt=rX5FWms98Rd6WAaVqW6yvw@mail.gmail.com>
+Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Kees Cook <keescook@chromium.org>, 
+	akpm@linux-foundation.org, mhocko@suse.com, vbabka@suse.cz, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, ndesaulniers@google.com, 
+	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com, 
+	ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The swapaccount deprecation warning is throwing false positives. Since
-we deprecated the knob and defaulted to enabling, the only reports
-we've been getting are from folks that set swapaccount=1. While this
-is a nice affirmation that always-enabling was the right choice, we
-certainly don't want to warn when users request the supported mode.
+On Mon, Feb 12, 2024 at 8:33=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+>
+> On Mon, Feb 12, 2024 at 07:22:42PM -0500, Steven Rostedt wrote:
+> > On Mon, 12 Feb 2024 16:10:02 -0800
+> > Kees Cook <keescook@chromium.org> wrote:
+> >
+> > > >  #endif
+> > > > +#ifdef CONFIG_MEM_ALLOC_PROFILING
+> > > > + {
+> > > > +         struct seq_buf s;
+> > > > +         char *buf =3D kmalloc(4096, GFP_ATOMIC);
+> > >
+> > > Why 4096? Maybe use PAGE_SIZE instead?
+> >
+> > Will it make a difference for architectures that don't have 4096 PAGE_S=
+IZE?
+> > Like PowerPC which has PAGE_SIZE of anywhere between 4K to 256K!
+>
+> it's just a string buffer
 
-Only warn when disabling is requested, and clarify the warning.
-
-Fixes: b25806dcd3d5 ("mm: memcontrol: deprecate swapaccounting=0 mode")
-Cc: stable@vger.kernel.org
-Reported-by: "Jonas Schäfer" <jonas@wielicki.name>
-Reported-by: Narcis Garcia <debianlists@actiu.net>
-Suggested-by: Yosry Ahmed <yosryahmed@google.com>
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
----
- mm/memcontrol.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 1ed40f9d3a27..107ec5d36819 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -7971,9 +7971,13 @@ bool mem_cgroup_swap_full(struct folio *folio)
- 
- static int __init setup_swap_account(char *s)
- {
--	pr_warn_once("The swapaccount= commandline option is deprecated. "
--		     "Please report your usecase to linux-mm@kvack.org if you "
--		     "depend on this functionality.\n");
-+	bool res;
-+
-+	if (!kstrtobool(s, &res) && !res)
-+		pr_warn_once("The swapaccount=0 commdandline option is deprecated "
-+			     "in favor of configuring swap control via cgroupfs. "
-+			     "Please report your usecase to linux-mm@kvack.org if you "
-+			     "depend on this functionality.\n");
- 	return 1;
- }
- __setup("swapaccount=", setup_swap_account);
--- 
-2.43.0
-
+We should document that __show_mem() prints only the top 10 largest
+allocations, therefore as long as this buffer is large enough to hold
+10 records we should be good. Technically we could simply print one
+record at a time and then the buffer can be smaller.
 
