@@ -1,145 +1,210 @@
-Return-Path: <cgroups+bounces-1523-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1524-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B764853DF4
-	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 23:03:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53D1E853E1E
+	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 23:08:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A02091C26BE2
-	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 22:03:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BB82295CE6
+	for <lists+cgroups@lfdr.de>; Tue, 13 Feb 2024 22:08:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 190A663403;
-	Tue, 13 Feb 2024 21:58:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C55763501;
+	Tue, 13 Feb 2024 22:05:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Rxb8wS3o"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dg9iVx++"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3338A69953
-	for <cgroups@vger.kernel.org>; Tue, 13 Feb 2024 21:58:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F42A626A4
+	for <cgroups@vger.kernel.org>; Tue, 13 Feb 2024 22:05:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707861535; cv=none; b=GRTSUJhSoLGm9GvK2BdbcS3XAByFSVwJGYz6HlsLUVy18ykZfoZW5+D/+X5zpmxd3S782SulEDlcCeJ7+hTVaAtKrFwUtvOSiuvU4w+t5YVHEpyhN6FSS52SkGUTTqIU0/xAbQy62jZ9jodKhJA4MOxBCnMPEln0Vcc+qEGE5zE=
+	t=1707861907; cv=none; b=ZJHJETlSc4tx6qu2vqQM0Yyrrx+RNijEXKUMaNocFn5uKCVsET5LguNz9P36D+K7Uq4h0TWd8frgVbyxOwZK4QV2eHXoJGawesm+BoVBatAesxr/4XZoxvfr1X8FfrWwhISsLe+tcTzP+VLYY1/K0qE2cOL2OgnzdkL5fGNmlL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707861535; c=relaxed/simple;
-	bh=y3mhTelgi0cx53H62n2OpwC2+wJXIbkyAT/UHHyybvM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RkI2Y5rn77E+gQxeYooRsximxGiGSsbnLvj/12Y4TJIVdo2ax/byApFpY1oh+tQqvz+Xz3FKm2ohi220qaajFkATgYCc1OuaqAOO1UWyNaGAIklUPs2NhLWrfVrJ82eJJQ68Xg5Bz1LVcEkGjx9NcfI9e2FjtgvPyQGbloOrw88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Rxb8wS3o; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dcc6fc978ddso194409276.0
-        for <cgroups@vger.kernel.org>; Tue, 13 Feb 2024 13:58:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707861533; x=1708466333; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Sj6FkWt0IHINoPp252M2H78r73QaJ+UAYuAK2lRmHyc=;
-        b=Rxb8wS3oMHnLIb34yoTtwMfqoD4BcyVNuvNgGPdVHWPCpCIa6nEGYA5xvYOo5c/pvz
-         J2+OGg5pEfmE2ho3y5XIHT7lyPc4URII+matfJ1wGhF8/rZuDswE4lvq0eGNeHmc4d6i
-         1TslSmbu7/OW47V4jOiZ5LOcxgKzmPryQ4zK+pmespbb8vXgJxMG8uIdRMZx91X4F4MZ
-         GLPJ/mSUpVJkzmEWH8AhXqdx7DmmTZO/C6XQK33qFlrmwPlyjLWoDnxwx87d60SE9xih
-         +mW7UIlKhjY11M0oWGgX7klJ3vobUHc6ZLro1BWt6iAV7lHw8VKFBSbHNeQIPKHeeCWG
-         zK8Q==
+	s=arc-20240116; t=1707861907; c=relaxed/simple;
+	bh=X3mmjMMPWZvO7ys0UnUVgOwYbLsh+szBz/q2uTvLWY8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iNTSdGURX9V2f9KcgUHcUIJ1e7p5iCjkm/bqi38VSogpMYUthcFbDff9g0IbMs1LaS/l09s03hESMMeL9kqbXrCZXolapuK2onal/2xNM7Y/FAC6l6syQiV+KrZndrZeB0otBkO4yK1CfobzTN9GpZCYzG1GOLcDYqVQY5rSLPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dg9iVx++; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707861904;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=RgZc24jjJQqeC7+KfoYWO0hi8grRBBzECQH5kw6TD04=;
+	b=dg9iVx++2wsDprYX0b4N7846Fz8IlHmCDHDwtTTWHfgYr/+GPbFgdye5F0V1im3W4nkkn0
+	4kZyqFflosIN0hvkW4CrITaH0cbV/b1pg99wPP6yhuM/sxNtej0LxUo7XXCZSg2fhERmjN
+	JCegUtL+9CAamBrjw3paFpKf0YFfA2E=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-52-mRpAleZ4PGW_ixQlHuwljQ-1; Tue, 13 Feb 2024 17:05:03 -0500
+X-MC-Unique: mRpAleZ4PGW_ixQlHuwljQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-411e24b69f7so465915e9.3
+        for <cgroups@vger.kernel.org>; Tue, 13 Feb 2024 14:05:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707861533; x=1708466333;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Sj6FkWt0IHINoPp252M2H78r73QaJ+UAYuAK2lRmHyc=;
-        b=xNIWJEigymURgFpH1G6JhsjpbHSXzG+ZPzRKQGnn1iMpQsBtZX/SHpaNAbvYZtcc4j
-         8sLtAayO3wc3euNTQ12KvccNGQU5ibvZy/+Mew67kHYNz54RJR5VRWpHCXeQ77uiovgV
-         L2w1GuugpSEmZ9W8b2EH/8m6BCFP3hB3xh8+oyunV1Y+dKA8mf5WctSusT6nHVt13p0l
-         Yx0UfQKCVU2LlpJVa7dKZfA6qijBFhg2/YrXnlINZbeKH5iLXfvY+hHs0v5s2Xvpl3RN
-         1vRYHtDgVEZWmc76GqXn1UjHQ5WnUShrx2YZ5z6pO7m3Yx1PV+2N9ANMZpzwI+th/KLV
-         y3LQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVDyVnbH1xKS5BZFWcZN7sOP77SmQNomVgVW+q9bvH7ilP684Xvb4F2C9SG0DjXbJALY5tllDNvnyP+hrIykaJC4xQVoMX7LA==
-X-Gm-Message-State: AOJu0YzJLElbQAxczUBgb/pUVeGFBgxo41qJPFcColNz0JHTuQ+NiIw3
-	e//QQvaXno+hI9QjgUi2eFi/If4WA1KpOBddVVaqH7ldUPJFcibMgyNmWZ8Upx7GNujIliGkPbr
-	60jGaaYihwozhaXCnNMj3swX3Y07ZBTzw/sSB
-X-Google-Smtp-Source: AGHT+IG6l4h8KgCu1mcr/ZMWQbdEFueKYTFVYNMwYlVMCYSQKnQPu8RzycqvNzeYz47HXL5wboAvOGkSQgCimZvCNdM=
-X-Received: by 2002:a25:d815:0:b0:dc6:e7f6:254a with SMTP id
- p21-20020a25d815000000b00dc6e7f6254amr127954ybg.8.1707861532899; Tue, 13 Feb
- 2024 13:58:52 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707861902; x=1708466702;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RgZc24jjJQqeC7+KfoYWO0hi8grRBBzECQH5kw6TD04=;
+        b=U9lm83jVZ5Ju0n+pEUXukgaljbZ3i/0Abn3bN6eEIhCFakDbxa/ySBZJIq7Btl524e
+         p7H8m6jrgLDzTidTAGmfoaWH1hLi+4BacCrb0JSlo9Ka06hR5sf7o2WV+vISDtF589oZ
+         wfgDugOgde1MHMM0CXTqsYccXjaPstoMurSjL0Jdm56WC+PRl1znCRDhsUhdacUvmEA/
+         pT68tpHafxR/xwq66ry5A/etd/lH8oYyT2dRGqxDcMra702MQA3Mu9M9Aj1MJWjtKy23
+         jeHy9P5MmLE+bsnYSTk80fz+zZP1VQHaiS8Wne19XFHnJVn59rzFuMiAvWBiPlRlel94
+         hciA==
+X-Forwarded-Encrypted: i=1; AJvYcCVeUVWUUflMxHcRgx4oXAivOQKUqMI+yFko4XUW9UcHZv5ZNKL6JP+EbGRmMPaHGBOUzx3begCiSUpxh5r2fM0x3Izu4lOGEg==
+X-Gm-Message-State: AOJu0YyIK2CHFjc6478L16oPUgtXu3RjQdRI989AAHZ7iSjQEkRt9uTT
+	hKceyhLlBuUnLrjVDAC/7s4XY/r77sqx2TIbHGluNXzg0iL8kvSljkHsKhBJgHpXOjR3cFb6D32
+	Q0MeN52my9R6oiZenbf8qWm328Yo9MLKbpEupTIEPrkdoj8jXCK0zpTA=
+X-Received: by 2002:a05:600c:45ca:b0:40e:bfbf:f368 with SMTP id s10-20020a05600c45ca00b0040ebfbff368mr650503wmo.2.1707861902197;
+        Tue, 13 Feb 2024 14:05:02 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHfwGiUw2bYR/LmfQNZuejQn9gXk2z/vWjFO1USlAAPfnN13va/Im5LfF+3hG3wHwAuSolHpw==
+X-Received: by 2002:a05:600c:45ca:b0:40e:bfbf:f368 with SMTP id s10-20020a05600c45ca00b0040ebfbff368mr650468wmo.2.1707861901793;
+        Tue, 13 Feb 2024 14:05:01 -0800 (PST)
+X-Forwarded-Encrypted: i=1; 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
+Received: from ?IPV6:2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e? (p200300d82f3c3f007177eb0cd3d24b0e.dip0.t-ipconnect.de. [2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e])
+        by smtp.gmail.com with ESMTPSA id jh2-20020a05600ca08200b00410e6a6403esm17251wmb.34.2024.02.13.14.04.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Feb 2024 14:05:01 -0800 (PST)
+Message-ID: <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
+Date: Tue, 13 Feb 2024 23:04:58 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <Zctfa2DvmlTYSfe8@tiehlicka>
-In-Reply-To: <Zctfa2DvmlTYSfe8@tiehlicka>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Tue, 13 Feb 2024 13:58:39 -0800
-Message-ID: <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-To: Michal Hocko <mhocko@suse.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, vbabka@suse.cz, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Language: en-US
+To: Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, vbabka@suse.cz,
+ hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
+ dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
+ corbet@lwn.net, void@manifault.com, peterz@infradead.org,
+ juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+ arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org,
+ dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+ paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com,
+ yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
+ andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com,
+ vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
+ ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+ rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+ vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, shakeelb@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+ minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+ cgroups@vger.kernel.org
+References: <20240212213922.783301-1-surenb@google.com>
+ <Zctfa2DvmlTYSfe8@tiehlicka>
+ <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 13, 2024 at 4:24=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
->
-> On Mon 12-02-24 13:38:46, Suren Baghdasaryan wrote:
-> [...]
-> > We're aiming to get this in the next merge window, for 6.9. The feedbac=
-k
-> > we've gotten has been that even out of tree this patchset has already
-> > been useful, and there's a significant amount of other work gated on th=
-e
-> > code tagging functionality included in this patchset [2].
->
-> I suspect it will not come as a surprise that I really dislike the
-> implementation proposed here. I will not repeat my arguments, I have
-> done so on several occasions already.
->
-> Anyway, I didn't go as far as to nak it even though I _strongly_ believe
-> this debugging feature will add a maintenance overhead for a very long
-> time. I can live with all the downsides of the proposed implementation
-> _as long as_ there is a wider agreement from the MM community as this is
-> where the maintenance cost will be payed. So far I have not seen (m)any
-> acks by MM developers so aiming into the next merge window is more than
-> little rushed.
+On 13.02.24 22:58, Suren Baghdasaryan wrote:
+> On Tue, Feb 13, 2024 at 4:24 AM Michal Hocko <mhocko@suse.com> wrote:
+>>
+>> On Mon 12-02-24 13:38:46, Suren Baghdasaryan wrote:
+>> [...]
+>>> We're aiming to get this in the next merge window, for 6.9. The feedback
+>>> we've gotten has been that even out of tree this patchset has already
+>>> been useful, and there's a significant amount of other work gated on the
+>>> code tagging functionality included in this patchset [2].
+>>
+>> I suspect it will not come as a surprise that I really dislike the
+>> implementation proposed here. I will not repeat my arguments, I have
+>> done so on several occasions already.
+>>
+>> Anyway, I didn't go as far as to nak it even though I _strongly_ believe
+>> this debugging feature will add a maintenance overhead for a very long
+>> time. I can live with all the downsides of the proposed implementation
+>> _as long as_ there is a wider agreement from the MM community as this is
+>> where the maintenance cost will be payed. So far I have not seen (m)any
+>> acks by MM developers so aiming into the next merge window is more than
+>> little rushed.
+> 
+> We tried other previously proposed approaches and all have their
+> downsides without making maintenance much easier. Your position is
+> understandable and I think it's fair. Let's see if others see more
+> benefit than cost here.
 
-We tried other previously proposed approaches and all have their
-downsides without making maintenance much easier. Your position is
-understandable and I think it's fair. Let's see if others see more
-benefit than cost here.
-Thanks,
-Suren.
+Would it make sense to discuss that at LSF/MM once again, especially 
+covering why proposed alternatives did not work out? LSF/MM is not "too 
+far" away (May).
 
->
-> >  81 files changed, 2126 insertions(+), 695 deletions(-)
-> --
-> Michal Hocko
-> SUSE Labs
+I recall that the last LSF/MM session on this topic was a bit 
+unfortunate (IMHO not as productive as it could have been). Maybe we can 
+finally reach a consensus on this.
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
