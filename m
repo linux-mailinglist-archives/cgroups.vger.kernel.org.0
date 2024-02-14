@@ -1,153 +1,199 @@
-Return-Path: <cgroups+bounces-1603-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1604-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A835C855402
-	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 21:31:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D3508555AF
+	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 23:22:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 173B31F23361
-	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 20:31:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 547DB2903F7
+	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 22:22:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E31B5465D;
-	Wed, 14 Feb 2024 20:31:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E3241419A2;
+	Wed, 14 Feb 2024 22:22:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="e4v7JGa7"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="GOIgzvdr"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B1C233C7
-	for <cgroups@vger.kernel.org>; Wed, 14 Feb 2024 20:31:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0D031419A0
+	for <cgroups@vger.kernel.org>; Wed, 14 Feb 2024 22:22:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707942665; cv=none; b=WTw+lnIIlJtB+ocs9rcVE6OdnXnmKD/ijojP+BHVUzVDAWnR4wW9PWehJ9VQqNeCGTAx7lHNGCU+f/wpPV5+Kp5G5ouJr0QhY0NV/NxoVSrgoO+HySnHpozGrszE6pmGZ011QqzS8dbJ3UDSwWw5z6Kbs5Nvrwufsf91WvJvOa8=
+	t=1707949361; cv=none; b=B7nIHoc/kp6OXZEnCg/uZaod+sqKwHmwIkDz92qwe+SGY65gh/969WwszfdxYOOltfA/lW2D/fMYmWWebZxc9cECfdZXokqor9S54PjNHJ88Ja8/UqUtWApVUwdkfUtsE6u8paqyN2BYvlLQoM4HTkWRT1QJ4wEW6CaSBiL8o+0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707942665; c=relaxed/simple;
-	bh=Vd0j1FX9Ch3W6HoLjw5jsyZYk+r6JPnPHoqpsjH65ZQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QrobwqNGW1435jvJFVaeWq36AhFhptfdN1OH1GYK9Azabe3cAJBNKWBumPGZRkVDiXssd4OjK43S1FHOXFYJIVyI+WBDMF7xB21vvu9aZqyBf3Uholf3oQSIYUWNoFWwQtOj+C3PA2Y3m3XCXxXlzedim3F3SACdYaHt5J4/W+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=e4v7JGa7; arc=none smtp.client-ip=209.85.219.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dcc80d6004bso106505276.0
-        for <cgroups@vger.kernel.org>; Wed, 14 Feb 2024 12:31:03 -0800 (PST)
+	s=arc-20240116; t=1707949361; c=relaxed/simple;
+	bh=Tjfak4zeHO2RhUSUhpoioPVs+jARNcl60hmLZOIqIDM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J5IvBiG6Es2CkJtOJcFs2pPLVkbODcnMRSisEHoSsYf3JQZLuOfLJa3IY5U8vtxbyC4mDCA3veRTo7Xfnc/jgtWLa177umjYajqWuX4JJBhAg+MQFnJwEEW9J1iM0vUAf9jOK0VF4xaW8DPYApsa0ltH+U26UpFAwsTHuDa+PQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=GOIgzvdr; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e0d085cf59so232267b3a.2
+        for <cgroups@vger.kernel.org>; Wed, 14 Feb 2024 14:22:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1707942662; x=1708547462; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NcEj/SyVb+AY5aiDL6vEY+YAlLL1EeaxcCrjK4Q+5oY=;
-        b=e4v7JGa7cWYIZNAW0huk/3rwOI/kwWdnUfrxj+106qY9WYGnNPyqqU+s/GPTR66aYq
-         E6Z9CoturLO7WL9zR8anrnxQ1tb+X+eCL/0xXobCI1PZu988h9jXDuQTqjlbLLhKlZjJ
-         l/Cqu8qc/n297fQbIV4Ppz5rL240ZYKpmBE2mnjVkY7hK06kO+MoKsA0DD5SlnFxEpPW
-         lTYSBU/elbShzB86eaf1oNF1Zo/wl1EYTb90LOaZ7ulyXM1m0BUsR58hYhdeRibgMo0I
-         vIHn30dBEWG2tg1H+Av6fegtFpmgrihEA1yRuOTVjHYV64g7odZ1JazgkMmJJb7cgpvH
-         xsMA==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1707949358; x=1708554158; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ln+OOvGmpFuiRMz6w7NK4oosvSzfGSRKkgDvCaci/QI=;
+        b=GOIgzvdrEpOzSeg47eMOE4siXoNP0ukhNR/non+Iru16Vy7bkf5L0ggyiocz+o/4au
+         7jy0wBUP+y7dVw6PSpDo5rNJ6yp4fyKsett31PWa3Y2nMd/RE5wY5D5IDaH2Vcald3Yw
+         E0sQi/slYrB+9jZj63fyzKIwNELLirugt8tDINfLxMWOH+wgiVkx5LdttrxR3oxsCVGl
+         gCuwMdZFgPhH8uAQTOLadpcWbSkkXD1/Agl83sE4/ZMbRh3Z2I1k/qI1plZBQEj6foaR
+         Fu3srphsm+2Jj3mrFaW8SrKtgb5Ne4s5sBFe5G8flEIBtCYNvCpC/AFouv9q9OEf94Pu
+         24MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707942662; x=1708547462;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NcEj/SyVb+AY5aiDL6vEY+YAlLL1EeaxcCrjK4Q+5oY=;
-        b=gbdeF379/0yAPJzhpu0M910l9HubU3AEkGRw6pWPu9kAvhhY90VHMyr5WZbHjYXa4V
-         RwzhvN+5Vlg7d63BzGKbFBUHVIlFVpDc58vGrNwSRQTvElVMc1JZF9AZqfruZW0tL+l2
-         MQsCTqHOx9OKDdWZOQOM4hl0YW9u5WZ4OZizGP62QeA3PEheptkbnpfKatRXQjOKLHfQ
-         JRKnyJG6tysXs7C74IgF3pzCt/Q+eYA47aDIyrroaGUR1apm0PO1MyJ04urzZcEqEzxD
-         sYBisXwf7pkOc4lbAZV94ElBBd2uYtKDpZ1WvZCyPLJ7sIQXbQnM+0BtIsZMavgbKEqW
-         S2Ow==
-X-Forwarded-Encrypted: i=1; AJvYcCU/4KtrV0Fvkd/h/ctNYmAelIhYbQTtDk8Wd2p2NNca6v++Xb8xcQnmV+SSrW0HLCuaUMVqeH5gILRDfY3vDfze9EgTExgi/Q==
-X-Gm-Message-State: AOJu0YxzN6SBlz5MtZP0KBuERKVe4/yF7cDTmRxFEIzkpBH22pEBP09/
-	2ZW5HpjnUYKF0k4Jt2W8AkG0ZDCKFaILuOkl2X0x9Z4B8JeqcRBuAqoadvfJJBmuXJc2zU9VUgm
-	AonldNnLLIMdoeBfWNLh87/xjdn5za3+6Sirz
-X-Google-Smtp-Source: AGHT+IFqoJj5aCwpmg00G6ZaLb2aiZ8b3im8fm6yEl4ijg46+lI254clzZhzLZ0Iv0kb6bhFH6lVLC2hnoLSZAsSoRU=
-X-Received: by 2002:a25:4115:0:b0:dc6:bbeb:d889 with SMTP id
- o21-20020a254115000000b00dc6bbebd889mr3283052yba.52.1707942662262; Wed, 14
- Feb 2024 12:31:02 -0800 (PST)
+        d=1e100.net; s=20230601; t=1707949358; x=1708554158;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ln+OOvGmpFuiRMz6w7NK4oosvSzfGSRKkgDvCaci/QI=;
+        b=YRhKO9UC/rEqeVSDi7Z2TgIsFXjCowSUVIJdLg9ENPczTSQ/vomml7Jk+BlsmH6bWX
+         EaKkZKrRKayLc0MWBa4eXLu5fMs/G6EbE5YuYDyHxdQINnVuyophMlH86cfjHKqVgh0X
+         HhjPdy//9JZ8+2fdz2IVyOoDVMF6kgMeN7Ncnzf1jtQr80KRPDgKuLuSv/JA2z0+ShNZ
+         9jDjKHoXRk9ST5fc3rQ8PpAaJdAUIEEUEjcLuwR+0+yyU7LiVXNX/WQrhzJxSEM3DDRv
+         2hbqD2+rXAvQznlSYz9AjYJROFwZl4B1fZUXUBZftwQyGDH1ziBSd7jQ8jCBdE3unkG1
+         9Uog==
+X-Forwarded-Encrypted: i=1; AJvYcCUGu1Ku6S1hodaUgN5bvXxxnJIFDj9VbYjnpiSgN4l0rYa326fgmQIZgdQ7cNgVxuvodV76D8gIj2TJb7CndGx4w3tuykir1w==
+X-Gm-Message-State: AOJu0Yxl28zvLvWXYwklNH03GRrS7SJs+7Vddecpd1EGEb6tACk0NKQu
+	FCYtpLsp/fxw28pBLrV88wRjnSmIFjegLr0ym9C0x5RUe4naDefakpYNThfUw9w=
+X-Google-Smtp-Source: AGHT+IHTGeIRIsITdPStGM5mFftKvPz626lejWEKKG4hpUncJNP4ImSALCuOSyfVaorY4mjRZpEnMA==
+X-Received: by 2002:a05:6a20:d703:b0:19e:9b19:96c0 with SMTP id iz3-20020a056a20d70300b0019e9b1996c0mr191489pzb.7.1707949357817;
+        Wed, 14 Feb 2024 14:22:37 -0800 (PST)
+X-Forwarded-Encrypted: i=1; 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
+Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
+        by smtp.gmail.com with ESMTPSA id t29-20020a62d15d000000b006e0a55790easm9168222pfl.216.2024.02.14.14.22.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Feb 2024 14:22:36 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1raNeD-006ZVB-2T;
+	Thu, 15 Feb 2024 09:22:33 +1100
+Date: Thu, 15 Feb 2024 09:22:33 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
+	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 25/35] xfs: Memory allocation profiling fixups
+Message-ID: <Zc09KRo7nMlSGpG6@dread.disaster.area>
+References: <20240212213922.783301-1-surenb@google.com>
+ <20240212213922.783301-26-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <4f24986587b53be3f9ece187a3105774eb27c12f.camel@linux.intel.com>
- <CAJuCfpGnnsMFu-2i6-d=n1N89Z3cByN4N1txpTv+vcWSBrC2eg@mail.gmail.com> <Zc0f7u5yCq-Iwh3A@google.com>
-In-Reply-To: <Zc0f7u5yCq-Iwh3A@google.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 14 Feb 2024 12:30:49 -0800
-Message-ID: <CAJuCfpEbdC4k=4aeEO=YfX2tZhkdOVaehAv9Ts7S42B_bmm=Ow@mail.gmail.com>
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Tim Chen <tim.c.chen@linux.intel.com>, akpm@linux-foundation.org, 
-	kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yuzhao@google.com, dhowells@redhat.com, hughd@google.com, 
-	andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com, 
-	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com, 
-	ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, 
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
-	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
-	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com, 
-	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
-	kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240212213922.783301-26-surenb@google.com>
 
-On Wed, Feb 14, 2024 at 12:17=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com=
-> wrote:
->
-> > > > Performance overhead:
-> > > > To evaluate performance we implemented an in-kernel test executing
-> > > > multiple get_free_page/free_page and kmalloc/kfree calls with alloc=
-ation
-> > > > sizes growing from 8 to 240 bytes with CPU frequency set to max and=
- CPU
-> > > > affinity set to a specific CPU to minimize the noise. Below are res=
-ults
-> > > > from running the test on Ubuntu 22.04.2 LTS with 6.8.0-rc1 kernel o=
-n
-> > > > 56 core Intel Xeon:
-> > > >
-> > > >                         kmalloc                 pgalloc
-> > > > (1 baseline)            6.764s                  16.902s
-> > > > (2 default disabled)    6.793s (+0.43%)         17.007s (+0.62%)
-> > > > (3 default enabled)     7.197s (+6.40%)         23.666s (+40.02%)
-> > > > (4 runtime enabled)     7.405s (+9.48%)         23.901s (+41.41%)
-> > > > (5 memcg)               13.388s (+97.94%)       48.460s (+186.71%)
-> >
-> > (6 default disabled+memcg)    13.332s (+97.10%)         48.105s (+184.6=
-1%)
-> > (7 default enabled+memcg)     13.446s (+98.78%)       54.963s (+225.18%=
-)
->
-> I think these numbers are very interesting for folks that already use
-> memcg. Specifically, the difference between 6 & 7, which seems to be
-> ~0.85% and ~14.25%. IIUC, this means that the extra overhead is
-> relatively much lower if someone is already using memcgs.
+On Mon, Feb 12, 2024 at 01:39:11PM -0800, Suren Baghdasaryan wrote:
+> From: Kent Overstreet <kent.overstreet@linux.dev>
+> 
+> This adds an alloc_hooks() wrapper around kmem_alloc(), so that we can
+> have allocations accounted to the proper callsite.
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> ---
+>  fs/xfs/kmem.c |  4 ++--
+>  fs/xfs/kmem.h | 10 ++++------
+>  2 files changed, 6 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/xfs/kmem.c b/fs/xfs/kmem.c
+> index c557a030acfe..9aa57a4e2478 100644
+> --- a/fs/xfs/kmem.c
+> +++ b/fs/xfs/kmem.c
+> @@ -8,7 +8,7 @@
+>  #include "xfs_trace.h"
+>  
+>  void *
+> -kmem_alloc(size_t size, xfs_km_flags_t flags)
+> +kmem_alloc_noprof(size_t size, xfs_km_flags_t flags)
+>  {
+>  	int	retries = 0;
+>  	gfp_t	lflags = kmem_flags_convert(flags);
+> @@ -17,7 +17,7 @@ kmem_alloc(size_t size, xfs_km_flags_t flags)
+>  	trace_kmem_alloc(size, flags, _RET_IP_);
+>  
+>  	do {
+> -		ptr = kmalloc(size, lflags);
+> +		ptr = kmalloc_noprof(size, lflags);
+>  		if (ptr || (flags & KM_MAYFAIL))
+>  			return ptr;
+>  		if (!(++retries % 100))
+> diff --git a/fs/xfs/kmem.h b/fs/xfs/kmem.h
+> index b987dc2c6851..c4cf1dc2a7af 100644
+> --- a/fs/xfs/kmem.h
+> +++ b/fs/xfs/kmem.h
+> @@ -6,6 +6,7 @@
+>  #ifndef __XFS_SUPPORT_KMEM_H__
+>  #define __XFS_SUPPORT_KMEM_H__
+>  
+> +#include <linux/alloc_tag.h>
+>  #include <linux/slab.h>
+>  #include <linux/sched.h>
+>  #include <linux/mm.h>
+> @@ -56,18 +57,15 @@ kmem_flags_convert(xfs_km_flags_t flags)
+>  	return lflags;
+>  }
+>  
+> -extern void *kmem_alloc(size_t, xfs_km_flags_t);
+>  static inline void  kmem_free(const void *ptr)
+>  {
+>  	kvfree(ptr);
+>  }
+>  
+> +extern void *kmem_alloc_noprof(size_t, xfs_km_flags_t);
+> +#define kmem_alloc(...)			alloc_hooks(kmem_alloc_noprof(__VA_ARGS__))
+>  
+> -static inline void *
+> -kmem_zalloc(size_t size, xfs_km_flags_t flags)
+> -{
+> -	return kmem_alloc(size, flags | KM_ZERO);
+> -}
+> +#define kmem_zalloc(_size, _flags)	kmem_alloc((_size), (_flags) | KM_ZERO)
+>  
+>  /*
+>   * Zone interfaces
+> -- 
+> 2.43.0.687.g38aa6559b0-goog
 
-Well, yes, percentage-wise it's much lower. If you look at the
-absolute difference between 6 & 7 vs 2 & 3, it's quite close.
+These changes can be dropped - the fs/xfs/kmem.[ch] stuff is now
+gone in linux-xfs/for-next.
 
->
-> >
-> > (6) shows a bit better performance than (5) but it's probably noise. I
-> > would expect them to be roughly the same. Hope this helps.
-> >
-> > > >
-> > >
-> > >
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
