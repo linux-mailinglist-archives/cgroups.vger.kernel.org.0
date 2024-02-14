@@ -1,179 +1,217 @@
-Return-Path: <cgroups+bounces-1556-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1557-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D36058542BA
-	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 07:20:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 570288544B7
+	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 10:12:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 02D3B1C26E99
-	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 06:20:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CFB628426D
+	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 09:12:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FE5F11185;
-	Wed, 14 Feb 2024 06:20:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D978BE5B;
+	Wed, 14 Feb 2024 09:12:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="frEKCXWj"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YnfpYJ9h"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB12110A13
-	for <cgroups@vger.kernel.org>; Wed, 14 Feb 2024 06:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4519BE6D
+	for <cgroups@vger.kernel.org>; Wed, 14 Feb 2024 09:12:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707891629; cv=none; b=t6z3Hl3zBJ7gI7WP1natHmhKX6J6XF/Id+iRAyCheSqYtkcpLRt8iQnVZnBR2Sj7gGanZ3SS5STRL9mm+mJQoqeFwGTYLVS5840FIOSQ+fhyMPif5IfuWkxVczbZX3JeVy9lLucTFUNVv9IDHbkFSuUGvYpEUkzYZ32rNToDYwU=
+	t=1707901930; cv=none; b=Bgz6pxb5HkCQuL5UQRcA7TU4ZozFGchOsdIl847gphr+JG66oSk1gyNKEUDTjZ6cCfyN2kaDhnozAkoAysjV61czbo405jSM2M/s/6Bg0a9TX6VxUGSp1GkA2UYQ4zeYVy/UrzgUP17Dlrt2s78XmBRmRSeAd6WnLRM33kCZ/9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707891629; c=relaxed/simple;
-	bh=mPZvfWNgR9UvijIIJJg1XLOXvrF3xKs/y4S11I2T7Mc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PPrk01opNk85xyZ0cHEqMFxkOnpWevPdMJfdvO/pLJzO8JEOnHTXKTTk7jlTivsAGLnTR0ZZ8mFpHRfHOiVfmCNJi6WKzAnyRR8zgEnODTLTAK9AuUaEoMplugWqNDwZ6boaSOAkmMFv+flKq5Zc+0HF4UyK+wkySHWAzczP9Bc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=frEKCXWj; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42ce63b1d30so18612501cf.3
-        for <cgroups@vger.kernel.org>; Tue, 13 Feb 2024 22:20:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1707891626; x=1708496426; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mPZvfWNgR9UvijIIJJg1XLOXvrF3xKs/y4S11I2T7Mc=;
-        b=frEKCXWjz3d2XuOUYzdId9W6Mvn73jhIIjZV2UtP6WyaWc+D189xwP5w9kl+nSGfMv
-         92wT3Ax40rNcFpOR+78CXna5fylDXfI6Hpiij0UumIVVKLviUy2TBLD/fQ4JiX8hcSKk
-         lDb1xW+VEfETTFCtbvp6CurH0ifNSGWGK9795xsbLYIgyGs6dgO9WOfTiI+Y04tJwTwz
-         U2B8EUisd2LXc0KXZhBK0T+8L+7pSUgqhfIrW+lqZMIXTuHrXKY6BZ+bKZmBwZFp1CkH
-         S+9RnGWorvD7Btw1UXhsTSfLoPpByNUBhDeBmUW9EuyIbEp1u9AceE9ovXck9gVbMmaP
-         b6Zw==
+	s=arc-20240116; t=1707901930; c=relaxed/simple;
+	bh=b/mhMZ0zKqCT3ertcABmL3CKUgHpNWzDTwLWzbWXPU0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jKBsbKanPQD6e9N3G5LA8SD33KbVygXv+NPT6CycQRtVpROF1EImfp+FqltniCqYPpHs61n3ZKm/ShtviIKkVs0k7iKDhTm64h0fJLo23IywmBZywVRUy05KzyjI+jGLGrgCG5G10JOfL691bZOm6BszCaO3eQvDiA6Z3NxzMvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YnfpYJ9h; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1707901927;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=VZA6DFg+WwA52lCBTWxrutolHXxVdoWwm9k2EKmKknw=;
+	b=YnfpYJ9haw6IPWosF0W1mmD4ydIJT2jB4T9FpY6rOkT+HvZI5tLAraOPXjbP8+T+D/wiGx
+	4L7iXNUmNmGbWRho7/ZFFe2vDymsn+Q+FmXLZrwMOFAEuQzaEpg/ia0/ouaZXGvMM06Icb
+	22KAIXd5QOWWc16bGre/WtYRaxuf7eY=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-86-w7gvnyEkOYOcr3Xsp1KT0w-1; Wed, 14 Feb 2024 04:12:06 -0500
+X-MC-Unique: w7gvnyEkOYOcr3Xsp1KT0w-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-410422e8cd1so30055235e9.3
+        for <cgroups@vger.kernel.org>; Wed, 14 Feb 2024 01:12:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707891626; x=1708496426;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1707901925; x=1708506725;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mPZvfWNgR9UvijIIJJg1XLOXvrF3xKs/y4S11I2T7Mc=;
-        b=sO45+4kbsvob4pgqw/nbXIJfYRbU1Nd0WmODqnUNwYVzs660P5FwfDMAIO9geZ2jmU
-         7eFTDfsAYpVg+nOC8fmwyQRRHzfJKdqGkPG4HMytgfQ3FMT1b6DbAa215ajnVPOYyvsF
-         VyZgTC29AcbjTchBlHjoTgMca1qe9dseMkPnJZ8cf0GAwn1X160po001MKp+5qlbqFbn
-         0Q+o7vja59lVV6wytHapfctA6lfBbdycrYFsbZgtt2qNs0knw3kou3DuyOXvZNZSMFyN
-         Tn774gIfWDKNDgEZGtNEIoExSSZgE88GcJ3RwXCLkMORNu+Xvq2vlQU4jYW18RHi92cE
-         KA/g==
-X-Forwarded-Encrypted: i=1; AJvYcCV+EwSLLYUKO6aGKfFKTXGHqg8ri64PHDzxvYLy+miLyT7xrVmM6kdsSw6w4S2q6xXpSKaOtUqEwYZJO0PPBZFivUpdDT2rrQ==
-X-Gm-Message-State: AOJu0YyIZg5qpy9Po9ehHZDMBazfECxxZedeWPxMetO8JWwLV8ska305
-	1WkYKrHzu4oR8rfAaxYqJi9kdgD5IaSmamb3U/SGd1yJDrXGsyhxnxGH5iM6tDI=
-X-Google-Smtp-Source: AGHT+IFnioDUv96AzhWE99fGuZ2JnAOUfdgv/2QX4e5KUyJeUPqxV+8qOH1R7pvVEl8yrhK7A4y3Cw==
-X-Received: by 2002:a05:622a:1045:b0:42c:70a8:1b3f with SMTP id f5-20020a05622a104500b0042c70a81b3fmr1875328qte.7.1707891626471;
-        Tue, 13 Feb 2024 22:20:26 -0800 (PST)
-X-Forwarded-Encrypted: i=1; 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
-Received: from localhost ([2620:10d:c091:400::5:6326])
-        by smtp.gmail.com with ESMTPSA id l13-20020ac8078d000000b0042c613a5cf3sm1755053qth.33.2024.02.13.22.20.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Feb 2024 22:20:25 -0800 (PST)
-Date: Wed, 14 Feb 2024 01:20:20 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
-	vbabka@suse.cz, roman.gushchin@linux.dev, mgorman@suse.de,
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org,
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
-	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
-	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
-	paulmck@kernel.org, pasha.tatashin@soleen.com,
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
-	ndesaulniers@google.com, vvvvvv@google.com,
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
-	elver@google.com, dvyukov@google.com, shakeelb@google.com,
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-Message-ID: <20240214062020.GA989328@cmpxchg.org>
-References: <20240212213922.783301-1-surenb@google.com>
+        bh=VZA6DFg+WwA52lCBTWxrutolHXxVdoWwm9k2EKmKknw=;
+        b=TwkuHoiVl2wBdc6R0t1k/oUARTT5bv1y3gpcexEOzMFTSnRk50WKXMeeWHwv88AbrW
+         7bqaniqiPYFfJqCBVyAl7YvK7vO+ENqA+JO2l+joA/Ll95t24+Xj6FR5QWIEtAPj6XW4
+         c54fh2M53YNgMTS77//O1tgwI6aYS2b9HaZYqXr4LrCrJE21i1qc0sfSeH74nabz1zHy
+         aBhf3VMd8rQF+hvoORUiwTOauHX+I4zBMSLeL5WWX24RefWu2Cdo7lifqowey7ak/oXZ
+         nT3pjOnNr7CQ/Mg/lXN+4hxHmBO9OuimYWbJ5zosawWwkFSyK35M04mIZ9BEWV+JGPcB
+         xM1A==
+X-Forwarded-Encrypted: i=1; AJvYcCX3hJnWiExUWuG3zBeYrlo/qI/ze2AzAEL6W5pqtc75Wt7Q9eglNL5oTitDbrjVQK/HPLAHjRQHdrx/kWLIyTW0mpQPN2ah4w==
+X-Gm-Message-State: AOJu0YzSYdSoSbs5PjZE9MXIxsg2l2AMo8z1iyXx1TEO8JHHspB4KIwY
+	RqigagCMGvF+DvjAXJtPuZogmKtxIYFM3glEvO70gkBFvgch1dHxBHDpkeJC5iNbNPlb/s9vH4i
+	A7AMWLA/9pfYFTxw8GxUqI6Tjbcto5rXtQvBBMOFVpautf8LFofvYanw=
+X-Received: by 2002:a05:600c:4f92:b0:40e:f9df:3531 with SMTP id n18-20020a05600c4f9200b0040ef9df3531mr1616936wmq.8.1707901924980;
+        Wed, 14 Feb 2024 01:12:04 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGhZev06DT+wQwCDjrhbCZX5g30BdTp6oDhqJnXloyJB+rxmBte2E2NuMdQoDmK9WLQFWbF2g==
+X-Received: by 2002:a05:600c:4f92:b0:40e:f9df:3531 with SMTP id n18-20020a05600c4f9200b0040ef9df3531mr1616906wmq.8.1707901924586;
+        Wed, 14 Feb 2024 01:12:04 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVqS5g1CamuPWuk5EE/YsfGdQ1wTy8LozYCBRvSt2P3zg16qUWY8dW+1xuaxuONCVcCdHJw3/UW+h98SehqzecRpIqVlzAg31i+hD3r80gW1+6nMLemeKSOEJbS8/HrqPqly9CCdvTw1mthL8iW+M/PxzA6fh5IxXwBdhsPzhqzLSCs7uGOkszPxvApMK1WjazzELLLqw7ZiRHgfty3p3sh/sr62OCU3r9R/TGfJb2ilnhapoqu4z7m50VpIGlcE1EOeDQ2g465iosRXhYo/Tfr+wZ094zbS35DEzLzTKXBfXl/EHR8Uy1F7hHeLZ2GUEJ4F+TnR+VBUsDkrXUcIndVNf+luwxNPKSP1C4MqbTF+WOXzB1uOoFWR0BEYXvnV6OmYCr0KZZQYvUSGUpuoS9gXqJmtyT+S/jqpjMejsR0KslcYGZezqp7PxCAeSO2LWeyWrz2J+HbHvld8T6tp67K7wrNNrfY1c2ipxFVhSvdIRs4ZQVc/qJ73yzPGrQSV7M+uOqtrjp9/lUs4ZQAe3j3xn23CV3IbMhfaoM67TNynePh6EffyzumwL+H4+SAsXgH
+Received: from ?IPV6:2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e? (p200300d82f3c3f007177eb0cd3d24b0e.dip0.t-ipconnect.de. [2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e])
+        by smtp.gmail.com with ESMTPSA id m10-20020a05600c4f4a00b00411e6243e70sm1308929wmq.12.2024.02.14.01.12.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Feb 2024 01:12:04 -0800 (PST)
+Message-ID: <27691f5d-2218-4247-b688-cd16d46961c3@redhat.com>
+Date: Wed, 14 Feb 2024 10:12:02 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240212213922.783301-1-surenb@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/7] mm/memcg: use order instead of nr in
+ split_page_memcg()
+Content-Language: en-US
+To: Zi Yan <ziy@nvidia.com>, "Pankaj Raghav (Samsung)"
+ <kernel@pankajraghav.com>, linux-mm@kvack.org
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ Ryan Roberts <ryan.roberts@arm.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Zach O'Keefe <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
+ Mcgrof Chamberlain <mcgrof@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20240213215520.1048625-1-zi.yan@sent.com>
+ <20240213215520.1048625-2-zi.yan@sent.com>
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240213215520.1048625-2-zi.yan@sent.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I'll do a more throrough code review, but before the discussion gets
-too sidetracked, I wanted to add my POV on the overall merit of the
-direction that is being proposed here.
+On 13.02.24 22:55, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
+> 
+> We do not have non power of two pages, using nr is error prone if nr
+> is not power-of-two. Use page order instead.
+> 
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> ---
+>   include/linux/memcontrol.h | 4 ++--
+>   mm/huge_memory.c           | 3 ++-
+>   mm/memcontrol.c            | 3 ++-
+>   mm/page_alloc.c            | 4 ++--
+>   4 files changed, 8 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 4e4caeaea404..173bbb53c1ec 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -1163,7 +1163,7 @@ static inline void memcg_memory_event_mm(struct mm_struct *mm,
+>   	rcu_read_unlock();
+>   }
+>   
+> -void split_page_memcg(struct page *head, unsigned int nr);
+> +void split_page_memcg(struct page *head, int order);
+>   
+>   unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+>   						gfp_t gfp_mask,
+> @@ -1621,7 +1621,7 @@ void count_memcg_event_mm(struct mm_struct *mm, enum vm_event_item idx)
+>   {
+>   }
+>   
+> -static inline void split_page_memcg(struct page *head, unsigned int nr)
+> +static inline void split_page_memcg(struct page *head, int order)
+>   {
+>   }
+>   
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 016e20bd813e..0cd5fba0923c 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2877,9 +2877,10 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>   	unsigned long offset = 0;
+>   	unsigned int nr = thp_nr_pages(head);
+>   	int i, nr_dropped = 0;
+> +	int order = folio_order(folio);
 
-I have backported and used this code for debugging production issues
-before. Logging into a random host with an unfamiliar workload and
-being able to get a reliable, comprehensive list of kernel memory
-consumers is one of the coolest things I have seen in a long
-time. This is a huge improvement to sysadmin quality of life.
+You could calculate "nr" from "order" here, removing the usage of 
+thp_nr_pages().
 
-It's also a huge improvement for MM developers. We're the first points
-of contact for memory regressions that can be caused by pretty much
-any driver or subsystem in the kernel.
+>   
+>   	/* complete memcg works before add pages to LRU */
+> -	split_page_memcg(head, nr);
+> +	split_page_memcg(head, order);
+>   
+>   	if (folio_test_anon(folio) && folio_test_swapcache(folio)) {
 
-I encourage anybody who is undecided on whether this is worth doing to
-build a kernel with these patches applied and run it on their own
-machine. I think you'll be surprised what you'll find - and how myopic
-and uninformative /proc/meminfo feels in comparison to this. Did you
-know there is a lot more to modern filesystems than the VFS objects we
-are currently tracking? :)
+Acked-by: David Hildenbrand <david@redhat.com>
 
-Then imagine what this looks like on a production host running a
-complex mix of filesystems, enterprise networking, bpf programs, gpus
-and accelerators etc.
+-- 
+Cheers,
 
-Backporting the code to a slightly older production kernel wasn't too
-difficult. The instrumentation layering is explicit, clean, and fairly
-centralized, so resolving minor conflicts around the _noprof renames
-and the wrappers was pretty straight-forward.
+David / dhildenb
 
-When we talk about maintenance cost, a fair shake would be to weigh it
-against the cost and reliability of our current method: evaluating
-consumers in the kernel on a case-by-case basis and annotating the
-alloc/free sites by hand; then quibbling with the MM community about
-whether that consumer is indeed significant enough to warrant an entry
-in /proc/meminfo, and what the catchiest name for the stat would be.
-
-I think we can agree that this is vastly less scalable and more
-burdensome than central annotations around a handful of mostly static
-allocator entry points. Especially considering the rate of change in
-the kernel as a whole, and that not everybody will think of the
-comprehensive MM picture when writing a random driver. And I think
-that's generous - we don't even have the network stack in meminfo.
-
-So I think what we do now isn't working. In the Meta fleet, at any
-given time the p50 for unaccounted kernel memory is several gigabytes
-per host. The p99 is between 15% and 30% of total memory. That's a
-looot of opaque resource usage we have to accept on faith.
-
-For hunting down regressions, all it takes is one untracked consumer
-in the kernel to really throw a wrench into things. It's difficult to
-find in the noise with tracing, and if it's not growing after an
-initial allocation spike, you're pretty much out of luck finding it at
-all. Raise your hand if you've written a drgn script to walk pfns and
-try to guess consumers from the state of struct page :)
-
-I agree we should discuss how the annotations are implemented on a
-technical basis, but my take is that we need something like this.
-
-In a codebase of our size, I don't think the allocator should be
-handing out memory without some basic implied tracking of where it's
-going. It's a liability for production environments, and it can hide
-bad memory management decisions in drivers and other subsystems for a
-very long time.
 
