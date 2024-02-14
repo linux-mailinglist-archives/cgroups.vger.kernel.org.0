@@ -1,185 +1,241 @@
-Return-Path: <cgroups+bounces-1572-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1573-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A1F1854C5E
-	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 16:15:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69B78854C80
+	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 16:19:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE5D4287577
-	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 15:14:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDC181F29C2C
+	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 15:19:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C7FA5D729;
-	Wed, 14 Feb 2024 15:14:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AA9D5C615;
+	Wed, 14 Feb 2024 15:19:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gU3rk2X2";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IhXF164r";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gU3rk2X2";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IhXF164r"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="dejtT5md"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2089.outbound.protection.outlook.com [40.107.243.89])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FBAA5D47E;
-	Wed, 14 Feb 2024 15:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707923641; cv=none; b=GtseO/qmO2P4QhzBRM22oov5sfsjHS+8diV7W1V0Ppt6MAVkdZ3g2HAeRrqtPoTzASTpqwe082aB25XH9GF9GY4ozcsKEWZgo62d0pyH2UVkqTpzu3nhEb3SXZA45E4UcEbDtR6tH56RK9ooskojuoNk3GqgFu5jQvxPlRxAR1I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707923641; c=relaxed/simple;
-	bh=7rqAA2OMkjlzZfzF2L7LpXxjv4CH2lahcs7k59r/a/U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BLDk53poI7fyyqHnhiOuajUVxqa3QwRLdhU8pZwy5cVMSz6VpmzdPqUR0P5IVfWS1MSY0ErWQNEsovp6TbOQPBCZK7bNVrcYq9FiystKCG8mL39PKFDpLtsYZfPdl5XClEGB09WZzq5uHHd7gK+mAXaLYtbw/5l8c4uLWF3mzho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gU3rk2X2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IhXF164r; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gU3rk2X2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IhXF164r; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5D70A220DD;
-	Wed, 14 Feb 2024 15:13:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707923637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tikF5ShYKbO2WOghBk9vtGAaaUgiPj3VsQTjyNrj1PE=;
-	b=gU3rk2X2NEJX4Fh9fwdAFML7uiHJwPY6ADIvA28KKNY/2Z7m2rh+DZBQYUGyaSSqjBp0Nk
-	j9kuonCsfIAslBIukjceFCBUO5tqnhYhJHks6m+XMV8pC11+/ehOtDt2i/K1HEEXk/7AwU
-	Cka2ujVNvF+539lMChG2VJsssRfRCPQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707923637;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tikF5ShYKbO2WOghBk9vtGAaaUgiPj3VsQTjyNrj1PE=;
-	b=IhXF164rhLv5W/+NathAC18BJymcHAqy5xAL15E8/dUk8X8AocBsujmKILSINsYmD8QYgi
-	+u8unfWWkL1AV6BA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707923637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tikF5ShYKbO2WOghBk9vtGAaaUgiPj3VsQTjyNrj1PE=;
-	b=gU3rk2X2NEJX4Fh9fwdAFML7uiHJwPY6ADIvA28KKNY/2Z7m2rh+DZBQYUGyaSSqjBp0Nk
-	j9kuonCsfIAslBIukjceFCBUO5tqnhYhJHks6m+XMV8pC11+/ehOtDt2i/K1HEEXk/7AwU
-	Cka2ujVNvF+539lMChG2VJsssRfRCPQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707923637;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tikF5ShYKbO2WOghBk9vtGAaaUgiPj3VsQTjyNrj1PE=;
-	b=IhXF164rhLv5W/+NathAC18BJymcHAqy5xAL15E8/dUk8X8AocBsujmKILSINsYmD8QYgi
-	+u8unfWWkL1AV6BA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 352AA13A6D;
-	Wed, 14 Feb 2024 15:13:56 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id BizkC7TYzGVnIQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 14 Feb 2024 15:13:56 +0000
-Message-ID: <6370b20f-96fb-4918-bef0-7555563c9ce2@suse.cz>
-Date: Wed, 14 Feb 2024 16:13:55 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A0405A7B4;
+	Wed, 14 Feb 2024 15:19:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.89
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1707923972; cv=fail; b=IcFoYhGBnLAq6n+wIJJA7YR+/nJ7I3SSWs0PzeIU9kolR2swMTtvMrqVOD0A3mDVTMjy7FocMbucJbpfNA5Tm1kX4ZuyjiMmEaKfJodZGHwrPgbrEXLo+b+jXvXAAHjm/OlKFUIqnHArcRC0xE2MssgMYfYBpngrPXKtu+2R5VM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1707923972; c=relaxed/simple;
+	bh=Fsr0B/0GLLArSGtuF5yecwbRD0jbFgqWVkfEjq7uwMY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ovNR638svCqQohC9V5QGTzC3Pye1sg4xxTHD6iyMJYplfYLJ9wigHM7KuofA1/lRYEYLJ9KJEb2AmP6wdBO05DJ/IfpItXzV7/c9Um/SZ4r317AU9i2odtTZXSTzJXF1ujlEmppXVUeXf3sIKVjCzlNDTRxHw5/YEuWiGXgqLJw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=dejtT5md; arc=fail smtp.client-ip=40.107.243.89
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kn5vLWy+OvOtMfupsfuoXJf9g+4RPMSqOiGsichYsdg5JGDvKA6LR+JAvY0VH5myjBQKOpLq1njvSPEtt8GQD5LwnzcBgf15VYNKuvFUVy3rfkLR3qaL3e/z3m+Dj9OMuvraQMLNdGSh57gPHNeBHpnZBz53LfOHYivNGcHfZkliGGFJwEZ/+sNBXtAHDoXGsiahXuTcjQR7GFP2NzORBaIxJiY8e2WBG3xfgESdWTi7cYPBxUIBEr0sfrKZ3qfeEg2k91GLIXQRgGXx87w7DrNJ1/dQfNSyBRShHCGsqzdzWX8vAsiK/xKindO4WzikGM+rOCsqU1Y5eskZom5LKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=L8Ky7f64np0p1muXhNJIEgbsBYkJb/YrLTBP4EWVMn0=;
+ b=Ca3vDbgUVmOWj1EkO9gS18Jbb4n7YfkRdYCRpsNk6AB3c58mB5SQGFxtbBYE8TwdZCxqh9PZBSDRKLGqRZ7bjCuPsxysZ+5lNh6MZRDa7hqA8UGwECNe0f4j0H1cKwueWTuJMG9Kav6dcD5v988OiJdHG3ep/FV+VqNTMFtar0ccYsdx1sJ47o1xHsrytFRJKezucrNKAETUgEq8sBTA+D3xZysaItZWzBhTTah4asKKq21FWaPDyvO6KU6zsuE1a1rZjKIhUn44ASw7kIEM3S4TmUL7Y3VRCQnV9FxO7TnN3JlzmPLl2chohB7e9J/B0kv0iqoGnJddtkF6hNHS5Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=L8Ky7f64np0p1muXhNJIEgbsBYkJb/YrLTBP4EWVMn0=;
+ b=dejtT5mdKWSm0RMFLHhWsY5sAJvKqn6UMwf+pttflRvbJfcP/pNU0b3NipLwumu+cOVK5Npxzc+1IBW4WBapXiZ3Q96kgsXHDxl+OJvR1ly7OKtfbRTISCBBy9BkVYrdB57cei1/Vcjp6SDtJH0GbKpmuLZDrEqgcM+ROIwbDk0D/g8J6HZcavk5CAc3ZA/A5vHpz0fsIWvdh4QSMbgg/yvgcFamhipZACtg5o/56qZoJpSGnhSJ4WOAMuny1WGUIxHHOlHw1MxqipmUdcV2fw1Sc3z4HbZN67epPOZds0wa99rsZh0beP6kUTUQzn87wsL36dMAcdlqKzM39sUHmA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
+ SN7PR12MB7323.namprd12.prod.outlook.com (2603:10b6:806:29a::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7292.26; Wed, 14 Feb 2024 15:19:24 +0000
+Received: from DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::db3e:28df:adc1:9c15]) by DS7PR12MB5744.namprd12.prod.outlook.com
+ ([fe80::db3e:28df:adc1:9c15%5]) with mapi id 15.20.7316.012; Wed, 14 Feb 2024
+ 15:19:24 +0000
+From: Zi Yan <ziy@nvidia.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: "\"Pankaj Raghav (Samsung)\"" <kernel@pankajraghav.com>,
+ linux-mm@kvack.org, "\"Matthew Wilcox (Oracle)\"" <willy@infradead.org>,
+ Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
+ "\"Kirill A . Shutemov\"" <kirill.shutemov@linux.intel.com>,
+ Ryan Roberts <ryan.roberts@arm.com>,
+ =?utf-8?q?=22Michal_Koutn=C3=BD=22?= <mkoutny@suse.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ "\"Zach O'Keefe\"" <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
+ Mcgrof Chamberlain <mcgrof@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 1/7] mm/memcg: use order instead of nr in
+ split_page_memcg()
+Date: Wed, 14 Feb 2024 10:19:21 -0500
+X-Mailer: MailMate (1.14r6018)
+Message-ID: <1110486E-73BE-44AE-A290-BC8AE1F06F8A@nvidia.com>
+In-Reply-To: <27691f5d-2218-4247-b688-cd16d46961c3@redhat.com>
+References: <20240213215520.1048625-1-zi.yan@sent.com>
+ <20240213215520.1048625-2-zi.yan@sent.com>
+ <27691f5d-2218-4247-b688-cd16d46961c3@redhat.com>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_6E9AA38E-7372-4581-94C5-3567A0306DC9_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-ClientProxiedBy: MN2PR15CA0061.namprd15.prod.outlook.com
+ (2603:10b6:208:237::30) To DS7PR12MB5744.namprd12.prod.outlook.com
+ (2603:10b6:8:73::18)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 23/35] mm/slub: Mark slab_free_freelist_hook()
- __always_inline
-Content-Language: en-US
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- Kees Cook <keescook@chromium.org>
-Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
- mhocko@suse.com, hannes@cmpxchg.org, roman.gushchin@linux.dev,
- mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
- liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, ndesaulniers@google.com,
- vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
- ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
- rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
- vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-24-surenb@google.com> <202402121631.5954CFB@keescook>
- <3xhfgmrlktq55aggiy2beupy6hby33voxl65hqqxz55tivdbbi@j66oaehpauhz>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <3xhfgmrlktq55aggiy2beupy6hby33voxl65hqqxz55tivdbbi@j66oaehpauhz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=gU3rk2X2;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=IhXF164r
-X-Spamd-Result: default: False [-0.48 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-0.18)[70.21%];
-	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_GT_50(0.00)[73];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[google.com,linux-foundation.org,suse.com,cmpxchg.org,linux.dev,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,gmail.com,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:106:10:150:64:167:received]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: -0.48
-X-Rspamd-Queue-Id: 5D70A220DD
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Bar: /
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|SN7PR12MB7323:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9f50121a-1c9d-4915-b584-08dc2d705399
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	WPn4y/uFnZRRhd2UE2y96n2Hc+ibvBIof9h9av0z7wv654fg9VBNsAJpfP32vD3xEBlOtsBrR0rI0JpIM+McvtvSIzhtKUvspZwSodwSJ1jQw9hk3Nrvqv7dbmk/90ui29k1CnVeQ94p3Rp9uAeQXLH2AG7unzX35tesmC4EfPgmpW4ovIQMteR5q71ux3eF1xn8Om5s2gEiUUkK/WaLFvxB7QRryNsmJf7ajFcflobC84jcVx6UkNQS7Qltvqo/XXcDNNyQ6imtuILed7ToDy4KJy8tpybCkzZDkKVtdxccWY/2NTEI1OIGw6WRU5IxAE59JQvY3A1EFq4drWCwt8akbAS4NuCpI99lCyL2ndSvc3tuHQAq2k0CyCo15rklnqjgaXP994UjtV0CqG1phu484u5o+MoA+yrSbkG6v+s0ZrVoe0e/byx65tsKbPiviay6LbE0xbY2RyPu/CSswTD36FnpOKRnuJQtrITPdch3Hvx7U4aJSBVdBPZ0Q9xrkVQbvaA9OXxNXvVx1XNNU0miX+v7HY4sGPyNNHnmrC6T9fx9J3YkA6Ql/T6oLU47
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(366004)(376002)(346002)(136003)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(7416002)(235185007)(2906002)(5660300002)(36756003)(41300700001)(2616005)(26005)(53546011)(33656002)(478600001)(38100700002)(6512007)(83380400001)(6506007)(66946007)(6486002)(86362001)(66556008)(66476007)(8676002)(6916009)(8936002)(4326008)(54906003)(6666004)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?zLK4FmpHNvrrS0eXvOsBJl8AF6XM5T4/+TCr1bmRl3+oaZIaN35gbNxa30be?=
+ =?us-ascii?Q?gw1uAthZtz9F2uCCMqOu61ZHBweB8BJmlug/YfCcUrtRDqRPDoJcjD4I0q/O?=
+ =?us-ascii?Q?vpmJLoUKxogVcuvL8o2kgkPiv3NiQidgkQfMTbPJ/KCLpstSfkkzkU3ipVd8?=
+ =?us-ascii?Q?BhzJ7g1AA8W+i5InLBqEK79M+uPmKQP/I4LEJE2nyGTfU/4jUwUENrS4wvSA?=
+ =?us-ascii?Q?lYLzkWuft0qDo2Zz2S2fOQMwcVjGc5vBFdNVFahk/jgomkNVC53J3uLDT7Rs?=
+ =?us-ascii?Q?/6VRn3HiC6Eddj+IsgvXX9gzUE9A+FHrayV+NybeA7fTpxKFd6Tt4bXqFkmt?=
+ =?us-ascii?Q?+gEV1bfnbJuPn0MbeGX+YIBnWWgsPOQSw0Krzjwu1Wdwj5Pu4NsmCUjcON+u?=
+ =?us-ascii?Q?aiKbf1LJv2lTeqwM55wmdSm8ARXYJTTXOk15ogx0i3LpeKQV+/osx6hey/NT?=
+ =?us-ascii?Q?UEOOIGGCPQ2L1SirW39n/wpTnjMW8lhs2eTI11xWDKafzJHpzNT7ontDk7ef?=
+ =?us-ascii?Q?to8Xztf5/wCWmiaB8hVJs3R7JPJ3MCUDv/e8bh9pZtPTM2gWrdgMWkSNbiJs?=
+ =?us-ascii?Q?a6bsjBAunFXEckfMGwr0hnmmbhWBbx1IAHpvA/4ES0H3P+tVl27dyfG5UXCf?=
+ =?us-ascii?Q?+bG4B2Im872/M6kTC9L9sUQpdNmSZXIxNkxG9BjVBCtTn8Kbdd6vDvmjdEcs?=
+ =?us-ascii?Q?bPvoOAKnchn/WonhZtL7e/fDjIkkHAyTaHFTWzd79l+Hce6Pt1jW7V8VqxPc?=
+ =?us-ascii?Q?9HIoxCSDoTnEqUxC13R/bLTk+9Ej/mLoLzMkOdGBbaY3hiG2lrzvd0DtmUGX?=
+ =?us-ascii?Q?jx8yKbug5sNf1zMQSD+2orzr6TRz1nNjmLx0QHAIFqvG9MN+s/1+mGf4tJCz?=
+ =?us-ascii?Q?+6NXZacbzJYjwE1aq6Uf4uVn633vbKcZT5Q5hCxRf0dcIErmaf5wVVwJ1osH?=
+ =?us-ascii?Q?3bQfCN/Ja2F5p2AEBDFtlw5fVYA5gZQoXJLxSLnzz8hHIVuMUcUFhNZfOUxJ?=
+ =?us-ascii?Q?9m1bVw5ZxbwlyAJyC6ZtHLwcBZGVn/rSeOHiw8YnispZJRKBHfeUmh4HnwID?=
+ =?us-ascii?Q?zW8ZT/kfoDlgdLhceA9Xi5JZw2MebaYBUPjMZJC8bkSxXUgvfnLu8qigYgi/?=
+ =?us-ascii?Q?r3SyYK/sHGwXLG/+OmjlWq5UeMOkXFrU7MiHqlXzOTXV/XM6G9LBTeBMbHnL?=
+ =?us-ascii?Q?a9h0HPWSWHhg2j+r0GNjZGnQOYQ+eXPTBGxvyiMeJFX9FmRb8VpANR1s1kTW?=
+ =?us-ascii?Q?g/+DCrpJbx61R6XQVBl9Sf/EIFwImG3QNzzcGSeTrS1rJGT1BlnQwiJ7h4aN?=
+ =?us-ascii?Q?Dyi/JZVRANT64A+IOR3yj2PiZ5HoKp10HwIXpCd1RG3WTk5aYZzYD/woSwxC?=
+ =?us-ascii?Q?SR8FM5itAYpqYBHuV24iDICKVnqLTeU17uf+amGsQEvxZxn/GrIBzHr9h+ku?=
+ =?us-ascii?Q?VmEEjWL6d3Q88GoZrzx0NUKOqgpsU7jMtRMapBuAJicO98BrqXmRC4Y7I2tM?=
+ =?us-ascii?Q?1BOYfUxHxefk6EPRvScQPxhJt98axP/5UI9oXk/fl78Pal6hdNWnCfE1x9Qi?=
+ =?us-ascii?Q?kpbUc/k2bxC9xXA2Pbc=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f50121a-1c9d-4915-b584-08dc2d705399
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2024 15:19:24.4366
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KGQG8jRqjMMFRXgMyg2HsQ5AyhP3lAeq+R+PJfy/AJQgfUu+V3FW7G2CdGa3aa3/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7323
 
-On 2/13/24 03:08, Kent Overstreet wrote:
-> On Mon, Feb 12, 2024 at 04:31:14PM -0800, Kees Cook wrote:
->> On Mon, Feb 12, 2024 at 01:39:09PM -0800, Suren Baghdasaryan wrote:
->> > From: Kent Overstreet <kent.overstreet@linux.dev>
->> > 
->> > It seems we need to be more forceful with the compiler on this one.
->> 
->> Sure, but why?
-> 
-> Wasn't getting inlined without it, and that's one we do want inlined -
-> it's only called in one place.
+--=_MailMate_6E9AA38E-7372-4581-94C5-3567A0306DC9_=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-It would be better to mention this in the changelog so it's clear this is
-for performance and not e.g. needed for the code tagging to work as expected.
+On 14 Feb 2024, at 4:12, David Hildenbrand wrote:
+
+> On 13.02.24 22:55, Zi Yan wrote:
+>> From: Zi Yan <ziy@nvidia.com>
+>>
+>> We do not have non power of two pages, using nr is error prone if nr
+>> is not power-of-two. Use page order instead.
+>>
+>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>> ---
+>>   include/linux/memcontrol.h | 4 ++--
+>>   mm/huge_memory.c           | 3 ++-
+>>   mm/memcontrol.c            | 3 ++-
+>>   mm/page_alloc.c            | 4 ++--
+>>   4 files changed, 8 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+>> index 4e4caeaea404..173bbb53c1ec 100644
+>> --- a/include/linux/memcontrol.h
+>> +++ b/include/linux/memcontrol.h
+>> @@ -1163,7 +1163,7 @@ static inline void memcg_memory_event_mm(struct =
+mm_struct *mm,
+>>   	rcu_read_unlock();
+>>   }
+>>  -void split_page_memcg(struct page *head, unsigned int nr);
+>> +void split_page_memcg(struct page *head, int order);
+>>    unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int o=
+rder,
+>>   						gfp_t gfp_mask,
+>> @@ -1621,7 +1621,7 @@ void count_memcg_event_mm(struct mm_struct *mm, =
+enum vm_event_item idx)
+>>   {
+>>   }
+>>  -static inline void split_page_memcg(struct page *head, unsigned int =
+nr)
+>> +static inline void split_page_memcg(struct page *head, int order)
+>>   {
+>>   }
+>>  diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>> index 016e20bd813e..0cd5fba0923c 100644
+>> --- a/mm/huge_memory.c
+>> +++ b/mm/huge_memory.c
+>> @@ -2877,9 +2877,10 @@ static void __split_huge_page(struct page *page=
+, struct list_head *list,
+>>   	unsigned long offset =3D 0;
+>>   	unsigned int nr =3D thp_nr_pages(head);
+>>   	int i, nr_dropped =3D 0;
+>> +	int order =3D folio_order(folio);
+>
+> You could calculate "nr" from "order" here, removing the usage of thp_n=
+r_pages().
+
+Sure.
+
+>
+>>    	/* complete memcg works before add pages to LRU */
+>> -	split_page_memcg(head, nr);
+>> +	split_page_memcg(head, order);
+>>    	if (folio_test_anon(folio) && folio_test_swapcache(folio)) {
+>
+> Acked-by: David Hildenbrand <david@redhat.com>
+
+Thanks.
+
+--
+Best Regards,
+Yan, Zi
+
+--=_MailMate_6E9AA38E-7372-4581-94C5-3567A0306DC9_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmXM2fkPHHppeUBudmlk
+aWEuY29tAAoJEOJ/noEUByhUe44P/37IDa1WsWVe9kc3Jon2KS5bBVOe4MWaDCz2
+oc/psM4afd3t+UgGcdm6RTqA4b8UJC8+9fKmACHNt+orzXl0lpfpZxwmCgIe0lmj
+wCB5vnPbOf8l5p+eg8kyIwwEw8EeitH1dUx3Wp3RS+Q5PPT7gJ5oPctGeHwObbMI
+pnie4tDVNTsKVPc7/WZikGfqc/cTqyAPbGMsgUo7OPEsY5viXxTphFs2BPYocTTY
+rgARFkXO3g2uF75CHlGXwNqJF3xGkLNXQB6AUqh21Kain5pCrDL1Y2nsUfljvgGw
+WX5JR1NBmRY6UFOetvnR3+YMqBUqO8r3nnKgFM03RNZaY/4v7bKwiDlKBmvyiNeZ
+22t+hgRUpUauUoCTv+rTAsIUVag5QLinnBL8sfMk5YtZF8+d9Ww4KtjRq1ZwDSG7
+bXftHc3VYx0ScTGC45Xg9gqZC09ELraQHfSQPcv2s9+VWW5p6C1iZn6sLwkLcmS7
+A/9BkXPtxk/V2sXFWkQss/o6m2qFFAGifrHI5B5kp/OMW8zD6EO3yjBzl3tHL0ye
+M/9b3SQ5l6yPryz3CoKkVETDeKvvpLkclOSqf2kZpykD//ImwXUSxQj2Ca9LSgPj
+xdQ7cyAUSn2sUbwxOKj9uxSNr4rkzE/4o2+OoAA1hfCIRWJacBiDXFGjRsV8iXVs
+8gkI17RI
+=+scf
+-----END PGP SIGNATURE-----
+
+--=_MailMate_6E9AA38E-7372-4581-94C5-3567A0306DC9_=--
 
