@@ -1,209 +1,213 @@
-Return-Path: <cgroups+bounces-1566-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1567-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77717854797
-	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 11:55:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4C24854A71
+	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 14:24:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2BD361F211C9
-	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 10:55:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16B361F24B69
+	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 13:24:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A396618E12;
-	Wed, 14 Feb 2024 10:55:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A41D54BD9;
+	Wed, 14 Feb 2024 13:23:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e0m+pqII"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="QIjP+FW0";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OBUSsdFQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E41B418B04
-	for <cgroups@vger.kernel.org>; Wed, 14 Feb 2024 10:55:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0FD053E3C;
+	Wed, 14 Feb 2024 13:23:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707908123; cv=none; b=PukkOkmaDyv+4Kbot1kSaEzo95lu5pU8Zm6ILvj71ABAKKzkkztZbd36VfZ4XTcmy2IJBmvkgonHPhwmpoN7cd9et5tSZe37glawgdRQMXdoJzjU2ccQ+EKmnmhc7q9nLa2D4508nLjNh98Fss/auibiaURKpjadd7r0HbB67Fw=
+	t=1707917018; cv=none; b=AiTGgEax5k9syfobuixqE/rDkXY5NvVqc9EGEBtUfR6LoqyIwbLSw/RBIe86KFpZ2mWRgyHp9ncYqf/akZdd8to7hRzPh/WF/8VfSSc3zZ0vr7EPPmiOAYb2EeytQzQyohc3ci6XNLmel/0jCEl+egI6GfEIYApDMadZzlv8TFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707908123; c=relaxed/simple;
-	bh=SQvAiJwsbkRskNIjC2WkhKsfQA6FMsn5qKhNC19CoQk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SbSvCuILvScErilCilpcKDM9gks3wspkcT42DbqNvFN0xz/qLPNhTDXy9TaFtJRcBR5GSSO8ONqgKf22oFkiWqTbbY4NrPKylwh1mT2X+4HHPGYVshcTpyfVgTxXeFpMJTdspQ/RBJE2hoNMbK49/RGO3SreDfyKGzc8nqkmXyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e0m+pqII; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707908120;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1707917018; c=relaxed/simple;
+	bh=sY0l/MGP0ifFOugFFWAqZ7Hx7MbEo7MwiddTrEtgeQs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Wndm2RlOuT47VvZYnYwB1NqV7VhuEMW/h+dvb61v9IibeuHKXtRAXy8pV6hU5xwZ64qg7aWdurfQmke0InA1og+AyS+zIjZCNkQUScvqV5BNPcFK+eGcIUoXN4OcaLCQNOkGiJLXq0D3dqEr8kk2Cdpi3frJzGoPoQQyRH7W4SE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=QIjP+FW0; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OBUSsdFQ; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D31DF1F805;
+	Wed, 14 Feb 2024 13:23:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707917015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=FkG4rFYSar/COgr1ANQgOL3qRnWrGDmTgIrKAH1p2yk=;
-	b=e0m+pqIINhyQ7RiH60+7ZzRGrAfgF5FftOpjV4QHFqzVJX7I7x1CoC7OkKT8v8tB0yr8UT
-	N7SitwSrHvPHEmXRcFVm06DW+5pYAAh+oHQF00YXN8gwVGhV0e31JOy3W/xl74MWkptW2o
-	S4KBC9jeuEGpclBAT7Xguo97kq/VXsg=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-471-nLOx4ypBNcmBr0s8z45vuQ-1; Wed, 14 Feb 2024 05:55:18 -0500
-X-MC-Unique: nLOx4ypBNcmBr0s8z45vuQ-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33b2badbb4eso2079561f8f.1
-        for <cgroups@vger.kernel.org>; Wed, 14 Feb 2024 02:55:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707908117; x=1708512917;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FkG4rFYSar/COgr1ANQgOL3qRnWrGDmTgIrKAH1p2yk=;
-        b=lptrGWpIXUahK7KMAi+8qTc1hDl6MmiV6NJqHN42AqJ4KLKl48eqNFXSx0aEhF6aKZ
-         VJmbmCASyBozm/uIt8EhJM4EGSCtKcFtTRswePLiovkcGCHlgTB7ucmSTc2sq5iL7N4d
-         4dZyyW5KcsbDeVOSXTttgihGtrWDirs6PcXZK5M3IJ5Vk6Ch5QobTCn4aZrZkNaVt13j
-         EchefUsKgQspCGJHUMYO8eELjBTkFmXRcDlTpynhp438iH4UwCsIREGk/aZdRGm3ItK2
-         1VOH97Izhv4JH8Y5DgWwwpQGtZgFkybWx5pcf4oED/0XRMBfV3DbKhTQoFNkTDIAGRzn
-         MXLA==
-X-Forwarded-Encrypted: i=1; AJvYcCV8osn5ha46yQNb+At49EBzW3MD7aRIQV1uIRAV+MPjjwvHf5eCB3uLC7u9F0S++crjwr9MXsb03ormPGD8rKUn0qdmhHTTXw==
-X-Gm-Message-State: AOJu0YzmmMFjE1flBkIM2Ju3/dPW7MC2b1GELmcMUwFRYuY+N3WCkqje
-	erGpodeRBRX88j5wgO3bsZpOpSBdqEWkOwLE31tlPvLcxsLk9ogNdORkARE+3Msbllla/5xFv6b
-	bHzriWMFG6l2OVcXowMZN+IW/Qqilo0p87ALs/bFPh6U2C5OMP2QQLy0=
-X-Received: by 2002:adf:ce03:0:b0:33c:e339:23e4 with SMTP id p3-20020adfce03000000b0033ce33923e4mr1686955wrn.62.1707908117481;
-        Wed, 14 Feb 2024 02:55:17 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEXEpBq8Q8ZnFUw1naCQqfidxYnDmHpx6kSBfapsNJ6KX7OVMNFoSQImIEewE+QUkL0vkf4Pw==
-X-Received: by 2002:adf:ce03:0:b0:33c:e339:23e4 with SMTP id p3-20020adfce03000000b0033ce33923e4mr1686932wrn.62.1707908117063;
-        Wed, 14 Feb 2024 02:55:17 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXp1v9NVJsals5Gj2CSvlzzxVVSJcTBmCSHUiUmrRTKzI5WP59WpjFLd3TWoWkVgs5iv/D4Spi4dWnY4NatoHVyfqqHz3CfPAGVDmI8/1vFuIDz++uFYIdcAO8WaGQCOXLQ0f6P8g1YagKdRvMuxgdytQ/iwe5D37XAGdDkPFdztU8YC0pkxYSZjX9GEvlququsj7jNyn8hhfvwpNPwCuj6EJ9Qm0Y2TMbQdIYMavsiT0s5QU0Gmm5kfgqxcV9bdN4+Zwlp9b3ryg5p9BQfhco9msJbBO2Cf41vsT9j6KvbBkTr5HqsftUr+F4lQFOk9qr1yd7Im0MeRP09Vt0/OKIMnlOqpbEfCQRq5KDtDAK5vaMAIZ380HJC8suqeAI3M3pPsKYUMePUgvLHcjRy3+zi4vOLjhP6YN2HoAZi100NCA34W3T019QKaeuw+qUxhXZTXHncVnNhHuC2L7I4XfbziwKhxSESSFVs7GaNV8vjoUZXYFTUl2Sd2s7fHBdCr175mI7fqy5Q8v/MM56PF0XpppomxJmdu5b8+bAps603502iUJhhw1E=
-Received: from ?IPV6:2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e? (p200300d82f3c3f007177eb0cd3d24b0e.dip0.t-ipconnect.de. [2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e])
-        by smtp.gmail.com with ESMTPSA id w13-20020a5d404d000000b0033b4dae972asm11995459wrp.37.2024.02.14.02.55.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 02:55:16 -0800 (PST)
-Message-ID: <46f61262-e197-456c-97f1-d464ad5688c1@redhat.com>
-Date: Wed, 14 Feb 2024 11:55:15 +0100
+	 in-reply-to:in-reply-to:references:references;
+	bh=qRJr10qi9dh6XG3cKWhF0aOO8OAegvJYwUfC6v4k4/c=;
+	b=QIjP+FW0aJkhheVbf//vZhksU2INykO7/VOPppfdDhlA8ab8RELtSf6gqTd+z5hBz+cImh
+	Ag2WHlhQPZ7ipV7H+3rxUDaRunemOqRJYdbe+SFp68BRkmSDMmmTuO66EPnKF235szRR0M
+	6+MEPV4zNbKf6fX6JKzfxnlJ9udu5jw=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1707917014; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qRJr10qi9dh6XG3cKWhF0aOO8OAegvJYwUfC6v4k4/c=;
+	b=OBUSsdFQY6/ONFq+SLJJgV5pbl7Y3+GUbhOdsQryZFyzRxPfavV+WWownngLZMDVoUdtvl
+	mMFT3Y4YdP8ZMxzDVLuXUAjuYpnODYwyabYbRa6y3dXx4Ssf6YdRjpvaSzGdhyT9F9amUo
+	SYxHabq46Dmuft16HAcTuJYIQ1qgEYo=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9EEC513A6D;
+	Wed, 14 Feb 2024 13:23:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 13hAJta+zGWQeAAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Wed, 14 Feb 2024 13:23:34 +0000
+Date: Wed, 14 Feb 2024 14:23:34 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org,
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
+	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, axboe@kernel.dk,
+	mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org,
+	dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 00/35] Memory allocation profiling
+Message-ID: <Zcy-1nScrEI_q0w7@tiehlicka>
+References: <20240212213922.783301-1-surenb@google.com>
+ <Zctfa2DvmlTYSfe8@tiehlicka>
+ <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
+ <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
+ <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
+ <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com>
+ <CAJuCfpEtOhzL65eMDk2W5SchcquN9hMCcbfD50a-FgtPgxh4Fw@mail.gmail.com>
+ <adbb77ee-1662-4d24-bcbf-d74c29bc5083@redhat.com>
+ <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
+ <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/7] Split a folio to any lower order folios
-Content-Language: en-US
-To: Ryan Roberts <ryan.roberts@arm.com>, Zi Yan <ziy@nvidia.com>
-Cc: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, linux-mm@kvack.org,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Roman Gushchin <roman.gushchin@linux.dev>, Zach O'Keefe
- <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
- Mcgrof Chamberlain <mcgrof@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20240213215520.1048625-1-zi.yan@sent.com>
- <659e1abb-40d0-42ba-ba0a-8256d7eb1c5a@redhat.com>
- <F4470D3A-DC2C-4A6A-B65C-1C94D732A60E@nvidia.com>
- <66d4b27f-85e4-458e-8d66-54f800c5c65f@arm.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <66d4b27f-85e4-458e-8d66-54f800c5c65f@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -2.30
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_GT_50(0.00)[73];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[linux.dev,redhat.com,linux-foundation.org,suse.cz,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-On 14.02.24 11:50, Ryan Roberts wrote:
-> On 13/02/2024 22:31, Zi Yan wrote:
->> On 13 Feb 2024, at 17:21, David Hildenbrand wrote:
->>
->>> On 13.02.24 22:55, Zi Yan wrote:
->>>> From: Zi Yan <ziy@nvidia.com>
->>>>
->>>> Hi all,
->>>>
->>>> File folio supports any order and multi-size THP is upstreamed[1], so both
->>>> file and anonymous folios can be >0 order. Currently, split_huge_page()
->>>> only splits a huge page to order-0 pages, but splitting to orders higher than
->>>> 0 is going to better utilize large folios. In addition, Large Block
->>>> Sizes in XFS support would benefit from it[2]. This patchset adds support for
->>>> splitting a large folio to any lower order folios and uses it during file
->>>> folio truncate operations.
->>>>
->>>> For Patch 6, Hugh did not like my approach to minimize the number of
->>>> folios for truncate[3]. I would like to get more feedback, especially
->>>> from FS people, on it to decide whether to keep it or not.
->>>
->>> I'm curious, would it make sense to exclude the "more" controversial parts (i.e., patch #6) for now, and focus on the XFS use case only?
->>
->> Sure. Patch 6 was there to make use of split_huge_page_to_list_to_order().
->> Now we have multi-size THP and XFS use cases, it can be dropped.
+On Tue 13-02-24 14:59:11, Suren Baghdasaryan wrote:
+> On Tue, Feb 13, 2024 at 2:50 PM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
+> >
+> > On Tue, Feb 13, 2024 at 11:48:41PM +0100, David Hildenbrand wrote:
+[...]
+> > > If you think you can easily achieve what Michal requested without all that,
+> > > good.
+> >
+> > He requested something?
 > 
-> What are your plans for how to determine when to split THP and to what order? I
-> don't see anything in this series that would split anon THP to non-zero order?
-> 
-> We have talked about using hints from user space in the past (e.g.  mremap,
-> munmap, madvise, etc). But chrome has a use case where it temporarily mprotects
-> a single (4K) page as part of garbage collection (IIRC). If you eagerly split on
-> that hint, you will have lost the benefits of the large folio when it later
-> mprotects back to the original setting.
+> Yes, a cleaner instrumentation.
 
-Not only that, splitting will make some of these operations more 
-expensive, possibly with no actual benefit.
+Nope, not really. You have indicated you want to target this version for the
+_next_ merge window without any acks, really. If you want to go
+forward with this then you should gain a support from the MM community
+at least. Why? Because the whole macro layering is adding maintenance
+cost for MM people.
 
-> 
-> I guess David will suggest this would be a good use case for the khugepaged-lite
-> machanism we have been talking about. I dunno - it seems wasteful to split then
-> collapse again.
+I have expressed why I absolutely hate the additional macro layer. We
+have been through similar layers of macros in other areas (not to
+mention page allocator interface itself) and it has _always_ turned out
+a bad idea long term. I do not see why this case should be any
+different.
 
-I agree. mprotect() and even madvise(), ... might not be good candidates 
-for splitting. mremap() likely is, if the folio is mapped exclusively. 
-MADV_DONTNEED/munmap()/mlock() might be good candidates (again, if 
-mapped exclusively). This will need a lot of thought I'm afraid (as you 
-say, deferred splitting is another example).
+The whole kernel is moving to a dynamic tracing realm and now we
+are going to build a statically macro based tracing infrastructure which
+will need tweaking anytime real memory consumers are one layer up the
+existing macro infrastructure (do not forget quite a lot of allocations
+are in library functions) and/or we need to modify the allocator API
+in some way. Call me unimpressed!
 
+Now, I fully recognize that the solution doesn't really have to be
+perfect in order to be useful. Hence I never NAKed it even though I really
+_dislike_ the approach. I have expected you will grow the community
+support over time if this is indeed the only feasible approach but that
+is not reflected in the series posted here. If you find a support I will
+not stand in the way.
+
+> Unfortunately the cleanest one is not
+> possible until the compiler feature is developed and deployed. And it
+> still would require changes to the headers, so don't think it's worth
+> delaying the feature for years.
+
+I am pretty sure you have invested a non-trivial time into evaluating
+other ways, yet your cover letter is rather modest about any details:
+:  - looked at alternate hooking methods.
+:    There were suggestions on alternate methods (compiler attribute,
+:    trampolines), but they wouldn't have made the patchset any cleaner
+:    (we still need to have different function versions for accounting vs. no
+:    accounting to control at which point in a call chain the accounting
+:    happens), and they would have added a dependency on toolchain
+:    support.
+
+First immediate question would be: What about page_owner? I do remember
+the runtime overhead being discussed but I do not really remember any
+actual numbers outside of artificial workloads. Has this been
+investigated? Is our stack unwinder the problem? Etc.
+
+Also what are the biggest obstacles to efficiently track allocations via
+our tracing infrastructure? Has this been investigated? What were conclusions?
 -- 
-Cheers,
-
-David / dhildenb
-
+Michal Hocko
+SUSE Labs
 
