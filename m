@@ -1,82 +1,81 @@
-Return-Path: <cgroups+bounces-1560-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1561-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7E5F854565
-	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 10:34:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D4BB8546C3
+	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 11:01:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC8981C20E62
-	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 09:34:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 920E81C2113B
+	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 10:01:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6001712B9E;
-	Wed, 14 Feb 2024 09:34:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6173168DF;
+	Wed, 14 Feb 2024 10:01:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M0DyIO7r"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Zt/NFtSo"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D22C168D0
-	for <cgroups@vger.kernel.org>; Wed, 14 Feb 2024 09:34:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48940168D0
+	for <cgroups@vger.kernel.org>; Wed, 14 Feb 2024 10:01:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707903259; cv=none; b=B91Pour7l3j2EwwtvTXEA7pOsAPGsb7mZ79luKQtHSbzWHxHvLHaoysuDkma2QO7dd5SsLF9Um1r6dgMtEvQ9ZaKu2BNmZl4N5PlKZIY3KLf+B6mUhLOjXEZo53vv60LVeFQUp6mpu90xfT/TU+/f1JRPkixJ8bl1goitWhgTl4=
+	t=1707904874; cv=none; b=ge31M9z20RCug/9vNS9c113oaqRSC3IgWVTVhrr6fTUrs5jjgBy/McN/n/8OdLxe7ec6zeQcYk0tn17T8QyjRLsv04vpAjPxgQMlnQD9spsduZ8UfyFyNAOPXU7CY/vX7qSgsJCclxbBx9q5sES6jmty3wMtcIi3I8joJuUGgPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707903259; c=relaxed/simple;
-	bh=FxSgUwsnEmLismW7KZS+woIOBL3X3s8QTre4gaV0ORU=;
+	s=arc-20240116; t=1707904874; c=relaxed/simple;
+	bh=ISNhoVAHE5ea59GMSp6fB/xzP9AMMIXNtq+7KToWy/g=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hGg7DhKpb8zCh/hU3PV3uz9Em6QYwCw6FRY/FLXdqMw6uPLBjAUuL8rLSM1LVPk7rcSoFY0tDrKAIwXQgcL7FHhOBNNSyKDU2eWUIpgneMl1WJexofeQkkbivhSp744CdzT2JWCiwazssP4C/VkcE+fdK3AFPgmhGwBtPVaXj1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M0DyIO7r; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=ccZLH5JCqX7wwHKduC1krLIurORWgEWTwHawqgeLf7YUZMBNNhrr+CM9H0RPcpeX6+hmNCW//N/B57WxhX2s/Hyrf+Z+3I04kRawbsocK7c/nrLjLmQrBEZovncKkZ651/Rl6Lqx21dtaJqmj/Jkt+wXD2INxWTKt5mg/q6cBn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Zt/NFtSo; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1707903256;
+	s=mimecast20190719; t=1707904871;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=qgy6GGYXXuaVuritCAHxcL8acV3jG8qW6OTkGDcq1DM=;
-	b=M0DyIO7r/QF5NP7xbpaHT6hEkfiN9C6ZsBmye3RF3lK/xJkfXgkDTmPpJDsosMbhQbvBu6
-	6HXQ5EPdieZFNtwjk4WyV0BOC/Zk/05kx0E8w7+M0QMcA/6BMjEaKIZWqnjJMfVaaHloV2
-	9rcAixnBI/FGqCjqslm0JfXu8AItUYo=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=SYtqzgv+BxOcacLu4368aIKcl3CwnG8tHFk8B9VUFvU=;
+	b=Zt/NFtSoz6le5JUH5GKFZSm48wlGJImoDcqyWoByxmVT+W+QjwX4J3n57C8EKYd7aiJ8EK
+	Pp5dA35il4ZVBqhIwhalKWDdniSjPPO9l9dqpZPLjeS5FvUjx0jNPAj9j9XRKw/xsOBGoI
+	5nnW4vQT/vAK6hfLVZMu8OcXg63eG4k=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-377-w1kePuMYNZKzMumhwfL5ZA-1; Wed, 14 Feb 2024 04:34:14 -0500
-X-MC-Unique: w1kePuMYNZKzMumhwfL5ZA-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-411ce6e7708so5787945e9.1
-        for <cgroups@vger.kernel.org>; Wed, 14 Feb 2024 01:34:14 -0800 (PST)
+ us-mta-424-pELN4gEjNme0jMW7jjqHZw-1; Wed, 14 Feb 2024 05:01:08 -0500
+X-MC-Unique: pELN4gEjNme0jMW7jjqHZw-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2d0cb64437dso43981191fa.2
+        for <cgroups@vger.kernel.org>; Wed, 14 Feb 2024 02:01:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707903253; x=1708508053;
+        d=1e100.net; s=20230601; t=1707904867; x=1708509667;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
          :references:cc:to:content-language:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qgy6GGYXXuaVuritCAHxcL8acV3jG8qW6OTkGDcq1DM=;
-        b=XFOcPWvSwSbXlEqrCdS3jkozoBwaNNCRalMqkq7S/iMw0aS3ewY6jC4aaL7lLVZEib
-         sPQjwt/qJ+hSYss4hJkkSr1CvwML9uncL00irkiTfcodo+rPqfCdKA/vq7unMsPXD/ZM
-         itJn8hQgfETPdJYKYTcLF5ISckUXxLIjld/Uu8FnpTOtma+IsjYYX8kGjxoJDY1Bgcue
-         Rc00d7nZZkarUk/OXliHBlqF9nj3JbeBRrucAkhJ9woTatG1RGmOd0vmP04yDIfxzZMF
-         UfJt/AxD8gnZs16YrV30N5WyJ+ETJXYcWiAVixU6bOw+jyQHSvcZtSsbKAnz2GzxwoJz
-         nz9A==
-X-Forwarded-Encrypted: i=1; AJvYcCVXtFY+OqF5qwAPWKgQhMdscIjSo9QEO17TSXQNuzAQKTCEaEtobmE3yh6felxdpTub2wPQ/OuRn/z3RxHKP+ZRtf+yercdfQ==
-X-Gm-Message-State: AOJu0YzHZbXHujgDBM0oOhvNJ/AWd7S4ISbaV22zvUyyc4u46p6tV7Gk
-	5vBzddAxw157ClibN9X/IGfDYaM9RchIJHawPfkDjGvN+lXJx4Vc+fLV89rzpHGFcaPaZfgqEAa
-	WoQ7XI4T3cDKOAgW/qN7zghRP3RpNiRHNWw3ekF+azJb7G2B3AOH6ACo=
-X-Received: by 2002:a5d:5001:0:b0:33b:68bc:6e73 with SMTP id e1-20020a5d5001000000b0033b68bc6e73mr1241973wrt.42.1707903253630;
-        Wed, 14 Feb 2024 01:34:13 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHTKmko1G9G/pee2ZiIe9NSxdTOYkWa8OLYM08WwbRBQZV9vdrjk9NQvxiRYAK2xGkX0Z9PEw==
-X-Received: by 2002:a5d:5001:0:b0:33b:68bc:6e73 with SMTP id e1-20020a5d5001000000b0033b68bc6e73mr1241961wrt.42.1707903253189;
-        Wed, 14 Feb 2024 01:34:13 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVOVgPexUBHiz71w0Ncw2wb5WblHGZcjzqljN+RKJvXEV26t3QZyu3Q/2CF52LOfzIlIVzJz9WuCDV9iTj0/AXsUvkibhf190GgJnJqKyUyJQ8HyxoHcv8u0nr/9FggrkpZaTADQ4zuu/P4D0hfOhBJoASA1J3dZkqNQTP3g6YoLm/RQxx4Yd2OCL6K1zX856PT46s1Pr4P0awOpzSDed6PhBTCYbs8hROATCFL5jlXXdsrS0/QWhNgM48wX1SS9TsGGuuUta/5t4X3CWSP4cI6vkA3/KCyZlPp3bSq1dHsw+3eDE7EGgvMoAJbq0TEHL9trc+jpZxe+AK6z+kOixjfRG2KSr/kcaD0wjVKqHFyRvXrnpj5KuvLhIIfafwwBgUUKhWl0LhM4IgAcX0XqUJLXkw5SkA6cNKtTQIX/sJuB0GEh3ETe5fX4jfXnUBwPhYOpczYXJ1BXODwfx8efnnz3FakvU6i9wuXseIea6Mf2BARrbDnsvflq7h7xAA5rnXJtjkFYJG0UYMXLyF8JQsP9yScItNqdrAWx9AY4sQscsz/TyCzKwcvZoweCe8+cy32
+        bh=SYtqzgv+BxOcacLu4368aIKcl3CwnG8tHFk8B9VUFvU=;
+        b=RgAWhfkF1vNywbRKRuTQLPleD0IkWnqeN9vnQavFFWEQUbQBJ9AH9v9KAfEY5Ty6WC
+         18GnqWKQkvtEytpz2Vx4lJX0CgNZ6n5XKYth64xA32QELTiaD8kROE1yqSZB84kutDe4
+         4CogqomvbukuB9l0ppvD6NKPFy0qhsR+cD+VIJyJSqjKcR5wdOrF8xjkMTymdLspxX/L
+         tvtc9OQqExQzd/XOoyXizgXFgr71mESRuSMRg9O5wznqpezg/iGS1Y129q5bRjbrRxOr
+         Zq3iUZ+gKMCKmy2U8e8+vnP/tXjAL7rGz9GPlsj3S7SVGStgNM/hr8VSwDcZXZtilWdU
+         hiSw==
+X-Forwarded-Encrypted: i=1; AJvYcCU8v9DaSvBWBHSpQnYoXp9JWzzSiszpKi2efVFvVHtns+D6cGVuRp9jdeuUlDBw53/aQn9L1Xh2o7MPZbQF8MvbficXbK5n6Q==
+X-Gm-Message-State: AOJu0YyGq3e0HCiZKnNoS+KNPiiAFULR+cCl4DBxgPsU8m9LxY9nY75n
+	lPts/zNU8LeV4zyIlJphb4hGaNJjhIEpNj7cdQkvjV9uxm9/T5aEdm8DpoeUkKzcN1oo6aFMBRY
+	Bm4W8ANZqkc4yFA6DjVXXYhMR8/3N53w8M09bxoIR06j4o/ZgE7WtvHM=
+X-Received: by 2002:a2e:bb85:0:b0:2d0:de72:9d47 with SMTP id y5-20020a2ebb85000000b002d0de729d47mr1387364lje.8.1707904866648;
+        Wed, 14 Feb 2024 02:01:06 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEeBVBeETe/HNpRyfxbiQ4zG7pHiUv6kqZUWoyq8jvv2EQfYHAzza7a6OSmZLJjmPb8OFOyjg==
+X-Received: by 2002:a2e:bb85:0:b0:2d0:de72:9d47 with SMTP id y5-20020a2ebb85000000b002d0de729d47mr1387286lje.8.1707904866113;
+        Wed, 14 Feb 2024 02:01:06 -0800 (PST)
 Received: from ?IPV6:2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e? (p200300d82f3c3f007177eb0cd3d24b0e.dip0.t-ipconnect.de. [2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e])
-        by smtp.gmail.com with ESMTPSA id bj5-20020a0560001e0500b0033b2799815csm12156827wrb.86.2024.02.14.01.34.11
+        by smtp.gmail.com with ESMTPSA id z21-20020a05600c221500b004101f27737asm1416372wml.29.2024.02.14.02.01.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Feb 2024 01:34:12 -0800 (PST)
-Message-ID: <48219ffc-62dc-430a-8055-6fb9ab533e7f@redhat.com>
-Date: Wed, 14 Feb 2024 10:34:11 +0100
+        Wed, 14 Feb 2024 02:01:05 -0800 (PST)
+Message-ID: <d7d132ca-8d0d-497e-bf8d-3c275960aaf9@redhat.com>
+Date: Wed, 14 Feb 2024 11:01:02 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -84,23 +83,48 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 4/7] mm: page_owner: add support for splitting to any
- order in split page_owner.
+Subject: Re: [PATCH v3 00/35] Memory allocation profiling
 Content-Language: en-US
-To: Zi Yan <ziy@nvidia.com>, "Pankaj Raghav (Samsung)"
- <kernel@pankajraghav.com>, linux-mm@kvack.org
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
- Ryan Roberts <ryan.roberts@arm.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>,
- Zach O'Keefe <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
- Mcgrof Chamberlain <mcgrof@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20240213215520.1048625-1-zi.yan@sent.com>
- <20240213215520.1048625-5-zi.yan@sent.com>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+ Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org, vbabka@suse.cz,
+ hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
+ dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
+ corbet@lwn.net, void@manifault.com, peterz@infradead.org,
+ juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+ arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org,
+ dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+ paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com,
+ yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
+ andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com,
+ vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
+ ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+ rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+ vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, shakeelb@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+ minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+ cgroups@vger.kernel.org
+References: <Zctfa2DvmlTYSfe8@tiehlicka>
+ <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
+ <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
+ <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
+ <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com>
+ <CAJuCfpEtOhzL65eMDk2W5SchcquN9hMCcbfD50a-FgtPgxh4Fw@mail.gmail.com>
+ <adbb77ee-1662-4d24-bcbf-d74c29bc5083@redhat.com>
+ <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
+ <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
+ <a9b0440b-844e-4e45-a546-315d53322aad@redhat.com>
+ <xbehqbtjp5wi4z2ppzrbmlj6vfazd2w5flz3tgjbo37tlisexa@caq633gciggt>
+ <c842347d-5794-4925-9b95-e9966795b7e1@redhat.com>
+ <CAJuCfpFB-WimQoC1s-ZoiAx+t31KRu1Hd9HgH3JTMssnskdvNw@mail.gmail.com>
 From: David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -147,138 +171,156 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20240213215520.1048625-5-zi.yan@sent.com>
+In-Reply-To: <CAJuCfpFB-WimQoC1s-ZoiAx+t31KRu1Hd9HgH3JTMssnskdvNw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 13.02.24 22:55, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
+On 14.02.24 00:28, Suren Baghdasaryan wrote:
+> On Tue, Feb 13, 2024 at 3:22 PM David Hildenbrand <david@redhat.com> wrote:
+>>
+>> On 14.02.24 00:12, Kent Overstreet wrote:
+>>> On Wed, Feb 14, 2024 at 12:02:30AM +0100, David Hildenbrand wrote:
+>>>> On 13.02.24 23:59, Suren Baghdasaryan wrote:
+>>>>> On Tue, Feb 13, 2024 at 2:50 PM Kent Overstreet
+>>>>> <kent.overstreet@linux.dev> wrote:
+>>>>>>
+>>>>>> On Tue, Feb 13, 2024 at 11:48:41PM +0100, David Hildenbrand wrote:
+>>>>>>> On 13.02.24 23:30, Suren Baghdasaryan wrote:
+>>>>>>>> On Tue, Feb 13, 2024 at 2:17 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>>>>>>
+>>>>>>>>> On 13.02.24 23:09, Kent Overstreet wrote:
+>>>>>>>>>> On Tue, Feb 13, 2024 at 11:04:58PM +0100, David Hildenbrand wrote:
+>>>>>>>>>>> On 13.02.24 22:58, Suren Baghdasaryan wrote:
+>>>>>>>>>>>> On Tue, Feb 13, 2024 at 4:24 AM Michal Hocko <mhocko@suse.com> wrote:
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> On Mon 12-02-24 13:38:46, Suren Baghdasaryan wrote:
+>>>>>>>>>>>>> [...]
+>>>>>>>>>>>>>> We're aiming to get this in the next merge window, for 6.9. The feedback
+>>>>>>>>>>>>>> we've gotten has been that even out of tree this patchset has already
+>>>>>>>>>>>>>> been useful, and there's a significant amount of other work gated on the
+>>>>>>>>>>>>>> code tagging functionality included in this patchset [2].
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> I suspect it will not come as a surprise that I really dislike the
+>>>>>>>>>>>>> implementation proposed here. I will not repeat my arguments, I have
+>>>>>>>>>>>>> done so on several occasions already.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> Anyway, I didn't go as far as to nak it even though I _strongly_ believe
+>>>>>>>>>>>>> this debugging feature will add a maintenance overhead for a very long
+>>>>>>>>>>>>> time. I can live with all the downsides of the proposed implementation
+>>>>>>>>>>>>> _as long as_ there is a wider agreement from the MM community as this is
+>>>>>>>>>>>>> where the maintenance cost will be payed. So far I have not seen (m)any
+>>>>>>>>>>>>> acks by MM developers so aiming into the next merge window is more than
+>>>>>>>>>>>>> little rushed.
+>>>>>>>>>>>>
+>>>>>>>>>>>> We tried other previously proposed approaches and all have their
+>>>>>>>>>>>> downsides without making maintenance much easier. Your position is
+>>>>>>>>>>>> understandable and I think it's fair. Let's see if others see more
+>>>>>>>>>>>> benefit than cost here.
+>>>>>>>>>>>
+>>>>>>>>>>> Would it make sense to discuss that at LSF/MM once again, especially
+>>>>>>>>>>> covering why proposed alternatives did not work out? LSF/MM is not "too far"
+>>>>>>>>>>> away (May).
+>>>>>>>>>>>
+>>>>>>>>>>> I recall that the last LSF/MM session on this topic was a bit unfortunate
+>>>>>>>>>>> (IMHO not as productive as it could have been). Maybe we can finally reach a
+>>>>>>>>>>> consensus on this.
+>>>>>>>>>>
+>>>>>>>>>> I'd rather not delay for more bikeshedding. Before agreeing to LSF I'd
+>>>>>>>>>> need to see a serious proposl - what we had at the last LSF was people
+>>>>>>>>>> jumping in with half baked alternative proposals that very much hadn't
+>>>>>>>>>> been thought through, and I see no need to repeat that.
+>>>>>>>>>>
+>>>>>>>>>> Like I mentioned, there's other work gated on this patchset; if people
+>>>>>>>>>> want to hold this up for more discussion they better be putting forth
+>>>>>>>>>> something to discuss.
+>>>>>>>>>
+>>>>>>>>> I'm thinking of ways on how to achieve Michal's request: "as long as
+>>>>>>>>> there is a wider agreement from the MM community". If we can achieve
+>>>>>>>>> that without LSF, great! (a bi-weekly MM meeting might also be an option)
+>>>>>>>>
+>>>>>>>> There will be a maintenance burden even with the cleanest proposed
+>>>>>>>> approach.
+>>>>>>>
+>>>>>>> Yes.
+>>>>>>>
+>>>>>>>> We worked hard to make the patchset as clean as possible and
+>>>>>>>> if benefits still don't outweigh the maintenance cost then we should
+>>>>>>>> probably stop trying.
+>>>>>>>
+>>>>>>> Indeed.
+>>>>>>>
+>>>>>>>> At LSF/MM I would rather discuss functonal
+>>>>>>>> issues/requirements/improvements than alternative approaches to
+>>>>>>>> instrument allocators.
+>>>>>>>> I'm happy to arrange a separate meeting with MM folks if that would
+>>>>>>>> help to progress on the cost/benefit decision.
+>>>>>>> Note that I am only proposing ways forward.
+>>>>>>>
+>>>>>>> If you think you can easily achieve what Michal requested without all that,
+>>>>>>> good.
+>>>>>>
+>>>>>> He requested something?
+>>>>>
+>>>>> Yes, a cleaner instrumentation. Unfortunately the cleanest one is not
+>>>>> possible until the compiler feature is developed and deployed. And it
+>>>>> still would require changes to the headers, so don't think it's worth
+>>>>> delaying the feature for years.
+>>>>>
+>>>>
+>>>> I was talking about this: "I can live with all the downsides of the proposed
+>>>> implementationas long as there is a wider agreement from the MM community as
+>>>> this is where the maintenance cost will be payed. So far I have not seen
+>>>> (m)any acks by MM developers".
+>>>>
+>>>> I certainly cannot be motivated at this point to review and ack this,
+>>>> unfortunately too much negative energy around here.
+>>>
+>>> David, this kind of reaction is exactly why I was telling Andrew I was
+>>> going to submit this as a direct pull request to Linus.
+>>>
+>>> This is an important feature; if we can't stay focused ot the technical
+>>> and get it done that's what I'll do.
+>>
+>> Kent, I started this with "Would it make sense" in an attempt to help
+>> Suren and you to finally make progress with this, one way or the other.
+>> I know that there were ways in the past to get the MM community to agree
+>> on such things.
+>>
+>> I tried to be helpful, finding ways *not having to* bypass the MM
+>> community to get MM stuff merged.
+>>
+>> The reply I got is mostly negative energy.
+>>
+>> So you don't need my help here, understood.
+>>
+>> But I will fight against any attempts to bypass the MM community.
 > 
-> It adds a new_order parameter to set new page order in page owner.
-> It prepares for upcoming changes to support split huge page to any
-> lower order.
-> 
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
-> ---
->   include/linux/page_owner.h | 10 +++++-----
->   mm/huge_memory.c           |  2 +-
->   mm/page_alloc.c            |  4 ++--
->   mm/page_owner.c            |  9 +++++----
->   4 files changed, 13 insertions(+), 12 deletions(-)
-> 
-> diff --git a/include/linux/page_owner.h b/include/linux/page_owner.h
-> index d7878523adfc..a784ba69f67f 100644
-> --- a/include/linux/page_owner.h
-> +++ b/include/linux/page_owner.h
-> @@ -11,7 +11,7 @@ extern struct page_ext_operations page_owner_ops;
->   extern void __reset_page_owner(struct page *page, unsigned short order);
->   extern void __set_page_owner(struct page *page,
->   			unsigned short order, gfp_t gfp_mask);
-> -extern void __split_page_owner(struct page *page, int order);
-> +extern void __split_page_owner(struct page *page, int old_order, int new_order);
->   extern void __folio_copy_owner(struct folio *newfolio, struct folio *old);
->   extern void __set_page_owner_migrate_reason(struct page *page, int reason);
->   extern void __dump_page_owner(const struct page *page);
-> @@ -31,10 +31,10 @@ static inline void set_page_owner(struct page *page,
->   		__set_page_owner(page, order, gfp_mask);
->   }
->   
-> -static inline void split_page_owner(struct page *page, int order)
-> +static inline void split_page_owner(struct page *page, int old_order, int new_order)
->   {
->   	if (static_branch_unlikely(&page_owner_inited))
-> -		__split_page_owner(page, order);
-> +		__split_page_owner(page, old_order, new_order);
->   }
->   static inline void folio_copy_owner(struct folio *newfolio, struct folio *old)
->   {
-> @@ -56,11 +56,11 @@ static inline void reset_page_owner(struct page *page, unsigned short order)
->   {
->   }
->   static inline void set_page_owner(struct page *page,
-> -			unsigned int order, gfp_t gfp_mask)
-> +			unsigned short order, gfp_t gfp_mask)
->   {
->   }
->   static inline void split_page_owner(struct page *page,
-> -			int order)
-> +			int old_order, int new_order)
->   {
->   }
->   static inline void folio_copy_owner(struct folio *newfolio, struct folio *folio)
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 3d30eccd3a7f..ad7133c97428 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2919,7 +2919,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->   	unlock_page_lruvec(lruvec);
->   	/* Caller disabled irqs, so they are still disabled here */
->   
-> -	split_page_owner(head, order);
-> +	split_page_owner(head, order, 0);
->   
->   	/* See comment in __split_huge_page_tail() */
->   	if (PageAnon(head)) {
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 9d4dd41d0647..e0f107b21c98 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -2652,7 +2652,7 @@ void split_page(struct page *page, unsigned int order)
->   
->   	for (i = 1; i < (1 << order); i++)
->   		set_page_refcounted(page + i);
-> -	split_page_owner(page, order);
-> +	split_page_owner(page, order, 0);
->   	split_page_memcg(page, order, 0);
->   }
->   EXPORT_SYMBOL_GPL(split_page);
-> @@ -4837,7 +4837,7 @@ static void *make_alloc_exact(unsigned long addr, unsigned int order,
->   		struct page *page = virt_to_page((void *)addr);
->   		struct page *last = page + nr;
->   
-> -		split_page_owner(page, order);
-> +		split_page_owner(page, order, 0);
->   		split_page_memcg(page, order, 0);
->   		while (page < --last)
->   			set_page_refcounted(last);
-> diff --git a/mm/page_owner.c b/mm/page_owner.c
-> index 1319e402c2cf..ebbffa0501db 100644
-> --- a/mm/page_owner.c
-> +++ b/mm/page_owner.c
-> @@ -292,19 +292,20 @@ void __set_page_owner_migrate_reason(struct page *page, int reason)
->   	page_ext_put(page_ext);
->   }
->   
-> -void __split_page_owner(struct page *page, int order)
-> +void __split_page_owner(struct page *page, int old_order, int new_order)
->   {
->   	int i;
->   	struct page_ext *page_ext = page_ext_get(page);
->   	struct page_owner *page_owner;
-> -	unsigned int nr = 1 << order;
-> +	unsigned int old_nr = 1 << old_order;
-> +	unsigned int new_nr = 1 << new_order;
->   
->   	if (unlikely(!page_ext))
->   		return;
->   
-> -	for (i = 0; i < nr; i++) {
-> +	for (i = 0; i < old_nr; i += new_nr) {
->   		page_owner = get_page_owner(page_ext);
-> -		page_owner->order = 0;
-> +		page_owner->order = new_order;
->   		page_ext = page_ext_next(page_ext);
+> Well, I'm definitely not trying to bypass the MM community, that's why
+> this patchset is posted. Not sure why people can't voice their opinion
+> on the benefit/cost balance of the patchset over the email... But if a
+> meeting would be more productive I'm happy to set it up.
 
-Staring at __set_page_owner_handle(), we do set all 1<<order page_exts 
-(corresponding to 1<<order "struct page"s) to have ->order set.
+If you can get the acks without any additional meetings, great. The 
+replies from Pasha and Johannes are encouraging, let's hope core 
+memory-allocator people will voice their opinion here.
 
-Wouldn't you have to do the same here?
+If you come to the conclusion that another meeting would help getting 
+maintainers's attention and sorting out some of the remaining concerns, 
+feel free to schedule a meeting with Dave R. I suspect only the slot 
+next week is already taken. In the past, we also had "special" meetings 
+just for things to make progress faster.
 
-for (i = 0; i < 1 << old_order; i++) {
-	page_owner = get_page_owner(page_ext);
-	page_owner->order = new_order;
-	page_ext = page_ext_next(page_ext);
-}
+If you're looking for ideas on what the agenda of such a meeting could 
+look like, I'll happily discuss that with you off-list.
+
+v2 was more than 3 months ago. If it's really about minor details here, 
+waiting another 3 months for LSF/MM is indeed not reasonable.
+
+Myself, I'll be happy not having to sit through another LSF/MM session 
+of that kind. The level of drama is exceptional and I'm hoping it won't 
+be the new norm in the MM space.
+
+Good luck!
 
 -- 
 Cheers,
