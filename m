@@ -1,138 +1,313 @@
-Return-Path: <cgroups+bounces-1585-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1586-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53CA3854EC7
-	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 17:40:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EC59854F06
+	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 17:48:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85F961C2804A
-	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 16:39:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0821EB2F030
+	for <lists+cgroups@lfdr.de>; Wed, 14 Feb 2024 16:41:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2393612EE;
-	Wed, 14 Feb 2024 16:38:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Xm+zNKCM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E7A960273;
+	Wed, 14 Feb 2024 16:41:29 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBDE32189
-	for <cgroups@vger.kernel.org>; Wed, 14 Feb 2024 16:38:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15AFF5FB8A;
+	Wed, 14 Feb 2024 16:41:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707928709; cv=none; b=qVRrT+brxfKZP6hPGPDkgd7wE87Y2yUk2Oifxwuo3jZVu5pIhfmzfqweA7NfaaiEDE4oewTrMiatacQYJlNrEtw5Nq1fmvHgjsjLveE7wGx4YPG7qkMV9F5jmeca4SZuCE2lnehNKOUXoDeOO1lqdVBlkFar3bX1+uEQxQYdcJA=
+	t=1707928889; cv=none; b=HCJiUz5bRhc9ro08zmQzwFlGqDUb15UcFBDGY4zl1RicQOtlMKAZZXyByV/KEf0fQjz9ON8+cvhiq5fU6r+vV1YfvgGT+NKu30VK019nSKZgn7CeDYCgfGj1J+JB3KHuD7K1diMDJx2YPoHGnRoX/WX8a37Y8bDbVrs5kXeCqLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707928709; c=relaxed/simple;
-	bh=3a96hFHa9kHGgs4R7+BbKUdcoCcJIe8Xk80EXRVjjJA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r8UHyv3dGcse2eiB12Quz8movSFkYtBA0hopqYL6HgImmmKJGpjkl86QNa5agkjuj8iGGlzwxASuQW9u6EN5QKA2Trt9HdcTQbyNrOAMx/QP0qFT9CkjrzYTOLQruQ8VXhAuVC5q9zSgvTeZMgyETVnX7F+hQxFx+3LAV3HZ09g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Xm+zNKCM; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 14 Feb 2024 11:38:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707928705;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GhC8U54i48aAhQsKXgUpTdpqc3Q9oBEWvXQFXanbxaU=;
-	b=Xm+zNKCMeqV79v7rJ5E5an4MzgIP4PD8/8ugFWMqKQm3NKxkYrYq0OYQxclkHYIL8RZCoP
-	TC2LBaoxPghcPUQzNf8N/tkj2r5IU55ThbSV14NQ/Bs/1muwGdvLMDBwjC0Nd8EVp21WU+
-	XnEe90fkimXt0ALl4VLMlcoyT6d4gss=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Suren Baghdasaryan <surenb@google.com>, 
-	David Hildenbrand <david@redhat.com>, Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, 
-	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, axboe@kernel.dk, 
-	mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, 
-	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, 
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
-	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
-	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-Message-ID: <wbe5dfkrjpspzykhbi4dshhfgc4t3jpyymutogppyyevzxyyra@r32wpro3xrbi>
-References: <CAJuCfpEsWfZnpL1vUB2C=cxRi_WxhxyvgGhUg7WdAxLEqy6oSw@mail.gmail.com>
- <9e14adec-2842-458d-8a58-af6a2d18d823@redhat.com>
- <2hphuyx2dnqsj3hnzyifp5yqn2hpgfjuhfu635dzgofr5mst27@4a5dixtcuxyi>
- <6a0f5d8b-9c67-43f6-b25e-2240171265be@redhat.com>
- <CAJuCfpEtOhzL65eMDk2W5SchcquN9hMCcbfD50a-FgtPgxh4Fw@mail.gmail.com>
- <adbb77ee-1662-4d24-bcbf-d74c29bc5083@redhat.com>
- <r6cmbcmalryodbnlkmuj2fjnausbcysmolikjguqvdwkngeztq@45lbvxjavwb3>
- <CAJuCfpF4g1jeEwHVHjQWwi5kqS-3UqjMt7GnG0Kdz5VJGyhK3Q@mail.gmail.com>
- <ea5vqiv5rt5cdbrlrdep5flej2pysqbfvxau4cjjbho64652um@7rz23kesqdup>
- <4bb7b1e4-d107-4708-bb65-ac44d4af9959@suse.cz>
+	s=arc-20240116; t=1707928889; c=relaxed/simple;
+	bh=mlzRfG3S1iCz1kh8DMN9QJKlAi7b/aj4A2+AzxWYo9g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=dc3DWUt/Vb2xRPSZAOwqu7FRYY8tp/bEe6rgwx4a3+IzsxjgFPcqF7DphTKENLWgEvsgnwZbEZMyNdNH39Jkncj5X4wFXs7T89w0eHZY/W+fbEvjkFZcWXNs7Q4BvIHGwGA1qN8p4r2+JCVN1w1oDhKVETNYxmyeKy4dg0JxXHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6A7031FB;
+	Wed, 14 Feb 2024 08:42:07 -0800 (PST)
+Received: from [10.57.64.120] (unknown [10.57.64.120])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C380B3F762;
+	Wed, 14 Feb 2024 08:41:23 -0800 (PST)
+Message-ID: <78095f74-dc1c-4425-b390-fb6307a6e429@arm.com>
+Date: Wed, 14 Feb 2024 16:41:22 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4bb7b1e4-d107-4708-bb65-ac44d4af9959@suse.cz>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 5/7] mm: thp: split huge page to any lower order pages
+ (except order-1).
+Content-Language: en-GB
+To: Zi Yan <ziy@nvidia.com>
+Cc: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, linux-mm@kvack.org,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ David Hildenbrand <david@redhat.com>, Yang Shi <shy828301@gmail.com>,
+ Yu Zhao <yuzhao@google.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Zach O'Keefe
+ <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
+ Mcgrof Chamberlain <mcgrof@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20240213215520.1048625-1-zi.yan@sent.com>
+ <20240213215520.1048625-6-zi.yan@sent.com>
+ <de66b9fb-ee84-473f-a69a-2ac8554f6000@arm.com>
+ <6859C8DA-5B7F-458E-895C-763BA782F4B9@nvidia.com>
+ <6c986b83-e00d-46fe-8c88-374f8e6bd0fa@arm.com>
+ <5D3CF5B4-FB16-4CE7-9D8E-CBFFA7A1FA43@nvidia.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <5D3CF5B4-FB16-4CE7-9D8E-CBFFA7A1FA43@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Feb 14, 2024 at 11:20:26AM +0100, Vlastimil Babka wrote:
-> On 2/14/24 00:08, Kent Overstreet wrote:
-> > And, as I keep saying: that alloc_hooks() macro will also get us _per
-> > callsite fault injection points_, and we really need that because - if
-> > you guys have been paying attention to other threads - whenever moving
-> > more stuff to PF_MEMALLOC_* flags comes up (including adding
-> > PF_MEMALLOC_NORECLAIM), the issue of small allocations not failing and
-> > not being testable keeps coming up.
+On 14/02/2024 16:28, Zi Yan wrote:
+> On 14 Feb 2024, at 11:22, Ryan Roberts wrote:
 > 
-> How exactly do you envision the fault injection to help here? The proposals
-> are about scoping via a process flag, and the process may then call just
-> about anything under that scope. So if our tool is per callsite fault
-> injection points, how do we know which callsites to enable to focus the
-> fault injection on the particular scope?
+>> On 14/02/2024 16:11, Zi Yan wrote:
+>>> On 14 Feb 2024, at 5:38, Ryan Roberts wrote:
+>>>
+>>>> On 13/02/2024 21:55, Zi Yan wrote:
+>>>>> From: Zi Yan <ziy@nvidia.com>
+>>>>>
+>>>>> To split a THP to any lower order (except order-1) pages, we need to
+>>>>> reform THPs on subpages at given order and add page refcount based on the
+>>>>> new page order. Also we need to reinitialize page_deferred_list after
+>>>>> removing the page from the split_queue, otherwise a subsequent split will
+>>>>> see list corruption when checking the page_deferred_list again.
+>>>>>
+>>>>> It has many uses, like minimizing the number of pages after
+>>>>> truncating a huge pagecache page. For anonymous THPs, we can only split
+>>>>> them to order-0 like before until we add support for any size anonymous
+>>>>> THPs.
+>>>>
+>>>> multi-size THP is now upstream. Not sure if this comment still makes sense.
+>>> Will change it to reflect the fact that multi-size THP is already upstream.
+>>>
+>>>> Still its not completely clear to me how you would integrate this new machinery
+>>>> and decide what non-zero order to split anon THP to?
+>>>
+>>> Originally, it was developed along with my 1GB THP support. So it was intended
+>>> to split order-18 to order-9. But for now, like you and David said in the cover
+>>> letter email thread, we might not want to use it for anonymous large folios
+>>> until we find a necessary use case.
+>>>
+>>>>>
+>>>>> Order-1 folio is not supported because _deferred_list, which is used by
+>>>>> partially mapped folios, is stored in subpage 2 and an order-1 folio only
+>>>>> has subpage 0 and 1.
+>>>>>
+>>>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>>>>> ---
+>>>>>  include/linux/huge_mm.h |  21 +++++---
+>>>>>  mm/huge_memory.c        | 114 +++++++++++++++++++++++++++++++---------
+>>>>>  2 files changed, 101 insertions(+), 34 deletions(-)
+>>>>>
+>>>>> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+>>>>> index 5adb86af35fc..de0c89105076 100644
+>>>>> --- a/include/linux/huge_mm.h
+>>>>> +++ b/include/linux/huge_mm.h
+>>>>> @@ -265,10 +265,11 @@ unsigned long thp_get_unmapped_area(struct file *filp, unsigned long addr,
+>>>>>
+>>>>>  void folio_prep_large_rmappable(struct folio *folio);
+>>>>>  bool can_split_folio(struct folio *folio, int *pextra_pins);
+>>>>> -int split_huge_page_to_list(struct page *page, struct list_head *list);
+>>>>> +int split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+>>>>> +		unsigned int new_order);
+>>>>>  static inline int split_huge_page(struct page *page)
+>>>>>  {
+>>>>> -	return split_huge_page_to_list(page, NULL);
+>>>>> +	return split_huge_page_to_list_to_order(page, NULL, 0);
+>>>>>  }
+>>>>>  void deferred_split_folio(struct folio *folio);
+>>>>>
+>>>>> @@ -422,7 +423,8 @@ can_split_folio(struct folio *folio, int *pextra_pins)
+>>>>>  	return false;
+>>>>>  }
+>>>>>  static inline int
+>>>>> -split_huge_page_to_list(struct page *page, struct list_head *list)
+>>>>> +split_huge_page_to_list_to_order(struct page *page, struct list_head *list,
+>>>>> +		unsigned int new_order)
+>>>>>  {
+>>>>>  	return 0;
+>>>>>  }
+>>>>> @@ -519,17 +521,20 @@ static inline bool thp_migration_supported(void)
+>>>>>  }
+>>>>>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>>>>>
+>>>>> -static inline int split_folio_to_list(struct folio *folio,
+>>>>> -		struct list_head *list)
+>>>>> +static inline int split_folio_to_list_to_order(struct folio *folio,
+>>>>> +		struct list_head *list, int new_order)
+>>>>>  {
+>>>>> -	return split_huge_page_to_list(&folio->page, list);
+>>>>> +	return split_huge_page_to_list_to_order(&folio->page, list, new_order);
+>>>>>  }
+>>>>>
+>>>>> -static inline int split_folio(struct folio *folio)
+>>>>> +static inline int split_folio_to_order(struct folio *folio, int new_order)
+>>>>>  {
+>>>>> -	return split_folio_to_list(folio, NULL);
+>>>>> +	return split_folio_to_list_to_order(folio, NULL, new_order);
+>>>>>  }
+>>>>>
+>>>>> +#define split_folio_to_list(f, l) split_folio_to_list_to_order(f, l, 0)
+>>>>> +#define split_folio(f) split_folio_to_order(f, 0)
+>>>>> +
+>>>>>  /*
+>>>>>   * archs that select ARCH_WANTS_THP_SWAP but don't support THP_SWP due to
+>>>>>   * limitations in the implementation like arm64 MTE can override this to
+>>>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>>>> index ad7133c97428..d0e555a8ea98 100644
+>>>>> --- a/mm/huge_memory.c
+>>>>> +++ b/mm/huge_memory.c
+>>>>> @@ -2718,11 +2718,14 @@ void vma_adjust_trans_huge(struct vm_area_struct *vma,
+>>>>>
+>>>>>  static void unmap_folio(struct folio *folio)
+>>>>>  {
+>>>>> -	enum ttu_flags ttu_flags = TTU_RMAP_LOCKED | TTU_SPLIT_HUGE_PMD |
+>>>>> -		TTU_SYNC | TTU_BATCH_FLUSH;
+>>>>> +	enum ttu_flags ttu_flags = TTU_RMAP_LOCKED | TTU_SYNC |
+>>>>> +		TTU_BATCH_FLUSH;
+>>>>>
+>>>>>  	VM_BUG_ON_FOLIO(!folio_test_large(folio), folio);
+>>>>>
+>>>>> +	if (folio_test_pmd_mappable(folio))
+>>>>> +		ttu_flags |= TTU_SPLIT_HUGE_PMD;
+>>>>
+>>>> Should we split this change out? I think it makes sense independent of this series?
+>>>>
+>>>
+>>> Sure. Since multi-size THP is upstream, this avoid unnecessary code path if
+>>> the THP is not PMD-mapped.
+>>>
+>>>>> +
+>>>>>  	/*
+>>>>>  	 * Anon pages need migration entries to preserve them, but file
+>>>>>  	 * pages can simply be left unmapped, then faulted back on demand.
+>>>>> @@ -2756,7 +2759,6 @@ static void lru_add_page_tail(struct page *head, struct page *tail,
+>>>>>  		struct lruvec *lruvec, struct list_head *list)
+>>>>>  {
+>>>>>  	VM_BUG_ON_PAGE(!PageHead(head), head);
+>>>>> -	VM_BUG_ON_PAGE(PageCompound(tail), head);
+>>>>>  	VM_BUG_ON_PAGE(PageLRU(tail), head);
+>>>>>  	lockdep_assert_held(&lruvec->lru_lock);
+>>>>>
+>>>>> @@ -2777,7 +2779,8 @@ static void lru_add_page_tail(struct page *head, struct page *tail,
+>>>>>  }
+>>>>>
+>>>>>  static void __split_huge_page_tail(struct folio *folio, int tail,
+>>>>> -		struct lruvec *lruvec, struct list_head *list)
+>>>>> +		struct lruvec *lruvec, struct list_head *list,
+>>>>> +		unsigned int new_order)
+>>>>>  {
+>>>>>  	struct page *head = &folio->page;
+>>>>>  	struct page *page_tail = head + tail;
+>>>>> @@ -2847,10 +2850,15 @@ static void __split_huge_page_tail(struct folio *folio, int tail,
+>>>>>  	 * which needs correct compound_head().
+>>>>>  	 */
+>>>>>  	clear_compound_head(page_tail);
+>>>>> +	if (new_order) {
+>>>>> +		prep_compound_page(page_tail, new_order);
+>>>>> +		folio_prep_large_rmappable(page_folio(page_tail));
+>>>>> +	}
+>>>>>
+>>>>>  	/* Finally unfreeze refcount. Additional reference from page cache. */
+>>>>> -	page_ref_unfreeze(page_tail, 1 + (!folio_test_anon(folio) ||
+>>>>> -					  folio_test_swapcache(folio)));
+>>>>> +	page_ref_unfreeze(page_tail,
+>>>>> +		1 + ((!folio_test_anon(folio) || folio_test_swapcache(folio)) ?
+>>>>> +			     folio_nr_pages(page_folio(page_tail)) : 0));
+>>>>>
+>>>>>  	if (folio_test_young(folio))
+>>>>>  		folio_set_young(new_folio);
+>>>>> @@ -2868,7 +2876,7 @@ static void __split_huge_page_tail(struct folio *folio, int tail,
+>>>>>  }
+>>>>>
+>>>>>  static void __split_huge_page(struct page *page, struct list_head *list,
+>>>>> -		pgoff_t end)
+>>>>> +		pgoff_t end, unsigned int new_order)
+>>>>>  {
+>>>>>  	struct folio *folio = page_folio(page);
+>>>>>  	struct page *head = &folio->page;
+>>>>> @@ -2877,10 +2885,11 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>>>>>  	unsigned long offset = 0;
+>>>>>  	unsigned int nr = thp_nr_pages(head);
+>>>>>  	int i, nr_dropped = 0;
+>>>>> +	unsigned int new_nr = 1 << new_order;
+>>>>>  	int order = folio_order(folio);
+>>>>>
+>>>>>  	/* complete memcg works before add pages to LRU */
+>>>>> -	split_page_memcg(head, order, 0);
+>>>>> +	split_page_memcg(head, order, new_order);
+>>>>>
+>>>>>  	if (folio_test_anon(folio) && folio_test_swapcache(folio)) {
+>>>>>  		offset = swp_offset(folio->swap);
+>>>>> @@ -2893,8 +2902,8 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>>>>>
+>>>>>  	ClearPageHasHWPoisoned(head);
+>>>>>
+>>>>> -	for (i = nr - 1; i >= 1; i--) {
+>>>>> -		__split_huge_page_tail(folio, i, lruvec, list);
+>>>>> +	for (i = nr - new_nr; i >= new_nr; i -= new_nr) {
+>>>>> +		__split_huge_page_tail(folio, i, lruvec, list, new_order);
+>>>>>  		/* Some pages can be beyond EOF: drop them from page cache */
+>>>>>  		if (head[i].index >= end) {
+>>>>>  			struct folio *tail = page_folio(head + i);
+>>>>> @@ -2910,29 +2919,41 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>>>>>  			__xa_store(&head->mapping->i_pages, head[i].index,
+>>>>>  					head + i, 0);
+>>>>>  		} else if (swap_cache) {
+>>>>> +			/*
+>>>>> +			 * split anonymous THPs (including swapped out ones) to
+>>>>> +			 * non-zero order not supported
+>>>>> +			 */
+>>>>> +			VM_WARN_ONCE(new_order,
+>>>>> +				"Split swap-cached anon folio to non-0 order not supported");
+>>>>
+>>>> Why isn't it supported? Even if it's not supported, is this level the right
+>>>> place to enforce these kinds of policy decisions? I wonder if we should be
+>>>> leaving that to the higher level to decide?
+>>>
+>>> Is the swap-out small-size THP without splitting merged? This needs that patchset.
+>>
+>> No not yet. I have to respin it. Its on my todo list.
+>>
+>> I'm not sure I understand the dependency though?
+> 
+> IIUC, swap cache only supports one cluster size, HPAGE_PMD_NR, so splitting
+> a PMD-size swapcached folio will need to split a cluster to smaller ones, which
+> needs your patchset support. Let me know if I get it wrong.
 
-So the question with fault injection is - how do we integrate it into
-our existing tests?
+Ahh yeah, sorry, obvious now that you've spelled it out - thanks!
 
-We need fault injection that we can integrate into our existing tests
-because that's the only way to get the code coverage we need - writing
-new tests that cover all the error paths isn't going to happen, and
-wouldn't work as well anyways.
+> 
+>>
+>>> You are right that a warning here is not appropriate. I will fail the splitting
+>>> if the folio is swapcached and going to be split into >0 order.
+>>>
+>>>>>  			__xa_store(&swap_cache->i_pages, offset + i,
+>>>>>  					head + i, 0);
+>>>>>  		}
+>>>>>  	}
+>>>>>
+>>>
+>>>
+>>> --
+>>> Best Regards,
+>>> Yan, Zi
+> 
+> 
+> --
+> Best Regards,
+> Yan, Zi
 
-But the trouble with injecting memory allocation failures is that
-they'll result in errors bubbling up to userspace, and in unpredictable
-ways.
-
-We _definitely_ cannot enable random memory allocation faults for the
-entire kernel at runttme - or rather we _could_, and that would actually
-be great to do as a side project; but that's not something we can do in
-our existing automated tests because the results will be completely
-unpredictable. If we did that the goal would be to just make sure the
-kernel doesn't explode - but what we actually want is for our automated
-pass/fail tests to still pass; we need to constrain what will fail.
-
-So we need at a minumum to be able to only enable memory allocation
-failures for the code we're interested in testing (file/module) -
-enabling memory allocation failures in some other random subsystem we're
-not developing or looking at isn't what we want.
-
-Beyond that, it's very much subsystem dependent. For bcachefs, my main
-strategy has been to flip on random (1%) memory allocation failures
-after the filesystem has mounted. During startup, we do a ton of
-allocations (I cover those with separate tests), but after startup we
-should be able to run normally in the precence of allocation failures
-without ever returning an error to userspace - so that's what I'm trying
-to test.
 
