@@ -1,103 +1,85 @@
-Return-Path: <cgroups+bounces-1609-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1610-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8967855DDD
-	for <lists+cgroups@lfdr.de>; Thu, 15 Feb 2024 10:23:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3344E856094
+	for <lists+cgroups@lfdr.de>; Thu, 15 Feb 2024 12:02:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 901B9287FE3
-	for <lists+cgroups@lfdr.de>; Thu, 15 Feb 2024 09:23:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E04CB281523
+	for <lists+cgroups@lfdr.de>; Thu, 15 Feb 2024 11:02:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C12ED1754B;
-	Thu, 15 Feb 2024 09:23:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E854129A8B;
+	Thu, 15 Feb 2024 10:52:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="sfOAoS4D";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="sfOAoS4D"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="oz1Vt0o5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6088179BD;
-	Thu, 15 Feb 2024 09:22:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ECE87A704
+	for <cgroups@vger.kernel.org>; Thu, 15 Feb 2024 10:52:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707988983; cv=none; b=tOhveFpdDCWzI4b6/ZpeEwsWCyI7m0c+Y6oxv4E2ZqzKSRcO3jPtU96ywiavfHvg7JuT0KNGDiOqplixrE3qasZhEkuc1WxNwoFiaJbwgC3KbNwBtjFqWhKMHVDHSfe6/ORQD7HE75nQ62qbPBUjRjhXMTTslwasak+gAZUXliE=
+	t=1707994368; cv=none; b=lFi/MNlJGe8yIkfX5WM8ivsawP7kTicLP++zA02/ec3BqL7qeq0C98aeYrRp6+HYX0r6xSjzVYexoatEO0zQdPge9eHybgBOiBCsovA404TLkucAfYpNsHVpEJkhF8OV+F0EiopOuc932ehL06gOF8Yngp/XnFE9Evzu9WWzlQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707988983; c=relaxed/simple;
-	bh=WNYLiPDN/h368EHdEX8l1z4Wuz1Yugs/kYjrmi7aM0g=;
+	s=arc-20240116; t=1707994368; c=relaxed/simple;
+	bh=DrS69cbqai6YRkZOkha+qInzsRn3vy2Nx9Kf8zL2FDg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fKnOv20R6DpRqrDbTZs99vmTxy21ZQsPMRKKt2hVqKIypTlFjtxJ6MnSMTjF+FamvJMj+bDggn+dnFk30nzSHBqhPNScWKzbkbngzeQggUAPi54alleWJ0bqht25JLPo4y1Iu6pZ58ksWF69kqptF4Hw8QbGyionN3URK/aUtv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=sfOAoS4D; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=sfOAoS4D; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0F1001F871;
-	Thu, 15 Feb 2024 09:22:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707988978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P0wAra6NNdsmQy/QOu3XOOm75y+sycyf1CReKWa3x/A=;
-	b=sfOAoS4D29QnYtnKO07SRNn72nriTA9zXXwoZ0RnHp0XHtxokuQn7bDggRyH/dV5bo4PMY
-	m6GbhMwzRlnOtmD5aW0DXlvPon3YpJ50cKwL/qadfxvkMWtOESzhQ0uXkZ1xrF5HxAfde3
-	KNje8XIUO7zvXrtU2TUsUX4dAPtyxss=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1707988978; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P0wAra6NNdsmQy/QOu3XOOm75y+sycyf1CReKWa3x/A=;
-	b=sfOAoS4D29QnYtnKO07SRNn72nriTA9zXXwoZ0RnHp0XHtxokuQn7bDggRyH/dV5bo4PMY
-	m6GbhMwzRlnOtmD5aW0DXlvPon3YpJ50cKwL/qadfxvkMWtOESzhQ0uXkZ1xrF5HxAfde3
-	KNje8XIUO7zvXrtU2TUsUX4dAPtyxss=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CED2B13A53;
-	Thu, 15 Feb 2024 09:22:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gyDbMfHXzWUfGQAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Thu, 15 Feb 2024 09:22:57 +0000
-Date: Thu, 15 Feb 2024 10:22:57 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, vbabka@suse.cz,
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org,
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
-	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
-	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
-	paulmck@kernel.org, pasha.tatashin@soleen.com,
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
-	ndesaulniers@google.com, vvvvvv@google.com,
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
-	elver@google.com, dvyukov@google.com, shakeelb@google.com,
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
-Message-ID: <Zc3X8XlnrZmh2mgN@tiehlicka>
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-32-surenb@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=V2AX9QcSWdU3R9dN5kEqmH+25qazJ9E1czaH6yXWYIcMDGydmeiHsr7CMkbRBBLZqoI+vODrfKrqFxyOy2tbU94incAA6hinwBDXyImTDj7BOZEZ20p/yiNWd5PRiqXs8T8hHyq2dfi4DBcy0UobVwkXwYruT84dBg7yfUL87ZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=oz1Vt0o5; arc=none smtp.client-ip=209.85.219.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dcbef31a9dbso474946276.1
+        for <cgroups@vger.kernel.org>; Thu, 15 Feb 2024 02:52:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1707994364; x=1708599164; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XVJlypdB8EeG025OlVruBqkZML3RozZ3SqRoFlfo3os=;
+        b=oz1Vt0o5HgvOetZMbPmc1EmSDgi6OMeTrk/C5F/cq05VC1vSRghiGrO4TzcjMw12Kt
+         whmoIrF5g3WSjer4qLS5Yt/XCJL+Nvuo2Ue/6r/tJfsJCgNw7ZTYHC3aT3weiq8DMi6T
+         ep7byMx25T9VxXopNCrGp9uBaZt9ad6BjHulrOdfGM3tlz5JBEDZcHnXbBzxE35q5ri2
+         ClqqEHSG03dmfG89r02sHdpsCQYTWBlDKWWXjpM+Wv6No/4cVe218D7J+rk4M6FQjuv8
+         N2ZV5cQYGXE4BZDtMEIL7+N1G9n6Klb/Z3acjyBsOFzbPiJjKeQ68yxwmSFi4de0GvvH
+         ubcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707994364; x=1708599164;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XVJlypdB8EeG025OlVruBqkZML3RozZ3SqRoFlfo3os=;
+        b=G/CBYh5rB0m8ZrGClHzqLpKqfA68/BYJ5Yxuotf7c1a5NJ7/N1tqcZzcnsmrSuHhYd
+         z9fHoNJQAXN+ptcJkHtIT2FMYQOyVuiECxKc9Jy/SEse5RNxkk5GuxGM6KtKsRMdthGP
+         tLdU+iNZV7KPUT37x4QO9G0fvDiTj4Kkh1ZK0OyicTDPUxnXlnK/rQ3pIyN+ItqOWabs
+         rzL3Nz4KKA6/6zi5hY6zce0BNc4BScyOq4mx1KNkrdepBmUZ+E5ti2SoJsRfC0deFGkb
+         r/wt6+oJHuMunyNr39ecgYGICb4Gjh0HBP0VDhNmnMHHz+XQ+MYUo2rVCnL/MoQqOlBv
+         70qw==
+X-Forwarded-Encrypted: i=1; AJvYcCXYBQfAPfiXnf46JflhMSnyNMX9PgT4qpBrT3AbefCsJwNyDuEi+nE3ldY/91w8Iy2ka1ZjuurwJysyixYJ6Tc6sZ3kjRkOFg==
+X-Gm-Message-State: AOJu0Yy1LjLp5VdCb7IsfboRIm5shyE0bDce4ThiF/seI+/7JKUp/+P9
+	eJJD7ce055mObXXjTBLvrJ5i28yZFsNR3um3cbZiQyf5YQuuAUmHhSNZ70jYKUg=
+X-Google-Smtp-Source: AGHT+IGKdFSiqy84NLrVA30/4Kts6hwSkrE6XMGw/mKt98wEEGkyKykv5EX2wDueJiJJVPejLrF0lw==
+X-Received: by 2002:a25:a049:0:b0:dcc:ae3:d8a0 with SMTP id x67-20020a25a049000000b00dcc0ae3d8a0mr1020389ybh.48.1707994364556;
+        Thu, 15 Feb 2024 02:52:44 -0800 (PST)
+Received: from localhost ([2620:10d:c091:400::5:4922])
+        by smtp.gmail.com with ESMTPSA id bk30-20020a05620a1a1e00b00785d7f634bcsm502508qkb.8.2024.02.15.02.52.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 02:52:43 -0800 (PST)
+Date: Thu, 15 Feb 2024 05:52:42 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Colin Ian King <colin.i.king@gmail.com>
+Cc: Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] mm: Fix spelling mistake "commdandline" ->
+ "commandline"
+Message-ID: <20240215105242.GA1282507@cmpxchg.org>
+References: <20240215090544.1649201-1-colin.i.king@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -106,66 +88,28 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240212213922.783301-32-surenb@google.com>
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=sfOAoS4D
-X-Spamd-Result: default: False [1.65 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 BAYES_HAM(-0.04)[58.58%];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_GT_50(0.00)[73];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,linux.dev,suse.cz,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 1.65
-X-Rspamd-Queue-Id: 0F1001F871
-X-Spam-Level: *
-X-Spam-Flag: NO
-X-Spamd-Bar: +
+In-Reply-To: <20240215090544.1649201-1-colin.i.king@gmail.com>
 
-On Mon 12-02-24 13:39:17, Suren Baghdasaryan wrote:
-[...]
-> @@ -423,4 +424,18 @@ void __show_mem(unsigned int filter, nodemask_t *nodemask, int max_zone_idx)
->  #ifdef CONFIG_MEMORY_FAILURE
->  	printk("%lu pages hwpoisoned\n", atomic_long_read(&num_poisoned_pages));
->  #endif
-> +#ifdef CONFIG_MEM_ALLOC_PROFILING
-> +	{
-> +		struct seq_buf s;
-> +		char *buf = kmalloc(4096, GFP_ATOMIC);
-> +
-> +		if (buf) {
-> +			printk("Memory allocations:\n");
-> +			seq_buf_init(&s, buf, 4096);
-> +			alloc_tags_show_mem_report(&s);
-> +			printk("%s", buf);
-> +			kfree(buf);
-> +		}
-> +	}
-> +#endif
+On Thu, Feb 15, 2024 at 09:05:44AM +0000, Colin Ian King wrote:
+> There is a spelling mistake in a pr_warn_once message. Fix it.
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> ---
+>  mm/memcontrol.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 94d1b278c458..95c3fccb321b 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -8014,7 +8014,7 @@ static int __init setup_swap_account(char *s)
+>  	bool res;
+>  
+>  	if (!kstrtobool(s, &res) && !res)
+> -		pr_warn_once("The swapaccount=0 commdandline option is deprecated "
+> +		pr_warn_once("The swapaccount=0 commandline option is deprecated "
 
-I am pretty sure I have already objected to this. Memory allocations in
-the oom path are simply no go unless there is absolutely no other way
-around that. In this case the buffer could be preallocated.
+Quality workmanship.
 
--- 
-Michal Hocko
-SUSE Labs
+Thanks Colin ;)
 
