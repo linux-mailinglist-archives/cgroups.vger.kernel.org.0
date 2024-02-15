@@ -1,163 +1,148 @@
-Return-Path: <cgroups+bounces-1632-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1633-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 271BD85718E
-	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 00:26:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E48488571BB
+	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 00:43:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3B3F28284F
-	for <lists+cgroups@lfdr.de>; Thu, 15 Feb 2024 23:26:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 941021F2331F
+	for <lists+cgroups@lfdr.de>; Thu, 15 Feb 2024 23:43:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5DB1145B07;
-	Thu, 15 Feb 2024 23:26:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A296A145B12;
+	Thu, 15 Feb 2024 23:43:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="naPm9z1l"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8707413B2AB;
-	Thu, 15 Feb 2024 23:26:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E3271386A3;
+	Thu, 15 Feb 2024 23:43:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708039563; cv=none; b=rBmTRMmLwHyk6fskQHTNUzWcv20qDMxOU32C9/w3QE85W+G3la0PbIvArsgRG779zwQIkGbU2kgWQL6NfCEzTBBha3vldG2IMjtBhy85trEZ2wTz7A3eY4w3EXYasBCbVi/cZG816aX3o9jwU+LZNF133UxYz7/OUX2krmS6gUE=
+	t=1708040602; cv=none; b=NAWAGUUaF+wRjKMqJtyXKHXPpUtRN4j+A+KQyWyRJ6CQRUOftjZKTXfJMXTQdBcxspzX4d8aHhmIyUwETBYuAg1uhBM56NO/ewlU8qCJhtT0oPIDfaUJVluqxVoKLqppt+1U0OIQm2XRv0/Vcex0gXBnbZIRXoGocHKwXnewduk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708039563; c=relaxed/simple;
-	bh=XS5bJqlP4STQgp1DfmpPHfkB4RaRvPoEvv+ra766L+4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gI1HFXSuCMFRc5NHOWZGJ1P9hJdHEvsoSuXX3VH88Sz9MZ1HcA8ybXqIey6j1FSz3hGEG5E4tqXSPLTVn6kyhbflJo7mbqI6TPFJrhm53IkWWaAFEGfq4b30CiNvb0qB4rIICedJNyIrGx14wm7k9egYhq+817EPlDv3CZ7bdwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6610C433F1;
-	Thu, 15 Feb 2024 23:25:55 +0000 (UTC)
-Date: Thu, 15 Feb 2024 18:27:29 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Vlastimil Babka <vbabka@suse.cz>, Suren Baghdasaryan
- <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
- akpm@linux-foundation.org, hannes@cmpxchg.org, roman.gushchin@linux.dev,
- mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
- liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
- ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
- ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, bsegall@google.com, bristot@redhat.com,
- vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in
- show_mem()
-Message-ID: <20240215182729.659f3f1c@gandalf.local.home>
-In-Reply-To: <20240215181648.67170ed5@gandalf.local.home>
-References: <20240212213922.783301-1-surenb@google.com>
-	<20240212213922.783301-32-surenb@google.com>
-	<Zc3X8XlnrZmh2mgN@tiehlicka>
-	<CAJuCfpHc2ee_V6SGAc_31O_ikjGGNivhdSG+2XNcc9vVmzO-9g@mail.gmail.com>
-	<Zc4_i_ED6qjGDmhR@tiehlicka>
-	<CAJuCfpHq3N0h6dGieHxD6Au+qs=iKAifFrHAMxTsHTcDrOwSQA@mail.gmail.com>
-	<ruxvgrm3scv7zfjzbq22on7tj2fjouydzk33k7m2kukm2n6uuw@meusbsciwuut>
-	<320cd134-b767-4f29-869b-d219793ba8a1@suse.cz>
-	<efxe67vo32epvmyzplmpd344nw2wf37azicpfhvkt3zz4aujm3@n27pl5j5zahj>
-	<20240215180742.34470209@gandalf.local.home>
-	<20240215181648.67170ed5@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708040602; c=relaxed/simple;
+	bh=Fqw4R2TCCNuFLfcj3N3za2hiQluZoyUsJ8OTL/KQZrU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Pmd9q8aAh3EqNGG5aB6j5DcPX5lEX62t8jtg4w7wvor+YS+fnBjA4HGr9v90Glk7hCxPCbCCs1jywxgfPfnl8ZPgOepVCFVvx5kOwukgmvB90+tLdc7H9gsrFsiN0bp0Gu3wUXoXYY8zidGQ9V1gwNwbRMYABf0qRYI993EAdoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=naPm9z1l; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708040600; x=1739576600;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Fqw4R2TCCNuFLfcj3N3za2hiQluZoyUsJ8OTL/KQZrU=;
+  b=naPm9z1lxEtcoE03S4Te5q7v+aYQ1YGFRrQQkfOEqiQQj0XeNCD35hfD
+   e8EZnPPup9dPbrszziKRGPFXEnP3pzE0ZXhOfB+rFn0QljqZha2UQCDOb
+   TJ7qBhvipwvfmmeUJxPJdP12eQxz8QO7bEa/2BTwvHkjSSgJGOJ7em5w2
+   7xrrYmbCGgI2NlFHekhj7ryHV5b6ZbpLiSVglK07FrjbRG6UnSHZUisye
+   qJ33ANptCZC/pTeIpCXb1QhiPe8GEYiuY5XA5/iSme11oc2kKTXOvHYKD
+   5Hi6zSnIdTzfMY2XsRpD25FRQrKqGZFez+QrJ8DI1XiQMuLrWexQYGhtU
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2294410"
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="2294410"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 15:43:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,162,1705392000"; 
+   d="scan'208";a="4003686"
+Received: from jmjohns4-mobl1.amr.corp.intel.com (HELO [10.209.57.138]) ([10.209.57.138])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 15:43:18 -0800
+Message-ID: <8a31fce6-9ad2-4868-b6bf-15997ef18334@intel.com>
+Date: Thu, 15 Feb 2024 15:43:18 -0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 09/15] x86/sgx: Charge mem_cgroup for per-cgroup
+ reclamation
+Content-Language: en-US
+To: Haitao Huang <haitao.huang@linux.intel.com>, jarkko@kernel.org,
+ dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
+ linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+ cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ hpa@zytor.com, sohil.mehta@intel.com, tim.c.chen@linux.intel.com
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-10-haitao.huang@linux.intel.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240205210638.157741-10-haitao.huang@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Thu, 15 Feb 2024 18:16:48 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On 2/5/24 13:06, Haitao Huang wrote:
+>  static struct mem_cgroup *sgx_encl_get_mem_cgroup(struct sgx_encl *encl)
+>  {
+> @@ -1003,14 +1001,6 @@ static struct mem_cgroup *sgx_encl_get_mem_cgroup(struct sgx_encl *encl)
+>  	struct sgx_encl_mm *encl_mm;
+>  	int idx;
+>  
+> -	/*
+> -	 * If called from normal task context, return the mem_cgroup
+> -	 * of the current task's mm. The remainder of the handling is for
+> -	 * ksgxd.
+> -	 */
+> -	if (!current_is_ksgxd())
+> -		return get_mem_cgroup_from_mm(current->mm);
 
-> On Thu, 15 Feb 2024 18:07:42 -0500
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> >    text         data            bss     dec             hex filename
-> > 29161847        18352730        5619716 53134293        32ac3d5 vmlinux.orig
-> > 29162286        18382638        5595140 53140064        32ada60 vmlinux.memtag-off		(+5771)
-> > 29230868        18887662        5275652 53394182        32ebb06 vmlinux.memtag			(+259889)
-> > 29230746        18887662        5275652 53394060        32eba8c vmlinux.memtag-default-on	(+259767) dropped?
-> > 29276214        18946374        5177348 53399936        32ed180 vmlinux.memtag-debug		(+265643)  
-> 
-> If you plan on running this in production, and this increases the size of
-> the text by 68k, have you measured the I$ pressure that this may induce?
-> That is, what is the full overhead of having this enabled, as it could
-> cause more instruction cache misses?
-> 
-> I wonder if there has been measurements of it off. That is, having this
-> configured in but default off still increases the text size by 68k. That
-> can't be good on the instruction cache.
-> 
+Why is this being removed?
 
-I should have read the cover letter ;-)  (someone pointed me to that on IRC):
+Searching the enclave mm list is a last resort.  It's expensive and
+imprecise.
 
-> Performance overhead:
-> To evaluate performance we implemented an in-kernel test executing
-> multiple get_free_page/free_page and kmalloc/kfree calls with allocation
-> sizes growing from 8 to 240 bytes with CPU frequency set to max and CPU
-> affinity set to a specific CPU to minimize the noise. Below are results
-> from running the test on Ubuntu 22.04.2 LTS with 6.8.0-rc1 kernel on
-> 56 core Intel Xeon:
-
-These are micro benchmarks, were any larger benchmarks taken? As
-microbenchmarks do not always show I$ issues (because the benchmark itself
-will warm up the cache). The cache issue could slow down tasks at a bigger
-picture, as it can cause more cache misses.
-
-Running other benchmarks under perf and recording the cache misses between
-the different configs would be a good picture to show.
-
-> 
->                         kmalloc                 pgalloc
-> (1 baseline)            6.764s                  16.902s
-> (2 default disabled)    6.793s (+0.43%)         17.007s (+0.62%)
-> (3 default enabled)     7.197s (+6.40%)         23.666s (+40.02%)
-> (4 runtime enabled)     7.405s (+9.48%)         23.901s (+41.41%)
-> (5 memcg)               13.388s (+97.94%)       48.460s (+186.71%)
-
-
-> 
-> Memory overhead:
-> Kernel size:
-> 
->    text           data        bss         dec         diff
-> (1) 26515311	      18890222    17018880    62424413
-> (2) 26524728	      19423818    16740352    62688898    264485
-> (3) 26524724	      19423818    16740352    62688894    264481
-> (4) 26524728	      19423818    16740352    62688898    264485
-> (5) 26541782	      18964374    16957440    62463596    39183
-
-Similar to my builds.
-
-
-> 
-> Memory consumption on a 56 core Intel CPU with 125GB of memory:
-> Code tags:           192 kB
-> PageExts:         262144 kB (256MB)
-> SlabExts:           9876 kB (9.6MB)
-> PcpuExts:            512 kB (0.5MB)
-> 
-> Total overhead is 0.2% of total memory.
-
-
-All this, and we are still worried about 4k for useful debugging :-/
-
--- Steve
+get_mem_cgroup_from_mm(current->mm), on the other hand is fast and precise.
 
