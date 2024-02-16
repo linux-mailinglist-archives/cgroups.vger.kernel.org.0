@@ -1,224 +1,147 @@
-Return-Path: <cgroups+bounces-1677-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1678-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AB1A8585AE
-	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 19:49:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1464858666
+	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 20:48:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7D0E1F2494C
-	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 18:49:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17F79B2475F
+	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 19:48:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 300A11353EF;
-	Fri, 16 Feb 2024 18:49:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3CFA13849D;
+	Fri, 16 Feb 2024 19:48:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IczKkH7t";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eWjfjtUQ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nJrH6lwW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rCplWnn+"
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="YX/jXwaF"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA9622C688;
-	Fri, 16 Feb 2024 18:49:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89923137C4A
+	for <cgroups@vger.kernel.org>; Fri, 16 Feb 2024 19:48:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708109348; cv=none; b=qkkHKM5Nw4GuedALyV26TEykdTKTsyHdRafMClDo+6A/gS5vdffFcfx8j9XkfxH0V7wZ59Hj8qh5MA1JfqKO56YD9ZVYFV4fVlO88FIVySdyPPQ8dQhaRcoPDG9ZHmi+jwBiO2o/2ipKC020GV9nCDacdOUUuJbFYhKqKqDUn1s=
+	t=1708112921; cv=none; b=R/al8iYm12qvVWjeGAzXTSctY4XSTfOh9tSEj+E3DNcmbulP/zBH9aK3H31kw0GPoxbd3HKIjbEspCO2wvkXAvZQIR3toGcaDL5y/6eReo9bpARBoI5lBOw3P9RWZRX2Px2fywr7OgO8kMoekBVecHI/Z+WHb++71FJaf3GmXVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708109348; c=relaxed/simple;
-	bh=A0E9sndd7l0lu6Xyh5dd3tP87FBrCGKIlTdotIdICcY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=APKFTYuKbahBYM2HJZrBlFKkWtfrxa5vZcOqKBY2BV7lE3IgDkubRsImDOYqMym7JKuKAEc2xgZRoJF6UmwHZnHHNMUnox2w9vQ+daXtPPTShqx1B15ixc/dGfVDNPgTbFUMJDn80AERXC4G8KJwLVKAX+YCbUc58yZDeQq1Nq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IczKkH7t; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eWjfjtUQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nJrH6lwW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rCplWnn+; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E942A22116;
-	Fri, 16 Feb 2024 18:49:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708109344; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LIy+v1QxzmWGHbmMqIx5w7+6IieTl4Y2Xxq5xuO/0u4=;
-	b=IczKkH7ttqFZkIRIpgaqdovXlBv+wdZc/WVt3WfwuuayALZt1K/ktc8gkJLvb9DV02Aw6O
-	mqoxlagg9OnV1b3uKdi4cPs834trLa4dhnFFXfGsjiAFaJlLtwlt5k0zq1/mQUJcjUKD98
-	Yl2/H30Tkm2T430gGAIL5rZo7SIco+4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708109344;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LIy+v1QxzmWGHbmMqIx5w7+6IieTl4Y2Xxq5xuO/0u4=;
-	b=eWjfjtUQK+vs3+zTwA2o6NuZ4YsKpb1iorpHwofZAOTDMADyKmTQZgmjt5VFnhMbl3fvFK
-	sOX+EXx60O+jLyCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708109341; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LIy+v1QxzmWGHbmMqIx5w7+6IieTl4Y2Xxq5xuO/0u4=;
-	b=nJrH6lwWDcLp8vXKR4AD0HQDEbJXWoHr5M6JWvxdQL9Kq6Pe5MBk9Loldg+eWVs0EKznrW
-	bSmITWiT6i/Cg9Xr+ymmLfxfxZCjgz/13+YnHVhtrh/UFjbFZapdv6pIPhVwTWLNVzoTnF
-	773TjX4j+Iu2mcmaak8h/AOdL0cbrR4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708109341;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LIy+v1QxzmWGHbmMqIx5w7+6IieTl4Y2Xxq5xuO/0u4=;
-	b=rCplWnn+zjLptQfYWR2TYcjXBWf1sp+AS9ffhspWlwv9w0hq+Dl+5EFFBo0Z/cp/14/7Vt
-	EghNrullQkOlmIBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5AF8F1398D;
-	Fri, 16 Feb 2024 18:49:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id upbPFR2uz2WgbQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 16 Feb 2024 18:49:01 +0000
-Message-ID: <198f835b-35d6-4ae2-b993-675c871c621e@suse.cz>
-Date: Fri, 16 Feb 2024 19:49:01 +0100
+	s=arc-20240116; t=1708112921; c=relaxed/simple;
+	bh=m2Wvv0O31LwrnCQdUKYEs3sNTTEexlxilQS/jlCfnew=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nVtbJCMX7loztu8DlJaZvsMDSNoSOgNAEkjnFyt5BoEI71Q/mqHeHab6vfHcbA9jkXiVGvKLqmVkTsHv1vOMi7Mgyg8NqmWhyjrgnbe0yTUsJ6xh6JktMFbJq53TvmJ4N8IrfXJ6Ipmx+KGPtbnX264fLVOlhvkwRaDRIBvR63Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=YX/jXwaF; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-511976c126dso3090068e87.1
+        for <cgroups@vger.kernel.org>; Fri, 16 Feb 2024 11:48:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1708112917; x=1708717717; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XMO1uzBf5Ipo+B8nJFhezHnHhPZI6cIYH4qqZglP7mw=;
+        b=YX/jXwaFS/hB9HhbzEkfX8cSH4LyyWANTm6daW/jaTDSixVYXYJ8kZXl3XHjLa3Rq5
+         iUU7aAFL94+s6iHS0CLve1DvbxMa9hUYM1/71ifPsUJaQtqPisbfE2CAyc63oAFT5TYc
+         basuhP0hUoEqMIyhM6lAWzzOrGne74JlZevCrQ6aEqmeEOZOLPD92I6Q1VECKXoj7181
+         cJsP3MdtZsEMuJnK5kLDEp6U40o4AFqha5hdIx6sII//n8rmeQswx6ppCWitx/d/slrB
+         JV0e12TJmGqbB/jOQHav8Aj3G/UvLeAdBikf7bajKfSKPmyGdPqrTYRIVQcx46M0HIHQ
+         E2lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708112917; x=1708717717;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XMO1uzBf5Ipo+B8nJFhezHnHhPZI6cIYH4qqZglP7mw=;
+        b=X4dDCBOhOXxN+XZu4BxskjFubrbPkZIOwgsNJzAZLDUVFBOvM28nKNsM0Upv2KkrXz
+         N8jwtSUwu9WY0l6jTRuFgBWnga8ZX9PIORctbYK6yWakJ7sV2OvRu5uyZg41vRPAnr/a
+         XE5QahCBb8jtS/GYmNLNCAocykFYvaQbpzqU3csXa9yR/fPm2Qe564Vjk60bZeqgHWao
+         WnRwJ9wun8i981Jslvf5uXBjO31Jkf/1s9AUu7xXNJ1kY24dJXugRyqa0OSTtKd+ZFgi
+         2XRduAbnMHB0s/+en7c07KwccRCTgmcVHhk2LHImeb4PRCQrOTvmgOJFjDLJ+TxCxLQ2
+         l8Cw==
+X-Forwarded-Encrypted: i=1; AJvYcCUkJPa3rdYiNr7R3poGUO6YTLczWFcdCjOANCi3GGvpNysG5PmvE3bHfLi9zW/YMtRKPFVKYZ41bLxocSospjAzOGfvyqI2ag==
+X-Gm-Message-State: AOJu0YzQasVpo0JVcLW2IsJ/qfy4HJ+JudhkMDC5WSWzLd0rH+iQecZJ
+	kBQ1Bl9REOqirtpHmv2N+g2FtTMUXKLWiprxe7R6F72io3ORAfisLnEfJCUFpAFlzpFwSWML04B
+	6bKA7Wvxtpf1sE5TI0TVrZFJnLlFs8pyIs0Kwbw==
+X-Google-Smtp-Source: AGHT+IEiJLDM3GyyGWObGaRCyMN7MxvgX2HQgceLg5ERcIU76EjTibg8tg0F0e6PZPfErw11n01+i2wIipIreSPlOTo=
+X-Received: by 2002:ac2:5bd1:0:b0:511:a021:220a with SMTP id
+ u17-20020ac25bd1000000b00511a021220amr4183994lfn.21.1708112917508; Fri, 16
+ Feb 2024 11:48:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 07/35] mm/slab: introduce SLAB_NO_OBJ_EXT to avoid
- obj_ext creation
-Content-Language: en-US
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, akpm@linux-foundation.org,
- mhocko@suse.com, hannes@cmpxchg.org, roman.gushchin@linux.dev,
- mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
- liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
- ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
- ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-8-surenb@google.com>
- <fbfab72f-413d-4fc1-b10b-3373cfc6c8e9@suse.cz>
- <tbqg7sowftykfj3rptpcbewoiy632fbgbkzemgwnntme4wxhut@5dlfmdniaksr>
- <ab4b1789-910a-4cd6-802c-5012bf9d8984@suse.cz>
- <CAJuCfpH=tr1faWnn0CZ=V_Gg-0ysEsGPOje5U-DDy5x2V83pxA@mail.gmail.com>
- <CAJuCfpGBCNsvK35Bq8666cJeZ3Hwfwj6mDJ6M5Wjg7oZi8xd0g@mail.gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CAJuCfpGBCNsvK35Bq8666cJeZ3Hwfwj6mDJ6M5Wjg7oZi8xd0g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-1.59 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_GT_50(0.00)[73];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux.dev,linux-foundation.org,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -1.59
+References: <20231226200205.562565-1-pasha.tatashin@soleen.com>
+ <20231226200205.562565-11-pasha.tatashin@soleen.com> <20240213131210.GA28926@willie-the-truck>
+ <CA+CK2bB4Z+z8tocO79AdsAy+gmN_4aVHgFUsm_gYLUJ2zV1A6A@mail.gmail.com> <20240216175752.GB2374@willie-the-truck>
+In-Reply-To: <20240216175752.GB2374@willie-the-truck>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Fri, 16 Feb 2024 14:48:00 -0500
+Message-ID: <CA+CK2bDURTkZFo9uE9Bgfrz-NwgXqo4SAzLOW6Jb35M+eqUEaA@mail.gmail.com>
+Subject: Re: [PATCH v3 10/10] iommu: account IOMMU allocated memory
+To: Will Deacon <will@kernel.org>
+Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
+	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
+	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
+	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
+	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
+	joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
+	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
+	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
+	rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
+	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, 
+	tj@kernel.org, tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, 
+	yu-cheng.yu@intel.com, rientjes@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/16/24 19:41, Suren Baghdasaryan wrote:
-> On Thu, Feb 15, 2024 at 10:10 PM Suren Baghdasaryan <surenb@google.com> wrote:
->>
->> On Thu, Feb 15, 2024 at 1:50 PM Vlastimil Babka <vbabka@suse.cz> wrote:
->> >
->> > On 2/15/24 22:37, Kent Overstreet wrote:
->> > > On Thu, Feb 15, 2024 at 10:31:06PM +0100, Vlastimil Babka wrote:
->> > >> On 2/12/24 22:38, Suren Baghdasaryan wrote:
->> > >> > Slab extension objects can't be allocated before slab infrastructure is
->> > >> > initialized. Some caches, like kmem_cache and kmem_cache_node, are created
->> > >> > before slab infrastructure is initialized. Objects from these caches can't
->> > >> > have extension objects. Introduce SLAB_NO_OBJ_EXT slab flag to mark these
->> > >> > caches and avoid creating extensions for objects allocated from these
->> > >> > slabs.
->> > >> >
->> > >> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->> > >> > ---
->> > >> >  include/linux/slab.h | 7 +++++++
->> > >> >  mm/slub.c            | 5 +++--
->> > >> >  2 files changed, 10 insertions(+), 2 deletions(-)
->> > >> >
->> > >> > diff --git a/include/linux/slab.h b/include/linux/slab.h
->> > >> > index b5f5ee8308d0..3ac2fc830f0f 100644
->> > >> > --- a/include/linux/slab.h
->> > >> > +++ b/include/linux/slab.h
->> > >> > @@ -164,6 +164,13 @@
->> > >> >  #endif
->> > >> >  #define SLAB_TEMPORARY            SLAB_RECLAIM_ACCOUNT    /* Objects are short-lived */
->> > >> >
->> > >> > +#ifdef CONFIG_SLAB_OBJ_EXT
->> > >> > +/* Slab created using create_boot_cache */
->> > >> > +#define SLAB_NO_OBJ_EXT         ((slab_flags_t __force)0x20000000U)
->> > >>
->> > >> There's
->> > >>    #define SLAB_SKIP_KFENCE        ((slab_flags_t __force)0x20000000U)
->> > >> already, so need some other one?
->>
->> Indeed. I somehow missed it. Thanks for noticing, will fix this in the
->> next version.
-> 
-> Apparently the only unused slab flag is 0x00000200U, all others seem
-> to be taken. I'll use it if there are no objections.
+On Fri, Feb 16, 2024 at 12:58=E2=80=AFPM Will Deacon <will@kernel.org> wrot=
+e:
+>
+> On Tue, Feb 13, 2024 at 10:44:53AM -0500, Pasha Tatashin wrote:
+> > > >  SecPageTables
+> > > > -              Memory consumed by secondary page tables, this curre=
+ntly
+> > > > -              currently includes KVM mmu allocations on x86 and ar=
+m64.
+> > > > +              Memory consumed by secondary page tables, this curre=
+ntly includes
+> > > > +              KVM mmu and IOMMU allocations on x86 and arm64.
+> >
+> > Hi Will,
+> >
+> > > While I can see the value in this for IOMMU mappings managed by VFIO,
+> > > doesn't this end up conflating that with the normal case of DMA domai=
+ns?
+> > > For systems that e.g. rely on an IOMMU for functional host DMA, it se=
+ems
+> > > wrong to subject that to accounting constraints.
+> >
+> > The accounting constraints are only applicable when GFP_KERNEL_ACCOUNT
+> > is passed to the iommu mapping functions. We do that from the vfio,
+> > iommufd, and vhost. Without this flag, the memory useage is reported
+> > in /proc/meminfo as part of  SecPageTables field, but not constrained
+> > in cgroup.
+>
+> Thanks, Pasha, that explanation makes sense. I still find it bizarre to
+> include IOMMU allocations from the DMA API in SecPageTables though, and
+> I worry that it will confuse people who are using that metric as a way
+> to get a feeling for how much memory is being used by KVM's secondary
+> page-tables. As an extreme example, having a non-zero SecPageTables count
+> without KVM even compiled in is pretty bizarre.
 
-OK. Will look into the cleanup and consolidation - we already know
-SLAB_MEM_SPREAD became dead with SLAB removed. If it comes to worst, we can
-switch to 64 bits again.
+I agree; I also prefer a new field in /proc/meminfo named
+'IOMMUPageTables'. This is what I proposed at LPC, but I was asked to
+reuse the existing 'SecPageTables' field instead. The rationale was
+that 'secondary' implies not only KVM page tables, but any other
+non-regular page tables.
 
->>
->> > >
->> > > What's up with the order of flags in that file? They don't seem to
->> > > follow any particular ordering.
->> >
->> > Seems mostly in increasing order, except commit 4fd0b46e89879 broke it for
->> > SLAB_RECLAIM_ACCOUNT?
->> >
->> > > Seems like some cleanup is in order, but any history/context we should
->> > > know first?
->> >
->> > Yeah noted, but no need to sidetrack you.
+I would appreciate the opinion of IOMMU maintainers on this: is it
+preferable to bundle the information with 'SecPageTables' or maintain
+a separate field?
 
+Pasha
 
