@@ -1,103 +1,104 @@
-Return-Path: <cgroups+bounces-1672-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1673-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 457E08583B9
-	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 18:13:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90B8C8583F2
+	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 18:19:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFE1D282383
-	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 17:13:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA76FB2600C
+	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 17:18:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD2A81353EC;
-	Fri, 16 Feb 2024 17:11:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C39D13175E;
+	Fri, 16 Feb 2024 17:18:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KimFcXg2"
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="bQxTPOn9"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C93A1353EB
-	for <cgroups@vger.kernel.org>; Fri, 16 Feb 2024 17:11:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4727130E3D
+	for <cgroups@vger.kernel.org>; Fri, 16 Feb 2024 17:18:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708103495; cv=none; b=c0Y9DTpRhmlJ/N8c9zYcZ6O/2La1/20AQI7eBTOpG3AzKpfV9CiAFmB/OZkEQLICK/dVWW1ChAngE4fAhN4MXR4ZNTJ0FhEzJ6QZisZI9pwD+XQltftJAN8inv7uMnlLNz68s7qZDkmMyypMgU6RNZ5/7UOBuZ7xE9fI8K+0QIU=
+	t=1708103928; cv=none; b=oafyz6fjGLpaOojthJoL86B62XSallguPW5bRg5U2EpTaT5UDKc3Hu7g/VaHrmDeGP/w96+rAlCxrX8INdFqFnpqfgAxt46OjFZdeN8MltQCdoVu1hISBgsqFyDD7zzncDRsraX3ezvqvOohcX7hjdx+PTkjqX0gSfO4CuJjrf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708103495; c=relaxed/simple;
-	bh=s5/J21l0Vb16qAasTR2af/DM49VlLYJehTHe2iQrZgA=;
+	s=arc-20240116; t=1708103928; c=relaxed/simple;
+	bh=2eKrnC6xOIWZ1NTwD/IJazyXMwCp/t3u/M4Pc8vdQNQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SVZ3g0pYFkUiXzQjjC895cCnfW2xmJb4tdidpPCdMFz5+C26ndAkkCWvP703MnUklN9ZhQfCaBapZ9NDac+6sozsKyNfo4Sv8dtDOZzyJ6VT1JGsGE2jbt3/51yWx4noCLKYoWlysNZw3fcxdnUdcaXLEOSZaUDZP8GjMAo24Eg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KimFcXg2; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dcc80d6004bso2305720276.0
-        for <cgroups@vger.kernel.org>; Fri, 16 Feb 2024 09:11:33 -0800 (PST)
+	 To:Cc:Content-Type; b=gsnFcZG82DqJxgncC53hOIdJ2uynsg2bgb5B6e2DeC7n/oaUSBvqhj0m9C/UjfTDZjwgzWGZkFQ0E/rfYN8OPqQ6sSEU80xqD7llMgRTgOdN1mpoX36xRa0DomqOCm5P6Th4Fzq8D1NE980rfpRnnxAJB4NPLi77otFWnrrx7MI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=bQxTPOn9; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-42c758f075dso27988601cf.0
+        for <cgroups@vger.kernel.org>; Fri, 16 Feb 2024 09:18:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708103493; x=1708708293; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uuBxuiKdZN3KVCrAhLvxlGbAMwEHkyTmKhPVF6pp06o=;
-        b=KimFcXg2C4cCytgZyCIT0srknZMq00HfxE12Dj7bA1s3r381iz6R5sE7SeDFmrk+PT
-         O3ONzwrB3pNa92xTGDaKc4VLgfd4T+uY2g+6NUauZXKuFBXxijpyHyxBgiHPwFs4nKO7
-         1wmeoDTmLocZTh3Yi4A5ASqiNh0i0uq7fnEbKVhrBqtlA7p+qEFXlFvmk3fM6kf+Af+N
-         EfFJ5HkPOYlJYZiVwnyYq5+DmlSpAOSsP8ggJMej4wRkFsQN5zqxOTJ0fMnClmzAKgY+
-         fM2z1zn1h821nQ+UL/2bzrskSP585dtzkL4nCTQRjB1BsaTLZdoaI195ty8A6uo+E6Gn
-         R/qA==
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1708103925; x=1708708725; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ttXNwKWugMJyygslP182txVVK8JBh5UVtMFEymJTCI0=;
+        b=bQxTPOn9WTXLnpyhxDEsmtOgQUNtA+cfA8a1UJ/SnidZ4cNowB3IzH91BFmbR8yVVX
+         n5w9F5nCodKqFu4cv6Uo1TVdfDutrblXDoFJCBkpZNdgpsd3jAvxKQvocFs73FqfCfnZ
+         Ty8VcdWL0UVMUiz/dwFRCwY4UMecgApLg+pC9V7lKjQCnK/TDEMitZ+rOeF6cfrnwUTN
+         LvwR1PIp8T9BlpxILOqJFiRfZN2sNWNAIXHBG51pGvUgQ4AI+Dmqk3zSvYQ5y0/2lE1r
+         bNuROBCX77VZOrM68PUxyOF9LjQHmtZ0WcLMbANRzuWCLmEccyY6XJidFLSGtG0TnzLC
+         MGGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708103493; x=1708708293;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uuBxuiKdZN3KVCrAhLvxlGbAMwEHkyTmKhPVF6pp06o=;
-        b=SDvyPSA9c20P3Mb+wFm7al4UO5vPswzfIo78W7cT62/NWji7aAizlc3vBNJqXktFfT
-         Mk92o955G94SpR4vejJuYkgWcfIO9YRzWHq3TMvnS0/a5aCPCBdJ80/HIrIC0a2vH3bQ
-         /mVsw7oR8g+QRTWzp8igEgMTC9jGpeCC5SVRw+EPJ2hVRclSIMzv9EbcRzF9RBjp9p4O
-         /dcpGd6I1Urv7Ih5GBi3PLSFF9oo8ClT7Aqq9zEbBwtQIjForb7ZVul0MGXBXDVRNOfI
-         W9q2yOsC53Sn7dCKmI1mJyeh+dNoq5C90KDd4ZqojulEx9TpTwZMWy0sYKD/p1QL3m98
-         jynw==
-X-Forwarded-Encrypted: i=1; AJvYcCWIQudGb6lYECWJb3f9LtMXcFQTfnrD6f1o8yw83E0ZHrhp0tLVbRp2UbkRrvXjaPP/R+Wx7wrUbP45tYVoHLOJA9pa1g33/Q==
-X-Gm-Message-State: AOJu0YyFgOsivXMzB3EURw5udAWuyAVWjTWN0X5/U+PtmlrxwUYsCwu8
-	Sa772h3kh++cBAMtQ2h+HEZqeMSt94LusbtZawm6DVfhPlnUqfL15kFyt/WcfEUifD0zNU+Ln6E
-	RjGVxsX2K+eGtMMPs0i73GIQhjNHs3CWGzY+R
-X-Google-Smtp-Source: AGHT+IGrTdDphKuPSMMFIAFPJovR9x9JDU4EDFPzTY0y3WFZl7FqMruLomlujQStik0SDQEztF8S9x7Y+PwqmZ025HY=
-X-Received: by 2002:a81:8391:0:b0:607:e1c0:450b with SMTP id
- t139-20020a818391000000b00607e1c0450bmr4624095ywf.0.1708103488010; Fri, 16
- Feb 2024 09:11:28 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708103925; x=1708708725;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ttXNwKWugMJyygslP182txVVK8JBh5UVtMFEymJTCI0=;
+        b=ZQrbQNQ3GC2WzgNltsaoRre4nsuDXJHuHY+sw7Hb6ORFQGU7FjQxJVP3fD6xqLn5fl
+         xWFbHgqqkXAzvISZGZHKozdXy0c1BDPr7kyO8tK5kZPDLkX9PFDOicNQncCjDYaY9VuZ
+         r7mZ7q3XMVJOtEryiA4VhpeBFbx4KYHIGPfzyCGsOygbyojY47kente2q8oQdDW+7F4A
+         lx4Z1eE7LPeIBg4kTpfmkkw38DJTRYatwkZ2ykTuoQdYAb22YXGLqfVInpkI7plOzyJI
+         G7s7hORfqqGYir3TvkXmPQr0XElrAuvXD8cgGA+fu8xo0bq6+6T+heh1RMqFFmG9TR7D
+         c6Og==
+X-Forwarded-Encrypted: i=1; AJvYcCVq7jULot5hcip/55w7Dx/rXl6C7EdLJ0Kp6mAp9vCICiwp+aE0/Tv9CKHegq+VJcML5e6jRjNL1XHCkEIffZ+EEOBv/39GGA==
+X-Gm-Message-State: AOJu0Yxax4DUqwgtMzuvQGcj5ob8pZSigJUgD4ofSoRpKk5lo6LjvN+V
+	UkOCTk/sgryOOjx8SypgSulmBDfxH8W1N1hIvjAsXEa3l2Zt20aUi+Zcn5QwxzJEvfbzInGbhup
+	NSRi7hkAtg/VMbOCXBapoSnNnGUbAQf6GbsxB7Q==
+X-Google-Smtp-Source: AGHT+IGK94jPimX8q7FvTT5r2WHXeqQfvdyDWPQi6YyK2aTQJC/GbkrY2OBKc6aAMFaGl9yMXVM9CDJXDWJJ3i4OZS8=
+X-Received: by 2002:a05:622a:130d:b0:42c:7b12:70bd with SMTP id
+ v13-20020a05622a130d00b0042c7b1270bdmr14455790qtk.9.1708103925488; Fri, 16
+ Feb 2024 09:18:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-22-surenb@google.com>
- <ec0f9be2-d544-45a6-b6a9-178872b27bd4@suse.cz> <vjtuo55tzxrezoxz54zav5oxp5djngtyftkgrj2mnimf4wqq6a@hedzv4xlrgv7>
-In-Reply-To: <vjtuo55tzxrezoxz54zav5oxp5djngtyftkgrj2mnimf4wqq6a@hedzv4xlrgv7>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Fri, 16 Feb 2024 09:11:17 -0800
-Message-ID: <CAJuCfpEsoC_hkhwOU8dNSe5HCFX-xiKsVivqyXbVmuEE-_F2ow@mail.gmail.com>
-Subject: Re: [PATCH v3 21/35] mm/slab: add allocation accounting into slab
- allocation and free paths
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org, mhocko@suse.com, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-14-surenb@google.com>
+ <20240215165438.cd4f849b291c9689a19ba505@linux-foundation.org>
+ <wdj72247rptlp4g7dzpvgrt3aupbvinskx3abxnhrxh32bmxvt@pm3d3k6rn7pm>
+ <CA+CK2bBod-1FtrWQH89OUhf0QMvTar1btTsE0wfROwiCumA8tg@mail.gmail.com>
+ <iqynyf7tiei5xgpxiifzsnj4z6gpazujrisdsrjagt2c6agdfd@th3rlagul4nn> <CAJuCfpHxaCQ_sy0u88EcdkgsV-GX3AbhCaiaRW-DWYFvZK1=Ew@mail.gmail.com>
+In-Reply-To: <CAJuCfpHxaCQ_sy0u88EcdkgsV-GX3AbhCaiaRW-DWYFvZK1=Ew@mail.gmail.com>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Fri, 16 Feb 2024 12:18:09 -0500
+Message-ID: <CA+CK2bCsW34RQtKhrp=1=3opMcfB=NSsLTnpwSejkULvo7CbTw@mail.gmail.com>
+Subject: Re: [PATCH v3 13/35] lib: add allocation tagging support for memory
+ allocation profiling
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
+	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, 
+	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
 	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
 	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
 	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	rppt@kernel.org, paulmck@kernel.org, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
 	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
 	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
 	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
@@ -106,74 +107,20 @@ Cc: Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org, mhocko@suse.com
 	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
 	cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 16, 2024 at 8:39=E2=80=AFAM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
+> > Personally, I hate trying to count long strings digits by eyeball...
 >
-> On Fri, Feb 16, 2024 at 05:31:11PM +0100, Vlastimil Babka wrote:
-> > On 2/12/24 22:39, Suren Baghdasaryan wrote:
-> > > Account slab allocations using codetag reference embedded into slabob=
-j_ext.
-> > >
-> > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > > Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > > ---
-> > >  mm/slab.h | 26 ++++++++++++++++++++++++++
-> > >  mm/slub.c |  5 +++++
-> > >  2 files changed, 31 insertions(+)
-> > >
-> > > diff --git a/mm/slab.h b/mm/slab.h
-> > > index 224a4b2305fb..c4bd0d5348cb 100644
-> > > --- a/mm/slab.h
-> > > +++ b/mm/slab.h
-> > > @@ -629,6 +629,32 @@ prepare_slab_obj_exts_hook(struct kmem_cache *s,=
- gfp_t flags, void *p)
-> > >
-> > >  #endif /* CONFIG_SLAB_OBJ_EXT */
-> > >
-> > > +#ifdef CONFIG_MEM_ALLOC_PROFILING
-> > > +
-> > > +static inline void alloc_tagging_slab_free_hook(struct kmem_cache *s=
-, struct slab *slab,
-> > > +                                   void **p, int objects)
-> > > +{
-> > > +   struct slabobj_ext *obj_exts;
-> > > +   int i;
-> > > +
-> > > +   obj_exts =3D slab_obj_exts(slab);
-> > > +   if (!obj_exts)
-> > > +           return;
-> > > +
-> > > +   for (i =3D 0; i < objects; i++) {
-> > > +           unsigned int off =3D obj_to_index(s, slab, p[i]);
-> > > +
-> > > +           alloc_tag_sub(&obj_exts[off].ref, s->size);
-> > > +   }
-> > > +}
-> > > +
-> > > +#else
-> > > +
-> > > +static inline void alloc_tagging_slab_free_hook(struct kmem_cache *s=
-, struct slab *slab,
-> > > +                                   void **p, int objects) {}
-> > > +
-> > > +#endif /* CONFIG_MEM_ALLOC_PROFILING */
-> >
-> > You don't actually use the alloc_tagging_slab_free_hook() anywhere? I s=
-ee
-> > it's in the next patch, but logically should belong to this one.
+> Maybe something like this work for everyone then?:
 >
-> I don't think it makes any sense to quibble about introducing something
-> in one patch that's not used until the next patch; often times, it's
-> just easier to review that way.
+> 160432128 (153MiB)     mm/slub.c:1826 module:slub func:alloc_slab_page
 
-Yeah, there were several cases where I was debating with myself which
-way to split a patch (same was, as you noticed, with
-prepare_slab_obj_exts_hook()). Since we already moved
-prepare_slab_obj_exts_hook(), alloc_tagging_slab_free_hook() will
-probably move into the same patch. I'll go over the results once more
-to see if the new split makes more sense, if not will keep it here.
-Thanks!
+That would be even harder to parse.
+
+This one liner should converts bytes to human readable size:
+sort -rn /proc/allocinfo | numfmt --to=iec
+
+Also, a "alloctop" script that would auto-update the current top
+allocators would be useful to put in tools/mm/
+
+Pasha
 
