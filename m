@@ -1,125 +1,136 @@
-Return-Path: <cgroups+bounces-1642-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1643-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31F78857329
-	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 02:12:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39FE3857330
+	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 02:13:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64A601C20AD6
-	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 01:12:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCF601F221BA
+	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 01:13:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 222F71BC30;
-	Fri, 16 Feb 2024 01:01:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24CFDF53;
+	Fri, 16 Feb 2024 01:06:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VwI1BtmZ"
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="fMkLOjyd"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE7CC1B956
-	for <cgroups@vger.kernel.org>; Fri, 16 Feb 2024 01:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF406F9EA
+	for <cgroups@vger.kernel.org>; Fri, 16 Feb 2024 01:06:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708045262; cv=none; b=KiGClKcnVig8O22EWWOYyihgFE1F7+HT8cubltVc+kmRKqp9ImWYIk9IBG98gYu9j8W3MFeamt+4xjcAIdXvT6b2rbJhmytG2MqiANK62zfbTXTDweoY4/x7V4AptyVKQC8NhQ0QmZONvp/HAamitaGdvSn/Mf51eBxPSaWp3RE=
+	t=1708045594; cv=none; b=m92ocs8iMm/XWZMSAl3ZPirxfMn0Y386E9UoQnpZ8NMWN2UYhKX2y1pS2CTd4bS2KwdWb8VnxWbRqQA8VnNwCppz7qEVGPISiO1ZGAmUhP9N5C/2FWbyQBKwUU3tLwSRbGRYmyGQdiAZgcKZcTuWnWFw5UQA/9pLNRAZvx9689E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708045262; c=relaxed/simple;
-	bh=A52H0dqD8kleqE238ieALR6ZBY6GGUNS1919tKqbDeQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Mr16VpohDAzZNyNJPFF6t3joSew9PmuMGxEdJS5yuQyN3Iki/r/KA6gzb3gPhKRV5t8IYDG/MQuB4rlF3i71jogwP8c8sqDkRusIdluvMNK6na+jkK+w0v5cQPpcpJ1p01slALNHoUvDZB8VzAAn+UIFBO+5XkkH/IJ5Z7hMpUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VwI1BtmZ; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 15 Feb 2024 20:00:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708045258;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BBDDxkjYnEavfD3mPCDXRmZmPfVkLnkDBgf+7vi9zKM=;
-	b=VwI1BtmZHZ8AkEFSDPZcDAbf2+PV4v1WRQyNv3uIXV1rbNjzQt5Leg53FPjWDtQ/KaxbAn
-	GxjPODEgB7rm5NhFMSI3EYn8tBPiHukc5PvTq1vOA+l7XGhliE2x7w1hLnpYG9dWz5RqKW
-	pX+V+s/4pq5j3IaGneZUuQMv6MupngE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Suren Baghdasaryan <surenb@google.com>, mhocko@suse.com, 
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, 
-	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de, 
-	mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, hughd@google.com, 
-	andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com, 
-	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com, 
-	ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, 
-	cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
-	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, minchan@google.com, 
-	kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
-	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 13/35] lib: add allocation tagging support for memory
- allocation profiling
-Message-ID: <wdj72247rptlp4g7dzpvgrt3aupbvinskx3abxnhrxh32bmxvt@pm3d3k6rn7pm>
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-14-surenb@google.com>
- <20240215165438.cd4f849b291c9689a19ba505@linux-foundation.org>
+	s=arc-20240116; t=1708045594; c=relaxed/simple;
+	bh=pdX4YFmXvkCYJozarbc5NuAljGq2QKgP22r5bHoyo6M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PKMXOO8JsG/2JaxSvebfCvGUJ/hY8Y5gyYf2xd6HWV94gQ7UBX6AjV5+pA+p78RpVy44Sz00u+7k7HqC9+UK+2mvlUiKWrL3U9kFYHewVVWxU70nMmYcM+rjdtbj5u4PTwbfLO4FIUjYLN6V+mISSpVhKRFXxgslZ/DoPdgdMxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=fMkLOjyd; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-42db60ebcd7so10223501cf.0
+        for <cgroups@vger.kernel.org>; Thu, 15 Feb 2024 17:06:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1708045592; x=1708650392; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=SJOk5GBoNGjtYX6UP2FD6x8pshcgNrZex6zZ50AbGYM=;
+        b=fMkLOjydWFzyo3tHChBuLpbIRXKs2SDBgSpHot0H0eZk+Mn7aohqz4yAeUXkcGbukN
+         tCIyuhwdsqBRQMkUJXoPVDVF1XEmf3gseQlQC4LZsyeSgnD5/KuSxFf45nfB3baDvU0i
+         C3vubDKbbYUj4B/0Kk0lhrHTVw6Pu9dI7ta4oTFx3U/1bPUWwN5LLwGjBvNM82vY5qDq
+         zGuZ5kAmJ3+rohu93m7E5zvDGTt0jy6rL1mV1jk8Ue7zRP4fK0U7ZsbSgVGTk7M4StmG
+         /L6CKRwJHr8psQ+pYeuWTvk0XGY/cPu5VBSKAEtGccMgdzH09vKaNVqiLW1lRTbzrLY9
+         y9Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708045592; x=1708650392;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SJOk5GBoNGjtYX6UP2FD6x8pshcgNrZex6zZ50AbGYM=;
+        b=WBrJ3cDUTKVNRACchTNJd2Y28e2kUSv5TnLzHqtB7Wsml/gGBW2d5PCDt8ZjyEpcjP
+         4AhE+DPOIsyt72/n9NIx04p4x0rMI46N179lebPQLbU2bj6WgdQRXsaYdMdaE9kcYKAV
+         cDMxd0c3FlBBDTweQMqEjPNu2WGawG+wbCbC96ZYZFufEDJXgyl1Z4UaPgD9tuYQxglM
+         ZA8NR9QgDOqgpl1HKibRQwWy5jlaRVzF7kQCT1IWwO2qHCmLjeYi57bigLjljVRaFukd
+         EhOSfE+UtNSEOnFGYIP3TfAkcqFphkFsIBkNMmRxLFjL7zqwCtvui4hREnhVbcpvhvBj
+         vRzg==
+X-Forwarded-Encrypted: i=1; AJvYcCUGCPSvXKyUspgwASr6kkySmlEs5e46I2i+5e5290L4Ir3Z/ejWwzSOeJbIF3pPCS/mDwgrtOirwanmdiw2jfOSoPMgoK/0pQ==
+X-Gm-Message-State: AOJu0Yx9LaxJPCOQ5TZnb5l0tKyslH9I9NqYB9TCSMKlvmw8nRYJtZnT
+	XVI3LN4M1ZUvp/VZ05PfC34UbpHmsR4IFELZax0PDO9JOFSmTczEQRg2XGAfJvHr1oIv+YYmJ8O
+	IffyQh7t/7dCvQPg997JxcfiHgP/hRd6itVVdFg==
+X-Google-Smtp-Source: AGHT+IFn+h3r/AaoF4MfmIEWnQLUDUmnx1Kec57gXxwxEXHIeMLPIowE5fZkN66KK2rAD8UQkIaND2e8M33sIsMCnhQ=
+X-Received: by 2002:a05:622a:1048:b0:42c:798a:a053 with SMTP id
+ f8-20020a05622a104800b0042c798aa053mr4373943qte.55.1708045591818; Thu, 15 Feb
+ 2024 17:06:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240215165438.cd4f849b291c9689a19ba505@linux-foundation.org>
-X-Migadu-Flow: FLOW_OUT
+References: <20240207174102.1486130-1-pasha.tatashin@soleen.com>
+ <20240207174102.1486130-2-pasha.tatashin@soleen.com> <8ce2cd7b-7702-45aa-b4c8-25a01c27ed83@arm.com>
+ <CA+CK2bC=XyUhoSP9f0XBqEnQ-P5mMT2U=5dfzRSc9C=2b+bstQ@mail.gmail.com> <b008bd2d-a189-481f-917d-bb045c43cb07@arm.com>
+In-Reply-To: <b008bd2d-a189-481f-917d-bb045c43cb07@arm.com>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Thu, 15 Feb 2024 20:05:55 -0500
+Message-ID: <CA+CK2bBTe93nXzY3Qhty+821LrkjBVnQDxro3m7Y-GVihSP18A@mail.gmail.com>
+Subject: Re: [PATCH v4 01/10] iommu/vt-d: add wrapper functions for page allocations
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
+	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
+	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
+	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
+	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
+	joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
+	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
+	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
+	rdunlap@infradead.org, samuel@sholland.org, suravee.suthikulpanit@amd.com, 
+	sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org, 
+	tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, will@kernel.org, 
+	yu-cheng.yu@intel.com, rientjes@google.com, bagasdotme@gmail.com, 
+	mkoutny@suse.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Feb 15, 2024 at 04:54:38PM -0800, Andrew Morton wrote:
-> On Mon, 12 Feb 2024 13:38:59 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
-> 
-> > +Example output.
-> > +
-> > +::
-> > +
-> > +    > cat /proc/allocinfo
-> > +
-> > +      153MiB     mm/slub.c:1826 module:slub func:alloc_slab_page
-> > +     6.08MiB     mm/slab_common.c:950 module:slab_common func:_kmalloc_order
-> > +     5.09MiB     mm/memcontrol.c:2814 module:memcontrol func:alloc_slab_obj_exts
-> > +     4.54MiB     mm/page_alloc.c:5777 module:page_alloc func:alloc_pages_exact
-> > +     1.32MiB     include/asm-generic/pgalloc.h:63 module:pgtable func:__pte_alloc_one
-> 
-> I don't really like the fancy MiB stuff.  Wouldn't it be better to just
-> present the amount of memory in plain old bytes, so people can use sort
-> -n on it?
+> >>> + */
+> >>> +static inline void *iommu_alloc_page_node(int nid, gfp_t gfp)
+> >>> +{
+> >>> +     return iommu_alloc_pages_node(nid, gfp, 0);
+> >>> +}
+> >>
+> >> TBH I'm not entirely convinced that saving 4 characters per invocation
+> >> times 11 invocations makes this wrapper worthwhile :/
+> >
+> > Let's keep them. After the clean-up that you suggested, there are
+> > fewer functions left in this file, but I think that it is cleaner to
+> > keep these remaining, as it is beneficial to easily distinguish when
+> > exactly one page is allocated vs when multiple are allocated via code
+> > search.
+>
+> But is it, really? It's not at all obvious to me *why* it would be
+> significantly interesting to distinguish fixed order-0 allocations from
+> higher-order or variable-order (which may still be 0) ones. After all,
+> there's no regular alloc_page_node() wrapper, yet plenty more callers of
+> alloc_pages_node(..., 0) :/
 
-They can use sort -h on it; the string_get_size() patch was specifically
-so that we could make the output compatible with sort -h
+The pages that are allocated with order > 0 cannot be freed using
+iommu_put_pages_list(), without messing up refcounts in the tail
+pages. I think having a dedicated function that guarantees order = 0
+pages allocation makes it easier for the reviewer to follow the code,
+and ensures that only these pages are put on the freelist.
 
-> And it's easier to tell big-from-small at a glance because
-> big has more digits.
-> 
-> Also, the first thing any sort of downstream processing of this data is
-> going to have to do is to convert the fancified output back into
-> plain-old-bytes.  So why not just emit plain-old-bytes?
-> 
-> If someone wants the fancy output (and nobody does) then that can be
-> done in userspace.
+Even in the existing code, the order=0 allocation is wrapped in the
+*alloc_pgtable_page() function.
 
-I like simpler, more discoverable tools; e.g. we've got a bunch of
-interesting stuff in scripts/ but it doesn't get used nearly as much -
-not as accessible as cat'ing a file, definitely not going to be
-installed by default.
+Pasha
 
-I'm just optimizing for the most common use case. I doubt there's going
-to be nearly as much consumption by tools, and I'm ok with making them
-do the conversion back to bytes if they really need it.
+
+>
+> Thanks,
+> Robin.
 
