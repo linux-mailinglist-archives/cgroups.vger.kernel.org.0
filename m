@@ -1,161 +1,126 @@
-Return-Path: <cgroups+bounces-1648-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1649-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BBBF857374
-	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 02:32:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FFD98575D4
+	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 07:07:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DED11C21207
-	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 01:32:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5B7B1F23186
+	for <lists+cgroups@lfdr.de>; Fri, 16 Feb 2024 06:07:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EECBEEADD;
-	Fri, 16 Feb 2024 01:31:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E829114A90;
+	Fri, 16 Feb 2024 06:07:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="itXYy/Rq"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RLzjIZP0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECE4CDF4E
-	for <cgroups@vger.kernel.org>; Fri, 16 Feb 2024 01:31:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD12014A8D;
+	Fri, 16 Feb 2024 06:07:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708047118; cv=none; b=hJIoPbwXvkFpCIA9Eg+W9KxgDFIFWb/gWP7G7GpE9kPFwxholDrwDBUpgLnY5x2HpHFIOilRRO6Fu6Df3PR9xKb7EPLXXBuij2MZfpGq55OpMxgmG9LfXEJmZlQ8voFDQSYYonRRN4Q441yIawR0DYPVDf3jBpw0bPa3tJPBV3U=
+	t=1708063656; cv=none; b=C/nXkQU6+7ZgVaSBDIuKiRc5VUfE1uS5cIAivcPgG7hE+3zxDwU2tEX9tJCu6wGy4Ozrs8edq4OJDlmUQyThgCYSkeK7PP66jEB8jksuxoMAq9SNueQegCsUHMgqo/cTc9sQKHdyFl03TrI0Et9zzl75RwMOlr4A8bFhKygHva0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708047118; c=relaxed/simple;
-	bh=vQYZ59CBPJ0zZaKxUafJy9oOl819GTZex04PI7LYJTI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dhN8ktvuoSr/IzuvS9hWgD9zeI68r8K+8YfzTST3RhifgHG6lypPAN4r4sGMH/pytU34lJ92KLIHAu3MxQaGv4RWVSolZpJpAgYSuR1y6hFJxz5VqobKc09mPxiIbtxRtHZuZ5Z11yZJAYz0GtxPd2ymLrxU9cC61I3zmXf68cM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=itXYy/Rq; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-6078c4cadd7so15525907b3.2
-        for <cgroups@vger.kernel.org>; Thu, 15 Feb 2024 17:31:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708047116; x=1708651916; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vQYZ59CBPJ0zZaKxUafJy9oOl819GTZex04PI7LYJTI=;
-        b=itXYy/Rq5xR2dZ0SWwxmNbF050Kt7ZGc+CuoSlhuVOrM09B5CzBzr/pKW48C+IleC1
-         Ni6TcNW/dgOGwS8zIuXIoyPovegCfX4484HfAcRmsyH/xXC/MwCP7bXHiQS33BzHbnvO
-         jJ2RqPp+8J7XMIzxwjTro3d/vjfIsSCSMxMcC5y3KcjZFgLcyNepZuYsfx9L7DCFUs42
-         YndcgXzcwCUozf5IF09tonQE0uZi8MO1wqigD3esitbGlGMdFeD696PiO5Q0/+14tWVd
-         llLA9gufIaSzLK6IWTV1MG3b10DekrEKi+A4MEJGrw2KlCkFhNA8CXGdlQ6Mi6xYoX2+
-         nlDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708047116; x=1708651916;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vQYZ59CBPJ0zZaKxUafJy9oOl819GTZex04PI7LYJTI=;
-        b=Yxaf+/lRTy94rSR2Hg9PB7l1nPJxgIn+nyS3AGM6Di+r7QQfcSd0XYaaOGduyrAlzn
-         sXyyMtSKzAo7Ky8oVrvFYi2rTwJ1Gb0ZhBQx9UsnDHXzY8kmBM8whwpSAuM4HFz4BePW
-         CyVKiUAKsqtQ2BDl1djxOiAn2mTBfF/FrL9t8qzxunerB2lRDtvj8IG/zM9d8McAjbyq
-         cltJ9xXV9Bhpjh4h5gbrBKvVC/UwgtyiDPJmUYKm4xZZXuhV9TzEMkUNceNUxltlnrBf
-         eTUAI13r5c/BViAzHSAB0SDTqAzdYgNOg+vtf60Fg1ORmmnB/Vdxu8LTLhrGtTj9CEO0
-         YL9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUXbjEqvH53TSRO8vUTBKSMsGpGNb2rMfiJYjxIQjsBxniahTI2Y39Eh5083wDtBVK+qNnumUHCyEtmhAgQ+xrp9t09nqHozA==
-X-Gm-Message-State: AOJu0Yx/BChG3IZGSwPLjX0NSoIqWf87yIOVTCM1jTUhDOAWgBzPrUT0
-	yPlTQGkSb8Jxhu+dgy5f8CaLisFGdbuE0NftZE+4aesp808XH2VLYaZRDdB9tVcNjUAWHaKU347
-	l7ETReTuoCtfwuPGDCJppbkzafnAYxmAGUWH5
-X-Google-Smtp-Source: AGHT+IF+os+iVX+7zsmj7iVNhReDfjBM+88HnPVkAqSYQi8klRBhu58CiKhLghxzSpctP7q1yEcL/Br5ckIrQQwfWyg=
-X-Received: by 2002:a0d:d905:0:b0:5ff:9aa1:8970 with SMTP id
- b5-20020a0dd905000000b005ff9aa18970mr3787864ywe.34.1708047115685; Thu, 15 Feb
- 2024 17:31:55 -0800 (PST)
+	s=arc-20240116; t=1708063656; c=relaxed/simple;
+	bh=gKqdrhGvXwQa/MD1xKqhRz44sgn+aAyq0soE+fJ1C/s=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=nQuErmtIWK0A0E1kD5KBaAXGLf2FYlgw10u3ArjlpKBLOQeR36SNNfzQ+au48sHJWySRNIeQwSF1ENSSgcgXefAeySzEFiJT/PQSk88amfx5MEivdGi1nvivvQ8olysYl/fJKLLR+0iB7ax66fy5T2UDu7bBZgOu+8y6OMW+Rh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RLzjIZP0; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708063655; x=1739599655;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=gKqdrhGvXwQa/MD1xKqhRz44sgn+aAyq0soE+fJ1C/s=;
+  b=RLzjIZP03GqlWvB8S2MWPG8IGeqepMb7tyMhqKVuEWsw912rJA8EHeGo
+   hLHgTb7TzXpnvoMR1Jk9TIGdgraL7GPppAlmTZ9r68yY5j+1Zucc0q8Gs
+   Dcf1peUrTbEMgSCr2XvcUNR4IEeZzHkM7yYk0RKfhAC+xsuJweA4LmYQp
+   k+Yt0q+W2ML7A28FmT4y3wKWYj72W3ed5KtPozzB+VH7sTxeuHQDg7VeY
+   Y1YKSObizax0mO483lTBlQWs0X+qbGLwupC0gILHwb9g7p3vsE04Egeow
+   gsw3zW1ViPQnY/aVB1i598TUqAbt2okDtxaBvQW+SOv+VpZAqi9LxE+Uk
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="6013712"
+X-IronPort-AV: E=Sophos;i="6.06,163,1705392000"; 
+   d="scan'208";a="6013712"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 22:07:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,163,1705392000"; 
+   d="scan'208";a="4048552"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 15 Feb 2024 22:07:32 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
+ mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+ x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com,
+ tim.c.chen@linux.intel.com, "Dave Hansen" <dave.hansen@intel.com>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+Subject: Re: [PATCH v9 09/15] x86/sgx: Charge mem_cgroup for per-cgroup
+ reclamation
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-10-haitao.huang@linux.intel.com>
+ <8a31fce6-9ad2-4868-b6bf-15997ef18334@intel.com>
+Date: Fri, 16 Feb 2024 00:07:28 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ruxvgrm3scv7zfjzbq22on7tj2fjouydzk33k7m2kukm2n6uuw@meusbsciwuut>
- <320cd134-b767-4f29-869b-d219793ba8a1@suse.cz> <efxe67vo32epvmyzplmpd344nw2wf37azicpfhvkt3zz4aujm3@n27pl5j5zahj>
- <20240215180742.34470209@gandalf.local.home> <jpmlfejxcmxa7vpsuyuzykahr6kz5vjb44ecrzfylw7z4un3g7@ia3judu4xkfp>
- <20240215192141.03421b85@gandalf.local.home> <uhagqnpumyyqsnf4qj3fxm62i6la47yknuj4ngp6vfi7hqcwsy@lm46eypwe2lp>
- <20240215193915.2d457718@gandalf.local.home> <a3ha7fchkeugpthmatm5lw7chg6zxkapyimn3qio3pkoipg4tc@3j6xfdfoustw>
- <20240215201239.30ea2ca8@gandalf.local.home> <wcvio3ad2yfsmqs3ogfau4uiz5dqc6aw6ttfnvocub7ebb2ziw@streccxstkmf>
-In-Reply-To: <wcvio3ad2yfsmqs3ogfau4uiz5dqc6aw6ttfnvocub7ebb2ziw@streccxstkmf>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 15 Feb 2024 17:31:41 -0800
-Message-ID: <CAJuCfpE9gys=A8A+A9ie92uJXLeYVNyZGGVgxizjEjmRGtjdvg@mail.gmail.com>
-Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@suse.com>, 
-	akpm@linux-foundation.org, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
-	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, 
-	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, bsegall@google.com, bristot@redhat.com, 
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
-	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
-	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com, 
-	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
-	kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2i70mqs3wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <8a31fce6-9ad2-4868-b6bf-15997ef18334@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-On Thu, Feb 15, 2024 at 5:18=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
->
-> On Thu, Feb 15, 2024 at 08:12:39PM -0500, Steven Rostedt wrote:
-> > On Thu, 15 Feb 2024 19:50:24 -0500
-> > Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> >
-> > > > All nice, but where are the benchmarks? This looks like it will hav=
-e an
-> > > > affect on cache and you can talk all you want about how it will not=
- be an
-> > > > issue, but without real world benchmarks, it's meaningless. Numbers=
- talk.
-> > >
-> > > Steve, you're being demanding. We provided sufficient benchmarks to s=
-how
-> > > the overhead is low enough for production, and then I gave you a
-> > > detailed breakdown of where our overhead is and where it'll show up. =
-I
-> > > think that's reasonable.
-> >
-> > It's not unreasonable or demanding to ask for benchmarks. You showed on=
-ly
-> > micro-benchmarks that do not show how cache misses may affect the syste=
-m.
-> > Honestly, it sounds like you did run other benchmarks and didn't like t=
-he
-> > results and are fighting to not have to produce them. Really, how hard =
-is
-> > it? There's lots of benchmarks you can run, like hackbench, stress-ng,
-> > dbench. Why is this so difficult for you?
+Hi Dave,
 
-I'll run these benchmarks and will include the numbers in the next cover le=
-tter.
+On Thu, 15 Feb 2024 17:43:18 -0600, Dave Hansen <dave.hansen@intel.com>  
+wrote:
 
+> On 2/5/24 13:06, Haitao Huang wrote:
+>>  static struct mem_cgroup *sgx_encl_get_mem_cgroup(struct sgx_encl  
+>> *encl)
+>>  {
+>> @@ -1003,14 +1001,6 @@ static struct mem_cgroup  
+>> *sgx_encl_get_mem_cgroup(struct sgx_encl *encl)
+>>  	struct sgx_encl_mm *encl_mm;
+>>  	int idx;
+>>
+>> -	/*
+>> -	 * If called from normal task context, return the mem_cgroup
+>> -	 * of the current task's mm. The remainder of the handling is for
+>> -	 * ksgxd.
+>> -	 */
+>> -	if (!current_is_ksgxd())
+>> -		return get_mem_cgroup_from_mm(current->mm);
+>
+> Why is this being removed?
+>
+> Searching the enclave mm list is a last resort.  It's expensive and
+> imprecise.
+>
+> get_mem_cgroup_from_mm(current->mm), on the other hand is fast and  
+> precise.
+>
 
->
-> Woah, this is verging into paranoid conspiracy territory.
->
-> No, we haven't done other benchmarks, and if we had we'd be sharing
-> them. And if I had more time to spend on performance of this patchset
-> that's not where I'd be spending it; the next thing I'd be looking at
-> would be assembly output of the hooking code and seeing if I could shave
-> that down.
->
-> But I already put a ton of work into shaving cycles on this patchset,
-> I'm happy with the results, and I have other responsibilities and other
-> things I need to be working on.
+I introduced a boolean flag to indicate caller is in kthread (ksgxd or  
+cgroup workqueue), so sgx_encl_alloc_backing only calls this function if  
+that flag is true, meaning search through the mm_list is needed.
+
+But now I think a more straightforward way is to just replace  
+current_is_ksgxd() with (current->flags & PF_KTHREAD).
+
+Thanks
+
+Haitao
 
