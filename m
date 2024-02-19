@@ -1,168 +1,208 @@
-Return-Path: <cgroups+bounces-1697-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1698-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5ED9285A916
-	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 17:39:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 237A285A969
+	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 17:55:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15DBA28365B
-	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 16:39:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4867C1C227B6
+	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 16:55:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23DDA3F9E3;
-	Mon, 19 Feb 2024 16:39:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3FC74439F;
+	Mon, 19 Feb 2024 16:55:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3CClvGDE"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MkZ/IxZ4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5586B41C79
-	for <cgroups@vger.kernel.org>; Mon, 19 Feb 2024 16:39:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1DA241C85
+	for <cgroups@vger.kernel.org>; Mon, 19 Feb 2024 16:55:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708360773; cv=none; b=iSaSF2LfRM79Q9ZEZEKKPbc5pIfvpw5XEdBqqWF0vBSEPcgIi9dCaNlxeoPaiENJ6ZkVmiTeJomvFIjbMVupVeOzXOT7ZtuTmhOl0m0uAmtmylK2nem1GlkGwcTcXw19k7Km3lv0hDzOATdngoGka+P2Lj0QvGVD7qWY5qyOp7o=
+	t=1708361738; cv=none; b=O0+LPhfxX30tbWfwNcSvmXeAzxjYvvey5YJHQXYEaP9f6q4ZKohMGQ0imBVX3v6BRvF5kwMEeU27EErLO3PZC6KupycNFRC7DPgjlUYkqFkM9SiZzcLu8OeM5dUx0oNty8OMj/Tl705umSD4/ofR355S5YOoDDOs8O22WcewHOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708360773; c=relaxed/simple;
-	bh=gk6WUuOUYilwjlmi9KvPeSBtjRyvxYITvt3eyTtNzcA=;
+	s=arc-20240116; t=1708361738; c=relaxed/simple;
+	bh=L2Wk+KfPMqWFy+4dwx61nIYX1yKhjaAyyhWHKrdqFeo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ioYnMO71FTAhQu+jtvybGqgeGTkaQlXbBUo+YKxuhIONGn17NEEkhGoRgoJcMJbbqbZCW68KniBsRYvydFiaJkp76UBEpECmBTtJNpN77hl3mJmMp+qhgnzwH2w8BrgkEgvWdAQlpMGljfmOpuRTIzEiDsmSNgJhSvpfPCl2mQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3CClvGDE; arc=none smtp.client-ip=209.85.128.173
+	 To:Cc:Content-Type; b=JwsRUKDxMv550zliVs5btoLjiAbkeN/pgqmfSu66pVc6i0C+/BzIEFVWBWij+h97FO/bj76TC10OwDNzHrdPVPZ7Vnqa5r6bGzZWE1BLMcU4T1llX996Z24BqbOYrTu/Zl0NEggnH9tYMpZ+I9MEG7Nct3KTn3OEa9+2jx6a9yk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MkZ/IxZ4; arc=none smtp.client-ip=209.85.219.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-608342633b8so12620787b3.1
-        for <cgroups@vger.kernel.org>; Mon, 19 Feb 2024 08:39:32 -0800 (PST)
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dcbef31a9dbso2787950276.1
+        for <cgroups@vger.kernel.org>; Mon, 19 Feb 2024 08:55:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708360771; x=1708965571; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1708361736; x=1708966536; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gk6WUuOUYilwjlmi9KvPeSBtjRyvxYITvt3eyTtNzcA=;
-        b=3CClvGDEnSBT9FQnMKdjaqdE6yUjZpF9oBAyA/4knW1if0VFVWxAAX9GjL8thIyf1m
-         TL1aE4z91qgTM7S/e4lyD7oAtMoAg8j2nSERfNcQ/nLAIHy28oP/2WGSIKBt2GFkw4DE
-         yaoJcOuk5H+u8u1Q5LUovgC0vVu2JHXxjkArxYEbyDhamXx3mjhm7TMqt6oH7IQyFPpH
-         19/vmyZ6CPVt/NWAtmqZgkSpj/gmHVU9Y+51/cwdQBd7j0gpr85kDBT/fBSoLJ3+9qNW
-         hXR8UsepoOPcFnyLA0SMfiN+syO6pPwlMW5RgWWt3PijNcmxIUr1eOvtSX9yG34TwGSB
-         vhtQ==
+        bh=MC1JxayV7V5FEwBjiEEHat04AtMi8UdAlknxmmQHPbY=;
+        b=MkZ/IxZ4QGXfI4ZTy9QDCdF6dyp0wZD+oD0HD8XIChpTjEQYwWiVrhhdipzC9NyIoX
+         wLHW5WsTCcZTnzLVnhOYOz3zmUpOSnmKSJYLgsyjrRwWTGVpsApwlptLts+qEn4Qk0Un
+         /dW/ZG24LaZivpClFG7/ubvZNAzi5kJ580ayfAjWOzSsccD70WRH6FVh2D9d+2PH2YOc
+         MSc7F68O3oyldG67kbMOC+F6XuYzndFaavEgloTQqjeveKnHJse9DTh2pD9aMrYwTEK6
+         zlGzqZLMGn+1gmyVal04viaSjc+d0e5VrUXYKev2lgQbl5RMAAxRBv/mbKeatIQWWwjz
+         /QCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708360771; x=1708965571;
+        d=1e100.net; s=20230601; t=1708361736; x=1708966536;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gk6WUuOUYilwjlmi9KvPeSBtjRyvxYITvt3eyTtNzcA=;
-        b=XImxWJXKhcWeiREkZUaxRY+mSa7UZ0mt4VwsdJaXnPUUsPw3eG1SYfVF9KLqG+KEkr
-         2yuGSl71N9vHt71u67wR8NlC0atc4tLHq2LSxBfdMOHc0ncOf/dneeHK3XjOVLnWOUQa
-         +swgSTbIDqJsjTu3Si5V6QDuZ9E4DEWrcHnOtoSDkGoDeYttbSkH5TQkEJ3THK2Ra4xd
-         BaboxeylLrfiC4HVkinyF5EzEqUrDzwp9L4qeXCvHHd+uBadwvlmnxHET3LL3VFoD9D9
-         zgX3RBn6pmD91S4O4VbFzmLx/bggtfc1svf/WtXzYyN+8kJTqJbrPIePFpIk1wPHLAtu
-         AsnA==
-X-Forwarded-Encrypted: i=1; AJvYcCWBfTuyoDPkNPgDN1BP+hG+DoV2/Hs3IVXbNMVURkuRmh0dite8h2GCc2U9Yyx8/i9b36dzyAXc1Y+fXieXYBmKwjFoXq6TXw==
-X-Gm-Message-State: AOJu0Yz87/ov80AiGTDLs74MhOzo95VuprJtYQCT8l1+oCD5CWSJF/ic
-	BGrFm+l2GnYhuaHoHbBUloo70zNoL5cgnfx9kiSufLJiAV1QBbMhubBNxpzfsY4rq04z6LL/2Gl
-	fmdtDaD+EnJA2OpTTMzpsSZUCe6e0aVUI5c+X
-X-Google-Smtp-Source: AGHT+IHOf7zN6UTEUs94Io+Il570qu2MIlpkBfsEY64np8rj8rUeVxwrc0psYvm2LfbR2YZKvPVrXq7xPmkV6NuOIPU=
-X-Received: by 2002:a0d:db0a:0:b0:608:218b:5494 with SMTP id
- d10-20020a0ddb0a000000b00608218b5494mr4113497ywe.14.1708360771228; Mon, 19
- Feb 2024 08:39:31 -0800 (PST)
+        bh=MC1JxayV7V5FEwBjiEEHat04AtMi8UdAlknxmmQHPbY=;
+        b=ny5lAneTrwQLBAVbnjMOqmI5FihrnL4Fb1+LGuhwKJ7WYlne9tNaTA0bJEDcneJVqP
+         HZu36PQNRtQNRjBBaEOg3EwtZB3BPg492RplVNlpCMMsEBtsiam5dXyzQpE9wUCCZihW
+         KlTMhzYidjKmFFp6oELHHTTdggCdBp8fAtcjyBumqksKfnaHoQO9mOmf//gHj3quS2wm
+         bCf9mYCF3Nzr09Mf1zJPYpm3OYXMdneNhraeyOxZTec6hE893sQ3TnvRxl6LHSmCaL+9
+         FxJbxDPaVgtbfGXuylWMLq77CvK30ZhfXnYWlmKwaK26Z9ifHQ766DIr2Alc0UdvwzTd
+         8MpA==
+X-Forwarded-Encrypted: i=1; AJvYcCXFyKqq8QKGceKKG+pjYV/SUKeLGRy/+7HGIJALDTWtzTWIoM2T8tyI7OL/EGIMIfEAveIWEL72JKA21S42MfzFywlDTqukzw==
+X-Gm-Message-State: AOJu0YxQpRZlxLl41HMMU3ysjcfS0Rh4iKiZyBiyH98Zv5HbonqukHxu
+	/9AuE3bAiA4LYlu/qsfDIZ840adpZy7tJmwQgNW/udawLeb7r/aL/byhguZNl4naJ6qGU6FFgkF
+	Ges9M6hAyV5tdw9UWrTmY7AE9En5+6qE1W+Y3
+X-Google-Smtp-Source: AGHT+IE9e4H9CxOF/Wkt1BmMwgF6wG5QNpfKFX5SyoOVKH5zyjhHqyJSbZUQlTjCIfZiNsAQiQ1++39gCNndnejh6es=
+X-Received: by 2002:a25:d68b:0:b0:dc6:aed5:718a with SMTP id
+ n133-20020a25d68b000000b00dc6aed5718amr10952783ybg.26.1708361735183; Mon, 19
+ Feb 2024 08:55:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202233855.1236422-1-tjmercier@google.com>
- <ZcC7Kgew3GDFNIux@tiehlicka> <CABdmKX3HbSxX6zLF4z3f+=Ybiq1bA71jckkeHv5QJxAjSexgaA@mail.gmail.com>
- <ZcE5n9cTdTGJChmq@tiehlicka> <CABdmKX0Du2F+bko=hjLBqdQO-bJSFcG3y1Bbuu2v6J8aVB39sw@mail.gmail.com>
- <ZcFG2JoXI7i8XzQY@tiehlicka> <CABdmKX0t1LXj80Awe20TrmY5gQB6v2E4bGfW8WXr2i84o+k6ow@mail.gmail.com>
- <ZcFQMru5_oATGbuP@tiehlicka> <CABdmKX35GV3VFar0_pNR_vAXLpvxo+APALXMharsXh6TO+0mrQ@mail.gmail.com>
- <ZcH0wBPvOjqayjAD@tiehlicka> <ZdNFbiH1ufbOTIDx@tiehlicka>
-In-Reply-To: <ZdNFbiH1ufbOTIDx@tiehlicka>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Mon, 19 Feb 2024 08:39:19 -0800
-Message-ID: <CABdmKX0-nWU4P7ZJqOMusRCuhewf+kg1x==U7m52=MaKeRCYWg@mail.gmail.com>
-Subject: Re: [PATCH v3] mm: memcg: Use larger batches for proactive reclaim
-To: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, Efly Young <yangyifei03@kuaishou.com>, 
-	android-mm@google.com, yuzhao@google.com, mkoutny@suse.com, 
-	Yosry Ahmed <yosryahmed@google.com>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
+References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-33-surenb@google.com>
+ <f0a56027-472d-44a6-aba5-912bd50ee3ae@suse.cz> <CAJuCfpGUTu7uhcR-23=0d3Wnn8ZbDtNwTaFnukd9qYYVHS9aSA@mail.gmail.com>
+ <5bd3761f-217d-45bb-bcd2-797f82c8a44f@suse.cz>
+In-Reply-To: <5bd3761f-217d-45bb-bcd2-797f82c8a44f@suse.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Mon, 19 Feb 2024 08:55:22 -0800
+Message-ID: <CAJuCfpHRqiV2LZEnCB0hwwoexw+8U_XzqH1f+LwLjsQxmXR3Tw@mail.gmail.com>
+Subject: Re: [PATCH v3 32/35] codetag: debug: skip objext checking when it's
+ for objext itself
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 19, 2024 at 4:11=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
+On Mon, Feb 19, 2024 at 1:17=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
 >
-> On Tue 06-02-24 09:58:41, Michal Hocko wrote:
-> > On Mon 05-02-24 20:01:40, T.J. Mercier wrote:
-> > > On Mon, Feb 5, 2024 at 1:16=E2=80=AFPM Michal Hocko <mhocko@suse.com>=
- wrote:
-> > > >
-> > > > On Mon 05-02-24 12:47:47, T.J. Mercier wrote:
-> > > > > On Mon, Feb 5, 2024 at 12:36=E2=80=AFPM Michal Hocko <mhocko@suse=
-.com> wrote:
-> > > > [...]
-> > > > > > This of something like
-> > > > > > timeout $TIMEOUT echo $TARGET > $MEMCG_PATH/memory.reclaim
-> > > > > > where timeout acts as a stop gap if the reclaim cannot finish i=
-n
-> > > > > > TIMEOUT.
-> > > > >
-> > > > > Yeah I get the desired behavior, but using sc->nr_reclaimed to ac=
-hieve
-> > > > > it is what's bothering me.
-> > > >
-> > > > I am not really happy about this subtlety. If we have a better way =
-then
-> > > > let's do it. Better in its own patch, though.
-> > > >
-> > > > > It's already wired up that way though, so if you want to make thi=
-s
-> > > > > change now then I can try to test for the difference using really
-> > > > > large reclaim targets.
-> > > >
-> > > > Yes, please. If you want it a separate patch then no objection from=
- me
-> > > > of course. If you do no like the nr_to_reclaim bailout then maybe w=
-e can
-> > > > go with a simple break out flag in scan_control.
-> > > >
-> > > > Thanks!
-> > >
-> > > It's a bit difficult to test under the too_many_isolated check, so I
-> > > moved the fatal_signal_pending check outside and tried with that.
-> > > Performing full reclaim on the /uid_0 cgroup with a 250ms delay befor=
-e
-> > > SIGKILL, I got an average of 16ms better latency with
-> > > sc->nr_to_reclaim across 20 runs ignoring one 1s outlier with
-> > > SWAP_CLUSTER_MAX.
+> On 2/19/24 02:04, Suren Baghdasaryan wrote:
+> > On Fri, Feb 16, 2024 at 6:39=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz=
+> wrote:
+> >>
+> >> On 2/12/24 22:39, Suren Baghdasaryan wrote:
+> >> > objext objects are created with __GFP_NO_OBJ_EXT flag and therefore =
+have
+> >> > no corresponding objext themselves (otherwise we would get an infini=
+te
+> >> > recursion). When freeing these objects their codetag will be empty a=
+nd
+> >> > when CONFIG_MEM_ALLOC_PROFILING_DEBUG is enabled this will lead to f=
+alse
+> >> > warnings. Introduce CODETAG_EMPTY special codetag value to mark
+> >> > allocations which intentionally lack codetag to avoid these warnings=
+.
+> >> > Set objext codetags to CODETAG_EMPTY before freeing to indicate that
+> >> > the codetag is expected to be empty.
+> >> >
+> >> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> >> > ---
+> >> >  include/linux/alloc_tag.h | 26 ++++++++++++++++++++++++++
+> >> >  mm/slab.h                 | 25 +++++++++++++++++++++++++
+> >> >  mm/slab_common.c          |  1 +
+> >> >  mm/slub.c                 |  8 ++++++++
+> >> >  4 files changed, 60 insertions(+)
+> >> >
+> >> > diff --git a/include/linux/alloc_tag.h b/include/linux/alloc_tag.h
+> >> > index 0a5973c4ad77..1f3207097b03 100644
+> >>
+> >> ...
+> >>
+> >> > index c4bd0d5348cb..cf332a839bf4 100644
+> >> > --- a/mm/slab.h
+> >> > +++ b/mm/slab.h
+> >> > @@ -567,6 +567,31 @@ static inline struct slabobj_ext *slab_obj_exts=
+(struct slab *slab)
+> >> >  int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+> >> >                       gfp_t gfp, bool new_slab);
+> >> >
+> >> > +
+> >> > +#ifdef CONFIG_MEM_ALLOC_PROFILING_DEBUG
+> >> > +
+> >> > +static inline void mark_objexts_empty(struct slabobj_ext *obj_exts)
+> >> > +{
+> >> > +     struct slabobj_ext *slab_exts;
+> >> > +     struct slab *obj_exts_slab;
+> >> > +
+> >> > +     obj_exts_slab =3D virt_to_slab(obj_exts);
+> >> > +     slab_exts =3D slab_obj_exts(obj_exts_slab);
+> >> > +     if (slab_exts) {
+> >> > +             unsigned int offs =3D obj_to_index(obj_exts_slab->slab=
+_cache,
+> >> > +                                              obj_exts_slab, obj_ex=
+ts);
+> >> > +             /* codetag should be NULL */
+> >> > +             WARN_ON(slab_exts[offs].ref.ct);
+> >> > +             set_codetag_empty(&slab_exts[offs].ref);
+> >> > +     }
+> >> > +}
+> >> > +
+> >> > +#else /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
+> >> > +
+> >> > +static inline void mark_objexts_empty(struct slabobj_ext *obj_exts)=
+ {}
+> >> > +
+> >> > +#endif /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
+> >> > +
+> >>
+> >> I assume with alloc_slab_obj_exts() moved to slub.c, mark_objexts_empt=
+y()
+> >> could move there too.
 > >
-> > This will obviously scale with the number of memcgs in the hierarchy bu=
-t
-> > you are right that too_many_isolated makes the whole fatal_signal_pendi=
-ng
-> > check rather inefficient. I haven't missed that. The reclaim path is
-> > rather convoluted so this will likely be more complex than I
-> > anticipated. I will think about that some more.
-> >
-> > In order to not delay your patch, please repost with suggested updates
-> > to the changelog. This needs addressing IMO but I do not think this is
-> > critical at this stage.
+> > No, I think mark_objexts_empty() belongs here. This patch introduced
+> > the function and uses it. Makes sense to me to keep it all together.
 >
-> Has there been a new version or a proposal to refine the changelog
-> posted?
+> Hi,
+>
+> here I didn't mean moving between patches, but files. alloc_slab_obj_exts=
+()
+> in slub.c means all callers of mark_objexts_empty() are in slub.c so it
+> doesn't need to be in slab.h
 
-Hi Michal,
+Ah, I see. I misunderstood your comment. Yes, after slab/slob cleanup
+this makes sense.
 
-I updated the commit message in V4 to include a sentence about restart
-cost, and added a line above each reclaim test to note the MGLRU
-config and whether the memcg LRU was used or not.
+>
+> Also same thing with mark_failed_objexts_alloc() and
+> handle_failed_objexts_alloc() in patch 34/35.
 
-https://lore.kernel.org/all/20240206175251.3364296-1-tjmercier@google.com/
+Ack. Thanks!
 
-> --
-> Michal Hocko
-> SUSE Labs
+>
 
