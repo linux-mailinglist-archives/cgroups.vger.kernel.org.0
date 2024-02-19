@@ -1,471 +1,162 @@
-Return-Path: <cgroups+bounces-1695-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1696-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8CA785A794
-	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 16:40:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ED6B85A7F3
+	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 16:57:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DC64282DF7
-	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 15:40:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 428D21C21548
+	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 15:57:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B720938FA5;
-	Mon, 19 Feb 2024 15:40:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9ABD3A1D0;
+	Mon, 19 Feb 2024 15:57:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i8CTs7m0"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GIbaVIyX"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E688381CE;
-	Mon, 19 Feb 2024 15:39:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CEDE38F98;
+	Mon, 19 Feb 2024 15:57:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708357201; cv=none; b=n+WO3NZ5qz/uy4bDvNpHvmIrUcDLdt/3HdWbTvQSMwaAmiszuZguN3i6Dzk6cJdSV/wTNuC+zF/+fukIiA4siWjR4Wo5Lb7FVlcXDFCQVY4BQ46JrNCSBs/2SrcKWopz2czQ3lxPvSgW6wt48Wm3H++mzs6ADyTC4p2mObtXN3Y=
+	t=1708358249; cv=none; b=RnMvC2WWfriKyZmpyaxRLJvq+CvORkaXYvtZtXlIBM2wQ+dEKjbQf0qLosm40y71WVJ/ksUU3UZ1KbgAL1hYkKHphCkLym5iDfo8ltsIaSQS3Vd9EZpPxHwcuzJUE/RHUyPudRmGrD6iH98Bp3cNhdOQHcU2JFuuHR4SRv9GUqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708357201; c=relaxed/simple;
-	bh=ckLM5TQFKK8lW70PK56ytZgY9likU8hHI4t/ifS0ybI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qss89qn5dAECzOH7aMGvtIijkkXxkNzUTu6Mji9lWxGJMOLTGyLfbFqpkKNSRv6J0BrJIZ3uVBELbaDVvBbv6gmHU/7eZJ+9jkZPo7+h8LNKgxy6THM3KOlY/DjYKZgLLn/nipJDGD7Rps9rgwL4XOxhPCRH5PMWlgDPFofsjPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i8CTs7m0; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1708358249; c=relaxed/simple;
+	bh=QxzA0sWbtJ1971nGvDV76Q3FY8LZ3iFXNaFcbvQwYYk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i3Y2R+puBbcp6jCCXTfgtENUpF7ipzz5hhdopGB9yrL/BIF0cYm8p8/61E/cBXCLx9YL3JfuTU+SZaKngst7vIoPO+3fA9bsWmHBAlhb/vJQg/Ua4uQ3CrqdzEfoJ2Ju4zNtNmfouKpp9J4bnkxCpmaQXUf+/LLiFR7kNVEMllY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GIbaVIyX; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708357199; x=1739893199;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ckLM5TQFKK8lW70PK56ytZgY9likU8hHI4t/ifS0ybI=;
-  b=i8CTs7m081aaLkzsQvNT0euj91bzW/PklQeBlU0gtLNoUXSTJgcNznxB
-   d5KIPQfgGfPFB5ecxyZIOFeQfEEWNzbUZ9sYF9bisgxpJNyUvgKCouSrZ
-   q5cuw0Vd8ZBMCQGPPw6gWVUTeR1lezx7jca/EwUOVrCZlnrwp4rB4y8xW
-   Z1A1dHkzYaNs4XzsE+Zr4Sbysj8I1VFtOdyQLvJkOfEQ4/Anj3AZ3wSGf
-   3Yv9iMYA8Y/zqwGMoV3xZReDUc9Oj82kbdH1n5JLBqRF84xfzH95WiAN/
-   bVNpxytt+4THajKOCsbmeCjKnlDN48Th1jE46FaCpkncBSrhWgPuQp7AT
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="13149608"
+  t=1708358247; x=1739894247;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=QxzA0sWbtJ1971nGvDV76Q3FY8LZ3iFXNaFcbvQwYYk=;
+  b=GIbaVIyXeaO0K+zMngg3jAWMnfIRiTjHvmysnwoi4GwVeRVpEQPXshmq
+   VKhbdMn0nmlKbbk8wJDpg6oZCoxzMaxNEmpziVTYv/BnyLNH1E9GxMDLa
+   5fb9bPVvS68CEzQ7Y9XA5Wad/ktq2n7dII3WI3v3f8jJvjTxuvjmlq5ck
+   mXp5yoj2hewxzhqgl+gJzmGdC0xnH6xTHSPJfPMKme9xjTvJq6eCr+INN
+   Qr23qEgQrNJxEjj/1thpHBsNDQ8OIbPtAQ3q3dafBWVkzPLv7GC1/xSBG
+   iyqBXC9pypWDlAgRNIoGWLSahOy+vHekVe5uLLs7Ha2jXBTDtC5iTAVTE
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="13151568"
 X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="13149608"
+   d="scan'208";a="13151568"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 07:39:58 -0800
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 07:57:01 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="912894511"
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="912896951"
 X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="912894511"
-Received: from b4969161e530.jf.intel.com ([10.165.56.46])
-  by fmsmga002.fm.intel.com with ESMTP; 19 Feb 2024 07:39:57 -0800
-From: Haitao Huang <haitao.huang@linux.intel.com>
-To: jarkko@kernel.org
-Cc: anakrish@microsoft.com,
-	bp@alien8.de,
-	cgroups@vger.kernel.org,
-	chrisyan@microsoft.com,
-	dave.hansen@linux.intel.com,
-	haitao.huang@linux.intel.com,
-	hpa@zytor.com,
-	kristen@linux.intel.com,
-	linux-kernel@vger.kernel.org,
-	linux-sgx@vger.kernel.org,
-	mikko.ylinen@linux.intel.com,
-	mingo@redhat.com,
-	mkoutny@suse.com,
-	seanjc@google.com,
-	sohil.mehta@intel.com,
-	tglx@linutronix.de,
-	tim.c.chen@linux.intel.com,
-	tj@kernel.org,
-	x86@kernel.org,
-	yangjie@microsoft.com,
-	zhanb@microsoft.com,
-	zhiquan1.li@intel.com
-Subject: [RFC PATCH] x86/sgx: Remove 'reclaim' boolean parameters
-Date: Mon, 19 Feb 2024 07:39:56 -0800
-Message-Id: <20240219153957.9957-1-haitao.huang@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CZ4FCQ633VLC.26Y7HUHGRSFB3@kernel.org>
-References: <CZ4FCQ633VLC.26Y7HUHGRSFB3@kernel.org>
+   d="scan'208";a="912896951"
+Received: from unknown (HELO [10.209.34.48]) ([10.209.34.48])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 07:56:59 -0800
+Message-ID: <40f95b90-8698-42dd-89d7-cd73d1e311b1@intel.com>
+Date: Mon, 19 Feb 2024 07:56:58 -0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] x86/sgx: Remove 'reclaim' boolean parameters
+Content-Language: en-US
+To: Haitao Huang <haitao.huang@linux.intel.com>, jarkko@kernel.org
+Cc: anakrish@microsoft.com, bp@alien8.de, cgroups@vger.kernel.org,
+ chrisyan@microsoft.com, dave.hansen@linux.intel.com, hpa@zytor.com,
+ kristen@linux.intel.com, linux-kernel@vger.kernel.org,
+ linux-sgx@vger.kernel.org, mikko.ylinen@linux.intel.com, mingo@redhat.com,
+ mkoutny@suse.com, seanjc@google.com, sohil.mehta@intel.com,
+ tglx@linutronix.de, tim.c.chen@linux.intel.com, tj@kernel.org,
+ x86@kernel.org, yangjie@microsoft.com, zhanb@microsoft.com,
+ zhiquan1.li@intel.com
+References: <CZ4FCQ633VLC.26Y7HUHGRSFB3@kernel.org>
+ <20240219153957.9957-1-haitao.huang@linux.intel.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240219153957.9957-1-haitao.huang@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Remove all boolean parameters for 'reclaim' from the function
-sgx_alloc_epc_page() and its callers by making two versions of each
-function.
+On 2/19/24 07:39, Haitao Huang wrote:
+> Remove all boolean parameters for 'reclaim' from the function
+> sgx_alloc_epc_page() and its callers by making two versions of each
+> function.
+> 
+> Also opportunistically remove non-static declaration of
+> __sgx_alloc_epc_page() and a typo
+> 
+> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> Suggested-by: Jarkko Sakkinen <jarkko@kernel.org>
+> ---
+>  arch/x86/kernel/cpu/sgx/encl.c  | 56 +++++++++++++++++++++------
+>  arch/x86/kernel/cpu/sgx/encl.h  |  6 ++-
+>  arch/x86/kernel/cpu/sgx/ioctl.c | 23 ++++++++---
+>  arch/x86/kernel/cpu/sgx/main.c  | 68 ++++++++++++++++++++++-----------
+>  arch/x86/kernel/cpu/sgx/sgx.h   |  4 +-
+>  arch/x86/kernel/cpu/sgx/virt.c  |  2 +-
+>  6 files changed, 115 insertions(+), 44 deletions(-)
 
-Also opportunistically remove non-static declaration of
-__sgx_alloc_epc_page() and a typo
+Jarkko, did this turn out how you expected?
 
-Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-Suggested-by: Jarkko Sakkinen <jarkko@kernel.org>
----
- arch/x86/kernel/cpu/sgx/encl.c  | 56 +++++++++++++++++++++------
- arch/x86/kernel/cpu/sgx/encl.h  |  6 ++-
- arch/x86/kernel/cpu/sgx/ioctl.c | 23 ++++++++---
- arch/x86/kernel/cpu/sgx/main.c  | 68 ++++++++++++++++++++++-----------
- arch/x86/kernel/cpu/sgx/sgx.h   |  4 +-
- arch/x86/kernel/cpu/sgx/virt.c  |  2 +-
- 6 files changed, 115 insertions(+), 44 deletions(-)
+I think passing around a function pointer to *only* communicate 1 bit of
+information is a _bit_ overkill here.
 
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index 279148e72459..07f369ae855c 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -217,7 +217,7 @@ static struct sgx_epc_page *sgx_encl_eldu(struct sgx_encl_page *encl_page,
- 	struct sgx_epc_page *epc_page;
- 	int ret;
- 
--	epc_page = sgx_alloc_epc_page(encl_page, false);
-+	epc_page = sgx_alloc_epc_page(encl_page);
- 	if (IS_ERR(epc_page))
- 		return epc_page;
- 
-@@ -359,14 +359,14 @@ static vm_fault_t sgx_encl_eaug_page(struct vm_area_struct *vma,
- 		goto err_out_unlock;
- 	}
- 
--	epc_page = sgx_alloc_epc_page(encl_page, false);
-+	epc_page = sgx_alloc_epc_page(encl_page);
- 	if (IS_ERR(epc_page)) {
- 		if (PTR_ERR(epc_page) == -EBUSY)
- 			vmret =  VM_FAULT_NOPAGE;
- 		goto err_out_unlock;
- 	}
- 
--	va_page = sgx_encl_grow(encl, false);
-+	va_page = sgx_encl_grow(encl);
- 	if (IS_ERR(va_page)) {
- 		if (PTR_ERR(va_page) == -EBUSY)
- 			vmret = VM_FAULT_NOPAGE;
-@@ -1230,23 +1230,23 @@ void sgx_zap_enclave_ptes(struct sgx_encl *encl, unsigned long addr)
- 	} while (unlikely(encl->mm_list_version != mm_list_version));
- }
- 
--/**
-- * sgx_alloc_va_page() - Allocate a Version Array (VA) page
-- * @reclaim: Reclaim EPC pages directly if none available. Enclave
-- *           mutex should not be held if this is set.
-- *
-- * Allocate a free EPC page and convert it to a Version Array (VA) page.
-+typedef struct sgx_epc_page *(*sgx_alloc_epc_page_fn_t)(void *owner);
-+
-+/*
-+ * Allocate a Version Array (VA) page
-+ * @alloc_fn: the EPC page allocation function.
-  *
-  * Return:
-  *   a VA page,
-  *   -errno otherwise
-  */
--struct sgx_epc_page *sgx_alloc_va_page(bool reclaim)
-+static struct sgx_epc_page *__sgx_alloc_va_page(sgx_alloc_epc_page_fn_t alloc_fn)
- {
- 	struct sgx_epc_page *epc_page;
- 	int ret;
- 
--	epc_page = sgx_alloc_epc_page(NULL, reclaim);
-+	epc_page = alloc_fn(NULL);
-+
- 	if (IS_ERR(epc_page))
- 		return ERR_CAST(epc_page);
- 
-@@ -1260,6 +1260,40 @@ struct sgx_epc_page *sgx_alloc_va_page(bool reclaim)
- 	return epc_page;
- }
- 
-+/**
-+ * sgx_alloc_va_page() - Allocate a Version Array (VA) page
-+ *
-+ * Allocate a free EPC page and convert it to a VA page.
-+ *
-+ * Do not reclaim EPC pages if none available.
-+ *
-+ * Return:
-+ *   a VA page,
-+ *   -errno otherwise
-+ */
-+struct sgx_epc_page *sgx_alloc_va_page(void)
-+{
-+    return __sgx_alloc_va_page(sgx_alloc_epc_page);
-+}
-+
-+/**
-+ * sgx_alloc_va_page_reclaim() - Allocate a Version Array (VA) page
-+ *
-+ * Allocate a free EPC page and convert it to a VA page.
-+ *
-+ * Reclaim EPC pages directly if none available. Enclave mutex should not be
-+ * held.
-+ *
-+ * Return:
-+ *   a VA page,
-+ *   -errno otherwise
-+ */
-+
-+struct sgx_epc_page *sgx_alloc_va_page_reclaim(void)
-+{
-+    return __sgx_alloc_va_page(sgx_alloc_epc_page_reclaim);
-+}
-+
- /**
-  * sgx_alloc_va_slot - allocate a VA slot
-  * @va_page:	a &struct sgx_va_page instance
-diff --git a/arch/x86/kernel/cpu/sgx/encl.h b/arch/x86/kernel/cpu/sgx/encl.h
-index f94ff14c9486..3248ff72e573 100644
---- a/arch/x86/kernel/cpu/sgx/encl.h
-+++ b/arch/x86/kernel/cpu/sgx/encl.h
-@@ -116,14 +116,16 @@ struct sgx_encl_page *sgx_encl_page_alloc(struct sgx_encl *encl,
- 					  unsigned long offset,
- 					  u64 secinfo_flags);
- void sgx_zap_enclave_ptes(struct sgx_encl *encl, unsigned long addr);
--struct sgx_epc_page *sgx_alloc_va_page(bool reclaim);
-+struct sgx_epc_page *sgx_alloc_va_page(void);
-+struct sgx_epc_page *sgx_alloc_va_page_reclaim(void);
- unsigned int sgx_alloc_va_slot(struct sgx_va_page *va_page);
- void sgx_free_va_slot(struct sgx_va_page *va_page, unsigned int offset);
- bool sgx_va_page_full(struct sgx_va_page *va_page);
- void sgx_encl_free_epc_page(struct sgx_epc_page *page);
- struct sgx_encl_page *sgx_encl_load_page(struct sgx_encl *encl,
- 					 unsigned long addr);
--struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl, bool reclaim);
-+struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl);
-+struct sgx_va_page *sgx_encl_grow_reclaim(struct sgx_encl *encl);
- void sgx_encl_shrink(struct sgx_encl *encl, struct sgx_va_page *va_page);
- 
- #endif /* _X86_ENCL_H */
-diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-index b65ab214bdf5..70f904f753aa 100644
---- a/arch/x86/kernel/cpu/sgx/ioctl.c
-+++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -17,7 +17,8 @@
- #include "encl.h"
- #include "encls.h"
- 
--struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl, bool reclaim)
-+typedef struct sgx_epc_page *(*sgx_alloc_va_page_fn_t)(void);
-+static struct sgx_va_page *__sgx_encl_grow(struct sgx_encl *encl, sgx_alloc_va_page_fn_t alloc_fn)
- {
- 	struct sgx_va_page *va_page = NULL;
- 	void *err;
-@@ -30,7 +31,7 @@ struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl, bool reclaim)
- 		if (!va_page)
- 			return ERR_PTR(-ENOMEM);
- 
--		va_page->epc_page = sgx_alloc_va_page(reclaim);
-+		va_page->epc_page = alloc_fn();
- 		if (IS_ERR(va_page->epc_page)) {
- 			err = ERR_CAST(va_page->epc_page);
- 			kfree(va_page);
-@@ -43,6 +44,16 @@ struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl, bool reclaim)
- 	return va_page;
- }
- 
-+struct sgx_va_page *sgx_encl_grow_reclaim(struct sgx_encl *encl)
-+{
-+    return __sgx_encl_grow(encl, sgx_alloc_va_page_reclaim);
-+}
-+
-+struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl)
-+{
-+    return __sgx_encl_grow(encl, sgx_alloc_va_page);
-+}
-+
- void sgx_encl_shrink(struct sgx_encl *encl, struct sgx_va_page *va_page)
- {
- 	encl->page_cnt--;
-@@ -64,7 +75,7 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
- 	struct file *backing;
- 	long ret;
- 
--	va_page = sgx_encl_grow(encl, true);
-+	va_page = sgx_encl_grow_reclaim(encl);
- 	if (IS_ERR(va_page))
- 		return PTR_ERR(va_page);
- 	else if (va_page)
-@@ -83,7 +94,7 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
- 
- 	encl->backing = backing;
- 
--	secs_epc = sgx_alloc_epc_page(&encl->secs, true);
-+	secs_epc = sgx_alloc_epc_page_reclaim(&encl->secs);
- 	if (IS_ERR(secs_epc)) {
- 		ret = PTR_ERR(secs_epc);
- 		goto err_out_backing;
-@@ -269,13 +280,13 @@ static int sgx_encl_add_page(struct sgx_encl *encl, unsigned long src,
- 	if (IS_ERR(encl_page))
- 		return PTR_ERR(encl_page);
- 
--	epc_page = sgx_alloc_epc_page(encl_page, true);
-+	epc_page = sgx_alloc_epc_page_reclaim(encl_page);
- 	if (IS_ERR(epc_page)) {
- 		kfree(encl_page);
- 		return PTR_ERR(epc_page);
- 	}
- 
--	va_page = sgx_encl_grow(encl, true);
-+	va_page = sgx_encl_grow_reclaim(encl);
- 	if (IS_ERR(va_page)) {
- 		ret = PTR_ERR(va_page);
- 		goto err_out_free;
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 166692f2d501..ed9b711049c2 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -463,14 +463,16 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
- /**
-  * __sgx_alloc_epc_page() - Allocate an EPC page
-  *
-- * Iterate through NUMA nodes and reserve ia free EPC page to the caller. Start
-+ * Iterate through NUMA nodes and reserve a free EPC page to the caller. Start
-  * from the NUMA node, where the caller is executing.
-  *
-+ * When a page is no longer needed it must be released with sgx_free_epc_page().
-+ *
-  * Return:
-  * - an EPC page:	A borrowed EPC pages were available.
-- * - NULL:		Out of EPC pages.
-+ * - -errno:		Out of EPC pages.
-  */
--struct sgx_epc_page *__sgx_alloc_epc_page(void)
-+static struct sgx_epc_page *__sgx_alloc_epc_page(void)
- {
- 	struct sgx_epc_page *page;
- 	int nid_of_current = numa_node_id();
-@@ -493,7 +495,24 @@ struct sgx_epc_page *__sgx_alloc_epc_page(void)
- 			return page;
- 	}
- 
--	return ERR_PTR(-ENOMEM);
-+	if (list_empty(&sgx_active_page_list))
-+		return ERR_PTR(-ENOMEM);
-+
-+	return ERR_PTR(-EBUSY);
-+}
-+
-+/*
-+ * Post-processing after allocating an EPC page.
-+ *
-+ * Set its owner, wake up ksgxd when the number of pages goes below the watermark.
-+ */
-+static void sgx_alloc_epc_page_post(struct sgx_epc_page *page, void* owner)
-+{
-+	if (!IS_ERR(page))
-+		page->owner = owner;
-+
-+	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
-+		wake_up(&ksgxd_waitq);
- }
- 
- /**
-@@ -542,38 +561,44 @@ int sgx_unmark_page_reclaimable(struct sgx_epc_page *page)
- /**
-  * sgx_alloc_epc_page() - Allocate an EPC page
-  * @owner:	the owner of the EPC page
-- * @reclaim:	reclaim pages if necessary
-  *
-- * Iterate through EPC sections and borrow a free EPC page to the caller. When a
-- * page is no longer needed it must be released with sgx_free_epc_page(). If
-- * @reclaim is set to true, directly reclaim pages when we are out of pages. No
-- * mm's can be locked when @reclaim is set to true.
-+ * When a page is no longer needed it must be released with sgx_free_epc_page().
-  *
-- * Finally, wake up ksgxd when the number of pages goes below the watermark
-- * before returning back to the caller.
-+ * Return:
-+ *   an EPC page,
-+ *   -errno on error
-+ */
-+struct sgx_epc_page *sgx_alloc_epc_page(void *owner)
-+{
-+	struct sgx_epc_page *page;
-+
-+	page = __sgx_alloc_epc_page();
-+
-+	sgx_alloc_epc_page_post(page, owner);
-+
-+	return page;
-+}
-+/**
-+ * sgx_alloc_epc_page_reclaim() - Allocate an EPC page, reclaim pages if necessary
-+ * @owner:	the owner of the EPC page
-+ *
-+ * Reclaim pages when we are out of pages. No mm's can be locked.
-  *
-  * Return:
-  *   an EPC page,
-  *   -errno on error
-  */
--struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
-+struct sgx_epc_page *sgx_alloc_epc_page_reclaim(void *owner)
- {
- 	struct sgx_epc_page *page;
- 
- 	for ( ; ; ) {
- 		page = __sgx_alloc_epc_page();
- 		if (!IS_ERR(page)) {
--			page->owner = owner;
- 			break;
- 		}
--
--		if (list_empty(&sgx_active_page_list))
--			return ERR_PTR(-ENOMEM);
--
--		if (!reclaim) {
--			page = ERR_PTR(-EBUSY);
-+		if (PTR_ERR(page) != -EBUSY)
- 			break;
--		}
- 
- 		if (signal_pending(current)) {
- 			page = ERR_PTR(-ERESTARTSYS);
-@@ -584,8 +609,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
- 		cond_resched();
- 	}
- 
--	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
--		wake_up(&ksgxd_waitq);
-+	sgx_alloc_epc_page_post(page, owner);
- 
- 	return page;
- }
-diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index d2dad21259a8..d6246a79f0b6 100644
---- a/arch/x86/kernel/cpu/sgx/sgx.h
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -83,13 +83,13 @@ static inline void *sgx_get_epc_virt_addr(struct sgx_epc_page *page)
- 	return section->virt_addr + index * PAGE_SIZE;
- }
- 
--struct sgx_epc_page *__sgx_alloc_epc_page(void);
- void sgx_free_epc_page(struct sgx_epc_page *page);
- 
- void sgx_reclaim_direct(void);
- void sgx_mark_page_reclaimable(struct sgx_epc_page *page);
- int sgx_unmark_page_reclaimable(struct sgx_epc_page *page);
--struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim);
-+struct sgx_epc_page *sgx_alloc_epc_page(void *owner);
-+struct sgx_epc_page *sgx_alloc_epc_page_reclaim(void *owner);
- 
- void sgx_ipi_cb(void *info);
- 
-diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
-index 7aaa3652e31d..6a81d8af84ab 100644
---- a/arch/x86/kernel/cpu/sgx/virt.c
-+++ b/arch/x86/kernel/cpu/sgx/virt.c
-@@ -46,7 +46,7 @@ static int __sgx_vepc_fault(struct sgx_vepc *vepc,
- 	if (epc_page)
- 		return 0;
- 
--	epc_page = sgx_alloc_epc_page(vepc, false);
-+	epc_page = sgx_alloc_epc_page(vepc);
- 	if (IS_ERR(epc_page))
- 		return PTR_ERR(epc_page);
- 
--- 
-2.25.1
+Simply replacing the bool with:
 
+enum sgx_reclaim {
+	SGX_NO_RECLAIM,
+	SGX_DO_RECLAIM
+};
+
+would do the same thing.  Right?
+
+Are you sure you want a function pointer for this?
 
