@@ -1,156 +1,289 @@
-Return-Path: <cgroups+bounces-1693-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1694-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FBF985A5E0
-	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 15:29:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DF1485A736
+	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 16:18:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CC771C2121F
-	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 14:29:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 929F11C2164D
+	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 15:18:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0607C374EB;
-	Mon, 19 Feb 2024 14:29:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07A5438389;
+	Mon, 19 Feb 2024 15:18:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CyOmQFXf";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="CyOmQFXf"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iqPfRZHw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71F1A25614;
-	Mon, 19 Feb 2024 14:29:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26EBB38F83;
+	Mon, 19 Feb 2024 15:18:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708352957; cv=none; b=uCf2N4UTG7ciIC12wYNGRkTBiTtdNon9cSSJOTOO6hU847NmagoGFT9d3yLsCid1KvF01RjymD2RdA/U1sJRj3Xjy631Fds4RVgbIwSeE746BFKjbba5XC+NT61SozXhIFftoJrIpb9P8jJPeIQ5zD+Klsp40Prb5ykcSlWvfkM=
+	t=1708355884; cv=none; b=R+afVvmBCRgH4jjQWVi0cakcqKSNaFo9sGpX7+kKtYkHD7uUITUSsRpO6XQXHX2th+UYHon5iCVjti5cLhdm+f4O9zrfuBLy+TFy/xpZ8oaowfDTgbynXr3oJyVODrY1uptoyBe/rPEFHuRf1+x7Mdrlxqi7PSKyVJ/1KS7fvQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708352957; c=relaxed/simple;
-	bh=+92MW98XOXYBpDGx8mWcDGFrMsPAqOXoGejzwebjWB8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EHRUOrp2aLWjReDFR/NnL7m/Ygk5wpESE+Ojm+IF4JMzIMPxgO1mBYiQkWl0AfH+kF6PNa6CtB5xPrr0W81TrYCAMymm8h8p703ki3mNawriYwQvCCFvEqU3KLgqvsmFOD1wyn8cPND/5Z6Bef8idsITmHLX1dwt6TRswMRtQAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CyOmQFXf; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=CyOmQFXf; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 2521B220FD;
-	Mon, 19 Feb 2024 14:29:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708352953; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1ONaivgVj/kykIG/cXvY1zXXQU8tX6udCSGGm21f/RE=;
-	b=CyOmQFXfzsrEpil59zjj1xDhLSls+8rhnUd/fyM34aCxr5PpAsA/lhdmTMzKx8PxdQA/q7
-	ayNWDtsEGEmotEstGlETf4VqR4ofnEUf/rDEBI9rulMxzF4Y3fUs2Gc9IQLdPOyu7nf4iS
-	BgP9ma7+xRaMwGXQbh0NsY2UwQa8aW4=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708352953; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1ONaivgVj/kykIG/cXvY1zXXQU8tX6udCSGGm21f/RE=;
-	b=CyOmQFXfzsrEpil59zjj1xDhLSls+8rhnUd/fyM34aCxr5PpAsA/lhdmTMzKx8PxdQA/q7
-	ayNWDtsEGEmotEstGlETf4VqR4ofnEUf/rDEBI9rulMxzF4Y3fUs2Gc9IQLdPOyu7nf4iS
-	BgP9ma7+xRaMwGXQbh0NsY2UwQa8aW4=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 0E15D139C6;
-	Mon, 19 Feb 2024 14:29:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id mIwkA7ll02XNEwAAn2gu4w
-	(envelope-from <mkoutny@suse.com>); Mon, 19 Feb 2024 14:29:13 +0000
-Date: Mon, 19 Feb 2024 15:29:11 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Jonas =?utf-8?Q?Sch=C3=A4fer?= <jonas@wielicki.name>, 
-	Narcis Garcia <debianlists@actiu.net>, Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [PATCH] mm: memcontrol: clarify swapaccount=0 deprecation warning
-Message-ID: <ch7mbvyfcvc5yswykpgj5i73okgt4dnovelqhpuv22puw7gpba@6vj6d2z2yhau>
-References: <20240213081634.3652326-1-hannes@cmpxchg.org>
+	s=arc-20240116; t=1708355884; c=relaxed/simple;
+	bh=ZhWmkh/IIQkwD8dcKNirzjh2xpN1uEDAcdNeim0Gh5E=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=UOb4qfB+/pnFXpkhwLBsMz84d6JiOVvKiUrXO/yozAJJNxJhILPNXr6XaiUlnuaSUJyB+0j/MDYyPH/cDL1XLGCrDyMFEOAy9d0nv/YzZoL3p03cTEZcPv/+AEl2qbK2QgPViHF4E7o3LV0W7/I/YVQ+W2cswFsYaPjlJn9Zpls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iqPfRZHw; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708355883; x=1739891883;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=ZhWmkh/IIQkwD8dcKNirzjh2xpN1uEDAcdNeim0Gh5E=;
+  b=iqPfRZHwJidugWJHOK72J/yha3xY+BrX28PNDiSyyEP3XkOVYPumHrpl
+   a+4CRxzu2X9r/cJ5Wa3cyKsa9y8gnAqKInlqK75IVvTPm0iPOYxVMGLm3
+   8KfyS9Ls8+SONLbbrurQZoFR1shwQoaPZJJ3V3iTdAEWyUfUMBrHrproU
+   l5pzNOTj/VYo6AaYlTYpmic+rzhBx0Peu4fK1B2GPjelSX7zbj7HYgjgC
+   7W4Zxe2bizM2HnvbiEY4tvi2TDgU77jHfbqQb9VvMFRIc6Hj0jJhPQqxu
+   9gihgFeIYArPzLiT3IX0DnM2CHLaln2O7BYXcMKkTdRcdi+oEdrbC+sCG
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2548280"
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="2548280"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 07:12:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="936303679"
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="936303679"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 19 Feb 2024 07:12:54 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
+ linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+ cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ hpa@zytor.com, sohil.mehta@intel.com, tim.c.chen@linux.intel.com, "Jarkko
+ Sakkinen" <jarkko@kernel.org>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+Subject: Re: [PATCH v9 10/15] x86/sgx: Add EPC reclamation in cgroup
+ try_charge()
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-11-haitao.huang@linux.intel.com>
+ <CZ3D53XFVXAW.25EK0ZBFH3HV2@kernel.org>
+ <op.2i1xkgedwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <CZ4FCQ633VLC.26Y7HUHGRSFB3@kernel.org>
+Date: Mon, 19 Feb 2024 09:12:51 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ifpowlilw3jtc7ow"
-Content-Disposition: inline
-In-Reply-To: <20240213081634.3652326-1-hannes@cmpxchg.org>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=CyOmQFXf
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-5.38 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 NEURAL_HAM_SHORT(-0.20)[-0.994];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 SIGNED_PGP(-2.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.27)[96.58%];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
-X-Spam-Score: -5.38
-X-Rspamd-Queue-Id: 2521B220FD
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2jd9vpf0wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <CZ4FCQ633VLC.26Y7HUHGRSFB3@kernel.org>
+User-Agent: Opera Mail/1.0 (Win32)
+
+On Tue, 13 Feb 2024 19:52:25 -0600, Jarkko Sakkinen <jarkko@kernel.org>  
+wrote:
+
+> On Tue Feb 13, 2024 at 1:15 AM EET, Haitao Huang wrote:
+>> Hi Jarkko
+>>
+>> On Mon, 12 Feb 2024 13:55:46 -0600, Jarkko Sakkinen <jarkko@kernel.org>
+>> wrote:
+>>
+>> > On Mon Feb 5, 2024 at 11:06 PM EET, Haitao Huang wrote:
+>> >> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> >>
+>> >> When the EPC usage of a cgroup is near its limit, the cgroup needs to
+>> >> reclaim pages used in the same cgroup to make room for new  
+>> allocations.
+>> >> This is analogous to the behavior that the global reclaimer is  
+>> triggered
+>> >> when the global usage is close to total available EPC.
+>> >>
+>> >> Add a Boolean parameter for sgx_epc_cgroup_try_charge() to indicate
+>> >> whether synchronous reclaim is allowed or not. And trigger the
+>> >> synchronous/asynchronous reclamation flow accordingly.
+>> >>
+>> >> Note at this point, all reclaimable EPC pages are still tracked in  
+>> the
+>> >> global LRU and per-cgroup LRUs are empty. So no per-cgroup  
+>> reclamation
+>> >> is activated yet.
+>> >>
+>> >> Co-developed-by: Sean Christopherson  
+>> <sean.j.christopherson@intel.com>
+>> >> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> >> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> >> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> >> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> >> ---
+>> >> V7:
+>> >> - Split this out from the big patch, #10 in V6. (Dave, Kai)
+>> >> ---
+>> >>  arch/x86/kernel/cpu/sgx/epc_cgroup.c | 26 ++++++++++++++++++++++++--
+>> >>  arch/x86/kernel/cpu/sgx/epc_cgroup.h |  4 ++--
+>> >>  arch/x86/kernel/cpu/sgx/main.c       |  2 +-
+>> >>  3 files changed, 27 insertions(+), 5 deletions(-)
+>> >>
+>> >> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>> >> b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>> >> index d399fda2b55e..abf74fdb12b4 100644
+>> >> --- a/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>> >> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>> >> @@ -184,13 +184,35 @@ static void
+>> >> sgx_epc_cgroup_reclaim_work_func(struct work_struct *work)
+>> >>  /**
+>> >>   * sgx_epc_cgroup_try_charge() - try to charge cgroup for a single  
+>> EPC
+>> >> page
+>> >>   * @epc_cg:	The EPC cgroup to be charged for the page.
+>> >> + * @reclaim:	Whether or not synchronous reclaim is allowed
+>> >>   * Return:
+>> >>   * * %0 - If successfully charged.
+>> >>   * * -errno - for failures.
+>> >>   */
+>> >> -int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
+>> >> +int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg, bool
+>> >> reclaim)
+>> >>  {
+>> >> -	return misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg,  
+>> PAGE_SIZE);
+>> >> +	for (;;) {
+>> >> +		if (!misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg,
+>> >> +					PAGE_SIZE))
+>> >> +			break;
+>> >> +
+>> >> +		if (sgx_epc_cgroup_lru_empty(epc_cg->cg))
+>> >> +			return -ENOMEM;
+>> >> + +		if (signal_pending(current))
+>> >> +			return -ERESTARTSYS;
+>> >> +
+>> >> +		if (!reclaim) {
+>> >> +			queue_work(sgx_epc_cg_wq, &epc_cg->reclaim_work);
+>> >> +			return -EBUSY;
+>> >> +		}
+>> >> +
+>> >> +		if (!sgx_epc_cgroup_reclaim_pages(epc_cg->cg, false))
+>> >> +			/* All pages were too young to reclaim, try again a little later  
+>> */
+>> >> +			schedule();
+>> >
+>> > This will be total pain to backtrack after a while when something
+>> > needs to be changed so there definitely should be inline comments
+>> > addressing each branch condition.
+>> >
+>> > I'd rethink this as:
+>> >
+>> > 1. Create static __sgx_epc_cgroup_try_charge() for addressing single
+>> >    iteration with the new "reclaim" parameter.
+>> > 2. Add a new sgx_epc_group_try_charge_reclaim() function.
+>> >
+>> > There's a bit of redundancy with sgx_epc_cgroup_try_charge() and
+>> > sgx_epc_cgroup_try_charge_reclaim() because both have almost the
+>> > same loop calling internal __sgx_epc_cgroup_try_charge() with
+>> > different parameters. That is totally acceptable.
+>> >
+>> > Please also add my suggested-by.
+>> >
+>> > BR, Jarkko
+>> >
+>> > BR, Jarkko
+>> >
+>> For #2:
+>> The only caller of this function, sgx_alloc_epc_page(), has the same
+>> boolean which is passed into this this function.
+>
+> I know. This would be good opportunity to fix that up. Large patch
+> sets should try to make the space for its feature best possible and
+> thus also clean up the code base overally.
+>
+>> If we separate it into sgx_epc_cgroup_try_charge() and
+>> sgx_epc_cgroup_try_charge_reclaim(), then the caller has to have the
+>> if/else branches. So separation here seems not help?
+>
+> Of course it does. It makes the code in that location self-documenting
+> and easier to remember what it does.
+>
+> BR, Jarkko
+>
+
+Please let me know if this aligns with your suggestion.
 
 
---ifpowlilw3jtc7ow
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+static int ___sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
+{
+         if (!misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg,
+                                         PAGE_SIZE))
+                 return 0;
 
-On Tue, Feb 13, 2024 at 03:16:34AM -0500, Johannes Weiner <hannes@cmpxchg.org> wrote:
-> The swapaccount deprecation warning is throwing false positives. Since
-> we deprecated the knob and defaulted to enabling, the only reports
-> we've been getting are from folks that set swapaccount=1. While this
-> is a nice affirmation that always-enabling was the right choice, we
-> certainly don't want to warn when users request the supported mode.
+         if (sgx_epc_cgroup_lru_empty(epc_cg->cg))
+                 return -ENOMEM;
 
-But shouldn't such users be still warned about effectively unused option?
-I think `return 0;` from the param handler should ensure that.
+         if (signal_pending(current))
+                 return -ERESTARTSYS;
 
+         return -EBUSY;
+}
 
-> +	if (!kstrtobool(s, &res) && !res)
-> +		pr_warn_once("The swapaccount=0 commdandline option is deprecated "
-                                                commandline
+/**
+  * sgx_epc_cgroup_try_charge() - try to charge cgroup for a single page
+  * @epc_cg:     The EPC cgroup to be charged for the page.
+  *
+  * Try to reclaim pages in the background if the group reaches its limit  
+and
+  * there are reclaimable pages in the group.
+  * Return:
+  * * %0 - If successfully charged.
+  * * -errno - for failures.
+  */
+int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
+{
+         int ret =  ___sgx_epc_cgroup_try_charge(epc_cg);
 
-Regards,
-Michal
+         if (ret == -EBUSY)
+                 queue_work(sgx_epc_cg_wq, &epc_cg->reclaim_work);
 
---ifpowlilw3jtc7ow
-Content-Type: application/pgp-signature; name="signature.asc"
+         return ret;
+}
 
------BEGIN PGP SIGNATURE-----
+/**
+  * sgx_epc_cgroup_try_charge_reclaim() - try to charge cgroup for a single  
+page
+  * @epc_cg:     The EPC cgroup to be charged for the page.
+  *
+  * Try to reclaim pages directly if the group reaches its limit and there  
+are
+  * reclaimable pages in the group.
+  * Return:
+  * * %0 - If successfully charged.
+  * * -errno - for failures.
+  */
+int sgx_epc_cgroup_try_charge_reclaim(struct sgx_epc_cgroup *epc_cg)
+{
+         int ret;
 
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZdNltQAKCRAGvrMr/1gc
-juU8AQCiaPhuMzNBRds24LnLkLrdU13FWaz9U416QQSNSADfBwD/SBYoMGN5ze1k
-0GP/LNuyKMEMrQa7zSRq6963II7goAY=
-=Jopi
------END PGP SIGNATURE-----
+         for (;;) {
+                 ret =  ___sgx_epc_cgroup_try_charge(epc_cg);
+                 if (ret != -EBUSY)
+                         return ret;
 
---ifpowlilw3jtc7ow--
+                 if (!sgx_epc_cgroup_reclaim_pages(epc_cg->cg, current->mm))
+                         /* All pages were too young to reclaim, try again  
+a little later */
+                         schedule();
+         }
+
+         return 0;
+}
+
+It is a little more involved to remove the boolean for  
+sgx_alloc_epc_page() and its callers like sgx_encl_grow(),  
+sgx_alloc_va_page(). I'll send a separate patch for comments.
+
+Thanks
+Haitao
 
