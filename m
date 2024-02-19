@@ -1,46 +1,46 @@
-Return-Path: <cgroups+bounces-1703-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1704-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A73985AD0B
-	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 21:23:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8310B85AD59
+	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 21:42:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AE791F25F1C
-	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 20:23:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B62221C24202
+	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 20:42:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E501535BB;
-	Mon, 19 Feb 2024 20:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2438535CD;
+	Mon, 19 Feb 2024 20:42:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OjpUcB1I"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k5pUuMn6"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E655A52F9B;
-	Mon, 19 Feb 2024 20:23:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57E3252F98;
+	Mon, 19 Feb 2024 20:42:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708374210; cv=none; b=fjba62Ar33FrTx/M5Jx6hKgXiw2FQLN6cAL5mECYn2oNrEZqtIqdOGnIj4dg80ecHqyj6TLY4KB+KGriSglLuwl24iq+hh3epZAGrH8cSaMMgTo4dlOCU5D5TpENYB6CxDEn0tRpOHnZU4ZGmC0eZD1xpjl//UMNXDpLB4JqoL0=
+	t=1708375357; cv=none; b=qs1plX5ZoryiFMVf9e3DgC85dg/QH98/WrRUXXBuLbXmrnBlp0XlfPqkBSfsQtwiB/II6ElMlMF0h97LMG3I0DJwWOtKzJDZENY5ijCI4OSU4EhQ19WNQM/KDHTY71asMVboz0OuNS9zstdr25hTJ5EjrSsASFSsSGwflZ2BFVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708374210; c=relaxed/simple;
-	bh=ixHV3knXhwlKaNm/H5VZf90xSon7xbNx8HdzY1OHTaE=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=Dpehsvbmg6I9Ca1ZlsApovOj41KiM472ygwU72XtYhNAeYqEAWtquSUeKQdUbcLzagDQpZD3CiC9XssYoExRi/Kg8saz6N7ZoeKOtl07YcpoMk3G3zQcLI93qk8DleYBhTl9lNlJ+Ar2bFr3jEKaC2/mKTg4fzXaSAgdG1HqvQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OjpUcB1I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3F0DC433F1;
-	Mon, 19 Feb 2024 20:23:24 +0000 (UTC)
+	s=arc-20240116; t=1708375357; c=relaxed/simple;
+	bh=d17JEQ94N0uoQLFj1CrJnlh4bPeyeziOZO+AvWt/zv4=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=FEqLzjrViO0dn/8XMPL/suBP39virOurIsxftgQ7so8FtP8cABOx083Uh0CvcN9Z2X3/YW9/GuJCrCJZhl6M6wzvdQQCtgQpq0Dwdfkh4OzZAZ4RaviDVSbBq4LboUqtsrNNU59ubxtwuoRimfnNbTMPT59YkG632Ir2MLoowZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k5pUuMn6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11862C433F1;
+	Mon, 19 Feb 2024 20:42:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708374209;
-	bh=ixHV3knXhwlKaNm/H5VZf90xSon7xbNx8HdzY1OHTaE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OjpUcB1IXEiERVGSZfOvbUCkCuR4TmpnrjXZViMy49DFN74vJyxOHJLpZnI/mluoy
-	 5t+48D1/yfNRnngCi3+O0k93X+tzsXNC7dAfSJM1dwk67yAW2JS1kc+dPAxzYGD9Va
-	 OV5MRb5nxQL8BnJo8n/GRJqfacljYIXCAX4FOOisF+xFEjguF/rcH7Lmv+D3rQGvaA
-	 IQbOSumem2riEQiubkyQhsh9xN9QoS7/OMHYNw+DwKzoexy78hpiAEfsMZdIvzZ3w7
-	 OWAMjZu1i7F0TgNnDh9tR9RVkP93uO1muS6llIweMUmrsexc+d2ZHttmbOHLbMQJlU
-	 T3j5ctixMwO1w==
+	s=k20201202; t=1708375356;
+	bh=d17JEQ94N0uoQLFj1CrJnlh4bPeyeziOZO+AvWt/zv4=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=k5pUuMn6H9zU70hz/4BM/+jJxWd/6P6s/GlNOpjI4aNHEb3h5QgU2Yt70L+sc8jmV
+	 fSkW8AmYGlxnkTmvoyP9Y1aHKonKRM3URipwp05cKQ7ACRaQtkCe7Y4sFsU9EwCL2U
+	 2w9s32jXTwzeELjkiU0MV1puiNRbVcJyyr7b00p+jGrTlncA70/aFTfprcWq3NEK3C
+	 P+Wk+zTniMfKYvHn72jZ1RDXt4yql2kWAY64zYJgvPNBjgVxeb3YKzcrkRrXO7+8WB
+	 DypU8nvqIGMr+zwVR5VT+S65iPgxIMOT0vJ9ERJVx4utYWdCmQ1jtMfEu7L68w4JlN
+	 /HmhjwWxzFELw==
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -49,10 +49,8 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date: Mon, 19 Feb 2024 20:23:23 +0000
-Message-Id: <CZ9C42ETAIZ5.2QF94SIXDWCHR@seitikki>
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Haitao Huang" <haitao.huang@linux.intel.com>
+Date: Mon, 19 Feb 2024 20:42:29 +0000
+Message-Id: <CZ9CIP97661C.2WUZJNNCQUHE8@seitikki>
 Cc: <anakrish@microsoft.com>, <bp@alien8.de>, <cgroups@vger.kernel.org>,
  <chrisyan@microsoft.com>, <dave.hansen@linux.intel.com>, <hpa@zytor.com>,
  <kristen@linux.intel.com>, <linux-kernel@vger.kernel.org>,
@@ -62,31 +60,63 @@ Cc: <anakrish@microsoft.com>, <bp@alien8.de>, <cgroups@vger.kernel.org>,
  <tim.c.chen@linux.intel.com>, <tj@kernel.org>, <x86@kernel.org>,
  <yangjie@microsoft.com>, <zhanb@microsoft.com>, <zhiquan1.li@intel.com>
 Subject: Re: [RFC PATCH] x86/sgx: Remove 'reclaim' boolean parameters
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Dave Hansen" <dave.hansen@intel.com>, "Haitao Huang"
+ <haitao.huang@linux.intel.com>
 X-Mailer: aerc 0.15.2
 References: <CZ4FCQ633VLC.26Y7HUHGRSFB3@kernel.org>
  <20240219153957.9957-1-haitao.huang@linux.intel.com>
-In-Reply-To: <20240219153957.9957-1-haitao.huang@linux.intel.com>
+ <40f95b90-8698-42dd-89d7-cd73d1e311b1@intel.com>
+In-Reply-To: <40f95b90-8698-42dd-89d7-cd73d1e311b1@intel.com>
 
-On Mon Feb 19, 2024 at 3:39 PM UTC, Haitao Huang wrote:
-> Remove all boolean parameters for 'reclaim' from the function
-> sgx_alloc_epc_page() and its callers by making two versions of each
-> function.
+On Mon Feb 19, 2024 at 3:56 PM UTC, Dave Hansen wrote:
+> On 2/19/24 07:39, Haitao Huang wrote:
+> > Remove all boolean parameters for 'reclaim' from the function
+> > sgx_alloc_epc_page() and its callers by making two versions of each
+> > function.
+> >=20
+> > Also opportunistically remove non-static declaration of
+> > __sgx_alloc_epc_page() and a typo
+> >=20
+> > Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> > Suggested-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > ---
+> >  arch/x86/kernel/cpu/sgx/encl.c  | 56 +++++++++++++++++++++------
+> >  arch/x86/kernel/cpu/sgx/encl.h  |  6 ++-
+> >  arch/x86/kernel/cpu/sgx/ioctl.c | 23 ++++++++---
+> >  arch/x86/kernel/cpu/sgx/main.c  | 68 ++++++++++++++++++++++-----------
+> >  arch/x86/kernel/cpu/sgx/sgx.h   |  4 +-
+> >  arch/x86/kernel/cpu/sgx/virt.c  |  2 +-
+> >  6 files changed, 115 insertions(+), 44 deletions(-)
 >
-> Also opportunistically remove non-static declaration of
-> __sgx_alloc_epc_page() and a typo
+> Jarkko, did this turn out how you expected?
 >
-> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> Suggested-by: Jarkko Sakkinen <jarkko@kernel.org>
+> I think passing around a function pointer to *only* communicate 1 bit of
+> information is a _bit_ overkill here.
+>
+> Simply replacing the bool with:
+>
+> enum sgx_reclaim {
+> 	SGX_NO_RECLAIM,
+> 	SGX_DO_RECLAIM
+> };
+>
+> would do the same thing.  Right?
+>
+> Are you sure you want a function pointer for this?
 
-I think this is for better.
+To look this in context I drafted quickly two branches representing
+imaginary next version of the patch set.
 
-My view point for kernel patches overally is that:
+I guess this would simpler and totally sufficient approach.
 
-1. A feature should leave the subsystem in cleaner state as
-   far as the existing framework of doing things goes.
-2. A bugfix can sometimes do the opposite if corner case
-   requires some weird dance to perform.
+With this approach I'd then change also:
 
+[PATCH v9 04/15] x86/sgx: Implement basic EPC misc cgroup functionality
+
+And add the enum-parameter already in that patch with just "no reclaim"
+enum. I.e. then 10/15 will add only "do reclaim" and the new
+functionality.
 
 BR, Jarkko
 
