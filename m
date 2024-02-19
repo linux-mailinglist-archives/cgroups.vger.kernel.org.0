@@ -1,243 +1,177 @@
-Return-Path: <cgroups+bounces-1690-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1691-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50AD1859F73
-	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 10:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F2C7C85A2E3
+	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 13:11:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86677B21783
-	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 09:18:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59FCFB20A90
+	for <lists+cgroups@lfdr.de>; Mon, 19 Feb 2024 12:11:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A122723750;
-	Mon, 19 Feb 2024 09:17:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22B2E2C848;
+	Mon, 19 Feb 2024 12:11:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MWMh6DJ/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GzteuApn";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nhZfcUQl";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8v+r0UKC"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mUO1CBBR";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mUO1CBBR"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88C432374C;
-	Mon, 19 Feb 2024 09:17:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BF9422F00;
+	Mon, 19 Feb 2024 12:11:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708334260; cv=none; b=oiq98HdcZHBtOKMNkIeGm6Wc8hbK8OK8YYjgDiPfYuLkQV7L/JYtnnYSZvD+paUDwBB9OcoDQuo5ZVV5PSVddCoQs9YqcJMMXqQVEwj3Fq7USYb2YiwBx8ePij4vxXtaxsSOejVKuK9TmkWnwqu1pG29urajuX20PPodYQ0DZpM=
+	t=1708344694; cv=none; b=Z8iqH472kc7YRFZtrL2KpPeQCp9qJwKIcbQCeu+xLOQ4YCgVwJueRX3LkV77nHkKnbAfNXXXl0uxbrQpKjPuuf1lpGrOkNMpBJF4q6iAew69W9JdkCsegTDD33fZ27XoIHi1mu9pnVLYgIiKIRi5EMCBLmlnxG0t85eKX9AGZJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708334260; c=relaxed/simple;
-	bh=IJlX/1YNrW4MfN2e7g/IXhlJ0tovkeaoJK+d3hUcH1w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lLonUzOZOWfm87L73QS8uRueM+3U3cPrY1wo8qoH08UGpEGY7KOmOq5fXrcvrhqmzKLE+lNYKGQMA3gSOkwGB6CMN8kIdLcdV93JXP/5DoNLKzcKbaz6ietyrvdbcDD66mrIBRS98YujEMC4xPUAVLXNq2HL7ISjKDuiWLilc6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MWMh6DJ/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GzteuApn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nhZfcUQl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=8v+r0UKC; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	s=arc-20240116; t=1708344694; c=relaxed/simple;
+	bh=RKA1FRCk3ma0tGwU4yw6balfgkgpjYcTeV2wBsGPWa4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NWUaSaBbTykyJSPzsU1BoQBOMlUElfIC3IBnYsWIM5svkYpQDMCGjqSM/Z2OF/LWTmIvDr7In98S1YnwfI8qO6zHCZy123rnsg+NOW/G0nnYnmWJ/U8LHDOEkvwqkQUlJziRvLB8K1zkgbGCPMh+fM4d9T+WSUIXYy5a83OYtjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mUO1CBBR; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mUO1CBBR; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AD65221EBE;
-	Mon, 19 Feb 2024 09:17:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708334256; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4FF2D21E6D;
+	Mon, 19 Feb 2024 12:11:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708344691; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vIC/a+gVDD7XPQtjCAkXOILzScqhk7P47GEkxD0UDQs=;
-	b=MWMh6DJ/ibVstvW8CHhxalEdn+EfDp2Pp6CLtUS7w2G8aKm80u24jjbaqFlFeJq3lsm9Ch
-	zmZU9F9fWuq1aSYZnzyc2Nr6Wh+ESMVZCBy+st8OYiqW4rLl90iwbWjzdnPcA6cBBX1juT
-	wQ7oin3joQHdQCFUzFj+7IJwYO/35a0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708334256;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	bh=dgEdE8pMlMrPDPVr2iZZlKCQOw1qxLHW5eescT7bZpg=;
+	b=mUO1CBBRL3HyVHI2fWsDkW0cA/NpbcKxhZPLTjpUVNrn15DI+P6p0SBpC+BjTfClxVqY0b
+	OaH+WJkFMGCOaI61UFckLXxAN8SE5Scv8tLSCP8ULatZb7VSAdEIYQ+DrchMsOBFiUy5Y/
+	PI26M9CvjSnmzPnmFtQNRxvkYXhGDu8=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708344691; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vIC/a+gVDD7XPQtjCAkXOILzScqhk7P47GEkxD0UDQs=;
-	b=GzteuApnghPs8TtGI0ScLwvh9hL/i4LonLgBBl+wck2XX6f4rm3q0fbvXB4+6HxOzNxgPu
-	qyCzH5DeLqoEgEBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708334254; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vIC/a+gVDD7XPQtjCAkXOILzScqhk7P47GEkxD0UDQs=;
-	b=nhZfcUQlK7pH0NXDM7sv2fYcGG6ZDiDb66Gs3exRJKPJtn1oKKXZk7O+L9mcFpHEICfrnI
-	AaunILK2z67g4pS3/czle2C8GcshxFhiA/5Fdd7m6L0ODF+AijttNP+JrMY5ZWs86XQc47
-	L4h7iwvt+dm0nWThHKdQsKNIJzn5kPA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708334254;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vIC/a+gVDD7XPQtjCAkXOILzScqhk7P47GEkxD0UDQs=;
-	b=8v+r0UKCTIoGKIjYstbF4ma5EEhXx29Kjd7rwRP4H+96aLGc+a6L9kcHVm8j614GlmUDPP
-	qNjxnGR/35wREXDg==
+	bh=dgEdE8pMlMrPDPVr2iZZlKCQOw1qxLHW5eescT7bZpg=;
+	b=mUO1CBBRL3HyVHI2fWsDkW0cA/NpbcKxhZPLTjpUVNrn15DI+P6p0SBpC+BjTfClxVqY0b
+	OaH+WJkFMGCOaI61UFckLXxAN8SE5Scv8tLSCP8ULatZb7VSAdEIYQ+DrchMsOBFiUy5Y/
+	PI26M9CvjSnmzPnmFtQNRxvkYXhGDu8=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 18E5713647;
-	Mon, 19 Feb 2024 09:17:34 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2C8FB139D0;
+	Mon, 19 Feb 2024 12:11:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gyquBa4c02VrEgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 19 Feb 2024 09:17:34 +0000
-Message-ID: <5bd3761f-217d-45bb-bcd2-797f82c8a44f@suse.cz>
-Date: Mon, 19 Feb 2024 10:17:33 +0100
+	id /jviB3NF02VWPgAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Mon, 19 Feb 2024 12:11:31 +0000
+Date: Mon, 19 Feb 2024 13:11:26 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com,
+	yuzhao@google.com, mkoutny@suse.com,
+	Yosry Ahmed <yosryahmed@google.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm: memcg: Use larger batches for proactive reclaim
+Message-ID: <ZdNFbiH1ufbOTIDx@tiehlicka>
+References: <20240202233855.1236422-1-tjmercier@google.com>
+ <ZcC7Kgew3GDFNIux@tiehlicka>
+ <CABdmKX3HbSxX6zLF4z3f+=Ybiq1bA71jckkeHv5QJxAjSexgaA@mail.gmail.com>
+ <ZcE5n9cTdTGJChmq@tiehlicka>
+ <CABdmKX0Du2F+bko=hjLBqdQO-bJSFcG3y1Bbuu2v6J8aVB39sw@mail.gmail.com>
+ <ZcFG2JoXI7i8XzQY@tiehlicka>
+ <CABdmKX0t1LXj80Awe20TrmY5gQB6v2E4bGfW8WXr2i84o+k6ow@mail.gmail.com>
+ <ZcFQMru5_oATGbuP@tiehlicka>
+ <CABdmKX35GV3VFar0_pNR_vAXLpvxo+APALXMharsXh6TO+0mrQ@mail.gmail.com>
+ <ZcH0wBPvOjqayjAD@tiehlicka>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 32/35] codetag: debug: skip objext checking when it's
- for objext itself
-Content-Language: en-US
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
- hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
- dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
- corbet@lwn.net, void@manifault.com, peterz@infradead.org,
- juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
- arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
- ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
- ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-33-surenb@google.com>
- <f0a56027-472d-44a6-aba5-912bd50ee3ae@suse.cz>
- <CAJuCfpGUTu7uhcR-23=0d3Wnn8ZbDtNwTaFnukd9qYYVHS9aSA@mail.gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CAJuCfpGUTu7uhcR-23=0d3Wnn8ZbDtNwTaFnukd9qYYVHS9aSA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZcH0wBPvOjqayjAD@tiehlicka>
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=nhZfcUQl;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=8v+r0UKC
-X-Spamd-Result: default: False [1.20 / 50.00];
-	 ARC_NA(0.00)[];
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
 	 TO_DN_SOME(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_GT_50(0.00)[73];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 1.20
-X-Rspamd-Queue-Id: AD65221EBE
-X-Spam-Level: *
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
-X-Spamd-Bar: +
 
-On 2/19/24 02:04, Suren Baghdasaryan wrote:
-> On Fri, Feb 16, 2024 at 6:39 PM Vlastimil Babka <vbabka@suse.cz> wrote:
->>
->> On 2/12/24 22:39, Suren Baghdasaryan wrote:
->> > objext objects are created with __GFP_NO_OBJ_EXT flag and therefore have
->> > no corresponding objext themselves (otherwise we would get an infinite
->> > recursion). When freeing these objects their codetag will be empty and
->> > when CONFIG_MEM_ALLOC_PROFILING_DEBUG is enabled this will lead to false
->> > warnings. Introduce CODETAG_EMPTY special codetag value to mark
->> > allocations which intentionally lack codetag to avoid these warnings.
->> > Set objext codetags to CODETAG_EMPTY before freeing to indicate that
->> > the codetag is expected to be empty.
->> >
->> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->> > ---
->> >  include/linux/alloc_tag.h | 26 ++++++++++++++++++++++++++
->> >  mm/slab.h                 | 25 +++++++++++++++++++++++++
->> >  mm/slab_common.c          |  1 +
->> >  mm/slub.c                 |  8 ++++++++
->> >  4 files changed, 60 insertions(+)
->> >
->> > diff --git a/include/linux/alloc_tag.h b/include/linux/alloc_tag.h
->> > index 0a5973c4ad77..1f3207097b03 100644
->>
->> ...
->>
->> > index c4bd0d5348cb..cf332a839bf4 100644
->> > --- a/mm/slab.h
->> > +++ b/mm/slab.h
->> > @@ -567,6 +567,31 @@ static inline struct slabobj_ext *slab_obj_exts(struct slab *slab)
->> >  int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
->> >                       gfp_t gfp, bool new_slab);
->> >
->> > +
->> > +#ifdef CONFIG_MEM_ALLOC_PROFILING_DEBUG
->> > +
->> > +static inline void mark_objexts_empty(struct slabobj_ext *obj_exts)
->> > +{
->> > +     struct slabobj_ext *slab_exts;
->> > +     struct slab *obj_exts_slab;
->> > +
->> > +     obj_exts_slab = virt_to_slab(obj_exts);
->> > +     slab_exts = slab_obj_exts(obj_exts_slab);
->> > +     if (slab_exts) {
->> > +             unsigned int offs = obj_to_index(obj_exts_slab->slab_cache,
->> > +                                              obj_exts_slab, obj_exts);
->> > +             /* codetag should be NULL */
->> > +             WARN_ON(slab_exts[offs].ref.ct);
->> > +             set_codetag_empty(&slab_exts[offs].ref);
->> > +     }
->> > +}
->> > +
->> > +#else /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
->> > +
->> > +static inline void mark_objexts_empty(struct slabobj_ext *obj_exts) {}
->> > +
->> > +#endif /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
->> > +
->>
->> I assume with alloc_slab_obj_exts() moved to slub.c, mark_objexts_empty()
->> could move there too.
+On Tue 06-02-24 09:58:41, Michal Hocko wrote:
+> On Mon 05-02-24 20:01:40, T.J. Mercier wrote:
+> > On Mon, Feb 5, 2024 at 1:16 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Mon 05-02-24 12:47:47, T.J. Mercier wrote:
+> > > > On Mon, Feb 5, 2024 at 12:36 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > [...]
+> > > > > This of something like
+> > > > > timeout $TIMEOUT echo $TARGET > $MEMCG_PATH/memory.reclaim
+> > > > > where timeout acts as a stop gap if the reclaim cannot finish in
+> > > > > TIMEOUT.
+> > > >
+> > > > Yeah I get the desired behavior, but using sc->nr_reclaimed to achieve
+> > > > it is what's bothering me.
+> > >
+> > > I am not really happy about this subtlety. If we have a better way then
+> > > let's do it. Better in its own patch, though.
+> > >
+> > > > It's already wired up that way though, so if you want to make this
+> > > > change now then I can try to test for the difference using really
+> > > > large reclaim targets.
+> > >
+> > > Yes, please. If you want it a separate patch then no objection from me
+> > > of course. If you do no like the nr_to_reclaim bailout then maybe we can
+> > > go with a simple break out flag in scan_control.
+> > >
+> > > Thanks!
+> > 
+> > It's a bit difficult to test under the too_many_isolated check, so I
+> > moved the fatal_signal_pending check outside and tried with that.
+> > Performing full reclaim on the /uid_0 cgroup with a 250ms delay before
+> > SIGKILL, I got an average of 16ms better latency with
+> > sc->nr_to_reclaim across 20 runs ignoring one 1s outlier with
+> > SWAP_CLUSTER_MAX.
 > 
-> No, I think mark_objexts_empty() belongs here. This patch introduced
-> the function and uses it. Makes sense to me to keep it all together.
+> This will obviously scale with the number of memcgs in the hierarchy but
+> you are right that too_many_isolated makes the whole fatal_signal_pending
+> check rather inefficient. I haven't missed that. The reclaim path is
+> rather convoluted so this will likely be more complex than I
+> anticipated. I will think about that some more.
+> 
+> In order to not delay your patch, please repost with suggested updates
+> to the changelog. This needs addressing IMO but I do not think this is
+> critical at this stage.
 
-Hi,
-
-here I didn't mean moving between patches, but files. alloc_slab_obj_exts()
-in slub.c means all callers of mark_objexts_empty() are in slub.c so it
-doesn't need to be in slab.h
-
-Also same thing with mark_failed_objexts_alloc() and
-handle_failed_objexts_alloc() in patch 34/35.
-
+Has there been a new version or a proposal to refine the changelog
+posted?
+-- 
+Michal Hocko
+SUSE Labs
 
