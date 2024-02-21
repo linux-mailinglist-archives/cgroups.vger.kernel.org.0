@@ -1,187 +1,161 @@
-Return-Path: <cgroups+bounces-1716-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1717-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93CBA85C64C
-	for <lists+cgroups@lfdr.de>; Tue, 20 Feb 2024 21:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E1EA985D077
+	for <lists+cgroups@lfdr.de>; Wed, 21 Feb 2024 07:25:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F4601F23A28
-	for <lists+cgroups@lfdr.de>; Tue, 20 Feb 2024 20:59:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 976C91F23402
+	for <lists+cgroups@lfdr.de>; Wed, 21 Feb 2024 06:25:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88803151CE9;
-	Tue, 20 Feb 2024 20:59:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A87C3B19D;
+	Wed, 21 Feb 2024 06:23:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RpASEgxw"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NKTvoGO6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86456151CCC
-	for <cgroups@vger.kernel.org>; Tue, 20 Feb 2024 20:59:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B97C3A1BC;
+	Wed, 21 Feb 2024 06:23:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708462780; cv=none; b=PgLcxlF8HzMbIstBotlqCZQpXer3WPTplkDbWdPmDFzr02RZwCtBxMsC+2mrcfjrTuPM79QY6emOl/vyOTKXxTJ4E00InLoOOB20wK6z/ZzpP+9id7H+WZftJZewW2flP6EmsTwuLSyfK3u0pv12jv4dYEMOu9KaVTcAic9QgXk=
+	t=1708496611; cv=none; b=ICYym6DcU0GuT59UVfJjESiDlhTMmMs27Mt9dj/YRCY4MsoUJp7KPt/PQ60GBgr2YZXTyE8qfe/09+QJTO3efRyTl1Q4ZZUyrP/d3EQRItLfduHSsaapwna2lO9h2SenVKyAAbyHTs5/xQkPcHUDniBcgt8jUcLloilAsTySyv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708462780; c=relaxed/simple;
-	bh=lAWvibZYCLZJ18pHlosxEIJ4ZpAXKtZDbRFFnu5UjNY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N86mFZRQNikAf0N9/AqkhPhphzfotHJaGmX3vAOkAV6bAxWULVaZ14mi3JRYQdp4unTO36wdsR5giUxasZHnTCENi+U7Ra4kqlB5z/WVoydmLgDXY4HwAfbjSPzQ6+pPK41mMo84puhGA1zj2QEkA0oi0NTZTslvJPBj/sDXB8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RpASEgxw; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dcc71031680so4648656276.2
-        for <cgroups@vger.kernel.org>; Tue, 20 Feb 2024 12:59:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708462777; x=1709067577; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lAWvibZYCLZJ18pHlosxEIJ4ZpAXKtZDbRFFnu5UjNY=;
-        b=RpASEgxwkOgocmvj8fdC72Q+wuzIgJgO+as12KY3i+3OKhqA0Ur+2USxl5/WxSw7GT
-         n/AMBdCT+NTGrnnWMXZNONo+JRE2hKpdLW4UQg+45cK1Vr17TS6vIb4n2/DhEHIy4d7e
-         viLLUOpZyT8mEju/VwiV32CdbT3D3Db5FmEh33LidWpziEM3Xm6EyhVWeEmbumCQVMwh
-         3EvUT49/Gu+st7rv1CM9V40ySq27BReRViIotx1s9womXle68aBdsps1pt5ryPw3uboK
-         Wu/FLi2Y7MjnzUpQD8y9evXWvjXFJw41+uWmmnpaTaYrNcDOQLMgcV4e9aA76TuP0gVN
-         ICIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708462777; x=1709067577;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lAWvibZYCLZJ18pHlosxEIJ4ZpAXKtZDbRFFnu5UjNY=;
-        b=jYO7ss/Ac52WS/G0DtbjEGC+K8eR1Z/he7fS6xry//Z0oX0cN0h3lKQGaeQCEHumKk
-         a2UcaOCUQEAeyd/MopvWfqEOedsCTMlIqID9XKkHwCy/n74yebGvoCQMtwGY0I2LLxho
-         uRa37Qi1GOhX9SLv8338BREceKK57dyKu/Rl5NlIQnb/Tu9XEgodUSJdXRBqaBTRLT8b
-         m+V7I0V5uKaLuYjcu+LFAegIn5BMOoFUftXHf0eR7KgmZvOzM8+pAA1dqlv9nV1Ah1L2
-         ZB+g2mU1b0NtXZdEdrGbD2GakNrHgBsZGOlus095j0e5whBMfyGwj1/OVXKcGU578Vba
-         IqWw==
-X-Forwarded-Encrypted: i=1; AJvYcCVJ/B0YDBEryceBMbfYOMgeSEx9YvtenhFRqWg4dkAlsQZj/vxl5JMQx/i58fRgSqFa6TkezKt9VDGJFi4sXq0CkDDRDHK0PA==
-X-Gm-Message-State: AOJu0Yy9B/u/lIFMv/hlJCGpCpbHd6l8yH7jfa+cziFxa69yyxwanXR2
-	wUZABL4N/75wvBRngG/g3c3yD9WMh/xS6WBjBkqTgG/dLxiWgVMsKqaiTEu4X4AxvQI4i1nmoBU
-	CBOY4vZsQLMv9Jf2L+Pm79WgFszA53bYtEt6B
-X-Google-Smtp-Source: AGHT+IEUBep3JbSfIFxIrjxLVKPObAawmbo2MZhL9tIpGGThj6+3JFdPMLwKRYjCckQD2YbEpyoHbPFSy5F0AEYQhEA=
-X-Received: by 2002:a81:7c55:0:b0:607:910c:9cb3 with SMTP id
- x82-20020a817c55000000b00607910c9cb3mr16089286ywc.36.1708462776952; Tue, 20
- Feb 2024 12:59:36 -0800 (PST)
+	s=arc-20240116; t=1708496611; c=relaxed/simple;
+	bh=0lWBlh6xitCkQRn/+82kIvUqjqF7tK3nFPTc+NjV+nA=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=bui+0NFQfhjbUCTNW8D4z/Bj4uOmOFUsl8IhEyQveqEHpcLAa5fjtdLaFYsnBjWubvEoo2Ynq5HTKytbbJvUzm24uhp/1n/lKkF/FyoUBDVPbtGYxRLBUj7wA9EVIiGwWZbCFzmyfUzwL8LO83GEOyxfMfWd+TjNkpwwtDt6hkw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=NKTvoGO6; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708496610; x=1740032610;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=0lWBlh6xitCkQRn/+82kIvUqjqF7tK3nFPTc+NjV+nA=;
+  b=NKTvoGO6t7BIlMvVk5wO3P6Q9/Kp30HCyXBMJTrvfe84DEMzFLiWIfQk
+   Bu3AjdsRHtQ6oDv9FNWXvqFSJwBWq/ojUEpmRp4myeiZPa0+xdODPOIZ7
+   4nisriCAq+c5gW5hLFxZpKGaEKreDC/zpjy/6rcCAHP+EglnyzuAWM7uj
+   d8MtShMpyfQqpX0Nt0QEhTJ6bQaXReNjY5oPKxTxrzasc5Ej7m0+fr85o
+   dSAi8bhGsTbk2NWh067sSylJ53WaPdn6ouSuTCfvFiAStdJ8V3rSOUBCY
+   vp/6WIykfGhCwun9eh5l852W0InjfPrzd/+1lNMdiId8wMi/Ky9q+wM9s
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="13758070"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="13758070"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 22:23:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="827290820"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="827290820"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 20 Feb 2024 22:23:26 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
+ <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
+ <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
+ <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
+ <kai.huang@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
+ <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: [PATCH v9 08/15] x86/sgx: Implement EPC reclamation flows for
+ cgroup
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-9-haitao.huang@linux.intel.com>
+ <fa091e657c2d3f3cc14aff15ad3484e0d7079b6f.camel@intel.com>
+Date: Wed, 21 Feb 2024 00:23:20 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Zc3X8XlnrZmh2mgN@tiehlicka> <CAJuCfpHc2ee_V6SGAc_31O_ikjGGNivhdSG+2XNcc9vVmzO-9g@mail.gmail.com>
- <Zc4_i_ED6qjGDmhR@tiehlicka> <CAJuCfpHq3N0h6dGieHxD6Au+qs=iKAifFrHAMxTsHTcDrOwSQA@mail.gmail.com>
- <ruxvgrm3scv7zfjzbq22on7tj2fjouydzk33k7m2kukm2n6uuw@meusbsciwuut>
- <320cd134-b767-4f29-869b-d219793ba8a1@suse.cz> <efxe67vo32epvmyzplmpd344nw2wf37azicpfhvkt3zz4aujm3@n27pl5j5zahj>
- <20240215180742.34470209@gandalf.local.home> <20240215181648.67170ed5@gandalf.local.home>
- <20240215182729.659f3f1c@gandalf.local.home> <mi5zw42r6c2yfg7fr2pfhfff6hudwizybwydosmdiwsml7vqna@a5iu6ksb2ltk>
- <CAJuCfpEARb8t8pc8WVZYB=yPk6G_kYGmJTMOdgiMHaYYKW3fUA@mail.gmail.com> <e017b7bc-d747-46e6-a89d-4ce558ed79b0@suse.cz>
-In-Reply-To: <e017b7bc-d747-46e6-a89d-4ce558ed79b0@suse.cz>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Tue, 20 Feb 2024 12:59:23 -0800
-Message-ID: <CAJuCfpFYAnDcyBtnPK_fc6PmFMJ6B4OqS=F7-QTidZ+QtJQx1A@mail.gmail.com>
-Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, Steven Rostedt <rostedt@goodmis.org>, 
-	Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org, hannes@cmpxchg.org, 
-	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, 
-	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, 
-	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de, 
-	mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
-	peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, 
-	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, tj@kernel.org, 
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org, Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2jhao6nzwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <fa091e657c2d3f3cc14aff15ad3484e0d7079b6f.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-On Tue, Feb 20, 2024 at 10:27=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> w=
-rote:
+StartHi Kai
+On Tue, 20 Feb 2024 03:52:39 -0600, Huang, Kai <kai.huang@intel.com> wrote:
+[...]
 >
-> On 2/19/24 18:17, Suren Baghdasaryan wrote:
-> > On Thu, Feb 15, 2024 at 3:56=E2=80=AFPM Kent Overstreet
-> > <kent.overstreet@linux.dev> wrote:
-> >>
-> >> On Thu, Feb 15, 2024 at 06:27:29PM -0500, Steven Rostedt wrote:
-> >> > All this, and we are still worried about 4k for useful debugging :-/
-> >
-> > I was planning to refactor this function to print one record at a time
-> > with a smaller buffer but after discussing with Kent, he has plans to
-> > reuse this function and having the report in one buffer is needed for
-> > that.
+> So you introduced the work/workqueue here but there's no place which  
+> actually
+> queues the work.  IMHO you can either:
 >
-> We are printing to console, AFAICS all the code involved uses plain print=
-k()
-> I think it would be way easier to have a function using printk() for this
-> use case than the seq_buf which is more suitable for /proc and friends. T=
-hen
-> all concerns about buffers would be gone. It wouldn't be that much of a c=
-ode
-> duplication?
+> 1) move relevant code change here; or
+> 2) focus on introducing core functions to reclaim certain pages from a  
+> given EPC
+> cgroup w/o workqueue and introduce the work/workqueue in later patch.
+>
+> Makes sense?
+>
 
-Ok, after discussing this with Kent, I'll change this patch to provide
-a function returning N top consumers (the array and N will be provided
-by the caller) and then we can print one record at a time with much
-less memory needed. That should address reusability concerns, will use
-memory more efficiently and will allow for more flexibility (more/less
-than 10 records if needed).
-Thanks for the feedback, everyone!
+Starting in v7, I was trying to split the big patch, #10 in v6 as you and  
+others suggested. My thought process was to put infrastructure needed for  
+per-cgroup reclaim in the front, then turn on per-cgroup reclaim in [v9  
+13/15] in the end.
 
->
-> >> Every additional 4k still needs justification. And whether we burn a
-> >> reserve on this will have no observable effect on user output in
-> >> remotely normal situations; if this allocation ever fails, we've alrea=
-dy
-> >> been in an OOM situation for awhile and we've already printed out this
-> >> report many times, with less memory pressure where the allocation woul=
-d
-> >> have succeeded.
-> >
-> > I'm not sure this claim will always be true, specifically in the case
-> > of low-end devices with relatively low amounts of reserves and in the
->
-> That's right, GFP_ATOMIC failures can easily happen without prior OOMs.
-> Consider a system where userspace allocations fill the memory as they
-> usually do, up to high watermark. Then a burst of packets is received and
-> handled by GFP_ATOMIC allocations that deplete the reserves and can't cau=
-se
-> OOMs (OOM is when we fail to reclaim anything, but we are allocating from=
- a
-> context that can't reclaim), so the very first report would be an GFP_ATO=
-MIC
-> failure and now it can't allocate that buffer for printing.
->
-> I'm sure more such scenarios exist, Cc: Tetsuo who I recall was an expert=
- on
-> this topic.
->
-> > presence of a possible quick memory usage spike. We should also
-> > consider a case when panic_on_oom is set. All we get is one OOM
-> > report, so we get only one chance to capture this report. In any case,
-> > I don't yet have data to prove or disprove this claim but it will be
-> > interesting to test it with data from the field once the feature is
-> > deployed.
-> >
-> > For now I think with Vlastimil's __GFP_NOWARN suggestion the code
-> > becomes safe and the only risk is to lose this report. If we get cases
-> > with reports missing this data, we can easily change to reserved
-> > memory.
->
+Before that, all reclaimables are tracked in the global LRU so really  
+there is no "reclaim certain pages from a  given EPC cgroup w/o workqueue"  
+or reclaim through workqueue before that point, as suggested in #2. This  
+patch puts down the implementation for both flows but neither used yet, as  
+stated in the commit message.
+
+#1 would force me go back and merge the patches again.
+
+Sorry I feel kind of lost on this whole thing by now. It seems so random  
+to me. Is there hard rules on this?
+
+I was hoping these statements would help reviewers on the flow of the  
+patches.
+
+At the end of [v9 04/15]:
+
+For now, the EPC cgroup simply blocks additional EPC allocation in
+sgx_alloc_epc_page() when the limit is reached. Reclaimable pages are
+still tracked in the global active list, only reclaimed by the global
+reclaimer when the total free page count is lower than a threshold.
+
+Later patches will reorganize the tracking and reclamation code in the
+global reclaimer and implement per-cgroup tracking and reclaiming.
+
+At the end of [v9 06/15]:
+
+Next patches will first get the cgroup reclamation flow ready while
+keeping pages tracked in the global LRU and reclaimed by ksgxd before we
+make the switch in the end for sgx_lru_list() to return per-cgroup
+LRU.
+
+At the end of [v9 08/15]:
+
+Both synchronous and asynchronous flows invoke the same top level reclaim
+function, and will be triggered later by sgx_epc_cgroup_try_charge()
+when usage of the cgroup is at or near its limit.
+
+At the end of [v9 10/15]:
+Note at this point, all reclaimable EPC pages are still tracked in the
+global LRU and per-cgroup LRUs are empty. So no per-cgroup reclamation
+is activated yet.
+
+
+Thanks
+Haitao
 
