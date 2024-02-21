@@ -1,70 +1,70 @@
-Return-Path: <cgroups+bounces-1742-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1743-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 896F285E7A5
-	for <lists+cgroups@lfdr.de>; Wed, 21 Feb 2024 20:42:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 495B085E7AB
+	for <lists+cgroups@lfdr.de>; Wed, 21 Feb 2024 20:43:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA51C1C22045
-	for <lists+cgroups@lfdr.de>; Wed, 21 Feb 2024 19:42:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D282B22561
+	for <lists+cgroups@lfdr.de>; Wed, 21 Feb 2024 19:43:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7819B128373;
-	Wed, 21 Feb 2024 19:41:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4451A12882B;
+	Wed, 21 Feb 2024 19:41:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="H37z25x5"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="byge+aaK"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68FFF86AFE
-	for <cgroups@vger.kernel.org>; Wed, 21 Feb 2024 19:41:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E324127B6F
+	for <cgroups@vger.kernel.org>; Wed, 21 Feb 2024 19:41:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708544468; cv=none; b=Aq3UHmxp9xY5azrqanh++WeJtfeLOUV1cSlcK3GMtC6LViXb0eedRgQ4BSg6MKIA0mfAjhXuVtk5nl/6innEvRMF9mMGlpe4OILqlbogRrrEn1zQLvUAD8NRCO6TP7VJJR+bNgwmg5PB82pPTgpdUtD11kp/ewCQ50H8I6ylcKc=
+	t=1708544470; cv=none; b=Jlm+mREVkCm9Dszjj4C9t0Uh6buuFk2W2xs2rNIjsvh6w0y8PTxBJuaAbw40auMLWrUwIFVAaTK4Ak7wkD3pjYpxguYtMU9zvY5R/mfCjbpHpJvaaeWQ3JJjVIuxhW3eTas9d0sIkLwMXIV9Xh0V7ce4f2Or1DL6fL0NbUCthgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708544468; c=relaxed/simple;
-	bh=HEHmOJCie8+J7RJiRgymV6TXHRXRZD3Kg9mNxHhJkjU=;
+	s=arc-20240116; t=1708544470; c=relaxed/simple;
+	bh=Z0uieU1Hw2qDymgn+R30jj728IuRbiBIVd6A3QTsoEg=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=iCnW5+4w3+4hMzyKX2cPezCJceucMbYNiibAJQThRj+k0R7AP7phGaLKNCmkpBzF0M1SWiliosnfuTPBcXjnINhvwTP2okuW9oQt5sMpNXg4Lt5JPjNMZUeTC/AU7AQ+yMFfmPWA2Se1vogIOYnZpd6OUoR0iCQHFzQCm69mqMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=H37z25x5; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=NXf1CZBe7U49o3+/7ve+tcQObkxReQ2ibv+4MeiuqB7Ma4klPeYzxTtGrLeDm/atjxxuWIRjdWyqcpcwjWvMDGjnpG/2fJ3U/G86mfJ7TMbFExDGFv3mvXZemhBLulCRCrsQ7pGrlp/JFp4nXtW5kK+sKlrd2Aoh9pRIQh2r6GA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=byge+aaK; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6086574258fso20090797b3.3
-        for <cgroups@vger.kernel.org>; Wed, 21 Feb 2024 11:41:06 -0800 (PST)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6047fed0132so108263317b3.1
+        for <cgroups@vger.kernel.org>; Wed, 21 Feb 2024 11:41:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708544465; x=1709149265; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1708544467; x=1709149267; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nNOJH11gO16gI1CGV9wD1JhhI3G0pl89I4/43bWDXAE=;
-        b=H37z25x5wvEqUwzd/42xA/Op9Kb8Fd0bYv549DTrI2TY1FrCrkQmoYqACVMpDfqD4y
-         OspB1oI6aB9HGWr2ol/P7wMiZw9MX2tFLcqPdJGAzby6B3v0elGYlsRr4FshFxpVDOBZ
-         AJ1VLsD2PiTfLGyj9LG7ysU5bHCjMwgDXL+25UFC1aurZBEQpx3AB67ny16u57cPH2yX
-         U/lQgoA+pKGM4aoHvqMFfedUkwH2/NcRsRLY+mgM4itaBDL1aKqg4idbJYagOSPcLGtq
-         buHUA1yS57dInoD8oYhGZjYyo0cXPDzWMUwuEJ900z20bs+j9uzayLp55OTSZz1uViN6
-         wZkg==
+        bh=14sostfgXdBtkigrgclSIrhsv4NljUYVKVXEohyvFzI=;
+        b=byge+aaKKirc/1HtrNjKyqcEh1JvgEDAfzILDPbokj0bGNmdMzHMyliJoEP6JRJ+qk
+         bhGiYyCwGhDZTEOKGxj+ABhC9mVdMWWHv6GtmMuN7ybSvKpU8Mc2FfbA9zcdorlH0cUO
+         /L6GVNl9T1n0I9asPP9NvNY5yWPUtwerWFneQlK/tLXWQ0Uj0Y7AxBagPMg6rZywoPSr
+         DjvV3RRrSoPKkW9TkKqtxhnHY/39vU560lNYeMS9SS340Xh+dtqnHhO3nGEnyfghptt7
+         l4vhmHvMk3ulYJQO++e6PAVqPtel0Zx0cTfWBxhcj+Ilqp8YAQYPCxDi8/df4KQ+bWLa
+         +R9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708544465; x=1709149265;
+        d=1e100.net; s=20230601; t=1708544467; x=1709149267;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nNOJH11gO16gI1CGV9wD1JhhI3G0pl89I4/43bWDXAE=;
-        b=NyhO6Lm3Y6jz5S0JrLwfZnWBzEmx3qfJoJ/JlfSNL71SqfzuAOckMg6NZhh2UblDqx
-         4ksmeYufOUJt+Eg1c3cX5IrpPIdMk1jcgnrgnDqNALX6PCJ3vj47utYBt784hRzJtuTS
-         z/92PtxFm8lABLBSMwCaqdg3Jz19NXXQJ6Qkr2GOzusBOC/gznsLEwO/nIInuD/I6AfN
-         O3gidWFTteKToeU8x3xIOgF1EHdeSoeATlhgNkHhBjLhBg6xDtKdfUjKN/m1wuYrGqCx
-         1cMWgawdI1FPL/Hh3LhwLwTD0o2/RreUhAC0lkKXifGNkSpjnjQe7luHucIfphb/s4lo
-         aa/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVfttVS2xGnFd6HmL6UWL/FAMbqeQUmP+jRiJ6EaM+GUTug5otwhFuKmxEDXMr5/DsT8Ob/CmHDc4Fyje1liPeC76Dcga0utQ==
-X-Gm-Message-State: AOJu0Yz+TgvrHxDIyoWmBhGeS7/6AyckmQFL+dbTa2tjpJrAJtpZc6Z6
-	S7q7uSaZnbFzzEOusm7f/RG1Bf8K/jEgNcLNO34AbCZpDCePNibyBFVrVJUwWNwZdykXhlYbbi6
-	mQQ==
-X-Google-Smtp-Source: AGHT+IFw1HW6rh2zXq6oVisO+flBpM8PZrPAxomjgm47RtsfgtCbzompT9Q8/PbN9Jjx8wnIh7u82HkUv1c=
+        bh=14sostfgXdBtkigrgclSIrhsv4NljUYVKVXEohyvFzI=;
+        b=OboWxWqEAqvsrWZuYolekzn26NmqD0O86kVX8rQK0axkOWxLl9256N39SdHkOpV3O6
+         M45E8j/iFhVhS5eNrUCNuZOgkIsgDdKa8Vjr2bOqWtue7hiGJxrqCAtIXQLclfHf0i1F
+         H1cP2n9g+dOKSUeEJK+5XzW/MR33n9NQRUFqZsNSzSGfa7gHZD5mioojDnLfJPSzNZje
+         aMduvxGs0aq2lHgVmpj8UBIm5n5gLth0rZfAnlZcCWl2IA9+tguUQYDLdP/6klGjvjFM
+         bn0S7qepNFrmMYyIdOoxqAEKcwN+uca84/UJBT3ZpKKBew7jJqva3hqon7ciXak06aor
+         nytg==
+X-Forwarded-Encrypted: i=1; AJvYcCWNTRU9mB0/jdNJ8tv9SfI5VQqwKlkBV18tVEz26rrcTkP+Au3Pmg9VvKsPeYFd1SCrFbwQhcJgS1QL6QJaPiSpEjzgDXSIxw==
+X-Gm-Message-State: AOJu0Ywt4oZYaCLfF0wgVYafEQHXcA8eCoVD/SuZTQlkFuFuJ7TvkMu4
+	P1DpvltCKqthDOKHvUHPfsOoaa6BlQbLbHjQD1ZjSClu4FN9adzT7qlbpHR195h93AxNQyKBg7k
+	mIQ==
+X-Google-Smtp-Source: AGHT+IEg8J3/Tgw3rQ0HmvocmCN1KEaF26PclNShE/JXdkinKLyGnMcr7oBUIgKaZkEgV9b6wmo43w0h+Rc=
 X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:953b:9a4e:1e10:3f07])
- (user=surenb job=sendgmr) by 2002:a81:528e:0:b0:608:94cb:6f6 with SMTP id
- g136-20020a81528e000000b0060894cb06f6mr174090ywb.7.1708544465320; Wed, 21 Feb
- 2024 11:41:05 -0800 (PST)
-Date: Wed, 21 Feb 2024 11:40:17 -0800
+ (user=surenb job=sendgmr) by 2002:a05:6902:4c2:b0:dcc:4785:b51e with SMTP id
+ v2-20020a05690204c200b00dcc4785b51emr10314ybs.12.1708544467498; Wed, 21 Feb
+ 2024 11:41:07 -0800 (PST)
+Date: Wed, 21 Feb 2024 11:40:18 -0800
 In-Reply-To: <20240221194052.927623-1-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -74,8 +74,8 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240221194052.927623-1-surenb@google.com>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <20240221194052.927623-5-surenb@google.com>
-Subject: [PATCH v4 04/36] scripts/kallysms: Always include __start and __stop symbols
+Message-ID: <20240221194052.927623-6-surenb@google.com>
+Subject: [PATCH v4 05/36] fs: Convert alloc_inode_sb() to a macro
 From: Suren Baghdasaryan <surenb@google.com>
 To: akpm@linux-foundation.org
 Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz, 
@@ -102,53 +102,40 @@ Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz,
 	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
 	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
 	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
+	cgroups@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="UTF-8"
 
 From: Kent Overstreet <kent.overstreet@linux.dev>
 
-These symbols are used to denote section boundaries: by always including
-them we can unify loading sections from modules with loading built-in
-sections, which leads to some significant cleanup.
+We're introducing alloc tagging, which tracks memory allocations by
+callsite. Converting alloc_inode_sb() to a macro means allocations will
+be tracked by its caller, which is a bit more useful.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
 Reviewed-by: Kees Cook <keescook@chromium.org>
 ---
- scripts/kallsyms.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ include/linux/fs.h | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
-index 653b92f6d4c8..47978efe4797 100644
---- a/scripts/kallsyms.c
-+++ b/scripts/kallsyms.c
-@@ -204,6 +204,11 @@ static int symbol_in_range(const struct sym_entry *s,
- 	return 0;
- }
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 023f37c60709..08d8246399c3 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3010,11 +3010,7 @@ int setattr_should_drop_sgid(struct mnt_idmap *idmap,
+  * This must be used for allocating filesystems specific inodes to set
+  * up the inode reclaim context correctly.
+  */
+-static inline void *
+-alloc_inode_sb(struct super_block *sb, struct kmem_cache *cache, gfp_t gfp)
+-{
+-	return kmem_cache_alloc_lru(cache, &sb->s_inode_lru, gfp);
+-}
++#define alloc_inode_sb(_sb, _cache, _gfp) kmem_cache_alloc_lru(_cache, &_sb->s_inode_lru, _gfp)
  
-+static bool string_starts_with(const char *s, const char *prefix)
-+{
-+	return strncmp(s, prefix, strlen(prefix)) == 0;
-+}
-+
- static int symbol_valid(const struct sym_entry *s)
- {
- 	const char *name = sym_name(s);
-@@ -211,6 +216,14 @@ static int symbol_valid(const struct sym_entry *s)
- 	/* if --all-symbols is not specified, then symbols outside the text
- 	 * and inittext sections are discarded */
- 	if (!all_symbols) {
-+		/*
-+		 * Symbols starting with __start and __stop are used to denote
-+		 * section boundaries, and should always be included:
-+		 */
-+		if (string_starts_with(name, "__start_") ||
-+		    string_starts_with(name, "__stop_"))
-+			return 1;
-+
- 		if (symbol_in_range(s, text_ranges,
- 				    ARRAY_SIZE(text_ranges)) == 0)
- 			return 0;
+ extern void __insert_inode_hash(struct inode *, unsigned long hashval);
+ static inline void insert_inode_hash(struct inode *inode)
 -- 
 2.44.0.rc0.258.g7320e95886-goog
 
