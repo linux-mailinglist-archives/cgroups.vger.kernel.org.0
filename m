@@ -1,219 +1,286 @@
-Return-Path: <cgroups+bounces-1812-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1814-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5757985FFC9
-	for <lists+cgroups@lfdr.de>; Thu, 22 Feb 2024 18:41:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D77A886007A
+	for <lists+cgroups@lfdr.de>; Thu, 22 Feb 2024 19:09:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D3A22864C2
-	for <lists+cgroups@lfdr.de>; Thu, 22 Feb 2024 17:41:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 059231C24563
+	for <lists+cgroups@lfdr.de>; Thu, 22 Feb 2024 18:09:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FF1715A4BE;
-	Thu, 22 Feb 2024 17:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AA46157E7C;
+	Thu, 22 Feb 2024 18:09:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="yewvBuHl"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D4mgCP0X"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4EA6158D70
-	for <cgroups@vger.kernel.org>; Thu, 22 Feb 2024 17:39:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF44515699F;
+	Thu, 22 Feb 2024 18:09:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708623605; cv=none; b=udRng4JBjB/lhKvceeqmYrUGZvJK7rv4h1T4oCfWJLSLd/AEgwNs0NalEepMQSypmTdlZGmsZ1myUXOQgp9D7nZa7QN5KSyuUNSbF4occssToPf6WccAmvWP2AEIz1WH0hz1twLdzs50pyTQ4tk+h2dpfoYoqQEG8rUFsZpBEJg=
+	t=1708625375; cv=none; b=tFwPavjgDToVDjfGVdB57mFAtn2fwCTjI4tJbkTRjPU99ZPgFZgSeknkxWDzheRFLdClliQffsy5CJaOyIAFFSu+ctQWJZwH+Xo8GSGLuNLiCIiAwNoblVplYZl/ie0ccvB4Mvi4vyPHJVvnF5pGKR+qpHQ48ei02HOEj0ES/ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708623605; c=relaxed/simple;
-	bh=s2nvM2JSjpFzXc4jGY+I9yEyb0A/qzUAKQj+oJecsuI=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dRS6Q9sp3G9SSpUEvASYQtw7h+E7SwRxghQhDJ8c8hfGQyUPCtTpfFMyueK/Qr/3jhGoRb9tYt2grH4Dfm6unaAgVX6Y41LZeYIBI9KL8iB6GINiiWLi2N9CtGHbLsXw+O/JD/fngIAd48AncDAdE4QDc76APzGbRdFmtieN2m4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=yewvBuHl; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-6087192b092so22361137b3.0
-        for <cgroups@vger.kernel.org>; Thu, 22 Feb 2024 09:39:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1708623596; x=1709228396; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SZ2pQJ9+dxF//EaiCt/uq+OdRpwnCyd+9hrUk8R734o=;
-        b=yewvBuHle/gJwA+itjyFD/ybSsLiCIVR4xaJxgr0GB+wC2676n9F9XZ+/oMyjm1icz
-         1TJwrAZI1jAv43V4OtZbsV3mJCAbh2urs3n+gUB42mgT5Gc/tD2jJ2+RCoRoq1l3Ct2x
-         jobWQ8AtkC5O7anBaEvifFHAdNfbh9MnCZpm40s46wqiMmIx7g1Hda4hl7D2LBzmRy/g
-         Yar7fao1ojokoqySRKMvg1Z71ZRvzD5rNQwcb0tAiPxwVN0UI9R8vPotL1pwzcetufwB
-         2Hp9Atw50NLLmq3mMlpQ7KIDbC7Xnth5tKXg6G4uZnBPyB7t+/Wm0rqL46Se2cGZ61oI
-         /+pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708623596; x=1709228396;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SZ2pQJ9+dxF//EaiCt/uq+OdRpwnCyd+9hrUk8R734o=;
-        b=tCEKS+zpuJci1BTRA2v/fRgHfKIiuwCLdiFMkxFGch5a0LAuTpYceb2B/OWwdCw8x8
-         /ftimJwId2Cpi8vCWX3ye8+z98M9F9LA2x1bf5T2Qcw64a6es0nguv+c5x7hs3UwWq19
-         8vekE1sKfJQRr/I5xXGkSUFa3L1rKqt7Q2H6pna3NiWdSRFLO0hJQmD3peJrwk6876ZZ
-         aRk8/OeMlPzMLFkAD7l9A0FbF7eSEwArrq6oK/mMXF7JHxJWDE87Scwmj9QnH3tZza7R
-         l7PV6lLg3U3soeRnyCYfRbERIRlyK9lNvx4HL5+vgaDZQ4aInsC10IUtlxj1NfgWKqHK
-         cDBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXP3AzNzPPy8wu3/5RKxYNgJumYIJNY8CaKOs+CQv3Pk5AFNVb94yJuqWE67RmFyVPCCCi3B+P0V/u7KwkB2Bg2lNmyoUE+fA==
-X-Gm-Message-State: AOJu0YxFl/W1eLZBQ09wvlXLGIfQGyn4I5cWybu/qPQ9nN/HMpqBEJs3
-	3BRJiITyMMAWJm2cdQPbaww+jFi1q9BIEzlyM+/+/JUWCHNYi7kXLjBBENkI6us=
-X-Google-Smtp-Source: AGHT+IEtAUUqy5uqw2b6AFNUjnG1318TVskHRq83YxSHDfvItzdqlBQeiT8forYQaEVyJnoFBVJVWg==
-X-Received: by 2002:a81:431a:0:b0:607:ef06:eb8 with SMTP id q26-20020a81431a000000b00607ef060eb8mr20801514ywa.40.1708623595945;
-        Thu, 22 Feb 2024 09:39:55 -0800 (PST)
-Received: from soleen.c.googlers.com.com (249.240.85.34.bc.googleusercontent.com. [34.85.240.249])
-        by smtp.gmail.com with ESMTPSA id f17-20020ac86ed1000000b0042e5ab6f24fsm259682qtv.7.2024.02.22.09.39.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Feb 2024 09:39:55 -0800 (PST)
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-To: akpm@linux-foundation.org,
-	alim.akhtar@samsung.com,
-	alyssa@rosenzweig.io,
-	asahi@lists.linux.dev,
-	baolu.lu@linux.intel.com,
-	bhelgaas@google.com,
-	cgroups@vger.kernel.org,
-	corbet@lwn.net,
-	david@redhat.com,
-	dwmw2@infradead.org,
-	hannes@cmpxchg.org,
-	heiko@sntech.de,
-	iommu@lists.linux.dev,
-	jernej.skrabec@gmail.com,
-	jonathanh@nvidia.com,
-	joro@8bytes.org,
-	krzysztof.kozlowski@linaro.org,
-	linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-sunxi@lists.linux.dev,
-	linux-tegra@vger.kernel.org,
-	lizefan.x@bytedance.com,
-	marcan@marcan.st,
-	mhiramat@kernel.org,
-	m.szyprowski@samsung.com,
-	pasha.tatashin@soleen.com,
-	paulmck@kernel.org,
-	rdunlap@infradead.org,
-	robin.murphy@arm.com,
-	samuel@sholland.org,
-	suravee.suthikulpanit@amd.com,
-	sven@svenpeter.dev,
-	thierry.reding@gmail.com,
-	tj@kernel.org,
-	tomas.mudrunka@gmail.com,
-	vdumpa@nvidia.com,
-	wens@csie.org,
-	will@kernel.org,
-	yu-cheng.yu@intel.com,
-	rientjes@google.com,
-	bagasdotme@gmail.com,
-	mkoutny@suse.com
-Subject: [PATCH v5 11/11] iommu: account IOMMU allocated memory
-Date: Thu, 22 Feb 2024 17:39:37 +0000
-Message-ID: <20240222173942.1481394-12-pasha.tatashin@soleen.com>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-In-Reply-To: <20240222173942.1481394-1-pasha.tatashin@soleen.com>
-References: <20240222173942.1481394-1-pasha.tatashin@soleen.com>
+	s=arc-20240116; t=1708625375; c=relaxed/simple;
+	bh=jk8RlsiT8f/S9Jhz/GgQqUxnZg2BACrAQRRLCql1KoA=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=C8k8TA+ZZeR+HVNk0VwpMjFcha+3qhHZTY3ggN7A+YpyGNac0/J1x1hFT8i0uHkGsqb7lj8fIDFAjRbQsDVQ99v8qil/SYlymsGVMiFTWscIi//Dh9pocXM4GlJ8ikNs2XAlezKFUhALSOAG/SoSA6uucWmC3Ifmfb/mTRG/+Dc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=D4mgCP0X; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708625373; x=1740161373;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=jk8RlsiT8f/S9Jhz/GgQqUxnZg2BACrAQRRLCql1KoA=;
+  b=D4mgCP0X7V2BOL6YI2be3QbS+MM7/d61FRsc0R8cp5B7yxS9NstO1bTO
+   Dw8YFnwZy0Ig/fhx2dEOYfYpIL0D/UnC6n7t+bP5IsdcZG2o19s6p1J6H
+   g1XJZfZD7bB8I9JpBxGs1bdfBQaPYdnWwQ0KOx+5QJEKcoG9czuK8d9Qt
+   JuUy/FabbNZNV3U0Fzm6ylKNt1GQksL6YvK9NFeoCrfr4189h5D0X/6hf
+   NHKDFOVH9IAoRaHGfHGJyi3/hPMQV/TKtPIScZ2WcQqkGgozTGotZuvxs
+   875Gt4fOvUxfvWe74ryVHqmrXKNUvjuWuqxooSwrbq0gsn6+fjfUkdpWk
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="2981632"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="2981632"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 10:09:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="827583578"
+X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
+   d="scan'208";a="827583578"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 22 Feb 2024 10:09:29 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
+ <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
+ <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
+ <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
+ <kai.huang@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
+ <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: [PATCH v9 08/15] x86/sgx: Implement EPC reclamation flows for
+ cgroup
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-9-haitao.huang@linux.intel.com>
+ <fa091e657c2d3f3cc14aff15ad3484e0d7079b6f.camel@intel.com>
+Date: Thu, 22 Feb 2024 12:09:28 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2jj11200wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <fa091e657c2d3f3cc14aff15ad3484e0d7079b6f.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-In order to be able to limit the amount of memory that is allocated
-by IOMMU subsystem, the memory must be accounted.
+On Tue, 20 Feb 2024 03:52:39 -0600, Huang, Kai <kai.huang@intel.com> wrote:
 
-Account IOMMU as part of the secondary pagetables as it was discussed
-at LPC.
+>>> +/**
+>> + * sgx_epc_cgroup_reclaim_pages() - walk a cgroup tree and scan LRUs  
+>> to reclaim pages
+>> + * @root:	Root of the tree to start walking from.
+>> + * Return:	Number of pages reclaimed.
+>
+> Just wondering, do you need to return @cnt given this function is called  
+> w/o
+> checking the return value?
+>
+Yes. Will add explicit commenting that we need scan fixed number of pages  
+for attempted reclamation.
+>> + */
+>> +unsigned int sgx_epc_cgroup_reclaim_pages(struct misc_cg *root)
+>> +{
+>> +	/*
+>> +	 * Attempting to reclaim only a few pages will often fail and is
+>> +	 * inefficient, while reclaiming a huge number of pages can result in
+>> +	 * soft lockups due to holding various locks for an extended duration.
+>> +	 */
+>
+> Not sure we need this comment, given it's already implied in
+> sgx_reclaim_pages().  You cannot pass a value > SGX_NR_TO_SCAN anyway.
 
-The value of SecPageTables now contains mmeory allocation by IOMMU
-and KVM.
+Will rework on these comments to make them more meaningful.
+>
 
-There is a difference between GFP_ACCOUNT and what NR_IOMMU_PAGES shows.
-GFP_ACCOUNT is set only where it makes sense to charge to user
-processes, i.e. IOMMU Page Tables, but there more IOMMU shared data
-that should not really be charged to a specific process.
+[other comments/questions addressed in separate email threads]
+[...]
+>> +
+>> +/*
+>> + * Scheduled by sgx_epc_cgroup_try_charge() to reclaim pages from the  
+>> cgroup
+>> + * when the cgroup is at/near its maximum capacity
+>> + */
+>
+> I don't see this being "scheduled by sgx_epc_cgroup_try_charge()" here.   
+> Does it
+> make more sense to move that code change to this patch for better review?
+>
 
-Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-Acked-by: David Rientjes <rientjes@google.com>
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 2 +-
- Documentation/filesystems/proc.rst      | 4 ++--
- drivers/iommu/iommu-pages.h             | 2 ++
- include/linux/mmzone.h                  | 2 +-
- 4 files changed, 6 insertions(+), 4 deletions(-)
+Right. This comment was left-over when I split the old patch.
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 17e6e9565156..15f80fea8df7 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1432,7 +1432,7 @@ PAGE_SIZE multiple when read back.
- 	  sec_pagetables
- 		Amount of memory allocated for secondary page tables,
- 		this currently includes KVM mmu allocations on x86
--		and arm64.
-+		and arm64 and IOMMU page tables.
- 
- 	  percpu (npn)
- 		Amount of memory used for storing per-cpu kernel
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 104c6d047d9b..604b2dccdc5a 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -1110,8 +1110,8 @@ KernelStack
- PageTables
-               Memory consumed by userspace page tables
- SecPageTables
--              Memory consumed by secondary page tables, this currently
--              currently includes KVM mmu allocations on x86 and arm64.
-+              Memory consumed by secondary page tables, this currently includes
-+              KVM mmu and IOMMU allocations on x86 and arm64.
- NFS_Unstable
-               Always zero. Previous counted pages which had been written to
-               the server, but has not been committed to stable storage.
-diff --git a/drivers/iommu/iommu-pages.h b/drivers/iommu/iommu-pages.h
-index daac2da00e40..6df286931907 100644
---- a/drivers/iommu/iommu-pages.h
-+++ b/drivers/iommu/iommu-pages.h
-@@ -30,6 +30,7 @@ static inline void __iommu_alloc_account(struct page *page, int order)
- 	const long pgcnt = 1l << order;
- 
- 	mod_node_page_state(page_pgdat(page), NR_IOMMU_PAGES, pgcnt);
-+	mod_lruvec_page_state(page, NR_SECONDARY_PAGETABLE, pgcnt);
- }
- 
- /**
-@@ -42,6 +43,7 @@ static inline void __iommu_free_account(struct page *page, int order)
- 	const long pgcnt = 1l << order;
- 
- 	mod_node_page_state(page_pgdat(page), NR_IOMMU_PAGES, -pgcnt);
-+	mod_lruvec_page_state(page, NR_SECONDARY_PAGETABLE, -pgcnt);
- }
- 
- /**
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index bb6bc504915a..a18edcf12d53 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -202,7 +202,7 @@ enum node_stat_item {
- 	NR_KERNEL_SCS_KB,	/* measured in KiB */
- #endif
- 	NR_PAGETABLE,		/* used for pagetables */
--	NR_SECONDARY_PAGETABLE, /* secondary pagetables, e.g. KVM pagetables */
-+	NR_SECONDARY_PAGETABLE, /* secondary pagetables, KVM & IOMMU */
- #ifdef CONFIG_IOMMU_SUPPORT
- 	NR_IOMMU_PAGES,		/* # of pages allocated by IOMMU */
- #endif
--- 
-2.44.0.rc0.258.g7320e95886-goog
+>> +static void sgx_epc_cgroup_reclaim_work_func(struct work_struct *work)
+>> +{
+>> +	struct sgx_epc_cgroup *epc_cg;
+>> +	u64 cur, max;
+>> +
+>> +	epc_cg = container_of(work, struct sgx_epc_cgroup, reclaim_work);
+>> +
+>> +	for (;;) {
+>> +		max = sgx_epc_cgroup_max_pages_to_root(epc_cg);
+>> +
+>> +		/*
+>> +		 * Adjust the limit down by one page, the goal is to free up
+>> +		 * pages for fault allocations, not to simply obey the limit.
+>> +		 * Conditionally decrementing max also means the cur vs. max
+>> +		 * check will correctly handle the case where both are zero.
+>> +		 */
+>> +		if (max)
+>> +			max--;
+>
+> With the below max -= SGX_NR_TO_SCAN/2 staff, do you still need this one?
+>
 
+Logically still needed for case max <= SGX_NR_TO_SCAN * 2
+
+>> +
+>> +		/*
+>> +		 * Unless the limit is extremely low, in which case forcing
+>> +		 * reclaim will likely cause thrashing, force the cgroup to
+>> +		 * reclaim at least once if it's operating *near* its maximum
+>> +		 * limit by adjusting @max down by half the min reclaim size.
+>
+> OK.  But why choose "SGX_NO_TO_SCAN * 2" as "extremely low"? E.g, could  
+> we
+> choose SGX_NR_TO_SCAN instead?
+> IMHO at least we should at least put a comment to mention this.
+>
+> And maybe you can have a dedicated macro for that in which way I believe  
+> the
+> code would be easier to understand?
+
+Good point. I think the value is kind of arbitrary. We consider  
+enclaves/cgroups of 64K size are very small. If such a cgroup ever reaches  
+the limit, then we don't aggressively reclaim to optimize #PF handling.  
+User might as well just raise the limit if it is not performant.
+
+>
+>> +		 * This work func is scheduled by sgx_epc_cgroup_try_charge
+>
+> This has been mentioned in the function comment already.
+>
+>> +		 * when it cannot directly reclaim due to being in an atomic
+>> +		 * context, e.g. EPC allocation in a fault handler.
+>
+> Why a fault handler is an "atomic context"?  Just say when it cannot  
+> directly
+> reclaim.
+>
+
+Sure.
+
+>> Waiting
+>> +		 * to reclaim until the cgroup is actually at its limit is less
+>> +		 * performant as it means the faulting task is effectively
+>> +		 * blocked until a worker makes its way through the global work
+>> +		 * queue.
+>> +		 */
+>> +		if (max > SGX_NR_TO_SCAN * 2)
+>> +			max -= (SGX_NR_TO_SCAN / 2);
+>> +
+>> +		cur = sgx_epc_cgroup_page_counter_read(epc_cg);
+>> +
+>> +		if (cur <= max || sgx_epc_cgroup_lru_empty(epc_cg->cg))
+>> +			break;
+>> +
+>> +		/* Keep reclaiming until above condition is met. */
+>> +		sgx_epc_cgroup_reclaim_pages(epc_cg->cg);
+>
+> Also, each loop here calls sgx_epc_cgroup_max_pages_to_root() and
+> sgx_epc_cgroup_lru_empty(), both loop the given EPC cgroup and  
+> descendants.  If
+> we still make sgx_reclaim_pages() always scan SGX_NR_TO_SCAN pages,  
+> seems we can
+> reduce the number of loops here?
+>
+
+[We already scan SGX_NR_TO_SCAN pages for the cgroup at the level of  
+sgx_epc_cgroup_reclaim_pages().]
+
+I think you mean that we keep scanning and reclaiming until at least  
+SGX_NR_TO_SCAN pages are reclaimed as your code suggested above. We  
+probably can make that a version for this background thread for  
+optimization. But sgx_epc_cgroup_max_pages_to_root() and  
+sgx_epc_cgroup_lru_empty() are not that bad unless we had very deep and  
+wide cgroup trees. So would you agree we defer this optimization for later?
+
+
+>> +	}
+>> +}
+>> +
+>> +/**
+>> + * sgx_epc_cgroup_try_charge() - try to charge cgroup for a single EPC  
+>> page
+>>   * @epc_cg:	The EPC cgroup to be charged for the page.
+>>   * Return:
+>>   * * %0 - If successfully charged.
+>> @@ -38,6 +209,7 @@ static void sgx_epc_cgroup_free(struct misc_cg *cg)
+>>  	if (!epc_cg)
+>>  		return;
+>>
+>> +	cancel_work_sync(&epc_cg->reclaim_work);
+>>  	kfree(epc_cg);
+>>  }
+>>
+>> @@ -50,6 +222,8 @@ const struct misc_res_ops sgx_epc_cgroup_ops = {
+>>
+>>  static void sgx_epc_misc_init(struct misc_cg *cg, struct  
+>> sgx_epc_cgroup *epc_cg)
+>>  {
+>> +	sgx_lru_init(&epc_cg->lru);
+>> +	INIT_WORK(&epc_cg->reclaim_work, sgx_epc_cgroup_reclaim_work_func);
+>>  	cg->res[MISC_CG_RES_SGX_EPC].priv = epc_cg;
+>>  	epc_cg->cg = cg;
+>>  }
+>> @@ -69,6 +243,11 @@ static int sgx_epc_cgroup_alloc(struct misc_cg *cg)
+>>
+>>  void sgx_epc_cgroup_init(void)
+>>  {
+>> +	sgx_epc_cg_wq = alloc_workqueue("sgx_epc_cg_wq",
+>> +					WQ_UNBOUND | WQ_FREEZABLE,
+>> +					WQ_UNBOUND_MAX_ACTIVE);
+>> +	BUG_ON(!sgx_epc_cg_wq);
+>
+> You cannot BUG_ON() simply due to unable to allocate a workqueue.  You  
+> can use
+> some way to mark EPC cgroup as disabled but keep going.  Static key is  
+> one way
+> although we cannot re-enable it at runtime.
+>
+>
+Okay, I'll disable and print a log.
+
+[...]
+[workqueue related discussion in separate email]
+
+Thanks
+Haitao
 
