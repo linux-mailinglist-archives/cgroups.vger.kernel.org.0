@@ -1,109 +1,112 @@
-Return-Path: <cgroups+bounces-1816-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1817-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35C6C8604C8
-	for <lists+cgroups@lfdr.de>; Thu, 22 Feb 2024 22:26:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B935786059A
+	for <lists+cgroups@lfdr.de>; Thu, 22 Feb 2024 23:25:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF6872819FE
-	for <lists+cgroups@lfdr.de>; Thu, 22 Feb 2024 21:26:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05B2BB236D1
+	for <lists+cgroups@lfdr.de>; Thu, 22 Feb 2024 22:25:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 109A573F2D;
-	Thu, 22 Feb 2024 21:26:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE20712D21F;
+	Thu, 22 Feb 2024 22:25:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KCIaY0Sm"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GOjkahQV"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB25273F26;
-	Thu, 22 Feb 2024 21:26:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6D8932C84;
+	Thu, 22 Feb 2024 22:25:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708637187; cv=fail; b=dgD+DZRWWlA3UjqGpnzTb4XXxOy6K4rvE5A9eC1UO6vE6IN9Ip2Engdh96AJikKobRH0qBIQNajPl+nWUIMQRt4W978QpS22lJx91VnmqKbPv04CFRCdJU3y2MteKCNcoIjVFCsR5icEiDsLWWC0pzNrsRe3AUmnPlrA2RgrFBk=
+	t=1708640710; cv=fail; b=TCGDwO5KYdb+YGyQoUhXzSlz1+qbTOeuIxxVZ/kLZZoj52mvb4at7Mk5sLIKTQ9qd3Cp/fchxH40b/Kf14VKR3przqv8c02m/2TTzi3vKEVylDY/TVNwO0X7DMqL7YRXhio4lJL5aw8cCTtnSj/gLiGeGiuA8WkzCDOXbl3+CZs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708637187; c=relaxed/simple;
-	bh=pMs2rbh6Gkp7M1U9+jy8Zmn8W0I4iqaiJj7SHp/SHTc=;
+	s=arc-20240116; t=1708640710; c=relaxed/simple;
+	bh=LYsqsyWwYB90zTGGa0PT1jsiLncFVhXNAZtQ68jFrSU=;
 	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=KWl5cUOSQJvU15zejPMix+XtdM9Zu1LUgvR1fdAfG68KgBNqEJmzfuyUTcfk0k+GY7FgZO6q7bLKOCawZ3MPsHezSg6BVNn4UAmHs1mXWpCf0VjaUD0Z8mTQBA3dATECy7PA0H3CjliZU5eG6weD39GvRUn1TNGYicLf95fuApU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KCIaY0Sm; arc=fail smtp.client-ip=198.175.65.21
+	 Content-Type:MIME-Version; b=IqpmIf5lW8EuHICtVi4xsqpy05m3oo6TkEfw5lYkjCW97fVRbI3HlelAmzlnxMmcz6VBri88/F+dnu9RydjyPO0CXJ31bp7umlZMtXf7nzn70zqe/F/3S13YsrZMmN1N8/YALJfJHagOA5cIqrwgeGCP05N9lUvUtTQpDshiJgk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GOjkahQV; arc=fail smtp.client-ip=198.175.65.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708637186; x=1740173186;
+  t=1708640709; x=1740176709;
   h=message-id:date:subject:to:cc:references:from:
    in-reply-to:content-transfer-encoding:mime-version;
-  bh=pMs2rbh6Gkp7M1U9+jy8Zmn8W0I4iqaiJj7SHp/SHTc=;
-  b=KCIaY0SmAF4NX8vI/sIKA2TSBItJetir0gHgfeilwFCqeCLkHjNs0BhZ
-   Re/ZeAETQYiuBHwevRc3X1HrR8VEPCQPoFodHCuHLBySXvLNZ8B7n9Aud
-   ViM3eUUeNGF1jdcH+r0beXEaBRPu4klobd5rbMEQI7FBUCAUIaDoEY+ED
-   7bMJw4gj+JC1uPVeWxIFNRFvpdOZdo2SDv7HXdst7lmjZlw6GqdE7zXDD
-   k++7ohqhzBw9sgqqPjuCwIBgq4KbYAuoy7M7PRPHYykdrB+qed8BkNw1G
-   yRH2dHfp303zl+IxX36gPzZl/zX8/TUTyBzGoKpVtob+W7yigARGKgpDT
+  bh=LYsqsyWwYB90zTGGa0PT1jsiLncFVhXNAZtQ68jFrSU=;
+  b=GOjkahQVT2diwQnHNpiuOw3619KF9EWtCKTibS3xKaUadPtgqE9QNltk
+   rXues+uj3xBceEcf2RnaE4uzCBIVZeHanTeqQxKyul11I029rhGiHcTlK
+   +q/DeWgpgCp3i7uGAqI29qzXDaCz/Jdu0ZaAYBCL5/FnvkvKLdCHrVlk1
+   lfZpXkftFLVgvwDCR6bximzcSTYSA6w1LjEi6gKta/um0NGyvI2n4aKvy
+   DerEbknhL00uTzzwish/abkU7dcfLmX4zJbC6qxruFxbjcFal+nocKr+G
+   DprrxxHWEoxTi/ry7yQLsrZyRupcOqFdacT6oiQeMyqiOlDeFt6ATBvLb
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="2814194"
+X-IronPort-AV: E=McAfee;i="6600,9927,10992"; a="14040382"
 X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="2814194"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 13:26:25 -0800
+   d="scan'208";a="14040382"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2024 14:25:09 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,179,1705392000"; 
-   d="scan'208";a="10212988"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmviesa003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Feb 2024 13:26:24 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+   d="scan'208";a="36451914"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 22 Feb 2024 14:25:07 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 22 Feb 2024 13:26:23 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ 15.1.2507.35; Thu, 22 Feb 2024 14:25:07 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 22 Feb 2024 13:26:23 -0800
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ 15.1.2507.35; Thu, 22 Feb 2024 14:25:05 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 22 Feb 2024 14:25:05 -0800
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (104.47.57.40) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 22 Feb 2024 13:26:22 -0800
+ 15.1.2507.35; Thu, 22 Feb 2024 14:25:05 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PM7bkYOK6kaNmS/JjfwFHmGA+7jkYRbbup0vu2DRClyqso6Q+/Jgj7J2MWFkzbRoNcX1gXqOrqdO9eNPH4fw7NWr1gyQ2j2Jq3DmOokZO43atIh7F1drK/wktFR543snxzqJF8tel5I4UIXeX/PLG/LLGD4Nupcvo0QP0IiQWhu66h8nRFKMooRZ8g6/sHalbqm9H3A8qrA7OXuIdGt4Bs3vzy7fz4Jlik3yyjI5TW0uvYpsO2WpGlQJGyG/sIWm8A9QRWBAVlk3+D8HCf/7vLLbNIgV07hWeyMiTyHOHwwzinCjI8K3LvE51Ypaq+FZt2wvG4ZBO5ljpopwT8S9+g==
+ b=WZYjxyIcVh8Xz5x60y4CzZdkywFzO4wuQtlin8+y/Y6p8FZ8cZ8JxL0AYdlTRTEMZzi6CQL6xx75ezdTlKof2Rzrs1ceDi6j8sa7783xSB2yLjyOKf02AfS/VGl0+9qYnWfBSYsazEWudeXQHw73Y2hMZqhaE+3Udnck7n2Z8ZLtc2LfT06Qrhlpww0MyAriHu1JGwcJbJH7vGJoUuT7DFWEPnVWTkJsliWbmEi8OtTm4PfhS+jiyk90cNphhDMwx+6PsohnnkTqP+ZAa7odmEqvL5P4b88q9wdmj3VnFYCvURc3JLim1IevUYTNrZMD+2GVdjq5yz01XW4GeDVRrg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GkfTOR1UrQHhTjz2zm0hI1wsO8kRMvjn5hxVYd2gmTo=;
- b=AoDDBkLG2+3nJf9V4EOU02uNSDSXr9bGLTFPXQzyQVlvh55bMUk+wP4F+kwU23CQG20PbkgFyqYYvDLVzbAzNBzC5RPfa7Px2VZejCK4DpMHUaOjNb19XVi4jVIuatx0c7fXPrFaZzH/n8QsJSzq7O13goTDy1raeImNoDIBljug6aP6wYYxXTgvO03ZcSlNnmzJPgkPiH1KZ6hOZdhEakqVRQod0X+e3p7nQd7bH9a/UuOHN2xlI2EvrZ4AncOn1/gHnFwAnAU3urXyf306KK4/TtuSqtvbbVOIGeRk9yQ6M/2r9Vrt4pNdS//CyGNIBwLR3vZM/c13e9l00f1EcA==
+ bh=bsDCFnQatGsnDCtDrlIOWJ9v7e+KSJOCKPu1BAsLCXU=;
+ b=X7oYkjVuish2PdBxSnWt94phld8DV4OHZ18TuQIyjkroLHXrGhN8Hcl3yi5yuW++By2TlNOKJ/iCwZvfmoKWsp7oY/d2f2JjAQ+c8Xx2eoM1kuILLPlTwDp8WfHfpCcZ4odOZJ5tUlI9373sXYLhjMyjpb1xkWzgQMt9nEhK56vH7mBRZdYu/ysPfoyh27J//oAyu2NmoWM27v2tw9Sx86xUw5uKlQSc3I+9HmJJuphV17sbCYn5ptZvis/QI110u81MLHPvTcJCksm2IcJ7TNpC/BaDq4R8DAD4YZEwY9wpEHIWhNYwuCgoUOGzsUMpR9hC238z2JlL2+iqLFqhSg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
 Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by BN9PR11MB5355.namprd11.prod.outlook.com (2603:10b6:408:11c::5) with
+ by DM4PR11MB6288.namprd11.prod.outlook.com (2603:10b6:8:a5::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.22; Thu, 22 Feb
- 2024 21:26:19 +0000
+ 2024 22:25:02 +0000
 Received: from BL1PR11MB5978.namprd11.prod.outlook.com
  ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
  ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7339.009; Thu, 22 Feb 2024
- 21:26:19 +0000
-Message-ID: <4db8493b-35a2-474f-997c-5e6ac1b8bd11@intel.com>
-Date: Fri, 23 Feb 2024 10:26:05 +1300
+ 22:25:02 +0000
+Message-ID: <aaaa54ed-7fd7-404c-853f-90f2e32ae004@intel.com>
+Date: Fri, 23 Feb 2024 11:24:47 +1300
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 10/15] x86/sgx: Add EPC reclamation in cgroup
- try_charge()
+Subject: Re: [PATCH v9 08/15] x86/sgx: Implement EPC reclamation flows for
+ cgroup
 Content-Language: en-US
-To: Haitao Huang <haitao.huang@linux.intel.com>, "hpa@zytor.com"
+To: Haitao Huang <haitao.huang@linux.intel.com>, "Mehta, Sohil"
+	<sohil.mehta@intel.com>, "mingo@redhat.com" <mingo@redhat.com>,
+	"jarkko@kernel.org" <jarkko@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
 	<hpa@zytor.com>, "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
-	"linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>, "x86@kernel.org"
-	<x86@kernel.org>, "dave.hansen@linux.intel.com"
-	<dave.hansen@linux.intel.com>, "jarkko@kernel.org" <jarkko@kernel.org>,
-	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"mkoutny@suse.com" <mkoutny@suse.com>, "tglx@linutronix.de"
-	<tglx@linutronix.de>, "Mehta, Sohil" <sohil.mehta@intel.com>, "tj@kernel.org"
-	<tj@kernel.org>, "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de"
-	<bp@alien8.de>
+	"linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>, "mkoutny@suse.com"
+	<mkoutny@suse.com>, "tglx@linutronix.de" <tglx@linutronix.de>,
+	"tj@kernel.org" <tj@kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "bp@alien8.de" <bp@alien8.de>
 CC: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
 	"seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
 	<anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
@@ -111,15 +114,17 @@ CC: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
 	<yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
 	"chrisyan@microsoft.com" <chrisyan@microsoft.com>
 References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-11-haitao.huang@linux.intel.com>
- <c5d03171473821ebc9cb79e3dad4d1bf0074e674.camel@intel.com>
- <op.2jjzaqdwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <20240205210638.157741-9-haitao.huang@linux.intel.com>
+ <fa091e657c2d3f3cc14aff15ad3484e0d7079b6f.camel@intel.com>
+ <op.2jhao6nzwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <bf21f955c1b56ef836ad03bc42d522b6d020edbf.camel@intel.com>
+ <op.2jj67xqlwjvjmi@hhuan26-mobl.amr.corp.intel.com>
 From: "Huang, Kai" <kai.huang@intel.com>
-In-Reply-To: <op.2jjzaqdwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2jj67xqlwjvjmi@hhuan26-mobl.amr.corp.intel.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4PR03CA0081.namprd03.prod.outlook.com
- (2603:10b6:303:b6::26) To BL1PR11MB5978.namprd11.prod.outlook.com
+X-ClientProxiedBy: MW4PR04CA0093.namprd04.prod.outlook.com
+ (2603:10b6:303:83::8) To BL1PR11MB5978.namprd11.prod.outlook.com
  (2603:10b6:208:385::18)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -128,173 +133,190 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|BN9PR11MB5355:EE_
-X-MS-Office365-Filtering-Correlation-Id: 54923eac-8c89-4268-ede2-08dc33ece8e7
+X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|DM4PR11MB6288:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2995344a-aacd-4102-1fb0-08dc33f51c52
 X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: n1xw/S9+k5CNM6UvpcKrBxIWLRWh4DzbaKBcS8DHpmp679Sh5vc6C8jVHi5YpbSBbOFDcTEgxBpo1noLm2sF4Zg2GI06+vM8jqXyK14I0AJSlVN2AEAeWcgdBqYtLsqiD7jHM1BXZ92TBSXNwaePS16H4L/MK5Voo+lhD//F42ouFinHhCe0Zi+MmEGO6NLxPgkdrsySJz6+m1ajnIBNHaBgc+WQu5vAS2ykTtt8nM3x9njPcipR27ki+G/nb3QyD4SWK+vyTZSYXrk3ciobT5fM5qxMaHzIFKRi6DVbRL4uYEaOCD6FoRAcmJqH7sCYDyfXTEXL3d8aL5ePW+ZVlM/fihiFkA6rtgli/Pqhw3s83Ycdd+lrHHZFD+EO9DFIefLdz6F6pFx5LXqjQP02pPi6Y6nuKhWJpXELo3Xw2VhEPqHNHl+q7VGoFX8jiYEbH83R9sz2s5VIcIkxdIDwBimZud74fUI9WXcMO1mRgCecyX9u4cAGRP9iPy+2DXz3nxDFYHOWz2K5Zo46EY0R/pgGFvdGlnVpTnhk1TeNpM+FaQuQfcinq8JmqYkOq/j3Ur3c+h9/cSoH+mhiIfeUVIkAkheU1K7NYl/k+5UDSPs=
+X-Microsoft-Antispam-Message-Info: PhEpFWNVlO31DG9g6dH+ka2kowmrWgRwGTUkXs8SA5ZzNx+AmLImXh9Fn6vbDzG59uTnQf2xL5O/OKEhUHSEnaivZVuk2/4qM7bdyPFujCtrewyMCZhgSBvnlr+ty8cgO6yIuGKxkW8SuA9bLvSc30A19d/psDQarLSGZA36Z2ny9KJpTI/ZpaZkIIBSxvnHB0m27T3VtTeCuTHqLSNA3W9SYyRYuohIJDQU7+Es9SpHQdxr9LWQruhOj23GedJwcKZFokKARsvqU9zSL/9MNr1iP3+nzU48Zu1+7Kkdmt02RIRHG0u3uDXEu1/frVoKlNZ2KIzPacVISkMWEKxIRLlksMD4BpUZ+RJNGnKrVNXfjmQVIZgdniHiDw0+E7C+2JXymLxKPU2FHUVAvLbFOBOLTKVDKxeQf+D6+ERRZwL49nZA49fQM9ert2KitDGR5xcTZfV0k0u4EL6DllkH4C1YlpVUOfea8LIrMqxtn1BpJ3BsRkXmgMYK4Pannd8znn8euZf6cX9uYtT0Y6HaoFP0HDLO7bWGWLc406rmffINzI9QFoNgUrFBB3eq3qf1Eh/HmoJOQZE2Vupd1CDnZfp0IV1ED/PndZzupUfwCN8=
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(921011);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dDhaTDM0WTllYzZxNjRrc24xM3p3OGVtSm0ra0lmSm9hcVRoY2JMZ013V3lm?=
- =?utf-8?B?WE0zM0k1S0RaazJadkcxTkYwdTgrbmpJYmJJVG5UbTRCSGV3bWpyeVFRcGlw?=
- =?utf-8?B?Q1hkeTlYUTRBVVVHWVIreFl2eUZhcGY0VDJycXozUFR6OXdxSVhFdlRqUU1L?=
- =?utf-8?B?TDBidFQ5YUVpWlZuVnZYQlQwNnR6dStpU1oxa2g1cEpVS09Dd2RnVzVCd2FN?=
- =?utf-8?B?ZmVYbjhBbU9mY2VuNlF2eUk5aHE5bTNVS1FyTyt4VEJBbFdaaFFaaEdXZ1V6?=
- =?utf-8?B?bkI5MGpaeGxWYzlmK3RyejUrRDNRODV0Zkd6NVRrRHU1cTBOOU44WEYzQ2V3?=
- =?utf-8?B?THh5VUxCVnNoVWNkd3JZYjFzMGtSRUJZcVdKOVNCYzBYWFI5NTJXOVRpOUg5?=
- =?utf-8?B?cEY3WVFlK2tBbmRJRXlhbnQ2T2RsV1B6dU5kR0FicmREM0hGR3JmcWd1YlJ6?=
- =?utf-8?B?bTA5VHBUUjRxQTRCTG51ME9YNTZHMWZhNzgrSEl5UUFtV3FDTnk2bU9wNkFi?=
- =?utf-8?B?TVhVM0xycEJyWFVVZkJwVHdpUVRxb1ZnOUNhWlRlUjF5L09uVzBCbTZSZnJl?=
- =?utf-8?B?emNOUGt6TW90VUg5TzdXUnpKc0dzNGlNRmhtWkU4UEE3blVQRklaYzU2VGpY?=
- =?utf-8?B?NUViSm5raDU2THFYWlc1aDJJNWp1Y0lidUk2OWhja0VGUHYvYzUzUmtFYXZY?=
- =?utf-8?B?WkNFN2R3U291YlpPdXkxNEZtMXZCUnh0eWJDSFkrMVcrNVE4TUpPZWp6SVll?=
- =?utf-8?B?RmsrdzdYQ1JTd21wZVd3aG9sb0ZMTHZnNWd1UkVpM1N3dFVqNG16L0p5bGRT?=
- =?utf-8?B?Q1dpa0FNZEhvMHo5dm5obE5XNlRWYUIwMjlIMEUvSHhJcUpXMjBCUHUyMEJp?=
- =?utf-8?B?VWovQk9CWmtRL2RsUEJsTmdCRzU3amRSejJTMUFscnpKbmFiQnJsQ21CajhF?=
- =?utf-8?B?MHhtcWR5MVgvVnc2TG5ISHNpUGxNMUoxSDMwdWMxS0RoRTZzakV5bW5sakp6?=
- =?utf-8?B?amFaZzd4N3hMcHErWlloWkt1UnVLWE5yb0FNaExhSis0ME5ueUJYeG1QY2Ix?=
- =?utf-8?B?OGVveDlFL00yNlRaY2FZOG5QamRKVUs3c281amVpUGpiWllabDdqS0VBYU1C?=
- =?utf-8?B?QUQ1S0Fvc01LaU9sUlRickcxNmZ4TWdCLzFIYVA3OFpJeTVFaHF2VEZSSGUv?=
- =?utf-8?B?VlhMWEZ4TlJta1lOb2pxQVhjRUVrclV3VG8zM2E3c3ZwNjU2RVJvUzZpa3o4?=
- =?utf-8?B?b2F0YlZEL1k4d0c5ZlpaYS9XRm9OTWxKa0wvWE5NWFgrSDRrWkU2YW9vOGd2?=
- =?utf-8?B?MHZCRGxNdDY3ZnN6bGVJQWNERytwSnljOHBTRFNiUE1EZllqQVNLZFY5UkpH?=
- =?utf-8?B?SVlvZFNueFZ3djF6NEg0TnpZdmllQnAzMXBLUDJzcFkwdTcwNVRvVlAyQ3F3?=
- =?utf-8?B?SC9zY2Z3c0FleFNUNkJpeVZER0ROMnZNMWwxSmtSYjIxUHQrVlV6emZOakVo?=
- =?utf-8?B?VTZqVUQrenB2Qm1xUmxUalduUjNLVVlTc3czYTR0d3N2YjREa0p1WXpjTFFX?=
- =?utf-8?B?U3NNTDk0eXJCZExYVXFOUC9CRmhuRkI4MzNZeUdobDRucW0xbGs4eUQyTlho?=
- =?utf-8?B?UTJMc2grNmdydStlRUdIZ1ZYV1FvaDgySmFNUW5CdENzTnUyQVRtay9BTnMw?=
- =?utf-8?B?cGdWSFQ2elNkYmRMQis1RVZUcTN1SERXMitiNWVXdjRhREVqNE1ENDNvdXVG?=
- =?utf-8?B?eEFORjRKcS9lbjdkQnNVeVE0ektnZVlwVll4NTVYaGp2a1g1QU8xSXpjVG5C?=
- =?utf-8?B?MHRPb0N1STlJU0IxVmV0dFFmTjB2R1IvM1o0MjRjMmUycFk5dXIvWDMvN0NL?=
- =?utf-8?B?R2c2WEhDOTRiWlFMWXNIa1BvTHN4dVJ6Vm0xREx0R1FCbU1BdVlSRGJyTWVV?=
- =?utf-8?B?aDBDUW00Q1lsZnZtSm84ZDg4NlhzVXVmMVJqa1lOV2ZibE01MVRxRTc0Wmsy?=
- =?utf-8?B?cTU3dFQ2QVFRTkdYWGpWQ3pEbU55enZYZjdGZDBXUnpCdWdCZWdndHpxWk1s?=
- =?utf-8?B?R2dPR2xabkFxS3FMM1l6QmNZWE1IUk5lTjNlamxtYVpVL1dUUGZ6KytRenRP?=
- =?utf-8?Q?/fGf9eGO9dzYxQIJf/GInugf3?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 54923eac-8c89-4268-ede2-08dc33ece8e7
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Ui91TFh2aHBtY3dIMloxRVI4aUg1bndxYUVoZG9FK1VnNXE1RGhHZlowUUlZ?=
+ =?utf-8?B?OHA3MG9POFo0NVZ3Qy9wcjNZMjBQS0dINTNYOVBlUDFENkdEUmg4Tk14N3R1?=
+ =?utf-8?B?TEZ1MzZxVDdEWmpRcC9iamtHaVIrQW5jNy9sQVR0YXFvTXkweWFMQ29DaUxY?=
+ =?utf-8?B?MVpBcG5OanVSSWNLVXhVMnI5eDNwVm9MaVlzeE1mTVMzdTc3ei9NS2RxS2F6?=
+ =?utf-8?B?bkEwUGRCS3RqT2oydTJpN3ZLeUx4YzlXUXJwR0s5dncrRmczb3BFSXI2NkJM?=
+ =?utf-8?B?K2E0RVNOLytpN1FsUkxtZzRxdlZ2c2VDeUlQbDV6Rjd4azNyTkZWL0JtU0tW?=
+ =?utf-8?B?S241eW4ybVFnZlY2L2dYZHMwMi9DcmhwSUU5TmVnbEl4YmIwZVpUaThEMEh6?=
+ =?utf-8?B?YjhEYXhLRDBTeWtocVl4V09DSXE4WGVvRVBuY1pJZ2ZkYTdRS0RlV2dLSnFJ?=
+ =?utf-8?B?d01ueERod0owY0hZS0tHc0lOL0tDczVxVVNMVmhxcnhoaGVjM2xVOURSYVli?=
+ =?utf-8?B?S214czd3Ujl0cHVHMGxGb0krZzBjWVhLeWpHZ0ZWYmdRbk9JSGIyMG1VeW01?=
+ =?utf-8?B?d3RmY0MxVkJJREpxdCsrNjVOcGVFaGhnclBoaUlyb2NSZ3RtT0pGMEVZdHor?=
+ =?utf-8?B?ODQzR20rZUlaQkJEYlIxUW1EVndsWDRqMU5iTCs5QytMMzVORkhwcE5HcFI2?=
+ =?utf-8?B?d3BxNEYvRmFxR1BKcmpvdjZzSTBuWkJWN1lwbGZ2ak1DVWdDdi9pSmk4RmZz?=
+ =?utf-8?B?UmNxUHlvQWFuVXd3UGNxdExWOTNJUmRZanNzenNvYXhRQkJtMTlMWVY4T2hi?=
+ =?utf-8?B?NkNGTjlEMFRqNHdaQkk3dy9oVHZDWXp4cmJtTTVDMlU2blc5dUNZYWZpQTF6?=
+ =?utf-8?B?SmRKbE4rNWRKbVcvOG4vTTk4VFFuWXJrclk3b1pHUTFTdWxTSHBLQU96eTM5?=
+ =?utf-8?B?bmdreGhGRFBNY0l5bkorN0VzVVRZWWtuRDVJVm00OTBmcGxDTWhpY0JhbDFJ?=
+ =?utf-8?B?ajdDMkQ4OCtJcUR1QktHdHN5YXVURzI3aHlKK1hJeU1nbkVVVldiNFE5WUMr?=
+ =?utf-8?B?bXhNVHI4M3p5Wjhta05MRFdCclA2Z0FnWmkxUGE4OUd6bkV5Rjl3YnMvVVRZ?=
+ =?utf-8?B?bzZBdFQ3YUJwOVMwR2FFYnFTWVNMcHhSRnpVVVU1azhrQjVlZ0FtdUs1dzcv?=
+ =?utf-8?B?bWIwemo4N0pqeTVOZTZPWUNzQThDS1djRGhSVytmdk8yMTBVVVh1QTZkaHM4?=
+ =?utf-8?B?UVBNeW5XN1FCMDFNUGcydFBrNU55OGJ6aFhqMlRiU3JUOFlCOVE4eGtVVTV3?=
+ =?utf-8?B?UG1uQUNyc2pUR1NuZ0Z5SmdKQTE0MUF3czVjWGFPNktxUUdtY0NpUkY4QmYy?=
+ =?utf-8?B?MDNFTTFpa21Hd2xqRFZiWkVlWlNXa1Z4Q0p3azJHeUVGOFhuUjhKNXRUZzdq?=
+ =?utf-8?B?WW81dFN1OVB4c1pHb1pYenp2YUV4TjAyeE53MTdIQ0MyK210ait4bVVJMXlB?=
+ =?utf-8?B?Q2dXWEx2Q0lMRzJIZG9qNUVxd3FxOTlvV3Vtd1M4aTlCTGpsQitHNmVGYkVJ?=
+ =?utf-8?B?eTVhZ0I4a2pWRklhVGtTc2x4M3dGMFA2ZERkQzlQa2RxK01pc1A2bW9BRk9l?=
+ =?utf-8?B?MU13SWRhQlR4RFhnQkY5M3hJR1RWUWFkaEYrZFdZS1dneDc0MTh5UEtwNWY4?=
+ =?utf-8?B?ekhleXZ6Q2hhZWpsaEh1VThWbkhGcWZsWWNPRUhCQlBhSVNIemhic09pek5H?=
+ =?utf-8?B?U0tDd29vTjVCTzh2OXYxSEhNMXJoaFNhSnVXbTB0Z3p5Mi9ZalB3U0dhSVlj?=
+ =?utf-8?B?U1FTR3Jac0NjaW4wNFlSM1NReFhvSHM2Mk4xczU3VVpzalNaSVBKcGU3ZC9O?=
+ =?utf-8?B?b1JyMkVjNGdkVlhRaGF0WDZ3U01qRGRTemZ5QzgxYlkzN2FwQTR3NnhoY0Vq?=
+ =?utf-8?B?cmdqMmsrNXRGaTFrclYycEJLam5DM1c5aE5yeXM2dUdlWEsrazZ0bGpRVEZx?=
+ =?utf-8?B?UXkvZ2NaVTY5Zm1HRVJmMDVVTGZsZEN5N2pTajVyQW90anRoMSs5VG1zN2lH?=
+ =?utf-8?B?MThYMDRzakFXd2c4Y3J0WmNOVlE3YjVjZ0RRRVZHV01rdnBtT1puTnJHSHoz?=
+ =?utf-8?Q?A+IIYSTEJ4+Gutllo1N0omACb?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2995344a-aacd-4102-1fb0-08dc33f51c52
 X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 21:26:19.4731
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Feb 2024 22:25:02.1048
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pa+Fq12wQDtFgM8fNEwh4C2YSJQ3K1VFVZbpjj2ZR3q+eSImHyOOfVIe2E5vfvTC1ZbomRZqKH9/1Pvx3ZXeXA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5355
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9VAv8Xjs8S4ERCv2NmS1xIlCBr/p6BJ6dfMPosRXsPASvTllW6bC+9kXkJkgT4P8oZqwXl9LIOX9QnH+2e9ZNQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6288
 X-OriginatorOrg: intel.com
 
 
 
-On 23/02/2024 6:09 am, Haitao Huang wrote:
-> On Wed, 21 Feb 2024 05:06:02 -0600, Huang, Kai <kai.huang@intel.com> wrote:
+On 23/02/2024 9:12 am, Haitao Huang wrote:
+> On Wed, 21 Feb 2024 04:48:58 -0600, Huang, Kai <kai.huang@intel.com> wrote:
 > 
->>
->>> -int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
->>> +int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg, bool 
->>> reclaim)
->>>  {
->>> -    return misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg, 
->>> PAGE_SIZE);
->>> +    for (;;) {
->>> +        if (!misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg,
->>> +                    PAGE_SIZE))
->>> +            break;
->>> +
->>> +        if (sgx_epc_cgroup_lru_empty(epc_cg->cg))
->>> +            return -ENOMEM;
->>> +
->>> +        if (signal_pending(current))
->>> +            return -ERESTARTSYS;
->>> +
->>> +        if (!reclaim) {
->>> +            queue_work(sgx_epc_cg_wq, &epc_cg->reclaim_work);
->>> +            return -EBUSY;
->>> +        }
->>> +
->>> +        if (!sgx_epc_cgroup_reclaim_pages(epc_cg->cg, false))
->>> +            /* All pages were too young to reclaim, try again a 
->>> little later */
->>> +            schedule();
->>> +    }
->>> +
->>> +    return 0;
->>>  }
+>> On Wed, 2024-02-21 at 00:23 -0600, Haitao Huang wrote:
+>>> StartHi Kai
+>>> On Tue, 20 Feb 2024 03:52:39 -0600, Huang, Kai <kai.huang@intel.com> 
+>>> wrote:
+>>> [...]
+>>> >
+>>> > So you introduced the work/workqueue here but there's no place which
+>>> > actually
+>>> > queues the work.  IMHO you can either:
+>>> >
+>>> > 1) move relevant code change here; or
+>>> > 2) focus on introducing core functions to reclaim certain pages from a
+>>> > given EPC
+>>> > cgroup w/o workqueue and introduce the work/workqueue in later patch.
+>>> >
+>>> > Makes sense?
+>>> >
 >>>
+>>> Starting in v7, I was trying to split the big patch, #10 in v6 as you 
+>>> and
+>>> others suggested. My thought process was to put infrastructure needed 
+>>> for
+>>> per-cgroup reclaim in the front, then turn on per-cgroup reclaim in [v9
+>>> 13/15] in the end.
 >>
->> Seems this code change is 90% similar to the existing code in the
->> sgx_alloc_epc_page():
+>> That's reasonable for sure.
 >>
->>     ...
->>     for ( ; ; ) {
->>                 page = __sgx_alloc_epc_page();
->>                 if (!IS_ERR(page)) {
->>                         page->owner = owner;
->>                         break;
->>                 }
->>
->>                 if (list_empty(&sgx_active_page_list))
->>                         return ERR_PTR(-ENOMEM);
->>
->>                 if (!reclaim) {
->>                         page = ERR_PTR(-EBUSY);
->>                         break;
->>                 }
->>
->>                 if (signal_pending(current)) {
->>                         page = ERR_PTR(-ERESTARTSYS);
->>                         break;
->>                 }
->>
->>                 sgx_reclaim_pages();
->>                 cond_resched();
->>         }
->>     ...
->>
->> Is it better to move the logic/code change in try_charge() out to
->> sgx_alloc_epc_page() to unify them?
->>
->> IIUC, the logic is quite similar: When you either failed to allocate 
->> one page,
->> or failed to charge one page, you try to reclaim EPC page(s) from the 
->> current
->> EPC cgroup, either directly or indirectly.
->>
->> No?
 > 
-> Only these lines are the same:
->                  if (!reclaim) {
->                          page = ERR_PTR(-EBUSY);
->                          break;
->                  }
+> Thanks for the confirmation :-)
 > 
->                  if (signal_pending(current)) {
->                          page = ERR_PTR(-ERESTARTSYS);
->                          break;
->                  }
+>>>
+>>> Before that, all reclaimables are tracked in the global LRU so really
+>>> there is no "reclaim certain pages from a  given EPC cgroup w/o 
+>>> workqueue"
+>>> or reclaim through workqueue before that point, as suggested in #2. This
+>>> patch puts down the implementation for both flows but neither used 
+>>> yet, as
+>>> stated in the commit message.
+>>
+>> I know it's not used yet.  The point is how to split patches to make 
+>> them more
+>> self-contain and easy to review.
 > 
-> In sgx_alloc_epc_page() we do global reclamation but here we do 
-> per-cgroup reclamation. 
-
-But why?  If we failed to allocate, shouldn't we try to reclaim from the 
-_current_ EPC cgroup instead of global?  E.g., I thought one enclave in 
-one EPC cgroup requesting insane amount of EPC shouldn't impact enclaves 
-inside other cgroups?
-
-That's why the logic of other lines is different
-> though they look similar due to similar function names. For the global 
-> reclamation we need consider case in that cgroup is not enabled. 
-> Similarly list_empty(&sgx_active_page_list) would have to be changed to 
-> check root cgroup if cgroups enabled otherwise check global LRU.  The 
-> (!reclaim) case is also different.  
-
-W/o getting clear on my above question, so far I am not convinced why 
-such difference cannot be hide inside wrapper function(s).
-
-So I don't see an obvious good way
-> to abstract those to get meaningful savings.
+> I would think this patch already self-contained in that all are 
+> implementation of cgroup reclamation building blocks utilized later. But 
+> I'll try to follow your suggestions below to split further (would prefer 
+> not to merge in general unless there is strong reasons).
 > 
-> Thanks
-> Haitao
+>>
+>> For #2, sorry for not being explicit -- I meant it seems it's more 
+>> reasonable to
+>> split in this way:
+>>
+>> Patch 1)
+>>   a). change to sgx_reclaim_pages();
+> 
+> I'll still prefer this to be a separate patch. It is self-contained IMHO.
+> We were splitting the original patch because it was too big. I don't 
+> want to merge back unless there is a strong reason.
+> 
+>>   b). introduce sgx_epc_cgroup_reclaim_pages();
+> 
+> Ok.
+
+If I got you right, I believe you want to have a cgroup variant function 
+following the same behaviour of the one for global reclaim, i.e., the 
+_current_ sgx_reclaim_pages(), which always tries to scan and reclaim 
+SGX_NR_TO_SCAN pages each time.
+
+And this cgroup variant function, sgx_epc_cgroup_reclaim_pages(), tries 
+to scan and reclaim SGX_NR_TO_SCAN pages each time "_across_ the cgroup 
+and all the descendants".
+
+And you want to implement sgx_epc_cgroup_reclaim_pages() in this way due 
+to WHATEVER reasons.
+
+In that case, the change to sgx_reclaim_pages() and the introduce of 
+sgx_epc_cgroup_reclaim_pages() should really be together because they 
+are completely tied together in terms of implementation.
+
+In this way you can just explain clearly in _ONE_ patch why you choose 
+this implementation, and for reviewer it's also easier to review because 
+we can just discuss in one patch.
+
+Makes sense?
+
+> 
+>>   c). introduce sgx_epc_cgroup_reclaim_work_func() (use a better 
+>> name),     which just takes an EPC cgroup as input w/o involving any 
+>> work/workqueue.
+> 
+> This is for the workqueue use only. So I think it'd be better be with 
+> patch #2 below?
+
+There are multiple levels of logic here IMHO:
+
+   1. a) and b) above focus on "each reclaim" a given EPC cgroup
+   2. c) is about a loop of above to bring given cgroup's usage to limit
+   3. workqueue is one (probably best) way to do c) in async way
+   4. the logic where 1) (direct reclaim) and 3) (indirect) are triggered
+
+To me, it's clear 1) should be in one patch as stated above.
+
+Also, to me 3) and 4) are better to be together since they give you a 
+clear view on how the direct/indirect reclaim are triggered.
+
+2) could be flexible depending on how you see it.  If you prefer viewing 
+it from low-level implementation of reclaiming pages from cgroup, then 
+it's also OK to be together with 1).  If you want to treat it as a part 
+of _async_ way of bring down usage to limit, then _MAYBE_ it's also OK 
+to be with 3) and 4).
+
+But to me 2) can be together with 1) or even a separate patch because 
+it's still kinda of low-level reclaiming details.  3) and 4) shouldn't 
+contain such detail but should focus on how direct/indirect reclaim is done.
+
+[...]
+
+> 
+> To be honest, the part I'm feeling most confusing is this 
+> self-contained-ness. It seems depend on how you look at things.
+
+Completely understand.  But I think our discussion should be helpful to 
+both of us and others.
 
