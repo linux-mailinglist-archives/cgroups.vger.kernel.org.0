@@ -1,162 +1,151 @@
-Return-Path: <cgroups+bounces-1794-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1795-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B1F485F070
-	for <lists+cgroups@lfdr.de>; Thu, 22 Feb 2024 05:31:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AFA985F524
+	for <lists+cgroups@lfdr.de>; Thu, 22 Feb 2024 11:00:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 327A31F22C06
-	for <lists+cgroups@lfdr.de>; Thu, 22 Feb 2024 04:31:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CD281C243B1
+	for <lists+cgroups@lfdr.de>; Thu, 22 Feb 2024 10:00:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 295CD1842;
-	Thu, 22 Feb 2024 04:31:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1981139AC3;
+	Thu, 22 Feb 2024 10:00:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E0JoAUak"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Fl7s6ciS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8166A382;
-	Thu, 22 Feb 2024 04:31:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B33AB22EEF
+	for <cgroups@vger.kernel.org>; Thu, 22 Feb 2024 10:00:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708576297; cv=none; b=ajzOzz1z407IVGV0Da7zPGRZeN80IAR53DGDmhjNWNgaWvakOos7AAJYhO4qw/rftndJOxr5l86Mg4WXyOx7aZtU0JizREfL1tTare/hS9XwAMOZ2E5VjUSG2qJUalQULcj/dGZpctJYMphabA0q72XwFxuoRD7dfTZCZeXnXmI=
+	t=1708596012; cv=none; b=XoWwxmsD0pEWuS/iBasksdhudZz5W8epDBY7A+ADCg27YnjBxyz+8GF8qOsLo5WkBNiiJP79lkA/Bh0pFU3KSW1jIXhTvkOn/aanq+vec73w0+f9b0Ygpf3yErST+kbnk6VB/sO4iTbIewIDHg9WOMC+PIwLcxVjkfu8Q2+Qebs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708576297; c=relaxed/simple;
-	bh=TcxyxtMCbWKsSZiCUDElieO84b/6DAH0dX5gHM8ttJw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=PpBzJiJEZOjgjx6R0OCXzBIOeRZI/PNtQhSKAEEpvBjxmyX+QBieDP+ncDOSunybBE6B+UKfAuu7yLQ9r4IfWGazD831flFus84oqVdjcabLI1PX4Gt2b0bG15h5gw3BpbWDgSf14I0rV9Y4ivHuouKJzMPhULcLf1sydfLawKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E0JoAUak; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dc1ff3ba1aso20445315ad.3;
-        Wed, 21 Feb 2024 20:31:36 -0800 (PST)
+	s=arc-20240116; t=1708596012; c=relaxed/simple;
+	bh=xY3a5A8TczyzS4EQy7YnxSv2e9KYZLcka7tIrv2ih1k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bEKXNSlcIGPyDQZ1i5p0/+qkRPPJqG/0thC7FJbvMYJMsSTJrYbTSUp70MYncKfzF25NNbH556pozimgbgrH1E4XW7CEKQnbc0DVtp1nbAZ882iXbDcgTpeac4RqP0DzdkD+bkFC1Gfqo258IXKyOU7pQoa9R5/ypz2l2SdZrnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Fl7s6ciS; arc=none smtp.client-ip=209.85.222.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-7d6275d7d4dso3935461241.2
+        for <cgroups@vger.kernel.org>; Thu, 22 Feb 2024 02:00:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708576296; x=1709181096; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1708596009; x=1709200809; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1qe6sezPW9Q3wTsxfWJprqeu8KJLsVxqYQYWx727S4g=;
-        b=E0JoAUakPUxqeHintqW/EHQWOLTDkdIDdcf3iCScb5k4OAGX9d/ZPRIRcs+1+OBnqs
-         UrgaspMrfPt407lz+mLhI8O9pZm1yyOLqm3exAs9ZTRrhGZP4eRSMfwKo5EZxVATH362
-         /QmGXj36IZP/MqPqwtCcqB8OSQqQHbs+fkJB/M6xmvNm0H+uIZ+71NLJoig+esj+Ig1F
-         bI30fkTeAe94Yu4QcxRcnWSEnHq+jNDfwGttpVzWEuiV7lO94yJ6hLp5Uy9eJn9BX06A
-         2IhMUXcH5mZXNe0MGjq6U5wngBs0bpXbtRIMAG5gKt1xixcvm32/Id7hY0gzk8IdCtdf
-         O9sw==
+        bh=xY3a5A8TczyzS4EQy7YnxSv2e9KYZLcka7tIrv2ih1k=;
+        b=Fl7s6ciS+4en1deeuOU1AB9WFgIiGeW1f4XEAekJTZ75iq/9K0zrmPX8NhW9X9AUuT
+         rIQ1bhTNP1/ArqGkQo6HiNaG0lvbiRuCiwjxV8zRR931e/kxKipH+1tXcxSwhCciQD9F
+         swg16CJUpxbze9NfoejW0g7KuioJZM3daXgKi0E2vxseSMc6+r2+y6uYd8LipL/9aPf2
+         yuz7aJTTtJDtHnmyioZxhaQphffvs3V0hrDSGHVrhPHJRUziBd/e2Rkt1xZwqbP9HYzY
+         u1ipZpJD+g7DjFIyZZEWx98Hu+sWJfypdUg9c0mxSGGmqpL7L2EcLXkzklunvFDnY198
+         jCXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708576296; x=1709181096;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708596009; x=1709200809;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1qe6sezPW9Q3wTsxfWJprqeu8KJLsVxqYQYWx727S4g=;
-        b=wu/RgrQ1BqLTXbSVUXcD0ybt1rXApm9TJrPGBc09rbpCTumRO3REG6Q8iyC/F+XxXg
-         zKKXe15fx9D7q+8rj6nhbRzbkiYRoF3biiEyYRvEPEBv1lGYfxEhBMovRW9XITXA6Gsm
-         08B/hvh3Oo0u1qBmoSsdVyw439MHJM2O1LVOmmNEe8/c+aJ8mQ9nZ9Z0nEhgQGgMEKw7
-         BxcI86ky6fvJ6/PMyM90McN+bD0Dy/fmT1TsanFQt5naiDosJ4OzY0y/47Rrg+VcdnJl
-         tNczc3SY7mjn3c3c9GyHr0JJb+Su0EA0XMDxw07OvstF2JudNPe5lvbIIrUzgdt8NOId
-         3etg==
-X-Forwarded-Encrypted: i=1; AJvYcCX1PcegUacOu2G4U/DVB3i5oLAmm5MecVfupYB0mcxm08F/DQJhUqeeY5IxM+Wayxx/sid/bP53+/RwiBe/drYpECPP32DaKV0Z64pIQfB20xmaAn5PDevXpJeqA3/KXbgVdk6lRFaANaYO7QqQioOklMrIUfJHroqi6yl8hlN+mvq12WCV0g==
-X-Gm-Message-State: AOJu0YxEnOouD8+PkXaND97RRm70cMP/IEeXp376VCCC/8cmGq8eWhUq
-	zO+9eSIQHWEe7rdu8Tgzcxf1poh+Yig2G98VK9AWNdSHKwMw/KG/
-X-Google-Smtp-Source: AGHT+IFvwhrdrl0JmcZYiX3fu1qeJSYVF8Ug338hF3xvhP1lnZXSpsbvYZMu3w6zkcy1H5hqE3qsWw==
-X-Received: by 2002:a17:902:6b82:b0:1d9:edf5:c858 with SMTP id p2-20020a1709026b8200b001d9edf5c858mr17146757plk.52.1708576295686;
-        Wed, 21 Feb 2024 20:31:35 -0800 (PST)
-Received: from localhost ([113.22.93.93])
-        by smtp.gmail.com with ESMTPSA id s4-20020a17090330c400b001db9cb62f7bsm8947356plc.153.2024.02.21.20.31.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 20:31:35 -0800 (PST)
-From: Nhat Pham <nphamcs@gmail.com>
-To: akpm@linux-foundation.org
-Cc: riel@surriel.com,
-	shuah@kernel.org,
-	hannes@cmpxchg.org,
-	yosryahmed@google.com,
-	tj@kernel.org,
-	lizefan.x@bytedance.com,
-	roman.gushchin@linux.dev,
-	linux-mm@kvack.org,
-	kernel-team@meta.com,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v3 3/3] selftests: add zswapin and no zswap tests (fix)
-Date: Wed, 21 Feb 2024 20:31:32 -0800
-Message-Id: <20240222043132.616320-1-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240205225608.3083251-4-nphamcs@gmail.com>
-References: <20240205225608.3083251-4-nphamcs@gmail.com>
+        bh=xY3a5A8TczyzS4EQy7YnxSv2e9KYZLcka7tIrv2ih1k=;
+        b=oqZffZDwau48EeuqiyiUmBLOEko9U6bo7fapn7h2FGEjIWT2d5DHXjx35lYDDzSSDs
+         oIDrsTKJHBf/D62GNJp+GYO+1W2areNlNHDCj4L2l3snkxaKMy6mIq0yNTp4OanY1ldl
+         /DaiN3Zq1zk0NQHchwy9wMKN1gyn22TKRJc6VM4C4ed0r0cx0FR8mGguOm4NuyQzdQS+
+         FLUUEWaR9orELmUo2Nvd94526+K0SUPHYswzQ5aJMsrJ28EnjV32G4XFW8k4tx1N6aq3
+         o6SoSDBAuFPxDmXEA64D/lC3/95pvpbhkbZin2Wyln/bKcmiRiCfvpEsbBQ1vHRe92kv
+         tiLw==
+X-Forwarded-Encrypted: i=1; AJvYcCWlOzyfBWVlr4dIc3Tjy0UB7/CbA3pqXfwdJhBjXWq4Q+5FsvIeDSF64vU8s3lYzu8Wofsb7cFuFadacnlUksJeZBgBDj6Grg==
+X-Gm-Message-State: AOJu0Yx1sK3OavEB/tSlIKyeqRVpW0oOlIsJ6QsxivmlF5V/cGuJj4K7
+	HN+x7KGGeTqGqdielY8p3M8/8Pwgm2gSASHMWloeQ7tAOrn/CQ42E7iwfwxHEkSpQaUma+VM9Mt
+	1wXcgIcub1Tu5HlNDZnY1ZmgZjj1Zo3BMq59E
+X-Google-Smtp-Source: AGHT+IHtNH9SG5kviHG0Zp4ObgcElY0QaPwq/WKIrJZZn0CRZo740etRowxrv/bo9NQSJHSXY5Ib9q+PDO3ajLn3tTQ=
+X-Received: by 2002:a05:6102:1626:b0:470:4a6e:4a4e with SMTP id
+ cu38-20020a056102162600b004704a6e4a4emr14352031vsb.29.1708596009136; Thu, 22
+ Feb 2024 02:00:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-25-surenb@google.com>
+In-Reply-To: <20240221194052.927623-25-surenb@google.com>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Thu, 22 Feb 2024 10:59:57 +0100
+Message-ID: <CAH5fLgiyouEuDGkbm3fB6WTOxAnTiDx=z6ADx7HN3BTMAO851g@mail.gmail.com>
+Subject: Re: [PATCH v4 24/36] rust: Add a rust helper for krealloc()
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	rust-for-linux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Remove redundant "set up" comment and add check to ensure enough data is
-swapped out (in swapin test) and zswapped-in.
+On Wed, Feb 21, 2024 at 8:41=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
+om> wrote:
+>
+> From: Kent Overstreet <kent.overstreet@linux.dev>
+>
+> Memory allocation profiling is turning krealloc() into a nontrivial
+> macro - so for now, we need a helper for it.
+>
+> Until we have proper support on the rust side for memory allocation
+> profiling this does mean that all Rust allocations will be accounted to
+> the helper.
+>
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Cc: Miguel Ojeda <ojeda@kernel.org>
+> Cc: Alex Gaynor <alex.gaynor@gmail.com>
+> Cc: Wedson Almeida Filho <wedsonaf@gmail.com>
+> Cc: Boqun Feng <boqun.feng@gmail.com>
+> Cc: Gary Guo <gary@garyguo.net>
+> Cc: "Bj=C3=B6rn Roy Baron" <bjorn3_gh@protonmail.com>
+> Cc: Benno Lossin <benno.lossin@proton.me>
+> Cc: Andreas Hindborg <a.hindborg@samsung.com>
+> Cc: Alice Ryhl <aliceryhl@google.com>
+> Cc: rust-for-linux@vger.kernel.org
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 
-Suggested-by: Yosry Ahmed <yosryahmed@google.com>
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
----
- tools/testing/selftests/cgroup/test_zswap.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+Currently, the Rust build doesn't work throughout the entire series
+since there are some commits where krealloc is missing before you
+introduce the helper. If you introduce the helper first before
+krealloc stops being an exported function, then the Rust build should
+work throughout the entire series. (Having both the helper and the
+exported function at the same time is not a problem.)
 
-diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
-index c263610a4a60..f0e488ed90d8 100644
---- a/tools/testing/selftests/cgroup/test_zswap.c
-+++ b/tools/testing/selftests/cgroup/test_zswap.c
-@@ -71,7 +71,7 @@ static int allocate_and_read_bytes(const char *cgroup, void *arg)
- 	for (int i = 0; i < size; i += 4095)
- 		mem[i] = 'a';
+With the patch reordered:
 
--	/* go through the allocated memory to (z)swap in and out pages */
-+	/* Go through the allocated memory to (z)swap in and out pages */
- 	for (int i = 0; i < size; i += 4095) {
- 		if (mem[i] != 'a')
- 			ret = -1;
-@@ -184,8 +184,8 @@ static int test_swapin_nozswap(const char *root)
- 		goto out;
- 	}
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
 
--	if (swap_peak == 0) {
--		ksft_print_msg("pages should be swapped out\n");
-+	if (swap_peak < MB(24)) {
-+		ksft_print_msg("at least 24MB of memory should be swapped out\n");
- 		goto out;
- 	}
-
-@@ -215,7 +215,6 @@ static int test_zswapin(const char *root)
- 	char *test_group;
- 	long zswpin;
-
--	/* Set up */
- 	test_group = cg_name(root, "zswapin_test");
- 	if (!test_group)
- 		goto out;
-@@ -236,8 +235,8 @@ static int test_zswapin(const char *root)
- 		goto out;
- 	}
-
--	if (zswpin == 0) {
--		ksft_print_msg("zswpin should not be 0\n");
-+	if (zswpin < MB(24) / PAGE_SIZE) {
-+		ksft_print_msg("at least 24MB should be brought back from zswap\n");
- 		goto out;
- 	}
-
-@@ -260,7 +259,6 @@ static int test_no_invasive_cgroup_shrink(const char *root)
- 	size_t control_allocation_size = MB(10);
- 	char *control_allocation, *wb_group = NULL, *control_group = NULL;
-
--	/* Set up */
- 	wb_group = setup_test_group_1M(root, "per_memcg_wb_test1");
- 	if (!wb_group)
- 		return KSFT_FAIL;
-
-base-commit: 9d193b36872d153e02e80c26203de4ee15127b58
---
-2.40.1
+Alice
 
