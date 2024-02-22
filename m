@@ -1,165 +1,205 @@
-Return-Path: <cgroups+bounces-1787-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1788-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0208685EDE7
-	for <lists+cgroups@lfdr.de>; Thu, 22 Feb 2024 01:22:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A09285EDF3
+	for <lists+cgroups@lfdr.de>; Thu, 22 Feb 2024 01:25:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC003284F41
-	for <lists+cgroups@lfdr.de>; Thu, 22 Feb 2024 00:22:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC9B8B22E0A
+	for <lists+cgroups@lfdr.de>; Thu, 22 Feb 2024 00:25:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 579DCC2E3;
-	Thu, 22 Feb 2024 00:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B867D10A12;
+	Thu, 22 Feb 2024 00:25:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="MgcZg+65"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ofhFBy0g"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C03E8BE8
-	for <cgroups@vger.kernel.org>; Thu, 22 Feb 2024 00:21:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA73DF4E7
+	for <cgroups@vger.kernel.org>; Thu, 22 Feb 2024 00:25:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708561317; cv=none; b=lUWlZGmrqESDnsJ76xBD77UeyrQ8K8yeIpJWa9OiQiZR8l1lVZfeYJfvLVnjagRPoyryExBOQyHia+OoJVegyPDnEeZ7q5bkd22cdxXLnEL0AmuhJiizvI/ygIDY9yYAzRMPK01o50xAeHxg1FZ1eill4qc4IJY/cyj14ABaJ9Q=
+	t=1708561505; cv=none; b=fqcFPAN0+ztKNoGgvFeAJL2VWjz81v8qkgjhtenqbUkRMcXFx9w8n16YKR7vVp+KESdx64Qe5BOe68H6OS+a5vTvWoNQlAeCUJXy5vGaevON8NQQWIhAdHVBXOsEmkB/K3oStrINKestjClLJkrjf+jII6bRXDnwWZd1aLmB4RQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708561317; c=relaxed/simple;
-	bh=ULWx7GnGcbkzH+Hk8ucwqEKl61im90Y5FaAmJnZtJAg=;
+	s=arc-20240116; t=1708561505; c=relaxed/simple;
+	bh=Wl2VBsr8T1E9brAP9ZLk+di58Ii4yEnpHnIDqcL7Ys4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VKJJO7SddpjYqf7be5D6TL5wBU5XV3lZ/pk2dvYlG/p4T1WUDnJ/PduyS6YJsb728jfOg2Rj4+11T6FiMsOqOf92nz5bcb5nA1a8JHo/UaQ6VxLOL2ZgYHpIgyv1AfjcPcatnhkjL1fQLjzE+3HvIyOoi7zizNeTquOQrR/OeWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=MgcZg+65; arc=none smtp.client-ip=209.85.222.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-7875dc24ecaso276728785a.3
-        for <cgroups@vger.kernel.org>; Wed, 21 Feb 2024 16:21:54 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=IKY55UTbNXXIoWnsMiCRwUWKNL8gI9/pcqVSizNY+0DXGUP5RaTgu5k0OSGplRPzj5mCQjRIrTBEBwUyeYqXCCMp1A6Ac0IUYmgtSkn96MfoLO45/YKgbmq2QAaxVEidwBvTGYqQ4NuJ3ivQr/Iz6wGg47rKI20lz1FVN8eleko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ofhFBy0g; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e34d12404eso3774057b3a.2
+        for <cgroups@vger.kernel.org>; Wed, 21 Feb 2024 16:25:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1708561314; x=1709166114; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9rn4mWdOER6tRcIB1iLpkedD4oyQHhFAy8BqoLay5HA=;
-        b=MgcZg+65Vvf3eaGqKA5NYMlqvoMc4UiKldYMGimRMSN8bQIK0NRXQ0FKRKAKjOxSot
-         Bssdjpj+HfxFZnetE6jgTuKheGtF04qKzVcAnNV+4tCtvAHwPezDYUR4YQFpEoqUcuy2
-         JIN5YhHfBLRlvutKyOMDClQJz2G4qTwAEE+MexxY7vThbI0GkkQu5VUYYb5nHB/tKNGV
-         3/BWBcxXhWtHmBoFUeiHkxr04IXKyVGw40F2MhTtUVwlWHK4vPpBDRh8KFKKEJQulrlb
-         QjbpgcDelPqeQk96DbvIYt0Mp3aSz/ncDX7G4L4DxVyr1LJwaLeo1SocD6ekZzsS2aIy
-         psvw==
+        d=chromium.org; s=google; t=1708561503; x=1709166303; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WrVxGxFZ9H3+hlcYIVohDlCBqheEbLY5A8SDm36k8gU=;
+        b=ofhFBy0gzNz2gmMbsAtpvobfLetDEr2h/tPE+renP/99jyIWS80pMhgteraIKPRAuT
+         dVlepU+AgxElGXhJTrV3XW5TKRRYghKYMkGBB6bsmf9UWTapjBEs+sytEdFYdPj195G4
+         U9m8fSBu+mk6/tjkHArePIX9vdpFML0ALGQ50=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708561314; x=1709166114;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9rn4mWdOER6tRcIB1iLpkedD4oyQHhFAy8BqoLay5HA=;
-        b=SzwljrzaklfpCyGybxUYFcD0jN14ym4crWQV0blL1HW7wNpWUVEh8njGLcJToy6Fi9
-         lsUGcE1Bqf5COP8uBgSf1UGy1ZWWc9Sz3OWzYpBidaPfhjwMbKH1wMMmVEHlxkxNb7pT
-         e8SIoPMA0H5Kq3FAZnZPLFZ4mp+GliItTlGh12pH6XeQH4swh3FdHxyj3mWs/oEYTstj
-         btE6JxIQq4qvFn8gAkQh0QA7W0Nji/PG7xpR3DY0ai2P2HseQX4FhmL1xAy8SAnlMwGD
-         X88ZLoMBRKI2mS+oIDJL8A/ZoAddHfHXdr+Ks23PdLijcNkQHaXBX614ONSRa+Nror6M
-         jDMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXKG/5A7mafKz900XKg8aNKI7eIIrjptVMXzN7FCV8lGkcXghAMD965t4XwKsfD7g2zjNoXx+M3C8Lwly3/YtILVupnzUEpaQ==
-X-Gm-Message-State: AOJu0YzqAjMIBzc8kQlB/kWhuA6QeNU2+BqDyToWKWFRi5snGZEoInRy
-	0aOE6/dpTyysEmQCMYNe6NGZJXfSIo9TPIcKSwvi0i9bNcDwz0u8d2CXIHI20Fc=
-X-Google-Smtp-Source: AGHT+IGSJoZu17XCLPx2AJSIv4qmgm+x+WexJaUrwx1qRLzsVh+X4k/87Gsnxjx0m8GySXbzSbUfyw==
-X-Received: by 2002:ad4:5ce3:0:b0:68f:8d7c:73cd with SMTP id iv3-20020ad45ce3000000b0068f8d7c73cdmr10367841qvb.8.1708561314072;
-        Wed, 21 Feb 2024 16:21:54 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id lb25-20020a056214319900b0068f9bb1a247sm1871280qvb.19.2024.02.21.16.21.53
+        d=1e100.net; s=20230601; t=1708561503; x=1709166303;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WrVxGxFZ9H3+hlcYIVohDlCBqheEbLY5A8SDm36k8gU=;
+        b=slhL9nz8fRbLPNpGwynujgqlfQC6Aon2jyPCz9FVsPjsN8GXgMGY1Xpmu9b4bBQNkC
+         rtFJVyGX3b071gi0dN7WX0vQeTEiFwsGBB2DGhF3SfENWeJJ67RenyJBqJ4OKGF9kgys
+         m3oRAMrKlisvFlVK46locGAtDx9o5uUUFLK+7whhW/8hV+x3lcxflgovCocfm7PXdJbB
+         SLUHDq5ZPofUK+d1qHc13bHBb22g3agT0c6bqZ0xuXxWYT/nWCIE46RCjRaUb22vU+kS
+         +XBt8uFyufjkkEbN33XG11T8vPMBakAHGU8T39NTUnMWK2YiTx6KDHlxsYje0ME1jCl3
+         UoYg==
+X-Forwarded-Encrypted: i=1; AJvYcCUkiJS8lMYUIs6oNQTeIiYlfu93YwD828i/Q2iKhmTWA0G2fm5BXl+86I2/RLzHDwkJxJtTOF4HGJm6mSHuckWLnAovGZaePw==
+X-Gm-Message-State: AOJu0YzS70XNHcqjZ4I90dzccIoG7tpOaPAHXJ7e7y0S0+WxhCNCsRvF
+	w8LocnTfW/LGzRV8/0XU/kLQ2/meo1ed+r+dWzOxwGdQ/pureluH9Va4DaoPcw==
+X-Google-Smtp-Source: AGHT+IEJZ3HYcFxZObICKM/x49WlLf4h3po0Yzl2rQr8TWxwQ9a9m/zFcKDEERUUQbcGP3mxNS8r5A==
+X-Received: by 2002:aa7:8a06:0:b0:6e4:59d0:febe with SMTP id m6-20020aa78a06000000b006e459d0febemr11129392pfa.7.1708561503366;
+        Wed, 21 Feb 2024 16:25:03 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id q13-20020a056a00088d00b006e05c801748sm9501136pfj.199.2024.02.21.16.25.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Feb 2024 16:21:53 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rcwqW-00DQWC-Tn;
-	Wed, 21 Feb 2024 20:21:52 -0400
-Date: Wed, 21 Feb 2024 20:21:52 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: Will Deacon <will@kernel.org>, akpm@linux-foundation.org,
-	alim.akhtar@samsung.com, alyssa@rosenzweig.io,
-	asahi@lists.linux.dev, baolu.lu@linux.intel.com,
-	bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net,
-	david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org,
-	heiko@sntech.de, iommu@lists.linux.dev, jernej.skrabec@gmail.com,
-	jonathanh@nvidia.com, joro@8bytes.org,
-	krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
-	marcan@marcan.st, mhiramat@kernel.org, m.szyprowski@samsung.com,
-	paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com,
-	samuel@sholland.org, suravee.suthikulpanit@amd.com,
-	sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org,
-	tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org,
-	yu-cheng.yu@intel.com, rientjes@google.com
-Subject: Re: [PATCH v3 10/10] iommu: account IOMMU allocated memory
-Message-ID: <20240222002152.GG13491@ziepe.ca>
-References: <20231226200205.562565-1-pasha.tatashin@soleen.com>
- <20231226200205.562565-11-pasha.tatashin@soleen.com>
- <20240213131210.GA28926@willie-the-truck>
- <CA+CK2bB4Z+z8tocO79AdsAy+gmN_4aVHgFUsm_gYLUJ2zV1A6A@mail.gmail.com>
- <20240216175752.GB2374@willie-the-truck>
- <CA+CK2bDURTkZFo9uE9Bgfrz-NwgXqo4SAzLOW6Jb35M+eqUEaA@mail.gmail.com>
+        Wed, 21 Feb 2024 16:25:03 -0800 (PST)
+Date: Wed, 21 Feb 2024 16:25:02 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
+	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+	willy@infradead.org, liam.howlett@oracle.com,
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net,
+	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v4 14/36] lib: add allocation tagging support for memory
+ allocation profiling
+Message-ID: <202402211608.41AD94094@keescook>
+References: <20240221194052.927623-1-surenb@google.com>
+ <20240221194052.927623-15-surenb@google.com>
+ <202402211449.401382D2AF@keescook>
+ <4vwiwgsemga7vmahgwsikbsawjq5xfskdsssmjsfe5hn7k2alk@b6ig5v2pxe5i>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+CK2bDURTkZFo9uE9Bgfrz-NwgXqo4SAzLOW6Jb35M+eqUEaA@mail.gmail.com>
+In-Reply-To: <4vwiwgsemga7vmahgwsikbsawjq5xfskdsssmjsfe5hn7k2alk@b6ig5v2pxe5i>
 
-On Fri, Feb 16, 2024 at 02:48:00PM -0500, Pasha Tatashin wrote:
-> On Fri, Feb 16, 2024 at 12:58 PM Will Deacon <will@kernel.org> wrote:
-> >
-> > On Tue, Feb 13, 2024 at 10:44:53AM -0500, Pasha Tatashin wrote:
-> > > > >  SecPageTables
-> > > > > -              Memory consumed by secondary page tables, this currently
-> > > > > -              currently includes KVM mmu allocations on x86 and arm64.
-> > > > > +              Memory consumed by secondary page tables, this currently includes
-> > > > > +              KVM mmu and IOMMU allocations on x86 and arm64.
-> > >
-> > > Hi Will,
-> > >
-> > > > While I can see the value in this for IOMMU mappings managed by VFIO,
-> > > > doesn't this end up conflating that with the normal case of DMA domains?
-> > > > For systems that e.g. rely on an IOMMU for functional host DMA, it seems
-> > > > wrong to subject that to accounting constraints.
-> > >
-> > > The accounting constraints are only applicable when GFP_KERNEL_ACCOUNT
-> > > is passed to the iommu mapping functions. We do that from the vfio,
-> > > iommufd, and vhost. Without this flag, the memory useage is reported
-> > > in /proc/meminfo as part of  SecPageTables field, but not constrained
-> > > in cgroup.
-> >
-> > Thanks, Pasha, that explanation makes sense. I still find it bizarre to
-> > include IOMMU allocations from the DMA API in SecPageTables though, and
-> > I worry that it will confuse people who are using that metric as a way
-> > to get a feeling for how much memory is being used by KVM's secondary
-> > page-tables. As an extreme example, having a non-zero SecPageTables count
-> > without KVM even compiled in is pretty bizarre.
+On Wed, Feb 21, 2024 at 06:29:17PM -0500, Kent Overstreet wrote:
+> On Wed, Feb 21, 2024 at 03:05:32PM -0800, Kees Cook wrote:
+> > On Wed, Feb 21, 2024 at 11:40:27AM -0800, Suren Baghdasaryan wrote:
+> > > [...]
+> > > +struct alloc_tag {
+> > > +	struct codetag			ct;
+> > > +	struct alloc_tag_counters __percpu	*counters;
+> > > +} __aligned(8);
+> > > [...]
+> > > +#define DEFINE_ALLOC_TAG(_alloc_tag)						\
+> > > +	static DEFINE_PER_CPU(struct alloc_tag_counters, _alloc_tag_cntr);	\
+> > > +	static struct alloc_tag _alloc_tag __used __aligned(8)			\
+> > > +	__section("alloc_tags") = {						\
+> > > +		.ct = CODE_TAG_INIT,						\
+> > > +		.counters = &_alloc_tag_cntr };
+> > > [...]
+> > > +static inline struct alloc_tag *alloc_tag_save(struct alloc_tag *tag)
+> > > +{
+> > > +	swap(current->alloc_tag, tag);
+> > > +	return tag;
+> > > +}
+> > 
+> > Future security hardening improvement idea based on this infrastructure:
+> > it should be possible to implement per-allocation-site kmem caches. For
+> > example, we could create:
+> > 
+> > struct alloc_details {
+> > 	u32 flags;
+> > 	union {
+> > 		u32 size; /* not valid after __init completes */
+> > 		struct kmem_cache *cache;
+> > 	};
+> > };
+> > 
+> > - add struct alloc_details to struct alloc_tag
+> > - move the tags section into .ro_after_init
+> > - extend alloc_hooks() to populate flags and size:
+> > 	.flags = __builtin_constant_p(size) ? KMALLOC_ALLOCATE_FIXED
+> > 					    : KMALLOC_ALLOCATE_BUCKETS;
+> > 	.size = __builtin_constant_p(size) ? size : SIZE_MAX;
+> > - during kernel start or module init, walk the alloc_tag list
+> >   and create either a fixed-size kmem_cache or to allocate a
+> >   full set of kmalloc-buckets, and update the "cache" member.
+> > - adjust kmalloc core routines to use current->alloc_tag->cache instead
+> >   of using the global buckets.
+> > 
+> > This would get us fully separated allocations, producing better than
+> > type-based levels of granularity, exceeding what we have currently with
+> > CONFIG_RANDOM_KMALLOC_CACHES.
+> > 
+> > Does this look possible, or am I misunderstanding something in the
+> > infrastructure being created here?
 > 
-> I agree; I also prefer a new field in /proc/meminfo named
-> 'IOMMUPageTables'. This is what I proposed at LPC, but I was asked to
-> reuse the existing 'SecPageTables' field instead. The rationale was
-> that 'secondary' implies not only KVM page tables, but any other
-> non-regular page tables.
+> Definitely possible, but... would we want this?
 
-Right, SeanC mentioned that the purpose of SecPageTables was to
-capture all non-mm page table radix allocations.
+Yes, very very much. One of the worst and mostly unaddressed weaknesses
+with the kernel right now is use-after-free based type confusion[0], which
+depends on merged caches (or cache reuse).
 
-> I would appreciate the opinion of IOMMU maintainers on this: is it
-> preferable to bundle the information with 'SecPageTables' or maintain
-> a separate field?
+This doesn't solve cross-allocator (kmalloc/page_alloc) type confusion
+(as terrifyingly demonstrated[1] by Jann Horn), but it does help with
+what has been a very common case of "use msg_msg to impersonate your
+target object"[2] exploitation.
 
-I think you should keep them together. I don't think we should be
-introducing new counters, in general.
+> That would produce a _lot_ of kmem caches
 
-Detailed memory profile should come from some kind of more dynamic and
-universal scheme. Hopefully that other giant thread about profiling
-will reach some conclusion.
+Fewer than you'd expect, but yes, there is some overhead. However,
+out-of-tree forks of Linux have successfully experimented with this
+already and seen good results[3].
 
-Jason
+> and don't we already try to collapse those where possible to reduce
+> internal fragmentation?
+
+In the past, yes, but the desire for security has tended to have more
+people building with SLAB_MERGE_DEFAULT=n and/or CONFIG_RANDOM_KMALLOC_CACHES=y
+(or booting with "slab_nomerge").
+
+Just doing the type safety isn't sufficient without the cross-allocator
+safety, but we've also had solutions for that proposed[4].
+
+-Kees
+
+[0] https://github.com/KSPP/linux/issues/189
+[1] https://googleprojectzero.blogspot.com/2021/10/how-simple-linux-kernel-memory.html
+[2] https://www.willsroot.io/2021/08/corctf-2021-fire-of-salvation-writeup.html
+    https://google.github.io/security-research/pocs/linux/cve-2021-22555/writeup.html#exploring-struct-msg_msg
+[3] https://grsecurity.net/how_autoslab_changes_the_memory_unsafety_game
+[4] https://lore.kernel.org/linux-hardening/20230915105933.495735-1-matteorizzo@google.com/
+
+-- 
+Kees Cook
 
