@@ -1,188 +1,147 @@
-Return-Path: <cgroups+bounces-1823-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1824-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA0E0861C1D
-	for <lists+cgroups@lfdr.de>; Fri, 23 Feb 2024 19:47:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26A4E861C72
+	for <lists+cgroups@lfdr.de>; Fri, 23 Feb 2024 20:27:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE8B51C20B9D
-	for <lists+cgroups@lfdr.de>; Fri, 23 Feb 2024 18:47:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5901F1C22F56
+	for <lists+cgroups@lfdr.de>; Fri, 23 Feb 2024 19:27:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0BAA143C54;
-	Fri, 23 Feb 2024 18:46:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73A4B1448FD;
+	Fri, 23 Feb 2024 19:26:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bskhNnbI"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OpCi4S7E"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 941AD143C48;
-	Fri, 23 Feb 2024 18:46:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E31F143C78
+	for <cgroups@vger.kernel.org>; Fri, 23 Feb 2024 19:26:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708714007; cv=none; b=ecEqFei7k30o9KZqtbky/Rjb3M/fiQCbrJeabLR+ATFHeKyeQHw0JFk6wAwz4aE6bq/3k94XU1RXF6/HUsoeGb0PSFtWtVtA1S144DbjeBQFvrOX8FYCFN62qIqvrkhnY+r/S2t7w3WVUAluZ3mSKqXQb3QOviMp6FzAc/qSxUs=
+	t=1708716416; cv=none; b=c851b7cm+5kVTsvcY4GjCy4LMoykjpc0YkHEwIN2gl5Pnn3bpAdqOrfCmBDj7CGuXuKKDGd3oMbbKzBo4biWehtmkdBebdE7urhokGK7/tzir1lfkqiG+IPYYaIRzSkfyg1KvHscxkyGr0KngEmMiLEho+LoCSvf0BpR6LUFykA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708714007; c=relaxed/simple;
-	bh=suNSZLNr+zR5ziYVHwwp8KFfgXyyGVIDhNjra3QpG5I=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=gyPDX6SSzjEhkSjyMYTJFBm1emgg75i6WNrqiPflbA0bvxm8wjRvn+9+VrTXaT7KLL6ZZtup+B/jg4Z6IgGn6MbsaGIC84OasJHhArBWMqaOrV9N4j5k3OfXAJd3qm01lF+hDAwYmNKed5ftpfQ43J3Ac4Tu8lFd+/c61cHpKdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bskhNnbI; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708714005; x=1740250005;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=suNSZLNr+zR5ziYVHwwp8KFfgXyyGVIDhNjra3QpG5I=;
-  b=bskhNnbIX11Tipoba+oTYnw5XUfJJ55dPeXmiIt6/qH2seq+O6tPO6H5
-   lW/NFfW7Wvuj2NmseKJMCI+0mlhbufRNaKtgxrrdL/QiXPG7dU7Cn0ngi
-   poEbZwqi9/z9OdZQFH7fFQVxScV1PcOKRc1zqBiIqW4HKce87zuL8p1fR
-   2U2c8C252AQlGXAI8ZiOvNI9Lwg15aAa70mIAfhCsTbXuUqSRm3clqBQR
-   1J1Ojnl9qGyfSAWGjEJxcP/Y7GAAqbUboqIb/X846BHsjspzRDapXh6c7
-   Wkl8/GpaqOrDoTX6cNZYicmY0H8x8wrWM0YSymbrDvb18PlJp97uLTI9A
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10993"; a="3187118"
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="3187118"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2024 10:46:44 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,180,1705392000"; 
-   d="scan'208";a="6407589"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 23 Feb 2024 10:46:43 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
- <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
- <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
- <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
- <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
- <kai.huang@intel.com>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
- <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
- "chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: [PATCH v9 13/15] x86/sgx: Turn on per-cgroup EPC reclamation
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-14-haitao.huang@linux.intel.com>
- <87a85645ef1661e54ae6e56f1e47db25c3f8d7af.camel@intel.com>
- <op.2jjxqjiwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <50ecd28c-4514-4ca9-8eb7-4cae24ba9d1d@intel.com>
-Date: Fri, 23 Feb 2024 12:46:40 -0600
+	s=arc-20240116; t=1708716416; c=relaxed/simple;
+	bh=R6zUV9LQ644WPBwU2nAdaKkCRupl6ITF2pP4ziWZMV0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FtY02LU+vD8dP7Z8+24aw0qFDDqSlXPSuqNgo+PmaU+RhFI/dpjgUdNPxjhgQnRry4AzWVuautkhNOHkJcItLvRgQV5EkO73faMVFOEKhvLeG9VtPsS6qHVKa+baJoMD5nBafFXglugdKPHyoyM2QNdV2U6Z1MCsMo9YYT+G8pI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OpCi4S7E; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-608cf2e08f9so895477b3.0
+        for <cgroups@vger.kernel.org>; Fri, 23 Feb 2024 11:26:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708716412; x=1709321212; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R6zUV9LQ644WPBwU2nAdaKkCRupl6ITF2pP4ziWZMV0=;
+        b=OpCi4S7EIle74AF4FZHaIEyLZXNxInq/DezUptdf3Dtyp+NkJo+dehUdZWG2qusLIi
+         bt8qF0ES+0LRUSPqWcX3BhMdXjaIdmafbMwRL9IPIvSNXVQcek1Jj0OLzR/dzhi+w7to
+         dAXnDGoFer1u6qbebk7TeotLVef6+Rz6kG/IIQYYpJYnHAms2nBdwshn2RMbFLixh9yV
+         eZZ0uK4Fjh1XP2wbWR9k7FrQhpvdHVp19ivE5SZkX2rlJbmBquB+IxJZ7azGQfDfOpLl
+         DtRq+AvFDvwCsisaBmPWMyn88TDIfYFY/bu64HZB+J1w9y9ZRnJSSKlJoV24LCl5T0vH
+         ZewQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708716412; x=1709321212;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=R6zUV9LQ644WPBwU2nAdaKkCRupl6ITF2pP4ziWZMV0=;
+        b=rOSRp9It5shMkprZgHlnXNf+OI0HDrp8fRDRbBBdg6SSz6hLH/ziItc5+a97jgGphj
+         Dse8uwuNlY6rLVVfat/yxpfBczCETVaUDn1WALtXyyEc6lfbP6QNFfHmlYa2hxdmUgMC
+         gsC2THA4JUQDzIG/fuhEIhMr4kjkaqktGri+o4mukI75zay2TLoq3vyiVR/0i2Jqr5zP
+         rChXWYbipCfcVrt375UCDA/g3fG/sAnItNYhzfsLHnh7Vk2y/Zg5YaJ2eR5wUuM9r1r3
+         I7Z2NmuTS0taM1JXpGx0wrvEYUEImGUalN/bveOlhY8mLKfbIIBUQa/p9vqsFBRd//62
+         HKPw==
+X-Forwarded-Encrypted: i=1; AJvYcCU3BDTBQBcDmF4WmiiVj4TuXAk/72QHs0Y+ROD4EnYq+3LR8pESduU6JMp0PboWO2BLLJE0ZqXrUrjyFAhlAUCVTvKcUCIdww==
+X-Gm-Message-State: AOJu0Yw7goO30Ic5t5Zxk7RaFIbcsEnlmZPO/1S2thdFlkA1t5xKTBnX
+	B/G8feDX1lmrOsUp3Vg7ux9223TTD1SrVCI8XWJqG3HTh1EC8VbIlY1RK8VprHt/7tsNcYy18tz
+	k3utYze4/fPDqy/CkukmQYFjgYOvpZ5+cPzl7
+X-Google-Smtp-Source: AGHT+IE/Pl6hrmaYgXKRMYbWWj3alWqUpkDIYPYsJjZVZ7mPx6TO4HEVqSuGco97bbBAS2NUd8BFNQPQR2paQWXSoCg=
+X-Received: by 2002:a25:2653:0:b0:dc6:b088:e742 with SMTP id
+ m80-20020a252653000000b00dc6b088e742mr843579ybm.8.1708716411749; Fri, 23 Feb
+ 2024 11:26:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2jlyf2o4wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <50ecd28c-4514-4ca9-8eb7-4cae24ba9d1d@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-7-surenb@google.com>
+ <Zdc6LUWnPOBRmtZH@tiehlicka> <20240222132410.6e1a2599@meshulam.tesarici.cz>
+In-Reply-To: <20240222132410.6e1a2599@meshulam.tesarici.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Fri, 23 Feb 2024 11:26:40 -0800
+Message-ID: <CAJuCfpGNoMa4G3o_us+Pn2wvAKxA2L=7WEif2xHT7tR76Mbw5g@mail.gmail.com>
+Subject: Re: [PATCH v4 06/36] mm: enumerate all gfp flags
+To: =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>
+Cc: Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org, kent.overstreet@linux.dev, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 22 Feb 2024 16:44:45 -0600, Huang, Kai <kai.huang@intel.com> wrote:
+On Thu, Feb 22, 2024 at 4:24=E2=80=AFAM 'Petr Tesa=C5=99=C3=ADk' via kernel=
+-team
+<kernel-team@android.com> wrote:
+>
+> On Thu, 22 Feb 2024 13:12:29 +0100
+> Michal Hocko <mhocko@suse.com> wrote:
+>
+> > On Wed 21-02-24 11:40:19, Suren Baghdasaryan wrote:
+> > > Introduce GFP bits enumeration to let compiler track the number of us=
+ed
+> > > bits (which depends on the config options) instead of hardcoding them=
+.
+> > > That simplifies __GFP_BITS_SHIFT calculation.
+> > >
+> > > Suggested-by: Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz>
+> > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > > Reviewed-by: Kees Cook <keescook@chromium.org>
+> >
+> > I thought I have responded to this patch but obviously not the case.
+> > I like this change. Makes sense even without the rest of the series.
+> > Acked-by: Michal Hocko <mhocko@suse.com>
+>
+> Thank you, Michal. I also hope it can be merged without waiting for the
+> rest of the series.
+
+Thanks Michal! I can post it separately. With the Ack I don't think it
+will delay the rest of the series.
+Thanks,
+Suren.
 
 >
+> Petr T
 >
-> On 23/02/2024 5:36 am, Haitao Huang wrote:
->> On Wed, 21 Feb 2024 05:23:00 -0600, Huang, Kai <kai.huang@intel.com>  
->> wrote:
->>
->>> On Mon, 2024-02-05 at 13:06 -0800, Haitao Huang wrote:
->>>> From: Kristen Carlson Accardi <kristen@linux.intel.com>
->>>>
->>>> Previous patches have implemented all infrastructure needed for
->>>> per-cgroup EPC page tracking and reclaiming. But all reclaimable EPC
->>>> pages are still tracked in the global LRU as sgx_lru_list() returns  
->>>> hard
->>>> coded reference to the global LRU.
->>>>
->>>> Change sgx_lru_list() to return the LRU of the cgroup in which the  
->>>> given
->>>> EPC page is allocated.
->>>>
->>>> This makes all EPC pages tracked in per-cgroup LRUs and the global
->>>> reclaimer (ksgxd) will not be able to reclaim any pages from the  
->>>> global
->>>> LRU. However, in cases of over-committing, i.e., sum of cgroup limits
->>>> greater than the total capacity, cgroups may never reclaim but the  
->>>> total
->>>> usage can still be near the capacity. Therefore global reclamation is
->>>> still needed in those cases and it should reclaim from the root  
->>>> cgroup.
->>>>
->>>> Modify sgx_reclaim_pages_global(), to reclaim from the root EPC cgroup
->>>> when cgroup is enabled, otherwise from the global LRU.
->>>>
->>>> Similarly, modify sgx_can_reclaim(), to check emptiness of LRUs of all
->>>> cgroups when EPC cgroup is enabled, otherwise only check the global  
->>>> LRU.
->>>>
->>>> With these changes, the global reclamation and per-cgroup reclamation
->>>> both work properly with all pages tracked in per-cgroup LRUs.
->>>>
->>>> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
->>>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
->>>> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
->>>> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
->>>> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->>>> ---
->>>> V7:
->>>> - Split this out from the big patch, #10 in V6. (Dave, Kai)
->>>> ---
->>>>  arch/x86/kernel/cpu/sgx/main.c | 16 +++++++++++++++-
->>>>  1 file changed, 15 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/arch/x86/kernel/cpu/sgx/main.c  
->>>> b/arch/x86/kernel/cpu/sgx/main.c
->>>> index 6b0c26cac621..d4265a390ba9 100644
->>>> --- a/arch/x86/kernel/cpu/sgx/main.c
->>>> +++ b/arch/x86/kernel/cpu/sgx/main.c
->>>> @@ -34,12 +34,23 @@ static struct sgx_epc_lru_list sgx_global_lru;
->>>>
->>>>  static inline struct sgx_epc_lru_list *sgx_lru_list(struct  
->>>> sgx_epc_page *epc_page)
->>>>  {
->>>> +#ifdef CONFIG_CGROUP_SGX_EPC
->>>> +    if (epc_page->epc_cg)
->>>> +        return &epc_page->epc_cg->lru;
->>>> +
->>>> +    /* This should not happen if kernel is configured correctly */
->>>> +    WARN_ON_ONCE(1);
->>>> +#endif
->>>>      return &sgx_global_lru;
->>>>  }
->>>
->>> How about when EPC cgroup is enabled, but one enclave doesn't belong  
->>> to any EPC
->>> cgroup?  Is it OK to track EPC pages for these enclaves to the root  
->>> EPC cgroup's
->>> LRU list together with other enclaves belongs to the root cgroup?
->>>
->>>
->>> This should be a valid case, right?
->>  There is no such case. Each page is in the root by default.
->>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kernel-team+unsubscribe@android.com.
 >
-> Is it guaranteed by the (misc) cgroup design/implementation?  If so  
-> please add this information to the changelog and/or comments?  It helps  
-> non-cgroup expert like me to understand.
->
-
-Will do
-
-Thanks
-Haitao
 
