@@ -1,152 +1,197 @@
-Return-Path: <cgroups+bounces-1835-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1836-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2657867A3E
-	for <lists+cgroups@lfdr.de>; Mon, 26 Feb 2024 16:29:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B451F867A97
+	for <lists+cgroups@lfdr.de>; Mon, 26 Feb 2024 16:45:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57D831F2436F
-	for <lists+cgroups@lfdr.de>; Mon, 26 Feb 2024 15:29:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67C051C22BF5
+	for <lists+cgroups@lfdr.de>; Mon, 26 Feb 2024 15:45:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C5D12AAEE;
-	Mon, 26 Feb 2024 15:28:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 672E412C53E;
+	Mon, 26 Feb 2024 15:44:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qiHqOP8l";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="b2FLq7ww"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NOETsR1/";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="y1kEO+FP";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Q25SrPtC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PG2cmVLD"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2EDC219E3;
-	Mon, 26 Feb 2024 15:28:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEC5812B153;
+	Mon, 26 Feb 2024 15:44:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708961309; cv=none; b=JtOX2EUSCy5tdkaGrVc2UuD0+eJAKJebo0RC1TZSKDWujai6QRaqGigz5JY7dSuexByesFETn1+P1uOgy/FgCVwy6EaN9oT59MrHZhk6knN3m6JM1zmrYIXbdgN6H3LWZsUPqWlHxhl3PmS9u0PSCSVYpu/9sWAza5XX30iVWe0=
+	t=1708962297; cv=none; b=fyKn8f7wLo+AU/m9XIvbHCGtrkdI6zS6GCfeAFk5xakA5fHnQL9n1hzcX2Zusjx1qLyiWYe2pI/jN7tY9ThI+dsakFOghGvJbtKaym3opEz9MBMgCrK+NQPzYDvKOW54ws3+4cJWgS/36al7E+JRCZ45lavLx9wOKdXQeVSfxe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708961309; c=relaxed/simple;
-	bh=eITRa6/dNliWbYSQG0MqgGYZZFqc07AifDCVVZZDKK8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U3zjQe4jUxI4/obNeNxIgDUju0D4YDkEmgmNOMzFaAAQV0OPty58Eqi3Lt1ipxUd+4U6NPvM2GmsrEAmoQdBtjSaerDwu8lDyQPO7afynDC/cITDeUkR2MM8vY22Ji2YlUuUx8T8DlGBeCtpVktSwEIwMTVcg7G2Du/PRiVx6io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qiHqOP8l; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=b2FLq7ww; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from blackpad (unknown [10.100.12.75])
+	s=arc-20240116; t=1708962297; c=relaxed/simple;
+	bh=RLBFNkzP9GqTjvndlIET/xlLk5CJRmEdNX0X75l4ank=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fii1U14fTLN6EdW5c0UVJtn0C9N1eoZg3qWXHhN4WsISIzxj0YluXfUKGayAeNDfx0Zk7CnMtRwHfblrulK6rXWlDn/xoi/9VHVHXzfetI6qTzPkEu7zKxUU6MoYs/Z5X1b7BNbeDSK6Wm6mvzI4S/7fcUxYIq4Yg49d2yRFp0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NOETsR1/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=y1kEO+FP; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Q25SrPtC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PG2cmVLD; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D0031225CA;
-	Mon, 26 Feb 2024 15:28:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708961306; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	by smtp-out2.suse.de (Postfix) with ESMTPS id DB67A1FD17;
+	Mon, 26 Feb 2024 15:44:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708962293; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/qL2shtSe0WTJwYJugT1JyXRoQHJ5+B/iJUmAXE1O4c=;
-	b=qiHqOP8lAAdRJmDR9/ScJ1aNBrgFj2AQi18FTYKkkfgks0eU5sPN8R4njbDlMsGyfyiPZm
-	0mLQ2f689eFzU9WNY7U/4mNfy2ffumI9mZGGxY33ZcDpvChvPiTspwgNlDJVL7CkdIXB3O
-	f2MsFbnjrl/aTEDBYr3QqnukALa0SPc=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708961305; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	bh=uO6nFRXFkR5BenyCu2zdHy6TynY7FaB2n2EEfF5vWuc=;
+	b=NOETsR1/coQP/da0HBqaD0qjl4DgUf+en6xj+srfFF+1uXTOn4+58dhn2yprDpczaFiAQr
+	2p7piU7RIh4Du1TBu8haQtMzsJDWm+HwEqQQDP6rAqmBMZpKbHd7OycRp1MVjfCZ/f1MPC
+	geFKKe27a31O8OQPpjlMDlB9/6f+yWw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708962293;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/qL2shtSe0WTJwYJugT1JyXRoQHJ5+B/iJUmAXE1O4c=;
-	b=b2FLq7wwz4tKaGoupw+8/bcv88zvY/14jI3062jmlBiC2sTsq9z03g0Sl3azKDDu8H7FkB
-	llaXbffqGkfAHAz+Gc7yUh+W8Q1fMnv+i96Th1cjmpMUzUOW7Oo6PRpr7Nxm06WLeMGLAL
-	/lBh6z837PzYYhWYHPNz7W2AF2PJaVs=
-Date: Mon, 26 Feb 2024 16:28:24 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Cruz Zhao <CruzZhao@linux.alibaba.com>
-Cc: tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org, 
-	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/core: introduce CPUTIME_FORCEIDLE_TASK
-Message-ID: <pb7jf52x2qpofgttzz3fphkeiuxuamjbjqb64paw7dvvtv2sxd@mgcol2syra6z>
-References: <20240219084134.10673-1-CruzZhao@linux.alibaba.com>
+	bh=uO6nFRXFkR5BenyCu2zdHy6TynY7FaB2n2EEfF5vWuc=;
+	b=y1kEO+FPjFYcUBvJzauKLGMk+sf/NPUgzw8djkI0nt/EWKAIW/8hiTzV37R/6gZlhB9sSS
+	dN0FoMwSj4d4cDCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708962292; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uO6nFRXFkR5BenyCu2zdHy6TynY7FaB2n2EEfF5vWuc=;
+	b=Q25SrPtCCHf76Rh616VtmtaJKZ8H33R+tYn4wpxCU1VSWMijjvei5aC5qPuEV4uLfS/6F1
+	TkD2vldaYqHVTh0wW3y2F45Bc53hkZd3ob2Tc1nWw1t+B2msiATKRtYg5stCDTzFlOnuVM
+	S4clmKoEGWAto1Re5Obt6f4HxlU92E0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708962292;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uO6nFRXFkR5BenyCu2zdHy6TynY7FaB2n2EEfF5vWuc=;
+	b=PG2cmVLDF6FPZ1ud+0JyiNBt6cG/oYI4OaGXlS9u3C5MWNnPp+NYekSYA9fOaUxEM2Z2wZ
+	2h9o/cDJcA8f2xAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3E9C213A3A;
+	Mon, 26 Feb 2024 15:44:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Da2gDvSx3GU+BAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 26 Feb 2024 15:44:52 +0000
+Message-ID: <f68e7f17-c288-4dc9-9ae9-78015983f99c@suse.cz>
+Date: Mon, 26 Feb 2024 16:44:51 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="cwh5t3gx4dedreqm"
-Content-Disposition: inline
-In-Reply-To: <20240219084134.10673-1-CruzZhao@linux.alibaba.com>
-Authentication-Results: smtp-out1.suse.de;
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 05/36] fs: Convert alloc_inode_sb() to a macro
+Content-Language: en-US
+To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
+Cc: kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
+ roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+ willy@infradead.org, liam.howlett@oracle.com,
+ penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
+ peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
+ will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+ nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
+ rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
+ yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+ hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+ ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
+ ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, shakeelb@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+ minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+ cgroups@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>
+References: <20240221194052.927623-1-surenb@google.com>
+ <20240221194052.927623-6-surenb@google.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240221194052.927623-6-surenb@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
 	none
-X-Spamd-Result: default: False [-1.08 / 50.00];
+X-Spam-Level: 
+X-Spam-Score: 0.18
+X-Spamd-Result: default: False [0.18 / 50.00];
 	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
 	 FROM_HAS_DN(0.00)[];
 	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[16];
-	 SIGNED_PGP(-2.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 BAYES_HAM(-0.03)[55.68%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_GT_50(0.00)[75];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_COUNT_ZERO(0.00)[0];
 	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 R_MIXED_CHARSET(0.63)[subject];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 BAYES_HAM(-0.00)[19.37%]
-X-Spam-Level: 
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,i-love.sakura.ne.jp,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com,zeniv.linux.org.uk];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
 X-Spam-Flag: NO
-X-Spam-Score: -1.08
 
+On 2/21/24 20:40, Suren Baghdasaryan wrote:
+> From: Kent Overstreet <kent.overstreet@linux.dev>
+> 
+> We're introducing alloc tagging, which tracks memory allocations by
+> callsite. Converting alloc_inode_sb() to a macro means allocations will
+> be tracked by its caller, which is a bit more useful.
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> ---
+>  include/linux/fs.h | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 023f37c60709..08d8246399c3 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -3010,11 +3010,7 @@ int setattr_should_drop_sgid(struct mnt_idmap *idmap,
+>   * This must be used for allocating filesystems specific inodes to set
+>   * up the inode reclaim context correctly.
+>   */
+> -static inline void *
+> -alloc_inode_sb(struct super_block *sb, struct kmem_cache *cache, gfp_t gfp)
 
---cwh5t3gx4dedreqm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+A __always_inline wouldn't have the same effect? Just wondering.
 
-Hello.
+> -{
+> -	return kmem_cache_alloc_lru(cache, &sb->s_inode_lru, gfp);
+> -}
+> +#define alloc_inode_sb(_sb, _cache, _gfp) kmem_cache_alloc_lru(_cache, &_sb->s_inode_lru, _gfp)
+>  
+>  extern void __insert_inode_hash(struct inode *, unsigned long hashval);
+>  static inline void insert_inode_hash(struct inode *inode)
 
-On Mon, Feb 19, 2024 at 04:41:34PM +0800, Cruz Zhao <CruzZhao@linux.alibaba.com> wrote:
-> As core sched uses rq_clock() as clock source to account forceidle
-> time, irq time will be accounted into forceidle time. However, in
-> some scenarios, forceidle sum will be much larger than exec runtime,
-> e.g., we observed that forceidle time of task calling futex_wake()
-> is 50% larger than exec runtime, which is confusing.
-
-And those 50% turned out to be all attributed to irq time (that's
-suggested by your diagram)?
-
-(Could you argue about that time with data from /proc/stat alone?)
-
-> Interfaces:
->  - task level: /proc/$pid/sched, row core_forceidle_task_sum.
->  - cgroup level: /sys/fs/cgroup/$cg/cpu.stat, row
->      core_sched.force_idle_task_usec.
-
-Hm, when you touch this, could you please also add a section into
-Documentation/admin-guide/cgroup-v2.rst about these entries?
-
-(Alternatively, explain in the commit message why those aren't supposed
-to be documented.
-Alternative altenratively, would mere documenting of
-core_sched.force_idle_usec help to prevent the confusion that you called
-out above?)
-
-Also, I wonder if the rstat counting code shouldn't be hidden with
-CONFIG_SCHED_DEBUG too? (IIUC, that's the same one required to see
-analogous stats in /proc/$pid/sched.)
-
-Regards,
-Michal
-
---cwh5t3gx4dedreqm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZdyuFgAKCRAGvrMr/1gc
-jlQ2AP9lHZzRmJGKHC/PArhq58TYH4bO31Cw8QJyLzpMB6/oOAEA7GubxdNMgkf8
-rKxYVNUeG+tzvQedlpfiWwD+Ql7RTAA=
-=aTWv
------END PGP SIGNATURE-----
-
---cwh5t3gx4dedreqm--
 
