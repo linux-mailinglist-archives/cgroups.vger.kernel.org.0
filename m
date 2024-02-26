@@ -1,115 +1,92 @@
-Return-Path: <cgroups+bounces-1862-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1863-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF5B08683B2
-	for <lists+cgroups@lfdr.de>; Mon, 26 Feb 2024 23:27:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 174208683C4
+	for <lists+cgroups@lfdr.de>; Mon, 26 Feb 2024 23:31:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3CF528B560
-	for <lists+cgroups@lfdr.de>; Mon, 26 Feb 2024 22:27:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 378C61C249CD
+	for <lists+cgroups@lfdr.de>; Mon, 26 Feb 2024 22:31:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3022F1369BC;
-	Mon, 26 Feb 2024 22:24:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EC0413342B;
+	Mon, 26 Feb 2024 22:31:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CGrgzw/Y"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YVsxl+/n"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0200D13699D;
-	Mon, 26 Feb 2024 22:24:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.17
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708986289; cv=fail; b=Ufm3JxbxEWR2r+3LgtvdJ5/zic2DUn9hrnKipxMy4vIfI2mqixM9Irlk6a6BWQFYZrgj2TlrWGauR96u8d7afm78xtZ4P4HbmgIvVBd+rkpTCbkbS32Dyv/6LbkWJVf/7krxzQAzWPrm7kczCe70+4VeMqantfhI70bQe/SczRE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708986289; c=relaxed/simple;
-	bh=A/bgilMZpawx2fDsW+6xypgzz+A4C2NN34oloUv2WPc=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=i4JFe3FAVF+kDaeyzsbN4xfZ+/4c8rKcBd6TNkii0GAEN/WA3ceGMgsrDsLPt41ogeUDgk34oarM9kcZ3ejfGuYKphuve7mSR2lhY1bFm5AQa4FqS4AAEnUZycX8HdBiZN/VwcPIVEky4KGekVRbZnW/37QqN7N3cR4sY1PL4DM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CGrgzw/Y; arc=fail smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20CCC18E2F;
+	Mon, 26 Feb 2024 22:31:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708986692; cv=none; b=Fle3Lhx/KLOuUcmnEMtpcXfAjnfV9WXZIj2oChhuEq6JKlLKrcDn9RnF/YkbxO6oaE0/MpwYykEjyFS6sjuHAaLUGHYVcc8VPaC7gvXmVBLTLdh2QwLk+13UtgrDowstSzJLUUPn5p4TZA/vn0Fl6OB+y7cLco2mJypmQ0G5u8U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708986692; c=relaxed/simple;
+	bh=Oa00y5Vur/zMjx9WSau2JYSqUvXGFVhCABThzlpIGI8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Vm7WO2gdwOrdp6Gs2aKbPMA2AD/EJss52lh4x09NOMlNOk0LyhNGvGzx6fvfdZqhthvuSA5qP3Kg3PBnQ7dN7o79g89lukVAeOULvqwqUVatrhUoGbty5AGwlDu9RiaqiIxe75SW1DAM6yyTVjjppJtK4ccfEDecX0mJ5xn37TQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YVsxl+/n; arc=none smtp.client-ip=192.198.163.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708986287; x=1740522287;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=A/bgilMZpawx2fDsW+6xypgzz+A4C2NN34oloUv2WPc=;
-  b=CGrgzw/Yru0pTAryOe0nzAN/OZU7PxDPlWs7uIcBCBFmeZj4XXgCbjlq
-   ba1nLze77T2z07ThpkAAgb+VsV7wR3wwerUCnTQxdnkewpWoRG7KSpyRl
-   kBcauiywu/BDrs5R/RQv2D83lNwm7ZdNqZqvHuiJanmxCsqFdJjpJV081
-   TnXPYDvQembulXZTDVOJcs3dD5scrLx2E+NqRhw8iG/1yW424IsVDKGp4
-   brPq/dyHDnvJGxvo0m3/F4Y4pArgKpm6pYCLY4NEqNDF4L0otQ4dHI2pi
-   12xCh3fPf1oLHSMLnoEvCouBWX5WmWRAAXAS24Wc5svbSLZ2tkf+zObgr
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3463912"
+  t=1708986691; x=1740522691;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Oa00y5Vur/zMjx9WSau2JYSqUvXGFVhCABThzlpIGI8=;
+  b=YVsxl+/njwNCY6wl7Osv8TcRqOqusC9FLVQpQqo1Cp+13yduBkAntF24
+   GkjlicN1gqJrb8VLIq0WW5OvhnntK+HLleG4tQ3bZuJH6lm95r1w+NTN8
+   JuIntVb+/L80v38dh3gHMPYoDPk4tsd5pxsHmUT+DE4jvlu0BlnJpBWeA
+   YqU1uKc8i9ib9AnHWfcVHxK/GkXIki5N7KAIyPseH8k7RoQsYuHRmGnue
+   QVsednGhzaJgKf93Uu9gWBpN12586lroYJah6RRPlR3fJ+tZBLdzUGrjZ
+   bTxnEDE84l0dYCRl9LTvmYbLmWMW34A1LZ+kwbI4GNqZA9RcqOyAD5Lwp
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="3468487"
 X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="3463912"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 14:24:46 -0800
+   d="scan'208";a="3468487"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 14:31:30 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,186,1705392000"; 
-   d="scan'208";a="6955508"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmviesa008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Feb 2024 14:24:46 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 26 Feb 2024 14:24:45 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 26 Feb 2024 14:24:45 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 26 Feb 2024 14:24:44 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I4y3ezRhl4effKIJsf2MYqpItdHU1spL99sOnHloIU0jsZ5b+BSME7sMhcEXAtuY4ESXGDCHIXRE1mbofJ1SIkku0QTPt9Pkh8Dvf86hK9gJNU/vU3TknoYwrAlq6RKbmksEgXk64m5t8XtEQ6mN0/+Ri976IxZpz2xFvrap54kVeOIK2Zz7Q6ifT6U3/348qs3Szu1fvp/u20JTu4XcQ+uQfntzjSGq3KQ0gyjF3MLjU7mEU5BhgyJkViXPevjUSGI85YMeR5j0sebbESyXo6kmx9RS9B+1p5SxVxzm420zeRXTJXXWVs85iJs0qp3boGra4wtnvEZs1o7I5YIMDw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UNrTMnHCFZ5PosKNZ1qzQ+24EAADbzP5fHTE0GL7An8=;
- b=iFc3W7CeLnb308E0roKtkkk8mYPLF0KVTaA7GkQv+9o7nV40n7ZCAcdhMkDWqw5NeQhAlqt6oQKEfxBCrP/ezK6Qym1a/JCVy2Owh9b0wLwQ8J1pevS9Jqx+2XXvvBBgksgZ+psrnjpkuF92er27HjmTSsyOiB58y4qWsr8UrjaMtrXGF1cv7Z34S+YSg/RmDkLraPx69e44WpwxpzsvS0dZ4xWsi1pScZpU3iLzUDvL6YAEF6y0766zf/NJur4d+kpEpD03TDFYVponLFnV0gZfClT/RVodD0hC1ZlkGZ9MXdM+UwzWvb5oSWsLAUHgi5z1GgnGEHJx8hXv7p1gPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by CH3PR11MB8776.namprd11.prod.outlook.com (2603:10b6:610:1c1::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.22; Mon, 26 Feb
- 2024 22:24:42 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7339.024; Mon, 26 Feb 2024
- 22:24:42 +0000
-Message-ID: <010f5c8e-6e63-4b37-82d7-ba755f989755@intel.com>
-Date: Tue, 27 Feb 2024 11:24:28 +1300
+   d="scan'208";a="7187169"
+Received: from dukhanki-mobl.amr.corp.intel.com (HELO [10.209.30.102]) ([10.209.30.102])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2024 14:31:29 -0800
+Message-ID: <a2d633da-6ab8-49d0-bca5-1e9eb7c3fc9a@intel.com>
+Date: Mon, 26 Feb 2024 14:31:28 -0800
+Precedence: bulk
+X-Mailing-List: cgroups@vger.kernel.org
+List-Id: <cgroups.vger.kernel.org>
+List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v9 10/15] x86/sgx: Add EPC reclamation in cgroup
  try_charge()
 Content-Language: en-US
-To: Haitao Huang <haitao.huang@linux.intel.com>, "tj@kernel.org"
-	<tj@kernel.org>, "jarkko@kernel.org" <jarkko@kernel.org>, "x86@kernel.org"
-	<x86@kernel.org>, "dave.hansen@linux.intel.com"
-	<dave.hansen@linux.intel.com>, "cgroups@vger.kernel.org"
-	<cgroups@vger.kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-	"mingo@redhat.com" <mingo@redhat.com>, "tim.c.chen@linux.intel.com"
-	<tim.c.chen@linux.intel.com>, "mkoutny@suse.com" <mkoutny@suse.com>, "Mehta,
- Sohil" <sohil.mehta@intel.com>, "linux-sgx@vger.kernel.org"
-	<linux-sgx@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "tglx@linutronix.de" <tglx@linutronix.de>,
-	"bp@alien8.de" <bp@alien8.de>
-CC: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-	"seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
-	<anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
-	"kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
-	<yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-	"chrisyan@microsoft.com" <chrisyan@microsoft.com>
+To: "Huang, Kai" <kai.huang@intel.com>,
+ Haitao Huang <haitao.huang@linux.intel.com>, "tj@kernel.org"
+ <tj@kernel.org>, "jarkko@kernel.org" <jarkko@kernel.org>,
+ "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+ "hpa@zytor.com" <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>,
+ "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+ "mkoutny@suse.com" <mkoutny@suse.com>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>,
+ "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "bp@alien8.de" <bp@alien8.de>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>,
+ "anakrish@microsoft.com" <anakrish@microsoft.com>,
+ "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>,
+ "yangjie@microsoft.com" <yangjie@microsoft.com>,
+ "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "chrisyan@microsoft.com" <chrisyan@microsoft.com>
 References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
  <20240205210638.157741-11-haitao.huang@linux.intel.com>
  <c5d03171473821ebc9cb79e3dad4d1bf0074e674.camel@intel.com>
@@ -122,220 +99,69 @@ References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
  <op.2jqdjjd8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
  <48faaea8b24f032baa6a858a2909a5b4ace769c6.camel@intel.com>
  <op.2jrpgcufwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-From: "Huang, Kai" <kai.huang@intel.com>
-In-Reply-To: <op.2jrpgcufwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4PR03CA0066.namprd03.prod.outlook.com
- (2603:10b6:303:b6::11) To BL1PR11MB5978.namprd11.prod.outlook.com
- (2603:10b6:208:385::18)
-Precedence: bulk
-X-Mailing-List: cgroups@vger.kernel.org
-List-Id: <cgroups.vger.kernel.org>
-List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|CH3PR11MB8776:EE_
-X-MS-Office365-Filtering-Correlation-Id: d518a8f3-a99a-4957-47e8-08dc3719ba3f
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DqY0G1+1pSNNXbN6IdMD10L7iT9RLNSKywSABQaaY5Zd7orGvz5lMoEmBkhqsZYGYxFCponKuqOYDWejy3p3/Pe+iTNGXwsj9PtKOeOvscMFeyNEXcsURyUkHm8Rm8jrVaCejdkUVG9nMTxIat1fxFMowd9FwuttZwHXOde64RKqSQuLD9gRXqOy1ajEZ75gSbUyFsv06ieJ7Gi+5LWpNknpusli/KtUl1oaSN1JqUzr/PAolKYuN54tktbjR67awmB/de61b6UiS0cFxWpTVZ79D1ST2PEuiuhkhr2jL1zQDuiLktIcaRC+Xnn/yKs2x6d8gNswv7T7AL1aio6FP7jFRgQbl0gDoCNV8bAz65E+VnU+Wcu6BDdEJHnfLmotDNOMfNjevsXVUFnGoh595h292s5IoVBrr18wgBg8pOZrud2I5qp/ZxuM3bW3rBAYaxtJ0QO4QGSbJefjRqnx0bowSaf4gAs76ZQ5ZnrdornCy6RbteYS93i4PeKi/dmdVuUBBNM9eO1w79IorX/CyWSxvbSx2vpchXBZE8x4/JXO3RbJjO0tOJZH5nB5q1X05cCP7OR2TUTEej9w3ECxe5gbkyrojoMmpKNb9PcxqHsv0kTwAgTwO1887DtqKOQvHtdxYHjEFErdlh1+9FeB96DhWY5nmD80t2A5yCuFG69yAb2spCiLRQFdREpTSbl8oft1toByIPswwompU8ODOQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(921011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZExsVXZYNWpJRlY2OEtEejAwZlBPYjhDVk14QjV4SUIyaklkU1lhbEV0eVly?=
- =?utf-8?B?dGFmVFkvR3BaQXk5V2pKMUlYRENXRHpVenlCNm5LVGZaSU1HTGRlM0JHa3ZO?=
- =?utf-8?B?cWowZERCdTBIZWpRUFo2djBXV0xCUTEvVlNVbWNGNXRDU0RMSHIrQmVyWi9M?=
- =?utf-8?B?Y2NsRDQ2ZG9ZOXB6aXlnamNPZkhYSFZ0WnpmVGNlcGtpNFhub3hhc1hWWGMv?=
- =?utf-8?B?VDdmYjRNbm9yRUFmTWROZy9iVUE0aHhOR083Y1JuTFlIaS9wQmgxUmc3RTc3?=
- =?utf-8?B?b3MvT2FTYU9sd2NsM1dRMGNGNEJOMkVwK0gycVZQYTE3bmd5UG50emZQTzdJ?=
- =?utf-8?B?TjVpaEVFRURucHhBNkg1c1F5cjFhZEwwZk9FSXBqOHFsNzlzbTBTbmM5L3h0?=
- =?utf-8?B?cEVKeUhhVzRJbjlZYzJCNEpoV2JGSkZVOWtPUU1tbnE5QWFMM0d3c1JManZM?=
- =?utf-8?B?RlV6eFdBQ3d0MVlmSng0N2w4UXF5cDZCVmN1NzJVSWYzZ1dCbHdqelJKTWJ5?=
- =?utf-8?B?TkZJaTBlQmM3L3hGUWdmRFkvWlM3cmNFSjNqblVoY0x3Nm83OFhJK0ZwcFVJ?=
- =?utf-8?B?cWRCV09nTWo0N0NUdjhiRlVab08zMEpQL2dISW8zK3lRU09VRkdsaHl6SE1q?=
- =?utf-8?B?cWZySU0weUdOTDF3Unp2ajEvWVRQZnRkcUpXbkFaWGhJNWRWeUFxdncvZTUz?=
- =?utf-8?B?S05Vejh1OWR4VkNFVGlUcVowYlZOTTJZU3lYZ25IVXNvMEdrYkJYbnNrbEFw?=
- =?utf-8?B?ODJLZHg0YWF4TWNMSnRNbklqM0pMNm5IdmNtQUJHRlFVRlFxUXdBVzRqSTRQ?=
- =?utf-8?B?U09HQU0yZXBoYlp3VEpZU05GVENVVG9DcnhqK0czcjREUDNFeThXeUh2aGhy?=
- =?utf-8?B?aWFXRjlna1h3UFBtOTJROWR4dzRjUFJhTmVZMnJ6ZWQ4UFVmWXJVV0dMMXc3?=
- =?utf-8?B?OU9tS3ZZMjIzWkNmbVRpYjJMTXJmT0k0R2NBSHJCT2NIdkZpRjVxRkRreGhq?=
- =?utf-8?B?amhHOUp4eDFTb3lMK3hwaHNmdFM0NHBQVEt1MWp0QXpyaSszWlh0NTVoYmhm?=
- =?utf-8?B?YTJJVjhYNVRUcWVzS3dXMDZMOTVSMUpSWTFrZnQ2WjFwbkNEdG8yVE4yQ0M0?=
- =?utf-8?B?TTJ2L0R5K3lQbXFENXdHbzV3Uks1c1JZV29XUTE0SmlXeU8rR2pqRzlJN0M5?=
- =?utf-8?B?bFJoV0NZQVg5ckhsVDdxdzFjUkJ0Q2hPclBub0liZWQvSkxZMldubDhmNUZE?=
- =?utf-8?B?UnFGR0ZMckFIdjZpbmNUZVdSTVNkWGNsZ0JGUmdweEEzYlFJdU8vaGM5OHpQ?=
- =?utf-8?B?U1V3L2RkNHgrM0VSdWFVVlBQTGhnWlpRY3BqYUp0a2xjTmpQWXh5UUtKR1Bj?=
- =?utf-8?B?RXdhQmV3QU9lQ1JKVitPd1ZXQ24vdWxjWloxejIzOWlRUDA2cDVZS3lhTFo2?=
- =?utf-8?B?eXUvNHpSMHRSMUxSZHlYR0lBdWd5bnNQYmFGTXVZa3Y3TkdHR1BBakJEWUV6?=
- =?utf-8?B?OWVFT1lJY1BnZ0g3d1VjL2UyZjZQRlQ0TWNpM09jUldHUzJkRis1MGs3Rm1H?=
- =?utf-8?B?OE90cUtsV29RL09QdktZaWdPSm5iVXVjN3p3dHhrVlh5WVA5ckpBLzBmZkU4?=
- =?utf-8?B?alVEeDZBTjdoVG9KTUpMcFBCdUhQNlVheXl6MTB6UWp3QXBBLzFHQVdMeUZ5?=
- =?utf-8?B?MUZUN1FVNWlPaW52ZllMV2p1NS8vbGFUNEQrOENSdDRGdjIxL2hQam1LVTFj?=
- =?utf-8?B?RWdSdG5YQVNTSmF4TnhvMDVnc2FSN0VNd2h6KzIyREpxUnNMTjV4Wi9WdzlD?=
- =?utf-8?B?VjVQVEJmK1MrWWF1OGNFQVBEeVgzSHd3bHNoMzcwMkh3YWVueFpXbDB5ZDJw?=
- =?utf-8?B?WFJaeksrM1g3cnZHcVF6MGdGUmJTRU9EcmZKVG9wNFR3ZFlIRXYyZ2ROM0Fy?=
- =?utf-8?B?cVYwNlBLRFZpRkRqY0hhTityampxMm5wZkJzU28zU0RIeTMzdWdnWThON3c5?=
- =?utf-8?B?aGZzS1ZNNEZ1YXhZY0NoU2hQUWpHaGtJSHdTWkJSZ215SlhqcG1CaXhJR3BS?=
- =?utf-8?B?dnYzQm50aGFtYXNUTjlWRWVQdHpLai9paldtQ0VLZi9IS1VPMkZoK3paa2Vy?=
- =?utf-8?Q?su18AmIDhO9/jT6/aI31Rryu4?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d518a8f3-a99a-4957-47e8-08dc3719ba3f
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2024 22:24:42.0093
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HM/rCV/qzjfe45CgfkTohcN2NO379hvwKGLSXZHfS46Z0RUmLEMa6zpXCEbljaA6AQTn5W0Yo4d4sjPH91KPGA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8776
-X-OriginatorOrg: intel.com
+ <010f5c8e-6e63-4b37-82d7-ba755f989755@intel.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <010f5c8e-6e63-4b37-82d7-ba755f989755@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-
-
-On 27/02/2024 10:18 am, Haitao Huang wrote:
-> On Mon, 26 Feb 2024 05:36:02 -0600, Huang, Kai <kai.huang@intel.com> wrote:
+On 2/26/24 14:24, Huang, Kai wrote:
+> What is the downside of doing per-group reclaim when try_charge()
+> succeeds for the enclave but failed to allocate EPC page?
 > 
->> On Sun, 2024-02-25 at 22:03 -0600, Haitao Huang wrote:
->>> On Sun, 25 Feb 2024 19:38:26 -0600, Huang, Kai <kai.huang@intel.com> 
->>> wrote:
->>>
->>> >
->>> >
->>> > On 24/02/2024 6:00 am, Haitao Huang wrote:
->>> > > On Fri, 23 Feb 2024 04:18:18 -0600, Huang, Kai <kai.huang@intel.com>
->>> > > wrote:
->>> > >
->>> > > > > >
->>> > > > > Right. When code reaches to here, we already passed reclaim per
->>> > > > > cgroup.
->>> > > >
->>> > > > Yes if try_charge() failed we must do pre-cgroup reclaim.
->>> > > >
->>> > > > > The cgroup may not at or reach limit but system has run out of
->>> > > > > physical
->>> > > > > EPC.
->>> > > > >
->>> > > >
->>> > > > But after try_charge() we can still choose to reclaim from the 
->>> current
->>> > > > group,
->>> > > > but not necessarily have to be global, right?  I am not sure 
->>> whether I
->>> > > > am
->>> > > > missing something, but could you elaborate why we should choose to
->>> > > > reclaim from
->>> > > > the global?
->>> > > >
->>> > >  Once try_charge is done and returns zero that means the cgroup 
->>> usage
->>> > > is charged and it's not over usage limit. So you really can't 
->>> reclaim
->>> > > from that cgroup if allocation failed. The only  thing you can do 
->>> is to
->>> > > reclaim globally.
->>> >
->>> > Sorry I still cannot establish the logic here.
->>> >
->>> > Let's say the sum of all cgroups are greater than the physical EPC, 
->>> and
->>> > elclave(s) in each cgroup could potentially fault w/o reaching 
->>> cgroup's
->>> > limit.
->>> >
->>> > In this case, when enclave(s) in one cgroup faults, why we cannot
->>> > reclaim from the current cgroup, but have to reclaim from global?
->>> >
->>> > Is there any real downside of the former, or you just want to 
->>> follow the
->>> > reclaim logic w/o cgroup at all?
->>> >
->>> > IIUC, there's at least one advantage of reclaim from the current 
->>> group,
->>> > that faults of enclave(s) in one group won't impact other enclaves in
->>> > other cgroups.  E.g., in this way other enclaves in other groups may
->>> > never need to trigger faults.
->>> >
->>> > Or perhaps I am missing anything?
->>> >
->>> The use case here is that user knows it's OK for group A to borrow some
->>> pages from group B for some time without impact much performance, vice
->>> versa. That's why the user is overcomitting so system can run more
->>> enclave/groups. Otherwise, if she is concerned about impact of A on 
->>> B, she
->>> could lower limit for A so it never interfere or interfere less with B
->>> (assume the lower limit is still high enough to run all enclaves in A),
->>> and sacrifice some of A's performance. Or if she does not want any
->>> interference between groups, just don't over-comit. So we don't really
->>> lose anything here.
->>
->> But if we reclaim from the same group, seems we could enable a user 
->> case that
->> allows the admin to ensure certain group won't be impacted at all, while
->> allowing other groups to over-commit?
->>
->> E.g., let's say we have 100M physical EPC.  And let's say the admin 
->> wants to run
->> some performance-critical enclave(s) which costs 50M EPC w/o being 
->> impacted.
->> The admin also wants to run other enclaves which could cost 100M EPC 
->> in total
->> but EPC swapping among them is acceptable.
->>
->> If we choose to reclaim from the current EPC cgroup, then seems to 
->> that the
->> admin can achieve the above by setting up 2 groups with group1 having 
->> 50M limit
->> and group2 having 100M limit, and then run performance-critical 
->> enclave(s) in
->> group1 and others in group2?  Or am I missing anything?
->>
-> 
-> The more important groups should have limits higher than or equal to 
-> peak usage to ensure no impact.
+> Could you give an complete answer why you choose to use global reclaim
+> for the above case?
 
-Yes.  But if you do global reclaim there's no guarantee of this 
-regardless of the limit setting.  It depends on setting of limits of 
-other groups.
+There are literally two different limits at play.  There's the limit
+that the cgroup imposes and then the actual physical limit.
 
-> The less important groups should have lower limits than its peak usage 
-> to avoid impacting higher priority groups.
+Hitting the cgroup limit induces cgroup reclaim.
 
-Yeah, but depending on how low the limit is, the try_charge() can still 
-succeed but physical EPC is already running out.
+Hitting the physical limit induces global reclaim.
 
-Are you saying we should always expect the admin to set limits of groups 
-not exceeding the physical EPC?
-
-> The limit is the maximum usage allowed.
-> 
-> By setting group2 limit to 100M, you are allowing it to use 100M. So as 
-> soon as it gets up and consume 100M, group1 can not even load any 
-> enclave if we only reclaim per-cgroup and do not do global reclaim.
-
-I kinda forgot, but I think SGX supports swapping out EPC of an enclave 
-before EINIT?  Also, with SGX2 the initial enclave can take less EPC to 
-be loaded.
-
-> 
->> If we choose to do global reclaim, then we cannot achieve that.
-> 
-> 
-> You can achieve this by setting group 2 limit to 50M. No need to 
-> overcommiting to the system.
-> Group 2 will swap as soon as it hits 50M, which is the maximum it can 
-> consume so no impact to group 1.
-
-Right.  We can achieve this by doing so.  But as said above, you are 
-depending on setting up the limit to do per-cgorup reclaim.
-
-So, back to the question:
-
-What is the downside of doing per-group reclaim when try_charge() 
-succeeds for the enclave but failed to allocate EPC page?
-
-Could you give an complete answer why you choose to use global reclaim 
-for the above case?
+Maybe I'm just being dense, but I fail to understand why you would want
+to entangle those two different concepts more than absolutely necessary.
 
