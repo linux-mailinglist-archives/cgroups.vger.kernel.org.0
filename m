@@ -1,181 +1,203 @@
-Return-Path: <cgroups+bounces-1871-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1872-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B27B3868C2C
-	for <lists+cgroups@lfdr.de>; Tue, 27 Feb 2024 10:26:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCFC1868C48
+	for <lists+cgroups@lfdr.de>; Tue, 27 Feb 2024 10:30:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D60FE1C202D5
-	for <lists+cgroups@lfdr.de>; Tue, 27 Feb 2024 09:26:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CEB81F2768B
+	for <lists+cgroups@lfdr.de>; Tue, 27 Feb 2024 09:30:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 533D613665F;
-	Tue, 27 Feb 2024 09:26:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41F17136983;
+	Tue, 27 Feb 2024 09:30:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="o78DBzFV";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="o78DBzFV"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0+Xj01Kk";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="a5suGYZ0";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0+Xj01Kk";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="a5suGYZ0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82986135A6A;
-	Tue, 27 Feb 2024 09:26:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC49A13666C;
+	Tue, 27 Feb 2024 09:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709025970; cv=none; b=ReV2SEbASrcsM/tEGUIOyQeD11xQoY2/PHZRVuhGXsp0QRhgWZkmIvxPQdBf3+hoBA4ViEpESncI0voGQF8poG9X6lAClN40io1AmGSGvcnP/4GmbXDo8d2ktFnYVDH7a0oCQClAJ8yNklxyhaQqeVM9pnKzZwoSZ/X6hBWOuEQ=
+	t=1709026226; cv=none; b=drXh6wcpussbbufYADZA/iRclTTL582kwyj54XwIrb+HGF1X7co2qACs1Ol/PLYU4O33F6KhRHrMV/EjAKSx93JUiNlBjGINV2uEl21JUvlWWDORW9+PZs6GpBTXOepLvSik6Dprz7mJ9tWKBEQn6aGkvmjlSSvNUWC6q5/bUeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709025970; c=relaxed/simple;
-	bh=AV2g7x0ZOwdpFQAqqqsupfpbYCDFszGJNfaXqw2PErY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YwXg3tu98wJQ4Vve68WyX+dM6b0EefQ2rHGXy3bIKd3IQzuuQ6ARrp+7YEs45PPlwdtbusyE8UQB4sopA/tafcGhg1lKEVTOh3MCIUB2gM+E8AU4b8PW+nxyDXog9kxxrTD4+OMCq1PZq3O/9esLBv3pSVg5QLsjViw7RrVcahM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=o78DBzFV; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=o78DBzFV; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from blackpad (unknown [10.100.12.75])
+	s=arc-20240116; t=1709026226; c=relaxed/simple;
+	bh=V8bBaiplfc/wVHe6wlfGo3JD6VOdJZwSExMn/u7zeBA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lJ+U0v/ydk0CPSIrlTHKn0xrLx7LZnNN83Tut8NEJ8QN5Bl4anATE3EzLdjGiN7Pu23TDDstUJZG+lhtCqEi6liVtRMSFHX40Tn+JMn8IuzzN/B+mZ4KCUck6NPvvhBJo/owIS7vvMEssNEgCSmARSOsJ8fuVgWKXoBhU0JClb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0+Xj01Kk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=a5suGYZ0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0+Xj01Kk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=a5suGYZ0; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 548101F44B;
-	Tue, 27 Feb 2024 09:26:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709025964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0888121F39;
+	Tue, 27 Feb 2024 09:30:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1709026222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AV2g7x0ZOwdpFQAqqqsupfpbYCDFszGJNfaXqw2PErY=;
-	b=o78DBzFVfaaMsZwIDFMng7AX6nAFB6C+qrsPZuR9yH7ebz4LQNm83BxfazGxZ9uY3x9iSE
-	ltgMHPJx3Onc/OmnYlRCYIVD4RFyg07vVxG3Vj4oZg4w0IkLHRG1CsaUEKypOssQMSBZrA
-	Ce0xYZtn8TCcjtJrjesUpiXb/qs1hw0=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1709025964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	bh=2tfyNx8Ewzx9RhyM+EFV+xT647ehMQIa9lFPRNlyECQ=;
+	b=0+Xj01KkKvhGJdcjtMAWzvJi7m2CYOxjq5YrvrR72FrAbBnNksgWTG3mO/sjQJxliG0g07
+	y5XsdIYk5XIw4V9w/uFGbV+ho5g2Z79tZZHX9Z5MisAFZaNbg0ho00u47ApDjRWrG0I7x9
+	LSiAQEtP8rShQ5r3WMB7RTCprO6zAnM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1709026222;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AV2g7x0ZOwdpFQAqqqsupfpbYCDFszGJNfaXqw2PErY=;
-	b=o78DBzFVfaaMsZwIDFMng7AX6nAFB6C+qrsPZuR9yH7ebz4LQNm83BxfazGxZ9uY3x9iSE
-	ltgMHPJx3Onc/OmnYlRCYIVD4RFyg07vVxG3Vj4oZg4w0IkLHRG1CsaUEKypOssQMSBZrA
-	Ce0xYZtn8TCcjtJrjesUpiXb/qs1hw0=
-Date: Tue, 27 Feb 2024 10:26:03 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Haitao Huang <haitao.huang@linux.intel.com>
-Cc: "Huang, Kai" <kai.huang@intel.com>, "tj@kernel.org" <tj@kernel.org>, 
-	"jarkko@kernel.org" <jarkko@kernel.org>, "x86@kernel.org" <x86@kernel.org>, 
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, 
-	"hpa@zytor.com" <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>, 
-	"tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>, "Mehta, Sohil" <sohil.mehta@intel.com>, 
-	"linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"tglx@linutronix.de" <tglx@linutronix.de>, "bp@alien8.de" <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@intel.com>, "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>, 
-	"seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com" <anakrish@microsoft.com>, 
-	"Zhang, Bo" <zhanb@microsoft.com>, "kristen@linux.intel.com" <kristen@linux.intel.com>, 
-	"yangjie@microsoft.com" <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>, 
-	"chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: Re: [PATCH v9 10/15] x86/sgx: Add EPC reclamation in cgroup
- try_charge()
-Message-ID: <wz5s5gocjwceojh4by6pvhreggw7zalethwo32ljxar3zswnow@d7v3hn2qwctp>
-References: <op.2jjzaqdwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <4db8493b-35a2-474f-997c-5e6ac1b8bd11@intel.com>
- <op.2jkfeezjwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <c913193c0560c4372d2fdb31e9edb28bcb419f50.camel@intel.com>
- <op.2jlti6g9wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <7b53e155-2622-4acb-b7c9-d22e623e4cb3@intel.com>
- <op.2jqdjjd8wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <48faaea8b24f032baa6a858a2909a5b4ace769c6.camel@intel.com>
- <d9b0df06-da68-4729-8aac-2a77e890e152@intel.com>
- <op.2jrquskiwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+	bh=2tfyNx8Ewzx9RhyM+EFV+xT647ehMQIa9lFPRNlyECQ=;
+	b=a5suGYZ0cgpf5Gj/Tn3aV8oNvMw4mA2P70HXJT8NNRif7MsKFvRRBqOmJe+FSffjbyvyAG
+	BTUMPoP/9cEiW9CQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1709026222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2tfyNx8Ewzx9RhyM+EFV+xT647ehMQIa9lFPRNlyECQ=;
+	b=0+Xj01KkKvhGJdcjtMAWzvJi7m2CYOxjq5YrvrR72FrAbBnNksgWTG3mO/sjQJxliG0g07
+	y5XsdIYk5XIw4V9w/uFGbV+ho5g2Z79tZZHX9Z5MisAFZaNbg0ho00u47ApDjRWrG0I7x9
+	LSiAQEtP8rShQ5r3WMB7RTCprO6zAnM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1709026222;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2tfyNx8Ewzx9RhyM+EFV+xT647ehMQIa9lFPRNlyECQ=;
+	b=a5suGYZ0cgpf5Gj/Tn3aV8oNvMw4mA2P70HXJT8NNRif7MsKFvRRBqOmJe+FSffjbyvyAG
+	BTUMPoP/9cEiW9CQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B04E513A58;
+	Tue, 27 Feb 2024 09:30:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id QuGyKq2r3WW8cgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Tue, 27 Feb 2024 09:30:21 +0000
+Message-ID: <72cc5f0b-90cc-48a8-a026-412fa1186acd@suse.cz>
+Date: Tue, 27 Feb 2024 10:30:53 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ksqmcolhrndbzaus"
-Content-Disposition: inline
-In-Reply-To: <op.2jrquskiwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-Authentication-Results: smtp-out2.suse.de;
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 15/36] lib: introduce support for page allocation
+ tagging
+Content-Language: en-US
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+ hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
+ dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
+ penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
+ peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
+ will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+ nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
+ rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
+ yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+ hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+ ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
+ ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, shakeelb@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+ minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+ cgroups@vger.kernel.org
+References: <20240221194052.927623-1-surenb@google.com>
+ <20240221194052.927623-16-surenb@google.com>
+ <d6141a99-3409-447b-88ac-16c24b0a892e@suse.cz>
+ <CAJuCfpGZ6W-vjby=hWd5F3BOCLjdeda2iQx_Tz-HcyjCAsmKVg@mail.gmail.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <CAJuCfpGZ6W-vjby=hWd5F3BOCLjdeda2iQx_Tz-HcyjCAsmKVg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
 	none
-X-Spam-Level: 
-X-Spam-Score: -2.88
-X-Spamd-Result: default: False [-2.88 / 50.00];
+X-Spamd-Result: default: False [1.39 / 50.00];
 	 ARC_NA(0.00)[];
-	 TO_DN_EQ_ADDR_SOME(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
 	 FROM_HAS_DN(0.00)[];
 	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.18)[-0.922];
-	 RCPT_COUNT_TWELVE(0.00)[24];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email];
-	 SIGNED_PGP(-2.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BAYES_HAM(-0.02)[52.97%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_GT_50(0.00)[74];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_COUNT_ZERO(0.00)[0];
 	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 BAYES_HAM(-0.00)[22.14%]
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[linux-foundation.org,linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,i-love.sakura.ne.jp,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Level: *
+X-Spam-Score: 1.39
 X-Spam-Flag: NO
 
 
---ksqmcolhrndbzaus
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hello.
+On 2/26/24 18:11, Suren Baghdasaryan wrote:
+> On Mon, Feb 26, 2024 at 9:07 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>>
+>> On 2/21/24 20:40, Suren Baghdasaryan wrote:
+>>> Introduce helper functions to easily instrument page allocators by
+>>> storing a pointer to the allocation tag associated with the code that
+>>> allocated the page in a page_ext field.
+>>>
+>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+>>> Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
+>>> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+>>
+>> The static key usage seems fine now. Even if the page_ext overhead is still
+>> always paid when compiled in, you mention in the cover letter there's a plan
+>> for boot-time toggle later, so
+> 
+> Yes, I already have a simple patch for that to be included in the next
+> revision: https://github.com/torvalds/linux/commit/7ca367e80232345f471b77b3ea71cf82faf50954
 
-On Mon, Feb 26, 2024 at 03:48:18PM -0600, Haitao Huang <haitao.huang@linux.=
-intel.com> wrote:
-> In case of overcomitting, i.e., sum of limits greater than the EPC capaci=
-ty,
-> if one group has a fault, and its usage is not above its own limit
-> (try_charge() passes), yet total usage of the system has exceeded the
-> capacity, whether we do global reclaim or just reclaim pages in the curre=
-nt
-> faulting group.
->=20
-> > Also, what does the core mm memcg code do?
-> >=20
-> I'm not sure. I'll try to find out but it'd be appreciated if someone more
-> knowledgeable can comment on this. memcg also has the protection mechanism
-> (i.e., min, low settings) to guarantee some allocation per group so its
-> approach might not be applicable to misc controller here.
+This opt-out logic would require a distro kernel with allocation
+profiling compiled-in to ship together with something that modifies
+kernel command line to disable it by default, so it's not very
+practical. Could the CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT be
+turned into having 3 possible choices, where one of them would
+initialize mem_profiling_enabled to false?
 
-I only follow the discussion superficially but it'd be nice to have
-analogous mechanisms in memcg and sgx controller.
+Or, taking a step back, is it going to be a common usecase to pay the
+memory overhead unconditionally, but only enable the profiling later
+during runtime? Also what happens if someone would enable and disable it
+multiple times during one boot? Would the statistics get all skewed
+because some frees would be not accounted while it's disabled?
 
-The memory limits are rather simple -- when allocating new memory, the
-tightest limit of ancestor applies and reclaim is applied to whole
-subtree of such an ancestor (not necessearily the originating cgroup of
-the allocation). Overcommit is admited, competition among siblings is
-resolved on the first comes, first served basis.
-
-The memory protections are an additional (and in a sense orthogoal)
-mechanism. They can be interpretted as limits that are enforced not at
-the time of allocation but at the time of reclaim (and reclaim is
-triggered independetly, either global or with the limits above). The
-consequence is that the protection code must do some normalization to
-evaluate overcommited values sensibly.
-
-(Historically, there was also memory.soft_limit_in_bytes, which combined
-"protection" and global reclaim but it turned out broken. I suggest
-reading Documentation/admin-guide/cgroup-v2.rst section Controller
-Issues and Remedies/Memory for more details and as cautionary example.)
-
-HTH,
-Michal
-
---ksqmcolhrndbzaus
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZd2qqQAKCRAGvrMr/1gc
-jpqeAP9p9303GerwhSN+u/jfAVtaDaMZNVnW9y8mi5Y8wwbX9wD/QAsthQ0lsxca
-Gaywp98WdnvlIFy1wDF4VD3bMJlbCAk=
-=yTmB
------END PGP SIGNATURE-----
-
---ksqmcolhrndbzaus--
+>>
+>> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+> 
+> Thanks!
+> 
+>>
+>>
 
