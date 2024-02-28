@@ -1,81 +1,57 @@
-Return-Path: <cgroups+bounces-1895-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1896-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D68486AC3A
-	for <lists+cgroups@lfdr.de>; Wed, 28 Feb 2024 11:32:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8106F86B105
+	for <lists+cgroups@lfdr.de>; Wed, 28 Feb 2024 14:57:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CAE31C228F0
-	for <lists+cgroups@lfdr.de>; Wed, 28 Feb 2024 10:32:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3CE572841B0
+	for <lists+cgroups@lfdr.de>; Wed, 28 Feb 2024 13:57:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49FE77A14;
-	Wed, 28 Feb 2024 10:31:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60C291534EF;
+	Wed, 28 Feb 2024 13:56:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RDUIKRk6"
+	dkim=pass (2048-bit key) header.d=alu.hr header.i=@alu.hr header.b="f9+Rrdk4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCCB174E00
-	for <cgroups@vger.kernel.org>; Wed, 28 Feb 2024 10:31:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 669D114F9FA;
+	Wed, 28 Feb 2024 13:56:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.53.235.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709116319; cv=none; b=cbHR6XeC9d9kh1mjs0fsH9hVW6d2WzJ5VXDFaWpA8xiCkorGLdMqUKjOVjEgTebw9xINqztlEENHvF6RSbHfQyUDU7U6dJzZ0XWsXE0CGkjyXRqVYdluepQen33HlFcx8CYleVNJezo1wBCmAGzdVTUKeFv++QrOP9Quc4V8meo=
+	t=1709128583; cv=none; b=aPc6JBjURXI3t8C81Xrguh1xf0CuUQL6S0UXJXopDyXnARMlh0CNe/YeYNSBfUH/WY5BiuHHADcCjnEtRUEnxgeHGzRrZq+ij7Fa0WcvxfirUIQkdB07zoWXsdS03uPLnhFK7Qt4TQtkWaw1TDiLzV7JzH1qnscJzFIkuWAP4fM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709116319; c=relaxed/simple;
-	bh=QtMVd8MfOkwZVeJr+7bvKB+Jv/uBDmSwr8adt/Z3VcI=;
+	s=arc-20240116; t=1709128583; c=relaxed/simple;
+	bh=4pWP2GQkp8/f0e8eY0vksB+WBnEVCChl4tswm7EQ4xA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ld2EMn0fDA7nNViM5uZt9ZheqxCJPiOPbln1U9h16ddcbvPShICbCs5m6hij2UYFy44wCzck73Oswn0+dbEwNM7pDQXY0y70bPvC0vCRH7bf/vBy2UU1aDVeo5jXiX7FpmP+82TAFFV3ulqc2yahKxBUYQ876l62on2GjlWVzhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RDUIKRk6; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709116315;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=R5nPJc5wHy0mfNIo9LccGmQA1ipGTS8wbRwCe+Rx9QU=;
-	b=RDUIKRk625lLwS6sTxrTJYTkwCrz+RPHxWyEQGVeNL8CPm2fdd7e19u8rJt1V0UXmWllkJ
-	W1ZgdX+gqUymZxpolv4KSKaDHNT13uEpJ7Eor1DZDCtStv4XiB1G3agA3XZmbcxQKdzaP6
-	edWKm1hkSzgD/lOCfEqZzzk+J0BuJuk=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-33-XNm8lpdHM4a-2P5hzf1VVA-1; Wed, 28 Feb 2024 05:31:54 -0500
-X-MC-Unique: XNm8lpdHM4a-2P5hzf1VVA-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-5131eb8137aso89997e87.3
-        for <cgroups@vger.kernel.org>; Wed, 28 Feb 2024 02:31:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709116313; x=1709721113;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R5nPJc5wHy0mfNIo9LccGmQA1ipGTS8wbRwCe+Rx9QU=;
-        b=BAeDASmUqjrGsxcyQ3SXv4h5gXtErs9fSQMTSJmXp9K+IOuHMwJAhjGONn+KoBOAub
-         DpKnCattzSvkdmhMewWiWh3QpKu0gV3PoOkiM1Qz5PWAqWkMJOXghucvPo7058JgeJu3
-         HfbjGcRaNjK3iZ4fAWAHksY+JN3lOJ/2Iig/KGWAbzV/1LgAUjT0wffR/CzjmGd1B+jX
-         dJ687m/tFhw3T+IQngXHfXk09oVMEsf7Y9ApZTtNuBHfJKtZ7TrY0OPJEI+s2T19GRrr
-         l5qxw8JJ6tUy4XxSBrLhXZt1aFQETYXCwtoUmiHt+Lc8ukf9FXz3pn+8hu+WoLaOhxi6
-         HbxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXx+9QXZvj3AnBwWwatewhlE6OgrwW/eTHqzQi4d38gtN9dvjXcnswZdG5gYHqtTHHcFplU1d6MYpQ/cbQfRtPrziiDAlFAwA==
-X-Gm-Message-State: AOJu0Yy+ELxS8/hn3JkwH35+pdrfWaN2WH2+FGv9JKlS93nOdXFAtJSB
-	tga6WlWxEiJGny9CR3lOH70jGkOjAtM56ppPiyHBvxRTOpttopZBFOCm+03iaBtJ7aweUj9zQhy
-	/yRn3N7z0TyjEaJjnphQkjkMDk2h3OLurUhikHdn3ZXvnyIyRYY14afg=
-X-Received: by 2002:a05:6512:3d1a:b0:513:43e:e22d with SMTP id d26-20020a0565123d1a00b00513043ee22dmr3680432lfv.35.1709116312673;
-        Wed, 28 Feb 2024 02:31:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHpBIBpKUIbkIBZPc7584Yu6aT6pSQlO3j6evLahsMP+rbCQLK7Dm8x3AdXIreKPYKZSuhbcA==
-X-Received: by 2002:a05:6512:3d1a:b0:513:43e:e22d with SMTP id d26-20020a0565123d1a00b00513043ee22dmr3680399lfv.35.1709116311831;
-        Wed, 28 Feb 2024 02:31:51 -0800 (PST)
-Received: from [10.32.64.237] (nat-pool-muc-t.redhat.com. [149.14.88.26])
-        by smtp.gmail.com with ESMTPSA id c2-20020a5d4142000000b0033cf453f2bbsm14023061wrq.35.2024.02.28.02.31.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 02:31:51 -0800 (PST)
-Message-ID: <75fb8bf8-f9bc-410d-8c22-f69cbf2080a9@redhat.com>
-Date: Wed, 28 Feb 2024 11:31:50 +0100
+	 In-Reply-To:Content-Type; b=j9BxRw7EJw7Q2dt11sh8jeWGZ6m2zPdrX7pCrSXGGL7UbQaXXYr6NTkfUYW9VQZ5qMVvCDvS3UMV/QKtqppnhg9hJRUnw5UjwzYx6TOPiAKe4fpwzbibZUg+VejUvWL8kUbYtPLbd2UO8ZUUIHf/cDe1EsXnd4iZcMDu6m0Rd5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alu.hr; spf=pass smtp.mailfrom=alu.hr; dkim=pass (2048-bit key) header.d=alu.hr header.i=@alu.hr header.b=f9+Rrdk4; arc=none smtp.client-ip=161.53.235.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alu.hr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alu.hr
+Received: from localhost (localhost [127.0.0.1])
+	by domac.alu.hr (Postfix) with ESMTP id 396DB6019E;
+	Wed, 28 Feb 2024 14:56:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.hr; s=mail;
+	t=1709128572; bh=4pWP2GQkp8/f0e8eY0vksB+WBnEVCChl4tswm7EQ4xA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=f9+Rrdk4kbZqgHk16RXmPt22nqVwJcacPfo4ayPEmnw9PNpDUuz7IQqemXYA3mxcb
+	 4AORLqp6RPXUkduoDX2S/O4pvWc3/7C1rnj9HB+9I8NXdMhnxPlTn/w3Y4Ov2oX4DM
+	 yGVjV/d6BZ4Al+zkZbo5Lf+T9CYNeXu3xcpFlKauIKX2ctZQeSqxhUC7wLb4Koe4EO
+	 x0eK0VAtXF5whvW6dL2j6mU9fZs7qQhvam52C0oQI1anjJtw6FOnvhz9Rl4XLp+66n
+	 p6jiatojxNT+JUSMXPyrHe1JHC3qg57Y7fvCOgppk5OULKOv+ByjE4IUgxhsdFkC8h
+	 j/VlFPHeI65SA==
+X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
+Received: from domac.alu.hr ([127.0.0.1])
+	by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id C5bqcllQsldQ; Wed, 28 Feb 2024 14:56:09 +0100 (CET)
+Received: from [192.168.100.10] (unknown [161.53.83.3])
+	by domac.alu.hr (Postfix) with ESMTPSA id 4689E60197;
+	Wed, 28 Feb 2024 14:56:09 +0100 (CET)
+Message-ID: <bc055871-9aa7-4165-bb54-39520349dc16@domac.alu.unizg.hr>
+Date: Wed, 28 Feb 2024 14:56:08 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -83,198 +59,67 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 6/8] mm: page_owner: add support for splitting to any
- order in split page_owner.
+Subject: Re: [PATCH] cgroup/cpuset: Fix a memory leak in
+ update_exclusive_cpumask()
 Content-Language: en-US
-To: Zi Yan <ziy@nvidia.com>, "Pankaj Raghav (Samsung)"
- <kernel@pankajraghav.com>, linux-mm@kvack.org
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Yang Shi <shy828301@gmail.com>, Yu Zhao <yuzhao@google.com>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
- Ryan Roberts <ryan.roberts@arm.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>,
- Zach O'Keefe <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
- Luis Chamberlain <mcgrof@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20240226205534.1603748-1-zi.yan@sent.com>
- <20240226205534.1603748-7-zi.yan@sent.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240226205534.1603748-7-zi.yan@sent.com>
+To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+ Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Mirsad Todorovac <mirsad.todorovac@alu.hr>
+References: <20240228005801.429847-1-longman@redhat.com>
+From: Mirsad Todorovac <mirsad.todorovac@alu.hr>
+In-Reply-To: <20240228005801.429847-1-longman@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 26.02.24 21:55, Zi Yan wrote:
-> From: Zi Yan <ziy@nvidia.com>
-> 
-> It adds a new_order parameter to set new page order in page owner.
-> It prepares for upcoming changes to support split huge page to any
-> lower order.
-> 
-> Signed-off-by: Zi Yan <ziy@nvidia.com>
+Hi,
+
+On 2/28/2024 1:58 AM, Waiman Long wrote:
+> Fix a possible memory leak in update_exclusive_cpumask() by moving the
+> alloc_cpumasks() down after the validate_change() check which can fail
+> and still before the temporary cpumasks are needed.
+>
+> Fixes: e2ffe502ba45 ("cgroup/cpuset: Add cpuset.cpus.exclusive for v2")
+> Reported-by: Mirsad Todorovac <mirsad.todorovac@alu.hr>
+> Closes: https://lore.kernel.org/lkml/14915689-27a3-4cd8-80d2-9c30d0c768b6@alu.unizg.hr
+> Signed-off-by: Waiman Long <longman@redhat.com>
 > ---
->   include/linux/page_owner.h | 13 ++++++++-----
->   mm/huge_memory.c           |  2 +-
->   mm/page_alloc.c            |  4 ++--
->   mm/page_owner.c            |  7 +++----
->   4 files changed, 14 insertions(+), 12 deletions(-)
-> 
-> diff --git a/include/linux/page_owner.h b/include/linux/page_owner.h
-> index 2b39c8e19d98..debdc25f08b9 100644
-> --- a/include/linux/page_owner.h
-> +++ b/include/linux/page_owner.h
-> @@ -11,7 +11,8 @@ extern struct page_ext_operations page_owner_ops;
->   extern void __reset_page_owner(struct page *page, unsigned short order);
->   extern void __set_page_owner(struct page *page,
->   			unsigned short order, gfp_t gfp_mask);
-> -extern void __split_page_owner(struct page *page, int order);
-> +extern void __split_page_owner(struct page *page, int old_order,
-> +			int new_order);
->   extern void __folio_copy_owner(struct folio *newfolio, struct folio *old);
->   extern void __set_page_owner_migrate_reason(struct page *page, int reason);
->   extern void __dump_page_owner(const struct page *page);
-> @@ -31,10 +32,11 @@ static inline void set_page_owner(struct page *page,
->   		__set_page_owner(page, order, gfp_mask);
->   }
+>   kernel/cgroup/cpuset.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index ba36c073304a..7260f095802a 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -2598,9 +2598,6 @@ static int update_exclusive_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+>   	if (cpumask_equal(cs->exclusive_cpus, trialcs->exclusive_cpus))
+>   		return 0;
 >   
-> -static inline void split_page_owner(struct page *page, int order)
-> +static inline void split_page_owner(struct page *page, int old_order,
-> +			int new_order)
->   {
->   	if (static_branch_unlikely(&page_owner_inited))
-> -		__split_page_owner(page, order);
-> +		__split_page_owner(page, old_order, new_order);
->   }
->   static inline void folio_copy_owner(struct folio *newfolio, struct folio *old)
->   {
-> @@ -56,10 +58,11 @@ static inline void reset_page_owner(struct page *page, unsigned short order)
->   {
->   }
->   static inline void set_page_owner(struct page *page,
-> -			unsigned int order, gfp_t gfp_mask)
-> +			unsigned short order, gfp_t gfp_mask)
->   {
->   }
-> -static inline void split_page_owner(struct page *page, int order)
-> +static inline void split_page_owner(struct page *page, int old_order,
-> +			int new_order)
->   {
->   }
->   static inline void folio_copy_owner(struct folio *newfolio, struct folio *folio)
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 5d4b7c17b9bc..b2df788c11fa 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2933,7 +2933,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->   	unlock_page_lruvec(lruvec);
->   	/* Caller disabled irqs, so they are still disabled here */
+> -	if (alloc_cpumasks(NULL, &tmp))
+> -		return -ENOMEM;
+> -
+>   	if (*buf)
+>   		compute_effective_exclusive_cpumask(trialcs, NULL);
 >   
-> -	split_page_owner(head, order);
-> +	split_page_owner(head, order, 0);
+> @@ -2615,6 +2612,9 @@ static int update_exclusive_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+>   	if (retval)
+>   		return retval;
 >   
->   	/* See comment in __split_huge_page_tail() */
->   	if (PageAnon(head)) {
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index c31a468fe317..cc41341c08f4 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -2652,7 +2652,7 @@ void split_page(struct page *page, unsigned int order)
->   
->   	for (i = 1; i < (1 << order); i++)
->   		set_page_refcounted(page + i);
-> -	split_page_owner(page, order);
-> +	split_page_owner(page, order, 0);
->   	split_page_memcg(page, order, 0);
->   }
->   EXPORT_SYMBOL_GPL(split_page);
-> @@ -4839,7 +4839,7 @@ static void *make_alloc_exact(unsigned long addr, unsigned int order,
->   		struct page *page = virt_to_page((void *)addr);
->   		struct page *last = page + nr;
->   
-> -		split_page_owner(page, order);
-> +		split_page_owner(page, order, 0);
->   		split_page_memcg(page, order, 0);
->   		while (page < --last)
->   			set_page_refcounted(last);
-> diff --git a/mm/page_owner.c b/mm/page_owner.c
-> index b678f7a6e702..033e349f6479 100644
-> --- a/mm/page_owner.c
-> +++ b/mm/page_owner.c
-> @@ -306,19 +306,18 @@ void __set_page_owner_migrate_reason(struct page *page, int reason)
->   	page_ext_put(page_ext);
->   }
->   
-> -void __split_page_owner(struct page *page, int order)
-> +void __split_page_owner(struct page *page, int old_order, int new_order)
->   {
->   	int i;
->   	struct page_ext *page_ext = page_ext_get(page);
->   	struct page_owner *page_owner;
-> -	unsigned int nr = 1 << order;
->   
->   	if (unlikely(!page_ext))
->   		return;
->   
-> -	for (i = 0; i < nr; i++) {
-> +	for (i = 0; i < (1 << old_order); i++) {
->   		page_owner = get_page_owner(page_ext);
-> -		page_owner->order = 0;
-> +		page_owner->order = new_order;
->   		page_ext = page_ext_next(page_ext);
->   	}
->   	page_ext_put(page_ext);
+> +	if (alloc_cpumasks(NULL, &tmp))
+> +		return -ENOMEM;
+> +
+>   	if (old_prs) {
+>   		if (cpumask_empty(trialcs->effective_xcpus)) {
+>   			invalidate = true;Great work at such a short notice! (I failed to find the culprit myself.)
 
-Acked-by: David Hildenbrand <david@redhat.com>
+The leak is no longer present.
 
--- 
-Cheers,
+Please feel free to add:
 
-David / dhildenb
+Tested-by: Mirsad Todorovac <mtodorov@alu.unizg.hr>
+
+Best regards, Mirsad Todorovac
+
+P.S. APologies for the previous email accidentally sent as HTML.
 
 
