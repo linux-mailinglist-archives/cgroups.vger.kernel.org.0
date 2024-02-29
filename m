@@ -1,82 +1,96 @@
-Return-Path: <cgroups+bounces-1925-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1926-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03B8686D4A7
-	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 21:45:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8705E86D55C
+	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 22:00:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DCA61C21FDA
-	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 20:45:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CBCFB28162
+	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 21:00:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DD62156D3D;
-	Thu, 29 Feb 2024 20:38:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD8C616C9E2;
+	Thu, 29 Feb 2024 20:41:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CIJfwYXJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fhg+MfpI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06169156D31;
-	Thu, 29 Feb 2024 20:38:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 472A016B041;
+	Thu, 29 Feb 2024 20:41:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709239111; cv=none; b=FScUly3WnE7Axy4005TCP/FYxK7m1SraqJV5yOW+RV/RgeqYK+Z9DEahmHO335kx1Lda5al5Uc9WryWUyIhNEPuCP3PFwiDaYwpeNzmNGkpSn9JFhtgtNG0fflr0cRLdyygtgA1o53Uzr11zK5BeAbl5WRjPuaSE+cnUhH4KU+k=
+	t=1709239305; cv=none; b=lmWY33pJmEcz2kb+pX+pa5q4GK5kRZUiMl35cRv/l1LgcUpeXMCATA8cVFGfykmFUetEqWiPF6Xk0h2YAviEWzVluNw4TJPS4HjGj0pK64i6kc/Pifq7xysZX6qkJPjQNDQjZ/+qc3SiZq+lcgc+G10SdDLg/ut/HvGTqXEYL90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709239111; c=relaxed/simple;
-	bh=eSg98sjt7aRu+w+i6zQE4mpmeGRBJu3v1N/Ulj64Yaw=;
+	s=arc-20240116; t=1709239305; c=relaxed/simple;
+	bh=APRMZ4n8LYH5W13havCjtiPcQWPmAf0KgH9MeFCxuFQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qi2PuCG6FFC7GBOacq0rh1FQPBNbVU7DMnIIEusHdQm9THoTJwrtKuC24cSMVtmrskOjmx0ana3jaebr/CoQIquQLZ0bXa7N7WuTl9OBAFLOzBkmKVA0D4MPziCy/max80S0+9HyJi61MVFhJS24bqBDjTKm3dBk6gUj1q6DRCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CIJfwYXJ; arc=none smtp.client-ip=209.85.216.45
+	 Content-Type:Content-Disposition:In-Reply-To; b=jzDH5dUycPkuuXBQ0j4sCQ+M+X/SlJEY5Mb78VhQAjaamx4/8KyPBsfOMhHhZ47Bff+dRg+gjlD8ukDXrtnJHbdGesxu21jtNOiUs2tGWZxKf3c1qpjqEXO3sWs0T/3K0TNnIiqZtcNYEtbejljcvkSI+46l5Ozcl/EzTxgRv4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fhg+MfpI; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-299354e5f01so2020977a91.1;
-        Thu, 29 Feb 2024 12:38:29 -0800 (PST)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dc5d0162bcso13270825ad.0;
+        Thu, 29 Feb 2024 12:41:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709239109; x=1709843909; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709239303; x=1709844103; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=3lG/LT7+3PcIB/iOfBuZGUVtLVxEz6BzHTsZ3utL/eU=;
-        b=CIJfwYXJKCklU7+6aORG+sxbmFvsGCIwN8+upNp+XESh5f6C5aZjlpFZMeAnAfhVhO
-         +iDQkIVZCHExr3FJrFKUDHfuw4IUDBc57Cl5dKY3kWB8IJfjhS08FZtgaSlTM6RED7h2
-         B6Zd/MgH5qckBbqmpWrn8tGb3BRDL0J3QrdvMEGXvsraR9uWxbO+HXoVOrgm339POPLh
-         R0/wQAnReGBOJYfazXMygdlKt1e/Ce4ibQ1P17zyqKHbLSQUtXtqCeWoyHvubjKAWMkU
-         XT2n8VuK4YgKvWJ1+8GjeLn7jggR5lSxGGYrVKTHxEI3gFPjkpC2f0zFX7IgKE0T7c2g
-         Xhdg==
+        bh=DCuy/++A6Eh0DIGCLnbR4RQY4erAHeKD29B4iy7q32c=;
+        b=fhg+MfpIN7opj+P+p/0Gc9adCTHPfd27qDIMVQEjKG1lY4+BKhdx4d9vlT0yRc4JSe
+         FpLjpZ4/05PTke1V1COIFKSVsaQORF4lLXbXcpE6c/SwFtltJDOu69pSgfwymP827Ycw
+         rYYOQdKXd1zxMSgaDCIAcdCl0/tlBZQJibZhUNMOqPEf3npeLiv6ljFzXEiFPSb/E6uN
+         rUGd+TTieRsVes5oRVWdPP8OcWMOvMuwWdpNuxr4FCgC0rTnruBplh29R9CLCSRcDBLt
+         RJiDMDpO6uPiuU4wymbDp2QQmIfQBUxmYX7z4eYiYPG/k1xJmP1E80IQZzA5rTX9FIs1
+         IkRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709239109; x=1709843909;
+        d=1e100.net; s=20230601; t=1709239303; x=1709844103;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3lG/LT7+3PcIB/iOfBuZGUVtLVxEz6BzHTsZ3utL/eU=;
-        b=j5IRJSS5dFk5qNZs9GdspgTTbQmCwSC/s0HVS+lnxrkort2oUcVygBkp3os2DXf0tp
-         MfI8CRTrqXGB3VyDQV8OZOykWuBs79hzeQvaENe7SsktzlDjgB5zw9/e0R+b0haG2oTU
-         rHpfjewfnkWO67TxnEpCx2AaObM1ZhtWSyE6kRYulaZyXrZUi0SHo9EylZn+mG6Uu+Hq
-         EWrCd6pqdaQIOajnVEvUQkkDHjE+KWubidn9fBhEtbUfzttxsxPgZFR4pCHD6iekRA9N
-         IYUrarS9XfnGindkiRiFHluEIy7twV6y8lPE3EFQZVIi3UPbAqd6sB0DGFENJHN0+LCh
-         o4gg==
-X-Forwarded-Encrypted: i=1; AJvYcCVOzNFoETdj7FCVPhN4Xae3hC8NJdedDhH/t7fTX4gNORKBaUsnqAYDlc8tmcy3mwBvsph14KEpyemeTIZ/UfvgShQL/u+C373U0xWioaMNeBLrSo6Hojw42o+69JUwgMujnDnkMg==
-X-Gm-Message-State: AOJu0YwmI2rNGHeVbc+FjhziNZPzqqFYXcFoR/ZJfoC76Rce3NbvyQo8
-	f6+8w62b4VrHVjtGsP9QUSRjXzS0IOxYR0ioLfqaKK31pmRdDyCC
-X-Google-Smtp-Source: AGHT+IGhRDhVSX6S3gH8ug1BgIIy3hfcEVYtLNzdTbhvxQpwCPUehtphII31vkVKc5tfPp6Acn5tWA==
-X-Received: by 2002:a17:90a:6c47:b0:29a:decc:711f with SMTP id x65-20020a17090a6c4700b0029adecc711fmr68384pjj.20.1709239109352;
-        Thu, 29 Feb 2024 12:38:29 -0800 (PST)
+        bh=DCuy/++A6Eh0DIGCLnbR4RQY4erAHeKD29B4iy7q32c=;
+        b=s2DrKl6y0KDWOyUa2Y1aTpJeDwF43PjCcspXN30ThoD6MrwBUuIq5aAKWrtID61IN4
+         +4NXRWkmSEeaxVZ08SpzPSiJD5KJS8DFNck4mT1Te0tDKAXn5IT96ZqrXpCHjObc06TZ
+         7LpJi8aYF034Napd8Z6CWPCf4Iiqa//+2BbHRVCUhDvdoWviooJpe7foc+0fqvA9t58P
+         Y0ppd7kQDjTzkR780PnO+MsrZTbIS4GECcRnXPTwQOgctzLSIWZ7ryROo59eqxPfoote
+         BrOPoIit+KiPbGkh8z0BfNvPv7dImtsFKIC6lejfRaNg+zLTmHfKdfD5c+neZPIo3EpF
+         919Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVZWcNwFtyw5y81DlbW3gaw/0yHnrhc1ln4M4uVjlDNENEj9bp3bzUiz02EfQujDg65/eNsLMuQLozzwSpr8UycRExUvwCdTOg1iXaZhNVQLIGtGAEmM6JpNHO97UJEfWT8CUcrmw==
+X-Gm-Message-State: AOJu0YzFp3nZ7zFCEyKwNQy4Go+if/ulAdBnZrCnphGurFTKRE0i/aXk
+	6O5k2L+vmIcU+g0JHcnxuQY4Aj4kwkwDECf1EcOx4iUWEsaB/liI
+X-Google-Smtp-Source: AGHT+IGTQKsZ5pKWSZpx0KLaYeFeiUjZqrnllq1Zus41oD/Lse7gy8HG5VCwXQlQCIaaZTp2iFyYeA==
+X-Received: by 2002:a17:902:aa8f:b0:1dc:890a:45a9 with SMTP id d15-20020a170902aa8f00b001dc890a45a9mr2640785plr.65.1709239303406;
+        Thu, 29 Feb 2024 12:41:43 -0800 (PST)
 Received: from localhost ([2620:10d:c090:400::5:8305])
-        by smtp.gmail.com with ESMTPSA id u8-20020a17090a5e4800b0029a56afe382sm1898967pji.39.2024.02.29.12.38.28
+        by smtp.gmail.com with ESMTPSA id a2-20020a170902900200b001dccaafe249sm1923875plp.220.2024.02.29.12.41.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 12:38:29 -0800 (PST)
+        Thu, 29 Feb 2024 12:41:43 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 29 Feb 2024 10:38:27 -1000
+Date: Thu, 29 Feb 2024 10:41:41 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Kamalesh Babulal <kamalesh.babulal@oracle.com>
-Cc: Waiman Long <longman@redhat.com>, Zefan Li <lizefan.x@bytedance.com>,
-	Tom Hromatka <tom.hromatka@oracle.com>, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup/cpuset: Fix retval in update_cpumask()
-Message-ID: <ZeDrQzU29SlKU2hF@slm.duckdns.org>
-References: <20240229101116.60043-1-kamalesh.babulal@oracle.com>
+To: Waiman Long <longman@redhat.com>
+Cc: Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	Cestmir Kalina <ckalina@redhat.com>,
+	Costa Shulyupin <cshulyup@redhat.com>
+Subject: Re: [PATCH 2/2] cgroup/cpuset: Exclude isolated CPUs from
+ housekeeping CPU masks
+Message-ID: <ZeDsBW4rC9gaMjuY@slm.duckdns.org>
+References: <20240229021414.508972-1-longman@redhat.com>
+ <20240229021414.508972-3-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -85,20 +99,23 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240229101116.60043-1-kamalesh.babulal@oracle.com>
+In-Reply-To: <20240229021414.508972-3-longman@redhat.com>
 
-On Thu, Feb 29, 2024 at 03:41:14PM +0530, Kamalesh Babulal wrote:
-> The update_cpumask(), checks for newly requested cpumask by calling
-> validate_change(), which returns an error on passing an invalid set
-> of cpu(s). Independent of the error returned, update_cpumask() always
-> returns zero, suppressing the error and returning success to the user
-> on writing an invalid cpu range for a cpuset. Fix it by returning
-> retval instead, which is returned by validate_change().
+On Wed, Feb 28, 2024 at 09:14:14PM -0500, Waiman Long wrote:
+> Call the newly introduced housekeeping_exlude_isolcpus() function to
+> exclude isolated CPUs from the selected housekeeping CPU masks. This
+> is in addition to the exclusion of isolated CPUs from the workqueue
+> unbound CPU mask.
 > 
-> Fixes: 99fe36ba6fc1 ("cgroup/cpuset: Improve temporary cpumasks handling")
-> Signed-off-by: Kamalesh Babulal <kamalesh.babulal@oracle.com>
+> Right now only HK_TYPE_TIMER and HK_TYPE_RCU CPU masks are updated,
+> but more may be added in the future when appropriate.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-Applied to cgroup/for-6.8-fixes.
+This looks fine to me from cgroup POV. Please feel free to route the patch
+any way you see fit.
+
+  Acked-by: Tejun Heo <tj@kernel.org>
 
 Thanks.
 
