@@ -1,162 +1,118 @@
-Return-Path: <cgroups+bounces-1906-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1907-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A87EF86B748
-	for <lists+cgroups@lfdr.de>; Wed, 28 Feb 2024 19:39:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0003486BECC
+	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 03:15:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA9B11C2439C
-	for <lists+cgroups@lfdr.de>; Wed, 28 Feb 2024 18:39:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 836E728873D
+	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 02:14:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E918571EC8;
-	Wed, 28 Feb 2024 18:39:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3CB7364DA;
+	Thu, 29 Feb 2024 02:14:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bZRYLvOc"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gaDIlszZ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F353971EB2
-	for <cgroups@vger.kernel.org>; Wed, 28 Feb 2024 18:39:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B5B0364C7
+	for <cgroups@vger.kernel.org>; Thu, 29 Feb 2024 02:14:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709145546; cv=none; b=Jg3PKIBEdOxdDbRTj7LfKgewaI8YEGOfkCb8CuNPtLFYbQe+Qj38aP6MLqAiXxFawgue8F5875ZCoy/IpjqXDWlWUi90taawAA5YTukIZhhZ7o52MxiwymUU111m7SkmXADuDcymvB/sZuA4Rtv00Vt2fAnksjePdarmpIolewg=
+	t=1709172896; cv=none; b=r3gy4Zd+xJJc+SHmJbIh9FaJU2WahEWID/5G9jnXWYMR2ZRq/Fz4sYA98RRM2r+QmdAyEuvD2vgFOGZHhhhi+nWx4MMe2P0XuD7YKmkJ8GQylEurfUZ/qhHA21ukgNFGJdBYACzDPu2Hm28wPqAzXHwoaf0A5U2xhfHZv0kXKx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709145546; c=relaxed/simple;
-	bh=7iqFBA+LWwnU3gwgoROsymeSLKp/pJPiwqlUMLON2K8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Tfq9OL+iz5FNxt6FDNkrL/KfS1FJu55xXAkwV6K0IFCnItB/kh8lQ83K9BYM85hKm7iLfechF0N4lpF9bUwSQFnbIeX439u/inK/tnW7QazmdpxbS7DNANuUmF0+Uq0qk6eOYf+BkJIBivlBQDqSp8iDPBfZxKEDPfanlU3SNf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bZRYLvOc; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-608c40666e0so705017b3.2
-        for <cgroups@vger.kernel.org>; Wed, 28 Feb 2024 10:39:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1709145544; x=1709750344; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7iqFBA+LWwnU3gwgoROsymeSLKp/pJPiwqlUMLON2K8=;
-        b=bZRYLvOcuSQJ7yTTsyjqu0vwk3flVlQP1DkzZ/201fIwY1LLOW6TSNF6BYYEq7oYih
-         1Cl/Df6h2RV0hl63dNEtntv3f0hZjvN14lRZSYwmLl6hBmIvAn8BJrmsnKFHiRyYxvSy
-         1wr5QF6lFsds62i4Y8iuXFqdO0/MBLf6T7/+JSj90jrAlTfxy6GUL+48TvD+WOQc65TS
-         PDOLJlrQzICYzz+uFhAZmzzcJl2jXbwZ8tb34Kwjdq/CreXpKKumqlKO+WPcgXvIqXBq
-         8HDEcoozgv8zib5X41FWRrwsnVv8RmgjkKKUEW/eb3ulqmH/IChjCZdd7xJUHNqnSmlQ
-         Y4AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709145544; x=1709750344;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7iqFBA+LWwnU3gwgoROsymeSLKp/pJPiwqlUMLON2K8=;
-        b=Sv8vL0F2bhfOP4DOZjAVjv4CqNuJObrjoDZWiAWKMNV/0M3P4HM8z5GXQVLZTnhbZU
-         Ky5e5iHy/pcq7BP0maYCIM4TozQyMAzSW8OOcs1QG1AgBl6bg8VnUZmvoZm4qE0gKPix
-         4HK7jjdS+b9FyIteQeNi8Phc9gia9Y+yhIyhSV9yHwcXeRCtANuRA+HgnvJ4Wf5FQgv2
-         aSKn8es7pHE0oLdjRXiuI3sV7Xdw2ArYduQAzoeRnAkrUyrUknirPiXlvKBR8nX9+b93
-         MgJKPTTk7PTp2ydTS+bd81hXjFBeYJKmMZUOYc+E5d/kJuGQV6s4GseNrTVM1bcoF6Uy
-         rqVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV19Lc1Wgjbcq0yRbou4rfXRUTF9Z1b8UEYwsXCiW30lcMpK9qNBBBlhfUzkV2N1AubpJ6AIrqBsaspy5nSfE/SP1vSLVuL+Q==
-X-Gm-Message-State: AOJu0YwvK/Y7a/X12UE2pRBgjes92X7OSdEzgAD2YOp14BKw+Z8Y8oXC
-	12iq8Jaye4xD9e1Jcd9pAMMm+8mY0VUtWauZrXFEhmcQiwF+j9R751ORLAIgW33aFrDrMyfaeBI
-	HQVjp/jcTjTQHT7Rv9MML0OaKETBXQlkp4IJn
-X-Google-Smtp-Source: AGHT+IGPWnLmF2TVmBJmUMEp5oMR8c6WgnFtjjNeDdqebhJZ+NPAbFsWrA/RAsFNPaaO16thY7f2/GzzgeasEYFaVaU=
-X-Received: by 2002:a5b:f45:0:b0:dc6:e75d:d828 with SMTP id
- y5-20020a5b0f45000000b00dc6e75dd828mr48009ybr.18.1709145543730; Wed, 28 Feb
- 2024 10:39:03 -0800 (PST)
+	s=arc-20240116; t=1709172896; c=relaxed/simple;
+	bh=hingJ5EXVicls4BQfV94vjpMA1BgNof8PS1gsswv0lY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=W8IOTSCbULFddY8/xnhj1ruUBJuYkB193NY+hIM9BLT2SQFTpadTZWHnBPDl0MLUojXhls4fqno5SguFfgqE8SXnxpE9frsSoWkJCkJrDsjnINXwxDWEWIdx4WxZJOZswkpEfUvGfGzXTOLDJpNbPDkoP1bJl34Ie9jXSuxeTPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gaDIlszZ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709172893;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=uLYPtBm4p8G3yFydUnPEm3+xNcp+Ap8SsLOv9W66tkg=;
+	b=gaDIlszZsViJvoGRpVBVmgZ66yffrWvyFVCl67wAguK8tFwwpDTyWHQy+E46OasblXCniO
+	SlUEyhaT0bL/1dy5i/DMC5KQsL5JIbE2B6tX+wohtaYJZRfcrT2XdX/zafLoSXiiTCDuu9
+	G2AqgkDdiExIGkATO2uZLMqdrP/jEL8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-507-VmLpVkUKO5irHrQOAreqhw-1; Wed, 28 Feb 2024 21:14:51 -0500
+X-MC-Unique: VmLpVkUKO5irHrQOAreqhw-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AE2FA881EA3;
+	Thu, 29 Feb 2024 02:14:50 +0000 (UTC)
+Received: from llong.com (unknown [10.22.9.68])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id D4190492BE2;
+	Thu, 29 Feb 2024 02:14:48 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Zefan Li <lizefan.x@bytedance.com>,
+	Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	Cestmir Kalina <ckalina@redhat.com>,
+	Costa Shulyupin <cshulyup@redhat.com>,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH 0/2] isolation: Exclude dynamically isolated CPUs from housekeeping masks
+Date: Wed, 28 Feb 2024 21:14:12 -0500
+Message-Id: <20240229021414.508972-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221194052.927623-1-surenb@google.com> <20240221194052.927623-20-surenb@google.com>
- <2daf5f5a-401a-4ef7-8193-6dca4c064ea0@suse.cz> <CAJuCfpGt+zfFzfLSXEjeTo79gw2Be-UWBcJq=eL1qAnPf9PaiA@mail.gmail.com>
- <6db0f0c8-81cb-4d04-9560-ba73d63db4b8@suse.cz> <CAJuCfpEgh1OiYNE_uKG-BqW2x97sOL9+AaTX4Jct3=WHzAv+kg@mail.gmail.com>
- <f494b8e5-f1ca-4b95-a8aa-01b9c4395523@suse.cz>
-In-Reply-To: <f494b8e5-f1ca-4b95-a8aa-01b9c4395523@suse.cz>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 28 Feb 2024 10:38:49 -0800
-Message-ID: <CAJuCfpHJoPa_pQNPrcWNZyU7V7=UA4deGFMxh9_aZPyiP0bFSw@mail.gmail.com>
-Subject: Re: [PATCH v4 19/36] mm: create new codetag references during page splitting
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On Wed, Feb 28, 2024 at 10:28=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> w=
-rote:
->
-> On 2/28/24 18:50, Suren Baghdasaryan wrote:
-> > On Wed, Feb 28, 2024 at 12:47=E2=80=AFAM Vlastimil Babka <vbabka@suse.c=
-z> wrote:
-> >
-> >>
-> >> Now this might be rare enough that it's not worth fixing if that would=
- be
-> >> too complicated, just FYI.
-> >
-> > Yeah. We can fix this by subtracting the "bytes" counter of the "head"
-> > page for all free_the_page(page + (1 << order), order) calls we do
-> > inside __free_pages(). But we can't simply use pgalloc_tag_sub()
-> > because the "calls" counter will get over-decremented (we allocated
-> > all of these pages with one call). I'll need to introduce a new
-> > pgalloc_tag_sub_bytes() API and use it here. I feel it's too targeted
-> > of a solution but OTOH this is a special situation, so maybe it's
-> > acceptable. WDYT?
->
-> Hmm I think there's a problem that once you fail put_page_testzero() and
-> detect you need to do this, the page might be already gone or reallocated=
- so
-> you can't get to the tag for decrementing bytes. You'd have to get it
-> upfront (I guess for "head && order > 0" cases) just in case it happens.
-> Maybe it's not worth the trouble for such a rare case.
+The housekeeping CPU masks, set up by the "isolcpus" and "nohz_full"
+boot command line options, are used at boot time to exclude selected
+CPUs from running some kernel housekeeping processes to minimize
+disturbance to latency sensitive userspace applications. However, some
+of housekeeping CPU masks are also checked at run time to avoid using
+those isolated CPUs.
 
-Yes, that hit me when I tried to implement it but there is a simple
-solution around that. I can obtain alloc_tag before doing
-put_page_testzero() and then decrement bytes counter directly as
-needed.
-Not sure if it is a rare enough case that we can ignore it but if the
-fix is simple enough then might as well do it?
+The purpose of this patch series is to exclude dynamically isolated
+CPUs from some housekeeping masks so that subsystems that check the
+housekeeping masks at run time will not see those isolated CPUs. It does
+not migrate the housekeeping processes that have been running on those
+newly isolated CPUs since bootup to other CPUs. That will hopefully be
+done in the near future.
 
->
-> >>
-> >>
-> >> > Every time
-> >> > one of these pages are freed that codetag's "bytes" and "calls"
-> >> > counters will be decremented. I think accounting will work correctly
-> >> > irrespective of where these pages are freed, in __free_pages() or by
-> >> > put_page().
-> >> >
-> >>
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kernel-team+unsubscribe@android.com.
->
+This patch series only updates the HK_TYPE_TIMER and HK_TYPE_RCU
+housekeeping masks for the time being, though this is subject to change.
+
+Waiman Long (2):
+  sched/isolation: Exclude dynamically isolated CPUs from housekeeping
+    masks
+  cgroup/cpuset: Exclude isolated CPUs from housekeeping CPU masks
+
+ include/linux/sched/isolation.h |   8 +++
+ kernel/cgroup/cpuset.c          |  30 +++++++---
+ kernel/sched/isolation.c        | 101 +++++++++++++++++++++++++++++++-
+ 3 files changed, 131 insertions(+), 8 deletions(-)
+
+-- 
+2.39.3
+
 
