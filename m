@@ -1,127 +1,107 @@
-Return-Path: <cgroups+bounces-1927-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1928-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0964786D59A
-	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 22:06:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4472F86D809
+	for <lists+cgroups@lfdr.de>; Fri,  1 Mar 2024 00:51:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 980E128CBC4
-	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 21:06:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E03F6B21FF4
+	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 23:51:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 151611428ED;
-	Thu, 29 Feb 2024 20:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A36813E7C1;
+	Thu, 29 Feb 2024 23:51:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ShtDbs5l"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6798B6D50A;
-	Thu, 29 Feb 2024 20:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D756134427
+	for <cgroups@vger.kernel.org>; Thu, 29 Feb 2024 23:51:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709240105; cv=none; b=bIeMuZhjAgUBLtw9NVGokzHs71DhK6hlpeFEC8ZmD82M6/agbtoTiRU8mMJqRzhUmVXPUtjWmd1iAF8X4Wb9pqd7De/LIrh4AHEFlKde7EZLqTXr2havIdGM6q8R8iw4sJg5Nk1UvccYiURLUQz+QnGL+Kp7KZigpdX3l6OYKOg=
+	t=1709250697; cv=none; b=S9Ys9BAftF8+Qz1JTSobX+M0c2Xd0KyppqveLSpX6j3u1n2kTi9WRSwgoCuqKPRF6A/2stw3XcWN5CvNIdKspFbJHsFWz8SZFdFUYHoizsp7Hn09HSVoWj/DcfN+/OiuV8HPtz82iZbL5pmmX7kktiN+Zr3dWD8iGf2rWPszy4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709240105; c=relaxed/simple;
-	bh=GWMJIephgFCkyB7gv9JQpivlnHOMsUi+KcICdET6vg0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aCJXW9OcBhQ/xq8iYd/GDVL6flabKaLP1yQtgllp4wWrS6UuVP5M9RHNtPCdyz3DRcf0A8IonCqmraTbns99C/j5N/dlQqdS5h2LFbPbzYPy+D/dK1a879XVh391Wwzg63/3VsG9QiLRE4KJUNLYPIra0D5hkV0/cFuCuytUkx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="26211658"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="26211658"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 12:55:03 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="913992414"
-X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
-   d="scan'208";a="913992414"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 12:54:47 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andy.shevchenko@gmail.com>)
-	id 1rfnQO-00000008nBm-1H3p;
-	Thu, 29 Feb 2024 22:54:40 +0200
-Date: Thu, 29 Feb 2024 22:54:40 +0200
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
-	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
-	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
-	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
-	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, peterx@redhat.com, david@redhat.com,
-	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
-	elver@google.com, dvyukov@google.com, shakeelb@google.com,
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
-	cgroups@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	Paul Mackerras <paulus@samba.org>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Noralf =?iso-8859-1?Q?Tr=F8nnes?= <noralf@tronnes.org>
-Subject: Re: [PATCH v3 01/35] lib/string_helpers: Add flags param to
- string_get_size()
-Message-ID: <ZeDvEKtlB73mnOYy@smile.fi.intel.com>
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-2-surenb@google.com>
- <CAHp75Vek3DEYLHnpUDBo_bYSd-ksN_66=LQ5s0Z+EhnNvhybpw@mail.gmail.com>
- <bicga3cv554ey4lby2twq3jw4tkkzx7mreakicf22sna63ye4x@x5di6km5x7fn>
+	s=arc-20240116; t=1709250697; c=relaxed/simple;
+	bh=wGdhmGNHVTXKtr8Coxlis0Li3Bk52TXuxtZPxJDknj4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=hC37h5EiMkl48mFK/2KWNmNKxKy/pfgMogZNx4BKUaNV+g8TSoJwIw2Rjaun3SPTubgR61+IUIZqVFE+pevsTsN3RSnyvFHJhLGbutPmJPAAmWO7RUVDQKfal4xqmH4NJ+w9gKWgixrRgWfTemtOr6k0dq4PrpHy6BKMYLrsTss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--axelrasmussen.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ShtDbs5l; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--axelrasmussen.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcc0bcf9256so2258568276.3
+        for <cgroups@vger.kernel.org>; Thu, 29 Feb 2024 15:51:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1709250695; x=1709855495; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wGdhmGNHVTXKtr8Coxlis0Li3Bk52TXuxtZPxJDknj4=;
+        b=ShtDbs5lOFNRkk6Jtu8JScDIID2cRH09UM0rEHa6BxrEoF+X1yaRbj3RU6CeG2XhPK
+         zVUjNdXaoVzLz+bFIWeoKiSGRylGGXlRo6mJFlF7WJj9SahP4UalsFo0L/xewY5DgREa
+         osgTNe6OR3RRQ1TfTrYpVaq/8NkfmHVW81dOlE6j13uUtz/wCMExtr6qZBSip0UPZMxK
+         vBmnRFke3t1oLrdUr7NYDKmitiMwCeHgfNKwG14qmca5IiNjPuTgIS2r7LQdyFo65Aon
+         XhYFKgsUxJxKU4s5tCcQSfbzWi1ZTdPIQZ+MzTIgld13X5wetBVgn41crBn0GwIbqdz4
+         UKZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709250695; x=1709855495;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wGdhmGNHVTXKtr8Coxlis0Li3Bk52TXuxtZPxJDknj4=;
+        b=ba/0uVua3yA93rhHluK3G/UhfKviJll8KK5+wtATA7QgPGAX6II+7aJGKzwGeT/HM5
+         iVVYEDMwhUGEZPw7yXpbtsYAZyuyPc9XysR335NJd1hSqjyah6cRQKmxPWGEBIBKtXaM
+         kRfQVLCt9liBuGsglxtKfyFREKlLiHJA1R9HF/P0/ri5HjL+e0DoeRjIaR/UWnXjCv67
+         dBQIkp2nr9GlFNpFRgvs+mPZ3J0jB4QmxmhIprB9CnWZ9PFBfU2hznKt5lZdwEuPzyzb
+         Ss15fOlGKvilVb0SeO3L5+fyx94IUFT/IrGjZXta7deYOWwrZYUD0GUSto+/KyF6KKPR
+         ADJg==
+X-Gm-Message-State: AOJu0Ywa3hFm1wouseLvu6pIxUunXIR4NQ4+uEMySsdSmzmHscAgimqE
+	wLDQBHEBtret4OraA5nmvwYAdDu1qso2M8BcLyLkTh0MPAK3qOkXXWLCVU/utUiVtddWxF+IivY
+	MUV/5AEtHTU16cV/k4TZ5DLjr65XTzg==
+X-Google-Smtp-Source: AGHT+IH867rn03DULgpAnZN98NdftWiJfM3usfRmVuNXYLi9bkM7Uz9nOwttJ34eI/OIA2Ca2LK6EGXn14L13DXQ6nxP
+X-Received: from axel.svl.corp.google.com ([2620:15c:2a3:200:4ca4:66d0:de29:8d39])
+ (user=axelrasmussen job=sendgmr) by 2002:a05:6902:100a:b0:dbe:387d:a8ef with
+ SMTP id w10-20020a056902100a00b00dbe387da8efmr177541ybt.1.1709250695530; Thu,
+ 29 Feb 2024 15:51:35 -0800 (PST)
+Date: Thu, 29 Feb 2024 15:51:33 -0800
+In-Reply-To: <ZcWOh9u3uqZjNFMa@chrisdown.name>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bicga3cv554ey4lby2twq3jw4tkkzx7mreakicf22sna63ye4x@x5di6km5x7fn>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Mime-Version: 1.0
+References: <ZcWOh9u3uqZjNFMa@chrisdown.name>
+X-Mailer: git-send-email 2.44.0.rc1.240.g4c46232300-goog
+Message-ID: <20240229235134.2447718-1-axelrasmussen@google.com>
+Subject: MGLRU premature memcg OOM on slow writes
+From: Axel Rasmussen <axelrasmussen@google.com>
+To: chris@chrisdown.name
+Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org, kernel-team@fb.com, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, yuzhao@google.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Feb 13, 2024 at 05:06:24PM -0500, Kent Overstreet wrote:
-> On Tue, Feb 13, 2024 at 10:26:48AM +0200, Andy Shevchenko wrote:
-> > On Mon, Feb 12, 2024 at 11:39 PM Suren Baghdasaryan <surenb@google.com> wrote:
+Hi Chris,
 
-> > It seems most of my points from the previous review were refused...
-> 
-> Look, Andy, this is a pretty tiny part of the patchset, yet it's been
-> eating up a pretty disproprortionate amount of time and your review
-> feedback has been pretty unhelpful - asking for things to be broken up
-> in ways that would not be bisectable, or (as here) re-asking the same
-> things that I've already answered and that should've been obvious.
-> 
-> The code works. If you wish to complain about anything being broken, or
-> if you can come up with anything more actionable than what you've got
-> here, I will absolutely respond to that, but otherwise I'm just going to
-> leave things where they sit.
+A couple of dumb questions. In your test, do you have any of the following
+configured / enabled?
 
-I do not understand why I should do *your* job.
-Nevertheless, I have just sent my version of this change.
-Enjoy!
+/proc/sys/vm/laptop_mode
+memory.low
+memory.min
 
--- 
-With Best Regards,
-Andy Shevchenko
+Besides that, it looks like the place non-MGLRU reclaim wakes up the
+flushers is in shrink_inactive_list() (which calls wakeup_flusher_threads()).
+Since MGLRU calls shrink_folio_list() directly (from evict_folios()), I agree it
+looks like it simply will not do this.
 
+Yosry pointed out [1], where MGLRU used to call this but stopped doing that. It
+makes sense to me at least that doing writeback every time we age is too
+aggressive, but doing it in evict_folios() makes some sense to me, basically to
+copy the behavior the non-MGLRU path (shrink_inactive_list()) has.
 
+I can send a patch which tries to implement this next week. In the meantime, Yu,
+please let me know if what I've said here makes no sense for some reason. :)
+
+[1]: https://lore.kernel.org/lkml/YzSiWq9UEER5LKup@google.com/
 
