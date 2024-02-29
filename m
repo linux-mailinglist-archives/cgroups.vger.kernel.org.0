@@ -1,135 +1,115 @@
-Return-Path: <cgroups+bounces-1915-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1916-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F43F86CB5C
-	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 15:23:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69D5986CB74
+	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 15:26:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B77862867C6
-	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 14:23:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BA091F26641
+	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 14:26:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C481361B3;
-	Thu, 29 Feb 2024 14:22:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23ACF137779;
+	Thu, 29 Feb 2024 14:25:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="sOntqjeT"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NqGlTl2p"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9892112F58D;
-	Thu, 29 Feb 2024 14:22:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.166.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 528BD12E1E3
+	for <cgroups@vger.kernel.org>; Thu, 29 Feb 2024 14:25:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709216541; cv=none; b=mUUhIYDS/PVx84a9RgnAyK/x2opbsegOGXlztTH0vnCOscqmIUCFdyYzBQfOniSPWjWqYluZFhr9Reouk8clUVijYZmV7+XKwWWqTq05fVSe9SzK+aQbyuPhVASRYddH5q6Zv6zQSbZ/wvb5nK1R6ffpCeZMSAUM7WD560F9LF8=
+	t=1709216706; cv=none; b=pWVzcHtICvD7S3lyd/DS2JzdwDyQNsPJ0KJ8qaFHUCQRBasmUTWmj0rAfcVhyZ2fN4P/MQ+FpoI20yQD4DQ1M2cOQr1Kk1gJ4Vlow1704j+HmnLoBnhrkHWG8hzX8rTfX6V/K36ok2jesW1fWxk5L0Egftk0QdXxfIEvt+uESSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709216541; c=relaxed/simple;
-	bh=5tRPmXL2TVv6kom3cQU7ugeRZCPtoU7puLCKLDcp4wA=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uGkA6jUQrrtKsSUeNodr89HYcp+chViBfQBubXzwAht359ASlpEckVahejKdiV3dW0lAdYlifQNbU9tm++OLM2ppJwOLvKSXYzbICoKqRzvXw55lsMCEqYM/qIxO549W/xsuKDkGDN2O0LjdPc4xA/hjLj7jQnWEiTY4eNB9hZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b=sOntqjeT; arc=none smtp.client-ip=205.220.166.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41T6NeDS014776;
-	Thu, 29 Feb 2024 06:20:28 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-	 h=from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PPS06212021; bh=2udlK6bNAriNhByS7Iy3jsJU3amaElXU/XABWbmgNfc=; b=
-	sOntqjeT7qgWOl9nx/HSpKtXrTSVs1EJI3ufWOw1CsVk8mB6xKui6wxfg9wYbjli
-	8QO4hPPhakPUCLI529zzChGKDjrZnssWhlNpNjGYaRHU+2uN7z2RUCqOgfuNPUqm
-	VATA0egIg/XYgZS10aqNOGPozpJVzZaWKpuTlEE/8CcjdcFbj2GovC0HO6/cnSc4
-	4jJ3qGaPSrKkhJ5N17X94zP76nGvKOgyOaTJ6lCS/NLPIMlKL8bwNbnqBHjKQvl1
-	HklMgL21HUGymNsts+M0SOrx8bc8a2b1N2QA8SuFR6ILCg2md9ziV7qpxvg8/vi+
-	Kh9zS7HEedVepqPDbYR8AQ==
-Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3wfcm45aaf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Thu, 29 Feb 2024 06:20:27 -0800 (PST)
-Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 29 Feb 2024 06:20:27 -0800
-Received: from pek-lpd-ccm6.wrs.com (147.11.1.11) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 29 Feb 2024 06:20:23 -0800
-From: Xiongwei Song <xiongwei.song@windriver.com>
-To: <longman@redhat.com>, <lizefan.x@bytedance.com>, <tj@kernel.org>,
-        <hannes@cmpxchg.org>, <corbet@lwn.net>
-CC: <vbabka@suse.cz>, <yosryahmed@google.com>, <rostedt@goodmis.org>,
-        <cl@linux.com>, <chengming.zhou@linux.dev>, <zhengyejian1@huawei.com>,
-        <cgroups@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] cgroup/cpuset: Mark memory_spread_slab as obsolete
-Date: Thu, 29 Feb 2024 22:20:07 +0800
-Message-ID: <20240229142007.1278610-2-xiongwei.song@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240229142007.1278610-1-xiongwei.song@windriver.com>
-References: <20240229142007.1278610-1-xiongwei.song@windriver.com>
+	s=arc-20240116; t=1709216706; c=relaxed/simple;
+	bh=N+5moBTraylCNNTWb3cy+j7uayzPyE60qSB2vr31vOY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XEyxokh2CSD6lIK0F1FUJgcb+LxLiN3wt/jXxoM0KiNgWmuwGKr/kisGiQLoId2i15FW8UyrTJ9NJ/QgEAHh2ii70uCBzOCDsSK3xs04XltJ0wq0ydk/tV/yKlFc9+8pfoPSDlEQRe7hV9MTb05o6IFhG61WQk6q8YF/DSKCjiY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NqGlTl2p; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1709216704;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DGDq1NUIAIPOPbfxiL7bhWCZkKjKYVk+M07BdvjqBpI=;
+	b=NqGlTl2pT3moAe+zVOqItRyWI5c5CbXAaU2nWD+bku2+x3qXZ4LTMiCJuXK6k3Td9Ti62N
+	Qyyew3Fo31972mMHcARWjdHYCCtp/9qqcz5sk5TDE93cfxh+PXcZG22ksaNSNi8VEMU/61
+	KKKp7UnP7SMQhFqE74iZIMCnBDS2h1U=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-643-cGc6HtCCNtOQhgf5F6uljQ-1; Thu, 29 Feb 2024 09:24:59 -0500
+X-MC-Unique: cGc6HtCCNtOQhgf5F6uljQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DFF9B1020210;
+	Thu, 29 Feb 2024 14:24:58 +0000 (UTC)
+Received: from [10.22.8.117] (unknown [10.22.8.117])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 67CC18CED;
+	Thu, 29 Feb 2024 14:24:58 +0000 (UTC)
+Message-ID: <52f842b8-2907-4eb0-ad0a-3784d54daa12@redhat.com>
+Date: Thu, 29 Feb 2024 09:24:58 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: qSydO_QdNgcpzUfXcE3ufBZrizF9vWxf
-X-Proofpoint-GUID: qSydO_QdNgcpzUfXcE3ufBZrizF9vWxf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-29_02,2024-02-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 spamscore=0 bulkscore=0 mlxlogscore=934 mlxscore=0
- lowpriorityscore=0 clxscore=1015 adultscore=0 suspectscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2402120000 definitions=main-2402290110
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cgroup/cpuset: Fix retval in update_cpumask()
+Content-Language: en-US
+To: Kamalesh Babulal <kamalesh.babulal@oracle.com>
+Cc: Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
+ Tom Hromatka <tom.hromatka@oracle.com>, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240229101116.60043-1-kamalesh.babulal@oracle.com>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20240229101116.60043-1-kamalesh.babulal@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-We've removed the SLAG allocator, cpuset_do_slab_mem_spread() and
-SLAB_MEM_SPREAD, memory_spread_slab is a no-op now. We can mark
-memory_spread_slab as obsolete in case someone still wants to use it
-after cpuset_do_slab_mem_spread() removed. For more details, please
-check [1].
 
-[1] https://lore.kernel.org/lkml/32bc1403-49da-445a-8c00-9686a3b0d6a3@redhat.com/T/#m8e292e21b00f95a4bb8086371fa7387fa4ea8f60
+On 2/29/24 05:11, Kamalesh Babulal wrote:
+> The update_cpumask(), checks for newly requested cpumask by calling
+> validate_change(), which returns an error on passing an invalid set
+> of cpu(s). Independent of the error returned, update_cpumask() always
+> returns zero, suppressing the error and returning success to the user
+> on writing an invalid cpu range for a cpuset. Fix it by returning
+> retval instead, which is returned by validate_change().
+>
+> Fixes: 99fe36ba6fc1 ("cgroup/cpuset: Improve temporary cpumasks handling")
+> Signed-off-by: Kamalesh Babulal <kamalesh.babulal@oracle.com>
+> ---
+>   kernel/cgroup/cpuset.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index ba36c073304a..2ddbfaa4efa9 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -2562,7 +2562,7 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+>   		update_partition_sd_lb(cs, old_prs);
+>   out_free:
+>   	free_cpumasks(NULL, &tmp);
+> -	return 0;
+> +	return retval;
+>   }
+>   
+>   /**
+>
+> base-commit: cf1182944c7cc9f1c21a8a44e0d29abe12527412
 
-Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
----
- Documentation/admin-guide/cgroup-v1/cpusets.rst | 2 +-
- kernel/cgroup/cpuset.c                          | 3 +++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+LGTM, thanks for the fix.
 
-diff --git a/Documentation/admin-guide/cgroup-v1/cpusets.rst b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-index ae646d621a8a..88d0e7fa2ee0 100644
---- a/Documentation/admin-guide/cgroup-v1/cpusets.rst
-+++ b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-@@ -179,7 +179,7 @@ files describing that cpuset:
-  - cpuset.mem_hardwall flag:  is memory allocation hardwalled
-  - cpuset.memory_pressure: measure of how much paging pressure in cpuset
-  - cpuset.memory_spread_page flag: if set, spread page cache evenly on allowed nodes
-- - cpuset.memory_spread_slab flag: if set, spread slab cache evenly on allowed nodes
-+ - cpuset.memory_spread_slab flag: IT'S OBSOLETE. Please don't use it anymore
-  - cpuset.sched_load_balance flag: if set, load balance within CPUs on that cpuset
-  - cpuset.sched_relax_domain_level: the searching range when migrating tasks
- 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index ba36c073304a..728d06fe9382 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -3897,6 +3897,9 @@ static struct cftype legacy_files[] = {
- 	},
- 
- 	{
-+		/* It's obsolete. Please don't use it anymore. We will remove it
-+		 * in the future.
-+		 */
- 		.name = "memory_spread_slab",
- 		.read_u64 = cpuset_read_u64,
- 		.write_u64 = cpuset_write_u64,
--- 
-2.43.0
+Reviewed-by: Waiman Long <longman@redhat.com>
 
 
