@@ -1,124 +1,127 @@
-Return-Path: <cgroups+bounces-1926-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1927-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8705E86D55C
-	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 22:00:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0964786D59A
+	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 22:06:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CBCFB28162
-	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 21:00:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 980E128CBC4
+	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 21:06:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD8C616C9E2;
-	Thu, 29 Feb 2024 20:41:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fhg+MfpI"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 151611428ED;
+	Thu, 29 Feb 2024 20:55:06 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 472A016B041;
-	Thu, 29 Feb 2024 20:41:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6798B6D50A;
+	Thu, 29 Feb 2024 20:55:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709239305; cv=none; b=lmWY33pJmEcz2kb+pX+pa5q4GK5kRZUiMl35cRv/l1LgcUpeXMCATA8cVFGfykmFUetEqWiPF6Xk0h2YAviEWzVluNw4TJPS4HjGj0pK64i6kc/Pifq7xysZX6qkJPjQNDQjZ/+qc3SiZq+lcgc+G10SdDLg/ut/HvGTqXEYL90=
+	t=1709240105; cv=none; b=bIeMuZhjAgUBLtw9NVGokzHs71DhK6hlpeFEC8ZmD82M6/agbtoTiRU8mMJqRzhUmVXPUtjWmd1iAF8X4Wb9pqd7De/LIrh4AHEFlKde7EZLqTXr2havIdGM6q8R8iw4sJg5Nk1UvccYiURLUQz+QnGL+Kp7KZigpdX3l6OYKOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709239305; c=relaxed/simple;
-	bh=APRMZ4n8LYH5W13havCjtiPcQWPmAf0KgH9MeFCxuFQ=;
+	s=arc-20240116; t=1709240105; c=relaxed/simple;
+	bh=GWMJIephgFCkyB7gv9JQpivlnHOMsUi+KcICdET6vg0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jzDH5dUycPkuuXBQ0j4sCQ+M+X/SlJEY5Mb78VhQAjaamx4/8KyPBsfOMhHhZ47Bff+dRg+gjlD8ukDXrtnJHbdGesxu21jtNOiUs2tGWZxKf3c1qpjqEXO3sWs0T/3K0TNnIiqZtcNYEtbejljcvkSI+46l5Ozcl/EzTxgRv4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fhg+MfpI; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dc5d0162bcso13270825ad.0;
-        Thu, 29 Feb 2024 12:41:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709239303; x=1709844103; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DCuy/++A6Eh0DIGCLnbR4RQY4erAHeKD29B4iy7q32c=;
-        b=fhg+MfpIN7opj+P+p/0Gc9adCTHPfd27qDIMVQEjKG1lY4+BKhdx4d9vlT0yRc4JSe
-         FpLjpZ4/05PTke1V1COIFKSVsaQORF4lLXbXcpE6c/SwFtltJDOu69pSgfwymP827Ycw
-         rYYOQdKXd1zxMSgaDCIAcdCl0/tlBZQJibZhUNMOqPEf3npeLiv6ljFzXEiFPSb/E6uN
-         rUGd+TTieRsVes5oRVWdPP8OcWMOvMuwWdpNuxr4FCgC0rTnruBplh29R9CLCSRcDBLt
-         RJiDMDpO6uPiuU4wymbDp2QQmIfQBUxmYX7z4eYiYPG/k1xJmP1E80IQZzA5rTX9FIs1
-         IkRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709239303; x=1709844103;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DCuy/++A6Eh0DIGCLnbR4RQY4erAHeKD29B4iy7q32c=;
-        b=s2DrKl6y0KDWOyUa2Y1aTpJeDwF43PjCcspXN30ThoD6MrwBUuIq5aAKWrtID61IN4
-         +4NXRWkmSEeaxVZ08SpzPSiJD5KJS8DFNck4mT1Te0tDKAXn5IT96ZqrXpCHjObc06TZ
-         7LpJi8aYF034Napd8Z6CWPCf4Iiqa//+2BbHRVCUhDvdoWviooJpe7foc+0fqvA9t58P
-         Y0ppd7kQDjTzkR780PnO+MsrZTbIS4GECcRnXPTwQOgctzLSIWZ7ryROo59eqxPfoote
-         BrOPoIit+KiPbGkh8z0BfNvPv7dImtsFKIC6lejfRaNg+zLTmHfKdfD5c+neZPIo3EpF
-         919Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVZWcNwFtyw5y81DlbW3gaw/0yHnrhc1ln4M4uVjlDNENEj9bp3bzUiz02EfQujDg65/eNsLMuQLozzwSpr8UycRExUvwCdTOg1iXaZhNVQLIGtGAEmM6JpNHO97UJEfWT8CUcrmw==
-X-Gm-Message-State: AOJu0YzFp3nZ7zFCEyKwNQy4Go+if/ulAdBnZrCnphGurFTKRE0i/aXk
-	6O5k2L+vmIcU+g0JHcnxuQY4Aj4kwkwDECf1EcOx4iUWEsaB/liI
-X-Google-Smtp-Source: AGHT+IGTQKsZ5pKWSZpx0KLaYeFeiUjZqrnllq1Zus41oD/Lse7gy8HG5VCwXQlQCIaaZTp2iFyYeA==
-X-Received: by 2002:a17:902:aa8f:b0:1dc:890a:45a9 with SMTP id d15-20020a170902aa8f00b001dc890a45a9mr2640785plr.65.1709239303406;
-        Thu, 29 Feb 2024 12:41:43 -0800 (PST)
-Received: from localhost ([2620:10d:c090:400::5:8305])
-        by smtp.gmail.com with ESMTPSA id a2-20020a170902900200b001dccaafe249sm1923875plp.220.2024.02.29.12.41.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 12:41:43 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 29 Feb 2024 10:41:41 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	Cestmir Kalina <ckalina@redhat.com>,
-	Costa Shulyupin <cshulyup@redhat.com>
-Subject: Re: [PATCH 2/2] cgroup/cpuset: Exclude isolated CPUs from
- housekeeping CPU masks
-Message-ID: <ZeDsBW4rC9gaMjuY@slm.duckdns.org>
-References: <20240229021414.508972-1-longman@redhat.com>
- <20240229021414.508972-3-longman@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=aCJXW9OcBhQ/xq8iYd/GDVL6flabKaLP1yQtgllp4wWrS6UuVP5M9RHNtPCdyz3DRcf0A8IonCqmraTbns99C/j5N/dlQqdS5h2LFbPbzYPy+D/dK1a879XVh391Wwzg63/3VsG9QiLRE4KJUNLYPIra0D5hkV0/cFuCuytUkx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="26211658"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="26211658"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 12:55:03 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="913992414"
+X-IronPort-AV: E=Sophos;i="6.06,194,1705392000"; 
+   d="scan'208";a="913992414"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Feb 2024 12:54:47 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andy.shevchenko@gmail.com>)
+	id 1rfnQO-00000008nBm-1H3p;
+	Thu, 29 Feb 2024 22:54:40 +0200
+Date: Thu, 29 Feb 2024 22:54:40 +0200
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
+	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
+	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+	Paul Mackerras <paulus@samba.org>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Noralf =?iso-8859-1?Q?Tr=F8nnes?= <noralf@tronnes.org>
+Subject: Re: [PATCH v3 01/35] lib/string_helpers: Add flags param to
+ string_get_size()
+Message-ID: <ZeDvEKtlB73mnOYy@smile.fi.intel.com>
+References: <20240212213922.783301-1-surenb@google.com>
+ <20240212213922.783301-2-surenb@google.com>
+ <CAHp75Vek3DEYLHnpUDBo_bYSd-ksN_66=LQ5s0Z+EhnNvhybpw@mail.gmail.com>
+ <bicga3cv554ey4lby2twq3jw4tkkzx7mreakicf22sna63ye4x@x5di6km5x7fn>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240229021414.508972-3-longman@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bicga3cv554ey4lby2twq3jw4tkkzx7mreakicf22sna63ye4x@x5di6km5x7fn>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Feb 28, 2024 at 09:14:14PM -0500, Waiman Long wrote:
-> Call the newly introduced housekeeping_exlude_isolcpus() function to
-> exclude isolated CPUs from the selected housekeeping CPU masks. This
-> is in addition to the exclusion of isolated CPUs from the workqueue
-> unbound CPU mask.
+On Tue, Feb 13, 2024 at 05:06:24PM -0500, Kent Overstreet wrote:
+> On Tue, Feb 13, 2024 at 10:26:48AM +0200, Andy Shevchenko wrote:
+> > On Mon, Feb 12, 2024 at 11:39 PM Suren Baghdasaryan <surenb@google.com> wrote:
+
+> > It seems most of my points from the previous review were refused...
 > 
-> Right now only HK_TYPE_TIMER and HK_TYPE_RCU CPU masks are updated,
-> but more may be added in the future when appropriate.
+> Look, Andy, this is a pretty tiny part of the patchset, yet it's been
+> eating up a pretty disproprortionate amount of time and your review
+> feedback has been pretty unhelpful - asking for things to be broken up
+> in ways that would not be bisectable, or (as here) re-asking the same
+> things that I've already answered and that should've been obvious.
 > 
-> Signed-off-by: Waiman Long <longman@redhat.com>
+> The code works. If you wish to complain about anything being broken, or
+> if you can come up with anything more actionable than what you've got
+> here, I will absolutely respond to that, but otherwise I'm just going to
+> leave things where they sit.
 
-This looks fine to me from cgroup POV. Please feel free to route the patch
-any way you see fit.
-
-  Acked-by: Tejun Heo <tj@kernel.org>
-
-Thanks.
+I do not understand why I should do *your* job.
+Nevertheless, I have just sent my version of this change.
+Enjoy!
 
 -- 
-tejun
+With Best Regards,
+Andy Shevchenko
+
+
 
