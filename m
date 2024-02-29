@@ -1,135 +1,133 @@
-Return-Path: <cgroups+bounces-1913-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1914-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5C8786C7AE
-	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 12:06:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60DA886CB59
+	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 15:22:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 644601F24D06
-	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 11:06:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9424EB24096
+	for <lists+cgroups@lfdr.de>; Thu, 29 Feb 2024 14:22:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26EA27AE4D;
-	Thu, 29 Feb 2024 11:06:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7544912FB29;
+	Thu, 29 Feb 2024 14:22:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="F+JaC3wB"
+	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="Fi5WSARf"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D3397A709;
-	Thu, 29 Feb 2024 11:06:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A7C1361DA;
+	Thu, 29 Feb 2024 14:21:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709204805; cv=none; b=iX+JD+gLfxh/u7O4YKgeAV3s5fPeEYlJYSqo5d9Ba67pDXKWMLNXN4zNbrfKD6iUGiKlhgo9VZrxK6O4rFl7Zf3UNB95q+hRgAnplMvhorXJb344gP8iTAth9yw67+XKuY49oFBLek/mLaNEB7OE0m0JcWnL2FPUTmLqPe5TktU=
+	t=1709216527; cv=none; b=QrQiom8VRECDl+MopTOY/cYghR+JItgqKmBZGqRhfj72iA2R9zNXKU0t7HLWIlUd0o1FHRIjW/rRNa7K7iDoodzIsjidEyBAtcI8bSvNznRa9yw2dRYaot7PXnNy0oZmxDIiZWZ/rfOJOlkgKvERrD5srhGgTy5rpzPZxcNMqXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709204805; c=relaxed/simple;
-	bh=ojcLD8Z5Xvok8y1Eu1turX6g6LXlVVTK404be4hZ6PI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=c3eOGM9vKoGP820RejNulpAjWe/FahpJrvh4QYfUkTt4n52Ov4OAO1O10wF48sB5uIRIPJ4OeHUqR3GVcCv6adjvWeimPm3naYje0S3bkhMIP0yYcLMM6XS2iU20qqyKPKZNgbcDVQckPN3uO0mRFRMRIqD83iecw4dXvGVN+Nw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=F+JaC3wB; arc=none smtp.client-ip=115.124.30.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1709204793; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=ymMWfNt/MW/wN+WKRTvmcf7uTUkwFW8Yar/C6/y6t2o=;
-	b=F+JaC3wBYqCW345iADuGVDPdZb6yiXnTaIpGG/ws+PXlEEluZ6hm8EkKFpBY5I/rUz9UxN0oxXUgDA5EfWaUXVwGCMwNTYeaMG47hr46CIE9VU71TyEburtoDDSNkXITHTVebBQj/raY332ZvR60hpJak/qpYa9I80TShjU479k=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R231e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=cruzzhao@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W1SnSIK_1709204782;
-Received: from 30.97.48.231(mailfrom:cruzzhao@linux.alibaba.com fp:SMTPD_---0W1SnSIK_1709204782)
-          by smtp.aliyun-inc.com;
-          Thu, 29 Feb 2024 19:06:31 +0800
-Message-ID: <f79a301f-9c6c-4d29-9f79-1c66a492b909@linux.alibaba.com>
-Date: Thu, 29 Feb 2024 19:06:21 +0800
+	s=arc-20240116; t=1709216527; c=relaxed/simple;
+	bh=eQfYYlfZztNSVMw3hVLw7QVKBwlURfYEIOXk8wyb4LU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XOg4FrI5EJqcxle8wp2k4BCPs9ek9o5QgJVLrDTau7F4Rp5B1R2r/+/ZfLdAN2ZdZsjWckxdJqcOkUzlcxAzELcc1DsZ+7SrYaX728vIAO2Oz/shrCkORvaLW2gO6SY0/diLxEt5f0rKeg6FljVmYe/9jShYqvjpYnY7DyiloRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b=Fi5WSARf; arc=none smtp.client-ip=205.220.178.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
+Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41T5ATuw022823;
+	Thu, 29 Feb 2024 14:20:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
+	 h=from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=PPS06212021; bh=CdQQt
+	2w/RCAyMiw/AwHTodQgR7TVrvlZkYmoTV0OJxo=; b=Fi5WSARfmrEbKY5bua/bF
+	ZqA9bE5Vr8rHOfM/AGxC9Vfyo367Eg6jG2/d1mQaqOtTXxkGBwg/GNraE4Jg76dC
+	aeIGOHTAkVS0E1TzZOYNWGG+VMkkmkZw9bJN5+Rt/ArL4F9DDTTwYZTgjzhzBsh5
+	cZCi6TYxrZKFDCzISGfQ+h0xBcfVaYB3N7f6/yJI/USQHz35//KN6kVP58uD/Ku0
+	o1Hctu5nRO+5Qq8Pu6fXUQ1jur2B0KrXFxP3eSDJSZITpmr8RaORHrPmjXg28KQF
+	EZ0dCFmrK6Lx7Q4ManmwkAnHv3zlT4bjWPubdXkjMoUVTC/z2ElquocotETJgdZS
+	w==
+Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3wf7e6dgd7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Thu, 29 Feb 2024 14:20:24 +0000 (GMT)
+Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 29 Feb 2024 06:20:23 -0800
+Received: from pek-lpd-ccm6.wrs.com (147.11.1.11) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 29 Feb 2024 06:20:19 -0800
+From: Xiongwei Song <xiongwei.song@windriver.com>
+To: <longman@redhat.com>, <lizefan.x@bytedance.com>, <tj@kernel.org>,
+        <hannes@cmpxchg.org>, <corbet@lwn.net>
+CC: <vbabka@suse.cz>, <yosryahmed@google.com>, <rostedt@goodmis.org>,
+        <cl@linux.com>, <chengming.zhou@linux.dev>, <zhengyejian1@huawei.com>,
+        <cgroups@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] cgroup/cpuset: Remove cpuset_do_slab_mem_spread()
+Date: Thu, 29 Feb 2024 22:20:06 +0800
+Message-ID: <20240229142007.1278610-1-xiongwei.song@windriver.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sched/core: introduce CPUTIME_FORCEIDLE_TASK
-Content-Language: en-US
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
- mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
- vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
- bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
- vschneid@redhat.com, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240219084134.10673-1-CruzZhao@linux.alibaba.com>
- <pb7jf52x2qpofgttzz3fphkeiuxuamjbjqb64paw7dvvtv2sxd@mgcol2syra6z>
-From: cruzzhao <cruzzhao@linux.alibaba.com>
-In-Reply-To: <pb7jf52x2qpofgttzz3fphkeiuxuamjbjqb64paw7dvvtv2sxd@mgcol2syra6z>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: Y7ftEdNsVCXNHQJqyuun61KEZUNp0dbS
+X-Proofpoint-ORIG-GUID: Y7ftEdNsVCXNHQJqyuun61KEZUNp0dbS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-29_02,2024-02-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 phishscore=0 mlxscore=0 impostorscore=0 spamscore=0
+ bulkscore=0 malwarescore=0 mlxlogscore=990 clxscore=1011
+ priorityscore=1501 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2402120000 definitions=main-2402290110
 
+The SLAB allocator has been removed sine 6.8-rc1 [1], so there is no user
+with SLAB_MEM_SPREAD and cpuset_do_slab_mem_spread(). Then SLAB_MEM_SPREAD
+is marked as unused by [2]. Here we can remove
+cpuset_do_slab_mem_spread(). For more details, please check [3].
 
+[1] https://lore.kernel.org/linux-mm/20231120-slab-remove-slab-v2-0-9c9c70177183@suse.cz/
+[2] https://lore.kernel.org/linux-kernel/20240223-slab-cleanup-flags-v2-0-02f1753e8303@suse.cz/T/
+[3] https://lore.kernel.org/lkml/32bc1403-49da-445a-8c00-9686a3b0d6a3@redhat.com/T/#mf14b838c5e0e77f4756d436bac3d8c0447ea4350
 
-在 2024/2/26 23:28, Michal Koutný 写道:
-> Hello.
-> 
-> On Mon, Feb 19, 2024 at 04:41:34PM +0800, Cruz Zhao <CruzZhao@linux.alibaba.com> wrote:
->> As core sched uses rq_clock() as clock source to account forceidle
->> time, irq time will be accounted into forceidle time. However, in
->> some scenarios, forceidle sum will be much larger than exec runtime,
->> e.g., we observed that forceidle time of task calling futex_wake()
->> is 50% larger than exec runtime, which is confusing.
-> 
-> And those 50% turned out to be all attributed to irq time (that's
-> suggested by your diagram)?
-> 
-> (Could you argue about that time with data from /proc/stat alone?)
-> 
+Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
+---
+ include/linux/cpuset.h | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-Sure. task 26281 is the task with this problem, and we bound it to cpu0,
-and it's SMT sibling is running stress-ng -c 1.
+diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+index 875d12598bd2..0ce6ff0d9c9a 100644
+--- a/include/linux/cpuset.h
++++ b/include/linux/cpuset.h
+@@ -121,11 +121,6 @@ static inline int cpuset_do_page_mem_spread(void)
+ 	return task_spread_page(current);
+ }
+ 
+-static inline int cpuset_do_slab_mem_spread(void)
+-{
+-	return task_spread_slab(current);
+-}
+-
+ extern bool current_cpuset_is_being_rebound(void);
+ 
+ extern void rebuild_sched_domains(void);
+@@ -264,11 +259,6 @@ static inline int cpuset_do_page_mem_spread(void)
+ 	return 0;
+ }
+ 
+-static inline int cpuset_do_slab_mem_spread(void)
+-{
+-	return 0;
+-}
+-
+ static inline bool current_cpuset_is_being_rebound(void)
+ {
+ 	return false;
+-- 
+2.43.0
 
-[root@localhost 26281]# cat ./sched |grep -E
-"forceidle|sum_exec_runtime" && cat /proc/stat |grep cpu0 && echo "" &&
-sleep 10 && cat ./sched |grep -E "forceidle|sum_exec_runtime" && cat
-/proc/stat |grep cpu0
-se.sum_exec_runtime                          :          3353.788406
-core_forceidle_sum                           :          4522.497675
-core_forceidle_task_sum                      :          3354.383413
-cpu0 1368 74 190 87023149 1 2463 3308 0 0 0
-
-se.sum_exec_runtime                          :          3952.897106
-core_forceidle_sum                           :          5311.687917
-core_forceidle_task_sum                      :          3953.571613
-cpu0 1368 74 190 87024043 1 2482 3308 0 0 0
-
-
-As we can see from the data, se.sum_exec_runtime increased by 600ms,
-core_forceidle_sum(using rq_clock) increased by 790ms,
-and core_forceidle_task_sum(using rq_clock_task, which subtracts irq
-time) increased by 600ms, closing to sum_exec_runtime.
-
-As for the irq time from /proc/stat, irq time increased by 19 ticks,
-190ms, closing to the difference of increment of core_forceidle_sum and
-se.sum_exec_runtime.
-
->> Interfaces:
->>  - task level: /proc/$pid/sched, row core_forceidle_task_sum.
->>  - cgroup level: /sys/fs/cgroup/$cg/cpu.stat, row
->>      core_sched.force_idle_task_usec.
-> 
-> Hm, when you touch this, could you please also add a section into
-> Documentation/admin-guide/cgroup-v2.rst about these entries?
-> 
-
-Sure, in the next version, I will update the document.
-
-> (Alternatively, explain in the commit message why those aren't supposed
-> to be documented.
-> Alternative altenratively, would mere documenting of
-> core_sched.force_idle_usec help to prevent the confusion that you called
-> out above?)
-> 
-> Also, I wonder if the rstat counting code shouldn't be hidden with
-> CONFIG_SCHED_DEBUG too? (IIUC, that's the same one required to see
-> analogous stats in /proc/$pid/sched.)
-> 
-> Regards,
-> Michal
 
