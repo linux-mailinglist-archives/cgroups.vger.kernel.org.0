@@ -1,200 +1,244 @@
-Return-Path: <cgroups+bounces-1937-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1938-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1692086E164
-	for <lists+cgroups@lfdr.de>; Fri,  1 Mar 2024 13:56:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A2E686E18F
+	for <lists+cgroups@lfdr.de>; Fri,  1 Mar 2024 14:09:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 389AF1C22222
-	for <lists+cgroups@lfdr.de>; Fri,  1 Mar 2024 12:56:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D6EA284124
+	for <lists+cgroups@lfdr.de>; Fri,  1 Mar 2024 13:09:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 162C94084D;
-	Fri,  1 Mar 2024 12:56:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="O84PCb5s"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3A2C6A349;
+	Fri,  1 Mar 2024 13:09:12 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2072.outbound.protection.outlook.com [40.107.223.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FB0E40860;
-	Fri,  1 Mar 2024 12:56:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.72
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709297809; cv=fail; b=a+vcYCVY0GeD6eaCfWhR226njQO4q9vzJuoBEmJ2NorzygTSdz46LjUf04MNvTSSvwtJO+wFPj++johgoU1Mz35wq+er52pLdNYsgvW1hkNIYbPRROGVW8CHDg92zWOEOKeeynlpDbr3f2Afkd4s7+fKA8jBQufiitukninnK7Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709297809; c=relaxed/simple;
-	bh=F05yRIJ790OJIv8rNWEdkUnxOq1qB67uE09f7ZmQTDQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=iSSR8Mou87x82ytSgRKH5NYnFfs4cM8pndYi7DYpcTfpwb6T8pcahVZZ5jgmy0bukWEI1iW61ySpJ6aGonOw4radsYXlvug9s1AuZE9UpSloYQdknSMzDMu7N7UYic/80ZRTu6YUolaa2MDYlovbhlSAdgN/KunHxt+Zq50HQ2s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=O84PCb5s; arc=fail smtp.client-ip=40.107.223.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZUYz9ygOzwarj6gzFVetZLmtFUZT0VYeiDkMK1f5ODS4jarIQ9NBB5o4sfKGER4Wg0jxvlMygcdHDhhq1tgxJen5woB0ksm3rFM8QAaEshRPlb8l23gaWT49sLrPTo1ZFnPB72rNoe61LYe+sUThwf9VV/o43eoJ+S2yMbs2eMiVt2XcB2ZDkOZvaBKsywEePZoXxj7VK73kcDlRakehavjPtssF5km+KLfuB7DSf0rBEtP8MbqgseDubT/FJ/E2+At9SCVHy2QmOup2udM9JA43qNdusaSZDfuxedp/9tRf4yNsOtm3zNkhMxYHztKKAJaiShRqLXwxtQr4IjeEzA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vo9L0pZQzJNgGya3MrIfKqloZM/gXYVTlUIr7sHqNXU=;
- b=cR9cBRFLiAicvJ5Hxn8ZvBmtNEU3VwY925g2xf8uDzLG+XSoNU4cVQesEsggE3pEtFG9PwuMKcrtFPF2yB+49kkRPvcj+Ot+qoRQyHvaJNLQq45oYyfpI3dmh3LrJJcruwsczfPRoSDlFj5Tk3Mz1nLf6jnaNMO8YDPT7RF8TJ5GUff86d89m+5Ai2I/E3PGui/YCTY4fs77nZxQ/WIv2h/baKUu6hO4PL8uYuGLenojUSlE0WjVIbNlgJT8iodTlNek5qixH5qc4O0OU2SJOk9FXes5q1iq3HLGwPYZljNfQ8Qn5coqT4UvLBzv3HquCjzkiWRsMFJuMTbb/kf+Hw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vo9L0pZQzJNgGya3MrIfKqloZM/gXYVTlUIr7sHqNXU=;
- b=O84PCb5sH6b0kaxhibz7IyZ9t7j0l+xHhphC/4zpOiEKs7Nuhf8LOcGL3dhnEdtnaxO/L329E9oB0wENmp+lixM3XV+sYA0E61CBLWWv4Qurs7HufqNGL+EHUbXezscHKQ9aYNEXmFAmN6nmkEAZiKHBbKOGZHJT/JXlQ2KGkkGrS0gaKjVrve+6xAQVDzxtAHIsec2Oeo3igWxUZ6WgVnL3Mo+ZMsLG/bq6ti4/PhI7Re/f12sxaeUMuXvmolI0njPYpZqUSpTu2/e+ywu/EycRD8Hmw1CPoBZKFrBmsrmIV1WeIA68LfZhKkK5ImVUS1LIWStZmn30ptA3t/KUag==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
- PH7PR12MB5973.namprd12.prod.outlook.com (2603:10b6:510:1d8::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.47; Fri, 1 Mar
- 2024 12:56:45 +0000
-Received: from DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::dc5c:2cf1:d5f5:9753]) by DS7PR12MB5744.namprd12.prod.outlook.com
- ([fe80::dc5c:2cf1:d5f5:9753%6]) with mapi id 15.20.7339.033; Fri, 1 Mar 2024
- 12:56:44 +0000
-From: Zi Yan <ziy@nvidia.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Ryan Roberts <ryan.roberts@arm.com>,
- Aishwarya TCV <aishwarya.tcv@arm.com>,
- "\"Pankaj Raghav (Samsung)\"" <kernel@pankajraghav.com>, linux-mm@kvack.org,
- "\"Matthew Wilcox (Oracle)\"" <willy@infradead.org>,
- David Hildenbrand <david@redhat.com>, Yang Shi <shy828301@gmail.com>,
- Yu Zhao <yuzhao@google.com>,
- "\"Kirill A . Shutemov\"" <kirill.shutemov@linux.intel.com>,
- =?utf-8?q?=22Michal_Koutn=C3=BD=22?= <mkoutny@suse.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- "\"Zach O'Keefe\"" <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
- Luis Chamberlain <mcgrof@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v5 8/8] mm: huge_memory: enable debugfs to split huge
- pages to any order.
-Date: Fri, 01 Mar 2024 07:56:41 -0500
-X-Mailer: MailMate (1.14r6018)
-Message-ID: <86C93A15-30F6-405C-A877-909B3E12C52C@nvidia.com>
-In-Reply-To: <2d5f9cd5-a2c2-453e-aa52-a84a86107d1f@sirena.org.uk>
-References: <20240226205534.1603748-1-zi.yan@sent.com>
- <20240226205534.1603748-9-zi.yan@sent.com>
- <082e48c8-71b7-4937-a5da-7a37b4be16ba@arm.com>
- <0dab0c69-2eac-4e65-9efe-e0b037499abc@arm.com>
- <2d5f9cd5-a2c2-453e-aa52-a84a86107d1f@sirena.org.uk>
-Content-Type: multipart/signed;
- boundary="=_MailMate_28CBCCCF-2620-498E-BF64-94C6A1625A3F_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: MN2PR17CA0012.namprd17.prod.outlook.com
- (2603:10b6:208:15e::25) To DS7PR12MB5744.namprd12.prod.outlook.com
- (2603:10b6:8:73::18)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91AE05F483;
+	Fri,  1 Mar 2024 13:09:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1709298552; cv=none; b=NGYzINw3BNIKPKBf0sgZY2OR53/GZeX7njM726uR1z4qVKMN+HZAzkBqIVfJzn7EgQjeUdPwTTViPiVWWkeKhCd8c7GF1PKmtXB/Cw8F5Ryl9wUQ0iijwmIJypTal3Zb7PLaYFsdVnfQhR9JBgemmO8lxMiWTfI9UpCKTxG2W7s=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1709298552; c=relaxed/simple;
+	bh=u/ydR0GkTc8ir3F0jOXvVYt37n9Fdyv4bSPUnci2cMU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=POsaF1cyqNVYJLvVfD36FZIudL36PLzIAzzh/SWL347U64wDhhgMtDiJKZY2CkAzYxW8No523ALL8rpc1xG4EWUHfZi4NnOt7ESijSE4B+IM5SvVF/cGuKPgwWfh3FUyaRzmMnq171FLleN4pP1x/inuEYCScGizJnjojdY7e1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F2DCC1FB;
+	Fri,  1 Mar 2024 05:09:47 -0800 (PST)
+Received: from [10.57.68.58] (unknown [10.57.68.58])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8893E3F6C4;
+	Fri,  1 Mar 2024 05:09:06 -0800 (PST)
+Message-ID: <f7a3d07d-290b-46d6-884e-fa288901c3c6@arm.com>
+Date: Fri, 1 Mar 2024 13:09:04 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|PH7PR12MB5973:EE_
-X-MS-Office365-Filtering-Correlation-Id: 56903a4b-5e96-4c83-413f-08dc39ef0c5d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	kddhRZTHMSO0Jlxmv3YxJayziekLNg7zByOPh+G/htYnAGeYkYqC+uy8UJ81xk6rbfajIaarUrgWkhiQ/TChPyqLP80erezv1z+BfgoAmmEGJocgTWhpld2lpf0lQOcWt76sjz7OAqFeMcDXyRwI/bDm15HTdolUZVQgIaQns1E7gKqSxDzqgsN66SeQsDF0rJIjpzHspSp6zznnV3rVG5EmJxvrgtPVhcFNwxKaqEgIyiJxKJrniGzCo61CMiSic9aK8aaCIb02xjfSz/Q2eEKz/vdlZ0s/OFrREA66ASDwWhxYDibSfDH+ATp4aSDxba+yWtA2JHb2/6qjhSbW955mlpHD43T8RXsh3uKzb4T5tR+DPCCAxRb428Waae7ETGPBXxZoXvyIqbR5oU8/H8XVVhWsMMZvdBJo6HcvsD5Cx2LjM+Iz04otue1+dwvG1Z7kzRZlay+aePKEnb84YmK7Gph5Uvx8jdHXJPJ+R8kDkQJy3dDY3EfJqj0WuHbb9n8CG0yScolGgwrliVlUwGKSIWZXD3RvEjEYWaYC3GlD935LukRG9RDHIHKEgiRlR+5sVxcD2B64wlX3a3YJRY2LCtte3QBXurSuLuiDzvN1P6z7sJHrRvN+XlpVCE6w
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?rdPRowIOLgN2w9t48MWQtj0t/cMJAPn4KLRKz6qHPeaQ7qxQYb2MS2HMnd0r?=
- =?us-ascii?Q?okom9i6lGz77fh4UFYEb8Q5rE2wo3ztZTpxHnmSCFDjpEK3CYYgyg4ZYuMEB?=
- =?us-ascii?Q?Qo0HeArCvldHi0AsVNlNz4Zr9x7O7MbV+EaxdgVahlytTiQCWcOEI6Exhz5e?=
- =?us-ascii?Q?idJgqEeD9OuCg7+ubhCy1LcFWmuvN6cjIjRDgxGBfJitGpdBHR6B8xacc25O?=
- =?us-ascii?Q?8Br9JyDK7yopaxXycRmLzdFXf64xQZp0WSqlf4RAkQIJdK5uX/fFMnxGHdI5?=
- =?us-ascii?Q?W2pC89c5e0cDguQtdQqSSVCq4gpPOMPeVnO/AHHNzIS7Nzu3WhM8eox7CsTU?=
- =?us-ascii?Q?YnYPI84E4w0HEM9RjYz4V3Hwf3Cjpc9IwW55BkbybmtR0YILC7Rc6MpG4ZYH?=
- =?us-ascii?Q?rNh3PntSmIBCm+1EQyK2N90VevlqXnIB3PQ52Dzl1IfKgi5OqU2SEIU8DoLx?=
- =?us-ascii?Q?6PXcySb+5Dt6zExca1U3AgfSOq+cREO38srcwi6CpZynlM69aOh7N9J7SMNd?=
- =?us-ascii?Q?niCX7wyBuo+yCALJxDEnqcLSobXob8tZC7vsx98eeb8wAiWEhzcJ513EBGaS?=
- =?us-ascii?Q?+ohi57HOsSq+Z8tsAlTLyztKiJuXUegk+rkchN6F8dPrUBYoy2ejIcF1QZ5J?=
- =?us-ascii?Q?1wBxslnup25a5wHv5XORAKlc5wtPPzZQVvBxZ9wjA7eBu8+emlYTD1AHchzT?=
- =?us-ascii?Q?Nb1GSrQe3h1kzldhRPl+Upw/KbcCcP4G96uwEKnAwvsvgZ9KNuDKvi02pOBt?=
- =?us-ascii?Q?XzUwi/C8d4zSzd+64YHS/kGVXlaCzxc0ugpi5Bm6WYjUfaRP5f26ALhzWX7z?=
- =?us-ascii?Q?g8djy7S6b1uDidQ2VnGSds5E92TGedXnQ4kjmPu7kWm46U2vW9qQykSoNNSv?=
- =?us-ascii?Q?93A97uzWYtDd3alCLuVqaVm/5uxb0eDLrWilvXUyvL9ta/YM/9Y0c6asfZMS?=
- =?us-ascii?Q?cWnVCuG18UFTUDsui3NlulnZ83WncvNGV1HyyAXZ+RkIBfCcwhfYj/Uyo1FT?=
- =?us-ascii?Q?rFoU3R6dOekSf6re4po+e6nGEyGoBbqaE/065drdSTTLqORfx85wUkBkIEwO?=
- =?us-ascii?Q?Ft1PN/xcF3gQsB4l1aEr7Ri9rn7cO4MelBzIFbMQExLE+WaQ85YObf0HDrUv?=
- =?us-ascii?Q?bNQtTHk8damIJL0W16gLIAP+4rcyXJyuPMplg9jq0aBvrUbfVdZu7Q/8PEbT?=
- =?us-ascii?Q?zcoLjWqLktbBPESFvHfGGJtYLW26GBFgb9stPZvbY83Mjf6j/+EFbVI5vBAs?=
- =?us-ascii?Q?EHtX9OpQPIe1C+vmuUKTZgPs26/slVIzeWew7vDzj8+nhQic56/Jt9RHKNc6?=
- =?us-ascii?Q?pu++wZhDUZnOe0I3xrQPeUR/oJmMAj1z64G2RHIvW3xdNlbLfw6lkwukWY2c?=
- =?us-ascii?Q?oXODCNdnX8+kiS0074h7QjiqITlcL8shDIC31BK/91DUiYGA06EjRuLQDAEV?=
- =?us-ascii?Q?tw1xKtLZ/if+9nAkj9PQJfcz+6v81izycfptIESiaGDIVS1spb4AiKlaJ6UT?=
- =?us-ascii?Q?Evwdfg2qWcx1HvDSRtDRH3AWJF4gJnU7vucyau1lhU20qf+I2lLWMfEUhsrU?=
- =?us-ascii?Q?PfDxajwHIfsLGTwjgDv8p7pQuKu6Or4MMd/PD8fK?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56903a4b-5e96-4c83-413f-08dc39ef0c5d
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 12:56:44.8588
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bJnnn8csXDasIFIKPxsahc4BCyqEdLoAY+lkxtce3+fdKrPfG5ysapm/ZYfI+10q
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5973
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 8/8] mm: huge_memory: enable debugfs to split huge
+ pages to any order.
+Content-Language: en-GB
+To: Zi Yan <ziy@nvidia.com>
+Cc: Aishwarya TCV <aishwarya.tcv@arm.com>,
+ "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, linux-mm@kvack.org,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ David Hildenbrand <david@redhat.com>, Yang Shi <shy828301@gmail.com>,
+ Yu Zhao <yuzhao@google.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Zach O'Keefe
+ <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
+ Luis Chamberlain <mcgrof@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Mark Brown <broonie@kernel.org>
+References: <20240226205534.1603748-1-zi.yan@sent.com>
+ <20240226205534.1603748-9-zi.yan@sent.com>
+ <082e48c8-71b7-4937-a5da-7a37b4be16ba@arm.com>
+ <0dab0c69-2eac-4e65-9efe-e0b037499abc@arm.com>
+ <08703C70-DD6E-446A-9ABC-BC2C8E33B8CD@nvidia.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <08703C70-DD6E-446A-9ABC-BC2C8E33B8CD@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
---=_MailMate_28CBCCCF-2620-498E-BF64-94C6A1625A3F_=
-Content-Type: text/plain
-
-On 1 Mar 2024, at 7:11, Mark Brown wrote:
-
-> On Fri, Mar 01, 2024 at 10:33:15AM +0000, Ryan Roberts wrote:
->
+On 01/03/2024 12:52, Zi Yan wrote:
+> On 1 Mar 2024, at 5:33, Ryan Roberts wrote:
+> 
+>> On 01/03/2024 09:51, Aishwarya TCV wrote:
+>>>
+>>>
+>>> On 26/02/2024 20:55, Zi Yan wrote:
+>>>> From: Zi Yan <ziy@nvidia.com>
+>>>>
+>>>> It is used to test split_huge_page_to_list_to_order for pagecache THPs.
+>>>> Also add test cases for split_huge_page_to_list_to_order via both
+>>>> debugfs.
+>>>>
+>>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
+>>>> ---
+>>>>  mm/huge_memory.c                              |  34 ++++--
+>>>>  .../selftests/mm/split_huge_page_test.c       | 115 +++++++++++++++++-
+>>>>  2 files changed, 131 insertions(+), 18 deletions(-)
+>>>>
+>>>
+>>> Hi Zi,
+>>>
+>>> When booting the kernel against next-master(20240228)with Arm64 on
+>>> Marvell Thunder X2 (TX2), the kselftest-mm test 'split_huge_page_test'
+>>> is failing in our CI (with rootfs over NFS). I can send the full logs if
+>>> required.
+>>
+>> Just to add, I took a quick eyeball and I think there a couple of potential issues:
+>>
 >>   - In create_pagecache_thp_and_fd() you do *fd = open(testfile, O_CREAT ...);
 >>     where testfile is /mnt/thp_fs/testfile. So if /mnt/thp_fs doesn't exist,
 >>     then the open will fail I think? I'm pretty sure that's what's happening on
 >>     our CI. Suggest the test needs to setup this dir itself. Is thp_fs a mounted
 >>     fs or just a dir? If the latter can you just mktemp()?
->
-> Mounting on /mnt would also be a bit of an issue, that's something
-> people are relatively likely to have used for something so could be
-> disruptive.  If the test is going to do a new mount it's probably better
-> to do something like make a temporary directory then mount on top of that.
+> 
+> The former. the page cache folio split tests require a file system supporting
+> large folio and I used XFS.
 
-To move it to a temp folder for mounting, the test needs to do the mount.
-But it is impossible to know if the running environment has the required FS or not
-and where the FS is. Should I add that as a parameter to the test binary?
+OK got it.
 
---
-Best Regards,
-Yan, Zi
+> 
+>>   - Later in create_pagecache_thp_and_fd() you fail the test if you don't have a
+>>     filesystem that supports large folios. Can we turn that into a skip? That
+>>     would reduce noise on the CI.
+> 
+> I can do that. But is this a new requirement that self tests have to be finish
+> in CI/CD environment? Can you provide a guideline for it? 
 
---=_MailMate_28CBCCCF-2620-498E-BF64-94C6A1625A3F_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename=signature.asc
-Content-Type: application/pgp-signature; name=signature.asc
+I'm not sure what's written down, but certainly anyone should be able to run the
+selftests with as little knowledge as possible, and they should only fail if
+they detect a real problem. By convention a test should be skipped if the
+environment (or kernel) isn't compatible. There are lots of examples of that in
+mm selftests (just grep ksft_test_result_skip). mm selftests also has
+run_vmtests.sh which does a lot of environment setup (e.g. reserving hugetlb
+pages, etc) before actually running the tests.
 
------BEGIN PGP SIGNATURE-----
+> Since I always assume
+> selftests are just ran by human who can set up environment. 
 
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmXh0IkPHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhUsp0P/3lAT3IVPZ5+EagFzaaFnND8k+YtGWdUf4OJ
-WYfNaDQYvt/X5ewduT8sq3AdTAAh1hNrPDSFjvr0ub3maWCjIz2bT+btXR1P8rFQ
-mpQdtOuIY3p8I2FRdokgDjsF+x+rfyiHlscx3o3OLqhXKxg+ty05XwKFWV71ntNN
-lH/YfG05gvJFftHAfJ+DxEzIzVKTSyK1cH8PI+DzrzQ+9dotGaMqg8JpwkMcemRP
-mblt3IKIvLmFAjtZyM9FXiGvvffvQENtibwtQIK7aLYcmH83i+2smkNEIsWnICDc
-SKg0C+2SSJbWFnL7+mVlw9c8oX7LmyuOiz6wIXtyM39JrUFUrUZNTTfWxUhmfdf2
-PP/xcxDHcPHqXbRk/kXC3SpIVrgYX8qc1sZO3qqtEv3e2YClHM7kkpz0KOuplIwP
-p19uzUYujjjZp/I3KVrEvju9xNj41pGfTMEo8omFpaJZW6rfSFR4aoPTi1bpnB7i
-8q8npJNMJwTDx+Ui0+PIGo/sMLkYfSIfg9wy6uxM8sJSHf52dsIk47HXhJpKX37t
-WX9maErqN/dQtD/BrLDUn6u7vhnHdSnq2/IxZcTgUdiQ20rEzSbxfOaHyCrx26EI
-Qo22ICnStiMUSRX3l0hd+srdioJNTrObnUdAMVQyDoIcE2xO63MsIUzgWVDutVdF
-DHBLR5iE
-=VPHr
------END PGP SIGNATURE-----
+I believe kernelci have been running mm skeftests on x86 for a long time. We
+have started running them against arm64 on our CI for the last couple of months
+and it had found a number of real issues in the kernel in -next, so this is
+helping find and fix things early. So there is definitely benefit to keeping
+these tests clean and robust.
 
---=_MailMate_28CBCCCF-2620-498E-BF64-94C6A1625A3F_=--
+> In addition, I do
+> not think it is realistic to make the test file to set up all the environment,
+> since everyone's machine is different. It is much easier to make the CI/CD
+> environment to make the mount.
+
+That's reasonable, but then the requirements should be documented and you
+probably would want to be able to optionally pass the mount on the command line.
+
+Thanks,
+Ryan
+
+> 
+>>
+>> Thanks,
+>> Ryan
+>>
+>>>
+>>> A bisect (full log below) identified this patch as introducing the
+>>> failure. Bisected it on the tag "next-20240228" at repo
+>>> "https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git".
+>>>
+>>> This works fine on  Linux version 6.8.0-rc6
+>>>
+>>>
+>>> Sample log from failure against run on TX2:
+>>> ------
+>>> 07:17:34.056125  # # ------------------------------
+>>> 07:17:34.056543  # # running ./split_huge_page_test
+>>> 07:17:34.056839  # # ------------------------------
+>>> 07:17:34.057114  # # TAP version 13
+>>> 07:17:34.058564  # # 1..12
+>>> 07:17:34.156822  # # ok 1 Split huge pages successful
+>>> 07:17:34.214074  # # ok 2 Split PTE-mapped huge pages successful
+>>> 07:17:34.215630  # # # Please enable pr_debug in
+>>> split_huge_pages_in_file() for more info.
+>>> 07:17:34.225503  # # # Please check dmesg for more information
+>>> 07:17:34.225862  # # ok 3 File-backed THP split test done
+>>> 07:17:34.236944  # # Bail out! Failed to create a file at /mnt/thp_fs#
+>>> Planned tests != run tests (12 != 3)
+>>> 07:17:34.237307  # # # Totals: pass:3 fail:0 xfail:0 xpass:0 skip:0 error:0
+>>> 07:17:34.237620  # # [FAIL]
+>>> 07:17:34.246430  # not ok 51 split_huge_page_test # exit=1
+>>>
+>>>
+>>> Bisect log:
+>>> ------
+>>> git bisect start
+>>> # good: [d206a76d7d2726f3b096037f2079ce0bd3ba329b] Linux 6.8-rc6
+>>> git bisect good d206a76d7d2726f3b096037f2079ce0bd3ba329b
+>>> # bad: [20af1ca418d2c0b11bc2a1fe8c0c88f67bcc2a7e] Add linux-next
+>>> specific files for 20240228
+>>> git bisect bad 20af1ca418d2c0b11bc2a1fe8c0c88f67bcc2a7e
+>>> # bad: [1322f1801e59dddce10591d602d246c1bf49990c] Merge branch 'main' of
+>>> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
+>>> git bisect bad 1322f1801e59dddce10591d602d246c1bf49990c
+>>> # bad: [a82f70041487790b7b09fe4bb45436e1b57021d3] Merge branch 'dev' of
+>>> git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
+>>> git bisect bad a82f70041487790b7b09fe4bb45436e1b57021d3
+>>> # bad: [ce90480b9352ba2bebe8946dad9223e3f24c6e9a] Merge branch
+>>> 'for-next' of
+>>> git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap.git
+>>> git bisect bad ce90480b9352ba2bebe8946dad9223e3f24c6e9a
+>>> # bad: [5daac92ed3881fd0c656478a301a4e1d124100ee] Merge branch
+>>> 'mm-everything' of git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
+>>> git bisect bad 5daac92ed3881fd0c656478a301a4e1d124100ee
+>>> # good: [acc2643d9e988c63dd4629a9af380ad9ac69c54a] Merge branch
+>>> 'mm-stable' into mm-unstable
+>>> git bisect good acc2643d9e988c63dd4629a9af380ad9ac69c54a
+>>> # good: [0294de8fe7d7c1a7eddc979cbf4c1886406e36b7] Merge branch 'fixes'
+>>> of git://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git
+>>> git bisect good 0294de8fe7d7c1a7eddc979cbf4c1886406e36b7
+>>> # good: [83e0c8f0e777a1ef0977b2f8189101765703b32d] Merge branch
+>>> 'mm-nonmm-stable' of git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
+>>> git bisect good 83e0c8f0e777a1ef0977b2f8189101765703b32d
+>>> # good: [a739cbe236e0dd3b6ff26a01fa1d31c73d4fac93] mm: memcg: make memcg
+>>> huge page split support any order split
+>>> git bisect good a739cbe236e0dd3b6ff26a01fa1d31c73d4fac93
+>>> # bad: [efb520aa333b2f11daaaaa13f4a598b5ae4ae823] mm: allow non-hugetlb
+>>> large folios to be batch processed
+>>> git bisect bad efb520aa333b2f11daaaaa13f4a598b5ae4ae823
+>>> # bad: [2258bdebb55e3ad3d30fd3849ddb955ff36825de] mm/zsmalloc: don't
+>>> hold locks of all pages when free_zspage()
+>>> git bisect bad 2258bdebb55e3ad3d30fd3849ddb955ff36825de
+>>> # bad: [7fc0be45acf2878cbacc4dba56923c34c3fd8b1e] mm: remove
+>>> total_mapcount()
+>>> git bisect bad 7fc0be45acf2878cbacc4dba56923c34c3fd8b1e
+>>> # good: [d55fac55da2f87ad5a99178e107df09770bbc411] mm: thp: split huge
+>>> page to any lower order pages
+>>> git bisect good d55fac55da2f87ad5a99178e107df09770bbc411
+>>> # bad: [4050d591c1aaf9336c08511fa5984827186e9ad1] mm/memfd: refactor
+>>> memfd_tag_pins() and memfd_wait_for_pins()
+>>> git bisect bad 4050d591c1aaf9336c08511fa5984827186e9ad1
+>>> # bad: [c0ba89c29ef559c95273feb481b049f622c43c17] mm: huge_memory:
+>>> enable debugfs to split huge pages to any order
+>>> git bisect bad c0ba89c29ef559c95273feb481b049f622c43c17
+>>> # first bad commit: [c0ba89c29ef559c95273feb481b049f622c43c17] mm:
+>>> huge_memory: enable debugfs to split huge pages to any order
+>>>
+>>>
+>>> Thanks,
+>>> Aishwarya
+> 
+> 
+> --
+> Best Regards,
+> Yan, Zi
+
 
