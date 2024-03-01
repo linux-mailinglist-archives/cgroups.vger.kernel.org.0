@@ -1,246 +1,175 @@
-Return-Path: <cgroups+bounces-1932-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1933-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21ADB86DE00
-	for <lists+cgroups@lfdr.de>; Fri,  1 Mar 2024 10:17:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C273586DE95
+	for <lists+cgroups@lfdr.de>; Fri,  1 Mar 2024 10:51:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 538A91C20882
-	for <lists+cgroups@lfdr.de>; Fri,  1 Mar 2024 09:17:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96F7AB20D3C
+	for <lists+cgroups@lfdr.de>; Fri,  1 Mar 2024 09:51:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCF686A323;
-	Fri,  1 Mar 2024 09:17:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F1XcCfY+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5C026A8BB;
+	Fri,  1 Mar 2024 09:51:26 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 229FB6A02D
-	for <cgroups@vger.kernel.org>; Fri,  1 Mar 2024 09:16:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1FDA6995C;
+	Fri,  1 Mar 2024 09:51:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709284620; cv=none; b=tNgkrVE6BW1RTZu1x3JLvQ0gC4dpMFbwsxtwx/4uwOu3sKdfk76dTd8NrQigpiiBqe02T+ljCnQo+9I3CqVS/pAdmUvMAapCECCiTNAWbHTi/MZyRWFsDaMByZvSC0BZ7v3aUkcebulx3Q7wT56+mW29Y2Tl4vQpACzqxIeZoOY=
+	t=1709286686; cv=none; b=kLz9yNTPmjS7bsUORvbu0yNAu/mEsmfXoiJUTqTexh8srPmeA3hrgG3vQrJa0ipmiE5e20Vigs1grmjtFbEpu+ls/ZyNZxaSUNKlUDpTWbv54BDCQwIdwAkiWvSqpxGSmCQL/JvGe43Y/BMRQIXZwE69tYhx4FyGq3sWiBbSkL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709284620; c=relaxed/simple;
-	bh=lg3S/25KdN+canx6gsvAokv23ZfwaxnbWt185mtFZ9Y=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=fd2FVMrw8lH0bdZ3y4qvliv1iJ8taFgK1Ri6cSiTjV8P8jFulnevPBam/T+gYSePbv/JxyonQCz7vMDw8B3brOGlDvjJEEx6QFsyuaA3jbiuxM1HitTq73zEiYjXL30RIEgA1eXxhQcpQ6JnDhcRvKzb6xusoXUjMKnRBgaJKC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F1XcCfY+; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1709284619; x=1740820619;
-  h=date:from:to:cc:subject:message-id;
-  bh=lg3S/25KdN+canx6gsvAokv23ZfwaxnbWt185mtFZ9Y=;
-  b=F1XcCfY+4t4lmuJRcqO7qmyOQ3KUBQFYqgH0f5DOuGkJeEAtfSujY6d3
-   nv71Sb9MBCiViVCEVQWrbJck7ib6noLXYR7nvVm+vZfW8x3NdubGJE6FJ
-   NJnwVxoNQeDVJU90Didj9v5oVAyRB5VbllvULhcSd914knaJht8x0Z11B
-   wxuhkDaKYOpI8IBAPS8u+amGq1ijI/R+8ps4ZJ+T+Giy4RM69k3/s6yLH
-   ihDat5fOqBHh5AssdY/JB7L0gQysDKAm5lg6Zjwt9XAa/0aG94+rZfIFH
-   ljIMy7DSys4FT2v9CAiLDLjZU1yG6KY4KtdH27I5XNdS6VSaBW/sJQYmA
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10999"; a="3932849"
-X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
-   d="scan'208";a="3932849"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2024 01:16:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,195,1705392000"; 
-   d="scan'208";a="8283320"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa008.fm.intel.com with ESMTP; 01 Mar 2024 01:16:57 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rfz0g-000DiT-39;
-	Fri, 01 Mar 2024 09:16:54 +0000
-Date: Fri, 01 Mar 2024 17:16:04 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-6.9] BUILD SUCCESS
- 3ab67a9ce82ff22447b1dad53b49a91d1abbf1ff
-Message-ID: <202403011701.AKYul2Fe-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1709286686; c=relaxed/simple;
+	bh=IXPS1YTOuSXz2bhI7nEjXLQQJhT3X+YyX8FgPiHLd2Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UvsW3yISRazAi5bfZo5JkODacgjBb5P9Z1YdZpoJG4cynJfxQhV8N2JG0XMLR5fhy1xA9lSlvsmuGqs8huDudQ9iAZjmyS2Eh2q9wdjkpRmuwYpEyJlyW/QnbWHud5WaZQer9Kp7359QlxLIbyyU1X/+m1Mpx5caN1d+96oBPMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7515F1FB;
+	Fri,  1 Mar 2024 01:52:02 -0800 (PST)
+Received: from [10.57.10.152] (unknown [10.57.10.152])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 474DD3F762;
+	Fri,  1 Mar 2024 01:51:21 -0800 (PST)
+Message-ID: <082e48c8-71b7-4937-a5da-7a37b4be16ba@arm.com>
+Date: Fri, 1 Mar 2024 09:51:19 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 8/8] mm: huge_memory: enable debugfs to split huge
+ pages to any order.
+To: Zi Yan <ziy@nvidia.com>, "Pankaj Raghav (Samsung)"
+ <kernel@pankajraghav.com>, linux-mm@kvack.org
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ David Hildenbrand <david@redhat.com>, Yang Shi <shy828301@gmail.com>,
+ Yu Zhao <yuzhao@google.com>,
+ "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+ Ryan Roberts <ryan.roberts@arm.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Zach O'Keefe <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
+ Luis Chamberlain <mcgrof@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Mark Brown <broonie@kernel.org>
+References: <20240226205534.1603748-1-zi.yan@sent.com>
+ <20240226205534.1603748-9-zi.yan@sent.com>
+Content-Language: en-US
+From: Aishwarya TCV <aishwarya.tcv@arm.com>
+In-Reply-To: <20240226205534.1603748-9-zi.yan@sent.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.9
-branch HEAD: 3ab67a9ce82ff22447b1dad53b49a91d1abbf1ff  cgroup/cpuset: Mark memory_spread_slab as obsolete
 
-elapsed time: 742m
 
-configs tested: 157
-configs skipped: 3
+On 26/02/2024 20:55, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
+> 
+> It is used to test split_huge_page_to_list_to_order for pagecache THPs.
+> Also add test cases for split_huge_page_to_list_to_order via both
+> debugfs.
+> 
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
+> ---
+>  mm/huge_memory.c                              |  34 ++++--
+>  .../selftests/mm/split_huge_page_test.c       | 115 +++++++++++++++++-
+>  2 files changed, 131 insertions(+), 18 deletions(-)
+> 
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Hi Zi,
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240301   gcc  
-arc                   randconfig-002-20240301   gcc  
-arm                              alldefconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240301   gcc  
-arm                   randconfig-002-20240301   clang
-arm                   randconfig-003-20240301   gcc  
-arm                   randconfig-004-20240301   gcc  
-arm                          sp7021_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240301   gcc  
-arm64                 randconfig-002-20240301   clang
-arm64                 randconfig-003-20240301   gcc  
-arm64                 randconfig-004-20240301   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240301   gcc  
-csky                  randconfig-002-20240301   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240301   clang
-hexagon               randconfig-002-20240301   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240301   clang
-i386         buildonly-randconfig-002-20240301   clang
-i386         buildonly-randconfig-003-20240301   gcc  
-i386         buildonly-randconfig-004-20240301   clang
-i386         buildonly-randconfig-005-20240301   clang
-i386         buildonly-randconfig-006-20240301   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240301   clang
-i386                  randconfig-002-20240301   clang
-i386                  randconfig-003-20240301   clang
-i386                  randconfig-004-20240301   clang
-i386                  randconfig-005-20240301   gcc  
-i386                  randconfig-006-20240301   gcc  
-i386                  randconfig-011-20240301   gcc  
-i386                  randconfig-012-20240301   clang
-i386                  randconfig-013-20240301   clang
-i386                  randconfig-014-20240301   gcc  
-i386                  randconfig-015-20240301   gcc  
-i386                  randconfig-016-20240301   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240301   gcc  
-loongarch             randconfig-002-20240301   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                            q40_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                       bmips_be_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240301   gcc  
-nios2                 randconfig-002-20240301   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc                  or1klitex_defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240301   gcc  
-parisc                randconfig-002-20240301   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                          g5_defconfig   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                          polaris_defconfig   gcc  
-sh                          rsk7201_defconfig   gcc  
-sh                           se7206_defconfig   gcc  
-sh                   sh7724_generic_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                       sparc64_defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240301   clang
-x86_64       buildonly-randconfig-002-20240301   gcc  
-x86_64       buildonly-randconfig-003-20240301   clang
-x86_64       buildonly-randconfig-004-20240301   gcc  
-x86_64       buildonly-randconfig-005-20240301   clang
-x86_64       buildonly-randconfig-006-20240301   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240301   gcc  
-x86_64                randconfig-002-20240301   clang
-x86_64                randconfig-003-20240301   clang
-x86_64                randconfig-004-20240301   clang
-x86_64                randconfig-005-20240301   gcc  
-x86_64                randconfig-006-20240301   gcc  
-x86_64                randconfig-011-20240301   clang
-x86_64                randconfig-012-20240301   clang
-x86_64                randconfig-013-20240301   clang
-x86_64                randconfig-014-20240301   gcc  
-x86_64                randconfig-015-20240301   clang
-x86_64                randconfig-016-20240301   gcc  
-x86_64                randconfig-071-20240301   gcc  
-x86_64                randconfig-072-20240301   clang
-x86_64                randconfig-073-20240301   gcc  
-x86_64                randconfig-074-20240301   gcc  
-x86_64                randconfig-075-20240301   gcc  
-x86_64                randconfig-076-20240301   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                          iss_defconfig   gcc  
+When booting the kernel against next-master(20240228)with Arm64 on
+Marvell Thunder X2 (TX2), the kselftest-mm test 'split_huge_page_test'
+is failing in our CI (with rootfs over NFS). I can send the full logs if
+required.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+A bisect (full log below) identified this patch as introducing the
+failure. Bisected it on the tag "next-20240228" at repo
+"https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git".
+
+This works fine on  Linux version 6.8.0-rc6
+
+
+Sample log from failure against run on TX2:
+------
+07:17:34.056125  # # ------------------------------
+07:17:34.056543  # # running ./split_huge_page_test
+07:17:34.056839  # # ------------------------------
+07:17:34.057114  # # TAP version 13
+07:17:34.058564  # # 1..12
+07:17:34.156822  # # ok 1 Split huge pages successful
+07:17:34.214074  # # ok 2 Split PTE-mapped huge pages successful
+07:17:34.215630  # # # Please enable pr_debug in
+split_huge_pages_in_file() for more info.
+07:17:34.225503  # # # Please check dmesg for more information
+07:17:34.225862  # # ok 3 File-backed THP split test done
+07:17:34.236944  # # Bail out! Failed to create a file at /mnt/thp_fs#
+Planned tests != run tests (12 != 3)
+07:17:34.237307  # # # Totals: pass:3 fail:0 xfail:0 xpass:0 skip:0 error:0
+07:17:34.237620  # # [FAIL]
+07:17:34.246430  # not ok 51 split_huge_page_test # exit=1
+
+
+Bisect log:
+------
+git bisect start
+# good: [d206a76d7d2726f3b096037f2079ce0bd3ba329b] Linux 6.8-rc6
+git bisect good d206a76d7d2726f3b096037f2079ce0bd3ba329b
+# bad: [20af1ca418d2c0b11bc2a1fe8c0c88f67bcc2a7e] Add linux-next
+specific files for 20240228
+git bisect bad 20af1ca418d2c0b11bc2a1fe8c0c88f67bcc2a7e
+# bad: [1322f1801e59dddce10591d602d246c1bf49990c] Merge branch 'main' of
+git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
+git bisect bad 1322f1801e59dddce10591d602d246c1bf49990c
+# bad: [a82f70041487790b7b09fe4bb45436e1b57021d3] Merge branch 'dev' of
+git://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
+git bisect bad a82f70041487790b7b09fe4bb45436e1b57021d3
+# bad: [ce90480b9352ba2bebe8946dad9223e3f24c6e9a] Merge branch
+'for-next' of
+git://git.kernel.org/pub/scm/linux/kernel/git/tmlind/linux-omap.git
+git bisect bad ce90480b9352ba2bebe8946dad9223e3f24c6e9a
+# bad: [5daac92ed3881fd0c656478a301a4e1d124100ee] Merge branch
+'mm-everything' of git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
+git bisect bad 5daac92ed3881fd0c656478a301a4e1d124100ee
+# good: [acc2643d9e988c63dd4629a9af380ad9ac69c54a] Merge branch
+'mm-stable' into mm-unstable
+git bisect good acc2643d9e988c63dd4629a9af380ad9ac69c54a
+# good: [0294de8fe7d7c1a7eddc979cbf4c1886406e36b7] Merge branch 'fixes'
+of git://git.kernel.org/pub/scm/linux/kernel/git/sre/linux-power-supply.git
+git bisect good 0294de8fe7d7c1a7eddc979cbf4c1886406e36b7
+# good: [83e0c8f0e777a1ef0977b2f8189101765703b32d] Merge branch
+'mm-nonmm-stable' of git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
+git bisect good 83e0c8f0e777a1ef0977b2f8189101765703b32d
+# good: [a739cbe236e0dd3b6ff26a01fa1d31c73d4fac93] mm: memcg: make memcg
+huge page split support any order split
+git bisect good a739cbe236e0dd3b6ff26a01fa1d31c73d4fac93
+# bad: [efb520aa333b2f11daaaaa13f4a598b5ae4ae823] mm: allow non-hugetlb
+large folios to be batch processed
+git bisect bad efb520aa333b2f11daaaaa13f4a598b5ae4ae823
+# bad: [2258bdebb55e3ad3d30fd3849ddb955ff36825de] mm/zsmalloc: don't
+hold locks of all pages when free_zspage()
+git bisect bad 2258bdebb55e3ad3d30fd3849ddb955ff36825de
+# bad: [7fc0be45acf2878cbacc4dba56923c34c3fd8b1e] mm: remove
+total_mapcount()
+git bisect bad 7fc0be45acf2878cbacc4dba56923c34c3fd8b1e
+# good: [d55fac55da2f87ad5a99178e107df09770bbc411] mm: thp: split huge
+page to any lower order pages
+git bisect good d55fac55da2f87ad5a99178e107df09770bbc411
+# bad: [4050d591c1aaf9336c08511fa5984827186e9ad1] mm/memfd: refactor
+memfd_tag_pins() and memfd_wait_for_pins()
+git bisect bad 4050d591c1aaf9336c08511fa5984827186e9ad1
+# bad: [c0ba89c29ef559c95273feb481b049f622c43c17] mm: huge_memory:
+enable debugfs to split huge pages to any order
+git bisect bad c0ba89c29ef559c95273feb481b049f622c43c17
+# first bad commit: [c0ba89c29ef559c95273feb481b049f622c43c17] mm:
+huge_memory: enable debugfs to split huge pages to any order
+
+
+Thanks,
+Aishwarya
 
