@@ -1,254 +1,171 @@
-Return-Path: <cgroups+bounces-1950-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1953-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF5CC86E6BD
-	for <lists+cgroups@lfdr.de>; Fri,  1 Mar 2024 18:07:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A361586E7BC
+	for <lists+cgroups@lfdr.de>; Fri,  1 Mar 2024 18:52:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F1311C251DC
-	for <lists+cgroups@lfdr.de>; Fri,  1 Mar 2024 17:07:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 428E2285614
+	for <lists+cgroups@lfdr.de>; Fri,  1 Mar 2024 17:52:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDC55882D;
-	Fri,  1 Mar 2024 17:07:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A73AB11C87;
+	Fri,  1 Mar 2024 17:51:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hR4RI3M7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="o05E46K6";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hR4RI3M7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="o05E46K6"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="PFjLRZ6n"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4FBA46B7;
-	Fri,  1 Mar 2024 17:07:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB55848E
+	for <cgroups@vger.kernel.org>; Fri,  1 Mar 2024 17:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709312834; cv=none; b=aSP5QSHl+bulrDBSro5CHLmmUSNwv0xOh2W7PCHX9bzVMw+iLY9BY8gk7cqQ7COLt84qFZlEVgcqME6gXzVsVb8xGCtTodcpd49dfWYZxSSlZ0QBB+354r8UWV09wXnoh3iLrxkdWqHlb10l7N1m0Vb4D6ijFhoqBMDkJvwgPB4=
+	t=1709315519; cv=none; b=rupSC3f63uDZmW+smc+MqrSPykTaJY5nj7ckJUq6h1yhcjurtqBVokuIvcAndhVdARHsHQdbnA4a6Ynzy59DrFMU/LbnUKqXaURRQP43BYa5eliX2WQnD4i/Mh5J5f808sCHb0aOd7FaQiuaJ9jNTzOevaOxqV2bfaYQjZZweio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709312834; c=relaxed/simple;
-	bh=QnfkJAoInt5fUE+416z0sQ20bCXrkSWJKNSLICwxmGM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=p95dDAU7RfLK74kD+9IggMtkH5zglerivEdHaMv236iJh6+dGhFTqrcAIe6/PqFS0LKbAwSI4cdmhZo0bk2FzmAdWOSnyBoHTPLywNe/xHhx8npCU3++sYE3ZVCDxjp+7rOOwj1Dk06nZWlYPqojnfhENh7p1D4iaNMHfeZ2xbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hR4RI3M7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=o05E46K6; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hR4RI3M7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=o05E46K6; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 13FDA207B4;
-	Fri,  1 Mar 2024 17:07:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709312831; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3OiKnePSvssqSsATKZD6FgDSrsGbw6Gz9LH7uaXGsMo=;
-	b=hR4RI3M7QdmI77qwLuZOBimpV0p2ze0qGZw1B4hIMLU2F/D7t3Gu5VbTAR9gTJgDi6vCeY
-	CHs1xCbyeczWk9Hb3kbBfU7sfuhKG4jF0YdapV00Mtliv7GsO2UuM0v+bywHfHlN1udd4J
-	we+zKQVacDSXAT9F9S8KKuGQXrqXA18=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709312831;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3OiKnePSvssqSsATKZD6FgDSrsGbw6Gz9LH7uaXGsMo=;
-	b=o05E46K6EN+fy853AkUBuf6HrQD5ZThoOdIKf4tjmcYR9J8tcaU11fvMi6vu+GSL77uZkk
-	Y/9da7wAoHpaIGBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709312831; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3OiKnePSvssqSsATKZD6FgDSrsGbw6Gz9LH7uaXGsMo=;
-	b=hR4RI3M7QdmI77qwLuZOBimpV0p2ze0qGZw1B4hIMLU2F/D7t3Gu5VbTAR9gTJgDi6vCeY
-	CHs1xCbyeczWk9Hb3kbBfU7sfuhKG4jF0YdapV00Mtliv7GsO2UuM0v+bywHfHlN1udd4J
-	we+zKQVacDSXAT9F9S8KKuGQXrqXA18=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709312831;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3OiKnePSvssqSsATKZD6FgDSrsGbw6Gz9LH7uaXGsMo=;
-	b=o05E46K6EN+fy853AkUBuf6HrQD5ZThoOdIKf4tjmcYR9J8tcaU11fvMi6vu+GSL77uZkk
-	Y/9da7wAoHpaIGBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E618113AA3;
-	Fri,  1 Mar 2024 17:07:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id MKjgNz4L4mUcGQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 01 Mar 2024 17:07:10 +0000
-From: Vlastimil Babka <vbabka@suse.cz>
-Date: Fri, 01 Mar 2024 18:07:11 +0100
-Subject: [PATCH RFC 4/4] UNFINISHED mm, fs: use kmem_cache_charge() in
- path_openat()
+	s=arc-20240116; t=1709315519; c=relaxed/simple;
+	bh=49XDVc09oo1D7rxA4pKGXs7kZYjPBKw7n1z6bPxN2O4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W4ffaN4qWk7/dToqHOXifpSCXlk0r0Eu1iObcVOiun/Wn1PQxg2ier8YSfkJ8/N5VgAqgTbY+iSbQ90li1hAApnOXFQkZmXLFUCCQPCmd9v8D7WcaxYsXO7GYEUa76K1CAOx9Qz86aHLGrqvMAdmLOMUreq7HNmUVZv+n+VkVm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=PFjLRZ6n; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-5132010e5d1so2520811e87.0
+        for <cgroups@vger.kernel.org>; Fri, 01 Mar 2024 09:51:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1709315515; x=1709920315; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=uzMbDkgTXsN2/951Q9RWiF9r9QR8HrSOWMnrlfRXcYc=;
+        b=PFjLRZ6nGmqMCp8ZzmNjDoCM2t89j+RdR0Za/FRYNx0n9Gog1SVfOOh5jho4gBaxzQ
+         J3Xe5bwHQ00wsEMVR+c2X7FnzrgIH6fuHO3WfSyWAmCC56vCzf5NCaEp3AQz5x2mtJHW
+         sd9NKuUAxeEyPs/kfYMCZhuM6tcPaZW6tE2QQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709315515; x=1709920315;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uzMbDkgTXsN2/951Q9RWiF9r9QR8HrSOWMnrlfRXcYc=;
+        b=vCZZ13apmIQGsvH1/J2UjhhboBZXcJWF4hQen+iMcdvgtFdR/SzX6PTcTKB7fFgaXD
+         xUVDJGIx/bIkk/pokuf+0kop2LU0LIcfBmx7Pn/MImamYSfuHjOwUbqi7zkYW+jDChvv
+         MN/T2KRHN70aHMw9SuOSQzw/4aSykCiNkzvLQ81yV5v0BdA9EFbwQYMyCgZq7jeFIUUU
+         siz1GymAPnHBl2e57o2t8c62r0pCtvHhLTM+B3WXpCuUx8fjzfaJylnLsyGShH175LlV
+         1a6d5keR8ICaOUOe+JKunk3HjpnID3ZGccn4qv0GTUn4DKR0GaeCQ4NGvwB5xQR02U3o
+         Pj2A==
+X-Forwarded-Encrypted: i=1; AJvYcCUfFgSxTZwURUlxemnzUkb8FZaBJ8mEXh8VaU5QKsseXtxFzeT/Trc4FDDxxVQWw4xsnGJ405XQ/DMN0zLGdswXEKBzeTungw==
+X-Gm-Message-State: AOJu0Yy8qlR6CNPl2uC1/yb2SGinQRogV4mxSI5x/3jJS5c4CKj39+3l
+	FQ6Ti/ShpyNV7rk0ct8TIeZ8q94l+aOQGcDiuJ29/Ky5MQVIuGKbhmk/7Lhp6cTvzdbMx2wj03l
+	aNvbx7Q==
+X-Google-Smtp-Source: AGHT+IHG9wgdXgBgFAZQHPoWXWcTFY/QRkFgUGfSbvaa7ESKn+MnAFDcazDDGYYkry6hwdwSar3fXA==
+X-Received: by 2002:a05:6512:4013:b0:513:177e:4254 with SMTP id br19-20020a056512401300b00513177e4254mr2069931lfb.14.1709315515632;
+        Fri, 01 Mar 2024 09:51:55 -0800 (PST)
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
+        by smtp.gmail.com with ESMTPSA id d1-20020a193841000000b005131eb404cfsm700119lfj.117.2024.03.01.09.51.55
+        for <cgroups@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Mar 2024 09:51:55 -0800 (PST)
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-513298d6859so2076394e87.3
+        for <cgroups@vger.kernel.org>; Fri, 01 Mar 2024 09:51:55 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX8YKewH9Oy8qnE5d10PIYy2Wy/a5p1A9Cu8xgDoZ601sm9gz6pGXXDm7DVj12vy0iudiU6iRFaTI6F4tgIefgSDy/IYmYvoQ==
+X-Received: by 2002:a17:906:5a9a:b0:a44:48db:9060 with SMTP id
+ l26-20020a1709065a9a00b00a4448db9060mr1596114ejq.19.1709315494643; Fri, 01
+ Mar 2024 09:51:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240301-slab-memcg-v1-4-359328a46596@suse.cz>
-References: <20240301-slab-memcg-v1-0-359328a46596@suse.cz>
-In-Reply-To: <20240301-slab-memcg-v1-0-359328a46596@suse.cz>
-To: Linus Torvalds <torvalds@linux-foundation.org>, 
- Josh Poimboeuf <jpoimboe@kernel.org>, Jeff Layton <jlayton@kernel.org>, 
- Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>, 
- Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, 
- David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>, 
- Andrew Morton <akpm@linux-foundation.org>, 
- Roman Gushchin <roman.gushchin@linux.dev>, 
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
- Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>, 
- Muchun Song <muchun.song@linux.dev>, 
- Alexander Viro <viro@zeniv.linux.org.uk>, 
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
- Vlastimil Babka <vbabka@suse.cz>
-X-Mailer: b4 0.13.0
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -6.80
-X-Spamd-Result: default: False [-6.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLY(-4.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 R_RATELIMIT(0.00)[to_ip_from(RL8ogcagzi1y561i1mcnzpnkwh)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[24];
-	 FREEMAIL_TO(0.00)[linux-foundation.org,kernel.org,oracle.com,linux.com,google.com,lge.com,linux.dev,gmail.com,cmpxchg.org,zeniv.linux.org.uk,suse.cz];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+References: <20240301-slab-memcg-v1-0-359328a46596@suse.cz> <20240301-slab-memcg-v1-4-359328a46596@suse.cz>
+In-Reply-To: <20240301-slab-memcg-v1-4-359328a46596@suse.cz>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Fri, 1 Mar 2024 09:51:18 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whgFtbTxCAg2CWQtDj7n6CEyzvdV1wcCj2qpMfpw0=m1A@mail.gmail.com>
+Message-ID: <CAHk-=whgFtbTxCAg2CWQtDj7n6CEyzvdV1wcCj2qpMfpw0=m1A@mail.gmail.com>
+Subject: Re: [PATCH RFC 4/4] UNFINISHED mm, fs: use kmem_cache_charge() in path_openat()
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>, Jeff Layton <jlayton@kernel.org>, 
+	Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>, 
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, 
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-This is just an example of using the kmem_cache_charge() API.  I think
-it's placed in a place that's applicable for Linus's example [1]
-although he mentions do_dentry_open() - I have followed from strace()
-showing openat(2) to path_openat() doing the alloc_empty_file().
+On Fri, 1 Mar 2024 at 09:07, Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> This is just an example of using the kmem_cache_charge() API.  I think
+> it's placed in a place that's applicable for Linus's example [1]
+> although he mentions do_dentry_open() - I have followed from strace()
+> showing openat(2) to path_openat() doing the alloc_empty_file().
 
-The idea is that filp_cachep stops being SLAB_ACCOUNT. Allocations that
-want to be accounted immediately can use GFP_KERNEL_ACCOUNT. I did that
-in alloc_empty_file_noaccount() (despite the contradictory name but the
-noaccount refers to something else, right?) as IIUC it's about
-kernel-internal opens.
+Thanks. This is not the right patch,  but yes, patches 1-3 look very nice to me.
 
-alloc_empty_file() is now not doing the accounting, so I added
-kmem_account_file() that calls the new kmem_cache_charge() API.
+> The idea is that filp_cachep stops being SLAB_ACCOUNT. Allocations that
+> want to be accounted immediately can use GFP_KERNEL_ACCOUNT. I did that
+> in alloc_empty_file_noaccount() (despite the contradictory name but the
+> noaccount refers to something else, right?) as IIUC it's about
+> kernel-internal opens.
 
-Why is this unfinished:
+Yeah, the "noaccount" function is about not accounting it towards nr_files.
 
-- there are other callers of alloc_empty_file() which I didn't adjust so
-  they simply became memcg-unaccounted. I haven't investigated for which
-  ones it would make also sense to separate the allocation and accounting.
-  Maybe alloc_empty_file() would need to get a parameter to control
-  this.
+That said, I don't think it necessarily needs to do the memory
+accounting either - it's literally for cases where we're never going
+to install the file descriptor in any user space.
 
-- I don't know how to properly unwind the accounting failure case. It
-  seems like a new case because when we succeed the open, there's no
-  further error path at least in path_openat().
+Your change to use GFP_KERNEL_ACCOUNT isn't exactly wrong, but I don't
+think it's really the right thing either, because
 
-Basically it boils down I'm unfamiliar with VFS so this depends if this
-approach is deemed useful enough to finish it.
+> Why is this unfinished:
+>
+> - there are other callers of alloc_empty_file() which I didn't adjust so
+>   they simply became memcg-unaccounted. I haven't investigated for which
+>   ones it would make also sense to separate the allocation and accounting.
+>   Maybe alloc_empty_file() would need to get a parameter to control
+>   this.
 
-[1] https://lore.kernel.org/all/CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com/
+Right. I think the natural and logical way to deal with this is to
+just say "we account when we add the file to the fdtable".
 
-Not-signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- fs/file_table.c | 9 +++++++--
- fs/internal.h   | 1 +
- fs/namei.c      | 4 +++-
- 3 files changed, 11 insertions(+), 3 deletions(-)
+IOW, just have fd_install() do it. That's the really natural point,
+and also makes it very logical why alloc_empty_file_noaccount()
+wouldn't need to do the GFP_KERNEL_ACCOUNT.
 
-diff --git a/fs/file_table.c b/fs/file_table.c
-index b991f90571b4..6401b6f175ae 100644
---- a/fs/file_table.c
-+++ b/fs/file_table.c
-@@ -223,6 +223,11 @@ struct file *alloc_empty_file(int flags, const struct cred *cred)
- 	return ERR_PTR(-ENFILE);
- }
- 
-+int kmem_account_file(struct file *f)
-+{
-+	return kmem_cache_charge(filp_cachep, GFP_KERNEL_ACCOUNT, f);
-+}
-+
- /*
-  * Variant of alloc_empty_file() that doesn't check and modify nr_files.
-  *
-@@ -234,7 +239,7 @@ struct file *alloc_empty_file_noaccount(int flags, const struct cred *cred)
- 	struct file *f;
- 	int error;
- 
--	f = kmem_cache_zalloc(filp_cachep, GFP_KERNEL);
-+	f = kmem_cache_zalloc(filp_cachep, GFP_KERNEL_ACCOUNT);
- 	if (unlikely(!f))
- 		return ERR_PTR(-ENOMEM);
- 
-@@ -468,7 +473,7 @@ void __init files_init(void)
- {
- 	filp_cachep = kmem_cache_create("filp", sizeof(struct file), 0,
- 				SLAB_TYPESAFE_BY_RCU | SLAB_HWCACHE_ALIGN |
--				SLAB_PANIC | SLAB_ACCOUNT, NULL);
-+				SLAB_PANIC, NULL);
- 	percpu_counter_init(&nr_files, 0, GFP_KERNEL);
- }
- 
-diff --git a/fs/internal.h b/fs/internal.h
-index b67406435fc0..06ada11b71d0 100644
---- a/fs/internal.h
-+++ b/fs/internal.h
-@@ -96,6 +96,7 @@ extern void chroot_fs_refs(const struct path *, const struct path *);
- struct file *alloc_empty_file(int flags, const struct cred *cred);
- struct file *alloc_empty_file_noaccount(int flags, const struct cred *cred);
- struct file *alloc_empty_backing_file(int flags, const struct cred *cred);
-+int kmem_account_file(struct file *file);
- 
- static inline void file_put_write_access(struct file *file)
- {
-diff --git a/fs/namei.c b/fs/namei.c
-index 4e0de939fea1..fcf3f3fcd059 100644
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -3799,8 +3799,10 @@ static struct file *path_openat(struct nameidata *nd,
- 		terminate_walk(nd);
- 	}
- 	if (likely(!error)) {
--		if (likely(file->f_mode & FMODE_OPENED))
-+		if (likely(file->f_mode & FMODE_OPENED)) {
-+			kmem_account_file(file);
- 			return file;
-+		}
- 		WARN_ON(1);
- 		error = -EINVAL;
- 	}
+> - I don't know how to properly unwind the accounting failure case. It
+>   seems like a new case because when we succeed the open, there's no
+>   further error path at least in path_openat().
 
--- 
-2.44.0
+Yeah, let me think about this part. Becasue fd_install() is the right
+point, but that too does not really allow for error handling.
 
+Yes, we could close things and fail it, but it really is much too late
+at this point.
+
+What I *think* I'd want for this case is
+
+ (a) allow the accounting to go over by a bit
+
+ (b) make sure there's a cheap way to ask (before) about "did we go
+over the limit"
+
+IOW, the accounting never needed to be byte-accurate to begin with,
+and making it fail (cheaply and early) on the next file allocation is
+fine.
+
+Just make it really cheap. Can we do that?
+
+For example, maybe don't bother with the whole "bytes and pages"
+stuff. Just a simple "are we more than one page over?" kind of
+question. Without the 'stock_lock' mess for sub-page bytes etc
+
+How would that look? Would it result in something that can be done
+cheaply without locking and atomics and without excessive pointer
+indirection through many levels of memcg data structures?
+
+             Linus
 
