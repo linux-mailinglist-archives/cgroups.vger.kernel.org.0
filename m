@@ -1,64 +1,66 @@
-Return-Path: <cgroups+bounces-1946-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1947-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B011B86E359
-	for <lists+cgroups@lfdr.de>; Fri,  1 Mar 2024 15:33:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7950C86E42C
+	for <lists+cgroups@lfdr.de>; Fri,  1 Mar 2024 16:21:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E588282E03
-	for <lists+cgroups@lfdr.de>; Fri,  1 Mar 2024 14:33:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AC701C22593
+	for <lists+cgroups@lfdr.de>; Fri,  1 Mar 2024 15:21:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E74161FBF;
-	Fri,  1 Mar 2024 14:33:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D33D239AC4;
+	Fri,  1 Mar 2024 15:21:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="WtDNOULp"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="lfeFeRf2"
 X-Original-To: cgroups@vger.kernel.org
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2082.outbound.protection.outlook.com [40.107.100.82])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2076.outbound.protection.outlook.com [40.107.223.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B686C394;
-	Fri,  1 Mar 2024 14:33:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.82
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E256E69E18;
+	Fri,  1 Mar 2024 15:21:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.76
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709303611; cv=fail; b=mBSLoIKmoJ4oBwveQBGqgeEKllnmdBApTTKcyi7qckbuHXjAb7sbXf4SD6NTZRv/DROjwrVAxlWx/hknLKxFfYpOybgwiBUUJ5RxEVeobUzlMsz8N5UtTwHNCjODoHJLOaAhVnzKXCCKbSZC6BsjfOFnJ4zFBJBWyhfyj/XXG50=
+	t=1709306482; cv=fail; b=EEEgZQoq+7JuJeNhVDxqnXbUr71LZEd6eTMNTVNI+4E/fsQsYh4eQTJlZvM0Xnhs6xVZYLGayvQ/z5hYTG8fi9T15UBxeC7ngSMz4TRt5QGsTpJhRHTcQpLb/ky2gMZpVeYo1SCGV4m1NGvwkFjEFb79XaNdipOwu5IvH8ObulA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709303611; c=relaxed/simple;
-	bh=EVtudqrX1ef5Q45Y0qQBI1//Q7UZ4UDaD5RvbCOVF9I=;
+	s=arc-20240116; t=1709306482; c=relaxed/simple;
+	bh=/Bd9SzRX/puTQtifDuMCeuZGB1zgWRhLxxXbe7u7IDQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=cVH/AveSv4ODL25E9CabI0FcQkz4OAufHA+3QuAN8/7KloPsXvAKGT4M81yJPVGUcjFn6cRCDc2RXe1t4fQhWSwQFf3xKe4FqICmyNxt6nCkk1S1EcCicOMVs5nYHqDl277SbH7ioULFBonf20Q15xGuWIAM9Z6XaI3XnAbPhvA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=WtDNOULp; arc=fail smtp.client-ip=40.107.100.82
+	 Content-Type:MIME-Version; b=PPgveCnqN6uTe/lj48K6ff949WjGK9kurHRR/d0v7dBWhsnvYoVpNkAf7NejOMjRITvuF7n6NnqgLQlBU5hwNbj+qZAo/M8gBvsEiXyZeOI2hItahZtxLXz2znPd9kL8J6ftwp1r+OR1Woxtzd5FNXdhKwkqo/CKMZYTQT08QrQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=lfeFeRf2; arc=fail smtp.client-ip=40.107.223.76
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eTfmcMjBGpUoLw0ntHLqju3jLxyzvtraVxu+2FwOVJWqaf+IX4yth5l09q1PUtXwLJRxDD5fM1ZJNsd5DV/BQ9LfdaAIGxdhtY/HsEFFIVOyKoITprStc3pEPHV5t1h84Pw/2Kny9hixhchEdXY7uzW5Ry3XRHrPdj9uPSoJ7sDmrE6EsxzqD2w2+gPo/HZejvOCHFKmfKhPsDjsw2MC60jtTWufo9zz1ROMYS++pk1Bj+gDRhswzHfAfqRdcdoANPiweQQJIZHdudVfyu83uY1b2WjZlD6Xh1IA5aHQn1SGl/AKRZHym3SnlD6xhbpSt+m2TCysMKQgZON0t1MsEQ==
+ b=l9Erdmkc2PwwuaFt6+VyRxMfbH2dzmO+eS8QQMCTQI3ULcd4OCVuvphyUAu9eJsDzBKeQ0x3CoWwoUNL1VzAq8CQYd1qD4aF3d0JvSQktBDvepMtJvwP8n3RhC+I93yHGYuH+epehXOajpmNzj8ZaEl8gzlDNn1UROurvvu1LoWhkWEMLOOVjjYJ+vi39NR99KoS9NJ1e7352jqBmHxbW2xhxZWiIGUmM58Um0WFHqUApFfVzMArxRJIIFvfPdcE8cAzhA5SP0Nu/mxtqbEA0w8PT9YHZ2Vdu8Y5sEzF73YIT/xeohEblw+BXgSH+zZDGXLBr2v59QF/8jaXkqG1KQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5hylb8FxyKcx77WRZVuAD8yeM9GbwyMXGZ2d0GJ3+qo=;
- b=GkANJpjEhRXE0seU1w7mxtfiERz2Kief+LZNHPRaAfrayZdPjtVUFdcfzb1KFyYzcmkVfxhu4kaBjz8T4e3f9yi0OxaJgWhi3ydGYZ8DqbZ/XDEXnTdYreVYA/21Fg6l/Fo9Rp3a4A4E/87cOFzv5yBJao2ru1SlWtnbZtnHUwcJCnfMjnDMj0yp8tyc4ZmSavYhKwUz/RCW4Dd91t23RiUeOVhvm5hQgA+Un1ULwCYwGiM67NqYNQB2334s9PMWL1xfsF++90O20tZbZX+liYvSaN+EVT0E8dIi1g1H+AGT42fzLMJRQnZulncesoajOGKGCaFAk0ApgE5EMVPxzg==
+ bh=U7pHyotvhZtWWPF1OhIbvo4DxHzvinTeALrcjhkphh0=;
+ b=Xaq3swSzMteWOOE9oewtut6GglA1rqY4IUi/qtfL7YGT3XoP3tmdNTbGJTXj2DucGRGMVckQbx4Kxi3AxwbJa2U1wgiATfnW4XvnfU+plT2YW6B6BKArdjMIgHAPIYB7R9fJRTR+QNkKnunsQMOeQ4SOVgfZ1KD29jkK5Dh6Do3XXtBUZYcBPt9W7v50FjWrC8ym7Q/e6dq5L6mubGVFYk7CuOB1Ze6/ZlcQxuuWaJs2U0mAcKtyNldfvFvd+qRMG1dXN9ZGfL6ZU7znu3eAZ9I8/S6wgvVkq2ZfN+XUVg/rznMd49DDWQclWrimTw84222m+UDofHqMPxQfOYI0PA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5hylb8FxyKcx77WRZVuAD8yeM9GbwyMXGZ2d0GJ3+qo=;
- b=WtDNOULpngwxovU8L2bEU7g+hUXrDmIWpazASJIaYtaFwo3uVkyVhcn92i0Lxw5+ByiZCOiPndQACRy72nCMOOOXHqswN2xcGSRUEm55WP/B/Iy9OAamVVeVJ7mEbWHqBLk+6U+bW15b+jmilnF9bz83eAJRdhbc33wUYnmUdN5bJNfIduWk2OWUMDF6zyt4XqyVRfsg/flrZiF8LX268drs8LAPdBTdvjmTccUAsMX5xig01QNWpQohDggDnxrW9ABaQr76JDrGWfWkpsGIT06XM62SwZisMq+NJDT8BQR2vBjeKHaAAoY46d3ZHpypLTecT3Dkem3mc7J6x649aw==
+ bh=U7pHyotvhZtWWPF1OhIbvo4DxHzvinTeALrcjhkphh0=;
+ b=lfeFeRf2He14JSIk+A/0vMeS3HyEN8uh20ZC+De/hMDk3UyZZCdl7zdIfFuGkmgMd37ba95tYbvPbVmdHTktT7q/8cSxNvSyTrmJV56UW3YRrRIRriBF1V3bIFXx9nv1Dk0ie24ju2xjMVUsxe96erSADoS9Yr5ICcYtThXXEaCax1T7HM8lpktb5Pwaxa6ZL0iEsOcO422hq2PUgy4UBMY3MTaQXJwlD7gG+u0+raKw6c7YmDxy8KX0e17s0M0QkQzJjTJWs5jc+2my0HrYdFfJbUyzGRyMm5+aAzvPcNDCQwiLQkZah0CxfDdtoi7vTRpt+rLd5DRWbWSW9kb+qQ==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from DS7PR12MB5744.namprd12.prod.outlook.com (2603:10b6:8:73::18) by
- MW3PR12MB4492.namprd12.prod.outlook.com (2603:10b6:303:57::10) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7339.34; Fri, 1 Mar 2024 14:33:26 +0000
+ PH7PR12MB9221.namprd12.prod.outlook.com (2603:10b6:510:2e8::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7339.32; Fri, 1 Mar
+ 2024 15:21:17 +0000
 Received: from DS7PR12MB5744.namprd12.prod.outlook.com
  ([fe80::dc5c:2cf1:d5f5:9753]) by DS7PR12MB5744.namprd12.prod.outlook.com
  ([fe80::dc5c:2cf1:d5f5:9753%6]) with mapi id 15.20.7339.033; Fri, 1 Mar 2024
- 14:33:24 +0000
+ 15:21:13 +0000
 From: Zi Yan <ziy@nvidia.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Aishwarya TCV <aishwarya.tcv@arm.com>,
+To: Mark Brown <broonie@kernel.org>
+Cc: Ryan Roberts <ryan.roberts@arm.com>,
+ Aishwarya TCV <aishwarya.tcv@arm.com>,
  "\"Pankaj Raghav (Samsung)\"" <kernel@pankajraghav.com>, linux-mm@kvack.org,
  "\"Matthew Wilcox (Oracle)\"" <willy@infradead.org>,
  David Hildenbrand <david@redhat.com>, Yang Shi <shy828301@gmail.com>,
@@ -70,23 +72,27 @@ Cc: Aishwarya TCV <aishwarya.tcv@arm.com>,
  Luis Chamberlain <mcgrof@kernel.org>,
  Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
  cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Mark Brown <broonie@kernel.org>
+ linux-kselftest@vger.kernel.org
 Subject: Re: [PATCH v5 8/8] mm: huge_memory: enable debugfs to split huge
  pages to any order.
-Date: Fri, 01 Mar 2024 09:33:21 -0500
+Date: Fri, 01 Mar 2024 10:21:10 -0500
 X-Mailer: MailMate (1.14r6018)
-Message-ID: <03588DEE-18D4-4186-B56D-D76E254F724D@nvidia.com>
-In-Reply-To: <6645287e-d069-4c37-823b-d1b814ec0efe@arm.com>
+Message-ID: <D1EB6EA5-205B-4448-BCE0-1D26F3EB34B6@nvidia.com>
+In-Reply-To: <dda99ee0-87a2-482d-bf28-bd5e5a97b46e@sirena.org.uk>
 References: <20240226205534.1603748-1-zi.yan@sent.com>
  <20240226205534.1603748-9-zi.yan@sent.com>
  <082e48c8-71b7-4937-a5da-7a37b4be16ba@arm.com>
- <2ED5C25C-FDB2-490F-B740-E413E8186C12@nvidia.com>
- <6645287e-d069-4c37-823b-d1b814ec0efe@arm.com>
+ <0dab0c69-2eac-4e65-9efe-e0b037499abc@arm.com>
+ <08703C70-DD6E-446A-9ABC-BC2C8E33B8CD@nvidia.com>
+ <f7a3d07d-290b-46d6-884e-fa288901c3c6@arm.com>
+ <3D5A5D18-0A20-4BB3-B667-0CB5799BA665@nvidia.com>
+ <6003865f-2c85-4dd4-9803-6204f9018f50@arm.com>
+ <dda99ee0-87a2-482d-bf28-bd5e5a97b46e@sirena.org.uk>
 Content-Type: multipart/signed;
- boundary="=_MailMate_FD5AA431-A00D-41BD-959B-5776C3AE19F3_=";
+ boundary="=_MailMate_E641C6CC-D60B-45F0-983E-9E8525B120B2_=";
  micalg=pgp-sha512; protocol="application/pgp-signature"
-X-ClientProxiedBy: MN2PR22CA0022.namprd22.prod.outlook.com
- (2603:10b6:208:238::27) To DS7PR12MB5744.namprd12.prod.outlook.com
+X-ClientProxiedBy: BL1PR13CA0009.namprd13.prod.outlook.com
+ (2603:10b6:208:256::14) To DS7PR12MB5744.namprd12.prod.outlook.com
  (2603:10b6:8:73::18)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -95,227 +101,104 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|MW3PR12MB4492:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6721e43c-3661-4b82-29ed-08dc39fc8d65
+X-MS-TrafficTypeDiagnostic: DS7PR12MB5744:EE_|PH7PR12MB9221:EE_
+X-MS-Office365-Filtering-Correlation-Id: 76acbbe1-99ac-4f31-ee0f-08dc3a033b60
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	cNqa8kFQsYAQ4J7F8x3f9YG5evN8YWyMfsivjssdaYT8PB3F1Evk1lt71J5s5dNfkNBRKkQepuIfs3BcpqXhxySV6IDPNq9QCUzfXrdrvlAUg16S9gyet3K4TIb2LYyB9yrU37sqJYM64DcYmnSLSQ+zLM0XrEBGiv00U+dsIH8KHEe+0iuLUsYWc6kDE80mVR5b9nqWauf5is0ZUUW6cW0Hi/epC8ZVy+IfnyZafPPfEctVMjOaqG7qQR6dstAP4SG7YEtZQrW0DViduBXjyNPzcvQuHmNOH1tFymWcjy1xIh1nmqcY3yn1NDghOvnKU+c2zRGZyyB1VNxPXMq9RqoDoS1nXY30+wnVSgenN7ZxjCjje+5dLWdh6kv3l5assluiZIgeodFI3L6BGLt/U8ybpW3DF1CqGNGsN5tqZ4U7+m0PU6k+xLfJ3b+K9dUw5TdSk+N19M97GIHG7mFNU8eYItXf0kUFwsSpXA1j8OFeuEnIitsMJyQon7qtOQkbrluv3TGb9zW2KqDbXrbLmwQ1TcfmWRx33liajUi191Bd2epOMowVOjBxqiQtTQqLv2/uCjGx7yW3sF6Xw/XvXLSLg4zGjYHFU+x6xoOz6V6OrHA1BClfqkMmbO9FhLCfkhzqDtuP+PX65Xsqm/ld3g==
+	iq+jSs+upxx8VxUk0tznzQTA3995dl0//a/kk4S91hqtjzKLCWkv0YnyDrhA70OAFCJYB6rWDINh3uocUWEWCi5hDDbkyZmxGNAGKpzVaTp6S3Rs8e0dkwwDClBOm3KneCB/d2q3IjMjl6QLRtabfsfaxisj1NKc3E41W3ekGTi1CZaGTfebTKNP+5ZgPyyCpfdSvARaE8dwXAs4uCUI5sCoET++eg2EqRqrEA1/G3aIE05zfnzrVjqHl4OEz4FIKmsluQgM31tdsqrXhs3kXxwmw1dNOOrSfBrbywlqz+9RHHQDFhv8fzk/1gZmOjOsN71bdK3Fqhmrftie0CxZJvCx4XFuFJs530Jrsf4ZPMEtIt04YzO4avmq24gvqm7PGyFh+C8thsyp4WsaPI1T8J2CVhj/0Quu1XTbsPOZnjDM4xfopTi/747o0BDemyZWzpqKR4Bx9NujKwlJGcduItlMT+LRXhjDJwSeNeDWo7IkC+tRwFf0eyZcDYiR5d04J+ae8c3eCvrs9vGn6D9z/VVaaCAHTnGb7G4oFl1WovlQu458EumKQ/gxGmtTTN6CJkCDKbOAn4vOl5RMDKsqqfzpwCAHeVrtB1s+fX/588hoFP5GxAUHxGdoT61QrgbgnthOSXznBooUBRkyMzvkDA==
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB5744.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?OSsyOGtpREVxNkxqVzE5Tno2UzhQNzUzc1YzcGpBaDh6VWRjbm1zYmtHbW5S?=
- =?utf-8?B?NDVqUzdVNVI0Q3FTMFRXcjlNUjJ2UHpYTWJBWWNqeFhUUm41OGVoeHgrUFda?=
- =?utf-8?B?QkZZOXhzOHdIblk3ZGw4ZnNvNTN1SnpQaVh6akl2aHVmVTl5YWxicDlxNnNw?=
- =?utf-8?B?ZUZvTGxSV3N5OVA3Q1lvWm83cEFVWStlR0VFZFc2YUlSZjN3Y1FOUlJFQnhr?=
- =?utf-8?B?Y2JMNjZaeE1kS2xUZ1c3eTdKWWtXSWMyUjlLRkpUWjNYSTVPOHdkMHdkUFly?=
- =?utf-8?B?L094bzUrTnA0aXhuY3p5S3V1WGsyclgvWnc1bGt4ZENwaEQzV2pwSVpEK3RB?=
- =?utf-8?B?LzBlSEoxcFowUnRtc0xGK1oyVXRxQUowajdHWExCN1BRQzFuOU5EV1oxSkp0?=
- =?utf-8?B?a3diTnMrR2ltRzVBelc0NERGRHVuaWxJUTlmQklYNVY2Zmk2SjdjbFNWT1VN?=
- =?utf-8?B?bklRZnlGdHJFMmF6Vzl3SWxRajVuUVlHdHA4Q24zL2tUVFRkd3d3OGpFc3Jo?=
- =?utf-8?B?OUJteHZnTHlleVMzVTNBRHN0VjNFOEU3QmpCSnUraGJXNjU1NTM2UWdZY0x1?=
- =?utf-8?B?eHh3c3dhUng2TGVta1pHNDFiTlo1MTlNckNMbjNHVzVxc2wwMSsvb3dhS0s0?=
- =?utf-8?B?dG0xaWYxM0VkQVRwb1d6TE1DSHBnMERCaUlkdXJ4eEVhdHdyVU5VTjlOSDBJ?=
- =?utf-8?B?RTNrSm9NcmFXbVNsZFQzNUdWM3hxRjBheVpQYmw0amtiZHBKRk5rUi9abnVZ?=
- =?utf-8?B?VlFUSThQWnBHV1pXNytkYnZZT0hmZWs5ZU1CVDNUNUQwRWJOYlVMc0hRbGh1?=
- =?utf-8?B?dXpiWFVjVlFvSmFwMUZXZzlMSmppS1l0MVk4NHBvVnFaVlBtdzJYYVl1dVNS?=
- =?utf-8?B?M3dxQm9iZnBIYmdQQ0lYSll3WXkvK1ZhbksrWXZLRDlHSTEraWtqWnVRUGpr?=
- =?utf-8?B?T0dQQlFWVXZ0ZGpDMFgyU1Rqc0NLaFBnSWhpRFhZOGFQam5idERiMXlZUDhp?=
- =?utf-8?B?RVJkeVE0WmQrWG9ZMEtXeFMwd2RDTmtVR3crZnl2OVg4WGNyWHNWRGt4NFRi?=
- =?utf-8?B?Nk5HcmFyVWhyM1UyWlhPVG1RTkhZVGJ4bE5MM0M4TGRYWHhTY3hzR09mZ3h4?=
- =?utf-8?B?SFlud1E5dGJpaUE2eGJKT3NkMlhEbXVyUzMwcEY1aXplZExUVkE5ZTRKZldC?=
- =?utf-8?B?OVptQWYxd0lheUNiT3hjUmYxMlVkcHVUeC9HRXNlOU1RbW8vQ01aWDhiTEEx?=
- =?utf-8?B?K2d6Q05OOXhkTFlYZmpCbDlFWWtZM3JCbUpFak5KSy9oMHdmU3BQd0Y4cmtq?=
- =?utf-8?B?bUltazZKa0oyNWwwUmZOMW1PdFllQjIwbHFEQktJSW81MHNnU2VNMFpRejBB?=
- =?utf-8?B?d053aHVwaVN3VmNDRG5TYkRVY2NraTBaS2FOU1BwcnYyd0IyWS9xTThpeUdH?=
- =?utf-8?B?ekV3bUxtSncrbjVWUDVnMHNqUHJqeDhBK1FOLzBsckJmVmRneTJrMi9JZTdZ?=
- =?utf-8?B?aXhYNG1yUUwrVVRKQVJQY25tSmVkQkFmMGpIQzN5QnFMc0c0TkMvbTNTT3c2?=
- =?utf-8?B?MHFETERwdG5SM3B6cENLT0VsMy85L2p3YnZjdUlSM09BRmlNZHhsUXA1MnN3?=
- =?utf-8?B?NmJEZG5CbTQ1TXB0N1R0aHViSktxb2tyWnBhMHh3RmRKa1YxZWo0THh2cVYw?=
- =?utf-8?B?TTJyb21MdThJNUZUOWUrVEQ5ZFR6YmJCZ3M3ekEwYmhSRTJiancxNHVUbWl4?=
- =?utf-8?B?SjZINkJQS293VHM5ZmU3UVB1Nm1Edk5tamlGOHZaaHJYdEp3SE1NeHdzZ1RU?=
- =?utf-8?B?cmJGSXNqT3VQYW1mQ2ExYU90cUxkZ2pNOG5Jckp3cG93NEkyZ2I2Skk1am42?=
- =?utf-8?B?LzJwbjBnYWlYb1JzN1g5ZzRmM1BXeDJGZFY1L3g5a3paTEN6MEltanlzeTQ0?=
- =?utf-8?B?TFZrZHdnWXR5YnMvVWFwdThhSDJTbGZzM1I1ZUhaQVZaSStnQU9oWllIbDNL?=
- =?utf-8?B?WXNoelVxYThIaW5VeEJlaGJhQkpibzFlYkVnaEs0TGFGU21ZZ2YxVXFVL2RI?=
- =?utf-8?B?NTNqdUlUNlhPQjBpS2toOE4vS0xCVHd0WWduZ21oWFZlQUJaU2ZGSEw3ajRH?=
- =?utf-8?Q?7NBcX7FFzBy3wtpR6CTYLKhJS?=
+	=?us-ascii?Q?6C6nidi/TaABiftOhzJ/3eJp0pSjpL0ngs7EK4pod8Ntpeaz/h/s0x7A4EBH?=
+ =?us-ascii?Q?wulCxF8fneNIbHRuLkaaP7TrQ3aWs/3uh65StduxbOiaZnH5QUtMLwOek/hV?=
+ =?us-ascii?Q?U+LoDa6tgs8OQ22M8zny5Oajvg/0D0kW318y0otOdl61yN03BnTeEGU2Qt4R?=
+ =?us-ascii?Q?gF3mguaXxomRCaWZvuMQJaG4URdalbDEZAjAv7H5sMhNhUnrQ/p/faIt4K+6?=
+ =?us-ascii?Q?R6BhOFFXjhpzSqQzMH6u+gjV5ClhmMVslHZA3ovboml1BcO4e6a3xLImKRGb?=
+ =?us-ascii?Q?824LNmAq/0MNXz0//0aEwEcjaC/3CZgfK9vfBXd76Huueyq8JhOTQH9VQ6+O?=
+ =?us-ascii?Q?Hx4+iuCBT7A7CKYZOJZNoXqd9I7ZuEqoP+shxJCMTAkDk3naVFv7S0NBUhGV?=
+ =?us-ascii?Q?tSwuUNcUlmZ/ptOy7a4aCkN/vO1yNfd/78TYbs0ow5s4LSshl5jSFeN++4N1?=
+ =?us-ascii?Q?i1U7CSMolccQpf2+M6E4GTnB4T6zOqhFpwAdNlyESWTZ/NtodiRGGif8/kI8?=
+ =?us-ascii?Q?+97BegPSX/y4Xq647shmnUtyJayKldUbXefRuZmhEMdP6Ba1AgSCxuyY7FUW?=
+ =?us-ascii?Q?8cQWtYgicZ7Z4uCZZLP1szhLU4OI5IloLKsxr6Vnko957xAXNXMWFwHp6Jxt?=
+ =?us-ascii?Q?KA+6ikwQZem1tGZRKpsrpe2Zv5wbk4bGqZOgpdzrI/iUkgI7HjMF8ATKxhxx?=
+ =?us-ascii?Q?oqViV5DHsls2clE8tFMas2CmLku9ve6EJtFAwdQbyp2bz7S2Fj7y2w+zpQkI?=
+ =?us-ascii?Q?IwxHYL66lM7fTYBjQym1opNtjueHH51TPu4S3YGJh1MaNbPUXzDU3hhfPTui?=
+ =?us-ascii?Q?xQlrbi+qlHOYru4NOkBaBjFdE5aRSiBovKr7tgQ1KbpZ0oGT+/+uL9FDZbqp?=
+ =?us-ascii?Q?yxRkSC2+Mfac4Wc5UNY6NflvY+dHKf55M8pPwrssdp8ipVXvBKLGLa/RaOs4?=
+ =?us-ascii?Q?5OoYH0XJMBLZaWZiCpmgp+J4UPJ+77ZArry8LsYia2aqbAvsIy1jHqcSIHlX?=
+ =?us-ascii?Q?4xzvzN8qwHA+50QtCwOoL3YgrapaehWFeQnqpmgJk11o1X6kMvL14yIOf/5F?=
+ =?us-ascii?Q?OGwIcj4XRxUnv0+d5QJGD9KfrOe8WnfI5D8Htmsi+WivvupwV1h33hLwAPPZ?=
+ =?us-ascii?Q?72AtGFy5oZixydwJxYnUhLdnjfc/Je/uwupYm3SZLb7iQMduLP0FgyZMmEcM?=
+ =?us-ascii?Q?dmEdoijyn9L/dJ8glNsf9M2IF7Lv0vPV2MOATT+7HAogg1fSXFHLyP5FSQgE?=
+ =?us-ascii?Q?IhDn0+Sd2yFHqPx5eDRYnvCFjz71tWImNiXtBvqy7tFIKiKNRCB0tkAbdzMo?=
+ =?us-ascii?Q?bLvwtT25e0g+iHRJoIiPDY8TbC9mbG4zIY38hqCQtrkomTmgAZCTq9KonPEr?=
+ =?us-ascii?Q?JP4DNtZVQgxJrjVD3MgG0AitRKdQGho5zomaiWUh4jw92Lys5nHhmMg0JfOJ?=
+ =?us-ascii?Q?io+xgmpONv2NCQCw3/7S+Ln12iQBftKbW3F+22o+0TDuRvAyN28ACxzlS5WF?=
+ =?us-ascii?Q?vqa3lUDMXBewMA6vzQFqlSowxT3twkBwTYbRWxbDFKmnQ1gLmNvQOt34psnk?=
+ =?us-ascii?Q?6HN8rpd+eiDW7r3qW81iU83sEnw3tYMm5uDnWN2m?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6721e43c-3661-4b82-29ed-08dc39fc8d65
+X-MS-Exchange-CrossTenant-Network-Message-Id: 76acbbe1-99ac-4f31-ee0f-08dc3a033b60
 X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB5744.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 14:33:24.7727
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Mar 2024 15:21:13.7329
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FzQuW4FYNxHcU6HYtx/hYZexORZd0haezb8HrWTk6TwaG/PDflNdsVPsXGTq0Wno
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4492
+X-MS-Exchange-CrossTenant-UserPrincipalName: b8s1Guk530pZCb8vrm1LGEa3r6NAu9i64hIbJ3x4IWwmvLblFbeu8ClBisD6GXkN
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9221
 
---=_MailMate_FD5AA431-A00D-41BD-959B-5776C3AE19F3_=
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+--=_MailMate_E641C6CC-D60B-45F0-983E-9E8525B120B2_=
+Content-Type: text/plain
 
-On 1 Mar 2024, at 9:23, Ryan Roberts wrote:
+On 1 Mar 2024, at 9:27, Mark Brown wrote:
 
-> On 01/03/2024 14:00, Zi Yan wrote:
->> On 1 Mar 2024, at 4:51, Aishwarya TCV wrote:
->>
->>> On 26/02/2024 20:55, Zi Yan wrote:
->>>> From: Zi Yan <ziy@nvidia.com>
->>>>
->>>> It is used to test split_huge_page_to_list_to_order for pagecache TH=
-Ps.
->>>> Also add test cases for split_huge_page_to_list_to_order via both
->>>> debugfs.
->>>>
->>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
->>>> ---
->>>>  mm/huge_memory.c                              |  34 ++++--
->>>>  .../selftests/mm/split_huge_page_test.c       | 115 +++++++++++++++=
-++-
->>>>  2 files changed, 131 insertions(+), 18 deletions(-)
->>>>
->>>
->>> Hi Zi,
->>>
->>> When booting the kernel against next-master(20240228)with Arm64 on
->>> Marvell Thunder X2 (TX2), the kselftest-mm test 'split_huge_page_test=
-'
->>> is failing in our CI (with rootfs over NFS). I can send the full logs=
- if
->>> required.
->>>
->>> A bisect (full log below) identified this patch as introducing the
->>> failure. Bisected it on the tag "next-20240228" at repo
->>> "https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git"=
-=2E
->>>
->>> This works fine on  Linux version 6.8.0-rc6
->>
->> Hi Aishwarya,
->>
->> I am trying to fix the issue. When I am compiling selftests/mm, I enco=
-untered
->> the error below when I run make under the folder. Am I missing any con=
-figuration?
->> Since you are able to run the test, I assume you know what is happenin=
-g. Thanks.
+> On Fri, Mar 01, 2024 at 02:18:16PM +0000, Ryan Roberts wrote:
 >
-> for what its worth, I usually compile from the top level directory with=
-:
+>> Although I agree it might be a tall order create and mount an XFS fs in
+>> run_vmtests.sh. Perhaps it might be good enough to add an optional param to the
+>> test to pass a path when running the test manually, and if that's not provided,
+>> just try to create a temp file in the current dir and skip if its not the right
+>> sort of fs?
 >
-> # make headers_install
-> # make -C tools/testing/selftests TARGETS=3Dmm install INSTALL_PATH=3D~=
-/kself
->
-> Perhaps the below is due to the headers not being exported properly. Ba=
-d things definitely happen if you omit the headers_install step.
+> Yeah, if it needs to be a specific kind of on disk filesystem then that
+> needs a lot more integration with CI systems (a lot of them run entirely
+> from nfsroot by default!).  Being able to specify the location via an
+> environment variable would also be good, it could fall back to the
+> current directory if one isn't set up.
 
-It works. Thanks a lot!
-
->>
->> vm_util.c: In function =E2=80=98__pagemap_scan_get_categories=E2=80=99=
-:
->> vm_util.c:34:28: error: storage size of =E2=80=98arg=E2=80=99 isn=E2=80=
-=99t known
->>    34 |         struct pm_scan_arg arg;
->>       |                            ^~~
->> vm_util.c:41:27: error: invalid application of =E2=80=98sizeof=E2=80=99=
- to incomplete type =E2=80=98struct pm_scan_arg=E2=80=99
->>    41 |         arg.size =3D sizeof(struct pm_scan_arg);
->>       |                           ^~~~~~
->> vm_util.c:45:35: error: =E2=80=98PAGE_IS_WPALLOWED=E2=80=99 undeclared=
- (first use in this function)
->>    45 |         arg.category_anyof_mask =3D PAGE_IS_WPALLOWED | PAGE_I=
-S_WRITTEN | PAGE_IS_FILE |
->>       |                                   ^~~~~~~~~~~~~~~~~
->> vm_util.c:45:35: note: each undeclared identifier is reported only onc=
-e for each function it appears in
->> vm_util.c:45:55: error: =E2=80=98PAGE_IS_WRITTEN=E2=80=99 undeclared (=
-first use in this function)
->>    45 |         arg.category_anyof_mask =3D PAGE_IS_WPALLOWED | PAGE_I=
-S_WRITTEN | PAGE_IS_FILE |
->>       |                                                       ^~~~~~~~=
-~~~~~~~
->> vm_util.c:45:73: error: =E2=80=98PAGE_IS_FILE=E2=80=99 undeclared (fir=
-st use in this function)
->>    45 |         arg.category_anyof_mask =3D PAGE_IS_WPALLOWED | PAGE_I=
-S_WRITTEN | PAGE_IS_FILE |
->>       |                                                               =
-          ^~~~~~~~~~~~
->> vm_util.c:46:35: error: =E2=80=98PAGE_IS_PRESENT=E2=80=99 undeclared (=
-first use in this function); did you mean =E2=80=98PAGEMAP_PRESENT=E2=80=99=
-?
->>    46 |                                   PAGE_IS_PRESENT | PAGE_IS_SW=
-APPED | PAGE_IS_PFNZERO |
->>       |                                   ^~~~~~~~~~~~~~~
->>       |                                   PAGEMAP_PRESENT
->> vm_util.c:46:53: error: =E2=80=98PAGE_IS_SWAPPED=E2=80=99 undeclared (=
-first use in this function)
->>    46 |                                   PAGE_IS_PRESENT | PAGE_IS_SW=
-APPED | PAGE_IS_PFNZERO |
->>       |                                                     ^~~~~~~~~~=
-~~~~~
->> vm_util.c:46:71: error: =E2=80=98PAGE_IS_PFNZERO=E2=80=99 undeclared (=
-first use in this function)
->>    46 |                                   PAGE_IS_PRESENT | PAGE_IS_SW=
-APPED | PAGE_IS_PFNZERO |
->>       |                                                               =
-        ^~~~~~~~~~~~~~~
->> vm_util.c:47:35: error: =E2=80=98PAGE_IS_HUGE=E2=80=99 undeclared (fir=
-st use in this function)
->>    47 |                                   PAGE_IS_HUGE | PAGE_IS_SOFT_=
-DIRTY;
->>       |                                   ^~~~~~~~~~~~
->> vm_util.c:47:50: error: =E2=80=98PAGE_IS_SOFT_DIRTY=E2=80=99 undeclare=
-d (first use in this function); did you mean =E2=80=98PM_SOFT_DIRTY=E2=80=
-=99?
->>    47 |                                   PAGE_IS_HUGE | PAGE_IS_SOFT_=
-DIRTY;
->>       |                                                  ^~~~~~~~~~~~~=
-~~~~~
->>       |                                                  PM_SOFT_DIRTY=
-
->> vm_util.c:50:26: error: =E2=80=98PAGEMAP_SCAN=E2=80=99 undeclared (fir=
-st use in this function); did you mean =E2=80=98PAGEMAP_PFN=E2=80=99?
->>    50 |         return ioctl(fd, PAGEMAP_SCAN, &arg);
->>       |                          ^~~~~~~~~~~~
->>       |                          PAGEMAP_PFN
->>
->> --
->> Best Regards,
->> Yan, Zi
-
+Sure. lkp creates a XFS image and mount it. I will give it a try. If it is too
+hard to do, I will do what Ryan suggested above.
 
 --
 Best Regards,
 Yan, Zi
 
---=_MailMate_FD5AA431-A00D-41BD-959B-5776C3AE19F3_=
+--=_MailMate_E641C6CC-D60B-45F0-983E-9E8525B120B2_=
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename=signature.asc
 Content-Type: application/pgp-signature; name=signature.asc
 
 -----BEGIN PGP SIGNATURE-----
 
-iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmXh5zIPHHppeUBudmlk
-aWEuY29tAAoJEOJ/noEUByhUp1UP/1LOMterfAFDWLhGJX8OoGHrUpj1OiWnkRbU
-dU5PAW0SnljPqJIvLfMH+jaSF5OYih8KMAA/TgVCwsFgNqe22J8GGw+rjHULZWCO
-BJgHjec+eril9JSqq6UgeCZJ5P8+JfjTqJ8twjsm3WGDHcrt/yjqGEcR4VUi9/E/
-YCHq8nZrYEd9mZpz4WN1tduEctLf6xwzvjGsEy1SexQaxR7wqFDe6R8btMNnmtFt
-VNTkFc+3ebhbVZv2OY2R9flRy9M8pu7pRVezk4+Cw2LmqHtBfH4Y6HG/6/eMiBEH
-kO3ko1HIJkSCSqOuSr2DrHYo11VsxTwKDF0T0dmuGPFJ4fTn+4IlPvKsed+/OOct
-C3yQemyoR7BbfIe9kwC9j07OlgLRWwU33FkN0wJyOYy6IGq0K7q3jZtA2gwEq0l9
-BU0saiAs0IPn/IRF4D8fyNdq6yaAgi4+rwkrlBMmOSA+qaTgXPGPC9GBbdVVFnKz
-1o05tHpTCcFh3Wad9moV6UxHtEBhm+nrude1A+Cas+ygr13fxyzSlKKG3xXWBNaZ
-2ZKdFO0qznLMfx3OJ0RIPLh8GsxR7GcQV2TDLoX9a+QuMLINKrJ4TTOTZzyvHQ4A
-0xCIMkodgQwSR9MJM+a5FZWTqDDYJGZ8eGJ75OX06BPRa+d27O3KlGr356b8UwbG
-B0T48+qS
-=wSNp
+iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmXh8mYPHHppeUBudmlk
+aWEuY29tAAoJEOJ/noEUByhU14sQAKYQi8sSbnKIs9nvnVnu4v/HZpBn4e4K3BWB
+PrGhuZU5ucgjSJpjvN8ajatmlK2JpitWgrXn6m5/Zk3ZZPjdprC3i43fmFMXAf/f
+ookaAjLLmKSXy9m9zG2SlYMMLw387q1pMIKfjunrUhH6r7P1RHPAWBqQXerWn7H9
+QNkGWHr+v2YzMvJ9ulmkWgm8Il080U9B9wvYhI2FPbxYaEp1PRpJlxmMj+QH4cUs
+cVEay0T2TkJF3Ei0nYPea7q+fnJJl1SSsaABMmOe9acAMXTxOaVzPrlMZVwQIaN8
+pyUqOOVh7hEAeDB+1JhMjOi/VORdinX37Ar3Xtsgj4k4I6cIk0nC1TL/KfdfK/AN
+Q2CDyluzIMFTC3L82x5nez0NZwwoXWM7ieKXThvB29AX7IbsUnYqjv3tPbfzxknP
+i/MtvXDki+pgBzpfHxtLw3u7PPXJ4mCdL3wQv7qZQ00xdidrkLFSlksdGaVTUm7q
+fZNTjWhwEiT4fH/AMEvXvlcuNGkQnaNMj3ogFspkJWFMqixyXPWgnz5rjCvWyYy8
+FYeRKfrykFUgrVRlyvGtmEUCnhXsCIejqiMBYM0OI9sKfnqWLzX/4EvoA0kfCvQ/
+/IU3x38FV/fvI/XuQdVtDTDsnRMIpvcUjLUAGq46BTo2VJujBtOdn66R3lSB6gDQ
+miUaV0VB
+=4pv2
 -----END PGP SIGNATURE-----
 
---=_MailMate_FD5AA431-A00D-41BD-959B-5776C3AE19F3_=--
+--=_MailMate_E641C6CC-D60B-45F0-983E-9E8525B120B2_=--
 
