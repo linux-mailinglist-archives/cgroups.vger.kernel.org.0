@@ -1,199 +1,139 @@
-Return-Path: <cgroups+bounces-1959-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-1960-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A360986FE07
-	for <lists+cgroups@lfdr.de>; Mon,  4 Mar 2024 10:52:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5621A8701CD
+	for <lists+cgroups@lfdr.de>; Mon,  4 Mar 2024 13:47:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25584B236BF
-	for <lists+cgroups@lfdr.de>; Mon,  4 Mar 2024 09:52:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11A752866A7
+	for <lists+cgroups@lfdr.de>; Mon,  4 Mar 2024 12:47:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 170FB249EA;
-	Mon,  4 Mar 2024 09:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C86883D39A;
+	Mon,  4 Mar 2024 12:47:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NVj0626x"
 X-Original-To: cgroups@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DFE2241E3;
-	Mon,  4 Mar 2024 09:50:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 783301D53F;
+	Mon,  4 Mar 2024 12:47:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709545837; cv=none; b=JW5fuglhcmmpr/IURSD4UPYwogDPRmjmThxpxzjDJTtkjNOM5VyU+Dxsbyk8G2ZgoJY1RFpvYbaLhrjULdZlH7zTqqNZEsMXzvYQki0FS4cB2mE5DOW2vx0kwjznEDKH3+moGQLhk/VcVQQccBiIt5YTtapqXBqocg+7kYfi1JE=
+	t=1709556473; cv=none; b=LUZkiTibTgtQ31ShzGJCPoPpkkTkf6mVCIBxlB5iqbmjCIHyXaKQq+mai2NmwCPt78I6Qje0gFHBZILXmSZyL0M/Ng3Vkmq78E4bfh8uUuzFSqAYR88V87Cry9hkgcTueCxXjrcxnP7kw2yPOPyxmt9hcTbkTw99Dw7Gkhs7ZWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709545837; c=relaxed/simple;
-	bh=H7NXG0DJNfXrnrJCrvS2GZLlDD9IRnE/n5Zgd4qxAwg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kN/Lr/6DDL8/FFlgD5PSkGKLArY16I9TpNfWlis6/GNL55gDrP8QMxPr4neiSqtPB7Eh0LCzjiOhgMKW58AL2T9ka2UtzzSuB5Dn9ZaODxONgOHfon1DbE9JK2Wv8nzu12sP4MEaO4C83FA5WVew/DpGRJH+2/WBpPt70Igj5XM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 704111FB;
-	Mon,  4 Mar 2024 01:51:11 -0800 (PST)
-Received: from [10.57.10.152] (unknown [10.57.10.152])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B11203F738;
-	Mon,  4 Mar 2024 01:50:31 -0800 (PST)
-Message-ID: <0be630f0-ce8e-4a80-b42f-697ea603cfc6@arm.com>
-Date: Mon, 4 Mar 2024 09:50:31 +0000
+	s=arc-20240116; t=1709556473; c=relaxed/simple;
+	bh=jLz5ELcfTObaRFcBiCY6jXqzV+/2ipsEzVEnweNaefw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WkAxw353/ZNWQeKpoRy3EZu84Q8lrhc4uuPBn0EqRiJxnnW5UDtC9cA81O+W1ASATxdRF3sEnh87AiYuenEJ9if+zHUkc/mVWWsyH688x3lziNdQa/DkSsNxu3tCcDY7Qkj74jt/aT3IRD63j4dDTvLsvOiGCPaTMlhYLkJ0RlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NVj0626x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D93EC433C7;
+	Mon,  4 Mar 2024 12:47:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709556473;
+	bh=jLz5ELcfTObaRFcBiCY6jXqzV+/2ipsEzVEnweNaefw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NVj0626xPWKm6oCku+qVbL1lqwYTouqrHQCaH3UFjNpYcgerz8YrBQAxVLMUMDzVu
+	 5A3CY7dLUz10f/4pLRxilXh7LkoOU5E2AhJfEuDr5r0NsZ2QULjgK/AEX/4cVXO15z
+	 N/4d3xLgdzIl3Oo5SDDPOMTzc1uRRm7QmCHgibWDu2Wf+49YC0k9fSXY9b/VuLgIO4
+	 LKshwUAICdZjbWyf0jSR2lECh+l3LDWx2FvJrYzJI+ObQIdmxJobd6UUaVCRr5uPjO
+	 kfCzAaA7gtshaoPK6wL6Kviuof0JMnw+vaX3Tc7QJ4gco6EsYOO0hhOUVlJsSyOvMN
+	 RjXYJoVDPbZMg==
+Date: Mon, 4 Mar 2024 13:47:44 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Jeff Layton <jlayton@kernel.org>, Chuck Lever <chuck.lever@oracle.com>, 
+	Kees Cook <kees@kernel.org>, Christoph Lameter <cl@linux.com>, 
+	Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>, 
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH RFC 4/4] UNFINISHED mm, fs: use kmem_cache_charge() in
+ path_openat()
+Message-ID: <20240304-pendant-implantat-4e19caa87151@brauner>
+References: <20240301-slab-memcg-v1-0-359328a46596@suse.cz>
+ <20240301-slab-memcg-v1-4-359328a46596@suse.cz>
+ <CAHk-=whgFtbTxCAg2CWQtDj7n6CEyzvdV1wcCj2qpMfpw0=m1A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 8/8] mm: huge_memory: enable debugfs to split huge
- pages to any order.
-Content-Language: en-US
-To: Zi Yan <ziy@nvidia.com>
-Cc: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>, linux-mm@kvack.org,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- David Hildenbrand <david@redhat.com>, Yang Shi <shy828301@gmail.com>,
- Yu Zhao <yuzhao@google.com>,
- "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
- Ryan Roberts <ryan.roberts@arm.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>,
- Zach O'Keefe <zokeefe@google.com>, Hugh Dickins <hughd@google.com>,
- Luis Chamberlain <mcgrof@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Mark Brown <broonie@kernel.org>
-References: <20240226205534.1603748-1-zi.yan@sent.com>
- <20240226205534.1603748-9-zi.yan@sent.com>
- <082e48c8-71b7-4937-a5da-7a37b4be16ba@arm.com>
- <A111EB95-0AF5-4715-82A4-70B8AD900A93@nvidia.com>
- <7E498B77-6CC9-4FC6-B980-D79EEC548CD0@nvidia.com>
- <0685EC19-CDB8-4CD3-BC39-82DE59B5D10C@nvidia.com>
-From: Aishwarya TCV <aishwarya.tcv@arm.com>
-In-Reply-To: <0685EC19-CDB8-4CD3-BC39-82DE59B5D10C@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whgFtbTxCAg2CWQtDj7n6CEyzvdV1wcCj2qpMfpw0=m1A@mail.gmail.com>
 
-
-
-On 01/03/2024 21:10, Zi Yan wrote:
-> On 1 Mar 2024, at 15:02, Zi Yan wrote:
+On Fri, Mar 01, 2024 at 09:51:18AM -0800, Linus Torvalds wrote:
+> On Fri, 1 Mar 2024 at 09:07, Vlastimil Babka <vbabka@suse.cz> wrote:
+> >
+> > This is just an example of using the kmem_cache_charge() API.  I think
+> > it's placed in a place that's applicable for Linus's example [1]
+> > although he mentions do_dentry_open() - I have followed from strace()
+> > showing openat(2) to path_openat() doing the alloc_empty_file().
 > 
->> On 1 Mar 2024, at 14:37, Zi Yan wrote:
->>
->>> On 1 Mar 2024, at 4:51, Aishwarya TCV wrote:
->>>
->>>> On 26/02/2024 20:55, Zi Yan wrote:
->>>>> From: Zi Yan <ziy@nvidia.com>
->>>>>
->>>>> It is used to test split_huge_page_to_list_to_order for pagecache THPs.
->>>>> Also add test cases for split_huge_page_to_list_to_order via both
->>>>> debugfs.
->>>>>
->>>>> Signed-off-by: Zi Yan <ziy@nvidia.com>
->>>>> ---
->>>>>  mm/huge_memory.c                              |  34 ++++--
->>>>>  .../selftests/mm/split_huge_page_test.c       | 115 +++++++++++++++++-
->>>>>  2 files changed, 131 insertions(+), 18 deletions(-)
->>>>>
->>>>
->>>> Hi Zi,
->>>>
->>>> When booting the kernel against next-master(20240228)with Arm64 on
->>>> Marvell Thunder X2 (TX2), the kselftest-mm test 'split_huge_page_test'
->>>> is failing in our CI (with rootfs over NFS). I can send the full logs if
->>>> required.
->>>>
->>>> A bisect (full log below) identified this patch as introducing the
->>>> failure. Bisected it on the tag "next-20240228" at repo
->>>> "https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git".
->>>>
->>>> This works fine on  Linux version 6.8.0-rc6
->>>
->>> Hi Aishwarya,
->>>
->>> Can you try the attached patch and see if it fixes the failure? I changed
->>> the test to accept XFS dev as input, mount XFS on a temp folder under /tmp,
->>> and skip if no XFS is mounted.
->>
->> Please try this updated one. It allows you to specify a XFS device path
->> in SPLIT_HUGE_PAGE_TEST_XFS_PATH env variable, which is passed to
->> split_huge_page_test in run_vmtests.sh. It at least allow CI/CD to run
->> the test without too much change.
+> Thanks. This is not the right patch,  but yes, patches 1-3 look very nice to me.
 > 
-> OK. This hopefully will be my last churn. Now split_huge_page_test accepts
-> a path that is backed by XFS and run_vmtest.sh creates a XFS image in /tmp,
-> mounts it in /tmp, and gives the path to split_huge_page_test. I tested
-> it locally and it works. Let me know if you have any issue. Thanks.
+> > The idea is that filp_cachep stops being SLAB_ACCOUNT. Allocations that
+> > want to be accounted immediately can use GFP_KERNEL_ACCOUNT. I did that
+> > in alloc_empty_file_noaccount() (despite the contradictory name but the
+> > noaccount refers to something else, right?) as IIUC it's about
+> > kernel-internal opens.
 > 
-> --
-> Best Regards,
-> Yan, Zi
+> Yeah, the "noaccount" function is about not accounting it towards nr_files.
+> That said, I don't think it necessarily needs to do the memory
+> accounting either - it's literally for cases where we're never going
+> to install the file descriptor in any user space.
 
-Hi Zi,
+Exactly.
 
-Tested the patch by applying it on next-20240304. Logs from our CI with
-rootfs over nfs is attached below. "Bail out! cannot remove tmp dir:
-Directory not empty" is still observed.
+> Your change to use GFP_KERNEL_ACCOUNT isn't exactly wrong, but I don't
+> think it's really the right thing either, because
+> 
+> > Why is this unfinished:
+> >
+> > - there are other callers of alloc_empty_file() which I didn't adjust so
+> >   they simply became memcg-unaccounted. I haven't investigated for which
+> >   ones it would make also sense to separate the allocation and accounting.
+> >   Maybe alloc_empty_file() would need to get a parameter to control
+> >   this.
+> 
+> Right. I think the natural and logical way to deal with this is to
+> just say "we account when we add the file to the fdtable".
+> IOW, just have fd_install() do it. That's the really natural point,
+> and also makes it very logical why alloc_empty_file_noaccount()
+> wouldn't need to do the GFP_KERNEL_ACCOUNT.
+> 
+> > - I don't know how to properly unwind the accounting failure case. It
+> >   seems like a new case because when we succeed the open, there's no
+> >   further error path at least in path_openat().
+> 
+> Yeah, let me think about this part. Becasue fd_install() is the right
+> point, but that too does not really allow for error handling.
+> 
+> Yes, we could close things and fail it, but it really is much too late
+> at this point.
 
+It would also mean massaging 100+ callsites. And having a non-subsystems
+specific failure step between file allocation, fd reservation and
+fd_install() would be awkward and an invitation for bugs.
 
-Test run log:
-# # ------------------------------
-# # running ./split_huge_page_test
-# # ------------------------------
-# # TAP version 13
-# # 1..12
-# # ok 1 Split huge pages successful
-# # ok 2 Split PTE-mapped huge pages successful
-# # # Please enable pr_debug in split_huge_pages_in_file() for more info.
-# # # Please check dmesg for more information
-# # ok 3 File-backed THP split test done
-<6>[  639.821657] split_huge_page (111099): drop_caches: 3
-<6>[  639.821657] split_huge_page (111099): drop_caches: 3
-# # # No large pagecache folio generated, please provide a filesystem
-supporting large folio
-# # ok 4 # SKIP Pagecache folio split skipped
-<6>[  645.392184] split_huge_page (111099): drop_caches: 3
-<6>[  645.392184] split_huge_page (111099): drop_caches: 3
-# # # No large pagecache folio generated, please provide a filesystem
-supporting large folio
-# # ok 5 # SKIP Pagecache folio split skipped
-<6>[  650.938248] split_huge_page (111099): drop_caches: 3
-<6>[  650.938248] split_huge_page (111099): drop_caches: 3
-# # # No large pagecache folio generated, please provide a filesystem
-supporting large folio
-# # ok 6 # SKIP Pagecache folio split skipped
-<6>[  656.500149] split_huge_page (111099): drop_caches: 3
-<6>[  656.500149] split_huge_page (111099): drop_caches: 3
-# # # No large pagecache folio generated, please provide a filesystem
-supporting large folio
-# # ok 7 # SKIP Pagecache folio split skipped
-<6>[  662.044085] split_huge_page (111099): drop_caches: 3
-<6>[  662.044085] split_huge_page (111099): drop_caches: 3
-# # # No large pagecache folio generated, please provide a filesystem
-supporting large folio
-# # ok 8 # SKIP Pagecache folio split skipped
-<6>[  667.591841] split_huge_page (111099): drop_caches: 3
-<6>[  667.591841] split_huge_page (111099): drop_caches: 3
-# # # No large pagecache folio generated, please provide a filesystem
-supporting large folio
-# # ok 9 # SKIP Pagecache folio split skipped
-<6>[  673.172441] split_huge_page (111099): drop_caches: 3
-<6>[  673.172441] split_huge_page (111099): drop_caches: 3
-# # # No large pagecache folio generated, please provide a filesystem
-supporting large folio
-# # ok 10 # SKIP Pagecache folio split skipped
-<6>[  678.726263] split_huge_page (111099): drop_caches: 3
-<6>[  678.726263] split_huge_page (111099): drop_caches: 3
-# # # No large pagecache folio generated, please provide a filesystem
-supporting large folio
-# # ok 11 # SKIP Pagecache folio split skipped
-<6>[  684.272851] split_huge_page (111099): drop_caches: 3
-<6>[  684.272851] split_huge_page (111099): drop_caches: 3
-# # # No large pagecache folio generated, please provide a filesystem
-supporting large folio
-# # ok 12 # SKIP Pagecache folio split skipped
-# # Bail out! cannot remove tmp dir: Directory not empty
-# # # Totals: pass:3 fail:0 xfail:0 xpass:0 skip:9 error:0
-# # [FAIL]
-# not ok 51 split_huge_page_test # exit=1
-# # ------------------
+> What I *think* I'd want for this case is
+> 
+>  (a) allow the accounting to go over by a bit
+> 
+>  (b) make sure there's a cheap way to ask (before) about "did we go
+> over the limit"
+> 
+> IOW, the accounting never needed to be byte-accurate to begin with,
+> and making it fail (cheaply and early) on the next file allocation is
+> fine.
 
-Thanks,
-Aishwarya
+I think that's a good idea.
 
