@@ -1,44 +1,45 @@
-Return-Path: <cgroups+bounces-2008-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2011-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55914874C2D
-	for <lists+cgroups@lfdr.de>; Thu,  7 Mar 2024 11:20:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66C82874C33
+	for <lists+cgroups@lfdr.de>; Thu,  7 Mar 2024 11:20:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 790491C20BDB
-	for <lists+cgroups@lfdr.de>; Thu,  7 Mar 2024 10:20:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0ABC41F21DD6
+	for <lists+cgroups@lfdr.de>; Thu,  7 Mar 2024 10:20:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F8AD85269;
-	Thu,  7 Mar 2024 10:20:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2766212881F;
+	Thu,  7 Mar 2024 10:20:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="CNesCE0U"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="JWcRK8NQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FB0782D83;
-	Thu,  7 Mar 2024 10:20:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A93F6127B73;
+	Thu,  7 Mar 2024 10:20:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709806806; cv=none; b=CxOzeKSDWCxfIe5loNbsHLxRUDNoP8juDhNdmpFo75/Vp6x20aSdmGZ2Xo63W2KL5rZZVOXFoWR5h9F34EXiyMFu5rBQnxmz55RhDgPEot7Jh/DFwwVk7UqRlUMtDHQfBDIaXigo4NbeLDBgSnImsXsXfmd+SIHszukGa1SYo9I=
+	t=1709806811; cv=none; b=nNjE8/0322ImUezEi5dXnjyEHYhu60Uqp9dlSupPQlejHFXK4AXWcS5h0REqshpO7ju9gGvyFOUOL+aP6eJwKcAE5sS7KP1u9sVt+UK2VkVqYEi2vKdLRyRE0bBvzy6mKR1PpJvdEeTfly+KpuY8PW3tSr0mz96xgKOtEBd4EOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709806806; c=relaxed/simple;
-	bh=ub88lbJOL4Wat28qZNBz2bFPtKjdrcJgNdHz3fHVpk4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KOfHEDiwjFOOQp78/Dz/SuyVIJSFNSMKuUrj/GpvtWvxpzDZAcgy8hSEggdDI+iVrbL8bdRESi43plwUjnGOUsRam/c3LCcvkenV8uHE4lpcw2K+oU74sU2uzAfLeHnLKTKKjOxkguyHe14q7v2VnfBpsOI4QSUKpQlZ5zegHnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=CNesCE0U; arc=none smtp.client-ip=115.124.30.100
+	s=arc-20240116; t=1709806811; c=relaxed/simple;
+	bh=sFthArt/S9De8yl4FLLf4O2ocSVPkaTCw6xLaMhpirc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Qx5G5XN3kXjV5bZXUymublCLbJp48qZMgXatQ+EBYxnv6NjM48Jt4Ie9JnJOUsnEIiN4D4qm5BzKw+4oUXj65mpMNKwIOuSSnZjIx1bg8qyVuh6AYEGW0ss0TXyn6EZnKCf7787YFs5yn9hxZXQWdyPG26acG1JiW1icP8SDUJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=JWcRK8NQ; arc=none smtp.client-ip=115.124.30.113
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1709806801; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=3p+NFO3SqwENF9m8aZP4ZJnc/MkG/qNo1PyeLiJvKTk=;
-	b=CNesCE0UrWJsdI40UlCujF2Aj/GczHsuZJiCq9IB/klbu1VRYltUq0JbHuUXPIBqeNTIIAXBJdbKD19E2fl4HcGq/7LBg9D5A7PXh7WShf1trljtkfduhCsOVawiRJQR1uhMsNfOiHLrUXbB6CAuAOv8i5vn0+fLTEgnkFUZBUo=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R291e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=cruzzhao@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0W2-P305_1709806785;
-Received: from localhost.localdomain(mailfrom:CruzZhao@linux.alibaba.com fp:SMTPD_---0W2-P305_1709806785)
+	t=1709806802; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=k3WrWoGnPi44WJ5pSTMFfxRPEbDLJx7jgfOpgLgyAJA=;
+	b=JWcRK8NQ5tsCPRuIUtFk4B7IZdnmMaP5F7VLYzSjxecZL1TctF6VXqV0J+Pu4EssysaYX3dh2KJBy0hDD8lEy/rrQNzmEHavK1S3V2pjj0dq43S468IuoJCalnrEr+HRLNknlh7xy2xobMgFNjT07mg5TjJ19SWPfyi5sM/grVM=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=cruzzhao@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0W2-P34F_1709806800;
+Received: from localhost.localdomain(mailfrom:CruzZhao@linux.alibaba.com fp:SMTPD_---0W2-P34F_1709806800)
           by smtp.aliyun-inc.com;
-          Thu, 07 Mar 2024 18:19:59 +0800
+          Thu, 07 Mar 2024 18:20:00 +0800
 From: Cruz Zhao <CruzZhao@linux.alibaba.com>
 To: tj@kernel.org,
 	lizefan.x@bytedance.com,
@@ -55,10 +56,12 @@ To: tj@kernel.org,
 	vschneid@redhat.com
 Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/3] introduce CPUTIME_FORCEIDLE_TASK and add
-Date: Thu,  7 Mar 2024 18:19:42 +0800
-Message-Id: <20240307101945.11280-1-CruzZhao@linux.alibaba.com>
+Subject: [PATCH v2 1/3] Documentation: add description of forceidle time statistics
+Date: Thu,  7 Mar 2024 18:19:43 +0800
+Message-Id: <20240307101945.11280-2-CruzZhao@linux.alibaba.com>
 X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20240307101945.11280-1-CruzZhao@linux.alibaba.com>
+References: <20240307101945.11280-1-CruzZhao@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -67,80 +70,62 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As core sched uses rq_clock() as clock source to account forceidle
-time, irq time will be accounted into forceidle time. However, in
-some scenarios, forceidle sum will be much larger than exec runtime,
-e.g., we observed that forceidle time of task calling futex_wake()
-is 50% larger than exec runtime, which is confusing.
+Add description of forceidle time statistics, including task perspective
+and cgroup perspective.
 
-In our test case, task 26281 is the task with this problem, and we bound
-it to cpu0, and it's SMT sibling is running stress-ng -c 1. Then we sample
-forceidle time and runtime of task 26281, and stat of cpu0:
+Signed-off-by: Cruz Zhao <CruzZhao@linux.alibaba.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst       |  3 ++-
+ .../admin-guide/hw-vuln/core-scheduling.rst   | 24 +++++++++++++++++++
+ 2 files changed, 26 insertions(+), 1 deletion(-)
 
-  [root@localhost 26281]# cat ./sched |grep -E
-  "forceidle|sum_exec_runtime" && cat /proc/stat |grep cpu0 && echo "" &&
-  sleep 10 && cat ./sched |grep -E "forceidle|sum_exec_runtime" && cat
-  /proc/stat |grep cpu0
-  se.sum_exec_runtime                          :          3353.788406
-  core_forceidle_sum                           :          4522.497675
-  core_forceidle_task_sum                      :          3354.383413
-  cpu0 1368 74 190 87023149 1 2463 3308 0 0 0
-  
-  se.sum_exec_runtime                          :          3952.897106
-  core_forceidle_sum                           :          5311.687917
-  core_forceidle_task_sum                      :          3953.571613
-  cpu0 1368 74 190 87024043 1 2482 3308 0 0 0
-
-As we can see from the data, se.sum_exec_runtime increased by 600ms,
-core_forceidle_sum(using rq_clock) increased by 790ms,
-and core_forceidle_task_sum(using rq_clock_task, which subtracts irq
-time) increased by 600ms, closing to sum_exec_runtime.
-
-As for the irq time from /proc/stat, irq time increased by 19 ticks,
-190ms, closing to the difference of increment of core_forceidle_sum and
-se.sum_exec_runtime.
-
-We introduce cpustat[CPUTIME_FORCEIDLE_TASK] to account the time
-that a task is actually running while the SMT siblings are forced
-idle, using rq_clock_task() as clock source.
-
-     |<---------------------forceidle time--------------------->|
-     |<--forceidle task time-->|      |<--forceidle task time-->|
-     |<------exec runtime----->|      |<-----exec runtime------>|
-ht0  |          A running      | irq  |         A running       |
-
-ht1  |                          idle                            |
-     |                        B queuing                         |
-
-Interfaces:
- - task level: /proc/$pid/sched, row core_forceidle_task_sum.
- - cgroup level: /sys/fs/cgroup/$cg/cpu.stat, row
-     core_sched.force_idle_task_usec.
-
-This pathset also add description of forceidle time and forceidle_task
-time in Documentation.
-
-v1--->v2: add description of forceidle time and forceidle_task time in
-Documentation.
-
-Cruz Zhao (3):
-  Documentation: add description of forceidle time statistics
-  sched/core: introduce CPUTIME_FORCEIDLE_TASK
-  Documentation: add description of forceidle_task time statistics
-
- Documentation/admin-guide/cgroup-v2.rst       |  4 ++-
- .../admin-guide/hw-vuln/core-scheduling.rst   | 30 +++++++++++++++++++
- include/linux/cgroup-defs.h                   |  1 +
- include/linux/kernel_stat.h                   |  3 +-
- include/linux/sched.h                         |  1 +
- kernel/cgroup/rstat.c                         | 11 +++++++
- kernel/sched/core.c                           |  5 ++++
- kernel/sched/core_sched.c                     |  5 +++-
- kernel/sched/cputime.c                        |  4 ++-
- kernel/sched/debug.c                          |  1 +
- kernel/sched/sched.h                          |  1 +
- 11 files changed, 62 insertions(+), 4 deletions(-)
-
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 17e6e9565156..b82717767c61 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1081,8 +1081,9 @@ All time durations are in microseconds.
+ 	- user_usec
+ 	- system_usec
+ 
+-	and the following five when the controller is enabled:
++	and the following six when the controller is enabled:
+ 
++	- core_sched.force_idle_usec
+ 	- nr_periods
+ 	- nr_throttled
+ 	- throttled_usec
+diff --git a/Documentation/admin-guide/hw-vuln/core-scheduling.rst b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+index cf1eeefdfc32..95a4920a2a9b 100644
+--- a/Documentation/admin-guide/hw-vuln/core-scheduling.rst
++++ b/Documentation/admin-guide/hw-vuln/core-scheduling.rst
+@@ -224,3 +224,27 @@ with SMT enabled. There are other use cases where this feature could be used:
+ - Gang scheduling: Requirements for a group of tasks that needs to be scheduled
+   together could also be realized using core scheduling. One example is vCPUs of
+   a VM.
++
++Statictics
++----------
++A task's forceidle statistics are exported via 1 field in procfs.
++
++/proc/$pid/sched:
++
++ - se.statistics.core_forceidle_sum: Force idle time caused by this task,
++   unit: ms. It is worth noting that, if this task is running on cpux whose SMT
++   siblings are forced idle, the irq time of cpux during this period will be
++   accounted to this task's force idle time.
++
++This interface is read-only.
++
++A group's forceidle statistics are exported via 1 filed in cpu.stat.
++
++cpu.stat:
++
++ - core_sched.force_idle_usec: Force idle time caused by this cgroup' tasks,
++   unit: us. It is worth nothing that, if this cgroup's task is running on cpux
++   whose SMT siblings are forced idle, the irq time of cpux during this period
++   will be accounted to this cgroup's force idle time.
++
++This interface is read-only.
 -- 
 2.39.3
 
