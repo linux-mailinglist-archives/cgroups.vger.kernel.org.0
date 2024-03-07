@@ -1,226 +1,126 @@
-Return-Path: <cgroups+bounces-2015-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2016-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EC348755FE
-	for <lists+cgroups@lfdr.de>; Thu,  7 Mar 2024 19:18:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C987F8757C3
+	for <lists+cgroups@lfdr.de>; Thu,  7 Mar 2024 20:59:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0704C1F22FD9
-	for <lists+cgroups@lfdr.de>; Thu,  7 Mar 2024 18:18:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 849EA282796
+	for <lists+cgroups@lfdr.de>; Thu,  7 Mar 2024 19:59:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B473F1332B0;
-	Thu,  7 Mar 2024 18:18:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBC4E137C3B;
+	Thu,  7 Mar 2024 19:59:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="H5aOzJ+M"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="f3WrWocD"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2648132C19
-	for <cgroups@vger.kernel.org>; Thu,  7 Mar 2024 18:18:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C35512DDB6;
+	Thu,  7 Mar 2024 19:59:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709835491; cv=none; b=MVPaqr+iG7Vi0Qz/qESa8LpwVZfriCKZon0txBjY4wYTuM53D62J9KG7UQGvWoPl7Qbqxm3yvgYC6Vhi6Hr/G9kfm9cyx0CHwLUbHbt+6D22/6pJm/AI/tMTZ/oc84i/0RPpEW+8jhqMckl38xXHTA/5TtOnm5hKVK65Nwutnc8=
+	t=1709841557; cv=none; b=RzzNJ4ziSd3TND7sBxkvxCecHfzLqr1PJwJAIg4YcrcC4sxNY7IQgKbamJ61UI1F/3qziEKSkyh91y2hUHYUmUTFSYu/ktvXk24JQyVYkODyZKCli9M2FBvB9Ba3fckcdRpWBP8O3+xCrCyYBlSWUbKHGzsyypB8IrDMkCRLceQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709835491; c=relaxed/simple;
-	bh=Gm1+12tqQKv7crZi1oC909n2tXEtrT/LTbYSqj5bPhw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h05t04xaRvJ0e3MIznb5/7O6BzPxkeO+aAgJ8DVf3RI2JTpyZVaiaHX8If8bV+v1/2MDIpbY47Z5kmtMcAOZWXy//Gl8mY3zWjaWct9zukyGzFE65BkcZ2FCw19gLac25R4YR7EBlizFFqQ1YEHzrvXBYaQDKOhFLQSdHm6GB5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=H5aOzJ+M; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 7 Mar 2024 13:17:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1709835485;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iHaIxY/+BiJn46m1UxNdZN63kb5NNOFAVQARDvBki5g=;
-	b=H5aOzJ+MeszkUjW7Gdq8GIb9xZvvYFafE54Qajm1X53jP+9kSZaHykmws15lGZbxbVC4sP
-	xB+aj3bB+XZoL9vVS6ke4qTd3NSX0xuXSFczxjIN4xYv/lKG+5cGIuGnJ1kVWq3Q8k+XsG
-	i3YlKbhrl9zIpdvnTlhFtaDJQqe9fLg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org, 
-	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
-	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, 
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
-	peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, 
-	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, 
-	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, 
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
-	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
-	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com, 
-	aliceryhl@google.com, rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
-	kernel-team@android.com, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH v5 37/37] memprofiling: Documentation
-Message-ID: <hsyclfp3ketwzkebjjrucpb56gmalixdgl6uld3oym3rvssyar@fmjlbpdkrczv>
-References: <20240306182440.2003814-1-surenb@google.com>
- <20240306182440.2003814-38-surenb@google.com>
- <10a95079-86e4-41bf-8e82-e387936c437d@infradead.org>
+	s=arc-20240116; t=1709841557; c=relaxed/simple;
+	bh=eH7ts0q5onZGbRT1w1B9IvPr7bH0ysYwVmxguJ8VLyo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AIfnk2ezrTX/jOYQ1dH83HvGL7Yc/c2ZtErIdSx1tyi4tsEmKY4E/b/W5nNEE9WuJJykLfZ7UKYX0A3s1G2CbC/Y1FmsVR0Qql8ZUplgoQWCqFH+MQqXE0LNkT7zTAYeFrVEqZ4OpMXePD5PQDxPkSh6AGS/9EI3bdZGiONlYIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=f3WrWocD; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=KVaCyMJy+vYOeUyoSR5Mk9pa+MCPgO2uUL4D5SXL/4U=; b=f3WrWocD0YgDteVxzjrU8D0SOL
+	i6nsddeuB7BsTF/6Bk57YSNGFwHs5xN7nLFK/8A0vEldbFtlRrqHlHBwZXKMbZ/V+lRULmFaGKkP2
+	KmcmYY8ln1CsCtQzN+HNZBkzqQPvRHsl85eew0Cw+l1z7z8R+S0q+3mlnKAIzYdGPXeatqeje8nqo
+	qqxpITt1bjw+UbEfM/hpcJ0+04WQ+YwWc0ItpZUX31hvtv3ihrmMw8UhN2jOiHLs/2uCP9xQpbGGV
+	S31FHRUrFmwa1Qfe20oJaHcxYNP0lu42D9hN2gPZQGm4p5MY87QkeTQhqi1x2geuN6lbb+dW5nC9v
+	APJHYROA==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1riJtE-00000006Axx-2mZO;
+	Thu, 07 Mar 2024 19:58:52 +0000
+Message-ID: <299be3c9-4cf4-47ce-b53a-c9789af4f5ca@infradead.org>
+Date: Thu, 7 Mar 2024 11:58:49 -0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <10a95079-86e4-41bf-8e82-e387936c437d@infradead.org>
-X-Migadu-Flow: FLOW_OUT
-
-On Wed, Mar 06, 2024 at 07:18:57PM -0800, Randy Dunlap wrote:
-> Hi,
-> This includes some editing suggestions and some doc build fixes.
-> 
-> 
-> On 3/6/24 10:24, Suren Baghdasaryan wrote:
-> > From: Kent Overstreet <kent.overstreet@linux.dev>
-> > 
-> > Provide documentation for memory allocation profiling.
-> > 
-> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > ---
-> >  Documentation/mm/allocation-profiling.rst | 91 +++++++++++++++++++++++
-> >  1 file changed, 91 insertions(+)
-> >  create mode 100644 Documentation/mm/allocation-profiling.rst
-> > 
-> > diff --git a/Documentation/mm/allocation-profiling.rst b/Documentation/mm/allocation-profiling.rst
-> > new file mode 100644
-> > index 000000000000..8a862c7d3aab
-> > --- /dev/null
-> > +++ b/Documentation/mm/allocation-profiling.rst
-> > @@ -0,0 +1,91 @@
-> > +.. SPDX-License-Identifier: GPL-2.0
-> > +
-> > +===========================
-> > +MEMORY ALLOCATION PROFILING
-> > +===========================
-> > +
-> > +Low overhead (suitable for production) accounting of all memory allocations,
-> > +tracked by file and line number.
-> > +
-> > +Usage:
-> > +kconfig options:
-> > + - CONFIG_MEM_ALLOC_PROFILING
-> > + - CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT
-> > + - CONFIG_MEM_ALLOC_PROFILING_DEBUG
-> > +   adds warnings for allocations that weren't accounted because of a
-> > +   missing annotation
-> > +
-> > +Boot parameter:
-> > +  sysctl.vm.mem_profiling=0|1|never
-> > +
-> > +  When set to "never", memory allocation profiling overheads is minimized and it
-> 
->                                                       overhead is
-> 
-> > +  cannot be enabled at runtime (sysctl becomes read-only).
-> > +  When CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT=y, default value is "1".
-> > +  When CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT=n, default value is "never".
-> > +
-> > +sysctl:
-> > +  /proc/sys/vm/mem_profiling
-> > +
-> > +Runtime info:
-> > +  /proc/allocinfo
-> > +
-> > +Example output:
-> > +  root@moria-kvm:~# sort -g /proc/allocinfo|tail|numfmt --to=iec
-> > +        2.8M    22648 fs/kernfs/dir.c:615 func:__kernfs_new_node
-> > +        3.8M      953 mm/memory.c:4214 func:alloc_anon_folio
-> > +        4.0M     1010 drivers/staging/ctagmod/ctagmod.c:20 [ctagmod] func:ctagmod_start
-> > +        4.1M        4 net/netfilter/nf_conntrack_core.c:2567 func:nf_ct_alloc_hashtable
-> > +        6.0M     1532 mm/filemap.c:1919 func:__filemap_get_folio
-> > +        8.8M     2785 kernel/fork.c:307 func:alloc_thread_stack_node
-> > +         13M      234 block/blk-mq.c:3421 func:blk_mq_alloc_rqs
-> > +         14M     3520 mm/mm_init.c:2530 func:alloc_large_system_hash
-> > +         15M     3656 mm/readahead.c:247 func:page_cache_ra_unbounded
-> > +         55M     4887 mm/slub.c:2259 func:alloc_slab_page
-> > +        122M    31168 mm/page_ext.c:270 func:alloc_page_ext
-> > +===================
-> > +Theory of operation
-> > +===================
-> > +
-> > +Memory allocation profiling builds off of code tagging, which is a library for
-> > +declaring static structs (that typcially describe a file and line number in
-> 
->                                   typically
-> 
-> > +some way, hence code tagging) and then finding and operating on them at runtime
-> 
->                                                                         at runtime,
-> 
-> > +- i.e. iterating over them to print them in debugfs/procfs.
-> 
->   i.e., iterating
-
-i.e. latin id est, that is: grammatically my version is fine
-
-> 
-> > +
-> > +To add accounting for an allocation call, we replace it with a macro
-> > +invocation, alloc_hooks(), that
-> > + - declares a code tag
-> > + - stashes a pointer to it in task_struct
-> > + - calls the real allocation function
-> > + - and finally, restores the task_struct alloc tag pointer to its previous value.
-> > +
-> > +This allows for alloc_hooks() calls to be nested, with the most recent one
-> > +taking effect. This is important for allocations internal to the mm/ code that
-> > +do not properly belong to the outer allocation context and should be counted
-> > +separately: for example, slab object extension vectors, or when the slab
-> > +allocates pages from the page allocator.
-> > +
-> > +Thus, proper usage requires determining which function in an allocation call
-> > +stack should be tagged. There are many helper functions that essentially wrap
-> > +e.g. kmalloc() and do a little more work, then are called in multiple places;
-> > +we'll generally want the accounting to happen in the callers of these helpers,
-> > +not in the helpers themselves.
-> > +
-> > +To fix up a given helper, for example foo(), do the following:
-> > + - switch its allocation call to the _noprof() version, e.g. kmalloc_noprof()
-> > + - rename it to foo_noprof()
-> > + - define a macro version of foo() like so:
-> > +   #define foo(...) alloc_hooks(foo_noprof(__VA_ARGS__))
-> > +
-> > +It's also possible to stash a pointer to an alloc tag in your own data structures.
-> > +
-> > +Do this when you're implementing a generic data structure that does allocations
-> > +"on behalf of" some other code - for example, the rhashtable code. This way,
-> > +instead of seeing a large line in /proc/allocinfo for rhashtable.c, we can
-> > +break it out by rhashtable type.
-> > +
-> > +To do so:
-> > + - Hook your data structure's init function, like any other allocation function
-> 
-> maybe end the line above with a '.' like the following line.
-> 
-> > + - Within your init function, use the convenience macro alloc_tag_record() to
-> > +   record alloc tag in your data structure.
-> > + - Then, use the following form for your allocations:
-> > +   alloc_hooks_tag(ht->your_saved_tag, kmalloc_noprof(...))
-> 
-> 
-> Finally, there are a number of documentation build warnings in this patch.
-> I'm no ReST expert, but the attached patch fixes them for me.
-> 
-> -- 
-> #Randy
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 37/37] memprofiling: Documentation
+Content-Language: en-US
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+ vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+ mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
+ liam.howlett@oracle.com, penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net,
+ void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+ catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de,
+ mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org,
+ peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
+ masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
+ jhubbard@nvidia.com, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+ paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com,
+ yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
+ andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com,
+ vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
+ ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+ rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+ vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, shakeelb@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com,
+ rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
+ kernel-team@android.com, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+ linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-modules@vger.kernel.org,
+ kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+References: <20240306182440.2003814-1-surenb@google.com>
+ <20240306182440.2003814-38-surenb@google.com>
+ <10a95079-86e4-41bf-8e82-e387936c437d@infradead.org>
+ <CAJuCfpFN3BLsFOWB0huA==LVa2pNYdnf7bT_VXgDtPuJOxvWSQ@mail.gmail.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <CAJuCfpFN3BLsFOWB0huA==LVa2pNYdnf7bT_VXgDtPuJOxvWSQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
 
+
+On 3/7/24 08:51, Suren Baghdasaryan wrote:
+> On Thu, Mar 7, 2024 at 3:19 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> Hi,
+>> This includes some editing suggestions and some doc build fixes.
+>>
+>>
+
+[snip]
+
+>>
+>>
+>> Finally, there are a number of documentation build warnings in this patch.
+>> I'm no ReST expert, but the attached patch fixes them for me.
+> 
+> Thanks Randy! I'll use your cleaned-up patch in the next submission.
+> Cheers,
+> Suren.
+
+Hi Suren,
+
+The patch did not include the grammar/punctuation changes, only the
+doc build changes.
+
+I can make a more complete patch if you like.
+
+thanks.
+-- 
+#Randy
 
