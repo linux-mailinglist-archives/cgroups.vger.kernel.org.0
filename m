@@ -1,120 +1,79 @@
-Return-Path: <cgroups+bounces-2025-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2026-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44F9A877C7F
-	for <lists+cgroups@lfdr.de>; Mon, 11 Mar 2024 10:20:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E68C187896E
+	for <lists+cgroups@lfdr.de>; Mon, 11 Mar 2024 21:26:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76F6B1C20E8D
-	for <lists+cgroups@lfdr.de>; Mon, 11 Mar 2024 09:20:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B473282194
+	for <lists+cgroups@lfdr.de>; Mon, 11 Mar 2024 20:26:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1252614F75;
-	Mon, 11 Mar 2024 09:20:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B81857861;
+	Mon, 11 Mar 2024 20:26:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gui0JIOP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RwheS22K"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6353017548;
-	Mon, 11 Mar 2024 09:20:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B781957329;
+	Mon, 11 Mar 2024 20:26:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710148816; cv=none; b=ZHGdAxi5xBb1esIcnBTw5FE2WnAq7M65VT2VLEACJzzeKAP/XEQmv7j/qff+zY/34GHUJ1VxxOeIt4p/2JZ0RHJ5poSJ4RF+c1V3NDYMDbzcdl1yGzVUkWxPUY1m9gqyp1KasvTvp1Qg23CcVfsVzizAN8iHiliPd4Am7fg0alk=
+	t=1710188770; cv=none; b=d71uaY0poMNBhjWQacTVOGUitXBXBnfJZA53LbXQ8sxmELqKHNLFlY1WftgWHBztaI1nPKoEEvyemOA21OGe6POd37lXXgFeUDuLdQHE4VBPqYRisu6YNM1UfHF1McXSrQ4l+8Tm1CaY/sZHSHjklqbraI0BVwwlYpKk+Zb5St4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710148816; c=relaxed/simple;
-	bh=nmBmBVnPqJ2N+DmK4r1FSHVlgAjjOny7F6we7mlRXkc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=ofA2XTZPoRGnYb1aiub2ZW9qCTS3IHbSICFyKRRZmH9AIqlF2ICaVitLSyqDhy0yeNjwxRCxA2rYZDlbRowRmQ47cPjMP0eje/EYERV6DNWwBLjh/Lin3DvT/RgtqopeClgrToRWKdcx2NGdij52v5eSPxmqMlSLXwflgAhoVHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gui0JIOP; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e64cdf08e3so1750662b3a.3;
-        Mon, 11 Mar 2024 02:20:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710148814; x=1710753614; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=PEdFwNEj9NiEV2imWkxjdIFM5A8FOXJbS9uIt5QsObI=;
-        b=gui0JIOPEyRqmBABlAR6VR/1bqA+JvXZNSpbZMQCUibO/ypzvDwJpY2lSszlDcOUcp
-         2xejr2MUG5zq9OBGxSpZ3lFIWbNPX+37U8fjawUufVpzZoYW35DSQRkJnaZmlm3szdN0
-         CCIIyn9ih3T+Jb8r1LOMuQwzyteNPb9xjTSAFUJ2DflvqX/Don6miVLY00GQrprQajrc
-         5eZCI2s/q/KcCrN87BpuA/qTnolSgE2ROh7FLLHL5J3aBgs3eizDAN0SRNWo+Tt48yu9
-         u5B+Dwl0qvWk5MJLvZGLYePBamV41dcx5F1ntaX1wXOlZe6qFeG1xz4dFtSUJD/I96xM
-         ZGZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710148814; x=1710753614;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PEdFwNEj9NiEV2imWkxjdIFM5A8FOXJbS9uIt5QsObI=;
-        b=o7Jo2PTjf4kcx/JniCHTdvbTF7ZKrY/5AJamdhFsaDS7ix/OJ5Mhh+Xcf2SlBXdl6Z
-         gDtVuDmcL3CoEiFM/w16VhfRdb2Imoh+zVgxjmccA4tmOvnU6tQJc1F0DJ2Z4ZHu8ia8
-         Ut/QIpCuYe/NncaA+VKNQBEJc+JlGdQmKmWphfTr2Yc4h+0hakSIGN8hfNgp9bIT5BlF
-         raOANGt1B8T+C8Nz3JxmP5et0K+98thc2LCYDojwgz4R8s0YxtPY9tIQq3rdcPct85T6
-         yeCZ9ANbqvFP2Dtm0z2+4zcAW9Q1BFrnsq+a7ZZ3CUPhoFDt4bPKxUybOQGa/t7/QYqX
-         hVpA==
-X-Forwarded-Encrypted: i=1; AJvYcCUAzvKfURhr83wEqaVltnyOJ/Pui5ng735DfvAHOqtrDAqyhPBciKj/298c2JU6rykweBUJyr7w6seV2bhdqv8bc/ausSl4YQ==
-X-Gm-Message-State: AOJu0Yxb3lqo4+OhoOOPGll+O/JjYxU8astMyeCGMlOercZcRRRDm3P2
-	pDORZjx+E/+1pjOHRqKBMrF+9sf4Sq76q5CQ0Q1fJuH0i3pc3Wwd24CdRkSh
-X-Google-Smtp-Source: AGHT+IFO6gbWf3bpTTWva/VcKINhqbsDFEwx2df2IDRRr0x+AwhIhvO2MX4lN70SuleiV8LVpbZQ2g==
-X-Received: by 2002:a05:6a20:3424:b0:19e:9c82:b139 with SMTP id i36-20020a056a20342400b0019e9c82b139mr2879035pzd.45.1710148814474;
-        Mon, 11 Mar 2024 02:20:14 -0700 (PDT)
-Received: from localhost ([163.114.132.7])
-        by smtp.gmail.com with ESMTPSA id y39-20020a056a00182700b006e3f09fd6a5sm3912448pfa.163.2024.03.11.02.20.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Mar 2024 02:20:14 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Sun, 10 Mar 2024 23:20:12 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
-	cgroups@vger.kernel.org
-Subject: [GIT PULL] cgroup changes for v6.9
-Message-ID: <Ze7MzJUQZG41zx1w@slm.duckdns.org>
+	s=arc-20240116; t=1710188770; c=relaxed/simple;
+	bh=PAeoA6SXSAVQ0jAnR2sgwtsZbAEvuYYXicyV5Er6pDc=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=UA+o/GIoRmB4Q6almNd5eF5P5xVLlx8KhvmJK0QlAs4D+XgPL14dOrh13jzTmRoh8w2h+2wK6NigncAdPrDowzXBKfCR6xTxX4qibYWkTe+cNT4BzhBPJJ5Y1zSzhTGWCerWXeY1hk+aSWYudhcO6ihHLHh/X84wRhZ5VO9a6vY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RwheS22K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2AB03C433A6;
+	Mon, 11 Mar 2024 20:26:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710188770;
+	bh=PAeoA6SXSAVQ0jAnR2sgwtsZbAEvuYYXicyV5Er6pDc=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=RwheS22KoEADbxCJsX7PUTfy3xqN6y1BooYxrSdNRacvZUQNag/Wacou8EOOLSLn9
+	 ASEVuDT7gpVcNUma+TvdqQlfJkz67ybNDwLO1ZYutC/UHUdpRjsdunZDWVUdS+tTWe
+	 1o9HBGo64RLzjAm51yTk5u/eGeFLIF/r6aEluMt3abRO2cvY3PPM6np4pk+6TD5qfv
+	 /Shzso7Xs3y3aMUaIlib3+aeZur5yuWE+Fzd3X8XTMAXPb7v+pfPpV4PGsBIcUyt0U
+	 8V+5zNDEVrEVl0UW6Hfa/AywM1fFyENiZFYIaZ2lYkisy5hGU1bxVGW8PqUvB1Q5c7
+	 A9NoeJa08Bk7w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1547FD95057;
+	Mon, 11 Mar 2024 20:26:10 +0000 (UTC)
+Subject: Re: [GIT PULL] cgroup changes for v6.9
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <Ze7MzJUQZG41zx1w@slm.duckdns.org>
+References: <Ze7MzJUQZG41zx1w@slm.duckdns.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <Ze7MzJUQZG41zx1w@slm.duckdns.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.9
+X-PR-Tracked-Commit-Id: 3ab67a9ce82ff22447b1dad53b49a91d1abbf1ff
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 045395d86acd02062b067bd325d4880391f2ce02
+Message-Id: <171018877008.21519.14926090079138053875.pr-tracker-bot@kernel.org>
+Date: Mon, 11 Mar 2024 20:26:10 +0000
+To: Tejun Heo <tj@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-The following changes since commit 7ed2632ec7d72e926b9e8bcc9ad1bb0cd37274bf:
+The pull request you sent on Sun, 10 Mar 2024 23:20:12 -1000:
 
-  drm/ttm: fix ttm pool initialization for no-dma-device drivers (2024-01-22 17:25:46 -0800)
+> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.9
 
-are available in the Git repository at:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/045395d86acd02062b067bd325d4880391f2ce02
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.9
-
-for you to fetch changes up to 3ab67a9ce82ff22447b1dad53b49a91d1abbf1ff:
-
-  cgroup/cpuset: Mark memory_spread_slab as obsolete (2024-02-29 10:28:19 -1000)
-
-----------------------------------------------------------------
-cgroup: Changes for 6.9
-
-A quiet cycle. One trivial doc update patch. Two patches to drop now defunct
-memory_spread_slab feature from cgroup1 cpuset.
-
-----------------------------------------------------------------
-Xinyu Li (1):
-      docs: cgroup-v1: add missing code-block tags
-
-Xiongwei Song (2):
-      cgroup/cpuset: Remove cpuset_do_slab_mem_spread()
-      cgroup/cpuset: Mark memory_spread_slab as obsolete
-
- Documentation/admin-guide/cgroup-v1/cpusets.rst |  2 +-
- Documentation/admin-guide/cgroup-v1/hugetlb.rst | 20 ++++++++++++--------
- include/linux/cpuset.h                          | 10 ----------
- kernel/cgroup/cpuset.c                          |  1 +
- 4 files changed, 14 insertions(+), 19 deletions(-)
+Thank you!
 
 -- 
-tejun
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
