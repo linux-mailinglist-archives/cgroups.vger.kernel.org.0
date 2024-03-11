@@ -1,239 +1,120 @@
-Return-Path: <cgroups+bounces-2024-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2025-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 975A6877C4A
-	for <lists+cgroups@lfdr.de>; Mon, 11 Mar 2024 10:11:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44F9A877C7F
+	for <lists+cgroups@lfdr.de>; Mon, 11 Mar 2024 10:20:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02A6AB20AAC
-	for <lists+cgroups@lfdr.de>; Mon, 11 Mar 2024 09:11:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76F6B1C20E8D
+	for <lists+cgroups@lfdr.de>; Mon, 11 Mar 2024 09:20:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A38414275;
-	Mon, 11 Mar 2024 09:11:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1252614F75;
+	Mon, 11 Mar 2024 09:20:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ju28+9JR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gui0JIOP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D161401E;
-	Mon, 11 Mar 2024 09:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6353017548;
+	Mon, 11 Mar 2024 09:20:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710148305; cv=none; b=GJySmhTIoFc9zSbFQcGDb8AXbkIfDG3nXZ44EhkV9BqiPoxIefcABvu8a3phlVzbkrOmwJOxO9j9LeOtN6Oxhei6rbKdKbzrqsWIOazWCFEx6DpNDpWBYUy7ydbsJEXfUsCdGWNdy/CJR0ZdvhBo2HYgLjaqzUeVU7RG3C47dyk=
+	t=1710148816; cv=none; b=ZHGdAxi5xBb1esIcnBTw5FE2WnAq7M65VT2VLEACJzzeKAP/XEQmv7j/qff+zY/34GHUJ1VxxOeIt4p/2JZ0RHJ5poSJ4RF+c1V3NDYMDbzcdl1yGzVUkWxPUY1m9gqyp1KasvTvp1Qg23CcVfsVzizAN8iHiliPd4Am7fg0alk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710148305; c=relaxed/simple;
-	bh=bQycjD3Nt7s486XLfov6DBezJbQVxS3qMWOSqeVVRFU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AkKR2EK7VnOiCOrlhUdSZBO+ZuJo0TpeTtwegarzfocO1EC1Byd9UEKXVnGIGdBzs5mNAqgXkUXSbYX63NYXApbBx+MlFac4sC8NiF3S1RunT+ZeygE7bHC4jMSUn9BS0+hlgXny6suL2L6OeFc4ZNMcMPni61Z39pgnn/xGSm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ju28+9JR; arc=none smtp.client-ip=209.85.222.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1710148816; c=relaxed/simple;
+	bh=nmBmBVnPqJ2N+DmK4r1FSHVlgAjjOny7F6we7mlRXkc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=ofA2XTZPoRGnYb1aiub2ZW9qCTS3IHbSICFyKRRZmH9AIqlF2ICaVitLSyqDhy0yeNjwxRCxA2rYZDlbRowRmQ47cPjMP0eje/EYERV6DNWwBLjh/Lin3DvT/RgtqopeClgrToRWKdcx2NGdij52v5eSPxmqMlSLXwflgAhoVHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gui0JIOP; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-7cedcea89a0so2728973241.1;
-        Mon, 11 Mar 2024 02:11:44 -0700 (PDT)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e64cdf08e3so1750662b3a.3;
+        Mon, 11 Mar 2024 02:20:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710148303; x=1710753103; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4qvSkoWG3hG+H8BATALROwaa3X2nvmLzNfY2hVRikCs=;
-        b=Ju28+9JRSFBYJdKkowGB1F8BLGRWwxS2DsFMFaEYZMDQM/czaDsCUrdn6ykl4LXoWs
-         ixYic1jVTk3DKFNv2HYgcD26+XE2kl81vv++yX1BgCim9MIbQoRorfLotawVdZccaswt
-         2X0/7SMd76YOX1iRxvuwxgzrWR28thg8i9QMa5Gkf+h1db92fNJQpkits0KPDrgnI66O
-         j6GWGCpACHtgUvG7Qcg7MfckYwlupJEkjPU8nWSTA7EbxbtIQ3n0RauTiZNZAFcRkLzU
-         MOzeC/Q0NClU0lAtfwAq7iUFMF70/OEhRGnihKMv8EqPZ8g7YEqOmWZTHSgYNJCdGS5h
-         W/kg==
+        d=gmail.com; s=20230601; t=1710148814; x=1710753614; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=PEdFwNEj9NiEV2imWkxjdIFM5A8FOXJbS9uIt5QsObI=;
+        b=gui0JIOPEyRqmBABlAR6VR/1bqA+JvXZNSpbZMQCUibO/ypzvDwJpY2lSszlDcOUcp
+         2xejr2MUG5zq9OBGxSpZ3lFIWbNPX+37U8fjawUufVpzZoYW35DSQRkJnaZmlm3szdN0
+         CCIIyn9ih3T+Jb8r1LOMuQwzyteNPb9xjTSAFUJ2DflvqX/Don6miVLY00GQrprQajrc
+         5eZCI2s/q/KcCrN87BpuA/qTnolSgE2ROh7FLLHL5J3aBgs3eizDAN0SRNWo+Tt48yu9
+         u5B+Dwl0qvWk5MJLvZGLYePBamV41dcx5F1ntaX1wXOlZe6qFeG1xz4dFtSUJD/I96xM
+         ZGZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710148303; x=1710753103;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4qvSkoWG3hG+H8BATALROwaa3X2nvmLzNfY2hVRikCs=;
-        b=RIuiiaBeaqRypjVSHweHaU9hJI6DslRjHC+kBVYoaZy65JuBV/wSj0XzWpP53qM4rd
-         9n7wKeTiru04xklqR0skQkjYhlg3xF0QsgykL7CYZKZZM0IHh+c2YKZ9BOq5b9/Bskag
-         pChskKChmWcWvTQBFd9RdmS5srF7nybhw9UzUmhlT9Rli330Sm2zCNsU7oHdM6jnh7As
-         ruwa/M3HN4/cxqOHUO1kcqh6oiZOGEWQZ30O1XxPAlYInbyJ9kApBV6BLM1Ax5TqgovP
-         +J4+dbfziyABgUGvUMrmxblMW+sO7N+2c7bDdje/5us5wFbKvT7T8ZL2YN4wFCUPC2Kz
-         sHbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU0tMif3x7OLyFqeHaw5oy1re2kaPhPR/EjFDT97iWarvhXDHAgiJrX6w+es65kEFV/ibivNVrq36II1bbgFrtHjQOVRA7JyQ6GMhSsarG8fjP+hLp10OemHSo0DM8cAYvDdE4qdQ==
-X-Gm-Message-State: AOJu0Yx0qwcZrsnfr7EWFfpHv/tg+20HLrXCwKZgpBciaDMJqBxUkOT8
-	dSxkpvemnANiF50lZvvSKAkmoCujYkd51ZkFlHdZX3ppFj6FvzIjhpe/nfLLE+rV/oks9rdmYZR
-	88nCvoGhxPobyKrfrZ4s3Vg7YnLaF9XT6iF2Jq7qdZsY=
-X-Google-Smtp-Source: AGHT+IGhj+x8PbYBec92s0jPkmQjnzq8HzpZbtjL6JMxo4ac2s/kS8iToRyYZSqvmkrMguR+LbUdOyKos2a5RyaKjr8=
-X-Received: by 2002:a05:6102:1814:b0:473:df7:1084 with SMTP id
- jg20-20020a056102181400b004730df71084mr3630428vsb.29.1710148303200; Mon, 11
- Mar 2024 02:11:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710148814; x=1710753614;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PEdFwNEj9NiEV2imWkxjdIFM5A8FOXJbS9uIt5QsObI=;
+        b=o7Jo2PTjf4kcx/JniCHTdvbTF7ZKrY/5AJamdhFsaDS7ix/OJ5Mhh+Xcf2SlBXdl6Z
+         gDtVuDmcL3CoEiFM/w16VhfRdb2Imoh+zVgxjmccA4tmOvnU6tQJc1F0DJ2Z4ZHu8ia8
+         Ut/QIpCuYe/NncaA+VKNQBEJc+JlGdQmKmWphfTr2Yc4h+0hakSIGN8hfNgp9bIT5BlF
+         raOANGt1B8T+C8Nz3JxmP5et0K+98thc2LCYDojwgz4R8s0YxtPY9tIQq3rdcPct85T6
+         yeCZ9ANbqvFP2Dtm0z2+4zcAW9Q1BFrnsq+a7ZZ3CUPhoFDt4bPKxUybOQGa/t7/QYqX
+         hVpA==
+X-Forwarded-Encrypted: i=1; AJvYcCUAzvKfURhr83wEqaVltnyOJ/Pui5ng735DfvAHOqtrDAqyhPBciKj/298c2JU6rykweBUJyr7w6seV2bhdqv8bc/ausSl4YQ==
+X-Gm-Message-State: AOJu0Yxb3lqo4+OhoOOPGll+O/JjYxU8astMyeCGMlOercZcRRRDm3P2
+	pDORZjx+E/+1pjOHRqKBMrF+9sf4Sq76q5CQ0Q1fJuH0i3pc3Wwd24CdRkSh
+X-Google-Smtp-Source: AGHT+IFO6gbWf3bpTTWva/VcKINhqbsDFEwx2df2IDRRr0x+AwhIhvO2MX4lN70SuleiV8LVpbZQ2g==
+X-Received: by 2002:a05:6a20:3424:b0:19e:9c82:b139 with SMTP id i36-20020a056a20342400b0019e9c82b139mr2879035pzd.45.1710148814474;
+        Mon, 11 Mar 2024 02:20:14 -0700 (PDT)
+Received: from localhost ([163.114.132.7])
+        by smtp.gmail.com with ESMTPSA id y39-20020a056a00182700b006e3f09fd6a5sm3912448pfa.163.2024.03.11.02.20.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Mar 2024 02:20:14 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Sun, 10 Mar 2024 23:20:12 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
+	cgroups@vger.kernel.org
+Subject: [GIT PULL] cgroup changes for v6.9
+Message-ID: <Ze7MzJUQZG41zx1w@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZcWOh9u3uqZjNFMa@chrisdown.name> <20240229235134.2447718-1-axelrasmussen@google.com>
- <ZeEhvV15IWllPKvM@chrisdown.name> <CAJHvVch2qVUDTJjNeSMqLBx0yoEm4zzb=ZXmABbd_5dWGQTpNg@mail.gmail.com>
-In-Reply-To: <CAJHvVch2qVUDTJjNeSMqLBx0yoEm4zzb=ZXmABbd_5dWGQTpNg@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Mon, 11 Mar 2024 17:11:06 +0800
-Message-ID: <CALOAHbBupMYBMWEzMK2xdhnqwR1C1+mJSrrZC1L0CKE2BMSC+g@mail.gmail.com>
-Subject: Re: MGLRU premature memcg OOM on slow writes
-To: Axel Rasmussen <axelrasmussen@google.com>
-Cc: Chris Down <chris@chrisdown.name>, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
-	kernel-team@fb.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	yuzhao@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Sat, Mar 9, 2024 at 3:19=E2=80=AFAM Axel Rasmussen <axelrasmussen@google=
-.com> wrote:
->
-> On Thu, Feb 29, 2024 at 4:30=E2=80=AFPM Chris Down <chris@chrisdown.name>=
- wrote:
-> >
-> > Axel Rasmussen writes:
-> > >A couple of dumb questions. In your test, do you have any of the follo=
-wing
-> > >configured / enabled?
-> > >
-> > >/proc/sys/vm/laptop_mode
-> > >memory.low
-> > >memory.min
-> >
-> > None of these are enabled. The issue is trivially reproducible by writi=
-ng to
-> > any slow device with memory.max enabled, but from the code it looks lik=
-e MGLRU
-> > is also susceptible to this on global reclaim (although it's less likel=
-y due to
-> > page diversity).
-> >
-> > >Besides that, it looks like the place non-MGLRU reclaim wakes up the
-> > >flushers is in shrink_inactive_list() (which calls wakeup_flusher_thre=
-ads()).
-> > >Since MGLRU calls shrink_folio_list() directly (from evict_folios()), =
-I agree it
-> > >looks like it simply will not do this.
-> > >
-> > >Yosry pointed out [1], where MGLRU used to call this but stopped doing=
- that. It
-> > >makes sense to me at least that doing writeback every time we age is t=
-oo
-> > >aggressive, but doing it in evict_folios() makes some sense to me, bas=
-ically to
-> > >copy the behavior the non-MGLRU path (shrink_inactive_list()) has.
-> >
-> > Thanks! We may also need reclaim_throttle(), depending on how you imple=
-ment it.
-> > Current non-MGLRU behaviour on slow storage is also highly suspect in t=
-erms of
-> > (lack of) throttling after moving away from VMSCAN_THROTTLE_WRITEBACK, =
-but one
-> > thing at a time :-)
->
->
-> Hmm, so I have a patch which I think will help with this situation,
-> but I'm having some trouble reproducing the problem on 6.8-rc7 (so
-> then I can verify the patch fixes it).
+The following changes since commit 7ed2632ec7d72e926b9e8bcc9ad1bb0cd37274bf:
 
-We encountered the same premature OOM issue caused by numerous dirty pages.
-The issue disappears after we revert the commit 14aa8b2d5c2e
-"mm/mglru: don't sync disk for each aging cycle"
+  drm/ttm: fix ttm pool initialization for no-dma-device drivers (2024-01-22 17:25:46 -0800)
 
-To aid in replicating the issue, we've developed a straightforward
-script, which consistently reproduces it, even on the latest kernel.
-You can find the script provided below:
+are available in the Git repository at:
 
-```
-#!/bin/bash
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.9
 
-MEMCG=3D"/sys/fs/cgroup/memory/mglru"
-ENABLE=3D$1
+for you to fetch changes up to 3ab67a9ce82ff22447b1dad53b49a91d1abbf1ff:
 
-# Avoid waking up the flusher
-sysctl -w vm.dirty_background_bytes=3D$((1024 * 1024 * 1024 *4))
-sysctl -w vm.dirty_bytes=3D$((1024 * 1024 * 1024 *4))
+  cgroup/cpuset: Mark memory_spread_slab as obsolete (2024-02-29 10:28:19 -1000)
 
-if [ ! -d ${MEMCG} ]; then
-        mkdir -p ${MEMCG}
-fi
+----------------------------------------------------------------
+cgroup: Changes for 6.9
 
-echo $$ > ${MEMCG}/cgroup.procs
-echo 1g > ${MEMCG}/memory.limit_in_bytes
+A quiet cycle. One trivial doc update patch. Two patches to drop now defunct
+memory_spread_slab feature from cgroup1 cpuset.
 
-if [ $ENABLE -eq 0 ]; then
-        echo 0 > /sys/kernel/mm/lru_gen/enabled
-else
-        echo 0x7 > /sys/kernel/mm/lru_gen/enabled
-fi
+----------------------------------------------------------------
+Xinyu Li (1):
+      docs: cgroup-v1: add missing code-block tags
 
-dd if=3D/dev/zero of=3D/data0/mglru.test bs=3D1M count=3D1023
-rm -rf /data0/mglru.test
-```
+Xiongwei Song (2):
+      cgroup/cpuset: Remove cpuset_do_slab_mem_spread()
+      cgroup/cpuset: Mark memory_spread_slab as obsolete
 
-This issue disappears as well after we disable the mglru.
+ Documentation/admin-guide/cgroup-v1/cpusets.rst |  2 +-
+ Documentation/admin-guide/cgroup-v1/hugetlb.rst | 20 ++++++++++++--------
+ include/linux/cpuset.h                          | 10 ----------
+ kernel/cgroup/cpuset.c                          |  1 +
+ 4 files changed, 14 insertions(+), 19 deletions(-)
 
-We hope this script proves helpful in identifying and addressing the
-root cause. We eagerly await your insights and proposed fixes.
-
->
-> If I understand the issue right, all we should need to do is get a
-> slow filesystem, and then generate a bunch of dirty file pages on it,
-> while running in a tightly constrained memcg. To that end, I tried the
-> following script. But, in reality I seem to get little or no
-> accumulation of dirty file pages.
->
-> I thought maybe fio does something different than rsync which you said
-> you originally tried, so I also tried rsync (copying /usr/bin into
-> this loop mount) and didn't run into an OOM situation either.
->
-> Maybe some dirty ratio settings need tweaking or something to get the
-> behavior you see? Or maybe my test has a dumb mistake in it. :)
->
->
->
-> #!/usr/bin/env bash
->
-> echo 0 > /proc/sys/vm/laptop_mode || exit 1
-> echo y > /sys/kernel/mm/lru_gen/enabled || exit 1
->
-> echo "Allocate disk image"
-> IMAGE_SIZE_MIB=3D1024
-> IMAGE_PATH=3D/tmp/slow.img
-> dd if=3D/dev/zero of=3D$IMAGE_PATH bs=3D1024k count=3D$IMAGE_SIZE_MIB || =
-exit 1
->
-> echo "Setup loop device"
-> LOOP_DEV=3D$(losetup --show --find $IMAGE_PATH) || exit 1
-> LOOP_BLOCKS=3D$(blockdev --getsize $LOOP_DEV) || exit 1
->
-> echo "Create dm-slow"
-> DM_NAME=3Ddm-slow
-> DM_DEV=3D/dev/mapper/$DM_NAME
-> echo "0 $LOOP_BLOCKS delay $LOOP_DEV 0 100" | dmsetup create $DM_NAME || =
-exit 1
->
-> echo "Create fs"
-> mkfs.ext4 "$DM_DEV" || exit 1
->
-> echo "Mount fs"
-> MOUNT_PATH=3D"/tmp/$DM_NAME"
-> mkdir -p "$MOUNT_PATH" || exit 1
-> mount -t ext4 "$DM_DEV" "$MOUNT_PATH" || exit 1
->
-> echo "Generate dirty file pages"
-> systemd-run --wait --pipe --collect -p MemoryMax=3D32M \
->         fio -name=3Dwrites -directory=3D$MOUNT_PATH -readwrite=3Drandwrit=
-e \
->         -numjobs=3D10 -nrfiles=3D90 -filesize=3D1048576 \
->         -fallocate=3Dposix \
->         -blocksize=3D4k -ioengine=3Dmmap \
->         -direct=3D0 -buffered=3D1 -fsync=3D0 -fdatasync=3D0 -sync=3D0 \
->         -runtime=3D300 -time_based
->
-
-
---=20
-Regards
-Yafang
+-- 
+tejun
 
