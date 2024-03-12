@@ -1,200 +1,258 @@
-Return-Path: <cgroups+bounces-2028-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2029-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 419578790E3
-	for <lists+cgroups@lfdr.de>; Tue, 12 Mar 2024 10:25:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3B9E87993F
+	for <lists+cgroups@lfdr.de>; Tue, 12 Mar 2024 17:45:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91159B225C5
-	for <lists+cgroups@lfdr.de>; Tue, 12 Mar 2024 09:25:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C71AD1C218B6
+	for <lists+cgroups@lfdr.de>; Tue, 12 Mar 2024 16:45:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2719A78669;
-	Tue, 12 Mar 2024 09:23:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 315917E586;
+	Tue, 12 Mar 2024 16:45:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JjTUxez+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4EUcVuLu";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JjTUxez+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4EUcVuLu"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Uspfvw/P"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 908E477F25;
-	Tue, 12 Mar 2024 09:22:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15AD87E577
+	for <cgroups@vger.kernel.org>; Tue, 12 Mar 2024 16:44:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710235379; cv=none; b=CoQ6Ss7h5gxLJv4XvkbVG+x9SvoGRbwcyibiRPfGMxeEQtAMKTxutKM9IYFyi3vjf8DM3Vh2U+mz2GjZsQ24NFHRJxeBnF+5hqmMW93DNsBK78jV/iJQ3/gnkKfOoFWvBg/OK8XnmCb/QMFhjUyAVpPddaUcBikwrFT4gnXiOug=
+	t=1710261902; cv=none; b=ruJDAt37tvlNyB+nflJDyh7ndmIX+1bCWLgTKv1ioGS0aTPRJP6Qp3HvzBrcCLpUL31JarkASXZX9v0nJC7WaxSgj53lgaFG4tXxWwRXsX37OfoI2enQhuawtCO/FQAMMxj8UNlJTHcdcELLPe9dvXed0Qj0eXM2jN6QImedtCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710235379; c=relaxed/simple;
-	bh=I+EYM0WoETASWaRI0J3YiWa6rmHuNoDSp7q5mvmzE8k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ft51vaxzZeGapGuZUQiYk/ymdLxzFQn0oVqSlA5XJZrelyKtRHTngLuXZlDU3GYYbtoXevnIeMg1f/JD7woPXsrJ2oba6el1g3sSsefq8sAg6+prGs6mFutbT1EGpP3z7UGIavJlZIxqlETQScJnbjj+GWjF48c7DJI8/qFIqlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JjTUxez+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4EUcVuLu; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JjTUxez+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4EUcVuLu; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6A4A6374BE;
-	Tue, 12 Mar 2024 09:22:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710235375; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QstBqPw+TFWXqr+lHM3TQAnfI7rBxMjKCBz0FdaAFh8=;
-	b=JjTUxez+t5+tkgWCeHoYFhbWGQ/8+VyUw3UsPDj4CwE/vP4F1JcUAVotrRQGG7Yyu/yj3B
-	am4oK9MbDA2uZBbKHajOpaLX4c7TyLOFvKXng9vsiDQe/mZGO8kdmNpLDfOda9ZY5Gh2xH
-	ys4+nCE24DEeOg/Y4jnROi95X4GWVCo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710235375;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QstBqPw+TFWXqr+lHM3TQAnfI7rBxMjKCBz0FdaAFh8=;
-	b=4EUcVuLu9y7GiROf+XRXjuTVFaEcC9Oez6BLIMLagRJ2BdV7eDlXozkus+xsGav7jhpWGa
-	KAeVEKkPIQD5NgBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710235375; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QstBqPw+TFWXqr+lHM3TQAnfI7rBxMjKCBz0FdaAFh8=;
-	b=JjTUxez+t5+tkgWCeHoYFhbWGQ/8+VyUw3UsPDj4CwE/vP4F1JcUAVotrRQGG7Yyu/yj3B
-	am4oK9MbDA2uZBbKHajOpaLX4c7TyLOFvKXng9vsiDQe/mZGO8kdmNpLDfOda9ZY5Gh2xH
-	ys4+nCE24DEeOg/Y4jnROi95X4GWVCo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710235375;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QstBqPw+TFWXqr+lHM3TQAnfI7rBxMjKCBz0FdaAFh8=;
-	b=4EUcVuLu9y7GiROf+XRXjuTVFaEcC9Oez6BLIMLagRJ2BdV7eDlXozkus+xsGav7jhpWGa
-	KAeVEKkPIQD5NgBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3A6781364F;
-	Tue, 12 Mar 2024 09:22:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 7vPiDe8e8GW6NAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 12 Mar 2024 09:22:55 +0000
-Message-ID: <8aa61329-dc3c-46f2-9db5-6e0770fbedda@suse.cz>
-Date: Tue, 12 Mar 2024 10:22:54 +0100
+	s=arc-20240116; t=1710261902; c=relaxed/simple;
+	bh=+RJFbCOEI9uZfJ8gaIw/aj45C6EHZwRkNR3KgAfnwjA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EnhaKLgKCAE73PY4LjMwkJpDxYO9qg4fk3yXlfjko5hVG1aFYNtst4g0y9QY03xcwGllSqQEqT/ZBkU8wkdq81cbhK9MwuQ37WEBokpsnhFNiYZM8+lPD0T3G8rb6BsDlcy4J3ug9SdcrwapsoMiH30nEgVi9UysgEFqJk5PSsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Uspfvw/P; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33e8b957a89so2038373f8f.0
+        for <cgroups@vger.kernel.org>; Tue, 12 Mar 2024 09:44:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710261898; x=1710866698; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jUYTRlfGzPdlx8mymTMY+S0XS9OSGuHPk7Hy7kZQcOo=;
+        b=Uspfvw/PsUGPJLx35q9/OiySvm/Df+U90tMNwX83ai1ABekYIHH9++/5Js7kdlfxO4
+         rG+5zf22066uqneM0zGkV0a5FNg8JedjXh1fWpVk975Gc6DJ7H0fSd107eftx3a4oNvt
+         hkmaTg5ANfXxgJ3exY7zJXzEX/iSECh4km59HXL7fNbgG5bnoKpDCbFcDz8z27vSKwc7
+         yXpZTVkLABdNM6MUaLPNfy3qhW4J1C0y4u6CiXZciGowwXMj5WKwP9lE9wfKyPWkOg+i
+         uWFLfMlzHVST/SL0XeymiBx5amn2am9OSJZDVTgZ0C3JhtccczEXTq54oIdYyBR2iIUF
+         15cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710261898; x=1710866698;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jUYTRlfGzPdlx8mymTMY+S0XS9OSGuHPk7Hy7kZQcOo=;
+        b=CLw1kRVDAz881xgIkcSQI8dPzc4DW2Cj9Noo/vivMDuF8e9jRj7z+wgz/DlcbWYpr+
+         zyc8AQxR1n5q0KvDzKEMqfYB2kkVZQGyJKIIeTeR+j2F+PFaI61rBk1F0YWg7UECpviO
+         OyjAV2VD+awlx+dXnzB//bLTvtver04lBxDUu/AG0rU9nWAguqOy4/Jzob0KyXnNOXPy
+         K86YtWfrzavxVVeDbIMZ3g4vS48mjTmJjE/8z3j0ZGUJYa4YR3MukgHHxJILv9mjBPaM
+         Aicbu2OHDov5SOirvzSrLi8wPG+N/t9Vch5xCsh80zsYiaDCTngJV5Cp83LdvSbCWscg
+         hbWA==
+X-Forwarded-Encrypted: i=1; AJvYcCXiyEqc5TeQE2hjTSkeIZGfEL8XDBqXxL5aX32lca0yBZcPvAkcd/Wz8Y5Q0eDkGaWuU4SUAPzyVcPTUN3dFNMjbm33gK6xCQ==
+X-Gm-Message-State: AOJu0YytVNaLURx/CdXrkc9/B0E8YniPxnqQEOI01pspxK9yNNxifaWP
+	tdakgyX7ZYNdV50KBHhFAxIsrWCUfjSpiQVKSJVQIgFuZ3DczcTDtRobcw7q2lehZKAKudB0GmT
+	pW48y+ETkQ/NknRCVfPvASjUw9AEn8FsLpmLA3Svlzl1Xj30gGA==
+X-Google-Smtp-Source: AGHT+IEOHrE4+eQswfnysO+rbIz/h2km4EqB2aEJrVjLYvrBrpadyUomXrcZEXQc05cIPMuPa95v4IS3geyGrAN/WsI=
+X-Received: by 2002:a05:6000:1806:b0:33d:701f:d179 with SMTP id
+ m6-20020a056000180600b0033d701fd179mr3754wrh.19.1710261898215; Tue, 12 Mar
+ 2024 09:44:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 4/4] UNFINISHED mm, fs: use kmem_cache_charge() in
- path_openat()
-To: Roman Gushchin <roman.gushchin@linux.dev>,
- Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>, Jeff Layton <jlayton@kernel.org>,
- Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>,
- Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
- David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>,
- Muchun Song <muchun.song@linux.dev>, Alexander Viro
- <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>,
- Jan Kara <jack@suse.cz>, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <20240301-slab-memcg-v1-0-359328a46596@suse.cz>
- <20240301-slab-memcg-v1-4-359328a46596@suse.cz>
- <CAHk-=whgFtbTxCAg2CWQtDj7n6CEyzvdV1wcCj2qpMfpw0=m1A@mail.gmail.com>
- <ZeIkKrS7HK6ENwbw@P9FQF9L96D.corp.robot.car>
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <ZeIkKrS7HK6ENwbw@P9FQF9L96D.corp.robot.car>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Level: 
-X-Spamd-Bar: /
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=JjTUxez+;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4EUcVuLu
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [0.00 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 TO_DN_SOME(0.00)[];
-	 DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
-	 R_RATELIMIT(0.00)[to_ip_from(RLduzbn1medsdpg3i8igc4rk67)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-0.983];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.00)[17.18%];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[23];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[kernel.org,oracle.com,linux.com,google.com,lge.com,linux-foundation.org,gmail.com,cmpxchg.org,linux.dev,zeniv.linux.org.uk,suse.cz,kvack.org,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: 0.00
-X-Rspamd-Queue-Id: 6A4A6374BE
-X-Spam-Flag: NO
+References: <ZcWOh9u3uqZjNFMa@chrisdown.name> <20240229235134.2447718-1-axelrasmussen@google.com>
+ <ZeEhvV15IWllPKvM@chrisdown.name> <CAJHvVch2qVUDTJjNeSMqLBx0yoEm4zzb=ZXmABbd_5dWGQTpNg@mail.gmail.com>
+ <CALOAHbBupMYBMWEzMK2xdhnqwR1C1+mJSrrZC1L0CKE2BMSC+g@mail.gmail.com>
+In-Reply-To: <CALOAHbBupMYBMWEzMK2xdhnqwR1C1+mJSrrZC1L0CKE2BMSC+g@mail.gmail.com>
+From: Axel Rasmussen <axelrasmussen@google.com>
+Date: Tue, 12 Mar 2024 09:44:19 -0700
+Message-ID: <CAJHvVcjhUNx8UP9mao4TdvU6xK7isRzazoSU53a4NCcFiYuM-g@mail.gmail.com>
+Subject: Re: MGLRU premature memcg OOM on slow writes
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: Chris Down <chris@chrisdown.name>, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
+	kernel-team@fb.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	yuzhao@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/1/24 19:53, Roman Gushchin wrote:
-> On Fri, Mar 01, 2024 at 09:51:18AM -0800, Linus Torvalds wrote:
->> What I *think* I'd want for this case is
->> 
->>  (a) allow the accounting to go over by a bit
->> 
->>  (b) make sure there's a cheap way to ask (before) about "did we go
->> over the limit"
->> 
->> IOW, the accounting never needed to be byte-accurate to begin with,
->> and making it fail (cheaply and early) on the next file allocation is
->> fine.
->> 
->> Just make it really cheap. Can we do that?
->> 
->> For example, maybe don't bother with the whole "bytes and pages"
->> stuff. Just a simple "are we more than one page over?" kind of
->> question. Without the 'stock_lock' mess for sub-page bytes etc
->> 
->> How would that look? Would it result in something that can be done
->> cheaply without locking and atomics and without excessive pointer
->> indirection through many levels of memcg data structures?
-> 
-> I think it's possible and I'm currently looking into batching charge,
-> objcg refcnt management and vmstats using per-task caching. It should
-> speed up things for the majority of allocations.
-> For allocations from an irq context and targeted allocations
-> (where the target memcg != memcg of the current task) we'd probably need to
-> keep the old scheme. I hope to post some patches relatively soon.
+On Mon, Mar 11, 2024 at 2:11=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com> =
+wrote:
+>
+> On Sat, Mar 9, 2024 at 3:19=E2=80=AFAM Axel Rasmussen <axelrasmussen@goog=
+le.com> wrote:
+> >
+> > On Thu, Feb 29, 2024 at 4:30=E2=80=AFPM Chris Down <chris@chrisdown.nam=
+e> wrote:
+> > >
+> > > Axel Rasmussen writes:
+> > > >A couple of dumb questions. In your test, do you have any of the fol=
+lowing
+> > > >configured / enabled?
+> > > >
+> > > >/proc/sys/vm/laptop_mode
+> > > >memory.low
+> > > >memory.min
+> > >
+> > > None of these are enabled. The issue is trivially reproducible by wri=
+ting to
+> > > any slow device with memory.max enabled, but from the code it looks l=
+ike MGLRU
+> > > is also susceptible to this on global reclaim (although it's less lik=
+ely due to
+> > > page diversity).
+> > >
+> > > >Besides that, it looks like the place non-MGLRU reclaim wakes up the
+> > > >flushers is in shrink_inactive_list() (which calls wakeup_flusher_th=
+reads()).
+> > > >Since MGLRU calls shrink_folio_list() directly (from evict_folios())=
+, I agree it
+> > > >looks like it simply will not do this.
+> > > >
+> > > >Yosry pointed out [1], where MGLRU used to call this but stopped doi=
+ng that. It
+> > > >makes sense to me at least that doing writeback every time we age is=
+ too
+> > > >aggressive, but doing it in evict_folios() makes some sense to me, b=
+asically to
+> > > >copy the behavior the non-MGLRU path (shrink_inactive_list()) has.
+> > >
+> > > Thanks! We may also need reclaim_throttle(), depending on how you imp=
+lement it.
+> > > Current non-MGLRU behaviour on slow storage is also highly suspect in=
+ terms of
+> > > (lack of) throttling after moving away from VMSCAN_THROTTLE_WRITEBACK=
+, but one
+> > > thing at a time :-)
+> >
+> >
+> > Hmm, so I have a patch which I think will help with this situation,
+> > but I'm having some trouble reproducing the problem on 6.8-rc7 (so
+> > then I can verify the patch fixes it).
+>
+> We encountered the same premature OOM issue caused by numerous dirty page=
+s.
+> The issue disappears after we revert the commit 14aa8b2d5c2e
+> "mm/mglru: don't sync disk for each aging cycle"
+>
+> To aid in replicating the issue, we've developed a straightforward
+> script, which consistently reproduces it, even on the latest kernel.
+> You can find the script provided below:
+>
+> ```
+> #!/bin/bash
+>
+> MEMCG=3D"/sys/fs/cgroup/memory/mglru"
+> ENABLE=3D$1
+>
+> # Avoid waking up the flusher
+> sysctl -w vm.dirty_background_bytes=3D$((1024 * 1024 * 1024 *4))
+> sysctl -w vm.dirty_bytes=3D$((1024 * 1024 * 1024 *4))
+>
+> if [ ! -d ${MEMCG} ]; then
+>         mkdir -p ${MEMCG}
+> fi
+>
+> echo $$ > ${MEMCG}/cgroup.procs
+> echo 1g > ${MEMCG}/memory.limit_in_bytes
+>
+> if [ $ENABLE -eq 0 ]; then
+>         echo 0 > /sys/kernel/mm/lru_gen/enabled
+> else
+>         echo 0x7 > /sys/kernel/mm/lru_gen/enabled
+> fi
+>
+> dd if=3D/dev/zero of=3D/data0/mglru.test bs=3D1M count=3D1023
+> rm -rf /data0/mglru.test
+> ```
+>
+> This issue disappears as well after we disable the mglru.
+>
+> We hope this script proves helpful in identifying and addressing the
+> root cause. We eagerly await your insights and proposed fixes.
 
-Do you think this will work on top of this series, i.e. patches 1+2 could be
-eventually put to slab/for-next after the merge window, or would it
-interfere with your changes?
+Thanks Yafang, I was able to reproduce the issue using this script.
 
-> I tried to optimize the current implementation but failed to get any
-> significant gains. It seems that the overhead is very evenly spread across
-> objcg pointer access, charge management, objcg refcnt management and vmstats.
-> 
-> Thanks!
+Perhaps interestingly, I was not able to reproduce it with cgroupv2
+memcgs. I know writeback semantics are quite a bit different there, so
+perhaps that explains why.
 
+Unfortunately, it also reproduces even with the commit I had in mind
+(basically stealing the "if (all isolated pages are unqueued dirty) {
+wakeup_flusher_threads(); reclaim_throttle(); }" from
+shrink_inactive_list, and adding it to MGLRU's evict_folios()). So
+I'll need to spend some more time on this; I'm planning to send
+something out for testing next week.
+
+>
+> >
+> > If I understand the issue right, all we should need to do is get a
+> > slow filesystem, and then generate a bunch of dirty file pages on it,
+> > while running in a tightly constrained memcg. To that end, I tried the
+> > following script. But, in reality I seem to get little or no
+> > accumulation of dirty file pages.
+> >
+> > I thought maybe fio does something different than rsync which you said
+> > you originally tried, so I also tried rsync (copying /usr/bin into
+> > this loop mount) and didn't run into an OOM situation either.
+> >
+> > Maybe some dirty ratio settings need tweaking or something to get the
+> > behavior you see? Or maybe my test has a dumb mistake in it. :)
+> >
+> >
+> >
+> > #!/usr/bin/env bash
+> >
+> > echo 0 > /proc/sys/vm/laptop_mode || exit 1
+> > echo y > /sys/kernel/mm/lru_gen/enabled || exit 1
+> >
+> > echo "Allocate disk image"
+> > IMAGE_SIZE_MIB=3D1024
+> > IMAGE_PATH=3D/tmp/slow.img
+> > dd if=3D/dev/zero of=3D$IMAGE_PATH bs=3D1024k count=3D$IMAGE_SIZE_MIB |=
+| exit 1
+> >
+> > echo "Setup loop device"
+> > LOOP_DEV=3D$(losetup --show --find $IMAGE_PATH) || exit 1
+> > LOOP_BLOCKS=3D$(blockdev --getsize $LOOP_DEV) || exit 1
+> >
+> > echo "Create dm-slow"
+> > DM_NAME=3Ddm-slow
+> > DM_DEV=3D/dev/mapper/$DM_NAME
+> > echo "0 $LOOP_BLOCKS delay $LOOP_DEV 0 100" | dmsetup create $DM_NAME |=
+| exit 1
+> >
+> > echo "Create fs"
+> > mkfs.ext4 "$DM_DEV" || exit 1
+> >
+> > echo "Mount fs"
+> > MOUNT_PATH=3D"/tmp/$DM_NAME"
+> > mkdir -p "$MOUNT_PATH" || exit 1
+> > mount -t ext4 "$DM_DEV" "$MOUNT_PATH" || exit 1
+> >
+> > echo "Generate dirty file pages"
+> > systemd-run --wait --pipe --collect -p MemoryMax=3D32M \
+> >         fio -name=3Dwrites -directory=3D$MOUNT_PATH -readwrite=3Drandwr=
+ite \
+> >         -numjobs=3D10 -nrfiles=3D90 -filesize=3D1048576 \
+> >         -fallocate=3Dposix \
+> >         -blocksize=3D4k -ioengine=3Dmmap \
+> >         -direct=3D0 -buffered=3D1 -fsync=3D0 -fdatasync=3D0 -sync=3D0 \
+> >         -runtime=3D300 -time_based
+> >
+>
+>
+> --
+> Regards
+> Yafang
 
