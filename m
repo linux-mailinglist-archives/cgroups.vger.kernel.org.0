@@ -1,194 +1,144 @@
-Return-Path: <cgroups+bounces-2055-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2056-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75EC187AA71
-	for <lists+cgroups@lfdr.de>; Wed, 13 Mar 2024 16:31:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9224987B016
+	for <lists+cgroups@lfdr.de>; Wed, 13 Mar 2024 19:42:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2853C284B95
-	for <lists+cgroups@lfdr.de>; Wed, 13 Mar 2024 15:31:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5A9C1C26A06
+	for <lists+cgroups@lfdr.de>; Wed, 13 Mar 2024 18:42:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7F6347F64;
-	Wed, 13 Mar 2024 15:31:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FE3C12BF3D;
+	Wed, 13 Mar 2024 17:34:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nHy1XTA7"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="i9O5fi+S"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6E047F54
-	for <cgroups@vger.kernel.org>; Wed, 13 Mar 2024 15:31:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAC3212BF21
+	for <cgroups@vger.kernel.org>; Wed, 13 Mar 2024 17:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710343894; cv=none; b=Mrkul97nQhL7wUKLjqAdEkuQsR/NSA3TQOfIXGC2AxaG+njcKGH5rrZDb2qOeRIGuDdDkoBXyp3KbyUqJ0vl56XPMchxxCl2A+m/XMLX2JztqlMEqvN/9xBOSUv04ZP3uDwPbRhcsHy01ANCZaDTAvlXhz4HT7cT0Gpba2t7FUk=
+	t=1710351254; cv=none; b=D5c4aBhQK27i2UKPru7SAttWc9/k3QRAH1vfJqZPPEavr9T2EGimZDBoDjI59mkGpfWKsoYoUhxf5LQAZvevLqaf7wZSTaeBBVFzF9CnhBTMUTgYdgato/nhll+ulW0s1O+d4QxOBNoBNqJL0g81zxldPWTR7aOM2BjeQlQeiQw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710343894; c=relaxed/simple;
-	bh=Zq4RfZOjcqNtcLFUzAg0QuQxZvQrvC1IKPOXZvtCEr8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LEysbvoebXx6ousjOiN4WmVYY/VZ2idUA7CS9sSOHyw0Lwr4Vib8wrHhhp0mh5dYZqs4sCt/0fbyE0MLb6vBQ09uTOKQu+3ZvzknOaKDrLXJUn+iB3zjLBakGJ3bN5tff3maz0Lt/iFOKJqz3eMcGzyU6OpV+Nm66GtFn9FSCL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nHy1XTA7; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dcd9e34430cso1217574276.1
-        for <cgroups@vger.kernel.org>; Wed, 13 Mar 2024 08:31:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710343891; x=1710948691; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JtMw74U66kmsHyXAV7bBZ7SbbkNSfFBApfqkzQBmCrI=;
-        b=nHy1XTA7EB89TkqAKPt3CSMUwffHkk/CAuX5IYEt3/EzeN/XRhGq2DKnf7K6hxBuX2
-         lizjW6ABzbMxvs9EVRQPfIEdfnzXbICsxanCJ313DaPFFsn3XgjJXutzC0m8X+uGp4Z5
-         Om3PINc9nBM2T9TOBrh3Fdfv+4E3X3TozhN1tc8/oU8w+/Zy+NQckLE5J7e2sPXxNlyr
-         Yg6YbyXesZbqI/nCi6EKIOgO914R0yfPTAzB91Id3Q95jZ4U6SQbdb1pjfCT0GK05Dcl
-         tPLny3Iv8ZJxV34iyTvblGo8lJ5DISojziQxMAi9f+np2LqJCj/YFpKveTEQzzcE0BjG
-         1ivg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710343891; x=1710948691;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JtMw74U66kmsHyXAV7bBZ7SbbkNSfFBApfqkzQBmCrI=;
-        b=ed2pQOqQgG6X5rugTUxvJUAYd+mplIkgux6ndfLYpKgsR2ETe2R+NS3kCKQtLr4C7L
-         iKTCCKTqooVRDBOKBIRLZ4wh2b6uLP+r7IIUqzjpbQ5oG7qvxfuDN5HGLcbMwwAiu4a4
-         RAbZ5BX8jPoTb/OHrbAMZ6Qqy0vqXq+9wbGWPGBElRhHrwVIPFXHtwsuON05EtIfa/bR
-         YuV4i+8+6urPnYcAp6SPFoyNS3sJPA2YSmOjld3meqU1Cx26Nzeznq1Qla7TNcrSZ2OE
-         CXgt23Ret463bjEmnHSpq3gCLxOWXnSttjOMpLbNtfObUaqX2ZWpQjtUp47KcMyIC+pi
-         kMUw==
-X-Forwarded-Encrypted: i=1; AJvYcCWuGxZH92khEFNac53TGk4kBaHYdQkww+u03WMPG3xLlEKIJ90QNwBmN55TIUk6BPacf+RwlhdK96XW0PAMoLNdmjbJdOcQmQ==
-X-Gm-Message-State: AOJu0Yy1DDdqEerzASVOfgmfUbVtafuaUH6YMfd34ZZay6xN0YVFFlVx
-	o9uoXJc9kqt+K9HDdJv+ncS/57TCmCzF/zfhsLhAglqE5OaCe1SKAvH7PDCretqAcWbX0AISSgu
-	/SqSFzI2LgkfVMtUQ8FtNCcDOXlkRYzq5ldBe
-X-Google-Smtp-Source: AGHT+IFt/OYhWjwqlxyr/Zyxfa6nHqBBNGn1lVwocwLdvQz8oj2Fnp7dsALCjpYCUrb0E7Elvx8ovXgew43c6K/l7cs=
-X-Received: by 2002:a5b:706:0:b0:dcb:abbc:f597 with SMTP id
- g6-20020a5b0706000000b00dcbabbcf597mr2798485ybq.54.1710343891190; Wed, 13 Mar
- 2024 08:31:31 -0700 (PDT)
+	s=arc-20240116; t=1710351254; c=relaxed/simple;
+	bh=ppg7LETEv608reOT2Zj9XxQBtbO706NvbrnIiSiiOGM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aPfvG1bbpx9RUgOLSWHILFOSalCNs0EiWZKRNBan7ciQK2PC08xT7t12i3mKPcG3OWmFQu9jKgWzDrcF71E/UGngThGezdcVlf53rCQpCsT3bvnWrutAiL9sfCZa2ashoFSY6Z63W5PbUSIb/ITYyFFkemB7hDQlUm+lDgpgICM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=i9O5fi+S; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 13 Mar 2024 10:34:02 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710351249;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Wol+p/8LL2LDmxvbQ9tqtsHeVEpgewKE43vwTQIQciI=;
+	b=i9O5fi+SXWvJdxW5Y+LAyDuRwOq8j5mxhExsiND2GKS/paYNKMzxa8ft6bhjUogbgbM/k6
+	rNA6LgBgasXbGfI1+VcTZUQH8VlOXLZs1sFopHRnBTidvxUOvmqdZUMEdvGbeuER3AyX9J
+	3g5ZwMx3uU/mQrxbBF1Fh7x7Jgyzo+0=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Jeff Layton <jlayton@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH RFC 1/4] mm, slab: move memcg charging to post-alloc hook
+Message-ID: <ZfHjivosHTM2xLfU@P9FQF9L96D>
+References: <20240301-slab-memcg-v1-0-359328a46596@suse.cz>
+ <20240301-slab-memcg-v1-1-359328a46596@suse.cz>
+ <ZfCkfpogPQVMZnIG@P9FQF9L96D>
+ <bd05d62d-9f46-46b5-b444-6c4814526459@suse.cz>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240306182440.2003814-1-surenb@google.com> <20240306182440.2003814-21-surenb@google.com>
- <ZfHAcVwJ6w9b1x0Z@casper.infradead.org>
-In-Reply-To: <ZfHAcVwJ6w9b1x0Z@casper.infradead.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Wed, 13 Mar 2024 15:31:18 +0000
-Message-ID: <CAJuCfpFf2xrCA_Rq_-e5HsDMqeS87p0b28PkK+wgWco17mxyDQ@mail.gmail.com>
-Subject: Re: [PATCH v5 20/37] mm: fix non-compound multi-order memory
- accounting in __free_pages
-To: Matthew Wilcox <willy@infradead.org>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
-	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
-	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
-	kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bd05d62d-9f46-46b5-b444-6c4814526459@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Mar 13, 2024 at 3:04=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Wed, Mar 06, 2024 at 10:24:18AM -0800, Suren Baghdasaryan wrote:
-> > When a non-compound multi-order page is freed, it is possible that a
-> > speculative reference keeps the page pinned. In this case we free all
-> > pages except for the first page, which will be freed later by the last
-> > put_page(). However put_page() ignores the order of the page being free=
-d,
-> > treating it as a 0-order page. This creates a memory accounting imbalan=
-ce
-> > because the pages freed in __free_pages() do not have their own alloc_t=
-ag
-> > and their memory was accounted to the first page. To fix this the first
-> > page should adjust its allocation size counter when "tail" pages are fr=
-eed.
->
-> It's not "ignored".  It's not available!
->
-> Better wording:
->
-> However the page passed to put_page() is indisinguishable from an
-> order-0 page, so it cannot do the accounting, just as it cannot free
-> the subsequent pages.  Do the accounting here, where we free the pages.
->
-> (I'm sure further improvements are possible)
->
-> > +static inline void pgalloc_tag_sub_bytes(struct alloc_tag *tag, unsign=
-ed int order)
-> > +{
-> > +     if (mem_alloc_profiling_enabled() && tag)
-> > +             this_cpu_sub(tag->counters->bytes, PAGE_SIZE << order);
-> > +}
->
-> This is a terribly named function.  And it's not even good for what we
-> want to use it for.
->
-> static inline void pgalloc_tag_sub_pages(struct alloc_tag *tag, unsigned =
-int nr)
-> {
->         if (mem_alloc_profiling_enabled() && tag)
->                 this_cpu_sub(tag->counters->bytes, PAGE_SIZE * nr);
-> }
->
-> > +++ b/mm/page_alloc.c
-> > @@ -4697,12 +4697,21 @@ void __free_pages(struct page *page, unsigned i=
-nt order)
-> >  {
-> >       /* get PageHead before we drop reference */
-> >       int head =3D PageHead(page);
-> > +     struct alloc_tag *tag =3D pgalloc_tag_get(page);
-> >
-> >       if (put_page_testzero(page))
-> >               free_the_page(page, order);
-> >       else if (!head)
-> > -             while (order-- > 0)
-> > +             while (order-- > 0) {
-> >                       free_the_page(page + (1 << order), order);
-> > +                     /*
-> > +                      * non-compound multi-order page accounts all all=
-ocations
-> > +                      * to the first page (just like compound one), th=
-erefore
-> > +                      * we need to adjust the allocation size of the f=
-irst
-> > +                      * page as its order is ignored when put_page() f=
-rees it.
-> > +                      */
-> > +                     pgalloc_tag_sub_bytes(tag, order);
->
-> -       else if (!head
-> +       else if (!head) {
-> +               pgalloc_tag_sub_pages(1 << order - 1);
->                 while (order-- > 0)
->                         free_the_page(page + (1 << order), order);
-> +       }
->
-> It doesn't need a comment, it's obvious what you're doing.
+On Wed, Mar 13, 2024 at 11:55:04AM +0100, Vlastimil Babka wrote:
+> On 3/12/24 19:52, Roman Gushchin wrote:
+> > On Fri, Mar 01, 2024 at 06:07:08PM +0100, Vlastimil Babka wrote:
+> >> The MEMCG_KMEM integration with slab currently relies on two hooks
+> >> during allocation. memcg_slab_pre_alloc_hook() determines the objcg and
+> >> charges it, and memcg_slab_post_alloc_hook() assigns the objcg pointer
+> >> to the allocated object(s).
+> >>
+> >> As Linus pointed out, this is unnecessarily complex. Failing to charge
+> >> due to memcg limits should be rare, so we can optimistically allocate
+> >> the object(s) and do the charging together with assigning the objcg
+> >> pointer in a single post_alloc hook. In the rare case the charging
+> >> fails, we can free the object(s) back.
+> >>
+> >> This simplifies the code (no need to pass around the objcg pointer) and
+> >> potentially allows to separate charging from allocation in cases where
+> >> it's common that the allocation would be immediately freed, and the
+> >> memcg handling overhead could be saved.
+> >>
+> >> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> >> Link: https://lore.kernel.org/all/CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com/
+> >> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> > 
+> > Nice cleanup, Vlastimil!
+> > Couple of small nits below, but otherwise, please, add my
+> > 
+> > Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+> 
+> Thanks!
+> 
+> >>  	/*
+> >>  	 * The obtained objcg pointer is safe to use within the current scope,
+> >>  	 * defined by current task or set_active_memcg() pair.
+> >>  	 * obj_cgroup_get() is used to get a permanent reference.
+> >>  	 */
+> >> -	struct obj_cgroup *objcg = current_obj_cgroup();
+> >> +	objcg = current_obj_cgroup();
+> >>  	if (!objcg)
+> >>  		return true;
+> >>  
+> >> +	/*
+> >> +	 * slab_alloc_node() avoids the NULL check, so we might be called with a
+> >> +	 * single NULL object. kmem_cache_alloc_bulk() aborts if it can't fill
+> >> +	 * the whole requested size.
+> >> +	 * return success as there's nothing to free back
+> >> +	 */
+> >> +	if (unlikely(*p == NULL))
+> >> +		return true;
+> > 
+> > Probably better to move this check up? current_obj_cgroup() != NULL check is more
+> > expensive.
+> 
+> It probably doesn't matter in practice anyway, but my thinking was that
+> *p == NULL is so rare (the object allocation failed) it shouldn't matter
+> that we did current_obj_cgroup() uselessly in case it happens.
+> OTOH current_obj_cgroup() returning NULL is not that rare (?) so it
+> could be useful to not check *p in those cases?
 
-All suggestions seem fine to me. I'll adjust the next version accordingly.
-Thanks for reviewing and the feedback!
-
->
+I see... Hm, I'd generally expect a speculative execution of the second check
+anyway (especially with an unlikely() hint for the first one), and because as
+you said p == NULL is almost never true, the additional cost is zero.
+But the same is true otherwise, so it really doesn't matter that much.
+Thanks for explaining your logic, it wasn't obvious to me.
 
