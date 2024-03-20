@@ -1,61 +1,83 @@
-Return-Path: <cgroups+bounces-2081-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2082-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C795881998
-	for <lists+cgroups@lfdr.de>; Wed, 20 Mar 2024 23:40:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9178881A37
+	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 00:45:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06E1A282FF0
-	for <lists+cgroups@lfdr.de>; Wed, 20 Mar 2024 22:40:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 260E51C20FCB
+	for <lists+cgroups@lfdr.de>; Wed, 20 Mar 2024 23:45:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 961A8126F11;
-	Wed, 20 Mar 2024 22:38:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3757F86244;
+	Wed, 20 Mar 2024 23:45:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="URTtPPLS"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="NQrUIa00"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B687D86ACC
-	for <cgroups@vger.kernel.org>; Wed, 20 Mar 2024 22:38:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 550B4381D1
+	for <cgroups@vger.kernel.org>; Wed, 20 Mar 2024 23:45:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710974329; cv=none; b=JMMbBKKdT8mXaFleWQtI5TBAoUkb9eqaUjBgJg8uy7vsgbMc3YWMyM4+uYr52xcG7naADa4aMC4GTQB9LL32RM6gR8yjxBYWwV4nZq4mquix6JkZhC3CjkLTV+I7Ijp6J8axQ0UJI+mqzRqVJ/9inZeo4muEcxl/mxjyOUCXM6k=
+	t=1710978323; cv=none; b=Cw5M6HMCmOPo+Wb80LGPDZWSUuHJhFN8Kvwz1Osg2Jyaz3MQMtW5DZuPFRR3S/v6jj+VhhFN53CuIETOr1kyUXgxNWdOlgH+LdOjbv0g1ymQ6LPI5qXOFzvzjBkpk94uo2hsOce+arbLY0awdbZr80mu6p+RmTYyMhGoaOBXFxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710974329; c=relaxed/simple;
-	bh=zN7xwFByqtX0SNgUDblzv18pthRpp6ItWXcAvRRTgtA=;
+	s=arc-20240116; t=1710978323; c=relaxed/simple;
+	bh=8tDjC9UtnvR6CB41JY1jXf3IwD8hZvVyzgVgCDUjlls=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uu8taR/ucSIl9BDYzYdJrpYxD4cCqHlV3FPZFCUYC5vGhGtDQ4mYEm4htq3se3L0rnZUqNa1sYo3BEuGzzd64OwYqg1pP4+SiXHtyr29FrcIcdTro/8T30TtrHj5F4rjbW/ySZcA5Pd7Xyy3BAUyPOBukFA9jymXb/rqr8kpAyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=URTtPPLS; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 20 Mar 2024 15:38:40 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710974325;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fdASLFv2/fpQ2J/Ny9c7D56INI9+Df/mhIjRVwm3hrg=;
-	b=URTtPPLSThfeQKeOGopVvqEwoBcfCWf55w/sMysnz0BWAaIWc23oX13AwEypZm92Jhv6U8
-	RdRh2Y3lNzCR09xWufVKFdcBEH3AR2XAw+qwB91xNKpyCftCanX6cXA9QSqE64r5yO9Is4
-	87gi9/lRigNTzlOM14FGLeK/GBcvZB0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-Cc: Michal Hocko <mhocko@suse.com>, Johannes Weiner <hannes@cmpxchg.org>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rtr/FlEtHxP70vli2vAvpF2J3R78ne1Gk92rtd4GQlsvCssfrCf6vnSmtSoju6M8B3prPy1D4crvevv+1Pwc9JQF/xTudTT4V8iihNBYhpHq+7zBAxsM16dV2eWkNFZ9Zsni5UVQO8ctzd0odSP1PNemTTGoa1j8RM7KLys568g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=NQrUIa00; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-78a2a97c296so27411885a.2
+        for <cgroups@vger.kernel.org>; Wed, 20 Mar 2024 16:45:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1710978318; x=1711583118; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AXioFYbquIvXXAo9owl/PKnQvce3YPzjBFfKMVoD2Ro=;
+        b=NQrUIa00QM6lGIZBbFhNKGwuvauo4dTYKgvdV/VYCrhyQ3hF75zWe/m7rJPAl/74JI
+         fHwZcPgGW5nKVMnDg6L3pk+/Of0fD8tjauv0q+bme7ZgX2fM3tcOL4NNjf+6M02Za9Bg
+         +QR75zmwgtsl+h67fqQdCDURWT+vXfppsE1zqAyLW4/fuAi2c1gyZvog4XgqvquBWO38
+         974Yn5Vuh7nfR1kYKkkuAjhNpNrkxzg7nAHJO+LiHnaiYckWn9bS0FJoJ63j1tPAD0db
+         dZDOYMwarbzzC9egni1ER0rv0RoDEj5F721zV+aW2Rf2exAhJDBQ/3mLP0HSsEhyD3jW
+         ZdMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710978318; x=1711583118;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AXioFYbquIvXXAo9owl/PKnQvce3YPzjBFfKMVoD2Ro=;
+        b=eGfluVCbvFu1b/ZVi6om76BhkED05w6FzRLsmZ1HLCvkk/orw5rXoc0aRBnMW1p/kn
+         ZP0MbGCR0ep8z3lobryvngzVSplkizn6xuwWAWK6FkkBAF4iS2I0bVzvhW1tT3MPkgXp
+         zMehVJcz+l6+xHx6U02ZfhmOV+BgpHsxvjAIgbrRYIgQj/tlt2skCcrstHBpuL2qM/U0
+         JMZEKQQB/m4opUzr75rLliOLin0ENYISUPUq8C3pA40wOFAP2nrr4TV2BW6qyfL0vX6o
+         /Kp0ZsV+IPxbWA8UOYpXnfiFynKZbJp9I2OmXiy04c1h2BLcbeUA+tm90r1YkeBx2nUl
+         HJxw==
+X-Forwarded-Encrypted: i=1; AJvYcCW2i02uUAOiBXQlLvqt7hA7JZ77lXVU+P/VDkIPlPtfeea5XjC9Wm4zindCG6tZms4Qt+dwgvzzaPlpNyPKyuAVbJbuglLB3w==
+X-Gm-Message-State: AOJu0YxM2sa445mOL7OfuHbZqHYuQrwesIGVJ6yqZE+zaWRfDAAivfei
+	Tn2TG3NqslJIgA9b5ExtGvi/WtzlOpO7W7pWuujZuXGWW1NLyziJ/aLCRdJmFBk=
+X-Google-Smtp-Source: AGHT+IFKPEjwfmOFjIX+g2ga1vxv+5xqkzUDeuvdTBScQ+ysDjM/7ZelybMetyrobl2ORzIKlZmDsA==
+X-Received: by 2002:a05:620a:578c:b0:789:f574:e511 with SMTP id wk12-20020a05620a578c00b00789f574e511mr7281092qkn.70.1710978318222;
+        Wed, 20 Mar 2024 16:45:18 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id b10-20020a05620a126a00b00789ea123bd5sm4975476qkl.59.2024.03.20.16.45.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 16:45:17 -0700 (PDT)
+Date: Wed, 20 Mar 2024 19:45:16 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@kernel.org>,
 	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Vladimir Davydov <vdavydov.dev@gmail.com>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel@openvz.org
-Subject: Re: [PATCH] mm/memcontrol: stop resize loop if limit was changed
- again
-Message-ID: <ZftlcFQMkQIcX8LP@P9FQF9L96D>
-References: <20240320100556.463266-1-ptikhomirov@virtuozzo.com>
- <Zfq6XaACmN2JssTW@tiehlicka>
- <be8cfada-f4bd-4894-848d-1b7706b14035@virtuozzo.com>
+	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: remove CONFIG_MEMCG_KMEM
+Message-ID: <20240320234516.GJ294822@cmpxchg.org>
+References: <20240320202745.740843-1-hannes@cmpxchg.org>
+ <Zftk3tzC2btb3Ine@P9FQF9L96D>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -64,50 +86,29 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <be8cfada-f4bd-4894-848d-1b7706b14035@virtuozzo.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <Zftk3tzC2btb3Ine@P9FQF9L96D>
 
-On Wed, Mar 20, 2024 at 06:55:05PM +0800, Pavel Tikhomirov wrote:
+On Wed, Mar 20, 2024 at 03:36:14PM -0700, Roman Gushchin wrote:
+> On Wed, Mar 20, 2024 at 04:27:45PM -0400, Johannes Weiner wrote:
+> > CONFIG_MEMCG_KMEM used to be a user-visible option for whether slab
+> > tracking is enabled. It has been default-enabled and equivalent to
+> > CONFIG_MEMCG for almost a decade. We've only grown more kernel memory
+> > accounting sites since, and there is no imaginable cgroup usecase
+> > going forward that wants to track user pages but not the multitude of
+> > user-drivable kernel allocations.
 > 
-> 
-> On 20/03/2024 18:28, Michal Hocko wrote:
-> > On Wed 20-03-24 18:03:30, Pavel Tikhomirov wrote:
-> > > In memory_max_write() we first set memcg->memory.max and only then
-> > > try to enforce it in loop. What if while we are in loop someone else
-> > > have changed memcg->memory.max but we are still trying to enforce
-> > > the old value? I believe this can lead to nasty consequence like getting
-> > > an oom on perfectly fine cgroup within it's limits or excess reclaim.
-> > 
-> > I would argue that uncoordinated hard limit configuration can cause
-> > problems on their own.
-> 
-> Sorry, didn't know that.
-> 
-> > Beside how is this any different from changing
-> > the high limit while we are inside the reclaim loop?
-> 
-> I believe reclaim loop rereads limits on each iteration, e.g. in
-> reclaim_high(), so it should always be enforcing the right limit.
-> 
-> > 
-> > > We also have exactly the same thing in memory_high_write().
-> > > 
-> > > So let's stop enforcing old limits if we already have a new ones.
-> > 
-> > I do see any reasons why this would be harmful I just do not see why
-> > this is a real thing or why the new behavior is any better for racing
-> > updaters as those are not deterministic anyway. If you have any actual
-> > usecase then more details would really help to justify this change.
-> > 
-> > The existing behavior makes some sense as it enforces the given limit
-> > deterministically.
-> 
-> I don't have any actual problem, usecase or reproduce at hand, I only see a
-> potential problem:
+> I totally support it. I believe one of the reasons for it to exist
+> was SLOB, which hasn't been supporting the slab memory accounting.
+> No such reasons anymore.
 
-If the problem is only potential and also not very severe (it's not a crash
-or memory corruption or something like this), I'd say let's keep things as
-they are.
+Yeah. The funny thing is, if you had slob selected, it would also
+disable all the other kernel memory accounting covered by that option
+that had nothing to do with the slab allocator.
 
-Thanks!
+This patch certainly got a much more simpler without slob around.
+
+> Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+
+Thanks :)
+
 
