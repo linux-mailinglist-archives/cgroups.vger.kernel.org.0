@@ -1,70 +1,70 @@
-Return-Path: <cgroups+bounces-2114-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2115-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1ED17885E78
-	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 17:49:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D28E2885E84
+	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 17:50:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BCD01C210A1
-	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 16:49:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F10F21C22C06
+	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 16:50:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E38D1420B7;
-	Thu, 21 Mar 2024 16:38:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AE7214290C;
+	Thu, 21 Mar 2024 16:38:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pug3BjJ+"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FNLsC8Qe"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B6D013328B
-	for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 16:38:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11A771420A3
+	for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 16:38:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711039093; cv=none; b=tpNFxHr5scSHbkK9QH3entGzcJCIrGZtVJak0scYa0KynJA4oW/i50FVTflBTkrEmrv0jv+sPHIkeLbBecIS9oQ/kzRDgxVLYSyOSYIwtms9BNWCumyscX6XPV6ZRrxbMRAjzBvSEqSYr9AG5x8jXFnnmekiFAthvCZHGO4/o0Y=
+	t=1711039097; cv=none; b=bgUfDjGcMoSH8NzsnePIXWkRVlViro+6MSGXXtBNimSWFFrpwHjfwUOBDCvXAep3jS17peRC6gyAdcW8Sk2z5KTi1egmec2AF/sWy+nqgWVCzcHy4Br+duoB6YHGR0TDfe779LbMOtzqKkI/iXOOEETW8CciJiVXcLFGPDxLX88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711039093; c=relaxed/simple;
-	bh=5ajV2iI74MCcJvdY3e41StjfOvcO/AanK2/O3Zac0KU=;
+	s=arc-20240116; t=1711039097; c=relaxed/simple;
+	bh=+rk7yZUSWOGHDX0mrmq7q5rPH06+Gd8vsMk4q87rLEE=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=saLafiQzHQVQ3YXciIlHT7D75ZWTNNcQf2xQEAamZZWEIz2/UleBG52uHZwlm+NEZz2bg1sR+DILQfRu4IuJuUc5EuuOSWcLwiLYSzO1d1MqcdrrRjzxMHXmls71WmBSrgpe/JSFxyT7mW/1uPMcL3VRdUNJzWnXJSAOYhw7/WM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pug3BjJ+; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=r5PROW2hJDb1VN2yYZ1dZLunjtnRA+64eBDx3V0GdCuJhJETcRZc8ucHrR/+GKxYgZgK6W/Wa16qTta/wO1HP4Y6/G0v50jyzs6jXvbB+bG3qFBQqKyt9cZ6IsVYj4CSS6CshUSPKd4Eqv9NqxIueERbQV9jG5Ec+VUztRKUO3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FNLsC8Qe; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60a2386e932so22628277b3.1
-        for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 09:38:11 -0700 (PDT)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcf22e5b70bso1903226276.1
+        for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 09:38:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711039091; x=1711643891; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1711039093; x=1711643893; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=krRMCxbEdPvR0gpNvdmt+1GzNi+HHBvoijzlHbN4rmY=;
-        b=pug3BjJ+V1Rng7W/ozJY8wGrvo+b2YITJ8EnhZ/boP7Sqog7MupqCVHMt7XQ4YKQJy
-         CEr4Bq+h8ob1sduSeQnVlrS8nng5lqLBbeD0NKfFVjk2AJl4AOYRFusRaqwFxMClSxjV
-         SNUS7QjNstnv5CUr+ku2CHIE+DiMK2pqofwi5AbV0IFQdK8Q8bS4Q6j4pEyMbaHrm9y7
-         nLb6pd6qYALuwqEM1aHRLdDdw0yoMzTtohp95md0NrYc29toJQqmoPSVtteaHdnikrf1
-         JwWbYdDsOaSkx9YQrRNC45g3j6zNHOvZQ8LQpZ9YoIG4zsB/Wjw3KMqeIgiRz09Fp99h
-         2gdg==
+        bh=TkCDMNHfK5xLLlYY223eXbm7c73NL7RFva1BQ3rh7WM=;
+        b=FNLsC8Qefze4WFvDfgy8PNRrY/W+MAfFUq/pqmCvAeEWpFdUkXyoG6rG/GTVkanCio
+         oKkpTN58YUyWCzaQDSQly3SjFhNPv7EiwGpOFUvdRsg5i/b+Q20ONZ67ZBbTmabe7E5X
+         BbCWhyWvXozSZXWrAMSdb3NFnsoiIj7kxk56ion4m94p88OEZTqE2MxXZIbP96LfgzOe
+         Th5l5EaPCh8FgQGtu0LW1n82Bp6tfoW538Npd8ie/Up3mWsjgKjOyAB46lrnkDAvDEyu
+         G7CCKRtx+d5a3RjAcJ2VKIxAAO+TpCdyQzPH7OfSuC1OUZ+gjKlwBOr9dVRVWjqafYNM
+         0VJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711039091; x=1711643891;
+        d=1e100.net; s=20230601; t=1711039093; x=1711643893;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=krRMCxbEdPvR0gpNvdmt+1GzNi+HHBvoijzlHbN4rmY=;
-        b=U2J/avB5nTsHX4UGTKTAyhBcve+wDx5iVDg1HPlyghpYY+FdnOqYOIUkgk8DADbHDh
-         u823KmQAelhr81MjCmZDH0lrh8PYQIdqr31j1d66S6tv4cEt7TIsSW+/Vvo3hzJZugUI
-         BI31ZSO/VfqQu1CfxE235rJZLsDXRKXcBKzKRilLRJqiM5vNP6QBtmAZtL93YkkKn79o
-         8FV15U0/YrCP8nzv25zOVKb/NE1IUg+GGrotZTTCLmxYuaaqVlz282MxgsyCTyCmULEz
-         hEf5clQRBtEd6JirfpbDxDbsx4/zZDZWfjPm9XNFWXsPDgH0aMJfy0V5sTig+Y8augbp
-         BHkg==
-X-Forwarded-Encrypted: i=1; AJvYcCX3fQDjHf9EQ/q3hBKykuuqlugWzYYlcHs9lYH2YAeYMBtHnEt+g7ft8l5yjQm4lSf1LDEuhOhzLHXfshZ+3evB1/UQW/E7DA==
-X-Gm-Message-State: AOJu0YwPWn/R2FvDVio6wL5bUB4CKavyqmCTJWxRS3mGJra2O9Y+mNRo
-	04GmGiKaCjZtrsWsJiKKAz4tN0jzA2Pkdli45/M1m/Be0tbO69Kcf4P9KsTQnHKVQPpAXOdaUAR
-	r3g==
-X-Google-Smtp-Source: AGHT+IGHRX7538S2HF/3oOa1sNnpVXnzB+i3nUjYB81n0AdHPc2tfmh7wCvtVRvHYQ8dsZZZ2KX9wsSWPB4=
+        bh=TkCDMNHfK5xLLlYY223eXbm7c73NL7RFva1BQ3rh7WM=;
+        b=JqgsVUtYNej7n0za4hC31Z4/vYutczAvmwmEhkwMfXeDmNZHUShDZUPkLL0Zdu9trh
+         Mex7oRx+PqM9PpbUoKvZdsO6zt1yxqK3gqnxMPO5FGU8pdNpxIHQNLfZ4E+rXUmJJTF+
+         KCXXOsCCick2le0EPe0HJh/i3a3prhDIBUHIcDXLnelza4f37J3sHxpYX5+4a27GCPN4
+         R1byZoA0DIlmyWAORw2N8lTeMIOiFrTE/ZiyK5yV1I4Km3Aht7R0J7AhjJChQyQvkeOT
+         XE17Nvt+mckm2k4httSGhtcmzZC4RBprgLXYKq8CJ7P1mA6VUfTgxr0sm192MbtIUuaK
+         3eMA==
+X-Forwarded-Encrypted: i=1; AJvYcCW/+E8skIgj7hpKDwyo5OCMbJpPV1zf2ovtO+eU+vw7XCHC9WwJCvRhCNw9e4uCDHPHctfzGY1T87y+e6G45ft2Hx8fEFceFg==
+X-Gm-Message-State: AOJu0YwxpDA8vun2MT+XZ6knWWaNByA/6zXaEkP0LSas26gIovUV3QMI
+	MgRJEUe+L47hdfboqcTsfDP7OfYXBVFUKPFkba2JZOMJUoafRvaoRDG8FQ+b9touVAEds2dMiYD
+	KsA==
+X-Google-Smtp-Source: AGHT+IGzAh9FXKpWdDvxkKjPGrkTEo4AMtUaoBAWJZd0ISNFCDPA2abbhqSo0+lrHGU23eGRJRqbHufH5vQ=
 X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:a489:6433:be5d:e639])
- (user=surenb job=sendgmr) by 2002:a05:6902:2506:b0:dd1:390a:51e8 with SMTP id
- dt6-20020a056902250600b00dd1390a51e8mr2395872ybb.10.1711039090742; Thu, 21
- Mar 2024 09:38:10 -0700 (PDT)
-Date: Thu, 21 Mar 2024 09:36:50 -0700
+ (user=surenb job=sendgmr) by 2002:a05:6902:1a48:b0:dcc:8be2:7cb0 with SMTP id
+ cy8-20020a0569021a4800b00dcc8be27cb0mr1175240ybb.0.1711039092976; Thu, 21 Mar
+ 2024 09:38:12 -0700 (PDT)
+Date: Thu, 21 Mar 2024 09:36:51 -0700
 In-Reply-To: <20240321163705.3067592-1-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -74,8 +74,8 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240321163705.3067592-1-surenb@google.com>
 X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-Message-ID: <20240321163705.3067592-29-surenb@google.com>
-Subject: [PATCH v6 28/37] mm: percpu: Add codetag reference into pcpuobj_ext
+Message-ID: <20240321163705.3067592-30-surenb@google.com>
+Subject: [PATCH v6 29/37] mm: percpu: enable per-cpu allocation tagging
 From: Suren Baghdasaryan <surenb@google.com>
 To: akpm@linux-foundation.org
 Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz, 
@@ -105,87 +105,183 @@ Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz,
 	cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-From: Kent Overstreet <kent.overstreet@linux.dev>
-
-To store codetag for every per-cpu allocation, a codetag reference is
-embedded into pcpuobj_ext when CONFIG_MEM_ALLOC_PROFILING=y. Hooks to
-use the newly introduced codetag are added.
+Redefine __alloc_percpu, __alloc_percpu_gfp and __alloc_reserved_percpu
+to record allocations and deallocations done by these functions.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 ---
- mm/percpu-internal.h | 11 +++++++++--
- mm/percpu.c          | 26 ++++++++++++++++++++++++++
- 2 files changed, 35 insertions(+), 2 deletions(-)
+ include/linux/percpu.h | 23 ++++++++++-----
+ mm/percpu.c            | 64 +++++-------------------------------------
+ 2 files changed, 23 insertions(+), 64 deletions(-)
 
-diff --git a/mm/percpu-internal.h b/mm/percpu-internal.h
-index e62d582f4bf3..7e42f0ca3b7b 100644
---- a/mm/percpu-internal.h
-+++ b/mm/percpu-internal.h
-@@ -36,9 +36,12 @@ struct pcpuobj_ext {
- #ifdef CONFIG_MEMCG_KMEM
- 	struct obj_cgroup	*cgroup;
+diff --git a/include/linux/percpu.h b/include/linux/percpu.h
+index 62b5eb45bd89..e54921c79c9a 100644
+--- a/include/linux/percpu.h
++++ b/include/linux/percpu.h
+@@ -2,6 +2,7 @@
+ #ifndef __LINUX_PERCPU_H
+ #define __LINUX_PERCPU_H
+ 
++#include <linux/alloc_tag.h>
+ #include <linux/mmdebug.h>
+ #include <linux/preempt.h>
+ #include <linux/smp.h>
+@@ -9,6 +10,7 @@
+ #include <linux/pfn.h>
+ #include <linux/init.h>
+ #include <linux/cleanup.h>
++#include <linux/sched.h>
+ 
+ #include <asm/percpu.h>
+ 
+@@ -125,7 +127,6 @@ extern int __init pcpu_page_first_chunk(size_t reserved_size,
+ 				pcpu_fc_cpu_to_node_fn_t cpu_to_nd_fn);
  #endif
-+#ifdef CONFIG_MEM_ALLOC_PROFILING
-+	union codetag_ref	tag;
-+#endif
- };
  
--#ifdef CONFIG_MEMCG_KMEM
-+#if defined(CONFIG_MEMCG_KMEM) || defined(CONFIG_MEM_ALLOC_PROFILING)
- #define NEED_PCPUOBJ_EXT
+-extern void __percpu *__alloc_reserved_percpu(size_t size, size_t align) __alloc_size(1);
+ extern bool __is_kernel_percpu_address(unsigned long addr, unsigned long *can_addr);
+ extern bool is_kernel_percpu_address(unsigned long addr);
+ 
+@@ -133,14 +134,16 @@ extern bool is_kernel_percpu_address(unsigned long addr);
+ extern void __init setup_per_cpu_areas(void);
  #endif
  
-@@ -86,7 +89,11 @@ struct pcpu_chunk {
+-extern void __percpu *__alloc_percpu_gfp(size_t size, size_t align, gfp_t gfp) __alloc_size(1);
+-extern void __percpu *__alloc_percpu(size_t size, size_t align) __alloc_size(1);
+-extern void free_percpu(void __percpu *__pdata);
++extern void __percpu *pcpu_alloc_noprof(size_t size, size_t align, bool reserved,
++				   gfp_t gfp) __alloc_size(1);
+ extern size_t pcpu_alloc_size(void __percpu *__pdata);
  
- static inline bool need_pcpuobj_ext(void)
- {
--	return !mem_cgroup_kmem_disabled();
-+	if (IS_ENABLED(CONFIG_MEM_ALLOC_PROFILING))
-+		return true;
-+	if (!mem_cgroup_kmem_disabled())
-+		return true;
-+	return false;
- }
+-DEFINE_FREE(free_percpu, void __percpu *, free_percpu(_T))
+-
+-extern phys_addr_t per_cpu_ptr_to_phys(void *addr);
++#define __alloc_percpu_gfp(_size, _align, _gfp)				\
++	alloc_hooks(pcpu_alloc_noprof(_size, _align, false, _gfp))
++#define __alloc_percpu(_size, _align)					\
++	alloc_hooks(pcpu_alloc_noprof(_size, _align, false, GFP_KERNEL))
++#define __alloc_reserved_percpu(_size, _align)				\
++	alloc_hooks(pcpu_alloc_noprof(_size, _align, true, GFP_KERNEL))
  
- extern spinlock_t pcpu_lock;
+ #define alloc_percpu_gfp(type, gfp)					\
+ 	(typeof(type) __percpu *)__alloc_percpu_gfp(sizeof(type),	\
+@@ -149,6 +152,12 @@ extern phys_addr_t per_cpu_ptr_to_phys(void *addr);
+ 	(typeof(type) __percpu *)__alloc_percpu(sizeof(type),		\
+ 						__alignof__(type))
+ 
++extern void free_percpu(void __percpu *__pdata);
++
++DEFINE_FREE(free_percpu, void __percpu *, free_percpu(_T))
++
++extern phys_addr_t per_cpu_ptr_to_phys(void *addr);
++
+ extern unsigned long pcpu_nr_pages(void);
+ 
+ #endif /* __LINUX_PERCPU_H */
 diff --git a/mm/percpu.c b/mm/percpu.c
-index 2e5edaad9cc3..90e9e4004ac9 100644
+index 90e9e4004ac9..dd7eeb370134 100644
 --- a/mm/percpu.c
 +++ b/mm/percpu.c
-@@ -1699,6 +1699,32 @@ static void pcpu_memcg_free_hook(struct pcpu_chunk *chunk, int off, size_t size)
- }
- #endif /* CONFIG_MEMCG_KMEM */
+@@ -1726,7 +1726,7 @@ static void pcpu_alloc_tag_free_hook(struct pcpu_chunk *chunk, int off, size_t s
+ #endif
  
-+#ifdef CONFIG_MEM_ALLOC_PROFILING
-+static void pcpu_alloc_tag_alloc_hook(struct pcpu_chunk *chunk, int off,
-+				      size_t size)
-+{
-+	if (mem_alloc_profiling_enabled() && likely(chunk->obj_exts)) {
-+		alloc_tag_add(&chunk->obj_exts[off >> PCPU_MIN_ALLOC_SHIFT].tag,
-+			      current->alloc_tag, size);
-+	}
-+}
-+
-+static void pcpu_alloc_tag_free_hook(struct pcpu_chunk *chunk, int off, size_t size)
-+{
-+	if (mem_alloc_profiling_enabled() && likely(chunk->obj_exts))
-+		alloc_tag_sub(&chunk->obj_exts[off >> PCPU_MIN_ALLOC_SHIFT].tag, size);
-+}
-+#else
-+static void pcpu_alloc_tag_alloc_hook(struct pcpu_chunk *chunk, int off,
-+				      size_t size)
-+{
-+}
-+
-+static void pcpu_alloc_tag_free_hook(struct pcpu_chunk *chunk, int off, size_t size)
-+{
-+}
-+#endif
-+
  /**
-  * pcpu_alloc - the percpu allocator
+- * pcpu_alloc - the percpu allocator
++ * pcpu_alloc_noprof - the percpu allocator
   * @size: size of area to allocate in bytes
+  * @align: alignment of area (max PAGE_SIZE)
+  * @reserved: allocate from the reserved chunk if available
+@@ -1740,7 +1740,7 @@ static void pcpu_alloc_tag_free_hook(struct pcpu_chunk *chunk, int off, size_t s
+  * RETURNS:
+  * Percpu pointer to the allocated area on success, NULL on failure.
+  */
+-static void __percpu *pcpu_alloc(size_t size, size_t align, bool reserved,
++void __percpu *pcpu_alloc_noprof(size_t size, size_t align, bool reserved,
+ 				 gfp_t gfp)
+ {
+ 	gfp_t pcpu_gfp;
+@@ -1907,6 +1907,8 @@ static void __percpu *pcpu_alloc(size_t size, size_t align, bool reserved,
+ 
+ 	pcpu_memcg_post_alloc_hook(objcg, chunk, off, size);
+ 
++	pcpu_alloc_tag_alloc_hook(chunk, off, size);
++
+ 	return ptr;
+ 
+ fail_unlock:
+@@ -1935,61 +1937,7 @@ static void __percpu *pcpu_alloc(size_t size, size_t align, bool reserved,
+ 
+ 	return NULL;
+ }
+-
+-/**
+- * __alloc_percpu_gfp - allocate dynamic percpu area
+- * @size: size of area to allocate in bytes
+- * @align: alignment of area (max PAGE_SIZE)
+- * @gfp: allocation flags
+- *
+- * Allocate zero-filled percpu area of @size bytes aligned at @align.  If
+- * @gfp doesn't contain %GFP_KERNEL, the allocation doesn't block and can
+- * be called from any context but is a lot more likely to fail. If @gfp
+- * has __GFP_NOWARN then no warning will be triggered on invalid or failed
+- * allocation requests.
+- *
+- * RETURNS:
+- * Percpu pointer to the allocated area on success, NULL on failure.
+- */
+-void __percpu *__alloc_percpu_gfp(size_t size, size_t align, gfp_t gfp)
+-{
+-	return pcpu_alloc(size, align, false, gfp);
+-}
+-EXPORT_SYMBOL_GPL(__alloc_percpu_gfp);
+-
+-/**
+- * __alloc_percpu - allocate dynamic percpu area
+- * @size: size of area to allocate in bytes
+- * @align: alignment of area (max PAGE_SIZE)
+- *
+- * Equivalent to __alloc_percpu_gfp(size, align, %GFP_KERNEL).
+- */
+-void __percpu *__alloc_percpu(size_t size, size_t align)
+-{
+-	return pcpu_alloc(size, align, false, GFP_KERNEL);
+-}
+-EXPORT_SYMBOL_GPL(__alloc_percpu);
+-
+-/**
+- * __alloc_reserved_percpu - allocate reserved percpu area
+- * @size: size of area to allocate in bytes
+- * @align: alignment of area (max PAGE_SIZE)
+- *
+- * Allocate zero-filled percpu area of @size bytes aligned at @align
+- * from reserved percpu area if arch has set it up; otherwise,
+- * allocation is served from the same dynamic area.  Might sleep.
+- * Might trigger writeouts.
+- *
+- * CONTEXT:
+- * Does GFP_KERNEL allocation.
+- *
+- * RETURNS:
+- * Percpu pointer to the allocated area on success, NULL on failure.
+- */
+-void __percpu *__alloc_reserved_percpu(size_t size, size_t align)
+-{
+-	return pcpu_alloc(size, align, true, GFP_KERNEL);
+-}
++EXPORT_SYMBOL_GPL(pcpu_alloc_noprof);
+ 
+ /**
+  * pcpu_balance_free - manage the amount of free chunks
+@@ -2328,6 +2276,8 @@ void free_percpu(void __percpu *ptr)
+ 	spin_lock_irqsave(&pcpu_lock, flags);
+ 	size = pcpu_free_area(chunk, off);
+ 
++	pcpu_alloc_tag_free_hook(chunk, off, size);
++
+ 	pcpu_memcg_free_hook(chunk, off, size);
+ 
+ 	/*
 -- 
 2.44.0.291.gc1ea87d7ee-goog
 
