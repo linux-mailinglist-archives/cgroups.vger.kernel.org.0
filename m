@@ -1,70 +1,70 @@
-Return-Path: <cgroups+bounces-2089-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2090-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C3AB885DCF
-	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 17:38:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F204885DD8
+	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 17:38:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC4F9281CDE
-	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 16:38:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBC891F214A7
+	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 16:38:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E491332B8;
-	Thu, 21 Mar 2024 16:37:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 263A0133991;
+	Thu, 21 Mar 2024 16:37:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wWAs86Pz"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="M97DhcGW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFDE21EA95
-	for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 16:37:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C574112C814
+	for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 16:37:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711039039; cv=none; b=d4mbG7i5aNhNOFE9NFIHxRenxJyXn1hvLY1Qp4EgNdy3ZMMVy+Xoe9c/X8rLb0lyJIa0JLSFG2KUGfV2VLnU1Ix9tE1uI7A/T0e6gV29ZBS02vG8rX4br+YKsw4i4jfFNK2Qo14CU+8sNBpXrHrwDcT77RQlZiTL7QzzITSRtGg=
+	t=1711039041; cv=none; b=OAw2lO6E8z9dYyPzXg+mzZIfuS4EQKdvQhb+piIdjSzYDuZzSpraOWJcsbYSkEPqPBawBedb6jHjneiaSQtyejSVxJ1AYxwNf4rl/aHRyX5SO8/pHsT66usz2daaZE+i09MlMu2MAsq2eyXVcw6Ph7VTVvPi+CiQNXcbIhdU8xU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711039039; c=relaxed/simple;
-	bh=HDNKqGkk/azPcTtEhJHN+gpMAx3GoPDUVnE3EYb5Lwg=;
+	s=arc-20240116; t=1711039041; c=relaxed/simple;
+	bh=ir6xyZtmAUC+Ybm5fW49pWbbkzfCfz5BPQNom35E7HQ=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=elqMevOeMZMA5mcCr2BQm5R06hOosCTKzu9PIb/GQb7PexmCCD6p6CwOP/ocsyhUI3NPkQyQ/m+7hD9CikubqKD5m+TVOaBLjWNIyOs9YHMa4cgnuz+wwshhPvNmrrDNj6yGAtMFHN+5zhc0F1km+z3yrw4kd/TJgzSR9n7x9HU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wWAs86Pz; arc=none smtp.client-ip=209.85.128.201
+	 To:Cc:Content-Type; b=hexTeOcTlkFicGU/+TfbLmX7cd9hW6UgKWurATl43f93d9X6PaZLS+Bpu4O6vEblvhKLGJ6AZHatPr+uWLUuf4wtwIp99nHYY2HR+wqTVxlqYIzycwD7k+X8ZWH9x9okUpDO4mzouwxTcAdPrmluvcHOieHixv4HkadyG+5mwKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=M97DhcGW; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60cd073522cso21742827b3.1
-        for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 09:37:17 -0700 (PDT)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60ff1816749so19566927b3.3
+        for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 09:37:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711039037; x=1711643837; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1711039039; x=1711643839; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cRKfaiB6dOVHxpZUYVy57amQHTHiIgtHPVa28h/bxKY=;
-        b=wWAs86Pzoa7/o4uO9DUaKalp5/lqsafBptAizETSwrwxG543E6aMELKTNZSJkOAIe0
-         bRt0Sx5bIrvo0fEeZIMOi/WnS3w8QvJt+cukgQ97dy2sUMu/2XvrkrSPB3wxcsHWECwJ
-         gXSz591epccQDT13TSfHCWEmVtILtlUzWaK6lofLdZtFD76e6xRP7kFw62KtCG/PeU3h
-         vCzqp4N2MCFbRN6fJ/OGzaUN0Z+fXQRfoKah+oG2oqXKYQLTWQzgy3lkLXpiFckDQa+N
-         mwKOtfm5DRQgGMMMcGfaLNoBA9YRBfqKZZyBJ0++lPTsszo1wJOPkxqU9dNzI9czQynf
-         t+dg==
+        bh=FcsF8xuW3B4rJ7bvWaC3URPqDGHFVTOJU/Md9c+vki8=;
+        b=M97DhcGW8hPCwutq/KjsElSFPJnWXH/25nt2pMe8zJPNVhhFUTwq6282ZNUp3MIMIf
+         ud9EZrXxH5mpYspVXQaHAkvufZYzu7iAL8y3m1T1clfrO1mHw7DXuDG3S+0/9rAtql90
+         2AjFb4iLI0tKvfe+2U3EIjHIEhtDFIrFowoLpxNCPGQV5hYtfhc8jGDE3XxhD4oXVu6R
+         cI3Vp/jnnZVuCg9ZWBOeAhp8IGzgCCo7HUf/GeuXN7py9MY51z2w0RJ7YrX4bxvMlIqu
+         6tHlyxNugquJvYPmKOAXkbCwr3CPMWqLXJ5kvBR6BER8iN9VXJk49w4t041PFILta3Ew
+         KOLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711039037; x=1711643837;
+        d=1e100.net; s=20230601; t=1711039039; x=1711643839;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cRKfaiB6dOVHxpZUYVy57amQHTHiIgtHPVa28h/bxKY=;
-        b=l7IvOeRiUDbsxKeqsazyYhxAci/+Gl1x0yqk2sL79e17JsVGvvrk+ovQvhqUsxjrEc
-         1NevmLK+HWxnKl//ly22+M6Fy1Mrir8v8j1y7g7A/AC+Qfj7H0SenElAYt7XRXc6NXvJ
-         8zV6yVnMSnf+eIkd933qMTGP4w6jxzSi9J5OzhMtayEfG8Bpb7fZktkW6a3eAb3DgsxP
-         m1bZGTEZWN7IH0DLjX2IyGhVGqRI7h7zdGUOcVKhRz2AVDrg5dH43Culvs3hyvL4FRp5
-         gwLNVuSl3S2gdOS69uoW/QF5ZbFW/B2rqRXzv6GurLISjQwu0UTsFHADgwLe6KL3Just
-         Vflg==
-X-Forwarded-Encrypted: i=1; AJvYcCXbAPVL+4E3DRqo3uJEAofNp3zQba9pI0VJwjJwJT5BGmnqdzjiTTDdHqKcuMHmzGZnNTWf0o7arYnvRjuLgu+tabuqedGccw==
-X-Gm-Message-State: AOJu0YxrpuQOnZlEFIeGtkNb3WMeeXPalX724ere8hS1H1LP34xhnpo1
-	D+FG7D9SCluYwPCLa3l5JVY72j8KG/3T9ngeVWtLfiPOn8qEtTsEZtacxLX45Q85CdpfagQuooD
-	qzg==
-X-Google-Smtp-Source: AGHT+IFYgw5ohbM2qs9qWLSKEHVv/3K2+6lhzKzCxOpGXwJ9EG3Fd8M+K30yKZwcBlNXdCTg4+rc5Suy1A8=
+        bh=FcsF8xuW3B4rJ7bvWaC3URPqDGHFVTOJU/Md9c+vki8=;
+        b=ecd1CvjLEFL4iPvHvtmhE+nZsk+KYLb597cAFtAhTM/mjVzbxfAFMiMHr3R2V71HcC
+         pglsaawG4RbrRfgIXt/fnLzfEaxJqn+XslMm7pN94sgzdBzxNF4ENZyZRDDjH50s7kwK
+         JKrsjW8xwW3aoBYOK8ljxlNkDLlx3b/6lv/uyzNaJPAnXYqqqVUlcbTvUmc7HJwlMn5Y
+         NZuxGfdgdOapAmPBILc+bcJ+SN6qDyRGJWJ+tgBYB3WwC5oIiJWDnzw/WmXoVUAUSRM4
+         uOqWgDhDGTaT2gEYoB+FoYOyVK+t3SVETi8BeJo5NQB9lZzLHiYRWZELOsd6t/DEkj0r
+         TyYw==
+X-Forwarded-Encrypted: i=1; AJvYcCXM/RLIUljc6/DS1siPcMeiyqyYxComlMCMsy3NM0rf7yrw+8eR8YW7OGXcKknsxET8RaoegTjJ8P89dR+AYgWwrWxCvBjcvQ==
+X-Gm-Message-State: AOJu0YyoCY/eLoRKvF5Muod2T5OYaE+6/HWVT/ThxK3E2cYcAuwGUXgE
+	esQ0/zaUazd33fPjFhjubjvQ3VTxo1UzqZNsiqRQhh9afKolil8RKgzMBrRRDB/azy+umr0Jm9Z
+	waA==
+X-Google-Smtp-Source: AGHT+IGrkFj5aE/qI6dA3cr3f2zIJD/myHIxBhs84G4EmxlJsslBgaCO9HAP/2XOVSrMpqDkAxdrZ+lOSbY=
 X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:a489:6433:be5d:e639])
- (user=surenb job=sendgmr) by 2002:a05:690c:f88:b0:610:f11e:9d24 with SMTP id
- df8-20020a05690c0f8800b00610f11e9d24mr1686171ywb.4.1711039036599; Thu, 21 Mar
- 2024 09:37:16 -0700 (PDT)
-Date: Thu, 21 Mar 2024 09:36:25 -0700
+ (user=surenb job=sendgmr) by 2002:a05:6902:1207:b0:dc6:b982:cfa2 with SMTP id
+ s7-20020a056902120700b00dc6b982cfa2mr1182860ybu.8.1711039038760; Thu, 21 Mar
+ 2024 09:37:18 -0700 (PDT)
+Date: Thu, 21 Mar 2024 09:36:26 -0700
 In-Reply-To: <20240321163705.3067592-1-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -74,8 +74,8 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240321163705.3067592-1-surenb@google.com>
 X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-Message-ID: <20240321163705.3067592-4-surenb@google.com>
-Subject: [PATCH v6 03/37] mm/slub: Mark slab_free_freelist_hook() __always_inline
+Message-ID: <20240321163705.3067592-5-surenb@google.com>
+Subject: [PATCH v6 04/37] scripts/kallysms: Always include __start and __stop symbols
 From: Suren Baghdasaryan <surenb@google.com>
 To: akpm@linux-foundation.org
 Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz, 
@@ -107,35 +107,49 @@ Content-Type: text/plain; charset="UTF-8"
 
 From: Kent Overstreet <kent.overstreet@linux.dev>
 
-It seems we need to be more forceful with the compiler on this one.
-This is done for performance reasons only.
+These symbols are used to denote section boundaries: by always including
+them we can unify loading sections from modules with loading built-in
+sections, which leads to some significant cleanup.
 
 Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 Signed-off-by: Suren Baghdasaryan <surenb@google.com>
 Reviewed-by: Kees Cook <keescook@chromium.org>
 Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- mm/slub.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ scripts/kallsyms.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/mm/slub.c b/mm/slub.c
-index 1bb2a93cf7b6..bc9f40889834 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -2106,9 +2106,9 @@ bool slab_free_hook(struct kmem_cache *s, void *x, bool init)
- 	return !kasan_slab_free(s, x, init);
+diff --git a/scripts/kallsyms.c b/scripts/kallsyms.c
+index 653b92f6d4c8..47978efe4797 100644
+--- a/scripts/kallsyms.c
++++ b/scripts/kallsyms.c
+@@ -204,6 +204,11 @@ static int symbol_in_range(const struct sym_entry *s,
+ 	return 0;
  }
  
--static inline bool slab_free_freelist_hook(struct kmem_cache *s,
--					   void **head, void **tail,
--					   int *cnt)
-+static __fastpath_inline
-+bool slab_free_freelist_hook(struct kmem_cache *s, void **head, void **tail,
-+			     int *cnt)
++static bool string_starts_with(const char *s, const char *prefix)
++{
++	return strncmp(s, prefix, strlen(prefix)) == 0;
++}
++
+ static int symbol_valid(const struct sym_entry *s)
  {
- 
- 	void *object;
+ 	const char *name = sym_name(s);
+@@ -211,6 +216,14 @@ static int symbol_valid(const struct sym_entry *s)
+ 	/* if --all-symbols is not specified, then symbols outside the text
+ 	 * and inittext sections are discarded */
+ 	if (!all_symbols) {
++		/*
++		 * Symbols starting with __start and __stop are used to denote
++		 * section boundaries, and should always be included:
++		 */
++		if (string_starts_with(name, "__start_") ||
++		    string_starts_with(name, "__stop_"))
++			return 1;
++
+ 		if (symbol_in_range(s, text_ranges,
+ 				    ARRAY_SIZE(text_ranges)) == 0)
+ 			return 0;
 -- 
 2.44.0.291.gc1ea87d7ee-goog
 
