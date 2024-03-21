@@ -1,70 +1,70 @@
-Return-Path: <cgroups+bounces-2118-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2119-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D975C885E95
-	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 17:51:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58215885E9D
+	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 17:52:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DED9E1C23115
-	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 16:51:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96A96B210BB
+	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 16:52:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A2271448F0;
-	Thu, 21 Mar 2024 16:38:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F68E145347;
+	Thu, 21 Mar 2024 16:38:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="E0KvrSRM"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OknUmdmW"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BFAB143C5C
-	for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 16:38:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F3FF14291B
+	for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 16:38:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711039104; cv=none; b=k73F7Cvwk5yKOB5gwIJAlK7uFEzg4KXd+sRpnRcU8cEYfbJoosw+gUGx1WuR0Lq20gpwWOS7XHa6WLf/Ntqiy7P0Pcro72UlxrwOX1C2ZvQu65s+6NTPFHgMNMdQCBx3/gjxJ84+GxBbZjFt0GYGROzmuuEdCbmxdNPTf0xmGJc=
+	t=1711039106; cv=none; b=I8m0tpall3I6sWBdSsR6E1EPg6tUhCtRGQa58NGXAUiNTW8XXsniS6D9RW9cjMW6p21ilJO/Wq0aolQt0gIy+mIWny82GsTUn6eqS6i6UdMg6lZn9jqCtxMX9mHi9w+tTMG3W6f84T3ktMssQXbbO/1QC22+Z24sa+/Clf1yxPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711039104; c=relaxed/simple;
-	bh=fjKlaW/3iFj7zPGvTnymctnlWUNRXZfhInu7vpc6prw=;
+	s=arc-20240116; t=1711039106; c=relaxed/simple;
+	bh=iyevJNgkas45Oi9479zaFVNggxxvMHV5lTrrqy1meOg=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=iMCnnYW88GxSzuc+opj76bT/1XL2rXo3UXNzYLRUsuoASLyyNhabTlOn4EqA4/RTQxqFjFLXTERgSqgzsvwLfF0u1NhNkREXdk6NQQun02ygpe6tCaL0NlKAPGbqnt7K5LfIk1x+eLLNqaNFqEtxRdzNF7EJV0Hf+5MakBt1ylA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=E0KvrSRM; arc=none smtp.client-ip=209.85.219.201
+	 To:Cc:Content-Type; b=EwThKhWpNbiv0d2k37G/hTGwOFNNBhPQLNbtCZ/c/Iom4yU4q4qX5SenbTaTcphtYAHWyJCpUygD+oyAwASCmDuraA6XhHI+lj7c82tT60l7Kz2Sshoo5Tee0obXgeWrCAM4ebXFJLCZA1iN+4sj0Mm+HRjqUnXFLTCWzmGZO8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OknUmdmW; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc74ac7d015so1392332276.0
-        for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 09:38:20 -0700 (PDT)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc6dbdcfd39so2288178276.2
+        for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 09:38:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1711039099; x=1711643899; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1711039102; x=1711643902; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iYMC0aOkTaJuIlgenfbozu9BZf0q2gbSOAGaj6P53nM=;
-        b=E0KvrSRMpOVxB6+HRxKmyqpn6yLuCVPcbTSetv8BZo2Bkk3ZZ0JN+kb4fSidNRcyre
-         6VivHskWOl+XBLRVQsL4C+66Q2fGO6Sa0U7eyX9wq2RwvAScaK9vggovE12tgLa6aomK
-         ORvcKmBraYoBAzmAbfrQEIdb0KLroarrKp9+KqYOdj9NES1LWjw/r+5msqvpZnPYvkAP
-         MI9vl1+IuR12dohLhhLLICPe0EiD/CUjEBFL5dVoX8Qhsi49rS2RLCsC2TsdKwCeHxW2
-         ZtCii3YQmJuB4uFezQalvPk+0mKc91xueeVCZBzb67VmDzD58RHw/z8PY+hQsA6v642c
-         EOjA==
+        bh=WqtLQxxTOcT4NwKA/wnlkHzJUMqCp8K/X9+cNXxjvBQ=;
+        b=OknUmdmW3HudMcocWWexYiKzUhBFQK5osGcY+fuBuKuOVOHeUb10D+gRDkIYOU4PEZ
+         ZPa9fy9/lXxLlJH/owF9R6nIUfiGZSUFa0xnzNfkWamCRtznNxfyfKSNCV/QNO/lMldR
+         FbfgZCn1WMV5oVcCUM8Qg841Uma8MhbO1kXfGkQ2QzZwS08WL6l7mfbV68ieCkhuHsij
+         oNfkY4m7e+JXhvYIOi+pp5rtQATyb4k28TTMD2I3bysItuj3AONsGVcAw9m4LBLtT8Ch
+         kodEx/e5ED1uQ2mwn0dfLfZDCV0m6YM9ZWKumRHD7HZ5Fx1DiJ8PCwwhw/n4xE89Fb9Y
+         9p2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711039099; x=1711643899;
+        d=1e100.net; s=20230601; t=1711039102; x=1711643902;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iYMC0aOkTaJuIlgenfbozu9BZf0q2gbSOAGaj6P53nM=;
-        b=cS3OMJQGK0ZuL46GvEAfa8i4U+mP1jP7SNDRQKzoHGMgT+ZIqDpRym7RDbzZHZK37o
-         Vqf5yOdsyeRfzQ7gHf6W6XO1EayNFPmgc8Er/FzdmfFH/cWrWdJOfOxyPtXJnOUQV5W1
-         uC2w/aSzIOnMsSV/IVEjq9xsaaBTjyTUNiRI5LiwG7gege4L33479qq2Knic6sEu5uwf
-         JUH243YK3F8n+iLrVcfAL32V8dfoN4CU2mzgQiNeBqyabEe09zg31cFytmIoDrmvRuAW
-         763J9tiKVO8+VJEbc0NYxsQD+fr/GFY7GTQyOOZHrutNe9r3XbbcqAO+1ewA+YjIHwHm
-         dAyg==
-X-Forwarded-Encrypted: i=1; AJvYcCVx0svzgSSEvXbUgKUaAEHiaD9faxMRAfZ+bVSinh7J7flvM8fUR0dq7at9KWwFneKuYhg80otlawEeuaoPvmkBSm3yECeozw==
-X-Gm-Message-State: AOJu0YxV7czzs8o2UThsqE0qW52U9dWVeZQQl/usqJemt2szUSEv/NUg
-	3Wppmg3/Tj41ZQO0UKcExdlMlVxbF8aFOb5e8iZMUezsoxVveq3Y5u3U4LK9b3p3qNHUYxOHVjU
-	1IA==
-X-Google-Smtp-Source: AGHT+IEl39fT88zAybCKFbgD7Ybs+bIKptMpR9e50EtGQF6WZVLSjiN4xDj0a9gSVDcCEVc03olmfnidgNM=
+        bh=WqtLQxxTOcT4NwKA/wnlkHzJUMqCp8K/X9+cNXxjvBQ=;
+        b=m6F5aDBhhxSra2DtUf5Ax6QuB9jtt1CBvM3ng5eH3RpB/ChVqwiKPmSk1wmLeOMSc0
+         sc+MEnTu8leyPrQKwIZotQeuh2XSqlYI6plHKMyn3p79UWQ0jacM6fx0mRqTBpaOmgh/
+         iBFLcUu0Q3GQhG+/g4FOq67McmA+uvAewknOr4CtjnSBD5mnZc1HUEeylRhs4wHyHDo3
+         b/JFfoE29P/Kn8dyXEKwwhziMdvZvN4qmGoF+gKYE8pThsZmcaV8o4cusifEcUQM2VGY
+         AS7X3wGjsDVDHDpWpqlDXbU/Y0Sbc7w643NZZXunIDwIz/nPSzLhsw6LG1qk3Ggkb2B1
+         7hVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVdFcbpAcmGYGYb84sRD+0r++xnwOkYKg28uV8SmnC6bL9al/efa7AyjBVQT0tJX0OWurrAuus1Kx223l3fnZdc8g47u+e1Bw==
+X-Gm-Message-State: AOJu0Yy7g12qjhr1DBaZmHI4TKd7fT6cyBnbb1epeCnpMUEMM0bxVXP2
+	r3s1zcqfgbTgIA0fXpXdUJKOlQNKlOjaMaOYRZ1orle+9NacjVtgfp1DrNaArRPcSeg1uw6fvSY
+	7Ig==
+X-Google-Smtp-Source: AGHT+IGROXQhVTEL+/Ecek6yIPftetu6NwNXc2sw4rx8G7tLlUrCGcwRYmXksEw30SynbjVDOeX+ECRwtfM=
 X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:a489:6433:be5d:e639])
- (user=surenb job=sendgmr) by 2002:a05:6902:2009:b0:dcd:c091:e86 with SMTP id
- dh9-20020a056902200900b00dcdc0910e86mr979486ybb.13.1711039099264; Thu, 21 Mar
- 2024 09:38:19 -0700 (PDT)
-Date: Thu, 21 Mar 2024 09:36:54 -0700
+ (user=surenb job=sendgmr) by 2002:a05:6902:2408:b0:dc2:1f34:fac4 with SMTP id
+ dr8-20020a056902240800b00dc21f34fac4mr5790745ybb.2.1711039101565; Thu, 21 Mar
+ 2024 09:38:21 -0700 (PDT)
+Date: Thu, 21 Mar 2024 09:36:55 -0700
 In-Reply-To: <20240321163705.3067592-1-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -74,8 +74,9 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240321163705.3067592-1-surenb@google.com>
 X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-Message-ID: <20240321163705.3067592-33-surenb@google.com>
-Subject: [PATCH v6 32/37] lib: add memory allocations report in show_mem()
+Message-ID: <20240321163705.3067592-34-surenb@google.com>
+Subject: [PATCH v6 33/37] codetag: debug: skip objext checking when it's for
+ objext itself
 From: Suren Baghdasaryan <surenb@google.com>
 To: akpm@linux-foundation.org
 Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz, 
@@ -105,148 +106,122 @@ Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz,
 	cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-Include allocations in show_mem reports.
+objext objects are created with __GFP_NO_OBJ_EXT flag and therefore have
+no corresponding objext themselves (otherwise we would get an infinite
+recursion). When freeing these objects their codetag will be empty and
+when CONFIG_MEM_ALLOC_PROFILING_DEBUG is enabled this will lead to false
+warnings. Introduce CODETAG_EMPTY special codetag value to mark
+allocations which intentionally lack codetag to avoid these warnings.
+Set objext codetags to CODETAG_EMPTY before freeing to indicate that
+the codetag is expected to be empty.
 
-Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- include/linux/alloc_tag.h |  7 +++++++
- include/linux/codetag.h   |  1 +
- lib/alloc_tag.c           | 38 ++++++++++++++++++++++++++++++++++++++
- lib/codetag.c             |  5 +++++
- mm/show_mem.c             | 26 ++++++++++++++++++++++++++
- 5 files changed, 77 insertions(+)
+ include/linux/alloc_tag.h | 26 ++++++++++++++++++++++++++
+ mm/slub.c                 | 33 +++++++++++++++++++++++++++++++++
+ 2 files changed, 59 insertions(+)
 
 diff --git a/include/linux/alloc_tag.h b/include/linux/alloc_tag.h
-index cf69e037f645..aefe3c81a1e3 100644
+index aefe3c81a1e3..c30e6c944353 100644
 --- a/include/linux/alloc_tag.h
 +++ b/include/linux/alloc_tag.h
-@@ -30,6 +30,13 @@ struct alloc_tag {
+@@ -28,6 +28,27 @@ struct alloc_tag {
+ 	struct alloc_tag_counters __percpu	*counters;
+ } __aligned(8);
  
++#ifdef CONFIG_MEM_ALLOC_PROFILING_DEBUG
++
++#define CODETAG_EMPTY	((void *)1)
++
++static inline bool is_codetag_empty(union codetag_ref *ref)
++{
++	return ref->ct == CODETAG_EMPTY;
++}
++
++static inline void set_codetag_empty(union codetag_ref *ref)
++{
++	if (ref)
++		ref->ct = CODETAG_EMPTY;
++}
++
++#else /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
++
++static inline bool is_codetag_empty(union codetag_ref *ref) { return false; }
++
++#endif /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
++
  #ifdef CONFIG_MEM_ALLOC_PROFILING
  
-+struct codetag_bytes {
-+	struct codetag *ct;
-+	s64 bytes;
-+};
-+
-+size_t alloc_tag_top_users(struct codetag_bytes *tags, size_t count, bool can_sleep);
-+
- static inline struct alloc_tag *ct_to_alloc_tag(struct codetag *ct)
- {
- 	return container_of(ct, struct alloc_tag, ct);
-diff --git a/include/linux/codetag.h b/include/linux/codetag.h
-index bfd0ba5c4185..c2a579ccd455 100644
---- a/include/linux/codetag.h
-+++ b/include/linux/codetag.h
-@@ -61,6 +61,7 @@ struct codetag_iterator {
- }
+ struct codetag_bytes {
+@@ -140,6 +161,11 @@ static inline void alloc_tag_sub(union codetag_ref *ref, size_t bytes)
+ 	if (!ref || !ref->ct)
+ 		return;
  
- void codetag_lock_module_list(struct codetag_type *cttype, bool lock);
-+bool codetag_trylock_module_list(struct codetag_type *cttype);
- struct codetag_iterator codetag_get_ct_iter(struct codetag_type *cttype);
- struct codetag *codetag_next_ct(struct codetag_iterator *iter);
- 
-diff --git a/lib/alloc_tag.c b/lib/alloc_tag.c
-index 617c2fbb6673..e24830c44783 100644
---- a/lib/alloc_tag.c
-+++ b/lib/alloc_tag.c
-@@ -86,6 +86,44 @@ static const struct seq_operations allocinfo_seq_op = {
- 	.show	= allocinfo_show,
- };
- 
-+size_t alloc_tag_top_users(struct codetag_bytes *tags, size_t count, bool can_sleep)
-+{
-+	struct codetag_iterator iter;
-+	struct codetag *ct;
-+	struct codetag_bytes n;
-+	unsigned int i, nr = 0;
-+
-+	if (can_sleep)
-+		codetag_lock_module_list(alloc_tag_cttype, true);
-+	else if (!codetag_trylock_module_list(alloc_tag_cttype))
-+		return 0;
-+
-+	iter = codetag_get_ct_iter(alloc_tag_cttype);
-+	while ((ct = codetag_next_ct(&iter))) {
-+		struct alloc_tag_counters counter = alloc_tag_read(ct_to_alloc_tag(ct));
-+
-+		n.ct	= ct;
-+		n.bytes = counter.bytes;
-+
-+		for (i = 0; i < nr; i++)
-+			if (n.bytes > tags[i].bytes)
-+				break;
-+
-+		if (i < count) {
-+			nr -= nr == count;
-+			memmove(&tags[i + 1],
-+				&tags[i],
-+				sizeof(tags[0]) * (nr - i));
-+			nr++;
-+			tags[i] = n;
-+		}
++	if (is_codetag_empty(ref)) {
++		ref->ct = NULL;
++		return;
 +	}
 +
-+	codetag_lock_module_list(alloc_tag_cttype, false);
-+
-+	return nr;
-+}
-+
- static void __init procfs_init(void)
- {
- 	proc_create_seq("allocinfo", 0444, NULL, &allocinfo_seq_op);
-diff --git a/lib/codetag.c b/lib/codetag.c
-index 408062f722ce..5ace625f2328 100644
---- a/lib/codetag.c
-+++ b/lib/codetag.c
-@@ -36,6 +36,11 @@ void codetag_lock_module_list(struct codetag_type *cttype, bool lock)
- 		up_read(&cttype->mod_lock);
- }
+ 	tag = ct_to_alloc_tag(ref->ct);
  
-+bool codetag_trylock_module_list(struct codetag_type *cttype)
+ 	this_cpu_sub(tag->counters->bytes, bytes);
+diff --git a/mm/slub.c b/mm/slub.c
+index a05d4daf1efd..de8171603269 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -1873,6 +1873,30 @@ static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
+ 
+ #ifdef CONFIG_SLAB_OBJ_EXT
+ 
++#ifdef CONFIG_MEM_ALLOC_PROFILING_DEBUG
++
++static inline void mark_objexts_empty(struct slabobj_ext *obj_exts)
 +{
-+	return down_read_trylock(&cttype->mod_lock) != 0;
++	struct slabobj_ext *slab_exts;
++	struct slab *obj_exts_slab;
++
++	obj_exts_slab = virt_to_slab(obj_exts);
++	slab_exts = slab_obj_exts(obj_exts_slab);
++	if (slab_exts) {
++		unsigned int offs = obj_to_index(obj_exts_slab->slab_cache,
++						 obj_exts_slab, obj_exts);
++		/* codetag should be NULL */
++		WARN_ON(slab_exts[offs].ref.ct);
++		set_codetag_empty(&slab_exts[offs].ref);
++	}
 +}
 +
- struct codetag_iterator codetag_get_ct_iter(struct codetag_type *cttype)
- {
- 	struct codetag_iterator iter = {
-diff --git a/mm/show_mem.c b/mm/show_mem.c
-index 8dcfafbd283c..bdb439551eef 100644
---- a/mm/show_mem.c
-+++ b/mm/show_mem.c
-@@ -423,4 +423,30 @@ void __show_mem(unsigned int filter, nodemask_t *nodemask, int max_zone_idx)
- #ifdef CONFIG_MEMORY_FAILURE
- 	printk("%lu pages hwpoisoned\n", atomic_long_read(&num_poisoned_pages));
- #endif
-+#ifdef CONFIG_MEM_ALLOC_PROFILING
-+	{
-+		struct codetag_bytes tags[10];
-+		size_t i, nr;
++#else /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
 +
-+		nr = alloc_tag_top_users(tags, ARRAY_SIZE(tags), false);
-+		if (nr) {
-+			pr_notice("Memory allocations:\n");
-+			for (i = 0; i < nr; i++) {
-+				struct codetag *ct = tags[i].ct;
-+				struct alloc_tag *tag = ct_to_alloc_tag(ct);
-+				struct alloc_tag_counters counter = alloc_tag_read(tag);
++static inline void mark_objexts_empty(struct slabobj_ext *obj_exts) {}
 +
-+				/* Same as alloc_tag_to_text() but w/o intermediate buffer */
-+				if (ct->modname)
-+					pr_notice("%12lli %8llu %s:%u [%s] func:%s\n",
-+						  counter.bytes, counter.calls, ct->filename,
-+						  ct->lineno, ct->modname, ct->function);
-+				else
-+					pr_notice("%12lli %8llu %s:%u func:%s\n",
-+						  counter.bytes, counter.calls, ct->filename,
-+						  ct->lineno, ct->function);
-+			}
-+		}
-+	}
-+#endif
++#endif /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
++
+ /*
+  * The allocated objcg pointers array is not accounted directly.
+  * Moreover, it should not come from DMA buffer and is not readily
+@@ -1913,6 +1937,7 @@ static int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+ 		 * assign slabobj_exts in parallel. In this case the existing
+ 		 * objcg vector should be reused.
+ 		 */
++		mark_objexts_empty(vec);
+ 		kfree(vec);
+ 		return 0;
+ 	}
+@@ -1929,6 +1954,14 @@ static inline void free_slab_obj_exts(struct slab *slab)
+ 	if (!obj_exts)
+ 		return;
+ 
++	/*
++	 * obj_exts was created with __GFP_NO_OBJ_EXT flag, therefore its
++	 * corresponding extension will be NULL. alloc_tag_sub() will throw a
++	 * warning if slab has extensions but the extension of an object is
++	 * NULL, therefore replace NULL with CODETAG_EMPTY to indicate that
++	 * the extension for obj_exts is expected to be NULL.
++	 */
++	mark_objexts_empty(obj_exts);
+ 	kfree(obj_exts);
+ 	slab->obj_exts = 0;
  }
 -- 
 2.44.0.291.gc1ea87d7ee-goog
