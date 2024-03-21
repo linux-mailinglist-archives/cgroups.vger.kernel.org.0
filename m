@@ -1,992 +1,406 @@
-Return-Path: <cgroups+bounces-2085-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2086-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EA768859F9
-	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 14:33:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71667885DAA
+	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 17:37:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0245CB2170C
-	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 13:33:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27103281888
+	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 16:37:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF57484A45;
-	Thu, 21 Mar 2024 13:33:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 390D185280;
+	Thu, 21 Mar 2024 16:37:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="v3Yna/Yp"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="u803RRbo"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFEE284A35
-	for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 13:33:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62123BE6F
+	for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 16:37:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711028015; cv=none; b=D65UElfTldIZ2lRTkhY+ta7+wpmTWh/L5GstiveK07M2FS4WqExolsAoDvr8wyUcP/fkdH0bx121Rk9vVgGLsjkjMfjYWjGdkwBs4wQMrBlDXQReE1Hkri/x9yQxVr1j2ycQRTsv3hzKg6jKJW5bQ4oMvVEsA0hseLkxAx69wP0=
+	t=1711039035; cv=none; b=BDynXZ+1Z2UqUZmZkTQrenZPqYHVj/TvV4PE3vJISGo+kO5ur1QqNX187l1oybCjx+d2sJm2ue3w2eNDQxmBxBvnu2XwKXhasNxiP8XyIDlRw/PioP/q10m+cO0y8gyZEy13h5HzmVhXG80HRDA0RojAP+FrfUgaWhoDsHAWwts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711028015; c=relaxed/simple;
-	bh=TvZDhKTxGig4VAQ7dSq3T+1m4TxxDMIIbXeUNOOEBJM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TQwHhGoj6xvOZJbKOcDoSU4TUDZSuASmfpnsUpFeFYi6ljMkMZszR6OPDmBf0Av3Ppm8c9ZeQjh3iueh+J593hIcLAUilLj+9hGXyn4n3p0dbHdozHhNilhJ6kmdnMWFDqSRuh5UdrDxITXdlAbaK/WxoO7sPbzKjDnayKAGTXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=v3Yna/Yp; arc=none smtp.client-ip=209.85.222.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-789db18e356so59305185a.2
-        for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 06:33:30 -0700 (PDT)
+	s=arc-20240116; t=1711039035; c=relaxed/simple;
+	bh=nXfkaShWfd/omgr6oAsoNsZp6U4Qoov4BwwUpupeQWU=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=MSSb0Px8iqcx72rlunkD8+b0W/rrxaYjgeW/5HBZw8N0aKGyqQEyZaJTpgaHhfuAFJ6T0QQT95RExrHMtAnYxQPos82X93roGc6OI8TUHS6Sg8FNZekB/j1hXKYbVEaYjp9QDiMs169XkraRFodORwIxL1xyiqinAWAW2fnolV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=u803RRbo; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf618042daso1828961276.0
+        for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 09:37:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1711028010; x=1711632810; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KcVV9gzmP3KDeWFWdiOMHwNLJIMGtwuTwaNs4hhyC/M=;
-        b=v3Yna/YpibvPl7iy0j7Tk1p6ZFOZwZWbXskvqsZCZN+oPU41rIGq+ITd4C8LWkGAsj
-         ix2E79gIiDxQmnG5cFxAq0pMvnRnnZ8IjGsMtOnwrSLi3Z2VS1M/XwEM129XyQCMb8sV
-         T75S15Ki9wjUBVmB9A2fMWVME6GI3Yj87KWcKYhJWJGw+KHUWDvkl/d20lrx8bI3dhen
-         5N985Lj7GQ1SrprN2k2Q1qejIgQMLMr1G6f1CJULNS6WqC3my7ojC5UUGqu9nIZO2lk/
-         nOPnc63EZ/MQqU2EQrfSg2vp3WADHJBHPeWuE9eJ+hnT/POmzTys50MvJC+w+kDLExEl
-         0EvQ==
+        d=google.com; s=20230601; t=1711039030; x=1711643830; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ZtzEdHMO1nsPqRyTOFCp2rzxqc4SYrWbhYHVl+Yksck=;
+        b=u803RRboTmbeXp/Lp544dIKtYPZsmohtBlHOopJOZPTlQ085+hj5iMLhDK40ypxqOz
+         vWaTrSy0nR0+ahRwgeFl+5NAUgOsh/V/jKORGGGhKEhKdskt+LJee+uQGreoCfoXNJPE
+         E7/F0oGkkrzqaaCnzdkJVdmkRfAWp9QP03S3B09jEyZnCD3nnOGsJ0jXKY+lqrUGqyu2
+         L8PwU6eR/STY4QHo0S2mGUkMwD/sk3Ab9Ocqbhey+N4WW3p6LMh5p1ljRRE7a5gnMWBB
+         rnEM5nSLQG1tkOTkqmViP0Ab6sW97+8L92/Z+po+AZlmzYZKMIe9AHVFKJaPdSq63cNV
+         c9yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711028010; x=1711632810;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KcVV9gzmP3KDeWFWdiOMHwNLJIMGtwuTwaNs4hhyC/M=;
-        b=eiXwyaJLzF4ZJbD96Ymdn7LQvvYgxTHoWaZVn2z7K9H1Kamhtk1Jyifaq1zYaEGIVi
-         vV8fQsR8XNEvPHCe5q4FoHVUvAuloh9U4GIsQe6X4tP8T2ATsYSzfocLPsW67T1fFLzY
-         0xkGmXPb9vX12rmtXZXvHQUfP3R3/FyNQpW9nZqOxKtIAbl27xLtfQWxSVcd9bR5eqCp
-         DoaNK2fBb81B5Pg/8mXioWP8xQx6eR+L5ich1vLz0iJpZSvSPBD16pSDr8jn5DkKquo9
-         QX4F0piI5uCTw9dC0EUxqZMPIS5cqVZgFbicnCJFDFNEiGt4zFMZJHRnel0Ql8pAuXvC
-         NkOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU9okdC6+sGeMNGJyxop/IhsmeLr30H5HSgY/hzlMW0Ty9/IRH4kGiD3Q2uU3Dqc4n4l3zUbwMGLf2USDwBc50APlqrxiXrwQ==
-X-Gm-Message-State: AOJu0Yx7vFuZc05IvR9zeu4ln+KC/iNJOEb6i1W2G8/3gLmXhtHtHliH
-	Rhxtneoi5vZHSeWJ1L1dPpCou5NXnWBbzW6nv6XiKlqqe4swfSyFdc6jF1p2gJU=
-X-Google-Smtp-Source: AGHT+IEkWhaoR6iNyvTN1Y8oFjZ2cgq1Av1arwk58UpzkDkTQ6CtD5oIPlY6xhwerQlIMPTA800OwA==
-X-Received: by 2002:a05:620a:a8c:b0:78a:e5:f8f1 with SMTP id v12-20020a05620a0a8c00b0078a00e5f8f1mr12430908qkg.77.1711028009685;
-        Thu, 21 Mar 2024 06:33:29 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id po8-20020a05620a384800b00789fc794dbesm4128110qkn.45.2024.03.21.06.33.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 Mar 2024 06:33:29 -0700 (PDT)
-Date: Thu, 21 Mar 2024 09:33:23 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: remove CONFIG_MEMCG_KMEM
-Message-ID: <20240321133323.GA777580@cmpxchg.org>
-References: <20240320202745.740843-1-hannes@cmpxchg.org>
- <Zfwu6oquhe7CSkOz@tiehlicka>
+        d=1e100.net; s=20230601; t=1711039030; x=1711643830;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZtzEdHMO1nsPqRyTOFCp2rzxqc4SYrWbhYHVl+Yksck=;
+        b=Ch4jT7aZG5WD535AnU0OF3bs8y9Oug+Hrgw8x/VxhLl+xXARPWcZC38akfGxkDMh7M
+         zvyI+o3jeMB1br93nW2I5ziz6Fkdian7J8mlW6XonwxbHNd/9gBE1B8AQIYx9PWdo/Vx
+         F6Ks26V8F+TRmgER+2nAoapr2jO0mm+22QjdeTR+xQJh59C1aEyynEzHGt+ltM3H5Jy1
+         6G5ouMFmWir/O7ErkHNAmHGfx2BLRmVTSBvahO15r+qeZVGsP/r1IR261PKmMA+YAs0X
+         uXvMaxPblYS9sXoZUuLUN7d9HMlK2dbEL4YP1etM8RZH8ulSePMh2Des6zgzM5TmX7zl
+         DRzw==
+X-Forwarded-Encrypted: i=1; AJvYcCX9FWWEBfNN3I58ttePqXHllzvC2xT2rll2r2TtFZaTKcIdeY+eLSY+sEfRNJH7KZVcb6+pEQhUdkekuYwqZkUQDx7RXtaBYg==
+X-Gm-Message-State: AOJu0YzC5sNsAFdZdMfRn1o6xyXsJ6vDBC5cuo6iNFJe4jC0MSEj1ekX
+	jXWaQbjUr5lXbF/YXgtraTdR/OEEUT4I7kdhJ6KMMIGt9PC6ZJoa10A92asiS9d22ZRKtVloq+Q
+	nkg==
+X-Google-Smtp-Source: AGHT+IHC69SQYVxvQ0JKFgn+XWn9kaco/tScCGiE8oHLMd2EppB6ElBhL02cnw+DSbIGpnq6CyJeTlj0IbA=
+X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:a489:6433:be5d:e639])
+ (user=surenb job=sendgmr) by 2002:a05:6902:11cc:b0:dd9:2789:17fb with SMTP id
+ n12-20020a05690211cc00b00dd9278917fbmr720533ybu.3.1711039030449; Thu, 21 Mar
+ 2024 09:37:10 -0700 (PDT)
+Date: Thu, 21 Mar 2024 09:36:22 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zfwu6oquhe7CSkOz@tiehlicka>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
+Message-ID: <20240321163705.3067592-1-surenb@google.com>
+Subject: [PATCH v6 00/37] Memory allocation profiling
+From: Suren Baghdasaryan <surenb@google.com>
+To: akpm@linux-foundation.org
+Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
+	surenb@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Mar 21, 2024 at 01:58:18PM +0100, Michal Hocko wrote:
-> On Wed 20-03-24 16:27:45, Johannes Weiner wrote:
-> > CONFIG_MEMCG_KMEM used to be a user-visible option for whether slab
-> > tracking is enabled. It has been default-enabled and equivalent to
-> > CONFIG_MEMCG for almost a decade. We've only grown more kernel memory
-> > accounting sites since, and there is no imaginable cgroup usecase
-> > going forward that wants to track user pages but not the multitude of
-> > user-drivable kernel allocations.
-> > 
-> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> 
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> 
-> But this
-> > @@ -422,7 +422,7 @@ kmalloc_caches[NR_KMALLOC_TYPES][KMALLOC_SHIFT_HIGH + 1];
-> >  #define KMALLOC_NOT_NORMAL_BITS					\
-> >  	(__GFP_RECLAIMABLE |					\
-> >  	(IS_ENABLED(CONFIG_ZONE_DMA)   ? __GFP_DMA : 0) |	\
-> > -	(IS_ENABLED(CONFIG_MEMCG_KMEM) ? __GFP_ACCOUNT : 0))
-> > +	(IS_ENABLED(CONFIG_KMEM) ? __GFP_ACCOUNT : 0))
-> 
-> seems like a typo and should be CONFIG_MEMCG, right?
+Overview:
+Low overhead [1] per-callsite memory allocation profiling. Not just for
+debug kernels, overhead low enough to be deployed in production.
 
-Ouch, good catch. IS_ENABLED() doesn't build warn on nonsense.
+Example output:
+  root@moria-kvm:~# sort -rn /proc/allocinfo
+   127664128    31168 mm/page_ext.c:270 func:alloc_page_ext
+    56373248     4737 mm/slub.c:2259 func:alloc_slab_page
+    14880768     3633 mm/readahead.c:247 func:page_cache_ra_unbounded
+    14417920     3520 mm/mm_init.c:2530 func:alloc_large_system_hash
+    13377536      234 block/blk-mq.c:3421 func:blk_mq_alloc_rqs
+    11718656     2861 mm/filemap.c:1919 func:__filemap_get_folio
+     9192960     2800 kernel/fork.c:307 func:alloc_thread_stack_node
+     4206592        4 net/netfilter/nf_conntrack_core.c:2567 func:nf_ct_alloc_hashtable
+     4136960     1010 drivers/staging/ctagmod/ctagmod.c:20 [ctagmod] func:ctagmod_start
+     3940352      962 mm/memory.c:4214 func:alloc_anon_folio
+     2894464    22613 fs/kernfs/dir.c:615 func:__kernfs_new_node
+     ...
 
----
-From 75e11950ce9c505bd7886a95d5809266c031bd02 Mon Sep 17 00:00:00 2001
-From: Johannes Weiner <hannes@cmpxchg.org>
-Date: Thu, 14 Mar 2024 14:30:15 -0400
-Subject: [PATCH V2] mm: remove CONFIG_MEMCG_KMEM
+Since v5 [2]:
+- Added Reviewed-by and Acked-by, per Vlastimil Babka and Miguel Ojeda
+- Changed pgalloc_tag_{add|sub} to use number of pages instead of order, per Matthew Wilcox
+- Changed pgalloc_tag_sub_bytes to pgalloc_tag_sub_pages and adjusted the usage, per Matthew Wilcox
+- Moved static key check before prepare_slab_obj_exts_hook(), per Vlastimil Babka
+- Fixed RUST helper, per Miguel Ojeda
+- Fixed documentation, per Randy Dunlap
+- Rebased over mm-unstable
 
-CONFIG_MEMCG_KMEM used to be a user-visible option for whether slab
-tracking is enabled. It has been default-enabled and equivalent to
-CONFIG_MEMCG for almost a decade. We've only grown more kernel memory
-accounting sites since, and there is no imaginable cgroup usecase
-going forward that wants to track user pages but not the multitude of
-user-drivable kernel allocations.
+Usage:
+kconfig options:
+ - CONFIG_MEM_ALLOC_PROFILING
+ - CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT
+ - CONFIG_MEM_ALLOC_PROFILING_DEBUG
+   adds warnings for allocations that weren't accounted because of a
+   missing annotation
 
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
-Acked-by: Michal Hocko <mhocko@suse.com>
----
- include/linux/bpf.h                   |  4 +-
- include/linux/list_lru.h              |  2 +-
- include/linux/memcontrol.h            | 20 ++------
- include/linux/sched.h                 |  2 -
- include/linux/slab.h                  | 12 ++---
- include/trace/events/kmem.h           |  4 +-
- init/Kconfig                          |  5 --
- kernel/bpf/memalloc.c                 |  9 ++--
- kernel/bpf/syscall.c                  |  6 +--
- mm/list_lru.c                         | 14 +++---
- mm/memcontrol.c                       | 67 ++++-----------------------
- mm/percpu-internal.h                  |  4 +-
- mm/percpu.c                           | 14 +++---
- mm/slab.h                             |  6 +--
- mm/slab_common.c                      | 10 ++--
- mm/slub.c                             |  6 +--
- mm/zswap.c                            |  2 +-
- tools/testing/selftests/cgroup/config |  1 -
- 18 files changed, 57 insertions(+), 131 deletions(-)
+sysctl:
+  /proc/sys/vm/mem_profiling
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 4f20f62f9d63..e286433d291f 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -273,7 +273,7 @@ struct bpf_map {
- 	u32 btf_value_type_id;
- 	u32 btf_vmlinux_value_type_id;
- 	struct btf *btf;
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 	struct obj_cgroup *objcg;
- #endif
- 	char name[BPF_OBJ_NAME_LEN];
-@@ -2221,7 +2221,7 @@ struct bpf_prog *bpf_prog_get_curr_or_next(u32 *id);
- 
- int bpf_map_alloc_pages(const struct bpf_map *map, gfp_t gfp, int nid,
- 			unsigned long nr_pages, struct page **page_array);
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- void *bpf_map_kmalloc_node(const struct bpf_map *map, size_t size, gfp_t flags,
- 			   int node);
- void *bpf_map_kzalloc(const struct bpf_map *map, size_t size, gfp_t flags);
-diff --git a/include/linux/list_lru.h b/include/linux/list_lru.h
-index 792b67ceb631..5099a8ccd5f4 100644
---- a/include/linux/list_lru.h
-+++ b/include/linux/list_lru.h
-@@ -50,7 +50,7 @@ struct list_lru_node {
- 
- struct list_lru {
- 	struct list_lru_node	*node;
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 	struct list_head	list;
- 	int			shrinker_id;
- 	bool			memcg_aware;
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index b6264796815d..6b273833caa2 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -218,7 +218,7 @@ struct mem_cgroup {
- 	/* Range enforcement for interrupt charges */
- 	struct work_struct high_work;
- 
--#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
-+#ifdef CONFIG_ZSWAP
- 	unsigned long zswap_max;
- 
- 	/*
-@@ -294,7 +294,6 @@ struct mem_cgroup {
- 	bool			tcpmem_active;
- 	int			tcpmem_pressure;
- 
--#ifdef CONFIG_MEMCG_KMEM
- 	int kmemcg_id;
- 	/*
- 	 * memcg->objcg is wiped out as a part of the objcg repaprenting
-@@ -305,7 +304,6 @@ struct mem_cgroup {
- 	struct obj_cgroup	*orig_objcg;
- 	/* list of inherited objcgs, protected by objcg_lock */
- 	struct list_head objcg_list;
--#endif
- 
- 	CACHELINE_PADDING(_pad2_);
- 
-@@ -540,7 +538,6 @@ static inline struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *ob
- 	return memcg;
- }
- 
--#ifdef CONFIG_MEMCG_KMEM
- /*
-  * folio_memcg_kmem - Check if the folio has the memcg_kmem flag set.
-  * @folio: Pointer to the folio.
-@@ -556,15 +553,6 @@ static inline bool folio_memcg_kmem(struct folio *folio)
- 	return folio->memcg_data & MEMCG_DATA_KMEM;
- }
- 
--
--#else
--static inline bool folio_memcg_kmem(struct folio *folio)
--{
--	return false;
--}
--
--#endif
--
- static inline bool PageMemcgKmem(struct page *page)
- {
- 	return folio_memcg_kmem(page_folio(page));
-@@ -1798,7 +1786,7 @@ static inline void set_shrinker_bit(struct mem_cgroup *memcg,
- }
- #endif
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- bool mem_cgroup_kmem_disabled(void);
- int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order);
- void __memcg_kmem_uncharge_page(struct page *page, int order);
-@@ -1941,9 +1929,9 @@ static inline void count_objcg_event(struct obj_cgroup *objcg,
- {
- }
- 
--#endif /* CONFIG_MEMCG_KMEM */
-+#endif /* CONFIG_MEMCG */
- 
--#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
-+#if defined(CONFIG_MEMCG) && defined(CONFIG_ZSWAP)
- bool obj_cgroup_may_zswap(struct obj_cgroup *objcg);
- void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size);
- void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size);
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 3c2abbc587b4..f905fe9ea289 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1451,9 +1451,7 @@ struct task_struct {
- 
- 	/* Used by memcontrol for targeted memcg charge: */
- 	struct mem_cgroup		*active_memcg;
--#endif
- 
--#ifdef CONFIG_MEMCG_KMEM
- 	struct obj_cgroup		*objcg;
- #endif
- 
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index e53cbfa18325..7af99bba1751 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -41,7 +41,7 @@ enum _slab_flag_bits {
- #ifdef CONFIG_FAILSLAB
- 	_SLAB_FAILSLAB,
- #endif
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 	_SLAB_ACCOUNT,
- #endif
- #ifdef CONFIG_KASAN_GENERIC
-@@ -168,7 +168,7 @@ enum _slab_flag_bits {
- # define SLAB_FAILSLAB		__SLAB_FLAG_UNUSED
- #endif
- /* Account to memcg */
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- # define SLAB_ACCOUNT		__SLAB_FLAG_BIT(_SLAB_ACCOUNT)
- #else
- # define SLAB_ACCOUNT		__SLAB_FLAG_UNUSED
-@@ -394,7 +394,7 @@ enum kmalloc_cache_type {
- #ifndef CONFIG_ZONE_DMA
- 	KMALLOC_DMA = KMALLOC_NORMAL,
- #endif
--#ifndef CONFIG_MEMCG_KMEM
-+#ifndef CONFIG_MEMCG
- 	KMALLOC_CGROUP = KMALLOC_NORMAL,
- #endif
- 	KMALLOC_RANDOM_START = KMALLOC_NORMAL,
-@@ -407,7 +407,7 @@ enum kmalloc_cache_type {
- #ifdef CONFIG_ZONE_DMA
- 	KMALLOC_DMA,
- #endif
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 	KMALLOC_CGROUP,
- #endif
- 	NR_KMALLOC_TYPES
-@@ -422,7 +422,7 @@ kmalloc_caches[NR_KMALLOC_TYPES][KMALLOC_SHIFT_HIGH + 1];
- #define KMALLOC_NOT_NORMAL_BITS					\
- 	(__GFP_RECLAIMABLE |					\
- 	(IS_ENABLED(CONFIG_ZONE_DMA)   ? __GFP_DMA : 0) |	\
--	(IS_ENABLED(CONFIG_MEMCG_KMEM) ? __GFP_ACCOUNT : 0))
-+	(IS_ENABLED(CONFIG_MEMCG) ? __GFP_ACCOUNT : 0))
- 
- extern unsigned long random_kmalloc_seed;
- 
-@@ -450,7 +450,7 @@ static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags, unsigne
- 	 */
- 	if (IS_ENABLED(CONFIG_ZONE_DMA) && (flags & __GFP_DMA))
- 		return KMALLOC_DMA;
--	if (!IS_ENABLED(CONFIG_MEMCG_KMEM) || (flags & __GFP_RECLAIMABLE))
-+	if (!IS_ENABLED(CONFIG_MEMCG) || (flags & __GFP_RECLAIMABLE))
- 		return KMALLOC_RECLAIM;
- 	else
- 		return KMALLOC_CGROUP;
-diff --git a/include/trace/events/kmem.h b/include/trace/events/kmem.h
-index 6e62cc64cd92..33d3e6af7f43 100644
---- a/include/trace/events/kmem.h
-+++ b/include/trace/events/kmem.h
-@@ -36,7 +36,7 @@ TRACE_EVENT(kmem_cache_alloc,
- 		__entry->bytes_alloc	= s->size;
- 		__entry->gfp_flags	= (__force unsigned long)gfp_flags;
- 		__entry->node		= node;
--		__entry->accounted	= IS_ENABLED(CONFIG_MEMCG_KMEM) ?
-+		__entry->accounted	= IS_ENABLED(CONFIG_MEMCG) ?
- 					  ((gfp_flags & __GFP_ACCOUNT) ||
- 					  (s->flags & SLAB_ACCOUNT)) : false;
- 	),
-@@ -87,7 +87,7 @@ TRACE_EVENT(kmalloc,
- 		__entry->bytes_alloc,
- 		show_gfp_flags(__entry->gfp_flags),
- 		__entry->node,
--		(IS_ENABLED(CONFIG_MEMCG_KMEM) &&
-+		(IS_ENABLED(CONFIG_MEMCG) &&
- 		 (__entry->gfp_flags & (__force unsigned long)__GFP_ACCOUNT)) ? "true" : "false")
- );
- 
-diff --git a/init/Kconfig b/init/Kconfig
-index f3ea5dea9c85..ef6bf97005ce 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -965,11 +965,6 @@ config MEMCG
- 	help
- 	  Provides control over the memory footprint of tasks in a cgroup.
- 
--config MEMCG_KMEM
--	bool
--	depends on MEMCG
--	default y
--
- config BLK_CGROUP
- 	bool "IO controller"
- 	depends on BLOCK
-diff --git a/kernel/bpf/memalloc.c b/kernel/bpf/memalloc.c
-index a546aba46d5d..dec892ded031 100644
---- a/kernel/bpf/memalloc.c
-+++ b/kernel/bpf/memalloc.c
-@@ -155,12 +155,9 @@ static void *__alloc(struct bpf_mem_cache *c, int node, gfp_t flags)
- 
- static struct mem_cgroup *get_memcg(const struct bpf_mem_cache *c)
- {
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 	if (c->objcg)
- 		return get_mem_cgroup_from_objcg(c->objcg);
--#endif
--
--#ifdef CONFIG_MEMCG
- 	return root_mem_cgroup;
- #else
- 	return NULL;
-@@ -534,7 +531,7 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
- 			size += LLIST_NODE_SZ; /* room for llist_node */
- 		unit_size = size;
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 		if (memcg_bpf_enabled())
- 			objcg = get_obj_cgroup_from_current();
- #endif
-@@ -556,7 +553,7 @@ int bpf_mem_alloc_init(struct bpf_mem_alloc *ma, int size, bool percpu)
- 	pcc = __alloc_percpu_gfp(sizeof(*cc), 8, GFP_KERNEL);
- 	if (!pcc)
- 		return -ENOMEM;
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 	objcg = get_obj_cgroup_from_current();
- #endif
- 	ma->objcg = objcg;
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index ae2ff73bde7e..be5007eb351d 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -385,7 +385,7 @@ void bpf_map_free_id(struct bpf_map *map)
- 	spin_unlock_irqrestore(&map_idr_lock, flags);
- }
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- static void bpf_map_save_memcg(struct bpf_map *map)
- {
- 	/* Currently if a map is created by a process belonging to the root
-@@ -486,7 +486,7 @@ int bpf_map_alloc_pages(const struct bpf_map *map, gfp_t gfp, int nid,
- 	unsigned long i, j;
- 	struct page *pg;
- 	int ret = 0;
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 	struct mem_cgroup *memcg, *old_memcg;
- 
- 	memcg = bpf_map_get_memcg(map);
-@@ -505,7 +505,7 @@ int bpf_map_alloc_pages(const struct bpf_map *map, gfp_t gfp, int nid,
- 		break;
- 	}
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 	set_active_memcg(old_memcg);
- 	mem_cgroup_put(memcg);
- #endif
-diff --git a/mm/list_lru.c b/mm/list_lru.c
-index 3fd64736bc45..a29d96929d7c 100644
---- a/mm/list_lru.c
-+++ b/mm/list_lru.c
-@@ -15,7 +15,7 @@
- #include "slab.h"
- #include "internal.h"
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- static LIST_HEAD(memcg_list_lrus);
- static DEFINE_MUTEX(list_lrus_mutex);
- 
-@@ -83,7 +83,7 @@ list_lru_from_memcg_idx(struct list_lru *lru, int nid, int idx)
- {
- 	return &lru->node[nid].lru;
- }
--#endif /* CONFIG_MEMCG_KMEM */
-+#endif /* CONFIG_MEMCG */
- 
- bool list_lru_add(struct list_lru *lru, struct list_head *item, int nid,
- 		    struct mem_cgroup *memcg)
-@@ -294,7 +294,7 @@ unsigned long list_lru_walk_node(struct list_lru *lru, int nid,
- 	isolated += list_lru_walk_one(lru, nid, NULL, isolate, cb_arg,
- 				      nr_to_walk);
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 	if (*nr_to_walk > 0 && list_lru_memcg_aware(lru)) {
- 		struct list_lru_memcg *mlru;
- 		unsigned long index;
-@@ -324,7 +324,7 @@ static void init_one_lru(struct list_lru_one *l)
- 	l->nr_items = 0;
- }
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- static struct list_lru_memcg *memcg_init_list_lru_one(gfp_t gfp)
- {
- 	int nid;
-@@ -544,14 +544,14 @@ static inline void memcg_init_list_lru(struct list_lru *lru, bool memcg_aware)
- static void memcg_destroy_list_lru(struct list_lru *lru)
- {
- }
--#endif /* CONFIG_MEMCG_KMEM */
-+#endif /* CONFIG_MEMCG */
- 
- int __list_lru_init(struct list_lru *lru, bool memcg_aware,
- 		    struct lock_class_key *key, struct shrinker *shrinker)
- {
- 	int i;
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 	if (shrinker)
- 		lru->shrinker_id = shrinker->id;
- 	else
-@@ -591,7 +591,7 @@ void list_lru_destroy(struct list_lru *lru)
- 	kfree(lru->node);
- 	lru->node = NULL;
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 	lru->shrinker_id = -1;
- #endif
- }
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index aab3f5473203..7251ed124011 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -255,7 +255,6 @@ struct mem_cgroup *vmpressure_to_memcg(struct vmpressure *vmpr)
- #define CURRENT_OBJCG_UPDATE_BIT 0
- #define CURRENT_OBJCG_UPDATE_FLAG (1UL << CURRENT_OBJCG_UPDATE_BIT)
- 
--#ifdef CONFIG_MEMCG_KMEM
- static DEFINE_SPINLOCK(objcg_lock);
- 
- bool mem_cgroup_kmem_disabled(void)
-@@ -360,7 +359,6 @@ EXPORT_SYMBOL(memcg_kmem_online_key);
- 
- DEFINE_STATIC_KEY_FALSE(memcg_bpf_enabled_key);
- EXPORT_SYMBOL(memcg_bpf_enabled_key);
--#endif
- 
- /**
-  * mem_cgroup_css_from_folio - css of the memcg associated with a folio
-@@ -593,7 +591,7 @@ static const unsigned int memcg_vm_event_stat[] = {
- 	PGDEACTIVATE,
- 	PGLAZYFREE,
- 	PGLAZYFREED,
--#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
-+#ifdef CONFIG_ZSWAP
- 	ZSWPIN,
- 	ZSWPOUT,
- 	ZSWPWB,
-@@ -1556,7 +1554,7 @@ static const struct memory_stat memory_stats[] = {
- 	{ "sock",			MEMCG_SOCK			},
- 	{ "vmalloc",			MEMCG_VMALLOC			},
- 	{ "shmem",			NR_SHMEM			},
--#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
-+#ifdef CONFIG_ZSWAP
- 	{ "zswap",			MEMCG_ZSWAP_B			},
- 	{ "zswapped",			MEMCG_ZSWAPPED			},
- #endif
-@@ -2259,13 +2257,11 @@ struct memcg_stock_pcp {
- 	struct mem_cgroup *cached; /* this never be root cgroup */
- 	unsigned int nr_pages;
- 
--#ifdef CONFIG_MEMCG_KMEM
- 	struct obj_cgroup *cached_objcg;
- 	struct pglist_data *cached_pgdat;
- 	unsigned int nr_bytes;
- 	int nr_slab_reclaimable_b;
- 	int nr_slab_unreclaimable_b;
--#endif
- 
- 	struct work_struct work;
- 	unsigned long flags;
-@@ -2276,27 +2272,11 @@ static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock) = {
- };
- static DEFINE_MUTEX(percpu_charge_mutex);
- 
--#ifdef CONFIG_MEMCG_KMEM
- static struct obj_cgroup *drain_obj_stock(struct memcg_stock_pcp *stock);
- static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
- 				     struct mem_cgroup *root_memcg);
- static void memcg_account_kmem(struct mem_cgroup *memcg, int nr_pages);
- 
--#else
--static inline struct obj_cgroup *drain_obj_stock(struct memcg_stock_pcp *stock)
--{
--	return NULL;
--}
--static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
--				     struct mem_cgroup *root_memcg)
--{
--	return false;
--}
--static void memcg_account_kmem(struct mem_cgroup *memcg, int nr_pages)
--{
--}
--#endif
--
- /**
-  * consume_stock: Try to consume stocked charge on this cpu.
-  * @memcg: memcg to consume from.
-@@ -2978,7 +2958,6 @@ void mem_cgroup_commit_charge(struct folio *folio, struct mem_cgroup *memcg)
- 	local_irq_enable();
- }
- 
--#ifdef CONFIG_MEMCG_KMEM
- /*
-  * The allocated objcg pointers array is not accounted directly.
-  * Moreover, it should not come from DMA buffer and is not readily
-@@ -3600,8 +3579,6 @@ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
- 	refill_obj_stock(objcg, size, true);
- }
- 
--#endif /* CONFIG_MEMCG_KMEM */
--
- /*
-  * Because page_memcg(head) is not set on tails, set it now.
-  */
-@@ -3941,7 +3918,6 @@ static int mem_cgroup_dummy_seq_show(__always_unused struct seq_file *m,
- 	return -EINVAL;
- }
- 
--#ifdef CONFIG_MEMCG_KMEM
- static int memcg_online_kmem(struct mem_cgroup *memcg)
- {
- 	struct obj_cgroup *objcg;
-@@ -3992,15 +3968,6 @@ static void memcg_offline_kmem(struct mem_cgroup *memcg)
- 	 */
- 	memcg_reparent_list_lrus(memcg, parent);
- }
--#else
--static int memcg_online_kmem(struct mem_cgroup *memcg)
--{
--	return 0;
--}
--static void memcg_offline_kmem(struct mem_cgroup *memcg)
--{
--}
--#endif /* CONFIG_MEMCG_KMEM */
- 
- static int memcg_update_tcp_max(struct mem_cgroup *memcg, unsigned long max)
- {
-@@ -5197,7 +5164,7 @@ static ssize_t memcg_write_event_control(struct kernfs_open_file *of,
- 	return ret;
- }
- 
--#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_SLUB_DEBUG)
-+#ifdef CONFIG_SLUB_DEBUG
- static int mem_cgroup_slab_show(struct seq_file *m, void *p)
- {
- 	/*
-@@ -5306,7 +5273,7 @@ static struct cftype mem_cgroup_legacy_files[] = {
- 		.write = mem_cgroup_reset,
- 		.read_u64 = mem_cgroup_read_u64,
- 	},
--#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_SLUB_DEBUG)
-+#ifdef CONFIG_SLUB_DEBUG
- 	{
- 		.name = "kmem.slabinfo",
- 		.seq_show = mem_cgroup_slab_show,
-@@ -5533,10 +5500,8 @@ static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
- 	INIT_LIST_HEAD(&memcg->event_list);
- 	spin_lock_init(&memcg->event_list_lock);
- 	memcg->socket_pressure = jiffies;
--#ifdef CONFIG_MEMCG_KMEM
- 	memcg->kmemcg_id = -1;
- 	INIT_LIST_HEAD(&memcg->objcg_list);
--#endif
- #ifdef CONFIG_CGROUP_WRITEBACK
- 	INIT_LIST_HEAD(&memcg->cgwb_list);
- 	for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++)
-@@ -5570,7 +5535,7 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
- 
- 	page_counter_set_high(&memcg->memory, PAGE_COUNTER_MAX);
- 	WRITE_ONCE(memcg->soft_limit, PAGE_COUNTER_MAX);
--#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
-+#ifdef CONFIG_ZSWAP
- 	memcg->zswap_max = PAGE_COUNTER_MAX;
- 	WRITE_ONCE(memcg->zswap_writeback,
- 		!parent || READ_ONCE(parent->zswap_writeback));
-@@ -5598,10 +5563,8 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
- 	if (cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_nosocket)
- 		static_branch_inc(&memcg_sockets_enabled_key);
- 
--#if defined(CONFIG_MEMCG_KMEM)
- 	if (!cgroup_memory_nobpf)
- 		static_branch_inc(&memcg_bpf_enabled_key);
--#endif
- 
- 	return &memcg->css;
- }
-@@ -5705,10 +5668,8 @@ static void mem_cgroup_css_free(struct cgroup_subsys_state *css)
- 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg->tcpmem_active)
- 		static_branch_dec(&memcg_sockets_enabled_key);
- 
--#if defined(CONFIG_MEMCG_KMEM)
- 	if (!cgroup_memory_nobpf)
- 		static_branch_dec(&memcg_bpf_enabled_key);
--#endif
- 
- 	vmpressure_cleanup(&memcg->vmpressure);
- 	cancel_work_sync(&memcg->high_work);
-@@ -6599,7 +6560,6 @@ static void mem_cgroup_move_task(void)
- }
- #endif
- 
--#ifdef CONFIG_MEMCG_KMEM
- static void mem_cgroup_fork(struct task_struct *task)
- {
- 	/*
-@@ -6627,7 +6587,6 @@ static void mem_cgroup_exit(struct task_struct *task)
- 	 */
- 	task->objcg = NULL;
- }
--#endif
- 
- #ifdef CONFIG_LRU_GEN
- static void mem_cgroup_lru_gen_attach(struct cgroup_taskset *tset)
-@@ -6651,7 +6610,6 @@ static void mem_cgroup_lru_gen_attach(struct cgroup_taskset *tset)
- static void mem_cgroup_lru_gen_attach(struct cgroup_taskset *tset) {}
- #endif /* CONFIG_LRU_GEN */
- 
--#ifdef CONFIG_MEMCG_KMEM
- static void mem_cgroup_kmem_attach(struct cgroup_taskset *tset)
- {
- 	struct task_struct *task;
-@@ -6662,17 +6620,12 @@ static void mem_cgroup_kmem_attach(struct cgroup_taskset *tset)
- 		set_bit(CURRENT_OBJCG_UPDATE_BIT, (unsigned long *)&task->objcg);
- 	}
- }
--#else
--static void mem_cgroup_kmem_attach(struct cgroup_taskset *tset) {}
--#endif /* CONFIG_MEMCG_KMEM */
- 
--#if defined(CONFIG_LRU_GEN) || defined(CONFIG_MEMCG_KMEM)
- static void mem_cgroup_attach(struct cgroup_taskset *tset)
- {
- 	mem_cgroup_lru_gen_attach(tset);
- 	mem_cgroup_kmem_attach(tset);
- }
--#endif
- 
- static int seq_puts_memcg_tunable(struct seq_file *m, unsigned long value)
- {
-@@ -7120,15 +7073,11 @@ struct cgroup_subsys memory_cgrp_subsys = {
- 	.css_reset = mem_cgroup_css_reset,
- 	.css_rstat_flush = mem_cgroup_css_rstat_flush,
- 	.can_attach = mem_cgroup_can_attach,
--#if defined(CONFIG_LRU_GEN) || defined(CONFIG_MEMCG_KMEM)
- 	.attach = mem_cgroup_attach,
--#endif
- 	.cancel_attach = mem_cgroup_cancel_attach,
- 	.post_attach = mem_cgroup_move_task,
--#ifdef CONFIG_MEMCG_KMEM
- 	.fork = mem_cgroup_fork,
- 	.exit = mem_cgroup_exit,
--#endif
- 	.dfl_cftypes = memory_files,
- 	.legacy_cftypes = mem_cgroup_legacy_files,
- 	.early_init = 0,
-@@ -8147,7 +8096,7 @@ static struct cftype memsw_files[] = {
- 	{ },	/* terminate */
- };
- 
--#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
-+#ifdef CONFIG_ZSWAP
- /**
-  * obj_cgroup_may_zswap - check if this cgroup can zswap
-  * @objcg: the object cgroup
-@@ -8329,7 +8278,7 @@ static struct cftype zswap_files[] = {
- 	},
- 	{ }	/* terminate */
- };
--#endif /* CONFIG_MEMCG_KMEM && CONFIG_ZSWAP */
-+#endif /* CONFIG_ZSWAP */
- 
- static int __init mem_cgroup_swap_init(void)
- {
-@@ -8338,7 +8287,7 @@ static int __init mem_cgroup_swap_init(void)
- 
- 	WARN_ON(cgroup_add_dfl_cftypes(&memory_cgrp_subsys, swap_files));
- 	WARN_ON(cgroup_add_legacy_cftypes(&memory_cgrp_subsys, memsw_files));
--#if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
-+#ifdef CONFIG_ZSWAP
- 	WARN_ON(cgroup_add_dfl_cftypes(&memory_cgrp_subsys, zswap_files));
- #endif
- 	return 0;
-diff --git a/mm/percpu-internal.h b/mm/percpu-internal.h
-index cdd0aa597a81..7c3f2281ff98 100644
---- a/mm/percpu-internal.h
-+++ b/mm/percpu-internal.h
-@@ -64,7 +64,7 @@ struct pcpu_chunk {
- 	int			end_offset;	/* additional area required to
- 						   have the region end page
- 						   aligned */
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 	struct obj_cgroup	**obj_cgroups;	/* vector of object cgroups */
- #endif
- 
-@@ -132,7 +132,7 @@ static inline size_t pcpu_obj_full_size(size_t size)
- {
- 	size_t extra_size = 0;
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 	if (!mem_cgroup_kmem_disabled())
- 		extra_size += size / PCPU_MIN_ALLOC_SIZE * sizeof(struct obj_cgroup *);
- #endif
-diff --git a/mm/percpu.c b/mm/percpu.c
-index 4e11fc1e6def..563ada75087e 100644
---- a/mm/percpu.c
-+++ b/mm/percpu.c
-@@ -1392,7 +1392,7 @@ static struct pcpu_chunk * __init pcpu_alloc_first_chunk(unsigned long tmp_addr,
- 		panic("%s: Failed to allocate %zu bytes\n", __func__,
- 		      alloc_size);
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 	/* first chunk is free to use */
- 	chunk->obj_cgroups = NULL;
- #endif
-@@ -1463,7 +1463,7 @@ static struct pcpu_chunk *pcpu_alloc_chunk(gfp_t gfp)
- 	if (!chunk->md_blocks)
- 		goto md_blocks_fail;
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 	if (!mem_cgroup_kmem_disabled()) {
- 		chunk->obj_cgroups =
- 			pcpu_mem_zalloc(pcpu_chunk_map_bits(chunk) *
-@@ -1480,7 +1480,7 @@ static struct pcpu_chunk *pcpu_alloc_chunk(gfp_t gfp)
- 
- 	return chunk;
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- objcg_fail:
- 	pcpu_mem_free(chunk->md_blocks);
- #endif
-@@ -1498,7 +1498,7 @@ static void pcpu_free_chunk(struct pcpu_chunk *chunk)
- {
- 	if (!chunk)
- 		return;
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 	pcpu_mem_free(chunk->obj_cgroups);
- #endif
- 	pcpu_mem_free(chunk->md_blocks);
-@@ -1619,7 +1619,7 @@ static struct pcpu_chunk *pcpu_chunk_addr_search(void *addr)
- 	return pcpu_get_page_chunk(pcpu_addr_to_page(addr));
- }
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- static bool pcpu_memcg_pre_alloc_hook(size_t size, gfp_t gfp,
- 				      struct obj_cgroup **objcgp)
- {
-@@ -1681,7 +1681,7 @@ static void pcpu_memcg_free_hook(struct pcpu_chunk *chunk, int off, size_t size)
- 	obj_cgroup_put(objcg);
- }
- 
--#else /* CONFIG_MEMCG_KMEM */
-+#else /* CONFIG_MEMCG */
- static bool
- pcpu_memcg_pre_alloc_hook(size_t size, gfp_t gfp, struct obj_cgroup **objcgp)
- {
-@@ -1697,7 +1697,7 @@ static void pcpu_memcg_post_alloc_hook(struct obj_cgroup *objcg,
- static void pcpu_memcg_free_hook(struct pcpu_chunk *chunk, int off, size_t size)
- {
- }
--#endif /* CONFIG_MEMCG_KMEM */
-+#endif /* CONFIG_MEMCG */
- 
- /**
-  * pcpu_alloc - the percpu allocator
-diff --git a/mm/slab.h b/mm/slab.h
-index d2bc9b191222..ea49f899c99f 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -536,7 +536,7 @@ static inline bool kmem_cache_debug_flags(struct kmem_cache *s, slab_flags_t fla
- 	return false;
- }
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- /*
-  * slab_objcgs - get the object cgroups vector associated with a slab
-  * @slab: a pointer to the slab struct
-@@ -559,7 +559,7 @@ int memcg_alloc_slab_cgroups(struct slab *slab, struct kmem_cache *s,
- 				 gfp_t gfp, bool new_slab);
- void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
- 		     enum node_stat_item idx, int nr);
--#else /* CONFIG_MEMCG_KMEM */
-+#else /* CONFIG_MEMCG */
- static inline struct obj_cgroup **slab_objcgs(struct slab *slab)
- {
- 	return NULL;
-@@ -571,7 +571,7 @@ static inline int memcg_alloc_slab_cgroups(struct slab *slab,
- {
- 	return 0;
- }
--#endif /* CONFIG_MEMCG_KMEM */
-+#endif /* CONFIG_MEMCG */
- 
- size_t __ksize(const void *objp);
- 
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index f5234672f03c..18a42b12696e 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -725,7 +725,7 @@ EXPORT_SYMBOL(kmalloc_size_roundup);
- #define KMALLOC_DMA_NAME(sz)
- #endif
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- #define KMALLOC_CGROUP_NAME(sz)	.name[KMALLOC_CGROUP] = "kmalloc-cg-" #sz,
- #else
- #define KMALLOC_CGROUP_NAME(sz)
-@@ -867,7 +867,7 @@ new_kmalloc_cache(int idx, enum kmalloc_cache_type type)
- 
- 	if ((KMALLOC_RECLAIM != KMALLOC_NORMAL) && (type == KMALLOC_RECLAIM)) {
- 		flags |= SLAB_RECLAIM_ACCOUNT;
--	} else if (IS_ENABLED(CONFIG_MEMCG_KMEM) && (type == KMALLOC_CGROUP)) {
-+	} else if (IS_ENABLED(CONFIG_MEMCG) && (type == KMALLOC_CGROUP)) {
- 		if (mem_cgroup_kmem_disabled()) {
- 			kmalloc_caches[type][idx] = kmalloc_caches[KMALLOC_NORMAL][idx];
- 			return;
-@@ -883,10 +883,10 @@ new_kmalloc_cache(int idx, enum kmalloc_cache_type type)
- #endif
- 
- 	/*
--	 * If CONFIG_MEMCG_KMEM is enabled, disable cache merging for
-+	 * If CONFIG_MEMCG is enabled, disable cache merging for
- 	 * KMALLOC_NORMAL caches.
- 	 */
--	if (IS_ENABLED(CONFIG_MEMCG_KMEM) && (type == KMALLOC_NORMAL))
-+	if (IS_ENABLED(CONFIG_MEMCG) && (type == KMALLOC_NORMAL))
- 		flags |= SLAB_NO_MERGE;
- 
- 	if (minalign > ARCH_KMALLOC_MINALIGN) {
-@@ -913,7 +913,7 @@ void __init create_kmalloc_caches(void)
- 	enum kmalloc_cache_type type;
- 
- 	/*
--	 * Including KMALLOC_CGROUP if CONFIG_MEMCG_KMEM defined
-+	 * Including KMALLOC_CGROUP if CONFIG_MEMCG defined
- 	 */
- 	for (type = KMALLOC_NORMAL; type < NR_KMALLOC_TYPES; type++) {
- 		for (i = KMALLOC_SHIFT_LOW; i <= KMALLOC_SHIFT_HIGH; i++) {
-diff --git a/mm/slub.c b/mm/slub.c
-index 1bb2a93cf7b6..3444a1c34abc 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -1871,7 +1871,7 @@ static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
- 		NR_SLAB_RECLAIMABLE_B : NR_SLAB_UNRECLAIMABLE_B;
- }
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- static inline void memcg_free_slab_cgroups(struct slab *slab)
- {
- 	kfree(slab_objcgs(slab));
-@@ -2027,7 +2027,7 @@ void memcg_slab_alloc_error_hook(struct kmem_cache *s, int objects,
- 	if (objcg)
- 		obj_cgroup_uncharge(objcg, objects * obj_full_size(s));
- }
--#else /* CONFIG_MEMCG_KMEM */
-+#else /* CONFIG_MEMCG */
- static inline void memcg_free_slab_cgroups(struct slab *slab)
- {
- }
-@@ -2057,7 +2057,7 @@ void memcg_slab_alloc_error_hook(struct kmem_cache *s, int objects,
- 				 struct obj_cgroup *objcg)
- {
- }
--#endif /* CONFIG_MEMCG_KMEM */
-+#endif /* CONFIG_MEMCG */
- 
- /*
-  * Hooks for other subsystems that check memory allocations. In a typical
-diff --git a/mm/zswap.c b/mm/zswap.c
-index b31c977f53e9..a4db8028a875 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -1303,7 +1303,7 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
- 	if (!zswap_shrinker_enabled || !mem_cgroup_zswap_writeback_enabled(memcg))
- 		return 0;
- 
--#ifdef CONFIG_MEMCG_KMEM
-+#ifdef CONFIG_MEMCG
- 	mem_cgroup_flush_stats(memcg);
- 	nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
- 	nr_stored = memcg_page_state(memcg, MEMCG_ZSWAPPED);
-diff --git a/tools/testing/selftests/cgroup/config b/tools/testing/selftests/cgroup/config
-index 97d549ee894f..39f979690dd3 100644
---- a/tools/testing/selftests/cgroup/config
-+++ b/tools/testing/selftests/cgroup/config
-@@ -3,5 +3,4 @@ CONFIG_CGROUP_CPUACCT=y
- CONFIG_CGROUP_FREEZER=y
- CONFIG_CGROUP_SCHED=y
- CONFIG_MEMCG=y
--CONFIG_MEMCG_KMEM=y
- CONFIG_PAGE_COUNTER=y
+Runtime info:
+  /proc/allocinfo
+
+Notes:
+
+[1]: Overhead
+To measure the overhead we are comparing the following configurations:
+(1) Baseline with CONFIG_MEMCG_KMEM=n
+(2) Disabled by default (CONFIG_MEM_ALLOC_PROFILING=y &&
+    CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=n)
+(3) Enabled by default (CONFIG_MEM_ALLOC_PROFILING=y &&
+    CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=y)
+(4) Enabled at runtime (CONFIG_MEM_ALLOC_PROFILING=y &&
+    CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=n && /proc/sys/vm/mem_profiling=1)
+(5) Baseline with CONFIG_MEMCG_KMEM=y && allocating with __GFP_ACCOUNT
+(6) Disabled by default (CONFIG_MEM_ALLOC_PROFILING=y &&
+    CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=n)  && CONFIG_MEMCG_KMEM=y
+(7) Enabled by default (CONFIG_MEM_ALLOC_PROFILING=y &&
+    CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=y) && CONFIG_MEMCG_KMEM=y
+
+Performance overhead:
+To evaluate performance we implemented an in-kernel test executing
+multiple get_free_page/free_page and kmalloc/kfree calls with allocation
+sizes growing from 8 to 240 bytes with CPU frequency set to max and CPU
+affinity set to a specific CPU to minimize the noise. Below are results
+from running the test on Ubuntu 22.04.2 LTS with 6.8.0-rc1 kernel on
+56 core Intel Xeon:
+
+                        kmalloc                 pgalloc
+(1 baseline)            6.764s                  16.902s
+(2 default disabled)    6.793s  (+0.43%)        17.007s (+0.62%)
+(3 default enabled)     7.197s  (+6.40%)        23.666s (+40.02%)
+(4 runtime enabled)     7.405s  (+9.48%)        23.901s (+41.41%)
+(5 memcg)               13.388s (+97.94%)       48.460s (+186.71%)
+(6 def disabled+memcg)  13.332s (+97.10%)       48.105s (+184.61%)
+(7 def enabled+memcg)   13.446s (+98.78%)       54.963s (+225.18%)
+
+Memory overhead:
+Kernel size:
+
+   text           data        bss         dec         diff
+(1) 26515311	      18890222    17018880    62424413
+(2) 26524728	      19423818    16740352    62688898    264485
+(3) 26524724	      19423818    16740352    62688894    264481
+(4) 26524728	      19423818    16740352    62688898    264485
+(5) 26541782	      18964374    16957440    62463596    39183
+
+Memory consumption on a 56 core Intel CPU with 125GB of memory:
+Code tags:           192 kB
+PageExts:         262144 kB (256MB)
+SlabExts:           9876 kB (9.6MB)
+PcpuExts:            512 kB (0.5MB)
+
+Total overhead is 0.2% of total memory.
+
+Benchmarks:
+
+Hackbench tests run 100 times:
+hackbench -s 512 -l 200 -g 15 -f 25 -P
+      baseline       disabled profiling           enabled profiling
+avg   0.3543         0.3559 (+0.0016)             0.3566 (+0.0023)
+stdev 0.0137         0.0188                       0.0077
+
+
+hackbench -l 10000
+      baseline       disabled profiling           enabled profiling
+avg   6.4218         6.4306 (+0.0088)             6.5077 (+0.0859)
+stdev 0.0933         0.0286                       0.0489
+
+stress-ng tests:
+stress-ng --class memory --seq 4 -t 60
+stress-ng --class cpu --seq 4 -t 60
+Results posted at: https://evilpiepirate.org/~kent/memalloc_prof_v4_stress-ng/
+
+[2] https://lore.kernel.org/all/20240306182440.2003814-1-surenb@google.com/
+
+Kent Overstreet (13):
+  fix missing vmalloc.h includes
+  asm-generic/io.h: Kill vmalloc.h dependency
+  mm/slub: Mark slab_free_freelist_hook() __always_inline
+  scripts/kallysms: Always include __start and __stop symbols
+  fs: Convert alloc_inode_sb() to a macro
+  rust: Add a rust helper for krealloc()
+  mempool: Hook up to memory allocation profiling
+  mm: percpu: Introduce pcpuobj_ext
+  mm: percpu: Add codetag reference into pcpuobj_ext
+  mm: vmalloc: Enable memory allocation profiling
+  rhashtable: Plumb through alloc tag
+  MAINTAINERS: Add entries for code tagging and memory allocation
+    profiling
+  memprofiling: Documentation
+
+Suren Baghdasaryan (24):
+  mm: introduce slabobj_ext to support slab object extensions
+  mm: introduce __GFP_NO_OBJ_EXT flag to selectively prevent slabobj_ext
+    creation
+  mm/slab: introduce SLAB_NO_OBJ_EXT to avoid obj_ext creation
+  slab: objext: introduce objext_flags as extension to
+    page_memcg_data_flags
+  lib: code tagging framework
+  lib: code tagging module support
+  lib: prevent module unloading if memory is not freed
+  lib: add allocation tagging support for memory allocation profiling
+  lib: introduce support for page allocation tagging
+  lib: introduce early boot parameter to avoid page_ext memory overhead
+  mm: percpu: increase PERCPU_MODULE_RESERVE to accommodate allocation
+    tags
+  change alloc_pages name in dma_map_ops to avoid name conflicts
+  mm: enable page allocation tagging
+  mm: create new codetag references during page splitting
+  mm: fix non-compound multi-order memory accounting in __free_pages
+  mm/page_ext: enable early_page_ext when
+    CONFIG_MEM_ALLOC_PROFILING_DEBUG=y
+  lib: add codetag reference into slabobj_ext
+  mm/slab: add allocation accounting into slab allocation and free paths
+  mm/slab: enable slab allocation tagging for kmalloc and friends
+  mm: percpu: enable per-cpu allocation tagging
+  lib: add memory allocations report in show_mem()
+  codetag: debug: skip objext checking when it's for objext itself
+  codetag: debug: mark codetags for reserved pages as empty
+  codetag: debug: introduce OBJEXTS_ALLOC_FAIL to mark failed slab_ext
+    allocations
+
+ Documentation/admin-guide/sysctl/vm.rst       |  16 +
+ Documentation/filesystems/proc.rst            |  29 ++
+ Documentation/mm/allocation-profiling.rst     | 100 ++++++
+ Documentation/mm/index.rst                    |   1 +
+ MAINTAINERS                                   |  17 +
+ arch/alpha/kernel/pci_iommu.c                 |   2 +-
+ arch/alpha/lib/checksum.c                     |   1 +
+ arch/alpha/lib/fpreg.c                        |   1 +
+ arch/alpha/lib/memcpy.c                       |   1 +
+ arch/arm/kernel/irq.c                         |   1 +
+ arch/arm/kernel/traps.c                       |   1 +
+ arch/arm64/kernel/efi.c                       |   1 +
+ arch/loongarch/include/asm/kfence.h           |   1 +
+ arch/mips/jazz/jazzdma.c                      |   2 +-
+ arch/powerpc/kernel/dma-iommu.c               |   2 +-
+ arch/powerpc/kernel/iommu.c                   |   1 +
+ arch/powerpc/mm/mem.c                         |   1 +
+ arch/powerpc/platforms/ps3/system-bus.c       |   4 +-
+ arch/powerpc/platforms/pseries/vio.c          |   2 +-
+ arch/riscv/kernel/elf_kexec.c                 |   1 +
+ arch/riscv/kernel/probes/kprobes.c            |   1 +
+ arch/s390/kernel/cert_store.c                 |   1 +
+ arch/s390/kernel/ipl.c                        |   1 +
+ arch/x86/include/asm/io.h                     |   1 +
+ arch/x86/kernel/amd_gart_64.c                 |   2 +-
+ arch/x86/kernel/cpu/sgx/main.c                |   1 +
+ arch/x86/kernel/irq_64.c                      |   1 +
+ arch/x86/mm/fault.c                           |   1 +
+ drivers/accel/ivpu/ivpu_mmu_context.c         |   1 +
+ drivers/gpu/drm/gma500/mmu.c                  |   1 +
+ drivers/gpu/drm/i915/gem/i915_gem_pages.c     |   1 +
+ .../gpu/drm/i915/gem/selftests/mock_dmabuf.c  |   1 +
+ drivers/gpu/drm/i915/gt/shmem_utils.c         |   1 +
+ drivers/gpu/drm/i915/gvt/firmware.c           |   1 +
+ drivers/gpu/drm/i915/gvt/gtt.c                |   1 +
+ drivers/gpu/drm/i915/gvt/handlers.c           |   1 +
+ drivers/gpu/drm/i915/gvt/mmio.c               |   1 +
+ drivers/gpu/drm/i915/gvt/vgpu.c               |   1 +
+ drivers/gpu/drm/i915/intel_gvt.c              |   1 +
+ drivers/gpu/drm/imagination/pvr_vm_mips.c     |   1 +
+ drivers/gpu/drm/mediatek/mtk_drm_gem.c        |   1 +
+ drivers/gpu/drm/omapdrm/omap_gem.c            |   1 +
+ drivers/gpu/drm/v3d/v3d_bo.c                  |   1 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_binding.c       |   1 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_cmd.c           |   1 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_devcaps.c       |   1 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_drv.c           |   1 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_execbuf.c       |   1 +
+ drivers/gpu/drm/vmwgfx/vmwgfx_ioctl.c         |   1 +
+ drivers/gpu/drm/xen/xen_drm_front_gem.c       |   1 +
+ drivers/hwtracing/coresight/coresight-trbe.c  |   1 +
+ drivers/iommu/dma-iommu.c                     |   2 +-
+ .../marvell/octeon_ep/octep_pfvf_mbox.c       |   1 +
+ .../marvell/octeon_ep_vf/octep_vf_mbox.c      |   1 +
+ .../net/ethernet/microsoft/mana/hw_channel.c  |   1 +
+ drivers/parisc/ccio-dma.c                     |   2 +-
+ drivers/parisc/sba_iommu.c                    |   2 +-
+ drivers/platform/x86/uv_sysfs.c               |   1 +
+ drivers/scsi/mpi3mr/mpi3mr_transport.c        |   2 +
+ drivers/staging/media/atomisp/pci/hmm/hmm.c   |   2 +-
+ drivers/vfio/pci/pds/dirty.c                  |   1 +
+ drivers/virt/acrn/mm.c                        |   1 +
+ drivers/virtio/virtio_mem.c                   |   1 +
+ drivers/xen/grant-dma-ops.c                   |   2 +-
+ drivers/xen/swiotlb-xen.c                     |   2 +-
+ include/asm-generic/codetag.lds.h             |  14 +
+ include/asm-generic/io.h                      |   1 -
+ include/asm-generic/vmlinux.lds.h             |   3 +
+ include/linux/alloc_tag.h                     | 205 +++++++++++
+ include/linux/codetag.h                       |  81 +++++
+ include/linux/dma-map-ops.h                   |   2 +-
+ include/linux/fortify-string.h                |   5 +-
+ include/linux/fs.h                            |   6 +-
+ include/linux/gfp.h                           | 126 ++++---
+ include/linux/gfp_types.h                     |  11 +
+ include/linux/memcontrol.h                    |  56 ++-
+ include/linux/mempool.h                       |  73 ++--
+ include/linux/mm.h                            |   9 +
+ include/linux/mm_types.h                      |   4 +-
+ include/linux/page_ext.h                      |   1 -
+ include/linux/pagemap.h                       |   9 +-
+ include/linux/pds/pds_common.h                |   2 +
+ include/linux/percpu.h                        |  27 +-
+ include/linux/pgalloc_tag.h                   | 134 +++++++
+ include/linux/rhashtable-types.h              |  11 +-
+ include/linux/sched.h                         |  24 ++
+ include/linux/slab.h                          | 179 +++++-----
+ include/linux/string.h                        |   4 +-
+ include/linux/vmalloc.h                       |  60 +++-
+ include/rdma/rdmavt_qp.h                      |   1 +
+ init/Kconfig                                  |   4 +
+ kernel/dma/mapping.c                          |   4 +-
+ kernel/kallsyms_selftest.c                    |   2 +-
+ kernel/module/main.c                          |  29 +-
+ lib/Kconfig.debug                             |  31 ++
+ lib/Makefile                                  |   3 +
+ lib/alloc_tag.c                               | 243 +++++++++++++
+ lib/codetag.c                                 | 283 +++++++++++++++
+ lib/rhashtable.c                              |  28 +-
+ mm/compaction.c                               |   7 +-
+ mm/debug_vm_pgtable.c                         |   1 +
+ mm/filemap.c                                  |   6 +-
+ mm/huge_memory.c                              |   2 +
+ mm/kfence/core.c                              |  14 +-
+ mm/kfence/kfence.h                            |   4 +-
+ mm/memcontrol.c                               |  56 +--
+ mm/mempolicy.c                                |  52 +--
+ mm/mempool.c                                  |  36 +-
+ mm/mm_init.c                                  |  13 +-
+ mm/nommu.c                                    |  64 ++--
+ mm/page_alloc.c                               |  71 ++--
+ mm/page_ext.c                                 |  13 +
+ mm/page_owner.c                               |   2 +-
+ mm/percpu-internal.h                          |  26 +-
+ mm/percpu.c                                   | 120 +++----
+ mm/show_mem.c                                 |  26 ++
+ mm/slab.h                                     |  51 ++-
+ mm/slab_common.c                              |   6 +-
+ mm/slub.c                                     | 327 +++++++++++++++---
+ mm/util.c                                     |  44 +--
+ mm/vmalloc.c                                  |  88 ++---
+ rust/helpers.c                                |   8 +
+ scripts/kallsyms.c                            |  13 +
+ scripts/module.lds.S                          |   7 +
+ sound/pci/hda/cs35l41_hda.c                   |   1 +
+ 125 files changed, 2319 insertions(+), 652 deletions(-)
+ create mode 100644 Documentation/mm/allocation-profiling.rst
+ create mode 100644 include/asm-generic/codetag.lds.h
+ create mode 100644 include/linux/alloc_tag.h
+ create mode 100644 include/linux/codetag.h
+ create mode 100644 include/linux/pgalloc_tag.h
+ create mode 100644 lib/alloc_tag.c
+ create mode 100644 lib/codetag.c
+
+
+base-commit: a824831a082f1d8f9b51a4c0598e633d38555fcf
 -- 
-2.44.0
+2.44.0.291.gc1ea87d7ee-goog
 
 
