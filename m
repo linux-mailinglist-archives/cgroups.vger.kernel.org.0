@@ -1,76 +1,76 @@
-Return-Path: <cgroups+bounces-2132-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2133-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 504E688626D
-	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 22:16:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22E4C88628E
+	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 22:33:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D433AB213E6
-	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 21:16:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0EB4284504
+	for <lists+cgroups@lfdr.de>; Thu, 21 Mar 2024 21:33:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFEA9136649;
-	Thu, 21 Mar 2024 21:15:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88F1E135A7D;
+	Thu, 21 Mar 2024 21:33:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eH8oK6O3"
+	dkim=pass (2048-bit key) header.d=malat-biz.20230601.gappssmtp.com header.i=@malat-biz.20230601.gappssmtp.com header.b="qOM3fsm6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6378E135A5C
-	for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 21:15:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61B87134CEF
+	for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 21:33:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711055755; cv=none; b=fsb0ZJaNsPkxRls+f61oQPZdvvL18/rZuvicemuGGUv4RCu1+0F/Zxnxm/QS7WPZWjxv6VieFd9PwM2635esu7WdYYothdFJfNwz60cMxYbjM7byBqxtSFrzf03MS9F/ZuQIQt3GIKRiEFae4+H5ptnmOVgRJ/b6ewMI2dFXbSs=
+	t=1711056789; cv=none; b=fKe133gVO25vi42KXt+FxTYCU8Fb6/qgbRKuX10KBFMCgdHq8IAn1nC9SP1Ri2eCFdSzjjujrtoxkc3it5NxH79aKtnF21MCXZzFmq6/lzVbjcdLEtqB4di2C5ir/iZdH7FK67ECLRzK+IydOYdX5RATHEKslWoeLbwRRXl5Mks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711055755; c=relaxed/simple;
-	bh=ikKSp2NuOvMpHZGFxKTZZGbjYUvlY9q8EBsen/cyAuY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C4y5zyCFqMqB57jTPYzIQk/6papDpobB07PxAz7jiPx5+3j/nb9Fa5QPuqxkd8sEVYH4b3fXiHuofrQ3xPxaJVul7gXtNv1P0tjHMJdCtAKbpqVXeEs8l3XMjYxz458NqnotB/wjbtPQ5HkoO/b9hoTeYygZqWOxzU+wvAeWEus=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eH8oK6O3; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 21 Mar 2024 17:15:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711055749;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Zg+YcWxUSQ4PW9xsrv1Bq8A+bJWYc2oFdFSsmHcvMpk=;
-	b=eH8oK6O3whN+5xkQZG4KRvkGEfJMaEROLYSVyvOMEmAr0vx034qCIMnxAzZq0oacFIqlx6
-	/4Zdupvf6beqxj+COUxVFOfr1DlCfPrxyCpAol5RsNR1a/MYKHHQcVdvNOqefJ+OE0+SxY
-	ThPaS33U901JNoVemYhAKPtdu/kPXRU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Suren Baghdasaryan <surenb@google.com>, mhocko@suse.com, 
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, 
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
-	peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, 
-	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, 
-	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, 
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
-	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, cgroups@vger.kernel.org, 
-	Alexander Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [PATCH v6 05/37] fs: Convert alloc_inode_sb() to a macro
-Message-ID: <gnqztvimdnvz2hcepdh3o3dpg4cmvlkug4sl7ns5vd4lm7hmao@dpstjnacdubq>
-References: <20240321163705.3067592-1-surenb@google.com>
- <20240321163705.3067592-6-surenb@google.com>
- <20240321133147.6d05af5744f9d4da88234fb4@linux-foundation.org>
+	s=arc-20240116; t=1711056789; c=relaxed/simple;
+	bh=s/aigHywVhgWNsDVTBDV12Yn4U7cENsqLjO7yKIRaVU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Yb4PU31vKC+x6rZFk/EUmwp1XgsScCwjIlGCHAXZAme2afQYMmdEl5Pu5e3DjqfImeKB57HEm4h7Z6GIE5SHcJw1lHSmUmJF57MIe0P6j+XieEEnA115tNQOVp2wYCMwEDQASwPqMibFiNHctA6KRCWVHkhw0Ydrmw42v+zw/bY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=malat.biz; spf=none smtp.mailfrom=malat.biz; dkim=pass (2048-bit key) header.d=malat-biz.20230601.gappssmtp.com header.i=@malat-biz.20230601.gappssmtp.com header.b=qOM3fsm6; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=malat.biz
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=malat.biz
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d109e82bd0so19839051fa.3
+        for <cgroups@vger.kernel.org>; Thu, 21 Mar 2024 14:33:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=malat-biz.20230601.gappssmtp.com; s=20230601; t=1711056784; x=1711661584; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZByuXS+qgZa7z4y4pS++q8CS2lDsMnE9E32aeKsq3tQ=;
+        b=qOM3fsm6gPH/Xivf0FtSYNw7e6u6GhNRnze/+h6COL4JTq7sOfxFjoPXXk5K5QMN/z
+         L0/UggbxiuqPyVnRZWEgIg1n+3ukr1JgJePqU8ELn/an//0PwEtk5JJfzlwsTQudrY5f
+         MMp09UNAlkQx+juoAv5qPZZHqDtZj10YPbEvKZKa1mScMTrb/DIfWCJpkApTT5NMjqQE
+         7YBxTFoXWc2pZlRTaz0rAUCMVqiEMGkbPMfJS68jD3opZQMHBcc4VfJL1QFd/8RmyzWN
+         yLdo1H3WCeFTQm3VG+O4dYHUlPYVntzuiQJZIf/7C2UdH6ckKWiYm7ruUMM97Ce2H2Hn
+         OcWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711056784; x=1711661584;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZByuXS+qgZa7z4y4pS++q8CS2lDsMnE9E32aeKsq3tQ=;
+        b=Km7Gq21nB5fW2zCReqw77acEr+D6Q9eS2C5HllW9RUNV5u0s9Fih8lUASm1qUIGmVO
+         ZodviQLlIVn6ov0Crs6CSOmEaiwBqpFnkhv6G1xByIRGJEDucM9p1y/5b4ZAO8YJSTxi
+         plp6a3g3ls7tsvbbhc//Fw5NetuScOeLQUI3IrgBmjjPWiqnySPsuR+z007zf01oOZKG
+         gyzcTLCKyCkw5rLQ+QJg6kD0hJ0Ue2qjLyPxXGpb1zDshgDBc7aaNv6ImATIyGl1xqOc
+         gYEoGUvba6zHtMBA8Xenj7Xh5BsXlxGdJGqhc/L1rWWpQT0/TO24NJ+YeiYmaOlifd13
+         /MuA==
+X-Gm-Message-State: AOJu0YyzwGh4RkBmeW6A/VaD8GpJvjoITSxlgi3QEi/osJktOerOW15u
+	oeDiYQczPKdsFATaeqLZS3Fij6fdma2csewtdVwZZbiVOsYgRGJNaU8DKYJtvK+PwckMKVo0gQt
+	JCA==
+X-Google-Smtp-Source: AGHT+IFXD8RPKQD/5Mezpj6PH4jKtlm+xSxfT8sOzwsyFtWZtTPaPoV07RUHdR/BEWf9sS/9SgAyaA==
+X-Received: by 2002:a2e:9397:0:b0:2d4:49d2:a3d1 with SMTP id g23-20020a2e9397000000b002d449d2a3d1mr562717ljh.1.1711056784301;
+        Thu, 21 Mar 2024 14:33:04 -0700 (PDT)
+Received: from ntb.petris.klfree.czf ([193.86.118.65])
+        by smtp.gmail.com with ESMTPSA id t31-20020a056402241f00b0056bb1b017besm281322eda.23.2024.03.21.14.33.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Mar 2024 14:33:03 -0700 (PDT)
+Date: Thu, 21 Mar 2024 22:33:03 +0100
+From: Petr Malat <oss@malat.biz>
+To: cgroups@vger.kernel.org
+Cc: longman@redhat.com, tj@kernel.org
+Subject: [RFC/POC]: Make cpuset.cpus.effective independent of cpuset.cpus
+Message-ID: <Zfynj56eDdCSdIxv@ntb.petris.klfree.czf>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -79,45 +79,31 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240321133147.6d05af5744f9d4da88234fb4@linux-foundation.org>
-X-Migadu-Flow: FLOW_OUT
 
-On Thu, Mar 21, 2024 at 01:31:47PM -0700, Andrew Morton wrote:
-> On Thu, 21 Mar 2024 09:36:27 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
-> 
-> > From: Kent Overstreet <kent.overstreet@linux.dev>
-> > 
-> > We're introducing alloc tagging, which tracks memory allocations by
-> > callsite. Converting alloc_inode_sb() to a macro means allocations will
-> > be tracked by its caller, which is a bit more useful.
-> 
-> I'd have thought that there would be many similar
-> inlines-which-allocate-memory.  Such as, I dunno, jbd2_alloc_inode(). 
-> Do we have to go converting things to macros as people report
-> misleading or less useful results, or is there some more general
-> solution to this?
+Hi!
+I have tried to use the new remote cgroup feature and I find the
+interface unfriendly - requiring cpuset.cpus.exclusive to be a subset
+of cpuset.cpus requires the program, which wants to isolate a CPU for
+some RT activity, to know what CPUs all ancestor cgroups want to use.
 
-No, this is just what we have to do.
+For example consider cgroup hierarchy c1/c2/c3 where my program is
+running and wants to isolate CPU N, so
+ - It creates new c1/c2/c3/rt cgroup
+ - It adds N to cpuset.cpus.exclusive of rt, c3 and c2 cgroup
+   (cpuset.cpus.exclusive |= N)
+ - Now it should do the same with cpuset.cpus, but that's not possible
+   if ancestors cpuset.cpus is empty, which is common configuration and
+   there is no good way how to set it in that case.
 
-But a fair number of these helpers shouldn't exist - jbd2_alloc_inode()
-is one of those, it looks like it predates kmalloc() being able to use
-the page allocator for large allocations.
+My proposal is to
+ - Not require cpuset.cpus.exclusive to be a subset of cpuset.cpus
+ - Create remote cgroup if cpuset.cpus is empty and local cgroup if it's
+   set, to give the user explicit control on what cgroup is created.
 
-> 
-> > --- a/include/linux/fs.h
-> > +++ b/include/linux/fs.h
-> > @@ -3083,11 +3083,7 @@ int setattr_should_drop_sgid(struct mnt_idmap *idmap,
-> >   * This must be used for allocating filesystems specific inodes to set
-> >   * up the inode reclaim context correctly.
-> >   */
-> > -static inline void *
-> > -alloc_inode_sb(struct super_block *sb, struct kmem_cache *cache, gfp_t gfp)
-> > -{
-> > -	return kmem_cache_alloc_lru(cache, &sb->s_inode_lru, gfp);
-> > -}
-> > +#define alloc_inode_sb(_sb, _cache, _gfp) kmem_cache_alloc_lru(_cache, &_sb->s_inode_lru, _gfp)
-> 
-> Parenthesizing __sb seems sensible here?  
+I have prepared change to test my idea (the next mail). I haven't tested it
+thoroughly yet, but I wanted to open the discussion on this topic to know
+if such a change could be accepted and I should burn more time on it.
 
-yeah, we can do that
+BR,
+  Petr
 
