@@ -1,108 +1,102 @@
-Return-Path: <cgroups+bounces-2156-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2157-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A0C888B116
-	for <lists+cgroups@lfdr.de>; Mon, 25 Mar 2024 21:14:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83B8288B6AE
+	for <lists+cgroups@lfdr.de>; Tue, 26 Mar 2024 02:16:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1ECF51FA5A9D
-	for <lists+cgroups@lfdr.de>; Mon, 25 Mar 2024 20:14:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA84FB3D04F
+	for <lists+cgroups@lfdr.de>; Mon, 25 Mar 2024 23:22:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 105E15B5BB;
-	Mon, 25 Mar 2024 20:12:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C8BD839F3;
+	Mon, 25 Mar 2024 23:21:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bMA28uNT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lq4Pi4Db"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61196548EF
-	for <cgroups@vger.kernel.org>; Mon, 25 Mar 2024 20:12:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC26382D76;
+	Mon, 25 Mar 2024 23:21:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711397553; cv=none; b=hnyhjd9JILil5985Kyg/00ZwBx8a5r19tvRgM8sUuAzI0O9XLWgE6ShvHaeGR5nRMlLgP6KVoZV59PWpB7yYvNLAXFGY7v0S8V9K+prRwqWikteT2cxmb7fw/cneSvcz7ZEKhqPJJPoHTCthXvttBnW47aDsWmQcekyG7rRTggE=
+	t=1711408904; cv=none; b=sGl5N2ynjyzZrGQBYeuSJS4mPxnQVCcInxUOWHJkfWKKqvW1oXF+Lrm91hw5p0qs9SaX1tAJSr11gZT8ly76ViGRy8gu1Gr2wm3wfBWvBiAxWsGOmX1iPAgr7I8uHcPmxMh5pSIw21njnZ5uesfxKPZYcG9GgVZoDs9ZmSWEO8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711397553; c=relaxed/simple;
-	bh=xGkVOf7VlRD212T25BHmWwvSkrd8iiq/Wfio6c8QpCA=;
+	s=arc-20240116; t=1711408904; c=relaxed/simple;
+	bh=uE45ocbqlizhPUeGtrVHccbnWtXfuAaF9hu2gthCdsY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S1kYvCIALL3p5THWWh5lV4P/8Q1LBVOZqrIsfy8ZVKgood68sl51lnbsXOk0bMAbByW/CEqKVdMhNUJRQzzfiTPeDjN/tzzysVn832HJXbkzd45ko53dfofRs9OmTU8Af7d6cXXOMO4Glz1R1r8oCokmUzmZ746Z+xhLmlHKyzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bMA28uNT; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1e04ac200a6so33310955ad.1
-        for <cgroups@vger.kernel.org>; Mon, 25 Mar 2024 13:12:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711397551; x=1712002351; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gHKGKzuDNhWxNthcx7U0hCQOrZ7eNRUkc4ROmxaemWI=;
-        b=bMA28uNT7s2UrVW0PJQMQ6cO4LubIc6PyukcKS4CtvwD7KZmPEUJETBzg3yIrUojWY
-         uSjKawziIG99a75TndIQ8JQ10AjhbxxMPgdjVJx9XZAUR5hE77Hdkqed7g2pt53zP1vS
-         kumTYb5mDptj8lm3eIsY5jZY6kxzfP/btUBd+agwWhauI5Z9o0QeUiXu/iDeZxj9gcrE
-         B60qsY+T8kJ426/b+eQJxVDT3JzczS8a9c+YJ0wPDDNBQZV5cpPMsceWhdj7D5snqFdg
-         Z+eTHODmvaI0ZOXdzOs6anxpGOYeC4HtwiaPepMumBkukFqHzpsVp67zF/bk8705ZBUb
-         I2dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711397551; x=1712002351;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gHKGKzuDNhWxNthcx7U0hCQOrZ7eNRUkc4ROmxaemWI=;
-        b=RD5UznmNyG28QgbD+NaVWoHFmiRG+JkOr6Sgqdc4E2RiRQfbqU4JySQLQNCDtwvM/j
-         QHjQNVsDBn/qqCb12itHtE6TaFdLu3F+ouMI/Cq52JxCc/0SugRl0hrAFNUuY4TDkG3e
-         /1odXeE3qgSCpWigH/3lj6HN7JhzV4P69mi7upjfyC08PAT9+yZk0LBpqG/XA0IPd6kF
-         sxjUOgjVM66/pV+5HGYVVrMV5PPGhtcfH26U3Ur8CtyHiB/SA5xGXM3Wp2U0wgHMCgxA
-         jWgwNkGnGcgsDKCeXXzxiErInrEPdzhQmZwjITMUmDqx7JjzqL4KChJAiVtvBvQCxave
-         j9cw==
-X-Gm-Message-State: AOJu0Yzo8lgFQjrfLFl/oLDM1U0wjBbUYnO9aXSDq5hDEpKIgn9AWpZn
-	5uz3Heh9oRiFQy40DPUm+ObXCdANUxONRLZzO26idkpse+B2X7O8
-X-Google-Smtp-Source: AGHT+IHCtvp8mn9K5usVZbALLpvZBiSqDjzOwZGyWQQoy653Bh9aQjEsZFakwiW5QVysfB8ZamRLsw==
-X-Received: by 2002:a17:902:e74a:b0:1e0:c571:d648 with SMTP id p10-20020a170902e74a00b001e0c571d648mr4133082plf.9.1711397550692;
-        Mon, 25 Mar 2024 13:12:30 -0700 (PDT)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id jf6-20020a170903268600b001e088a9e2bcsm5098190plb.292.2024.03.25.13.12.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Mar 2024 13:12:30 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 25 Mar 2024 10:12:29 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Petr Malat <oss@malat.biz>
-Cc: cgroups@vger.kernel.org, longman@redhat.com
-Subject: Re: [PATCH] cgroup/cpuset: Make cpuset.cpus.effective independent of
- cpuset.cpus
-Message-ID: <ZgHarUDknkJyidia@slm.duckdns.org>
-References: <Zfynj56eDdCSdIxv@ntb.petris.klfree.czf>
- <20240321213945.1117641-1-oss@malat.biz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=UuzEKvrZcEZ2Nw5fjULAXPlDnKd2L24g4ZtGhd4br/8pAbCqb/15fZsChkS1z8jWtdRFDcZ8MsLzBhSeVq7Q6UF/Lsqz0gkbru7OaBqIWCZQbSGIbh/aPR8BRla6kRVpSnZAJ4Vz0t4mVdffWYzSYNLoSAmOyqxcvbeXeIpMgVo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lq4Pi4Db; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AA0BC433C7;
+	Mon, 25 Mar 2024 23:21:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711408904;
+	bh=uE45ocbqlizhPUeGtrVHccbnWtXfuAaF9hu2gthCdsY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Lq4Pi4DbOyj9mlv3h4O7boEvYbtJbDwqK/DwTKyH5yzuSceQpIsoHK1X3UlrlIbbv
+	 M9SNouCM+9LUwuqM0oyQec34FtJ9Plt3FMQGiaqGv2JJZlR0KTwx8orq5EMt4d2zpm
+	 Z0kVjFU9BJRKQvRm0WXGflp52AL7P32e/Oyyk2A/lHSt8Y9Ch/xbMLMu1tN+o0dpi4
+	 r3Gsd3poBdWJ19bNGY9yjT7VclRDrS6O0PAneZIK7DtfTpOvHbSvF2Y1f8ALrGMxS7
+	 EvOzSg/ThHGNEBwaJ4itBaUuZXrG2wtxHE52ks/MMthazWqXjUlKDaa2fANohUiFbx
+	 aieAPfQHPiSLQ==
+Date: Tue, 26 Mar 2024 00:21:41 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	Cestmir Kalina <ckalina@redhat.com>,
+	Costa Shulyupin <cshulyup@redhat.com>
+Subject: Re: [PATCH 1/2] sched/isolation: Exclude dynamically isolated CPUs
+ from housekeeping masks
+Message-ID: <ZgIHBaF0gGQTKlvU@pavilion.home>
+References: <20240229021414.508972-1-longman@redhat.com>
+ <20240229021414.508972-2-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240321213945.1117641-1-oss@malat.biz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240229021414.508972-2-longman@redhat.com>
 
-On Thu, Mar 21, 2024 at 10:39:45PM +0100, Petr Malat wrote:
-> Requiring cpuset.cpus.effective to be a subset of cpuset.cpus makes it
-> hard to use as one is forced to configure cpuset.cpus of current and all
-> ancestor cgroups, which requires a knowledge about all other units
-> sharing the same cgroup subtree. Also, it doesn't allow using empty
-> cpuset.cpus.
+Le Wed, Feb 28, 2024 at 09:14:13PM -0500, Waiman Long a écrit :
+> The housekeeping CPU masks, set up by the "isolcpus" and "nohz_full"
+> boot command line options, are used at boot time to exclude selected CPUs
+> from running some kernel background processes to minimize disturbance
+> to latency sensitive userspace applications. Some of housekeeping CPU
+> masks are also checked at run time to avoid using those isolated CPUs.
 > 
-> Do not require cpuset.cpus.effective to be a subset of cpuset.cpus and
-> create remote cgroup only if cpuset.cpus is empty, to make it easier for
-> the user to control which cgroup is being created.
+> The cpuset subsystem is now able to dynamically create a set of isolated
+> CPUs to be used in isolated cpuset partitions. The long term goal is
+> to make the degree of isolation as close as possible to what can be
+> done statically using those boot command line options.
 > 
-> Signed-off-by: Petr Malat <oss@malat.biz>
+> This patch is a step in that direction by making the housekeeping CPU
+> mask APIs exclude the dynamically isolated CPUs when they are called
+> at run time. The housekeeping CPU masks will fall back to the bootup
+> default when all the dynamically isolated CPUs are released.
+> 
+> A new housekeeping_exlude_isolcpus() function is added which is to be
+> called by the cpuset subsystem to provide a list of isolated CPUs to
+> be excluded.
 
-Waiman, what do you think?
+Can we instead overwrite housekeeping_boot.cpumasks from cpusets entirely and
+forget about the original boot value forever?
 
 Thanks.
-
--- 
-tejun
 
