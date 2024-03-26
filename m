@@ -1,107 +1,201 @@
-Return-Path: <cgroups+bounces-2168-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2169-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41F5B88C696
-	for <lists+cgroups@lfdr.de>; Tue, 26 Mar 2024 16:16:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5ADF88C79E
+	for <lists+cgroups@lfdr.de>; Tue, 26 Mar 2024 16:43:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A50B8B214CD
-	for <lists+cgroups@lfdr.de>; Tue, 26 Mar 2024 15:16:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A88FB2671D
+	for <lists+cgroups@lfdr.de>; Tue, 26 Mar 2024 15:43:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7F3213C80C;
-	Tue, 26 Mar 2024 15:15:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E92313CAB6;
+	Tue, 26 Mar 2024 15:40:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="P7lvI/vb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qyKA41Y/"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EDD6763E2
-	for <cgroups@vger.kernel.org>; Tue, 26 Mar 2024 15:15:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1CE613CA98;
+	Tue, 26 Mar 2024 15:40:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711466104; cv=none; b=pM7YWJbibPr2pnCgyCZ8W48grouo8+v6+fC3rV6vDU4Q0l3wUzi9We9OE1bWEPqqgPfK/1ErsLqa4sTrlbBFV9whvBsfvcFFskqhaIHHevgyoskg9OufGZZk1qjKtDrpN3BwWxfE+QOdk0CjGlccDn4OQXf+N39jif5oXekoyuw=
+	t=1711467600; cv=none; b=LHyID/sSExbpmKVrXMMbveQoakX4DGhoV61/d8o/Uz2DSbdjtJvCEaPfgsZHTOeRBFujZqHmM7jBkt4Zc5j9qsll120Fa1dWLvMA+iryg8r+lya7H4rsEfz7XQqx4iMOjLiVOyk4wHEHB2Zwy5YnhZylfkL80qfX4RFq6FGB5n0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711466104; c=relaxed/simple;
-	bh=rZUlhrZrFOEBgDmHKnu8B897vERZc+NHJZOltpFZZfk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hTvnlTBioJ7KwlYv77LHowfUWmH2gS0aIKesg6YZzcHj/6j699s2dy0CrJHwB0BspEJAhBRed/5biJJFpIFYfMc2GnYHf6YRIpqOsZ3sSQv+Q8oD6VdAtzVxVkEX2778+mCRA2DNpmtHsvkOZmgtm8clNIEPsc+CUSfhFjszofo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=P7lvI/vb; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711466102;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J2Wyjhd+3dp1rjt02EAGYMoL+qRXMXYRAHy1Q/7L4Lw=;
-	b=P7lvI/vbewiAH0X7dNQ6tQF5czDcBb45ZAngr50ZeYnx/Mvp2AvUOWIYiW5t2TxuRluWau
-	FgSBhk7LE9arbf60aG0LBkJADKeVD4wB6pVaSSXP/LPK+paUqMEsT88issYVeGRoWPRy23
-	0h1E9SmJDYB4+YyqAAvD2I1Wg9eCpko=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-621-g0DmJSBYMRS5I6vEJF-olA-1; Tue,
- 26 Mar 2024 11:14:58 -0400
-X-MC-Unique: g0DmJSBYMRS5I6vEJF-olA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D26F21C01B32;
-	Tue, 26 Mar 2024 15:14:57 +0000 (UTC)
-Received: from [10.22.18.245] (unknown [10.22.18.245])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 8A10A1C060D6;
-	Tue, 26 Mar 2024 15:14:57 +0000 (UTC)
-Message-ID: <c700ec0d-9260-438f-a9c8-7d7c268e4ed3@redhat.com>
-Date: Tue, 26 Mar 2024 11:14:53 -0400
+	s=arc-20240116; t=1711467600; c=relaxed/simple;
+	bh=ztmkPAB0U1ULXqxkAJmpV7w+Ysid9k8KKpLkRxinnKg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=k4SjJzMzURlofj6p5aT3RHyl2YauItKHy+EjvHDPz2o+ula0vZo0ejVqcN4iU9TagpIPZXOENPWITnjI3op2/Z5gh7HmjV9OxbFvDWAWG+xLQAWZ/7wuCn4UdmUOLGgHfbUuilOpCJQEvDfZ+bPxbO0DuY8xMy8KQTNI32bxXZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qyKA41Y/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9697C433F1;
+	Tue, 26 Mar 2024 15:39:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711467600;
+	bh=ztmkPAB0U1ULXqxkAJmpV7w+Ysid9k8KKpLkRxinnKg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=qyKA41Y/u8Cszywiz7OK3FbbmiKGQ9C4dXlmSowzO0eODtV3XQMYhndL6LqSSCExc
+	 gSr5KriK7AK/eduOXCzUuM9/M/JTph42YYV7yXqy/Ep5e4C8RdOMDwEY3NB+TWhosG
+	 ynhFk3x5fLusreKA62Lb5K8LI+Hrn02SMQKKQERtg/F9T4BStRFCcanXEuZXn7koxg
+	 lsnbct8Q5TAF/wUov8x/pcO/9j1j/+eoZC8z34hhlBPd/+k36MCtc3hIUbdc3qsQoD
+	 O7ZTB0GZ/L4AyBehCj5ri1j5aP5jWLIf/OTq2a320InuObeAqCv/u7gXamunek3p0/
+	 fkdWsgil6eNBQ==
+From: SeongJae Park <sj@kernel.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: SeongJae Park <sj@kernel.org>,
+	hannes@cmpxchg.org,
+	roman.gushchin@linux.dev,
+	mgorman@suse.de,
+	dave@stgolabs.net,
+	willy@infradead.org,
+	liam.howlett@oracle.com,
+	penguin-kernel@i-love.sakura.ne.jp,
+	corbet@lwn.net,
+	void@manifault.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	catalin.marinas@arm.com,
+	will@kernel.org,
+	arnd@arndb.de,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	peterx@redhat.com,
+	david@redhat.com,
+	axboe@kernel.dk,
+	mcgrof@kernel.org,
+	masahiroy@kernel.org,
+	nathan@kernel.org,
+	dennis@kernel.org,
+	jhubbard@nvidia.com,
+	tj@kernel.org,
+	muchun.song@linux.dev,
+	rppt@kernel.org,
+	paulmck@kernel.org,
+	pasha.tatashin@soleen.com,
+	yosryahmed@google.com,
+	yuzhao@google.com,
+	dhowells@redhat.com,
+	hughd@google.com,
+	andreyknvl@gmail.com,
+	keescook@chromium.org,
+	ndesaulniers@google.com,
+	vvvvvv@google.com,
+	gregkh@linuxfoundation.org,
+	ebiggers@google.com,
+	ytcoode@gmail.com,
+	vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	bristot@redhat.com,
+	vschneid@redhat.com,
+	cl@linux.com,
+	penberg@kernel.org,
+	iamjoonsoo.kim@lge.com,
+	42.hyeyoo@gmail.com,
+	glider@google.com,
+	elver@google.com,
+	dvyukov@google.com,
+	songmuchun@bytedance.com,
+	jbaron@akamai.com,
+	aliceryhl@google.com,
+	rientjes@google.com,
+	minchan@google.com,
+	kaleshsingh@google.com,
+	kernel-team@android.com,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev,
+	linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-modules@vger.kernel.org,
+	kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v6 30/37] mm: vmalloc: Enable memory allocation profiling
+Date: Tue, 26 Mar 2024 08:39:54 -0700
+Message-Id: <20240326153954.89199-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <CAJuCfpGwLRBWKegYq5XY++fCPWO4mpzrhifw9QGvzJ5Uf9S4jw@mail.gmail.com>
+References: 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cgroup/cpuset: Make cpuset.cpus.effective independent of
- cpuset.cpus
-Content-Language: en-US
-To: Tejun Heo <tj@kernel.org>, Petr Malat <oss@malat.biz>
-Cc: cgroups@vger.kernel.org
-References: <Zfynj56eDdCSdIxv@ntb.petris.klfree.czf>
- <20240321213945.1117641-1-oss@malat.biz> <ZgHarUDknkJyidia@slm.duckdns.org>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <ZgHarUDknkJyidia@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+On Tue, 26 Mar 2024 00:51:21 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
+
+> On Mon, Mar 25, 2024 at 11:20 AM SeongJae Park <sj@kernel.org> wrote:
+> >
+> > On Mon, 25 Mar 2024 10:59:01 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
+> >
+> > > On Mon, Mar 25, 2024 at 10:49 AM SeongJae Park <sj@kernel.org> wrote:
+> > > >
+> > > > On Mon, 25 Mar 2024 14:56:01 +0000 Suren Baghdasaryan <surenb@google.com> wrote:
+> > > >
+> > > > > On Sat, Mar 23, 2024 at 6:05 PM SeongJae Park <sj@kernel.org> wrote:
+> > > > > >
+> > > > > > Hi Suren and Kent,
+> > > > > >
+> > > > > > On Thu, 21 Mar 2024 09:36:52 -0700 Suren Baghdasaryan <surenb@google.com> wrote:
+> > > > > >
+> > > > > > > From: Kent Overstreet <kent.overstreet@linux.dev>
+> > > > > > >
+> > > > > > > This wrapps all external vmalloc allocation functions with the
+> > > > > > > alloc_hooks() wrapper, and switches internal allocations to _noprof
+> > > > > > > variants where appropriate, for the new memory allocation profiling
+> > > > > > > feature.
+> > > > > >
+> > > > > > I just noticed latest mm-unstable fails running kunit on my machine as below.
+> > > > > > 'git-bisect' says this is the first commit of the failure.
+> > > > > >
+> > > > > >     $ ./tools/testing/kunit/kunit.py run --build_dir ../kunit.out/
+> > > > > >     [10:59:53] Configuring KUnit Kernel ...
+> > > > > >     [10:59:53] Building KUnit Kernel ...
+> > > > > >     Populating config with:
+> > > > > >     $ make ARCH=um O=../kunit.out/ olddefconfig
+> > > > > >     Building with:
+> > > > > >     $ make ARCH=um O=../kunit.out/ --jobs=36
+> > > > > >     ERROR:root:/usr/bin/ld: arch/um/os-Linux/main.o: in function `__wrap_malloc':
+> > > > > >     main.c:(.text+0x10b): undefined reference to `vmalloc'
+> > > > > >     collect2: error: ld returned 1 exit status
+> > > > > >
+> > > > > > Haven't looked into the code yet, but reporting first.  May I ask your idea?
+> > > > >
+> > > > > Hi SeongJae,
+> > > > > Looks like we missed adding "#include <linux/vmalloc.h>" inside
+> > > > > arch/um/os-Linux/main.c in this patch:
+> > > > > https://lore.kernel.org/all/20240321163705.3067592-2-surenb@google.com/.
+> > > > > I'll be posing fixes for all 0-day issues found over the weekend and
+> > > > > will include a fix for this. In the meantime, to work around it you
+> > > > > can add that include yourself. Please let me know if the issue still
+> > > > > persists after doing that.
+> > > >
+> > > > Thank you, Suren.  The change made the error message disappears.  However, it
+> > > > introduced another one.
+> > >
+> > > Ok, let me investigate and I'll try to get a fix for it today evening.
+> >
+> > Thank you for this kind reply.  Nonetheless, this is not blocking some real
+> > thing from me.  So, no rush.  Plese take your time :)
+> 
+> I posted a fix here:
+> https://lore.kernel.org/all/20240326073750.726636-1-surenb@google.com/
+> Please let me know if this resolves the issue.
+
+I confirmed it is fixing the issue, and replied to the patch with my Tested-by:
+tag.  Thank you for this kind fix, Suren.
 
 
-On 3/25/24 16:12, Tejun Heo wrote:
-> On Thu, Mar 21, 2024 at 10:39:45PM +0100, Petr Malat wrote:
->> Requiring cpuset.cpus.effective to be a subset of cpuset.cpus makes it
->> hard to use as one is forced to configure cpuset.cpus of current and all
->> ancestor cgroups, which requires a knowledge about all other units
->> sharing the same cgroup subtree. Also, it doesn't allow using empty
->> cpuset.cpus.
->>
->> Do not require cpuset.cpus.effective to be a subset of cpuset.cpus and
->> create remote cgroup only if cpuset.cpus is empty, to make it easier for
->> the user to control which cgroup is being created.
->>
->> Signed-off-by: Petr Malat <oss@malat.biz>
-> Waiman, what do you think?
+Thanks,
+SJ
 
-I think it is possible to make cpuset.cpus.exclusive independent of 
-cpuset.cpus. There are probably more places that need to be changed 
-including the cgroup-v2.rst file.
-
-Cheers,
-Longman
-
->
-> Thanks.
->
-
+[...]
 
