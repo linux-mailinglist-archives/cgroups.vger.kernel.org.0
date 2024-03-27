@@ -1,239 +1,270 @@
-Return-Path: <cgroups+bounces-2172-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2173-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4595488CAC0
-	for <lists+cgroups@lfdr.de>; Tue, 26 Mar 2024 18:26:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 066BF88D4BC
+	for <lists+cgroups@lfdr.de>; Wed, 27 Mar 2024 03:44:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77ECCB23D0A
-	for <lists+cgroups@lfdr.de>; Tue, 26 Mar 2024 17:26:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29C3D1C24C15
+	for <lists+cgroups@lfdr.de>; Wed, 27 Mar 2024 02:44:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7814A1CFA0;
-	Tue, 26 Mar 2024 17:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C0B21104;
+	Wed, 27 Mar 2024 02:44:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FdiCl3vq"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="GfPbjfeE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B2B51CD30
-	for <cgroups@vger.kernel.org>; Tue, 26 Mar 2024 17:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADDE4171AD;
+	Wed, 27 Mar 2024 02:44:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711473985; cv=none; b=u3Xl4gQiY+r6AtfoKHvQToDiAyM4e+xQ7bTQ74FLDABkUjVC+JjsQhDb+hfZDFzSmVO7hID7z1dxGhdw9Zte6S062yuimDD8wyqHdSKzEK1IPKaP4yHt8Fg4DOC40eKFh94K3vKDQMrBbcMNEin48oTL2/WzvjZgXuXTsRkwID4=
+	t=1711507491; cv=none; b=XdEl/O3i0QGyagoBGF5TSVbFjyLWUQS3dZ+mMMFAk55z2tV5ATDtwWQJ0M22DDW0w7U1Jz00H6POPjfBxFvR5H/d3epkHDh6ljHpxddbGls1txmA9XiBt1T+lqnJo0Pqv/3JkbxnU/azcOcozXdgeiLKXG8j8G16ioTEAxQZmaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711473985; c=relaxed/simple;
-	bh=231sOgOjYRYKR4/1G/mFoB8TwrkVUS74HDdf1Cm89DM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=teyevfgbR+dH6TcUoilphok7U1w5MR4yv9BsYD9XZR7gGeZCMwq7PwLShYO8/SuccAfcegNHEStk8eHqlcMlvTM1hFrHmecbRnuK5ilOY0ax/2OhPB6K/LgX4TkZ4CtZtYXF+bqGMzdSNMZk/uSLOBRqu9D6NryX9YAIvkJbb+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FdiCl3vq; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e0189323b4so44665015ad.1
-        for <cgroups@vger.kernel.org>; Tue, 26 Mar 2024 10:26:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711473983; x=1712078783; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6Ym7SqthJT0G4e4E1tr5HwPb0B7bvcxbP/psYJ4cnNQ=;
-        b=FdiCl3vqp9pwNal9nU0rQCRsDI86215oMIIdPrJMYuSr9y16zKV/qSwgtkoqF6eA7d
-         fAeWR3j6qHimxujzXPJkHrvz2DvVF2BL2+9HZMr+xkwlLx/hn9zeRvqULV7NBZqXxY4X
-         qJFXkOxIZksb7b07fUWYp3/Qr0RkGr3JmS+qes3+k2ooUgvxITwNE2dc2PMukW+9h703
-         vmRlsmeWSB8ueBvwLbC5zgoQCOPzltkawR3TPTr2NmQrRavkERhqcsJ4iTyfGav7IWqS
-         c19SlysiNTu6++mwDiRYia9Mkbl1KxQN40LpilyIALIbbmNIISMDffRFRESRIsYgf0Kl
-         ssUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711473983; x=1712078783;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6Ym7SqthJT0G4e4E1tr5HwPb0B7bvcxbP/psYJ4cnNQ=;
-        b=HNNJN6A96AL5UhNH9UhHeogTPG7bUUKpZBii8QS8zirLeTTNkQPw5J/Et6BOH8ms0f
-         CknLsGzBcm1YmzXyckwmDY9f4vACZelK7zhf6QS2Kw3IWdOvZ4vUBk5gZtm1VcyrmwXo
-         sTPxF6Sv+a65tQV0iqeG5RiAyVTG9AcD/eoJ8F+rRfFTgueX6BBFKQMrkcTU5sognu/y
-         2xVjBJgDhm/V4KGV3t25KDZcbu1gDvSCdKj4xJ1VKp8jmdegqPOwX2N5foN5DQWKP54v
-         V6YU49AkqjQSyFldPPJoYMwiS2/ch8F4Iy/WeO1KzsCAwPPHzWc10M+ZOyPgWa4jo6pq
-         +SGw==
-X-Gm-Message-State: AOJu0YwtuCYCqITEB580fnBbFyTCYpHrm0fbw0N8S6npcgMGt5VmrJzl
-	QFUWMrJW6NHk+Y31W/Is0yWhsHQx22/kJHWB+ZcGo3hCG90JvZ4T
-X-Google-Smtp-Source: AGHT+IHtKkDBzzRkb+u2ico1X6zkdlG1X5aLWU2JMimBhYKMUIexL4P+29Z8CbO2nU+W0ua1jtr14w==
-X-Received: by 2002:a17:902:f545:b0:1e1:214:1b67 with SMTP id h5-20020a170902f54500b001e102141b67mr260378plf.37.1711473982691;
-        Tue, 26 Mar 2024 10:26:22 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:29ff])
-        by smtp.gmail.com with ESMTPSA id m16-20020a170902db1000b001e0b2851db7sm5396699plx.105.2024.03.26.10.26.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Mar 2024 10:26:22 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 26 Mar 2024 07:26:20 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc: cgroups@vger.kernel.org, longman@redhat.com, tj@kernel.orgv,
-	hughd@google.com, wuyun.abel@bytedance.com,
-	hezhongkun.hzk@bytedance.com, chenying.kernel@bytedance.com,
-	zhanghaoyu.zhy@bytedance.com
-Subject: Re: [problem] Hung task caused by memory migration when cpuset.mems
- changes
-Message-ID: <ZgMFPMjZRZCsq9Q-@slm.duckdns.org>
-References: <20240325144609.983333-1-zhouchuyi@bytedance.com>
+	s=arc-20240116; t=1711507491; c=relaxed/simple;
+	bh=sxBIlRRXsth6YYqnrWJgKwagTA+TS5BCoWocctZPtBE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WzyijtzJA1QQxMPNTi/SpXwOt8BiA0ph0W6LoIEp9TIyvfx3nlnfXPz5zEq9zc30kOmxya/HMX/9OoYoQXLTeAIlh0+xO2AEWm5T+Zf22Zu+WE2dQakk2wzgXTC8rby25pbcwsaTVSbiqwzFhFmky/IGJNaU21zZAdYJveKvjk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=GfPbjfeE; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1711507485; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=UOO0zYL/R8/POaduYOpKB0fD0kNEnTD3fHeKwvGHVyw=;
+	b=GfPbjfeEEPzy6jI6jR+Az9cuej2PX/BsBKNy3+j+cA0Dj5z/zarmUltqcuIx3/JmqlUvdqDjUflj25PXjwh3OfwgraYzuqWMg8nq92pdI+BnpN1HJE3Gi6Zo4xdH9a+IPz2QsZ7T8UiXNSAb3ZTFEELvXgtRusMlrBd0vmSvyIQ=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=dtcccc@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W3N27Kt_1711507477;
+Received: from localhost.localdomain(mailfrom:dtcccc@linux.alibaba.com fp:SMTPD_---0W3N27Kt_1711507477)
+          by smtp.aliyun-inc.com;
+          Wed, 27 Mar 2024 10:44:44 +0800
+From: Tianchen Ding <dtcccc@linux.alibaba.com>
+To: linux-kernel@vger.kernel.org
+Cc: Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Shuah Khan <shuah@kernel.org>,
+	cgroups@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH] selftests: cgroup: skip test_cgcore_lesser_ns_open when cgroup2 mounted without nsdelegate
+Date: Wed, 27 Mar 2024 10:44:37 +0800
+Message-Id: <20240327024437.3196-1-dtcccc@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240325144609.983333-1-zhouchuyi@bytedance.com>
+Content-Transfer-Encoding: 8bit
 
-Hello,
+The test case test_cgcore_lesser_ns_open only tasks effect when cgroup2
+is mounted with "nsdelegate" mount option. If it misses this option, or
+is remounted without "nsdelegate", the test case will fail. For example,
+running bpf/test_cgroup_storage first, and then run cgroup/test_core will
+fail on test_cgcore_lesser_ns_open. Skip it if "nsdelegate" is not
+detected in cgroup2 mount options.
 
-On Mon, Mar 25, 2024 at 10:46:09PM +0800, Chuyi Zhou wrote:
-> In our production environment, we have observed several cases of hung tasks
-> blocked on the cgroup_mutex. The underlying cause is that when user modify
-> the cpuset.mems, memory migration operations are performed in the
-> work_queue. However, the duration of these operations depends on the memory
-> size of workloads and can consume a significant amount of time.
-> 
-> In the __cgroup_procs_write operation, there is a flush_workqueue operation
-> that waits for the migration to complete while holding the cgroup_mutex.
-> As a result, most cgroup-related operations have the potential to
-> experience blocking.
-> 
-> We have noticed the commit "cgroup/cpuset: Enable memory migration for
-> cpuset v2"[1]. This commit enforces memory migration when modifying the
-> cpuset. Furthermore, in cgroup v2, there is no option available for
-> users to disable CS_MEMORY_MIGRATE.
-> 
-> In our scenario, we do need to perform memory migration when cpuset.mems
-> changes, while ensuring that other tasks are not blocked on cgroup_mutex
-> for an extended period of time.
-> 
-> One feasible approach is to revert the commit "cgroup/cpuset: Enable memory
-> migration for cpuset v2"[1]. This way, modifying cpuset.mems will not
-> trigger memory migration, and we can manually perform memory migration
-> using migrate_pages()/move_pages() syscalls.
-> 
-> Another solution is to use a lazy approach for memory migration[2]. In
-> this way we only walk through all the pages and sets pages to protnone,
-> and numa faults triggered by later touch will handle the movement. That
-> would significantly reduce the time spent in cpuset_migrate_mm_workfn.
-> But MPOL_MF_LAZY was disabled by commit 2cafb582173f ("mempolicy: remove
-> confusing MPOL_MF_LAZY dead code")
+Fixes: bf35a7879f1d ("selftests: cgroup: Test open-time cgroup namespace usage for migration checks")
+Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
+---
+ tools/testing/selftests/cgroup/cgroup_util.c        | 8 +++++---
+ tools/testing/selftests/cgroup/cgroup_util.h        | 2 +-
+ tools/testing/selftests/cgroup/test_core.c          | 7 ++++++-
+ tools/testing/selftests/cgroup/test_cpu.c           | 2 +-
+ tools/testing/selftests/cgroup/test_cpuset.c        | 2 +-
+ tools/testing/selftests/cgroup/test_freezer.c       | 2 +-
+ tools/testing/selftests/cgroup/test_hugetlb_memcg.c | 2 +-
+ tools/testing/selftests/cgroup/test_kill.c          | 2 +-
+ tools/testing/selftests/cgroup/test_kmem.c          | 2 +-
+ tools/testing/selftests/cgroup/test_memcontrol.c    | 2 +-
+ tools/testing/selftests/cgroup/test_zswap.c         | 2 +-
+ 11 files changed, 20 insertions(+), 13 deletions(-)
 
-One approach we can take is pushing the cpuset_migrate_mm_wq flushing to
-task_work so that it happens after cpuset mutex is dropped. That way we
-maintain the operation synchronicity for the issuer while avoiding bothering
-anyone else.
-
-Can you see whether the following patch fixes the issue for you? Thanks.
-
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index ba36c073304a..8a8bd3f157ab 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -42,6 +42,7 @@
- #include <linux/spinlock.h>
- #include <linux/oom.h>
- #include <linux/sched/isolation.h>
-+#include <linux/task_work.h>
- #include <linux/cgroup.h>
- #include <linux/wait.h>
- #include <linux/workqueue.h>
-@@ -2696,6 +2697,26 @@ static void cpuset_migrate_mm_workfn(struct work_struct *work)
- 	kfree(mwork);
+diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
+index 0340d4ca8f51..432db923bced 100644
+--- a/tools/testing/selftests/cgroup/cgroup_util.c
++++ b/tools/testing/selftests/cgroup/cgroup_util.c
+@@ -195,10 +195,10 @@ int cg_write_numeric(const char *cgroup, const char *control, long value)
+ 	return cg_write(cgroup, control, buf);
  }
  
-+static void flush_migrate_mm_task_workfn(struct callback_head *head)
-+{
-+	flush_workqueue(cpuset_migrate_mm_wq);
-+}
-+
-+static int schedule_flush_migrate_mm(void)
-+{
-+	struct callback_head *flush_cb;
-+
-+	flush_cb = kzalloc(sizeof(*flush_cb), GFP_KERNEL);
-+	if (!flush_cb)
-+		return -ENOMEM;
-+
-+	flush_cb->func = flush_migrate_mm_task_workfn;
-+	if (task_work_add(current, flush_cb, TWA_RESUME))
-+		kfree(flush_cb);
-+
-+	return 0;
-+}
-+
- static void cpuset_migrate_mm(struct mm_struct *mm, const nodemask_t *from,
- 							const nodemask_t *to)
+-int cg_find_unified_root(char *root, size_t len)
++int cg_find_unified_root(char *root, size_t len, bool *nsdelegate)
  {
-@@ -2718,11 +2739,6 @@ static void cpuset_migrate_mm(struct mm_struct *mm, const nodemask_t *from,
+ 	char buf[10 * PAGE_SIZE];
+-	char *fs, *mount, *type;
++	char *fs, *mount, *type, *options;
+ 	const char delim[] = "\n\t ";
+ 
+ 	if (read_text("/proc/self/mounts", buf, sizeof(buf)) <= 0)
+@@ -211,12 +211,14 @@ int cg_find_unified_root(char *root, size_t len)
+ 	for (fs = strtok(buf, delim); fs; fs = strtok(NULL, delim)) {
+ 		mount = strtok(NULL, delim);
+ 		type = strtok(NULL, delim);
+-		strtok(NULL, delim);
++		options = strtok(NULL, delim);
+ 		strtok(NULL, delim);
+ 		strtok(NULL, delim);
+ 
+ 		if (strcmp(type, "cgroup2") == 0) {
+ 			strncpy(root, mount, len);
++			if (nsdelegate)
++				*nsdelegate = !!strstr(options, "nsdelegate");
+ 			return 0;
+ 		}
  	}
+diff --git a/tools/testing/selftests/cgroup/cgroup_util.h b/tools/testing/selftests/cgroup/cgroup_util.h
+index 1df7f202214a..89e8519fb271 100644
+--- a/tools/testing/selftests/cgroup/cgroup_util.h
++++ b/tools/testing/selftests/cgroup/cgroup_util.h
+@@ -21,7 +21,7 @@ static inline int values_close(long a, long b, int err)
+ 	return abs(a - b) <= (a + b) / 100 * err;
  }
  
--static void cpuset_post_attach(void)
--{
--	flush_workqueue(cpuset_migrate_mm_wq);
--}
--
- /*
-  * cpuset_change_task_nodemask - change task's mems_allowed and mempolicy
-  * @tsk: the task to change
-@@ -3276,6 +3292,10 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
- 	bool cpus_updated, mems_updated;
- 	int ret;
+-extern int cg_find_unified_root(char *root, size_t len);
++extern int cg_find_unified_root(char *root, size_t len, bool *nsdelegate);
+ extern char *cg_name(const char *root, const char *name);
+ extern char *cg_name_indexed(const char *root, const char *name, int index);
+ extern char *cg_control(const char *cgroup, const char *control);
+diff --git a/tools/testing/selftests/cgroup/test_core.c b/tools/testing/selftests/cgroup/test_core.c
+index 80aa6b2373b9..a5672a91d273 100644
+--- a/tools/testing/selftests/cgroup/test_core.c
++++ b/tools/testing/selftests/cgroup/test_core.c
+@@ -18,6 +18,8 @@
+ #include "../kselftest.h"
+ #include "cgroup_util.h"
  
-+	ret = schedule_flush_migrate_mm();
-+	if (ret)
-+		return ret;
++static bool nsdelegate;
 +
- 	/* used later by cpuset_attach() */
- 	cpuset_attach_old_cs = task_cs(cgroup_taskset_first(tset, &css));
- 	oldcs = cpuset_attach_old_cs;
-@@ -3584,7 +3604,11 @@ static ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
+ static int touch_anon(char *buf, size_t size)
  {
- 	struct cpuset *cs = css_cs(of_css(of));
- 	struct cpuset *trialcs;
--	int retval = -ENODEV;
-+	int retval;
+ 	int fd;
+@@ -775,6 +777,9 @@ static int test_cgcore_lesser_ns_open(const char *root)
+ 	pid_t pid;
+ 	int status;
+ 
++	if (!nsdelegate)
++		return KSFT_SKIP;
 +
-+	retval = schedule_flush_migrate_mm();
-+	if (retval)
-+		return retval;
+ 	cg_test_a = cg_name(root, "cg_test_a");
+ 	cg_test_b = cg_name(root, "cg_test_b");
  
- 	buf = strstrip(buf);
+@@ -862,7 +867,7 @@ int main(int argc, char *argv[])
+ 	char root[PATH_MAX];
+ 	int i, ret = EXIT_SUCCESS;
  
-@@ -3613,8 +3637,10 @@ static ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
+-	if (cg_find_unified_root(root, sizeof(root)))
++	if (cg_find_unified_root(root, sizeof(root), &nsdelegate))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
  
- 	cpus_read_lock();
- 	mutex_lock(&cpuset_mutex);
--	if (!is_cpuset_online(cs))
-+	if (!is_cpuset_online(cs)) {
-+		retval = -ENODEV;
- 		goto out_unlock;
-+	}
+ 	if (cg_read_strstr(root, "cgroup.subtree_control", "memory"))
+diff --git a/tools/testing/selftests/cgroup/test_cpu.c b/tools/testing/selftests/cgroup/test_cpu.c
+index 24020a2c68dc..186bf96f6a28 100644
+--- a/tools/testing/selftests/cgroup/test_cpu.c
++++ b/tools/testing/selftests/cgroup/test_cpu.c
+@@ -700,7 +700,7 @@ int main(int argc, char *argv[])
+ 	char root[PATH_MAX];
+ 	int i, ret = EXIT_SUCCESS;
  
- 	trialcs = alloc_trial_cpuset(cs);
- 	if (!trialcs) {
-@@ -3643,7 +3669,6 @@ static ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
- 	cpus_read_unlock();
- 	kernfs_unbreak_active_protection(of->kn);
- 	css_put(&cs->css);
--	flush_workqueue(cpuset_migrate_mm_wq);
- 	return retval ?: nbytes;
- }
+-	if (cg_find_unified_root(root, sizeof(root)))
++	if (cg_find_unified_root(root, sizeof(root), NULL))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
  
-@@ -4283,7 +4308,6 @@ struct cgroup_subsys cpuset_cgrp_subsys = {
- 	.can_attach	= cpuset_can_attach,
- 	.cancel_attach	= cpuset_cancel_attach,
- 	.attach		= cpuset_attach,
--	.post_attach	= cpuset_post_attach,
- 	.bind		= cpuset_bind,
- 	.can_fork	= cpuset_can_fork,
- 	.cancel_fork	= cpuset_cancel_fork,
-
+ 	if (cg_read_strstr(root, "cgroup.subtree_control", "cpu"))
+diff --git a/tools/testing/selftests/cgroup/test_cpuset.c b/tools/testing/selftests/cgroup/test_cpuset.c
+index b061ed1e05b4..4034d14ba69a 100644
+--- a/tools/testing/selftests/cgroup/test_cpuset.c
++++ b/tools/testing/selftests/cgroup/test_cpuset.c
+@@ -249,7 +249,7 @@ int main(int argc, char *argv[])
+ 	char root[PATH_MAX];
+ 	int i, ret = EXIT_SUCCESS;
+ 
+-	if (cg_find_unified_root(root, sizeof(root)))
++	if (cg_find_unified_root(root, sizeof(root), NULL))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
+ 
+ 	if (cg_read_strstr(root, "cgroup.subtree_control", "cpuset"))
+diff --git a/tools/testing/selftests/cgroup/test_freezer.c b/tools/testing/selftests/cgroup/test_freezer.c
+index 8845353aca53..8730645d363a 100644
+--- a/tools/testing/selftests/cgroup/test_freezer.c
++++ b/tools/testing/selftests/cgroup/test_freezer.c
+@@ -827,7 +827,7 @@ int main(int argc, char *argv[])
+ 	char root[PATH_MAX];
+ 	int i, ret = EXIT_SUCCESS;
+ 
+-	if (cg_find_unified_root(root, sizeof(root)))
++	if (cg_find_unified_root(root, sizeof(root), NULL))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
+ 	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+ 		switch (tests[i].fn(root)) {
+diff --git a/tools/testing/selftests/cgroup/test_hugetlb_memcg.c b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
+index f0fefeb4cc24..856f9508ea56 100644
+--- a/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
++++ b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
+@@ -214,7 +214,7 @@ int main(int argc, char **argv)
+ 		return ret;
+ 	}
+ 
+-	if (cg_find_unified_root(root, sizeof(root)))
++	if (cg_find_unified_root(root, sizeof(root), NULL))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
+ 
+ 	switch (test_hugetlb_memcg(root)) {
+diff --git a/tools/testing/selftests/cgroup/test_kill.c b/tools/testing/selftests/cgroup/test_kill.c
+index 6153690319c9..0e5bb6c7307a 100644
+--- a/tools/testing/selftests/cgroup/test_kill.c
++++ b/tools/testing/selftests/cgroup/test_kill.c
+@@ -276,7 +276,7 @@ int main(int argc, char *argv[])
+ 	char root[PATH_MAX];
+ 	int i, ret = EXIT_SUCCESS;
+ 
+-	if (cg_find_unified_root(root, sizeof(root)))
++	if (cg_find_unified_root(root, sizeof(root), NULL))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
+ 	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+ 		switch (tests[i].fn(root)) {
+diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
+index c82f974b85c9..137506db0312 100644
+--- a/tools/testing/selftests/cgroup/test_kmem.c
++++ b/tools/testing/selftests/cgroup/test_kmem.c
+@@ -420,7 +420,7 @@ int main(int argc, char **argv)
+ 	char root[PATH_MAX];
+ 	int i, ret = EXIT_SUCCESS;
+ 
+-	if (cg_find_unified_root(root, sizeof(root)))
++	if (cg_find_unified_root(root, sizeof(root), NULL))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
+ 
+ 	/*
+diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
+index c7c9572003a8..b462416b3806 100644
+--- a/tools/testing/selftests/cgroup/test_memcontrol.c
++++ b/tools/testing/selftests/cgroup/test_memcontrol.c
+@@ -1314,7 +1314,7 @@ int main(int argc, char **argv)
+ 	char root[PATH_MAX];
+ 	int i, proc_status, ret = EXIT_SUCCESS;
+ 
+-	if (cg_find_unified_root(root, sizeof(root)))
++	if (cg_find_unified_root(root, sizeof(root), NULL))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
+ 
+ 	/*
+diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
+index f0e488ed90d8..ef7f39545317 100644
+--- a/tools/testing/selftests/cgroup/test_zswap.c
++++ b/tools/testing/selftests/cgroup/test_zswap.c
+@@ -440,7 +440,7 @@ int main(int argc, char **argv)
+ 	char root[PATH_MAX];
+ 	int i, ret = EXIT_SUCCESS;
+ 
+-	if (cg_find_unified_root(root, sizeof(root)))
++	if (cg_find_unified_root(root, sizeof(root), NULL))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
+ 
+ 	if (!zswap_configured())
 -- 
-tejun
+2.39.3
+
 
