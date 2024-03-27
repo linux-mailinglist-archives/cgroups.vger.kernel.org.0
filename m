@@ -1,297 +1,239 @@
-Return-Path: <cgroups+bounces-2182-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2183-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69A7B88EBFA
-	for <lists+cgroups@lfdr.de>; Wed, 27 Mar 2024 18:01:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADA9388EC4B
+	for <lists+cgroups@lfdr.de>; Wed, 27 Mar 2024 18:15:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9659B2AA43
-	for <lists+cgroups@lfdr.de>; Wed, 27 Mar 2024 16:56:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D2F71F28825
+	for <lists+cgroups@lfdr.de>; Wed, 27 Mar 2024 17:15:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B22A114D6FC;
-	Wed, 27 Mar 2024 16:56:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23155130AFC;
+	Wed, 27 Mar 2024 17:14:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o6pyTYKO"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ha/ONp3w"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E447131BA9;
-	Wed, 27 Mar 2024 16:56:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B60A535A4
+	for <cgroups@vger.kernel.org>; Wed, 27 Mar 2024 17:14:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711558602; cv=none; b=mgPtx9dMz3zsy8B22hioTEszSH6sA7kgfSJF8Vz4gEQ2ArW/sO4hcjE2tlaTO63l/SexWFY88H0sJMYz8VYLj0Q6tqbaYYND1ra5t40ExR/5ySiSeoexO9fACa8gvDmstaRiXc26JlQPA6TF4/GUrvq5ya1cIqK7CZ0axGPnqcI=
+	t=1711559698; cv=none; b=Sr4/cBjE9x3aluKHEhWmz0XVXg5F2gBG4NexnHghjGWUZ/hsfHEjp6RANc/ocCYftQ1CMvCdINa9YLV8mqXvZLWevc/rHXSGUyteRzNc1bY6f6mhdgr2aNHNjbAL4ju9Xc7/48cbTgvw33hsny3zOGiMpbcCkpMqhwVW/xdoNgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711558602; c=relaxed/simple;
-	bh=HiC7BqQmXRl4D1EayBeDeK4Ew6tPWv+jQqStxIpWhnA=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=OAtefInDIXmztGFHXwwRc4k+32acnxdhOn74VmxL/zckoOa4WfM1Fs9DbIy+CDhJlZQQ7mrMvAHO8GnrrrC7nQp7kWy9pcj90zRZsytMuoKw1TvMEIT8bttnwNCLnYNz9yCmQm87+WEaVLImdcI7koStt13t+bO0t+VZw2Z9HvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o6pyTYKO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA65EC433C7;
-	Wed, 27 Mar 2024 16:56:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711558602;
-	bh=HiC7BqQmXRl4D1EayBeDeK4Ew6tPWv+jQqStxIpWhnA=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=o6pyTYKOEe4k9F7njyxnfRWaWV9MNmMYgiSCZOSS4yBnWHtx2obvkRNWTtslRKW6Z
-	 9xCW1hohxto6fo0mneEXy9QMFXMFOFb0l4MDpdNvKTVyTD73d/Gj0O5zlPY2dkGd25
-	 SJIuMREuOoCgzcB5de7wr2h6WljLMPh1SMk535CfxNyBct8DiWlQh2oj6UIY5I0fId
-	 oahrSrYb3MDX4DUd4DLYsmX3mzCTeUqphjCGB1aElOZabmsm1/z8c5k8TCYojQuACJ
-	 e8Skt9W714Y5j0wUwcLxKMfV0PDtOPjFa6WIGcpEWXsGepl5N3lG/ky5b9LCSB/M4Y
-	 Tqs0/XTdRqTbA==
+	s=arc-20240116; t=1711559698; c=relaxed/simple;
+	bh=WQ9b9W+K1cr0PaDz8CdCDwfTuAdl9qIcWO3q1kLH7/4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pzorOX6fJCXWrhvD15PU97x+wqt2cdN0RbcNXnypE9Mj+mEhg0KSvQ+uAeD/trc/lV2DIypB3MizkWLI30n0EDRgEjn5CHlw/iwBcZwSC0FIc1ilEJiFE4FNPoIgEbmypEWDSXS2tdKcKu3wRMoeGR8foyKjI1olYVSee/J4SWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ha/ONp3w; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711559696;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e/ehU8cycNoqYZCNxtm79uKP+Ubo74kxYeqF1hCvXwk=;
+	b=Ha/ONp3wJGQhQh/Ka9lG+U5W4nAUASYUwhIhpP2scWGj8CzPmfFuCQOTVt52ANiqz4tbe/
+	Cb5yudwlYia6ey1FKdYOsSMTaaSTWd40yYGI4ZgmJ4VH9GX2qSaLBj2PHcDPq1ugFv4Z6U
+	odO3JxK3rdD4BtxUuVrxEG3cfl9wVfM=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-131-oWr9LjkmPcGIqwKMTbV4-w-1; Wed,
+ 27 Mar 2024 13:14:50 -0400
+X-MC-Unique: oWr9LjkmPcGIqwKMTbV4-w-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 49AF53C000A5;
+	Wed, 27 Mar 2024 17:14:50 +0000 (UTC)
+Received: from [10.22.33.225] (unknown [10.22.33.225])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id D5FAE492BD0;
+	Wed, 27 Mar 2024 17:14:49 +0000 (UTC)
+Message-ID: <d8e8b000-7d09-4747-82ec-bf99a73607ee@redhat.com>
+Date: Wed, 27 Mar 2024 13:14:49 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 27 Mar 2024 18:56:35 +0200
-Message-Id: <D04OVW6I8MUA.1OAIHFQ8943SM@kernel.org>
-To: "Jarkko Sakkinen" <jarkko@kernel.org>, "Haitao Huang"
- <haitao.huang@linux.intel.com>, <dave.hansen@linux.intel.com>,
- <tj@kernel.org>, <mkoutny@suse.com>, <linux-kernel@vger.kernel.org>,
- <linux-sgx@vger.kernel.org>, <x86@kernel.org>, <cgroups@vger.kernel.org>,
- <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
- <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
-Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
- <zhanb@microsoft.com>, <anakrish@microsoft.com>,
- <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
- <chrisyan@microsoft.com>
-Subject: Re: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup
- testing
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-16-haitao.huang@linux.intel.com>
- <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
-In-Reply-To: <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [problem] Hung task caused by memory migration when cpuset.mems
+ changes
+Content-Language: en-US
+To: Tejun Heo <tj@kernel.org>, Chuyi Zhou <zhouchuyi@bytedance.com>
+Cc: cgroups@vger.kernel.org, hughd@google.com, wuyun.abel@bytedance.com,
+ hezhongkun.hzk@bytedance.com, chenying.kernel@bytedance.com,
+ zhanghaoyu.zhy@bytedance.com
+References: <20240325144609.983333-1-zhouchuyi@bytedance.com>
+ <ZgMFPMjZRZCsq9Q-@slm.duckdns.org>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <ZgMFPMjZRZCsq9Q-@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On Wed Mar 27, 2024 at 2:55 PM EET, Jarkko Sakkinen wrote:
-> On Mon, 2024-02-05 at 13:06 -0800, Haitao Huang wrote:
-> > The scripts rely on cgroup-tools package from libcgroup [1].
-> >=20
-> > To run selftests for epc cgroup:
-> >=20
-> > sudo ./run_epc_cg_selftests.sh
-> >=20
-> > To watch misc cgroup 'current' changes during testing, run this in a
-> > separate terminal:
-> >=20
-> > ./watch_misc_for_tests.sh current
-> >=20
-> > With different cgroups, the script starts one or multiple concurrent
-> > SGX
-> > selftests, each to run one unclobbered_vdso_oversubscribed test.=C2=A0
-> > Each
-> > of such test tries to load an enclave of EPC size equal to the EPC
-> > capacity available on the platform. The script checks results against
-> > the expectation set for each cgroup and reports success or failure.
-> >=20
-> > The script creates 3 different cgroups at the beginning with
-> > following
-> > expectations:
-> >=20
-> > 1) SMALL - intentionally small enough to fail the test loading an
-> > enclave of size equal to the capacity.
-> > 2) LARGE - large enough to run up to 4 concurrent tests but fail some
-> > if
-> > more than 4 concurrent tests are run. The script starts 4 expecting
-> > at
-> > least one test to pass, and then starts 5 expecting at least one test
-> > to fail.
-> > 3) LARGER - limit is the same as the capacity, large enough to run
-> > lots of
-> > concurrent tests. The script starts 8 of them and expects all pass.
-> > Then it reruns the same test with one process randomly killed and
-> > usage checked to be zero after all process exit.
-> >=20
-> > The script also includes a test with low mem_cg limit and LARGE
-> > sgx_epc
-> > limit to verify that the RAM used for per-cgroup reclamation is
-> > charged
-> > to a proper mem_cg.
-> >=20
-> > [1] https://github.com/libcgroup/libcgroup/blob/main/README
-> >=20
-> > Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> > ---
-> > V7:
-> > - Added memcontrol test.
-> >=20
-> > V5:
-> > - Added script with automatic results checking, remove the
-> > interactive
-> > script.
-> > - The script can run independent from the series below.
-> > ---
-> > =C2=A0.../selftests/sgx/run_epc_cg_selftests.sh=C2=A0=C2=A0=C2=A0=C2=A0=
- | 246
-> > ++++++++++++++++++
-> > =C2=A0.../selftests/sgx/watch_misc_for_tests.sh=C2=A0=C2=A0=C2=A0=C2=A0=
- |=C2=A0 13 +
-> > =C2=A02 files changed, 259 insertions(+)
-> > =C2=A0create mode 100755
-> > tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-> > =C2=A0create mode 100755
-> > tools/testing/selftests/sgx/watch_misc_for_tests.sh
-> >=20
-> > diff --git a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-> > b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-> > new file mode 100755
-> > index 000000000000..e027bf39f005
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-> > @@ -0,0 +1,246 @@
-> > +#!/bin/bash
+On 3/26/24 13:26, Tejun Heo wrote:
+> Hello,
 >
-> This is not portable and neither does hold in the wild.
+> On Mon, Mar 25, 2024 at 10:46:09PM +0800, Chuyi Zhou wrote:
+>> In our production environment, we have observed several cases of hung tasks
+>> blocked on the cgroup_mutex. The underlying cause is that when user modify
+>> the cpuset.mems, memory migration operations are performed in the
+>> work_queue. However, the duration of these operations depends on the memory
+>> size of workloads and can consume a significant amount of time.
+>>
+>> In the __cgroup_procs_write operation, there is a flush_workqueue operation
+>> that waits for the migration to complete while holding the cgroup_mutex.
+>> As a result, most cgroup-related operations have the potential to
+>> experience blocking.
+>>
+>> We have noticed the commit "cgroup/cpuset: Enable memory migration for
+>> cpuset v2"[1]. This commit enforces memory migration when modifying the
+>> cpuset. Furthermore, in cgroup v2, there is no option available for
+>> users to disable CS_MEMORY_MIGRATE.
+>>
+>> In our scenario, we do need to perform memory migration when cpuset.mems
+>> changes, while ensuring that other tasks are not blocked on cgroup_mutex
+>> for an extended period of time.
+>>
+>> One feasible approach is to revert the commit "cgroup/cpuset: Enable memory
+>> migration for cpuset v2"[1]. This way, modifying cpuset.mems will not
+>> trigger memory migration, and we can manually perform memory migration
+>> using migrate_pages()/move_pages() syscalls.
+>>
+>> Another solution is to use a lazy approach for memory migration[2]. In
+>> this way we only walk through all the pages and sets pages to protnone,
+>> and numa faults triggered by later touch will handle the movement. That
+>> would significantly reduce the time spent in cpuset_migrate_mm_workfn.
+>> But MPOL_MF_LAZY was disabled by commit 2cafb582173f ("mempolicy: remove
+>> confusing MPOL_MF_LAZY dead code")
+> One approach we can take is pushing the cpuset_migrate_mm_wq flushing to
+> task_work so that it happens after cpuset mutex is dropped. That way we
+> maintain the operation synchronicity for the issuer while avoiding bothering
+> anyone else.
+I think it is a good idea to use task_work() to wait for mm migration to 
+finish before returning to user space.
 >
-> It does not even often hold as it is not uncommon to place bash
-> to the path /usr/bin/bash. If I recall correctly, e.g. NixOS has
-> a path that is neither of those two.
+> Can you see whether the following patch fixes the issue for you? Thanks.
 >
-> Should be #!/usr/bin/env bash
->
-> That is POSIX compatible form.
->
-> Just got around trying to test this in NUC7 so looking into this in
-> more detail.
->
-> That said can you make the script work with just "#!/usr/bin/env sh"
-> and make sure that it is busybox ash compatible?
->
-> I don't see any necessity to make this bash only and it adds to the
-> compilation time of the image. Otherwise lot of this could be tested
-> just with qemu+bzImage+busybox(inside initramfs).
->
-> Now you are adding fully glibc shenanigans for the sake of syntax
-> sugar.
->
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright(c) 2023 Intel Corporation.
-> > +
-> > +TEST_ROOT_CG=3Dselftest
-> > +cgcreate -g misc:$TEST_ROOT_CG
->
-> How do you know that cgcreate exists? It is used a lot in the script
-> with no check for the existence. Please fix e.g. with "command -v
-> cgreate".
->
-> > +if [ $? -ne 0 ]; then
-> > +=C2=A0=C2=A0=C2=A0 echo "# Please make sure cgroup-tools is installed,=
- and misc
-> > cgroup is mounted."
-> > +=C2=A0=C2=A0=C2=A0 exit 1
-> > +fi
->
-> And please do not do it this way. Also, please remove the advice for
-> "cgroups-tool". This is not meant to be debian only. Better would be
-> to e.g. point out the URL of the upstream project.
->
-> And yeah the whole message should be based on "command -v", not like
-> this.
->
-> > +TEST_CG_SUB1=3D$TEST_ROOT_CG/test1
-> > +TEST_CG_SUB2=3D$TEST_ROOT_CG/test2
-> > +# We will only set limit in test1 and run tests in test3
-> > +TEST_CG_SUB3=3D$TEST_ROOT_CG/test1/test3
-> > +TEST_CG_SUB4=3D$TEST_ROOT_CG/test4
-> > +
-> > +cgcreate -g misc:$TEST_CG_SUB1
->
->
->
-> > +cgcreate -g misc:$TEST_CG_SUB2
-> > +cgcreate -g misc:$TEST_CG_SUB3
-> > +cgcreate -g misc:$TEST_CG_SUB4
-> > +
-> > +# Default to V2
-> > +CG_MISC_ROOT=3D/sys/fs/cgroup
-> > +CG_MEM_ROOT=3D/sys/fs/cgroup
-> > +CG_V1=3D0
-> > +if [ ! -d "/sys/fs/cgroup/misc" ]; then
-> > +=C2=A0=C2=A0=C2=A0 echo "# cgroup V2 is in use."
-> > +else
-> > +=C2=A0=C2=A0=C2=A0 echo "# cgroup V1 is in use."
->
-> Is "#" prefix a standard for kselftest? I don't know this, thus asking.
->
-> > +=C2=A0=C2=A0=C2=A0 CG_MISC_ROOT=3D/sys/fs/cgroup/misc
-> > +=C2=A0=C2=A0=C2=A0 CG_MEM_ROOT=3D/sys/fs/cgroup/memory
-> > +=C2=A0=C2=A0=C2=A0 CG_V1=3D1
->
-> Have you checked what is the indentation policy for bash scripts inside
-> kernel tree. I don't know what it is. That's why I'm asking.
->
-> > +fi
-> > +
-> > +CAPACITY=3D$(grep "sgx_epc" "$CG_MISC_ROOT/misc.capacity" | awk
-> > '{print $2}')
-> > +# This is below number of VA pages needed for enclave of capacity
-> > size. So
-> > +# should fail oversubscribed cases
-> > +SMALL=3D$(( CAPACITY / 512 ))
-> > +
-> > +# At least load one enclave of capacity size successfully, maybe up
-> > to 4.
-> > +# But some may fail if we run more than 4 concurrent enclaves of
-> > capacity size.
-> > +LARGE=3D$(( SMALL * 4 ))
-> > +
-> > +# Load lots of enclaves
-> > +LARGER=3D$CAPACITY
-> > +echo "# Setting up limits."
-> > +echo "sgx_epc $SMALL" > $CG_MISC_ROOT/$TEST_CG_SUB1/misc.max
-> > +echo "sgx_epc $LARGE" >=C2=A0 $CG_MISC_ROOT/$TEST_CG_SUB2/misc.max
-> > +echo "sgx_epc $LARGER" > $CG_MISC_ROOT/$TEST_CG_SUB4/misc.max
-> > +
-> > +timestamp=3D$(date +%Y%m%d_%H%M%S)
-> > +
-> > +test_cmd=3D"./test_sgx -t unclobbered_vdso_oversubscribed"
-> > +
-> > +wait_check_process_status() {
-> > +=C2=A0=C2=A0=C2=A0 local pid=3D$1
-> > +=C2=A0=C2=A0=C2=A0 local check_for_success=3D$2=C2=A0 # If 1, check fo=
-r success;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 # If 0, check for failure
-> > +=C2=A0=C2=A0=C2=A0 wait "$pid"
-> > +=C2=A0=C2=A0=C2=A0 local status=3D$?
-> > +
-> > +=C2=A0=C2=A0=C2=A0 if [[ $check_for_success -eq 1 && $status -eq 0 ]];=
- then
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 echo "# Process $pid succee=
-ded."
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0
-> > +=C2=A0=C2=A0=C2=A0 elif [[ $check_for_success -eq 0 && $status -ne 0 ]=
-]; then
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 echo "# Process $pid return=
-ed failure."
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0
-> > +=C2=A0=C2=A0=C2=A0 fi
-> > +=C2=A0=C2=A0=C2=A0 return 1
-> > +}
-> > +
-> > +wai
-> > wait_and_detect_for_any() {
->
-> what is "any"?
->
-> Maybe for some key functions could have short documentation what they
-> are and for what test uses them. I cannot possibly remember all of this
-> just by hints such as "this waits for Any" ;-)
->
-> I don't think there is actual kernel guideline to engineer the script
-> to work with just ash but at least for me that would inevitably
-> increase my motivation to test this patch set more rather than less.
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index ba36c073304a..8a8bd3f157ab 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -42,6 +42,7 @@
+>   #include <linux/spinlock.h>
+>   #include <linux/oom.h>
+>   #include <linux/sched/isolation.h>
+> +#include <linux/task_work.h>
+>   #include <linux/cgroup.h>
+>   #include <linux/wait.h>
+>   #include <linux/workqueue.h>
+> @@ -2696,6 +2697,26 @@ static void cpuset_migrate_mm_workfn(struct work_struct *work)
+>   	kfree(mwork);
+>   }
+>   
+> +static void flush_migrate_mm_task_workfn(struct callback_head *head)
+> +{
+> +	flush_workqueue(cpuset_migrate_mm_wq);
+> +}
+> +
+> +static int schedule_flush_migrate_mm(void)
+> +{
+> +	struct callback_head *flush_cb;
+> +
+> +	flush_cb = kzalloc(sizeof(*flush_cb), GFP_KERNEL);
+> +	if (!flush_cb)
+> +		return -ENOMEM;
+> +
+> +	flush_cb->func = flush_migrate_mm_task_workfn;
+> +	if (task_work_add(current, flush_cb, TWA_RESUME))
+> +		kfree(flush_cb);
+> +
+> +	return 0;
+> +}
+> +
+>   static void cpuset_migrate_mm(struct mm_struct *mm, const nodemask_t *from,
+>   							const nodemask_t *to)
+>   {
+> @@ -2718,11 +2739,6 @@ static void cpuset_migrate_mm(struct mm_struct *mm, const nodemask_t *from,
+>   	}
+>   }
+>   
+> -static void cpuset_post_attach(void)
+> -{
+> -	flush_workqueue(cpuset_migrate_mm_wq);
+> -}
+> -
+>   /*
+>    * cpuset_change_task_nodemask - change task's mems_allowed and mempolicy
+>    * @tsk: the task to change
+> @@ -3276,6 +3292,10 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
+>   	bool cpus_updated, mems_updated;
+>   	int ret;
+>   
+> +	ret = schedule_flush_migrate_mm();
+> +	if (ret)
+> +		return ret;
+> +
 
-I also wonder is cgroup-tools dependency absolutely required or could
-you just have a function that would interact with sysfs?
+It may be too early to initiate the task_work at cpuset_can_attach() as 
+no mm migration may happen. My suggestion is to do it at cpuset_attach() 
+with at least one cpuset_migrate_mm() call.
 
-BR, Jarkko
+Cheers,
+Longman
+
+>   	/* used later by cpuset_attach() */
+>   	cpuset_attach_old_cs = task_cs(cgroup_taskset_first(tset, &css));
+>   	oldcs = cpuset_attach_old_cs;
+> @@ -3584,7 +3604,11 @@ static ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
+>   {
+>   	struct cpuset *cs = css_cs(of_css(of));
+>   	struct cpuset *trialcs;
+> -	int retval = -ENODEV;
+> +	int retval;
+> +
+> +	retval = schedule_flush_migrate_mm();
+> +	if (retval)
+> +		return retval;
+>   
+>   	buf = strstrip(buf);
+>   
+> @@ -3613,8 +3637,10 @@ static ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
+>   
+>   	cpus_read_lock();
+>   	mutex_lock(&cpuset_mutex);
+> -	if (!is_cpuset_online(cs))
+> +	if (!is_cpuset_online(cs)) {
+> +		retval = -ENODEV;
+>   		goto out_unlock;
+> +	}
+>   
+>   	trialcs = alloc_trial_cpuset(cs);
+>   	if (!trialcs) {
+> @@ -3643,7 +3669,6 @@ static ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
+>   	cpus_read_unlock();
+>   	kernfs_unbreak_active_protection(of->kn);
+>   	css_put(&cs->css);
+> -	flush_workqueue(cpuset_migrate_mm_wq);
+>   	return retval ?: nbytes;
+>   }
+>   
+> @@ -4283,7 +4308,6 @@ struct cgroup_subsys cpuset_cgrp_subsys = {
+>   	.can_attach	= cpuset_can_attach,
+>   	.cancel_attach	= cpuset_cancel_attach,
+>   	.attach		= cpuset_attach,
+> -	.post_attach	= cpuset_post_attach,
+>   	.bind		= cpuset_bind,
+>   	.can_fork	= cpuset_can_fork,
+>   	.cancel_fork	= cpuset_cancel_fork,
+>
+
 
