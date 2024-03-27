@@ -1,270 +1,103 @@
-Return-Path: <cgroups+bounces-2173-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2174-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 066BF88D4BC
-	for <lists+cgroups@lfdr.de>; Wed, 27 Mar 2024 03:44:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 738F388D504
+	for <lists+cgroups@lfdr.de>; Wed, 27 Mar 2024 04:25:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29C3D1C24C15
-	for <lists+cgroups@lfdr.de>; Wed, 27 Mar 2024 02:44:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D755FB22F3C
+	for <lists+cgroups@lfdr.de>; Wed, 27 Mar 2024 03:25:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C0B21104;
-	Wed, 27 Mar 2024 02:44:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 634AB2263E;
+	Wed, 27 Mar 2024 03:25:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="GfPbjfeE"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="CvKbObme"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADDE4171AD;
-	Wed, 27 Mar 2024 02:44:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 830BC17545;
+	Wed, 27 Mar 2024 03:25:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711507491; cv=none; b=XdEl/O3i0QGyagoBGF5TSVbFjyLWUQS3dZ+mMMFAk55z2tV5ATDtwWQJ0M22DDW0w7U1Jz00H6POPjfBxFvR5H/d3epkHDh6ljHpxddbGls1txmA9XiBt1T+lqnJo0Pqv/3JkbxnU/azcOcozXdgeiLKXG8j8G16ioTEAxQZmaA=
+	t=1711509916; cv=none; b=HUF+kZWIQU1g4E5gOrPu0ixxQt3ugiYCG8boS+DpG2H7VqRHN5S82FClvZef3QQgkDul7fRxWGtGfWWz+t3p/4ghVUNhRqr+5pLewDgV7kGUQpnb6Rymulv3ysLQNk34fYm0x7/baT+FXX7DeRJAn5kcYm+1t4f7T4CUvMvuFlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711507491; c=relaxed/simple;
-	bh=sxBIlRRXsth6YYqnrWJgKwagTA+TS5BCoWocctZPtBE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WzyijtzJA1QQxMPNTi/SpXwOt8BiA0ph0W6LoIEp9TIyvfx3nlnfXPz5zEq9zc30kOmxya/HMX/9OoYoQXLTeAIlh0+xO2AEWm5T+Zf22Zu+WE2dQakk2wzgXTC8rby25pbcwsaTVSbiqwzFhFmky/IGJNaU21zZAdYJveKvjk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=GfPbjfeE; arc=none smtp.client-ip=115.124.30.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1711507485; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=UOO0zYL/R8/POaduYOpKB0fD0kNEnTD3fHeKwvGHVyw=;
-	b=GfPbjfeEEPzy6jI6jR+Az9cuej2PX/BsBKNy3+j+cA0Dj5z/zarmUltqcuIx3/JmqlUvdqDjUflj25PXjwh3OfwgraYzuqWMg8nq92pdI+BnpN1HJE3Gi6Zo4xdH9a+IPz2QsZ7T8UiXNSAb3ZTFEELvXgtRusMlrBd0vmSvyIQ=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=dtcccc@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0W3N27Kt_1711507477;
-Received: from localhost.localdomain(mailfrom:dtcccc@linux.alibaba.com fp:SMTPD_---0W3N27Kt_1711507477)
-          by smtp.aliyun-inc.com;
-          Wed, 27 Mar 2024 10:44:44 +0800
-From: Tianchen Ding <dtcccc@linux.alibaba.com>
-To: linux-kernel@vger.kernel.org
-Cc: Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Shuah Khan <shuah@kernel.org>,
-	cgroups@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH] selftests: cgroup: skip test_cgcore_lesser_ns_open when cgroup2 mounted without nsdelegate
-Date: Wed, 27 Mar 2024 10:44:37 +0800
-Message-Id: <20240327024437.3196-1-dtcccc@linux.alibaba.com>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1711509916; c=relaxed/simple;
+	bh=Ajy7EClEZNT2l5jOz2HI8KHPxT0cshu9vXiK2kZRlto=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ReRtvfXj3NavgzydWCWY9EQm3+1BbJM7IeHD+3lUltRhxsgoK6lLJCqyalPq8uSc5A+A+hwgbgbkDuXI/CsovsDzYs3+jpI4ZIqTDnXYT1hZDkpss0r96Uzx2l2y6x6R1xVlClUM+GyAMq1iuoyFiWJECAGqRSZxJt45b4I2CA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=CvKbObme; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=RlEUjYz6ln8uzzOTkIlgn9vdiC3nQ/IHmLuBP8wka2o=; b=CvKbObmeyBqqOPthjS/+uTpYG7
+	eoUDBQh9S0XUeVkTmqvfA2KU9S2jl1TZ0d/qfo5XKxsxRNNeBlTMQ9ds6skxSEv80Xd12pe1JfdEb
+	wBCa1azgkkM7zTLqgfjH1rCC5601LmPSODTJbeICFjKQWfDpMNA114PK6p2Yu5WOCMl603JqhWXFP
+	GAqIFx5AGDyS+2+gnJcmPNdFornkVnc81GPJerRi2bQih5+8inhCt2YgTrhOsNBiT38nwzY62TPlz
+	+Ui6qV0zTYT8lAxb8f7sCnUN35mUg/q0e5NBUGjmRCTIeFKN0D3jcStJA97Y0rx4kDHTcdjGvCFZw
+	x40o0e+w==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rpJtt-00000002v5K-0VmM;
+	Wed, 27 Mar 2024 03:24:29 +0000
+Date: Wed, 27 Mar 2024 03:24:28 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	mgorman@suse.de, dave@stgolabs.net, liam.howlett@oracle.com,
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net,
+	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com,
+	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+	paulmck@kernel.org, pasha.tatashin@soleen.com,
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, songmuchun@bytedance.com,
+	jbaron@akamai.com, aliceryhl@google.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v6 14/37] lib: introduce support for page allocation
+ tagging
+Message-ID: <ZgORbAY5F0MWgX5K@casper.infradead.org>
+References: <20240321163705.3067592-1-surenb@google.com>
+ <20240321163705.3067592-15-surenb@google.com>
+ <ZgI9Iejn6DanJZ-9@casper.infradead.org>
+ <CAJuCfpGvviA5H1Em=ymd8Yqz_UoBVGFOst_wbaA6AwGkvffPHg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJuCfpGvviA5H1Em=ymd8Yqz_UoBVGFOst_wbaA6AwGkvffPHg@mail.gmail.com>
 
-The test case test_cgcore_lesser_ns_open only tasks effect when cgroup2
-is mounted with "nsdelegate" mount option. If it misses this option, or
-is remounted without "nsdelegate", the test case will fail. For example,
-running bpf/test_cgroup_storage first, and then run cgroup/test_core will
-fail on test_cgcore_lesser_ns_open. Skip it if "nsdelegate" is not
-detected in cgroup2 mount options.
+On Mon, Mar 25, 2024 at 11:23:25PM -0700, Suren Baghdasaryan wrote:
+> Ah, good eye! We probably didn't include page_ext.h before and then
+> when we did I missed removing these declarations. I'll post a fixup.
+> Thanks!
 
-Fixes: bf35a7879f1d ("selftests: cgroup: Test open-time cgroup namespace usage for migration checks")
-Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
----
- tools/testing/selftests/cgroup/cgroup_util.c        | 8 +++++---
- tools/testing/selftests/cgroup/cgroup_util.h        | 2 +-
- tools/testing/selftests/cgroup/test_core.c          | 7 ++++++-
- tools/testing/selftests/cgroup/test_cpu.c           | 2 +-
- tools/testing/selftests/cgroup/test_cpuset.c        | 2 +-
- tools/testing/selftests/cgroup/test_freezer.c       | 2 +-
- tools/testing/selftests/cgroup/test_hugetlb_memcg.c | 2 +-
- tools/testing/selftests/cgroup/test_kill.c          | 2 +-
- tools/testing/selftests/cgroup/test_kmem.c          | 2 +-
- tools/testing/selftests/cgroup/test_memcontrol.c    | 2 +-
- tools/testing/selftests/cgroup/test_zswap.c         | 2 +-
- 11 files changed, 20 insertions(+), 13 deletions(-)
-
-diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
-index 0340d4ca8f51..432db923bced 100644
---- a/tools/testing/selftests/cgroup/cgroup_util.c
-+++ b/tools/testing/selftests/cgroup/cgroup_util.c
-@@ -195,10 +195,10 @@ int cg_write_numeric(const char *cgroup, const char *control, long value)
- 	return cg_write(cgroup, control, buf);
- }
- 
--int cg_find_unified_root(char *root, size_t len)
-+int cg_find_unified_root(char *root, size_t len, bool *nsdelegate)
- {
- 	char buf[10 * PAGE_SIZE];
--	char *fs, *mount, *type;
-+	char *fs, *mount, *type, *options;
- 	const char delim[] = "\n\t ";
- 
- 	if (read_text("/proc/self/mounts", buf, sizeof(buf)) <= 0)
-@@ -211,12 +211,14 @@ int cg_find_unified_root(char *root, size_t len)
- 	for (fs = strtok(buf, delim); fs; fs = strtok(NULL, delim)) {
- 		mount = strtok(NULL, delim);
- 		type = strtok(NULL, delim);
--		strtok(NULL, delim);
-+		options = strtok(NULL, delim);
- 		strtok(NULL, delim);
- 		strtok(NULL, delim);
- 
- 		if (strcmp(type, "cgroup2") == 0) {
- 			strncpy(root, mount, len);
-+			if (nsdelegate)
-+				*nsdelegate = !!strstr(options, "nsdelegate");
- 			return 0;
- 		}
- 	}
-diff --git a/tools/testing/selftests/cgroup/cgroup_util.h b/tools/testing/selftests/cgroup/cgroup_util.h
-index 1df7f202214a..89e8519fb271 100644
---- a/tools/testing/selftests/cgroup/cgroup_util.h
-+++ b/tools/testing/selftests/cgroup/cgroup_util.h
-@@ -21,7 +21,7 @@ static inline int values_close(long a, long b, int err)
- 	return abs(a - b) <= (a + b) / 100 * err;
- }
- 
--extern int cg_find_unified_root(char *root, size_t len);
-+extern int cg_find_unified_root(char *root, size_t len, bool *nsdelegate);
- extern char *cg_name(const char *root, const char *name);
- extern char *cg_name_indexed(const char *root, const char *name, int index);
- extern char *cg_control(const char *cgroup, const char *control);
-diff --git a/tools/testing/selftests/cgroup/test_core.c b/tools/testing/selftests/cgroup/test_core.c
-index 80aa6b2373b9..a5672a91d273 100644
---- a/tools/testing/selftests/cgroup/test_core.c
-+++ b/tools/testing/selftests/cgroup/test_core.c
-@@ -18,6 +18,8 @@
- #include "../kselftest.h"
- #include "cgroup_util.h"
- 
-+static bool nsdelegate;
-+
- static int touch_anon(char *buf, size_t size)
- {
- 	int fd;
-@@ -775,6 +777,9 @@ static int test_cgcore_lesser_ns_open(const char *root)
- 	pid_t pid;
- 	int status;
- 
-+	if (!nsdelegate)
-+		return KSFT_SKIP;
-+
- 	cg_test_a = cg_name(root, "cg_test_a");
- 	cg_test_b = cg_name(root, "cg_test_b");
- 
-@@ -862,7 +867,7 @@ int main(int argc, char *argv[])
- 	char root[PATH_MAX];
- 	int i, ret = EXIT_SUCCESS;
- 
--	if (cg_find_unified_root(root, sizeof(root)))
-+	if (cg_find_unified_root(root, sizeof(root), &nsdelegate))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
- 
- 	if (cg_read_strstr(root, "cgroup.subtree_control", "memory"))
-diff --git a/tools/testing/selftests/cgroup/test_cpu.c b/tools/testing/selftests/cgroup/test_cpu.c
-index 24020a2c68dc..186bf96f6a28 100644
---- a/tools/testing/selftests/cgroup/test_cpu.c
-+++ b/tools/testing/selftests/cgroup/test_cpu.c
-@@ -700,7 +700,7 @@ int main(int argc, char *argv[])
- 	char root[PATH_MAX];
- 	int i, ret = EXIT_SUCCESS;
- 
--	if (cg_find_unified_root(root, sizeof(root)))
-+	if (cg_find_unified_root(root, sizeof(root), NULL))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
- 
- 	if (cg_read_strstr(root, "cgroup.subtree_control", "cpu"))
-diff --git a/tools/testing/selftests/cgroup/test_cpuset.c b/tools/testing/selftests/cgroup/test_cpuset.c
-index b061ed1e05b4..4034d14ba69a 100644
---- a/tools/testing/selftests/cgroup/test_cpuset.c
-+++ b/tools/testing/selftests/cgroup/test_cpuset.c
-@@ -249,7 +249,7 @@ int main(int argc, char *argv[])
- 	char root[PATH_MAX];
- 	int i, ret = EXIT_SUCCESS;
- 
--	if (cg_find_unified_root(root, sizeof(root)))
-+	if (cg_find_unified_root(root, sizeof(root), NULL))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
- 
- 	if (cg_read_strstr(root, "cgroup.subtree_control", "cpuset"))
-diff --git a/tools/testing/selftests/cgroup/test_freezer.c b/tools/testing/selftests/cgroup/test_freezer.c
-index 8845353aca53..8730645d363a 100644
---- a/tools/testing/selftests/cgroup/test_freezer.c
-+++ b/tools/testing/selftests/cgroup/test_freezer.c
-@@ -827,7 +827,7 @@ int main(int argc, char *argv[])
- 	char root[PATH_MAX];
- 	int i, ret = EXIT_SUCCESS;
- 
--	if (cg_find_unified_root(root, sizeof(root)))
-+	if (cg_find_unified_root(root, sizeof(root), NULL))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
- 	for (i = 0; i < ARRAY_SIZE(tests); i++) {
- 		switch (tests[i].fn(root)) {
-diff --git a/tools/testing/selftests/cgroup/test_hugetlb_memcg.c b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-index f0fefeb4cc24..856f9508ea56 100644
---- a/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-+++ b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-@@ -214,7 +214,7 @@ int main(int argc, char **argv)
- 		return ret;
- 	}
- 
--	if (cg_find_unified_root(root, sizeof(root)))
-+	if (cg_find_unified_root(root, sizeof(root), NULL))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
- 
- 	switch (test_hugetlb_memcg(root)) {
-diff --git a/tools/testing/selftests/cgroup/test_kill.c b/tools/testing/selftests/cgroup/test_kill.c
-index 6153690319c9..0e5bb6c7307a 100644
---- a/tools/testing/selftests/cgroup/test_kill.c
-+++ b/tools/testing/selftests/cgroup/test_kill.c
-@@ -276,7 +276,7 @@ int main(int argc, char *argv[])
- 	char root[PATH_MAX];
- 	int i, ret = EXIT_SUCCESS;
- 
--	if (cg_find_unified_root(root, sizeof(root)))
-+	if (cg_find_unified_root(root, sizeof(root), NULL))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
- 	for (i = 0; i < ARRAY_SIZE(tests); i++) {
- 		switch (tests[i].fn(root)) {
-diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
-index c82f974b85c9..137506db0312 100644
---- a/tools/testing/selftests/cgroup/test_kmem.c
-+++ b/tools/testing/selftests/cgroup/test_kmem.c
-@@ -420,7 +420,7 @@ int main(int argc, char **argv)
- 	char root[PATH_MAX];
- 	int i, ret = EXIT_SUCCESS;
- 
--	if (cg_find_unified_root(root, sizeof(root)))
-+	if (cg_find_unified_root(root, sizeof(root), NULL))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
- 
- 	/*
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index c7c9572003a8..b462416b3806 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -1314,7 +1314,7 @@ int main(int argc, char **argv)
- 	char root[PATH_MAX];
- 	int i, proc_status, ret = EXIT_SUCCESS;
- 
--	if (cg_find_unified_root(root, sizeof(root)))
-+	if (cg_find_unified_root(root, sizeof(root), NULL))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
- 
- 	/*
-diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
-index f0e488ed90d8..ef7f39545317 100644
---- a/tools/testing/selftests/cgroup/test_zswap.c
-+++ b/tools/testing/selftests/cgroup/test_zswap.c
-@@ -440,7 +440,7 @@ int main(int argc, char **argv)
- 	char root[PATH_MAX];
- 	int i, ret = EXIT_SUCCESS;
- 
--	if (cg_find_unified_root(root, sizeof(root)))
-+	if (cg_find_unified_root(root, sizeof(root), NULL))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
- 
- 	if (!zswap_configured())
--- 
-2.39.3
-
+Andrew's taken a patch from me to remove these two declarations as
+part of marking them const.  No patch needed from you, just needed to
+check there was no reason to have them.
 
