@@ -1,239 +1,234 @@
-Return-Path: <cgroups+bounces-2183-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2184-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADA9388EC4B
-	for <lists+cgroups@lfdr.de>; Wed, 27 Mar 2024 18:15:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D492A88F0EC
+	for <lists+cgroups@lfdr.de>; Wed, 27 Mar 2024 22:31:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D2F71F28825
-	for <lists+cgroups@lfdr.de>; Wed, 27 Mar 2024 17:15:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F9431F29C89
+	for <lists+cgroups@lfdr.de>; Wed, 27 Mar 2024 21:31:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23155130AFC;
-	Wed, 27 Mar 2024 17:14:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E730D15358B;
+	Wed, 27 Mar 2024 21:31:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ha/ONp3w"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VJ9tFCuE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B60A535A4
-	for <cgroups@vger.kernel.org>; Wed, 27 Mar 2024 17:14:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF47D14D2B5
+	for <cgroups@vger.kernel.org>; Wed, 27 Mar 2024 21:31:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711559698; cv=none; b=Sr4/cBjE9x3aluKHEhWmz0XVXg5F2gBG4NexnHghjGWUZ/hsfHEjp6RANc/ocCYftQ1CMvCdINa9YLV8mqXvZLWevc/rHXSGUyteRzNc1bY6f6mhdgr2aNHNjbAL4ju9Xc7/48cbTgvw33hsny3zOGiMpbcCkpMqhwVW/xdoNgI=
+	t=1711575091; cv=none; b=TlR+3bcvGDsgr1CQT+4+KeXLZv/vZBVRSoLoyc2kLPBZXXPJkLRMH7cnc2ups4lLHNXzESoZFA0OcnaBEC0QW/OTzsEGpzNYXk+y7IU3zpd+EOlGJbzEXG0aGDRSHE8HtWlFRrmnkZPMZzFM40kGSiQiGWL+c6OXHzMzCc7vUHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711559698; c=relaxed/simple;
-	bh=WQ9b9W+K1cr0PaDz8CdCDwfTuAdl9qIcWO3q1kLH7/4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pzorOX6fJCXWrhvD15PU97x+wqt2cdN0RbcNXnypE9Mj+mEhg0KSvQ+uAeD/trc/lV2DIypB3MizkWLI30n0EDRgEjn5CHlw/iwBcZwSC0FIc1ilEJiFE4FNPoIgEbmypEWDSXS2tdKcKu3wRMoeGR8foyKjI1olYVSee/J4SWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ha/ONp3w; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711559696;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e/ehU8cycNoqYZCNxtm79uKP+Ubo74kxYeqF1hCvXwk=;
-	b=Ha/ONp3wJGQhQh/Ka9lG+U5W4nAUASYUwhIhpP2scWGj8CzPmfFuCQOTVt52ANiqz4tbe/
-	Cb5yudwlYia6ey1FKdYOsSMTaaSTWd40yYGI4ZgmJ4VH9GX2qSaLBj2PHcDPq1ugFv4Z6U
-	odO3JxK3rdD4BtxUuVrxEG3cfl9wVfM=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-131-oWr9LjkmPcGIqwKMTbV4-w-1; Wed,
- 27 Mar 2024 13:14:50 -0400
-X-MC-Unique: oWr9LjkmPcGIqwKMTbV4-w-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 49AF53C000A5;
-	Wed, 27 Mar 2024 17:14:50 +0000 (UTC)
-Received: from [10.22.33.225] (unknown [10.22.33.225])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id D5FAE492BD0;
-	Wed, 27 Mar 2024 17:14:49 +0000 (UTC)
-Message-ID: <d8e8b000-7d09-4747-82ec-bf99a73607ee@redhat.com>
-Date: Wed, 27 Mar 2024 13:14:49 -0400
+	s=arc-20240116; t=1711575091; c=relaxed/simple;
+	bh=G1xjtCwsE5TyJpVtDYihKDzXG3ZXcnzrS1aBTofQBcw=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=mHVjyS/Mkf0ZJYEyPAAKY+b1aaJjKawPO5rpdLQm8ScQx7BECw4saGro46Ii4xnt68QPNwJ2fDK7taCag89Ka4hrPZ/93hp/hGxq+Yd27LiQk8NbIOEKhv+ggG2JmkUPU18VYgY8fhtvZ0qvKegailGuK7ZoejlXfETkcxP8gMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yuanchu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VJ9tFCuE; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yuanchu.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60a0815e3f9so4819547b3.2
+        for <cgroups@vger.kernel.org>; Wed, 27 Mar 2024 14:31:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1711575088; x=1712179888; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=j1WkldVevb55Hs0T4InQAALOIu6zVUWaR4B4A3EAoAg=;
+        b=VJ9tFCuE6SHosieGf6Y797K3Msd0s+1vEvqUMM24r+awggGQWVfpoEP/Kg8EFOy6a1
+         qM4kampCUfCBs7o4XHeVQM9+vUHselrR6QsQo44ReI13NEacHu2cetVN7pLiXr0ru+fq
+         W6na2bw7UmrorRri4Y49lEQf99EsujLOEEcXV1pi7Ju5GdmaRcMIYNpzkOlu1VSxGXWl
+         3EFEA1ie57jR3gICJBVLZK/x1t2xFwrSy3WBYBaRYn2y2/gsTHMS4BJpESsGgiVeJpr0
+         7x2ubR+GpKXSEBSPujU/3R5xP8ClAmcgH++sH+jLy/sp4ZKrdzxFc/adJVxGPtDomZDh
+         WUnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711575088; x=1712179888;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=j1WkldVevb55Hs0T4InQAALOIu6zVUWaR4B4A3EAoAg=;
+        b=Pgjgid/gqhqd/nOARlNxmQ1i9Gq+ap6EB/ycXvQb/UephRL7LjZbZN0D3bc+n0YlPc
+         Ru1HlwPCkfEKhjrmsKNTXjjXdbmmuRmcaTQkCA/3i6+pLmGXLL/amKnV6hF4IsBH2nSK
+         1D+MCGnOwlQQEt7qK4CqnuthubAH1wLtLVrFB8ZHc9eKsYYhAKQ9UP5XCWocHoGRyei9
+         DO4a4oujIQtuMta+TaQYAqJ0D/86vYSWGw0WMNpm+B5L8lUKEwUURv6lChbNgS7aCwyJ
+         zNPAjTcHrJnz15L62hCOepd2l3uIKH7H1/OjN6WCiLE7IpCuQS219T2sacXPQlI4tRZ7
+         RsMA==
+X-Forwarded-Encrypted: i=1; AJvYcCVKefaBp00kmKaomkZOyjb71y3+A3ZY1r4Rrlgsy4sJobkzYcemqhjC/cmT/fLvWXuuXW7JiIiJ30R0WKCkE2yYtoe9h9vfzA==
+X-Gm-Message-State: AOJu0YzXeDpjWKWDWP6UkkSg9f9WjwNzhXaBVgHJTZgxjKm+bFyJxf/k
+	FHRas1idOA9U74OmpFgcTKSlxJNO2zoAWwbjgqO6i+iMrPUSsOJ3yQgiagtos74NyDZsFssEEAm
+	kT8Y4Vg==
+X-Google-Smtp-Source: AGHT+IEadIRNrv0swKBdpi8F8A66pEpu8qyXv3IJO389bzVqRmj7ZSDORZJUPOnrxxSqDEOUJMJJc78lWKDl
+X-Received: from yuanchu-desktop.svl.corp.google.com ([2620:15c:2a3:200:6df3:ef42:a58e:a6b1])
+ (user=yuanchu job=sendgmr) by 2002:a05:6902:1145:b0:dce:5218:c89b with SMTP
+ id p5-20020a056902114500b00dce5218c89bmr119024ybu.5.1711575087927; Wed, 27
+ Mar 2024 14:31:27 -0700 (PDT)
+Date: Wed, 27 Mar 2024 14:30:59 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [problem] Hung task caused by memory migration when cpuset.mems
- changes
-Content-Language: en-US
-To: Tejun Heo <tj@kernel.org>, Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc: cgroups@vger.kernel.org, hughd@google.com, wuyun.abel@bytedance.com,
- hezhongkun.hzk@bytedance.com, chenying.kernel@bytedance.com,
- zhanghaoyu.zhy@bytedance.com
-References: <20240325144609.983333-1-zhouchuyi@bytedance.com>
- <ZgMFPMjZRZCsq9Q-@slm.duckdns.org>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <ZgMFPMjZRZCsq9Q-@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.396.g6e790dbe36-goog
+Message-ID: <20240327213108.2384666-1-yuanchu@google.com>
+Subject: [RFC PATCH v3 0/8] mm: workingset reporting
+From: Yuanchu Xie <yuanchu@google.com>
+To: David Hildenbrand <david@redhat.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>, 
+	Khalid Aziz <khalid.aziz@oracle.com>, Henry Huang <henry.hj@antgroup.com>, 
+	Yu Zhao <yuzhao@google.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Gregory Price <gregory.price@memverge.com>, Huang Ying <ying.huang@intel.com>
+Cc: Wei Xu <weixugc@google.com>, David Rientjes <rientjes@google.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Shuah Khan <shuah@kernel.org>, 
+	Yosry Ahmed <yosryahmed@google.com>, Matthew Wilcox <willy@infradead.org>, 
+	Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>, Kairui Song <kasong@tencent.com>, 
+	"Michael S. Tsirkin" <mst@redhat.com>, Vasily Averin <vasily.averin@linux.dev>, Nhat Pham <nphamcs@gmail.com>, 
+	Miaohe Lin <linmiaohe@huawei.com>, Qi Zheng <zhengqi.arch@bytedance.com>, 
+	Abel Wu <wuyun.abel@bytedance.com>, "Vishal Moola (Oracle)" <vishal.moola@gmail.com>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, Yuanchu Xie <yuanchu@google.com>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 3/26/24 13:26, Tejun Heo wrote:
-> Hello,
->
-> On Mon, Mar 25, 2024 at 10:46:09PM +0800, Chuyi Zhou wrote:
->> In our production environment, we have observed several cases of hung tasks
->> blocked on the cgroup_mutex. The underlying cause is that when user modify
->> the cpuset.mems, memory migration operations are performed in the
->> work_queue. However, the duration of these operations depends on the memory
->> size of workloads and can consume a significant amount of time.
->>
->> In the __cgroup_procs_write operation, there is a flush_workqueue operation
->> that waits for the migration to complete while holding the cgroup_mutex.
->> As a result, most cgroup-related operations have the potential to
->> experience blocking.
->>
->> We have noticed the commit "cgroup/cpuset: Enable memory migration for
->> cpuset v2"[1]. This commit enforces memory migration when modifying the
->> cpuset. Furthermore, in cgroup v2, there is no option available for
->> users to disable CS_MEMORY_MIGRATE.
->>
->> In our scenario, we do need to perform memory migration when cpuset.mems
->> changes, while ensuring that other tasks are not blocked on cgroup_mutex
->> for an extended period of time.
->>
->> One feasible approach is to revert the commit "cgroup/cpuset: Enable memory
->> migration for cpuset v2"[1]. This way, modifying cpuset.mems will not
->> trigger memory migration, and we can manually perform memory migration
->> using migrate_pages()/move_pages() syscalls.
->>
->> Another solution is to use a lazy approach for memory migration[2]. In
->> this way we only walk through all the pages and sets pages to protnone,
->> and numa faults triggered by later touch will handle the movement. That
->> would significantly reduce the time spent in cpuset_migrate_mm_workfn.
->> But MPOL_MF_LAZY was disabled by commit 2cafb582173f ("mempolicy: remove
->> confusing MPOL_MF_LAZY dead code")
-> One approach we can take is pushing the cpuset_migrate_mm_wq flushing to
-> task_work so that it happens after cpuset mutex is dropped. That way we
-> maintain the operation synchronicity for the issuer while avoiding bothering
-> anyone else.
-I think it is a good idea to use task_work() to wait for mm migration to 
-finish before returning to user space.
->
-> Can you see whether the following patch fixes the issue for you? Thanks.
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index ba36c073304a..8a8bd3f157ab 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -42,6 +42,7 @@
->   #include <linux/spinlock.h>
->   #include <linux/oom.h>
->   #include <linux/sched/isolation.h>
-> +#include <linux/task_work.h>
->   #include <linux/cgroup.h>
->   #include <linux/wait.h>
->   #include <linux/workqueue.h>
-> @@ -2696,6 +2697,26 @@ static void cpuset_migrate_mm_workfn(struct work_struct *work)
->   	kfree(mwork);
->   }
->   
-> +static void flush_migrate_mm_task_workfn(struct callback_head *head)
-> +{
-> +	flush_workqueue(cpuset_migrate_mm_wq);
-> +}
-> +
-> +static int schedule_flush_migrate_mm(void)
-> +{
-> +	struct callback_head *flush_cb;
-> +
-> +	flush_cb = kzalloc(sizeof(*flush_cb), GFP_KERNEL);
-> +	if (!flush_cb)
-> +		return -ENOMEM;
-> +
-> +	flush_cb->func = flush_migrate_mm_task_workfn;
-> +	if (task_work_add(current, flush_cb, TWA_RESUME))
-> +		kfree(flush_cb);
-> +
-> +	return 0;
-> +}
-> +
->   static void cpuset_migrate_mm(struct mm_struct *mm, const nodemask_t *from,
->   							const nodemask_t *to)
->   {
-> @@ -2718,11 +2739,6 @@ static void cpuset_migrate_mm(struct mm_struct *mm, const nodemask_t *from,
->   	}
->   }
->   
-> -static void cpuset_post_attach(void)
-> -{
-> -	flush_workqueue(cpuset_migrate_mm_wq);
-> -}
-> -
->   /*
->    * cpuset_change_task_nodemask - change task's mems_allowed and mempolicy
->    * @tsk: the task to change
-> @@ -3276,6 +3292,10 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
->   	bool cpus_updated, mems_updated;
->   	int ret;
->   
-> +	ret = schedule_flush_migrate_mm();
-> +	if (ret)
-> +		return ret;
-> +
+This patch series provides workingset reporting of user pages in
+lruvecs, of which coldness can be tracked by accessed bits and fd
+references. However, the concept of workingset applies generically to
+all types of memory, which could be kernel slab caches, discardable
+userspace caches (databases), or CXL.mem. Therefore, data sources might
+come from slab shrinkers, device drivers, or the userspace. IMO, the
+kernel should provide a set of workingset interfaces that should be
+generic enough to accommodate the various use cases, and be extensible
+to potential future use cases. The current proposed interfaces are not
+sufficient in that regard, but I would like to start somewhere, solicit
+feedback, and iterate.
 
-It may be too early to initiate the task_work at cpuset_can_attach() as 
-no mm migration may happen. My suggestion is to do it at cpuset_attach() 
-with at least one cpuset_migrate_mm() call.
+Use cases
+==========
+Job scheduling
+For data center machines, workingset information allows the job scheduler
+to right-size each job and land more jobs on the same host or NUMA node,
+and in the case of a job with increasing workingset, policy decisions
+can be made to migrate other jobs off the host/NUMA node, or oom-kill
+the misbehaving job. If the job shape is very different from the machine
+shape, knowing the workingset per-node can also help inform page
+allocation policies.
 
-Cheers,
-Longman
+Proactive reclaim
+Workingset information allows the a container manager to proactively
+reclaim memory while not impacting a job's performance. While PSI may
+provide a reactive measure of when a proactive reclaim has reclaimed too
+much, workingset reporting enables the policy to be more accurate and
+flexible.
 
->   	/* used later by cpuset_attach() */
->   	cpuset_attach_old_cs = task_cs(cgroup_taskset_first(tset, &css));
->   	oldcs = cpuset_attach_old_cs;
-> @@ -3584,7 +3604,11 @@ static ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
->   {
->   	struct cpuset *cs = css_cs(of_css(of));
->   	struct cpuset *trialcs;
-> -	int retval = -ENODEV;
-> +	int retval;
-> +
-> +	retval = schedule_flush_migrate_mm();
-> +	if (retval)
-> +		return retval;
->   
->   	buf = strstrip(buf);
->   
-> @@ -3613,8 +3637,10 @@ static ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
->   
->   	cpus_read_lock();
->   	mutex_lock(&cpuset_mutex);
-> -	if (!is_cpuset_online(cs))
-> +	if (!is_cpuset_online(cs)) {
-> +		retval = -ENODEV;
->   		goto out_unlock;
-> +	}
->   
->   	trialcs = alloc_trial_cpuset(cs);
->   	if (!trialcs) {
-> @@ -3643,7 +3669,6 @@ static ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
->   	cpus_read_unlock();
->   	kernfs_unbreak_active_protection(of->kn);
->   	css_put(&cs->css);
-> -	flush_workqueue(cpuset_migrate_mm_wq);
->   	return retval ?: nbytes;
->   }
->   
-> @@ -4283,7 +4308,6 @@ struct cgroup_subsys cpuset_cgrp_subsys = {
->   	.can_attach	= cpuset_can_attach,
->   	.cancel_attach	= cpuset_cancel_attach,
->   	.attach		= cpuset_attach,
-> -	.post_attach	= cpuset_post_attach,
->   	.bind		= cpuset_bind,
->   	.can_fork	= cpuset_can_fork,
->   	.cancel_fork	= cpuset_cancel_fork,
->
+Ballooning (similar to proactive reclaim)
+While this patch series does not extend the virtio-balloon device,
+balloon policies benefit from workingset to more precisely determine
+the size of the memory balloon. On desktops/laptops/mobile devices where
+memory is scarce and overcommitted, the balloon sizing in multiple VMs
+running on the same device can be orchestrated with workingset reports
+from each one.
+
+Promotion/Demotion
+Similar to proactive reclaim, a workingset report enables demotion to a
+slower tier of memory.
+For promotion, the workingset report interfaces need to be extended to
+report hotness and gather hotness information from the devices[1].
+
+[1]
+https://www.opencompute.org/documents/ocp-cms-hotness-tracking-requirements-white-paper-pdf-1
+
+Sysfs and Cgroup Interfaces
+==========
+The interfaces are detailed in the patches that introduce them. The main
+idea here is we break down the workingset per-node per-memcg into time
+intervals (ms), e.g.
+
+1000 anon=137368 file=24530
+20000 anon=34342 file=0
+30000 anon=353232 file=333608
+40000 anon=407198 file=206052
+9223372036854775807 anon=4925624 file=892892
+
+I realize this does not generalize well to hotness information, but I
+lack the intuition for an abstraction that presents hotness in a useful
+way. Based on a recent proposal for move_phys_pages[2], it seems like
+userspace tiering software would like to move specific physical pages,
+instead of informing the kernel "move x number of hot pages to y
+device". Please advise.
+
+[2]
+https://lore.kernel.org/lkml/20240319172609.332900-1-gregory.price@memverge.com/
+
+Implementation
+==========
+Currently, the reporting of user pages is based off of MGLRU, and
+therefore requires CONFIG_LRU_GEN=y. We would benefit from more MGLRU
+generations for a more fine-grained workingset report. I will make the
+generation count configurable in the next version. The workingset
+reporting mechanism is gated behind CONFIG_WORKINGSET_REPORT, and the
+aging thread is behind CONFIG_WORKINGSET_REPORT_AGING.
+
+--
+Changes from RFC v2 -> RFC v3:
+- Update to v6.8
+- Added an aging kernel thread (gated behind config)
+- Added basic selftests for sysfs interface files
+- Track swapped out pages for reaccesses
+- Refactoring and cleanup
+- Dropped the virtio-balloon extension to make things manageable
+
+Changes from RFC v1 -> RFC v2:
+- Refactored the patchs into smaller pieces
+- Renamed interfaces and functions from wss to wsr (Working Set Reporting)
+- Fixed build errors when CONFIG_WSR is not set
+- Changed working_set_num_bins to u8 for virtio-balloon
+- Added support for per-NUMA node reporting for virtio-balloon
+
+[rfc v1]
+https://lore.kernel.org/linux-mm/20230509185419.1088297-1-yuanchu@google.com/
+[rfc v2]
+https://lore.kernel.org/linux-mm/20230621180454.973862-1-yuanchu@google.com/
+
+Yuanchu Xie (8):
+  mm: multi-gen LRU: ignore non-leaf pmd_young for force_scan=true
+  mm: aggregate working set information into histograms
+  mm: use refresh interval to rate-limit workingset report aggregation
+  mm: report workingset during memory pressure driven scanning
+  mm: extend working set reporting to memcgs
+  mm: add per-memcg reaccess histogram
+  mm: add kernel aging thread for workingset reporting
+  mm: test system-wide workingset reporting
+
+ drivers/base/node.c                           |   3 +
+ include/linux/memcontrol.h                    |   5 +
+ include/linux/mmzone.h                        |   4 +
+ include/linux/workingset_report.h             | 107 +++
+ mm/Kconfig                                    |  15 +
+ mm/Makefile                                   |   2 +
+ mm/internal.h                                 |  45 ++
+ mm/memcontrol.c                               | 386 ++++++++-
+ mm/mmzone.c                                   |   2 +
+ mm/vmscan.c                                   |  95 ++-
+ mm/workingset.c                               |   9 +-
+ mm/workingset_report.c                        | 757 ++++++++++++++++++
+ mm/workingset_report_aging.c                  | 127 +++
+ tools/testing/selftests/mm/.gitignore         |   1 +
+ tools/testing/selftests/mm/Makefile           |   3 +
+ .../testing/selftests/mm/workingset_report.c  | 315 ++++++++
+ .../testing/selftests/mm/workingset_report.h  |  37 +
+ .../selftests/mm/workingset_report_test.c     | 328 ++++++++
+ 18 files changed, 2231 insertions(+), 10 deletions(-)
+ create mode 100644 include/linux/workingset_report.h
+ create mode 100644 mm/workingset_report.c
+ create mode 100644 mm/workingset_report_aging.c
+ create mode 100644 tools/testing/selftests/mm/workingset_report.c
+ create mode 100644 tools/testing/selftests/mm/workingset_report.h
+ create mode 100644 tools/testing/selftests/mm/workingset_report_test.c
+
+-- 
+2.44.0.396.g6e790dbe36-goog
 
 
