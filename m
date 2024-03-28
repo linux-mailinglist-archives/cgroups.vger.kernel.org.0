@@ -1,86 +1,94 @@
-Return-Path: <cgroups+bounces-2228-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2229-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31211890705
-	for <lists+cgroups@lfdr.de>; Thu, 28 Mar 2024 18:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E2FD89070E
+	for <lists+cgroups@lfdr.de>; Thu, 28 Mar 2024 18:22:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E00C229E407
-	for <lists+cgroups@lfdr.de>; Thu, 28 Mar 2024 17:19:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD059299EAC
+	for <lists+cgroups@lfdr.de>; Thu, 28 Mar 2024 17:22:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C35B7F7C9;
-	Thu, 28 Mar 2024 17:19:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E374A7EF14;
+	Thu, 28 Mar 2024 17:22:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mv3RCmsO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VKf6inN+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90ECF5A780
-	for <cgroups@vger.kernel.org>; Thu, 28 Mar 2024 17:19:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52BAC1EA6E;
+	Thu, 28 Mar 2024 17:22:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711646383; cv=none; b=Uiczoo7As78yFXgh5pxBA9bCeIgJY2oG+89QZo23UGSgQl3kRxek6iNd08cvhJMhzRsD2IiC6ca5Gica4sZfsrolYpT65aoD3BC0s8MfPUMyRcqfI5ZnL7jZdEQGM6MtcXN6+4BxqmUqV+ev2WIDlQFwdKhJrThQLU6j2HoyEcM=
+	t=1711646529; cv=none; b=AFH25Fscp9VGig1Gx2XgwrwQSarjjVg/Z5LyBRpjd6+Hr8DyI7AaQH+74XTqRsI8YO/7wkjJMeVZwQ32HKiBFYFHZ78ESD4chF+eldF9pchOo3oJfMs2DjqRQbw2uNMm2TYO9hdWQnJIgZmWg2QoNaEBCrpfLIlyMfxrAiWYzg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711646383; c=relaxed/simple;
-	bh=BZy0e/HR+pWf3mz25qycBa3sXr1+PebgKxFTS/8vQOA=;
+	s=arc-20240116; t=1711646529; c=relaxed/simple;
+	bh=rTVGMrfwkd+NlU1R9C/m47OpxkWT83eOW/pXXryVqcc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=paD4cL9xQmXJTzXs++xOCXJK6pGz5ChiY3N8aIAXts7+B/O32PfZL2QrpY4Wfb9P+gP5F9isK0WXbP0wfPxtddfyucTZJ+mZW50c80ahqayLBnB7zUYozXHnt9NT95JXmY1edcRisV/T4Qz570HdSwvPwGeT9zNITjDYKkGqHS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mv3RCmsO; arc=none smtp.client-ip=209.85.210.54
+	 Content-Type:Content-Disposition:In-Reply-To; b=Bn1D9TmIHPigIqj7jeFQTHTsyDewiFVSX8Pbo64Q7ueSUc+0FtCPyub0W1tMwGMLxOED0wfqXpIoG9sp8nYgylzwdvUCW402yUNqZUgyM1anZCAyD/iCSxjY2ShwJHyKuBXYQG2rQ0wxxQuWuotgzloFiYTVbA57u4AjVqXENXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VKf6inN+; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e6d089f603so772559a34.1
-        for <cgroups@vger.kernel.org>; Thu, 28 Mar 2024 10:19:41 -0700 (PDT)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e6b54a28d0so989242b3a.2;
+        Thu, 28 Mar 2024 10:22:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711646380; x=1712251180; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1711646528; x=1712251328; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=sfV7qShhatNrGXBe7b0YAYRKlqVZCrAHczV6YxdU+OI=;
-        b=mv3RCmsOiHpxouJr9otseY0cogaxGy+awTEwaNw9VjJpHHAmieEwqgl2A0rQUrmRs4
-         k+S4jrH0iBsKSeTUS84/47pfzKGtkFsa8yC6ZQH045rJahT0dq3gJdbDKVGdKKfzOBqm
-         VOY7T1iynnTVz0mOEvqIYoMOaBcT9W5glZzX5H0NQyOhKxu6ehlUksYVsTDTtI2r/ApS
-         67vgM9GF2vnT4AZhW1KKu78XA2a6Y2T9DwI2RKJwPIzLhgx6rVcPEHhwW3LZnycG9Jt6
-         zd2ukdWGakU6+/hKirixR9/TGXEi+CaCZSa3g5bHTe6HyO7EXQeYmj73182Dct7YpZm2
-         rRVA==
+        bh=nJTs2T19ZBiaUU6XEnV+BuULbMh1YwOJefd/Q2W0TsI=;
+        b=VKf6inN+ywJknsS50jG5870ZVt4uTBvXS/YhJyDKGoRxb+cTmts+c1EChjZ7LUhC/a
+         zmREgWU4OwDxm+NMG7HMPS18CGK2v/KxxSG3LyEiIqCChWFFsdMXPKl0rgufFVmWR6AO
+         3H8jVYKeZeISLiUR4KLIqw5NNk/DYt1oA41RjU3Q4eVRSTLReLoGtDp7/vsbMTKmTwAP
+         etycr06zN/jR2XX9aK0K88BbndPVBvYpmxQMxhD60poZs7O+raLG65zJ6dKYL1bR0G5R
+         VoDfufXBogD2h1nQxHlXOrHpVGHgRu12dGfZzsQANl/pvOkdrb/V2pj/JEoJlpt0tklK
+         xFgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711646380; x=1712251180;
+        d=1e100.net; s=20230601; t=1711646528; x=1712251328;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sfV7qShhatNrGXBe7b0YAYRKlqVZCrAHczV6YxdU+OI=;
-        b=s+VR6mG3cYtp19PtvgxlhgaFEos6cp8KS+rcGfV2+agd0AgwSZ5paZbTBzgfP5Pjwc
-         jK0/Hgr/tpeXrnc48FqxE8t/R6MoxdnOwy9w7GlFuMTtTjmDK6p+QtrmUEMo23NL6oNw
-         sslEn4JJAGJQDjPE8MkKvyzKm0f8BvdhjyjOfgQ6vsd6YaH5uWPEJy3TiX2AlplUSwGK
-         Nkg0+pzuUaQ9T8X6j+A44RwfPmFFwJ1JijhbQT7G7jKCM0qx+gbQHPWG3AuBHyMbHpOQ
-         Kp3tFNe+7xkpsRikln+nggBEQKs50tERObVIRyk01wTEpCLhYyUfTQ6z1JV/sk63Gtit
-         qk3A==
-X-Forwarded-Encrypted: i=1; AJvYcCXlzRyZG1lwmTI86zJdMapm2exAI0QhSbR8lFHsaF2cBe1I+GfMTBYPXO5kxobweM3mBiEViNFk02b2l7IQ5WIDxoSouNVb5g==
-X-Gm-Message-State: AOJu0YzupyYW2VmQH1X6ay1zUNBSbbe12saIqErSPLdSwgPoX0qhuEQ8
-	ZoPJg5KkjXkcxK+fB2lX6+oQthUwQW3qGEcEt3Q8EQ414NTS22dv
-X-Google-Smtp-Source: AGHT+IFmOdQsoW1apEip9E2PFY45O/QAdNMogcsa29luKsarAQdr5m+rdSz79tSYeUX1a1yk0uXcFw==
-X-Received: by 2002:a05:6870:d1c1:b0:222:619f:9510 with SMTP id b1-20020a056870d1c100b00222619f9510mr3838195oac.27.1711646380569;
-        Thu, 28 Mar 2024 10:19:40 -0700 (PDT)
+        bh=nJTs2T19ZBiaUU6XEnV+BuULbMh1YwOJefd/Q2W0TsI=;
+        b=OcwKIC0YMI/ocLQtGKL+/2pBIlo3z1WNB9URjWt51mjYZS3j5MB+ahiqzRIR9HtFQx
+         1K3kFQ71MuiutBSYhIenPBjYotAnPga8PXSuE0ZxSvKpvVORC5wEFVbTyJ5ZxC1Jc+PL
+         +Dz1ACp8LunyAnnDjJb9kIhEpQGgyBBVBFbHhoBXuD8qvSVNzvTorNOsPRYeLgYvaRTq
+         lPJTvrXRFREN+wiMs2okT66a+3a7nqMihEGqV6MTdXSmO7jf2cm8Py1grB7IlvfXpwjL
+         abxjNHIYp4utYfmqU+XCdAngzpNMQ9RQY6aHtohX4LO4JYC3BaxSyY4U8xwsp7a6o8L3
+         4WoA==
+X-Forwarded-Encrypted: i=1; AJvYcCUBSGh/uVwvzYqW7br/GecEyF1ZDcnskdTx9Ia5S3oCd+SAJl7bzAavJ3EEYi3FbvulAzabF41qIHWBv/MrOw3i6UGrbWRVqaPyhsyEFUxCfVkciDeXL+ES9k2Jji6EvRH/ugLoLWHL1vHJ1TR9dxN5ceSTsEw4kquhH3oK5gxkWddIiDkC5y3cPwPy+pbzZbWeLBCmoj6WZEKu6g==
+X-Gm-Message-State: AOJu0Yy8mGhM1Vp9bXI1qhyQyOIVpmJ0mV/2imvHfaxjI/nnwinEKb5F
+	42E/yAGQgAqNXUcPD1J4X72Qai8wbehtsrA12IVLH5SzV3qw7G4W
+X-Google-Smtp-Source: AGHT+IEQw6JvwbE25jnXK5NyR/sgTVhJaXMx83kTTEkRAeXjs5/u197o7f4DiVoEvkuWqC97fCG8OA==
+X-Received: by 2002:aa7:8893:0:b0:6ea:c4f4:13cc with SMTP id z19-20020aa78893000000b006eac4f413ccmr4333915pfe.26.1711646527638;
+        Thu, 28 Mar 2024 10:22:07 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::5:4d4e])
-        by smtp.gmail.com with ESMTPSA id e10-20020a631e0a000000b005dc98d9114bsm1552756pge.43.2024.03.28.10.19.39
+        by smtp.gmail.com with ESMTPSA id gu5-20020a056a004e4500b006ead4eb1b09sm1619509pfb.124.2024.03.28.10.22.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 10:19:40 -0700 (PDT)
+        Thu, 28 Mar 2024 10:22:07 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 28 Mar 2024 07:19:38 -1000
+Date: Thu, 28 Mar 2024 07:22:05 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Abel Wu <wuyun.abel@bytedance.com>
-Cc: Chuyi Zhou <zhouchuyi@bytedance.com>, cgroups@vger.kernel.org,
-	longman@redhat.com, tj@kernel.orgv, hughd@google.com,
-	hezhongkun.hzk@bytedance.com, chenying.kernel@bytedance.com,
-	zhanghaoyu.zhy@bytedance.com
-Subject: Re: Re: [problem] Hung task caused by memory migration when
- cpuset.mems changes
-Message-ID: <ZgWmqmIXwdN43cUl@slm.duckdns.org>
-References: <20240325144609.983333-1-zhouchuyi@bytedance.com>
- <ZgMFPMjZRZCsq9Q-@slm.duckdns.org>
- <232747d6-2c39-4e2b-879e-9ac12445d488@bytedance.com>
+To: Djalal Harouni <tixxdz@gmail.com>
+Cc: Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
+Message-ID: <ZgWnPZtwBYfHEFzf@slm.duckdns.org>
+References: <20240327-ccb56fc7a6e80136db80876c@djalal>
+ <20240327225334.58474-1-tixxdz@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -89,25 +97,31 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <232747d6-2c39-4e2b-879e-9ac12445d488@bytedance.com>
+In-Reply-To: <20240327225334.58474-1-tixxdz@gmail.com>
 
-On Thu, Mar 28, 2024 at 03:53:30PM +0800, Abel Wu wrote:
-> > +static int schedule_flush_migrate_mm(void)
-> > +{
-> > +	struct callback_head *flush_cb;
-> > +
-> > +	flush_cb = kzalloc(sizeof(*flush_cb), GFP_KERNEL);
-> > +	if (!flush_cb)
-> > +		return -ENOMEM;
-> > +
-> > +	flush_cb->func = flush_migrate_mm_task_workfn;
-> > +	if (task_work_add(current, flush_cb, TWA_RESUME))
-> > +		kfree(flush_cb);
+Hello, Djalal.
+
+On Wed, Mar 27, 2024 at 11:53:22PM +0100, Djalal Harouni wrote:
+> This patch series adds support to freeze the task cgroup hierarchy
+> that is on a default cgroup v2 without going through kernfs interface.
 > 
-> It seems we will lose track of flush_cb and causes memleak here. Did I miss
-> anything?
+> For some cases we want to freeze the cgroup of a task based on some
+> signals, doing so from bpf is better than user space which could be
+> too late.
+> 
+> Planned users of this feature are: tetragon and systemd when freezing
+> a cgroup hierarchy that could be a K8s pod, container, system service
+> or a user session.
+> 
+> Patch 1: cgroup: add cgroup_freeze_no_kn() to freeze a cgroup from bpf
+> Patch 2: bpf: add bpf_task_freeze_cgroup() to freeze the cgroup of a task
+> Patch 3: selftests/bpf: add selftest for bpf_task_freeze_cgroup
 
-Oops, yeah, the work item needs to free itself. Thanks for spotting it.
+It bothers me a bit that it's adding a dedicated interface for something
+which already has a defined userspace interface. Would it be better to have
+kfunc wrappers for kernel_read() and kernel_write()?
+
+Thanks.
 
 -- 
 tejun
