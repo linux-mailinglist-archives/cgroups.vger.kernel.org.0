@@ -1,127 +1,132 @@
-Return-Path: <cgroups+bounces-2233-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2234-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7ED23890921
-	for <lists+cgroups@lfdr.de>; Thu, 28 Mar 2024 20:23:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6131E89098D
+	for <lists+cgroups@lfdr.de>; Thu, 28 Mar 2024 20:46:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3312F1F29C4C
-	for <lists+cgroups@lfdr.de>; Thu, 28 Mar 2024 19:23:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9300E1C2D980
+	for <lists+cgroups@lfdr.de>; Thu, 28 Mar 2024 19:46:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43A3E137C26;
-	Thu, 28 Mar 2024 19:23:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E3A1386BF;
+	Thu, 28 Mar 2024 19:46:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Cngsym2B";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TSDDrWfH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KUerO6QI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 512103BBCA;
-	Thu, 28 Mar 2024 19:23:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E1B21849;
+	Thu, 28 Mar 2024 19:46:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711653815; cv=none; b=nJOr4ES71BMUAv8ejXqqqclVbaxjkSFVdyCaW1S5BpNN3j7Wduw05KyxJKHZeIwe4aVYmqfsL6XWXYj2AYucQmEFiS8ovHw6Sxvls5yjlNqi2FNbG6fHDHBN5kJL/8SwcERoTp9/umLs3Me+wXN7QA/Qns5Xe9u8ljTvzkHy9Wg=
+	t=1711655178; cv=none; b=LOtlFXufwnuEClYWoTg4ex/XkoPP9iobuIH0cGcV+Q2gZ6JpZfkt5jAiQMDfyWExXEsj0VVpXMtdWz6O8Q+Ei/AgAyfd2djbrIklkJzKwLBsZzO4KNNXcnuSUvKyyS3I7A4QCS7tFKE8T5trLdRM+B82ea354ah1tWo9yXlprFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711653815; c=relaxed/simple;
-	bh=wA/3ZMzsqhnPRDvcXtmhlRKA0r/1h+Jjze3JHfLTZzI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DpJ/B3L4x5UOcYPZsSL1g2wOgCWpbs5RJHmGk2jx5X/1tQzfJ70xa9EfWZvPsWhP8WuREfob5VhvaDw15BNnz2G+9q3LTDjHDgH4n+td8j1kRCQnvRAA21AuNaE/UdNsq6dmwj/Dnr4lcT6k2xGnbC/Sygz8/+PNAm55yCXLzlg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Cngsym2B; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=TSDDrWfH; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 688DA34336;
-	Thu, 28 Mar 2024 19:23:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1711653811;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ji3/UHuciPHNkExk7xa/gFONeP3sfxTR6+pZplh8sHw=;
-	b=Cngsym2Bx1bWQZwsIC0zsKw0NzvpGxOk3akKbL4obhj7d1jb/iUdwFZLt1Qmv0adOFlG7s
-	6RgLs7a8JOJDYVl2MEONXeeOkycod4dhhy5ZTk5vGNPi4W+RQIR/VSHMzxPThbcfRd+OMa
-	lF7uFr5exuV7EWHqlpBjgURJ17wMPoE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1711653811;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ji3/UHuciPHNkExk7xa/gFONeP3sfxTR6+pZplh8sHw=;
-	b=TSDDrWfHiZ0MN2QLCLn9mZDB70GugkpLsGz/KGcuI46XhybN7OsWUj4DInvPdyCE0bbMvA
-	L5XYOUgivHqdy/Ag==
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4B8AD13A94;
-	Thu, 28 Mar 2024 19:23:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id QUpLErPDBWYPLwAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Thu, 28 Mar 2024 19:23:31 +0000
-Date: Thu, 28 Mar 2024 20:16:12 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Mike Snitzer <snitzer@kernel.org>,
-	Mikulas Patocka <mpatocka@redhat.com>,
-	Matthew Sakai <msakai@redhat.com>, Chris Mason <clm@fb.com>,
-	David Sterba <dsterba@suse.com>, dm-devel@lists.linux.dev,
-	cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 4/4] btrfs use bio_list_merge_init
-Message-ID: <20240328191612.GZ14596@suse.cz>
-Reply-To: dsterba@suse.cz
-References: <20240328084147.2954434-1-hch@lst.de>
- <20240328084147.2954434-5-hch@lst.de>
+	s=arc-20240116; t=1711655178; c=relaxed/simple;
+	bh=spgJqmt4sgwaRYWhJ7flL2ZvsHlYCW0N6JgDCKojbDc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BTBgBQXZH6tC5+nWZ+58cqKF6KpLSgiBl5ocQlnP8+cFILHiOnVKPyX7ETgKrk8QeOMdBeLJmxe1xdRWWxv0f7DTqsrENEQEc0QHG7P4PQyWmZhZzS5MoG2Wh917D58kcl5Se1ryTjo95poKbVu3cukjFOLdibmxl9v5d0iL6KQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KUerO6QI; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-341b9f6fb2eso864898f8f.2;
+        Thu, 28 Mar 2024 12:46:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711655175; x=1712259975; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=spgJqmt4sgwaRYWhJ7flL2ZvsHlYCW0N6JgDCKojbDc=;
+        b=KUerO6QI5JQ/YwBujcu/N1ElqfV1Y2/PcBI8LWNh9Fa6l8ijI3QLr8qJdyViTUUiPM
+         +px9K9TO6dB4AYxUMt1wJs0SRW6m81gG7YZ6SmMDKtlYNuZafuadriIH5nx6hT5cEHwi
+         yL8bh90xea5HssZdWnVYdg4rMCDrrdRU4MTt/gqJqvjoByO9cNF+olYepzDomrCOYL48
+         k7odhOKf+q+yEYZWB2we4vmKNKkFaXTFlDliF7GXqflWBDcqXCkIllBBNgCJvzpMJqCw
+         w5cxtzO0MT+gpgyDXcm6cJ+O1P0Q/YgUPFBZau52yJCnA3umiZeqkLbHP+MNMmdE5BdC
+         He4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711655175; x=1712259975;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=spgJqmt4sgwaRYWhJ7flL2ZvsHlYCW0N6JgDCKojbDc=;
+        b=wxRhp7FJJIYFXOzdkpxi4Ww4+S6sFV2FvI401AAB0DtPbJ/aMmVq3elJin3iEXl7pr
+         0vmQS3O+gZFNg9JSIE9XAUo2XLFmjG/eWA3bJF5mEDS0yB3vE5C0UvXS3czozFUFMbXC
+         ZRdGW+Hq8eL+BILnorEsKjEyzr3Te3AG8n/UHsgMk1gwal1PTEDnO4AwiZNs2Xhywm2X
+         66egB2wI/2hjXantqUty6aQNTZAZRmzcZF49SnLxXeLI5onXeklWBU98nYMyK9Prjdvk
+         CDzHTrqllPssygOeUVzJQip/5Kd7j4ot5mvwy6S7gnpRbhSYiprMes2AC1bnevc5y+N0
+         YCEg==
+X-Forwarded-Encrypted: i=1; AJvYcCVx1HhP/nhXQAOaPeZRUMSKnTQoB133dgUlTHs6kdDVrVVmkjDCXuSAx7k9/bm91tJussp0S4yjRQFdrvHbHGNBeF85Ho+9N1EbFHFPF85Iu+BDR7xvEl4dwlWQPLIjaFhRFy61JnA/t3HRQBnZyDvrc1NFew/i9bxneSVIa1G292wjYzTCdj9KgIogxDpmd0o3rNkLxv2bpVt2Ag==
+X-Gm-Message-State: AOJu0YwC47D81a/brX+fwjRQoofLbXvy4XqaNUAXpXC9SY0HOvo1qB2W
+	hpbJDj4kmgaQS5gR9ZEIEIHnIAVaHYRw1FC/dq2TXfhXJIvcLgaZkZkEzmTxVG9JElV/NIJepD2
+	0mFCnzBimdByA1q/EYTm5InsxVeQ=
+X-Google-Smtp-Source: AGHT+IFWusnGRofxUqkdce214ptGaKSLBbD5ujAd410w8xh3y92TbU6CAQLelLuqig0w7Y4NkcB6iXOU8DyX1KjSe4Q=
+X-Received: by 2002:a5d:66d0:0:b0:33e:d547:4318 with SMTP id
+ k16-20020a5d66d0000000b0033ed5474318mr29659wrw.47.1711655174605; Thu, 28 Mar
+ 2024 12:46:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240328084147.2954434-5-hch@lst.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-0.05 / 50.00];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	BAYES_HAM(-0.05)[59.90%];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.com:email]
-X-Spam-Score: -0.05
-X-Spam-Level: 
-X-Spam-Flag: NO
+References: <20240327-ccb56fc7a6e80136db80876c@djalal> <20240327225334.58474-1-tixxdz@gmail.com>
+ <ZgWnPZtwBYfHEFzf@slm.duckdns.org> <CAADnVQK6BUGZFCATD8Ejcfob5sKK-b8HUD_4o8Q6s9FM72L4iQ@mail.gmail.com>
+ <ZgWv19ySvoACAll4@slm.duckdns.org>
+In-Reply-To: <ZgWv19ySvoACAll4@slm.duckdns.org>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 28 Mar 2024 12:46:03 -0700
+Message-ID: <CAADnVQLhWDcX-7XCdo-W=jthU=9iPqODwrE6c9fvU8sfAJ5ARg@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
+To: Tejun Heo <tj@kernel.org>
+Cc: Djalal Harouni <tixxdz@gmail.com>, Zefan Li <lizefan.x@bytedance.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 28, 2024 at 09:41:47AM +0100, Christoph Hellwig wrote:
-> Use bio_list_merge_init instead of open coding bio_list_merge and
-> bio_list_init.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Thu, Mar 28, 2024 at 10:58=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello, Alexei.
+>
+> On Thu, Mar 28, 2024 at 10:32:24AM -0700, Alexei Starovoitov wrote:
+> > > It bothers me a bit that it's adding a dedicated interface for someth=
+ing
+> > > which already has a defined userspace interface. Would it be better t=
+o have
+> > > kfunc wrappers for kernel_read() and kernel_write()?
+> >
+> > How would that look ?
+> > prog cannot and shouldn't open a file.
+>
+> Oh, I didn't know. Why is that?
+>
+> > The seq_file would be passed/pinned by user space?
+>
+> Would it work if it's just "open this file, write this and then close it"=
+?
 
-Acked-by: David Sterba <dsterba@suse.com>
+Continuing discussion...
+To use kernel_file_open() it would need path, inode, cred.
+None of that is available now.
+Allocating all these structures just to wrap a cgroup pointer
+feels like overkill.
+Of course, it would solve the need to introduce other
+cgroup apis that are already available via text based cgroupfs
+read/write. So there are pros and cons in both approaches.
+Maybe the 3rd option would be to expose:
+cgroup_lock() as a special blend of acquire plus lock.
+Then there will be no need for bpf_task_freeze_cgroup() with task
+argument. Instead cgroup_freeze() will be such kfunc that
+takes cgroup argument and the verifier will check that
+cgroup was acquired/locked.
+Sort-of what we check to access bpf_rb_root.
 
