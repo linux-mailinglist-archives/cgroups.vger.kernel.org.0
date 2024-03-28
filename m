@@ -1,88 +1,77 @@
-Return-Path: <cgroups+bounces-2215-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2216-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0B5C88F3AE
-	for <lists+cgroups@lfdr.de>; Thu, 28 Mar 2024 01:26:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05FA388F43B
+	for <lists+cgroups@lfdr.de>; Thu, 28 Mar 2024 01:57:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B194E1C21A28
-	for <lists+cgroups@lfdr.de>; Thu, 28 Mar 2024 00:26:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A29852A5213
+	for <lists+cgroups@lfdr.de>; Thu, 28 Mar 2024 00:57:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F5B849C;
-	Thu, 28 Mar 2024 00:24:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4F3316423;
+	Thu, 28 Mar 2024 00:57:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VjIohUff"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Oj264fS3"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA832BA4D;
-	Thu, 28 Mar 2024 00:24:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B62718C22;
+	Thu, 28 Mar 2024 00:57:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711585485; cv=none; b=Q3UW/lxh/792+NGzw73mNnh4t4gxvx7piUgPujgSEAuhpmcufxseHfzMRJwU6MobNk6DFNF6goAJaqT18ZDIVoDBHV1xI3kem0fvUI0K/ZXCNIJuRVnWUzsPKBdY/QSRp32JEo0EI999MrNDHfqolvPZ8N7SUMZYG0zSEjCh/pY=
+	t=1711587452; cv=none; b=NnllTBQuKiGcsYrmC7daBZ0QYXUbdGXApxRpGKeZMomq8aJLTpt2QybqK711WvHHHRy10x9EKKwf/KeYmS/VLbZ7CbrfGpjSHLOyldEXifTLIrO/gvavT/xS6rB0im68lS+/NzohqPLZX5w9W93FmYBgMmN86gM4Hd8MC/2VJd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711585485; c=relaxed/simple;
-	bh=LTT3O9BblMVJnEDnyDTWBOO9zWxonJBv0EFHX9G/6vU=;
+	s=arc-20240116; t=1711587452; c=relaxed/simple;
+	bh=LMEa4+12A/57Ghvrda87UUmPNebE1EJUdYhkKKuwMCc=;
 	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=f7s9adMB3qt49dhq+yYllUw0cFHF5WYaEZEwjP50zKvT+0aAc14Eznv4rbeD3lBm5ZtXQodTlDWTUhZfl8sqq3URtC66FFMdI4RgwZxuBeYxxqz7VnlBHS1wxO93F1BSzt3BB9Ej/fPxfKxnDtIpEbFCv0bx0pDBZrCvTUvOQpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VjIohUff; arc=none smtp.client-ip=198.175.65.18
+	 Message-ID:In-Reply-To; b=c1pVCBbitPAX4j3DzO/yhotyudxhaurAaqRcFOzU7Fc9UOcM3cLuk9gZ/XbrPZq8ciVMr2Aw+F7bv9vUOx3J4maG6awL71EaAYkC/8L9FptTYbiAldgwbeDmmOnt+BTz3oMZ2LoS6JSGj6alW38Mbm/ZQFZrdpwUfUQq469zYVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Oj264fS3; arc=none smtp.client-ip=192.198.163.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1711585484; x=1743121484;
+  t=1711587450; x=1743123450;
   h=to:cc:subject:references:date:mime-version:
    content-transfer-encoding:from:message-id:in-reply-to;
-  bh=LTT3O9BblMVJnEDnyDTWBOO9zWxonJBv0EFHX9G/6vU=;
-  b=VjIohUffZHgy4WRynx9uJbeSUWAJF17MaJMnNFhX+QO28+Rv3arvHZ8K
-   Plzn6Tofx3EfghQ+veQO1c5OHM+KTbISwm8juh62pZ1GQLvzMfQGcq/Q6
-   lmD3vMY309kjbZJ9eQ4ocCnNDM1dBS+dJRr1sBv5oV+9qv7y4baXYpOo2
-   WvA13/GKP2pkVY+GjfzueSbZQWWAxfQGNjoFtTiuxf3fpaSvRMb5RdWjX
-   4MJBvz/Bay9eVYTDf6DBuF8wXlT6VNGmSzcqY5IVS/avL/6EKvanEHoji
-   6CZ6CBBt+GX5wFwVBXPy1SV/wFXWO951BuDQn/Y8YxWRr9V/ATaylwyIy
-   Q==;
-X-CSE-ConnectionGUID: 2CAmkv2dR2Sp6G1sBEOyqA==
-X-CSE-MsgGUID: IgYcyXy1Qt+MJ5oeG5xYrw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="6850708"
+  bh=LMEa4+12A/57Ghvrda87UUmPNebE1EJUdYhkKKuwMCc=;
+  b=Oj264fS39+0Vyce4VwMC/JtJSUCF3FrR0Tht8CxhzYX30aG3nUFzWfzy
+   ndIPJNzzxjdZCEo6KDhZRhPpRQR3YYbp+87L+pKuBM1vV6SvUqz3bACpt
+   lXNP2YvxWCzJOXxfq8tU3jC3r6htVzaCEGDt1RotFbFZZxDKy24B6vZlW
+   ZC8whJHmvc77E9xqf5RbL3f0ugVg5FEYOxxAtyt9Rnr/dclyAOf9saxe7
+   Lp811Aywg4WOXAnwhvz1Q37DVF/ClG0WKbsS0+y0XqI6hSe6BjFOkMuYs
+   6TeLHvb9+icgvkZ7rShtJ3VcvP070BVUDyeM9iyZZTQbi6n2wllzz0cWe
+   g==;
+X-CSE-ConnectionGUID: 04BoiYZqQWqKfiLErggk3A==
+X-CSE-MsgGUID: BmATFsdVRsSnID1fT17QQA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11026"; a="9682583"
 X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="6850708"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 17:24:43 -0700
+   d="scan'208";a="9682583"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Mar 2024 17:57:29 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,160,1708416000"; 
-   d="scan'208";a="20985192"
+   d="scan'208";a="21125662"
 Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 27 Mar 2024 17:24:41 -0700
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 27 Mar 2024 17:57:27 -0700
 Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "Mehta, Sohil" <sohil.mehta@intel.com>, "mingo@redhat.com"
- <mingo@redhat.com>, "jarkko@kernel.org" <jarkko@kernel.org>, "x86@kernel.org"
- <x86@kernel.org>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
- <hpa@zytor.com>, "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
- "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>, "mkoutny@suse.com"
- <mkoutny@suse.com>, "tglx@linutronix.de" <tglx@linutronix.de>, "tj@kernel.org"
- <tj@kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
- <kai.huang@intel.com>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
- <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
- "chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: [PATCH v9 08/15] x86/sgx: Implement EPC reclamation flows for
- cgroup
+To: "Jarkko Sakkinen" <jarkko@kernel.org>, dave.hansen@linux.intel.com,
+ tj@kernel.org, mkoutny@suse.com, linux-kernel@vger.kernel.org,
+ linux-sgx@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+ sohil.mehta@intel.com, tim.c.chen@linux.intel.com
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+Subject: Re: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup
+ testing
 References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-9-haitao.huang@linux.intel.com>
- <fa091e657c2d3f3cc14aff15ad3484e0d7079b6f.camel@intel.com>
- <op.2jhao6nzwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <bf21f955c1b56ef836ad03bc42d522b6d020edbf.camel@intel.com>
- <op.2jj67xqlwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <aaaa54ed-7fd7-404c-853f-90f2e32ae004@intel.com>
-Date: Wed, 27 Mar 2024 19:24:34 -0500
+ <20240205210638.157741-16-haitao.huang@linux.intel.com>
+ <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
+ <D04OVW6I8MUA.1OAIHFQ8943SM@kernel.org>
+Date: Wed, 27 Mar 2024 19:57:26 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -92,158 +81,236 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 From: "Haitao Huang" <haitao.huang@linux.intel.com>
 Organization: Intel
-Message-ID: <op.2lbh28nuwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <aaaa54ed-7fd7-404c-853f-90f2e32ae004@intel.com>
+Message-ID: <op.2lbjl0oawjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <D04OVW6I8MUA.1OAIHFQ8943SM@kernel.org>
 User-Agent: Opera Mail/1.0 (Win32)
 
-On Thu, 22 Feb 2024 16:24:47 -0600, Huang, Kai <kai.huang@intel.com> wrote:
+On Wed, 27 Mar 2024 11:56:35 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
+wrote:
 
->
->
-> On 23/02/2024 9:12 am, Haitao Huang wrote:
->> On Wed, 21 Feb 2024 04:48:58 -0600, Huang, Kai <kai.huang@intel.com>  
->> wrote:
+> On Wed Mar 27, 2024 at 2:55 PM EET, Jarkko Sakkinen wrote:
+>> On Mon, 2024-02-05 at 13:06 -0800, Haitao Huang wrote:
+>> > The scripts rely on cgroup-tools package from libcgroup [1].
+>> >
+>> > To run selftests for epc cgroup:
+>> >
+>> > sudo ./run_epc_cg_selftests.sh
+>> >
+>> > To watch misc cgroup 'current' changes during testing, run this in a
+>> > separate terminal:
+>> >
+>> > ./watch_misc_for_tests.sh current
+>> >
+>> > With different cgroups, the script starts one or multiple concurrent
+>> > SGX
+>> > selftests, each to run one unclobbered_vdso_oversubscribed test.> Each
+>> > of such test tries to load an enclave of EPC size equal to the EPC
+>> > capacity available on the platform. The script checks results against
+>> > the expectation set for each cgroup and reports success or failure.
+>> >
+>> > The script creates 3 different cgroups at the beginning with
+>> > following
+>> > expectations:
+>> >
+>> > 1) SMALL - intentionally small enough to fail the test loading an
+>> > enclave of size equal to the capacity.
+>> > 2) LARGE - large enough to run up to 4 concurrent tests but fail some
+>> > if
+>> > more than 4 concurrent tests are run. The script starts 4 expecting
+>> > at
+>> > least one test to pass, and then starts 5 expecting at least one test
+>> > to fail.
+>> > 3) LARGER - limit is the same as the capacity, large enough to run
+>> > lots of
+>> > concurrent tests. The script starts 8 of them and expects all pass.
+>> > Then it reruns the same test with one process randomly killed and
+>> > usage checked to be zero after all process exit.
+>> >
+>> > The script also includes a test with low mem_cg limit and LARGE
+>> > sgx_epc
+>> > limit to verify that the RAM used for per-cgroup reclamation is
+>> > charged
+>> > to a proper mem_cg.
+>> >
+>> > [1] https://github.com/libcgroup/libcgroup/blob/main/README
+>> >
+>> > Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> > ---
+>> > V7:
+>> > - Added memcontrol test.
+>> >
+>> > V5:
+>> > - Added script with automatic results checking, remove the
+>> > interactive
+>> > script.
+>> > - The script can run independent from the series below.
+>> > ---
+>> >  .../selftests/sgx/run_epc_cg_selftests.sh     | 246
+>> > ++++++++++++++++++
+>> >  .../selftests/sgx/watch_misc_for_tests.sh     |  13 +
+>> >  2 files changed, 259 insertions(+)
+>> >  create mode 100755
+>> > tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+>> >  create mode 100755
+>> > tools/testing/selftests/sgx/watch_misc_for_tests.sh
+>> >
+>> > diff --git a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+>> > b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+>> > new file mode 100755
+>> > index 000000000000..e027bf39f005
+>> > --- /dev/null
+>> > +++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+>> > @@ -0,0 +1,246 @@
+>> > +#!/bin/bash
 >>
->>> On Wed, 2024-02-21 at 00:23 -0600, Haitao Huang wrote:
->>>> StartHi Kai
->>>> On Tue, 20 Feb 2024 03:52:39 -0600, Huang, Kai <kai.huang@intel.com>  
->>>> wrote:
->>>> [...]
->>>> >
->>>> > So you introduced the work/workqueue here but there's no place which
->>>> > actually
->>>> > queues the work.  IMHO you can either:
->>>> >
->>>> > 1) move relevant code change here; or
->>>> > 2) focus on introducing core functions to reclaim certain pages  
->>>> from a
->>>> > given EPC
->>>> > cgroup w/o workqueue and introduce the work/workqueue in later  
->>>> patch.
->>>> >
->>>> > Makes sense?
->>>> >
->>>>
->>>> Starting in v7, I was trying to split the big patch, #10 in v6 as you  
->>>> and
->>>> others suggested. My thought process was to put infrastructure needed  
->>>> for
->>>> per-cgroup reclaim in the front, then turn on per-cgroup reclaim in  
->>>> [v9
->>>> 13/15] in the end.
->>>
->>> That's reasonable for sure.
->>>
->>  Thanks for the confirmation :-)
+>> This is not portable and neither does hold in the wild.
 >>
->>>>
->>>> Before that, all reclaimables are tracked in the global LRU so really
->>>> there is no "reclaim certain pages from a  given EPC cgroup w/o  
->>>> workqueue"
->>>> or reclaim through workqueue before that point, as suggested in #2.  
->>>> This
->>>> patch puts down the implementation for both flows but neither used  
->>>> yet, as
->>>> stated in the commit message.
->>>
->>> I know it's not used yet.  The point is how to split patches to make  
->>> them more
->>> self-contain and easy to review.
->>  I would think this patch already self-contained in that all are  
->> implementation of cgroup reclamation building blocks utilized later.  
->> But I'll try to follow your suggestions below to split further (would  
->> prefer not to merge in general unless there is strong reasons).
+>> It does not even often hold as it is not uncommon to place bash
+>> to the path /usr/bin/bash. If I recall correctly, e.g. NixOS has
+>> a path that is neither of those two.
 >>
->>>
->>> For #2, sorry for not being explicit -- I meant it seems it's more  
->>> reasonable to
->>> split in this way:
->>>
->>> Patch 1)
->>>   a). change to sgx_reclaim_pages();
->>  I'll still prefer this to be a separate patch. It is self-contained  
->> IMHO.
->> We were splitting the original patch because it was too big. I don't  
->> want to merge back unless there is a strong reason.
+>> Should be #!/usr/bin/env bash
 >>
->>>   b). introduce sgx_epc_cgroup_reclaim_pages();
->>  Ok.
->
-> If I got you right, I believe you want to have a cgroup variant function  
-> following the same behaviour of the one for global reclaim, i.e., the  
-> _current_ sgx_reclaim_pages(), which always tries to scan and reclaim  
-> SGX_NR_TO_SCAN pages each time.
->
-> And this cgroup variant function, sgx_epc_cgroup_reclaim_pages(), tries  
-> to scan and reclaim SGX_NR_TO_SCAN pages each time "_across_ the cgroup  
-> and all the descendants".
->
-> And you want to implement sgx_epc_cgroup_reclaim_pages() in this way due  
-> to WHATEVER reasons.
->
-> In that case, the change to sgx_reclaim_pages() and the introduce of  
-> sgx_epc_cgroup_reclaim_pages() should really be together because they  
-> are completely tied together in terms of implementation.
->
-> In this way you can just explain clearly in _ONE_ patch why you choose  
-> this implementation, and for reviewer it's also easier to review because  
-> we can just discuss in one patch.
->
-> Makes sense?
->
+>> That is POSIX compatible form.
 >>
->>>   c). introduce sgx_epc_cgroup_reclaim_work_func() (use a better  
->>> name),     which just takes an EPC cgroup as input w/o involving any  
->>> work/workqueue.
->>  This is for the workqueue use only. So I think it'd be better be with  
->> patch #2 below?
+>> Just got around trying to test this in NUC7 so looking into this in
+>> more detail.
+>>
+>> That said can you make the script work with just "#!/usr/bin/env sh"
+>> and make sure that it is busybox ash compatible?
+>>
+>> I don't see any necessity to make this bash only and it adds to the
+>> compilation time of the image. Otherwise lot of this could be tested
+>> just with qemu+bzImage+busybox(inside initramfs).
+>>
+>> Now you are adding fully glibc shenanigans for the sake of syntax
+>> sugar.
+>>
+>> > +# SPDX-License-Identifier: GPL-2.0
+>> > +# Copyright(c) 2023 Intel Corporation.
+>> > +
+>> > +TEST_ROOT_CG=selftest
+>> > +cgcreate -g misc:$TEST_ROOT_CG
+>>
+>> How do you know that cgcreate exists? It is used a lot in the script
+>> with no check for the existence. Please fix e.g. with "command -v
+>> cgreate".
+>>
+>> > +if [ $? -ne 0 ]; then
+>> > +    echo "# Please make sure cgroup-tools is installed, and misc
+>> > cgroup is mounted."
+>> > +    exit 1
+>> > +fi
+>>
+>> And please do not do it this way. Also, please remove the advice for
+>> "cgroups-tool". This is not meant to be debian only. Better would be
+>> to e.g. point out the URL of the upstream project.
+>>
+>> And yeah the whole message should be based on "command -v", not like
+>> this.
+>>
+>> > +TEST_CG_SUB1=$TEST_ROOT_CG/test1
+>> > +TEST_CG_SUB2=$TEST_ROOT_CG/test2
+>> > +# We will only set limit in test1 and run tests in test3
+>> > +TEST_CG_SUB3=$TEST_ROOT_CG/test1/test3
+>> > +TEST_CG_SUB4=$TEST_ROOT_CG/test4
+>> > +
+>> > +cgcreate -g misc:$TEST_CG_SUB1
+>>
+>>
+>>
+>> > +cgcreate -g misc:$TEST_CG_SUB2
+>> > +cgcreate -g misc:$TEST_CG_SUB3
+>> > +cgcreate -g misc:$TEST_CG_SUB4
+>> > +
+>> > +# Default to V2
+>> > +CG_MISC_ROOT=/sys/fs/cgroup
+>> > +CG_MEM_ROOT=/sys/fs/cgroup
+>> > +CG_V1=0
+>> > +if [ ! -d "/sys/fs/cgroup/misc" ]; then
+>> > +    echo "# cgroup V2 is in use."
+>> > +else
+>> > +    echo "# cgroup V1 is in use."
+>>
+>> Is "#" prefix a standard for kselftest? I don't know this, thus asking.
+>>
+>> > +    CG_MISC_ROOT=/sys/fs/cgroup/misc
+>> > +    CG_MEM_ROOT=/sys/fs/cgroup/memory
+>> > +    CG_V1=1
+>>
+>> Have you checked what is the indentation policy for bash scripts inside
+>> kernel tree. I don't know what it is. That's why I'm asking.
+>>
+>> > +fi
+>> > +
+>> > +CAPACITY=$(grep "sgx_epc" "$CG_MISC_ROOT/misc.capacity" | awk
+>> > '{print $2}')
+>> > +# This is below number of VA pages needed for enclave of capacity
+>> > size. So
+>> > +# should fail oversubscribed cases
+>> > +SMALL=$(( CAPACITY / 512 ))
+>> > +
+>> > +# At least load one enclave of capacity size successfully, maybe up
+>> > to 4.
+>> > +# But some may fail if we run more than 4 concurrent enclaves of
+>> > capacity size.
+>> > +LARGE=$(( SMALL * 4 ))
+>> > +
+>> > +# Load lots of enclaves
+>> > +LARGER=$CAPACITY
+>> > +echo "# Setting up limits."
+>> > +echo "sgx_epc $SMALL" > $CG_MISC_ROOT/$TEST_CG_SUB1/misc.max
+>> > +echo "sgx_epc $LARGE" >  $CG_MISC_ROOT/$TEST_CG_SUB2/misc.max
+>> > +echo "sgx_epc $LARGER" > $CG_MISC_ROOT/$TEST_CG_SUB4/misc.max
+>> > +
+>> > +timestamp=$(date +%Y%m%d_%H%M%S)
+>> > +
+>> > +test_cmd="./test_sgx -t unclobbered_vdso_oversubscribed"
+>> > +
+>> > +wait_check_process_status() {
+>> > +    local pid=$1
+>> > +    local check_for_success=$2  # If 1, check for success;
+>> > +                                # If 0, check for failure
+>> > +    wait "$pid"
+>> > +    local status=$?
+>> > +
+>> > +    if [[ $check_for_success -eq 1 && $status -eq 0 ]]; then
+>> > +        echo "# Process $pid succeeded."
+>> > +        return 0
+>> > +    elif [[ $check_for_success -eq 0 && $status -ne 0 ]]; then
+>> > +        echo "# Process $pid returned failure."
+>> > +        return 0
+>> > +    fi
+>> > +    return 1
+>> > +}
+>> > +
+>> > +wai
+>> > wait_and_detect_for_any() {
+>>
+>> what is "any"?
+>>
+>> Maybe for some key functions could have short documentation what they
+>> are and for what test uses them. I cannot possibly remember all of this
+>> just by hints such as "this waits for Any" ;-)
+>>
+>> I don't think there is actual kernel guideline to engineer the script
+>> to work with just ash but at least for me that would inevitably
+>> increase my motivation to test this patch set more rather than less.
 >
-> There are multiple levels of logic here IMHO:
->
->    1. a) and b) above focus on "each reclaim" a given EPC cgroup
->    2. c) is about a loop of above to bring given cgroup's usage to limit
->    3. workqueue is one (probably best) way to do c) in async way
->    4. the logic where 1) (direct reclaim) and 3) (indirect) are triggered
->
-> To me, it's clear 1) should be in one patch as stated above.
->
-> Also, to me 3) and 4) are better to be together since they give you a  
-> clear view on how the direct/indirect reclaim are triggered.
->
-> 2) could be flexible depending on how you see it.  If you prefer viewing  
-> it from low-level implementation of reclaiming pages from cgroup, then  
-> it's also OK to be together with 1).  If you want to treat it as a part  
-> of _async_ way of bring down usage to limit, then _MAYBE_ it's also OK  
-> to be with 3) and 4).
->
-> But to me 2) can be together with 1) or even a separate patch because  
-> it's still kinda of low-level reclaiming details.  3) and 4) shouldn't  
-> contain such detail but should focus on how direct/indirect reclaim is  
-> done.
+> I also wonder is cgroup-tools dependency absolutely required or could
+> you just have a function that would interact with sysfs?
 
-I incorporated most of your suggestions, and think it'd be better discuss  
-this with actual code.
+I should have checked email before hit the send button for v10 :-).
 
-So I'm sending out v10, and just quickly summarize what I did to address  
-this particular issue here.
+It'd be more complicated and less readable to do all the stuff without the  
+cgroup-tools, esp cgexec. I checked dependency, cgroup-tools only depends  
+on libc so I hope this would not cause too much inconvenience.
 
-I pretty much follow above suggestions and end up with two patches:
+I saw bash was also used in cgroup test scripts so at least that's  
+consistent :-)
+I can look into ash if that's required. Let me know.
 
-1) a) and b) above  plus direct reclaim triggered in try_charge() so  
-reviewers can see at lease one use of the sgx_cgroup_reclaim_pages(),  
-which is the basic building block.
-
-2) All async related: c) above, workqueue, indirect triggered in  
-try_charge() which queues the work.
-
-Please review v10 and if you think the triggering parts need be separated  
-then I'll separate.
-
-Additionally, after more experimentation, I simplified sgx_reclaim_pages()  
-by removing the pointer for *nr_to_scan as you suggested, but returning  
-pages collected for isolation (attempted for reclaim) instead of pages  
-actually reclaimed. I found performance is acceptable with this approach.
-
-Thanks again for your review.
+Certainly can add more docs as you suggested.
+Thanks
 Haitao
 
