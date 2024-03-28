@@ -1,126 +1,139 @@
-Return-Path: <cgroups+bounces-2231-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2232-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D01DD8907D3
-	for <lists+cgroups@lfdr.de>; Thu, 28 Mar 2024 18:58:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C50C89084D
+	for <lists+cgroups@lfdr.de>; Thu, 28 Mar 2024 19:29:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A46E2A4EB9
-	for <lists+cgroups@lfdr.de>; Thu, 28 Mar 2024 17:58:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B66181F256F2
+	for <lists+cgroups@lfdr.de>; Thu, 28 Mar 2024 18:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3F07131BA3;
-	Thu, 28 Mar 2024 17:58:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49885135A6D;
+	Thu, 28 Mar 2024 18:29:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cbH0VmiL"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XMMwqo9A"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40AD22E419;
-	Thu, 28 Mar 2024 17:58:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F1AE131BB6
+	for <cgroups@vger.kernel.org>; Thu, 28 Mar 2024 18:29:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711648731; cv=none; b=p3U/576+mjN6esatUMq6i6AIzOQ79+kq1aWnKWF99qOuhNpDxVPthFmAyUnP+BCqxMZJ2r46D/YdHjirS2qlpugF70IXI/Y2Emg4DWjb454a/cdErGzKTnmZ2aUq7h8qqIFVnlCJFtQ4so/OBM/GbE8w6fUjBDyPdV3zC7qzH4Q=
+	t=1711650574; cv=none; b=e8JPOtlCqhwBM4Ji88+haiXiRV6Uef4jTP1XC8SErR6wI1C2iVDS34PJR9MwzonNV5ZgsjBYQdBcmOgFZLOaEL1kKxKvV2U9mUUfWn8iL2AjSEErWQH3TxUCiupgwNKDe+BWuv5qG4UbA7zt2Q1YS1IYVcRFSDx9KHRJ85M3K1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711648731; c=relaxed/simple;
-	bh=eoW/Ol+Fztd1pjIFLPvuQ9Q/3JpA1yu2NX4LAFYFqoY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AivFopBkAaiscBtQKzFysWhak/9B2Tm/AzO3fbHPcGmNOnX57uY888xXf3CA3bDdAvswtUuOm3lW+A7znhh9aAs10PljAJD8DAZ1lxgeE59mSW9lRkkbnyu1ahtKjei8mm0+RKD946GSpxQAPhUZyM7w2rVj4ZKfVrA1TxPUVhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cbH0VmiL; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6ead4093f85so1219499b3a.3;
-        Thu, 28 Mar 2024 10:58:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711648729; x=1712253529; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UTZjV+7S2zxd1Kd89MiyQnHfAcCtg3m3Sh+mN+X+VE4=;
-        b=cbH0VmiLQgKd6eGr0Ib/dvR9ScAd3mNzQEY50dN/F5Z6sTv6qjZME5s2yjJnKJBdyv
-         xXeGtTmd49rRR4+k5CQQalJnuC6eLSEu9sw1E/+i0GlbrUIYAOUbAdWEmqCjZsPoyl7+
-         Gh85J53btlYHnXcke29bFI0dmaafkmm2rCmfNlSU4NzIhByNbQbC+FvgEpNJ0Y5j4WjU
-         xMHKJiPyv1O97sR3D5czMH8UC4HUCAso3gwqij6zKpnD1DhThEhIZUVwPt58mv2slHHK
-         H+cSV6IYQwjT219q9+CXGmp/99yRiElJOSciSAjtQJwzmsIahed0pAZYUJSV3s4LmCcJ
-         EcDA==
+	s=arc-20240116; t=1711650574; c=relaxed/simple;
+	bh=GthFzf4c2CnxlFa+euL1T99nUeV+RK/jqmB1OAtv88w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=r83RDx0MAJvCZSSkE/txFgiuJcoZlYdcXUpB2RNgVPH+VBcapayXM9aIoMc99oeZ1Kp/cEtIV9bpJuaGn3hTwystz8RcflARz6Zl6+tkPOI1v6McXtQ/eyD42iw/m6rwaTlnVVTWHfnaQk1+T8D7stn4Ru+g14oVBEFYIHYJ2vs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XMMwqo9A; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711650571;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=295Tz66lZ5wzxYSBeQjEsXjOn4yj5P6f+q+3yKW440Y=;
+	b=XMMwqo9AhmjGZZFHJOiB5GPeicsDVn0Aw+XibKdbOO78fIT7/+EZHqXazeGn+o2sydFA8e
+	7nrHYP75bELZXS/lHjnJnyct/T2+OiG3RBbXvzvOq+EYmla9ZjJ8psvQIF6v0KBuENrsmd
+	yzJm150Tdw9Jz1WuG2IaTEw/D7j5CgU=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-180-Izt_tAWIOkm7WW32Mmlj0g-1; Thu, 28 Mar 2024 14:29:29 -0400
+X-MC-Unique: Izt_tAWIOkm7WW32Mmlj0g-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-6986f2dba1eso10777836d6.2
+        for <cgroups@vger.kernel.org>; Thu, 28 Mar 2024 11:29:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711648729; x=1712253529;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UTZjV+7S2zxd1Kd89MiyQnHfAcCtg3m3Sh+mN+X+VE4=;
-        b=SUAyfc/n1T1v7gM+EpHrTPXm1+66T/OODCna3XTorSJHSow7/oHeGPQgZP9KhCgk35
-         6M6iHBpxVE1/XL6YCJGG4e+Ho4lp+5itDzdgaPgv9McWy4l+Ev/wmYNt0Mi+0o+2vaKm
-         /CcX7LFpAPVcGaPaEQ+uzLUHH4HXdHuMggfNHDpSkgfDNu3nncUgckp+asg02jV1gZVf
-         TzInCC21Yjwkf3Cp3adt7aJfcMi+A8p/4VgZGuojtBimUubvNNqd3ClyY/Njpt0S1DOV
-         6kRBoEleVv1P4ftPHL+nl9GKUFLtdUZ5b8soLirEPxLFnjdi6j8p87ffNaXPDS3/3swj
-         UIyg==
-X-Forwarded-Encrypted: i=1; AJvYcCU5K48kIiuJhN4ncih6qIZL7k+U9aOHg5K3r1yZJNB9MSWch6sIN6QAkPNNpobjxdqE40Ku9fPqV88OLGNKIhYGa//cKif2yTHXERltE6keMiTlx+2tmWvWEgpra/4ZQOqaLgX/wssX/DHcPgjOy7/Yl4qyCSG665V0KMF6phU8PYT7jipZTa8Rf7mYjGDIY93fe4TQo9ltBSh8Aw==
-X-Gm-Message-State: AOJu0YxzA1/EtY2JrFfMMu+ask4cs+fsH0LQJrld7/vINPFn2FD28VSO
-	j8OS/QW59D5R9jGx4Z+nj9TzV7cjiIJ2kg0nPFZ8sciKa9PrvWt+
-X-Google-Smtp-Source: AGHT+IH09lCUtZaPss1VyFYl40VeAXb9We1fTAAJJrYddWEHb5BMLEhDDxsPchyUikJpWi2lOU8z8Q==
-X-Received: by 2002:a05:6a00:a82:b0:6ea:d10d:c96d with SMTP id b2-20020a056a000a8200b006ead10dc96dmr4950pfl.19.1711648729400;
-        Thu, 28 Mar 2024 10:58:49 -0700 (PDT)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id k24-20020aa78218000000b006eadd0f4803sm1282084pfi.206.2024.03.28.10.58.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 10:58:49 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 28 Mar 2024 07:58:47 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Djalal Harouni <tixxdz@gmail.com>, Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-	bpf <bpf@vger.kernel.org>,
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
-Message-ID: <ZgWv19ySvoACAll4@slm.duckdns.org>
-References: <20240327-ccb56fc7a6e80136db80876c@djalal>
- <20240327225334.58474-1-tixxdz@gmail.com>
- <ZgWnPZtwBYfHEFzf@slm.duckdns.org>
- <CAADnVQK6BUGZFCATD8Ejcfob5sKK-b8HUD_4o8Q6s9FM72L4iQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1711650569; x=1712255369;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=295Tz66lZ5wzxYSBeQjEsXjOn4yj5P6f+q+3yKW440Y=;
+        b=W/cJyB166P+PsZApn70Jkg6XyGPlWca/dKO68IjIndAkbCg3TZg1h6hNslFZA6QSyU
+         /pqgKt94NNk9m81UM/PfDznfHmSOH/NO07+An7QRh+WnsaAaU79Phs87X4o2aQ6V1U5D
+         4ZJw7z30GXDSyy6dgvRiaianHlRA+96SxM3cnVeZSD/GxvLNfTgsFlag4a5iC8cdIQka
+         QDnh0D6cwb9dMHS8XcVSbUgCxGKwidlwsMObGAiVTrJmsJwRHTWFqcQmTvxUw3Vj+vB1
+         6rWct5Yhir5t/O0cVRzi5G6Paqi68QuZlbrC7AewgVfi+wwYvYG2959J5pgUViryLOsC
+         rE6A==
+X-Forwarded-Encrypted: i=1; AJvYcCU7SZYw3y6s73fQhxoCK2he0G8v6ta/KCF3SJ4huDKlvSRMndbScW6bUEEsvSlC1bW8XKfPzr/ixoRIRqRK53GwFZE9kCiCFA==
+X-Gm-Message-State: AOJu0Yy2b8sJ5BIz0jGkFkU1OevE/uVzNgFT2Y0lLdVG8FjKELdtvrNP
+	n3YkftatkYMGjWoPupq3vf8OjjIe9WVzMM1oYuH8j70s1/D291x8ZrzaD4nA7aCrroQC6qIGZCo
+	Vc1YXoCmOCYuLoZ/c/VYagLiEiNA3d4KVNMPbas/qpZI/JKyyAzblbCw=
+X-Received: by 2002:a0c:d64d:0:b0:696:3a75:2964 with SMTP id e13-20020a0cd64d000000b006963a752964mr57857qvj.18.1711650569464;
+        Thu, 28 Mar 2024 11:29:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFe5oHWCZzfUomrQkq5TZ0+KX+12VkRPiBcXfHIdH4JazXT/nPJvHY3WgEr/AA6t75OSJCiAw==
+X-Received: by 2002:a0c:d64d:0:b0:696:3a75:2964 with SMTP id e13-20020a0cd64d000000b006963a752964mr57839qvj.18.1711650569212;
+        Thu, 28 Mar 2024 11:29:29 -0700 (PDT)
+Received: from [192.168.1.165] ([70.22.187.239])
+        by smtp.gmail.com with ESMTPSA id c13-20020a056214224d00b006913aa64629sm854751qvc.22.2024.03.28.11.29.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Mar 2024 11:29:28 -0700 (PDT)
+Message-ID: <2ae69d9f-a42c-00d7-f9eb-e93c071153ce@redhat.com>
+Date: Thu, 28 Mar 2024 14:29:27 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQK6BUGZFCATD8Ejcfob5sKK-b8HUD_4o8Q6s9FM72L4iQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH 1/4] block: add a bio_list_merge_init helper
+Content-Language: en-US
+To: Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Cc: Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+ Mike Snitzer <snitzer@kernel.org>, Mikulas Patocka <mpatocka@redhat.com>,
+ Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+ dm-devel@lists.linux.dev, cgroups@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <20240328084147.2954434-1-hch@lst.de>
+ <20240328084147.2954434-2-hch@lst.de>
+From: Matthew Sakai <msakai@redhat.com>
+In-Reply-To: <20240328084147.2954434-2-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello, Alexei.
 
-On Thu, Mar 28, 2024 at 10:32:24AM -0700, Alexei Starovoitov wrote:
-> > It bothers me a bit that it's adding a dedicated interface for something
-> > which already has a defined userspace interface. Would it be better to have
-> > kfunc wrappers for kernel_read() and kernel_write()?
+On 3/28/24 04:41, Christoph Hellwig wrote:
+> This is a simple combination of bio_list_merge + bio_list_init
+> similar to list_splice_init.  While it only saves a single
+> line in a callers, it makes the move all bios from one list to
+> another and reinitialize the original pattern a lot more obvious
+> in the callers.
 > 
-> How would that look ?
-> prog cannot and shouldn't open a file.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>   include/linux/bio.h | 7 +++++++
+>   1 file changed, 7 insertions(+)
+> 
+> diff --git a/include/linux/bio.h b/include/linux/bio.h
+> index 875d792bffff82..9b8a369f44bc6b 100644
+> --- a/include/linux/bio.h
+> +++ b/include/linux/bio.h
+> @@ -615,6 +615,13 @@ static inline void bio_list_merge(struct bio_list *bl, struct bio_list *bl2)
+>   	bl->tail = bl2->tail;
+>   }
+>   
+> +static inline void bio_list_merge_init(struct bio_list *bl,
+> +		struct bio_list *bl2)
 
-Oh, I didn't know. Why is that?
+Nit: The indentation in this line looks off to me.
+Otherwise, for the series:
 
-> The seq_file would be passed/pinned by user space?
+Reviewed-by: Matthew Sakai <msakai@redhat.com>
 
-Would it work if it's just "open this file, write this and then close it"?
+> +{
+> +	bio_list_merge(bl, bl2);
+> +	bio_list_init(bl2);
+> +}
+> +
+>   static inline void bio_list_merge_head(struct bio_list *bl,
+>   				       struct bio_list *bl2)
+>   {
 
-Thanks.
-
--- 
-tejun
 
