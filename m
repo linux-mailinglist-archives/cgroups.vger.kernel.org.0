@@ -1,286 +1,152 @@
-Return-Path: <cgroups+bounces-2246-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2247-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45DAB892524
-	for <lists+cgroups@lfdr.de>; Fri, 29 Mar 2024 21:19:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CDB7892636
+	for <lists+cgroups@lfdr.de>; Fri, 29 Mar 2024 22:39:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEE04287E76
-	for <lists+cgroups@lfdr.de>; Fri, 29 Mar 2024 20:19:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE8B31C211C8
+	for <lists+cgroups@lfdr.de>; Fri, 29 Mar 2024 21:39:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9155413B7B2;
-	Fri, 29 Mar 2024 20:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EE6713BC2C;
+	Fri, 29 Mar 2024 21:39:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="N22rtauF"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QvoEtOft"
 X-Original-To: cgroups@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6F291DDEA;
-	Fri, 29 Mar 2024 20:19:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C81013B2B8;
+	Fri, 29 Mar 2024 21:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711743586; cv=none; b=qnXEe1EYigl/K65We6SvcODXKCB+IpBocFIYyAS6qKIQOdYnSNPI4EDUExcju3TrsLQVOTxPy6VVGNu/AMK41YUnWuWfSK3J4VIHZKSPkHC/A3xpjkT8TlV15oD7OVbVH9stU10/4j5Ldaw+LG1bYZCsAEbiKdFUc6YK/bUjLNI=
+	t=1711748361; cv=none; b=GiBpO7ZPYjX1sB6Zin88EKbc9eb+bceewo0Mr10YydZtxNBMl+ERH3sp2VR/YpRygZqTYRtSwiOBhmeGI7nnDj+k9M6hZdnjpSTiBeTHDzM2ZSYkmPieJHbhloZI6qQgMu03DvzB19YAphVjqj451xWOPjFuJDYYRH5H1yhYb0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711743586; c=relaxed/simple;
-	bh=LxBnhveT9wJc5Gb452ltbRcCzBPRzEznzVbAaylCB0E=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=eEnnbZUbfwnbTLA0M3xwe3LeK91G1tMIC8oTD9hUVw6DPyVZVDtH36Q2M5FZEH/q2la/kLSc6JE+pyR0SaQmFBEhduFFqPUnmNJwGDdFkV38PPSM84vKhA2yJKGLtXfKsEfCKTNTfKey+WXIcuqZ6o6xoBZd5Wxb+AMn2hSYoao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=N22rtauF; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1711743583;
-	bh=LxBnhveT9wJc5Gb452ltbRcCzBPRzEznzVbAaylCB0E=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=N22rtauFy6Yed3RlP3fQ/dTIfwik75IoPKQjcVgRbkiFg7QiykyVwd2zm32mOkipp
-	 Esb9Yh2EfNtA2yQbFTtVRptVkASaCOdvvrtZQcqarYgLcmSerT2TBMJen8ay3Dudjr
-	 TFeYPrtKCL/z7mshKEWWmqe2K5+ZDb9H6u2w0/7zfQfZFKF0hJzBSpFH5/9tnBKjJ4
-	 as9YQgHNNGLj7TMjLbaolgGXgRveBZ7n21Zc57OtMrB5H566pAxgJcOcycKJevqxGb
-	 ErOQwIp1Hkja1wuJ8ZbI5n54c+ILtHPgUc+K0GZBNQt+5g16w4mXus8PItGHuyDKjS
-	 3lrHUSuxwR+vw==
-Received: from [100.113.15.66] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E2413378211A;
-	Fri, 29 Mar 2024 20:19:39 +0000 (UTC)
-Message-ID: <ca7a1547-5bb0-40d7-a77a-9ca6c14fd6f2@collabora.com>
-Date: Sat, 30 Mar 2024 01:20:10 +0500
+	s=arc-20240116; t=1711748361; c=relaxed/simple;
+	bh=dj3Oype14Ww3F92B/r9tr29fIg6wdMJyfmeULyKUqnw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I/uufbmLDt3gQOPHJiEQvwqZtlaKIGAjhL9bkSxUjPMialQdpkIG3S+H50xlTgIEiHok596k54Cx1sL+Hxe+TwRQkuCHqewEf+wYUt6aNDdZhPwBUD3chxQZs/6c1tkr7OR5AEo5tRllrGwmoWeKCzowu/u1M9DDoUkAqlwHdIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QvoEtOft; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e740fff1d8so1992151b3a.1;
+        Fri, 29 Mar 2024 14:39:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1711748359; x=1712353159; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jeYwhYVAnY0ZecOSBeK2vgKjBBlgI8Cj8HOaDALSlB0=;
+        b=QvoEtOftPZZ0x5J29R7smtFQ1XaLDNy8D8DLyM7Q2ngzWkE6boF8bgr8hNkP9IAnrt
+         5odasLAd+YAFvEFgAh+twH86gNGmkOcVatU0naL01rEGRYtYDfOIX4xqLgcm5FB/ny6+
+         W/oP5TYBJxnLpxBwSlqJDTVhElVrqTGwU0S7YTtt5vmbjlf+/OvFzKumhg8QMLNB/gqn
+         N3N0Pl07fS7yq7xS4Ch5eFF1miUkhRl5/+IDmoNRLyRIegDd2K5Lfi1G+R4iq/0APDwr
+         SqvOJsBNMrRC2dqEyqxtTgOq1/bj5iTwyvADTOo2lKzKWxaiurfy/JicV/kAev9HiVjG
+         eKcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711748359; x=1712353159;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jeYwhYVAnY0ZecOSBeK2vgKjBBlgI8Cj8HOaDALSlB0=;
+        b=nFgGfFpdImkTVlv8QHZahh0YdphYYQj9fW+6X5hUszdqPolG5zUJS+52QnEOI4pWHW
+         1QIpLuMw1zP4krg9Bg/IA1AB9O9X8xRSvsjS+pReshA2nxr+z1KlPZla81D+/leR5G3c
+         N3gH3e7b5MYEDtmJyonKVttyom9/Hz3G1vnjyObB6kfz9rQwpWLzed/gqfosr+8Q0EE9
+         UnvPjInOwk/UJEwVM8O2AM5Ru+v+vC6KW05OG9P3NLJFn+vjCQZJLsagCmo+P69ZZQB2
+         j5wL4FGuqF38McQT1A6NqBKnCS+6MB5FVo6rTOVLoqN09QfLRVdnnZG8NPz0tOZzpH/R
+         vaKA==
+X-Forwarded-Encrypted: i=1; AJvYcCVcb/CmyLwKHdUnoaAt3Z7NpXcQN59oN8QuSEsQ0zvU5ZPBsC7MVqzOaWEA2ob0cLXFtnQ2PWo0L8flS6/Oke0pYpdkFIxPn50sVPOQb4eJv45KbJSQmyvP03quPjZtWWIDLoOSTR498Mpbasm0+bHVwy6FqA2wzYW3NjsoPfh3PNbLiBcyMTnkpt5Wm/LzA1+8z/QbIJrRKAKljw==
+X-Gm-Message-State: AOJu0Yx9b16NxRhE5jZBnHy3hpVBOCpvWjHu3ZdDVRn4Tfk7EoK8Rf4t
+	womPG7uGvj0qUnMRJTrdHHJSPfzKSwaVE9B1EHKvIu5aVIp/YP1K
+X-Google-Smtp-Source: AGHT+IFstVhpjK2rGXsS9X/HZtXRWDa9Ng+SCHkBs1up8kl0TP5v/Jv+fZ+0YdG2qO5QE6oh6ONs8A==
+X-Received: by 2002:a05:6a20:3946:b0:1a3:32e5:f38a with SMTP id r6-20020a056a20394600b001a332e5f38amr3552913pzg.45.1711748358853;
+        Fri, 29 Mar 2024 14:39:18 -0700 (PDT)
+Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
+        by smtp.gmail.com with ESMTPSA id e18-20020aa79812000000b006ea81423c65sm3553948pfl.148.2024.03.29.14.39.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Mar 2024 14:39:18 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Fri, 29 Mar 2024 11:39:17 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Djalal Harouni <tixxdz@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+	bpf <bpf@vger.kernel.org>,
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
+Message-ID: <Zgc1BZnYCS9OSSTw@slm.duckdns.org>
+References: <20240327-ccb56fc7a6e80136db80876c@djalal>
+ <20240327225334.58474-1-tixxdz@gmail.com>
+ <ZgWnPZtwBYfHEFzf@slm.duckdns.org>
+ <CAADnVQK6BUGZFCATD8Ejcfob5sKK-b8HUD_4o8Q6s9FM72L4iQ@mail.gmail.com>
+ <ZgWv19ySvoACAll4@slm.duckdns.org>
+ <CAADnVQLhWDcX-7XCdo-W=jthU=9iPqODwrE6c9fvU8sfAJ5ARg@mail.gmail.com>
+ <ZgXMww9kJiKi4Vmd@slm.duckdns.org>
+ <CAADnVQK970_Nx3918V41ue031RkGs+WsteOAm6EJOY7oSwzS1A@mail.gmail.com>
+ <ZgXallkHApJC-adM@slm.duckdns.org>
+ <bcb084ae-c934-4eba-aadd-95bbec2a63cb@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Shuah Khan <shuah@kernel.org>,
- cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] selftests: cgroup: skip test_cgcore_lesser_ns_open when
- cgroup2 mounted without nsdelegate
-To: Tianchen Ding <dtcccc@linux.alibaba.com>, linux-kernel@vger.kernel.org
-References: <20240327024437.3196-1-dtcccc@linux.alibaba.com>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240327024437.3196-1-dtcccc@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bcb084ae-c934-4eba-aadd-95bbec2a63cb@gmail.com>
 
-On 3/27/24 7:44 AM, Tianchen Ding wrote:
-> The test case test_cgcore_lesser_ns_open only tasks effect when cgroup2
-> is mounted with "nsdelegate" mount option. If it misses this option, or
-> is remounted without "nsdelegate", the test case will fail. For example,
-> running bpf/test_cgroup_storage first, and then run cgroup/test_core will
-> fail on test_cgcore_lesser_ns_open. Skip it if "nsdelegate" is not
-> detected in cgroup2 mount options.
-> 
-> Fixes: bf35a7879f1d ("selftests: cgroup: Test open-time cgroup namespace usage for migration checks")
-> Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Hello,
 
-> ---
->  tools/testing/selftests/cgroup/cgroup_util.c        | 8 +++++---
->  tools/testing/selftests/cgroup/cgroup_util.h        | 2 +-
->  tools/testing/selftests/cgroup/test_core.c          | 7 ++++++-
->  tools/testing/selftests/cgroup/test_cpu.c           | 2 +-
->  tools/testing/selftests/cgroup/test_cpuset.c        | 2 +-
->  tools/testing/selftests/cgroup/test_freezer.c       | 2 +-
->  tools/testing/selftests/cgroup/test_hugetlb_memcg.c | 2 +-
->  tools/testing/selftests/cgroup/test_kill.c          | 2 +-
->  tools/testing/selftests/cgroup/test_kmem.c          | 2 +-
->  tools/testing/selftests/cgroup/test_memcontrol.c    | 2 +-
->  tools/testing/selftests/cgroup/test_zswap.c         | 2 +-
->  11 files changed, 20 insertions(+), 13 deletions(-)
+On Fri, Mar 29, 2024 at 02:22:28PM +0100, Djalal Harouni wrote:
+> It would be easy at least for me if I just start with cgroupv2 and
+> ensure that it has same available filenames as if we go through kernfs.
+> Not a root cgroup node and maybe only freeze and kill for now that are
+> part of cgroup_base_files.
 > 
-> diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
-> index 0340d4ca8f51..432db923bced 100644
-> --- a/tools/testing/selftests/cgroup/cgroup_util.c
-> +++ b/tools/testing/selftests/cgroup/cgroup_util.c
-> @@ -195,10 +195,10 @@ int cg_write_numeric(const char *cgroup, const char *control, long value)
->  	return cg_write(cgroup, control, buf);
->  }
->  
-> -int cg_find_unified_root(char *root, size_t len)
-> +int cg_find_unified_root(char *root, size_t len, bool *nsdelegate)
->  {
->  	char buf[10 * PAGE_SIZE];
-> -	char *fs, *mount, *type;
-> +	char *fs, *mount, *type, *options;
->  	const char delim[] = "\n\t ";
->  
->  	if (read_text("/proc/self/mounts", buf, sizeof(buf)) <= 0)
-> @@ -211,12 +211,14 @@ int cg_find_unified_root(char *root, size_t len)
->  	for (fs = strtok(buf, delim); fs; fs = strtok(NULL, delim)) {
->  		mount = strtok(NULL, delim);
->  		type = strtok(NULL, delim);
-> -		strtok(NULL, delim);
-> +		options = strtok(NULL, delim);
->  		strtok(NULL, delim);
->  		strtok(NULL, delim);
->  
->  		if (strcmp(type, "cgroup2") == 0) {
->  			strncpy(root, mount, len);
-> +			if (nsdelegate)
-> +				*nsdelegate = !!strstr(options, "nsdelegate");
->  			return 0;
->  		}
->  	}
-> diff --git a/tools/testing/selftests/cgroup/cgroup_util.h b/tools/testing/selftests/cgroup/cgroup_util.h
-> index 1df7f202214a..89e8519fb271 100644
-> --- a/tools/testing/selftests/cgroup/cgroup_util.h
-> +++ b/tools/testing/selftests/cgroup/cgroup_util.h
-> @@ -21,7 +21,7 @@ static inline int values_close(long a, long b, int err)
->  	return abs(a - b) <= (a + b) / 100 * err;
->  }
->  
-> -extern int cg_find_unified_root(char *root, size_t len);
-> +extern int cg_find_unified_root(char *root, size_t len, bool *nsdelegate);
->  extern char *cg_name(const char *root, const char *name);
->  extern char *cg_name_indexed(const char *root, const char *name, int index);
->  extern char *cg_control(const char *cgroup, const char *control);
-> diff --git a/tools/testing/selftests/cgroup/test_core.c b/tools/testing/selftests/cgroup/test_core.c
-> index 80aa6b2373b9..a5672a91d273 100644
-> --- a/tools/testing/selftests/cgroup/test_core.c
-> +++ b/tools/testing/selftests/cgroup/test_core.c
-> @@ -18,6 +18,8 @@
->  #include "../kselftest.h"
->  #include "cgroup_util.h"
->  
-> +static bool nsdelegate;
-> +
->  static int touch_anon(char *buf, size_t size)
->  {
->  	int fd;
-> @@ -775,6 +777,9 @@ static int test_cgcore_lesser_ns_open(const char *root)
->  	pid_t pid;
->  	int status;
->  
-> +	if (!nsdelegate)
-> +		return KSFT_SKIP;
-> +
->  	cg_test_a = cg_name(root, "cg_test_a");
->  	cg_test_b = cg_name(root, "cg_test_b");
->  
-> @@ -862,7 +867,7 @@ int main(int argc, char *argv[])
->  	char root[PATH_MAX];
->  	int i, ret = EXIT_SUCCESS;
->  
-> -	if (cg_find_unified_root(root, sizeof(root)))
-> +	if (cg_find_unified_root(root, sizeof(root), &nsdelegate))
->  		ksft_exit_skip("cgroup v2 isn't mounted\n");
->  
->  	if (cg_read_strstr(root, "cgroup.subtree_control", "memory"))
-> diff --git a/tools/testing/selftests/cgroup/test_cpu.c b/tools/testing/selftests/cgroup/test_cpu.c
-> index 24020a2c68dc..186bf96f6a28 100644
-> --- a/tools/testing/selftests/cgroup/test_cpu.c
-> +++ b/tools/testing/selftests/cgroup/test_cpu.c
-> @@ -700,7 +700,7 @@ int main(int argc, char *argv[])
->  	char root[PATH_MAX];
->  	int i, ret = EXIT_SUCCESS;
->  
-> -	if (cg_find_unified_root(root, sizeof(root)))
-> +	if (cg_find_unified_root(root, sizeof(root), NULL))
->  		ksft_exit_skip("cgroup v2 isn't mounted\n");
->  
->  	if (cg_read_strstr(root, "cgroup.subtree_control", "cpu"))
-> diff --git a/tools/testing/selftests/cgroup/test_cpuset.c b/tools/testing/selftests/cgroup/test_cpuset.c
-> index b061ed1e05b4..4034d14ba69a 100644
-> --- a/tools/testing/selftests/cgroup/test_cpuset.c
-> +++ b/tools/testing/selftests/cgroup/test_cpuset.c
-> @@ -249,7 +249,7 @@ int main(int argc, char *argv[])
->  	char root[PATH_MAX];
->  	int i, ret = EXIT_SUCCESS;
->  
-> -	if (cg_find_unified_root(root, sizeof(root)))
-> +	if (cg_find_unified_root(root, sizeof(root), NULL))
->  		ksft_exit_skip("cgroup v2 isn't mounted\n");
->  
->  	if (cg_read_strstr(root, "cgroup.subtree_control", "cpuset"))
-> diff --git a/tools/testing/selftests/cgroup/test_freezer.c b/tools/testing/selftests/cgroup/test_freezer.c
-> index 8845353aca53..8730645d363a 100644
-> --- a/tools/testing/selftests/cgroup/test_freezer.c
-> +++ b/tools/testing/selftests/cgroup/test_freezer.c
-> @@ -827,7 +827,7 @@ int main(int argc, char *argv[])
->  	char root[PATH_MAX];
->  	int i, ret = EXIT_SUCCESS;
->  
-> -	if (cg_find_unified_root(root, sizeof(root)))
-> +	if (cg_find_unified_root(root, sizeof(root), NULL))
->  		ksft_exit_skip("cgroup v2 isn't mounted\n");
->  	for (i = 0; i < ARRAY_SIZE(tests); i++) {
->  		switch (tests[i].fn(root)) {
-> diff --git a/tools/testing/selftests/cgroup/test_hugetlb_memcg.c b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-> index f0fefeb4cc24..856f9508ea56 100644
-> --- a/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-> +++ b/tools/testing/selftests/cgroup/test_hugetlb_memcg.c
-> @@ -214,7 +214,7 @@ int main(int argc, char **argv)
->  		return ret;
->  	}
->  
-> -	if (cg_find_unified_root(root, sizeof(root)))
-> +	if (cg_find_unified_root(root, sizeof(root), NULL))
->  		ksft_exit_skip("cgroup v2 isn't mounted\n");
->  
->  	switch (test_hugetlb_memcg(root)) {
-> diff --git a/tools/testing/selftests/cgroup/test_kill.c b/tools/testing/selftests/cgroup/test_kill.c
-> index 6153690319c9..0e5bb6c7307a 100644
-> --- a/tools/testing/selftests/cgroup/test_kill.c
-> +++ b/tools/testing/selftests/cgroup/test_kill.c
-> @@ -276,7 +276,7 @@ int main(int argc, char *argv[])
->  	char root[PATH_MAX];
->  	int i, ret = EXIT_SUCCESS;
->  
-> -	if (cg_find_unified_root(root, sizeof(root)))
-> +	if (cg_find_unified_root(root, sizeof(root), NULL))
->  		ksft_exit_skip("cgroup v2 isn't mounted\n");
->  	for (i = 0; i < ARRAY_SIZE(tests); i++) {
->  		switch (tests[i].fn(root)) {
-> diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
-> index c82f974b85c9..137506db0312 100644
-> --- a/tools/testing/selftests/cgroup/test_kmem.c
-> +++ b/tools/testing/selftests/cgroup/test_kmem.c
-> @@ -420,7 +420,7 @@ int main(int argc, char **argv)
->  	char root[PATH_MAX];
->  	int i, ret = EXIT_SUCCESS;
->  
-> -	if (cg_find_unified_root(root, sizeof(root)))
-> +	if (cg_find_unified_root(root, sizeof(root), NULL))
->  		ksft_exit_skip("cgroup v2 isn't mounted\n");
->  
->  	/*
-> diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-> index c7c9572003a8..b462416b3806 100644
-> --- a/tools/testing/selftests/cgroup/test_memcontrol.c
-> +++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-> @@ -1314,7 +1314,7 @@ int main(int argc, char **argv)
->  	char root[PATH_MAX];
->  	int i, proc_status, ret = EXIT_SUCCESS;
->  
-> -	if (cg_find_unified_root(root, sizeof(root)))
-> +	if (cg_find_unified_root(root, sizeof(root), NULL))
->  		ksft_exit_skip("cgroup v2 isn't mounted\n");
->  
->  	/*
-> diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
-> index f0e488ed90d8..ef7f39545317 100644
-> --- a/tools/testing/selftests/cgroup/test_zswap.c
-> +++ b/tools/testing/selftests/cgroup/test_zswap.c
-> @@ -440,7 +440,7 @@ int main(int argc, char **argv)
->  	char root[PATH_MAX];
->  	int i, ret = EXIT_SUCCESS;
->  
-> -	if (cg_find_unified_root(root, sizeof(root)))
-> +	if (cg_find_unified_root(root, sizeof(root), NULL))
->  		ksft_exit_skip("cgroup v2 isn't mounted\n");
->  
->  	if (!zswap_configured())
+> So if I get it right, somehow like what I did but we endup with:
+> 
+> In bpf, cgroup was already acquired.
+> 
+> bpf_cgroup_knob_write(cgroup, "freeze", buf)
+> |_ parse params -> lock cgroup_mutex -> cgroup_freeze() -> unlock
+> 
+> 
+> cgroup_freeze_write(struct kernfs_open_file *of, char *buf,...)
+> |_ parse params -> cgroup_ref++ -> krnfs_active_ref--  ->
+>      -> lock cgroup_mutex -> cgroup_freeze() -> unlock + krnfs++ ...
+> 
+> Please let me know if I missed something.
+
+I've thought about it a bit and I wonder whether a better way to do this is
+implementing this at the kernfs layer. Something like (hopefully with a
+better name):
+
+ s32 bpf_kernfs_knob_write(struct kernfs_node *dir, const char *knob, char *buf);
+
+So, about the same, but takes kernfs_node directory instead of cgroup. This
+would make the interface useful for accessing sysfs knobs too which use
+similar conventions. For cgroup, @dir is just cgrp->kn and for sysfs it'd be
+kobj->sd. This way we can avoid the internal object -> path -> internal
+object ping-poinging while keeping the interface a lot more generic. What do
+you think?
+
+Thanks.
 
 -- 
-BR,
-Muhammad Usama Anjum
+tejun
 
