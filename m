@@ -1,144 +1,126 @@
-Return-Path: <cgroups+bounces-2239-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2240-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 267F9890E77
-	for <lists+cgroups@lfdr.de>; Fri, 29 Mar 2024 00:23:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62929890FE7
+	for <lists+cgroups@lfdr.de>; Fri, 29 Mar 2024 01:56:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF55C294D49
-	for <lists+cgroups@lfdr.de>; Thu, 28 Mar 2024 23:23:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 922B21C247A3
+	for <lists+cgroups@lfdr.de>; Fri, 29 Mar 2024 00:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2670712D1FC;
-	Thu, 28 Mar 2024 23:23:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B99110942;
+	Fri, 29 Mar 2024 00:56:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HsUzo0Dx"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ViZ2H7nK"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BCFA3F9EA;
-	Thu, 28 Mar 2024 23:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E9E0A5F
+	for <cgroups@vger.kernel.org>; Fri, 29 Mar 2024 00:56:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711668206; cv=none; b=GgPpP40mfkaA5eElv27qi2lZ2ZZKEqQimNI+jYR0ZtnWeLk7ELCEr92RH0oYsQa5bGD/GlTcgxtiNEiJvwmuu3mRpB1rE3+cKyztc7V+rE4LH2QZgyHFtPVPsrzBYQ2LpVkAotYvk1wFFPTgy8I7kznZJHlSd7UDgHa7wMuyYA8=
+	t=1711673787; cv=none; b=TX+fVoxsHc81FEcANh+2nHiTQ94/CjUPLmRjjgF32gHiHDRrkm/nolhqlu0CIQO2WND52RDM36YM/1Gj0ao6c7Y1XZWWLKrMOxuWCZQmEgGfYVwRXVysNIRuu29/Wv5INCUHE4iEjKyEbQsXDDXuL5iGLzYROuqQpXlVpobHcis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711668206; c=relaxed/simple;
-	bh=f+Fn0IVd1CXhIBMUfKxmbY6PpiZuXCT5Jwa6jncWG1c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j/fSNAuRKHY70oeLFpbQJrkOQRTZC74Rzd3F80pUUEO2pdKpxCWohIHCt10bBhMJg1N7mIHCaOFObjJs39ogovKHht08nLs41pUVcJgHN5bgIqf1pywJhHubkXP3ANBwoFKSOjVThNGlSfT0FPfGfhkJUzA3PGv7Ss0PoeDPeoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HsUzo0Dx; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e740fff1d8so1327639b3a.1;
-        Thu, 28 Mar 2024 16:23:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711668204; x=1712273004; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pjgXiS9mThv24KOLFrcYAxjGt4bSxcV19+6gwf0UgxU=;
-        b=HsUzo0Dxh1VYe4WWFqSmxN/uGTbMb4jeaLMWzKxAivvIRD0w2fi3P21vdDhPCAd8xw
-         vkJnbMUX1GuJsC6Mzsp1HqFfwL5ahrzWcPHk8o2qSStAvMj/h5JQYNWY6biSAcYU4/0T
-         LBu5TKHZzLpoQj5YcH8oeDLzYw3ZQerXZhWbwSazCn8ltQDYdZn3oAq7InXrK1w2cIJ/
-         7InQeSASODFeYc+z9kAgFJEq+P/MKRJqSvgo+OTSdAFHazZ6v1zLaO3OfRfxGD+C7iUe
-         Was0zY43K57AYYD1x9NfgcH7KJd/fCXC0WSt81ebZ5sDGlVTGZxWl1kkq9T6ZBLOM7Fb
-         O0lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711668204; x=1712273004;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pjgXiS9mThv24KOLFrcYAxjGt4bSxcV19+6gwf0UgxU=;
-        b=BZhyGagJTBWm047299r0wwnleZ6YGjF0nfBOOTO5bz7t3xuTjwPfcEGniZBG9W8Hle
-         oPXcnBfDqLwCuYXddeQrBd3uWfLndmaCEpUiHuCcFceVPPFYuS54EblFyNAnUdRi7D4k
-         2llGqxXodgUIeNOTSFnrO9TXc+YtRYHAdlFru8cex4zptPLHq2JxbvKjOJwfGz62dmRW
-         8eaOeINZzAMQ4VUCgGVSIsnw4lpr7oPlsQHn8mRZHQVvtYQd5UDbsJjZHgKDXPoiGdSL
-         uCvczGotbLh0YOYoW79WhKySGuw04VzzXG381i0jbnGS3utCt63jfGWQPzcKc2gvYfsy
-         BofQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXNRAFsaUFyMf+wds197nQJULS2/AKiVooK0hu2LNbcpptbNq+nVLSMZbBrdqaJs984/prRz+3GTl4DQYclPkiaUZzt74Qs2dQbGETLsXFQNJzHfzJAuv6+dQngVSnIrRm/xP2C3XOr3D8mWM+DSOJNjbEi8Te7w2OaCGbpv5RYxlEkKgQf8urZ2ReANN1WD4DTMNqHNdM4YjqzFg==
-X-Gm-Message-State: AOJu0YzXM9fsVEc/cc39dLqXHxbJrNgcrqqKcuryKpArpf4/n+yKaIgi
-	sromWI4DFK1ilTOI9MN0HO3gejLtxWL84vO9AVXE6pBukvZOwMlG
-X-Google-Smtp-Source: AGHT+IED4+zMpS52gRLtiDL2tuGN2olL7XAhhBJZ5TcYamtrSCl87g6jlNerqqK47bJO7a629WacbA==
-X-Received: by 2002:a05:6a00:9284:b0:6ea:c2ef:3b71 with SMTP id jw4-20020a056a00928400b006eac2ef3b71mr927159pfb.20.1711668203684;
-        Thu, 28 Mar 2024 16:23:23 -0700 (PDT)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id e5-20020aa79805000000b006eac9c54f7csm1968972pfl.96.2024.03.28.16.23.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 16:23:23 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 28 Mar 2024 13:23:22 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Djalal Harouni <tixxdz@gmail.com>, Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-	bpf <bpf@vger.kernel.org>,
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
-Message-ID: <ZgX76nX2NfcxuYb8@slm.duckdns.org>
-References: <20240327-ccb56fc7a6e80136db80876c@djalal>
- <20240327225334.58474-1-tixxdz@gmail.com>
- <ZgWnPZtwBYfHEFzf@slm.duckdns.org>
- <CAADnVQK6BUGZFCATD8Ejcfob5sKK-b8HUD_4o8Q6s9FM72L4iQ@mail.gmail.com>
- <ZgWv19ySvoACAll4@slm.duckdns.org>
- <CAADnVQLhWDcX-7XCdo-W=jthU=9iPqODwrE6c9fvU8sfAJ5ARg@mail.gmail.com>
- <ZgXMww9kJiKi4Vmd@slm.duckdns.org>
- <CAADnVQK970_Nx3918V41ue031RkGs+WsteOAm6EJOY7oSwzS1A@mail.gmail.com>
- <ZgXallkHApJC-adM@slm.duckdns.org>
- <CAADnVQLSDOfKccynu2jt-7=8nJqoLtoNkRchvHo1NCUEYOQJ7Q@mail.gmail.com>
+	s=arc-20240116; t=1711673787; c=relaxed/simple;
+	bh=bTxic3zTCVAnP1UInL2d0EPzinfN7xzR216WNJg4b6Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E1U960nFHnXghmQV6YuayxdvZGHqcyM0iJ3pF7HzL1wbQeBOpOKdzVJTU3ISINi8rYERjpPdQxPfzZYJxoWIX4PbDTQdkKznjVPp8QtKk+lqS93B5lOj55iHe9zLxtsRaDYtBt07p3rI9q7yG+SNXqNelOxWCXUK265RENQ3m+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ViZ2H7nK; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1711673784;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=k3mzPsNX7W5NRZtTNJ51NaOr5melaIinfF0oNdCHQi4=;
+	b=ViZ2H7nKd0QBvgUjX6dZ1Z+GlRdRHkDML/PYaYo3jzB1WnyU165InByzYbKFFEaD4VJ9aA
+	Zb2sFHthDAdZyXWJ6BWfz3kf8+pZWZZZEHrokxt4cx2vfn/ZJWbjFEJx7e911UqJVEOTX/
+	qPxKRWFIr7QgctiQ4BnhN6pYvlV96aE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-6-9KCimqGQPxKhCir4LIknOQ-1; Thu, 28 Mar 2024 20:56:18 -0400
+X-MC-Unique: 9KCimqGQPxKhCir4LIknOQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E8F3A185A783;
+	Fri, 29 Mar 2024 00:56:17 +0000 (UTC)
+Received: from [10.22.9.3] (unknown [10.22.9.3])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 832511C060D0;
+	Fri, 29 Mar 2024 00:56:15 +0000 (UTC)
+Message-ID: <3135adb7-9e4d-4538-ae1b-c67d37b1ee1b@redhat.com>
+Date: Thu, 28 Mar 2024 20:56:15 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQLSDOfKccynu2jt-7=8nJqoLtoNkRchvHo1NCUEYOQJ7Q@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] sched/isolation: Exclude dynamically isolated CPUs
+ from housekeeping masks
+Content-Language: en-US
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
+ <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ Cestmir Kalina <ckalina@redhat.com>, Costa Shulyupin <cshulyup@redhat.com>
+References: <20240229021414.508972-1-longman@redhat.com>
+ <20240229021414.508972-2-longman@redhat.com> <ZgIHBaF0gGQTKlvU@pavilion.home>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <ZgIHBaF0gGQTKlvU@pavilion.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-Hello,
 
-On Thu, Mar 28, 2024 at 02:28:51PM -0700, Alexei Starovoitov wrote:
-> > > So filename will be one of cgroup_base_files[].name ?
-> > > We probably don't want psi or cgroup1_base_files in there.
-> >
-> > Would it matter?
-> 
-> Few weak reasons:
-> . cgroup_psi_files have show/write/poll/release which
->   doesn't map to this bpf_cgroup_knob_write/read ?
-> . cgroup1_base_files probably needs to a separate kfunc
->   bpf_cgroup1_...
-> 
-> > If the user has root perm, they can do whatever with the
-> > files anyway, so I'm not sure why we'd restrict any specific knob. Maybe we
-> > wanna make sure @filename doesn't include '/'? Or is it that you don't want
-> > to go through the usual file name look up?
-> 
-> yeah. why do a file lookup? The names are there in the array.
-> cgroup pointer gives that "relative path" and knob name is the last
-> part of such "path". Easy to search in that array(s).
+On 3/25/24 19:21, Frederic Weisbecker wrote:
+> Le Wed, Feb 28, 2024 at 09:14:13PM -0500, Waiman Long a écrit :
+>> The housekeeping CPU masks, set up by the "isolcpus" and "nohz_full"
+>> boot command line options, are used at boot time to exclude selected CPUs
+>> from running some kernel background processes to minimize disturbance
+>> to latency sensitive userspace applications. Some of housekeeping CPU
+>> masks are also checked at run time to avoid using those isolated CPUs.
+>>
+>> The cpuset subsystem is now able to dynamically create a set of isolated
+>> CPUs to be used in isolated cpuset partitions. The long term goal is
+>> to make the degree of isolation as close as possible to what can be
+>> done statically using those boot command line options.
+>>
+>> This patch is a step in that direction by making the housekeeping CPU
+>> mask APIs exclude the dynamically isolated CPUs when they are called
+>> at run time. The housekeeping CPU masks will fall back to the bootup
+>> default when all the dynamically isolated CPUs are released.
+>>
+>> A new housekeeping_exlude_isolcpus() function is added which is to be
+>> called by the cpuset subsystem to provide a list of isolated CPUs to
+>> be excluded.
+> Can we instead overwrite housekeeping_boot.cpumasks from cpusets entirely and
+> forget about the original boot value forever?
 
-Difficult to tell without looking at the implementation but I don't have
-strong opinions. The interface makes sense to me and as long as we can hook
-it up in a reasonably way, it should be okay. We can always change internal
-implementation later if necessary.
+That is an interesting question.
 
-Thanks.
+I think we will still need to keep the boot values somewhere, at least 
+until we can dynamically isolate CPUs as good as what can be done at 
+boot time. At this point, what can be done dynamically is still limited. 
+So we want to keep the statically isolated CPUs around without breaking 
+its isolation. Of course, we can do all these within cpuset with minimal 
+change in kernel/sched/isolation.c.
 
--- 
-tejun
+Cheers,
+Longman
+
 
