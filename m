@@ -1,145 +1,195 @@
-Return-Path: <cgroups+bounces-2248-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2249-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F82589278C
-	for <lists+cgroups@lfdr.de>; Sat, 30 Mar 2024 00:05:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 03A1A892AAF
+	for <lists+cgroups@lfdr.de>; Sat, 30 Mar 2024 12:15:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 056B628456A
-	for <lists+cgroups@lfdr.de>; Fri, 29 Mar 2024 23:05:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B192E28282C
+	for <lists+cgroups@lfdr.de>; Sat, 30 Mar 2024 11:15:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45FB13E403;
-	Fri, 29 Mar 2024 23:05:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C98C2BAF6;
+	Sat, 30 Mar 2024 11:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U6BheGdN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W1ftU9vF"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5C9913E895;
-	Fri, 29 Mar 2024 23:05:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFFF9BE6F;
+	Sat, 30 Mar 2024 11:15:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711753508; cv=none; b=FLeM8DL77EJQk6d3SoFqLdC7M9KInCrb73EaxABSIo6M20qhRi8lEN3eVO9pY77/N7l6TnWH2cSI20IexzpQI34U709g9VIp29JeVqTWnX76yniTt+/10d7iY8jWp+91WIOH3ijzvfB6Ea7PPBXZLP9SjUiLT5N7hcNrPeQ40gM=
+	t=1711797321; cv=none; b=Hjw4wINcNy5QP8obsVwEzt5ugSGtowJRrRGd7nkNoqz+7ILmQXHNBk8sJYsupao+cVJ4LCUGaFNraAwas7PK8p4nONcVzHuIXLK7kO+waGYL2EfGTz1q378YJYsuBJnhrDWi8ZTzgmq+KKfLHFPzaoTlsDxkho2nw9vgiiRmfXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711753508; c=relaxed/simple;
-	bh=bbuOaKvrjP/9RP0DxEgIjZZL+rizhBaVvYfdFek3Ayw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lnKhXE0aLOBD7K1hY7M6uqlFa/aZRGqyfFx+VEjK8k6kal30SuIwFkrDs3hk5qFwJW2fZkesMP+UOA/OHPfsfVDDQRBZh66kxclEpsMd7l69fKS9U356kjE/Ick3Y6RmiwyscvuDpiu792NkL3zqiWcz1vHtzdsMJOqwuW2zPac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U6BheGdN; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-341cf28e055so1634072f8f.0;
-        Fri, 29 Mar 2024 16:05:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711753505; x=1712358305; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s5EA1dNOkzmqCgmVjiD2GJtPLu9i/Imtz0kuQLrem3Q=;
-        b=U6BheGdNeUMgaKm6mNXGRnCp1esqQW4gDO+RDLN6EV/KrDD7i6+on8+lbzNlgefLbm
-         vokX82qEqTfkZmbM5iPf420jv5rOA9f2TScYT/l+ReBghoC2Dxeop7Qn+BW49Pz/pqGV
-         5LwcLd/RxQuwWvNjQFbdokj04/tmUVvt98WDZqneNDeLrVSee5LJo4ySP+5XemFaRc/J
-         tMwvhImcXJKZj7SpxQhVw5es2SbaltiPVSJi6nuvxgEVKbo466rwWWJijCjefxNoqrbc
-         gLY2+M0cV3lepFWrNj5FCM/Hl6jZUskfjYzN4k57oIOLVzOg95D26J4/pRzX7ujDMJiE
-         N0Sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711753505; x=1712358305;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s5EA1dNOkzmqCgmVjiD2GJtPLu9i/Imtz0kuQLrem3Q=;
-        b=C09g1n69spfR6CUS/oEhb9r2Y0OyMbpQc2V0849IsD9Xam4Pf4kKeCbV08O1EoClPK
-         a8sC0xD/pVaIKxrm/xsr+vu5QKmO/7sLBmoLryWpDpIHa5oPUOIOCv8M48e2npr3gv6t
-         cpyPT/UyTXQc5kns9OK8w8TfeaLpaTv9Z1ykSNrB1RJ7eAkY5nM1LVikGrKpxJ1kOZyX
-         Io3pBpIojitRFyBy/96N4PliO/nJYxVjJqco64vj7aY0hLCIebgh3e1xP3rMO/XySBZm
-         DHnEEN15/m/x4IOJ9jwGVv9vL3gSyuE5ImQxjCNXbYH7BWjApFrAICyWI4UcBweMC5ue
-         3s9g==
-X-Forwarded-Encrypted: i=1; AJvYcCWhoUbV68p4KJcbPDCXQ9D7P4zTusuthY+FGCAXM9+zaLQom1hP/iSNSC7g8PauKphynB4HtWVb6rcfu5iC7WSJqy3lvxyLqVa9XedwE7vd/+20qs20XDTiC30CTP/C60sVSBvIENbBoBzgLz83cJqBcRzya3aF0QGQqX2MeqLUPPFa+EqJp6wtXJvXHWPNsJblWfYDnvUhbSrPmg==
-X-Gm-Message-State: AOJu0YyzlVXeqSG5DsAWannGBgZ73MxCu2I7krdyOqHH/vHWT8e0xMKS
-	KIco58NPvq7ziTRt2lbKKhsopNd1wO02rnTPY72KEzzhleIxDiAzzWuy+H0n2IZzsmASEmW5Yov
-	0FqHs3PXu+o49whdrOCbX453xatRjEMcGNFs=
-X-Google-Smtp-Source: AGHT+IF2ci+unak71hLReqynfxa6tgaGH9aZUsNmeB01zAgeMDLG44P7GTpQiLz63QxISFU4QEHAfgz2JOgpTquvmN0=
-X-Received: by 2002:a5d:4452:0:b0:33e:b78b:5831 with SMTP id
- x18-20020a5d4452000000b0033eb78b5831mr2444474wrr.52.1711753504850; Fri, 29
- Mar 2024 16:05:04 -0700 (PDT)
+	s=arc-20240116; t=1711797321; c=relaxed/simple;
+	bh=BU+iZwlXyhOhb/Hxv5gnkF30nWmGZ2Tfi8rvRT0cHrQ=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=AOPCWkMM2ymG1kPRk4CYyB0USMUmI1VmLGOqvfEYBZSOt6jhvETyb6jn/ixC/WWT13d00MZeOU+4es7Ezv8lZ5NVwE/AXLvLUm7iTHXlSJ8vAMBG0ToVpJAoOyM7XZNsJuTXBu7naGk1w4kxGH1ykzboLQ6xCXUvKm/Th483eRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W1ftU9vF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CA6CC433C7;
+	Sat, 30 Mar 2024 11:15:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1711797320;
+	bh=BU+iZwlXyhOhb/Hxv5gnkF30nWmGZ2Tfi8rvRT0cHrQ=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=W1ftU9vFLnbH4j7hCK8xkdGjzTG/MGGbmBbVQVFzTq/zfl/JYzycktJouUNwAiMnq
+	 Latzr1w792NX2lTxu1zNXfCyxU0gN224HMF9bk7ZDLBmL83YCL+hm9kTpvZZPQilr4
+	 X3Y0xoTofPq/EsJyilTVGYeD70A3q3pqjmY0wFaVEtBU7g+b3rcHSnI/EONwSI2lT0
+	 8wE+P/oTOx7VeVG/JeoKrLPkzMiaGZT4BcclAcqNsFiCncrBtdSc5hk2N35hNX/GKU
+	 Yzvv2cqe3TV2PMvPgByy2kvtR0PHMZewgALyxULuKlFTzK+0c4II4VYXyV3eIzvZ/S
+	 1PAE6gH3hxG9g==
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240327-ccb56fc7a6e80136db80876c@djalal> <20240327225334.58474-1-tixxdz@gmail.com>
- <ZgWnPZtwBYfHEFzf@slm.duckdns.org> <CAADnVQK6BUGZFCATD8Ejcfob5sKK-b8HUD_4o8Q6s9FM72L4iQ@mail.gmail.com>
- <ZgWv19ySvoACAll4@slm.duckdns.org> <CAADnVQLhWDcX-7XCdo-W=jthU=9iPqODwrE6c9fvU8sfAJ5ARg@mail.gmail.com>
- <ZgXMww9kJiKi4Vmd@slm.duckdns.org> <CAADnVQK970_Nx3918V41ue031RkGs+WsteOAm6EJOY7oSwzS1A@mail.gmail.com>
- <ZgXallkHApJC-adM@slm.duckdns.org> <bcb084ae-c934-4eba-aadd-95bbec2a63cb@gmail.com>
- <Zgc1BZnYCS9OSSTw@slm.duckdns.org>
-In-Reply-To: <Zgc1BZnYCS9OSSTw@slm.duckdns.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 29 Mar 2024 16:04:53 -0700
-Message-ID: <CAADnVQ+WmaPG1WOaSDbjxNPVzVape_JfG_CNSRy188ni076Mog@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
-To: Tejun Heo <tj@kernel.org>
-Cc: Djalal Harouni <tixxdz@gmail.com>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Sat, 30 Mar 2024 13:15:14 +0200
+Message-Id: <D071I61AGNZ7.HQGKJZI2D5UW@kernel.org>
+Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+ <zhanb@microsoft.com>, <anakrish@microsoft.com>,
+ <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
+ <chrisyan@microsoft.com>
+Subject: Re: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup
+ testing
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>,
+ <dave.hansen@linux.intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
+ <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+ <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+ <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+ <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
+X-Mailer: aerc 0.17.0
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-16-haitao.huang@linux.intel.com>
+ <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
+ <op.2lbrsagbwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2lbrsagbwjvjmi@hhuan26-mobl.amr.corp.intel.com>
 
-On Fri, Mar 29, 2024 at 2:39=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
+On Thu Mar 28, 2024 at 5:54 AM EET, Haitao Huang wrote:
+> On Wed, 27 Mar 2024 07:55:34 -0500, Jarkko Sakkinen <jarkko@kernel.org> =
+=20
+> wrote:
 >
-> Hello,
+> > On Mon, 2024-02-05 at 13:06 -0800, Haitao Huang wrote:
+> >> The scripts rely on cgroup-tools package from libcgroup [1].
+> >>
+> >> To run selftests for epc cgroup:
+> >>
+> >> sudo ./run_epc_cg_selftests.sh
+> >>
+> >> To watch misc cgroup 'current' changes during testing, run this in a
+> >> separate terminal:
+> >>
+> >> ./watch_misc_for_tests.sh current
+> >>
+> >> With different cgroups, the script starts one or multiple concurrent
+> >> SGX
+> >> selftests, each to run one unclobbered_vdso_oversubscribed test.Each
+> >> of such test tries to load an enclave of EPC size equal to the EPC
+> >> capacity available on the platform. The script checks results against
+> >> the expectation set for each cgroup and reports success or failure.
+> >>
+> >> The script creates 3 different cgroups at the beginning with
+> >> following
+> >> expectations:
+> >>
+> >> 1) SMALL - intentionally small enough to fail the test loading an
+> >> enclave of size equal to the capacity.
+> >> 2) LARGE - large enough to run up to 4 concurrent tests but fail some
+> >> if
+> >> more than 4 concurrent tests are run. The script starts 4 expecting
+> >> at
+> >> least one test to pass, and then starts 5 expecting at least one test
+> >> to fail.
+> >> 3) LARGER - limit is the same as the capacity, large enough to run
+> >> lots of
+> >> concurrent tests. The script starts 8 of them and expects all pass.
+> >> Then it reruns the same test with one process randomly killed and
+> >> usage checked to be zero after all process exit.
+> >>
+> >> The script also includes a test with low mem_cg limit and LARGE
+> >> sgx_epc
+> >> limit to verify that the RAM used for per-cgroup reclamation is
+> >> charged
+> >> to a proper mem_cg.
+> >>
+> >> [1] https://github.com/libcgroup/libcgroup/blob/main/README
+> >>
+> >> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> >> ---
+> >> V7:
+> >> - Added memcontrol test.
+> >>
+> >> V5:
+> >> - Added script with automatic results checking, remove the
+> >> interactive
+> >> script.
+> >> - The script can run independent from the series below.
+> >> ---
+> >>  .../selftests/sgx/run_epc_cg_selftests.sh     | 246
+> >> ++++++++++++++++++
+> >>  .../selftests/sgx/watch_misc_for_tests.sh     |  13 +
+> >>  2 files changed, 259 insertions(+)
+> >>  create mode 100755
+> >> tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+> >>  create mode 100755
+> >> tools/testing/selftests/sgx/watch_misc_for_tests.sh
+> >>
+> >> diff --git a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+> >> b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+> >> new file mode 100755
+> >> index 000000000000..e027bf39f005
+> >> --- /dev/null
+> >> +++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+> >> @@ -0,0 +1,246 @@
+> >> +#!/bin/bash
+> >
+> > This is not portable and neither does hold in the wild.
+> >
+> > It does not even often hold as it is not uncommon to place bash
+> > to the path /usr/bin/bash. If I recall correctly, e.g. NixOS has
+> > a path that is neither of those two.
+> >
+> > Should be #!/usr/bin/env bash
+> >
+> > That is POSIX compatible form.
+> >
 >
-> On Fri, Mar 29, 2024 at 02:22:28PM +0100, Djalal Harouni wrote:
-> > It would be easy at least for me if I just start with cgroupv2 and
-> > ensure that it has same available filenames as if we go through kernfs.
-> > Not a root cgroup node and maybe only freeze and kill for now that are
-> > part of cgroup_base_files.
-> >
-> > So if I get it right, somehow like what I did but we endup with:
-> >
-> > In bpf, cgroup was already acquired.
-> >
-> > bpf_cgroup_knob_write(cgroup, "freeze", buf)
-> > |_ parse params -> lock cgroup_mutex -> cgroup_freeze() -> unlock
-> >
-> >
-> > cgroup_freeze_write(struct kernfs_open_file *of, char *buf,...)
-> > |_ parse params -> cgroup_ref++ -> krnfs_active_ref--  ->
-> >      -> lock cgroup_mutex -> cgroup_freeze() -> unlock + krnfs++ ...
-> >
-> > Please let me know if I missed something.
+> Sure
 >
-> I've thought about it a bit and I wonder whether a better way to do this =
-is
-> implementing this at the kernfs layer. Something like (hopefully with a
-> better name):
+> > Just got around trying to test this in NUC7 so looking into this in
+> > more detail.
 >
->  s32 bpf_kernfs_knob_write(struct kernfs_node *dir, const char *knob, cha=
-r *buf);
+> Thanks. Could you please check if this version works for you?
 >
-> So, about the same, but takes kernfs_node directory instead of cgroup. Th=
-is
-> would make the interface useful for accessing sysfs knobs too which use
-> similar conventions. For cgroup, @dir is just cgrp->kn and for sysfs it'd=
- be
-> kobj->sd. This way we can avoid the internal object -> path -> internal
-> object ping-poinging while keeping the interface a lot more generic. What=
- do
-> you think?
+> https://github.com/haitaohuang/linux/commit/3c424b841cf3cf66b085a424f4b53=
+7fbc3bbff6f
+>
+> >
+> > That said can you make the script work with just "#!/usr/bin/env sh"
+> > and make sure that it is busybox ash compatible?
+>
+> Yes.
+>
+> >
+> > I don't see any necessity to make this bash only and it adds to the
+> > compilation time of the image. Otherwise lot of this could be tested
+> > just with qemu+bzImage+busybox(inside initramfs).
+> >
+>
+> will still need cgroup-tools as you pointed out later. Compiling from its=
+ =20
+> upstream code OK?
 
-And helpers like cgroup_freeze_write() will be refactored
-to take kernfs_node directly instead of kernfs_open_file?
-Makes sense to me.
-Sounds like a minimal amount of changes and flexible enough.
+Can you explain why you need it?
+
+What is the thing you cannot do without it?
+
+BR, Jarkko
 
