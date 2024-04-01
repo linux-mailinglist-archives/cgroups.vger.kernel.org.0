@@ -1,169 +1,128 @@
-Return-Path: <cgroups+bounces-2264-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2265-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CA44893C7A
-	for <lists+cgroups@lfdr.de>; Mon,  1 Apr 2024 17:00:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C51B89477A
+	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 00:55:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AE84281ADA
-	for <lists+cgroups@lfdr.de>; Mon,  1 Apr 2024 14:59:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AA472833C9
+	for <lists+cgroups@lfdr.de>; Mon,  1 Apr 2024 22:55:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E121D47A74;
-	Mon,  1 Apr 2024 14:59:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC64456473;
+	Mon,  1 Apr 2024 22:55:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ejj75wdD"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A34oIFey"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1062146B80
-	for <cgroups@vger.kernel.org>; Mon,  1 Apr 2024 14:59:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93BDA33982;
+	Mon,  1 Apr 2024 22:55:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711983570; cv=none; b=PWavghDJRsFM32pAc25OY0yQdsqAyu2v0Iayohoa9jHYm6J7BWXgSk9Xuc1FTbR59f3S7a1zGNjkMxhC0YQODXWbL3QnfL6k98Z1awkWDO/8/6QeYeLC5zuGfyFcpAhCmJ7QuV24k26+MeqkhjGV9w3bwbaMpHaBvtq0UAknRSM=
+	t=1712012110; cv=none; b=leP6AQYPq/TPbDgmGaiJL1Aaiya+hK0xDTGsoMUJ62SYlFT/gEvEv4w/2pDAANQAcbFk2Xgmf8CEz5kyMgCmORMH2CRjbaGxrk4Tr79nFFnAJ4er81iVz7k/E/v7c9WQf25BmnJA79dWz8LhHcXT9W0eHlQ/viFoESDCaq5PCvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711983570; c=relaxed/simple;
-	bh=Y173ouXifC0UgenFiTZyN7ZdMZSoLV5wM5RT2GlmCFc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mWS2VOD/dNz04GNvpM+Qz8lw9qFqHKRX/CSsIhyOAWXQ6hDWGnoW1iRA4nqA7ehqvQijJ/6SDFX2ta24MV2fpPmCKjqEnSkeV51cZx0gd7hvCmc2a6XKjLyXkx8oaPeK4WHCd5Y/Rbh1dws02n7M9+LfawiNxFDkugUIMmBe6iY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ejj75wdD; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1711983568;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oYtrXSODkF7n06ZabqM/gn748i0MzfQn245Hdj5AU1M=;
-	b=Ejj75wdD2sbTqZHTyAgVRzrVeQCjdx7gV5iPqfkC8+X4/n7JP3GVf1oEJbD8Z273PkYrZz
-	X2EJe4jOwK7nfaYoyC/DeY0w7fEe8uOVtatmyIysXJ7QV9XS6VbVIZaVoX5fdDc56wFoBA
-	HWFHcDZu0EZSU+wGgioQ17qmzC/VbGI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-303-2-d38DFfNMaBj4mHhv0i_A-1; Mon, 01 Apr 2024 10:59:21 -0400
-X-MC-Unique: 2-d38DFfNMaBj4mHhv0i_A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B9E33185A781;
-	Mon,  1 Apr 2024 14:59:19 +0000 (UTC)
-Received: from llong.com (unknown [10.22.16.160])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 955A58177;
-	Mon,  1 Apr 2024 14:59:18 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <len.brown@intel.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Frederic Weisbecker <frederic@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Alex Shi <alexs@kernel.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Barry Song <song.bao.hua@hisilicon.com>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH 2/2] cgroup/cpuset: Add test_cpuset_v1_hp.sh
-Date: Mon,  1 Apr 2024 10:58:58 -0400
-Message-Id: <20240401145858.2656598-3-longman@redhat.com>
-In-Reply-To: <20240401145858.2656598-1-longman@redhat.com>
-References: <20240401145858.2656598-1-longman@redhat.com>
+	s=arc-20240116; t=1712012110; c=relaxed/simple;
+	bh=30gWJyaHRF80+3efAwmOoPWr9DWWUI7WAK4YaLcCZOc=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=X1uhAzzBpZXNqFMZ9oCTJFNFJF6dujSNMWCEc1fuC4uwvXZMKCxQy0+xgAGKaJKsH4a2pjt+wUKSEgzoRQ5M9+6GgN6GoruYF/k0Y+QCHAKDcr8MleYVPTGl5O1m8WJIxFyg/4QLapbSHWOt+B/mXYqw3dv1Z0JpJJpt7j99OOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A34oIFey; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712012109; x=1743548109;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=30gWJyaHRF80+3efAwmOoPWr9DWWUI7WAK4YaLcCZOc=;
+  b=A34oIFeyZyz1OurneqWBAsyCjROWBzwO+9F7mhd+8F1U0Gu5wuQwLixV
+   uxbcdxUZ1+vN3oiLIXBz8si5gK0fKhpu/NUPGzZnUogTl7ub0Tns6liEw
+   hZCx5Dw7HvEY75f77VZ9sKynBwYJrGXjdVABCVlfC6Zako6JBCs/bRD/F
+   Jaf+GI65ofsf0CGLY/+TeZgBUq/xl0CtA0Xt06KX8+hBRBreFMVwwAEvz
+   Bp28JuUGiZpX5+7equuiID4LcxRpK6fhP0VKB2tOlo/AtD33KHccZeXHd
+   Gv+CXIqHiWm6VCXrFfDRx+aMjW6WEhgH7IUMB8V/n3XtavyGBxJ9TJZDn
+   w==;
+X-CSE-ConnectionGUID: JEayBrwWQjavic3XzCdT8g==
+X-CSE-MsgGUID: letfgcqiT0aLQUntDZf+QQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11031"; a="7058405"
+X-IronPort-AV: E=Sophos;i="6.07,173,1708416000"; 
+   d="scan'208";a="7058405"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2024 15:55:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,173,1708416000"; 
+   d="scan'208";a="18321991"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 01 Apr 2024 15:55:06 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "Jarkko Sakkinen" <jarkko@kernel.org>
+Cc: anakrish@microsoft.com, bp@alien8.de, cgroups@vger.kernel.org,
+ chrisyan@microsoft.com, dave.hansen@linux.intel.com, hpa@zytor.com,
+ kai.huang@intel.com, kristen@linux.intel.com, linux-kernel@vger.kernel.org,
+ linux-sgx@vger.kernel.org, mikko.ylinen@linux.intel.com, mingo@redhat.com,
+ mkoutny@suse.com, seanjc@google.com, sohil.mehta@intel.com,
+ tglx@linutronix.de, tim.c.chen@linux.intel.com, tj@kernel.org, x86@kernel.org,
+ yangjie@microsoft.com, zhanb@microsoft.com, zhiquan1.li@intel.com
+Subject: Re: [PATCH] selftests/sgx: Improve cgroup test scripts
+References: <D071SWVSOJLN.2C9H7NTS4PHGI@kernel.org>
+ <20240331174442.51019-1-haitao.huang@linux.intel.com>
+ <D08UQJ2XQY6L.1XEOEJ6HIUJ8Y@kernel.org>
+Date: Mon, 01 Apr 2024 17:55:02 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2lkm90y3wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <D08UQJ2XQY6L.1XEOEJ6HIUJ8Y@kernel.org>
+User-Agent: Opera Mail/1.0 (Win32)
 
-Add a simple test to verify that an empty v1 cpuset will force its tasks
-to be moved to an ancestor node. It is based on the test case documented
-in commit 76bb5ab8f6e3 ("cpuset: break kernfs active protection in
-cpuset_write_resmask()").
+On Mon, 01 Apr 2024 09:22:21 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
+wrote:
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- tools/testing/selftests/cgroup/Makefile       |  2 +-
- .../selftests/cgroup/test_cpuset_v1_hp.sh     | 40 +++++++++++++++++++
- 2 files changed, 41 insertions(+), 1 deletion(-)
- create mode 100755 tools/testing/selftests/cgroup/test_cpuset_v1_hp.sh
+> On Sun Mar 31, 2024 at 8:44 PM EEST, Haitao Huang wrote:
+>> Make cgroup test scripts ash compatible.
+>> Remove cg-tools dependency.
+>> Add documentation for functions.
+>>
+>> Tested with busybox on Ubuntu.
+>>
+>> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>
+> I'll run this next week on good old NUC7. Thank you.
+>
+> I really wish that either (hopefully both) Intel or AMD would bring up
+> for developers home use meant platform to develop on TDX and SNP. It is
+> a shame that the latest and greatest is from 2018.
+>
+> BR, Jarkko
+>
 
-diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
-index 00b441928909..16461dc0ffdf 100644
---- a/tools/testing/selftests/cgroup/Makefile
-+++ b/tools/testing/selftests/cgroup/Makefile
-@@ -4,7 +4,7 @@ CFLAGS += -Wall -pthread
- all: ${HELPER_PROGS}
- 
- TEST_FILES     := with_stress.sh
--TEST_PROGS     := test_stress.sh test_cpuset_prs.sh
-+TEST_PROGS     := test_stress.sh test_cpuset_prs.sh test_cpuset_v1_hp.sh
- TEST_GEN_FILES := wait_inotify
- TEST_GEN_PROGS = test_memcontrol
- TEST_GEN_PROGS += test_kmem
-diff --git a/tools/testing/selftests/cgroup/test_cpuset_v1_hp.sh b/tools/testing/selftests/cgroup/test_cpuset_v1_hp.sh
-new file mode 100755
-index 000000000000..0d0a1923d8ec
---- /dev/null
-+++ b/tools/testing/selftests/cgroup/test_cpuset_v1_hp.sh
-@@ -0,0 +1,40 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Test the special cpuset v1 hotplug case where a cpuset become empty of
-+# CPUs will force migration of tasks out to an ancestor.
-+#
-+
-+skip_test() {
-+	echo "$1"
-+	echo "Test SKIPPED"
-+	exit 4 # ksft_skip
-+}
-+
-+[[ $(id -u) -eq 0 ]] || skip_test "Test must be run as root!"
-+
-+# Find cpuset v1 mount point
-+CPUSET=$(mount -t cgroup | grep cpuset | head -1 | awk -e '{print $3}')
-+[[ -n "$CPUSET" ]] || skip_test "cpuset v1 mount point not found!"
-+
-+#
-+# Create a test cpuset, put a CPU and a task there and offline that CPU
-+#
-+TDIR=test$$
-+[[ -d $CPUSET/$TDIR ]] || mkdir $CPUSET/$TDIR
-+echo 1 > $CPUSET/$TDIR/cpuset.cpus
-+echo 0 > $CPUSET/$TDIR/cpuset.mems
-+sleep 10&
-+TASK=$!
-+echo $TASK > $CPUSET/$TDIR/tasks
-+echo 0 > /sys/devices/system/cpu/cpu1/online
-+sleep 0.5
-+echo 1 > /sys/devices/system/cpu/cpu1/online
-+NEWCS=$(cat /proc/$TASK/cpuset)
-+rmdir $CPUSET/$TDIR
-+[[ $NEWCS != "/" ]] && {
-+	echo "cpuset $NEWCS, test FAILED!"
-+	exit 1
-+}
-+echo "Test PASSED"
-+exit 0
--- 
-2.39.3
+Argh, missed a few changes for v2 cgroup:
 
+--- a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
++++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+@@ -15,6 +15,8 @@ CG_MEM_ROOT=/sys/fs/cgroup
+  CG_V1=0
+  if [ ! -d "/sys/fs/cgroup/misc" ]; then
+      echo "# cgroup V2 is in use."
++    echo "+misc" >  $CG_MISC_ROOT/cgroup.subtree_control
++    echo "+memory" > $CG_MEM_ROOT/cgroup.subtree_control
+  else
+      echo "# cgroup V1 is in use."
+      CG_MISC_ROOT=/sys/fs/cgroup/misc
+@@ -26,6 +28,11 @@ mkdir -p $CG_MISC_ROOT/$TEST_CG_SUB2
+  mkdir -p $CG_MISC_ROOT/$TEST_CG_SUB3
+  mkdir -p $CG_MISC_ROOT/$TEST_CG_SUB4
+
++if [ $CG_V1 -eq 0 ]; then
++echo "+misc" >  $CG_MISC_ROOT/$TEST_ROOT_CG/cgroup.subtree_control
++echo "+misc" >  $CG_MISC_ROOT/$TEST_CG_SUB1/cgroup.subtree_control
++fi
 
