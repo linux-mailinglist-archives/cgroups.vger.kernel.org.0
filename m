@@ -1,46 +1,46 @@
-Return-Path: <cgroups+bounces-2260-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2261-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 538DF893C2D
-	for <lists+cgroups@lfdr.de>; Mon,  1 Apr 2024 16:22:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09956893C36
+	for <lists+cgroups@lfdr.de>; Mon,  1 Apr 2024 16:30:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D9D49B20EF4
-	for <lists+cgroups@lfdr.de>; Mon,  1 Apr 2024 14:22:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC8D8282438
+	for <lists+cgroups@lfdr.de>; Mon,  1 Apr 2024 14:30:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 040A3621;
-	Mon,  1 Apr 2024 14:22:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCAF441E22;
+	Mon,  1 Apr 2024 14:30:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rQ7fvW6E"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nSAsAvvr"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF69F4087A;
-	Mon,  1 Apr 2024 14:22:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B6310A03;
+	Mon,  1 Apr 2024 14:30:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711981348; cv=none; b=IdYkHdiw71k9r+QXDb60IbsfpfDTt9xCEbiV5mjl6cwyL14yaJWOllHUFLwgnZCSNNf8yEnWiJj7TRqJQWGWmdXZQYoCh6PphZRktp88aXLmf/lUYaas8dsihpYn1Pkd/n2/9n/Eh7KErByICGW4cBVfOl4ac27BoJd2JwsXsgM=
+	t=1711981814; cv=none; b=qXFf1lIrlRdV3CEKGYLAJPdsfGKmXOn/TarOfsoFrVpDzHGStA2nN2oItES/q5VYDiAmUBH+KlZJ2MFBkQILbjWR8zaqqGF43CxlmgaADES2jVlMK/ZBc87WZWee3cb1I+jaRrbw61zyJs8HM2yBYw6hnAYHutWBE4X+rlSYvkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711981348; c=relaxed/simple;
-	bh=EpJRJUCiWs16GDakKWHk4xl65Sv86m9+Q1f3XYISMCc=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=aTtTA6mkpATC0f9F5lkZFelheRbyGibfAsjty3ha6sRjby/ZdSA0XXVUWwuG/ZcYCs0uFSnzn7BuQm4zW1aLDNs11dR6iVigB7IKzlAVpC4je03bX1w1wTqrPKq34Cv3GI5bbUEalYY8fKRTFpxU76MaRweuLefBhXC1iU/mwzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rQ7fvW6E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C99E6C43394;
-	Mon,  1 Apr 2024 14:22:23 +0000 (UTC)
+	s=arc-20240116; t=1711981814; c=relaxed/simple;
+	bh=rUtbKhJd42W49mcH+PWZ7Hn3kLbojDapBlOE3UUUjqg=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=c8FdvD4aOm0EPTNCAJyef2CRqoZHkWcBnojy8ey1ZPwXd3hn7aNEUCpTVwHke4rdYWK8SAWMBNhNjMmiBg4D2tKbUvfT1qO4zYnL7kD6vSoSxaLFsnyWt3Ec3qEOSzkxjhZ2pky+k6UTsrgo37Ct8bKaFPsDOg6x7BnGFZoT9D8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nSAsAvvr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68741C433F1;
+	Mon,  1 Apr 2024 14:30:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711981348;
-	bh=EpJRJUCiWs16GDakKWHk4xl65Sv86m9+Q1f3XYISMCc=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=rQ7fvW6EKj6tB6IDRwnyR5Rg1HoDXEevMleRodZuTwgvEDtU5pb1uziBqpNB6Pnbx
-	 eX7OBsBzYxDOOtXXHryrP8gYfeaYoD0aNpv2P5yDVUOvEuFWEBzF8+yMAjzH7a3Kvl
-	 eNYOAZ+jBUXoQuSXVoJuEBYLJcrdwQXZ/P/ky6FK2bIpO+vg3SYw3UWpEe+ugjqJGg
-	 m2oT2v0KYGerkdRZbpmRvmPpzKZvStS3RtCIzahuqHwNyksD2Pp4UZ9QJDBu7C5EY4
-	 JgUNGq7uOzaigaorDDJeSiXEudQvuQaR7brWSW0+ljh7toEhvdhgOFGRWoI/pSr1lE
-	 gQumKrZuwXt+Q==
+	s=k20201202; t=1711981814;
+	bh=rUtbKhJd42W49mcH+PWZ7Hn3kLbojDapBlOE3UUUjqg=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=nSAsAvvrPavW1PfN4Fkbep2/goAmTke8164aFwdRKMyR3xw6D6s3Gwq390kOGo+PP
+	 EHhifHhLUn7xfjwnbBUEtxQl/gEd7nELO+z/xZyFcQh9KgNwQdWkML3quMpEEP7Qju
+	 46QgINKC8vwrM1ZYL/uJ7AeykQ2qn2KjdBC9r7RF9NCKIvdkb1r9l4ly8l1u2JvlIC
+	 MzgaNHG2FjN8zxZj5lZcZW88Gb5qGCbpbKwJQrSvFE5EowVoROxCgr7429wmjaWkyy
+	 HDTBo/ZnG/5PtJz7sqfKO7fBNvABvuXIFcn4mPph/KQfkVCVJyxjGjc8+Kdc0zP6UA
+	 4rN7b0QvM50WA==
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -49,38 +49,73 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date: Mon, 01 Apr 2024 17:22:21 +0300
-Message-Id: <D08UQJ2XQY6L.1XEOEJ6HIUJ8Y@kernel.org>
-Subject: Re: [PATCH] selftests/sgx: Improve cgroup test scripts
+Date: Mon, 01 Apr 2024 17:30:07 +0300
+Message-Id: <D08UWGYDKS6D.2J34TCDQ836RF@kernel.org>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>,
+ "yangjie@microsoft.com" <yangjie@microsoft.com>, "Li, Zhiquan1"
+ <zhiquan1.li@intel.com>, "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: [PATCH v10 05/14] x86/sgx: Implement basic EPC misc cgroup
+ functionality
 From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Haitao Huang" <haitao.huang@linux.intel.com>
-Cc: <anakrish@microsoft.com>, <bp@alien8.de>, <cgroups@vger.kernel.org>,
- <chrisyan@microsoft.com>, <dave.hansen@linux.intel.com>, <hpa@zytor.com>,
- <kai.huang@intel.com>, <kristen@linux.intel.com>,
- <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
- <mikko.ylinen@linux.intel.com>, <mingo@redhat.com>, <mkoutny@suse.com>,
- <seanjc@google.com>, <sohil.mehta@intel.com>, <tglx@linutronix.de>,
- <tim.c.chen@linux.intel.com>, <tj@kernel.org>, <x86@kernel.org>,
- <yangjie@microsoft.com>, <zhanb@microsoft.com>, <zhiquan1.li@intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>, "mingo@redhat.com"
+ <mingo@redhat.com>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>, "hpa@zytor.com"
+ <hpa@zytor.com>, "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "mkoutny@suse.com" <mkoutny@suse.com>, "haitao.huang@linux.intel.com"
+ <haitao.huang@linux.intel.com>, "cgroups@vger.kernel.org"
+ <cgroups@vger.kernel.org>, "tj@kernel.org" <tj@kernel.org>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "tglx@linutronix.de" <tglx@linutronix.de>,
+ "bp@alien8.de" <bp@alien8.de>
 X-Mailer: aerc 0.17.0
-References: <D071SWVSOJLN.2C9H7NTS4PHGI@kernel.org>
- <20240331174442.51019-1-haitao.huang@linux.intel.com>
-In-Reply-To: <20240331174442.51019-1-haitao.huang@linux.intel.com>
+References: <20240328002229.30264-1-haitao.huang@linux.intel.com>
+ <20240328002229.30264-6-haitao.huang@linux.intel.com>
+ <89b4e053db21c31859cf2572428fd9d4ab4475ab.camel@intel.com>
+ <D071JQZYBH2W.399N43JS6GY6Z@kernel.org>
+ <5a5dee86713a2852fc2c1ebef28ae08927d2c95f.camel@intel.com>
+In-Reply-To: <5a5dee86713a2852fc2c1ebef28ae08927d2c95f.camel@intel.com>
 
-On Sun Mar 31, 2024 at 8:44 PM EEST, Haitao Huang wrote:
-> Make cgroup test scripts ash compatible.
-> Remove cg-tools dependency.
-> Add documentation for functions.
+On Mon Apr 1, 2024 at 12:29 PM EEST, Huang, Kai wrote:
+> On Sat, 2024-03-30 at 13:17 +0200, Jarkko Sakkinen wrote:
+> > On Thu Mar 28, 2024 at 2:53 PM EET, Huang, Kai wrote:
+> > >=20
+> > > > --- /dev/null
+> > > > +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+> > > > @@ -0,0 +1,74 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > +// Copyright(c) 2022 Intel Corporation.
+> > >=20
+> > > It's 2024 now.
+> > >=20
+> > > And looks you need to use C style comment for /* Copyright ... */, af=
+ter looking
+> > > at some other C files.
+> >=20
+> > To be fair, this happens *all the time* to everyone :-)
+> >=20
+> > I've proposed this few times in SGX context and going to say it now.
+> > Given the nature of Git copyrights would anyway need to be sorted by
+> > the Git log not possibly incorrect copyright platters in the header
+> > and source files.
+> >=20
 >
-> Tested with busybox on Ubuntu.
+> Sure fine to me either way.  Thanks for pointing out.
 >
-> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> I have some vague memory that we should update the year but I guess I was=
+ wrong.
 
-I'll run this next week on good old NUC7. Thank you.
+I think updating year makes sense!
 
-I really wish that either (hopefully both) Intel or AMD would bring up
-for developers home use meant platform to develop on TDX and SNP. It is
-a shame that the latest and greatest is from 2018.
+I'd be fine not having copyright platter at all since the commit is from
+Intel domain anyway but if it is kept then the year needs to be
+corrected.
+
+I mean Git commit stores all the data, including exact date.
 
 BR, Jarkko
+
 
