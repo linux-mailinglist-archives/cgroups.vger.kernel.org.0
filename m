@@ -1,62 +1,65 @@
-Return-Path: <cgroups+bounces-2273-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2274-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF6D489583C
-	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 17:31:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD2FB895884
+	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 17:46:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17686B25E18
-	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 15:31:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C1731F25F30
+	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 15:46:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 480DC132C1C;
-	Tue,  2 Apr 2024 15:30:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E7FB1332A7;
+	Tue,  2 Apr 2024 15:43:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OqxyHHGf"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="d6c2O9cu"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D90A131751
-	for <cgroups@vger.kernel.org>; Tue,  2 Apr 2024 15:30:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FECB12DD92;
+	Tue,  2 Apr 2024 15:42:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712071821; cv=none; b=s7npgrbpGf2BpdHNmNq+kzSpoYZm4FTE2FWrYSHNQwb0nS4b4WKSKFvBTPtI+C4BdoCoiW++WtqdEpXv0Z37Nqjd6cW88qRDuMQTraksdgtf/b+nxnVvjUaWxJqoiRNRg5d2OnaK9OpAZJ9a+SDEqhBxR+bMKA+cxmLCA2sb4CQ=
+	t=1712072581; cv=none; b=QrsJGjVZ+M7jnKX/yD6kQ6VLmJFnGnRbZ4xmZohmCKzO6GNCXkbP6QpIZOJrU29tkk+Qqqg3BepSHEFwlAjecQQxHDe4/qdDdv7fMCfqy6ucNusR2qMu3XjIFnrl0hQpOLXvEPwvfKX1vO/BlPCv9u0JoT5MqCcj5OHGHFCUzzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712071821; c=relaxed/simple;
-	bh=23qNJ4ftegx5H447MVacyBoGDIcrxV1t1VQ4lsSZJ/A=;
+	s=arc-20240116; t=1712072581; c=relaxed/simple;
+	bh=LMUohvB/UKa9RdS6CcaGwa208bYJywDqPRBXkkbgk2E=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NrLqk0QA7tKGov7+ujbeYaJxnGKzm5i5LJSIRHNYGQvrYXN51iaV8TGWigQZJG2BDnXjqsTb1HzP5QmHqHuEmrxYwYcjC9kKOLPDkV7WZKquep6OQ+ITeH/g4zCzaGcRBdZAPjaxY7MJgPNYA5KAiPQ80D5YbH/Ca/rqizTIV+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OqxyHHGf; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712071817;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9CES7zO5vAsVp440eN4HWeKNk0OJ2Kki5eVVcnl1iPU=;
-	b=OqxyHHGfaULbFldnn+tYR4OjCWIO3qzVRKzyEiJNe690/uFQYpSYZ2yiypL9VD8t3T75x6
-	n11gTC+TFtEEE1fLTnSSyOo8v7I5rDwU3iGU2Fa8/K++nEf0sUmo8rPj4HmQBDr2hls39K
-	mzQ0ZAcb3IJIJ+cS0IfokHsqKAQVUG4=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-611-mCLhMP9nP1GCXUty7wZCZQ-1; Tue,
- 02 Apr 2024 11:30:14 -0400
-X-MC-Unique: mCLhMP9nP1GCXUty7wZCZQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 575BD1E441D0;
-	Tue,  2 Apr 2024 15:30:13 +0000 (UTC)
-Received: from [10.22.33.108] (unknown [10.22.33.108])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id E66122022EA7;
-	Tue,  2 Apr 2024 15:30:11 +0000 (UTC)
-Message-ID: <548efd52-e45f-41fa-a477-bc5112d7b00c@redhat.com>
-Date: Tue, 2 Apr 2024 11:30:11 -0400
+	 In-Reply-To:Content-Type; b=O+loYEZJWAaf3QiQ4VnpG7p3zmV4RzAxedlMKfa00DuIrrJR6yK6vczmA/1MZ6IUGl6NPIZ6oPvHJ1rrMnSrv61BOFcpY8dYT5FdSKR8gL6mFiQ9tu5nD2tcXdrVnAv8YEB9SryRM/nNODFL+pInMrsBemSk+jUKMZAGiw+26Hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=d6c2O9cu; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712072579; x=1743608579;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=LMUohvB/UKa9RdS6CcaGwa208bYJywDqPRBXkkbgk2E=;
+  b=d6c2O9cuUMibkhJW3SZarZXsXhw6QAaiJDwUnx8+Ovh8x/pePXJjDXWk
+   xcuwSgy5LNVXX/7grY5lJ9LJiJqSMXIvkY2ItvjXpddhm1864VgqER2U/
+   rhf5Smo6TgSiaN1QlsbQrc7K2NHcENSXic8nnhRM5db8m18yhuYpUnDk1
+   9TLfie5D48fDoWlmEf0EumRkjxnwP0adgZfqB96O/pyqabGInfhvgT6tP
+   +ifoiba0D0nAgZm2GGm9axxrdxF318LwYGvIRdijc/ExLumnyKwxY36oj
+   h44dhnIFPlqE2SWkoM4JI3tq2K241F5sswzpvOTgs1uJaR6g46tvKoVYR
+   Q==;
+X-CSE-ConnectionGUID: uCLEHMe4SlSaEN2wumwgMQ==
+X-CSE-MsgGUID: KnJu5E1+QcO3FNdKNFKldw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="17870161"
+X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
+   d="scan'208";a="17870161"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 08:42:58 -0700
+X-CSE-ConnectionGUID: PKgMf9GeQXquyiRSOFuqaw==
+X-CSE-MsgGUID: jheAp996SdCaJYqnDCResQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
+   d="scan'208";a="22757623"
+Received: from babailey-mobl2.amr.corp.intel.com (HELO [10.255.228.218]) ([10.255.228.218])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 08:42:57 -0700
+Message-ID: <18e84d04-0b75-4188-a94d-6b033f4edbf0@intel.com>
+Date: Tue, 2 Apr 2024 08:42:56 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -64,79 +67,92 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] cgroup/cpuset: Make cpuset hotplug processing
- synchronous
+Subject: Re: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup
+ testing
+To: Jarkko Sakkinen <jarkko@kernel.org>,
+ Haitao Huang <haitao.huang@linux.intel.com>, dave.hansen@linux.intel.com,
+ tj@kernel.org, mkoutny@suse.com, linux-kernel@vger.kernel.org,
+ linux-sgx@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+ sohil.mehta@intel.com, tim.c.chen@linux.intel.com
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-16-haitao.huang@linux.intel.com>
+ <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
+ <D04OVW6I8MUA.1OAIHFQ8943SM@kernel.org>
+ <op.2lbjl0oawjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <D071OAFZ80O6.XEDXJ8AF4PK9@kernel.org>
 Content-Language: en-US
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Thomas Gleixner <tglx@linutronix.de>,
- Peter Zijlstra <peterz@infradead.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Len Brown <len.brown@intel.com>,
- Pavel Machek <pavel@ucw.cz>, Shuah Khan <shuah@kernel.org>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Frederic Weisbecker <frederic@kernel.org>,
- "Paul E. McKenney" <paulmck@kernel.org>, Ingo Molnar <mingo@kernel.org>,
- Valentin Schneider <vschneid@redhat.com>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>, Alex Shi <alexs@kernel.org>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Barry Song <song.bao.hua@hisilicon.com>
-References: <20240401145858.2656598-1-longman@redhat.com>
- <20240401145858.2656598-2-longman@redhat.com>
- <kce74bx6aafxfuw5yovaschym4ze4kommfk74eq5totojytest@mdxnfvl2kdol>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <kce74bx6aafxfuw5yovaschym4ze4kommfk74eq5totojytest@mdxnfvl2kdol>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <D071OAFZ80O6.XEDXJ8AF4PK9@kernel.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
+On 3/30/24 04:23, Jarkko Sakkinen wrote:
+>>> I also wonder is cgroup-tools dependency absolutely required or could
+>>> you just have a function that would interact with sysfs?
+>> I should have checked email before hit the send button for v10 🙂.
+>>
+>> It'd be more complicated and less readable to do all the stuff without the  
+>> cgroup-tools, esp cgexec. I checked dependency, cgroup-tools only depends  
+>> on libc so I hope this would not cause too much inconvenience.
+> As per cgroup-tools, please prove this. It makes the job for more
+> complicated *for you* and you are making the job more  complicated
+> to every possible person in the planet running any kernel QA.
 
-On 4/2/24 10:13, Michal Koutný wrote:
-> Hello Waiman.
->
-> (I have no opinion on the overall locking reworks, only the bits about
-> v1 migrations caught my attention.)
->
-> On Mon, Apr 01, 2024 at 10:58:57AM -0400, Waiman Long <longman@redhat.com> wrote:
-> ...
->> @@ -4383,12 +4377,20 @@ hotplug_update_tasks_legacy(struct cpuset *cs,
->>   	/*
->>   	 * Move tasks to the nearest ancestor with execution resources,
->>   	 * This is full cgroup operation which will also call back into
->> -	 * cpuset. Should be done outside any lock.
->> +	 * cpuset. Execute it asynchronously using workqueue.
->                     ...to avoid deadlock on cpus_read_lock
->
-> Is this the reason?
-> Also, what happens with the tasks in the window till the migration
-> happens?
-> Is it handled gracefully that their cpu is gone?
+I don't see any other use of cgroup-tools in testing/selftests.
 
-Yes, there is a potential that a cpus_read_lock() may be called leading 
-to deadlock. So unless we reverse the current cgroup_mutex --> 
-cpu_hotplug_lock ordering, it is not safe to call 
-cgroup_transfer_tasks() directly.
+I *DO* see a ton of /bin/bash use though.  I wouldn't go to much trouble
+to make the thing ash-compatible.
 
-
->
->
->> -	if (is_empty) {
->> -		mutex_unlock(&cpuset_mutex);
->> -		remove_tasks_in_empty_cpuset(cs);
->> -		mutex_lock(&cpuset_mutex);
->> +	if (is_empty && css_tryget_online(&cs->css)) {
->> +		struct cpuset_remove_tasks_struct *s;
->> +
->> +		s = kzalloc(sizeof(*s), GFP_KERNEL);
-> Is there a benefit of having a work for each cpuset?
-> Instead of traversing whole top_cpuset once in the async work.
-
-We could do that too. It's just that we have the repeat the iteration 
-process once the workfn is invoked, but that has the advantage of not 
-needing to do memory allocation. I am OK with either way. Let's see what 
-other folks think about that.
-
-Cheers,
-Longman
-
+That said, the most important thing is to get some selftests in place.
+If using cgroup-tools means we get actual, runnable tests in place,
+that's a heck of a lot more important than making them perfect.
+Remember, almost nobody uses SGX.  It's available on *VERY* few systems
+from one CPU vendor and only in very specific hardware configurations.
 
