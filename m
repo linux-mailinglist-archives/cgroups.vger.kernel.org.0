@@ -1,142 +1,172 @@
-Return-Path: <cgroups+bounces-2268-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2269-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 037E6894CC8
-	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 09:43:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A68F9894D1D
+	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 10:03:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ED301C21F0C
-	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 07:43:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AAE71F227DB
+	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 08:03:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0596A3BBC3;
-	Tue,  2 Apr 2024 07:43:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rNMMpQJi"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15F763D3BF;
+	Tue,  2 Apr 2024 08:03:29 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B000432C8B;
-	Tue,  2 Apr 2024 07:43:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4493D0D5
+	for <cgroups@vger.kernel.org>; Tue,  2 Apr 2024 08:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712043812; cv=none; b=Nz13lVrFoCQNjDqXZNywdp6vDkVOPJz4hPp2V8yQmd4HmCqOUMWBxUmhbiVsBPymK21THzGh09jS6yPmhwXZkcnTlz+o5JZNq9NaDl9m9KdR2n8widF7jZSXwNJAOq8ImZRiSsUROJgQaJLmMwnQDERWf6oPgrwq6JvICT3aalw=
+	t=1712045008; cv=none; b=gInnsLrr5Aixfddm3Lyjis7CTJvCfhCiLOEsuk9X7iD3xgGu+D4G0rX0AMmQG13/SymKWIR5wM1AmSek/fXE41EAsjICa4yZACsvj2inEh8Y+sG2UDKdCmDFTDzHwi8T/2TrhVX3tfFqBQfnJB1mJLdxBuH6u910U8e5JYL6GBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712043812; c=relaxed/simple;
-	bh=lOeUlS13nUasibcKAc+APQJ2GhDUpD5w9apCgLzBdJE=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=hMUxfn3yIFCN8LB1lem57NR7B3xHKbHZq6d167b3Atb9zi3m1IaLIkVZL7phtx9v2MKlRrRQSzmGuxDb5qrnVY6sX1UqHQn17Vb13WBbJ7t8amimsgvjYbzyPkp1Q+wlVJegDmHP5EGedGbNdWAgRxjeBPBbDQdF5F/qEEamWmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rNMMpQJi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD2DFC433C7;
-	Tue,  2 Apr 2024 07:43:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712043812;
-	bh=lOeUlS13nUasibcKAc+APQJ2GhDUpD5w9apCgLzBdJE=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=rNMMpQJi+z+zXGyHrgy/DaCtRevEEQ2tWUaeN8zXTqLSVU39HoUSZ+2WR1yJCDzUW
-	 DCJjUe6N6V+1DAlLXPtlQ5ZHQbWc8ZdmJjOjW4ZtIqFqI1QhOx9tT0eH/478GSmmju
-	 hnl7rpHkzPa+GYy9qktz7b9hScg9TGVHIHsFc0Bnd3yarZf6p2X+Gf7WCmeR5MNeSX
-	 mop2J/pam1R2GlPb6+5DbUXYdqb6Sgsy5NT6AYUr92tPb+wzghIA2/n5ieiUm28lDw
-	 91DOnwCWeBfJ/kdIWnQPR7WfeUpUEbq1sR1Ga6r4kCY7dsO2rlGYxaJ/T8PvgK/bNY
-	 UWsTtxzmgfyOA==
+	s=arc-20240116; t=1712045008; c=relaxed/simple;
+	bh=x4QcBhQyq3PUKN6NXyXD0NMNdswTtW/r0Avf3VrV5eI=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=NqlKcyzj6wjRTrsKE21fJSe/9Cxah58KQv+cfQU6aXAJ5v5aOJuHWzJtqfVOynSPxXNxiXmQAlz+mK+V/pDAFpNtFqNUFGjjg4yMqKG4XWVYvzZzO6j7GHBP5EJhUIhjIAmqo/tWZvcitYyC+RAIXofzuPFRy0NeGRdcpN4eYGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc01445f6bso569439239f.3
+        for <cgroups@vger.kernel.org>; Tue, 02 Apr 2024 01:03:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712045006; x=1712649806;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7/tFOWbWi2bLri/fRNazllfY41I4TBGsKrUaqKSOOSA=;
+        b=rEMcY4QP+xLQbqNTKO/tTD3r/NWiwf6ad1sqDpgU1WQwIknfaMbiBmikDvYMwnwJMs
+         b8kFtfVMCuR36NBu58msvXOIZmZW/pW1QwhiFTv+cBQhOL25Z16zsHKgcd1T7+2la2ka
+         5MMsZN73op3JHRz4yuiW74gJIxmd1tsQLPLdH+Zfo131fE+MMqxOcUWYdcf2LRNXBXuR
+         lJFRT620CNTSTwmjRKQKkerkaPk7YdpakwSej71Gtk5Os4f6lN4h20Ly2mSO9lMJpSm0
+         v41t9zDwOEtkzoaKLlRNJkaTFjEwFWX9SCfaGqMtqWYYLxl2sUlAZHMzzA9HVLGoWZF5
+         I4mQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXSsoX/PQBgqnjo5veJSeSmbqM6yEkE1CbG36iVsIQK8VNXfE/cgcGtx2fOJEtLYeSWNEyv4+XzssguSRGm5JGEYmFr5GoD6w==
+X-Gm-Message-State: AOJu0Yyc6s1OnGstaviPbSFxnkynpqrGyminhZpBoEQlu+5Vnb4ZihVf
+	NXzpnt0LrFUKLQnFyakXzeIaZxmHjxVwr3i9/aovWt8b03WwRYnIHQwOA3iQaa7nMbdLB/Vnu86
+	O+UAU/kfue+zCFceJ6sKIziZHcyfRE6J17XPy3DDwxyps/oDyJHrA7MQ=
+X-Google-Smtp-Source: AGHT+IGQwA0lDqWVd2qeRITX4mAExADgoFvXteM0BzA+uAkY4XebP7mqXeYgptUhm06d1/NGLpQBgJ3fX/s0pm5GdtZl+SuEe89Y
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 02 Apr 2024 10:43:25 +0300
-Message-Id: <D09GVMLN1O4Z.2RXQUH4ZY5IVF@kernel.org>
-To: "Haitao Huang" <haitao.huang@linux.intel.com>
-Cc: <anakrish@microsoft.com>, <bp@alien8.de>, <cgroups@vger.kernel.org>,
- <chrisyan@microsoft.com>, <dave.hansen@linux.intel.com>, <hpa@zytor.com>,
- <kai.huang@intel.com>, <kristen@linux.intel.com>,
- <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
- <mikko.ylinen@linux.intel.com>, <mingo@redhat.com>, <mkoutny@suse.com>,
- <seanjc@google.com>, <sohil.mehta@intel.com>, <tglx@linutronix.de>,
- <tim.c.chen@linux.intel.com>, <tj@kernel.org>, <x86@kernel.org>,
- <yangjie@microsoft.com>, <zhanb@microsoft.com>, <zhiquan1.li@intel.com>
-Subject: Re: [PATCH v2] selftests/sgx: Improve cgroup test scripts
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <D08UQJ2XQY6L.1XEOEJ6HIUJ8Y@kernel.org>
- <20240402014254.27717-1-haitao.huang@linux.intel.com>
-In-Reply-To: <20240402014254.27717-1-haitao.huang@linux.intel.com>
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:1607:b0:369:8e96:1edf with SMTP id
+ t7-20020a056e02160700b003698e961edfmr733147ilu.4.1712045006598; Tue, 02 Apr
+ 2024 01:03:26 -0700 (PDT)
+Date: Tue, 02 Apr 2024 01:03:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007545d00615188a03@google.com>
+Subject: [syzbot] [cgroups?] [mm?] WARNING in __mod_memcg_lruvec_state
+From: syzbot <syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, 
+	muchun.song@linux.dev, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue Apr 2, 2024 at 4:42 AM EEST, Haitao Huang wrote:
-> Make cgroup test scripts ash compatible.
-> Remove cg-tools dependency.
-> Add documentation for functions.
->
-> Tested with busybox on Ubuntu.
->
-> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> ---
-> v2:
-> - Fixes for v2 cgroup
-> - Turn off swapping before memcontrol tests and back on after
-> - Add comments and reformat
-> ---
->  tools/testing/selftests/sgx/ash_cgexec.sh     |  57 ++++++
->  .../selftests/sgx/run_epc_cg_selftests.sh     | 187 +++++++++++-------
->  .../selftests/sgx/watch_misc_for_tests.sh     |  13 +-
->  3 files changed, 179 insertions(+), 78 deletions(-)
->  create mode 100755 tools/testing/selftests/sgx/ash_cgexec.sh
->
-> diff --git a/tools/testing/selftests/sgx/ash_cgexec.sh b/tools/testing/se=
-lftests/sgx/ash_cgexec.sh
-> new file mode 100755
-> index 000000000000..9607784378df
-> --- /dev/null
-> +++ b/tools/testing/selftests/sgx/ash_cgexec.sh
-> @@ -0,0 +1,57 @@
-> +#!/usr/bin/env sh
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright(c) 2024 Intel Corporation.
-> +
-> +# Move the current shell process to the specified cgroup
-> +# Arguments:
-> +# 	$1 - The cgroup controller name, e.g., misc, memory.
-> +#	$2 - The path of the cgroup,
-> +#		relative to /sys/fs/cgroup for cgroup v2,
-> +#		relative to /sys/fs/cgroup/$1 for v1.
-> +move_to_cgroup() {
-> +    controllers=3D"$1"
-> +    path=3D"$2"
-> +
-> +    # Check if cgroup v2 is in use
-> +    if [ ! -d "/sys/fs/cgroup/misc" ]; then
-> +        # Cgroup v2 logic
-> +        cgroup_full_path=3D"/sys/fs/cgroup/${path}"
-> +        echo $$ > "${cgroup_full_path}/cgroup.procs"
-> +    else
-> +        # Cgroup v1 logic
-> +        OLD_IFS=3D"$IFS"
-> +        IFS=3D','
-> +        for controller in $controllers; do
-> +            cgroup_full_path=3D"/sys/fs/cgroup/${controller}/${path}"
-> +            echo $$ > "${cgroup_full_path}/tasks"
-> +        done
-> +        IFS=3D"$OLD_IFS"
-> +    fi
+Hello,
 
-I think that if you could point me to git v10 and all this I could
-then quite easily create test image and see what I get from that.
+syzbot found the following issue on:
 
-I will code review the whole thing but this is definitely good
-enough to start testing this series properly! Thanks for the
-effort with this. The payback from this comes after the feature
-is mainline. We have now sort of reference of the usage patterns
-and less layers when we need to debug any possible (likely) bugs
-in the future.
+HEAD commit:    317c7bc0ef03 Merge tag 'mmc-v6.9-rc1' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=15fd40c5180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f64ec427e98bccd7
+dashboard link: https://syzkaller.appspot.com/bug?extid=9319a4268a640e26b72b
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-This is definitely to the right direction. I'm just wondering do
-we want to support v1 cgroups or would it make sense support only
-v2?
-=20
-BR, Jarkko
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-317c7bc0.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/efab473d72c0/vmlinux-317c7bc0.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5ba3f56d362d/bzImage-317c7bc0.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 30105 at mm/memcontrol.c:865 __mod_memcg_lruvec_state+0x3fa/0x550 mm/memcontrol.c:865
+Modules linked in:
+CPU: 0 PID: 30105 Comm: syz-executor.2 Not tainted 6.9.0-rc1-syzkaller-00178-g317c7bc0ef03 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:__mod_memcg_lruvec_state+0x3fa/0x550 mm/memcontrol.c:865
+Code: 45 85 e4 75 1d 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e 41 5f c3 cc cc cc cc b8 00 04 00 00 e9 80 fd ff ff 89 c6 e9 a0 fd ff ff 90 <0f> 0b 90 e9 a7 fc ff ff 48 c7 c7 18 43 e1 8f e8 32 51 f8 ff e9 5e
+RSP: 0018:ffffc900034beef8 EFLAGS: 00010202
+RAX: 0000000000000292 RBX: 0000000000000001 RCX: 1ffffffff1fc2863
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff888024b92bc8
+RBP: ffff888024b92000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+R13: ffff88801c326000 R14: 0000000000000001 R15: ffff888024b92000
+FS:  00007f0811bf96c0(0000) GS:ffff88806b000000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000000cfff1dd CR3: 000000003e4e2000 CR4: 0000000000350ef0
+DR0: 0000000000000031 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __update_lru_size include/linux/mm_inline.h:47 [inline]
+ lru_gen_update_size include/linux/mm_inline.h:199 [inline]
+ lru_gen_add_folio+0x62d/0xe80 include/linux/mm_inline.h:262
+ lruvec_add_folio include/linux/mm_inline.h:323 [inline]
+ lru_add_fn+0x3fc/0xd80 mm/swap.c:215
+ folio_batch_move_lru+0x243/0x400 mm/swap.c:233
+ lru_add_drain_cpu+0x534/0x860 mm/swap.c:667
+ lru_add_drain+0x109/0x440 mm/swap.c:767
+ __folio_batch_release+0x68/0xb0 mm/swap.c:1091
+ folio_batch_release include/linux/pagevec.h:101 [inline]
+ mpage_prepare_extent_to_map+0x112b/0x14b0 fs/ext4/inode.c:2505
+ ext4_do_writepages+0xa9e/0x3250 fs/ext4/inode.c:2632
+ ext4_writepages+0x303/0x730 fs/ext4/inode.c:2768
+ do_writepages+0x1a3/0x7f0 mm/page-writeback.c:2612
+ filemap_fdatawrite_wbc mm/filemap.c:397 [inline]
+ filemap_fdatawrite_wbc+0x148/0x1c0 mm/filemap.c:387
+ __filemap_fdatawrite_range+0xba/0x100 mm/filemap.c:430
+ file_write_and_wait_range+0xd0/0x140 mm/filemap.c:788
+ ext4_sync_file+0x296/0xf30 fs/ext4/fsync.c:158
+ vfs_fsync_range+0x141/0x230 fs/sync.c:188
+ generic_write_sync include/linux/fs.h:2793 [inline]
+ ext4_buffered_write_iter+0x2e6/0x3d0 fs/ext4/file.c:305
+ ext4_file_write_iter+0x874/0x1a40 fs/ext4/file.c:698
+ call_write_iter include/linux/fs.h:2108 [inline]
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0x6db/0x1100 fs/read_write.c:590
+ ksys_write+0x12f/0x260 fs/read_write.c:643
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f0810e7dda9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0811bf90c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f0810fabf80 RCX: 00007f0810e7dda9
+RDX: 0000000000002000 RSI: 0000000020000180 RDI: 0000000000000007
+RBP: 00007f0810eca47a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f0810fabf80 R15: 00007ffd57bcc8d8
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
