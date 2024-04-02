@@ -1,189 +1,144 @@
-Return-Path: <cgroups+bounces-2275-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2276-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC55D8959BD
-	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 18:28:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7672895A56
+	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 19:05:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72410B2C4DA
-	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 16:20:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BF551F23668
+	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 17:05:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41E6814B07C;
-	Tue,  2 Apr 2024 16:20:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3623215990A;
+	Tue,  2 Apr 2024 17:05:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Sh2FIqYZ"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZbLTC8t1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 111D614AD1D;
-	Tue,  2 Apr 2024 16:20:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CFC5132C38
+	for <cgroups@vger.kernel.org>; Tue,  2 Apr 2024 17:05:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712074830; cv=none; b=C0OOxB4le9KWFBxD6fa1pglMGwxea2IPXUJsIz8QnW3mrX1aLR3w7VCcXFv9EQd8hxCqI4GxSQMN9Ykz/QeaceFEBaxoR19wUluU6ei0MTPwQWx7c5pegh1c4Pd3vngAlzp5mEO+Xy/F8wk+PjqrwJvndj6G7ofmJu9POxGaklg=
+	t=1712077503; cv=none; b=icKA1gwkC7SdIPIcpmqjWWBaSUsAiujdyXyKE4ZIqNOQ59ZbWDdJSOp4SzAw8vPmhQEbnRm/SeJnQa/ss3SyUOZiY6MY9IpIfy/0LoOSQ2Luwzc54W9xG6jooztaIJ/rq+cmFidgOKtn1P6WUNualjhSzOGrqr1wZuw3LXHcV5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712074830; c=relaxed/simple;
-	bh=YBovMqze5iU2OuiwBk7yaV5ROH0m1Xil3sSKdX5tHCI=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=rhE0gv+rxTQpLon6l/i0Uz0l8hbXZd29z30WWgAxB9yicv7t7mGsKXtufNr7CPvQfJqJDqn+dQp6hg6+/tAfbetapIqvWWjO0ZRLda8UthS/0hB8VUrO+CLbEz7NE6JrvGfkUM6tlPN4xaxH9HoWpOGMBbcm9JoH9VIZ2kRQjEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Sh2FIqYZ; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712074828; x=1743610828;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=YBovMqze5iU2OuiwBk7yaV5ROH0m1Xil3sSKdX5tHCI=;
-  b=Sh2FIqYZoRXzTE9FxUMvYrhQJGq1NUw4zwS9fWWeYug3/rDNPy1y6c/r
-   YFEEqe1rVMOi/NzW6b9pR+NVJ/2osVFXfktsaGmAvsB4M1dUle7MlJVit
-   Q7nRLUhzml+oP4oGYTCpH0zeBQ7EpB371xTgmgGaKG0NIf558grZHRQ2s
-   zayt/83jsU4BXcPBYIPBOIXURboVBxXL27I17+Hx1ljZd9aVhA7Q9kA/c
-   4/rwbnfCS70lNXsNgw8d8uCJj5DVUiVk1dA0xOGki6PHYSoOUm/D8Tbq6
-   p34uhtBPuGSEvL06jr10M+7TyyQozXAfwv55B/IkPWdyAUpo63paaCrx7
-   g==;
-X-CSE-ConnectionGUID: zRtNVA8wQiud9WGfKly3sQ==
-X-CSE-MsgGUID: yYW49mC8SjqQcwSVOtMN+A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="17879022"
-X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
-   d="scan'208";a="17879022"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 09:20:27 -0700
-X-CSE-ConnectionGUID: vxxT3scQSXOl1xwOYNfuTQ==
-X-CSE-MsgGUID: ldColvJnTb23d8ewg0JsSg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
-   d="scan'208";a="22577715"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 02 Apr 2024 09:20:25 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: =?iso-8859-15?Q?Michal_Koutn=FD?= <mkoutny@suse.com>, "Jarkko Sakkinen"
- <jarkko@kernel.org>
-Cc: dave.hansen@linux.intel.com, tj@kernel.org, linux-kernel@vger.kernel.org,
- linux-sgx@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
- tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
- sohil.mehta@intel.com, tim.c.chen@linux.intel.com, zhiquan1.li@intel.com,
- kristen@linux.intel.com, seanjc@google.com, zhanb@microsoft.com,
- anakrish@microsoft.com, mikko.ylinen@linux.intel.com, yangjie@microsoft.com,
- chrisyan@microsoft.com
-Subject: Re: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup
- testing
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-16-haitao.huang@linux.intel.com>
- <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
- <D04OVW6I8MUA.1OAIHFQ8943SM@kernel.org>
- <op.2lbjl0oawjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <D071OAFZ80O6.XEDXJ8AF4PK9@kernel.org> <D071QIHLW7MP.UM9R3VYETIOK@kernel.org>
- <htiz5jgsby5v262saphhomcsxtixb2u7ot6jcghpfhvgz65ht6@qlz3gpdwapaa>
- <D09MB26IPFFW.3UBD7M0S17SG6@kernel.org>
-Date: Tue, 02 Apr 2024 11:20:21 -0500
+	s=arc-20240116; t=1712077503; c=relaxed/simple;
+	bh=JMsavF9E8jV7zEcFxbiq9+OylvrBmne0FvUV96+/x5E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qeCm2P3yYhXAw1xqtwepUAI9EtCCr8iEa0eojmgXT3q4lm+SZL9roFIZVMwO1EUS7mWZj87dLxZKgxriVNufLaU04sl44vYafckI2dziJWj9GSVDsiJInh6jz+kci6Sy2uhMN5sTVKWdvZuoZKiJzJGdIwCLCQq2+IlnePWrfjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZbLTC8t1; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4BF345C058;
+	Tue,  2 Apr 2024 17:04:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712077499; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OX2xvF4wQ5WhD1IS4KQSSQ9DnagarlT0hY8OHMyE7Oo=;
+	b=ZbLTC8t1m25+dfXvsxnFacGzavsjvSHG0SYPSOfhf5gnjHKOCxUpfZPIWEbomPq697Xy5O
+	kwsGQhwNf4Yt6EZgqnVKbVQxzypPOsovBR4bRcAHcNNJiT5w8aesTm2ZJv4XbOQ5ecJiWq
+	njKkIu92bt0HYkRiKN4+Grty19r7GiQ=
+Authentication-Results: smtp-out2.suse.de;
+	none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 3EC5813357;
+	Tue,  2 Apr 2024 17:04:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id lD7lDrs6DGadHgAAn2gu4w
+	(envelope-from <mkoutny@suse.com>); Tue, 02 Apr 2024 17:04:59 +0000
+Date: Tue, 2 Apr 2024 19:04:58 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Petr Malat <oss@malat.biz>
+Cc: cgroups@vger.kernel.org, tj@kernel.org, longman@redhat.com
+Subject: Re: [PATCH] cgroup/cpuset: Make cpuset.cpus.effective independent of
+ cpuset.cpus
+Message-ID: <xdx55wvvss44viwmszsss2tohyslirqu3jrrexroyc5knamful@2sdajjhw45sj>
+References: <Zfynj56eDdCSdIxv@ntb.petris.klfree.czf>
+ <20240321213945.1117641-1-oss@malat.biz>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: Quoted-Printable
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2llzn7wgwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <D09MB26IPFFW.3UBD7M0S17SG6@kernel.org>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="lj5zjdn5y2ata35t"
+Content-Disposition: inline
+In-Reply-To: <20240321213945.1117641-1-oss@malat.biz>
+X-Spamd-Result: default: False [-1.90 / 50.00];
+	SIGNED_PGP(-2.00)[];
+	MID_RHS_NOT_FQDN(0.50)[];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	BAYES_HAM(-0.00)[31.11%];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	MISSING_XM_UA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_THREE(0.00)[4]
+X-Spam-Score: -1.90
+X-Spam-Level: 
+X-Spam-Flag: NO
 
-On Tue, 02 Apr 2024 06:58:40 -0500, Jarkko Sakkinen <jarkko@kernel.org> =
- =
 
-wrote:
+--lj5zjdn5y2ata35t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> On Tue Apr 2, 2024 at 2:23 PM EEST, Michal Koutn=FD wrote:
->> Hello.
->>
->> On Sat, Mar 30, 2024 at 01:26:08PM +0200, Jarkko Sakkinen  =
+Hello.
 
->> <jarkko@kernel.org> wrote:
->> > > > It'd be more complicated and less readable to do all the stuff =
- =
+On Thu, Mar 21, 2024 at 10:39:45PM +0100, Petr Malat <oss@malat.biz> wrote:
+> Requiring cpuset.cpus.effective to be a subset of cpuset.cpus makes it
+> hard to use as one is forced to configure cpuset.cpus of current and all
+> ancestor cgroups, which requires a knowledge about all other units
+> sharing the same cgroup subtree.
 
->> without the
->> > > > cgroup-tools, esp cgexec. I checked dependency, cgroup-tools on=
-ly  =
+> Also, it doesn't allow using empty cpuset.cpus.
+                               ^^^^^^^^^^^^^^^^^
+                          _this_ is what cpuset has been missing IMO
 
->> depends
->> > > > on libc so I hope this would not cause too much inconvenience.
->> > >
->> > > As per cgroup-tools, please prove this. It makes the job for more=
+I think cpuset v2 should allow empty value in cpuset.cpus (not only
+default but also as a reset (to the default)) which would implicitely
+mean using whatever CPUs were passed from parent(s).
 
->> > > complicated *for you* and you are making the job more  complicate=
-d
->> > > to every possible person in the planet running any kernel QA.
->> > >
->> > > I weight the latter more than the former. And it is exactly the
->> > > reason why we did custom user space kselftest in the first place.=
+Does that make sense to you too?
 
->> > > Let's keep the tradition. All I can say is that kselftest is
->> > > unfinished in its current form.
->> > >
->> > > What is "esp cgexec"?
->> >
->> > Also in kselftest we don't drive ultimate simplicity, we drive
->> > efficient CI/QA. By open coding something like subset of
->> > cgroup-tools needed to run the test you also help us later
->> > on to backtrack the kernel changes. With cgroups-tools you
->> > would have to use strace to get the same info.
->>
->> FWIW, see also functions in
->> tools/testing/selftests/cgroup/cgroup_util.{h,c}.
->> They likely cover what you need already -- if the tests are in C.
->>
->> (I admit that stuff in tools/testing/selftests/cgroup/ is best
->> understood with strace.)
->
-> Thanks!
->
-> My conclusions are that:
->
-> 1. We probably cannot move the test part of cgroup test itself
->    given the enclave payload dependency.
-> 2. I think it makes sense to still follow the same pattern as
->    other cgroups test and re-use cgroup_util.[ch] functionaltiy.
->
-> So yeah I guess we need two test programs instead of one.
->
-> Something along the lines:
->
-> 1. main.[ch] -> test_sgx.[ch]
-> 2. introduce test_sgx_cgroup.c
->
-> And test_sgx_cgroup.c would be implement similar test as the shell
-> script and would follow the structure of existing cgroups tests.
->
->>
->> HTH,
->> Michal
->
-> BR, Jarkko
->
-Do we really want to have it implemented in c? There are much fewer line=
-s  =
+Thus the patch(es) seems to need to be extended to handle a case when
+empty cpuset.cpus is assigned but no cpuset.cpus.exclusive are
+specified neither.
 
-of code in shell scripts. Note we are not really testing basic cgroup  =
+Thanks,
+Michal
 
-stuff. All we needed were creating/deleting cgroups and set limits which=
- I  =
+--lj5zjdn5y2ata35t
+Content-Type: application/pgp-signature; name="signature.asc"
 
-think have been demonstrated feasible in the ash scripts now.
+-----BEGIN PGP SIGNATURE-----
 
-Given Dave's comments, and test scripts being working and cover the case=
-s  =
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZgw6twAKCRAGvrMr/1gc
+js8FAQC6PK8Vz77D/URPaGG3w/LUOiCoAP/H693O1LQRbR0I8QD/UGAinnNfVh3e
+WnLFNiajsYbEh7YcJN5qjIoXV9QeugI=
+=Imuo
+-----END PGP SIGNATURE-----
 
-needed IMHO, I don't see much need to move to c code. I can add more cas=
-es  =
-
-if needed and fall back a c implementation later  if any case can't be  =
-
-implemented in scripts. How about that?
-
-Haitao
+--lj5zjdn5y2ata35t--
 
