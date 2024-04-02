@@ -1,165 +1,170 @@
-Return-Path: <cgroups+bounces-2277-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2278-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE951895A80
-	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 19:16:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B70BA895AB1
+	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 19:31:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A91A6287323
-	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 17:16:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAF301C24323
+	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 17:31:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C73715A490;
-	Tue,  2 Apr 2024 17:16:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A249815A4A3;
+	Tue,  2 Apr 2024 17:31:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HyDNeoUo"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RpaWjP7B"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E4015990F;
-	Tue,  2 Apr 2024 17:16:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C5A2156F33;
+	Tue,  2 Apr 2024 17:31:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712078202; cv=none; b=KBe1BNEs+p8Utt7UMOp8o9wKunXLsxXXxMrtGtd2FNt1aIKwA6f4exP1Qv4QYg6/ZlpVQuMabfVUeqOBEgcwGvTld5ImhVXtMntLTODt75gEObO7YagF/ILl8UUcRnCAopMtNaeMZcOmi375UiyKXu6oauNh5x/f5IHIaTSFF4w=
+	t=1712079103; cv=none; b=ls5CeWkt5HBSlZhFKLbdXeMqSQ71RzXzC9h13Zm7rfZmpZEidfNYocyfxamL1h9wIBzVl31VpMNeU1gVKZcVyjc5u9env/URyjdaV+PH9nqynIKYgvAC4BSeXMGrSEw6zriZt/5NILu0aAiqCmd+HsDhWOpRz6ENrFhEglQGVps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712078202; c=relaxed/simple;
-	bh=pP519wusPUAXRys+Pm1fP6WiHUMTu+p8h8uiy+wJCy0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mhN2ioAM1ciUs4CDbPC5zygsxd3URYjQXuGoz17kk8MorneA35V05UY/BIZ0ItY+fpZQj54EL2Ax2oLat2m0BFIgLLiWIlwHrlyU8pZauhRg9Dp8qFU5nEd2lv9Cdc+G1L2DMVuPX1L9A2fE6KFjj7IE8IRY4zvlK9pljnRBMu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HyDNeoUo; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8637B34934;
-	Tue,  2 Apr 2024 17:16:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712078198; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pP519wusPUAXRys+Pm1fP6WiHUMTu+p8h8uiy+wJCy0=;
-	b=HyDNeoUoZJkyHWwJ8XCspPVKQE0grsOAe6fIzOJfL6spCvd8yGbYzAefLUZLCRHZcjQuWZ
-	P21owtoIlNmvKSzoFThdyX2PRKtb7ph/zuDKnK7aTsZtPYc5WbgwGy/kozkVocQijFMnGr
-	KxxnZHv5eGwVoSboBVG4imEzEAx39Mk=
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7240F13357;
-	Tue,  2 Apr 2024 17:16:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id vLDAG3Y9DGZiIgAAn2gu4w
-	(envelope-from <mkoutny@suse.com>); Tue, 02 Apr 2024 17:16:38 +0000
-Date: Tue, 2 Apr 2024 19:16:29 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Djalal Harouni <tixxdz@gmail.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
-Message-ID: <ex2uipr54lb2odxwzwp22ycvlwplsy4mm3shx26hczo3mjtkvz@uuzyk6535prw>
-References: <20240327-ccb56fc7a6e80136db80876c@djalal>
- <20240327225334.58474-1-tixxdz@gmail.com>
+	s=arc-20240116; t=1712079103; c=relaxed/simple;
+	bh=R83jK+pei7GoedhpFDOHXlUw+k4/j/waYzwaI/yXZ9E=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=agkhksPXm37/p1zpFHaaL3USadRb7bAvbX0Xgf7VHbR0rJJqywB5L/2HHbMcslycuFOMNEqOIICgmGA12ooFi5/jz9ZU/yMy6+PRG6PVAHLm4NqdDZqi2Mxqoo54ztT79pOGT+gTj0o7kUbYBVkJsg/D4xeiMBKJZESmmg3JXjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RpaWjP7B; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712079101; x=1743615101;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=R83jK+pei7GoedhpFDOHXlUw+k4/j/waYzwaI/yXZ9E=;
+  b=RpaWjP7BJXfldfIvmMzKaNHnXxppENUoVnxarPX2JBdNt/kjvWtq8HVX
+   e5Np3OG3otNxq8oxdP7cWGvyUBQybWjON4rMSKh9H22sfutEftmRizcih
+   ZvL/v0yqFCm6DZDF/9tBE5Bes9ycU2c4YQpBNHcYnbl6x0lXLuG9PK1qm
+   CPtuRYOequS0vkbTi8bOz7+2xcZaKnQERlDjJryla4dh8BWDbJ6bzyciP
+   ItMd4C5rk28WFOLN9MRvNAd+3DMCRPJzYfynyA5wb14mnUxyAby5x2sxJ
+   IlT0Oy3tABuzD3mtjxKsvSbzIiWkj4fBUTkTfnVfJSDYCaRL9OMSusxX2
+   Q==;
+X-CSE-ConnectionGUID: YulYhiNUQIaeTR9Lfm4WoQ==
+X-CSE-MsgGUID: WuqoNnMESJ++g6ykzZImig==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7135691"
+X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
+   d="scan'208";a="7135691"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 10:31:39 -0700
+X-CSE-ConnectionGUID: jBxWQHvCSzKolXJhjJjjyg==
+X-CSE-MsgGUID: ZXiH4Q3XRaGXu0t67r0oBQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,175,1708416000"; 
+   d="scan'208";a="18255509"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 02 Apr 2024 10:31:37 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "Jarkko Sakkinen" <jarkko@kernel.org>
+Cc: anakrish@microsoft.com, bp@alien8.de, cgroups@vger.kernel.org,
+ chrisyan@microsoft.com, dave.hansen@linux.intel.com, hpa@zytor.com,
+ kai.huang@intel.com, kristen@linux.intel.com, linux-kernel@vger.kernel.org,
+ linux-sgx@vger.kernel.org, mikko.ylinen@linux.intel.com, mingo@redhat.com,
+ mkoutny@suse.com, seanjc@google.com, sohil.mehta@intel.com,
+ tglx@linutronix.de, tim.c.chen@linux.intel.com, tj@kernel.org, x86@kernel.org,
+ yangjie@microsoft.com, zhanb@microsoft.com, zhiquan1.li@intel.com
+Subject: Re: [PATCH v2] selftests/sgx: Improve cgroup test scripts
+References: <D08UQJ2XQY6L.1XEOEJ6HIUJ8Y@kernel.org>
+ <20240402014254.27717-1-haitao.huang@linux.intel.com>
+ <D09GVMLN1O4Z.2RXQUH4ZY5IVF@kernel.org>
+Date: Tue, 02 Apr 2024 12:31:36 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="jy46jtmbnpyw2njk"
-Content-Disposition: inline
-In-Reply-To: <20240327225334.58474-1-tixxdz@gmail.com>
-X-Spam-Score: -2.01
-X-Spamd-Result: default: False [-2.01 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.62)[82.04%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.19)[-0.971];
-	 RCPT_COUNT_TWELVE(0.00)[22];
-	 SIGNED_PGP(-2.00)[];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[kernel.org,bytedance.com,cmpxchg.org,iogearbox.net,linux.dev,gmail.com,google.com,fb.com,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2ll2yyfgwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <D09GVMLN1O4Z.2RXQUH4ZY5IVF@kernel.org>
+User-Agent: Opera Mail/1.0 (Win32)
+
+On Tue, 02 Apr 2024 02:43:25 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
+wrote:
+
+> On Tue Apr 2, 2024 at 4:42 AM EEST, Haitao Huang wrote:
+>> Make cgroup test scripts ash compatible.
+>> Remove cg-tools dependency.
+>> Add documentation for functions.
+>>
+>> Tested with busybox on Ubuntu.
+>>
+>> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> ---
+>> v2:
+>> - Fixes for v2 cgroup
+>> - Turn off swapping before memcontrol tests and back on after
+>> - Add comments and reformat
+>> ---
+>>  tools/testing/selftests/sgx/ash_cgexec.sh     |  57 ++++++
+>>  .../selftests/sgx/run_epc_cg_selftests.sh     | 187 +++++++++++-------
+>>  .../selftests/sgx/watch_misc_for_tests.sh     |  13 +-
+>>  3 files changed, 179 insertions(+), 78 deletions(-)
+>>  create mode 100755 tools/testing/selftests/sgx/ash_cgexec.sh
+>>
+>> diff --git a/tools/testing/selftests/sgx/ash_cgexec.sh  
+>> b/tools/testing/selftests/sgx/ash_cgexec.sh
+>> new file mode 100755
+>> index 000000000000..9607784378df
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/sgx/ash_cgexec.sh
+>> @@ -0,0 +1,57 @@
+>> +#!/usr/bin/env sh
+>> +# SPDX-License-Identifier: GPL-2.0
+>> +# Copyright(c) 2024 Intel Corporation.
+>> +
+>> +# Move the current shell process to the specified cgroup
+>> +# Arguments:
+>> +# 	$1 - The cgroup controller name, e.g., misc, memory.
+>> +#	$2 - The path of the cgroup,
+>> +#		relative to /sys/fs/cgroup for cgroup v2,
+>> +#		relative to /sys/fs/cgroup/$1 for v1.
+>> +move_to_cgroup() {
+>> +    controllers="$1"
+>> +    path="$2"
+>> +
+>> +    # Check if cgroup v2 is in use
+>> +    if [ ! -d "/sys/fs/cgroup/misc" ]; then
+>> +        # Cgroup v2 logic
+>> +        cgroup_full_path="/sys/fs/cgroup/${path}"
+>> +        echo $$ > "${cgroup_full_path}/cgroup.procs"
+>> +    else
+>> +        # Cgroup v1 logic
+>> +        OLD_IFS="$IFS"
+>> +        IFS=','
+>> +        for controller in $controllers; do
+>> +            cgroup_full_path="/sys/fs/cgroup/${controller}/${path}"
+>> +            echo $$ > "${cgroup_full_path}/tasks"
+>> +        done
+>> +        IFS="$OLD_IFS"
+>> +    fi
+>
+> I think that if you could point me to git v10 and all this I could
+> then quite easily create test image and see what I get from that.
+>
+> I will code review the whole thing but this is definitely good
+> enough to start testing this series properly! Thanks for the
+> effort with this. The payback from this comes after the feature
+> is mainline. We have now sort of reference of the usage patterns
+> and less layers when we need to debug any possible (likely) bugs
+> in the future.
+>
+> This is definitely to the right direction. I'm just wondering do
+> we want to support v1 cgroups or would it make sense support only
+> v2?
+> BR, Jarkko
+>
+I can drop v1. I think most distro now support v2.
+Created this branch to host these changes so far:  
+https://github.com/haitaohuang/linux/tree/sgx_cg_upstream_v10_plus
 
 
---jy46jtmbnpyw2njk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hello.
-
-On Wed, Mar 27, 2024 at 11:53:22PM +0100, Djalal Harouni <tixxdz@gmail.com> wrote:
-> ...
-> For some cases we want to freeze the cgroup of a task based on some
-> signals, doing so from bpf is better than user space which could be
-> too late.
-
-Notice that freezer itself is not immediate -- tasks are frozen as if a
-signal (kill(2)) was delivered to them (i.e. returning to userspace).
-
-What kind of signals (also kill?) are you talking about for
-illustration?
-
-> Planned users of this feature are: tetragon and systemd when freezing
-> a cgroup hierarchy that could be a K8s pod, container, system service
-> or a user session.
-
-It sounds like the signals are related to a particular process. If so
-what is it good for to freeze unrelated processes in the same cgroup?
-
-I think those answers better clarify why this is needed.
-
-
-As for the generalization to any cgroup attribute (or kernfs). Can this
-be compared with sysctls -- I see there are helpers to intercept user
-writes but no helpers to affect sysctl values without an outer writer.
-What would justify different approaches between kernfs attributes and
-sysctls (direct writes vs modified writes)?
-
-
-Thanks,
-Michal
-
---jy46jtmbnpyw2njk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZgw9awAKCRAGvrMr/1gc
-jkx3AP9q4yObx2ZVhnJrJtyuNXurHxN0CyA34JgyPMSJk2fz8wD/eQvPgsUzvuGS
-lms51KfenKpEwlwmmEfvlZSNXVAU1Qw=
-=rjUz
------END PGP SIGNATURE-----
-
---jy46jtmbnpyw2njk--
+Thanks
+Haitao
 
