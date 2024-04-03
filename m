@@ -1,185 +1,108 @@
-Return-Path: <cgroups+bounces-2303-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2304-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D82589785B
-	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 20:40:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B6E2897927
+	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 21:43:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 861C6B3EADE
-	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 18:02:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 718C71C25E42
+	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 19:43:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28E71152E11;
-	Wed,  3 Apr 2024 18:02:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C35B1155317;
+	Wed,  3 Apr 2024 19:42:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OZJT+mgl"
 X-Original-To: cgroups@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32389152513;
-	Wed,  3 Apr 2024 18:02:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256B52F24;
+	Wed,  3 Apr 2024 19:42:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712167344; cv=none; b=SEXtTkACKWkYJ3C+yr9it6HEZpiwaYraqcRxNty5W19YbDHQhLEKvsmjf942KO9qbtPi86mi1n6+1dRp6DkeKgWLCSBOTrdXFFVNyZycyV3EwxIwxm+efw86jGJ5GKRC0pn83sd6nCT1+5dCZaJAAsFWSnNfVJDIkwI0qYHs07Q=
+	t=1712173378; cv=none; b=JSxb9bfzDSFz+e1TWcYuNoHFXzttCw9KtmlWt5XHr87uN+Cb0DLeVC1g7gFu6smk4rYrQSkG08LANBuG2KP7VsrDdfIoRysxvN4VihFtHXJl6ywotz5A8STz1d/QU6rlgl2Qm5ZBRLby1XXf5iv3heWKSItaNpMwWyvehpIkM54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712167344; c=relaxed/simple;
-	bh=wohhLCNkof1vY1W1Dwlmkq643wtKNO9tiiqXimh9pKk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=F+cmCEygnzc2hUXXfPCmrf8/IBOt13fk2iQqAbCdI0lMYpErgqo5cl4R0uHJb9SQ/DAn8LUbLycecRicElw0oJluQ0icrEJXmTpxUD0pjfAaGFoqSX/1p4SWk7PQF3JgVyg5UUQSE06jWRJo18bEmrOePB5uq58WsY/tWjf+jKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 20D441007;
-	Wed,  3 Apr 2024 11:02:52 -0700 (PDT)
-Received: from [10.57.18.20] (unknown [10.57.18.20])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5F9333F766;
-	Wed,  3 Apr 2024 11:02:17 -0700 (PDT)
-Message-ID: <2143378c-0d5b-4e68-9da4-cabc149cb84f@arm.com>
-Date: Wed, 3 Apr 2024 19:02:15 +0100
+	s=arc-20240116; t=1712173378; c=relaxed/simple;
+	bh=3WUH9SubfwYcKxvgcz+D1M4r1DIyiUItWr+37jMl3Vw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=exzdnVnn1PlQh3YExmyxlRg8WKqMUmmovjhSR8YAnULyv7QyjH52XZTUivkGmWYB0Pzg75iRgnaZw2TeOmfBNK7wzLwwxMwueB0jrSxZzcbONxeuLqanVYQoDmuEOc3lfYzYzAwuVUEpoqkbFbIoCDXJ2BMoQbF8w/+rDtGmhB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OZJT+mgl; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2a28b11db68so110749a91.2;
+        Wed, 03 Apr 2024 12:42:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712173376; x=1712778176; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MUae7FX57GCbhwQ8NWUH2pJwsLTvGchJ6LyegeiE4d0=;
+        b=OZJT+mglv8j4K+Q6smrVixru9z92cltp74WDeoxWjcbgJ3dqUZv1rA3XSO4xBe0vlA
+         JDwRcHniqTXgh6JcTvUfTqhrm0v+5tYURVq++tp+za6Wn+Bb1puKuUiTVNUn3vgCfInb
+         ftFBhiQJYiujhiYJ+TeEEBplguAw4hUxZnzxZw/qJY5Qg9peeViri3CT/mN87Ma8N0Ie
+         ac6FLeVEu+fmpxRu05RxMkKI7H0VLsCkVqmw5V27adNMOmR74NM4oeXwcpIjG00/XwRQ
+         61EhcHsxveDHlv1bqZKeDPL5y6NaOSDWbnEOvroMp3AOrnTOMmK1N+aJGj7AfnKIJxYR
+         51AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712173376; x=1712778176;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MUae7FX57GCbhwQ8NWUH2pJwsLTvGchJ6LyegeiE4d0=;
+        b=WjkX1YyyEotKyhkd1hyxqPczeiuopidwA0YQInwgSawyAf/L6adJ4WJJ8CywmFX0xN
+         wqzYm+YMT+EOY3tdOfsqijCmX/MuFHSes2mg1SlDxy8j/XpgStvHbcgOYW5BfP8wOhGC
+         3KKTpygFDSWxVcUJvfKorczaoM1Xol2nTeWtI+VPWAJA+VIXYeeuyo1YmR7ysivIYI+s
+         s3xrx/jAvjP2qu7W7n++8wtYbmtKYnRtgcuHn6iPLzX58tRuqLHAJH6RRJs8vMlIn8Ct
+         xp79eBEqRQzVIg/XvNVudW3tkpRVG7OURzRu1/hu5XMFcpYs1XqKV42oHTxBEtSPlLff
+         ICig==
+X-Forwarded-Encrypted: i=1; AJvYcCULJHWELfRobEGZYa8xhlRuslmKt/FmGucqlwFvSVtJ/3unKWs8DA6CN+s850/7WZFqWVTHSs9RHfcEpGh94Vqki0MVLLYk9+wGZGM//H+zNBpT5MpbQqBhuphWbrKsZzbu2Jv/OHLE3g==
+X-Gm-Message-State: AOJu0Yxv5SqHKVeofOLzEbJYuNHyz5WzRnSwkAx/qtZ33LMSzCCMOgm2
+	Cy4jkfCYpCudGaqbXJ0k70ZXmoazp1bOg54Vw0aS5v6WSXRXFsVj
+X-Google-Smtp-Source: AGHT+IEVXZX4Q2IoMb+hEcs5wG+rtM60qFsELk5WmIi68s8cL1mTcSnvyfYFxW/wOCpaOy2eQGQZBg==
+X-Received: by 2002:a17:90a:43c5:b0:29b:2268:3349 with SMTP id r63-20020a17090a43c500b0029b22683349mr508502pjg.18.1712173376438;
+        Wed, 03 Apr 2024 12:42:56 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:25ab])
+        by smtp.gmail.com with ESMTPSA id nh12-20020a17090b364c00b0029c61521eb5sm64786pjb.43.2024.04.03.12.42.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 12:42:56 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 3 Apr 2024 09:42:54 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Tianchen Ding <dtcccc@linux.alibaba.com>
+Cc: linux-kernel@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>, Shuah Khan <shuah@kernel.org>,
+	cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] selftests: cgroup: skip test_cgcore_lesser_ns_open when
+ cgroup2 mounted without nsdelegate
+Message-ID: <Zg2xPtwFvT-lsSJX@slm.duckdns.org>
+References: <20240327024437.3196-1-dtcccc@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] mm, slab: move memcg charging to post-alloc hook
-Content-Language: en-US
-To: Vlastimil Babka <vbabka@suse.cz>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- Chengming Zhou <chengming.zhou@linux.dev>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Jeff Layton <jlayton@kernel.org>,
- Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>,
- Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
- David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Shakeel Butt <shakeel.butt@linux.dev>, Mark Brown <broonie@kernel.org>
-References: <20240325-slab-memcg-v2-0-900a458233a6@suse.cz>
- <20240325-slab-memcg-v2-1-900a458233a6@suse.cz>
- <30df7730-1b37-420d-b661-e5316679246f@arm.com>
- <4af50be2-4109-45e5-8a36-2136252a635e@suse.cz>
-From: Aishwarya TCV <aishwarya.tcv@arm.com>
-In-Reply-To: <4af50be2-4109-45e5-8a36-2136252a635e@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327024437.3196-1-dtcccc@linux.alibaba.com>
 
-
-
-On 03/04/2024 16:48, Vlastimil Babka wrote:
-> On 4/3/24 1:39 PM, Aishwarya TCV wrote:
->>
->>
->> On 25/03/2024 08:20, Vlastimil Babka wrote:
->>> The MEMCG_KMEM integration with slab currently relies on two hooks
->>> during allocation. memcg_slab_pre_alloc_hook() determines the objcg and
->>> charges it, and memcg_slab_post_alloc_hook() assigns the objcg pointer
->>> to the allocated object(s).
->>>
->>> As Linus pointed out, this is unnecessarily complex. Failing to charge
->>> due to memcg limits should be rare, so we can optimistically allocate
->>> the object(s) and do the charging together with assigning the objcg
->>> pointer in a single post_alloc hook. In the rare case the charging
->>> fails, we can free the object(s) back.
->>>
->>> This simplifies the code (no need to pass around the objcg pointer) and
->>> potentially allows to separate charging from allocation in cases where
->>> it's common that the allocation would be immediately freed, and the
->>> memcg handling overhead could be saved.
->>>
->>> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
->>> Link: https://lore.kernel.org/all/CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com/
->>> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
->>> Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
->>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
->>> ---
->>>  mm/slub.c | 180 +++++++++++++++++++++++++++-----------------------------------
->>>  1 file changed, 77 insertions(+), 103 deletions(-)
->>
->> Hi Vlastimil,
->>
->> When running the LTP test "memcg_limit_in_bytes" against next-master
->> (next-20240402) kernel with Arm64 on JUNO, oops is observed in our CI. I
->> can send the full logs if required. It is observed to work fine on
->> softiron-overdrive-3000.
->>
->> A bisect identified 11bb2d9d91627935c63ea3e6a031fd238c846e1 as the first
->> bad commit. Bisected it on the tag "next-20240402" at repo
->> "https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git".
->>
->> This works fine on  Linux version v6.9-rc2
+On Wed, Mar 27, 2024 at 10:44:37AM +0800, Tianchen Ding wrote:
+> The test case test_cgcore_lesser_ns_open only tasks effect when cgroup2
+> is mounted with "nsdelegate" mount option. If it misses this option, or
+> is remounted without "nsdelegate", the test case will fail. For example,
+> running bpf/test_cgroup_storage first, and then run cgroup/test_core will
+> fail on test_cgcore_lesser_ns_open. Skip it if "nsdelegate" is not
+> detected in cgroup2 mount options.
 > 
-> Oops, sorry, can you verify that this fixes it?
-> Thanks.
-> 
-> ----8<----
-> From b0597c220624fef4f10e26079a3ff1c86f02a12b Mon Sep 17 00:00:00 2001
-> From: Vlastimil Babka <vbabka@suse.cz>
-> Date: Wed, 3 Apr 2024 17:45:15 +0200
-> Subject: [PATCH] fixup! mm, slab: move memcg charging to post-alloc hook
-> 
-> The call to memcg_alloc_abort_single() is wrong, it expects a pointer to
-> single object, not an array.
-> 
-> Reported-by: Aishwarya TCV <aishwarya.tcv@arm.com>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  mm/slub.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index f5b151a58b7d..b32e79629ae7 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2100,7 +2100,7 @@ bool memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
->  		return true;
->  
->  	if (likely(size == 1)) {
-> -		memcg_alloc_abort_single(s, p);
-> +		memcg_alloc_abort_single(s, *p);
->  		*p = NULL;
->  	} else {
->  	
-	kmem_cache_free_bulk(s, size, p);
+> Fixes: bf35a7879f1d ("selftests: cgroup: Test open-time cgroup namespace usage for migration checks")
+> Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
 
-Tested the attached patch on next-20240302. Confirming that the test is
-running fine. Test run log is attached below.
+Applied to cgroup/for-6.10.
 
-Test run log:
---------------
-memcg_limit_in_bytes 8 TPASS: process 614 is killed
-memcg_limit_in_bytes 9 TINFO: Test limit_in_bytes will be aligned to
-PAGESIZE
-memcg_limit_in_bytes 9 TPASS: echo 4095 > memory.limit_in_bytes passed
-as expected
-memcg_limit_in_bytes 9 TPASS: input=4095, limit_in_bytes=0
-memcg_limit_in_bytes 10 TPASS: echo 4097 > memory.limit_in_bytes passed
-as expected
-memcg_limit_in_bytes 10 TPASS: input=4097, limit_in_bytes=4096
-memcg_limit_in_bytes 11 TPASS: echo 1 > memory.limit_in_bytes passed as
-expected
-memcg_limit_in_bytes 11 TPASS: input=1, limit_in_bytes=0
-memcg_limit_in_bytes 12 TINFO: Test invalid memory.limit_in_bytes
-memcg_limit_in_bytes 12 TPASS: echo -1 > memory.limit_in_bytes passed as
-expected
-memcg_limit_in_bytes 13 TPASS: echo 1.0 > memory.limit_in_bytes failed
-as expected
-memcg_limit_in_bytes 14 TPASS: echo 1xx > memory.limit_in_bytes failed
-as expected
-memcg_limit_in_bytes 15 TPASS: echo xx > memory.limit_in_bytes failed as
-expected
-Summary:
-passed   18
-failed   0
-broken   0
-skipped  0
-warnings 0
+Thanks.
 
-Thanks,
-Aishwarya
+-- 
+tejun
 
