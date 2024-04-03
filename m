@@ -1,114 +1,164 @@
-Return-Path: <cgroups+bounces-2301-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2302-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A82A1897596
-	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 18:46:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71F1C8975D7
+	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 19:03:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 635FD28E205
-	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 16:46:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2B221C275A5
+	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 17:03:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C882A1514CC;
-	Wed,  3 Apr 2024 16:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7CE152512;
+	Wed,  3 Apr 2024 17:03:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L4SwTRHj"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hZoh+pO+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 813DC1E520;
-	Wed,  3 Apr 2024 16:46:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C7A6152193
+	for <cgroups@vger.kernel.org>; Wed,  3 Apr 2024 17:02:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712162783; cv=none; b=nTvu22szWk0GasX4wUpfWcSnlR4b4o1IJ5l3nFKFmSkKKw1tSPuGgkPX9vYBRrvHMtBxA4AwipLk1u9K/0qoWrrY2xI3f3vXnT0Wwyt1YkgBA3kNL9DomRtsYie2UYTbN/nK+SGQiasEzXQeuvw+8IF3odNOQoylyLH5UPYjkns=
+	t=1712163781; cv=none; b=tCXbyZqnicLmnaDoDHhGggX5tfLEnhi/0nT5obDmuEvalMRzr0HcdtHezYxF+nhxy08X3UvwyvT1VUzAzvaXx/mIcm9kOw3Q0gp9xV/U3DJ51BCViJycqP2UuOiUh/DCYI0Auzoo1uC/sAm2IyZHCglS0+ee5ZbEBXjCyNNBV2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712162783; c=relaxed/simple;
-	bh=B/9drZEy5S7WaOtGfUFnN3ljHMB28vjUwWZEPvQmAzs=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=pxjf9gjmBTR+EV1PEeoSaZiH8xNn9xcTUA23q5ITvk2rF32JuLySrPMtPOSqANRoKJOTiLkmE1nihc5OWfHUI8OG8P1cTM3/ye1k7c5o7hCSZqPhrV+Mkz7vlHLMEoJc9MHmQcGgTarytZLi8nS6H4lVJwYG4k/IrRKtMmk5fUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L4SwTRHj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9D15C433C7;
-	Wed,  3 Apr 2024 16:46:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712162783;
-	bh=B/9drZEy5S7WaOtGfUFnN3ljHMB28vjUwWZEPvQmAzs=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=L4SwTRHjmdR1/Qm+gnsbFIb+8kkfUzw6rTiDJKE7UPZPxH4gNNm+3sU0kcBkpsx5Z
-	 EQNr5evYNvWZ8XDpgCLbsHVpyM07Gwems6ZXP1on/v99RFs7Ra0FLnbo0nTkCohCJc
-	 Mi4mIzn7YOoQpadDZ4PCRjHpXpU/0Ar9tFzGm6hQfW9s58dC94hPzojlL3flT6GwAb
-	 RIrbkgq9EAVotXFnjJQyInDO+7tggRGZF0erEspN+E1D2wTjRspk7XLF4PKbOUsvzh
-	 SX4xMOPMJIS53qRuSqsOwcOOCeN4JvC2PSP9A0BQXHQwsYjc05Fp1eXhE6mmIitsFR
-	 4IDS8uXbgnTQA==
+	s=arc-20240116; t=1712163781; c=relaxed/simple;
+	bh=uy0uR4KNWQjTyhStmbFe7CExzINwuvct04FOVMIe8G0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FY3BTaiaZtMytRGWDDzOuZoS2peiClREhjgOV67zFXVBkW2U0uryPHezxKuKgaVwpyPHOO3HlxnRtfBJqUMVkvypxL9Bmw9ScADJohM0lnLOqeS6wtBKJixe+rd04sGcXfw7bsU5wQXiY3s2sfykDMnt9KRsBFsqcxU+maGDNh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hZoh+pO+; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 3 Apr 2024 10:02:40 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712163777;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l2xgd3X9t4EgBaNAFDJVjvxOH1jxFC0KojtDFbkugeQ=;
+	b=hZoh+pO+l0APIgPQISDmnLTHEmqpxabM1zSle/bXSt0Rv0Hu5Vb48tN7QWGsBv2nWTDfZB
+	PfmejjrzTBt5G7M7FpBZ7m1h684jEvO4ylLhoT46tLRwJrbcun1U5Bi2j0KgR41qRLra/o
+	k172DDMShT0o2CtvIZmeFyo3MVW6cyk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Aishwarya TCV <aishwarya.tcv@arm.com>,
+	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	Chengming Zhou <chengming.zhou@linux.dev>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Jeff Layton <jlayton@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Muchun Song <muchun.song@linux.dev>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 1/2] mm, slab: move memcg charging to post-alloc hook
+Message-ID: <Zg2LsNm6twOmG69l@P9FQF9L96D.corp.robot.car>
+References: <20240325-slab-memcg-v2-0-900a458233a6@suse.cz>
+ <20240325-slab-memcg-v2-1-900a458233a6@suse.cz>
+ <30df7730-1b37-420d-b661-e5316679246f@arm.com>
+ <4af50be2-4109-45e5-8a36-2136252a635e@suse.cz>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 03 Apr 2024 19:46:16 +0300
-Message-Id: <D0AN1T7IQCB6.3L1IV1UFGMBV1@kernel.org>
-Cc: <dave.hansen@linux.intel.com>, <tj@kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
- <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
- <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
- <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>,
- <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
- <zhanb@microsoft.com>, <anakrish@microsoft.com>,
- <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
- <chrisyan@microsoft.com>
-Subject: Re: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup
- testing
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, "Haitao Huang"
- <haitao.huang@linux.intel.com>
-X-Mailer: aerc 0.17.0
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-16-haitao.huang@linux.intel.com>
- <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
- <D04OVW6I8MUA.1OAIHFQ8943SM@kernel.org>
- <op.2lbjl0oawjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <D071OAFZ80O6.XEDXJ8AF4PK9@kernel.org>
- <D071QIHLW7MP.UM9R3VYETIOK@kernel.org>
- <htiz5jgsby5v262saphhomcsxtixb2u7ot6jcghpfhvgz65ht6@qlz3gpdwapaa>
- <D09MB26IPFFW.3UBD7M0S17SG6@kernel.org>
- <op.2llzn7wgwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <yjremy4leipriqfd547wvjd6jt3r6t4tgz36eazy3slfuew4mc@v4iye7sm7yqn>
-In-Reply-To: <yjremy4leipriqfd547wvjd6jt3r6t4tgz36eazy3slfuew4mc@v4iye7sm7yqn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4af50be2-4109-45e5-8a36-2136252a635e@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue Apr 2, 2024 at 8:40 PM EEST, Michal Koutn=C3=BD wrote:
-> On Tue, Apr 02, 2024 at 11:20:21AM -0500, Haitao Huang <haitao.huang@linu=
-x.intel.com> wrote:
-> > Do we really want to have it implemented in c?
->
-> I only pointed to the available C boilerplate.
->
-> > There are much fewer lines of
-> > code in shell scripts. Note we are not really testing basic cgroup stuf=
-f.
-> > All we needed were creating/deleting cgroups and set limits which I thi=
-nk
-> > have been demonstrated feasible in the ash scripts now.
->
-> I assume you refer to
-> Message-Id: <20240331174442.51019-1-haitao.huang@linux.intel.com>
-> right?
->
-> Could it be even simpler if you didn't stick to cgtools APIs and v1
-> compatibility?
->
-> Reducing ash_cgexec.sh to something like
-> 	echo 0 >$R/$1/cgroup.procs
-> 	shift
-> 	exec "$@"
-> (with some small builerplate for $R and previous mkdirs)
+On Wed, Apr 03, 2024 at 05:48:24PM +0200, Vlastimil Babka wrote:
+> On 4/3/24 1:39 PM, Aishwarya TCV wrote:
+> > 
+> > 
+> > On 25/03/2024 08:20, Vlastimil Babka wrote:
+> >> The MEMCG_KMEM integration with slab currently relies on two hooks
+> >> during allocation. memcg_slab_pre_alloc_hook() determines the objcg and
+> >> charges it, and memcg_slab_post_alloc_hook() assigns the objcg pointer
+> >> to the allocated object(s).
+> >> 
+> >> As Linus pointed out, this is unnecessarily complex. Failing to charge
+> >> due to memcg limits should be rare, so we can optimistically allocate
+> >> the object(s) and do the charging together with assigning the objcg
+> >> pointer in a single post_alloc hook. In the rare case the charging
+> >> fails, we can free the object(s) back.
+> >> 
+> >> This simplifies the code (no need to pass around the objcg pointer) and
+> >> potentially allows to separate charging from allocation in cases where
+> >> it's common that the allocation would be immediately freed, and the
+> >> memcg handling overhead could be saved.
+> >> 
+> >> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> >> Link: https://lore.kernel.org/all/CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com/
+> >> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+> >> Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
+> >> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> >> ---
+> >>  mm/slub.c | 180 +++++++++++++++++++++++++++-----------------------------------
+> >>  1 file changed, 77 insertions(+), 103 deletions(-)
+> > 
+> > Hi Vlastimil,
+> > 
+> > When running the LTP test "memcg_limit_in_bytes" against next-master
+> > (next-20240402) kernel with Arm64 on JUNO, oops is observed in our CI. I
+> > can send the full logs if required. It is observed to work fine on
+> > softiron-overdrive-3000.
+> > 
+> > A bisect identified 11bb2d9d91627935c63ea3e6a031fd238c846e1 as the first
+> > bad commit. Bisected it on the tag "next-20240402" at repo
+> > "https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git".
+> > 
+> > This works fine on  Linux version v6.9-rc2
+> 
+> Oops, sorry, can you verify that this fixes it?
+> Thanks.
+> 
+> ----8<----
+> From b0597c220624fef4f10e26079a3ff1c86f02a12b Mon Sep 17 00:00:00 2001
+> From: Vlastimil Babka <vbabka@suse.cz>
+> Date: Wed, 3 Apr 2024 17:45:15 +0200
+> Subject: [PATCH] fixup! mm, slab: move memcg charging to post-alloc hook
+> 
+> The call to memcg_alloc_abort_single() is wrong, it expects a pointer to
+> single object, not an array.
+> 
+> Reported-by: Aishwarya TCV <aishwarya.tcv@arm.com>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
-I already asked about necessity of v1 in some response, and fully
-support this idea. Then cgexec can simply be a function wrapping
-along the lines what you proposed.
+Oh, indeed.
+Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
 
-BR, Jarkko
+Vlastimil, here is another small comments fixup for the same original patch:
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 0745a28782de..9bd0ffd4c547 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -353,7 +353,7 @@ static void memcg_reparent_objcgs(struct mem_cgroup *memcg,
+
+ /*
+  * A lot of the calls to the cache allocation functions are expected to be
+- * inlined by the compiler. Since the calls to memcg_slab_pre_alloc_hook() are
++ * inlined by the compiler. Since the calls to memcg_slab_post_alloc_hook() are
+  * conditional to this static branch, we'll have to allow modules that does
+  * kmem_cache_alloc and the such to see this symbol as well
+  */
+
+
+
+Thanks!
 
