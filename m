@@ -1,83 +1,80 @@
-Return-Path: <cgroups+bounces-2304-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2305-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B6E2897927
-	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 21:43:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B43B897A70
+	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 23:12:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 718C71C25E42
-	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 19:43:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29135282B9B
+	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 21:12:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C35B1155317;
-	Wed,  3 Apr 2024 19:42:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD524156662;
+	Wed,  3 Apr 2024 21:12:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OZJT+mgl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AvVi8LMC"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256B52F24;
-	Wed,  3 Apr 2024 19:42:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DAE75DF0E;
+	Wed,  3 Apr 2024 21:12:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712173378; cv=none; b=JSxb9bfzDSFz+e1TWcYuNoHFXzttCw9KtmlWt5XHr87uN+Cb0DLeVC1g7gFu6smk4rYrQSkG08LANBuG2KP7VsrDdfIoRysxvN4VihFtHXJl6ywotz5A8STz1d/QU6rlgl2Qm5ZBRLby1XXf5iv3heWKSItaNpMwWyvehpIkM54=
+	t=1712178766; cv=none; b=Bny2k+UmT8PAEEW3PyRu7QIALA53HYWPTT7j8COy5WUvgI51/IxlVdKvguft1cb/fmbGk+3lg/1c2/GNpD+Ygz0gRvoZq8Rwv1UkvLtWYOeQ5slrAwHs34hoKKfI7fqbBX4p9V/AktHwWNUczrTw2cA3ALR26ZaUEYgH940l3qc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712173378; c=relaxed/simple;
-	bh=3WUH9SubfwYcKxvgcz+D1M4r1DIyiUItWr+37jMl3Vw=;
+	s=arc-20240116; t=1712178766; c=relaxed/simple;
+	bh=eAxmNahq0qz4MjguPAZcqC0KPuy9iIiFN/TD17zLp6k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=exzdnVnn1PlQh3YExmyxlRg8WKqMUmmovjhSR8YAnULyv7QyjH52XZTUivkGmWYB0Pzg75iRgnaZw2TeOmfBNK7wzLwwxMwueB0jrSxZzcbONxeuLqanVYQoDmuEOc3lfYzYzAwuVUEpoqkbFbIoCDXJ2BMoQbF8w/+rDtGmhB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OZJT+mgl; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2a28b11db68so110749a91.2;
-        Wed, 03 Apr 2024 12:42:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712173376; x=1712778176; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MUae7FX57GCbhwQ8NWUH2pJwsLTvGchJ6LyegeiE4d0=;
-        b=OZJT+mglv8j4K+Q6smrVixru9z92cltp74WDeoxWjcbgJ3dqUZv1rA3XSO4xBe0vlA
-         JDwRcHniqTXgh6JcTvUfTqhrm0v+5tYURVq++tp+za6Wn+Bb1puKuUiTVNUn3vgCfInb
-         ftFBhiQJYiujhiYJ+TeEEBplguAw4hUxZnzxZw/qJY5Qg9peeViri3CT/mN87Ma8N0Ie
-         ac6FLeVEu+fmpxRu05RxMkKI7H0VLsCkVqmw5V27adNMOmR74NM4oeXwcpIjG00/XwRQ
-         61EhcHsxveDHlv1bqZKeDPL5y6NaOSDWbnEOvroMp3AOrnTOMmK1N+aJGj7AfnKIJxYR
-         51AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712173376; x=1712778176;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MUae7FX57GCbhwQ8NWUH2pJwsLTvGchJ6LyegeiE4d0=;
-        b=WjkX1YyyEotKyhkd1hyxqPczeiuopidwA0YQInwgSawyAf/L6adJ4WJJ8CywmFX0xN
-         wqzYm+YMT+EOY3tdOfsqijCmX/MuFHSes2mg1SlDxy8j/XpgStvHbcgOYW5BfP8wOhGC
-         3KKTpygFDSWxVcUJvfKorczaoM1Xol2nTeWtI+VPWAJA+VIXYeeuyo1YmR7ysivIYI+s
-         s3xrx/jAvjP2qu7W7n++8wtYbmtKYnRtgcuHn6iPLzX58tRuqLHAJH6RRJs8vMlIn8Ct
-         xp79eBEqRQzVIg/XvNVudW3tkpRVG7OURzRu1/hu5XMFcpYs1XqKV42oHTxBEtSPlLff
-         ICig==
-X-Forwarded-Encrypted: i=1; AJvYcCULJHWELfRobEGZYa8xhlRuslmKt/FmGucqlwFvSVtJ/3unKWs8DA6CN+s850/7WZFqWVTHSs9RHfcEpGh94Vqki0MVLLYk9+wGZGM//H+zNBpT5MpbQqBhuphWbrKsZzbu2Jv/OHLE3g==
-X-Gm-Message-State: AOJu0Yxv5SqHKVeofOLzEbJYuNHyz5WzRnSwkAx/qtZ33LMSzCCMOgm2
-	Cy4jkfCYpCudGaqbXJ0k70ZXmoazp1bOg54Vw0aS5v6WSXRXFsVj
-X-Google-Smtp-Source: AGHT+IEVXZX4Q2IoMb+hEcs5wG+rtM60qFsELk5WmIi68s8cL1mTcSnvyfYFxW/wOCpaOy2eQGQZBg==
-X-Received: by 2002:a17:90a:43c5:b0:29b:2268:3349 with SMTP id r63-20020a17090a43c500b0029b22683349mr508502pjg.18.1712173376438;
-        Wed, 03 Apr 2024 12:42:56 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:25ab])
-        by smtp.gmail.com with ESMTPSA id nh12-20020a17090b364c00b0029c61521eb5sm64786pjb.43.2024.04.03.12.42.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 12:42:56 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 3 Apr 2024 09:42:54 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Tianchen Ding <dtcccc@linux.alibaba.com>
-Cc: linux-kernel@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>, Shuah Khan <shuah@kernel.org>,
-	cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] selftests: cgroup: skip test_cgcore_lesser_ns_open when
- cgroup2 mounted without nsdelegate
-Message-ID: <Zg2xPtwFvT-lsSJX@slm.duckdns.org>
-References: <20240327024437.3196-1-dtcccc@linux.alibaba.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LqmLIkAWp+8WuvT6Y1hZED1BHuinEdoe52jifK7r/QahXOpucjCH4WE4ISReD5Ja2gu5TJZC8qM2xatfYZU8D6S8cE1fPKRghRpxpZePciFRyQWHSW4pc/HwPjVoPv6u3u1REOsv5KQvKJ1zgU0XEju4uZtU2k33ZtCHkvs9DL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AvVi8LMC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E15A6C433C7;
+	Wed,  3 Apr 2024 21:12:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712178766;
+	bh=eAxmNahq0qz4MjguPAZcqC0KPuy9iIiFN/TD17zLp6k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AvVi8LMCPmD4vtizYlqbbrKdv6QHneAbgdsDhvVCwOCKlEjxORkOrxxsJaVKKe7ib
+	 YfLM/rXrgmOgLEfBvFZMk7h4uuO1i9LQJ8M/6UOuM3j1UhfgLRc8vtGUdYkyvOB7qF
+	 FK0zIrKPLUKf2X5PFEHqblNLkN3++ZGBDxB0Ckhu7GEuMY1ENqC6PtyP4PptCVwaCA
+	 a2tbItT4M2CDmlu7PtN/anCWs0FKgXZEkpfh6sPHkTM077WDUkJUHG5B3YhvYpuPju
+	 xPxmHBxAuN4+ZSpTgL2wp6f5XhRGsP7bV4GU68Ip1Yj2vPHXgYGKnLcD5SyRvdfCp0
+	 PZSDJCo+DH2qQ==
+Date: Wed, 3 Apr 2024 14:12:40 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
+Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz,
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net,
+	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org,
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, songmuchun@bytedance.com,
+	jbaron@akamai.com, aliceryhl@google.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v6 01/37] fix missing vmalloc.h includes
+Message-ID: <20240403211240.GA307137@dev-arch.thelio-3990X>
+References: <20240321163705.3067592-1-surenb@google.com>
+ <20240321163705.3067592-2-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -86,23 +83,62 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240327024437.3196-1-dtcccc@linux.alibaba.com>
+In-Reply-To: <20240321163705.3067592-2-surenb@google.com>
 
-On Wed, Mar 27, 2024 at 10:44:37AM +0800, Tianchen Ding wrote:
-> The test case test_cgcore_lesser_ns_open only tasks effect when cgroup2
-> is mounted with "nsdelegate" mount option. If it misses this option, or
-> is remounted without "nsdelegate", the test case will fail. For example,
-> running bpf/test_cgroup_storage first, and then run cgroup/test_core will
-> fail on test_cgcore_lesser_ns_open. Skip it if "nsdelegate" is not
-> detected in cgroup2 mount options.
+On Thu, Mar 21, 2024 at 09:36:23AM -0700, Suren Baghdasaryan wrote:
+> From: Kent Overstreet <kent.overstreet@linux.dev>
 > 
-> Fixes: bf35a7879f1d ("selftests: cgroup: Test open-time cgroup namespace usage for migration checks")
-> Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
+> The next patch drops vmalloc.h from a system header in order to fix
+> a circular dependency; this adds it to all the files that were pulling
+> it in implicitly.
+> 
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 
-Applied to cgroup/for-6.10.
+I bisected an error that I see when building ARCH=loongarch allmodconfig
+to commit 302519d9e80a ("asm-generic/io.h: kill vmalloc.h dependency")
+in -next, which tells me that this patch likely needs to contain
+something along the following lines, as LoongArch was getting
+include/linux/sizes.h transitively through the vmalloc.h include in
+include/asm-generic/io.h.
 
-Thanks.
+Cheers,
+Nathan
 
--- 
-tejun
+  In file included from arch/loongarch/include/asm/io.h:11,
+                   from include/linux/io.h:13,
+                   from arch/loongarch/mm/mmap.c:6:
+  include/asm-generic/io.h: In function 'ioport_map':
+  arch/loongarch/include/asm/addrspace.h:124:25: error: 'SZ_32M' undeclared (first use in this function); did you mean 'PS_32M'?
+    124 | #define PCI_IOSIZE      SZ_32M
+        |                         ^~~~~~
+  arch/loongarch/include/asm/addrspace.h:126:26: note: in expansion of macro 'PCI_IOSIZE'
+    126 | #define IO_SPACE_LIMIT  (PCI_IOSIZE - 1)
+        |                          ^~~~~~~~~~
+  include/asm-generic/io.h:1113:17: note: in expansion of macro 'IO_SPACE_LIMIT'
+   1113 |         port &= IO_SPACE_LIMIT;
+        |                 ^~~~~~~~~~~~~~
+  arch/loongarch/include/asm/addrspace.h:124:25: note: each undeclared identifier is reported only once for each function it appears in
+    124 | #define PCI_IOSIZE      SZ_32M
+        |                         ^~~~~~
+  arch/loongarch/include/asm/addrspace.h:126:26: note: in expansion of macro 'PCI_IOSIZE'
+    126 | #define IO_SPACE_LIMIT  (PCI_IOSIZE - 1)
+        |                          ^~~~~~~~~~
+  include/asm-generic/io.h:1113:17: note: in expansion of macro 'IO_SPACE_LIMIT'
+   1113 |         port &= IO_SPACE_LIMIT;
+        |                 ^~~~~~~~~~~~~~
+
+diff --git a/arch/loongarch/include/asm/addrspace.h b/arch/loongarch/include/asm/addrspace.h
+index b24437e28c6e..7bd47d65bf7a 100644
+--- a/arch/loongarch/include/asm/addrspace.h
++++ b/arch/loongarch/include/asm/addrspace.h
+@@ -11,6 +11,7 @@
+ #define _ASM_ADDRSPACE_H
+ 
+ #include <linux/const.h>
++#include <linux/sizes.h>
+ 
+ #include <asm/loongarch.h>
+ 
 
