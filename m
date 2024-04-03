@@ -1,159 +1,164 @@
-Return-Path: <cgroups+bounces-2282-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2283-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A21E895BA0
-	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 20:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 51BCF8969BA
+	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 10:59:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6383FB24B45
-	for <lists+cgroups@lfdr.de>; Tue,  2 Apr 2024 18:21:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A921FB22A34
+	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 08:58:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3473515B103;
-	Tue,  2 Apr 2024 18:20:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EXEWBeks"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99A7A6FE0A;
+	Wed,  3 Apr 2024 08:58:06 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4539015AD8D;
-	Tue,  2 Apr 2024 18:20:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6E454675;
+	Wed,  3 Apr 2024 08:58:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712082055; cv=none; b=bgurQEP7b89OBAvZ7sCWDT3qj+qmyFTi7HyDtqMDV+8VN2ebiAvvfnujk7IZh2fa4CZIw2nzwm1Fcnog8A3cMb9qTsBuhlP8oOTrrBByODH3GWCL8FgW+/kNZoRXllaUBWKNREi3+3z6QTnschQr5M9T7WnQYQ6Qdf/2tmNFGkc=
+	t=1712134686; cv=none; b=kbfHn0sH9hKWp58tGeXf14CvuiiyQS6C4Fp2Vj5w/lHAhXnRfOlDAjEdj0btifoIcVDSY7f4BYF+K7YvALsKwG91degOSm3ehxRh3O535VzB+xNet0bnrFQeVqyXGUTbgUNIdFu5a6fOLp6iRKByKPr7WIPjPA1cCP1rUs51Bvs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712082055; c=relaxed/simple;
-	bh=zv7sHKFkjNevE/UqWToiX8FmogO6sxuivtv/ibrNNXA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YI50ILQF3doVAiYBSDY5dFBenoeXtNMpQklNEhREGBKzDk0vOjjF1vlOBRaAtZvPcTiSGpNTsF1SVEi9bfwXWiNxoBw/fVxrC0KQTuQCQXXuIPIR4DqrN7LGHZ8JICa8R3L6eATjfELEN13XOQVPqCaPGoGfyPLDANFvletPifI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EXEWBeks; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-415584360c0so21876535e9.1;
-        Tue, 02 Apr 2024 11:20:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712082051; x=1712686851; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:mime-version:date:message-id:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DCiVkwPQCDGfrvASyvu6t9tXKJzzMnM8zHvPzO/AMwA=;
-        b=EXEWBeksImfeRSHMAf69o9CTGp5sPYwl2nt+2fYso1zzFlA1+JOi+zHxkA+8uIOGsJ
-         VoSpeXGY4aQxrHDyxDmicnkObs8PRW+6GYbeZTvG3xrV8XKd4MJsDXP0ji2N86K2FJvE
-         gZ0Z60STS+OUIllD7JZcZ2vxbRdjr/rT6VxJwkI42txqJRBNf7qDsDUIv8jpgUNSqs8o
-         LhxkBYp7YW4/CXu3f4usjEp99j1QUDvUCk1RaB0IMpQVwkm3sjFxs+aZRbS7ZPGR7W3t
-         eRCwtgeDgZK2SyZM/o3oBBNPXXM8ctM2vJ8NkBVabVQBxRvesnho2phfNvMpSI6IHRg0
-         IN+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712082051; x=1712686851;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DCiVkwPQCDGfrvASyvu6t9tXKJzzMnM8zHvPzO/AMwA=;
-        b=Hr+MyqdyYgLkb2ugWDrZ2PacAWEg6IlhDqWD7j2VyyJQQQOrPNlAxmUqx27YaPS568
-         LStDoxYx1LTD61vqdMq2JS43EXTsnsUBMGY5/gkPvY4njAUrOd9oAgzwaUsjo9vx5Ltu
-         W7dvCpIXWPXrlBFevuJ0vRRorJ9UD0FQD81SmwgAoKmTGxrzP7uf/ouSoqFMEtG26Jon
-         xdjcPrq1o/1OQKu6fOUWci6oDAer5kKMLkO7VoX2thWOfs96+qLGJDQbqYmPe0pBs1iu
-         cR/AgyIjp5TOMQT1m0rK7woFMA4m34DM6AdBQXlB/2F3yhhNdOWE36nakuzq5+S6vtvx
-         A43w==
-X-Forwarded-Encrypted: i=1; AJvYcCUJPvvnnJQRU609ms0G7s+YXwy4NPZi0vjZPztQg8zR/YxHnVS69KLN9haoF4NSAagixYVGK7HMKji3FF1mcXBQQ2cCKVFQjLCjsJrRDK7JQo+5zPCZBM8RDD4GDsgHBhbcAmkr05FklcIWXfp/Gmja9CHY5tN7csQVMhkaXVsiA8VeHnD0lUp0gjEuZkIZLIeRsBj+ltVts43VyA==
-X-Gm-Message-State: AOJu0YzsSkbUp+Y6iZ8CZZjYa6AucfAIM9UOcARLhM8xMn1OJovdp9DP
-	9awiWrPfRdvN3qPFI9zHYS2/69GNi0ib/0TCYvKhNOxJhkZWH3BL
-X-Google-Smtp-Source: AGHT+IH7dZM98T8LsIjrzMa4icTrHivRPJMZDMvbLYQyhm1OTnVSmFrT5rXdsQklfK67izIlApE9XA==
-X-Received: by 2002:a05:600c:1394:b0:415:6121:5171 with SMTP id u20-20020a05600c139400b0041561215171mr5870525wmf.32.1712082049265;
-        Tue, 02 Apr 2024 11:20:49 -0700 (PDT)
-Received: from [192.168.1.113] ([105.109.56.176])
-        by smtp.gmail.com with ESMTPSA id q17-20020a05600c46d100b0041409db0349sm18761667wmo.48.2024.04.02.11.20.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Apr 2024 11:20:48 -0700 (PDT)
-Message-ID: <705d7180-aced-46ba-80a6-84ac4e2b96b9@gmail.com>
-Date: Tue, 2 Apr 2024 19:20:45 +0100
+	s=arc-20240116; t=1712134686; c=relaxed/simple;
+	bh=WzH0xSfIPWd+YCnXQz2pzuGn0FYWidLKKiCFdrtgfFs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qHmCmwwNKg5A3zEKyumzCnjiZSQxhKPvh1ILCS9az07eVKDmEQNOLdCNS2JhZt2I0HUVDPP4ZoPvFbBgelWKsuxlXFLx8RDN/f4uCxNTSIJGrx53V3ZZvfR/wiHktSSm2jRZuvyYot6SRzE4G2OGqZFbX3GU/AWpNUQG3k8mlOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4V8dsw5gp7z17MyP;
+	Wed,  3 Apr 2024 16:57:08 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id 24C9F1A016F;
+	Wed,  3 Apr 2024 16:58:01 +0800 (CST)
+Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Wed, 3 Apr
+ 2024 16:58:00 +0800
+From: Chen Ridong <chenridong@huawei.com>
+To: <longman@redhat.com>, <lizefan.x@bytedance.com>, <tj@kernel.org>,
+	<hannes@cmpxchg.org>, <daniel.m.jordan@oracle.com>
+CC: <peterz@infradead.org>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <wangweiyang2@huawei.com>,
+	<lujialin4@huawei.com>, <xiujianfeng@huawei.com>, <caixinchen1@huawei.com>,
+	<chenridong@huawei.com>
+Subject: [PATCH] cpuset: fix race between rebuild scheduler domains and hotplug work
+Date: Wed, 3 Apr 2024 08:52:45 +0000
+Message-ID: <20240403085245.335072-1-chenridong@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20240327-ccb56fc7a6e80136db80876c@djalal>
- <20240327225334.58474-1-tixxdz@gmail.com>
- <ex2uipr54lb2odxwzwp22ycvlwplsy4mm3shx26hczo3mjtkvz@uuzyk6535prw>
-Content-Language: en-US
-From: Djalal Harouni <tixxdz@gmail.com>
-In-Reply-To: <ex2uipr54lb2odxwzwp22ycvlwplsy4mm3shx26hczo3mjtkvz@uuzyk6535prw>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
-Hello Michal,
+When offlining cpus, it holds cpu_hotplug_lock and call
+cpuset_hotplug_workfn asynchronously, which holds and releases
+cpuset_mutex repeatly to update cpusets, and it will release
+cpu_hotplug_lock before cpuset_hotplug_workfn finish. It means that some
+interfaces like cpuset_write_resmask holding two locks may rebuild
+scheduler domains when some cpusets are not refreshed, which may lead to
+generate domains with offlining cpus and will panic.
 
-On 4/2/24 18:16, Michal Koutný wrote:
-> Hello.
-> 
-> On Wed, Mar 27, 2024 at 11:53:22PM +0100, Djalal Harouni <tixxdz@gmail.com> wrote:
->> ...
->> For some cases we want to freeze the cgroup of a task based on some
->> signals, doing so from bpf is better than user space which could be
->> too late.
-> 
-> Notice that freezer itself is not immediate -- tasks are frozen as if a
-> signal (kill(2)) was delivered to them (i.e. returning to userspace).
+As commit 406100f3da08 ("cpuset: fix race between hotplug work and later
+ CPU offline")  mentioned. This problem happen in cgroup v2:
 
-Thanks yes, I would expect freeze to behave like signal, and if one
-wants to block immediately there is the LSM override return. The
-selftest attached tries to do exactly that.
+This problem can also happen in cgroup v1 pressure test, which onlines
+and offlines cpus, and sets cpuset.cpus to rebuild domains with
+sched_load_balance off.
 
-> What kind of signals (also kill?) are you talking about for
-> illustration?
+smpboot: CPU 1 is now offline
+BUG: unable to handle page fault for address: 0000342bad598668
+PGD 0 P4D 0
+Oops: 0000 [#1] PREEMPT SMP NOPTI
+CPU: 54 PID: 9966 Comm: sh Kdump: loaded Tainted: G S         OE      6.8.0-rc7+ #5
+Hardware name: Powerleader PR2715P3/T1DM-E2, BIOS OEM57.22 11/23/2021
+RIP: 0010:sd_init+0x204/0x390
+Code: 00 02 00 00 a8 80 0f 84 ad 00 00 00 41 c7 44 24 2c 6e 00 00 00 85 d2 74 2f 48 63 54 24 18 49 8b 45 20 48 8b 14 d5 60 0b 79 ab <48> 8b 04 02 49 89 84 24 10 01 00 00 f0 ff 00 49 8b 84 24 10 01 00
+RSP: 0018:ffff9f90669afc18 EFLAGS: 00010206
+RAX: 0000342c00e62668 RBX: 0000000000000000 RCX: 00000000ffffffa0
+RDX: ffffffffac736000 RSI: 0000000000000060 RDI: ffff8b24b8143930
+RBP: ffff8b24b8143920 R08: 0000000000000060 R09: ffff8b2635783670
+R10: 0000000000000001 R11: 0000000000000001 R12: ffff8b24b8143800
+R13: ffff8ae687511600 R14: ffffffffabc6b9b0 R15: ffff8b25c0040ea0
+FS:  00007fd93c734740(0000) GS:ffff8b24bca00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000342bad598668 CR3: 00000001e0934005 CR4: 00000000007706f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ ? __die+0x24/0x70
+ ? page_fault_oops+0x82/0x150
+ ? local_clock_noinstr+0xf/0xb0
+ ? exc_page_fault+0x69/0x1b0
+ ? asm_exc_page_fault+0x26/0x30
+ ? sd_init+0x204/0x390
+ ? sd_init+0x11c/0x390
+ build_sched_domains+0x171/0x640
+ partition_sched_domains_locked+0x2a1/0x3c0
+ rebuild_sched_domains_locked+0x14f/0x200
+ update_cpumask+0x27c/0x5f0
+ cpuset_write_resmask+0x423/0x530
+ kernfs_fop_write_iter+0x160/0x220
+ vfs_write+0x355/0x480
+ ksys_write+0x69/0xf0
+ do_syscall_64+0x66/0x180
+ entry_SYSCALL_64_after_hwframe+0x6e/0x76
+RIP: 0033:0x7fd93c4fc907
+Code: 0f 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+RSP: 002b:00007fff153c7f08 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007fd93c4fc907
+RDX: 0000000000000002 RSI: 000055d055679900 RDI: 0000000000000001
+RBP: 000055d055679900 R08: 00007fd93c5b01e0 R09: 00007fd93c5b0260
+R10: 00007fd93c5b0160 R11: 0000000000000246 R12: 0000000000000002
+R13: 00007fd93c5f25a0 R14: 0000000000000002 R15: 00007fd93c5f27a0
 
-Could be security signals, reading sensitive files or related to any
-operation management, for X reasons this user session should be freezed
-or killed.
+It must guarantee that cpus in domains passing to
+partition_and_rebuild_sched_domains must be active. So the domains should
+be checked after generate_sched_domains.
 
-The kill is an effective defense against fork-bombs as an example.
+Fixes: 0ccea8feb980 ("cpuset: Make generate_sched_domains() work with partition")
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
+---
+ kernel/cgroup/cpuset.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
->> Planned users of this feature are: tetragon and systemd when freezing
->> a cgroup hierarchy that could be a K8s pod, container, system service
->> or a user session.
-> 
-> It sounds like the signals are related to a particular process. If so
-> what is it good for to freeze unrelated processes in the same cgroup?
-
-Today some container/pod operations are performed at bpf level, having
-the freeze and kill available is straightforward to perform this.
-
-
-> I think those answers better clarify why this is needed.
-
-Alright will add those in v2.
-
-> 
-> As for the generalization to any cgroup attribute (or kernfs). Can this
-> be compared with sysctls -- I see there are helpers to intercept user
-> writes but no helpers to affect sysctl values without an outer writer.
-> What would justify different approaches between kernfs attributes and
-> sysctls (direct writes vs modified writes)?
-
-For generalizing this, haven't thought about it that much. First use
-case is to try to get freeze and possibly kill support, and use a common
-interface as requested.
-
-Thank you!
-
-> 
-> Thanks,
-> Michal
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 927bef3a598a..0e0d469c2591 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -1210,6 +1210,7 @@ static void rebuild_sched_domains_locked(void)
+ 	cpumask_var_t *doms;
+ 	struct cpuset *cs;
+ 	int ndoms;
++	int i;
+ 
+ 	lockdep_assert_cpus_held();
+ 	lockdep_assert_held(&cpuset_mutex);
+@@ -1251,6 +1252,12 @@ static void rebuild_sched_domains_locked(void)
+ 	/* Generate domain masks and attrs */
+ 	ndoms = generate_sched_domains(&doms, &attr);
+ 
++	/* guarantee no CPU offlining in doms */
++	for (i = 0; i < ndoms; ++i) {
++		if (!cpumask_subset(doms[i], cpu_active_mask))
++			return;
++	}
++
+ 	/* Have scheduler rebuild the domains */
+ 	partition_and_rebuild_sched_domains(ndoms, doms, attr);
+ }
+-- 
+2.34.1
 
 
