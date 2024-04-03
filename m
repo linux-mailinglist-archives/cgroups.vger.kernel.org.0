@@ -1,119 +1,116 @@
-Return-Path: <cgroups+bounces-2294-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2295-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EB358973A6
-	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 17:13:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62D028973D6
+	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 17:20:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20E302811D3
-	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 15:13:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02A811F27217
+	for <lists+cgroups@lfdr.de>; Wed,  3 Apr 2024 15:20:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8414573506;
-	Wed,  3 Apr 2024 15:10:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441B814C5AC;
+	Wed,  3 Apr 2024 15:16:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Wt7d7/um"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nm0Ybv9G"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C583C14A4F1
-	for <cgroups@vger.kernel.org>; Wed,  3 Apr 2024 15:10:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED59426292;
+	Wed,  3 Apr 2024 15:16:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712157049; cv=none; b=Ex/XpdUtyksOlnuvnGDGddPb67L1/ICZJSviDlHnnxZaWluKNY8ztAceAaqkuSLLzVMmVinHPhfmvqOcmHFGnGRIOdWrbUG+Khe6bTs/dXnYt1zb3B/iL1rQCiuR/TTnYHMPCTIuG0lUEj2Gcyqsgg2CgLcoSPdgVjKZQVnbZwc=
+	t=1712157376; cv=none; b=LFdBtmH2Aasco3G8YtTRb1bNNKJ7ewBS8MuE9kVQDpGbJhwJUp0S78sRtxh/QaHVsfcbXN1SePd2Hoss4V5ur2hogNxqw4435MwJlh63Jbs5KfrwMnrjW8faY266B51vX62oYnDlqtiXk0szczfLnucQgryzQLU7hw1sIF+0Zt8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712157049; c=relaxed/simple;
-	bh=anwzlEybqYMGwaD+F9GCbHmbnWkGkyE/W+MYH3vfNAU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pQsTlNVvtpdCQdzEWYUne4scQbpfxv9p2rwsjVgqbNzAAMdCqEq13mq+2cl10jNLzhJlbm8GTPQaKmUxJfaRGhHk/7w1wussMtJrhfeiqP0FQwd0piNKNcRCQ9hEXaCkHEmIl382BB67GKpXarClMfyNCTThGJASEYMlVi93eQE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Wt7d7/um; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712157046;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vcTH6u0Rlg+BVw+a7Jg/5/hidJ0AE0bMPe3NIsD6EkA=;
-	b=Wt7d7/umycXGstBBPBVhAe9noK9/M8FO3ozLaoQ77UDpujtl1vBolIgSBu2SJxaLZb8l1Z
-	W7XcRoClkKPtCqvzFrc9WBL6fZ/U7wS8Sa4KkXqoVBVSdNxY0wi2TjqewmrvX3lWB0MzPN
-	v+otOH5wP24NSujZPq7VS4ITSkFBp9o=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-453-5XXZIlPLMNmZ6TxIZUFe7A-1; Wed, 03 Apr 2024 11:10:40 -0400
-X-MC-Unique: 5XXZIlPLMNmZ6TxIZUFe7A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E328A80B1E3;
-	Wed,  3 Apr 2024 15:10:38 +0000 (UTC)
-Received: from [10.22.33.218] (unknown [10.22.33.218])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 80B2B2166B31;
-	Wed,  3 Apr 2024 15:10:37 +0000 (UTC)
-Message-ID: <ae27aa5a-4c34-46dd-b139-3017729e2c1f@redhat.com>
-Date: Wed, 3 Apr 2024 11:10:37 -0400
+	s=arc-20240116; t=1712157376; c=relaxed/simple;
+	bh=z3lQD5lgMachfwYyNrVW8WJbO2hEjtLyQulbSy5ojU0=;
+	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
+	 References:In-Reply-To; b=DYlKycI1y45RrXS7BT6oeGRRJoVB6yMRWA9YObiPIPSZZgwcFXB4AdBLM/6DnN+2QsMvm3GHBtcpfk7wjp5wPyeDAKNzP7nDN9PT3wZ2Yg/UQgEIDnv435OHGfnOVT9LYJNknLM0HHecTwhLapArQX+YzQFcSnoXHX91BaQk+r4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nm0Ybv9G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBF34C433C7;
+	Wed,  3 Apr 2024 15:16:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712157375;
+	bh=z3lQD5lgMachfwYyNrVW8WJbO2hEjtLyQulbSy5ojU0=;
+	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
+	b=Nm0Ybv9GSWZkkgEyiuULaleJd2ST6xA9OgSewczf9SKZakwdUVS3HboknHyllu8MF
+	 kFWTjqejWXJP5RVnNMHDah5KRw5glDItlYj6dxIHJhrAPxzGUfV5hFZ2wROKzcXdco
+	 /6V6VTQqeYAtpQsjsbW8/rZd8ucVXgjwUEleGnhAVreBRcNBT9XjaB8W+JCwh1lC57
+	 ndzmd97Xo/T2tZ3OwqWvn24On1MYKNGFXjQTzcu3PLTEk3fq2W7ZuZFSwGUuevTZQs
+	 RZLLShcGwPfNq+Cm1oXQSmPikS9CYW6NsME3Kl7vUXUlIMa2oB+D6Jq+hpAWgSt6T1
+	 CYBrKO5DCVIjA==
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] cgroup/cpuset: Make cpuset hotplug processing
- synchronous
-Content-Language: en-US
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Valentin Schneider <vschneid@redhat.com>, Tejun Heo <tj@kernel.org>,
- Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <len.brown@intel.com>,
- Pavel Machek <pavel@ucw.cz>, Shuah Khan <shuah@kernel.org>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- linux-pm@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Frederic Weisbecker <frederic@kernel.org>,
- "Paul E. McKenney" <paulmck@kernel.org>, Ingo Molnar <mingo@kernel.org>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>, Alex Shi <alexs@kernel.org>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Barry Song <song.bao.hua@hisilicon.com>
-References: <20240401145858.2656598-1-longman@redhat.com>
- <20240401145858.2656598-2-longman@redhat.com>
- <kce74bx6aafxfuw5yovaschym4ze4kommfk74eq5totojytest@mdxnfvl2kdol>
- <548efd52-e45f-41fa-a477-bc5112d7b00c@redhat.com>
- <u3naomgv34t5rnc7pmyy4zjppgf36skeo45orss2xnqcvtrcez@m74tsl2ws76f>
- <7e62b37d-6c9c-4e55-a01a-175695475cb5@redhat.com>
- <xhsmhedbmbjz5.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
- <620d1b70-cfbc-4b76-ad04-b3be559afd56@redhat.com>
- <tm5kvzgn2g5yv63zoyqvd2bdrgl7l3ytffu4cq4ybxyq5irp76@hpmq3zfbtmlp>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <tm5kvzgn2g5yv63zoyqvd2bdrgl7l3ytffu4cq4ybxyq5irp76@hpmq3zfbtmlp>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 03 Apr 2024 18:16:09 +0300
+Message-Id: <D0AL4STCYS9S.2F0HJSH4E3M3B@kernel.org>
+To: "Dave Hansen" <dave.hansen@intel.com>, "Haitao Huang"
+ <haitao.huang@linux.intel.com>, <dave.hansen@linux.intel.com>,
+ <tj@kernel.org>, <mkoutny@suse.com>, <linux-kernel@vger.kernel.org>,
+ <linux-sgx@vger.kernel.org>, <x86@kernel.org>, <cgroups@vger.kernel.org>,
+ <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+ <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
+Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+ <zhanb@microsoft.com>, <anakrish@microsoft.com>,
+ <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
+ <chrisyan@microsoft.com>
+Subject: Re: [PATCH v9 15/15] selftests/sgx: Add scripts for EPC cgroup
+ testing
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+X-Mailer: aerc 0.17.0
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-16-haitao.huang@linux.intel.com>
+ <4be7b291010973c203ed8c7bcd25b626c1290231.camel@kernel.org>
+ <D04OVW6I8MUA.1OAIHFQ8943SM@kernel.org>
+ <op.2lbjl0oawjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <D071OAFZ80O6.XEDXJ8AF4PK9@kernel.org>
+ <18e84d04-0b75-4188-a94d-6b033f4edbf0@intel.com>
+In-Reply-To: <18e84d04-0b75-4188-a94d-6b033f4edbf0@intel.com>
 
-
-On 4/3/24 10:56, Michal Koutný wrote:
-> On Wed, Apr 03, 2024 at 10:47:33AM -0400, Waiman Long <longman@redhat.com> wrote:
->> should be rare these days as it will only apply in the case of cgroup
->> v1 under certain condtion,
-> Could the migration be simply omitted it those special cases?
+On Tue Apr 2, 2024 at 6:42 PM EEST, Dave Hansen wrote:
+> On 3/30/24 04:23, Jarkko Sakkinen wrote:
+> >>> I also wonder is cgroup-tools dependency absolutely required or could
+> >>> you just have a function that would interact with sysfs?
+> >> I should have checked email before hit the send button for v10 =F0=9F=
+=99=82.
+> >>
+> >> It'd be more complicated and less readable to do all the stuff without=
+ the =20
+> >> cgroup-tools, esp cgexec. I checked dependency, cgroup-tools only depe=
+nds =20
+> >> on libc so I hope this would not cause too much inconvenience.
+> > As per cgroup-tools, please prove this. It makes the job for more
+> > complicated *for you* and you are making the job more  complicated
+> > to every possible person in the planet running any kernel QA.
 >
-> (Tasks remain in cpusets with empty cpusets -- that already happens in
-> with the current patch before workqueue is dispatched.)
-
-The tasks should not be runnable if there is no CPUs left in their v1 
-cpuset. Migrating them to a parent with runnable CPUs is the current way 
-which I don't want to break. Alternatively, we could force it to fall 
-back to cgroup v2 behavior using the CPUs in their parent cpuset.
-
-Cheers,
-Longman
-
+> I don't see any other use of cgroup-tools in testing/selftests.
 >
-> Michal
+> I *DO* see a ton of /bin/bash use though.  I wouldn't go to much trouble
+> to make the thing ash-compatible.
+>
+> That said, the most important thing is to get some selftests in place.
+> If using cgroup-tools means we get actual, runnable tests in place,
+> that's a heck of a lot more important than making them perfect.
+> Remember, almost nobody uses SGX.  It's available on *VERY* few systems
+> from one CPU vendor and only in very specific hardware configurations.
 
+Ash-compatible is good enough for me, so let's draw the line there.
+
+Ash-compatibility does not cause any major hurdle as can we seen from
+Haitao's patch. Earlier version was not even POSIX-compatible, given
+that it used hard-coded path.
+
+Most of the added stuff come open coding the tools but in the test
+code that is not the big deal, and helps with debugging in the future.
+Even right now it helps reviewing kernel patches because it documents
+exactly how the feature is seen from user space.
+
+BR, Jarkko
 
