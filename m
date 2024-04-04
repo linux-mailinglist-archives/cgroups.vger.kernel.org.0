@@ -1,134 +1,145 @@
-Return-Path: <cgroups+bounces-2310-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2311-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFF52897D4C
-	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 03:08:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1342F897DEB
+	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 04:56:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 750171F25A55
-	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 01:08:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32E9D1C235E1
+	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 02:56:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57520525E;
-	Thu,  4 Apr 2024 01:07:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E25471CD37;
+	Thu,  4 Apr 2024 02:55:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="p0SeqJJv"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DOYOq1kt"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E160C2F37;
-	Thu,  4 Apr 2024 01:07:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F74EEEB2;
+	Thu,  4 Apr 2024 02:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712192874; cv=none; b=bUXfd/sO9rD04p1njrJlyfa7DfiutWnQHEyGy+3C/j/TtTaT3mgupUTfOdgT288qi+AW/wCZh8Hnsu++BhtGCRgtuF/jrC1Ec7N0VjT8uaS3c5suLnAQaHvyuyVqxPb0d5+qxtcM5Dr3Tk62+LuHTAiGauoSCY5WtMYAhw1msGA=
+	t=1712199359; cv=none; b=mSiz+APlstW1ljXZskE8dV+mg/iOxpb6u7p1+aCINou+Wy/MMTqUKqo0Z73Dp+3HUt1ZYevStMNpWVylHKEFhIjXVyJiiXAz6V9wDZVxDFEWd+cFL8kJL/R1V03jjnJ3TNGfCNxhV6AizvhvQUbDqn4FhHNFlbBkF5GuVJcSENc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712192874; c=relaxed/simple;
-	bh=FtaGvZn9DU8zSy564EUnjvqdBkYKe+7qJxI5a/lH6GE=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=bqQjwKIhvrKRHh4QdMi7xh9feLKGD1IrhVUoi8Ar8nvx6TmmQh9sMGC7dRgj5rCGIBxZPf2M/cHBaW07HaTEvSRt13wGWvVnXg0LyeYG5M9DWMoAgr9P4ZhV75bJNymYvRWZC42EytN+2d8t/H9+JDAM5Bd2PWUxMdllTtY4/74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=p0SeqJJv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07B1FC433F1;
-	Thu,  4 Apr 2024 01:07:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1712192873;
-	bh=FtaGvZn9DU8zSy564EUnjvqdBkYKe+7qJxI5a/lH6GE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=p0SeqJJv5v7ULZGvarHpc1u8KHj7ZFli8N09Omm2YvQzu7bRwLxryoH9UnRltzubl
-	 XvFEtCl7YTXsjpcqwRKp9kqT59CkvQTC6Lu1rNqo+O8VI5K6Y6GJn5gh2y3U+XLqb0
-	 8UtnPjuYEc0CVtYAz+h//EWBxcQUS9vqQzHHoy0c=
-Date: Wed, 3 Apr 2024 18:07:52 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: syzbot <syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com>
-Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org,
- muchun.song@linux.dev, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
- syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [cgroups?] [mm?] WARNING in __mod_memcg_lruvec_state
-Message-Id: <20240403180752.f95e1b77e033b5e03164c160@linux-foundation.org>
-In-Reply-To: <0000000000007545d00615188a03@google.com>
-References: <0000000000007545d00615188a03@google.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712199359; c=relaxed/simple;
+	bh=woQPwN94SfTkVo2nkrzwmeNCeR1tcNFP0GrDX8U1n6g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oOO6hyjDrgYEyeqM6WiNg0nyVqPu4f/vz4XKFWPHMz52UQcdoxzDazSOxB3oMqBMcUMfT9xHtWHAHrFelZi4N6L4fTB5JuVDDJyWtG6G12VxXrEr2PKDTX5Gcy88ddmGjA+XXOnAq17cq/5d5nbGonlnwxcRHSIDi4brBAW34r4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DOYOq1kt; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=b2H16tqCkJ6i90mQLPDpV1ZsYZDW4KEWWz9R9e+0Oig=; b=DOYOq1ktip9OrPqyMbwDoNqDtq
+	VB6HauYA/GGMAstDHOFp3X/FsrrMKv6YfXGD+QUD67yFNWCAcxzrPxwIanfV6S3L97X/TEZcue6x1
+	DEi6bN9guWRaHhck/D7JnDVcfH/ggNwDsVGjKVdBzXBBK0zM3jPjOcv259vAlag3vudS0kmURSzoM
+	aJYzWCso5E+7of2Er2nfWcoIvHsHbXLcHILwObAIYPaSB1QJuojxjuRFiDBF8ddzqHDVt2GWbVL/+
+	xR+0t7YyOlbaQgK6MbdXjKGC7weqzQ++wCpmLrtM1OisyiYiLNHGQ3qfa4nDy1kb8yHh9fC1vn6Yz
+	GUTgK+bw==;
+Received: from [50.53.2.121] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rsDGA-000000012Up-3OOS;
+	Thu, 04 Apr 2024 02:55:27 +0000
+Message-ID: <5a349108-afd9-4290-acb6-8ec176a80a84@infradead.org>
+Date: Wed, 3 Apr 2024 19:55:22 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 01/37] fix missing vmalloc.h includes
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+ David Hildenbrand <david@redhat.com>
+Cc: Nathan Chancellor <nathan@kernel.org>,
+ Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+ mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
+ roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+ willy@infradead.org, liam.howlett@oracle.com,
+ penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
+ peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
+ will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, dennis@kernel.org,
+ jhubbard@nvidia.com, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+ paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com,
+ yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
+ andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com,
+ vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
+ ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+ rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+ vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, songmuchun@bytedance.com,
+ jbaron@akamai.com, aliceryhl@google.com, rientjes@google.com,
+ minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+ cgroups@vger.kernel.org
+References: <20240321163705.3067592-1-surenb@google.com>
+ <20240321163705.3067592-2-surenb@google.com>
+ <20240403211240.GA307137@dev-arch.thelio-3990X>
+ <4qk7f3ra5lrqhtvmipmacgzo5qwnugrfxn5dd3j4wubzwqvmv4@vzdhpalbmob3>
+ <9e2d09f8-2234-42f3-8481-87bbd9ad4def@redhat.com>
+ <qyyo6mjctqm734utdjen4ozhoo3t4ikswzjfjnemp7olwdgyt4@qifwishdzul4>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <qyyo6mjctqm734utdjen4ozhoo3t4ikswzjfjnemp7olwdgyt4@qifwishdzul4>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Tue, 02 Apr 2024 01:03:26 -0700 syzbot <syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com> wrote:
 
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    317c7bc0ef03 Merge tag 'mmc-v6.9-rc1' of git://git.kernel...
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15fd40c5180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f64ec427e98bccd7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9319a4268a640e26b72b
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-317c7bc0.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/efab473d72c0/vmlinux-317c7bc0.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/5ba3f56d362d/bzImage-317c7bc0.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 30105 at mm/memcontrol.c:865 __mod_memcg_lruvec_state+0x3fa/0x550 mm/memcontrol.c:865
-> Modules linked in:
-> CPU: 0 PID: 30105 Comm: syz-executor.2 Not tainted 6.9.0-rc1-syzkaller-00178-g317c7bc0ef03 #0
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> RIP: 0010:__mod_memcg_lruvec_state+0x3fa/0x550 mm/memcontrol.c:865
-> Code: 45 85 e4 75 1d 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e 41 5f c3 cc cc cc cc b8 00 04 00 00 e9 80 fd ff ff 89 c6 e9 a0 fd ff ff 90 <0f> 0b 90 e9 a7 fc ff ff 48 c7 c7 18 43 e1 8f e8 32 51 f8 ff e9 5e
-> RSP: 0018:ffffc900034beef8 EFLAGS: 00010202
-> RAX: 0000000000000292 RBX: 0000000000000001 RCX: 1ffffffff1fc2863
-> RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff888024b92bc8
-> RBP: ffff888024b92000 R08: 0000000000000005 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-> R13: ffff88801c326000 R14: 0000000000000001 R15: ffff888024b92000
-> FS:  00007f0811bf96c0(0000) GS:ffff88806b000000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000000000cfff1dd CR3: 000000003e4e2000 CR4: 0000000000350ef0
-> DR0: 0000000000000031 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  __update_lru_size include/linux/mm_inline.h:47 [inline]
->  lru_gen_update_size include/linux/mm_inline.h:199 [inline]
->  lru_gen_add_folio+0x62d/0xe80 include/linux/mm_inline.h:262
->  lruvec_add_folio include/linux/mm_inline.h:323 [inline]
->  lru_add_fn+0x3fc/0xd80 mm/swap.c:215
->  folio_batch_move_lru+0x243/0x400 mm/swap.c:233
 
-Well it beats me.  I assume we failed to update for a new case.  I'll
-toss this into -next to perhaps shed a bit of light.
+On 4/3/24 3:57 PM, Kent Overstreet wrote:
+> On Wed, Apr 03, 2024 at 11:48:12PM +0200, David Hildenbrand wrote:
+>> On 03.04.24 23:41, Kent Overstreet wrote:
+>>> On Wed, Apr 03, 2024 at 02:12:40PM -0700, Nathan Chancellor wrote:
+>>>> On Thu, Mar 21, 2024 at 09:36:23AM -0700, Suren Baghdasaryan wrote:
+>>>>> From: Kent Overstreet <kent.overstreet@linux.dev>
+>>>>>
+>>>>> The next patch drops vmalloc.h from a system header in order to fix
+>>>>> a circular dependency; this adds it to all the files that were pulling
+>>>>> it in implicitly.
+>>>>>
+>>>>> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+>>>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+>>>>> Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+>>>>
+>>>> I bisected an error that I see when building ARCH=loongarch allmodconfig
+>>>> to commit 302519d9e80a ("asm-generic/io.h: kill vmalloc.h dependency")
+>>>> in -next, which tells me that this patch likely needs to contain
+>>>> something along the following lines, as LoongArch was getting
+>>>> include/linux/sizes.h transitively through the vmalloc.h include in
+>>>> include/asm-generic/io.h.
+>>>
+>>> gcc doesn't appear to be packaged for loongarch for debian (most other
+>>> cross compilers are), so that's going to make it hard for me to test
+>>> anything...
+>>
+>> The latest cross-compilers from Arnd [1] include a 13.2.0 one for
+>> loongarch64 that works for me. Just in case you haven't heard of Arnds work
+>> before and want to give it a shot.
+>>
+>> [1] https://mirrors.edge.kernel.org/pub/tools/crosstool/
+> 
+> Thanks for the pointer - but something seems to be busted with the
+> loongarch build, if I'm not mistaken; one of the included headers
+> references loongarch-def.h, but that's not included.
+> 
 
---- a/mm/memcontrol.c~__mod_memcg_lruvec_state-enhance-diagnostics
-+++ a/mm/memcontrol.c
-@@ -860,10 +860,12 @@ void __mod_memcg_lruvec_state(struct lru
- 		case NR_ANON_THPS:
- 		case NR_SHMEM_PMDMAPPED:
- 		case NR_FILE_PMDMAPPED:
--			WARN_ON_ONCE(!in_task());
-+			if (WARN_ON_ONCE(!in_task()))
-+				pr_warn("stat item index: %d\n", idx);
- 			break;
- 		default:
--			VM_WARN_ON_IRQS_ENABLED();
-+			if (VM_WARN_ON_IRQS_ENABLED())
-+				pr_warn("stat item index: %d\n", idx);
- 		}
- 	}
- 
-_
+That file is part of gcc plugins. If you disable CONFIG_GCC_PLUGINS,
+it should build without having that issue. Of course, there may be other
+unrelated issues....
 
+
+-- 
+#Randy
 
