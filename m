@@ -1,145 +1,122 @@
-Return-Path: <cgroups+bounces-2311-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2312-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1342F897DEB
-	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 04:56:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3750897E39
+	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 06:39:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32E9D1C235E1
-	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 02:56:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3822D1F22722
+	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 04:39:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E25471CD37;
-	Thu,  4 Apr 2024 02:55:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C69F1AAC4;
+	Thu,  4 Apr 2024 04:39:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DOYOq1kt"
+	dkim=pass (2048-bit key) header.d=malat-biz.20230601.gappssmtp.com header.i=@malat-biz.20230601.gappssmtp.com header.b="n1p/xyaj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F74EEEB2;
-	Thu,  4 Apr 2024 02:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A411018AF4
+	for <cgroups@vger.kernel.org>; Thu,  4 Apr 2024 04:39:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712199359; cv=none; b=mSiz+APlstW1ljXZskE8dV+mg/iOxpb6u7p1+aCINou+Wy/MMTqUKqo0Z73Dp+3HUt1ZYevStMNpWVylHKEFhIjXVyJiiXAz6V9wDZVxDFEWd+cFL8kJL/R1V03jjnJ3TNGfCNxhV6AizvhvQUbDqn4FhHNFlbBkF5GuVJcSENc=
+	t=1712205566; cv=none; b=tX2YQcKdKxW8YYaxJ4+x3Bs3LGlfHFaAdTdjIfL1N6xwiHvaZJrXQkdC8BXWP011kOBVzYXTeSeqtcWFJNbPUHLs2d69K2beNEb7tofoT2O5cx8VQAH1p6fpUjaa07STT5PB5X7iFSR3aPBK2AAITR1uPBfSzRINHwMrgqBzMX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712199359; c=relaxed/simple;
-	bh=woQPwN94SfTkVo2nkrzwmeNCeR1tcNFP0GrDX8U1n6g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oOO6hyjDrgYEyeqM6WiNg0nyVqPu4f/vz4XKFWPHMz52UQcdoxzDazSOxB3oMqBMcUMfT9xHtWHAHrFelZi4N6L4fTB5JuVDDJyWtG6G12VxXrEr2PKDTX5Gcy88ddmGjA+XXOnAq17cq/5d5nbGonlnwxcRHSIDi4brBAW34r4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DOYOq1kt; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=b2H16tqCkJ6i90mQLPDpV1ZsYZDW4KEWWz9R9e+0Oig=; b=DOYOq1ktip9OrPqyMbwDoNqDtq
-	VB6HauYA/GGMAstDHOFp3X/FsrrMKv6YfXGD+QUD67yFNWCAcxzrPxwIanfV6S3L97X/TEZcue6x1
-	DEi6bN9guWRaHhck/D7JnDVcfH/ggNwDsVGjKVdBzXBBK0zM3jPjOcv259vAlag3vudS0kmURSzoM
-	aJYzWCso5E+7of2Er2nfWcoIvHsHbXLcHILwObAIYPaSB1QJuojxjuRFiDBF8ddzqHDVt2GWbVL/+
-	xR+0t7YyOlbaQgK6MbdXjKGC7weqzQ++wCpmLrtM1OisyiYiLNHGQ3qfa4nDy1kb8yHh9fC1vn6Yz
-	GUTgK+bw==;
-Received: from [50.53.2.121] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsDGA-000000012Up-3OOS;
-	Thu, 04 Apr 2024 02:55:27 +0000
-Message-ID: <5a349108-afd9-4290-acb6-8ec176a80a84@infradead.org>
-Date: Wed, 3 Apr 2024 19:55:22 -0700
+	s=arc-20240116; t=1712205566; c=relaxed/simple;
+	bh=pgTYXvTl3Q/soSKsqLecxYeXRL0lBO2ia7kP+I7D0zQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Iv18zeG2nj6H+TV/NlyzhRUdnKHQ+rxmUVQGP8XtvR6Fo5PoF+/55YqSfOPiYx5vyUBsjFB3+6ZOOG5PAbt3CQKOCq6K5Jw8Z8Wy5owfByXistVTrMQ9qEpK7FXVI9b9Wn4gLjug2usxIMNk5K/DvauBjmRXbSYoHG0Hd0vgMTs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=malat.biz; spf=none smtp.mailfrom=malat.biz; dkim=pass (2048-bit key) header.d=malat-biz.20230601.gappssmtp.com header.i=@malat-biz.20230601.gappssmtp.com header.b=n1p/xyaj; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=malat.biz
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=malat.biz
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d485886545so7987441fa.2
+        for <cgroups@vger.kernel.org>; Wed, 03 Apr 2024 21:39:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=malat-biz.20230601.gappssmtp.com; s=20230601; t=1712205562; x=1712810362; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qEOAYQ++eOSF99LMPQNDnxVmDipaoC5YscAs01CyzFM=;
+        b=n1p/xyaj6VdRmZS8dITK4+/NhoLTy+CV6YvmudmNgWtO4lahRo9Rp7q0rkMiULHVaB
+         3Y/b/GumarXkdk49b7AlP0zzQeA9sFukLJwTD19cHtEJfsTVYxyS1/GlmPcpZdanXiuj
+         F0ReA4/iV/wHbCMtedYpktM7hzZe4xCbeuQLT1Jpoe+qoleRNMci27A3v9W6i2YN3kNQ
+         XAh7nvdrd2vkNu6S3oKsUNSEByzC/qsa5rfKqJLiXFn/NyNEm8LFUaLQwrP45HmgLTG7
+         CY9OErpObOjR24lPVXOjFIITUhJVgL5o62+GQ9LsopKyLR6z9n8ImO9j37KaoY9xpznN
+         dFsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712205562; x=1712810362;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qEOAYQ++eOSF99LMPQNDnxVmDipaoC5YscAs01CyzFM=;
+        b=jqjyDf0WUG6taNNIUhhPx4Zfhs9eMJg0bUgxU/8DtUAK/D7wZtkgHiQ7nPvGpu1VDW
+         2QlQ2Xgl3ehpA7AtVCv5lBJkeb0jxAkjU71e7eva1C8gS/3HNIIH4+2QvItdVy/8Vf6N
+         OXDAwUyACkqIpPwN7OLkFswbHtnnVvGfR6OQ9vYjaAf/rhG5hQ3nLNVEHRB1q+Yp68N2
+         B1+wJ9+299lHIgFxN5R6OU/jskDTyo1/borqDQNig9adFF16hEwflN8ONIwfKZQTEOzS
+         +sw3LWfNO2e3Ex5MwqPgM0N5ZCE2+bzG+H2Sc9rk7cmAZrLzG9uNRlwr4V9x1LJ+rWBm
+         BJhw==
+X-Gm-Message-State: AOJu0YytTPrkSJ5+R75RO6gyRFL8E8eLsGREhnsXDI76/0xG9avsGcpM
+	zR9i2NdgUa4keqLfPINPPFUpjJhW40fHORHUP4+qZYQ1/V2dLbGFwJvJs5TKHg==
+X-Google-Smtp-Source: AGHT+IHNQnPdluTnSGnpuQ3YA9d/CR35BqWjLtSvE6AgGNek8cMUz+3MTjkyyMflq2jJIW22esbdzA==
+X-Received: by 2002:a2e:8457:0:b0:2d4:5c03:5ccb with SMTP id u23-20020a2e8457000000b002d45c035ccbmr1147905ljh.10.1712205561541;
+        Wed, 03 Apr 2024 21:39:21 -0700 (PDT)
+Received: from ntb.petris.klfree.czf (178.165.201.129.wireless.dyn.drei.com. [178.165.201.129])
+        by smtp.gmail.com with ESMTPSA id js19-20020a170906ca9300b00a4e8353be19sm3034485ejb.224.2024.04.03.21.39.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 21:39:20 -0700 (PDT)
+Date: Thu, 4 Apr 2024 06:36:56 +0200
+From: Petr Malat <oss@malat.biz>
+To: Michal Koutn?? <mkoutny@suse.com>
+Cc: cgroups@vger.kernel.org, tj@kernel.org, longman@redhat.com
+Subject: Re: [PATCH] cgroup/cpuset: Make cpuset.cpus.effective independent of
+ cpuset.cpus
+Message-ID: <Zg4uaCep1Sg6Ynkl@ntb.petris.klfree.czf>
+References: <Zfynj56eDdCSdIxv@ntb.petris.klfree.czf>
+ <20240321213945.1117641-1-oss@malat.biz>
+ <xdx55wvvss44viwmszsss2tohyslirqu3jrrexroyc5knamful@2sdajjhw45sj>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 01/37] fix missing vmalloc.h includes
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- David Hildenbrand <david@redhat.com>
-Cc: Nathan Chancellor <nathan@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
- mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
- willy@infradead.org, liam.howlett@oracle.com,
- penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, dennis@kernel.org,
- jhubbard@nvidia.com, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
- paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com,
- yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
- andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com,
- vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
- ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
- rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
- vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, songmuchun@bytedance.com,
- jbaron@akamai.com, aliceryhl@google.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240321163705.3067592-1-surenb@google.com>
- <20240321163705.3067592-2-surenb@google.com>
- <20240403211240.GA307137@dev-arch.thelio-3990X>
- <4qk7f3ra5lrqhtvmipmacgzo5qwnugrfxn5dd3j4wubzwqvmv4@vzdhpalbmob3>
- <9e2d09f8-2234-42f3-8481-87bbd9ad4def@redhat.com>
- <qyyo6mjctqm734utdjen4ozhoo3t4ikswzjfjnemp7olwdgyt4@qifwishdzul4>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <qyyo6mjctqm734utdjen4ozhoo3t4ikswzjfjnemp7olwdgyt4@qifwishdzul4>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <xdx55wvvss44viwmszsss2tohyslirqu3jrrexroyc5knamful@2sdajjhw45sj>
 
-
-
-On 4/3/24 3:57 PM, Kent Overstreet wrote:
-> On Wed, Apr 03, 2024 at 11:48:12PM +0200, David Hildenbrand wrote:
->> On 03.04.24 23:41, Kent Overstreet wrote:
->>> On Wed, Apr 03, 2024 at 02:12:40PM -0700, Nathan Chancellor wrote:
->>>> On Thu, Mar 21, 2024 at 09:36:23AM -0700, Suren Baghdasaryan wrote:
->>>>> From: Kent Overstreet <kent.overstreet@linux.dev>
->>>>>
->>>>> The next patch drops vmalloc.h from a system header in order to fix
->>>>> a circular dependency; this adds it to all the files that were pulling
->>>>> it in implicitly.
->>>>>
->>>>> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
->>>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->>>>> Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
->>>>
->>>> I bisected an error that I see when building ARCH=loongarch allmodconfig
->>>> to commit 302519d9e80a ("asm-generic/io.h: kill vmalloc.h dependency")
->>>> in -next, which tells me that this patch likely needs to contain
->>>> something along the following lines, as LoongArch was getting
->>>> include/linux/sizes.h transitively through the vmalloc.h include in
->>>> include/asm-generic/io.h.
->>>
->>> gcc doesn't appear to be packaged for loongarch for debian (most other
->>> cross compilers are), so that's going to make it hard for me to test
->>> anything...
->>
->> The latest cross-compilers from Arnd [1] include a 13.2.0 one for
->> loongarch64 that works for me. Just in case you haven't heard of Arnds work
->> before and want to give it a shot.
->>
->> [1] https://mirrors.edge.kernel.org/pub/tools/crosstool/
+Hi,
+On Tue, Apr 02, 2024 at 07:04:58PM +0200, Michal Koutn?? wrote:
+> Hello.
 > 
-> Thanks for the pointer - but something seems to be busted with the
-> loongarch build, if I'm not mistaken; one of the included headers
-> references loongarch-def.h, but that's not included.
+> On Thu, Mar 21, 2024 at 10:39:45PM +0100, Petr Malat <oss@malat.biz> wrote:
+> > Requiring cpuset.cpus.effective to be a subset of cpuset.cpus makes it
+> > hard to use as one is forced to configure cpuset.cpus of current and all
+> > ancestor cgroups, which requires a knowledge about all other units
+> > sharing the same cgroup subtree.
 > 
+> > Also, it doesn't allow using empty cpuset.cpus.
+>                                ^^^^^^^^^^^^^^^^^
+>                           _this_ is what cpuset has been missing IMO
+> 
+> I think cpuset v2 should allow empty value in cpuset.cpus (not only
+> default but also as a reset (to the default)) which would implicitely
+> mean using whatever CPUs were passed from parent(s).
+> 
+> Does that make sense to you too?
+> 
+> Thus the patch(es) seems to need to be extended to handle a case when
+> empty cpuset.cpus is assigned but no cpuset.cpus.exclusive are
+> specified neither.
 
-That file is part of gcc plugins. If you disable CONFIG_GCC_PLUGINS,
-it should build without having that issue. Of course, there may be other
-unrelated issues....
+I don't see how this could be useful - consider hierarchy A/B, where A
+configures the cpuset.cpus and B doesn't and inherits if from A.
 
+If B is then made root partition it will use exactly the same CPUs as
+A, thus these CPUs will not be available in A. Also, there can't be
+a sibling of B, because there are no CPUs left for it. As B is then
+the only working child of A, no resource distribution can happen on A.
 
--- 
-#Randy
+So there is no point in creating B and one could use A directly.
+  Petr
 
