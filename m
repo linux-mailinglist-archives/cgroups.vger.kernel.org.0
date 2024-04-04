@@ -1,122 +1,166 @@
-Return-Path: <cgroups+bounces-2312-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2313-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3750897E39
-	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 06:39:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAF0C8982DB
+	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 10:09:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3822D1F22722
-	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 04:39:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B67128755A
+	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 08:09:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C69F1AAC4;
-	Thu,  4 Apr 2024 04:39:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DB0C5D73B;
+	Thu,  4 Apr 2024 08:09:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=malat-biz.20230601.gappssmtp.com header.i=@malat-biz.20230601.gappssmtp.com header.b="n1p/xyaj"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="LkVVivGp"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A411018AF4
-	for <cgroups@vger.kernel.org>; Thu,  4 Apr 2024 04:39:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7822F5FEE3
+	for <cgroups@vger.kernel.org>; Thu,  4 Apr 2024 08:09:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712205566; cv=none; b=tX2YQcKdKxW8YYaxJ4+x3Bs3LGlfHFaAdTdjIfL1N6xwiHvaZJrXQkdC8BXWP011kOBVzYXTeSeqtcWFJNbPUHLs2d69K2beNEb7tofoT2O5cx8VQAH1p6fpUjaa07STT5PB5X7iFSR3aPBK2AAITR1uPBfSzRINHwMrgqBzMX4=
+	t=1712218186; cv=none; b=QRZR0yCd1m8DUZ7Q5N1YeO/PgIlTZ2p9vFNfnrYHVt/LVD0TfH8EnWFGM/tbElfgSkMxMvTXI3C0bmmVxozRQLsE2cPM2xIBPuQtmE2e9LqN1XCEJSb7+NYsymICawN8jfcer8MumWclZVS+wUu3GHRdmQ+lwneTBuhbLM3Aoyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712205566; c=relaxed/simple;
-	bh=pgTYXvTl3Q/soSKsqLecxYeXRL0lBO2ia7kP+I7D0zQ=;
+	s=arc-20240116; t=1712218186; c=relaxed/simple;
+	bh=+RETk7LMLu0DOLsrdCcWL8qaTl4HgQomZlIPuSp3UFU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Iv18zeG2nj6H+TV/NlyzhRUdnKHQ+rxmUVQGP8XtvR6Fo5PoF+/55YqSfOPiYx5vyUBsjFB3+6ZOOG5PAbt3CQKOCq6K5Jw8Z8Wy5owfByXistVTrMQ9qEpK7FXVI9b9Wn4gLjug2usxIMNk5K/DvauBjmRXbSYoHG0Hd0vgMTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=malat.biz; spf=none smtp.mailfrom=malat.biz; dkim=pass (2048-bit key) header.d=malat-biz.20230601.gappssmtp.com header.i=@malat-biz.20230601.gappssmtp.com header.b=n1p/xyaj; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=malat.biz
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=malat.biz
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d485886545so7987441fa.2
-        for <cgroups@vger.kernel.org>; Wed, 03 Apr 2024 21:39:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=malat-biz.20230601.gappssmtp.com; s=20230601; t=1712205562; x=1712810362; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qEOAYQ++eOSF99LMPQNDnxVmDipaoC5YscAs01CyzFM=;
-        b=n1p/xyaj6VdRmZS8dITK4+/NhoLTy+CV6YvmudmNgWtO4lahRo9Rp7q0rkMiULHVaB
-         3Y/b/GumarXkdk49b7AlP0zzQeA9sFukLJwTD19cHtEJfsTVYxyS1/GlmPcpZdanXiuj
-         F0ReA4/iV/wHbCMtedYpktM7hzZe4xCbeuQLT1Jpoe+qoleRNMci27A3v9W6i2YN3kNQ
-         XAh7nvdrd2vkNu6S3oKsUNSEByzC/qsa5rfKqJLiXFn/NyNEm8LFUaLQwrP45HmgLTG7
-         CY9OErpObOjR24lPVXOjFIITUhJVgL5o62+GQ9LsopKyLR6z9n8ImO9j37KaoY9xpznN
-         dFsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712205562; x=1712810362;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qEOAYQ++eOSF99LMPQNDnxVmDipaoC5YscAs01CyzFM=;
-        b=jqjyDf0WUG6taNNIUhhPx4Zfhs9eMJg0bUgxU/8DtUAK/D7wZtkgHiQ7nPvGpu1VDW
-         2QlQ2Xgl3ehpA7AtVCv5lBJkeb0jxAkjU71e7eva1C8gS/3HNIIH4+2QvItdVy/8Vf6N
-         OXDAwUyACkqIpPwN7OLkFswbHtnnVvGfR6OQ9vYjaAf/rhG5hQ3nLNVEHRB1q+Yp68N2
-         B1+wJ9+299lHIgFxN5R6OU/jskDTyo1/borqDQNig9adFF16hEwflN8ONIwfKZQTEOzS
-         +sw3LWfNO2e3Ex5MwqPgM0N5ZCE2+bzG+H2Sc9rk7cmAZrLzG9uNRlwr4V9x1LJ+rWBm
-         BJhw==
-X-Gm-Message-State: AOJu0YytTPrkSJ5+R75RO6gyRFL8E8eLsGREhnsXDI76/0xG9avsGcpM
-	zR9i2NdgUa4keqLfPINPPFUpjJhW40fHORHUP4+qZYQ1/V2dLbGFwJvJs5TKHg==
-X-Google-Smtp-Source: AGHT+IHNQnPdluTnSGnpuQ3YA9d/CR35BqWjLtSvE6AgGNek8cMUz+3MTjkyyMflq2jJIW22esbdzA==
-X-Received: by 2002:a2e:8457:0:b0:2d4:5c03:5ccb with SMTP id u23-20020a2e8457000000b002d45c035ccbmr1147905ljh.10.1712205561541;
-        Wed, 03 Apr 2024 21:39:21 -0700 (PDT)
-Received: from ntb.petris.klfree.czf (178.165.201.129.wireless.dyn.drei.com. [178.165.201.129])
-        by smtp.gmail.com with ESMTPSA id js19-20020a170906ca9300b00a4e8353be19sm3034485ejb.224.2024.04.03.21.39.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 21:39:20 -0700 (PDT)
-Date: Thu, 4 Apr 2024 06:36:56 +0200
-From: Petr Malat <oss@malat.biz>
-To: Michal Koutn?? <mkoutny@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=GWWcbBVMcpj+WCHKA8JSv4oDz7rluJFMFJPoe99jMknBLhtO4BzWP0JwMqWGKou5STD3xGu7aN821gNulM/F7p/9nm3yzdYUcs0VnuZxoflRzr8A8TEjlOYCXfMCLn0Dl1LWdYUxgeu4W2rSmcUAyx84DqapkeYMpTDGNB6+r/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=LkVVivGp; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 88DDD37967;
+	Thu,  4 Apr 2024 08:09:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712218181; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I6n6DByyXKoNuba0GvN+yYLk2T66kNe4KnkeA5kQZZM=;
+	b=LkVVivGp3FuSbo++NVtCTQWd7pk/rUsr3Sd12+ajiGB69i5QHYTkVNLJFe2x4TGnOCfPof
+	hjL9IWwR+rDMhcL/hRJ1FDaMfJVw8ZcByp22zbyKzJ5Z5UkEJAqCLT/kol/eVYkH6X869U
+	lsiqZtAEgVWEnOJgUfV2IrV8eobqWNw=
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 79FFD13298;
+	Thu,  4 Apr 2024 08:09:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 22RRHUVgDmbCCAAAn2gu4w
+	(envelope-from <mkoutny@suse.com>); Thu, 04 Apr 2024 08:09:41 +0000
+Date: Thu, 4 Apr 2024 10:09:40 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Petr Malat <oss@malat.biz>
 Cc: cgroups@vger.kernel.org, tj@kernel.org, longman@redhat.com
-Subject: Re: [PATCH] cgroup/cpuset: Make cpuset.cpus.effective independent of
- cpuset.cpus
-Message-ID: <Zg4uaCep1Sg6Ynkl@ntb.petris.klfree.czf>
+Subject: Re: Re: [PATCH] cgroup/cpuset: Make cpuset.cpus.effective
+ independent of cpuset.cpus
+Message-ID: <7smfbqhzzl7pggwvdleq4uj4iqixdeaj5gqaccsiwtepswygmm@bubny2ul3ihg>
 References: <Zfynj56eDdCSdIxv@ntb.petris.klfree.czf>
  <20240321213945.1117641-1-oss@malat.biz>
  <xdx55wvvss44viwmszsss2tohyslirqu3jrrexroyc5knamful@2sdajjhw45sj>
+ <Zg4uaCep1Sg6Ynkl@ntb.petris.klfree.czf>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="qifcv7qyb263kco4"
+Content-Disposition: inline
+In-Reply-To: <Zg4uaCep1Sg6Ynkl@ntb.petris.klfree.czf>
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-0.997];
+	 SIGNED_PGP(-2.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.90)[85.97%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+
+
+--qifcv7qyb263kco4
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <xdx55wvvss44viwmszsss2tohyslirqu3jrrexroyc5knamful@2sdajjhw45sj>
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
-On Tue, Apr 02, 2024 at 07:04:58PM +0200, Michal Koutn?? wrote:
-> Hello.
-> 
-> On Thu, Mar 21, 2024 at 10:39:45PM +0100, Petr Malat <oss@malat.biz> wrote:
-> > Requiring cpuset.cpus.effective to be a subset of cpuset.cpus makes it
-> > hard to use as one is forced to configure cpuset.cpus of current and all
-> > ancestor cgroups, which requires a knowledge about all other units
-> > sharing the same cgroup subtree.
-> 
-> > Also, it doesn't allow using empty cpuset.cpus.
->                                ^^^^^^^^^^^^^^^^^
->                           _this_ is what cpuset has been missing IMO
-> 
-> I think cpuset v2 should allow empty value in cpuset.cpus (not only
-> default but also as a reset (to the default)) which would implicitely
-> mean using whatever CPUs were passed from parent(s).
-> 
-> Does that make sense to you too?
-> 
-> Thus the patch(es) seems to need to be extended to handle a case when
-> empty cpuset.cpus is assigned but no cpuset.cpus.exclusive are
-> specified neither.
+On Thu, Apr 04, 2024 at 06:36:56AM +0200, Petr Malat <oss@malat.biz> wrote:
+> So there is no point in creating B and one could use A directly.
 
-I don't see how this could be useful - consider hierarchy A/B, where A
-configures the cpuset.cpus and B doesn't and inherits if from A.
+There indeed isn't in this example.
 
-If B is then made root partition it will use exactly the same CPUs as
-A, thus these CPUs will not be available in A. Also, there can't be
-a sibling of B, because there are no CPUs left for it. As B is then
-the only working child of A, no resource distribution can happen on A.
+Consider siblings A/B and A/C. B would have configured cpus (and
+possibly be a partition root) while C is generally uninterested in
+cpuset so would not be configured. (Setup like this is encountered more
+easily on unified hierarchy where the tree is already organized without
+cpuset considerations.)
 
-So there is no point in creating B and one could use A directly.
-  Petr
+If B took all A's CPUs, it would be an invalid partition, otherwise C
+would use the remaining CPUs implicitly.
+
+Documentation/admin-guide/cgroup-v2.rst already tries to describe
+something like that:
+
+        An empty value indicates that the cgroup is using the same
+        setting as the nearest cgroup ancestor with a non-empty
+        "cpuset.cpus" or all the available CPUs if none is found.
+
+But it doesn't work like that (kernel 6.7.9):
+	# cd /sys/fs/cgroup=20
+	# echo +cpuset >cgroup.subtree_control
+	# cat init.scope/cpuset.cpus
+	   (empty is possible)
+	# cat init.scope/cpuset.cpus.effective
+	0-7
+=09
+	# echo 3 >init.scope/cpuset.cpus
+	# cat init.scope/cpuset.cpus.effective
+	3
+	echo "" >init.scope/cpuset.cpus
+	# cat init.scope/cpuset.cpus
+	3  (I'd expect empty again)
+
+IOW, cpuset cgroup can have empty cpuset.cpus when it's freshly created
+but it seems it cannot be reset back to such an indifferent state.
+
+(To match it to the previous example A/C=3D=3Dinit.scope, A/B would be some
+foo.service (under -.slice) that requires configured cpuset.)
+
+Michal
+
+--qifcv7qyb263kco4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZg5gQgAKCRAGvrMr/1gc
+jmreAQCdAmax+F++o0+0AZqNhgYRcmcEQ2SGijWyslGen6rMHAEA2ixipr86icZ1
+iDrl418Swvus6Xq30NamAWb+HC1xaAU=
+=6Ni/
+-----END PGP SIGNATURE-----
+
+--qifcv7qyb263kco4--
 
