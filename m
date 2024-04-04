@@ -1,170 +1,123 @@
-Return-Path: <cgroups+bounces-2321-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2322-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CF4F89895B
-	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 15:57:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0947B898B4F
+	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 17:39:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E08ED281809
-	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 13:57:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D4091F29F1B
+	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 15:39:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AC5D127B7E;
-	Thu,  4 Apr 2024 13:56:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ACED129A99;
+	Thu,  4 Apr 2024 15:39:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="bpSxcZ8Z"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BL5Nhvp6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C798128832
-	for <cgroups@vger.kernel.org>; Thu,  4 Apr 2024 13:56:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4721012B87;
+	Thu,  4 Apr 2024 15:39:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712239016; cv=none; b=leTwisOUMYHnGZWsRcZnTxJsEKl4QaiBldfZ6VnLTJWNnxcqkHsd54nWUi6jGQBNtGbh1Daok+NzkK1yDp6O1veEAqh/Ofxx2yhtulGz+ZN9bPeSRBoWT6xMz8Hkquol3v+qx0xzRCj21Ziu3Y5GJOz0cD03Y0xkK1uRyLa5ETQ=
+	t=1712245171; cv=none; b=ZQenR2l9QadLIzSKQFcVcN3BZ73Vjc4olDgah8IvaIS+wQcdSNqWeR5bcgHDQCqYFxahm972GYiG7C/Otfa1HgUSe5CJNHW6vpgWkCnmrOl8b9WuqsCDmcalcaGfz8UFrhyC9iOw3hc4Z7wrZCsC+D215RpLXmSO+usV/gYV8pk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712239016; c=relaxed/simple;
-	bh=dyJ8/jg3OEVZu3rV6eRPJgBUaaPW7kEy4ZucbMmQDWA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n5WJQYN1TsqKw9+WMeAMNzGEdANMH+afy9ZsiMJnYDRXb5MHYhyFE8A5zP7FulhcVhXb4d20um91QNW0U6cL+dnkQpyG/HmkWDqjl0CaUjWlUUlKCpL6YjLVYcrQQ0oPz0tdH74+iKMfsTHLDRxvFet4N24Ou/YmhKvOsPzxv5s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=bpSxcZ8Z; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-430c63d4da9so5707761cf.0
-        for <cgroups@vger.kernel.org>; Thu, 04 Apr 2024 06:56:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1712239013; x=1712843813; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=msc9tQgMq343nFV4/DBdPcJS7hGm3uD+5fv8GwkMOjA=;
-        b=bpSxcZ8ZLk4bpaTCLJg2MyKrmUNAd9lPLsMj9m2uhkhvl5+tze/0OzJhZQu6jksKt0
-         hTY1J6BkGqD9g9NawhYR4OBTb8T5PkvAapR7gOCaRMC/OV4vwxAji0uFGxw1PwU+K03g
-         5ETEx7lvWaXtXWXpQqny7lqmLNKlSsSaqPsf6l0SxgEWUIG4hXGbeHrMsDMBfu/0XXw6
-         eHXGjJ4FMR9bGGs0v4+W2L7FzsOq4YgNz2r2PfEoVxXvjkUemrK3sXUd5gxGWsKzWXxf
-         A6Klmrz96svkE/SZJc9/S9ycPkeBfFdkXjsB07aJg/7IB+FH8AQmmGwpCSCaddcXe+jY
-         9RjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712239013; x=1712843813;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=msc9tQgMq343nFV4/DBdPcJS7hGm3uD+5fv8GwkMOjA=;
-        b=WRDZ7GRy0JwZ6f9MAz4rSPhhh0uk7BQrhGfPtaVCZwL+L2X+EVDjhXVEg3kkd3y/+K
-         JDsBH9PcbYs++kyzMY1aI7fzYeII0wev4JAbD9FWsu8/KMYBM79DHglW0szN1AOpJgKf
-         GhS6PGkjeWKSvJJttjSv192LQlXJGmW33qM0ouEknToxKIK/tEl4/KaT55M9XLzMSF8o
-         wol82u6P7WSDIF24f25QfrVWNeZ9BFAxKsoH9M6mUDZcyTvqWk2Qso1VQ7WtJByMnbnB
-         /AQW2XglQqRh2dSjVLRFnamRXNDtxe9ElNQ+DdQHgu2wN7dxBlLS40A9A19XezDGh97U
-         aosQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV9Ud5aKVZEZRrFySCxg9LkaPhXQCxbVu0Y82a5OGdVLuJqFQdfL1EQNSKgKV+DJSUj6ot5cPMu4Rm/mGwBbJITxKOuPLXBTw==
-X-Gm-Message-State: AOJu0Yw9cQhFxLmr9ZFzJIYvWcb7GdJmvtuH7dJnE26Ij46FiH73v88A
-	yPP3j+2NIKWbTdWgBcWV9zN3O4gHWqB0zmbhzEy4QdgdCOZOKmsk1W5Xq4GYZ0YG1OGyk3cNFqq
-	fZLr4zqy1ypYds66zncBoyQ11RRLbMUL/J3XChA==
-X-Google-Smtp-Source: AGHT+IH9S7DU2DIf+z4/lTa3f7DcyJz1Y9kNOGjz2IQr7tohPqSHHhqayAGWHjuk7zhrLKiTZ6wb5Cu4ZzpulPIDrg0=
-X-Received: by 2002:a05:622a:2:b0:431:378d:afa with SMTP id
- x2-20020a05622a000200b00431378d0afamr2733138qtw.34.1712239013126; Thu, 04 Apr
- 2024 06:56:53 -0700 (PDT)
+	s=arc-20240116; t=1712245171; c=relaxed/simple;
+	bh=SyMXF+YI9dsKS9EwsdxFUximlqPUveJCPZuIvwTOF/E=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=Xyg9xT27pKnNxXWXgrlhaADLIXciA2ywNFfLDg6ojn5DSUtFMNhbZlw4ntO8sQg4szaJiyUQn0oKbI6zaWzxft1TXPOPedA68wOtAtF9rHY02CyJdtdPSTW8oIgczUzbAR1O8r1Z/fKjkS9Fd8m2UcFTsJGjH5AC9XzBFgMoqBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BL5Nhvp6; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712245170; x=1743781170;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=SyMXF+YI9dsKS9EwsdxFUximlqPUveJCPZuIvwTOF/E=;
+  b=BL5Nhvp6l5lhdp1HXImj4SNMs1Yg5ip8xSX3q/2WUWdFNYFoQewGtiC8
+   hKI7xCa18qVrcaBlgbZJM262Df1qn3nV3d9c8BZyIALgdnmJ1V92QO5iI
+   rYWuFmTJNKzXiIIj7YASoMne/P2n4GIjO+vlFWM4wTQNlbESQaY9YID+7
+   3WviPv4nnSVg4hQPHbQL2VZfc7fX5wUQrgbT+5IsorShMfQJy8CcILOzB
+   PXvps5puT6eG0mtm220pkSyXoXDl+e6gpuldzuwXRSAxnkXbwQXM7ITbu
+   RDL7zdRuDt4SOXAepUXvlkWM2aMJs6N8LU+6Ywy2nCz9k3q9XaV3nCYbh
+   Q==;
+X-CSE-ConnectionGUID: Xjwd6miJTO2ONGd3J4lc1w==
+X-CSE-MsgGUID: XArMb3lzTJOlQcuXGNzX2Q==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="18271757"
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="18271757"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 08:39:29 -0700
+X-CSE-ConnectionGUID: EVj/EoeDSNCuzxhTN+5cCw==
+X-CSE-MsgGUID: yFrNcW5oTgKVAZnP8hFI8A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="23518129"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.247.65.164])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/AES256-SHA; 04 Apr 2024 08:39:16 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
+ <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
+ <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
+ <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
+ <kai.huang@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
+ <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: [PATCH v10 09/14] x86/sgx: Implement async reclamation for cgroup
+References: <20240328002229.30264-1-haitao.huang@linux.intel.com>
+ <20240328002229.30264-10-haitao.huang@linux.intel.com>
+ <cb5a76983bc195e1cfb2a4e2c96c31d694e5b777.camel@intel.com>
+Date: Thu, 04 Apr 2024 10:39:10 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240222173942.1481394-1-pasha.tatashin@soleen.com>
- <20240222173942.1481394-2-pasha.tatashin@soleen.com> <20240404121625.GB102637@hyd1403.caveonetworks.com>
-In-Reply-To: <20240404121625.GB102637@hyd1403.caveonetworks.com>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Thu, 4 Apr 2024 09:56:16 -0400
-Message-ID: <CA+CK2bDmya+768tOvF0N-BYq8E+RwBw4xS8vC+MmbU9eoOv_3g@mail.gmail.com>
-Subject: Re: [PATCH v5 01/11] iommu/vt-d: add wrapper functions for page allocations
-To: Linu Cherian <lcherian@marvell.com>
-Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
-	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
-	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
-	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
-	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
-	joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
-	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
-	rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
-	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, 
-	tj@kernel.org, tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, 
-	will@kernel.org, yu-cheng.yu@intel.com, rientjes@google.com, 
-	bagasdotme@gmail.com, mkoutny@suse.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2lpm3ktdwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <cb5a76983bc195e1cfb2a4e2c96c31d694e5b777.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-> Few minor nits.
+On Thu, 04 Apr 2024 06:16:54 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
-Hi Linu,
-
-Thank you for taking a look at this patch, my replies below.
-
-> > +/*
-> > + * All page allocations that should be reported to as "iommu-pagetables" to
-> > + * userspace must use on of the functions below.  This includes allocations of
-> > + * page-tables and other per-iommu_domain configuration structures.
+> On Wed, 2024-03-27 at 17:22 -0700, Haitao Huang wrote:
+>>   void sgx_cgroup_init(void)
+>>  {
+>> +	sgx_cg_wq = alloc_workqueue("sgx_cg_wq", WQ_UNBOUND | WQ_FREEZABLE,  
+>> WQ_UNBOUND_MAX_ACTIVE);
+>> +
+>> +	/* All Cgroups functionalities are disabled. */
+>> +	if (WARN_ON(!sgx_cg_wq))
+>> +		return;
+>> +
 >
-> /s/use on/use one/?
-
-I will correct in the next version (if there is going to be one).
-
-> > + *
-> > + * This is necessary for the proper accounting as IOMMU state can be rather
-> > + * large, i.e. multiple gigabytes in size.
-> > + */
-> > +
-> > +/**
-> > + * __iommu_alloc_pages - allocate a zeroed page of a given order.
-> > + * @gfp: buddy allocator flags
+> I don't think you should WARN(), because it's not a kernel bug or  
+> similar.  Just
+> print a message saying EPC cgroup is disabled and move on.
 >
-> Shall we keep the comments generic here(avoid reference to allocator
-> algo)  ?
+> 	if (!sgx_cg_wq) {
+> 		pr_err("SGX EPC cgroup disabled: alloc_workqueue() failed.\n");
+> 		return;
+> 	}
 
-There are no references to allocator algorithm. I specify the zero
-page because this function adds __GFP_ZERO. The order and gfp
-arguments are provided by the caller, therefore, should be mentioned.
 
-> > + * @order: page order
-> > + *
-> > + * returns the head struct page of the allocated page.
-> > + */
-> > +static inline struct page *__iommu_alloc_pages(gfp_t gfp, int order)
-> > +{
-> > +     struct page *page;
-> > +
-> > +     page = alloc_pages(gfp | __GFP_ZERO, order);
-> > +     if (unlikely(!page))
-> > +             return NULL;
-> > +
-> > +     return page;
-> > +}
-> > +
-> > +/**
-> > + * __iommu_free_pages - free page of a given order
-> > + * @page: head struct page of the page
-> > + * @order: page order
-> > + */
-> > +static inline void __iommu_free_pages(struct page *page, int order)
-> > +{
-> > +     if (!page)
-> > +             return;
-> > +
-> > +     __free_pages(page, order);
-> > +}
-> > +
-> > +/**
-> > + * iommu_alloc_pages_node - allocate a zeroed page of a given order from
-> > + * specific NUMA node.
-> > + * @nid: memory NUMA node id
-> > + * @gfp: buddy allocator flags
->
-> Same here for this one and other references below.
-
-ditto.
-
-Thank you,
-Pasha
+Sure
+Thanks
+Haitao
 
