@@ -1,363 +1,586 @@
-Return-Path: <cgroups+bounces-2325-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2326-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA4C0898CCB
-	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 18:58:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C83DD898CF4
+	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 19:05:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE0071C23ADD
-	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 16:58:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79D6F2844AB
+	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 17:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AA4E12BEBC;
-	Thu,  4 Apr 2024 16:58:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CC6712DD9E;
+	Thu,  4 Apr 2024 17:05:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VE+TMXT1"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W86xt4Gu"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD1A3128815
-	for <cgroups@vger.kernel.org>; Thu,  4 Apr 2024 16:58:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 489971C6BC;
+	Thu,  4 Apr 2024 17:05:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712249893; cv=none; b=RJugKPw5HdRLVsvocFHzFhf63A4qIwV1JvebLoMDpH4OXEA8QS0Tnby38KwUU1xDp7P6r0bN9TYjJSkUqtQvW/MLCdV46lLCuyhSGVYtXPzLRXDlusaWYJVigB1wcKJ0O4HhMQIGgQs7arjxoyetic+wj6tboLR9a9mHYSpqNaA=
+	t=1712250325; cv=none; b=mpxDaK26in4F41S3NqbA8nzTJj6rFqTYCSTSKuUzUZzDo4abz/0NLmIIsj5TmEGvccYGYxw7FdjPSJn23xcRudqw4SG8147WJ2AEVGjZ9WW24rZ5Si3bR2Fp9PTiSuhU2+ACAvJ8Y0C/cmsDJF/zSXtGKAxDNZZaHkhnbhX1dJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712249893; c=relaxed/simple;
-	bh=Ug3wNn9rUYSiApUWsdmJAfxaH7gkdUjC0d0zsQR/y4Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WZq2JHNQrAFtUDuEOO7W2uBQYEHBg5nC85NscwDYxYFJgePnXNAuOyUOjHrvN70E/9QeqjZUQM0lDC+JjkEmVo39oFLoaHsYWX2NR/nOBLajMI4FkbgiUffGVUXwqEMQpCGiLsk7ps0ktqPjnJnitl92ZbI1VebR0y99FThnpgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VE+TMXT1; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dbed0710c74so1203283276.1
-        for <cgroups@vger.kernel.org>; Thu, 04 Apr 2024 09:58:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712249890; x=1712854690; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SnNkrv9amLNSOChMZU1xiNRngWLHsWRGHJdyDWSVIjQ=;
-        b=VE+TMXT19IlGsNP/1GZ4QkeACDqlNHhbUWPxK9JAFxupGgfIy3o9CUYHwC3zIILeE/
-         dw0le8WSHyjn/yq30nG7WGIBs+X6a9VPfx1czXi3gORFjnFlex63/z9NmeK+P7uf4FiD
-         RHJKVnZ48GhO6Q4rq8jgk0qaybB9hdHz4S+E0g6+tSZchhycJvFOpbl7D2UtYx1SXGvj
-         gepwgqcJ7Jg/qqAYl7LvxwqsD5gHQVzcaToe3QQoSJR+sUbcEAX8lpWLwVUPvWrUQ6mm
-         MWXNXICHXg6DmfFEa3hCb/McRPKDAOzCAeHvys1ChiPt0IZ9j9LrXVHefmOmwHrmBH7X
-         jS3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712249890; x=1712854690;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SnNkrv9amLNSOChMZU1xiNRngWLHsWRGHJdyDWSVIjQ=;
-        b=SLUPritIpXYejFUK3tJCxPFo3P58WhKMSrvmbELmwjhwuVLxDIIRpMHvpsujk4ue0g
-         jBBEkRwCeekmvI1fYe2fi9FqFqMGmtpVONZ93bK+HOmRnwlXuNMsI1BzDr/aCn2gcGg/
-         KQLkerpt5qq5WYXPxZ00Xbupa4VLFvqHoyg8qkJIniUWlnENLOfUXGdPDMPg3sCvSNH9
-         14tCYADS7YHaZ91sxhFXMLDZNTJNJp5x3Fw4xGgxcVQsVOjxGLh0wP/3800g64pl6H4V
-         a/u5dDhOrKF9EI74Dii2Tjo1ymXofndgkoy4XVPmYtfQDiH+3hZmp2c5OBqirXz2bWey
-         gziA==
-X-Forwarded-Encrypted: i=1; AJvYcCV2h12mweILojAl5Xjh/uHPP0YRhhdlsUBQQ6WGLxXMEewLvdwPvwqS8UILzpTkyIJjv96RbyVJX7CumOq1qNlIYKUpNKSZYA==
-X-Gm-Message-State: AOJu0Yz6tQom+477tGLr1S9BkcbrT9AMz34ZrtAThioVIZx/UeJWzQqe
-	PUZiFOuXosV3OqspzINof2dcxih8q67ohYLEdPktMRJfuKrMQO/GwJ4IiRv7w4hY7H3XUgGArfS
-	J6vRVNWFBmcEYSUQ3r4AzuKkDkZ+Q/m1J5Ei+
-X-Google-Smtp-Source: AGHT+IF7B3akhgfxRrnqjce/FXowsw1E3eakccZbE6M28J8HXpTOkV5OPQcXw5mCpvOPKhYETIzOkOwrlUerT+o2JDc=
-X-Received: by 2002:a5b:481:0:b0:dcc:9d30:58a0 with SMTP id
- n1-20020a5b0481000000b00dcc9d3058a0mr2683124ybp.64.1712249889460; Thu, 04 Apr
- 2024 09:58:09 -0700 (PDT)
+	s=arc-20240116; t=1712250325; c=relaxed/simple;
+	bh=aiZSbGzOG/4RlCwdBiEVdFCJ3+wpRJZPZc+8td5FrsU=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=tJQLJgu8eaiaNY4n4qMcufUCtgGXGNVO7Y0igij1rMbZmqgHp8PnJPygoPlOAjzfCPGCPEBVxrmYSlMaSz8rKDRnkstFWIkeOPs1bmQcvUE8MuRcwkaC62gjaL0FlqgFD/o3230zt87UOi5UaD5kqfE33cRhXbt0LMUzcb0ahQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W86xt4Gu; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712250324; x=1743786324;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=aiZSbGzOG/4RlCwdBiEVdFCJ3+wpRJZPZc+8td5FrsU=;
+  b=W86xt4GuE4PI3ch5pZ9GWoTPiwl+1vt4qpmOi31h2kbpR3+TTU/sEAPP
+   nFGIDb3nxUbOS/4bRONsbkRM1kLK1nbZ7sp+UUvo1yRWCoVWGpALmT3ar
+   7ElWUAybD643I/xTa7GnLnqCLbwhgasEE3sm6fvLmRx/BmajUwkxk4Gpr
+   10ckR+NVZXoGhHLPqMjuVsnjZ6K++LdXb1STcoiVNO2Eg4CJB2orHXo64
+   G9Sf0VXRwb52FsV9bhIom9MoQ8Lox6yhiXJ2A5KABGRIkLxsS4+OfYSSd
+   VqOl3zeSwO3AwbV/GfnQ5FtR5qHWUg+4SliaVdW5K4eP/uIzDMQJ8l1RS
+   Q==;
+X-CSE-ConnectionGUID: Ozqd3EzJQwedHJahMOCh1A==
+X-CSE-MsgGUID: a6VuIc/NTym6dPRJhoyvnQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7395670"
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="7395670"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 10:05:18 -0700
+X-CSE-ConnectionGUID: SAPJm0r9QnWxZ5K63C5Ymw==
+X-CSE-MsgGUID: 6eg6zFrEQSy1mdPMNzjoPA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="23348713"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.247.65.164])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 04 Apr 2024 10:05:05 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
+ <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
+ <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+ "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+ "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
+ <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+ <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
+ <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
+ <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
+ <kai.huang@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
+ <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: [PATCH v10 08/14] x86/sgx: Add basic EPC reclamation flow for
+ cgroup
+References: <20240328002229.30264-1-haitao.huang@linux.intel.com>
+ <20240328002229.30264-9-haitao.huang@linux.intel.com>
+ <e616e520b021e2e7ac385b5b1c41febb781706de.camel@intel.com>
+Date: Thu, 04 Apr 2024 12:05:00 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321163705.3067592-1-surenb@google.com> <20240321163705.3067592-6-surenb@google.com>
- <20240321133147.6d05af5744f9d4da88234fb4@linux-foundation.org>
- <gnqztvimdnvz2hcepdh3o3dpg4cmvlkug4sl7ns5vd4lm7hmao@dpstjnacdubq>
- <20240321150908.48283ba55a6c786dee273ec3@linux-foundation.org>
- <bliyhrwtskv5xhg3rxxszouxntrhnm3nxhcmrmdwwk4iyx5wdo@vodd22dbtn75> <CAJuCfpEO4NjYysJ7X8ME_GjHc41u-_dK4AhrhmaSMh_9mxaHSA@mail.gmail.com>
-In-Reply-To: <CAJuCfpEO4NjYysJ7X8ME_GjHc41u-_dK4AhrhmaSMh_9mxaHSA@mail.gmail.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 4 Apr 2024 09:57:55 -0700
-Message-ID: <CAJuCfpEGJHs=ygb2_PNcqEy__dvhby5N7dvwnno=3pDEvE1+2g@mail.gmail.com>
-Subject: Re: [PATCH v6 05/37] fs: Convert alloc_inode_sb() to a macro
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, mhocko@suse.com, vbabka@suse.cz, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
-	glider@google.com, elver@google.com, dvyukov@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
-	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
-	kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2lpq2mtswjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <e616e520b021e2e7ac385b5b1c41febb781706de.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-On Thu, Mar 21, 2024 at 3:47=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> On Thu, Mar 21, 2024 at 3:17=E2=80=AFPM Kent Overstreet
-> <kent.overstreet@linux.dev> wrote:
-> >
-> > On Thu, Mar 21, 2024 at 03:09:08PM -0700, Andrew Morton wrote:
-> > > On Thu, 21 Mar 2024 17:15:39 -0400 Kent Overstreet <kent.overstreet@l=
-inux.dev> wrote:
-> > >
-> > > > On Thu, Mar 21, 2024 at 01:31:47PM -0700, Andrew Morton wrote:
-> > > > > On Thu, 21 Mar 2024 09:36:27 -0700 Suren Baghdasaryan <surenb@goo=
-gle.com> wrote:
-> > > > >
-> > > > > > From: Kent Overstreet <kent.overstreet@linux.dev>
-> > > > > >
-> > > > > > We're introducing alloc tagging, which tracks memory allocation=
-s by
-> > > > > > callsite. Converting alloc_inode_sb() to a macro means allocati=
-ons will
-> > > > > > be tracked by its caller, which is a bit more useful.
-> > > > >
-> > > > > I'd have thought that there would be many similar
-> > > > > inlines-which-allocate-memory.  Such as, I dunno, jbd2_alloc_inod=
-e().
-> > > > > Do we have to go converting things to macros as people report
-> > > > > misleading or less useful results, or is there some more general
-> > > > > solution to this?
-> > > >
-> > > > No, this is just what we have to do.
-> > >
-> > > Well, this is something we strike in other contexts - kallsyms gives =
-us
-> > > an inlined function and it's rarely what we wanted.
-> > >
-> > > I think kallsyms has all the data which is needed to fix this - how
-> > > hard can it be to figure out that a particular function address lies
-> > > within an outer function?  I haven't looked...
-> >
-> > This is different, though - even if a function is inlined in multiple
-> > places there's only going to be one instance of a static var defined
-> > within that function.
->
-> I guess one simple way to detect the majority of these helpers would
-> be to filter all entries from /proc/allocinfo which originate from
-> header files.
->
-> ~# grep ".*\.h:." /proc/allocinfo
->       933888      228 include/linux/mm.h:2863 func:pagetable_alloc
->          848       53 include/linux/mm_types.h:1175 func:mm_alloc_cid
->            0        0 include/linux/bpfptr.h:70 func:kvmemdup_bpfptr
->            0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
->            0        0 include/linux/bpf.h:2256 func:bpf_map_alloc_percpu
->            0        0 include/linux/bpf.h:2256 func:bpf_map_alloc_percpu
->            0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
->            0        0 include/linux/bpf.h:2249 func:bpf_map_kvcalloc
->            0        0 include/linux/bpf.h:2243 func:bpf_map_kzalloc
->            0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
->            0        0 include/linux/ptr_ring.h:471
-> func:__ptr_ring_init_queue_alloc
->            0        0 include/linux/bpf.h:2256 func:bpf_map_alloc_percpu
->            0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
->            0        0 include/net/tcx.h:80 func:tcx_entry_create
->            0        0 arch/x86/include/asm/pgalloc.h:156 func:p4d_alloc_o=
-ne
->       487424      119 include/linux/mm.h:2863 func:pagetable_alloc
->            0        0 include/linux/mm.h:2863 func:pagetable_alloc
->          832       13 include/linux/jbd2.h:1607 func:jbd2_alloc_inode
->            0        0 include/linux/jbd2.h:1591 func:jbd2_alloc_handle
->            0        0 fs/nfs/iostat.h:51 func:nfs_alloc_iostats
->            0        0 include/net/netlabel.h:281 func:netlbl_secattr_cach=
-e_alloc
->            0        0 include/net/netlabel.h:381 func:netlbl_secattr_allo=
-c
->            0        0 include/crypto/internal/acompress.h:76
-> func:__acomp_request_alloc
->         8064       84 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->         1016       74 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->          384        4 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->          704        3 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->           32        1 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->           64        1 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
-llocate
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->           40        2 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
-llocate
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
-llocate
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
-llocate
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
-llocate
->           32        1 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
-llocate
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
-llocate
->        30000      625 include/acpi/platform/aclinuxex.h:67
-> func:acpi_os_acquire_object
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
-llocate
->            0        0 include/acpi/platform/aclinuxex.h:67
-> func:acpi_os_acquire_object
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->          512        1 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
-llocate
->          192        6 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
-llocate
->            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
-llocate
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
-llocate
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->          192        3 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
-llocate
->        61992      861 include/acpi/platform/aclinuxex.h:67
-> func:acpi_os_acquire_object
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 include/acpi/platform/aclinuxex.h:67
-> func:acpi_os_acquire_object
->            0        0 include/acpi/platform/aclinuxex.h:57
-> func:acpi_os_allocate_zeroed
->            0        0 drivers/iommu/amd/amd_iommu.h:141 func:alloc_pgtabl=
-e_page
->            0        0 drivers/iommu/amd/amd_iommu.h:141 func:alloc_pgtabl=
-e_page
->            0        0 drivers/iommu/amd/amd_iommu.h:141 func:alloc_pgtabl=
-e_page
->            0        0 include/linux/dma-fence-chain.h:91
-> func:dma_fence_chain_alloc
->            0        0 include/linux/dma-fence-chain.h:91
-> func:dma_fence_chain_alloc
->            0        0 include/linux/dma-fence-chain.h:91
-> func:dma_fence_chain_alloc
->            0        0 include/linux/dma-fence-chain.h:91
-> func:dma_fence_chain_alloc
->            0        0 include/linux/dma-fence-chain.h:91
-> func:dma_fence_chain_alloc
->            0        0 include/linux/hid_bpf.h:154 func:call_hid_bpf_rdesc=
-_fixup
->            0        0 include/linux/skbuff.h:3392 func:__dev_alloc_pages
->       114688       56 include/linux/ptr_ring.h:471
-> func:__ptr_ring_init_queue_alloc
->            0        0 include/linux/skmsg.h:415 func:sk_psock_init_link
->            0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
->            0        0 include/linux/ptr_ring.h:628 func:ptr_ring_resize_m=
-ultiple
->        24576        3 include/linux/ptr_ring.h:471
-> func:__ptr_ring_init_queue_alloc
->            0        0 include/net/netlink.h:1896 func:nla_memdup
->            0        0 include/linux/sockptr.h:97 func:memdup_sockptr
->            0        0 include/net/request_sock.h:131 func:reqsk_alloc
->            0        0 include/net/tcp.h:2456 func:tcp_v4_save_options
->            0        0 include/net/tcp.h:2456 func:tcp_v4_save_options
->            0        0 include/crypto/hash.h:586 func:ahash_request_alloc
->            0        0 include/linux/sockptr.h:97 func:memdup_sockptr
->            0        0 include/linux/sockptr.h:97 func:memdup_sockptr
->            0        0 net/sunrpc/auth_gss/auth_gss_internal.h:38
-> func:simple_get_netobj
->            0        0 include/crypto/hash.h:586 func:ahash_request_alloc
->            0        0 include/net/netlink.h:1896 func:nla_memdup
->            0        0 include/crypto/skcipher.h:869 func:skcipher_request=
-_alloc
->            0        0 include/net/fq_impl.h:361 func:fq_init
->            0        0 include/net/netlabel.h:316 func:netlbl_catmap_alloc
->
-> and it finds our example:
->
->          832       13 include/linux/jbd2.h:1607 func:jbd2_alloc_inode
->
-> Interestingly the inlined functions which are called from multiple
-> places will have multiple entries with the same file+line:
->
->            0        0 include/linux/dma-fence-chain.h:91
-> func:dma_fence_chain_alloc
->            0        0 include/linux/dma-fence-chain.h:91
-> func:dma_fence_chain_alloc
->            0        0 include/linux/dma-fence-chain.h:91
-> func:dma_fence_chain_alloc
->            0        0 include/linux/dma-fence-chain.h:91
-> func:dma_fence_chain_alloc
->            0        0 include/linux/dma-fence-chain.h:91
-> func:dma_fence_chain_alloc
->
-> So, duplicate entries can be also used as an indication of an inlined all=
-ocator.
-> I'll go chase these down and will post a separate patch converting them.
+Hi Kai,
+Thanks for your suggestions. I'll adopt most of it as it.
+Minor details below.
 
-I just posted https://lore.kernel.org/all/20240404165404.3805498-1-surenb@g=
-oogle.com/
-to report allocations done from the inlined functions in the headers
-to their callers.
+On Wed, 03 Apr 2024 08:08:28 -0500, Huang, Kai <kai.huang@intel.com> wrote:
+
+> On Wed, 2024-03-27 at 17:22 -0700, Haitao Huang wrote:
+>> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>>
+>> When a cgroup usage reaches its limit, and it is to be charged, i.e.,
+>> sgx_cgroup_try_charge() called for new allocations, the cgroup needs to
+>> reclaim pages from its LRU or LRUs of its descendants to make room for
+>> any new allocations. This patch adds the basic building block for the
+>> per-cgroup reclamation flow and use it for synchronous reclamation in
+>> sgx_cgroup_try_charge().
+>
+> It's better to firstly mention _why_ we need this first:
+>
+> Currently in the EPC page allocation, the kernel simply fails the  
+> allocation
+> when the current EPC cgroup fails to charge due to its usage reaching  
+> limit.
+> This is not ideal.  When that happens, a better way is to reclaim EPC  
+> page(s)
+> from the current EPC cgroup (and/or its descendants) to reduce its usage  
+> so the
+> new allocation can succeed.
+>
+> Add the basic building blocks to support the per-cgroup reclamation flow  
+> ...
+>
+
+ok
+
+>>
+>> First, modify sgx_reclaim_pages() to let callers to pass in the LRU from
+>> which pages are reclaimed, so it can be reused by both the global and
+>> cgroup reclaimers. Also return the number of pages attempted, so a
+>> cgroup reclaimer can use it to track reclamation progress from its
+>> descendants.
+>
+> IMHO you are jumping too fast to the implementation details.  Better to  
+> have
+> some more background:
+>
+> "
+> Currently the kernel only has one place to reclaim EPC pages: the global  
+> EPC LRU
+> list.  To support the "per-cgroup" EPC reclaim, maintain an LRU list for  
+> each
+> EPC cgroup, and introduce a "cgroup" variant function to reclaim EPC  
+> page(s)
+> from a given EPC cgroup (and its descendants).
+> "
+>
+
+ok
+
+>>
+>> For the global reclaimer, replace all call sites of sgx_reclaim_pages()
+>> with calls to a newly created wrapper, sgx_reclaim_pages_global(), which
+>> just calls sgx_reclaim_pages() with the global LRU passed in.
+>>
+>> For cgroup reclamation, implement a basic reclamation flow, encapsulated
+>> in the top-level function, sgx_cgroup_reclaim_pages(). It performs a
+>> pre-order walk on a given cgroup subtree, and calls sgx_reclaim_pages()
+>> at each node passing in the LRU of that node. It keeps track of total
+>> attempted pages and stops the walk if desired number of pages are
+>> attempted.
+>
+> Then it's time to jump to implementation details:
+>
+> "
+> Currently the kernel does the global EPC reclaim in sgx_reclaim_page().   
+> It
+> always tries to reclaim EPC pages in batch of SGX_NR_TO_SCAN (16) pages.
+> Specifically, it always "scans", or "isolates" SGX_NR_TO_SCAN pages from  
+> the
+> global LRU, and then tries to reclaim these pages at once for better
+> performance.
+>
+> Use similar way to implement the "cgroup" variant EPC reclaim, but keep  
+> the
+> implementation simple: 1) change sgx_reclaim_pages() to take an LRU as  
+> input,
+> and return the pages that are "scanned" (but not actually reclaimed); 2)  
+> loop
+> the given EPC cgroup and its descendants and do the new  
+> sgx_reclaim_pages()
+> until SGX_NR_TO_SCAN pages are "scanned".
+>
+> This implementation always tries to reclaim SGX_NR_TO_SCAN pages from  
+> the LRU of
+> the given EPC cgroup, and only moves to its descendants when there's no  
+> enough
+> reclaimable EPC pages to "scan" in its LRU.  It should be enough for  
+> most cases.
+> "
+>
+
+ok
+
+> Then I think it's better to explain why "alternatives" are not chosen:
+>
+> "
+> Note, this simple implementation doesn't _exactly_ mimic the current  
+> global EPC
+> reclaim (which always tries to do the actual reclaim in batch of  
+> SGX_NR_TO_SCAN
+> pages): when LRUs have less than SGX_NR_TO_SCAN reclaimable pages, the  
+> actual
+> reclaim of EPC pages will be split into smaller batches _across_  
+> multiple LRUs
+> with each being smaller than SGX_NR_TO_SCAN pages.
+>
+> A more precise way to mimic the current global EPC reclaim would be to  
+> have a
+> new function to only "scan" (or "isolate") SGX_NR_TO_SCAN pages _across_  
+> the
+> given EPC cgroup _AND_ its descendants, and then do the actual reclaim  
+> in one
+> batch.  But this is unnecessarily complicated at this stage.
+>
+> Alternatively, the current sgx_reclaim_pages() could be changed to  
+> return the
+> actual "reclaimed" pages, but not "scanned" pages.  However this  
+> solution also
+> has cons: <CONS>
+> "
+>
+> <CONS>:
+>
+> I recall you mentioned "unable to control latency of each reclaim" etc,  
+> but IIUC
+> one could be:
+>
+> This approach may result in higher chance of "reclaiming EPC pages from
+> descendants but not the root/given EPC cgorup", e.g., when all EPC pages  
+> in the
+> root EPC cgroup are all young while these in its descendants are not.   
+> This may
+> not be desired.
+>
+> Makes sense?
+>
+
+Agree with the flow.
+The con is that this function may block too long that is unacceptable for  
+some callers like synchronous flow which only needs some minimal (e.g.,  
+one page to pass try_charge()) to make forward progress. Convention is to  
+call this function loops to ensure caller's condition is met, i.e., the  
+way the original sgx_reclaim_pages() is called in existing code.
+
+>>
+>> Finally, pass a parameter to sgx_cgroup_try_charge() to indicate whether
+>> a synchronous reclamation is allowed. If the caller allows and cgroup
+>> usage is at its limit, trigger the synchronous reclamation by calling
+>> sgx_cgroup_reclaim_pages() in a loop with cond_resched() in between
+>> iterations.
+>
+> This isn't needed IMHO as you can easily see in the code, and there's no  
+> "design
+> choices" here.
+>
+> General rule: focus on explaining "why", and "design choices", but not
+> implementation details, which can be seen in the code.
+>
+>>
+>> A later patch will add support for asynchronous reclamation reusing
+>> sgx_cgroup_reclaim_pages().
+>
+> Please also mention why "leaving asynchronous reclamation to later  
+> patch(es)" is
+> fine.  E.g., it won't break anything I suppose.
+>
+
+Right. Pages are still in the global list at the moment and only global  
+reclaiming is active until the "turn on" patch. Separating out is really  
+just for the purpose of review IMHO.
+
+> (That being said, as mentioned in previous version, I _think_ it's  
+> better to
+> have one patch to implement the "cgroup" variant EPC reclaim function,  
+> and
+> another patch to use it: both "sync" and "async" way.  But for the sake  
+> of
+> moving forward, I am fine with the current way if nothing is broken.)
+>
+>>
+>> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> ---
+>> V10:
+>> - Simplify the signature by removing a pointer to nr_to_scan (Kai)
+>> - Return pages attempted instead of reclaimed as it is really what the
+>> cgroup caller needs to track progress. This further simplifies the  
+>> design.
+>> - Merge patch for exposing sgx_reclaim_pages() with basic synchronous
+>> reclamation. (Kai)
+>
+> (As mentioned above, I am not sure I suggested this but anyway...)
+>
+
+Sorry above did not characterize your suggestion accurately.
+I'll keep the sync reclaim flow in for now unless strong objections.
+
+>> - Shorten names for EPC cgroup functions. (Jarkko)
+>> - Fix/add comments to justify the design (Kai)
+>> - Separate out a helper for for addressing single iteration of the loop
+>> in sgx_cgroup_try_charge(). (Jarkko)
+>>
+>> V9:
+>> - Add comments for static variables. (Jarkko)
+>>
+>> V8:
+>> - Use width of 80 characters in text paragraphs. (Jarkko)
+>> - Remove alignment for substructure variables. (Jarkko)
+>>
+>> V7:
+>> - Reworked from patch 9 of V6, "x86/sgx: Restructure top-level EPC  
+>> reclaim
+>> function". Do not split the top level function (Kai)
+>> - Dropped patches 7 and 8 of V6.
+>> - Split this out from the big patch, #10 in V6. (Dave, Kai)
+>> ---
+>>  arch/x86/kernel/cpu/sgx/epc_cgroup.c | 127 ++++++++++++++++++++++++++-
+>>  arch/x86/kernel/cpu/sgx/epc_cgroup.h |   5 +-
+>>  arch/x86/kernel/cpu/sgx/main.c       |  45 ++++++----
+>>  arch/x86/kernel/cpu/sgx/sgx.h        |   1 +
+>>  4 files changed, 156 insertions(+), 22 deletions(-)
+>>
+>> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.c  
+>> b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>> index a1dd43c195b2..f7a487a29ed1 100644
+>> --- a/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
+>> @@ -9,16 +9,136 @@
+>>  static struct sgx_cgroup sgx_cg_root;
+>>
+>>  /**
+>> - * sgx_cgroup_try_charge() - try to charge cgroup for a single EPC page
+>> + * sgx_cgroup_lru_empty() - check if a cgroup tree has no pages on its  
+>> LRUs
+>> + * @root:	Root of the tree to check
+>> + *
+>> + * Used to avoid livelocks due to a cgroup having a non-zero charge  
+>> count but
+>> + * no pages on its LRUs, e.g. due to a dead enclave waiting to be  
+>> released or
+>> + * because all pages in the cgroup are unreclaimable.
+>
+> I don't think this comment (the paragraph starting from "Used") should  
+> be here,
+> but should be put to the code where it applies.
+>  Comment what this function does instead.
+>
+
+Ok. I can drop it if no objections from others.
+This was in from the beginning and I saw couple of other examples in  
+existing code that explains expected usage. So I thought we were supposed  
+to do that.
+
+>> + *
+>> + * Return: %true if all cgroups under the specified root have empty  
+>> LRU lists.
+>> + */
+>> +static bool sgx_cgroup_lru_empty(struct misc_cg *root)
+>> +{
+>> +	struct cgroup_subsys_state *css_root;
+>> +	struct cgroup_subsys_state *pos;
+>> +	struct sgx_cgroup *sgx_cg;
+>> +	bool ret = true;
+>> +
+>> +	/*
+>> +	 * Caller ensure css_root ref acquired
+>> +	 */
+>
+> 	/* The caller must ensure ... */
+>
+
+ok
+
+>> +	css_root = &root->css;
+>> +
+>> +	rcu_read_lock();
+>> +	css_for_each_descendant_pre(pos, css_root) {
+>> +		if (!css_tryget(pos))
+>> +			break;
+>> +
+>> +		rcu_read_unlock();
+>> +
+>> +		sgx_cg = sgx_cgroup_from_misc_cg(css_misc(pos));
+>> +
+>> +		spin_lock(&sgx_cg->lru.lock);
+>> +		ret = list_empty(&sgx_cg->lru.reclaimable);
+>> +		spin_unlock(&sgx_cg->lru.lock);
+>> +
+>> +		rcu_read_lock();
+>> +		css_put(pos);
+>> +		if (!ret)
+>> +			break;
+>> +	}
+>> +
+>> +	rcu_read_unlock();
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +/**
+>> + * sgx_cgroup_reclaim_pages() - reclaim EPC from a cgroup tree
+>> + * @root:	The root of cgroup tree to reclaim from.
+>>   *
+>> + * This function performs a pre-order walk in the cgroup tree under  
+>> the given
+>> + * root, attempting to reclaim pages at each node until a fixed number  
+>> of pages
+>> + * (%SGX_NR_TO_SCAN) are attempted for reclamation. No guarantee of  
+>> success on
+>> + * the actual reclamation process. In extreme cases, if all pages in  
+>> front of
+>> + * the LRUs are recently accessed, i.e., considered "too young" to  
+>> reclaim, no
+>> + * page will actually be reclaimed after walking the whole tree.
+>> + *
+>> + * Callers check for the need for reclamation before calling this  
+>> function. Some
+>> + * callers may run this function in a loop guarded by some criteria for
+>> + * triggering reclamation, and call cond_resched() in between  
+>> iterations to
+>> + * avoid indefinite blocking.
+>
+> Ditto IMHO the second paragraph isn't necessary.  But anyway.
+>
+
+Same as above, I can drop if no objections.
+
+>> + */
+>> +static void sgx_cgroup_reclaim_pages(struct misc_cg *root)
+>> +{
+>> +	struct cgroup_subsys_state *css_root;
+>> +	struct cgroup_subsys_state *pos;
+>> +	struct sgx_cgroup *sgx_cg;
+>> +	unsigned int cnt = 0;
+>> +
+>> +	 /* Caller ensure css_root ref acquired */
+>> +	css_root = &root->css;
+>> +
+>> +	rcu_read_lock();
+>> +	css_for_each_descendant_pre(pos, css_root) {
+>> +		if (!css_tryget(pos))
+>> +			break;
+>> +		rcu_read_unlock();
+>> +
+>> +		sgx_cg = sgx_cgroup_from_misc_cg(css_misc(pos));
+>> +		cnt += sgx_reclaim_pages(&sgx_cg->lru);
+>> +
+>> +		rcu_read_lock();
+>> +		css_put(pos);
+>> +
+>> +		if (cnt >= SGX_NR_TO_SCAN)
+>> +			break;
+>> +	}
+>> +
+>> +	rcu_read_unlock();
+>> +}
+>> +
+>> +static int __sgx_cgroup_try_charge(struct sgx_cgroup *epc_cg)
+>> +{
+>> +	if (!misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg, PAGE_SIZE))
+>> +		return 0;
+>> +
+>> +	if (sgx_cgroup_lru_empty(epc_cg->cg))
+>> +		return -ENOMEM;
+>> +
+>> +	if (signal_pending(current))
+>> +		return -ERESTARTSYS;
+>> +
+>> +	return -EBUSY;
+>> +}
+>> +
+>> +/**
+>> + * sgx_cgroup_try_charge() - try to charge cgroup for a single EPC page
+>>   * @sgx_cg:	The EPC cgroup to be charged for the page.
+>> + * @reclaim:	Whether or not synchronous EPC reclaim is allowed.
+>>   * Return:
+>>   * * %0 - If successfully charged.
+>>   * * -errno - for failures.
+>>   */
+>> -int sgx_cgroup_try_charge(struct sgx_cgroup *sgx_cg)
+>> +int sgx_cgroup_try_charge(struct sgx_cgroup *sgx_cg, enum sgx_reclaim  
+>> reclaim)
+>>  {
+>> -	return misc_cg_try_charge(MISC_CG_RES_SGX_EPC, sgx_cg->cg, PAGE_SIZE);
+>> +	int ret;
+>> +
+>> +	for (;;) {
+>> +		ret = __sgx_cgroup_try_charge(sgx_cg);
+>> +
+>> +		if (ret != -EBUSY)
+>> +			return ret;
+>> +
+>> +		if (reclaim == SGX_NO_RECLAIM)
+>> +			return -ENOMEM;
+>> +
+>> +		sgx_cgroup_reclaim_pages(sgx_cg->cg);
+>> +		cond_resched();
+>> +	}
+>> +
+>> +	return 0;
+>>  }
+>>
+>>  /**
+>> @@ -50,6 +170,7 @@ const struct misc_res_ops sgx_cgroup_ops = {
+>>
+>>  static void sgx_cgroup_misc_init(struct misc_cg *cg, struct sgx_cgroup  
+>> *sgx_cg)
+>>  {
+>> +	sgx_lru_init(&sgx_cg->lru);
+>>  	cg->res[MISC_CG_RES_SGX_EPC].priv = sgx_cg;
+>>  	sgx_cg->cg = cg;
+>>  }
+>> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.h  
+>> b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
+>> index 8f794e23fad6..f62dce0cac51 100644
+>> --- a/arch/x86/kernel/cpu/sgx/epc_cgroup.h
+>> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
+>> @@ -20,7 +20,7 @@ static inline struct sgx_cgroup  
+>> *sgx_get_current_cg(void)
+>>
+>>  static inline void sgx_put_cg(struct sgx_cgroup *sgx_cg) { }
+>>
+>> -static inline int sgx_cgroup_try_charge(struct sgx_cgroup *sgx_cg)
+>> +static inline int sgx_cgroup_try_charge(struct sgx_cgroup *sgx_cg,  
+>> enum sgx_reclaim r)
+>
+> Is the @r here intentional for shorter typing?
+>
+
+yes :-)
+Will speel out to make it consistent if that's the concern.
+
+> [...]
+>
+>> @@ -572,7 +583,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void  
+>> *owner, enum sgx_reclaim reclaim)
+>>  	int ret;
+>>
+>>  	sgx_cg = sgx_get_current_cg();
+>> -	ret = sgx_cgroup_try_charge(sgx_cg);
+>> +	ret = sgx_cgroup_try_charge(sgx_cg, reclaim);
+>>  	if (ret) {
+>>  		sgx_put_cg(sgx_cg);
+>>  		return ERR_PTR(ret);
+>> @@ -604,7 +615,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void  
+>> *owner, enum sgx_reclaim reclaim)
+>>  		 * Need to do a global reclamation if cgroup was not full but free
+>>  		 * physical pages run out, causing __sgx_alloc_epc_page() to fail.
+>>  		 */
+>> -		sgx_reclaim_pages();
+>> +		sgx_reclaim_pages_global();
+>>  		cond_resched();
+>>  	}
+>
+> I wish we could put the result of discussion around "per-cgroup reclaim"  
+> vs
+> "global reclaim" when try_charge() succeeds but still fails to allocate  
+> to the
+> changelog:
+>
+> https://lore.kernel.org/lkml/a2d633da-6ab8-49d0-bca5-1e9eb7c3fc9a@intel.com/
+>
+> But perhaps it is just me that thinks this better to be clarified in  
+> changelog,
+> so up to you.
+>
+
+Will add that.
+
+> (btw, looks another reason to split the "cgroup" EPC reclaim function  
+> out as a
+> separate patch, but again, up to you.)
+>
+>
+Thanks
+Haitao
 
