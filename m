@@ -1,206 +1,729 @@
-Return-Path: <cgroups+bounces-2314-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2315-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D4BB8985E3
-	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 13:19:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFC8F89871C
+	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 14:20:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 242082880AD
-	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 11:19:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B7171C2349F
+	for <lists+cgroups@lfdr.de>; Thu,  4 Apr 2024 12:20:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ADB18174C;
-	Thu,  4 Apr 2024 11:19:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B00D812A176;
+	Thu,  4 Apr 2024 12:17:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VVNWw9n+"
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="fxrtnFAZ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E162E6D1BA;
-	Thu,  4 Apr 2024 11:19:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712229592; cv=fail; b=LKnvGosFzG8yWvPk/nb1FaQ1GIy3YwHEMGk9cy7dsJYoQJ+hHmJSGB35++GXWoXCiXDU96jKCX9gutgQKnXLgOSGNOWpsTu872TcvGsKuST63ndXdEWkCqkNgjggLRixSN7NAFy/MTh5Z2g+mnuG2CqxAtNoAFgTosVGzafdkbA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712229592; c=relaxed/simple;
-	bh=tD4RG6UdU3/OgxayAKODzP/77CjdlL+sf4xTYDKvOuo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=EENOQPnZqlAm/zAF/wFyvnXaDLAocwSVXZEaRlaP9eUt/2D8jyvg1t5bV3mPGTW5/0ZH1OzWCwXKhjOrD14wQKlQQplCUY84O4o1oiheCPxe1fp5rJmeoteTKRaQm4W7DNZ6L6xTLxh1lbJiet1y/+fQJ8HxXbRzA97D6mXDoLs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VVNWw9n+; arc=fail smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712229589; x=1743765589;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=tD4RG6UdU3/OgxayAKODzP/77CjdlL+sf4xTYDKvOuo=;
-  b=VVNWw9n+bII3s9cp5j5fE+qajTxFupiU/17Tnwxf4Wsb0LhhmwLKWCMm
-   yxyb3zPkVcViYwh/8T/iDyEsj+Mrw4VBx/2MmGai+5lSLyRGq0ZmhSf7M
-   5cM1KIWXqyVBHggsJZkA46ddImRRk+8sT2yPrafyrPYJ7IDi7nwjvHCFf
-   e89AcFgTyQdP63K5ML0BnR96qrX+wOh4dVJd1p/CdlPXV14Rhk13Heob0
-   LI0sWL3XImdeBAuYq4LR8W4cusU4W5O/+Z7YK25++pHmqIkBXaAC/1Ay0
-   uzLjmyPAGTAl4UllGyshaH3aAQlK5zk75d1bl6Js3ZCfveNO8zb7Pb3xd
-   g==;
-X-CSE-ConnectionGUID: 3Q6gmsTfTf2O9wIzkBHkcA==
-X-CSE-MsgGUID: nNZZqBU3ST27pjyK24524g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7356350"
-X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
-   d="scan'208";a="7356350"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 04:17:30 -0700
-X-CSE-ConnectionGUID: rDhNKBD0QTCpa7h+h7745g==
-X-CSE-MsgGUID: CXevjt56THG2rxqckkz8Ag==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="41917859"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Apr 2024 04:17:28 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 4 Apr 2024 04:17:28 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 4 Apr 2024 04:17:28 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 4 Apr 2024 04:17:28 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 366C512A163;
+	Thu,  4 Apr 2024 12:17:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712233077; cv=none; b=nmHQiXINi72c+mFwZebZ97Hovm5IAQAjwCytJD0k2pXRdqkATAMlR0rSvfc4ePWSY6H30/HqKMLwUFFLo3cP+rcWr2njxezTBgMqD3CBxj3qHyVt0+qn6LT9On3FtrOLfZCGDTLPlQNI5+3G3/GF/ET8snRJmdja+DHJ0o2UnXU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712233077; c=relaxed/simple;
+	bh=3wO5KYb4Jg3XvOszZEVnc9napAmW3+mYjTSGe8bQvEY=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Fhp12MPoA9tajdZjowH96/hUMWxhxAlmULQi7wyDDWfakZntgYJnt+uA35uGOdg6CUyflSVsB9oXC9+J6uwu+/7NZK60WO0gsVXChWlgO9q26o5zj+Gkm73gh7B4hfY4iS8YCWFkxbvVkrHJuBnrhpSN53BzDHaHGx9d+xDpEoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=fxrtnFAZ; arc=none smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 434A6eFr001681;
+	Thu, 4 Apr 2024 05:16:42 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=pfpt0220; bh=WFNH2xqWyxV1VpCkW8vjvZ
+	z0yWgDDXkQw2ZrEetuygg=; b=fxrtnFAZsRo3LBMg9SekQ8XXVsKvxh4ys+Gtxs
+	7IrhPd+UqS5JjF/1Ub6DhFlH0oMyExmad9ElCxqajXghzvYSFib+hjlWLS4OcZXY
+	wSnm3Cs55EEUBqcw2oq2p4vI9Wr9pfETFNUJtVmHsI6621SDNhBPyKSv9U4eefcx
+	7I6zX6CowwxBhZ63KIWQqMFuJ2/Y00YU5RJVHhJPc4cMg2mDpGVyUEbQ2FlNBkTo
+	RcuDqOanfEGSnx8+Fr3IxmZhqvaLtrowxakBZO8mInlYYICsI6B724skjI+Mo8b5
+	n127RaqaMdnC1ryIw0qrbMIAeKpojpD2fs+t23znUNKHbUVA==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3x9em6j8b9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Apr 2024 05:16:41 -0700 (PDT)
+Received: from m0045851.ppops.net (m0045851.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.24/8.17.1.24) with ESMTP id 434CGFI5029994;
+	Thu, 4 Apr 2024 05:16:41 -0700
+Received: from dc6wp-exch02.marvell.com ([4.21.29.225])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3x9em6j8b7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Apr 2024 05:16:41 -0700 (PDT)
+Received: from DC6WP-EXCH02.marvell.com (10.76.176.209) by
+ DC6WP-EXCH02.marvell.com (10.76.176.209) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 4 Apr 2024 04:17:27 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EcHEmoiGu6PDKeX1FJf+fMr+W1yxLNlmD7bippGokn5RbwNIffcyQi65mhzhHviETmN0NX1ilIOW+XJYukJjo97vk9E82Xtn6nEYt/I1ZBCDDnacaqV9AlBSdy63Mfns+Ayfq77CvpxvMdEvyijE9b6thsoiL+PoSG7TewjWP0xHs2aK2jHykh6D3+54crsoboIBdeljDmprfym16j4FFWaCM/dGTdoyldf8rnAwMxypu7QA8aNCRMM4B+WkJfE+5Qf30pzotd7dRj84z/QuJ81diJ9KBoaDNkMr19ChEY7wqeZOvb/ZwmB26k5nE4AoUU8R1L+PAbGIWAIRu8xohA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tD4RG6UdU3/OgxayAKODzP/77CjdlL+sf4xTYDKvOuo=;
- b=VxlMPER93+f75xzGMb8Dj+oYYVfx7VRV5u11yg60Vdc8jFh0huQHl40NsREcjh49ZPSwDMvQ1vQr8s1gC3Ac8Mz3lhZHi1JKGrL6Iz8UT1ytavNgvbm5H1/IL3xOT+1wVEsvckKyr19X4EZ8aNwrF2TI+boXHEQHaXVNBlC8UnZTfcaOD5x0kjL9pqr+q7M+VKb1XQi1jiWY9LOptlzWiJ8VaQkzWWgonIwoD0DNH6u8m8m2/GYK/+iaz+a89eftuqNtAG+MvSBAQGSbHwZOoQJakhoKwnbtDo9aYAsLyFS59fk4J6oppzOz/c41fG4Bi+cFauSyovvH6TaXbffJxQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
- by CO1PR11MB4915.namprd11.prod.outlook.com (2603:10b6:303:93::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.25; Thu, 4 Apr
- 2024 11:16:55 +0000
-Received: from BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92]) by BL1PR11MB5978.namprd11.prod.outlook.com
- ([fe80::ef2c:d500:3461:9b92%4]) with mapi id 15.20.7452.019; Thu, 4 Apr 2024
- 11:16:55 +0000
-From: "Huang, Kai" <kai.huang@intel.com>
-To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
-	<tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
-	<linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-	"jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
-	<cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
-	"tglx@linutronix.de" <tglx@linutronix.de>, "haitao.huang@linux.intel.com"
-	<haitao.huang@linux.intel.com>, "Mehta, Sohil" <sohil.mehta@intel.com>,
-	"tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com" <mingo@redhat.com>,
-	"bp@alien8.de" <bp@alien8.de>
-CC: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-	"seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
-	<anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
-	"kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
-	<yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-	"chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: [PATCH v10 09/14] x86/sgx: Implement async reclamation for cgroup
-Thread-Topic: [PATCH v10 09/14] x86/sgx: Implement async reclamation for
- cgroup
-Thread-Index: AQHagKYLcT2mglD0z0mJ5usuVyn07rFYAeKA
-Date: Thu, 4 Apr 2024 11:16:54 +0000
-Message-ID: <cb5a76983bc195e1cfb2a4e2c96c31d694e5b777.camel@intel.com>
-References: <20240328002229.30264-1-haitao.huang@linux.intel.com>
-	 <20240328002229.30264-10-haitao.huang@linux.intel.com>
-In-Reply-To: <20240328002229.30264-10-haitao.huang@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.50.3 (3.50.3-1.fc39) 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BL1PR11MB5978:EE_|CO1PR11MB4915:EE_
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: QkWNDC/7/e9SHmlKKSZnJLwKQYTA051bU1rrhCVlCOpNOAWP9O3+EbcWZXWaCs3k/gUuV5FwBHZHjjf/iirgyYPQ/M+sDBCbINqCy8N7D8tn+97YAQHXnG0MJr5tURT/5EmCU6DTO+zdCS3XpG+XbYbfiIUCWo+vAhE1wxRFgcWypH4q+4MMAozkkRT2RJPfNDTVfvakOLZk+G7iP3lgWuQ9oIs2iaFks9g0+qyD1yoAlsiAiGtlNQ2RT99aQvt2yLL3YlQsAj2SmhRG0/bjRlDw/VANkrCayC8Oxg8Cq1g+eMXNWszy1PqJK6Wis/qmIhrebuU1y521ILKqWhnLGZwaFHJdwFsr6+8mrHqlvn729uMo37H8zTLXquqfyTSCYYEYLNBwkUhrPRIuVSHOijjslIlYMQFsWGVb6r/0eC+EMTXCDz0HlwpXsaiMeOV1Gunh947d1PGHjhg4g92sPn5voNtEwfTBpq0oNEr2pkf5P6BIVoIfig42opbDe7NHH5I/+PAWoefk8okGNLUnhXd2d9JjdLCSMh+n+9mAD18soe9zbD7I6F8Ugl0syPyvLOKZbr40QkoT13mo/xL1O4m0RKZYflBKVG+zu2LXJ1hlR0lQHsKmM7g0ji91W77FAC8flON0mRqi9ig8bQF+t206KR9f9qIF7fTjUHZ7+0iMgEOVMaGHYHq5CDUSyi10brA62IyAYZHnw3263Ni+eg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(366007)(921011);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SkJrVWprUENqRExHb1RjWlU4RVcrWko3MGZ2QUMxOWRBTCtPaGR0S250T1Rm?=
- =?utf-8?B?NldQbnUxU3FsS05NSVhJK3JSbTQ3ZEZpUlhmalp0bmJQclp6dnNKM0FsSDMw?=
- =?utf-8?B?anRQRmxEZnpjbHp3elBsanY5ZTcvay9lWjlMejJZZER1Uys0L0IvQUFNL1Bn?=
- =?utf-8?B?K2N1NkExL1N4ZUd3Z1FYRWwrNFVBTE1JQklEWk1SQ1VtUGoyT21tZE5BTDZK?=
- =?utf-8?B?b1duL1pmbFh2aXlkVzlmTDE3TCt5WmdpL21sbVRRWStYKzVZbTFiUGc1anh3?=
- =?utf-8?B?TVBWWHhIYktHWWpNNXdGUS9jZGVoRDN4QlBJbWEvY2d5cUVqM3NIa3pvejBk?=
- =?utf-8?B?U0tpRlp6L0NpL0w1Z1hMajZkb09TV0oxSlpuKzJHaDJ1MHcrMGt5Q0JxbVBk?=
- =?utf-8?B?M1Jobzc5TVgxQ3dFT2dmREM2bnllV3VWdy94dnBBNG8yeDY2WHZXVDBtZ2JT?=
- =?utf-8?B?TjNpWm9BdkR2YzBoSEFFSFYyQXhONTBvWS9SRXdMQ0krYmRHcE9DWXp6Tmtx?=
- =?utf-8?B?VG13Q0FCczRhdFFuajQzaXpMZnRzMnpUQWhVUDRiVzhCMnBWazErczR6cGwz?=
- =?utf-8?B?bFRKeDUzWERSZUc2dmE1VjdwTjhHVVc3UXJMajJZU3JWSitQYllLdmd5bldz?=
- =?utf-8?B?VDV4WU1NNjhWSURUOUEyNWZsb3VMb05IelQ0Ykh5bys2ZThXUy9mdjl3ZENy?=
- =?utf-8?B?djRLM0VLMi9yZFYwamxXd1RwL3c3WDNXMFJ3bHNVcG0wSnZLTXpqaXpaQmFk?=
- =?utf-8?B?VTN0OWthRnJvZnpXYnpFQzN0VGpEM05hYUZwcEdjSHFtV0JXT1JJVThJMXkr?=
- =?utf-8?B?V1pjWTBEN2pqRUxnT0QzK3h1N09LTGxGWlZ4MXhrS0xJTmxyRHNlMlhzb1pk?=
- =?utf-8?B?YWpaT0VKaWFxMkRmek5xL1dTWWMrMVQ4b3Nzc0hqUURqY2dCeWJVeGpWaHVM?=
- =?utf-8?B?SVB4K1pqV3g4QTcxZXdRdFdFOW9TNThCdTQ1bVBXeFBEVlZzVWFuamc1T2k4?=
- =?utf-8?B?WjdnMEk1VHoydUM0dzg0TVBJTVMwWmp4a0thOTFSQ3ZTZVJocGRyR3k0a0g5?=
- =?utf-8?B?b2tNRm5XRlRhZXNHZVVJb0RpbDlCQ2hwaHdkYXhOd2VsU25IRlNaVnNjVS9Y?=
- =?utf-8?B?emhPVEFXWUc4dE81V0ltZUNENXdSbFVpMUc4K1ZLNXJMOGYxTXlxWEQzanZa?=
- =?utf-8?B?RFRIVkNtcUlpQjNSV3I5c09QT3J0ZVJiUXN4VE81Z0l6VjljaUxEamo4UzBB?=
- =?utf-8?B?T1hJRnZzYUdqRm5sUnZVd2VNbzlpNjNoYmp5L0k3QnFiaThYUWVrVVduejNU?=
- =?utf-8?B?eHlwaWEzRXREaFlFOGV4aWRHajdsTUVsWExmQ2hOakhIdGJERk4xUTRaQThw?=
- =?utf-8?B?TVJQZFo4NWFzeVdWTWsrMEtXeHZCZDdsdW5odGdUWmh4a2w4Q05JSWpPek1Y?=
- =?utf-8?B?cWpCbkl5dUxzTm1ETlZ3M29PN3Y2dTBFNTViRFFBQzI5YStFdGdWaUJ2eUhZ?=
- =?utf-8?B?ZFNpVldWNFNXeUhhR2xtaG5aMnA4TjhWL2k0QnpzS0ROVHdaa3R5SnpiT3Q5?=
- =?utf-8?B?NmZNVExLeEdiQXVtVHd1dDcycVNzamdqWGdCS3hveTdSR2h6dXBtVzRDME5G?=
- =?utf-8?B?MXJORTZQdCtzZVg0aVhlMVQwTENlYVJIRGlpZXBhbWQwcmRIL2NhYVgyMytt?=
- =?utf-8?B?NDRvekNLdlp3Rms3eGhJL21sbFNoOEw0djRaY0w5TWY3d0Ywdzk2Mll0VVp0?=
- =?utf-8?B?SXJTQjJpcTNKUUJUU0xydXBLRlpyZ1doWU8zZWs2eEY1Y0tKOVhnR25Dc0Jp?=
- =?utf-8?B?SmV4QWJXRFM1cWgrcmNTazZnM3IxdkZCNGtaWW1MUThXSGJieGhEQmJheXRY?=
- =?utf-8?B?NE5PRFZQVXIrSG5rdE9YZWFsVU1TTHp5TFJPbnc5MWpDbS9QSzRQOVg4SHdu?=
- =?utf-8?B?ZE9Od2FPMmtqVXI5d09GTFJOdVYyTTdvajgwTkpaRXpVU2krckFIMlFnYzNa?=
- =?utf-8?B?emxxQzJ1THRpTmx0MUNoYTFZUDVCZ1hxN0NEMUdKVnNUNGxNcHZnYXNWd2ZP?=
- =?utf-8?B?bjN4d3dNdTlpUkYxRUlFYVBJNCtjN0VNN3VwLzUyWkZjQVhINHZib25TMXNJ?=
- =?utf-8?B?azBlUU9UNXZOZHpwTHN5WGxFUGlDWFcvdTNGZ0VuRjNNeGVmbzFsaXVEWnlZ?=
- =?utf-8?B?TlE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <2770B2374DB47E4999DFB9952BF8225B@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ 15.2.1544.4; Thu, 4 Apr 2024 05:16:40 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC6WP-EXCH02.marvell.com
+ (10.76.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Thu, 4 Apr 2024 05:16:40 -0700
+Received: from hyd1403.caveonetworks.com (unknown [10.29.37.84])
+	by maili.marvell.com (Postfix) with SMTP id 473A53F7071;
+	Thu,  4 Apr 2024 05:16:26 -0700 (PDT)
+Date: Thu, 4 Apr 2024 17:46:25 +0530
+From: Linu Cherian <lcherian@marvell.com>
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+CC: <akpm@linux-foundation.org>, <alim.akhtar@samsung.com>,
+        <alyssa@rosenzweig.io>, <asahi@lists.linux.dev>,
+        <baolu.lu@linux.intel.com>, <bhelgaas@google.com>,
+        <cgroups@vger.kernel.org>, <corbet@lwn.net>, <david@redhat.com>,
+        <dwmw2@infradead.org>, <hannes@cmpxchg.org>, <heiko@sntech.de>,
+        <iommu@lists.linux.dev>, <jernej.skrabec@gmail.com>,
+        <jonathanh@nvidia.com>, <joro@8bytes.org>,
+        <krzysztof.kozlowski@linaro.org>, <linux-doc@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-rockchip@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>, <linux-sunxi@lists.linux.dev>,
+        <linux-tegra@vger.kernel.org>, <lizefan.x@bytedance.com>,
+        <marcan@marcan.st>, <mhiramat@kernel.org>, <m.szyprowski@samsung.com>,
+        <paulmck@kernel.org>, <rdunlap@infradead.org>, <robin.murphy@arm.com>,
+        <samuel@sholland.org>, <suravee.suthikulpanit@amd.com>,
+        <sven@svenpeter.dev>, <thierry.reding@gmail.com>, <tj@kernel.org>,
+        <tomas.mudrunka@gmail.com>, <vdumpa@nvidia.com>, <wens@csie.org>,
+        <will@kernel.org>, <yu-cheng.yu@intel.com>, <rientjes@google.com>,
+        <bagasdotme@gmail.com>, <mkoutny@suse.com>
+Subject: Re: [PATCH v5 01/11] iommu/vt-d: add wrapper functions for page
+ allocations
+Message-ID: <20240404121625.GB102637@hyd1403.caveonetworks.com>
+References: <20240222173942.1481394-1-pasha.tatashin@soleen.com>
+ <20240222173942.1481394-2-pasha.tatashin@soleen.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 40662030-bcca-47ab-0e76-08dc5498bbf8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Apr 2024 11:16:54.4934
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bIz285Ww3jjMMdIOqxa0+8xTd5acpoRAPAJqju9XrO4/lFImuIBgNzR+4aL0d4IwCFziVOoUAjca3oJvYB0DSg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4915
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240222173942.1481394-2-pasha.tatashin@soleen.com>
+X-Proofpoint-ORIG-GUID: ml5ER6014kXSnT0Ebw1dOx2QJIXx5OyA
+X-Proofpoint-GUID: 9OBRWJvB46jCkAc7cBBSeZFwPQdY4s0e
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-04_08,2024-04-04_01,2023-05-22_02
 
-T24gV2VkLCAyMDI0LTAzLTI3IGF0IDE3OjIyIC0wNzAwLCBIYWl0YW8gSHVhbmcgd3JvdGU6DQo+
-IMKgDQo+IMKgdm9pZCBzZ3hfY2dyb3VwX2luaXQodm9pZCkNCj4gwqB7DQo+ICsJc2d4X2NnX3dx
-ID0gYWxsb2Nfd29ya3F1ZXVlKCJzZ3hfY2dfd3EiLCBXUV9VTkJPVU5EIHwgV1FfRlJFRVpBQkxF
-LCBXUV9VTkJPVU5EX01BWF9BQ1RJVkUpOw0KPiArDQo+ICsJLyogQWxsIENncm91cHMgZnVuY3Rp
-b25hbGl0aWVzIGFyZSBkaXNhYmxlZC4gKi8NCj4gKwlpZiAoV0FSTl9PTighc2d4X2NnX3dxKSkN
-Cj4gKwkJcmV0dXJuOw0KPiArDQoNCkkgZG9uJ3QgdGhpbmsgeW91IHNob3VsZCBXQVJOKCksIGJl
-Y2F1c2UgaXQncyBub3QgYSBrZXJuZWwgYnVnIG9yIHNpbWlsYXIuICBKdXN0DQpwcmludCBhIG1l
-c3NhZ2Ugc2F5aW5nIEVQQyBjZ3JvdXAgaXMgZGlzYWJsZWQgYW5kIG1vdmUgb24uDQoNCglpZiAo
-IXNneF9jZ193cSkgew0KCQlwcl9lcnIoIlNHWCBFUEMgY2dyb3VwIGRpc2FibGVkOiBhbGxvY193
-b3JrcXVldWUoKSBmYWlsZWQuXG4iKTsNCgkJcmV0dXJuOw0KCX0NCg==
+Hi Pasha,
+
+On 2024-02-22 at 23:09:27, Pasha Tatashin (pasha.tatashin@soleen.com) wrote:
+> In order to improve observability and accountability of IOMMU layer, we
+> must account the number of pages that are allocated by functions that
+> are calling directly into buddy allocator.
+> 
+> This is achieved by first wrapping the allocation related functions into a
+> separate inline functions in new file:
+> 
+> drivers/iommu/iommu-pages.h
+> 
+> Convert all page allocation calls under iommu/intel to use these new
+> functions.
+> 
+> Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+> Acked-by: David Rientjes <rientjes@google.com>
+> Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+> ---
+>  drivers/iommu/intel/dmar.c          |  16 +--
+>  drivers/iommu/intel/iommu.c         |  47 +++------
+>  drivers/iommu/intel/iommu.h         |   2 -
+>  drivers/iommu/intel/irq_remapping.c |  16 +--
+>  drivers/iommu/intel/pasid.c         |  18 ++--
+>  drivers/iommu/intel/svm.c           |  11 +-
+>  drivers/iommu/iommu-pages.h         | 154 ++++++++++++++++++++++++++++
+>  7 files changed, 201 insertions(+), 63 deletions(-)
+>  create mode 100644 drivers/iommu/iommu-pages.h
+
+
+Few minor nits.
+
+> 
+> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+> index 23cb80d62a9a..ff6045ae8e97 100644
+> --- a/drivers/iommu/intel/dmar.c
+> +++ b/drivers/iommu/intel/dmar.c
+> @@ -32,6 +32,7 @@
+>  
+>  #include "iommu.h"
+>  #include "../irq_remapping.h"
+> +#include "../iommu-pages.h"
+>  #include "perf.h"
+>  #include "trace.h"
+>  #include "perfmon.h"
+> @@ -1185,7 +1186,7 @@ static void free_iommu(struct intel_iommu *iommu)
+>  	}
+>  
+>  	if (iommu->qi) {
+> -		free_page((unsigned long)iommu->qi->desc);
+> +		iommu_free_page(iommu->qi->desc);
+>  		kfree(iommu->qi->desc_status);
+>  		kfree(iommu->qi);
+>  	}
+> @@ -1731,7 +1732,8 @@ static void __dmar_enable_qi(struct intel_iommu *iommu)
+>  int dmar_enable_qi(struct intel_iommu *iommu)
+>  {
+>  	struct q_inval *qi;
+> -	struct page *desc_page;
+> +	void *desc;
+> +	int order;
+>  
+>  	if (!ecap_qis(iommu->ecap))
+>  		return -ENOENT;
+> @@ -1752,19 +1754,19 @@ int dmar_enable_qi(struct intel_iommu *iommu)
+>  	 * Need two pages to accommodate 256 descriptors of 256 bits each
+>  	 * if the remapping hardware supports scalable mode translation.
+>  	 */
+> -	desc_page = alloc_pages_node(iommu->node, GFP_ATOMIC | __GFP_ZERO,
+> -				     !!ecap_smts(iommu->ecap));
+> -	if (!desc_page) {
+> +	order = ecap_smts(iommu->ecap) ? 1 : 0;
+> +	desc = iommu_alloc_pages_node(iommu->node, GFP_ATOMIC, order);
+> +	if (!desc) {
+>  		kfree(qi);
+>  		iommu->qi = NULL;
+>  		return -ENOMEM;
+>  	}
+>  
+> -	qi->desc = page_address(desc_page);
+> +	qi->desc = desc;
+>  
+>  	qi->desc_status = kcalloc(QI_LENGTH, sizeof(int), GFP_ATOMIC);
+>  	if (!qi->desc_status) {
+> -		free_page((unsigned long) qi->desc);
+> +		iommu_free_page(qi->desc);
+>  		kfree(qi);
+>  		iommu->qi = NULL;
+>  		return -ENOMEM;
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index 6fb5f6fceea1..2c676f46e38c 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -28,6 +28,7 @@
+>  #include "../dma-iommu.h"
+>  #include "../irq_remapping.h"
+>  #include "../iommu-sva.h"
+> +#include "../iommu-pages.h"
+>  #include "pasid.h"
+>  #include "cap_audit.h"
+>  #include "perfmon.h"
+> @@ -224,22 +225,6 @@ static int __init intel_iommu_setup(char *str)
+>  }
+>  __setup("intel_iommu=", intel_iommu_setup);
+>  
+> -void *alloc_pgtable_page(int node, gfp_t gfp)
+> -{
+> -	struct page *page;
+> -	void *vaddr = NULL;
+> -
+> -	page = alloc_pages_node(node, gfp | __GFP_ZERO, 0);
+> -	if (page)
+> -		vaddr = page_address(page);
+> -	return vaddr;
+> -}
+> -
+> -void free_pgtable_page(void *vaddr)
+> -{
+> -	free_page((unsigned long)vaddr);
+> -}
+> -
+>  static int domain_type_is_si(struct dmar_domain *domain)
+>  {
+>  	return domain->domain.type == IOMMU_DOMAIN_IDENTITY;
+> @@ -473,7 +458,7 @@ struct context_entry *iommu_context_addr(struct intel_iommu *iommu, u8 bus,
+>  		if (!alloc)
+>  			return NULL;
+>  
+> -		context = alloc_pgtable_page(iommu->node, GFP_ATOMIC);
+> +		context = iommu_alloc_page_node(iommu->node, GFP_ATOMIC);
+>  		if (!context)
+>  			return NULL;
+>  
+> @@ -647,17 +632,17 @@ static void free_context_table(struct intel_iommu *iommu)
+>  	for (i = 0; i < ROOT_ENTRY_NR; i++) {
+>  		context = iommu_context_addr(iommu, i, 0, 0);
+>  		if (context)
+> -			free_pgtable_page(context);
+> +			iommu_free_page(context);
+>  
+>  		if (!sm_supported(iommu))
+>  			continue;
+>  
+>  		context = iommu_context_addr(iommu, i, 0x80, 0);
+>  		if (context)
+> -			free_pgtable_page(context);
+> +			iommu_free_page(context);
+>  	}
+>  
+> -	free_pgtable_page(iommu->root_entry);
+> +	iommu_free_page(iommu->root_entry);
+>  	iommu->root_entry = NULL;
+>  }
+>  
+> @@ -795,7 +780,7 @@ static struct dma_pte *pfn_to_dma_pte(struct dmar_domain *domain,
+>  		if (!dma_pte_present(pte)) {
+>  			uint64_t pteval;
+>  
+> -			tmp_page = alloc_pgtable_page(domain->nid, gfp);
+> +			tmp_page = iommu_alloc_page_node(domain->nid, gfp);
+>  
+>  			if (!tmp_page)
+>  				return NULL;
+> @@ -807,7 +792,7 @@ static struct dma_pte *pfn_to_dma_pte(struct dmar_domain *domain,
+>  
+>  			if (cmpxchg64(&pte->val, 0ULL, pteval))
+>  				/* Someone else set it while we were thinking; use theirs. */
+> -				free_pgtable_page(tmp_page);
+> +				iommu_free_page(tmp_page);
+>  			else
+>  				domain_flush_cache(domain, pte, sizeof(*pte));
+>  		}
+> @@ -920,7 +905,7 @@ static void dma_pte_free_level(struct dmar_domain *domain, int level,
+>  		      last_pfn < level_pfn + level_size(level) - 1)) {
+>  			dma_clear_pte(pte);
+>  			domain_flush_cache(domain, pte, sizeof(*pte));
+> -			free_pgtable_page(level_pte);
+> +			iommu_free_page(level_pte);
+>  		}
+>  next:
+>  		pfn += level_size(level);
+> @@ -944,7 +929,7 @@ static void dma_pte_free_pagetable(struct dmar_domain *domain,
+>  
+>  	/* free pgd */
+>  	if (start_pfn == 0 && last_pfn == DOMAIN_MAX_PFN(domain->gaw)) {
+> -		free_pgtable_page(domain->pgd);
+> +		iommu_free_page(domain->pgd);
+>  		domain->pgd = NULL;
+>  	}
+>  }
+> @@ -1046,7 +1031,7 @@ static int iommu_alloc_root_entry(struct intel_iommu *iommu)
+>  {
+>  	struct root_entry *root;
+>  
+> -	root = alloc_pgtable_page(iommu->node, GFP_ATOMIC);
+> +	root = iommu_alloc_page_node(iommu->node, GFP_ATOMIC);
+>  	if (!root) {
+>  		pr_err("Allocating root entry for %s failed\n",
+>  			iommu->name);
+> @@ -1718,7 +1703,7 @@ static void domain_exit(struct dmar_domain *domain)
+>  		LIST_HEAD(freelist);
+>  
+>  		domain_unmap(domain, 0, DOMAIN_MAX_PFN(domain->gaw), &freelist);
+> -		put_pages_list(&freelist);
+> +		iommu_put_pages_list(&freelist);
+>  	}
+>  
+>  	if (WARN_ON(!list_empty(&domain->devices)))
+> @@ -2452,7 +2437,7 @@ static int copy_context_table(struct intel_iommu *iommu,
+>  			if (!old_ce)
+>  				goto out;
+>  
+> -			new_ce = alloc_pgtable_page(iommu->node, GFP_KERNEL);
+> +			new_ce = iommu_alloc_page_node(iommu->node, GFP_KERNEL);
+>  			if (!new_ce)
+>  				goto out_unmap;
+>  
+> @@ -3385,7 +3370,7 @@ static int intel_iommu_memory_notifier(struct notifier_block *nb,
+>  					start_vpfn, mhp->nr_pages,
+>  					list_empty(&freelist), 0);
+>  			rcu_read_unlock();
+> -			put_pages_list(&freelist);
+> +			iommu_put_pages_list(&freelist);
+>  		}
+>  		break;
+>  	}
+> @@ -3816,7 +3801,7 @@ static int md_domain_init(struct dmar_domain *domain, int guest_width)
+>  	domain->max_addr = 0;
+>  
+>  	/* always allocate the top pgd */
+> -	domain->pgd = alloc_pgtable_page(domain->nid, GFP_ATOMIC);
+> +	domain->pgd = iommu_alloc_page_node(domain->nid, GFP_ATOMIC);
+>  	if (!domain->pgd)
+>  		return -ENOMEM;
+>  	domain_flush_cache(domain, domain->pgd, PAGE_SIZE);
+> @@ -3960,7 +3945,7 @@ int prepare_domain_attach_device(struct iommu_domain *domain,
+>  		pte = dmar_domain->pgd;
+>  		if (dma_pte_present(pte)) {
+>  			dmar_domain->pgd = phys_to_virt(dma_pte_addr(pte));
+> -			free_pgtable_page(pte);
+> +			iommu_free_page(pte);
+>  		}
+>  		dmar_domain->agaw--;
+>  	}
+> @@ -4107,7 +4092,7 @@ static void intel_iommu_tlb_sync(struct iommu_domain *domain,
+>  				      start_pfn, nrpages,
+>  				      list_empty(&gather->freelist), 0);
+>  
+> -	put_pages_list(&gather->freelist);
+> +	iommu_put_pages_list(&gather->freelist);
+>  }
+>  
+>  static phys_addr_t intel_iommu_iova_to_phys(struct iommu_domain *domain,
+> diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
+> index d02f916d8e59..9fe04cea29c4 100644
+> --- a/drivers/iommu/intel/iommu.h
+> +++ b/drivers/iommu/intel/iommu.h
+> @@ -1069,8 +1069,6 @@ void domain_update_iommu_cap(struct dmar_domain *domain);
+>  
+>  int dmar_ir_support(void);
+>  
+> -void *alloc_pgtable_page(int node, gfp_t gfp);
+> -void free_pgtable_page(void *vaddr);
+>  void iommu_flush_write_buffer(struct intel_iommu *iommu);
+>  struct iommu_domain *intel_nested_domain_alloc(struct iommu_domain *parent,
+>  					       const struct iommu_user_data *user_data);
+> diff --git a/drivers/iommu/intel/irq_remapping.c b/drivers/iommu/intel/irq_remapping.c
+> index 566297bc87dd..39cd9626eb8d 100644
+> --- a/drivers/iommu/intel/irq_remapping.c
+> +++ b/drivers/iommu/intel/irq_remapping.c
+> @@ -22,6 +22,7 @@
+>  
+>  #include "iommu.h"
+>  #include "../irq_remapping.h"
+> +#include "../iommu-pages.h"
+>  #include "cap_audit.h"
+>  
+>  enum irq_mode {
+> @@ -527,7 +528,7 @@ static int intel_setup_irq_remapping(struct intel_iommu *iommu)
+>  	struct ir_table *ir_table;
+>  	struct fwnode_handle *fn;
+>  	unsigned long *bitmap;
+> -	struct page *pages;
+> +	void *ir_table_base;
+>  
+>  	if (iommu->ir_table)
+>  		return 0;
+> @@ -536,9 +537,9 @@ static int intel_setup_irq_remapping(struct intel_iommu *iommu)
+>  	if (!ir_table)
+>  		return -ENOMEM;
+>  
+> -	pages = alloc_pages_node(iommu->node, GFP_KERNEL | __GFP_ZERO,
+> -				 INTR_REMAP_PAGE_ORDER);
+> -	if (!pages) {
+> +	ir_table_base = iommu_alloc_pages_node(iommu->node, GFP_KERNEL,
+> +					       INTR_REMAP_PAGE_ORDER);
+> +	if (!ir_table_base) {
+>  		pr_err("IR%d: failed to allocate pages of order %d\n",
+>  		       iommu->seq_id, INTR_REMAP_PAGE_ORDER);
+>  		goto out_free_table;
+> @@ -573,7 +574,7 @@ static int intel_setup_irq_remapping(struct intel_iommu *iommu)
+>  	else
+>  		iommu->ir_domain->msi_parent_ops = &dmar_msi_parent_ops;
+>  
+> -	ir_table->base = page_address(pages);
+> +	ir_table->base = ir_table_base;
+>  	ir_table->bitmap = bitmap;
+>  	iommu->ir_table = ir_table;
+>  
+> @@ -622,7 +623,7 @@ static int intel_setup_irq_remapping(struct intel_iommu *iommu)
+>  out_free_bitmap:
+>  	bitmap_free(bitmap);
+>  out_free_pages:
+> -	__free_pages(pages, INTR_REMAP_PAGE_ORDER);
+> +	iommu_free_pages(ir_table_base, INTR_REMAP_PAGE_ORDER);
+>  out_free_table:
+>  	kfree(ir_table);
+>  
+> @@ -643,8 +644,7 @@ static void intel_teardown_irq_remapping(struct intel_iommu *iommu)
+>  			irq_domain_free_fwnode(fn);
+>  			iommu->ir_domain = NULL;
+>  		}
+> -		free_pages((unsigned long)iommu->ir_table->base,
+> -			   INTR_REMAP_PAGE_ORDER);
+> +		iommu_free_pages(iommu->ir_table->base, INTR_REMAP_PAGE_ORDER);
+>  		bitmap_free(iommu->ir_table->bitmap);
+>  		kfree(iommu->ir_table);
+>  		iommu->ir_table = NULL;
+> diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
+> index 3239cefa4c33..d46f661dd971 100644
+> --- a/drivers/iommu/intel/pasid.c
+> +++ b/drivers/iommu/intel/pasid.c
+> @@ -20,6 +20,7 @@
+>  
+>  #include "iommu.h"
+>  #include "pasid.h"
+> +#include "../iommu-pages.h"
+>  
+>  /*
+>   * Intel IOMMU system wide PASID name space:
+> @@ -38,7 +39,7 @@ int intel_pasid_alloc_table(struct device *dev)
+>  {
+>  	struct device_domain_info *info;
+>  	struct pasid_table *pasid_table;
+> -	struct page *pages;
+> +	struct pasid_dir_entry *dir;
+>  	u32 max_pasid = 0;
+>  	int order, size;
+>  
+> @@ -59,14 +60,13 @@ int intel_pasid_alloc_table(struct device *dev)
+>  
+>  	size = max_pasid >> (PASID_PDE_SHIFT - 3);
+>  	order = size ? get_order(size) : 0;
+> -	pages = alloc_pages_node(info->iommu->node,
+> -				 GFP_KERNEL | __GFP_ZERO, order);
+> -	if (!pages) {
+> +	dir = iommu_alloc_pages_node(info->iommu->node, GFP_KERNEL, order);
+> +	if (!dir) {
+>  		kfree(pasid_table);
+>  		return -ENOMEM;
+>  	}
+>  
+> -	pasid_table->table = page_address(pages);
+> +	pasid_table->table = dir;
+>  	pasid_table->order = order;
+>  	pasid_table->max_pasid = 1 << (order + PAGE_SHIFT + 3);
+>  	info->pasid_table = pasid_table;
+> @@ -97,10 +97,10 @@ void intel_pasid_free_table(struct device *dev)
+>  	max_pde = pasid_table->max_pasid >> PASID_PDE_SHIFT;
+>  	for (i = 0; i < max_pde; i++) {
+>  		table = get_pasid_table_from_pde(&dir[i]);
+> -		free_pgtable_page(table);
+> +		iommu_free_page(table);
+>  	}
+>  
+> -	free_pages((unsigned long)pasid_table->table, pasid_table->order);
+> +	iommu_free_pages(pasid_table->table, pasid_table->order);
+>  	kfree(pasid_table);
+>  }
+>  
+> @@ -146,7 +146,7 @@ static struct pasid_entry *intel_pasid_get_entry(struct device *dev, u32 pasid)
+>  retry:
+>  	entries = get_pasid_table_from_pde(&dir[dir_index]);
+>  	if (!entries) {
+> -		entries = alloc_pgtable_page(info->iommu->node, GFP_ATOMIC);
+> +		entries = iommu_alloc_page_node(info->iommu->node, GFP_ATOMIC);
+>  		if (!entries)
+>  			return NULL;
+>  
+> @@ -158,7 +158,7 @@ static struct pasid_entry *intel_pasid_get_entry(struct device *dev, u32 pasid)
+>  		 */
+>  		if (cmpxchg64(&dir[dir_index].val, 0ULL,
+>  			      (u64)virt_to_phys(entries) | PASID_PTE_PRESENT)) {
+> -			free_pgtable_page(entries);
+> +			iommu_free_page(entries);
+>  			goto retry;
+>  		}
+>  		if (!ecap_coherent(info->iommu->ecap)) {
+> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+> index 40edd282903f..a691f917456c 100644
+> --- a/drivers/iommu/intel/svm.c
+> +++ b/drivers/iommu/intel/svm.c
+> @@ -23,6 +23,7 @@
+>  #include "pasid.h"
+>  #include "perf.h"
+>  #include "../iommu-sva.h"
+> +#include "../iommu-pages.h"
+>  #include "trace.h"
+>  
+>  static irqreturn_t prq_event_thread(int irq, void *d);
+> @@ -64,16 +65,14 @@ svm_lookup_device_by_dev(struct intel_svm *svm, struct device *dev)
+>  int intel_svm_enable_prq(struct intel_iommu *iommu)
+>  {
+>  	struct iopf_queue *iopfq;
+> -	struct page *pages;
+>  	int irq, ret;
+>  
+> -	pages = alloc_pages(GFP_KERNEL | __GFP_ZERO, PRQ_ORDER);
+> -	if (!pages) {
+> +	iommu->prq = iommu_alloc_pages(GFP_KERNEL, PRQ_ORDER);
+> +	if (!iommu->prq) {
+>  		pr_warn("IOMMU: %s: Failed to allocate page request queue\n",
+>  			iommu->name);
+>  		return -ENOMEM;
+>  	}
+> -	iommu->prq = page_address(pages);
+>  
+>  	irq = dmar_alloc_hwirq(IOMMU_IRQ_ID_OFFSET_PRQ + iommu->seq_id, iommu->node, iommu);
+>  	if (irq <= 0) {
+> @@ -118,7 +117,7 @@ int intel_svm_enable_prq(struct intel_iommu *iommu)
+>  	dmar_free_hwirq(irq);
+>  	iommu->pr_irq = 0;
+>  free_prq:
+> -	free_pages((unsigned long)iommu->prq, PRQ_ORDER);
+> +	iommu_free_pages(iommu->prq, PRQ_ORDER);
+>  	iommu->prq = NULL;
+>  
+>  	return ret;
+> @@ -141,7 +140,7 @@ int intel_svm_finish_prq(struct intel_iommu *iommu)
+>  		iommu->iopf_queue = NULL;
+>  	}
+>  
+> -	free_pages((unsigned long)iommu->prq, PRQ_ORDER);
+> +	iommu_free_pages(iommu->prq, PRQ_ORDER);
+>  	iommu->prq = NULL;
+>  
+>  	return 0;
+> diff --git a/drivers/iommu/iommu-pages.h b/drivers/iommu/iommu-pages.h
+> new file mode 100644
+> index 000000000000..35bfa369b134
+> --- /dev/null
+> +++ b/drivers/iommu/iommu-pages.h
+> @@ -0,0 +1,154 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2024, Google LLC.
+> + * Pasha Tatashin <pasha.tatashin@soleen.com>
+> + */
+> +
+> +#ifndef __IOMMU_PAGES_H
+> +#define __IOMMU_PAGES_H
+> +
+> +#include <linux/vmstat.h>
+> +#include <linux/gfp.h>
+> +#include <linux/mm.h>
+> +
+> +/*
+> + * All page allocations that should be reported to as "iommu-pagetables" to
+> + * userspace must use on of the functions below.  This includes allocations of
+> + * page-tables and other per-iommu_domain configuration structures.
+
+/s/use on/use one/?
+
+> + *
+> + * This is necessary for the proper accounting as IOMMU state can be rather
+> + * large, i.e. multiple gigabytes in size.
+> + */
+> +
+> +/**
+> + * __iommu_alloc_pages - allocate a zeroed page of a given order.
+> + * @gfp: buddy allocator flags
+
+Shall we keep the comments generic here(avoid reference to allocator
+algo)  ?
+
+> + * @order: page order
+> + *
+> + * returns the head struct page of the allocated page.
+> + */
+> +static inline struct page *__iommu_alloc_pages(gfp_t gfp, int order)
+> +{
+> +	struct page *page;
+> +
+> +	page = alloc_pages(gfp | __GFP_ZERO, order);
+> +	if (unlikely(!page))
+> +		return NULL;
+> +
+> +	return page;
+> +}
+> +
+> +/**
+> + * __iommu_free_pages - free page of a given order
+> + * @page: head struct page of the page
+> + * @order: page order
+> + */
+> +static inline void __iommu_free_pages(struct page *page, int order)
+> +{
+> +	if (!page)
+> +		return;
+> +
+> +	__free_pages(page, order);
+> +}
+> +
+> +/**
+> + * iommu_alloc_pages_node - allocate a zeroed page of a given order from
+> + * specific NUMA node.
+> + * @nid: memory NUMA node id
+> + * @gfp: buddy allocator flags
+
+Same here for this one and other references below.
+
+> + * @order: page order
+> + *
+> + * returns the virtual address of the allocated page
+> + */
+> +static inline void *iommu_alloc_pages_node(int nid, gfp_t gfp, int order)
+> +{
+> +	struct page *page = alloc_pages_node(nid, gfp | __GFP_ZERO, order);
+> +
+> +	if (unlikely(!page))
+> +		return NULL;
+> +
+> +	return page_address(page);
+> +}
+> +
+> +/**
+> + * iommu_alloc_pages - allocate a zeroed page of a given order
+> + * @gfp: buddy allocator flags
+> + * @order: page order
+> + *
+> + * returns the virtual address of the allocated page
+> + */
+> +static inline void *iommu_alloc_pages(gfp_t gfp, int order)
+> +{
+> +	struct page *page = __iommu_alloc_pages(gfp, order);
+> +
+> +	if (unlikely(!page))
+> +		return NULL;
+> +
+> +	return page_address(page);
+> +}
+> +
+> +/**
+> + * iommu_alloc_page_node - allocate a zeroed page at specific NUMA node.
+> + * @nid: memory NUMA node id
+> + * @gfp: buddy allocator flags
+> + *
+> + * returns the virtual address of the allocated page
+> + */
+> +static inline void *iommu_alloc_page_node(int nid, gfp_t gfp)
+> +{
+> +	return iommu_alloc_pages_node(nid, gfp, 0);
+> +}
+> +
+> +/**
+> + * iommu_alloc_page - allocate a zeroed page
+> + * @gfp: buddy allocator flags
+> + *
+> + * returns the virtual address of the allocated page
+> + */
+> +static inline void *iommu_alloc_page(gfp_t gfp)
+> +{
+> +	return iommu_alloc_pages(gfp, 0);
+> +}
+> +
+> +/**
+> + * iommu_free_pages - free page of a given order
+> + * @virt: virtual address of the page to be freed.
+> + * @order: page order
+> + */
+> +static inline void iommu_free_pages(void *virt, int order)
+> +{
+> +	if (!virt)
+> +		return;
+> +
+> +	__iommu_free_pages(virt_to_page(virt), order);
+> +}
+> +
+> +/**
+> + * iommu_free_page - free page
+> + * @virt: virtual address of the page to be freed.
+> + */
+> +static inline void iommu_free_page(void *virt)
+> +{
+> +	iommu_free_pages(virt, 0);
+> +}
+> +
+> +/**
+> + * iommu_put_pages_list - free a list of pages.
+> + * @page: the head of the lru list to be freed.
+> + *
+> + * There are no locking requirement for these pages, as they are going to be
+> + * put on a free list as soon as refcount reaches 0. Pages are put on this LRU
+> + * list once they are removed from the IOMMU page tables. However, they can
+> + * still be access through debugfs.
+> + */
+> +static inline void iommu_put_pages_list(struct list_head *page)
+> +{
+> +	while (!list_empty(page)) {
+> +		struct page *p = list_entry(page->prev, struct page, lru);
+> +
+> +		list_del(&p->lru);
+> +		put_page(p);
+> +	}
+> +}
+> +
+> +#endif	/* __IOMMU_PAGES_H */
+> -- 
+> 2.44.0.rc0.258.g7320e95886-goog
+> 
 
