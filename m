@@ -1,317 +1,171 @@
-Return-Path: <cgroups+bounces-2358-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2359-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48EED89AD15
-	for <lists+cgroups@lfdr.de>; Sat,  6 Apr 2024 23:37:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2D3489AD1D
+	for <lists+cgroups@lfdr.de>; Sat,  6 Apr 2024 23:43:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61F751C20B58
-	for <lists+cgroups@lfdr.de>; Sat,  6 Apr 2024 21:37:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E512F1C20BD7
+	for <lists+cgroups@lfdr.de>; Sat,  6 Apr 2024 21:43:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4206D4EB54;
-	Sat,  6 Apr 2024 21:37:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 241294F1E0;
+	Sat,  6 Apr 2024 21:42:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="TkXSICni"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ArScyxrv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 430C038389;
-	Sat,  6 Apr 2024 21:37:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34C293D0C5
+	for <cgroups@vger.kernel.org>; Sat,  6 Apr 2024 21:42:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712439445; cv=none; b=rOOAqz1a9GmBKyrnApJPFEGTQ07+kMa2iKIlryGHDliDHWzKM793Y/21wrz+5BdVDIquR1w0PuhBLNKsajXYizJ2nz9zn5cz9ytw24c5miybeSzf5rqpkbzlqvYg3mSF8MAu9mnAccw81FCkYwkrwYKK6fPTGhv3Bcz51Mb34JM=
+	t=1712439775; cv=none; b=ra2/Cs48e3S5AlujSEu9P5zh7i1izf7cQz3+WcAjVTWrotB4XKqYGlP//acimaXnmrItbs+PdFhCWd1p45xagqXDa4ZxtBYvlXm2bCT4tWFLMeaaT061UgWplOkhu7p5Xb0PBNNSALWeTx5olGL85R6x1P41nkjhXK8kPWnez+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712439445; c=relaxed/simple;
-	bh=EtEAijm9uw1TWIb7s9qNwCRb3mIKCqYyJPbwcSFUuAA=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=LNX2lHU7zQpVenbW5qSU4de5mSxEWWecX7ipc+NmtsxbYyEwE8HJfxFHGuaKvC949IMnP6qy2YkUCB94AbxpvjhWbAWuG3wzj0gwO7vILInAsHzZi9lo3HJelS8/NcjRYOXS74y7qeYgV89bzVCFogPYf//DxpCBasfy3bU+y1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=TkXSICni; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712439441;
-	bh=EtEAijm9uw1TWIb7s9qNwCRb3mIKCqYyJPbwcSFUuAA=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=TkXSICniY6CWWM/OTWLRuNCDbbGcZsFf2LZBopnkGc1ZLw/nXCV7Us/RMrRyoGh2m
-	 vyZw4qpT2hom2ufj1Ek9n3G6IQJvDdd1zxEYYpFTeYcT8/2ivwazjeh85KCXuXCJCH
-	 M/m1EZyW4/ovbzoRj12A3vkQtTaBSRS9mKtK2E5SmqOb09ihQ6L4LIjY9564ej4+q2
-	 QAkg2qPRPsbZqPs7daMA5cI38zsFBo4FrXFyAlre7biAjWtW9lCxveAj8XQt1c1pFx
-	 50qb1bnom1P5OeMM4Sx+q88asJ9gy4bjXIgoi4KRLuGo2dXaERN9rPYyqwSL9kJPMA
-	 CqVPmsSvKsN6Q==
-Received: from [100.113.15.66] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 70F1E37809CE;
-	Sat,  6 Apr 2024 21:37:13 +0000 (UTC)
-Message-ID: <a45c2ece-acb4-4cff-9d53-f5c007c9b905@collabora.com>
-Date: Sun, 7 Apr 2024 02:37:44 +0500
+	s=arc-20240116; t=1712439775; c=relaxed/simple;
+	bh=fYYeF3MecFw24NiAZ+QMoa0g1C92UzUGo1u5gHhYFXk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IhFx+aT0CnkxoOqLL2zydty5hKzSLB4CJf8gLF1iw+4yHNT2wI+OmDl0m8e5nOu54B0REYgt78AGeKkHIo6uEibLQfEyaGVfXPa02rdccEw2cFA702B5Warko5K+c6ggKCctJVCEPjs2/pav5gpF3KUc/qFyrqay9qkKX+CI07E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ArScyxrv; arc=none smtp.client-ip=209.85.167.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3c3aeef1385so2183598b6e.3
+        for <cgroups@vger.kernel.org>; Sat, 06 Apr 2024 14:42:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712439773; x=1713044573; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m1G9gUrNc9dGzPe7AYM33DPZfjgc9cVYEl/DEKm89Aw=;
+        b=ArScyxrvfDWduVY/F8RejzGRYbuEijxm5/8n92WYtfUl5vp1jQ1vsGr/rGbZpBlBxZ
+         J6kz1YqYIYQ7RCwWhEdKndv6GK/Crx44nF8gZ8xxlCc2q0y8GqRWWgkmTg7YZNDcMdxQ
+         0ckBbVjtgW6qTsxXOKggz9Csb/hW8tx8TEtd8Dws8cG8nErJ5gqkA0pTuYO8yqlVRwOw
+         sqI6UmpY9+CLGPZyCdpTpNkWiJTP4ee0wzqhNPR7KWylbD7V+uyqn01BShAUoRiCQ/qO
+         ui8N+sVN/ptI7J/TNHBcshtflTCbc2H1dw+T81NJOB5eP3I4kRgTWlAlyRZF+a8VyDd/
+         AESg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712439773; x=1713044573;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m1G9gUrNc9dGzPe7AYM33DPZfjgc9cVYEl/DEKm89Aw=;
+        b=tpFiby/P7Idurk6AwqW6VcdZVVeAiIfLL9Kvw0tZyaYEvyy7bjXDI2z62D36hJt/LY
+         3LxQDz7g7d2VP/k4njydPY3e/hkZ20sj5fsxjj3Z9wz0jjcF74OW7HDH6PELw3ISU8u2
+         5trX9bvBqQ58vIqcI3Cue2CY03kKy3H6JSndW+i0TXEJdsjRSu/XvJY+25/6u73IbUtJ
+         7E+d4suyVRrxtrnTAww2j2yhq+WaPqNO/pUhUFgACq/xbdPOTMRqOtwkVMDfKjarHFbV
+         K9SHlv3yBSKKy2g6sRVxerVJnVdODDMyN19hBRndMTtlXSNDFDMuz8cahRYOxv2rwUVb
+         onAw==
+X-Forwarded-Encrypted: i=1; AJvYcCV/i2m+uxq2JVHKQjlwWlm4h7Lcqq1CLjPrUxerLTt5KT1XdNSDgk5l6+nsOKdnuqtsvEj7fW8YZY1wCrtgKOpaHEQpho3KDw==
+X-Gm-Message-State: AOJu0YxyUG9JKCQsrTxCCrfyZ+5GC/R0PGLvEd/ebdrzzD48EOCOz0lp
+	g08/UnzffqJj65c8Fc2UNE1mJf16HPyzoUXBCDJYajfnVsT7ON6QrtVxhscbOQdrr7/iqtATn0u
+	rBOjQ494gY5loD6JxNbXfms5rVnxDscqx8Mkd
+X-Google-Smtp-Source: AGHT+IEy/KQG2Rqx5HErdblj8QUCCqwueXsecSytEtIs4U2W0lIYmqOxwok485xQsC2WwPFvE/PMCfWXWAWd2KQRtS8=
+X-Received: by 2002:a05:6808:3084:b0:3c3:dcfc:f694 with SMTP id
+ bl4-20020a056808308400b003c3dcfcf694mr5989197oib.47.1712439773006; Sat, 06
+ Apr 2024 14:42:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Jonathan Corbet <corbet@lwn.net>,
- Shuah Khan <shuah@kernel.org>
-Subject: Re: [RFC PATCH v3 6/9] selftests: cgroup: Add basic tests for pids
- controller
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20240405170548.15234-1-mkoutny@suse.com>
- <20240405170548.15234-7-mkoutny@suse.com>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240405170548.15234-7-mkoutny@suse.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240321163705.3067592-1-surenb@google.com> <c14cd89b-c879-4474-a800-d60fc29c1820@gmail.com>
+ <CAJuCfpHEt2n6sA7m5zvc-F+z=3-twVEKfVGCa0+y62bT10b0Bw@mail.gmail.com>
+ <41328d5a-3e41-4936-bcb7-c0a85e6ce332@gmail.com> <CAJuCfpERj52X8DB64b=6+9WLcnuEBkpjnfgYBgvPs0Rq7kxOkw@mail.gmail.com>
+ <3d496797-4173-43de-b597-af3668fd0eca@gmail.com>
+In-Reply-To: <3d496797-4173-43de-b597-af3668fd0eca@gmail.com>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Sat, 6 Apr 2024 14:42:40 -0700
+Message-ID: <CAJuCfpHXr=183+4AJPC_TwrLsNOn0BZ1jSXipoP0LE+hd7Ehfw@mail.gmail.com>
+Subject: Re: [PATCH v6 00/37] Memory allocation profiling
+To: Klara Modin <klarasmodin@gmail.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
+	kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/5/24 10:05 PM, Michal Koutný wrote:
-> This commit adds (and wires in) new test program for checking basic pids
-> controller functionality -- restricting tasks in a cgroup and correct
-> event counting.
-> 
-> Signed-off-by: Michal Koutný <mkoutny@suse.com>
-> ---
->  tools/testing/selftests/cgroup/Makefile    |   2 +
->  tools/testing/selftests/cgroup/test_pids.c | 187 +++++++++++++++++++++
-Please create/add test_pid to .gitignore file.
+On Fri, Apr 5, 2024 at 8:38=E2=80=AFAM Klara Modin <klarasmodin@gmail.com> =
+wrote:
+>
+>
+>
+> On 2024-04-05 17:20, Suren Baghdasaryan wrote:
+> > On Fri, Apr 5, 2024 at 7:30=E2=80=AFAM Klara Modin <klarasmodin@gmail.c=
+om> wrote:
+> >>
+> >> On 2024-04-05 16:14, Suren Baghdasaryan wrote:
+> >>> On Fri, Apr 5, 2024 at 6:37=E2=80=AFAM Klara Modin <klarasmodin@gmail=
+.com> wrote:
+> >>>> If I enable this, I consistently get percpu allocation failures. I c=
+an
+> >>>> occasionally reproduce it in qemu. I've attached the logs and my con=
+fig,
+> >>>> please let me know if there's anything else that could be relevant.
+> >>>
+> >>> Thanks for the report!
+> >>> In debug_alloc_profiling.log I see:
+> >>>
+> >>> [    7.445127] percpu: limit reached, disable warning
+> >>>
+> >>> That's probably the reason. I'll take a closer look at the cause of
+> >>> that and how we can fix it.
+> >>
+> >> Thanks!
+> >
+> > In the build that produced debug_alloc_profiling.log I think we are
+> > consuming all the per-cpu memory reserved for the modules. Could you
+> > please try this change and see if that fixes the issue:
+> >
+> >   include/linux/percpu.h | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/include/linux/percpu.h b/include/linux/percpu.h
+> > index a790afba9386..03053de557cf 100644
+> > --- a/include/linux/percpu.h
+> > +++ b/include/linux/percpu.h
+> > @@ -17,7 +17,7 @@
+> >   /* enough to cover all DEFINE_PER_CPUs in modules */
+> >   #ifdef CONFIG_MODULES
+> >   #ifdef CONFIG_MEM_ALLOC_PROFILING
+> > -#define PERCPU_MODULE_RESERVE (8 << 12)
+> > +#define PERCPU_MODULE_RESERVE (8 << 13)
+> >   #else
+> >   #define PERCPU_MODULE_RESERVE (8 << 10)
+> >   #endif
+> >
+>
+> Yeah, that patch fixes the issue for me.
+>
+> Thanks,
+> Tested-by: Klara Modin
 
->  2 files changed, 189 insertions(+)
->  create mode 100644 tools/testing/selftests/cgroup/test_pids.c
-> 
-> diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
-> index f3e1ef69e88d..f5f0886a2c4a 100644
-> --- a/tools/testing/selftests/cgroup/Makefile
-> +++ b/tools/testing/selftests/cgroup/Makefile
-> @@ -15,6 +15,7 @@ TEST_GEN_PROGS += test_hugetlb_memcg
->  TEST_GEN_PROGS += test_kill
->  TEST_GEN_PROGS += test_kmem
->  TEST_GEN_PROGS += test_memcontrol
-> +TEST_GEN_PROGS += test_pids
->  TEST_GEN_PROGS += test_zswap
->  
->  LOCAL_HDRS += $(selfdir)/clone3/clone3_selftests.h $(selfdir)/pidfd/pidfd.h
-> @@ -29,4 +30,5 @@ $(OUTPUT)/test_hugetlb_memcg: cgroup_util.c
->  $(OUTPUT)/test_kill: cgroup_util.c
->  $(OUTPUT)/test_kmem: cgroup_util.c
->  $(OUTPUT)/test_memcontrol: cgroup_util.c
-> +$(OUTPUT)/test_pids: cgroup_util.c
->  $(OUTPUT)/test_zswap: cgroup_util.c
-> diff --git a/tools/testing/selftests/cgroup/test_pids.c b/tools/testing/selftests/cgroup/test_pids.c
-> new file mode 100644
-> index 000000000000..c1c3a3965624
-> --- /dev/null
-> +++ b/tools/testing/selftests/cgroup/test_pids.c
-> @@ -0,0 +1,187 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#define _GNU_SOURCE
-> +
-> +#include <errno.h>
-> +#include <linux/limits.h>
-> +#include <signal.h>
-> +#include <string.h>
-> +#include <sys/stat.h>
-> +#include <sys/types.h>
-> +#include <unistd.h>
-> +
-> +#include "../kselftest.h"
-> +#include "cgroup_util.h"
-> +
-> +static int run_success(const char *cgroup, void *arg)
-> +{
-> +	return 0;
-> +}
-> +
-> +static int run_pause(const char *cgroup, void *arg)
-> +{
-> +	return pause();
-> +}
-> +
-> +/*
-> + * This test checks that pids.max prevents forking new children above the
-> + * specified limit in the cgroup.
-> + */
-> +static int test_pids_max(const char *root)
-> +{
-> +	int ret = KSFT_FAIL;
-> +	char *cg_pids;
-> +	int pid;
-> +
-> +
-Please remove extra line.
-
-> +	cg_pids = cg_name(root, "pids_test");
-> +	if (!cg_pids)
-> +		goto cleanup;
-> +
-> +	if (cg_create(cg_pids))
-> +		goto cleanup;
-> +
-> +	if (cg_read_strcmp(cg_pids, "pids.max", "max\n"))
-> +		goto cleanup;
-> +
-> +	if (cg_write(cg_pids, "pids.max", "2"))
-> +		goto cleanup;
-> +
-> +	if (cg_enter_current(cg_pids))
-> +		goto cleanup;
-> +
-> +	pid = cg_run_nowait(cg_pids, run_pause, NULL);
-> +	if (pid < 0)
-> +		goto cleanup;
-> +
-> +	if (cg_run_nowait(cg_pids, run_success, NULL) != -1 || errno != EAGAIN)
-> +		goto cleanup;
-> +
-> +	if (kill(pid, SIGINT))
-> +		goto cleanup;
-> +
-> +	ret = KSFT_PASS;
-> +
-> +cleanup:
-> +	cg_enter_current(root);
-> +	cg_destroy(cg_pids);
-> +	free(cg_pids);
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * This test checks that pids.max prevents forking new children above the
-> + * specified limit in the cgroup.
-> + */
-> +static int test_pids_events(const char *root)
-> +{
-> +	int ret = KSFT_FAIL;
-> +	char *cg_parent = NULL, *cg_child = NULL;
-> +	int pid;
-> +
-> +
-> +	cg_parent = cg_name(root, "pids_parent");
-> +	cg_child = cg_name(cg_parent, "pids_child");
-> +	if (!cg_parent || !cg_child)
-> +		goto cleanup;
-> +
-> +	if (cg_create(cg_parent))
-> +		goto cleanup;
-> +	if (cg_write(cg_parent, "cgroup.subtree_control", "+pids"))
-> +		goto cleanup;
-> +	if (cg_create(cg_child))
-> +		goto cleanup;
-> +
-> +	if (cg_write(cg_parent, "pids.max", "2"))
-> +		goto cleanup;
-> +
-> +	if (cg_read_strcmp(cg_child, "pids.max", "max\n"))
-> +		goto cleanup;
-> +
-> +	if (cg_enter_current(cg_child))
-> +		goto cleanup;
-> +
-> +	pid = cg_run_nowait(cg_child, run_pause, NULL);
-> +	if (pid < 0)
-> +		goto cleanup;
-> +
-> +	if (cg_run_nowait(cg_child, run_success, NULL) != -1 || errno != EAGAIN)
-> +		goto cleanup;
-> +
-> +	if (kill(pid, SIGINT))
-> +		goto cleanup;
-> +
-> +
-Remove extra line.
-
-> +	if (cg_read_key_long(cg_child, "pids.events", "max ") != 0)
-> +		goto cleanup;
-> +	if (cg_read_key_long(cg_child, "pids.events", "max.imposed ") != 1)
-> +		goto cleanup;
-> +
-> +	if (cg_read_key_long(cg_parent, "pids.events", "max ") != 1)
-> +		goto cleanup;
-> +	if (cg_read_key_long(cg_parent, "pids.events", "max.imposed ") != 1)
-> +		goto cleanup;
-> +
-> +
-> +	ret = KSFT_PASS;
-> +
-> +cleanup:
-> +	cg_enter_current(root);
-> +	if (cg_child)
-> +		cg_destroy(cg_child);
-> +	if (cg_parent)
-> +		cg_destroy(cg_parent);
-> +	free(cg_child);
-> +	free(cg_parent);
-> +
-> +	return ret;
-> +}
-> +
-> +
-> +
-> +#define T(x) { x, #x }
-> +struct pids_test {
-> +	int (*fn)(const char *root);
-> +	const char *name;
-> +} tests[] = {
-> +	T(test_pids_max),
-> +	T(test_pids_events),
-> +};
-> +#undef T
-> +
-> +int main(int argc, char **argv)
-> +{
-> +	char root[PATH_MAX];
-> +	int i, ret = EXIT_SUCCESS;
-The
-	ksft_print_header();
-	ksft_set_plan(total_number_of_tests);
-are missing. Please use all of the ksft APIs to make the test TAP compliant.
-
-> +
-> +	if (cg_find_unified_root(root, sizeof(root)))
-> +		ksft_exit_skip("cgroup v2 isn't mounted\n");
-> +
-> +	/*
-> +	 * Check that pids controller is available:
-> +	 * pids is listed in cgroup.controllers
-> +	 */
-> +	if (cg_read_strstr(root, "cgroup.controllers", "pids"))
-> +		ksft_exit_skip("pids controller isn't available\n");
-> +
-> +	if (cg_read_strstr(root, "cgroup.subtree_control", "pids"))
-> +		if (cg_write(root, "cgroup.subtree_control", "+pids"))
-> +			ksft_exit_skip("Failed to set pids controller\n");
-> +
-> +	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-> +		switch (tests[i].fn(root)) {
-> +		case KSFT_PASS:
-> +			ksft_test_result_pass("%s\n", tests[i].name);
-> +			break;
-> +		case KSFT_SKIP:
-> +			ksft_test_result_skip("%s\n", tests[i].name);
-> +			break;
-> +		default:
-> +			ret = EXIT_FAILURE;
-> +			ksft_test_result_fail("%s\n", tests[i].name);
-> +			break;
-Use ksft_test_result_report() instead of swith-case here.
-
-> +		}
-> +	}
-> +
-> +	return ret;
-> +}
-
--- 
-BR,
-Muhammad Usama Anjum
+Official fix is posted at
+https://lore.kernel.org/all/20240406214044.1114406-1-surenb@google.com/
+Thanks,
+Suren.
 
