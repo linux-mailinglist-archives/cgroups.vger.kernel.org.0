@@ -1,294 +1,123 @@
-Return-Path: <cgroups+bounces-2346-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2350-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4998989A320
-	for <lists+cgroups@lfdr.de>; Fri,  5 Apr 2024 19:06:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45AC889A85C
+	for <lists+cgroups@lfdr.de>; Sat,  6 Apr 2024 04:08:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F33EE2899EE
-	for <lists+cgroups@lfdr.de>; Fri,  5 Apr 2024 17:06:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 346AB1F216C5
+	for <lists+cgroups@lfdr.de>; Sat,  6 Apr 2024 02:08:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A572E172772;
-	Fri,  5 Apr 2024 17:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 653AB1171C;
+	Sat,  6 Apr 2024 02:08:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fk2jbyKg";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fk2jbyKg"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="kMDveTdA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3620B171664;
-	Fri,  5 Apr 2024 17:05:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3C27C8E1
+	for <cgroups@vger.kernel.org>; Sat,  6 Apr 2024 02:07:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712336756; cv=none; b=ZYXTU8ECDuWyzajDF02B2KSkNWR4rd6IswH893RvGvtWZQJoqZbmcR8Qw9ioY8i/VdO4P4YhDPZPIsJ9D0NhJcA+evkwP7Y9Oz6ZHy3Z972GNSN2mdcORvyMg1oFYxXS0j7HoAAYOh18WnPFwJvdD6VtF4iJJ4C+jKJLonFx1tM=
+	t=1712369280; cv=none; b=SttRYHzBBBRZrhZb14x6hobrSndF5usVkbQ6bbEE/ZUd2lNjxmqQu9jCAeRx5gh7YgQUPCa44qFN2p8q4AL+IPNOpeGrnb697jM4BykPSgGLA31XCSvN63Rsjx9Jt135013Fz2FNDFrwNnVSuiIAkO+pscGYct3XSYcKBOntG7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712336756; c=relaxed/simple;
-	bh=KkUoBQzcMlALn6Mccqa0ttzzH8E9KfZ2WpkSFjPxReY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gMKa/pXMl/SOMFNH2XNKTqMSFxmmewKZhsL3zbI0ZAtxQ1Jr/yMR7W78lvAWa6piNWvK2twPItCz83WzaFf2L5XPRd1NbgMrEk9yP6C8OPKb+3B+d9662MapzvfLf3PV970qONoa0nesDJODBmrhkpvc4dfqMUcv5DjMxIBHel4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fk2jbyKg; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fk2jbyKg; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7BA1F1F7F5;
-	Fri,  5 Apr 2024 17:05:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712336752; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f58r1/3r4ZhM3ZTHBh4+rovDyyYzto8nSN21lk4LFNA=;
-	b=fk2jbyKgGaJewq044j7MheRtW861laTS2bkyTMluUaZ6Z+8hhWCZ9sGsitJyH+P0U10nHZ
-	2nlIkm+N9/oeHcK/1+y6+/V9TRMkY3Np99FJlBUtYOkJDedjYWk47zd3t+25IDPJj0EkZ1
-	VAKIONB6BZxsrFDoJCWCfthENJrS4zY=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=fk2jbyKg
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1712336752; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=f58r1/3r4ZhM3ZTHBh4+rovDyyYzto8nSN21lk4LFNA=;
-	b=fk2jbyKgGaJewq044j7MheRtW861laTS2bkyTMluUaZ6Z+8hhWCZ9sGsitJyH+P0U10nHZ
-	2nlIkm+N9/oeHcK/1+y6+/V9TRMkY3Np99FJlBUtYOkJDedjYWk47zd3t+25IDPJj0EkZ1
-	VAKIONB6BZxsrFDoJCWCfthENJrS4zY=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5668213AAA;
-	Fri,  5 Apr 2024 17:05:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id +KhtFHAvEGYteAAAn2gu4w
-	(envelope-from <mkoutny@suse.com>); Fri, 05 Apr 2024 17:05:52 +0000
-From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To: cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Cc: Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <shuah@kernel.org>
-Subject: [RFC PATCH v3 9/9] selftests: cgroup: Add tests pids controller
-Date: Fri,  5 Apr 2024 19:05:48 +0200
-Message-ID: <20240405170548.15234-10-mkoutny@suse.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240405170548.15234-1-mkoutny@suse.com>
-References: <20240405170548.15234-1-mkoutny@suse.com>
+	s=arc-20240116; t=1712369280; c=relaxed/simple;
+	bh=NRDSrd//lw3VipjgP/KmiM8Kzaxra2OkM66vbPYRZmY=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=q5IEg7IAi/YVdPi4s98+rdTyRDwiBkarO5r4grLp0dvZrtmfh/bvkfn/7IfLfXf6M0ZLFZcAmsX76tcbR8o7tnn8SVc26k9QfAt16nT1O5cn/623lrP6YuBtmwBC1Z1aZNd4nAAsghX1sIJBf/G8E34O2xt6i4so47gOtraYn4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=kMDveTdA; arc=none smtp.client-ip=209.85.166.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7c86e6f649aso27645139f.0
+        for <cgroups@vger.kernel.org>; Fri, 05 Apr 2024 19:07:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712369278; x=1712974078; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sfyeTnbUOHjE4JfMs0wGJdvVcv7mV0yWrczNYacKGfg=;
+        b=kMDveTdARaGNPMxjo/wgLDzNKK55H8YINc2kt5VgWqq6U0fbw9YT20kEtmCfjdQr0A
+         sDLgSXC4mVWvKO5aO1dp6LMkYCIpS17Zyao3612UoUYYkoZ+R0FapHF8v4I24LHzti+y
+         tsnJHSDOhXVFfoZ1sNRq1aXs0cPQIBaLiGwD7pFp9GhvrVucx8Fhg9OzW19wDEyu8Df2
+         SuLoxm5aSsQuaUkAlk0uce/MctYeiP5RX98KjGHg+goXS6ETe2fh8FOg6xHx1Uqviu5b
+         5Qk3CyMijFGt34L4JWzkXAS6diePL6Hx5gnj7FvoAptxDa0dlBvULwRlri5lqdS+C0PK
+         YcQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712369278; x=1712974078;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sfyeTnbUOHjE4JfMs0wGJdvVcv7mV0yWrczNYacKGfg=;
+        b=vxrKISq5ONqdNXYwf62BAT28xA5t6x7RuQ0roEyMeZtjmvCTywIlNeDuX/VZiicnlK
+         Uw7bgqMlk+2PAm0jG9o0zpPRc1J+qY9kzEZQfC9P0eQRTp691f4BGDdbILkvC163dzEV
+         3aVeiKGNrtM3m21OWkvrbwGLObZL4Yz+9jwZ1Nw1ZiWprANsPIlbBEeruyyHf1c2YBYc
+         eSkz5xqZ+5t8JfZl8MmDdqf1R6SAB1lGHZ3QvAoUQhsHdNVtjAyiqlvbeJ70wxhEHk/a
+         pCOI+3BaCzP8h4qHTwk4XRICF9tlyMFaFIA42IhNcnHz0KU6xV6wTPEygb7GGOoIMruv
+         FokQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWQENTnjwtyylr+tBFzJ/6nnFZ4fwkWciRqsiqBUcZFGKpitvcO+svFRtx+Cxe7GkowSEMGAhBEq0x/QwtSJBEa2ZoIs4iTzg==
+X-Gm-Message-State: AOJu0YwCF5y/DiyU8TZnwBQN5Z8Xm2ZVropOw2ws2tEV2Ycj5sDWNDsG
+	qNn8Hgz0l+ly3vM+gkHJeYiA+zg3llsdvb18caUmBZyYvzpcWPyinpRRnVJ8gps=
+X-Google-Smtp-Source: AGHT+IH/HsleWvwHw/pVrctaalvVy7+rmbzL5bu+lHTyu0TKoHSuajK+U2MSGalABMhK3FGF/GMHVA==
+X-Received: by 2002:a05:6602:1644:b0:7d5:cc9e:9d96 with SMTP id y4-20020a056602164400b007d5cc9e9d96mr501025iow.1.1712369277985;
+        Fri, 05 Apr 2024 19:07:57 -0700 (PDT)
+Received: from [127.0.0.1] ([99.196.135.167])
+        by smtp.gmail.com with ESMTPSA id jb6-20020a05663888c600b004827f5def6bsm28853jab.4.2024.04.05.19.07.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 19:07:57 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: linux-kernel@vger.kernel.org, Rik van Riel <riel@surriel.com>
+Cc: kernel-team@meta.com, Tejun Heo <tj@kernel.org>, 
+ Josef Bacik <josef@toxicpanda.com>, cgroups@vger.kernel.org, 
+ linux-block@vger.kernel.org
+In-Reply-To: <20240404123253.0f58010f@imladris.surriel.com>
+References: <20240404123253.0f58010f@imladris.surriel.com>
+Subject: Re: [PATCH] blk-iocost: avoid out of bounds shift
+Message-Id: <171236927113.2455316.5665277976518467416.b4-ty@kernel.dk>
+Date: Fri, 05 Apr 2024 20:07:51 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	R_RATELIMIT(0.00)[to_ip_from(RLfcexjtczxtbnj559fj95g6y7)];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.com:dkim,suse.com:email];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 7BA1F1F7F5
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -3.51
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.5-dev-2aabd
 
-This adds a couple of tests to check enforcing of limits in pids
-controller upon migration. When the new option does not exist, the test
-is skipped.
 
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- tools/testing/selftests/cgroup/test_pids.c | 117 ++++++++++++++++++++-
- 1 file changed, 116 insertions(+), 1 deletion(-)
+On Thu, 04 Apr 2024 12:32:53 -0400, Rik van Riel wrote:
+> UBSAN catches undefined behavior in blk-iocost, where sometimes
+> iocg->delay is shifted right by a number that is too large,
+> resulting in undefined behavior on some architectures.
+> 
+> [  186.556576] ------------[ cut here ]------------
+> UBSAN: shift-out-of-bounds in block/blk-iocost.c:1366:23
+> shift exponent 64 is too large for 64-bit type 'u64' (aka 'unsigned long long')
+> CPU: 16 PID: 0 Comm: swapper/16 Tainted: G S          E    N 6.9.0-0_fbk700_debug_rc2_kbuilder_0_gc85af715cac0 #1
+> Hardware name: Quanta Twin Lakes MP/Twin Lakes Passive MP, BIOS F09_3A23 12/08/2020
+> Call Trace:
+>  <IRQ>
+>  dump_stack_lvl+0x8f/0xe0
+>  __ubsan_handle_shift_out_of_bounds+0x22c/0x280
+>  iocg_kick_delay+0x30b/0x310
+>  ioc_timer_fn+0x2fb/0x1f80
+>  __run_timer_base+0x1b6/0x250
+> ...
+> 
+> [...]
 
-diff --git a/tools/testing/selftests/cgroup/test_pids.c b/tools/testing/selftests/cgroup/test_pids.c
-index c1c3a3965624..a3ad5a495f59 100644
---- a/tools/testing/selftests/cgroup/test_pids.c
-+++ b/tools/testing/selftests/cgroup/test_pids.c
-@@ -12,6 +12,8 @@
- #include "../kselftest.h"
- #include "cgroup_util.h"
- 
-+static bool has_miglimit;
-+
- static int run_success(const char *cgroup, void *arg)
- {
- 	return 0;
-@@ -69,6 +71,112 @@ static int test_pids_max(const char *root)
- 	return ret;
- }
- 
-+/*
-+ * This test checks that pids.max prevents migrating tasks over limit into the
-+ * cgroup.
-+ */
-+static int test_pids_max_migration(const char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	char *cg_pids;
-+	int pid;
-+
-+	if (!has_miglimit)
-+		return KSFT_SKIP;
-+
-+	cg_pids = cg_name(root, "pids_test");
-+	if (!cg_pids)
-+		goto cleanup;
-+
-+	if (cg_create(cg_pids))
-+		goto cleanup;
-+
-+	if (cg_write(cg_pids, "pids.max", "1"))
-+		goto cleanup;
-+
-+	pid = cg_run_nowait(cg_pids, run_pause, NULL);
-+	if (pid < 0)
-+		goto cleanup;
-+
-+	if (cg_enter_current(cg_pids) >= 0)
-+		goto cleanup;
-+
-+	if (kill(pid, SIGINT))
-+		goto cleanup;
-+
-+	ret = KSFT_PASS;
-+
-+cleanup:
-+	cg_enter_current(root);
-+	cg_destroy(cg_pids);
-+	free(cg_pids);
-+
-+	return ret;
-+}
-+
-+/*
-+ * This test checks that pids.max does not prevent migrating existing tasks
-+ * inside subtree.
-+ */
-+static int test_pids_max_overcommit(const char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	char *cg_parent = NULL, *cg_src = NULL, *cg_dst = NULL;
-+	int pid;
-+
-+	if (!has_miglimit)
-+		return KSFT_SKIP;
-+
-+	cg_parent = cg_name(root, "pids_test");
-+	if (!cg_parent)
-+		goto cleanup;
-+	cg_src = cg_name(cg_parent, "src");
-+	if (!cg_src)
-+		goto cleanup;
-+	cg_dst = cg_name(cg_parent, "dst");
-+	if (!cg_dst)
-+		goto cleanup;
-+
-+	if (cg_create(cg_parent))
-+		goto cleanup;
-+	if (cg_write(cg_parent, "cgroup.subtree_control", "+pids"))
-+		goto cleanup;
-+	if (cg_create(cg_src))
-+		goto cleanup;
-+	if (cg_create(cg_dst))
-+		goto cleanup;
-+
-+	if (cg_enter_current(cg_src) < 0)
-+		goto cleanup;
-+
-+	pid = cg_run_nowait(cg_src, run_pause, NULL);
-+	if (pid < 0)
-+		goto cleanup;
-+
-+	if (cg_write(cg_parent, "pids.max", "1"))
-+		goto cleanup;
-+
-+	if (cg_enter(cg_dst, pid) < 0)
-+		goto cleanup;
-+
-+	if (kill(pid, SIGINT))
-+		goto cleanup;
-+
-+	ret = KSFT_PASS;
-+
-+cleanup:
-+	cg_enter_current(root);
-+	cg_destroy(cg_dst);
-+	cg_destroy(cg_src);
-+	cg_destroy(cg_parent);
-+	free(cg_dst);
-+	free(cg_src);
-+	free(cg_parent);
-+
-+	return ret;
-+}
-+
-+
- /*
-  * This test checks that pids.max prevents forking new children above the
-  * specified limit in the cgroup.
-@@ -145,6 +253,8 @@ struct pids_test {
- 	const char *name;
- } tests[] = {
- 	T(test_pids_max),
-+	T(test_pids_max_migration),
-+	T(test_pids_max_overcommit),
- 	T(test_pids_events),
- };
- #undef T
-@@ -152,7 +262,7 @@ struct pids_test {
- int main(int argc, char **argv)
- {
- 	char root[PATH_MAX];
--	int i, ret = EXIT_SUCCESS;
-+	int i, proc_status, ret = EXIT_SUCCESS;
- 
- 	if (cg_find_unified_root(root, sizeof(root)))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
-@@ -168,6 +278,11 @@ int main(int argc, char **argv)
- 		if (cg_write(root, "cgroup.subtree_control", "+pids"))
- 			ksft_exit_skip("Failed to set pids controller\n");
- 
-+	proc_status = proc_mount_contains("pids_miglimit");
-+	if (proc_status < 0)
-+		ksft_exit_skip("Failed to query cgroup mount option\n");
-+	has_miglimit = proc_status;
-+
- 	for (i = 0; i < ARRAY_SIZE(tests); i++) {
- 		switch (tests[i].fn(root)) {
- 		case KSFT_PASS:
+Applied, thanks!
+
+[1/1] blk-iocost: avoid out of bounds shift
+      commit: beaa51b36012fad5a4d3c18b88a617aea7a9b96d
+
+Best regards,
 -- 
-2.44.0
+Jens Axboe
+
+
 
 
