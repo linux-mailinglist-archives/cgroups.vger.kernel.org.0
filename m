@@ -1,115 +1,166 @@
-Return-Path: <cgroups+bounces-2364-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2365-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95F7289B6A1
-	for <lists+cgroups@lfdr.de>; Mon,  8 Apr 2024 05:54:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A13489BE21
+	for <lists+cgroups@lfdr.de>; Mon,  8 Apr 2024 13:29:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01410B21E62
-	for <lists+cgroups@lfdr.de>; Mon,  8 Apr 2024 03:54:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E9AC1C21352
+	for <lists+cgroups@lfdr.de>; Mon,  8 Apr 2024 11:29:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE29079C2;
-	Mon,  8 Apr 2024 03:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD57657CD;
+	Mon,  8 Apr 2024 11:29:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZXV21nBH"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="DIqmKBfp";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TiejnKOe"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EBA0747F;
-	Mon,  8 Apr 2024 03:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2293D53AC;
+	Mon,  8 Apr 2024 11:29:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712548419; cv=none; b=qHy7F1wy9hHhkaFdPOqWzlf6/l2N/AqPC0sneFkYEGRLseFOZoDy3FwDBMBinW+YIPRxp+90KOGSLeRLMfWbs8fcaFnIuugMYoDT/EH+BT5lfsgMv6nUuEvHZIZr2NYUpm/JNFeNufdaQ2XLTZAXaRVctT7NpQ34rnSJs62YYYw=
+	t=1712575782; cv=none; b=U1yYal8B5FShSnjCzcxBRWoKucLZGQe2stM+GgFysXUE37hWekSNCK+x6hn8+iacPwgGkEGNtkxGzvbxbGMnzgG10YXGo7Fe8ZF7JrBxTkcEqLNUxGA+Knc5GcOjqKijO7KUXXG7Pgs8d4/YoJBNTN71Lg/HLv4Q4o4qCqK5gME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712548419; c=relaxed/simple;
-	bh=oEHbOOo+Ri1kqs5/5aZkyEbpKV8E6A2FxGUiVI2WTv4=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cceppDfYSCsQGu2Azlm5zuyXju6URDyC3XqSNNMA+uWoEdXkhbQhbFqME5Tb5DGW4d0Oyb0CPEUbT7Ihe4fIpGev4WvtPaoK2hBtkX/YYI2YcjGZg9zLcmfVJLcxfnWOg7+CV/W6/YSK9WLoofHbTx267Ft1hD4h0UIRHFJVijQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZXV21nBH; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e0e89faf47so10064615ad.1;
-        Sun, 07 Apr 2024 20:53:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712548417; x=1713153217; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tdaKb7vbj+4jUEnI1aBP9RhDrJGBVLsISpGLsJCZpEI=;
-        b=ZXV21nBHIj1N2FEUNbZwtkjxiMYUVL9f2VpyfDqxAWMIJu7JjUREamW4lit3H6MH9S
-         U2w+A+PSvvgC6ftEmakKukYQ3iTZIoI5I707n+FkW3HS4g1i8V/L05SxDE2ofuZb6AYX
-         z+7T7TkIHIqNE8pBxxDmrIpj9u2LvdIVKNPZ4/VEA150ie+DWqxJovtx6LJYuIKhNck5
-         f7EGfPvqoGvNYWCWsbLDoPuKEBSN1u4VAPL4cSvm0SqtshDAYzZXZQa7+N90GP3AK+w0
-         KZvI/k0hw4M78EMBq/bMHPFIxuzJzDEkhI58sX6KCPzURN6IGsIJvdC9SYdE3H0ZCiSH
-         DZ+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712548417; x=1713153217;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tdaKb7vbj+4jUEnI1aBP9RhDrJGBVLsISpGLsJCZpEI=;
-        b=MDqSmesSgndat1n9UWECuoxQfs1cVMpOlSKjon9F651j28MmThZpOtx1vAKvuSOknL
-         cee6/FAYI4kZdVbIDFTPJJ0728ZVDS3LnGszWa5wpQak3GQYMTN3myYmZr321HfR6DR9
-         yOxZvGt8g6FSTI9R6r66MKpPi50avamOxGt533ZFRk/4M4YHmboS+lPW5wUOIIs12lrN
-         C5fyi3+oycwKq7fXHpSLqBlgOZEFG6xYYc4a+ka7D80uFRUnLm3dhpCEsxyZ3dk8rjMZ
-         cC/yvxXiIWCZwmuldDsqUWiDhmFW9zKfxPj5Gs225h9DmSsc5JexFcGyMmVphEb3fsad
-         zOKA==
-X-Forwarded-Encrypted: i=1; AJvYcCW1jWjAGgg0vYO43bTndsufgRUFYHDrE3Eo4vl4j43lrPvdewHRYrbno2Z0t1frfFc0h8Y8SH/gi3VyPPNZB56y8ZH//EM+3IAqZKY8nqnGZ3o4JnfDPLL6MtV4WwO51VKRFb6xswMdzixoTVACMdhawMgxdzD4MpetskqZSR0f2A==
-X-Gm-Message-State: AOJu0YxkKKB/AlA0VIc7y7EOTDpeMmXAn/Gfy3S3/otp80dPFXVrGgHZ
-	CUGJ3c+tzbHOyea7TxhO595Wfx01uBpEY11Ox6I8fQEWbOJr3xUI
-X-Google-Smtp-Source: AGHT+IGLZl4k8db3AnaLRdS/1JiFbgxr3JLLo6wVIhnsAWiOWBj8HDCBzJF2ZfE47HU1g1KnmKyq1w==
-X-Received: by 2002:a17:902:e811:b0:1e0:c887:f93f with SMTP id u17-20020a170902e81100b001e0c887f93fmr10054410plg.1.1712548417216;
-        Sun, 07 Apr 2024 20:53:37 -0700 (PDT)
-Received: from vaxr-BM6660-BM6360.. ([2001:288:7001:2703:705b:f2ff:2c4d:3b1b])
-        by smtp.gmail.com with ESMTPSA id kp11-20020a170903280b00b001d8aa88f59esm5757512plb.110.2024.04.07.20.53.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Apr 2024 20:53:36 -0700 (PDT)
-From: I Hsin Cheng <richard120310@gmail.com>
-To: tj@kernel.org
-Cc: lizefan.x@bytedance.com,
-	hannes@cmpxchg.org,
-	corbet@lwn.net,
-	cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	I Hsin Cheng <richard120310@gmail.com>
-Subject: [PATCH] docs: cgroup-v1: Fix description for css_online
-Date: Mon,  8 Apr 2024 11:53:29 +0800
-Message-Id: <20240408035329.5175-1-richard120310@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1712575782; c=relaxed/simple;
+	bh=ui6zO61OoRy1WTVBGgbxlxDqE3SIMw1GmctCU6KhCl4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TCBtSvANB+KDmnQemjnkGm4StfRggbPppD8fRqywkdGqsVndcc2rYIvCotwI4EWb+uZCN9qtuBeFfQx9Qox9hGrgPT8p8paYgHTZx/Cs+dioTu6Dg0wAisuNJuRaS1t1kWYMhfzpKawdpe/WkPfHykqHrBB29761NN8llIwDvqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=DIqmKBfp; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TiejnKOe; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E89E3227FC;
+	Mon,  8 Apr 2024 11:29:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712575778; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wkruFaWMqf9jEP3pbWk4gnmTixQ96+6DeaVPdg/LTxU=;
+	b=DIqmKBfpSnO93JQKiKSKdz07gIxN3frXvts4GqUuIVrpLsnXpUIAD9AqOnSE2U4UbWJ4y5
+	1qKvZC/NhfysrAs6dgkyumU3cYhxHfOkkYjz5SLXTbe7qxEY0oC7PubfFxqDH9UpMr8zco
+	d21F+St+kZjSELYc0FwvNdEXuJgsV88=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712575777; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wkruFaWMqf9jEP3pbWk4gnmTixQ96+6DeaVPdg/LTxU=;
+	b=TiejnKOefeUVgeT83QWTu1r65qefyoQ8qFnWHlaeBW3PatGsL8R8sCpR/OVF7TevYdnAw9
+	VRVxwiUlsK2nW/882oESPIEgFk1EUVeNw132mjhulJ4O2SzHfdviMXAuDQQGwBuCQwhH/S
+	Ab8OcVJTMWizgCNgfm9f3rpYVRaxCNU=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id DA25313A92;
+	Mon,  8 Apr 2024 11:29:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id w3wONSHVE2b9RgAAn2gu4w
+	(envelope-from <mkoutny@suse.com>); Mon, 08 Apr 2024 11:29:37 +0000
+Date: Mon, 8 Apr 2024 13:29:32 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, Tejun Heo <tj@kernel.org>, 
+	Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
+Subject: Re: Re: [RFC PATCH v3 6/9] selftests: cgroup: Add basic tests for
+ pids controller
+Message-ID: <qweowkm4wlfzovp3qhtkzbybeampodtwmpbp2kbtiqcrhmjtdt@syk4itfkpmfr>
+References: <20240405170548.15234-1-mkoutny@suse.com>
+ <20240405170548.15234-7-mkoutny@suse.com>
+ <a45c2ece-acb4-4cff-9d53-f5c007c9b905@collabora.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="u36r24juol4udy4e"
+Content-Disposition: inline
+In-Reply-To: <a45c2ece-acb4-4cff-9d53-f5c007c9b905@collabora.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.90 / 50.00];
+	SIGNED_PGP(-2.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	BAYES_HAM(-0.00)[40.95%];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns]
+X-Spam-Score: -2.90
+X-Spam-Flag: NO
 
-The original description refers to the comment on
-cgroup_for_each_descendant_pre() for more details. However, the macro
-cgroup_for_each_descendant_pre() no longer exist, we replace it with the
-corresponding macro cgroup_for_each_live_descendant_pre().
 
-Signed-off-by: I Hsin Cheng <richard120310@gmail.com>
----
- Documentation/admin-guide/cgroup-v1/cgroups.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--u36r24juol4udy4e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/Documentation/admin-guide/cgroup-v1/cgroups.rst b/Documentation/admin-guide/cgroup-v1/cgroups.rst
-index 9343148ee..a3e2edb3d 100644
---- a/Documentation/admin-guide/cgroup-v1/cgroups.rst
-+++ b/Documentation/admin-guide/cgroup-v1/cgroups.rst
-@@ -570,7 +570,7 @@ visible to cgroup_for_each_child/descendant_*() iterators. The
- subsystem may choose to fail creation by returning -errno. This
- callback can be used to implement reliable state sharing and
- propagation along the hierarchy. See the comment on
--cgroup_for_each_descendant_pre() for details.
-+cgroup_for_each_live_descendant_pre() for details.
- 
- ``void css_offline(struct cgroup *cgrp);``
- (cgroup_mutex held by caller)
--- 
-2.34.1
+On Sun, Apr 07, 2024 at 02:37:44AM +0500, Muhammad Usama Anjum <usama.anjum@collabora.com> wrote:
+> The
+> 	ksft_print_header();
+> 	ksft_set_plan(total_number_of_tests);
+> are missing. Please use all of the ksft APIs to make the test TAP compliant.
 
+Will do.
+
+> > +	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+> > +		switch (tests[i].fn(root)) {
+> > +		case KSFT_PASS:
+> > +			ksft_test_result_pass("%s\n", tests[i].name);
+> > +			break;
+> > +		case KSFT_SKIP:
+> > +			ksft_test_result_skip("%s\n", tests[i].name);
+> > +			break;
+> > +		default:
+> > +			ret = EXIT_FAILURE;
+> > +			ksft_test_result_fail("%s\n", tests[i].name);
+> > +			break;
+> Use ksft_test_result_report() instead of swith-case here.
+
+Do you mean ksft_test_result()? That one cannot distinguish the
+KSFT_SKIP case.
+Or ksft_test_result_code(tests[i].fn(root), tests[i].name)?
+
+Would the existing ksft_test_resul_*() calls inside switch-case still
+TAP-work?
+
+Thanks,
+Michal
+
+--u36r24juol4udy4e
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZhPVGgAKCRAGvrMr/1gc
+jkcRAQDfTQHi6illQsUgcXSAIodsO9Z2hcWZ0Oly6vYAN7OZXgEAn0NtUBk0wQBw
+tQYzo52YpkylzKawaHv3c1ayxTXUwgc=
+=hKE+
+-----END PGP SIGNATURE-----
+
+--u36r24juol4udy4e--
 
