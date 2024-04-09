@@ -1,60 +1,60 @@
-Return-Path: <cgroups+bounces-2397-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2398-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A147589E352
-	for <lists+cgroups@lfdr.de>; Tue,  9 Apr 2024 21:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E47A589E358
+	for <lists+cgroups@lfdr.de>; Tue,  9 Apr 2024 21:26:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CD1C2845B7
-	for <lists+cgroups@lfdr.de>; Tue,  9 Apr 2024 19:25:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E00628557F
+	for <lists+cgroups@lfdr.de>; Tue,  9 Apr 2024 19:26:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F22E158205;
-	Tue,  9 Apr 2024 19:24:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41400157E88;
+	Tue,  9 Apr 2024 19:25:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DvikZ062"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GMv8hHMn"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9108F157E75
-	for <cgroups@vger.kernel.org>; Tue,  9 Apr 2024 19:24:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A01115749A
+	for <cgroups@vger.kernel.org>; Tue,  9 Apr 2024 19:25:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712690690; cv=none; b=PvGxJJ7mYRrUCiL4jE02hTEs/S19HVGpFxSuVVAVySkbA1+1V150LaJNbTl4mcffP3fzp9Pw/k9fQzLjvPcp7I3U47GhLm1kcRe9knJGb7uUV4SouKPUDI2JUHQoxe2eLu/GFsA6ZYfSMbOEak6YNMEszlboN2cHY7e2Qx9Tp0s=
+	t=1712690704; cv=none; b=Q+7NoLLR0VngqRaKEK2tNaXkBEc6LcyDgpTdBi3UVJCiBbNTDXwRqqA/M6sfBtZxamH+i9a2C+94KbNQOx+97SeB0tSLbjJ++aBARdERHSAyF32inDvFCFtOCN7uxWOsRIwXSJvQ3fnGRWpgxWwkFz42soP6ecd3ckgGpzg+hc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712690690; c=relaxed/simple;
-	bh=f2r6XGWVgx08KSMlFSZ6qHtz58Yi8+jxNoK6fRu4Nds=;
+	s=arc-20240116; t=1712690704; c=relaxed/simple;
+	bh=FAIHwezgBzib8qVcIz1KMdTokmMBm7CLgJNhlG06JSY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sJi/qMMA28hqXaoJueriBphhhgkFhA6BuGMEn3N6mjJqoMz6EgWm+dUqS6bAnvTDCK+vwHXn7QGTOdN1JrSWMa3MuSjEWv63f2ps2wikbZCBeIwhMq0BQz2q+eem3YOUv8rnJKmqvKms/Dts9kXiKriZD9udZoIkURyHisTmD0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DvikZ062; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=hny19y4wJWd5bFw6ox4jwO2cbW6SNB/UglF5Lwb5QUVs0Dsj3Jn66H+r1iTQwkeB5Yj7Jz/fSwchapUrZjo5qArseIeW9e1pI8tEMq25CAWkQO29u5v4V3/6SD4gH8kP1pPSAxhffYEEIQf6aIWqsNKoCicX53SaLWulTaWlXHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GMv8hHMn; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712690687;
+	s=mimecast20190719; t=1712690701;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kfmOqlR3LeI6JA5XUUI6YoG07vX8W74qIyKiUchjaJU=;
-	b=DvikZ062WM1x2Cc2HwSAVuiuCJ37sxAsoc1oUDFeBwTWXMvDd7cdUCBt75numDYkynhBGs
-	+yu2ikXtLmFbuNRqLB7mKOVUT1LR1UnEmnGPUx/Bw9e3MaIOTK1nvFTqpbnF+QVTTIKKdQ
-	Zf5qPRRD0n+Z1R74232E+SxXTQUndow=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-97-N-WWN3PRODGQvvQK2vZjIQ-1; Tue, 09 Apr 2024 15:24:44 -0400
-X-MC-Unique: N-WWN3PRODGQvvQK2vZjIQ-1
+	bh=6rnCGH1F82LpMt5YjVvPZTK3t5BGo8uUqDhbNYCO1mM=;
+	b=GMv8hHMn1W3FAXy/lgTzPdQYYF7jxjOFZeNAyRciLfSbRBeie4usGSbUP21rPbyQUuFJ8K
+	MdgGBZCKvt0pt/ffa/Z4+B1Jk9/9hozT0+AHhfGWQDZNnxEECZrqVtRpeWunFbzE4lFsCD
+	kz1RoVXUYu5auSPSDHTgnb4twZ5FwxE=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-195-HVcby02FNvy6GQIyoWw54g-1; Tue,
+ 09 Apr 2024 15:24:57 -0400
+X-MC-Unique: HVcby02FNvy6GQIyoWw54g-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B730680B51A;
-	Tue,  9 Apr 2024 19:24:42 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6D86429AA392;
+	Tue,  9 Apr 2024 19:24:56 +0000 (UTC)
 Received: from t14s.redhat.com (unknown [10.39.192.106])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id DCED040B4979;
-	Tue,  9 Apr 2024 19:24:33 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 0A40740B497A;
+	Tue,  9 Apr 2024 19:24:42 +0000 (UTC)
 From: David Hildenbrand <david@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: linux-mm@kvack.org,
@@ -82,9 +82,9 @@ Cc: linux-mm@kvack.org,
 	Miaohe Lin <linmiaohe@huawei.com>,
 	Naoya Horiguchi <naoya.horiguchi@nec.com>,
 	Richard Chang <richardycc@google.com>
-Subject: [PATCH v1 06/18] mm: make folio_mapcount() return 0 for small typed folios
-Date: Tue,  9 Apr 2024 21:22:49 +0200
-Message-ID: <20240409192301.907377-7-david@redhat.com>
+Subject: [PATCH v1 07/18] mm/memory: use folio_mapcount() in zap_present_folio_ptes()
+Date: Tue,  9 Apr 2024 21:22:50 +0200
+Message-ID: <20240409192301.907377-8-david@redhat.com>
 In-Reply-To: <20240409192301.907377-1-david@redhat.com>
 References: <20240409192301.907377-1-david@redhat.com>
 Precedence: bulk
@@ -96,42 +96,38 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-We already handle it properly for large folios. Let's also return "0"
-for small typed folios, like page_mapcount() currently would.
+We want to limit the use of page_mapcount() to the places where it is
+absolutely necessary. In zap_present_folio_ptes(), let's simply check
+the folio mapcount(). If there is some issue, it will underflow at some
+point either way when unmapping.
 
-Consequently, folio_mapcount() will never return negative values for
-typed folios, but may return negative values for underflows.
+As indicated already in commit 10ebac4f95e7 ("mm/memory: optimize unmap/zap
+with PTE-mapped THP"), we already documented "If we ever have a cheap
+folio_mapcount(), we might just want to check for underflows there.".
+
+There is no change for small folios. For large folios, we'll now catch
+more underflows when batch-unmapping, because instead of only testing
+the mapcount of the first subpage, we'll test if the folio mapcount
+underflows.
 
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- include/linux/mm.h | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ mm/memory.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index daf687f0e8e5..d453232bba62 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1260,12 +1260,19 @@ static inline int folio_large_mapcount(const struct folio *folio)
-  * references the entire folio counts exactly once, even when such special
-  * page table entries are comprised of multiple ordinary page table entries.
-  *
-+ * Will report 0 for pages which cannot be mapped into userspace, such as
-+ * slab, page tables and similar.
-+ *
-  * Return: The number of times this folio is mapped.
-  */
- static inline int folio_mapcount(const struct folio *folio)
- {
--	if (likely(!folio_test_large(folio)))
--		return atomic_read(&folio->_mapcount) + 1;
-+	int mapcount;
-+
-+	if (likely(!folio_test_large(folio))) {
-+		mapcount = atomic_read(&folio->_mapcount);
-+		return page_type_has_type(mapcount) ? 0 : mapcount + 1;
-+	}
- 	return folio_large_mapcount(folio);
- }
+diff --git a/mm/memory.c b/mm/memory.c
+index 78422d1c7381..178492efb4af 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -1502,8 +1502,7 @@ static __always_inline void zap_present_folio_ptes(struct mmu_gather *tlb,
+ 	if (!delay_rmap) {
+ 		folio_remove_rmap_ptes(folio, page, nr, vma);
+ 
+-		/* Only sanity-check the first page in a batch. */
+-		if (unlikely(page_mapcount(page) < 0))
++		if (unlikely(folio_mapcount(folio) < 0))
+ 			print_bad_pte(vma, addr, ptent, page);
+ 	}
  
 -- 
 2.44.0
