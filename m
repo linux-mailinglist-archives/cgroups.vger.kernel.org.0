@@ -1,129 +1,140 @@
-Return-Path: <cgroups+bounces-2378-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2379-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33AB489D179
-	for <lists+cgroups@lfdr.de>; Tue,  9 Apr 2024 06:23:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AC1C89D2B4
+	for <lists+cgroups@lfdr.de>; Tue,  9 Apr 2024 08:52:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 969CFB24DBA
-	for <lists+cgroups@lfdr.de>; Tue,  9 Apr 2024 04:23:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB6E91C21B9B
+	for <lists+cgroups@lfdr.de>; Tue,  9 Apr 2024 06:52:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A8F056465;
-	Tue,  9 Apr 2024 04:23:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81754762CD;
+	Tue,  9 Apr 2024 06:52:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nTI9L8cB"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XyeQe9HU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2296683CB0;
-	Tue,  9 Apr 2024 04:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A820E537E6;
+	Tue,  9 Apr 2024 06:52:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712636607; cv=none; b=TSOLWTfiXD9hnooT8YOKObw3vueDkId/1CQCksv3h42fJWEK58WzFY81k0d3i667KpuI3s3I5+d6iYyIZ9oeF98O5ge3O9EYgYPWyLKGGDns/uHQl3kPucwpdm+ooQK+Nxz1gZ/lCYUkF8DMFZcj9McR8m7t+GoI1wIMDHXKyX4=
+	t=1712645565; cv=none; b=PFgr9f1M1E+8gdT5aYI5EE0FLQEHaRD203y80+CzmBVvWPxw3GVI9Sq2rN6MUTfj5rfXhC0vrxOBnOZet4ePNRsTwqTotx9tc08atvEM6rZ6wZLq6rSY1IC9fVF+xo+rDuYosjT5I8YTyIibm1LwGIt02rrxJQ1qADFM3wCpurM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712636607; c=relaxed/simple;
-	bh=SuQSgPe8CBiuq2s/IXE0JGCrExX0FOBruorD6DKwhDI=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=VVfDvZPXTbd3GlqPq1NhBm4H4+c2emf+sQGcgrwzpqBqgfaZR5xiqqwzqZqKHgHDo1W0eHK354foyTHlG3hP0jpsv9GwEkd6C888o0G/3q03JAWYf9NPAovbviz+DWXyr2PMG08QbAxC4+NQsVDly8ruAs4kw9V+zvcbq/3Farg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nTI9L8cB; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1712645565; c=relaxed/simple;
+	bh=Zle6FAHr+wtJCiFQxUsaRDq7UJ+UY3tgUpSmO7Qbp7M=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=EbatQSdffTm5YLO4z8KLzNdA8f2ok+LPc9MSRz+R1BkvgC0+7K+j9wiXn3ljRuTfeIiXDLxxqrO+8wQfQmQkaKLU4UMjvz35sbv2uzCIcomR7pGsp4ZHCsHNhmm75w1jO4u8FkXG9NqZFduKCCo850dGZ4HAbjfzMxZQdf/VTJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XyeQe9HU; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712636606; x=1744172606;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=SuQSgPe8CBiuq2s/IXE0JGCrExX0FOBruorD6DKwhDI=;
-  b=nTI9L8cBUe4UZYDCljqedY/9k5z4cQNHJ3Hi1bouyyOjMT8aZto0tXLr
-   vgnVPkpcfMf90M0StmFh/c8xdwZ/54bUs6QSNcJaeRD3kZuzPUIHBnIzu
-   FxNSVfsL12baT7GjsLGS7HhZAF3vwlw98pY0aUNpyZr9l8test982VJ2A
-   cR9GY6a1wpezTAna7wjvWMc/Qx9fAyFujL5AJbmB2sdEREUGVgwkKgOKc
-   9Ui8ZDxOKr5j3vmRbC1SAiJ+RoPq/1+FiUIFsOCs17IEitnha0p9/vpz6
-   bGxa0EOTU7ZOeaVIla0YdDzgL5BdGVS1mTdVpjFj1GnEs27X3ofvwY6IV
+  t=1712645564; x=1744181564;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=Zle6FAHr+wtJCiFQxUsaRDq7UJ+UY3tgUpSmO7Qbp7M=;
+  b=XyeQe9HUG31AKvMYHggYeANmWOmoH5Wgyj9/bPVOJd6kT20hqyPKlcQ2
+   SSta4BqXfaXZ0jh6pPq5J6mFinmasS90p2MeYUF/UYzpjGCBx2YxMlkrb
+   xhPaytb4CFrRJMQiD4YoHUCl2x/lfeym/xZUs7TuyS7q1Jl3O5CmIu8kr
+   tMfsZdFNbLed+iF4OOSx/z7MHRsK+7vx42pD0iGF+8Mpp2nVDHhQjcHJi
+   3607/vyBxs6MjVUb9f2mXJzsFM4B02Ue/Gw92SHu3/G6sVrSy8AIST6HP
+   XBPse5Gz5Z8bbvMfBInxd0yg/UiBAGqgAwPh0Rjo5G933WLKVvAmy+kWg
    A==;
-X-CSE-ConnectionGUID: nXg57YKOS6ek8UbTXoy9zg==
-X-CSE-MsgGUID: E+CCpb21TfeHwyDazU9tyQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="33344738"
+X-CSE-ConnectionGUID: +kEAxvbLQvaMa39NrbeZNQ==
+X-CSE-MsgGUID: 4jer2gSGSnecslZPHqTEog==
+X-IronPort-AV: E=McAfee;i="6600,9927,11038"; a="7792757"
 X-IronPort-AV: E=Sophos;i="6.07,188,1708416000"; 
-   d="scan'208";a="33344738"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 21:23:25 -0700
-X-CSE-ConnectionGUID: OqeZOLAWSVm4WyyvVODuHw==
-X-CSE-MsgGUID: eIudRArYTrG75Ijrlc2gPw==
+   d="scan'208";a="7792757"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 23:52:43 -0700
+X-CSE-ConnectionGUID: QV3bAUOnS1Gi+AaB9c/ZEg==
+X-CSE-MsgGUID: TqDHlEfCS5CC6TUhVnmpVA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,188,1708416000"; 
-   d="scan'208";a="20182985"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 08 Apr 2024 21:23:23 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
- <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
- <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
- <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
- <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
- <kai.huang@intel.com>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
- <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
- "chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: [PATCH v10 12/14] x86/sgx: Turn on per-cgroup EPC reclamation
-References: <20240328002229.30264-1-haitao.huang@linux.intel.com>
- <20240328002229.30264-13-haitao.huang@linux.intel.com>
- <d25dbe76d48a0b6c74fa09b06f1ca3fdf234a190.camel@intel.com>
- <op.2lw8gfg2wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <7a21c0de-ba59-4e76-8d67-70957f9db581@intel.com>
-Date: Mon, 08 Apr 2024 23:23:21 -0500
+   d="scan'208";a="20157423"
+Received: from unknown (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2024 23:52:35 -0700
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Yuanchu Xie <yuanchu@google.com>
+Cc: David Hildenbrand <david@redhat.com>,  "Aneesh Kumar K.V"
+ <aneesh.kumar@linux.ibm.com>,  Khalid Aziz <khalid.aziz@oracle.com>,
+  Henry Huang <henry.hj@antgroup.com>,  Yu Zhao <yuzhao@google.com>,  Dan
+ Williams <dan.j.williams@intel.com>,  Gregory Price
+ <gregory.price@memverge.com>,  Wei Xu <weixugc@google.com>,  David
+ Rientjes <rientjes@google.com>,  Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>,  "Rafael J. Wysocki" <rafael@kernel.org>,
+  Andrew Morton <akpm@linux-foundation.org>,  Johannes Weiner
+ <hannes@cmpxchg.org>,  Michal Hocko <mhocko@kernel.org>,  Roman Gushchin
+ <roman.gushchin@linux.dev>,  Muchun Song <muchun.song@linux.dev>,  Shuah
+ Khan <shuah@kernel.org>,  Yosry Ahmed <yosryahmed@google.com>,  Matthew
+ Wilcox <willy@infradead.org>,  Sudarshan Rajagopalan
+ <quic_sudaraja@quicinc.com>,  Kairui Song <kasong@tencent.com>,  "Michael
+ S. Tsirkin" <mst@redhat.com>,  Vasily Averin <vasily.averin@linux.dev>,
+  Nhat Pham <nphamcs@gmail.com>,  Miaohe Lin <linmiaohe@huawei.com>,  Qi
+ Zheng <zhengqi.arch@bytedance.com>,  Abel Wu <wuyun.abel@bytedance.com>,
+  "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,  Kefeng Wang
+ <wangkefeng.wang@huawei.com>,  linux-kernel@vger.kernel.org,
+  linux-mm@kvack.org,  cgroups@vger.kernel.org,
+  linux-kselftest@vger.kernel.org
+Subject: Re: [RFC PATCH v3 1/8] mm: multi-gen LRU: ignore non-leaf pmd_young
+ for force_scan=true
+In-Reply-To: <20240327213108.2384666-2-yuanchu@google.com> (Yuanchu Xie's
+	message of "Wed, 27 Mar 2024 14:31:00 -0700")
+References: <20240327213108.2384666-1-yuanchu@google.com>
+	<20240327213108.2384666-2-yuanchu@google.com>
+Date: Tue, 09 Apr 2024 14:50:42 +0800
+Message-ID: <875xwr81x9.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2lx047lrwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <7a21c0de-ba59-4e76-8d67-70957f9db581@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Type: text/plain; charset=ascii
 
-On Mon, 08 Apr 2024 17:37:10 -0500, Huang, Kai <kai.huang@intel.com> wrote:
+Yuanchu Xie <yuanchu@google.com> writes:
 
+> When non-leaf pmd accessed bits are available, MGLRU page table walks
+> can clear the accessed bit and promptly ignore the accessed bit on the
+> pte because it's on a different node, so the walk does not update the
+> generation of said page. When the next scan comes around on the right
+> node, the non-leaf pmd accessed bit might remain cleared and the pte
+> accessed bits won't be checked. While this is sufficient for
+> reclaim-driven aging, where the goal is to select a reasonably cold
+> page, the access can be missed when aging proactively for measuring the
+> working set size of a node/memcg.
 >
+> Since force_scan disables various other optimizations, we check
+> force_scan to ignore the non-leaf pmd accessed bit.
 >
-> On 9/04/2024 6:03 am, Haitao Huang wrote:
->>>>
->>  The misc root cgroup is a static similar to sgx_cg_root. So  
->> misc_cg_root()  won't be NULL
->> However, based on how css_misc() was check NULL, I suppose  
->> sgx_get_current_cg() may be NULL when cgroup is disabled (again not  
->> 100% sure but we handle it anyway)
+> Signed-off-by: Yuanchu Xie <yuanchu@google.com>
+> ---
+>  mm/vmscan.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> Could you help to check?  Sorry I am busy on something else thus won't  
-> be able to do any actual check.
->
-It's always non-NULL based on testing.
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 4f9c854ce6cc..1a7c7d537db6 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -3522,7 +3522,7 @@ static void walk_pmd_range(pud_t *pud, unsigned long start, unsigned long end,
+>  
+>  		walk->mm_stats[MM_NONLEAF_TOTAL]++;
+>  
+> -		if (should_clear_pmd_young()) {
+> +		if (!walk->force_scan && should_clear_pmd_young()) {
+>  			if (!pmd_young(val))
+>  				continue;
 
-It's hard for me to say definitely by reading the code. But IIUC  
-cgroup_disable command-line only blocks operations in /sys/fs/cgroup so  
-user space can't set up controllers and config limits, etc., for the  
-diasabled ones. Each task->cgroups would still have a non-NULL pointer to  
-the static root object for each cgroup that is enabled by KConfig, so  
-get_current_misc_cg() thus  sgx_get_current_cg() should not return NULL  
-regardless 'cgroup_disable=misc'.
+Sorry, I don't understand why we need this.  If !pmd_young(val), we
+don't need to update the generation.  If pmd_young(val), the bloom
+filter will be ignored if force_scan == true.  Or do I miss something?
 
-Maybe @Michal or @tj can confirm?
-
-Thanks
-Haitao
-
+--
+Best Regards,
+Huang, Ying
 
