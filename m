@@ -1,151 +1,164 @@
-Return-Path: <cgroups+bounces-2435-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2436-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 684B18A04C5
-	for <lists+cgroups@lfdr.de>; Thu, 11 Apr 2024 02:26:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27B4B8A0B21
+	for <lists+cgroups@lfdr.de>; Thu, 11 Apr 2024 10:26:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8169B1C21659
-	for <lists+cgroups@lfdr.de>; Thu, 11 Apr 2024 00:26:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D77AB219B5
+	for <lists+cgroups@lfdr.de>; Thu, 11 Apr 2024 08:26:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 976B117F3;
-	Thu, 11 Apr 2024 00:26:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A52EF13FD8C;
+	Thu, 11 Apr 2024 08:26:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZPkn0pwI"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mvpUJWKX";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mvpUJWKX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF8F610F4
-	for <cgroups@vger.kernel.org>; Thu, 11 Apr 2024 00:26:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DE5913E023;
+	Thu, 11 Apr 2024 08:26:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712795190; cv=none; b=ZVWSKaXqFrUdSloBoGnN6HETwHmASjR0t77VaH1PIrQUmdhHpAjyrh+8b2m8VbJPt7XvSTxoMff3xNX6ynSi5F9YWi92D2/kXKGLRooEPQ9/fDTbRWXAf0rtQvZBYPAqLQlnt5UuJM+qHvQzrowOMihNMN7laU8TZ+fErT5LobI=
+	t=1712823964; cv=none; b=cqWzM4Rkv08eEqw5Dy4L10D8m9CyGlOeeXCa1JmL0fZ92+3unT1rIwanH9kagByTyVWzAi5yWqgQKdZ9GIBURrC7kR6Z06G+3WYom5XEYobhpZpDV+0v4uKDRmLCebopjXAihscL8RS6b6L/twLZyle6zPDAd2+w3KQDP2UHViI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712795190; c=relaxed/simple;
-	bh=iOxJT8OfTlI2kJRkaXpBe16OPqSDgaEyZ9Me/w385Wc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dhYsP0eyJzWlqwOWladitnF2XS/YINdTnhzp4pbo6DXo4DPNHKmgz0Ub/xxK9nGcGG/4XnRDwx+L/m4/8qwxSmKLkA00q/o8W56ViFbmn/+g1aW1vU/5rLmNa2iVekj/b5xqjtX4DbyZOLTONF2N4U8txN/Ez256SX/B1+AUMko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZPkn0pwI; arc=none smtp.client-ip=91.218.175.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <31904afe-1d8a-4169-a3bd-d6d1c86cac5f@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712795186;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	s=arc-20240116; t=1712823964; c=relaxed/simple;
+	bh=kBsrwI1nrQ+DqBTdvGD+kXeHsKAdfRqKLaUqW7+FO2Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=udIDhic2/HIv0WV4FwTvHU42xx8S1dxnM5wKhCWjPVFYKws+Vgrkvhu5fqSIOCtBgobnEfJbk6NKVcw6rLBljzML6hs105glBJtI+v12cv+JZTpjcrP+1xhzxH8mZtXc/3kxrrcJjHB7qHx8NR7xhhBJqrlLBamqBbO0PJs6o0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mvpUJWKX; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mvpUJWKX; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 2923620B61;
+	Thu, 11 Apr 2024 08:26:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712823960; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gB2Wp3EMMPBhX4wRoJ9ubR900ORB8tJWdO8CVq4jwWQ=;
-	b=ZPkn0pwIJRwaHIbkfEkVSdU9ecajbn7zceHnEAJi/o70wwJfHYmj3NZOCeYFMxYXFAXR0C
-	Mb9wM84w4gd8qYC/C4KAzd+Vo8BhaVCZm5Bzs0ueih2vvXuPUsPI8hKxnOnEzZJmb0Y8dt
-	YrFK1drcLrl96FZP67JFf7ejx+FK/0s=
-Date: Wed, 10 Apr 2024 17:26:18 -0700
+	bh=kBsrwI1nrQ+DqBTdvGD+kXeHsKAdfRqKLaUqW7+FO2Y=;
+	b=mvpUJWKX5SM0fRVFK6fwiJKVgTAfKbkGws5cOhVE4iW0qy99hKEhZ5mggNEjbt+vV1U2j4
+	FxSCaEz4rQw9k6Qupjkv445G1yXs+cKVFg8v8B0Z1S7fdII2CZ9W9XDzHxupS4n+zI4gKd
+	aBguafXJPmMQWCA31rknna4jX564ehU=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=mvpUJWKX
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712823960; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kBsrwI1nrQ+DqBTdvGD+kXeHsKAdfRqKLaUqW7+FO2Y=;
+	b=mvpUJWKX5SM0fRVFK6fwiJKVgTAfKbkGws5cOhVE4iW0qy99hKEhZ5mggNEjbt+vV1U2j4
+	FxSCaEz4rQw9k6Qupjkv445G1yXs+cKVFg8v8B0Z1S7fdII2CZ9W9XDzHxupS4n+zI4gKd
+	aBguafXJPmMQWCA31rknna4jX564ehU=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0E73A13685;
+	Thu, 11 Apr 2024 08:26:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id GCRiA5ieF2Y/RwAAD6G6ig
+	(envelope-from <mkoutny@suse.com>); Thu, 11 Apr 2024 08:26:00 +0000
+Date: Thu, 11 Apr 2024 10:25:54 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: Djalal Harouni <tixxdz@gmail.com>, Tejun Heo <tj@kernel.org>, 
+	Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
+Message-ID: <mizwxyeznmb3ezlkwcjjc6fwwjseby6f5o2fb7ppunxtjdnitk@k5bxjxhfy6kv>
+References: <20240327-ccb56fc7a6e80136db80876c@djalal>
+ <20240327225334.58474-1-tixxdz@gmail.com>
+ <ex2uipr54lb2odxwzwp22ycvlwplsy4mm3shx26hczo3mjtkvz@uuzyk6535prw>
+ <705d7180-aced-46ba-80a6-84ac4e2b96b9@gmail.com>
+ <eosbqsdycwdaezg6huqwpjvttxdxgbu6ptjmpxesy6i2rl276i@72w2orzveyes>
+ <31904afe-1d8a-4169-a3bd-d6d1c86cac5f@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next 0/3] bpf: freeze a task cgroup from bpf
-Content-Language: en-GB
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Djalal Harouni <tixxdz@gmail.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20240327-ccb56fc7a6e80136db80876c@djalal>
- <20240327225334.58474-1-tixxdz@gmail.com>
- <ex2uipr54lb2odxwzwp22ycvlwplsy4mm3shx26hczo3mjtkvz@uuzyk6535prw>
- <705d7180-aced-46ba-80a6-84ac4e2b96b9@gmail.com>
- <eosbqsdycwdaezg6huqwpjvttxdxgbu6ptjmpxesy6i2rl276i@72w2orzveyes>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <eosbqsdycwdaezg6huqwpjvttxdxgbu6ptjmpxesy6i2rl276i@72w2orzveyes>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="qnegwa3hbjphuauz"
+Content-Disposition: inline
+In-Reply-To: <31904afe-1d8a-4169-a3bd-d6d1c86cac5f@linux.dev>
+X-Spam-Flag: NO
+X-Spam-Score: -5.45
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 2923620B61
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-5.45 / 50.00];
+	BAYES_HAM(-2.84)[99.31%];
+	SIGNED_PGP(-2.00)[];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	DWL_DNSWL_LOW(-1.00)[suse.com:dkim];
+	MID_RHS_NOT_FQDN(0.50)[];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,kernel.org,bytedance.com,cmpxchg.org,iogearbox.net,linux.dev,google.com,fb.com,vger.kernel.org];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
 
 
-On 4/9/24 8:32 AM, Michal Koutný wrote:
-> Hi.
->
-> On Tue, Apr 02, 2024 at 07:20:45PM +0100, Djalal Harouni <tixxdz@gmail.com> wrote:
->> Thanks yes, I would expect freeze to behave like signal, and if one
->> wants to block immediately there is the LSM override return. The
->> selftest attached tries to do exactly that.
-> Are you refering to this part:
->
-> 	int BPF_PROG(lsm_freeze_cgroup, int cmd, union bpf_attr *attr, unsigned int size)
-> 		...
-> 		ret = bpf_task_freeze_cgroup(task, 1);
-> 		if (!ret) {
-> 			ret = -EPERM;
-> 			/* reset for next call */
-> ?
->
->
->> Could be security signals, reading sensitive files or related to any
->> operation management, for X reasons this user session should be freezed
->> or killed.
-> What can be done with a frozen cgroup after anything of that happens?
-> Anything besides killing anyway?
->
-> Killing of an offending process could be caught by its supervisor (like
-> container runtime or systemd) and propagated accordingly to the whole
-> cgroup.
->
->> The kill is an effective defense against fork-bombs as an example.
-> There are several ways how to prevent fork-bombs in kernel already, it
-> looks like a contrived example.
->
->> Today some container/pod operations are performed at bpf level, having
->> the freeze and kill available is straightforward to perform this.
-> It seems to me like an extra step when the same operation can be done from
-> (the managing) userspace already.
->
->> For generalizing this, haven't thought about it that much. First use
->> case is to try to get freeze and possibly kill support, and use a common
->> interface as requested.
-> BTW, I notice that there is bpf_sys_bpf() helper that allows calling an
-> arbitrary syscall. Wouldn't that be sufficient for everything?
+--qnegwa3hbjphuauz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This is not true. Currently, only 'bpf' and 'close' syscalls are supported.
+On Wed, Apr 10, 2024 at 05:26:18PM -0700, Yonghong Song <yonghong.song@linux.dev> wrote:
+> This is not true.
 
-static const struct bpf_func_proto *
-syscall_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-{
-         switch (func_id) {
-         case BPF_FUNC_sys_bpf:
-                 return !bpf_token_capable(prog->aux->token, CAP_PERFMON)
-                        ? NULL : &bpf_sys_bpf_proto;
-         case BPF_FUNC_btf_find_by_name_kind:
-                 return &bpf_btf_find_by_name_kind_proto;
-         case BPF_FUNC_sys_close:
-                 return &bpf_sys_close_proto;
-         case BPF_FUNC_kallsyms_lookup_name:
-                 return &bpf_kallsyms_lookup_name_proto;
-         default:
-                 return tracing_prog_func_proto(func_id, prog);
-         }
-}
+Oh, I misunderstood a manpage, I can see now it's not for any syscall.
 
-More syscalls can be added (through kfunc) if there is a use case for that.
+> More syscalls can be added (through kfunc) if there is a use case for that.
 
->
-> (Based on how I still understand the problem: either you must respond
-> immediately and then the direct return from LSM is appropriate or timing
-> is not sensitive but you want act on whole cgroup.)
->
-> Thanks,
-> Michal
+Thus, I don't want to open this up.
+
+Michal
+
+--qnegwa3hbjphuauz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZheekAAKCRAGvrMr/1gc
+jnl+AP9K1DB6KLICURjslQg8RPwAxt5ZS4vkUe5biaeljWRA7wEA9UKJ0+1wiJV4
+4Mf98MQLtuvEFv5v6L6qtBRpvrcGCQw=
+=0oQ4
+-----END PGP SIGNATURE-----
+
+--qnegwa3hbjphuauz--
 
