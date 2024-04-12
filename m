@@ -1,113 +1,143 @@
-Return-Path: <cgroups+bounces-2443-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2444-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8130E8A2BFB
-	for <lists+cgroups@lfdr.de>; Fri, 12 Apr 2024 12:10:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF7F78A3090
+	for <lists+cgroups@lfdr.de>; Fri, 12 Apr 2024 16:26:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 367991F244B3
-	for <lists+cgroups@lfdr.de>; Fri, 12 Apr 2024 10:10:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BA051C2140F
+	for <lists+cgroups@lfdr.de>; Fri, 12 Apr 2024 14:26:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF77053802;
-	Fri, 12 Apr 2024 10:10:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 278C512BF2A;
+	Fri, 12 Apr 2024 14:23:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b="LuZbLWJP"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="aaK8eDl8";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="aaK8eDl8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC8A53373;
-	Fri, 12 Apr 2024 10:10:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.250.239
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712916619; cv=none; b=n2hMJmaXIUdCyPKIxKqycwkw8bwG++A9yWUF2tve7JS5jrsay5L21WpXLZpbQy4jWqG2vU2T7KEo1pVbWSQ6ykaCN568fchV5f9Aly2Wwh86R8OlE1fMYwVC0nuMNzjmheANhHUJg0uomGKl0AaoGZrPZX75DGVJh2il0XbKqz4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712916619; c=relaxed/simple;
-	bh=E+iVkylCqaTgNVotthxWDOOoCqml/4nGJOpaARXTjK0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=obYLr5ka/CzZ5wBcAYioLpi6ofINDwBNK9+5O6FlmPJWUY8nW1lD+vjj/zPnEOM+00NTqUgNZ5W/tAJsj/GyZDD/DG4L8gA91V6MCIhA3SXCnHHbWakYHX9mTs8awcTHWw2Lo/ZByg0vyqM+WjFe6Be6kF7czZcoIeJ1ZvKdDOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org; spf=pass smtp.mailfrom=8bytes.org; dkim=pass (2048-bit key) header.d=8bytes.org header.i=@8bytes.org header.b=LuZbLWJP; arc=none smtp.client-ip=85.214.250.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=8bytes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=8bytes.org
-Received: from 8bytes.org (p4ffe0bdf.dip0.t-ipconnect.de [79.254.11.223])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by mail.8bytes.org (Postfix) with ESMTPSA id 51047281A38;
-	Fri, 12 Apr 2024 12:10:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
-	s=default; t=1712916616;
-	bh=E+iVkylCqaTgNVotthxWDOOoCqml/4nGJOpaARXTjK0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LuZbLWJPGCLZJPltogQTsk4oQ9NTj4Tsj7ifX4XmlHt9dm9BjBk7wNSRnJEGBBLX0
-	 RR1K295opyq8KNseqPbA6/RWBABghoCfLVi53gLBIUssvvge/FC7qptmqVDcplhzTo
-	 XuBmaDg9QBQ/vnZqdaxAREDkzJpp0Wy4QVBWKVDHOT7296ofu/w9sV3sUJl9A78VIT
-	 Q8HYmCNyUOwMBct7Se9mdxxPDMr4hl0kzCGipNnFTmrP6p8lRL075rML4+cOeADLWK
-	 3bfKf9EbMlshGtJnw/aGnFdGxYsmOkfVQGWHlFj/MJ94e75Lh2o+bnyCKL3btAMYV6
-	 t2ODbB7AbBEpQ==
-Date: Fri, 12 Apr 2024 12:10:14 +0200
-From: Joerg Roedel <joro@8bytes.org>
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com,
-	alyssa@rosenzweig.io, asahi@lists.linux.dev,
-	baolu.lu@linux.intel.com, bhelgaas@google.com,
-	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com,
-	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de,
-	iommu@lists.linux.dev, jernej.skrabec@gmail.com,
-	jonathanh@nvidia.com, krzysztof.kozlowski@linaro.org,
-	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-rockchip@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
-	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com,
-	marcan@marcan.st, mhiramat@kernel.org, m.szyprowski@samsung.com,
-	paulmck@kernel.org, rdunlap@infradead.org, robin.murphy@arm.com,
-	samuel@sholland.org, suravee.suthikulpanit@amd.com,
-	sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org,
-	tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org,
-	will@kernel.org, yu-cheng.yu@intel.com, rientjes@google.com,
-	bagasdotme@gmail.com, mkoutny@suse.com
-Subject: Re: [PATCH v5 00/11] IOMMU memory observability
-Message-ID: <ZhkIhtTCWg6bgl1o@8bytes.org>
-References: <20240222173942.1481394-1-pasha.tatashin@soleen.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BB918626D;
+	Fri, 12 Apr 2024 14:23:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712931808; cv=none; b=AeZKmNNueRC8lcZf14NRx8JfJZXJyz2uOgdamYEsvR/l/Tl3kNP+TMpsOufY4/ZJnAGxb7B2Bxm30kQThMqP4ZG4Br+NiAbDqW7I3IkVv/E8qxdWKmV86OWe8ABdqba8WLvhdDpLG2t1FLCfWgGE+qXGlTYaXMinsRLSSad/jRE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712931808; c=relaxed/simple;
+	bh=JxNUt0WI8VJtqkr1vI04CciRk6AsgIvjNELyWKMNfaI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kwi/v3swpW0G79F3dc51+tSgxRK1wjg6KmkBvFBWzeYyBRFaPkVbUJwc41dsVvb2cfOI5SNkuVhqCy6+CwSXyE5y10R3gXIf0nCqQX9vdnFJ7Zw1YrGyxX4yYrkrgvnUW1AB787cJwnGc+LA9I4fwQy6pMU1Sot9UQVC1/Mbgas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=aaK8eDl8; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=aaK8eDl8; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8170B3835A;
+	Fri, 12 Apr 2024 14:23:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712931805; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JxNUt0WI8VJtqkr1vI04CciRk6AsgIvjNELyWKMNfaI=;
+	b=aaK8eDl8BbXj/V9hd6/mjA++UiyT5kZSEtZ189Pvr4jHoHuZz9d+z4mZzyui0I2g6ZS9+b
+	SuZrlvcQKWtdyZltI/Kt3evj81rlqpDyiLMckCFuyKea/bA5Oc+Q+d4wp8GTMglf/6LLHY
+	dfoGgS7VsdYJXfExdxGLfjyMWE/llbo=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712931805; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JxNUt0WI8VJtqkr1vI04CciRk6AsgIvjNELyWKMNfaI=;
+	b=aaK8eDl8BbXj/V9hd6/mjA++UiyT5kZSEtZ189Pvr4jHoHuZz9d+z4mZzyui0I2g6ZS9+b
+	SuZrlvcQKWtdyZltI/Kt3evj81rlqpDyiLMckCFuyKea/bA5Oc+Q+d4wp8GTMglf/6LLHY
+	dfoGgS7VsdYJXfExdxGLfjyMWE/llbo=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 66F6C1368B;
+	Fri, 12 Apr 2024 14:23:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id FUDyGN1DGWZvcAAAD6G6ig
+	(envelope-from <mkoutny@suse.com>); Fri, 12 Apr 2024 14:23:25 +0000
+Date: Fri, 12 Apr 2024 16:23:24 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
+Subject: Re: Re: [RFC PATCH v3 2/9] cgroup/pids: Separate semantics of
+ pids.events related to pids.max
+Message-ID: <w7cenotcuudapq4zsq6mybfvaqyljgy5hez3uc3byqzdn44yi6@76yfnhg4irt6>
+References: <20240405170548.15234-1-mkoutny@suse.com>
+ <20240405170548.15234-3-mkoutny@suse.com>
+ <ZhQvmnnxhiVo1duU@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="746pwchwjxtzohce"
+Content-Disposition: inline
+In-Reply-To: <ZhQvmnnxhiVo1duU@slm.duckdns.org>
+X-Spam-Flag: NO
+X-Spam-Score: -5.75
+X-Spam-Level: 
+X-Spamd-Result: default: False [-5.75 / 50.00];
+	BAYES_HAM(-2.85)[99.34%];
+	SIGNED_PGP(-2.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+
+
+--746pwchwjxtzohce
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240222173942.1481394-1-pasha.tatashin@soleen.com>
 
-Pasha,
+On Mon, Apr 08, 2024 at 07:55:38AM -1000, Tejun Heo <tj@kernel.org> wrote:
+> The whole series make sense to me.
 
-On Thu, Feb 22, 2024 at 05:39:26PM +0000, Pasha Tatashin wrote:
-> Pasha Tatashin (11):
->   iommu/vt-d: add wrapper functions for page allocations
->   iommu/dma: use iommu_put_pages_list() to releae freelist
->   iommu/amd: use page allocation function provided by iommu-pages.h
->   iommu/io-pgtable-arm: use page allocation function provided by
->     iommu-pages.h
->   iommu/io-pgtable-dart: use page allocation function provided by
->     iommu-pages.h
->   iommu/exynos: use page allocation function provided by iommu-pages.h
->   iommu/rockchip: use page allocation function provided by iommu-pages.h
->   iommu/sun50i: use page allocation function provided by iommu-pages.h
->   iommu/tegra-smmu: use page allocation function provided by
->     iommu-pages.h
->   iommu: observability of the IOMMU allocations
->   iommu: account IOMMU allocated memory
-
-Some problems with this:
-
-  1. I get DKIM failures when downloading this patch-set with b4, can
-     you please send them via a mailserver with working DKIM?
-
-  2. They don't apply to v6.9-rc3. Please rebase to that version and
-     are-send.
+Including the migration charging?
+(Asking whether I should keep it stacked in v4 posting.)
 
 Thanks,
+Michal
 
-	Joerg
+--746pwchwjxtzohce
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZhlD1wAKCRAGvrMr/1gc
+jqWHAP43KM4VxC2WEkbxsocIW9835Ah5tJFCnWq+L9dCH0YYeQEAgf4YC5EsufMc
+emrWLa4i67lHae7Mxu5+aJkQVhJQ2AY=
+=vxlD
+-----END PGP SIGNATURE-----
+
+--746pwchwjxtzohce--
 
