@@ -1,113 +1,113 @@
-Return-Path: <cgroups+bounces-2445-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2446-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97BB28A3447
-	for <lists+cgroups@lfdr.de>; Fri, 12 Apr 2024 19:05:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78B898A3475
+	for <lists+cgroups@lfdr.de>; Fri, 12 Apr 2024 19:07:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ED4C1F22403
-	for <lists+cgroups@lfdr.de>; Fri, 12 Apr 2024 17:05:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0846AB21BAE
+	for <lists+cgroups@lfdr.de>; Fri, 12 Apr 2024 17:07:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE42114C586;
-	Fri, 12 Apr 2024 17:04:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFC0B14B08C;
+	Fri, 12 Apr 2024 17:07:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EPJTI1+V"
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="TjDnn+YL"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47E8E148FE0;
-	Fri, 12 Apr 2024 17:04:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3576814BFB0
+	for <cgroups@vger.kernel.org>; Fri, 12 Apr 2024 17:07:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712941495; cv=none; b=UUoDmsNHHLRgXXuekR0iJh0reBWoF3/OnhaEoA9D/OUjBXKkUL1YpcLl2exSQstcQks2qCRjmKGoa0YngfaaPo3YgLIGbM/clgFEe4PtqjwSCYgps4bq3GL999CtidxgpB7Vs1Q5s3pD9Y5oPVd1Sz4jvIAacPrImNZ6GNUrcKo=
+	t=1712941650; cv=none; b=rDWzzFIUmO5z03tEScUTuZmIKskSze3GBzIMwm6w/XTUECRfb8tySMpF4RNP89hmR6RK+q5cu6V3Q9xQcv+z8aryaDxwubRGABstYhi5aTjtqlZEq8pZBbbOlTQrvClbv/OvW0azm8hx8qv+gHEyz+Hp/1Aatu1eWEFsI525S+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712941495; c=relaxed/simple;
-	bh=M7r14FHjZbuhdCAG+sZjShy/l3FXLIbS90iDEYwkv8M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QZPn7WrrGkc9XfsDYTX2LLBjrBm79ny/JP42768fSDmseyoAt6WWJBZwfkhSlo+5I2eTUiwYlStn6mM8cahfaigA6kqSktgX0azgv9wDDiWrrmCFO2kn3GhSVV5juail4DCcDDiWskqfY1hk9DVxmKCh9VU5yIgLS15O6w0mj1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EPJTI1+V; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ed0e9ccca1so1087536b3a.0;
-        Fri, 12 Apr 2024 10:04:54 -0700 (PDT)
+	s=arc-20240116; t=1712941650; c=relaxed/simple;
+	bh=5JFuYVePpmhoWdZk8WbeOoqlnSWSkoUYiXSyfRvyGWg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ii7ELmMO6H5RwV8ZQYW66t8iJM0933uSE7mv1OQRG0gilmOzHuiFq3gljQalcCPSHmYbNR1YpLj1Fu8r6Pgz9RZIjF4ru0CJv5zq5WMugmb5hyrwPcsDNcN2AsCp/OVg8+0eYXGe9hQwHAMrYNMTQmv5mzahZ1lf77CM8VJ3dr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=TjDnn+YL; arc=none smtp.client-ip=209.85.160.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-43446959b33so4133601cf.3
+        for <cgroups@vger.kernel.org>; Fri, 12 Apr 2024 10:07:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712941493; x=1713546293; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+vRBBp2kQIwax2hPIS89JrnPtpcdPuEq4eh4lk133lk=;
-        b=EPJTI1+VGHg9ClFQqGY5WVTuRjounNq177ecsjlxBOXwMJHO9zBu23LK3MiluvePjz
-         8LOnziKsqn8KPNNfYRbrv0b5uk8/4fMCV+d1ikbdrTNo65BJmvhsIQZQs6J5QoasFAzH
-         6c8mCHZaCjOgU4rFezkk7GxTF103KWFKE74lrJwS3KIu3xW7j80Ye6X2jk6VFfMeUz+e
-         k94MGeln4msKHtmsW32apw6HPRLop1/+VR0k6AeEFVzz4/UuRY9+hJht1v3elKI1I7QU
-         4YCi2eU+BEEsJKL9U5Xjdth/kfBanZdeCHX0WKccErQy+mNpEThfLmq1m2mQDU7VyeZp
-         DhQg==
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1712941648; x=1713546448; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ICZfIsGcQEVbd3Zt1qoYBnvko2GDh9Nz2dJVHbfGpSA=;
+        b=TjDnn+YLc4Pkh/akCRL4/SqjYG7P8QtAKysCpTbW8BKrCh58n6xjndCzTQrFbHWqZe
+         OVzj89ZGTc3+N2dTGLdSzwWPsZXQeznKMurGiBv4i/fgFNuMGFqSDVbmMObKeH7RRebc
+         NrjYo16o6FCAlwz2HOgVJoJKnRZQm3OZ5CqtE2uHNqEG64NJEzIi3SL+c2iW77RoUIwO
+         eKBkIUEv4B2BgQjStijlqQWZtcpbwpGDjMQeGwtQAO23uAcSsqnP6nYP0rPJbOuNkTvd
+         EIUwBn4o6Pz5hN/8RGiAUOtkcgfE/hLtdet7qZ/Vy5309XMhHtt2bnWVQ54xb9bQvrAU
+         PnqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712941493; x=1713546293;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+vRBBp2kQIwax2hPIS89JrnPtpcdPuEq4eh4lk133lk=;
-        b=e7lPllQtgXA9yM9VMIKbDTbvmFofL+aabo7ekjeN2BBVPY7zYR53xaaSAMUNKQZa85
-         txrHXOQz0D1dADy74kj8Fz6bf+Q4fM/IhlSaWvbPXOLXqWq3SPQsJCzUojqcy3+6dTIQ
-         Jr0+AoAF/N9UuRm70kC9oQ8SAjRvykSZkXw/SDbBgnMVBtHvGnvU3zG+7EroUVKiJy/H
-         6S2Egaxj39Tgsrd1WFa+eDOBzaEUoRbJdafkc/rEpvaGc7Pv8MccHNIswEkYPTCOap4H
-         Z82Q4ANoVLWqnnhKOX8WUVkhgWk+iYJE2Zod0lz23D24UvQNjdZBxUv1Nq4wvEgkqQz8
-         FvpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUq2hxp3jL7ZN6ioqSdeE1EItwap+Nj1CZE60BVUWBena1wujSMdnb5aMwyQZe0WJKqHzJ1bEjdU3+y00/s35XYEljBbk/F5lce3Lpitv76LGhwcFWK+XGjY9+nhpr7ZvTVG3ze0lkS9TZc+TMEMv8xxi/fJuyhHJCFoXJNBYbXxfp6T/FvcI1d
-X-Gm-Message-State: AOJu0Yxozg2RRZ6Sdt0KEMJs0TDKGH1PylCQEsPkLRvcu2yqLHwAgkLC
-	+YVtwgw+W3rrZVj3KReM2ZURU/7Ua8vpBZTucC5tM5rjXBtbMPC0
-X-Google-Smtp-Source: AGHT+IFDP3zAZVc9G1jUxQumgWQfNdz762OArh07eRsQiNx9aUqkQbjDFEDxwIlscgrSQkVXIG0rbA==
-X-Received: by 2002:a05:6a21:33a5:b0:1a7:51f1:f778 with SMTP id yy37-20020a056a2133a500b001a751f1f778mr3758604pzb.37.1712941493479;
-        Fri, 12 Apr 2024 10:04:53 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:a5f4])
-        by smtp.gmail.com with ESMTPSA id l9-20020a17090a070900b002a63c29d3c8sm3245156pjl.41.2024.04.12.10.04.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 10:04:53 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 12 Apr 2024 07:04:51 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
-Subject: Re: Re: [RFC PATCH v3 2/9] cgroup/pids: Separate semantics of
- pids.events related to pids.max
-Message-ID: <Zhlps1a6C6U6_4ed@slm.duckdns.org>
-References: <20240405170548.15234-1-mkoutny@suse.com>
- <20240405170548.15234-3-mkoutny@suse.com>
- <ZhQvmnnxhiVo1duU@slm.duckdns.org>
- <w7cenotcuudapq4zsq6mybfvaqyljgy5hez3uc3byqzdn44yi6@76yfnhg4irt6>
+        d=1e100.net; s=20230601; t=1712941648; x=1713546448;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ICZfIsGcQEVbd3Zt1qoYBnvko2GDh9Nz2dJVHbfGpSA=;
+        b=XfJ/Cukr3XgjnQ6s8ilxswJ+7MjjqL4iTLr1wZNdEjbK7ew6JG/LaQEpl/hI0ubFwz
+         4bTbULSb4tvitsDw35fh4Tc5c6ucViWyEpPsjYweVIe/WyOd+mDo/0WvA8F7f+JJZe2p
+         bJCvW7mbmS5o26lzbG00FTPEcLlnx1RiYRkcJcKmgErNYh07pfO4tzL3U5TwhfIDqL2x
+         myBSsvJjKR4ndmjHQy4218rqXc0KrangHx2teMS0FOiLBLl8RgNyGKLlD7f072s4KYWN
+         2e/ocwGRht9tUWgQ2BQUfMv1TYSFlxhB/zM4fbZht/BPzLekN0w8t6E+yhtlNLDUsA4Z
+         bVQA==
+X-Forwarded-Encrypted: i=1; AJvYcCXgZoueiupfA4Y6tPtyPmCcaGBSii8WlsGQP4eG5u8+kG0JDr6fO3qfhTXMkflnQkObW/BqnR5mm2Mmw1GYgdrjl2GPYWc10w==
+X-Gm-Message-State: AOJu0Yw9LykcgwQ1qTeoTAW0cPNUsVN7G0zFQXflxB63PS0o9FvtW+EW
+	idtR5QY9v/yX2LjTusqZz4l5guzwkfAGhJajfVpP4oPVPgqnxNcgAXRuqD2hh/9yZICfBwaKT+F
+	rsw9wsYniG48solfQiOfTse/tVwDNcarAQEggWQ==
+X-Google-Smtp-Source: AGHT+IEXzcV5Ah/di4pWjeRuzI8bp8L5qdlySBiHU1tn4/tN30fitecIDCoiEvXNx6whVxsKgO+qRvqVW4OxECf95F8=
+X-Received: by 2002:a05:622a:606:b0:434:89af:bd3b with SMTP id
+ z6-20020a05622a060600b0043489afbd3bmr3794375qta.40.1712941648259; Fri, 12 Apr
+ 2024 10:07:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <w7cenotcuudapq4zsq6mybfvaqyljgy5hez3uc3byqzdn44yi6@76yfnhg4irt6>
+References: <20240222173942.1481394-1-pasha.tatashin@soleen.com> <ZhkIhtTCWg6bgl1o@8bytes.org>
+In-Reply-To: <ZhkIhtTCWg6bgl1o@8bytes.org>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Fri, 12 Apr 2024 13:06:52 -0400
+Message-ID: <CA+CK2bCjXGTP7ie=rFtXrmRaWxn_6VmfZb5BXR13z9a3scfETg@mail.gmail.com>
+Subject: Re: [PATCH v5 00/11] IOMMU memory observability
+To: Joerg Roedel <joro@8bytes.org>
+Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
+	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
+	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
+	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
+	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
+	krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
+	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
+	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
+	rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
+	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, 
+	tj@kernel.org, tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, 
+	will@kernel.org, yu-cheng.yu@intel.com, rientjes@google.com, 
+	bagasdotme@gmail.com, mkoutny@suse.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Apr 12, 2024 at 04:23:24PM +0200, Michal Koutný wrote:
-> On Mon, Apr 08, 2024 at 07:55:38AM -1000, Tejun Heo <tj@kernel.org> wrote:
-> > The whole series make sense to me.
-> 
-> Including the migration charging?
-> (Asking whether I should keep it stacked in v4 posting.)
+> Some problems with this:
+>
+>   1. I get DKIM failures when downloading this patch-set with b4, can
+>      you please send them via a mailserver with working DKIM?
 
-Oh, let's separate that part out. I'm not sure about that. The problem with
-can_attach failures is that they're really opaque and the more we do it the
-less we'll be able to tell where the failures are coming from, so I'm not
-very enthusiastic about them.
+I was in the process of migrating from google domains to a different
+registrar, but I think now the issue is resolved. I will verify it.
 
-Thanks.
+>   2. They don't apply to v6.9-rc3. Please rebase to that version and
+>      are-send.
 
--- 
-tejun
+I will.
+
+Thanks,
+Pasha
 
