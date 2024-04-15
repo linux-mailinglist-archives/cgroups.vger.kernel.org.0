@@ -1,545 +1,256 @@
-Return-Path: <cgroups+bounces-2486-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2487-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A83A48A5926
-	for <lists+cgroups@lfdr.de>; Mon, 15 Apr 2024 19:33:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDE5B8A59EE
+	for <lists+cgroups@lfdr.de>; Mon, 15 Apr 2024 20:32:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35B621F22906
-	for <lists+cgroups@lfdr.de>; Mon, 15 Apr 2024 17:33:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDC631C203C0
+	for <lists+cgroups@lfdr.de>; Mon, 15 Apr 2024 18:32:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADF9A83CBE;
-	Mon, 15 Apr 2024 17:33:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE56C153800;
+	Mon, 15 Apr 2024 18:32:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k5f/3ioO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jTbfQH60"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F9E0839FD;
-	Mon, 15 Apr 2024 17:33:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B89D115357D;
+	Mon, 15 Apr 2024 18:32:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713202392; cv=none; b=Jc4wxSfeNMriEw17QOkVWJwSO/SchpUHcFt/XQ2Sc4WnohlB+ELyqSw7eTu4LcLu78p7tDx+v7z+gp0yJtFYL6pnu6lDZIdjV6+IRxCUc4NyMvk9xp3VsbHeyKtU4yx/gwGq2B9J0e+xIKiR/6spOgNOkYP6prtP6BdV30CFVE0=
+	t=1713205930; cv=none; b=e+Gy8pg7+YoU7XR2P3W47xwNdLMG1m65xgOoCEDZRobsT3HaGUe+HDZbB/+q6vKfLWl5ajMp3yURusGp6LSdHtA+BncW+bL+GvKaQdPPmttUYU72cGm0xgOTP8o1Tj0l4s9saP4ZISnW8KNjB+EXLJJ1PmgPrXDmKugO0ZooV3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713202392; c=relaxed/simple;
-	bh=dmJnwQssfjKZlvBOGnSQcCg3pYKxhQQGFHC9ZTv2v6Y=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=oWXY1WEyqDvg2gxF2zos2nzZkoNvuKsQ5ObGEBUMpI9vOA0grjpXJyCu5dURGF5FAjqMh5Px/lafWEQbW1LqdXB910tznA9EFQMusUYv+xiU+XAkhzQUxrV58qkjFhrmLoiOp/B7ykhmbCVPt9vc3g8Na7XqlqfVSPiSvGBtf1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=k5f/3ioO; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713202390; x=1744738390;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=dmJnwQssfjKZlvBOGnSQcCg3pYKxhQQGFHC9ZTv2v6Y=;
-  b=k5f/3ioOU4z/yLpzDSvpzPA9EatySdJ0zZY+pjZSsAmrnZU20NUt5n/9
-   oJtcVJEplYkuTE2TmPwRs6o2Sa54ZJ8HPmC7n3+ZIHRTxLtg7IHPDxlHP
-   wV0fl3GaAR7a1LwdasAuGUw0H7F4f65FIpV9PnautOQY+UczOMb6pu8Hf
-   RV2MSxwUMjMpcJv3s0VGwHzKt31e7Qjsc9E/udZ+zNqb4BYIEG8rGXVsr
-   QmDfqe5PFmi4KbIrC+kl8WSfckD/MLYMIarTEHKpbY1TZ3G17fgOE2CEB
-   z+g4bQU0LypYuBx4p6EJs1M48Wo4zNeyRoSbuUQFo1pPopM/6NJ8wcmad
-   g==;
-X-CSE-ConnectionGUID: g06/G7+ZSdSExsUTA31O8A==
-X-CSE-MsgGUID: WL7FbwByTtKlQI6KczMb1Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="8440862"
-X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
-   d="scan'208";a="8440862"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 10:33:09 -0700
-X-CSE-ConnectionGUID: spGTXlG4QTyfNcmljMhxqQ==
-X-CSE-MsgGUID: 6N3PJCvSQ6aNW90S4YZ1wQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
-   d="scan'208";a="22407763"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/AES256-SHA; 15 Apr 2024 10:33:01 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: dave.hansen@linux.intel.com, kai.huang@intel.com, tj@kernel.org,
- mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
- x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com,
- tim.c.chen@linux.intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com, chrisyan@microsoft.com
-Subject: Re: [PATCH v11 14/14] selftests/sgx: Add scripts for EPC cgroup
- testing
-References: <20240410182558.41467-1-haitao.huang@linux.intel.com>
- <20240410182558.41467-15-haitao.huang@linux.intel.com>
- <D0JBFRTGWZV9.3TRHOTV0SCGV@kernel.org>
-Date: Mon, 15 Apr 2024 12:32:55 -0500
+	s=arc-20240116; t=1713205930; c=relaxed/simple;
+	bh=ypB0M/yxYiVpSpTfJMOKUEFFxzQJxHzjaQ8flno2ylM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gphzp9iEOagu4t1TvcAJqHDcfCw0vazU+9i7qCno7GMqS4eD3cKNaywU1TdnGQDtTgZ1Dy6DpCn049/rsYtOYmBYD0e/vr+eeZoI2LbBAMYgtVjzM7xIOedoDNTxQ3NEpPf3epFwPOEHH+Nvz9uShthxVIOoIX1Mj5OFL21lvCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jTbfQH60; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-516d6e23253so3867970e87.1;
+        Mon, 15 Apr 2024 11:32:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713205927; x=1713810727; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7BObtzxYiY3PmGcxZPMQAa4vztvNYgpogv+uT8X9uMc=;
+        b=jTbfQH60SmGseWXDQtLxf5XdTaweEEvzHAOpU6DZmcotkHjiCWJrymFZ6a8gZZMeix
+         7Wrywp8drxxY+PUgY265IXhOHKrBcei6sBJH69nif+39cS9RVBYj0DCnzmZquoAM0g8l
+         pZPZCuNq+H0Eypim52p8YAM7goCykgO1QIHPu1/QlCkTXfvTOFrQq8WLgsxU+Osuf3P4
+         6RdXUjL3cuz8iRwPR3V9Yx1WdUuTEK7FZaSdRXVZbR0cq+7wrUs4WEdxyrOLc+uKSbMD
+         UCoMg5GZ3PKlcG/XoPAYypkVs9gZ/J/T4HGWfAeQTsv9epV/0ngC3Mn0mfv3uVCAL2U5
+         w9/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713205927; x=1713810727;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7BObtzxYiY3PmGcxZPMQAa4vztvNYgpogv+uT8X9uMc=;
+        b=kyWBKjV1T9sneOuJ+o5eohDW1RJACT0q1r/M+DccJfTbDd9lrpnpWYYDov/+G1oO7K
+         GtdpVrDM1b8GIzl5/0c3dmzKtosbH1t6At69HsXhP7rxOzdZb8tzvPWMyz82EqWJWSjI
+         cu47VYPUYKm9fF/xiBfBcYIBgkG/Ja38JzrrAAHTA9Y41YmfNDhXUhUYgOx5ZfEFi98h
+         AIl6tE33HC7YhPkLQyTetr7WxdnqXyAvaSZR+VUffH0qQIk8vzutCBzA3y8pf07y4qmG
+         sj9NyI24TbjXTOk8+qhm+yxnpscxNKuL2Nd/+o0h9u5/DkA4ZfPdkYkRvedEK4ACZTOY
+         CODA==
+X-Forwarded-Encrypted: i=1; AJvYcCXvnOef6IeCV9jZZf11VKzNvbtVmfODKr/5mNHyaZ7HcACam7C0v4Z1oIzTUfNd9KQFr6J28TV0lhK7h3htWLyVL5/o0QhmlFZ7dAAylNvK06XwZCKlW6rCvpOUi/b4Z14KfHC9YQ==
+X-Gm-Message-State: AOJu0YxJCnOCNJ/LjW1kWaOuXkwdAexUeGAfeOty3UFAn2ETAPdCtGd2
+	6NoyIKRGQUUkwiKM+YTRirj61vSj6CJLU9ktFuDmuCiYtpkp1GxO8btjJEoRib2sDt4yHj1uye6
+	/Ahka1x20gkAj2lswvE7p978CXoE=
+X-Google-Smtp-Source: AGHT+IELpdHs5oFeoJ4R5hMXIeoaGuXsJr1uljvlhUTakFT+LkeDspHihOeO/Bws+LtHWr6XekRPiGt1x2fxr1ncTWU=
+X-Received: by 2002:ac2:51a7:0:b0:518:bb6e:7985 with SMTP id
+ f7-20020ac251a7000000b00518bb6e7985mr4869628lfk.51.1713205926682; Mon, 15 Apr
+ 2024 11:32:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2l95o5tawjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <D0JBFRTGWZV9.3TRHOTV0SCGV@kernel.org>
-User-Agent: Opera Mail/1.0 (Win32)
+References: <20240415111123924s9IbQkgHF8S4yZv4su8LI@zte.com.cn> <CAGsJ_4y5+3jKx78-TWh_3jWoXQW4mmx=uKHbBSHWpvMj1eYW7A@mail.gmail.com>
+In-Reply-To: <CAGsJ_4y5+3jKx78-TWh_3jWoXQW4mmx=uKHbBSHWpvMj1eYW7A@mail.gmail.com>
+From: Yang Shi <shy828301@gmail.com>
+Date: Mon, 15 Apr 2024 11:31:55 -0700
+Message-ID: <CAHbLzkqwHiSb4e=soerK1qtA7FoJz8PEPXiCmnFx8i1Bhvp2-g@mail.gmail.com>
+Subject: Re: [PATCH] mm: thp: makes the memcg THP deferred split shrinker
+ aware of node_id
+To: Barry Song <21cnbao@gmail.com>
+Cc: xu.xin16@zte.com.cn, yang.shi@linux.alibaba.com, v-songbaohua@oppo.com, 
+	mhocko@kernel.org, ryan.roberts@arm.com, david@redhat.com, 
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev, 
+	akpm@linux-foundation.org, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, ran.xiaokai@zte.com.cn, yang.yang29@zte.com.cn, 
+	lu.zhongjun@zte.com.cn
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 13 Apr 2024 16:34:17 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
-
-> On Wed Apr 10, 2024 at 9:25 PM EEST, Haitao Huang wrote:
->> To run selftests for EPC cgroup:
->>
->> sudo ./run_epc_cg_selftests.sh
->>
->> To watch misc cgroup 'current' changes during testing, run this in a
->> separate terminal:
->>
->> ./watch_misc_for_tests.sh current
->>
->> With different cgroups, the script starts one or multiple concurrent SGX
->> selftests (test_sgx), each to run the unclobbered_vdso_oversubscribed
->> test case, which loads an enclave of EPC size equal to the EPC capacity
->> available on the platform. The script checks results against the
->> expectation set for each cgroup and reports success or failure.
->>
->> The script creates 3 different cgroups at the beginning with following
->> expectations:
->>
->> 1) SMALL - intentionally small enough to fail the test loading an
->> enclave of size equal to the capacity.
->> 2) LARGE - large enough to run up to 4 concurrent tests but fail some if
->> more than 4 concurrent tests are run. The script starts 4 expecting at
->> least one test to pass, and then starts 5 expecting at least one test
->> to fail.
->> 3) LARGER - limit is the same as the capacity, large enough to run lots  
->> of
->> concurrent tests. The script starts 8 of them and expects all pass.
->> Then it reruns the same test with one process randomly killed and
->> usage checked to be zero after all processes exit.
->>
->> The script also includes a test with low mem_cg limit and LARGE sgx_epc
->> limit to verify that the RAM used for per-cgroup reclamation is charged
->> to a proper mem_cg. For this test, it turns off swapping before start,
->> and turns swapping back on afterwards.
->>
->> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->> ---
->> V11:
->> - Remove cgroups-tools dependency and make scripts ash compatible.  
->> (Jarkko)
->> - Drop support for cgroup v1 and simplify. (Michal, Jarkko)
->> - Add documentation for functions. (Jarkko)
->> - Turn off swapping before memcontrol tests and back on after
->> - Format and style fixes, name for hard coded values
->>
->> V7:
->> - Added memcontrol test.
->>
->> V5:
->> - Added script with automatic results checking, remove the interactive
->> script.
->> - The script can run independent from the series below.
->> ---
->>  tools/testing/selftests/sgx/ash_cgexec.sh     |  16 +
->>  .../selftests/sgx/run_epc_cg_selftests.sh     | 275 ++++++++++++++++++
->>  .../selftests/sgx/watch_misc_for_tests.sh     |  11 +
->>  3 files changed, 302 insertions(+)
->>  create mode 100755 tools/testing/selftests/sgx/ash_cgexec.sh
->>  create mode 100755 tools/testing/selftests/sgx/run_epc_cg_selftests.sh
->>  create mode 100755 tools/testing/selftests/sgx/watch_misc_for_tests.sh
->>
->> diff --git a/tools/testing/selftests/sgx/ash_cgexec.sh  
->> b/tools/testing/selftests/sgx/ash_cgexec.sh
->> new file mode 100755
->> index 000000000000..cfa5d2b0e795
->> --- /dev/null
->> +++ b/tools/testing/selftests/sgx/ash_cgexec.sh
->> @@ -0,0 +1,16 @@
->> +#!/usr/bin/env sh
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright(c) 2024 Intel Corporation.
->> +
->> +# Start a program in a given cgroup.
->> +# Supports V2 cgroup paths, relative to /sys/fs/cgroup
->> +if [ "$#" -lt 2 ]; then
->> +    echo "Usage: $0 <v2 cgroup path> <command> [args...]"
->> +    exit 1
->> +fi
->> +# Move this shell to the cgroup.
->> +echo 0 >/sys/fs/cgroup/$1/cgroup.procs
->> +shift
->> +# Execute the command within the cgroup
->> +exec "$@"
->> +
->> diff --git a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh  
->> b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
->> new file mode 100755
->> index 000000000000..dd56273056fc
->> --- /dev/null
->> +++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
->> @@ -0,0 +1,275 @@
->> +#!/usr/bin/env sh
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright(c) 2023, 2024 Intel Corporation.
->> +
->> +TEST_ROOT_CG=selftest
->> +TEST_CG_SUB1=$TEST_ROOT_CG/test1
->> +TEST_CG_SUB2=$TEST_ROOT_CG/test2
->> +# We will only set limit in test1 and run tests in test3
->> +TEST_CG_SUB3=$TEST_ROOT_CG/test1/test3
->> +TEST_CG_SUB4=$TEST_ROOT_CG/test4
->> +
->> +# Cgroup v2 only
->> +CG_ROOT=/sys/fs/cgroup
->> +mkdir -p $CG_ROOT/$TEST_CG_SUB1
->> +mkdir -p $CG_ROOT/$TEST_CG_SUB2
->> +mkdir -p $CG_ROOT/$TEST_CG_SUB3
->> +mkdir -p $CG_ROOT/$TEST_CG_SUB4
->> +
->> +# Turn on misc and memory controller in non-leaf nodes
->> +echo "+misc" >  $CG_ROOT/cgroup.subtree_control && \
->> +echo "+memory" > $CG_ROOT/cgroup.subtree_control && \
->> +echo "+misc" >  $CG_ROOT/$TEST_ROOT_CG/cgroup.subtree_control && \
->> +echo "+memory" > $CG_ROOT/$TEST_ROOT_CG/cgroup.subtree_control && \
->> +echo "+misc" >  $CG_ROOT/$TEST_CG_SUB1/cgroup.subtree_control
->> +if [ $? -ne 0 ]; then
->> +    echo "# Failed setting up cgroups, make sure misc and memory  
->> cgroups are enabled."
->> +    exit 1
->> +fi
->> +
->> +CAPACITY=$(grep "sgx_epc" "$CG_ROOT/misc.capacity" | awk '{print $2}')
->> +# This is below number of VA pages needed for enclave of capacity  
->> size. So
->> +# should fail oversubscribed cases
->> +SMALL=$(( CAPACITY / 512 ))
->> +
->> +# At least load one enclave of capacity size successfully, maybe up to  
->> 4.
->> +# But some may fail if we run more than 4 concurrent enclaves of  
->> capacity size.
->> +LARGE=$(( SMALL * 4 ))
->> +
->> +# Load lots of enclaves
->> +LARGER=$CAPACITY
->> +echo "# Setting up limits."
->> +echo "sgx_epc $SMALL" > $CG_ROOT/$TEST_CG_SUB1/misc.max && \
->> +echo "sgx_epc $LARGE" >  $CG_ROOT/$TEST_CG_SUB2/misc.max && \
->> +echo "sgx_epc $LARGER" > $CG_ROOT/$TEST_CG_SUB4/misc.max
->> +if [ $? -ne 0 ]; then
->> +    echo "# Failed setting up misc limits."
->> +    exit 1
->> +fi
->> +
->> +clean_up()
->> +{
->> +    sleep 2
->> +    rmdir $CG_ROOT/$TEST_CG_SUB2
->> +    rmdir $CG_ROOT/$TEST_CG_SUB3
->> +    rmdir $CG_ROOT/$TEST_CG_SUB4
->> +    rmdir $CG_ROOT/$TEST_CG_SUB1
->> +    rmdir $CG_ROOT/$TEST_ROOT_CG
->> +}
->> +
->> +timestamp=$(date +%Y%m%d_%H%M%S)
->> +
->> +test_cmd="./test_sgx -t unclobbered_vdso_oversubscribed"
->> +
->> +PROCESS_SUCCESS=1
->> +PROCESS_FAILURE=0
->> +
->> +# Wait for a process and check for expected exit status.
->> +#
->> +# Arguments:
->> +#	$1 - the pid of the process to wait and check.
->> +#	$2 - 1 if expecting success, 0 for failure.
->> +#
->> +# Return:
->> +#	0 if the exit status of the process matches the expectation.
->> +#	1 otherwise.
->> +wait_check_process_status() {
->> +    pid=$1
->> +    check_for_success=$2
->> +
->> +    wait "$pid"
->> +    status=$?
->> +
->> +    if [ $check_for_success -eq $PROCESS_SUCCESS ] && [ $status -eq 0  
->> ]; then
->> +        echo "# Process $pid succeeded."
->> +        return 0
->> +    elif [ $check_for_success -eq $PROCESS_FAILURE ] && [ $status -ne  
->> 0 ]; then
->> +        echo "# Process $pid returned failure."
->> +        return 0
->> +    fi
->> +    return 1
->> +}
->> +
->> +# Wait for a set of processes and check for expected exit status
->> +#
->> +# Arguments:
->> +#	$1 - 1 if expecting success, 0 for failure.
->> +#	remaining args - The pids of the processes
->> +#
->> +# Return:
->> +#	0 if exit status of any process matches the expectation.
->> +#	1 otherwise.
->> +wait_and_detect_for_any() {
->> +    check_for_success=$1
->> +
->> +    shift
->> +    detected=1 # 0 for success detection
->> +
->> +    for pid in $@; do
->> +        if wait_check_process_status "$pid" "$check_for_success"; then
->> +            detected=0
->> +            # Wait for other processes to exit
->> +        fi
->> +    done
->> +
->> +    return $detected
->> +}
->> +
->> +echo "# Start unclobbered_vdso_oversubscribed with SMALL limit,  
->> expecting failure..."
->> +# Always use leaf node of misc cgroups
->> +# these may fail on OOM
->> +./ash_cgexec.sh $TEST_CG_SUB3 $test_cmd >cgtest_small_$timestamp.log  
->> 2>&1
->> +if [ $? -eq 0 ]; then
->> +    echo "# Fail on SMALL limit, not expecting any test passes."
->> +    clean_up
->> +    exit 1
->> +else
->> +    echo "# Test failed as expected."
->> +fi
->> +
->> +echo "# PASSED SMALL limit."
->> +
->> +echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with  
->> LARGE limit,
->> +        expecting at least one success...."
->> +
->> +pids=""
->> +for i in 1 2 3 4; do
->> +    (
->> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd  
->> >cgtest_large_positive_$timestamp.$i.log 2>&1
->> +    ) &
->> +    pids="$pids $!"
->> +done
->> +
->> +
->> +if wait_and_detect_for_any $PROCESS_SUCCESS "$pids"; then
->> +    echo "# PASSED LARGE limit positive testing."
->> +else
->> +    echo "# Failed on LARGE limit positive testing, no test passes."
->> +    clean_up
->> +    exit 1
->> +fi
->> +
->> +echo "# Start 5 concurrent unclobbered_vdso_oversubscribed tests with  
->> LARGE limit,
->> +        expecting at least one failure...."
->> +pids=""
->> +for i in 1 2 3 4 5; do
->> +    (
->> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd  
->> >cgtest_large_negative_$timestamp.$i.log 2>&1
->> +    ) &
->> +    pids="$pids $!"
->> +done
->> +
->> +if wait_and_detect_for_any $PROCESS_FAILURE "$pids"; then
->> +    echo "# PASSED LARGE limit negative testing."
->> +else
->> +    echo "# Failed on LARGE limit negative testing, no test fails."
->> +    clean_up
->> +    exit 1
->> +fi
->> +
->> +echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with  
->> LARGER limit,
->> +        expecting no failure...."
->> +pids=""
->> +for i in 1 2 3 4 5 6 7 8; do
->> +    (
->> +        ./ash_cgexec.sh $TEST_CG_SUB4 $test_cmd  
->> >cgtest_larger_$timestamp.$i.log 2>&1
->> +    ) &
->> +    pids="$pids $!"
->> +done
->> +
->> +if wait_and_detect_for_any $PROCESS_FAILURE "$pids"; then
->> +    echo "# Failed on LARGER limit, at least one test fails."
->> +    clean_up
->> +    exit 1
->> +else
->> +    echo "# PASSED LARGER limit tests."
->> +fi
->> +
->> +echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with  
->> LARGER limit,
->> +      randomly kill one, expecting no failure...."
->> +pids=""
->> +for i in 1 2 3 4 5 6 7 8; do
->> +    (
->> +        ./ash_cgexec.sh $TEST_CG_SUB4 $test_cmd  
->> >cgtest_larger_kill_$timestamp.$i.log 2>&1
->> +    ) &
->> +    pids="$pids $!"
->> +done
->> +random_number=$(awk 'BEGIN{srand();print int(rand()*5)}')
->> +sleep $((random_number + 1))
->> +
->> +# Randomly select a process to kill
->> +# Make sure usage counter not leaked at the end.
->> +RANDOM_INDEX=$(awk 'BEGIN{srand();print int(rand()*8)}')
->> +counter=0
->> +for pid in $pids; do
->> +    if [ "$counter" -eq "$RANDOM_INDEX" ]; then
->> +        PID_TO_KILL=$pid
->> +        break
->> +    fi
->> +    counter=$((counter + 1))
->> +done
->> +
->> +kill $PID_TO_KILL
->> +echo "# Killed process with PID: $PID_TO_KILL"
->> +
->> +any_failure=0
->> +for pid in $pids; do
->> +    wait "$pid"
->> +    status=$?
->> +    if [ "$pid" != "$PID_TO_KILL" ]; then
->> +        if [ $status -ne 0 ]; then
->> +	    echo "# Process $pid returned failure."
->> +            any_failure=1
->> +        fi
->> +    fi
->> +done
->> +
->> +if [ $any_failure -ne 0 ]; then
->> +    echo "# Failed on random killing, at least one test fails."
->> +    clean_up
->> +    exit 1
->> +fi
->> +echo "# PASSED LARGER limit test with a process randomly killed."
->> +
->> +MEM_LIMIT_TOO_SMALL=$((CAPACITY - 2 * LARGE))
->> +
->> +echo "$MEM_LIMIT_TOO_SMALL" > $CG_ROOT/$TEST_CG_SUB2/memory.max
->> +if [ $? -ne 0 ]; then
->> +    echo "# Failed creating memory controller."
->> +    clean_up
->> +    exit 1
->> +fi
->> +
->> +echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with  
->> LARGE EPC limit,
->> +        and too small RAM limit, expecting all failures...."
->> +# Ensure swapping off so the OOM killer is activated when mem_cgroup  
->> limit is hit.
->> +swapoff -a
->> +pids=""
->> +for i in 1 2 3 4; do
->> +    (
->> +        ./ash_cgexec.sh $TEST_CG_SUB2 $test_cmd  
->> >cgtest_large_oom_$timestamp.$i.log 2>&1
->> +    ) &
->> +    pids="$pids $!"
->> +done
->> +
->> +if wait_and_detect_for_any $PROCESS_SUCCESS "$pids"; then
->> +    echo "# Failed on tests with memcontrol, some tests did not fail."
->> +    clean_up
->> +    swapon -a
->> +    exit 1
->> +else
->> +    swapon -a
->> +    echo "# PASSED LARGE limit tests with memcontrol."
->> +fi
->> +
->> +sleep 2
->> +
->> +USAGE=$(grep '^sgx_epc' "$CG_ROOT/$TEST_ROOT_CG/misc.current" | awk  
->> '{print $2}')
->> +if [ "$USAGE" -ne 0 ]; then
->> +    echo "# Failed: Final usage is $USAGE, not 0."
->> +else
->> +    echo "# PASSED leakage check."
->> +    echo "# PASSED ALL cgroup limit tests, cleanup cgroups..."
->> +fi
->> +clean_up
->> +echo "# done."
->> diff --git a/tools/testing/selftests/sgx/watch_misc_for_tests.sh  
->> b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
->> new file mode 100755
->> index 000000000000..1c9985726ace
->> --- /dev/null
->> +++ b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
->> @@ -0,0 +1,11 @@
->> +#!/usr/bin/env sh
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright(c) 2023, 2024 Intel Corporation.
->> +
->> +if [ -z "$1" ]; then
->> +    echo "No argument supplied, please provide 'max', 'current', or  
->> 'events'"
->> +    exit 1
->> +fi
->> +
->> +watch -n 1 'find /sys/fs/cgroup -wholename "*/test*/misc.'$1'" -exec \
->> +    sh -c '\''echo "$1:"; cat "$1"'\'' _ {} \;'
+On Sun, Apr 14, 2024 at 8:30=E2=80=AFPM Barry Song <21cnbao@gmail.com> wrot=
+e:
 >
-> I'll compile the kernel with this and see what happens!
+> On Mon, Apr 15, 2024 at 3:11=E2=80=AFPM <xu.xin16@zte.com.cn> wrote:
+> >
+> > From: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+> >
+> > Since commit 87eaceb3faa5 ("mm: thp: make deferred split shrinker
+> > memcg aware"), the THP deferred split queue is per memcg but not
+> > per mem_cgroup_per_node. This has two aspects of impact:
+> >
+> > Impact1: for kswapd reclaim
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >   kswapd
+> >     balance_pgdat
+> >       kswapd_shrink_node
+> >         shrink_node(pgdat, sc);
+> >           shrink_node_memcgs(pgdat, sc);
+> >             shrink_slab(sc->gfp_mask, pgdat->node_id, memcg...);
+> >   the parameter "pgdat->node_id"  does not take effectct for
+> >   THP deferred_split_shrinker, as the deferred_split_queue of
+> >   specified memcg is not for a certain numa node but for all the nodes.
+> >   We want to makes the memcg THP deferred split shrinker aware of
+> >   node_id.
+> >
+> > Impact2: thp-deferred_split shrinker debugfs interface
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >    for the "count" file:
+> >    <cgroup inode id> <objects on node 0> <objects on node 1>
+> >      the output is acctually the sum of all numa nodes.
+> >    for the "scan" file:
+> >    <cgroup inode id> <numa id> <number of objects to scan>
+> >      Also the "numa id" input does not take effect here.
+> >
+> > This patch makes memcg deferred_split_queue per mem_cgroup_per_node
+> > so try to conform to semantic logic.
+
+I used to have a similar patch before,
+https://lore.kernel.org/linux-mm/1569968203-64647-1-git-send-email-yang.shi=
+@linux.alibaba.com/
+
+But it was somehow lost in discussion.
+
+I have no objection to this patch. However, I was thinking about using
+list_lru for deferred split queue, but I didn't have time to look
+deeper. Maybe we should try now?
+
 >
-> Have you tried to run the test suite from top-level? This is just a
-> sanity check. I've few times forgot to do this so thus asking :-)
+> This seems to be a correct fix to me,  + Yang Shi, the original author of
+> commit 87eaceb3faa5.
 >
-> BR, Jarkko
+> >
+> > Reviewed-by: Lu Zhongjun <lu.zhongjun@zte.com.cn>
+> > Signed-off-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+> > Cc: xu xin <xu.xin16@zte.com.cn>
+> > Cc: Yang Yang <yang.yang29@zte.com.cn>
+> > ---
+> >  include/linux/memcontrol.h |  7 +++----
+> >  mm/huge_memory.c           |  6 +++---
+> >  mm/memcontrol.c            | 11 +++++------
+> >  3 files changed, 11 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index 394fd0a887ae..7282861d5a5d 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -130,6 +130,9 @@ struct mem_cgroup_per_node {
+> >         bool                    on_tree;
+> >         struct mem_cgroup       *memcg;         /* Back pointer, we can=
+not */
+> >                                                 /* use container_of    =
+    */
+> > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > +       struct deferred_split deferred_split_queue;
+> > +#endif
+> >  };
+> >
+> >  struct mem_cgroup_threshold {
+> > @@ -327,10 +330,6 @@ struct mem_cgroup {
+> >         struct list_head event_list;
+> >         spinlock_t event_list_lock;
+> >
+> > -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > -       struct deferred_split deferred_split_queue;
+> > -#endif
+> > -
+> >  #ifdef CONFIG_LRU_GEN_WALKS_MMU
+> >         /* per-memcg mm_struct list */
+> >         struct lru_gen_mm_list mm_list;
+> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > index 9859aa4f7553..338d071070a6 100644
+> > --- a/mm/huge_memory.c
+> > +++ b/mm/huge_memory.c
+> > @@ -774,7 +774,7 @@ struct deferred_split *get_deferred_split_queue(str=
+uct folio *folio)
+> >         struct pglist_data *pgdat =3D NODE_DATA(folio_nid(folio));
+> >
+> >         if (memcg)
+> > -               return &memcg->deferred_split_queue;
+> > +               return &memcg->nodeinfo[pgdat->node_id]->deferred_split=
+_queue;
+> >         else
+> >                 return &pgdat->deferred_split_queue;
+> >  }
+> > @@ -3305,7 +3305,7 @@ static unsigned long deferred_split_count(struct =
+shrinker *shrink,
+> >
+> >  #ifdef CONFIG_MEMCG
+> >         if (sc->memcg)
+> > -               ds_queue =3D &sc->memcg->deferred_split_queue;
+> > +               ds_queue =3D &sc->memcg->nodeinfo[sc->nid]->deferred_sp=
+lit_queue;
+> >  #endif
+> >         return READ_ONCE(ds_queue->split_queue_len);
+> >  }
+> > @@ -3322,7 +3322,7 @@ static unsigned long deferred_split_scan(struct s=
+hrinker *shrink,
+> >
+> >  #ifdef CONFIG_MEMCG
+> >         if (sc->memcg)
+> > -               ds_queue =3D &sc->memcg->deferred_split_queue;
+> > +               ds_queue =3D &sc->memcg->nodeinfo[sc->nid]->deferred_sp=
+lit_queue;
+> >  #endif
+> >
+> >         spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index fabce2b50c69..cdf9f5fa3b8e 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -5445,7 +5445,11 @@ static int alloc_mem_cgroup_per_node_info(struct=
+ mem_cgroup *memcg, int node)
+> >                 kfree(pn);
+> >                 return 1;
+> >         }
+> > -
+> > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > +       spin_lock_init(&pn->deferred_split_queue.split_queue_lock);
+> > +       INIT_LIST_HEAD(&pn->deferred_split_queue.split_queue);
+> > +       pn->deferred_split_queue.split_queue_len =3D 0;
+> > +#endif
+> >         lruvec_init(&pn->lruvec);
+> >         pn->memcg =3D memcg;
+> >
+> > @@ -5545,11 +5549,6 @@ static struct mem_cgroup *mem_cgroup_alloc(struc=
+t mem_cgroup *parent)
+> >         for (i =3D 0; i < MEMCG_CGWB_FRN_CNT; i++)
+> >                 memcg->cgwb_frn[i].done =3D
+> >                         __WB_COMPLETION_INIT(&memcg_cgwb_frn_waitq);
+> > -#endif
+> > -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > -       spin_lock_init(&memcg->deferred_split_queue.split_queue_lock);
+> > -       INIT_LIST_HEAD(&memcg->deferred_split_queue.split_queue);
+> > -       memcg->deferred_split_queue.split_queue_len =3D 0;
+> >  #endif
+> >         lru_gen_init_memcg(memcg);
+> >         return memcg;
+> > --
+> > 2.15.2
+> >
 >
-
-I added following on  
-https://github.com/haitaohuang/linux/tree/sgx_cg_upstream_v11_plus
-Please update to run from top-level.
-
---- a/tools/testing/selftests/sgx/Makefile
-+++ b/tools/testing/selftests/sgx/Makefile
-@@ -20,7 +20,8 @@ ENCL_LDFLAGS := -Wl,-T,test_encl.lds,--build-id=none
-
-  ifeq ($(CAN_BUILD_X86_64), 1)
-  TEST_CUSTOM_PROGS := $(OUTPUT)/test_sgx
--TEST_FILES := $(OUTPUT)/test_encl.elf
-+TEST_FILES := $(OUTPUT)/test_encl.elf ash_cgexec.sh
-+TEST_PROGS := run_epc_cg_selftests.sh
-
-  all: $(TEST_CUSTOM_PROGS) $(OUTPUT)/test_encl.elf
-  endif
-
-...
-
-index dd56273056fc..ba0451fc16bc 100755
---- a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-+++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-@@ -2,6 +2,14 @@
-  # SPDX-License-Identifier: GPL-2.0
-  # Copyright(c) 2023, 2024 Intel Corporation.
-
-+
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+if [ "$(id -u)" -ne 0 ]; then
-+    echo "SKIP: SGX Cgroup tests need root priviledges."
-+    exit $ksft_skip
-+fi
-+
-  TEST_ROOT_CG=selftest
-
-Thanks
-Haitao
+> Thanks
+> Barry
+>
 
