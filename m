@@ -1,155 +1,108 @@
-Return-Path: <cgroups+bounces-2540-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2541-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 038E98A735F
-	for <lists+cgroups@lfdr.de>; Tue, 16 Apr 2024 20:41:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 271888A749D
+	for <lists+cgroups@lfdr.de>; Tue, 16 Apr 2024 21:23:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 349271C21775
-	for <lists+cgroups@lfdr.de>; Tue, 16 Apr 2024 18:41:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46E661C20D3B
+	for <lists+cgroups@lfdr.de>; Tue, 16 Apr 2024 19:23:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A95F1369B9;
-	Tue, 16 Apr 2024 18:41:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56A50137C3A;
+	Tue, 16 Apr 2024 19:23:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Tg/YRJvi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D4R5Gztd"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91B251332A0
-	for <cgroups@vger.kernel.org>; Tue, 16 Apr 2024 18:41:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0BE6137777;
+	Tue, 16 Apr 2024 19:23:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713292886; cv=none; b=ZG3+OgmnZdrtVntK7ayfY7I9yybZmOHIyyHEAbxwWHbjTQ7tBTQ1f43DGkz96YA+WpIKAevjQC3MDNL8qMNT8ns/Ma/6JwEFNQtq/oBHoenjveSPQTQTDEJmxlhwcPiUDj8JfdLSLuyr3QS2cphBqISY7yNYYAljBSiWa50mJ68=
+	t=1713295413; cv=none; b=kVv6fHwszAe2P0Uif05dGJuhEk5yCeEKtDggujvw1/YylBB1WKz/I8fV7rvBkZbtxfty10MmRO0aFsxaqTsYrZ2jcHQGbWMRH66xEge/Vy9dxtyLj/ntnYx1btJHCHMQu2nLQ15B7rfnbH/RVvjmCyT6HLln4QG/ToFndijT9Tg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713292886; c=relaxed/simple;
-	bh=bmzjTTFBWVz12gXu4GvtCl6/if4RyTfGK18ivEjF9FA=;
+	s=arc-20240116; t=1713295413; c=relaxed/simple;
+	bh=IxFBhcBuXhAaWMYafyfOgtB9dObEv5wh3weokm48AQk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lpumgiEVQYI3qHaJ/jZhirl0sBnGAtmqBjxtc6y4DwUmAksb/I86cdxhjzfVQ72RHJ+Mu73+YkwWfUS+S2Et2NBCLPB63bYc9uhHs9uylt8UWmg6gQ3iDVIDjkrYjFQiY0X7svZVkhBCWOoY+uP/uFjVOxZZ2HfsJD2gsz3ey80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Tg/YRJvi; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 16 Apr 2024 11:41:15 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1713292882;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AARNMAAmv0ZXNznpgmWdVj/ZM3y0d0nkfa+epz38edo=;
-	b=Tg/YRJvi+gsorMTVglfkGMo25xZslc2DG+Q3niadqPeDe0UXXpz//oQEO/8rXho+keqy0O
-	fT0WCzxTkS7d3YdtM/X2cSn/g/keKmFcCaY8tWIWLgWq52vcuvbfGQXocNILOLXpK6doWM
-	I4E72O2k43z0IjPC4afmINIRpSVCOFU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Yosry Ahmed <yosryahmed@google.com>, Waiman Long <longman@redhat.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, 
-	Jesper Dangaard Brouer <jesper@cloudflare.com>, "David S. Miller" <davem@davemloft.net>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Shakeel Butt <shakeelb@google.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
-	kernel-team <kernel-team@cloudflare.com>, cgroups@vger.kernel.org, Linux-MM <linux-mm@kvack.org>, 
-	Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Ivan Babrou <ivan@cloudflare.com>
-Subject: Re: Advice on cgroup rstat lock
-Message-ID: <f6daabzdesdwo7zdouexow5mdub3qnzr7e67lonmhh3itjgk5j@qw3xpvqoyb7j>
-References: <CAJD7tkbn-wFEbhnhGWTy0-UsFoosr=m7wiJ+P96XnDoFnSH7Zg@mail.gmail.com>
- <ac4cf07f-52dd-454f-b897-2a4b3796a4d9@kernel.org>
- <96728c6d-3863-48c7-986b-b0b37689849e@redhat.com>
- <CAJD7tkZrVjhe5PPUZQNoAZ5oOO4a+MZe283MVTtQHghGSxAUnA@mail.gmail.com>
- <4fd9106c-40a6-415a-9409-c346d7ab91ce@redhat.com>
- <f72ab971-989e-4a1c-9246-9b8e57201b60@kernel.org>
- <CAJD7tka=1AnBNFn=frp7AwfjGsZMGcDjw=xiWeqNygC5rPf6uQ@mail.gmail.com>
- <75d837cc-4d33-44f6-bb0c-7558f0488d4e@kernel.org>
- <CAJD7tka_ESbcK6cspyEfVqv1yTW0uhWSvvoO4bqMJExn-j-SEg@mail.gmail.com>
- <9f6333ec-f28c-4a91-b7b9-07a028d92225@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=r6qh0fNUES6YxUSI6jH9tjVugOgcfg1dBDc9YfXJXkzAKrbrXq4LZyFQ4BfDZ0G0ywiqfQUZOKPYwqlA4C3o2lyD1wrnCO8xeQP9m08pZEKK+sfHoa1buTaCUOUO163YJjSSQa6qMy4BFl1oCzfUC6EgURVp3d25RhSnQBYjcE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D4R5Gztd; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2a53e810f10so2972225a91.0;
+        Tue, 16 Apr 2024 12:23:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713295410; x=1713900210; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ViIRHIDHyA9RsYj3V5deXpjEvZ4mPNUGbf3dBlxIbKw=;
+        b=D4R5GztdQQ7fX9MvU+pfBdstkdsK2YWF8tg/+a9scAA8FZaWDIU67KJxgOobjhr9ZI
+         eryHjkU1CAbTvIfV/sbP3oZBb/uN7CK7i/xTjCs+HEFELJaGBRdUvDkGa8VYuIHpDoHB
+         K3fyZ3NQsDqrzfLh3YjZzBjcr3HOHEjnAHGAIXK6tjuap75rtQHNZ3hktRHTKbXVIYPV
+         WM+glirb/KtKSHothhQkh85n+njq4t5u8OZcFl5eoooiyBD+kchEg3dzwSsp8KwfY6RB
+         kgdA58/JjVnyjAAcE+4RrOCwKeLWtaMr86XNJzoNYJTtVwZHw9MyugemKXjcxpwUtdOl
+         cpfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713295410; x=1713900210;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ViIRHIDHyA9RsYj3V5deXpjEvZ4mPNUGbf3dBlxIbKw=;
+        b=cC22ppDm0t7zugREsH3cpc36aPS0fiXDIK8gBpl2vnhtV4kWSqf0jQkMjOG6BDIJBO
+         l1mSOwK7PzYDuLANdg7niozH/U9VgsahhCDOZtQP8MuF35AxxVEalrqm2/orYV+WnVdr
+         35GACPQs7Wu4DvwmTzUdWtDUwzECKJmlUoC6NexOWbuBrn1x2mtmUNWWieb/OLCAa19Z
+         0AwUcwi/aum+NmIRkw1NpAyuqbdCdQoFAik/bObtaDSXadOJaIOYnISgJ4N1IEIKbYsB
+         QRWgbSg0H39afaAi33vo5HQO9XDSHn9kH7XVbLN6swMDe5d3xzLdv4S6oN4AJMkPhTkM
+         D3tw==
+X-Forwarded-Encrypted: i=1; AJvYcCVyx6QZZ9vRq11vRrcrCDz0yOo8roD/9sJ7WqLVHTpQzgqgU0jNYRqugHULy2mjdHQHty5iQ+vfbpNnvjoVndhJRI2M+WVYndK6jO7BbrKpb4qmCnx1dzsHUFnypdu1hw6JEIZ85xrd7+sb3Tw9qrfDNW2c9gomyUklje9kcnNoUk7J/GhSh49v
+X-Gm-Message-State: AOJu0Yx6FPiiGs2FTuyHZkp9CCOPNEOyi9BR2giAPhDcBXayZuc6lPYL
+	VdiKiUYwh14cEOeQtqw4kehPQrbhJB2Bb9H+fiYkzYfZRdjB3VbQ
+X-Google-Smtp-Source: AGHT+IE2br9IFwohZaNTezS9EaNHNUE9a9LyHYvBDfqBixBaHoEaLGwVptV8CqJKNiQ4rQOiXRbRjw==
+X-Received: by 2002:a17:90a:8c9:b0:2a8:2cce:9f46 with SMTP id 9-20020a17090a08c900b002a82cce9f46mr5757716pjn.30.1713295410026;
+        Tue, 16 Apr 2024 12:23:30 -0700 (PDT)
+Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
+        by smtp.gmail.com with ESMTPSA id d13-20020a17090ac24d00b002a706910b05sm7471906pjx.9.2024.04.16.12.23.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Apr 2024 12:23:29 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 16 Apr 2024 09:23:28 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+	Muhammad Usama Anjum <usama.anjum@collabora.com>
+Subject: Re: [PATCH v4 1/6] cgroup/pids: Remove superfluous zeroing
+Message-ID: <Zh7QMGhNKMQR-OSz@slm.duckdns.org>
+References: <20240416142014.27630-1-mkoutny@suse.com>
+ <20240416142014.27630-2-mkoutny@suse.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <9f6333ec-f28c-4a91-b7b9-07a028d92225@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240416142014.27630-2-mkoutny@suse.com>
 
-On Tue, Apr 16, 2024 at 04:22:51PM +0200, Jesper Dangaard Brouer wrote:
-
-Sorry for the late response and I see there are patches posted as well
-which I will take a look but let me put somethings in perspective.
-
+On Tue, Apr 16, 2024 at 04:20:09PM +0200, Michal Koutný wrote:
+> Atomic counters are in kzalloc'd struct. They are zeroed already and
+> atomic64_t does not need special initialization
+> (cf kernel/trace/trace_clock.c:trace_counter).
 > 
-> 
-> > 
-> > I personally don't like mem_cgroup_flush_stats_ratelimited() very
-> > much, because it is time-based (unlike memcg_vmstats_needs_flush()),
-> > and a lot of changes can happen in a very short amount of time.
-> > However, it seems like for some workloads it's a necessary evil :/
-> > 
+> Signed-off-by: Michal Koutný <mkoutny@suse.com>
 
-Other than obj_cgroup_may_zswap(), there is no other place which really
-need very very accurate stats. IMO we should actually make ratelimited
-version the default one for all the places. Stats will always be out of
-sync for some time window even with non-ratelimited flush and I don't
-see any place where 2 second old stat would be any issue.
+Applied to cgroup/for-6.10.
 
-> 
-> I like the combination of the two mem_cgroup_flush_stats_ratelimited()
-> and memcg_vmstats_needs_flush().
-> IMHO the jiffies rate limit 2*FLUSH_TIME is too high, looks like 4 sec?
+Thanks.
 
-4 sec is the worst case and I don't think anyone have seen or reported
-that they are seeing 4 sec delayed flush and if it is happening, it
-seems like no one cares. 
-
-> 
-> 
-> > I briefly looked into a global scheme similar to
-> > memcg_vmstats_needs_flush() in core cgroups code, but I gave up
-> > quickly. Different subsystems have different incomparable stats, so we
-> > cannot have a simple magnitude of pending updates on a cgroup-level
-> > that represents all subsystems fairly.
-> > 
-> > I tried to have per-subsystem callbacks to update the pending stats
-> > and check if flushing is required -- but it got complicated quickly
-> > and performance was bad.
-> > 
-> 
-> I like the time-based limit because it doesn't require tracking pending
-> updates.
-> 
-> I'm looking at using a time-based limit, on how often userspace can take
-> the lock, but in the area of 50ms to 100 ms.
-
-Sounds good to me and you might just need to check obj_cgroup_may_zswap
-is not getting delayed or getting stale stats.
-
-> 
-> 
-> With a mutex lock contention will be less obvious, as converting this to
-> a mutex avoids multiple CPUs spinning while waiting for the lock, but
-> it doesn't remove the lock contention.
-> 
-
-I don't like global sleepable locks as those are source of priority
-inversion issues on highly utilized multi-tenant systems but I still
-need to see how you are handling that.
-
-> Userspace can easily triggered pressure on the global cgroup_rstat_lock
-> via simply reading io.stat and cpu.stat files (under /sys/fs/cgroup/).
-> I think we need a system to mitigate lock contention from userspace
-> (waiting on code compiling with a proposal).  We see normal userspace
-> stats tools like cadvisor, nomad (and systemd) trigger this by reading
-> all the stat file on the system and even spawning parallel threads
-> without realizing that kernel side they share same global lock.
-> 
-> You have done a huge effort to mitigate lock contention from memcg,
-> thank you for that.  It would be sad if userspace reading these stat
-> files can block memcg.  On production I see shrink_node having a
-> congestion point happening on this global lock.
-
-Seems like another instance where we should use the ratelimited version
-of the flush function.
+-- 
+tejun
 
