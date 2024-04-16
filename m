@@ -1,174 +1,334 @@
-Return-Path: <cgroups+bounces-2493-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2494-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 364668A6147
-	for <lists+cgroups@lfdr.de>; Tue, 16 Apr 2024 05:05:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D7658A6181
+	for <lists+cgroups@lfdr.de>; Tue, 16 Apr 2024 05:20:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 985B01F2235E
-	for <lists+cgroups@lfdr.de>; Tue, 16 Apr 2024 03:05:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 86683B21A30
+	for <lists+cgroups@lfdr.de>; Tue, 16 Apr 2024 03:20:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4110C134AB;
-	Tue, 16 Apr 2024 03:05:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02C0B17996;
+	Tue, 16 Apr 2024 03:20:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="kbdKKuf5"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kyuX8Fg0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2080.outbound.protection.outlook.com [40.107.93.80])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82F0F513;
-	Tue, 16 Apr 2024 03:05:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.80
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713236714; cv=fail; b=X0cL3sq/MTtZqzaT5FA5D/slAGtajYphCut1HrJvdxOkPfQ/PdlIR8+2m+l2vNg77EV9Lz8XnguQ+wCPTCledWfgnmO37dlcSvlcsCMGdFQbldsjNsXJDvBOZOSY0SKeP2VuqynP+2p5cGlaBQiWV7wNKsc60axA2R+eRkMd0ZA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713236714; c=relaxed/simple;
-	bh=OTD6faEKd7LA5ZnjpQQmjPN5Zkp7iFk6H92FTy4a3zM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=D+QstgeEj9+DFcgCeDMVeWLIobUvFaSGQpIstWcpP508MQ13zDfDvJs60TIAoK7rA/WaZXyXY9i34z0Jqe8yY3z0fUs9v+J+tAoLGcewwBN6zMRkgerXC5JIK/6gDYUmzNt+7Rd9ejTPs30Fwzau8SZCFtl+AzJHX+VAwXA02EY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=kbdKKuf5; arc=fail smtp.client-ip=40.107.93.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IEUUhK1i2u4B0H/n/qLUZ7ggvtm0MZkz5TAcEZeL09Q8HKxzKjXEnR8QbwbXb2UDuqUbtcv0VnxRCYrG6KhLcKG6njiXvxJL96h0J1ZQfAGhwySYcgXdB3VhLo4OsaMKR1URV+COceAjfWV/9fd0CjXa33Fvk+/K4sBQyz94Hw2NqLSfnWbjQNmZyoyofDOfVVjwlIRobId3JUGt8SallLh9EJeh0IVTnQVNjO+KtT5efBJmfaKMz78fFQ16YDIO26V+uK5Owrs856Fzxk+9p44g12DBKlXYpv8wahpNUI7+nJy1YE+P0sFVPohLytIwGtQl2vfqSnmr7okABcQpkA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OTD6faEKd7LA5ZnjpQQmjPN5Zkp7iFk6H92FTy4a3zM=;
- b=Pm/QvUq9SiAn8lEh2LSUZFvBIgx3YgvMb0l7UuqTlkyfPHpDfquDApLue1yITHOhamZ5wOAWNjhiq2y74sh4x7jqY21azc57aSnqlRlOMmg77djLv9V2b+wC74asdPG05766YJ+F2yFJOqU4uJJLT6TWjRPq+cRvRkOUdFByzC4ouaCH5KDlV74qO88kvrNxmdr45ZhZwZ/bRgEnQm32oL3MbqOjcaD/K6OPtAD61a3iNAE39kIkrVVLQBc9YPXeq1SSQ8tXeXRPtNqWUFdLC1eBb036fyTl2ueqZIQfLnvZDsywZ48zLGsLsw9r61uFqU+ruCZ1kT/XljFwxPsxXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OTD6faEKd7LA5ZnjpQQmjPN5Zkp7iFk6H92FTy4a3zM=;
- b=kbdKKuf5WCeuWTytHcv+McCGmSKRyH+uPf+/HV8dhMWdfk8yOwpVSMHD+q2n0CI2slTIvLPdIA00lXa9bye0OIJJ0xsCruOI9KXyI80eKNRCCuq1poEu3uqyc0IOQgusFCHlTMkzEtMa+QWWelybaHjLTUUPJmtYye8y8iPZUtYZ2SVH5TFG0qXsXl9TtdI+BPtcg5vNtjujpVRln6rvPBnoz8rFLtfOfDOATLMsrNKD9NdPL9T+o3UTL7pMhi3fkTBP+iLv6M+QJASvpQlxHawtJOEZ9pr4AWRkpzUt9JSAXIAMoyYBqvDCE2czRqIjoUa96w5pSFApo/PeBX+odA==
-Received: from LV3PR12MB9404.namprd12.prod.outlook.com (2603:10b6:408:219::9)
- by PH7PR12MB7233.namprd12.prod.outlook.com (2603:10b6:510:204::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.50; Tue, 16 Apr
- 2024 03:05:09 +0000
-Received: from LV3PR12MB9404.namprd12.prod.outlook.com
- ([fe80::a1:5ecd:3681:16f2]) by LV3PR12MB9404.namprd12.prod.outlook.com
- ([fe80::a1:5ecd:3681:16f2%7]) with mapi id 15.20.7452.049; Tue, 16 Apr 2024
- 03:05:09 +0000
-From: Chaitanya Kulkarni <chaitanyak@nvidia.com>
-To: Yu Kuai <yukuai1@huaweicloud.com>, Tejun Heo <tj@kernel.org>
-CC: "axboe@kernel.dk" <axboe@kernel.dk>, "chenhuacai@kernel.org"
-	<chenhuacai@kernel.org>, "josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"jhs@mojatatu.com" <jhs@mojatatu.com>, "svenjoac@gmx.de" <svenjoac@gmx.de>,
-	"raven@themaw.net" <raven@themaw.net>, "pctammela@mojatatu.com"
-	<pctammela@mojatatu.com>, "qde@naccy.de" <qde@naccy.de>,
-	"zhaotianrui@loongson.cn" <zhaotianrui@loongson.cn>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "yi.zhang@huawei.com"
-	<yi.zhang@huawei.com>, "yangerkun@huawei.com" <yangerkun@huawei.com>, "yukuai
- (C)" <yukuai3@huawei.com>
-Subject: Re: [PATCH RFC v2 2/6] blk-throttle: delay initialization until
- configuration
-Thread-Topic: [PATCH RFC v2 2/6] blk-throttle: delay initialization until
- configuration
-Thread-Index: AQHah/nBklcJbQT7r0CusO0+yp3Vs7Fk9kaAgACGTICABLphAIAADt8A
-Date: Tue, 16 Apr 2024 03:05:09 +0000
-Message-ID: <1f2bade6-9a82-4c59-be61-703be45ad5a4@nvidia.com>
-References: <20240406080059.2248314-1-yukuai1@huaweicloud.com>
- <20240406080059.2248314-3-yukuai1@huaweicloud.com>
- <Zhl2a2m3L3QEELtj@slm.duckdns.org>
- <7531ba77-964a-169d-f55f-a8dcfcdbb450@huaweicloud.com>
- <f1cbd12d-b66b-131d-44ed-8db67b9186db@huaweicloud.com>
-In-Reply-To: <f1cbd12d-b66b-131d-44ed-8db67b9186db@huaweicloud.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: LV3PR12MB9404:EE_|PH7PR12MB7233:EE_
-x-ms-office365-filtering-correlation-id: 9543c5bc-44ab-4a8a-59b0-08dc5dc2069a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- g7N/sSt7HIM+nfyIZwtiPJ/4zK+qKWbT542hcyyEj4AHTAuc21shLIx1h1UX+s6T8uMbeJE/OMBCCdDE4jloY6xGdJk2OOXvXUdW1OmalQY6aorxEf2RHRsVV0Yg8DzLkJJJkiYyUtsM7+pFJN4g7t/lMke641ju6HcGOc64V9aPfN0e3cpTD2CRUHinbJrlr2Ilk/fhTQb3QKhBEkszMXHie6B0x3+zFELnIGvamevcx3hSPwgk8JXYPw+DDtm3C0veVf3KoFyPkJL/wQRmhNGSHwxcRusuzUxD6GrCo+yrXq2/H0MkOeKOt2COCHuBwmJyJ0I93DDcbPo6JmYr9+Xf8CMdsAPmzgquK9dNNpZa3s4oio5c90bih+OSRm3pCJH0tXe2BasTMe+OtNuXWZg21smltuW/xLzHhMcWfMybaActuRDovp+6MDHt8gfT+g/8fX/CHuVr//hQgjWQB6xgorAuBgOpTyC8D8uiPOT6IIXPRC3N24FH5R+4BC8PojptNZBBxSlRTthLHeGEWEJITB8H4kbanz7QimXlrVXotRAYyt5GBQYnMVOXiCBhj05WRF7HkOZh8XO1sfQcrZ2bl7O/RLza1k29Z0lPBbG5nA5j9erRA/Zmp+txzPltKCrYkOYhOLi7TsNzCr6sQfkHkWVPwhrv/rd01W65J3NyfDxS8kil3KaJ5Tr1NVPalXCraEiFa/gZVvh7bWA1WFyq3E2JnihZFNboPLoBc/Y=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR12MB9404.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?T1NnYi9MS2NhQmZ3THlTYmRDVnBuNXhwTFYyMzU5TnZHUFg0cmhvRmhINW5K?=
- =?utf-8?B?OXBoRG9UVnY2OVpZRWdFMS9FdlNpbHI0b0NDS3ZoWEpkUjNPS0I2MlM1ZHBa?=
- =?utf-8?B?TXErTjFFekVERU41TGdLL0dDUWtvR2dFZFNiOVREVncycHFsMXRhdktRVmVZ?=
- =?utf-8?B?NjEzbTVlQTkzekVXS0l6UmJ1MjJGL25wdHNpaFZzSWRudEhXQW5OTmhNNXAw?=
- =?utf-8?B?NGtxVU92OFFna2hzbnRJSFJhN3crM3REb2RVVjRzUmJwL1lNdktTS0xjaEVB?=
- =?utf-8?B?SS9DZXZQWk9tbXZsaklIcTJCV1YrZkZjVUZhSDJSSHprRzIwbDNFUU9tR2Fo?=
- =?utf-8?B?bTB1ckJwbGZSSjFoT09ibHlBeG50T3cvRDNzL3ZCaUpnT3BlL2ZpbUpBdXZC?=
- =?utf-8?B?RHppTlBGMWJaQ3EraVNYV21LcWV6NXRHaU4xV0VvRldaTGJZbmFKanA0RTls?=
- =?utf-8?B?SlRYV1UwWUJIeTRaWnV4azhSM3piRVdoMnB4MTRHYVU0Yno4VjdIa0ZWR0VU?=
- =?utf-8?B?QWFYV3dYUjF3b2w4UE4weEN6bi8wQllMZTR5NTczYmRIZk9VdDA0TnZKYUVU?=
- =?utf-8?B?Ukdya3Qzc1p0TVZzTVhJOXJRMDEwMkVnclJ6L0xmUk0wN1hXOHBHNE51Y1Jn?=
- =?utf-8?B?VzBoNUtPakRGZFJXNlIvNlhRY3VhL085QVFxUE9QZkpmUnBvV2ozaEpQZ094?=
- =?utf-8?B?SStJaGtXK0IzVTdqSGI4WWhsOXhIeDJiSTUxSTFPQzByYTR3NE4yNm5Xb2Zl?=
- =?utf-8?B?aFp1K0JxSGtnWW4yVVVRODEzaW9kOXB1Z2RTemdMTTVHVzZDSTZQTnNuNE9w?=
- =?utf-8?B?aVFzUElQRnFCYXdPazZxSC9JVUY0alBLL0tObWNSZHJ1QjRUdDBkaHVzdWY1?=
- =?utf-8?B?STYzc0prcmFKNW9nMXdqc3JvdjhmTW5ER3Fta0xjWkRYTW1JWVJSbU50M3Mz?=
- =?utf-8?B?QlRsS0EvVFdUL3VMSkFlV3crRFJGY0FvYnA0QUMvc0EyLzhKSGxyT2ZqcTlt?=
- =?utf-8?B?VDZuUWN4WG1abzgzQ1ZkOE1sREFhVmQxRXgvQUltRlo3M09ncnlpMzJESXRy?=
- =?utf-8?B?Vnk2MGRoTVlRcTlyME5kZXd2dEhXRTRGT1V4eERXVCtScHU1V3UyK3B5VkRa?=
- =?utf-8?B?ZGpFb25QZ1J5U2NKeFR3eDVMRWNxY3E4bnlWWmI0Vm5oNHV6M1I1Y1FzR215?=
- =?utf-8?B?UXFzdVcyRlBnT01xYTExM0VtL1ZkTFE1Y1Z3aHk2bEhKQ0gyRlRSZG9oSTZ0?=
- =?utf-8?B?eFhiZkdwVHh1azhjRlBxOWJOZTBjWXBBY0lsK3NVYk94aVhEVWNxUVErbmRX?=
- =?utf-8?B?elhkZ3gwYmplUFREWFg5My9qR0VpREF1UkxBZ2R1VVlLRVYrU3VwcXY3bWF3?=
- =?utf-8?B?dVhXOVh4RmsxR09uR1FSN1U0dFRBTFRBZlpvY1doMzJHWVAyclFmVnZHU3dj?=
- =?utf-8?B?SmxZamhudHY3NFFnVHJPZlVMMm9sSlBTTnl2T2QzR1Z0YXptYWxFZGhEb3Zq?=
- =?utf-8?B?ZW53U1V1OFFucFhnczFEVXZYbk9obE1idlpmcFp2ckpYam5GM3JseWwvQW05?=
- =?utf-8?B?ZWl5MVo4ZWpsUkxDaVAxM0JJTUl0NlJBakV1SkRYT0Vyb1ZMbElLWEdYcVN3?=
- =?utf-8?B?R2J1TVNRN1JOaFhqNlFwakFWSjgxamVIc3dPQ1RlK2xIb0kvYzc3WGE0a254?=
- =?utf-8?B?MVlZQ0NZM2ZzZDJtYlRkUDFSTGluNFdvS09nYXVXOXl0SDVpOUtzWDlrMHNQ?=
- =?utf-8?B?RzZlVmZSNEdFUDZDZ1RqM0FYaEFlZVFYdjRramZZa1pSNGVKMDZDQUNwa3JG?=
- =?utf-8?B?aXgraFQwVnNsYVRMcllCbXhDUEhxNU9QQjFyZkd1dmRNMjNhcDgzU1Y5aFlu?=
- =?utf-8?B?cFEzWjg3TC83d2h5VEhMYzd5YlZkY1B2dEE2Vk5TN2RWNVB3ejZpcTNPWXhn?=
- =?utf-8?B?TjNWZmZZczQvSUZZdlc3OXNzeUFDREVuNE56RS8vYnRFa21peXcyUG0zd3Y3?=
- =?utf-8?B?dytDa2pRd0tZS050TGZkQXA5Q1dOVTlmcDd3a3RxUEpSMjRMOEt0QWd4ZUJY?=
- =?utf-8?B?bWpuL3NxaHZIQUFpQ2RuSHIvM2JNNVNrMDJqVTZpYVE0MTBQTTNoNjJIU2dF?=
- =?utf-8?B?QWdaWjFEMU9hN0tXbXplMWcrVUVWWHdoTklqdGplQXRqN2ZZYnVpZ2xnMmNi?=
- =?utf-8?Q?0YkjjDCPjezyfKKZKixE7EQ2QuWvi3KluqPRzUPe0zd4?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3C9C33850A32E34F9067908049512673@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAFD617984;
+	Tue, 16 Apr 2024 03:20:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713237614; cv=none; b=mjBuy+pqv/taRWOD0gPDtR1h9FNkDODxRg5dXRHaRniNwkXvdEfZIKpNV1+oZ+gYt+ttUsD3XLTK7Qye1RrAaTQWzAq3dPI/L0yZtjwnVJ8U0tzUM/8bwCRWLtiXkrk6iaiOyEU6wg+HpaZYfen6oAx+snymeygL8gR3peFA2HI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713237614; c=relaxed/simple;
+	bh=H0QdOUFnlIEfmKJIYiHN3eszdxO8OLE39FMob0NKQ0w=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QN6oVQpuGAaVZZxKkzUvR5WqS4xKo1ngUbrpBrtqUn/8wDXZjaa5sn+qML17QyENhgmImZG39AIYhBgSV7bPsskYQu1h8e6/KZcT+K18wprXKAhNISbWiCDxxVKqQ+GffvkdttwTHosQN4xcqq3PTWPh3Mr4i0c+NWIoREzXGtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kyuX8Fg0; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713237613; x=1744773613;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=H0QdOUFnlIEfmKJIYiHN3eszdxO8OLE39FMob0NKQ0w=;
+  b=kyuX8Fg0QuIq0kOKeyfsPqj6QOB5Z2DWdcc+qL0f9v9+5MfGe6KyMZv8
+   Q1EBDuOGMnYgoHhOfHC8c5jrfIvJsqo0XgbfMe5oLRS5v5+acRgoUUdHX
+   pjzOE+tQxvue01y+tlt3No37GZzosWWqqm6hcnXQw/btM4LPZaJB5nw+Z
+   4xsl7jJktTtfChTYyIA/nqtZTF7HncKm2ZQiWuEzhbRQQlGl8dfhDMjKI
+   u2Xj9U88nYmSF6cjhcpsH88I44waaCWPex+G5OcoC9kWwJORjpwJAPhxY
+   31ZmRJ8ozQ4uAqi+3GjtT15UCrP7Xt0dHtojWtqgOYf3SZxfS6IpNZUGJ
+   A==;
+X-CSE-ConnectionGUID: EMOiBIWAQGmo0uqI/jYokQ==
+X-CSE-MsgGUID: 8rGkzOeGSr2CjViGLkB1FA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="34043308"
+X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
+   d="scan'208";a="34043308"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 20:20:12 -0700
+X-CSE-ConnectionGUID: FNzohZeKRrSD+E0Zrd939w==
+X-CSE-MsgGUID: LmZSAYjdRM6e5+PW4m2L7Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,204,1708416000"; 
+   d="scan'208";a="22193525"
+Received: from b4969161e530.jf.intel.com ([10.165.56.46])
+  by fmviesa008.fm.intel.com with ESMTP; 15 Apr 2024 20:20:11 -0700
+From: Haitao Huang <haitao.huang@linux.intel.com>
+To: jarkko@kernel.org,
+	dave.hansen@linux.intel.com,
+	kai.huang@intel.com,
+	tj@kernel.org,
+	mkoutny@suse.com,
+	linux-kernel@vger.kernel.org,
+	linux-sgx@vger.kernel.org,
+	x86@kernel.org,
+	cgroups@vger.kernel.org,
+	tglx@linutronix.de,
+	mingo@redhat.com,
+	bp@alien8.de,
+	hpa@zytor.com,
+	sohil.mehta@intel.com,
+	tim.c.chen@linux.intel.com
+Cc: zhiquan1.li@intel.com,
+	kristen@linux.intel.com,
+	seanjc@google.com,
+	zhanb@microsoft.com,
+	anakrish@microsoft.com,
+	mikko.ylinen@linux.intel.com,
+	yangjie@microsoft.com,
+	chrisyan@microsoft.com
+Subject: [PATCH v12 00/14] Add Cgroup support for SGX EPC memory
+Date: Mon, 15 Apr 2024 20:19:57 -0700
+Message-Id: <20240416032011.58578-1-haitao.huang@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR12MB9404.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9543c5bc-44ab-4a8a-59b0-08dc5dc2069a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Apr 2024 03:05:09.4951
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xYMahG/rQpD8W6990ZNrgQfsQnT9dbxv+jHs6JVdO8P2kU+vASAciEtvxHj+PFg2bfy5ylgiGiTNMqQj0Am3Uw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7233
+Content-Transfer-Encoding: 8bit
 
-T24gNC8xNS8yNCAxOToxMSwgWXUgS3VhaSB3cm90ZToNCj4gSGksIFRlanVuIQ0KPg0KPiDlnKgg
-MjAyNC8wNC8xMyA5OjU5LCBZdSBLdWFpIOWGmemBkzoNCj4+IENhbiB5b3UgcGxlYXNlIGFsc28N
-Cj4+IGFkZCBob3cgeW91IHRlc3RlZCB0aGUgY2hhbmdlPw0KPg0KPiBJIGp1c3Qgc2VudCBhIHBh
-dGNoc2V0IHRvIGFkZCBzb21lIHRlc3RzIHRvIGJsa3Rlc3RzLCBhIGJhc2ljIGZ1bmN0aW9uYWwN
-Cj4gdGVzdCBhbmQgYSBmZXcgcmVncmVzc2lvbiB0ZXN0LCB0aGlzIGlzIG5vdCBlbm91Z2ggYnV0
-IGl0J3MgYSBzdGFydC4NCj4NCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzIwMjQwNDE2
-MDIwMDQyLjUwOTI5MS0xLXl1a3VhaTFAaHVhd2VpY2xvdWQuY29tLyANCj4NCj4NCj4gVGhhbmtz
-LA0KPiBLdWFpDQo+DQo+DQoNCkl0J2QgYmUgcmVhbGx5IG5pY2UgaWYgd2UgY29tZSB3aXRoIGF0
-IGxlYXN0IGZldyBjb21wbGV4IHNjZW5hcmlvcyB0bw0KaW5jcmVhc2UgdGhlIHRlc3QgY292ZXJh
-Z2UgaW4gdGhpcyBhcmVhLiBBbHNvLCBwbGVhc2UgQ0MNClNoaW5pY2hpcm8gS2F3YXNha2kgPHNo
-aW5pY2hpcm8ua2F3YXNha2lAd2RjLmNvbT4gb24gYW55IGJsa3Rlc3RzIGVtYWlscy4NCg0KLWNr
-DQoNCg0K
+SGX Enclave Page Cache (EPC) memory allocations are separate from normal
+RAM allocations, and are managed solely by the SGX subsystem. The existing
+cgroup memory controller cannot be used to limit or account for SGX EPC
+memory, which is a desirable feature in some environments, e.g., support
+for pod level control in a Kubernates cluster on a VM or bare-metal host
+[1,2].
+ 
+This patchset implements the support for sgx_epc memory within the misc
+cgroup controller. A user can use the misc cgroup controller to set and
+enforce a max limit on total EPC usage per cgroup. The implementation
+reports current usage and events of reaching the limit per cgroup as well
+as the total system capacity.
+ 
+Much like normal system memory, EPC memory can be overcommitted via virtual
+memory techniques and pages can be swapped out of the EPC to their backing
+store, which are normal system memory allocated via shmem and accounted by
+the memory controller. Similar to per-cgroup reclamation done by the memory
+controller, the EPC misc controller needs to implement a per-cgroup EPC
+reclaiming process: when the EPC usage of a cgroup reaches its hard limit
+('sgx_epc' entry in the 'misc.max' file), the cgroup starts swapping out
+some EPC pages within the same cgroup to make room for new allocations.
+ 
+For that, this implementation tracks reclaimable EPC pages in a separate
+LRU list in each cgroup, and below are more details and justification of
+this design. 
+ 
+Track EPC pages in per-cgroup LRUs (from Dave)
+----------------------------------------------
+ 
+tl;dr: A cgroup hitting its limit should be as similar as possible to the
+system running out of EPC memory. The only two choices to implement that
+are nasty changes the existing LRU scanning algorithm, or to add new LRUs.
+The result: Add a new LRU for each cgroup and scans those instead. Replace
+the existing global cgroup with the root cgroup's LRU (only when this new
+support is compiled in, obviously).
+ 
+The existing EPC memory management aims to be a miniature version of the
+core VM where EPC memory can be overcommitted and reclaimed. EPC
+allocations can wait for reclaim. The alternative to waiting would have
+been to send a signal and let the enclave die.
+ 
+This series attempts to implement that same logic for cgroups, for the same
+reasons: it's preferable to wait for memory to become available and let
+reclaim happen than to do things that are fatal to enclaves.
+ 
+There is currently a global reclaimable page SGX LRU list. That list (and
+the existing scanning algorithm) is essentially useless for doing reclaim
+when a cgroup hits its limit because the cgroup's pages are scattered
+around that LRU. It is unspeakably inefficient to scan a linked list with
+millions of entries for what could be dozens of pages from a cgroup that
+needs reclaim.
+ 
+Even if unspeakably slow reclaim was accepted, the existing scanning
+algorithm only picks a few pages off the head of the global LRU. It would
+either need to hold the list locks for unreasonable amounts of time, or be
+taught to scan the list in pieces, which has its own challenges.
+ 
+Unreclaimable Enclave Pages
+---------------------------
+ 
+There are a variety of page types for enclaves, each serving different
+purposes [5]. Although the SGX architecture supports swapping for all
+types, some special pages, e.g., Version Array(VA) and Secure Enclave
+Control Structure (SECS)[5], holds meta data of reclaimed pages and
+enclaves. That makes reclamation of such pages more intricate to manage.
+The SGX driver global reclaimer currently does not swap out VA pages. It
+only swaps the SECS page of an enclave when all other associated pages have
+been swapped out. The cgroup reclaimer follows the same approach and does
+not track those in per-cgroup LRUs and considers them as unreclaimable
+pages. The allocation of these pages is counted towards the usage of a
+specific cgroup and is subject to the cgroup's set EPC limits.
+ 
+Earlier versions of this series implemented forced enclave-killing to
+reclaim VA and SECS pages. That was designed to enforce the 'max' limit,
+particularly in scenarios where a user or administrator reduces this limit
+post-launch of enclaves. However, subsequent discussions [3, 4] indicated
+that such preemptive enforcement is not necessary for the misc-controllers.
+Therefore, reclaiming SECS/VA pages by force-killing enclaves were removed,
+and the limit is only enforced at the time of new EPC allocation request.
+When a cgroup hits its limit but nothing left in the LRUs of the subtree,
+i.e., nothing to reclaim in the cgroup, any new attempt to allocate EPC
+within that cgroup will result in an 'ENOMEM'.
+ 
+Unreclaimable Guest VM EPC Pages
+--------------------------------
+ 
+The EPC pages allocated for guest VMs by the virtual EPC driver are not
+reclaimable by the host kernel [6]. Therefore an EPC cgroup also treats
+those as unreclaimable and returns ENOMEM when its limit is hit and nothing
+reclaimable left within the cgroup. The virtual EPC driver translates the
+ENOMEM error resulted from an EPC allocation request into a SIGBUS to the
+user process exactly the same way handling host running out of physical
+EPC.
+ 
+This work was originally authored by Sean Christopherson a few years ago,
+and previously modified by Kristen C. Accardi to utilize the misc cgroup
+controller rather than a custom controller. I have been updating the
+patches based on review comments since V2 [7-16], simplified the
+implementation/design, added selftest scripts, fixed some stability issues
+found from testing.
+ 
+Thanks to all for the review/test/tags/feedback provided on the previous
+versions. 
+ 
+I appreciate your further reviewing/testing and providing tags if
+appropriate.
+ 
+---
+V12:
+- Integrate test scripts to kselftests "run_tests" target. (Jarkko)
+- Remove CGROUP_SGX_EPC kconfig, conditionally compile with CGROUP_MISC enabled. (Jarkko)
+- Explain why taking 'struct misc_cg *cg' as parameter, but not 'struct misc_res *res' in the
+  changelog for patch #2. (Kai)
+- Remove "unlikely" in patch #2 (Kai)
+  
+V11:
+- Update copyright years and use c style (Kai)
+- Improve and simplify test scripts: remove cgroup-tools and bash dependency, drop cgroup v1.
+  (Jarkko, Michal)
+- Add more stub/wrapper functions to minimize #ifdefs in c file. (Kai)
+- Revise commit message for patch #8 to clarify design rational (Kai)
+- Print error instead of WARN for init failure. (Kai)
+- Add check for need to queue an async reclamation before returning from
+  sgx_cgroup_try_charge(), do so if needed.
+
+V10:
+- Use enum instead of boolean for the 'reclaim' parameters in
+  sgx_alloc_epc_page(). (Dave, Jarkko)
+- Pass mm struct instead of a boolean 'indirect'. (Dave, Jarkko)
+- Add comments/macros to clarify the cgroup async reclaimer design. (Kai)
+- Simplify sgx_reclaim_pages() signature, removing a pointer passed in.
+  (Kai)
+- Clarify design of sgx_cgroup_reclaim_pages(). (Kai)
+	- Does not return a value for callers to check.
+	- Its usage pattern is similar to that of sgx_reclaim_pages() now
+- Add cond_resched() in the loop in the cgroup reclaimer to improve
+  liveliness.
+- Add logic for cgroup level reclamation in sgx_reclaim_direct()
+- Restructure V9 patches 7-10 to make them flow better. (Kai)
+- Disable cgroup if workqueue allocation failed during init. (Kai)
+- Shorten names for EPC cgroup functions, structures and variables.
+  (Jarkko)
+- Separate out a helper for for addressing single iteration of the loop in
+  sgx_cgroup_try_charge(). (Jarkko)
+- More cleanup/clarifying/comments/style fixes. (Kai, Jarkko)  
+ 
+V9:
+- Add comments for static variables outside functions. (Jarkko)
+- Remove unnecessary ifs. (Tim)
+- Add more Reviewed-By: tags from Jarkko and TJ.
+ 
+V8:
+- Style fixes. (Jarkko)
+- Abstract _misc_res_free/alloc() (Jarkko)
+- Remove unneeded NULL checks. (Jarkko)
+ 
+V7:
+- Split the large patch for the final EPC implementation, #10 in V6, into
+  smaller ones. (Dave, Kai)
+- Scan and reclaim one cgroup at a time, don't split sgx_reclaim_pages()
+  into two functions (Kai)
+- Removed patches to introduce the EPC page states, list for storing
+  candidate pages for reclamation. (not needed due to above changes)
+- Make ops one per resource type and store them in array (Michal)
+- Rename the ops struct to misc_res_ops, and enforce the constraints of
+  required callback functions (Jarkko)
+- Initialize epc cgroup in sgx driver init function. (Kai)
+- Moved addition of priv field to patch 4 where it was used first. (Jarkko)
+- Split sgx_get_current_epc_cg() out of sgx_epc_cg_try_charge() (Kai)
+- Use a static for root cgroup (Kai)
+ 
+[1]https://lore.kernel.org/all/DM6PR21MB11772A6ED915825854B419D6C4989@DM6PR21MB1177.namprd21.prod.outlook.com/
+[2]https://lore.kernel.org/all/ZD7Iutppjj+muH4p@himmelriiki/
+[3]https://lore.kernel.org/lkml/7a1a5125-9da2-47b6-ba0f-cf24d84df16b@intel.com/
+[4]https://lore.kernel.org/lkml/yz44wukoic3syy6s4fcrngagurkjhe2hzka6kvxbajdtro3fwu@zd2ilht7wcw3/
+[5]Documentation/arch/x86/sgx.rst, Section"Enclave Page Types"
+[6]Documentation/arch/x86/sgx.rst, Section "Virtual EPC"
+[7]v2: https://lore.kernel.org/all/20221202183655.3767674-1-kristen@linux.intel.com/
+[8]v3: https://lore.kernel.org/linux-sgx/20230712230202.47929-1-haitao.huang@linux.intel.com/
+[9]v4: https://lore.kernel.org/all/20230913040635.28815-1-haitao.huang@linux.intel.com/
+[10]v5: https://lore.kernel.org/all/20230923030657.16148-1-haitao.huang@linux.intel.com/
+[11]v6: https://lore.kernel.org/linux-sgx/20231030182013.40086-1-haitao.huang@linux.intel.com/
+[12]v7: https://lore.kernel.org/linux-sgx/20240122172048.11953-1-haitao.huang@linux.intel.com/T/#t
+[13]v8: https://lore.kernel.org/linux-sgx/20240130020938.10025-1-haitao.huang@linux.intel.com/T/#t
+[14]v9: https://lore.kernel.org/lkml/20240205210638.157741-1-haitao.huang@linux.intel.com/T/
+[15]v10: https://lore.kernel.org/linux-sgx/20240328002229.30264-1-haitao.huang@linux.intel.com/T/#t
+[16]v11: https://lore.kernel.org/lkml/20240410182558.41467-1-haitao.huang@linux.intel.com/
+
+Haitao Huang (3):
+  x86/sgx: Replace boolean parameters with enums
+  x86/sgx: Charge mem_cgroup for per-cgroup reclamation
+  selftests/sgx: Add scripts for EPC cgroup testing
+
+Kristen Carlson Accardi (9):
+  cgroup/misc: Add per resource callbacks for CSS events
+  cgroup/misc: Export APIs for SGX driver
+  cgroup/misc: Add SGX EPC resource type
+  x86/sgx: Implement basic EPC misc cgroup functionality
+  x86/sgx: Abstract tracking reclaimable pages in LRU
+  x86/sgx: Add basic EPC reclamation flow for cgroup
+  x86/sgx: Implement async reclamation for cgroup
+  x86/sgx: Abstract check for global reclaimable pages
+  x86/sgx: Turn on per-cgroup EPC reclamation
+
+Sean Christopherson (2):
+  x86/sgx: Add sgx_epc_lru_list to encapsulate LRU list
+  Docs/x86/sgx: Add description for cgroup support
+
+ Documentation/arch/x86/sgx.rst                |  83 +++++
+ arch/x86/kernel/cpu/sgx/Makefile              |   1 +
+ arch/x86/kernel/cpu/sgx/encl.c                |  41 +--
+ arch/x86/kernel/cpu/sgx/encl.h                |   7 +-
+ arch/x86/kernel/cpu/sgx/epc_cgroup.c          | 312 ++++++++++++++++++
+ arch/x86/kernel/cpu/sgx/epc_cgroup.h          | 101 ++++++
+ arch/x86/kernel/cpu/sgx/ioctl.c               |  10 +-
+ arch/x86/kernel/cpu/sgx/main.c                | 205 +++++++++---
+ arch/x86/kernel/cpu/sgx/sgx.h                 |  50 ++-
+ arch/x86/kernel/cpu/sgx/virt.c                |   2 +-
+ include/linux/misc_cgroup.h                   |  41 +++
+ kernel/cgroup/misc.c                          | 107 ++++--
+ tools/testing/selftests/sgx/Makefile          |   3 +-
+ tools/testing/selftests/sgx/README            | 116 +++++++
+ tools/testing/selftests/sgx/ash_cgexec.sh     |  16 +
+ .../selftests/sgx/run_epc_cg_selftests.sh     | 283 ++++++++++++++++
+ .../selftests/sgx/watch_misc_for_tests.sh     |  11 +
+ 17 files changed, 1284 insertions(+), 105 deletions(-)
+ create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.c
+ create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.h
+ create mode 100644 tools/testing/selftests/sgx/README
+ create mode 100755 tools/testing/selftests/sgx/ash_cgexec.sh
+ create mode 100755 tools/testing/selftests/sgx/run_epc_cg_selftests.sh
+ create mode 100755 tools/testing/selftests/sgx/watch_misc_for_tests.sh
+
+
+base-commit: 0bbac3facb5d6cc0171c45c9873a2dc96bea9680
+-- 
+2.25.1
+
 
