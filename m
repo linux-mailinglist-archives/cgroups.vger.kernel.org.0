@@ -1,165 +1,161 @@
-Return-Path: <cgroups+bounces-2520-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2521-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 106D98A6DDB
-	for <lists+cgroups@lfdr.de>; Tue, 16 Apr 2024 16:20:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 907888A6DF7
+	for <lists+cgroups@lfdr.de>; Tue, 16 Apr 2024 16:23:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEEFC285236
-	for <lists+cgroups@lfdr.de>; Tue, 16 Apr 2024 14:19:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E1D728289B
+	for <lists+cgroups@lfdr.de>; Tue, 16 Apr 2024 14:23:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE4A812FF9E;
-	Tue, 16 Apr 2024 14:17:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED89131BCA;
+	Tue, 16 Apr 2024 14:20:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="thnaB9WR";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="VxIn4lUJ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CDC8128805;
-	Tue, 16 Apr 2024 14:17:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC356130A4A;
+	Tue, 16 Apr 2024 14:20:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713277057; cv=none; b=eiJ8Yc7bEluiaf94b3ciVBz6Is1ysZuHZxbasce84W8kiiX4JnlvuZpo7I8zx7h5GdAHfO+MGeYfeqq6gXL400rLy8Pdxz6qT4yn9X+PCmNti8ueclUUCCwgGhzX/GkiGEaoTiXsy1Hzee84XU15qLxQiNqiJkspynV853se5w4=
+	t=1713277219; cv=none; b=Fj/iYIIbsIJXvjzAhSs3nIGzo2j0XChDt5Y7ihv6d88WefwA7e/ffdnl++omZVJg3MLrwfppuGQ5HUtIsgSQwW0WL9DEAlB7U09IZXAiVuhbtc7D3yqYfpc6Yx7Zrljiiu1k6pZe6xCkNVbSYRRbBI7O9b4XQxD2XcEcW9rWTfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713277057; c=relaxed/simple;
-	bh=nVjL7xFxhNE5qVQP1x7QBvAR9LfWcP0/FxFyMGPLsLQ=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Xj7gT19ZGph+QXXTQRuQItAFi42bQsfH8HQHxwJYeDFH4AanyS6KiywbmOp/Yf4v7170rktDiebvQMk3s7v5s+ocCz0yrPuppOh3Az+mA8M6qO/EAPdjT580OkSikDmw6YxdKXWXLN6eUgVZ9GFhUbJ0kpPgof2nuOg93OBkW3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VJmMQ6Stxz4f3n6l;
-	Tue, 16 Apr 2024 22:17:22 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id C37B51A0D4C;
-	Tue, 16 Apr 2024 22:17:31 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgCXaBF5iB5mB_iTKA--.31202S3;
-	Tue, 16 Apr 2024 22:17:31 +0800 (CST)
-Subject: Re: [PATCH RFC v2 6/6] blk-throtl: switch to use rq_qos
-To: Yu Kuai <yukuai1@huaweicloud.com>, Tejun Heo <tj@kernel.org>
-Cc: axboe@kernel.dk, chenhuacai@kernel.org, josef@toxicpanda.com,
- jhs@mojatatu.com, svenjoac@gmx.de, raven@themaw.net, pctammela@mojatatu.com,
- qde@naccy.de, zhaotianrui@loongson.cn, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
- cgroups@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20240406080059.2248314-1-yukuai1@huaweicloud.com>
- <20240406080059.2248314-7-yukuai1@huaweicloud.com>
- <Zhl5ONFlPg4vqjGj@slm.duckdns.org>
- <b522c2b7-efae-a7ca-ee6c-197a4b9b54ff@huaweicloud.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <ed253aa4-517c-0f56-5550-96b23093528b@huaweicloud.com>
-Date: Tue, 16 Apr 2024 22:17:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1713277219; c=relaxed/simple;
+	bh=fnjq1zyVvQYgrXF/wl6IPhboOrjktoNVcF7GsyNF6J0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rdh13cX4K7HqtxJDDAiR1zm/MGUJ0BiVhUx/dRNCb0GinBGEh+GWgM0ZWo+A1frFZMYZEnzKlwM+XXdSmSEIxcuEY7onI8ObQXd3/t/r6aa3oISpUtDzKJ1d61fV00mZbskbW2ZOKfixNLbM86sGCg1rRes2Ezlc1yp7BZ5OBgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=thnaB9WR; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=VxIn4lUJ; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id DD3F95F88B;
+	Tue, 16 Apr 2024 14:20:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1713277216; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=nm9OmMNv+yRwBNQE7fNDtbSWePhkSHjqXbgzKdCZ+YE=;
+	b=thnaB9WR0St7tGY09yQ+nPsqkuehI0QaZgj1S88dnqFAnY8adn5NtDz6dYVS4csShddw4e
+	auRQek7jlqpUxKY6oWpecJn7xqzYPYCRiXEgVKPKBCyOoQF4UZojM8+lhne1xQqUgeXrIN
+	hKBBoOzYOWWHnhkblat4cwn8LT/MRt0=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1713277215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=nm9OmMNv+yRwBNQE7fNDtbSWePhkSHjqXbgzKdCZ+YE=;
+	b=VxIn4lUJa+KYM9eJosRsp5HmLK+riJ4QcV7BJd20Iqks4xoaHqJUuwOuigUFk5Sq1Q++7q
+	+F6ga5S/ogp+S6/bClh+qGtI21RTAox7WIt8g9wvnELHmNhAGIg8eMHQyn4LEqDbMH7sLo
+	t+L44TGsqSu90O/Weysd/u30WCQY4VQ=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C1BD513931;
+	Tue, 16 Apr 2024 14:20:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id fG4aLx+JHmbAbQAAD6G6ig
+	(envelope-from <mkoutny@suse.com>); Tue, 16 Apr 2024 14:20:15 +0000
+From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To: cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Cc: Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <shuah@kernel.org>,
+	Muhammad Usama Anjum <usama.anjum@collabora.com>
+Subject: [PATCH v4 0/6] pids controller events rework
+Date: Tue, 16 Apr 2024 16:20:08 +0200
+Message-ID: <20240416142014.27630-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <b522c2b7-efae-a7ca-ee6c-197a4b9b54ff@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCXaBF5iB5mB_iTKA--.31202S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxGF4DuF17GFWDGrW5tw1kZrb_yoW5Jw1fpa
-	y0g3WUCrWDCrnY9w13Cw40qFWSyr4UA3yUJr98JFZxJF1DJr9YgFy3Zw109ayUXFs7Wr4j
-	va4UJw4xu3WDAFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-	3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-	sGvfC2KfnxnUUI43ZEXa7VUbQVy7UUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.08 / 50.00];
+	BAYES_HAM(-1.78)[93.67%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Spam-Score: -2.08
+X-Spam-Flag: NO
 
-Hi,
+This makes pids.events:max affine to pids.max limit.
 
-在 2024/04/13 10:17, Yu Kuai 写道:
-> Hi,
-> 
-> 在 2024/04/13 2:11, Tejun Heo 写道:
->> Hello,
->>
->> On Sat, Apr 06, 2024 at 04:00:59PM +0800, Yu Kuai wrote:
->>> From: Yu Kuai <yukuai3@huawei.com>
->>>
->>> To avoid exposing blk-throttle internal implementation to general block
->>> layer.
->> ...
->>> @@ -832,7 +832,7 @@ void submit_bio_noacct(struct bio *bio)
->>>           goto not_supported;
->>>       }
->>> -    if (blk_throtl_bio(bio))
->>> +    if (rq_qos_throttle_bio(q, bio))
->>>           return;
->>>       submit_bio_noacct_nocheck(bio);
->>>       return;
->>
->> This is a half-way conversion, right? You're adding a dedicated hook to
->> rq_qos and none of the other hooks can be used by blk-throtl. Even the 
->> name,
+How are the new events supposed to be useful?
 
-Actually, rq_qos_exit() is used as well for destroy blk-throtl.
+- pids.events.local:max
+  - tells that cgroup's limit is hit (too tight?)
+- pids.events:*
+  - "only" directs top-down search to cgroups of interest
 
->> rq_qos_throttle_bio(), becomes a misnomer. I'm not really sure this makes
->> things better or worse. It makes certain things a bit cleaner but other
->> things nastier. I don't know.
-> 
-> Yes, the final goal is making all blk-cgroup policies modular, and this
-> patch use rq-qos to prevent exposing blk-throtle to block layer, like
-> other policies.
+Changes from v3 (https://lore.kernel.org/r/20240405170548.15234-1-mkoutny@suse.com)
+- use existing functions for TAP output in selftest (Muhammad)
+- formatting in selftest (Muhammad)
+- remove pids.events:max.imposed event, keep it internal (Johannes)
+- allow legacy behavior with a mount option
+- detach migration charging patches
+- drop RFC prefix
 
-After thinking this a bit more, I still think probably rq_qos is a
-better choice, and there is something that I want to discuss.
+Changes from v2 (https://lore.kernel.org/r/20200205134426.10570-1-mkoutny@suse.com)
+- implemented pids.events.local (Tejun)
+- added migration charging
 
-There are two different direction, first is swith blk-throttle to
-rq_qos_throttle() as well, which is called for each rq:
+[1] https://lore.kernel.org/r/20230202155626.1829121-1-hannes@cmpxchg.org/
 
-1) For, rq-based device, why blk-throtl must throttle before
-rq_qos_throttle()? And blk-throtl have to handle the bio split case
-seperately. And it looks like blk-throttle can switch to use
-rq_qos_throttle() with the benefit that io split does't need
-special handling.
+Michal Koutný (6):
+  cgroup/pids: Remove superfluous zeroing
+  cgroup/pids: Separate semantics of pids.events related to pids.max
+  cgroup/pids: Make event counters hierarchical
+  cgroup/pids: Add pids.events.local
+  selftests: cgroup: Lexicographic order in Makefile
+  selftests: cgroup: Add basic tests for pids controller
 
-2) blk-throtl treats split IO as additional iops, while it ignores
-merge IO, this looks wrong to me. If multiple bio merged into one
-request, iostat will see just one IO. And after switching to rq_qos,
-bio merge case can be handled easily as well.
+ Documentation/admin-guide/cgroup-v1/pids.rst |   3 +-
+ Documentation/admin-guide/cgroup-v2.rst      |  12 ++
+ include/linux/cgroup-defs.h                  |   7 +-
+ kernel/cgroup/cgroup.c                       |  15 +-
+ kernel/cgroup/pids.c                         | 131 +++++++++++---
+ tools/testing/selftests/cgroup/.gitignore    |  11 +-
+ tools/testing/selftests/cgroup/Makefile      |  25 +--
+ tools/testing/selftests/cgroup/test_pids.c   | 178 +++++++++++++++++++
+ 8 files changed, 341 insertions(+), 41 deletions(-)
+ create mode 100644 tools/testing/selftests/cgroup/test_pids.c
 
-Another is still add a rq_qos_throttle_bio(perhaps another name?), and
-meanwhile iocost can benefit from this new helper as well. Because
-iocost really is based on bio, currently it must handle the io merge
-case by debt.
 
-Thanks,
-Kuai
-
-> 
-> There is another choice that I think is feasible:
-> 
-> Let blk-throttle ping a policy id, and use the id to call throttle
-> function directly, this will require initializing the 'plid' from
-> blkcg_policy() during definition instead of blkcg_policy_register().
-> 
-> Thanks,
-> Kuai
-> 
->>
->> Thanks.
->>
-> 
-> .
-> 
+base-commit: 026e680b0a08a62b1d948e5a8ca78700bfac0e6e
+-- 
+2.44.0
 
 
