@@ -1,121 +1,120 @@
-Return-Path: <cgroups+bounces-2552-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2553-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF8ED8A79CE
-	for <lists+cgroups@lfdr.de>; Wed, 17 Apr 2024 02:22:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 345DA8A7A0C
+	for <lists+cgroups@lfdr.de>; Wed, 17 Apr 2024 03:09:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86633284C97
-	for <lists+cgroups@lfdr.de>; Wed, 17 Apr 2024 00:22:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 65CE31C212A0
+	for <lists+cgroups@lfdr.de>; Wed, 17 Apr 2024 01:09:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCA817EB;
-	Wed, 17 Apr 2024 00:21:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HG7ynyAy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5160917F7;
+	Wed, 17 Apr 2024 01:09:16 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 130EA37B
-	for <cgroups@vger.kernel.org>; Wed, 17 Apr 2024 00:21:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F19CEA47;
+	Wed, 17 Apr 2024 01:09:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713313281; cv=none; b=KLYG67CBhUWLbd1wYUk8p1HTSKIvtEucHbjaOqqyvezWaXOUYLeb9yxHukk48eCOdjYcYN1Y1CnYXhSXIR50Tl/APqVYEoI35T9xQcCkYA/T2aI6kSjr0NsLg/F3VlHZGDeOjCjb1nkuqYSJjI+NlIduQlfe7Ch4ST4K39i7d14=
+	t=1713316156; cv=none; b=ifFpNqpnuQhW2359Q6RVPeIX94EjkJ3rVKeZYH8LlKJDgW6PcivUWYDN2UEQpSFn6OQpN2FU35aQUSyikUr8oz7Dke5wSVpz4uG133zJdcqBtAXNasOs6yNxHsfX4sfTUEelwvO9W9hljsE6JFcuWBQGSHyrFZrNCUREaQcJzcA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713313281; c=relaxed/simple;
-	bh=K2ZFtuGnRYBMp4zqpkPAY0ZwBh7cc4jMlO0Ey57ysoQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=fwJF8nBVOSwlnaUSX+JF3gE6jjJLM7R33nO6KHm+euowLpyU44xZU/SknQqFTWcTwsiI8kaqr37REIMJKqXIn8mw3D1bkhjcJXQEHE5TMIpvGDTIx4zrQbDyWv975nYeq8e5e/qY7hYRrkCVenVnILnoM7GrA2MetDI7DFdv/KU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HG7ynyAy; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713313280; x=1744849280;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=K2ZFtuGnRYBMp4zqpkPAY0ZwBh7cc4jMlO0Ey57ysoQ=;
-  b=HG7ynyAyarR3UO12xqt6QvluA+Qgy+rLzgZ+wZXB4kn036MbOgw4/j9w
-   x0d1wxkPJgeIVoWc2ExiUYg01Z2jVW8FOa+txN5KmgIEKRDgJVjRGu91Y
-   MY8UrZoAx4C8zCyb0apj+MmNBFla5wqOEFzNWUDuR1uqN1x4gUOo1YAe0
-   8g63SyeBz8vaHCSfISSLWjj8ZKFHzk0bwoEg51AXaFt0COHE11jmfICPX
-   RqBHzo9tsNxgRJp8qDuTBViGrW5nYoFOzd7pNg/M7qnb5Zg/BiO/6ebvo
-   TJTrfg4gpyimvZr1TX11ze5/pNSbumWHnUYL8H8JX0y1cW/59pJRVeH/Q
-   A==;
-X-CSE-ConnectionGUID: J7hcHzpRRvylH1rAySTRsw==
-X-CSE-MsgGUID: oI4/sdyUSmmrUP/cm9oMSg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="12625222"
-X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="12625222"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Apr 2024 17:21:20 -0700
-X-CSE-ConnectionGUID: WSAKRmfRSIOZQIgB7anLXA==
-X-CSE-MsgGUID: cxPnTlcoRRqqdgd2jBfXyQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,207,1708416000"; 
-   d="scan'208";a="22495129"
-Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
-  by fmviesa010.fm.intel.com with ESMTP; 16 Apr 2024 17:21:18 -0700
-Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rwt36-0005si-0M;
-	Wed, 17 Apr 2024 00:21:16 +0000
-Date: Wed, 17 Apr 2024 08:20:49 +0800
-From: kernel test robot <lkp@intel.com>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
-	Tejun Heo <tj@kernel.org>
-Subject: [tj-cgroup:for-next 7/7] kernel/cgroup/rstat.c:334: warning:
- Function parameter or struct member 'cgrp' not described in
- 'cgroup_rstat_flush_release'
-Message-ID: <202404170821.HwZGISTY-lkp@intel.com>
+	s=arc-20240116; t=1713316156; c=relaxed/simple;
+	bh=6e1ar9zwNRxGZPT51PILThGT0Z1+J9uUvPSlF2J1dwQ=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=E8MXybx8GD5qb7vb0bEDI2KHSt155iRzcNPH5JLZ92M7xqctr8BCcBzt/QNDwbuEO6EXqlGfmyXWzDljen/cYSbfmHICjlBVYCzdUUKQxMi3Nsq0i79NrYcKe6x2RA1hkpW8WUL0zpfi9ONQfooNxfA2esr75MoJISbkwhCIo48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VK2qJ4KDMz4f3pJX;
+	Wed, 17 Apr 2024 09:09:00 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 7DC0E1A016E;
+	Wed, 17 Apr 2024 09:09:09 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgAX6REzIR9mbcG7KA--.61033S3;
+	Wed, 17 Apr 2024 09:09:09 +0800 (CST)
+Subject: Re: [PATCH RFC v2 0/6] blk-throttle: support enable and disable
+ during runtime
+To: =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+ Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, chenhuacai@kernel.org, tj@kernel.org,
+ josef@toxicpanda.com, jhs@mojatatu.com, svenjoac@gmx.de, raven@themaw.net,
+ pctammela@mojatatu.com, qde@naccy.de, zhaotianrui@loongson.cn,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ loongarch@lists.linux.dev, cgroups@vger.kernel.org, yi.zhang@huawei.com,
+ yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20240406080059.2248314-1-yukuai1@huaweicloud.com>
+ <4exmes2ilp2cmfj3evf3jhhhq6tapfzgfzuasjejrxbj6a3327@3ecptofffblf>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <f721f06e-e2c8-608e-0dd0-41f41e948f0d@huaweicloud.com>
+Date: Wed, 17 Apr 2024 09:09:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <4exmes2ilp2cmfj3evf3jhhhq6tapfzgfzuasjejrxbj6a3327@3ecptofffblf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAX6REzIR9mbcG7KA--.61033S3
+X-Coremail-Antispam: 1UD129KBjvdXoWruFWfAFW7tw15tr17tFW7XFb_yoWDJFb_CF
+	1Y93yxK3s5Zw48GanxKF4rWrsrWF1Igr1qq34UXFWxtr12qryxAryDAwn7Xr4UCFs0yF1v
+	vr98KF4xAry29jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb3AFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+	17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+	3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUOmhFUUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-head:   fc29e04ae1ad4c99422c0b8ae4b43cfe99c70429
-commit: fc29e04ae1ad4c99422c0b8ae4b43cfe99c70429 [7/7] cgroup/rstat: add cgroup_rstat_lock helpers and tracepoints
-config: parisc-defconfig (https://download.01.org/0day-ci/archive/20240417/202404170821.HwZGISTY-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240417/202404170821.HwZGISTY-lkp@intel.com/reproduce)
+Hi,
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404170821.HwZGISTY-lkp@intel.com/
+在 2024/04/16 23:56, Michal Koutný 写道:
+> On Sat, Apr 06, 2024 at 04:00:53PM +0800, Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>> I'm planning to support build all blk-throttle polices as kernel module,
+> 
+> There is only one blk-throttle policy (especially after your removal of
+> io.low). Did you mean blkcg policies in general?
 
-All warnings (new ones prefixed by >>):
+Yes, bfq already support that, and others are all rq_qos based, they
+will be much easier than blk-throtl.
+> 
+> The current code is complex because of various lifecycles in
+> 	devices x cgroups.
+> Turning policies into modules seems to make it
+> 	devices x cgroups x policy modules
+> .
+> 
+> Could you please add more info why policies as modules is beneficial,
+> how to keep complexity capped?
 
->> kernel/cgroup/rstat.c:334: warning: Function parameter or struct member 'cgrp' not described in 'cgroup_rstat_flush_release'
+First of all, users can only load these policies when they need, and
+reduce kernel size; Then, when these policies is not loaded, IO fast
+path will be slightly shorter, and save some memory overhead for each
+disk.
 
+Thanks,
+Kuai
 
-vim +334 kernel/cgroup/rstat.c
+> 
+> Thanks,
+> Michal
+> 
 
-6162cef0f741c7 Tejun Heo              2018-04-26  328  
-6162cef0f741c7 Tejun Heo              2018-04-26  329  /**
-6162cef0f741c7 Tejun Heo              2018-04-26  330   * cgroup_rstat_flush_release - release cgroup_rstat_flush_hold()
-6162cef0f741c7 Tejun Heo              2018-04-26  331   */
-fc29e04ae1ad4c Jesper Dangaard Brouer 2024-04-16  332  void cgroup_rstat_flush_release(struct cgroup *cgrp)
-0fa294fb1985c0 Tejun Heo              2018-04-26  333  	__releases(&cgroup_rstat_lock)
-6162cef0f741c7 Tejun Heo              2018-04-26 @334  {
-fc29e04ae1ad4c Jesper Dangaard Brouer 2024-04-16  335  	__cgroup_rstat_unlock(cgrp, -1);
-6162cef0f741c7 Tejun Heo              2018-04-26  336  }
-6162cef0f741c7 Tejun Heo              2018-04-26  337  
-
-:::::: The code at line 334 was first introduced by commit
-:::::: 6162cef0f741c70eb0c7ac7e6142f85808d8abc4 cgroup: Factor out and expose cgroup_rstat_*() interface functions
-
-:::::: TO: Tejun Heo <tj@kernel.org>
-:::::: CC: Tejun Heo <tj@kernel.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
