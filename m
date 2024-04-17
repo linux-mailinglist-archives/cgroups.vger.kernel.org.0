@@ -1,134 +1,240 @@
-Return-Path: <cgroups+bounces-2563-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2564-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0613B8A8318
-	for <lists+cgroups@lfdr.de>; Wed, 17 Apr 2024 14:25:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 698DE8A8356
+	for <lists+cgroups@lfdr.de>; Wed, 17 Apr 2024 14:46:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BCD01F24B48
-	for <lists+cgroups@lfdr.de>; Wed, 17 Apr 2024 12:25:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95BDA1C2182C
+	for <lists+cgroups@lfdr.de>; Wed, 17 Apr 2024 12:46:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8CA413D614;
-	Wed, 17 Apr 2024 12:24:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C904841A89;
+	Wed, 17 Apr 2024 12:46:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="VAcYSu3S";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kZtRR5ba"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gVy6qM5F"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8161613D2BD;
-	Wed, 17 Apr 2024 12:24:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC3942747F
+	for <cgroups@vger.kernel.org>; Wed, 17 Apr 2024 12:46:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713356694; cv=none; b=PNFQMGgZjqidW6yxj3ctjvjtNKNDOET3D02YvR+tqyOeNVauZJnbrISS3p67/o7Cv04xRQf4HbFDO7iZ5f4h3uYMfZI2IlixCMWobdlP3G9OkuuZAnaI/+4otNMWQSz2EXr1N5H9E+22/PBEwiJ4h+aZVAtyxptPvA58MukXYkw=
+	t=1713357979; cv=none; b=ummT2/XlNSLfRPBFIYY5oug9ijE2HqU877eEhNym/1bUcBWikhdXLUjjfGU3Fg6v+K0dLAIWxYR7aw/ah6gjL0u8IYt/swoIdGdXsCLpPH0GGxnKp7J6mz5KtddCWWf7Dy8WHSdF0/vYBBM/SFUL5MoZk2vx3/qWXWWK61hjNwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713356694; c=relaxed/simple;
-	bh=z4Gu5qWkv/b/cx2hcRaqKXSN/jIg5ez6d7+8R7hTHOk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Als+h0FLr6W74jDdgVO19nFAiYc5OHWof+6NdEwHmjN0WSzZEbMWxCRr/Vn16bXzGtzGz/9rqRO++D5OvzxqZlcZ/bifKDb1A18WvVravQxGH3VPD6w9+DMZA8OfVjbEgB6gkMi4LdY1c67wB6cN1tZEwdbarThf74YSu5XUXaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=VAcYSu3S; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kZtRR5ba; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7956C33C1A;
-	Wed, 17 Apr 2024 12:24:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1713356690; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n7gZgeMX+J5HSmuMB3qC2Ah2TcNIJGZlP9Si3K/N6/o=;
-	b=VAcYSu3Sx7uIbxCWr4HgSjnU7tCl+7FrsmI2lO/cVDmcBJJwOuClb9ZNzmf1ZN6ch9TsAD
-	dUX8vt+XTpb4pUUDIPx3BGcM5V9H0ZwMkhzGie2aQv5LyQTTLp9JnuTEJOVl5pbWuuHH31
-	qgsEdEipZZDNT8KEygfx4AAloz9EhZA=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1713356689; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n7gZgeMX+J5HSmuMB3qC2Ah2TcNIJGZlP9Si3K/N6/o=;
-	b=kZtRR5baUVfIrI5lz/QyQku+8P3TIY7z8OHgtV6v8sqxES0onFTnFSfn/AG93o9NwWY2f5
-	/hk00JZ/VBXJKXZjqlGFv9v6xj22GD5ILB9JNUX99qn3t9ORao0niYn4JoxSgNJpcD+0xN
-	S/8yABdzfBXZJUdQrZOjniMXX5Qn9wM=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 524BE1384C;
-	Wed, 17 Apr 2024 12:24:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id l6CQEZG/H2b4GwAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Wed, 17 Apr 2024 12:24:49 +0000
-Date: Wed, 17 Apr 2024 14:24:44 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: lipeifeng@oppo.com
-Cc: hannes@cmpxchg.org, shakeel.butt@linux.dev, muchun.song@linux.dev,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: fix the comment error of memcontrol.h
-Message-ID: <Zh-_jOtSyv6DoETP@tiehlicka>
-References: <20240417121645.25355-1-lipeifeng@oppo.com>
+	s=arc-20240116; t=1713357979; c=relaxed/simple;
+	bh=QKzc8VdE4hx4yRUvgyMIY3829wYF/6tM3fe4k22nAyI=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=gVYeRobUrwdLZ1gw76ORFi4Xzynn+nEOvJs9uPMs4CkdVHX+8sHn8IzaMuhE3g6Q1HNRjTqYeKbhzBKoh8gallUjWf4WtWQWyt5eqBTQ7WbxgYIvCCsV7uuCpAggt/K2zngKTIW7xgkVVDzDV7NNqg5UC789pPZ1ZAqwLgHV90o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gVy6qM5F; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713357977; x=1744893977;
+  h=date:from:to:cc:subject:message-id;
+  bh=QKzc8VdE4hx4yRUvgyMIY3829wYF/6tM3fe4k22nAyI=;
+  b=gVy6qM5FU5f6mHq2KhPmu7zZVJQkobbRtxfCPH98NzanI7Nx3DWTI6wO
+   gXz+YFaPQGBd5uVtaVXj9HXZRU/yxSxSdcGf9aXPdTwahskT79q+Mm1M9
+   MIhQI8aDTkbAthvWsIEwTIiaTijvzkbFNwZVSSPOJv3rlZuhGdoCodnVB
+   eGC0EUFbVV7zwEryLBgXO8RmrROQ9mlNTQRD3xC+F+70rSKLnvJTLVYQb
+   o5AhDS4Q1Mh5lRUSn5a83yp8GhmQ+WQbgQXuER7kzDhPLwmsUDL4h9rQn
+   7EknuAksbG2slpdH9yqoSA4wPFRgLniZ/yaN5km+bhoQdYVBjkWG+9GS6
+   g==;
+X-CSE-ConnectionGUID: 5EfIzSaAQrm9GhSgrcA69A==
+X-CSE-MsgGUID: gV6My2huQFSnmweOE4sjyw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11046"; a="8706230"
+X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
+   d="scan'208";a="8706230"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Apr 2024 05:46:17 -0700
+X-CSE-ConnectionGUID: DvEi2cHuRDanXD9fD+6enw==
+X-CSE-MsgGUID: WAINst+fRyGjgwtn9rhr8A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,209,1708416000"; 
+   d="scan'208";a="27048725"
+Received: from unknown (HELO 23c141fc0fd8) ([10.239.97.151])
+  by fmviesa005.fm.intel.com with ESMTP; 17 Apr 2024 05:46:16 -0700
+Received: from kbuild by 23c141fc0fd8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rx4g1-0006aR-2j;
+	Wed, 17 Apr 2024 12:46:13 +0000
+Date: Wed, 17 Apr 2024 20:46:12 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS WITH WARNING
+ fc29e04ae1ad4c99422c0b8ae4b43cfe99c70429
+Message-ID: <202404172009.ht7VFFhH-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240417121645.25355-1-lipeifeng@oppo.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.16 / 50.00];
-	BAYES_HAM(-2.36)[97.05%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[oppo.com:email]
-X-Spam-Score: -3.16
-X-Spam-Flag: NO
 
-On Wed 17-04-24 20:16:45, lipeifeng@oppo.com wrote:
-> From: Peifeng Li <lipeifeng@oppo.com>
-> 
-> Signed-off-by: Peifeng Li <lipeifeng@oppo.com>
-> ---
->  include/linux/memcontrol.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 394fd0a887ae..07d08be706bf 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -1679,7 +1679,7 @@ static inline bool folio_matches_lruvec(struct folio *folio,
->  	       lruvec_memcg(lruvec) == folio_memcg(folio);
->  }
->  
-> -/* Don't lock again iff page's lruvec locked */
-> +/* Don't lock again if page's lruvec locked */
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: fc29e04ae1ad4c99422c0b8ae4b43cfe99c70429  cgroup/rstat: add cgroup_rstat_lock helpers and tracepoints
 
-Not a typo. iff stands for if and only if
+Warning reports:
+
+https://lore.kernel.org/oe-kbuild-all/202404170821.HwZGISTY-lkp@intel.com
+
+Warning: (recently discovered and may have been fixed)
+
+kernel/cgroup/rstat.c:334: warning: Function parameter or struct member 'cgrp' not described in 'cgroup_rstat_flush_release'
+
+Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- csky-allmodconfig
+|   `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+|-- csky-allyesconfig
+|   `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+|-- i386-buildonly-randconfig-006-20240417
+|   `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+|-- i386-randconfig-002-20240417
+|   `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+|-- i386-randconfig-003-20240417
+|   `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+|-- i386-randconfig-012-20240417
+|   `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+|-- microblaze-allyesconfig
+|   `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+|-- mips-allyesconfig
+|   `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+|-- nios2-allmodconfig
+|   `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+|-- nios2-allyesconfig
+|   `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+|-- parisc-defconfig
+|   `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+|-- sparc-allmodconfig
+|   `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+|-- sparc64-allmodconfig
+|   `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+`-- sparc64-allyesconfig
+    `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+clang_recent_errors
+|-- i386-randconfig-001-20240417
+|   `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+|-- i386-randconfig-013-20240417
+|   `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+|-- riscv-allmodconfig
+|   `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+`-- riscv-allyesconfig
+    `-- kernel-cgroup-rstat.c:warning:Function-parameter-or-struct-member-cgrp-not-described-in-cgroup_rstat_flush_release
+
+elapsed time: 866m
+
+configs tested: 101
+configs skipped: 3
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240417   clang
+i386         buildonly-randconfig-002-20240417   gcc  
+i386         buildonly-randconfig-003-20240417   clang
+i386         buildonly-randconfig-004-20240417   gcc  
+i386         buildonly-randconfig-005-20240417   gcc  
+i386         buildonly-randconfig-006-20240417   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240417   clang
+i386                  randconfig-002-20240417   gcc  
+i386                  randconfig-003-20240417   gcc  
+i386                  randconfig-004-20240417   clang
+i386                  randconfig-005-20240417   clang
+i386                  randconfig-006-20240417   clang
+i386                  randconfig-011-20240417   gcc  
+i386                  randconfig-012-20240417   gcc  
+i386                  randconfig-013-20240417   clang
+i386                  randconfig-014-20240417   gcc  
+i386                  randconfig-015-20240417   gcc  
+i386                  randconfig-016-20240417   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
 
 -- 
-Michal Hocko
-SUSE Labs
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
