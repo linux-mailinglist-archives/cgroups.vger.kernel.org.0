@@ -1,82 +1,83 @@
-Return-Path: <cgroups+bounces-2590-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2591-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E01BE8A9F46
-	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 17:57:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 088178A9F65
+	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 18:00:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A120285B90
-	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 15:57:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 395011C21359
+	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 16:00:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D6E16F840;
-	Thu, 18 Apr 2024 15:57:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63CDC16F849;
+	Thu, 18 Apr 2024 16:00:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FyijSi3H"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VBidoEn9"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E38EE16E89E;
-	Thu, 18 Apr 2024 15:57:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 317D915D5AE;
+	Thu, 18 Apr 2024 16:00:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713455838; cv=none; b=VmfV6VLYcBDQTvkfyQ1LeTZSaMMCluRQagFUR6V4kkXS8HTD9ORYxW8IOXWdUNwI2oALuaSAPF+q0u5YwNZPvUn0OV+WHc4ozbAfyqNuGkQJrZFD+onjppFIqkYbBwLdCfi8hFKkgG2AmkNJduQdq58CpY5MwucgKgb1WFH63sM=
+	t=1713456048; cv=none; b=mjISVEvVtxIxqEUS0ML5y5at1Zk+4K6cWdjmO1SRezjcWBx0q/jEJvw13z0QDLDq0/T+Zz1DtY1cx6Kiyelyv6e5czJF2do9VtzNPRt5eA5kQTvblut/yfhvJYXz+ixu4ZDGRkfQIoZy0Bcap4qriFFutBfFPe5PdlxAIenwDtU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713455838; c=relaxed/simple;
-	bh=NZIjz58uChGfVrQTFf9J8bzx9/b0OCWG32jP5AflxYg=;
+	s=arc-20240116; t=1713456048; c=relaxed/simple;
+	bh=2tvjJQzckk7me2qDQz2+/czKkqYeyc4qjDGM18IMo/g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HULfq3W278JXWEduOSjb8tISUjCa5dncSyNOPA/r5O/Txp7gyLoS2/d2gOZIvpAeRFoaUaLzT6/z16Hc6jlauzAPNtYg4Mj8JwqcE1zeK+2bfF6HusveVbXpT6ukh8hqXPSp2hofkIrKp9m18qj7vqwjesUe/oS8gQsFDf5Kz0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FyijSi3H; arc=none smtp.client-ip=209.85.210.175
+	 Content-Type:Content-Disposition:In-Reply-To; b=NIWgliBNdfKnradyvHu2pbYTzE3nLhVhN+jLK3gpBI/XgnQIHcJhf8yjE7epAnB5w8/HkwhYqZZ2hWweit7qz2q/OUYsxPjg4GmCSNKMrEFQJrWVgTkz61mgDwTehoNE+JC1q9Dsottb3crxwsTwixDwlWkkHYRIlwHra/cDDfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VBidoEn9; arc=none smtp.client-ip=209.85.214.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ee0642f718so1562470b3a.0;
-        Thu, 18 Apr 2024 08:57:16 -0700 (PDT)
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e4266673bbso9560005ad.2;
+        Thu, 18 Apr 2024 09:00:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713455836; x=1714060636; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713456045; x=1714060845; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=31gcKiCM041JeHwiuTiAkytMVofo37R4KQG8kS1eMO4=;
-        b=FyijSi3Hs31tWdXijU3isd+usZivxkuUt0qq58SxqQFkfNfLoCyKibCpOkts6YoR1t
-         qtt2XSv0okFYv0xJ7520NnhFtsc25GTjavWxm2tx6etm6aURZlHRP0w6qQWMpMlnxDow
-         qBW0JbDyhgBxbK4PBew2q+xa8TDruF9bzprUAnz0mJZdVBn1CTXHr7zy8+pvRJGU3a0x
-         uf0+l7DDoFwDJ4DSLOh5zvJr60efr8mM5UzuUQB7C6vxUV+wb7DX5Xjyh0qF6UPIGYiy
-         eNd2rQ9FjqrgqtPV9feZN3CBn/ObILQ9gD6ccD4ynPN+Hr9si8A/IIo+JyL6UHg+w9S3
-         QFMA==
+        bh=PQ8NnE95Wng2cbF08yApBUNklEsbuY7jF+Twef4QuI0=;
+        b=VBidoEn9MxhUEdWJNlWJzYEkSoPovRp9yRuHYCa3e3WTRNg1plIC/etfwIDPKdF2wJ
+         Oer4y+g5rPofSpcWRSqk6JS2I7IGCIi54c4bKAt3l5EiP3t+900ZcE/J/nHmW/xbTs8P
+         zvzFy5Cca9kn+OwN3T937+RXdAm8rPHy1ozsYFi4GrjYr5KoAxhViBYVUIkeiWF8pIJk
+         rLTaKWXAvmpLqiwtG0OrpZsrP91MhkYqlxjipNEUGlQA9oIlhqAZvmDK3mVrQXLETSIR
+         7TWzrm56hVOf6OrbiOkQLSHqn9LwrB77OgAyYl8Uo07JeD9mxnhRFhgM2NTxSI5o1KST
+         2DHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713455836; x=1714060636;
+        d=1e100.net; s=20230601; t=1713456045; x=1714060845;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=31gcKiCM041JeHwiuTiAkytMVofo37R4KQG8kS1eMO4=;
-        b=ilyTyeKjMALGysslseJXT8C8HppLldc8qMcXfHS0U11UsENbHEIsbxBmYJjidkSLJW
-         87ZnNZe0ZUOzswXXheG8udKGExyq5ZnUN0LBrRioJGyJwRgPbNZTjWCFMkuf+yDgBRE0
-         0wiZvJUaroU1Q5xC3nLvzIRE5Z3IUZL+qkk4AIygtw/feH4DRk9XmSA9YX/b/8EvNdZa
-         zJ0uShJxcfsZg/5/ocTu2F+v4BmrjwEVk7eC9BDa8e3mGT5lzs54jx/3PZ2r7dS9UXJk
-         5xBIdvXnUWckjkxkymcy/QETC16HDW0uRHPJG+XipOikfUOjQOwQe2QhWewrXSBsX48j
-         W6BA==
-X-Forwarded-Encrypted: i=1; AJvYcCU45zyTH7cs/Cry17r9Vk6DSLMfmt1M3DKxiYfaJHnZciKv9fhPoyjH1+OZq3NJ0XiR9PkYODi+4MqM+l4/N9ichjIGGudJIQMcS0uQ/Z9aJ/i81BDsPjo9GWAuzy6eZ+NX5gzbmw==
-X-Gm-Message-State: AOJu0Ywq9M7rNEcLvUk/gsz6zhwgIWIzQx1nkhE+rs9ERD8maQFFQsgV
-	VqaSiy/cLd07PuBj/kU707OYqphf8UtlOD141YGITHWEKP15dbphNIkgi/cK
-X-Google-Smtp-Source: AGHT+IECbU03OA/uDtt/4eiPZmOnQn58qU66mWE0ULSPEhGbJvwpcV57muu+sGx72J6Sn//yYT08ag==
-X-Received: by 2002:a05:6a21:2723:b0:1a7:9b0e:ded3 with SMTP id rm35-20020a056a21272300b001a79b0eded3mr3931879pzb.11.1713455836062;
-        Thu, 18 Apr 2024 08:57:16 -0700 (PDT)
+        bh=PQ8NnE95Wng2cbF08yApBUNklEsbuY7jF+Twef4QuI0=;
+        b=ObouYg0jC61OecC88ihVMEOKoV7UsRA/b2iUqmDaOf7zzC37bBNr0jkSLbxiHmPpcw
+         xEsUGHPf4+0/Ud3KZbreTuiKk+d8rRQVYSFqtg+28l5VcEShDAX+tmepCeukWwj23HCW
+         KDNQ6ef0WkWzdBTJ8roFfvHwAmmrTSCx2Ss2ycsILJyV4V7uDTBgetckvEcIUwKCt4Lh
+         gZqoYLzq21CoiJUjM/w3keAp39/oxA7wuJDfVrTIYT+4CUNyQ4PPn84stK7cV8rJgZU1
+         +lA4JAD3pXhbtcjGOtvzAihSnPGECDvTKfdSumoGTk29UmOck+Y3R7ah+uLMikOpxhVu
+         jygA==
+X-Forwarded-Encrypted: i=1; AJvYcCVk8pM583nGABDmI6OMx0U5b6rHS/yA8U/OlH9p8Im6VjCK34opuV7p2R/QWDCaitCG2QOSY3fSDIHZHpM9tlaC9hx4yWE97qkZhOAxxpTSG/iAUx53GlWMUMrCBcEWODmd7xS6TlMg8EOFe+nG/izJ5+aM09wwPxOSvB4DY+OZMg==
+X-Gm-Message-State: AOJu0YzigPnjsU8Btwgm7NARFaPjvr6hCIRtapNqkTumJaeYLkeeoFUx
+	I/DV/F1PDH5yfHmSc9rS5FPtcPyemULtIs9xkH2hPSx3Ox3vfGUw
+X-Google-Smtp-Source: AGHT+IE4e7zmJlTVm+rOJDjXS8ojKP/o+9OmVobTcNe+p/oMU7S06QGA/ADKTuXfUm0fMYIAFgeE+Q==
+X-Received: by 2002:a17:902:e742:b0:1e5:4f00:3754 with SMTP id p2-20020a170902e74200b001e54f003754mr4096356plf.8.1713456045245;
+        Thu, 18 Apr 2024 09:00:45 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::5:6f51])
-        by smtp.gmail.com with ESMTPSA id g13-20020a62e30d000000b006ecfd2ad4ddsm1696343pfh.146.2024.04.18.08.57.15
+        by smtp.gmail.com with ESMTPSA id m5-20020a170902768500b001e4478e9b21sm1673804pll.244.2024.04.18.09.00.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Apr 2024 08:57:15 -0700 (PDT)
+        Thu, 18 Apr 2024 09:00:45 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 18 Apr 2024 05:57:14 -1000
+Date: Thu, 18 Apr 2024 06:00:43 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Xiu Jianfeng <xiujianfeng@huaweicloud.com>
-Cc: lizefan.x@bytedance.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 -next] cgroup: don't call
- cgroup1_pidlist_destroy_all() for v2
-Message-ID: <ZiFC2u5g5QGGRFFa@slm.duckdns.org>
-References: <20240418021930.914245-1-xiujianfeng@huaweicloud.com>
+To: Xiu Jianfeng <xiujianfeng@huawei.com>
+Cc: lizefan.x@bytedance.com, hannes@cmpxchg.org, corbet@lwn.net,
+	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Subject: Re: [PATCH -next] docs, cgroup: add entries for pids to cgroup-v2.rst
+Message-ID: <ZiFDq5NuAKLYslmn@slm.duckdns.org>
+References: <20240418123012.916411-1-xiujianfeng@huawei.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -85,14 +86,13 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240418021930.914245-1-xiujianfeng@huaweicloud.com>
+In-Reply-To: <20240418123012.916411-1-xiujianfeng@huawei.com>
 
-On Thu, Apr 18, 2024 at 02:19:30AM +0000, Xiu Jianfeng wrote:
-> From: Xiu Jianfeng <xiujianfeng@huawei.com>
-> 
-> Currently cgroup1_pidlist_destroy_all() will be called when releasing
-> cgroup even if the cgroup is on default hierarchy, however it doesn't
-> make any sense for v2 to destroy pidlist of v1.
+(cc'ing Michal for potential conflict in the pids controller documentation)
+
+On Thu, Apr 18, 2024 at 12:30:12PM +0000, Xiu Jianfeng wrote:
+> This patch add two entries (pids.peak and pids.events) for pids
+> controller, and also update pids.current because it's on non-root.
 > 
 > Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
 
