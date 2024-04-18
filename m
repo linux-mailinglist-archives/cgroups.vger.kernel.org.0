@@ -1,128 +1,94 @@
-Return-Path: <cgroups+bounces-2578-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2579-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F9408A940B
-	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 09:32:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A92668A9488
+	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 10:01:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D415B22437
-	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 07:32:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44A741F22BC4
+	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 08:01:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12A3A57334;
-	Thu, 18 Apr 2024 07:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EE8877F2D;
+	Thu, 18 Apr 2024 08:00:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gbNnVMCs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C33894EB45;
-	Thu, 18 Apr 2024 07:32:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5EF5762E5;
+	Thu, 18 Apr 2024 08:00:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713425557; cv=none; b=RDZowdvyT5tQ+r72HtqpbWoysihIxuynTU1Dg4/M10bCrbIy7do5vgG/4Zj24GMHwUwMkvATDbcO+DblC5XvTchYsydJ1Ss+KN705ZvXOPudXXid51qSnvxnXhe7AhutQoDSrZZyfm+cFjzme56gf362LwMeedNyV4Iu7FHLI/s=
+	t=1713427221; cv=none; b=JNnGOzqHuzxJ1R1tVW0WiXEFqh4B2mxfoz4NLm07HwRkCVnIJUi5nq/u0ny21+HhacMm9EK4S3h+nqIxfbEzTHjfC5BxiXIW9I2Q2Dg04LFHL+f3km4JZ2YNWaiJIkrzlOOQZx1UinxxmGzV+crgW05jNZE0z2vlX/Pb3qhYEEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713425557; c=relaxed/simple;
-	bh=h7PVw/s5YkA2E6D/+aBzDZKszhArG5Oeh3JVPlHIBSI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=r3XEftZ7kDOOl90od4ifQE5nUYYmY4gcHUbNysmZUYwNMTxFnIFNSSGAK6wAfzyCNHxEakiFQDwwnpD4u1jwW+Z4KM9pIANLDg1oAC38/VTqgTqCoiv6q2qrwg5e65WdfKTpsHI83VoC6TpoEY0izMCdjXztV55+q1V9WxC8LiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VKqHD6cJ3z4f3kFb;
-	Thu, 18 Apr 2024 15:32:24 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 27D831A0175;
-	Thu, 18 Apr 2024 15:32:32 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDHlxCOzCBmBygqKQ--.12535S4;
-	Thu, 18 Apr 2024 15:32:31 +0800 (CST)
-From: linan666@huaweicloud.com
-To: tj@kernel.org,
-	josef@toxicpanda.com,
-	axboe@kernel.dk
-Cc: hch@lst.de,
-	cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linan666@huaweicloud.com,
-	yukuai3@huawei.com,
-	yi.zhang@huawei.com,
-	houtao1@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH] blk-iocost: do not WARNING if iocg has already offlined
-Date: Thu, 18 Apr 2024 15:23:40 +0800
-Message-Id: <20240418072340.2090877-1-linan666@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1713427221; c=relaxed/simple;
+	bh=8xkMYyuEcKoA6xltCA5FHMbWSOH1kFJ6bzMXvN0SpMY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uNDUHBDPEAilRWh276aOOC4QADBr9fOqHJJSrL+CKpoUI/LaXaBKGySkVcBLSIMeRg5p1i4tCMraTIgzJu4mT+M+farwVV5uuMQfPBcVKwbZTrc9jPgNrNoHZekCVYo78AJlSw8oVje6fDLE5HqwOVR490JcdJVLtDX/RsREoGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gbNnVMCs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF511C113CE;
+	Thu, 18 Apr 2024 08:00:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713427221;
+	bh=8xkMYyuEcKoA6xltCA5FHMbWSOH1kFJ6bzMXvN0SpMY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=gbNnVMCs3OpZ7tw3N/dPN0SJ6ZdFxArs40SVqZA5Ck30OuzATWr6xJPV4JA3o4Yr1
+	 b1Wcy7Nd/n4ZsLB/XDkxkqHZE2hU6cfwI2oquZcJEnYExFg4JHxetExSmOPZS0gc3S
+	 hOxVkGla6AERdW7iJxLvvHcNwIUKVXX3kZJ//Bvugn/wv6J4By7WhNBrZLzp8O1jrZ
+	 rW6HXz2lIB9WdNjkGOhNS2Kcb1MGluHl5pThVJ8QIiXJexT6mkhFytklyPkdimV+iG
+	 R07jRsGzXA3zgtZLW6yz+cB+5YfJPI1/mAitJZTjpGjQSAdBouZwbYfkrDmrHpzeR2
+	 YzC017NummtaA==
+Message-ID: <2f08b2c8-a931-4fc9-85c1-e63b49dbfebc@kernel.org>
+Date: Thu, 18 Apr 2024 10:00:17 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDHlxCOzCBmBygqKQ--.12535S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7WryxtrW3tryUXFWxJr4rGrg_yoW8WFWDpF
-	4agwnFkF1jqr13KF4kK3Z2q348uan5Wws3Jw4fWrZ8Za4fur1xX3Z7Zr4YyFySqrn5AFs3
-	ZF48G3y7Aa1UWaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-	F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-	4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
-	648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lw4CEc2x0rVAKj4xxMxAIw28IcxkI7VAKI4
-	8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
-	wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
-	v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
-	Y4v20xvaj40_Zr0_Wr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUBSoJUUUUU=
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/3] cgroup/rstat: add cgroup_rstat_lock helpers and
+ tracepoints
+To: Tejun Heo <tj@kernel.org>
+Cc: hannes@cmpxchg.org, lizefan.x@bytedance.com, cgroups@vger.kernel.org,
+ yosryahmed@google.com, longman@redhat.com, netdev@vger.kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, shakeel.butt@linux.dev,
+ kernel-team@cloudflare.com, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>, mhocko@kernel.org
+References: <171328983017.3930751.9484082608778623495.stgit@firesoul>
+ <171328988660.3930751.17537768209042139758.stgit@firesoul>
+ <Zh7vVPp-Rj5hB6eN@slm.duckdns.org>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <Zh7vVPp-Rj5hB6eN@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Li Nan <linan122@huawei.com>
 
-In iocg_pay_debt(), warn is triggered if 'active_list' is empty, which
-is intended to confirm iocg is avitve when it has debt. However, warn
-can be triggered during removing cgroup controller, as
-iocg_waitq_timer_fn() is awakened at that time.
+On 16/04/2024 23.36, Tejun Heo wrote:
+> On Tue, Apr 16, 2024 at 07:51:26PM +0200, Jesper Dangaard Brouer wrote:
+>> This commit enhances the ability to troubleshoot the global
+>> cgroup_rstat_lock by introducing wrapper helper functions for the lock
+>> along with associated tracepoints.
+> 
+> Applied to cgroup/for-6.10.
+> 
 
-  WARNING: CPU: 0 PID: 2344971 at block/blk-iocost.c:1402 iocg_pay_debt+0x14c/0x190
-  Call trace:
-  iocg_pay_debt+0x14c/0x190
-  iocg_kick_waitq+0x438/0x4c0
-  iocg_waitq_timer_fn+0xd8/0x130
-  __run_hrtimer+0x144/0x45c
-  __hrtimer_run_queues+0x16c/0x244
-  hrtimer_interrupt+0x2cc/0x7b0
+Thanks for applying the tracepoint patch. I've backported this to our 
+main production kernels v6.6 LTS (with before mentioned upstream cgroup 
+work from Yosry and Longman). I have it running in production on two 
+machines this morning.  Doing manual bpftrace script inspection now, but 
+plan is monitor this continuously (ebpf_exporter[1]) and even have 
+alerts on excessive wait time on contention.
 
-The warn in this situation is meaningless. Since this iocg is being
-removed, the state of the 'active_list' is irrelevant, and 'waitq_timer'
-is canceled after removing 'active_list' in ioc_pd_free(), which ensure
-iocg is freed after iocg_waitq_timer_fn() returns.
+It makes sense to delay applying the next two patches, until we have 
+some production experiments with those two patches, and I have fleet 
+monitoring in place.  I'm be offline next week (on dive trip), so I'll 
+resume work on this 29 April, before I start doing prod experiments.
 
-Therefore, add the check if iocg has already offlined to avoid warn
-when removing cgroup controller.
-
-Signed-off-by: Li Nan <linan122@huawei.com>
----
- block/blk-iocost.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index baa20c85799d..2e109c016a39 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -1440,7 +1440,7 @@ static void iocg_pay_debt(struct ioc_gq *iocg, u64 abs_vpay,
- 	lockdep_assert_held(&iocg->waitq.lock);
- 
- 	/* make sure that nobody messed with @iocg */
--	WARN_ON_ONCE(list_empty(&iocg->active_list));
-+	WARN_ON_ONCE(list_empty(&iocg->active_list) && iocg->pd.online);
- 	WARN_ON_ONCE(iocg->inuse > 1);
- 
- 	iocg->abs_vdebt -= min(abs_vpay, iocg->abs_vdebt);
--- 
-2.39.2
-
+--Jesper
+[1] https://github.com/cloudflare/ebpf_exporter
 
