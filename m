@@ -1,70 +1,70 @@
-Return-Path: <cgroups+bounces-2595-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2596-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D04448AA42A
-	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 22:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 583448AA430
+	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 22:40:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DDDC1F22126
-	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 20:39:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DB531F21E5B
+	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 20:40:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ABE0190690;
-	Thu, 18 Apr 2024 20:39:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14674190696;
+	Thu, 18 Apr 2024 20:40:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nys+YJQS"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2GNTnUIY"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BE3E190674
-	for <cgroups@vger.kernel.org>; Thu, 18 Apr 2024 20:39:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD0A190687
+	for <cgroups@vger.kernel.org>; Thu, 18 Apr 2024 20:40:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713472742; cv=none; b=tn3JN+B7qXSIyX67GsTD80lxBxIaT31v+yieSHnVMSrpnNJ9G8G1XnvE4xrTCk0nDY+NpI9CLfkcRz/hDkYlobn3XqkvExYfKRSiC0Md8UuXPIcKYGSdzawIe0ocemN6ch6tpUnLdH3NHxbpkcbGZodcS5jJEtptL9kfMPT4Gqw=
+	t=1713472820; cv=none; b=tE5G+iL3Jj0Y2lmEX1zcb1mypwMS3wtRNK/BbG/fc8v0RPVUZyjRsGZBsxzXXaI9e9iQgvoS/uNHCO4om6G3lYhFUODFl7tS9FnQTKHkPMuML+gLD/EfN0Lphjpyu3We56b9Q+ZmLF+AqcUe/+YhYZN5q6FhUhkE9V2AKGjYfbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713472742; c=relaxed/simple;
-	bh=EQjWnSkdAXaSrCFiO96RSYAuq6uV5rmr2APeMYWUk2w=;
+	s=arc-20240116; t=1713472820; c=relaxed/simple;
+	bh=TvHDhStGMQ0UOSySjq/PFonA1j7hVWZ/FBuw6OxGTus=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=W8gRbixw9JPHEXvEU/nWtPEliXR9PropdO/yF9c3gAXT65BoYKyYqfZrcgGVXOPDkjBsS7G+WJBwD5t9cmIiZn98dAmUNCTQ76nVw7AHJgFcDjGMGsmuEuuyB1i6ef6FFffIVr78xCsHfqdJ0Nml7PFZkhQUr9jbY7VJBOyJFwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nys+YJQS; arc=none smtp.client-ip=209.85.218.45
+	 To:Cc:Content-Type; b=PuNOUJxZaPKOWv1sO5PxhM0g71nHkF17FOHDrxZWISffrdSIAEqS8YM0PAgb47shuxADxsPjgB90sbXuS8kgZ1md9ypIR/hD8EtDWeqQtBua/Nta7X7g+VTn0djdw3xtFDveVgfyqBRnrTl3nSGHsiNh5wWBb7EBPHLNkNYP44I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2GNTnUIY; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a519e1b0e2dso131970566b.2
-        for <cgroups@vger.kernel.org>; Thu, 18 Apr 2024 13:39:00 -0700 (PDT)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3465921600dso1148068f8f.3
+        for <cgroups@vger.kernel.org>; Thu, 18 Apr 2024 13:40:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713472739; x=1714077539; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1713472818; x=1714077618; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kB9PcMjE0hVVpql+JbzqFJwr2b8GY15J6ZW7aMEdH3Q=;
-        b=nys+YJQSD+bVtq0Co48PcXIVYeRGNykKREGFF+/QL7SEkPdariZrDfXd8UjgV9BdM9
-         55fBydZ6jx3w7G/PF8bIt8fNamPQhrryGrVEDJS6NWAw62Lwkn/5fSo1BBKJKk53QZh4
-         BH7sWmiD8hoiapl75oSTrDtFyI5zIkHFbO9nAeIHbkAEUtRQHiHJQaEiwDcE5PO0byrF
-         qRmkulUB0Wds/AIJm6zVHiKSna9HC+C+M8qk25X5RO7OBya28nTikrSc21gtRJEwWnKt
-         R16rJxEnTMjw6iK1jPla0z2LbRo6cQuirj207jiLAxcdgfwHupq33ZCN7GXWEj2Gv3df
-         K8YA==
+        bh=djyBKRlGRpWDdeJHGkQSaOnuWsBmFhDAvHccO4EOJ1k=;
+        b=2GNTnUIYIcYY0TihbJJ8ApbXq88uLWKaHsADRuuYY4wQxj7MrJPT9yIM74u5G7B644
+         nYSZQ9xFeecE9ile3y6+la2NK/42797hCwqbhsIWAp4zXv08ptietT2EbBVYBtauE1Jj
+         sYccCLovgQeUOH4t9yOvWH5z6oqYBxPtBt46//IMQxG0iXdIcXVderYZFxXr8G0kbeZI
+         LZLvKWiANt+0PFrYYce+jXUJvT9HqGO4Eh9h/yHB6Yp7aMIMiQVz/O9YOknvCfXMlbMy
+         0mffzMIj826Cy2pvT7Ph/ODPZ8eisdSsP5toWEsEU2az+k8VRUQL2iiCCBBzAo3R6xMF
+         zh4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713472739; x=1714077539;
+        d=1e100.net; s=20230601; t=1713472818; x=1714077618;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kB9PcMjE0hVVpql+JbzqFJwr2b8GY15J6ZW7aMEdH3Q=;
-        b=dh+UaRVVgqm6ELcRpOoXkCCucUXWMvPOBvQzJnuO+v5T7ki9hSYgXEk21/7fB/1iiA
-         q3mifkL3Av1Zkjan/oG580hxlmMKi96vw5NcPvcCWUeVeOLEYCzsdZF0Ur14lB7tRt9Y
-         g2NeSz9W8XMNaVVzgBQqOGTdQrfzbrY6u+C90K6LIdmTYDwfls5Xy8i1AeGQEvaBbb4b
-         qQaYwkJBvZKaJlBO0UpuQB+aQ01AHG2wQEsNeXILZTtFrXdgO4BBTTCDI9ODCROQRVML
-         krpteshXRxaBuX5Ng49zpSvxVdKBfSCvBRd5fw2iPjplSpsONaHBIkfDgIBzjhtZekZT
-         dKHw==
-X-Forwarded-Encrypted: i=1; AJvYcCVr/tjdy8d0GNMyo2HzGhixvP/XYLUCyR8sB4N/klXyMJKBx3O5KfIEKszcil/ku1CBANuv9FPQ7qjIaauqYz5+Ywyf51eVeg==
-X-Gm-Message-State: AOJu0YxA73F+pH8hzZ1WxqiHGI5Lm0G1qAiILZkDAD/bd/jLIR8zkoBW
-	YzERUjrUT4ID0c+I08zFfGjCdaT9yEBUlbNwKUT0891xS3BVqqWUqYbJsCB87gX0hrlbnj+zAkx
-	39YJm2+0I8y6YUYSDzHdbKtYNTUSSmis2tcv8
-X-Google-Smtp-Source: AGHT+IE5WBFPkQE1UYAhvIFf0d5mnAUdlsEGWrhC2zVPDjA0RfuTTaSKcmUw73ewun1AK1uASHQuPihQ9bZCIaT/BJw=
-X-Received: by 2002:a17:906:a24c:b0:a55:59e6:13f5 with SMTP id
- bi12-20020a170906a24c00b00a5559e613f5mr170031ejb.26.1713472738744; Thu, 18
- Apr 2024 13:38:58 -0700 (PDT)
+        bh=djyBKRlGRpWDdeJHGkQSaOnuWsBmFhDAvHccO4EOJ1k=;
+        b=MM2GId454Zz8uXFTxc+Y/RAEICvLcX2RhndwziX156+A0Je+hv8OcLqYn0knrjXr2T
+         toI0Wu2/Lc3uH1lX4Z5aOISW5g/fElMn5tckpqtkA1KZ515AoDgqQoBYt4ScBTZCaLJl
+         vFjUiADX2b5sYAnkXBBNv3AkGGPTg6fHp3Bv9q/okEvXAHHo5C6gMI71YKDc18qjlTfz
+         RY3gWDma3DE/ikEp9uryQ6fBABsFHsbsAy48cE8mgQEaN6NvpVUxfDRU6G0/QBJI+iLh
+         1Ki2NPJ8rtzedaV83wOp1lOFK2vpkKygdkLl1a4hU27gbVAIlPXWbVtKn8EjFqPOflcZ
+         n5cA==
+X-Forwarded-Encrypted: i=1; AJvYcCU9B3SrO6FD5JU65ZarIZ1GOwBZSGYRSTElzd0CG2unNwFULwTmbGiQRZKQPt5hYPr17zwtCBtM4IdMc+wAALrtBi1ZDFz3dQ==
+X-Gm-Message-State: AOJu0Yy9ZQSwQhC2YVUtWt+et/r8xCYKbQi81PF/C7Jaid2AV6xe1Ndp
+	luL+gjQRF3roU0g3OEmKtjaW8pxpCcfAKUdRr+dlSseuBvuFZKe8WAd7Y3gOGClVCWJerzKMLV/
+	MhYsCgkI01TF0skZ9yFwsNA3HlWAehPYwaHSr
+X-Google-Smtp-Source: AGHT+IFo6JA2vkoE/3eFV5S2YO4dqACxa+eCURTAtQHQybTEc66uavOtkJHCgKt+OL7C5O/wtn3rtinJvDxEQsoIiOI=
+X-Received: by 2002:a5d:6a07:0:b0:343:77f4:e663 with SMTP id
+ m7-20020a5d6a07000000b0034377f4e663mr37716wru.18.1713472817454; Thu, 18 Apr
+ 2024 13:40:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -73,102 +73,58 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <171328983017.3930751.9484082608778623495.stgit@firesoul>
  <171328989335.3930751.3091577850420501533.stgit@firesoul> <CAJD7tkZFnQK9CFofp5rxa7Mv9wYH2vWF=Bb28Dchupm8LRt7Aw@mail.gmail.com>
- <651a52ac-b545-4b25-b82f-ad3a2a57bf69@kernel.org>
-In-Reply-To: <651a52ac-b545-4b25-b82f-ad3a2a57bf69@kernel.org>
+ <651a52ac-b545-4b25-b82f-ad3a2a57bf69@kernel.org> <lxzi557wfbrkrj6phdlub4nmtulzbegykbmroextadvssdyfhe@qarxog72lheh>
+In-Reply-To: <lxzi557wfbrkrj6phdlub4nmtulzbegykbmroextadvssdyfhe@qarxog72lheh>
 From: Yosry Ahmed <yosryahmed@google.com>
-Date: Thu, 18 Apr 2024 13:38:20 -0700
-Message-ID: <CAJD7tkbU1PB6ocRUVM0mw_q-c6kq1r9WsgkZwe1ppNkZG8KdQA@mail.gmail.com>
+Date: Thu, 18 Apr 2024 13:39:41 -0700
+Message-ID: <CAJD7tkYJZgWOeFuTMYNoyH=9+uX2qaRdwc4cNuFN9wdhneuHfA@mail.gmail.com>
 Subject: Re: [PATCH v1 2/3] cgroup/rstat: convert cgroup_rstat_lock back to mutex
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: tj@kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com, 
-	cgroups@vger.kernel.org, longman@redhat.com, netdev@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, shakeel.butt@linux.dev, 
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, tj@kernel.org, hannes@cmpxchg.org, 
+	lizefan.x@bytedance.com, cgroups@vger.kernel.org, longman@redhat.com, 
+	netdev@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
 	kernel-team@cloudflare.com, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, mhocko@kernel.org, Wei Xu <weixugc@google.com>
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, mhocko@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 18, 2024 at 2:02=E2=80=AFAM Jesper Dangaard Brouer <hawk@kernel=
-.org> wrote:
+On Thu, Apr 18, 2024 at 7:49=E2=80=AFAM Shakeel Butt <shakeel.butt@linux.de=
+v> wrote:
 >
->
->
-> On 18/04/2024 04.19, Yosry Ahmed wrote:
-> > On Tue, Apr 16, 2024 at 10:51=E2=80=AFAM Jesper Dangaard Brouer <hawk@k=
-ernel.org> wrote:
-> >>
-> >> Since kernel v4.18, cgroup_rstat_lock has been an IRQ-disabling spinlo=
-ck,
-> >> as introduced by commit 0fa294fb1985 ("cgroup: Replace cgroup_rstat_mu=
-tex
-> >> with a spinlock").
-> >>
-> >> Despite efforts in cgroup_rstat_flush_locked() to yield the lock when
-> >> necessary during the collection of per-CPU stats, this approach has le=
-d
-> >> to several scaling issues observed in production environments. Holding
-> >> this IRQ lock has caused starvation of other critical kernel functions=
-,
-> >> such as softirq (e.g., timers and netstack). Although kernel v6.8
-> >> introduced optimizations in this area, we continue to observe instance=
-s
-> >> where the spin_lock is held for 64-128 ms in production.
-> >>
-> >> This patch converts cgroup_rstat_lock back to being a mutex lock. This
-> >> change is made possible thanks to the significant effort by Yosry Ahme=
-d
-> >> to eliminate all atomic context use-cases through multiple commits,
-> >> ending in 0a2dc6ac3329 ("cgroup: removecgroup_rstat_flush_atomic()"),
-> >> included in kernel v6.5.
-> >>
-> >> After this patch lock contention will be less obvious, as converting t=
-his
-> >> to a mutex avoids multiple CPUs spinning while waiting for the lock, b=
-ut
-> >> it doesn't remove the lock contention. It is recommended to use the
-> >> tracepoints to diagnose this.
+> On Thu, Apr 18, 2024 at 11:02:06AM +0200, Jesper Dangaard Brouer wrote:
 > >
-> > I will keep the high-level conversation about using the mutex here in
-> > the cover letter thread, but I am wondering why we are keeping the
-> > lock dropping logic here with the mutex?
+> >
+> > On 18/04/2024 04.19, Yosry Ahmed wrote:
+> [...]
+> > >
+> > > I will keep the high-level conversation about using the mutex here in
+> > > the cover letter thread, but I am wondering why we are keeping the
+> > > lock dropping logic here with the mutex?
+> > >
+> >
+> > I agree that yielding the mutex in the loop makes less sense.
+> > Especially since the raw_spin_unlock_irqrestore(cpu_lock, flags) call
+> > will be a preemption point for my softirq.   But I kept it because, we
+> > are running a CONFIG_PREEMPT_VOLUNTARY kernel, so I still worried that
+> > there was no sched point for other userspace processes while holding th=
+e
+> > mutex, but I don't fully know the sched implication when holding a mute=
+x.
 > >
 >
-> I agree that yielding the mutex in the loop makes less sense.
-> Especially since the raw_spin_unlock_irqrestore(cpu_lock, flags) call
-> will be a preemption point for my softirq.   But I kept it because, we
-> are running a CONFIG_PREEMPT_VOLUNTARY kernel, so I still worried that
-> there was no sched point for other userspace processes while holding the
-> mutex, but I don't fully know the sched implication when holding a mutex.
+> Are the softirqs you are interested in, raised from the same cpu or
+> remote cpu? What about local_softirq_pending() check in addition to
+> need_resched() and spin_needbreak() checks? If softirq can only be
+> raised on local cpu then convert the spin_lock to non-irq one (Please
+> correct me if I am wrong but on return from hard irq and not within bh
+> or irq disabled spin_lock, the kernel will run the pending softirqs,
+> right?). Did you get the chance to test these two changes or something
+> similar in your prod environment?
 
-I guess dropping the lock before rescheduling could be more preferable
-in this case since we do not need to keep holding the lock for
-correctness.
+I tried making the spinlock a non-irq lock before, but Tejun objected [1].
 
->
-> > If this is to reduce lock contention, why does it depend on
-> > need_resched()? spin_needbreak() is a good indicator for lock
-> > contention, but need_resched() isn't, right?
-> >
->
-> As I said, I'm unsure of the semantics of holding a mutex.
->
->
-> > Also, how was this tested?
-> >
->
-> I tested this in a testlab, prior to posting upstream, with parallel
-> reader of the stat files.
+Perhaps we could experiment with always dropping the lock at CPU
+boundaries instead?
 
-I believe high concurrency is a key point here. CC'ing Wei who
-reported regressions on previous attempts of mine before to address
-the lock contention from userspace.
-
-> As I said in other mail, I plan to experiment
-> with these patches(2+3) in production, as micro-benchmarking will not
-> reveal the corner cases we care about.
-
-Right, but micro-benchmarking should give us a signal about
-regressions. It was very useful for me when working with this code
-before to use synthetic benchmarks with high concurrency of userspace
-reads and/or kernel flushers.
+[1]https://lore.kernel.org/lkml/ZBz%2FV5a7%2F6PZeM7S@slm.duckdns.org/
 
