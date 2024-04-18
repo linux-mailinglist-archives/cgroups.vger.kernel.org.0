@@ -1,134 +1,129 @@
-Return-Path: <cgroups+bounces-2571-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2570-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DBE58A90F8
-	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 04:05:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12B658A90F4
+	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 04:05:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE407282162
-	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 02:05:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6D951F21BD3
+	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 02:05:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E20D641C85;
-	Thu, 18 Apr 2024 02:05:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9A313BBD4;
+	Thu, 18 Apr 2024 02:05:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iaQXswJS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Plf0jScj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 164583A1D3
-	for <cgroups@vger.kernel.org>; Thu, 18 Apr 2024 02:05:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44C726FA7;
+	Thu, 18 Apr 2024 02:05:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713405930; cv=none; b=oiXcZ7xb4aqO8lrUCqNZUp8rhvqN962wQmLEyFymEafdHhFh3joEGGwotnQ13wS8fKPei2Dxy+izwP4px5RhOaNQK6pIZmUkAEJX4C94IbMDI7iTjbpwGrN26O5GcB0R4Z/hJdTbbH4yZPm/8amsNrhbLY61N2OmwoNPhUP7S5Y=
+	t=1713405918; cv=none; b=p7fqcBu9PztgeT+Mlz0OwuN9feBNT7BfGhidY3trEmst6SvB0m8H4Ph4DdasKXBoB/6qGyzz/RNARBEwE6CWIYMNwsV+OXVKsv60uQjaLUqC/z8BNueUCbmRQNg1R4aM+HsGubh6Xqav9pq1jH02fXZ8lLs6gqv5ZRzWpq15cxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713405930; c=relaxed/simple;
-	bh=T0QnjAhdYrmACiuwAPDxnR5HIy4p9penGkBMygu+5uU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tB1GoSJKraM3+uoPbTf0Jml3jqWd3Ae/nXj7g3h/aY6q1RWvvR1DRBxdnO9uEUO/7+/Zquh2PiWo4s2DPR2T30TLr6LZ+bLc0desCRN2X6XoZUBzdKGhvnQlWfGtppj9NqJRjksEyNbzyIjQ5VpfaoBtWX7TotYyWGFF8n0+8D8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iaQXswJS; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2da01cb187cso5847761fa.0
-        for <cgroups@vger.kernel.org>; Wed, 17 Apr 2024 19:05:28 -0700 (PDT)
+	s=arc-20240116; t=1713405918; c=relaxed/simple;
+	bh=73LVQrfjmvrDVO+kAsF3UE4WMxKTnsJSv1IvmJzeqnM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s/20haU11nwrJ4rUzpsk8F0oLWkbVLvVTaohdIHVjp3tbMLbFXIL195KJ6kJyFrDN3gZFrgoc4roVTbCOD21NpFR1P7/TEhWsOAVJZPiOuAUBXSSJR82UidZpWnYsFEyTMtZLB3zwhp9ZvhZwGacttKV9cXyJEeEplJmMaKrGus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Plf0jScj; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6ecf8ebff50so265378b3a.1;
+        Wed, 17 Apr 2024 19:05:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713405927; x=1714010727; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=T0QnjAhdYrmACiuwAPDxnR5HIy4p9penGkBMygu+5uU=;
-        b=iaQXswJSwbd6W25fe4Gm0Pjcaxlny+oZVrwFZ5yeQDqUCqctGQ0oJzeErLjcaqSVjQ
-         c5rROx3N5EHWyGn7GYvncjhJ2MW+mzH4mfu0FnHyvfU/krB54BJpgMR7zL7aXg3gHt1h
-         Cix3sRYVObXpzTpratyv/GQAbufq/aQo47i5wFdquZDGtwXA1bRzIChHOiU9gnz9YgWO
-         pVtgb4K/M67JhK2l5S2DYN/nP1WKudwWA/AFyov3uh9pQgyGoFU2m8gEh9/1UdgACd/e
-         /VoLNfpm6mfQJYZ3SJRs1JomoDjYLJ055rtMehVwPTfjEW5/Vs2/KqpkVDlMUOR2Prfc
-         BuBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713405927; x=1714010727;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1713405916; x=1714010716; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=T0QnjAhdYrmACiuwAPDxnR5HIy4p9penGkBMygu+5uU=;
-        b=QeYePndTrNqCwokLYe12ntc8UUGH0nRtrmusHpL4ggUkusGi4cp8AQT01EvjcYX35x
-         S5w18LKuv94KNKc8J4aE6dHFuKeDJ4lRyjGQ79Qqe0b3O7VdOWFFBkXomarMtffw96kt
-         z5W0wmzRQulO9h1rlRD+NEexPZeFrOdX0KFpGJiHxBZxRTy/pvVzy5aYpYZItipPfpnv
-         db8f/SkAnK5E43zHTw/z4eBLhUb4tazC7F/Ge20AIfX0gCBiZqdqGZFAZh6xwoKmak+Q
-         GSERmc2dBJaLWRxtmLWMfs+n4e9/In6RZyNG0MZv0a0PmMFX2huDExEOH07P/4HONZI5
-         b2Sg==
-X-Forwarded-Encrypted: i=1; AJvYcCVc8ejcNcZtbVMywTLTszmHUqFmu3hYtLKTaCB2DFY+vRmtIa+KO97cnzeBFn/k85tnZIzcnfJko/Z/8sQyntv42WK1dvGs/w==
-X-Gm-Message-State: AOJu0YwBuVvIYzAPQX/8B8oOSH7OIKgKH8xGbzXrSN1DvdtZKtrcDef2
-	Ztd0Es1aZM8h0QckFE9LyttOiCYx2RMPbbFHps6QBxZTs/OYTyjaI9sOxfosEusO5VhTsM0SIZ9
-	U8u9AofVYEE9Vi0wsEDjel1M8EOCjRDfuf/su
-X-Google-Smtp-Source: AGHT+IFCm3pN2ShD28Z+g4gvIKer7DIONCtgHex5oajrniOoI2un8C3zrZeQwrRhrc0hLYs0bHNGtT9KLILyXzzacvw=
-X-Received: by 2002:a2e:9003:0:b0:2d8:bda5:c5f5 with SMTP id
- h3-20020a2e9003000000b002d8bda5c5f5mr644366ljg.35.1713405927096; Wed, 17 Apr
- 2024 19:05:27 -0700 (PDT)
+        bh=Dav8LT6ZkkrV7Xf+PoaKXV2rDAf6ehRkqp4ZSiFp8Pw=;
+        b=Plf0jScj9/RJij99whXZri6LT+ABti5q77T/LGzxC/Oqp3hxfmqAUwhFlbPTK7bpqz
+         batTTtbYzmw0FMiclbfsc+cMPs3WIexEwggq2OVpAxZ/g08dJy0jE+p4fzyQSNstyI1a
+         hPEtaVLdKUWpXuVj6clEFFvHVYSoYuW48XnpbKSgv8LW3ix4oImd/DmbVuAN+TKDZYwp
+         57LTkShShZ9pq4z6HKlDW1oqug5rrT+YFyfQwU7stqoapLXO/BVSO9GXU/2ObYjNJFkj
+         yobZ2X7thuATGMCva2Bw5rMchcJxrQoiEzqOdxsJqZDU3qfPUfdYQUTnFbeTy7572TOW
+         laMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713405916; x=1714010716;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Dav8LT6ZkkrV7Xf+PoaKXV2rDAf6ehRkqp4ZSiFp8Pw=;
+        b=es0qaIztMqPnLr0SgvI1g9kOukgmMQoAE9szrBCLjB+3VtRCh+FgND3YUb0WcZwM5x
+         bFM3E7kEhrO3f1Vto10AvCJLiUGScMhMd7UANPOWDDwoTi6F0KYoKJE5weXHuxuCEV1z
+         0FDMMElcxmPbIrY7FQNGqlTAQsrBVqrWncd2m0RxJDSjWbWTgmOy/U3+ZtYM9CNI7GEC
+         feyaMLoXoRppLxkqVqw2kVjFath9Mty/1dOTnYv+2NeNUR4oFaWEkwdQOSiwugVXILb0
+         v8KN/pm1O2TpgZtCaOCaQakt82C0/+KSyM44J9ALjzTa5sxq0hryA+t4QZExEW/l3XQ7
+         s5Fw==
+X-Forwarded-Encrypted: i=1; AJvYcCVZMCFiwHgbKH9U33+fmwX46EfpigrvDlO0P7e/CzJpGX4Fgf90mieVGqssO7OyMW70NoI6oB49dOPkNOu/XEqy+c2WzSrsD3CjVVyNnDeMVey7STIj8/0GoWQ/trusigo5uITrRu0My1to0Va5ZeOHp3HjgVzPS9t3E31pdunS29o7
+X-Gm-Message-State: AOJu0YyOD8XxleZqPCwuNHySQSaAtSSQYXJORm9aJhUjg9YYm8XVBxwS
+	R23K9nG3u7CjbZUwzyhcc/KhoNXok2HoDiA/mG7gCa63PhInze6p
+X-Google-Smtp-Source: AGHT+IG5SxIK07Q/miAgOz8egYZfpCoEBFkaUYGR29gIiRkZu7799/SYMMBv2tExbxkUjc8I2ntfzA==
+X-Received: by 2002:a05:6a00:2789:b0:6ed:4b2d:a764 with SMTP id bd9-20020a056a00278900b006ed4b2da764mr1361359pfb.11.1713405916495;
+        Wed, 17 Apr 2024 19:05:16 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:6f51])
+        by smtp.gmail.com with ESMTPSA id k26-20020aa7821a000000b006ed8379fe7csm350584pfi.75.2024.04.17.19.05.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Apr 2024 19:05:16 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 17 Apr 2024 16:05:14 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, chenhuacai@kernel.org, josef@toxicpanda.com,
+	jhs@mojatatu.com, svenjoac@gmx.de, raven@themaw.net,
+	pctammela@mojatatu.com, qde@naccy.de, zhaotianrui@loongson.cn,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	loongarch@lists.linux.dev, cgroups@vger.kernel.org,
+	yi.zhang@huawei.com, yangerkun@huawei.com,
+	"yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH RFC v2 5/6] blk-throttle: support to destroy throtl_data
+ when blk-throttle is disabled
+Message-ID: <ZiB_2ryBOxq2_IyG@slm.duckdns.org>
+References: <20240406080059.2248314-1-yukuai1@huaweicloud.com>
+ <20240406080059.2248314-6-yukuai1@huaweicloud.com>
+ <Zhl37slglnnTSMO7@slm.duckdns.org>
+ <1bb85208-1224-77dc-f0b2-7b7a228ef70b@huaweicloud.com>
+ <Zh6wx4mXZy_EOViH@slm.duckdns.org>
+ <19086c09-3060-a4ce-4ac6-811a29653979@huaweicloud.com>
+ <Zh8kPGAu2TG4Su2M@slm.duckdns.org>
+ <1ed63126-d2e6-f0b6-42ef-127ecb464955@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJD7tkbn-wFEbhnhGWTy0-UsFoosr=m7wiJ+P96XnDoFnSH7Zg@mail.gmail.com>
- <ac4cf07f-52dd-454f-b897-2a4b3796a4d9@kernel.org> <96728c6d-3863-48c7-986b-b0b37689849e@redhat.com>
- <CAJD7tkZrVjhe5PPUZQNoAZ5oOO4a+MZe283MVTtQHghGSxAUnA@mail.gmail.com>
- <4fd9106c-40a6-415a-9409-c346d7ab91ce@redhat.com> <f72ab971-989e-4a1c-9246-9b8e57201b60@kernel.org>
- <CAJD7tka=1AnBNFn=frp7AwfjGsZMGcDjw=xiWeqNygC5rPf6uQ@mail.gmail.com>
- <75d837cc-4d33-44f6-bb0c-7558f0488d4e@kernel.org> <CAJD7tka_ESbcK6cspyEfVqv1yTW0uhWSvvoO4bqMJExn-j-SEg@mail.gmail.com>
- <9f6333ec-f28c-4a91-b7b9-07a028d92225@kernel.org> <f6daabzdesdwo7zdouexow5mdub3qnzr7e67lonmhh3itjgk5j@qw3xpvqoyb7j>
-In-Reply-To: <f6daabzdesdwo7zdouexow5mdub3qnzr7e67lonmhh3itjgk5j@qw3xpvqoyb7j>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 17 Apr 2024 19:04:50 -0700
-Message-ID: <CAJD7tkYnSRwJTpXxSnGgo-i3-OdD7cdT-e3_S_yf7dSknPoRKw@mail.gmail.com>
-Subject: Re: Advice on cgroup rstat lock
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, Waiman Long <longman@redhat.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, 
-	Jesper Dangaard Brouer <jesper@cloudflare.com>, "David S. Miller" <davem@davemloft.net>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Shakeel Butt <shakeelb@google.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
-	kernel-team <kernel-team@cloudflare.com>, cgroups@vger.kernel.org, 
-	Linux-MM <linux-mm@kvack.org>, Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, Ivan Babrou <ivan@cloudflare.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ed63126-d2e6-f0b6-42ef-127ecb464955@huaweicloud.com>
 
-[..]
+Hello,
 
-> > > I personally don't like mem_cgroup_flush_stats_ratelimited() very
-> > > much, because it is time-based (unlike memcg_vmstats_needs_flush()),
-> > > and a lot of changes can happen in a very short amount of time.
-> > > However, it seems like for some workloads it's a necessary evil :/
-> > >
->
-> Other than obj_cgroup_may_zswap(), there is no other place which really
-> need very very accurate stats. IMO we should actually make ratelimited
-> version the default one for all the places. Stats will always be out of
-> sync for some time window even with non-ratelimited flush and I don't
-> see any place where 2 second old stat would be any issue.
+On Wed, Apr 17, 2024 at 09:39:43AM +0800, Yu Kuai wrote:
+...
+> I guess I'll do lazy init first, and then modularization for rq_qos,
+> and leave blk-throtl there for now. Perhaps add a new throtl model in
+> iocost can replace blk-throtl in the future.
 
-We disagreed about this before, and I am not trying to get you to
-debate this with me again :)
+That sounds like a plan.
 
-I just prefer that we avoid this if possible. We have seen cases where
-the 2 sec window caused issues. Not because 2 sec is a long time, but
-because userspace reads the stats after an event occurs (e.g.
-proactive reclaim), but gets stats from before the event.
+> BTW, currently during test of iocost, I found that iocost can already
+> achieve that, for example, by following configure:
+> 
+> echo "$dev enable=1 min=100 max=100" > qos
+> echo "$dev wbps=4096 wseqiops=1 wrandiops=1" > model
+> 
+> In the test, I found that wbps and iops is actually limited to the
+> set value.
 
-[..]
->
-> >
-> >
-> > With a mutex lock contention will be less obvious, as converting this to
-> > a mutex avoids multiple CPUs spinning while waiting for the lock, but
-> > it doesn't remove the lock contention.
-> >
->
-> I don't like global sleepable locks as those are source of priority
-> inversion issues on highly utilized multi-tenant systems but I still
-> need to see how you are handling that.
+Yeah, it shouldn't be too difficult to add .max support to iocost so that
+you can say something like "this cgroup subtree can't use more than 60% of
+available capacity". That'd be really cool to have.
 
-For context, this was discussed before as well in [1].
+Thanks.
 
-[1]https://lore.kernel.org/lkml/CALvZod441xBoXzhqLWTZ+xnqDOFkHmvrzspr9NAr+nybqXgS-A@mail.gmail.com/
+-- 
+tejun
 
