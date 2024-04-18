@@ -1,121 +1,134 @@
-Return-Path: <cgroups+bounces-2569-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2571-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 500F08A90EE
-	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 04:02:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DBE58A90F8
+	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 04:05:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2FD21F2198A
-	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 02:02:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE407282162
+	for <lists+cgroups@lfdr.de>; Thu, 18 Apr 2024 02:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 601CF39AF4;
-	Thu, 18 Apr 2024 02:02:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E20D641C85;
+	Thu, 18 Apr 2024 02:05:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="boS+kwTY"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iaQXswJS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6B0B4F887;
-	Thu, 18 Apr 2024 02:02:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 164583A1D3
+	for <cgroups@vger.kernel.org>; Thu, 18 Apr 2024 02:05:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713405739; cv=none; b=N3e2mQb7rwLp02P20Je4uVvfF+oB+vIkfiim7dyLB/ndCLSCZUyz0z8EFKV8OxLdbm5g0PPyGzDTW6EKCy85KoZ6oA3H+2oDTFBAoi8CiWJsDKM/6ah8rSMPSgPe8KPaztb/zzpQ2Qpi99MawjjYoGNARSAfrKcA/ToRBUlMEkU=
+	t=1713405930; cv=none; b=oiXcZ7xb4aqO8lrUCqNZUp8rhvqN962wQmLEyFymEafdHhFh3joEGGwotnQ13wS8fKPei2Dxy+izwP4px5RhOaNQK6pIZmUkAEJX4C94IbMDI7iTjbpwGrN26O5GcB0R4Z/hJdTbbH4yZPm/8amsNrhbLY61N2OmwoNPhUP7S5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713405739; c=relaxed/simple;
-	bh=8wQoDT/7NOKMTE80UgxESvDJgj7uWjTrlOpXXXDcBv4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AXuu6BOD+jevqHJBKxsr705dyuUOpfW4rCBczGKZJ53bMJsXPLMCKM7xPFhGsU+0yNohaevGhyMuV3VDlq4jKA647j94pZ8QyDa4TSo9VZzidhHR+5ZEmgZjyQR5Wa6vtY91IBgSxilpxM7siKENhxvOe+7hpETtC+60wQ25yW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=boS+kwTY; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5c6bd3100fcso191174a12.3;
-        Wed, 17 Apr 2024 19:02:16 -0700 (PDT)
+	s=arc-20240116; t=1713405930; c=relaxed/simple;
+	bh=T0QnjAhdYrmACiuwAPDxnR5HIy4p9penGkBMygu+5uU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tB1GoSJKraM3+uoPbTf0Jml3jqWd3Ae/nXj7g3h/aY6q1RWvvR1DRBxdnO9uEUO/7+/Zquh2PiWo4s2DPR2T30TLr6LZ+bLc0desCRN2X6XoZUBzdKGhvnQlWfGtppj9NqJRjksEyNbzyIjQ5VpfaoBtWX7TotYyWGFF8n0+8D8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iaQXswJS; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2da01cb187cso5847761fa.0
+        for <cgroups@vger.kernel.org>; Wed, 17 Apr 2024 19:05:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713405736; x=1714010536; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Wvjc4I9zVrii6+4lvGmCflRZZaopkcwkKKuCNg7PNrA=;
-        b=boS+kwTYr3Pc7G8EMtOJSdWY1F12Ic0HhFaVPZ9D6mlWB6Gu8pkjHH3FhEHr0/Pa0q
-         0jEuY77ks9qr36pFgmR8xtMtAs1ETZ8wjvFmWIBIo3+9l0xQvc944OQm+WwRVLdYoaRY
-         E2e+s1CRzQEsnjGD2VF2LSu2BdZ2M7HL5p+IP3UGDnmqzu2SY70eLGQ2E604NPTlSMXw
-         uBXVdugzMc5dMj95qFiEnBkfnWUdphJvuB8KKK14fkSoERTQ96ofpdy9BdVVSoUDjU30
-         z0zElksoUeEzhBPiaf8Y4anlr2WA4Exq7mNeYfJR2OVEeFnJyXE/miHmLVRnUKoWZr/q
-         DpdA==
+        d=google.com; s=20230601; t=1713405927; x=1714010727; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=T0QnjAhdYrmACiuwAPDxnR5HIy4p9penGkBMygu+5uU=;
+        b=iaQXswJSwbd6W25fe4Gm0Pjcaxlny+oZVrwFZ5yeQDqUCqctGQ0oJzeErLjcaqSVjQ
+         c5rROx3N5EHWyGn7GYvncjhJ2MW+mzH4mfu0FnHyvfU/krB54BJpgMR7zL7aXg3gHt1h
+         Cix3sRYVObXpzTpratyv/GQAbufq/aQo47i5wFdquZDGtwXA1bRzIChHOiU9gnz9YgWO
+         pVtgb4K/M67JhK2l5S2DYN/nP1WKudwWA/AFyov3uh9pQgyGoFU2m8gEh9/1UdgACd/e
+         /VoLNfpm6mfQJYZ3SJRs1JomoDjYLJ055rtMehVwPTfjEW5/Vs2/KqpkVDlMUOR2Prfc
+         BuBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713405736; x=1714010536;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Wvjc4I9zVrii6+4lvGmCflRZZaopkcwkKKuCNg7PNrA=;
-        b=s5zloOEzRYoo+PDul9LXsLKJb2y8EmTwITNmbki6B80To7YK2Wv4UolXp9DKxjbqSG
-         Jbm3qae32reX3ND2AJIzGbPW45sR1DV5sSUNL/uQKDnWH32hwSeKVJmmM/yoRk9/PWKI
-         iTHxYZuLxPnTfWjCb3JRy7643eh3L88YC9716brOyR4OztfY2RXKNCpVUNvBKyu2wBXJ
-         /Qw5AbW6KO96wLBh+mL+C3qKwWZ2sTzIJ3JuhdiUC23f3/guUGLBkMPgcqIUyGwSLvIF
-         t4akUFci9Agh5SlcymRbPr7E6uLmg1RWLILHjLAZpRGjSsuAfFX0Hi0iJNpUqpoEN4Fd
-         lsqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUP0nXIBLOVUOZqMSbDDU/8n/u5JMjaRX5NbEF+4ipPxqPazsgbDM+1WI66E/iuXmJ6L2UgI6xdHJkLHx7j2LfKzNk4RfU6sRkioLHn83ku7Qv66je2heXX+zQdkNCLW3CxOZqGpw==
-X-Gm-Message-State: AOJu0YwSbez9RQBKiQISSXFnw9yqX/y5BQNUuiQBtw/IAASJiw0Uy3ye
-	eIQrLVHapqbDwuFNkH8tdfuSEl7g6z0uJmewFn1t9HufYk0LfB+p/DHwxhBm
-X-Google-Smtp-Source: AGHT+IHd6qaRHQzsC46JCsWbvCgwOaSJANmZnUHo2qQF1xbcWUIi2cK5x15za76GV3HRv0hHa6KqsA==
-X-Received: by 2002:a05:6a21:3e0d:b0:1a7:75ee:6062 with SMTP id bk13-20020a056a213e0d00b001a775ee6062mr1669931pzc.54.1713405736061;
-        Wed, 17 Apr 2024 19:02:16 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:6f51])
-        by smtp.gmail.com with ESMTPSA id i16-20020a17090332d000b001e0c568ae8fsm311848plr.192.2024.04.17.19.02.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Apr 2024 19:02:15 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 17 Apr 2024 16:02:14 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Xiu Jianfeng <xiujianfeng@huaweicloud.com>
-Cc: lizefan.x@bytedance.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] cgroup: don't call cgroup1_pidlist_destroy_all()
- for v2
-Message-ID: <ZiB_Jhj2I8YdYs64@slm.duckdns.org>
-References: <20240417021359.883736-1-xiujianfeng@huaweicloud.com>
+        d=1e100.net; s=20230601; t=1713405927; x=1714010727;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T0QnjAhdYrmACiuwAPDxnR5HIy4p9penGkBMygu+5uU=;
+        b=QeYePndTrNqCwokLYe12ntc8UUGH0nRtrmusHpL4ggUkusGi4cp8AQT01EvjcYX35x
+         S5w18LKuv94KNKc8J4aE6dHFuKeDJ4lRyjGQ79Qqe0b3O7VdOWFFBkXomarMtffw96kt
+         z5W0wmzRQulO9h1rlRD+NEexPZeFrOdX0KFpGJiHxBZxRTy/pvVzy5aYpYZItipPfpnv
+         db8f/SkAnK5E43zHTw/z4eBLhUb4tazC7F/Ge20AIfX0gCBiZqdqGZFAZh6xwoKmak+Q
+         GSERmc2dBJaLWRxtmLWMfs+n4e9/In6RZyNG0MZv0a0PmMFX2huDExEOH07P/4HONZI5
+         b2Sg==
+X-Forwarded-Encrypted: i=1; AJvYcCVc8ejcNcZtbVMywTLTszmHUqFmu3hYtLKTaCB2DFY+vRmtIa+KO97cnzeBFn/k85tnZIzcnfJko/Z/8sQyntv42WK1dvGs/w==
+X-Gm-Message-State: AOJu0YwBuVvIYzAPQX/8B8oOSH7OIKgKH8xGbzXrSN1DvdtZKtrcDef2
+	Ztd0Es1aZM8h0QckFE9LyttOiCYx2RMPbbFHps6QBxZTs/OYTyjaI9sOxfosEusO5VhTsM0SIZ9
+	U8u9AofVYEE9Vi0wsEDjel1M8EOCjRDfuf/su
+X-Google-Smtp-Source: AGHT+IFCm3pN2ShD28Z+g4gvIKer7DIONCtgHex5oajrniOoI2un8C3zrZeQwrRhrc0hLYs0bHNGtT9KLILyXzzacvw=
+X-Received: by 2002:a2e:9003:0:b0:2d8:bda5:c5f5 with SMTP id
+ h3-20020a2e9003000000b002d8bda5c5f5mr644366ljg.35.1713405927096; Wed, 17 Apr
+ 2024 19:05:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240417021359.883736-1-xiujianfeng@huaweicloud.com>
+References: <CAJD7tkbn-wFEbhnhGWTy0-UsFoosr=m7wiJ+P96XnDoFnSH7Zg@mail.gmail.com>
+ <ac4cf07f-52dd-454f-b897-2a4b3796a4d9@kernel.org> <96728c6d-3863-48c7-986b-b0b37689849e@redhat.com>
+ <CAJD7tkZrVjhe5PPUZQNoAZ5oOO4a+MZe283MVTtQHghGSxAUnA@mail.gmail.com>
+ <4fd9106c-40a6-415a-9409-c346d7ab91ce@redhat.com> <f72ab971-989e-4a1c-9246-9b8e57201b60@kernel.org>
+ <CAJD7tka=1AnBNFn=frp7AwfjGsZMGcDjw=xiWeqNygC5rPf6uQ@mail.gmail.com>
+ <75d837cc-4d33-44f6-bb0c-7558f0488d4e@kernel.org> <CAJD7tka_ESbcK6cspyEfVqv1yTW0uhWSvvoO4bqMJExn-j-SEg@mail.gmail.com>
+ <9f6333ec-f28c-4a91-b7b9-07a028d92225@kernel.org> <f6daabzdesdwo7zdouexow5mdub3qnzr7e67lonmhh3itjgk5j@qw3xpvqoyb7j>
+In-Reply-To: <f6daabzdesdwo7zdouexow5mdub3qnzr7e67lonmhh3itjgk5j@qw3xpvqoyb7j>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Wed, 17 Apr 2024 19:04:50 -0700
+Message-ID: <CAJD7tkYnSRwJTpXxSnGgo-i3-OdD7cdT-e3_S_yf7dSknPoRKw@mail.gmail.com>
+Subject: Re: Advice on cgroup rstat lock
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, Waiman Long <longman@redhat.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, 
+	Jesper Dangaard Brouer <jesper@cloudflare.com>, "David S. Miller" <davem@davemloft.net>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Shakeel Butt <shakeelb@google.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Bristot de Oliveira <bristot@redhat.com>, 
+	kernel-team <kernel-team@cloudflare.com>, cgroups@vger.kernel.org, 
+	Linux-MM <linux-mm@kvack.org>, Netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, Ivan Babrou <ivan@cloudflare.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+[..]
 
-On Wed, Apr 17, 2024 at 02:13:59AM +0000, Xiu Jianfeng wrote:
-> From: Xiu Jianfeng <xiujianfeng@huawei.com>
-> 
-> Currently cgroup1_pidlist_destroy_all() will be called when releasing
-> cgroup even if the cgroup is on default hierarchy, however it doesn't
-> make any sense for v2 to destroy pidlist of v1.
-> 
-> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
-> ---
->  kernel/cgroup/cgroup-v1.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-> index 520a11cb12f4..46d89157d558 100644
-> --- a/kernel/cgroup/cgroup-v1.c
-> +++ b/kernel/cgroup/cgroup-v1.c
-> @@ -197,6 +197,8 @@ void cgroup1_pidlist_destroy_all(struct cgroup *cgrp)
->  {
->  	struct cgroup_pidlist *l, *tmp_l;
->  
-> +	if (cgroup_on_dfl(cgrp))
-> +		return;
+> > > I personally don't like mem_cgroup_flush_stats_ratelimited() very
+> > > much, because it is time-based (unlike memcg_vmstats_needs_flush()),
+> > > and a lot of changes can happen in a very short amount of time.
+> > > However, it seems like for some workloads it's a necessary evil :/
+> > >
+>
+> Other than obj_cgroup_may_zswap(), there is no other place which really
+> need very very accurate stats. IMO we should actually make ratelimited
+> version the default one for all the places. Stats will always be out of
+> sync for some time window even with non-ratelimited flush and I don't
+> see any place where 2 second old stat would be any issue.
 
-Can you move the test to the caller?
+We disagreed about this before, and I am not trying to get you to
+debate this with me again :)
 
-Thanks.
+I just prefer that we avoid this if possible. We have seen cases where
+the 2 sec window caused issues. Not because 2 sec is a long time, but
+because userspace reads the stats after an event occurs (e.g.
+proactive reclaim), but gets stats from before the event.
 
--- 
-tejun
+[..]
+>
+> >
+> >
+> > With a mutex lock contention will be less obvious, as converting this to
+> > a mutex avoids multiple CPUs spinning while waiting for the lock, but
+> > it doesn't remove the lock contention.
+> >
+>
+> I don't like global sleepable locks as those are source of priority
+> inversion issues on highly utilized multi-tenant systems but I still
+> need to see how you are handling that.
+
+For context, this was discussed before as well in [1].
+
+[1]https://lore.kernel.org/lkml/CALvZod441xBoXzhqLWTZ+xnqDOFkHmvrzspr9NAr+nybqXgS-A@mail.gmail.com/
 
