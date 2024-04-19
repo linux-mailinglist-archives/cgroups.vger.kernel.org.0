@@ -1,69 +1,70 @@
-Return-Path: <cgroups+bounces-2628-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2629-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEE2A8AB587
-	for <lists+cgroups@lfdr.de>; Fri, 19 Apr 2024 21:22:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 492988AB58D
+	for <lists+cgroups@lfdr.de>; Fri, 19 Apr 2024 21:26:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22CED1F2218B
-	for <lists+cgroups@lfdr.de>; Fri, 19 Apr 2024 19:22:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0777B282CB5
+	for <lists+cgroups@lfdr.de>; Fri, 19 Apr 2024 19:26:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39E2113C82D;
-	Fri, 19 Apr 2024 19:22:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C674913C908;
+	Fri, 19 Apr 2024 19:26:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zIeHq+Th"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KgzeKJG/"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBD31386CC
-	for <cgroups@vger.kernel.org>; Fri, 19 Apr 2024 19:22:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F93D13C69B
+	for <cgroups@vger.kernel.org>; Fri, 19 Apr 2024 19:26:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713554530; cv=none; b=DFbyz512DwJMGUXUhPLKwZRVC/jQcFcQK+JzpX+/SibwHYbkR1dSH6iJc2DV0N8xhhq5X6QD8W7Y6N7eAHMbqxzk6rfbS2JKbLyswLM4FmqmwmYAmghLIVLewvZSuVMcc9jg0dW8U02WFisdy8Xqdq85TkaAbf4fauX9HDT7fYk=
+	t=1713554774; cv=none; b=svZrL25Fr9OE6aXoN9vWaO4Mq9TYMCToawUB3M9a9u+6Mwz57oUTdPMnttBWwCpc0kmcr3/fb+S+KNpSLhBMo0TL1kXnmG7D720m22/0OLp6cNuXY4uSx/hyuRtuMD3GwV+qycYVQhroh4KTe6nCVb/jWUr3UKxYC1l0RY0mnBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713554530; c=relaxed/simple;
-	bh=0Yf1np1EiQRR1H+HojMtCteZkzQwyIMTFpovj1tcuSA=;
+	s=arc-20240116; t=1713554774; c=relaxed/simple;
+	bh=EdC0cGkPp/KdKeI1Kb/6RwCL6y1AT+p3suMsbxZCaso=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Kun5Tl4SDTzcxYx0iyNJZOM/CR5O3k5D+ljlLbS7X/CdxnFJKYuvzQq7douQR8IN28KLxsO/x4GTDetvFi+VSppgkrIwhRnmg4Em07CaDh3XdE64sn3orcLiQ1qAcMtjmhi/S/vhUmnohvUUnU8VRLawq1/1cJeqkzK184rR4Ao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zIeHq+Th; arc=none smtp.client-ip=209.85.218.41
+	 To:Cc:Content-Type; b=jXyNOEHqBXTLbJN5brXK/iWD5EsDAAP6exetrFLVqT8Ufwjv/ybPa77XHVAqB1XVC0aRSWjjRVtN+oRUe+O2ohxvCjwfNnigDeQMcjJ2ErCuYW/k/keYtp+7N9rn3yZ5uupUIBhwmwtI/d7+mbBX9vEAaHNTNl2EHmkcsKHlc5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KgzeKJG/; arc=none smtp.client-ip=209.85.167.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a554afec54eso245751666b.1
-        for <cgroups@vger.kernel.org>; Fri, 19 Apr 2024 12:22:08 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-518a56cdbcfso3884207e87.2
+        for <cgroups@vger.kernel.org>; Fri, 19 Apr 2024 12:26:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1713554527; x=1714159327; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Cgxiaek1OC/UQSjtnluTE8oS+OxORZPByii8n2kRyX4=;
-        b=zIeHq+Thn7YTr3RpZM3b+1yEJ5ovU/PQYkZPXZhio6P7bZctZbZiLGj24cRFIg5oFw
-         kHsShSdrttqbvrsThk6/whQjz0PlCcUfi9PAf4QKVU5oX7NvZzjZaBMMDyrPYI9GHora
-         hI3hMxb4Xu1V3yVOfG25Gh/oSvOu8DBaJD58mNQty4nZZrLQpNnEVabb3PHEhYmbTzGA
-         lgOgUcUOb23NYEb7jAsI7wlpy/mr3hoJP9nOjpr1l7996mNf12bdNAiZCMNj5bHB4ACG
-         eqCJxOZKZ8nwG30IxCBu7PLmFtG7SkTk/KB2EkG/EC5tdC+3LWFoAcNftt/ysDAJgcOt
-         TXiA==
+        d=google.com; s=20230601; t=1713554771; x=1714159571; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5jD0EhyCifuBQLkCgtTMY21veWhe8WpFtZANsrLOqmw=;
+        b=KgzeKJG/+ttl3iKp6CTfLXe4CISeZ3XMk77y75QIa825gBnZx6oo9jVu5uvE9F7tut
+         MIiUb8VLbClGl/VcyzAO0bZzNmthe3/0fvTN766Kq/Cgg2TTnt2gvBUIKnLiT1SgaMAG
+         pmGM7yr7wBS+uXkSYYD8gtjfK5G2sB65AtKEeTRxJ949mxH2UDApL7iSaxW2JU6XufEW
+         50Or1Pjg0fl5hwbe9zNJSG+kHotU0efDJ9IQg8fevGkdyUSJvmSHxNfB4CfgyvoYR1AC
+         sVtLoAztoKhHZscOhowrCMFFoVKB5+/XvnbzfMt6HEFkuTJG78XX7rPEoSI8btUraBoS
+         v8Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713554527; x=1714159327;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Cgxiaek1OC/UQSjtnluTE8oS+OxORZPByii8n2kRyX4=;
-        b=YN7QGPYkmR/4TvJmFU3xUICFcl0xbqNNdwdLqiil9LejK+NyrO/6WEOtKAV83L4l86
-         ow8+JGM/hCIFqbseLx575fROcjUOnu0K737lL7thE6uirfEmCI5JuG4fDHqYxm06XWYt
-         oO1Z2nBkuQyjTnQ20oOYwrF4XAhQOcQsI6uKu5WsvrcKO+sheij7SH76vM4ljO8MyPL3
-         OZql3AnWd1u5TaJqgmOF5TjQM949uCEQ3gEXxWXkyC89RbNu5/66jdDXRim+TFljqbKo
-         XjxkUbr9JgGljpTW0xP85xCQvFrBwHgrqiZinZoBI5cBvX6hGY7z9dgn8AU2hXPMInlG
-         RVFw==
-X-Forwarded-Encrypted: i=1; AJvYcCWkx0AzjQC1uHvusOb9eVBKVSl+znfKLHDzQp8q8O6Ovu/E1vZhm1Ov3Xqa42YQ/OAB7aBEtBvEGw74d+BV24nYYJ1DylFFeA==
-X-Gm-Message-State: AOJu0YwIuFZGTmXedSIHu0gW0ejkUVMjzUJq7QbzUVHeg/o9g3U+5jSS
-	UGkRwJniKVhnKCdw+dDy1ve/O1RciJeSn45fa4img7ZKBpnF8+Fi7dpBiWJHgpz790zUfTJK4HG
-	r2E1XRrdNGr4iEyfk6El1fd4lhJr0YM0PhT3D
-X-Google-Smtp-Source: AGHT+IEBjBNkvxdmuTE9VnI6C88nKhqq8KjzGCHHIFj/6VLY3xCFjTvSpOxoFw/tjaW8RUkr6IZWX3lHaV1KlXwC0BQ=
-X-Received: by 2002:a17:906:f255:b0:a52:2284:d97f with SMTP id
- gy21-20020a170906f25500b00a522284d97fmr2030488ejb.25.1713554526552; Fri, 19
- Apr 2024 12:22:06 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1713554771; x=1714159571;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5jD0EhyCifuBQLkCgtTMY21veWhe8WpFtZANsrLOqmw=;
+        b=KD5I5gmN5JcrSpdf7Ye+tNFWWDddCcWtEGLAA0T1H+Jl2v3MFOZnQn3g1U6bRqVFih
+         j/DIXMQ3BjIECeQuD0+dUhA1XB8CYbm+wGN8kfJ7gV/8qDIhdtnqrAdl4wym6P2E/MR7
+         WS7q8Yl8H3UlHvyJ5+OgyjYnOTmtVMJrz3xh7p7UQAvfAsuppXQdRQtCpgk3pxkAZfqV
+         3uKcLw5ltR8HG5SEoYkAnT3e5i8ElVHO1z9LtMzp99NdG3QkV3aKQyLKcURe4Qys1mrO
+         sUtLHN5jAdxLmR4VUk66r0oKq12dexjdXZ+GQNAEk0QqGD3RaQllas5I57Rv/PLZrRLe
+         yhkw==
+X-Forwarded-Encrypted: i=1; AJvYcCXjk7k3TK4nrVVYEISGskBVCjcqfY8TpxltFQtZ5btd9yHwzyIrhENpdu4CK9+ypo9EPU5hwHKBQ8rqyioNf/xmZSsuwqWAMQ==
+X-Gm-Message-State: AOJu0YwbVoXJUYhSTcBdVrgkUp+SAWwb36Rzjn8coIOcF6uvGtoxTXkr
+	8imWKQKKS/eHbfmDcCI/r9IEjcb+ra8u2HxYlg3Qs8AJULGbZgKDhi8/7lFzSkbGLuPlOVdCcCr
+	2kZw5OaQHClXr9xmKRcKbo+2tVzo2k+CMlNHE
+X-Google-Smtp-Source: AGHT+IG7VL6KZ/P5UdQBTbJCd+VjQRvtNpyhd38tP7Or3vQWzXSTZExyuSTBKhBZU9qfTY773qr5ITgLc3HCzj5YcEo=
+X-Received: by 2002:a05:6512:3f18:b0:51a:dee1:d41e with SMTP id
+ y24-20020a0565123f1800b0051adee1d41emr294169lfa.61.1713554771092; Fri, 19 Apr
+ 2024 12:26:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -71,129 +72,79 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <171328983017.3930751.9484082608778623495.stgit@firesoul>
- <171328989335.3930751.3091577850420501533.stgit@firesoul> <CAJD7tkZFnQK9CFofp5rxa7Mv9wYH2vWF=Bb28Dchupm8LRt7Aw@mail.gmail.com>
- <651a52ac-b545-4b25-b82f-ad3a2a57bf69@kernel.org> <lxzi557wfbrkrj6phdlub4nmtulzbegykbmroextadvssdyfhe@qarxog72lheh>
- <CAJD7tkYJZgWOeFuTMYNoyH=9+uX2qaRdwc4cNuFN9wdhneuHfA@mail.gmail.com>
- <6392f7e8-d14c-40f4-8a19-110dfffb9707@kernel.org> <gckdqiczjtyd5qdod6a7uyaxppbglg3fkgx2pideuscsyhdrmy@by6rlly6crmz>
-In-Reply-To: <gckdqiczjtyd5qdod6a7uyaxppbglg3fkgx2pideuscsyhdrmy@by6rlly6crmz>
+ <171328990014.3930751.10674097155895405137.stgit@firesoul>
+ <CAJD7tkbZAj3UQSHbu3kj1NG4QDowXWrohG4XM=7cX_a=QL-Shg@mail.gmail.com>
+ <72e4a55e-a246-4e28-9d2e-d4f1ef5637c2@kernel.org> <CAJD7tkbNvo4nDek5HV7rpZRbARE7yc3y=ufVY5WMBkNH6oL4Mw@mail.gmail.com>
+ <33295077-e969-427a-badb-3e29698f5cfb@kernel.org>
+In-Reply-To: <33295077-e969-427a-badb-3e29698f5cfb@kernel.org>
 From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 19 Apr 2024 12:21:30 -0700
-Message-ID: <CAJD7tkbCzx1S9d0oK-wR7AY3O3ToBrEwKTaYTykE1WwczcYLBg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/3] cgroup/rstat: convert cgroup_rstat_lock back to mutex
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, tj@kernel.org, hannes@cmpxchg.org, 
-	lizefan.x@bytedance.com, cgroups@vger.kernel.org, longman@redhat.com, 
-	netdev@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+Date: Fri, 19 Apr 2024 12:25:32 -0700
+Message-ID: <CAJD7tkbXgd1jHA2OYppdyfPnMR5aBtee0KxSHLBsZ=78eGG73w@mail.gmail.com>
+Subject: Re: [PATCH v1 3/3] cgroup/rstat: introduce ratelimited rstat flushing
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: tj@kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com, 
+	cgroups@vger.kernel.org, longman@redhat.com, netdev@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, shakeel.butt@linux.dev, 
 	kernel-team@cloudflare.com, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, mhocko@kernel.org
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, mhocko@kernel.org, Wei Xu <weixugc@google.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-[..]
-> > > Perhaps we could experiment with always dropping the lock at CPU
-> > > boundaries instead?
-> > >
-> >
-> > I don't think this will be enough (always dropping the lock at CPU
-> > boundaries).  My measured "lock-hold" times that is blocking IRQ (and
-> > softirq) for too long.  When looking at prod with my new cgroup
-> > tracepoint script[2]. When contention occurs, I see many Yields
-> > happening and with same magnitude as Contended. But still see events
-> > with long "lock-hold" times, even-though yields are high.
-> >
-> >  [2] https://github.com/xdp-project/xdp-project/blob/master/areas/latency/cgroup_rstat_tracepoint.bt
-> >
-> > Example output:
-> >
-> >  12:46:56 High Lock-contention: wait: 739 usec (0 ms) on CPU:56 comm:kswapd7
-> >  12:46:56 Long lock-hold time: 6381 usec (6 ms) on CPU:27 comm:kswapd3
-> >  12:46:56 Long lock-hold time: 18905 usec (18 ms) on CPU:100
-> > comm:kworker/u261:12
-> >
-> >  12:46:56  time elapsed: 36 sec (interval = 1 sec)
-> >   Flushes(2051) 15/interval (avg 56/sec)
-> >   Locks(44464) 1340/interval (avg 1235/sec)
-> >   Yields(42413) 1325/interval (avg 1178/sec)
-> >   Contended(42112) 1322/interval (avg 1169/sec)
-> >
-> > There is reported 15 flushes/sec, but locks are yielded quickly.
-> >
-> > More problematically (for softirq latency) we see a Long lock-hold time
-> > reaching 18 ms.  For network RX softirq I need lower than 0.5ms latency,
-> > to avoid RX-ring HW queue overflows.
-
-Here we are measuring yields against contention, but the main problem
-here is IRQ serving latency, which doesn't have to correlate with
-contention, right?
-
-Perhaps contention is causing us to yield the lock every nth cpu
-boundary, but apparently this is not enough for IRQ serving latency.
-Dropping the lock on each boundary should improve IRQ serving latency,
-regardless of the presence of contention.
-
-Let's focus on one problem at a time ;)
-
-> >
-> >
-> > --Jesper
-> > p.s. I'm seeing a pattern with kswapdN contending on this lock.
-> >
-> > @stack[697, kswapd3]:
-> >         __cgroup_rstat_lock+107
-> >         __cgroup_rstat_lock+107
-> >         cgroup_rstat_flush_locked+851
-> >         cgroup_rstat_flush+35
-> >         shrink_node+226
-> >         balance_pgdat+807
-> >         kswapd+521
-> >         kthread+228
-> >         ret_from_fork+48
-> >         ret_from_fork_asm+27
-> >
-> > @stack[698, kswapd4]:
-> >         __cgroup_rstat_lock+107
-> >         __cgroup_rstat_lock+107
-> >         cgroup_rstat_flush_locked+851
-> >         cgroup_rstat_flush+35
-> >         shrink_node+226
-> >         balance_pgdat+807
-> >         kswapd+521
-> >         kthread+228
-> >         ret_from_fork+48
-> >         ret_from_fork_asm+27
-> >
-> > @stack[699, kswapd5]:
-> >         __cgroup_rstat_lock+107
-> >         __cgroup_rstat_lock+107
-> >         cgroup_rstat_flush_locked+851
-> >         cgroup_rstat_flush+35
-> >         shrink_node+226
-> >         balance_pgdat+807
-> >         kswapd+521
-> >         kthread+228
-> >         ret_from_fork+48
-> >         ret_from_fork_asm+27
-> >
+On Fri, Apr 19, 2024 at 3:17=E2=80=AFAM Jesper Dangaard Brouer <hawk@kernel=
+.org> wrote:
 >
-> Can you simply replace mem_cgroup_flush_stats() in
-> prepare_scan_control() with the ratelimited version and see if the issue
-> still persists for your production traffic?
+>
+> On 18/04/2024 23.00, Yosry Ahmed wrote:
+> > On Thu, Apr 18, 2024 at 4:00=E2=80=AFAM Jesper Dangaard Brouer<hawk@ker=
+nel.org>  wrote:
+> >> On 18/04/2024 04.21, Yosry Ahmed wrote:
+> >>> On Tue, Apr 16, 2024 at 10:51=E2=80=AFAM Jesper Dangaard Brouer<hawk@=
+kernel.org>  wrote:
+> >>>> This patch aims to reduce userspace-triggered pressure on the global
+> >>>> cgroup_rstat_lock by introducing a mechanism to limit how often read=
+ing
+> >>>> stat files causes cgroup rstat flushing.
+> >>>>
+> [...]
+>
+> > Taking a step back, I think this series is trying to address two
+> > issues in one go: interrupt handling latency and lock contention.
+>
+> Yes, patch 2 and 3 are essentially independent and address two different
+> aspects.
+>
+> > While both are related because reducing flushing reduces irq
+> > disablement, I think it would be better if we can fix that issue
+> > separately with a more fundamental solution (e.g. using a mutex or
+> > dropping the lock at each CPU boundary).
+> >
+> > After that, we can more clearly evaluate the lock contention problem
+> > with data purely about flushing latency, without taking into
+> > consideration the irq handling problem.
+> >
+> > Does this make sense to you?
+>
+> Yes, make sense.
+>
+> So, you are suggesting we start with the mutex change? (patch 2)
+> (which still needs some adjustments/tuning)
 
-With thresholding, the fact that we reach cgroup_rstat_flush() means
-that there is a high magnitude of pending updates. I think Jesper
-mentioned 128 CPUs before, that means 128 * 64 (MEMCG_CHARGE_BATCH)
-page-sized updates. That could be over 33 MBs with 4K page size.
+Yes. Let's focus on (what I assume to be) the more important problem,
+IRQ serving latency. Once this is fixed, let's consider the tradeoffs
+for improving lock contention separately.
 
-I am not sure if it's fine to ignore such updates in shrink_node(),
-especially that it is called in a loop sometimes so I imagine we may
-want to see what changed after the last iteration.
+Thanks!
 
 >
-> Also were you able to get which specific stats are getting the most
-> updates?
-
-This, on the other hand, would be very interesting. I think it is very
-possible that we don't actually have 33 MBs of updates, but rather we
-keep adding and subtracting from the same stat until we reach the
-threshold. This could especially be true for hot stats like slab
-allocations.
+> This make sense to me, as there are likely many solutions to reducing
+> the pressure on the lock.
+>
+> With the tracepoint patch in-place, I/we can measure the pressure on the
+> lock, and I plan to do this across our CF fleet.  Then we can slowly
+> work on improving lock contention and evaluate this on our fleets.
+>
+> --Jesper
+> p.s.
+> Setting expectations:
+>   - Going on vacation today, so will resume work after 29th April.
 
