@@ -1,89 +1,77 @@
-Return-Path: <cgroups+bounces-2626-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2627-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CB088AB4E2
-	for <lists+cgroups@lfdr.de>; Fri, 19 Apr 2024 20:15:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D89938AB54C
+	for <lists+cgroups@lfdr.de>; Fri, 19 Apr 2024 20:55:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8763281792
-	for <lists+cgroups@lfdr.de>; Fri, 19 Apr 2024 18:15:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06AE71C20CC9
+	for <lists+cgroups@lfdr.de>; Fri, 19 Apr 2024 18:55:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DBF413B780;
-	Fri, 19 Apr 2024 18:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD10F13118B;
+	Fri, 19 Apr 2024 18:55:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nmJZlG+W"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fUrk96bD"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF4FB130A5B;
-	Fri, 19 Apr 2024 18:15:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CA921DA26;
+	Fri, 19 Apr 2024 18:55:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713550522; cv=none; b=qKnZhRyworv6VzW3WT1dDQbOwaRTcQJVseNiHRW7SNRo0cbAqc3DqKgZHVQ4O1BaPMHVM9+H7ILtivSDs6QSGcyx1aUj4oKmdcYfMSOn1oyEiMJipAyprQ3Iq9d8xz+zvEqy+3dg689HzXMQzqTQ1M12jbp10khC/1+61nGflKE=
+	t=1713552938; cv=none; b=mY5X+bi7OA8sQmHdrriWTWhcgPISdQpGzJumYAZXU+R80Ga09dM2wYAUWXufyaZp4/J2vqJCF3WvZ4+rFtI9fmjX7cKy9TadO+LOf+77DIwTMaflM4sHgZ7R5Qs97YtHhKt5GVDOVBqW8ZvLp8C4Uqfe4rDaIZERyCrZeXnnzoc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713550522; c=relaxed/simple;
-	bh=1CyKF1CDwhvwSPePXcZXWSY7Imlj5i23kiKngwm8hiQ=;
+	s=arc-20240116; t=1713552938; c=relaxed/simple;
+	bh=UsQKoIdsg1qzhVZohacdD4T7uZAx/ak/IJJH/5oMPrM=;
 	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=RgMFd/vb9CwHlbBK4ml/JRM0df7L7a89UXwhKnaNtqAXzvYIBz51A5uSBFDp4664WfowIz4i16m17gyGeU0hM/3suOoD1oRIa5yh6rC5lf6OT/uhWDaJOnGfBCTkKW0sTv89Z1INGgGduDU5kEBny6MOo7z+U2s9uCyJ1ne0ppk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nmJZlG+W; arc=none smtp.client-ip=198.175.65.19
+	 Message-ID:In-Reply-To; b=lsIvRfMZ0jPAkAnGP/BF+7Dnh4uawqAn7XR4gY51PsZFrS7sRCHjQgrS47pV4MNpYeN+h+/q4Q/+3M/wlWyCE9QCqDsH1AtXJ0dd9M8i6HHQGSSxZkCZVTMqqoelykL40L2k+HGZ8s+ELYrTMqbt4BKTRxLEAoCYiQR2zhcuaJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fUrk96bD; arc=none smtp.client-ip=198.175.65.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713550521; x=1745086521;
+  t=1713552937; x=1745088937;
   h=to:cc:subject:references:date:mime-version:
    content-transfer-encoding:from:message-id:in-reply-to;
-  bh=1CyKF1CDwhvwSPePXcZXWSY7Imlj5i23kiKngwm8hiQ=;
-  b=nmJZlG+WUzJjvCp9vnw+oZEmGwHczXMZx/YJJvgrA5qbHPyAmn8JErXF
-   Ckud7T5DY58gFaEKJqYCUIp2KEwwLU+/3a5O2DZ2sisNP/KINRMyZUSdv
-   7EdzDjFWgSAq5Mhu2DnvIuJxQOnvEayX1KAw0m98Dkgxq3HAWdH6TVUu7
-   1vomP8Qv1FvU4Jjjl9p4QnqSb+tiv01nTTdWcy/QE9jxZwcIvhrxfnaJn
-   HWhQvNlqfOkgYY0Tlv4famw7ikm5pXTWvv7/RTuI0nX3ocfUQDLAQkH+m
-   S2XwCxyzQZp6GEZrmkzqSiyMw2j3kmh/FcOsdbNJALJVZvifqWZBMfQsJ
-   Q==;
-X-CSE-ConnectionGUID: 0SLKGfn9RB+l3luNlFwbXQ==
-X-CSE-MsgGUID: PBNnP44MTAyjeU+tHMfqRA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="9036514"
+  bh=UsQKoIdsg1qzhVZohacdD4T7uZAx/ak/IJJH/5oMPrM=;
+  b=fUrk96bD7672VyhyfoHm8O/SSk0JIozx/A9xEyH/aBPodokyMIbaskE1
+   ufxGgnr02bi/c2mdOszPs3QXmtdAhtWQcSSh/1PLrpZw3wcHz+QgyghFb
+   akyF1aSKpZ5lpR+Xr5sWj0vx+KLQ6cYg/k0ksosEyumA2XnjOmmvjTSCj
+   nrD3hSav6urZJbcGh92vN9unkA67K/G1N4fXfwKCaQeOCKyrMK2iwy7f9
+   RI0y4YdeNVqDKkqFnp7fEgxjtslahRvJSOYBqFMVQtEaLvD6RLEk9obMJ
+   IVcRF7qPZ7T4+KhC1eBHz6C7KkNhq2/uchBmJNLw/8XVb9wNF2tshr+v8
+   A==;
+X-CSE-ConnectionGUID: PaEPX/0tSPWXK10+Dw+agQ==
+X-CSE-MsgGUID: bWLb+TUzTjCSRew8m3xoug==
+X-IronPort-AV: E=McAfee;i="6600,9927,11049"; a="20309639"
 X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
-   d="scan'208";a="9036514"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 11:15:21 -0700
-X-CSE-ConnectionGUID: 2PG7nB6VSgOCK/hIYTgz7w==
-X-CSE-MsgGUID: J22koZ0gQO+BhjwRLbK9jg==
+   d="scan'208";a="20309639"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Apr 2024 11:55:36 -0700
+X-CSE-ConnectionGUID: E5Tbv0JuSraAgqoY7losDg==
+X-CSE-MsgGUID: DqVHhWN7QCGEpgauAFickQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,214,1708416000"; 
-   d="scan'208";a="23419118"
+   d="scan'208";a="28226862"
 Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 19 Apr 2024 11:15:17 -0700
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/AES256-SHA; 19 Apr 2024 11:55:33 -0700
 Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
- <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
- <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
- <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
- <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
- <kai.huang@intel.com>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
- <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
- "chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: [PATCH v12 05/14] x86/sgx: Implement basic EPC misc cgroup
- functionality
+To: jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
+ mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+ x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com,
+ tim.c.chen@linux.intel.com, "Huang, Kai" <kai.huang@intel.com>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+Subject: Re: [PATCH v12 09/14] x86/sgx: Implement async reclamation for cgroup
 References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
- <20240416032011.58578-6-haitao.huang@linux.intel.com>
- <a5e009636c5144622e0a910a459cd9d05976715e.camel@intel.com>
- <op.2mf3ykfswjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <d401e7a1-44fa-44b6-9c6e-c0abdabd5111@intel.com>
-Date: Fri, 19 Apr 2024 13:15:16 -0500
+ <20240416032011.58578-10-haitao.huang@linux.intel.com>
+ <640866c5-9fe0-4f7b-a459-7a685dbe4092@intel.com>
+Date: Fri, 19 Apr 2024 13:55:31 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -93,117 +81,160 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 From: "Haitao Huang" <haitao.huang@linux.intel.com>
 Organization: Intel
-Message-ID: <op.2mhmbqapwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <d401e7a1-44fa-44b6-9c6e-c0abdabd5111@intel.com>
+Message-ID: <op.2mhn6ti6wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <640866c5-9fe0-4f7b-a459-7a685dbe4092@intel.com>
 User-Agent: Opera Mail/1.0 (Win32)
 
-On Thu, 18 Apr 2024 18:29:53 -0500, Huang, Kai <kai.huang@intel.com> wrote:
+On Thu, 18 Apr 2024 20:32:14 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
+>
+>
+> On 16/04/2024 3:20 pm, Haitao Huang wrote:
+>> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>>  In cases EPC pages need be allocated during a page fault and the cgroup
+>> usage is near its limit, an asynchronous reclamation needs be triggered
+>> to avoid blocking the page fault handling.
+>>  Create a workqueue, corresponding work item and function definitions
+>> for EPC cgroup to support the asynchronous reclamation.
+>>  In case the workqueue allocation is failed during init, disable cgroup.
+>
+> It's fine and reasonable to disable (SGX EPC) cgroup.  The problem is  
+> "exactly what does this mean" isn't quite clear.
+>
+First, this is really some corner case most people don't care: during  
+init, kernel can't even allocate a workqueue object. So I don't think we  
+should write extra code to implement some sophisticated solution. Any  
+solution we come up with may just not work as the way user want or solve  
+the real issue due to the fact such allocation failure even happens at  
+init time.
 
->>>>
->>>> --- /dev/null
->>>> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
->>>> @@ -0,0 +1,72 @@
->>>> +/* SPDX-License-Identifier: GPL-2.0 */
->>>> +#ifndef _SGX_EPC_CGROUP_H_
->>>> +#define _SGX_EPC_CGROUP_H_
->>>> +
->>>> +#include <asm/sgx.h>
->>>
->>> I don't see why you need <asm/sgx.h> here.  Also, ...
->>>
->>>> +#include <linux/cgroup.h>
->>>> +#include <linux/misc_cgroup.h>
->>>> +
->>>> +#include "sgx.h"
->>>
->>> ... "sgx.h" already includes <asm/sgx.h>
->>>
->>> [...]
->>>
->> right
->>
->>>>
->>>> +static inline struct sgx_cgroup *sgx_get_current_cg(void)
->>>> +{
->>>> +    /* get_current_misc_cg() never returns NULL when Kconfig enabled  
->>>> */
->>>> +    return sgx_cgroup_from_misc_cg(get_current_misc_cg());
->>>> +}
->>>
->>> I spent some time looking into this.  And yes if I was reading code
->>> correctly the get_current_misc_cg() should never return NULL when  
->>> Kconfig
->>> is on.
->>>
->>> I typed my analysis below in [*].  And it would be helpful if any  
->>> cgroup
->>> expert can have a second eye on this.
->>>
->>> [...]
->>>
->> Thanks for checking this and I did similar and agree with the  
->> conclusion. I think this is confirmed also by Michal's description  
->> AFAICT:
->> "
->> The current implementation creates root css object (see cgroup_init(),
->> cgroup_ssid_enabled() check is after cgroup_init_subsys()).
->> I.e. it will look like all tasks are members of root cgroup wrt given
->> controller permanently and controller attribute files won't exist."
->
-> After looking I believe we can even disable MISC cgroup at runtime for a  
-> particular cgroup (haven't actually verified on real machine, though):
->
->   # echo "-misc" > /sys/fs/cgroup/my_group/cgroup.subtree_control
->
-My test confirms this is does not cause NULL cgroup for the tasks.
-It actually works the same way as commandline disable except for that this  
-only disables misc in subtree and does not show any misc.* files or allow  
-creating such files in the subtree.
+So IMHO the current solution should be fine and I'll answer some of your  
+detailed questions below.
 
-> And if you look at the MISC cgroup core code, many functions actually  
-> handle a NULL css, e.g., misc_cg_try_charge():
+> Given SGX EPC is just one type of MISC cgroup resources, we cannot just  
+> disable MISC cgroup as a whole.
 >
-> 	int misc_cg_try_charge(enum misc_res_type type,
-> 				struct misc_cg *cg, u64 amount)
+> So, the first interpretation is we treat the entire MISC_CG_RES_SGX  
+> resource type doesn't exist, that is, we just don't show control files  
+> in the file system, and all EPC pages are tracked in the global list.
+>
+> But it might be not straightforward to implement in the SGX driver,  
+> i.e., we might need to do more MISC cgroup core code change to make it  
+> being able to support disable particular resource at runtime -- I need  
+> to double check.
+>
+> So if that is not something worth to do, we will still need to live with  
+> the fact that, the user is still able to create SGX cgroup in the  
+> hierarchy and see those control files, and being able to read/write them.
+>
+
+Can not reliably predict what will happen. Most likely the ENOMEM will be  
+returned by sgx_cgroup_alloc() if reached or other error in the stack if  
+not reached to sgx_cgroup_alloc()
+  and user fails on creating anything.
+
+But if they do end up creating some cgroups (sgx_cgroup_alloc() and  
+everything else  on the call stack passed without failure), everything  
+still kind of works for the reason answered below.
+
+> The second interpretation I suppose is, although the SGX cgroup is still  
+> seen as supported in userspace, in kernel we just treat it doesn't exist.
+>
+> Specifically, that means: 1) we always return the root SGX cgroup for  
+> any EPC page when allocating a new one; 2) as a result, we still track  
+> all EPC pages in a single global list.
+>
+
+Current code has similar behavior without extra code.
+
+> But from the code below ...
+>
+>
+>>   static int __sgx_cgroup_try_charge(struct sgx_cgroup *epc_cg)
+>>   {
+>>   	if (!misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg, PAGE_SIZE))
+>> @@ -117,19 +226,28 @@ int sgx_cgroup_try_charge(struct sgx_cgroup  
+>> *sgx_cg, enum sgx_reclaim reclaim)
+>>   {
+>>   	int ret;
+>>   +	/* cgroup disabled due to wq allocation failure during  
+>> sgx_cgroup_init(). */
+>> +	if (!sgx_cg_wq)
+>> +		return 0;
+>> +
+>
+> ..., IIUC you choose a (third) solution that is even one more step back:
+>
+> It just makes try_charge() always succeed, but EPC pages are still  
+> managed in the "per-cgroup" list.
+>
+> But this solution, AFAICT, doesn't work.  The reason is when you fail to  
+> allocate EPC page you will do the global reclaim, but now the global  
+> list is empty.
+>
+> Am I missing anything?
+
+But when cgroups enabled in config, global reclamation starts from root  
+and reclaim from the whole hierarchy if user may still be able to create.  
+Just that we don't have async/sync per-cgroup reclaim triggered.
+
+>
+> So my thinking is, we have two options:
+>
+> 1) Modify the MISC cgroup core code to allow the kernel to disable one  
+> particular resource.  It shouldn't be hard, e.g., we can add a  
+> 'disabled' flag to the 'struct misc_res'.
+>
+> Hmm.. wait, after checking, the MISC cgroup won't show any control files  
+> if the "capacity" of the resource is 0:
+>
+> "
+>   * Miscellaneous resources capacity for the entire machine. 0 capacity
+>   * means resource is not initialized or not present in the host.
+> "
+>
+> So I really suppose we should go with this route, i.e., by just setting  
+> the EPC capacity to 0?
+>
+> Note misc_cg_try_charge() will fail if capacity is 0, but we can make it  
+> return success by explicitly check whether SGX cgroup is disabled by  
+> using a helper, e.g., sgx_cgroup_disabled().
+>
+> And you always return the root SGX cgroup in sgx_get_current_cg() when  
+> sgx_cgroup_disabled() is true.
+>
+> And in sgx_reclaim_pages_global(), you do something like:
+>
+> 	static void sgx_reclaim_pages_global(..)
 > 	{
-> 		...
->
->          	if (!(valid_type(type) && cg &&
-> 				READ_ONCE(misc_res_capacity[type])))
->                  	return -EINVAL;
->
-> 		...
+> 	#ifdef CONFIG_CGROUP_MISC
+> 		if (sgx_cgroup_disabled())
+> 			sgx_reclaim_pages(&sgx_root_cg.lru);
+> 		else
+> 			sgx_cgroup_reclaim_pages(misc_cg_root());
+> 	#else
+> 		sgx_reclaim_pages(&sgx_global_list);
+> 	#endif
 > 	}
 >
-> That's why I am still a little bit worried about this.  And it's better  
-> to have cgroup expert(s) to confirm here.
+> I am perhaps missing some other spots too but you got the idea.
+>
+> At last, after typing those, I believe we should have a separate patch  
+> to handle disable SGX cgroup at initialization time.  And you can even  
+> put this patch _somewhere_ after the patch
+>
+> 	"x86/sgx: Implement basic EPC misc cgroup functionality"
+>
+> and before this patch.
+>
+> It makes sense to have such patch anyway, because with it we can easily  
+> to add a kernel command line 'sgx_cgroup=disabled" if the user wants it  
+> disabled (when someone has such requirement in the future).
 >
 
-I think it's just being defensive as this function is public API called by  
-other parts of kernel. Documentation of task_get_css() says it always  
-returns a valid css. This function is used by get_current_misc_cg() to get  
-the css refernce.
+I think we can add support for "sgx_cgroup=disabled" in future if indeed  
+needed. But just for init failure, no?
 
-
-/**
-  * task_get_css - find and get the css for (task, subsys)
-  * @task: the target task
-  * @subsys_id: the target subsystem ID
-  *
-  * Find the css for the (@task, @subsys_id) combination, increment a
-  * reference on and return it.  This function is guaranteed to return a
-  * valid css.  The returned css may already have been offlined.
-  */
-static inline struct cgroup_subsys_state *
-task_get_css(struct task_struct *task, int subsys_id)
-
-
-If you look at the code of this function, you will see it does not check  
-NULL either for task_css().
-
-So I think we are pretty sure here it's confirmed by this documentation  
-and testing.
 Thanks
 Haitao
 
