@@ -1,140 +1,116 @@
-Return-Path: <cgroups+bounces-2613-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2614-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63CD18AABA3
-	for <lists+cgroups@lfdr.de>; Fri, 19 Apr 2024 11:42:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6321C8AACA4
+	for <lists+cgroups@lfdr.de>; Fri, 19 Apr 2024 12:17:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 054FD1F20FEA
-	for <lists+cgroups@lfdr.de>; Fri, 19 Apr 2024 09:42:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94DA61C215B8
+	for <lists+cgroups@lfdr.de>; Fri, 19 Apr 2024 10:17:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB4737BAED;
-	Fri, 19 Apr 2024 09:42:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18A3E7BB19;
+	Fri, 19 Apr 2024 10:16:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tNIPxI5H"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 134F973518;
-	Fri, 19 Apr 2024 09:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4434745EF;
+	Fri, 19 Apr 2024 10:16:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713519731; cv=none; b=hpSKboYPx3uovijgJI8ycTyG+5YRmXtS73l1hQObzSFxFC8RuboDw+qL/qrdO43/hAtaxHP9WzAcPCCHNJHvQ4Hlo0QY3d2foE/akJHn45h9c1vtKlVcG164afno1KmHWq9BHCv5n0KbRP4z9tNeh6dQW8px1SnIMh8TPw/Ad0o=
+	t=1713521816; cv=none; b=PTQbxDatjWDJnmFsXDXcwBAE51EwuPyUbaHjru51lP60NPJ/ANR8K85buPaaeqG1/PEaXN24rdgrK94oAg0YOIoGw6c+RsWUgfkx78NyHAq9qjXNnCRdcZaNGgl7h7ogN4bJVwqTHSgqaZlifM74TfQgIsewAsaQFaG9LKkkBno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713519731; c=relaxed/simple;
-	bh=PEwMW4CFu9H07YyRLwf9wZ/6wuK3fPveGR5w/PSbNug=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KlQBnTTIZ6/C0bgzzOZbhy1lL8B1RGCBCsadWTb4cYF+9u1bHIDo5c/lcHHtdW9IUkZvtzUyyc9uEdI/8SqYoe2a/dfVAxd/lcLvMat3qECT1KO8LAWESiDQsSHf5c4MqB82Us62U6XHQGBRrfOEu3qWZZfDh4dB1nDqDB2coxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VLV6F3FLlz4f3jJ9;
-	Fri, 19 Apr 2024 17:41:57 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id B58ED1A0179;
-	Fri, 19 Apr 2024 17:42:04 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgBHGBFfPCJmFDWMKQ--.63826S4;
-	Fri, 19 Apr 2024 17:41:52 +0800 (CST)
-From: linan666@huaweicloud.com
-To: tj@kernel.org,
-	josef@toxicpanda.com,
-	axboe@kernel.dk
-Cc: cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linan666@huaweicloud.com,
-	yukuai3@huawei.com,
-	yi.zhang@huawei.com,
-	houtao1@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH v2] blk-iocost: do not WARNING if iocg has already offlined
-Date: Fri, 19 Apr 2024 17:32:57 +0800
-Message-Id: <20240419093257.3004211-1-linan666@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1713521816; c=relaxed/simple;
+	bh=aC+QA5rjhgsuTqn2kdyip+wg1YmdpSU1U1t0y/JyVB4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BBEx+dtWFV8eTC2KaPcn+c36V/AZx7bQ2D9qhqkX5TMxEPRhevYPfZSQ1Chs2B/VD8qrbQLpf51NiJvHwCA8qeTxTNPNpM+0su3ow4F5i4WOkZFWJuss/9eUwAiQDZYfU4bi9z8rkV7qqxYKOAbl/SlGxQPGURg2kO/z/6g5zdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tNIPxI5H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9E1AC072AA;
+	Fri, 19 Apr 2024 10:16:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713521816;
+	bh=aC+QA5rjhgsuTqn2kdyip+wg1YmdpSU1U1t0y/JyVB4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=tNIPxI5HOVILSTXuczGUDtJGoDhmBpJGSxMEqBFvHNc2zXK33PEiKk4HM+8mTjKo/
+	 bu1QPvghvyq31zosBe16/stXNcEqYWg5NdaCyQQ+0r0jpOYs1k0v8NDfk93oso4wyk
+	 3jIMkkHrA7DgSmPunJ14oE0XNCHPHd0btuepG1tf77WZG83xIcjHaeL1Gzdw/tFMp1
+	 Dau3NJVvA9W6sTlorR3yNNq/IyMUo29+AmiNyDXYRERCMv0FSe56YLuG2ErpFVxtuG
+	 o8+arByas5NQ5ha1eVk7zFPlQHUct8n2jtqpmfHIuwRBE2lZiVWcAn6bP2VSZQrscQ
+	 qR9DgG4w1BvVg==
+Message-ID: <33295077-e969-427a-badb-3e29698f5cfb@kernel.org>
+Date: Fri, 19 Apr 2024 12:16:52 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 3/3] cgroup/rstat: introduce ratelimited rstat flushing
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com,
+ cgroups@vger.kernel.org, longman@redhat.com, netdev@vger.kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, shakeel.butt@linux.dev,
+ kernel-team@cloudflare.com, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>, mhocko@kernel.org,
+ Wei Xu <weixugc@google.com>
+References: <171328983017.3930751.9484082608778623495.stgit@firesoul>
+ <171328990014.3930751.10674097155895405137.stgit@firesoul>
+ <CAJD7tkbZAj3UQSHbu3kj1NG4QDowXWrohG4XM=7cX_a=QL-Shg@mail.gmail.com>
+ <72e4a55e-a246-4e28-9d2e-d4f1ef5637c2@kernel.org>
+ <CAJD7tkbNvo4nDek5HV7rpZRbARE7yc3y=ufVY5WMBkNH6oL4Mw@mail.gmail.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <CAJD7tkbNvo4nDek5HV7rpZRbARE7yc3y=ufVY5WMBkNH6oL4Mw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBHGBFfPCJmFDWMKQ--.63826S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7WryxtrW3tF45tFykCFy5twb_yoW8uF13pr
-	45KwnruF1Utr12ka1Dt3Z2q3409a1rWws3J34xWrZ8Za43ur1Iq3Wv9w4FvFy0qF95CFZ5
-	ZF48trWSy3WUCaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1lnxkEFVAIw20F6cxK64vIFxWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-	F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r
-	4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I
-	648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lw4CEc2x0rVAKj4xxMxAIw28IcxkI7VAKI4
-	8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
-	wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
-	v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
-	Y4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbSApUUUUUU==
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
 
-From: Li Nan <linan122@huawei.com>
 
-In iocg_pay_debt(), warn is triggered if 'active_list' is empty, which
-is intended to confirm iocg is avitve when it has debt. However, warn
-can be triggered during a blkcg or disk is being removed, as
-iocg_waitq_timer_fn() is awakened at that time.
+On 18/04/2024 23.00, Yosry Ahmed wrote:
+> On Thu, Apr 18, 2024 at 4:00 AM Jesper Dangaard Brouer<hawk@kernel.org>  wrote:
+>> On 18/04/2024 04.21, Yosry Ahmed wrote:
+>>> On Tue, Apr 16, 2024 at 10:51 AM Jesper Dangaard Brouer<hawk@kernel.org>  wrote:
+>>>> This patch aims to reduce userspace-triggered pressure on the global
+>>>> cgroup_rstat_lock by introducing a mechanism to limit how often reading
+>>>> stat files causes cgroup rstat flushing.
+>>>>
+[...]
 
-  WARNING: CPU: 0 PID: 2344971 at block/blk-iocost.c:1402 iocg_pay_debt+0x14c/0x190
-  Call trace:
-  iocg_pay_debt+0x14c/0x190
-  iocg_kick_waitq+0x438/0x4c0
-  iocg_waitq_timer_fn+0xd8/0x130
-  __run_hrtimer+0x144/0x45c
-  __hrtimer_run_queues+0x16c/0x244
-  hrtimer_interrupt+0x2cc/0x7b0
-ps: This issue was got in linux 5.10, but it also exists in the mainline.
+> Taking a step back, I think this series is trying to address two
+> issues in one go: interrupt handling latency and lock contention.
 
-The warn in this situation is meaningless. Since this iocg is being
-removed, the state of the 'active_list' is irrelevant, and 'waitq_timer'
-is canceled after removing 'active_list' in ioc_pd_free(), which ensure
-iocg is freed after iocg_waitq_timer_fn() returns.
+Yes, patch 2 and 3 are essentially independent and address two different 
+aspects.
 
-Therefore, add the check if iocg has already offlined to avoid warn
-when removing a blkcg or disk.
+> While both are related because reducing flushing reduces irq
+> disablement, I think it would be better if we can fix that issue
+> separately with a more fundamental solution (e.g. using a mutex or
+> dropping the lock at each CPU boundary).
+> 
+> After that, we can more clearly evaluate the lock contention problem
+> with data purely about flushing latency, without taking into
+> consideration the irq handling problem.
+> 
+> Does this make sense to you?
 
-Signed-off-by: Li Nan <linan122@huawei.com>
-Reviewed-by: Yu Kuai <yukuai3@huawei.com>
-Acked-by: Tejun Heo <tj@kernel.org>
----
-v2: 
- - Indicate in the message that there is also an issue with deleting
-   the disk.
- - add comment for check pd.online.
+Yes, make sense.
 
- block/blk-iocost.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+So, you are suggesting we start with the mutex change? (patch 2)
+(which still needs some adjustments/tuning)
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index baa20c85799d..690ca99dfaca 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -1439,8 +1439,11 @@ static void iocg_pay_debt(struct ioc_gq *iocg, u64 abs_vpay,
- 	lockdep_assert_held(&iocg->ioc->lock);
- 	lockdep_assert_held(&iocg->waitq.lock);
- 
--	/* make sure that nobody messed with @iocg */
--	WARN_ON_ONCE(list_empty(&iocg->active_list));
-+	/*
-+	 * make sure that nobody messed with @iocg. Check iocg->pd.online
-+	 * to avoid warn when removing blkcg or disk.
-+	 */
-+	WARN_ON_ONCE(list_empty(&iocg->active_list) && iocg->pd.online);
- 	WARN_ON_ONCE(iocg->inuse > 1);
- 
- 	iocg->abs_vdebt -= min(abs_vpay, iocg->abs_vdebt);
--- 
-2.39.2
+This make sense to me, as there are likely many solutions to reducing
+the pressure on the lock.
 
+With the tracepoint patch in-place, I/we can measure the pressure on the
+lock, and I plan to do this across our CF fleet.  Then we can slowly
+work on improving lock contention and evaluate this on our fleets.
+
+--Jesper
+p.s.
+Setting expectations:
+  - Going on vacation today, so will resume work after 29th April.
 
