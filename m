@@ -1,116 +1,128 @@
-Return-Path: <cgroups+bounces-2614-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2615-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6321C8AACA4
-	for <lists+cgroups@lfdr.de>; Fri, 19 Apr 2024 12:17:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AF0D8AAE39
+	for <lists+cgroups@lfdr.de>; Fri, 19 Apr 2024 14:14:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94DA61C215B8
-	for <lists+cgroups@lfdr.de>; Fri, 19 Apr 2024 10:17:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 268412827FE
+	for <lists+cgroups@lfdr.de>; Fri, 19 Apr 2024 12:14:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18A3E7BB19;
-	Fri, 19 Apr 2024 10:16:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E87385273;
+	Fri, 19 Apr 2024 12:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tNIPxI5H"
+	dkim=pass (1024-bit key) header.d=kuaishou.com header.i=@kuaishou.com header.b="eidpqVcu"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4434745EF;
-	Fri, 19 Apr 2024 10:16:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from mailhk01.kuaishou.com (mailhk01.kuaishou.com [129.226.226.143])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0689839F1;
+	Fri, 19 Apr 2024 12:13:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.226.226.143
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713521816; cv=none; b=PTQbxDatjWDJnmFsXDXcwBAE51EwuPyUbaHjru51lP60NPJ/ANR8K85buPaaeqG1/PEaXN24rdgrK94oAg0YOIoGw6c+RsWUgfkx78NyHAq9qjXNnCRdcZaNGgl7h7ogN4bJVwqTHSgqaZlifM74TfQgIsewAsaQFaG9LKkkBno=
+	t=1713528838; cv=none; b=O4rkD9S15iNl2e+wCYxGeoY4GBJmMZkRYohLjQk5MDZWHFlDIrHI0VxkJyGdbPSeP2VSj37dBHdDEZruRXea4I8LyxHiftR/f8Px/rcq6P7XF8EvzC+nKfSqLaWAq3llSg2TNpcXISyRcClpnYteduiOtFpAcBTJFf9RrhS68aU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713521816; c=relaxed/simple;
-	bh=aC+QA5rjhgsuTqn2kdyip+wg1YmdpSU1U1t0y/JyVB4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BBEx+dtWFV8eTC2KaPcn+c36V/AZx7bQ2D9qhqkX5TMxEPRhevYPfZSQ1Chs2B/VD8qrbQLpf51NiJvHwCA8qeTxTNPNpM+0su3ow4F5i4WOkZFWJuss/9eUwAiQDZYfU4bi9z8rkV7qqxYKOAbl/SlGxQPGURg2kO/z/6g5zdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tNIPxI5H; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9E1AC072AA;
-	Fri, 19 Apr 2024 10:16:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713521816;
-	bh=aC+QA5rjhgsuTqn2kdyip+wg1YmdpSU1U1t0y/JyVB4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=tNIPxI5HOVILSTXuczGUDtJGoDhmBpJGSxMEqBFvHNc2zXK33PEiKk4HM+8mTjKo/
-	 bu1QPvghvyq31zosBe16/stXNcEqYWg5NdaCyQQ+0r0jpOYs1k0v8NDfk93oso4wyk
-	 3jIMkkHrA7DgSmPunJ14oE0XNCHPHd0btuepG1tf77WZG83xIcjHaeL1Gzdw/tFMp1
-	 Dau3NJVvA9W6sTlorR3yNNq/IyMUo29+AmiNyDXYRERCMv0FSe56YLuG2ErpFVxtuG
-	 o8+arByas5NQ5ha1eVk7zFPlQHUct8n2jtqpmfHIuwRBE2lZiVWcAn6bP2VSZQrscQ
-	 qR9DgG4w1BvVg==
-Message-ID: <33295077-e969-427a-badb-3e29698f5cfb@kernel.org>
-Date: Fri, 19 Apr 2024 12:16:52 +0200
+	s=arc-20240116; t=1713528838; c=relaxed/simple;
+	bh=kQXlIm+hk7ZcDtTEmOfJwkpRlUhwn8EeE4YRTcIyaZg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dUd0oexIxvJbJvFFzvJIf21gTEpyd2F+9Y+QdNMJprwMwY4aHxYMjTZdiADJ+jsRUINX/bSGJSVNoTn+q39YvjY4SGgKh4EKEShKO5tjoCUgS/hEQMDZYnjIxAZr0w+AtwwL9aZ1ggg31wk6hxyovM/TT8bWYx891UOPenXDgMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kuaishou.com; spf=pass smtp.mailfrom=kuaishou.com; dkim=pass (1024-bit key) header.d=kuaishou.com header.i=@kuaishou.com header.b=eidpqVcu; arc=none smtp.client-ip=129.226.226.143
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kuaishou.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kuaishou.com
+Received: from bjm7-spam02.kuaishou.com (smtpcn03.kuaishou.com [103.107.217.217])
+	by mailhk01.kuaishou.com (Postfix) with ESMTP id B3F2461579;
+	Fri, 19 Apr 2024 20:08:06 +0800 (CST)
+Received: from bjm7-pm-mail01.kuaishou.com (unknown [172.28.1.1])
+	by bjm7-spam02.kuaishou.com (Postfix) with ESMTPS id 42EBF19226D0D;
+	Fri, 19 Apr 2024 20:07:51 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; d=kuaishou.com; s=dkim; c=relaxed/relaxed;
+	t=1713528471; h=from:subject:to:date:message-id;
+	bh=0ojQK3AKejzo96bSCef2HP/0kdeYSr7fp5rz2r2c22s=;
+	b=eidpqVcu7qp9qlJL/Ie4vWLUzzqvlJXH5h0f2IXPG5NEstSyRYUfwR71cOcNlTebaG5fobPr0uQ
+	U2GO9iDZe+2HXf2R3CsI2b55oRPbyFxZEhwMVBab8B836foaZ+FwTQ2Din/O+aIUCxQKWdjbWuINE
+	13KaaF0k1iPXIqGmO/Y=
+Received: from rack-retrieve19671.idchb1az3.hb1.kwaidc.com (172.28.1.32) by
+ bjm7-pm-mail01.kuaishou.com (172.28.1.1) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.20; Fri, 19 Apr 2024 20:07:50 +0800
+From: zhoutaiyu <zhoutaiyu@kuaishou.com>
+To: <tj@kernel.org>
+CC: <josef@toxicpanda.com>, <axboe@kernel.dk>, <cgroups@vger.kernel.org>,
+	<linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] blk-throttle: fix repeat limit on bio with BIO_BPS_THROTTLED
+Date: Fri, 19 Apr 2024 20:07:47 +0800
+Message-ID: <20240419120747.38031-1-zhoutaiyu@kuaishou.com>
+X-Mailer: git-send-email 2.35.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 3/3] cgroup/rstat: introduce ratelimited rstat flushing
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: tj@kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com,
- cgroups@vger.kernel.org, longman@redhat.com, netdev@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, shakeel.butt@linux.dev,
- kernel-team@cloudflare.com, Arnaldo Carvalho de Melo <acme@kernel.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>, mhocko@kernel.org,
- Wei Xu <weixugc@google.com>
-References: <171328983017.3930751.9484082608778623495.stgit@firesoul>
- <171328990014.3930751.10674097155895405137.stgit@firesoul>
- <CAJD7tkbZAj3UQSHbu3kj1NG4QDowXWrohG4XM=7cX_a=QL-Shg@mail.gmail.com>
- <72e4a55e-a246-4e28-9d2e-d4f1ef5637c2@kernel.org>
- <CAJD7tkbNvo4nDek5HV7rpZRbARE7yc3y=ufVY5WMBkNH6oL4Mw@mail.gmail.com>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <CAJD7tkbNvo4nDek5HV7rpZRbARE7yc3y=ufVY5WMBkNH6oL4Mw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: bjm7-pm-mail09.kuaishou.com (172.28.1.91) To
+ bjm7-pm-mail01.kuaishou.com (172.28.1.1)
 
+Give a concrete example, a bio is throtted because of reaching bps
+limit. It is then dispatched to request layer after a delay. In the
+request layer, it is split and the split bio flagged with
+BIO_BPS_THROTTLED will re-enter blkthrottle.
+The bio with BIO_BPS_THROTTLED should not be throttled for its bytes
+again. However, when the bps_limit and iops_limit are both set and
+sq->queue is not empty, the bio will be throttled again even the tg is
+still within iops limit.
 
-On 18/04/2024 23.00, Yosry Ahmed wrote:
-> On Thu, Apr 18, 2024 at 4:00 AM Jesper Dangaard Brouer<hawk@kernel.org>  wrote:
->> On 18/04/2024 04.21, Yosry Ahmed wrote:
->>> On Tue, Apr 16, 2024 at 10:51 AM Jesper Dangaard Brouer<hawk@kernel.org>  wrote:
->>>> This patch aims to reduce userspace-triggered pressure on the global
->>>> cgroup_rstat_lock by introducing a mechanism to limit how often reading
->>>> stat files causes cgroup rstat flushing.
->>>>
-[...]
+Test scrips:
+cgpath=/sys/fs/cgroup/blkio/test0
+mkdir -p $cgpath
+echo "8:0 10485760" > $cgpath/blkio.throttle.write_bps_device
+echo "8:16 100000" > $cgpath/blkio.throttle.write_iops_device
+for ((i=0;i<50;i++));do
+  fio -rw=write -direct=1 -bs=4M -iodepth=8 -size=200M -numjobs=1 \
+-time_based=1 -runtime=30  -name=testt_$i -filename=testf_$i > /dev/null &
+  echo $! > $cgpath/tasks
+done
 
-> Taking a step back, I think this series is trying to address two
-> issues in one go: interrupt handling latency and lock contention.
+The output of iostat:
+Device:  ...  wMB/s  ...
+sdb      ...  3.75  ...
+sdb      ...  2.50  ...
+sdb      ...  3.75  ...
+sdb      ...  2.50  ...
+sdb      ...  3.75  ...
 
-Yes, patch 2 and 3 are essentially independent and address two different 
-aspects.
+In order to fix this problem, early throttled the bio only when
+sq->queue is no empty and the bio is not flagged with BIO_BPS_THROTTLED.
 
-> While both are related because reducing flushing reduces irq
-> disablement, I think it would be better if we can fix that issue
-> separately with a more fundamental solution (e.g. using a mutex or
-> dropping the lock at each CPU boundary).
-> 
-> After that, we can more clearly evaluate the lock contention problem
-> with data purely about flushing latency, without taking into
-> consideration the irq handling problem.
-> 
-> Does this make sense to you?
+Signed-off-by: zhoutaiyu <zhoutaiyu@kuaishou.com>
+---
+ block/blk-throttle.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Yes, make sense.
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index f4850a6..499c006 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -913,7 +913,8 @@ static bool tg_may_dispatch(struct throtl_grp *tg, struct bio *bio,
+ 	 * queued.
+ 	 */
+ 	BUG_ON(tg->service_queue.nr_queued[rw] &&
+-	       bio != throtl_peek_queued(&tg->service_queue.queued[rw]));
++	       bio != throtl_peek_queued(&tg->service_queue.queued[rw]) &&
++	       !bio_flagged(bio, BIO_BPS_THROTTLED));
+ 
+ 	/* If tg->bps = -1, then BW is unlimited */
+ 	if ((bps_limit == U64_MAX && iops_limit == UINT_MAX) ||
+@@ -2201,7 +2202,7 @@ bool __blk_throtl_bio(struct bio *bio)
+ 		throtl_downgrade_check(tg);
+ 		throtl_upgrade_check(tg);
+ 		/* throtl is FIFO - if bios are already queued, should queue */
+-		if (sq->nr_queued[rw])
++		if (sq->nr_queued[rw] && !bio_flagged(bio, BIO_BPS_THROTTLED))
+ 			break;
+ 
+ 		/* if above limits, break to queue */
+-- 
+1.8.3.1
 
-So, you are suggesting we start with the mutex change? (patch 2)
-(which still needs some adjustments/tuning)
-
-This make sense to me, as there are likely many solutions to reducing
-the pressure on the lock.
-
-With the tracepoint patch in-place, I/we can measure the pressure on the
-lock, and I plan to do this across our CF fleet.  Then we can slowly
-work on improving lock contention and evaluate this on our fleets.
-
---Jesper
-p.s.
-Setting expectations:
-  - Going on vacation today, so will resume work after 29th April.
 
