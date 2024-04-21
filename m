@@ -1,170 +1,136 @@
-Return-Path: <cgroups+bounces-2638-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2642-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17DBE8ABAD8
-	for <lists+cgroups@lfdr.de>; Sat, 20 Apr 2024 11:50:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35AFF8ABEBA
+	for <lists+cgroups@lfdr.de>; Sun, 21 Apr 2024 09:18:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4707281EA0
-	for <lists+cgroups@lfdr.de>; Sat, 20 Apr 2024 09:50:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE528B20B66
+	for <lists+cgroups@lfdr.de>; Sun, 21 Apr 2024 07:18:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0DF3179A8;
-	Sat, 20 Apr 2024 09:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83209D529;
+	Sun, 21 Apr 2024 07:18:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SJZPEz0O"
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5371175A6;
-	Sat, 20 Apr 2024 09:50:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 100C93232;
+	Sun, 21 Apr 2024 07:18:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713606628; cv=none; b=P8k1Mlyj/+1ealg+3wVToNbQqDkWpTyMIYMo3bqxlQxD/ciOCUzOiBeeUVXAcB1+yAAlY0FrOE/xFv2sSnJCvdF5jzL0g4lnhomJTqFmiJzfDdjlP1+U8WMv0tuZXpw4/Tlm6MNL006sFiX/vUE7eDdhYWOYEiD7y/y0NnRfHvs=
+	t=1713683910; cv=none; b=dfMAlWJJugfZJBKIrnL0kfmCdCR+Ru0z8TrtAH7+Msjb8gVcRuN6ok0h6rmVCfdGlsjz637ZTpVmRIPBgv7d+c9wf6gfN/u3T1kHqkXUIo2Tyj5BvOXiQ0xhntlFdYRO1OVh0VQyisSLVi76kSOdGAzS7Yx0X7C9SzJpiWcV5Vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713606628; c=relaxed/simple;
-	bh=AMP+HOz12eu4e02b64VUoOditPc8EeZAygZmBenspqA=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=ueUzLL14ryYzpIwBJsLH1/6VA+IRrc/nn52byPMf9RpQtGEQdc9uJ7RMSwAvBfCx3ILN9LqcCvl6p1DqyhKq74jKDbvGUXIvkRNY5j2rpnX3n9x2PR7MR1brCua5gGNKcX6EZt74eT+XpebKTvVouDjw98wDReTNwbZT375lRw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VM6DH626wzSjGK;
-	Sat, 20 Apr 2024 17:49:19 +0800 (CST)
-Received: from dggpeml500023.china.huawei.com (unknown [7.185.36.114])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8C833180A9C;
-	Sat, 20 Apr 2024 17:50:22 +0800 (CST)
-Received: from [10.67.110.112] (10.67.110.112) by
- dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sat, 20 Apr 2024 17:50:22 +0800
-Message-ID: <90f306e2-dd37-4dea-d57e-7ddae22b1889@huawei.com>
-Date: Sat, 20 Apr 2024 17:50:22 +0800
+	s=arc-20240116; t=1713683910; c=relaxed/simple;
+	bh=CBgucA0S133Z5gmCgirpyuah29eI+7G7hML2D/BTkQ4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dXGGkcBTMfy+oc8oVG5xWpj6zzsjjuPcdiqeKZx/O7/39Z/Dcke06Q6Bw+igAlYMztKbtZrc/7cLkv9dUlI/zt3HF5YM+NoHYZvDOHH0o+7sbD4cTv/le3R/8I7lo+/Z2nfxCFahWS1O/UUnClCVuUozbdpMOi8IyD40DcHnoIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SJZPEz0O; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6f0aeee172dso1618486b3a.1;
+        Sun, 21 Apr 2024 00:18:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713683908; x=1714288708; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=CBgucA0S133Z5gmCgirpyuah29eI+7G7hML2D/BTkQ4=;
+        b=SJZPEz0Oz1XdMzMy6iS9EwVQiuj4qvmde7J/5GpeMF6faJCZaj3ibKQOO/F2TRXpFL
+         XKzlUkkFeTA0fx+IBRb8jI/Kf6fmzJJK/0UdQwNKmLSBMhe4vpnd+JlVjAJ5tpZcYW4q
+         jcLqc2J48svJNJXlxM+/hbJXNsgVB+phN/QwcDCRdQmlOYYb53ua/Ex6sHUljm30oTsi
+         Cj38rHP9z1cTBSCMuQ1Sz1m2MIk0J2pbmPNE05Qu08Opz2SHdREBTPPJn99YPEbEhfho
+         gJv0VGmIR/WqJ3gXWDYrKwBoE0eb7OZCA1492/ze5FC+PcZqON9FN9oNsQzKPg4gogKf
+         qlLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713683908; x=1714288708;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CBgucA0S133Z5gmCgirpyuah29eI+7G7hML2D/BTkQ4=;
+        b=woW0HG69MG9YW3BuzSkdsaJT2HZmRzU0P5Asl1/xJr2jv3IiXWWfNB5lT5HW8ZEkxq
+         TFtIbjadCu99ZHHnn/bAxE3FVQJAEYcX9jAiKhxJTPxXZzSPN3a7Ga+cHn+tIOF1ahVS
+         /uEFkjUXO3UrxIA9sgD1YX5Gpf7y057KdjRCFvjditJoJ8HeZs53SSHJXkV11qOS5KbT
+         tLI082lCOQPaMVO0E7/oMVEpRWMTyRERnTUz4VK3FmyuNHvbH9CK7BzCKOsXS/FukZDe
+         gdzrgIw3f5/hyaDVrPS3CelyESQxXn/dSJ/UrLOpr7yO7VMrx0lXCxf+m/aSy6Me7EB/
+         pk8w==
+X-Forwarded-Encrypted: i=1; AJvYcCX3FekLcUhUIQitGNZ0A9iAvWSNCHOa0Tt83SkFPRFz+lB7atI+n8ry2vAodnNly6Ls8fw1UQ3AnyTjsfQBGgaWD25qnBnOK+7iMeFAADt28ToWP9Qx6c8vt9brL9jXGW3Z3ReOKibApSkGUOvpKFpKfJFUMsK+Yw1oO5MhxIp92w==
+X-Gm-Message-State: AOJu0Yz5BRWQjQUArSa/cOW7cytTbC09Jkow0WCwOmflWgrSFkORK7Lz
+	vEG+6AST4b4Mqv0CTGuWlNSG+HFT0HbreuUcsK3ws273fEd8dfTt
+X-Google-Smtp-Source: AGHT+IEaASRVGHPgzkdeZOLFI6GTrwiHLWZSYvOIfTuHOycbJtI2qEkk5kB5/B5nmVmEc9uRThWJsw==
+X-Received: by 2002:a05:6a20:72a2:b0:1a9:11e5:2915 with SMTP id o34-20020a056a2072a200b001a911e52915mr9764345pzk.27.1713683908163;
+        Sun, 21 Apr 2024 00:18:28 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id c7-20020aa78e07000000b006ed048a7323sm5762102pfr.86.2024.04.21.00.18.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Apr 2024 00:18:27 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 451161849081A; Sun, 21 Apr 2024 14:18:25 +0700 (WIB)
+Date: Sun, 21 Apr 2024 14:18:24 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Haitao Huang <haitao.huang@linux.intel.com>, jarkko@kernel.org,
+	dave.hansen@linux.intel.com, kai.huang@intel.com, tj@kernel.org,
+	mkoutny@suse.com, linux-kernel@vger.kernel.org,
+	linux-sgx@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+	tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+	sohil.mehta@intel.com, tim.c.chen@linux.intel.com
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+	zhanb@microsoft.com, anakrish@microsoft.com,
+	mikko.ylinen@linux.intel.com, yangjie@microsoft.com,
+	chrisyan@microsoft.com, Mao Zhu <zhumao001@208suo.com>,
+	Ran Sun <sunran001@208suo.com>, Xiang wangx <wangxiang@cdjrlc.com>,
+	Shaomin Deng <dengshaomin@cdjrlc.com>,
+	Charles Han <hanchunchao@inspur.com>, Josh Don <joshdon@google.com>,
+	YouHong Li <liyouhong@kylinos.cn>
+Subject: Re: [PATCH v12 13/14] Docs/x86/sgx: Add description for cgroup
+ support
+Message-ID: <ZiS9wBvfU3VH5tCI@archie.me>
+References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
+ <20240416032011.58578-14-haitao.huang@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH] cgroup: Introduce css_is_online() helper
-Content-Language: en-US
-From: xiujianfeng <xiujianfeng@huawei.com>
-To: <viro@zeniv.linux.org.uk>, <brauner@kernel.org>, <jack@suse.cz>,
-	<tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
-	<mhocko@kernel.org>, <roman.gushchin@linux.dev>, <shakeel.butt@linux.dev>,
-	<muchun.song@linux.dev>, <akpm@linux-foundation.org>
-CC: <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<cgroups@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20240420093837.1028410-1-xiujianfeng@huawei.com>
-In-Reply-To: <20240420093837.1028410-1-xiujianfeng@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500023.china.huawei.com (7.185.36.114)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5ViV3SWxb5xsN/it"
+Content-Disposition: inline
+In-Reply-To: <20240416032011.58578-14-haitao.huang@linux.intel.com>
 
-sorry, ignore this one, the tag should be [PATCH -next]
 
-On 2024/4/20 17:38, Xiu Jianfeng wrote:
-> Introduce css_is_online() helper to test if whether the specified
-> css is online, avoid testing css.flags with CSS_ONLINE directly
-> outside of cgroup.c.
-> 
-> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
-> ---
->  fs/fs-writeback.c               | 2 +-
->  include/linux/cgroup.h          | 9 +++++++++
->  include/linux/memcontrol.h      | 2 +-
->  kernel/cgroup/cgroup-internal.h | 2 +-
->  mm/memcontrol.c                 | 2 +-
->  mm/page_owner.c                 | 2 +-
->  6 files changed, 14 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index 92a5b8283528..bb84c6a2fa8e 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -916,7 +916,7 @@ void wbc_account_cgroup_owner(struct writeback_control *wbc, struct page *page,
->  	folio = page_folio(page);
->  	css = mem_cgroup_css_from_folio(folio);
->  	/* dead cgroups shouldn't contribute to inode ownership arbitration */
-> -	if (!(css->flags & CSS_ONLINE))
-> +	if (!css_is_online(css))
->  		return;
->  
->  	id = css->id;
-> diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-> index 2150ca60394b..e6b6f3418da8 100644
-> --- a/include/linux/cgroup.h
-> +++ b/include/linux/cgroup.h
-> @@ -346,6 +346,15 @@ static inline bool css_is_dying(struct cgroup_subsys_state *css)
->  	return !(css->flags & CSS_NO_REF) && percpu_ref_is_dying(&css->refcnt);
->  }
->  
-> +/*
-> + * css_is_online - test whether the specified css is online
-> + * @css: target css
-> + */
-> +static inline bool css_is_online(struct cgroup_subsys_state *css)
-> +{
-> +	return !!(css->flags & CSS_ONLINE);
-> +}
-> +
->  static inline void cgroup_get(struct cgroup *cgrp)
->  {
->  	css_get(&cgrp->self);
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 8f332b4ae84c..cd6b3bfd070f 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -939,7 +939,7 @@ static inline bool mem_cgroup_online(struct mem_cgroup *memcg)
->  {
->  	if (mem_cgroup_disabled())
->  		return true;
-> -	return !!(memcg->css.flags & CSS_ONLINE);
-> +	return css_is_online(&memcg->css);
->  }
->  
->  void mem_cgroup_update_lru_size(struct lruvec *lruvec, enum lru_list lru,
-> diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
-> index 520b90dd97ec..feeaf172844d 100644
-> --- a/kernel/cgroup/cgroup-internal.h
-> +++ b/kernel/cgroup/cgroup-internal.h
-> @@ -183,7 +183,7 @@ extern struct list_head cgroup_roots;
->  
->  static inline bool cgroup_is_dead(const struct cgroup *cgrp)
->  {
-> -	return !(cgrp->self.flags & CSS_ONLINE);
-> +	return !css_is_online(&cgrp->self);
->  }
->  
->  static inline bool notify_on_release(const struct cgroup *cgrp)
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 7703ced535a3..e77e9e1911e6 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -405,7 +405,7 @@ ino_t page_cgroup_ino(struct page *page)
->  	/* page_folio() is racy here, but the entire function is racy anyway */
->  	memcg = folio_memcg_check(page_folio(page));
->  
-> -	while (memcg && !(memcg->css.flags & CSS_ONLINE))
-> +	while (memcg && !css_is_online(&memcg->css))
->  		memcg = parent_mem_cgroup(memcg);
->  	if (memcg)
->  		ino = cgroup_ino(memcg->css.cgroup);
-> diff --git a/mm/page_owner.c b/mm/page_owner.c
-> index 75c23302868a..7accb25e6fe6 100644
-> --- a/mm/page_owner.c
-> +++ b/mm/page_owner.c
-> @@ -523,7 +523,7 @@ static inline int print_page_owner_memcg(char *kbuf, size_t count, int ret,
->  	if (!memcg)
->  		goto out_unlock;
->  
-> -	online = (memcg->css.flags & CSS_ONLINE);
-> +	online = css_is_online(&memcg->css);
->  	cgroup_name(memcg->css.cgroup, name, sizeof(name));
->  	ret += scnprintf(kbuf + ret, count - ret,
->  			"Charged %sto %smemcg %s\n",
+--5ViV3SWxb5xsN/it
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Apr 15, 2024 at 08:20:10PM -0700, Haitao Huang wrote:
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>=20
+> Add initial documentation of how to regulate the distribution of
+> SGX Enclave Page Cache (EPC) memory via the Miscellaneous cgroup
+> controller.
+>=20
+
+The doc LGTM, thanks!
+
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--5ViV3SWxb5xsN/it
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZiS9vQAKCRD2uYlJVVFO
+oyuaAPwOYYTsCVsQVixfmg6tl/XnRifeSpkBSqxL8IPhmEoF4gD8CjyJFVn7ZYCA
+TQBF7UTW7VlL6ie4XWBl3MfKntKw6ww=
+=VYSs
+-----END PGP SIGNATURE-----
+
+--5ViV3SWxb5xsN/it--
 
