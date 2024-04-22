@@ -1,173 +1,110 @@
-Return-Path: <cgroups+bounces-2645-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2646-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A54F8AC313
-	for <lists+cgroups@lfdr.de>; Mon, 22 Apr 2024 05:34:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99E9E8AC336
+	for <lists+cgroups@lfdr.de>; Mon, 22 Apr 2024 05:48:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00ED728268A
-	for <lists+cgroups@lfdr.de>; Mon, 22 Apr 2024 03:34:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB9CE1C20912
+	for <lists+cgroups@lfdr.de>; Mon, 22 Apr 2024 03:48:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 668D0EAF6;
-	Mon, 22 Apr 2024 03:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=kuaishou.com header.i=@kuaishou.com header.b="J6R5/7+i"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E3EFFBFC;
+	Mon, 22 Apr 2024 03:47:56 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from bjm7-spam02.kuaishou.com (smtpcn03.kuaishou.com [103.107.217.217])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AD73EAEB;
-	Mon, 22 Apr 2024 03:34:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.107.217.217
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EEA7819;
+	Mon, 22 Apr 2024 03:47:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713756843; cv=none; b=h/PdwA+eUMHKTOE12Zw8yjip6VgmPF7ixLI9sTs0sYYGGd8ffIq2SFGspY9FjKbUxaXuadllY7SyIqk0iRyxnd8AQtfSntcci5+f0CGiOIAdw1cjpEDLt62VZ3/LtWx91BFIQnrcGrgEtze/r5FVR8ibexPPI74uwVVitCDushk=
+	t=1713757675; cv=none; b=m+li5cOijLiNBY10Ae70qj8s8tH8ukCGfWY0N7qTThZ2mPsd5tCtsNkOewggPI4bETQGiXJ3/K+5bU9cl2wfDeahhcbSbKpUKShJVIHX+L2hd+p5OHm2Re4T7Fq8xBcSqAXfvMuJ1WHNNwyu4VS+aRQdHcJHLKbEAaaOTGIL60E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713756843; c=relaxed/simple;
-	bh=m3wCcorDdfuWrYb4gwnoehhK7CJGhnMKiK00/jZbyqk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=ujDQx7qmfJ+KFqx/HoB5BN0TOcOaNfUJ00rovpKTMjjC6Y8o95svQIo6R50kz3mRXzgLTbI5oU/QkMT7UojNPd70+iO9S3gOsJkPwTptBydI+kWQgfsEBC6E1hyXyFKm8msBniM0iLy4yy4HuAc6G2C8P0FzGD2o8iPHrj76Hvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kuaishou.com; spf=pass smtp.mailfrom=kuaishou.com; dkim=pass (1024-bit key) header.d=kuaishou.com header.i=@kuaishou.com header.b=J6R5/7+i; arc=none smtp.client-ip=103.107.217.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kuaishou.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kuaishou.com
-Received: from bjm7-pm-mail02.kuaishou.com (unknown [172.28.1.2])
-	by bjm7-spam02.kuaishou.com (Postfix) with ESMTPS id CF7AA1841C815;
-	Mon, 22 Apr 2024 11:33:59 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; d=kuaishou.com; s=dkim; c=relaxed/relaxed;
-	t=1713756839; h=from:subject:to:date:message-id;
-	bh=m3wCcorDdfuWrYb4gwnoehhK7CJGhnMKiK00/jZbyqk=;
-	b=J6R5/7+iJz4GA13wmR2/SaEvAG12S9MKiDmoJkJk+3R1O2VH6vSYFtHfGTarauQH7GYfB6tfsuF
-	ZQuKA1LHc4Krm5LUBTyFpssMlLm8V+akayT6Mf+bDocZfY9r6s7+P/Ge967BRQCGeSrZ+sW3skEXJ
-	OR8EnUS/0f0OsFA40z8=
-Received: from bjm7-pm-mail01.kuaishou.com (172.28.1.1) by
- bjm7-pm-mail02.kuaishou.com (172.28.1.2) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.20; Mon, 22 Apr 2024 11:33:59 +0800
-Received: from bjm7-pm-mail01.kuaishou.com ([fe80::90df:c4ca:7789:1e31]) by
- bjm7-pm-mail01.kuaishou.com ([fe80::90df:c4ca:7789:1e31%16]) with mapi id
- 15.02.1118.020; Mon, 22 Apr 2024 11:33:59 +0800
-From: =?utf-8?B?5ZGo5rOw5a6H?= <zhoutaiyu@kuaishou.com>
-To: Yu Kuai <yukuai1@huaweicloud.com>, "tj@kernel.org" <tj@kernel.org>
-CC: "josef@toxicpanda.com" <josef@toxicpanda.com>, "axboe@kernel.dk"
-	<axboe@kernel.dk>, "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "yukuai (C)"
-	<yukuai3@huawei.com>
-Subject: Re: Re: [PATCH] blk-throttle: fix repeat limit on bio with
+	s=arc-20240116; t=1713757675; c=relaxed/simple;
+	bh=dKCOsWmsgjfFo6IO8R3M57gvMEH3lYVCacgWynXwjn8=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=XHUnpvW3DLWAPwc6UDImbDywZrUf2R9eI9Y/Bil5gd7E8oxo8gRjtEXmq+IdUvPKSS63aVuo2jFFw6ROUqRVCmVRYulcUIITKp/nEmSNR1HL7NmiapKtpsGtBK44K+aq7X5ozYgOF9gxpcx7a54jlJqnRvOWwDMYGioQvof6LRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VNB602sM9z4f3khV;
+	Mon, 22 Apr 2024 11:47:36 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id CC0A71A0D93;
+	Mon, 22 Apr 2024 11:47:43 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgCXaBHe3SVm89mEKg--.58781S3;
+	Mon, 22 Apr 2024 11:47:43 +0800 (CST)
+Subject: Re: [PATCH] blk-throttle: fix repeat limit on bio with
  BIO_BPS_THROTTLED
-Thread-Topic: Re: [PATCH] blk-throttle: fix repeat limit on bio with
- BIO_BPS_THROTTLED
-Thread-Index: AQHalGXpPdZ+bcNQlEWA99FUOKdkZQ==
-Date: Mon, 22 Apr 2024 03:33:58 +0000
-Message-ID: <e2d291e6b6ed43d89930eb2a7d459ff8@kuaishou.com>
-References: <20240419120747.38031-1-zhoutaiyu@kuaishou.com>,<ea781ccc-c29e-894e-c54a-f44ea349edca@huaweicloud.com>
-In-Reply-To: <ea781ccc-c29e-894e-c54a-f44ea349edca@huaweicloud.com>
-Accept-Language: en-AS, zh-CN, en-US
-Content-Language: aa
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+To: =?UTF-8?B?5ZGo5rOw5a6H?= <zhoutaiyu@kuaishou.com>,
+ Yu Kuai <yukuai1@huaweicloud.com>, "tj@kernel.org" <tj@kernel.org>
+Cc: "josef@toxicpanda.com" <josef@toxicpanda.com>,
+ "axboe@kernel.dk" <axboe@kernel.dk>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20240419120747.38031-1-zhoutaiyu@kuaishou.com>
+ <ea781ccc-c29e-894e-c54a-f44ea349edca@huaweicloud.com>
+ <e2d291e6b6ed43d89930eb2a7d459ff8@kuaishou.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <fbf135e8-de16-8eb4-9ade-1b979a335e33@huaweicloud.com>
+Date: Mon, 22 Apr 2024 11:47:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <e2d291e6b6ed43d89930eb2a7d459ff8@kuaishou.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgCXaBHe3SVm89mEKg--.58781S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrZw4xZr13tw4xXry5Gry3Jwb_yoW3ZrX_uF
+	s8Ar1xKrn5Jw4xtr9xKr1Y93ykK3sxuw1qq3ykZF1kX34v9F4kGFW7KFZ7AF1fZanYqws7
+	Ar4UtayFgay7WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb4kFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
+	Y487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+	0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+	0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+	WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8
+	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UU
+	UUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-SGksDQoNCj4+IFRlc3Qgc2NyaXBzOg0KPj4gY2dwYXRoPS9zeXMvZnMvY2dyb3VwL2Jsa2lvL3Rl
-c3QwDQo+PiBta2RpciAtcCAkY2dwYXRoDQo+PiBlY2hvICI4OjAgMTA0ODU3NjAiID4gJGNncGF0
-aC9ibGtpby50aHJvdHRsZS53cml0ZV9icHNfZGV2aWNlDQo+PiBlY2hvICI4OjE2IDEwMDAwMCIg
-PiAkY2dwYXRoL2Jsa2lvLnRocm90dGxlLndyaXRlX2lvcHNfZGV2aWNlDQoNCj7CoFdoYXQ/IDg6
-MCBhbmQgODoxNj8NCg0KDQpNeSBiYWQswqBJIG1hZGUgYSB0eXBvcyBoZXJlLiBJdCBzaG91bGQg
-YmUgYWxsIDg6MCBvciA4OjE2LsKgDQpXaGF0IEkgd2FudCB0byBkbyBoZXJlIHdhcyB0byBzZXQg
-YW4gZWFzeSB0byByZWFjaMKgdmFsdWXCoHRvIEJQU19MSU1JVCAoMTBNL3MgaW4gdGhpcyBleGFt
-cGxlKcKgYW5kwqBhbiB1bmFibGUgdG8gcmVhY2jCoHZhbHVlIHRvIElPUFNfTElNSVQgKDEwMDAw
-MCBpbiB0aGlzIGV4YW1wbGUpLg0KDQoNClVuZGVyIHRoaXMgc2V0dGluZywgdGhlIGlvc3RhdCBz
-aG93cyB0aGF0IHRoZSBicHMgaXMgZmFyIGxlc3MgdGhhbiAxME0vcyBhbmQgc29tZXRpbWVzIGlz
-wqBmYXIgbGFyZ2VyIHRoYW4gMTBNL3MuDQoNCg0KT25jZSBJIGNhbmNlbCB0aGUgSU9QU19MSU1J
-VCwgaS5lLizCoGVjaG8gMCB0byB0aGXCoHdyaXRlX2lvcHNfZGV2aWNlLCB0aGUgYnBzIHN0YWJp
-bGl6ZXMgYXQgYXJvdW5kIDEwTS9zLg0KDQoNClRoZSByb290IGNhdXNlIG9mIHRoaXMgaXMgdGhh
-dMKgdGhlIHNwbGl0IGJpbyB3aWxsIGJlIHRocm90dGxlZCBhZ2FpbiBldmVuIHRob3VnaCBhIHRn
-IGlzIHVuZGVywqB0aGUgSU9QU19MSU1JVMKgd2hlbsKgdGhlIHRnJ3PCoHNxLT5xdWV1ZSBpcyBu
-b3QgZW1wdHkuDQoNCg0KTGV0IG1lIGV4cGxhaW4gaXQgd2l0aCB0aGUgY29kZS4NCg0KDQpJZiB3
-ZSBvbmx5IHNldCBCUFNfTElNSVQgYW5kIHRoZSBiaW8gaXMgZmxhZ2dlZCB3aXRowqBCSU9fQlBT
-X1RIUk9UVExFRCwgdGhlwqBibGtfc2hvdWxkX3Rocm90bCgpIHdpbGwgYWx3YXlzIHJldHVybiBm
-YWxzZSBhbmQgdGhlwqBfX2Jsa190aHJvdGxfYmlvKCkgd2lsbCBub3QgYmUgY2FsbGVkLsKgIFNv
-LCB0aGUgYmlvwqBmbGFnZ2VkIHdpdGjCoEJJT19CUFNfVEhST1RUTEVEIHdpbGwgbm90IGJlIHRo
-cm90dGxlZCBpbiBhbnkgY2FzZXMuDQoNCg0KSG93ZXZlciwgaWYgd2Ugc2V0IGJvdGggQlBTX0xJ
-TUlUIGFuZCBJT1BTX0xJTUlULCB0aGXCoGJsa19zaG91bGRfdGhyb3RsKCkgd2lsbCBhbHdheXPC
-oHJldHVybiB0cnVlwqBubyBtYXR0ZXIgd2hhdCB0aGUgdmFsdWUgdGhlwqBJT1BTX0xJTUlUIGlz
-wqBiZWNhdXNlwqB0Zy0+aGFzX3J1bGVzX2lvcHNbcnddIGlzIGFsd2F5cyB0cnVlLg0KDQoNCkFm
-dGVyIHRoYXQsIHRoZSBiaW8gd2lsbCBiZSBwYXNzZWQgdG/CoF9fYmxrX3Rocm90bF9iaW8oKS4N
-Cg0KDQpJZiB0aGUgdGcncyBzcS0+cXVldWUgaXMgZW1wdHksIGJsa3Rocm90dGxlIHdpbGwgY2Fs
-Y3VsYXRlIGlmIHRoZSB0ZyBpcyBhYm92ZSBsaW1pdCB3aXRoIHRoZSBiaW8uwqANClNpbmNlIHRo
-ZSBiaW8gaXMgZmxhZ2dlZCB3aXRowqBCSU9fQlBTX1RIUk9UVExFRCwgYmxrdGhyb3R0bGUgd2ls
-bCBvbmx5IGNhbGN1bGF0ZSB0aGUgSU9QUyBsaW1pdCBmb3IgdGhlIHRnLg0KSWYgdGcgaXMgdW5k
-ZXLCoGlvcHPCoGxpbWl0IHdpdGggdGhlIGJpbywgdGhlIGJpbyB3aWxsIG5vdCBiZSB0aHJvdHRs
-ZWQuwqANCk90aGVyd2lzZSwgdGhlIGJpb8Kgd2lsbCBiZcKgdGhyb3R0bGVkIGJlY2F1c2Ugb2Yg
-dGhlwqBpb3BzwqBsaW1pdC4NCg0KDQpIb3dldmVyLMKgSWYgdGhlIHRnJ3Mgc3EtPnF1ZXVlIGlz
-IG5vdCBlbXB0eSwgdGhlIGJpbyB3aWxsIGJlIHRocm90dGxlZCBkaXJlY3RseSB3aXRob3V0IGFu
-eSBpb3BzIG9yIGJwcyBsaW1pdGF0aW9uIGNhbGN1bGF0aW9ucy4NCg0KDQpUaGXCoCByZWxhdGVk
-wqBjb2RlIHNuaXBwZXQgaXMgOg0KDQpib29sIF9fYmxrX3Rocm90bF9iaW8oc3RydWN0IGJpbyAq
-YmlvKSANCnsNCi4uLi4uLi4NCg0Kd2hpbGUgKHRydWUpIHsNCi4uLi4uLg0KwqAgwqAgLyogdGhy
-b3RsIGlzIEZJRk8gLSBpZiBiaW9zIGFyZSBhbHJlYWR5IHF1ZXVlZCwgc2hvdWxkIHF1ZXVlICov
-DQrCoCDCoCBpZiAoc3EtPm5yX3F1ZXVlZFtyd10pDQrCoCDCoCDCoCDCoCBicmVhazvCoCAvL8Kg
-LS0tLS0+wqDCoHRoZSBiaW8gd2lsbCBiZcKgdGhyb3R0bGVkIGluIGFueSBjYXNlcw0KDQrCoCDC
-oCAvKiBpZiBhYm92ZSBsaW1pdHMsIGJyZWFrIHRvIHF1ZXVlICovDQrCoCDCoCBpZiAoIXRnX21h
-eV9kaXNwYXRjaCh0ZywgYmlvLCBOVUxMKSkgeyAvLyAtLS0tPiBkbyBpb3BzIGFuZCBicHMgY2Fs
-Y3VsYXRpb25zDQrCoCDCoCDCoCDCoCBicmVhazvCoCAvL8KgLS0tPsKgwqB0aGUgYmlvIHdpbGwg
-YmXCoHRocm90dGxlZCBpZiB0aGUgdGcgaXPCoGFib3ZlIGJwcyBvciBpb3BzIGxpbWl0cw0KDQou
-Li4uLi4NCsKgIMKgwqANCsKgIMKgIGlmICghdGcpIHvCoA0KwqAgwqAgwqAgwqAgYmlvX3NldF9m
-bGFnKGJpbywgQklPX0JQU19USFJPVFRMRUQpOw0KwqAgwqAgwqAgwqAgZ290byBvdXRfdW5sb2Nr
-OyAvL8KgLS0tLT4gcGFzcywgbm/CoHRocm90dGxlDQrCoCDCoCB9DQoNCi4uLi4uLi4NCn0NCn0N
-Cg0KDQpTbyBldmVuIHRoZSBiaW8gaXMgZmxhZ2dlZCB3aXRowqBCSU9fQlBTX1RIUk9UVExFRCBh
-bmQgdGhlIHRnIGlzIGZhciBtb3JlIGJlaGluZCBJT1BTX0xJTUlULCB0aGUgYmlvIHdpbGwgYmUg
-dGhyb3R0bGVkIGlmIHRoZSBzcS0+cXVldWUgaXMgbm90IGVtcHR5Lg0KDQoNClRoaXMgcHJvYmxl
-bSBjYW4gYmUgcmVwcm9kdWNlZCBieSBydW5uaW5nIGZvbGxvd2luZyBzY3JpcHRzIGFuZCBjb21w
-YXJpbmcgdGhlIG91dHB1dHMgb2YgaW9zdGF0Lg0KMSnCoA0KUE5VTT01MCAjIGxhcmdlIGVub3Vn
-aCB0byBzYXR1cmF0ZSB0aGUgc3EtPnF1ZXVlDQoNCmNncGF0aD0vc3lzL2ZzL2Nncm91cC9ibGtp
-by90ZXN0MA0KbWtkaXIgLXAgJGNncGF0aA0KZWNobyAiODowIDEwNDg1NzYwIiA+ICRjZ3BhdGgv
-YmxraW8udGhyb3R0bGUud3JpdGVfYnBzX2RldmljZQ0KZWNobyAiODowIDEwMDAwMCIgPiAkY2dw
-YXRoL2Jsa2lvLnRocm90dGxlLndyaXRlX2lvcHNfZGV2aWNlwqAgI8KgbGFyZ2UgZW5vdWdoIHRv
-IG1ha2UgaXQgdW5yZWFjaGFibGUNCmZvciAoKGk9MDtpPDskUFVNO8KgaSsrKSk7ZG8NCsKgIGZp
-byAtcnc9d3JpdGUgLWRpcmVjdD0xIC1icz00TSAtaW9kZXB0aD04IC1zaXplPTIwME0gLW51bWpv
-YnM9MSBcDQotdGltZV9iYXNlZD0xIC1ydW50aW1lPTMwwqAgLW5hbWU9dGVzdHRfJGkgLWZpbGVu
-YW1lPXRlc3RmXyRpID4gL2Rldi9udWxsICYNCsKgIGVjaG8gJCEgPiAkY2dwYXRoL3Rhc2tzDQpk
-b25lDQoNCjIpDQoNClBOVU09NTAgIyBsYXJnZSBlbm91Z2ggdG8gc2F0dXJhdGUgdGhlIHNxLT5x
-dWV1ZQ0KDQpjZ3BhdGg9L3N5cy9mcy9jZ3JvdXAvYmxraW8vdGVzdDANCm1rZGlyIC1wICRjZ3Bh
-dGgNCmVjaG8gIjg6MCAxMDQ4NTc2MCIgPiAkY2dwYXRoL2Jsa2lvLnRocm90dGxlLndyaXRlX2Jw
-c19kZXZpY2UNCmVjaG8gIjg6MMKgMCIgPiAkY2dwYXRoL2Jsa2lvLnRocm90dGxlLndyaXRlX2lv
-cHNfZGV2aWNlwqAgI8KgZG8gbm90IHNldCBpb3BzIGxpbWl0DQpmb3IgKChpPTA7aTw7JFBVTTvC
-oGkrKykpO2RvDQrCoCBmaW8gLXJ3PXdyaXRlIC1kaXJlY3Q9MSAtYnM9NE0gLWlvZGVwdGg9OCAt
-c2l6ZT0yMDBNIC1udW1qb2JzPTEgXA0KLXRpbWVfYmFzZWQ9MSAtcnVudGltZT0zMMKgIC1uYW1l
-PXRlc3R0XyRpIC1maWxlbmFtZT10ZXN0Zl8kaSA+IC9kZXYvbnVsbCAmDQrCoCBlY2hvICQhID4g
-JGNncGF0aC90YXNrcw0KZG9uZQ0KDQo+PiBTaWduZWQtb2ZmLWJ5OiB6aG91dGFpeXUgPHpob3V0
-YWl5dUBrdWFpc2hvdS5jb20+DQo+PiAtLS0NCj4+wqDCoCBibG9jay9ibGstdGhyb3R0bGUuYyB8
-IDUgKysrLS0NCj4+wqDCoCAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAyIGRlbGV0
-aW9ucygtKQ0KPj4NCj4+IGRpZmYgLS1naXQgYS9ibG9jay9ibGstdGhyb3R0bGUuYyBiL2Jsb2Nr
-L2Jsay10aHJvdHRsZS5jDQo+PiBpbmRleCBmNDg1MGE2Li40OTljMDA2IDEwMDY0NA0KPj4gLS0t
-IGEvYmxvY2svYmxrLXRocm90dGxlLmMNCj4+ICsrKyBiL2Jsb2NrL2Jsay10aHJvdHRsZS5jDQo+
-PiBAQCAtOTEzLDcgKzkxMyw4IEBAIHN0YXRpYyBib29sIHRnX21heV9kaXNwYXRjaChzdHJ1Y3Qg
-dGhyb3RsX2dycCAqdGcsIHN0cnVjdCBiaW8gKmJpbywNCj4+wqDCoMKgwqDCoMKgwqAgKiBxdWV1
-ZWQuDQo+PsKgwqDCoMKgwqDCoMKgICovDQo+PsKgwqDCoMKgwqDCoCBCVUdfT04odGctPnNlcnZp
-Y2VfcXVldWUubnJfcXVldWVkW3J3XSAmJg0KPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYmlv
-ICE9IHRocm90bF9wZWVrX3F1ZXVlZCgmdGctPnNlcnZpY2VfcXVldWUucXVldWVkW3J3XSkpOw0K
-Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYmlvICE9IHRocm90bF9wZWVrX3F1ZXVlZCgmdGct
-PnNlcnZpY2VfcXVldWUucXVldWVkW3J3XSkgJiYNCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-ICFiaW9fZmxhZ2dlZChiaW8sIEJJT19CUFNfVEhST1RUTEVEKSk7DQo+Pg0KPj7CoMKgwqDCoMKg
-wqAgLyogSWYgdGctPmJwcyA9IC0xLCB0aGVuIEJXIGlzIHVubGltaXRlZCAqLw0KPj7CoMKgwqDC
-oMKgwqAgaWYgKChicHNfbGltaXQgPT0gVTY0X01BWCAmJiBpb3BzX2xpbWl0ID09IFVJTlRfTUFY
-KSB8fA0KPj4gQEAgLTIyMDEsNyArMjIwMiw3IEBAIGJvb2wgX19ibGtfdGhyb3RsX2JpbyhzdHJ1
-Y3QgYmlvICpiaW8pDQo+PsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdGhyb3RsX2Rvd25n
-cmFkZV9jaGVjayh0Zyk7DQo+PsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdGhyb3RsX3Vw
-Z3JhZGVfY2hlY2sodGcpOw0KPj7CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC8qIHRocm90
-bCBpcyBGSUZPIC0gaWYgYmlvcyBhcmUgYWxyZWFkeSBxdWV1ZWQsIHNob3VsZCBxdWV1ZSAqLw0K
-Pj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpZiAoc3EtPm5yX3F1ZXVlZFtyd10pDQo+PiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlmIChzcS0+bnJfcXVldWVkW3J3XSAmJiAhYmlvX2Zs
-YWdnZWQoYmlvLCBCSU9fQlBTX1RIUk9UVExFRCkpDQoNCj7CoE5vLCB0aGlzIGNoYW5nZSBpcyB3
-cm9uZy4gU3BsaXQgSU8gd2lsbCBub3QgYmUgdGhyb3R0bGVkIGJ5IGlvcHMgbGltaXQNCmFueW1v
-cmUuDQoNCkFmdGVyIHRoaXMgY2hhbmdlLCB0aGUgc3BsaXQgSU8gd2lsbCBiZSB0aHJvdHRsZWQg
-YnkgaW9wcyBsaW1pdCBhZ2FpbsKgaWYgaXQgcmVhY2hlcyBhIHRnJ3MgaW9wcyBsaW1pdCBhbmQg
-d2lsbCBub3QgYmUgdGhyb3R0bGVkIGluIGFueSBjYXNlcyBpZiB0aGUgc3EtPnF1ZXVlIGlzIG5v
-dCBlbXB0eS4=
+Hi!
+
+在 2024/04/22 11:33, 周泰宇 写道:
+> What I want to do here was to set an easy to reach value to BPS_LIMIT (10M/s in this example) and an unable to reach value to IOPS_LIMIT (100000 in this example).
+> 
+> 
+> Under this setting, the iostat shows that the bps is far less than 10M/s and sometimes is far larger than 10M/s.
+
+Yes, I know this behaviour, and this is because blk-throttle works
+before IO split, and io stats is accounting bps for rq-based disk after
+IO split, if you using Q2C for bps you'll see that bps is stable as
+limit.
+
+Hi, Tejun！
+
+Do you think this *phenomenon* need to be fixed? If so, I don't see a
+easy way other than throttle bio after *IO split*. Perhaps ohter than
+bio merge case, this can be another motivation to move blk-throttle to
+rq_qos_throttle().
+
+Thanks,
+Kuai
+
 
