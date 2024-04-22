@@ -1,46 +1,46 @@
-Return-Path: <cgroups+bounces-2659-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2660-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0356A8ADAAB
-	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 02:18:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CF818ADABC
+	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 02:20:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 769ABB24F08
-	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 00:17:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96CB01F2136C
+	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 00:20:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C73619066A;
-	Mon, 22 Apr 2024 23:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA7761BED9C;
+	Mon, 22 Apr 2024 23:58:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kU6T7eDD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VMT4Tpsm"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B884318413C;
-	Mon, 22 Apr 2024 23:58:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 918611BED8F;
+	Mon, 22 Apr 2024 23:58:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713830299; cv=none; b=Zt5QaRhArj0xRK16PyQhbOisrYYc+ufQmRIp1OvYO95x4b8U6U1JIVz7bOqavCBd00D/Mi1v9zYKTDvELakR7oT22DNml18ojBGHnFywQOmL3MJxJ+FtSDDHErFtyHyR1UH/m9EqjlX/jV8dpyVJhkXphbKnYspP9OBNqldDXM4=
+	t=1713830325; cv=none; b=fHWAQ7ViWHkde6HklNl0NS/7ZGeGjixIB+TeZyOzf1K04sLKXmHi7D9mMLm6LkXsdXM7kFx7g6yuQJaC7MOoVquiL73GkRARRaWxDDo/Z+BeYOhqLQawonWGTSU8PEou/qUpdppldX+GG74lbpm+YCHhmr067yvvuRWHhUxeLnI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713830299; c=relaxed/simple;
-	bh=CVL6TEAyAqjPTfgfZ/4FDjwn41Lr4j97Qw71Mbg1Q/w=;
+	s=arc-20240116; t=1713830325; c=relaxed/simple;
+	bh=W9pOpOd2acGm9rUbkTrq2p4QP6XCepJzgXwMj8zQ8No=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lFsZZV1nm6bU2eo1k/QyG6g3pvHAIhr3NsV+KGMLOh1FyJrHQvRJN78fq87rZHozuJVSNjLFQHWommXcXKowtd5xz+vuR+8jLIKTTgVGknvzkos7Si03/LuJLMUNdypOwUxbNm5jsXr5XuZI2u8DmwG+4hxWD3YtJGb1/xeT9rE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kU6T7eDD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57E7FC3277B;
-	Mon, 22 Apr 2024 23:58:18 +0000 (UTC)
+	 MIME-Version; b=s+W3h1RAWs74hWoSDkiLsyAvp4kgf/A/lRpyfYvmGMTvf4XIhZLD8+prEQOeBx7OnK24KE66Qo7Ek5wxQk514wc1nPwCiA6gvGHokyXhv2zeOMXb7dcf/obaAyfPXi3rNSVUFU4nxJbdN7r2MNBfdXtKffJUIXWZvpzbQPnO3Wc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VMT4Tpsm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74A17C3277B;
+	Mon, 22 Apr 2024 23:58:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713830299;
-	bh=CVL6TEAyAqjPTfgfZ/4FDjwn41Lr4j97Qw71Mbg1Q/w=;
+	s=k20201202; t=1713830325;
+	bh=W9pOpOd2acGm9rUbkTrq2p4QP6XCepJzgXwMj8zQ8No=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kU6T7eDDXnOjiniX1ss89SXQ0KaRaTykvM9q5MyO7+chmDvhOWUMrimYb9KhcZDUs
-	 kUw8vJCHbodk9H3qPhRbYTJnBnxwS10+va1UFb/Ro2SAMw+lt6N8aEi+h3mN8JCQpF
-	 GMeytPCIdqIhHWjt2v1ibjVP9CptTdROl8yafE+fZEAEFmswG7EprelESXWyusoT2L
-	 Kjp2Xw8Sox0HGjEvekyo63+JvAsvM/GVZQbioizmV8/Cr51fSR03H41C+crKhg5CeA
-	 jMv36t2WV8eymcA4L0FTbv//P6YXvKqMmGL0OPJ2KwLCV/2ByXkL0zTj7hQN0P5uj7
-	 0cRrC3T3ncFYA==
+	b=VMT4TpsmmGcMWBbBDuMQnKWvH7+UuvxW6/p21L/Lmsgdg4b+Cqj+WIHqcDz4tewfR
+	 8ktU1+wy0W1w37kMV5syAjJKX8JqOfAxGwf7BqBoxcvfoo12+n6Z0leqZQ1Q6ksWfP
+	 MwLiIGlGloC1mW4E7w9brJLQ53oimj0+Qz8+xvIamyK+0dcP+6awbu3GgbOsmQBxrT
+	 ijpqdEnu318btqM782leLlxixixBM5W78TWcLDpnnisUbzEYb+1+0F1V79BI3+jcP5
+	 g8FUpq9uxOh4qHyCOCmhR8EtoLMuY0esOpSy5QWXVEBJ+cOVbGF3iIdNT/GNPJXz5c
+	 lGTLGuzDcVnFQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -51,12 +51,12 @@ Cc: Rik van Riel <riel@surriel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	cgroups@vger.kernel.org,
 	linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 06/10] blk-iocost: avoid out of bounds shift
-Date: Mon, 22 Apr 2024 19:19:19 -0400
-Message-ID: <20240422231929.1611680-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 6/9] blk-iocost: avoid out of bounds shift
+Date: Mon, 22 Apr 2024 19:19:47 -0400
+Message-ID: <20240422231955.1613650-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240422231929.1611680-1-sashal@kernel.org>
-References: <20240422231929.1611680-1-sashal@kernel.org>
+In-Reply-To: <20240422231955.1613650-1-sashal@kernel.org>
+References: <20240422231955.1613650-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -65,7 +65,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.156
+X-stable-base: Linux 5.10.215
 Content-Transfer-Encoding: 8bit
 
 From: Rik van Riel <riel@surriel.com>
@@ -110,10 +110,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 645a589edda82..bfdb7b0cf49de 100644
+index 63a8fb456b283..fe5b0c79e5411 100644
 --- a/block/blk-iocost.c
 +++ b/block/blk-iocost.c
-@@ -1336,7 +1336,7 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
+@@ -1290,7 +1290,7 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
  {
  	struct ioc *ioc = iocg->ioc;
  	struct blkcg_gq *blkg = iocg_to_blkg(iocg);
@@ -122,7 +122,7 @@ index 645a589edda82..bfdb7b0cf49de 100644
  	s64 vover, vover_pct;
  	u32 hwa;
  
-@@ -1351,8 +1351,9 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
+@@ -1305,8 +1305,9 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
  
  	/* calculate the current delay in effect - 1/2 every second */
  	tdelta = now->now - iocg->delay_at;
