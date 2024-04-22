@@ -1,112 +1,103 @@
-Return-Path: <cgroups+bounces-2653-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2654-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C37D8AD4F8
-	for <lists+cgroups@lfdr.de>; Mon, 22 Apr 2024 21:39:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70A3E8AD549
+	for <lists+cgroups@lfdr.de>; Mon, 22 Apr 2024 21:54:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E7801C2155A
-	for <lists+cgroups@lfdr.de>; Mon, 22 Apr 2024 19:39:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CA07280D4C
+	for <lists+cgroups@lfdr.de>; Mon, 22 Apr 2024 19:54:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 249FC155343;
-	Mon, 22 Apr 2024 19:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA6A6156226;
+	Mon, 22 Apr 2024 19:52:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IDVPB+RK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ikuURnPJ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54AFF155337;
-	Mon, 22 Apr 2024 19:38:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E071155752;
+	Mon, 22 Apr 2024 19:52:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713814733; cv=none; b=s2FJOkOUH5XwrTPN5Of8vAMUMaeX26rU8ylSh+ZBEGxp3egLuwpSkM6aIZz87tqooeNgNsDxKDgEtqo3WuWmlXWZQelhB4t46hXPcQzot6o6Y5AXnT4LXm2pMS8YPnHBcxYwckxA4um4a2ufMXeqHFJIL6i0eFuDPIoHWPFR3QQ=
+	t=1713815546; cv=none; b=QjMtdLcr7yrlMDeffoSEuc7nZrvSs4BiI8AGJC3Ga79N8fA192/2By3PkQE6mhO6hrwzMI/3EI0xOp0f2tbukKaBKwmktSOEPOEBWaqw1tMUvPZiKH3MUR2lrJAfwQczb21qYa/NOvCD/b+OLGwnyp/OQebmFido0QtmzoV23j0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713814733; c=relaxed/simple;
-	bh=2GRFl6WMleWf91SC8vfssaS1Has6aTi33GaASl85sXM=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=lLjpIshkB6AJdBKcMx+fpTp1MjErdM9eyauzKJtGakhQOY15erAacQKw3a9Y6gf7HTJ2LqTNR5maAUTILIqkmrUwpEzJD7+arAvWCXV1bLmlez3s5kVMyR6v2oBYKUgoZm0TU9+YnZprqQ9lRvQDuiCzNkjfnWjmRJm4iQG0AkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IDVPB+RK; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713814732; x=1745350732;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=2GRFl6WMleWf91SC8vfssaS1Has6aTi33GaASl85sXM=;
-  b=IDVPB+RKVn8/241gQnuf2TCERhjYgKPdRBaCvI9XOSw1PQcLD/sbH0TO
-   PAvigSPFlvDRslMT3kj/PWxVloPxDjhfKPmm/4Gpw5nwbsubvv+eZum6i
-   d/t2YzWuFUHX1zySJ55npCJ7EOyXVm7M0SEUNctmnrI1BwKVRDcGnYQ4+
-   iKJZ1pdXi0bkQ3B9+lnny0MJXB9Py/PryxUX8Pjrb87X6yY/n65y/oAsV
-   2PFQGDwnpAEAFuy3LJiwved7dkisS/FxsPk85j8nWAolrb1jkwpGAAS81
-   cZb8HD+lgWb8pPJWn6LNlDFDFq5AvNPr1vuhCTCgqqUNomGECG4nUJUhX
-   Q==;
-X-CSE-ConnectionGUID: lRyTJZY5QD6/8WWnjjKHmg==
-X-CSE-MsgGUID: dWQeUNsXRo+qhYjDe5dESQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="31862685"
-X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
-   d="scan'208";a="31862685"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2024 12:38:51 -0700
-X-CSE-ConnectionGUID: wxQAfcSZQH6z1pluyFm5Xw==
-X-CSE-MsgGUID: LUyg5N3USu2ioIEx+8xN4g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,221,1708416000"; 
-   d="scan'208";a="28777816"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.125.85.20])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 22 Apr 2024 12:38:49 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: dave.hansen@linux.intel.com, kai.huang@intel.com, tj@kernel.org,
- mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
- x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com,
- tim.c.chen@linux.intel.com, "Jarkko Sakkinen" <jarkko@kernel.org>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com, chrisyan@microsoft.com
-Subject: Re: [PATCH v11 14/14] selftests/sgx: Add scripts for EPC cgroup
- testing
-References: <20240410182558.41467-1-haitao.huang@linux.intel.com>
- <20240410182558.41467-15-haitao.huang@linux.intel.com>
- <D0JXP8HZLEQZ.3PHVXZI140VIH@kernel.org>
- <op.2l81wdjdwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <D0KXLFE83H9V.3GNOZNN4II125@kernel.org>
-Date: Mon, 22 Apr 2024 14:38:46 -0500
+	s=arc-20240116; t=1713815546; c=relaxed/simple;
+	bh=LNdpfWpGGQSV4DF9n4X+sBNvYWLDN87wEYe7NixA0qU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P8EHxVpiXISsAnK5NdiQp7XWCauzAMSU+0yVF+f1H6gR/dNY5+mE4FJSTmQJD1r952gwwxPNiNIjwnzVkbb+CAPxMtvOJmhJRbyOeYY2eO4E/qG1FxMUb8Wh4WqXuTjBqlGd/IVpj60nyFJwTRLqVDrYAgVzm9R/Ph1d6Rr/zak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ikuURnPJ; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e8f68f8e0dso20491645ad.3;
+        Mon, 22 Apr 2024 12:52:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713815544; x=1714420344; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=68NfI5IJiqhZpxzEB090wfQW0MtGnY2YVgkxhAQEuIw=;
+        b=ikuURnPJkTZ0WaroV14xzDKDIBxpFkJTdNRBpiGJQmI3nEayEXcAzAdtpzjGU9Mn8A
+         mXlVuMdGEulbgb8SAHqEAHf0yafIAyankBgXxqbPz4ZiIsH4v3CSx0OK4ScltuoEUIOh
+         IDz1wwX2bMJfnXoRezswWdN5FbJ9VZK6D5cno9ZY9jJZYV3Fsqv7uh5r0CdqDr3BFsid
+         APXQnj0+UJaBAim0heSCYgES0BjlO9q5VUZ40/cqu2EdIrbjm/dX8oN1wDkTsAvnA0bT
+         4Swb37b2Y+vkjeAf4HAe2HpyTrk6omIx4cRh5xDr3hp/zdyPeFsLXtKWXbKFNWZIb/XK
+         2UHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713815544; x=1714420344;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=68NfI5IJiqhZpxzEB090wfQW0MtGnY2YVgkxhAQEuIw=;
+        b=XcCIgUet54ZDsMGKBsX00fxIopcaRk7XED2XdbOMfN58u6IhGPPa0aSepicFGwRW02
+         3aryVBvMG1hThSfRgdjuyRiI4YhQ0Ik3CYsok/gO7owoo94HvvxaBdmaig400ibERfci
+         WYhtc3BGy1vD+OeCvxzYAnL0CU/OGXQjB4rUfB22YqN7Hq+pnjnL1lMHldVCBHwVVYzK
+         JkR2/IoYWUHfLt62gvtWQdbYYb3loBUa2b6i2ocOZIGX31VMgSh4JLBg8kGghllx/XRQ
+         WCgzTxs55k80jZp+yezyf3wouAggSM6n6H3pnoMU22kaJVa7AvY8RanNl8RQgFntzpnd
+         7wyw==
+X-Forwarded-Encrypted: i=1; AJvYcCVtzARLDWF4vTVLMxNfIkDyfySH+2afNvZSZGzimJZoXNDSbXx+VcpW3c70Zk+YOammfNJDDYzDSWk6vx//jj9e74/MQ6AKpEP7xv2kKW/ResxUNODv6Yp/jp6xg7VkeKzZ5GxvLQ==
+X-Gm-Message-State: AOJu0YzIoy5EZ6wsTWNxWDfbxxL2E+MV8n4vgrbdrfz1IiV0TkmZ207/
+	T+0uQ8nsRA8SmQSSzX/6dKQts1ywhcxcY3ebxUi7RKuiTJQbAA1M
+X-Google-Smtp-Source: AGHT+IHMLs9QxnWp6xH7muIu3RMeWdJrqCpFyWPHP5zkYZeHIac/vk0VtWjbLeEyaWRLjeeuWAwgsQ==
+X-Received: by 2002:a17:902:ec83:b0:1e9:a0ce:f618 with SMTP id x3-20020a170902ec8300b001e9a0cef618mr4485622plg.69.1713815544283;
+        Mon, 22 Apr 2024 12:52:24 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:6f51])
+        by smtp.gmail.com with ESMTPSA id n6-20020a170903110600b001e668c1060bsm8497797plh.122.2024.04.22.12.52.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Apr 2024 12:52:23 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Mon, 22 Apr 2024 09:52:22 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Xiu Jianfeng <xiujianfeng@huawei.com>
+Cc: longman@redhat.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] cgroup/cpuset: Statically initialize more members
+ of top_cpuset
+Message-ID: <Zia_9nYxtJdrS-eQ@slm.duckdns.org>
+References: <20240420094616.1028540-1-xiujianfeng@huawei.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2mm96wwswjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <D0KXLFE83H9V.3GNOZNN4II125@kernel.org>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240420094616.1028540-1-xiujianfeng@huawei.com>
 
-Hi Jarkko
+On Sat, Apr 20, 2024 at 09:46:16AM +0000, Xiu Jianfeng wrote:
+> Initializing top_cpuset.relax_domain_level and setting
+> CS_SCHED_LOAD_BALANCE to top_cpuset.flags in cpuset_init() could be
+> completed at the time of top_cpuset definition by compiler.
+> 
+> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
 
-On Mon, 15 Apr 2024 14:08:44 -0500, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
+Applied to cgroup/for-6.10.
 
-> I did run the basic test by manually creating the cgroup so you could
-> add tested-by from my side to the other kernel patches expect this one
->
-> I've reviewed it enough rounds and given various code suggestions etc.
-> For me it is "good enough" or has been for a while. I just want this
-> test to work so that people doing kernel QA will automatically get it
-> to their testing cycle. That is why proper integration to kselftest
-> framework is a must
+Thanks.
 
-May I have your "Reviewed-by" tag also for the patches #8-13?
-
-Not sure if I missed any other comments/issue you raised. I think all are  
-addressed in v12. I will refine the test scripts (patch #14) in v13.
-
-Thanks
-Haitao
+-- 
+tejun
 
