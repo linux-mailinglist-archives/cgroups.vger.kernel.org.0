@@ -1,256 +1,129 @@
-Return-Path: <cgroups+bounces-2668-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2669-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67FD88AE0C0
-	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 11:12:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 343EE8AE481
+	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 13:44:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BE351C21C6E
-	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 09:12:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 662BE1C22BAA
+	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 11:44:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D80556B69;
-	Tue, 23 Apr 2024 09:12:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1896B138481;
+	Tue, 23 Apr 2024 11:40:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kTFeZKcJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZPyOaXPP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F33872AD11
-	for <cgroups@vger.kernel.org>; Tue, 23 Apr 2024 09:11:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0CC3137752;
+	Tue, 23 Apr 2024 11:40:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713863520; cv=none; b=J5G9TB+d0C/lgMpJ2pOjaHoWVuzx8O2xxNv73YXHjRpMurmksgG09u7ESBcNF0SZx9MgvUy9i39AZnk87vZxVYPyDPmukdUbw/sx2MNgaQHHUadqUCIYI7DsmST2Z4ioLwtJwLTwa639BY/OiFb2Fmhw0yPzitxIUIN9JXtQxoA=
+	t=1713872429; cv=none; b=gmlouNwc/T8aBtNcG/Idr8w49Nn0IOJWw9HysLBzonghOOmQTxkyYZikOYtS4Fz5Lwcc0Nwod3PRvUw/Jg8Adg1XsyxIhfSE0cEMQ/qvBfALjEzyGvIXW8WWE2LxUHBZ+KZX1N/KWl/GobJx5Gu9uYcewipeJbvqpsFCpGf9E8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713863520; c=relaxed/simple;
-	bh=VHwzjnNyugcNynsAhov4RKXJjOohKw3Q1V9pC+OywSI=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=gJjkSX7tptOk/GBkrgVbDrgVoHtfA+vI7SqAbaNi4zV1bNi2vTSTnLmMwRoNLnq1UXac27IQxnEjJ1p4HnBcXGw7JJm6CgUEsC6sCxfUkHKIY2sRFadd5aMJugtO/8sSfjvAoGE6w8jYxH0LHv+7gZnzlizP9a52PAhtgaJenQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kTFeZKcJ; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713863518; x=1745399518;
-  h=date:from:to:cc:subject:message-id;
-  bh=VHwzjnNyugcNynsAhov4RKXJjOohKw3Q1V9pC+OywSI=;
-  b=kTFeZKcJ0m3D0iKaP3pYVT/H/5Ok83J8zp1YpV7P8xEMHaJNXqyTn1RG
-   SoaVgJ6bP35e6k8BCNlmHFhUslT3wcI8tMA+wLKK/9e7gMCq0S6hzgjN2
-   Hq1YbD0mmLc9agZ9o9UvKr/6Fg2m2RKrZivJK62x0klZpbdtMTnotH48z
-   +kZ6t6eXfZ9Gq6twgEn6xXgHIWTboPFCznZMuxhzJ9C89grSRvmzLkoVO
-   xPMk9uUdBAEsz862d2D+rQWd+riPiFxtfzB879LQBWemw16cXodOPl7nR
-   3EkBYU/X3QN+4KzPwrP0B78ruHcbmNUZ/UlTF5+p5lE/rh9xa+u4PbEKp
-   A==;
-X-CSE-ConnectionGUID: wqe72icrQFCW6WDMz/rQVQ==
-X-CSE-MsgGUID: I859wsP/QTGEONJUJeuHTg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="20133355"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="20133355"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 02:11:21 -0700
-X-CSE-ConnectionGUID: fzj35jK9TJ+eByM3j0WwhA==
-X-CSE-MsgGUID: HKoQgdniTpCMC3Qz+NdhJA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="24365550"
-Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 23 Apr 2024 02:11:20 -0700
-Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rzCBJ-000048-2J;
-	Tue, 23 Apr 2024 09:11:17 +0000
-Date: Tue, 23 Apr 2024 17:10:44 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- 8996f93fc3880d000a0a0cb40c724d5830e140fd
-Message-ID: <202404231741.CoKTeScj-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1713872429; c=relaxed/simple;
+	bh=/Lwk9cGiFCTAlohZ1IS3e7lAjH6XXaUG0XDKhwUfqE0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=r/ls7EkQ72pffBnT9n+7uCfm11AnRZDj4RXXdKuFJ7LItjMbSXnYOh3F+L/S/xWpjRWiDSs35NIBoCoeR2ygm869VAWMJv2FY4N9HHUJCN6Cp4g2JAQ1saLnKtrvB+U2bRHuE/E9cMOfZeoExCyU5oXvPJqrsWOUHeaN4keg9JA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZPyOaXPP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39B97C32783;
+	Tue, 23 Apr 2024 11:40:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1713872429;
+	bh=/Lwk9cGiFCTAlohZ1IS3e7lAjH6XXaUG0XDKhwUfqE0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ZPyOaXPPSxJkCaf0ULLQ4rtUSdaY6o+65mAJo/XAR7BC3fwyldE2y/Yh2/pqq8tO9
+	 Xw1fbGaz7bdjyAw1mAKD/QiDxg/pLaTaNKQvhIkgSaUAdo71TAXVmRM4o4/GiApPTw
+	 phMtvT8Dnc8o0zxu7bSvJYt71ONSwI7ZMpEly4HrF8zqfH4nvouMKgZijnzgd/8DKD
+	 xAm1e4FmfTlF5a5pWh0rc7+Vxu3E8Esq25UGNeJSsB1zRz+Tu5p/Vg6lf5uLukctSY
+	 8tceywj+fFU+rdHRZbx35cBGrhYsznJckVP+xvo1+MLbffuDMnecczGZHmr8M3FkA+
+	 h5llPNR+/YNOg==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Li Nan <linan122@huawei.com>,
+	Yu Kuai <yukuai3@huawei.com>,
+	Tejun Heo <tj@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Sasha Levin <sashal@kernel.org>,
+	josef@toxicpanda.com,
+	cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 18/18] blk-iocost: do not WARN if iocg was already offlined
+Date: Tue, 23 Apr 2024 07:01:14 -0400
+Message-ID: <20240423110118.1652940-18-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240423110118.1652940-1-sashal@kernel.org>
+References: <20240423110118.1652940-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.8.7
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: 8996f93fc3880d000a0a0cb40c724d5830e140fd  cgroup/cpuset: Statically initialize more members of top_cpuset
+From: Li Nan <linan122@huawei.com>
 
-elapsed time: 791m
+[ Upstream commit 01bc4fda9ea0a6b52f12326486f07a4910666cf6 ]
 
-configs tested: 163
-configs skipped: 3
+In iocg_pay_debt(), warn is triggered if 'active_list' is empty, which
+is intended to confirm iocg is active when it has debt. However, warn
+can be triggered during a blkcg or disk removal, if iocg_waitq_timer_fn()
+is run at that time:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+  WARNING: CPU: 0 PID: 2344971 at block/blk-iocost.c:1402 iocg_pay_debt+0x14c/0x190
+  Call trace:
+  iocg_pay_debt+0x14c/0x190
+  iocg_kick_waitq+0x438/0x4c0
+  iocg_waitq_timer_fn+0xd8/0x130
+  __run_hrtimer+0x144/0x45c
+  __hrtimer_run_queues+0x16c/0x244
+  hrtimer_interrupt+0x2cc/0x7b0
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240423   gcc  
-arc                   randconfig-002-20240423   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                   randconfig-001-20240423   clang
-arm                   randconfig-002-20240423   clang
-arm                   randconfig-003-20240423   clang
-arm                   randconfig-004-20240423   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240423   clang
-arm64                 randconfig-002-20240423   gcc  
-arm64                 randconfig-003-20240423   clang
-arm64                 randconfig-004-20240423   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240423   gcc  
-csky                  randconfig-002-20240423   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240423   clang
-hexagon               randconfig-002-20240423   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240423   clang
-i386         buildonly-randconfig-002-20240423   clang
-i386         buildonly-randconfig-003-20240423   gcc  
-i386         buildonly-randconfig-004-20240423   clang
-i386         buildonly-randconfig-005-20240423   clang
-i386         buildonly-randconfig-006-20240423   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240423   gcc  
-i386                  randconfig-002-20240423   gcc  
-i386                  randconfig-003-20240423   clang
-i386                  randconfig-004-20240423   gcc  
-i386                  randconfig-005-20240423   clang
-i386                  randconfig-006-20240423   clang
-i386                  randconfig-011-20240423   gcc  
-i386                  randconfig-012-20240423   clang
-i386                  randconfig-013-20240423   clang
-i386                  randconfig-014-20240423   gcc  
-i386                  randconfig-015-20240423   gcc  
-i386                  randconfig-016-20240423   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20240423   gcc  
-loongarch             randconfig-002-20240423   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240423   gcc  
-nios2                 randconfig-002-20240423   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240423   gcc  
-parisc                randconfig-002-20240423   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc               randconfig-001-20240423   gcc  
-powerpc               randconfig-002-20240423   gcc  
-powerpc               randconfig-003-20240423   clang
-powerpc64             randconfig-001-20240423   gcc  
-powerpc64             randconfig-002-20240423   clang
-powerpc64             randconfig-003-20240423   clang
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240423   gcc  
-riscv                 randconfig-002-20240423   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240423   clang
-s390                  randconfig-002-20240423   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240423   gcc  
-sh                    randconfig-002-20240423   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240423   gcc  
-sparc64               randconfig-002-20240423   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240423   gcc  
-um                    randconfig-002-20240423   gcc  
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240423   clang
-x86_64       buildonly-randconfig-002-20240423   clang
-x86_64       buildonly-randconfig-003-20240423   gcc  
-x86_64       buildonly-randconfig-004-20240423   gcc  
-x86_64       buildonly-randconfig-005-20240423   clang
-x86_64       buildonly-randconfig-006-20240423   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240423   clang
-x86_64                randconfig-002-20240423   gcc  
-x86_64                randconfig-003-20240423   gcc  
-x86_64                randconfig-004-20240423   gcc  
-x86_64                randconfig-005-20240423   gcc  
-x86_64                randconfig-006-20240423   gcc  
-x86_64                randconfig-011-20240423   gcc  
-x86_64                randconfig-012-20240423   gcc  
-x86_64                randconfig-013-20240423   clang
-x86_64                randconfig-014-20240423   clang
-x86_64                randconfig-015-20240423   clang
-x86_64                randconfig-016-20240423   gcc  
-x86_64                randconfig-071-20240423   clang
-x86_64                randconfig-072-20240423   clang
-x86_64                randconfig-073-20240423   clang
-x86_64                randconfig-074-20240423   gcc  
-x86_64                randconfig-075-20240423   gcc  
-x86_64                randconfig-076-20240423   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240423   gcc  
-xtensa                randconfig-002-20240423   gcc  
+The warn in this situation is meaningless. Since this iocg is being
+removed, the state of the 'active_list' is irrelevant, and 'waitq_timer'
+is canceled after removing 'active_list' in ioc_pd_free(), which ensures
+iocg is freed after iocg_waitq_timer_fn() returns.
 
+Therefore, add the check if iocg was already offlined to avoid warn
+when removing a blkcg or disk.
+
+Signed-off-by: Li Nan <linan122@huawei.com>
+Reviewed-by: Yu Kuai <yukuai3@huawei.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+Link: https://lore.kernel.org/r/20240419093257.3004211-1-linan666@huaweicloud.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ block/blk-iocost.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index 04d44f0bcbc85..9a70aaf2b0d84 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -1438,8 +1438,11 @@ static void iocg_pay_debt(struct ioc_gq *iocg, u64 abs_vpay,
+ 	lockdep_assert_held(&iocg->ioc->lock);
+ 	lockdep_assert_held(&iocg->waitq.lock);
+ 
+-	/* make sure that nobody messed with @iocg */
+-	WARN_ON_ONCE(list_empty(&iocg->active_list));
++	/*
++	 * make sure that nobody messed with @iocg. Check iocg->pd.online
++	 * to avoid warn when removing blkcg or disk.
++	 */
++	WARN_ON_ONCE(list_empty(&iocg->active_list) && iocg->pd.online);
+ 	WARN_ON_ONCE(iocg->inuse > 1);
+ 
+ 	iocg->abs_vdebt -= min(abs_vpay, iocg->abs_vdebt);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.0
+
 
