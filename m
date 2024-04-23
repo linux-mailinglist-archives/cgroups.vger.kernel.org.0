@@ -1,199 +1,118 @@
-Return-Path: <cgroups+bounces-2675-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2676-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91C698AF2BE
-	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 17:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D50408AF315
+	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 17:56:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09E0A1F23AF2
-	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 15:53:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EA301F2273E
+	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 15:56:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A57813C9BE;
-	Tue, 23 Apr 2024 15:53:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B8AB13C9DE;
+	Tue, 23 Apr 2024 15:56:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="THV9GSZw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MjKYTsb7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FEBD13C687;
-	Tue, 23 Apr 2024 15:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0EBB136652;
+	Tue, 23 Apr 2024 15:56:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713887608; cv=none; b=p9oziASvbxeLGk2YDIJDMCDnPdV4NZ9BLT7NkeY8N+F13dZF4e9IXH/cFPd0oLbtXstCvzDhVTKPnaH9TMsAcnmAU/4gqE1Nc8H/aK76gZq3fcxOSYvglkCd15ekbPsGJo8s/SH3bvE6XIlhWJHCgL1qPpOc/Al74DINeInNTcM=
+	t=1713887802; cv=none; b=O4yFeHgDPT2JJmz/8yLoV8ETvWfepLsB0b6RGQACmK5n3h4AuPRMXucL6+TXIdU/2eswn7FbjUMoBXhtsYEm+o6A4nuWUAyjEdgs5fBmI62EP9bCYS4whecVInUKClbDrdJv8RizhUJ0Hl6Zrn/MoGQpqCPQpybGU807YuR1FGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713887608; c=relaxed/simple;
-	bh=fh7yjp2tSefFpIVGJP6q+aTlJDI9CIF+XVgZbkGG5Uw=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=ozPnoPVeoQw87vkazA5PebaKeslZpjUYSINnHOZt2+gmONXDy/V7FrCN98wMD7hssEv8HFBLQ3WcF8wXsA8NbUyKuY77b80lFHxwvR+ibqqIUJwQyeD+7lcM8nls72Ixpq+1VVUWJ5jv2KeK/gzCnE44tigv3B6iRstgoXu6wHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=THV9GSZw; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713887607; x=1745423607;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=fh7yjp2tSefFpIVGJP6q+aTlJDI9CIF+XVgZbkGG5Uw=;
-  b=THV9GSZwLoOy6vq8WtKhs17AYyMDzaiLe7THtC8v9Bsl9Fuo8vHgOMZ3
-   9KqF+xDiwqjZFK3dF6gAcknJ06OHM4mT5nWbloK6zzm7Usg480i97EBVW
-   L/23MD3AL8b+HqqDqTPEWKtRDC0VZpMWgex6AoIwrAhkxwkAYa/9afpVe
-   a7ZJxljBbuYSFCyuoOrmNB9ENlPRRyWUgeo5eGUFV8pDVm5mAbOz21sjH
-   oTdkTzMOXYJCnDmqI8/Ah9/x2GLfnu4D0596/bD9a1wmQBLTw11JUmXgD
-   p2bWqrlsQ2u8ywl9lG8JdoRaiSQxxvsjKm3y76kHmEv6KQ/dFlcydMXIk
-   A==;
-X-CSE-ConnectionGUID: xwWmg7KkSlKdC9a/nlGT4Q==
-X-CSE-MsgGUID: rOJJaTRWTpeBciUCCnXJPw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="31975009"
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="31975009"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 08:53:27 -0700
-X-CSE-ConnectionGUID: g5k+nMEzTKCel3CKajTLvg==
-X-CSE-MsgGUID: LZ/fAsciR6yBchxQZb7MlQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="24408924"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.125.85.20])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 23 Apr 2024 08:53:23 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
- mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
- x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com,
- tim.c.chen@linux.intel.com, "Huang, Kai" <kai.huang@intel.com>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com, chrisyan@microsoft.com
-Subject: Re: [PATCH v12 08/14] x86/sgx: Add basic EPC reclamation flow for
- cgroup
-References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
- <20240416032011.58578-9-haitao.huang@linux.intel.com>
- <8a9ae08a-c813-442d-9fc3-031a4c984700@intel.com>
-Date: Tue, 23 Apr 2024 10:53:21 -0500
+	s=arc-20240116; t=1713887802; c=relaxed/simple;
+	bh=+WQoZCfvynzpRW6VnCCjpKF3zxAAd2n5DqdreZLhSBk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G6ZM9Lm7cKa8Zza4xGF6Z2d3RHts1RC0SRpmXUkfqcVsivGmMRhd8HQK89n1cDYj/w24DXGWPqebpTKOEnr5b2qJEOkTfgIcVhvTeL3lMLZojoAIjq7GfL8k6lX6HERb6vVPpSmgO9MlyJi9xP5piRItdNMand4z3BAFQoKzz5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MjKYTsb7; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ed2170d89fso4457836b3a.1;
+        Tue, 23 Apr 2024 08:56:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1713887800; x=1714492600; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TiXJwUhPMkjGHKs13WSq0NGz2KDz4IaigXpr6ZbxkHA=;
+        b=MjKYTsb71fwZou2p4aMhS2LlO4+ZSDQvRmu/aZAZ0sFSRnzueGJfp6qIk30CCF3Nyn
+         ME90yAMNodEr2uiPjAGV0OKP/5SJCiOvBN8bhDD/9LeHgYPP8ixbn9zcC/wV2kx16EMw
+         LdD4zaPQgABL6RLAwKuKeby9pVaPhUHuSZv93W8BskSLL4dBtvi2hfLSsWFN+JA5DWdX
+         hZHnNpd8bY6iS3xV0WFLUt6DwbDx7nrBOf4BgrsusCdXqLwL5idHl4JFtGUVSrKZ/GpW
+         O7ed9xw4g1xkyQJuDUBh02AtO1IjM1j+mvj2IHDnqGw7kxbK+h+yROiVbiv8ct1/k2OG
+         dyVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713887800; x=1714492600;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TiXJwUhPMkjGHKs13WSq0NGz2KDz4IaigXpr6ZbxkHA=;
+        b=m5BM8yHerAKawoqDFqtXlYMTBnPrXXzA/6CIzchlLh/2uWhh0v7Oc1e0CTppTjTik7
+         t61OmLAVzzc0UvEKgkMp6xP+p1j49Rujo11/l3gKKD2LEumvwuArIR3+YAvJLx1BNM5j
+         a3Tcmu9v0wmehJpOMAZj4vYZc9jhQh54mIcNO78xszmifvs0QFdliZJBCSyN2Xizo0pd
+         L9gQ/C6Y+v95LDLh1/N52ECr0BtG/ljYPK0TrMSIr3uzK3ACj6LU7fEYIIDGDn2x6pSI
+         97WFiVwgdp9xA8HmKO1w+PHDvJtaFLSeIoyyWdYhMN7uxdLEJJ15ixpnh0DzlxgikPZq
+         LnJg==
+X-Forwarded-Encrypted: i=1; AJvYcCV2MmjmRU/kTtm2AVZwAr48fvSeCRuBNpzpiz8ELfDrLiZl4Ty1Vb9uODaWMc47laTC5vI68mAqlMNl49e9HMrTdR+SmyqHHR6Bjvsqv6YG8Wyow2qgQ4s3Gzlg0RE3JHxeWBlFzOSO8z0T46p2T4h4mA66f74njH9Gts8RD6Uf4Jlp3fc=
+X-Gm-Message-State: AOJu0YwaLXFkjB9uycPERVQ0VCdh1Zy4DwazXyb15MIMhw19b35JgCL7
+	MNeKV80Jfnmo2M0a0n6O3KhPVkEKLdmAjwDsyda4BuIfAKxg1uNf
+X-Google-Smtp-Source: AGHT+IEjl28DHNnTcDOKcrrQgkmsbyO0K1hBgAt0eVjjLJ03dT44w2VLFfYWunJLIKjDEVbIXfLeGQ==
+X-Received: by 2002:a05:6a21:2d8c:b0:1a3:a821:f297 with SMTP id ty12-20020a056a212d8c00b001a3a821f297mr4606950pzb.2.1713887799820;
+        Tue, 23 Apr 2024 08:56:39 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:6f51])
+        by smtp.gmail.com with ESMTPSA id gs9-20020a056a004d8900b006e694719fa0sm10119667pfb.147.2024.04.23.08.56.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Apr 2024 08:56:39 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 23 Apr 2024 05:56:38 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Jan Kara <jack@suse.cz>
+Cc: Xiu Jianfeng <xiujianfeng@huawei.com>, viro@zeniv.linux.org.uk,
+	brauner@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, akpm@linux-foundation.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH -next] cgroup: Introduce css_is_online() helper
+Message-ID: <ZifaNsx9wFDp8m-_@slm.duckdns.org>
+References: <20240420094428.1028477-1-xiujianfeng@huawei.com>
+ <20240423134923.osuljlalsd27awz3@quack3>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2moue7exwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <8a9ae08a-c813-442d-9fc3-031a4c984700@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240423134923.osuljlalsd27awz3@quack3>
 
-On Wed, 17 Apr 2024 18:51:28 -0500, Huang, Kai <kai.huang@intel.com> wrote:
+Hello,
 
->
->
-> On 16/04/2024 3:20 pm, Haitao Huang wrote:
->> From: Kristen Carlson Accardi <kristen@linux.intel.com>
->>  Currently in the EPC page allocation, the kernel simply fails the
->> allocation when the current EPC cgroup fails to charge due to its usage
->> reaching limit.  This is not ideal. When that happens, a better way is
->> to reclaim EPC page(s) from the current EPC cgroup (and/or its
->> descendants) to reduce its usage so the new allocation can succeed.
->>  Add the basic building blocks to support per-cgroup reclamation.
->>  Currently the kernel only has one place to reclaim EPC pages: the  
->> global
->> EPC LRU list.  To support the "per-cgroup" EPC reclaim, maintain an LRU
->> list for each EPC cgroup, and introduce a "cgroup" variant function to
->> reclaim EPC pages from a given EPC cgroup and its descendants.
->>  Currently the kernel does the global EPC reclaim in sgx_reclaim_page().
->> It always tries to reclaim EPC pages in batch of SGX_NR_TO_SCAN (16)
->> pages.  Specifically, it always "scans", or "isolates" SGX_NR_TO_SCAN
->> pages from the global LRU, and then tries to reclaim these pages at once
->> for better performance.
->>  Implement the "cgroup" variant EPC reclaim in a similar way, but keep
->> the implementation simple: 1) change sgx_reclaim_pages() to take an LRU
->> as input, and return the pages that are "scanned" and attempted for
->> reclamation (but not necessarily reclaimed successfully); 2) loop the
->> given EPC cgroup and its descendants and do the new sgx_reclaim_pages()
->> until SGX_NR_TO_SCAN pages are "scanned".
->>  This implementation, encapsulated in sgx_cgroup_reclaim_pages(), always
->> tries to reclaim SGX_NR_TO_SCAN pages from the LRU of the given EPC
->> cgroup, and only moves to its descendants when there's no enough
->> reclaimable EPC pages to "scan" in its LRU.  It should be enough for
->> most cases.
->>  Note, this simple implementation doesn't _exactly_ mimic the current
->> global EPC reclaim (which always tries to do the actual reclaim in batch
->> of SGX_NR_TO_SCAN pages): when LRUs have less than SGX_NR_TO_SCAN
->> reclaimable pages, the actual reclaim of EPC pages will be split into
->> smaller batches _across_ multiple LRUs with each being smaller than
->> SGX_NR_TO_SCAN pages.
->>  A more precise way to mimic the current global EPC reclaim would be to
->> have a new function to only "scan" (or "isolate") SGX_NR_TO_SCAN pages
->> _across_ the given EPC cgroup _AND_ its descendants, and then do the
->> actual reclaim in one batch.  But this is unnecessarily complicated at
->> this stage.
->>  Alternatively, the current sgx_reclaim_pages() could be changed to
->> return the actual "reclaimed" pages, but not "scanned" pages. However,
->> the reclamation is a lengthy process, forcing a successful reclamation
->> of predetermined number of pages may block the caller for too long. And
->> that may not be acceptable in some synchronous contexts, e.g., in
->> serving an ioctl().
->>  With this building block in place, add synchronous reclamation support
->> in sgx_cgroup_try_charge(): trigger a call to
->> sgx_cgroup_reclaim_pages() if the cgroup reaches its limit and the
->> caller allows synchronous reclaim as indicated by s newly added
->> parameter.
->>  A later patch will add support for asynchronous reclamation reusing
->> sgx_cgroup_reclaim_pages().
->>  Note all reclaimable EPC pages are still tracked in the global LRU thus
->> no per-cgroup reclamation is actually active at the moment. Per-cgroup
->> tracking and reclamation will be turned on in the end after all
->> necessary infrastructure is in place.
->
-> Nit:
->
-> "all necessary infrastructures are in place", or, "all necessary  
-> building blocks are in place".
->
-> ?
->
->>  Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
->> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
->> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
->> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
->> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->> Tested-by: Jarkko Sakkinen <jarkko@kernel.org>
->> ---
->
-> Reviewed-by: Kai Huang <kai.huang@intel.com>
->
+On Tue, Apr 23, 2024 at 03:49:23PM +0200, Jan Kara wrote:
+> On Sat 20-04-24 09:44:28, Xiu Jianfeng wrote:
+> > Introduce css_is_online() helper to test if whether the specified
+> > css is online, avoid testing css.flags with CSS_ONLINE directly
+> > outside of cgroup.c.
+> > 
+> > Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+> 
+> Looks good. Feel free to add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-Thanks
+I'm a bit skeptical about these trivial helpers. If the test is something
+more involved or has complications which need documentation (e.g. regarding
+synchronization and what not), the helper would be useful even if it's just
+as a place to centrally document what's going on. However, here, it's just
+testing one flag and I'm not sure what benefits the helper brings.
 
-> More nitpickings below:
->
-> [...]
->
->> -static inline int sgx_cgroup_try_charge(struct sgx_cgroup *sgx_cg)
->> +static inline int sgx_cgroup_try_charge(struct sgx_cgroup *sgx_cg,  
->> enum sgx_reclaim reclaim)
->
-> Let's still wrap the text on 80-character basis.
->
-> I guess most people are more used to that.
->
-> [...]
->
->> -		epc_page = list_first_entry_or_null(&sgx_global_lru.reclaimable,
->> -						    struct sgx_epc_page, list);
->> +		epc_page = list_first_entry_or_null(&lru->reclaimable, struct  
->> sgx_epc_page, list);
->
-> Ditto.
->
+Thanks.
 
-Actually I changed to 100 char width based on comments from Jarkko IIRC.
-I don't have personal preference, but will not change back to 80 unless  
-Jarkko also agrees.
-
-Thanks
-Haitao
+-- 
+tejun
 
