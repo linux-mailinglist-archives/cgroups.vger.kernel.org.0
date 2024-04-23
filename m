@@ -1,46 +1,46 @@
-Return-Path: <cgroups+bounces-2669-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2670-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 343EE8AE481
-	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 13:44:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F5038AE4AF
+	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 13:48:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 662BE1C22BAA
-	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 11:44:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09C041C22C86
+	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 11:48:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1896B138481;
-	Tue, 23 Apr 2024 11:40:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7DB813E3EA;
+	Tue, 23 Apr 2024 11:40:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZPyOaXPP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qP8f49jh"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0CC3137752;
-	Tue, 23 Apr 2024 11:40:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFE513E04F;
+	Tue, 23 Apr 2024 11:40:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872429; cv=none; b=gmlouNwc/T8aBtNcG/Idr8w49Nn0IOJWw9HysLBzonghOOmQTxkyYZikOYtS4Fz5Lwcc0Nwod3PRvUw/Jg8Adg1XsyxIhfSE0cEMQ/qvBfALjEzyGvIXW8WWE2LxUHBZ+KZX1N/KWl/GobJx5Gu9uYcewipeJbvqpsFCpGf9E8M=
+	t=1713872456; cv=none; b=nKrItd9HfMlUgwMk0F9ludd41YT3/lboN7vZ7YDMSwqiiIMFDG7nslJARkkL8/eRquaXcZ6U2LSLS4g85NUcrkii8LI4IoRH4tZaslJycTuOHfUH1rlhIcDH2Ixh4ztuA7DygOs05kNF4ybOjSBHqzEZh/MD7gxfkZXeLZ90vM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872429; c=relaxed/simple;
-	bh=/Lwk9cGiFCTAlohZ1IS3e7lAjH6XXaUG0XDKhwUfqE0=;
+	s=arc-20240116; t=1713872456; c=relaxed/simple;
+	bh=4g0p/N75RcsA9tw6EzoYo7lJL11XjAoHwbaElJQ0eXc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=r/ls7EkQ72pffBnT9n+7uCfm11AnRZDj4RXXdKuFJ7LItjMbSXnYOh3F+L/S/xWpjRWiDSs35NIBoCoeR2ygm869VAWMJv2FY4N9HHUJCN6Cp4g2JAQ1saLnKtrvB+U2bRHuE/E9cMOfZeoExCyU5oXvPJqrsWOUHeaN4keg9JA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZPyOaXPP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39B97C32783;
-	Tue, 23 Apr 2024 11:40:28 +0000 (UTC)
+	 MIME-Version; b=Oq9IFKDBTR2qTVD23wQPCOk7m44ocO6fD4Yvm0zVM/MPDEuvnETMRg4o6YSkKjk9TTLfCB5QLuQ4JVTQL33k6f07K25XnUdHSAvq/0rxewTKIokJpSSKySAwwv0Wh+Jmx3uSPHx/HAngaQG45lk9aIgu0H3EJb3dJZb0MxUx9Fg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qP8f49jh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 477EBC3277B;
+	Tue, 23 Apr 2024 11:40:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713872429;
-	bh=/Lwk9cGiFCTAlohZ1IS3e7lAjH6XXaUG0XDKhwUfqE0=;
+	s=k20201202; t=1713872456;
+	bh=4g0p/N75RcsA9tw6EzoYo7lJL11XjAoHwbaElJQ0eXc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZPyOaXPPSxJkCaf0ULLQ4rtUSdaY6o+65mAJo/XAR7BC3fwyldE2y/Yh2/pqq8tO9
-	 Xw1fbGaz7bdjyAw1mAKD/QiDxg/pLaTaNKQvhIkgSaUAdo71TAXVmRM4o4/GiApPTw
-	 phMtvT8Dnc8o0zxu7bSvJYt71ONSwI7ZMpEly4HrF8zqfH4nvouMKgZijnzgd/8DKD
-	 xAm1e4FmfTlF5a5pWh0rc7+Vxu3E8Esq25UGNeJSsB1zRz+Tu5p/Vg6lf5uLukctSY
-	 8tceywj+fFU+rdHRZbx35cBGrhYsznJckVP+xvo1+MLbffuDMnecczGZHmr8M3FkA+
-	 h5llPNR+/YNOg==
+	b=qP8f49jhoReQ+QzJI13lpFWv9+RLGpv7kyNPIXO3b0IAELyHRHwGR5TLOA5iWFLhg
+	 hcADCbRBrCWUjhNEGBJ7D4+qNkvHI4paCPETWNbToXHPXG9D3kpWzmSD9dtqKYg/2R
+	 gQ5Bc4JY8JOB45ZNPGixD5qYC3Zq/smhanYa3NsanTAkBhwCMjKiH7TQ4av739vxu7
+	 M1OQQuM2aLHs0v2sp7UC2p/U1N9Mqg4AJf3S4L4/S+SyU444yRu5iIIOiegmtJbTl2
+	 mvOyU6XoScVsdbJ7rB9sTr4GhUf1I40c4xezkahAoPmksMW94BM9Mdu2TmGz9SSi4f
+	 YLpsHGs/voMYw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -52,12 +52,12 @@ Cc: Li Nan <linan122@huawei.com>,
 	josef@toxicpanda.com,
 	cgroups@vger.kernel.org,
 	linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 18/18] blk-iocost: do not WARN if iocg was already offlined
-Date: Tue, 23 Apr 2024 07:01:14 -0400
-Message-ID: <20240423110118.1652940-18-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 16/16] blk-iocost: do not WARN if iocg was already offlined
+Date: Tue, 23 Apr 2024 07:01:49 -0400
+Message-ID: <20240423110151.1658546-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240423110118.1652940-1-sashal@kernel.org>
-References: <20240423110118.1652940-1-sashal@kernel.org>
+In-Reply-To: <20240423110151.1658546-1-sashal@kernel.org>
+References: <20240423110151.1658546-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -66,7 +66,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.8.7
+X-stable-base: Linux 6.6.28
 Content-Transfer-Encoding: 8bit
 
 From: Li Nan <linan122@huawei.com>
@@ -106,7 +106,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 04d44f0bcbc85..9a70aaf2b0d84 100644
+index 7ee8d85c2c68d..b2e913fe61e67 100644
 --- a/block/blk-iocost.c
 +++ b/block/blk-iocost.c
 @@ -1438,8 +1438,11 @@ static void iocg_pay_debt(struct ioc_gq *iocg, u64 abs_vpay,
