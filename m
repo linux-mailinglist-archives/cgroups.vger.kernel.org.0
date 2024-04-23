@@ -1,93 +1,78 @@
-Return-Path: <cgroups+bounces-2674-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2675-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9609D8AEB22
-	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 17:31:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91C698AF2BE
+	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 17:53:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E9D91F220FA
-	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 15:31:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09E0A1F23AF2
+	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 15:53:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970C413C3E3;
-	Tue, 23 Apr 2024 15:31:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A57813C9BE;
+	Tue, 23 Apr 2024 15:53:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HDgssAaK"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="THV9GSZw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B4A713698B;
-	Tue, 23 Apr 2024 15:31:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FEBD13C687;
+	Tue, 23 Apr 2024 15:53:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713886276; cv=none; b=PMPtwYUpsDwn04I0R3T0Wd9z/NOIF/gnif8Z8TNNxeuGhv/X43FCCx/IId7rgHSLf0KT22/OpwAAklT7LefgWrD8/oXqHH1LXjfJtayWsBcedqP7V0yH/w6wMuszkXxfKiay8YZOZCM40RIRhHc3WY2biWRF7zzsA3O6hZ2N2Yc=
+	t=1713887608; cv=none; b=p9oziASvbxeLGk2YDIJDMCDnPdV4NZ9BLT7NkeY8N+F13dZF4e9IXH/cFPd0oLbtXstCvzDhVTKPnaH9TMsAcnmAU/4gqE1Nc8H/aK76gZq3fcxOSYvglkCd15ekbPsGJo8s/SH3bvE6XIlhWJHCgL1qPpOc/Al74DINeInNTcM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713886276; c=relaxed/simple;
-	bh=BtNEO6lMIphI6XxyY8shoILbPgSyEZ6EIn9zTBj6O7s=;
+	s=arc-20240116; t=1713887608; c=relaxed/simple;
+	bh=fh7yjp2tSefFpIVGJP6q+aTlJDI9CIF+XVgZbkGG5Uw=;
 	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=hc+MaTKNaLXeKi28IQbrkaRDveYCTvwvyY5tk4+tf8vz7KvPkWd7WYrBSWO9W5cX9l5LZ+gLscxRE/syC3hX9C21dKkYau2CYU9NhP2Trs7VzmM1KNmVjmxqXo8LHQJ7EyG1gf6ZaAGspgAzcKciohckw1JW3hc3rLkAdot/Q1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HDgssAaK; arc=none smtp.client-ip=192.198.163.12
+	 Message-ID:In-Reply-To; b=ozPnoPVeoQw87vkazA5PebaKeslZpjUYSINnHOZt2+gmONXDy/V7FrCN98wMD7hssEv8HFBLQ3WcF8wXsA8NbUyKuY77b80lFHxwvR+ibqqIUJwQyeD+7lcM8nls72Ixpq+1VVUWJ5jv2KeK/gzCnE44tigv3B6iRstgoXu6wHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=THV9GSZw; arc=none smtp.client-ip=198.175.65.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1713886271; x=1745422271;
+  t=1713887607; x=1745423607;
   h=to:cc:subject:references:date:mime-version:
    content-transfer-encoding:from:message-id:in-reply-to;
-  bh=BtNEO6lMIphI6XxyY8shoILbPgSyEZ6EIn9zTBj6O7s=;
-  b=HDgssAaKCd0d4uAbdn5USdIGaBT64J9O90+B+8QNRonmIs0QQ0uYVKGz
-   FCi5j09qJAfkMjreEhfkLBv2XlReeNnioMdnWeDlYhGF8r5Z71EN8w6N6
-   RbLidc2lqNubO+rURGwGwYfimD1OGSFSd+1Hjg1GkAajMWxJr5IhrlkI2
-   mBJcm+P3oK0ViUpn7+i5oqqO2CqGQhw1Lbm56G+3jKLDZGsfkTzBcZMUk
-   7dJnGQ0is9iu0VJMSRmS8/gCojF8n+ku3bO/lfMzJv7uvJWauzemqGSs0
-   g6Gf4WwdLeVzoom93vYS7eG6J5io5QOPOA540scsTPuapaj8k/yIq+2+8
-   g==;
-X-CSE-ConnectionGUID: iX6uN4MBShiAe964FFU5Bw==
-X-CSE-MsgGUID: rQqQT/xdRaqrSFGSn1PSbg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="13263417"
+  bh=fh7yjp2tSefFpIVGJP6q+aTlJDI9CIF+XVgZbkGG5Uw=;
+  b=THV9GSZwLoOy6vq8WtKhs17AYyMDzaiLe7THtC8v9Bsl9Fuo8vHgOMZ3
+   9KqF+xDiwqjZFK3dF6gAcknJ06OHM4mT5nWbloK6zzm7Usg480i97EBVW
+   L/23MD3AL8b+HqqDqTPEWKtRDC0VZpMWgex6AoIwrAhkxwkAYa/9afpVe
+   a7ZJxljBbuYSFCyuoOrmNB9ENlPRRyWUgeo5eGUFV8pDVm5mAbOz21sjH
+   oTdkTzMOXYJCnDmqI8/Ah9/x2GLfnu4D0596/bD9a1wmQBLTw11JUmXgD
+   p2bWqrlsQ2u8ywl9lG8JdoRaiSQxxvsjKm3y76kHmEv6KQ/dFlcydMXIk
+   A==;
+X-CSE-ConnectionGUID: xwWmg7KkSlKdC9a/nlGT4Q==
+X-CSE-MsgGUID: rOJJaTRWTpeBciUCCnXJPw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11053"; a="31975009"
 X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="13263417"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 08:30:57 -0700
-X-CSE-ConnectionGUID: X1SVaLSnQduHyFJQCL89eA==
-X-CSE-MsgGUID: 0gkSmFhLTiCjmxB05KP/ew==
+   d="scan'208";a="31975009"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 08:53:27 -0700
+X-CSE-ConnectionGUID: g5k+nMEzTKCel3CKajTLvg==
+X-CSE-MsgGUID: LZ/fAsciR6yBchxQZb7MlQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
-   d="scan'208";a="24442745"
+   d="scan'208";a="24408924"
 Received: from hhuan26-mobl.amr.corp.intel.com ([10.125.85.20])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 23 Apr 2024 08:30:53 -0700
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 23 Apr 2024 08:53:23 -0700
 Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "jarkko@kernel.org" <jarkko@kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hpa@zytor.com"
- <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>, "tj@kernel.org"
- <tj@kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>, "Mehta, Sohil"
- <sohil.mehta@intel.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "tim.c.chen@linux.intel.com"
- <tim.c.chen@linux.intel.com>, "tglx@linutronix.de" <tglx@linutronix.de>,
- "bp@alien8.de" <bp@alien8.de>, "Huang, Kai" <kai.huang@intel.com>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
- <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
- "chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: [PATCH v12 09/14] x86/sgx: Implement async reclamation for cgroup
+To: jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
+ mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+ x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com,
+ tim.c.chen@linux.intel.com, "Huang, Kai" <kai.huang@intel.com>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+Subject: Re: [PATCH v12 08/14] x86/sgx: Add basic EPC reclamation flow for
+ cgroup
 References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
- <20240416032011.58578-10-haitao.huang@linux.intel.com>
- <640866c5-9fe0-4f7b-a459-7a685dbe4092@intel.com>
- <op.2mhn6ti6wjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <4be309656cb4e03793703098bbebab3dee93077e.camel@intel.com>
- <op.2mh5p7fawjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <e8d076fb097774f1f0fe3365883e6cf5a823fc4f.camel@intel.com>
- <op.2mm0u7uswjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <914371bd0673870c03e5f4c37db5a2a08fc50aa4.camel@intel.com>
- <op.2momr8oewjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <be1b1198e05a91b16677acf4037cd52519273529.camel@intel.com>
-Date: Tue, 23 Apr 2024 10:30:51 -0500
+ <20240416032011.58578-9-haitao.huang@linux.intel.com>
+ <8a9ae08a-c813-442d-9fc3-031a4c984700@intel.com>
+Date: Tue, 23 Apr 2024 10:53:21 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -97,239 +82,117 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 From: "Haitao Huang" <haitao.huang@linux.intel.com>
 Organization: Intel
-Message-ID: <op.2motdpw6wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <be1b1198e05a91b16677acf4037cd52519273529.camel@intel.com>
+Message-ID: <op.2moue7exwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <8a9ae08a-c813-442d-9fc3-031a4c984700@intel.com>
 User-Agent: Opera Mail/1.0 (Win32)
 
-On Tue, 23 Apr 2024 09:19:53 -0500, Huang, Kai <kai.huang@intel.com> wrote:
-
-> On Tue, 2024-04-23 at 08:08 -0500, Haitao Huang wrote:
->> On Mon, 22 Apr 2024 17:16:34 -0500, Huang, Kai <kai.huang@intel.com>  
->> wrote:
->>
->> > On Mon, 2024-04-22 at 11:17 -0500, Haitao Huang wrote:
->> > > On Sun, 21 Apr 2024 19:22:27 -0500, Huang, Kai <kai.huang@intel.com>
->> > > wrote:
->> > >
->> > > > On Fri, 2024-04-19 at 20:14 -0500, Haitao Huang wrote:
->> > > > > > > I think we can add support for "sgx_cgroup=disabled" in  
->> future
->> > > if
->> > > > > indeed
->> > > > > > > needed. But just for init failure, no?
->> > > > > > >
->> > > > > >
->> > > > > > It's not about the commandline, which we can add in the future
->> > > when
->> > > > > > needed.  It's about we need to have a way to handle SGX cgroup
->> > > being
->> > > > > > disabled at boot time nicely, because we already have a case
->> > > where we
->> > > > > > need
->> > > > > > to do so.
->> > > > > >
->> > > > > > Your approach looks half-way to me, and is not future
->> > > extendible.  If
->> > > > > we
->> > > > > > choose to do it, do it right -- that is, we need a way to  
->> disable
->> > > it
->> > > > > > completely in both kernel and userspace so that userspace  
->> won't be
->> > > > > able> to
->> > > > > > see it.
->> > > > >
->> > > > > That would need more changes in misc cgroup implementation to
->> > > support
->> > > > > sgx-disable. Right now misc does not have separate files for
->> > > different
->> > > > > resource types. So we can only block echo "sgx_epc..." to those
->> > > > > interfacefiles, can't really make files not visible.
->> > > >
->> > > > "won't be able to see" I mean "only for SGX EPC resource", but  
->> not the
->> > > > control files for the entire MISC cgroup.
->> > > >
->> > > > I replied at the beginning of the previous reply:
->> > > >
->> > > > "
->> > > > Given SGX EPC is just one type of MISC cgroup resources, we cannot
->> > > just
->> > > > disable MISC cgroup as a whole.
->> > > > "
->> > > >
->> > > Sorry I missed this point. below.
->> > >
->> > > > You just need to set the SGX EPC "capacity" to 0 to disable SGX  
->> EPC.
->> > > See
->> > > > the comment of @misc_res_capacity:
->> > > >
->> > > >  * Miscellaneous resources capacity for the entire machine. 0  
->> capacity
->> > > >  * means resource is not initialized or not present in the host.
->> > > >
->> > >
->> > > IIUC I don't think the situation we have is either of those cases.  
->> For
->> > > our
->> > > case, resource is inited and present on the host but we have  
->> allocation
->> > > error for sgx cgroup infra.
->> >
->> > You have calculated the "capacity", but later you failed something and
->> > then reset the "capacity" to 0, i.e., cleanup.  What's wrong with  
->> that?
->> >
->> > >
->> > > > And "blocking echo sgx_epc ... to those control files" is already
->> > > > sufficient for the purpose of not exposing SGX EPC to userspace,
->> > > correct?
->> > > >
->> > > > E.g., if SGX cgroup is enabled, you can see below when you read  
->> "max":
->> > > >
->> > > >  # cat /sys/fs/cgroup/my_group/misc.max
->> > > >  # <resource1> <max1>
->> > > >    sgx_epc ...
->> > > >    ...
->> > > >
->> > > > Otherwise you won't be able to see "sgx_epc":
->> > > >
->> > > >  # cat /sys/fs/cgroup/my_group/misc.max
->> > > >  # <resource1> <max1>
->> > > >    ...
->> > > >
->> > > > And when you try to write the "max" for "sgx_epc", you will hit  
->> error:
->> > > >
->> > > >  # echo "sgx_epc 100" > /sys/fs/cgroup/my_group/misc.max
->> > > >  # ... echo: write error: Invalid argument
->> > > >
->> > > > The above applies to all the control files.  To me this is pretty  
->> much
->> > > > means "SGX EPC is disabled" or "not supported" for userspace.
->> > > >
->> > > You are right, capacity == 0 does block echoing max and users see an
->> > > error
->> > > if they do that. But 1) doubt you literately wanted "SGX EPC is
->> > > disabled"
->> > > and make it unsupported in this case,
->> >
->> > I don't understand.  Something failed during SGX cgroup  
->> initialization,
->> > you _literally_ cannot continue to support it.
->> >
->> >
->>
->> Then we should just return -ENOMEM from sgx_init() when sgx cgroup
->> initialization fails?
->> I thought we only disable SGX cgroup support. SGX can still run.
->
-> I am not sure how you got this conclusion.  I specifically said something
-> failed during SGX "cgroup" initialization, so only SGX "cgroup" needs to
-> be disabled, not SGX as a whole.
->
->>
->> > > 2) even if we accept this is "sgx
->> > > cgroup disabled" I don't see how it is much better user experience  
->> than
->> > > current solution or really helps user better.
->> >
->> > In your way, the userspace is still able to see "sgx_epc" in control
->> > files
->> > and is able to update them.  So from userspace's perspective SGX  
->> cgroup
->> > is
->> > enabled, but obviously updating to "max" doesn't have any impact.   
->> This
->> > will confuse userspace.
->> >
->> > >
->>
->> Setting capacity to zero also confuses user space. Some application may
->> rely on this file to know the capacity.
->
->
-> Why??
->
-> Are you saying before this SGX cgroup patchset those applications cannot
-> run?
->
->>
->> > > Also to implement this approach, as you mentioned, we need  
->> workaround
->> > > the
->> > > fact that misc_try_charge() fails when capacity set to zero, and  
->> adding
->> > > code to return root always?
->> >
->> > Why this is a problem?
->> >
->>
->> It changes/overrides the the original meaning of capacity==0: no one can
->> allocate if capacity is zero.
->
-> Why??
->
-> Are you saying before this series, no one can allocate EPC page?
->
->>
->> > > So it seems like more workaround code to just
->> > > make it work for a failing case no one really care much and end  
->> result
->> > > is
->> > > not really much better IMHO.
->> >
->> > It's not workaround, it's the right thing to do.
->> >
->> > The result is userspace will see it being disabled when kernel  
->> disables
->> > it.
->> >
->> >
->> It's a workaround because you use the capacity==0 but it does not really
->> mean to disable the misc cgroup for specific resource IIUC.
->
-> Please read the comment around @misc_res_capacity again:
->
->  * Miscellaneous resources capacity for the entire machine. 0 capacity
->  * means resource is not initialized or not present in the host.
->
-
-I mentioned this in earlier email. I think this means no SGX EPC. It does  
-not mean sgx epc cgroup not enabled. That's also consistent with the  
-behavior try_charge() fails if capacity is zero.
-
->>
->> There is explicit way for user to disable misc without setting capacity  
->> to
->> zero.
->
-> Which way are you talking about?
-
-Echo "-misc" to cgroup.subtree_control at root level for example still  
-shows non-zero sgx_epc capacity.
+On Wed, 17 Apr 2024 18:51:28 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
 >
->> So in future if we want really disable sgx_epc cgroup specifically
->> we should not use capacity.  Therefore your approach is not
->> extensible/reusable.
->>
->> Given this is a rare corner case caused by configuration, we can only do
->> as much as possible IMHO, not trying to implement a perfect solution at
->> the moment. Maybe BUG_ON() is more appropriate?
->>
 >
-> I think I will reply this thread for the last time:
+> On 16/04/2024 3:20 pm, Haitao Huang wrote:
+>> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>>  Currently in the EPC page allocation, the kernel simply fails the
+>> allocation when the current EPC cgroup fails to charge due to its usage
+>> reaching limit.  This is not ideal. When that happens, a better way is
+>> to reclaim EPC page(s) from the current EPC cgroup (and/or its
+>> descendants) to reduce its usage so the new allocation can succeed.
+>>  Add the basic building blocks to support per-cgroup reclamation.
+>>  Currently the kernel only has one place to reclaim EPC pages: the  
+>> global
+>> EPC LRU list.  To support the "per-cgroup" EPC reclaim, maintain an LRU
+>> list for each EPC cgroup, and introduce a "cgroup" variant function to
+>> reclaim EPC pages from a given EPC cgroup and its descendants.
+>>  Currently the kernel does the global EPC reclaim in sgx_reclaim_page().
+>> It always tries to reclaim EPC pages in batch of SGX_NR_TO_SCAN (16)
+>> pages.  Specifically, it always "scans", or "isolates" SGX_NR_TO_SCAN
+>> pages from the global LRU, and then tries to reclaim these pages at once
+>> for better performance.
+>>  Implement the "cgroup" variant EPC reclaim in a similar way, but keep
+>> the implementation simple: 1) change sgx_reclaim_pages() to take an LRU
+>> as input, and return the pages that are "scanned" and attempted for
+>> reclamation (but not necessarily reclaimed successfully); 2) loop the
+>> given EPC cgroup and its descendants and do the new sgx_reclaim_pages()
+>> until SGX_NR_TO_SCAN pages are "scanned".
+>>  This implementation, encapsulated in sgx_cgroup_reclaim_pages(), always
+>> tries to reclaim SGX_NR_TO_SCAN pages from the LRU of the given EPC
+>> cgroup, and only moves to its descendants when there's no enough
+>> reclaimable EPC pages to "scan" in its LRU.  It should be enough for
+>> most cases.
+>>  Note, this simple implementation doesn't _exactly_ mimic the current
+>> global EPC reclaim (which always tries to do the actual reclaim in batch
+>> of SGX_NR_TO_SCAN pages): when LRUs have less than SGX_NR_TO_SCAN
+>> reclaimable pages, the actual reclaim of EPC pages will be split into
+>> smaller batches _across_ multiple LRUs with each being smaller than
+>> SGX_NR_TO_SCAN pages.
+>>  A more precise way to mimic the current global EPC reclaim would be to
+>> have a new function to only "scan" (or "isolate") SGX_NR_TO_SCAN pages
+>> _across_ the given EPC cgroup _AND_ its descendants, and then do the
+>> actual reclaim in one batch.  But this is unnecessarily complicated at
+>> this stage.
+>>  Alternatively, the current sgx_reclaim_pages() could be changed to
+>> return the actual "reclaimed" pages, but not "scanned" pages. However,
+>> the reclamation is a lengthy process, forcing a successful reclamation
+>> of predetermined number of pages may block the caller for too long. And
+>> that may not be acceptable in some synchronous contexts, e.g., in
+>> serving an ioctl().
+>>  With this building block in place, add synchronous reclamation support
+>> in sgx_cgroup_try_charge(): trigger a call to
+>> sgx_cgroup_reclaim_pages() if the cgroup reaches its limit and the
+>> caller allows synchronous reclaim as indicated by s newly added
+>> parameter.
+>>  A later patch will add support for asynchronous reclamation reusing
+>> sgx_cgroup_reclaim_pages().
+>>  Note all reclaimable EPC pages are still tracked in the global LRU thus
+>> no per-cgroup reclamation is actually active at the moment. Per-cgroup
+>> tracking and reclamation will be turned on in the end after all
+>> necessary infrastructure is in place.
 >
-> I don't have strong opinion to against using BUG_ON() when you fail to
-> allocate workqueue.  If you choose to do this, I'll leave to others.
+> Nit:
 >
-> If you want to "disable SGX cgroup" when you fail to allocate workqueue,
-> reset the "capacity" to 0 to disable it.
+> "all necessary infrastructures are in place", or, "all necessary  
+> building blocks are in place".
+>
+> ?
+>
+>>  Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> Tested-by: Jarkko Sakkinen <jarkko@kernel.org>
+>> ---
+>
+> Reviewed-by: Kai Huang <kai.huang@intel.com>
+>
 
-Unless I hear otherwise, I'll revert to BUG_ON().
+Thanks
+
+> More nitpickings below:
+>
+> [...]
+>
+>> -static inline int sgx_cgroup_try_charge(struct sgx_cgroup *sgx_cg)
+>> +static inline int sgx_cgroup_try_charge(struct sgx_cgroup *sgx_cg,  
+>> enum sgx_reclaim reclaim)
+>
+> Let's still wrap the text on 80-character basis.
+>
+> I guess most people are more used to that.
+>
+> [...]
+>
+>> -		epc_page = list_first_entry_or_null(&sgx_global_lru.reclaimable,
+>> -						    struct sgx_epc_page, list);
+>> +		epc_page = list_first_entry_or_null(&lru->reclaimable, struct  
+>> sgx_epc_page, list);
+>
+> Ditto.
+>
+
+Actually I changed to 100 char width based on comments from Jarkko IIRC.
+I don't have personal preference, but will not change back to 80 unless  
+Jarkko also agrees.
 
 Thanks
 Haitao
