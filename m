@@ -1,129 +1,265 @@
-Return-Path: <cgroups+bounces-2670-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2671-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F5038AE4AF
-	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 13:48:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F9788AE77E
+	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 15:09:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09C041C22C86
-	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 11:48:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4696B289600
+	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 13:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7DB813E3EA;
-	Tue, 23 Apr 2024 11:40:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFF0D13540E;
+	Tue, 23 Apr 2024 13:08:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qP8f49jh"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FC9ijhQq"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CFE513E04F;
-	Tue, 23 Apr 2024 11:40:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E836D130AF7;
+	Tue, 23 Apr 2024 13:08:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713872456; cv=none; b=nKrItd9HfMlUgwMk0F9ludd41YT3/lboN7vZ7YDMSwqiiIMFDG7nslJARkkL8/eRquaXcZ6U2LSLS4g85NUcrkii8LI4IoRH4tZaslJycTuOHfUH1rlhIcDH2Ixh4ztuA7DygOs05kNF4ybOjSBHqzEZh/MD7gxfkZXeLZ90vM4=
+	t=1713877709; cv=none; b=ZbvQ1kWAaujt6AidyX25iQxBuyn/GMBnAnBDk68EIBceEvTxmAwBxlQ4t5CixlQA2dqSxteH1SSVN+lyL+jfLM/LjfPf74f11KwKJDT8NcBBo3hDojquxwOfnGOW8vWDxzdBBcb2oQgwdP34GfmOmoXnJqacajeLcnwVIex0J80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713872456; c=relaxed/simple;
-	bh=4g0p/N75RcsA9tw6EzoYo7lJL11XjAoHwbaElJQ0eXc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Oq9IFKDBTR2qTVD23wQPCOk7m44ocO6fD4Yvm0zVM/MPDEuvnETMRg4o6YSkKjk9TTLfCB5QLuQ4JVTQL33k6f07K25XnUdHSAvq/0rxewTKIokJpSSKySAwwv0Wh+Jmx3uSPHx/HAngaQG45lk9aIgu0H3EJb3dJZb0MxUx9Fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qP8f49jh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 477EBC3277B;
-	Tue, 23 Apr 2024 11:40:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713872456;
-	bh=4g0p/N75RcsA9tw6EzoYo7lJL11XjAoHwbaElJQ0eXc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qP8f49jhoReQ+QzJI13lpFWv9+RLGpv7kyNPIXO3b0IAELyHRHwGR5TLOA5iWFLhg
-	 hcADCbRBrCWUjhNEGBJ7D4+qNkvHI4paCPETWNbToXHPXG9D3kpWzmSD9dtqKYg/2R
-	 gQ5Bc4JY8JOB45ZNPGixD5qYC3Zq/smhanYa3NsanTAkBhwCMjKiH7TQ4av739vxu7
-	 M1OQQuM2aLHs0v2sp7UC2p/U1N9Mqg4AJf3S4L4/S+SyU444yRu5iIIOiegmtJbTl2
-	 mvOyU6XoScVsdbJ7rB9sTr4GhUf1I40c4xezkahAoPmksMW94BM9Mdu2TmGz9SSi4f
-	 YLpsHGs/voMYw==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Li Nan <linan122@huawei.com>,
-	Yu Kuai <yukuai3@huawei.com>,
-	Tejun Heo <tj@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Sasha Levin <sashal@kernel.org>,
-	josef@toxicpanda.com,
-	cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 16/16] blk-iocost: do not WARN if iocg was already offlined
-Date: Tue, 23 Apr 2024 07:01:49 -0400
-Message-ID: <20240423110151.1658546-16-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240423110151.1658546-1-sashal@kernel.org>
-References: <20240423110151.1658546-1-sashal@kernel.org>
+	s=arc-20240116; t=1713877709; c=relaxed/simple;
+	bh=uS2ZuTJaMnQpRhdP2S8VwBZAeRQ4ZnlDK/4HnTjcFoM=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=YNnTzXYpAZ0eIkqjb61EBYpLL4BiBlvWKiclCxmhjv0+9gBQR2yzvOR9eabiAinhsLrrFmwAPafEEWr2s8XkgEIvUJ7v0eWOtzW2wkIpCqr6SN/8wh2Jrnumqbz2gojAf/v68CdNTjao6VBUjCw9rMWcCXpwGNyRBVupQdVwY/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FC9ijhQq; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713877708; x=1745413708;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=uS2ZuTJaMnQpRhdP2S8VwBZAeRQ4ZnlDK/4HnTjcFoM=;
+  b=FC9ijhQqt3tNfGWDZNAJ6sEdXJax4HKMGFGCSqBncE05D4sMxLNZn+8/
+   pfJcY5Hkd6YuempEPWnWKOGDk5jLWp4w3QzDoDMTDChU2FkCggKylTx13
+   iTiIhyWP05AH+8wNZFjZDeAiP/hZSzwGZe/j0LpNUxug1zDGNnAnk2MFR
+   i82tlBdSM9VSup8z7PTFigoIG0yH9P9pElUsgZPWlOR3QSsmrnWYQTBM5
+   +rRFJIm44UFaFA0JYLH1kcQH0hYBL2ou5/9AO57Aq3VYx9Wa3sHFmvSI7
+   DKpsB0TL4JGL62cUYVvPjUkHsS5cKT7Vz+B1H1TppC1jNgPbQtHZHscDp
+   w==;
+X-CSE-ConnectionGUID: NcY3fZ0uSgWrwJVB3yBa8g==
+X-CSE-MsgGUID: jHxHavyRSiuzDibcrQIaqg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11052"; a="13243683"
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="13243683"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Apr 2024 06:08:26 -0700
+X-CSE-ConnectionGUID: 6ZP7vbbgRvqYnVB23Y7dxA==
+X-CSE-MsgGUID: eaRP4m3rRJCMwWd1xZ5cfg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,222,1708416000"; 
+   d="scan'208";a="29168855"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.125.85.20])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/AES256-SHA; 23 Apr 2024 06:08:23 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: "tj@kernel.org" <tj@kernel.org>, "jarkko@kernel.org" <jarkko@kernel.org>,
+ "x86@kernel.org" <x86@kernel.org>, "dave.hansen@linux.intel.com"
+ <dave.hansen@linux.intel.com>, "cgroups@vger.kernel.org"
+ <cgroups@vger.kernel.org>, "hpa@zytor.com" <hpa@zytor.com>, "mingo@redhat.com"
+ <mingo@redhat.com>, "tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>,
+ "mkoutny@suse.com" <mkoutny@suse.com>, "Mehta, Sohil" <sohil.mehta@intel.com>,
+ "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "tglx@linutronix.de" <tglx@linutronix.de>, "bp@alien8.de" <bp@alien8.de>,
+ "Huang, Kai" <kai.huang@intel.com>
+Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
+ <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
+ "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
+ <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+ "chrisyan@microsoft.com" <chrisyan@microsoft.com>
+Subject: Re: [PATCH v12 09/14] x86/sgx: Implement async reclamation for cgroup
+References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
+ <20240416032011.58578-10-haitao.huang@linux.intel.com>
+ <640866c5-9fe0-4f7b-a459-7a685dbe4092@intel.com>
+ <op.2mhn6ti6wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <4be309656cb4e03793703098bbebab3dee93077e.camel@intel.com>
+ <op.2mh5p7fawjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <e8d076fb097774f1f0fe3365883e6cf5a823fc4f.camel@intel.com>
+ <op.2mm0u7uswjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <914371bd0673870c03e5f4c37db5a2a08fc50aa4.camel@intel.com>
+Date: Tue, 23 Apr 2024 08:08:22 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.28
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2momr8oewjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <914371bd0673870c03e5f4c37db5a2a08fc50aa4.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-From: Li Nan <linan122@huawei.com>
+On Mon, 22 Apr 2024 17:16:34 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
-[ Upstream commit 01bc4fda9ea0a6b52f12326486f07a4910666cf6 ]
+> On Mon, 2024-04-22 at 11:17 -0500, Haitao Huang wrote:
+>> On Sun, 21 Apr 2024 19:22:27 -0500, Huang, Kai <kai.huang@intel.com>  
+>> wrote:
+>>
+>> > On Fri, 2024-04-19 at 20:14 -0500, Haitao Huang wrote:
+>> > > > > I think we can add support for "sgx_cgroup=disabled" in future  
+>> if
+>> > > indeed
+>> > > > > needed. But just for init failure, no?
+>> > > > >
+>> > > >
+>> > > > It's not about the commandline, which we can add in the future  
+>> when
+>> > > > needed.  It's about we need to have a way to handle SGX cgroup  
+>> being
+>> > > > disabled at boot time nicely, because we already have a case  
+>> where we
+>> > > > need
+>> > > > to do so.
+>> > > >
+>> > > > Your approach looks half-way to me, and is not future  
+>> extendible.  If
+>> > > we
+>> > > > choose to do it, do it right -- that is, we need a way to disable  
+>> it
+>> > > > completely in both kernel and userspace so that userspace won't be
+>> > > able> to
+>> > > > see it.
+>> > >
+>> > > That would need more changes in misc cgroup implementation to  
+>> support
+>> > > sgx-disable. Right now misc does not have separate files for  
+>> different
+>> > > resource types. So we can only block echo "sgx_epc..." to those
+>> > > interfacefiles, can't really make files not visible.
+>> >
+>> > "won't be able to see" I mean "only for SGX EPC resource", but not the
+>> > control files for the entire MISC cgroup.
+>> >
+>> > I replied at the beginning of the previous reply:
+>> >
+>> > "
+>> > Given SGX EPC is just one type of MISC cgroup resources, we cannot  
+>> just
+>> > disable MISC cgroup as a whole.
+>> > "
+>> >
+>> Sorry I missed this point. below.
+>>
+>> > You just need to set the SGX EPC "capacity" to 0 to disable SGX EPC.   
+>> See
+>> > the comment of @misc_res_capacity:
+>> >
+>> >  * Miscellaneous resources capacity for the entire machine. 0 capacity
+>> >  * means resource is not initialized or not present in the host.
+>> >
+>>
+>> IIUC I don't think the situation we have is either of those cases. For  
+>> our
+>> case, resource is inited and present on the host but we have allocation
+>> error for sgx cgroup infra.
+>
+> You have calculated the "capacity", but later you failed something and
+> then reset the "capacity" to 0, i.e., cleanup.  What's wrong with that?
+>
+>>
+>> > And "blocking echo sgx_epc ... to those control files" is already
+>> > sufficient for the purpose of not exposing SGX EPC to userspace,  
+>> correct?
+>> >
+>> > E.g., if SGX cgroup is enabled, you can see below when you read "max":
+>> >
+>> >  # cat /sys/fs/cgroup/my_group/misc.max
+>> >  # <resource1> <max1>
+>> >    sgx_epc ...
+>> >    ...
+>> >
+>> > Otherwise you won't be able to see "sgx_epc":
+>> >
+>> >  # cat /sys/fs/cgroup/my_group/misc.max
+>> >  # <resource1> <max1>
+>> >    ...
+>> >
+>> > And when you try to write the "max" for "sgx_epc", you will hit error:
+>> >
+>> >  # echo "sgx_epc 100" > /sys/fs/cgroup/my_group/misc.max
+>> >  # ... echo: write error: Invalid argument
+>> >
+>> > The above applies to all the control files.  To me this is pretty much
+>> > means "SGX EPC is disabled" or "not supported" for userspace.
+>> >
+>> You are right, capacity == 0 does block echoing max and users see an  
+>> error
+>> if they do that. But 1) doubt you literately wanted "SGX EPC is  
+>> disabled"
+>> and make it unsupported in this case,
+>
+> I don't understand.  Something failed during SGX cgroup initialization,
+> you _literally_ cannot continue to support it.
+>
+>
 
-In iocg_pay_debt(), warn is triggered if 'active_list' is empty, which
-is intended to confirm iocg is active when it has debt. However, warn
-can be triggered during a blkcg or disk removal, if iocg_waitq_timer_fn()
-is run at that time:
+Then we should just return -ENOMEM from sgx_init() when sgx cgroup  
+initialization fails?
+I thought we only disable SGX cgroup support. SGX can still run.
 
-  WARNING: CPU: 0 PID: 2344971 at block/blk-iocost.c:1402 iocg_pay_debt+0x14c/0x190
-  Call trace:
-  iocg_pay_debt+0x14c/0x190
-  iocg_kick_waitq+0x438/0x4c0
-  iocg_waitq_timer_fn+0xd8/0x130
-  __run_hrtimer+0x144/0x45c
-  __hrtimer_run_queues+0x16c/0x244
-  hrtimer_interrupt+0x2cc/0x7b0
+>> 2) even if we accept this is "sgx
+>> cgroup disabled" I don't see how it is much better user experience than
+>> current solution or really helps user better.
+>
+> In your way, the userspace is still able to see "sgx_epc" in control  
+> files
+> and is able to update them.  So from userspace's perspective SGX cgroup  
+> is
+> enabled, but obviously updating to "max" doesn't have any impact.  This
+> will confuse userspace.
+>
+>>
 
-The warn in this situation is meaningless. Since this iocg is being
-removed, the state of the 'active_list' is irrelevant, and 'waitq_timer'
-is canceled after removing 'active_list' in ioc_pd_free(), which ensures
-iocg is freed after iocg_waitq_timer_fn() returns.
+Setting capacity to zero also confuses user space. Some application may  
+rely on this file to know the capacity.
 
-Therefore, add the check if iocg was already offlined to avoid warn
-when removing a blkcg or disk.
+>> Also to implement this approach, as you mentioned, we need workaround  
+>> the
+>> fact that misc_try_charge() fails when capacity set to zero, and adding
+>> code to return root always?
+>
+> Why this is a problem?
+>
 
-Signed-off-by: Li Nan <linan122@huawei.com>
-Reviewed-by: Yu Kuai <yukuai3@huawei.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Link: https://lore.kernel.org/r/20240419093257.3004211-1-linan666@huaweicloud.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- block/blk-iocost.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+It changes/overrides the the original meaning of capacity==0: no one can  
+allocate if capacity is zero.
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 7ee8d85c2c68d..b2e913fe61e67 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -1438,8 +1438,11 @@ static void iocg_pay_debt(struct ioc_gq *iocg, u64 abs_vpay,
- 	lockdep_assert_held(&iocg->ioc->lock);
- 	lockdep_assert_held(&iocg->waitq.lock);
- 
--	/* make sure that nobody messed with @iocg */
--	WARN_ON_ONCE(list_empty(&iocg->active_list));
-+	/*
-+	 * make sure that nobody messed with @iocg. Check iocg->pd.online
-+	 * to avoid warn when removing blkcg or disk.
-+	 */
-+	WARN_ON_ONCE(list_empty(&iocg->active_list) && iocg->pd.online);
- 	WARN_ON_ONCE(iocg->inuse > 1);
- 
- 	iocg->abs_vdebt -= min(abs_vpay, iocg->abs_vdebt);
--- 
-2.43.0
+>> So it seems like more workaround code to just
+>> make it work for a failing case no one really care much and end result  
+>> is
+>> not really much better IMHO.
+>
+> It's not workaround, it's the right thing to do.
+>
+> The result is userspace will see it being disabled when kernel disables
+> it.
+>
+>
+It's a workaround because you use the capacity==0 but it does not really  
+mean to disable the misc cgroup for specific resource IIUC.
 
+There is explicit way for user to disable misc without setting capacity to  
+zero. So in future if we want really disable sgx_epc cgroup specifically  
+we should not use capacity.  Therefore your approach is not  
+extensible/reusable.
+
+Given this is a rare corner case caused by configuration, we can only do  
+as much as possible IMHO, not trying to implement a perfect solution at  
+the moment. Maybe BUG_ON() is more appropriate?
+
+(If you want to disable sgx, we can return error from sgx_init() but I  
+still doubt that's what you meant.)
+
+Thanks
+Haitao
 
