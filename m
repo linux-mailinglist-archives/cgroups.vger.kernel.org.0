@@ -1,86 +1,82 @@
-Return-Path: <cgroups+bounces-2676-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2677-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D50408AF315
-	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 17:56:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6684F8AF361
+	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 18:01:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EA301F2273E
-	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 15:56:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 979CC1C21F7D
+	for <lists+cgroups@lfdr.de>; Tue, 23 Apr 2024 16:01:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B8AB13C9DE;
-	Tue, 23 Apr 2024 15:56:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35ABE13CA82;
+	Tue, 23 Apr 2024 16:01:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MjKYTsb7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VI18o5+8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0EBB136652;
-	Tue, 23 Apr 2024 15:56:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A6E1350F2;
+	Tue, 23 Apr 2024 16:01:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713887802; cv=none; b=O4yFeHgDPT2JJmz/8yLoV8ETvWfepLsB0b6RGQACmK5n3h4AuPRMXucL6+TXIdU/2eswn7FbjUMoBXhtsYEm+o6A4nuWUAyjEdgs5fBmI62EP9bCYS4whecVInUKClbDrdJv8RizhUJ0Hl6Zrn/MoGQpqCPQpybGU807YuR1FGY=
+	t=1713888086; cv=none; b=L37pd/FdAemFMHT7e+KLcmrUha0SnEcsikfOzxxp0hH7IO9qhh5hgZwpJNcrbjez6gdv1SEvZPSmPOu9wKitzfnQ6prZf9Jfzij85ICJ75v2o3tf/x3o+/Gi6m+ilrKYgMblVKLdr0VvpHDWcMYX7zRatPwnLzFnAf28tl05yFM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713887802; c=relaxed/simple;
-	bh=+WQoZCfvynzpRW6VnCCjpKF3zxAAd2n5DqdreZLhSBk=;
+	s=arc-20240116; t=1713888086; c=relaxed/simple;
+	bh=PNQBO0iNLxR8U4HksV68EkO7M5zt8A8WHrYsHbxd/yw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G6ZM9Lm7cKa8Zza4xGF6Z2d3RHts1RC0SRpmXUkfqcVsivGmMRhd8HQK89n1cDYj/w24DXGWPqebpTKOEnr5b2qJEOkTfgIcVhvTeL3lMLZojoAIjq7GfL8k6lX6HERb6vVPpSmgO9MlyJi9xP5piRItdNMand4z3BAFQoKzz5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MjKYTsb7; arc=none smtp.client-ip=209.85.210.174
+	 Content-Type:Content-Disposition:In-Reply-To; b=HXeqdgueeOmtc4SYyg9+G1u3x+45DPfGpOsKHfu8QBH3Ce4blGGKFRHSUU3YflnyNH5yclP6yLTU4u0VQaDQw7SbDxu2UFoyeh8PRtbQ6T4VzQxvHeVveOwnhlrR9/ZHIXZbZXYY44RCPoViyV3K9oiqGefjSA+C94Ecnl5LtjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VI18o5+8; arc=none smtp.client-ip=209.85.210.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6ed2170d89fso4457836b3a.1;
-        Tue, 23 Apr 2024 08:56:40 -0700 (PDT)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ed0e9ccca1so5406323b3a.0;
+        Tue, 23 Apr 2024 09:01:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713887800; x=1714492600; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1713888084; x=1714492884; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=TiXJwUhPMkjGHKs13WSq0NGz2KDz4IaigXpr6ZbxkHA=;
-        b=MjKYTsb71fwZou2p4aMhS2LlO4+ZSDQvRmu/aZAZ0sFSRnzueGJfp6qIk30CCF3Nyn
-         ME90yAMNodEr2uiPjAGV0OKP/5SJCiOvBN8bhDD/9LeHgYPP8ixbn9zcC/wV2kx16EMw
-         LdD4zaPQgABL6RLAwKuKeby9pVaPhUHuSZv93W8BskSLL4dBtvi2hfLSsWFN+JA5DWdX
-         hZHnNpd8bY6iS3xV0WFLUt6DwbDx7nrBOf4BgrsusCdXqLwL5idHl4JFtGUVSrKZ/GpW
-         O7ed9xw4g1xkyQJuDUBh02AtO1IjM1j+mvj2IHDnqGw7kxbK+h+yROiVbiv8ct1/k2OG
-         dyVg==
+        bh=8AFpeUo5gFWggR9UCj8+ja6/OFl5Ao3dvFK12RV7J1c=;
+        b=VI18o5+8oreYbdgVvwP1/z1IXFDiqrBZWFFC/hxvY8b/F0NTNhGv362+BycefV4Mw9
+         3ZK2+XqQ0b9uvFq6oaQvcWA9Zq10T8fIt1vyKYfJyUG3o5Dxg5VlPq3DBhznvTCzr+Zj
+         PELchC9Ur7SomZVGK3oxzHD7aC+TDyOoiFWqRyiWtYX0ANFK/20d0qhhsQmu8XgBoyMz
+         bW2YyGrSAkAPkf/yswKYdc6z9KnT/YxdvsFUe5tF8lFQze1C0hExsgD4q67ivEMCJB+a
+         kythrtTugbxphLpZ5hCmT+gBxNf2vK2YOAEiwdDlbUtaX0TpgoKsS+pa13bN0kdRonLt
+         LHQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713887800; x=1714492600;
+        d=1e100.net; s=20230601; t=1713888084; x=1714492884;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TiXJwUhPMkjGHKs13WSq0NGz2KDz4IaigXpr6ZbxkHA=;
-        b=m5BM8yHerAKawoqDFqtXlYMTBnPrXXzA/6CIzchlLh/2uWhh0v7Oc1e0CTppTjTik7
-         t61OmLAVzzc0UvEKgkMp6xP+p1j49Rujo11/l3gKKD2LEumvwuArIR3+YAvJLx1BNM5j
-         a3Tcmu9v0wmehJpOMAZj4vYZc9jhQh54mIcNO78xszmifvs0QFdliZJBCSyN2Xizo0pd
-         L9gQ/C6Y+v95LDLh1/N52ECr0BtG/ljYPK0TrMSIr3uzK3ACj6LU7fEYIIDGDn2x6pSI
-         97WFiVwgdp9xA8HmKO1w+PHDvJtaFLSeIoyyWdYhMN7uxdLEJJ15ixpnh0DzlxgikPZq
-         LnJg==
-X-Forwarded-Encrypted: i=1; AJvYcCV2MmjmRU/kTtm2AVZwAr48fvSeCRuBNpzpiz8ELfDrLiZl4Ty1Vb9uODaWMc47laTC5vI68mAqlMNl49e9HMrTdR+SmyqHHR6Bjvsqv6YG8Wyow2qgQ4s3Gzlg0RE3JHxeWBlFzOSO8z0T46p2T4h4mA66f74njH9Gts8RD6Uf4Jlp3fc=
-X-Gm-Message-State: AOJu0YwaLXFkjB9uycPERVQ0VCdh1Zy4DwazXyb15MIMhw19b35JgCL7
-	MNeKV80Jfnmo2M0a0n6O3KhPVkEKLdmAjwDsyda4BuIfAKxg1uNf
-X-Google-Smtp-Source: AGHT+IEjl28DHNnTcDOKcrrQgkmsbyO0K1hBgAt0eVjjLJ03dT44w2VLFfYWunJLIKjDEVbIXfLeGQ==
-X-Received: by 2002:a05:6a21:2d8c:b0:1a3:a821:f297 with SMTP id ty12-20020a056a212d8c00b001a3a821f297mr4606950pzb.2.1713887799820;
-        Tue, 23 Apr 2024 08:56:39 -0700 (PDT)
+        bh=8AFpeUo5gFWggR9UCj8+ja6/OFl5Ao3dvFK12RV7J1c=;
+        b=roU+KtizFfj1ebz+F128MjgD/OkCxX9worDweLBETqhXGWwRW0zfnWRrBP70F9QFyQ
+         QglcZAGgfScctuy2cuz8gZrrWgWJl/oowCnFYo9koxcyYW6/XQKvVt8tEH5rjETHsal4
+         WQX6VtpSfJgeIvgU1nf0wPC2io7RJNTeSTh3TbZScCDRYCY1sJVRFxOyuwJdWvUSF0B5
+         wzsXC12jsoBPWm0Tm6rO3GFnDNaibgZyVG6wW0V4wzx0PIoPkjPbNynB6uTMN1auOiwa
+         dWXJT1j5jNbo5yY+fp0pOmSZwbzFHQNU7r/ZNOOsfmF7ygPWXHOnDdVSJJV+CPDiXCbY
+         tU8A==
+X-Forwarded-Encrypted: i=1; AJvYcCXgyo1B5EtrNhOc+VFr/ZaOaaP2V81LUB853hzLjaYaaYychR4eTEqsgwBnG9aO7WKPJ0PMK0YQuXdcvgxljwbR4BRPM9XiyCFvRfGCI59x5aaJOWgjMjO1UdoDAw9vXikR0rM53A==
+X-Gm-Message-State: AOJu0YxH3THpnygQH88JJqEQKFbiIv8Mrd7MSBtKUNC57+9GfUtKyc80
+	T+B+Uxx9GPm+iECrOwyUntW2b143v3XDEwaFBRtfQpYr0nsDyhYOefFGdMTo
+X-Google-Smtp-Source: AGHT+IGIOT3ID+kHLi2YOydjHrPyh0DnhFJisw7LGPY9Wv4MuyK45iFNl6tB3QBeGgVfS9WjZ0JTjA==
+X-Received: by 2002:a05:6a21:2d87:b0:1a9:e2e0:1806 with SMTP id ty7-20020a056a212d8700b001a9e2e01806mr14099261pzb.43.1713888083672;
+        Tue, 23 Apr 2024 09:01:23 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:400::5:6f51])
-        by smtp.gmail.com with ESMTPSA id gs9-20020a056a004d8900b006e694719fa0sm10119667pfb.147.2024.04.23.08.56.39
+        by smtp.gmail.com with ESMTPSA id lw4-20020a056a00750400b006ea9108ec12sm9760478pfb.115.2024.04.23.09.01.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Apr 2024 08:56:39 -0700 (PDT)
+        Tue, 23 Apr 2024 09:01:23 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 23 Apr 2024 05:56:38 -1000
+Date: Tue, 23 Apr 2024 06:01:21 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Jan Kara <jack@suse.cz>
-Cc: Xiu Jianfeng <xiujianfeng@huawei.com>, viro@zeniv.linux.org.uk,
-	brauner@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, akpm@linux-foundation.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH -next] cgroup: Introduce css_is_online() helper
-Message-ID: <ZifaNsx9wFDp8m-_@slm.duckdns.org>
-References: <20240420094428.1028477-1-xiujianfeng@huawei.com>
- <20240423134923.osuljlalsd27awz3@quack3>
+To: Xiu Jianfeng <xiujianfeng@huawei.com>
+Cc: longman@redhat.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 -next] cgroup/cpuset: Avoid clearing
+ CS_SCHED_LOAD_BALANCE twice
+Message-ID: <ZifbUdjX6VYCl2qD@slm.duckdns.org>
+References: <20240423024439.1064922-1-xiujianfeng@huawei.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -89,27 +85,18 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240423134923.osuljlalsd27awz3@quack3>
+In-Reply-To: <20240423024439.1064922-1-xiujianfeng@huawei.com>
 
-Hello,
-
-On Tue, Apr 23, 2024 at 03:49:23PM +0200, Jan Kara wrote:
-> On Sat 20-04-24 09:44:28, Xiu Jianfeng wrote:
-> > Introduce css_is_online() helper to test if whether the specified
-> > css is online, avoid testing css.flags with CSS_ONLINE directly
-> > outside of cgroup.c.
-> > 
-> > Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+On Tue, Apr 23, 2024 at 02:44:39AM +0000, Xiu Jianfeng wrote:
+> In cpuset_css_online(), CS_SCHED_LOAD_BALANCE will be cleared twice,
+> the former one in the is_in_v2_mode() case could be removed because
+> is_in_v2_mode() can be true for cgroup v1 if the "cpuset_v2_mode"
+> mount option is specified, that balance flag change isn't appropriate
+> for this particular case.
 > 
-> Looks good. Feel free to add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
 
-I'm a bit skeptical about these trivial helpers. If the test is something
-more involved or has complications which need documentation (e.g. regarding
-synchronization and what not), the helper would be useful even if it's just
-as a place to centrally document what's going on. However, here, it's just
-testing one flag and I'm not sure what benefits the helper brings.
+Applied to cgroup/for-6.10.
 
 Thanks.
 
