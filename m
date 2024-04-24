@@ -1,113 +1,109 @@
-Return-Path: <cgroups+bounces-2685-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2686-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C0458AFD78
-	for <lists+cgroups@lfdr.de>; Wed, 24 Apr 2024 02:57:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8076B8AFD85
+	for <lists+cgroups@lfdr.de>; Wed, 24 Apr 2024 03:01:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36F661C21F25
-	for <lists+cgroups@lfdr.de>; Wed, 24 Apr 2024 00:57:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2B461C21F52
+	for <lists+cgroups@lfdr.de>; Wed, 24 Apr 2024 01:01:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33C574A32;
-	Wed, 24 Apr 2024 00:57:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0299538A;
+	Wed, 24 Apr 2024 01:00:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="c+zG8jBR"
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B21F3C30;
-	Wed, 24 Apr 2024 00:57:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF92C4A32
+	for <cgroups@vger.kernel.org>; Wed, 24 Apr 2024 01:00:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713920225; cv=none; b=fmpRh7mcCPetSXjBXJoFsn3T6Kd6d4+G0n/HE83sOlmiW6CGGgqXjXuX2L+AbmyIgEMyP2PZCzRaCAxaPTuYhWqp+isdSoCpUg/WYqgZGPDBuLAscJ4F8vCjZo6E4JEGeLt5fHVUbCrgaWMo/vVMHeVLf4Z6sE0kZzsJ16leDoU=
+	t=1713920457; cv=none; b=oQr8Y4vrp0Fa9ULSyzXA7Ieg0L9z/NKB7SwoeXaN8BCSz2TY6VwZmZJgLhAzhjT2vzKGvMsdAghniynPVXAJrRvFdAApodFp2EgtTlH7pIKsGmVxijic4ypSDUF7j/v8kcajhBGRNzf99jWMonoh3rNo6Zir81CMiODX8AYSaYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713920225; c=relaxed/simple;
-	bh=JrppL5ptzNVHIWPonIbowmK1NS+YtvtmSsy9A8cO/0k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=KsP6Rb9cBrCrLUNq/f3D+164U2cORKg9I5AbPASjVwg4Wi4sDsetRRDw7C6TPnfXSxQrNSV+CpHY86niRWJ8khUp3BYvbhLbAgUoJnS2Y13RUeBCgAjcq0TOWPbmCdGfWagwtRLp36CHK3Mhcjr5rOVnitKKLyikmfmTjg5p3T4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VPL8k1dp5zvPrq;
-	Wed, 24 Apr 2024 08:53:58 +0800 (CST)
-Received: from dggpeml500023.china.huawei.com (unknown [7.185.36.114])
-	by mail.maildlp.com (Postfix) with ESMTPS id 61F67180A9C;
-	Wed, 24 Apr 2024 08:56:59 +0800 (CST)
-Received: from [10.67.110.112] (10.67.110.112) by
- dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 24 Apr 2024 08:56:59 +0800
-Message-ID: <a94e7b2f-0c22-f9bd-236c-d542958b6934@huawei.com>
-Date: Wed, 24 Apr 2024 08:56:47 +0800
+	s=arc-20240116; t=1713920457; c=relaxed/simple;
+	bh=S+0/yfWEbTG33zVAf3a7JUyadtPHjguQhf9rNUpBUYU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CYlGErhaI7tO4xdGiXBe5+8n640Q0J0eTQJq3s4vYNMjWkvIzXJIYyEcpO3V+WwXC2YwizYQcXN4JOjrV1+LDX0uIFmJBhfxDYvW2vWKb2rUlqtJMgWwmxp9tHRX+l8jk3wgkqbJmyjGNel1/cRQofbmC35VWqefByjmvV4nIO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=c+zG8jBR; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1713920454;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=/a5fhFSmdofMCiLnLbJwkC2x6hk67MrQy10O1DXKAP4=;
+	b=c+zG8jBR55f2vgSEMQRpRGEH+9Cxa94XcUQoUiYkfI5fbCiYoUnCEW46rHvxRiKmEkvHiI
+	VJTQaUPbWfH4XRWX/6c5Muk/fb8eMo3K/Bf3RZB2DlgMaZgZCRYoFQnEED8gFzGCJICN+G
+	FvTUh3p0mvtQPPfNqt+taqVxX8HpoRw=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-131-Ou3fZRdJMUu6vLcO4XX7Uw-1; Tue,
+ 23 Apr 2024 21:00:49 -0400
+X-MC-Unique: Ou3fZRdJMUu6vLcO4XX7Uw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3E5CB385A185;
+	Wed, 24 Apr 2024 01:00:49 +0000 (UTC)
+Received: from llong.com (unknown [10.22.33.184])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id E5757C13FA3;
+	Wed, 24 Apr 2024 01:00:47 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>
+Cc: linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	Xiu Jianfeng <xiujianfeng@huawei.com>,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH-cgroup] cgroup/cpuset: Fix incorrect top_cpuset flags
+Date: Tue, 23 Apr 2024 21:00:20 -0400
+Message-Id: <20240424010020.181305-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH -next] cgroup/cpuset: Statically initialize more members
- of top_cpuset
-Content-Language: en-US
-To: Klara Modin <klarasmodin@gmail.com>, <longman@redhat.com>,
-	<lizefan.x@bytedance.com>, <tj@kernel.org>, <hannes@cmpxchg.org>
-CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240420094616.1028540-1-xiujianfeng@huawei.com>
- <f2edf788-6ff3-43b1-9445-ac237e7910ac@gmail.com>
-From: xiujianfeng <xiujianfeng@huawei.com>
-In-Reply-To: <f2edf788-6ff3-43b1-9445-ac237e7910ac@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500023.china.huawei.com (7.185.36.114)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
+Commit 8996f93fc388 ("cgroup/cpuset: Statically initialize more
+members of top_cpuset") uses an incorrect "<" relational operator for
+the CS_SCHED_LOAD_BALANCE bit when initializing the top_cpuset. This
+results in load_balancing turned off by default in the top cpuset which
+is bad for performance.
 
+Fix this by using the BIT() helper macro to set the desired top_cpuset
+flags and avoid similar mistake from being made in the future.
 
-On 2024/4/24 3:21, Klara Modin wrote:
-> Hi,
-> 
-> On 2024-04-20 11:46, Xiu Jianfeng wrote:
->> Initializing top_cpuset.relax_domain_level and setting
->> CS_SCHED_LOAD_BALANCE to top_cpuset.flags in cpuset_init() could be
->> completed at the time of top_cpuset definition by compiler.
->>
->> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
->> ---
->>   kernel/cgroup/cpuset.c | 5 ++---
->>   1 file changed, 2 insertions(+), 3 deletions(-)
->>
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index d8d3439eda4e..e70008a1d86a 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -369,8 +369,9 @@ static inline void notify_partition_change(struct
->> cpuset *cs, int old_prs)
->>     static struct cpuset top_cpuset = {
->>       .flags = ((1 << CS_ONLINE) | (1 << CS_CPU_EXCLUSIVE) |
->> -          (1 << CS_MEM_EXCLUSIVE)),
->> +          (1 << CS_MEM_EXCLUSIVE) | (1 < CS_SCHED_LOAD_BALANCE)),
-> 
-> You dropped a '<' for the bitwise shift, this causes bad cpu utilization
-> for me.
+Fixes: 8996f93fc388 ("cgroup/cpuset: Statically initialize more members of top_cpuset")
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ kernel/cgroup/cpuset.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Oops, that's bad, I'm sorry for that!
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index e70008a1d86a..b0a97efa5f20 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -368,8 +368,8 @@ static inline void notify_partition_change(struct cpuset *cs, int old_prs)
+ }
+ 
+ static struct cpuset top_cpuset = {
+-	.flags = ((1 << CS_ONLINE) | (1 << CS_CPU_EXCLUSIVE) |
+-		  (1 << CS_MEM_EXCLUSIVE) | (1 < CS_SCHED_LOAD_BALANCE)),
++	.flags = BIT(CS_ONLINE) | BIT(CS_CPU_EXCLUSIVE) |
++		 BIT(CS_MEM_EXCLUSIVE) | BIT(CS_SCHED_LOAD_BALANCE),
+ 	.partition_root_state = PRS_ROOT,
+ 	.relax_domain_level = -1,
+ 	.remote_sibling = LIST_HEAD_INIT(top_cpuset.remote_sibling),
+-- 
+2.39.3
 
-> 
->>       .partition_root_state = PRS_ROOT,
->> +    .relax_domain_level = -1,
->>       .remote_sibling = LIST_HEAD_INIT(top_cpuset.remote_sibling),
->>   };
->>   @@ -4309,8 +4310,6 @@ int __init cpuset_init(void)
->>       nodes_setall(top_cpuset.effective_mems);
->>         fmeter_init(&top_cpuset.fmeter);
->> -    set_bit(CS_SCHED_LOAD_BALANCE, &top_cpuset.flags);
->> -    top_cpuset.relax_domain_level = -1;
->>       INIT_LIST_HEAD(&remote_children);
->>         BUG_ON(!alloc_cpumask_var(&cpus_attach, GFP_KERNEL));
-> 
-> Kind regards,
-> Klara Modin
 
