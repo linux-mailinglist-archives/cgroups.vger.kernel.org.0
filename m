@@ -1,121 +1,116 @@
-Return-Path: <cgroups+bounces-2700-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2701-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94A208B197D
-	for <lists+cgroups@lfdr.de>; Thu, 25 Apr 2024 05:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F7918B1A08
+	for <lists+cgroups@lfdr.de>; Thu, 25 Apr 2024 06:52:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 350041F23C60
-	for <lists+cgroups@lfdr.de>; Thu, 25 Apr 2024 03:26:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07FC11F22E2B
+	for <lists+cgroups@lfdr.de>; Thu, 25 Apr 2024 04:52:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0430023767;
-	Thu, 25 Apr 2024 03:26:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FE4839AF0;
+	Thu, 25 Apr 2024 04:52:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SB/UBFh9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KiaxAdkq"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6013920DFF
-	for <cgroups@vger.kernel.org>; Thu, 25 Apr 2024 03:26:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 255D718E02;
+	Thu, 25 Apr 2024 04:52:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714015574; cv=none; b=iWCcbMcSk858SZq41VkuASxqivocgtHM6FSMc0bm7ZIhDlDtuXLM5WcrI+/EkZVlzmSWDgmKpo4bd0u1pWLQCMhIwOrzdex8oiuI15mzhDhHcIpIw2Kn80mQBiZew5tu0E2T6r/4GAfjxCtyH6Q7wbjlLwDZhoEY2ru62zTNde0=
+	t=1714020723; cv=none; b=Fm6jIMncQO86JNsr1IpJaGEauh3HGgtts5V3+hR3MJivkUqgZaIrdBll1S65dEDRYwfKrnqdxy0mOMdi+dqfR/IsFuCVbA8hz4n3PWZq5BXiOoyJ6idTl3tGkTvXpCWuSY0qUI9SN4rRfWrrhLyad6UxOfPedz9b5RiceDFHCEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714015574; c=relaxed/simple;
-	bh=88mSEe2XHZvT1rBs/fYya7T2WNxPEAzzgRRezEnLHpg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Nzr35g+JRr/BwlAc1y+eW+9f9dXunvTvHG5coq4SGetTCnf9teean13EsSPqRj4OCKFtSWeRrjU/9/QlYh/gqBvj2d6YM6HpshlRgiK3GFmwjQe5O4eBFzt3JoxScahDzO4lFNLJ1jeoTkBjp/lKf3lUbCNPn9FEdSdJtmnJ+2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SB/UBFh9; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 24 Apr 2024 23:25:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714015569;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=B4E11bh0mnSYCbs7XlFu6X7DBUDw+NgzQF2QoLRfZq4=;
-	b=SB/UBFh9p4EtaUdmuFy3Y/2llf6hAFYeqTBTCq9EEsoT+vbVj3Dlf1lTZDFcjgmVyftRCV
-	Waevx5gMLX6VuaMH0g7owkCnFmE0q6eqUFo94c3PjotScdKb99fpqHnymmit8v+7TmVjp+
-	fv6zDMYTkmqCw9Lze8Tza4V/pRVw9Ow=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Kees Cook <keescook@chromium.org>
-Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org, 
-	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
-	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, 
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
-	peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, 
-	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, 
-	tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, songmuchun@bytedance.com, jbaron@akamai.com, 
-	aliceryhl@google.com, rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
-	kernel-team@android.com, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH v6 00/37] Memory allocation profiling
-Message-ID: <3eyvxqihylh4st6baagn6o6scw3qhcb6lapgli4wsic2fvbyzu@h66mqxcikmcp>
-References: <20240321163705.3067592-1-surenb@google.com>
- <202404241852.DC4067B7@keescook>
+	s=arc-20240116; t=1714020723; c=relaxed/simple;
+	bh=p7hjWUgR2R06dl3ei0tERDhkngFe7TKEuv52mjeiL5k=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=YPyInGZu3qzDUzSgbsuyKcKTd3WOmXlTCo0DHQ2TJoATXpwN0BgPQxQqclq+0knqqOsHSPY4nzqinuvrm3o6zIPRwHbJ56XxkIUqUADAVbqrcsq0QkjQPAaPekxS6D375iQaA0+Jbz/s4zE1RfQ51ZnzYHQQfU0xlVfciuQ7r3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KiaxAdkq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30FEEC113CC;
+	Thu, 25 Apr 2024 04:51:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714020722;
+	bh=p7hjWUgR2R06dl3ei0tERDhkngFe7TKEuv52mjeiL5k=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=KiaxAdkqqt8DPt6Nx4tssIeQoaNyqm4bSg1T6g8X3IVz3zUBEtkmlWuLfozSxqh4I
+	 F2ToYlUTcWMLnVGmHmqBFOxA+K+/9Bv+gzvLDRcAt9Jj6pABjdGp6AsLqpYZ3Hw3dc
+	 t8VjDL6yYzo/6vmbZtbGx2HCxOHkYtwMxiMR7S07OIk0Z6/p/9vbLYq6ec+S4rA4Dc
+	 vK8+PPe1Hv6CGTBAekkqBJH1kR2PonEWVoNwFdgHH+glGj9cn4xN7B/SL0TzrfflZF
+	 s1w0WYN1lhEguuFjXWHSTFhOFl1KSgesFYSt0jAyE3UtZ9oGSrgVYYcqeLd8AdpbqX
+	 PZW+8UIIOt+Wg==
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202404241852.DC4067B7@keescook>
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 25 Apr 2024 07:51:56 +0300
+Message-Id: <D0SXMUQP947S.3KBGA0PH06PDX@kernel.org>
+Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+ <zhanb@microsoft.com>, <anakrish@microsoft.com>,
+ <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
+ <chrisyan@microsoft.com>
+Subject: Re: [PATCH v12 14/14] selftests/sgx: Add scripts for EPC cgroup
+ testing
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>,
+ <dave.hansen@linux.intel.com>, <kai.huang@intel.com>, <tj@kernel.org>,
+ <mkoutny@suse.com>, <linux-kernel@vger.kernel.org>,
+ <linux-sgx@vger.kernel.org>, <x86@kernel.org>, <cgroups@vger.kernel.org>,
+ <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+ <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
+X-Mailer: aerc 0.17.0
+References: <20240416032011.58578-1-haitao.huang@linux.intel.com>
+ <20240416032011.58578-15-haitao.huang@linux.intel.com>
+ <D0LLS28WEXYA.G15BAG7WOJGR@kernel.org>
+ <D0LLVE07V8O0.S8XF3CY2DQ9A@kernel.org>
+ <op.2mbs1m05wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <D0LODQCRSTRA.2KSPCDB0FLK0X@kernel.org>
+ <op.2mqzodbxwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2mqzodbxwjvjmi@hhuan26-mobl.amr.corp.intel.com>
 
-On Wed, Apr 24, 2024 at 06:59:01PM -0700, Kees Cook wrote:
-> On Thu, Mar 21, 2024 at 09:36:22AM -0700, Suren Baghdasaryan wrote:
-> > Low overhead [1] per-callsite memory allocation profiling. Not just for
-> > debug kernels, overhead low enough to be deployed in production.
-> 
-> Okay, I think I'm holding it wrong. With next-20240424 if I set:
-> 
-> CONFIG_CODE_TAGGING=y
-> CONFIG_MEM_ALLOC_PROFILING=y
-> CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT=y
-> 
-> My test system totally freaks out:
-> 
-> ...
-> SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
-> Oops: general protection fault, probably for non-canonical address 0xc388d881e4808550: 0000 [#1] PREEMPT SMP NOPTI
-> CPU: 0 PID: 0 Comm: swapper Not tainted 6.9.0-rc5-next-20240424 #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
-> RIP: 0010:__kmalloc_node_noprof+0xcd/0x560
-> 
-> Which is:
-> 
-> __kmalloc_node_noprof+0xcd/0x560:
-> __slab_alloc_node at mm/slub.c:3780 (discriminator 2)
-> (inlined by) slab_alloc_node at mm/slub.c:3982 (discriminator 2)
-> (inlined by) __do_kmalloc_node at mm/slub.c:4114 (discriminator 2)
-> (inlined by) __kmalloc_node_noprof at mm/slub.c:4122 (discriminator 2)
-> 
-> Which is:
-> 
->         tid = READ_ONCE(c->tid);
-> 
-> I haven't gotten any further than that; I'm EOD. Anyone seen anything
-> like this with this series?
+On Wed Apr 24, 2024 at 10:42 PM EEST, Haitao Huang wrote:
+> Hi Jarkko
+> On Tue, 16 Apr 2024 11:08:11 -0500, Jarkko Sakkinen <jarkko@kernel.org> =
+=20
+> wrote:
+>
+> > On Tue Apr 16, 2024 at 5:54 PM EEST, Haitao Huang wrote:
+> >> I did declare the configs in the config file but I missed it in my pat=
+ch
+> >> as stated earlier. IIUC, that would not cause this error though.
+> >>
+> >> Maybe I should exit with the skip code if no CGROUP_MISC (no more
+> >> CGROUP_SGX_EPC) is configured?
+> > OK, so I wanted to do a distro kernel test here, and used the default
+> > OpenSUSE kernel config. I need to check if it has CGROUP_MISC set.
+>
+> I couldn't figure out why this failure you have encountered. I think =20
+> OpenSUSE kernel most likely config CGROUP_MISC.
+>
+> Also if CGROUP_MISC not set, then there should be error happen earlier on=
+ =20
+> echoing "+misc" to cgroup.subtree_control at line 20. But your log =20
+> indicates only error on echoing "sgx_epc ..." to =20
+> /sys/fs/cgroup/...//misc.max.
+>
+> I can only speculate that can could happen (if sgx epc cgroup was compile=
+d =20
+> in) when the cgroup-fs subdirectories in question already have populated =
+=20
+> config that is conflicting with the scripts.
+>
+> Could you double check or start from a clean environment?
+> Thanks
+> Haitao
 
-I certainly haven't. That looks like some real corruption, we're in slub
-internal data structures and derefing a garbage address. Check kasan and
-all that?
+I can re-check next week once I'm back from Estonia. I'm travelling now
+to https://lu.ma/uncloud.
+
+BR, Jarkko
 
