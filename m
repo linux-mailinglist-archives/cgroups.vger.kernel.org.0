@@ -1,161 +1,103 @@
-Return-Path: <cgroups+bounces-2705-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2706-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3522B8B2556
-	for <lists+cgroups@lfdr.de>; Thu, 25 Apr 2024 17:40:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 031FF8B2779
+	for <lists+cgroups@lfdr.de>; Thu, 25 Apr 2024 19:18:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC60E1F24D31
-	for <lists+cgroups@lfdr.de>; Thu, 25 Apr 2024 15:40:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B43F2282CD7
+	for <lists+cgroups@lfdr.de>; Thu, 25 Apr 2024 17:18:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 245DE14BF8D;
-	Thu, 25 Apr 2024 15:39:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8C9214E2CD;
+	Thu, 25 Apr 2024 17:17:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Lu6K1LeB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UOQHSu3E"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FF6914B080
-	for <cgroups@vger.kernel.org>; Thu, 25 Apr 2024 15:39:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E841E864;
+	Thu, 25 Apr 2024 17:17:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714059592; cv=none; b=BQdPPGfJKf+9iICdKi6rNSyaqtM+tOjhS8LLye0SqTf9BbPC8dBwuNPRISr83WoLotIKw5Mqo4HpJJid7x63gQ4atMUclzmPxzDlHA+0jOcHfLhDGgc1DZbp9gWAETyr2knwP5nGDC+zlHIUb67nOHP3hlW2IU2kzlCWUB/tzug=
+	t=1714065476; cv=none; b=PoITy2LeTxkkzgNsLE0k0qpHAjJGGMjHSG79IWgwBMNl3sVogEcMe7rKZ636fc0BTHU9Dqeydpas1J/Omv96tnOMtk7UKY40Oo6pd5b/puC0Hxl0pf6VgzF3/o2qNbqqW0GU5IdbMdp/TU1vFtGcF12eJ8UKoE6o8IsVzFtLRQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714059592; c=relaxed/simple;
-	bh=WF+dlvX2I/JhfKIJrRxXQkXnpq+LBXuSxxxOJYIm9Ew=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nUWmx1EWIG6riEXoKOMdJNfSjFyPPUL0wE5d9RNPRW7kUck+e8BHcY75VvkXTI96mPt0HqghZgQaxNAQp5bhxF8OqOTUldYCkFIqHOH6n30+mJmJCT79v3hBgdPcU+NNstmHoXhXs4hHKPhSuh8KbRNaEHzVeXrCT2jQoMlqXb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Lu6K1LeB; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-de45dba15feso1385021276.3
-        for <cgroups@vger.kernel.org>; Thu, 25 Apr 2024 08:39:51 -0700 (PDT)
+	s=arc-20240116; t=1714065476; c=relaxed/simple;
+	bh=5snC8iqMbQWNRgYRrgyDI6dkWLiaUWRHNAhR4zzs6AQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tOdrWz8bQ9wtIJQ1QL3i2fxjVbidSUBmTItMXTu2Dao8R6cEGjpVa3yGKldTA0qbbkGxCKUMqsmBh/1QqW6PGvT6YEAktncaunP3+fbdWCz5xTk61U2YtKbxKY5Irc5KnP7ba0drz0jDkHNdCgF9KPAR3gQ/aWak1WlekvFP37E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UOQHSu3E; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e9451d8b71so11070265ad.0;
+        Thu, 25 Apr 2024 10:17:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714059590; x=1714664390; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e0BChCss6w1nIzeILAtQLE3LhBpW3YXUB4HhPqTq7zU=;
-        b=Lu6K1LeBSNBNuTVNCNhOq9CVfWCgWKfOOjLOuPvMlbZ4TbQX9Y6s3T3Dfquhqvq1gF
-         mSGKoXEglg6vdgTDr5v9G47Ub46LTi7qUsk9DMx4zz8NmC2nBp58STboK2hpJPK6D8vG
-         o+k4gfJ4LMFLggYdCwnnrRUKnZBBA4vmXiIPPSCwSNsbpdnV+ZvkvC1X8/O9rc+7Ft5w
-         BDqipbhrArlE1vJtRM3CYBzMarSxplWxzeMnYt3vsxsEkfrb0jSHO8Nssq7cY4Ni3EIp
-         ivIsN7Lhc03KWHjEh+harc3wwEVQW9cNDWot+8WGoPk7E/RremVKM910I6z8wswDBghp
-         OxJA==
+        d=gmail.com; s=20230601; t=1714065474; x=1714670274; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=UL5saDl1/HYC9QxiX3OYDnCtXKbXFzyViYUmGWcWo3w=;
+        b=UOQHSu3EGyfmU2GcqbJjrq7wz0/iJVuzQ1axE2axe7cpbbk8LHz7jaJDSD+GAePWFx
+         r6e4UTMIF1mC3OwGT5TsXrIypRMAV41CHFAQTJvKT2Xs7u5wlQ5NnHcrOcB6ku10VnSd
+         Yp0ueq1lf3W/aPseCVn0Q0m9SkKTTmU73FSRcMApxxU5PQ78AKONAW4XBHQDOHUbYA34
+         RnIMPo3a8K7zMRtGZelXsal09hg0mKsbr3z0T2IzjlM4CJX7l8InKUd/wG7xTrPLmT7/
+         b5o4KfUzRwfafG1MhZLFAkTGb275C7bRmZ42rYK9qOgGkLcw6FhE63NGl64IKYqNdLo2
+         3ZWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714059590; x=1714664390;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e0BChCss6w1nIzeILAtQLE3LhBpW3YXUB4HhPqTq7zU=;
-        b=me71fdr9wLtxBH06cHhSm+fh04NJL36OPZcRpBIvccCogIcgEAu+aRpN/w6dcjl1I5
-         zVvzdvPtmqOKyLwPXm8QbJ+wpc/lqHv3m6dP9gzgcF8X6l27gA2wcmum1K1y9W3EK0LG
-         sCF3AxDdtG7QWz23NJ9gbYfc1R0xPh8NMw7YdQkhdjHa0MsYtB5dHKAUSZPsbSkM74TR
-         VNZ0a8nacuda5Kxf7XsPYuQIZI9Oqdl1Uc157H//zNnHx8ZpBBbLJYltyWktOPEEz/+o
-         /lxKsDUjVcYQN3Sls6J3QiN5hmO2P8oFXnuVT7gMrwdGcuptArNu1qzmnIqv06+RoePZ
-         mzpg==
-X-Forwarded-Encrypted: i=1; AJvYcCU/OsFNuLb39QI4/aVtf/jS2PvMEdsrEBKR8kiTI0c4CdFMxSrZcrI/PFHHLdhqmPvSHYmhx+OLQeLTxO7nMX6ZghDxGClbcg==
-X-Gm-Message-State: AOJu0YytsmRPkpAaridEFk92s0SClIXUa5flb8H9T9xtr6yZsaEGE1No
-	veNu6om2/rV4nKwdStHiQTKNNyCd7ovdVWS92eU1+Ga1/K1293HURV5RgMhhvZ9isymPTvbaZ5K
-	FixVnv5XtkCDVAP6zx7vPKiPe9OSP290eXHKA
-X-Google-Smtp-Source: AGHT+IHMmrQCod73kiqRAvCkDsnHTcOLVG7U0Dhn6OWsLE5Eza4GBBk8ZEiq+Ddus8vlXjyfwMqyLLjmcyn5VeI1piA=
-X-Received: by 2002:a05:6902:54b:b0:de1:849:a6f3 with SMTP id
- z11-20020a056902054b00b00de10849a6f3mr5525501ybs.7.1714059589879; Thu, 25 Apr
- 2024 08:39:49 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714065474; x=1714670274;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UL5saDl1/HYC9QxiX3OYDnCtXKbXFzyViYUmGWcWo3w=;
+        b=Dr8iRHRSkaCMjPUsaqA44mHHg3tiZY++Vhd/jAGUGbcygu7HtxUkfc5qIpQk29viU4
+         nLj+lCcfF4BwvwdwxVj/rnE4HMXIH1rMFskuCIIk+w2ejCyJJCqPGgmC6G/S4B7BzR8U
+         27gFJCu0b3xqjrcvvZI9R1lnETtpFuzoUsHzzuk3uiatDhdMSnHpCguyB0atIlXSv2Sy
+         WfMANoHqsEoYmWDsHaxv65ZR0OVS/Kdp/lv0D0VSv7rKT2BEiN5AqfhlbNc5z7toGg4L
+         YHUXEjrLpfSjUwAIPYJCy7Rw7la3q+fZ1OG+h7xTeXBlIP+aQEgoZxualwfDDJ9GMY0X
+         p4fQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVHoYidjomeaYNGEn4t1GIhR3yg1jlr7eiWx7ff/J7RnG9WODuQLuh4xQr3/WAJrddMdM+T6yQ4WjvUGZbmHW7yRu4Qo6fVObP6cBo+0veW82qTAZB21DtwcA9L9bplz7kNS4+qlQ==
+X-Gm-Message-State: AOJu0YxEf/9QLHW4rh6aHrlqRkBBUSe1U4/OjmJyCysTOo8Rry6zY6So
+	c0vB4bo1qu7m31RxAYQVH/llemfh7iZRu3LoK5MaEWls3Zdq4A1L
+X-Google-Smtp-Source: AGHT+IHqo9Qxba+7U0d5wxma8FuytFh+BWKBGanl+d15UZ4FatVV71SiA8rtledZVrDTc4EZ35NiJg==
+X-Received: by 2002:a17:903:1c2:b0:1e0:ca47:4d96 with SMTP id e2-20020a17090301c200b001e0ca474d96mr184034plh.3.1714065474383;
+        Thu, 25 Apr 2024 10:17:54 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:4652])
+        by smtp.gmail.com with ESMTPSA id w3-20020a170902a70300b001e83a718d87sm14042745plq.19.2024.04.25.10.17.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Apr 2024 10:17:54 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 25 Apr 2024 07:17:52 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Xiu Jianfeng <xiujianfeng@huawei.com>
+Cc: longman@redhat.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] cgroup/cpuset: Remove outdated comment in
+ sched_partition_write()
+Message-ID: <ZiqQQJG2I5WsGKt4@slm.duckdns.org>
+References: <20240425093016.1068567-1-xiujianfeng@huawei.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321163705.3067592-1-surenb@google.com> <202404241852.DC4067B7@keescook>
- <3eyvxqihylh4st6baagn6o6scw3qhcb6lapgli4wsic2fvbyzu@h66mqxcikmcp>
-In-Reply-To: <3eyvxqihylh4st6baagn6o6scw3qhcb6lapgli4wsic2fvbyzu@h66mqxcikmcp>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 25 Apr 2024 08:39:37 -0700
-Message-ID: <CAJuCfpFtj7MVY+9FaKfq0w7N1qw8=jYifC0sBUAySk=AWBhK6Q@mail.gmail.com>
-Subject: Re: [PATCH v6 00/37] Memory allocation profiling
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Kees Cook <keescook@chromium.org>, akpm@linux-foundation.org, mhocko@suse.com, 
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, songmuchun@bytedance.com, 
-	jbaron@akamai.com, aliceryhl@google.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240425093016.1068567-1-xiujianfeng@huawei.com>
 
-On Wed, Apr 24, 2024 at 8:26=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
->
-> On Wed, Apr 24, 2024 at 06:59:01PM -0700, Kees Cook wrote:
-> > On Thu, Mar 21, 2024 at 09:36:22AM -0700, Suren Baghdasaryan wrote:
-> > > Low overhead [1] per-callsite memory allocation profiling. Not just f=
-or
-> > > debug kernels, overhead low enough to be deployed in production.
-> >
-> > Okay, I think I'm holding it wrong. With next-20240424 if I set:
-> >
-> > CONFIG_CODE_TAGGING=3Dy
-> > CONFIG_MEM_ALLOC_PROFILING=3Dy
-> > CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT=3Dy
-> >
-> > My test system totally freaks out:
-> >
-> > ...
-> > SLUB: HWalign=3D64, Order=3D0-3, MinObjects=3D0, CPUs=3D4, Nodes=3D1
-> > Oops: general protection fault, probably for non-canonical address 0xc3=
-88d881e4808550: 0000 [#1] PREEMPT SMP NOPTI
-> > CPU: 0 PID: 0 Comm: swapper Not tainted 6.9.0-rc5-next-20240424 #1
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06=
-/2015
-> > RIP: 0010:__kmalloc_node_noprof+0xcd/0x560
-> >
-> > Which is:
-> >
-> > __kmalloc_node_noprof+0xcd/0x560:
-> > __slab_alloc_node at mm/slub.c:3780 (discriminator 2)
-> > (inlined by) slab_alloc_node at mm/slub.c:3982 (discriminator 2)
-> > (inlined by) __do_kmalloc_node at mm/slub.c:4114 (discriminator 2)
-> > (inlined by) __kmalloc_node_noprof at mm/slub.c:4122 (discriminator 2)
-> >
-> > Which is:
-> >
-> >         tid =3D READ_ONCE(c->tid);
-> >
-> > I haven't gotten any further than that; I'm EOD. Anyone seen anything
-> > like this with this series?
->
-> I certainly haven't. That looks like some real corruption, we're in slub
-> internal data structures and derefing a garbage address. Check kasan and
-> all that?
+On Thu, Apr 25, 2024 at 09:30:16AM +0000, Xiu Jianfeng wrote:
+> The comment here is outdated and can cause confusion, from the code
+> perspective, there’s also no need for new comment, so just remove it.
+> 
+> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
 
-Hi Kees,
-I tested next-20240424 yesterday with defconfig and
-CONFIG_MEM_ALLOC_PROFILING enabled but didn't see any issue like that.
-Could you share your config file please?
-Thanks,
-Suren.
+Applied to cgroup/for-6.10.
+
+Thanks.
+
+-- 
+tejun
 
