@@ -1,108 +1,161 @@
-Return-Path: <cgroups+bounces-2704-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2705-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B08F8B2194
-	for <lists+cgroups@lfdr.de>; Thu, 25 Apr 2024 14:25:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3522B8B2556
+	for <lists+cgroups@lfdr.de>; Thu, 25 Apr 2024 17:40:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A21F1F22CE3
-	for <lists+cgroups@lfdr.de>; Thu, 25 Apr 2024 12:25:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC60E1F24D31
+	for <lists+cgroups@lfdr.de>; Thu, 25 Apr 2024 15:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8EF312BF38;
-	Thu, 25 Apr 2024 12:24:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 245DE14BF8D;
+	Thu, 25 Apr 2024 15:39:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WCiAd/98"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Lu6K1LeB"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A5D85C52
-	for <cgroups@vger.kernel.org>; Thu, 25 Apr 2024 12:24:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FF6914B080
+	for <cgroups@vger.kernel.org>; Thu, 25 Apr 2024 15:39:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714047894; cv=none; b=JzIN183y2+iTPDNi+vxO4O3TUtgO1cMb6ldMKfZHK9Sh/6PtU2niSw04VsO4mxHI7Af2g5q0FDWeWUulEwkG5zGgx8rKIVOAHoxf09B2UUaiwyoFNnPxRyRjDEvMGzGGNQPYJRtuHNTZC7mMlfetyuZ4o9rUOf+a6xsBoFHG8sY=
+	t=1714059592; cv=none; b=BQdPPGfJKf+9iICdKi6rNSyaqtM+tOjhS8LLye0SqTf9BbPC8dBwuNPRISr83WoLotIKw5Mqo4HpJJid7x63gQ4atMUclzmPxzDlHA+0jOcHfLhDGgc1DZbp9gWAETyr2knwP5nGDC+zlHIUb67nOHP3hlW2IU2kzlCWUB/tzug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714047894; c=relaxed/simple;
-	bh=M71qeK8Sdn8NVW2kZBFrMrpoDYzrjWTiYmyUYOxRzpc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sc/aHjkyNgapU3T+qOpmKlezxjKfjrPforiiRcBHakhH48VtTPGtdpLickpUGe3RtEbdGN63Vbv8zCSwzep8o9F4lLqDNC/aOFDIH603ixEVR5dy4xQqR6wBScMCegua5Byb0Y6t4r1yoJ4hHGmJzc/EBq7pvCTig+brf/X5wPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WCiAd/98; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1714047891;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uRbwdG+1XunRLInxSf/AH761bg3jaFbuEZ5fAcJb3TY=;
-	b=WCiAd/98ZAJ/+6e+9t4eas6Bxz6uSWE/5py6vdJDZ7mIhyOmtWVUSGRhUHXeopzkIl3xrZ
-	jnLZ+BFiKz3vPfhFuIQjlrxztz5kv/EJlsAMLtf08KpKK3lzYPx6KjjPW4wqt2rXNStUny
-	sKt+cUEL2g9/zwQRd8kNv+1V4Oxhs9A=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-611-fbcaXE1cMpCWsRlt9eVr4g-1; Thu, 25 Apr 2024 08:24:48 -0400
-X-MC-Unique: fbcaXE1cMpCWsRlt9eVr4g-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F3252800CA2;
-	Thu, 25 Apr 2024 12:24:47 +0000 (UTC)
-Received: from [10.22.17.9] (unknown [10.22.17.9])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 81A7040F01A;
-	Thu, 25 Apr 2024 12:24:47 +0000 (UTC)
-Message-ID: <a834a59d-9f31-4374-923f-ddd89780b62a@redhat.com>
-Date: Thu, 25 Apr 2024 08:24:46 -0400
+	s=arc-20240116; t=1714059592; c=relaxed/simple;
+	bh=WF+dlvX2I/JhfKIJrRxXQkXnpq+LBXuSxxxOJYIm9Ew=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nUWmx1EWIG6riEXoKOMdJNfSjFyPPUL0wE5d9RNPRW7kUck+e8BHcY75VvkXTI96mPt0HqghZgQaxNAQp5bhxF8OqOTUldYCkFIqHOH6n30+mJmJCT79v3hBgdPcU+NNstmHoXhXs4hHKPhSuh8KbRNaEHzVeXrCT2jQoMlqXb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Lu6K1LeB; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-de45dba15feso1385021276.3
+        for <cgroups@vger.kernel.org>; Thu, 25 Apr 2024 08:39:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1714059590; x=1714664390; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e0BChCss6w1nIzeILAtQLE3LhBpW3YXUB4HhPqTq7zU=;
+        b=Lu6K1LeBSNBNuTVNCNhOq9CVfWCgWKfOOjLOuPvMlbZ4TbQX9Y6s3T3Dfquhqvq1gF
+         mSGKoXEglg6vdgTDr5v9G47Ub46LTi7qUsk9DMx4zz8NmC2nBp58STboK2hpJPK6D8vG
+         o+k4gfJ4LMFLggYdCwnnrRUKnZBBA4vmXiIPPSCwSNsbpdnV+ZvkvC1X8/O9rc+7Ft5w
+         BDqipbhrArlE1vJtRM3CYBzMarSxplWxzeMnYt3vsxsEkfrb0jSHO8Nssq7cY4Ni3EIp
+         ivIsN7Lhc03KWHjEh+harc3wwEVQW9cNDWot+8WGoPk7E/RremVKM910I6z8wswDBghp
+         OxJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714059590; x=1714664390;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e0BChCss6w1nIzeILAtQLE3LhBpW3YXUB4HhPqTq7zU=;
+        b=me71fdr9wLtxBH06cHhSm+fh04NJL36OPZcRpBIvccCogIcgEAu+aRpN/w6dcjl1I5
+         zVvzdvPtmqOKyLwPXm8QbJ+wpc/lqHv3m6dP9gzgcF8X6l27gA2wcmum1K1y9W3EK0LG
+         sCF3AxDdtG7QWz23NJ9gbYfc1R0xPh8NMw7YdQkhdjHa0MsYtB5dHKAUSZPsbSkM74TR
+         VNZ0a8nacuda5Kxf7XsPYuQIZI9Oqdl1Uc157H//zNnHx8ZpBBbLJYltyWktOPEEz/+o
+         /lxKsDUjVcYQN3Sls6J3QiN5hmO2P8oFXnuVT7gMrwdGcuptArNu1qzmnIqv06+RoePZ
+         mzpg==
+X-Forwarded-Encrypted: i=1; AJvYcCU/OsFNuLb39QI4/aVtf/jS2PvMEdsrEBKR8kiTI0c4CdFMxSrZcrI/PFHHLdhqmPvSHYmhx+OLQeLTxO7nMX6ZghDxGClbcg==
+X-Gm-Message-State: AOJu0YytsmRPkpAaridEFk92s0SClIXUa5flb8H9T9xtr6yZsaEGE1No
+	veNu6om2/rV4nKwdStHiQTKNNyCd7ovdVWS92eU1+Ga1/K1293HURV5RgMhhvZ9isymPTvbaZ5K
+	FixVnv5XtkCDVAP6zx7vPKiPe9OSP290eXHKA
+X-Google-Smtp-Source: AGHT+IHMmrQCod73kiqRAvCkDsnHTcOLVG7U0Dhn6OWsLE5Eza4GBBk8ZEiq+Ddus8vlXjyfwMqyLLjmcyn5VeI1piA=
+X-Received: by 2002:a05:6902:54b:b0:de1:849:a6f3 with SMTP id
+ z11-20020a056902054b00b00de10849a6f3mr5525501ybs.7.1714059589879; Thu, 25 Apr
+ 2024 08:39:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] cgroup/cpuset: Remove outdated comment in
- sched_partition_write()
-To: Xiu Jianfeng <xiujianfeng@huawei.com>, lizefan.x@bytedance.com,
- tj@kernel.org, hannes@cmpxchg.org
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240425093016.1068567-1-xiujianfeng@huawei.com>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240425093016.1068567-1-xiujianfeng@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+References: <20240321163705.3067592-1-surenb@google.com> <202404241852.DC4067B7@keescook>
+ <3eyvxqihylh4st6baagn6o6scw3qhcb6lapgli4wsic2fvbyzu@h66mqxcikmcp>
+In-Reply-To: <3eyvxqihylh4st6baagn6o6scw3qhcb6lapgli4wsic2fvbyzu@h66mqxcikmcp>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 25 Apr 2024 08:39:37 -0700
+Message-ID: <CAJuCfpFtj7MVY+9FaKfq0w7N1qw8=jYifC0sBUAySk=AWBhK6Q@mail.gmail.com>
+Subject: Re: [PATCH v6 00/37] Memory allocation profiling
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Kees Cook <keescook@chromium.org>, akpm@linux-foundation.org, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, songmuchun@bytedance.com, 
+	jbaron@akamai.com, aliceryhl@google.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/25/24 05:30, Xiu Jianfeng wrote:
-> The comment here is outdated and can cause confusion, from the code
-> perspective, there’s also no need for new comment, so just remove it.
+On Wed, Apr 24, 2024 at 8:26=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
 >
-> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
-> ---
->   kernel/cgroup/cpuset.c | 3 ---
->   1 file changed, 3 deletions(-)
+> On Wed, Apr 24, 2024 at 06:59:01PM -0700, Kees Cook wrote:
+> > On Thu, Mar 21, 2024 at 09:36:22AM -0700, Suren Baghdasaryan wrote:
+> > > Low overhead [1] per-callsite memory allocation profiling. Not just f=
+or
+> > > debug kernels, overhead low enough to be deployed in production.
+> >
+> > Okay, I think I'm holding it wrong. With next-20240424 if I set:
+> >
+> > CONFIG_CODE_TAGGING=3Dy
+> > CONFIG_MEM_ALLOC_PROFILING=3Dy
+> > CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT=3Dy
+> >
+> > My test system totally freaks out:
+> >
+> > ...
+> > SLUB: HWalign=3D64, Order=3D0-3, MinObjects=3D0, CPUs=3D4, Nodes=3D1
+> > Oops: general protection fault, probably for non-canonical address 0xc3=
+88d881e4808550: 0000 [#1] PREEMPT SMP NOPTI
+> > CPU: 0 PID: 0 Comm: swapper Not tainted 6.9.0-rc5-next-20240424 #1
+> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06=
+/2015
+> > RIP: 0010:__kmalloc_node_noprof+0xcd/0x560
+> >
+> > Which is:
+> >
+> > __kmalloc_node_noprof+0xcd/0x560:
+> > __slab_alloc_node at mm/slub.c:3780 (discriminator 2)
+> > (inlined by) slab_alloc_node at mm/slub.c:3982 (discriminator 2)
+> > (inlined by) __do_kmalloc_node at mm/slub.c:4114 (discriminator 2)
+> > (inlined by) __kmalloc_node_noprof at mm/slub.c:4122 (discriminator 2)
+> >
+> > Which is:
+> >
+> >         tid =3D READ_ONCE(c->tid);
+> >
+> > I haven't gotten any further than that; I'm EOD. Anyone seen anything
+> > like this with this series?
 >
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index f5443c039619..a10e4bd0c0c1 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -3774,9 +3774,6 @@ static ssize_t sched_partition_write(struct kernfs_open_file *of, char *buf,
->   
->   	buf = strstrip(buf);
->   
-> -	/*
-> -	 * Convert "root" to ENABLED, and convert "member" to DISABLED.
-> -	 */
->   	if (!strcmp(buf, "root"))
->   		val = PRS_ROOT;
->   	else if (!strcmp(buf, "member"))
+> I certainly haven't. That looks like some real corruption, we're in slub
+> internal data structures and derefing a garbage address. Check kasan and
+> all that?
 
-Yes, that comment is now no longer relevant.
-
-Acked-by: Waiman Long <longman@redhat.com>
-
+Hi Kees,
+I tested next-20240424 yesterday with defconfig and
+CONFIG_MEM_ALLOC_PROFILING enabled but didn't see any issue like that.
+Could you share your config file please?
+Thanks,
+Suren.
 
