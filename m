@@ -1,139 +1,147 @@
-Return-Path: <cgroups+bounces-2698-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2699-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F2D88B1706
-	for <lists+cgroups@lfdr.de>; Thu, 25 Apr 2024 01:24:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DA2A8B18AD
+	for <lists+cgroups@lfdr.de>; Thu, 25 Apr 2024 03:59:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 880301C236EF
-	for <lists+cgroups@lfdr.de>; Wed, 24 Apr 2024 23:24:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35D741C213B3
+	for <lists+cgroups@lfdr.de>; Thu, 25 Apr 2024 01:59:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1841C16F0DE;
-	Wed, 24 Apr 2024 23:23:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64D49111A1;
+	Thu, 25 Apr 2024 01:59:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZDBmXtqK"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DKH8/s3J"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DA40156F5D
-	for <cgroups@vger.kernel.org>; Wed, 24 Apr 2024 23:23:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB338107A6
+	for <cgroups@vger.kernel.org>; Thu, 25 Apr 2024 01:59:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714001034; cv=none; b=Vbx2sfQD0H387ZRvYoo+VfGAcyO4/haRi5Yu2HIoPhbe4LVUwDfXShbf0y1rAGD05AC7byYa+twZWdf8DS+zudm0rPO2sS2NkZIex6epvQp4xkPfg25CEHWqxEKrmvTWbZ3Fj7w0lhGxS+2oYc0cHyJkJZl7xMpqMXcK81UOmFw=
+	t=1714010344; cv=none; b=FijhYProsj3DT0CXqgvnDB345Iv5YyVSbDyIM46Hy++KXMyWCIVBvFbEDbreubP3sqYBeEzI3pEN7xUAWe+qZyVeu2mq0YguZZH0irAoouzjVIPicYmkrcnBkOtcI10Te30fZ/ihdMZGqDJ5ZfSXTxbAatwbd9c2oDhUFg/sDLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714001034; c=relaxed/simple;
-	bh=kWYPE52TsD9tInankw4Nl3ZO8d6bCgXJgGeWHlBI7E8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KhqFbxfmTGxzkaga6IE4SCgwYCueQKKFD0RaBfW9J/ZUKcd8cgvS0UVjo6GwImcptOt7O20zhjf60DQtD2798RGziNQZn9hwBmqGSiYcEaMTagr0T/Ej4493wyv2zzRE89QDW3JiuJXhecBT3rICi48AVuwDNHHaQC/0LO/6RoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZDBmXtqK; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2dd19c29c41so4195211fa.3
-        for <cgroups@vger.kernel.org>; Wed, 24 Apr 2024 16:23:53 -0700 (PDT)
+	s=arc-20240116; t=1714010344; c=relaxed/simple;
+	bh=p/cGThLZ3QnfmTN7NW9NTr5bcTYchPjUIQ6WCPhs4IQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L7qGIqFE5RJQn4LHzclEYqqwzN0TsERQxOl5LFfzXE0ELiJXABDmPt2N9AuDAks+DuO2usNhcOjhpuxwcbRp8YrDZV5/aHQ6aORm4xA4tULnoJNXJbTpTgcN5menaIK8kqY3EVhgniigScaoPIOszJkHS3Jd6Nch6q2YL5va7IY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DKH8/s3J; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1e51398cc4eso4352415ad.2
+        for <cgroups@vger.kernel.org>; Wed, 24 Apr 2024 18:59:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714001031; x=1714605831; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=R4Xhz5NWCXtt8nKXxeIFmhH8Oed5NRQI3JQnJYBJb4s=;
-        b=ZDBmXtqKUgzM5W6Y9v/FaSWCHcLxNWr12HbqWLBMO6yf6A8OTiahKd3JK1posYwxSG
-         vuMm8PFjLRvrMt5lwZUyiweQsVDVF/F62rnhi0zCE97/mNJZDsIrMMajRsNQZSWmr4og
-         91mlctLys46RrYkEjgAGu3mrzHmHtO6IJiTk66weMjRoMXvW0gpylRits2TiFvcY1cMt
-         BY5wd9sliMz2uIigVPYvjLwCd1a6JIZf3M2FhGr/gSilxQWrA4VkRFCwDVXgAf+hN4jo
-         BJ3M7EGjRQdm3yamJoku/qFFDjGF1fVDfDEZ7VgXBFd+amcVrRPryrjanJWvvXizAaAS
-         nCGg==
+        d=chromium.org; s=google; t=1714010342; x=1714615142; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=S4qlJ+DG6HoUrdCik4e+F/ZipKmWdndDCcmvcXd31J0=;
+        b=DKH8/s3JRXewO3uRlUu4fCoood6Fz58WtrLazwyrSzra0mwJ9mITfxLQXdn+2npsKd
+         AatPjRBUoHypnwwljhYrMkOBSBRQ25yB0gdmKwZCLwWouMGpc1BCWIwfh3ujF+UbXo0+
+         jbQQehQ52/2q73gd0IoDWpbdw+s06PcKXfokQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714001031; x=1714605831;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=R4Xhz5NWCXtt8nKXxeIFmhH8Oed5NRQI3JQnJYBJb4s=;
-        b=v6Yx/+G5lYhGjzeqX8IUfSNa9vfuQaFdUb2q7Km3DtIp0f0BkMRUGuc9HMsVSIiS6c
-         I5y5FvnIZds8YsMXkKual0C8nO/7dMcLRDk+FQPiI7uedh14vmUOi6UFj+/7VqpyKvFS
-         O2V8ThVTWZOePekxWMvZVWGaF/bpkuvAjObV5fbr+J17ZMn3E+82nZH3KvPTLjxSSBPM
-         RMJ7dfC4x4IJggDlr82pHoH6Whgm/Hsk0r+7yMMdqRRYi9rWbSYLuQHL0QdjPRVkp2c8
-         /RRAlZN0+J49phhK26AP6q2sMklnIG6xYXMcpj+fkB/VRSrawP+8OpfTzNkvsv4mWVDg
-         VAmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWU7YWTczz135ezZAEW9OkhFPcpTMdADdEFrPfDzGEZSGq/sGgTSr9Kgjx9rYqBDWh8dHqynNZF5PuzD8ApEKeK/CZMbQzAOg==
-X-Gm-Message-State: AOJu0YyJjjg9akD+WinVzOwSPZoxBQ5oLwQ2cFe7vm4qzXSQtwRtmrCc
-	xuoF/Oahi38YU0PdeuqQhsU+RzC2i7b4oDxvYIm7cUCgkH+1E/M4Ot7hFVtTy7srT24OFA+3jjZ
-	j+Ua4ojLYqcqCVVuJ7z59qZ2ByN0Vd+hNOEBL
-X-Google-Smtp-Source: AGHT+IHPC10+jHzeG+tgpIIgUMIPE4SuCr0QvH7By3qs7yKyt3sGcnqfFcju9V2mis/w27r/UIkSloxyYeZtRuWl320=
-X-Received: by 2002:ac2:4254:0:b0:519:63c1:6f45 with SMTP id
- m20-20020ac24254000000b0051963c16f45mr2385942lfl.61.1714001031354; Wed, 24
- Apr 2024 16:23:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714010342; x=1714615142;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S4qlJ+DG6HoUrdCik4e+F/ZipKmWdndDCcmvcXd31J0=;
+        b=lrJLUk71TMrLlkv5FqxaviPc3dIhVLfwX2Eb7VDOdkRQMWeIokR6vkNE4/cW5HDb9Q
+         Ip76C4zFDa54+urdWyzbL6AspIC+KuG07m4IOMxcM4j+65SYBj1+I1K/uYNxTRpX4n2f
+         SB4gMZBxuBEjX1HyZwfGYx4AwBadTlmGV03/jd82RqxSMwh6IwLKZ9jO63kVy0VKBhzd
+         xxoo38oIB4F0H1ZU5ODqqM3oYlmUHUWDPFOQ1LS8t2BwtU/C1VyBaiPrHBeEq8BVgCvv
+         hAgTDrsVyXnQdGe513Fb9GfvOmpXyCJ9ogj3oSVH1kSfdVfNKn9CiOF0PVNKyT/ZOqA3
+         QlPw==
+X-Forwarded-Encrypted: i=1; AJvYcCVGQt3VA0e6fa7PVFKTpTGAsTl9w2pC+agfmSCe4DJ7ZXT14Db5fWNNl6uIek9ccjjSjN/+pPKtFx/AvVkpFuujMMlcFXwJIQ==
+X-Gm-Message-State: AOJu0Yxl2pHbyCT4t4I4+XKkS/Q+BmCvKMx1kWxbScSxuIoLZMQOKjKo
+	AVRmv9j7ONEReYEMy/6WMsOt+zTeVPjoZ0hEp7c/35nKZMo1kR18eFGUv1C1ww==
+X-Google-Smtp-Source: AGHT+IFgnziqKVsPlDFcaVY3O1lcKny/l/El36yYFOjaOKnKn279lG8Ph9ngGazPAxyRWX6j+oUVIg==
+X-Received: by 2002:a17:903:2290:b0:1e8:92:c5e2 with SMTP id b16-20020a170903229000b001e80092c5e2mr6592452plh.47.1714010342304;
+        Wed, 24 Apr 2024 18:59:02 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id g2-20020a170902934200b001e25da6f2f2sm12553004plp.68.2024.04.24.18.59.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Apr 2024 18:59:01 -0700 (PDT)
+Date: Wed, 24 Apr 2024 18:59:01 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
+	liam.howlett@oracle.com, penguin-kernel@i-love.sakura.ne.jp,
+	corbet@lwn.net, void@manifault.com, peterz@infradead.org,
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
+	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org,
+	jhubbard@nvidia.com, tj@kernel.org, muchun.song@linux.dev,
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+	hughd@google.com, andreyknvl@gmail.com, ndesaulniers@google.com,
+	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
+	ytcoode@gmail.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
+	glider@google.com, elver@google.com, dvyukov@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com,
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
+	kernel-team@android.com, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v6 00/37] Memory allocation profiling
+Message-ID: <202404241852.DC4067B7@keescook>
+References: <20240321163705.3067592-1-surenb@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424125940.2410718-1-leitao@debian.org>
-In-Reply-To: <20240424125940.2410718-1-leitao@debian.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 24 Apr 2024 16:23:12 -0700
-Message-ID: <CAJD7tkaWw14fLvCKE5-3U-FLm_0bsMJHcxHEFJwgGdfsR4SzMw@mail.gmail.com>
-Subject: Re: [PATCH] memcg: Fix data-race KCSAN bug in rstats
-To: Breno Leitao <leitao@debian.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, leit@meta.com, 
-	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <cgroups@vger.kernel.org>, 
-	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <linux-mm@kvack.org>, open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240321163705.3067592-1-surenb@google.com>
 
-On Wed, Apr 24, 2024 at 6:00=E2=80=AFAM Breno Leitao <leitao@debian.org> wr=
-ote:
->
-> A data-race issue in memcg rstat occurs when two distinct code paths
-> access the same 4-byte region concurrently. KCSAN detection triggers the
-> following BUG as a result.
->
->         BUG: KCSAN: data-race in __count_memcg_events / mem_cgroup_css_rs=
-tat_flush
->
->         write to 0xffffe8ffff98e300 of 4 bytes by task 5274 on cpu 17:
->         mem_cgroup_css_rstat_flush (mm/memcontrol.c:5850)
->         cgroup_rstat_flush_locked (kernel/cgroup/rstat.c:243 (discriminat=
-or 7))
->         cgroup_rstat_flush (./include/linux/spinlock.h:401 kernel/cgroup/=
-rstat.c:278)
->         mem_cgroup_flush_stats.part.0 (mm/memcontrol.c:767)
->         memory_numa_stat_show (mm/memcontrol.c:6911)
-> <snip>
->
->         read to 0xffffe8ffff98e300 of 4 bytes by task 410848 on cpu 27:
->         __count_memcg_events (mm/memcontrol.c:725 mm/memcontrol.c:962)
->         count_memcg_event_mm.part.0 (./include/linux/memcontrol.h:1097 ./=
-include/linux/memcontrol.h:1120)
->         handle_mm_fault (mm/memory.c:5483 mm/memory.c:5622)
-> <snip>
->
->         value changed: 0x00000029 -> 0x00000000
->
-> The race occurs because two code paths access the same "stats_updates"
-> location. Although "stats_updates" is a per-CPU variable, it is remotely
-> accessed by another CPU at
-> cgroup_rstat_flush_locked()->mem_cgroup_css_rstat_flush(), leading to
-> the data race mentioned.
->
-> Considering that memcg_rstat_updated() is in the hot code path, adding
-> a lock to protect it may not be desirable, especially since this
-> variable pertains solely to statistics.
->
-> Therefore, annotating accesses to stats_updates with READ/WRITE_ONCE()
-> can prevent KCSAN splats and potential partial reads/writes.
->
-> Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+On Thu, Mar 21, 2024 at 09:36:22AM -0700, Suren Baghdasaryan wrote:
+> Low overhead [1] per-callsite memory allocation profiling. Not just for
+> debug kernels, overhead low enough to be deployed in production.
 
-Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+Okay, I think I'm holding it wrong. With next-20240424 if I set:
 
-, and or posterity:
-Fixes: 9cee7e8ef3e3 ("mm: memcg: optimize parent iteration in
-memcg_rstat_updated()")
+CONFIG_CODE_TAGGING=y
+CONFIG_MEM_ALLOC_PROFILING=y
+CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT=y
+
+My test system totally freaks out:
+
+...
+SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
+Oops: general protection fault, probably for non-canonical address 0xc388d881e4808550: 0000 [#1] PREEMPT SMP NOPTI
+CPU: 0 PID: 0 Comm: swapper Not tainted 6.9.0-rc5-next-20240424 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
+RIP: 0010:__kmalloc_node_noprof+0xcd/0x560
+
+Which is:
+
+__kmalloc_node_noprof+0xcd/0x560:
+__slab_alloc_node at mm/slub.c:3780 (discriminator 2)
+(inlined by) slab_alloc_node at mm/slub.c:3982 (discriminator 2)
+(inlined by) __do_kmalloc_node at mm/slub.c:4114 (discriminator 2)
+(inlined by) __kmalloc_node_noprof at mm/slub.c:4122 (discriminator 2)
+
+Which is:
+
+        tid = READ_ONCE(c->tid);
+
+I haven't gotten any further than that; I'm EOD. Anyone seen anything
+like this with this series?
+
+-Kees
+
+-- 
+Kees Cook
 
