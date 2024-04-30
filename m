@@ -1,655 +1,662 @@
-Return-Path: <cgroups+bounces-2736-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2739-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABA1D8B80DE
-	for <lists+cgroups@lfdr.de>; Tue, 30 Apr 2024 21:53:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C71D68B8148
+	for <lists+cgroups@lfdr.de>; Tue, 30 Apr 2024 22:15:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CB1251C249B9
-	for <lists+cgroups@lfdr.de>; Tue, 30 Apr 2024 19:53:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77B9228C7B0
+	for <lists+cgroups@lfdr.de>; Tue, 30 Apr 2024 20:15:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 854CD1C6883;
-	Tue, 30 Apr 2024 19:51:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E175319DF72;
+	Tue, 30 Apr 2024 20:15:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="L7LP5TmF"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n8wGtb7F"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F21571C0DD6;
-	Tue, 30 Apr 2024 19:51:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29164199E96;
+	Tue, 30 Apr 2024 20:14:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714506681; cv=none; b=E0Nx/pdMh+KflW8Lj5kpK7HdtgD+wsXQlmYQ27oUweff38LwPzWAiYETLmEU6GckQ7ecpEKDS/pkJKvq68KNKLah8g8GhQcHGT8xYx9QeWGp5WchSEYzYIze97QBWRtoc48pCwp/psrJWIqEq2NMOxOhXrzp4hIbUGwD7SUOO+A=
+	t=1714508104; cv=none; b=YsJOUvt6vV+MyuCUFV2Vx9pJAmz6Z9+ssUezQJKtMDQpKGrDTndWYp0XJguuvrltBGGaiWzpAImvaIBB2XDFDDnz6/s/2+X5/GBGF2R+cN7548vGJPSpGwrQIgpaFBeYrtfJMhIe4XCbWau4zDCXlk0L32xLJDGADZIz4/uiksQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714506681; c=relaxed/simple;
-	bh=cdTt/RfbXiPxDDfK6wWOc6D308ILWNE4x9utyKswqpw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WNo4XDJ6pFM2IW07IBiE6aKftpIgYLT1TURNQCMUvUwTtpEgQwFu8UzDGC6j/lpGN+PLswTd3IdSEhPdua49L4+66QgBf/q5zsnqh8PK0tmJGf/M6iiWyjUu3PgZ54hbWJIWgiotW8QaScAdtnw9br1MKHm7nLeY3d25Rt413/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=L7LP5TmF; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1714508104; c=relaxed/simple;
+	bh=ZafLxfI+Z/GIhZZqRQsDUhDD3XnYQA1a9EWeGEFS0wg=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=ejd39rr+wI6bCS3kwdpI0PA5piPPQM3YJEaM0lCx6Xake3RPrU6/nAB06ukFR/FNjGAMHfMScBbPAsuzN37zt/efMEBFa9AxjfXQ1XOSIlF5Fft9AYwBvZrVTLc+WUEV75+VwJFcngxwcS5bS1wBJfrZ+w+i8v6EtrjhrAUDifA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n8wGtb7F; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1714506679; x=1746042679;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=cdTt/RfbXiPxDDfK6wWOc6D308ILWNE4x9utyKswqpw=;
-  b=L7LP5TmFEYLSpgBIxpIiVEa+jTUGhNUGHEiNnezI546ssL2jtrSyr9VZ
-   kuCqyNMjZN0q1fxu1HHVYLnkniOHfmQF3pP3c+LML+RUk2hb0S20uwolE
-   SV0Lxz2wt40dOP+JLgpvLsd7FLSdu7jo4xw3bbsptUc3BS7DKFJbqrNN4
-   5SaLmR+nZvVmCjy1TxCvjHHpiYjQucVQY4ARN3BQQ55i0F/qLxuxIxART
-   7l0EjV8ATo10S6dQVqBT9oBsw04uhx8t8xAF94n/Z7vCp6juOWC+4+wss
-   8ull1njJ+yrztJwU66pvS5LxLPc34OT4frXvFML3N1L6O5pXBSNDK5cLh
-   w==;
-X-CSE-ConnectionGUID: XzxeMYmhSv6OZS6ShaIXww==
-X-CSE-MsgGUID: ufjR+xeuQTOBLtLPOS6B8A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="10355671"
+  t=1714508100; x=1746044100;
+  h=date:from:to:cc:subject:message-id;
+  bh=ZafLxfI+Z/GIhZZqRQsDUhDD3XnYQA1a9EWeGEFS0wg=;
+  b=n8wGtb7Fo6NLJ1b8FFns9upmw71hIgtYb3esOPNVBZlGQvrGA9Z+YETE
+   vqxrneEWu2oB0zdSEPihEaVcxGG9bWm9Pgl0du6roYUssZoBINV9tcbdf
+   uIehgN04nGSqEK5u1SKdTcbNpYvtg1I8OCCGmnY7lZZsCY7nLdzoVw+VP
+   +dP8EeU92t9DhZvpGlXbj13hkpRHfgxoxvRQdqacw2FDGPrnrYnDY2erQ
+   B/MHodrKZGXprwNqtGhYBOPDjTbTsubuMXhtK9j+h1BZNJYdYEvwuFjOA
+   Sa3+yP4Or8vhlAQYAeDYDQoKTyGEm2QyKCwRmwyaCUyBsRn5iKk/Zdqyr
+   A==;
+X-CSE-ConnectionGUID: kzYi2If/Rwm6J14ZySXZ1w==
+X-CSE-MsgGUID: Efob9qktQyynrXybpz065g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11060"; a="10358855"
 X-IronPort-AV: E=Sophos;i="6.07,243,1708416000"; 
-   d="scan'208";a="10355671"
+   d="scan'208";a="10358855"
 Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 12:51:12 -0700
-X-CSE-ConnectionGUID: +rfVlnmcQnqaSR9pzKA70Q==
-X-CSE-MsgGUID: r8tW38zPTnGyBCUcnUycmg==
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Apr 2024 13:14:54 -0700
+X-CSE-ConnectionGUID: qp6YMwp+TsSexkVVR2GzOA==
+X-CSE-MsgGUID: KrZvMl4uSsiQsmyNvi+utQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,243,1708416000"; 
-   d="scan'208";a="31280339"
-Received: from b4969161e530.jf.intel.com ([10.165.56.46])
-  by orviesa003.jf.intel.com with ESMTP; 30 Apr 2024 12:51:11 -0700
-From: Haitao Huang <haitao.huang@linux.intel.com>
-To: jarkko@kernel.org,
-	dave.hansen@linux.intel.com,
-	kai.huang@intel.com,
-	tj@kernel.org,
-	mkoutny@suse.com,
-	linux-kernel@vger.kernel.org,
-	linux-sgx@vger.kernel.org,
-	x86@kernel.org,
-	cgroups@vger.kernel.org,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	hpa@zytor.com,
-	sohil.mehta@intel.com,
-	tim.c.chen@linux.intel.com
-Cc: zhiquan1.li@intel.com,
-	kristen@linux.intel.com,
-	seanjc@google.com,
-	zhanb@microsoft.com,
-	anakrish@microsoft.com,
-	mikko.ylinen@linux.intel.com,
-	yangjie@microsoft.com,
-	chrisyan@microsoft.com
-Subject: [PATCH v13 14/14] selftests/sgx: Add scripts for EPC cgroup testing
-Date: Tue, 30 Apr 2024 12:51:08 -0700
-Message-Id: <20240430195108.5676-15-haitao.huang@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240430195108.5676-1-haitao.huang@linux.intel.com>
-References: <20240430195108.5676-1-haitao.huang@linux.intel.com>
+   d="scan'208";a="31288691"
+Received: from lkp-server01.sh.intel.com (HELO e434dd42e5a1) ([10.239.97.150])
+  by orviesa003.jf.intel.com with ESMTP; 30 Apr 2024 13:14:47 -0700
+Received: from kbuild by e434dd42e5a1 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s1tsC-0008VX-1f;
+	Tue, 30 Apr 2024 20:14:44 +0000
+Date: Wed, 01 May 2024 04:14:21 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux Memory Management List <linux-mm@kvack.org>,
+ acrn-dev@lists.projectacrn.org, amd-gfx@lists.freedesktop.org,
+ cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ intel-gfx@lists.freedesktop.org, intel-xe@lists.freedesktop.org,
+ io-uring@vger.kernel.org, iommu@lists.linux.dev,
+ linux-arch@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+ linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-nvme@lists.infradead.org
+Subject: [linux-next:master] BUILD REGRESSION
+ d04466706db5e241ee026f17b5f920e50dee26b5
+Message-ID: <202405010414.1nlkOC6t-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-With different cgroups, the script starts one or multiple concurrent SGX
-selftests (test_sgx), each to run the unclobbered_vdso_oversubscribed
-test case, which loads an enclave of EPC size equal to the EPC capacity
-available on the platform. The script checks results against the
-expectation set for each cgroup and reports success or failure.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: d04466706db5e241ee026f17b5f920e50dee26b5  Add linux-next specific files for 20240430
 
-The script creates 3 different cgroups at the beginning with following
-expectations:
+Error/Warning reports:
 
-1) small - intentionally small enough to fail the test loading an
-enclave of size equal to the capacity.
-2) large - large enough to run up to 4 concurrent tests but fail some if
-more than 4 concurrent tests are run. The script starts 4 expecting at
-least one test to pass, and then starts 5 expecting at least one test
-to fail.
-3) larger - limit is the same as the capacity, large enough to run lots of
-concurrent tests. The script starts 8 of them and expects all pass.
-Then it reruns the same test with one process randomly killed and
-usage checked to be zero after all processes exit.
+https://lore.kernel.org/oe-kbuild-all/202404301738.J71xGyaR-lkp@intel.com
 
-The script also includes a test with low mem_cg limit and large sgx_epc
-limit to verify that the RAM used for per-cgroup reclamation is charged
-to a proper mem_cg. For this test, it turns off swapping before start,
-and turns swapping back on afterwards.
+Unverified Error/Warning (likely false positive, please contact us if interested):
 
-Add README to document how to run the tests.
+drivers/virt/acrn/mm.c:217 acrn_vm_ram_map() error: uninitialized symbol 'start_pfn'.
+drivers/virt/acrn/mm.c:224 acrn_vm_ram_map() error: uninitialized symbol 'ret'.
+net/ipv6/route.c:5712 rt6_fill_node() error: we previously assumed 'dst' could be null (see line 5697)
 
-Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
----
-V13:
-- More improvement on handling error cases and style fixes.
-- Add settings file for custom timeout
+Error/Warning ids grouped by kconfigs:
 
-V12:
-- Integrate the scripts to the "run_tests" target. (Jarkko)
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- arc-allmodconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- arc-allyesconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- arc-randconfig-r121-20240430
+|   |-- drivers-hwmon-pmbus-xdp710.c:sparse:sparse:symbol-micro_ohm_rsense-was-not-declared.-Should-it-be-static
+|   |-- fs-bcachefs-btree_cache.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-task_struct-got-unsigned-long
+|   `-- fs-ext4-orphan.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-restricted-__le32-_prev_-got-unsigned-long
+|-- arc-randconfig-r122-20240430
+|   |-- block-blk-mq.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-request
+|   |-- block-blk-mq.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-request
+|   |-- block-blk-mq.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-request-got-unsigned-long
+|   |-- drivers-dma-buf-dma-fence-chain.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-dma_fence-noderef-__rcu
+|   |-- drivers-dma-buf-dma-fence-chain.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-dma_fence-noderef-__rcu
+|   |-- drivers-dma-buf-dma-fence-chain.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-dma_fence-noderef-__rcu-got-unsigned-long
+|   |-- drivers-nvme-target-fabrics-cmd.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-nvmet_ctrl
+|   |-- drivers-nvme-target-fabrics-cmd.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-nvmet_ctrl
+|   |-- drivers-nvme-target-fabrics-cmd.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-nvmet_ctrl-got-unsigned-long
+|   |-- fs-btrfs-raid56.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-btrfs_stripe_hash_table
+|   |-- fs-btrfs-raid56.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-btrfs_stripe_hash_table
+|   |-- fs-btrfs-raid56.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-btrfs_stripe_hash_table-got-unsigned-long
+|   |-- fs-crypto-hooks.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-char
+|   |-- fs-crypto-hooks.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-char
+|   |-- fs-crypto-hooks.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-char-got-unsigned-long
+|   |-- fs-crypto-keysetup.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-fscrypt_inode_info
+|   |-- fs-crypto-keysetup.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-fscrypt_inode_info
+|   |-- fs-crypto-keysetup.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-fscrypt_inode_info-got-unsigned-long
+|   |-- fs-debugfs-file.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-void
+|   |-- fs-debugfs-file.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-void
+|   |-- fs-debugfs-file.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-void-got-unsigned-long
+|   |-- fs-ext4-orphan.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-restricted-__le32-_n_
+|   |-- fs-ext4-orphan.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-restricted-__le32-_o_
+|   |-- fs-libfs.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-dentry
+|   |-- fs-libfs.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-dentry
+|   |-- fs-libfs.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-dentry-got-unsigned-long
+|   |-- fs-locks.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-file_lock_context
+|   |-- fs-locks.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-file_lock_context
+|   |-- fs-locks.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-file_lock_context-got-unsigned-long
+|   |-- fs-notify-mark.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-fsnotify_mark_connector-noderef-__rcu
+|   |-- fs-notify-mark.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-fsnotify_mark_connector-noderef-__rcu
+|   |-- fs-notify-mark.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-fsnotify_mark_connector-noderef-__rcu-got-unsigned-long
+|   |-- fs-overlayfs-readdir.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-file
+|   |-- fs-overlayfs-readdir.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-file
+|   |-- fs-overlayfs-readdir.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-file-got-unsigned-long
+|   |-- fs-posix_acl.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-posix_acl
+|   |-- fs-posix_acl.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-posix_acl
+|   |-- fs-posix_acl.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-posix_acl-got-unsigned-long
+|   |-- fs-super.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-workqueue_struct
+|   |-- fs-super.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-workqueue_struct
+|   |-- fs-super.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-workqueue_struct-got-unsigned-long
+|   |-- io_uring-io_uring.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-llist_node
+|   |-- io_uring-io_uring.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-llist_node
+|   |-- io_uring-io_uring.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-llist_node-got-unsigned-long
+|   |-- kernel-locking-osq_lock.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-optimistic_spin_node-got-unsigned-long
+|   |-- kernel-sched-core.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-wake_q_node
+|   |-- kernel-sched-core.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-wake_q_node
+|   |-- kernel-sched-core.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-wake_q_node-got-unsigned-long
+|   |-- kernel-task_work.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-callback_head
+|   |-- kernel-task_work.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-callback_head
+|   |-- kernel-task_work.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-callback_head-got-unsigned-long
+|   |-- kernel-trace-ring_buffer.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-buffer_page
+|   |-- kernel-trace-ring_buffer.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-list_head
+|   |-- kernel-trace-ring_buffer.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-buffer_page
+|   |-- kernel-trace-ring_buffer.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-list_head
+|   |-- kernel-trace-ring_buffer.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-buffer_page-got-unsigned-long
+|   |-- kernel-trace-ring_buffer.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-list_head-got-unsigned-long
+|   |-- lib-generic-radix-tree.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-genradix_node
+|   |-- lib-generic-radix-tree.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-genradix_root
+|   |-- lib-generic-radix-tree.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-genradix_node
+|   |-- lib-generic-radix-tree.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-genradix_root
+|   |-- lib-generic-radix-tree.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-genradix_node-got-unsigned-long
+|   |-- lib-generic-radix-tree.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-genradix_root-got-unsigned-long
+|   |-- lib-llist.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-llist_node
+|   |-- lib-llist.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-llist_node
+|   |-- lib-llist.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-llist_node-got-unsigned-long
+|   |-- lib-rhashtable.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-bucket_table
+|   |-- lib-rhashtable.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-union-nested_table
+|   |-- lib-rhashtable.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-bucket_table
+|   |-- lib-rhashtable.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-union-nested_table
+|   |-- lib-rhashtable.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-bucket_table-got-unsigned-long
+|   |-- lib-rhashtable.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-union-nested_table-got-unsigned-long
+|   |-- mm-huge_memory.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-folio
+|   |-- mm-huge_memory.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-folio
+|   |-- mm-huge_memory.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-folio-got-unsigned-long
+|   |-- mm-memcontrol.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-mem_cgroup-got-unsigned-long
+|   |-- mm-memcontrol.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-obj_cgroup-got-unsigned-long
+|   |-- mm-oom_kill.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-new-got-struct-mm_struct
+|   |-- mm-oom_kill.c:sparse:sparse:incorrect-type-in-argument-(different-base-types)-expected-unsigned-long-usertype-old-got-struct-mm_struct
+|   `-- mm-oom_kill.c:sparse:sparse:incorrect-type-in-assignment-(different-base-types)-expected-struct-mm_struct-got-unsigned-long
+|-- arm-allmodconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- arm-allyesconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- arm64-defconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- csky-allmodconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- csky-allyesconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- csky-randconfig-r053-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- i386-allmodconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- i386-allyesconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- i386-buildonly-randconfig-003-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- i386-randconfig-003-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- i386-randconfig-005-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- i386-randconfig-053-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- i386-randconfig-062-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- loongarch-allmodconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- m68k-allmodconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- m68k-allyesconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- m68k-randconfig-r133-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- microblaze-allmodconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- microblaze-allyesconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- mips-allyesconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- mips-ip27_defconfig
+|   `-- arch-mips-sgi-ip27-ip27-irq.c:warning:unused-variable-i
+|-- nios2-allmodconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- nios2-allyesconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- openrisc-allyesconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- parisc-allmodconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- parisc-allyesconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- parisc-randconfig-r063-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- powerpc-allmodconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- powerpc-randconfig-002-20240430
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-calcs-dcn_calc_auto.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-calcs-dcn_calc_math.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-calcs-dcn_calcs.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn20-dcn20_fpu.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn20-display_mode_vba_20.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn20-display_mode_vba_20v2.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn20-display_rq_dlg_calc_20.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn20-display_rq_dlg_calc_20v2.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn21-display_mode_vba_21.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn21-display_rq_dlg_calc_21.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn30-dcn30_fpu.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn30-display_mode_vba_30.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn30-display_rq_dlg_calc_30.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn301-dcn301_fpu.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn302-dcn302_fpu.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn303-dcn303_fpu.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn31-dcn31_fpu.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn31-display_mode_vba_31.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn31-display_rq_dlg_calc_31.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn314-dcn314_fpu.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn314-display_mode_vba_314.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn314-display_rq_dlg_calc_314.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn32-dcn32_fpu.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn32-display_mode_vba_32.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn32-display_mode_vba_util_32.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn32-display_rq_dlg_calc_32.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn321-dcn321_fpu.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn35-dcn35_fpu.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn351-dcn351_fpu.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dcn401-dcn401_fpu.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-display_mode_vba.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dml1_display_rq_dlg_calc.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml-dsc-rc_calc_fpu.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-display_mode_core.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-display_mode_util.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml21-dml21_translation_helper.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml21-dml21_utils.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml21-src-dml2_core-dml2_core_dcn4.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml21-src-dml2_core-dml2_core_dcn4_calcs.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml21-src-dml2_core-dml2_core_shared.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml21-src-dml2_dpmm-dml2_dpmm_dcn4.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml21-src-dml2_mcg-dml2_mcg_dcn4.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml21-src-dml2_pmo-dml2_pmo_dcn3.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml21-src-dml2_pmo-dml2_pmo_dcn4.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml21-src-dml2_pmo-dml2_pmo_dcn4_fams2.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml21-src-dml2_standalone_libraries-lib_float_math.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml21-src-dml2_top-dml_top_mcache.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml2_mall_phantom.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml2_policy.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml2_translation_helper.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml2_utils.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   |-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml2_wrapper.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|   `-- powerpc-linux-ld:drivers-gpu-drm-amd-display-dc-dml2-dml_display_rq_dlg_calc.o-uses-hard-float-arch-powerpc-kernel-udbg.o-uses-soft-float
+|-- powerpc-randconfig-r061-20240430
+|   `-- ERROR:drm_dsc_pps_payload_pack-drivers-gpu-drm-panel-panel-lg-sw43408.ko-undefined
+|-- riscv-randconfig-001-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- s390-allyesconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- sparc-allmodconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- sparc-randconfig-002-20240430
+|   `-- (.head.text):relocation-truncated-to-fit:R_SPARC_WDISP22-against-init.text
+|-- sparc-randconfig-r113-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- sparc64-allmodconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- sparc64-allyesconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- sparc64-randconfig-001-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- sparc64-randconfig-r131-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- um-allyesconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- x86_64-randconfig-004-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- x86_64-randconfig-005-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+`-- xtensa-randconfig-001-20240430
+    `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+clang_recent_errors
+|-- arm-defconfig
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- arm-randconfig-002-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- arm-randconfig-003-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- arm64-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-amd_asic_type-and-enum-amd_chip_flags-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras.c:error:arithmetic-between-different-enumeration-types-(-enum-amdgpu_ras_block-and-enum-amdgpu_ras_mca_block-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_insert-Werror-Wunused-function
+|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_iter_next-Werror-Wunused-function
+|   |-- drivers-gpu-drm-i915-display-intel_cursor.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-phy-and-enum-port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_dpll_mgr.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-intel_dpll_id-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_hotplug.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_pipe_crc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_tc.c:error:arithmetic-between-different-enumeration-types-(-enum-intel_display_power_domain-and-enum-tc_port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_vdsc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-skl_universal_plane.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-skl_watermark.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-pl111-pl111_versatile.c:error:cast-to-smaller-integer-type-enum-versatile_clcd-from-const-void-Werror-Wvoid-pointer-to-enum-cast
+|   |-- drivers-gpu-drm-radeon-radeon_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-radeon_family-and-enum-radeon_chip_flags-)-Werror-Wenum-enum-conversion
+|   |-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|   |-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-node_stat_item-and-enum-lru_list-)-Werror-Wenum-enum-conversion
+|   `-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-zone_stat_item-and-enum-numa_stat_item-)-Werror-Wenum-enum-conversion
+|-- hexagon-allmodconfig
+|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_insert-Werror-Wunused-function
+|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_iter_next-Werror-Wunused-function
+|   |-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|   |-- include-asm-generic-io.h:error:performing-pointer-arithmetic-on-a-null-pointer-has-undefined-behavior-Werror-Wnull-pointer-arithmetic
+|   `-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-node_stat_item-and-enum-lru_list-)-Werror-Wenum-enum-conversion
+|-- hexagon-allyesconfig
+|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_insert-Werror-Wunused-function
+|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_iter_next-Werror-Wunused-function
+|   |-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|   |-- include-asm-generic-io.h:error:performing-pointer-arithmetic-on-a-null-pointer-has-undefined-behavior-Werror-Wnull-pointer-arithmetic
+|   `-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-node_stat_item-and-enum-lru_list-)-Werror-Wenum-enum-conversion
+|-- i386-buildonly-randconfig-002-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- i386-randconfig-001-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- i386-randconfig-054-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- powerpc-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-amd_asic_type-and-enum-amd_chip_flags-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras.c:error:arithmetic-between-different-enumeration-types-(-enum-amdgpu_ras_block-and-enum-amdgpu_ras_mca_block-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_insert-Werror-Wunused-function
+|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_iter_next-Werror-Wunused-function
+|   |-- drivers-gpu-drm-pl111-pl111_versatile.c:error:cast-to-smaller-integer-type-enum-versatile_clcd-from-const-void-Werror-Wvoid-pointer-to-enum-cast
+|   |-- drivers-gpu-drm-radeon-radeon_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-radeon_family-and-enum-radeon_chip_flags-)-Werror-Wenum-enum-conversion
+|   |-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|   |-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-node_stat_item-and-enum-lru_list-)-Werror-Wenum-enum-conversion
+|   `-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-zone_stat_item-and-enum-numa_stat_item-)-Werror-Wenum-enum-conversion
+|-- powerpc-randconfig-003-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- powerpc64-randconfig-001-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- powerpc64-randconfig-003-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- riscv-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dml2-dml21-src-dml2_dpmm-dml2_dpmm_dcn4.c:error:arithmetic-between-enumeration-type-enum-dentist_divider_range-and-floating-point-type-double-Werror-Wenum-floa
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-amd_asic_type-and-enum-amd_chip_flags-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras.c:error:arithmetic-between-different-enumeration-types-(-enum-amdgpu_ras_block-and-enum-amdgpu_ras_mca_block-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_insert-Werror-Wunused-function
+|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_iter_next-Werror-Wunused-function
+|   |-- drivers-gpu-drm-i915-display-intel_cursor.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-phy-and-enum-port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_dpll_mgr.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-intel_dpll_id-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_hotplug.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_pipe_crc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_tc.c:error:arithmetic-between-different-enumeration-types-(-enum-intel_display_power_domain-and-enum-tc_port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_vdsc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-skl_universal_plane.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-skl_watermark.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-pl111-pl111_versatile.c:error:cast-to-smaller-integer-type-enum-versatile_clcd-from-const-void-Werror-Wvoid-pointer-to-enum-cast
+|   |-- drivers-gpu-drm-radeon-radeon_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-radeon_family-and-enum-radeon_chip_flags-)-Werror-Wenum-enum-conversion
+|   |-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|   |-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-node_stat_item-and-enum-lru_list-)-Werror-Wenum-enum-conversion
+|   `-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-zone_stat_item-and-enum-numa_stat_item-)-Werror-Wenum-enum-conversion
+|-- riscv-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-dml2-dml21-src-dml2_dpmm-dml2_dpmm_dcn4.c:error:arithmetic-between-enumeration-type-enum-dentist_divider_range-and-floating-point-type-double-Werror-Wenum-floa
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-amd_asic_type-and-enum-amd_chip_flags-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras.c:error:arithmetic-between-different-enumeration-types-(-enum-amdgpu_ras_block-and-enum-amdgpu_ras_mca_block-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_insert-Werror-Wunused-function
+|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_iter_next-Werror-Wunused-function
+|   |-- drivers-gpu-drm-pl111-pl111_versatile.c:error:cast-to-smaller-integer-type-enum-versatile_clcd-from-const-void-Werror-Wvoid-pointer-to-enum-cast
+|   |-- drivers-gpu-drm-radeon-radeon_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-radeon_family-and-enum-radeon_chip_flags-)-Werror-Wenum-enum-conversion
+|   |-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|   |-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-node_stat_item-and-enum-lru_list-)-Werror-Wenum-enum-conversion
+|   `-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-zone_stat_item-and-enum-numa_stat_item-)-Werror-Wenum-enum-conversion
+|-- s390-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-amd_asic_type-and-enum-amd_chip_flags-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_ras.c:error:arithmetic-between-different-enumeration-types-(-enum-amdgpu_ras_block-and-enum-amdgpu_ras_mca_block-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_cursor.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-phy-and-enum-port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_dpll_mgr.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-intel_dpll_id-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_hotplug.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_pipe_crc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_tc.c:error:arithmetic-between-different-enumeration-types-(-enum-intel_display_power_domain-and-enum-tc_port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_vdsc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-skl_universal_plane.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-skl_watermark.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-pl111-pl111_versatile.c:error:cast-to-smaller-integer-type-enum-versatile_clcd-from-const-void-Werror-Wvoid-pointer-to-enum-cast
+|   |-- drivers-gpu-drm-radeon-radeon_drv.c:error:bitwise-operation-between-different-enumeration-types-(-enum-radeon_family-and-enum-radeon_chip_flags-)-Werror-Wenum-enum-conversion
+|   |-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|   |-- include-asm-generic-io.h:error:performing-pointer-arithmetic-on-a-null-pointer-has-undefined-behavior-Werror-Wnull-pointer-arithmetic
+|   |-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-node_stat_item-and-enum-lru_list-)-Werror-Wenum-enum-conversion
+|   `-- include-linux-vmstat.h:error:arithmetic-between-different-enumeration-types-(-enum-zone_stat_item-and-enum-numa_stat_item-)-Werror-Wenum-enum-conversion
+|-- x86_64-allnoconfig
+|   |-- Warning:MAINTAINERS-references-a-file-that-doesn-t-exist:Documentation-devicetree-bindings-display-exynos
+|   |-- Warning:MAINTAINERS-references-a-file-that-doesn-t-exist:Documentation-devicetree-bindings-reserved-memory-qcom
+|   `-- net-ipv6-udp.c:trace-events-udp.h-is-included-more-than-once.
+|-- x86_64-allyesconfig
+|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_insert-Werror-Wunused-function
+|   |-- drivers-gpu-drm-drm_mm.c:error:unused-function-drm_mm_interval_tree_iter_next-Werror-Wunused-function
+|   |-- drivers-gpu-drm-pl111-pl111_versatile.c:error:cast-to-smaller-integer-type-enum-versatile_clcd-from-const-void-Werror-Wvoid-pointer-to-enum-cast
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- x86_64-buildonly-randconfig-006-20240430
+|   |-- drivers-iommu-amd-pasid.c:error:call-to-undeclared-function-mmu_notifier_register-ISO-C99-and-later-do-not-support-implicit-function-declarations
+|   `-- drivers-iommu-amd-pasid.c:error:call-to-undeclared-function-mmu_notifier_unregister-ISO-C99-and-later-do-not-support-implicit-function-declarations
+|-- x86_64-randconfig-001-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- x86_64-randconfig-002-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- x86_64-randconfig-012-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- x86_64-randconfig-014-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- x86_64-randconfig-101-20240430
+|   `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
+|-- x86_64-randconfig-161-20240430
+|   |-- drivers-virt-acrn-mm.c-acrn_vm_ram_map()-error:uninitialized-symbol-ret-.
+|   |-- drivers-virt-acrn-mm.c-acrn_vm_ram_map()-error:uninitialized-symbol-start_pfn-.
+|   `-- net-ipv6-route.c-rt6_fill_node()-error:we-previously-assumed-dst-could-be-null-(see-line-)
+`-- x86_64-randconfig-r123-20240430
+    `-- drivers-usb-dwc3-core.c:warning:variable-hw_mode-set-but-not-used
 
-V11:
-- Remove cgroups-tools dependency and make scripts ash compatible. (Jarkko)
-- Drop support for cgroup v1 and simplify. (Michal, Jarkko)
-- Add documentation for functions. (Jarkko)
-- Turn off swapping before memcontrol tests and back on after
-- Format and style fixes, name for hard coded values
+elapsed time: 751m
 
-V7:
-- Added memcontrol test.
+configs tested: 170
+configs skipped: 4
 
-V5:
-- Added script with automatic results checking, remove the interactive
-script.
-- The script can run independent from the series below.
----
- tools/testing/selftests/sgx/Makefile          |   3 +-
- tools/testing/selftests/sgx/README            | 109 +++++++
- tools/testing/selftests/sgx/ash_cgexec.sh     |  16 +
- tools/testing/selftests/sgx/config            |   4 +
- .../selftests/sgx/run_epc_cg_selftests.sh     | 295 ++++++++++++++++++
- tools/testing/selftests/sgx/settings          |   2 +
- .../selftests/sgx/watch_misc_for_tests.sh     |  11 +
- 7 files changed, 439 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/sgx/README
- create mode 100755 tools/testing/selftests/sgx/ash_cgexec.sh
- create mode 100644 tools/testing/selftests/sgx/config
- create mode 100755 tools/testing/selftests/sgx/run_epc_cg_selftests.sh
- create mode 100644 tools/testing/selftests/sgx/settings
- create mode 100755 tools/testing/selftests/sgx/watch_misc_for_tests.sh
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                     haps_hs_smp_defconfig   gcc  
+arc                        nsim_700_defconfig   gcc  
+arc                   randconfig-001-20240430   gcc  
+arc                   randconfig-002-20240430   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                       imx_v6_v7_defconfig   clang
+arm                            mmp2_defconfig   gcc  
+arm                       multi_v4t_defconfig   clang
+arm                        mvebu_v5_defconfig   gcc  
+arm                   randconfig-001-20240430   clang
+arm                   randconfig-002-20240430   clang
+arm                   randconfig-003-20240430   clang
+arm                   randconfig-004-20240430   clang
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240430   clang
+arm64                 randconfig-002-20240430   gcc  
+arm64                 randconfig-003-20240430   clang
+arm64                 randconfig-004-20240430   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240430   gcc  
+csky                  randconfig-002-20240430   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-002-20240430   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240430   gcc  
+i386         buildonly-randconfig-002-20240430   clang
+i386         buildonly-randconfig-003-20240430   gcc  
+i386         buildonly-randconfig-004-20240430   clang
+i386         buildonly-randconfig-005-20240430   clang
+i386         buildonly-randconfig-006-20240430   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240430   clang
+i386                  randconfig-002-20240430   gcc  
+i386                  randconfig-003-20240430   gcc  
+i386                  randconfig-004-20240430   gcc  
+i386                  randconfig-005-20240430   gcc  
+i386                  randconfig-006-20240430   gcc  
+i386                  randconfig-011-20240430   gcc  
+i386                  randconfig-012-20240430   clang
+i386                  randconfig-013-20240430   clang
+i386                  randconfig-014-20240430   gcc  
+i386                  randconfig-015-20240430   gcc  
+i386                  randconfig-016-20240430   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240430   gcc  
+loongarch             randconfig-002-20240430   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                           ip27_defconfig   gcc  
+mips                      malta_kvm_defconfig   gcc  
+mips                malta_qemu_32r6_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240430   gcc  
+nios2                 randconfig-002-20240430   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240430   gcc  
+parisc                randconfig-002-20240430   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                      bamboo_defconfig   clang
+powerpc                      chrp32_defconfig   clang
+powerpc                        icon_defconfig   gcc  
+powerpc                     ksi8560_defconfig   gcc  
+powerpc                   microwatt_defconfig   gcc  
+powerpc                       ppc64_defconfig   clang
+powerpc               randconfig-001-20240430   gcc  
+powerpc               randconfig-002-20240430   gcc  
+powerpc               randconfig-003-20240430   clang
+powerpc64                        alldefconfig   clang
+powerpc64             randconfig-001-20240430   clang
+powerpc64             randconfig-002-20240430   clang
+powerpc64             randconfig-003-20240430   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240430   gcc  
+riscv                 randconfig-002-20240430   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240430   gcc  
+s390                  randconfig-002-20240430   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240430   gcc  
+sh                    randconfig-002-20240430   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240430   gcc  
+sparc64               randconfig-002-20240430   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240430   clang
+um                    randconfig-002-20240430   clang
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240430   gcc  
+x86_64       buildonly-randconfig-002-20240430   clang
+x86_64       buildonly-randconfig-003-20240430   clang
+x86_64       buildonly-randconfig-004-20240430   clang
+x86_64       buildonly-randconfig-005-20240430   clang
+x86_64       buildonly-randconfig-006-20240430   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240430   clang
+x86_64                randconfig-002-20240430   clang
+x86_64                randconfig-003-20240430   gcc  
+x86_64                randconfig-004-20240430   gcc  
+x86_64                randconfig-005-20240430   gcc  
+x86_64                randconfig-006-20240430   clang
+x86_64                randconfig-012-20240430   clang
+x86_64                randconfig-013-20240430   gcc  
+x86_64                randconfig-014-20240430   clang
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240430   gcc  
+xtensa                randconfig-002-20240430   gcc  
+xtensa                         virt_defconfig   gcc  
 
-diff --git a/tools/testing/selftests/sgx/Makefile b/tools/testing/selftests/sgx/Makefile
-index 867f88ce2570..739376af9e33 100644
---- a/tools/testing/selftests/sgx/Makefile
-+++ b/tools/testing/selftests/sgx/Makefile
-@@ -20,7 +20,8 @@ ENCL_LDFLAGS := -Wl,-T,test_encl.lds,--build-id=none
- 
- ifeq ($(CAN_BUILD_X86_64), 1)
- TEST_CUSTOM_PROGS := $(OUTPUT)/test_sgx
--TEST_FILES := $(OUTPUT)/test_encl.elf
-+TEST_FILES := $(OUTPUT)/test_encl.elf ash_cgexec.sh
-+TEST_PROGS := run_epc_cg_selftests.sh
- 
- all: $(TEST_CUSTOM_PROGS) $(OUTPUT)/test_encl.elf
- endif
-diff --git a/tools/testing/selftests/sgx/README b/tools/testing/selftests/sgx/README
-new file mode 100644
-index 000000000000..f84406bf29a4
---- /dev/null
-+++ b/tools/testing/selftests/sgx/README
-@@ -0,0 +1,109 @@
-+SGX selftests
-+
-+The SGX selftests includes a c program (test_sgx) that covers basic user space
-+facing APIs and a shell scripts (run_sgx_cg_selftests.sh) testing SGX misc
-+cgroup. The SGX cgroup test script requires root privileges and runs a
-+specific test case of  the test_sgx in different cgroups configured by the
-+script. More details about the cgroup test can be found below.
-+
-+All SGX selftests can run with or without kselftest framework.
-+
-+WITH KSELFTEST FRAMEWORK
-+=======================
-+
-+BUILD
-+-----
-+
-+Build executable file "test_sgx" from top level directory of the kernel source:
-+ $ make -C tools/testing/selftests TARGETS=sgx
-+
-+RUN
-+---
-+
-+Run all sgx tests as sudo or root since the cgroup tests need to configure cgroup
-+limits in files under /sys/fs/cgroup.
-+
-+ $ sudo make -C tools/testing/selftests/sgx run_tests
-+
-+Without sudo, SGX cgroup tests will be skipped.
-+
-+On platforms with large Enclave Page Cache (EPC) and/or less cpu cores, you may
-+need adjust the timeout in 'settings' to avoid timeouts.
-+
-+More details about kselftest framework can be found in
-+Documentation/dev-tools/kselftest.rst.
-+
-+WITHOUT KSELFTEST FRAMEWORK
-+===========================
-+
-+BUILD
-+-----
-+
-+Build executable file "test_sgx" from this
-+directory(tools/testing/selftests/sgx/):
-+
-+  $ make
-+
-+RUN
-+---
-+
-+Run all non-cgroup tests:
-+
-+ $ ./test_sgx
-+
-+To test SGX cgroup:
-+
-+ $ sudo ./run_sgx_cg_selftests.sh
-+
-+THE SGX CGROUP TEST SCRIPTS
-+===========================
-+
-+Overview of the main cgroup test script
-+---------------------------------------
-+
-+With different cgroups, the script (run_sgx_cg_selftests.sh) starts one or
-+multiple concurrent SGX selftests (test_sgx), each to run the
-+unclobbered_vdso_oversubscribed test case, which loads an enclave of EPC size
-+equal to the EPC capacity available on the platform. The script checks results
-+against the expectation set for each cgroup and reports success or failure.
-+
-+The script creates 3 different cgroups at the beginning with following
-+expectations:
-+
-+  1) small - intentionally small enough to fail the test loading an enclave of
-+             size equal to the capacity.
-+
-+  2) large - large enough to run up to 4 concurrent tests but fail some if more
-+	     than 4 concurrent tests are run. The script starts 4 expecting at
-+	     least one test to pass, and then starts 5 expecting at least one
-+             test to fail.
-+
-+  3) larger - limit is the same as the capacity, large enough to run lots of
-+	      concurrent tests. The script starts 8 of them and expects all
-+	      pass.  Then it reruns the same test with one process randomly
-+	      killed and usage checked to be zero after all processes exit.
-+
-+The script also includes a test with low mem_cg limit (memory.max) and the
-+'large' sgx_epc limit to verify that the RAM used for per-cgroup reclamation is
-+charged to a proper mem_cg. To validate mem_cg OOM-kills processes when its
-+memory.max limit is reached due to SGX EPC reclamation, the script turns off
-+swapping before start, and turns swapping back on afterwards for this particular
-+test.
-+
-+The helper script
-+------------------------------------------------------
-+
-+To monitor the SGX cgroup settings and behaviors or trouble-shoot during
-+testing, the helper script, watch_misc_for_tests.sh, can be used to watch
-+relevant entries in cgroupfs files. For example, to watch the SGX cgroup
-+'current' counter changes during testing, run this in a separate terminal from
-+this directory:
-+
-+  $ ./watch_misc_for_tests.sh current
-+
-+For more details about SGX cgroups, see "Cgroup Support" in
-+Documentation/arch/x86/sgx.rst.
-+
-+The scripts require cgroup v2 support. More details about cgroup v2 can be found
-+in Documentation/admin-guide/cgroup-v2.rst.
-+
-diff --git a/tools/testing/selftests/sgx/ash_cgexec.sh b/tools/testing/selftests/sgx/ash_cgexec.sh
-new file mode 100755
-index 000000000000..cfa5d2b0e795
---- /dev/null
-+++ b/tools/testing/selftests/sgx/ash_cgexec.sh
-@@ -0,0 +1,16 @@
-+#!/usr/bin/env sh
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright(c) 2024 Intel Corporation.
-+
-+# Start a program in a given cgroup.
-+# Supports V2 cgroup paths, relative to /sys/fs/cgroup
-+if [ "$#" -lt 2 ]; then
-+    echo "Usage: $0 <v2 cgroup path> <command> [args...]"
-+    exit 1
-+fi
-+# Move this shell to the cgroup.
-+echo 0 >/sys/fs/cgroup/$1/cgroup.procs
-+shift
-+# Execute the command within the cgroup
-+exec "$@"
-+
-diff --git a/tools/testing/selftests/sgx/config b/tools/testing/selftests/sgx/config
-new file mode 100644
-index 000000000000..e7f1db1d3eff
---- /dev/null
-+++ b/tools/testing/selftests/sgx/config
-@@ -0,0 +1,4 @@
-+CONFIG_CGROUPS=y
-+CONFIG_CGROUP_MISC=y
-+CONFIG_MEMCG=y
-+CONFIG_X86_SGX=y
-diff --git a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-new file mode 100755
-index 000000000000..f3d463c09cc2
---- /dev/null
-+++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-@@ -0,0 +1,295 @@
-+#!/usr/bin/env sh
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright(c) 2023, 2024 Intel Corporation.
-+
-+PROCESS_SUCCESS=1
-+PROCESS_FAILURE=0
-+# Wait for a process and check for expected exit status.
-+#
-+# Arguments:
-+#	$1 - the pid of the process to wait and check.
-+#	$2 - 1 if expecting success, 0 for failure.
-+#
-+# Return:
-+#	0 if the exit status of the process matches the expectation.
-+#	1 otherwise.
-+wait_check_process_status() {
-+    pid=$1
-+    check_for_success=$2
-+
-+    wait "$pid"
-+    status=$?
-+
-+    if [ $check_for_success -eq $PROCESS_SUCCESS ] && [ $status -eq 0 ]; then
-+        echo "# Process $pid succeeded."
-+        return 0
-+    elif [ $check_for_success -eq $PROCESS_FAILURE ] && [ $status -ne 0 ]; then
-+        echo "# Process $pid returned failure."
-+        return 0
-+    fi
-+    return 1
-+}
-+
-+# Wait for a set of processes and check for expected exit status
-+#
-+# Arguments:
-+#	$1 - 1 if expecting success, 0 for failure.
-+#	remaining args - The pids of the processes
-+#
-+# Return:
-+#	0 if exit status of any process matches the expectation.
-+#	1 otherwise.
-+wait_and_detect_for_any() {
-+    check_for_success=$1
-+
-+    shift
-+    detected=1 # 0 for success detection
-+
-+    for pid in $@; do
-+        if wait_check_process_status "$pid" "$check_for_success"; then
-+            detected=0
-+            # Wait for other processes to exit
-+        fi
-+    done
-+
-+    return $detected
-+}
-+
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+if [ "$(id -u)" -ne 0 ]; then
-+    echo "SKIP: SGX cgroup tests need root privileges."
-+    exit $ksft_skip
-+fi
-+
-+cg_root=/sys/fs/cgroup
-+if [ ! -d "$cg_root/$test_root_cg" ]; then
-+    echo "SKIP: SGX cgroup tests require v2 cgroups."
-+    exit $ksft_skip
-+fi
-+test_root_cg=sgx_kselftest
-+#make sure we start clean
-+if [ -d "$cg_root/$test_root_cg" ]; then
-+    echo "SKIP: Please clean up $cg_root/$test_root_cg."
-+    exit $ksft_skip
-+fi
-+
-+test_cg_small_parent=$test_root_cg/sgx_test_small_parent
-+test_cg_large=$test_root_cg/sgx_test_large
-+# We will only set limit in test1 and run tests in test3
-+test_cg_small=$test_cg_small_parent/sgx_test_small
-+test_cg_larger=$test_root_cg/sgx_test_larger
-+
-+clean_up()
-+{
-+    # Wait a little for cgroups to reset counters for dead processes.
-+    sleep 2
-+    rmdir $cg_root/$test_cg_large
-+    rmdir $cg_root/$test_cg_small
-+    rmdir $cg_root/$test_cg_larger
-+    rmdir $cg_root/$test_cg_small_parent
-+    rmdir $cg_root/$test_root_cg
-+}
-+
-+mkdir $cg_root/$test_root_cg && \
-+mkdir $cg_root/$test_cg_small_parent && \
-+mkdir $cg_root/$test_cg_large && \
-+mkdir $cg_root/$test_cg_small && \
-+mkdir $cg_root/$test_cg_larger
-+if [ $? -ne 0 ]; then
-+    echo "FAIL: Failed creating cgroups."
-+    exit 1
-+fi
-+
-+# Turn on misc and memory controller in non-leaf nodes
-+echo "+misc" >  $cg_root/cgroup.subtree_control && \
-+echo "+memory" > $cg_root/cgroup.subtree_control && \
-+echo "+misc" >  $cg_root/$test_root_cg/cgroup.subtree_control && \
-+echo "+memory" > $cg_root/$test_root_cg/cgroup.subtree_control && \
-+echo "+misc" >  $cg_root/$test_cg_small_parent/cgroup.subtree_control
-+if [ $? -ne 0 ]; then
-+    echo "FAIL: can't set up cgroups, make sure misc and memory cgroups are enabled."
-+    clean_up
-+    exit 1
-+fi
-+
-+epc_capacity=$(grep "sgx_epc" "$cg_root/misc.capacity" | awk '{print $2}')
-+
-+# This is below number of VA pages needed for enclave of capacity size. So
-+# should fail oversubscribed cases
-+epc_small_limit=$(( epc_capacity / 512 ))
-+
-+# At least load one enclave of capacity size successfully, maybe up to 4.
-+# But some may fail if we run more than 4 concurrent enclaves of capacity size.
-+epc_large_limit=$(( epc_small_limit * 4 ))
-+
-+# Load lots of enclaves
-+epc_larger_limit=$epc_capacity
-+echo "# Setting up SGX cgroup limits."
-+echo "sgx_epc $epc_small_limit" > $cg_root/$test_cg_small_parent/misc.max && \
-+echo "sgx_epc $epc_large_limit" >  $cg_root/$test_cg_large/misc.max && \
-+echo "sgx_epc $epc_larger_limit" > $cg_root/$test_cg_larger/misc.max
-+if [ $? -ne 0 ]; then
-+    echo "# Failed setting up misc limits for sgx_epc."
-+    echo "SKIP: Kernel does not support SGX cgroup."
-+    clean_up
-+    exit $ksft_skip
-+fi
-+
-+test_cmd="./test_sgx -t unclobbered_vdso_oversubscribed"
-+
-+echo "# Start unclobbered_vdso_oversubscribed with small EPC limit, expecting failure..."
-+./ash_cgexec.sh $test_cg_small $test_cmd >/dev/null 2>&1
-+if [ $? -eq 0 ]; then
-+    echo "FAIL: Fail on small EPC limit, not expecting any test passes."
-+    clean_up
-+    exit 1
-+else
-+    echo "# Test failed as expected."
-+fi
-+
-+echo "PASS: small EPC limit test."
-+
-+echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with large EPC limit, \
-+expecting at least one success...."
-+
-+pids=""
-+for i in 1 2 3 4; do
-+    (
-+        ./ash_cgexec.sh $test_cg_large $test_cmd >/dev/null 2>&1
-+    ) &
-+    pids="$pids $!"
-+done
-+
-+if wait_and_detect_for_any $PROCESS_SUCCESS "$pids"; then
-+    echo "PASS: large EPC limit positive testing."
-+else
-+    echo "FAIL: Failed on large EPC limit positive testing, no test passes."
-+    clean_up
-+    exit 1
-+fi
-+
-+echo "# Start 5 concurrent unclobbered_vdso_oversubscribed tests with large EPC limit, \
-+expecting at least one failure...."
-+pids=""
-+for i in 1 2 3 4 5; do
-+    (
-+        ./ash_cgexec.sh $test_cg_large $test_cmd >/dev/null 2>&1
-+    ) &
-+    pids="$pids $!"
-+done
-+
-+if wait_and_detect_for_any $PROCESS_FAILURE "$pids"; then
-+    echo "PASS: large EPC limit negative testing."
-+else
-+    echo "FAIL: Failed on large EPC limit negative testing, no test fails."
-+    clean_up
-+    exit 1
-+fi
-+
-+echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with larger EPC limit, \
-+expecting no failure...."
-+pids=""
-+for i in 1 2 3 4 5 6 7 8; do
-+    (
-+        ./ash_cgexec.sh $test_cg_larger $test_cmd >/dev/null 2>&1
-+    ) &
-+    pids="$pids $!"
-+done
-+
-+if wait_and_detect_for_any $PROCESS_FAILURE "$pids"; then
-+    echo "FAIL: Failed on larger EPC limit, at least one test fails."
-+    clean_up
-+    exit 1
-+else
-+    echo "PASS: larger EPC limit tests."
-+fi
-+
-+echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with larger EPC limit,\
-+ randomly kill one, expecting no failure...."
-+pids=""
-+for i in 1 2 3 4 5 6 7 8; do
-+    (
-+        ./ash_cgexec.sh $test_cg_larger $test_cmd >/dev/null 2>&1
-+    ) &
-+    pids="$pids $!"
-+done
-+random_number=$(awk 'BEGIN{srand();print int(rand()*5)}')
-+sleep $((random_number + 1))
-+
-+# Randomly select a process to kill
-+# Make sure usage counter not leaked at the end.
-+random_index=$(awk 'BEGIN{srand();print int(rand()*8)}')
-+counter=0
-+for pid in $pids; do
-+    if [ "$counter" -eq "$random_index" ]; then
-+        pid_to_kill=$pid
-+        break
-+    fi
-+    counter=$((counter + 1))
-+done
-+
-+kill $pid_to_kill
-+echo "# Killed process with PID: $pid_to_kill"
-+
-+any_failure=0
-+for pid in $pids; do
-+    wait "$pid"
-+    status=$?
-+    if [ "$pid" != "$pid_to_kill" ]; then
-+        if [ $status -ne 0 ]; then
-+	    echo "# Process $pid returned failure."
-+            any_failure=1
-+        fi
-+    fi
-+done
-+
-+if [ $any_failure -ne 0 ]; then
-+    echo "FAIL: Failed on random killing, at least one test fails."
-+    clean_up
-+    exit 1
-+fi
-+echo "PASS: larger EPC limit test with a process randomly killed."
-+
-+mem_limit_too_small=$((epc_capacity - 2 * epc_large_limit))
-+
-+echo "$mem_limit_too_small" > $cg_root/$test_cg_large/memory.max
-+if [ $? -ne 0 ]; then
-+    echo "FAIL: Failed setting up memory controller."
-+    clean_up
-+    exit 1
-+fi
-+
-+echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with large EPC limit, \
-+and too small RAM limit, expecting all failures...."
-+# Ensure swapping off so the OOM killer is activated when mem_cgroup limit is hit.
-+swapoff -a
-+pids=""
-+for i in 1 2 3 4; do
-+    (
-+        ./ash_cgexec.sh $test_cg_large $test_cmd >/dev/null 2>&1
-+    ) &
-+    pids="$pids $!"
-+done
-+
-+if wait_and_detect_for_any $PROCESS_SUCCESS "$pids"; then
-+    echo "FAIL: Failed on tests with memcontrol, some tests did not fail."
-+    clean_up
-+    swapon -a
-+    exit 1
-+else
-+    swapon -a
-+    echo "PASS: large EPC limit tests with memcontrol."
-+fi
-+
-+sleep 2
-+
-+epc_usage=$(grep '^sgx_epc' "$cg_root/$test_root_cg/misc.current" | awk '{print $2}')
-+if [ "$epc_usage" -ne 0 ]; then
-+    echo "FAIL: Final usage is $epc_usage, not 0."
-+else
-+    echo "PASS: leakage check."
-+    echo "PASS: ALL cgroup limit tests, cleanup cgroups..."
-+fi
-+clean_up
-+echo "# Done SGX cgroup tests."
-diff --git a/tools/testing/selftests/sgx/settings b/tools/testing/selftests/sgx/settings
-new file mode 100644
-index 000000000000..22f228d3b8c2
---- /dev/null
-+++ b/tools/testing/selftests/sgx/settings
-@@ -0,0 +1,2 @@
-+# This timeout may need be increased for platforms with EPC larger than 4G
-+timeout=120
-diff --git a/tools/testing/selftests/sgx/watch_misc_for_tests.sh b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
-new file mode 100755
-index 000000000000..9280a5e0962b
---- /dev/null
-+++ b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
-@@ -0,0 +1,11 @@
-+#!/usr/bin/env sh
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright(c) 2023, 2024 Intel Corporation.
-+
-+if [ -z "$1" ]; then
-+    echo "No argument supplied, please provide 'max', 'current', or 'events'"
-+    exit 1
-+fi
-+
-+watch -n 1 'find /sys/fs/cgroup -wholename "*/sgx_test*/misc.'$1'" -exec \
-+    sh -c '\''echo "$1:"; cat "$1"'\'' _ {} \;'
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
