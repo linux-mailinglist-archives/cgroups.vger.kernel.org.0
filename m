@@ -1,85 +1,86 @@
-Return-Path: <cgroups+bounces-2763-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2764-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 039AD8BAB8E
-	for <lists+cgroups@lfdr.de>; Fri,  3 May 2024 13:27:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D89E8BAB91
+	for <lists+cgroups@lfdr.de>; Fri,  3 May 2024 13:28:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27D161C21CA3
-	for <lists+cgroups@lfdr.de>; Fri,  3 May 2024 11:27:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23804283858
+	for <lists+cgroups@lfdr.de>; Fri,  3 May 2024 11:28:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8960152501;
-	Fri,  3 May 2024 11:27:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CBE515219B;
+	Fri,  3 May 2024 11:28:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Rx8vmp8Z";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Rx8vmp8Z"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qMole+1Z";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="RaV1Bx9g"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69A3152197;
-	Fri,  3 May 2024 11:27:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62A9F1AACA;
+	Fri,  3 May 2024 11:28:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714735666; cv=none; b=EAVIg5Rukm0oebCHxDapvtugk3xhzCxI9syRD/9tPgxlqw8rRN1rgCBfmBowvPZY3VTv1MB62r0FJr6dVV7bNZIzJ+fqB6epWCNrIJilYlxF88frmNX2AtmOClMLNCTrwdsYzmy7cS4dtPPtjq6jnnbWYGkTmm1IdpvTgLKHaiE=
+	t=1714735732; cv=none; b=uFCM4shkRWG/Zhgi72QM763ei4bBWB2DayLZ+xLHsIAmTfl3/zb/19Rwa2sVTEhkrzXQQxjzy6qEmxqoi2jfdOFS89O93d3svFZSCg7NDNdAq876Cgk0vw7rkqwKODJpXQNY/7z5v+55/GHHqDiWob2zZGlqG1Ah/GWA7aFV+/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714735666; c=relaxed/simple;
-	bh=sZMYPxJX/4mfiHqJ/Yi9H75a1iIpwoT/ry5Fbko4snQ=;
+	s=arc-20240116; t=1714735732; c=relaxed/simple;
+	bh=88WW0kURqdBjfVybYXftiM2YM7XJ7njj5pm4ndP4vaA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AVccwHL04nlIBzLRozQzZN7CFAfjb9kuz+kJ+UY4K6DSR4dADFOaxRP4C48BDBaGpivdh0Y54bwD1z3JQcZX1awPRVncnrOVz8OOVaJLSHV6ZR4PWi7tSi2hjS3pVqJh1IdrrjBjkHK5r00ja6slC2Z2o+HY5EzB1esokjwUwbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Rx8vmp8Z; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Rx8vmp8Z; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=isK1LKmlfaA/wm5E0EJBqcUiSZrSjTwG33I6cEeTDnFz50QiY7Yl4HT7v+CAQjoloNw6K1kemm+nkPQ9IngWVKCR4Jh51xppu+2WTRG5Li+2gtU56gJJ10j1Cn43RIqqIz9+SX0109SB7pTQU7EkVO+lpjSVkAhHm/rvvkJBsT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qMole+1Z; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=RaV1Bx9g; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B99F23387A;
-	Fri,  3 May 2024 11:27:42 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6A64F20254;
+	Fri,  3 May 2024 11:28:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1714735662; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1714735728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UXpjzV5DWrRABNO+vO47pjlZXBhvnc1hWU3ZO34EKqg=;
-	b=Rx8vmp8Zigf3yHzGm1pm9Kmc0A6srYlVYDeWNYIw+gz2cyITTJE9exIDiHErn8Hc6h3ZVf
-	TBVOYBBkck1vthjzNSpb170SUsJQUYxiZRJVelC8VbtQtYBiLottbMnvOM2tj5CB5cNnXn
-	BJYpuaOQUzp7OBFNN2QiCivdXHFBgRE=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=Rx8vmp8Z
+	bh=P9yMKpP+WtXCZbyBz2t9/3WxqhYBErFHeUW75pJnqQ8=;
+	b=qMole+1Zdn0F1+ZqrG6EUVw5BjK9JmJ/rWM42iSp1qhhaRFnfLatmTJKZ1QVF47iRkZhbj
+	lX6qTmtqvXkGpFyKOoKQI6S/5vcHacEXGRixfkQ8bCecLcnP+y/1/rJzFaiJ5Ga1o8zEPF
+	UQ9G5e87Ncq26CecfQEajUTpHUOGkGk=
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1714735662; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1714735727; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=UXpjzV5DWrRABNO+vO47pjlZXBhvnc1hWU3ZO34EKqg=;
-	b=Rx8vmp8Zigf3yHzGm1pm9Kmc0A6srYlVYDeWNYIw+gz2cyITTJE9exIDiHErn8Hc6h3ZVf
-	TBVOYBBkck1vthjzNSpb170SUsJQUYxiZRJVelC8VbtQtYBiLottbMnvOM2tj5CB5cNnXn
-	BJYpuaOQUzp7OBFNN2QiCivdXHFBgRE=
+	bh=P9yMKpP+WtXCZbyBz2t9/3WxqhYBErFHeUW75pJnqQ8=;
+	b=RaV1Bx9gMOPXbKF3N6rOhGhw1fHnczyZ1plP5vjk2ZRWIo3sZd1ItSM26Xqg+gUDWJ/MZr
+	9UTCuRye3t7jnBKyDQfP7+5+9XB5XWKuVEl0LdoxBOenusm/k3yU8QdQfb38G9DN7TQWpM
+	JYlOVIsMT/Wp0RETs6GHPHQV1Iprnas=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9F2AF139CB;
-	Fri,  3 May 2024 11:27:42 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 510AD139CB;
+	Fri,  3 May 2024 11:28:47 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id G6nZIy7KNGZgWQAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Fri, 03 May 2024 11:27:42 +0000
-Date: Fri, 3 May 2024 13:27:41 +0200
+	id LDnLEG/KNGapWQAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Fri, 03 May 2024 11:28:47 +0000
+Date: Fri, 3 May 2024 13:28:42 +0200
 From: Michal Hocko <mhocko@suse.com>
 To: Breno Leitao <leitao@debian.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
 	Shakeel Butt <shakeel.butt@linux.dev>,
 	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, leit@meta.com,
+	Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
 	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <cgroups@vger.kernel.org>,
 	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <linux-mm@kvack.org>,
 	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: Fix data-race KCSAN bug in rstats
-Message-ID: <ZjTKLVjxuUJwwFPg@tiehlicka>
-References: <20240424125940.2410718-1-leitao@debian.org>
+Subject: Re: [PATCH] mm: memcg: use READ_ONCE()/WRITE_ONCE() to access
+ stock->nr_pages
+Message-ID: <ZjTKareAb6Q3VGAF@tiehlicka>
+References: <20240501095420.679208-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -88,138 +89,161 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240424125940.2410718-1-leitao@debian.org>
+In-Reply-To: <20240501095420.679208-1-leitao@debian.org>
 X-Spam-Flag: NO
-X-Spam-Score: -6.01
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: B99F23387A
+X-Spam-Score: -3.80
 X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-6.01 / 50.00];
+X-Spamd-Result: default: False [-3.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	RCVD_COUNT_TWO(0.00)[2];
 	FROM_EQ_ENVFROM(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim,suse.com:email]
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email]
 
-On Wed 24-04-24 05:59:39, Breno Leitao wrote:
-> A data-race issue in memcg rstat occurs when two distinct code paths
-> access the same 4-byte region concurrently. KCSAN detection triggers the
-> following BUG as a result.
+On Wed 01-05-24 02:54:20, Breno Leitao wrote:
+> A memcg pointer in the per-cpu stock can be accessed by drain_all_stock()
+> and consume_stock() in parallel, causing a potential race.
 > 
-> 	BUG: KCSAN: data-race in __count_memcg_events / mem_cgroup_css_rstat_flush
+> KCSAN shows this data-race clearly in the splat below:
 > 
-> 	write to 0xffffe8ffff98e300 of 4 bytes by task 5274 on cpu 17:
-> 	mem_cgroup_css_rstat_flush (mm/memcontrol.c:5850)
-> 	cgroup_rstat_flush_locked (kernel/cgroup/rstat.c:243 (discriminator 7))
-> 	cgroup_rstat_flush (./include/linux/spinlock.h:401 kernel/cgroup/rstat.c:278)
-> 	mem_cgroup_flush_stats.part.0 (mm/memcontrol.c:767)
-> 	memory_numa_stat_show (mm/memcontrol.c:6911)
-> <snip>
+> 	BUG: KCSAN: data-race in drain_all_stock.part.0 / try_charge_memcg
 > 
-> 	read to 0xffffe8ffff98e300 of 4 bytes by task 410848 on cpu 27:
-> 	__count_memcg_events (mm/memcontrol.c:725 mm/memcontrol.c:962)
-> 	count_memcg_event_mm.part.0 (./include/linux/memcontrol.h:1097 ./include/linux/memcontrol.h:1120)
-> 	handle_mm_fault (mm/memory.c:5483 mm/memory.c:5622)
-> <snip>
+> 	write to 0xffff88903f8b0788 of 4 bytes by task 35901 on cpu 2:
+> 	try_charge_memcg (mm/memcontrol.c:2323 mm/memcontrol.c:2746)
+> 	__mem_cgroup_charge (mm/memcontrol.c:7287 mm/memcontrol.c:7301)
+> 	do_anonymous_page (mm/memory.c:1054 mm/memory.c:4375 mm/memory.c:4433)
+> 	__handle_mm_fault (mm/memory.c:3878 mm/memory.c:5300 mm/memory.c:5441)
+> 	handle_mm_fault (mm/memory.c:5606)
+> 	do_user_addr_fault (arch/x86/mm/fault.c:1363)
+> 	exc_page_fault (./arch/x86/include/asm/irqflags.h:37
+> 		        ./arch/x86/include/asm/irqflags.h:72
+> 			arch/x86/mm/fault.c:1513
+> 			arch/x86/mm/fault.c:1563)
+> 	asm_exc_page_fault (./arch/x86/include/asm/idtentry.h:623)
 > 
-> 	value changed: 0x00000029 -> 0x00000000
+> 	read to 0xffff88903f8b0788 of 4 bytes by task 287 on cpu 27:
+> 	drain_all_stock.part.0 (mm/memcontrol.c:2433)
+> 	mem_cgroup_css_offline (mm/memcontrol.c:5398 mm/memcontrol.c:5687)
+> 	css_killed_work_fn (kernel/cgroup/cgroup.c:5521 kernel/cgroup/cgroup.c:5794)
+> 	process_one_work (kernel/workqueue.c:3254)
+> 	worker_thread (kernel/workqueue.c:3329 kernel/workqueue.c:3416)
+> 	kthread (kernel/kthread.c:388)
+> 	ret_from_fork (arch/x86/kernel/process.c:147)
+> 	ret_from_fork_asm (arch/x86/entry/entry_64.S:257)
 > 
-> The race occurs because two code paths access the same "stats_updates"
-> location. Although "stats_updates" is a per-CPU variable, it is remotely
-> accessed by another CPU at
-> cgroup_rstat_flush_locked()->mem_cgroup_css_rstat_flush(), leading to
-> the data race mentioned.
+> 	value changed: 0x00000014 -> 0x00000013
 > 
-> Considering that memcg_rstat_updated() is in the hot code path, adding
-> a lock to protect it may not be desirable, especially since this
-> variable pertains solely to statistics.
+> This happens because drain_all_stock() is reading stock->nr_pages, while
+> consume_stock() might be updating the same address, causing a potential
+> data-race.
 > 
-> Therefore, annotating accesses to stats_updates with READ/WRITE_ONCE()
-> can prevent KCSAN splats and potential partial reads/writes.
+> Make the shared addresses bulletproof regarding to reads and writes,
+> similarly to what stock->cached_objcg and stock->cached.
+> Annotate all accesses to stock->nr_pages with READ_ONCE()/WRITE_ONCE().
 > 
-> Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
 > Signed-off-by: Breno Leitao <leitao@debian.org>
 
 Acked-by: Michal Hocko <mhocko@suse.com>
 
 It is worth mentioning that the race is harmless.
 
-Thanks!
-
 > ---
->  mm/memcontrol.c | 12 +++++++-----
->  1 file changed, 7 insertions(+), 5 deletions(-)
+>  mm/memcontrol.c | 24 +++++++++++++++---------
+>  1 file changed, 15 insertions(+), 9 deletions(-)
 > 
 > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index fabce2b50c69..3c99457b36a1 100644
+> index fabce2b50c69..d3befe3b62fa 100644
 > --- a/mm/memcontrol.c
 > +++ b/mm/memcontrol.c
-> @@ -715,6 +715,7 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
+> @@ -2310,6 +2310,7 @@ static void memcg_account_kmem(struct mem_cgroup *memcg, int nr_pages)
+>  static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
 >  {
->  	struct memcg_vmstats_percpu *statc;
->  	int cpu = smp_processor_id();
-> +	unsigned int stats_updates;
+>  	struct memcg_stock_pcp *stock;
+> +	unsigned int stock_pages;
+>  	unsigned long flags;
+>  	bool ret = false;
 >  
->  	if (!val)
->  		return;
-> @@ -722,8 +723,9 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
->  	cgroup_rstat_updated(memcg->css.cgroup, cpu);
->  	statc = this_cpu_ptr(memcg->vmstats_percpu);
->  	for (; statc; statc = statc->parent) {
-> -		statc->stats_updates += abs(val);
-> -		if (statc->stats_updates < MEMCG_CHARGE_BATCH)
-> +		stats_updates = READ_ONCE(statc->stats_updates) + abs(val);
-> +		WRITE_ONCE(statc->stats_updates, stats_updates);
-> +		if (stats_updates < MEMCG_CHARGE_BATCH)
->  			continue;
+> @@ -2319,8 +2320,9 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  	local_lock_irqsave(&memcg_stock.stock_lock, flags);
 >  
->  		/*
-> @@ -731,9 +733,9 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
->  		 * redundant. Avoid the overhead of the atomic update.
->  		 */
->  		if (!memcg_vmstats_needs_flush(statc->vmstats))
-> -			atomic64_add(statc->stats_updates,
-> +			atomic64_add(stats_updates,
->  				     &statc->vmstats->stats_updates);
-> -		statc->stats_updates = 0;
-> +		WRITE_ONCE(statc->stats_updates, 0);
+>  	stock = this_cpu_ptr(&memcg_stock);
+> -	if (memcg == READ_ONCE(stock->cached) && stock->nr_pages >= nr_pages) {
+> -		stock->nr_pages -= nr_pages;
+> +	stock_pages = READ_ONCE(stock->nr_pages);
+> +	if (memcg == READ_ONCE(stock->cached) && stock_pages >= nr_pages) {
+> +		WRITE_ONCE(stock->nr_pages, stock_pages - nr_pages);
+>  		ret = true;
 >  	}
+>  
+> @@ -2334,16 +2336,18 @@ static bool consume_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>   */
+>  static void drain_stock(struct memcg_stock_pcp *stock)
+>  {
+> +	unsigned int stock_pages = READ_ONCE(stock->nr_pages);
+>  	struct mem_cgroup *old = READ_ONCE(stock->cached);
+>  
+>  	if (!old)
+>  		return;
+>  
+> -	if (stock->nr_pages) {
+> -		page_counter_uncharge(&old->memory, stock->nr_pages);
+> +	if (stock_pages) {
+> +		page_counter_uncharge(&old->memory, stock_pages);
+>  		if (do_memsw_account())
+> -			page_counter_uncharge(&old->memsw, stock->nr_pages);
+> -		stock->nr_pages = 0;
+> +			page_counter_uncharge(&old->memsw, stock_pages);
+> +
+> +		WRITE_ONCE(stock->nr_pages, 0);
+>  	}
+>  
+>  	css_put(&old->css);
+> @@ -2380,6 +2384,7 @@ static void drain_local_stock(struct work_struct *dummy)
+>  static void __refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  {
+>  	struct memcg_stock_pcp *stock;
+> +	unsigned int stock_pages;
+>  
+>  	stock = this_cpu_ptr(&memcg_stock);
+>  	if (READ_ONCE(stock->cached) != memcg) { /* reset if necessary */
+> @@ -2387,9 +2392,10 @@ static void __refill_stock(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  		css_get(&memcg->css);
+>  		WRITE_ONCE(stock->cached, memcg);
+>  	}
+> -	stock->nr_pages += nr_pages;
+> +	stock_pages = READ_ONCE(stock->nr_pages) + nr_pages;
+> +	WRITE_ONCE(stock->nr_pages, stock_pages);
+>  
+> -	if (stock->nr_pages > MEMCG_CHARGE_BATCH)
+> +	if (stock_pages > MEMCG_CHARGE_BATCH)
+>  		drain_stock(stock);
 >  }
 >  
-> @@ -5845,7 +5847,7 @@ static void mem_cgroup_css_rstat_flush(struct cgroup_subsys_state *css, int cpu)
->  			}
->  		}
->  	}
-> -	statc->stats_updates = 0;
-> +	WRITE_ONCE(statc->stats_updates, 0);
->  	/* We are in a per-cpu loop here, only do the atomic write once */
->  	if (atomic64_read(&memcg->vmstats->stats_updates))
->  		atomic64_set(&memcg->vmstats->stats_updates, 0);
+> @@ -2428,7 +2434,7 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
+>  
+>  		rcu_read_lock();
+>  		memcg = READ_ONCE(stock->cached);
+> -		if (memcg && stock->nr_pages &&
+> +		if (memcg && READ_ONCE(stock->nr_pages) &&
+>  		    mem_cgroup_is_descendant(memcg, root_memcg))
+>  			flush = true;
+>  		else if (obj_stock_flush_required(stock, root_memcg))
 > -- 
 > 2.43.0
-> 
 
 -- 
 Michal Hocko
