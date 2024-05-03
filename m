@@ -1,157 +1,111 @@
-Return-Path: <cgroups+bounces-2775-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2776-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C2C68BB3CB
-	for <lists+cgroups@lfdr.de>; Fri,  3 May 2024 21:18:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA4808BB459
+	for <lists+cgroups@lfdr.de>; Fri,  3 May 2024 21:50:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB73D1F25869
-	for <lists+cgroups@lfdr.de>; Fri,  3 May 2024 19:18:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DF94B2305E
+	for <lists+cgroups@lfdr.de>; Fri,  3 May 2024 19:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B76491581FD;
-	Fri,  3 May 2024 19:18:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A552158D66;
+	Fri,  3 May 2024 19:50:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V2BxOp6Z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IjsYKxmY"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCAC613A27D
-	for <cgroups@vger.kernel.org>; Fri,  3 May 2024 19:18:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1269D51A;
+	Fri,  3 May 2024 19:50:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714763902; cv=none; b=bTRWSzIyKKcFDkHg2UXuzRsaX4KN9tk4LbMNv7JasuIIxlsl0PxXvjk0+gep1jH9ivHjMoj4/MtPD5EaQGIofy0AmI/Mp74xqOZU2HAVx9M4ZKh8kgLnnFcgXYeXvbYhIf0QyTV4VDt04f+x/NsDkHdJOFhpQr0IiuW/ixlTOLE=
+	t=1714765844; cv=none; b=o65FYk/8WIysCF2ZMU0owfRdEGuhIuuypu4NOuc46mwgbuSO7ND/FRUBBZ96nWhNwXBds8gJDsbGIsxRL2DaJP9kMkHtgHm9a4WHlTw75Q8srOHudmQ4E0SaiAWwrbr9SkWt465ghJ5kKzqjblhhldtymRQ8QbIIwKy3tq9skQI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714763902; c=relaxed/simple;
-	bh=VBe/SOv0mwQ5XI5qY/WFjxdIHLqFgILCJ6ieyL0XOQU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WdtPgbEEu6IptdBoKxYCy1PsXv4Be+Nx2XCSqts5ZzvW7KW3A/1iTAK9uLVXMIr0CcbOIhF9+q53srRNHZYeFZpYYxcNTjQ18PJ1iCF9RybI/J+fR/SY5d7GuTwZfl5EX9z+r9pywJQUyUgxUWMWdNodT86PyX+q33IhS3KogBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V2BxOp6Z; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 3 May 2024 12:18:13 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714763898;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mckXklrCvW8qW39pcWOiZpvvEZSd/ILPXQUzKCJtjD8=;
-	b=V2BxOp6ZWWszRo+ezP4vqmUAsMOz43rjBG7TStVGd9+e9l5CVUB72pTp2yzXXpYNsQFFw0
-	TS5ChN5xanrZZE1bD+BTlQyWWZU7A7d81b5Qq8cXa0yyZ+PgE1QMWIT7EHDnAdzyOOyk7g
-	pa3WaVWrgo12UH9Fc5kOuLDUaSj54aM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Waiman Long <longman@redhat.com>, tj@kernel.org, hannes@cmpxchg.org, 
-	lizefan.x@bytedance.com, cgroups@vger.kernel.org, yosryahmed@google.com, 
-	netdev@vger.kernel.org, linux-mm@kvack.org, kernel-team@cloudflare.com, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH v1] cgroup/rstat: add cgroup_rstat_cpu_lock helpers and
- tracepoints
-Message-ID: <4gdfgo3njmej7a42x6x6x4b6tm267xmrfwedis4mq7f4mypfc7@4egtwzrfqkhp>
-References: <171457225108.4159924.12821205549807669839.stgit@firesoul>
- <30d64e25-561a-41c6-ab95-f0820248e9b6@redhat.com>
- <4a680b80-b296-4466-895a-13239b982c85@kernel.org>
- <203fdb35-f4cf-4754-9709-3c024eecade9@redhat.com>
- <b74c4e6b-82cc-4b26-b817-0b36fbfcc2bd@kernel.org>
- <b161e21f-9d66-4aac-8cc1-83ed75f14025@redhat.com>
- <42a6d218-206b-4f87-a8fa-ef42d107fb23@kernel.org>
+	s=arc-20240116; t=1714765844; c=relaxed/simple;
+	bh=KN3OMp2RxTcIZRuhyPTjSWHGJjFCoqc9Q5ufOJcmQ5Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uEDUoLOr0zFAw0mBeThMkNqz1hHHKiz/BBGoKPqx1GVT5xugFEUZCcs2InlnZius8UfA8cW3uN5T//eXBPZzNCmPacDJe4QJu2kJQy3XS1CB6LWeC/3ng0GyMwoAu9cwg19NTgxirvM0YwC+/LqC0AszRGKYIec0QUoxeQe188Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IjsYKxmY; arc=none smtp.client-ip=209.85.219.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6a04bae512aso264226d6.2;
+        Fri, 03 May 2024 12:50:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714765841; x=1715370641; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BuVUTGivGv+RNT3apO0p2n+zz8phIuPLwQeuA6Csm8A=;
+        b=IjsYKxmYgzJ6QPqKHHfiZjZBG+4Aupn9Zv4gT0HYIgmD/kCuYpWwZvOEHkc06AhPJU
+         JV1OBrbtFRlKgqE4Hfv/encjGtYzN3SZFAjd3eWL7abu0HCFYzNaIkcKytN4pVQna5j0
+         KD6hh9rE+QCuFIiq6UA97yPZvjdOXIGIdUarJGVx6m8Js0eta2xZE1az2PPYoQFQrbAV
+         vm0cvmZwi26Pztbu9YbKX8txReXdEKh3vNhJnZe7dn470VOCIRotjZNivXXOqJWqJofj
+         iO5BlM5JtgySYx/7A/zZ7iYWBMkJLGBSEabMxekSZA1VefdEij/TyhO4k3TG1iW2GpbG
+         cQLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714765841; x=1715370641;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BuVUTGivGv+RNT3apO0p2n+zz8phIuPLwQeuA6Csm8A=;
+        b=GkENZD4CjwwsIjO5i4FUf6UYkFUHGBzDzGCpLx/Xz5c/DH5K1dSQH3HFhhE64JcCdJ
+         98Bc/j4HguRQva4khcgnw7k7TC0FmhUBnrdiKK8ZQ9oujcmJ7qEEEnm6SvbqnZowNTCK
+         SZtao2tNvP32gzfFtOyAdmtsoSy1XICIHrlF1tbEL7ZLv9+XGfuemMYRfzq9snJPgU1D
+         ggowPqfoSWYv3KJREtMbkgdueHHtqHP2HWqVyixMejBN70Vd874wvJMlQphF8YUqoQEj
+         0r17GWyeJvUi9w5wWPQK8Zmjlr9P9vYMN64whUBe0jsUDqbbXmVQAL8PvNcMbRpr/x1t
+         ibNA==
+X-Forwarded-Encrypted: i=1; AJvYcCXaoMmlcw6ZX5I0EKXX4DsoPd7UK3m7Og9pAQupoBei45dOnwMCLteygjmvUxobHB0MOiSoYBFMU8OtVIvj1FS5/2RoovkrZSjXk+/CxSz8pqtFdM6mmhEMR32V+YHdZkaLcCuZopp7TikvQSAfNahl06St698NK0fkVAdATVo+KRcizlNMtQ==
+X-Gm-Message-State: AOJu0YwohYinGBzpnVOZB0ok26g6RWaifglNTXCwXlUoMaCXuTswuFhg
+	03zFU/mowiFFwDc2oo55u5Lf2Hfie9WpUGavHAs2S92JPhuSTswzZUv12w894/v8fatKygciMT3
+	3H0C/GIFv5OLdZU0aNJk35Kic1lM=
+X-Google-Smtp-Source: AGHT+IHwsKaZ7g4EJ175fFjyaFI1whbPu9tvhSXfH4HIZV0Fc9Dc2fTEfVQKadr/oY7bJDXaWRRTj2m7au4X01JgX1U=
+X-Received: by 2002:a05:6214:da8:b0:6a0:cd1b:9f9f with SMTP id
+ h8-20020a0562140da800b006a0cd1b9f9fmr3712807qvh.38.1714765841550; Fri, 03 May
+ 2024 12:50:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <42a6d218-206b-4f87-a8fa-ef42d107fb23@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+References: <20240503035105.93280-1-jhubbard@nvidia.com> <20240503035105.93280-5-jhubbard@nvidia.com>
+In-Reply-To: <20240503035105.93280-5-jhubbard@nvidia.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Fri, 3 May 2024 12:50:28 -0700
+Message-ID: <CAKEwX=OzV+hCXwwFhnAWKvsrDq_vMaS6GaJgRn8LG_EsB80OCw@mail.gmail.com>
+Subject: Re: [PATCH 4/4] selftests/cgroup: fix uninitialized variables in test_zswap.c
+To: John Hubbard <jhubbard@nvidia.com>
+Cc: Shuah Khan <shuah@kernel.org>, Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Waiman Long <longman@redhat.com>, 
+	Yosry Ahmed <yosryahmed@google.com>, Chengming Zhou <chengming.zhou@linux.dev>, 
+	Valentin Obst <kernel@valentinobst.de>, linux-kselftest@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 03, 2024 at 04:00:20PM +0200, Jesper Dangaard Brouer wrote:
-> 
-> 
-[...]
-> > 
-> > I may have mistakenly thinking the lock hold time refers to just the
-> > cpu_lock. Your reported times here are about the cgroup_rstat_lock.
-> > Right? If so, the numbers make sense to me.
-> > 
-> 
-> True, my reported number here are about the cgroup_rstat_lock.
-> Glad to hear, we are more aligned then :-)
-> 
-> Given I just got some prod machines online with this patch
-> cgroup_rstat_cpu_lock tracepoints, I can give you some early results,
-> about hold-time for the cgroup_rstat_cpu_lock.
+On Thu, May 2, 2024 at 8:51=E2=80=AFPM John Hubbard <jhubbard@nvidia.com> w=
+rote:
+>
+> First of all, in order to build with clang at all, one must first apply
+> Valentin Obst's build fix for LLVM [1]. Once that is done, then when
+> building with clang, via:
+>
+>     make LLVM=3D1 -C tools/testing/selftests
+>
+> ...clang finds and warning about some uninitialized variables. Fix these
+> by initializing them.
+>
+> [1] https://lore.kernel.org/all/20240329-selftests-libmk-llvm-rfc-v1-1-2f=
+9ed7d1c49f@valentinobst.de/
+>
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
 
-Oh you have already shared the preliminary data.
-
-> 
-> From this oneliner bpftrace commands:
-> 
->   sudo bpftrace -e '
->          tracepoint:cgroup:cgroup_rstat_cpu_lock_contended {
->            @start[tid]=nsecs; @cnt[probe]=count()}
->          tracepoint:cgroup:cgroup_rstat_cpu_locked {
->            $now=nsecs;
->            if (args->contended) {
->              @wait_per_cpu_ns=hist($now-@start[tid]); delete(@start[tid]);}
->            @cnt[probe]=count(); @locked[tid]=$now}
->          tracepoint:cgroup:cgroup_rstat_cpu_unlock {
->            $now=nsecs;
->            @locked_per_cpu_ns=hist($now-@locked[tid]); delete(@locked[tid]);
->            @cnt[probe]=count()}
->          interval:s:1 {time("%H:%M:%S "); print(@wait_per_cpu_ns);
->            print(@locked_per_cpu_ns); print(@cnt); clear(@cnt);}'
-> 
-> Results from one 1 sec period:
-> 
-> 13:39:55 @wait_per_cpu_ns:
-> [512, 1K)              3 |      |
-> [1K, 2K)              12 |@      |
-> [2K, 4K)             390
-> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> [4K, 8K)              70 |@@@@@@@@@      |
-> [8K, 16K)             24 |@@@      |
-> [16K, 32K)           183 |@@@@@@@@@@@@@@@@@@@@@@@@      |
-> [32K, 64K)            11 |@      |
-> 
-> @locked_per_cpu_ns:
-> [256, 512)         75592 |@      |
-> [512, 1K)        2537357
-> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> [1K, 2K)          528615 |@@@@@@@@@@      |
-> [2K, 4K)          168519 |@@@      |
-> [4K, 8K)          162039 |@@@      |
-> [8K, 16K)         100730 |@@      |
-> [16K, 32K)         42276 |      |
-> [32K, 64K)          1423 |      |
-> [64K, 128K)           89 |      |
-> 
->  @cnt[tracepoint:cgroup:cgroup_rstat_cpu_lock_contended]: 3 /sec
->  @cnt[tracepoint:cgroup:cgroup_rstat_cpu_unlock]: 3200  /sec
->  @cnt[tracepoint:cgroup:cgroup_rstat_cpu_locked]: 3200  /sec
-> 
-> 
-> So, we see "flush-code-path" per-CPU-holding @locked_per_cpu_ns isn't
-> exceeding 128 usec.
-
-Hmm 128 usec is actually unexpectedly high. How does the cgroup
-hierarchy on your system looks like? How many cgroups have actual
-workloads running? Can the network softirqs run on any cpus or smaller
-set of cpus? I am assuming these softirqs are processing packets from
-any or all cgroups and thus have larger cgroup update tree. I wonder if
-you comment out MEMCG_SOCK stat update and still see the same holding
-time.
-
-> 
-> My latency requirements, to avoid RX-queue overflow, with 1024 slots,
-> running at 25 Gbit/s, is 27.6 usec with small packets, and 500 usec
-> (0.5ms) with MTU size packets.  This is very close to my latency
-> requirements.
-> 
-> --Jesper
-> 
+Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+> ---
 
