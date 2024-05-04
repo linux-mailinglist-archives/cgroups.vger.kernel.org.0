@@ -1,111 +1,237 @@
-Return-Path: <cgroups+bounces-2776-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2777-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA4808BB459
-	for <lists+cgroups@lfdr.de>; Fri,  3 May 2024 21:50:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 257288BB9BC
+	for <lists+cgroups@lfdr.de>; Sat,  4 May 2024 09:30:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DF94B2305E
-	for <lists+cgroups@lfdr.de>; Fri,  3 May 2024 19:50:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FC5A1C211A9
+	for <lists+cgroups@lfdr.de>; Sat,  4 May 2024 07:30:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A552158D66;
-	Fri,  3 May 2024 19:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63AD563C1;
+	Sat,  4 May 2024 07:30:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IjsYKxmY"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RKbaZSu8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1269D51A;
-	Fri,  3 May 2024 19:50:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA5F4C9F
+	for <cgroups@vger.kernel.org>; Sat,  4 May 2024 07:30:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714765844; cv=none; b=o65FYk/8WIysCF2ZMU0owfRdEGuhIuuypu4NOuc46mwgbuSO7ND/FRUBBZ96nWhNwXBds8gJDsbGIsxRL2DaJP9kMkHtgHm9a4WHlTw75Q8srOHudmQ4E0SaiAWwrbr9SkWt465ghJ5kKzqjblhhldtymRQ8QbIIwKy3tq9skQI=
+	t=1714807847; cv=none; b=JaO+lE6xNAFHOuIQJgJbWM3HUQq1dv2P+ihJL3U57OEc4l02wge1YeKK19HvRkn0kaa2eI2NgMX7rotqg2wHn4yddRexfnL2xl7fP8A4yu5Hxgqbp2Begb7k+zK/mvks7mgFVE0uF95HYAQhuBKbwLgdsE7zBlVZrdkvrGXy9c4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714765844; c=relaxed/simple;
-	bh=KN3OMp2RxTcIZRuhyPTjSWHGJjFCoqc9Q5ufOJcmQ5Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uEDUoLOr0zFAw0mBeThMkNqz1hHHKiz/BBGoKPqx1GVT5xugFEUZCcs2InlnZius8UfA8cW3uN5T//eXBPZzNCmPacDJe4QJu2kJQy3XS1CB6LWeC/3ng0GyMwoAu9cwg19NTgxirvM0YwC+/LqC0AszRGKYIec0QUoxeQe188Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IjsYKxmY; arc=none smtp.client-ip=209.85.219.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6a04bae512aso264226d6.2;
-        Fri, 03 May 2024 12:50:42 -0700 (PDT)
+	s=arc-20240116; t=1714807847; c=relaxed/simple;
+	bh=5stJ9da450qa80ywyURzS+csuwoFs5l3Ac6/1RKt3r0=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=gmFoQcj+3xDoS03jCBKGOn5eTcW2HEh7mV7e23+xB9DLt9TdznmYdos7bouE9079j9jT+k2YvbewRrpX0INn6C/rb+srvd77NuUkl6diTUPr2DGN7PiOKV5X6IXEAMZKAAdJh3w8n7hXqdee91u+cgvkEqpqwJGnYBbcKVXhUhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yuanchu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RKbaZSu8; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yuanchu.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc64f63d768so751917276.2
+        for <cgroups@vger.kernel.org>; Sat, 04 May 2024 00:30:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714765841; x=1715370641; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BuVUTGivGv+RNT3apO0p2n+zz8phIuPLwQeuA6Csm8A=;
-        b=IjsYKxmYgzJ6QPqKHHfiZjZBG+4Aupn9Zv4gT0HYIgmD/kCuYpWwZvOEHkc06AhPJU
-         JV1OBrbtFRlKgqE4Hfv/encjGtYzN3SZFAjd3eWL7abu0HCFYzNaIkcKytN4pVQna5j0
-         KD6hh9rE+QCuFIiq6UA97yPZvjdOXIGIdUarJGVx6m8Js0eta2xZE1az2PPYoQFQrbAV
-         vm0cvmZwi26Pztbu9YbKX8txReXdEKh3vNhJnZe7dn470VOCIRotjZNivXXOqJWqJofj
-         iO5BlM5JtgySYx/7A/zZ7iYWBMkJLGBSEabMxekSZA1VefdEij/TyhO4k3TG1iW2GpbG
-         cQLA==
+        d=google.com; s=20230601; t=1714807844; x=1715412644; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ZEhqL1CqjynIxdH2JX4K2zUhUQiHbpFFJcUISKJLIbM=;
+        b=RKbaZSu8qR9gQ+IbONjZzUXgVYyYbIlJDic6fnHLwTXSyGqrnpR3peq+LLDb2eEMab
+         x9ApjU3tsPZN6H8JtlBs9Jm0JelfUYscL4BxPRPrOH6/M/jUVMo57IjpGeKZTAziWg6j
+         LR6IkjP7sr9M1VtdUcuzWloyCaaP3W7O07nce5Kpf/gg2/yr8MidP70Eqj+AnONwSV0J
+         otc7x/89JXcB1BKgAzPT2HWwFHlkbWrIh3m9GddZJ1V0VtalqXIEFVwLKS+hFKhKaelB
+         omnGY0l2GyTlk1RjtwyEAaXHWHW3LsJLw0i//mVfQDpBPd9IqP8ogJzAsVtXi+VUI5x9
+         +pPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714765841; x=1715370641;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BuVUTGivGv+RNT3apO0p2n+zz8phIuPLwQeuA6Csm8A=;
-        b=GkENZD4CjwwsIjO5i4FUf6UYkFUHGBzDzGCpLx/Xz5c/DH5K1dSQH3HFhhE64JcCdJ
-         98Bc/j4HguRQva4khcgnw7k7TC0FmhUBnrdiKK8ZQ9oujcmJ7qEEEnm6SvbqnZowNTCK
-         SZtao2tNvP32gzfFtOyAdmtsoSy1XICIHrlF1tbEL7ZLv9+XGfuemMYRfzq9snJPgU1D
-         ggowPqfoSWYv3KJREtMbkgdueHHtqHP2HWqVyixMejBN70Vd874wvJMlQphF8YUqoQEj
-         0r17GWyeJvUi9w5wWPQK8Zmjlr9P9vYMN64whUBe0jsUDqbbXmVQAL8PvNcMbRpr/x1t
-         ibNA==
-X-Forwarded-Encrypted: i=1; AJvYcCXaoMmlcw6ZX5I0EKXX4DsoPd7UK3m7Og9pAQupoBei45dOnwMCLteygjmvUxobHB0MOiSoYBFMU8OtVIvj1FS5/2RoovkrZSjXk+/CxSz8pqtFdM6mmhEMR32V+YHdZkaLcCuZopp7TikvQSAfNahl06St698NK0fkVAdATVo+KRcizlNMtQ==
-X-Gm-Message-State: AOJu0YwohYinGBzpnVOZB0ok26g6RWaifglNTXCwXlUoMaCXuTswuFhg
-	03zFU/mowiFFwDc2oo55u5Lf2Hfie9WpUGavHAs2S92JPhuSTswzZUv12w894/v8fatKygciMT3
-	3H0C/GIFv5OLdZU0aNJk35Kic1lM=
-X-Google-Smtp-Source: AGHT+IHwsKaZ7g4EJ175fFjyaFI1whbPu9tvhSXfH4HIZV0Fc9Dc2fTEfVQKadr/oY7bJDXaWRRTj2m7au4X01JgX1U=
-X-Received: by 2002:a05:6214:da8:b0:6a0:cd1b:9f9f with SMTP id
- h8-20020a0562140da800b006a0cd1b9f9fmr3712807qvh.38.1714765841550; Fri, 03 May
- 2024 12:50:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714807844; x=1715412644;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZEhqL1CqjynIxdH2JX4K2zUhUQiHbpFFJcUISKJLIbM=;
+        b=cmKSh3AZnPZ3POdPUL9N90os+Krsu08DS4EW5GNsAF1dpLDkqMobxnxS/34TJy4hKF
+         VfaqDzRpe5u2zQyxp7LSliIW7f+/3UXNMlF27ol/IINVIS3nq0oh4D0+qNPDtgZWl4kf
+         8p353EjrpEwUXV9TdhHghORk3YYf182Cls+dqWkbKLXwmlzXyjfUYAXCKnN1nsN8jmC4
+         Mot5R7aJDgh/lN9fhHO5oEPek6NMETR0GVjGv5OOAlR2noyOreU9J0Kpqq7oRLZPXCP0
+         53tl8LyqdLtvU5H27jCfhifqkP9na3UCnxF4eTs/jc7AK82fgrxOdZXUxdg5B/HG3ZOW
+         rumQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU9ZDfGsImDb7tzcDlVK1ePanntPmbiD38KFxD2+jjcrhzwKqQ2VJbhamF2y5d8DcUJiwVyjzltA+oH+DBPM8I6+LLeRdaCLg==
+X-Gm-Message-State: AOJu0Yziuu6czIiEkLxHVwViWD2pSaCiJ47eDTUmpJgrzUFnPzAgU5oj
+	Se7C9bQu0PKvAmHWBv9cOIIcySUuu1rqR6jNgEhdqmhT7Tf9/Lkxd5jUvpLLfu4VVSmmAnv70Tl
+	MwTfaBw==
+X-Google-Smtp-Source: AGHT+IFP46rvcozU6JIIDCEu+DKrbHJU9uxcDlUFqWs1yPYFcfhx8EqiHxmm9strVpEXBTixcF5vXf03mKao
+X-Received: from yuanchu-desktop.svl.corp.google.com ([2620:15c:2a3:200:da8f:bd07:9977:eb21])
+ (user=yuanchu job=sendgmr) by 2002:a25:ad85:0:b0:dcb:b9d7:2760 with SMTP id
+ z5-20020a25ad85000000b00dcbb9d72760mr1376164ybi.13.1714807844528; Sat, 04 May
+ 2024 00:30:44 -0700 (PDT)
+Date: Sat,  4 May 2024 00:30:04 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240503035105.93280-1-jhubbard@nvidia.com> <20240503035105.93280-5-jhubbard@nvidia.com>
-In-Reply-To: <20240503035105.93280-5-jhubbard@nvidia.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Fri, 3 May 2024 12:50:28 -0700
-Message-ID: <CAKEwX=OzV+hCXwwFhnAWKvsrDq_vMaS6GaJgRn8LG_EsB80OCw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] selftests/cgroup: fix uninitialized variables in test_zswap.c
-To: John Hubbard <jhubbard@nvidia.com>
-Cc: Shuah Khan <shuah@kernel.org>, Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
+Message-ID: <20240504073011.4000534-1-yuanchu@google.com>
+Subject: [PATCH v1 0/7] mm: workingset reporting
+From: Yuanchu Xie <yuanchu@google.com>
+To: David Hildenbrand <david@redhat.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>, 
+	Khalid Aziz <khalid.aziz@oracle.com>, Henry Huang <henry.hj@antgroup.com>, 
+	Yu Zhao <yuzhao@google.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Gregory Price <gregory.price@memverge.com>, Huang Ying <ying.huang@intel.com>
+Cc: Kalesh Singh <kaleshsingh@google.com>, Wei Xu <weixugc@google.com>, 
+	David Rientjes <rientjes@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
 	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Waiman Long <longman@redhat.com>, 
-	Yosry Ahmed <yosryahmed@google.com>, Chengming Zhou <chengming.zhou@linux.dev>, 
-	Valentin Obst <kernel@valentinobst.de>, linux-kselftest@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	LKML <linux-kernel@vger.kernel.org>, llvm@lists.linux.dev
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Shuah Khan <shuah@kernel.org>, Yosry Ahmed <yosryahmed@google.com>, 
+	Matthew Wilcox <willy@infradead.org>, Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>, 
+	Kairui Song <kasong@tencent.com>, "Michael S. Tsirkin" <mst@redhat.com>, 
+	Vasily Averin <vasily.averin@linux.dev>, Nhat Pham <nphamcs@gmail.com>, 
+	Miaohe Lin <linmiaohe@huawei.com>, Qi Zheng <zhengqi.arch@bytedance.com>, 
+	Abel Wu <wuyun.abel@bytedance.com>, "Vishal Moola (Oracle)" <vishal.moola@gmail.com>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, Yuanchu Xie <yuanchu@google.com>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 2, 2024 at 8:51=E2=80=AFPM John Hubbard <jhubbard@nvidia.com> w=
-rote:
->
-> First of all, in order to build with clang at all, one must first apply
-> Valentin Obst's build fix for LLVM [1]. Once that is done, then when
-> building with clang, via:
->
->     make LLVM=3D1 -C tools/testing/selftests
->
-> ...clang finds and warning about some uninitialized variables. Fix these
-> by initializing them.
->
-> [1] https://lore.kernel.org/all/20240329-selftests-libmk-llvm-rfc-v1-1-2f=
-9ed7d1c49f@valentinobst.de/
->
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+Changes from RFC v3 -> PATCH v1:
+- Updated selftest to use ksft_print_msg instead of fprintf(stderr, ...)
+  (Muhammad Usama Anjum)
+- Included more detail in patch skipping pmd_young with force_scan
+  (Huang, Ying)
+- Deferred reaccess histogram as a followup
+- Removed per-memcg page age interval configs for simplicity
 
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
-> ---
+Changes from RFC v2 -> RFC v3:
+- Update to v6.8
+- Added an aging kernel thread (gated behind config)
+- Added basic selftests for sysfs interface files
+- Track swapped out pages for reaccesses
+- Refactoring and cleanup
+- Dropped the virtio-balloon extension to make things manageable
+
+Changes from RFC v1 -> RFC v2:
+- Refactored the patchs into smaller pieces
+- Renamed interfaces and functions from wss to wsr (Working Set Reporting)
+- Fixed build errors when CONFIG_WSR is not set
+- Changed working_set_num_bins to u8 for virtio-balloon
+- Added support for per-NUMA node reporting for virtio-balloon
+
+[rfc v1]
+https://lore.kernel.org/linux-mm/20230509185419.1088297-1-yuanchu@google.com/
+[rfc v2]
+https://lore.kernel.org/linux-mm/20230621180454.973862-1-yuanchu@google.com/
+[rfc v3]
+https://lore.kernel.org/linux-mm/20240327213108.2384666-1-yuanchu@google.com/
+
+This patch series provides workingset reporting of user pages in
+lruvecs, of which coldness can be tracked by accessed bits and fd
+references. However, the concept of workingset applies generically to
+all types of memory, which could be kernel slab caches, discardable
+userspace caches (databases), or CXL.mem. Therefore, data sources might
+come from slab shrinkers, device drivers, or the userspace. IMO, the
+kernel should provide a set of workingset interfaces that should be
+generic enough to accommodate the various use cases, and be extensible
+to potential future use cases. The current proposed interfaces are not
+sufficient in that regard, but I would like to start somewhere, solicit
+feedback, and iterate.
+
+Use cases
+==========
+Job scheduling
+On overcommitted hosts, workingset information allows the job scheduler
+to right-size each job and land more jobs on the same host or NUMA node,
+and in the case of a job with increasing workingset, policy decisions
+can be made to migrate other jobs off the host/NUMA node, or oom-kill
+the misbehaving job. If the job shape is very different from the machine
+shape, knowing the workingset per-node can also help inform page
+allocation policies.
+
+Proactive reclaim
+Workingset information allows the a container manager to proactively
+reclaim memory while not impacting a job's performance. While PSI may
+provide a reactive measure of when a proactive reclaim has reclaimed too
+much, workingset reporting allows the policy to be more accurate and
+flexible.
+
+Ballooning (similar to proactive reclaim)
+While this patch series does not extend the virtio-balloon device,
+balloon policies benefit from workingset to more precisely determine
+the size of the memory balloon. On desktops/laptops/mobile devices where
+memory is scarce and overcommitted, the balloon sizing in multiple VMs
+running on the same device can be orchestrated with workingset reports
+from each one.
+
+Promotion/Demotion
+Similar to proactive reclaim, a workingset report enables demotion to a
+slower tier of memory.
+For promotion, the workingset report interfaces need to be extended to
+report hotness and gather hotness information from the devices[1].
+
+[1]
+https://www.opencompute.org/documents/ocp-cms-hotness-tracking-requirements-white-paper-pdf-1
+
+Sysfs and Cgroup Interfaces
+==========
+The interfaces are detailed in the patches that introduce them. The main
+idea here is we break down the workingset per-node per-memcg into time
+intervals (ms), e.g.
+
+1000 anon=137368 file=24530
+20000 anon=34342 file=0
+30000 anon=353232 file=333608
+40000 anon=407198 file=206052
+9223372036854775807 anon=4925624 file=892892
+
+I realize this does not generalize well to hotness information, but I
+lack the intuition for an abstraction that presents hotness in a useful
+way. Please advise.
+
+Implementation
+==========
+Currently, the reporting of user pages is based off of MGLRU, and
+therefore requires CONFIG_LRU_GEN=y. We would benefit from more MGLRU
+generations for a more fine-grained workingset report. I will make the
+generation count configurable in the next version. The workingset
+reporting mechanism is gated behind CONFIG_WORKINGSET_REPORT, and the
+aging thread is behind CONFIG_WORKINGSET_REPORT_AGING.
+
+Yuanchu Xie (7):
+  mm: multi-gen LRU: ignore non-leaf pmd_young for force_scan=true
+  mm: aggregate working set information into histograms
+  mm: use refresh interval to rate-limit workingset report aggregation
+  mm: report workingset during memory pressure driven scanning
+  mm: extend working set reporting to memcgs
+  mm: add kernel aging thread for workingset reporting
+  selftest: test system-wide workingset reporting
+
+ drivers/base/node.c                           |   6 +
+ include/linux/memcontrol.h                    |   5 +
+ include/linux/mmzone.h                        |   9 +
+ include/linux/workingset_report.h             |  97 ++++
+ mm/Kconfig                                    |  15 +
+ mm/Makefile                                   |   2 +
+ mm/internal.h                                 |  17 +
+ mm/memcontrol.c                               | 184 +++++-
+ mm/mm_init.c                                  |   2 +
+ mm/mmzone.c                                   |   2 +
+ mm/vmscan.c                                   |  85 ++-
+ mm/workingset_report.c                        | 545 ++++++++++++++++++
+ mm/workingset_report_aging.c                  | 127 ++++
+ tools/testing/selftests/mm/.gitignore         |   1 +
+ tools/testing/selftests/mm/Makefile           |   3 +
+ .../testing/selftests/mm/workingset_report.c  | 317 ++++++++++
+ .../testing/selftests/mm/workingset_report.h  |  39 ++
+ .../selftests/mm/workingset_report_test.c     | 332 +++++++++++
+ 18 files changed, 1786 insertions(+), 2 deletions(-)
+ create mode 100644 include/linux/workingset_report.h
+ create mode 100644 mm/workingset_report.c
+ create mode 100644 mm/workingset_report_aging.c
+ create mode 100644 tools/testing/selftests/mm/workingset_report.c
+ create mode 100644 tools/testing/selftests/mm/workingset_report.h
+ create mode 100644 tools/testing/selftests/mm/workingset_report_test.c
+
+-- 
+2.45.0.rc1.225.g2a3ae87e7f-goog
+
 
