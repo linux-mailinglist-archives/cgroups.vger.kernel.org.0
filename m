@@ -1,95 +1,74 @@
-Return-Path: <cgroups+bounces-2789-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2790-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68EF48BCF59
-	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 15:43:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D02B8BCF7E
+	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 15:54:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AFBA1C203E5
-	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 13:43:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0B7A1F226D8
+	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 13:53:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C05E778C67;
-	Mon,  6 May 2024 13:43:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0CA77FBC4;
+	Mon,  6 May 2024 13:53:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BgbMRQ2W"
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53B614642B;
-	Mon,  6 May 2024 13:43:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A53F27F7C2;
+	Mon,  6 May 2024 13:53:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715003020; cv=none; b=QhLTiQfbXxi8G0n4i050ysuE1pyfSnOVNv5QKIHaWra6Skpp646AGDVbYzL3YDE7Mf9Fa0VqHWVcNMnveZqZyr5dYsd8xxdZX6gIbMyt5ELTGzQ9LCeEWTspqq03WSxEd77oYTQYXTb0ftH8kVIECr7yoGWn+xZmW4n4QdqODNM=
+	t=1715003636; cv=none; b=GA+7hK9KYq9+1QsFBsF/fQhbAd55JFVwsH5Vu0VUptXaekC+xLbPkZMnal5P1SZ7KVoADbbtVw2K8hD39jS9j6UkgC+PZdhCpJD6uuOCuo6AkvlxsXAXTEvAs/evVfm9C6Lm7gSvnSZ1I7Go+Ix7afFh/NddYyYI1s/94uoifWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715003020; c=relaxed/simple;
-	bh=nhwIlnyEtPbRTE8qpKMfmZn3Vfdf2AIZnGekxbXX+ck=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=S6x+pXYIpKRPDTlEcwZAoAVlquUTvOuakPujvz/4gBWHaCRDVuq6x3rTy3BaB//EKx5BKBv4cfq1Oks2H5JKkDZjShQrmSgZXi0Dl1YHPJ64YWpx5E5zq/CYRhX26bxsLXmDQMCBfuTQiWEJiIt1pF7vLcEhEJneYTyazS1iaPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VY2bG6CQGztT3t;
-	Mon,  6 May 2024 21:40:10 +0800 (CST)
-Received: from dggpeml500023.china.huawei.com (unknown [7.185.36.114])
-	by mail.maildlp.com (Postfix) with ESMTPS id E5C5E180065;
-	Mon,  6 May 2024 21:43:34 +0800 (CST)
-Received: from hulk-vt.huawei.com (10.67.174.26) by
- dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 6 May 2024 21:43:34 +0800
-From: Xiu Jianfeng <xiujianfeng@huawei.com>
-To: <hannes@cmpxchg.org>, <mhocko@kernel.org>, <roman.gushchin@linux.dev>,
-	<shakeel.butt@linux.dev>, <muchun.song@linux.dev>,
-	<akpm@linux-foundation.org>
-CC: <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] mm: memcg: use meaningful error code for return value
-Date: Mon, 6 May 2024 13:36:43 +0000
-Message-ID: <20240506133643.1124102-1-xiujianfeng@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1715003636; c=relaxed/simple;
+	bh=4wGZZWr50vBbs3Q757bfPI+FzVZjlv4CH/7/r+l/niA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=APA7t5eVniSlG9GinBHk3gsmr29ewvxN+qWVtA3Bj+Vqve0y+lypneI1jqtB07w+KbaVT4FNTwgccuoLYOsgpp+qFpLDbh40oeQAgBGVtgyIGFegD8qRoSYAtxAjqqLVg91SE52eiO7A8jTCE2UfNdbBuks8vELNtwH/3pm6iRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=BgbMRQ2W; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=4wGZZWr50vBbs3Q757bfPI+FzVZjlv4CH/7/r+l/niA=; b=BgbMRQ2WdJfHA20fF1oQAn25cc
+	jk87a5yBwfhlKEqjjW7Y6pqP7s+X2z+DuZHBnN2S7F/XmSK6495gokjSa+o3OpSveFSYZinIULhEX
+	ObCJ6LLabA9MUHJM0obz5AoKxkLDASvN1Ynn1M+O/MRerqv/+CVKvpb81pPuCaKgLb+xGM5KXNGCx
+	9CClxA6t01knOSFEImNBBIV3O90uZj4XdjPR3MCmmDjkLr0OvOp59MZZ0Ew8PFixxUN8tbnnSvrf9
+	F6yMyja3qhr2eBstJDud8D/7jxA6R8Nfy7lJGa5potIiUsudHdsRJWVNOWpG9qblitFgKT8NxUqUd
+	UT/95xkQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s3ymp-0000000B3XI-3waU;
+	Mon, 06 May 2024 13:53:47 +0000
+Date: Mon, 6 May 2024 14:53:47 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Xiu Jianfeng <xiujianfeng@huawei.com>
+Cc: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev, muchun.song@linux.dev,
+	akpm@linux-foundation.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] mm: memcg: use meaningful error code for return
+ value
+Message-ID: <Zjjg60ZW-d7r-DS9@casper.infradead.org>
+References: <20240506133643.1124102-1-xiujianfeng@huawei.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500023.china.huawei.com (7.185.36.114)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240506133643.1124102-1-xiujianfeng@huawei.com>
 
-alloc_mem_cgroup_per_node_info() returns 1 if failed, use -ENOMEM
-instead, which is more meaningful.
+On Mon, May 06, 2024 at 01:36:43PM +0000, Xiu Jianfeng wrote:
+> alloc_mem_cgroup_per_node_info() returns 1 if failed, use -ENOMEM
+> instead, which is more meaningful.
 
-Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
----
- mm/memcontrol.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index d11536ef59ef..657f68b536c4 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5659,7 +5659,7 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
- 
- 	pn = kzalloc_node(sizeof(*pn), GFP_KERNEL, node);
- 	if (!pn)
--		return 1;
-+		return -ENOMEM;
- 
- 	pn->lruvec_stats = kzalloc_node(sizeof(struct lruvec_stats), GFP_KERNEL,
- 					node);
-@@ -5679,7 +5679,7 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
- fail:
- 	kfree(pn->lruvec_stats);
- 	kfree(pn);
--	return 1;
-+	return -ENOMEM;
- }
- 
- static void free_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
--- 
-2.34.1
-
+This should probably be changed to return true/false instead of
+an int.
 
