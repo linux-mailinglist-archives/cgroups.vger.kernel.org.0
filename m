@@ -1,172 +1,176 @@
-Return-Path: <cgroups+bounces-2799-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2800-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AF5C8BD38E
-	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 19:02:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16FE18BD446
+	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 20:01:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 704F51C22974
-	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 17:02:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C07C81F220E3
+	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 18:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D595B156F5D;
-	Mon,  6 May 2024 17:02:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7DC9158A14;
+	Mon,  6 May 2024 18:00:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qE+kzatp"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HCAaN023"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92790156F43
-	for <cgroups@vger.kernel.org>; Mon,  6 May 2024 17:02:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17E8315749A;
+	Mon,  6 May 2024 18:00:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715014956; cv=none; b=EcvcrbEU2YshkrE1pBKYLalFLh3EQ5ij+TqFFaSN9046ipZDBluneJY1SEE3/mkTFbdLbuujbTPPjFZuZTfTScMxe2ccS0kLVefkHd3pmisFC0aWC/+4Pl/CulEqIoCM58nGSo3mzQdaD8pKiuKjgGOqSRAW0xcTyceUk9DKEm8=
+	t=1715018456; cv=none; b=CjPDtZCYLEYUTo0y5v5wVXdR2z8y6+n8S5C8g0WZT5hypZbH3fJvFoU2urkOzxb0YFpkX2aKNeuG8JyJztMYj0XXY8EUzF7hq2TspsRNwiVBzEmKI0mU8wmRJYxUZ9kKDtVbz0Kf9N2RmnNHjWijkGsQGoETgzTkFC+aaSV6abo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715014956; c=relaxed/simple;
-	bh=NdjHAsSBpWstZn/HYUpuRlnDtObWLi+ESwC8JAudwV0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XkSzCQ9gPj3iLX0794zh6ny58+YIMA1Ia4Y33TmwsGhxJzNnOWgapI/++zYYwAFI7hxALdnCbSLgugyTkIk4MGz3TIQOUqtn3wHm+/k0/KdyftzBwc9iC3AgrEqHTyjOE7gOiA4Yk04M4WqURlU4Kh1iSh/R+eq2XWD7eQ7/2Nw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qE+kzatp; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a59c0a6415fso413063266b.1
-        for <cgroups@vger.kernel.org>; Mon, 06 May 2024 10:02:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1715014953; x=1715619753; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bHUuIg1EPJOixoiveJwfsUUpdyu5w7k323oGfOqRFbU=;
-        b=qE+kzatpczyu0XYqDAVvStb2aTPG03FUwuQsF8OA/AIb0JBRmuqE1Pfz1T/L262ONG
-         Kq0ZrXjjgd+fpR+17qEUhOVO/vAaymEWoMzZxpmUTYwBFvh0vrMs+C4vk9+tU9Um06Mi
-         66HmafxcAV1l8/SVgY74oyDt9KTbODDKtGnxiz4BYVp9pmJokifVrLPgngmCxs07zs5m
-         Oyoyw1n035302/AUlxmMP7tU9aO4e05wAyGx1z1iD6Ec9IoI+RCSoDd5IdokDCDKR7Me
-         DmZIzSHcptW1THLbprof1hDL9j/pXTF5mg5xxOD+GCKU4MTJupdebiFfbOsX6TnWhlKu
-         SnUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715014953; x=1715619753;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bHUuIg1EPJOixoiveJwfsUUpdyu5w7k323oGfOqRFbU=;
-        b=INcP3ToXO76fEWwV/6njAgl1hwphNcrnUBazgpA2CNK22tNvtGfGAC/0n3WQBuJMNd
-         /Cmr87rzUubhDVLbskRByK5O9sDTVdYB28qCoc9ipP90I3Zmxq4MPSudTBTM1Y/2IyBR
-         1YvXZZcS1F5sFH0oULFwXOCqxJvwjyuHnZIwidPOFXbhDzYApm+YrCJWi3hxuAo+Z238
-         PGiZf5YObX5Os07d3+H4XGsUrr9uO/9emyNOrBBnVhAdmdgoLD+qGTzodZYeyXQjILXA
-         QauEcbIYkR7dP0jgW1P2nyebDJf9ifnKY63jLXT3dn0o2bbRCnzsZ9X/uMpc/TBL22TO
-         Jglw==
-X-Forwarded-Encrypted: i=1; AJvYcCUA/3OiMhDVu7D46Thu+4fjV//N9R3oPLdSBBGmFX+HkVmtef9ediA7D/M5uWqxPp5pMmg84qyrJj866k8fmxyK9HnOLc9fFw==
-X-Gm-Message-State: AOJu0YwW4rleW+KuSGjjp9BQ/vn00J5UU8y6BAsHhfXSCE6ejHowgOvp
-	7Ga81jqdO0ce7ZgUYIZMe0LudKhu+icyeE2vEcEb8ceCXsIsnoCkdXGdb0gOfQ3lvpzUcVgvplv
-	5Lo/aq1ocKpXiXq7g0g9lnw2H2U/35R4Z09pR
-X-Google-Smtp-Source: AGHT+IEIInvjyGer8PqSYIUNJ70IvWgRV34lzO8tdHFMlQ1h1nswMVPYZHYBJMaY/e0gKepTU0c+ycHOnV3VjwTmTCY=
-X-Received: by 2002:a17:906:3446:b0:a59:c52b:993d with SMTP id
- d6-20020a170906344600b00a59c52b993dmr2629241ejb.20.1715014952709; Mon, 06 May
- 2024 10:02:32 -0700 (PDT)
+	s=arc-20240116; t=1715018456; c=relaxed/simple;
+	bh=f/Nm6vtJRqqBh671P2U5uIyh+8sXlTcjJTL36SePe5o=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=inz/QdOja4y6sGgR75Z167ovnzERj0gKr2mCT0Canmxpr4hzySGdsX8wIIr1lVLGKibiiDiD5p2e1V8AnMs/hYw0AZA0zksqjn2aMp4R7tdJ8c7TYG5ANg+HFQAmcpy/a0AocrozcGKotOClbxuZfUzpvD9WvSiTlMrsJCfuCwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HCAaN023; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715018455; x=1746554455;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=f/Nm6vtJRqqBh671P2U5uIyh+8sXlTcjJTL36SePe5o=;
+  b=HCAaN023BetsvyD6zH7S4D+oSVNfUk4tgMvpQJpksnHytwuu+dHDRpN5
+   7pOKRDeg0zkUVC6xUO58Bd37StUeZCt1RreHrApVlBNAgh+NilB8cKTPc
+   Pfb/Eq+zgBw2DQfRoo3F/QIvXDHTITl7u0QIVsSxHXtbMPiYv5fXUwmk9
+   rtoOGaNEu9ar7v7AcmQLG99uw4v4Ph2A38oWTSEK4tb5nmJTvLjv8WD4W
+   ojaypF45LmB7AklAefMoXgmqeBRJ+DJlw10tScJ3dpnoLCL/5kUuqy2ow
+   jjsQu4Jh7wJkCBCsAqlkijNjY7tHZF2EXlSr1/xc+9TeAqVBA/IBkP5Rj
+   w==;
+X-CSE-ConnectionGUID: +jQyBe01Sd+OYnZPOsiD6A==
+X-CSE-MsgGUID: hBOc87VzR9Ct7w0JLjpnug==
+X-IronPort-AV: E=McAfee;i="6600,9927,11065"; a="36162882"
+X-IronPort-AV: E=Sophos;i="6.07,259,1708416000"; 
+   d="scan'208";a="36162882"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2024 11:00:53 -0700
+X-CSE-ConnectionGUID: xgWPnwH2RBWiuXwZjTJ2WQ==
+X-CSE-MsgGUID: 3pKBw7FwQkyMaaNdVXJC3A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,259,1708416000"; 
+   d="scan'208";a="59417151"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.125.210.0])
+  by smtpauth.intel.com with ESMTP/TLS/AES256-SHA; 06 May 2024 11:00:48 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
+ mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+ x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com,
+ tim.c.chen@linux.intel.com, "Huang, Kai" <kai.huang@intel.com>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+Subject: Re: [PATCH v13 11/14] x86/sgx: Abstract check for global reclaimable
+ pages
+References: <20240430195108.5676-1-haitao.huang@linux.intel.com>
+ <20240430195108.5676-12-haitao.huang@linux.intel.com>
+ <3eb37a6d-ff52-41b0-8f74-d9d049e6ce05@intel.com>
+Date: Mon, 06 May 2024 13:00:46 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240506170024.202111-1-yosryahmed@google.com>
-In-Reply-To: <20240506170024.202111-1-yosryahmed@google.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 6 May 2024 10:01:54 -0700
-Message-ID: <CAJD7tkbmtmmnnNLaEC4dzUaYjV7d-SPgfphXdByAdBPi3XuatQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: do not update memcg stats for NR_{FILE/SHMEM}_PMDMAPPED
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2nc2zkpywjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <3eb37a6d-ff52-41b0-8f74-d9d049e6ce05@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-On Mon, May 6, 2024 at 10:00=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> Do not use __lruvec_stat_mod_folio() when updating NR_FILE_PMDMAPPED and
-> NR_SHMEM_PMDMAPPED as these stats are not maintained per-memcg. Use
-> __mod_node_page_state() instead, which updates the global per-node stats
-> only.
->
-> Reported-by: syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com
-> Closes: https://lore.kernel.org/lkml/0000000000001b9d500617c8b23c@google.=
-com
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-> ---
->  mm/rmap.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
->
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 12be4241474ab..c2cfb750d2535 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1435,13 +1435,14 @@ static __always_inline void __folio_add_file_rmap=
-(struct folio *folio,
->                 struct page *page, int nr_pages, struct vm_area_struct *v=
-ma,
->                 enum rmap_level level)
->  {
-> +       pg_data_t *pgdat =3D folio_pgdat(folio);
->         int nr, nr_pmdmapped =3D 0;
->
->         VM_WARN_ON_FOLIO(folio_test_anon(folio), folio);
->
->         nr =3D __folio_add_rmap(folio, page, nr_pages, level, &nr_pmdmapp=
-ed);
->         if (nr_pmdmapped)
-> -               __lruvec_stat_mod_folio(folio, folio_test_swapbacked(foli=
-o) ?
-> +               __mod_node_page_state(pgdat, folio_test_swapbacked(folio)=
- ?
->                         NR_SHMEM_PMDMAPPED : NR_FILE_PMDMAPPED, nr_pmdmap=
-ped);
->         if (nr)
->                 __lruvec_stat_mod_folio(folio, NR_FILE_MAPPED, nr);
-> @@ -1493,6 +1494,7 @@ static __always_inline void __folio_remove_rmap(str=
-uct folio *folio,
->                 enum rmap_level level)
->  {
->         atomic_t *mapped =3D &folio->_nr_pages_mapped;
-> +       pg_data_t *pgdat =3D folio_pgdat(folio);
->         int last, nr =3D 0, nr_pmdmapped =3D 0;
->         bool partially_mapped =3D false;
->         enum node_stat_item idx;
-> @@ -1540,13 +1542,14 @@ static __always_inline void __folio_remove_rmap(s=
-truct folio *folio,
->         }
->
->         if (nr_pmdmapped) {
-> +               /* NR_{FILE/SHMEM}_PMDMAPPED are not maintained per-memcg=
- */
->                 if (folio_test_anon(folio))
-> -                       idx =3D NR_ANON_THPS;
-> -               else if (folio_test_swapbacked(folio))
-> -                       idx =3D NR_SHMEM_PMDMAPPED;
-> +                       __lruvec_stat_mod_folio(folio, NR_ANON_THPS, -nr_=
-pmdmapped);
->                 else
-> -                       idx =3D NR_FILE_PMDMAPPED;
-> -               __lruvec_stat_mod_folio(folio, idx, -nr_pmdmapped);
-> +                       __mod_node_page_state(pgdat,
-> +                                       folio_test_swapbacked(folio) ?
-> +                                       NR_SHMEM_PMDMAPPED : NR_FILE_PMDM=
-APPED,
-> +                                       nr_pmdmapped);
+Hi Kai
+Sorry there seems to be some delay in receiving my emails.
 
-..and of course right after I press send I realized this should be
--nr_pmdmapped.
+On Thu, 02 May 2024 18:23:06 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
->         }
->         if (nr) {
->                 idx =3D folio_test_anon(folio) ? NR_ANON_MAPPED : NR_FILE=
-_MAPPED;
-> --
-> 2.45.0.rc1.225.g2a3ae87e7f-goog
 >
+>
+> On 1/05/2024 7:51 am, Haitao Huang wrote:
+>> From: Kristen Carlson Accardi <kristen@linux.intel.com>
+>>  For the global reclaimer to determine if any page available for
+>> reclamation at the global level, it currently only checks for emptiness
+>> of the global LRU. That will be inadequate when pages are tracked in
+>> multiple LRUs, one per cgroup. For this purpose, create a new helper,
+>> sgx_can_reclaim_global(), to abstract this check. Currently it only
+>> checks the global LRU, later will check emptiness of LRUs of all cgroups
+>> when per-cgroup tracking is turned on.
+>>  Replace all the checks for emptiness of the global LRU,
+>> list_empty(&sgx_global_lru.reclaimable), with calls to
+>> sgx_can_reclaim_global().
+>>  Rename sgx_should_reclaim() to sgx_should_reclaim_global() as it is  
+>> used
+>> to check if a global reclamation should be performed.
+>>  Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+>> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+>> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+>> Tested-by: Jarkko Sakkinen <jarkko@kernel.org>
+>> ---
+>
+> Free free to add:
+>
+> Reviewed-by: Kai Huang <kai.huang@intel.com>
+>
+
+Thanks
+
+> One thing below:
+>
+> [...]
+>
+>> -static bool sgx_should_reclaim(unsigned long watermark)
+>> +static bool sgx_should_reclaim_global(unsigned long watermark)
+>>   {
+>>   	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
+>> -	       !list_empty(&sgx_global_lru.reclaimable);
+>> +		sgx_can_reclaim_global();
+>>   }
+>>     static void sgx_reclaim_pages_global(struct mm_struct *charge_mm)
+>> @@ -405,7 +413,7 @@ static void sgx_reclaim_pages_global(struct  
+>> mm_struct *charge_mm)
+>>    */
+>>   void sgx_reclaim_direct(void)
+>>   {
+>> -	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
+>> +	if (sgx_should_reclaim_global(SGX_NR_LOW_PAGES))
+>>   		sgx_reclaim_pages_global(current->mm);
+>>   }
+>>
+>
+> Hmm.. Sorry for not pointing out in the previous version.
+>
+> Perhaps it makes more sense to do the rename in the patch ...
+>
+>    x86/sgx: Add basic EPC reclamation flow for cgroup
+>
+> ... where we have actually introduced the concept of per-cgroup reclaim,  
+> and we literally have below change in that patch:
+>
+>   void sgx_reclaim_direct(void)
+>   {
+>   	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
+> -		sgx_reclaim_pages();
+> +		sgx_reclaim_pages_global();
+>   }
+>
+> So in that patch, the sgx_should_reclaim() literally just means we  
+> should do gloabl reclaim, but not the per-cgruop reclaim.  Thus, perhaps  
+> we just do the renaming here together with the new  
+> sgx_reclaim_pages_global().
+>
+> If there's a new version needed, please move the renaming to that patch?
+>
+Will do
+
+BR
+Haitao
 
