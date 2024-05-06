@@ -1,196 +1,148 @@
-Return-Path: <cgroups+bounces-2797-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2798-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85EB28BD2CA
-	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 18:29:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3FA68BD385
+	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 19:00:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F190B1F24534
-	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 16:29:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00DAE1C21A8D
+	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 17:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A1EB156659;
-	Mon,  6 May 2024 16:28:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0309E15749C;
+	Mon,  6 May 2024 17:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Y3k0j3IG"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xXaFGxY1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5918115664B
-	for <cgroups@vger.kernel.org>; Mon,  6 May 2024 16:28:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 569E0156960
+	for <cgroups@vger.kernel.org>; Mon,  6 May 2024 17:00:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715012934; cv=none; b=n4XGb2uVNEij38nAu9QbH3ULp8dp4oN5yg68pOgGhpjxB58IuPBamf+75IsGu7TW8gJNw/4atzoCo19grNM6poW1+j3fHm+O4cwhG8J4E0drK1TRKnpngT1py0DwHTGTd7j3JdI6nBEsngfzHk6kTeHItvMbvkAso93uwzk0pq4=
+	t=1715014829; cv=none; b=qWpLWMESB6PMQj8dWG2QWxQlYVTCqFtMxDyeTwmo/Hc45fd8LdA6g9Xyg1G/D3Or817lOGsLtzDm8a0MybstQFglEC+nIf6//smCYf3SunP1ltrWKFqzkxdp/u85rfgKGHsLDzLjYDsWqBz+vXvVyfvTt+yJrCnFp5d9HGib1LU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715012934; c=relaxed/simple;
-	bh=yBy+qbkhiVAGOfJz494tYdqv5oV8MVNOabfY1NO2uRM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YizDJGnzAnPd9agVh62AA+MYsHYqBQdpTbRIaniHRyHeJX2X9qK/znV1+4mLyEqNsCigJQJNOAEFr+73v3huge1FDCCZAOBx3iZbpfnaJYlRicR07XqhqtNTeb0P7q1FkVIMKVKSjC5V/GjC13p7KOB44EgS/mUv60NJF6hJH/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Y3k0j3IG; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-61bec6bab2bso22183117b3.1
-        for <cgroups@vger.kernel.org>; Mon, 06 May 2024 09:28:53 -0700 (PDT)
+	s=arc-20240116; t=1715014829; c=relaxed/simple;
+	bh=jhh8LyHkwXk9703eTsRhjl8hIDK7WrfNFcjG2s8a6Kk=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=uzK+L46gToqlObedRPon+qkSJ5vQ1g0UGZ0MSRSAPEFX3erm1QqL1lqeFgHhC/65fcv6KmSOuIj65SA6Lo1ENkTroeZE/EeZ7NQDYbY/IbII+QC9cEmK7IypU3r415ad2ffuhJiYl4+/zdzqpJg/FZutzW/jwg1eLpvzxRYpFzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xXaFGxY1; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-de51daf900cso3930476276.1
+        for <cgroups@vger.kernel.org>; Mon, 06 May 2024 10:00:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1715012932; x=1715617732; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xCCkT3u7JpEp6mJ5QsHOybd1FYzd1g8E4PkeVAusjAE=;
-        b=Y3k0j3IG2OMbjastaYHXwkSTG5lGUUZnk4+LN5E7tCNvv1w2iP0rcdS8AIXV8XbN0d
-         5nlfIrexO5bzL7EjjkgHQXbNJfdwTD//ribKD0EjrMVUFfWh3W8q87V612CZ3BxF6A/4
-         ScacCcw2bRdVNKeVoa9PTaml7WlxXrHZxJRed55zPqnwrublz41Q46OMzZtRymAyruT5
-         ZtjgljkH5HHYevpVwDgMJD43qpOO783DeW+WuNmJMQNbhN0ql/7QbNwG18t7dkiVccUZ
-         cM64C6M++2e0nfSdbwIiMcbx8EuJnPesFfldbVuvT93nA7qM1nwKb0KwsXBnJujkoy43
-         8dUw==
+        d=google.com; s=20230601; t=1715014827; x=1715619627; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=NtGseJ2cTzNz5m7usek72YLEdD+Xy4saxF80B0cOKZw=;
+        b=xXaFGxY1ALAGoHlPQw1NQ/YZY3yU9ou5iFANjdyC7ll5p9alCOphrNH4TQLdnfToyB
+         m2c7VrJ+Ihundckf3pYO08BEBXo9ZO46fajrYMkFN6SLRREMLzV3t3zfR8d+heADImvK
+         LkLJW5Ve99CxnttYro5HMKaqnzjNmZYXAK9J35QrpgutxXN8RSD8IoklQ1XSNjgsRh4l
+         yeHVnMA6n/12q3Svl7+CasLPFLhEcu8HCnf64hHrpiHDRkXbEau/wWILZKs8ibkmUGpl
+         5vPtHsvwgFZWWamEpr7RUnQOFl2uVP+cyb2PYva+gd5fwMltEHhw3YmnvG5TdleMrxtP
+         YqpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715012932; x=1715617732;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xCCkT3u7JpEp6mJ5QsHOybd1FYzd1g8E4PkeVAusjAE=;
-        b=CilUh70mxkH1Etpn5FMETy+si9vIxk07WIfdiN4VbImIOHDP1LYitLTaWoY04JlFAc
-         oLjXxj2Jvi7LlgDKGxLVClPEG7dMTeFQAsa++vt9Itxq2n4KWLdbX4lBDo8TMwXeVnMS
-         Wg3hMxfPAM3QOdnU1BvMwQ0pNstxnYw4LaGUUU+0a6uZG/YWqMG2nciAQUq+M30C+iDk
-         5J+9lIjg7815N4LPuS5fkw/WblIc93iGYCPu/St1i7ux/OEG6D4xZxL0hrC+7GL1bmsX
-         /5sndRjsNuDrFj5HvU1lfEcKYD8qEIw9yq2SPv/Qumv+m+3IWWGhpMFLawEGTPzlfKWd
-         BhoA==
-X-Forwarded-Encrypted: i=1; AJvYcCVBgHTUAAYmt1pNos/Jz0K7R3xa2K3Re38apWJXKZzszICODy2/Z4g8LkhLk7Bcc7VsdSzX0hoiEn5ZihQBwRQ/NOpNpXXinA==
-X-Gm-Message-State: AOJu0YysaBgJFRipSZxd5bdMcGlcBckTfrSli/GbuO9vNDIYcHNpLG2r
-	SrWJMy3FSozoJ1npFWMr5/Mvl6HTVc9Bm9e3bJwKNR7TN/hrtdF8nF4P0d3dHpMgbdVJxZlqEYh
-	Wxbuh6IZiqEn5y2pq2LaCN2zY8/7NZI57PzngnA==
-X-Google-Smtp-Source: AGHT+IFvfA2ywVbCWpHObc2hhQu6/bp+dPE34bgiOyDlARIZkevuDZ413NE2Lsv3j8JUxB1ePQsIlKXeHYj5RqeHUtk=
-X-Received: by 2002:a81:af12:0:b0:61a:d372:8767 with SMTP id
- n18-20020a81af12000000b0061ad3728767mr9829158ywh.51.1715012932189; Mon, 06
- May 2024 09:28:52 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1715014827; x=1715619627;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NtGseJ2cTzNz5m7usek72YLEdD+Xy4saxF80B0cOKZw=;
+        b=q15wndFjTpi4DQOMAc+UqaGMcvd8+7wpxVb6W0bvODEMIZvvvnuwoGjRzBlBgq8MwS
+         aWztMO15TFjlEkWmW6uW1Syj418aKlmBVfJJ08pd9Ei5JliwT5HmHxTVQZ1sdlv7cbGQ
+         /kdrpdj7n4j6hEz97ill/rfH9K/sbEUZZuGm8490Qi6jtpKWKVGITBiJvXyNWngjd37K
+         mZj4Znl+SpVycRJRHWY5sfE90n680oNIhaIgmfa6fcM5BhoNPJpiALui0oMnfxies1gV
+         l5htn63te+XoRe88DtvV9s3E00/u6adrWiw5JhjYahHw6dVHxRpYf+qu2e7hyNCSytPl
+         Z8vA==
+X-Forwarded-Encrypted: i=1; AJvYcCWntiLQpVQGMl6Z9FGrCq5jvMaAA8GpwLfmsc0bTtpUCSd0nhw+y6ZZ1QxkAIH2aMl8y1+PLIOl+jEmWC62SJI9g+BhxR8JQg==
+X-Gm-Message-State: AOJu0YyIQ+gQpqk7bCVH7sNLQxh0jm9DqLA2rRNX+k7a+Z/qXT3oCLRn
+	HFXvTxSSNMnAIG69J+nMmZRTUcD1G80ZS3XGwGH3Jz7VGkIIWPjspoc50tWzTXUQg2WAQ0F6pe5
+	hxZtPq/1LmGiWmKM9BQ==
+X-Google-Smtp-Source: AGHT+IHlyLVb/6ZNQeHwPNEf5AX1+AhaGqFqM5/t0YfXLcEDdTp7Br6QVMdHD+ukGbKsxUoTnlGAazy8w9nonexk
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:2b8a:b0:deb:88f5:fa10 with
+ SMTP id fj10-20020a0569022b8a00b00deb88f5fa10mr1022569ybb.5.1715014827422;
+ Mon, 06 May 2024 10:00:27 -0700 (PDT)
+Date: Mon,  6 May 2024 17:00:24 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <171457225108.4159924.12821205549807669839.stgit@firesoul>
- <30d64e25-561a-41c6-ab95-f0820248e9b6@redhat.com> <4a680b80-b296-4466-895a-13239b982c85@kernel.org>
- <203fdb35-f4cf-4754-9709-3c024eecade9@redhat.com> <b74c4e6b-82cc-4b26-b817-0b36fbfcc2bd@kernel.org>
- <b161e21f-9d66-4aac-8cc1-83ed75f14025@redhat.com> <42a6d218-206b-4f87-a8fa-ef42d107fb23@kernel.org>
- <4gdfgo3njmej7a42x6x6x4b6tm267xmrfwedis4mq7f4mypfc7@4egtwzrfqkhp>
- <55854a94-681e-4142-9160-98b22fa64d61@kernel.org> <mnakwztmiskni3k6ia5mynqfllb3dw5kicuv4wp4e4ituaezwt@2pzkuuqg6r3e>
-In-Reply-To: <mnakwztmiskni3k6ia5mynqfllb3dw5kicuv4wp4e4ituaezwt@2pzkuuqg6r3e>
-From: Ivan Babrou <ivan@cloudflare.com>
-Date: Mon, 6 May 2024 09:28:41 -0700
-Message-ID: <CABWYdi2pTg5Yc23XAV_ZLJepF42b8L3R5syhocDVJS-Po=ZYOA@mail.gmail.com>
-Subject: Re: [PATCH v1] cgroup/rstat: add cgroup_rstat_cpu_lock helpers and tracepoints
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, Waiman Long <longman@redhat.com>, tj@kernel.org, 
-	hannes@cmpxchg.org, lizefan.x@bytedance.com, cgroups@vger.kernel.org, 
-	yosryahmed@google.com, netdev@vger.kernel.org, linux-mm@kvack.org, 
-	kernel-team@cloudflare.com, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Daniel Dao <dqminh@cloudflare.com>, jr@cloudflare.com
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
+Message-ID: <20240506170024.202111-1-yosryahmed@google.com>
+Subject: [PATCH] mm: do not update memcg stats for NR_{FILE/SHMEM}_PMDMAPPED
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>, 
+	syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 6, 2024 at 9:22=E2=80=AFAM Shakeel Butt <shakeel.butt@linux.dev=
-> wrote:
->
-> On Mon, May 06, 2024 at 02:03:47PM +0200, Jesper Dangaard Brouer wrote:
-> >
-> >
-> > On 03/05/2024 21.18, Shakeel Butt wrote:
-> [...]
-> > >
-> > > Hmm 128 usec is actually unexpectedly high.
-> >
-> > > How does the cgroup hierarchy on your system looks like?
-> > I didn't design this, so hopefully my co-workers can help me out here? =
-(To
-> > @Daniel or @Jon)
-> >
-> > My low level view is that, there are 17 top-level directories in
-> > /sys/fs/cgroup/.
-> > There are 649 cgroups (counting occurrence of memory.stat).
-> > There are two directories that contain the major part.
-> >  - /sys/fs/cgroup/system.slice =3D 379
-> >  - /sys/fs/cgroup/production.slice =3D 233
-> >  - (production.slice have directory two levels)
-> >  - remaining 37
-> >
-> > We are open to changing this if you have any advice?
-> > (@Daniel and @Jon are actually working on restructuring this)
-> >
-> > > How many cgroups have actual workloads running?
-> > Do you have a command line trick to determine this?
-> >
->
-> The rstat infra maintains a per-cpu cgroup update tree to only flush
-> stats of cgroups which have seen updates. So, even if you have large
-> number of cgroups but the workload is active in small number of cgroups,
-> the update tree should be much smaller. That is the reason I asked these
-> questions. I don't have any advise yet. At the I am trying to understand
-> the usage and then hopefully work on optimizing those.
->
-> >
-> > > Can the network softirqs run on any cpus or smaller
-> > > set of cpus? I am assuming these softirqs are processing packets from
-> > > any or all cgroups and thus have larger cgroup update tree.
-> >
-> > Softirq and specifically NET_RX is running half of the cores (e.g. 64).
-> > (I'm looking at restructuring this allocation)
-> >
-> > > I wonder if
-> > > you comment out MEMCG_SOCK stat update and still see the same holding
-> > > time.
-> > >
-> >
-> > It doesn't look like MEMCG_SOCK is used.
-> >
-> > I deduct you are asking:
-> >  - What is the update count for different types of mod_memcg_state() ca=
-lls?
-> >
-> > // Dumped via BTF info
-> > enum memcg_stat_item {
-> >         MEMCG_SWAP =3D 43,
-> >         MEMCG_SOCK =3D 44,
-> >         MEMCG_PERCPU_B =3D 45,
-> >         MEMCG_VMALLOC =3D 46,
-> >         MEMCG_KMEM =3D 47,
-> >         MEMCG_ZSWAP_B =3D 48,
-> >         MEMCG_ZSWAPPED =3D 49,
-> >         MEMCG_NR_STAT =3D 50,
-> > };
-> >
-> > sudo bpftrace -e 'kfunc:vmlinux:__mod_memcg_state{@[args->idx]=3Dcount(=
-)}
-> > END{printf("\nEND time elapsed: %d sec\n", elapsed / 1000000000);}'
-> > Attaching 2 probes...
-> > ^C
-> > END time elapsed: 99 sec
-> >
-> > @[45]: 17996
-> > @[46]: 18603
-> > @[43]: 61858
-> > @[47]: 21398919
-> >
-> > It seems clear that MEMCG_KMEM =3D 47 is the main "user".
-> >  - 21398919/99 =3D 216150 calls per sec
-> >
-> > Could someone explain to me what this MEMCG_KMEM is used for?
-> >
->
-> MEMCG_KMEM is the kernel memory charged to a cgroup. It also contains
-> the untyped kernel memory which is not included in kernel_stack,
-> pagetables, percpu, vmalloc, slab e.t.c.
->
-> The reason I asked about MEMCG_SOCK was that it might be causing larger
-> update trees (more cgroups) on CPUs processing the NET_RX.
+Do not use __lruvec_stat_mod_folio() when updating NR_FILE_PMDMAPPED and
+NR_SHMEM_PMDMAPPED as these stats are not maintained per-memcg. Use
+__mod_node_page_state() instead, which updates the global per-node stats
+only.
 
-We pass cgroup.memory=3Dnosocket in the kernel cmdline:
+Reported-by: syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/lkml/0000000000001b9d500617c8b23c@google.com
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+---
+ mm/rmap.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-* https://lore.kernel.org/lkml/CABWYdi0G7cyNFbndM-ELTDAR3x4Ngm0AehEp5aP0tfN=
-kXUE+Uw@mail.gmail.com/
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 12be4241474ab..c2cfb750d2535 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1435,13 +1435,14 @@ static __always_inline void __folio_add_file_rmap(struct folio *folio,
+ 		struct page *page, int nr_pages, struct vm_area_struct *vma,
+ 		enum rmap_level level)
+ {
++	pg_data_t *pgdat = folio_pgdat(folio);
+ 	int nr, nr_pmdmapped = 0;
+ 
+ 	VM_WARN_ON_FOLIO(folio_test_anon(folio), folio);
+ 
+ 	nr = __folio_add_rmap(folio, page, nr_pages, level, &nr_pmdmapped);
+ 	if (nr_pmdmapped)
+-		__lruvec_stat_mod_folio(folio, folio_test_swapbacked(folio) ?
++		__mod_node_page_state(pgdat, folio_test_swapbacked(folio) ?
+ 			NR_SHMEM_PMDMAPPED : NR_FILE_PMDMAPPED, nr_pmdmapped);
+ 	if (nr)
+ 		__lruvec_stat_mod_folio(folio, NR_FILE_MAPPED, nr);
+@@ -1493,6 +1494,7 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
+ 		enum rmap_level level)
+ {
+ 	atomic_t *mapped = &folio->_nr_pages_mapped;
++	pg_data_t *pgdat = folio_pgdat(folio);
+ 	int last, nr = 0, nr_pmdmapped = 0;
+ 	bool partially_mapped = false;
+ 	enum node_stat_item idx;
+@@ -1540,13 +1542,14 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
+ 	}
+ 
+ 	if (nr_pmdmapped) {
++		/* NR_{FILE/SHMEM}_PMDMAPPED are not maintained per-memcg */
+ 		if (folio_test_anon(folio))
+-			idx = NR_ANON_THPS;
+-		else if (folio_test_swapbacked(folio))
+-			idx = NR_SHMEM_PMDMAPPED;
++			__lruvec_stat_mod_folio(folio, NR_ANON_THPS, -nr_pmdmapped);
+ 		else
+-			idx = NR_FILE_PMDMAPPED;
+-		__lruvec_stat_mod_folio(folio, idx, -nr_pmdmapped);
++			__mod_node_page_state(pgdat,
++					folio_test_swapbacked(folio) ?
++					NR_SHMEM_PMDMAPPED : NR_FILE_PMDMAPPED,
++					nr_pmdmapped);
+ 	}
+ 	if (nr) {
+ 		idx = folio_test_anon(folio) ? NR_ANON_MAPPED : NR_FILE_MAPPED;
+-- 
+2.45.0.rc1.225.g2a3ae87e7f-goog
 
-> Anyways did the mutex change helped your production workload regarding
-> latencies?
 
