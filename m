@@ -1,46 +1,48 @@
-Return-Path: <cgroups+bounces-2786-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2787-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70B238BC598
-	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 03:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE3358BCD52
+	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 14:03:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00FDD2823FC
-	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 01:50:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 857972855B4
+	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 12:03:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 458163C463;
-	Mon,  6 May 2024 01:50:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CB45142E85;
+	Mon,  6 May 2024 12:03:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mRfikGBB"
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 025DC42052;
-	Mon,  6 May 2024 01:50:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F801DFCE;
+	Mon,  6 May 2024 12:03:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714960211; cv=none; b=E8y/Z3PGM+HQJn0QC8/r+EpMevD3A9M/I0Sk9/owOHjT8e/Pusx3X5+T0HogvTpgA2PCRLoD8K9aYY5tZMEpTJ23SSuoj7R4DyVtiAj8UgcAf5LMVAEVbSvEB6EgJWOGUvlp5G4j/26puE0yI5YrGGHHqYZ24JlpgqnBlQQ/FlA=
+	t=1714997032; cv=none; b=QbyQ5EDz/zHy7A/Z5XsxbHBz1BNmcwHXoqCYYdQdxC6YvdTCA47x9TGWXwX9x6XrTYlwsnhsuWsxAhELO8KQTUIDFbg4cHNtk0UlmzJyqnhIz6uojuEHBxCAVl5L57BtLbPF0snqulaGvICTzi6uAcwkFjUm+47hzeLAE1MU4Ds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714960211; c=relaxed/simple;
-	bh=k8CAQVXY/1SB5nrtKOe5IPn90LXyDKDIfdFZpHC2h7A=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=QSTUD7df5tXNhjHK2KBSEPaMqWUCr4v7xc0JJINK0yhFzuUOb3L58fNyR/1VwJCbW1tLQa+z1Dn38aYqCPvIO3ZYZD2UIDBijSzA8PiBPHBOQE5WsTOuGhT5KzTNPyuWP1JEIWq9T8fjkfRoJvn5dpQyiB2qP9V5R8xsT8L2mnE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VXklY4qgxzYspc;
-	Mon,  6 May 2024 09:46:17 +0800 (CST)
-Received: from kwepemm600003.china.huawei.com (unknown [7.193.23.202])
-	by mail.maildlp.com (Postfix) with ESMTPS id C46E3140444;
-	Mon,  6 May 2024 09:50:04 +0800 (CST)
-Received: from [10.67.109.150] (10.67.109.150) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 6 May 2024 09:50:04 +0800
-Message-ID: <7fd75461-2083-3da5-f25b-d77a0e21b7bc@huawei.com>
-Date: Mon, 6 May 2024 09:50:03 +0800
+	s=arc-20240116; t=1714997032; c=relaxed/simple;
+	bh=vZLDlCQywQMMqzP/n/DNibtb3u8+gJTHpgsfApvLK+A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=o4rvLQA61RpuLUHgHBERH/dnpBG5rlUbJXRVftR1UXOnvrpouG49apKGPicUIY2Xp6TlHuNLo16fyJChneGDj42SsEA/NkYXoF8+FNlbsDUf+iXOd2nedUZzfnzdEgCqop50tW/NbGJoS/IfEe2cyuw6PO821bGYhBhVwZQebaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mRfikGBB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01E45C116B1;
+	Mon,  6 May 2024 12:03:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714997031;
+	bh=vZLDlCQywQMMqzP/n/DNibtb3u8+gJTHpgsfApvLK+A=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=mRfikGBBMDfRbhbVjp8yMC9P2JhRVQmwe2R5TqSMwrZxsMYqXnJltFfO1KktXB7fH
+	 YAiJFUlK5NqPiubLZNyasP6pvVoLj3gNTiuhSpT6mOPzLlBXd6iOko1sjmJhIi0VzZ
+	 h44gU3sD7wPdclAgEWk4PYDsIrKjmDpHfDH2ItVHJwTWn7Dhpk0Ng2fYb9WCnhv7CF
+	 0XxFfeu3kiAeJhjdthxZwdO7X5WSRg5cmJ8Z7Ga+MBI55uWicKsvBnmTpksKe+Hsmv
+	 NYVfR0xF2OW3F4s0r3BKi60/7HlcZIzF5jP1DhLP0QNIzf2NWh/HGfX77zyc6qjwpY
+	 UQwZIeICTmloQ==
+Message-ID: <55854a94-681e-4142-9160-98b22fa64d61@kernel.org>
+Date: Mon, 6 May 2024 14:03:47 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -48,75 +50,176 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [QUESTION]cgroup mount return -EBUSY
+Subject: Re: [PATCH v1] cgroup/rstat: add cgroup_rstat_cpu_lock helpers and
+ tracepoints
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Waiman Long <longman@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
+ lizefan.x@bytedance.com, cgroups@vger.kernel.org, yosryahmed@google.com,
+ netdev@vger.kernel.org, linux-mm@kvack.org, kernel-team@cloudflare.com,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Daniel Dao <dqminh@cloudflare.com>, Ivan Babrou <ivan@cloudflare.com>,
+ jr@cloudflare.com
+References: <171457225108.4159924.12821205549807669839.stgit@firesoul>
+ <30d64e25-561a-41c6-ab95-f0820248e9b6@redhat.com>
+ <4a680b80-b296-4466-895a-13239b982c85@kernel.org>
+ <203fdb35-f4cf-4754-9709-3c024eecade9@redhat.com>
+ <b74c4e6b-82cc-4b26-b817-0b36fbfcc2bd@kernel.org>
+ <b161e21f-9d66-4aac-8cc1-83ed75f14025@redhat.com>
+ <42a6d218-206b-4f87-a8fa-ef42d107fb23@kernel.org>
+ <4gdfgo3njmej7a42x6x6x4b6tm267xmrfwedis4mq7f4mypfc7@4egtwzrfqkhp>
 Content-Language: en-US
-From: Lu Jialin <lujialin4@huawei.com>
-To: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, Johannes
- Weiner <hannes@cmpxchg.org>
-CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <5b5da2d3-37b3-60ee-5a94-149094cbe9dc@huawei.com>
-In-Reply-To: <5b5da2d3-37b3-60ee-5a94-149094cbe9dc@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemm600003.china.huawei.com (7.193.23.202)
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <4gdfgo3njmej7a42x6x6x4b6tm267xmrfwedis4mq7f4mypfc7@4egtwzrfqkhp>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-ping
 
-On 2024/4/26 12:55, Lu Jialin wrote:
-> Hello
+
+On 03/05/2024 21.18, Shakeel Butt wrote:
+> On Fri, May 03, 2024 at 04:00:20PM +0200, Jesper Dangaard Brouer wrote:
+>>
+>>
+> [...]
+>>>
+>>> I may have mistakenly thinking the lock hold time refers to just the
+>>> cpu_lock. Your reported times here are about the cgroup_rstat_lock.
+>>> Right? If so, the numbers make sense to me.
+>>>
+>>
+>> True, my reported number here are about the cgroup_rstat_lock.
+>> Glad to hear, we are more aligned then :-)
+>>
+>> Given I just got some prod machines online with this patch
+>> cgroup_rstat_cpu_lock tracepoints, I can give you some early results,
+>> about hold-time for the cgroup_rstat_cpu_lock.
 > 
-> I encountered a problem when I try to unmount the subsystem right after
-> all it's subcgroups are removed, the cgroup_root would remain. Mounting
-> this subsystem to another cgroup_root would return -EBUSY.
+> Oh you have already shared the preliminary data.
 > 
-> The problem could be reproduced with the following script.
+>>
+>>  From this oneliner bpftrace commands:
+>>
+>>    sudo bpftrace -e '
+>>           tracepoint:cgroup:cgroup_rstat_cpu_lock_contended {
+>>             @start[tid]=nsecs; @cnt[probe]=count()}
+>>           tracepoint:cgroup:cgroup_rstat_cpu_locked {
+>>             $now=nsecs;
+>>             if (args->contended) {
+>>               @wait_per_cpu_ns=hist($now-@start[tid]); delete(@start[tid]);}
+>>             @cnt[probe]=count(); @locked[tid]=$now}
+>>           tracepoint:cgroup:cgroup_rstat_cpu_unlock {
+>>             $now=nsecs;
+>>             @locked_per_cpu_ns=hist($now-@locked[tid]); delete(@locked[tid]);
+>>             @cnt[probe]=count()}
+>>           interval:s:1 {time("%H:%M:%S "); print(@wait_per_cpu_ns);
+>>             print(@locked_per_cpu_ns); print(@cnt); clear(@cnt);}'
+>>
+>> Results from one 1 sec period:
+>>
+>> 13:39:55 @wait_per_cpu_ns:
+>> [512, 1K)              3 |      |
+>> [1K, 2K)              12 |@      |
+>> [2K, 4K)             390
+>> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+>> [4K, 8K)              70 |@@@@@@@@@      |
+>> [8K, 16K)             24 |@@@      |
+>> [16K, 32K)           183 |@@@@@@@@@@@@@@@@@@@@@@@@      |
+>> [32K, 64K)            11 |@      |
+>>
+>> @locked_per_cpu_ns:
+>> [256, 512)         75592 |@      |
+>> [512, 1K)        2537357
+>> |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
+>> [1K, 2K)          528615 |@@@@@@@@@@      |
+>> [2K, 4K)          168519 |@@@      |
+>> [4K, 8K)          162039 |@@@      |
+>> [8K, 16K)         100730 |@@      |
+>> [16K, 32K)         42276 |      |
+>> [32K, 64K)          1423 |      |
+>> [64K, 128K)           89 |      |
+>>
+>>   @cnt[tracepoint:cgroup:cgroup_rstat_cpu_lock_contended]: 3 /sec
+>>   @cnt[tracepoint:cgroup:cgroup_rstat_cpu_unlock]: 3200  /sec
+>>   @cnt[tracepoint:cgroup:cgroup_rstat_cpu_locked]: 3200  /sec
+>>
+>>
+>> So, we see "flush-code-path" per-CPU-holding @locked_per_cpu_ns isn't
+>> exceeding 128 usec.
 > 
-> test.sh:
-> 
-> mkdir /tmp/test1
-> mount -t cgroup -o pids pids /tmp/test1
-> mkdir /tmp/test1/test
-> rmdir /tmp/test1/test
-> umount /tmp/test1
-> mkdir /tmp/test
-> mount -t cgroup -o pids,cpu none /tmp/test
-> 
-> test.sh should return this.
-> mount: mounting none on /tmp/test failed: Device or resource busy.
-> 
-> It seems that when unmounting /tmp/test1, the original cgroup_root for
-> this PID is not released.
-> /test # cat /proc/cgroups
-> 
-> #subsys_name    hierarchy       num_cgroups     enabled
-> 
-> cpuset  0       1       1
-> 
-> cpu     0       1       1
-> 
-> cpuacct 0       1       1
-> 
-> blkio   0       1       1
-> 
-> devices 0       1       1
-> 
-> freezer 0       1       1
-> 
-> net_cls 0       1       1
-> 
-> perf_event      0       1       1
-> 
-> net_prio        0       1       1
-> 
-> hugetlb 0       1       1
-> 
-> pids    1       1       1
-> 
-> rdma    0       1       1
-> 
-> misc    0       1       1
-> 
-> debug   0       1       1
-> 
+> Hmm 128 usec is actually unexpectedly high. 
+
+> How does the cgroup hierarchy on your system looks like? 
+I didn't design this, so hopefully my co-workers can help me out here? 
+(To @Daniel or @Jon)
+
+My low level view is that, there are 17 top-level directories in 
+/sys/fs/cgroup/.
+There are 649 cgroups (counting occurrence of memory.stat).
+There are two directories that contain the major part.
+  - /sys/fs/cgroup/system.slice = 379
+  - /sys/fs/cgroup/production.slice = 233
+  - (production.slice have directory two levels)
+  - remaining 37
+
+We are open to changing this if you have any advice?
+(@Daniel and @Jon are actually working on restructuring this)
+
+> How many cgroups have actual workloads running?
+Do you have a command line trick to determine this?
+
+
+> Can the network softirqs run on any cpus or smaller
+> set of cpus? I am assuming these softirqs are processing packets from
+> any or all cgroups and thus have larger cgroup update tree. 
+
+Softirq and specifically NET_RX is running half of the cores (e.g. 64).
+(I'm looking at restructuring this allocation)
+
+> I wonder if
+> you comment out MEMCG_SOCK stat update and still see the same holding
+> time.
+>
+
+It doesn't look like MEMCG_SOCK is used.
+
+I deduct you are asking:
+  - What is the update count for different types of mod_memcg_state() calls?
+
+// Dumped via BTF info
+enum memcg_stat_item {
+         MEMCG_SWAP = 43,
+         MEMCG_SOCK = 44,
+         MEMCG_PERCPU_B = 45,
+         MEMCG_VMALLOC = 46,
+         MEMCG_KMEM = 47,
+         MEMCG_ZSWAP_B = 48,
+         MEMCG_ZSWAPPED = 49,
+         MEMCG_NR_STAT = 50,
+};
+
+sudo bpftrace -e 'kfunc:vmlinux:__mod_memcg_state{@[args->idx]=count()} 
+END{printf("\nEND time elapsed: %d sec\n", elapsed / 1000000000);}'
+Attaching 2 probes...
+^C
+END time elapsed: 99 sec
+
+@[45]: 17996
+@[46]: 18603
+@[43]: 61858
+@[47]: 21398919
+
+It seems clear that MEMCG_KMEM = 47 is the main "user".
+  - 21398919/99 = 216150 calls per sec
+
+Could someone explain to me what this MEMCG_KMEM is used for?
+
+
+>>
+>> My latency requirements, to avoid RX-queue overflow, with 1024 slots,
+>> running at 25 Gbit/s, is 27.6 usec with small packets, and 500 usec
+>> (0.5ms) with MTU size packets.  This is very close to my latency
+>> requirements.
+>>
+>> --Jesper
+>>
 
