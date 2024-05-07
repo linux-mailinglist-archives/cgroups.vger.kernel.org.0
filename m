@@ -1,116 +1,80 @@
-Return-Path: <cgroups+bounces-2819-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2820-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42C6F8BE0C8
-	for <lists+cgroups@lfdr.de>; Tue,  7 May 2024 13:15:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 951E48BE0CF
+	for <lists+cgroups@lfdr.de>; Tue,  7 May 2024 13:17:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED6501F26235
-	for <lists+cgroups@lfdr.de>; Tue,  7 May 2024 11:15:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C70651C21E77
+	for <lists+cgroups@lfdr.de>; Tue,  7 May 2024 11:17:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCAA5152534;
-	Tue,  7 May 2024 11:15:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BA54152168;
+	Tue,  7 May 2024 11:17:47 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CFFB152170;
-	Tue,  7 May 2024 11:15:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3D341509A6;
+	Tue,  7 May 2024 11:17:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715080536; cv=none; b=uZixdnkdqxlW/MP6ZCVH0cl/Hu8gT9N/2EuMebWxC7rKa87J3v+KHWflvuujGzO4nNGAIgpHzbp+iFlGBGfgzH6Ttga+o+z0Jg0M4xzvCv3qFlBqxnfXXupKJZ/oHrYtTTqqq9ZKJV0NN9ivTwt5Ky4GI1eimHvcbSaQVmCWsFw=
+	t=1715080667; cv=none; b=MSgOwyGL42azLar7kZmWlt9xgsj6HocGuanqu9/0QVCZyM52S8RS2CjiPWwbUao1pJ2eVzmNFF0ZFYlBngYJUctCBRab2RwYtl2ntuNcYnS85eqRa/76hVdg0EiHHinbSzNGmHl24xMRHpxFB1dTa4+Ry1SI6vRARRkESNYBJfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715080536; c=relaxed/simple;
-	bh=qTksG14/AXe3UADF3lCbJ7w9tRhXaIrGr0xnZCBfOIY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=uTu2shJZAZLJEvvtmEPl8kHdlWN1q0YsMbCaVOYoHPRgo/CNRn744oz+EfXi7PzJeuGaGUhCzKLHq45dqhB2npOGgzSqczzKHTRYMY8DvoE7+Zg6vhG4I8pQGeuqTYTchxPqbegN/SmHLDZQCeKwjfJG4yviBZciC25YPEpbDEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+	s=arc-20240116; t=1715080667; c=relaxed/simple;
+	bh=0lxFd2GCE2ODuH3qgno60tjiH9OHy42/GKT7AMGXobw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=F628KAY+qULV8rxp5/wahkMVkqdyMlv38Kxdpo+OccixweSgMIbhxq25AGIzbUm+mJfKn8uKuAXvUvRyj0Y1uSb/tWGd58ddbJltSYCJzUnzW/eOy9GHBBW73tgC5rZbYTcjyZGkyxrMh4YyoqcaiyOrm5lYRJgKHlENObKe5Sk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VYbFN0mvtzYnhR;
-	Tue,  7 May 2024 19:11:36 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4VYbK66NBsz1yn0M;
+	Tue,  7 May 2024 19:14:50 +0800 (CST)
 Received: from dggpeml500023.china.huawei.com (unknown [7.185.36.114])
-	by mail.maildlp.com (Postfix) with ESMTPS id 59357180065;
-	Tue,  7 May 2024 19:15:25 +0800 (CST)
-Received: from hulk-vt.huawei.com (10.67.174.26) by
+	by mail.maildlp.com (Postfix) with ESMTPS id 2234B1401DC;
+	Tue,  7 May 2024 19:17:36 +0800 (CST)
+Received: from [10.67.110.112] (10.67.110.112) by
  dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 7 May 2024 19:15:25 +0800
-From: Xiu Jianfeng <xiujianfeng@huawei.com>
-To: <hannes@cmpxchg.org>, <mhocko@kernel.org>, <roman.gushchin@linux.dev>,
-	<shakeel.butt@linux.dev>, <muchun.song@linux.dev>,
-	<akpm@linux-foundation.org>
-CC: <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 -next] mm: memcg: make alloc_mem_cgroup_per_node_info() return bool
-Date: Tue, 7 May 2024 11:08:32 +0000
-Message-ID: <20240507110832.1128370-1-xiujianfeng@huawei.com>
-X-Mailer: git-send-email 2.34.1
+ 15.1.2507.35; Tue, 7 May 2024 19:17:35 +0800
+Message-ID: <b98d71e7-9b0f-4c8d-4c90-d1cc1eb730a2@huawei.com>
+Date: Tue, 7 May 2024 19:17:35 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH -next] mm: memcg: use meaningful error code for return
+ value
+Content-Language: en-US
+To: Matthew Wilcox <willy@infradead.org>
+CC: <hannes@cmpxchg.org>, <mhocko@kernel.org>, <roman.gushchin@linux.dev>,
+	<shakeel.butt@linux.dev>, <muchun.song@linux.dev>,
+	<akpm@linux-foundation.org>, <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240506133643.1124102-1-xiujianfeng@huawei.com>
+ <Zjjg60ZW-d7r-DS9@casper.infradead.org>
+From: xiujianfeng <xiujianfeng@huawei.com>
+In-Reply-To: <Zjjg60ZW-d7r-DS9@casper.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  dggpeml500023.china.huawei.com (7.185.36.114)
 
-Currently alloc_mem_cgroup_per_node_info() returns 1 if failed,
-make it return bool, false for failure and true for success.
 
-Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
----
- mm/memcontrol.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index d11536ef59ef..69d70feb8e68 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5653,13 +5653,13 @@ struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino)
- }
- #endif
- 
--static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
-+static bool alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
- {
- 	struct mem_cgroup_per_node *pn;
- 
- 	pn = kzalloc_node(sizeof(*pn), GFP_KERNEL, node);
- 	if (!pn)
--		return 1;
-+		return false;
- 
- 	pn->lruvec_stats = kzalloc_node(sizeof(struct lruvec_stats), GFP_KERNEL,
- 					node);
-@@ -5675,11 +5675,11 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
- 	pn->memcg = memcg;
- 
- 	memcg->nodeinfo[node] = pn;
--	return 0;
-+	return true;
- fail:
- 	kfree(pn->lruvec_stats);
- 	kfree(pn);
--	return 1;
-+	return false;
- }
- 
- static void free_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
-@@ -5751,7 +5751,7 @@ static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
- 	}
- 
- 	for_each_node(node)
--		if (alloc_mem_cgroup_per_node_info(memcg, node))
-+		if (!alloc_mem_cgroup_per_node_info(memcg, node))
- 			goto fail;
- 
- 	if (memcg_wb_domain_init(memcg, GFP_KERNEL))
--- 
-2.34.1
-
+On 2024/5/6 21:53, Matthew Wilcox wrote:
+> On Mon, May 06, 2024 at 01:36:43PM +0000, Xiu Jianfeng wrote:
+>> alloc_mem_cgroup_per_node_info() returns 1 if failed, use -ENOMEM
+>> instead, which is more meaningful.
+> 
+> This should probably be changed to return true/false instead of
+> an int.
+> 
+OK, already sent v2.
 
