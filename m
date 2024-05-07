@@ -1,73 +1,57 @@
-Return-Path: <cgroups+bounces-2825-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2826-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B14618BE83A
-	for <lists+cgroups@lfdr.de>; Tue,  7 May 2024 18:07:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 813718BE85D
+	for <lists+cgroups@lfdr.de>; Tue,  7 May 2024 18:09:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66E561F2CE0E
-	for <lists+cgroups@lfdr.de>; Tue,  7 May 2024 16:07:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFEA11C24077
+	for <lists+cgroups@lfdr.de>; Tue,  7 May 2024 16:09:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9904A16D4E3;
-	Tue,  7 May 2024 16:03:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 447F31649D3;
+	Tue,  7 May 2024 16:09:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GYgFcoZF"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E52D016D4DC;
-	Tue,  7 May 2024 16:03:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5989415FD19
+	for <cgroups@vger.kernel.org>; Tue,  7 May 2024 16:09:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715097786; cv=none; b=A2Tmwx+RYzP2frqtJFhBxiPDY8Ab8S0WH9QO9jyQ9Y4eJEIN7dsMqOj5IoB1Llq0vYlh88OXtCo2cpqmHgB2UDEvXDnddgKtxLsQdHw2E+2H15mtjdlXv4jKj2FrjGH4mmzVV0gzT/oD1l7020UK+Lw0zXn2D0N7+fbBWInMnJE=
+	t=1715098192; cv=none; b=CInD9CYgf27V21RNUHiStBCvkUS3QtSEGHH6NEsT7E2Vek0O4d3HbNOOlQmzfygNDe525nbZQK5mEwsRjmdtb7MCPchvQMrdMkaf0gq6CXi2f0Mkaj+JfUylHC+jqjnpbv3+BTQhF8ESj8xk9UM+c+y3YYNFFXpCinT6+dTy3vI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715097786; c=relaxed/simple;
-	bh=lNe2OKBPTAJiByLVNklZt3fwsF2kSncvssGXrmbVVqU=;
+	s=arc-20240116; t=1715098192; c=relaxed/simple;
+	bh=gz4Jf3ondj4y4dpkh3Y5gyLp2dfD3A5nAdCohPabPh0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r0FJfCpK2z9O9EuT2mlYqTFn2/6xhBzS29UmUc1/IehnXQNpnkgXUYfbmfzEiC00p2aDujw26foDF60e7OvABAFLNGFfME8sq6zf4dJWuO4/udVUIhLZaV0T05/9MfWa2uehI9F3igJB21tfi71EvxYngpnzFba5R04lYlEbs0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a59cdf7cd78so622954866b.0;
-        Tue, 07 May 2024 09:03:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715097783; x=1715702583;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AXEoid+P4y9d9rlcyx/evf5V3Cmxvkdb7Jf8hRQs27Y=;
-        b=njnDiqf9+Tvwuoayrgwz8CATRyA7vnF2FUAFa0r/wxtgkGYxx7L40el/onM7MsaZkX
-         VuzW9CL8+2K6LbVZNLhg4H2FL15hIe3ANRVt/BTnpYIyor1HLxeNL/DG8obSWTg1zZTL
-         0TBNAQuSbut0ipV5TNl5FHLj6UsuNKaB24vkTSzviBmDAey3oHf7rMplYI4SYr2QZMlv
-         4TVUVONsC+iC/d5z3vU8o0MkObT6WECL+zct4zjr4/y/gslHrSDweYbMOaYLj5w7HQeD
-         6AwJAs+lr5PN974klc31gCVl0kjsZsOKOiGp+jwbK49wZB/B4rjiof+9nFCqjMnWDlvu
-         o56w==
-X-Forwarded-Encrypted: i=1; AJvYcCUV56NHKywqVCNgcjd49PVg3VVPni71uYzEMTlTiPxnT69A+IuhmaotzhHODcBSVUb01sJtp/VQCl7uT9jN3h1JYIk6mViSp509bIBOOHa3OTbVZ8X5B4v9xU1MKEzT6iZmVGy3tQ==
-X-Gm-Message-State: AOJu0Yx9J7aJOOWL0D0n2JomRL68jdMEh3azKGHK0QGupaf4//kiODRj
-	jj/OELbMW9Bcwa1fDSrhnVqGwBBTZgT+Tll2nfbcVs+9U8553aWL+ZA2/g==
-X-Google-Smtp-Source: AGHT+IFtMMmBt2l5Z1o6dwv8yMonvYSVpTqzn3bwquAqseHLd2VYeqJJU7FnCoTxbJrq9Fw5nmTMKQ==
-X-Received: by 2002:a17:907:da2:b0:a59:ca9c:4de9 with SMTP id go34-20020a1709070da200b00a59ca9c4de9mr6079850ejc.76.1715097783279;
-        Tue, 07 May 2024 09:03:03 -0700 (PDT)
-Received: from gmail.com (fwdproxy-lla-116.fbsv.net. [2a03:2880:30ff:74::face:b00c])
-        by smtp.gmail.com with ESMTPSA id xa8-20020a170907b9c800b00a59eb443e01sm922487ejc.74.2024.05.07.09.03.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 May 2024 09:03:02 -0700 (PDT)
-Date: Tue, 7 May 2024 09:03:00 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, leit@meta.com,
-	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <cgroups@vger.kernel.org>,
-	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <linux-mm@kvack.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: Fix data-race KCSAN bug in rstats
-Message-ID: <ZjpQtDE9aixy0hZf@gmail.com>
-References: <20240424125940.2410718-1-leitao@debian.org>
- <ZjTKLVjxuUJwwFPg@tiehlicka>
+	 Content-Type:Content-Disposition:In-Reply-To; b=IQ+NqeyOx+8m2WgBMYEs4eqSrsyk2Tzzds9KO9QVesRqlQH9WCjCNUKG7C10W2svAYH93i4MxGCt6JWOO7ocmuPNaxChETGD4tqsUr/OWq6O+9tVr1P1avIBsesaCF1Bk75+u/HHGModU96KRPnrqq3am68RI8FdgNPIXTYOZZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GYgFcoZF; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 7 May 2024 09:09:33 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1715098187;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tgzIR0YD+S9uWGtbeF9+1URxHxfb+Er2kUk5GWowswQ=;
+	b=GYgFcoZFHdDT9O8zbQNUuBjwrw3TYPWDPuV7kfu2wxM2XY5R/zlVAaa7+/VEnmVBOaXaOb
+	Bd0uwhVVj08huf6sHJBxSAABdmpRTNwO1UiflcVyljF+6UECf8ZIY5GV0zvOtF8p1wxO/L
+	WOxNDSZLD9HnbXit5a7NqNimo/JxiqA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Xiu Jianfeng <xiujianfeng@huawei.com>
+Cc: hannes@cmpxchg.org, mhocko@kernel.org, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, akpm@linux-foundation.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 -next] mm: memcg: make
+ alloc_mem_cgroup_per_node_info() return bool
+Message-ID: <ZjpSPRn5kVErC6s2@P9FQF9L96D.corp.robot.car>
+References: <20240507110832.1128370-1-xiujianfeng@huawei.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -76,25 +60,19 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZjTKLVjxuUJwwFPg@tiehlicka>
+In-Reply-To: <20240507110832.1128370-1-xiujianfeng@huawei.com>
+X-Migadu-Flow: FLOW_OUT
 
-Hello Michal,
-
-On Fri, May 03, 2024 at 01:27:41PM +0200, Michal Hocko wrote:
-> On Wed 24-04-24 05:59:39, Breno Leitao wrote:
-> > The race occurs because two code paths access the same "stats_updates"
-> > location. Although "stats_updates" is a per-CPU variable, it is remotely
-> > accessed by another CPU at
-> > cgroup_rstat_flush_locked()->mem_cgroup_css_rstat_flush(), leading to
-> > the data race mentioned.
+On Tue, May 07, 2024 at 11:08:32AM +0000, Xiu Jianfeng wrote:
+> Currently alloc_mem_cgroup_per_node_info() returns 1 if failed,
+> make it return bool, false for failure and true for success.
 > 
-> It is worth mentioning that the race is harmless.
+> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
 
-Are you suggesting that the race consistently avoids producing corrupt
-data, or even if corruption occurs, it's inconsequential because it only
-affects statistics?
+I actually liked the previous (ENOMEM) version slightly more,
+but this one works too.
 
-If there's no data corruption, does it incur any performance drawbacks?
+Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
 
 Thanks!
 
