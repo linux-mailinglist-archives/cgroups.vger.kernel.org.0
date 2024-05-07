@@ -1,304 +1,254 @@
-Return-Path: <cgroups+bounces-2814-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2815-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E6198BD68B
-	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 22:53:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C60158BD868
+	for <lists+cgroups@lfdr.de>; Tue,  7 May 2024 02:11:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF68D1F22A0F
-	for <lists+cgroups@lfdr.de>; Mon,  6 May 2024 20:53:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46A51282C25
+	for <lists+cgroups@lfdr.de>; Tue,  7 May 2024 00:11:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D51AC15B963;
-	Mon,  6 May 2024 20:53:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3192C37C;
+	Tue,  7 May 2024 00:11:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U1upf4x4"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Jdcam4OI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32182EBB
-	for <cgroups@vger.kernel.org>; Mon,  6 May 2024 20:53:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715028816; cv=none; b=ZTHkgxLnmYqrUCNgfsFzCcHB6NgSzVBo96PLkRbUjWW8KKGf+OGNB8SP8LZS1ztva649f9wUx4QG5/GHtRSn/JMLAnAMWUBUqQ2yRhbx/b0b7r521rtvp2+sdyPU4ieWCNAxh47XVnfbM4xmVEGb5ku5JjJ/OSD/rsVIxNuDPgg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715028816; c=relaxed/simple;
-	bh=SOrr1nenzAriLe0GnDo7AsSNuockUJ6/CCRk2fh8qKE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Co63dv3sKOr/yNMLqUqP6vWRRU3BFNZ9uOmnam0YQr4569url+C5mNeRH3bkIKk8HGYSDF5z6corznPzewvq+ZJm183/23NThB+HhrR9l9cSCra/FpKVhbwdP2URoINAT/Q95fvxDm9Z6MVUIrz9Fg+YuC0ZsViC3OhhFDvL8Qo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U1upf4x4; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1715028813;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=g6sZw134VQmMlIGhxEPVPz2EDdHDR3NFPzKEHXmWo0Q=;
-	b=U1upf4x4Rcoz5AgVTMbApO7WDMYcs/qJUN7thQ7L4ftOoXhvbC8Fb5k543zaUaNyGrMgI3
-	GzXDrgVniDPq8T+uyRdb0d7k4/nqPSFh9Mss6vz7yhrshHkuDGHtbMCBqqxFoVjnQxzXij
-	d5AetmQrHhrAXwT2Mvpsxv1SRXJEENE=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-570-l0bWPNzwPaCtKvAl0XaY-g-1; Mon, 06 May 2024 16:53:32 -0400
-X-MC-Unique: l0bWPNzwPaCtKvAl0XaY-g-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-41f092f7275so5332275e9.3
-        for <cgroups@vger.kernel.org>; Mon, 06 May 2024 13:53:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715028811; x=1715633611;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=g6sZw134VQmMlIGhxEPVPz2EDdHDR3NFPzKEHXmWo0Q=;
-        b=rZLyxkjCY4LHiaD8RsFrPmz0wWMgPmNDopHJ3XrdvrQnz4YBJtPu1JJ0o93wdHtAIa
-         9uceNLhSsK942ZPm7GHVMpDosC6uKIVdqwBNx6qtu3tzZrQIoCZRxJCGnp1QhU9g7H2T
-         oZ7fHlJQ2SuZezGAKkIjfVLQcRN5vZrm+BRmK/fOn5SHwk1fBeojh5BNalj1FbXjQhBq
-         2PyVX0Z+Lvb54VQs/xfOsQOBp1z1LEHvkraOG+hOAaZbbmR9Sx7ejVrlTJxbrE73N1tu
-         yzr7xr6nrV3ivLjG5dqauBfOCmcrY89sV22fD5WOwzXoWbHs5X2hUD0wNVdCxBlWFBqj
-         rU6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXF0s+jV+UNdCC1N4e4CfxXoefGbwtj+SaWWEddO3V3vl3cqYDirSpyL0CCTocbhiq/VUu0Zhe+ThbvJOHopKstEMhrqJBeuQ==
-X-Gm-Message-State: AOJu0YwuyVwn9ZpKH1/qW8CVtrn4SV42UUpER7Ekm+/mdnjr3BuTCICn
-	gyGPUv7fsdB98YQPVIHypmz1OTzEYELv2JV+TtojITe8M3f2FRkkghzMumIkoe88w6Zk2WSESFT
-	etBV1TlG9Q0Is3wo9dZ1uUfcCDZMMG+BjEJVttMCvudyeyjNLVR7TVyg=
-X-Received: by 2002:a05:600c:3148:b0:41a:bdaf:8c78 with SMTP id h8-20020a05600c314800b0041abdaf8c78mr9056658wmo.8.1715028810716;
-        Mon, 06 May 2024 13:53:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEGXS3u7yyH8Hq9lb4xFCdpYTJwX09+v3bSW3RHVxTIgKkmel4AMK8PA0pm7h/wljalLA2NHQ==
-X-Received: by 2002:a05:600c:3148:b0:41a:bdaf:8c78 with SMTP id h8-20020a05600c314800b0041abdaf8c78mr9056640wmo.8.1715028810231;
-        Mon, 06 May 2024 13:53:30 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c74b:bf00:182c:d606:87cf:6fea? (p200300cbc74bbf00182cd60687cf6fea.dip0.t-ipconnect.de. [2003:cb:c74b:bf00:182c:d606:87cf:6fea])
-        by smtp.gmail.com with ESMTPSA id l27-20020a05600c1d1b00b0041c5151dc1csm20990620wms.29.2024.05.06.13.53.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 06 May 2024 13:53:29 -0700 (PDT)
-Message-ID: <e491e094-0194-4ea0-9d0e-50538f121d6c@redhat.com>
-Date: Mon, 6 May 2024 22:53:28 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4359317C;
+	Tue,  7 May 2024 00:10:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1715040660; cv=fail; b=F/T4bFBZzkBWBbuLS72mSEkNpsgcJMLfRZZZgV2049ZRN5sZ7PdFnDaNrncqef/D4Qu+FeO5cHwen3t8wosBz26RNIQMDkIlxYILw8WHN5q8d/tg/UEZEIfaAfIjABNrlLmePFTWwLeqF0v6mehFs0rGMrIAuXaFVoaLk36ti8k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1715040660; c=relaxed/simple;
+	bh=EohOHF5qvNs5/zZ5pZuz5yJvGpsfEo/PMi14lVVt1vM=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=ZK9RMwestOZ1NccDUTwLOpciwgyzSkXfmd5tAFiMUnJ7RXC+q4crmwGxnZfSNCj9e4+WxNv8qc+9a0Ic9By1Vyf9j28ZLO8uNp0rFvtNENpEYdwXpopQ9qh5QgIKWCco44/FrwdAt4+sOnoTaBNLPCXh1d8Apyfu40Lmll0TbfU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Jdcam4OI; arc=fail smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715040659; x=1746576659;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=EohOHF5qvNs5/zZ5pZuz5yJvGpsfEo/PMi14lVVt1vM=;
+  b=Jdcam4OI1XUQuUXsNl01pAzoKwt48QkR0aHi3U1xww6+iXWgfCvShAvE
+   +OpTCCTnrHCGQiLMKbYOIG9G9W76xXlSY+24nOG+RAfXQ9FdNwUW76KYk
+   hgJC0ZxX14LmY2GYQCV5Zda9do8KPUsTmktG+c7AfPzdC7vhKFCq0cDp6
+   RifVawFLbdyHlQO89PxkXPKXiyEWiM86z9TEdj3Eu78EMGNzREMqnOTQ+
+   PUXTrZEF+hy59Af5CkkcQJD/z6gh6TKGv3eOChv+E/FQIsfhsm0zoJnNl
+   sdBJBU+qbdVJr9qswwbMkok1Sb6VWlBYox+5rvQVKtLUyu8DLha3PwjkN
+   w==;
+X-CSE-ConnectionGUID: rcVGa6iZT3CjRPAm0bMONQ==
+X-CSE-MsgGUID: eqkGp3ECR6m/hHLK7xbyCw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11065"; a="14594178"
+X-IronPort-AV: E=Sophos;i="6.07,259,1708416000"; 
+   d="scan'208";a="14594178"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2024 17:10:58 -0700
+X-CSE-ConnectionGUID: 4BPhHzL6RTyOqm+HrxHBrA==
+X-CSE-MsgGUID: /GgWiVzwQ+i+DRueNJW11g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,259,1708416000"; 
+   d="scan'208";a="51524032"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 May 2024 17:10:59 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 6 May 2024 17:10:58 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 6 May 2024 17:10:58 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 6 May 2024 17:10:57 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IgHrVfNa3yxr/jsBFPo8jjYiW8RVRmpxtMgamn3RZOWnKGG/b8hOCudj5z9zYIXBAHt3WNsD/Imyxkbap7D9bBMdPPRhmWs8K7NtlTc7ANMw/YemL4SmJ9DkHpSNxMviDzBwKivSnc/PgbAlnpCARYQXHHQ64IbbbzCVKFK3pXr+Y/gHNjwIFpsWRcL+nWw37pqlVdy82dnHuVGxTGlo1QflagooB+wwGEZdblc+O+MHpr7r6LgIX8kLBXFHIipxXZfytemaeCdKSTYb9zZzgxgB7H69qzbGAk7TL3pMxhIsLz7twJY3AOwh81GMhEF1dNSjmyO+x/RyHImMC9cQwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8pwKV7LPfMCTy16AvKoJfROQ6eEqdTyleijfReo43c8=;
+ b=FVw71MN/Mz5vAsQJy7DxYwRF2YyNND3U6V3nPDM+ZFMxX8trcqWSRy55+VRHuXQtFO96W16MH966lwi5Jh5Fp+AwTSC08+qOEZy/hzA4ExH/gTqnyfxAHljdiYpnlfi33kyVpPijJhyFNQPuBxRC+kY9oF+sSlEt9GXPq+DH01kFPIJ+bjgPJ62SPGrmQG8EGW6ahMg0bQeZI9gWvl3TfOq+W0CrAa5DjlcVQI5C6mgWHVQN+ZeDD3N/o7Q6X84qTxV5ZSuV1yqc1+hrjT7q2AZgSiBt5eYxWMQnKLY+AJhrUfveCmWpSmNA5K0mXOJzet03U33EUJ5UmM2fTSeB7Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by PH7PR11MB5957.namprd11.prod.outlook.com (2603:10b6:510:1e0::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.39; Tue, 7 May
+ 2024 00:10:54 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::fdb:309:3df9:a06b]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::fdb:309:3df9:a06b%4]) with mapi id 15.20.7544.041; Tue, 7 May 2024
+ 00:10:54 +0000
+Message-ID: <966e4afe-b177-4527-80c9-1146d2503c93@intel.com>
+Date: Tue, 7 May 2024 12:10:42 +1200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 12/14] x86/sgx: Turn on per-cgroup EPC reclamation
+To: Haitao Huang <haitao.huang@linux.intel.com>, <jarkko@kernel.org>,
+	<dave.hansen@linux.intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
+	<linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+	<x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+	<mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>, <sohil.mehta@intel.com>,
+	<tim.c.chen@linux.intel.com>
+CC: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+	<zhanb@microsoft.com>, <anakrish@microsoft.com>,
+	<mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
+	<chrisyan@microsoft.com>
+References: <20240430195108.5676-1-haitao.huang@linux.intel.com>
+ <20240430195108.5676-13-haitao.huang@linux.intel.com>
+Content-Language: en-US
+From: "Huang, Kai" <kai.huang@intel.com>
+In-Reply-To: <20240430195108.5676-13-haitao.huang@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0194.namprd03.prod.outlook.com
+ (2603:10b6:303:b8::19) To BL1PR11MB5978.namprd11.prod.outlook.com
+ (2603:10b6:208:385::18)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm: do not update memcg stats for
- NR_{FILE/SHMEM}_PMDMAPPED
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com
-References: <20240506192924.271999-1-yosryahmed@google.com>
- <d99b6375-cbae-41f1-9221-f1dd25aab150@redhat.com>
- <Zjk7AJGUsjR7TOBr@google.com>
- <42b09dc5-cfb1-4bd7-b5e3-8b631498d08f@redhat.com>
- <CAJD7tkYvSAWRL1fPZP8dAWtS2ZAenp9nngvwtANAzZsUSjnoJg@mail.gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <CAJD7tkYvSAWRL1fPZP8dAWtS2ZAenp9nngvwtANAzZsUSjnoJg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|PH7PR11MB5957:EE_
+X-MS-Office365-Filtering-Correlation-Id: c778b8e3-36d6-4968-8c4a-08dc6e2a296d
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|366007|7416005|1800799015|921011;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?cFpENE9Ld3d2WW1NWEgvU3hkcnlRU0pIZUU4U2tqUFlGWGNqZjRld09UL2dS?=
+ =?utf-8?B?TzNnTklFUUMvbUtrRVRjSmZKTzFnNG9USUs4NWVOV0MrU2dlM1RPRW9saEZq?=
+ =?utf-8?B?UUFwNS9xbUtOQ0RqZkQvTU5MTFdlV2F6WEVjMWw4bXVJc05jb3dMeFp5M1hR?=
+ =?utf-8?B?OW40eE1HOGZxQ2dtZy95aGhWMXZZY2FPQWRVMURHQmI3LzhWMDNXbHBFcjky?=
+ =?utf-8?B?c3N0aFl1elQySzBPdnBLNjZSQkpBYU1LSGI0VzJvT2RFNGlJcGxhOGtRN2Nl?=
+ =?utf-8?B?Sk15RzdtU2ZUOE1wVkw1SUsxMUhmTVBkVCt3Z0wxaTV2L2hlSHFKNC9qNWRa?=
+ =?utf-8?B?azA1aldseW8zc1hPSm5PbDhycFhyUGI4U2xyeThqK2toNlAyeUx3WFpNa3Bm?=
+ =?utf-8?B?Zms5Q1pSZHNFUkVETnRra3lZUjJpZ3ZabGgwNXJYMzV0ZFpoWWdLQU84TCs4?=
+ =?utf-8?B?STkzY09nODhaMUZWdkhKR0RrSndlZTc4MldtMzl4UjJOSVdPVW9mVHErcDIz?=
+ =?utf-8?B?TmcwTVBxTFhUaUFlUEtEd1RHcGxxNU83bHQ1NEpSckgrUXNkN3kwYW5LVE95?=
+ =?utf-8?B?Sk5hZzBaU2wyL1FZZU5hTlZQbTNFRHM4STY4OEtLSnpBS3loLzFwOEpMYURi?=
+ =?utf-8?B?SlV6S3Vkc2hpVkM2c1ZnajRXam1RUGYzMXN6aTgrWExSZ2VPUXN4TVc5ajZx?=
+ =?utf-8?B?UWsvTlNoaFBwekk4SzVPMlU0Wm5oejM2YW81UnBCWEp6bkUyZksxWndxVmdT?=
+ =?utf-8?B?anNBQjVFWUsvVjdTR3RZZERkd2VWRzVaaGlYTzlpVUlLV2dVdFBGektpeHhX?=
+ =?utf-8?B?REc3MTNNaE94eEtSTklMekVHdU94RHhNdEJxQk5nMkhFeXorVzg1ZHVzTDc2?=
+ =?utf-8?B?d3hHcFVZNlZCd1VNNUVMQWxwS1RvcElSRDA0TmFrTy9sNWxyQzM5ZktiRytO?=
+ =?utf-8?B?TFZBWFZ6WkNrVWxsc0dmTHgzNDV5d01waU0yYjhzWkFmc09rc3dEdnRza0JW?=
+ =?utf-8?B?cWhMUU0rS1RiYmxxdzJ0RUg4dURhdm1INk1MVmJJeVhnNWViMzZqVTFtaXpO?=
+ =?utf-8?B?MnROSlQ2NXhnZ1pmSXlPSVhtR0M1Zzk4cE14TzR5M3JINm94emw0Zkxja284?=
+ =?utf-8?B?M2oyajNVR0Fyc3M0R0NldHlOazZGbmFacHhCRmdMNHR1M0REWkpxWDZ4NTdl?=
+ =?utf-8?B?V3lWUmlOM1pPNm5yVDJpQ1VrMmNKZnViek0rRUdWUzk2bTJkMXJMTWUyYk9t?=
+ =?utf-8?B?a3dwbDZGZWRma0NWaHhSdzh0ZWpRdG04N3MzZFNUbnRoUnVBbEF5a1FPNVps?=
+ =?utf-8?B?b2xHSXY1OUY4M09iUEhlVTk0dDVCb0RjSWswU1haVmd3R29SdzZ6d245ZGM4?=
+ =?utf-8?B?bGVtblVqTDErMTNRVkNSSjdPK2tHcHBLbUFBR2VzN3Q5QzJxc1BTMlVvNUZ1?=
+ =?utf-8?B?M3pCckhIak9zdDUvOW9kcnd5TW1JakVhUDRHbEg3azV3dHBNb1RzR0RnUDZI?=
+ =?utf-8?B?UVhBWmE1SUR5Rzd3NXFDUktONUF0WnlWcmRoVzZDRXVGaHI4NTl4TUpXc2x4?=
+ =?utf-8?B?TGJtZ1g5dHhpU1hZdHVoalNtbjhlZFpUY1dVNDFTZVZka0NJbVdwMVFyc2NF?=
+ =?utf-8?B?OTgyNWF6c2czTDhrVlhRN2t3N0hDNjFZWXpYTCtaUEdBZGhkT2JxMXkwZ21x?=
+ =?utf-8?B?SVp1NGo0UU0wQ2lIUnZwaUlRNlB4dDM2NC90OTU1bUx1MWRXTy9zaVJBc1hs?=
+ =?utf-8?Q?7u1YIp/llsn0WFxgfEcN/05pKIqSMLwxVGHNu10?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(7416005)(1800799015)(921011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?emZxaWlvZVhreG5rOVB3bU16a213eU5hbU1tUGxtRUZqOFNCWmNNcFczSnI2?=
+ =?utf-8?B?WFlCajc3TzFieDZPR0Y5a05iWkgxcDAzeU9BWU5aR2tzVjVJNXJNMTFXa0hB?=
+ =?utf-8?B?QkUwcElDYzV4elI1TGJObWlYM1hNaDRacTZzRThWSjVHVWJ1VEU1T2JZWXJv?=
+ =?utf-8?B?ZzRBQVk5WEVuOE4wSDhEQjY5M3NtL2QzYThzZlVKUnlaUEx4MmVIanRUQlU3?=
+ =?utf-8?B?aTBBTmprOUR1UFBPWXo2OUZKcUphZ21ZSmlMallITzdPa3RJdmhvNzcxOEEy?=
+ =?utf-8?B?K0pYcStlelV2bDliZUpYK2FBWnFEWEVMbW9MQW5teWoxTEptMHFDeEI0NnFi?=
+ =?utf-8?B?SUIwaGlVN0U2Ynkva2w5T3VsTlplcFJUTkhlSTlqK2pKR1MwZzExNEdXS1Jt?=
+ =?utf-8?B?NGloOWhFaXY0VU53RjdPV1UrMEdoZTBRZnU5R3RTMlZRTE1ncFlMNUlTbmxk?=
+ =?utf-8?B?TkdtU0FOYnBHdm53a09WMHV5dStXYlJtNjlMS2NrOVBpeFg4ZDdlcUUvaitN?=
+ =?utf-8?B?bUZyU3Y5ZFNleEY1cXllcTAyOUdFV3I1V25VTzJXS3NIU1p3QkhRQkVyZEZQ?=
+ =?utf-8?B?Rit1L0RsQjdRaHhIYU9XNkdqSUR2MEM1TGNUV2ZDTmp4Q3JYN202dEVqNEll?=
+ =?utf-8?B?aHBFN1l0eGh4TTZNcXRxMUlHZ3VwdFB4MTBabjRLb0RESkx6N3pJU2VYOG9F?=
+ =?utf-8?B?cDlyUzdWYkVnZ3BhM3dOaDZ6dlFqNHNaTWVpTmVuQjlBSGg5NW9VZVpzK2la?=
+ =?utf-8?B?UzFFV0d0a1FQUUlPYkhQdXc3MU1lTEpGUVpSY3JoaDRZQkMyajhZYmpibjEv?=
+ =?utf-8?B?VTh5U2c1WG1sZWZVbFN2am1Na2drakRkTSs0RVVsUXh6b3JnL1kxKzFqanJt?=
+ =?utf-8?B?cTQ1cGVMYm05cXlVU3NnbjVFeXcyeGNwV0JIZnlPS1dDYkRvRVdDOGsvYWw3?=
+ =?utf-8?B?dCtLakVrVkF6SkcvSG1oZDVNMmxCd0pKSUVrY2U2TWJ0OWs5M0Y4NDVRM2Iy?=
+ =?utf-8?B?cFQ3aE5EQy9UV1loU1ZjSVdENDZ2Y0lqeVlZTW11TmZZaUFnZnJkcW43UjJq?=
+ =?utf-8?B?czBsQ09QcHpIYTZwT2piOTNnMTJrclNwWHhFUFUvZ3BzWElrR0xUVkxaK2NK?=
+ =?utf-8?B?SUtldGVjVGVHcmJKdURwUFhibUk3ZEhtaWZBTGEyaUVqK29PWWl3L1g4NGpO?=
+ =?utf-8?B?aGsrbnJIOWZXYlJxS3dBVmhBb3pKWk82OWlVWFpiWFhyQ1laaTRnSzhGeUd1?=
+ =?utf-8?B?TjcxYTlmTlZoNEVhWUxrZ3lPek8xNU5uNHptWitmNUhXTVY0WTR4aGNVTmhH?=
+ =?utf-8?B?YlZWYnIzTDJzZGp4eHlJWUFGYWlqSkxIcmVyaElpaDJSODZjWmtCa2JGRTBj?=
+ =?utf-8?B?SDdUSWxpRzZZOUlick4vaUdmZThCVWlzcHlOeUhKblF1K1dGU3FuV2xUZHdv?=
+ =?utf-8?B?VXN6M1dtVUhERDNXSWZTUTQyUVpnNlRRYVl5RWlRTW1TUmQ3NnhwdGd0RWVC?=
+ =?utf-8?B?QklQMURzNTlULzRPOEVDSHpOMzZCWEhtQ2NBR2luMUMwWHlCeWc5aUdOd3Jz?=
+ =?utf-8?B?cXZmSTlEdmJhOGdLeU1sc0tab2hraUNJejFtdnhKRlVNdGQ2Z1MzTHF0UFc4?=
+ =?utf-8?B?eUJxMEdEMlV1MC9zV3h6RU9VZXZmMkdkcUh1VEdjMDRjWDZtUjNxemhqbXVx?=
+ =?utf-8?B?WkZlWURKL0xHTVlTelpuQjJiWkIyRnpEUWZ2L0JvMGgwaFBXejNta1BMMXRm?=
+ =?utf-8?B?RzJWWFNvdWZlSXpJOFZUdkhKZ3R6Y2RIWURETHlKUVdYNXB1d1NMZnJPeGxt?=
+ =?utf-8?B?RUNaT1cvMXU1ekVRak5jQlQvRW11emJ1ZGdmcngyMXpNWUxDNndsdEp5YitS?=
+ =?utf-8?B?bVV3OXpaQVU3akJMZGtmTFBHemVsWWNyZlFXVUhleDcxYm1JcTNsd0RnOHFZ?=
+ =?utf-8?B?Tkx4ZjdFcWlxRlZFZUpPdDltUFRsRHVkM2grMEhYbC9tYlRtNTNBNDFWN09V?=
+ =?utf-8?B?eGVHaW04Z3phSWEvQ2pJaWl0dHU1SktRMDdsbkJLbTUwMTVrUVduR09mcjhn?=
+ =?utf-8?B?dlVyMFM3SnRab2h1QmoyWmVaWUxTaytoVm5kam9kcFJ1MmhHZWRXWjhYRzg2?=
+ =?utf-8?Q?zWk6mYFqEHSHnIP20P8DxUp3e?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c778b8e3-36d6-4968-8c4a-08dc6e2a296d
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 May 2024 00:10:54.4645
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ALFTYmwvWeCUDgXuff7j8UKuYWsIExsYqtygyW1Ws7yMEihqVi8XB3AU9fzZfpXZrDM8d7x+96fEkrcZTLDEOg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB5957
+X-OriginatorOrg: intel.com
 
-On 06.05.24 22:41, Yosry Ahmed wrote:
-> On Mon, May 6, 2024 at 1:31 PM David Hildenbrand <david@redhat.com> wrote:
->>
->> On 06.05.24 22:18, Yosry Ahmed wrote:
->>> On Mon, May 06, 2024 at 09:50:10PM +0200, David Hildenbrand wrote:
->>>> On 06.05.24 21:29, Yosry Ahmed wrote:
->>>>> Previously, all NR_VM_EVENT_ITEMS stats were maintained per-memcg,
->>>>> although some of those fields are not exposed anywhere. Commit
->>>>> 14e0f6c957e39 ("memcg: reduce memory for the lruvec and memcg stats")
->>>>> changed this such that we only maintain the stats we actually expose
->>>>> per-memcg via a translation table.
->>>>>
->>>>> Additionally, commit 514462bbe927b ("memcg: warn for unexpected events
->>>>> and stats") added a warning if a per-memcg stat update is attempted for
->>>>> a stat that is not in the translation table. The warning started firing
->>>>> for the NR_{FILE/SHMEM}_PMDMAPPED stat updates in the rmap code. These
->>>>> stats are not maintained per-memcg, and hence are not in the translation
->>>>> table.
->>>>>
->>>>> Do not use __lruvec_stat_mod_folio() when updating NR_FILE_PMDMAPPED and
->>>>> NR_SHMEM_PMDMAPPED. Use __mod_node_page_state() instead, which updates
->>>>> the global per-node stats only.
->>>>>
->>>>> Reported-by: syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com
->>>>> Closes: https://lore.kernel.org/lkml/0000000000001b9d500617c8b23c@google.com
->>>>> Fixes: 514462bbe927 ("memcg: warn for unexpected events and stats")
->>>>> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
->>>>> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
->>>>> ---
->>>>>     mm/rmap.c | 15 +++++++++------
->>>>>     1 file changed, 9 insertions(+), 6 deletions(-)
->>>>>
->>>>> diff --git a/mm/rmap.c b/mm/rmap.c
->>>>> index 12be4241474ab..ed7f820369864 100644
->>>>> --- a/mm/rmap.c
->>>>> +++ b/mm/rmap.c
->>>>> @@ -1435,13 +1435,14 @@ static __always_inline void __folio_add_file_rmap(struct folio *folio,
->>>>>              struct page *page, int nr_pages, struct vm_area_struct *vma,
->>>>>              enum rmap_level level)
->>>>>     {
->>>>> +   pg_data_t *pgdat = folio_pgdat(folio);
->>>>>      int nr, nr_pmdmapped = 0;
->>>>>      VM_WARN_ON_FOLIO(folio_test_anon(folio), folio);
->>>>>      nr = __folio_add_rmap(folio, page, nr_pages, level, &nr_pmdmapped);
->>>>>      if (nr_pmdmapped)
->>>>> -           __lruvec_stat_mod_folio(folio, folio_test_swapbacked(folio) ?
->>>>> +           __mod_node_page_state(pgdat, folio_test_swapbacked(folio) ?
->>>>>                      NR_SHMEM_PMDMAPPED : NR_FILE_PMDMAPPED, nr_pmdmapped);
->>>>>      if (nr)
->>>>>              __lruvec_stat_mod_folio(folio, NR_FILE_MAPPED, nr);
->>>>> @@ -1493,6 +1494,7 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
->>>>>              enum rmap_level level)
->>>>>     {
->>>>>      atomic_t *mapped = &folio->_nr_pages_mapped;
->>>>> +   pg_data_t *pgdat = folio_pgdat(folio);
->>>>>      int last, nr = 0, nr_pmdmapped = 0;
->>>>>      bool partially_mapped = false;
->>>>>      enum node_stat_item idx;
->>>>> @@ -1540,13 +1542,14 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
->>>>>      }
->>>>>      if (nr_pmdmapped) {
->>>>> +           /* NR_{FILE/SHMEM}_PMDMAPPED are not maintained per-memcg */
->>>>>              if (folio_test_anon(folio))
->>>>> -                   idx = NR_ANON_THPS;
->>>>> -           else if (folio_test_swapbacked(folio))
->>>>> -                   idx = NR_SHMEM_PMDMAPPED;
->>>>> +                   __lruvec_stat_mod_folio(folio, NR_ANON_THPS, -nr_pmdmapped);
->>>>>              else
->>>>> -                   idx = NR_FILE_PMDMAPPED;
->>>>> -           __lruvec_stat_mod_folio(folio, idx, -nr_pmdmapped);
->>>>> +                   __mod_node_page_state(pgdat,
->>>>
->>>> folio_pgdat(folio) should fit here easily. :)
->>>>
->>>> But I would actually suggest something like the following in mm/rmap.c
->>>
->>> I am not a big fan of this. Not because I don't like the abstraction,
->>> but because I think it doesn't go all the way. It abstracts a very
->>> certain case: updating nr_pmdmapped for file folios.
->>>
->>
->> Right. It only removes some of the ugliness ;)
-> 
-> I think if we do this we just add one unnecessary layer of indirection
-> to one case. If anything people will wonder why we have a helper only
-> for this case. Just my 2c :)
-> 
->>
->>> I think if we opt for abstracting the stats updates in mm/rmap.c, we
->>> should go all the way with something like the following (probably split
->>> as two patches: refactoring then bug fix). WDYT about the below?
->>>
->>> diff --git a/mm/rmap.c b/mm/rmap.c
->>> index 12be4241474ab..70d6f6309da01 100644
->>> --- a/mm/rmap.c
->>> +++ b/mm/rmap.c
->>> @@ -1269,6 +1269,28 @@ static void __page_check_anon_rmap(struct folio *folio, struct page *page,
->>>                       page);
->>>    }
->>>
->>> +static void __foio_mod_stat(struct folio *folio, int nr, int nr_pmdmapped)
->>> +{
->>> +     int idx;
->>> +
->>> +     if (nr) {
->>> +             idx = folio_test_anon(folio) ? NR_ANON_MAPPED : NR_FILE_MAPPED;
->>> +             __lruvec_stat_mod_folio(folio, idx, nr);
->>> +     }
->>> +     if (nr_pmdmapped) {
->>> +             if (folio_test_anon(folio)) {
->>> +                     idx = NR_ANON_THPS;
->>> +                     __lruvec_stat_mod_folio(folio, idx, nr_pmdmapped);
->>> +             } else {
->>> +                     /* NR_*_PMDMAPPED are not maintained per-memcg */
->>> +                     idx = folio_test_swapbacked(folio) ?
->>> +                             NR_SHMEM_PMDMAPPED : NR_FILE_PMDMAPPED;
->>> +                     __mod_node_page_state(folio_pgdat(folio), idx,
->>> +                                           nr_pmdmapped);
->>> +             }
->>> +     }
->>> +}
->>> +
->>
->> I didn't suggest that, because in the _anon and _file functions we'll
->> end up introducing unnecessary folio_test_anon() checks that the
->> compiler cannot optimize out.
-> 
-> I convinced myself that the folio_test_anon() will be #free because
-> the struct folio should be already in the cache at this point, of
-> course I may be delusional :)
 
-Well, nothing is free :) But yes, likely it won't matter much.
 
-> 
-> We can pass in an @anon boolean parameter, but it becomes an ugliness
-> tradeoff at this point :)
+On 1/05/2024 7:51 am, Haitao Huang wrote:
+>   
+>   static void sgx_reclaim_pages_global(struct mm_struct *charge_mm)
+>   {
+> -	sgx_reclaim_pages(&sgx_global_lru, charge_mm);
+> +	if (IS_ENABLED(CONFIG_CGROUP_MISC))
+> +		sgx_cgroup_reclaim_pages(misc_cg_root(), charge_mm);
+> +	else
+> +		sgx_reclaim_pages(&sgx_global_lru, charge_mm);
+>   }
+>   
 
-Agreed.
+I think we have a problem here when we do global reclaim starting from 
+the ROOT cgroup:
 
-> 
-> Anyway, I don't feel strongly either way. I am fine with keeping the
-> patch as-is, the diff I proposed above, or the diff I proposed with an
-> @anon parameter of folio_test_anon(). The only option I don't really
-> like is adding a helper just for the file pmdmapped case.
+This function will mostly just only try to reclaim from the ROOT cgroup, 
+but won't reclaim from the descendants.
 
-Let's go with your cleanup here (could do as separate cleanup on top of 
-v2, whatever you prefer).
+The reason is the sgx_cgroup_reclaim_pages() will simply return after 
+"scanning" SGX_NR_TO_SCAN (16) pages w/o going to the descendants, and 
+the "scanning" here simply means "removing the EPC page from the 
+cgroup's LRU list".
 
--- 
-Cheers,
+So as long as the ROOT cgroup LRU contains more than SGX_NR_TO_SCAN (16) 
+pages, effectively sgx_cgroup_reclaim_pages() will just scan and return 
+w/o going into the descendants.  Having 16 EPC pages should be a "almost 
+always true" case I suppose.
 
-David / dhildenb
+When the sgx_reclaim_pages_global() is called again, we will start from 
+the ROOT again.
 
+That means the this doesn't truly reclaim "from global" at all.
+
+IMHO the behaviour of sgx_cgroup_reclaim_pages() is OK for per-cgroup 
+reclaim because I think in this case our intention is we should try best 
+to reclaim from the cgroup, i.e., whether we can reclaim from 
+descendants doesn't matter.
+
+But for global reclaim this doesn't work.
+
+Am I missing anything?
 
