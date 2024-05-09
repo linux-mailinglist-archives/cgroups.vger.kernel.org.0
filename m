@@ -1,63 +1,82 @@
-Return-Path: <cgroups+bounces-2835-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2836-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A7598C0FB9
-	for <lists+cgroups@lfdr.de>; Thu,  9 May 2024 14:40:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 736138C10D0
+	for <lists+cgroups@lfdr.de>; Thu,  9 May 2024 16:05:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 071D1B22CAF
-	for <lists+cgroups@lfdr.de>; Thu,  9 May 2024 12:40:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F197282D16
+	for <lists+cgroups@lfdr.de>; Thu,  9 May 2024 14:05:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1042D13BC04;
-	Thu,  9 May 2024 12:40:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D68EE15E1F8;
+	Thu,  9 May 2024 14:05:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ee/2otxe"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="FHIxmQjk"
 X-Original-To: cgroups@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F25513B2BB;
-	Thu,  9 May 2024 12:40:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7965B15CD76
+	for <cgroups@vger.kernel.org>; Thu,  9 May 2024 14:05:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715258409; cv=none; b=rMF8CZatXp46Vkf1Gniy7fih2RCbFo1vnSwGDTnPwzcv96gKkiPSvG6YwAkHGiK5MfQ3Z2YGZ769mE8F1DLlBw+f2VMuhFltFY1ndhaUpTgyeQ5sk/y4WyVzBPVl5f7kYOYshGC9vFDKokCZyvYHpNEJWznnAgk91PFfqGDBQeg=
+	t=1715263515; cv=none; b=TRc5WErzFZPAUnyHloKauIrNo8L0tf0UEH5s9daUSYxum9WjWLAE3ueKg+PpDXN78qpxDhADfGuEPJTnfPrEhHMXb/pGWZFwgSUYyXGI3dtJUmlzF0UE/4PMtSIr0zT+3tBBcM+nkUPtLWranb5PoM88bJ++GjqAjSO7XihlXdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715258409; c=relaxed/simple;
-	bh=o4EJzw5BUXuBgoy2uU4zb1qMLA37I4KNAPe8azdAsNQ=;
+	s=arc-20240116; t=1715263515; c=relaxed/simple;
+	bh=0YdZl6Zq6//+zNC1b0gYUiB5yFvpiMGteATa5STZ6Ns=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UdxdhDeNnXWjmQGNtV4e7YlWadJAOU+vZg0hYOTC4Ip/kBGHZhePfbn0K3Nh1T+0VTprg9EZZWYCuCKr3Yuw8sCujWm2tDUlD1CvsraJkWsuDhM7Xqu3ovDZ+d/tEjkUzQRQFJsdhWelrX9osv2joFyhy7dGRJbC1y5mAI5coCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Ee/2otxe; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=P/Yh6fmWOx0S3hHFDnR/3XNxSMU0c5O7DQ9VhEI3qZ4=; b=Ee/2otxepDaoDyWBcWwFyiIctq
-	nqoj0uR7R7rKU2RVLehLlBSEbFOIzg3Ei49vP9t0eZfHXbnK7Clo4ViqVb2Eja8jvDoFoOTO7KzS2
-	mx0+KGb840gHS36HB/TO+kOV3kAi9xSNAap53ofcOVYJn54tWWpd/4UJL62TiOyvKVqCS9AMgY1H1
-	E8R41KbrN0wd6lmELud0Aer8PlF9GNud2sqoOAkxfMREoWS8Fpdn+2hR+mRQyF706nSm7HCCNFC7P
-	sKuzRooBCw5ovFR3K20jpikuGw2ivt218HNx5m6JJwCgrgrc3OArj4I8OPVW2Pp+0bUA1SLr+L/1P
-	3czW+isA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s5343-00000001STi-2Jqg;
-	Thu, 09 May 2024 12:39:59 +0000
-Date: Thu, 9 May 2024 05:39:59 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>, Jens Axboe <axboe@kernel.dk>,
-	Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>, linux-mm@kvack.org,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, Zhaoyang Huang <huangzhaoyang@gmail.com>,
-	steve.kang@unisoc.com
-Subject: Re: [RFC PATCH 2/2] mm: introduce budgt control in readahead
-Message-ID: <ZjzEH5fFGHgnqbLj@infradead.org>
-References: <20240509023937.1090421-1-zhaoyang.huang@unisoc.com>
- <20240509023937.1090421-3-zhaoyang.huang@unisoc.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=G7fBe9hRgmz5oM29/dh0mSCKlZ4VygjXtJq+H0FMIeOQ/yCsAPyfMZZicltWBuRWdHI94/M7IYryaA7VLfbtni3KWhBB09Cw9lUvWyXKsoeHweS6EZCGNmgUQhqEX6j8JlIzo4/Z3Mq7K/7uVALkrN7ljdxB3I2bwaeESNVIS6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=FHIxmQjk; arc=none smtp.client-ip=209.85.219.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6a0ffaa079dso16961316d6.1
+        for <cgroups@vger.kernel.org>; Thu, 09 May 2024 07:05:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1715263511; x=1715868311; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kvn9rngIDL29d8F1SzHuLjz6VO7wTPtvUbwSUyJZyRo=;
+        b=FHIxmQjkc7Ualuluw2fLfP7N3RZpwBpOH4wmseQW7FNB9X3FWNS1UPfB67weeQBBpv
+         zy7Gezo5pdz8WGWStjpbhWXT80YlNDPFqyN4oS13TGfiaFywO1X+RiMBA9OQ3hJOOgkH
+         CagMA18SFj9pSsh9y2lztZd+M0erjhxVfLE9ohUmAy5w5PzO3EZANFUmU5OfZ0dCX2ai
+         nsLfk+HBoS4SlhYx06YS/sH/JPr55gJxmrWwH2xyEuipwS/9CnnfAlmKSUv4NAwnUiZd
+         9teI53e5AjExu2Xya21omP81Ywj/A/Wh7N8uDI6O30bEJqxOv/gOvHvLub9m+xperc4a
+         NnQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715263511; x=1715868311;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kvn9rngIDL29d8F1SzHuLjz6VO7wTPtvUbwSUyJZyRo=;
+        b=gs/hiCRf0KrjhquyjkQWHkiJRfMLB8o8vjasuO2CUuUZ6OfDIxHMi3wty6mB2GhYlv
+         Zw987yvT7MSOI2w9d8bdE2cLgN6zemT21VSxkX8DQ3gJaFPM/yAxE4OHbzweX7rWhqTc
+         qZ+P86RrGEQOYe8VCQtS+aT7q6fGCp0w9nT3i4Mhz8NpPtvTgfXfA+hQtEnPz5wCdKpZ
+         91OGHG/ySWTcBYLtygm9+zK1Uk9vMNXr/y/B6i5x8o9lTHd+40X5DkwzBtFY7EyDCAmo
+         RR/VbtwcjRxZ6DKaJ4MCBGdQoGu0RsxYabWDAYaq3VugLQmLuY4O1FVSO0upsDGiOtgf
+         WIAg==
+X-Forwarded-Encrypted: i=1; AJvYcCUjxvLcHOaS4pEfyWqpD+0szcjEr4XPgr7AATW6jlGCRGVrsPKCOQMT1OVXCsSAddUGtqMNcuaieq/GLP6XOrXP8k5Tv9rSkw==
+X-Gm-Message-State: AOJu0YxkEJPS1o8TN8cdJmLIUPUBBXhBhWubfndiPXoMBL5dkgyZzrns
+	Bio4eB6smaowZlC7BP4bdH1Wujm0mlxDUlKJVNmSgF1XXhffGggyQbP5if8W0AM=
+X-Google-Smtp-Source: AGHT+IGfjpV8KyyCSoYBb7jd/faTYT6XDBXmV2leln7rpsUs8MqA5s1oe086inZatvtDiGmDWFpCkg==
+X-Received: by 2002:a05:6214:110d:b0:6a0:deb6:7b0f with SMTP id 6a1803df08f44-6a15cc96ce2mr42735196d6.29.1715263511394;
+        Thu, 09 May 2024 07:05:11 -0700 (PDT)
+Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6a15f1cd3desm7259176d6.88.2024.05.09.07.05.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 May 2024 07:05:10 -0700 (PDT)
+Date: Thu, 9 May 2024 10:05:09 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Xiu Jianfeng <xiujianfeng@huawei.com>
+Cc: mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, akpm@linux-foundation.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 -next] mm: memcg: make
+ alloc_mem_cgroup_per_node_info() return bool
+Message-ID: <20240509140509.GB374370@cmpxchg.org>
+References: <20240507110832.1128370-1-xiujianfeng@huawei.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -66,13 +85,16 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240509023937.1090421-3-zhaoyang.huang@unisoc.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20240507110832.1128370-1-xiujianfeng@huawei.com>
 
-> +	unsigned long budgt = inode->i_sb->s_bdev ?
-> +			blk_throttle_budgt(inode->i_sb->s_bdev) : 0;
+On Tue, May 07, 2024 at 11:08:32AM +0000, Xiu Jianfeng wrote:
+> Currently alloc_mem_cgroup_per_node_info() returns 1 if failed,
+> make it return bool, false for failure and true for success.
+> 
+> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
 
-The readahead code is used for all file systems, you can't just call
-into block layer code here.
+I also slightly preferred the -ENOMEM version. But this is better than
+the status quo.
 
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
