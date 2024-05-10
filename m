@@ -1,620 +1,324 @@
-Return-Path: <cgroups+bounces-2852-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2853-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C59DB8C1EB6
-	for <lists+cgroups@lfdr.de>; Fri, 10 May 2024 09:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 004078C1ED6
+	for <lists+cgroups@lfdr.de>; Fri, 10 May 2024 09:16:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38A3A1F22BAA
-	for <lists+cgroups@lfdr.de>; Fri, 10 May 2024 07:11:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6E1BA1F21397
+	for <lists+cgroups@lfdr.de>; Fri, 10 May 2024 07:16:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17CCA15EFB4;
-	Fri, 10 May 2024 07:11:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BDD1153BE2;
+	Fri, 10 May 2024 07:16:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EKNosrfb"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QYdpCYDS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF78515ECDF;
-	Fri, 10 May 2024 07:11:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715325073; cv=none; b=rRwhMsSlcvRmL6s9VUnKJ9+Rl8SRAr2SILVRhZrW+jT9dHCoW/9XjNwcIF7XAKQjFsafLokTQnT4T8LCF6m47cRTahY+veJw/Z7GgvgbRha8lxCULzgF/DCRtw/nm0v8PCX+nvYlXHfn62T/Q9grH4oLscLAQ3fLNk0JBtbx2ZU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715325073; c=relaxed/simple;
-	bh=9vkE8mzX9h2u+gdWiRVG95GW1btLhJ18wAPQIaicwYg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A654SHrxp39oxzaiXwzlOvCvcTia8XfBQoP1xkggY3tGXDhPfA+EKiYraogV/iKn6D79NzBNEyVWOD4VqN3cbbIPw7SpZjw0osiNdFwhYJazLDBBxrWJxjWdw7Akg/fqh7bxzBIQflZNiJr1+zj/DNw6kbiqIdggjYAv+uK/XRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EKNosrfb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 330CEC2BD11;
-	Fri, 10 May 2024 07:11:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715325073;
-	bh=9vkE8mzX9h2u+gdWiRVG95GW1btLhJ18wAPQIaicwYg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=EKNosrfbFzAYrRQmfKu/KoccpQD6WXfe3PcX6fBoVrQiRXF2CKooNkxcaJChX12aB
-	 q00nMPeTfle4ByAM49solZffzTS3cI27Gyv3arCCSJ/n8VyXlhG96kyvREBv/8WTe9
-	 zyf8RxER+/lDbbmkWsbB8F3hXXf6AFD6AhkWnUJ1jPaypXgQiE4xBak1RWvgOoM1Zu
-	 o11rYCDmYy9mFurkg54ddjFZzD/uHDV8asfI4BD2igR0HCnrJrvT9IeDr6JKZ+CHa0
-	 tA49+jFRoVQgKlfDMlxISVukAsWI/ee9mYeqlZdPs0qXV/daZG38WpwweGiHh3rH3x
-	 j4uGzW6wQDung==
-Message-ID: <fcda2351-9ba7-4121-a993-184a4c02f9a6@kernel.org>
-Date: Fri, 10 May 2024 16:11:10 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 578931DA53;
+	Fri, 10 May 2024 07:15:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1715325362; cv=fail; b=C9+rpiOa95UrwaFdTHq3azsDNASFFtIiKJphuvsrYGxduYDE+kqEne7mFtKYp/At8UcgqbGRP7NM1wBuIgYPdC6Hljhzh9I6YdkKRenpbQ/XQQFd59vpVlaGP+MpnQE79tjXmx1tIohcbPOdkfAx4qac5axfifBUp+58qYND6UA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1715325362; c=relaxed/simple;
+	bh=3MGcXH8PnBXQpGX81Zs56TChoQJ4Evw0kXh3qRSS2NI=;
+	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=bk71KSLwQ+6Gpm6EWZ/WSMDVOr80pa3C+t+FvVag6s8Tr+gKDQQluaRhQKvUqXgecaQtxQZaraa3vj9qITrkOkn2M7FhdmSX44cMJedzxS0VKzgkoSi1SwKocwvALBFwUHKgGda7WVq9nXGjswdB9FSYnkSi4IeZ3gZ2V+FsxWs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QYdpCYDS; arc=fail smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715325359; x=1746861359;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   mime-version;
+  bh=3MGcXH8PnBXQpGX81Zs56TChoQJ4Evw0kXh3qRSS2NI=;
+  b=QYdpCYDSYrPWWqDMLA/ioXTH6U0OqWKBrXEzYg7QGp2wxfZv9S7MWa/C
+   fmYQ+NMJfone0+Paav2bupUn2NQoqsuWAlAfVSBrRC+2Xssu7zUhSx21b
+   eqFMcZ3eN1JpTSIfZRfK2hEDAFcqS7gFIzqfcz4sjgUY4ce9rvwvxijzE
+   LLQItYpwN3BRcLYziRUeJAipqqpX3/7xR+yRA0Q9ryD61DeVMUi23irNO
+   3Izt1bAJ7VBpme/TTAiHmcxynZoaiatExVuMMTRK/m+Ra6OqiNBHBEuC7
+   NATrJD2Zb3GNaN2F5ju0b/6erM83g+CSQ3QpEbtWR8qFJ9zmAwxngnMJV
+   w==;
+X-CSE-ConnectionGUID: lYG6jkbgTtCT0PEZsAWUYw==
+X-CSE-MsgGUID: x7JRuhxGShKrgLh+l1LKEg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11068"; a="15099944"
+X-IronPort-AV: E=Sophos;i="6.08,150,1712646000"; 
+   d="scan'208";a="15099944"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2024 00:15:59 -0700
+X-CSE-ConnectionGUID: A3HFRt/dRHKZh3ZxBxSp0Q==
+X-CSE-MsgGUID: oLsxs+yBQxGdcS7H/61MYw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,150,1712646000"; 
+   d="scan'208";a="29513990"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 May 2024 00:15:58 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 10 May 2024 00:15:58 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Fri, 10 May 2024 00:15:58 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 10 May 2024 00:15:57 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Y54Va8WMNGci8LHf68YamoiV19wvXTlWpkGwG9GnB7V7I71C8qxbfLNdYoJatnUQ67HPchoFrhcS5U+nv29hvh6ysIjCTQ/DnvOEs56LMUSUdWfp6pmtWZbcip7VLswx3kUlpuW66HSN1pvfuseOixbNjHVMQZezYA5n6kslKQgBOqZJZSn1ZR1Kl0E6dI/L1Q0YrTzGq8YJS2Coy7VW+OytTm3h1fgRQhi7yNarYEOHiGljaX5WoBl/G89BQDA8xmcUxdERZx8XDvyChY08JP+M9qTtHAJR2AbfuYgLlvd5UOA94mias3Fsl20sHma5urnCH5RbhcaSgHemnAzAdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HTvmvi9itryTFFRe2Qx8KhsLV81HzY/TXs1btCw9MXc=;
+ b=VpP52C6/PdSsbYp0b857Up7VEEAlnXs/oVq1WynPgH0MuZRGDf5rWcHmVzKTXxSd1HX+i9sBF/aa2O9scQ7/oh0YwIiS++b91rHCJj7xfQEEoLC7o57ZDugMM0Gbaj4daadfaMFquRuEiG1ZC7QUKZjKVbAsHqK8OZBMLH8NBybbpTyuDjEvLjr4Mva1pdE+7Fp+1ukEARUz6N4/4iZ9l82zMWGtRuu0CutcDPR4XUPsTWzKqNp1r7oLhYJYpbwIl6wTCh2EJgfgmJzhUCYdWG2ZcgOJ22Lhdt6XSQBVf3BlZAuHhSEDdgW4ywunB9UfWG7uMfuOSCI/ZvaxQBnZ9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB8393.namprd11.prod.outlook.com (2603:10b6:806:373::21)
+ by CO1PR11MB4898.namprd11.prod.outlook.com (2603:10b6:303:92::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.49; Fri, 10 May
+ 2024 07:15:55 +0000
+Received: from SA1PR11MB8393.namprd11.prod.outlook.com
+ ([fe80::1835:328e:6bb5:3a45]) by SA1PR11MB8393.namprd11.prod.outlook.com
+ ([fe80::1835:328e:6bb5:3a45%4]) with mapi id 15.20.7544.047; Fri, 10 May 2024
+ 07:15:55 +0000
+Date: Fri, 10 May 2024 15:15:49 +0800
+From: kernel test robot <yujie.liu@intel.com>
+To: Roman Gushchin <roman.gushchin@linux.dev>
+CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
+	<ltp@lists.linux.it>, Andrew Morton <akpm@linux-foundation.org>, Muchun Song
+	<muchun.song@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko
+	<mhocko@kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>, "Frank van der
+ Linden" <fvdl@google.com>, Roman Gushchin <roman.gushchin@linux.dev>
+Subject: Re: [PATCH v1 2/4] mm: memcg: merge multiple page_counters into a
+ single structure
+Message-ID: <202405101421.84a43285-lkp@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240503201835.2969707-3-roman.gushchin@linux.dev>
+X-ClientProxiedBy: SGXP274CA0023.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::35)
+ To SA1PR11MB8393.namprd11.prod.outlook.com (2603:10b6:806:373::21)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/3] block: track per-node I/O latency
-To: John Meneghini <jmeneghi@redhat.com>, tj@kernel.org,
- josef@toxicpanda.com, axboe@kernel.dk, kbusch@kernel.org, hch@lst.de,
- sagi@grimberg.me, emilne@redhat.com, hare@kernel.org
-Cc: linux-block@vger.kernel.org, cgroups@vger.kernel.org,
- linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
- jrani@purestorage.com, randyj@purestorage.com, aviv.coro@ibm.com
-References: <20240403141756.88233-1-hare@kernel.org>
- <20240509204324.832846-2-jmeneghi@redhat.com>
-From: Damien Le Moal <dlemoal@kernel.org>
-Content-Language: en-US
-Organization: Western Digital Research
-In-Reply-To: <20240509204324.832846-2-jmeneghi@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB8393:EE_|CO1PR11MB4898:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3a868c54-9a67-4a99-02e3-08dc70c1083c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|1800799015|7416005|366007;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?k0msozhXcg9fBBgJuLYpS8VCeqaw5zm+7ZvKYoaImynl56VUAshVz350Fjmy?=
+ =?us-ascii?Q?hffi7nzZsFkNzrqtM4kM/SAnh6dUY71MXYIpeO7CMLqqSO79OgpYYkA5diMP?=
+ =?us-ascii?Q?99se45iPnAxmJyB29gVUsxqOxerS2YEAMbwOknXucl7Rfq96/jdu2AsmlUKA?=
+ =?us-ascii?Q?vABRTOvxks0t/2sTX1HTucQ/+grDZXEuBLM8frEXmfH/9crNewSQqXVTGZ2D?=
+ =?us-ascii?Q?Dp9FjN6Lbw3zB8TCgekBH0TntweWxLrAgZIjtWioI18O2aS9pNIt6cC8vGqx?=
+ =?us-ascii?Q?HL11tTyn32jc8roGMVhtOKjB8Vxqu1Z+uMEzLCm4EEtSDFuirt1ngn7pp9sG?=
+ =?us-ascii?Q?VHOD6+90ZpIFmxMGFTiEoHv7TQCcb81pOPv2EE2DESHi/pTzH56neGGJvycU?=
+ =?us-ascii?Q?2WWGzMAZWBlBN31owUPehldB9dDDehXoj2QUXfMx+9wITpNm6uukHezduJU0?=
+ =?us-ascii?Q?cQjOJbXu7UrFrVqp3Gyx/u0LGc8QRF3aWkvvAMfamqwTT9IAiazl1DAFi6lE?=
+ =?us-ascii?Q?3+MKtxueM7hZOlDDOHjw6PJIXK7j0MWiba3xBYl1D/gfwO2XbxgwLEniR10t?=
+ =?us-ascii?Q?RXdPGbxtX5I3mYl5tlFqdL57qLFZrtGQ/wi/bSzorcTpq6m0HO0RRe4EuQZQ?=
+ =?us-ascii?Q?DdPrfv5F6cXnovofC3pThsR9atirc8zY4Sm49NJG5QNQJ/uapd29NYMCxegB?=
+ =?us-ascii?Q?Kr4FJs8DsXMLWB9q5ugMhQ8LCvOQYoykr6QuN24TOFc3gBSI3VEyjgcAwG4n?=
+ =?us-ascii?Q?ayI+vtjljTojFe4XnKCnV3EV0SrpfxlxRJTLAOgyd3OxJAz6fIKUMVtDv2IX?=
+ =?us-ascii?Q?gxWWFGZ00LQsXmBdECH8HNkaylsdUaEYN9NEVxbO0Lp28l6PL4PQ7Zgutrh1?=
+ =?us-ascii?Q?j+DLONtcW3ZfR1qWoh1VBn691SMlRlhUuNH5d39GXSkIIHnBviHcvfICWvxF?=
+ =?us-ascii?Q?41Yz0aXhtAUbPSEBYCBUERlD0TjEB+syTEy9utxi/ObGw65OgA6Sr+A5dk7c?=
+ =?us-ascii?Q?0XxmCBUGHn1hw0l4SQW1WLkguThE3nxCtDnYBrZKqBf4oYinw2VMRcvBFgv8?=
+ =?us-ascii?Q?AkiKX8NKwIoaFIYdj/ye1hxzJ2HhaIEO3tYeJxJMVeahZ4n9EEv1nA97/Jbk?=
+ =?us-ascii?Q?h7JIAuUYLG+LN4oQvbdOnVUcvI6Q+fgaSF1nfbr1oVqWjHkQYoApE7Yrxz0s?=
+ =?us-ascii?Q?91GzNYdRzDi+klotHKsVlY6iCuTIahscDDEp7by0l0wEDCcNWfAeb8BU5q0?=
+ =?us-ascii?Q?=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB8393.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3lyi05gOnpPIWip7Enc6N1KFBw+TN8iH+OrHJt67N+zFwqlsa7Z86rnOudBe?=
+ =?us-ascii?Q?vV7fwzxBcaIFGTPLlGSQzjYgAMALzXuv1+Q8a0UObmcbuLss9RZVjjqhsBAs?=
+ =?us-ascii?Q?zMzuOjbIe2PsqN/IZ+6fqWDqTJBHAoCoNRdn1+4r5iwyNTGtJ/w2p7jum8gv?=
+ =?us-ascii?Q?C2o+zB3CCRzc9jdzN2tXwwB/GBgvq6fZ/PegAdTOzFBQTeRaRXrGtWA5SV0P?=
+ =?us-ascii?Q?rQeS+RlkB0lPL8JjLZBW5iX45ZVDgpsFZMEmCnIQuGBLnmlclEp/Z5c1SrBe?=
+ =?us-ascii?Q?bajC5Yw6ywgQqmExLFpSteML0t4OyCYIkRcWLJSVEkeRK/wcvLkGAfl4rhIH?=
+ =?us-ascii?Q?UHfLrMEc6xAAGYooxZJIKRTD1PvPYl8BzAilqDGzKrSRGz3/EniUQ5Kte5mp?=
+ =?us-ascii?Q?oWg7VwHYwfQjJCyKErgP4tH7Hz11XyqexbgzpU09N7kS3An7t6+XFHg3B6aE?=
+ =?us-ascii?Q?AkM6r2A8sDUG+8RxUgmZpdCpvxUdS1Tdbn4btTSFBTKRAjb8Ld/890X/7MIG?=
+ =?us-ascii?Q?fUpM/rONqLEhlYYi7AeN1UFtFp565WJObYdZRWNHwsXpoX5xhcihgyZOAjcS?=
+ =?us-ascii?Q?6ob5hAvkheyTOxyifcIKD8U4Ia+0kyEh3ZDRDS7Qig4iG+xpxYb72URPFbeK?=
+ =?us-ascii?Q?OQBlkdr7sknj6wDGw91ctl5mf5dt52gcVV1OHyv2X0FsWD47krO8nw2Y3Nz7?=
+ =?us-ascii?Q?MWRTjtjq1KD5nVjEM/PkFwFD7VaKrsCq+qMvVzK5jfxP6Hm7NIPv0q+GAVzo?=
+ =?us-ascii?Q?7qPmaT2hZBGplf38flesUc/aCpTNtasQDbIrcholPcYEDNYmvreiZOmDRKjm?=
+ =?us-ascii?Q?d2/kVS5glTcWTdXiRTRaUciaEyk5tOwSDX/ZAMJFd9CoyUitBhDyYlhtcf8J?=
+ =?us-ascii?Q?gL3ivkauH6CsdngWDVBITpn84IUHMiJPMum82mxcP3u2lwRcMIbIsVMRC2I6?=
+ =?us-ascii?Q?4ZC+WlmEm4Xseq2hlYYjiWMCqLuPHA8QavizDw8w8l1hnZNUq/gRIlsUIkdq?=
+ =?us-ascii?Q?vZPmP8CyQBH3etmF1Pae53YYTTulOP+VZF7f+Bfc/KMkh/khsVOdVOfWznJT?=
+ =?us-ascii?Q?yR6Jh3lkGfivWCfgJVbM8HlBHrTmxi+pEiNXWrG/boaggt8D7Yx6yt0bWHPs?=
+ =?us-ascii?Q?K5jGJs2NXdgoxtp43GejbFyK29QjOsF2XO4MadZQQYKgCS7ecyOOiMLRDuTf?=
+ =?us-ascii?Q?2fgbmWILvpU7wRKdsVNFdNbvxAlEnwNmYJOtKfD56JmyZGTLYUH+ykj7UZQF?=
+ =?us-ascii?Q?9H8nRA0aMEDi6jAOF0o8lwKtUI3Lj6f56NCsRjpVqsGvOYTo3ft15zUeUC1E?=
+ =?us-ascii?Q?hhDMuapqZ7wEME2hrPie2YpxkObf0/mAJA0qYyQ6bvzJmVISOEEtfbahL3Rh?=
+ =?us-ascii?Q?RkLbd48puLG40h9J7R3I3mIxun1atsxCrA1SEPKl2UM1zygpfu+7KPH0L1aq?=
+ =?us-ascii?Q?8bOlobu/QyR82syZMAOueuWPUofrF1afXOZjpjqs8EscOfwj3Wmsbxni0KfI?=
+ =?us-ascii?Q?E8x+GjeyUIlQRQMw/YOBGkePHPL6TKb8nX5dbqgdcEFx8uGMZ1bpDxLNy0gC?=
+ =?us-ascii?Q?HXa+Bdrhk95end2T9d0cwzp10dfvelne1cKbd+XK?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a868c54-9a67-4a99-02e3-08dc70c1083c
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB8393.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 May 2024 07:15:55.2008
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aTluqBB28vOPS1TJhrkOWVImNz9hCfGHCWY7aGYh/+CWndV7qlTE3e7F1B2N6DrpFQD3pupPXJe6wTly0PCsDQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4898
+X-OriginatorOrg: intel.com
 
-On 5/10/24 05:43, John Meneghini wrote:
-> From: Hannes Reinecke <hare@kernel.org>
-> 
-> Add a new option 'BLK_NODE_LATENCY' to track per-node I/O latency.
-> This can be used by I/O schedulers to determine the 'best' queue
-> to send I/O to.
-> 
-> Signed-off-by: Hannes Reinecke <hare@kernel.org>
-> 
-> Cleaned up checkpatch warnings and updated MAINTAINERS.
+Hello,
 
-This note should be before Hannes SoB. E.g:
+kernel test robot noticed "WARNING:at_mm/page_counter.c:#page_counter_cancel" on:
 
-[John] Fixed checkpatch warnings and updated MAINTAINERS.
+commit: 214583b2262ef6157ee9834fa23a7da8f2292dd2 ("[PATCH v1 2/4] mm: memcg: merge multiple page_counters into a single structure")
+url: https://github.com/intel-lab-lkp/linux/commits/Roman-Gushchin/mm-memcg-convert-enum-res_type-to-mem_counter_type/20240504-042046
+base: https://git.kernel.org/cgit/linux/kernel/git/akpm/mm.git mm-everything
+patch link: https://lore.kernel.org/all/20240503201835.2969707-3-roman.gushchin@linux.dev/
+patch subject: [PATCH v1 2/4] mm: memcg: merge multiple page_counters into a single structure
 
-> 
-> Signed-off-by: John Meneghini <jmeneghi@redhat.com>
-> ---
->  MAINTAINERS            |   1 +
->  block/Kconfig          |   9 +
->  block/Makefile         |   1 +
->  block/blk-mq-debugfs.c |   2 +
->  block/blk-nlatency.c   | 389 +++++++++++++++++++++++++++++++++++++++++
->  block/blk-rq-qos.h     |   6 +
->  include/linux/blk-mq.h |  11 ++
->  7 files changed, 419 insertions(+)
->  create mode 100644 block/blk-nlatency.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7c121493f43d..a4634365c82f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5405,6 +5405,7 @@ F:	block/bfq-cgroup.c
->  F:	block/blk-cgroup.c
->  F:	block/blk-iocost.c
->  F:	block/blk-iolatency.c
-> +F:	block/blk-nlatency.c
->  F:	block/blk-throttle.c
->  F:	include/linux/blk-cgroup.h
->  
-> diff --git a/block/Kconfig b/block/Kconfig
-> index 1de4682d48cc..641ed39d609c 100644
-> --- a/block/Kconfig
-> +++ b/block/Kconfig
-> @@ -186,6 +186,15 @@ config BLK_CGROUP_IOPRIO
->  	scheduler and block devices process requests. Only some I/O schedulers
->  	and some block devices support I/O priorities.
->  
-> +config BLK_NODE_LATENCY
-> +	bool "Track per-node I/O latency"
-> +	help
-> +	Enable per-node I/O latency tracking for multipathing. This uses the
-> +	blk-nodelat latency tracker to provide latencies for each node, and schedules
-> +	I/O on the path with the least latency for the submitting node. This can be
-> +	used by I/O schedulers to determine the node with the least latency. Currently
-> +	only supports nvme over fabrics devices.
-> +
->  config BLK_DEBUG_FS
->  	bool "Block layer debugging information in debugfs"
->  	default y
-> diff --git a/block/Makefile b/block/Makefile
-> index 46ada9dc8bbf..9d2e71a3e36f 100644
-> --- a/block/Makefile
-> +++ b/block/Makefile
-> @@ -21,6 +21,7 @@ obj-$(CONFIG_BLK_DEV_THROTTLING)	+= blk-throttle.o
->  obj-$(CONFIG_BLK_CGROUP_IOPRIO)	+= blk-ioprio.o
->  obj-$(CONFIG_BLK_CGROUP_IOLATENCY)	+= blk-iolatency.o
->  obj-$(CONFIG_BLK_CGROUP_IOCOST)	+= blk-iocost.o
-> +obj-$(CONFIG_BLK_NODE_LATENCY) += blk-nlatency.o
+in testcase: ltp
+version: ltp-x86_64-14c1f76-1_20240504
+with following parameters:
 
-Let's keep the alignment please.
+	disk: 1HDD
+	fs: xfs
+	test: syscalls-03
 
->  obj-$(CONFIG_MQ_IOSCHED_DEADLINE)	+= mq-deadline.o
->  obj-$(CONFIG_MQ_IOSCHED_KYBER)	+= kyber-iosched.o
->  bfq-y				:= bfq-iosched.o bfq-wf2q.o bfq-cgroup.o
-> diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
-> index 94668e72ab09..cb38228b95d8 100644
-> --- a/block/blk-mq-debugfs.c
-> +++ b/block/blk-mq-debugfs.c
-> @@ -762,6 +762,8 @@ static const char *rq_qos_id_to_name(enum rq_qos_id id)
->  		return "latency";
->  	case RQ_QOS_COST:
->  		return "cost";
-> +	case RQ_QOS_NLAT:
-> +		return "node-latency";
->  	}
->  	return "unknown";
->  }
-> diff --git a/block/blk-nlatency.c b/block/blk-nlatency.c
-> new file mode 100644
-> index 000000000000..219c3f636d76
-> --- /dev/null
-> +++ b/block/blk-nlatency.c
-> @@ -0,0 +1,389 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Per-node request latency tracking.
-> + *
-> + * Copyright (C) 2023 Hannes Reinecke
-> + *
-> + * A simple per-node latency tracker for use by I/O scheduler.
-> + * Latencies are measures over 'win_usec' microseconds and stored per node.
-> + * If the number of measurements falls below 'lowat' the measurement is
-> + * assumed to be unreliable and will become 'stale'.
-> + * These 'stale' latencies can be 'decayed', where during each measurement
-> + * interval the 'stale' latency value is decreased by 'decay' percent.
-> + * Once the 'stale' latency reaches zero it will be updated by the
-> + * measured latency.
-> + */
-> +#include <linux/kernel.h>
-> +#include <linux/blk_types.h>
-> +#include <linux/slab.h>
-> +
-> +#include "blk-stat.h"
-> +#include "blk-rq-qos.h"
-> +#include "blk.h"
-> +
-> +#define NLAT_DEFAULT_LOWAT 2
-> +#define NLAT_DEFAULT_DECAY 50
-> +
-> +struct rq_nlat {
-> +	struct rq_qos rqos;
-> +
-> +	u64 win_usec;		/* latency measurement window in microseconds */
+compiler: gcc-13
+test machine: 4 threads 1 sockets Intel(R) Core(TM) i3-3220 CPU @ 3.30GHz (Ivy Bridge) with 8G memory
 
-Using microseconds forces you to do costly multiplications and divisions by
-1000. Why not keep things in nanoseconds ?
+(please refer to attached dmesg/kmsg for entire log/backtrace)
 
-> +	unsigned int lowat;	/* Low Watermark latency measurement */
-> +	unsigned int decay;	/* Percentage for 'decaying' latencies */
-> +	bool enabled;
-> +
-> +	struct blk_stat_callback *cb;
-> +
-> +	unsigned int num;
-> +	u64 *latency;
-> +	unsigned int *samples;
-> +};
-> +
-> +static inline struct rq_nlat *RQNLAT(struct rq_qos *rqos)
-> +{
-> +	return container_of(rqos, struct rq_nlat, rqos);
-> +}
-> +
-> +static u64 nlat_default_latency_usec(struct request_queue *q)
-> +{
-> +	/*
-> +	 * We default to 2msec for non-rotational storage, and 75msec
-> +	 * for rotational storage.
-> +	 */
-> +	if (blk_queue_nonrot(q))
-> +		return 2000ULL;
-> +	else
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <yujie.liu@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202405101421.84a43285-lkp@intel.com
 
-No need for this else.
 
-> +		return 75000ULL;
-> +}
-> +
-> +static void nlat_timer_fn(struct blk_stat_callback *cb)
-> +{
-> +	struct rq_nlat *nlat = cb->data;
-> +	int n;
-> +
-> +	for (n = 0; n < cb->buckets; n++) {
-> +		if (cb->stat[n].nr_samples < nlat->lowat) {
-> +			/*
-> +			 * 'decay' the latency by the specified
-> +			 * percentage to ensure the queues are
-> +			 * being tested to balance out temporary
-> +			 * latency spikes.
-> +			 */
-> +			nlat->latency[n] =
-> +				div64_u64(nlat->latency[n] * nlat->decay, 100);
-> +		} else
-> +			nlat->latency[n] = cb->stat[n].mean;
+kern  :warn  : [  551.565920] ------------[ cut here ]------------
+kern  :warn  : [  551.573137] page_counter underflow: -512 nr_pages=512
+kern :warn : [  551.585841] WARNING: CPU: 0 PID: 6724 at mm/page_counter.c:58 page_counter_cancel (mm/page_counter.c:58 (discriminator 1)) 
+kern  :warn  : [  551.810031] CPU: 0 PID: 6724 Comm: memfd_create03 Tainted: G S                 6.9.0-rc4-00574-g214583b2262e #1
+kern  :warn  : [  551.820871] Hardware name: Hewlett-Packard HP Pro 3340 MT/17A1, BIOS 8.07 01/24/2013
+kern :warn : [  551.829368] RIP: 0010:page_counter_cancel (mm/page_counter.c:58 (discriminator 1)) 
+kern :warn : [ 551.835103] Code: 3c 02 00 75 4f 49 c7 04 24 00 00 00 00 31 f6 e9 71 ff ff ff 48 89 ea 48 c7 c7 a0 88 f6 83 c6 05 06 21 d6 03 01 e8 84 d9 72 ff <0f> 0b eb ad 48 89 34 24 e8 d7 94 fb ff 48 8b 34 24 e9 67 ff ff ff
+All code
+========
+   0:	3c 02                	cmp    $0x2,%al
+   2:	00 75 4f             	add    %dh,0x4f(%rbp)
+   5:	49 c7 04 24 00 00 00 	movq   $0x0,(%r12)
+   c:	00 
+   d:	31 f6                	xor    %esi,%esi
+   f:	e9 71 ff ff ff       	jmp    0xffffffffffffff85
+  14:	48 89 ea             	mov    %rbp,%rdx
+  17:	48 c7 c7 a0 88 f6 83 	mov    $0xffffffff83f688a0,%rdi
+  1e:	c6 05 06 21 d6 03 01 	movb   $0x1,0x3d62106(%rip)        # 0x3d6212b
+  25:	e8 84 d9 72 ff       	call   0xffffffffff72d9ae
+  2a:*	0f 0b                	ud2		<-- trapping instruction
+  2c:	eb ad                	jmp    0xffffffffffffffdb
+  2e:	48 89 34 24          	mov    %rsi,(%rsp)
+  32:	e8 d7 94 fb ff       	call   0xfffffffffffb950e
+  37:	48 8b 34 24          	mov    (%rsp),%rsi
+  3b:	e9 67 ff ff ff       	jmp    0xffffffffffffffa7
 
-Missing the curly brackets around the else block.
-Nit: n is a rather unusual name for a loop index. Why not the usual "i" ? Does
-notmatter much though.
+Code starting with the faulting instruction
+===========================================
+   0:	0f 0b                	ud2
+   2:	eb ad                	jmp    0xffffffffffffffb1
+   4:	48 89 34 24          	mov    %rsi,(%rsp)
+   8:	e8 d7 94 fb ff       	call   0xfffffffffffb94e4
+   d:	48 8b 34 24          	mov    (%rsp),%rsi
+  11:	e9 67 ff ff ff       	jmp    0xffffffffffffff7d
+kern  :warn  : [  551.854617] RSP: 0018:ffffc9000817fb58 EFLAGS: 00010286
+kern  :warn  : [  551.860610] RAX: 0000000000000000 RBX: ffff8881001c4100 RCX: ffffffff8239a90e
+kern  :warn  : [  551.868499] RDX: 1ffff11030706a6c RSI: 0000000000000008 RDI: ffff888183835360
+kern  :warn  : [  551.876394] RBP: 0000000000000200 R08: 0000000000000001 R09: fffff5200102ff23
+kern  :warn  : [  551.884295] R10: ffffc9000817f91f R11: 205d363233542020 R12: ffff8881001c4100
+kern  :warn  : [  551.892184] R13: 0000000000000000 R14: 0000000000000000 R15: ffffffff869a1de8
+kern  :warn  : [  551.900067] FS:  00007f45c0bc1740(0000) GS:ffff888183800000(0000) knlGS:0000000000000000
+kern  :warn  : [  551.908910] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+kern  :warn  : [  551.915420] CR2: 00007f45c0c73900 CR3: 0000000206448002 CR4: 00000000001706f0
+kern  :warn  : [  551.923304] Call Trace:
+kern  :warn  : [  551.926508]  <TASK>
+kern :warn : [  551.929366] ? __warn (kernel/panic.c:694) 
+kern :warn : [  551.933354] ? page_counter_cancel (mm/page_counter.c:58 (discriminator 1)) 
+kern :warn : [  551.938467] ? report_bug (lib/bug.c:180 lib/bug.c:219) 
+kern :warn : [  551.942892] ? handle_bug (arch/x86/kernel/traps.c:239 (discriminator 1)) 
+kern :warn : [  551.947142] ? exc_invalid_op (arch/x86/kernel/traps.c:260 (discriminator 1)) 
+kern :warn : [  551.951741] ? asm_exc_invalid_op (arch/x86/include/asm/idtentry.h:621) 
+kern :warn : [  551.956684] ? llist_add_batch (lib/llist.c:33 (discriminator 14)) 
+kern :warn : [  551.961451] ? page_counter_cancel (mm/page_counter.c:58 (discriminator 1)) 
+kern :warn : [  551.966564] ? page_counter_cancel (mm/page_counter.c:58 (discriminator 1)) 
+kern :warn : [  551.971674] page_counter_uncharge (mm/page_counter.c:168 (discriminator 3)) 
+kern :warn : [  551.976706] hugetlb_cgroup_uncharge_counter (mm/hugetlb_cgroup.c:392) 
+kern :warn : [  551.982684] hugetlb_vm_op_close (mm/hugetlb.c:5222) 
+kern :warn : [  551.987713] remove_vma (mm/mmap.c:142) 
+kern :warn : [  551.991870] do_vmi_align_munmap (mm/mmap.c:2336 mm/mmap.c:2685) 
+kern :warn : [  551.996897] ? __pfx_do_vmi_align_munmap (mm/mmap.c:2561) 
+kern :warn : [  552.002446] do_vmi_munmap (mm/mmap.c:2757) 
+kern :warn : [  552.006948] __vm_munmap (mm/mmap.c:3036) 
+kern :warn : [  552.011288] ? __pfx___vm_munmap (mm/mmap.c:3027) 
+kern :warn : [  552.016138] ? __pfx_ksys_write (fs/read_write.c:633) 
+kern :warn : [  552.020914] __x64_sys_munmap (mm/mmap.c:3050) 
+kern :warn : [  552.025509] do_syscall_64 (arch/x86/entry/common.c:52 (discriminator 1) arch/x86/entry/common.c:83 (discriminator 1)) 
+kern :warn : [  552.029924] entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:130) 
+kern  :warn  : [  552.035733] RIP: 0033:0x7f45c0cc58f7
+kern :warn : [ 552.040067] Code: 00 00 00 48 8b 15 09 05 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 0b 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d d9 04 0d 00 f7 d8 64 89 01 48
+All code
+========
+   0:	00 00                	add    %al,(%rax)
+   2:	00 48 8b             	add    %cl,-0x75(%rax)
+   5:	15 09 05 0d 00       	adc    $0xd0509,%eax
+   a:	f7 d8                	neg    %eax
+   c:	64 89 02             	mov    %eax,%fs:(%rdx)
+   f:	48 c7 c0 ff ff ff ff 	mov    $0xffffffffffffffff,%rax
+  16:	c3                   	ret
+  17:	66 2e 0f 1f 84 00 00 	cs nopw 0x0(%rax,%rax,1)
+  1e:	00 00 00 
+  21:	66 90                	xchg   %ax,%ax
+  23:	b8 0b 00 00 00       	mov    $0xb,%eax
+  28:	0f 05                	syscall
+  2a:*	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax		<-- trapping instruction
+  30:	73 01                	jae    0x33
+  32:	c3                   	ret
+  33:	48 8b 0d d9 04 0d 00 	mov    0xd04d9(%rip),%rcx        # 0xd0513
+  3a:	f7 d8                	neg    %eax
+  3c:	64 89 01             	mov    %eax,%fs:(%rcx)
+  3f:	48                   	rex.W
 
-> +		nlat->samples[n] = cb->stat[n].nr_samples;
-> +	}
-> +	if (nlat->enabled)
-> +		blk_stat_activate_nsecs(nlat->cb, nlat->win_usec * 1000);
-> +}
-> +
-> +static int nlat_bucket_node(const struct request *rq)
-> +{
-> +	if (!rq->mq_ctx)
-> +		return -1;
-> +	return cpu_to_node(blk_mq_rq_cpu((struct request *)rq));
-> +}
-> +
-> +static void nlat_exit(struct rq_qos *rqos)
-> +{
-> +	struct rq_nlat *nlat = RQNLAT(rqos);
-> +
-> +	blk_stat_remove_callback(nlat->rqos.disk->queue, nlat->cb);
-> +	blk_stat_free_callback(nlat->cb);
-> +	kfree(nlat->samples);
-> +	kfree(nlat->latency);
-> +	kfree(nlat);
-> +}
-> +
-> +#ifdef CONFIG_BLK_DEBUG_FS
-> +static int nlat_win_usec_show(void *data, struct seq_file *m)
-> +{
-> +	struct rq_qos *rqos = data;
-> +	struct rq_nlat *nlat = RQNLAT(rqos);
-> +
-> +	seq_printf(m, "%llu\n", nlat->win_usec);
-> +	return 0;
-> +}
-> +
-> +static ssize_t nlat_win_usec_write(void *data, const char __user *buf,
-> +			size_t count, loff_t *ppos)
-> +{
-> +	struct rq_qos *rqos = data;
-> +	struct rq_nlat *nlat = RQNLAT(rqos);
-> +	char val[16] = { };
-> +	u64 usec;
-> +	int err;
-> +
-> +	if (blk_queue_dying(nlat->rqos.disk->queue))
-> +		return -ENOENT;
-> +
-> +	if (count >= sizeof(val))
-> +		return -EINVAL;
-> +
-> +	if (copy_from_user(val, buf, count))
-> +		return -EFAULT;
-> +
-> +	err = kstrtoull(val, 10, &usec);
-> +	if (err)
-> +		return err;
-> +	blk_stat_deactivate(nlat->cb);
-> +	nlat->win_usec = usec;
-> +	blk_stat_activate_nsecs(nlat->cb, nlat->win_usec * 1000);
-> +
-> +	return count;
-> +}
-> +
-> +static int nlat_lowat_show(void *data, struct seq_file *m)
-> +{
-> +	struct rq_qos *rqos = data;
-> +	struct rq_nlat *nlat = RQNLAT(rqos);
-> +
-> +	seq_printf(m, "%u\n", nlat->lowat);
-> +	return 0;
-> +}
-> +
-> +static ssize_t nlat_lowat_write(void *data, const char __user *buf,
-> +			size_t count, loff_t *ppos)
-> +{
-> +	struct rq_qos *rqos = data;
-> +	struct rq_nlat *nlat = RQNLAT(rqos);
-> +	char val[16] = { };
-> +	unsigned int lowat;
-> +	int err;
-> +
-> +	if (blk_queue_dying(nlat->rqos.disk->queue))
-> +		return -ENOENT;
-> +
-> +	if (count >= sizeof(val))
-> +		return -EINVAL;
-> +
-> +	if (copy_from_user(val, buf, count))
-> +		return -EFAULT;
-> +
-> +	err = kstrtouint(val, 10, &lowat);
-> +	if (err)
-> +		return err;
-> +	blk_stat_deactivate(nlat->cb);
-> +	nlat->lowat = lowat;
-> +	blk_stat_activate_nsecs(nlat->cb, nlat->win_usec * 1000);
-> +
-> +	return count;
-> +}
-> +
-> +static int nlat_decay_show(void *data, struct seq_file *m)
-> +{
-> +	struct rq_qos *rqos = data;
-> +	struct rq_nlat *nlat = RQNLAT(rqos);
-> +
-> +	seq_printf(m, "%u\n", nlat->decay);
-> +	return 0;
-> +}
-> +
-> +static ssize_t nlat_decay_write(void *data, const char __user *buf,
-> +			size_t count, loff_t *ppos)
-> +{
-> +	struct rq_qos *rqos = data;
-> +	struct rq_nlat *nlat = RQNLAT(rqos);
-> +	char val[16] = { };
-> +	unsigned int decay;
-> +	int err;
-> +
-> +	if (blk_queue_dying(nlat->rqos.disk->queue))
-> +		return -ENOENT;
-> +
-> +	if (count >= sizeof(val))
-> +		return -EINVAL;
-> +
-> +	if (copy_from_user(val, buf, count))
-> +		return -EFAULT;
-> +
-> +	err = kstrtouint(val, 10, &decay);
-> +	if (err)
-> +		return err;
-> +	if (decay > 100)
-> +		return -EINVAL;
-> +	blk_stat_deactivate(nlat->cb);
-> +	nlat->decay = decay;
-> +	blk_stat_activate_nsecs(nlat->cb, nlat->win_usec * 1000);
-> +
-> +	return count;
-> +}
-> +
-> +static int nlat_enabled_show(void *data, struct seq_file *m)
-> +{
-> +	struct rq_qos *rqos = data;
-> +	struct rq_nlat *nlat = RQNLAT(rqos);
-> +
-> +	seq_printf(m, "%d\n", nlat->enabled);
-> +	return 0;
-> +}
-> +
-> +static int nlat_id_show(void *data, struct seq_file *m)
-> +{
-> +	struct rq_qos *rqos = data;
-> +
-> +	seq_printf(m, "%u\n", rqos->id);
-> +	return 0;
-> +}
-> +
-> +static int nlat_latency_show(void *data, struct seq_file *m)
-> +{
-> +	struct rq_qos *rqos = data;
-> +	struct rq_nlat *nlat = RQNLAT(rqos);
-> +	int n;
-> +
-> +	if (!nlat->enabled)
-> +		return 0;
-> +
-> +	for (n = 0; n < nlat->num; n++) {
-> +		if (n > 0)
-> +			seq_puts(m, " ");
-> +		seq_printf(m, "%llu", nlat->latency[n]);
-> +	}
-> +	seq_puts(m, "\n");
-> +	return 0;
-> +}
-> +
-> +static int nlat_samples_show(void *data, struct seq_file *m)
-> +{
-> +	struct rq_qos *rqos = data;
-> +	struct rq_nlat *nlat = RQNLAT(rqos);
-> +	int n;
-> +
-> +	if (!nlat->enabled)
-> +		return 0;
-> +
-> +	for (n = 0; n < nlat->num; n++) {
-> +		if (n > 0)
-> +			seq_puts(m, " ");
-> +		seq_printf(m, "%u", nlat->samples[n]);
-> +	}
-> +	seq_puts(m, "\n");
-> +	return 0;
-> +}
-> +
-> +static const struct blk_mq_debugfs_attr nlat_debugfs_attrs[] = {
-> +	{"win_usec", 0600, nlat_win_usec_show, nlat_win_usec_write},
-> +	{"lowat", 0600, nlat_lowat_show, nlat_lowat_write},
-> +	{"decay", 0600, nlat_decay_show, nlat_decay_write},
-> +	{"enabled", 0400, nlat_enabled_show},
-> +	{"id", 0400, nlat_id_show},
-> +	{"latency", 0400, nlat_latency_show},
-> +	{"samples", 0400, nlat_samples_show},
-> +	{},
-> +};
-> +#endif
-> +
-> +static const struct rq_qos_ops nlat_rqos_ops = {
-> +	.exit = nlat_exit,
-> +#ifdef CONFIG_BLK_DEBUG_FS
-> +	.debugfs_attrs = nlat_debugfs_attrs,
-> +#endif
-> +};
-> +
-> +u64 blk_nlat_latency(struct gendisk *disk, int node)
-> +{
-> +	struct rq_qos *rqos;
-> +	struct rq_nlat *nlat;
-> +
-> +	rqos = nlat_rq_qos(disk->queue);
-> +	if (!rqos)
-> +		return 0;
-> +	nlat = RQNLAT(rqos);
-> +	if (node > nlat->num)
-> +		return 0;
-> +
-> +	return div64_u64(nlat->latency[node], 1000);
+Code starting with the faulting instruction
+===========================================
+   0:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax
+   6:	73 01                	jae    0x9
+   8:	c3                   	ret
+   9:	48 8b 0d d9 04 0d 00 	mov    0xd04d9(%rip),%rcx        # 0xd04e9
+  10:	f7 d8                	neg    %eax
+  12:	64 89 01             	mov    %eax,%fs:(%rcx)
+  15:	48                   	rex.W
 
-See comment at the top. Why not keep everything in nanoseconds to avoid this
-costly division ?
 
-> +}
-> +EXPORT_SYMBOL_GPL(blk_nlat_latency);
-> +
-> +int blk_nlat_enable(struct gendisk *disk)
-> +{
-> +	struct rq_qos *rqos;
-> +	struct rq_nlat *nlat;
-> +
-> +	/* Latency tracking not enabled? */
-> +	rqos = nlat_rq_qos(disk->queue);
-> +	if (!rqos)
-> +		return -EINVAL;
-> +	nlat = RQNLAT(rqos);
-> +	if (nlat->enabled)
-> +		return 0;
-> +
-> +	/* Queue not registered? Maybe shutting down... */
-> +	if (!blk_queue_registered(disk->queue))
-> +		return -EAGAIN;
-> +
-> +	nlat->enabled = true;
-> +	memset(nlat->latency, 0, sizeof(u64) * nlat->num);
-> +	memset(nlat->samples, 0, sizeof(unsigned int) * nlat->num);
-> +	blk_stat_activate_nsecs(nlat->cb, nlat->win_usec * 1000);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(blk_nlat_enable);
-> +
-> +void blk_nlat_disable(struct gendisk *disk)
-> +{
-> +	struct rq_qos *rqos = nlat_rq_qos(disk->queue);
-> +	struct rq_nlat *nlat;
-> +
-> +	if (!rqos)
-> +		return;
-> +	nlat = RQNLAT(rqos);
-> +	if (nlat->enabled) {
-> +		blk_stat_deactivate(nlat->cb);
-> +		nlat->enabled = false;
-> +	}
-> +}
-> +EXPORT_SYMBOL_GPL(blk_nlat_disable);
-> +
-> +int blk_nlat_init(struct gendisk *disk)
-> +{
-> +	struct rq_nlat *nlat;
-> +	int ret = -ENOMEM;
-> +
-> +	nlat = kzalloc(sizeof(*nlat), GFP_KERNEL);
-> +	if (!nlat)
-> +		return -ENOMEM;
-> +
-> +	nlat->num = num_possible_nodes();
-> +	nlat->lowat = NLAT_DEFAULT_LOWAT;
-> +	nlat->decay = NLAT_DEFAULT_DECAY;
-> +	nlat->win_usec = nlat_default_latency_usec(disk->queue);
-> +
-> +	nlat->latency = kcalloc(nlat->num, sizeof(u64), GFP_KERNEL);
-> +	if (!nlat->latency)
-> +		goto err_free;
-> +	nlat->samples = kcalloc(nlat->num, sizeof(unsigned int), GFP_KERNEL);
-> +	if (!nlat->samples)
-> +		goto err_free;
-> +	nlat->cb = blk_stat_alloc_callback(nlat_timer_fn, nlat_bucket_node,
-> +					   nlat->num, nlat);
-> +	if (!nlat->cb)
-> +		goto err_free;
-> +
-> +	/*
-> +	 * Assign rwb and add the stats callback.
-> +	 */
-
-This can be a single line comment.
-
-> +	mutex_lock(&disk->queue->rq_qos_mutex);
-> +	ret = rq_qos_add(&nlat->rqos, disk, RQ_QOS_NLAT, &nlat_rqos_ops);
-> +	mutex_unlock(&disk->queue->rq_qos_mutex);
-> +	if (ret)
-> +		goto err_free_cb;
-> +
-> +	blk_stat_add_callback(disk->queue, nlat->cb);
-> +
-> +	return 0;
-> +
-> +err_free_cb:
-> +	blk_stat_free_callback(nlat->cb);
-> +err_free:
-> +	kfree(nlat->samples);
-> +	kfree(nlat->latency);
-> +	kfree(nlat);
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(blk_nlat_init);
-> diff --git a/block/blk-rq-qos.h b/block/blk-rq-qos.h
-> index 37245c97ee61..2fc11ced0c00 100644
-> --- a/block/blk-rq-qos.h
-> +++ b/block/blk-rq-qos.h
-> @@ -17,6 +17,7 @@ enum rq_qos_id {
->  	RQ_QOS_WBT,
->  	RQ_QOS_LATENCY,
->  	RQ_QOS_COST,
-> +	RQ_QOS_NLAT,
->  };
->  
->  struct rq_wait {
-> @@ -79,6 +80,11 @@ static inline struct rq_qos *iolat_rq_qos(struct request_queue *q)
->  	return rq_qos_id(q, RQ_QOS_LATENCY);
->  }
->  
-> +static inline struct rq_qos *nlat_rq_qos(struct request_queue *q)
-> +{
-> +	return rq_qos_id(q, RQ_QOS_NLAT);
-> +}
-> +
->  static inline void rq_wait_init(struct rq_wait *rq_wait)
->  {
->  	atomic_set(&rq_wait->inflight, 0);
-> diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
-> index d3d8fd8e229b..1f3829627f1b 100644
-> --- a/include/linux/blk-mq.h
-> +++ b/include/linux/blk-mq.h
-> @@ -1231,4 +1231,15 @@ static inline bool blk_req_can_dispatch_to_zone(struct request *rq)
->  }
->  #endif /* CONFIG_BLK_DEV_ZONED */
->  
-> +#ifdef CONFIG_BLK_NODE_LATENCY
-> +int blk_nlat_enable(struct gendisk *disk);
-> +void blk_nlat_disable(struct gendisk *disk);
-> +u64 blk_nlat_latency(struct gendisk *disk, int node);
-> +int blk_nlat_init(struct gendisk *disk);
-> +#else
-> +static inline int blk_nlat_enable(struct gendisk *disk) { return 0; }
-> +static inline void blk_nlat_disable(struct gendisk *disk) {}
-> +static inline u64 blk_nlat_latency(struct gendisk *disk, int node) { return 0; }
-> +static inline int blk_nlat_init(struct gendisk *disk) { return -EOPNOTSUPP; }
-> +#endif
->  #endif /* BLK_MQ_H */
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20240510/202405101421.84a43285-lkp@intel.com
 
 -- 
-Damien Le Moal
-Western Digital Research
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
