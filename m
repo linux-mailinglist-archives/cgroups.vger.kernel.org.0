@@ -1,72 +1,72 @@
-Return-Path: <cgroups+bounces-2870-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2871-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 892A58C496A
-	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 00:02:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09CD58C496D
+	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 00:02:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EC0D1F222F4
-	for <lists+cgroups@lfdr.de>; Mon, 13 May 2024 22:02:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C478B23FC9
+	for <lists+cgroups@lfdr.de>; Mon, 13 May 2024 22:02:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8221884FD0;
-	Mon, 13 May 2024 22:01:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2044685955;
+	Mon, 13 May 2024 22:01:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fgkOXsmu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eFWJkdXQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBE8484D1F;
-	Mon, 13 May 2024 22:01:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85DDD84FD2;
+	Mon, 13 May 2024 22:01:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715637716; cv=none; b=kR8ZL5fFAZBNdIiUsPZuCK++fYwDarQTjKe7NBrHrE1DI8zyHznebkdPY140n6OA+ohiMNXOBTzyHmA6Q/0l9YMoDXqCyVSR97GPqKvDZ5r4/wjrVBPG4dOTTAPKybdrI2kDNmK2VLhV+4Ax4qTxs8SQKjufzjyCswpcrhwiFT4=
+	t=1715637717; cv=none; b=tv1Jt6cqT61bWRCKZQaAE6FrjJDVkw8RDxth7ln5XUJKdnSX+9ygHmIW/ySc0wC9+4w5fOnsL4bqvTNcTny9l0vjauiNx51XAXiy/Cg+LG/VjkCt1Rr9WVhVKYvIliMrZxQS4w/45myhOnIYN0dNBdvoH1q+N5S/BfzH5Us9Ups=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715637716; c=relaxed/simple;
-	bh=nBiBy7FlXCP7ujfPp1uf/LyH0qpEqlY9Ed0LVQjJiMU=;
+	s=arc-20240116; t=1715637717; c=relaxed/simple;
+	bh=Ix9Coy/qu+1Zq7Gd5fg/8EWLc8Pf3aPinseA69cbQO0=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RQ94WOwZa4B9JWxUxHPldmvVt6P7a03XxeSaj4c5TvY8iobcBVwuVB1KIPph8C/POd8DkPogQK5K0pcBTcakTjSTzT7/aYl21aUyZRT9VQ2EPi/j1rPbFvbzCiy+40jRj2KQ1uFhLFIq3ZaPQI/fy76OibPGk76ZWdjhlYRm76Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fgkOXsmu; arc=none smtp.client-ip=209.85.128.170
+	 MIME-Version; b=X69/m9qv9ZLLQqqwR5HfVmqmj3L+9M5dSygDNgssTBXGM1BlnyyaCgouL5vf++p3ty47zH77rXzI8T+jSXEX6GccMfdMyUnj58FWzBnt9+KENuK17Ta6TVuuSmDoSpsojPvyeikJdN95fEziUj21Ukl7AX+iRmQAf/zDcNJFCe8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eFWJkdXQ; arc=none smtp.client-ip=209.85.128.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-61b4cbb8834so48983297b3.0;
-        Mon, 13 May 2024 15:01:54 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-61be74097cbso52625577b3.1;
+        Mon, 13 May 2024 15:01:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715637714; x=1716242514; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715637715; x=1716242515; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=sIyxYS7w9O3sylA6Ofcy5e++wtKWaDEMHTTKe4epeVg=;
-        b=fgkOXsmuvanS29tLpuMeqsJfz60j+2Q81idGah+LKZzBBGrvvnnGexIfXoJRmWds7d
-         5LANExxwMseQStus39sby7goISBCNKqEn10Mj8IMsc6icfqyHIeTOn+WS0vB7AQEUEk9
-         kDzESwpEKV3+64nKxAnd298U0B+t1VbOchh2Ouy/Xs/ePGgIXLrQfWoWlKc7zBg1CWpZ
-         fZYbCFYS2IWarMym5YKBZVzNn5D/q0osD48R0RZJRUVvP1E5pM9LMCz3VKnKWTQ9IV2/
-         rmS2izcCJ2o1Kalmq5W3Cr0kAsGGNGnewgqwFQzJIVKCQf7ZxckTaSrpcATscCq4bNck
-         FZyQ==
+        bh=tMnBK/XyNMBSy+HUKP6h71zL5+rKZfas4ejQ4zNN5ps=;
+        b=eFWJkdXQj6KOK2UXb+CCYl8LHrP2SzBeTuJXMFxBDnUxuuZP2WCBwiswrfi/brALpb
+         kt+wAIitkMUB8t4ml69uZTkz5pi626BZxC387QRP+eFoKeuus7zn6B/gYjc3/JguX8Bm
+         OARkw4l5oiNXHvwMLGz5O/nWRAtnOevAg01uJnA0Drm3X3eHhMIM3Mgv0TYU4+Yi91oH
+         4KAn7gldCvfmqgScT4XfB0Dw30Iwo25Bj3GsJnGOInAmaxS5unWLxJpZ2/fwJy3lhoOh
+         ouJzloYs3jOvIo6WXsjuGyosbsumTZZksFjbuYunIt0ulnBaWhypFAMtfTjlypecWz5Z
+         Kd3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715637714; x=1716242514;
+        d=1e100.net; s=20230601; t=1715637715; x=1716242515;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sIyxYS7w9O3sylA6Ofcy5e++wtKWaDEMHTTKe4epeVg=;
-        b=Ef2B98MmboN02JXF0xBb0ESLjnl1COVSUdD0ATNrGnUluwbK0Kpk8Rt7gZ8bAWnmo1
-         QgBCl32Nu4NMwVaCkVEGB6daDMP8Oe0I2cYOtdDwsvdReoIxAQW82ib/OhmBIGwL1HYP
-         XJkpF+gtO2c6YA91UXHHc/o54gy0uCRLvu5ZAyuz/qE9b8CTWdfY9BMMYtpmo0avHTVm
-         pnVO4hXx6txwMRmdN605sXKIg6Pb+o34NbMbG/e41behtT2TQfbyjEUVSK9i0pZSeC75
-         Bqll21XGYLoO/kRfLu8a5DK1ONueAD9WKaIRRQCL6Ki/NN3kUatZACLSA+Ruq46dLLDK
-         sZ7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUXkvdtgryADSxjmF8eZWv8xu4dqqFb47exPPJKNh36dQogzH2r8hXu7YXNYlwnhiA68sjNv4L5cPSR3VvuQTRagNfUObNMVA==
-X-Gm-Message-State: AOJu0YyAZ9Ujp2FlNjDro83WzTuyEEQTJ8lEy7/znSANUJos+vmx76Lm
-	ZnLXWgO8uXbEHUFGHAbhseZ6d5xrPdHru6d7kci89W3Ajetl6d1cLY9anw==
-X-Google-Smtp-Source: AGHT+IGIzVWatliUFBuHHJNBpX3gRYcxQpUGm9gJHfvw7WbY7OPk4ckhZ+rdP4c6stCKSMlTQJDSng==
-X-Received: by 2002:a05:690c:f87:b0:61b:1e81:4f65 with SMTP id 00721157ae682-622afd979demr130974687b3.0.1715637713803;
-        Mon, 13 May 2024 15:01:53 -0700 (PDT)
+        bh=tMnBK/XyNMBSy+HUKP6h71zL5+rKZfas4ejQ4zNN5ps=;
+        b=YpGRAYYd8LuIhnMx93wuFn6b14mG+//1mFGzU8hGIxiQy+TvTdknU4vzmTxO88uXRT
+         U9KrCz/JugJcoIgx0Jl8ADPIWlFtXnDgV8InFAK64ny5L5mXCkYxsorFRRwcXCQ57e18
+         f9dfk/Ym3BgHfOGR/pyD2IPmoTeO7e0vaZV2FxoAEcqfUQB/B9hm5s6RFO8D6sGZbnIX
+         eU+Iycqu72uc/1vWj42Fg2USoVJjUaXhbCiuMYEANq65TaystsyNULQjjXeuhLS9v/pk
+         v2/hzwW0zNLIOSvplU0cA7BFHAv9RskZdYZme7ShU4qo8GYhBIXybdig1LXtL2o+ZRUa
+         lFKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUFVzCw3+2nhg7d8WXrKwZCH3IBqTDIQ0wG9RUUmxYD2pNJa7Lnixv4bMxd61dcHK7fL6lCBXHLipcbo2tbVKwzVZQ3onTLjw==
+X-Gm-Message-State: AOJu0Yx18A9Jaw3N2skEvtXsXnN31C34iEOENLkVRJz4P4hybbZEHgLO
+	UfvCeJIBE7kIlzHnnAYob4XH1RrAaHpe59WqnPelehdhKW166gqXcgsDTQ==
+X-Google-Smtp-Source: AGHT+IHwlzXZd0n1tEC+TfFua7XYxnKiw801k8/NgQcyzcgsKuv7SmbWyKK1IkFTqcY+3pEp0aAytw==
+X-Received: by 2002:a81:b28a:0:b0:61b:c89:1e73 with SMTP id 00721157ae682-622b01384b9mr102086057b3.45.1715637715407;
+        Mon, 13 May 2024 15:01:55 -0700 (PDT)
 Received: from localhost ([2601:344:8301:57f0:8acf:1c06:973:d499])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6209e349e0csm22824797b3.79.2024.05.13.15.01.53
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-622deaa12d1sm8128727b3.1.2024.05.13.15.01.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 May 2024 15:01:53 -0700 (PDT)
+        Mon, 13 May 2024 15:01:55 -0700 (PDT)
 From: Yury Norov <yury.norov@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -94,9 +94,9 @@ To: linux-kernel@vger.kernel.org,
 	Yury Norov <yury.norov@gmail.com>,
 	Zefan Li <lizefan.x@bytedance.com>,
 	cgroups@vger.kernel.org
-Subject: [PATCH 3/6] driver core: cpu: optimize print_cpus_isolated()
-Date: Mon, 13 May 2024 15:01:43 -0700
-Message-Id: <20240513220146.1461457-4-yury.norov@gmail.com>
+Subject: [PATCH 4/6] genirq: optimize irq_do_set_affinity()
+Date: Mon, 13 May 2024 15:01:44 -0700
+Message-Id: <20240513220146.1461457-5-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240513220146.1461457-1-yury.norov@gmail.com>
 References: <20240513220146.1461457-1-yury.norov@gmail.com>
@@ -108,33 +108,28 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The function may be called with housekeeping_cpumask == cpu_possible_mask,
-and in such case the 'isolated' cpumask would be just empty.
-
-We can call cpumask_clear() in that case, and save CPU cycles.
+If mask == desc->irq_common_data.affinity, copying one to another is
+useless, and we can just skip it.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- drivers/base/cpu.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ kernel/irq/manage.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-index 56fba44ba391..1322957286dd 100644
---- a/drivers/base/cpu.c
-+++ b/drivers/base/cpu.c
-@@ -282,8 +282,10 @@ static ssize_t print_cpus_isolated(struct device *dev,
- 	if (!alloc_cpumask_var(&isolated, GFP_KERNEL))
- 		return -ENOMEM;
- 
--	cpumask_andnot(isolated, cpu_possible_mask,
--		       housekeeping_cpumask(HK_TYPE_DOMAIN));
-+	if (cpu_possible_mask != housekeeping_cpumask(HK_TYPE_DOMAIN))
-+		cpumask_andnot(isolated, cpu_possible_mask, housekeeping_cpumask(HK_TYPE_DOMAIN));
-+	else
-+		cpumask_clear(isolated);
- 	len = sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(isolated));
- 
- 	free_cpumask_var(isolated);
+diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+index bf9ae8a8686f..ad9ed9fdf919 100644
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -285,7 +285,8 @@ int irq_do_set_affinity(struct irq_data *data, const struct cpumask *mask,
+ 	switch (ret) {
+ 	case IRQ_SET_MASK_OK:
+ 	case IRQ_SET_MASK_OK_DONE:
+-		cpumask_copy(desc->irq_common_data.affinity, mask);
++		if (desc->irq_common_data.affinity != mask)
++			cpumask_copy(desc->irq_common_data.affinity, mask);
+ 		fallthrough;
+ 	case IRQ_SET_MASK_OK_NOCOPY:
+ 		irq_validate_effective_affinity(data);
 -- 
 2.40.1
 
