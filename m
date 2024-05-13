@@ -1,120 +1,92 @@
-Return-Path: <cgroups+bounces-2861-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2862-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 721438C3011
-	for <lists+cgroups@lfdr.de>; Sat, 11 May 2024 09:35:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6004C8C4093
+	for <lists+cgroups@lfdr.de>; Mon, 13 May 2024 14:19:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A33DC1C21673
-	for <lists+cgroups@lfdr.de>; Sat, 11 May 2024 07:35:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A9492863C3
+	for <lists+cgroups@lfdr.de>; Mon, 13 May 2024 12:19:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8416C2FD;
-	Sat, 11 May 2024 07:35:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CVoAdqTG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECFCB14F132;
+	Mon, 13 May 2024 12:19:19 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D90D3522A;
-	Sat, 11 May 2024 07:35:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1595E14EC6A;
+	Mon, 13 May 2024 12:19:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715412924; cv=none; b=n//LUOi99TLMfQYzANLPA9EOihFAjoHVtqgIHoaxEkCwPzX5/GNYMxT/jLqpurU+7a/7JpdkiWxGIFOGdVmp6uA/yE3OPUxAJFAvvu0YLO1SukrbxPLOV6vpks9L6shK8t7kWoTgP/hhU8jBR3/phfHEXnHqnbEnRxWxiZk7NW0=
+	t=1715602759; cv=none; b=aG/GJawicsFo6JgJjezRX7s331DC7dEl5toFahOvEeU8FGxS6/lwtATcxsHN6Gu8zUi7Uwb9Yc5k1TponoNv54hTl8S/mkHm+/D0w/pMKtPk6AV1FfmiYRQm5JU06dJjIArxt/j0Kk48lmeitBc/2Z6qFMeWzVb274I5Y6797Ok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715412924; c=relaxed/simple;
-	bh=RCnR/Narod92mFqDOefmW4qo56aOWbIqph2R20YVQuw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sbnKWih/uJbfgWPVzNIadFZLcxZ3X72Pn2jl/iN7gY61eqlTi9w5mraj7UetLteMfq1a7kmZmprzMaDKItR+jDgFBGWL/fJLZuejPO0Ia1MXcjjlyaLEHfPgGqrghDfTx5ccNcS3r9uR/Fkm4HqQxMLfZAd39lKLt7QjbDDC94o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CVoAdqTG; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51f1bf83f06so3266029e87.1;
-        Sat, 11 May 2024 00:35:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715412921; x=1716017721; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=onldwQIzp78LG59n3NFElPNcsr9m2UJ7FD1wkPedMlM=;
-        b=CVoAdqTG7Nz4W5HmK6Hov3YAsmJWnHzP9cZKnywWoDXkUlQYN5E0ZyviXAKFFYgbpn
-         5A9Bn9I5ZFzWzm8WCwcxFWeGsOzNC2Xw79xljYTYAHCPRRcn9XXPtHF1PcuMJr3Ob7LL
-         LQr6oGntS7dr5Faia9Cv49ryhrMftZ7VRRK7f/K+5QRLQRIzi46H9ENcKGPXaY/K+VxI
-         Vvacm7wo2eiPi/sL8iW5u0uozMEfkpYcesA62fgsR4+EWcExuUri3rDxxUXStBa7NkrK
-         YJDT4Uvfqk2G8evVuWreHxe+NB32Ki+JmVhNdwo2YxljOWL7G1qMoTCusyz8HDDDVOv2
-         sUaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715412921; x=1716017721;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=onldwQIzp78LG59n3NFElPNcsr9m2UJ7FD1wkPedMlM=;
-        b=XPVQKa5f1r5/kKo9UUlW0+UKjrV9SotbyzCpDlMuzsxcJLIZnyr5ZSNvMxreVR57sG
-         N3pESC5ZE7luja6weNIL1DVbDUoc3GKofMwUp/e2bNEw4rY6eq7r/h44Rg6sP/Op1d/x
-         SMyc0NU+dlWGWXeUGUcqt5EOnwIxx5trrN3nwQQJVwyO4/Uz2hk7yB4Sm4+1I2Rv8Lgs
-         NMt8DThPdCxIqCxpnswDL5mCEsuhnAx1laj2pQU0N3UmWTM0cj7qtJII7oWSWT9xK492
-         zGDYxmKFYQ/rReBzvaQNLOo5mGjopqyi28YRo4uSdvlSa6wUgFW0jWhrNFj0mvLcY+tW
-         J2kA==
-X-Forwarded-Encrypted: i=1; AJvYcCURf+1644oYoT+1Zz8xihTN+sL1BWumctP0MdWzCjS2kRE8fb8tUoN7+6cEYEf9J0o5wgck3P45KIUFx2I0UHKg4oIvqphNxKNYFNI+vAB1l8KtSQ9yNfGzYns1Z7PPP8HWrmrfr8ZPZZ6jQKoev+KUzb42xiuHVi8rR9XSceQeLGET
-X-Gm-Message-State: AOJu0YzIrvd1tMaeE/2MOfst0ivHWsY0BxGGQg4Ll3NNoPie+yxwrN5/
-	F0fmtKRUdA5jr9jkCYqE5z2XrVSZ8aeioVT/GE7NTENdCaNAK2W6GLEeoptqO+u7AZz1hLDZmey
-	lQI6de4LlYivXzZML6+mSzuyiOfA9lVIv
-X-Google-Smtp-Source: AGHT+IGwYg82We3uLuR2mZ/xbiWuGjRpwEPg+Yy/6af9O3ukcvNdq4tIg71vISFu90ZIh+8muwTg9jg1Bla+rXCh2xI=
-X-Received: by 2002:a05:6512:38d1:b0:51f:1853:25f with SMTP id
- 2adb3069b0e04-5220fc79467mr2836408e87.19.1715412920609; Sat, 11 May 2024
- 00:35:20 -0700 (PDT)
+	s=arc-20240116; t=1715602759; c=relaxed/simple;
+	bh=lkPugVOypGhAP7Q3SGXFpjeqcaDfBZ/dF03MDdJXcP4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Xjz4XwiEzRoC2to5pkKG43Um+DMfCgGGpn109kqWi1MXqF5o1CtWYcV9/ywzCu2cJehoP9WIieDzX/VnBnXGkDCrv8vTNi/gJVSmoktNQQBFvYDqS864s2RPAQHFMDWrtGBX8Lqrt5xqU2z1l/tSjWXs8S34/9Gv3n+uZkuYA8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VdJSR0dcyz4f3kkP;
+	Mon, 13 May 2024 20:19:03 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 8F0D31A016E;
+	Mon, 13 May 2024 20:19:08 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgAn9g46BUJm8iY0Mg--.57325S4;
+	Mon, 13 May 2024 20:19:08 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: tj@kernel.org,
+	josef@toxicpanda.com,
+	axboe@kernel.dk
+Cc: cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	yukuai3@huawei.com,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH -next 0/2] blk-throttle: fix lower control under super low iops limit
+Date: Mon, 13 May 2024 20:08:46 +0800
+Message-Id: <20240513120848.2828797-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240509023937.1090421-1-zhaoyang.huang@unisoc.com>
- <20240509023937.1090421-3-zhaoyang.huang@unisoc.com> <Zjw_0UPKvGkPfKFO@casper.infradead.org>
- <CAGWkznGZP3KUBN2M6syrjTmVOdSM0zx23hcJ6+hqE8Drgz2f-A@mail.gmail.com> <Zj2R_UH0JMspexp5@casper.infradead.org>
-In-Reply-To: <Zj2R_UH0JMspexp5@casper.infradead.org>
-From: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date: Sat, 11 May 2024 15:35:09 +0800
-Message-ID: <CAGWkznHX3OBeMh7-jvAP1HyVaT=TN6Fs2ArUCkUHtE3nVadaDA@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/2] mm: introduce budgt control in readahead
-To: Matthew Wilcox <willy@infradead.org>
-Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, linux-mm@kvack.org, 
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, steve.kang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAn9g46BUJm8iY0Mg--.57325S4
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY77AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
+	6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+	kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8I
+	cVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2js
+	IEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE
+	5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeV
+	CFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l
+	FIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+	0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+	17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+	C0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
+	0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2Kf
+	nxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Fri, May 10, 2024 at 11:18=E2=80=AFAM Matthew Wilcox <willy@infradead.or=
-g> wrote:
->
-> On Fri, May 10, 2024 at 10:43:20AM +0800, Zhaoyang Huang wrote:
-> > Thanks for the prompt. I did some basic research on soft RAID and
-> > wonder if applying the bps limit on /dev/md0 like below could make
-> > this work.
->
-> No.  Look at btrfs' raid support, for example.  it doesn't use md0.
-If I understand the below command correctly, btrfs uses one of the
-volumes within RAID as the mount block device, not /dev/md0. However,
-I think this is a problem of blkio.throttle rather than this commit
-which means this readahead budget control will work accordingly as
-long as blkio.throttle's parameter is configured correctly(eg. 50/50
-on sdb and sdc)
+From: Yu Kuai <yukuai3@huawei.com>
 
-mkfs.btrfs -m raid0 -d raid0 /dev/sdb /dev/sdc
-mount -t btrfs /dev/sdb /mnt/btr
+Yu Kuai (2):
+  blk-throttle: factor out a helper to get throtl_slice from tg
+  blk-throttle: fix lower control under super low iops limit
 
+ block/blk-throttle.c | 52 ++++++++++++++++++++++++++++++++------------
+ block/blk-throttle.h |  6 +++++
+ 2 files changed, 44 insertions(+), 14 deletions(-)
 
+-- 
+2.39.2
 
->
-> > I didn't find information about 'RAID internally'. Could we set the
-> > limit on the root device(the one used for mount) to manage the whole
-> > partition without caring about where the bio finally goes? Or ask the
-> > user to decide if to use by making sure the device they apply will not
-> > do RAID?
->
-> No.
 
