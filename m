@@ -1,108 +1,127 @@
-Return-Path: <cgroups+bounces-2901-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2900-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 755E58C5CC9
-	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 23:29:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 486688C5C95
+	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 23:02:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16F051F22853
-	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 21:29:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C048B21D42
+	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 21:02:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B72181CE9;
-	Tue, 14 May 2024 21:28:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9484A180A6A;
+	Tue, 14 May 2024 21:02:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="oA3G1sZz"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xTHATAbS";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Dweu8njF"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.smtpout.orange.fr (smtp-19.smtpout.orange.fr [80.12.242.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDDD6181B93;
-	Tue, 14 May 2024 21:28:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D70BE14532B;
+	Tue, 14 May 2024 21:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715722131; cv=none; b=TXr/rVyYM4FTxZ9swnsnEDBrUSg0l7ys9WwOUuWSx81NpXwL1xWHQrotz9nP0GWZouTq0kyNBK3AIfmpiErQjFMB/qpF8VyAQKvRArt2vwA2cvnJ9PaehKntNlP0M2jZpFAqufTKfo1yVjBSz21mLladiGGtjakRxAVat+vxhyI=
+	t=1715720524; cv=none; b=qWHl/p93VmEIEsbV8PcFpPxrk2gK/AylfxuY/O8AgMfXIt6xlpDJI6OA/n5ghM+4awZkEfl2M8wD6vmikGtEkdfUg7nsyb12C/QrPeYGTCRTcx2T0t4qLCFY6vtVQTB0N75wWM5hhZJaWeFjObIJbiDDZDMxqu8Z3guzTlOA7G8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715722131; c=relaxed/simple;
-	bh=HlmV3fYfS862Gw2Y44V0T78NlarxsqVus5X9aOaYhbM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
-	 In-Reply-To:Content-Type; b=IBwoMkmdklGneIfTo2OGspfr/D/0AuUXgPuiEt1rFcQ/SiLZwzM+W4AxjB4PvsME2I/hC6FkDjCCNTCe582Yh25bu9I0fiZXTyk38ib2t42ZKXEZHCxOthva1bZK65W87ezr8Sfcwb9yQI1908gLxaA51HzYsx7dnEpxwW6rhco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=oA3G1sZz; arc=none smtp.client-ip=80.12.242.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.37] ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id 6z8usemhMGAMZ6z8us6Qwc; Tue, 14 May 2024 22:53:06 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1715719986;
-	bh=aLWlgahzJcaRGqUoakghQCTDX9EaszXl5pn3yfSS5as=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=oA3G1sZzCQhftt1mEv+keu25rsjPFSjtCQ9ned9HKtiM/yL6JVkKpoW45o0E5f2fj
-	 gEWLKMW/7Q692b2/vVAB6IM5e1mJVg79qaNCceq17RnEe7omto1u3Ow+d4RG4RoipT
-	 Aq5qqZFnOKLd/bMiho/vkF4OweOFJqOwVInw8+OaKmI9ibR34aEiB6QccmWTAj+RZC
-	 rIexraXe7uHNGSbE2ojyX4a+47UjKENSXbOvPVULZsGemzPGs86vjgZdnBw0tTDYRs
-	 6nkW+MuNc0b+dOWDRbJlJGlGnkmNTRX1EW7Pcpu6teGxXF6/7h248i2jbyzIeJ6EEg
-	 TJYe7foJbHwCA==
-X-ME-Helo: [192.168.1.37]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Tue, 14 May 2024 22:53:06 +0200
-X-ME-IP: 86.243.17.157
-Message-ID: <9fb7adfc-701b-427c-a08e-a007e3159601@wanadoo.fr>
-Date: Tue, 14 May 2024 22:53:00 +0200
+	s=arc-20240116; t=1715720524; c=relaxed/simple;
+	bh=oNNSswIyrt13EK8oXKF/p1rfPKlwxsz+mTptoXw8pUk=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=JFlc/z9lCj8L7Zw1+iSDjKAWRR3ntG12PhCNw6TicNApI17HzHywXqFHSLk/d34UA3jM0D12x27Dh7LOdLFXs6+oPcokgbgHgm91YZhPgg1ZLkb06/ksIIoWmhkT2NLtVpyLke64jKhtV/DJCaxlcwwdpyS/LWlCIcQJEWwrhPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=xTHATAbS; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Dweu8njF; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1715720521;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l9IhefwFGHqUFohDsQBE0bSZV5Ni7HPgyBwTX8U3rtw=;
+	b=xTHATAbS2oMlFmU6eR+Gzu1a3vT8mekSwRgnuz1YS3XvVDoHBoIMqULio2ndUn9WP2ICWF
+	gVWExzS0yzfhheDls2sX765jaH+nmuOGwcZYTNnnp17kwzfWEE2fqeGibiRIgTXV6JpaFI
+	qZ+DYt1ekmDlyuCWnSy9huETcMJF0wOQUINTDfiIQ8jjcgZp3wYy4FBAqBdj8WlQF7ROdx
+	zHdakega01kbXTFPcLlSBWEXWpYH1LkZNQIhVcbsUywuIZybaDf0vbaSLR+yPmRTJJ2q2c
+	UxJ6PT7rDT/sDk8G7COrgst9cIjlgOGxjC3DqcsuDbTVvU44Tp1Lp5yGMxAI5Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1715720521;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l9IhefwFGHqUFohDsQBE0bSZV5Ni7HPgyBwTX8U3rtw=;
+	b=Dweu8njFymxpAMKfxaoBwSdUnenIrETZ5nUXq2uSyUt7JIeu5epMEk1O9qFSQ30RdiM9m/
+	EMLFVyv2o679WFCg==
+To: Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, "Paul E. McKenney"
+ <paulmck@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Anna-Maria
+ Behnsen <anna-maria@linutronix.de>, Ben Segall <bsegall@google.com>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>, Frederic Weisbecker <frederic@kernel.org>,
+ Imran Khan <imran.f.khan@oracle.com>, Ingo Molnar <mingo@redhat.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Leonardo Bras <leobras@redhat.com>, Mel Gorman <mgorman@suse.de>, Peter
+ Zijlstra <peterz@infradead.org>, Rik van Riel <riel@surriel.com>, Steven
+ Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>, Valentin
+ Schneider <vschneid@redhat.com>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Waiman Long <longman@redhat.com>, Yury Norov
+ <yury.norov@gmail.com>, Zefan Li <lizefan.x@bytedance.com>,
+ cgroups@vger.kernel.org
+Subject: Re: [PATCH 3/6] driver core: cpu: optimize print_cpus_isolated()
+In-Reply-To: <20240513220146.1461457-4-yury.norov@gmail.com>
+References: <20240513220146.1461457-1-yury.norov@gmail.com>
+ <20240513220146.1461457-4-yury.norov@gmail.com>
+Date: Tue, 14 May 2024 23:02:00 +0200
+Message-ID: <87jzjwkszb.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/6] sched/topology: optimize topology_span_sane()
-To: Yury Norov <yury.norov@gmail.com>
-References: <20240513220146.1461457-1-yury.norov@gmail.com>
- <20240513220146.1461457-3-yury.norov@gmail.com>
-Content-Language: en-MW
-Cc: anna-maria@linutronix.de, bristot@redhat.com, bsegall@google.com,
- cgroups@vger.kernel.org, dietmar.eggemann@arm.com, frederic@kernel.org,
- gregkh@linuxfoundation.org, hannes@cmpxchg.org, imran.f.khan@oracle.com,
- juri.lelli@redhat.com, leobras@redhat.com, linux-kernel@vger.kernel.org,
- lizefan.x@bytedance.com, longman@redhat.com, mgorman@suse.de,
- mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org,
- rafael@kernel.org, riel@surriel.com, rostedt@goodmis.org,
- tglx@linutronix.de, tj@kernel.org, vincent.guittot@linaro.org,
- vschneid@redhat.com
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20240513220146.1461457-3-yury.norov@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Le 14/05/2024 à 00:01, Yury Norov a écrit :
-> The function may call cpumask_equal with tl->mask(cpu) == tl->mask(i),
-> even though cpu != i. In such case, cpumask_equal() would always return
-> true, and we can proceed to the next CPU immediately.
-> 
-> Signed-off-by: Yury Norov <yury.norov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-> ---
->   kernel/sched/topology.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 99ea5986038c..eb9eb17b0efa 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -2360,7 +2360,7 @@ static bool topology_span_sane(struct sched_domain_topology_level *tl,
->   	 * breaks the linking done for an earlier span.
->   	 */
->   	for_each_cpu(i, cpu_map) {
-> -		if (i == cpu)
-> +		if (i == cpu || tl->mask(cpu) == tl->mask(i))
->   			continue;
->   		/*
->   		 * We should 'and' all those masks with 'cpu_map' to exactly
+On Mon, May 13 2024 at 15:01, Yury Norov wrote:
+> The function may be called with housekeeping_cpumask == cpu_possible_mask,
 
-Hi,
+How so? There is no cpumask argument in the function signature. Can you
+please be precise?
 
-does it make sense to pre-compute tl->mask(cpu) outside the for_each_cpu()?
+> and in such case the 'isolated' cpumask would be just empty.
+>
+> We can call cpumask_clear() in that case, and save CPU cycles.
+>
+> @@ -282,8 +282,10 @@ static ssize_t print_cpus_isolated(struct device *dev,
+>  	if (!alloc_cpumask_var(&isolated, GFP_KERNEL))
+>  		return -ENOMEM;
+>  
+> -	cpumask_andnot(isolated, cpu_possible_mask,
+> -		       housekeeping_cpumask(HK_TYPE_DOMAIN));
+> +	if (cpu_possible_mask != housekeeping_cpumask(HK_TYPE_DOMAIN))
+> +		cpumask_andnot(isolated, cpu_possible_mask, housekeeping_cpumask(HK_TYPE_DOMAIN));
+> +	else
+> +		cpumask_clear(isolated);
+>  	len = sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(isolated));
+>  
+>  	free_cpumask_var(isolated);
 
-CJ
+Seriously? You need clear() to emit an empty string via %*pbl?
+
+	if (cpu_possible_mask != housekeeping_cpumask(HK_TYPE_DOMAIN)) {
+        	if (!alloc_cpumask_var(&isolated, GFP_KERNEL))
+                	return -ENOMEM;
+                cpumask_andnot(isolated, cpu_possible_mask, housekeeping_cpumask(HK_TYPE_DOMAIN));
+                len = sysfs_emit(buf, "%*pbl\n", cpumask_pr_args(isolated));
+	  	free_cpumask_var(isolated);
+	} else {
+        	len = sysfs_emit(buf, "\n");
+        }
+
+That actually would make sense and spare way more CPU cycles, no?
+
+Is it actually worth the larger text size? Not really convinced about that.
+
+Thanks,
+
+        tglx
 
