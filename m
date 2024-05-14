@@ -1,110 +1,108 @@
-Return-Path: <cgroups+bounces-2899-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2901-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 461368C5C76
-	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 22:49:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 755E58C5CC9
+	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 23:29:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0315F2828EE
-	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 20:49:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16F051F22853
+	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 21:29:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32EB21EA80;
-	Tue, 14 May 2024 20:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49B72181CE9;
+	Tue, 14 May 2024 21:28:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OGQpwThJ"
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="oA3G1sZz"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.smtpout.orange.fr (smtp-19.smtpout.orange.fr [80.12.242.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A9D339A0
-	for <cgroups@vger.kernel.org>; Tue, 14 May 2024 20:48:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDDD6181B93;
+	Tue, 14 May 2024 21:28:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715719741; cv=none; b=fyStcsHw/3DAwNPKiyYJONdqa2oEUHU+1pkAux/DJxNDNQjDTC7plY7oj6zPjlEydMpIlY7t6nHuaM2qxrvQYfamaGJwgbE8vAM7aGEx0d+W8pwmW6GIQM7aGznI5bxKZNfV3qkQLqDRNtcd1ZYLgf9EB0f8RNI9SYST+2WVKuU=
+	t=1715722131; cv=none; b=TXr/rVyYM4FTxZ9swnsnEDBrUSg0l7ys9WwOUuWSx81NpXwL1xWHQrotz9nP0GWZouTq0kyNBK3AIfmpiErQjFMB/qpF8VyAQKvRArt2vwA2cvnJ9PaehKntNlP0M2jZpFAqufTKfo1yVjBSz21mLladiGGtjakRxAVat+vxhyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715719741; c=relaxed/simple;
-	bh=+kC3x8SXXb0no0oRx22C1RCk9ERpR8hzu7TzSlw8wEA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bei6XDjck1LhfmywWD/vzpzEj5Xxzbma2uulMg6ZI0hP+WMp9PVOcW3AeWwQeTT8eKrfAxsKz5ZS9m030xdN0BMqkBkwJNHjZqjTTIOfPaeStX+bCRBfn8A4GNnYsWUdqlyAV7O2j8DX/okOyVk6Z09NXmy6czFe2g28F+/6154=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OGQpwThJ; arc=none smtp.client-ip=91.218.175.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 14 May 2024 13:48:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1715719737;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vjO7VnrroqxxgnD3OiMZO9Nx30PMYAUaL1ENaC7gzp0=;
-	b=OGQpwThJqbh+faErC9luLSfbckj35Wc0Ehw3+nSaXp9SeE7K4BbMHDB74xYP0iRy49c8iV
-	0FPeMy9LX1E2pl9GAgAFJ4KQq6jO9kP2IghKENNjf3jOeLwUzPt5S7bt2ZGWSeumNApQDp
-	KHHP+Ef5Nqvk58wjoPRIH+AgL9SKHUQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Rik van Riel <riel@surriel.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] mm: vmscan: restore incremental cgroup iteration
-Message-ID: <whvb6gkmciiogjoevep6pep6ibkjxoabgckeog6dejn4wjqxpj@przngnktv255>
-References: <20240514202641.2821494-1-hannes@cmpxchg.org>
+	s=arc-20240116; t=1715722131; c=relaxed/simple;
+	bh=HlmV3fYfS862Gw2Y44V0T78NlarxsqVus5X9aOaYhbM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type; b=IBwoMkmdklGneIfTo2OGspfr/D/0AuUXgPuiEt1rFcQ/SiLZwzM+W4AxjB4PvsME2I/hC6FkDjCCNTCe582Yh25bu9I0fiZXTyk38ib2t42ZKXEZHCxOthva1bZK65W87ezr8Sfcwb9yQI1908gLxaA51HzYsx7dnEpxwW6rhco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=oA3G1sZz; arc=none smtp.client-ip=80.12.242.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.37] ([86.243.17.157])
+	by smtp.orange.fr with ESMTPA
+	id 6z8usemhMGAMZ6z8us6Qwc; Tue, 14 May 2024 22:53:06 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1715719986;
+	bh=aLWlgahzJcaRGqUoakghQCTDX9EaszXl5pn3yfSS5as=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=oA3G1sZzCQhftt1mEv+keu25rsjPFSjtCQ9ned9HKtiM/yL6JVkKpoW45o0E5f2fj
+	 gEWLKMW/7Q692b2/vVAB6IM5e1mJVg79qaNCceq17RnEe7omto1u3Ow+d4RG4RoipT
+	 Aq5qqZFnOKLd/bMiho/vkF4OweOFJqOwVInw8+OaKmI9ibR34aEiB6QccmWTAj+RZC
+	 rIexraXe7uHNGSbE2ojyX4a+47UjKENSXbOvPVULZsGemzPGs86vjgZdnBw0tTDYRs
+	 6nkW+MuNc0b+dOWDRbJlJGlGnkmNTRX1EW7Pcpu6teGxXF6/7h248i2jbyzIeJ6EEg
+	 TJYe7foJbHwCA==
+X-ME-Helo: [192.168.1.37]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 14 May 2024 22:53:06 +0200
+X-ME-IP: 86.243.17.157
+Message-ID: <9fb7adfc-701b-427c-a08e-a007e3159601@wanadoo.fr>
+Date: Tue, 14 May 2024 22:53:00 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240514202641.2821494-1-hannes@cmpxchg.org>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/6] sched/topology: optimize topology_span_sane()
+To: Yury Norov <yury.norov@gmail.com>
+References: <20240513220146.1461457-1-yury.norov@gmail.com>
+ <20240513220146.1461457-3-yury.norov@gmail.com>
+Content-Language: en-MW
+Cc: anna-maria@linutronix.de, bristot@redhat.com, bsegall@google.com,
+ cgroups@vger.kernel.org, dietmar.eggemann@arm.com, frederic@kernel.org,
+ gregkh@linuxfoundation.org, hannes@cmpxchg.org, imran.f.khan@oracle.com,
+ juri.lelli@redhat.com, leobras@redhat.com, linux-kernel@vger.kernel.org,
+ lizefan.x@bytedance.com, longman@redhat.com, mgorman@suse.de,
+ mingo@redhat.com, paulmck@kernel.org, peterz@infradead.org,
+ rafael@kernel.org, riel@surriel.com, rostedt@goodmis.org,
+ tglx@linutronix.de, tj@kernel.org, vincent.guittot@linaro.org,
+ vschneid@redhat.com
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20240513220146.1461457-3-yury.norov@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, May 14, 2024 at 04:26:41PM -0400, Johannes Weiner wrote:
-> Currently, reclaim always walks the entire cgroup tree in order to
-> ensure fairness between groups. While overreclaim is limited in
-> shrink_lruvec(), many of our systems have a sizable number of active
-> groups, and an even bigger number of idle cgroups with cache left
-> behind by previous jobs; the mere act of walking all these cgroups can
-> impose significant latency on direct reclaimers.
+Le 14/05/2024 à 00:01, Yury Norov a écrit :
+> The function may call cpumask_equal with tl->mask(cpu) == tl->mask(i),
+> even though cpu != i. In such case, cpumask_equal() would always return
+> true, and we can proceed to the next CPU immediately.
 > 
-> In the past, we've used a save-and-restore iterator that enabled
-> incremental tree walks over multiple reclaim invocations. This ensured
-> fairness, while keeping the work of individual reclaimers small.
+> Signed-off-by: Yury Norov <yury.norov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> ---
+>   kernel/sched/topology.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> However, in edge cases with a lot of reclaim concurrency, individual
-> reclaimers would sometimes not see enough of the cgroup tree to make
-> forward progress and (prematurely) declare OOM. Consequently we
-> switched to comprehensive walks in 1ba6fc9af35b ("mm: vmscan: do not
-> share cgroup iteration between reclaimers").
-> 
-> To address the latency problem without bringing back the premature OOM
-> issue, reinstate the shared iteration, but with a restart condition to
-> do the full walk in the OOM case - similar to what we do for
-> memory.low enforcement and active page protection.
-> 
-> In the worst case, we do one more full tree walk before declaring
-> OOM. But the vast majority of direct reclaim scans can then finish
-> much quicker, while fairness across the tree is maintained:
-> 
-> - Before this patch, we observed that direct reclaim always takes more
->   than 100us and most direct reclaim time is spent in reclaim cycles
->   lasting between 1ms and 1 second. Almost 40% of direct reclaim time
->   was spent on reclaim cycles exceeding 100ms.
-> 
-> - With this patch, almost all page reclaim cycles last less than 10ms,
->   and a good amount of direct page reclaim finishes in under 100us. No
->   page reclaim cycles lasting over 100ms were observed anymore.
-> 
-> The shared iterator state is maintaned inside the target cgroup, so
-> fair and incremental walks are performed during both global reclaim
-> and cgroup limit reclaim of complex subtrees.
-> 
-> Reported-by: Rik van Riel <riel@surriel.com>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Rik van Riel <riel@surriel.com>
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index 99ea5986038c..eb9eb17b0efa 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -2360,7 +2360,7 @@ static bool topology_span_sane(struct sched_domain_topology_level *tl,
+>   	 * breaks the linking done for an earlier span.
+>   	 */
+>   	for_each_cpu(i, cpu_map) {
+> -		if (i == cpu)
+> +		if (i == cpu || tl->mask(cpu) == tl->mask(i))
+>   			continue;
+>   		/*
+>   		 * We should 'and' all those masks with 'cpu_map' to exactly
 
-Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
+Hi,
+
+does it make sense to pre-compute tl->mask(cpu) outside the for_each_cpu()?
+
+CJ
 
