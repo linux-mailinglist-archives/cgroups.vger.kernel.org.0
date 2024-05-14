@@ -1,107 +1,122 @@
-Return-Path: <cgroups+bounces-2876-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2877-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 373858C4C1D
-	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 07:55:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BA508C4DB8
+	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 10:31:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C76F91F23B17
-	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 05:55:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 564AA28415F
+	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 08:31:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E901819BDC;
-	Tue, 14 May 2024 05:55:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47D3912B83;
+	Tue, 14 May 2024 08:31:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fnRBuXES"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="sHlO3rCF";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="8whJTUXt"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63BC4182AE;
-	Tue, 14 May 2024 05:55:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB6A8AD58;
+	Tue, 14 May 2024 08:31:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715666144; cv=none; b=n1QG5rNh9AGWoR20aNI08GhxeYkKsOJbvegJHOV80iUxuVaKh/UZDa0C0m1oGE57Atx8mOm+eKmMpncpn02XykXXQ4GJo2eefJI72K7dVrv2C7SsYzucd+ACSsEORRYOOO94yq52DqFRGzyCJkzngjdnLCvpNIN8+Wu3HE6+PuY=
+	t=1715675510; cv=none; b=WlN0jFgrvT4wLno3kFpSz81DVOqoQz1ha7Yw+b6uLAv1ybMgB/F6UwVoA60oxDXXchptd96FTOznoWEEtdsC2xZsxAi+bEAGuh4qmwco1mdoQloEDpTRtkc3QKHpyqgVX52iBmU9ejaCcOxVu1KGNoukXbiims2Abe2tDhEo04w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715666144; c=relaxed/simple;
-	bh=7E4zl3qvXcx4BC+TUlRpaN+JchwtVW7K20SANmRkhvU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XhQU2SK0T4X/DEYQIRhGQ8Uw2yMvnQuGrNzJqLalnZSihkWxLLV7bhXbUU4DBj8SYR7ikaShbDRigv217LSVQSYq+4pJjGXu7olc8IJuH8qUqUNWpZZ5MxtjhrsV7rxPNiVVlv6yrou8dAqAoxR9PK9/Q3bDfwDAzkdNpR+vmQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fnRBuXES; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1ed835f3c3cso45429685ad.3;
-        Mon, 13 May 2024 22:55:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715666143; x=1716270943; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Valc74lvXAwD6+y7W85medmI0BL8q37OKUd2fSWd/YU=;
-        b=fnRBuXESOHxOuhqm3pVyL3bDENwb5A/mV4MBIVV+IHsJlbiw53FScgmDYxFR/kUubJ
-         Q8ltDR6H2yZfD10l1KnkrGS8FtpS0DErNCsuqH9/hMC9mzAlpHhkClPZZiSmugWn6bQx
-         yQm9gkMvPBni46L86ufj88g9vSO/XeFrQoT6RReN3vyVu90AibJ4g+xSuETtizrFdemk
-         uECJlL84f76GWXxOgnN7wS1T64T9jsz5f8s0MJZnxcIguKxy74P99HmiO1FkiAtIwJ6u
-         8k51XWYu0KxrGtvanzG0oZsnMesLqsAA4nCeYhH0TXiHykTYtdN9NK/juEQps5WQz5ER
-         Qk3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715666143; x=1716270943;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Valc74lvXAwD6+y7W85medmI0BL8q37OKUd2fSWd/YU=;
-        b=CY8WD9SZlxrHsokYOG21c9wWMd4CqBd4z42Cep08dOmF2K7DSgP0alB5yQKtWn2jD4
-         VZxIXA4z8F0a/qE/z7aqDTP1SYWmbpPuVNuIuS3HwLgdlMcTJM3PI5lwR2Tqgni422cm
-         B6bY2HbPG5cyrR0y8GWZ/rPmxk+o5JVw9E+33ui9XhWS0rvnanbeRnRNzC7fvq1U++3C
-         LgYnOjY3xriwtj/MHFVjIIN0N8n6oluI1XyleXWw9pWp6rMrtOpTskGuaXjz59xoW/R0
-         yhzFhVfyleJKOCLSoGHh53jPzPyPRAPCFR7dIJIPC8UQOjPiueHhzHtdPDYTW0x364Qu
-         OcPw==
-X-Forwarded-Encrypted: i=1; AJvYcCWl2pfSxfZC2+af3jakl+xnKyLi2HzpkUlVrAFdYPbC164Arsl7pmugQw8gw4twr/3jVRbgbBDpp5E9eI3bVFGaGzuwfm/6ooHrSk/hUja7A+rHazC+cz03CQ4C3Ro58Q==
-X-Gm-Message-State: AOJu0YwnvKkQCbHnVzhuX3xJipLi3Z76NnapvEDyo5ZFBg3vVvX8p/li
-	0CXca0W0/0kAeCz/Xy4T60FCT5TCNu/F+lbtWNkICxuGeMlmb8zKVWwmnA==
-X-Google-Smtp-Source: AGHT+IEvsJOgch+NsjTC4HgYob0dTbJ1kB6MJhSMWFi6JZDGO7axZbb1C1z9Uw3RNRGIVU/lYe8GMA==
-X-Received: by 2002:a17:903:22c9:b0:1dd:878d:9dca with SMTP id d9443c01a7336-1ef4404a347mr156742045ad.48.1715666142601;
-        Mon, 13 May 2024 22:55:42 -0700 (PDT)
-Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1ef0c0362d4sm88776495ad.210.2024.05.13.22.55.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 May 2024 22:55:42 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 13 May 2024 19:55:40 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: hannes@cmpxchg.org, lizefan.x@bytedance.com, cgroups@vger.kernel.org,
-	yosryahmed@google.com, longman@redhat.com, netdev@vger.kernel.org,
-	linux-mm@kvack.org, shakeel.butt@linux.dev,
-	kernel-team@cloudflare.com,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH v1] cgroup/rstat: add cgroup_rstat_cpu_lock helpers and
- tracepoints
-Message-ID: <ZkL83GKD7sga8tFX@slm.duckdns.org>
-References: <171457225108.4159924.12821205549807669839.stgit@firesoul>
- <0ef04a5c-ced8-4e30-bcde-43c218e35387@kernel.org>
+	s=arc-20240116; t=1715675510; c=relaxed/simple;
+	bh=D5V5Vlz28AnMUFbWtT4/nkFKtqlK/exeeNTnjhpKyBU=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=a1yfkl6DujylCgSwTjYPmf3twsf+qvCTuSDBjaC8r8d11xJNBNoEtwDe1f0PshJ1LKcjm4inasItELTj/dOO2h01OYlzJ2b9G1JtdE/HFvqX6w6ZG4wE9YbzCuioxMjL7Bb6Memj8LIhwHo2A8gIkQ+pJiYHx8ITNzkJfpumhg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=sHlO3rCF; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=8whJTUXt; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1715675506;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wKAgEzIfgJRZRaemvfk+xP86DopN5RrKmXQomodN5HM=;
+	b=sHlO3rCFQ4Qkcg9zLUrc1r3xbaegMu1etwy1Qj32tQiKFQXPGiOB2wUHdGuO6Fv1cbiwQd
+	tUliSmnwwxk2x1aKJqaTgPJ7MKxfaWp/JTuU7AhnwpNBdhWEKXP77grTPzYt10CjswFq6H
+	Wz1IdDAozSyxzm1kXM4xKWjl0ulkYr0b324ETbdLHtrP4tpeRqz04D26zcUXmEsKqb5m0t
+	mZTTEp3ze3NXTAw//76cZe+oB69w6UI5B5MNKc0TQAByUdSA7+J1jw4qMvb/IxoGHvIuxD
+	+HAnCk5+2wFUCblF0RQo1DI1p64an4Vu1savFC7cyJw5G/gVQC6Gi82iWAcyDQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1715675506;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wKAgEzIfgJRZRaemvfk+xP86DopN5RrKmXQomodN5HM=;
+	b=8whJTUXtqUUAwcx0cnBHUPSkg8kBO2oOeTxYo4gRAFj3EVadHQTA9aF9oN/ef02Zvia4TB
+	Hn2ZLLtCPMpBYTDw==
+To: Yury Norov <yury.norov@gmail.com>, linux-kernel@vger.kernel.org, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, "Paul E. McKenney"
+ <paulmck@kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Anna-Maria
+ Behnsen <anna-maria@linutronix.de>, Ben Segall <bsegall@google.com>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>, Frederic Weisbecker <frederic@kernel.org>,
+ Imran Khan <imran.f.khan@oracle.com>, Ingo Molnar <mingo@redhat.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Leonardo Bras <leobras@redhat.com>, Mel Gorman <mgorman@suse.de>, Peter
+ Zijlstra <peterz@infradead.org>, Rik van Riel <riel@surriel.com>, Steven
+ Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>, Valentin
+ Schneider <vschneid@redhat.com>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Waiman Long <longman@redhat.com>, Yury Norov
+ <yury.norov@gmail.com>, Zefan Li <lizefan.x@bytedance.com>,
+ cgroups@vger.kernel.org
+Subject: Re: [PATCH 6/6] tick/common: optimize cpumask_equal() usage
+In-Reply-To: <20240513220146.1461457-7-yury.norov@gmail.com>
+References: <20240513220146.1461457-1-yury.norov@gmail.com>
+ <20240513220146.1461457-7-yury.norov@gmail.com>
+Date: Tue, 14 May 2024 10:31:46 +0200
+Message-ID: <878r0cn6a5.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0ef04a5c-ced8-4e30-bcde-43c218e35387@kernel.org>
+Content-Type: text/plain
 
-On Tue, May 14, 2024 at 07:18:18AM +0200, Jesper Dangaard Brouer wrote:
-> Hi Tejun,
-> 
-> Could we please apply this for-6.10, to avoid splitting tracepoint changes
-> over multiple kernel versions?
+On Mon, May 13 2024 at 15:01, Yury Norov wrote:
+> Some functions in the file call cpumask_equal() with src1p == src2p.
+> We can obviously just skip comparison entirely in this case.
+>
+> This patch fixes cpumask_equal invocations when boot-test or LTP detect
+> such condition.
 
-Yeah, I can. Waiman, would that be okay?
+Please write your changelogs in imperative mood.
 
-Thanks.
+git grep 'This patch' Documentation/process/
 
--- 
-tejun
+Also please see Documentation/process/maintainer-tip.rst
+
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> ---
+>  kernel/time/tick-common.c | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
+>
+> diff --git a/kernel/time/tick-common.c b/kernel/time/tick-common.c
+> index d88b13076b79..b31fef292833 100644
+> --- a/kernel/time/tick-common.c
+> +++ b/kernel/time/tick-common.c
+> @@ -253,7 +253,8 @@ static void tick_setup_device(struct tick_device *td,
+>  	 * When the device is not per cpu, pin the interrupt to the
+>  	 * current cpu:
+>  	 */
+> -	if (!cpumask_equal(newdev->cpumask, cpumask))
+> +	if (newdev->cpumask != cpumask &&
+> +			!cpumask_equal(newdev->cpumask, cpumask))
+>  		irq_set_affinity(newdev->irq, cpumask);
+
+I'm not seeing the benefit. This is slow path setup code so the extra
+comparison does not really buy anything aside of malformatted line
+breaks.
+
+Thanks,
+
+        tglx
 
