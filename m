@@ -1,128 +1,110 @@
-Return-Path: <cgroups+bounces-2898-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2899-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8710F8C5C74
-	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 22:48:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 461368C5C76
+	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 22:49:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4025C1F21A2D
-	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 20:48:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0315F2828EE
+	for <lists+cgroups@lfdr.de>; Tue, 14 May 2024 20:49:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D7DD17F36E;
-	Tue, 14 May 2024 20:48:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32EB21EA80;
+	Tue, 14 May 2024 20:49:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="G8PUNoqv";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="8NACxmF7"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OGQpwThJ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 956851DFD1;
-	Tue, 14 May 2024 20:48:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A9D339A0
+	for <cgroups@vger.kernel.org>; Tue, 14 May 2024 20:48:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715719682; cv=none; b=slEYcqx9QcY6dPcnbn3lTPM5h5mm7+Z4OO2RropY2CXjfBKSWU+Lm4/2OxgJtxVCzrVUR4OVrq5awTJ4TbHQMtT7aVHTTFRupSxw0cHqUeYlesGrRK9Y8wxrYm6D5j5LEwySW5fJuddA7M6AS9an4iusrapcjczfectfaMX2tms=
+	t=1715719741; cv=none; b=fyStcsHw/3DAwNPKiyYJONdqa2oEUHU+1pkAux/DJxNDNQjDTC7plY7oj6zPjlEydMpIlY7t6nHuaM2qxrvQYfamaGJwgbE8vAM7aGEx0d+W8pwmW6GIQM7aGznI5bxKZNfV3qkQLqDRNtcd1ZYLgf9EB0f8RNI9SYST+2WVKuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715719682; c=relaxed/simple;
-	bh=voK/yZS/mI07lLRJzdQ3NNqRzfZtfnrJUYswFWYYp1Q=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Rk2I1eL7MtSa2dNHgccvAm3bzaCyZB72l2lMWwUm7SHqVGKKW8gijhWdkLqRvlUMvry8N9AdMtYmzeT7qUc9+822dDLqk6SHk7mI17ks2qpsWmmdJ5L3Ou8HIIXdXSsb7HK2J2MgFhn6zCO0oyqZ51wmRPFBivWot4YmL/dDDZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=G8PUNoqv; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=8NACxmF7; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1715719678;
+	s=arc-20240116; t=1715719741; c=relaxed/simple;
+	bh=+kC3x8SXXb0no0oRx22C1RCk9ERpR8hzu7TzSlw8wEA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Bei6XDjck1LhfmywWD/vzpzEj5Xxzbma2uulMg6ZI0hP+WMp9PVOcW3AeWwQeTT8eKrfAxsKz5ZS9m030xdN0BMqkBkwJNHjZqjTTIOfPaeStX+bCRBfn8A4GNnYsWUdqlyAV7O2j8DX/okOyVk6Z09NXmy6czFe2g28F+/6154=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OGQpwThJ; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 14 May 2024 13:48:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1715719737;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YWGGR9WNQtfowXxmZrt+1GRML6oRarKOdd0NAWuZUm8=;
-	b=G8PUNoqvKv4z1tIWxNeqOsG3FMX1YDcJSgi7g6DYWHRfxiHx3UQ9KkpdD7HeVJE/wiDCmW
-	if50fXqsOQz8m5tg0xSHvNH69j5kR/0fJcx4IQ/GECKUJoK9KFDrC4NN9TbJEwS15CxiIX
-	aj+VVvsm+c5T8aagiUDFTzo//JPp0aVUrBGGJkFQLT7CvDiW3gYjGOIuyAIkmMTf5NIF1A
-	xq1fTqu19AJtDtnW/8RRjk4cERR9iRuHZMFGBtPyPQqOXiDkt/PZ3yxOVDqBfmP7tKWE/h
-	BV0KTSdUPe0ho8HGiorZ2flBt9ozRPnCra7sY8YJhdRdp4tcZhK3ziS256NJLg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1715719678;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YWGGR9WNQtfowXxmZrt+1GRML6oRarKOdd0NAWuZUm8=;
-	b=8NACxmF7BQjmO6dBW+VOwCq0qcvrezGzRoN8f+svY9p4Q0Ha3mUgMqzEkAvreHWjQABzUL
-	TChXfM4eivuek5Dw==
-To: Yury Norov <yury.norov@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, "Paul E. McKenney" <paulmck@kernel.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Anna-Maria Behnsen
- <anna-maria@linutronix.de>, Ben Segall <bsegall@google.com>, Daniel
- Bristot de Oliveira <bristot@redhat.com>, Dietmar Eggemann
- <dietmar.eggemann@arm.com>, Frederic Weisbecker <frederic@kernel.org>,
- Imran Khan <imran.f.khan@oracle.com>, Ingo Molnar <mingo@redhat.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Juri Lelli <juri.lelli@redhat.com>,
- Leonardo Bras <leobras@redhat.com>, Mel Gorman <mgorman@suse.de>, Peter
- Zijlstra <peterz@infradead.org>, Rik van Riel <riel@surriel.com>, Steven
- Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>, Valentin
- Schneider <vschneid@redhat.com>, Vincent Guittot
- <vincent.guittot@linaro.org>, Waiman Long <longman@redhat.com>, Zefan Li
- <lizefan.x@bytedance.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH 6/6] tick/common: optimize cpumask_equal() usage
-In-Reply-To: <CAAH8bW-o_zz_C_NFnjL3uP1BXyC4OF-BAR2Dk2Xd-DFDOZpodQ@mail.gmail.com>
-References: <20240513220146.1461457-1-yury.norov@gmail.com>
- <20240513220146.1461457-7-yury.norov@gmail.com> <878r0cn6a5.ffs@tglx>
- <874jb0n5rt.ffs@tglx>
- <CAAH8bW-o_zz_C_NFnjL3uP1BXyC4OF-BAR2Dk2Xd-DFDOZpodQ@mail.gmail.com>
-Date: Tue, 14 May 2024 22:47:57 +0200
-Message-ID: <87msosktmq.ffs@tglx>
+	bh=vjO7VnrroqxxgnD3OiMZO9Nx30PMYAUaL1ENaC7gzp0=;
+	b=OGQpwThJqbh+faErC9luLSfbckj35Wc0Ehw3+nSaXp9SeE7K4BbMHDB74xYP0iRy49c8iV
+	0FPeMy9LX1E2pl9GAgAFJ4KQq6jO9kP2IghKENNjf3jOeLwUzPt5S7bt2ZGWSeumNApQDp
+	KHHP+Ef5Nqvk58wjoPRIH+AgL9SKHUQ=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Rik van Riel <riel@surriel.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] mm: vmscan: restore incremental cgroup iteration
+Message-ID: <whvb6gkmciiogjoevep6pep6ibkjxoabgckeog6dejn4wjqxpj@przngnktv255>
+References: <20240514202641.2821494-1-hannes@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240514202641.2821494-1-hannes@cmpxchg.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, May 14 2024 at 09:47, Yury Norov wrote:
->> Instead of sprinkling these conditional all over the place, can't you
->> just do the obvious and check for ptr1 == ptr2 in bitmap_copy() and
->> bitmap_equal()?
->
-> I proposed this a while (few years) ago, and it has been rejected. On
-> bitmaps level we decided not to do that for the reasons memcpy() and
-> memcmp() doesn't, and on cpumasks and nodemasks level it hasn't
-> been discussed at all.
->
-> Now that most of bitmap ops have inline and outline implementation,
-> we technically can move this checks in outline code, as inline bitmap
-> ops are very lightweight already.
->
-> So I see the following options:
->  - Implement these sanity checks in outline bitmap API (lib/bitmap.c);
->  - Implement them on cpumask and nodemask level; or
->  - add a new family of helpers that do this check, like
->   bitmap_copy_if_needed() (better name appreciated).
->
-> The argument against #1 and #2 these days was that memcpy() and
-> similarly bitmap_copy() with dst == src may be a sign of error, and
-> we don't want to add a code that optimizes for it.
+On Tue, May 14, 2024 at 04:26:41PM -0400, Johannes Weiner wrote:
+> Currently, reclaim always walks the entire cgroup tree in order to
+> ensure fairness between groups. While overreclaim is limited in
+> shrink_lruvec(), many of our systems have a sizable number of active
+> groups, and an even bigger number of idle cgroups with cache left
+> behind by previous jobs; the mere act of walking all these cgroups can
+> impose significant latency on direct reclaimers.
+> 
+> In the past, we've used a save-and-restore iterator that enabled
+> incremental tree walks over multiple reclaim invocations. This ensured
+> fairness, while keeping the work of individual reclaimers small.
+> 
+> However, in edge cases with a lot of reclaim concurrency, individual
+> reclaimers would sometimes not see enough of the cgroup tree to make
+> forward progress and (prematurely) declare OOM. Consequently we
+> switched to comprehensive walks in 1ba6fc9af35b ("mm: vmscan: do not
+> share cgroup iteration between reclaimers").
+> 
+> To address the latency problem without bringing back the premature OOM
+> issue, reinstate the shared iteration, but with a restart condition to
+> do the full walk in the OOM case - similar to what we do for
+> memory.low enforcement and active page protection.
+> 
+> In the worst case, we do one more full tree walk before declaring
+> OOM. But the vast majority of direct reclaim scans can then finish
+> much quicker, while fairness across the tree is maintained:
+> 
+> - Before this patch, we observed that direct reclaim always takes more
+>   than 100us and most direct reclaim time is spent in reclaim cycles
+>   lasting between 1ms and 1 second. Almost 40% of direct reclaim time
+>   was spent on reclaim cycles exceeding 100ms.
+> 
+> - With this patch, almost all page reclaim cycles last less than 10ms,
+>   and a good amount of direct page reclaim finishes in under 100us. No
+>   page reclaim cycles lasting over 100ms were observed anymore.
+> 
+> The shared iterator state is maintaned inside the target cgroup, so
+> fair and incremental walks are performed during both global reclaim
+> and cgroup limit reclaim of complex subtrees.
+> 
+> Reported-by: Rik van Riel <riel@surriel.com>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Rik van Riel <riel@surriel.com>
 
-That's a fair argument.
-
-> Now, I ran the kernel through the LTP test and in practice all the
-> cases that I spot look pretty normal. So I can continue sprinkling
-> the checks once a few years, or do something like described above.
-
-I don't see these checks as valuable in most cases and I detest them as
-they make the code harder to read.
-
-Except for smp_call_function_many_cond() and to a lesser extent
-irq_do_set_affinity() none of them you added really matters.
-
-Though it might be worth to have helper functions which make it obvious
-that the src == dst case is intentional.
-
-Thanks,
-
-        tglx
+Reviewed-by: Shakeel Butt <shakeel.butt@linux.dev>
 
