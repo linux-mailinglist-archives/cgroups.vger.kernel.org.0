@@ -1,192 +1,119 @@
-Return-Path: <cgroups+bounces-2904-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2906-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A79E8C5EC0
-	for <lists+cgroups@lfdr.de>; Wed, 15 May 2024 03:25:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C92178C5F35
+	for <lists+cgroups@lfdr.de>; Wed, 15 May 2024 04:45:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D2FC1F21FB6
-	for <lists+cgroups@lfdr.de>; Wed, 15 May 2024 01:25:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 842A1283897
+	for <lists+cgroups@lfdr.de>; Wed, 15 May 2024 02:45:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 575262FB6;
-	Wed, 15 May 2024 01:25:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0641C36126;
+	Wed, 15 May 2024 02:45:11 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 313B279C0;
-	Wed, 15 May 2024 01:25:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD9478F5A;
+	Wed, 15 May 2024 02:45:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715736318; cv=none; b=bb9eCobtPHXe4hITyimPE6uNWKlgzVfB6iw3UT6vDaXxj5FC8Wt2RVUxEn9xmM+/WoRsJzlAR87AXeHMuLakxyoRS1/wD3CJcyBgJkAmYFOCrPG9+CmM3qBKDhNV1FDsJphzbToJwWObqcS8dy1JFVHRjKAJ3VPXNO1CC6AgOZE=
+	t=1715741110; cv=none; b=oo4eGMP8PzNQhgvCMCLC+YKb+dkadCPwXe/BNHrijL56meZl8cj/o8chtEBUDiFhdA2iX12yZwkU7DwLkx5IilJzL5GF5Ct8LfwjNW/hqn6wKuMT5RgYtTkPIagGPdlhLR3tv4xvfwdONxe0dImo/F9a96sLFNngQEdnoBpovB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715736318; c=relaxed/simple;
-	bh=yMMIUz7DubXFQXYpZ3HCVv1OQrz7GVWdZJEPrbTdrZU=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dc6mmrOdRG0g69A4CAdUL+JVxry2oWuVlTq4o4bIiybNIaaFeY9IFLp4P5RhOny07ZLTpjuZQh1IvN5qqJv/92NB1ksZpIbJSvQpSaZkXcG7ksxlPtYS2mfDfnCltBbinJpHFiThBA26cbBWuJJE6vc/LDI8PRphEUjuA6wBSV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 44F1O7LZ051706;
-	Wed, 15 May 2024 09:24:07 +0800 (+08)
-	(envelope-from zhaoyang.huang@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4VfFm04QmWz2PDtZH;
-	Wed, 15 May 2024 09:20:48 +0800 (CST)
-Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
- BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Wed, 15 May 2024 09:24:05 +0800
-From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-To: Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox
-	<willy@infradead.org>, Jens Axboe <axboe@kernel.dk>,
-        Tejun Heo
-	<tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
-        Baolin Wang
-	<baolin.wang@linux.alibaba.com>, <linux-mm@kvack.org>,
-        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <cgroups@vger.kernel.org>, Zhaoyang Huang <huangzhaoyang@gmail.com>,
-        <steve.kang@unisoc.com>
-Subject: [RFC PATCH 2/2] mm: introduce budgt control in readahead
-Date: Wed, 15 May 2024 09:23:50 +0800
-Message-ID: <20240515012350.1166350-3-zhaoyang.huang@unisoc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240515012350.1166350-1-zhaoyang.huang@unisoc.com>
-References: <20240515012350.1166350-1-zhaoyang.huang@unisoc.com>
+	s=arc-20240116; t=1715741110; c=relaxed/simple;
+	bh=y5b1xG04vn1CcIUIecHfF8Tcjak6yElJQa34HoZDmyc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=UqO5xqUdcm8BXx7xRsuTrVp6aK1vB3WF3xc3ACLlQwy/+oa4rD2gwLWMDPsFFfS3Z99yl5sEWtXgMXFQs6a3MO1U1twtUnqsFL9i67Su7CdzA7GqhEEe5VjaLKIKdHfO0ApYHWmYVOJjE1dMfSG3aXLsAuzU6nTaMSQ+SDa5/EA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VfHYD3chGzvYjJ;
+	Wed, 15 May 2024 10:41:36 +0800 (CST)
+Received: from dggpeml500023.china.huawei.com (unknown [7.185.36.114])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2A074180085;
+	Wed, 15 May 2024 10:45:05 +0800 (CST)
+Received: from [10.67.110.112] (10.67.110.112) by
+ dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Wed, 15 May 2024 10:45:04 +0800
+Message-ID: <29aae825-6a1c-1935-a50f-d824c308c4c9@huawei.com>
+Date: Wed, 15 May 2024 10:45:04 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH -next] memcg: don't handle event_list for v2 when
+ offlining
+To: Michal Hocko <mhocko@suse.com>
+CC: <hannes@cmpxchg.org>, <roman.gushchin@linux.dev>,
+	<shakeel.butt@linux.dev>, <muchun.song@linux.dev>,
+	<akpm@linux-foundation.org>, <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240514131106.1326323-1-xiujianfeng@huawei.com>
+ <ZkNwthw5vJrnQSLL@tiehlicka>
+Content-Language: en-US
+From: xiujianfeng <xiujianfeng@huawei.com>
+In-Reply-To: <ZkNwthw5vJrnQSLL@tiehlicka>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- BJMBX01.spreadtrum.com (10.0.64.7)
-X-MAIL:SHSQR01.spreadtrum.com 44F1O7LZ051706
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500023.china.huawei.com (7.185.36.114)
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-Currently, readahead's size is decided mainly by page cache's status
-like hit/miss or hole size which could lead to suspension of following
-bio which is over the size of blk-throttle allowed size when
-BLK_THROTTLING is on. Introduce the budgt value here to have the bio's
-size be within the legal size.
 
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
----
- mm/readahead.c | 33 ++++++++++++++++++++++++---------
- 1 file changed, 24 insertions(+), 9 deletions(-)
+On 2024/5/14 22:09, Michal Hocko wrote:
+> On Tue 14-05-24 13:11:06, Xiu Jianfeng wrote:
+>> The event_list for memcg is only valid for v1 and not used for v2,
+>> so it's unnessesary to handle event_list for v2.
+> 
+> You are right but the code as is works just fine. The list will be
+> empty. It is true that we do not need to take event_list_lock lock but
+> nobody should be using this lock anyway. Also the offline callback is
+> not particularly hot path. So why do we want to change the code?
+> 
 
-diff --git a/mm/readahead.c b/mm/readahead.c
-index 130c0e7df99f..2b6120ced6f9 100644
---- a/mm/readahead.c
-+++ b/mm/readahead.c
-@@ -128,6 +128,7 @@
- #include <linux/blk-cgroup.h>
- #include <linux/fadvise.h>
- #include <linux/sched/mm.h>
-+#include <linux/minmax.h>
- 
- #include "internal.h"
- 
-@@ -358,16 +359,23 @@ static unsigned long get_init_ra_size(unsigned long size, unsigned long max)
-  *  Get the previous window size, ramp it up, and
-  *  return it as the new window size.
-  */
--static unsigned long get_next_ra_size(struct file_ra_state *ra,
-+static unsigned long get_next_ra_size(struct readahead_control *ractl,
- 				      unsigned long max)
- {
--	unsigned long cur = ra->size;
-+	unsigned long cur = ractl->ra->size;
-+	struct inode *inode = ractl->mapping->host;
-+	unsigned long budgt = inode->i_sb->s_bdev ?
-+			blk_throttle_budgt(inode->i_sb->s_bdev) : 0;
-+	unsigned long val = max;
- 
- 	if (cur < max / 16)
--		return 4 * cur;
-+		val = 4 * cur;
- 	if (cur <= max / 2)
--		return 2 * cur;
--	return max;
-+		val = 2 * cur;
-+
-+	val = budgt ? min(budgt / PAGE_SIZE, val) : val;
-+
-+	return val;
- }
- 
- /*
-@@ -437,6 +445,8 @@ static int try_context_readahead(struct address_space *mapping,
- 				 unsigned long max)
- {
- 	pgoff_t size;
-+	unsigned long budgt = mapping->host->i_sb->s_bdev ?
-+		blk_throttle_budgt(mapping->host->i_sb->s_bdev) : 0;
- 
- 	size = count_history_pages(mapping, index, max);
- 
-@@ -455,7 +465,7 @@ static int try_context_readahead(struct address_space *mapping,
- 		size *= 2;
- 
- 	ra->start = index;
--	ra->size = min(size + req_size, max);
-+	ra->size = min3(budgt / PAGE_SIZE, size + req_size, max);
- 	ra->async_size = 1;
- 
- 	return 1;
-@@ -552,6 +562,8 @@ static void ondemand_readahead(struct readahead_control *ractl,
- 	pgoff_t index = readahead_index(ractl);
- 	pgoff_t expected, prev_index;
- 	unsigned int order = folio ? folio_order(folio) : 0;
-+	unsigned long budgt = ractl->mapping->host->i_sb->s_bdev ?
-+		blk_throttle_budgt(ractl->mapping->host->i_sb->s_bdev) : 0;
- 
- 	/*
- 	 * If the request exceeds the readahead window, allow the read to
-@@ -574,7 +586,7 @@ static void ondemand_readahead(struct readahead_control *ractl,
- 			1UL << order);
- 	if (index == expected || index == (ra->start + ra->size)) {
- 		ra->start += ra->size;
--		ra->size = get_next_ra_size(ra, max_pages);
-+		ra->size = get_next_ra_size(ractl, max_pages);
- 		ra->async_size = ra->size;
- 		goto readit;
- 	}
-@@ -599,7 +611,7 @@ static void ondemand_readahead(struct readahead_control *ractl,
- 		ra->start = start;
- 		ra->size = start - index;	/* old async_size */
- 		ra->size += req_size;
--		ra->size = get_next_ra_size(ra, max_pages);
-+		ra->size = get_next_ra_size(ractl, max_pages);
- 		ra->async_size = ra->size;
- 		goto readit;
- 	}
-@@ -631,6 +643,9 @@ static void ondemand_readahead(struct readahead_control *ractl,
- 	 * standalone, small random read
- 	 * Read as is, and do not pollute the readahead state.
- 	 */
-+	if (budgt)
-+		req_size = min(budgt / PAGE_SIZE, req_size);
-+
- 	do_page_cache_ra(ractl, req_size, 0);
- 	return;
- 
-@@ -647,7 +662,7 @@ static void ondemand_readahead(struct readahead_control *ractl,
- 	 * Take care of maximum IO pages as above.
- 	 */
- 	if (index == ra->start && ra->size == ra->async_size) {
--		add_pages = get_next_ra_size(ra, max_pages);
-+		add_pages = get_next_ra_size(ractl, max_pages);
- 		if (ra->size + add_pages <= max_pages) {
- 			ra->async_size = add_pages;
- 			ra->size += add_pages;
--- 
-2.25.1
+Actually, I don’t quite agree, but I don't insist on this patch.
+Thanks for your feedback.
 
+
+>>
+>> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+>> ---
+>>  mm/memcontrol.c | 12 +++++++-----
+>>  1 file changed, 7 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index d127c9c5fabf..4254f9cd05f4 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -5881,12 +5881,14 @@ static void mem_cgroup_css_offline(struct cgroup_subsys_state *css)
+>>  	 * Notify userspace about cgroup removing only after rmdir of cgroup
+>>  	 * directory to avoid race between userspace and kernelspace.
+>>  	 */
+>> -	spin_lock_irq(&memcg->event_list_lock);
+>> -	list_for_each_entry_safe(event, tmp, &memcg->event_list, list) {
+>> -		list_del_init(&event->list);
+>> -		schedule_work(&event->remove);
+>> +	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
+>> +		spin_lock_irq(&memcg->event_list_lock);
+>> +		list_for_each_entry_safe(event, tmp, &memcg->event_list, list) {
+>> +			list_del_init(&event->list);
+>> +			schedule_work(&event->remove);
+>> +		}
+>> +		spin_unlock_irq(&memcg->event_list_lock);
+>>  	}
+>> -	spin_unlock_irq(&memcg->event_list_lock);
+>>  
+>>  	page_counter_set_min(&memcg->memory, 0);
+>>  	page_counter_set_low(&memcg->memory, 0);
+>> -- 
+>> 2.34.1
+> 
 
