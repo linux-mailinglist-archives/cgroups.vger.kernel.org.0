@@ -1,91 +1,119 @@
-Return-Path: <cgroups+bounces-2907-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2908-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F0348C5F39
-	for <lists+cgroups@lfdr.de>; Wed, 15 May 2024 04:47:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB1098C5F8E
+	for <lists+cgroups@lfdr.de>; Wed, 15 May 2024 06:00:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FF7C1C20B70
-	for <lists+cgroups@lfdr.de>; Wed, 15 May 2024 02:47:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D05D1F22528
+	for <lists+cgroups@lfdr.de>; Wed, 15 May 2024 04:00:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73D72364DC;
-	Wed, 15 May 2024 02:47:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43D5C381D4;
+	Wed, 15 May 2024 04:00:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HzkGSJkx"
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BB012E83F;
-	Wed, 15 May 2024 02:47:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FB7238FA5
+	for <cgroups@vger.kernel.org>; Wed, 15 May 2024 04:00:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715741234; cv=none; b=pz4laoqbZa2dJ+uq7aWmvE3UsjleFpc4ZNTnhbMW0vm7cVljCoERvmtDXkWDdAr2vvW3hGfBSdD3i5oA89su12z300lbCKvJWQTtsl6Y2du7Q4i7GKTDyLXhbngv4HlV8AmA/TBsIPsflzuNt/IRBoT8PJKUsLfFmI2guluhG/Y=
+	t=1715745619; cv=none; b=OFVoTTUsT1BMjVq0i0uZi7m8Op9a/iR6RM4u8/9aU1ePxSljVPeMm+nnxcODWSN4OqBOoFvM19J274jdDQf8mbGX4fDa9ynKwNS7IUyzoNweiBdyQV5GQzUCKyn+KxxdrjLGe1mZVtwUqn+oU8sMixfBWoYhn+Ec1nQ+S56148Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715741234; c=relaxed/simple;
-	bh=I9V72DkiQhdP85f8x4+pkp/kW6Su4vtYx3XDQpiP11k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=HGuRbkw1ANeFztygbqxQaDskKpywi6vIz2kKIEf/gjjYoeLxHMOR38DC9/S9VFoUmmjAMkGHM2GjKecoaUo+BQgap08WUMHbfCo9Ub7TpfzFBggHRSzvdO5+BJX9liqrzHRf1/47bs6B+W9wmKcCl0j3G+bySp5Eqbml40Cb1PI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VfHZz5Xn0zgZCs;
-	Wed, 15 May 2024 10:43:07 +0800 (CST)
-Received: from dggpeml500023.china.huawei.com (unknown [7.185.36.114])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9CF52140155;
-	Wed, 15 May 2024 10:47:08 +0800 (CST)
-Received: from [10.67.110.112] (10.67.110.112) by
- dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 15 May 2024 10:47:08 +0800
-Message-ID: <41fdf6cb-ec1b-ff07-44f4-3ba01b45ebda@huawei.com>
-Date: Wed, 15 May 2024 10:47:07 +0800
+	s=arc-20240116; t=1715745619; c=relaxed/simple;
+	bh=FS8BxcGOh1QyUsPCb/Z1Pw2aO5KhRVPLl/8FppUGhgs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QMhRcrNo7EdWnSkI6wX+mJLbU6azqF8cWJlWbT/dZoaPsB2PSK08VvYl6aBCgEnh7jnmnSaoaFaYmhza+zvFnZwEz6RUF+zFQZTzL5b+dHGlMRiG8cQruYYCPT+UDXP4i3Mg37HbyHyHo2mcQK76M93b7ioDIzZhdaTIklCkGeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HzkGSJkx; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1715745616;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rfxw+vb/eMFY8ya0z6a2BGMJqEE78GiWToX1LII8WvU=;
+	b=HzkGSJkxWR7JhCqdDsxfAWgD40miKOjTp4ogkvlfAeu8jARjkzO+eYQutDi3B3QG7tShHX
+	5qFAyP5Hu6MaNN/LnAbyGye1ZTqjwCZ8drdM/iRmKpuwP8I1wHVG+dm0tVg4sS0dhwPQte
+	PelFtjqzBFBJOnTlRGUVlHYPIi5erqo=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-641-9owWtM1FNJSMY9rCzR2n2w-1; Tue,
+ 14 May 2024 23:59:56 -0400
+X-MC-Unique: 9owWtM1FNJSMY9rCzR2n2w-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 298621C4C380;
+	Wed, 15 May 2024 03:59:56 +0000 (UTC)
+Received: from [10.22.8.47] (unknown [10.22.8.47])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id D22FF3C27;
+	Wed, 15 May 2024 03:59:55 +0000 (UTC)
+Message-ID: <3ed32279-904a-411d-91a4-a62f4ca2dde2@redhat.com>
+Date: Tue, 14 May 2024 23:59:55 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH -next] memcg: don't handle event_list for v2 when
- offlining
+User-Agent: Mozilla Thunderbird
+Subject: Re: cgroup io.stat propagation regression
+To: Dan Schatzberg <schatzberg.dan@gmail.com>, Tejun Heo <tj@kernel.org>
+Cc: linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <ZkO6l/ODzadSgdhC@dschatzberg-fedora-PF3DHTBV>
 Content-Language: en-US
-To: Roman Gushchin <roman.gushchin@linux.dev>, Michal Hocko <mhocko@suse.com>
-CC: <hannes@cmpxchg.org>, <shakeel.butt@linux.dev>, <muchun.song@linux.dev>,
-	<akpm@linux-foundation.org>, <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240514131106.1326323-1-xiujianfeng@huawei.com>
- <ZkNwthw5vJrnQSLL@tiehlicka> <ZkOBaNffNi4rmR8h@P9FQF9L96D>
-From: xiujianfeng <xiujianfeng@huawei.com>
-In-Reply-To: <ZkOBaNffNi4rmR8h@P9FQF9L96D>
-Content-Type: text/plain; charset="UTF-8"
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <ZkO6l/ODzadSgdhC@dschatzberg-fedora-PF3DHTBV>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500023.china.huawei.com (7.185.36.114)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
+On 5/14/24 15:25, Dan Schatzberg wrote:
+> Hi Waiman,
+>
+> I've noticed that on recent kernels io.stat metrics don't propagate
+> all the way up the hierarchy. Specifically, io.stat metrics of some
+> leaf cgroup will be propagated to the parent, but not its grandparent.
+>
+> For a simple repro, run the following:
+>
+> systemd-run --slice test-test dd if=/dev/urandom of=/tmp/test bs=4096 count=1
+>
+> Then:
+>
+> cat /sys/fs/cgroup/test.slice/test-test.slice/io.stat
+>
+> Shows the parent cgroup stats and I see wbytes=4096 but the grandparent cgroup:
+>
+> cat /sys/fs/cgroup/test.slice/io.stat
+>
+> shows no writes.
+>
+> I believe this was caused by the change in "blk-cgroup: Optimize
+> blkcg_rstat_flush()". When blkcg_rstat_flush is called on the parent
+> cgroup, it exits early because the lockless list is empty since the
+> parent cgroup never issued writes itself (e.g. in
+> blk_cgroup_bio_start). However, in doing so it never propagated stats
+> to its parent.
+>
+> Can you confirm if my understanding of the logic here is correct and
+> advise on a fix?
 
+Yes, I believe your analysis is correct. Thanks for spotting this iostat 
+propagation problem.
 
-On 2024/5/14 23:21, Roman Gushchin wrote:
-> On Tue, May 14, 2024 at 04:09:58PM +0200, Michal Hocko wrote:
->> On Tue 14-05-24 13:11:06, Xiu Jianfeng wrote:
->>> The event_list for memcg is only valid for v1 and not used for v2,
->>> so it's unnessesary to handle event_list for v2.
->>
->> You are right but the code as is works just fine. The list will be
->> empty. It is true that we do not need to take event_list_lock lock but
->> nobody should be using this lock anyway. Also the offline callback is
->> not particularly hot path. So why do we want to change the code?
-> 
-> +1 to that.
-> 
-> Plus this code will be moved to a separate function in mm/memcontrol-v1.c
-> and luckily can be compiled out entirely for users who don't need the
-> cgroup v1 support.
+I am working on a fix to address this problem and will post a patch once 
+I have finished my testing.
 
-I found the patchset you mentioned, Thanks.
+Thanks,
+Longman
 
-> 
-> Thanks!
 
