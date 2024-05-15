@@ -1,102 +1,116 @@
-Return-Path: <cgroups+bounces-2910-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2911-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABE118C60C9
-	for <lists+cgroups@lfdr.de>; Wed, 15 May 2024 08:32:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 613EC8C61E4
+	for <lists+cgroups@lfdr.de>; Wed, 15 May 2024 09:41:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F4691F211E6
-	for <lists+cgroups@lfdr.de>; Wed, 15 May 2024 06:32:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 929FF1C20F39
+	for <lists+cgroups@lfdr.de>; Wed, 15 May 2024 07:41:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C309433CC4;
-	Wed, 15 May 2024 06:32:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C548C446D9;
+	Wed, 15 May 2024 07:41:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l9gG0Zf0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e8+pZEkW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 510861E53F;
-	Wed, 15 May 2024 06:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176FA44391;
+	Wed, 15 May 2024 07:40:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715754721; cv=none; b=t/RYriT+z0lYN0aRpPIoaKWoQGtdf6WQqrfas+DE2Z5QMf0izuyQAMJZ7FUrBuSMQctbu9vMormwlTxeEDB7la2aKpo2iOc5bpQ57KXBniwVxdtjbm/JUpStXMgAlPxqnaL9Bxma30YIMrylYlsrb15lctFRoL/3kn7Ug1MgGR8=
+	t=1715758861; cv=none; b=q8BTcAh8fJdXht7TmCsZfCR2SMC+PFb+aEqYWFS/mWIvIOmWmv19pvpGYUF73xuEOBAjsab9g96seZ5pbm0MHEG+Celd+B0h1sxDv2rCgH/YsPHW5OEBEan5QbUkZnzbyjWL5GEZW0M2gN7bdu+csuenAO4SSoJYpeXaIg9WsaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715754721; c=relaxed/simple;
-	bh=SMe88j30uJlqLy1VfHIE4rYvL+Pl2XRda8aPFrB8pg0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hIsnYtSbPwvKmbyjDyij/sW/UaaT6/AnE1boaVxl/zsda6K6Z58QGt11xh8z6eNGYq5NFJ8G9V6YhZgzfSUAE1SU68voL5E8yMApnUTkpAb0oIcRKItkRlhjxtQNjtVooqzxtvfYf3XliVj3qTzAAGCnyEb/5avQiw0N6RP/cMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l9gG0Zf0; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1715758861; c=relaxed/simple;
+	bh=t9RspgqG+F2PVlmvWuEQ0GLhwwngFJ3ao73Evv6IOpc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lycdBEhIjUgeahdFvxQWIdRdbrzKpTcR4FJwkqQH0/3i49ZR6WH5oXRcSutYRZdsNhVcRVWK81MCRz/Yi/vGBH91bL7PT8myyU+mH8ujy+Vqlyhbq8t9I+0Id9R8ENmWEs33yB2A4iBMgMspKyZIf9X4kWdt4wbbgZ4b3NefdwY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e8+pZEkW; arc=none smtp.client-ip=209.85.210.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-5238b5c080cso811553e87.1;
-        Tue, 14 May 2024 23:31:59 -0700 (PDT)
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6f0f5645c68so2211271a34.1;
+        Wed, 15 May 2024 00:40:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715754717; x=1716359517; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KO/Qnq8uu0A2bAHSPuBz0lil2/aJMgXXAcipsRcH8eU=;
-        b=l9gG0Zf0JqRHxzAsIf98ffv7hZlzQA0TQxvBRpgnMCA4iM2FKPQFjdTIpYxzYGvzfy
-         1cg+5FjYvp5GFLhf307IiaD3jgpyIhwoAynsLr9A2P4gUO12ZYNM93sS7uCvAT4h3LOF
-         HgCwDznA2tp+uQ0E5OKCJpyceRhKBnrJlvIFF+gAJwrg+keSXuqAgq6vJZ45aAWIjmDG
-         CdYMjENuCROS4ykt5Xwa4mqfVz89bkaGwt/vId3qt6Zj1HMTSaNJd8F93o0TStJuzCzz
-         teXdTlHzRywOsRTEQFdLoulF/8mPD69j77Hn5Mj/oDmsvuAaYCwbXlZvEW8huqXgrbMU
-         41lA==
+        d=gmail.com; s=20230601; t=1715758859; x=1716363659; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TLhn4fqdh7o5svdDGhY37fd8hSl+dswnienDJA3jE4w=;
+        b=e8+pZEkWRrmirjaxLS/JuS0I+LZprA9UzY2I1lgAHtV7JaJoWwp1sOvka8kN/b/V8B
+         0md3lEy3wv8jJHUH271MxrtdZTERZLp7vu/5Orfn7DiBzV6yRE3jkeYgIMYBArevzh86
+         eIiVlL4adsC6kpkQOr+f1mrjf11H+7gzCeLmZlCG1z3G6nbd9/bYO06telsZCFXj5Q+w
+         A6AjussYuWZkGjket7wxkUd25Hcl92adqxxKtByIcaCsUgwgaMIB2LS+K89mIkjbt4mV
+         fJ4yv871NzFE7phzB4UiNrvkCAOZ4PMIeHzlp6RVtIYswRoVvgQTE5kLtO9JBZrUcCa1
+         UMuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715754717; x=1716359517;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1715758859; x=1716363659;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KO/Qnq8uu0A2bAHSPuBz0lil2/aJMgXXAcipsRcH8eU=;
-        b=Yg5DwL9qduKj+eMUDdPiOIzIWwbztsojpfkTZIzKyUlXp+Z926J1qM+UYAnvz13rGA
-         ftHy6u9aRlBYKqgAt/rezENvj9Gp7I3iO/JeB6/whUGKfrc4vC5ZGkpg9wv96xyCJr/L
-         CyI9t886+L/Y0jhNEYEMYm60dY12dRyBihDsmYdYeUYuJepzwesMiao7d12LtWMXKpuN
-         sA+rW7GASiwWtsMnRxAw/4fCOfzlJO5K82D87XKx5tT0Jw5twVSMaZuveVvT3dIi+0zo
-         /MIt2UJGN93gBhoqlL18l2D6zMM2mCK7oZzeAK7qfKe/QWxIiUoeBInHnQpUwthnODtn
-         lJMA==
-X-Forwarded-Encrypted: i=1; AJvYcCVZkuwwHBpNGECGhcoyzMa1rwCvknuOdoO4YNpBYvCnst24DYvE4t+on/J2DV1GNbBaldApUp5pqdwekJJVGaAtOl+3qwlzDjfoPnagoB7SLNZ5MkQBSc1mHKXGh/vnOnpGinU2m3kplJSYAXKHElB5lxdf7xdDyhN3KOfk51RPqRW9
-X-Gm-Message-State: AOJu0YxQqdkvsnoiRfSHVjvpKlKcz4G/QWgfSDDRaxO25XMdFYMMM+Gi
-	nwQLJ9Y7UeMRtSuK7RAQJsFxSIbC6c43KNse1w3Wfj2HvrLEBhqe31iL/raoatMO4UddpN77Dh+
-	ufHPffUKzfLB/fdirlWeR8uw82Wk=
-X-Google-Smtp-Source: AGHT+IHoKg0Vu+Ev/OMzjy0UIYtyUIbh89ctl6Q2Uk+JY2wl6Xd+Yslf9XhsdnZpO7qUHzF5fIdfEgEnHzxHsvSQbzc=
-X-Received: by 2002:ac2:58e3:0:b0:518:dfed:f021 with SMTP id
- 2adb3069b0e04-5220fb749bdmr7624802e87.24.1715754717250; Tue, 14 May 2024
- 23:31:57 -0700 (PDT)
+        bh=TLhn4fqdh7o5svdDGhY37fd8hSl+dswnienDJA3jE4w=;
+        b=OTY7I8PskVeO/rgBpDSwS4bdXjYizR6njNgpLfizv0ktga/OlOXODtn/cTLbqcf/Ew
+         YTAqCFFY5UuLJVy0GNYR7uQDU2DKcAH6jomK6VRa/ddrpOGw68qFIFRTNpTbpkZkAnY4
+         B37fAwz0ODajWocgblRqLSD9sW9dwleMzswOhAO7e1GuAfEtG+/qLeP05QkWDuhC0pFK
+         uVzN3zBSzNdpAKLXYSiWeH6SM/jY10rBRslRBy5Tp8ZojRcOvOuBz4Lo0F90QQOJhCG0
+         bPoAQfSlnVEMFBcD+SX7tAf7ee/+Wts6w2qv0WNcomcxYP1ncbqRX1pVdQdFp8z1jPJ5
+         q8bQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWC6IOCdu5Mjah025IGxZ6SZkXkjDxAEkdheBZseQBSTw3dBq63G5HmQJhgHdEWsu0BvQ2DlZzsdPU+vz4rN82l/XqlZnxGrxXNjD2emHDeW/4ly55coq2dbM/lLBYsoX14enj69qCk418DOYfiRkW+wv/joXOwip59ZrEAeu6kVndH
+X-Gm-Message-State: AOJu0Yzpbgq6OpmkK5aowEtbWxaU7/G3PV7mFHzsYkvhg/lGjkJIkkpa
+	Av/E9Qm1WDfiPBJW1w1o+F8XdaOfD4ufk8tG8t44zzcDuE+bnR6K
+X-Google-Smtp-Source: AGHT+IFAoB28Oxhj1Qe9IKvpyG7rsjUv6rTIqwphEgorIUy9cjMuH127glK9Bi63tCvYIjYKLEYIaQ==
+X-Received: by 2002:a05:6830:f8c:b0:6f1:23cc:b4ff with SMTP id 46e09a7af769-6f123ccbc9amr1247245a34.11.1715758859033;
+        Wed, 15 May 2024 00:40:59 -0700 (PDT)
+Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-63411530b0esm10843078a12.88.2024.05.15.00.40.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 May 2024 00:40:58 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 14 May 2024 21:40:56 -1000
+From: Tejun Heo <tj@kernel.org>
+To: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>, Jens Axboe <axboe@kernel.dk>,
+	Josef Bacik <josef@toxicpanda.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>, linux-mm@kvack.org,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, Zhaoyang Huang <huangzhaoyang@gmail.com>,
+	steve.kang@unisoc.com
+Subject: Re: [RFC PATCH 2/2] mm: introduce budgt control in readahead
+Message-ID: <ZkRnCDasZNvFQUaY@slm.duckdns.org>
+References: <20240515012350.1166350-1-zhaoyang.huang@unisoc.com>
+ <20240515012350.1166350-3-zhaoyang.huang@unisoc.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240515012350.1166350-1-zhaoyang.huang@unisoc.com>
- <20240515012350.1166350-3-zhaoyang.huang@unisoc.com> <ZkQ1dsHKVttb7y4_@casper.infradead.org>
-In-Reply-To: <ZkQ1dsHKVttb7y4_@casper.infradead.org>
-From: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date: Wed, 15 May 2024 14:31:45 +0800
-Message-ID: <CAGWkznH1dxyF17cQi+9+0EadoG7_MVUNy8n-svQ7ZjYNaWKYdQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/2] mm: introduce budgt control in readahead
-To: Matthew Wilcox <willy@infradead.org>
-Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, linux-mm@kvack.org, 
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, steve.kang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240515012350.1166350-3-zhaoyang.huang@unisoc.com>
 
-On Wed, May 15, 2024 at 12:09=E2=80=AFPM Matthew Wilcox <willy@infradead.or=
-g> wrote:
->
-> On Wed, May 15, 2024 at 09:23:50AM +0800, zhaoyang.huang wrote:
-> > +     unsigned long budgt =3D inode->i_sb->s_bdev ?
-> > +                     blk_throttle_budgt(inode->i_sb->s_bdev) : 0;
->
-> NAK as previously explained.
-ok. But this commit could work by following the configuration of
-blk-throttle as long as it works on btrfs with internal RAID on.
-Furthermore, this will help the blkcg meet the desired BPS value
-perfectly.
+Hello,
+
+On Wed, May 15, 2024 at 09:23:50AM +0800, zhaoyang.huang wrote:
+> +static unsigned long get_next_ra_size(struct readahead_control *ractl,
+>  				      unsigned long max)
+>  {
+> +	unsigned long cur = ractl->ra->size;
+> +	struct inode *inode = ractl->mapping->host;
+> +	unsigned long budgt = inode->i_sb->s_bdev ?
+> +			blk_throttle_budgt(inode->i_sb->s_bdev) : 0;
+
+Technical correctness aside, I'm not convinced it's generally a good idea to
+bubble up one specific IO control mechanism's detail all the way upto RA
+layer. Besides what's the gain here? For continuous IO stream, whether some
+RA bios are oversized or not shouldn't matter, no? Doesn't this just affect
+the accuracy of the last RA IO of a finite read stream?
+
+Thanks.
+
+-- 
+tejun
 
