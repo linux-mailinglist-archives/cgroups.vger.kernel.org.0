@@ -1,58 +1,58 @@
-Return-Path: <cgroups+bounces-2938-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2940-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 890848C7D0C
-	for <lists+cgroups@lfdr.de>; Thu, 16 May 2024 21:13:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9606D8C7D10
+	for <lists+cgroups@lfdr.de>; Thu, 16 May 2024 21:14:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40E011F25A7C
-	for <lists+cgroups@lfdr.de>; Thu, 16 May 2024 19:13:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FD61289505
+	for <lists+cgroups@lfdr.de>; Thu, 16 May 2024 19:14:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20E6815B570;
-	Thu, 16 May 2024 19:08:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 362DA15CD56;
+	Thu, 16 May 2024 19:08:45 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E60915B571;
-	Thu, 16 May 2024 19:08:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6711415B99E;
+	Thu, 16 May 2024 19:08:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715886513; cv=none; b=JlRCxH0bGJYUZRz6RMbOMCY/WvrSUdn+eHq3qTDLxXpEVZPBTjUpTRNQ+gSguf+ijvt7I0VedMiQiCxdndR5zxJDV/9efOtxVZ9UCD2TfT9WgjQS54Jdx3PKhCHjd2yGJBnsEvY2obNifxi3/AvjHnELa0L/eo619/upLwDlwiA=
+	t=1715886525; cv=none; b=Yz2di///1RJw9n57BWQWxzd1qYRObhiXJvrSX4dLCPD1QD4YOjy6D+VFi2cjOVE2lZ0h1hQoEEh1kWLVko+Pdsuhx3SP4vrLy7P3vT6KCjoLMg+Sd6LYT62PWm0Gvmi0KVs5m797DFMPdMzbUlAxKd6Uel4XlD4v5poB5ZrTB4Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715886513; c=relaxed/simple;
-	bh=8kbqqHhC8hqJWztiJ4S0vBrzZ4vEVAmywhl/Drj8bP8=;
+	s=arc-20240116; t=1715886525; c=relaxed/simple;
+	bh=mX5XKX5uGD9BuklRP06Jpi6evZ3ukENWqzfNye0bnME=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U1DVRFsbszru4/RJYwuBXHclx0dxcTm3KpV4OXEjwPh6gpdVG6msW0H+HZvVa8LY2m/2HhsLBpKFMkCTLe/xrPmau49EnmG4RIqiX0r3ZuevlAoOMBqCIStMM+d2OsCcGZERXS6cyiJdt2DNO28vu5N0+eJTs6UxDhuy8LPRXnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.45
+	 MIME-Version; b=GNtRMvqNCR7deSi1fPSb0ApRFZZFUBvGuUh/dllE5aTCzxv/u7TIhfpWuyvM9ve8ZMnZ66c3liLkVqvCR3ZORMm2zeG/mrQ+TfnD/WXuCAFUdT22kNhC78unj64lxEzTLEov2rLpkzs9cqkqPDnnHNJGqu2JfdguzTQ+1K8XZ64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-420180b5897so34934195e9.3;
-        Thu, 16 May 2024 12:08:31 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41dc9c83e57so54113525e9.0;
+        Thu, 16 May 2024 12:08:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715886510; x=1716491310;
+        d=1e100.net; s=20230601; t=1715886522; x=1716491322;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KKc3fp/jI+BvIXedy1D0TYqFMPTw9ko9fdbmFGrVOU8=;
-        b=drNowamVeICSyaeTWBAQUoIqHtkZGjREWEdR7cQi4lxBUB5vp8mqHNq+4t8Vv1pYtZ
-         GaV5qn1/vN12rQBax6ADaQYaY5oewd1i2nMu1rXjp63ei3NMpWaNpPQqw6kD1hcDX+zj
-         o1ECya54JQBs95HzjubTpeaFYYQpVzpUc5Q+raOW9jTuiwBa4ca3uzvj1bqFSXtlPmat
-         deNdFVFwPvTnpCfEvemp/eGICtY8kQd4t+jG7KdEb7YPZXjtLGx6o8HPGSvmaQpGqpXs
-         WHszNaKnh3geJHY2LGJBPDNkxw1RA0Bz64yJFEeqaBJTtpNr4btIE6+MQ9GQayphDWSv
-         XWVw==
-X-Forwarded-Encrypted: i=1; AJvYcCV59nIk/Lo9vlRb7WRyQEiaYU/pj2/6RgT9hBoZW0UrwP5LjJLIslEvLP4jmENKkqCem9I8PTLdeYapLPvTtLI9jwi22gYxPFJNqEN2VH+LzBfqeQbSCKs3AYO77vA4QELw2aVYoQ==
-X-Gm-Message-State: AOJu0YyFpdClXn4TJXLVAAW6T0Vvu7+LOAQJ7R1pzaAIS+Kjq9YxFsrk
-	y8BMCUUHYVTO8hEydGnaLWWhjXlUObbJUn+SZfapbfFAhtmmLNp+
-X-Google-Smtp-Source: AGHT+IE+8OzEl7GN/XD1Evd2s20T59JGOPsfzEjJ78E96nJYaDJAN5YoScVDZUfO86b85wduS8T3cQ==
-X-Received: by 2002:a05:600c:4a16:b0:41a:5d49:6143 with SMTP id 5b1f17b1804b1-41feaa3873dmr163546945e9.12.1715886509604;
-        Thu, 16 May 2024 12:08:29 -0700 (PDT)
+        bh=XotNX/kdCHfV2cFFrChZaa3s9ogxBqwq0+5YyaOb/CY=;
+        b=Iqono8BOiYX4xNHN4rj0W+ofhFH48wDYCvTuX2tbZTPtCx6S/5gF+dKg/jTw1HL1lq
+         9lkDOIiia9zS6uCct3F0n4/Ffx4gyNBfaXH5td0fqpPNCrkscCXA0WUkqpREKodEi8MA
+         ekcLEkqGZqbdsSeS88SCDDJ6h9olqKJDzclJDrwplb3Jj84b7pBU7v5/UW4ryFeVyR5J
+         1FgXh4074Bto5aBbd+iE5dkI/3MMOz7sjJK/7rohEEdlQCtdY7u/gGCMJWqycP2i222T
+         v139L9bLv7kdywpcRDRHJaYLcStUuLroCplPdNkZ+zBp0klSI1TwFiglHVa5VpvWUYKK
+         ye2g==
+X-Forwarded-Encrypted: i=1; AJvYcCVPwadCwevZNU8dWl+s9WIDMCwnJd4pTj21TM7D5iRnR15OBRsgf/vABag8Yefz0aL3H9FG5OBjjn7jD6bn0T769HEdl4wfed+CEsVV4S38TDHVyO+4GR1vwP7wkEwiCqkyuvPWTA==
+X-Gm-Message-State: AOJu0YxNwWQXzZ/GbNYHKicnkDbDAVINdtdleoeJsgZRIxPiFkbccgxw
+	COZtopjf3wk3PSMzqUMNHxcrnpBZxiKsmHuvDyy1DqrHSS3jf3JT
+X-Google-Smtp-Source: AGHT+IEHJzMMlARo96lIKxi6+Ewm9yu9Vst6AigtrNRq0VDU0gIcxCb3LWOI1zcmJsh+fI2VXekGug==
+X-Received: by 2002:a05:600c:444e:b0:41b:4caa:554c with SMTP id 5b1f17b1804b1-41fea930c57mr184691415e9.2.1715886521791;
+        Thu, 16 May 2024 12:08:41 -0700 (PDT)
 Received: from costa-tp.redhat.com ([2a00:a040:1a3:c059:8b18:f13e:da9b:5a8e])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-41fccee9335sm275834155e9.29.2024.05.16.12.08.26
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-41fccee9335sm275834155e9.29.2024.05.16.12.08.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 May 2024 12:08:29 -0700 (PDT)
+        Thu, 16 May 2024 12:08:41 -0700 (PDT)
 From: Costa Shulyupin <costa.shul@redhat.com>
 To: longman@redhat.com,
 	pauld@redhat.com,
@@ -83,9 +83,9 @@ To: longman@redhat.com,
 	Costa Shulyupin <costa.shul@redhat.com>,
 	linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org
-Subject: [PATCH v1 5/7] [NOT-FOR-MERGE] test timers affinity adjustment
-Date: Thu, 16 May 2024 22:04:35 +0300
-Message-ID: <20240516190437.3545310-6-costa.shul@redhat.com>
+Subject: [PATCH v1 6/7] [NOT-FOR-MERGE] test timers and hrtimers affinity adjustment
+Date: Thu, 16 May 2024 22:04:36 +0300
+Message-ID: <20240516190437.3545310-7-costa.shul@redhat.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <20240516190437.3545310-1-costa.shul@redhat.com>
 References: <20240516190437.3545310-1-costa.shul@redhat.com>
@@ -97,54 +97,79 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-There must be no timers on the specified cpu
-at the end of timers_resettle_from_cpu.
+Kernel module to generate timers and hrtimers for the test
+and shell commands.
 
 Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
 ---
- kernel/time/timer.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ tests/timers.c | 58 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 58 insertions(+)
+ create mode 100644 tests/timers.c
 
-diff --git a/kernel/time/timer.c b/kernel/time/timer.c
-index 2d15c0e7b0550..b7d253d230453 100644
---- a/kernel/time/timer.c
-+++ b/kernel/time/timer.c
-@@ -2658,6 +2658,27 @@ int timers_prepare_cpu(unsigned int cpu)
- 	return 0;
- }
- 
-+static int count_timers(int cpu)
+diff --git a/tests/timers.c b/tests/timers.c
+new file mode 100644
+index 0000000000000..bf6ef3244bc05
+--- /dev/null
++++ b/tests/timers.c
+@@ -0,0 +1,58 @@
++#include <linux/timer.h>
++#include <linux/hrtimer.h>
++#include <linux/module.h>
++
++/*
++ * Testing instructions:
++ *
++ * isolate=1
++ * insmod timers.ko test_cpu=$isolate
++ * cd /sys/fs/cgroup/
++ * echo +cpuset > cgroup.subtree_control
++ * mkdir test
++ * echo isolated > test/cpuset.cpus.partition
++ * echo $isolate > test/cpuset.cpus
++ *
++ * awk "/cpu:/{y=0};/cpu: $isolate\$/{y=1};/ #[0-9]/ && y;" /proc/timer_list \
++ * 	| grep -q test_hrtimer_cb && echo FAIL || echo PASS
++ *
++ * Assure that there is no timers on the isolated cpu.
++ */
++
++static void test_timer_cb(struct timer_list *unused) { }
++
++static struct timer_list test_timer;
++
++static struct hrtimer test_hrtimer;
++
++static enum hrtimer_restart test_hrtimer_cb(struct hrtimer *hr_timer)
 +{
-+	struct timer_base *base;
-+	int b, v, count = 0;
-+
-+	for (b = 0; b < NR_BASES; b++) {
-+		base = per_cpu_ptr(&timer_bases[b], cpu);
-+		raw_spin_lock_irq(&base->lock);
-+
-+		for (v = 0; v < WHEEL_SIZE; v++) {
-+			struct hlist_node *c;
-+
-+			hlist_for_each(c, base->vectors + v)
-+				count++;
-+		}
-+		raw_spin_unlock_irq(&base->lock);
-+	}
-+
-+	return count;
++	return HRTIMER_NORESTART;
 +}
 +
- /**
-  * timers_resettle_from_cpu - resettles timers from
-  * specified cpu to housekeeping cpus.
-@@ -2697,6 +2718,7 @@ void timers_resettle_from_cpu(unsigned int cpu)
- 		raw_spin_unlock_irq(&new_base->lock);
- 	}
- 	local_irq_enable();
-+	WARN_ON(count_timers(cpu));
- }
- 
- int timers_dead_cpu(unsigned int cpu)
++static int test_cpu = 1;
++module_param(test_cpu, int, 0444);
++
++static int timers_init(void)
++{
++	set_cpus_allowed_ptr(current, cpumask_of(test_cpu));
++	timer_setup(&test_timer, test_timer_cb, TIMER_PINNED);
++	test_timer.expires = KTIME_MAX;
++	add_timer(&test_timer);
++
++	hrtimer_init(&test_hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
++	test_hrtimer.function = test_hrtimer_cb;
++	hrtimer_start(&test_hrtimer, -1, HRTIMER_MODE_REL);
++	return 0;
++}
++
++static void timers_exit(void)
++{
++	del_timer(&test_timer);
++	hrtimer_cancel(&test_hrtimer);
++}
++
++module_init(timers_init);
++module_exit(timers_exit);
++
++MODULE_LICENSE("GPL");
 -- 
 2.45.0
 
