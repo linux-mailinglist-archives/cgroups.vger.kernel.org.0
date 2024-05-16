@@ -1,58 +1,58 @@
-Return-Path: <cgroups+bounces-2937-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2938-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 887938C7D0A
-	for <lists+cgroups@lfdr.de>; Thu, 16 May 2024 21:13:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 890848C7D0C
+	for <lists+cgroups@lfdr.de>; Thu, 16 May 2024 21:13:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DAED5B25821
-	for <lists+cgroups@lfdr.de>; Thu, 16 May 2024 19:13:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40E011F25A7C
+	for <lists+cgroups@lfdr.de>; Thu, 16 May 2024 19:13:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA9FB15B127;
-	Thu, 16 May 2024 19:08:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20E6815B570;
+	Thu, 16 May 2024 19:08:33 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B8915B122;
-	Thu, 16 May 2024 19:08:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E60915B571;
+	Thu, 16 May 2024 19:08:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715886503; cv=none; b=iuGlpkeypLCJJYbsft7SYjYqLJic3dZ5Z2tKib7CXWnlxxcxp87ytsWEtClMdc/io+KSpmrCApbnA6sI722cTL/9pGEQNQfToHke2c3RCjPCiexEx6ZwqTyRS0vTMj+ZZU24fBfk7DucCnsMhC8bilDEK/o9c54nX0Fi8Gu0n+k=
+	t=1715886513; cv=none; b=JlRCxH0bGJYUZRz6RMbOMCY/WvrSUdn+eHq3qTDLxXpEVZPBTjUpTRNQ+gSguf+ijvt7I0VedMiQiCxdndR5zxJDV/9efOtxVZ9UCD2TfT9WgjQS54Jdx3PKhCHjd2yGJBnsEvY2obNifxi3/AvjHnELa0L/eo619/upLwDlwiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715886503; c=relaxed/simple;
-	bh=BBuLJN0RtiuFgr6SaE8THENmcUL4dkXcdDEVIERoegA=;
+	s=arc-20240116; t=1715886513; c=relaxed/simple;
+	bh=8kbqqHhC8hqJWztiJ4S0vBrzZ4vEVAmywhl/Drj8bP8=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KWfVEGrAx41lbmPaTRfycwnuGunBajeCjx7/n5sUaRC0XX5FCyw7/iI51jskZONUBFeMDNlgMT/rJaYBHW6d6pPjhhTDeZ/O4xZ5OHsBg8WpH0OZ4+30eOtUmty/a4p+ECSVuuhiVrMrzLedNsdVwEgr1ytyYN8ff9qkACyL3T0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.46
+	 MIME-Version; b=U1DVRFsbszru4/RJYwuBXHclx0dxcTm3KpV4OXEjwPh6gpdVG6msW0H+HZvVa8LY2m/2HhsLBpKFMkCTLe/xrPmau49EnmG4RIqiX0r3ZuevlAoOMBqCIStMM+d2OsCcGZERXS6cyiJdt2DNO28vu5N0+eJTs6UxDhuy8LPRXnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-42011507a54so35038485e9.0;
-        Thu, 16 May 2024 12:08:21 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-420180b5897so34934195e9.3;
+        Thu, 16 May 2024 12:08:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715886500; x=1716491300;
+        d=1e100.net; s=20230601; t=1715886510; x=1716491310;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=V/chxMa/Gj7pZdtme6fcFfNNAAL7xcfxQRHCvbZqZis=;
-        b=Hma7euspQapO5/MKrO/nD8tImvJPvPwg7UdoEgaLXxVIt6FWqT5QITYGRSJgeG7llL
-         M8OE43C/wErfBFkDaQZ5Ebk6YWVDxtZSuw+z3h7cF/BDVxHjD19I4eK1VLx4otw0SWVB
-         7+asPNzi3+L9KanaFtKAcOvm4MtIyKDHAjO0gD1qIcL1gyMwxoMTY6HMr13TT38jLyzK
-         FEOIo2UJY9s7HJkLFeyYPfF2fVuUwTuuIzto90EnF9Jr4KkYFg457E4eDvfTkEqZDPLe
-         c5QyGY7BnqDTVB7LDchvsVTTBNFfASO7pvfF9/whkzXSd2yllTajO13gsL1duLTenmfU
-         U2UQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVluWRIUZNHP6+9EC4dlFDD4Ht14piODvv7epQGsJtB7pvCYawc195BrC7nd6q0ZVcwX/pq9+j4U2uIYeCwzySObnX8/9GnYBGIcY4FEJxrHgl+GgVZs3PBs5ph8kDX7lRSrPUXZw==
-X-Gm-Message-State: AOJu0YyloG4LM+UkU8VfFw+j3+A8kslDSLzCKm0Ue+xA1iX/r4rC0jI4
-	Z5ahjlchoXfKK/Nz8HecDsg9SX29QOWhKS3GLN/XBlPs5E2NNAnl
-X-Google-Smtp-Source: AGHT+IGNLSvubANeOQQYk+X3W8EbGSGRZaIgIySYagFEURDMRefDIO8fjJUDwgdX420RuIqYEoAEwg==
-X-Received: by 2002:a05:600c:474b:b0:41c:13f6:1ee1 with SMTP id 5b1f17b1804b1-41fea930c73mr192345865e9.4.1715886499933;
-        Thu, 16 May 2024 12:08:19 -0700 (PDT)
+        bh=KKc3fp/jI+BvIXedy1D0TYqFMPTw9ko9fdbmFGrVOU8=;
+        b=drNowamVeICSyaeTWBAQUoIqHtkZGjREWEdR7cQi4lxBUB5vp8mqHNq+4t8Vv1pYtZ
+         GaV5qn1/vN12rQBax6ADaQYaY5oewd1i2nMu1rXjp63ei3NMpWaNpPQqw6kD1hcDX+zj
+         o1ECya54JQBs95HzjubTpeaFYYQpVzpUc5Q+raOW9jTuiwBa4ca3uzvj1bqFSXtlPmat
+         deNdFVFwPvTnpCfEvemp/eGICtY8kQd4t+jG7KdEb7YPZXjtLGx6o8HPGSvmaQpGqpXs
+         WHszNaKnh3geJHY2LGJBPDNkxw1RA0Bz64yJFEeqaBJTtpNr4btIE6+MQ9GQayphDWSv
+         XWVw==
+X-Forwarded-Encrypted: i=1; AJvYcCV59nIk/Lo9vlRb7WRyQEiaYU/pj2/6RgT9hBoZW0UrwP5LjJLIslEvLP4jmENKkqCem9I8PTLdeYapLPvTtLI9jwi22gYxPFJNqEN2VH+LzBfqeQbSCKs3AYO77vA4QELw2aVYoQ==
+X-Gm-Message-State: AOJu0YyFpdClXn4TJXLVAAW6T0Vvu7+LOAQJ7R1pzaAIS+Kjq9YxFsrk
+	y8BMCUUHYVTO8hEydGnaLWWhjXlUObbJUn+SZfapbfFAhtmmLNp+
+X-Google-Smtp-Source: AGHT+IE+8OzEl7GN/XD1Evd2s20T59JGOPsfzEjJ78E96nJYaDJAN5YoScVDZUfO86b85wduS8T3cQ==
+X-Received: by 2002:a05:600c:4a16:b0:41a:5d49:6143 with SMTP id 5b1f17b1804b1-41feaa3873dmr163546945e9.12.1715886509604;
+        Thu, 16 May 2024 12:08:29 -0700 (PDT)
 Received: from costa-tp.redhat.com ([2a00:a040:1a3:c059:8b18:f13e:da9b:5a8e])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-41fccee9335sm275834155e9.29.2024.05.16.12.08.17
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-41fccee9335sm275834155e9.29.2024.05.16.12.08.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 May 2024 12:08:19 -0700 (PDT)
+        Thu, 16 May 2024 12:08:29 -0700 (PDT)
 From: Costa Shulyupin <costa.shul@redhat.com>
 To: longman@redhat.com,
 	pauld@redhat.com,
@@ -83,9 +83,9 @@ To: longman@redhat.com,
 	Costa Shulyupin <costa.shul@redhat.com>,
 	linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org
-Subject: [PATCH v1 4/7] sched/isolation: Adjust affinity of managed irqs according to change of housekeeping cpumask
-Date: Thu, 16 May 2024 22:04:34 +0300
-Message-ID: <20240516190437.3545310-5-costa.shul@redhat.com>
+Subject: [PATCH v1 5/7] [NOT-FOR-MERGE] test timers affinity adjustment
+Date: Thu, 16 May 2024 22:04:35 +0300
+Message-ID: <20240516190437.3545310-6-costa.shul@redhat.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <20240516190437.3545310-1-costa.shul@redhat.com>
 References: <20240516190437.3545310-1-costa.shul@redhat.com>
@@ -97,133 +97,54 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-irq_affinity_adjust() is prototyped from irq_affinity_online_cpu()
-and irq_restore_affinity_of_irq().
-
-Core test snippets without infrastructure:
-
-1. Create managed IRQ on specific cpu with:
-
-static int test_set_affinity(struct irq_data *data,
-			     const struct cpumask *m, bool f)
-{
-	irq_data_update_effective_affinity(data, m);
-	return 0;
-}
-
-static int make_test_irq(void)
-{
-	struct irq_affinity_desc a = { mask: *cpumask_of(test_cpu),
-				       is_managed: true };
-	static struct irq_chip test_chip = { .irq_set_affinity = test_set_affinity };
-	int test_irq = __irq_alloc_descs(-1, 1, 1, 0, THIS_MODULE, &a);
-
-	irq_set_chip(test_irq, &test_chip);
-	irq_set_status_flags(test_irq, IRQ_MOVE_PCNTXT);
-	request_irq(test_irq, test_irq_cb, 0, "test_affinity", 0);
-
-	return test_irq;
-}
-
-2. Isolate specified CPU.
-
-3.  Assure that test_irq doesn't affine with test_cpu:
-
-cat /proc/irq/$test_irq/smp_affinity_list
+There must be no timers on the specified cpu
+at the end of timers_resettle_from_cpu.
 
 Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
 ---
- kernel/cgroup/cpuset.c   |  3 ++-
- kernel/sched/isolation.c | 44 +++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 45 insertions(+), 2 deletions(-)
+ kernel/time/timer.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 9d01e8e0a3ed9..2e59a2983eb2e 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -225,7 +225,8 @@ static struct list_head remote_children;
- /*
-  * The set of housekeeping flags to be updated for CPU isolation
-  */
--#define	HOUSEKEEPING_FLAGS	(BIT(HK_TYPE_TIMER) | BIT(HK_TYPE_RCU))
-+#define	HOUSEKEEPING_FLAGS	(BIT(HK_TYPE_TIMER) | BIT(HK_TYPE_RCU) \
-+		| BIT(HK_TYPE_MANAGED_IRQ))
- 
- /*
-  * Partition root states:
-diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 85a17d39d8bb0..b0503ed362fce 100644
---- a/kernel/sched/isolation.c
-+++ b/kernel/sched/isolation.c
-@@ -135,6 +135,43 @@ static void resettle_all_timers(cpumask_var_t enable_mask, cpumask_var_t disable
- 	}
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 2d15c0e7b0550..b7d253d230453 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -2658,6 +2658,27 @@ int timers_prepare_cpu(unsigned int cpu)
+ 	return 0;
  }
  
-+static int irq_affinity_adjust(cpumask_var_t disable_mask)
++static int count_timers(int cpu)
 +{
-+	unsigned int irq;
-+	cpumask_var_t mask;
++	struct timer_base *base;
++	int b, v, count = 0;
 +
-+	if (!alloc_cpumask_var(&mask, GFP_KERNEL))
-+		return -ENOMEM;
++	for (b = 0; b < NR_BASES; b++) {
++		base = per_cpu_ptr(&timer_bases[b], cpu);
++		raw_spin_lock_irq(&base->lock);
 +
-+	irq_lock_sparse();
-+	for_each_active_irq(irq) {
-+		struct irq_desc *desc = irq_to_desc(irq);
++		for (v = 0; v < WHEEL_SIZE; v++) {
++			struct hlist_node *c;
 +
-+		raw_spin_lock_irq(&desc->lock);
-+		struct irq_data *data = irq_desc_get_irq_data(desc);
-+
-+		if (irqd_affinity_is_managed(data) && cpumask_weight_and(disable_mask,
-+			irq_data_get_affinity_mask(data))) {
-+
-+			cpumask_and(mask, cpu_online_mask, irq_default_affinity);
-+			cpumask_and(mask, mask, housekeeping_cpumask(HK_TYPE_MANAGED_IRQ));
-+			irq_set_affinity_locked(data, mask, true);
-+			WARN_ON(cpumask_weight_and(irq_data_get_effective_affinity_mask(data),
-+						disable_mask));
-+			WARN_ON(!cpumask_subset(irq_data_get_effective_affinity_mask(data),
-+						cpu_online_mask));
-+			WARN_ON(!cpumask_subset(irq_data_get_effective_affinity_mask(data),
-+						housekeeping_cpumask(HK_TYPE_MANAGED_IRQ)));
++			hlist_for_each(c, base->vectors + v)
++				count++;
 +		}
-+		raw_spin_unlock_irq(&desc->lock);
++		raw_spin_unlock_irq(&base->lock);
 +	}
-+	irq_unlock_sparse();
 +
-+	free_cpumask_var(mask);
-+
-+	return 0;
++	return count;
 +}
 +
- /*
-  * housekeeping_update - change housekeeping.cpumasks[type] and propagate the
-  * change.
-@@ -144,6 +181,8 @@ static void resettle_all_timers(cpumask_var_t enable_mask, cpumask_var_t disable
-  */
- static int housekeeping_update(enum hk_type type, cpumask_var_t update)
- {
-+	int err = 0;
-+
- 	struct {
- 		struct cpumask changed;
- 		struct cpumask enable;
-@@ -171,11 +210,14 @@ static int housekeeping_update(enum hk_type type, cpumask_var_t update)
- 		lockup_detector_reconfigure();
- #endif
- 		break;
-+	case HK_TYPE_MANAGED_IRQ:
-+		err = irq_affinity_adjust(&masks->disable);
-+		break;
- 	default:
+ /**
+  * timers_resettle_from_cpu - resettles timers from
+  * specified cpu to housekeeping cpus.
+@@ -2697,6 +2718,7 @@ void timers_resettle_from_cpu(unsigned int cpu)
+ 		raw_spin_unlock_irq(&new_base->lock);
  	}
- 	kfree(masks);
- 
--	return 0;
-+	return err;
+ 	local_irq_enable();
++	WARN_ON(count_timers(cpu));
  }
  
- static int __init housekeeping_setup(char *str, unsigned long flags)
+ int timers_dead_cpu(unsigned int cpu)
 -- 
 2.45.0
 
