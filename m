@@ -1,125 +1,127 @@
-Return-Path: <cgroups+bounces-2928-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2929-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EE438C7708
-	for <lists+cgroups@lfdr.de>; Thu, 16 May 2024 15:04:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45B068C79CB
+	for <lists+cgroups@lfdr.de>; Thu, 16 May 2024 17:51:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B1F5B21B79
-	for <lists+cgroups@lfdr.de>; Thu, 16 May 2024 13:04:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFA991F22D1D
+	for <lists+cgroups@lfdr.de>; Thu, 16 May 2024 15:51:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ABCF146D5A;
-	Thu, 16 May 2024 13:04:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B84C114EC49;
+	Thu, 16 May 2024 15:50:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jP478jQ7"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="KygvtkIO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68B11465B7
-	for <cgroups@vger.kernel.org>; Thu, 16 May 2024 13:04:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC94A14D43A
+	for <cgroups@vger.kernel.org>; Thu, 16 May 2024 15:50:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715864655; cv=none; b=Qe46RGboh/yCUKTctMT8ulP7XJMd/feT5MqczhsAbEyePd42gAv+cKpGYCLmpr7TF//Aq5iqlhDXM3svlyDGzjWwzPXZNexkI3tpaYlbuBOxV0B5S2BSJHhQZfx6rsfJRSb/NYz6qAqBrmNFcpVsH/kv5wD9cEu7fYlzjq5UWY0=
+	t=1715874612; cv=none; b=Y5kyuBHnV97gHChdM7af2Tt57hXtlICe8ngSbloSDcCycrVvXQgLeZ4wygsUNYjoNzh41cFQjCDSsdzW4tJ9lLL5y0U6xa9755aATvaEb9m0us0CexugKL/Ylo9YF6ppeqDn189t+1DeN2c0gp6p6GqE944XJQ70Y47a7IvFOVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715864655; c=relaxed/simple;
-	bh=CYbU+iTKUs++kZfDgFdZa6ah0eEMidjuFp5veKjhXXE=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=DpXGF00yEkRSudX9mel5TjtB+PHYaZhIMdReRENs+4sI82WlMW1qNfO0YloXHUiu/NwOYQ4rV3yjGlWhIhE9nApxmiGU1ZOiTwxKqFe8O/E3ndI+tI+tpbZf4wx28wZsgC9MttKNBp8lQZ60N7bxgZbHXv1EYYUxd3F1NSC2rmQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jP478jQ7; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1715864652;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type;
-	bh=fMhujxl7GYzS5ei+Ia3VImv29dSe1TrNNjtJn8rOB2k=;
-	b=jP478jQ7poR8Hoqz0vTS89kRUspB9j7AdxC8Pe83gcCI74zbhQmKpSdjmJ15JsgG0Beh5I
-	974dm6D1CqSwfWoB1vx3vAHKa5HNq9OsOFk6Uzxf4rgN0xNLapVJ8o2Xxjn1nIcYx8mAka
-	ztPY+SJWY/HvCfZOIuWv6RvFpFB07IQ=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-672-6qhSDOKvPpeqQdIXGIZ2Xw-1; Thu, 16 May 2024 09:04:10 -0400
-X-MC-Unique: 6qhSDOKvPpeqQdIXGIZ2Xw-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2b38e234a96so7128842a91.0
-        for <cgroups@vger.kernel.org>; Thu, 16 May 2024 06:04:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715864649; x=1716469449;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+	s=arc-20240116; t=1715874612; c=relaxed/simple;
+	bh=C2S+Wcg1T1bDn7HdR6vfDNd7hPYvGbP2fXOfs5dd6ZU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IIL3aNTA5oS4Oq8s3sTjYCEfK5z4+ykyUTcBKicNZtqj3MVw1H2j9Hk/UpOHg04fr+V1uJANW77ZA23fOlwxdsLQMTvGV7tWy2svqIZiKCyuanV9jE/brRJ/JIuTeMa9ZgriYUjxMtL1nl6P6Oc3XiOvq6W4vob5DU+42GsdTNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=KygvtkIO; arc=none smtp.client-ip=209.85.166.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7e1b88a886fso5548439f.0
+        for <cgroups@vger.kernel.org>; Thu, 16 May 2024 08:50:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1715874609; x=1716479409; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=fMhujxl7GYzS5ei+Ia3VImv29dSe1TrNNjtJn8rOB2k=;
-        b=EHwfsIAytX62FPVtGRHReN9Sa+aHHrPBU6VxYuScrkVjq89qdsxohJ+xRLJPY0wIgO
-         B2BEKaZZxin3ofDk9+PxdC2XuyT87c+faCp4+pbCFoGIJXN3Qb+yI0Qy4p7j6dCsO71u
-         4XA/JlYgCw3oO1ugJ0smnsQ3skXIHzL2P+4im8c2Fe0PuAzPNYT+Y4Hzx7vHXd2/9MAt
-         oVT//jwvgJl4L0Re3O5hYJbE+7vK4+6geyyoiHRhO+OOrxfSyCjRbU3AkCm2QmJXin/v
-         e95vaLjZxNyKwcDe/YBG+G4VeGDgk7Rvim27553CuNP0LCzMg32LAb+tmlhxmgUVInez
-         avhA==
-X-Gm-Message-State: AOJu0YxqHvFkgsYayplGC3HCew2VVNta+I12VXHlg7wta92G2arRsPbz
-	MhuSpUJfI2C/nAKwPDmHgaO7OOrJV+8HW9JbFhQf2Bkz2Q56BO1N2KIg/JNkk72IumE/w79s7oE
-	nRfUvOpWVvEYeFhVP/QfL/0jUzScU+aqhNB7Zy7q9//AiLYepHdaAu93dQTSf7Hny5+r7pc70aY
-	tLJTljyPs7b6N0PPS8nDPmRWwWSEpqZR/HVAT7LvbZ3u8=
-X-Received: by 2002:a17:90b:23c4:b0:2b6:2067:df12 with SMTP id 98e67ed59e1d1-2b6cc757e72mr16265715a91.16.1715864648544;
-        Thu, 16 May 2024 06:04:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEiXJ8xzaM+sGR9V2lV9ZYnwsi82g3pfuFe+KOmIVZ/MQ0t7sgQYbKUSt4txmsqKtwZn4QVaIRfEY2ITS8mcTM=
-X-Received: by 2002:a17:90b:23c4:b0:2b6:2067:df12 with SMTP id
- 98e67ed59e1d1-2b6cc757e72mr16265696a91.16.1715864648073; Thu, 16 May 2024
- 06:04:08 -0700 (PDT)
+        bh=P+iK/FVhZ4HUNEOzdTMBxIyNYiEbX2AZzsfqmN9W/BY=;
+        b=KygvtkIOUT6biaordQ3w+WUwvxASyMz+pLz1DE35nNfEcMRVZuxGNLdnzw+5wWRTwm
+         yyHTTtqgNTEzM6KudcdfQC2/D8IuNtsWcLtH5kaymoUzF2tLZUA8cuP4HP+1v/IULPzU
+         083xnHcDCF3WUP/jSfZqSpJT+xHb8fEuCsJtI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715874609; x=1716479409;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=P+iK/FVhZ4HUNEOzdTMBxIyNYiEbX2AZzsfqmN9W/BY=;
+        b=uePQtHGkqgwHmEXBWX6htKQ21S3X6mLF2quTIEcar2rraMO5Pc8f1D/OpT1KPVbhkM
+         WspON3tcZszgqhGWJ0e/pcoWgAc0IFsUyLulIBTsvI+A3Qg91e5TMD+QbJ2jE1QJHQ7N
+         /S9sZYHtLhKejfTkfp041z5HBh6EGRA+1LOKMeXwEjsOjlp9ZhNQbi8umTjnGLPx/q1H
+         fGR4k+Q39WIW9criSUWAbBYnujRxaE5QPlyTg0zQEdwRJvJRRptXuHBmdAsydKaoOs+a
+         RkGEmVCf3w57WHeJT2Z0x6MMWNX/LPhIRzQAfvn1rWhT83zJW36964YAuPpY5W9z5voO
+         tiiw==
+X-Forwarded-Encrypted: i=1; AJvYcCX0e8K4Qg3No0xGEwcoY3zSFKjLxvbiLhr48hn8UcxAo4hLneHiim9pIRLJi6vphUnv+cbAKI+1RNKD52vUKsJvQjeNKjLE/g==
+X-Gm-Message-State: AOJu0Yx+PYwgZ7POcy25lPVfkOkzlkT/dVA/uC4I4KNesMcuHqaVM/JL
+	uSXduJbkqPWf8XDTTSuMKFDn09H+vh0u8IF3Ah0G2d5jMWjeDX/KJQQlJxS+ZGU=
+X-Google-Smtp-Source: AGHT+IFJbIeUVLI7ISOMfUKtjb3QlrF6+MESxVkubwkrIwTVWoi4y8+3A4qy7lb3Ntw2ajnuWMf8Hw==
+X-Received: by 2002:a05:6602:59e:b0:7d9:eeb8:ddeb with SMTP id ca18e2360f4ac-7e1b5202ae8mr1886131739f.2.1715874608958;
+        Thu, 16 May 2024 08:50:08 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-489376de185sm4147976173.150.2024.05.16.08.50.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 May 2024 08:50:08 -0700 (PDT)
+Message-ID: <bec3f30e-fc9a-45e2-b6ea-d739b2a2d019@linuxfoundation.org>
+Date: Thu, 16 May 2024 09:50:06 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Changhui Zhong <czhong@redhat.com>
-Date: Thu, 16 May 2024 21:03:56 +0800
-Message-ID: <CAGVVp+W4FdKU44aaoMbwcShEHZoHxg1NVe1EcLJHFQi62XL3mg@mail.gmail.com>
-Subject: [bug report] leak blkio in cgroup
-To: cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 08/66] selftests/cgroup: Drop define _GNU_SOURCE
+To: Tejun Heo <tj@kernel.org>, Edward Liaw <edliaw@google.com>
+Cc: shuah@kernel.org, =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+ =?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>,
+ Christian Brauner <brauner@kernel.org>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Zefan Li
+ <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Muchun Song <muchun.song@linux.dev>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Yosry Ahmed <yosryahmed@google.com>,
+ Nhat Pham <nphamcs@gmail.com>, Chengming Zhou <chengming.zhou@linux.dev>,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ kernel-team@android.com, linux-security-module@vger.kernel.org,
+ netdev@vger.kernel.org, linux-riscv@lists.infradead.org,
+ bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ Shuah Khan <skhan@linuxfoundation.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+References: <20240510000842.410729-1-edliaw@google.com>
+ <20240510000842.410729-9-edliaw@google.com>
+ <ZkJHvrwZEqg6RJK5@slm.duckdns.org>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <ZkJHvrwZEqg6RJK5@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 5/13/24 11:02, Tejun Heo wrote:
+> On Fri, May 10, 2024 at 12:06:25AM +0000, Edward Liaw wrote:
+>> _GNU_SOURCE is provided by lib.mk, so it should be dropped to prevent
+>> redefinition warnings.
+>>
+>> Signed-off-by: Edward Liaw <edliaw@google.com>
+> 
+> Applied to cgroup/for-6.10.
+> 
+> Thanks.
+> 
 
-I hit this issue on recent upstream, looks there is a leak blkio in cgroup,
-please help check it and let me know if you need any info/testing for
-it, thanks.
+Hi Tejun,
 
-repo:https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-branch:master
-commit HEAD: 3c999d1ae3c75991902a1a7dad0cb62c2a3008b4
+Please don't include this in your PR to Linus. This patch series needs
+to go together as it is causing several build warns and some errors.
 
-reproducer:
-1. install podman and container-tools
-2. # for i in $(seq 1000); do podman run --name=test --replace centos
-/bin/echo 'running'; done >/dev/null
-3. # while [ 1 ];do cat /proc/cgroups | grep -e subsys -e blkio |
-column -t; sleep 5; done
-
-results:
-#subsys_name  hierarchy  num_cgroups  enabled
-blkio         0          85           1
-#subsys_name  hierarchy  num_cgroups  enabled
-blkio         0          138          1
-#subsys_name  hierarchy  num_cgroups  enabled
-blkio         0          210          1
-#subsys_name  hierarchy  num_cgroups  enabled
-blkio         0          283          1
-#subsys_name  hierarchy  num_cgroups  enabled
-blkio         0          357          1
-#subsys_name  hierarchy  num_cgroups  enabled
-blkio         0          430          1
-#subsys_name  hierarchy  num_cgroups  enabled
-blkio         0          505          1
-#subsys_name  hierarchy  num_cgroups  enabled
-blkio         0          578          1
-#subsys_name  hierarchy  num_cgroups  enabled
-blkio         0          653          1
-#subsys_name  hierarchy  num_cgroups  enabled
-blkio         0          726          1
-
---
-Best Regards,
-     Changhui
-
+thanks,
+-- Shuah
 
