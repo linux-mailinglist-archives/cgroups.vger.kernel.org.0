@@ -1,58 +1,58 @@
-Return-Path: <cgroups+bounces-2935-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2936-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6A578C7D01
-	for <lists+cgroups@lfdr.de>; Thu, 16 May 2024 21:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 901BE8C7D06
+	for <lists+cgroups@lfdr.de>; Thu, 16 May 2024 21:12:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56ACE1F2211E
-	for <lists+cgroups@lfdr.de>; Thu, 16 May 2024 19:12:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1ABC81F21E13
+	for <lists+cgroups@lfdr.de>; Thu, 16 May 2024 19:12:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36302158D95;
-	Thu, 16 May 2024 19:07:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B00DC15AAD8;
+	Thu, 16 May 2024 19:07:57 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60412158D72;
-	Thu, 16 May 2024 19:07:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC70E158D99;
+	Thu, 16 May 2024 19:07:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715886467; cv=none; b=iyp6aSSdE6tqupwZD7mfE+MSUXMBwkt9DXvPeTID44CqXU6iKFklc+J26d9JuKT0XNgyVWYw+2rvM41qQwRI+KFF03A+vbbBDOrVF4xkPPeQdhDORiJG4DkM4KOn51p7gDEGvhFG+VuM1eyezzzFGembhZzvRRDbjnFEfSJD0ww=
+	t=1715886477; cv=none; b=bFcAjBLzgTQxWQqYtM67IgPXMyjO0yPAGz8h0SqmQYGyyme3YPDTrnbVCrr/P1weELtaC56PiwxPhYUkpU+yBc6ZR/e/l4n1cbTWI9OmCieHDPQIIl7C9UORAo/zLngo72Sm+R2ZWzRugYXxUWSwXf37fMsmV3HTl6A41Rx8s40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715886467; c=relaxed/simple;
-	bh=EmFSx8/Ii7PDX25whTQOapn04D9/HEs4Zzlo9FTr/5A=;
+	s=arc-20240116; t=1715886477; c=relaxed/simple;
+	bh=YPEFrtuubBM6fnGYCgA5k7qX92z/KFJwSRrSAPfnjAg=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PnLvNplX5VozThf9gUVsy8UYK4Y8Gogo90Ytg1ExkR2w1k6Bi1ClpkIForkFtb/Rmi7FDlpsTReWrQIMI2P+AKwFA4tVFNWvcryQNjYVqLIlOxqcuV99nCKDTcJGo9snzjUF1/u1pOYYuRfce+HlcvESMELKQQwTcosSLEor6tU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.47
+	 MIME-Version; b=XYGtrzgbL8Zas3vyp0ENjIW32AdxGq18D0SHjcZT/speNh32lyEpXgFn2riCNkQsWobYyHx+vHWuDmzjkCByqEVIhGv/MQCk5P0NR7/erOQfC9pJHFEPIMj/VjTfgyaGmoNZjXwQaVFqBv5GG9Qi7hhURofpkBYMWeuj2usRROo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-42016c8daa7so33208275e9.2;
-        Thu, 16 May 2024 12:07:45 -0700 (PDT)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4202ca70270so9420325e9.3;
+        Thu, 16 May 2024 12:07:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715886464; x=1716491264;
+        d=1e100.net; s=20230601; t=1715886474; x=1716491274;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=61LwWLE7vVj50HZOr0xZhY/e3UrTUHc9jD8In45+Uew=;
-        b=SCYCtO24VQHRUl/Z1D2vfoR3Xd+qjz7bCNLlux16gb++RFvygVgpMI/dSHhYRj+FJD
-         dRUAzao1z4cTAtubeZq2GWVjk/gaNenSU5HYu4K1odYoJ+qOHSF1HTT9Ilpyr7NKJUvD
-         R0Nm5VP5IneWoNr9j9J8hJRAm7tV081KPbKPgzek4XOLoIdM8tBGxGfH6uceulyQ214X
-         4KgSVuC405rUXDnt9INU6/1fPKqEH93hRrwloLM4ysOc9oCZ3xcqhlWCriFna7/HSvNy
-         tsY8yATMcVz5U0LV4J7rB91ekb3dmo8WGOW2YqDJ5j3TvPn79jaLZs5yqnXdAoifJ7OY
-         llGA==
-X-Forwarded-Encrypted: i=1; AJvYcCXSRlJM1mcBtnR15flDV1dr550aDIXdjJJht8t1jWr4WQydxnPl8ghzLmAJzvhzyF26HFeNXzOmpSF4a6yp7NKVInKIUfOAHsy3Zt3nId9oHPLL88vRBXFNzauxTisZMQ03EsUwFw==
-X-Gm-Message-State: AOJu0YyHryGzBM2baZXx6Bm1PPADyLJlx9pl2pQPM02sZlOTAf12M3zh
-	QaEza/Sxq2bFLWCHxrKGcFnxcQfEr1fAP8Nkrv9SG3pRHEL3MV+d
-X-Google-Smtp-Source: AGHT+IEBxb/kDHNUZLNkFrbcua9vIlbfeC4Qz918TjIq4cHJPBlssgEmoiIGckrGbwvB1Tfo4KE0bg==
-X-Received: by 2002:a05:600c:5487:b0:41b:851a:af43 with SMTP id 5b1f17b1804b1-41feaa38f9dmr133889165e9.11.1715886463488;
-        Thu, 16 May 2024 12:07:43 -0700 (PDT)
+        bh=VvtGwduNasaOM3VcnROsPDVP96tMSrEFSnIEu3AfJDc=;
+        b=TuJyl23937NbONASA/IvCu639U4Z8YtHDtA8L0R6u8Y1UKEdaOcPKv2gAH77WICEsJ
+         VEtQCv+lbUnPaRI0WPaODDU3Bw1k1dzFFCEme/0wqFESssF6awRFrO/kzrS9f2lHUok6
+         Czfedd1EoZ2NN8iVxyOZK527ejYcWUymm7YQ4bwulsvALVBNNbnHy9srvgJBJTW3SZFE
+         X1slqHR6zcrnR4UfnDfD6KrJCxxjZ+WL1GPbfdkbh4GkI26kH29pcJfRBwEWXqg0onUf
+         hf2KQEqGH4UMrl/Y6hCkaTcFhSXfcutnk2RCzgVZMMY85/kYAuwtQeK3WdpBhbI8e6xW
+         +SzA==
+X-Forwarded-Encrypted: i=1; AJvYcCW1s3p2UOW5c1i3Vo/GRMrqmc1Aj+/UOg8ZBHSYKCQZrUQtv957W4To11RI9b00gFuVjYTG0ipt35n0RRJG6n+4sdFWwag5kGHOVr+F1BhySCL/AjN95gB53lYEdIcjJU96nvc46w==
+X-Gm-Message-State: AOJu0YymFyzGRhA3nJwgN+tartaW7N7X0HjAnqmCUi7utUIV0JSbgadT
+	et7pLAE+0MaO/JpSJQORMSQ8u8bbaA7Igl/Yn1TWjdVEax6G+7Xz
+X-Google-Smtp-Source: AGHT+IFgGf+aabCh2pLx3YMJxIhyC6A8RPl3ErJdma0B1WxABl8AUca89BHiazxnBkPPeU6aqag/Lw==
+X-Received: by 2002:a05:600c:3ca3:b0:41c:23f3:65fa with SMTP id 5b1f17b1804b1-41feac55e3cmr186888035e9.28.1715886474158;
+        Thu, 16 May 2024 12:07:54 -0700 (PDT)
 Received: from costa-tp.redhat.com ([2a00:a040:1a3:c059:8b18:f13e:da9b:5a8e])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-41fccee9335sm275834155e9.29.2024.05.16.12.07.40
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-41fccee9335sm275834155e9.29.2024.05.16.12.07.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 May 2024 12:07:43 -0700 (PDT)
+        Thu, 16 May 2024 12:07:53 -0700 (PDT)
 From: Costa Shulyupin <costa.shul@redhat.com>
 To: longman@redhat.com,
 	pauld@redhat.com,
@@ -83,9 +83,9 @@ To: longman@redhat.com,
 	Costa Shulyupin <costa.shul@redhat.com>,
 	linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org
-Subject: [PATCH v1 1/7] sched/isolation: Add infrastructure to adjust affinity for dynamic CPU isolation
-Date: Thu, 16 May 2024 22:04:31 +0300
-Message-ID: <20240516190437.3545310-2-costa.shul@redhat.com>
+Subject: [PATCH v1 2/7] sched/isolation: Adjust affinity of timers according to change of housekeeping cpumask
+Date: Thu, 16 May 2024 22:04:32 +0300
+Message-ID: <20240516190437.3545310-3-costa.shul@redhat.com>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <20240516190437.3545310-1-costa.shul@redhat.com>
 References: <20240516190437.3545310-1-costa.shul@redhat.com>
@@ -97,103 +97,201 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce infrastructure function housekeeping_update() to change
-housekeeping_cpumask during runtime and adjust affinities of depended
-subsystems.
+Adjust affinity timers and watchdog_cpumask according to
+change of housekeeping.cpumasks[HK_TYPE_TIMER] during runtime.
 
-Affinity adjustments of subsystems follow in subsequent patches.
+watchdog_cpumask is initialized during boot in lockup_detector_init()
+from housekeeping_cpumask(HK_TYPE_TIMER).
 
-Parent patch:
-"sched/isolation: Exclude dynamically isolated CPUs from housekeeping masks"
-https://lore.kernel.org/lkml/20240229021414.508972-2-longman@redhat.com/
+lockup_detector_reconfigure() utilizes updated watchdog_cpumask
+via __lockup_detector_reconfigure().
 
-Test example for cgroup2:
+timers_resettle_from_cpu() is blindly prototyped from timers_dead_cpu().
+local_irq_disable is used because cpuhp_thread_fun uses it before
+cpuhp_invoke_callback() call.
 
-cd /sys/fs/cgroup/
-echo +cpuset > cgroup.subtree_control
-mkdir test
-echo isolated > test/cpuset.cpus.partition
-echo $isolate > test/cpuset.cpus
+Core test snippets without infrastructure:
+
+1. Create timer on specific cpu with:
+
+	timer_setup(&test_timer, test_timer_cb, TIMER_PINNED);
+        test_timer.expires = KTIME_MAX;
+        add_timer_on(&test_timer, test_cpu);
+
+2. Call housekeeping_update()
+
+3. Assure that there is no timers on specified cpu at the end
+of timers_resettle_from_cpu() with:
+
+static int count_timers(int cpu)
+{
+	struct timer_base *base;
+	int b, v, count = 0;
+
+	for (b = 0; b < NR_BASES; b++) {
+		base = per_cpu_ptr(&timer_bases[b], cpu);
+		raw_spin_lock_irq(&base->lock);
+
+		for (v = 0; v < WHEEL_SIZE; v++) {
+			struct hlist_node *c;
+
+			hlist_for_each(c, base->vectors + v)
+				count++;
+		}
+		raw_spin_unlock_irq(&base->lock);
+	}
+
+	return count;
+}
 
 Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
 ---
- kernel/sched/isolation.c | 48 +++++++++++++++++++++++++++++++++++-----
- 1 file changed, 43 insertions(+), 5 deletions(-)
+ include/linux/timer.h    |  2 ++
+ init/Kconfig             |  1 +
+ kernel/sched/isolation.c | 27 ++++++++++++++++++++++++++
+ kernel/time/timer.c      | 42 ++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 72 insertions(+)
 
+diff --git a/include/linux/timer.h b/include/linux/timer.h
+index e67ecd1cbc97d..a09266abdb18a 100644
+--- a/include/linux/timer.h
++++ b/include/linux/timer.h
+@@ -219,9 +219,11 @@ unsigned long round_jiffies_up_relative(unsigned long j);
+ #ifdef CONFIG_HOTPLUG_CPU
+ int timers_prepare_cpu(unsigned int cpu);
+ int timers_dead_cpu(unsigned int cpu);
++void timers_resettle_from_cpu(unsigned int cpu);
+ #else
+ #define timers_prepare_cpu	NULL
+ #define timers_dead_cpu		NULL
++static inline void timers_resettle_from_cpu(unsigned int cpu) { }
+ #endif
+ 
+ #endif
+diff --git a/init/Kconfig b/init/Kconfig
+index 72404c1f21577..fac49c6bb965a 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -682,6 +682,7 @@ config CPU_ISOLATION
+ 	bool "CPU isolation"
+ 	depends on SMP || COMPILE_TEST
+ 	default y
++	select HOTPLUG_CPU
+ 	help
+ 	  Make sure that CPUs running critical tasks are not disturbed by
+ 	  any source of "noise" such as unbound workqueues, timers, kthreads...
 diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 948b9ee0dc2cc..036e48f0e7d1b 100644
+index 036e48f0e7d1b..3b63f0212887e 100644
 --- a/kernel/sched/isolation.c
 +++ b/kernel/sched/isolation.c
-@@ -116,6 +116,39 @@ static void __init housekeeping_setup_type(enum hk_type type,
+@@ -8,6 +8,10 @@
+  *
+  */
+ 
++#ifdef CONFIG_LOCKUP_DETECTOR
++#include <linux/nmi.h>
++#endif
++
+ enum hk_flags {
+ 	HK_FLAG_TIMER		= BIT(HK_TYPE_TIMER),
+ 	HK_FLAG_RCU		= BIT(HK_TYPE_RCU),
+@@ -116,6 +120,19 @@ static void __init housekeeping_setup_type(enum hk_type type,
  		     housekeeping_staging);
  }
  
-+/*
-+ * housekeeping_update - change housekeeping.cpumasks[type] and propagate the
-+ * change.
-+ *
-+ * Assuming cpuset_mutex is held in sched_partition_write or
-+ * cpuset_write_resmask.
-+ */
-+static int housekeeping_update(enum hk_type type, cpumask_var_t update)
++static void resettle_all_timers(cpumask_var_t enable_mask, cpumask_var_t disable_mask)
 +{
-+	struct {
-+		struct cpumask changed;
-+		struct cpumask enable;
-+		struct cpumask disable;
-+	} *masks;
++	unsigned int cpu;
 +
-+	masks = kmalloc(sizeof(*masks), GFP_KERNEL);
-+	if (!masks)
-+		return -ENOMEM;
++	for_each_cpu(cpu, enable_mask)	{
++		timers_prepare_cpu(cpu);
++	}
 +
-+	lockdep_assert_cpus_held();
-+	cpumask_xor(&masks->changed, housekeeping_cpumask(type), update);
-+	cpumask_and(&masks->enable, &masks->changed, update);
-+	cpumask_andnot(&masks->disable, &masks->changed, update);
-+	cpumask_copy(housekeeping.cpumasks[type], update);
-+	housekeeping.flags |= BIT(type);
-+	if (!static_branch_unlikely(&housekeeping_overridden))
-+		static_key_enable_cpuslocked(&housekeeping_overridden.key);
-+
-+	kfree(masks);
-+
-+	return 0;
++	for_each_cpu(cpu, disable_mask) {
++		timers_resettle_from_cpu(cpu);
++	}
 +}
 +
- static int __init housekeeping_setup(char *str, unsigned long flags)
- {
- 	cpumask_var_t non_housekeeping_mask, housekeeping_staging;
-@@ -314,9 +347,12 @@ int housekeeping_exlude_isolcpus(const struct cpumask *isolcpus, unsigned long f
- 		/*
- 		 * Reset housekeeping to bootup default
- 		 */
--		for_each_set_bit(type, &housekeeping_boot.flags, HK_TYPE_MAX)
--			cpumask_copy(housekeeping.cpumasks[type],
--				     housekeeping_boot.cpumasks[type]);
-+		for_each_set_bit(type, &housekeeping_boot.flags, HK_TYPE_MAX) {
-+			int err = housekeeping_update(type, housekeeping_boot.cpumasks[type]);
-+
-+			if (err)
-+				return err;
-+		}
- 
- 		WRITE_ONCE(housekeeping.flags, housekeeping_boot.flags);
- 		if (!housekeeping_boot.flags &&
-@@ -344,9 +380,11 @@ int housekeeping_exlude_isolcpus(const struct cpumask *isolcpus, unsigned long f
- 		cpumask_andnot(tmp_mask, src_mask, isolcpus);
- 		if (!cpumask_intersects(tmp_mask, cpu_online_mask))
- 			return -EINVAL;	/* Invalid isolated CPUs */
--		cpumask_copy(housekeeping.cpumasks[type], tmp_mask);
-+		int err = housekeeping_update(type, tmp_mask);
-+
-+		if (err)
-+			return err;
- 	}
--	WRITE_ONCE(housekeeping.flags, housekeeping_boot.flags | flags);
- 	excluded = true;
+ /*
+  * housekeeping_update - change housekeeping.cpumasks[type] and propagate the
+  * change.
+@@ -144,6 +161,16 @@ static int housekeeping_update(enum hk_type type, cpumask_var_t update)
  	if (!static_branch_unlikely(&housekeeping_overridden))
  		static_key_enable_cpuslocked(&housekeeping_overridden.key);
+ 
++	switch (type) {
++	case HK_TYPE_TIMER:
++		resettle_all_timers(&masks->enable, &masks->disable);
++#ifdef CONFIG_LOCKUP_DETECTOR
++		cpumask_copy(&watchdog_cpumask, housekeeping_cpumask(HK_TYPE_TIMER));
++		lockup_detector_reconfigure();
++#endif
++		break;
++	default:
++	}
+ 	kfree(masks);
+ 
+ 	return 0;
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 48288dd4a102f..2d15c0e7b0550 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -51,6 +51,7 @@
+ #include <asm/div64.h>
+ #include <asm/timex.h>
+ #include <asm/io.h>
++#include <linux/sched/isolation.h>
+ 
+ #include "tick-internal.h"
+ #include "timer_migration.h"
+@@ -2657,6 +2658,47 @@ int timers_prepare_cpu(unsigned int cpu)
+ 	return 0;
+ }
+ 
++/**
++ * timers_resettle_from_cpu - resettles timers from
++ * specified cpu to housekeeping cpus.
++ */
++void timers_resettle_from_cpu(unsigned int cpu)
++{
++	struct timer_base *old_base;
++	struct timer_base *new_base;
++	int b, i;
++
++	local_irq_disable();
++	for (b = 0; b < NR_BASES; b++) {
++		old_base = per_cpu_ptr(&timer_bases[b], cpu);
++		new_base = per_cpu_ptr(&timer_bases[b],
++				cpumask_any_and(cpu_active_mask,
++					housekeeping_cpumask(HK_TYPE_TIMER)));
++		/*
++		 * The caller is globally serialized and nobody else
++		 * takes two locks at once, deadlock is not possible.
++		 */
++		raw_spin_lock_irq(&new_base->lock);
++		raw_spin_lock_nested(&old_base->lock, SINGLE_DEPTH_NESTING);
++
++		/*
++		 * The current CPUs base clock might be stale. Update it
++		 * before moving the timers over.
++		 */
++		forward_timer_base(new_base);
++
++		WARN_ON_ONCE(old_base->running_timer);
++		old_base->running_timer = NULL;
++
++		for (i = 0; i < WHEEL_SIZE; i++)
++			migrate_timer_list(new_base, old_base->vectors + i);
++
++		raw_spin_unlock(&old_base->lock);
++		raw_spin_unlock_irq(&new_base->lock);
++	}
++	local_irq_enable();
++}
++
+ int timers_dead_cpu(unsigned int cpu)
+ {
+ 	struct timer_base *old_base;
 -- 
 2.45.0
 
