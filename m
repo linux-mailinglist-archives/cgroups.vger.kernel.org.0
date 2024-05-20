@@ -1,257 +1,266 @@
-Return-Path: <cgroups+bounces-2960-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2961-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DFC28C95A8
-	for <lists+cgroups@lfdr.de>; Sun, 19 May 2024 19:47:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0723B8C9801
+	for <lists+cgroups@lfdr.de>; Mon, 20 May 2024 04:43:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C16EE1C20ED1
-	for <lists+cgroups@lfdr.de>; Sun, 19 May 2024 17:47:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7538E1F213AB
+	for <lists+cgroups@lfdr.de>; Mon, 20 May 2024 02:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4B9751C49;
-	Sun, 19 May 2024 17:47:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAA009457;
+	Mon, 20 May 2024 02:43:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Wg9+zWz8"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jcDCnGgK"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13E054DA1F
-	for <cgroups@vger.kernel.org>; Sun, 19 May 2024 17:47:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716140833; cv=none; b=KsBEuhm2G3IQngfnhazJkrqmPINSoUZkWGM4MZoK+w0AG22OGpqisC1j+zdf/zYVsblsF6IAHJMKv1/Ak8EJQbn/kSQWZl6YCm2vmmOyjmRQf6yhubE6zigBb2G7DAW8+S7jVZoEmimVWWzldzwruoN+44cez+uRGnZgiXHocpE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716140833; c=relaxed/simple;
-	bh=myeE3XBIP2ogQpDASkBLoktTJIKPRWi5o4H6xIR1cnY=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=YRvH99aM4gToqFh0dNvkjtJ8kyoWt0+s+yHuLZ2wutytuKxnCnmTvNkqWR21Tzv5nJPM0m8faJ8KgErq57rBrFXXATzcCRPYNNVMZbxE1h7d4VQaWA8Q74vhxYXHm7dWkNDdHrii/BRrSnPs4t6lHmyJCuoCqSymZJveBsSmNLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Wg9+zWz8; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dee8315174dso14327660276.0
-        for <cgroups@vger.kernel.org>; Sun, 19 May 2024 10:47:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1716140830; x=1716745630; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=MxyPPkoyb/v1Xne3FZ/GVon/lPLE77xcyrrXPBy+OCs=;
-        b=Wg9+zWz8Phj8rGeihP9ZmlThaCerTWGwuBNe6erRKpHD9roiJYcZPvautUJ1UhLK5U
-         7jdDXdEGi+MHHBy9ofLc9EZPj9BtRAP+IuR3Me+dVeFN3jAZyx+hrSsX6oiiVypAUVbc
-         uRzS978iWZY2CjFIvgmcLIOG9/tPG100umeQaNvyaOVn6vn5zQa5ZT1s9qkI+U1VXoLA
-         Iyu6ZG46BQlQyVLq6ZZHlhSyfTovm5EqeLYksVfqHWqtQAlRENi20BDFIYh5Not4usxE
-         vyeXrrVOJHHBH4/gQHQfiZ5+5s69rRx+VEgke/ONPlEC6/8w7IcT6WE4gBk9k9Exnv/d
-         L8lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716140830; x=1716745630;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MxyPPkoyb/v1Xne3FZ/GVon/lPLE77xcyrrXPBy+OCs=;
-        b=vQFIyWzmre0opC1wSKrQg/2wu418Kbs7pg6v0oDkGbTN+PmE2pokRGlhGofEcbk1uh
-         ZZl8CzhHynshIJ3DTMyHmkOCKQ8WWeWSmorlX/J6Qzy2usBtBuFJoy1z7+QzFCpYuJVH
-         z4CxfANrx9X5ULOFktE80fGaV13vIzzF48g26K1U9MuT8tbVb6BKCvUxT/cUrr/IPhJz
-         g3MGJdjrj4geOE3Molwk7T5xCmPtab5NEF2HvaUp0DFquwszX15ZvAMb71K7V3pL/P4Q
-         S6W5WlEZ8LNBhhWVXTQpeBPqWZhGC9UQVejhA8RAU8n1Pxt6tvRkC1O8UDrm5Wl3mYAo
-         lJ9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV0Q+L2pjHfht6cARQb7pxNfZdGgsZ+Ox108Z7vNw9jwJfQAfosDDB0isf0ns3IoeM8lHNBJnLmymqYWzBPWC//diYEyvdXpg==
-X-Gm-Message-State: AOJu0YwhirnpGoq1s/k6b9+RZmmZ/zhk0DL5V9daY+5Tcw5Gf9mb2qeF
-	cPk0l4u2w5wFLiTnylrxCr4Xd7SWkeDa4qEOGXdcHV/zFx5UEhMcGbdlIy8uq3Nwvz/RmPm2aGK
-	YGM3ZGKO6VkHznQ==
-X-Google-Smtp-Source: AGHT+IHT8sDGPigxr7FKHw6oIx0bTcsFvuCkPczlxcIrNezaHNHMldcSmu36Fnmq8zyuYkZ3A+DQbfeCn2NHlVk=
-X-Received: from tj-virt.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5683])
- (user=tjmercier job=sendgmr) by 2002:a25:b18f:0:b0:de6:569:325c with SMTP id
- 3f1490d57ef6-df490711195mr1058902276.4.1716140830204; Sun, 19 May 2024
- 10:47:10 -0700 (PDT)
-Date: Sun, 19 May 2024 17:46:48 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC4A6AB8
+	for <cgroups@vger.kernel.org>; Mon, 20 May 2024 02:43:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.10
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1716173034; cv=fail; b=Klj59ZSZeNp9eC5h9ah8GR/oM+ucTezQBaok53f7Mjdddt0lNkO3vMobqH55D+WRDyEgZP7GIQSSRZGcRw/zE+xtrViXyZqzOhbL342Vjjauk0DqvdNkr6Xl1cvwABVKClkMT1/jOyLHp9hP/tYgDV/Cr5TBY0B8prd6aAx8kII=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1716173034; c=relaxed/simple;
+	bh=D5F4hQDvFO0pABdP+uQbteSKNSM2k2cUiotweapDTMU=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=GxyE4Oy4DCCuBwQdLMC62oOaF/C5ljX1zcag8y3gB+weASeC/Sx7ZlPmfcmuYbRzkfc452AUBMCsMPrw/vkL3LmL2RcnPhR5NKcdnkQvUvsRxj/BjgcqAxkONIxBSm1n1v/uFjgtCcXrc1QunK4KlSAoJPEH1YMji/eilw1yBkM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jcDCnGgK; arc=fail smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1716173031; x=1747709031;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=D5F4hQDvFO0pABdP+uQbteSKNSM2k2cUiotweapDTMU=;
+  b=jcDCnGgKDL4jGdehLWBHpGBF5999ZLjHUWDyxncND9NanyFXqA9N7kTJ
+   5ZXfX0ThK32L8lPSXFlj2cgJ6TEAFbXSYXMRhSt2b//Bjrz4BIJRaV6My
+   OvW1O5iW23p8dw3XH+2Afie9gLucY+R+m6/fimQSRMreQTPTPdOksoinF
+   C1pcXx6akF2pLsVQKGrZrlqYbi5PrRRoynDxLra/qm6oJhGMi5ExRjsN1
+   Igb8z3AQdOm/GmNg3CHXgnAnyeYguVBFWyXQZO+vuWqb6/GQzg4s4m1Qv
+   oDC2LR2pte0zPuODmel7WLhG5WR80QwTDL5mmYuuO645ZFlp83tFFm9FO
+   g==;
+X-CSE-ConnectionGUID: /6HKdmw2QL2HGqXIlthpmA==
+X-CSE-MsgGUID: N+STOVAhTTqZQi+ZSU2x0w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11077"; a="29793657"
+X-IronPort-AV: E=Sophos;i="6.08,174,1712646000"; 
+   d="scan'208";a="29793657"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2024 19:43:51 -0700
+X-CSE-ConnectionGUID: Hmlult42SnSH4CVMqflnqQ==
+X-CSE-MsgGUID: yMLWvDVwT0yHhdm/uimFlA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,174,1712646000"; 
+   d="scan'208";a="36798339"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmviesa005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 May 2024 19:43:50 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Sun, 19 May 2024 19:43:50 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Sun, 19 May 2024 19:43:49 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Sun, 19 May 2024 19:43:49 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sun, 19 May 2024 19:43:49 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nH++CZtZNLig9PJaZ4+txfntjd7w5NJGZfcLjJiV3eHAnYC9oncGBwXb5qjRMP1WdRZVo672t4OIOkQWs0O7Y1zHtaKjcfLzmxm3GEjbBiXKGd9cj4yEFo9l4XWDSzrUqOpN3uUfW/rQCBK8nwefBuxkao5pTGpG++oz4kyLCe0hZCWp/1RxIwaME3gN3PmY1QhTJPJrtuhjJ8lxh19nwPGeU+Sz9rSIHQb6v5VXnGafj57ApSv8VuuSRDIGMy6mQg3QHgUwee+FRiPy6L9SSLIAb3udyKpoMOMErsvKDR819dqxQAaRx24WpaZ0EpxU2FOMTzHRWDZK6FTxzrLIdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QBSSV7B442wsIyMD1KBRGIdVDSkiThYXGjSNKaInJPU=;
+ b=F0U8z1TEJpe/OciIvoq/ERjK27fQNbJBR9ZYhcWVi9p4Hd2wqLjUWfsUIVnX+JhlBShDpOek/6nG4FMoYQpLmGdf7tC3bgUdxvhxPV+HnE7p9I1+m+ZGQ59CJc/i89HPisxKE2EY5vOLJUSSnOk+U2Sna3KYTLbr5C5uL+RTm4Wn1wYqFE5xfGWNvuXpFIuQQwNTxcodN2MT3elvGOah1nDw6F2SmBm4zGpO7xmAeIpvigT4y224SunKjpJ8pYg6vt1pFTGYwaCAG1QXTfrPUtJ76KnIkMgTqWwS8rRB3gmpUrcrOx/amPjNuzpfxYk+Jb0o+F15SFCx2zz6JX/H4Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by SJ2PR11MB8500.namprd11.prod.outlook.com (2603:10b6:a03:574::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7587.34; Mon, 20 May
+ 2024 02:43:47 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c%2]) with mapi id 15.20.7587.030; Mon, 20 May 2024
+ 02:43:46 +0000
+Date: Mon, 20 May 2024 10:43:35 +0800
+From: Oliver Sang <oliver.sang@intel.com>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, Linux Memory Management List
+	<linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, Yosry Ahmed
+	<yosryahmed@google.com>, "T.J. Mercier" <tjmercier@google.com>, "Roman
+ Gushchin" <roman.gushchin@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>,
+	<cgroups@vger.kernel.org>, <ying.huang@intel.com>, <feng.tang@intel.com>,
+	<fengwei.yin@intel.com>, <oliver.sang@intel.com>
+Subject: Re: [linux-next:master] [memcg]  70a64b7919:
+ will-it-scale.per_process_ops -11.9% regression
+Message-ID: <Zkq41w8YKCaKQAGk@xsang-OptiPlex-9020>
+References: <202405171353.b56b845-oliver.sang@intel.com>
+ <pdfcrrgqz6vy6xarsw6gswtoa32wjd2gpcagmreh7ksuy66i63@dowfkmloe37q>
+ <ZknC/xjryN0sxOWB@xsang-OptiPlex-9020>
+ <jg2rpsollyfck5drndajpxtqbjtigtuxql4j5s66egygfrcjqa@okdilkpx5v5e>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <jg2rpsollyfck5drndajpxtqbjtigtuxql4j5s66egygfrcjqa@okdilkpx5v5e>
+X-ClientProxiedBy: KU1PR03CA0042.apcprd03.prod.outlook.com
+ (2603:1096:802:19::30) To LV3PR11MB8603.namprd11.prod.outlook.com
+ (2603:10b6:408:1b6::9)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
-Message-ID: <20240519174650.559538-1-tjmercier@google.com>
-Subject: [RFC] cgroup: Fix /proc/cgroups count for v2
-From: "T.J. Mercier" <tjmercier@google.com>
-To: tjmercier@google.com, Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>
-Cc: shakeel.butt@linux.dev, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|SJ2PR11MB8500:EE_
+X-MS-Office365-Filtering-Correlation-Id: b2bca993-6ce8-47a3-1f6a-08dc7876abcd
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|376005|1800799015|7416005;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?wFvOpJYtAy3fj3uKmoWvB8Oe2UO0rJFxTlX9sXLBHQ7mk7eUBb/HGsVQ/iZB?=
+ =?us-ascii?Q?7F/U+nw46BtRPJhYJnh1ZvmAGZjPGPKCh5UaV2CzYf1RQHAeWV9Zgy+f2wML?=
+ =?us-ascii?Q?/yWxlcDKiPKK1hkEwCeBMD9y0AMhM2kpaPg5pD1pS5MYzGHUYa7hMaPdr10c?=
+ =?us-ascii?Q?FxgG8KS+h2V8UVYv//WnlcZeYyYkALb3p/EeSOv2RILugW62uQ5eeW3JdLfR?=
+ =?us-ascii?Q?MVBSQHZoOv/OHMfWxA9L9Q5V2brZtwkd7Js+OcTLzpGnEt4o4qH8ItyZadOI?=
+ =?us-ascii?Q?qyAjT3G0jawIcrVIiP1GGRyEUBHWAkE4vJJKORM5lV7u93luVKxId9Sbb/mr?=
+ =?us-ascii?Q?1e5SqxVK1mb8J4GVGzYDZYcRbQNHIQkiw/gj7ADg0w4zBVZfXiKgTN+ThYG9?=
+ =?us-ascii?Q?Ne4pYMWoX8OGNs8FyHABscJ1djsC384QJZkRkpwyqTphdCBRw3vBXxDXn1E3?=
+ =?us-ascii?Q?3r1sahhO5x5xQM4GuKayk4c0K7SDZXeceMB9abRentUizXIXa3LuoXWxaxV0?=
+ =?us-ascii?Q?3F45ISI187Pj66oDkF7hTvouT1PstR3Q/DFvferB6AcV11ma4u4Abbu9USi5?=
+ =?us-ascii?Q?T1tu65YkSlDE47YJugsdsvLH5Osay5ROlnGby/iaOvJ6VvjPNIqy5aR+hqlY?=
+ =?us-ascii?Q?D+a0WMp0sHnB0XfI5oeNEcY99+7GFWDv+6PQP5agJTZqP9pCYOx2LcaIlRsr?=
+ =?us-ascii?Q?m4PvJntJ8SFUh/+RZJW0bXoKKr0I4/HxfK2OWQ7uZhkQWNBsdRv5GEcxfIK0?=
+ =?us-ascii?Q?MZEINfjU/NqLHdplBu87/uYEg1LeKNc9Hn3giVSbb3lJefZxlH7j2hSrBnpz?=
+ =?us-ascii?Q?z5cF+ONEI0Wu21LWlJN3BNDPiIIuReORESRSMon4VgZTfC3CF+TqDzDO4b7s?=
+ =?us-ascii?Q?/eXq9D4ETglRyUT+8YVetK9Aetbtj62QkQikH6KS5ggOTfvsdkS9dUsx85t6?=
+ =?us-ascii?Q?IZWOhg7SfVWYyctVfVJVsgr10OgXV1gh4T5iFh3wNtny9EPs/mINb4J8DtbH?=
+ =?us-ascii?Q?xggDKu2Feijz7DxXtI6Zjp/XxhrO+uzySn85dEDTeKGRJiH4RBJpRA7eWKZL?=
+ =?us-ascii?Q?RKMrS71OKYn87pxm0h9lTPuuzrMcBlGniYkrFkb+y1rBdJzcnhWTJ3/voUUV?=
+ =?us-ascii?Q?02vA620SHZBkh+Um8vlquR4PDhLfhGxfk6QrTqrZ66HE3blKJtPXFMMFc5my?=
+ =?us-ascii?Q?Npc6EBf9xV7SbVm+LjAV5WjUK7oZquXF+pskK+fLmjsIVoIqTjcL8RFsFf4?=
+ =?us-ascii?Q?=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(7416005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?X5XBJ9VTf4ehy73hwRytVAnH32PWclntfY3nopgy4mbmXIcUkCf5JGA9mofF?=
+ =?us-ascii?Q?zgdbS6lumZBx5VCPybmP/6lL6JGiJiSTp4EfEzaa8hlVn9RKsOfKjnMFRs2x?=
+ =?us-ascii?Q?YMzACgcwro8ZLHsdojqoyf50b84TwzylMzqyejE3YTxJZ5mCTWF09BpUMw/f?=
+ =?us-ascii?Q?tM7HcpoI4+uKX/e7JneuvrF/KdRrkpE1OS5hYIfbvBe3b3JAyvFVF2sR+xyz?=
+ =?us-ascii?Q?VAxRFKuqqRzCilyMDcO+qosatarJAkggvh9XdCie2UXb0re090aag1CyuKC3?=
+ =?us-ascii?Q?nZV0qN5eKnatyis9409LGyrSLkneuQmjrsGkCVyuYROqUDo67x6eEna3kV0V?=
+ =?us-ascii?Q?GEarDQkjpz/DaI+TtOoOEYwXlJZ4B13r0sJu0C6zoZ3HW73R3Z3jxbPFGhlN?=
+ =?us-ascii?Q?47iC+l/pxIvDdeSkUIp44N9eE/VPI24qoh6L/YRziUQ9pYo08zg200XpMcwo?=
+ =?us-ascii?Q?GZvjCAvKK9gs7e/JdTbNci38ZsvrzTVwInlnaEL30NLZKqDNCRiFGeY04D4V?=
+ =?us-ascii?Q?UibBEL+5mmtmVIJfTN6fP7cnHjLsTaUHK93qgd9PmuOTPsVnG+flk8GMKT/Z?=
+ =?us-ascii?Q?H4bk8jD7euPYoU224Tow1O32gDZdR8Y8l8FzI034b2rQ4JyrC5yGQpV19Zoe?=
+ =?us-ascii?Q?9HmmOKhqxCRbiVVHvKOMIVLVa8MKMUxXVvwvsYVeZFSYu77Lx6smglBoR06x?=
+ =?us-ascii?Q?w5/xpvqqI8ZaJefSPBxTQe81Krj9M9mJzc4yiUl3jUnpAyuyG+Efr4X+YBRv?=
+ =?us-ascii?Q?h23LhewZ7TcjxGgmpzTmP/1R7gqmsMYXlhWgVU9+PpP2pAm5K8Ho/SnZzBNK?=
+ =?us-ascii?Q?HKkL/pbFBAnbbtXkjFOnH3RU8M+SmLpjEgErW8uqcwfg4Yef5eGKK5/qPjzX?=
+ =?us-ascii?Q?lyZZAthETcZs79Gj1A9X2QFs64oiVb35aXgoEvMns74HxelopHe03F93hRP/?=
+ =?us-ascii?Q?NirAiD048o9i4nOJUp1WKghEUfQAigOLbw/LoD/y0t2m46hniTYqvIWUAsQA?=
+ =?us-ascii?Q?zM5m/zdLo6CMLF71ee88Cv10HipXrkI5shUk0dEpeD6QrIJZ3Vq2e1ZDsxDB?=
+ =?us-ascii?Q?F7KJbD2AaQUwNaR6PkE/I6fwBbXWy9qsZijEjpH3L5VKhNgBfzkX/RXgp680?=
+ =?us-ascii?Q?NI73/cfK/wPfDTL6FwifPt8bghbhSVhNsN2a1YQtn7V/wzwk1F4tjI8oXGCf?=
+ =?us-ascii?Q?dK3tHqCQ+vGLL67rJIOUyPNGs7R+/Qn1y7Tsbsnampg136v2x3QiknqVJ2Wg?=
+ =?us-ascii?Q?RTXNyoDE9HEDnpn2J2bNwq64wtFTDuzZWfblzm910+zk+GzQzXmEUUBxQqJb?=
+ =?us-ascii?Q?Mf7kJiSwbVhtsXirupwYsP+xTk5U+f+1lutTuX1ze5btvANV6mgWN9bfHWHX?=
+ =?us-ascii?Q?D4m9UiTpA4XCCtHQFx1FNTzbupPwB/Q61VZY3hMnw5dvphJADalJ+81hLBBW?=
+ =?us-ascii?Q?HWLVOt9TbkzBL79sQJGiVgRfAOGlVMhF+ZddN58YsQsy6gImmiaougbS3Wh0?=
+ =?us-ascii?Q?Z7NApZWs768NcHr4Xlnm1gOsLnjqM15RLdaD1LbIolqSZoxzsTPf6uM0hmCO?=
+ =?us-ascii?Q?HA0WsC0OOUOUjm1w9SoCCb16omi2ZnpkSBovvYM4sQszNzgPGYdTpZfrDCmv?=
+ =?us-ascii?Q?rg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2bca993-6ce8-47a3-1f6a-08dc7876abcd
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2024 02:43:46.6819
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yGynRG2j4MgJusy90xUpNHanhm/0iKDKnBUtMKN7nAR1BSxCopmswI5tDcGy8IA+e1PxZYlmU6FXYpsUSfHmXg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB8500
+X-OriginatorOrg: intel.com
 
-The /proc/cgroups documentation says that the num_cgroups value is,
-"the number of control groups in this hierarchy using this controller."
+hi, Shakeel,
 
-The value printed is simply the total number of cgroups in the hierarchy
-which is correct for v1, but not for the shared v2 hierarchy.
+On Sun, May 19, 2024 at 10:20:28AM -0700, Shakeel Butt wrote:
+> On Sun, May 19, 2024 at 05:14:39PM +0800, Oliver Sang wrote:
+> > hi, Shakeel,
+> > 
+> > On Fri, May 17, 2024 at 11:28:10PM -0700, Shakeel Butt wrote:
+> > > On Fri, May 17, 2024 at 01:56:30PM +0800, kernel test robot wrote:
+> > > > 
+> > > > 
+> > > > Hello,
+> > > > 
+> > > > kernel test robot noticed a -11.9% regression of will-it-scale.per_process_ops on:
+> > > > 
+> > > > 
+> > > > commit: 70a64b7919cbd6c12306051ff2825839a9d65605 ("memcg: dynamically allocate lruvec_stats")
+> > > > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> > > > 
+> > > 
+> > > Thanks for the report. Can you please run the same benchmark but with
+> > > the full series (of 8 patches) or at least include the ff48c71c26aa
+> > > ("memcg: reduce memory for the lruvec and memcg stats").
+> > 
+> > while this bisect, ff48c71c26aa has been checked. it has silimar data as
+> > 70a64b7919 (a little worse actually)
+> > 
+> > 59142d87ab03b8ff 70a64b7919cbd6c12306051ff28 ff48c71c26aaefb090c108d8803
+> > ---------------- --------------------------- ---------------------------
+> >          %stddev     %change         %stddev     %change         %stddev
+> >              \          |                \          |                \
+> >      91713           -11.9%      80789           -13.2%      79612        will-it-scale.per_process_ops
+> > 
+> > 
+> > ok, we will run tests on tip of the series which should be below if I understand
+> > it correctly.
+> > 
+> > * a94032b35e5f9 memcg: use proper type for mod_memcg_state
+> > 
+> > 
+> 
+> Thanks a lot Oliver. One question: what is the filesystem mounted at
+> /tmp on your test machine? I just wanted to make sure I run the test
+> with minimal changes from your setup.
 
-Consider:
-controllers="cpuset cpu io memory hugetlb pids rdma misc"
-for c in $controllers
-do
-  echo +$c > /sys/fs/cgroup/cgroup.subtree_control
-  mkdir /sys/fs/cgroup/$c
-  echo +$c > /sys/fs/cgroup/$c/cgroup.subtree_control
-  for i in `seq 100`; do mkdir /sys/fs/cgroup/$c/$i; done
-done
-cat /proc/cgroups
+we don't have specific partition for /tmp, just use tmpfs
 
-#subsys_name	hierarchy	num_cgroups	enabled
-cpuset	0	809	1
-cpu	0	809	1
-cpuacct	0	809	1
-blkio	0	809	1
-memory	0	809	1
-devices	0	809	1
-freezer	0	809	1
-net_cls	0	809	1
-perf_event	0	809	1
-net_prio	0	809	1
-hugetlb	0	809	1
-pids	0	809	1
-rdma	0	809	1
-misc	0	809	1
-debug	0	809	1
+tmp on /tmp type tmpfs (rw,relatime)
 
-A count of 809 is reported for each controller, but only 109 should be
-reported for most of them since each controller is enabled in only part
-of the hierarchy. (Note that io depends on memcg, so its count should be
-209.)
 
-The number of cgroups using a controller is an important metric since
-kernel memory is used for each cgroup, and some kernel operations scale
-with the number of cgroups for some controllers (memory, io). So users
-have an interest in minimizing/tracking the number of them.
+BTW, the test on a94032b35e5f9 finished, still have similar score to 70a64b7919
 
-- - - - - - - - - -
+=========================================================================================
+compiler/cpufreq_governor/kconfig/mode/nr_task/rootfs/tbox_group/test/testcase:
+  gcc-13/performance/x86_64-rhel-8.3/process/100%/debian-12-x86_64-20240206.cgz/lkp-skl-fpga01/page_fault2/will-it-scale
 
-Why is this functional patch currently a RFC:
-The point at which the new counters are incremented/decremented for most
-enumerated v2 controllers works fine. However for some controllers (the
-v2 documentation calls them "utility controllers") online_css and
-kill_css are never called: cpuacct, devices, freezer, net_cls, net_prio,
-debug.
+59142d87ab03b8ff 70a64b7919cbd6c12306051ff28 ff48c71c26aaefb090c108d8803 a94032b35e5f97dc1023030d929
+---------------- --------------------------- --------------------------- ---------------------------
+         %stddev     %change         %stddev     %change         %stddev     %change         %stddev
+             \          |                \          |                \          |                \
+     91713           -11.9%      80789           -13.2%      79612           -13.0%      79833        will-it-scale.per_process_ops
 
-To deal with num_cgroups being reported as 1 for those utility
-controllers regardless of the number of cgroups that exist and support
-their use, I added is_v2_utility_controller which checks if a controller
-is among a hardcoded list instead of looking at some property of the
-cgroup_subsys since I don't think any such property currently exists.
-It'd be easy to miss adding a new utility controller to this list, so
-I am interested in hearing if folks have other ideas. I checked if I
-could use the presence of online_css in cgroup_subsys, but that only
-works for cpuacct and debug.
----
- include/linux/cgroup-defs.h |  6 ++++++
- kernel/cgroup/cgroup-v1.c   | 36 ++++++++++++++++++++++++++++++++++--
- kernel/cgroup/cgroup.c      |  4 ++++
- 3 files changed, 44 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index ea48c861cd36..400311222337 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -579,6 +579,12 @@ struct cgroup_root {
- 	/* Number of cgroups in the hierarchy, used only for /proc/cgroups */
- 	atomic_t nr_cgrps;
- 
-+	/*
-+	 * Number of cgroups using each controller. Includes online and zombies.
-+	 * Used only for v2 controllers in /proc/cgroups.
-+	 */
-+	atomic_t nr_css[CGROUP_SUBSYS_COUNT];
-+
- 	/* Hierarchy-specific flags */
- 	unsigned int flags;
- 
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index 520a11cb12f4..8146bcc31421 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -663,6 +663,30 @@ struct cftype cgroup1_base_files[] = {
- 	{ }	/* terminate */
- };
- 
-+static bool is_v2_utility_controller(int ssid)
-+{
-+	return
-+#ifdef CONFIG_CGROUP_CPUACCT
-+		ssid == cpuacct_cgrp_id ||
-+#endif
-+#ifdef CONFIG_CGROUP_DEVICE
-+		ssid == devices_cgrp_id ||
-+#endif
-+#ifdef CONFIG_CGROUP_FREEZER
-+		ssid == freezer_cgrp_id ||
-+#endif
-+#ifdef CONFIG_NET_CLS_CGROUP
-+		ssid == net_cls_cgrp_id ||
-+#endif
-+#ifdef CONFIG_CGROUP_NET_PRIO
-+		ssid == net_prio_cgrp_id ||
-+#endif
-+#ifdef CONFIG_CGROUP_DEBUG
-+		ssid == debug_cgrp_id ||
-+#endif
-+		false;
-+}
-+
- /* Display information about each subsystem and each hierarchy */
- int proc_cgroupstats_show(struct seq_file *m, void *v)
- {
-@@ -675,11 +699,19 @@ int proc_cgroupstats_show(struct seq_file *m, void *v)
- 	 * cgroup_mutex contention.
- 	 */
- 
--	for_each_subsys(ss, i)
-+	for_each_subsys(ss, i) {
-+		int count;
-+
-+		if (!cgroup_on_dfl(&ss->root->cgrp) || is_v2_utility_controller(i))
-+			count = atomic_read(&ss->root->nr_cgrps);
-+		else
-+			count = atomic_read(&ss->root->nr_css[i]);
-+
- 		seq_printf(m, "%s\t%d\t%d\t%d\n",
- 			   ss->legacy_name, ss->root->hierarchy_id,
--			   atomic_read(&ss->root->nr_cgrps),
-+			   count,
- 			   cgroup_ssid_enabled(i));
-+	}
- 
- 	return 0;
- }
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index a66c088c851c..f25d0e77ae8a 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -2047,6 +2047,8 @@ void init_cgroup_root(struct cgroup_fs_context *ctx)
- 
- 	INIT_LIST_HEAD_RCU(&root->root_list);
- 	atomic_set(&root->nr_cgrps, 1);
-+	for (int i = 0; i < CGROUP_SUBSYS_COUNT; ++i)
-+		atomic_set(&root->nr_css[i], 0);
- 	cgrp->root = root;
- 	init_cgroup_housekeeping(cgrp);
- 
-@@ -5362,6 +5364,7 @@ static void css_free_rwork_fn(struct work_struct *work)
- 		ss->css_free(css);
- 		cgroup_idr_remove(&ss->css_idr, id);
- 		cgroup_put(cgrp);
-+		atomic_dec(&ss->root->nr_css[ss->id]);
- 
- 		if (parent)
- 			css_put(parent);
-@@ -5503,6 +5506,7 @@ static int online_css(struct cgroup_subsys_state *css)
- 		atomic_inc(&css->online_cnt);
- 		if (css->parent)
- 			atomic_inc(&css->parent->online_cnt);
-+		atomic_inc(&ss->root->nr_css[ss->id]);
- 	}
- 	return ret;
- }
--- 
-2.45.0.rc1.225.g2a3ae87e7f-goog
 
+> 
+> > > 
+> > > thanks,
+> > > Shakeel
+> > > 
 
