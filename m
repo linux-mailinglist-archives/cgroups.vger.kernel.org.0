@@ -1,348 +1,134 @@
-Return-Path: <cgroups+bounces-2971-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-2972-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAE5C8CAAAE
-	for <lists+cgroups@lfdr.de>; Tue, 21 May 2024 11:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B73E8CAE90
+	for <lists+cgroups@lfdr.de>; Tue, 21 May 2024 14:51:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BFEC1F22A29
-	for <lists+cgroups@lfdr.de>; Tue, 21 May 2024 09:22:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CF091F21509
+	for <lists+cgroups@lfdr.de>; Tue, 21 May 2024 12:51:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F396CDA0;
-	Tue, 21 May 2024 09:21:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="p5DV15iL";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="p5DV15iL"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 678705337C;
+	Tue, 21 May 2024 12:51:04 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC37355C29;
-	Tue, 21 May 2024 09:21:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B60D012E6A
+	for <cgroups@vger.kernel.org>; Tue, 21 May 2024 12:51:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716283297; cv=none; b=YygjyYAlTzB+Tz9tAPgiZ8Wjf1hlvHHfqgrU9HHC/d70c1YFOlbvpz8YbMXC7ObXH21sFHVLpiZ213GHTDNODMrcR30Dh516ocFwK20lV0ODsuZkQUl5mN/0tqS/O27bb7vF5wLJsMvI43MzktQ43mC5ZpiiRRx9VzswS2sPFWM=
+	t=1716295864; cv=none; b=qKIHUHz1g0FYHo7ayqdijFczIHyywhff9uQofmARU2RfpJ7disTKFwl7tp6xBGufLZD00BTNR1o6xLxO24pDTvmrvwpuT8INLxOP9pN6lbIRe4e0AN3V8jA/hni5GH29H0sYIFQ6ahcV0ToGAdNNRD4dYzpzpWWexjWvlGs2qXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716283297; c=relaxed/simple;
-	bh=4dFrYdcmVtwA9VZJt2v3HgZmwGamkp49n3Wy0o+6jxU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iY/hM2a5ZJoXFJNj2hoRp1S0raNPqXvglg5eAPfuFNRwrBH3L/4OuYU0Wydsikqh+tiea0bMgvPreG03vIX8L8E9/3GAKuAmJA6nkQUync/uYMKPs+Q6sck9AbXEMQ42NuvFC7kCyBwRD/JmWRPpdbpwfxRp3J7B0qWBIpNDRio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=p5DV15iL; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=p5DV15iL; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0C0485BFD9;
-	Tue, 21 May 2024 09:21:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1716283292; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=X37ZRyOgbOIAdXd7wOkCKb16c9+K3Y5mi/hhGEonRpo=;
-	b=p5DV15iLN5DIJWQ8v6ZWwPalnQDNriEmykiKfpG9rAld0VGRCccuXxPfq5o0Ruf5q7t0gj
-	SmOfUURe7oXNbEHJ8AxR5+07RKO0PSTnuWaIoikj6SklOC95IVKB3sE5pyB+KNUx2J0YN7
-	/o0eORNxm9vTEVFHrJSXlPsVS7U9GWE=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1716283292; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=X37ZRyOgbOIAdXd7wOkCKb16c9+K3Y5mi/hhGEonRpo=;
-	b=p5DV15iLN5DIJWQ8v6ZWwPalnQDNriEmykiKfpG9rAld0VGRCccuXxPfq5o0Ruf5q7t0gj
-	SmOfUURe7oXNbEHJ8AxR5+07RKO0PSTnuWaIoikj6SklOC95IVKB3sE5pyB+KNUx2J0YN7
-	/o0eORNxm9vTEVFHrJSXlPsVS7U9GWE=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E175B13A7C;
-	Tue, 21 May 2024 09:21:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id oJXtNptnTGaZYgAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Tue, 21 May 2024 09:21:31 +0000
-From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To: cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Cc: Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <shuah@kernel.org>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>
-Subject: [PATCH v5 5/5] selftests: cgroup: Add basic tests for pids controller
-Date: Tue, 21 May 2024 11:21:30 +0200
-Message-ID: <20240521092130.7883-6-mkoutny@suse.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240521092130.7883-1-mkoutny@suse.com>
-References: <20240521092130.7883-1-mkoutny@suse.com>
+	s=arc-20240116; t=1716295864; c=relaxed/simple;
+	bh=iFhpxbsZXML7gYcki62aQ1d/rmHrpv53G8WlR31lmyo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JcDLR91UpkvxI+q4Uz+fjoQNas3FFMx9kY3f5cBtTajyLcI3sfhw+tlkUrHQZfhbQlg3lgqs6IX6v8VyUXEgGIOy9qruo6CzgTODr+rji4OQcEV/5V/Rp6caWRjldsnW7IgxWDZADSAH1VWLa6u2c41MSSwiTRGyAcLJOU/4UA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4VkDjQ0Tkcz1S6GJ;
+	Tue, 21 May 2024 20:47:22 +0800 (CST)
+Received: from dggpemm100001.china.huawei.com (unknown [7.185.36.93])
+	by mail.maildlp.com (Postfix) with ESMTPS id E5D2918007E;
+	Tue, 21 May 2024 20:50:58 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 21 May 2024 20:50:58 +0800
+From: Kefeng Wang <wangkefeng.wang@huawei.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+CC: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt
+	<shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+	<linux-mm@kvack.org>, <cgroups@vger.kernel.org>, Kefeng Wang
+	<wangkefeng.wang@huawei.com>
+Subject: [PATCH] mm: memcontrol: remove page_memcg()
+Date: Tue, 21 May 2024 21:15:56 +0800
+Message-ID: <20240521131556.142176-1-wangkefeng.wang@huawei.com>
+X-Mailer: git-send-email 2.41.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	R_RATELIMIT(0.00)[to_ip_from(RL6j1h7wxugqfdyj8pnx7tibp9)];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
-X-Spam-Score: -3.30
-X-Spam-Flag: NO
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm100001.china.huawei.com (7.185.36.93)
 
-This commit adds (and wires in) new test program for checking basic pids
-controller functionality -- restricting tasks in a cgroup and correct
-event counting.
+The page_memcg() only called by mod_memcg_page_state(), so squash it to
+cleanup page_memcg().
 
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
+Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- tools/testing/selftests/cgroup/.gitignore  |   1 +
- tools/testing/selftests/cgroup/Makefile    |   2 +
- tools/testing/selftests/cgroup/test_pids.c | 178 +++++++++++++++++++++
- 3 files changed, 181 insertions(+)
- create mode 100644 tools/testing/selftests/cgroup/test_pids.c
+ include/linux/memcontrol.h | 14 ++------------
+ mm/memcontrol.c            |  2 +-
+ 2 files changed, 3 insertions(+), 13 deletions(-)
 
-diff --git a/tools/testing/selftests/cgroup/.gitignore b/tools/testing/selftests/cgroup/.gitignore
-index ec635a0ef488..952e4448bf07 100644
---- a/tools/testing/selftests/cgroup/.gitignore
-+++ b/tools/testing/selftests/cgroup/.gitignore
-@@ -7,5 +7,6 @@ test_hugetlb_memcg
- test_kill
- test_kmem
- test_memcontrol
-+test_pids
- test_zswap
- wait_inotify
-diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
-index b91f60f3402c..1b897152bab6 100644
---- a/tools/testing/selftests/cgroup/Makefile
-+++ b/tools/testing/selftests/cgroup/Makefile
-@@ -15,6 +15,7 @@ TEST_GEN_PROGS += test_hugetlb_memcg
- TEST_GEN_PROGS += test_kill
- TEST_GEN_PROGS += test_kmem
- TEST_GEN_PROGS += test_memcontrol
-+TEST_GEN_PROGS += test_pids
- TEST_GEN_PROGS += test_zswap
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 030d34e9d117..8abc70cc7219 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -443,11 +443,6 @@ static inline struct mem_cgroup *folio_memcg(struct folio *folio)
+ 	return __folio_memcg(folio);
+ }
  
- LOCAL_HDRS += $(selfdir)/clone3/clone3_selftests.h $(selfdir)/pidfd/pidfd.h
-@@ -29,4 +30,5 @@ $(OUTPUT)/test_hugetlb_memcg: cgroup_util.c
- $(OUTPUT)/test_kill: cgroup_util.c
- $(OUTPUT)/test_kmem: cgroup_util.c
- $(OUTPUT)/test_memcontrol: cgroup_util.c
-+$(OUTPUT)/test_pids: cgroup_util.c
- $(OUTPUT)/test_zswap: cgroup_util.c
-diff --git a/tools/testing/selftests/cgroup/test_pids.c b/tools/testing/selftests/cgroup/test_pids.c
-new file mode 100644
-index 000000000000..9ecb83c6cc5c
---- /dev/null
-+++ b/tools/testing/selftests/cgroup/test_pids.c
-@@ -0,0 +1,178 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+
-+#include <errno.h>
-+#include <linux/limits.h>
-+#include <signal.h>
-+#include <string.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+
-+#include "../kselftest.h"
-+#include "cgroup_util.h"
-+
-+static int run_success(const char *cgroup, void *arg)
-+{
-+	return 0;
-+}
-+
-+static int run_pause(const char *cgroup, void *arg)
-+{
-+	return pause();
-+}
-+
-+/*
-+ * This test checks that pids.max prevents forking new children above the
-+ * specified limit in the cgroup.
-+ */
-+static int test_pids_max(const char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	char *cg_pids;
-+	int pid;
-+
-+	cg_pids = cg_name(root, "pids_test");
-+	if (!cg_pids)
-+		goto cleanup;
-+
-+	if (cg_create(cg_pids))
-+		goto cleanup;
-+
-+	if (cg_read_strcmp(cg_pids, "pids.max", "max\n"))
-+		goto cleanup;
-+
-+	if (cg_write(cg_pids, "pids.max", "2"))
-+		goto cleanup;
-+
-+	if (cg_enter_current(cg_pids))
-+		goto cleanup;
-+
-+	pid = cg_run_nowait(cg_pids, run_pause, NULL);
-+	if (pid < 0)
-+		goto cleanup;
-+
-+	if (cg_run_nowait(cg_pids, run_success, NULL) != -1 || errno != EAGAIN)
-+		goto cleanup;
-+
-+	if (kill(pid, SIGINT))
-+		goto cleanup;
-+
-+	ret = KSFT_PASS;
-+
-+cleanup:
-+	cg_enter_current(root);
-+	cg_destroy(cg_pids);
-+	free(cg_pids);
-+
-+	return ret;
-+}
-+
-+/*
-+ * This test checks that pids.events are counted in cgroup associated with pids.max
-+ */
-+static int test_pids_events(const char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	char *cg_parent = NULL, *cg_child = NULL;
-+	int pid;
-+
-+	cg_parent = cg_name(root, "pids_parent");
-+	cg_child = cg_name(cg_parent, "pids_child");
-+	if (!cg_parent || !cg_child)
-+		goto cleanup;
-+
-+	if (cg_create(cg_parent))
-+		goto cleanup;
-+	if (cg_write(cg_parent, "cgroup.subtree_control", "+pids"))
-+		goto cleanup;
-+	if (cg_create(cg_child))
-+		goto cleanup;
-+
-+	if (cg_write(cg_parent, "pids.max", "2"))
-+		goto cleanup;
-+
-+	if (cg_read_strcmp(cg_child, "pids.max", "max\n"))
-+		goto cleanup;
-+
-+	if (cg_enter_current(cg_child))
-+		goto cleanup;
-+
-+	pid = cg_run_nowait(cg_child, run_pause, NULL);
-+	if (pid < 0)
-+		goto cleanup;
-+
-+	if (cg_run_nowait(cg_child, run_success, NULL) != -1 || errno != EAGAIN)
-+		goto cleanup;
-+
-+	if (kill(pid, SIGINT))
-+		goto cleanup;
-+
-+	if (cg_read_key_long(cg_child, "pids.events", "max ") != 0)
-+		goto cleanup;
-+	if (cg_read_key_long(cg_parent, "pids.events", "max ") != 1)
-+		goto cleanup;
-+
-+
-+	ret = KSFT_PASS;
-+
-+cleanup:
-+	cg_enter_current(root);
-+	if (cg_child)
-+		cg_destroy(cg_child);
-+	if (cg_parent)
-+		cg_destroy(cg_parent);
-+	free(cg_child);
-+	free(cg_parent);
-+
-+	return ret;
-+}
-+
-+
-+
-+#define T(x) { x, #x }
-+struct pids_test {
-+	int (*fn)(const char *root);
-+	const char *name;
-+} tests[] = {
-+	T(test_pids_max),
-+	T(test_pids_events),
-+};
-+#undef T
-+
-+int main(int argc, char **argv)
-+{
-+	char root[PATH_MAX];
-+
-+	ksft_print_header();
-+	ksft_set_plan(ARRAY_SIZE(tests));
-+	if (cg_find_unified_root(root, sizeof(root), NULL))
-+		ksft_exit_skip("cgroup v2 isn't mounted\n");
-+
-+	/*
-+	 * Check that pids controller is available:
-+	 * pids is listed in cgroup.controllers
-+	 */
-+	if (cg_read_strstr(root, "cgroup.controllers", "pids"))
-+		ksft_exit_skip("pids controller isn't available\n");
-+
-+	if (cg_read_strstr(root, "cgroup.subtree_control", "pids"))
-+		if (cg_write(root, "cgroup.subtree_control", "+pids"))
-+			ksft_exit_skip("Failed to set pids controller\n");
-+
-+	for (int i = 0; i < ARRAY_SIZE(tests); i++) {
-+		switch (tests[i].fn(root)) {
-+		case KSFT_PASS:
-+			ksft_test_result_pass("%s\n", tests[i].name);
-+			break;
-+		case KSFT_SKIP:
-+			ksft_test_result_skip("%s\n", tests[i].name);
-+			break;
-+		default:
-+			ksft_test_result_fail("%s\n", tests[i].name);
-+			break;
-+		}
-+	}
-+
-+	ksft_finished();
-+}
+-static inline struct mem_cgroup *page_memcg(struct page *page)
+-{
+-	return folio_memcg(page_folio(page));
+-}
+-
+ /**
+  * folio_memcg_rcu - Locklessly get the memory cgroup associated with a folio.
+  * @folio: Pointer to the folio.
+@@ -1014,7 +1009,7 @@ static inline void mod_memcg_page_state(struct page *page,
+ 		return;
+ 
+ 	rcu_read_lock();
+-	memcg = page_memcg(page);
++	memcg = folio_memcg(page_folio(page));
+ 	if (memcg)
+ 		mod_memcg_state(memcg, idx, val);
+ 	rcu_read_unlock();
+@@ -1133,11 +1128,6 @@ static inline struct mem_cgroup *folio_memcg(struct folio *folio)
+ 	return NULL;
+ }
+ 
+-static inline struct mem_cgroup *page_memcg(struct page *page)
+-{
+-	return NULL;
+-}
+-
+ static inline struct mem_cgroup *folio_memcg_rcu(struct folio *folio)
+ {
+ 	WARN_ON_ONCE(!rcu_read_lock_held());
+@@ -1636,7 +1626,7 @@ static inline void unlock_page_lruvec_irqrestore(struct lruvec *lruvec,
+ 	spin_unlock_irqrestore(&lruvec->lru_lock, flags);
+ }
+ 
+-/* Test requires a stable page->memcg binding, see page_memcg() */
++/* Test requires a stable page->memcg binding, see folio_memcg() */
+ static inline bool folio_matches_lruvec(struct folio *folio,
+ 		struct lruvec *lruvec)
+ {
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 54070687aad2..72833f6f0944 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3811,7 +3811,7 @@ void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+ #endif /* CONFIG_MEMCG_KMEM */
+ 
+ /*
+- * Because page_memcg(head) is not set on tails, set it now.
++ * Because folio_memcg(head) is not set on tails, set it now.
+  */
+ void split_page_memcg(struct page *head, int old_order, int new_order)
+ {
 -- 
-2.44.0
+2.41.0
 
 
