@@ -1,46 +1,46 @@
-Return-Path: <cgroups+bounces-3013-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3014-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92A158D06B4
-	for <lists+cgroups@lfdr.de>; Mon, 27 May 2024 17:52:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 970038D070A
+	for <lists+cgroups@lfdr.de>; Mon, 27 May 2024 17:57:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0ED051F2373A
-	for <lists+cgroups@lfdr.de>; Mon, 27 May 2024 15:52:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA7011C224D4
+	for <lists+cgroups@lfdr.de>; Mon, 27 May 2024 15:57:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00AF715A857;
-	Mon, 27 May 2024 15:51:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30D5115F3EF;
+	Mon, 27 May 2024 15:54:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hqJDWQL8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UmT8IJbm"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7BE3155CB0;
-	Mon, 27 May 2024 15:51:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5E9C15F33A;
+	Mon, 27 May 2024 15:54:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716825112; cv=none; b=NLbTzQecIut8wRvUewUH7oOrs2puCB6GQMRz+TUHo/M9djEYXJn/Hs25vLzWnjKcYhbtbHde44bMlTlm4UiATHR63TBWR1zoPGlL4XKHAsQt6zwau51hSDmEvqDVh1dlZYj5iHZwhBQrxHZfU8rdT0QmTAnSM93OFoLSc6alTQc=
+	t=1716825243; cv=none; b=NXbpgB2v2I+Kjee552B+XAzuHZoTd0/a7ow84Isw6CkbCSJBleBOekaPruZkB4I6rDl8Ui+3g0V87Xu+HHbU0uN9IX+7Ov3BCoBbXkX2y0Z7xilS6Zb+bHrLINGl5ITvPYwGI49zSDVrHRP0wCNfwY/5UpCnhMLwa8sMXxyXiAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716825112; c=relaxed/simple;
-	bh=MiGE80CeLbrozLsH1T/KJ5SwEQt07TGcAp6a5gUZ8FY=;
+	s=arc-20240116; t=1716825243; c=relaxed/simple;
+	bh=l1EmPdSeGJxwIDhQawnhTXJxkxkHEHivp5+X/6ScZCM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZgzyvpnDbK5jNhheJkMsrBmEomFR0y2evLUAIByAbN8i+3Xvc3WwZlZEQ6BagyqR5jjNG9EBRSMDDVtHXdSkfNpoeW73wvGaoaW+uAEQMsZe2EdyP34GjgA1rRiV9VSndWnyIzvZJI67yj8ugD0eMboBE5d4b73Dy9SL3yX/NBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hqJDWQL8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6230C4AF0E;
-	Mon, 27 May 2024 15:51:50 +0000 (UTC)
+	 MIME-Version; b=U1+4NnkxGTtBiFKNDVYcbmI0vwZaxUcPGPQxFcg5K8KKyxr8hajI5mYaIbMrywzAlBaQ1mkKwrhGWFSn01uU5Emjq/shH4TMXmMZh+K1IJ4rRVfJNoB+FnECIEbWzm0+luzJS9vf9d8TljJMWiAAqexKWBfF2DD9Ep0zu3c9rpU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UmT8IJbm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B59E7C2BBFC;
+	Mon, 27 May 2024 15:54:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716825112;
-	bh=MiGE80CeLbrozLsH1T/KJ5SwEQt07TGcAp6a5gUZ8FY=;
+	s=k20201202; t=1716825243;
+	bh=l1EmPdSeGJxwIDhQawnhTXJxkxkHEHivp5+X/6ScZCM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hqJDWQL8XI0OKZxXlz+9Ab9k2omBRw+eJ2IqSyd8Tzr+5CFztEW4flmyp9FXWLbvL
-	 lkpLHqtqSDUOrGPm2OJaIGQ2a4hza+JERmHzKvmLwAXL/TvOCGp9b/Z2UXivSKJQKJ
-	 mCCtRTUrFzFdQF0VD/N1BVyO2d+2ICpfHuXh4i+ftE6hIXQt6aSDuwLwZBXAcnT+FH
-	 vIG8b4fuYSfvUDb6AvBoC8cSSJ3ILBDrszb/MtcaqHg6vqan9w/33f86yZvifeUDWc
-	 9Ztflp1/w6F8zYJq5BcaXmRBx6qGli3d0JxyTrT42Sa/YlbvdL9RaHJ1Ys/+fycegX
-	 Z511fWGTdxs3g==
+	b=UmT8IJbmEua1PwtlH7piBBTR2hINmCmYWFQpwe/S/09vvskxh6KJRC0Q3BWwV7Ohz
+	 YN2PjNvXjmgCwgV6jaCTDc0AOOANhDrjoSwMAZKLJfbnhr+Vf2FKc1SBWOR5Nc/aXR
+	 /qM3RDzWCrMvlTnfIMPD2HLzMv2GvdejiFsrKEUrMggpwqXLPVluhMDvYFxli99unS
+	 eeXVXJ+nnUR8DG5gXVVfm19/YlJwswddApHkA5CX5FIrg5QZCZEVn6KcHc1/5P9eJV
+	 CvJq1/vK/YXQfRFAF1/m9LotnYPbyc5HEqCRiajT/sYhgZbXBYZJ1MFoy/YsMBDuVZ
+	 Z3MDKwxCkLK1Q==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -57,12 +57,12 @@ Cc: Waiman Long <longman@redhat.com>,
 	pavel@ucw.cz,
 	cgroups@vger.kernel.org,
 	linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.9 06/23] cgroup/cpuset: Make cpuset hotplug processing synchronous
-Date: Mon, 27 May 2024 11:50:07 -0400
-Message-ID: <20240527155123.3863983-6-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 05/20] cgroup/cpuset: Make cpuset hotplug processing synchronous
+Date: Mon, 27 May 2024 11:52:48 -0400
+Message-ID: <20240527155349.3864778-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240527155123.3863983-1-sashal@kernel.org>
-References: <20240527155123.3863983-1-sashal@kernel.org>
+In-Reply-To: <20240527155349.3864778-1-sashal@kernel.org>
+References: <20240527155349.3864778-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -71,7 +71,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.9.2
+X-stable-base: Linux 6.8.11
 Content-Transfer-Encoding: 8bit
 
 From: Waiman Long <longman@redhat.com>
@@ -128,7 +128,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  4 files changed, 56 insertions(+), 138 deletions(-)
 
 diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-index 0ce6ff0d9c9aa..de4cf0ee96f79 100644
+index 875d12598bd2d..c9c90ada8cf91 100644
 --- a/include/linux/cpuset.h
 +++ b/include/linux/cpuset.h
 @@ -70,7 +70,6 @@ extern int cpuset_init(void);
@@ -139,7 +139,7 @@ index 0ce6ff0d9c9aa..de4cf0ee96f79 100644
  extern void inc_dl_tasks_cs(struct task_struct *task);
  extern void dec_dl_tasks_cs(struct task_struct *task);
  extern void cpuset_lock(void);
-@@ -185,8 +184,6 @@ static inline void cpuset_update_active_cpus(void)
+@@ -190,8 +189,6 @@ static inline void cpuset_update_active_cpus(void)
  	partition_sched_domains(1, NULL, NULL);
  }
  
@@ -149,7 +149,7 @@ index 0ce6ff0d9c9aa..de4cf0ee96f79 100644
  static inline void dec_dl_tasks_cs(struct task_struct *task) { }
  static inline void cpuset_lock(void) { }
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 4237c8748715d..d8d3439eda4e4 100644
+index 927bef3a598ad..db8cbb134cc21 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
 @@ -201,6 +201,14 @@ struct cpuset {
@@ -271,7 +271,7 @@ index 4237c8748715d..d8d3439eda4e4 100644
  
  	cpus_read_lock();
  	mutex_lock(&cpuset_mutex);
-@@ -4354,6 +4345,16 @@ static void remove_tasks_in_empty_cpuset(struct cpuset *cs)
+@@ -4353,6 +4344,16 @@ static void remove_tasks_in_empty_cpuset(struct cpuset *cs)
  	}
  }
  
@@ -288,7 +288,7 @@ index 4237c8748715d..d8d3439eda4e4 100644
  static void
  hotplug_update_tasks_legacy(struct cpuset *cs,
  			    struct cpumask *new_cpus, nodemask_t *new_mems,
-@@ -4383,12 +4384,21 @@ hotplug_update_tasks_legacy(struct cpuset *cs,
+@@ -4382,12 +4383,21 @@ hotplug_update_tasks_legacy(struct cpuset *cs,
  	/*
  	 * Move tasks to the nearest ancestor with execution resources,
  	 * This is full cgroup operation which will also call back into
@@ -315,7 +315,7 @@ index 4237c8748715d..d8d3439eda4e4 100644
  	}
  }
  
-@@ -4421,30 +4431,6 @@ void cpuset_force_rebuild(void)
+@@ -4420,30 +4430,6 @@ void cpuset_force_rebuild(void)
  	force_rebuild = true;
  }
  
@@ -346,7 +346,7 @@ index 4237c8748715d..d8d3439eda4e4 100644
  /**
   * cpuset_hotplug_update_tasks - update tasks in a cpuset for hotunplug
   * @cs: cpuset in interest
-@@ -4493,13 +4479,11 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
+@@ -4492,13 +4478,11 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
  		compute_partition_effective_cpumask(cs, &new_cpus);
  
  	if (remote && cpumask_empty(&new_cpus) &&
@@ -361,7 +361,7 @@ index 4237c8748715d..d8d3439eda4e4 100644
  	}
  
  	/*
-@@ -4519,18 +4503,8 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
+@@ -4518,18 +4502,8 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
  	else if (is_partition_valid(parent) && is_partition_invalid(cs))
  		partcmd = partcmd_update;
  
@@ -380,7 +380,7 @@ index 4237c8748715d..d8d3439eda4e4 100644
  		if ((partcmd == partcmd_invalidate) || is_partition_valid(cs)) {
  			compute_partition_effective_cpumask(cs, &new_cpus);
  			cpuset_force_rebuild();
-@@ -4558,8 +4532,7 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
+@@ -4557,8 +4531,7 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
  }
  
  /**
@@ -390,7 +390,7 @@ index 4237c8748715d..d8d3439eda4e4 100644
   *
   * This function is called after either CPU or memory configuration has
   * changed and updates cpuset accordingly.  The top_cpuset is always
-@@ -4573,8 +4546,10 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
+@@ -4572,8 +4545,10 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
   *
   * Note that CPU offlining during suspend is ignored.  We don't modify
   * cpusets across suspend/resume cycles at all.
@@ -402,7 +402,7 @@ index 4237c8748715d..d8d3439eda4e4 100644
  {
  	static cpumask_t new_cpus;
  	static nodemask_t new_mems;
-@@ -4585,6 +4560,7 @@ static void cpuset_hotplug_workfn(struct work_struct *work)
+@@ -4584,6 +4559,7 @@ static void cpuset_hotplug_workfn(struct work_struct *work)
  	if (on_dfl && !alloc_cpumasks(NULL, &tmp))
  		ptmp = &tmp;
  
@@ -410,7 +410,7 @@ index 4237c8748715d..d8d3439eda4e4 100644
  	mutex_lock(&cpuset_mutex);
  
  	/* fetch the available cpus/mems and find out which changed how */
-@@ -4666,7 +4642,7 @@ static void cpuset_hotplug_workfn(struct work_struct *work)
+@@ -4665,7 +4641,7 @@ static void cpuset_hotplug_workfn(struct work_struct *work)
  	/* rebuild sched domains if cpus_allowed has changed */
  	if (cpus_updated || force_rebuild) {
  		force_rebuild = false;
@@ -419,7 +419,7 @@ index 4237c8748715d..d8d3439eda4e4 100644
  	}
  
  	free_cpumasks(NULL, ptmp);
-@@ -4679,12 +4655,7 @@ void cpuset_update_active_cpus(void)
+@@ -4678,12 +4654,7 @@ void cpuset_update_active_cpus(void)
  	 * inside cgroup synchronization.  Bounce actual hotplug processing
  	 * to a work item to avoid reverse locking order.
  	 */
@@ -433,7 +433,7 @@ index 4237c8748715d..d8d3439eda4e4 100644
  }
  
  /*
-@@ -4695,7 +4666,7 @@ void cpuset_wait_for_hotplug(void)
+@@ -4694,7 +4665,7 @@ void cpuset_wait_for_hotplug(void)
  static int cpuset_track_online_nodes(struct notifier_block *self,
  				unsigned long action, void *arg)
  {
@@ -443,10 +443,10 @@ index 4237c8748715d..d8d3439eda4e4 100644
  }
  
 diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 63447eb85dab6..563877d6c28b6 100644
+index f8a0406ce8ba5..f0ef0754753f9 100644
 --- a/kernel/cpu.c
 +++ b/kernel/cpu.c
-@@ -1208,52 +1208,6 @@ void __init cpuhp_threads_init(void)
+@@ -1209,52 +1209,6 @@ void __init cpuhp_threads_init(void)
  	kthread_unpark(this_cpu_read(cpuhp_state.thread));
  }
  
@@ -499,7 +499,7 @@ index 63447eb85dab6..563877d6c28b6 100644
  #ifdef CONFIG_HOTPLUG_CPU
  #ifndef arch_clear_mm_cpumask_cpu
  #define arch_clear_mm_cpumask_cpu(cpu, mm) cpumask_clear_cpu(cpu, mm_cpumask(mm))
-@@ -1494,7 +1448,6 @@ static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
+@@ -1498,7 +1452,6 @@ static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
  	 */
  	lockup_detector_cleanup();
  	arch_smt_update();
@@ -507,7 +507,7 @@ index 63447eb85dab6..563877d6c28b6 100644
  	return ret;
  }
  
-@@ -1728,7 +1681,6 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
+@@ -1732,7 +1685,6 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
  out:
  	cpus_write_unlock();
  	arch_smt_update();
