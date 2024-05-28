@@ -1,70 +1,72 @@
-Return-Path: <cgroups+bounces-3015-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3016-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 277F68D112A
-	for <lists+cgroups@lfdr.de>; Tue, 28 May 2024 02:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 552098D112B
+	for <lists+cgroups@lfdr.de>; Tue, 28 May 2024 02:57:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8969B1F21743
-	for <lists+cgroups@lfdr.de>; Tue, 28 May 2024 00:57:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E98221F21800
+	for <lists+cgroups@lfdr.de>; Tue, 28 May 2024 00:57:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01B618827;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 621AB9479;
 	Tue, 28 May 2024 00:56:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JrS9xzYM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KzuW6M0b"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AFEB1C2E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7452907;
 	Tue, 28 May 2024 00:56:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716857813; cv=none; b=M4RASYVn4UxjqyQTLKgQuK5BvqRvBqbUrAEBMiv904monuTv4HK8RjemoOeEGpwG2M53ktvIkG0OxY1V/36QHPIfA4pkbUSp2a/W8SjQUWEZxy1pQIEsoEKFwAg01nyhcxdlyWCUKtRHJ6R35KRYhsLJ88/TWFpjLXCYoAeMuxs=
+	t=1716857814; cv=none; b=jgBzKwVEgaVQomkRri6CvwgZMkshMYdAPpvBzuHggOL828NkKcr2CqSj4XFUy6z7eOEmV2zoXIE+lMzml98WKzXnB7YEm+ZOOEsuhCAU5u4xUPE9nOSykEJjbPUfiS8/+Qf+JOyWvl79E8PmJ6eF7upu/cFxnp68LBRHkL4Pye8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716857813; c=relaxed/simple;
-	bh=VIByQsRIRWXyiavO0JopjOwT9I3BGWmXRDeKDW0vxaE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=sun5kcXPkTPMi8JwupydPuMs/WHVVSbdHES6+t4rENZ2w+2ZxSEsld8+vd+eHgxGUNDKzZGMGhmtMbV45ExqhxZ+0hzkohrYmgAXt/nBpq6HjeRRy+OrTSc/Y69XVBJ/qDhofeoHP456f2mrzFejyZAM2VwCz1LnMJZOOnRaoNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JrS9xzYM; arc=none smtp.client-ip=209.85.128.176
+	s=arc-20240116; t=1716857814; c=relaxed/simple;
+	bh=yi/EszHUlOpCwgzZqVjrzflrzIMfLJP7BNBpSEMhkYY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Z98i+bPxtTdKfTU/6O5Zu8Q89i6eQ1V6bnXAjale1s4hEXHs2GzprAKQUGsJx9IEsC1ZuCaUxg6FL01cGLRDp2Xr0u2TJ4AxxlIXUU9QIkMl+6EtE5LCooPeNRLSbX5O7YHEjS23RTAeVAb+Nl0vIKOdu6mr8Q3j3ha1auBEVWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KzuW6M0b; arc=none smtp.client-ip=209.85.128.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-627ebbefd85so2861187b3.3;
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-62a08099115so2935007b3.0;
         Mon, 27 May 2024 17:56:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716857811; x=1717462611; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5Ez0J0qtAkKq9DhtNvT58fIFshyeGP2st4dotGSlOno=;
-        b=JrS9xzYMzyRDBwIWQwT+K9C8NajlO5du6VfXZBSreZrgJKWhKWr1JzLQbu3oy52xS0
-         hBxN2XJLle2wz1ZCno8A16uk6q5GIgdIMle62v44H9ufDduY2K8HWNhzORehZUKrgPq1
-         l9ElMJpGgjIrlDM4PgYcpnmURz93TEhBSFYOKVSptwubft2CHuekrgFQ2S9truGv+AiV
-         ipsGuY0s5zZQnSCP1xVxgcz98TC+T5Kl5MG4AegkF2ShXXEiOB7rZn8C19DKdmRu92zH
-         O6s+IsmJl7/8VmUtPpQMgiGf60tXK7Z8OHnK8j7HRmI9JZrqcNyVU40nizW3gR0F2g1l
-         CYfQ==
+        d=gmail.com; s=20230601; t=1716857812; x=1717462612; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WrtpjA7rbTF+FvnXXEAEsUdT24L7/cDqcK77C2g3SmA=;
+        b=KzuW6M0bN9Np5HtDKb2U6OWQ5/5ovDW5k4dlOPLvJGibUEtg8l5wvWIyanvQ/+gMaP
+         8kLEy0KaKoFoG4fhBM4TaiuXT2JPDqtJ5qhtFVBCePFRgydWF2Sn6Z+bgvshBiAvMtY3
+         M5KzszTIh43wbWzT2tJOj7MF9xHrCCNN3RyK2WseUZiGcZwdfgQCQWsUkbX+2Cyav3NI
+         AZMkibY+xC01TL7JXG8OwhVXmvn3TYgMROZ+c/e+9IVTz27MM+4DUR1uYCTpfqEWiHtz
+         VWMebhWA7KdJrLFLzTsP2RBcvO57RxTvcgmU0NNKccZLX3mQr6X/vEJdAa8z7/lzBjtE
+         TF5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716857811; x=1717462611;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5Ez0J0qtAkKq9DhtNvT58fIFshyeGP2st4dotGSlOno=;
-        b=rfcP3JmwKT1qZLrXyts4sGQlqfbCw8i/XmylQcfzzV0a2gxKRiZnihKwrraCkAECuM
-         2s3OWqqbSHOE8hwXKGS4B5HSBEYVH8QjdUoBn+q7gTGxot7iShyN5fMw52eXi/5Bc8P7
-         v+HIG1WiTG707KY2SlvQAxZ6Nx2GCsLwSO5ZpM5qwXvgoWjpExH7eD7W3xqRC60XgEmF
-         TcAkTZe2mzEq0mwRonlKwvHWieHTSMbnn1evoit2kprOdcFUnwyWW3H3+dWDiRSuzF2s
-         7XhVyLLU0+oOUPAIhhjh+g0hwNJiOfuzzzafgBvncndXFbqqnIUyMhrsvzpHYUxxJ+oQ
-         +RAA==
-X-Forwarded-Encrypted: i=1; AJvYcCXyBB1VQWa8aW8QbL2E+j6f/5t8bx+hJ1W+fHVcIEGa6N3jJMUTsSm67Q4JKnUf33+AGeQ2MQqyqseTfua3O7hQ+vqu57Prd8MzmQYgXg4DrjQ4PZk3Cj8uc0EU8Zc1A5hrutIgF63+JRRXa5UJFmZNn5Gv0Wmz8ZoevCWQ6PFcZQ==
-X-Gm-Message-State: AOJu0Yx6oQLKj67/PaXLBzAX+wnzt4BHudhP8gt4xCSRqoNLk+jhpOYg
-	r1sYCO3+HX5NWKvwV1j4NRidRlCEA1HcF3Sk0NQBC2XSDFho/x1lldGr+w==
-X-Google-Smtp-Source: AGHT+IFtIWzXOyFRH+mmAemFEAEjq0S6YTXWPFy1QE68aOtKfOPGRU/J566TydAC2cqpZmcJMXliyQ==
-X-Received: by 2002:a0d:e897:0:b0:61a:f59a:c1b5 with SMTP id 00721157ae682-62a08db6ef6mr107669807b3.23.1716857810435;
-        Mon, 27 May 2024 17:56:50 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1716857812; x=1717462612;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WrtpjA7rbTF+FvnXXEAEsUdT24L7/cDqcK77C2g3SmA=;
+        b=d2RAeHJH7t91x50XvkMPXG+a94REGYrF+8zRvthkBEqfaCJjlw4qxdASTV7RtzC0i9
+         hE79ZGEka2cQVK1tMdNqP5pTm/hzUW4HqasW7AVTmFjgw/r/7WQpDtNWJFbXgkgA8sA9
+         ZXpo274F2ArVbvm/lUju+OCE9OyWtyUv7OTbbyXwhxnaUxk9E/ltFeLHLGoutcK9w6s/
+         5rslk/Q9meXH+F7skue3dZSOQEzYCxTxHqC59IP/kqZHcr0UMqmazoOCh74vG/NJ1pos
+         z9SgHJnoDWFfyDRKIr4G5CnvO1XkxsZyZk2SHdpWBQ7BXvch/xWUPuAZd5t+XquIETMC
+         MTSw==
+X-Forwarded-Encrypted: i=1; AJvYcCWs+gq9rkaxe5lC8vJIGGIFrWquV9rnkkrRUA1QwG7v3RfiXkc7Ekl+MtuzzOg4nOVS2UF6SgfZn3j83pVzfEanT1nfzXnOqfp95JANVIubCkwWRfcFO804zNNbfv9wmLZLpqMxUPzrDJn3tvFX865WLA0X3FkiqhP3wXx9ipChYA==
+X-Gm-Message-State: AOJu0YyBr2INXl3OCTuXKcVLSpkv77Mo070rhca+Cyb44J3KNxhLBuAf
+	h2yU9SSRDX000ifX19e/u+05TsJrRLnVkfs/roDzMJ0GBDNHSyolP/gpLw==
+X-Google-Smtp-Source: AGHT+IF6oojh7SVjXJ8sdTcrbsy+EFZrvDSMwjEXLGSGTF684UQ1adnnZZP0XdnvzUZCDMb9dLHmcw==
+X-Received: by 2002:a81:6d12:0:b0:618:9353:100c with SMTP id 00721157ae682-62a479dc17amr20084727b3.23.1716857811724;
+        Mon, 27 May 2024 17:56:51 -0700 (PDT)
 Received: from localhost ([2601:344:8301:57f0:35f3:16c3:302:8fdb])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-62a0a3bf743sm18245997b3.40.2024.05.27.17.56.49
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-62a0a27d13bsm18412197b3.12.2024.05.27.17.56.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 May 2024 17:56:49 -0700 (PDT)
+        Mon, 27 May 2024 17:56:51 -0700 (PDT)
 From: Yury Norov <yury.norov@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org,
@@ -93,10 +95,12 @@ Cc: Yury Norov <yury.norov@gmail.com>,
 	Vincent Guittot <vincent.guittot@linaro.org>,
 	Viresh Kumar <viresh.kumar@linaro.org>,
 	Zefan Li <lizefan.x@bytedance.com>
-Subject: [PATCH 0/6] Cleanup cpumask.h inclusion in core headers
-Date: Mon, 27 May 2024 17:56:42 -0700
-Message-Id: <20240528005648.182376-1-yury.norov@gmail.com>
+Subject: [PATCH 1/6] MAINTAINERS: add linux/nodemask_types.h to BITMAP API
+Date: Mon, 27 May 2024 17:56:43 -0700
+Message-Id: <20240528005648.182376-2-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240528005648.182376-1-yury.norov@gmail.com>
+References: <20240528005648.182376-1-yury.norov@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -105,56 +109,27 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Many core headers include linux/cpumask.h for nothing, and some others
-include it just for types. We already have nodemask_types.h, and this
-series adds cpumask_types.h to optimize core headers inclusion paths.
+Commit bea32141764b ("nodemask: Split out include/linux/nodemask_types.h")
+added the nodemask_types.h but didn't cover it with corresponding record in
+the MAINTAINERS file.
 
-Interestingly, it doesn't improve on build time for me, but the headers
-cleanup work should keep going.
+Signed-off-by: Yury Norov <yury.norov@gmail.com>
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-Yury Norov (6):
-  MAINTAINERS: add linux/nodemask_types.h to BITMAP API
-  sched: pre-caculate ilog2(TASK_REPORT_MAX)
-  cpumask: split out include/linux/cpumask_types.h
-  sched: drop dependency on cpumask.h
-  cpumask: cleanup core headers inclusion
-  cpumask: make core headers including cpumask_types.h where possible
-
-Yury Norov (6):
-  MAINTAINERS: add linux/nodemask_types.h to BITMAP API
-  sched: pre-caculate ilog2(TASK_REPORT_MAX)
-  cpumask: split out include/linux/cpumask_types.h
-  sched: drop dependency on cpumask.h
-  cpumask: cleanup core headers inclusion
-  cpumask: make core headers including cpumask_types.h where possible
-
- MAINTAINERS                                  |  2 +
- include/linux/cacheinfo.h                    |  2 +-
- include/linux/cgroup.h                       |  1 -
- include/linux/clockchips.h                   |  2 +-
- include/linux/cpu.h                          |  1 -
- include/linux/cpu_cooling.h                  |  1 -
- include/linux/cpu_rmap.h                     |  2 +-
- include/linux/cpumask.h                      | 56 +----------------
- include/linux/cpumask_types.h                | 66 ++++++++++++++++++++
- include/linux/interrupt.h                    |  2 +-
- include/linux/irqchip/irq-partition-percpu.h |  2 +-
- include/linux/kernel_stat.h                  |  1 -
- include/linux/msi.h                          |  2 +-
- include/linux/node.h                         |  1 -
- include/linux/percpu.h                       |  1 -
- include/linux/pm_domain.h                    |  2 +-
- include/linux/profile.h                      |  1 -
- include/linux/rcupdate.h                     |  1 -
- include/linux/sched.h                        |  7 ++-
- include/linux/seq_file.h                     |  1 -
- include/linux/stop_machine.h                 |  2 +-
- include/linux/torture.h                      |  2 +-
- include/linux/tracepoint.h                   |  1 -
- include/linux/workqueue.h                    |  2 +-
- 24 files changed, 83 insertions(+), 78 deletions(-)
- create mode 100644 include/linux/cpumask_types.h
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d6c90161c7bf..6ae73aaee305 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3733,6 +3733,7 @@ F:	include/linux/bits.h
+ F:	include/linux/cpumask.h
+ F:	include/linux/find.h
+ F:	include/linux/nodemask.h
++F:	include/linux/nodemask_types.h
+ F:	include/vdso/bits.h
+ F:	lib/bitmap-str.c
+ F:	lib/bitmap.c
 -- 
 2.40.1
 
