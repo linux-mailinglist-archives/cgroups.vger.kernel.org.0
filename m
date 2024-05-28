@@ -1,117 +1,118 @@
-Return-Path: <cgroups+bounces-3031-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3032-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B9258D2823
-	for <lists+cgroups@lfdr.de>; Wed, 29 May 2024 00:38:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 556E18D2827
+	for <lists+cgroups@lfdr.de>; Wed, 29 May 2024 00:41:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBF54283825
-	for <lists+cgroups@lfdr.de>; Tue, 28 May 2024 22:38:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA37A1F26A46
+	for <lists+cgroups@lfdr.de>; Tue, 28 May 2024 22:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 341A113F01A;
-	Tue, 28 May 2024 22:38:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E5B013E052;
+	Tue, 28 May 2024 22:41:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="y7NQPIRV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c3kiOa9B"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BA6E13EFE0
-	for <cgroups@vger.kernel.org>; Tue, 28 May 2024 22:38:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C3D021A0C;
+	Tue, 28 May 2024 22:41:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716935907; cv=none; b=t4RccAGqEqym/dfmk/2Ulgyv0w8IXMXNsMKXG+hMga3C/KxNv5R9w5gpVDt1FO93SJIJZ90cgCJ7pLVqdRj3AeB+r02v6LHzXGq7EIVMDlRvb08Wox3HUN6zkCoCKMAWKETfaWOusJA8KIiGFOx3GjB3sI2rjOKSIady3Pmos+s=
+	t=1716936094; cv=none; b=dsII2leuOTLYJzrqAG+26UIa7cbdAEyUtH3nPy0TBjHKLsiYl6A9R4LaeaC6v5sYS/H1ydBPAoqBDaGuNxFLGCqlce2lWiL4scQDETLw4IZwn3ZtJXwdooByHOy2myDG1RiFKwKqK/tmuV03oZHZSa12HCYBzfN+IgOVm+9zfXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716935907; c=relaxed/simple;
-	bh=2WvRjYFaFMZKL47YHVHy7KxFsHaztdsVymExOIYR4NI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Gc7pezqJGSKY6hBfLhandMmBpluj6MljkD9n1dysDZfMvodImugIe+npHYV6xXw0Mo/NRvhl+zphksL/G4aIZCwNv+wDSnYZ5IWYdo1275DHH9njrsh1IWnoDK8mPG+z8ckEV5LAQ8ekKdbG9OuRByObB/LwDk8GUWaGq/21seY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=y7NQPIRV; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-52388d9ca98so2238765e87.0
-        for <cgroups@vger.kernel.org>; Tue, 28 May 2024 15:38:23 -0700 (PDT)
+	s=arc-20240116; t=1716936094; c=relaxed/simple;
+	bh=UIsrzkaz1wPu1JTOUJPJS4ShO9BgVhRVdBLndJtFASg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QHvaYqI91XYEU2Dw2cRNcbJ/Fe8jm9Q54b+9NCM9akvGTaBOjidc1glnY7MDEbKJ/BNo8inExrHqJ5s2g9xedLa9aKGfAyncarT6t0bvHeFN66FkP2pkN0D1nwyGGJrZEUf2sXpGKWvUmodO+GYBRzoUpGSZ0ecaVSffu/9lzRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c3kiOa9B; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-681907aebebso1057234a12.1;
+        Tue, 28 May 2024 15:41:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1716935902; x=1717540702; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2WvRjYFaFMZKL47YHVHy7KxFsHaztdsVymExOIYR4NI=;
-        b=y7NQPIRVYB4BtV+SuyMm0IZN2LVZFod8MkXyAb5QjRq572C5rPbGkYA5NN9Ji4b5Qn
-         ovtnkSDb7QFBVi+ao+J37Tivrs+vEwQgAmzVURqfFmDe7PCr5aK7SYH9v1ChW6ffqRpC
-         u5SEc95zzG6qG2q6fxDqm8d+Q9n9HTLV2+qcjL/XJ9Bs3IvM+W9/Gd3c04FWKPqGTFA3
-         1xxZDn9oI5dMGRSsIUxKrJ0TD2hd01QXH+vOBWzXRuBAloiu6Ojqf1sdKrmcMkRT86aB
-         x9F8B8EeH4aCPb0SpYe5F9cV4lGZ3P+sIGjtgqsnjCJyB/k49xXhTpcqC+r5iFFrPsXD
-         SRnA==
+        d=gmail.com; s=20230601; t=1716936092; x=1717540892; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NW4QKUirvV1brwDDAsMiHdvL81ePNCCRnBG2ksx8gOc=;
+        b=c3kiOa9Bhh9jZNcolZ+FsS3Y9j2muF6bhFMBtyDoLBnId7DlmO7/sDr9ZIoO5Sr67h
+         D4SrrA1bgpDCsve62FafxWwDPDXyDtuf3sIRY+XCJT7NXFSYGoxwrAjNdwVNEgntNrtb
+         gqrAGj9giUWP3t65bWfiCtKsZKW3ioFodWfV4kr6WaWNqTZ9p9FuuP1ADgTlxzClMxtF
+         5q6605Tn720wzkDsWpEi9DZoen1LF7mytu1IfQGtRUWh1jCT8LwaP4FXPslhoxtiXqFK
+         nJcmnTHEvSQdaO3DXW6M4VrUupO8R2PQSHp1qMSm3AjowO6pv3dDa96Y794EsJKa2MKS
+         VbEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716935902; x=1717540702;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2WvRjYFaFMZKL47YHVHy7KxFsHaztdsVymExOIYR4NI=;
-        b=Qe1OU/oIVd9ksvKwzw3QMg2xH9NvRYqsAiA0IMyBjA/hULEnfzJ5tyhehnsdE3722I
-         cDxTRaxMvb5oNVx/K8pbITWt93gGGQ/MdRp0BpvoTHrvmfTBSsd7/mpLBi24Ae+qvqcf
-         MEPHh8IeGlAkqGqcYvspktvonwMcx8KHuWXw387g8YGbtOPa3rIS7FhWNwa1dN1WBapw
-         Ingxdie0uodCYv4gZzLQg2CdM64i6s0gAW+comkvrc9lZBMoEVQIKFcFYPv8US6uRF+L
-         BzOzYQaDeLHR49A25mGmnRTVY9W+0yzoKkuk/npestDewqkjKgG5tdy9b/yPmIEgarpY
-         1yOw==
-X-Forwarded-Encrypted: i=1; AJvYcCXLeltnOGAlnUbUlS8C9d3EUtyV6zgTcSiK+6H6VPQAFyxSeHuTdXVZ9aNw8Ii+00Ex/JxkZMiA5iBvV6CPPF0cRiaKt5h5nw==
-X-Gm-Message-State: AOJu0YxXP4B3JtdcPce5HmNJ6XNcHVE1kubf7EQoPGjfSt+4MPhIuL6b
-	n4VbVqDeuzHpcplvAog15VKK8gtJUmTVgEmXj8qn85RrCgAu0vhV4HXEAexki+GN8P6x7ueyKvG
-	WJi2RQKmicEhdpoqwnTpiu6+lkLTT0VjAJPVF
-X-Google-Smtp-Source: AGHT+IE1o5Dipkov01x4ZrjguurfGe0R3sBkf6gcSIgXWq5AbRYVESf5uPGZq0vDyweh1nYEo9sFpaswlKhRItdM7WA=
-X-Received: by 2002:a05:6512:224c:b0:516:d232:2516 with SMTP id
- 2adb3069b0e04-529652903a6mr13891084e87.6.1716935902153; Tue, 28 May 2024
- 15:38:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1716936092; x=1717540892;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NW4QKUirvV1brwDDAsMiHdvL81ePNCCRnBG2ksx8gOc=;
+        b=da7xxEi8E9KPi1oIiwfcOFYMapPf/v3WAGXtFPPxqUtT6P/xdhcaQXe/y95ZPQLyWa
+         eLFT/YDTDbux3UD7ufZM51LQJM2xgzsQD+1Yga4e+wOvK0pU+IY/fsf488eHp/shagmA
+         aAPmzqCB/3LAHK7XYy0bvRrTKfFvl730sePaLPlnW9lHfxrVp+wVjsmMnL/R9pAIh3/l
+         KOmDSToYsWVJdaONQ4t40O18qStqEpT/JJXniBiMO5sZWWSWmMlQThWERYBqHQClQ6cP
+         PqSe3/+xe9/MOEOSDVXB2fXSlM8sjZq/wyHqYSklBb14V5/sNwxhyBsE8Begh5h8eKtY
+         itmg==
+X-Forwarded-Encrypted: i=1; AJvYcCX8o417j7FDsvaFZFVh4WuhQbeF4eWKPOPXMqXZv7w3S4SNQyippfT234cFL1QkoIDX8HxzCOO/+fGagpD3d8MiLqQhQPz5dEPC7LqCBDlX+7pEM/0PzfUbwBSXICrq9ugXYvPH5w==
+X-Gm-Message-State: AOJu0YzHdxZgIyMpLW63ACaM/WmJtXgOmZbG5wY8EA5cSak5BADC61EK
+	RzPq1Kcj/Lm0G2RRCBAYJkWPw47q066Nz5vT6ZT6xta7HjOC8KhS
+X-Google-Smtp-Source: AGHT+IFaTiVPO5UV3QfW0H5sO86kXUR40YyISAlU2go1rpphGsPC2EO3tzTrABTmkfkGnjtMYUuCkQ==
+X-Received: by 2002:a05:6a21:61e:b0:1af:b2e5:2a5e with SMTP id adf61e73a8af0-1b212f0ea33mr12657886637.49.1716936092200;
+        Tue, 28 May 2024 15:41:32 -0700 (PDT)
+Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f44c967bcasm85748865ad.176.2024.05.28.15.41.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 May 2024 15:41:31 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 28 May 2024 12:41:30 -1000
+From: Tejun Heo <tj@kernel.org>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>, shakeel.butt@linux.dev,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] cgroup: Fix /proc/cgroups count for v2
+Message-ID: <ZlZdmlN3jpKbtgfN@slm.duckdns.org>
+References: <20240528163713.2024887-1-tjmercier@google.com>
+ <ZlYzzFYd0KgUnlso@slm.duckdns.org>
+ <zrvsmkowongdaqcy3yqb6abh76utimen5ejrnkczd4uq3etesl@jv3xb4uso4yk>
+ <ZlZa-j3Q8UqL84Zh@slm.duckdns.org>
+ <CABdmKX1fPYjkA2S90NntVFjcoMRvQZY1FjHt780S6KZCsBSRJQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240528163713.2024887-1-tjmercier@google.com>
- <ZlYzzFYd0KgUnlso@slm.duckdns.org> <zrvsmkowongdaqcy3yqb6abh76utimen5ejrnkczd4uq3etesl@jv3xb4uso4yk>
- <ZlZa-j3Q8UqL84Zh@slm.duckdns.org>
-In-Reply-To: <ZlZa-j3Q8UqL84Zh@slm.duckdns.org>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Tue, 28 May 2024 15:38:07 -0700
-Message-ID: <CABdmKX1fPYjkA2S90NntVFjcoMRvQZY1FjHt780S6KZCsBSRJQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] cgroup: Fix /proc/cgroups count for v2
-To: Tejun Heo <tj@kernel.org>
-Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, shakeel.butt@linux.dev, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABdmKX1fPYjkA2S90NntVFjcoMRvQZY1FjHt780S6KZCsBSRJQ@mail.gmail.com>
 
-On Tue, May 28, 2024 at 3:30=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Tue, May 28, 2024 at 11:42:13PM +0200, Michal Koutn=C4=B1 wrote:
-> > On Tue, May 28, 2024 at 09:43:08AM GMT, Tejun Heo <tj@kernel.org> wrote=
-:
-> > > I agree that this can be a useful metric but am not sure /proc/cgroup=
-s is
-> > > the right place to put it. Its use of v1 controller names, listing of
-> > > controllers that don't exist in v2 and the unnecessary column are rat=
-her
-> > > ugly and unnecessary.
+Hello,
+
+On Tue, May 28, 2024 at 03:38:07PM -0700, T.J. Mercier wrote:
+> On Tue, May 28, 2024 at 3:30 PM Tejun Heo <tj@kernel.org> wrote:
+> > > At the same time, the info provided currently is incorrect or at least
+> > > misleading (when only v2 hierarchy is mounted, it mixes the counts) --
+> > > that's what T.J.'s patch attempts to rectify in my understanding.
 > >
-> > At the same time, the info provided currently is incorrect or at least
-> > misleading (when only v2 hierarchy is mounted, it mixes the counts) --
-> > that's what T.J.'s patch attempts to rectify in my understanding.
->
-> Yeah, I was hoping to phase out that file once folks are all on v2.
+> > Yeah, I was hoping to phase out that file once folks are all on v2.
+> 
+> I'll buy a round of drinks when that happens, but aren't we a few
+> years out from that? :)
 
-I'll buy a round of drinks when that happens, but aren't we a few
-years out from that? :)
+I don't think we're too far off from at least making cgroup1 a CONFIG
+option. As for the /proc/cgroups file, it's mostly useless on cgroup2, so I
+was hoping that this could be put behind the same CONFIG option. I haven't
+really thought through it tho, so it's not a hard set plan or anything.
 
->
-> Thanks.
->
-> --
-> tejun
+Thanks.
+
+-- 
+tejun
 
