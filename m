@@ -1,166 +1,205 @@
-Return-Path: <cgroups+bounces-3023-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3024-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0529F8D1468
-	for <lists+cgroups@lfdr.de>; Tue, 28 May 2024 08:30:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AF1C8D21BC
+	for <lists+cgroups@lfdr.de>; Tue, 28 May 2024 18:37:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2A742826CB
-	for <lists+cgroups@lfdr.de>; Tue, 28 May 2024 06:30:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E8AA1F251A2
+	for <lists+cgroups@lfdr.de>; Tue, 28 May 2024 16:37:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FDE08F48;
-	Tue, 28 May 2024 06:30:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E543170826;
+	Tue, 28 May 2024 16:37:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hzyKk+rF"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="H/1j5USv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2DEC22067
-	for <cgroups@vger.kernel.org>; Tue, 28 May 2024 06:30:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3B416C86F
+	for <cgroups@vger.kernel.org>; Tue, 28 May 2024 16:37:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716877848; cv=none; b=mI9tmbNp1ffDGMtPYx67yj4M8KxIbMQvt+oEU1Y29VIYYT/iq2BwV9vw9sAZIbTtIDnWrBMdvdUQH28U92WWivriuhHJ004CwN94UShj0535/xmtYQoHGiQBDDn/qLndreJqHFYvqE+9sTEhjy6nn4zlsjY3t2qG8zQ1Sn1P9Jc=
+	t=1716914256; cv=none; b=Lu2HVdEanIfDZfKm8getjYiFu/BkTFS4KcQMpaU0mpZXDB7hFdhhQ5ZBiH+CXbWGvy7YQDl5YrxW2bdECP/XpEFYetWJ7fgWqEqsiqpyzCrLnsFXCcWZi6v8FL9qaE8JokR6ym+m6qg3pRmrZgu3ahHyRnjVScCTavYKWtEJcNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716877848; c=relaxed/simple;
-	bh=MbLS+hldK79Ntn839dxW3kttgjPsUGk4+ECEhPAEkeY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bMx4CpDKZq5dQ0wddXfkNBWhmPbDIYaabeOpWu/soDeJJsxnbGYxhLyxugw1WTbgmYofBUoQpEmbU3dme/EnsN3nG8aRLf6jYmJ9hhfnPsU0HuyTcNeiyu3O3ujBuRiaPxsSRVKLHxcxkdgPvE+t5spv/jmqlycb99NdW1mN24I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hzyKk+rF; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: oliver.sang@intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1716877844;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MbLS+hldK79Ntn839dxW3kttgjPsUGk4+ECEhPAEkeY=;
-	b=hzyKk+rF3/zR5yFq3NVthNkP/0ysnZGdyis/A9KfUVFaJ981RBccwGUJcVpsy2MErLg5F3
-	t1zNnua1YEqvKpayuzNqDbWlwicG0Ia1zfdlnQMgyh2gQYV++SJ83FAy2/fyAoVM+VBWk9
-	W6rEhw4ym5c5/MZaMVz4knO+QvgyJYY=
-X-Envelope-To: oe-lkp@lists.linux.dev
-X-Envelope-To: lkp@intel.com
-X-Envelope-To: linux-mm@kvack.org
-X-Envelope-To: akpm@linux-foundation.org
-X-Envelope-To: yosryahmed@google.com
-X-Envelope-To: tjmercier@google.com
-X-Envelope-To: roman.gushchin@linux.dev
-X-Envelope-To: hannes@cmpxchg.org
-X-Envelope-To: mhocko@kernel.org
-X-Envelope-To: muchun.song@linux.dev
-X-Envelope-To: cgroups@vger.kernel.org
-X-Envelope-To: ying.huang@intel.com
-X-Envelope-To: feng.tang@intel.com
-X-Envelope-To: fengwei.yin@intel.com
-Date: Mon, 27 May 2024 23:30:38 -0700
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Oliver Sang <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, 
-	Linux Memory Management List <linux-mm@kvack.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Yosry Ahmed <yosryahmed@google.com>, "T.J. Mercier" <tjmercier@google.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, 
-	ying.huang@intel.com, feng.tang@intel.com, fengwei.yin@intel.com
-Subject: Re: [linux-next:master] [memcg]  70a64b7919:
- will-it-scale.per_process_ops -11.9% regression
-Message-ID: <6gtp47pv4h27txb7lxvxjavrsamxvzamsclrsbpsl62i3nn2bp@yhamzxapsmsf>
-References: <ZknC/xjryN0sxOWB@xsang-OptiPlex-9020>
- <jg2rpsollyfck5drndajpxtqbjtigtuxql4j5s66egygfrcjqa@okdilkpx5v5e>
- <Zkq41w8YKCaKQAGk@xsang-OptiPlex-9020>
- <20240520034933.wei3dffiuhq7uxhv@linux.dev>
- <ZkwKRH0Oc1S7r2LP@xsang-OptiPlex-9020>
- <gpkpq3r3e7wxi6d7hbysfvg6chmuysluogsy47ifgm55d5ypy3@bs3kcqfgyxgp>
- <Zk702CrvXpE6P8fy@xsang-OptiPlex-9020>
- <k2ohfxhpt73n5vdumctrarrit2cmzctougtbnupd4onjy4kbbd@tenjl3mucikh>
- <ZlBFskeX3Wj3UGYJ@xsang-OptiPlex-9020>
- <uzqh6xvoe6xgef3i6743m7gld5tlqp6h2krcqgjre3nzfcogwz@gsllvs77r57a>
+	s=arc-20240116; t=1716914256; c=relaxed/simple;
+	bh=/r/SLL08HjdI46x3LF0p3F/u9Isqs916m5IdhjUo0RM=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=ICp6x+rofB6X7PIpejbsf1BPtC/sw8pRXU0xa7Yr4rwMnf8VnWT2OjWSlUrSsDi7pqThnfJQ1H8ZhpdOIMAU9fdCkaNFRU99Q/NokMulhE2j/j1eTTKlqn8xfadlE+3c6vtYQ5/o65eC/sAbsgNw7n40hLormwzdakY5InLT62g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=H/1j5USv; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-df777ba71e2so1736363276.0
+        for <cgroups@vger.kernel.org>; Tue, 28 May 2024 09:37:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1716914254; x=1717519054; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6GEC5jqmiiBW2QPmiEul4IbzhqqHXLiTP01MQ0qoF6U=;
+        b=H/1j5USvXTvJmWhwuOmLQmLvHdkM1QA1Yt5EkrBom21ZMXsaobXqIvximIHr4pIvzY
+         AFpA9EjUNSeJeRveYgHTrvsz1MAkhGVR7bGra7fVK5OfpjPYNQ4Tl7Ol1Bs07WxqFp5x
+         3bOseOJaSUmMSr1HHAJdHkhr5j5Ml2kCDwDOO3K3PES15sZjSGQ8V4qkd205rgw0BkKG
+         HUfx5HrrQNkRa5RF6aCii//d2Se+BublsMptqKOqKKnWAZy5ciXvmNvzr1zAgy6Fk1N2
+         wl71h1PIRqXQSNzFS79DwWA/b2SYk2FlcX/ZJjMBVWUWlYnlLzsiaSnHOpIex6zMYAvI
+         pMXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716914254; x=1717519054;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6GEC5jqmiiBW2QPmiEul4IbzhqqHXLiTP01MQ0qoF6U=;
+        b=hM92E+GzjE4KCACgZmbUpXUzSVnwumLd6jffwuFXGdZmBHsZumHObBAzuzISoW0L3S
+         e0Lzt4MYTPnrAMFLRVwstjmwx043ztczG2TcHUyBm2yemiq9Zx5pv6hXvsyltn5Fm6ad
+         5Y+au1yVgKACRycz3euOa2+LYURQ4NBEQT8fDpBjIqfyWG8iY4pEqYo/938dsQgzXfhO
+         s9MoE7wDSfDWzW2xgQACkRlPVipFmigyFyz5Th1tcFVtFT4jB9C9frvEpPIhukmd1SMz
+         LvZoHldlkFXfiHpEQ23EhI9l8NkEiTRneQpQR5CNdIq4qcw5o0FVycLedci8QAg4ulxI
+         V9Ow==
+X-Forwarded-Encrypted: i=1; AJvYcCVyAgFcyWyufCMx5Hyo4Oj6l7bUup8T+WMxMhPz13R1KM6r7iwpbC2YxvR0x0sSHwmsrS5j3sxXVJmLskOfijsIts12Rk3l+A==
+X-Gm-Message-State: AOJu0YzASLNpyEChEmZIHQKWJV1uYETVsBn20rAuddsd/poaKtPTU77G
+	fj46iyLOxNP2+EoTRa7nYf8Ep57rh7c0YhVaDVrS+QUh2LgKKLVl5M1ioQZgvgwdbvN3hZdVFwx
+	0AptLdNvsajqCMQ==
+X-Google-Smtp-Source: AGHT+IFCM8agQwohlgmz/X20yI5XC7cbVbMVjBbNM657wC++i+TlAhU6zWE3+cMrzjDCjID8rBD8gKeQnEhFQnM=
+X-Received: from tj-virt.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5683])
+ (user=tjmercier job=sendgmr) by 2002:a05:6902:f85:b0:de6:166f:3250 with SMTP
+ id 3f1490d57ef6-df7721c1a20mr3534064276.2.1716914254444; Tue, 28 May 2024
+ 09:37:34 -0700 (PDT)
+Date: Tue, 28 May 2024 16:37:12 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <uzqh6xvoe6xgef3i6743m7gld5tlqp6h2krcqgjre3nzfcogwz@gsllvs77r57a>
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.45.1.288.g0e0cd299f1-goog
+Message-ID: <20240528163713.2024887-1-tjmercier@google.com>
+Subject: [PATCH 1/2] cgroup: Fix /proc/cgroups count for v2
+From: "T.J. Mercier" <tjmercier@google.com>
+To: tjmercier@google.com, mkoutny@suse.com, Tejun Heo <tj@kernel.org>, 
+	Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>
+Cc: shakeel.butt@linux.dev, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, May 24, 2024 at 11:06:54AM GMT, Shakeel Butt wrote:
-> On Fri, May 24, 2024 at 03:45:54PM +0800, Oliver Sang wrote:
-[...]
-> I will re-run my experiments on linus tree and report back.
+The /proc/cgroups documentation says that the num_cgroups value is,
+"the number of control groups in this hierarchy using this controller."
 
-I am not able to reproduce the regression with the fix I have proposed,
-at least on my 1 node 52 CPUs (Cooper Lake) and 2 node 80 CPUs (Skylake)
-machines. Let me give more details below:
+The value printed is simply the total number of cgroups in the hierarchy
+which is correct for v1, but not for the shared v2 hierarchy.
 
-Setup instructions:
--------------------
-mount -t tmpfs tmpfs /tmp
-mkdir -p /sys/fs/cgroup/A
-mkdir -p /sys/fs/cgroup/A/B
-mkdir -p /sys/fs/cgroup/A/B/C
-echo +memory > /sys/fs/cgroup/A/cgroup.subtree_control
-echo +memory > /sys/fs/cgroup/A/B/cgroup.subtree_control
-echo $$ > /sys/fs/cgroup/A/B/C/cgroup.procs
+Consider:
+controllers="cpuset cpu io memory hugetlb pids rdma misc"
+for c in $controllers
+do
+  echo +$c > /sys/fs/cgroup/cgroup.subtree_control
+  mkdir /sys/fs/cgroup/$c
+  echo +$c > /sys/fs/cgroup/$c/cgroup.subtree_control
+  for i in `seq 100`; do mkdir /sys/fs/cgroup/$c/$i; done
+done
+cat /proc/cgroups
 
-The base case (commit a4c43b8a0980):
-------------------------------------
-$ python3 ./runtest.py page_fault2 295 process 0 0 52
-tasks,processes,processes_idle,threads,threads_idle,linear
-0,0,100,0,100,0
-52,2796769,0.03,0,0.00,0
+cpuset	0	809	1
+cpu	0	809	1
+cpuacct	0	809	1
+blkio	0	809	1
+memory	0	809	1
+devices	0	809	1
+freezer	0	809	1
+net_cls	0	809	1
+perf_event	0	809	1
+net_prio	0	809	1
+hugetlb	0	809	1
+pids	0	809	1
+rdma	0	809	1
+misc	0	809	1
+debug	0	809	1
 
-$ python3 ./runtest.py page_fault2 295 process 0 0 80
-tasks,processes,processes_idle,threads,threads_idle,linear
-0,0,100,0,100,0
-80,6755010,0.04,0,0.00,0
+A count of 809 is reported for each controller, but only 109 should be
+reported for most of them since each controller is enabled in only part
+of the hierarchy. (Note that io depends on memcg, so its count should be
+209.)
 
+The number of cgroups using a controller is an important metric since
+kernel memory is used for each cgroup, and some kernel operations scale
+with the number of cgroups for some controllers (memory, io). So users
+have an interest in minimizing/tracking the number of them.
 
-The regressing series (last commit a94032b35e5f)
-------------------------------------------------
-$ python3 ./runtest.py page_fault2 295 process 0 0 52
-tasks,processes,processes_idle,threads,threads_idle,linear
-0,0,100,0,100,0
-52,2684859,0.03,0,0.00,0
+Signed-off-by: T.J. Mercier <tjmercier@google.com>
 
-$ python3 ./runtest.py page_fault2 295 process 0 0 80
-tasks,processes,processes_idle,threads,threads_idle,linear
-0,0,100,0,100,0
-80,6010438,0.13,0,0.00,0
+---
+Changes from RFC:
+Don't manually initialize the atomic counters to 0 since they are
+kzalloced - Michal Koutny
 
-The fix on top of regressing series:
-------------------------------------
-$ python3 ./runtest.py page_fault2 295 process 0 0 52
-tasks,processes,processes_idle,threads,threads_idle,linear
-0,0,100,0,100,0
-52,3812133,0.02,0,0.00,0
+Also return the CSS count for utility controllers instead of the cgroup
+count - Michal Koutny
 
-$ python3 ./runtest.py page_fault2 295 process 0 0 80
-tasks,processes,processes_idle,threads,threads_idle,linear
-0,0,100,0,100,0
-80,7979893,0.15,0,0.00,0
+ include/linux/cgroup-defs.h | 6 ++++++
+ kernel/cgroup/cgroup-v1.c   | 8 ++++++--
+ kernel/cgroup/cgroup.c      | 2 ++
+ 3 files changed, 14 insertions(+), 2 deletions(-)
 
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index ea48c861cd36..bc1dbf7652c4 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -579,6 +579,12 @@ struct cgroup_root {
+ 	/* Number of cgroups in the hierarchy, used only for /proc/cgroups */
+ 	atomic_t nr_cgrps;
+ 
++	/*
++	 * Number of cgroups using each controller. Includes online and zombies.
++	 * Used only for /proc/cgroups.
++	 */
++	atomic_t nr_css[CGROUP_SUBSYS_COUNT];
++
+ 	/* Hierarchy-specific flags */
+ 	unsigned int flags;
+ 
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index b9dbf6bf2779..9bad59486c46 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -675,11 +675,15 @@ int proc_cgroupstats_show(struct seq_file *m, void *v)
+ 	 * cgroup_mutex contention.
+ 	 */
+ 
+-	for_each_subsys(ss, i)
++	for_each_subsys(ss, i) {
++		int count = cgroup_on_dfl(&ss->root->cgrp) ?
++			atomic_read(&ss->root->nr_css[i]) : atomic_read(&ss->root->nr_cgrps);
++
+ 		seq_printf(m, "%s\t%d\t%d\t%d\n",
+ 			   ss->legacy_name, ss->root->hierarchy_id,
+-			   atomic_read(&ss->root->nr_cgrps),
++			   count,
+ 			   cgroup_ssid_enabled(i));
++	}
+ 
+ 	return 0;
+ }
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index e32b6972c478..1bacd7cf7551 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -5362,6 +5362,7 @@ static void css_free_rwork_fn(struct work_struct *work)
+ 		ss->css_free(css);
+ 		cgroup_idr_remove(&ss->css_idr, id);
+ 		cgroup_put(cgrp);
++		atomic_dec(&ss->root->nr_css[ss->id]);
+ 
+ 		if (parent)
+ 			css_put(parent);
+@@ -5504,6 +5505,7 @@ static int online_css(struct cgroup_subsys_state *css)
+ 		atomic_inc(&css->online_cnt);
+ 		if (css->parent)
+ 			atomic_inc(&css->parent->online_cnt);
++		atomic_inc(&ss->root->nr_css[ss->id]);
+ 	}
+ 	return ret;
+ }
 
-As you can see, the fix is improving the performance over the base, at
-least for me. I can only speculate that either the difference of
-hardware is giving us different results (you have newer CPUs) or there
-is still disparity of experiment setup/environment between us.
+base-commit: 6fbf71854e2ddea7c99397772fbbb3783bfe15b5
+-- 
+2.45.1.288.g0e0cd299f1-goog
 
-Are you disabling hyperthreading? Is the prefetching heuristics
-different on your systems?
-
-Regarding test environment, can you check my setup instructions above
-and see if I am doing something wrong or different?
-
-At the moment, I am inclined towards asking Andrew to include my fix in
-following 6.10-rc* but keep this report open, so we continue to improve.
-Let me know if you have concerns.
-
-thanks,
-Shakeel
 
