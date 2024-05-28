@@ -1,72 +1,72 @@
-Return-Path: <cgroups+bounces-3019-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3020-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64D208D1131
-	for <lists+cgroups@lfdr.de>; Tue, 28 May 2024 02:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 66A098D1134
+	for <lists+cgroups@lfdr.de>; Tue, 28 May 2024 02:58:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1EE3B20D9B
-	for <lists+cgroups@lfdr.de>; Tue, 28 May 2024 00:57:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD9DDB2119C
+	for <lists+cgroups@lfdr.de>; Tue, 28 May 2024 00:58:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 222CF182B3;
-	Tue, 28 May 2024 00:56:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB5001CA94;
+	Tue, 28 May 2024 00:56:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XzMXiKjs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mBtBabPw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8368D13FEE;
-	Tue, 28 May 2024 00:56:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E012B17C6A;
+	Tue, 28 May 2024 00:56:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716857817; cv=none; b=sgSMirTudUBxRD0Y3as0LUX98JFFEsH+lhsiEWDOHvJNuJlqz+Pw3bvvs3j3ftjAOi3+zsdSUIYqGLnlPJ8S+M5pRUiBGz4vyUwbYI6pemaTf90ddDtCohINmH76SHy3YNJnMTWke45vnKwUwkVHC+8jqYAwcp9uA7OIMKQxQKI=
+	t=1716857819; cv=none; b=uR+OG2xJWrYiB9qPfy0qk+mXHuU3j4I9hAgt3NjZgyTMAzHzpauZXONImIoPeCPbmSRWSY8st/Tjk9QINUc6YvPk8x6qI3efbM9eKBtiJi+BZ4LVIimMyJfcCLF0/m8KQAl4d551D+9HU7BhUlxVhDVUaL1uoDfUhMTkSDmY33A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716857817; c=relaxed/simple;
-	bh=GtclWTy0ASRdAy3fBHQ5+Eg7GjfSLLlKIztDtP6lJnc=;
+	s=arc-20240116; t=1716857819; c=relaxed/simple;
+	bh=XviXIO66hJ4gYGo+wTqmxQ6eYLtqNAT+9ea+NoAhLJM=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qGhw3H2N/YCbXsjmJW8f4xlzv2Ptx+7/zcugc2YWKl9GPTOwYzdC7SHLGqjJJgtdeIBII8v0mN7d0tQC5ULiptaJ/jNFXYBSgNq9x5rtaCdUjL/KhxvJxBM1c0YBByWCzKe2H9XhfmesDKGCfZk13hOSf5lnpxn4G6wuS/qMK7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XzMXiKjs; arc=none smtp.client-ip=209.85.128.170
+	 MIME-Version; b=SEgcHXvBID6LkGETY4wei+56AGbB5nlH7XqfJPN7Y55gts9pjC+0x11e+9PhijTlFvr1y5IXCThxgKxZkPj5+7J1y1fMOMFmKA6GulUauBjjbhI1DEM/zSnPhsGZ+On8EieJ8DHNeUu9T+Jk1XTOWJy73xW6sO4a7S3YWcjSpmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mBtBabPw; arc=none smtp.client-ip=209.85.128.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-627ebbe7720so2391647b3.0;
-        Mon, 27 May 2024 17:56:56 -0700 (PDT)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-62a0849f5a8so2825347b3.2;
+        Mon, 27 May 2024 17:56:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716857815; x=1717462615; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1716857817; x=1717462617; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XKPhButNX8xjaR4Wjw1GyI4VB8TnS9vBdoFs31kcATQ=;
-        b=XzMXiKjs/sd5joDlv+Jz2ejVs/1QPbnGCWbrUPSWnxDfZHMjqh7orYvZRVCgQOSqsn
-         SrpjVdF0C5YPQ26AbuFJGn2OSrGMu3Sjuh5QbcdR+EEQTuG9PAlpKPak2PThmsiiKUkW
-         cpPo275UawTg9z5IUigkk08bQyDe/vJXp7crFRZUsXaKhQTcg/XU1dClaNczPH5iJbt7
-         cqPxtU0YOdIWVzyWQ+OAbu6NRPgDyW7uD2JvaxrXsRc33vl0DuYfRKHaY9BEGKYvr9YQ
-         FxLJnDwJ068sAVpaGl9j0KYpgenGd1niPPyILP9zkuwUvzykvQl4aoMwEaTi1yroDQW0
-         g8lA==
+        bh=qHGYk8qXYj5JTpHSzZERaVZ+nE3cg/cmKUns2Hgwu4w=;
+        b=mBtBabPwcHHow5qM7+rnmnXOuGMct9bPRB7oHcQwn6bkhKR8cQYZkLRbRAASSdAdIp
+         LDn6eE0fmtU7Xpbhk01KfObx+NNOnMMIa9f50AFdU5qGq8IztjdzzKI4FTCjaXYbXbDH
+         new4zXe1p/FRUML1Hu77YsONaBlCNEWueSvOeu0QafxuRb/g8z7g10/kF7C831hC6P/V
+         BI9476ZmNLrT0ifMrNtP5Ut0oVxhqo9oHcdhP0S808Cp9dyRRNVKHf74VDWT7Ys+CRfW
+         FCA9hiPbyiiLcM9os1z140eeJNacfSMi7LVrmUebkrbAw3aERV170an6+dTedjFe2urX
+         V67w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716857815; x=1717462615;
+        d=1e100.net; s=20230601; t=1716857817; x=1717462617;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XKPhButNX8xjaR4Wjw1GyI4VB8TnS9vBdoFs31kcATQ=;
-        b=tMIjfVPC6+bBC4QSJNnuY5Fzx30m5Zo/RCdvQgiWFS3M3fGnuhBb0m0hrl6QKb/rfk
-         5Jz/71kHXPnO4OqVCnnNmGemg5xqFpuNYUjAZECAgLmcS836/QJQI0mJvBvMBxZRQexb
-         chpoxw9s60MRVJ2aMMXGgPvd/AsobqNuuZvHjv/Q16khfFtKxk0phQrFZjWpHbNn7f1D
-         Lp93hETqYvPGB7mSQhG7Ld3dckkR16MXzZwO0fBPhOm4rQr1LNAwxJCQZmIWtu974h6K
-         dSVQ0pWpx3Ua4qpFr4HtQGBi59oYQ4THvbqMab+pt+1qx+zbsnXElquDt5KjNsI1IDLz
-         TNwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUl3unwSWP5T1KpnaytybtsKVw987TJRSPu+PeoDRo0OpNLXhGsOHgUbmVYUYZtrT5aqAJiEMJlzqKsDDJ/E7vzJRcVzjUGauqHxgJ42Bo8zKOPDVF8Z61xgkR9Y05l7UiLMLTkhJmwnrjC0PH35DcAYTPIfrBn9JH8XwdndbIEgw==
-X-Gm-Message-State: AOJu0YwzppLrp2snMCZSo4adelAfgcUGK7sj+0gJ9N6SZAp7d+ag4ES5
-	be/rP9+CbDeuKFdOx9Um8+c2/e8I/2km2SzWyo3YeA0/8OUveMHcCFuXlA==
-X-Google-Smtp-Source: AGHT+IFe5hc0HMbIYKV8GGca2K7UFivtrv6cj+FsXeO4rccoRk4EjlKGQ1bt+Bu1VPRdc4g49tpZhw==
-X-Received: by 2002:a0d:dfc9:0:b0:61b:3346:83ce with SMTP id 00721157ae682-62a08d83a1bmr114507497b3.15.1716857815579;
-        Mon, 27 May 2024 17:56:55 -0700 (PDT)
+        bh=qHGYk8qXYj5JTpHSzZERaVZ+nE3cg/cmKUns2Hgwu4w=;
+        b=pDQ4VLf7Zf2VReTBj6q73lWSKtL6g8KRCAsgicjWSJvJcxJGwdp/py2onbrvxXcdj3
+         xn4na4Cp4ez1i8GGzCrwwyS9fC4nXvF1gdghyv8yOX3QAM3DhKBuFVfYli0Amm9cU5fc
+         vj+HK6ftvAyxIeX86VnQB2IF0modVAxTIu7F/6EBOrs6ZoBlDzYF1hRrjMHSju14bmt5
+         DM4mWRHycI7VZYfgM5eC6y46dThK5aSiucDb7vAc0hf8siT+xktmqxUzS2OW5fgr74tx
+         vqHNE37XZcIsZCrnLfOOyVdCcoE322V6a+z43wASypneTz9YEHdBP+BSSwBw4Jng/yoE
+         LgMA==
+X-Forwarded-Encrypted: i=1; AJvYcCUqBgd7m1RQlRMiUU2K6cQntA+F1ofruY7LRotfZOn61nn6+KVsozmQRqj3YeTbF78aaY/xMl0IsN9wix/OOcumvz4V5m25lMqKo9GJhDNPZbaB3ChqBM60DyyLYbJoWv4NvQBIF8ugIy7xFW1c7Ia2LrTIueau1czAZykDJDIV/A==
+X-Gm-Message-State: AOJu0YyJMuxevMiJZ2zFrqW3WMjhKcWxsGNOniXUrx8GS0WCMPlxuGNk
+	1I5HLkQJofUSjmhnOA/UI7E2KmoLebOuuokkj0fzt+f7hOLcNR5zLxhUMQ==
+X-Google-Smtp-Source: AGHT+IFQ1Cdt/C4ONuJ8/TbLF7uijtI1itlxg7F6r+jPWRUhsZaJ+tjQCHNvVKklYdjZsrys0pVIkA==
+X-Received: by 2002:a81:a052:0:b0:627:dfbd:89f with SMTP id 00721157ae682-62a08d291b9mr102632737b3.6.1716857816951;
+        Mon, 27 May 2024 17:56:56 -0700 (PDT)
 Received: from localhost ([2601:344:8301:57f0:35f3:16c3:302:8fdb])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-62a0a534cf7sm18415697b3.115.2024.05.27.17.56.55
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-62a0a4f0205sm18118607b3.84.2024.05.27.17.56.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 May 2024 17:56:55 -0700 (PDT)
+        Mon, 27 May 2024 17:56:56 -0700 (PDT)
 From: Yury Norov <yury.norov@gmail.com>
 To: linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org,
@@ -95,9 +95,9 @@ Cc: Yury Norov <yury.norov@gmail.com>,
 	Vincent Guittot <vincent.guittot@linaro.org>,
 	Viresh Kumar <viresh.kumar@linaro.org>,
 	Zefan Li <lizefan.x@bytedance.com>
-Subject: [PATCH 4/6] sched: drop sched.h dependency on cpumask
-Date: Mon, 27 May 2024 17:56:46 -0700
-Message-Id: <20240528005648.182376-5-yury.norov@gmail.com>
+Subject: [PATCH 5/6] cpumask: cleanup core headers inclusion
+Date: Mon, 27 May 2024 17:56:47 -0700
+Message-Id: <20240528005648.182376-6-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240528005648.182376-1-yury.norov@gmail.com>
 References: <20240528005648.182376-1-yury.norov@gmail.com>
@@ -109,41 +109,142 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-sched.h needs cpumask.h mostly for types declaration. Now that we have
-cpumask_types.h, which is a significantly smaller header, we can rely on
-it.
-
-The only exception is UP stub for set_cpus_allowed_ptr(). The function
-needs to test bit #0 in a @new_mask, which can be trivially opencoded.
+Many core headers include cpumask.h for nothing. Drop it.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- include/linux/sched.h | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ include/linux/cgroup.h      | 1 -
+ include/linux/cpu.h         | 1 -
+ include/linux/cpu_cooling.h | 1 -
+ include/linux/kernel_stat.h | 1 -
+ include/linux/node.h        | 1 -
+ include/linux/percpu.h      | 1 -
+ include/linux/profile.h     | 1 -
+ include/linux/rcupdate.h    | 1 -
+ include/linux/seq_file.h    | 1 -
+ include/linux/tracepoint.h  | 1 -
+ 10 files changed, 10 deletions(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 98abb07de149..f2f907ef1389 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -13,7 +13,7 @@
- #include <asm/processor.h>
- #include <linux/thread_info.h>
- #include <linux/preempt.h>
--#include <linux/cpumask.h>
-+#include <linux/cpumask_types.h>
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 2150ca60394b..c60ba0ab1462 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -10,7 +10,6 @@
+  */
  
+ #include <linux/sched.h>
+-#include <linux/cpumask.h>
+ #include <linux/nodemask.h>
+ #include <linux/rculist.h>
+ #include <linux/cgroupstats.h>
+diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+index 861c3bfc5f17..ea6ac8f98e4a 100644
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -16,7 +16,6 @@
+ 
+ #include <linux/node.h>
+ #include <linux/compiler.h>
+-#include <linux/cpumask.h>
+ #include <linux/cpuhotplug.h>
+ #include <linux/cpu_smt.h>
+ 
+diff --git a/include/linux/cpu_cooling.h b/include/linux/cpu_cooling.h
+index a3bdc8a98f2c..2c774fb3c091 100644
+--- a/include/linux/cpu_cooling.h
++++ b/include/linux/cpu_cooling.h
+@@ -15,7 +15,6 @@
+ 
+ #include <linux/of.h>
+ #include <linux/thermal.h>
+-#include <linux/cpumask.h>
+ 
+ struct cpufreq_policy;
+ 
+diff --git a/include/linux/kernel_stat.h b/include/linux/kernel_stat.h
+index 9c042c6384bb..b97ce2df376f 100644
+--- a/include/linux/kernel_stat.h
++++ b/include/linux/kernel_stat.h
+@@ -5,7 +5,6 @@
+ #include <linux/smp.h>
+ #include <linux/threads.h>
+ #include <linux/percpu.h>
+-#include <linux/cpumask.h>
+ #include <linux/interrupt.h>
+ #include <linux/sched.h>
+ #include <linux/vtime.h>
+diff --git a/include/linux/node.h b/include/linux/node.h
+index dfc004e4bee7..9a881c2208b3 100644
+--- a/include/linux/node.h
++++ b/include/linux/node.h
+@@ -16,7 +16,6 @@
+ #define _LINUX_NODE_H_
+ 
+ #include <linux/device.h>
+-#include <linux/cpumask.h>
+ #include <linux/list.h>
+ 
+ /**
+diff --git a/include/linux/percpu.h b/include/linux/percpu.h
+index 03053de557cf..4b2047b78b67 100644
+--- a/include/linux/percpu.h
++++ b/include/linux/percpu.h
+@@ -6,7 +6,6 @@
+ #include <linux/mmdebug.h>
+ #include <linux/preempt.h>
+ #include <linux/smp.h>
+-#include <linux/cpumask.h>
+ #include <linux/pfn.h>
+ #include <linux/init.h>
+ #include <linux/cleanup.h>
+diff --git a/include/linux/profile.h b/include/linux/profile.h
+index 04ae5ebcb637..2fb487f61d12 100644
+--- a/include/linux/profile.h
++++ b/include/linux/profile.h
+@@ -4,7 +4,6 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+-#include <linux/cpumask.h>
  #include <linux/cache.h>
- #include <linux/irqflags_types.h>
-@@ -1778,7 +1778,8 @@ static inline void do_set_cpus_allowed(struct task_struct *p, const struct cpuma
- }
- static inline int set_cpus_allowed_ptr(struct task_struct *p, const struct cpumask *new_mask)
- {
--	if (!cpumask_test_cpu(0, new_mask))
-+	/* Opencoded cpumask_test_cpu(0, new_mask) to avoid dependency on cpumask.h */
-+	if ((*cpumask_bits(new_mask) & 1) == 0)
- 		return -EINVAL;
- 	return 0;
- }
+ 
+ #include <asm/errno.h>
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index dfd2399f2cde..fb8ab4618d63 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -29,7 +29,6 @@
+ #include <linux/lockdep.h>
+ #include <linux/cleanup.h>
+ #include <asm/processor.h>
+-#include <linux/cpumask.h>
+ #include <linux/context_tracking_irq.h>
+ 
+ #define ULONG_CMP_GE(a, b)	(ULONG_MAX / 2 >= (a) - (b))
+diff --git a/include/linux/seq_file.h b/include/linux/seq_file.h
+index 8bd4fda6e027..2fb266ea69fa 100644
+--- a/include/linux/seq_file.h
++++ b/include/linux/seq_file.h
+@@ -7,7 +7,6 @@
+ #include <linux/string_helpers.h>
+ #include <linux/bug.h>
+ #include <linux/mutex.h>
+-#include <linux/cpumask.h>
+ #include <linux/nodemask.h>
+ #include <linux/fs.h>
+ #include <linux/cred.h>
+diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+index 689b6d71590e..6be396bb4297 100644
+--- a/include/linux/tracepoint.h
++++ b/include/linux/tracepoint.h
+@@ -16,7 +16,6 @@
+ #include <linux/srcu.h>
+ #include <linux/errno.h>
+ #include <linux/types.h>
+-#include <linux/cpumask.h>
+ #include <linux/rcupdate.h>
+ #include <linux/tracepoint-defs.h>
+ #include <linux/static_call.h>
 -- 
 2.40.1
 
