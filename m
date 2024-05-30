@@ -1,181 +1,127 @@
-Return-Path: <cgroups+bounces-3041-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3042-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8F418D4D2D
-	for <lists+cgroups@lfdr.de>; Thu, 30 May 2024 15:51:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 568378D4E49
+	for <lists+cgroups@lfdr.de>; Thu, 30 May 2024 16:47:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D8AEB20D57
-	for <lists+cgroups@lfdr.de>; Thu, 30 May 2024 13:51:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 137762836FE
+	for <lists+cgroups@lfdr.de>; Thu, 30 May 2024 14:47:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD4D917C9FF;
-	Thu, 30 May 2024 13:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C7E17D891;
+	Thu, 30 May 2024 14:47:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N8HW/Y2G"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NYQ+PDl8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB6B17D371
-	for <cgroups@vger.kernel.org>; Thu, 30 May 2024 13:49:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 564B217C237
+	for <cgroups@vger.kernel.org>; Thu, 30 May 2024 14:47:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717076991; cv=none; b=He1HOJ7kIn8w/RapqO+xFTDjh2uGkFR755JcMLNFxWXRs7twrXQsJJo6kbxQWF47UDL3V2zL07G9hLJXvU+cepBok5Eu7i1gVWr8MV3psAdvU43o8yOqQQTuMM8pWuNnwBgUhE9+wGyCspOQYNfWf7bEHdQ0DwpfcgO/TS0Z/GA=
+	t=1717080422; cv=none; b=fDoEVu3dxQkNvM0JMf2EDR2HXwPau5M//1L4yyPcdNvW8bZ44RdPOUOAWIMaFFRdIIOPLJQn5ggjkCwuRwiiUXIQqCMUULUeL2rG5gtinOnfAR5Y6ZtDiHkkKbDr6o8rtKe7mudjeXpkQLPGEUkkT0DwiRMmGTaWQonZ5ZCE4k0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717076991; c=relaxed/simple;
-	bh=BxQLsWAQxchrkWKnK3ChTnkIylveR7dUnQAn8LahHww=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QG+csDGrJTl8TI9ZYXeB+gGTyxw0xG7or1ddnLBP/uXvoHlKb+RyjRHCcNl6EEvcnz2i81KgLzRe4PhsgDWrcwpAGhBtRzSp7q2jSNgSrFBGbrLxW3s08ahwMBGNd3o804Z9vAujD25AEcmqC2URnskNpDP0AP7rWGHKo67n3N8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N8HW/Y2G; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1717076988;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sdHTFIUqw1UhZaLCSYhv+4vv96KPTgtHy1W4U/Cmx6I=;
-	b=N8HW/Y2GdMXwxTNWoSts5XEgIX05+LK/9+eJJgwkH3eoOc6nSxksm69/kT85pHrgy7PpWf
-	hny0JpMR4Rn1kujZAb+oPGC1DF14FxbbTTiy3QCnRq2f0GFmNSAQYsFwNMl5YuDCAo1WY2
-	gBetKPYGvsnTL0MymmITMK0e2DUalL8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-335-qnQNB9lYM_6hMWMk9NGfsg-1; Thu,
- 30 May 2024 09:49:45 -0400
-X-MC-Unique: qnQNB9lYM_6hMWMk9NGfsg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id ACF4529AA389;
-	Thu, 30 May 2024 13:49:44 +0000 (UTC)
-Received: from [10.22.33.42] (unknown [10.22.33.42])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id B7EB040004D;
-	Thu, 30 May 2024 13:49:43 +0000 (UTC)
-Message-ID: <0de07021-df77-4196-bb75-9ded88b74ce2@redhat.com>
-Date: Thu, 30 May 2024 09:49:43 -0400
+	s=arc-20240116; t=1717080422; c=relaxed/simple;
+	bh=PKGD7n9IHlCmuoHyMmsNI3hO3fv1iDnzWTZNDrREJw8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Fgi0EoIBfpBGrMM1zZXais9utKG6dPliybnshEeIrPmD8VNo7+/jrBLFnknX+T2mwot2t+vO8pmxJ24VyC6et/6l4tygbFluq3OQ0nnb9cy3Tr2u5a2hDhTBuohPxZVkJrohvDlS++9SZEeaBzK5O/6Ck/IjgavKE69xSES+K/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NYQ+PDl8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CA88C32789
+	for <cgroups@vger.kernel.org>; Thu, 30 May 2024 14:47:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717080422;
+	bh=PKGD7n9IHlCmuoHyMmsNI3hO3fv1iDnzWTZNDrREJw8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=NYQ+PDl8PjsPJ6T3kXrSirK19nblB/O2P9nGNWClObJICQ6ZucZVQ9K8FiDjhRO12
+	 IU73UPIFQSxBODUkmv4rqfQanr8/ctuSbOMtbGiuvnoYNfq4FkzzDDBuztEPmnbvoG
+	 bST0CFkRpEnl5f8mopf7iXK9PdsdOvWKW4OYjo2yEftklLu5GKY+N8lPQlTmtZemtm
+	 p7js5w8tPExTFiqZh9rzE1Futac3gF+Pg4TnNv7W5cqElpzMDTq6baNxQRCgaxZf1l
+	 nTON2DpvvF/xEfs5rxcFYFBtD6ktPhKHrNMbCCcr/10yoi9lGCAJz0l0Fp7J5F7eDE
+	 pQVKHzNox4HnA==
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-57a196134d1so963886a12.2
+        for <cgroups@vger.kernel.org>; Thu, 30 May 2024 07:47:01 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCU4139szdbWKLHycybiZxrFWrJv72EraSB4wi2/tx6vqWyRd4NgpJPe3iXB4MyCBGjkX6YV3/G60ZA7SjO8RZNfrF6f8sXbNQ==
+X-Gm-Message-State: AOJu0YwuJhfASQ29iXdHCu1pvXo0UxHINjWNsLgDLj4M/J5PKDzEz0TX
+	0J330dBG+IdDSoDxXdTNyiGBsTU0f+h7CMMel2+myxi3zpA8V7ID9RM9I8ylChMKNG506lDN/t9
+	LUuwlq3ph2VDTPYEViiTdTHr5I2E=
+X-Google-Smtp-Source: AGHT+IENmn6mtzTr1APrCtX5mi2KjfYAkYH8yBjU8IgbS1wGLME84pJdqa9AB/cpTTqoXMZn1W5nvwPnDcPfqsJqOjU=
+X-Received: by 2002:a17:906:b49:b0:a63:3170:14ae with SMTP id
+ a640c23a62f3a-a65e8e321eemr164026966b.9.1717080420648; Thu, 30 May 2024
+ 07:47:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] blk-throttle: Fix incorrect display of io.max
-To: Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
- Josef Bacik <josef@toxicpanda.com>
-Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, Dan Schatzberg <schatzberg.dan@gmail.com>,
- Ming Lei <ming.lei@redhat.com>, Justin Forbes <jforbes@redhat.com>,
- Yu Kuai <yukuai3@huawei.com>
-References: <20240530134547.970075-1-longman@redhat.com>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240530134547.970075-1-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+References: <202405271606.DYMCKs25-lkp@intel.com> <ZlY1gDDPi_mNrwJ1@slm.duckdns.org>
+ <0eed02905b2b4554b429b080a7c88b35c9bba30b.camel@xry111.site>
+In-Reply-To: <0eed02905b2b4554b429b080a7c88b35c9bba30b.camel@xry111.site>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Thu, 30 May 2024 22:46:54 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H5ZbDZ12VbXo1+kHHLjxGO-=DvHU9mchg3e9RH1zGCZWA@mail.gmail.com>
+Message-ID: <CAAhV-H5ZbDZ12VbXo1+kHHLjxGO-=DvHU9mchg3e9RH1zGCZWA@mail.gmail.com>
+Subject: Re: [tj-cgroup:for-next] BUILD REGRESSION a8d55ff5f3acf52e6380976fb5d0a9172032dcb0
+To: Xi Ruoyao <xry111@xry111.site>
+Cc: Tejun Heo <tj@kernel.org>, kernel test robot <lkp@intel.com>, cgroups@vger.kernel.org, 
+	WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 5/30/24 09:45, Waiman Long wrote:
-> Commit bf20ab538c81 ("blk-throttle: remove CONFIG_BLK_DEV_THROTTLING_LOW")
-> attempts to revert the code change introduced by commit cd5ab1b0fcb4
-> ("blk-throttle: add .low interface").  However, it leaves behind the
-> bps_conf[] and iops_conf[] fields in the throtl_grp structure which
-> aren't set anywhere in the new blk-throttle.c code but are still being
-> used by tg_prfill_limit() to display the limits in io.max. Now io.max
-> always displays the following values if a block queue is used:
+On Wed, May 29, 2024 at 8:28=E2=80=AFAM Xi Ruoyao <xry111@xry111.site> wrot=
+e:
 >
-> 	<m>:<n> rbps=0 wbps=0 riops=0 wiops=0
+> On Tue, 2024-05-28 at 09:50 -1000, Tejun Heo wrote:
+> > (cc'ing loongarch folks)
+> >
+> > On Mon, May 27, 2024 at 04:14:10PM +0800, kernel test robot wrote:
+> > > tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgrou=
+p.git for-next
+> > > branch HEAD: a8d55ff5f3acf52e6380976fb5d0a9172032dcb0  kernel/cgroup:=
+ cleanup cgroup_base_files when fail to add cgroup_psi_files
+> > >
+> > > Error/Warning reports:
+> > >
+> > > https://lore.kernel.org/oe-kbuild-all/202405270728.d1SabzhU-lkp@intel=
+.com
+> > >
+> > > Error/Warning: (recently discovered and may have been fixed)
+> > >
+> > > kernel/cgroup/pids.o: warning: objtool: __jump_table+0x0: special: ca=
+n't find orig instruction
+> > >
+> > > Error/Warning ids grouped by kconfigs:
+> > >
+> > > gcc_recent_errors
+> > > `-- loongarch-defconfig
+> > >     `-- kernel-cgroup-pids.o:warning:objtool:__jump_table:special:can=
+-t-find-orig-instruction
+> >
+> > I don't know what to make of this build warning. I can't reproduce the
+> > problem on x86 and the referenced commit doesn't have anything special.=
+ It
+> > *looks* like it could be something specific to loongarch. Can you guys
+> > please take a look?
 >
-> Fix this problem by removing bps_conf[] and iops_conf[] and use bps[]
-> and iops[] instead to complete the revert.
+> For now on LoongArch objtool does not work well with jump tables.  We
+> already have:
 >
-> Fixes: bf20ab538c81 ("blk-throttle: remove CONFIG_BLK_DEV_THROTTLING_LOW")
-> Reported-by: Justin Forbes <jforbes@redhat.com>
-> Closes: https://github.com/containers/podman/issues/22701#issuecomment-2120627789
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->   block/blk-throttle.c | 24 ++++++++++++------------
->   block/blk-throttle.h |  8 ++------
->   2 files changed, 14 insertions(+), 18 deletions(-)
+> ifdef CONFIG_OBJTOOL
+> KBUILD_CFLAGS           +=3D -fno-jump-tables
+> endif
 >
-> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-> index d907040859f9..da619654f418 100644
-> --- a/block/blk-throttle.c
-> +++ b/block/blk-throttle.c
-> @@ -1347,32 +1347,32 @@ static u64 tg_prfill_limit(struct seq_file *sf, struct blkg_policy_data *pd,
->   	bps_dft = U64_MAX;
->   	iops_dft = UINT_MAX;
->   
-> -	if (tg->bps_conf[READ] == bps_dft &&
-> -	    tg->bps_conf[WRITE] == bps_dft &&
-> -	    tg->iops_conf[READ] == iops_dft &&
-> -	    tg->iops_conf[WRITE] == iops_dft)
-> +	if (tg->bps[READ] == bps_dft &&
-> +	    tg->bps[WRITE] == bps_dft &&
-> +	    tg->iops[READ] == iops_dft &&
-> +	    tg->iops[WRITE] == iops_dft)
->   		return 0;
->   
->   	seq_printf(sf, "%s", dname);
-> -	if (tg->bps_conf[READ] == U64_MAX)
-> +	if (tg->bps[READ] == U64_MAX)
->   		seq_printf(sf, " rbps=max");
->   	else
-> -		seq_printf(sf, " rbps=%llu", tg->bps_conf[READ]);
-> +		seq_printf(sf, " rbps=%llu", tg->bps[READ]);
->   
-> -	if (tg->bps_conf[WRITE] == U64_MAX)
-> +	if (tg->bps[WRITE] == U64_MAX)
->   		seq_printf(sf, " wbps=max");
->   	else
-> -		seq_printf(sf, " wbps=%llu", tg->bps_conf[WRITE]);
-> +		seq_printf(sf, " wbps=%llu", tg->bps[WRITE]);
->   
-> -	if (tg->iops_conf[READ] == UINT_MAX)
-> +	if (tg->iops[READ] == UINT_MAX)
->   		seq_printf(sf, " riops=max");
->   	else
-> -		seq_printf(sf, " riops=%u", tg->iops_conf[READ]);
-> +		seq_printf(sf, " riops=%u", tg->iops[READ]);
->   
-> -	if (tg->iops_conf[WRITE] == UINT_MAX)
-> +	if (tg->iops[WRITE] == UINT_MAX)
->   		seq_printf(sf, " wiops=max");
->   	else
-> -		seq_printf(sf, " wiops=%u", tg->iops_conf[WRITE]);
-> +		seq_printf(sf, " wiops=%u", tg->iops[WRITE]);
->   
->   	seq_printf(sf, "\n");
->   	return 0;
-> diff --git a/block/blk-throttle.h b/block/blk-throttle.h
-> index 32503fd83a84..8c365541a275 100644
-> --- a/block/blk-throttle.h
-> +++ b/block/blk-throttle.h
-> @@ -95,15 +95,11 @@ struct throtl_grp {
->   	bool has_rules_bps[2];
->   	bool has_rules_iops[2];
->   
-> -	/* internally used bytes per second rate limits */
-> +	/* bytes per second rate limits */
->   	uint64_t bps[2];
-> -	/* user configured bps limits */
-> -	uint64_t bps_conf[2];
->   
-> -	/* internally used IOPS limits */
-> +	/* IOPS limits */
->   	unsigned int iops[2];
-> -	/* user configured IOPS limits */
-> -	unsigned int iops_conf[2];
->   
->   	/* Number of bytes dispatched in current slice */
->   	uint64_t bytes_disp[2];
+> So why this doesn't stop GCC from producing a jump table?
+We cannot produce this warning, but currently objtool indeed cannot
+work with -jump-table, and we are investigate to solve it, which may
+take some time.
 
-Add Yu Kuai <yukuai3@huawei.com> to cc.
-
-
+Huacai
+>
+> --
+> Xi Ruoyao <xry111@xry111.site>
+> School of Aerospace Science and Technology, Xidian University
+>
 
