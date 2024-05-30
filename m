@@ -1,127 +1,117 @@
-Return-Path: <cgroups+bounces-3042-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3043-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 568378D4E49
-	for <lists+cgroups@lfdr.de>; Thu, 30 May 2024 16:47:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D521B8D4FFC
+	for <lists+cgroups@lfdr.de>; Thu, 30 May 2024 18:41:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 137762836FE
-	for <lists+cgroups@lfdr.de>; Thu, 30 May 2024 14:47:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70CD4B2124F
+	for <lists+cgroups@lfdr.de>; Thu, 30 May 2024 16:41:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C7E17D891;
-	Thu, 30 May 2024 14:47:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE53C23749;
+	Thu, 30 May 2024 16:41:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NYQ+PDl8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i1/gpBVA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 564B217C237
-	for <cgroups@vger.kernel.org>; Thu, 30 May 2024 14:47:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 296E921350;
+	Thu, 30 May 2024 16:41:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717080422; cv=none; b=fDoEVu3dxQkNvM0JMf2EDR2HXwPau5M//1L4yyPcdNvW8bZ44RdPOUOAWIMaFFRdIIOPLJQn5ggjkCwuRwiiUXIQqCMUULUeL2rG5gtinOnfAR5Y6ZtDiHkkKbDr6o8rtKe7mudjeXpkQLPGEUkkT0DwiRMmGTaWQonZ5ZCE4k0=
+	t=1717087298; cv=none; b=WQILxH+2wJAMz6NEELFSpsokFeLuTpd3mymYg+8ZoAJTucjIOAjgGSawo8DE2Myb/qwTeNcwu28hO2zsz7OKDITGrHgG/NRuHlI0r7shNHXxhW2FUDzbtRhfjtbk4wcbuh9+3fEY69tIMy1VoXlvZd7VXTBzQdcVNCaRmKfcpj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717080422; c=relaxed/simple;
-	bh=PKGD7n9IHlCmuoHyMmsNI3hO3fv1iDnzWTZNDrREJw8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Fgi0EoIBfpBGrMM1zZXais9utKG6dPliybnshEeIrPmD8VNo7+/jrBLFnknX+T2mwot2t+vO8pmxJ24VyC6et/6l4tygbFluq3OQ0nnb9cy3Tr2u5a2hDhTBuohPxZVkJrohvDlS++9SZEeaBzK5O/6Ck/IjgavKE69xSES+K/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NYQ+PDl8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CA88C32789
-	for <cgroups@vger.kernel.org>; Thu, 30 May 2024 14:47:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717080422;
-	bh=PKGD7n9IHlCmuoHyMmsNI3hO3fv1iDnzWTZNDrREJw8=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=NYQ+PDl8PjsPJ6T3kXrSirK19nblB/O2P9nGNWClObJICQ6ZucZVQ9K8FiDjhRO12
-	 IU73UPIFQSxBODUkmv4rqfQanr8/ctuSbOMtbGiuvnoYNfq4FkzzDDBuztEPmnbvoG
-	 bST0CFkRpEnl5f8mopf7iXK9PdsdOvWKW4OYjo2yEftklLu5GKY+N8lPQlTmtZemtm
-	 p7js5w8tPExTFiqZh9rzE1Futac3gF+Pg4TnNv7W5cqElpzMDTq6baNxQRCgaxZf1l
-	 nTON2DpvvF/xEfs5rxcFYFBtD6ktPhKHrNMbCCcr/10yoi9lGCAJz0l0Fp7J5F7eDE
-	 pQVKHzNox4HnA==
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-57a196134d1so963886a12.2
-        for <cgroups@vger.kernel.org>; Thu, 30 May 2024 07:47:01 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU4139szdbWKLHycybiZxrFWrJv72EraSB4wi2/tx6vqWyRd4NgpJPe3iXB4MyCBGjkX6YV3/G60ZA7SjO8RZNfrF6f8sXbNQ==
-X-Gm-Message-State: AOJu0YwuJhfASQ29iXdHCu1pvXo0UxHINjWNsLgDLj4M/J5PKDzEz0TX
-	0J330dBG+IdDSoDxXdTNyiGBsTU0f+h7CMMel2+myxi3zpA8V7ID9RM9I8ylChMKNG506lDN/t9
-	LUuwlq3ph2VDTPYEViiTdTHr5I2E=
-X-Google-Smtp-Source: AGHT+IENmn6mtzTr1APrCtX5mi2KjfYAkYH8yBjU8IgbS1wGLME84pJdqa9AB/cpTTqoXMZn1W5nvwPnDcPfqsJqOjU=
-X-Received: by 2002:a17:906:b49:b0:a63:3170:14ae with SMTP id
- a640c23a62f3a-a65e8e321eemr164026966b.9.1717080420648; Thu, 30 May 2024
- 07:47:00 -0700 (PDT)
+	s=arc-20240116; t=1717087298; c=relaxed/simple;
+	bh=h+sgsRXRgywtulA6yP05p7p5SlkPSUmpREB4pxqGy0M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aTzEYScx9zbsdmfoez7m+QHJKEEv0bD5m67qXbz2opqzc7N7gtq/7qRNsjUP707i58RGGOWydF+Qp0lcRAoUNOfWSJgmurm0R9vG8t6cRA9lsfXmndql7ma3CUB3p2gZ+P0fp/GbwLrQs78gT1waw2Q/ps1pZY3tvbeNYmLF0/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i1/gpBVA; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-70223dffaf6so1056058b3a.1;
+        Thu, 30 May 2024 09:41:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717087296; x=1717692096; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=G7FTH0c3tG+Ht3s1Gg8KhD3HVk6ceCg/0HWZJM2Xej0=;
+        b=i1/gpBVAk/HuKoYSgQg/i8TlOwcN5vwamPBLwxpzoQadKdudKaHsLUhWcb1tuoNUWV
+         10KZ/dtOBlldYut0AGMdHPju3Nea0HlUnlQkJbZsKPzxopoSSF8RCo3gvJZzV52BpI5Y
+         2b/sy/7IHJWmE0KjQDj5T9xecWIYdKYrcAvWs2rQcI4HCEIOXDKRQan7hS+uryMu2XIa
+         WK5q4UjSjbl9lcs4RFc+t11HoMxE5SEXDtcfJHBsgh7Ki/3r1Pwn5o4jmR0vAr2oKq93
+         whCUCYceQHhgeEaL+gczhcvSgg7ul9VKDVRxQCnr064Bcv0cahFIyijFo9Txiw28Cwks
+         X2Tg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717087296; x=1717692096;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G7FTH0c3tG+Ht3s1Gg8KhD3HVk6ceCg/0HWZJM2Xej0=;
+        b=kBK48p8bBbJ98f16IhHxHdUpWU827yQmrwnETGCgo1wDrgwIhrxYubmr0DTCu4JRjs
+         I0sstCXkW4cXx5lfmABoqiJbl+RNeW7WH5gH4ZE+ozwIFvVUhcqG0bLJY4Q7TQS8g2XD
+         7sikeuhEjZsTMxf1SBzmM53/Veta9RRxDsRlY3mZMyafx5LyJtA1qdQOFvbTjhOwVTkd
+         iSEyc8PojIl4oOwC5+j8CR6J75A1D0NzW4lVqMB8bl5VYR6xMQObuYoHGBkgks4SHQ8d
+         V+52jQRd7I69sEiCrYb2qASK8CVJdpUhKwzi5G0cVEYXg/jTVkcsi1S5pBEYRp9jQ3O2
+         R3rw==
+X-Forwarded-Encrypted: i=1; AJvYcCVKaHwoMwl/hONt5pwiRNpeCXSjsX5FcSHave3DEhQzu2fRZo0HAcicrkWj3G0jWDmDY5+WsKkjlBIO3NvSf8/irmQ6Oybw3Qz105rCszY6T8R23gr81CI3GUWChXYoCH5odceZCKPoe0Yaxf+Gpi62mH+0qG9FcRw61CC1eV6AeHtZ
+X-Gm-Message-State: AOJu0YxklA1DyZu9/9joH17ff4Sc9vLYL/Ocpk0tVkQoneBwx+m+0RPj
+	d6eMjuQSmVHlAaE2bzmMQxzlpb8CTH4xDeoqwD0Gtl3qthTSng+7AEkBzg==
+X-Google-Smtp-Source: AGHT+IFEJ//Wt6NvtnyBumLbOBeR6lFNrkSrlEpAyGaWElUnMBNdmB9QqiOM1sO+S3CYJAoG642hyQ==
+X-Received: by 2002:a05:6a00:2d81:b0:702:3b69:9e6e with SMTP id d2e1a72fcca58-7023b6a0c7cmr1352847b3a.14.1717087296127;
+        Thu, 30 May 2024 09:41:36 -0700 (PDT)
+Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7022a5c2cc8sm2100730b3a.108.2024.05.30.09.41.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 May 2024 09:41:35 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 30 May 2024 06:41:34 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Jens Axboe <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>,
+	cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Dan Schatzberg <schatzberg.dan@gmail.com>,
+	Ming Lei <ming.lei@redhat.com>, Justin Forbes <jforbes@redhat.com>
+Subject: Re: [PATCH] blk-throttle: Fix incorrect display of io.max
+Message-ID: <ZlisPiR1CGLRq6PT@slm.duckdns.org>
+References: <20240530134547.970075-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202405271606.DYMCKs25-lkp@intel.com> <ZlY1gDDPi_mNrwJ1@slm.duckdns.org>
- <0eed02905b2b4554b429b080a7c88b35c9bba30b.camel@xry111.site>
-In-Reply-To: <0eed02905b2b4554b429b080a7c88b35c9bba30b.camel@xry111.site>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Thu, 30 May 2024 22:46:54 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5ZbDZ12VbXo1+kHHLjxGO-=DvHU9mchg3e9RH1zGCZWA@mail.gmail.com>
-Message-ID: <CAAhV-H5ZbDZ12VbXo1+kHHLjxGO-=DvHU9mchg3e9RH1zGCZWA@mail.gmail.com>
-Subject: Re: [tj-cgroup:for-next] BUILD REGRESSION a8d55ff5f3acf52e6380976fb5d0a9172032dcb0
-To: Xi Ruoyao <xry111@xry111.site>
-Cc: Tejun Heo <tj@kernel.org>, kernel test robot <lkp@intel.com>, cgroups@vger.kernel.org, 
-	WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240530134547.970075-1-longman@redhat.com>
 
-On Wed, May 29, 2024 at 8:28=E2=80=AFAM Xi Ruoyao <xry111@xry111.site> wrot=
-e:
->
-> On Tue, 2024-05-28 at 09:50 -1000, Tejun Heo wrote:
-> > (cc'ing loongarch folks)
-> >
-> > On Mon, May 27, 2024 at 04:14:10PM +0800, kernel test robot wrote:
-> > > tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgrou=
-p.git for-next
-> > > branch HEAD: a8d55ff5f3acf52e6380976fb5d0a9172032dcb0  kernel/cgroup:=
- cleanup cgroup_base_files when fail to add cgroup_psi_files
-> > >
-> > > Error/Warning reports:
-> > >
-> > > https://lore.kernel.org/oe-kbuild-all/202405270728.d1SabzhU-lkp@intel=
-.com
-> > >
-> > > Error/Warning: (recently discovered and may have been fixed)
-> > >
-> > > kernel/cgroup/pids.o: warning: objtool: __jump_table+0x0: special: ca=
-n't find orig instruction
-> > >
-> > > Error/Warning ids grouped by kconfigs:
-> > >
-> > > gcc_recent_errors
-> > > `-- loongarch-defconfig
-> > >     `-- kernel-cgroup-pids.o:warning:objtool:__jump_table:special:can=
--t-find-orig-instruction
-> >
-> > I don't know what to make of this build warning. I can't reproduce the
-> > problem on x86 and the referenced commit doesn't have anything special.=
- It
-> > *looks* like it could be something specific to loongarch. Can you guys
-> > please take a look?
->
-> For now on LoongArch objtool does not work well with jump tables.  We
-> already have:
->
-> ifdef CONFIG_OBJTOOL
-> KBUILD_CFLAGS           +=3D -fno-jump-tables
-> endif
->
-> So why this doesn't stop GCC from producing a jump table?
-We cannot produce this warning, but currently objtool indeed cannot
-work with -jump-table, and we are investigate to solve it, which may
-take some time.
+On Thu, May 30, 2024 at 09:45:47AM -0400, Waiman Long wrote:
+> Commit bf20ab538c81 ("blk-throttle: remove CONFIG_BLK_DEV_THROTTLING_LOW")
+> attempts to revert the code change introduced by commit cd5ab1b0fcb4
+> ("blk-throttle: add .low interface").  However, it leaves behind the
+> bps_conf[] and iops_conf[] fields in the throtl_grp structure which
+> aren't set anywhere in the new blk-throttle.c code but are still being
+> used by tg_prfill_limit() to display the limits in io.max. Now io.max
+> always displays the following values if a block queue is used:
+> 
+> 	<m>:<n> rbps=0 wbps=0 riops=0 wiops=0
+> 
+> Fix this problem by removing bps_conf[] and iops_conf[] and use bps[]
+> and iops[] instead to complete the revert.
+> 
+> Fixes: bf20ab538c81 ("blk-throttle: remove CONFIG_BLK_DEV_THROTTLING_LOW")
+> Reported-by: Justin Forbes <jforbes@redhat.com>
+> Closes: https://github.com/containers/podman/issues/22701#issuecomment-2120627789
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-Huacai
->
-> --
-> Xi Ruoyao <xry111@xry111.site>
-> School of Aerospace Science and Technology, Xidian University
->
+Acked-by: Tejun Heo <tj@kernel.org>
+
+Thanks.
+
+-- 
+tejun
 
