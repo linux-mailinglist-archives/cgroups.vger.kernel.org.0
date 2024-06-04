@@ -1,237 +1,273 @@
-Return-Path: <cgroups+bounces-3083-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3084-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 310C18FA82E
-	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2024 04:08:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E78FC8FA840
+	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2024 04:21:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C4BF1F27277
-	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2024 02:08:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6ECC21F26A8E
+	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2024 02:21:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0D0D1411D6;
-	Tue,  4 Jun 2024 02:06:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91BBB1386B9;
+	Tue,  4 Jun 2024 02:21:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kw3CUsG4"
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="ilaPIATg"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2087.outbound.protection.outlook.com [40.107.241.87])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC7A140E22
-	for <cgroups@vger.kernel.org>; Tue,  4 Jun 2024 02:06:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717466785; cv=none; b=BkpLzcRwmAUGC3MYPZLhAEitzJ78vrd1EVc079tXgXba9oL1qdlzmr+49F9zfnAau988TSGb1FuZlgZB3RyDX+I75LYsnJoiXbqT4iFZjSIP8ERoNa64+/qY4Hwk7WE6EooY59dttjrsPuZ3G0GVusaL+Yo0B2kcpRVzz4/vN6k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717466785; c=relaxed/simple;
-	bh=eASpyk4WWK4m1u5bAgzdZmzHoLxlNRCkiIkqJ+AFaTw=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=hD4+3TfXv9L+9xTE5xmqu7fBD7Cb4KUgjZ+kTR6tZMoxRjt4iiWJZ5epDEvIWCoSTR4JhKrE1QYLPE54b/7y+WLJE4g4QEbe1BqagXZYCjF64SCVAvAt7qJzLDQvhoubHGs80hHPm+b9lxGPYhccNkBNG89G6qJCpMd1ZSWijWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yuanchu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kw3CUsG4; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yuanchu.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-62a3dec382eso54944277b3.1
-        for <cgroups@vger.kernel.org>; Mon, 03 Jun 2024 19:06:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1717466782; x=1718071582; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TnO0wJpr9VrNuJfB7YNxreIL5h7wQch0G6mtECTuPNI=;
-        b=kw3CUsG4HuXRbBfwPxIlmqbR59+zdoruCRpZfL487nlZ/KeYrxAz5IYal2lceH7KcQ
-         M090USlbcJr0vsXC4S19u/7Wl64ULN/7p+VrkpqJB2xukoqq/ZTtsK2BND/MKg5tcRP4
-         g68Zq1Lyl0xQ8Qyos4iFJUsv2uRnYVQV77jpfMKFYy8gHKVKh+k99f9oDe9eijg5ov1r
-         GiveBNjP+eolSf94p441u8j3HDuZO8hjKV63kEie0Og9IeVVt7JVw1FbSj+Luv6/vNz4
-         49+OPKcDmrWbAf9Nn7Mm+iKp8S/jQisMIqWGJekmOVrt92iCG9X1IkSqj0yC5GpD1vVM
-         1Sxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717466782; x=1718071582;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TnO0wJpr9VrNuJfB7YNxreIL5h7wQch0G6mtECTuPNI=;
-        b=jg/fqfVyXE5BTPruKNUh+Fre7NspBNokFxHFOHlmNPb7W1pEECoJjAfG8hCejxOF+s
-         OtmKReIftXsuqj90RxCYblCSmUnlWiEVoy7Cl5nm4uYo03wdURvfviGd7tSdl74nWM9O
-         ASe+lbKwGAajGA3ytpeVx7Ch8orO69iFEM5cegOzROoDuc6ZUytkGHIiQTGaNb68nhri
-         qassyJpuBDhuKwhiA/NIn/GQC5UsdmK5xdGsO4yIjge5gQPTrvZtlZvOxZ1NP8n2TJpl
-         xNC5G4SsPTnw8yrK8kcMO55s6f3Gon2oDv4tc6VdV7AF1hMUOlixgLVzyyC0N4i2Gk9e
-         VKbA==
-X-Forwarded-Encrypted: i=1; AJvYcCUXtleMpUIfCD6nFiWi9r8Jgb6vhHEEisjS/NnnfbE4qMGDx7mxadULVdL+703cDDqh0r4kj6jSa/fxShgH7/hASwRDO8ELmw==
-X-Gm-Message-State: AOJu0Yz9hxHa6l8Nkgt5RUyP5G0XDwOZVQ1o4KhBLsrV48wt57zp3xgw
-	0I+xPQEJ9qA95UZNFB1NnF6IDtNLWOu0x+EYORMcp9iLsOXheu+2Ga3cLz6T07Z20KCKp9Lrjzc
-	c/UesiQ==
-X-Google-Smtp-Source: AGHT+IGZTKhErP0mteEdLmLII+zOO1bIGHOtdpRtyYGuauHmWRG/AEKax0/K3QpTHO4KkINtPULvAXTKU6Gn
-X-Received: from yuanchu-desktop.svl.corp.google.com ([2620:15c:2a3:200:367f:7387:3dd2:73f1])
- (user=yuanchu job=sendgmr) by 2002:a81:c906:0:b0:618:9348:6b92 with SMTP id
- 00721157ae682-62cabc4cd34mr3112857b3.1.1717466782241; Mon, 03 Jun 2024
- 19:06:22 -0700 (PDT)
-Date: Mon,  3 Jun 2024 19:05:49 -0700
-In-Reply-To: <20240604020549.1017540-1-yuanchu@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDED753BE;
+	Tue,  4 Jun 2024 02:21:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.241.87
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1717467667; cv=fail; b=jnTMUhMNibZPs14wWbDvkKgcKVju7xCWb/FCUjn3z3kbqxFHsQIDaSP47g8j9Rctdw/XV4B1EWdluMS3D8Ca60RcMwjn9baXEwDto4TZ/lN/vQ3J8GQXiy4Bg74Q9C6BAjBC2+asWwTQAzjlZrnTSzOgsnTz/q1KtRFWicETkHM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1717467667; c=relaxed/simple;
+	bh=DD0zQjiMjzT/Nb7UKwer6WT+2xfA2Dd1iY2QQnwQQOs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=fRb/yzryrW4LW/7D+7wNAbbkTLQXy1q0Y5JDC1YnlFK2i39wkp9Zub1DzaVxMlYATrXhokdY4OYJ+2DOsJ51dNm8UVWgx+fqnJVSCGGnMFWFLpHke3Y9wwO8ebnLVwnnVimW+BfTy+Y2XoQi78ybZAqBlV4xlkbBuLwn7qVPMH4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=ilaPIATg; arc=fail smtp.client-ip=40.107.241.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dxdYzuwyAAJ2bFk0gL44lt5Ffb+OIeNr/7HY/3jo33pdewZa3zSLmfqt0dyrE/pmYfPfIKBNBhjsTcNlGYRyhnHzzp3YCyFXWJB9D1tsNQg0DVkplnXoFQuNHE3ns9/i81Om33nW0g/9IXiuaOUKqbBSXNHvwfy4xi+iIaYR7pMlh3HTu0XNyDm/IcqzpS7YUu7C2LMHr/puM7F2U1scrkvFEQQ/evk78idCky1WrHt1mqtQeM8YaIgrP9+mcTtVv1ZureDBJ2qwEiPVX8IA/qJuK3I6BLFbzEXC7bJQJ7t0TmkW+grSZOGYGvTwxM2ysA+FXlS0a3nft7u9jnv62A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=duEyIfmS2RZVGut/L/Q9qcFsvqhSmbUDUE1vacZ2JtI=;
+ b=lrfKI24jJ1DLwhsmIlEezBhxGgwbQEFIOPxrdlXjA9PyS+eFKesEjDsUQmYeBWi7/O2nNcAYTUQpo9kUns4ibz+GPnL2FQtolAOBQmgZXyCRAjIbl607cmb9/k5ED2xv1lAevPLicwQK695jMw+XQOPCQD4cM6eZoJsM09mJ9uc4f4jtydtO7M1GrY93OYSLU1af1H2R7taQMcXzWf6jVb6311x9FS4+pmuSrasCD+hICY8PqqSGTP/DTfjaaYL4LLDzPdCmvcTbn03bXG1ayaNtJvKeLPXXhBYU8RKoG2pvNA31F3A0ouWFNvJPXR+Ke1QmLYUuRtVDHUpbHHwMQA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=duEyIfmS2RZVGut/L/Q9qcFsvqhSmbUDUE1vacZ2JtI=;
+ b=ilaPIATgdUZpiC5/uerkgXCM7kzE1Py/KY8IpY9cdi74u+oupwPax63gspjxLTbJ5kzzVC5m7UjLqlVmMf1OCgrUvqRTQY6NUlyUzRSeidHT0/9OZu57T7agH9/U28dPVR0JnXI3RLs/vDicCDGTKPMDDqQkMqpQ1EGMW8fYb6I=
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by DB8PR04MB6988.eurprd04.prod.outlook.com (2603:10a6:10:117::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.24; Tue, 4 Jun
+ 2024 02:20:59 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::557f:6fcf:a5a7:981c]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::557f:6fcf:a5a7:981c%7]) with mapi id 15.20.7633.021; Tue, 4 Jun 2024
+ 02:20:59 +0000
+From: Peng Fan <peng.fan@nxp.com>
+To: Roman Gushchin <roman.gushchin@linux.dev>
+CC: "linux-mm@kvack.org" <linux-mm@kvack.org>, "bpf@vger.kernel.org"
+	<bpf@vger.kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>,
+	"ast@kernel.org" <ast@kernel.org>, "zlim.lnx@gmail.com" <zlim.lnx@gmail.com>,
+	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "hannes@cmpxchg.org"
+	<hannes@cmpxchg.org>, "mhocko@kernel.org" <mhocko@kernel.org>,
+	"shakeelb@google.com" <shakeelb@google.com>, "muchun.song@linux.dev"
+	<muchun.song@linux.dev>
+Subject: RE: [Oops] vfree abort in bpf_jit_free with memcg_data value 0xffff
+Thread-Topic: [Oops] vfree abort in bpf_jit_free with memcg_data value 0xffff
+Thread-Index: Adq1lSXxP1MKnpdwTLWYSVpJsSrmhgAhBYsAAAL/UTA=
+Date: Tue, 4 Jun 2024 02:20:59 +0000
+Message-ID:
+ <DU0PR04MB9417DEFCECEC13149ACAEB0B88F82@DU0PR04MB9417.eurprd04.prod.outlook.com>
+References:
+ <DU0PR04MB941765BD4422D30FBDCFC1C388FF2@DU0PR04MB9417.eurprd04.prod.outlook.com>
+ <Zl5k5ky1b6XFaPD9@P9FQF9L96D>
+In-Reply-To: <Zl5k5ky1b6XFaPD9@P9FQF9L96D>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|DB8PR04MB6988:EE_
+x-ms-office365-filtering-correlation-id: 9f3383b0-b381-4248-ab1e-08dc843cf976
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230031|366007|1800799015|376005|7416005|38070700009;
+x-microsoft-antispam-message-info:
+ =?us-ascii?Q?wVcNx85TzCs7bUXovJELqIpsMVaiPJoBFx8F8MTaJbLXxRCCLnNR8+opKI7q?=
+ =?us-ascii?Q?wjLdTKeJbZnNvjZbx0fBXvCFYcF3B2q2kY+ixwNUG2VzokGqiWXmEJNFpyC1?=
+ =?us-ascii?Q?/WVMg9L8E6r1b64z2S0p5iUMaFmK4U4gzegZwofEVZnEvRWwmIcg9Qtcwfpu?=
+ =?us-ascii?Q?nHFEZPZFpC7O3QGG3dG4qRQAKAP2SFiYHgY4wJzoeCIVrNsk1top1eB7ApVj?=
+ =?us-ascii?Q?msrwWdUYYadxNKDYnkJ7qRM1Se3ypo5nLmhMIEu8rwWuJtzPtTB2tJSu/CwQ?=
+ =?us-ascii?Q?NxQw2vyPSN4VG+IUpE+fC//a7R7yyYB7joFd5aOZLxwAAbTfDPrn89mePa4z?=
+ =?us-ascii?Q?S6UlF9vmG0v+Owm2hW8ump6y9e1GUW6+VKJu9Kt2jMfaFUu1O3cqfQqGVlWu?=
+ =?us-ascii?Q?mb0iDp2SWF4+C+D7pVgIq7xNB/+mc92I4HLxg0ZbjFk96N4G7J0cf4+LReQZ?=
+ =?us-ascii?Q?BqjSeBFxElu+70oteiNLLanNy36Afs07Cxe/ykVpYpHJIewsj1TUTrnPOSxQ?=
+ =?us-ascii?Q?At5p8UacR7YKWC0n0D35MB2S0Hz07zW0u+bZJ+VkFoRzE1Ptpto/cnAqOkKi?=
+ =?us-ascii?Q?v2iqgexWAENZKeNY2f3v7Hl6Ch1/i8jkf2x2lfYkKHtxAKQePKQvm9qhsJ1s?=
+ =?us-ascii?Q?qDi7KcQtELnW1kM1zMOA7+MubUhnEHEBA9b14JdRAMIzbT6XjNMUZILroRBv?=
+ =?us-ascii?Q?rgH4Jc4kOE5ScURPT13PmDU6HD2aIFGqWSNS/xC2Gyqft+KtA0hsVOfIZL4F?=
+ =?us-ascii?Q?3B80qdW0qxgcTne813wLVHQ7+PQmwD+VCj+USdp9cS3NItchQB1oXGnVHSPl?=
+ =?us-ascii?Q?Pk03UVzS6OtQXhsahM7fJ+uN+JvllVOWJfXwvshutIz5nKgnlwOTWdHrlvyW?=
+ =?us-ascii?Q?qSomp35hpvcA2QmO0apNADhFxMONA46NyJ+ZULmFeCYfrFvdS4rCKqTrfMfM?=
+ =?us-ascii?Q?knNZ41ehc++ie0QqRKEB1KkvAgyi+0epM8/wt++cs81Z5iEFm8f3RYDV8ud1?=
+ =?us-ascii?Q?kcDTPWo0m+pFTismzE0eteLPw8Cmue318k+SujSWcFuoOfDaPWlEvXR8dFd2?=
+ =?us-ascii?Q?/hfs9JYuPZCs34Zwnq1Nk1EPadCbFTCc6NhcpzDd/OeVPbNL3hsdLrmh4nhW?=
+ =?us-ascii?Q?3w3Qbcp1gLe1G/tZF6wnCqdlsLc2q06QD2GkSti0dxaoMfgoU8CO2NQ38Xyg?=
+ =?us-ascii?Q?CGP+XfqEY9BKBzEnsHvHqf+3NS4XhLkFr5+ntGmAyDqPhiXucCrmdNU8jjuN?=
+ =?us-ascii?Q?RRsv8JizSGcox2KG1T1DYmezicOR9b03TFVHzjVMoEUvaWHzZ5iswIn+c26z?=
+ =?us-ascii?Q?vFZiRO6+Xv6UUA50wY6mB+kYxgrv0ufZZ+/AnvUu7DbbJw=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?RRE8vNprOBVkDKSGOk+DQJLL+ARNsthpCNmG+cjs/MHTGFZOTrgYO5Lx5BG8?=
+ =?us-ascii?Q?caH6hyeQFX7rh7uGnQ916GaVYZPdkLGyWyiV3688ggO+kjyfqFMyrujQJjZx?=
+ =?us-ascii?Q?gWk+UdawAEHCQD4q5XEKCZ8vNMmTI3pdmHzKPoRRRCrv1O4RqV1/xWVtOfmE?=
+ =?us-ascii?Q?cP6Fnm+KdjcHOc2veUw5/6INuiNpe9568P3C/hDvdh2waBS+Mhr3vjuqK2bk?=
+ =?us-ascii?Q?oSgAbwsCkCJtY4pgOQZZm190eCPOsL7HYnl1G7hAP66O33AKRXhZYm/Sc1hJ?=
+ =?us-ascii?Q?WIjfRdqvCFP76rkwGuBlMB0RZP77CQ++HVlxYOfQzwB6nhUD2Gz7qoPWpvZy?=
+ =?us-ascii?Q?byA9/t6sbn3C40QfeRep0iycI90Kkf/i5S8fRxdIi+V4Pcs8LFi7DHha6qZy?=
+ =?us-ascii?Q?p/udEEhCNGWAFVzrpYVSlfGTnUUI92MGWpCu97CFSQZw6GHI+HX9ZkGyEbC6?=
+ =?us-ascii?Q?2JDaYUQdd2f0S1pAqiXvD8RjOLnywRxNk7r/yGYp/Ax5KxKV/4ffaPg6oCki?=
+ =?us-ascii?Q?Undj+ZcIUm8E1AH4rB4C/kdkFryieEPcU7JG260w/xUEbp1fxYEhY12wT0e1?=
+ =?us-ascii?Q?GmoSB3lTBdYsmYqqR6HmBptkpFWMZYRr60TKFJ+Kz9ryisbF21NaOral25z3?=
+ =?us-ascii?Q?tcIBRiWeLTg9ADsucZhohL8LgbMw6tT66v1slsbcmi1PVDa2kRzW9y0S7qbp?=
+ =?us-ascii?Q?qJtiEJudyX7omvyrtFGHqgfuBwXmJiNk+HE/MQz0JShnzraORNa/GwNf/srn?=
+ =?us-ascii?Q?WxWVOZ1S4kzuBrZqyNdulI1jcrRVuMVMRe3TewENuZ6Tpl5KbmQ1sci7KBBi?=
+ =?us-ascii?Q?vhv3ZkflkF3n3tLqrEG8DWk9PzxFrqaHKTRUF71vN0sH+Pw3dzjfMuurDNyo?=
+ =?us-ascii?Q?0VvyNJxzVXc5LzBymaTQ1MtxCLVfMxRCAdflUwuqdVJIkIkPmyCjfXJeg7/Q?=
+ =?us-ascii?Q?aQtJA7kVq2HVNJsiiRs5WQkmSnet18A+eawi79uM1wOlAZNp5zHqqfwO8hMi?=
+ =?us-ascii?Q?/uds4GV7pcL4x+PQIG+hvPyIwsnvJ9sVcntq85Xd3cDsN0EFOObNSffF943Y?=
+ =?us-ascii?Q?C/OdROC4PwdXl70pNhm39Gd7UiTMmmBuJMKYcSDb2YClpTG7myvdE+Qd1Uvc?=
+ =?us-ascii?Q?ypf5lw3bPTMxh/sebNKSUcKpft9PuWQUq30Y9j4YzYmV/bBG2QpvWV4yPz42?=
+ =?us-ascii?Q?JKXlohYXx3fj/wLcrenCTfAWwuQIXzpRLyfBT1RKF3ddftaV7qvsx8DkUnAP?=
+ =?us-ascii?Q?Hy2HuMbePV04ze2sTFFpnY7xJ2lP0nY6gPEeiUwNU/JVq6PMEzanA3NbhARp?=
+ =?us-ascii?Q?JG1oeyn0xSeMDmXWwhsCW7ckUcTUfKp0AtAsSUXMjyTDahsOK9zGlklnbJ0g?=
+ =?us-ascii?Q?WOG2avYQnsIFuvkfZucW+grA9hsZP3E63hcbtCxdi//+UlpyUC9Oy6Q86nYT?=
+ =?us-ascii?Q?FG3ir6oqXBkGSIRFztB+rz5eu01paETM6hnaJtTnA9Hcr7zMbmWfsPy+InyM?=
+ =?us-ascii?Q?TLBgkj3E2zYlsduvEmpt7surkp2OHiRA5Gjf3E65rHBHiQUrGaLHOJAaQjCC?=
+ =?us-ascii?Q?DKC1qeYmBAgnNsmq1aE=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240604020549.1017540-1-yuanchu@google.com>
-X-Mailer: git-send-email 2.45.1.467.gbab1589fc0-goog
-Message-ID: <20240604020549.1017540-9-yuanchu@google.com>
-Subject: [PATCH v2 8/8] Docs/admin-guide/mm/workingset_report: document sysfs
- and memcg interfaces
-From: Yuanchu Xie <yuanchu@google.com>
-To: David Hildenbrand <david@redhat.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>, 
-	Khalid Aziz <khalid.aziz@oracle.com>, Henry Huang <henry.hj@antgroup.com>, 
-	Yu Zhao <yuzhao@google.com>, Dan Williams <dan.j.williams@intel.com>, 
-	Gregory Price <gregory.price@memverge.com>, Huang Ying <ying.huang@intel.com>, 
-	Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: Kalesh Singh <kaleshsingh@google.com>, Wei Xu <weixugc@google.com>, 
-	David Rientjes <rientjes@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Shuah Khan <shuah@kernel.org>, Yosry Ahmed <yosryahmed@google.com>, 
-	Matthew Wilcox <willy@infradead.org>, Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>, 
-	Kairui Song <kasong@tencent.com>, "Michael S. Tsirkin" <mst@redhat.com>, 
-	Vasily Averin <vasily.averin@linux.dev>, Nhat Pham <nphamcs@gmail.com>, 
-	Miaohe Lin <linmiaohe@huawei.com>, Qi Zheng <zhengqi.arch@bytedance.com>, 
-	Abel Wu <wuyun.abel@bytedance.com>, "Vishal Moola (Oracle)" <vishal.moola@gmail.com>, 
-	Kefeng Wang <wangkefeng.wang@huawei.com>, Yuanchu Xie <yuanchu@google.com>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f3383b0-b381-4248-ab1e-08dc843cf976
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Jun 2024 02:20:59.7546
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: gQNNirkpRnkdF5hzkreP9XxCV7VxzaCjuMLIAZ+khScdHMs4257FSaD3PcpsDwhc0p+yZfSwmd+rVAWyduQ1WQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6988
 
-Add workingset reporting documentation for better discoverability of
-its sysfs and memcg interfaces. Also document the required kernel
-config to enable workingset reporting.
+Hi Roman,
 
-Signed-off-by: Yuanchu Xie <yuanchu@google.com>
----
- Documentation/admin-guide/mm/index.rst        |   1 +
- .../admin-guide/mm/workingset_report.rst      | 105 ++++++++++++++++++
- 2 files changed, 106 insertions(+)
- create mode 100644 Documentation/admin-guide/mm/workingset_report.rst
+> Subject: Re: [Oops] vfree abort in bpf_jit_free with memcg_data value 0xf=
+fff
+>=20
+> On Mon, Jun 03, 2024 at 09:10:43AM +0000, Peng Fan wrote:
+> > Hi All,
+> >
+> > We are running 6.6 kernel on NXP i.MX95 platform, and meet an issue
+> > very hard to reproduce. Panic log in the end. I check the registers and
+> source code.
+>=20
+> Hi!
+>=20
+> Do you know by a chance if the issue is reproducible on newer kernels?
+>=20
+> From a very first glance, I doubt it's a generic memory accounting issue,
+> otherwise we'd see a lot more instances of it. So my guess it something
+> related to bpf jit code. It seems like there were heavy changes since 6.6=
+, this
+> is why I'm asking about newer kernels.
 
-diff --git a/Documentation/admin-guide/mm/index.rst b/Documentation/admin-guide/mm/index.rst
-index 1f883abf3f00..fba987de8997 100644
---- a/Documentation/admin-guide/mm/index.rst
-+++ b/Documentation/admin-guide/mm/index.rst
-@@ -41,4 +41,5 @@ the Linux memory management.
-    swap_numa
-    transhuge
-    userfaultfd
-+   workingset_report
-    zswap
-diff --git a/Documentation/admin-guide/mm/workingset_report.rst b/Documentation/admin-guide/mm/workingset_report.rst
-new file mode 100644
-index 000000000000..f455ae93b30e
---- /dev/null
-+++ b/Documentation/admin-guide/mm/workingset_report.rst
-@@ -0,0 +1,105 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=================
-+Workingset Report
-+=================
-+Workingset report provides a view of memory coldness in user-defined
-+time intervals, i.e. X bytes are Y milliseconds cold. It breaks down
-+the user pages in the system per-NUMA node, per-memcg, for both
-+anonymous and file pages into histograms that look like:
-+::
-+
-+    1000 anon=137368 file=24530
-+    20000 anon=34342 file=0
-+    30000 anon=353232 file=333608
-+    40000 anon=407198 file=206052
-+    9223372036854775807 anon=4925624 file=892892
-+
-+The workingset reports can be used to drive proactive reclaim, by
-+identifying the number of cold bytes in a memcg, then writing to
-+``memory.reclaim``.
-+
-+Quick start
-+===========
-+Build the kernel with the following configurations. The report relies
-+on Multi-gen LRU for page coldness.
-+
-+* ``CONFIG_LRU_GEN=y``
-+* ``CONFIG_LRU_GEN_ENABLED=y``
-+* ``CONFIG_WORKINGSET_REPORT=y``
-+
-+Optionally, the aging kernel daemon can be enabled with the following
-+configuration.
-+* ``CONFIG_LRU_GEN_ENABLED=y``
-+
-+Sysfs interfaces
-+================
-+``/sys/devices/system/node/nodeX/page_age`` provides a per-node page
-+age histogram, showing an aggregate of the node's lruvecs.
-+Reading this file causes a hierarchical aging of all lruvecs, scanning
-+pages and creates a new Multi-gen LRU generation in each lruvec.
-+For example:
-+::
-+
-+    1000 anon=0 file=0
-+    2000 anon=0 file=0
-+    100000 anon=5533696 file=5566464
-+    18446744073709551615 anon=0 file=0
-+
-+``/sys/devices/system/node/nodeX/page_age_interval`` is a comma
-+separated list of time in milliseconds that configures what the page
-+age histogram uses for aggregation. For the above histogram,
-+the intervals are:
-+::
-+    1000,2000,100000
-+
-+``/sys/devices/system/node/nodeX/workingset_report/refresh_interval``
-+defines the amount of time the report is valid for in milliseconds.
-+When a report is still valid, reading the ``page_age`` file shows
-+the existing valid report, instead of generating a new one.
-+
-+``/sys/devices/system/node/nodeX/workingset_report/report_threshold``
-+specifies how often the userspace agent can be notified for node
-+memory pressure, in milliseconds. When a node reaches its low
-+watermarks and wakes up kswapd, programs waiting on ``page_age`` are
-+woken up so they can read the histogram and make policy decisions.
-+
-+Memcg interface
-+===============
-+While ``page_age_interval`` is defined per-node in sysfs. ``page_age``,
-+``refresh_interval`` and ``report_threshold`` are available per-memcg.
-+
-+``/sys/fs/cgroup/.../memory.workingset.page_age``
-+The memcg equivalent of the sysfs workingset page age histogram,
-+breaks down the workingset of this memcg and its children into
-+page age intervals. Each node is prefixed with a node header and
-+a newline. Non-proactive direct reclaim on this memcg can also
-+wake up userspace agents that are waiting on this file.
-+e.g.
-+::
-+
-+    N0
-+    1000 anon=0 file=0
-+    2000 anon=0 file=0
-+    3000 anon=0 file=0
-+    4000 anon=0 file=0
-+    5000 anon=0 file=0
-+    18446744073709551615 anon=0 file=0
-+
-+``/sys/fs/cgroup/.../memory.workingset.refresh_interval``
-+The memcg equivalent of the sysfs refresh interval. A per-node
-+number of how much time a page age histogram is valid for, in
-+milliseconds.
-+e.g.
-+::
-+
-+    echo N0=2000 > memory.workingset.refresh_interval
-+
-+``/sys/fs/cgroup/.../memory.workingset.report_threshold``
-+The memcg equivalent of the sysfs report threshold. A per-node
-+number of how often userspace agent waiting on the page age
-+histogram can be woken up, in milliseconds.
-+e.g.
-+::
-+
-+    echo N0=1000 > memory.workingset.report_threshold
--- 
-2.45.1.467.gbab1589fc0-goog
+I not have a full test environment with newer kernel, the i.MX95 platform
+has not been landed in upstream repo.
 
+After I enable DEBUG_VM, I have a new dump in virt_to_phys: I am thinking
+whether the dma corrupt memory. And with disabling DPU, I am redoing
+the test, and see how it goes.
+
+[    2.992655] ------------[ cut here ]------------                        =
+                        =20
+[    3.003764] virt_to_phys used for non-linear address: 00000000897eac93 (=
+0xffff800086001000)     =20
+[    3.004944] sysctr_timer_read_write:10024 retry: 1                      =
+                         =20
+[    3.012196] WARNING: CPU: 0 PID: 11 at arch/arm64/mm/physaddr.c:12 __vir=
+t_to_phys+0x68/0x98     =20
+[    3.025243] Modules linked in:                                          =
+                        =20
+[    3.028312] CPU: 0 PID: 11 Comm: kworker/u12:0 Not tainted 6.6.23-06226-=
+g4986cc3e1b75-dirty #251=20
+[    3.037098] Hardware name: NXP i.MX95 19X19 board (DT)                  =
+                           =20
+[    3.042239] Workqueue: events_unbound deferred_probe_work_func          =
+                        =20
+[    3.044953] sysctr_timer_read_write:10024 retry: 1                      =
+                        =20
+[    3.048079] pstate: 60400009 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=
+=3D--)                     =20
+[    3.059796] pc : __virt_to_phys+0x68/0x98                               =
+                        =20
+[    3.063809] lr : __virt_to_phys+0x68/0x98                               =
+                        =20
+[    3.067839] sp : ffff800082de3990                                       =
+                        =20
+[    3.071141] x29: ffff800082de3990 x28: 0000000000000000 x27: 00000000343=
+25258                          =20
+[    3.078282] x26: ffff000084748000 x25: ffff0000818ba800 x24: ffff0000847=
+1dc00                   =20
+[    3.084954] sysctr_timer_read_write:10024 retry: 1                      =
+                               =20
+[    3.085423] x23: 0000000000000000 x22: ffff0000818ba200 x21: ffff0000808=
+0bc00                   =20
+[    3.097323] x20: ffff0000847345c0 x19: ffff800086001000 x18: 00000000000=
+00006                   =20
+[    3.104447] x17: 6666783028203339 x16: 6361653739383030 x15: 30303030303=
+0203a                   =20
+[    3.111588] x14: 7373657264646120 x13: 2930303031303036 x12: 38303030386=
+66666                   =20
+[    3.118712] x11: 6678302820333963 x10: 0000000000000a90 x9 : ffff8000800=
+e04a0                   =20
+[    3.120954] sysctr_timer_read_write:10024 retry: 1                      =
+                        =20
+[    3.125836] x8 : ffff0000803d28f0 x7 : 000000006273d88e x6 : 00000000000=
+00400                   =20
+[    3.137736] x5 : 00000000410fd050 x4 : 0000000000f0000f x3 : 00000000002=
+00000                   =20
+[    3.144894] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff0000803=
+d1e00                   =20
+[    3.152036] Call trace:                                                 =
+                        =20
+[    3.154489]  __virt_to_phys+0x68/0x98                                   =
+                        =20
+[    3.158163]  drm_fbdev_dma_helper_fb_probe+0x138/0x238                  =
+                        =20
+[    3.163294]  __drm_fb_helper_initial_config_and_unlock+0x2b0/0x4c0      =
+                        =20
+[    3.169012] sysctr_timer_read_write:10024 retry: 1                      =
+                        =20
+[    3.169498]  drm_fb_helper_initial_config+0x4c/0x68                     =
+                        =20
+[    3.177000] sysctr_timer_read_write:10024 retry: 1                      =
+                        =20
+[    3.179136]  drm_fbdev_dma_client_hotplug+0x8c/0xe0                     =
+                        =20
+[    3.188773]  drm_client_register+0x60/0xb0                              =
+                        =20
+[    3.192881]  drm_fbdev_dma_setup+0x94/0x148                             =
+                        =20
+[    3.197059]  dpu95_probe+0xc4/0x130                                     =
+                        =20
+[    3.200577]  platform_probe+0x70/0xd0                                   =
+                        =20
+[    3.204252]  really_probe+0x150/0x2c0  =20
+
+Thanks
+Peng
+>=20
+> Thanks!
 
