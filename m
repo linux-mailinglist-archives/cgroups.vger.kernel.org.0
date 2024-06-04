@@ -1,212 +1,266 @@
-Return-Path: <cgroups+bounces-3074-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3075-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA8368FA7A5
-	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2024 03:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 96F248FA817
+	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2024 04:06:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47AEEB22B34
-	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2024 01:38:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF397B272F7
+	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2024 02:06:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4127313D295;
-	Tue,  4 Jun 2024 01:38:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B60FC13D608;
+	Tue,  4 Jun 2024 02:06:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BqFTX3Is"
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2DF7462;
-	Tue,  4 Jun 2024 01:38:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6437339BC
+	for <cgroups@vger.kernel.org>; Tue,  4 Jun 2024 02:06:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717465101; cv=none; b=JvxZkDxHuCb221SvNWLsy7LDyq2/cJhXDesH2TSL0d2EBGAGTmpgf7GkkY58zFmT8ooLBuWWmy/Ax9fz7gI8HfwXBO56ArDiOPAA78FS++EA8yBQ0kjF6nsxCwga3ymGWHxf5nILIHC0n0Dq0CtvSmMi88DvZ4Os2bOPE+1x1l8=
+	t=1717466770; cv=none; b=glHrAHD2d3KbQgNDr5nnbTrDBrWVkKudab7MK0NQHr2u6V8hjXAy4m8EY7UWwqHkuAtRC+3hnDLrRzxh7R0+8xzDIx8fD94Nhx/nMc/CVNRJB3NyQEkbksy6ysHY8DOcQn49WLpRDAlIiMk+DTLxJQbNkMn6zME6zxVNhReB8lo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717465101; c=relaxed/simple;
-	bh=AJSz8KJObMMDxhywmduW5EuoLxLL09BUaUxOa9QUubw=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=W76wPOqJhcfdB6bDI384qYWr5It8IGNtsF7P3ZiEf2do4DteNys1XNAEj5j60+v6mm0u/CGqeb0nwGs+414yqQsMpnESMXIbwZneeb0x7Kbi/vtHxEGiYG4HQPZLqgd0UOu3U5f8c5+SFb6zgHHWbikoW93g8IYO0vRmjfGZQu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VtY6M2gZgzxRDr;
-	Tue,  4 Jun 2024 09:34:19 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7C016180069;
-	Tue,  4 Jun 2024 09:38:14 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Tue, 4 Jun 2024 09:38:02 +0800
-Subject: Re: [PATCH v1 1/1] treewide: Align match_string() with
- sysfs_match_string()
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Rafael J. Wysocki"
-	<rafael.j.wysocki@intel.com>, Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>, Corey Minyard <minyard@acm.org>, Allen Pais
-	<apais@linux.microsoft.com>, Sebastian Reichel
-	<sebastian.reichel@collabora.com>, Perry Yuan <perry.yuan@amd.com>, Giovanni
- Cabiddu <giovanni.cabiddu@intel.com>, Herbert Xu
-	<herbert@gondor.apana.org.au>, Nuno Sa <nuno.sa@analog.com>, Guenter Roeck
-	<linux@roeck-us.net>, Randy Dunlap <rdunlap@infradead.org>, Andi Shyti
-	<andi.shyti@kernel.org>, Heiner Kallweit <hkallweit1@gmail.com>, Lee Jones
-	<lee@kernel.org>, Samuel Holland <samuel@sholland.org>, Elad Nachman
-	<enachman@marvell.com>, Arseniy Krasnov <AVKrasnov@sberdevices.ru>, Johannes
- Berg <johannes.berg@intel.com>, Gregory Greenman
-	<gregory.greenman@intel.com>, Benjamin Berg <benjamin.berg@intel.com>, Bjorn
- Helgaas <bhelgaas@google.com>, Robert Richter <rrichter@amd.com>, Vinod Koul
-	<vkoul@kernel.org>, Chunfeng Yun <chunfeng.yun@mediatek.com>, Linus Walleij
-	<linus.walleij@linaro.org>, Hans de Goede <hdegoede@redhat.com>,
-	=?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>, Nikita
- Kravets <teackot@gmail.com>, Jiri Slaby <jirislaby@kernel.org>, Srinivas
- Pandruvada <srinivas.pandruvada@linux.intel.com>, Stanley Chang
-	<stanley_chang@realtek.com>, Heikki Krogerus
-	<heikki.krogerus@linux.intel.com>, Abdel Alkuor <abdelalkuor@geotab.com>,
-	Kent Overstreet <kent.overstreet@linux.dev>, Eric Biggers
-	<ebiggers@google.com>, Kees Cook <keescook@chromium.org>, Ingo Molnar
-	<mingo@kernel.org>, "Steven Rostedt (Google)" <rostedt@goodmis.org>, Daniel
- Bristot de Oliveira <bristot@kernel.org>, Andrew Morton
-	<akpm@linux-foundation.org>, Hugh Dickins <hughd@google.com>, Abel Wu
-	<wuyun.abel@bytedance.com>, John Johansen <john.johansen@canonical.com>, Mimi
- Zohar <zohar@linux.ibm.com>, Stefan Berger <stefanb@linux.ibm.com>, Roberto
- Sassu <roberto.sassu@huawei.com>, Eric Snowberg <eric.snowberg@oracle.com>,
-	Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, Mark Brown
-	<broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-	<linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-	<keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-	<linux-acpi@vger.kernel.org>, <linux-ide@vger.kernel.org>,
-	<openipmi-developer@lists.sourceforge.net>, <linux-clk@vger.kernel.org>,
-	<linux-rpi-kernel@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-rockchip@lists.infradead.org>,
-	<linux-tegra@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-	<qat-linux@intel.com>, <dri-devel@lists.freedesktop.org>,
-	<intel-gfx@lists.freedesktop.org>, <intel-xe@lists.freedesktop.org>,
-	<nouveau@lists.freedesktop.org>, <linux-hwmon@vger.kernel.org>,
-	<linux-i2c@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-	<linux-sunxi@lists.linux.dev>, <linux-omap@vger.kernel.org>,
-	<linux-mmc@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<netdev@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
-	<linux-pci@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-	<linux-phy@lists.infradead.org>, <linux-gpio@vger.kernel.org>,
-	<platform-driver-x86@vger.kernel.org>, <linux-staging@lists.linux.dev>,
-	<linux-usb@vger.kernel.org>, <linux-fbdev@vger.kernel.org>,
-	<linux-bcachefs@vger.kernel.org>, <linux-hardening@vger.kernel.org>,
-	<cgroups@vger.kernel.org>, <linux-trace-kernel@vger.kernel.org>,
-	<linux-mm@kvack.org>, <apparmor@lists.ubuntu.com>,
-	<linux-security-module@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
-	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>
-CC: Michael Ellerman <mpe@ellerman.id.au>, Nicholas Piggin
-	<npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, "Naveen
- N. Rao" <naveen.n.rao@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
-	<dave.hansen@linux.intel.com>, <x86@kernel.org>, "H. Peter Anvin"
-	<hpa@zytor.com>, David Howells <dhowells@redhat.com>, "David S. Miller"
-	<davem@davemloft.net>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown
-	<lenb@kernel.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, Damien Le Moal
-	<dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, Daniel Scally
-	<djrscally@gmail.com>, Sakari Ailus <sakari.ailus@linux.intel.com>, Michael
- Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Florian
- Fainelli <florian.fainelli@broadcom.com>, Ray Jui <rjui@broadcom.com>, Scott
- Branden <sbranden@broadcom.com>, Broadcom internal kernel review list
-	<bcm-kernel-feedback-list@broadcom.com>, Heiko Stuebner <heiko@sntech.de>,
-	Peter De Schrijver <pdeschrijver@nvidia.com>, Prashant Gaikwad
-	<pgaikwad@nvidia.com>, Thierry Reding <thierry.reding@gmail.com>, Jonathan
- Hunter <jonathanh@nvidia.com>, Huang Rui <ray.huang@amd.com>, "Gautham R.
- Shenoy" <gautham.shenoy@amd.com>, Mario Limonciello
-	<mario.limonciello@amd.com>, Viresh Kumar <viresh.kumar@linaro.org>, Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
-	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
-	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Jani Nikula
-	<jani.nikula@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>, Joonas
- Lahtinen <joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin
-	<tursulin@ursulin.net>, Karol Herbst <kherbst@redhat.com>, Lyude Paul
-	<lyude@redhat.com>, Danilo Krummrich <dakr@redhat.com>, Jean Delvare
-	<jdelvare@suse.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Pavel Machek <pavel@ucw.cz>, Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec
-	<jernej.skrabec@gmail.com>, Tony Lindgren <tony@atomide.com>, Adrian Hunter
-	<adrian.hunter@intel.com>, Hu Ziji <huziji@marvell.com>, Ulf Hansson
-	<ulf.hansson@linaro.org>, Miquel Raynal <miquel.raynal@bootlin.com>, Richard
- Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Potnuri
- Bharat Teja <bharat@chelsio.com>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Miri Korenblit
-	<miriam.rachel.korenblit@intel.com>, Kalle Valo <kvalo@kernel.org>, Mahesh J
- Salgaonkar <mahesh@linux.ibm.com>, Oliver O'Halloran <oohall@gmail.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>, Matthias Brugger
-	<matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>, JC Kuo <jckuo@nvidia.com>, Andrew
- Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>,
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Sebastian Reichel
-	<sre@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui
-	<rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, Thinh Nguyen
-	<Thinh.Nguyen@synopsys.com>, Helge Deller <deller@gmx.de>, Brian Foster
-	<bfoster@redhat.com>, Tejun Heo <tj@kernel.org>, Zefan Li
-	<lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, Peter
- Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, Vincent
- Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
-	<dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel Gorman
-	<mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin
- Schneider <vschneid@redhat.com>, Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Jason Baron
-	<jbaron@akamai.com>, Jim Cromie <jim.cromie@gmail.com>, Paul Moore
-	<paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn"
-	<serge@hallyn.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, Clemens
- Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
-	<tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Linus Torvalds
-	<torvalds@linux-foundation.org>
-References: <20240603211538.289765-1-andriy.shevchenko@linux.intel.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <a6cff4d3-821a-3723-b261-3699053b5a51@huawei.com>
-Date: Tue, 4 Jun 2024 09:37:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1717466770; c=relaxed/simple;
+	bh=wy5P01o+0T9XjRR76ApAbVVT5yJ5oILZKBGqQSK/dd8=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=TiKYigmZwWpFkg22yD1C2g4guSMcJy8F0gy3Kuxs2nKp33zHxkUWoY+03O+dyv6jYD30K5ntzJw9YPsIoDC+Z67H7vWc2cfDSMfU+pVwekZLzgiKYAxg0kH5klM7nQPqy2P0eApin8daNMk4EpYW+w/+QLFmpmaoWuTAyq6E2pQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yuanchu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BqFTX3Is; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yuanchu.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-62a084a0573so77919497b3.2
+        for <cgroups@vger.kernel.org>; Mon, 03 Jun 2024 19:06:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1717466767; x=1718071567; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rjsptS2Yts9gQuV5Q8ZXK1TfjP+hvA4bC7qdXn/aM28=;
+        b=BqFTX3Isw4SWroCcvDGc2XhbzVCcYcHNuD/iK1C8UzQe4y+Lsr+IhmXVP/PI5dQJ6k
+         A4m0zFqLA0FXV0DLWS+2ZU9XAg7vczaL9ODCfMFbq4iyN3sXdVnhyHcJ1XhcklsQEhZp
+         Qj1zpgYkADUS3DgK6aRJ+Fi8egKaSxNpyGJfz0HsY/5lbCGZ52zEk8wCR2rbhAsXBhYl
+         +n/h8YNiYeqte0yAJYW0KXpmCjEE5LtrsX6AKXTipwqcsmow/3MHO+L+nTgb9nU0LDkI
+         mszYqbJPbjqZmVWx9OhDNp5RSQ+nZV+1wIO/RbrGHyrDzZVT9ICJbiKf7l+sOImJnm1K
+         6AKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717466767; x=1718071567;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rjsptS2Yts9gQuV5Q8ZXK1TfjP+hvA4bC7qdXn/aM28=;
+        b=VxwyASBPpi0RdttNzXJkrnCo8No2EEFyU5Uo42HsIQENuzO/vPh8Vu3YMOqxU7GEVj
+         go9SKAwj79IwuUMyzSybkQYgxE48Vis2uk35779tivL5oZgyOCmkS80Ik6JRqkn40V4J
+         hhPyyUWkBBQ5Qpe2FMKyZIj88tp2KM+zYiTFxRTiT/1vmgYcpxd5xaPmxhu7AKL3+ty0
+         c+k0G8p/3L7oneoMfAjzk4tstV37f4rDdWS5OlkFe12iMLcPIf2l4qzi2acuEqYPQlxv
+         U55YEfVChdkJqETlKncCjQ/ratnsakDCh7R2E639IpC9Uvs5hWRMNu8lOy3LVUffTQEH
+         0m8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWQvS2I4Rtoj61FvcadXao29vJqL9+cqK3KPZd5QBR4h1Hl4AbL3FKi3xk8qcOU2yAX+YEpwFKO5hz9QhbR9RqRhl4+UgZrAA==
+X-Gm-Message-State: AOJu0Yy1zEWfX6CVxILk3E69VG/BA1gpwr1n1Ij0P0aCZOz5QiXj9zBC
+	brV6hNKr+vcwbVZFggYwu9tzuVt8379LAln7uxNU521+gGQjRmO/wiHYAZjnwAdjRjLtLtO2J3s
+	8bryvWA==
+X-Google-Smtp-Source: AGHT+IG3g3AgqCOlx3jBB4ji1cGSVnGwhhLfCxnWASyuX4xJagCnN4kQSgFzxz93g37nWopgo31fHw42PQJS
+X-Received: from yuanchu-desktop.svl.corp.google.com ([2620:15c:2a3:200:367f:7387:3dd2:73f1])
+ (user=yuanchu job=sendgmr) by 2002:a05:690c:85:b0:61b:1dbf:e3f with SMTP id
+ 00721157ae682-62c796486d0mr32737577b3.4.1717466766718; Mon, 03 Jun 2024
+ 19:06:06 -0700 (PDT)
+Date: Mon,  3 Jun 2024 19:05:41 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20240603211538.289765-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.45.1.467.gbab1589fc0-goog
+Message-ID: <20240604020549.1017540-1-yuanchu@google.com>
+Subject: [PATCH v2 0/8] mm: workingset reporting
+From: Yuanchu Xie <yuanchu@google.com>
+To: David Hildenbrand <david@redhat.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>, 
+	Khalid Aziz <khalid.aziz@oracle.com>, Henry Huang <henry.hj@antgroup.com>, 
+	Yu Zhao <yuzhao@google.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Gregory Price <gregory.price@memverge.com>, Huang Ying <ying.huang@intel.com>, 
+	Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Kalesh Singh <kaleshsingh@google.com>, Wei Xu <weixugc@google.com>, 
+	David Rientjes <rientjes@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Shuah Khan <shuah@kernel.org>, Yosry Ahmed <yosryahmed@google.com>, 
+	Matthew Wilcox <willy@infradead.org>, Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>, 
+	Kairui Song <kasong@tencent.com>, "Michael S. Tsirkin" <mst@redhat.com>, 
+	Vasily Averin <vasily.averin@linux.dev>, Nhat Pham <nphamcs@gmail.com>, 
+	Miaohe Lin <linmiaohe@huawei.com>, Qi Zheng <zhengqi.arch@bytedance.com>, 
+	Abel Wu <wuyun.abel@bytedance.com>, "Vishal Moola (Oracle)" <vishal.moola@gmail.com>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, Yuanchu Xie <yuanchu@google.com>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-ÔÚ 2024/6/2 23:57, Andy Shevchenko Ð´µÀ:
-> Make two APIs look similar. Hence convert match_string() to be
-> a 2-argument macro. In order to avoid unneeded churn, convert
-> all users as well. There is no functional change intended.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> 
-> Compile tested with `make allyesconfig` and `make allmodconfig`
-> on x86_64, arm, aarch64, powerpc64 (8 builds total).
-> 
+Changes from PATCH v1 -> v2:
+- Updated selftest to use ksft_test_result_code instead of switch-case
+  (Muhammad Usama Anjum)
+- Included more use cases in the cover letter
+  (Huang, Ying)
+- Added documentation for sysfs and memcg interfaces
+- Added an aging-specific struct lru_gen_mm_walk in struct pglist_data
+  to avoid allocating for each lruvec.
 
-[...]
-> diff --git a/fs/ubifs/auth.c b/fs/ubifs/auth.c
-> index a4a0158f712d..fc0da18bfa65 100644
-> --- a/fs/ubifs/auth.c
-> +++ b/fs/ubifs/auth.c
-> @@ -264,13 +264,13 @@ int ubifs_init_authentication(struct ubifs_info *c)
->   		return -EINVAL;
->   	}
->   
-> -	c->auth_hash_algo = match_string(hash_algo_name, HASH_ALGO__LAST,
-> -					 c->auth_hash_name);
-> -	if ((int)c->auth_hash_algo < 0) {
-> +	err = __match_string(hash_algo_name, HASH_ALGO__LAST, c->auth_hash_name);
-> +	if (err < 0) {
->   		ubifs_err(c, "Unknown hash algo %s specified",
->   			  c->auth_hash_name);
-> -		return -EINVAL;
-> +		return err;
->   	}
-> +	c->auth_hash_algo = err;
->   
->   	snprintf(hmac_name, CRYPTO_MAX_ALG_NAME, "hmac(%s)",
->   		 c->auth_hash_name);
+Changes from RFC v3 -> PATCH v1:
+- Updated selftest to use ksft_print_msg instead of fprintf(stderr, ...)
+  (Muhammad Usama Anjum)
+- Included more detail in patch skipping pmd_young with force_scan
+  (Huang, Ying)
+- Deferred reaccess histogram as a followup
+- Removed per-memcg page age interval configs for simplicity
 
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>  # fs/ubifs
+Changes from RFC v2 -> RFC v3:
+- Update to v6.8
+- Added an aging kernel thread (gated behind config)
+- Added basic selftests for sysfs interface files
+- Track swapped out pages for reaccesses
+- Refactoring and cleanup
+- Dropped the virtio-balloon extension to make things manageable
+
+Changes from RFC v1 -> RFC v2:
+- Refactored the patchs into smaller pieces
+- Renamed interfaces and functions from wss to wsr (Working Set Reporting)
+- Fixed build errors when CONFIG_WSR is not set
+- Changed working_set_num_bins to u8 for virtio-balloon
+- Added support for per-NUMA node reporting for virtio-balloon
+
+[rfc v1]
+https://lore.kernel.org/linux-mm/20230509185419.1088297-1-yuanchu@google.com/
+[rfc v2]
+https://lore.kernel.org/linux-mm/20230621180454.973862-1-yuanchu@google.com/
+[rfc v3]
+https://lore.kernel.org/linux-mm/20240327213108.2384666-1-yuanchu@google.com/
+
+This patch series provides workingset reporting of user pages in
+lruvecs, of which coldness can be tracked by accessed bits and fd
+references. However, the concept of workingset applies generically to
+all types of memory, which could be kernel slab caches, discardable
+userspace caches (databases), or CXL.mem. Therefore, data sources might
+come from slab shrinkers, device drivers, or the userspace. IMO, the
+kernel should provide a set of workingset interfaces that should be
+generic enough to accommodate the various use cases, and be extensible
+to potential future use cases. The current proposed interfaces are not
+sufficient in that regard, but I would like to start somewhere, solicit
+feedback, and iterate.
+
+Use cases
+==========
+Job scheduling
+On overcommitted hosts, workingset information allows the job scheduler
+to right-size each job and land more jobs on the same host or NUMA node,
+and in the case of a job with increasing workingset, policy decisions
+can be made to migrate other jobs off the host/NUMA node, or oom-kill
+the misbehaving job. If the job shape is very different from the machine
+shape, knowing the workingset per-node can also help inform page
+allocation policies.
+
+Proactive reclaim
+Workingset information allows the a container manager to proactively
+reclaim memory while not impacting a job's performance. While PSI may
+provide a reactive measure of when a proactive reclaim has reclaimed too
+much, workingset reporting allows the policy to be more accurate and
+flexible.
+
+Ballooning (similar to proactive reclaim)
+While this patch series does not extend the virtio-balloon device,
+balloon policies benefit from workingset to more precisely determine
+the size of the memory balloon. On desktops/laptops/mobile devices where
+memory is scarce and overcommitted, the balloon sizing in multiple VMs
+running on the same device can be orchestrated with workingset reports
+from each one.
+
+Promotion/Demotion
+If different mechanisms are used for promition and demotion, workingset
+information can help connect the two and avoid pages being migrated back
+and forth.
+For example, given a promotion hot page threshold defined in reaccess
+distance of N seconds (promote pages accessed more often than every N
+seconds). The threshold N should be set so that ~80% (e.g.) of pages on
+the fast memory node passes the threshold. This calculation can be done
+with workingset reports.
+To be directly useful for promotion policies, the workingset report
+interfaces need to be extended to report hotness and gather hotness
+information from the devices[1].
+
+[1]
+https://www.opencompute.org/documents/ocp-cms-hotness-tracking-requirements-white-paper-pdf-1
+
+Sysfs and Cgroup Interfaces
+==========
+The interfaces are detailed in the patches that introduce them. The main
+idea here is we break down the workingset per-node per-memcg into time
+intervals (ms), e.g.
+
+1000 anon=137368 file=24530
+20000 anon=34342 file=0
+30000 anon=353232 file=333608
+40000 anon=407198 file=206052
+9223372036854775807 anon=4925624 file=892892
+
+I realize this does not generalize well to hotness information, but I
+lack the intuition for an abstraction that presents hotness in a useful
+way. Based on a recent proposal for move_phys_pages[2], it seems like
+userspace tiering software would like to move specific physical pages,
+instead of informing the kernel "move x number of hot pages to y
+device". Please advise.
+
+[2]
+https://lore.kernel.org/lkml/20240319172609.332900-1-gregory.price@memverge.com/
+
+Implementation
+==========
+Currently, the reporting of user pages is based off of MGLRU, and
+therefore requires CONFIG_LRU_GEN=y. We would benefit from more MGLRU
+generations for a more fine-grained workingset report. I will make the
+generation count configurable in the next version. The workingset
+reporting mechanism is gated behind CONFIG_WORKINGSET_REPORT, and the
+aging thread is behind CONFIG_WORKINGSET_REPORT_AGING.
+
+Yuanchu Xie (8):
+  mm: multi-gen LRU: ignore non-leaf pmd_young for force_scan=true
+  mm: aggregate working set information into histograms
+  mm: use refresh interval to rate-limit workingset report aggregation
+  mm: report workingset during memory pressure driven scanning
+  mm: extend working set reporting to memcgs
+  mm: add kernel aging thread for workingset reporting
+  selftest: test system-wide workingset reporting
+  Docs/admin-guide/mm/workingset_report: document sysfs and memcg
+    interfaces
+
+ Documentation/admin-guide/mm/index.rst        |   1 +
+ .../admin-guide/mm/workingset_report.rst      | 105 ++++
+ drivers/base/node.c                           |   6 +
+ include/linux/memcontrol.h                    |   5 +
+ include/linux/mmzone.h                        |   9 +
+ include/linux/workingset_report.h             |  97 +++
+ mm/Kconfig                                    |  15 +
+ mm/Makefile                                   |   2 +
+ mm/internal.h                                 |  18 +
+ mm/memcontrol.c                               | 184 +++++-
+ mm/mm_init.c                                  |   2 +
+ mm/mmzone.c                                   |   2 +
+ mm/vmscan.c                                   |  58 +-
+ mm/workingset_report.c                        | 561 ++++++++++++++++++
+ mm/workingset_report_aging.c                  | 127 ++++
+ tools/testing/selftests/mm/.gitignore         |   1 +
+ tools/testing/selftests/mm/Makefile           |   3 +
+ tools/testing/selftests/mm/run_vmtests.sh     |   5 +
+ .../testing/selftests/mm/workingset_report.c  | 306 ++++++++++
+ .../testing/selftests/mm/workingset_report.h  |  39 ++
+ .../selftests/mm/workingset_report_test.c     | 329 ++++++++++
+ 21 files changed, 1869 insertions(+), 6 deletions(-)
+ create mode 100644 Documentation/admin-guide/mm/workingset_report.rst
+ create mode 100644 include/linux/workingset_report.h
+ create mode 100644 mm/workingset_report.c
+ create mode 100644 mm/workingset_report_aging.c
+ create mode 100644 tools/testing/selftests/mm/workingset_report.c
+ create mode 100644 tools/testing/selftests/mm/workingset_report.h
+ create mode 100644 tools/testing/selftests/mm/workingset_report_test.c
+
+-- 
+2.45.1.467.gbab1589fc0-goog
+
 
