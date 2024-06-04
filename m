@@ -1,138 +1,221 @@
-Return-Path: <cgroups+bounces-3096-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3097-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED9518FB67B
-	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2024 17:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0225A8FB821
+	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2024 17:55:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B2111C22CC4
-	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2024 15:03:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21E771C24E05
+	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2024 15:55:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D24D846D;
-	Tue,  4 Jun 2024 15:03:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bAuI3hV4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9540A149C65;
+	Tue,  4 Jun 2024 15:53:26 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DCCA13CA9A
-	for <cgroups@vger.kernel.org>; Tue,  4 Jun 2024 15:03:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA463148FE6;
+	Tue,  4 Jun 2024 15:53:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717513385; cv=none; b=TRBJslWKrCwneF6dlqHAtfAIWkyFhPqsmOYfezhvA7Z/r9srVuNtdG9rv7stwbkvbq4PJBltpFKE8jRmZpTplQTTMvDm07/xktGwcJqe1lljqsrqgaVAmLV0F/5vFN3PNxDqrEBrPb84VxUqihSIP2Sm8IYfZoxffhxvmzpctx0=
+	t=1717516406; cv=none; b=J/ElMn9fnrAqKHj3Q04mRBprYqY+wqNGifUYyZiyMFLQLHCTS25Uj41KAD7XE06esu1IlUxJft+wyaIdDyTdhp7T/FBd6BJAtIa87svht6SR53OFyPuN5s0Fk6Vej4j+uOOzbygcSuA+kTNL5UlecU3UpWXjznFhBuuFSNTcJ7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717513385; c=relaxed/simple;
-	bh=4TQW0kfgzyxz8gaP9ctr2Nr1tEvi9I6QOkgJu5JS7zE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CZkhrv9f5/dct6Dq6zCiXD23nVPfz2ypQcJnHpB3T7rNpI7y2YjybiEyQrpc0d00KGyMlTEkM0xUCZ1p+1vWqiLpS5rk46S5NRDeVNE8P8D/y3CSBRbY0KZuyGFPn3daGorBRh4T1LBbnM7yzz1VEa1UEnxiSsP7hzCbzq8ZQdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bAuI3hV4; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1717513382;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5HeKLp06cYpYp9T9CdViOJHM4DaddkJicTfYxHrEBRA=;
-	b=bAuI3hV4SsW4TuHTZ3pP8b5nlraR8sf6rckYC9rgPGpxbJLh4TKluSHCjf0f1L6IJdVPXJ
-	bE9r/enxjVAvthW60ukLQeZbPe5YsuZZeqzMNYL4//neA45Mm3oYTr2a2zMU2/U8UoBq5X
-	k1g1B0jEmlW6UhvBcIhVBeoMjuqhZCM=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-117-sBQ9Z7ckMCK9d-dAK7eg6g-1; Tue,
- 04 Jun 2024 11:02:58 -0400
-X-MC-Unique: sBQ9Z7ckMCK9d-dAK7eg6g-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 663333C0008A;
-	Tue,  4 Jun 2024 15:02:58 +0000 (UTC)
-Received: from [10.22.17.111] (unknown [10.22.17.111])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id A769E492BDB;
-	Tue,  4 Jun 2024 15:02:57 +0000 (UTC)
-Message-ID: <6a2b7129-febc-4dd2-b493-7f43e061a2a6@redhat.com>
-Date: Tue, 4 Jun 2024 11:02:57 -0400
+	s=arc-20240116; t=1717516406; c=relaxed/simple;
+	bh=jqzyU34fAZG4/WHYtSv7WuekoSVYXVRfGb6ve0icGKI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=p24aUvh2sK+xxHKdgy6Nsc5etRY5CTEgKo1l4S7OjdgLXzMcnrN24i2KecpeN4cQrCEo2G5nkOI5AFT/v/bN9IbHUJb2/eqkeQWsl4pHDIpZORyG//m5nc3Wva1nnddlD6cegodt4qLjznDIf8yAzGpYSrbrXWn6acFsy+qIupw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D41BC2BBFC;
+	Tue,  4 Jun 2024 15:52:38 +0000 (UTC)
+Date: Tue, 4 Jun 2024 11:52:35 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Rafael J. Wysocki"
+ <rafael.j.wysocki@intel.com>, Greg Kroah-Hartman
+ <gregkh@linuxfoundation.org>, Corey Minyard <minyard@acm.org>, Allen Pais
+ <apais@linux.microsoft.com>, Sebastian Reichel
+ <sebastian.reichel@collabora.com>, Perry Yuan <perry.yuan@amd.com>,
+ Giovanni Cabiddu <giovanni.cabiddu@intel.com>, Herbert Xu
+ <herbert@gondor.apana.org.au>, Nuno Sa <nuno.sa@analog.com>, Guenter Roeck
+ <linux@roeck-us.net>, Randy Dunlap <rdunlap@infradead.org>, Andi Shyti
+ <andi.shyti@kernel.org>, Heiner Kallweit <hkallweit1@gmail.com>, Lee Jones
+ <lee@kernel.org>, Samuel Holland <samuel@sholland.org>, Elad Nachman
+ <enachman@marvell.com>, Arseniy Krasnov <AVKrasnov@sberdevices.ru>,
+ Johannes Berg <johannes.berg@intel.com>, Gregory Greenman
+ <gregory.greenman@intel.com>, Benjamin Berg <benjamin.berg@intel.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, Robert Richter <rrichter@amd.com>,
+ Vinod Koul <vkoul@kernel.org>, Chunfeng Yun <chunfeng.yun@mediatek.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Hans de Goede
+ <hdegoede@redhat.com>, Ilpo =?UTF-8?B?SsOkcnZpbmVu?=
+ <ilpo.jarvinen@linux.intel.com>, Nikita Kravets <teackot@gmail.com>, Jiri
+ Slaby <jirislaby@kernel.org>, Srinivas Pandruvada
+ <srinivas.pandruvada@linux.intel.com>, Stanley Chang
+ <stanley_chang@realtek.com>, Heikki Krogerus
+ <heikki.krogerus@linux.intel.com>, Abdel Alkuor <abdelalkuor@geotab.com>,
+ Kent Overstreet <kent.overstreet@linux.dev>, Eric Biggers
+ <ebiggers@google.com>, Kees Cook <keescook@chromium.org>, Ingo Molnar
+ <mingo@kernel.org>, Daniel Bristot de Oliveira <bristot@kernel.org>, Andrew
+ Morton <akpm@linux-foundation.org>, Hugh Dickins <hughd@google.com>, Abel
+ Wu <wuyun.abel@bytedance.com>, John Johansen <john.johansen@canonical.com>,
+ Mimi Zohar <zohar@linux.ibm.com>, Stefan Berger <stefanb@linux.ibm.com>,
+ Roberto Sassu <roberto.sassu@huawei.com>, Eric Snowberg
+ <eric.snowberg@oracle.com>, Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto
+ <o-takashi@sakamocchi.jp>, Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+ Mark Brown <broonie@kernel.org>, Kuninori Morimoto
+ <kuninori.morimoto.gx@renesas.com>, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, keyrings@vger.kernel.org,
+ linux-crypto@vger.kernel.org, linux-acpi@vger.kernel.org,
+ linux-ide@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
+ linux-clk@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org, qat-linux@intel.com,
+ dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+ intel-xe@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+ linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
+ linux-leds@vger.kernel.org, linux-sunxi@lists.linux.dev,
+ linux-omap@vger.kernel.org, linux-mmc@vger.kernel.org,
+ linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+ linux-wireless@vger.kernel.org, linux-pci@vger.kernel.org,
+ linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org,
+ linux-gpio@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+ linux-staging@lists.linux.dev, linux-usb@vger.kernel.org,
+ linux-fbdev@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+ linux-hardening@vger.kernel.org, cgroups@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org,
+ apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+ linux-integrity@vger.kernel.org, alsa-devel@alsa-project.org,
+ linux-sound@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
+ Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, "Naveen N. Rao"
+ <naveen.n.rao@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo
+ Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, Dave Hansen
+ <dave.hansen@linux.intel.com>, x86@kernel.org, "H. Peter Anvin"
+ <hpa@zytor.com>, David Howells <dhowells@redhat.com>, "David S. Miller"
+ <davem@davemloft.net>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown
+ <lenb@kernel.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, Damien Le Moal
+ <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>, Daniel Scally
+ <djrscally@gmail.com>, Sakari Ailus <sakari.ailus@linux.intel.com>, Michael
+ Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
+ Florian Fainelli <florian.fainelli@broadcom.com>, Ray Jui
+ <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, Broadcom
+ internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Heiko
+ Stuebner <heiko@sntech.de>, Peter De Schrijver <pdeschrijver@nvidia.com>,
+ Prashant Gaikwad <pgaikwad@nvidia.com>, Thierry Reding
+ <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, Huang
+ Rui <ray.huang@amd.com>, "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
+ Mario Limonciello <mario.limonciello@amd.com>, Viresh Kumar
+ <viresh.kumar@linaro.org>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Rodrigo Vivi <rodrigo.vivi@intel.com>,
+ Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin
+ <tursulin@ursulin.net>, Karol Herbst <kherbst@redhat.com>, Lyude Paul
+ <lyude@redhat.com>, Danilo Krummrich <dakr@redhat.com>, Jean Delvare
+ <jdelvare@suse.com>, Alexander Shishkin
+ <alexander.shishkin@linux.intel.com>, Pavel Machek <pavel@ucw.cz>, Chen-Yu
+ Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, Tony
+ Lindgren <tony@atomide.com>, Adrian Hunter <adrian.hunter@intel.com>, Hu
+ Ziji <huziji@marvell.com>, Ulf Hansson <ulf.hansson@linaro.org>, Miquel
+ Raynal <miquel.raynal@bootlin.com>, Richard Weinberger <richard@nod.at>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Potnuri Bharat Teja
+ <bharat@chelsio.com>, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Miri Korenblit
+ <miriam.rachel.korenblit@intel.com>, Kalle Valo <kvalo@kernel.org>, Mahesh
+ J Salgaonkar <mahesh@linux.ibm.com>, Oliver O'Halloran <oohall@gmail.com>,
+ Kishon Vijay Abraham I <kishon@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, JC Kuo <jckuo@nvidia.com>,
+ Andrew Lunn <andrew@lunn.ch>, Gregory Clement
+ <gregory.clement@bootlin.com>, Sebastian Hesselbarth
+ <sebastian.hesselbarth@gmail.com>, Sebastian Reichel <sre@kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui
+ <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>, Thinh Nguyen
+ <Thinh.Nguyen@synopsys.com>, Helge Deller <deller@gmx.de>, Brian Foster
+ <bfoster@redhat.com>, Zhihao Cheng <chengzhihao1@huawei.com>, Tejun Heo
+ <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner
+ <hannes@cmpxchg.org>, Peter Zijlstra <peterz@infradead.org>, Juri Lelli
+ <juri.lelli@redhat.com>, Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall
+ <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot de
+ Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Jason Baron <jbaron@akamai.com>, Jim
+ Cromie <jim.cromie@gmail.com>, Paul Moore <paul@paul-moore.com>, James
+ Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, Dmitry
+ Kasatkin <dmitry.kasatkin@gmail.com>, Clemens Ladisch <clemens@ladisch.de>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam
+ Girdwood <lgirdwood@gmail.com>, Linus Torvalds
+ <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v1 1/1] treewide: Align match_string() with
+ sysfs_match_string()
+Message-ID: <20240604115235.044acfd6@gandalf.local.home>
+In-Reply-To: <87tti9cfry.fsf@intel.com>
+References: <20240603211538.289765-1-andriy.shevchenko@linux.intel.com>
+	<87tti9cfry.fsf@intel.com>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] cpuset: use Union-Find to optimize the merging of
- cpumasks
-To: Xavier <ghostxavier@sina.com>
-Cc: lizefan.x@bytedance.com, tj@kernel.org, hannes@cmpxchg.org,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240531024837.255293-1-ghostxavier@sina.com>
- <20240603123101.590760-1-ghostxavier@sina.com>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240603123101.590760-1-ghostxavier@sina.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On 6/3/24 08:31, Xavier wrote:
-> The process of constructing scheduling domains involves multiple loops
-> and repeated evaluations, leading to numerous redundant and ineffective
-> assessments that impact code efficiency.
->
-> Here, we use Union-Find to optimize the merging of cpumasks. By employing
-> path compression and union by rank, we effectively reduce the number of
-> lookups and merge comparisons.
->
-> Signed-off-by: Xavier <ghostxavier@sina.com>
->
-> Hi Longman,
->
-> Thank you for your feedback on the previous version of the patch.
->
-> Now I will respond to the three questions you raised:
-> 1) The function comment describes the algorithm to find the set of
-> domains. If you change the algorithm, you have to update the comment as
-> well.
->
-> Reply: Sorry for not paying attention to the comments before. The new patch (v3) has updated the comment content.
->
-> 2) generate_sched_domains() is not in a performance critical path, so
-> its performance is not as important. Also the csn array is typically not
-> that big. Changing the algorithm may introduce new bugs which leads to
-> the next point.
->
-> Reply: Indeed, this function is not a critical path impacting performance, but it's always good to optimize efficiency. The optimization is limited to the internals of this function and does not affect other modules, so fixing the internal bug should have manageable risks.
+On Tue, 04 Jun 2024 10:45:37 +0300
+Jani Nikula <jani.nikula@linux.intel.com> wrote:
 
-In term of efficiency, your patch does eliminate the third iteration (k) 
-in the csn iteration loop. However the new union_sets() function may go 
-up the node hierarchy which can considered a third iteration in some 
-way. So there is some saving, but not as significant as it looks. It 
-does simplify the code and make it a bit easier to read.
+> On Sun, 02 Jun 2024, Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+> > Make two APIs look similar. Hence convert match_string() to be
+> > a 2-argument macro. In order to avoid unneeded churn, convert
+> > all users as well. There is no functional change intended.  
+> 
+> Why do we think it's a good idea to increase and normalize the use of
+> double-underscore function names across the kernel, like
+> __match_string() in this case? It should mean "reserved for the
+> implementation, not to be called directly".
+> 
+> If it's to be used directly, it should be named accordingly, right?
+> 
+> Being in line with __sysfs_match_string() isn't a great argument alone,
+> because this adds three times the number of __match_string() calls than
+> there are __sysfs_match_string() calls. It's not a good model to follow.
+> Arguably both should be renamed.
 
->
-> 3) How do you test your code to ensure its correctness?
-> I applied your patch and run the ./test_cpuset_prs.sh got the following...
->
-> Reply: I'm very sorry, this is my first time submitting a kernel patch and I don't know which test cases need to be run. I just constructed some scenarios locally to test, so the testing scope is limited. Thank you for providing the test cases. I have reproduced and resolved the issue, and have passed several other test cases in CGroup. But currently, I only have QEMU simulation environment, so my testing ability is limited. I hope you can help me with some comprehensive testing of my new version patch. Thank you very much.
->
-> I hope you can pay further attention to the new patch.
+Agreed. I want to get rid of any functions starting with an underscore
+except for those that are basically the same function used internally for
+convenience.
 
-Also your patch eliminates all the use of the cpuset->pn variable. So 
-you cab remove it as it is no longer needed.
+Perhaps "match_string_dynamic()"? Where it is used for dynamically
+allocated arrays without known size. Or, allow a third parameter for
+dynamic arrays.
 
-After a harder look at the generate_sched_domains() code, I have found a 
-bug in the code with respect to the support of remote partition. I will 
-send another patch to fix it. I also realize that the function was 
-originally designed to support v1 cpuset. v2 cpuset is quite different 
-and the code can be simplified for the v2 use case.
+#define match_string(_a, _s, ...)
+	char _______STR[] = __stringify((__VA_ARGS__));	\
+	if (sizeof(_______STR) > 3)			\
+		__match_string(_a, _s, ##__VA_ARGS__);  \
+	else						\
+		__match_string(_a, _s, ARRAY_SIZE(_a));
 
-You are welcome to send a v4 patch on top of the new cpuset code base.
+What the above stringify((__VA_ARGS__)) does is to check the size of any
+args added to match_string(). if there isn't any, it will turn into:
+"()\0", which is of size 3. If you add an argument, it will be:
+"(<arg>)\0", which will have a size greater than three.
 
-Thanks,
-Longman
+(trace_printk() does this trick in include/linux/kernel.h).
+
+This way, both:
+
+ match_string(array, sting);
+
+or
+
+ match_string(array, string, size);
+
+will work.
+
+-- Steve
 
 
