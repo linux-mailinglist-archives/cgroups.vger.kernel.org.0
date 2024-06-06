@@ -1,62 +1,52 @@
-Return-Path: <cgroups+bounces-3121-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3122-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E77BB8FF10D
-	for <lists+cgroups@lfdr.de>; Thu,  6 Jun 2024 17:46:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D92B18FF35D
+	for <lists+cgroups@lfdr.de>; Thu,  6 Jun 2024 19:10:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60C5328DD77
-	for <lists+cgroups@lfdr.de>; Thu,  6 Jun 2024 15:46:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F311B2542A
+	for <lists+cgroups@lfdr.de>; Thu,  6 Jun 2024 17:04:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47DEB197553;
-	Thu,  6 Jun 2024 15:45:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9248B1990D8;
+	Thu,  6 Jun 2024 17:02:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ymg7ROBd"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JdB6g2Uj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B07D196DB0
-	for <cgroups@vger.kernel.org>; Thu,  6 Jun 2024 15:45:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAF5D1990C4;
+	Thu,  6 Jun 2024 17:02:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717688749; cv=none; b=fH4ZftCl7/47bmX3KP1TbCJ0RT2q5TwGBKD3B78OKF61jydb2IHqKhkLAWMubUVDLOz1t04FZESdzaBxSjGbYDbsyl+sLPxNoego7udDL4eywHuhG6wA0ufVzo9g8JVPxjB7kNzRtPVvkJWL7u2xR5/yAEKDDrCNLridkv7hx4E=
+	t=1717693377; cv=none; b=ubpYzFlF1KpQGWg0BbjnMpdOl1EaR+xmgN+8smhrdeQCM03Y4XH7CCvqk04Ui5huFP1vLrJ/KIJ1BAkA/iCL1YP7dFR2KW+gzHPL8agzYgl+wHiFNYZWALwSKbu/PC9L97DPRFZxp1BExgOBbCMreNN7cDnFUduBHBNskNRooo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717688749; c=relaxed/simple;
-	bh=axEesd1KcqTkvjB0CnmuulRkE7CYYEayuZLnI4aD1Hc=;
+	s=arc-20240116; t=1717693377; c=relaxed/simple;
+	bh=OezYr4YgBlSXfoJFFb3xKyEwrZ8N+uOzdHMby2UkiLQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Hf1mC75dp+6oUBtCnDyhmpOpHBJ7GqDhU4Q7o+wQnIs9J1+pVrpQpEIxQQFq+RIPGN/DFRCpTsL45dhO0e5ZQrkpZjzVtRMISOgwRtZLl2h+v6opkIiemksXM56w5HgUCpvdDYfqW5qAzGCOwucZyDRYUNh6nVg/EdzerT4X+HQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ymg7ROBd; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1717688746;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=do9l/6SevcYiTITfryG8vnwfYZ8K8fjEylRaQrA5X7Q=;
-	b=Ymg7ROBdmznGuqsx7K2sdZUAPUrtJbZgS17WgC6LfscshXsyepuOUvEF7HJ4CoeNmmeXeU
-	Ihe/QSjvL/UhtJDzkw6pgpkHr8JUF0jnDv3V4iGWQi0g9Mra7OsrT0+n+vDAYzg5CmXxEl
-	mBPdoM7D9PcJ9S5Y3uQYWG3nfGtFyiQ=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-683-_NT2JrStN7CzC6EDXSlQDQ-1; Thu,
- 06 Jun 2024 11:45:43 -0400
-X-MC-Unique: _NT2JrStN7CzC6EDXSlQDQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D6F0E380008F;
-	Thu,  6 Jun 2024 15:45:41 +0000 (UTC)
-Received: from [10.22.33.43] (unknown [10.22.33.43])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 12844202A435;
-	Thu,  6 Jun 2024 15:45:40 +0000 (UTC)
-Message-ID: <8936c102-725d-4496-b014-cc3edfccf4dd@redhat.com>
-Date: Thu, 6 Jun 2024 11:45:37 -0400
+	 In-Reply-To:Content-Type; b=Jo/CbFrilVbyus7qVkLgI/VETuutiKWF/nUXQKF7tbLlO0ztMpRMo8eLs8Kz3826qAhwwah3WQEFE3WG1LbCK4F2oMcpTOYPYBzhwdaCCz3qNNWiZv2/RHH57ntFLLCufwsc72yTpjwltA4KI46PoH4a1TBw6/mG+HwCQLNQxg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=JdB6g2Uj; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=sEoAy6edqgFguOV2DSnAI0H9NUQjpmesJsuIe22sxxo=; b=JdB6g2UjYDYtHDCOjp5NsNNEcO
+	qVNfnIrQWV+DYpMt2eS2OOLdllzYnUSqAwwZrXvHXsjfH94NkxZisXAgXA7htzRK296gfbR3JkOZD
+	MYlpC5xq+Jp86vYvVdUl/F/XgJnUqTr4kqA4h6uawzBrKf+uVySfT6QocJfmSXjP7pzeI6/ezEXVc
+	+myeYfHZNsr1yXqSB6VVs8kx3juFiWga3dXv/VJELekjuO663XN6jcIjiktEEYAFSHpvfNklO3k5S
+	oJolq3cEZKG4sdvDUkf6xL6ClVw5s3+7TinwFYgUwT/LvRZiEHTW2YKQQnQAwyqFYYKmI+Q54Bb9O
+	LtecWOSA==;
+Received: from [50.53.4.147] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sFGVS-0000000AcqX-3vpJ;
+	Thu, 06 Jun 2024 17:02:31 +0000
+Message-ID: <f0d23fd7-70c5-4d07-bb37-712310aca0f7@infradead.org>
+Date: Thu, 6 Jun 2024 10:02:27 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -64,54 +54,185 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] cgroup/cpuset: export cpuset_cpus_allowed()
-To: Fred Griffoul <fgriffo@amazon.co.uk>, griffoul@gmail.com
-Cc: kernel test robot <lkp@intel.com>,
- Alex Williamson <alex.williamson@redhat.com>,
- Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- Yi Liu <yi.l.liu@intel.com>, Kevin Tian <kevin.tian@intel.com>,
- Eric Auger <eric.auger@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>,
- Christian Brauner <brauner@kernel.org>, Ankit Agrawal <ankita@nvidia.com>,
- Reinette Chatre <reinette.chatre@intel.com>, Ye Bin <yebin10@huawei.com>,
- kvm@vger.kernel.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-References: <20240606151017.41623-1-fgriffo@amazon.co.uk>
- <20240606151017.41623-2-fgriffo@amazon.co.uk>
+Subject: Re: [PATCH v2 8/8] Docs/admin-guide/mm/workingset_report: document
+ sysfs and memcg interfaces
+To: Yuanchu Xie <yuanchu@google.com>, David Hildenbrand <david@redhat.com>,
+ "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+ Khalid Aziz <khalid.aziz@oracle.com>, Henry Huang <henry.hj@antgroup.com>,
+ Yu Zhao <yuzhao@google.com>, Dan Williams <dan.j.williams@intel.com>,
+ Gregory Price <gregory.price@memverge.com>, Huang Ying
+ <ying.huang@intel.com>, Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Kalesh Singh <kaleshsingh@google.com>, Wei Xu <weixugc@google.com>,
+ David Rientjes <rientjes@google.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Muchun Song <muchun.song@linux.dev>, Shuah Khan <shuah@kernel.org>,
+ Yosry Ahmed <yosryahmed@google.com>, Matthew Wilcox <willy@infradead.org>,
+ Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>,
+ Kairui Song <kasong@tencent.com>, "Michael S. Tsirkin" <mst@redhat.com>,
+ Vasily Averin <vasily.averin@linux.dev>, Nhat Pham <nphamcs@gmail.com>,
+ Miaohe Lin <linmiaohe@huawei.com>, Qi Zheng <zhengqi.arch@bytedance.com>,
+ Abel Wu <wuyun.abel@bytedance.com>,
+ "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20240604020549.1017540-1-yuanchu@google.com>
+ <20240604020549.1017540-9-yuanchu@google.com>
 Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240606151017.41623-2-fgriffo@amazon.co.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240604020549.1017540-9-yuanchu@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
+Hi,
 
-On 6/6/24 11:10, Fred Griffoul wrote:
-> A subsequent patch calls cpuset_cpus_allowed() in the vfio driver pci
-> code. Export the symbol to be able to build the vfio driver as a kernel
-> module.
->
-> Signed-off-by: Fred Griffoul <fgriffo@amazon.co.uk>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202406060731.L3NSR1Hy-lkp@intel.com/
+Just a couple of nits below:
+
+On 6/3/24 7:05 PM, Yuanchu Xie wrote:
+> Add workingset reporting documentation for better discoverability of
+> its sysfs and memcg interfaces. Also document the required kernel
+> config to enable workingset reporting.
+> 
+> Signed-off-by: Yuanchu Xie <yuanchu@google.com>
 > ---
->   kernel/cgroup/cpuset.c | 1 +
->   1 file changed, 1 insertion(+)
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 4237c8748715..9fd56222aa4b 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -4764,6 +4764,7 @@ void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
->   	rcu_read_unlock();
->   	spin_unlock_irqrestore(&callback_lock, flags);
->   }
-> +EXPORT_SYMBOL_GPL(cpuset_cpus_allowed);
->   
->   /**
->    * cpuset_cpus_allowed_fallback - final fallback before complete catastrophe.
+>  Documentation/admin-guide/mm/index.rst        |   1 +
+>  .../admin-guide/mm/workingset_report.rst      | 105 ++++++++++++++++++
+>  2 files changed, 106 insertions(+)
+>  create mode 100644 Documentation/admin-guide/mm/workingset_report.rst
+> 
+> diff --git a/Documentation/admin-guide/mm/index.rst b/Documentation/admin-guide/mm/index.rst
+> index 1f883abf3f00..fba987de8997 100644
+> --- a/Documentation/admin-guide/mm/index.rst
+> +++ b/Documentation/admin-guide/mm/index.rst
+> @@ -41,4 +41,5 @@ the Linux memory management.
+>     swap_numa
+>     transhuge
+>     userfaultfd
+> +   workingset_report
+>     zswap
+> diff --git a/Documentation/admin-guide/mm/workingset_report.rst b/Documentation/admin-guide/mm/workingset_report.rst
+> new file mode 100644
+> index 000000000000..f455ae93b30e
+> --- /dev/null
+> +++ b/Documentation/admin-guide/mm/workingset_report.rst
+> @@ -0,0 +1,105 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=================
+> +Workingset Report
+> +=================
+> +Workingset report provides a view of memory coldness in user-defined
+> +time intervals, i.e. X bytes are Y milliseconds cold. It breaks down
+> +the user pages in the system per-NUMA node, per-memcg, for both
+> +anonymous and file pages into histograms that look like:
+> +::
+> +
+> +    1000 anon=137368 file=24530
+> +    20000 anon=34342 file=0
+> +    30000 anon=353232 file=333608
+> +    40000 anon=407198 file=206052
+> +    9223372036854775807 anon=4925624 file=892892
+> +
+> +The workingset reports can be used to drive proactive reclaim, by
+> +identifying the number of cold bytes in a memcg, then writing to
+> +``memory.reclaim``.
+> +
+> +Quick start
+> +===========
+> +Build the kernel with the following configurations. The report relies
+> +on Multi-gen LRU for page coldness.
+> +
+> +* ``CONFIG_LRU_GEN=y``
+> +* ``CONFIG_LRU_GEN_ENABLED=y``
+> +* ``CONFIG_WORKINGSET_REPORT=y``
+> +
+> +Optionally, the aging kernel daemon can be enabled with the following
+> +configuration.
+> +* ``CONFIG_LRU_GEN_ENABLED=y``
+> +
+> +Sysfs interfaces
+> +================
+> +``/sys/devices/system/node/nodeX/page_age`` provides a per-node page
+> +age histogram, showing an aggregate of the node's lruvecs.
+> +Reading this file causes a hierarchical aging of all lruvecs, scanning
+> +pages and creates a new Multi-gen LRU generation in each lruvec.
+> +For example:
+> +::
+> +
+> +    1000 anon=0 file=0
+> +    2000 anon=0 file=0
+> +    100000 anon=5533696 file=5566464
+> +    18446744073709551615 anon=0 file=0
+> +
+> +``/sys/devices/system/node/nodeX/page_age_interval`` is a comma
+> +separated list of time in milliseconds that configures what the page
+> +age histogram uses for aggregation. For the above histogram,
+> +the intervals are:
+> +::
+> +    1000,2000,100000
+> +
+> +``/sys/devices/system/node/nodeX/workingset_report/refresh_interval``
+> +defines the amount of time the report is valid for in milliseconds.
+> +When a report is still valid, reading the ``page_age`` file shows
+> +the existing valid report, instead of generating a new one.
+> +
+> +``/sys/devices/system/node/nodeX/workingset_report/report_threshold``
+> +specifies how often the userspace agent can be notified for node
+> +memory pressure, in milliseconds. When a node reaches its low
+> +watermarks and wakes up kswapd, programs waiting on ``page_age`` are
+> +woken up so they can read the histogram and make policy decisions.
+> +
+> +Memcg interface
+> +===============
+> +While ``page_age_interval`` is defined per-node in sysfs. ``page_age``,
 
-LGTM
+                                                      sysfs,
 
-Acked-by: Waiman Long <longman@redhat.com>
+> +``refresh_interval`` and ``report_threshold`` are available per-memcg.
+> +
+> +``/sys/fs/cgroup/.../memory.workingset.page_age``
+> +The memcg equivalent of the sysfs workingset page age histogram,
 
+                                                       no comma   ^
+
+> +breaks down the workingset of this memcg and its children into
+> +page age intervals. Each node is prefixed with a node header and
+> +a newline. Non-proactive direct reclaim on this memcg can also
+> +wake up userspace agents that are waiting on this file.
+> +e.g.
+> +::
+> +
+> +    N0
+> +    1000 anon=0 file=0
+> +    2000 anon=0 file=0
+> +    3000 anon=0 file=0
+> +    4000 anon=0 file=0
+> +    5000 anon=0 file=0
+> +    18446744073709551615 anon=0 file=0
+> +
+> +``/sys/fs/cgroup/.../memory.workingset.refresh_interval``
+> +The memcg equivalent of the sysfs refresh interval. A per-node
+> +number of how much time a page age histogram is valid for, in
+> +milliseconds.
+> +e.g.
+> +::
+> +
+> +    echo N0=2000 > memory.workingset.refresh_interval
+> +
+> +``/sys/fs/cgroup/.../memory.workingset.report_threshold``
+> +The memcg equivalent of the sysfs report threshold. A per-node
+> +number of how often userspace agent waiting on the page age
+> +histogram can be woken up, in milliseconds.
+> +e.g.
+> +::
+> +
+> +    echo N0=1000 > memory.workingset.report_threshold
+
+-- 
+#Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://subspace.kernel.org/etiquette.html
 
