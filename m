@@ -1,116 +1,117 @@
-Return-Path: <cgroups+bounces-3115-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3116-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0523E8FF030
-	for <lists+cgroups@lfdr.de>; Thu,  6 Jun 2024 17:15:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CBAF8FF069
+	for <lists+cgroups@lfdr.de>; Thu,  6 Jun 2024 17:21:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8473328BB54
-	for <lists+cgroups@lfdr.de>; Thu,  6 Jun 2024 15:15:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E6D61C208E8
+	for <lists+cgroups@lfdr.de>; Thu,  6 Jun 2024 15:21:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 605E2199E98;
-	Thu,  6 Jun 2024 14:52:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F2F8198822;
+	Thu,  6 Jun 2024 15:11:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Rlw+lGM2"
+	dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b="wDKEeDBf"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+Received: from smtp-fw-52002.amazon.com (smtp-fw-52002.amazon.com [52.119.213.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 437131E494;
-	Thu,  6 Jun 2024 14:52:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B39196D86;
+	Thu,  6 Jun 2024 15:11:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717685532; cv=none; b=AY+SDucKsnk5fNKhdRgDnoxxiaxswAHx9QaleaHkWr10cHlcuhWspYfYVPD08Cw/5LM5DX3GSLEzb2xr01uiT1bhX/mWELTynW89S1ABYD5WmbVGGSfnHjoN699W3pgnglLLLD+MrvIzALferxelzLVa8VXN72QsNvNc37QyqwE=
+	t=1717686676; cv=none; b=bbvncjvTd8gh4usQ2ioppkVPFebJCYfEh4p0irfKuT1DitId7PHauW3K4C/KvO7hR+S27zxcjcBw3s27Orn7V47LsJhBArMziVczRIzU+F5hEcnKMjpZ9YPAIEoQw0bwoVxKBOnOowutiyrvuoC/2CFpdAUB7+P6ousJOvi9zvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717685532; c=relaxed/simple;
-	bh=ih5KlinNy99KtipdP5e9vfFOB8HH84JHruKk/DTM7Nc=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=NVn37fxvEjRze5UOqPB1ezjdXLpZGVOrdXB3HetqzBCVvn15J2aEYbIqH2D+q7ly2uYe8E6DMB6dXlHXKvyKcQj4JzCXPKCwO6OgFRKtsWHRXaC/9EFJ4fu37hsDueFJU9l1KxWgaknRUhF5JYo648T+YHwksaPhw5Eu+O3It4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Rlw+lGM2; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1717685530; x=1749221530;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=ih5KlinNy99KtipdP5e9vfFOB8HH84JHruKk/DTM7Nc=;
-  b=Rlw+lGM20SCbtTpGX9R9Y09o6a71J7ol1i6rtc+fDQ6YglQshpRiV5ck
-   /GjOWtLKD3r3FAzunDpl0UGzq+Q7xZhaNC7s4ZhPjTZXqrKRJeVhZJL6G
-   h8Jgzp0qJJ4VTpb//yeLTCv6MgTT2SkhLvccJn8iy5KKTlZaxoRTbFmQu
-   o/wZDJb1mRz77/GK1LtNlDVNf66F5vmSKPnhNBeGJ41l1Gxwlnt/78qiJ
-   0+oXRy+Ezi6SCzhnW5QFqmVlysXiVzMjbu8/Qm1vBv/Mlv30ESWCP8A0Y
-   Ea0VXs3/CYt4y6Kd3/Z2iHJ34om1ADMl48Cg9Pvz+nkj3VZqkYBln/Rp7
-   g==;
-X-CSE-ConnectionGUID: 8sfd12fuTvOhlUO+eOjq+w==
-X-CSE-MsgGUID: MjhTErU/S/SEOsOBdrC4Qw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11095"; a="17292290"
-X-IronPort-AV: E=Sophos;i="6.08,219,1712646000"; 
-   d="scan'208";a="17292290"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2024 07:51:59 -0700
-X-CSE-ConnectionGUID: 4AS7pECdTOShdbhz3z/Icw==
-X-CSE-MsgGUID: Yob9KelaRo6dwLNTOd73AQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,219,1712646000"; 
-   d="scan'208";a="75459722"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by smtpauth.intel.com with ESMTP/TLS/AES256-SHA; 06 Jun 2024 07:51:57 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: jarkko@kernel.org, dave.hansen@linux.intel.com, kai.huang@intel.com,
- tj@kernel.org, mkoutny@suse.com, linux-kernel@vger.kernel.org,
- linux-sgx@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
- tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
- sohil.mehta@intel.com, tim.c.chen@linux.intel.com, chenridong
- <chenridong@huawei.com>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com, chrisyan@microsoft.com
-Subject: Re: [PATCH v14 02/14] cgroup/misc: Add per resource callbacks for CSS
- events
-References: <20240531222630.4634-1-haitao.huang@linux.intel.com>
- <20240531222630.4634-3-haitao.huang@linux.intel.com>
- <eeb1f936-2989-4de0-8353-b2373ce47474@huawei.com>
-Date: Thu, 06 Jun 2024 09:51:55 -0500
+	s=arc-20240116; t=1717686676; c=relaxed/simple;
+	bh=v817bIMc8LCngm5aUfnkq+5jwelHGj9o1rf31AuUP60=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=stbuSZeJ/V57mhPsNpmyjXXU+iyx2u+1rmU396nrvIYOkm3bJ4kwrF/R/gr1vE2P1mwl42IA41Y4nlRAwHjouEmjWtUf2+7vVFDlUSsLjjhStw5Nss+oI1ZiIM/9xJCC/59Et1wBOKPMO8iLaIlT3sLkXuZg+ORj9wloYDQq2ug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b=wDKEeDBf; arc=none smtp.client-ip=52.119.213.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
+  s=amazon201209; t=1717686676; x=1749222676;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=3G9qxMT86kDpYdUxpd7pF8ELFUehp62qjuTlc4JGLIg=;
+  b=wDKEeDBf+ryyHi8AHnTZNjO4KWO3hqZGtkdhv3lNiYJSCdL29WEkdiAf
+   6uJh+sqYc8jXvwOkMf1v3yu56Z/Zke+oyaPUvqwGNGzLqSzT5pnKzmXaw
+   tiRm/7g5GFHcN4vj6lPwCvw3CrnByUdWE/Yn4OaGWi8rf2sjsiRVvbdcq
+   o=;
+X-IronPort-AV: E=Sophos;i="6.08,219,1712620800"; 
+   d="scan'208";a="637767875"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2024 15:11:13 +0000
+Received: from EX19MTAEUA002.ant.amazon.com [10.0.10.100:62920]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.31.105:2525] with esmtp (Farcaster)
+ id 990c7da9-484b-4967-885f-b3d91f08d027; Thu, 6 Jun 2024 15:11:11 +0000 (UTC)
+X-Farcaster-Flow-ID: 990c7da9-484b-4967-885f-b3d91f08d027
+Received: from EX19D007EUA001.ant.amazon.com (10.252.50.133) by
+ EX19MTAEUA002.ant.amazon.com (10.252.50.126) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Thu, 6 Jun 2024 15:11:11 +0000
+Received: from EX19MTAUWB001.ant.amazon.com (10.250.64.248) by
+ EX19D007EUA001.ant.amazon.com (10.252.50.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Thu, 6 Jun 2024 15:11:11 +0000
+Received: from dev-dsk-fgriffo-1c-69b51a13.eu-west-1.amazon.com
+ (10.13.244.152) by mail-relay.amazon.com (10.250.64.254) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34 via Frontend Transport; Thu, 6 Jun 2024 15:11:08 +0000
+From: Fred Griffoul <fgriffo@amazon.co.uk>
+To: <griffoul@gmail.com>
+CC: Fred Griffoul <fgriffo@amazon.co.uk>, kernel test robot <lkp@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>, Waiman Long
+	<longman@redhat.com>, Zefan Li <lizefan.x@bytedance.com>, Tejun Heo
+	<tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Jason Gunthorpe
+	<jgg@ziepe.ca>, Yi Liu <yi.l.liu@intel.com>, Kevin Tian
+	<kevin.tian@intel.com>, Eric Auger <eric.auger@redhat.com>, Stefan Hajnoczi
+	<stefanha@redhat.com>, Christian Brauner <brauner@kernel.org>, Ankit Agrawal
+	<ankita@nvidia.com>, Reinette Chatre <reinette.chatre@intel.com>, Ye Bin
+	<yebin10@huawei.com>, <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<cgroups@vger.kernel.org>
+Subject: [PATCH v3 1/2] cgroup/cpuset: export cpuset_cpus_allowed()
+Date: Thu, 6 Jun 2024 15:10:12 +0000
+Message-ID: <20240606151017.41623-2-fgriffo@amazon.co.uk>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240606151017.41623-1-fgriffo@amazon.co.uk>
+References: <20240606151017.41623-1-fgriffo@amazon.co.uk>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2ox8wt11wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <eeb1f936-2989-4de0-8353-b2373ce47474@huawei.com>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-On Thu, 06 Jun 2024 08:37:31 -0500, chenridong <chenridong@huawei.com>  
-wrote:
+A subsequent patch calls cpuset_cpus_allowed() in the vfio driver pci
+code. Export the symbol to be able to build the vfio driver as a kernel
+module.
 
->
->    
-> If _misc_cg_res_alloc fails, maybe some types do not call ->alloc(), but  
-> all types ->free() callback >will be called, is that ok?
->
-Not sure I understand. Are you suggesting we ignore failures from  
-->alloc() callback in _misc_cg_res_alloc() as it is per-resource, and have  
-->free() callback and resource provider of the failing type to handle the  
-failure internally?
+Signed-off-by: Fred Griffoul <fgriffo@amazon.co.uk>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202406060731.L3NSR1Hy-lkp@intel.com/
+---
+ kernel/cgroup/cpuset.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-IIUC, this failure only happens when a specific subcgroup is created  
-(memory running out for allocation) so failing that subcgroup as a whole  
-seems fine to me. Note the root node is static and no pre-resource  
-callbacks invoked by misc. And resource provider handles its own  
-allocations for root. In SGX case we too declare a static object for  
-corresponding root sgx_cgroup struct.
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 4237c8748715..9fd56222aa4b 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -4764,6 +4764,7 @@ void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
+ 	rcu_read_unlock();
+ 	spin_unlock_irqrestore(&callback_lock, flags);
+ }
++EXPORT_SYMBOL_GPL(cpuset_cpus_allowed);
+ 
+ /**
+  * cpuset_cpus_allowed_fallback - final fallback before complete catastrophe.
+-- 
+2.40.1
 
-Note also misc cgroup (except for setting capacity[res] = 0 at root) is  
-all or nothing so no mechanism to tell user "this resource does not work  
-but others are fine in this particular cgroup."
-
-Thanks
-Haitao
 
