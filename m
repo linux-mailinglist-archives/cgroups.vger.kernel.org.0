@@ -1,93 +1,200 @@
-Return-Path: <cgroups+bounces-3112-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3113-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7CA48FDEA9
-	for <lists+cgroups@lfdr.de>; Thu,  6 Jun 2024 08:24:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED7FE8FE702
+	for <lists+cgroups@lfdr.de>; Thu,  6 Jun 2024 15:02:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56A2A1F216C2
-	for <lists+cgroups@lfdr.de>; Thu,  6 Jun 2024 06:24:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA3CA1C232D9
+	for <lists+cgroups@lfdr.de>; Thu,  6 Jun 2024 13:02:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A72F673444;
-	Thu,  6 Jun 2024 06:24:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V6a3uCBz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 621513D56D;
+	Thu,  6 Jun 2024 13:02:04 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp134-31.sina.com.cn (smtp134-31.sina.com.cn [180.149.134.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60F9417BD5;
-	Thu,  6 Jun 2024 06:24:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FC10364
+	for <cgroups@vger.kernel.org>; Thu,  6 Jun 2024 13:01:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=180.149.134.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717655045; cv=none; b=eNoXex+ofo4giKjHAQzcg983iB8nhZIZ6GHn7Cw1HXuCfC0YiXwD8dCU/geO4TrzTlJBYuZdi2u0XXcj8DDp647idhl39RVsxgiRXpB5b9zr7rV9quXk0TS542jyKSDhLVnRJH/T48qz+hxXCU6njb/37jUWreAjwPgn87ZbQGU=
+	t=1717678924; cv=none; b=ZquFKWNDSsRQP0TNfF/mI9VPkFpKZCoJElbObqS1cHIf8WXeyHLIOhpctssc9UwF/sxpcHVPpEZedg6CLYXwXkDQqTSMk6DcJ8PzGQA+18unA1TmcSiRtzhr7VeboeWrlnqKyBYrpRu6Pi+OaopvvEzMonXNF/EXnmV0LtFYfq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717655045; c=relaxed/simple;
-	bh=Xmf+9W3CuWTJtgo6IQWETLoxYV8aWEsYyhvAl4to5BI=;
-	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=MtDX6pIoFAJhT8ZcwVuL/+RlgFJJ1PxkGb1Bv+Xfdi7sScXIxqOOzp9OkWbqOSxl+atUI3PzEF/eOOSUpBUBAPBG/DoGxswhEzU0KHtN4g7UUxA51nkVNIfdNiIW9fjk4r3kJivqzpS2rRrnRD5GkhqrFb2T/9mCsx3FcmeJ10U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V6a3uCBz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52FB0C2BD10;
-	Thu,  6 Jun 2024 06:24:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717655044;
-	bh=Xmf+9W3CuWTJtgo6IQWETLoxYV8aWEsYyhvAl4to5BI=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
-	b=V6a3uCBzKKrXFU0sf5Wio7VKNFk/R+sFFVccK40BceTOBRmpggbf/7GL5usUiHpVT
-	 F7gHqNe/M8rpWA6oAIaJvtxatNMjowRWXNTAgji3i4ivJnpFRqxJ34nTgLHKAdCxu3
-	 oXoqKyrYtbYjL6Mz5PgVF0d+GLfmYaAnTnYIo8YrFYgVgFDLanMbID3cJFdErVQuJg
-	 PVZjN9x+qc0s0EC4LTOD7i4NuU0tLLbiy7ZRSSGrIqqIG2ahSOiusGWnXr1dUkv4Td
-	 nowd9hYqGEMTNBddwSYaxqD8Diyp6Z94nRNJeScCS22oXvoVchPylY/4eGAh/Fk5bl
-	 3uEpd+nCPa4QQ==
+	s=arc-20240116; t=1717678924; c=relaxed/simple;
+	bh=9G+hDe0Y4HCk9gqOw5r8impQjZrix9+GnvOv3xH6UPs=;
+	h=Date:From:To:Cc:Subject:Mime-Version:Message-ID:Content-Type:
+	 Content-Disposition; b=MmYgYQpEN9ZoLtDyJyAOo7jyUCeUVqrRv0a1XJgaG6MAQwhOlMnlusUYARukyQ3VTX3Ap1ZLyu7IsSFm0k17yjKrrYqa4+Wj2DlnDAEFXEN5FlSOaQKr2009aQlvmkNxLAL/l6TSAmNrO/KEgHpEHAeP9jdFbPPijJ7HF9Erkt0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=180.149.134.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: webmail.sinamail.sina.com.cn
+Received: from webmail-23-147.pop3.fmail.yf.sinanode.com (HELO webmail.sinamail.sina.com.cn)([10.2.23.147])
+	by sina.com (10.185.250.21) with SMTP
+	id 6661B33C00004050; Thu, 6 Jun 2024 21:01:48 +0800 (CST)
+X-Sender: ghostxavier@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=ghostxavier@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=ghostxavier@sina.com
+X-SMAIL-MID: 5907333408643
+Received: by webmail.sinamail.sina.com.cn (Postfix, from userid 993)
+	id 83AC72B3E; Thu,  6 Jun 2024 21:01:48 +0800 (CST)
+Date: Thu, 06 Jun 2024 21:01:48 +0800
+Received: from ghostxavier@sina.com ([59.82.45.118]) by m1.mail.sina.com.cn via HTTP;
+ Thu, 06 Jun 2024 21:01:48 +0800
+From: "Xavier" <ghostxavier@sina.com>
+Reply-To: ghostxavier@sina.com
+To: "Waiman Long" <longman@redhat.com>
+Cc: "cgroups" <cgroups@vger.kernel.org>,
+ "linux-kernel" <linux-kernel@vger.kernel.org>, "tj" <tj@kernel.org>,
+ "lizefan.x" <lizefan.x@bytedance.com>, "hannes" <hannes@cmpxchg.org>
+Subject: Re: [PATCH-cgroup 1/2] cgroup/cpuset: Fix remote root partition
+ creation problem
+X-Priority: 3
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 06 Jun 2024 09:23:58 +0300
-Message-Id: <D1SPW7EF9CTN.1BY6S0JCPDPPY@kernel.org>
-To: "Jarkko Sakkinen" <jarkko@kernel.org>, "Huang, Kai"
- <kai.huang@intel.com>, "Haitao Huang" <haitao.huang@linux.intel.com>,
- <dave.hansen@linux.intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
- <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
- <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
- <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
- <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
-Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
- <zhanb@microsoft.com>, <anakrish@microsoft.com>,
- <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
- <chrisyan@microsoft.com>
-Subject: Re: [PATCH v14 14/14] selftests/sgx: Add scripts for EPC cgroup
- testing
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240531222630.4634-1-haitao.huang@linux.intel.com>
- <20240531222630.4634-15-haitao.huang@linux.intel.com>
- <D1RKK8CENNXI.1KMNDADV9C1YM@kernel.org>
- <op.2owf5xiwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <7cbf3583-a23e-4437-afc2-1faeb4a1f436@intel.com>
- <D1SPTDBBDU6F.2WLRZKYZWWTRB@kernel.org>
-In-Reply-To: <D1SPTDBBDU6F.2WLRZKYZWWTRB@kernel.org>
+Message-ID: <6661b33c7f1670.55086514.d793e57a@m1.mail.sina.com.cn>
+X-MessageID: 760e2f921f99d0dbcce4f70c5d48172f_202406
+X-SMAIL-UIID: 204ABDE21985004C70E66AE2A1146B46-20240606-210148-2
+X-Mailer: Sina WebMail 4.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
 
-On Thu Jun 6, 2024 at 9:20 AM EEST, Jarkko Sakkinen wrote:
-> > There are existing code where BUG_ON() is used during the kernel early=
-=20
-> > boot code when memory allocation fails (e.g., see cgroup_init_subsys())=
-,=20
-> > so it might be acceptable to use BUG_ON() here, but it's up to=20
-> > maintainers to decide whether it is OK.
->
-> When it is not possible continue to run the system at all, and only
-> then.
->
-> Here it is possible. Without SGX.
+SGkgTG9uZ21hbiwNCg0KSSBoYXZlIGEgc21hbGwgcXVlc3Rpb24gYWJvdXQgeW91ciBuZXcgcGF0
+Y2guIA0KSSB3b25kZXIgdGhhdCBpbiBjZ3JvdXAgdjIsICB3aWxsIHRoZXJlIGJlIGFueSBvdmVy
+bGFwIGJldHdlZW4gdmFsaWQgcGFydGl0aW9uIHJvb3RzIGFuZCB0b3BfY3B1c2V0PyBJZiBpdCBp
+cyBub3QsIHRoZSBzZWN0aW9uIHN0YXJ0aW5nIHdpdGggJ3Jlc3RhcnQ6JyB0aGF0IHNlYXJjaGVz
+IGZvciBvdmVybGFwcGluZyBjcHVzZXRzIGNhbiBiZSBza2lwcGVkIGZvciBjZ3JvdXAgdjIuIE90
+aGVyd2lzZSwgaWYgdGhlcmUgYXJlIGFueSBvdmVybGFwLCB0aGVuIHRoZSBhc3NpZ25tZW50IHRv
+ICdkb20nIG1heSBuZWVkIHBlcmZvcm0gYW4gY3B1bWFza19vciBvcGVyYXRpb24/DQoNCkJlc3Qg
+cmVnYXJkcywNClhhdmllcg0KDQo+LS0tLS0gT3JpZ2luYWwgTWVzc2FnZSAtLS0tLQ0KPkZyb206
+IFdhaW1hbiBMb25nIDxsb25nbWFuQHJlZGhhdC5jb20+DQo+VG86IFRlanVuIEhlbyA8dGpAa2Vy
+bmVsLm9yZz4sIFplZmFuIExpIDxsaXplZmFuLnhAYnl0ZWRhbmNlLmNvbT4sIEpvaGFubmVzIFdl
+aW5lciA8aGFubmVzQGNtcHhjaGcub3JnPg0KPkNjOiBjZ3JvdXBzQHZnZXIua2VybmVsLm9yZywg
+bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZywgWGF2aWVyIDxnaG9zdHhhdmllckBzaW5hLmNv
+bT4sIFdhaW1hbiBMb25nIDxsb25nbWFuQHJlZGhhdC5jb20+DQo+U3ViamVjdDogW1BBVENILWNn
+cm91cCAxLzJdIGNncm91cC9jcHVzZXQ6IEZpeCByZW1vdGUgcm9vdCBwYXJ0aXRpb24gY3JlYXRp
+b24gcHJvYmxlbQ0KPkRhdGU6IDIwMjQtMDYtMDYgMDE6MTkNCj4NCj5TaW5jZSBjb21taXQgMTgx
+YzhlMDkxYWFlICgiY2dyb3VwL2NwdXNldDogSW50cm9kdWNlIHJlbW90ZSBwYXJ0aXRpb24iKSwN
+Cj5hIHJlbW90ZSBwYXJ0aXRpb24gY2FuIGJlIGNyZWF0ZWQgdW5kZXJuZWF0aCBhIG5vbi1wYXJ0
+aXRpb24gcm9vdCBjcHVzZXQNCj5hcyBsb25nIGFzIGl0cyBleGNsdXNpdmVfY3B1cyBhcmUgc2V0
+IHRvIGRpc3RyaWJ1dGUgZXhjbHVzaXZlIENQVXMgZG93bg0KPnRvIGl0cyBjaGlsZHJlbi4gVGhl
+IGdlbmVyYXRlX3NjaGVkX2RvbWFpbnMoKSBmdW5jdGlvbiwgaG93ZXZlciwgZG9lc24ndA0KPnRh
+a2UgaW50byBhY2NvdW50IHRoaXMgbmV3IGJlaGF2aW9yIGFuZCBoZW5jZSB3aWxsIGZhaWwgdG8g
+Y3JlYXRlIHRoZQ0KPnNjaGVkIGRvbWFpbiBuZWVkZWQgZm9yIGEgcmVtb3RlIHJvb3QgKG5vbi1p
+c29sYXRlZCkgcGFydGl0aW9uLg0KPlRoZXJlIGFyZSB0d28gaXNzdWVzIHJlbGF0ZWQgdG8gcmVt
+b3RlIHBhcnRpdGlvbiBzdXBwb3J0LiBGaXJzdCBvZg0KPmFsbCwgZ2VuZXJhdGVfc2NoZWRfZG9t
+YWlucygpIGhhcyBhIGZhc3QgcGF0aCB0aGF0IGlzIGFjdGl2YXRlZCBpZg0KPnJvb3RfbG9hZF9i
+YWxhbmNlIGlzIHRydWUgYW5kIHRvcF9jcHVzZXQubnJfc3VicGFydHMgaXMgbm9uLXplcm8uIFRo
+ZQ0KPmxhdGVyIGNvbmRpdGlvbiBpc24ndCBxdWl0ZSBjb3JyZWN0IGZvciByZW1vdGUgcGFydGl0
+aW9ucyBhcyBucl9zdWJwYXJ0cw0KPmp1c3Qgc2hvd3MgdGhlIG51bWJlciBvZiBsb2NhbCBjaGls
+ZCBwYXJ0aXRpb25zIHVuZGVybmVhdGggaXQuIFRoZXJlDQo+Y2FuIGJlIG5vIGxvY2FsIGNoaWxk
+IHBhcnRpdGlvbiB1bmRlciB0b3BfY3B1c2V0IGV2ZW4gaWYgdGhlcmUgYXJlDQo+cmVtb3RlIHBh
+cnRpdGlvbnMgZnVydGhlciBkb3duIHRoZSBoaWVyYXJjaHkuIEZpeCB0aGF0IGJ5IGNoZWNraW5n
+DQo+Zm9yIHN1YnBhcnRpdGlvbnNfY3B1cyB3aGljaCBjb250YWlucyBleGNsdXNpdmUgQ1BVcyBh
+bGxvY2F0ZWQgdG8gYm90aA0KPmxvY2FsIGFuZCByZW1vdGUgcGFydGl0aW9ucy4NCj5TZWNvbmRs
+eSwgdGhlIHZhbGlkIHBhcnRpdGlvbiBjaGVjayBmb3Igc3VidHJlZSBza2lwcGluZyBpbiB0aGUg
+Y3NhW10NCj5nZW5lcmF0aW9uIGxvb3AgaXNuJ3QgZW5vdWdoIGFzIHJlbW90ZSBwYXJ0aXRpb24g
+ZG9lcyBub3QgbmVlZCB0bw0KPmhhdmUgYSBwYXJ0aXRpb24gcm9vdCBwYXJlbnQuIEZpeCB0aGlz
+IHByb2JsZW0gYnkgYnJlYWtpbmcgY3NhW10gYXJyYXkNCj5nZW5lcmF0aW9uIGxvb3Agb2YgZ2Vu
+ZXJhdGVfc2NoZWRfZG9tYWlucygpIGludG8gdjEgYW5kIHYyIHNwZWNpZmljIHBhcnRzDQo+YW5k
+IGNoZWNraW5nIGEgY3B1c2V0J3MgZXhjbHVzaXZlX2NwdXMgYmVmb3JlIHNraXBwaW5nIGl0cyBz
+dWJ0cmVlIGluDQo+dGhlIHYyIGNhc2UuDQo+QWxzbyBzaW1wbGlmeSBnZW5lcmF0ZV9zY2hlZF9k
+b21haW5zKCkgZm9yIGNncm91cCB2MiBhcyBvbmx5DQo+bm9uLWlzb2xhdGluZyBwYXJ0aXRpb24g
+cm9vdHMgc2hvdWxkIGJlIGluY2x1ZGVkIGluIGJ1aWxkaW5nIHRoZSBjcHVzZXQNCj5hcnJheSBh
+bmQgbm9uZSBvZiB0aGUgdjEgc2NoZWR1bGluZyBhdHRyaWJ1dGVzIG90aGVyIHRoYW4gYSBkaWZm
+ZXJlbnQNCj53YXkgdG8gY3JlYXRlIGFuIGlzb2xhdGVkIHBhcnRpdGlvbiBhcmUgc3VwcG9ydGVk
+Lg0KPkZpeGVzOiAxODFjOGUwOTFhYWUgKCJjZ3JvdXAvY3B1c2V0OiBJbnRyb2R1Y2UgcmVtb3Rl
+IHBhcnRpdGlvbiIpDQo+U2lnbmVkLW9mZi1ieTogV2FpbWFuIExvbmcgPGxvbmdtYW5AcmVkaGF0
+LmNvbT4NCj4tLS0NCj4ga2VybmVsL2Nncm91cC9jcHVzZXQuYyB8IDU1ICsrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLQ0KPiAxIGZpbGUgY2hhbmdlZCwgNDIgaW5zZXJ0
+aW9ucygrKSwgMTMgZGVsZXRpb25zKC0pDQo+ZGlmZiAtLWdpdCBhL2tlcm5lbC9jZ3JvdXAvY3B1
+c2V0LmMgYi9rZXJuZWwvY2dyb3VwL2NwdXNldC5jDQo+aW5kZXggZjliOTdmNjVlMjA0Li5mYjcx
+ZDcxMGE2MDMgMTAwNjQ0DQo+LS0tIGEva2VybmVsL2Nncm91cC9jcHVzZXQuYw0KPisrKyBiL2tl
+cm5lbC9jZ3JvdXAvY3B1c2V0LmMNCj5AQCAtMTY5LDcgKzE2OSw3IEBAIHN0cnVjdCBjcHVzZXQg
+ew0KPiAJLyogZm9yIGN1c3RvbSBzY2hlZCBkb21haW4gKi8NCj4gCWludCByZWxheF9kb21haW5f
+bGV2ZWw7DQo+IA0KPi0JLyogbnVtYmVyIG9mIHZhbGlkIHN1Yi1wYXJ0aXRpb25zICovDQo+Kwkv
+KiBudW1iZXIgb2YgdmFsaWQgbG9jYWwgY2hpbGQgcGFydGl0aW9ucyAqLw0KPiAJaW50IG5yX3N1
+YnBhcnRzOw0KPiANCj4gCS8qIHBhcnRpdGlvbiByb290IHN0YXRlICovDQo+QEAgLTk1NywxMyAr
+OTU3LDE0IEBAIHN0YXRpYyBpbnQgZ2VuZXJhdGVfc2NoZWRfZG9tYWlucyhjcHVtYXNrX3Zhcl90
+ICoqZG9tYWlucywNCj4gCWludCBuc2xvdDsJCS8qIG5leHQgZW1wdHkgZG9tc1tdIHN0cnVjdCBj
+cHVtYXNrIHNsb3QgKi8NCj4gCXN0cnVjdCBjZ3JvdXBfc3Vic3lzX3N0YXRlICpwb3NfY3NzOw0K
+PiAJYm9vbCByb290X2xvYWRfYmFsYW5jZSA9IGlzX3NjaGVkX2xvYWRfYmFsYW5jZSgmdG9wX2Nw
+dXNldCk7DQo+Kwlib29sIGNncnB2MiA9IGNncm91cF9zdWJzeXNfb25fZGZsKGNwdXNldF9jZ3Jw
+X3N1YnN5cyk7DQo+IA0KPiAJZG9tcyA9IE5VTEw7DQo+IAlkYXR0ciA9IE5VTEw7DQo+IAljc2Eg
+PSBOVUxMOw0KPiANCj4gCS8qIFNwZWNpYWwgY2FzZSBmb3IgdGhlIDk5JSBvZiBzeXN0ZW1zIHdp
+dGggb25lLCBmdWxsLCBzY2hlZCBkb21haW4gKi8NCj4tCWlmIChyb290X2xvYWRfYmFsYW5jZSAm
+JiAhdG9wX2NwdXNldC5ucl9zdWJwYXJ0cykgew0KPisJaWYgKHJvb3RfbG9hZF9iYWxhbmNlICYm
+IGNwdW1hc2tfZW1wdHkoc3VicGFydGl0aW9uc19jcHVzKSkgew0KPiBzaW5nbGVfcm9vdF9kb21h
+aW46DQo+IAkJbmRvbXMgPSAxOw0KPiAJCWRvbXMgPSBhbGxvY19zY2hlZF9kb21haW5zKG5kb21z
+KTsNCj5AQCAtOTkyLDE2ICs5OTMsMTggQEAgc3RhdGljIGludCBnZW5lcmF0ZV9zY2hlZF9kb21h
+aW5zKGNwdW1hc2tfdmFyX3QgKipkb21haW5zLA0KPiAJY3B1c2V0X2Zvcl9lYWNoX2Rlc2NlbmRh
+bnRfcHJlKGNwLCBwb3NfY3NzLCAmdG9wX2NwdXNldCkgew0KPiAJCWlmIChjcCA9PSAmdG9wX2Nw
+dXNldCkNCj4gCQkJY29udGludWU7DQo+Kw0KPisJCWlmIChjZ3JwdjIpDQo+KwkJCWdvdG8gdjI7
+DQo+Kw0KPiAJCS8qDQo+KwkJICogdjE6DQo+IAkJICogQ29udGludWUgdHJhdmVyc2luZyBiZXlv
+bmQgQGNwIGlmZiBAY3AgaGFzIHNvbWUgQ1BVcyBhbmQNCj4gCQkgKiBpc24ndCBsb2FkIGJhbGFu
+Y2luZy4gIFRoZSBmb3JtZXIgaXMgb2J2aW91cy4gIFRoZQ0KPiAJCSAqIGxhdHRlcjogQWxsIGNo
+aWxkIGNwdXNldHMgY29udGFpbiBhIHN1YnNldCBvZiB0aGUNCj4gCQkgKiBwYXJlbnQncyBjcHVz
+LCBzbyBqdXN0IHNraXAgdGhlbSwgYW5kIHRoZW4gd2UgY2FsbA0KPiAJCSAqIHVwZGF0ZV9kb21h
+aW5fYXR0cl90cmVlKCkgdG8gY2FsYyByZWxheF9kb21haW5fbGV2ZWwgb2YNCj4gCQkgKiB0aGUg
+Y29ycmVzcG9uZGluZyBzY2hlZCBkb21haW4uDQo+LQkJICoNCj4tCQkgKiBJZiByb290IGlzIGxv
+YWQtYmFsYW5jaW5nLCB3ZSBjYW4gc2tpcCBAY3AgaWYgaXQNCj4tCQkgKiBpcyBhIHN1YnNldCBv
+ZiB0aGUgcm9vdCdzIGVmZmVjdGl2ZV9jcHVzLg0KPiAJCSAqLw0KPiAJCWlmICghY3B1bWFza19l
+bXB0eShjcC0+Y3B1c19hbGxvd2VkKSAmJg0KPiAJCSAgICAhKGlzX3NjaGVkX2xvYWRfYmFsYW5j
+ZShjcCkgJiYNCj5AQCAtMTAwOSwxNiArMTAxMiwyOCBAQCBzdGF0aWMgaW50IGdlbmVyYXRlX3Nj
+aGVkX2RvbWFpbnMoY3B1bWFza192YXJfdCAqKmRvbWFpbnMsDQo+IAkJCQkJIGhvdXNla2VlcGlu
+Z19jcHVtYXNrKEhLX1RZUEVfRE9NQUlOKSkpKQ0KPiAJCQljb250aW51ZTsNCj4gDQo+LQkJaWYg
+KHJvb3RfbG9hZF9iYWxhbmNlICYmDQo+LQkJICAgIGNwdW1hc2tfc3Vic2V0KGNwLT5jcHVzX2Fs
+bG93ZWQsIHRvcF9jcHVzZXQuZWZmZWN0aXZlX2NwdXMpKQ0KPi0JCQljb250aW51ZTsNCj4tDQo+
+IAkJaWYgKGlzX3NjaGVkX2xvYWRfYmFsYW5jZShjcCkgJiYNCj4gCQkgICAgIWNwdW1hc2tfZW1w
+dHkoY3AtPmVmZmVjdGl2ZV9jcHVzKSkNCj4gCQkJY3NhW2NzbisrXSA9IGNwOw0KPiANCj4tCQkv
+KiBza2lwIEBjcCdzIHN1YnRyZWUgaWYgbm90IGEgcGFydGl0aW9uIHJvb3QgKi8NCj4tCQlpZiAo
+IWlzX3BhcnRpdGlvbl92YWxpZChjcCkpDQo+KwkJLyogc2tpcCBAY3AncyBzdWJ0cmVlICovDQo+
+KwkJcG9zX2NzcyA9IGNzc19yaWdodG1vc3RfZGVzY2VuZGFudChwb3NfY3NzKTsNCj4rCQljb250
+aW51ZTsNCj4rDQo+K3YyOg0KPisJCS8qDQo+KwkJICogT25seSB2YWxpZCBwYXJ0aXRpb24gcm9v
+dHMgdGhhdCBhcmUgbm90IGlzb2xhdGVkIGFuZCB3aXRoDQo+KwkJICogbm9uLWVtcHR5IGVmZmVj
+dGl2ZV9jcHVzIHdpbGwgYmUgc2F2ZWQgaW50byBjc25bXS4NCj4rCQkgKi8NCj4rCQlpZiAoKGNw
+LT5wYXJ0aXRpb25fcm9vdF9zdGF0ZSA9PSBQUlNfUk9PVCkgJiYNCj4rCQkgICAgIWNwdW1hc2tf
+ZW1wdHkoY3AtPmVmZmVjdGl2ZV9jcHVzKSkNCj4rCQkJY3NhW2NzbisrXSA9IGNwOw0KPisNCj4r
+CQkvKg0KPisJCSAqIFNraXAgQGNwJ3Mgc3VidHJlZSBpZiBub3QgYSBwYXJ0aXRpb24gcm9vdCBh
+bmQgaGFzIG5vDQo+KwkJICogZXhjbHVzaXZlIENQVXMgdG8gYmUgZ3JhbnRlZCB0byBjaGlsZCBj
+cHVzZXRzLg0KPisJCSAqLw0KPisJCWlmICghaXNfcGFydGl0aW9uX3ZhbGlkKGNwKSAmJiBjcHVt
+YXNrX2VtcHR5KGNwLT5leGNsdXNpdmVfY3B1cykpDQo+IAkJCXBvc19jc3MgPSBjc3NfcmlnaHRt
+b3N0X2Rlc2NlbmRhbnQocG9zX2Nzcyk7DQo+IAl9DQo+IAlyY3VfcmVhZF91bmxvY2soKTsNCj5A
+QCAtMTA3Miw2ICsxMDg3LDIwIEBAIHN0YXRpYyBpbnQgZ2VuZXJhdGVfc2NoZWRfZG9tYWlucyhj
+cHVtYXNrX3Zhcl90ICoqZG9tYWlucywNCj4gCWRhdHRyID0ga21hbGxvY19hcnJheShuZG9tcywg
+c2l6ZW9mKHN0cnVjdCBzY2hlZF9kb21haW5fYXR0ciksDQo+IAkJCSAgICAgIEdGUF9LRVJORUwp
+Ow0KPiANCj4rCS8qDQo+KwkgKiBDZ3JvdXAgdjIgZG9lc24ndCBzdXBwb3J0IGRvbWFpbiBhdHRy
+aWJ1dGVzLCBqdXN0IHNldCBhbGwgb2YgdGhlbQ0KPisJICogdG8gU0RfQVRUUl9JTklULiBBbHNv
+IG5vbi1pc29sYXRpbmcgcGFydGl0aW9uIHJvb3QgQ1BVcyBhcmUgYQ0KPisJICogc3Vic2V0IG9m
+IEhLX1RZUEVfRE9NQUlOIGhvdXNla2VlcGluZyBDUFVzLg0KPisJICovDQo+KwlpZiAoY2dycHYy
+KSB7DQo+KwkJZm9yIChpID0gMDsgaSA8IG5kb21zOyBpKyspIHsNCj4rCQkJY3B1bWFza19jb3B5
+KGRvbXNbaV0sIGNzYVtpXS0+ZWZmZWN0aXZlX2NwdXMpOyAgICAgICAgIC8qKioqKioqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKioqKi8NCj4rCQkJaWYgKGRhdHRyKQ0KPisJCQkJZGF0
+dHJbaV0gPSBTRF9BVFRSX0lOSVQ7DQo+KwkJfQ0KPisJCWdvdG8gZG9uZTsNCj4rCX0NCj4rDQo+
+IAlmb3IgKG5zbG90ID0gMCwgaSA9IDA7IGkgPCBjc247IGkrKykgew0KPiAJCXN0cnVjdCBjcHVz
+ZXQgKmEgPSBjc2FbaV07DQo+IAkJc3RydWN0IGNwdW1hc2sgKmRwOw0KPkBAIC0xMjMxLDcgKzEy
+NjAsNyBAQCBzdGF0aWMgdm9pZCByZWJ1aWxkX3NjaGVkX2RvbWFpbnNfbG9ja2VkKHZvaWQpDQo+
+IAkgKiByb290IHNob3VsZCBiZSBvbmx5IGEgc3Vic2V0IG9mIHRoZSBhY3RpdmUgQ1BVcy4gIFNp
+bmNlIGEgQ1BVIGluIGFueQ0KPiAJICogcGFydGl0aW9uIHJvb3QgY291bGQgYmUgb2ZmbGluZWQs
+IGFsbCBtdXN0IGJlIGNoZWNrZWQuDQo+IAkgKi8NCj4tCWlmICh0b3BfY3B1c2V0Lm5yX3N1YnBh
+cnRzKSB7DQo+KwlpZiAoIWNwdW1hc2tfZW1wdHkoc3VicGFydGl0aW9uc19jcHVzKSkgew0KPiAJ
+CXJjdV9yZWFkX2xvY2soKTsNCj4gCQljcHVzZXRfZm9yX2VhY2hfZGVzY2VuZGFudF9wcmUoY3Ms
+IHBvc19jc3MsICZ0b3BfY3B1c2V0KSB7DQo+IAkJCWlmICghaXNfcGFydGl0aW9uX3ZhbGlkKGNz
+KSkgew0KPkBAIC00NTc1LDcgKzQ2MDQsNyBAQCBzdGF0aWMgdm9pZCBjcHVzZXRfaGFuZGxlX2hv
+dHBsdWcodm9pZCkNCj4gCSAqIEluIHRoZSByYXJlIGNhc2UgdGhhdCBob3RwbHVnIHJlbW92ZXMg
+YWxsIHRoZSBjcHVzIGluDQo+IAkgKiBzdWJwYXJ0aXRpb25zX2NwdXMsIHdlIGFzc3VtZWQgdGhh
+dCBjcHVzIGFyZSB1cGRhdGVkLg0KPiAJICovDQo+LQlpZiAoIWNwdXNfdXBkYXRlZCAmJiB0b3Bf
+Y3B1c2V0Lm5yX3N1YnBhcnRzKQ0KPisJaWYgKCFjcHVzX3VwZGF0ZWQgJiYgIWNwdW1hc2tfZW1w
+dHkoc3VicGFydGl0aW9uc19jcHVzKSkNCj4gCQljcHVzX3VwZGF0ZWQgPSB0cnVlOw0KPiANCj4g
+CS8qIEZvciB2MSwgc3luY2hyb25pemUgY3B1c19hbGxvd2VkIHRvIGNwdV9hY3RpdmVfbWFzayAq
+Lw0KPi0tIA0KPjIuMzkuMw==
 
-With this logic sgx_init() should call BUG() in the error paths.
-
-BR, Jarkko
 
