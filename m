@@ -1,151 +1,155 @@
-Return-Path: <cgroups+bounces-3131-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3132-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C40D7900BD1
-	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 20:18:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5239F900C45
+	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 21:10:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B3BB1F217C6
-	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 18:18:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F057A1F2365A
+	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 19:10:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3E4F13793E;
-	Fri,  7 Jun 2024 18:18:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941F0145B1A;
+	Fri,  7 Jun 2024 19:10:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K8wwPA6p"
+	dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b="G+zWQtHX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B01C4D9F6;
-	Fri,  7 Jun 2024 18:18:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C42D1D2E5;
+	Fri,  7 Jun 2024 19:10:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717784300; cv=none; b=LfWdHVYA4OlZfjgofZMSXDbh+fETCsos4dCPhokw1HnxvWeh+6BgxHPb4kAS8qRVRmH2qzNsPqvEjsAptZ3SQA8FY186RaVMBTG/WljLieo420p3SpUiLrTe7UtDRMgU7KSzHh+aNdkJuiW1cWW3VDFuhY788ZRArynry2Q8vfY=
+	t=1717787413; cv=none; b=ChTu6hJmL5NYbB7swGYDTxV4F/JFld3jCrSZ1V+w6q5UnhvLHD/iLOHWfMzVWYFoP46qID4JCKdpogl8HHHqqUHFnDwi7/E67fE8oEsMwFgPIJCTuRBAVMP7p4lwjpT8iFDNgAT/vHDbECoCjaN3PLCcakIJmKEIvEon8qIi9zc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717784300; c=relaxed/simple;
-	bh=5JpkYyQUWLN+xyr/JvA/2oGR+WmnEnSD2h3usXzErDQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mEPSdWmOMCzw7qxp3j4tVpj6lGNX7kCC1ksvUE7dvNN415v9z+/zsDrbrBMN7JIiwXSu6OrLPPNM31o0nrHacL3kVEwU8Z+Q5QE3rXyksAFIXZWCiLpGcbZgGtN1lCEFECWk+xA5HvXlXc5wqc4lCYGMT0K+QdRy8MYPU20qAgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K8wwPA6p; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-57c681dd692so324017a12.3;
-        Fri, 07 Jun 2024 11:18:18 -0700 (PDT)
+	s=arc-20240116; t=1717787413; c=relaxed/simple;
+	bh=Z4QAKAxa4Z6eA8Xk0RNt4/hYgvYzXEdnVXDs3bnsvGw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JMChvbGVBurWAC5p0paSGB+UFCiohFxs5YsDaVFDlT9wwvdP8L1WeIWTwI1N23CJijeqpOwJrpNBU+P/PEZF+45fWJhGfpLH4rR4Nkc/lY5Da4Tl6Y48tEkqfp36x0Xy9JAz4tZ7VgYSiblhGZvqxHQgd0TiTkm3kPGXR2opbhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b=G+zWQtHX; arc=none smtp.client-ip=99.78.197.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717784297; x=1718389097; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ki62ROu4ZJlTvDhZ3YNoMM9LkVRCxfxHNw+RD9Gzvkc=;
-        b=K8wwPA6pi4ptuseodtUPvRNoKImjfwgk91AmVCZo1+ftC71ZSIB7iYggg/iaIotuTs
-         uLvQ1qRizCtRC0ZVWQoZDeV6u9XKdVECiQHxNMIQOTwMMyUVzqLSpXHM8aeYRps9ariW
-         ua0k6YJTvIKqhZte/X/a9Vp4wE8rwbRCY1pddy5jl8rMtgkqhbuvePiWJ1Qd43aA7QpY
-         g4G6V8vwUUZAXMrroIxLxvIv1SSNDaShorcP5xlMA8ZJiBdF3tYR0BUaklTDduEMuece
-         +tdv7dEnQwHOxfXT7d/E3uR5tbPiLMfBwmZ4sgAbkXsLxtGLZhivd3GpcQCt1LHEVbs9
-         ZstA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717784297; x=1718389097;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ki62ROu4ZJlTvDhZ3YNoMM9LkVRCxfxHNw+RD9Gzvkc=;
-        b=WcW8Tc1kV7h35SZAA1vQFnyvb/nPe/kzVerQxlOmQ5VluJqiIfxupbAAOjYA5J3awv
-         DHm7t8s/lY/OBTwV4O9f23JIRg591qS89I+z3rqtG83y5i2nMS5uYp67Mh16aHXp5T/G
-         Igd4uWUnDEUJERd3pOyNu6lKFUIZMaZieW26TW6nbX9CLB4eiEisKFRjZCqnlM/lQfMv
-         wS3S/sqgJKBBq/KNQ6a+jft0cJLSb7HhgMi6VHWhCYB9yO+J/W0ERC4hbetEGeZW49CC
-         YolzhE5IbvipICwedyX40hRlDjdeqPhmq5Kja9Kr8k2vd6sWvcP+wSRSLhcqbIIFc8gP
-         K5Sg==
-X-Forwarded-Encrypted: i=1; AJvYcCWZcLV2zeBNEp2OadZfeQL30nASjCDeulyPUgGRxfH5qI53nG8EnisO0cInpivc+dDUB6XLav2m89TI6X8K6KLW4p24JsgbGGb0fJ1JALhSYm63HMXKKtB8yNbT3OoYQc0Cv/qBdAx+pgETw5iZEmpztQnpnRe3rRlBZw==
-X-Gm-Message-State: AOJu0Yyu+mbkv9YaFDOYx5XNNQRV+2LQWpXqVjk5pMA1jyvLktgo9oWg
-	HIg8Q4IkmssOwIIvWv0Tn5P3oGaoeNuBYlm7DltJbBWaIc29QHCOmFLwOAnkNFU8Nw0Qy5xnhEv
-	RNy7/OAo+6gXEPGKoliLDf0KeuQY=
-X-Google-Smtp-Source: AGHT+IHcXlBwnhFwbEMEOX/J/9t8DvROoCeBcg6wmiALfaEKm0vAs3KYLT4IFQiQWjrWCFR2K6s+GJnw6asT7x02bYQ=
-X-Received: by 2002:a50:8e49:0:b0:57c:4875:10a9 with SMTP id
- 4fb4d7f45d1cf-57c50935134mr1982735a12.24.1717784297289; Fri, 07 Jun 2024
- 11:18:17 -0700 (PDT)
+  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
+  s=amazon201209; t=1717787412; x=1749323412;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=cSxRdA7CtZqMH5AHnu0pjbjgm4y83TDi1I22kwsZmWA=;
+  b=G+zWQtHXmfXubDNFTDepYAk6wIz5BaO1db6q8RE4t1Io5Y4OYqMi21ut
+   tRa2inuUCr3LHCG/BQ/KJ6HcRQkEqZ6SXLFqtZ+2NYOqiY03i+UqSCVCK
+   FliK/N1lxR2Qg5LiAKvJ5jFUOW22WasckeaQto6pSmlqTGPMoWwoLOdUu
+   w=;
+X-IronPort-AV: E=Sophos;i="6.08,221,1712620800"; 
+   d="scan'208";a="301930328"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.25.36.210])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2024 19:10:06 +0000
+Received: from EX19MTAEUB001.ant.amazon.com [10.0.17.79:48726]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.2.117:2525] with esmtp (Farcaster)
+ id 6c8e0930-de93-4c38-9937-28cedbcfa495; Fri, 7 Jun 2024 19:10:05 +0000 (UTC)
+X-Farcaster-Flow-ID: 6c8e0930-de93-4c38-9937-28cedbcfa495
+Received: from EX19D007EUA003.ant.amazon.com (10.252.50.8) by
+ EX19MTAEUB001.ant.amazon.com (10.252.51.26) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Fri, 7 Jun 2024 19:10:05 +0000
+Received: from EX19MTAUWC001.ant.amazon.com (10.250.64.145) by
+ EX19D007EUA003.ant.amazon.com (10.252.50.8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Fri, 7 Jun 2024 19:10:04 +0000
+Received: from dev-dsk-fgriffo-1c-69b51a13.eu-west-1.amazon.com
+ (10.13.244.152) by mail-relay.amazon.com (10.250.64.145) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34 via Frontend Transport; Fri, 7 Jun 2024 19:10:00 +0000
+From: Fred Griffoul <fgriffo@amazon.co.uk>
+To: <griffoul@gmail.com>
+CC: Fred Griffoul <fgriffo@amazon.co.uk>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Alex Williamson
+	<alex.williamson@redhat.com>, Waiman Long <longman@redhat.com>, Zefan Li
+	<lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>, Johannes Weiner
+	<hannes@cmpxchg.org>, Mark Rutland <mark.rutland@arm.com>, Marc Zyngier
+	<maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, Mark Brown
+	<broonie@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Joey Gouly
+	<joey.gouly@arm.com>, Ryan Roberts <ryan.roberts@arm.com>, Jeremy Linton
+	<jeremy.linton@arm.com>, Jason Gunthorpe <jgg@ziepe.ca>, Yi Liu
+	<yi.l.liu@intel.com>, Kevin Tian <kevin.tian@intel.com>, Eric Auger
+	<eric.auger@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, "Christian
+ Brauner" <brauner@kernel.org>, Ankit Agrawal <ankita@nvidia.com>, "Reinette
+ Chatre" <reinette.chatre@intel.com>, Ye Bin <yebin10@huawei.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<kvm@vger.kernel.org>, <cgroups@vger.kernel.org>
+Subject: [PATCH v3 0/2] vfio/pci: add msi interrupt affinity support
+Date: Fri, 7 Jun 2024 19:09:47 +0000
+Message-ID: <20240607190955.15376-1-fgriffo@amazon.co.uk>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240606151017.41623-1-fgriffo@amazon.co.uk> <20240606151017.41623-2-fgriffo@amazon.co.uk>
- <8936c102-725d-4496-b014-cc3edfccf4dd@redhat.com> <ZmM1SWBf5rb7P2je@slm.duckdns.org>
-In-Reply-To: <ZmM1SWBf5rb7P2je@slm.duckdns.org>
-From: Frederic Griffoul <griffoul@gmail.com>
-Date: Fri, 7 Jun 2024 19:18:06 +0100
-Message-ID: <CAF2vKzOr6_c9TJ7eWH4B_q7CuB=549MpW=48NQw3mpT+gu23Lg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] cgroup/cpuset: export cpuset_cpus_allowed()
-To: Tejun Heo <tj@kernel.org>
-Cc: Waiman Long <longman@redhat.com>, Fred Griffoul <fgriffo@amazon.co.uk>, 
-	kernel test robot <lkp@intel.com>, Alex Williamson <alex.williamson@redhat.com>, 
-	Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Yi Liu <yi.l.liu@intel.com>, Kevin Tian <kevin.tian@intel.com>, 
-	Eric Auger <eric.auger@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, 
-	Christian Brauner <brauner@kernel.org>, Ankit Agrawal <ankita@nvidia.com>, 
-	Reinette Chatre <reinette.chatre@intel.com>, Ye Bin <yebin10@huawei.com>, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Thanks. Unfortunately exporting cpuset_cpus_allowed() is not enough.
-When CONFIG_CPUSETS is _not_ defined, the function is inline to return
-task_cpu_possible_mask(). On arm64 the latter checks the static key
-arm64_mismatched_32bit_el0, and thus this symbol must be exported too.
+v4:
+ - export arm64_mismatched_32bit_el0 to compile the vfio driver as
+   a kernel module on arm64 if CONFIG_CPUSETS is not defined.
+ - vfio_pci_ioctl_set_irqs(): free the cpumask_var_t only if data_size
+   is not zero, otherwise it was not allocated.
+ - vfio_pci_set_msi_trigger(): call the new function
+   vfio_pci_set_msi_affinity() later, after the DATA_EVENTFD
+   processing and the vdev index check.
 
-I wonder whether it would be better to avoid inlining cpuset_cpus_allowed()
-in this case.
+v3:
+ - add a first patch to export cpuset_cpus_allowed() to be able to
+   compile the vfio driver as a kernel module.
 
-Br,
+v2:
+ - change the ioctl() interface to use a cpu_set_t in vfio_irq_set
+   'data' to keep the 'start' and 'count' semantic, as suggested by
+    David Woodhouse <dwmw2@infradead.org>
 
-Fred
+v1:
 
-On Fri, Jun 7, 2024 at 5:29=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> On Thu, Jun 06, 2024 at 11:45:37AM -0400, Waiman Long wrote:
-> >
-> > On 6/6/24 11:10, Fred Griffoul wrote:
-> > > A subsequent patch calls cpuset_cpus_allowed() in the vfio driver pci
-> > > code. Export the symbol to be able to build the vfio driver as a kern=
-el
-> > > module.
-> > >
-> > > Signed-off-by: Fred Griffoul <fgriffo@amazon.co.uk>
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > Closes: https://lore.kernel.org/oe-kbuild-all/202406060731.L3NSR1Hy-l=
-kp@intel.com/
-> > > ---
-> > >   kernel/cgroup/cpuset.c | 1 +
-> > >   1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> > > index 4237c8748715..9fd56222aa4b 100644
-> > > --- a/kernel/cgroup/cpuset.c
-> > > +++ b/kernel/cgroup/cpuset.c
-> > > @@ -4764,6 +4764,7 @@ void cpuset_cpus_allowed(struct task_struct *ts=
-k, struct cpumask *pmask)
-> > >     rcu_read_unlock();
-> > >     spin_unlock_irqrestore(&callback_lock, flags);
-> > >   }
-> > > +EXPORT_SYMBOL_GPL(cpuset_cpus_allowed);
-> > >   /**
-> > >    * cpuset_cpus_allowed_fallback - final fallback before complete ca=
-tastrophe.
-> >
-> > LGTM
-> >
-> > Acked-by: Waiman Long <longman@redhat.com>
->
-> Acked-by: Tejun Heo <tj@kernel.org>
->
-> If more convenient, please feel free to route the patch with the rest of =
-the
-> series. If you want it applied to the cgroup tree, please let me know.
->
-> Thanks.
->
-> --
-> tejun
+The usual way to configure a device interrupt from userland is to write
+the /proc/irq/<irq>/smp_affinity or smp_affinity_list files. When using
+vfio to implement a device driver or a virtual machine monitor, this may
+not be ideal: the process managing the vfio device interrupts may not be
+granted root privilege, for security reasons. Thus it cannot directly
+control the interrupt affinity and has to rely on an external command.
+
+This patch extends the VFIO_DEVICE_SET_IRQS ioctl() with a new data flag
+to specify the affinity of a vfio pci device interrupt.
+
+The affinity argument must be a subset of the process cpuset, otherwise
+an error -EPERM is returned.
+
+The vfio_irq_set argument shall be set-up in the following way:
+
+- the 'flags' field have the new flag VFIO_IRQ_SET_DATA_AFFINITY set
+as well as VFIO_IRQ_SET_ACTION_TRIGGER.
+
+- the 'start' field is the device interrupt index. Only one interrupt
+can be configured per ioctl().
+
+- the variable-length array consists of one or more CPU index
+encoded as __u32, the number of entries in the array is specified in the
+'count' field.
+
+Fred Griffoul (2):
+  cgroup/cpuset: export cpuset_cpus_allowed()
+  vfio/pci: add msi interrupt affinity support
+
+ arch/arm64/kernel/cpufeature.c    |  1 +
+ drivers/vfio/pci/vfio_pci_core.c  | 26 +++++++++++++++++----
+ drivers/vfio/pci/vfio_pci_intrs.c | 39 +++++++++++++++++++++++++++++++
+ drivers/vfio/vfio_main.c          | 13 +++++++----
+ include/uapi/linux/vfio.h         | 10 +++++++-
+ kernel/cgroup/cpuset.c            |  1 +
+ 6 files changed, 81 insertions(+), 9 deletions(-)
+
+
+base-commit: cbb325e77fbe62a06184175aa98c9eb98736c3e8
+--
+2.40.1
+
 
