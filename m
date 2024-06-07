@@ -1,65 +1,95 @@
-Return-Path: <cgroups+bounces-3128-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3129-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A0D09006B8
-	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 16:33:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 545EA900A66
+	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 18:32:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 864441F22C84
-	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 14:33:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B46C1C214EF
+	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 16:31:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D72194A4F;
-	Fri,  7 Jun 2024 14:32:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE53A19EEAB;
+	Fri,  7 Jun 2024 16:29:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="B8hEjK93"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W4/em0Xv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF6BE200A3
-	for <cgroups@vger.kernel.org>; Fri,  7 Jun 2024 14:32:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37FDA19DF71;
+	Fri,  7 Jun 2024 16:28:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717770775; cv=none; b=Tiy3bmMXe2B31i1RWZLSavuHusX0TqjUlIeeuzFIG6QXCSqdN2GUD+PVayKFvT611u4SLCbp9uNRusItkvhsZEnJ1GQGZ5ARmJM2XdobjwEJ1UF5GdCcOdPW4YQYjTHi7gTmRf3c3lQY+AUzQujIv99wS+piYHc/HXUcqSHrzqQ=
+	t=1717777741; cv=none; b=etX7WK7WX2efOu+bpshson5MuDS/n8qIeteXyn2ZrNWIfOLHosPLT0APmkwNyNWl2iwDOGazV9HZJIv5m529ZGND/nDcAOJMAIGNFRNU74afiSMTY/9JaMFbZlreqth9qzxEZ+U2BDO1VeBbB7nfAfsS0p5P5nBhmHS/TLrhYdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717770775; c=relaxed/simple;
-	bh=KLNaDjyJghj2OpfI7J2yiPaJ8igUX0r6A5F6ONpoHzA=;
+	s=arc-20240116; t=1717777741; c=relaxed/simple;
+	bh=1wGhhmJq/xUhMmXlkArOGi3wVi33minnfJzQj9uCKUc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WeEUiJ6JuOxRxzq/i1zMjPEdO4vlyM/Dcu1Yu2H4GTC9yd5d2Eo0FDU4Bd8elyvF2ZW8oPQghbFjIoSbmZlvRtjBUOqusF+HWtbTxB9kxJXysxlYvo7dJAE3L6aaB6DCXDaNme8yz+XC01sLbzn5kwV4OjcKyQx4Q3uKqgXTyLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=B8hEjK93; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: hawk@kernel.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1717770771;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2NvCYHpZJ1ZjGoA68QOuHW4f0uq565qSfBp0tFxFCsw=;
-	b=B8hEjK93FWbycj6OxRHaxjicx7BrkV2Uiq2QDAKDQKrIM5ihChm3umdH0rf5J06hUPY7K8
-	yavee1l8pRBkj+GJTSlatoJgrXhDvVrFG0wNwJ/RpfFl9pdZOdn/pB+SMXj1ljjDVYmXZZ
-	QIyaFwoSlrU4qh5k1Ikwog41UFEvxf8=
-X-Envelope-To: stable@vger.kernel.org
-X-Envelope-To: yosryahmed@google.com
-X-Envelope-To: tj@kernel.org
-X-Envelope-To: hannes@cmpxchg.org
-X-Envelope-To: lizefan.x@bytedance.com
-X-Envelope-To: cgroups@vger.kernel.org
-X-Envelope-To: longman@redhat.com
-X-Envelope-To: linux-mm@kvack.org
-X-Envelope-To: kernel-team@cloudflare.com
-Date: Fri, 7 Jun 2024 07:32:46 -0700
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: stable@vger.kernel.org, yosryahmed@google.com, tj@kernel.org, 
-	hannes@cmpxchg.org, lizefan.x@bytedance.com, cgroups@vger.kernel.org, 
-	longman@redhat.com, linux-mm@kvack.org, kernel-team@cloudflare.com
-Subject: Re: [PATCH 6.6.y] mm: ratelimit stat flush from workingset shrinker
-Message-ID: <tge6txvuepcu3iy7nz3cuafbd5x2hmeprbaz3d3fzawvvzg3xr@f4utxxs2egxl>
-References: <171776806121.384105.7980809581420394573.stgit@firesoul>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tk6/qs9aH0a5+qB580zse8afbAo4gsfNJjvYqI4BcyE7AIY3jLbI3uGqjJ2iV6P9NgW/duuRPsorHuIbVpD6zdlglhs3YtLnYGAyfgtgbd/qzUndzs2xHAMp1n+opADw3zSoKNa3BOxr+FAy7HUMruFHVhLnDT7h/k3wepTpoUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W4/em0Xv; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-7024d571d8eso1967470b3a.0;
+        Fri, 07 Jun 2024 09:28:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717777739; x=1718382539; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=z5U5vYedi2Uaq0jp7wwznCLlOkYCVT2//3vK0sKJfPk=;
+        b=W4/em0XvUJ4w7QnstIE/UMzM2IwyF1eHS695/tWqAnXyWfgyTc/w/IJOBGnVearw6T
+         9QPVuKLFWk/3+6kLv22iDG15lHOew9xOCtfJi/HH7fYBiX0zVtBmU1+uchnS2hpBHAQo
+         9wYqCQxPfENELeGRKlsd72ZZm3LUn3pbJ9D88SJlyJnkqFq3ckxCEe0lui8obg54BQy/
+         5tSu/1UNOZWhtgjfh/jYm/2c3XmFeiM8/+GEMUYROc5G2myro8Ol9IhFrAp3QBF9/HrK
+         dg2m6kR8+jyg9qKCii8iJdpkAZR3/LurBTEb1LGXTPSE9LH27XoNAokFG3d/bB4mJR9k
+         6Txw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717777739; x=1718382539;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=z5U5vYedi2Uaq0jp7wwznCLlOkYCVT2//3vK0sKJfPk=;
+        b=T25jXkRBPWCRy35GUAZcLhw5JJffNHWSK7Zo3CYX9p11RW4R/whYgiWESUnlqz2Nld
+         OO1rx5EZv3XM8R5Ejgqh8953aHGiRDA990skYnSogFLACqTiel10F5QgI4RBV66zTwgW
+         JicFlCja11iKAwVgnmv3sdh3wM6FRFILtznjz5RZHSyb1XOxDjlH9OY2AbTGRbj4YYpt
+         i1hwpTp5HqU1zrx3e+MXtC8iAR1PnPqjo0NEwEwjbRQ/Rcv4+Diwj1kRKaFleecPUSUB
+         EWFAqMkeuEBAF1w0Wf9FfMZeSe8rEluKrn7MrI66HvgAspSj0Nh74AiyclshitCdMlyS
+         LUww==
+X-Forwarded-Encrypted: i=1; AJvYcCV9VZeY4dnt/DQZhlXElOJ+hH35sjZOb+WqDGYTkNf90uaGpR4tGxFmyp85NeIVKWfL4MO94mLuCVzHOVjnvoZzT0Yu3sMdaThme0svGsltxbt8lIMPdFUJr/Y0J9fEIxmoWM4cm4Ut9xgMD8XBkrUbSCqpmNBnrMaEZw==
+X-Gm-Message-State: AOJu0YwGKp6jJZem+99eG7mVubtcHGswV7TvWW/Sp3s5OZCMcqhrjajC
+	+2PS1M7Fdp29LkbftQT30wzbpzSXYZjJNIjNI/YhRnVoeOMVaPre
+X-Google-Smtp-Source: AGHT+IF46sBs+Uh6sVLy9BmR7z4ajfG6b0Ftovq0XkmXzu35fi1XHga5oRNdcSpljNGAmIRJiqupWA==
+X-Received: by 2002:a05:6a20:1590:b0:1b0:259e:c8f3 with SMTP id adf61e73a8af0-1b2f9ccbc20mr3708325637.54.1717777739366;
+        Fri, 07 Jun 2024 09:28:59 -0700 (PDT)
+Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-703fd50bc26sm2757124b3a.180.2024.06.07.09.28.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Jun 2024 09:28:59 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Fri, 7 Jun 2024 06:28:57 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Fred Griffoul <fgriffo@amazon.co.uk>, griffoul@gmail.com,
+	kernel test robot <lkp@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Yi Liu <yi.l.liu@intel.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Eric Auger <eric.auger@redhat.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Ankit Agrawal <ankita@nvidia.com>,
+	Reinette Chatre <reinette.chatre@intel.com>,
+	Ye Bin <yebin10@huawei.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] cgroup/cpuset: export cpuset_cpus_allowed()
+Message-ID: <ZmM1SWBf5rb7P2je@slm.duckdns.org>
+References: <20240606151017.41623-1-fgriffo@amazon.co.uk>
+ <20240606151017.41623-2-fgriffo@amazon.co.uk>
+ <8936c102-725d-4496-b014-cc3edfccf4dd@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -68,57 +98,45 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <171776806121.384105.7980809581420394573.stgit@firesoul>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <8936c102-725d-4496-b014-cc3edfccf4dd@redhat.com>
 
-On Fri, Jun 07, 2024 at 03:48:06PM GMT, Jesper Dangaard Brouer wrote:
-> From: Shakeel Butt <shakeelb@google.com>
+On Thu, Jun 06, 2024 at 11:45:37AM -0400, Waiman Long wrote:
 > 
-> commit d4a5b369ad6d8aae552752ff438dddde653a72ec upstream.
+> On 6/6/24 11:10, Fred Griffoul wrote:
+> > A subsequent patch calls cpuset_cpus_allowed() in the vfio driver pci
+> > code. Export the symbol to be able to build the vfio driver as a kernel
+> > module.
+> > 
+> > Signed-off-by: Fred Griffoul <fgriffo@amazon.co.uk>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202406060731.L3NSR1Hy-lkp@intel.com/
+> > ---
+> >   kernel/cgroup/cpuset.c | 1 +
+> >   1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> > index 4237c8748715..9fd56222aa4b 100644
+> > --- a/kernel/cgroup/cpuset.c
+> > +++ b/kernel/cgroup/cpuset.c
+> > @@ -4764,6 +4764,7 @@ void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
+> >   	rcu_read_unlock();
+> >   	spin_unlock_irqrestore(&callback_lock, flags);
+> >   }
+> > +EXPORT_SYMBOL_GPL(cpuset_cpus_allowed);
+> >   /**
+> >    * cpuset_cpus_allowed_fallback - final fallback before complete catastrophe.
 > 
-> One of our workloads (Postgres 14 + sysbench OLTP) regressed on newer
-> upstream kernel and on further investigation, it seems like the cause is
-> the always synchronous rstat flush in the count_shadow_nodes() added by
-> the commit f82e6bf9bb9b ("mm: memcg: use rstat for non-hierarchical
-> stats").  On further inspection it seems like we don't really need
-> accurate stats in this function as it was already approximating the amount
-> of appropriate shadow entries to keep for maintaining the refault
-> information.  Since there is already 2 sec periodic rstat flush, we don't
-> need exact stats here.  Let's ratelimit the rstat flush in this code path.
+> LGTM
 > 
-> Link: https://lkml.kernel.org/r/20231228073055.4046430-1-shakeelb@google.com
-> Fixes: f82e6bf9bb9b ("mm: memcg: use rstat for non-hierarchical stats")
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Yosry Ahmed <yosryahmed@google.com>
-> Cc: Yu Zhao <yuzhao@google.com>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Roman Gushchin <roman.gushchin@linux.dev>
-> Cc: Muchun Song <songmuchun@bytedance.com>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
-> 
-> ---
-> On production with kernel v6.6 we are observing issues with excessive
-> cgroup rstat flushing due to the extra call to mem_cgroup_flush_stats()
-> in count_shadow_nodes() introduced in commit f82e6bf9bb9b ("mm: memcg:
-> use rstat for non-hierarchical stats") that commit is part of v6.6.
-> We request backport of commit d4a5b369ad6d ("mm: ratelimit stat flush
-> from workingset shrinker") as it have a fixes tag for this commit.
-> 
-> IMHO it is worth explaining call path that makes count_shadow_nodes()
-> cause excessive cgroup rstat flushing calls. Function shrink_node()
-> calls mem_cgroup_flush_stats() on its own first, and then invokes
-> shrink_node_memcgs(). Function shrink_node_memcgs() iterates over
-> cgroups via mem_cgroup_iter() for each calling shrink_slab(). The
-> shrink_slab() calls do_shrink_slab() that via shrinker->count_objects()
-> invoke count_shadow_nodes(), and count_shadow_nodes() does
-> a mem_cgroup_flush_stats() call, that seems unnecessary.
-> 
+> Acked-by: Waiman Long <longman@redhat.com>
 
-Actually at Meta production we have also replaced
-mem_cgroup_flush_stats() in shrink_node() with
-mem_cgroup_flush_stats_ratelimited() as it was causing too much flushing
-issue. We have not observed any issue after the change. I will propose
-that patch to upstream as well.
+Acked-by: Tejun Heo <tj@kernel.org>
+
+If more convenient, please feel free to route the patch with the rest of the
+series. If you want it applied to the cgroup tree, please let me know.
+
+Thanks.
+
+-- 
+tejun
 
