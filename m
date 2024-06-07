@@ -1,146 +1,125 @@
-Return-Path: <cgroups+bounces-3125-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3126-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EEE59001A3
-	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 13:09:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9FA0900572
+	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 15:48:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A08E71C21290
-	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 11:09:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74412B22CAD
+	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 13:48:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC2ED186E55;
-	Fri,  7 Jun 2024 11:09:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9BAA194AD1;
+	Fri,  7 Jun 2024 13:48:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jxUbegs5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1E212FB01;
-	Fri,  7 Jun 2024 11:09:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5769194A5A;
+	Fri,  7 Jun 2024 13:48:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717758579; cv=none; b=Yja0Hk107VCT53/LDSIauIeDrk546AjQ3HTnWHZ9pu0FhUEjcqpwaWdZvSPlOGrwN3TaTQCIQaOy982TnAR8Cx98DRCsIJBzpjsQQw9IcZJ4G7RdnG5r2aYPQsCT7b2VUDygTOc9LXWyqkPECeTyXTOC+lpO8ysZ249F6SQuvNI=
+	t=1717768091; cv=none; b=aMFuUoOmxYOLj6RsjysHgiZnLR/tEFE9yK/K6LrHW3Zi1s+QkvFRaiQPLjke+IGzh6VwpGS0/piDChxLLYKKO8BPAIw/xMNdLxuJ92CitP8z3QmoO3ibF9x+rHspCXGPhiIkXUNM6D8buDaj00bhRQmdPA2f6ZotQ7foj+QWZcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717758579; c=relaxed/simple;
-	bh=kc8Z5wRPGLoi9gFViVuYCBwyahPZY0fAZxf1vj1H6xA=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cR5z8ravLtwFPbFs2670FaGjjt7SyzIzpxn46ORGloQiHgXbFXs7rWrrYUNZtXgnHVzp68y75iPJKMkljavlz881Mv03Kbj5kM1oZ+7xT1PATILpexOy61Pv6Vp4FPhI1cFND4pYMAI9ZttVLBlIGlUcPW5erLrHY/r/CQXSi9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Vwdfs3zlzzPpbd;
-	Fri,  7 Jun 2024 19:06:13 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 273F018007E;
-	Fri,  7 Jun 2024 19:09:33 +0800 (CST)
-Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Fri, 7 Jun
- 2024 19:09:32 +0800
-From: Chen Ridong <chenridong@huawei.com>
-To: <martin.lau@linux.dev>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<andrii@kernel.org>, <eddyz87@gmail.com>, <song@kernel.org>,
-	<yonghong.song@linux.dev>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-	<sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>, <tj@kernel.org>,
-	<lizefan.x@bytedance.com>, <hannes@cmpxchg.org>, <roman.gushchin@linux.dev>
-CC: <bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] cgroup: Fix AA deadlock caused by cgroup_bpf_release
-Date: Fri, 7 Jun 2024 11:03:13 +0000
-Message-ID: <20240607110313.2230669-1-chenridong@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1717768091; c=relaxed/simple;
+	bh=TQyKi7DdPGzpHrY7zAT+50KqIFo9l+0hqUZDJ1H9PuA=;
+	h=Subject:From:To:Cc:Date:Message-ID:MIME-Version:Content-Type; b=foHJAF+9cSyqCdYIWMMDs1mgapoLPjm4pC5AsBVAdpeKtbUsufr5umtvydIdkroJj39nVnnEmNtlc+dbrSu8G94bXLg9kyUwcYdLJtXX5DUIcC5tq5lK3oqoEkKXLjt6YcEjuP+3uFkUDMUfJTxBU59dZ2wuFTC4KlVmlBfgLYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jxUbegs5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4B10C32782;
+	Fri,  7 Jun 2024 13:48:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717768091;
+	bh=TQyKi7DdPGzpHrY7zAT+50KqIFo9l+0hqUZDJ1H9PuA=;
+	h=Subject:From:To:Cc:Date:From;
+	b=jxUbegs50WXk2Yd4F4sXnmPaVFzxACNse6F2pABiZWF8OZDrk1Sx0xEbZR9w2VuWi
+	 bf/sJ8HBjGMEqnyj+7U4yHbljoQVJZGcfmBsnlvmiD7NxHCv9RrUiobIA5WsUec0Gg
+	 YQCY5UCpAwyo6gS5JXEr2QiIr8aDnst6qXkj7bNVP+HYWV2MVzNDJs2u8OXNCcwzXE
+	 kxC7eFcF3DR38BlqtcZS7hqsvP8MJnaurmOfg92rgO/UCG5yF9C9UjPh7BKXR6HAx0
+	 K3C5ISy9fHOpK1I7Rg2ueH5yACJ44rWz8RntfKEA9y8apUhZivpvsRNMOoSuOwXnk2
+	 KuxTGt73+csaQ==
+Subject: [PATCH 6.6.y] mm: ratelimit stat flush from workingset shrinker
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+To: stable@vger.kernel.org, yosryahmed@google.com, shakeel.butt@linux.dev
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, tj@kernel.org,
+ hannes@cmpxchg.org, lizefan.x@bytedance.com, cgroups@vger.kernel.org,
+ longman@redhat.com, linux-mm@kvack.org, kernel-team@cloudflare.com
+Date: Fri, 07 Jun 2024 15:48:06 +0200
+Message-ID: <171776806121.384105.7980809581420394573.stgit@firesoul>
+User-Agent: StGit/1.5
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemd100013.china.huawei.com (7.221.188.163)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-We found an AA deadlock problem as shown belowed:
+From: Shakeel Butt <shakeelb@google.com>
 
-cgroup_destroy_wq		TaskB				WatchDog			system_wq
+commit d4a5b369ad6d8aae552752ff438dddde653a72ec upstream.
 
-...
-css_killed_work_fn:
-P(cgroup_mutex)
-...
-								...
-								__lockup_detector_reconfigure:
-								P(cpu_hotplug_lock.read)
-								...
-				...
-				percpu_down_write:
-				P(cpu_hotplug_lock.write)
-												...
-												cgroup_bpf_release:
-												P(cgroup_mutex)
-								smp_call_on_cpu:
-								Wait system_wq
+One of our workloads (Postgres 14 + sysbench OLTP) regressed on newer
+upstream kernel and on further investigation, it seems like the cause is
+the always synchronous rstat flush in the count_shadow_nodes() added by
+the commit f82e6bf9bb9b ("mm: memcg: use rstat for non-hierarchical
+stats").  On further inspection it seems like we don't really need
+accurate stats in this function as it was already approximating the amount
+of appropriate shadow entries to keep for maintaining the refault
+information.  Since there is already 2 sec periodic rstat flush, we don't
+need exact stats here.  Let's ratelimit the rstat flush in this code path.
 
-cpuset_css_offline:
-P(cpu_hotplug_lock.read)
+Link: https://lkml.kernel.org/r/20231228073055.4046430-1-shakeelb@google.com
+Fixes: f82e6bf9bb9b ("mm: memcg: use rstat for non-hierarchical stats")
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Yosry Ahmed <yosryahmed@google.com>
+Cc: Yu Zhao <yuzhao@google.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
 
-WatchDog is waiting for system_wq, who is waiting for cgroup_mutex, to
-finish the jobs, but the owner of the cgroup_mutex is waiting for
-cpu_hotplug_lock. This problem caused by commit 4bfc0bb2c60e ("bpf:
-decouple the lifetime of cgroup_bpf from cgroup itself")
-puts cgroup_bpf release work into system_wq. As cgroup_bpf is a member of
-cgroup, it is reasonable to put cgroup bpf release work into
-cgroup_destroy_wq, which is only used for cgroup's release work, and the
-preblem is solved.
-
-Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf from cgroup itself")
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- kernel/bpf/cgroup.c             | 2 +-
- kernel/cgroup/cgroup-internal.h | 1 +
- kernel/cgroup/cgroup.c          | 2 +-
- 3 files changed, 3 insertions(+), 2 deletions(-)
+On production with kernel v6.6 we are observing issues with excessive
+cgroup rstat flushing due to the extra call to mem_cgroup_flush_stats()
+in count_shadow_nodes() introduced in commit f82e6bf9bb9b ("mm: memcg:
+use rstat for non-hierarchical stats") that commit is part of v6.6.
+We request backport of commit d4a5b369ad6d ("mm: ratelimit stat flush
+from workingset shrinker") as it have a fixes tag for this commit.
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 8ba73042a239..a611a1274788 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -334,7 +334,7 @@ static void cgroup_bpf_release_fn(struct percpu_ref *ref)
- 	struct cgroup *cgrp = container_of(ref, struct cgroup, bpf.refcnt);
+IMHO it is worth explaining call path that makes count_shadow_nodes()
+cause excessive cgroup rstat flushing calls. Function shrink_node()
+calls mem_cgroup_flush_stats() on its own first, and then invokes
+shrink_node_memcgs(). Function shrink_node_memcgs() iterates over
+cgroups via mem_cgroup_iter() for each calling shrink_slab(). The
+shrink_slab() calls do_shrink_slab() that via shrinker->count_objects()
+invoke count_shadow_nodes(), and count_shadow_nodes() does
+a mem_cgroup_flush_stats() call, that seems unnecessary.
+
+Backport differs slightly due to v6.6.32 doesn't contain commit
+7d7ef0a4686a ("mm: memcg: restore subtree stats flushing") from v6.8.
+---
+ mm/workingset.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/workingset.c b/mm/workingset.c
+index 2559a1f2fc1c..9110957bec5b 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -664,7 +664,7 @@ static unsigned long count_shadow_nodes(struct shrinker *shrinker,
+ 		struct lruvec *lruvec;
+ 		int i;
  
- 	INIT_WORK(&cgrp->bpf.release_work, cgroup_bpf_release);
--	queue_work(system_wq, &cgrp->bpf.release_work);
-+	queue_work(cgroup_destroy_wq, &cgrp->bpf.release_work);
- }
- 
- /* Get underlying bpf_prog of bpf_prog_list entry, regardless if it's through
-diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
-index 520b90dd97ec..9e57f3e9316e 100644
---- a/kernel/cgroup/cgroup-internal.h
-+++ b/kernel/cgroup/cgroup-internal.h
-@@ -13,6 +13,7 @@
- extern spinlock_t trace_cgroup_path_lock;
- extern char trace_cgroup_path[TRACE_CGROUP_PATH_LEN];
- extern void __init enable_debug_cgroup(void);
-+extern struct workqueue_struct *cgroup_destroy_wq;
- 
- /*
-  * cgroup_path() takes a spin lock. It is good practice not to take
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index e32b6972c478..3317e03fe2fb 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -124,7 +124,7 @@ DEFINE_PERCPU_RWSEM(cgroup_threadgroup_rwsem);
-  * destruction work items don't end up filling up max_active of system_wq
-  * which may lead to deadlock.
-  */
--static struct workqueue_struct *cgroup_destroy_wq;
-+struct workqueue_struct *cgroup_destroy_wq;
- 
- /* generate an array of cgroup subsystem pointers */
- #define SUBSYS(_x) [_x ## _cgrp_id] = &_x ## _cgrp_subsys,
--- 
-2.34.1
+-		mem_cgroup_flush_stats();
++		mem_cgroup_flush_stats_ratelimited();
+ 		lruvec = mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid));
+ 		for (pages = 0, i = 0; i < NR_LRU_LISTS; i++)
+ 			pages += lruvec_page_state_local(lruvec,
+
 
 
