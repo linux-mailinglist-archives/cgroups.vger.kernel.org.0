@@ -1,125 +1,140 @@
-Return-Path: <cgroups+bounces-3126-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3127-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9FA0900572
-	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 15:48:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00FC5900659
+	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 16:23:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 74412B22CAD
-	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 13:48:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4F041F22C28
+	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 14:23:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9BAA194AD1;
-	Fri,  7 Jun 2024 13:48:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D7A2196446;
+	Fri,  7 Jun 2024 14:23:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jxUbegs5"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QI+p1fRr"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5769194A5A;
-	Fri,  7 Jun 2024 13:48:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB791D530;
+	Fri,  7 Jun 2024 14:23:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717768091; cv=none; b=aMFuUoOmxYOLj6RsjysHgiZnLR/tEFE9yK/K6LrHW3Zi1s+QkvFRaiQPLjke+IGzh6VwpGS0/piDChxLLYKKO8BPAIw/xMNdLxuJ92CitP8z3QmoO3ibF9x+rHspCXGPhiIkXUNM6D8buDaj00bhRQmdPA2f6ZotQ7foj+QWZcE=
+	t=1717770203; cv=none; b=eIqVp7e1muHJUhspfRdJSwIH+rsgTPz8bPxrMU1rhcI9M3BAovDXl27zaRgEEdTbDyW24TLW7vSoChLdchTv1kMqrjPvh9uRWs4qyiiwKflKdhsk+Lxb7PWT2cDIU15w05waNmu6eXbrQnzwt0eZNE8j4xUxRQrVGt80FzTvT7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717768091; c=relaxed/simple;
-	bh=TQyKi7DdPGzpHrY7zAT+50KqIFo9l+0hqUZDJ1H9PuA=;
-	h=Subject:From:To:Cc:Date:Message-ID:MIME-Version:Content-Type; b=foHJAF+9cSyqCdYIWMMDs1mgapoLPjm4pC5AsBVAdpeKtbUsufr5umtvydIdkroJj39nVnnEmNtlc+dbrSu8G94bXLg9kyUwcYdLJtXX5DUIcC5tq5lK3oqoEkKXLjt6YcEjuP+3uFkUDMUfJTxBU59dZ2wuFTC4KlVmlBfgLYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jxUbegs5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4B10C32782;
-	Fri,  7 Jun 2024 13:48:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717768091;
-	bh=TQyKi7DdPGzpHrY7zAT+50KqIFo9l+0hqUZDJ1H9PuA=;
-	h=Subject:From:To:Cc:Date:From;
-	b=jxUbegs50WXk2Yd4F4sXnmPaVFzxACNse6F2pABiZWF8OZDrk1Sx0xEbZR9w2VuWi
-	 bf/sJ8HBjGMEqnyj+7U4yHbljoQVJZGcfmBsnlvmiD7NxHCv9RrUiobIA5WsUec0Gg
-	 YQCY5UCpAwyo6gS5JXEr2QiIr8aDnst6qXkj7bNVP+HYWV2MVzNDJs2u8OXNCcwzXE
-	 kxC7eFcF3DR38BlqtcZS7hqsvP8MJnaurmOfg92rgO/UCG5yF9C9UjPh7BKXR6HAx0
-	 K3C5ISy9fHOpK1I7Rg2ueH5yACJ44rWz8RntfKEA9y8apUhZivpvsRNMOoSuOwXnk2
-	 KuxTGt73+csaQ==
-Subject: [PATCH 6.6.y] mm: ratelimit stat flush from workingset shrinker
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-To: stable@vger.kernel.org, yosryahmed@google.com, shakeel.butt@linux.dev
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, tj@kernel.org,
- hannes@cmpxchg.org, lizefan.x@bytedance.com, cgroups@vger.kernel.org,
- longman@redhat.com, linux-mm@kvack.org, kernel-team@cloudflare.com
-Date: Fri, 07 Jun 2024 15:48:06 +0200
-Message-ID: <171776806121.384105.7980809581420394573.stgit@firesoul>
-User-Agent: StGit/1.5
+	s=arc-20240116; t=1717770203; c=relaxed/simple;
+	bh=IsjGFL0NwnhIQdxK6PsEqSI1jgzkHzKCixEGCzLgbNg=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=kl2oik2S65LbLhIVDaPhKftoE0Qj7g90hJR9B8D7c1Y6MnUaZ0SBhf0n+I1zfQzyh+uhAfpsgSkkRSH7gfS5FL9x92OwxxAAruNGlJ1hAlBL0tB4ykMK/WWcnSNSwPjKF2zdItypu7xqqsVo4qTG3V54qbYdyOpdVr4XyOmTm20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QI+p1fRr; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1717770201; x=1749306201;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=IsjGFL0NwnhIQdxK6PsEqSI1jgzkHzKCixEGCzLgbNg=;
+  b=QI+p1fRrobP31ISeu/5fZh1i3yZi/FfFBc/AhYCuIva3Ku3N3JHkUOkG
+   /ZZvAys296dafKw5OBi6BJWtSqo9OeDU5JLIzcEQ2yuq76qH9XY4eiEFY
+   ZdKOy3rO4N02zQDXNMfI83LqKNy8C/mXOvECP7h66ltH3VvIWDy/gBUWk
+   ++kZ5HKsQ+cgv+Vu2dDQy3VqwDhn+q0SeYCgQuG3gt8dMDiTdqj7wn2W2
+   sM4RsNbukRwxlutQ2vUpR7o8MtenZlhuIcdZ4f2Fh0q6xOovpP+KNcST0
+   b3OwxofIpft5Ba0fM2dLET2KKte/HNKTVSyDoLdLexDw5jpeHezSTBLjf
+   g==;
+X-CSE-ConnectionGUID: XfykR/32StCLPXFpgLo4bg==
+X-CSE-MsgGUID: KpEzoOMcRHO9EOSJPeW+aQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11096"; a="14233600"
+X-IronPort-AV: E=Sophos;i="6.08,221,1712646000"; 
+   d="scan'208";a="14233600"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2024 07:23:20 -0700
+X-CSE-ConnectionGUID: oDdqg0zxRXauu0ZecMGFfw==
+X-CSE-MsgGUID: AWEyKtx7QjyhVFI7OqlLYA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,221,1712646000"; 
+   d="scan'208";a="38449259"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 07 Jun 2024 07:23:17 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: jarkko@kernel.org, dave.hansen@linux.intel.com, kai.huang@intel.com,
+ tj@kernel.org, mkoutny@suse.com, linux-kernel@vger.kernel.org,
+ linux-sgx@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+ tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+ sohil.mehta@intel.com, tim.c.chen@linux.intel.com, chenridong
+ <chenridong@huawei.com>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+Subject: Re: [PATCH v14 02/14] cgroup/misc: Add per resource callbacks for CSS
+ events
+References: <20240531222630.4634-1-haitao.huang@linux.intel.com>
+ <20240531222630.4634-3-haitao.huang@linux.intel.com>
+ <eeb1f936-2989-4de0-8353-b2373ce47474@huawei.com>
+ <op.2ox8wt11wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <683e88d8-aa34-40c0-a8d5-d7f8f9d4deee@huawei.com>
+Date: Fri, 07 Jun 2024 09:23:16 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2oz17kjnwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <683e88d8-aa34-40c0-a8d5-d7f8f9d4deee@huawei.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-From: Shakeel Butt <shakeelb@google.com>
+On Thu, 06 Jun 2024 20:53:11 -0500, chenridong <chenridong@huawei.com>  
+wrote:
 
-commit d4a5b369ad6d8aae552752ff438dddde653a72ec upstream.
+> I think it is better when _misc_cg_res_alloc fails, it just calls  
+> _misc_cg_res_free(cg, index)(add index parameter, it means ending of  
+> iterator), so it can avoid calling ->free() that do not call ->alloc().
+>
+> And in misc_cg_free, just call _misc_cg_res_free(cg, MISC_CG_RES_TYPES)   
+> to free all.
+>
+That makes sense now, Will do that.
+(BTW you need comment inline :-)
+Thanks
+Haitao
 
-One of our workloads (Postgres 14 + sysbench OLTP) regressed on newer
-upstream kernel and on further investigation, it seems like the cause is
-the always synchronous rstat flush in the count_shadow_nodes() added by
-the commit f82e6bf9bb9b ("mm: memcg: use rstat for non-hierarchical
-stats").  On further inspection it seems like we don't really need
-accurate stats in this function as it was already approximating the amount
-of appropriate shadow entries to keep for maintaining the refault
-information.  Since there is already 2 sec periodic rstat flush, we don't
-need exact stats here.  Let's ratelimit the rstat flush in this code path.
-
-Link: https://lkml.kernel.org/r/20231228073055.4046430-1-shakeelb@google.com
-Fixes: f82e6bf9bb9b ("mm: memcg: use rstat for non-hierarchical stats")
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Yosry Ahmed <yosryahmed@google.com>
-Cc: Yu Zhao <yuzhao@google.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Muchun Song <songmuchun@bytedance.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
-
----
-On production with kernel v6.6 we are observing issues with excessive
-cgroup rstat flushing due to the extra call to mem_cgroup_flush_stats()
-in count_shadow_nodes() introduced in commit f82e6bf9bb9b ("mm: memcg:
-use rstat for non-hierarchical stats") that commit is part of v6.6.
-We request backport of commit d4a5b369ad6d ("mm: ratelimit stat flush
-from workingset shrinker") as it have a fixes tag for this commit.
-
-IMHO it is worth explaining call path that makes count_shadow_nodes()
-cause excessive cgroup rstat flushing calls. Function shrink_node()
-calls mem_cgroup_flush_stats() on its own first, and then invokes
-shrink_node_memcgs(). Function shrink_node_memcgs() iterates over
-cgroups via mem_cgroup_iter() for each calling shrink_slab(). The
-shrink_slab() calls do_shrink_slab() that via shrinker->count_objects()
-invoke count_shadow_nodes(), and count_shadow_nodes() does
-a mem_cgroup_flush_stats() call, that seems unnecessary.
-
-Backport differs slightly due to v6.6.32 doesn't contain commit
-7d7ef0a4686a ("mm: memcg: restore subtree stats flushing") from v6.8.
----
- mm/workingset.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/workingset.c b/mm/workingset.c
-index 2559a1f2fc1c..9110957bec5b 100644
---- a/mm/workingset.c
-+++ b/mm/workingset.c
-@@ -664,7 +664,7 @@ static unsigned long count_shadow_nodes(struct shrinker *shrinker,
- 		struct lruvec *lruvec;
- 		int i;
- 
--		mem_cgroup_flush_stats();
-+		mem_cgroup_flush_stats_ratelimited();
- 		lruvec = mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid));
- 		for (pages = 0, i = 0; i < NR_LRU_LISTS; i++)
- 			pages += lruvec_page_state_local(lruvec,
+>
+> On 2024/6/6 22:51, Haitao Huang wrote:
+>> On Thu, 06 Jun 2024 08:37:31 -0500, chenridong <chenridong@huawei.com>  
+>> wrote:
+>>
+>>>
+>>>   If _misc_cg_res_alloc fails, maybe some types do not call ->alloc(),  
+>>> but all types ->free() callback >will be called, is that ok?
+>>>
+>> Not sure I understand. Are you suggesting we ignore failures from  
+>> ->alloc() callback in _misc_cg_res_alloc() as it is per-resource, and  
+>> have ->free() callback and resource provider of the failing type to  
+>> handle the failure internally?
+>>
+>> IIUC, this failure only happens when a specific subcgroup is created  
+>> (memory running out for allocation) so failing that subcgroup as a  
+>> whole seems fine to me. Note the root node is static and no  
+>> pre-resource callbacks invoked by misc. And resource provider handles  
+>> its own allocations for root. In SGX case we too declare a static  
+>> object for corresponding root sgx_cgroup struct.
+>>
+>> Note also misc cgroup (except for setting capacity[res] = 0 at root) is  
+>> all or nothing so no mechanism to tell user "this resource does not  
+>> work but others are fine in this particular cgroup."
+>>
+>> Thanks
+>> Haitao
+>>
+>
 
 
+-- 
+Using Opera's mail client: http://www.opera.com/mail/
 
