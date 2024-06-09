@@ -1,316 +1,198 @@
-Return-Path: <cgroups+bounces-3134-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3135-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A81F9900C4B
-	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 21:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48578901679
+	for <lists+cgroups@lfdr.de>; Sun,  9 Jun 2024 17:30:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18DF3B2435E
-	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2024 19:11:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EDBBB2104B
+	for <lists+cgroups@lfdr.de>; Sun,  9 Jun 2024 15:30:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 849891474D6;
-	Fri,  7 Jun 2024 19:10:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D687846525;
+	Sun,  9 Jun 2024 15:29:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b="DnlkUCUZ"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="e8Ovct9O"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC520D2E5;
-	Fri,  7 Jun 2024 19:10:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FCE843AC3
+	for <cgroups@vger.kernel.org>; Sun,  9 Jun 2024 15:29:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717787457; cv=none; b=lQPwJL7GRkK3lvGuE8kvLcY66WKirfb8lBsbgnGwxBHiaDLHl7Ka/4vTIB9iNRbMJig+4PCspCrLcc65eCdmuKmpsGYicJ3v9UCOmZdrlaxFUQ58A3KBbRHLwRF6dnhp0SwNI9TSloOI4nOgfqkXrKXzq5Ffd0X/LymlIrRD5/A=
+	t=1717946997; cv=none; b=etEDNw2eV6CgCa6QGX/hPFJAgjJC7ea5MI5jppmWM89KYwnZOK6XGhDtzNn3Ub8DDquSoKYINKSZLo0pnqGeh/hc9pfTmV35VenCZa9mgLMyYkcQLh0bJJOg5CDWe+6KyVzayX75IN4XKNsIaCElAXTCVC6Q5MFbVfmJVwIh/34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717787457; c=relaxed/simple;
-	bh=MLBjsU4I09vKzSbxgrBhP1TROF1e4jZS6L6yZ9Bowag=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pQ2j1hltRsjKnm7q0x3e8icrdKAnRO3TdY6fitLjQasAuJBABKzXYNq+F7CT0V2goXixcche9jBs6FWU6wqFvBUhb8rkQnW4mEYV5ISIkCMkgeLvcX9N61TxSqqunNtstWSoGDb4Umi4PDXwvwpxK3Cnlthyjyu69j3iCt0iFVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b=DnlkUCUZ; arc=none smtp.client-ip=99.78.197.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
+	s=arc-20240116; t=1717946997; c=relaxed/simple;
+	bh=LkPXGai8kaRoajhEuKD9q1QTp4VpWFHLrSWtfPGkqEk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=XogHAe3V7MBLpsw+YWPX3Oj1d1p5RB5VJoQB2DnTiTQtzxQ6QG985kbPgf58301csDP5thxxx8lFJKViruPRE42vf8iPQxTzj5gigXHdur2zb0ObZCcxN1z3k+Fcu7ZL8OkTc8EXVTaTHzbTt+nYo8LcPWJ6FL3ntEOxww7mcOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=e8Ovct9O; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2e73441edf7so39006471fa.1
+        for <cgroups@vger.kernel.org>; Sun, 09 Jun 2024 08:29:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
-  s=amazon201209; t=1717787456; x=1749323456;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=pvuQyB3QYdHQctMrm6MNGw6MxQLOpFvtCEVJYTSwXFM=;
-  b=DnlkUCUZ9q70r+3D8ImvXhnn0OrM4yKsCElfGPqQEzLCVRiRhyaXeJbc
-   U0ynyCAGxgG4u4+f4r2wDgIQd9MDOu1h3IflWfiTymx/1j8vsD+mP2BVO
-   AznIMgBJq9DALn304LzBg1KFMSRMNVtJBeltEnjXhAzZhKD1nv37B/pxG
-   I=;
-X-IronPort-AV: E=Sophos;i="6.08,221,1712620800"; 
-   d="scan'208";a="301930460"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.25.36.210])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2024 19:10:53 +0000
-Received: from EX19MTAEUC001.ant.amazon.com [10.0.10.100:21333]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.2.117:2525] with esmtp (Farcaster)
- id 8d85155e-7d4f-438c-a225-c206bacb4100; Fri, 7 Jun 2024 19:10:50 +0000 (UTC)
-X-Farcaster-Flow-ID: 8d85155e-7d4f-438c-a225-c206bacb4100
-Received: from EX19D007EUA001.ant.amazon.com (10.252.50.133) by
- EX19MTAEUC001.ant.amazon.com (10.252.51.155) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Fri, 7 Jun 2024 19:10:43 +0000
-Received: from EX19MTAUWC001.ant.amazon.com (10.250.64.145) by
- EX19D007EUA001.ant.amazon.com (10.252.50.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Fri, 7 Jun 2024 19:10:42 +0000
-Received: from dev-dsk-fgriffo-1c-69b51a13.eu-west-1.amazon.com
- (10.13.244.152) by mail-relay.amazon.com (10.250.64.145) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34 via Frontend Transport; Fri, 7 Jun 2024 19:10:38 +0000
-From: Fred Griffoul <fgriffo@amazon.co.uk>
-To: <griffoul@gmail.com>
-CC: Fred Griffoul <fgriffo@amazon.co.uk>, Catalin Marinas
-	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Alex Williamson
-	<alex.williamson@redhat.com>, Waiman Long <longman@redhat.com>, Zefan Li
-	<lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>, Johannes Weiner
-	<hannes@cmpxchg.org>, Mark Rutland <mark.rutland@arm.com>, Marc Zyngier
-	<maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, Mark Brown
-	<broonie@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Joey Gouly
-	<joey.gouly@arm.com>, Ryan Roberts <ryan.roberts@arm.com>, Jeremy Linton
-	<jeremy.linton@arm.com>, Jason Gunthorpe <jgg@ziepe.ca>, Yi Liu
-	<yi.l.liu@intel.com>, Kevin Tian <kevin.tian@intel.com>, Eric Auger
-	<eric.auger@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, "Christian
- Brauner" <brauner@kernel.org>, Ankit Agrawal <ankita@nvidia.com>, "Reinette
- Chatre" <reinette.chatre@intel.com>, Ye Bin <yebin10@huawei.com>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<kvm@vger.kernel.org>, <cgroups@vger.kernel.org>
-Subject: [PATCH v4 2/2] vfio/pci: add msi interrupt affinity support
-Date: Fri, 7 Jun 2024 19:09:49 +0000
-Message-ID: <20240607190955.15376-3-fgriffo@amazon.co.uk>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240607190955.15376-1-fgriffo@amazon.co.uk>
-References: <20240607190955.15376-1-fgriffo@amazon.co.uk>
+        d=linaro.org; s=google; t=1717946993; x=1718551793; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+p7Dbyuweupea3JxyYctujxWv1vr+kMS3mFulUukLl4=;
+        b=e8Ovct9OJM6L9gooMPF98nCD/TSJFi5sosivd7iXjZQ/1b4j/I7Fly9b84YAu7o3zG
+         /zeN4ansGlsFvhJ3FlZ/RV3h3qNO5nRu2Fl5giDWSMUFw7Z4HByk7b5prLDFqStyMV5/
+         qXvQTfBeN7OMB8nsn1OnT6PooGPnrWYCE0Xnd9EqbotCW1y/45UczRkYv4zf9McTI9Af
+         ulvZYw1x+KJliZ0xRtzT2iF7u9Xu0xYhoF67+RgbQ7EVmkn8wDv7P6sa5VzZfJYoEoZx
+         8SVTipcnsxM0Oetz9yMBNedp9bBB0bFoPYS+fGi9N/nO50N4vh8Wq+1xXXN8ZD06sYL0
+         yIcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717946993; x=1718551793;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+p7Dbyuweupea3JxyYctujxWv1vr+kMS3mFulUukLl4=;
+        b=gtjd8d3VNoTgUSyDtw1PD+NLI+SqRLyzExl0jNjtENkQI/UkOU6jXg6UBzfogTc84l
+         9FB7Yl0vMz81Hx6IzTqc+K/KyW5iU+Tsq3YoEg8INFGzOU1VIxGbKNuXrVSBk8PWyQ3j
+         KumRAeviREXY4QcMYyDTPW8DQY2zIjeRHx8Ehne2eA6q4GkrkAaFIxcs+kubO5pVTchj
+         08A+DXbPfx8dpSjr3OiD1O3+M0v/Pe9mzG27XMoWlaluNFpZBBvWZmtl1ZW9zqO8/3Uw
+         WDaLmiyPsuA9vP6DYszq7a8FceMlTFzIL/wfTsLrpDL6JqpVSJrRMRg7gIhfhrxLVi9D
+         Wzgg==
+X-Forwarded-Encrypted: i=1; AJvYcCUVw2EWzBKtrPj8A5iD6qwh9ZBCdCKDj72mYio4IMBcKXwXTFCQ/H/PxATNPg4iG3uSQQTyjjIXvxxBlNAhrrj7YQD4jb/lhQ==
+X-Gm-Message-State: AOJu0Yz5iFcdz1UtWTlIOKVL8422DkRgwqJ0Y61oUhAyUpzT2iTRv3wD
+	9i/MDZAFjrwj2eTjklR5z+XlcBjEeZBsn2mIlrM5/b8H/9BPdV/nhBmQ4gEyhac=
+X-Google-Smtp-Source: AGHT+IHAD4z52RxtAlhkJKnz6xDUNUsq8wzsH9aGCceUyMemIpuwQ3lYTq1VwnfUMEWgqgARHYFD4Q==
+X-Received: by 2002:a19:5f5b:0:b0:520:c2c1:153a with SMTP id 2adb3069b0e04-52bb9fd2521mr4380150e87.58.1717946992519;
+        Sun, 09 Jun 2024 08:29:52 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-35f2024b1c8sm1716363f8f.39.2024.06.09.08.29.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 09 Jun 2024 08:29:52 -0700 (PDT)
+Date: Sun, 9 Jun 2024 18:29:48 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: oe-kbuild@lists.linux.dev, Fred Griffoul <fgriffo@amazon.co.uk>,
+	griffoul@gmail.com
+Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+	Fred Griffoul <fgriffo@amazon.co.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	Waiman Long <longman@redhat.com>,
+	Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Mark Brown <broonie@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Joey Gouly <joey.gouly@arm.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Jeremy Linton <jeremy.linton@arm.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Yi Liu <yi.l.liu@intel.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Eric Auger <eric.auger@redhat.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Ankit Agrawal <ankita@nvidia.com>,
+	Reinette Chatre <reinette.chatre@intel.com>,
+	Ye Bin <yebin10@huawei.com>, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] vfio/pci: add msi interrupt affinity support
+Message-ID: <714268da-d199-4371-8360-500e7165119c@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240607190955.15376-3-fgriffo@amazon.co.uk>
 
-The usual way to configure a device interrupt from userland is to write
-the /proc/irq/<irq>/smp_affinity or smp_affinity_list files. When using
-vfio to implement a device driver or a virtual machine monitor, this may
-not be ideal: the process managing the vfio device interrupts may not be
-granted root privilege, for security reasons. Thus it cannot directly
-control the interrupt affinity and has to rely on an external command.
+Hi Fred,
 
-This patch extends the VFIO_DEVICE_SET_IRQS ioctl() with a new data flag
-to specify the affinity of interrupts of a vfio pci device.
+kernel test robot noticed the following build warnings:
 
-The CPU affinity mask argument must be a subset of the process cpuset,
-otherwise an error -EPERM is returned.
+url:    https://github.com/intel-lab-lkp/linux/commits/Fred-Griffoul/cgroup-cpuset-export-cpuset_cpus_allowed/20240608-031332
+base:   cbb325e77fbe62a06184175aa98c9eb98736c3e8
+patch link:    https://lore.kernel.org/r/20240607190955.15376-3-fgriffo%40amazon.co.uk
+patch subject: [PATCH v4 2/2] vfio/pci: add msi interrupt affinity support
+config: mips-randconfig-r081-20240609 (https://download.01.org/0day-ci/archive/20240609/202406092245.Hgx6MqK9-lkp@intel.com/config)
+compiler: mips-linux-gcc (GCC) 13.2.0
 
-The vfio_irq_set argument shall be set-up in the following way:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202406092245.Hgx6MqK9-lkp@intel.com/
 
-- the 'flags' field have the new flag VFIO_IRQ_SET_DATA_AFFINITY set
-as well as VFIO_IRQ_SET_ACTION_TRIGGER.
+New smatch warnings:
+drivers/vfio/pci/vfio_pci_core.c:1241 vfio_pci_ioctl_set_irqs() warn: maybe return -EFAULT instead of the bytes remaining?
 
-- the variable-length 'data' field is a cpu_set_t structure, as
-for the sched_setaffinity() syscall, the size of which is derived
-from 'argsz'.
+vim +1241 drivers/vfio/pci/vfio_pci_core.c
 
-Signed-off-by: Fred Griffoul <fgriffo@amazon.co.uk>
----
- drivers/vfio/pci/vfio_pci_core.c  | 26 +++++++++++++++++----
- drivers/vfio/pci/vfio_pci_intrs.c | 39 +++++++++++++++++++++++++++++++
- drivers/vfio/vfio_main.c          | 13 +++++++----
- include/uapi/linux/vfio.h         | 10 +++++++-
- 4 files changed, 79 insertions(+), 9 deletions(-)
+2ecf3b58ed7bc5 drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-31  1190  static int vfio_pci_ioctl_set_irqs(struct vfio_pci_core_device *vdev,
+663eab456e072b drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-31  1191  				   struct vfio_irq_set __user *arg)
+2ecf3b58ed7bc5 drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-31  1192  {
+2ecf3b58ed7bc5 drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-31  1193  	unsigned long minsz = offsetofend(struct vfio_irq_set, count);
+89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-31  1194  	struct vfio_irq_set hdr;
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1195  	cpumask_var_t mask;
+89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-31  1196  	u8 *data = NULL;
+05692d7005a364 drivers/vfio/pci/vfio_pci.c      Vlad Tsyrklevich 2016-10-12  1197  	int max, ret = 0;
+ef198aaa169c61 drivers/vfio/pci/vfio_pci.c      Kirti Wankhede   2016-11-17  1198  	size_t data_size = 0;
+89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-31  1199  
+663eab456e072b drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-31  1200  	if (copy_from_user(&hdr, arg, minsz))
+89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-31  1201  		return -EFAULT;
+89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-31  1202  
+05692d7005a364 drivers/vfio/pci/vfio_pci.c      Vlad Tsyrklevich 2016-10-12  1203  	max = vfio_pci_get_irq_count(vdev, hdr.index);
+89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-31  1204  
+ea3fc04d4fad2d drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-31  1205  	ret = vfio_set_irqs_validate_and_prepare(&hdr, max, VFIO_PCI_NUM_IRQS,
+ea3fc04d4fad2d drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-31  1206  						 &data_size);
+ef198aaa169c61 drivers/vfio/pci/vfio_pci.c      Kirti Wankhede   2016-11-17  1207  	if (ret)
+ef198aaa169c61 drivers/vfio/pci/vfio_pci.c      Kirti Wankhede   2016-11-17  1208  		return ret;
+89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-31  1209  
+ef198aaa169c61 drivers/vfio/pci/vfio_pci.c      Kirti Wankhede   2016-11-17  1210  	if (data_size) {
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1211  		if (hdr.flags & VFIO_IRQ_SET_DATA_AFFINITY) {
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1212  			if (!zalloc_cpumask_var(&mask, GFP_KERNEL))
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1213  				return -ENOMEM;
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1214  
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1215  			ret = copy_from_user(mask, &arg->data, data_size);
 
-diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-index 80cae87fff36..6a3b1ca95acc 100644
---- a/drivers/vfio/pci/vfio_pci_core.c
-+++ b/drivers/vfio/pci/vfio_pci_core.c
-@@ -1192,6 +1192,7 @@ static int vfio_pci_ioctl_set_irqs(struct vfio_pci_core_device *vdev,
- {
- 	unsigned long minsz = offsetofend(struct vfio_irq_set, count);
- 	struct vfio_irq_set hdr;
-+	cpumask_var_t mask;
- 	u8 *data = NULL;
- 	int max, ret = 0;
- 	size_t data_size = 0;
-@@ -1207,9 +1208,21 @@ static int vfio_pci_ioctl_set_irqs(struct vfio_pci_core_device *vdev,
- 		return ret;
- 
- 	if (data_size) {
--		data = memdup_user(&arg->data, data_size);
--		if (IS_ERR(data))
--			return PTR_ERR(data);
-+		if (hdr.flags & VFIO_IRQ_SET_DATA_AFFINITY) {
-+			if (!zalloc_cpumask_var(&mask, GFP_KERNEL))
-+				return -ENOMEM;
-+
-+			ret = copy_from_user(mask, &arg->data, data_size);
-+			if (ret)
-+				goto out;
-+
-+			data = (u8 *)mask;
-+
-+		} else {
-+			data = memdup_user(&arg->data, data_size);
-+			if (IS_ERR(data))
-+				return PTR_ERR(data);
-+		}
- 	}
- 
- 	mutex_lock(&vdev->igate);
-@@ -1218,7 +1231,12 @@ static int vfio_pci_ioctl_set_irqs(struct vfio_pci_core_device *vdev,
- 				      hdr.count, data);
- 
- 	mutex_unlock(&vdev->igate);
--	kfree(data);
-+
-+out:
-+	if (hdr.flags & VFIO_IRQ_SET_DATA_AFFINITY && data_size)
-+		free_cpumask_var(mask);
-+	else
-+		kfree(data);
- 
- 	return ret;
- }
-diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
-index 8382c5834335..fe01303cf94e 100644
---- a/drivers/vfio/pci/vfio_pci_intrs.c
-+++ b/drivers/vfio/pci/vfio_pci_intrs.c
-@@ -19,6 +19,7 @@
- #include <linux/vfio.h>
- #include <linux/wait.h>
- #include <linux/slab.h>
-+#include <linux/cpuset.h>
- 
- #include "vfio_pci_priv.h"
- 
-@@ -675,6 +676,41 @@ static int vfio_pci_set_intx_trigger(struct vfio_pci_core_device *vdev,
- 	return 0;
- }
- 
-+static int vfio_pci_set_msi_affinity(struct vfio_pci_core_device *vdev,
-+				     unsigned int start, unsigned int count,
-+				     struct cpumask *irq_mask)
-+{
-+	struct vfio_pci_irq_ctx *ctx;
-+	cpumask_var_t allowed_mask;
-+	unsigned int i;
-+	int err = 0;
-+
-+	if (!alloc_cpumask_var(&allowed_mask, GFP_KERNEL))
-+		return -ENOMEM;
-+
-+	cpuset_cpus_allowed(current, allowed_mask);
-+	if (!cpumask_subset(irq_mask, allowed_mask)) {
-+		err = -EPERM;
-+		goto finish;
-+	}
-+
-+	for (i = start; i < start + count; i++) {
-+		ctx = vfio_irq_ctx_get(vdev, i);
-+		if (!ctx) {
-+			err = -EINVAL;
-+			break;
-+		}
-+
-+		err = irq_set_affinity(ctx->producer.irq, irq_mask);
-+		if (err)
-+			break;
-+	}
-+
-+finish:
-+	free_cpumask_var(allowed_mask);
-+	return err;
-+}
-+
- static int vfio_pci_set_msi_trigger(struct vfio_pci_core_device *vdev,
- 				    unsigned index, unsigned start,
- 				    unsigned count, uint32_t flags, void *data)
-@@ -713,6 +749,9 @@ static int vfio_pci_set_msi_trigger(struct vfio_pci_core_device *vdev,
- 	if (!irq_is(vdev, index))
- 		return -EINVAL;
- 
-+	if (flags & VFIO_IRQ_SET_DATA_AFFINITY)
-+		return vfio_pci_set_msi_affinity(vdev, start, count, data);
-+
- 	for (i = start; i < start + count; i++) {
- 		ctx = vfio_irq_ctx_get(vdev, i);
- 		if (!ctx)
-diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
-index e97d796a54fb..e87131d45059 100644
---- a/drivers/vfio/vfio_main.c
-+++ b/drivers/vfio/vfio_main.c
-@@ -1505,23 +1505,28 @@ int vfio_set_irqs_validate_and_prepare(struct vfio_irq_set *hdr, int num_irqs,
- 		size = 0;
- 		break;
- 	case VFIO_IRQ_SET_DATA_BOOL:
--		size = sizeof(uint8_t);
-+		size = hdr->count * sizeof(uint8_t);
- 		break;
- 	case VFIO_IRQ_SET_DATA_EVENTFD:
--		size = sizeof(int32_t);
-+		size = hdr->count * sizeof(int32_t);
-+		break;
-+	case VFIO_IRQ_SET_DATA_AFFINITY:
-+		size = hdr->argsz - minsz;
-+		if (size > cpumask_size())
-+			size = cpumask_size();
- 		break;
- 	default:
- 		return -EINVAL;
- 	}
- 
- 	if (size) {
--		if (hdr->argsz - minsz < hdr->count * size)
-+		if (hdr->argsz - minsz < size)
- 			return -EINVAL;
- 
- 		if (!data_size)
- 			return -EINVAL;
- 
--		*data_size = hdr->count * size;
-+		*data_size = size;
- 	}
- 
- 	return 0;
-diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-index 2b68e6cdf190..5ba2ca223550 100644
---- a/include/uapi/linux/vfio.h
-+++ b/include/uapi/linux/vfio.h
-@@ -580,6 +580,12 @@ struct vfio_irq_info {
-  *
-  * Note that ACTION_[UN]MASK specify user->kernel signaling (irqfds) while
-  * ACTION_TRIGGER specifies kernel->user signaling.
-+ *
-+ * DATA_AFFINITY specifies the affinity for the range of interrupt vectors.
-+ * It must be set with ACTION_TRIGGER in 'flags'. The variable-length 'data'
-+ * array is a CPU affinity mask 'cpu_set_t' structure, as for the
-+ * sched_setaffinity() syscall argument: the 'argsz' field is used to check
-+ * the actual cpu_set_t size.
-  */
- struct vfio_irq_set {
- 	__u32	argsz;
-@@ -587,6 +593,7 @@ struct vfio_irq_set {
- #define VFIO_IRQ_SET_DATA_NONE		(1 << 0) /* Data not present */
- #define VFIO_IRQ_SET_DATA_BOOL		(1 << 1) /* Data is bool (u8) */
- #define VFIO_IRQ_SET_DATA_EVENTFD	(1 << 2) /* Data is eventfd (s32) */
-+#define VFIO_IRQ_SET_DATA_AFFINITY	(1 << 6) /* Data is cpu_set_t */
- #define VFIO_IRQ_SET_ACTION_MASK	(1 << 3) /* Mask interrupt */
- #define VFIO_IRQ_SET_ACTION_UNMASK	(1 << 4) /* Unmask interrupt */
- #define VFIO_IRQ_SET_ACTION_TRIGGER	(1 << 5) /* Trigger interrupt */
-@@ -599,7 +606,8 @@ struct vfio_irq_set {
- 
- #define VFIO_IRQ_SET_DATA_TYPE_MASK	(VFIO_IRQ_SET_DATA_NONE | \
- 					 VFIO_IRQ_SET_DATA_BOOL | \
--					 VFIO_IRQ_SET_DATA_EVENTFD)
-+					 VFIO_IRQ_SET_DATA_EVENTFD | \
-+					 VFIO_IRQ_SET_DATA_AFFINITY)
- #define VFIO_IRQ_SET_ACTION_TYPE_MASK	(VFIO_IRQ_SET_ACTION_MASK | \
- 					 VFIO_IRQ_SET_ACTION_UNMASK | \
- 					 VFIO_IRQ_SET_ACTION_TRIGGER)
+copy_from_user() returns the number of bytes remaining to be copied.
+This should be:
+
+	if (copy_from_user(mask, &arg->data, data_size)) {
+		ret = -EFAULT;
+		goto out;
+	}
+
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1216  			if (ret)
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1217  				goto out;
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1218  
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1219  			data = (u8 *)mask;
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1220  
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1221  		} else {
+663eab456e072b drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-31  1222  			data = memdup_user(&arg->data, data_size);
+3a1f7041ddd59e drivers/vfio/pci/vfio_pci.c      Fengguang Wu     2012-12-07  1223  			if (IS_ERR(data))
+3a1f7041ddd59e drivers/vfio/pci/vfio_pci.c      Fengguang Wu     2012-12-07  1224  				return PTR_ERR(data);
+89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-31  1225  		}
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1226  	}
+89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-31  1227  
+89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-31  1228  	mutex_lock(&vdev->igate);
+89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-31  1229  
+ea3fc04d4fad2d drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-31  1230  	ret = vfio_pci_set_irqs_ioctl(vdev, hdr.flags, hdr.index, hdr.start,
+ea3fc04d4fad2d drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-31  1231  				      hdr.count, data);
+89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-31  1232  
+89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-31  1233  	mutex_unlock(&vdev->igate);
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1234  
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1235  out:
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1236  	if (hdr.flags & VFIO_IRQ_SET_DATA_AFFINITY && data_size)
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1237  		free_cpumask_var(mask);
+66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-07  1238  	else
+89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-31  1239  		kfree(data);
+89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-31  1240  
+89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-31 @1241  	return ret;
+2ecf3b58ed7bc5 drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-31  1242  }
+
 -- 
-2.40.1
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
