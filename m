@@ -1,219 +1,262 @@
-Return-Path: <cgroups+bounces-3139-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3140-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72780901C7A
-	for <lists+cgroups@lfdr.de>; Mon, 10 Jun 2024 10:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B5ED901CD8
+	for <lists+cgroups@lfdr.de>; Mon, 10 Jun 2024 10:21:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ECD921F228BB
-	for <lists+cgroups@lfdr.de>; Mon, 10 Jun 2024 08:09:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9FAA1F21784
+	for <lists+cgroups@lfdr.de>; Mon, 10 Jun 2024 08:21:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8BA557CB4;
-	Mon, 10 Jun 2024 08:08:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAABA6A8BE;
+	Mon, 10 Jun 2024 08:21:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FY2k3Mn1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FyOi6n7q"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DF51558BA
-	for <cgroups@vger.kernel.org>; Mon, 10 Jun 2024 08:08:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9BD84D8BC;
+	Mon, 10 Jun 2024 08:21:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718006916; cv=none; b=CJYLOJX/kZP+tvvdwEB6s/Vvo3hzwupy1sd74kJ/T6HVI7qLBJTM5+4a/rVYrcRqhq5arXjIJP9q2wXAefIScUI77kTdxVoVPVuqIGb0XLIY1bhYGOSUqpu/OaiCVG5MHPQ6DAVOFm9rqK1jFANJwWT+M5egKh9Tm7BQ9TnFLvQ=
+	t=1718007705; cv=none; b=sNUDLFbacqTvES4i6s+RYUU/bHINp/FQ2EurzgdmE5ofb+2gsiyd24QM050hQQA9312GNy9vKpDJKTBxDRxEIfZcuGvlrNc0pr0TjyURlkDzFTNtIHy01opDQkriJySIYvVwVthHJHF5JZK/3sxU/KTtZrCTIi9IV+4zQT4uoTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718006916; c=relaxed/simple;
-	bh=/L5y1Dv6ivY3eszYnYmdXRYc401x9YYY2yBAmmyUG/k=;
+	s=arc-20240116; t=1718007705; c=relaxed/simple;
+	bh=68qVpkivRPu/UqBy8a5aM/GcH3KxSp5sMnJQNIuc4FU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EaGth07ll3ApfQ4HpT6msNSgOl/DB85hRqVswCu7Iu5KwP/5+8wEjkBpiFTdNJeAgiKIX3YvP+PXMW8M+QYw+knzgzWGWw5l6TRYcXkxKkSRJKN7/tp38meZmqck9MOEB169uPZHhoRcyHZgM126wHVCThDz3eS5Q3t+mP1RKI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FY2k3Mn1; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2e95a75a90eso45686561fa.2
-        for <cgroups@vger.kernel.org>; Mon, 10 Jun 2024 01:08:34 -0700 (PDT)
+	 To:Cc:Content-Type; b=aAnVIOkLeTdxTC9XrNjddvIfr/5z7VXTFSUWEEF80VZkf7BV1+mHKLEMXMvfwLAwUbDSQsZqIutR0TFnX0hJX233xfqeJ0pwSV+Q/LnuEdl/+4k9X37P6mh2D/S9RGC6QzhaYePhSgZ8pm7YH5NcazxetC+z0XAlpB+1Qssz8Vg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FyOi6n7q; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-57a4d7ba501so5286457a12.2;
+        Mon, 10 Jun 2024 01:21:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1718006913; x=1718611713; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1718007702; x=1718612502; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/L5y1Dv6ivY3eszYnYmdXRYc401x9YYY2yBAmmyUG/k=;
-        b=FY2k3Mn1PYXcT34Eo96oKLUsknRz0hgtVbv3X+DhxGiYz+kbwRScKV5erdDVYUAAcd
-         jw6OuZPpP2NNPqOZ2xbFrAnjX+R/moWth1xQbyLTQwP/AO2viR5QhBlPBUqVIiumNaWh
-         q9FNp9oq5otLzICQCloUWcrekkzWRFWluxtU4sFdlbDWDluPzyuTugazeXoFyCiJBRP3
-         HApxSZljkEXVYOKB9+xNb5fXk5aZomQQNqaUlFf2wJEZ4UBULeRnjXc636gbucf+QV1v
-         lD2YagRXZavPnguwNF+EgxZqcY5VeCnUF1kmP29ABaYpXiQO+TVb9XtCe6irhsUQsFWo
-         cHEg==
+        bh=JwKWNr3+SkhJYsnRjSQdpuuiDdqh1Y+N1jlC0TkNGnY=;
+        b=FyOi6n7qTs2M1acOLHUKYVCxHR4o/phgVvtAmExnQSPtNfhK6kJipVRXWs7uYAYteT
+         CVvmCviyBqjz8rgbyJ43MIMeJST0eP1GQB1NBMYzrhYvB1fS1cQ/NfPRz5eAKj7MTCPa
+         ZNskFw+WKm3Mf0LG16W+RlgpkFBfbY+t+wwMX2i0OF4MfOCyZ1KO/LrF5IPD85TZ4oeK
+         YczC3QsT/kBynFGYHS7cfjJ+f72TPPOZFxO34QtJBIx605DmNvB1ZzXWcSbnXiwP8yNH
+         TA5ttEolrGdUeEdD/kS+QJZm2q0XEVeTUlo7mwhLyMa8K98cMbPep5UrxfAqheu+d+eF
+         7WLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718006913; x=1718611713;
+        d=1e100.net; s=20230601; t=1718007702; x=1718612502;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/L5y1Dv6ivY3eszYnYmdXRYc401x9YYY2yBAmmyUG/k=;
-        b=JkMm/I3n+BhkyWUHzpfBpi6oyfXxSGCJruuE4sJCnS9B8NVGDT2aHkKCCNrDGlzUEm
-         gx1nQrSNGMAAwCoK5N0uR6Qy7M3LBk1SFTs0zI00ncyZDAxV5mi9GstvvIBvjr7O6mEt
-         PINoqiwy8aeB+vXmrgkITSs2sYJKXBt5NKVcQGTZ9l7aVdHzdkWZ8P9nxODReYqyXArL
-         msoN+mJJW3exzFJdSghquZ7DbuvZW2CbY/2ENK/vv4KGDU0Ui+LV1fQnZia1QW2v+qDD
-         pSJENq+4W8di+2maMnIca5XkL5+rfE2xWXf2Ubd4Pt71Q1ArxCbzqEDcLs4gsujaj3tf
-         hpqA==
-X-Forwarded-Encrypted: i=1; AJvYcCUR2OSHDmQ0Btvr2KlZJDI3OwZ5pViYuae8M0sZoeEfEJSuHoSTBQbflMReHC6rmt+cjxRv15rVdfdjab5m+DGH6e44x7P1yw==
-X-Gm-Message-State: AOJu0YwYMCJl6Z/88NFqS2vOR65vUbRLkELQhEEuS7WxNL3P1Au9OFER
-	2gJto1YqtdMjSfC0eTE6CvdXXq8IFJX3tZPvCYT91DxvaemY1wK+wei1mFQ7yhaK1bBWbsgIcgL
-	F461NH0nDLT6N5m4/25ZaOowyR9Lq8W3EHFZQDnQ4VTT58cwc
-X-Google-Smtp-Source: AGHT+IEoIIaopVbMhKiBzu+ZFeFG117iZrYhuaSy1PLsnicMvCE0nAaF1iUL9hhnUeVtUHqe9i20V059/u6XmSWe6yI=
-X-Received: by 2002:a05:6512:234d:b0:52b:be9b:cafe with SMTP id
- 2adb3069b0e04-52bbe9bcbadmr5940256e87.21.1718006892189; Mon, 10 Jun 2024
- 01:08:12 -0700 (PDT)
+        bh=JwKWNr3+SkhJYsnRjSQdpuuiDdqh1Y+N1jlC0TkNGnY=;
+        b=oCMGVxxCVlZAVWA367MBqRGyxPBxP31f7dLGx6lbpVyI/abARJs7WYiIDctUr5D4tY
+         raHDS296glKkFW7vEuq2b6nbHjkeVutj5/ngHktv/wP/rBKNKbMLryg3iAbD2J1effts
+         GCLSNwdweJ/GVu55haMXUvHp+RCHIRqRJHFqFmSD3Ae6nlJ3xkq2lDFlZ6nWVCFoONBC
+         Rq7ahI0jl9pSPjmZmKrtJ9HkEPvYlbPX7d+k1GY4Xbz95l1CD6GlMuh8z1vRIoyxqp13
+         C7kNeWCiju27IkigLQfM3hBnyqi2SD915RxBDVFlZkFrlbwkYU99BoLAv27LqH0z6FPS
+         bFtg==
+X-Forwarded-Encrypted: i=1; AJvYcCUAXChbb5P/x5zrg6qe7Fzag7uuYJLPrmfkHfN+FISRqWiY6tKDszVRzJHMhjMVBeOtV5rqon7AK7nsmasn5ulPflv4Y7y1NJNPIanp7ZW3LhzaAf51LxRPezzYZzk66bilU5CQi/YfIYG6OuGmS3sJhKEu7Y1YUPUwiw==
+X-Gm-Message-State: AOJu0YyJaTJ5fjxAe656RU6SwuZ7Ou6uSrpCqqsoVdF8FZYkbw3aFAVn
+	IiD+d+HCIwOxtDKxmp5MsVly+qIYQlgRoJpKcVv+uKDc+acJ6fx4xb65MVPjDkOhsH5+2C1dGpP
+	L0JfEsi+Or2bV7eHq0arnLZ4OBl8=
+X-Google-Smtp-Source: AGHT+IFoeL0ZvocmrGv43whyPh4WdDBovgyiR6rzdf6LIdVEfBJkv89u568WYmQekhY/GtCxdAuSJSZUaxZnt6i/1Cc=
+X-Received: by 2002:a17:907:174d:b0:a6e:f8d6:f61d with SMTP id
+ a640c23a62f3a-a6ef8d6f7e5mr399407866b.50.1718007701813; Mon, 10 Jun 2024
+ 01:21:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240603211538.289765-1-andriy.shevchenko@linux.intel.com> <87tti9cfry.fsf@intel.com>
-In-Reply-To: <87tti9cfry.fsf@intel.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Mon, 10 Jun 2024 10:08:00 +0200
-Message-ID: <CACRpkdZFPG_YLici-BmYfk9HZ36f4WavCN3JNotkk8cPgCODCg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] treewide: Align match_string() with sysfs_match_string()
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Corey Minyard <minyard@acm.org>, 
-	Allen Pais <apais@linux.microsoft.com>, 
-	Sebastian Reichel <sebastian.reichel@collabora.com>, Perry Yuan <perry.yuan@amd.com>, 
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	Nuno Sa <nuno.sa@analog.com>, Guenter Roeck <linux@roeck-us.net>, 
-	Randy Dunlap <rdunlap@infradead.org>, Andi Shyti <andi.shyti@kernel.org>, 
-	Heiner Kallweit <hkallweit1@gmail.com>, Lee Jones <lee@kernel.org>, 
-	Samuel Holland <samuel@sholland.org>, Elad Nachman <enachman@marvell.com>, 
-	Arseniy Krasnov <AVKrasnov@sberdevices.ru>, Johannes Berg <johannes.berg@intel.com>, 
-	Gregory Greenman <gregory.greenman@intel.com>, Benjamin Berg <benjamin.berg@intel.com>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Robert Richter <rrichter@amd.com>, Vinod Koul <vkoul@kernel.org>, 
-	Chunfeng Yun <chunfeng.yun@mediatek.com>, Hans de Goede <hdegoede@redhat.com>, 
-	=?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
-	Nikita Kravets <teackot@gmail.com>, Jiri Slaby <jirislaby@kernel.org>, 
-	Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, 
-	Stanley Chang <stanley_chang@realtek.com>, 
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>, Abdel Alkuor <abdelalkuor@geotab.com>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, Eric Biggers <ebiggers@google.com>, 
-	Kees Cook <keescook@chromium.org>, Ingo Molnar <mingo@kernel.org>, 
-	"Steven Rostedt (Google)" <rostedt@goodmis.org>, Daniel Bristot de Oliveira <bristot@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Hugh Dickins <hughd@google.com>, 
-	Abel Wu <wuyun.abel@bytedance.com>, John Johansen <john.johansen@canonical.com>, 
-	Mimi Zohar <zohar@linux.ibm.com>, Stefan Berger <stefanb@linux.ibm.com>, 
-	Roberto Sassu <roberto.sassu@huawei.com>, Eric Snowberg <eric.snowberg@oracle.com>, 
-	Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, 
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, Mark Brown <broonie@kernel.org>, 
-	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linuxppc-dev@lists.ozlabs.org, 
-	linux-kernel@vger.kernel.org, keyrings@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	linux-ide@vger.kernel.org, openipmi-developer@lists.sourceforge.net, 
-	linux-clk@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
-	linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org, qat-linux@intel.com, 
-	dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org, 
-	intel-xe@lists.freedesktop.org, nouveau@lists.freedesktop.org, 
-	linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org, 
-	linux-leds@vger.kernel.org, linux-sunxi@lists.linux.dev, 
-	linux-omap@vger.kernel.org, linux-mmc@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, netdev@vger.kernel.org, 
-	linux-wireless@vger.kernel.org, linux-pci@vger.kernel.org, 
-	linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org, 
-	linux-gpio@vger.kernel.org, platform-driver-x86@vger.kernel.org, 
-	linux-staging@lists.linux.dev, linux-usb@vger.kernel.org, 
-	linux-fbdev@vger.kernel.org, linux-bcachefs@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org, 
-	linux-integrity@vger.kernel.org, alsa-devel@alsa-project.org, 
-	linux-sound@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, David Howells <dhowells@redhat.com>, 
-	"David S. Miller" <davem@davemloft.net>, "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, 
-	Sergey Shtylyov <s.shtylyov@omp.ru>, Damien Le Moal <dlemoal@kernel.org>, 
-	Niklas Cassel <cassel@kernel.org>, Daniel Scally <djrscally@gmail.com>, 
-	Sakari Ailus <sakari.ailus@linux.intel.com>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Florian Fainelli <florian.fainelli@broadcom.com>, 
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Heiko Stuebner <heiko@sntech.de>, 
-	Peter De Schrijver <pdeschrijver@nvidia.com>, Prashant Gaikwad <pgaikwad@nvidia.com>, 
-	Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, 
-	Huang Rui <ray.huang@amd.com>, "Gautham R. Shenoy" <gautham.shenoy@amd.com>, 
-	Mario Limonciello <mario.limonciello@amd.com>, Viresh Kumar <viresh.kumar@linaro.org>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Rodrigo Vivi <rodrigo.vivi@intel.com>, Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, 
-	Tvrtko Ursulin <tursulin@ursulin.net>, Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>, 
-	Danilo Krummrich <dakr@redhat.com>, Jean Delvare <jdelvare@suse.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Pavel Machek <pavel@ucw.cz>, 
-	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Tony Lindgren <tony@atomide.com>, Adrian Hunter <adrian.hunter@intel.com>, Hu Ziji <huziji@marvell.com>, 
-	Ulf Hansson <ulf.hansson@linaro.org>, Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
-	Potnuri Bharat Teja <bharat@chelsio.com>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>, Kalle Valo <kvalo@kernel.org>, 
-	Mahesh J Salgaonkar <mahesh@linux.ibm.com>, "Oliver O'Halloran" <oohall@gmail.com>, 
-	Kishon Vijay Abraham I <kishon@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, JC Kuo <jckuo@nvidia.com>, 
-	Andrew Lunn <andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>, 
-	Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>, Sebastian Reichel <sre@kernel.org>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
-	Lukasz Luba <lukasz.luba@arm.com>, Thinh Nguyen <Thinh.Nguyen@synopsys.com>, 
-	Helge Deller <deller@gmx.de>, Brian Foster <bfoster@redhat.com>, 
-	Zhihao Cheng <chengzhihao1@huawei.com>, Tejun Heo <tj@kernel.org>, 
-	Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Jason Baron <jbaron@akamai.com>, Jim Cromie <jim.cromie@gmail.com>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, Dmitry Kasatkin <dmitry.kasatkin@gmail.com>, 
-	Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Linus Torvalds <torvalds@linux-foundation.org>
+References: <20240607190955.15376-3-fgriffo@amazon.co.uk> <714268da-d199-4371-8360-500e7165119c@moroto.mountain>
+In-Reply-To: <714268da-d199-4371-8360-500e7165119c@moroto.mountain>
+From: Frederic Griffoul <griffoul@gmail.com>
+Date: Mon, 10 Jun 2024 09:21:31 +0100
+Message-ID: <CAF2vKzPWANE8DBcN8mvpk2fwRRL2kF0-VXP5EygY2tBGJgDjrA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] vfio/pci: add msi interrupt affinity support
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: oe-kbuild@lists.linux.dev, Fred Griffoul <fgriffo@amazon.co.uk>, lkp@intel.com, 
+	oe-kbuild-all@lists.linux.dev, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Alex Williamson <alex.williamson@redhat.com>, 
+	Waiman Long <longman@redhat.com>, Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Mark Rutland <mark.rutland@arm.com>, Marc Zyngier <maz@kernel.org>, 
+	Oliver Upton <oliver.upton@linux.dev>, Mark Brown <broonie@kernel.org>, 
+	Ard Biesheuvel <ardb@kernel.org>, Joey Gouly <joey.gouly@arm.com>, 
+	Ryan Roberts <ryan.roberts@arm.com>, Jeremy Linton <jeremy.linton@arm.com>, 
+	Jason Gunthorpe <jgg@ziepe.ca>, Yi Liu <yi.l.liu@intel.com>, Kevin Tian <kevin.tian@intel.com>, 
+	Eric Auger <eric.auger@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, 
+	Christian Brauner <brauner@kernel.org>, Ankit Agrawal <ankita@nvidia.com>, 
+	Reinette Chatre <reinette.chatre@intel.com>, Ye Bin <yebin10@huawei.com>, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	kvm@vger.kernel.org, cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 4, 2024 at 9:46=E2=80=AFAM Jani Nikula <jani.nikula@linux.intel=
-.com> wrote:
+Pff. Thanks Dan,
 
-[Maybe slightly off-topic, ranty]
+I will post a v5 to address the two issues you mentioned.
 
-> Why do we think it's a good idea to increase and normalize the use of
-> double-underscore function names across the kernel, like
-> __match_string() in this case? It should mean "reserved for the
-> implementation, not to be called directly".
+Br,
+
+Fred
+
+On Sun, Jun 9, 2024 at 4:29=E2=80=AFPM Dan Carpenter <dan.carpenter@linaro.=
+org> wrote:
 >
-> If it's to be used directly, it should be named accordingly, right?
-
-It's a huge mess. "__" prefix is just so ambiguous I think it just
-shouldn't be used or prolifierated, and it usually breaks Rusty Russells
-API rules times over.
-
-Consider __set_bit() from <linux/bitops.h>, used all over the place,
-in contrast with set_bit() for example, what does "__" represent in
-this context that makes __set_bit() different from set_bit()?
-
-It means "non-atomic"...
-
-How does a random contributor know this?
-
-Yeah, you guess it. By the token of "everybody knows that".
-(Grep, google, repeat for the number of contributors to the kernel.)
-
-I was considering to send a script to Torvalds to just change all
-this to set_bit_nonatomic() (etc) but was hesitating because that
-makes the name unambiguous but long. I think I stayed off it
-because changing stuff like that all over the place creates churn
-and churn is bad.
-
-Yours,
-Linus Walleij
+> Hi Fred,
+>
+> kernel test robot noticed the following build warnings:
+>
+> url:    https://github.com/intel-lab-lkp/linux/commits/Fred-Griffoul/cgro=
+up-cpuset-export-cpuset_cpus_allowed/20240608-031332
+> base:   cbb325e77fbe62a06184175aa98c9eb98736c3e8
+> patch link:    https://lore.kernel.org/r/20240607190955.15376-3-fgriffo%4=
+0amazon.co.uk
+> patch subject: [PATCH v4 2/2] vfio/pci: add msi interrupt affinity suppor=
+t
+> config: mips-randconfig-r081-20240609 (https://download.01.org/0day-ci/ar=
+chive/20240609/202406092245.Hgx6MqK9-lkp@intel.com/config)
+> compiler: mips-linux-gcc (GCC) 13.2.0
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> | Closes: https://lore.kernel.org/r/202406092245.Hgx6MqK9-lkp@intel.com/
+>
+> New smatch warnings:
+> drivers/vfio/pci/vfio_pci_core.c:1241 vfio_pci_ioctl_set_irqs() warn: may=
+be return -EFAULT instead of the bytes remaining?
+>
+> vim +1241 drivers/vfio/pci/vfio_pci_core.c
+>
+> 2ecf3b58ed7bc5 drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-=
+31  1190  static int vfio_pci_ioctl_set_irqs(struct vfio_pci_core_device *v=
+dev,
+> 663eab456e072b drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-=
+31  1191                                  struct vfio_irq_set __user *arg)
+> 2ecf3b58ed7bc5 drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-=
+31  1192  {
+> 2ecf3b58ed7bc5 drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-=
+31  1193       unsigned long minsz =3D offsetofend(struct vfio_irq_set, cou=
+nt);
+> 89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-=
+31  1194       struct vfio_irq_set hdr;
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1195       cpumask_var_t mask;
+> 89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-=
+31  1196       u8 *data =3D NULL;
+> 05692d7005a364 drivers/vfio/pci/vfio_pci.c      Vlad Tsyrklevich 2016-10-=
+12  1197       int max, ret =3D 0;
+> ef198aaa169c61 drivers/vfio/pci/vfio_pci.c      Kirti Wankhede   2016-11-=
+17  1198       size_t data_size =3D 0;
+> 89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-=
+31  1199
+> 663eab456e072b drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-=
+31  1200       if (copy_from_user(&hdr, arg, minsz))
+> 89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-=
+31  1201               return -EFAULT;
+> 89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-=
+31  1202
+> 05692d7005a364 drivers/vfio/pci/vfio_pci.c      Vlad Tsyrklevich 2016-10-=
+12  1203       max =3D vfio_pci_get_irq_count(vdev, hdr.index);
+> 89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-=
+31  1204
+> ea3fc04d4fad2d drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-=
+31  1205       ret =3D vfio_set_irqs_validate_and_prepare(&hdr, max, VFIO_P=
+CI_NUM_IRQS,
+> ea3fc04d4fad2d drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-=
+31  1206                                                &data_size);
+> ef198aaa169c61 drivers/vfio/pci/vfio_pci.c      Kirti Wankhede   2016-11-=
+17  1207       if (ret)
+> ef198aaa169c61 drivers/vfio/pci/vfio_pci.c      Kirti Wankhede   2016-11-=
+17  1208               return ret;
+> 89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-=
+31  1209
+> ef198aaa169c61 drivers/vfio/pci/vfio_pci.c      Kirti Wankhede   2016-11-=
+17  1210       if (data_size) {
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1211               if (hdr.flags & VFIO_IRQ_SET_DATA_AFFINITY) {
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1212                       if (!zalloc_cpumask_var(&mask, GFP_KERNEL))
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1213                               return -ENOMEM;
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1214
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1215                       ret =3D copy_from_user(mask, &arg->data, dat=
+a_size);
+>
+> copy_from_user() returns the number of bytes remaining to be copied.
+> This should be:
+>
+>         if (copy_from_user(mask, &arg->data, data_size)) {
+>                 ret =3D -EFAULT;
+>                 goto out;
+>         }
+>
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1216                       if (ret)
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1217                               goto out;
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1218
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1219                       data =3D (u8 *)mask;
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1220
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1221               } else {
+> 663eab456e072b drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-=
+31  1222                       data =3D memdup_user(&arg->data, data_size);
+> 3a1f7041ddd59e drivers/vfio/pci/vfio_pci.c      Fengguang Wu     2012-12-=
+07  1223                       if (IS_ERR(data))
+> 3a1f7041ddd59e drivers/vfio/pci/vfio_pci.c      Fengguang Wu     2012-12-=
+07  1224                               return PTR_ERR(data);
+> 89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-=
+31  1225               }
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1226       }
+> 89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-=
+31  1227
+> 89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-=
+31  1228       mutex_lock(&vdev->igate);
+> 89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-=
+31  1229
+> ea3fc04d4fad2d drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-=
+31  1230       ret =3D vfio_pci_set_irqs_ioctl(vdev, hdr.flags, hdr.index, =
+hdr.start,
+> ea3fc04d4fad2d drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-=
+31  1231                                     hdr.count, data);
+> 89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-=
+31  1232
+> 89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-=
+31  1233       mutex_unlock(&vdev->igate);
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1234
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1235  out:
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1236       if (hdr.flags & VFIO_IRQ_SET_DATA_AFFINITY && data_size)
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1237               free_cpumask_var(mask);
+> 66c926fb7b2507 drivers/vfio/pci/vfio_pci_core.c Fred Griffoul    2024-06-=
+07  1238       else
+> 89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-=
+31  1239               kfree(data);
+> 89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-=
+31  1240
+> 89e1f7d4c66d85 drivers/vfio/pci/vfio_pci.c      Alex Williamson  2012-07-=
+31 @1241       return ret;
+> 2ecf3b58ed7bc5 drivers/vfio/pci/vfio_pci_core.c Jason Gunthorpe  2022-08-=
+31  1242  }
+>
+> --
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+>
 
