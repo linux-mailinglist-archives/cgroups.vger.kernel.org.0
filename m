@@ -1,367 +1,251 @@
-Return-Path: <cgroups+bounces-3147-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3148-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAEE7902953
-	for <lists+cgroups@lfdr.de>; Mon, 10 Jun 2024 21:32:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCB43902BD4
+	for <lists+cgroups@lfdr.de>; Tue, 11 Jun 2024 00:40:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52F2A1F217B1
-	for <lists+cgroups@lfdr.de>; Mon, 10 Jun 2024 19:32:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 358462820CD
+	for <lists+cgroups@lfdr.de>; Mon, 10 Jun 2024 22:40:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 501BB81ACA;
-	Mon, 10 Jun 2024 19:32:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B1F11509A4;
+	Mon, 10 Jun 2024 22:40:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YFieU8EK"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kGcYrch5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63C2E2032B
-	for <cgroups@vger.kernel.org>; Mon, 10 Jun 2024 19:32:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718047940; cv=none; b=dgs4XYhOPapL9SEcZqrplSzUBRCO1JJTyJ6wqw938Bx6WVWew1vxpKjz7c0lzzHgLe6JEuhH9/FUirWjfgvkLmCKs6mO/Hlys9vJ0/94UJgRax+l4Y/iFUIcwP5UQDcveQBdyEqd4xbB1PnbsUa9EfCLflpuWjb32JBi0fhx8WM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718047940; c=relaxed/simple;
-	bh=InOa6heL5Z0zQtrtZXM1t8E5jy7Fl6gS5IxHmczhyvc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IIgGhgGILZV84Fwa6qCUpZe8raQ6O65qIRlM+duKzGcHp++lZ7Ol5CL29sGHhzHTn9XxQjXP8XjQwO4+bGLuAQYut9OdhezngIWZzsjBl1jNwFwYclN1sxh3kjyYBKTDXUBFDpFgPXu7YybunpdnNur8AIbs6CdE5/JjXFJ3o74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YFieU8EK; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1718047937;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5RyIS9264RlqB1OG3rOf8l6Ym1+Q4KsvmigQA6LMdr0=;
-	b=YFieU8EKY8nLAfO0cs++D+dvPr2J5hRg205Eu9gq2bFOqfskhWIvYGq2e6zTTavdixxSoo
-	7MMn5qzTNw4E+8/9bp77JVtpgVWLmna64iflhhP5EhUEzphBobq1C1Iu1raVu/SwZVe7db
-	sw6QpZeMMVZHlii1gyHUxKGoPQ5jC1o=
-Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com
- [209.85.160.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-106-B8zQ3uOzM-6syGWaRYgxaw-1; Mon, 10 Jun 2024 15:32:16 -0400
-X-MC-Unique: B8zQ3uOzM-6syGWaRYgxaw-1
-Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-2500b8a716fso137039fac.2
-        for <cgroups@vger.kernel.org>; Mon, 10 Jun 2024 12:32:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718047933; x=1718652733;
-        h=content-transfer-encoding:mime-version:organization:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5RyIS9264RlqB1OG3rOf8l6Ym1+Q4KsvmigQA6LMdr0=;
-        b=EhwwnHoWcdtY1Ep/EeCWdbnOWwcWGn+kPOjIPvdZ547juitKGdiWDBeNTLbuAyijFH
-         EFi+CEIST8n2gKLJz7iTIRLAIwwx9Bc1A1ukSyYBRWvkU7O1MZUU9Jo0lNFgK0oZcZpH
-         pFS7uwhCiAJ544JXzMV4euGzRr0zDJ9KHXF9KIA+56qqVbwtEVrZn1sfnKsBmPT3TtKA
-         OUVffQ0Ucz7SkEGCmGtf56wR/7buozt7ykpVCRTh9H4Qz/AOSf3ajXYv/Bs4S/OFEfsd
-         YhbHtUZPcJtGrC3AtMzaaN/SMBIl3K4OWgCF8Da2smDYQAvE2pJQE2YBguvqZF3KubaK
-         YTkA==
-X-Forwarded-Encrypted: i=1; AJvYcCX3IpEYWGeGyyKFeOF/lUxeOihqgJJfaAhHiojzW+vHXlG1HkgIepoIuCCAgv48TALDyNqsvmlfOwUOqQqyp7SC0J5odI3Khg==
-X-Gm-Message-State: AOJu0YytHRi2YBsGq9rbXk4p1eOuzAB+/cIZ7O5v6Kwm3Vdzg7z4nG8X
-	mYB+jGxZS20QFfHgSpfn2AYoYMHLtALBx8M2FOpnjquQB8S+BHjW+HdktKvWZXaTem8bGN9w8rX
-	6nuI8pNUWQwviDGpuIyutXhWNRGJgDXP9++Hv9lAm8bNT/+3HU/BSgME=
-X-Received: by 2002:a05:6870:219e:b0:24c:b878:b4fc with SMTP id 586e51a60fabf-2546441a494mr11034205fac.17.1718047932649;
-        Mon, 10 Jun 2024 12:32:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGUC+H8CCbkKnPy4YHOOMwLvQ1eUEEF00M667jcLIaKCuzEWFE3yNACWxBxGCtaKevuJqcN3g==
-X-Received: by 2002:a05:6870:219e:b0:24c:b878:b4fc with SMTP id 586e51a60fabf-2546441a494mr11034175fac.17.1718047932132;
-        Mon, 10 Jun 2024 12:32:12 -0700 (PDT)
-Received: from redhat.com ([38.15.36.11])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-25447e0171dsm2438233fac.13.2024.06.10.12.32.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jun 2024 12:32:11 -0700 (PDT)
-Date: Mon, 10 Jun 2024 13:32:07 -0600
-From: Alex Williamson <alex.williamson@redhat.com>
-To: Fred Griffoul <fgriffo@amazon.co.uk>
-Cc: <griffoul@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, Will
- Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, Zefan Li
- <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>, Johannes Weiner
- <hannes@cmpxchg.org>, Mark Rutland <mark.rutland@arm.com>, Marc Zyngier
- <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, Mark Brown
- <broonie@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Joey Gouly
- <joey.gouly@arm.com>, Ryan Roberts <ryan.roberts@arm.com>, Jeremy Linton
- <jeremy.linton@arm.com>, Jason Gunthorpe <jgg@ziepe.ca>, Yi Liu
- <yi.l.liu@intel.com>, Kevin Tian <kevin.tian@intel.com>, Eric Auger
- <eric.auger@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, "Christian
- Brauner" <brauner@kernel.org>, Ankit Agrawal <ankita@nvidia.com>, "Reinette
- Chatre" <reinette.chatre@intel.com>, Ye Bin <yebin10@huawei.com>,
- <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
- <kvm@vger.kernel.org>, <cgroups@vger.kernel.org>
-Subject: Re: [PATCH v5 2/2] vfio/pci: add msi interrupt affinity support
-Message-ID: <20240610133207.7d039dab.alex.williamson@redhat.com>
-In-Reply-To: <20240610125713.86750-3-fgriffo@amazon.co.uk>
-References: <20240610125713.86750-1-fgriffo@amazon.co.uk>
-	<20240610125713.86750-3-fgriffo@amazon.co.uk>
-Organization: Red Hat
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C60A45466B;
+	Mon, 10 Jun 2024 22:40:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1718059213; cv=fail; b=Jc4rcMlSg7W3AzGUp9DUMpFrWeKDBHhBt5cV3f57tAE3mMNnYfXDT1h00O+sDJm0NewzY1qeFpbbe6r2xbppdK+ejKCHNt9X2KY8gZAhotn2kWR1asWuz/xuaICnEaiv3XyTqWa+2bWFNq6lDZP74A7zoQXzNm3yWHE1UnjM20I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1718059213; c=relaxed/simple;
+	bh=/v2gCVMrNdH8/cLNxENmgB+FwLj0zakg6l9KeaAACyE=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Kc4fe/pAfCjIy2yUXsHa1Xg1UNIiVl8JHhZFH1Efq2g1eMxvg9pZqctpzMq889u13SdhcTPjMdLv7/EiyNdZ5ktYMbIBLLGReS/Hj6BjMVKzhGcq3LW25iAZ/AJsN8Vzllw0lRleX7Ah7vyWyYFslLcDXxjR4sgcU4BHHGa9/kc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kGcYrch5; arc=fail smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1718059212; x=1749595212;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=/v2gCVMrNdH8/cLNxENmgB+FwLj0zakg6l9KeaAACyE=;
+  b=kGcYrch5y3GvUftZfiuiGOwoMT8EOW9Z5WXNMmvePKqdOwsvuM3b8xlf
+   Y/53tEP6chDEDC8siV9Hnhz3qL1NhNLXk3Mcx1KeswrnpFfO9kLSOA+KS
+   rRdVKcdqebG/wdD64KA+YkxsOUKSWtDMN1t/B3yBMmopQNw6TLofWlNMm
+   oymLNkIULgxloo40M/jmE+BD0GiZlnxbB/6C6Oqb3t+Pz+RqGo6udMCjC
+   7SDE3VR6xNgCBK/oJdeO3zAAo61MP8STgtkmKsShBbE5fQajosH8JN4At
+   0ocv8IWA20xREdJweLtk/ZulsP24CuvvqarYa05ol8WkfMQkdDRZlLv54
+   Q==;
+X-CSE-ConnectionGUID: Mn3mW+BrTsaSf4EJHEd7eQ==
+X-CSE-MsgGUID: ryy+CqUFTty3Eq5zKDONvw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11099"; a="14868728"
+X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
+   d="scan'208";a="14868728"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2024 15:40:11 -0700
+X-CSE-ConnectionGUID: G0qeyBnGQsS7gjJwoiCJWQ==
+X-CSE-MsgGUID: xMjH8Z3ZSracve2jiHb/NQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
+   d="scan'208";a="76662529"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orviesa001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 10 Jun 2024 15:40:11 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Mon, 10 Jun 2024 15:40:10 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Mon, 10 Jun 2024 15:40:10 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.43) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Mon, 10 Jun 2024 15:40:09 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UNHnu/s/Hbo/r/U365A/UH9H4D8ZdxBV0yaHfudiL1alehLe0ur8Fz5oGY4FKVHmmX50dzCxmNyonl8g7v5bp3XgxqffXjXJ4eQnfP+9YCPuh04QRKHxH3xX5CvZifcseHfUdsB48egegG2Nyit3oXASqM5JE5f7R2p/uasAEG1LfI4Dmlgo8oKBe6UCWDEqJ7WaUi/PmmLGkb3g2Nzbw0yyE1DXpJTdT1wEhnnO4PEfP7Zkbjg1rPiQmKeCgaZnVysrts2GfHdKvg11Qqk2iXCcVPFF6cltWOsqYPk3S/KU7UMJDuK8u7Zz1VV77YhGSHFl7EUtfmDV3e21GDgUVA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9klRS68hYTi9ZjLbNbV/fqb/g0egZGySaewRlLwL+Co=;
+ b=N97pB+ReJjAnZZXFLd1EWwnu6kyOH14oGJ094AAnMJ0AGp+HI72bnjHXuuzl1JpL8F+GwMBHONk8VlbTHk+89G9BV5BhODgJyXwmi0KwEnYxJW+8pgy0PqSMglFGHcTbGFwweWaQuy2swNvxK5t38jcsWioogfMkZpnFiN///LJALa8f1h1DzL3SeE2BJkLwbpBVkA3o+RBXkyAWSMvdSP4J6FRySwTf1n/IZt3MMHSDl7q/Vt6v74GsHWhkutnYMkOIa3SxsHEgYNCUoLKmu6Mcl7K8bXvnaHiBJ+sxf75W+8GUgEU2SEMqCDjiRa3WVfJExfclN7MVUlvfGd2IYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com (2603:10b6:208:385::18)
+ by MW4PR11MB6692.namprd11.prod.outlook.com (2603:10b6:303:20e::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.36; Mon, 10 Jun
+ 2024 22:40:07 +0000
+Received: from BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::fdb:309:3df9:a06b]) by BL1PR11MB5978.namprd11.prod.outlook.com
+ ([fe80::fdb:309:3df9:a06b%4]) with mapi id 15.20.7633.036; Mon, 10 Jun 2024
+ 22:40:07 +0000
+Message-ID: <eb36980a-2a81-426b-82fb-7f598f7a0037@intel.com>
+Date: Tue, 11 Jun 2024 10:39:53 +1200
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v14 14/14] selftests/sgx: Add scripts for EPC cgroup
+ testing
+To: Haitao Huang <haitao.huang@linux.intel.com>, "dave.hansen@linux.intel.com"
+	<dave.hansen@linux.intel.com>, "tj@kernel.org" <tj@kernel.org>,
+	"mkoutny@suse.com" <mkoutny@suse.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-sgx@vger.kernel.org"
+	<linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "tglx@linutronix.de"
+	<tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>, "bp@alien8.de"
+	<bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>, "Mehta, Sohil"
+	<sohil.mehta@intel.com>, "tim.c.chen@linux.intel.com"
+	<tim.c.chen@linux.intel.com>, Jarkko Sakkinen <jarkko@kernel.org>
+CC: "Li, Zhiquan1" <zhiquan1.li@intel.com>, "kristen@linux.intel.com"
+	<kristen@linux.intel.com>, "seanjc@google.com" <seanjc@google.com>, "Zhang,
+ Bo" <zhanb@microsoft.com>, "anakrish@microsoft.com" <anakrish@microsoft.com>,
+	"mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+	"yangjie@microsoft.com" <yangjie@microsoft.com>, "chrisyan@microsoft.com"
+	<chrisyan@microsoft.com>
+References: <20240531222630.4634-1-haitao.huang@linux.intel.com>
+ <20240531222630.4634-15-haitao.huang@linux.intel.com>
+ <D1RKK8CENNXI.1KMNDADV9C1YM@kernel.org>
+ <op.2owf5xiwwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <D1SOT40TEXMI.A5J72PR5IWSP@kernel.org>
+ <op.2ox4ccz7wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+Content-Language: en-US
+From: "Huang, Kai" <kai.huang@intel.com>
+In-Reply-To: <op.2ox4ccz7wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR05CA0141.namprd05.prod.outlook.com
+ (2603:10b6:a03:33d::26) To BL1PR11MB5978.namprd11.prod.outlook.com
+ (2603:10b6:208:385::18)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR11MB5978:EE_|MW4PR11MB6692:EE_
+X-MS-Office365-Filtering-Correlation-Id: e23735e3-4a9e-4b26-4ba3-08dc899e45fe
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|7416005|1800799015|376005|366007|921011;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?ODNrY0NDQ3E2M1NOdS81eXYrazdtdFpoYVJTZmU0WG9SU3l3bTcvZmpGc2k1?=
+ =?utf-8?B?VnNrNzhPYXdKY2JGb3BleCtXd1BSOC83N0VrMHZDcUwvejJpU0RUd01OMDJ1?=
+ =?utf-8?B?RHVmV1lFMlRCckhhVG5RT1o1TzE4NnYzMUZRY0RqNVBCZzNWeFFiOVF4c3Y5?=
+ =?utf-8?B?bWNVSHNrMHlLZFNLMWE2YjBhdEV4em51OG5oV0s1OU44dXVVSmZLRFlGb1E4?=
+ =?utf-8?B?cW5meFNMbC9OUXBBTEIxeWhNWUVWemtDbE9hR0g3bXprV0lrWFRSUU9rYWov?=
+ =?utf-8?B?aVdnaW1HTndFM213b3dLQ3NaNWVUakZHWUIvWG8xaTE2Vi9sdndGY2RKTEcz?=
+ =?utf-8?B?dDFEcjFyYVpOZk5uZTNYSlNtSjNFdGFzdWpBUnUzVHZZUWxTdkwySm5rNG5P?=
+ =?utf-8?B?cUJibll1R0FUNDA0bG9ZcGhRZXNzOHhrRHlXRWhuOEpzRVk2eHFXNkNDTGdq?=
+ =?utf-8?B?MytCT0JzV0tUOXdRWkJHZS9OdTNGNkF2dnV1cmVZVk85b2xCQ0tXMEtMZXpH?=
+ =?utf-8?B?V04vd3JhOUpsbkIwQ0gwTVJlelRkVklCajNZUmZRd2JpV3Z3WlZ3L25DVE53?=
+ =?utf-8?B?SjIwVzhJaFlCanlNQTZHd3gyWm8xQVZzMyswSjF6c0hNRDEva0lPQTFiU2t5?=
+ =?utf-8?B?ZjJERFV1d09JSFV3RGNGODAxRzdvUU5uSUx0YndTcGdhaEN1c01jN3F2c01G?=
+ =?utf-8?B?cUNPSlJlNUNyVy9wNDhJdXVzcUd0Q2ljM2tuelNGdHk5anE0L01hcjkySGVm?=
+ =?utf-8?B?QUxvVlgxWHZUK1EyaS9vU2I1ak5NVE5YZjRlWGlCVVBNZFJFMWtzVnI0b2ti?=
+ =?utf-8?B?MkRYZVpHNzhOZEhJL1c0L2VtL3oranU5NWptUkphY1UxaVRENi85U29EdHVs?=
+ =?utf-8?B?NDZwZDROc0ZKaUlRdGgxcVVtQUtaenFTTklET0dkekQ5a1RCQXZhRUdudW1t?=
+ =?utf-8?B?RXI2UkJvanhpSlNuOHAxVWwxbnduYTVjd1QrSUZOamJscFNHOWI3YlAzT3RH?=
+ =?utf-8?B?dE1pakRqN1VnZm5hdksvZzdBMmh3YWFhSWZQRWpMUFd5Tk9mcnMrVnR6V0F6?=
+ =?utf-8?B?cTVPa0dueGZidWVtckRUUU5Mc09OYTMxdjNyOVd5UW9zM2hkWkVydG9JV21U?=
+ =?utf-8?B?QUZzaHJDbDQ3MWVpRWZpRCtlalk3T3llM1hKSlY5eXEvTTR2RGladi8zNGZk?=
+ =?utf-8?B?VkE2QVBnS0Jtd0pGVmViVmgvc2ZNTVVKUldmSXVkOHRHSHE5M3BoYVJDeWJR?=
+ =?utf-8?B?Z1pWNHJDeEVQUUNCZGdybkJhNEZTVWtuRFVZcG9kVUIvU3BVSmFCTTJjQTl2?=
+ =?utf-8?B?bERGUDJJUTlRQ3N3RnpCMWZzWEthbEtmZmZBaDFyZTR6OEdmRDFOMnVaWWRR?=
+ =?utf-8?B?K3JXRlNCV3lkeWIvR2MvUlgrL0RUaHdaYzBqSUJrSVJrQ0JDNE0vL2VSWm8w?=
+ =?utf-8?B?NjhUTzd3bmx5T3ZIRUdwa28wdkovSG1nMTJYM28yaGF3a0hRNDYrd0NqVkFX?=
+ =?utf-8?B?RFBmM2pRa2kxTkRsWnVQemVxZzZhRnIwR1o2SzZkNGIrSEIzSkZxYStaQlB4?=
+ =?utf-8?B?RExpQjZUVVJ6elZGTEJKek5va1ZGVXcvWXVXUTgxQ0FJY1NEL0duSDdBUlh6?=
+ =?utf-8?B?cmRQR2NGd2diZkE4Z3F3dnI4QlZWVTRYUERTcWtzR01pd25oc2xhMEN6SFU2?=
+ =?utf-8?B?VUZROFVmOUFna21iZnFzRXgxRTFtOVhzdEcrQ3lpV2RKWklBajNDWXQ0ZkdK?=
+ =?utf-8?B?SjVUS25DYzlrOVRETFZad0gwNWlUcXBERVhwUDBOK0ZKZkEvdXlEUUEzeEV6?=
+ =?utf-8?Q?Dm93cbxDXFSdU5JKbX3s2W3hQXgh3o+gn8Br4=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR11MB5978.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(366007)(921011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?V1BHWDhGcFdPMjZoeG5BRVJmOWVhQkdlM2F3VXFGNHhHSjdkbXlJWElhdmN0?=
+ =?utf-8?B?M0ZqeS9PQmlhZmNHb1ovOHgwQWdnanlNWUlzUFBMMjErU2I0eThrTVYrWCtP?=
+ =?utf-8?B?UFpIRTNYVUU0TTU3R0dTWlRQRmltUmRBVzBrUGcxdFpjdUE3dEY1Z1VBNTFX?=
+ =?utf-8?B?UU9OUGpJeEZpZitFMUdqT3hhWFlHbmJrb2tXK0dZanlPZHNHdmd4YU92VWhX?=
+ =?utf-8?B?d3V1WU9mTlpDMElQc0U0L3ZUZm00Y1VZSmIrNFdaM3EzR2d3VE1lMFdDZW1q?=
+ =?utf-8?B?RDJTNkxKZFY1T3pibFRxY21LWmN0YUNiVFBMNFdzN2YxL0ovNWFHVGZRRzVD?=
+ =?utf-8?B?MjFTeUgyUnU2V2VQVStqNi9Ua1NEc1BTWXRteFcydkhFRGNLRk5rUC91cGVa?=
+ =?utf-8?B?MlVIM08zdXYrZktPc0I2RXR5NjRLK2N0dThmcHZacS9sWmpFcE5KTFRVanJL?=
+ =?utf-8?B?c2xROEVLUVZnS0JCOW5vRlhZOUo2SHphdTBNYjJjTy9PUzBIOS9RV2J1eXp0?=
+ =?utf-8?B?RWVJMWNyNm8vUVYzSVRxMTVJL2NSU2cwVENmVkY3eWs2dHliU1VzM3l0NWVa?=
+ =?utf-8?B?d2h0Z0loK3Y4WkNNenVCZzRkQzI4NVdsdXdOcS8rY2NGV3VKcXFvdUROYkkv?=
+ =?utf-8?B?ME9PVmk5L3pWbzVTZitKRkNpek5rOTRzdmdkZk9WRVZtT0ZTNG5laGlyaXlD?=
+ =?utf-8?B?YWF0TXU4MHpuVk1CRFI2anRqdjBQY3BzT2lmSjMxK3IvWEYrQ3ViUTViSHI5?=
+ =?utf-8?B?OGQzckRHSXNrTG14UkwzZCtRNEpFeEtXM0lGaXhyUHAvVDNzVzlmY0pKeGpi?=
+ =?utf-8?B?TFFVWU1kVnpsb1JnVlhWUlRrb3d5d3FTSnVDOEdjY2dBNmN5ODhyUTNERjg3?=
+ =?utf-8?B?bi9Vc1ROOXVDVlM4R2hIN2txSEptaFJ3bXpmbTRsdHNBeG1SNW9Fbnh6dStB?=
+ =?utf-8?B?M2VHVWh6NTRnQW9FTTU1aHJUaHdHeXVnQi9Ndm9MdzhMVVYxQXg5eThaVnFr?=
+ =?utf-8?B?YUhiYzRVVlhoeFltWmtXZHlVemIrU01INGszeDFDM0YvRFc4Slh6K2E4NlRV?=
+ =?utf-8?B?bkpSdTY1TzZodlhkMnlLY2lzQldHZ25TV0ZYQllaYUgxZDFCeWQ2N1d0ZVVw?=
+ =?utf-8?B?UnFOaTNBZlkya2IvTDNYNWo1cWZCR2pDYXFuV1g3YTRpOUFFb1FXRTNuM3hk?=
+ =?utf-8?B?anRtOFhMajFVMGpmWWxadXA1YzkrNnhXbW91bGo5WWFzUEVkSHQ3ODdPZ3Fk?=
+ =?utf-8?B?eFY0bnF0RU1SRzh3bmNhVm1NQVA4ZjVvMzF5NFY4UTdEa2pha0FVa3FaNUhT?=
+ =?utf-8?B?SWwwVUNQK2k4MXNBcloyVi9PT25jL3VOOEVRcGQ5WXNtRzlldGhsc3hGOGUv?=
+ =?utf-8?B?eUpQWGUybEFQV1ZYQzFKRGQ0TFR1Tjhyd0g0RmhGVHBXMi8vYlRPYlNxMHpO?=
+ =?utf-8?B?RVhuU1V1bytVZjJ0SDlaOTEzeXhvL0I5b2ppblFKTnBYMnMvZjZjQUEzRDRM?=
+ =?utf-8?B?SXBSRENKMTNoWTZJbXd3dVRwK0tqOVl6b0dZK1VjQjJqUUx0cExHMGpQZVZ6?=
+ =?utf-8?B?RFAwUnhyNUNuZ3Z5YkQ3SjBLTStINjhlSS9tb0RtVS9Rd3dyWWNSbjg1ck5Y?=
+ =?utf-8?B?MHJrczZEQi9WZWp1ejZrYnNrd3F2clpmaUJlckl1S2hjWE83V0pCMGZmOUE1?=
+ =?utf-8?B?Znc3ZWRxMHJZaloyZmF6MHNZUDdtZDA1UXFGVmhmMVJxc2xoL09iOHhNbnk4?=
+ =?utf-8?B?T2V4T3dONk1QUkR6eFp6R2dVSThwRDJhVXFoNElTVW92ckJwbFhuditTb1FE?=
+ =?utf-8?B?cVNyWTBhWDZybzJwaHViOUc5WWpnTXpMMmRteFFZZzV3L1V2STk2c1RzdHlJ?=
+ =?utf-8?B?ZUU0SlB2b1pLUk8xck5hVUNTM09PTG54MkZNS0ZvMm5peHE0N1A5S0pLQkdk?=
+ =?utf-8?B?TGdNbjI5WFhuakw5Uzc2SWpzRno2OE42dWxIbEk5YTlWRnVEVzU1bFVoZmp5?=
+ =?utf-8?B?R3VqRXRvTWhNODdBTkJTZVljWGZVdXNBTjJHcUE5OWlpa2FRaXpIYnRUZlpU?=
+ =?utf-8?B?Zno1OTNpWHRMK2Zwakx3VXJySnk3TzNHSTRVYmJucEVRM3ZmUXVoc2QrV0lU?=
+ =?utf-8?Q?TXGfluJu2DW+Y6Y6sy+umtw4t?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e23735e3-4a9e-4b26-4ba3-08dc899e45fe
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR11MB5978.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jun 2024 22:40:07.1762
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: F1drV8yHTKfeti6Stu4LLkpK32dFDaaDuMfrzZxH721k19co/jlvxymxFZHGp9FyK8sns4mUxvOS9mEZ6NiSfQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6692
+X-OriginatorOrg: intel.com
 
-On Mon, 10 Jun 2024 12:57:08 +0000
-Fred Griffoul <fgriffo@amazon.co.uk> wrote:
 
-> The usual way to configure a device interrupt from userland is to write
-> the /proc/irq/<irq>/smp_affinity or smp_affinity_list files. When using
-> vfio to implement a device driver or a virtual machine monitor, this may
-> not be ideal: the process managing the vfio device interrupts may not be
-> granted root privilege, for security reasons. Thus it cannot directly
-> control the interrupt affinity and has to rely on an external command.
+> --- a/arch/x86/kernel/cpu/sgx/main.c
+> +++ b/arch/x86/kernel/cpu/sgx/main.c
+> @@ -1045,7 +1045,7 @@ static int __init sgx_init(void)
+>        if (!sgx_page_cache_init())
+>            return -ENOMEM;
 > 
-> This patch extends the VFIO_DEVICE_SET_IRQS ioctl() with a new data flag
-> to specify the affinity of interrupts of a vfio pci device.
-> 
-> The CPU affinity mask argument must be a subset of the process cpuset,
-> otherwise an error -EPERM is returned.
-> 
-> The vfio_irq_set argument shall be set-up in the following way:
-> 
-> - the 'flags' field have the new flag VFIO_IRQ_SET_DATA_AFFINITY set
-> as well as VFIO_IRQ_SET_ACTION_TRIGGER.
-> 
-> - the variable-length 'data' field is a cpu_set_t structure, as
-> for the sched_setaffinity() syscall, the size of which is derived
-> from 'argsz'.
-> 
-> Signed-off-by: Fred Griffoul <fgriffo@amazon.co.uk>
-> ---
->  drivers/vfio/pci/vfio_pci_core.c  | 27 +++++++++++++++++----
->  drivers/vfio/pci/vfio_pci_intrs.c | 39 +++++++++++++++++++++++++++++++
->  drivers/vfio/vfio_main.c          | 13 +++++++----
->  include/uapi/linux/vfio.h         | 10 +++++++-
->  4 files changed, 80 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-> index 80cae87fff36..2e3419560480 100644
-> --- a/drivers/vfio/pci/vfio_pci_core.c
-> +++ b/drivers/vfio/pci/vfio_pci_core.c
-> @@ -1192,6 +1192,7 @@ static int vfio_pci_ioctl_set_irqs(struct vfio_pci_core_device *vdev,
->  {
->  	unsigned long minsz = offsetofend(struct vfio_irq_set, count);
->  	struct vfio_irq_set hdr;
-> +	cpumask_var_t mask;
->  	u8 *data = NULL;
->  	int max, ret = 0;
->  	size_t data_size = 0;
-> @@ -1207,9 +1208,22 @@ static int vfio_pci_ioctl_set_irqs(struct vfio_pci_core_device *vdev,
->  		return ret;
->  
->  	if (data_size) {
-> -		data = memdup_user(&arg->data, data_size);
-> -		if (IS_ERR(data))
-> -			return PTR_ERR(data);
-> +		if (hdr.flags & VFIO_IRQ_SET_DATA_AFFINITY) {
-> +			if (!zalloc_cpumask_var(&mask, GFP_KERNEL))
-> +				return -ENOMEM;
-> +
-> +			if (copy_from_user(mask, &arg->data, data_size)) {
-> +				ret = -EFAULT;
-> +				goto out;
-> +			}
-> +
-> +			data = (u8 *)mask;
+> -    if (!sgx_page_reclaimer_init()) {
+> +    if (!sgx_page_reclaimer_init() || !sgx_cgroup_init()) {
+>            ret = -ENOMEM;
+>            goto err_page_cache;
+>        }
 
-Seems like this could just use the memdup_user() path, why do we care
-to copy it into a cpumask_var_t here?  If we do care, wouldn't we
-implement something like get_user_cpu_mask() used by
-sched_setaffinity(2)?
+Does it make more sense to move the sgx_cgroup_init() to the 
+sgx_drv_init()?  The SGX cgroup only works for the driver side anyway. 
+In this case, if something went wrong in sgx_cgroup_init(), the 
+sgx_vepc_init() could still have a chance to work.
 
-> +
-> +		} else {
-> +			data = memdup_user(&arg->data, data_size);
-> +			if (IS_ERR(data))
-> +				return PTR_ERR(data);
-> +		}
->  	}
->  
->  	mutex_lock(&vdev->igate);
-> @@ -1218,7 +1232,12 @@ static int vfio_pci_ioctl_set_irqs(struct vfio_pci_core_device *vdev,
->  				      hdr.count, data);
->  
->  	mutex_unlock(&vdev->igate);
-> -	kfree(data);
-> +
-> +out:
-> +	if (hdr.flags & VFIO_IRQ_SET_DATA_AFFINITY && data_size)
-> +		free_cpumask_var(mask);
-> +	else
-> +		kfree(data);
->  
->  	return ret;
->  }
-> diff --git a/drivers/vfio/pci/vfio_pci_intrs.c b/drivers/vfio/pci/vfio_pci_intrs.c
-> index 8382c5834335..fe01303cf94e 100644
-> --- a/drivers/vfio/pci/vfio_pci_intrs.c
-> +++ b/drivers/vfio/pci/vfio_pci_intrs.c
-> @@ -19,6 +19,7 @@
->  #include <linux/vfio.h>
->  #include <linux/wait.h>
->  #include <linux/slab.h>
-> +#include <linux/cpuset.h>
->  
->  #include "vfio_pci_priv.h"
->  
-> @@ -675,6 +676,41 @@ static int vfio_pci_set_intx_trigger(struct vfio_pci_core_device *vdev,
->  	return 0;
->  }
->  
-> +static int vfio_pci_set_msi_affinity(struct vfio_pci_core_device *vdev,
-> +				     unsigned int start, unsigned int count,
-> +				     struct cpumask *irq_mask)
+And IIUC we need to reset the "capacity" to 0 if sgx_cgroup_init() 
+fails, no matter it is called inside sgx_drv_init() or sgx_init(), 
+otherwise the "epc" would appear in the cgroup hierarchy as a misc 
+cgroup resource.
 
-Aside from the name, what makes this unique to MSI vectors?
+Another option is to defer setting the capacity to the point where we 
+have made sure sgx_drv_init() and sgx_cgroup_init() cannot fail.
 
-> +{
-> +	struct vfio_pci_irq_ctx *ctx;
-> +	cpumask_var_t allowed_mask;
-> +	unsigned int i;
-> +	int err = 0;
-> +
-> +	if (!alloc_cpumask_var(&allowed_mask, GFP_KERNEL))
-> +		return -ENOMEM;
-> +
-> +	cpuset_cpus_allowed(current, allowed_mask);
-> +	if (!cpumask_subset(irq_mask, allowed_mask)) {
-> +		err = -EPERM;
-> +		goto finish;
-> +	}
-> +
-> +	for (i = start; i < start + count; i++) {
-> +		ctx = vfio_irq_ctx_get(vdev, i);
-> +		if (!ctx) {
-> +			err = -EINVAL;
-> +			break;
-> +		}
-> +
-> +		err = irq_set_affinity(ctx->producer.irq, irq_mask);
-> +		if (err)
-> +			break;
-> +	}
-
-Is this typical/userful behavior to set a series of vectors to the same
-cpu_set_t?  It's unusual behavior for this ioctl to apply the same data
-across multiple vectors.  Should the DATA_AFFINITY case support an
-array of cpu_set_t?
-
-> +
-> +finish:
-> +	free_cpumask_var(allowed_mask);
-> +	return err;
-> +}
-> +
->  static int vfio_pci_set_msi_trigger(struct vfio_pci_core_device *vdev,
->  				    unsigned index, unsigned start,
->  				    unsigned count, uint32_t flags, void *data)
-> @@ -713,6 +749,9 @@ static int vfio_pci_set_msi_trigger(struct vfio_pci_core_device *vdev,
->  	if (!irq_is(vdev, index))
->  		return -EINVAL;
->  
-> +	if (flags & VFIO_IRQ_SET_DATA_AFFINITY)
-> +		return vfio_pci_set_msi_affinity(vdev, start, count, data);
-> +
->  	for (i = start; i < start + count; i++) {
->  		ctx = vfio_irq_ctx_get(vdev, i);
->  		if (!ctx)
-> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
-> index e97d796a54fb..e75c5d66681c 100644
-> --- a/drivers/vfio/vfio_main.c
-> +++ b/drivers/vfio/vfio_main.c
-> @@ -1505,23 +1505,28 @@ int vfio_set_irqs_validate_and_prepare(struct vfio_irq_set *hdr, int num_irqs,
->  		size = 0;
->  		break;
->  	case VFIO_IRQ_SET_DATA_BOOL:
-> -		size = sizeof(uint8_t);
-> +		size = hdr->count * sizeof(uint8_t);
->  		break;
->  	case VFIO_IRQ_SET_DATA_EVENTFD:
-> -		size = sizeof(int32_t);
-> +		size = size_mul(hdr->count, sizeof(int32_t));
-
-Why use size_mul() in one place and not the other? 
-
-> +		break;
-> +	case VFIO_IRQ_SET_DATA_AFFINITY:
-> +		size = hdr->argsz - minsz;
-> +		if (size > cpumask_size())
-> +			size = cpumask_size();
-
-Or just set size = (hdr->argsz - minsz) / count?
-
-Generate an error if (hdr->argsz - minsz) % count?
-
-It seems like all the cpumask'items can be contained to the set affinity
-function.
-
->  		break;
->  	default:
->  		return -EINVAL;
->  	}
->  
->  	if (size) {
-> -		if (hdr->argsz - minsz < hdr->count * size)
-> +		if (hdr->argsz - minsz < size)
->  			return -EINVAL;
->  
->  		if (!data_size)
->  			return -EINVAL;
->  
-> -		*data_size = hdr->count * size;
-> +		*data_size = size;
->  	}
->  
->  	return 0;
-> diff --git a/include/uapi/linux/vfio.h b/include/uapi/linux/vfio.h
-> index 2b68e6cdf190..5ba2ca223550 100644
-> --- a/include/uapi/linux/vfio.h
-> +++ b/include/uapi/linux/vfio.h
-> @@ -580,6 +580,12 @@ struct vfio_irq_info {
->   *
->   * Note that ACTION_[UN]MASK specify user->kernel signaling (irqfds) while
->   * ACTION_TRIGGER specifies kernel->user signaling.
-> + *
-> + * DATA_AFFINITY specifies the affinity for the range of interrupt vectors.
-> + * It must be set with ACTION_TRIGGER in 'flags'. The variable-length 'data'
-> + * array is a CPU affinity mask 'cpu_set_t' structure, as for the
-> + * sched_setaffinity() syscall argument: the 'argsz' field is used to check
-> + * the actual cpu_set_t size.
->   */
-
-DATA_CPUSET?
-
-The IRQ_INFO ioctl should probably also report support for this
-feature.
-
-Is there any proposed userspace code that takes advantage of this
-interface?  Thanks,
-
-Alex
-
->  struct vfio_irq_set {
->  	__u32	argsz;
-> @@ -587,6 +593,7 @@ struct vfio_irq_set {
->  #define VFIO_IRQ_SET_DATA_NONE		(1 << 0) /* Data not present */
->  #define VFIO_IRQ_SET_DATA_BOOL		(1 << 1) /* Data is bool (u8) */
->  #define VFIO_IRQ_SET_DATA_EVENTFD	(1 << 2) /* Data is eventfd (s32) */
-> +#define VFIO_IRQ_SET_DATA_AFFINITY	(1 << 6) /* Data is cpu_set_t */
->  #define VFIO_IRQ_SET_ACTION_MASK	(1 << 3) /* Mask interrupt */
->  #define VFIO_IRQ_SET_ACTION_UNMASK	(1 << 4) /* Unmask interrupt */
->  #define VFIO_IRQ_SET_ACTION_TRIGGER	(1 << 5) /* Trigger interrupt */
-> @@ -599,7 +606,8 @@ struct vfio_irq_set {
->  
->  #define VFIO_IRQ_SET_DATA_TYPE_MASK	(VFIO_IRQ_SET_DATA_NONE | \
->  					 VFIO_IRQ_SET_DATA_BOOL | \
-> -					 VFIO_IRQ_SET_DATA_EVENTFD)
-> +					 VFIO_IRQ_SET_DATA_EVENTFD | \
-> +					 VFIO_IRQ_SET_DATA_AFFINITY)
->  #define VFIO_IRQ_SET_ACTION_TYPE_MASK	(VFIO_IRQ_SET_ACTION_MASK | \
->  					 VFIO_IRQ_SET_ACTION_UNMASK | \
->  					 VFIO_IRQ_SET_ACTION_TRIGGER)
-
+Btw, I plan to review the rest from late of this week or next week 
+because this week I have some other staff needs to be finished first.
 
