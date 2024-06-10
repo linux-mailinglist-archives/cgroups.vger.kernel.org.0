@@ -1,115 +1,167 @@
-Return-Path: <cgroups+bounces-3141-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3142-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E80CD9021A8
-	for <lists+cgroups@lfdr.de>; Mon, 10 Jun 2024 14:30:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04896902228
+	for <lists+cgroups@lfdr.de>; Mon, 10 Jun 2024 14:57:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 197071C20E6D
-	for <lists+cgroups@lfdr.de>; Mon, 10 Jun 2024 12:30:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86403285388
+	for <lists+cgroups@lfdr.de>; Mon, 10 Jun 2024 12:57:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F5D4811E6;
-	Mon, 10 Jun 2024 12:30:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4C13823CB;
+	Mon, 10 Jun 2024 12:57:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="Rkh5jNcX"
+	dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b="dXvxT2wI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.3])
+Received: from smtp-fw-52003.amazon.com (smtp-fw-52003.amazon.com [52.119.213.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81F127FBA8;
-	Mon, 10 Jun 2024 12:30:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9FE180C1D;
+	Mon, 10 Jun 2024 12:57:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718022607; cv=none; b=q0E9z5DX8sK3oE62OPzUpK2e0VPCFekXmAm+cx0oBdgWGgmGBc+6D2Yd6jpB1nswAGGBnOmkRzyhlMcmIRZv9iPmKj37BrY4urS0pYM0Z3/8jnZqbkwqJP+RqdgjkWi6woTM270Ub5fH0ddsCzMr8LYm4JwazJxZM1GqvbvnOGs=
+	t=1718024250; cv=none; b=gTqP09ty8eACRD5zDn+qeTZ4RlSANhEaofT0RnmMJzbQUxrNlo2xjj8povIx3trjZZpHiTXv7kuBVFwkevJ6te1ESpmZNvPI8WmP1Jxa4ETTsda+PfEdODCw/hhsZfiOWfCr4RzGceH8/0ohNemao10OEATi6avESH26nZJl8/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718022607; c=relaxed/simple;
-	bh=wuJQnRYB08ec6imUGRWGaKR53UgTGv9ukbD4T7WaEcg=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=f25W11wYbTzselwFyPXoHIzMfJG7zb+cTf1KF+XZ3Uj7XyMevq3DrXhL1DaTaYe17jdVDhmHjqmoPWFTN39a7s5ZAJd5Z/dVKxzMxkf/EyDO+6fHYkOYa3s7V9nkT01ef90RU21uflQFPWWsI0pwzgbhRxUfOoyOrPyRnNaOQF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=Rkh5jNcX; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1718022496; x=1718627296; i=markus.elfring@web.de;
-	bh=D4Pv1t+P1y3mZ1KhtEA6vVUjt5e+QyYarpSPtOTxoLA=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=Rkh5jNcXIXoQTjWnF6EkIqPHSsd48v0//cmfBxu1+bDZPMtAUHbqywfNA5GmV37e
-	 Vo/YkHNlNCXLLhSwga933B8KPm3H5stqJb8jxs+XcGvgyh40zAcwD4lVsgLEYc0HY
-	 /SRvp4mbUqX8lKWX7yExtG5Pt4oRZwN5zQSppOBcAC1CZF0baXXR2YCmAULoJ7naW
-	 aovi2mfS8PE8MDER3bMTnldBjUmTNYWH6kJHgZ2WWcjm1MW4p59n7s6LLJBDaxSTi
-	 odIf7xa77dFD/AM3vIVIuWlGbloqbbO63/AMZiHhL0VqSWcnLMfOeVhx3PQBd8TWY
-	 fl7l94Qn3UO3NMmmGw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.83.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MTvvy-1rpb3S1aOA-00K8Ks; Mon, 10
- Jun 2024 14:28:16 +0200
-Message-ID: <f8dfa410-bce0-48fe-b3d1-19fb5f5768a8@web.de>
-Date: Mon, 10 Jun 2024 14:28:07 +0200
+	s=arc-20240116; t=1718024250; c=relaxed/simple;
+	bh=nJlLLJ2rBh0pTmSFO7XatNSh6LfP0lAb9qJiPmFoxzY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pixwywIv1CdoPerKS828X9wp/3di2Je9+5ERgHG4l7ij/ewa0Wt/F8ot+ealaB8DBZiKI1JmMd4jPt1lvNuW5iAhxx+t96wAuzhnizoABevmkUYTcuX1FRZbJ7YG6x7eBimgOANC6FGsVIedAcM0QWZ0FoxosdWEl/rTaMZvldU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (1024-bit key) header.d=amazon.co.uk header.i=@amazon.co.uk header.b=dXvxT2wI; arc=none smtp.client-ip=52.119.213.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.uk; i=@amazon.co.uk; q=dns/txt;
+  s=amazon201209; t=1718024249; x=1749560249;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ib8x6MUsFnm8OLqTHSSQ95s+8p+vISoBQLrMEQteYyg=;
+  b=dXvxT2wIfzS5ZMLQ8zutroDw3BOPn/LhHzHaaqTE6Et3L147a4gZg9Fx
+   HFORkWCUlOoiW7Bpq5nmg3Nd7PujLagNiNROqvnZG6gOJ4xZEXgsNV5Lz
+   LacB6gy66Wkq0ihLdt1gFRpM+v3xUS0BNaGrIdDETgChp5QJMeJbTU5jE
+   U=;
+X-IronPort-AV: E=Sophos;i="6.08,227,1712620800"; 
+   d="scan'208";a="3967790"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2024 12:57:27 +0000
+Received: from EX19MTAEUB001.ant.amazon.com [10.0.10.100:53360]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.26.236:2525] with esmtp (Farcaster)
+ id 9d700111-131b-461d-9914-1613d0d80b56; Mon, 10 Jun 2024 12:57:25 +0000 (UTC)
+X-Farcaster-Flow-ID: 9d700111-131b-461d-9914-1613d0d80b56
+Received: from EX19D007EUA004.ant.amazon.com (10.252.50.76) by
+ EX19MTAEUB001.ant.amazon.com (10.252.51.28) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Mon, 10 Jun 2024 12:57:25 +0000
+Received: from EX19MTAUWA001.ant.amazon.com (10.250.64.204) by
+ EX19D007EUA004.ant.amazon.com (10.252.50.76) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Mon, 10 Jun 2024 12:57:24 +0000
+Received: from dev-dsk-fgriffo-1c-69b51a13.eu-west-1.amazon.com
+ (10.13.244.152) by mail-relay.amazon.com (10.250.64.204) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34 via Frontend Transport; Mon, 10 Jun 2024 12:57:20 +0000
+From: Fred Griffoul <fgriffo@amazon.co.uk>
+To: <griffoul@gmail.com>
+CC: Fred Griffoul <fgriffo@amazon.co.uk>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Alex Williamson
+	<alex.williamson@redhat.com>, Waiman Long <longman@redhat.com>, Zefan Li
+	<lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>, Johannes Weiner
+	<hannes@cmpxchg.org>, Mark Rutland <mark.rutland@arm.com>, Marc Zyngier
+	<maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, Mark Brown
+	<broonie@kernel.org>, Ard Biesheuvel <ardb@kernel.org>, Joey Gouly
+	<joey.gouly@arm.com>, Ryan Roberts <ryan.roberts@arm.com>, Jeremy Linton
+	<jeremy.linton@arm.com>, Jason Gunthorpe <jgg@ziepe.ca>, Yi Liu
+	<yi.l.liu@intel.com>, Kevin Tian <kevin.tian@intel.com>, Eric Auger
+	<eric.auger@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, "Christian
+ Brauner" <brauner@kernel.org>, Ankit Agrawal <ankita@nvidia.com>, "Reinette
+ Chatre" <reinette.chatre@intel.com>, Ye Bin <yebin10@huawei.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<kvm@vger.kernel.org>, <cgroups@vger.kernel.org>
+Subject: [PATCH v5 0/2] vfio/pci: add msi interrupt affinity support
+Date: Mon, 10 Jun 2024 12:57:06 +0000
+Message-ID: <20240610125713.86750-1-fgriffo@amazon.co.uk>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Chen Ridong <chenridong@huawei.com>, bpf@vger.kernel.org,
- cgroups@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- Roman Gushchin <roman.gushchin@linux.dev>, Song Liu <song@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Tejun Heo <tj@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, Zefan Li <lizefan.x@bytedance.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <20240607110313.2230669-1-chenridong@huawei.com>
-Subject: Re: [PATCH -next] cgroup: Fix AA deadlock caused by
- cgroup_bpf_release
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240607110313.2230669-1-chenridong@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fmuK/VTR2YmSFLF2VDqjJtmVhTUzsI5l3pGMntg9UQYcsMbycmj
- +DSIdivBBL62ghxa3h9pU+c/GSmkts8QTF+2OvzfenG91FB8OSkKyy8xMktKwS/8zT6LFpw
- RT9znp2Zi6CxM09H1KMHHXuz4xWj/7+3Izuh/nT5g4JttQvRfWmi4QWB5Zk3agPzs02+7nq
- sYjc7gKvFhlTLyknF2hXA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:jIa/TUJcvPQ=;og0TU1hehFZUopo0uOcnVoVQ2SE
- 3Hl8UUIUEF7aUsdg3iEOM8wuAg2C1lC/RcyRXdWbBdyXtT3M1oCs3W9fmEbRSvxclKMi1Xfsq
- K/pC07ZkhlfxkD7DGLn2PWUQW9XFt4DZ3vjZ34cufPmcworgk3twYQqkdw796tGHTqFoCWPT7
- dt3cy1XjqqYn8zypQQMnZvFLneZcZtFro+FUvw18rx5aFQi8oYiw4rbL70TKl3QfDaXsuKdYm
- z5kCE5EYV1lEqZR95mM3L4/39CGhRibzIagsnjmUmMswjkZI0MotoGE8lZpCezDB7mWAkKdRk
- g31NBO3YWVqWqSZ8cwC4qBT+DXOE9pUyw1V9WPUsbyrG9BQbgS3vRoItT26pXnQ2c9L5FGuuX
- sskWhPN4z8R0yM3XlNh5hiXBCVIa6peRtb2Ek/pb+dBI0ve+ma3JSdmUOwVorHNWEhY89obdu
- xPENgzF/tS6VPKyywwtZ4kYaNgP0XTYLQXiTmTqfDXFeUQ4Bb4DGBBtupWnPW7Sxvtu3Rn5yR
- IX9aVlBRSnI1P4CkBN9rL8pJw0V6IFccQLoxEhICfyNyiAY6BIN1KxI7uXEmxdpVeUYIfz+9B
- Mcr7aDy2AuyTBoR4X8x+yEypYMwJTY9ZCNrWfFiPWlDw+RZb6G7RR/h3NGjJp4As+069E9zxe
- MOkZPNdF/laInksUqqbw+m8zOOUuMsPHTCoTydJev9J4igwBB0aEB7srpAl822MPYlntY3+0d
- wkZ0D/w0DvCpjQBGO9ajL3dTczP9fSMOYpylFNLwXj1XVwsW7kPgxKTPy+0DtPRjZrG9oIwtk
- Lus04zZxyMBp/DboVtZp7cJRZW7ZE2eUtDZTitw0xA5CU=
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-> We found an AA deadlock problem as shown belowed:
+v5:
+ - vfio_pci_ioctl_set_irqs(): fix copy_from_user() check when copying
+   the cpumask argument. Reported by Dan Carpenter
+   <dan.carpenter@linaro.org>
+ - vfio_set_irqs_validate_and_prepare(): use size_mul() to compute the
+   data size of a VFIO_IRQ_SET_DATA_EVENTFD ioctl() to avoid a possible
+   overflow on 32-bit system. Reported by Dan Carpenter
+   <dan.carpenter@linaro.org>
+ - export system_32bit_el0_cpumask() to fix yet another missing symbol
+   for arm64 architecture.
 
-                                           below?
+v4:
+ - export arm64_mismatched_32bit_el0 to compile the vfio driver as
+   a kernel module on arm64 if CONFIG_CPUSETS is not defined.
+ - vfio_pci_ioctl_set_irqs(): free the cpumask_var_t only if data_size
+   is not zero, otherwise it was not allocated.
+ - vfio_pci_set_msi_trigger(): call the new function
+   vfio_pci_set_msi_affinity() later, after the DATA_EVENTFD
+   processing and the vdev index check.
 
-* How was an =E2=80=9CAA deadlock=E2=80=9D problem detected?
+v3:
+ - add a first patch to export cpuset_cpus_allowed() to be able to
+   compile the vfio driver as a kernel module.
 
-* Were any special analysis tools involved?
+v2:
+ - change the ioctl() interface to use a cpu_set_t in vfio_irq_set
+   'data' to keep the 'start' and 'count' semantic, as suggested by
+    David Woodhouse <dwmw2@infradead.org>
+
+v1:
+
+The usual way to configure a device interrupt from userland is to write
+the /proc/irq/<irq>/smp_affinity or smp_affinity_list files. When using
+vfio to implement a device driver or a virtual machine monitor, this may
+not be ideal: the process managing the vfio device interrupts may not be
+granted root privilege, for security reasons. Thus it cannot directly
+control the interrupt affinity and has to rely on an external command.
+
+This patch extends the VFIO_DEVICE_SET_IRQS ioctl() with a new data flag
+to specify the affinity of a vfio pci device interrupt.
+
+The affinity argument must be a subset of the process cpuset, otherwise
+an error -EPERM is returned.
+
+The vfio_irq_set argument shall be set-up in the following way:
+
+- the 'flags' field have the new flag VFIO_IRQ_SET_DATA_AFFINITY set
+as well as VFIO_IRQ_SET_ACTION_TRIGGER.
+
+- the 'start' field is the device interrupt index. Only one interrupt
+can be configured per ioctl().
+
+- the variable-length array consists of one or more CPU index
+encoded as __u32, the number of entries in the array is specified in the
+'count' field.
 
 
-=E2=80=A6
-> preblem is solved.
+Fred Griffoul (2):
+  cgroup/cpuset: export cpuset_cpus_allowed()
+  vfio/pci: add msi interrupt affinity support
 
-  problem?
+ arch/arm64/kernel/cpufeature.c    |  2 ++
+ drivers/vfio/pci/vfio_pci_core.c  | 27 +++++++++++++++++----
+ drivers/vfio/pci/vfio_pci_intrs.c | 39 +++++++++++++++++++++++++++++++
+ drivers/vfio/vfio_main.c          | 13 +++++++----
+ include/uapi/linux/vfio.h         | 10 +++++++-
+ kernel/cgroup/cpuset.c            |  1 +
+ 6 files changed, 83 insertions(+), 9 deletions(-)
 
 
-Regards,
-Markus
+base-commit: cbb325e77fbe62a06184175aa98c9eb98736c3e8
+--
+2.40.1
+
 
