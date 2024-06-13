@@ -1,108 +1,126 @@
-Return-Path: <cgroups+bounces-3180-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3181-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C76B6907807
-	for <lists+cgroups@lfdr.de>; Thu, 13 Jun 2024 18:15:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 816CD907EC2
+	for <lists+cgroups@lfdr.de>; Fri, 14 Jun 2024 00:20:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F25C282EFF
-	for <lists+cgroups@lfdr.de>; Thu, 13 Jun 2024 16:15:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E20B283BB0
+	for <lists+cgroups@lfdr.de>; Thu, 13 Jun 2024 22:20:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6471F1474B5;
-	Thu, 13 Jun 2024 16:15:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81AB014B95B;
+	Thu, 13 Jun 2024 22:20:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="HrcpeDFR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I4RqPMse"
 X-Original-To: cgroups@vger.kernel.org
-Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92C3A14198E;
-	Thu, 13 Jun 2024 16:15:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB38E13B580;
+	Thu, 13 Jun 2024 22:20:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718295322; cv=none; b=MdDR1pSYAN9o/XOFnMbqFvqWTDmigL9Sx0ZakH9OwaQa4Gq49SKvms74ng9USBcO7P2ltk9QOrZTDzJ3jrNAM6hmZ8n1N+ULug4uwkTEd19GF2FIwg/8GT3/VXYj2IIrg+0nf/X1xGVEGbpEYZsPz0vUJvR+qdLdQPYI79VhYP0=
+	t=1718317228; cv=none; b=juij93oDJQd7p8NU+dS30LmHg7p2j2KXTPnmoleSHtV4gMzBAMradiskL/BjlvsTjdrEsBIk2vN34J9AE5JpTMHe8MTPukc5g+Fq6TyMi7Ue7ahIDid85da3/VbLI6YaubEaLHrQydwzdXAE8ULv9NGAnRciYd4B1JjGy8vmYHU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718295322; c=relaxed/simple;
-	bh=whMfq11Dvw2ni6ZHzlG2G6+Nq2AQLkx4vq48AZNPPKA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CR67LLtwTMD4o30sXxSNVbM0dt1WeXWzlXjqHYcwOwai4i5Rh0tN+alkMx5kG/VC0SCPgQtH7uIlfMju1n8n0RNulVpMfT2ZvfuYngnqCBRVvbeG2ABl6CtGO/5wFXGfuHZ6DfGSDtfpnWAIFpXHkiXI/0uECfXE4BykY9YpB38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=HrcpeDFR; arc=none smtp.client-ip=199.89.1.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 008.lax.mailroute.net (Postfix) with ESMTP id 4W0SDl5Rwcz6Cnk94;
-	Thu, 13 Jun 2024 16:15:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:content-language:references:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1718295315; x=1720887316; bh=VkPfQbRg/V3TI9O9qndO+2G1
-	4jtGtT1qgCPkkoNwBOM=; b=HrcpeDFREjPrz+2v1PgNd01GJOe/dxhdUPjTA+LD
-	pZHQgMHKcgmHMsTnqxvkBqa0/P4ZEFihu5ONnYpHZe+BSMFky0muLiknd/afYuDV
-	BcxA0aSpy3tT8XMmzx2sIm8bLIKNQjkjl3VewPrxaHmYHtRr2MmroDea7T7ka0B5
-	wfGwUwQalf/nMiwXZiNfdhukh96/Cuus1SkqrbvaimWrx5zVLAEmdnWCQuJmRtV0
-	Kvvqf44yFMOywckrNLjaOaERTlaVKXHRF5G8F3A3WDNXXLJdHi1m9uAI3H95g41Z
-	3zQpI91h0FDjUCKPOhJmxB+LX+SoM1R5F09XCJZdeW9Yuw==
-X-Virus-Scanned: by MailRoute
-Received: from 008.lax.mailroute.net ([127.0.0.1])
- by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id 0z4NuhIURIQq; Thu, 13 Jun 2024 16:15:15 +0000 (UTC)
-Received: from [IPV6:2620:0:1000:5e10:c543:208b:8ce4:f55a] (unknown [104.132.0.90])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4W0SDd3gd8z6Cnk9B;
-	Thu, 13 Jun 2024 16:15:13 +0000 (UTC)
-Message-ID: <97a2b888-4dac-451c-bb9c-40d8dc52cd60@acm.org>
-Date: Thu, 13 Jun 2024 09:15:11 -0700
+	s=arc-20240116; t=1718317228; c=relaxed/simple;
+	bh=HDqW2DtKDteM+/7uZVEBB2l511EH5+IAceScCpt/bvc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X+oVbV/LU3jGzj1TBcywb4fB/SYhmDR+uDo4DtrEZ3Uqpq2c5KCKYiE6YbVtk4n7S2ocDOeb2tVslB+RtJzDvoLDY6UtKk6Eiy1Di/PrJ2qrSP4rEufeKlkfp78Qe26aeWrFGQ2lHuP8dmRgFo4f5TsTHxfotLkOwGa7vectd84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I4RqPMse; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-705c739b878so1571330b3a.1;
+        Thu, 13 Jun 2024 15:20:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718317226; x=1718922026; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1jg4v2BGp1MDHKNEcJnr9qjZmB+J5b1qf8nu8looBk0=;
+        b=I4RqPMsePEsUO1SJxJmB1y+a8SxX99/B67F3xd1s08zlIrOQm7WUUhrATqQxenX1LS
+         ZYloNvtQ36KNz3ThYB3uQhoULXyvTAn+hQfmiVE+T/Uh+pFlVn+BS1V0PKNYr44dZ3ts
+         zKfaVZbbtJXpe/bYqJYovIAneRyNxlFQFSrEWi/C2iVZRwlpK/LgOyCdtLL+oSQ4rhDs
+         2l6hedls0B7AA1JyYsADRXGbj4oW9eJgykmvV3ch+onvw7QgwmtdmZKIRBJZfhlDH/C4
+         iTWML/EUqY82BZUEfgnmm8DwkKIMRQmBxpQ0soYg3nK08uavxJ4qErStAr4lomonCt6Y
+         pu3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718317226; x=1718922026;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1jg4v2BGp1MDHKNEcJnr9qjZmB+J5b1qf8nu8looBk0=;
+        b=FQotnma/NNvi/vJghKfRUC5ekEtVVhIWy8tTXbJ3XQfdL7LMUMhmGbIM02VbZ5BIpD
+         YcyKTogeZLs5FNCJH109Pq23fCd3Uxup0hufIveBURZVMIN06A5GfP7aMuahvfdDc7ec
+         bTdoyZr90SF2BIQ9EF++1//hdhrS6pxRTjNDpicC/FoQ2jMjoYScKFtygAyMHENdbkj3
+         07N4GMK5ytfF4dcW6MszE3DPoCrbUhyATl0SEpbVKcmbYgrYCczJAaYOYCL/MXOurCuA
+         Q3Ox9YnofAgvWh7oC9eYbgKPI8W3LY0Ig659SfOIzBxY6E/veFsu0TYNS2z7MouwMzAV
+         y/cg==
+X-Forwarded-Encrypted: i=1; AJvYcCXB3ffMg+DCAjEfi5gc5zJBaYPEApd+8paei+fHdmlmmW9Iuojjv0ijzJ1NdrmobIJqk04VQdiIrYjvXa/c/a1vrEFQBkOL8lYZ6+q1WPSd1GPLdiIk4NdgW3MQ1npfiu3ZN+ooXj/W0q7myW8Qpl9Ebb5gUXtYS+JoaZLNybuXfeE+
+X-Gm-Message-State: AOJu0YwtRMVw96ukBIuURhEoB/ki1RgFTztvdjeEgqg68y9N+KygCxBV
+	vZd68+Utuyzwc4H6TmY1yDX22xs7wS2btAsCWxpyxKMNqm/QREcnzdkyhQ==
+X-Google-Smtp-Source: AGHT+IEyVbito5YaJFZ/IWRI9IidtmbZ1XEOKBCbrnbo+p7OwrD6GSkyNGm4CDQYUYYi0DDTKGJlQQ==
+X-Received: by 2002:a05:6a21:2790:b0:1b4:b4af:6052 with SMTP id adf61e73a8af0-1bae7f93cd1mr1244172637.23.1718317225962;
+        Thu, 13 Jun 2024 15:20:25 -0700 (PDT)
+Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-705cc98915esm1897860b3a.96.2024.06.13.15.20.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jun 2024 15:20:25 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 13 Jun 2024 12:20:24 -1000
+From: Tejun Heo <tj@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: axboe@kernel.dk, linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-team@fb.com, newella@fb.com,
+	hch@lst.de
+Subject: Re: [PATCH 12/27] blk-iocost: grab ioc->lock for debt handling
+Message-ID: <ZmtwqDsMnTJHQB6o@slm.duckdns.org>
+References: <20200901185257.645114-1-tj@kernel.org>
+ <20200901185257.645114-13-tj@kernel.org>
+ <45603be5-65ae-4d45-bfbe-22c3c1e22280@oracle.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC -next 0/7] blk-iocost: support to build iocost as
- kernel module
-To: Greg KH <gregkh@linuxfoundation.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: axboe@kernel.dk, tj@kernel.org, josef@toxicpanda.com,
- lizefan.x@bytedance.com, hannes@cmpxchg.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, yukuai3@huawei.com,
- yi.zhang@huawei.com, yangerkun@huawei.com
-References: <20240613014937.1326020-1-yukuai1@huaweicloud.com>
- <2024061342-walk-cavalier-7e48@gregkh>
-Content-Language: en-US
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <2024061342-walk-cavalier-7e48@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <45603be5-65ae-4d45-bfbe-22c3c1e22280@oracle.com>
 
-On 6/12/24 10:54 PM, Greg KH wrote:
-> On Thu, Jun 13, 2024 at 09:49:30AM +0800, Yu Kuai wrote:
->> From: Yu Kuai <yukuai3@huawei.com>
->>
->> Yu Kuai (7):
->>    kernfs: export pr_cont_kernfs_path()
->>    cgroup: export cgroup_parse_float
->>    block: export some API
->>    blk-iocost: factor out helpers to handle params from ioc_qos_write()
->>    blk-iocost: parse params before initializing iocost
->>    blk-iocost: support to free iocost
->>    blk-iocost: support to build iocost as kernel module
+Hello,
+
+On Wed, Jun 12, 2024 at 12:33:19PM +0100, John Garry wrote:
+...
+> This generates the following sparse warnings on mainline today:
 > 
-> No where do you say _why_ building this as a module is a good idea.
+>   CHECK   block/blk-iocost.c
+> block/blk-iocost.c:685:9: warning: context imbalance in 'iocg_lock' -
+> wrong count at exit
+> block/blk-iocost.c:696:28: warning: context imbalance in 'iocg_unlock'
+> - unexpected unlock
 > 
-> Why do this at all?
+> If we try to break iocg_lock() into one version for lock_ioc set and another
+> for lock_ioc unset, we can solve the sparse issues for those functions, but
+> then we get another sparse issue from the callsites for those functions:
+> 
+> block/blk-iocost.c:2679:17: warning: context imbalance in
+> 'ioc_rqos_throttle' - different lock contexts for basic block
+> 
+> I tried to solve with a total ioc_rqos_throttle() re-org and much code
+> duplication by calling the different lock and unlock versions from
+> effectively 2x separate copies of ioc_rqos_throttle(), as sparse seems
+> confused with how we call these functions. It's a total no-go.
+> 
+> Any simpler idea to solve these? Or just something to live with?
 
-With CONFIG_BLK_CGROUP_IOCOST=y (as in the Android kernel), the
-blk-iocost kernel module causes a (small) runtime overhead, even if it
-is not being used.
+I kinda gave up on sparse lock checking as there's not much it can do that
+lockdep can't and the annotations are too awkward and inconsistent
+throughout the code base. So, my tendency is just to ignore it.
 
-Thanks,
+Thanks.
 
-Bart.
-
+-- 
+tejun
 
