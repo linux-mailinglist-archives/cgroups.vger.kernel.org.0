@@ -1,119 +1,124 @@
-Return-Path: <cgroups+bounces-3183-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3184-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E2A6907EE2
-	for <lists+cgroups@lfdr.de>; Fri, 14 Jun 2024 00:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A61C90807D
+	for <lists+cgroups@lfdr.de>; Fri, 14 Jun 2024 03:07:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C6EA1C220FF
-	for <lists+cgroups@lfdr.de>; Thu, 13 Jun 2024 22:32:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70E3B1C21884
+	for <lists+cgroups@lfdr.de>; Fri, 14 Jun 2024 01:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2243B149DFA;
-	Thu, 13 Jun 2024 22:32:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jCKChL0a"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF43158D9C;
+	Fri, 14 Jun 2024 01:07:12 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9152F2F50;
-	Thu, 13 Jun 2024 22:32:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0178157E7D;
+	Fri, 14 Jun 2024 01:07:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718317927; cv=none; b=UZUR9YoB6Sr+qrvjERA1h9Y7SH9o2vyCwVLGL9x0Oo6sIOm+nOkfhfBwwD+7uxuvClbdR1WUQkxBRaQfg+Dm992z/YNaf2vWweT5DmF9f69/K+jJEXucmyWNXX8EmoIhvXnzfaN1o7vPc+73HKEEJHLWUX6+6l0jJiiAwhmiH4Y=
+	t=1718327232; cv=none; b=JdlSymMPzaXm5v39j4Cpe2SwvRbCf5frMjvV5RBVu4XeriNa62bdOb4ovl8vWhKFrl29P1mBdLlYhRH3yVJJuWgdiuVNmx1d4kla3UKN6nCl4SbtI9CSSBStmFjFDS+WDLPm/NVw1cZuou91dOyFWUzoJDoaHUtiLCJYufcCVno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718317927; c=relaxed/simple;
-	bh=qPSXquU6U27MoLTDYbXSvkIqxPRvwgayXwThhzfL44Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rzR3wiWNsmyVscD2lbQYaP8Aa1AU1ml4umy/iMCU7FDtxWjcJLK/V3Cer/k8XxCQuRU6BYHGoOWef+l0J7Wk88ikWIR7dqNPadGsjO5T9VR7n5DcdiIVanB26MWDZJm3+0NWq855ot6cXHUfAiBGloUjR1Nk0NMVAerGZNhG4cg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jCKChL0a; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-70436ac8882so1249962b3a.2;
-        Thu, 13 Jun 2024 15:32:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718317926; x=1718922726; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mdBrPdC03uBfyp4h0UDLcnfRIq5hLrsMUcQxR+uWGTY=;
-        b=jCKChL0az7IqMz9I1v6YwIpNeom8QE/14gKEqL+2ghNqIIgHMT7haco7QjmhBCE59P
-         BBln8th0catKdZOUcnKrbqs6nXF4G4007bwn7d8CnBbI+cBlVe+a2MZPRIiQUfxVvIDv
-         VpruTiFXg6uZmavcOEuCZWXwefWgh60pE2Sh0ukMH0+W17GfmmFNkJon1ORYfnQTlE9z
-         v0CZtFU4tyjFe3Pq6BkJmf4QPS2lVYm6xctqFKnG2UGa1deM/edH7I58rf6aB8EdtttX
-         d/u4fFjMRCXcPqwWt3A8L76rViYd5IfyabPE29oJKZvydpaigVpRN0YUg1DGvWUKapYy
-         OhXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718317926; x=1718922726;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mdBrPdC03uBfyp4h0UDLcnfRIq5hLrsMUcQxR+uWGTY=;
-        b=v6tP+aaQ1AcHqbKEZXpNeJ88R54wb2SL8o9mMx+Mc1z4eoKftRpubJVrTDowRWyiUx
-         WvkMuI5VUiA566rL2JTFb7llFFarjP+eFNDUyXvLNCqKe5ZrbSIejTsyBPQNJPjBPWYK
-         alpZZal5wh/djPe/nbfsssWyTjKrpX43IbcWXjSrcRfB6VwDkjPOV7VrPbVDjLLqJDJP
-         gD0IR4jF53lNSu33pCA1AueBn9Dis3JLF2seh4n08nMUAljx4EH0+iyEa5oXKMrq8ZVt
-         g4c7tFzEvBneOJy++cTXyzbUSYQhht9h/wJJVvLwZlVv6EMNgB6uWvHgp6RIqi7uAOHQ
-         rv/w==
-X-Forwarded-Encrypted: i=1; AJvYcCWS178zbxd3Kiuob3olvGfDUfbDEgddJI6T/BFCivzwOKKMKeMKHeKGfW51wFUXuHIDhOWeUqkgMs8nESSENOc06stdHkHHm1H37n4dqOt5CmHQPKCCpxRv2dsMz8r5NTPsVyenxSoolaZpdEhmYw5qlyK5SUVu+WzkuvyKaw3/CQLC
-X-Gm-Message-State: AOJu0YyD4KetVp+Gr9pTFTyiNV2JqZn5bPGlbJqWpBBqOIwicHxHR3/F
-	6nqVA7a9fCbRBMWgnl9vbmS3/VpS2RmIL8Ysu+Io8hgM1N0HlqDMFQP6yw==
-X-Google-Smtp-Source: AGHT+IHtcFkCRzKVUWoWnuA8d2ZTx4W7xmzb6xaoYGxgWDDH+MegbR44iI4dxtg/vsMxIbAMcFnCVg==
-X-Received: by 2002:a62:be08:0:b0:705:a669:8acf with SMTP id d2e1a72fcca58-705d71d1277mr922095b3a.26.1718317925718;
-        Thu, 13 Jun 2024 15:32:05 -0700 (PDT)
-Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-705ccb3bf00sm1846190b3a.135.2024.06.13.15.32.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jun 2024 15:32:05 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 13 Jun 2024 12:32:04 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH -next 2/2] blk-throttle: fix lower control under super
- low iops limit
-Message-ID: <ZmtzZKW1m6JpdfWx@slm.duckdns.org>
-References: <20240513120848.2828797-1-yukuai1@huaweicloud.com>
- <20240513120848.2828797-3-yukuai1@huaweicloud.com>
+	s=arc-20240116; t=1718327232; c=relaxed/simple;
+	bh=2tC/fV53SlYxr1+Tb0Q8m2wjAfrkmL7OuJnZr23PIcI=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=bflDOy65M6cJWLNCLlk6rNt+vt51vQzbGYFC08e13BaYKsVuyCtYDOd1IBV6/FoI0tpportg4FzaVHE6Ti5OWqsZIi0AL8t7IRuvzwOF/Bwwu5DXlIGAt439cjNEtdZAzmE6avIrM/WXmGAhTo3YbQ1deIbpIipPQvRMBgE8IAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4W0h262P9Fz4f3mHq;
+	Fri, 14 Jun 2024 09:06:54 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id D76B71A0185;
+	Fri, 14 Jun 2024 09:07:05 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgBnOBG3l2tmQXutPQ--.44541S3;
+	Fri, 14 Jun 2024 09:07:05 +0800 (CST)
+Subject: Re: [PATCH RFC -next 0/7] blk-iocost: support to build iocost as
+ kernel module
+To: Bart Van Assche <bvanassche@acm.org>, Greg KH
+ <gregkh@linuxfoundation.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, tj@kernel.org, josef@toxicpanda.com,
+ lizefan.x@bytedance.com, hannes@cmpxchg.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, yi.zhang@huawei.com,
+ yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20240613014937.1326020-1-yukuai1@huaweicloud.com>
+ <2024061342-walk-cavalier-7e48@gregkh>
+ <97a2b888-4dac-451c-bb9c-40d8dc52cd60@acm.org>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <6bfbe267-8a75-486c-877b-e3236cddfa93@huaweicloud.com>
+Date: Fri, 14 Jun 2024 09:07:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240513120848.2828797-3-yukuai1@huaweicloud.com>
+In-Reply-To: <97a2b888-4dac-451c-bb9c-40d8dc52cd60@acm.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBnOBG3l2tmQXutPQ--.44541S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7XF1DKFWUZw15CFWrCw1Utrb_yoWDWFgEv3
+	Z5ZFyjqryxWayDAw1qyFs0qrWkKr4ruw4jy34UWayUKFn5tFnYyw1rX34kZFn8GF47Crn5
+	uFy5XF1ktF1YgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb3AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+	17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+	3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Hello,
+Hi,
 
-On Mon, May 13, 2024 at 08:08:48PM +0800, Yu Kuai wrote:
-...
-> However, if limit is quite low, the result can be 0, then
-> allowed IO in the slice is 0, this will cause missing dispatch and
-> control will be lower than limit.
+在 2024/06/14 0:15, Bart Van Assche 写道:
+> On 6/12/24 10:54 PM, Greg KH wrote:
+>> On Thu, Jun 13, 2024 at 09:49:30AM +0800, Yu Kuai wrote:
+>>> From: Yu Kuai <yukuai3@huawei.com>
+>>>
+>>> Yu Kuai (7):
+>>>    kernfs: export pr_cont_kernfs_path()
+>>>    cgroup: export cgroup_parse_float
+>>>    block: export some API
+>>>    blk-iocost: factor out helpers to handle params from ioc_qos_write()
+>>>    blk-iocost: parse params before initializing iocost
+>>>    blk-iocost: support to free iocost
+>>>    blk-iocost: support to build iocost as kernel module
+>>
+>> No where do you say _why_ building this as a module is a good idea.
+>>
+>> Why do this at all?
 > 
-> For example, set iops_limit to 5 with HD disk, and test will found that
-> iops will be 3.
+> With CONFIG_BLK_CGROUP_IOCOST=y (as in the Android kernel), the
+> blk-iocost kernel module causes a (small) runtime overhead, even if it
+> is not being used.
 
-Hmm... can't this be solved by starting the next slice with the right
-credit?
+I think this is not true... Because iocost is lazy initialized, and if
+iocost is not initialized, there should not be such overhead.
 
->  static unsigned int tg_throtl_slice(struct throtl_grp *tg, int rw)
->  {
-> +	if (tg->throtl_slice[rw])
-> +		return tg->throtl_slice[rw];
->  	return tg->td->throtl_slice;
+Thanks,
+Kuai
 
-Because this is a bit nasty. If we want to use difference throttling slices
-for different cgroups, we might as well do it universally.
+> 
+> Thanks,
+> 
+> Bart.
+> 
+> 
+> .
+> 
 
-Thanks.
-
--- 
-tejun
 
