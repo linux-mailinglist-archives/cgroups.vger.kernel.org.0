@@ -1,60 +1,61 @@
-Return-Path: <cgroups+bounces-3192-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3193-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54DBC90AE3D
-	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 14:53:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E354190AE3F
+	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 14:53:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9CF11F23F86
-	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 12:53:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3457FB23768
+	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 12:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 355A0197A60;
-	Mon, 17 Jun 2024 12:53:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 651AE197A76;
+	Mon, 17 Jun 2024 12:53:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="APsotigh"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D6APL9cC"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACA8A197553;
-	Mon, 17 Jun 2024 12:53:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22094197555;
+	Mon, 17 Jun 2024 12:53:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718628821; cv=none; b=ZobKin9ew6C2nM+ijDDGYI3U4tWPNKwMGkOhMeLMLfWYgnzIIGEFWaO3SurBhpocPBKYh4Y9DW5ldDY53oUq0ZBd6iB6FcgHWrE8InnFbOHKmfUKALyAf4gIZriDJfQZ/n7P3vG1SBHG3Rfvh4V74lWf0nOVn0FrBRs4iD6z0DE=
+	t=1718628822; cv=none; b=dhrDkxwWHf6CaNh7ywWL/qfxQ6OWr990cGUXFVCxrWu/jnv2bLZHfEdhXLkQkPhGOEe4eeoCNZPrhDuSBj7TdH2qAkl3QjBw8AGEdj0g7ZgIpZrseAJksGxwluUobZRJHFr6IUS63AQrY561/1ChgHuY/xHZFkXMDVIo34FNhgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718628821; c=relaxed/simple;
-	bh=inxbYXOp88xAFLKevPUaDVMw9tix/9ZfCkd+wcM7SpU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=P6dIiEhmS30pkXH/n5D/j+txITDtJNmg7l2yZRHeygTGFgPXvQhnVU2Rx0D3MKOMtf9i8s5LKsMf749qNKxWUeEE4XoZhXZ9LJWe6jou718a15hZIo3AnIX4iYzA0qt1qMNcfGXSPEyHaJn3czvUinInKOG+xaawDMoUDr79zCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=APsotigh; arc=none smtp.client-ip=198.175.65.17
+	s=arc-20240116; t=1718628822; c=relaxed/simple;
+	bh=BL+BfndbCpOpfHAQoORAi29I2C6ATSA8m3FqidOb1Z0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=lQAH+FW1YSoNShs7KMTr08yhJCFdG7qYCkYk9RBxVgY9COf7jPnAJkVIFGx7kLawrC0d5C/cQlcqqiVUZHZBfSmWX+ckZOfvIo8QYnB02u7wxb5sP7m1W8HiUQadSHIotjj3Lv3uNg4+L8OAIV8b5QgUWESuAiiY13mwalXl7PU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=D6APL9cC; arc=none smtp.client-ip=198.175.65.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718628819; x=1750164819;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=inxbYXOp88xAFLKevPUaDVMw9tix/9ZfCkd+wcM7SpU=;
-  b=APsotighH0xFsSL+pTITdh90l0od/TaLdkXxy4rGVPaVuMEDBbD0M1xL
-   K4UT4w/owg9ZWwO5wr0T6AnM1xkl+K5XQqNKCOnYbAFcVsLI9IeF+ItJF
-   j+2e5EPK66k6sHzzYMa3/e1zPdP+lj3Ktpa6fQnjuZeGhiV6aXRhvWjUB
-   ZMhLoFxrOWkY8ROd3BwHKOmoP+mWOsi1cy6SPu0qSJ15PS1Ac0F00ddJT
-   dFPYHZaAH7xDZGjNRaSGYqGXvYTfUUiqXFVVaymn/qIFjAvjWpDTC8fs4
-   tykQNwEXfq5r6/o0KtzPQ4JIH3h+xuYJxFvkksRipwkSD5e62hupk2pB9
-   w==;
-X-CSE-ConnectionGUID: 5FVATTIzQuevuUmbSZgO5g==
-X-CSE-MsgGUID: 5rG4iH7zShqYIS8T3fwTvg==
-X-IronPort-AV: E=McAfee;i="6700,10204,11105"; a="15570824"
+  t=1718628820; x=1750164820;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=BL+BfndbCpOpfHAQoORAi29I2C6ATSA8m3FqidOb1Z0=;
+  b=D6APL9cCxsCfeNbzOwvFHK21gC9LThEeWnIZqXPkEY9rS8DZKlBV7m2s
+   fppdTL7nlcni7KU8DjEJyp9KW4SSpQcLZFs8V/xhFNnyN037OZKOhc5Wp
+   WW0UIzMB292V69IKN14ff197tixxxOJ4wkW1iO+DPjZ4aZJW2s3HXsGrl
+   0u/QTVtgJkwBGM5Vh3fiREdsShCtBPLDXztpd8JIBbW6eYGyaLQ7IBalX
+   I87O0dZkwEuBc5aa7blZjILhKgzI3fISm6xBousebctdXz4spyByawrnS
+   JdDnGu/eTW93bqAU7WvJPR3Hmkzd8kMY+s8vrcNHOJMK2y+7iSksEn1g0
+   Q==;
+X-CSE-ConnectionGUID: iaFD83aqSbmQKqxHqAM1og==
+X-CSE-MsgGUID: RchIPHjETo6r5uzFIiuhCg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11105"; a="15570834"
 X-IronPort-AV: E=Sophos;i="6.08,244,1712646000"; 
-   d="scan'208";a="15570824"
+   d="scan'208";a="15570834"
 Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2024 05:53:38 -0700
-X-CSE-ConnectionGUID: V98DGs35SMWKwCYKC7RxwQ==
-X-CSE-MsgGUID: SCeUvpgJQku9FSBcFTRylw==
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2024 05:53:39 -0700
+X-CSE-ConnectionGUID: AUSczjeXTT2b2buybP3UjA==
+X-CSE-MsgGUID: jV0VQT4YQVyU+gqOWJTaUA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,244,1712646000"; 
-   d="scan'208";a="72387476"
+   d="scan'208";a="72387483"
 Received: from b4969164b36c.jf.intel.com ([10.165.59.5])
   by fmviesa001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2024 05:53:37 -0700
 From: "Huang, Haitao" <haitao.huang@linux.intel.com>
@@ -82,10 +83,12 @@ Cc: zhiquan1.li@intel.com,
 	mikko.ylinen@linux.intel.com,
 	yangjie@microsoft.com,
 	chrisyan@microsoft.com
-Subject: [PATCH v15 00/14] Add Cgroup support for SGX EPC memory
-Date: Mon, 17 Jun 2024 05:53:07 -0700
-Message-ID: <20240617125321.36658-1-haitao.huang@linux.intel.com>
+Subject: [PATCH v15 01/14] x86/sgx: Replace boolean parameters with enums
+Date: Mon, 17 Jun 2024 05:53:08 -0700
+Message-ID: <20240617125321.36658-2-haitao.huang@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240617125321.36658-1-haitao.huang@linux.intel.com>
+References: <20240617125321.36658-1-haitao.huang@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -94,269 +97,251 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-SGX Enclave Page Cache (EPC) memory allocations are separate from normal
-RAM allocations, and are managed solely by the SGX subsystem. The existing
-cgroup memory controller cannot be used to limit or account for SGX EPC
-memory, which is a desirable feature in some environments, e.g., support
-for pod level control in a Kubernates cluster on a VM or bare-metal host
-[1,2].
- 
-This patchset implements the support for sgx_epc memory within the misc
-cgroup controller. A user can use the misc cgroup controller to set and
-enforce a max limit on total EPC usage per cgroup. The implementation
-reports current usage and events of reaching the limit per cgroup as well
-as the total system capacity.
- 
-Much like normal system memory, EPC memory can be overcommitted via virtual
-memory techniques and pages can be swapped out of the EPC to their backing
-store, which are normal system memory allocated via shmem and accounted by
-the memory controller. Similar to per-cgroup reclamation done by the memory
-controller, the EPC misc controller needs to implement a per-cgroup EPC
-reclaiming process: when the EPC usage of a cgroup reaches its hard limit
-('sgx_epc' entry in the 'misc.max' file), the cgroup starts swapping out
-some EPC pages within the same cgroup to make room for new allocations.
- 
-For that, this implementation tracks reclaimable EPC pages in a separate
-LRU list in each cgroup, and below are more details and justification of
-this design. 
- 
-Track EPC pages in per-cgroup LRUs (from Dave)
-----------------------------------------------
- 
-tl;dr: A cgroup hitting its limit should be as similar as possible to the
-system running out of EPC memory. The only two choices to implement that
-are nasty changes the existing LRU scanning algorithm, or to add new LRUs.
-The result: Add a new LRU for each cgroup and scans those instead. Replace
-the existing global cgroup with the root cgroup's LRU (only when this new
-support is compiled in, obviously).
- 
-The existing EPC memory management aims to be a miniature version of the
-core VM where EPC memory can be overcommitted and reclaimed. EPC
-allocations can wait for reclaim. The alternative to waiting would have
-been to send a signal and let the enclave die.
- 
-This series attempts to implement that same logic for cgroups, for the same
-reasons: it's preferable to wait for memory to become available and let
-reclaim happen than to do things that are fatal to enclaves.
- 
-There is currently a global reclaimable page SGX LRU list. That list (and
-the existing scanning algorithm) is essentially useless for doing reclaim
-when a cgroup hits its limit because the cgroup's pages are scattered
-around that LRU. It is unspeakably inefficient to scan a linked list with
-millions of entries for what could be dozens of pages from a cgroup that
-needs reclaim.
- 
-Even if unspeakably slow reclaim was accepted, the existing scanning
-algorithm only picks a few pages off the head of the global LRU. It would
-either need to hold the list locks for unreasonable amounts of time, or be
-taught to scan the list in pieces, which has its own challenges.
- 
-Unreclaimable Enclave Pages
----------------------------
- 
-There are a variety of page types for enclaves, each serving different
-purposes [5]. Although the SGX architecture supports swapping for all
-types, some special pages, e.g., Version Array(VA) and Secure Enclave
-Control Structure (SECS)[5], holds meta data of reclaimed pages and
-enclaves. That makes reclamation of such pages more intricate to manage.
-The SGX driver global reclaimer currently does not swap out VA pages. It
-only swaps the SECS page of an enclave when all other associated pages have
-been swapped out. The cgroup reclaimer follows the same approach and does
-not track those in per-cgroup LRUs and considers them as unreclaimable
-pages. The allocation of these pages is counted towards the usage of a
-specific cgroup and is subject to the cgroup's set EPC limits.
- 
-Earlier versions of this series implemented forced enclave-killing to
-reclaim VA and SECS pages. That was designed to enforce the 'max' limit,
-particularly in scenarios where a user or administrator reduces this limit
-post-launch of enclaves. However, subsequent discussions [3, 4] indicated
-that such preemptive enforcement is not necessary for the misc-controllers.
-Therefore, reclaiming SECS/VA pages by force-killing enclaves were removed,
-and the limit is only enforced at the time of new EPC allocation request.
-When a cgroup hits its limit but nothing left in the LRUs of the subtree,
-i.e., nothing to reclaim in the cgroup, any new attempt to allocate EPC
-within that cgroup will result in an 'ENOMEM'.
- 
-Unreclaimable Guest VM EPC Pages
---------------------------------
- 
-The EPC pages allocated for guest VMs by the virtual EPC driver are not
-reclaimable by the host kernel [6]. Therefore an EPC cgroup also treats
-those as unreclaimable and returns ENOMEM when its limit is hit and nothing
-reclaimable left within the cgroup. The virtual EPC driver translates the
-ENOMEM error resulted from an EPC allocation request into a SIGBUS to the
-user process exactly the same way handling host running out of physical
-EPC.
- 
-This work was originally authored by Sean Christopherson a few years ago,
-and previously modified by Kristen C. Accardi to utilize the misc cgroup
-controller rather than a custom controller. I have been updating the
-patches based on review comments since V2 [7-19], simplified the
-implementation/design, added selftest scripts, fixed some stability issues
-found from testing.
- 
-Thanks to all for the review/test/tags/feedback provided on the previous
-versions. 
- 
-I appreciate your further reviewing/testing and providing tags if
-appropriate.
- 
+From: Haitao Huang <haitao.huang@linux.intel.com>
+
+Replace boolean parameters for 'reclaim' in the function
+sgx_alloc_epc_page() and its callers with an enum.
+
+Also opportunistically remove non-static declaration of
+__sgx_alloc_epc_page() and a typo
+
+Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+Suggested-by: Jarkko Sakkinen <jarkko@kernel.org>
+Suggested-by: Dave Hansen <dave.hansen@intel.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Reviewed-by: Kai Huang <kai.huang@intel.com>
+Tested-by: Jarkko Sakkinen <jarkko@kernel.org>
 ---
-V15:
-- Disable SGX when sgx_cgroup_init() fails instead of using BUG_ON()
-  (Jarkko)
-- Reset capacity if sgx_cgroup_init() fails. (Kai)
-- Style fixes (Jarkko, Kai)
-- In misc.c, only invoke the ->free() callbacks for resource types whose
-  ->alloc() callback  was called and returned success. (Ridong)
+ arch/x86/kernel/cpu/sgx/encl.c  | 12 ++++++------
+ arch/x86/kernel/cpu/sgx/encl.h  |  4 ++--
+ arch/x86/kernel/cpu/sgx/ioctl.c | 10 +++++-----
+ arch/x86/kernel/cpu/sgx/main.c  | 14 +++++++-------
+ arch/x86/kernel/cpu/sgx/sgx.h   | 13 +++++++++++--
+ arch/x86/kernel/cpu/sgx/virt.c  |  2 +-
+ 6 files changed, 32 insertions(+), 23 deletions(-)
 
-V14:
-- modified sgx_cgroup_reclaim_pages() to return the next node. Caller can use it as the new
-  starting node for next round of reclamation attempt if needed. This is to fix a corner case
-where a super busy top level cgroup may block reclamation in lower level cgroups. (Kai)
-- Move renaming of sgx_should_reclaim_global() to the patch 'x86/sgx: Add basic EPC reclamation
-flow for cgroup'. (Kai)
-
-v13:
-- Only allocate workqueue for SGX cgroup when misc is enabled and BUG_ON() when allocation fails
-- Add more tags
-- Commit logs and style improvements (Kai)
-- Test script improvements (Jarkko)
+diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
+index 279148e72459..f474179b6f77 100644
+--- a/arch/x86/kernel/cpu/sgx/encl.c
++++ b/arch/x86/kernel/cpu/sgx/encl.c
+@@ -217,7 +217,7 @@ static struct sgx_epc_page *sgx_encl_eldu(struct sgx_encl_page *encl_page,
+ 	struct sgx_epc_page *epc_page;
+ 	int ret;
  
-V12:
-- Integrate test scripts to kselftests "run_tests" target. (Jarkko)
-- Remove CGROUP_SGX_EPC kconfig, conditionally compile with CGROUP_MISC enabled. (Jarkko)
-- Explain why taking 'struct misc_cg *cg' as parameter, but not 'struct misc_res *res' in the
-  changelog for patch #2. (Kai)
-- Remove "unlikely" in patch #2 (Kai)
-  
-V11:
-- Update copyright years and use c style (Kai)
-- Improve and simplify test scripts: remove cgroup-tools and bash dependency, drop cgroup v1.
-  (Jarkko, Michal)
-- Add more stub/wrapper functions to minimize #ifdefs in c file. (Kai)
-- Revise commit message for patch #8 to clarify design rational (Kai)
-- Print error instead of WARN for init failure. (Kai)
-- Add check for need to queue an async reclamation before returning from
-  sgx_cgroup_try_charge(), do so if needed.
-
-V10:
-- Use enum instead of boolean for the 'reclaim' parameters in
-  sgx_alloc_epc_page(). (Dave, Jarkko)
-- Pass mm struct instead of a boolean 'indirect'. (Dave, Jarkko)
-- Add comments/macros to clarify the cgroup async reclaimer design. (Kai)
-- Simplify sgx_reclaim_pages() signature, removing a pointer passed in.
-  (Kai)
-- Clarify design of sgx_cgroup_reclaim_pages(). (Kai)
-	- Does not return a value for callers to check.
-	- Its usage pattern is similar to that of sgx_reclaim_pages() now
-- Add cond_resched() in the loop in the cgroup reclaimer to improve
-  liveliness.
-- Add logic for cgroup level reclamation in sgx_reclaim_direct()
-- Restructure V9 patches 7-10 to make them flow better. (Kai)
-- Disable cgroup if workqueue allocation failed during init. (Kai)
-- Shorten names for EPC cgroup functions, structures and variables.
-  (Jarkko)
-- Separate out a helper for for addressing single iteration of the loop in
-  sgx_cgroup_try_charge(). (Jarkko)
-- More cleanup/clarifying/comments/style fixes. (Kai, Jarkko)  
+-	epc_page = sgx_alloc_epc_page(encl_page, false);
++	epc_page = sgx_alloc_epc_page(encl_page, SGX_NO_RECLAIM);
+ 	if (IS_ERR(epc_page))
+ 		return epc_page;
  
-V9:
-- Add comments for static variables outside functions. (Jarkko)
-- Remove unnecessary ifs. (Tim)
-- Add more Reviewed-By: tags from Jarkko and TJ.
+@@ -359,14 +359,14 @@ static vm_fault_t sgx_encl_eaug_page(struct vm_area_struct *vma,
+ 		goto err_out_unlock;
+ 	}
  
-V8:
-- Style fixes. (Jarkko)
-- Abstract _misc_res_free/alloc() (Jarkko)
-- Remove unneeded NULL checks. (Jarkko)
+-	epc_page = sgx_alloc_epc_page(encl_page, false);
++	epc_page = sgx_alloc_epc_page(encl_page, SGX_NO_RECLAIM);
+ 	if (IS_ERR(epc_page)) {
+ 		if (PTR_ERR(epc_page) == -EBUSY)
+ 			vmret =  VM_FAULT_NOPAGE;
+ 		goto err_out_unlock;
+ 	}
  
-V7:
-- Split the large patch for the final EPC implementation, #10 in V6, into
-  smaller ones. (Dave, Kai)
-- Scan and reclaim one cgroup at a time, don't split sgx_reclaim_pages()
-  into two functions (Kai)
-- Removed patches to introduce the EPC page states, list for storing
-  candidate pages for reclamation. (not needed due to above changes)
-- Make ops one per resource type and store them in array (Michal)
-- Rename the ops struct to misc_res_ops, and enforce the constraints of
-  required callback functions (Jarkko)
-- Initialize epc cgroup in sgx driver init function. (Kai)
-- Moved addition of priv field to patch 4 where it was used first. (Jarkko)
-- Split sgx_get_current_epc_cg() out of sgx_epc_cg_try_charge() (Kai)
-- Use a static for root cgroup (Kai)
+-	va_page = sgx_encl_grow(encl, false);
++	va_page = sgx_encl_grow(encl, SGX_NO_RECLAIM);
+ 	if (IS_ERR(va_page)) {
+ 		if (PTR_ERR(va_page) == -EBUSY)
+ 			vmret = VM_FAULT_NOPAGE;
+@@ -1232,8 +1232,8 @@ void sgx_zap_enclave_ptes(struct sgx_encl *encl, unsigned long addr)
  
-[1]https://lore.kernel.org/all/DM6PR21MB11772A6ED915825854B419D6C4989@DM6PR21MB1177.namprd21.prod.outlook.com/
-[2]https://lore.kernel.org/all/ZD7Iutppjj+muH4p@himmelriiki/
-[3]https://lore.kernel.org/lkml/7a1a5125-9da2-47b6-ba0f-cf24d84df16b@intel.com/
-[4]https://lore.kernel.org/lkml/yz44wukoic3syy6s4fcrngagurkjhe2hzka6kvxbajdtro3fwu@zd2ilht7wcw3/
-[5]Documentation/arch/x86/sgx.rst, Section"Enclave Page Types"
-[6]Documentation/arch/x86/sgx.rst, Section "Virtual EPC"
-[7]v2: https://lore.kernel.org/all/20221202183655.3767674-1-kristen@linux.intel.com/
-[8]v3: https://lore.kernel.org/linux-sgx/20230712230202.47929-1-haitao.huang@linux.intel.com/
-[9]v4: https://lore.kernel.org/all/20230913040635.28815-1-haitao.huang@linux.intel.com/
-[10]v5: https://lore.kernel.org/all/20230923030657.16148-1-haitao.huang@linux.intel.com/
-[11]v6: https://lore.kernel.org/linux-sgx/20231030182013.40086-1-haitao.huang@linux.intel.com/
-[12]v7: https://lore.kernel.org/linux-sgx/20240122172048.11953-1-haitao.huang@linux.intel.com/T/#t
-[13]v8: https://lore.kernel.org/linux-sgx/20240130020938.10025-1-haitao.huang@linux.intel.com/T/#t
-[14]v9: https://lore.kernel.org/lkml/20240205210638.157741-1-haitao.huang@linux.intel.com/T/
-[15]v10: https://lore.kernel.org/linux-sgx/20240328002229.30264-1-haitao.huang@linux.intel.com/T/#t
-[16]v11: https://lore.kernel.org/lkml/20240410182558.41467-1-haitao.huang@linux.intel.com/
-[17]v12: https://lore.kernel.org/lkml/20240416032011.58578-1-haitao.huang@linux.intel.com/
-[18]v13: https://lore.kernel.org/lkml/20240430195108.5676-1-haitao.huang@linux.intel.com/ 
-[19]v14: https://lore.kernel.org/linux-sgx/20240531222630.4634-1-haitao.huang@linux.intel.com/T/#t
-
-Haitao Huang (3):
-  x86/sgx: Replace boolean parameters with enums
-  x86/sgx: Charge mem_cgroup for per-cgroup reclamation
-  selftests/sgx: Add scripts for EPC cgroup testing
-
-Kristen Carlson Accardi (9):
-  cgroup/misc: Add per resource callbacks for CSS events
-  cgroup/misc: Export APIs for SGX driver
-  cgroup/misc: Add SGX EPC resource type
-  x86/sgx: Implement basic EPC misc cgroup functionality
-  x86/sgx: Abstract tracking reclaimable pages in LRU
-  x86/sgx: Add basic EPC reclamation flow for cgroup
-  x86/sgx: Abstract check for global reclaimable pages
-  x86/sgx: Implement async reclamation for cgroup
-  x86/sgx: Turn on per-cgroup EPC reclamation
-
-Sean Christopherson (2):
-  x86/sgx: Add sgx_epc_lru_list to encapsulate LRU list
-  Docs/x86/sgx: Add description for cgroup support
-
- Documentation/arch/x86/sgx.rst                |  83 +++++
- arch/x86/kernel/cpu/sgx/Makefile              |   1 +
- arch/x86/kernel/cpu/sgx/encl.c                |  41 +-
- arch/x86/kernel/cpu/sgx/encl.h                |   7 +-
- arch/x86/kernel/cpu/sgx/epc_cgroup.c          | 352 ++++++++++++++++++
- arch/x86/kernel/cpu/sgx/epc_cgroup.h          | 106 ++++++
- arch/x86/kernel/cpu/sgx/ioctl.c               |  10 +-
- arch/x86/kernel/cpu/sgx/main.c                | 243 +++++++++---
- arch/x86/kernel/cpu/sgx/sgx.h                 |  51 ++-
- arch/x86/kernel/cpu/sgx/virt.c                |   2 +-
- include/linux/misc_cgroup.h                   |  41 ++
- kernel/cgroup/misc.c                          | 107 +++++-
- tools/testing/selftests/sgx/Makefile          |   3 +-
- tools/testing/selftests/sgx/README            | 109 ++++++
- tools/testing/selftests/sgx/ash_cgexec.sh     |  16 +
- tools/testing/selftests/sgx/config            |   4 +
- .../selftests/sgx/run_epc_cg_selftests.sh     | 295 +++++++++++++++
- tools/testing/selftests/sgx/settings          |   2 +
- .../selftests/sgx/watch_misc_for_tests.sh     |  11 +
- 19 files changed, 1373 insertions(+), 111 deletions(-)
- create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.c
- create mode 100644 arch/x86/kernel/cpu/sgx/epc_cgroup.h
- create mode 100644 tools/testing/selftests/sgx/README
- create mode 100755 tools/testing/selftests/sgx/ash_cgexec.sh
- create mode 100644 tools/testing/selftests/sgx/config
- create mode 100755 tools/testing/selftests/sgx/run_epc_cg_selftests.sh
- create mode 100644 tools/testing/selftests/sgx/settings
- create mode 100755 tools/testing/selftests/sgx/watch_misc_for_tests.sh
-
-
-base-commit: 1613e604df0cd359cf2a7fbd9be7a0bcfacfabd0
+ /**
+  * sgx_alloc_va_page() - Allocate a Version Array (VA) page
+- * @reclaim: Reclaim EPC pages directly if none available. Enclave
+- *           mutex should not be held if this is set.
++ * @reclaim: Whether reclaim EPC pages directly if none available. Enclave
++ *           mutex should not be held for SGX_DO_RECLAIM.
+  *
+  * Allocate a free EPC page and convert it to a Version Array (VA) page.
+  *
+@@ -1241,7 +1241,7 @@ void sgx_zap_enclave_ptes(struct sgx_encl *encl, unsigned long addr)
+  *   a VA page,
+  *   -errno otherwise
+  */
+-struct sgx_epc_page *sgx_alloc_va_page(bool reclaim)
++struct sgx_epc_page *sgx_alloc_va_page(enum sgx_reclaim reclaim)
+ {
+ 	struct sgx_epc_page *epc_page;
+ 	int ret;
+diff --git a/arch/x86/kernel/cpu/sgx/encl.h b/arch/x86/kernel/cpu/sgx/encl.h
+index f94ff14c9486..fe15ade02ca1 100644
+--- a/arch/x86/kernel/cpu/sgx/encl.h
++++ b/arch/x86/kernel/cpu/sgx/encl.h
+@@ -116,14 +116,14 @@ struct sgx_encl_page *sgx_encl_page_alloc(struct sgx_encl *encl,
+ 					  unsigned long offset,
+ 					  u64 secinfo_flags);
+ void sgx_zap_enclave_ptes(struct sgx_encl *encl, unsigned long addr);
+-struct sgx_epc_page *sgx_alloc_va_page(bool reclaim);
++struct sgx_epc_page *sgx_alloc_va_page(enum sgx_reclaim reclaim);
+ unsigned int sgx_alloc_va_slot(struct sgx_va_page *va_page);
+ void sgx_free_va_slot(struct sgx_va_page *va_page, unsigned int offset);
+ bool sgx_va_page_full(struct sgx_va_page *va_page);
+ void sgx_encl_free_epc_page(struct sgx_epc_page *page);
+ struct sgx_encl_page *sgx_encl_load_page(struct sgx_encl *encl,
+ 					 unsigned long addr);
+-struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl, bool reclaim);
++struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl, enum sgx_reclaim reclaim);
+ void sgx_encl_shrink(struct sgx_encl *encl, struct sgx_va_page *va_page);
+ 
+ #endif /* _X86_ENCL_H */
+diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
+index b65ab214bdf5..793a0ba2cb16 100644
+--- a/arch/x86/kernel/cpu/sgx/ioctl.c
++++ b/arch/x86/kernel/cpu/sgx/ioctl.c
+@@ -17,7 +17,7 @@
+ #include "encl.h"
+ #include "encls.h"
+ 
+-struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl, bool reclaim)
++struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl, enum sgx_reclaim reclaim)
+ {
+ 	struct sgx_va_page *va_page = NULL;
+ 	void *err;
+@@ -64,7 +64,7 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
+ 	struct file *backing;
+ 	long ret;
+ 
+-	va_page = sgx_encl_grow(encl, true);
++	va_page = sgx_encl_grow(encl, SGX_DO_RECLAIM);
+ 	if (IS_ERR(va_page))
+ 		return PTR_ERR(va_page);
+ 	else if (va_page)
+@@ -83,7 +83,7 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
+ 
+ 	encl->backing = backing;
+ 
+-	secs_epc = sgx_alloc_epc_page(&encl->secs, true);
++	secs_epc = sgx_alloc_epc_page(&encl->secs, SGX_DO_RECLAIM);
+ 	if (IS_ERR(secs_epc)) {
+ 		ret = PTR_ERR(secs_epc);
+ 		goto err_out_backing;
+@@ -269,13 +269,13 @@ static int sgx_encl_add_page(struct sgx_encl *encl, unsigned long src,
+ 	if (IS_ERR(encl_page))
+ 		return PTR_ERR(encl_page);
+ 
+-	epc_page = sgx_alloc_epc_page(encl_page, true);
++	epc_page = sgx_alloc_epc_page(encl_page, SGX_DO_RECLAIM);
+ 	if (IS_ERR(epc_page)) {
+ 		kfree(encl_page);
+ 		return PTR_ERR(epc_page);
+ 	}
+ 
+-	va_page = sgx_encl_grow(encl, true);
++	va_page = sgx_encl_grow(encl, SGX_DO_RECLAIM);
+ 	if (IS_ERR(va_page)) {
+ 		ret = PTR_ERR(va_page);
+ 		goto err_out_free;
+diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
+index 27892e57c4ef..e64073fb4256 100644
+--- a/arch/x86/kernel/cpu/sgx/main.c
++++ b/arch/x86/kernel/cpu/sgx/main.c
+@@ -464,14 +464,14 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
+ /**
+  * __sgx_alloc_epc_page() - Allocate an EPC page
+  *
+- * Iterate through NUMA nodes and reserve ia free EPC page to the caller. Start
++ * Iterate through NUMA nodes and reserve a free EPC page to the caller. Start
+  * from the NUMA node, where the caller is executing.
+  *
+  * Return:
+  * - an EPC page:	A borrowed EPC pages were available.
+  * - NULL:		Out of EPC pages.
+  */
+-struct sgx_epc_page *__sgx_alloc_epc_page(void)
++static struct sgx_epc_page *__sgx_alloc_epc_page(void)
+ {
+ 	struct sgx_epc_page *page;
+ 	int nid_of_current = numa_node_id();
+@@ -543,12 +543,12 @@ int sgx_unmark_page_reclaimable(struct sgx_epc_page *page)
+ /**
+  * sgx_alloc_epc_page() - Allocate an EPC page
+  * @owner:	the owner of the EPC page
+- * @reclaim:	reclaim pages if necessary
++ * @reclaim:	whether reclaim pages if necessary
+  *
+  * Iterate through EPC sections and borrow a free EPC page to the caller. When a
+  * page is no longer needed it must be released with sgx_free_epc_page(). If
+- * @reclaim is set to true, directly reclaim pages when we are out of pages. No
+- * mm's can be locked when @reclaim is set to true.
++ * @reclaim is set to SGX_DO_RECLAIM, directly reclaim pages when we are out of
++ * pages. No mm's can be locked for SGX_DO_RECLAIM.
+  *
+  * Finally, wake up ksgxd when the number of pages goes below the watermark
+  * before returning back to the caller.
+@@ -557,7 +557,7 @@ int sgx_unmark_page_reclaimable(struct sgx_epc_page *page)
+  *   an EPC page,
+  *   -errno on error
+  */
+-struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
++struct sgx_epc_page *sgx_alloc_epc_page(void *owner, enum sgx_reclaim reclaim)
+ {
+ 	struct sgx_epc_page *page;
+ 
+@@ -571,7 +571,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
+ 		if (list_empty(&sgx_active_page_list))
+ 			return ERR_PTR(-ENOMEM);
+ 
+-		if (!reclaim) {
++		if (reclaim == SGX_NO_RECLAIM) {
+ 			page = ERR_PTR(-EBUSY);
+ 			break;
+ 		}
+diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
+index d2dad21259a8..ca34cd4f58ac 100644
+--- a/arch/x86/kernel/cpu/sgx/sgx.h
++++ b/arch/x86/kernel/cpu/sgx/sgx.h
+@@ -29,6 +29,16 @@
+ /* Pages on free list */
+ #define SGX_EPC_PAGE_IS_FREE		BIT(1)
+ 
++/**
++ * enum sgx_reclaim - Whether EPC reclamation is allowed within a function.
++ * %SGX_NO_RECLAIM:		Do not reclaim EPC pages.
++ * %SGX_DO_RECLAIM:		Reclaim EPC pages as needed.
++ */
++enum sgx_reclaim {
++	SGX_NO_RECLAIM,
++	SGX_DO_RECLAIM
++};
++
+ struct sgx_epc_page {
+ 	unsigned int section;
+ 	u16 flags;
+@@ -83,13 +93,12 @@ static inline void *sgx_get_epc_virt_addr(struct sgx_epc_page *page)
+ 	return section->virt_addr + index * PAGE_SIZE;
+ }
+ 
+-struct sgx_epc_page *__sgx_alloc_epc_page(void);
+ void sgx_free_epc_page(struct sgx_epc_page *page);
+ 
+ void sgx_reclaim_direct(void);
+ void sgx_mark_page_reclaimable(struct sgx_epc_page *page);
+ int sgx_unmark_page_reclaimable(struct sgx_epc_page *page);
+-struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim);
++struct sgx_epc_page *sgx_alloc_epc_page(void *owner, enum sgx_reclaim reclaim);
+ 
+ void sgx_ipi_cb(void *info);
+ 
+diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
+index 7aaa3652e31d..e7fdc3a9abae 100644
+--- a/arch/x86/kernel/cpu/sgx/virt.c
++++ b/arch/x86/kernel/cpu/sgx/virt.c
+@@ -46,7 +46,7 @@ static int __sgx_vepc_fault(struct sgx_vepc *vepc,
+ 	if (epc_page)
+ 		return 0;
+ 
+-	epc_page = sgx_alloc_epc_page(vepc, false);
++	epc_page = sgx_alloc_epc_page(vepc, SGX_NO_RECLAIM);
+ 	if (IS_ERR(epc_page))
+ 		return PTR_ERR(epc_page);
+ 
 -- 
 2.43.0
 
