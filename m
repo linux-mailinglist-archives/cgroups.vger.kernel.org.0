@@ -1,34 +1,34 @@
-Return-Path: <cgroups+bounces-3203-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3204-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F5BE90AE55
-	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 14:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 365D690AE57
+	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 14:56:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D446B20D8E
-	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 12:56:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96FD8B24FB0
+	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 12:56:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA5D61991D0;
-	Mon, 17 Jun 2024 12:53:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EEB6197A61;
+	Mon, 17 Jun 2024 12:53:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DGGLkH+w"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AG9OePGa"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8359E198E98;
-	Mon, 17 Jun 2024 12:53:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A8841990BB;
+	Mon, 17 Jun 2024 12:53:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718628828; cv=none; b=qb9Yrhj2KVxFDWSAQcWBCLVSy+AysozbQuCujUqdj1nTSvm2Ae/QV1u4iaaeJhAM203efyYgh56zzRYqldMye2DehhwP5oRdQK7nrUxwK5+irwJ0qUob/Tp1pTBAsCikTONY+X0tbTRlauhA0Lioxgw1tmFzmAAyFJC704FtT58=
+	t=1718628829; cv=none; b=LGAsxAiTkVm7AOztIzZfFny0dxzhQWI1yF5YICpkIQQ1Mm3zRDLlAoXvA975BgzfS2LAF+g8G4/IC8TkgT/QtiNvyIalgsygKpgt3zOVKQkMIfaQj2F8Ixc6FLkZNbj2L0LOB/aGDRr7CLlxAUNa/jEAPOU6PkzyhvBwjnq0kQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718628828; c=relaxed/simple;
-	bh=KtUbaJGCe66CR7VGRok9JORxLkx8Q2xuO3UyluJAlDY=;
+	s=arc-20240116; t=1718628829; c=relaxed/simple;
+	bh=eL+sH+CT4pmUEI/qpckfiAXaMLZfUhrtHmESnQ8hdX8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Wp/tu+SHbPHlR7pEs+xT/z7ENDyFMTljHilsNOo5ICxmANkgNybsXQrXpNjw7Beg4PMre3d9HRRTIztYrq0I4ZiWdDjhanJccfdT520w9Goqu21TNJuwAS2s/GYRP0NbsgglZpN4ZwFrenVjU6yQ54OBWgpQiq97Wl47SApuxb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DGGLkH+w; arc=none smtp.client-ip=198.175.65.17
+	 MIME-Version; b=Kx0OEeCuiWSGGOMElxvIRxik/WqWkK1J/kVxulw0H+mbMEDiLgNwmTsPpKlOY3xHGoHCgFUlJvcuSQd64K8AI39YbzwkQ1VF8m0LT/OUgB+k1CsB3IUyDS7snvJyyJc6UOi5SgkVxaziy0yuGJOkO+lU3Pmx1wLRkbmiMweDNAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AG9OePGa; arc=none smtp.client-ip=198.175.65.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
@@ -36,26 +36,26 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   t=1718628827; x=1750164827;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=KtUbaJGCe66CR7VGRok9JORxLkx8Q2xuO3UyluJAlDY=;
-  b=DGGLkH+wnmFKgLBw9PUZMU6n9cbg/51bTQdhtVSpLDH/dHlsyW+P/Wlp
-   yEp2irGymR8MeQalUOUql6uGPHDD2i8cFAcphgAa2N+bl4sGKupTaxI1M
-   pBWznOJOKhRwGtQM6YQ8ok8gBTIy9xzmfSGph/la5YgyZu341FYNn3CBK
-   h1NhF5BYYTQWOfoIUz7im558/LeVatZKD9YW92pPJO0xhT29lhUecaYKs
-   BPHu9P/NsWveqYoFo0g5/55/mqmJ6Zx3ynIZhWLq/Z0iy4HdunwxH13Ab
-   cScGbABaUpt2xZlGrG/HjM+KsxhP2w/S2wUUM6ZVmP/SWWw7zQJSB5tLP
-   g==;
-X-CSE-ConnectionGUID: DJGqV/fIQMiPQIAk6OL5zQ==
-X-CSE-MsgGUID: WwfDblMGTROmADf6DbdJdw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11105"; a="15570940"
+  bh=eL+sH+CT4pmUEI/qpckfiAXaMLZfUhrtHmESnQ8hdX8=;
+  b=AG9OePGaAOoWvBBWM9KAnzxgrV0nxIeLY89UeAh/9M56+WrOa7QRJdsc
+   o4uOHXrqdj6+4QgyDOKzcRjobkFZd8JBZ1+PxRDGIzw8VUWKByR5DDU5D
+   QGBb7hjTryZqESuFEa32mPUTUhl4qBeMsTtWtfD3y2H7JyoPDWqejIInf
+   pm2XFZb/L/BgwK5nkONSTYp9BcW+D8xPVUlYdd5KNhTR9bmWlpJW7WLPC
+   mBXP3/T7U1/RMVvPGnuUDAVVqvDgWa0IopZ5/cwsKxMLnt1sb4/D++DqO
+   trqrmhm6weIVOpddjGmBDqNzbKPVQbAlZPHWg4/+zGN5Ksk6S+1OVb3k3
+   A==;
+X-CSE-ConnectionGUID: rX2nXzCnQrWH0vt9PBNX2Q==
+X-CSE-MsgGUID: kIRly26DR2ONsMkr/Y5Z2Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11105"; a="15570951"
 X-IronPort-AV: E=Sophos;i="6.08,244,1712646000"; 
-   d="scan'208";a="15570940"
+   d="scan'208";a="15570951"
 Received: from fmviesa001.fm.intel.com ([10.60.135.141])
   by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2024 05:53:44 -0700
-X-CSE-ConnectionGUID: JgWGF71ZTHKqEllzPW8X3w==
-X-CSE-MsgGUID: WFGd0r43R+W6LEAzd90lAA==
+X-CSE-ConnectionGUID: k57wfwH0TCiMRnjAUk4NBA==
+X-CSE-MsgGUID: SQVruJD+T/mZQ4xRBoDhKQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,244,1712646000"; 
-   d="scan'208";a="72387562"
+   d="scan'208";a="72387568"
 Received: from b4969164b36c.jf.intel.com ([10.165.59.5])
   by fmviesa001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2024 05:53:43 -0700
 From: "Huang, Haitao" <haitao.huang@linux.intel.com>
@@ -83,9 +83,9 @@ Cc: zhiquan1.li@intel.com,
 	mikko.ylinen@linux.intel.com,
 	yangjie@microsoft.com,
 	chrisyan@microsoft.com
-Subject: [PATCH v15 11/14] x86/sgx: Charge mem_cgroup for per-cgroup reclamation
-Date: Mon, 17 Jun 2024 05:53:18 -0700
-Message-ID: <20240617125321.36658-12-haitao.huang@linux.intel.com>
+Subject: [PATCH v15 12/14] x86/sgx: Turn on per-cgroup EPC reclamation
+Date: Mon, 17 Jun 2024 05:53:19 -0700
+Message-ID: <20240617125321.36658-13-haitao.huang@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240617125321.36658-1-haitao.huang@linux.intel.com>
 References: <20240617125321.36658-1-haitao.huang@linux.intel.com>
@@ -97,303 +97,326 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Haitao Huang <haitao.huang@linux.intel.com>
+From: Kristen Carlson Accardi <kristen@linux.intel.com>
 
-Enclave Page Cache(EPC) memory can be swapped out to regular system
-memory, and the consumed memory should be charged to a proper
-mem_cgroup. Currently the selection of mem_cgroup to charge is done in
-sgx_encl_get_mem_cgroup(). But it considers all contexts other than the
-ksgxd thread are user processes. With the new EPC cgroup implementation,
-the swapping can also happen in EPC cgroup work-queue threads. In those
-cases, it improperly selects the root mem_cgroup to charge for the RAM
-usage.
+Previous patches have implemented all infrastructure needed for
+per-cgroup EPC page tracking and reclaiming. But all reclaimable EPC
+pages are still tracked in the global LRU as sgx_epc_page_lru() always
+returns reference to the global LRU.
 
-Remove current_is_ksgxd() and change sgx_encl_get_mem_cgroup() to take
-an additional argument to explicitly specify the mm struct to charge for
-allocations. Callers from background kthreads not associated with a
-charging mm struct would set it to NULL, while callers in user process
-contexts set it to current->mm.
+Change sgx_epc_page_lru() to return the LRU of the cgroup in which the
+given EPC page is allocated.
 
-Internally, it handles the case when the charging mm given is NULL, by
-searching for an mm struct from enclave's mm_list.
+This makes all EPC pages tracked in per-cgroup LRUs and the global
+reclaimer (ksgxd) will not be able to reclaim any pages from the global
+LRU. However, in cases of over-committing, i.e., the sum of cgroup
+limits greater than the total capacity, cgroups may never reclaim but
+the total usage can still be near the capacity. Therefore a global
+reclamation is still needed in those cases and it should be performed
+from the root cgroup.
 
+Modify sgx_reclaim_pages_global(), to reclaim from the root EPC cgroup
+when cgroup is enabled. Similar to sgx_cgroup_reclaim_pages(), return
+the next cgroup so callers can use it as the new starting node for next
+round of reclamation if needed.
+
+Also update sgx_can_reclaim_global(), to check emptiness of LRUs of all
+cgroups when EPC cgroup is enabled, otherwise only check the global LRU.
+
+Finally, change sgx_reclaim_direct(), to check and ensure there are free
+pages at cgroup level so forward progress can be made by the caller.
+
+With these changes, the global reclamation and per-cgroup reclamation
+both work properly with all pages tracked in per-cgroup LRUs.
+
+Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
 Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-Reported-by: Mikko Ylinen <mikko.ylinen@linux.intel.com>
-Reviewed-by: Kai Huang <kai.huang@intel.com>
 Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 Tested-by: Mikko Ylinen <mikko.ylinen@linux.intel.com>
 Tested-by: Jarkko Sakkinen <jarkko@kernel.org>
 ---
+V14:
+- Update global reclamation to use the new sgx_cgroup_reclaim_pages() to
+iterate cgroups at lower level if the top cgroups are too busy.
+
+V13:
+- Use IS_ENABLED(CONFIG_CGROUP_MISC) in sgx_can_reclaim_global(). (Kai)
+
+V12:
+- Remove CONFIG_CGROUP_SGX_EPC, conditional compile SGX Cgroup for
+CONFIGCONFIG_CGROUPMISC. (Jarkko)
+
+V11:
+- Reword the comments for global reclamation for allocation failure
+after passing cgroup charging. (Kai)
+- Add stub functions to remove ifdefs in c file (Kai)
+- Add more detailed comments to clarify each page belongs to one cgroup, or the
+root. (Kai)
+
 V10:
-- Pass mm struct instead of a boolean 'indirect'. (Dave, Jarkko)
+- Add comment to clarify each page belongs to one cgroup, or the root by
+default. (Kai)
+- Merge the changes that expose sgx_cgroup_* functions to this patch.
+- Add changes for sgx_reclaim_direct() that was missed previously.
 
-V9:
-- Reduce number of if statements. (Tim)
-
-V8:
-- Limit text paragraphs to 80 characters wide. (Jarkko)
+V7:
+- Split this out from the big patch, #10 in V6. (Dave, Kai)
 ---
- arch/x86/kernel/cpu/sgx/encl.c       | 29 ++++++++++++++--------------
- arch/x86/kernel/cpu/sgx/encl.h       |  3 +--
- arch/x86/kernel/cpu/sgx/epc_cgroup.c | 11 +++++++----
- arch/x86/kernel/cpu/sgx/main.c       | 29 +++++++++++++---------------
- arch/x86/kernel/cpu/sgx/sgx.h        |  2 +-
- 5 files changed, 37 insertions(+), 37 deletions(-)
+ arch/x86/kernel/cpu/sgx/epc_cgroup.c |  8 +--
+ arch/x86/kernel/cpu/sgx/epc_cgroup.h | 32 +++++++++++
+ arch/x86/kernel/cpu/sgx/main.c       | 80 +++++++++++++++++++++++++---
+ 3 files changed, 109 insertions(+), 11 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index f474179b6f77..7b77dad41daf 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -993,23 +993,23 @@ static int __sgx_encl_get_backing(struct sgx_encl *encl, unsigned long page_inde
- }
- 
- /*
-- * When called from ksgxd, returns the mem_cgroup of a struct mm stored
-- * in the enclave's mm_list. When not called from ksgxd, just returns
-- * the mem_cgroup of the current task.
-+ * Find the mem_cgroup to charge for memory allocated on behalf of an enclave.
-+ *
-+ * Used in sgx_encl_alloc_backing() for backing store allocation.
-+ *
-+ * Return the mem_cgroup of the given charge_mm. Otherwise return the mem_cgroup
-+ * of a struct mm stored in the enclave's mm_list.
-  */
--static struct mem_cgroup *sgx_encl_get_mem_cgroup(struct sgx_encl *encl)
-+static struct mem_cgroup *sgx_encl_get_mem_cgroup(struct sgx_encl *encl,
-+						  struct mm_struct *charge_mm)
- {
- 	struct mem_cgroup *memcg = NULL;
- 	struct sgx_encl_mm *encl_mm;
- 	int idx;
- 
--	/*
--	 * If called from normal task context, return the mem_cgroup
--	 * of the current task's mm. The remainder of the handling is for
--	 * ksgxd.
--	 */
--	if (!current_is_ksgxd())
--		return get_mem_cgroup_from_mm(current->mm);
-+	 /* Use the charge_mm if given. */
-+	if (charge_mm)
-+		return get_mem_cgroup_from_mm(charge_mm);
- 
- 	/*
- 	 * Search the enclave's mm_list to find an mm associated with
-@@ -1047,8 +1047,9 @@ static struct mem_cgroup *sgx_encl_get_mem_cgroup(struct sgx_encl *encl)
-  * @encl:	an enclave pointer
-  * @page_index:	enclave page index
-  * @backing:	data for accessing backing storage for the page
-+ * @charge_mm:	the mm to charge for the allocation
-  *
-- * When called from ksgxd, sets the active memcg from one of the
-+ * When charge_mm is NULL, sets the active memcg from one of the
-  * mms in the enclave's mm_list prior to any backing page allocation,
-  * in order to ensure that shmem page allocations are charged to the
-  * enclave.  Create a backing page for loading data back into an EPC page with
-@@ -1060,9 +1061,9 @@ static struct mem_cgroup *sgx_encl_get_mem_cgroup(struct sgx_encl *encl)
-  *   -errno otherwise.
-  */
- int sgx_encl_alloc_backing(struct sgx_encl *encl, unsigned long page_index,
--			   struct sgx_backing *backing)
-+			   struct sgx_backing *backing, struct mm_struct *charge_mm)
- {
--	struct mem_cgroup *encl_memcg = sgx_encl_get_mem_cgroup(encl);
-+	struct mem_cgroup *encl_memcg = sgx_encl_get_mem_cgroup(encl, charge_mm);
- 	struct mem_cgroup *memcg = set_active_memcg(encl_memcg);
- 	int ret;
- 
-diff --git a/arch/x86/kernel/cpu/sgx/encl.h b/arch/x86/kernel/cpu/sgx/encl.h
-index fe15ade02ca1..5ce9d108290f 100644
---- a/arch/x86/kernel/cpu/sgx/encl.h
-+++ b/arch/x86/kernel/cpu/sgx/encl.h
-@@ -103,12 +103,11 @@ static inline int sgx_encl_find(struct mm_struct *mm, unsigned long addr,
- int sgx_encl_may_map(struct sgx_encl *encl, unsigned long start,
- 		     unsigned long end, unsigned long vm_flags);
- 
--bool current_is_ksgxd(void);
- void sgx_encl_release(struct kref *ref);
- int sgx_encl_mm_add(struct sgx_encl *encl, struct mm_struct *mm);
- const cpumask_t *sgx_encl_cpumask(struct sgx_encl *encl);
- int sgx_encl_alloc_backing(struct sgx_encl *encl, unsigned long page_index,
--			   struct sgx_backing *backing);
-+			   struct sgx_backing *backing, struct mm_struct *charge_mm);
- void sgx_encl_put_backing(struct sgx_backing *backing);
- int sgx_encl_test_and_clear_young(struct mm_struct *mm,
- 				  struct sgx_encl_page *page);
 diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.c b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-index fdadfb7c05fe..ec7f267d3e7a 100644
+index ec7f267d3e7a..04d156848cf1 100644
 --- a/arch/x86/kernel/cpu/sgx/epc_cgroup.c
 +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-@@ -107,6 +107,7 @@ static bool sgx_cgroup_lru_empty(struct misc_cg *root)
-  * sgx_cgroup_reclaim_pages() - reclaim EPC from a cgroup tree
-  * @root:	The root of cgroup tree to reclaim from.
-  * @start:	The descendant cgroup from which to start the tree walking.
-+ * @charge_mm:	The mm to charge for backing store allocation.
+@@ -67,7 +67,7 @@ static inline u64 sgx_cgroup_max_pages_to_root(struct sgx_cgroup *sgx_cg)
   *
-  * This function performs a pre-order walk in the cgroup tree under the given
-  * root, starting from the node %start, or from the root if %start is NULL. The
-@@ -126,7 +127,8 @@ static bool sgx_cgroup_lru_empty(struct misc_cg *root)
+  * Return: %true if all cgroups under the specified root have empty LRU lists.
+  */
+-static bool sgx_cgroup_lru_empty(struct misc_cg *root)
++bool sgx_cgroup_lru_empty(struct misc_cg *root)
+ {
+ 	struct cgroup_subsys_state *css_root;
+ 	struct cgroup_subsys_state *pos;
+@@ -127,8 +127,8 @@ static bool sgx_cgroup_lru_empty(struct misc_cg *root)
   * release the reference if the returned is not used as %start for a subsequent
   * call.
   */
--static struct misc_cg *sgx_cgroup_reclaim_pages(struct misc_cg *root, struct misc_cg *start)
-+static struct misc_cg *sgx_cgroup_reclaim_pages(struct misc_cg *root, struct misc_cg *start,
-+						struct mm_struct *charge_mm)
+-static struct misc_cg *sgx_cgroup_reclaim_pages(struct misc_cg *root, struct misc_cg *start,
+-						struct mm_struct *charge_mm)
++struct misc_cg *sgx_cgroup_reclaim_pages(struct misc_cg *root, struct misc_cg *start,
++					 struct mm_struct *charge_mm)
  {
  	struct cgroup_subsys_state *css_root, *pos;
  	struct cgroup_subsys_state *next = NULL;
-@@ -142,7 +144,7 @@ static struct misc_cg *sgx_cgroup_reclaim_pages(struct misc_cg *root, struct mis
+@@ -181,7 +181,7 @@ static struct misc_cg *sgx_cgroup_reclaim_pages(struct misc_cg *root, struct mis
+  * threshold (%SGX_CG_MIN_FREE_PAGE) and there are reclaimable pages within the
+  * cgroup.
+  */
+-static bool sgx_cgroup_should_reclaim(struct sgx_cgroup *sgx_cg)
++bool sgx_cgroup_should_reclaim(struct sgx_cgroup *sgx_cg)
+ {
+ 	u64 cur, max;
  
- 	while (cnt < SGX_NR_TO_SCAN) {
- 		sgx_cg = sgx_cgroup_from_misc_cg(css_misc(pos));
--		cnt += sgx_reclaim_pages(&sgx_cg->lru);
-+		cnt += sgx_reclaim_pages(&sgx_cg->lru, charge_mm);
+diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.h b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
+index 2f4ed046b1b5..4601cd507eaf 100644
+--- a/arch/x86/kernel/cpu/sgx/epc_cgroup.h
++++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
+@@ -13,6 +13,11 @@
+ #define MISC_CG_RES_SGX_EPC MISC_CG_RES_TYPES
+ struct sgx_cgroup;
  
- 		rcu_read_lock();
++static inline struct misc_cg *misc_from_sgx(struct sgx_cgroup *sgx_cg)
++{
++	return NULL;
++}
++
+ static inline struct sgx_cgroup *sgx_get_current_cg(void)
+ {
+ 	return NULL;
+@@ -27,8 +32,25 @@ static inline int sgx_cgroup_try_charge(struct sgx_cgroup *sgx_cg, enum sgx_recl
  
-@@ -218,7 +220,8 @@ static void sgx_cgroup_reclaim_work_func(struct work_struct *work)
- 	 * blocked until a worker makes its way through the global work queue.
- 	 */
- 	while (sgx_cgroup_should_reclaim(sgx_cg)) {
--		cg_next = sgx_cgroup_reclaim_pages(sgx_cg->cg, cg_next);
-+		 /* Indirect reclaim, no mm to charge, so NULL: */
-+		cg_next = sgx_cgroup_reclaim_pages(sgx_cg->cg, cg_next, NULL);
- 		cond_resched();
- 	}
+ static inline void sgx_cgroup_uncharge(struct sgx_cgroup *sgx_cg) { }
  
-@@ -266,7 +269,7 @@ int sgx_cgroup_try_charge(struct sgx_cgroup *sgx_cg, enum sgx_reclaim reclaim)
- 			goto out;
- 		}
++static inline bool sgx_cgroup_lru_empty(struct misc_cg *root)
++{
++	return true;
++}
++
++static inline bool sgx_cgroup_should_reclaim(struct sgx_cgroup *sgx_cg)
++{
++	return false;
++}
++
+ static inline void sgx_cgroup_init(void) { }
  
--		cg_next = sgx_cgroup_reclaim_pages(sgx_cg->cg, cg_next);
-+		cg_next = sgx_cgroup_reclaim_pages(sgx_cg->cg, cg_next, current->mm);
- 		cond_resched();
- 	}
++static inline struct misc_cg *sgx_cgroup_reclaim_pages(struct misc_cg *root,
++						       struct misc_cg *next_cg,
++						       struct mm_struct *charge_mm)
++{
++	return NULL;
++}
++
+ #else /* CONFIG_CGROUP_MISC */
  
+ struct sgx_cgroup {
+@@ -37,6 +59,11 @@ struct sgx_cgroup {
+ 	struct work_struct reclaim_work;
+ };
+ 
++static inline struct misc_cg *misc_from_sgx(struct sgx_cgroup *sgx_cg)
++{
++	return sgx_cg->cg;
++}
++
+ static inline struct sgx_cgroup *sgx_cgroup_from_misc_cg(struct misc_cg *cg)
+ {
+ 	return (struct sgx_cgroup *)(cg->res[MISC_CG_RES_SGX_EPC].priv);
+@@ -67,6 +94,11 @@ static inline void sgx_put_cg(struct sgx_cgroup *sgx_cg)
+ 
+ int sgx_cgroup_try_charge(struct sgx_cgroup *sgx_cg, enum sgx_reclaim reclaim);
+ void sgx_cgroup_uncharge(struct sgx_cgroup *sgx_cg);
++bool sgx_cgroup_lru_empty(struct misc_cg *root);
++bool sgx_cgroup_should_reclaim(struct sgx_cgroup *sgx_cg);
++struct misc_cg *sgx_cgroup_reclaim_pages(struct misc_cg *root,
++					 struct misc_cg *next_cg,
++					 struct mm_struct *charge_mm);
+ int __init sgx_cgroup_init(void);
+ 
+ #endif /* CONFIG_CGROUP_MISC */
 diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 2c0a36be7cdd..e91fa5f5348d 100644
+index e91fa5f5348d..894adf6922f8 100644
 --- a/arch/x86/kernel/cpu/sgx/main.c
 +++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -261,8 +261,8 @@ static void sgx_encl_ewb(struct sgx_epc_page *epc_page,
- 	}
- }
- 
--static void sgx_reclaimer_write(struct sgx_epc_page *epc_page,
--				struct sgx_backing *backing)
-+static void sgx_reclaimer_write(struct sgx_epc_page *epc_page, struct sgx_backing *backing,
-+				struct mm_struct *charge_mm)
- {
- 	struct sgx_encl_page *encl_page = epc_page->owner;
- 	struct sgx_encl *encl = encl_page->encl;
-@@ -278,7 +278,7 @@ static void sgx_reclaimer_write(struct sgx_epc_page *epc_page,
- 
- 	if (!encl->secs_child_cnt && test_bit(SGX_ENCL_INITIALIZED, &encl->flags)) {
- 		ret = sgx_encl_alloc_backing(encl, PFN_DOWN(encl->size),
--					   &secs_backing);
-+					   &secs_backing, charge_mm);
- 		if (ret)
- 			goto out;
- 
-@@ -297,6 +297,7 @@ static void sgx_reclaimer_write(struct sgx_epc_page *epc_page,
- /**
-  * sgx_reclaim_pages() - Attempt to reclaim a fixed number of pages from an LRU
-  * @lru:	The LRU from which pages are reclaimed.
-+ * @charge_mm:	The mm to charge for backing store allocation.
-  *
-  * Take a fixed number of pages from the head of a given LRU and reclaim them to
-  * the enclave's private shmem files. Skip the pages, which have been accessed
-@@ -312,7 +313,7 @@ static void sgx_reclaimer_write(struct sgx_epc_page *epc_page,
-  *
-  * Return:	Number of pages attempted for reclamation.
+@@ -32,9 +32,30 @@ static DEFINE_XARRAY(sgx_epc_address_space);
   */
--unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru)
-+unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru, struct mm_struct *charge_mm)
+ static struct sgx_epc_lru_list sgx_global_lru;
+ 
++/*
++ * Get the per-cgroup or global LRU list that tracks the given reclaimable page.
++ */
+ static inline struct sgx_epc_lru_list *sgx_epc_page_lru(struct sgx_epc_page *epc_page)
  {
- 	struct sgx_epc_page *chunk[SGX_NR_TO_SCAN];
- 	struct sgx_backing backing[SGX_NR_TO_SCAN];
-@@ -352,7 +353,7 @@ unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru)
- 		page_index = PFN_DOWN(encl_page->desc - encl_page->encl->base);
- 
- 		mutex_lock(&encl_page->encl->lock);
--		ret = sgx_encl_alloc_backing(encl_page->encl, page_index, &backing[i]);
-+		ret = sgx_encl_alloc_backing(encl_page->encl, page_index, &backing[i], charge_mm);
- 		if (ret) {
- 			mutex_unlock(&encl_page->encl->lock);
- 			goto skip;
-@@ -384,7 +385,7 @@ unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru)
- 			continue;
- 
- 		encl_page = epc_page->owner;
--		sgx_reclaimer_write(epc_page, &backing[i]);
-+		sgx_reclaimer_write(epc_page, &backing[i], charge_mm);
- 
- 		kref_put(&encl_page->encl->refcount, sgx_encl_release);
- 		epc_page->flags &= ~SGX_EPC_PAGE_RECLAIMER_TRACKED;
-@@ -401,9 +402,9 @@ static bool sgx_should_reclaim_global(unsigned long watermark)
- 		sgx_can_reclaim_global();
- }
- 
--static void sgx_reclaim_pages_global(void)
-+static void sgx_reclaim_pages_global(struct mm_struct *charge_mm)
- {
--	sgx_reclaim_pages(&sgx_global_lru);
-+	sgx_reclaim_pages(&sgx_global_lru, charge_mm);
++#ifdef CONFIG_CGROUP_MISC
++	/*
++	 * epc_page->sgx_cg here is never NULL during a reclaimable epc_page's
++	 * life between sgx_alloc_epc_page() and sgx_free_epc_page():
++	 *
++	 * In sgx_alloc_epc_page(), epc_page->sgx_cg is set to the return from
++	 * sgx_get_current_cg() which is the misc cgroup of the current task, or
++	 * the root by default even if the misc cgroup is disabled by kernel
++	 * command line.
++	 *
++	 * epc_page->sgx_cg is only unset by sgx_free_epc_page().
++	 *
++	 * This function is never used before sgx_alloc_epc_page() or after
++	 * sgx_free_epc_page().
++	 */
++	return &epc_page->sgx_cg->lru;
++#else
+ 	return &sgx_global_lru;
++#endif
  }
  
  /*
-@@ -414,7 +415,7 @@ static void sgx_reclaim_pages_global(void)
+@@ -42,7 +63,10 @@ static inline struct sgx_epc_lru_list *sgx_epc_page_lru(struct sgx_epc_page *epc
+  */
+ static inline bool sgx_can_reclaim_global(void)
+ {
+-	return !list_empty(&sgx_global_lru.reclaimable);
++	if (IS_ENABLED(CONFIG_CGROUP_MISC))
++		return !sgx_cgroup_lru_empty(misc_cg_root());
++	else
++		return !list_empty(&sgx_global_lru.reclaimable);
+ }
+ 
+ static atomic_long_t sgx_nr_free_pages = ATOMIC_LONG_INIT(0);
+@@ -402,9 +426,14 @@ static bool sgx_should_reclaim_global(unsigned long watermark)
+ 		sgx_can_reclaim_global();
+ }
+ 
+-static void sgx_reclaim_pages_global(struct mm_struct *charge_mm)
++static struct misc_cg *sgx_reclaim_pages_global(struct misc_cg *next_cg,
++						struct mm_struct *charge_mm)
+ {
++	if (IS_ENABLED(CONFIG_CGROUP_MISC))
++		return sgx_cgroup_reclaim_pages(misc_cg_root(), next_cg, charge_mm);
++
+ 	sgx_reclaim_pages(&sgx_global_lru, charge_mm);
++	return NULL;
+ }
+ 
+ /*
+@@ -414,12 +443,35 @@ static void sgx_reclaim_pages_global(struct mm_struct *charge_mm)
+  */
  void sgx_reclaim_direct(void)
  {
++	struct sgx_cgroup *sgx_cg = sgx_get_current_cg();
++	struct misc_cg *cg = misc_from_sgx(sgx_cg);
++	struct misc_cg *next_cg = NULL;
++
++	/*
++	 * Make sure there are some free pages at both cgroup and global levels.
++	 * In both cases, only make one attempt of reclamation to avoid lengthy
++	 * block on the caller.
++	 */
++	if (sgx_cg && sgx_cgroup_should_reclaim(sgx_cg))
++		next_cg = sgx_cgroup_reclaim_pages(cg, next_cg, current->mm);
++
++	if (next_cg != cg)
++		put_misc_cg(next_cg);
++
++	next_cg = NULL;
  	if (sgx_should_reclaim_global(SGX_NR_LOW_PAGES))
--		sgx_reclaim_pages_global();
-+		sgx_reclaim_pages_global(current->mm);
+-		sgx_reclaim_pages_global(current->mm);
++		next_cg = sgx_reclaim_pages_global(next_cg, current->mm);
++
++	if (next_cg != misc_cg_root())
++		put_misc_cg(next_cg);
++
++	sgx_put_cg(sgx_cg);
  }
  
  static int ksgxd(void *p)
-@@ -437,7 +438,8 @@ static int ksgxd(void *p)
+ {
++	struct misc_cg *next_cg = NULL;
++
+ 	set_freezable();
+ 
+ 	/*
+@@ -437,11 +489,15 @@ static int ksgxd(void *p)
+ 				     kthread_should_stop() ||
  				     sgx_should_reclaim_global(SGX_NR_HIGH_PAGES));
  
- 		if (sgx_should_reclaim_global(SGX_NR_HIGH_PAGES))
--			sgx_reclaim_pages_global();
-+			/* Indirect reclaim, no mm to charge, so NULL: */
-+			sgx_reclaim_pages_global(NULL);
+-		if (sgx_should_reclaim_global(SGX_NR_HIGH_PAGES))
++		while (!kthread_should_stop() && sgx_should_reclaim_global(SGX_NR_HIGH_PAGES)) {
+ 			/* Indirect reclaim, no mm to charge, so NULL: */
+-			sgx_reclaim_pages_global(NULL);
++			next_cg = sgx_reclaim_pages_global(next_cg, NULL);
++			cond_resched();
++		}
  
- 		cond_resched();
+-		cond_resched();
++		if (next_cg != misc_cg_root())
++			put_misc_cg(next_cg);
++		next_cg = NULL;
  	}
-@@ -460,11 +462,6 @@ static bool __init sgx_page_reclaimer_init(void)
- 	return true;
- }
  
--bool current_is_ksgxd(void)
--{
--	return current == ksgxd_tsk;
--}
--
- static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
+ 	return 0;
+@@ -583,6 +639,7 @@ int sgx_unmark_page_reclaimable(struct sgx_epc_page *page)
+  */
+ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, enum sgx_reclaim reclaim)
  {
- 	struct sgx_numa_node *node = &sgx_numa_nodes[nid];
-@@ -619,7 +616,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, enum sgx_reclaim reclaim)
++	struct misc_cg *next_cg = NULL;
+ 	struct sgx_cgroup *sgx_cg;
+ 	struct sgx_epc_page *page;
+ 	int ret;
+@@ -616,10 +673,19 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, enum sgx_reclaim reclaim)
  			break;
  		}
  
--		sgx_reclaim_pages_global();
-+		sgx_reclaim_pages_global(current->mm);
+-		sgx_reclaim_pages_global(current->mm);
++		/*
++		 * At this point, the usage within this cgroup is under its
++		 * limit but there is no physical page left for allocation.
++		 * Perform a global reclaim to get some pages released from any
++		 * cgroup with reclaimable pages.
++		 */
++		next_cg = sgx_reclaim_pages_global(next_cg, current->mm);
  		cond_resched();
  	}
  
-diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index 4dc04f4d046c..4dc067519504 100644
---- a/arch/x86/kernel/cpu/sgx/sgx.h
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -136,7 +136,7 @@ void sgx_reclaim_direct(void);
- void sgx_mark_page_reclaimable(struct sgx_epc_page *page);
- int sgx_unmark_page_reclaimable(struct sgx_epc_page *page);
- struct sgx_epc_page *sgx_alloc_epc_page(void *owner, enum sgx_reclaim reclaim);
--unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru);
-+unsigned int sgx_reclaim_pages(struct sgx_epc_lru_list *lru, struct mm_struct *charge_mm);
- 
- void sgx_ipi_cb(void *info);
- 
++	if (next_cg != misc_cg_root())
++		put_misc_cg(next_cg);
++
+ 	if (!IS_ERR(page)) {
+ 		WARN_ON_ONCE(sgx_epc_page_get_cgroup(page));
+ 		/* sgx_put_cg() in sgx_free_epc_page() */
 -- 
 2.43.0
 
