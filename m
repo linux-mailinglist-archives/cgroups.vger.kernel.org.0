@@ -1,660 +1,100 @@
-Return-Path: <cgroups+bounces-3206-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3207-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0F4C90AE5E
-	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 14:57:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2EB490B3A8
+	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 17:14:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2AD0B233A7
-	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 12:57:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A85161F2781C
+	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 15:14:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48A041993B2;
-	Mon, 17 Jun 2024 12:53:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776FB1581EF;
+	Mon, 17 Jun 2024 14:33:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n4Rf1ivH"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hqG4OcjH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA6F01991CC;
-	Mon, 17 Jun 2024 12:53:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A3F1581F6
+	for <cgroups@vger.kernel.org>; Mon, 17 Jun 2024 14:33:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718628831; cv=none; b=rRZX2gmwvJdkEOM/AqYFYHrnndenFVOARtvch9K4bqGK+vZQ1OMoBYUOLvofO8eUJm4E9Kanyj8ScbSURg+0j8HUbijqGi9N64uM1l0eE9TXG5WzUMkT0xCIpK4+NqkO+6L+7A4d/ebcYCcxHLIzZVOY7JR+ro7q9cTU5pueFvg=
+	t=1718634791; cv=none; b=l4FMnXC4F+tB9Ol22JmGEdkd1Kawe3UeyzLFoeJOhlnFZrjWr9iJ2vU9xwy7YxS+P1/CxsyZ32p+PSJ/hv9bJw40ykznAiLKl+4N69q8whKf6lqfIdBfvpfiyBoTa4GrOFXzR+cmJ3HNs+RPYbUxv0yEPSIG4+vVRNnyWMF5B9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718628831; c=relaxed/simple;
-	bh=YnQQrQqJqIpII5iGqWz9BTwY3yPH+aZBkPCDMN1tUoQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=q9Mieh4/ovqVKv3YNxe82hzh71nFwSwrbihE0HldFTaTfx1eIpTvYr5S/Ia/gLa0GNJ1LTSR+hWFhSBjYBaAHFXe8S+oq2sydES0iRnfGW9wBD2hi9cU7/n5uT7A9TnauCQ12v1u/Euk9W3L0NUYiSfcvnzZFh7thDbkhVQVLTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n4Rf1ivH; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718628829; x=1750164829;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=YnQQrQqJqIpII5iGqWz9BTwY3yPH+aZBkPCDMN1tUoQ=;
-  b=n4Rf1ivHs984KlTH/3pq8LzRZFyFha1Mv1/q5hFxyfWmzSCrmuKRYh1O
-   c0LfCya9CImEiGa+OtlSxoEW4i6RNbmgeFgroMY8lqgU0odSfFqxprxUB
-   JtZo8L4shUc4aiwK8/kjZqDYZ6bU9jajFNdWmw1VSJ12P3tTUTy9IeaYK
-   hMMxk81qcq8jmGp+dnWR+fkLfCpsQf/1yG2kol1opFo82wjUljS8HDogR
-   EtGis8FFu7ymMCvcuu8EUBf1M+nzAWoSLrURAj5+nOCi0uRq2Zf/mpf0+
-   XEjgA1uNbS9AUT+goP27n5mNz0BUDkj/Zhdt8tbzQVpKVIgcbLvB8THW6
-   Q==;
-X-CSE-ConnectionGUID: KXq9IpCjR2GgW4/rDjOLDw==
-X-CSE-MsgGUID: rjKD9K9DRNa42vhs/pqQbQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11105"; a="15570973"
-X-IronPort-AV: E=Sophos;i="6.08,244,1712646000"; 
-   d="scan'208";a="15570973"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2024 05:53:45 -0700
-X-CSE-ConnectionGUID: buqz+dZUT1eI6mC5lctLsA==
-X-CSE-MsgGUID: T6B3GQkZTLqrbVT93ZS4RQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,244,1712646000"; 
-   d="scan'208";a="72387578"
-Received: from b4969164b36c.jf.intel.com ([10.165.59.5])
-  by fmviesa001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2024 05:53:44 -0700
-From: "Huang, Haitao" <haitao.huang@linux.intel.com>
-To: jarkko@kernel.org,
-	dave.hansen@linux.intel.com,
-	kai.huang@intel.com,
-	tj@kernel.org,
-	mkoutny@suse.com,
-	chenridong@huawei.com,
-	linux-kernel@vger.kernel.org,
-	linux-sgx@vger.kernel.org,
-	x86@kernel.org,
-	cgroups@vger.kernel.org,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	hpa@zytor.com,
-	sohil.mehta@intel.com,
-	tim.c.chen@linux.intel.com
-Cc: zhiquan1.li@intel.com,
-	kristen@linux.intel.com,
-	seanjc@google.com,
-	zhanb@microsoft.com,
-	anakrish@microsoft.com,
-	mikko.ylinen@linux.intel.com,
-	yangjie@microsoft.com,
-	chrisyan@microsoft.com
-Subject: [PATCH v15 14/14] selftests/sgx: Add scripts for EPC cgroup testing
-Date: Mon, 17 Jun 2024 05:53:21 -0700
-Message-ID: <20240617125321.36658-15-haitao.huang@linux.intel.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240617125321.36658-1-haitao.huang@linux.intel.com>
-References: <20240617125321.36658-1-haitao.huang@linux.intel.com>
+	s=arc-20240116; t=1718634791; c=relaxed/simple;
+	bh=fWjqbpNutW3h0ilIV3YbKpiK5u8HlimcRO2ScyVu/wA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=cB3Z/i9qO+6KreNFJNJ79y9cK3TRE9Cl+HXw0iNg+9w3F5jL7OGIg+/zF6ZLrkVK/gNCF9lNOrtk9iWb+WFfp2Wjgy3PIdgrNBkNHH9Qx5+l8KoKn2+K0HVMK9zZq8EcqhO1TFnsH+PC/fUmozzFC0UmNtIAO8vVidv9IEL+MzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hqG4OcjH; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1718634788;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=fWjqbpNutW3h0ilIV3YbKpiK5u8HlimcRO2ScyVu/wA=;
+	b=hqG4OcjHtBZIPdhZAX8WTstH0VK84WAU2+vQ38IDwbH65I/QMMggWNeN1M/Ro0Qk1F9hTY
+	Z0AED+1qKDr1tnP5/E96tLgdWUwD7XLqLCMhsVZfSW1xmF8elhw2EtzXcmDJa22XOPcwds
+	zmnT+kledFq0ZIpq4BrfRUmz83M9j8Q=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-310-4R28uW_0N_e-gwwSv3TsXw-1; Mon,
+ 17 Jun 2024 10:33:05 -0400
+X-MC-Unique: 4R28uW_0N_e-gwwSv3TsXw-1
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id C3ACD19560BB;
+	Mon, 17 Jun 2024 14:33:03 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.89])
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 603FD19560AF;
+	Mon, 17 Jun 2024 14:33:01 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Mon, 17 Jun 2024 16:31:32 +0200 (CEST)
+Date: Mon, 17 Jun 2024 16:31:29 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/1] cgroup: avoid the unnecessary list_add(dying_tasks) in
+ cgroup_exit()
+Message-ID: <20240617143129.GA10395@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-From: Haitao Huang <haitao.huang@linux.intel.com>
+Hello,
 
-With different cgroups, the script starts one or multiple concurrent SGX
-selftests (test_sgx), each to run the unclobbered_vdso_oversubscribed
-test case, which loads an enclave of EPC size equal to the EPC capacity
-available on the platform. The script checks results against the
-expectation set for each cgroup and reports success or failure.
+Sorry for delay and for confusing you in our previous discussion
+here https://lore.kernel.org/all/20240610105028.GA21586@redhat.com/
 
-The script creates 3 different cgroups at the beginning with following
-expectations:
+No, cgroup_exit() can't rely on group_dead, this is racy.
 
-1) small - intentionally small enough to fail the test loading an
-enclave of size equal to the capacity.
-2) large - large enough to run up to 4 concurrent tests but fail some if
-more than 4 concurrent tests are run. The script starts 4 expecting at
-least one test to pass, and then starts 5 expecting at least one test
-to fail.
-3) larger - limit is the same as the capacity, large enough to run lots of
-concurrent tests. The script starts 8 of them and expects all pass.
-Then it reruns the same test with one process randomly killed and
-usage checked to be zero after all processes exit.
+And no, we can't shift css_set_skip_task_iters/etc from cgroup_release()
+to cgroup_exit(), an execing sub-thread can change the group leader.
 
-The script also includes a test with low mem_cg limit and large sgx_epc
-limit to verify that the RAM used for per-cgroup reclamation is charged
-to a proper mem_cg. For this test, it turns off swapping before start,
-and turns swapping back on afterwards.
+Let me at least send the simple patch which looks "obviously good" to me.
 
-Add README to document how to run the tests.
+I would really like to remove the usage of signal->live in cgroup.c, but
+so far I do not see a simple solution.
 
-Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Tested-by: Jarkko Sakkinen <jarkko@kernel.org>
----
-V13:
-- More improvement on handling error cases and style fixes.
-- Add settings file for custom timeout
+With or without this change cgroup.procs can be empty but cgroup.threads
+is not. But at least the exiting sub-threads which have already passed
+atomic_dec_and_test() should call cgroup_exit() "soon".
 
-V12:
-- Integrate the scripts to the "run_tests" target. (Jarkko)
-
-V11:
-- Remove cgroups-tools dependency and make scripts ash compatible. (Jarkko)
-- Drop support for cgroup v1 and simplify. (Michal, Jarkko)
-- Add documentation for functions. (Jarkko)
-- Turn off swapping before memcontrol tests and back on after
-- Format and style fixes, name for hard coded values
-
-V7:
-- Added memcontrol test.
-
-V5:
-- Added script with automatic results checking, remove the interactive
-script.
-- The script can run independent from the series below.
----
- tools/testing/selftests/sgx/Makefile          |   3 +-
- tools/testing/selftests/sgx/README            | 109 +++++++
- tools/testing/selftests/sgx/ash_cgexec.sh     |  16 +
- tools/testing/selftests/sgx/config            |   4 +
- .../selftests/sgx/run_epc_cg_selftests.sh     | 295 ++++++++++++++++++
- tools/testing/selftests/sgx/settings          |   2 +
- .../selftests/sgx/watch_misc_for_tests.sh     |  11 +
- 7 files changed, 439 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/sgx/README
- create mode 100755 tools/testing/selftests/sgx/ash_cgexec.sh
- create mode 100644 tools/testing/selftests/sgx/config
- create mode 100755 tools/testing/selftests/sgx/run_epc_cg_selftests.sh
- create mode 100644 tools/testing/selftests/sgx/settings
- create mode 100755 tools/testing/selftests/sgx/watch_misc_for_tests.sh
-
-diff --git a/tools/testing/selftests/sgx/Makefile b/tools/testing/selftests/sgx/Makefile
-index 867f88ce2570..739376af9e33 100644
---- a/tools/testing/selftests/sgx/Makefile
-+++ b/tools/testing/selftests/sgx/Makefile
-@@ -20,7 +20,8 @@ ENCL_LDFLAGS := -Wl,-T,test_encl.lds,--build-id=none
- 
- ifeq ($(CAN_BUILD_X86_64), 1)
- TEST_CUSTOM_PROGS := $(OUTPUT)/test_sgx
--TEST_FILES := $(OUTPUT)/test_encl.elf
-+TEST_FILES := $(OUTPUT)/test_encl.elf ash_cgexec.sh
-+TEST_PROGS := run_epc_cg_selftests.sh
- 
- all: $(TEST_CUSTOM_PROGS) $(OUTPUT)/test_encl.elf
- endif
-diff --git a/tools/testing/selftests/sgx/README b/tools/testing/selftests/sgx/README
-new file mode 100644
-index 000000000000..f84406bf29a4
---- /dev/null
-+++ b/tools/testing/selftests/sgx/README
-@@ -0,0 +1,109 @@
-+SGX selftests
-+
-+The SGX selftests includes a c program (test_sgx) that covers basic user space
-+facing APIs and a shell scripts (run_sgx_cg_selftests.sh) testing SGX misc
-+cgroup. The SGX cgroup test script requires root privileges and runs a
-+specific test case of  the test_sgx in different cgroups configured by the
-+script. More details about the cgroup test can be found below.
-+
-+All SGX selftests can run with or without kselftest framework.
-+
-+WITH KSELFTEST FRAMEWORK
-+=======================
-+
-+BUILD
-+-----
-+
-+Build executable file "test_sgx" from top level directory of the kernel source:
-+ $ make -C tools/testing/selftests TARGETS=sgx
-+
-+RUN
-+---
-+
-+Run all sgx tests as sudo or root since the cgroup tests need to configure cgroup
-+limits in files under /sys/fs/cgroup.
-+
-+ $ sudo make -C tools/testing/selftests/sgx run_tests
-+
-+Without sudo, SGX cgroup tests will be skipped.
-+
-+On platforms with large Enclave Page Cache (EPC) and/or less cpu cores, you may
-+need adjust the timeout in 'settings' to avoid timeouts.
-+
-+More details about kselftest framework can be found in
-+Documentation/dev-tools/kselftest.rst.
-+
-+WITHOUT KSELFTEST FRAMEWORK
-+===========================
-+
-+BUILD
-+-----
-+
-+Build executable file "test_sgx" from this
-+directory(tools/testing/selftests/sgx/):
-+
-+  $ make
-+
-+RUN
-+---
-+
-+Run all non-cgroup tests:
-+
-+ $ ./test_sgx
-+
-+To test SGX cgroup:
-+
-+ $ sudo ./run_sgx_cg_selftests.sh
-+
-+THE SGX CGROUP TEST SCRIPTS
-+===========================
-+
-+Overview of the main cgroup test script
-+---------------------------------------
-+
-+With different cgroups, the script (run_sgx_cg_selftests.sh) starts one or
-+multiple concurrent SGX selftests (test_sgx), each to run the
-+unclobbered_vdso_oversubscribed test case, which loads an enclave of EPC size
-+equal to the EPC capacity available on the platform. The script checks results
-+against the expectation set for each cgroup and reports success or failure.
-+
-+The script creates 3 different cgroups at the beginning with following
-+expectations:
-+
-+  1) small - intentionally small enough to fail the test loading an enclave of
-+             size equal to the capacity.
-+
-+  2) large - large enough to run up to 4 concurrent tests but fail some if more
-+	     than 4 concurrent tests are run. The script starts 4 expecting at
-+	     least one test to pass, and then starts 5 expecting at least one
-+             test to fail.
-+
-+  3) larger - limit is the same as the capacity, large enough to run lots of
-+	      concurrent tests. The script starts 8 of them and expects all
-+	      pass.  Then it reruns the same test with one process randomly
-+	      killed and usage checked to be zero after all processes exit.
-+
-+The script also includes a test with low mem_cg limit (memory.max) and the
-+'large' sgx_epc limit to verify that the RAM used for per-cgroup reclamation is
-+charged to a proper mem_cg. To validate mem_cg OOM-kills processes when its
-+memory.max limit is reached due to SGX EPC reclamation, the script turns off
-+swapping before start, and turns swapping back on afterwards for this particular
-+test.
-+
-+The helper script
-+------------------------------------------------------
-+
-+To monitor the SGX cgroup settings and behaviors or trouble-shoot during
-+testing, the helper script, watch_misc_for_tests.sh, can be used to watch
-+relevant entries in cgroupfs files. For example, to watch the SGX cgroup
-+'current' counter changes during testing, run this in a separate terminal from
-+this directory:
-+
-+  $ ./watch_misc_for_tests.sh current
-+
-+For more details about SGX cgroups, see "Cgroup Support" in
-+Documentation/arch/x86/sgx.rst.
-+
-+The scripts require cgroup v2 support. More details about cgroup v2 can be found
-+in Documentation/admin-guide/cgroup-v2.rst.
-+
-diff --git a/tools/testing/selftests/sgx/ash_cgexec.sh b/tools/testing/selftests/sgx/ash_cgexec.sh
-new file mode 100755
-index 000000000000..cfa5d2b0e795
---- /dev/null
-+++ b/tools/testing/selftests/sgx/ash_cgexec.sh
-@@ -0,0 +1,16 @@
-+#!/usr/bin/env sh
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright(c) 2024 Intel Corporation.
-+
-+# Start a program in a given cgroup.
-+# Supports V2 cgroup paths, relative to /sys/fs/cgroup
-+if [ "$#" -lt 2 ]; then
-+    echo "Usage: $0 <v2 cgroup path> <command> [args...]"
-+    exit 1
-+fi
-+# Move this shell to the cgroup.
-+echo 0 >/sys/fs/cgroup/$1/cgroup.procs
-+shift
-+# Execute the command within the cgroup
-+exec "$@"
-+
-diff --git a/tools/testing/selftests/sgx/config b/tools/testing/selftests/sgx/config
-new file mode 100644
-index 000000000000..e7f1db1d3eff
---- /dev/null
-+++ b/tools/testing/selftests/sgx/config
-@@ -0,0 +1,4 @@
-+CONFIG_CGROUPS=y
-+CONFIG_CGROUP_MISC=y
-+CONFIG_MEMCG=y
-+CONFIG_X86_SGX=y
-diff --git a/tools/testing/selftests/sgx/run_epc_cg_selftests.sh b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-new file mode 100755
-index 000000000000..f3d463c09cc2
---- /dev/null
-+++ b/tools/testing/selftests/sgx/run_epc_cg_selftests.sh
-@@ -0,0 +1,295 @@
-+#!/usr/bin/env sh
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright(c) 2023, 2024 Intel Corporation.
-+
-+PROCESS_SUCCESS=1
-+PROCESS_FAILURE=0
-+# Wait for a process and check for expected exit status.
-+#
-+# Arguments:
-+#	$1 - the pid of the process to wait and check.
-+#	$2 - 1 if expecting success, 0 for failure.
-+#
-+# Return:
-+#	0 if the exit status of the process matches the expectation.
-+#	1 otherwise.
-+wait_check_process_status() {
-+    pid=$1
-+    check_for_success=$2
-+
-+    wait "$pid"
-+    status=$?
-+
-+    if [ $check_for_success -eq $PROCESS_SUCCESS ] && [ $status -eq 0 ]; then
-+        echo "# Process $pid succeeded."
-+        return 0
-+    elif [ $check_for_success -eq $PROCESS_FAILURE ] && [ $status -ne 0 ]; then
-+        echo "# Process $pid returned failure."
-+        return 0
-+    fi
-+    return 1
-+}
-+
-+# Wait for a set of processes and check for expected exit status
-+#
-+# Arguments:
-+#	$1 - 1 if expecting success, 0 for failure.
-+#	remaining args - The pids of the processes
-+#
-+# Return:
-+#	0 if exit status of any process matches the expectation.
-+#	1 otherwise.
-+wait_and_detect_for_any() {
-+    check_for_success=$1
-+
-+    shift
-+    detected=1 # 0 for success detection
-+
-+    for pid in $@; do
-+        if wait_check_process_status "$pid" "$check_for_success"; then
-+            detected=0
-+            # Wait for other processes to exit
-+        fi
-+    done
-+
-+    return $detected
-+}
-+
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+if [ "$(id -u)" -ne 0 ]; then
-+    echo "SKIP: SGX cgroup tests need root privileges."
-+    exit $ksft_skip
-+fi
-+
-+cg_root=/sys/fs/cgroup
-+if [ ! -d "$cg_root/$test_root_cg" ]; then
-+    echo "SKIP: SGX cgroup tests require v2 cgroups."
-+    exit $ksft_skip
-+fi
-+test_root_cg=sgx_kselftest
-+#make sure we start clean
-+if [ -d "$cg_root/$test_root_cg" ]; then
-+    echo "SKIP: Please clean up $cg_root/$test_root_cg."
-+    exit $ksft_skip
-+fi
-+
-+test_cg_small_parent=$test_root_cg/sgx_test_small_parent
-+test_cg_large=$test_root_cg/sgx_test_large
-+# We will only set limit in test1 and run tests in test3
-+test_cg_small=$test_cg_small_parent/sgx_test_small
-+test_cg_larger=$test_root_cg/sgx_test_larger
-+
-+clean_up()
-+{
-+    # Wait a little for cgroups to reset counters for dead processes.
-+    sleep 2
-+    rmdir $cg_root/$test_cg_large
-+    rmdir $cg_root/$test_cg_small
-+    rmdir $cg_root/$test_cg_larger
-+    rmdir $cg_root/$test_cg_small_parent
-+    rmdir $cg_root/$test_root_cg
-+}
-+
-+mkdir $cg_root/$test_root_cg && \
-+mkdir $cg_root/$test_cg_small_parent && \
-+mkdir $cg_root/$test_cg_large && \
-+mkdir $cg_root/$test_cg_small && \
-+mkdir $cg_root/$test_cg_larger
-+if [ $? -ne 0 ]; then
-+    echo "FAIL: Failed creating cgroups."
-+    exit 1
-+fi
-+
-+# Turn on misc and memory controller in non-leaf nodes
-+echo "+misc" >  $cg_root/cgroup.subtree_control && \
-+echo "+memory" > $cg_root/cgroup.subtree_control && \
-+echo "+misc" >  $cg_root/$test_root_cg/cgroup.subtree_control && \
-+echo "+memory" > $cg_root/$test_root_cg/cgroup.subtree_control && \
-+echo "+misc" >  $cg_root/$test_cg_small_parent/cgroup.subtree_control
-+if [ $? -ne 0 ]; then
-+    echo "FAIL: can't set up cgroups, make sure misc and memory cgroups are enabled."
-+    clean_up
-+    exit 1
-+fi
-+
-+epc_capacity=$(grep "sgx_epc" "$cg_root/misc.capacity" | awk '{print $2}')
-+
-+# This is below number of VA pages needed for enclave of capacity size. So
-+# should fail oversubscribed cases
-+epc_small_limit=$(( epc_capacity / 512 ))
-+
-+# At least load one enclave of capacity size successfully, maybe up to 4.
-+# But some may fail if we run more than 4 concurrent enclaves of capacity size.
-+epc_large_limit=$(( epc_small_limit * 4 ))
-+
-+# Load lots of enclaves
-+epc_larger_limit=$epc_capacity
-+echo "# Setting up SGX cgroup limits."
-+echo "sgx_epc $epc_small_limit" > $cg_root/$test_cg_small_parent/misc.max && \
-+echo "sgx_epc $epc_large_limit" >  $cg_root/$test_cg_large/misc.max && \
-+echo "sgx_epc $epc_larger_limit" > $cg_root/$test_cg_larger/misc.max
-+if [ $? -ne 0 ]; then
-+    echo "# Failed setting up misc limits for sgx_epc."
-+    echo "SKIP: Kernel does not support SGX cgroup."
-+    clean_up
-+    exit $ksft_skip
-+fi
-+
-+test_cmd="./test_sgx -t unclobbered_vdso_oversubscribed"
-+
-+echo "# Start unclobbered_vdso_oversubscribed with small EPC limit, expecting failure..."
-+./ash_cgexec.sh $test_cg_small $test_cmd >/dev/null 2>&1
-+if [ $? -eq 0 ]; then
-+    echo "FAIL: Fail on small EPC limit, not expecting any test passes."
-+    clean_up
-+    exit 1
-+else
-+    echo "# Test failed as expected."
-+fi
-+
-+echo "PASS: small EPC limit test."
-+
-+echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with large EPC limit, \
-+expecting at least one success...."
-+
-+pids=""
-+for i in 1 2 3 4; do
-+    (
-+        ./ash_cgexec.sh $test_cg_large $test_cmd >/dev/null 2>&1
-+    ) &
-+    pids="$pids $!"
-+done
-+
-+if wait_and_detect_for_any $PROCESS_SUCCESS "$pids"; then
-+    echo "PASS: large EPC limit positive testing."
-+else
-+    echo "FAIL: Failed on large EPC limit positive testing, no test passes."
-+    clean_up
-+    exit 1
-+fi
-+
-+echo "# Start 5 concurrent unclobbered_vdso_oversubscribed tests with large EPC limit, \
-+expecting at least one failure...."
-+pids=""
-+for i in 1 2 3 4 5; do
-+    (
-+        ./ash_cgexec.sh $test_cg_large $test_cmd >/dev/null 2>&1
-+    ) &
-+    pids="$pids $!"
-+done
-+
-+if wait_and_detect_for_any $PROCESS_FAILURE "$pids"; then
-+    echo "PASS: large EPC limit negative testing."
-+else
-+    echo "FAIL: Failed on large EPC limit negative testing, no test fails."
-+    clean_up
-+    exit 1
-+fi
-+
-+echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with larger EPC limit, \
-+expecting no failure...."
-+pids=""
-+for i in 1 2 3 4 5 6 7 8; do
-+    (
-+        ./ash_cgexec.sh $test_cg_larger $test_cmd >/dev/null 2>&1
-+    ) &
-+    pids="$pids $!"
-+done
-+
-+if wait_and_detect_for_any $PROCESS_FAILURE "$pids"; then
-+    echo "FAIL: Failed on larger EPC limit, at least one test fails."
-+    clean_up
-+    exit 1
-+else
-+    echo "PASS: larger EPC limit tests."
-+fi
-+
-+echo "# Start 8 concurrent unclobbered_vdso_oversubscribed tests with larger EPC limit,\
-+ randomly kill one, expecting no failure...."
-+pids=""
-+for i in 1 2 3 4 5 6 7 8; do
-+    (
-+        ./ash_cgexec.sh $test_cg_larger $test_cmd >/dev/null 2>&1
-+    ) &
-+    pids="$pids $!"
-+done
-+random_number=$(awk 'BEGIN{srand();print int(rand()*5)}')
-+sleep $((random_number + 1))
-+
-+# Randomly select a process to kill
-+# Make sure usage counter not leaked at the end.
-+random_index=$(awk 'BEGIN{srand();print int(rand()*8)}')
-+counter=0
-+for pid in $pids; do
-+    if [ "$counter" -eq "$random_index" ]; then
-+        pid_to_kill=$pid
-+        break
-+    fi
-+    counter=$((counter + 1))
-+done
-+
-+kill $pid_to_kill
-+echo "# Killed process with PID: $pid_to_kill"
-+
-+any_failure=0
-+for pid in $pids; do
-+    wait "$pid"
-+    status=$?
-+    if [ "$pid" != "$pid_to_kill" ]; then
-+        if [ $status -ne 0 ]; then
-+	    echo "# Process $pid returned failure."
-+            any_failure=1
-+        fi
-+    fi
-+done
-+
-+if [ $any_failure -ne 0 ]; then
-+    echo "FAIL: Failed on random killing, at least one test fails."
-+    clean_up
-+    exit 1
-+fi
-+echo "PASS: larger EPC limit test with a process randomly killed."
-+
-+mem_limit_too_small=$((epc_capacity - 2 * epc_large_limit))
-+
-+echo "$mem_limit_too_small" > $cg_root/$test_cg_large/memory.max
-+if [ $? -ne 0 ]; then
-+    echo "FAIL: Failed setting up memory controller."
-+    clean_up
-+    exit 1
-+fi
-+
-+echo "# Start 4 concurrent unclobbered_vdso_oversubscribed tests with large EPC limit, \
-+and too small RAM limit, expecting all failures...."
-+# Ensure swapping off so the OOM killer is activated when mem_cgroup limit is hit.
-+swapoff -a
-+pids=""
-+for i in 1 2 3 4; do
-+    (
-+        ./ash_cgexec.sh $test_cg_large $test_cmd >/dev/null 2>&1
-+    ) &
-+    pids="$pids $!"
-+done
-+
-+if wait_and_detect_for_any $PROCESS_SUCCESS "$pids"; then
-+    echo "FAIL: Failed on tests with memcontrol, some tests did not fail."
-+    clean_up
-+    swapon -a
-+    exit 1
-+else
-+    swapon -a
-+    echo "PASS: large EPC limit tests with memcontrol."
-+fi
-+
-+sleep 2
-+
-+epc_usage=$(grep '^sgx_epc' "$cg_root/$test_root_cg/misc.current" | awk '{print $2}')
-+if [ "$epc_usage" -ne 0 ]; then
-+    echo "FAIL: Final usage is $epc_usage, not 0."
-+else
-+    echo "PASS: leakage check."
-+    echo "PASS: ALL cgroup limit tests, cleanup cgroups..."
-+fi
-+clean_up
-+echo "# Done SGX cgroup tests."
-diff --git a/tools/testing/selftests/sgx/settings b/tools/testing/selftests/sgx/settings
-new file mode 100644
-index 000000000000..4bf7dcbf9fa8
---- /dev/null
-+++ b/tools/testing/selftests/sgx/settings
-@@ -0,0 +1,2 @@
-+# This timeout may need be increased for platforms with EPC larger than 4G
-+timeout=140
-diff --git a/tools/testing/selftests/sgx/watch_misc_for_tests.sh b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
-new file mode 100755
-index 000000000000..9280a5e0962b
---- /dev/null
-+++ b/tools/testing/selftests/sgx/watch_misc_for_tests.sh
-@@ -0,0 +1,11 @@
-+#!/usr/bin/env sh
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright(c) 2023, 2024 Intel Corporation.
-+
-+if [ -z "$1" ]; then
-+    echo "No argument supplied, please provide 'max', 'current', or 'events'"
-+    exit 1
-+fi
-+
-+watch -n 1 'find /sys/fs/cgroup -wholename "*/sgx_test*/misc.'$1'" -exec \
-+    sh -c '\''echo "$1:"; cat "$1"'\'' _ {} \;'
--- 
-2.43.0
+Oleg.
 
 
