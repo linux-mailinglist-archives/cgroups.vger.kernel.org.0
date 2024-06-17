@@ -1,61 +1,61 @@
-Return-Path: <cgroups+bounces-3211-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3212-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85F2190B3E8
-	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 17:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB37C90B3E9
+	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 17:21:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2203928ADA2
-	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 15:20:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41E8628B03F
+	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 15:21:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D9B415CD5C;
-	Mon, 17 Jun 2024 14:41:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1BAD15D5D2;
+	Mon, 17 Jun 2024 14:41:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Q1lQ2xS7"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VdWzRUVJ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED29B15CD49
-	for <cgroups@vger.kernel.org>; Mon, 17 Jun 2024 14:41:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C0315D5AA
+	for <cgroups@vger.kernel.org>; Mon, 17 Jun 2024 14:41:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718635282; cv=none; b=KnSOZ+WetM9BC4vNSjFkv3calwtUa3H9HlJ4OB9t3OtOQsHYoJUAD2mh1T3uwwxV0X05x4O0AqhP2CVCOSG9V5VoEcCo5JBRlhW33gJmQ4T3AMVdb53goipSEM6GQ1y73dmexkLbEM5ZEm2s94Ep/SJ4FWdhoT0K8NP68m3ZID8=
+	t=1718635284; cv=none; b=TzYeFcsQwZ7gU2TIzBZRRm74y8VnmMK9rkbCqBJYXTTe24DXZ2oi3KldfWoIGSOPuVqUtokRsTb6T5wd5s+v+Yf+2fbRP7RkrvIy7BSTnf/xpuRrBTXSTHTOhVZQP/d99M6UYzop8qMKSLKOErGbvrnyxUYceJNaBrL2KD2RenY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718635282; c=relaxed/simple;
-	bh=rxsR7U/YvvGUO9SU+gZVaocyTWFefPbzUS56onemTSQ=;
+	s=arc-20240116; t=1718635284; c=relaxed/simple;
+	bh=dobE8kihQV9T60XVIDbBgNU5uvQG3tjGens1jhgmrrc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dUX09JUBAnLdL+vmA/hvxNTpowqWjBzpRCozWuQw9k3hZjRMwthKERyvHckCYVdjEvw+lw195HpN/H6wZeUF/4MVs5D9e3K3FYuEKOdwj2cUNus6VWAr+B0BSpzpNwz9Tq52behsceYZPpnF5tqI0prVfDiJzEru5QIo9VJYa3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Q1lQ2xS7; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=Tx7iVxgvWLf8K5i1Adw3JJ0aT9WUFLCg2sKqH32nlyGEyymnBIlpBhQ7eYy+DvYhfsz/ABexmOvm/OvNoEQUqsBA/m3zaqKVFCh6qVMoHy54SKY4Elzvgi7WbBJH1A0j3i7xB/pqBzLKSrDeI6hMkLqoJRBN6a7XOGnImSGq25k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VdWzRUVJ; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1718635279;
+	s=mimecast20190719; t=1718635282;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=COdoiIbcjskr3CZ+b0ndr1ezwQxaMDEVmxWG+69AViE=;
-	b=Q1lQ2xS75f9LMsmyDwdTNd/iRzrhFXCzwChaqjx0TCE7W6oZmX39I+1apybqjREdo9AJd6
-	xkOUZ9dIe3vlYcr6wNSrk0V7/vhzVGcOYuWhkN9vLuaUR5Ir5R1LmhZfNm0C/LIe0jzISG
-	QdxHfxmtdUwue70+tl+CyLauoKVmZnM=
+	bh=POuuOTSCgQ9YWI6IghxXxhiMXh2n0u6EcFeF16mkX7I=;
+	b=VdWzRUVJFJXtNxKC+Y/VkpUpJUMLI5lnW360SZUqR2Fzez4nm8FQw8vlsYPRIPxcYyyl2r
+	5IbpF4V2kAgI/0bxHB2QXBkh1W6+J8S+6Ru1wbfp/CF/xUHD0HCpI78ZT6jJk007d4d+KK
+	Wed7i/0S4u0wMzfHRgH8hj8nYKwVRuY=
 Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-33-rF8BIeCLOVC61x_7d4u2Qw-1; Mon,
- 17 Jun 2024 10:41:15 -0400
-X-MC-Unique: rF8BIeCLOVC61x_7d4u2Qw-1
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-292-dCeivIGBPLq1QD-7fHt1Aw-1; Mon,
+ 17 Jun 2024 10:41:18 -0400
+X-MC-Unique: dCeivIGBPLq1QD-7fHt1Aw-1
 Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6532B195608E;
-	Mon, 17 Jun 2024 14:41:13 +0000 (UTC)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8C09C1956096;
+	Mon, 17 Jun 2024 14:41:16 +0000 (UTC)
 Received: from llong.com (unknown [10.22.32.57])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 81FD21956054;
-	Mon, 17 Jun 2024 14:41:10 +0000 (UTC)
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 9CC1B1956048;
+	Mon, 17 Jun 2024 14:41:13 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Tejun Heo <tj@kernel.org>,
 	Zefan Li <lizefan.x@bytedance.com>,
@@ -69,11 +69,10 @@ Cc: cgroups@vger.kernel.org,
 	Xavier <ghostxavier@sina.com>,
 	Peter Hunt <pehunt@redhat.com>,
 	Petr Malat <oss@malat.biz>,
-	Waiman Long <longman@redhat.com>,
-	kernel test robot <oliver.sang@intel.com>
-Subject: [PATCH-cgroup v2 2/5] selftest/cgroup: Fix test_cpuset_prs.sh problems reported by test robot
-Date: Mon, 17 Jun 2024 10:39:42 -0400
-Message-Id: <20240617143945.454888-3-longman@redhat.com>
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH-cgroup v2 3/5] cgroup/cpuset: Delay setting of CS_CPU_EXCLUSIVE until valid partition
+Date: Mon, 17 Jun 2024 10:39:43 -0400
+Message-Id: <20240617143945.454888-4-longman@redhat.com>
 In-Reply-To: <20240617143945.454888-1-longman@redhat.com>
 References: <20240617143945.454888-1-longman@redhat.com>
 Precedence: bulk
@@ -85,92 +84,123 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-The test robot reported two different problems when running the
-test_cpuset_prs.sh test.
+The CS_CPU_EXCLUSIVE flag is currently set whenever cpuset.cpus.exclusive
+is set to make sure that the exclusivity test will be run to ensure its
+exclusiveness. At the same time, this flag can be changed whenever the
+partition root state is changed. For example, the CS_CPU_EXCLUSIVE flag
+will be reset whenever a partition root becomes invalid. This makes
+using CS_CPU_EXCLUSIVE to ensure exclusiveness a bit fragile.
 
- # ./test_cpuset_prs.sh: line 106: echo: write error: Input/output error
- #  :
- # Effective cpus changed to 0-1,4-7 after test 4!
+The current scheme also makes setting up a cpuset.cpus.exclusive
+hierarchy to enable remote partition harder as cpuset.cpus.exclusive
+cannot overlap with any cpuset.cpus of sibling cpusets if their
+cpuset.cpus.exclusive aren't set.
 
-The write error is caused by writing to /dev/console. It looks like
-some systems may not have /dev/console configured or in a writeable
-state. Fix this by checking the existence of /dev/console before
-attempting to write it.
+Solve these issues by deferring the setting of CS_CPU_EXCLUSIVE flag
+until the cpuset become a valid partition root while adding new checks
+in validate_change() to ensure that cpuset.cpus.exclusive of sibling
+cpusets cannot overlap.
 
-After the completion of each test run, the script will check if the
-cpuset state is reset back to the original state. That usually takes a
-while to happen. The test script inserts some artificial delay to make
-sure that the reset has completed. The current setting is about 80ms.
-That may not be enough in some cases especially if the test system is
-slow. Double it to 160ms to minimize the chance of this type of failure.
+An additional check is also added to validate_change() to make sure that
+cpuset.cpus of one cpuset cannot be a subset of cpuset.cpus.exclusive
+of a sibling cpuset to avoid the problem that none of those CPUs will
+be available when these exclusive CPUs are extracted out to a newly
+enabled partition root. The Documentation/admin-guide/cgroup-v2.rst
+file is updated to document the new constraints.
 
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202406141712.dbbaa8fd-oliver.sang@intel.com
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- .../selftests/cgroup/test_cpuset_prs.sh       | 20 +++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+ Documentation/admin-guide/cgroup-v2.rst |  8 ++++--
+ kernel/cgroup/cpuset.c                  | 36 ++++++++++++++++++++-----
+ 2 files changed, 35 insertions(+), 9 deletions(-)
 
-diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-index b5eb1be2248c..96bf2b5c5eb6 100755
---- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-+++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-@@ -28,6 +28,14 @@ CPULIST=$(cat $CGROUP2/cpuset.cpus.effective)
- NR_CPUS=$(lscpu | grep "^CPU(s):" | sed -e "s/.*:[[:space:]]*//")
- [[ $NR_CPUS -lt 8 ]] && skip_test "Test needs at least 8 cpus available!"
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index f886c6ad704e..722e4762c4e0 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -2359,8 +2359,12 @@ Cpuset Interface Files
+ 	is always a subset of it.
  
-+# Check to see if /dev/console exists and is writable
-+if [[ -c /dev/console && -w /dev/console ]]
-+then
-+	CONSOLE=/dev/console
-+else
-+	CONSOLE=/dev/null
-+fi
+ 	Users can manually set it to a value that is different from
+-	"cpuset.cpus".	The only constraint in setting it is that the
+-	list of CPUs must be exclusive with respect to its sibling.
++	"cpuset.cpus".	One constraint in setting it is that the list of
++	CPUs must be exclusive with respect to "cpuset.cpus.exclusive"
++	of its sibling.  If "cpuset.cpus.exclusive" of a sibling cgroup
++	isn't set, its "cpuset.cpus" value, if set, cannot be a subset
++	of it to leave at least one CPU available when the exclusive
++	CPUs are taken away.
+ 
+ 	For a parent cgroup, any one of its exclusive CPUs can only
+ 	be distributed to at most one of its child cgroups.  Having an
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index fb71d710a603..144bfc319809 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -825,17 +825,41 @@ static int validate_change(struct cpuset *cur, struct cpuset *trial)
+ 
+ 	/*
+ 	 * If either I or some sibling (!= me) is exclusive, we can't
+-	 * overlap
++	 * overlap. exclusive_cpus cannot overlap with each other if set.
+ 	 */
+ 	ret = -EINVAL;
+ 	cpuset_for_each_child(c, css, par) {
+-		if ((is_cpu_exclusive(trial) || is_cpu_exclusive(c)) &&
+-		    c != cur) {
++		bool txset, cxset;	/* Are exclusive_cpus set? */
 +
- # Set verbose flag and delay factor
- PROG=$1
- VERBOSE=0
-@@ -103,8 +111,8 @@ console_msg()
++		if (c == cur)
++			continue;
++
++		txset = !cpumask_empty(trial->exclusive_cpus);
++		cxset = !cpumask_empty(c->exclusive_cpus);
++		if (is_cpu_exclusive(trial) || is_cpu_exclusive(c) ||
++		    (txset && cxset)) {
+ 			if (!cpusets_are_exclusive(trial, c))
+ 				goto out;
++		} else if (txset || cxset) {
++			struct cpumask *xcpus, *acpus;
++
++			/*
++			 * When just one of the exclusive_cpus's is set,
++			 * cpus_allowed of the other cpuset, if set, cannot be
++			 * a subset of it or none of those CPUs will be
++			 * available if these exclusive CPUs are activated.
++			 */
++			if (txset) {
++				xcpus = trial->exclusive_cpus;
++				acpus = c->cpus_allowed;
++			} else {
++				xcpus = c->exclusive_cpus;
++				acpus = trial->cpus_allowed;
++			}
++			if (!cpumask_empty(acpus) && cpumask_subset(acpus, xcpus))
++				goto out;
+ 		}
+ 		if ((is_mem_exclusive(trial) || is_mem_exclusive(c)) &&
+-		    c != cur &&
+ 		    nodes_intersects(trial->mems_allowed, c->mems_allowed))
+ 			goto out;
+ 	}
+@@ -1375,7 +1399,7 @@ static void update_sibling_cpumasks(struct cpuset *parent, struct cpuset *cs,
+  */
+ static int update_partition_exclusive(struct cpuset *cs, int new_prs)
  {
- 	MSG=$1
- 	echo "$MSG"
--	echo "" > /dev/console
--	echo "$MSG" > /dev/console
-+	echo "" > $CONSOLE
-+	echo "$MSG" > $CONSOLE
- 	pause 0.01
- }
+-	bool exclusive = (new_prs > 0);
++	bool exclusive = (new_prs > PRS_MEMBER);
  
-@@ -694,9 +702,9 @@ null_isolcpus_check()
- 	[[ $VERBOSE -gt 0 ]] || return 0
- 	# Retry a few times before printing error
- 	RETRY=0
--	while [[ $RETRY -lt 5 ]]
-+	while [[ $RETRY -lt 8 ]]
- 	do
--		pause 0.01
-+		pause 0.02
- 		check_isolcpus "."
- 		[[ $? -eq 0 ]] && return 0
- 		((RETRY++))
-@@ -726,7 +734,7 @@ run_state_test()
+ 	if (exclusive && !is_cpu_exclusive(cs)) {
+ 		if (update_flag(CS_CPU_EXCLUSIVE, cs, 1))
+@@ -2620,8 +2644,6 @@ static int update_exclusive_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+ 		retval = cpulist_parse(buf, trialcs->exclusive_cpus);
+ 		if (retval < 0)
+ 			return retval;
+-		if (!is_cpu_exclusive(cs))
+-			set_bit(CS_CPU_EXCLUSIVE, &trialcs->flags);
+ 	}
  
- 	while [[ $I -lt $CNT ]]
- 	do
--		echo "Running test $I ..." > /dev/console
-+		echo "Running test $I ..." > $CONSOLE
- 		[[ $VERBOSE -gt 1 ]] && {
- 			echo ""
- 			eval echo \${$TEST[$I]}
-@@ -783,7 +791,7 @@ run_state_test()
- 		while [[ $NEWLIST != $CPULIST && $RETRY -lt 8 ]]
- 		do
- 			# Wait a bit longer & recheck a few times
--			pause 0.01
-+			pause 0.02
- 			((RETRY++))
- 			NEWLIST=$(cat cpuset.cpus.effective)
- 		done
+ 	/* Nothing to do if the CPUs didn't change */
 -- 
 2.39.3
 
