@@ -1,80 +1,62 @@
-Return-Path: <cgroups+bounces-3214-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3215-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C88EC90B3EE
-	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 17:21:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E62E590C24C
+	for <lists+cgroups@lfdr.de>; Tue, 18 Jun 2024 05:18:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CEBF28BC3C
-	for <lists+cgroups@lfdr.de>; Mon, 17 Jun 2024 15:21:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7187B283CFA
+	for <lists+cgroups@lfdr.de>; Tue, 18 Jun 2024 03:18:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 742C715E5BB;
-	Mon, 17 Jun 2024 14:41:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HBnrVgY2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFC3B19B3D1;
+	Tue, 18 Jun 2024 03:18:48 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA26915E5A1
-	for <cgroups@vger.kernel.org>; Mon, 17 Jun 2024 14:41:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2FC51C69D;
+	Tue, 18 Jun 2024 03:18:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718635291; cv=none; b=VGUxpkTefCUAArSfybaC2h8sLyMCSjvReAkBjT9yN1oNjmF4ZWiNXz6qdBtBNURxZuXyP/NYWG6vMIlZ1TlWw0i22iWJ0qM5Ui76+RONxr2bjblFRnGpfXz6A18zihMG1nbRl0bern3uKxnZ895ZVPf/HiNfcsJMZ3uOp5OFdho=
+	t=1718680728; cv=none; b=uh4XGc9rwek5BVzvqXlG7W6hB3L2SJwI/d5SpawQyvg5Evh5RCXHYshiNbhgKEyfdcEO3CAMjJLfjm2QvQHl+ztKhndyAou7X7he3nnEK6iKptpT512zJHqla83fdbX5RTtAlgIHBPQbure1aPScv2EsAM1h5fxIvonjIWZEKCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718635291; c=relaxed/simple;
-	bh=QW5oWZ8gmTw6vFjOs2TBVrkH9y+MYMdSSUWbhgEl4xs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WQoUZwW6vk7HKYy9gD8kxOkaymXlYjrF/xbtu3aoZq6jaBch8+K5n4qKeQyEOrJyzNNU0PvByda/W+bB7+QZmMWjH3qVOAlhV2k6dOjnXnsHxPJmKbsP9cAkM3yiyiBasXdC0C7TsfkcwbZsUBWmFssdqCcqS1/qGfrbaTenZmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HBnrVgY2; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1718635288;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dBjPYXeV0EWopTwsNRqGM0mNGcDnahH8FozbM0iNvCA=;
-	b=HBnrVgY248qdq2UqBx86QbW2RkzIzYXX5DKORCfOy7nTkZUtyod8VG4V8SjXOAib1RhdIX
-	cHZ3O9d9dG/4YL3wr6fFHYIrwDEHhQA5N5jWl1kQXNMK1udfJqxF0mSbsEwAo7hX1zIi4q
-	X/UFCNd5dUXZOAKLOA3UZDHamwMtI1M=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-240-yvPWStyWOEuXkLHKYogjIA-1; Mon,
- 17 Jun 2024 10:41:23 -0400
-X-MC-Unique: yvPWStyWOEuXkLHKYogjIA-1
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B341119560B6;
-	Mon, 17 Jun 2024 14:41:21 +0000 (UTC)
-Received: from llong.com (unknown [10.22.32.57])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 4C5C11956048;
-	Mon, 17 Jun 2024 14:41:19 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <shuah@kernel.org>
-Cc: cgroups@vger.kernel.org,
+	s=arc-20240116; t=1718680728; c=relaxed/simple;
+	bh=iJDZc9m2RG0x8XpdmbtTCaEIW8kUeEyAjdeRKO/SaTk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Iwqavsf+/VWdgubR8cZO3BfvcavZHIIfw3WgJ2UR6LvkBvrtyR8fjS+pt4kgWLwnR5WvpsoYtYvwwY5EvBocHjVGPfDQwirUw54cNyQZdx1iI8AZ8zJO52IJH5wpRBLKife3hLUQIqef3xQGmF+Tc1UPGK2YYCe2JHyPY51NUoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4W3Bm36j0fz4f3kvt;
+	Tue, 18 Jun 2024 11:18:27 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id A89321A0181;
+	Tue, 18 Jun 2024 11:18:39 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgCXAQ+N_HBmFJj8AA--.12964S4;
+	Tue, 18 Jun 2024 11:18:39 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: axboe@kernel.dk,
+	tj@kernel.org,
+	gregkh@linuxfoundation.org,
+	bvanassche@acm.org,
+	hch@infradead.org,
+	josef@toxicpanda.com,
+	lizefan.x@bytedance.com,
+	hannes@cmpxchg.org
+Cc: linux-block@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Xavier <ghostxavier@sina.com>,
-	Peter Hunt <pehunt@redhat.com>,
-	Petr Malat <oss@malat.biz>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH-cgroup v2 5/5] selftest/cgroup: Update test_cpuset_prs.sh to match changes
-Date: Mon, 17 Jun 2024 10:39:45 -0400
-Message-Id: <20240617143945.454888-6-longman@redhat.com>
-In-Reply-To: <20240617143945.454888-1-longman@redhat.com>
-References: <20240617143945.454888-1-longman@redhat.com>
+	cgroups@vger.kernel.org,
+	yukuai3@huawei.com,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH RFC v2 0/7] blk-iocost: support to build iocost as kernel module
+Date: Tue, 18 Jun 2024 11:17:44 +0800
+Message-Id: <20240618031751.3470464-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -82,184 +64,64 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+X-CM-TRANSID:gCh0CgCXAQ+N_HBmFJj8AA--.12964S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7CF4rKw18AF45Xr18XrW8WFg_yoW8Xr4UpF
+	sIgr15Cay7Grs7J3WfGw1293Wftw4kWFWrJ3ZxXr95Aw17JF1Iy3Wvv348G34xZFW7Ar4Y
+	gFW3Jry3Kr1ayFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+	UQvtAUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Unlike the list of isolated CPUs, it is not easy to programamatically
-determine what sched domains are being created by the scheduler just
-by examinng the data in various kernfs filesystems. The easiest way
-to get this information is by enabling /sys/kernel/debug/sched/verbose
-file to make those information displayed in the console. This is also
-what the test_cpuset_prs.sh script is doing when the -v flag is given.
+From: Yu Kuai <yukuai3@huawei.com>
 
-It is rather hard to fetch the data from the console and compare it to
-the expected result. An easier way is to dump the expected sched-domain
-information out to the console so that they can be visually compared
-with the actual sched domain data. However, this have to be done manually
-by visual inspection and so will only be done once in a while.
+Changes from RFC v1:
+ - replace the first patch.
+ - add commit message of our motivation and advantages to build iocost
+ as kernel module.
 
-Moreover the preceding cpuset commits also change the cpuset behavior
-requiring corresponding chanages in some test cases as well as new test
-cases to test the newly added functionality.
+The motivation is that iocost is not used widely in our production, and
+some customers don't want to increase kernel size to enable iocost that
+they will never use, and it'll be painful to maintain a new downstream
+kernel. Hence it'll be beneficially to build iocost as kernel module:
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- .../selftests/cgroup/test_cpuset_prs.sh       | 55 ++++++++++++++-----
- 1 file changed, 40 insertions(+), 15 deletions(-)
+- Kernel Size and Resource Usage, modules are loaded only when their
+specific functionality is required.
 
-diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-index 96bf2b5c5eb6..7c08cc153367 100755
---- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-+++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-@@ -169,6 +169,14 @@ test_add_proc()
- #  T    = put a task into cgroup
- #  O<c>=<v> = Write <v> to CPU online file of <c>
- #
-+# ECPUs    - effective CPUs of cpusets
-+# Pstate   - partition root state
-+# ISOLCPUS - isolated CPUs (<icpus>[,<icpus2>])
-+#
-+# Note that if there are 2 fields in ISOLCPUS, the first one is for
-+# sched-debug matching which includes offline CPUs and single-CPU partitions
-+# while the second one is for matching cpuset.cpus.isolated.
-+#
- SETUP_A123_PARTITIONS="C1-3:P1:S+ C2-3:P1:S+ C3:P1"
- TEST_MATRIX=(
- 	#  old-A1 old-A2 old-A3 old-B1 new-A1 new-A2 new-A3 new-B1 fail ECPUs Pstate ISOLCPUS
-@@ -228,23 +236,29 @@ TEST_MATRIX=(
- 	" C0-3:S+ C1-3:S+ C2-3     .    X2-3  X2-3:P2   .      .     0 A1:0-1,A2:2-3,A3:2-3 A1:P0,A2:P2 2-3"
- 	" C0-3:S+ C1-3:S+ C2-3     .    X2-3   X3:P2    .      .     0 A1:0-2,A2:3,A3:3 A1:P0,A2:P2 3"
- 	" C0-3:S+ C1-3:S+ C2-3     .    X2-3   X2-3  X2-3:P2   .     0 A1:0-1,A2:1,A3:2-3 A1:P0,A3:P2 2-3"
--	" C0-3:S+ C1-3:S+ C2-3     .    X2-3   X2-3 X2-3:P2:C3 .     0 A1:0-2,A2:1-2,A3:3 A1:P0,A3:P2 3"
-+	" C0-3:S+ C1-3:S+ C2-3     .    X2-3   X2-3 X2-3:P2:C3 .     0 A1:0-1,A2:1,A3:2-3 A1:P0,A3:P2 2-3"
- 	" C0-3:S+ C1-3:S+ C2-3   C2-3     .      .      .      P2    0 A1:0-3,A2:1-3,A3:2-3,B1:2-3 A1:P0,A3:P0,B1:P-2"
- 	" C0-3:S+ C1-3:S+ C2-3   C4-5     .      .      .      P2    0 B1:4-5 B1:P2 4-5"
- 	" C0-3:S+ C1-3:S+ C2-3    C4    X2-3   X2-3  X2-3:P2   P2    0 A3:2-3,B1:4 A3:P2,B1:P2 2-4"
- 	" C0-3:S+ C1-3:S+ C2-3    C4    X2-3   X2-3 X2-3:P2:C1-3 P2  0 A3:2-3,B1:4 A3:P2,B1:P2 2-4"
- 	" C0-3:S+ C1-3:S+ C2-3    C4    X1-3  X1-3:P2   P2     .     0 A2:1,A3:2-3 A2:P2,A3:P2 1-3"
- 	" C0-3:S+ C1-3:S+ C2-3    C4    X2-3   X2-3  X2-3:P2 P2:C4-5 0 A3:2-3,B1:4-5 A3:P2,B1:P2 2-5"
-+	" C4:X0-3:S+ X1-3:S+ X2-3  .      .      P2     .      .     0 A1:4,A2:1-3,A3:1-3 A2:P2 1-3"
-+	" C4:X0-3:S+ X1-3:S+ X2-3  .      .      .      P2     .     0 A1:4,A2:4,A3:2-3 A3:P2 2-3"
- 
- 	# Nested remote/local partition tests
- 	" C0-3:S+ C1-3:S+ C2-3   C4-5   X2-3  X2-3:P1   P2     P1    0 A1:0-1,A2:,A3:2-3,B1:4-5 \
- 								       A1:P0,A2:P1,A3:P2,B1:P1 2-3"
- 	" C0-3:S+ C1-3:S+ C2-3    C4    X2-3  X2-3:P1   P2     P1    0 A1:0-1,A2:,A3:2-3,B1:4 \
- 								       A1:P0,A2:P1,A3:P2,B1:P1 2-4,2-3"
-+	" C0-3:S+ C1-3:S+ C2-3    C4    X2-3  X2-3:P1    .     P1    0 A1:0-1,A2:2-3,A3:2-3,B1:4 \
-+								       A1:P0,A2:P1,A3:P0,B1:P1"
- 	" C0-3:S+ C1-3:S+  C3     C4    X2-3  X2-3:P1   P2     P1    0 A1:0-1,A2:2,A3:3,B1:4 \
- 								       A1:P0,A2:P1,A3:P2,B1:P1 2-4,3"
- 	" C0-4:S+ C1-4:S+ C2-4     .    X2-4  X2-4:P2  X4:P1    .    0 A1:0-1,A2:2-3,A3:4 \
- 								       A1:P0,A2:P2,A3:P1 2-4,2-3"
-+	" C0-4:S+ C1-4:S+ C2-4     .    X2-4  X2-4:P2 X3-4:P1   .    0 A1:0-1,A2:2,A3:3-4 \
-+								       A1:P0,A2:P2,A3:P1 2"
- 	" C0-4:X2-4:S+ C1-4:X2-4:S+:P2 C2-4:X4:P1 \
- 				   .      .      X5      .      .    0 A1:0-4,A2:1-4,A3:2-4 \
- 								       A1:P0,A2:P-2,A3:P-1"
-@@ -270,8 +284,8 @@ TEST_MATRIX=(
- 			    .      .    X2-3    P2      .      .     0 A1:0-2,A2:3,XA2:3 A2:P2 3"
- 
- 	# Invalid to valid local partition direct transition tests
--	" C1-3:S+:P2 C2-3:X1:P2 .  .      .      .      .      .     0 A1:1-3,XA1:1-3,A2:2-3:XA2: A1:P2,A2:P-2 1-3"
--	" C1-3:S+:P2 C2-3:X1:P2 .  .      .    X3:P2    .      .     0 A1:1-2,XA1:1-3,A2:3:XA2:3 A1:P2,A2:P2 1-3"
-+	" C1-3:S+:P2 X4:P2  .      .      .      .      .      .     0 A1:1-3,XA1:1-3,A2:1-3:XA2: A1:P2,A2:P-2 1-3"
-+	" C1-3:S+:P2 X4:P2  .      .      .    X3:P2    .      .     0 A1:1-2,XA1:1-3,A2:3:XA2:3 A1:P2,A2:P2 1-3"
- 	"  C0-3:P2   .      .    C4-6   C0-4     .      .      .     0 A1:0-4,B1:4-6 A1:P-2,B1:P0"
- 	"  C0-3:P2   .      .    C4-6 C0-4:C0-3  .      .      .     0 A1:0-3,B1:4-6 A1:P2,B1:P0 0-3"
- 	"  C0-3:P2   .      .  C3-5:C4-5  .      .      .      .     0 A1:0-3,B1:4-5 A1:P2,B1:P0 0-3"
-@@ -282,21 +296,18 @@ TEST_MATRIX=(
- 	" C0-3:X1-3:S+:P2 C1-3:X2-3:S+:P2 C2-3:X3:P2 \
- 				   .      .     X4      .      .     0 A1:1-3,A2:1-3,A3:2-3,XA2:,XA3: A1:P2,A2:P-2,A3:P-2 1-3"
- 	" C0-3:X1-3:S+:P2 C1-3:X2-3:S+:P2 C2-3:X3:P2 \
--				   .      .     C4      .      .     0 A1:1-3,A2:1-3,A3:2-3,XA2:,XA3: A1:P2,A2:P-2,A3:P-2 1-3"
-+				   .      .    C4:X     .      .     0 A1:1-3,A2:1-3,A3:2-3,XA2:,XA3: A1:P2,A2:P-2,A3:P-2 1-3"
- 	# Local partition CPU change tests
- 	" C0-5:S+:P2 C4-5:S+:P1 .  .      .    C3-5     .      .     0 A1:0-2,A2:3-5 A1:P2,A2:P1 0-2"
- 	" C0-5:S+:P2 C4-5:S+:P1 .  .    C1-5     .      .      .     0 A1:1-3,A2:4-5 A1:P2,A2:P1 1-3"
- 
- 	# cpus_allowed/exclusive_cpus update tests
- 	" C0-3:X2-3:S+ C1-3:X2-3:S+ C2-3:X2-3 \
--				   .     C4      .      P2     .     0 A1:4,A2:4,XA2:,XA3:,A3:4 \
-+				   .    X:C4     .      P2     .     0 A1:4,A2:4,XA2:,XA3:,A3:4 \
- 								       A1:P0,A3:P-2"
- 	" C0-3:X2-3:S+ C1-3:X2-3:S+ C2-3:X2-3 \
- 				   .     X1      .      P2     .     0 A1:0-3,A2:1-3,XA1:1,XA2:,XA3:,A3:2-3 \
- 								       A1:P0,A3:P-2"
--	" C0-3:X2-3:S+ C1-3:X2-3:S+ C2-3:X2-3 \
--				   .      .     C3      P2     .     0 A1:0-2,A2:0-2,XA2:3,XA3:3,A3:3 \
--								       A1:P0,A3:P2 3"
- 	" C0-3:X2-3:S+ C1-3:X2-3:S+ C2-3:X2-3 \
- 				   .      .     X3      P2     .     0 A1:0-2,A2:1-2,XA2:3,XA3:3,A3:3 \
- 								       A1:P0,A3:P2 3"
-@@ -304,10 +315,7 @@ TEST_MATRIX=(
- 				   .      .     X3      .      .     0 A1:0-3,A2:1-3,XA2:3,XA3:3,A3:2-3 \
- 								       A1:P0,A3:P-2"
- 	" C0-3:X2-3:S+ C1-3:X2-3:S+ C2-3:X2-3:P2 \
--				   .      .     C3      .      .     0 A1:0-3,A2:3,XA2:3,XA3:3,A3:3 \
--								       A1:P0,A3:P-2"
--	" C0-3:X2-3:S+ C1-3:X2-3:S+ C2-3:X2-3:P2 \
--				   .     C4      .      .      .     0 A1:4,A2:4,A3:4,XA1:,XA2:,XA3 \
-+				   .     X4      .      .      .     0 A1:0-3,A2:1-3,A3:2-3,XA1:4,XA2:,XA3 \
- 								       A1:P0,A3:P-2"
- 
- 	#  old-A1 old-A2 old-A3 old-B1 new-A1 new-A2 new-A3 new-B1 fail ECPUs Pstate ISOLCPUS
-@@ -354,6 +362,9 @@ TEST_MATRIX=(
- 	"  C0-1:P1   .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-2,B1:2-3 A1:P-1,B1:P-1"
- 	"   C0-1     .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-2,B1:2-3 A1:P0,B1:P-1"
- 
-+	# cpuset.cpus can overlap with sibling cpuset.cpus.exclusive but not subsumed by it
-+	"   C0-3     .      .    C4-5     X5     .      .      .     0 A1:0-3,B1:4-5"
-+
- 	#  old-A1 old-A2 old-A3 old-B1 new-A1 new-A2 new-A3 new-B1 fail ECPUs Pstate ISOLCPUS
- 	#  ------ ------ ------ ------ ------ ------ ------ ------ ---- ----- ------ --------
- 	# Failure cases:
-@@ -363,6 +374,9 @@ TEST_MATRIX=(
- 
- 	# Changes to cpuset.cpus.exclusive that violate exclusivity rule is rejected
- 	"   C0-3     .      .    C4-5   X0-3     .      .     X3-5   1 A1:0-3,B1:4-5"
-+
-+	# cpuset.cpus cannot be a subset of sibling cpuset.cpus.exclusive
-+	"   C0-3     .      .    C4-5   X3-5     .      .      .     1 A1:0-3,B1:4-5"
- )
- 
- #
-@@ -564,14 +578,15 @@ check_cgroup_states()
- 	do
- 		set -- $(echo $CHK | sed -e "s/:/ /g")
- 		CGRP=$1
-+		CGRP_DIR=$CGRP
- 		STATE=$2
- 		FILE=
- 		EVAL=$(expr substr $STATE 2 2)
--		[[ $CGRP = A2 ]] && CGRP=A1/A2
--		[[ $CGRP = A3 ]] && CGRP=A1/A2/A3
-+		[[ $CGRP = A2 ]] && CGRP_DIR=A1/A2
-+		[[ $CGRP = A3 ]] && CGRP_DIR=A1/A2/A3
- 
- 		case $STATE in
--			P*) FILE=$CGRP/cpuset.cpus.partition
-+			P*) FILE=$CGRP_DIR/cpuset.cpus.partition
- 			    ;;
- 			*)  echo "Unknown state: $STATE!"
- 			    exit 1
-@@ -595,6 +610,16 @@ check_cgroup_states()
- 				;;
- 		esac
- 		[[ $EVAL != $VAL ]] && return 1
-+
-+		#
-+		# For root partition, dump sched-domains info to console if
-+		# verbose mode set for manual comparison with sched debug info.
-+		#
-+		[[ $VAL -eq 1 && $VERBOSE -gt 0 ]] && {
-+			DOMS=$(cat $CGRP_DIR/cpuset.cpus.effective)
-+			[[ -n "$DOMS" ]] &&
-+				echo " [$CGRP] sched-domain: $DOMS" > $CONSOLE
-+		}
- 	done
- 	return 0
- }
+- Flexibility and Maintainability, allows for dynamic loading and unloading
+of modules at runtime without the need to recompile and restart the kernel,
+for example we can just replace blk-iocost.ko to fix iocost CVE in our
+production environment.
+
+Yu Kuai (7):
+  blk-cgroup: add a new helper pr_cont_blkg_path()
+  cgroup: export cgroup_parse_float
+  block: export some API
+  blk-iocost: factor out helpers to handle params from ioc_qos_write()
+  blk-iocost: parse params before initializing iocost
+  blk-iocost: support to free iocost
+  blk-iocost: support to build iocost as kernel module
+
+ block/Kconfig             |   2 +-
+ block/blk-cgroup.c        |  10 ++
+ block/blk-cgroup.h        |   1 +
+ block/blk-iocost.c        | 225 ++++++++++++++++++++++++++------------
+ block/blk-rq-qos.c        |   2 +
+ include/linux/blk_types.h |   2 +-
+ kernel/cgroup/cgroup.c    |   1 +
+ 7 files changed, 170 insertions(+), 73 deletions(-)
+
 -- 
-2.39.3
+2.39.2
 
 
