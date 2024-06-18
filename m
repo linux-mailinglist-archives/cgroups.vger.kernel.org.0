@@ -1,43 +1,43 @@
-Return-Path: <cgroups+bounces-3216-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3218-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9625E90C252
-	for <lists+cgroups@lfdr.de>; Tue, 18 Jun 2024 05:19:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9978390C256
+	for <lists+cgroups@lfdr.de>; Tue, 18 Jun 2024 05:19:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 069DAB227E9
-	for <lists+cgroups@lfdr.de>; Tue, 18 Jun 2024 03:19:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37F7A283CC1
+	for <lists+cgroups@lfdr.de>; Tue, 18 Jun 2024 03:19:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EA0019B5A2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E15762B9A6;
 	Tue, 18 Jun 2024 03:18:49 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2F56256D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2FF41CD35;
 	Tue, 18 Jun 2024 03:18:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718680729; cv=none; b=jsWpDVHd+/TlKZBd0q87Kf9jJ75i2kqR1+gn/AkXBBGYT75BXk6sHV7Y2SLYPwjnBR9+UOa5w7nPqPWV0UAxUDXhM9OLP8x1/jccQ1wh3LXRmCXA5111UaDPlRwEcnABDNYnDcEqZdgTbT0nT5J/+w9LEQ3y0DsADkoMHtcb+uA=
+	t=1718680729; cv=none; b=r5sjqLHPygH0dLJvWsOt8mV2tHHnXlud6m3J8SwakWEopTQ5DAA9NTBVdGieQknxWqg08Ha0CgZlpknzp+r0/1a+sqZxpVxuIY0wKW0EQ7IJGRaSI1vEdyXuQr6Mj5PU93ebKTM0XkLsX7K3On7fQLRq39hJZzwEbCyaCi6agnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1718680729; c=relaxed/simple;
-	bh=e7+vDoIEVL1RlGQ3D7xQBG+dbRRC33wLqhnC22LJoPc=;
+	bh=1w2uBjaaCYiqkDeJ8zIZEjj4QVSb+MXZMKyM2t9/Q68=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UjCqGIvRCaEZrJsnnvbxqMoxaGRpDxKTxDCPBuZdtqfSQrEb8C2utvMIB7wC9cCtzqE7MGgJe1Ce+rSjAlsoMsJBWpU5lg0w7pLGaWH/IZi5k5rUywHeJDdOaH1gnGuXFYEutHS2D/QqEdfcjKdzffyd1fdEIEeTi3Oa7l2atGY=
+	 MIME-Version; b=mWEBsU6ycY1uKqIwT47F8/mjlH++CJV5dW3iqlN8hefsw4aGFoC1qKWFMrIywRlTHb3kH4Kzn01Aru4ff9bRrcvDL08J4eCqyqp0u3fU9E0ljLUhVo7Dtt/zLpcNmrf/bUJ8fUGBFATPgVsA+kTpenNtmyDWMH/9/5lWhjNOPSw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4W3BmD2dswz4f3jQd;
-	Tue, 18 Jun 2024 11:18:36 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4W3Bm76yzWz4f3kvv;
+	Tue, 18 Jun 2024 11:18:31 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 2840E1A016E;
+	by mail.maildlp.com (Postfix) with ESMTP id B2ED01A0FC7;
 	Tue, 18 Jun 2024 11:18:43 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgCXAQ+N_HBmFJj8AA--.12964S10;
-	Tue, 18 Jun 2024 11:18:42 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgCXAQ+N_HBmFJj8AA--.12964S11;
+	Tue, 18 Jun 2024 11:18:43 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: axboe@kernel.dk,
 	tj@kernel.org,
@@ -54,9 +54,9 @@ Cc: linux-block@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH RFC v2 6/7] blk-iocost: support to free iocost
-Date: Tue, 18 Jun 2024 11:17:50 +0800
-Message-Id: <20240618031751.3470464-7-yukuai1@huaweicloud.com>
+Subject: [PATCH RFC v2 7/7] blk-iocost: support to build iocost as kernel module
+Date: Tue, 18 Jun 2024 11:17:51 +0800
+Message-Id: <20240618031751.3470464-8-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240618031751.3470464-1-yukuai1@huaweicloud.com>
 References: <20240618031751.3470464-1-yukuai1@huaweicloud.com>
@@ -67,10 +67,10 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCXAQ+N_HBmFJj8AA--.12964S10
-X-Coremail-Antispam: 1UD129KBjvJXoWxGry5Kr4DCFWfuFy7KF43GFg_yoW5KFy7pa
-	1ruw1akayqqrs7urnxXr42vw1Skws2gryxJ3yfG34ftrnFkr1FqF1kCry8CFy5JFZ5Ar4a
-	vFZ5trW7Gr48ArJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgCXAQ+N_HBmFJj8AA--.12964S11
+X-Coremail-Antispam: 1UD129KBjvJXoWxCr1xCr43AF4xCr1xAFy7Wrg_yoW5CF48pF
+	s8Ww1Yyay7KFsIgayfGwn7Xr1fJa92gFWrWa43W3sYv3yayw1xZ3WkJryrXFy8ZF43Zr43
+	XFW0qrWakFyUArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -89,138 +89,102 @@ X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Currently if iocost is initialized, it can never be freed until the disk
-is deleted.
+The motivation is that iocost is not used widely in our production, and
+some customers don't want to increase kernel size to enable iocost that
+they will never use, and it'll be painful to maintain a new downstream
+kernel version. Hence it'll be beneficially to build iocost as kernel
+module:
 
-A new param "free" is added to the blk-io cgroup api "io.cost.qos", and
-user can use it to free iocost. On the one hand prevent overhead from
-fast path, on the other hand prepare to build iocost as kernel module.
+- Kernel Size and Resource Usage, modules are loaded only when their
+specific functionality is required.
+
+- Flexibility and Maintainability, allows for dynamic loading and unloading
+of modules at runtime without the need to recompile and restart the kernel,
+for example we can just replace blk-iocost.ko to fix iocost CVE in our
+production environment.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- block/blk-iocost.c | 38 +++++++++++++++++++++++++++++++++-----
- 1 file changed, 33 insertions(+), 5 deletions(-)
+ block/Kconfig             |  2 +-
+ block/blk-iocost.c        | 14 +++++++++++++-
+ include/linux/blk_types.h |  2 +-
+ 3 files changed, 15 insertions(+), 3 deletions(-)
 
+diff --git a/block/Kconfig b/block/Kconfig
+index dc12af58dbae..b94b93158e57 100644
+--- a/block/Kconfig
++++ b/block/Kconfig
+@@ -156,7 +156,7 @@ config BLK_CGROUP_FC_APPID
+ 	  application specific identification into the FC frame.
+ 
+ config BLK_CGROUP_IOCOST
+-	bool "Enable support for cost model based cgroup IO controller"
++	tristate "Enable support for cost model based cgroup IO controller"
+ 	depends on BLK_CGROUP
+ 	select BLK_RQ_ALLOC_TIME
+ 	help
 diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 34dcf4cdfadb..9765c988113f 100644
+index 9765c988113f..33ab6e436af2 100644
 --- a/block/blk-iocost.c
 +++ b/block/blk-iocost.c
-@@ -324,6 +324,7 @@ enum ioc_running {
- enum {
- 	QOS_ENABLE,
- 	QOS_CTRL,
-+	QOS_FREE,
- 	NR_QOS_CTRL_PARAMS,
- };
+@@ -2850,6 +2850,7 @@ static void ioc_rqos_queue_depth_changed(struct rq_qos *rqos)
  
-@@ -2847,11 +2848,9 @@ static void ioc_rqos_queue_depth_changed(struct rq_qos *rqos)
- 	spin_unlock_irq(&ioc->lock);
- }
- 
--static void ioc_rqos_exit(struct rq_qos *rqos)
-+static void __ioc_exit(struct ioc *ioc)
+ static void __ioc_exit(struct ioc *ioc)
  {
--	struct ioc *ioc = rqos_to_ioc(rqos);
--
--	blkcg_deactivate_policy(rqos->disk, &blkcg_policy_iocost);
-+	blkcg_deactivate_policy(ioc->rqos.disk, &blkcg_policy_iocost);
++	module_put(THIS_MODULE);
+ 	blkcg_deactivate_policy(ioc->rqos.disk, &blkcg_policy_iocost);
  
  	spin_lock_irq(&ioc->lock);
- 	ioc->running = IOC_STOP;
-@@ -2862,6 +2861,13 @@ static void ioc_rqos_exit(struct rq_qos *rqos)
- 	kfree(ioc);
- }
+@@ -2882,13 +2883,19 @@ static int blk_iocost_init(struct gendisk *disk)
+ 	struct ioc *ioc;
+ 	int i, cpu, ret;
  
-+static void ioc_rqos_exit(struct rq_qos *rqos)
-+{
-+	struct ioc *ioc = rqos_to_ioc(rqos);
++	if (!try_module_get(THIS_MODULE))
++		return -ENODEV;
 +
-+	__ioc_exit(ioc);
-+}
-+
- static const struct rq_qos_ops ioc_rqos_ops = {
- 	.throttle = ioc_rqos_throttle,
- 	.merge = ioc_rqos_merge,
-@@ -3193,6 +3199,7 @@ static int ioc_qos_show(struct seq_file *sf, void *v)
- static const match_table_t qos_ctrl_tokens = {
- 	{ QOS_ENABLE,		"enable=%u"	},
- 	{ QOS_CTRL,		"ctrl=%s"	},
-+	{ QOS_FREE,		"free"		},
- 	{ NR_QOS_CTRL_PARAMS,	NULL		},
- };
- 
-@@ -3210,6 +3217,7 @@ struct ioc_qos_params {
- 	u32 qos[NR_QOS_PARAMS];
- 	bool enable;
- 	bool user;
-+	bool free;
- };
- 
- static void ioc_qos_params_init(struct ioc *ioc, struct ioc_qos_params *params)
-@@ -3228,6 +3236,8 @@ static void ioc_qos_params_init(struct ioc *ioc, struct ioc_qos_params *params)
- 		params->enable = false;
- 		params->user = false;
- 	}
-+
-+	params->free = false;
- }
- 
- static int ioc_qos_params_parse(struct blkg_conf_ctx *ctx,
-@@ -3260,6 +3270,9 @@ static int ioc_qos_params_parse(struct blkg_conf_ctx *ctx,
- 			else
- 				return -EINVAL;
- 			continue;
-+		case QOS_FREE:
-+			params->free = true;
-+			continue;
- 		}
- 
- 		tok = match_token(p, qos_tokens, args);
-@@ -3338,6 +3351,15 @@ static void ioc_qos_params_update(struct gendisk *disk, struct ioc *ioc,
- 	ioc_refresh_params(ioc, true);
- }
- 
-+static void ioc_free(struct ioc *ioc)
-+{
-+	if (!ioc)
-+		return;
-+
-+	rq_qos_del(&ioc->rqos);
-+	__ioc_exit(ioc);
-+}
-+
- static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
- 			     size_t nbytes, loff_t off)
- {
-@@ -3366,7 +3388,7 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
- 	if (ret)
- 		goto err;
- 
--	if (!ioc) {
-+	if (!params.free && !ioc) {
- 		ret = blk_iocost_init(disk);
- 		if (ret)
- 			goto err;
-@@ -3376,6 +3398,11 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
- 	blk_mq_freeze_queue(disk->queue);
- 	blk_mq_quiesce_queue(disk->queue);
- 
-+	if (params.free) {
-+		ioc_free(ioc);
-+		goto out;
+ 	ioc = kzalloc(sizeof(*ioc), GFP_KERNEL);
+-	if (!ioc)
++	if (!ioc) {
++		module_put(THIS_MODULE);
+ 		return -ENOMEM;
 +	}
+ 
+ 	ioc->pcpu_stat = alloc_percpu(struct ioc_pcpu_stat);
+ 	if (!ioc->pcpu_stat) {
+ 		kfree(ioc);
++		module_put(THIS_MODULE);
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -2938,6 +2945,7 @@ static int blk_iocost_init(struct gendisk *disk)
+ 	rq_qos_del(&ioc->rqos);
+ err_free_ioc:
+ 	free_percpu(ioc->pcpu_stat);
++	module_put(THIS_MODULE);
+ 	kfree(ioc);
+ 	return ret;
+ }
+@@ -3616,3 +3624,7 @@ static void __exit ioc_exit(void)
+ 
+ module_init(ioc_init);
+ module_exit(ioc_exit);
 +
- 	spin_lock_irq(&ioc->lock);
- 
- 	ioc_qos_params_update(disk, ioc, &params);
-@@ -3386,6 +3413,7 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
- 	else
- 		wbt_enable_default(disk);
- 
-+out:
- 	blk_mq_unquiesce_queue(disk->queue);
- 	blk_mq_unfreeze_queue(disk->queue);
- 
++MODULE_AUTHOR("Tejun Heo");
++MODULE_LICENSE("GPL");
++MODULE_DESCRIPTION("Cost model based cgroup IO controller");
+diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+index 781c4500491b..8da12ebc7777 100644
+--- a/include/linux/blk_types.h
++++ b/include/linux/blk_types.h
+@@ -234,7 +234,7 @@ struct bio {
+ 	 */
+ 	struct blkcg_gq		*bi_blkg;
+ 	struct bio_issue	bi_issue;
+-#ifdef CONFIG_BLK_CGROUP_IOCOST
++#if IS_ENABLED(CONFIG_BLK_CGROUP_IOCOST)
+ 	u64			bi_iocost_cost;
+ #endif
+ #endif
 -- 
 2.39.2
 
