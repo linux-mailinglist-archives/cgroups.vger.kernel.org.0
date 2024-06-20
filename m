@@ -1,86 +1,64 @@
-Return-Path: <cgroups+bounces-3241-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3242-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1048690F547
-	for <lists+cgroups@lfdr.de>; Wed, 19 Jun 2024 19:38:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CF77190FCFA
+	for <lists+cgroups@lfdr.de>; Thu, 20 Jun 2024 08:48:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 359681C22D12
-	for <lists+cgroups@lfdr.de>; Wed, 19 Jun 2024 17:38:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C82B51C20DAA
+	for <lists+cgroups@lfdr.de>; Thu, 20 Jun 2024 06:48:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBC0B155C80;
-	Wed, 19 Jun 2024 17:38:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95A673C6AC;
+	Thu, 20 Jun 2024 06:48:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RlexAPjc"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="01ffPyud"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4738513FD83;
-	Wed, 19 Jun 2024 17:38:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF26F38F82;
+	Thu, 20 Jun 2024 06:48:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718818715; cv=none; b=T2/qbn2NzYJ2HhyN1UrIss40j6sd4/fkuxkOxUq+c/RoXsmC3p/hU965hHmOOTImISoNae4f4JW6KHB2tBhq1GqRekyu5hCTPQIRbXN87ArBUKOnEx0sxBZUkEhJ6MLStJsJbB4cY5eyjVL9JP04Nf3Nf0ZUsWQCB0qGSn3Wcr0=
+	t=1718866111; cv=none; b=YZj5eTFeS3LKkuqVXQ2byKAGN0gQhry0M7lNfXWI9nwlGgDmcVjlQwQoIMQNLzSo2V8Udo3EG5kXV9ibq93x2TRt3B71MfdKGe6/jytDgARjDOYB2HF/ss8jWTEHg8eGhQp5dElDTbN+d+zRofiQw8B/hc8b84siaJH1Dyz7qWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718818715; c=relaxed/simple;
-	bh=4yMlmNu3E4RPfMYi/vUwCHzrd3B4Imj083hU/YUWekI=;
+	s=arc-20240116; t=1718866111; c=relaxed/simple;
+	bh=EURGL1Rs3BdktP3BB0xtvce8eQsfhKCbDz44BOfgB4A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pm1oHGYfbew+Zm7pFWi1Uv6+hv5kVuVKaaz6Y9KLlFb0C/+XbOq4Pw7vvmlx1QEA3/aJmbGjaPSZ2k2Z0Y0Q8dZPbxVkkWvNl/hhG2evgdT10/PfXnMKeIpc8RQSezUTIku/WOjSuSa7orH+qn/E7/e0GSkcAAfdr2LQL1e6MZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RlexAPjc; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-70df2135426so30689a12.2;
-        Wed, 19 Jun 2024 10:38:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718818713; x=1719423513; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AwlqRmpnnTbOA8a/YYpeWoQQ9Oj2iA9/yTutC9gsceI=;
-        b=RlexAPjcA16POJxXvYNTfUD9xhKzcTKKLLy69876NfLLJcwQU1wuxc2NOQWvyttss2
-         IariaH4gpie0wGSDrJvHrMBEbsCD2hc10va8x4WATC7wnw5X1ijc71uQZgYGosXivkbp
-         dSeapBmOqkRXvT7ECZXSzA4lcworRoK9tzIsyTre3SDsQYUUOyN9S9bZrRb5rBoTXddi
-         2rBZ73IIHz7Gze65LKkm7YdwkDuIF38sv7oBhCPetZ9rXSx8tCaJzHrGc8nyGCKebmof
-         j0Vheh/lw0Rm0557596VAFzC/lXu6B9LXKqwYrr9ocNtkh6PTbKEmkFKyknIi90/yBXf
-         rLyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718818713; x=1719423513;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AwlqRmpnnTbOA8a/YYpeWoQQ9Oj2iA9/yTutC9gsceI=;
-        b=hFtfFoikKQzdsAlVQKGK0LkAzR9rCxv4QiyBSC6pi1x8ohzVLN0syfK+0nbOO1NFxs
-         Cuc97qktERwIXh2MsTe2WW5zljj3WH8Y03rZZkKO80+bbWzMQKONPxITj6arv1aLdfzc
-         vINQRrX+Ksar0VRWyoC+YTQj2GD/oL46eGBR3Il3geYUTcLYprwTSjzRr8hykQCMt4G6
-         sBr2Ls2nPHpq2uMsiTRpg4JyzL96jBAbUlLHf9+6PrFo0+r1Id2X2wFS7ye11dabzfny
-         zG9vbcf0vsVLQeuEqhDPPX2gbg9XikTby9KXTuHBbPzHdrEWyyaE+oGnGfasS4RSxmti
-         910Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVEN1NHk/dmkme5Qr+VI2qtGbfIDRJAo0lXr4Or9v6/1A4DKOBWs5z40CLPTPurl8xuXA9ThitfEGKc+jO0aX8UhuHh+sbDTAKCXj4Kisj9qGjmRPvBYTw1araDQJbfiOsjfkO+3D+HQ92cIwJ1qH2TQ7JkxJhuaal4D2SN6blyWb14dkqdxHMydXlJ3SdlsIlQjNyXywCkomuzUyxYaabNqA==
-X-Gm-Message-State: AOJu0YwLpKu5gvpAjdFZs3vBxaZ+K9Kg0LsqBES+epzSpWZNljqKoJ9y
-	wYS7Q1Q95+pTTLB8K3zpSJXeqs+j0E3IqDpugkcem1cX2DkVjNvf
-X-Google-Smtp-Source: AGHT+IGigk1SJQVkobXkIRHmXQvXlqqaw2Y/3/XxAO+442rp0W/fQMCjhA8liZPY8oQLO1GaOnawTg==
-X-Received: by 2002:a17:902:d4c1:b0:1f6:7f8f:65c7 with SMTP id d9443c01a7336-1f9aa3e9e54mr37915675ad.26.1718818713403;
-        Wed, 19 Jun 2024 10:38:33 -0700 (PDT)
-Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f855f01a26sm120205105ad.199.2024.06.19.10.38.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jun 2024 10:38:32 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 19 Jun 2024 07:38:31 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Xavier <ghostxavier@sina.com>, Peter Hunt <pehunt@redhat.com>,
-	Petr Malat <oss@malat.biz>
-Subject: Re: [PATCH-cgroup v2 0/5] cgroup/cpuset: Fix miscellaneous issues
-Message-ID: <ZnMXl5mS5zUHp7rS@slm.duckdns.org>
-References: <20240617143945.454888-1-longman@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zeziuefi+OKyBjD7Dz1huDjMmaDP+UdNMCA6eUCOjyIcdqsm8wMOwq3t6CK90LMBNLnesSYjx4/UmSn5iuzdyX3X87InLOFP6dteHuZC9RKPxmozm0HzoK+tCjqDquWHvKO18USjIJjR1M4olDoJTk53GAR69bShezcaB7TTRIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=01ffPyud; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=5jgpDICmScrWTrO4VPVId37Kbw6KdjAcTNIFFr+6Bgw=; b=01ffPyudzC/VgkyjmjQOPwou+s
+	1QzmQmXLrPXKUMSKu6oGIznZeINtfeyUrZZ2yxj9ICX9sRmgJ5ZA1HQ4I2JegSqZVxKv3Bi8nQtun
+	67dMzxaYV8MdzA65jPyT4mpdSVwpwmk7wnsvE5XCHCMhYkkCkls3ai/yU/hobR0FM3A6uqD4Cm/Sw
+	Q19MzuDWeSroLcv4b47sWjTrro4U0rR2rkEkiagMWy4+86GhPlAnB/9UuyP7Q8RFYZX4eErktfVwT
+	WmbItLm0kxVmjX4cuHu3W9diD3d13pVIOkMNi6mwNm7DzaE/jsq94oncOR4xfIg+HTkJafazdmZH9
+	dr4nDkCQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sKBam-00000003r8E-17Bl;
+	Thu, 20 Jun 2024 06:48:20 +0000
+Date: Wed, 19 Jun 2024 23:48:20 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: Christoph Hellwig <hch@infradead.org>, axboe@kernel.dk, tj@kernel.org,
+	gregkh@linuxfoundation.org, bvanassche@acm.org,
+	josef@toxicpanda.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+	"yukuai (C)" <yukuai3@huawei.com>
+Subject: Re: [PATCH RFC v2 3/7] block: export some API
+Message-ID: <ZnPQtJE8VqgPjaLA@infradead.org>
+References: <20240618031751.3470464-1-yukuai1@huaweicloud.com>
+ <20240618031751.3470464-4-yukuai1@huaweicloud.com>
+ <ZnEzyJW9WAX0Rjsx@infradead.org>
+ <25110963-cc9e-7c9f-09b3-d57e4ce6109b@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -89,35 +67,20 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240617143945.454888-1-longman@redhat.com>
+In-Reply-To: <25110963-cc9e-7c9f-09b3-d57e4ce6109b@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Mon, Jun 17, 2024 at 10:39:40AM -0400, Waiman Long wrote:
->  v2:
->   - Fix test_cpuset_prs.sh problems reported by test robot
->   - Relax restriction imposed between cpuset.cpus.exclusive and
->     cpuset.cpus of sibling cpusets.
->   - Make cpuset.cpus.exclusive independent of cpuset.cpus. 
->   - Update test_cpuset_prs.sh accordingly.
->   
->  [v1] https://lore.kernel.org/lkml/20240605171858.1323464-1-longman@redhat.com/
+On Tue, Jun 18, 2024 at 03:58:54PM +0800, Yu Kuai wrote:
+> There is already bigger helper blkg_conf_prep() exported, as used by bfq
+> for a long time already, and this helper is introduced for code
+> optimization, as iocost configuration doesn't need to access the blkg.
 > 
-> This patchset attempts to address the following cpuset issues.
->  1) While reviewing the generate_sched_domains() function, I found a bug
->     in generating sched domains for remote non-isolating partitions.
->  2) Test robot had reported a test_cpuset_prs.sh test failure.
->  3) The current exclusivity test between cpuset.cpus.exclusive and
->     cpuset.cpus and the restriction that the set effective exclusive
->     CPUs has to be a subset of cpuset.cpus make it harder to preconfigure
->     the cgroup hierarchy to enable remote partition.
-> 
-> The test_cpuset_prs.sh script is updated to match changes made in this
-> patchset and was run to verify that the new code did not cause any
-> regression.
+> Perhaps this should be another discussion about "design mistakes",
+> however, I'm not sure why. :( Do you have previous discussions?
 
-Applied to cgroup/for-6.11.
+blkg_conf_prep at least has some level of abstraction.
 
-Thanks.
+But at least my conclusion is:  don't make blk-iocost modular.  It's
+far too messy to split out, and not really worth it.
 
--- 
-tejun
 
