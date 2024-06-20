@@ -1,456 +1,175 @@
-Return-Path: <cgroups+bounces-3258-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3259-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D3DD910B16
-	for <lists+cgroups@lfdr.de>; Thu, 20 Jun 2024 18:06:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D2C2911223
+	for <lists+cgroups@lfdr.de>; Thu, 20 Jun 2024 21:31:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5EED6B24FEB
-	for <lists+cgroups@lfdr.de>; Thu, 20 Jun 2024 16:06:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 471301C22820
+	for <lists+cgroups@lfdr.de>; Thu, 20 Jun 2024 19:31:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F18D1B1418;
-	Thu, 20 Jun 2024 16:05:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56D791B47C1;
+	Thu, 20 Jun 2024 19:31:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RQhKw1Ls"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Yx4EB1vE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 297191AF68A;
-	Thu, 20 Jun 2024 16:05:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBD431B47A7
+	for <cgroups@vger.kernel.org>; Thu, 20 Jun 2024 19:31:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718899557; cv=none; b=ENwDMvV+vYGx2esnEbSX9dtyo8QnQFOPTmDvK1Y0VX0WiN7wsZNseEjzijd08yCt7uhB9AH123d0xWiG5CbuN3swJAHDwPp8cwX7uh7PWYPbUq7j21s1xd74cg52MJKTq6pTfI7SYJPSJPFT9b3E7+N2Jd3gQhWO8zIhFIoFDKU=
+	t=1718911884; cv=none; b=nVcXtG1L4NZryCUd+ulxLEzCDdRiwMp/yPPzupBH1L4nRAEimgYzWI2u4a8VMCtGZlaM5R28U3NfH6ZeIIbq+9jO20iInPddLedrkeonltvDF2qfKcWTuzAdKNelHMCd3u8HWWegjJ/ZdoaeyPzz0uBU4nnurRGz4izO3qsSUCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718899557; c=relaxed/simple;
-	bh=2SDKW4L6Q15RBL23B70Zucrxs8TmimpdU68R6G9rQX0=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=rbsE8jrYGpGb+N6LtZ+eu+BQnOn7EMJ7ouPET/s5yOK0S/FeLWw5Ja1CCCimvr1N6HQm7kJ0AM5rQOwF+rLjxn55pEqL7v2VnAZ5FmtGu0qHNEZ0prqtpFqVxSipUx5aw4eGmPqFeAJAVaOJSFTFsbKCdIbrE8kk0E7i4p8HyiQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RQhKw1Ls; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718899556; x=1750435556;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=2SDKW4L6Q15RBL23B70Zucrxs8TmimpdU68R6G9rQX0=;
-  b=RQhKw1LsdVq3CZpldglGUfeckHpEByzOu/3xPh/7KK86d3tDOcZvKYGi
-   hVhM6NwSPwCaG3AtqYtqRyLtN6sIC8YD3sC0B9M9RzE5Dew/svi6MGNFW
-   W8NqeawYGKBK0PxC42w8aCm5es2ij0niBoph0tuzm7RFFqfLoBkqqUh39
-   nrkQu1yM9euBODqcP+F+zsV7UNUGBbp51Gfzcr5NliCHFQCPM/PVp8wkq
-   Y2VoPZB6z8Vl9xtklqMoWmf6AtU29d//m3h+XHaia2snPfvSZEd3vhINQ
-   zVZmsfmcr9k6fVJ9TVgv/vx8hR3R7IVI5LHeNLBjf9i69bg55EhiC+D/e
-   g==;
-X-CSE-ConnectionGUID: CJQZLSkVQ4qcz7aOVB4iVA==
-X-CSE-MsgGUID: Mv5TwVKaRGKnYsEOL/dSUw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11109"; a="15725360"
-X-IronPort-AV: E=Sophos;i="6.08,252,1712646000"; 
-   d="scan'208";a="15725360"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2024 09:05:41 -0700
-X-CSE-ConnectionGUID: NYLIaNUqT4G7hDfBMgCHWA==
-X-CSE-MsgGUID: IcQZEVWxSj+fYIlpW4HpRg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,252,1712646000"; 
-   d="scan'208";a="42749926"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.246.119.97])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/AES256-SHA; 20 Jun 2024 09:05:37 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
- <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
- <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
- <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
- <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
- <kai.huang@intel.com>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
- <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
- "chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: [PATCH v15 08/14] x86/sgx: Add basic EPC reclamation flow for
- cgroup
-References: <20240617125321.36658-1-haitao.huang@linux.intel.com>
- <20240617125321.36658-9-haitao.huang@linux.intel.com>
- <ecaab6953b36adb278c98b01f5eb647ff0cc9aab.camel@intel.com>
-Date: Thu, 20 Jun 2024 11:05:35 -0500
+	s=arc-20240116; t=1718911884; c=relaxed/simple;
+	bh=IKAfJej3/bz5YlCG6l6nJNqS8jTbUdfavV3jmwAtIRM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rBo8/JkGBEbFGO8/7etI262vtXQvNbdE9bD1VnIXfxP7F8TtVuBqpUbv0l3wTRdVtK6ZI6wyBwiPu1FvdIVKS2fKzzP4aGf6Sl0u3In2kycnpT7jKfk2fNh6jMuWGtrAz7y2Rjf2k5BKqfGTWmg+7wcBxDRVhyZYKNRLcnD3EuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Yx4EB1vE; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1718911881;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=G45UoON6v+it5Xc8gJfipBY0/k2jsQBfWJWN4FYkCH0=;
+	b=Yx4EB1vEsUlssH/b6NXTf7xMRyIkADHKxDLlI791mkiTakWW0flaDpYhdikNZZvWx54fGN
+	+cqiNUXngdh7Ag+h2J8eS515Q0dx6z5tQ0dihBQZ5rceWDRTPNBWLWcP1jCES9ppj7R3mG
+	3uFRxkYqpIQPNtTSaJpk7XKoulgtLA8=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-664-zvlcTznhNtis9LHHdpIBSw-1; Thu, 20 Jun 2024 15:31:20 -0400
+X-MC-Unique: zvlcTznhNtis9LHHdpIBSw-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-362763f8d2eso608880f8f.3
+        for <cgroups@vger.kernel.org>; Thu, 20 Jun 2024 12:31:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718911879; x=1719516679;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=G45UoON6v+it5Xc8gJfipBY0/k2jsQBfWJWN4FYkCH0=;
+        b=cwsKYgtmObGUnp3HW7I4Wk5IUP9fRSQGbgdnJ+4hd7bfigSkX/fh6SddBob68e38/n
+         s0nkbM/iYPRl8H0xRuI8fMieYWl4MUtFjLDoMyE54pVICibI8WjqwBJBUR/8pnMFlzh5
+         OmPyRMJE1W4cMJ7Tf6MsLB9cgVXATwZNtyi3/L65/NGDs+ZKgAracGgkrMw5WdC8IE+Q
+         IEy1tO/eFBsbjl4fI5Z2D7MfL7O8hrmrUAL9ap7UwzAro35w0MUbKcZrQJpU2tbxe+MY
+         IzAPC46Dm+byTlK4h33CWZCHkEYziwzRk2UI/IKCjmmVFwnJFvVke2X8synpW2Qjhin4
+         L5MA==
+X-Forwarded-Encrypted: i=1; AJvYcCV1ln6kK1OSNWz9lEAeE9ntY2yQdSKjaytg+BWQXGlVohIN9or6Qd9GW/Zs239mfcwagHdsThHwELyC9Yv/HRr/WqUkwjyU5w==
+X-Gm-Message-State: AOJu0Yyp32Kg5Ou11JrKXfwFICWxA+axDVBFzOOA3mKLYo/VSGhVWfhS
+	VGp6o+cCQIEGrhO1oh81FQvKkfieiDG9kpsiCeKjfZBI8WoGmlwkteABX+DYRuf5nM4A1Ulk24R
+	F4UKHg2dVgVrLMkcoPV1T+uWV5U81CZG8L7kk6NsGdsW45jy33GdUY8M=
+X-Received: by 2002:a05:6000:459e:b0:35f:f90:f383 with SMTP id ffacd0b85a97d-363195b1a17mr3954390f8f.56.1718911879367;
+        Thu, 20 Jun 2024 12:31:19 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEFPX9p5DHYoAnqSxI/KYGBLxNvxCKZJ9fr0+v5glAOA4M8Akmwl58KZHLYUyco+zkPvuXAjw==
+X-Received: by 2002:a05:6000:459e:b0:35f:f90:f383 with SMTP id ffacd0b85a97d-363195b1a17mr3954365f8f.56.1718911878933;
+        Thu, 20 Jun 2024 12:31:18 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c719:5b00:61af:900f:3aef:3af3? (p200300cbc7195b0061af900f3aef3af3.dip0.t-ipconnect.de. [2003:cb:c719:5b00:61af:900f:3aef:3af3])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3615d7a1a0csm8022368f8f.23.2024.06.20.12.31.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Jun 2024 12:31:18 -0700 (PDT)
+Message-ID: <d961070e-d261-4227-b044-dc73f9f8ca16@redhat.com>
+Date: Thu, 20 Jun 2024 21:31:16 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.9 000/281] 6.9.6-rc1 review
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
+ patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
+ rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org,
+ Miaohe Lin <linmiaohe@huawei.com>, Arnd Bergmann <arnd@arndb.de>,
+ Dan Carpenter <dan.carpenter@linaro.org>, Cgroups <cgroups@vger.kernel.org>,
+ linux-mm <linux-mm@kvack.org>, Baolin Wang <baolin.wang@linux.alibaba.com>,
+ jbeulich@suse.com, LTP List <ltp@lists.linux.it>
+References: <20240619125609.836313103@linuxfoundation.org>
+ <CA+G9fYtPV3kskAyc4NQws68-CpBrV+ohxkt1EEaAN54Dh6J6Uw@mail.gmail.com>
+ <2024062028-caloric-cost-2ab9@gregkh>
+ <CA+G9fYsr0=_Yzew1uyUtrZ7ayZFYqmaNzAwFZJPjFnDXZEwYcQ@mail.gmail.com>
+ <36a38846-0250-4ac2-b2d0-c72e00d6898d@redhat.com>
+ <CA+G9fYv4fZiB-pL7=4SNfudh2Aqknf5+OXo1RFAFRhJFZMsEsg@mail.gmail.com>
+ <3cd2cdca-5c89-447e-b6f1-f68112cf3f7b@redhat.com>
+ <CA+G9fYutNa9ziuj7aayhukaMdxKFU9+81qKAjZbQ=dQa3fwYYg@mail.gmail.com>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <CA+G9fYutNa9ziuj7aayhukaMdxKFU9+81qKAjZbQ=dQa3fwYYg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2pn9nlapwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <ecaab6953b36adb278c98b01f5eb647ff0cc9aab.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
 
 
-On Thu, 20 Jun 2024 08:28:57 -0500, Huang, Kai <kai.huang@intel.com> wrote:
+>>>>
+>> Trying to connect the dots here, can you enlighten me how this is
+>> related to the fork13 mainline report?
+> 
+> I am not sure about the relation between these two reports.
+> But as a common practice I have shared that report information.
 
->
-> On 18/06/2024 12:53 am, Huang, Haitao wrote:
->> From: Kristen Carlson Accardi <kristen@linux.intel.com>
->>
->> Currently in the EPC page allocation, the kernel simply fails the
->> allocation when the current EPC cgroup fails to charge due to its usage
->> reaching limit.  This is not ideal. When that happens, a better way is
->> to reclaim EPC page(s) from the current EPC cgroup (and/or its
->> descendants) to reduce its usage so the new allocation can succeed.
->>
->> Add the basic building blocks to support per-cgroup reclamation.
->>
->> Currently the kernel only has one place to reclaim EPC pages: the global
->> EPC LRU list.  To support the "per-cgroup" EPC reclaim, maintain an LRU
->> list for each EPC cgroup, and introduce a "cgroup" variant function to
->> reclaim EPC pages from a given EPC cgroup and its descendants.
->>
->> Currently the kernel does the global EPC reclaim in sgx_reclaim_page().
->> It always tries to reclaim EPC pages in batch of SGX_NR_TO_SCAN (16)
->> pages.  Specifically, it always "scans", or "isolates" SGX_NR_TO_SCAN
->> pages from the global LRU, and then tries to reclaim these pages at once
->> for better performance.
->>
->> Implement the "cgroup" variant EPC reclaim in a similar way, but keep
->> the implementation simple: 1) change sgx_reclaim_pages() to take an LRU
->> as input, and return the pages that are "scanned" and attempted for
->> reclamation (but not necessarily reclaimed successfully); 2) loop the
->> given EPC cgroup and its descendants and do the new sgx_reclaim_pages()
->> until SGX_NR_TO_SCAN pages are "scanned".
->> This implementation, encapsulated in sgx_cgroup_reclaim_pages(), always
->> tries to reclaim SGX_NR_TO_SCAN pages from the LRU of the given EPC
->> cgroup, and only moves to its descendants when there's no enough
->> reclaimable EPC pages to "scan" in its LRU.  It should be enough for
->> most cases.
->
-> [...]
->
->> In other cases, the caller may invoke this function in a
->> loop to ensure enough pages reclaimed for its usage. To ensure all
->> descendant groups scanned in a round-robin fashion in those cases,
->> sgx_cgroup_reclaim_pages() takes in a starting cgroup and returns the
->> next cgroup that the caller can pass in as the new starting cgroup for a
->> subsequent call.
->
->
-> AFAICT this part is new, and I believe this "round-robin" thing is just
-> for the "global reclaim"?  Or is it also for per-cgroup reclaim where  
-> more
-> than SGX_NR_TO_SCAN pages needs to be reclaimed?
->
-> I wish the changelog should just point out what consumers will use this
-> new sgx_cgroup_reclaim_pages(), like:
->
-> The sgx_cgroup_reclaim_pages() will be used in three cases:
->
->  1) direct/sync per-cgroup reclaim in try_charge()
->  2) indirect/async per-cgroup reclaim triggered in try_charge()
->  3) global reclaim
->
-> And then describe how will they use sgx_cgroup_reclaim_pages():
->
-> Both 1) and 2) can result in needing to reclaim more than SGX_NR_TO_SCAN
-> pages, in which case we should <fill in how to reclaim>.
->
-> For 3), the new global reclaim should try tot match the existing global
-> reclaim behaviour, that is to try to treat all EPC pages equally.
-> <continue to explain how can sgx_cgroup_reclaim_pages() achieve this.>
->
-> With above context, we can justify why to make sgx_cgroup_reclaim_pages()
-> in this form.
->
-This new part is only to address the issue you raised in this thread:
-https://lore.kernel.org/lkml/op.2ndsydgywjvjmi@hhuan26-mobl.amr.corp.intel.com/
+Yes, I was just briefly concerned that we are seeing the same issue as 
+we saw once on 6.10-rc3 also on a 6.9 kernel -- also because the patch 
+list don't contain that much MM stuff.
 
-Really it has nothing to do whether global, direct/async, per-cgroup  
-contexts. They all should use the function the same way. This paragraph  
-describes the design and
-I thought the above new statements justify the reason we return 'next' so  
-it can reclaim into descedant in round-robin fashion?  No sure we need get  
-into details of different usages of the functions which are in code  
-actually?
+-- 
+Cheers,
 
-I'll address the new global reclamation behavior later when this function  
-was actually used for that. And the difference really exists before and  
-not because of this change.
+David / dhildenb
 
->>
->> Note, this simple implementation doesn't _exactly_ mimic the current
->> global EPC reclaim (which always tries to do the actual reclaim in batch
->> of SGX_NR_TO_SCAN pages): when LRUs have less than SGX_NR_TO_SCAN
->> reclaimable pages, the actual reclaim of EPC pages will be split into
->> smaller batches _across_ multiple LRUs with each being smaller than
->> SGX_NR_TO_SCAN pages.
->>
->> A more precise way to mimic the current global EPC reclaim would be to
->> have a new function to only "scan" (or "isolate") SGX_NR_TO_SCAN pages
->> _across_ the given EPC cgroup _AND_ its descendants, and then do the
->> actual reclaim in one batch.  But this is unnecessarily complicated at
->> this stage.
->>
->> Alternatively, the current sgx_reclaim_pages() could be changed to
->> return the actual "reclaimed" pages, but not "scanned" pages. However,
->> the reclamation is a lengthy process, forcing a successful reclamation
->> of predetermined number of pages may block the caller for too long. And
->> that may not be acceptable in some synchronous contexts, e.g., in
->> serving an ioctl().
->>
->> With this building block in place, add synchronous reclamation support
->> in sgx_cgroup_try_charge(): trigger a call to
->> sgx_cgroup_reclaim_pages() if the cgroup reaches its limit and the
->> caller allows synchronous reclaim as indicated by s newly added
->> parameter.
->>
->> A later patch will add support for asynchronous reclamation reusing
->> sgx_cgroup_reclaim_pages().
->
-> It seems you also should mention the new global reclaim will also use
-> this sgx_cgroup_reclaim_pages()?
->
-> [...]
->
->> +/**
->> + * sgx_cgroup_reclaim_pages() - reclaim EPC from a cgroup tree
->> + * @root:	The root of cgroup tree to reclaim from.
->> + * @start:	The descendant cgroup from which to start the tree walking.
->> + *
->> + * This function performs a pre-order walk in the cgroup tree under  
->> the given
->> + * root, starting from the node %start, or from the root if %start is  
->> NULL. The
->> + * function will attempt to reclaim pages at each node until a fixed  
->> number of
->> + * pages (%SGX_NR_TO_SCAN) are attempted for reclamation. No guarantee  
->> of
->> + * success on the actual reclamation process. In extreme cases, if all  
->> pages in
->> + * front of the LRUs are recently accessed, i.e., considered "too  
->> young" to
->> + * reclaim, no page will actually be reclaimed after walking the whole  
->> tree.
->> + *
->> + * In some cases, a caller may want to ensure enough reclamation until  
->> its
->> + * specific need is met. In those cases, the caller should invoke this  
->> function
->> + * in a loop, and at each iteration passes in the same root and the  
->> next node
->> + * returned from the previous call as the new %start.
->> + *
->> + * Return: The next misc cgroup in the subtree to continue the  
->> scanning and
->> + * attempt for more reclamation from this subtree if needed.
->
-> [...]
->
->> Caller must
->> + * release the reference if the returned is not used as %start for a  
->> subsequent
->> + * call.
->>
->
-> This sentence isn't clear to me.
->
-> First of all, release the reference "of what"?  The %start, or the one
-> returned by this function?
->
-
-will this be better?
-  * Return: A reference to next misc cgroup in the subtree to continue the
-  * scanning and attempt for more reclamation from this subtree if needed.
-  * Caller must release the returned reference if the returned is not used  
-as
-  * %start for a subsequent call.
-
-> And is it because of ...
->
->> + */
->> +static struct misc_cg *sgx_cgroup_reclaim_pages(struct misc_cg *root,  
->> struct misc_cg *start)
->> +{
->> +	struct cgroup_subsys_state *css_root, *pos;
->> +	struct cgroup_subsys_state *next = NULL;
->> +	struct sgx_cgroup *sgx_cg;
->> +	unsigned int cnt = 0;
->> +
->> +	 /* Caller must ensure css_root and start ref's acquired */
->
-> ... the caller must acquire the ref of both @css_root and @css_start, and
-> ...
-yes
->
->> +	css_root = &root->css;
->> +	if (start)
->> +		pos = &start->css;
->> +	else
->> +		pos = css_root;
->> +
->> +	while (cnt < SGX_NR_TO_SCAN) {
->> +		sgx_cg = sgx_cgroup_from_misc_cg(css_misc(pos));
->> +		cnt += sgx_reclaim_pages(&sgx_cg->lru);
->> +
->> +		rcu_read_lock();
->> +
->> +		next = css_next_descendant_pre(pos, css_root);
->> +
->> +		if (pos != css_root)
->> +			css_put(pos);
->
-> ... the ref is decreased internally?
->
-
-Right.
-
->> +
->> +		if (!next || !css_tryget(next)) {
->> +			/* We are done if next is NULL or not safe to continue
->> +			 * the walk if next is dead. Return NULL and the caller
->> +			 * determines whether to restart from root.
->> +			 */
->
-> Incorrect comment style.
->
-Will fix
->> +			rcu_read_unlock();
->> +			return NULL;
->> +		}
->> +
->> +		rcu_read_unlock();
->> +		pos = next;
->
-> There's no ref grab here, wouldn't the above ...
->
-tryget() done to next
-
-> 		if (pos != css_root)
-> 			css_put(pos);
->
-> ... decrease the ref w/o having it been increased?
->
->> +	}
->> +
->> +	return css_misc(next);
->
-> Here AFAICT the ref isn't increased, but ...
->
-We only return next when next && css_tryget(next), otherwise NULL.
-
-> [...]
->
->
->> +/**
->> + * sgx_cgroup_try_charge() - try to charge cgroup for a single EPC page
->>    * @sgx_cg:	The EPC cgroup to be charged for the page.
->> + * @reclaim:	Whether or not synchronous EPC reclaim is allowed.
->>    * Return:
->>    * * %0 - If successfully charged.
->>    * * -errno - for failures.
->>    */
->> -int sgx_cgroup_try_charge(struct sgx_cgroup *sgx_cg)
->> +int sgx_cgroup_try_charge(struct sgx_cgroup *sgx_cg, enum sgx_reclaim  
->> reclaim)
->>   {
->> -	return misc_cg_try_charge(MISC_CG_RES_SGX_EPC, sgx_cg->cg, PAGE_SIZE);
->> +	int ret;
->> +	struct misc_cg *cg_next = NULL;
->> +
->> +	for (;;) {
->> +		ret = __sgx_cgroup_try_charge(sgx_cg);
->> +
->> +		if (ret != -EBUSY)
->> +			goto out;
->> +
->> +		if (reclaim == SGX_NO_RECLAIM) {
->> +			ret = -ENOMEM;
->> +			goto out;
->> +		}
->> +
->> +		cg_next = sgx_cgroup_reclaim_pages(sgx_cg->cg, cg_next);
->> +		cond_resched();
->> +	}
->> +
->> +out:
->> +	if (cg_next != sgx_cg->cg)
->> +		put_misc_cg(cg_next);
->
-> ... if I am reading correctly, here you does the put anyway.
->
-cg_next ref is increased or it is NULL.
-Only puts the last one no longer to be passed back in to  
-sgx_cgroup_reclaim_page()
-
->> +	return ret;
->>   }
->>
->
-> And when there are more than SGX_NR_TO_SCAN pages that need to reclaim,
-> the above ...
-
-Note, all sgx_cgroup_reclaim_pages() guarantees is scanning SGX_NR_TO_SCAN  
-pages.
->
-> 	for (;;) {
-> 		cg_next = sgx_cgroup_reclaim_pages(sgx_cg->cg, cg_next);
-> 	}
->
-> ... actually tries to reclaim those pages from @sgx_cg _AND_ it's
-> descendants, and tries to do it _EQUALLY_.
->
-> Is this desired, or should we always try to reclaim from the @sgx_cg
-> first, but only moves to the desendants when the @sgx_cg shouldn't be
-> reclaimed anymore?
->
-
-we still reclaim in sgx_cg in first scan and attempt of reclaiming for  
-SGX_NR_TOS_CAN pages, but if it turns out that did not satisfy caller  
-needs, then caller goes on to reclaim from descendants by passing in  
-'next' as starting point.
-
-> Anyway, it's different from the previous behaviour.
->
-Again, this is to fix the issue you raised. I consider it improved  
-behavior :-)
-> [...]
->
->> -static bool sgx_should_reclaim(unsigned long watermark)
->> +static bool sgx_should_reclaim_global(unsigned long watermark)
->>   {
->>   	return atomic_long_read(&sgx_nr_free_pages) < watermark &&
->>   	       !list_empty(&sgx_global_lru.reclaimable);
->>   }
->>
->> +static void sgx_reclaim_pages_global(void)
->> +{
->> +	sgx_reclaim_pages(&sgx_global_lru);
->> +}
->> +
->>   /*
->>    * sgx_reclaim_direct() should be called (without enclave's mutex  
->> held)
->>    * in locations where SGX memory resources might be low and might be
->> @@ -394,8 +405,8 @@ static bool sgx_should_reclaim(unsigned long  
->> watermark)
->>    */
->>   void sgx_reclaim_direct(void)
->>   {
->> -	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
->> -		sgx_reclaim_pages();
->> +	if (sgx_should_reclaim_global(SGX_NR_LOW_PAGES))
->> +		sgx_reclaim_pages_global();
->>   }
->>
->
-> I wish the rename was mentioned in the changelog too.
->
-OK
 
