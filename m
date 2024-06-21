@@ -1,149 +1,98 @@
-Return-Path: <cgroups+bounces-3262-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3263-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1BE7911CEF
-	for <lists+cgroups@lfdr.de>; Fri, 21 Jun 2024 09:35:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 173F4911F4C
+	for <lists+cgroups@lfdr.de>; Fri, 21 Jun 2024 10:51:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F1A51C21083
-	for <lists+cgroups@lfdr.de>; Fri, 21 Jun 2024 07:35:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C701028BC34
+	for <lists+cgroups@lfdr.de>; Fri, 21 Jun 2024 08:51:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7E9C13B59E;
-	Fri, 21 Jun 2024 07:35:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 194B318E20;
+	Fri, 21 Jun 2024 08:51:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VVcPkD5M"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="nDdB9LT7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 997273AC1F
-	for <cgroups@vger.kernel.org>; Fri, 21 Jun 2024 07:35:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2B6E16C856;
+	Fri, 21 Jun 2024 08:51:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718955336; cv=none; b=fQ2J64F1dY0RDhv2x/9IUg7QszkV9/GWef8dMXePnft8F4pvd3FRsVQPEowCtozMeRElynpFPlgOijYwpiRqeR5njU4WOTUvwef5dVlHyp7mtXHfSX98KlDraRIKTWMA/AscFiTbC2+6yeO1Ikt3I2idh9R26+9i45x/c0uHgIo=
+	t=1718959864; cv=none; b=ROeusKtlwqZO6N8mTRB0gK1pa4p0cXBGdgrKzOv0xxKNv37HWh1xSecQ6BM8K2LG+iNBJXtiLJm6QyN5KK15rKoOgz8e5bo/TT1IOsfUPoxAijeLAtc0qbDTXn3Dn85M9NMeVX6OHTl8nFWvseEI4m0x8MUKIMUnyMtkzaN2nFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718955336; c=relaxed/simple;
-	bh=6nWKfd9njzUJuwL/S+Z4UTu+ZlA0JRTziO0WkrYoQaQ=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=grOCEzfvXeEtecjv8JpNBel6rP4B/YKq/4OgBGRjKIlhDR9NV7FCqi8TW/I9lqu/7ZWlep7AtxFYLD54EBMlnhRFqCnV4FrFzlJmXc0aLa5FAjzJt5H4VAg/DeZUGXeL/XoEJ1rxhEKNtZ4OAOnODsgdUcr6tJ92H9Yo5SsdkAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VVcPkD5M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B6FEC2BBFC;
-	Fri, 21 Jun 2024 07:35:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718955336;
-	bh=6nWKfd9njzUJuwL/S+Z4UTu+ZlA0JRTziO0WkrYoQaQ=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=VVcPkD5MguWMmWjoGNRk2AiKGsiWdFnk2yJwKyj34mfrxWfP2Bcnf2QpSYRVpfGTJ
-	 iFlsVgJpM+RHqaWuSYCr/9+H4vZR7RJihKTnafQqikD3+ZCH/4LO+UEpDmExHXcpt5
-	 ONxMY2NBw3kBlQYrJbwebKZO80IOB8Zp3XnkNTT9xd7SpK08XeHxFG/yzA5udZzLAt
-	 SdWJo9juVUy++nVlCMsigJI3fxwPG48AWX3C7QW6RoB9hl6rhC3ccwxOHDgAi7uumA
-	 MAjJszpmVuC4qF5TOx8s8RjbU7e29FfnO3XQXuDGnlP89kM8vkrGUuI1/+JAYnnMqD
-	 Ve72eTTcXEy6Q==
-Subject: [PATCH RFC] cgroup/rstat: avoid thundering herd problem on root cgrp
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-To: tj@kernel.org, cgroups@vger.kernel.org, yosryahmed@google.com,
- shakeel.butt@linux.dev
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, hannes@cmpxchg.org,
- lizefan.x@bytedance.com, longman@redhat.com, kernel-team@cloudflare.com
-Date: Fri, 21 Jun 2024 09:35:31 +0200
-Message-ID: <171895533185.1084853.3033751561302228252.stgit@firesoul>
-In-Reply-To: <c0fb8c2d-433d-4f8a-a06d-e6ca578ebbf0@kernel.org>
-References: <c0fb8c2d-433d-4f8a-a06d-e6ca578ebbf0@kernel.org>
-User-Agent: StGit/1.5
+	s=arc-20240116; t=1718959864; c=relaxed/simple;
+	bh=5QYROOWaGcvbXXs7cTnbAtHbsH2oX4In9WLxiDZb1MY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Afxmg7c6z9qp8ANBN5XaeaxHf0aGtP/pSl2Ki1w5r8HR9huFxQtXtVhN76eEO3lOVwVY+HCD11Ku6LtlEMUuVLBMsmSQ3HVHUpPbL/XqLNWELLiZ19Aij7kz9Y04BPixiDB1DsYfUMqXCdZUjbcRnnmgV0QRuhWe6py3vEwm4qk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=nDdB9LT7; arc=none smtp.client-ip=220.197.31.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=NEUI6
+	8AFczxDnCoNcvvy8d5kEzbCqj+XKf0377HnJrU=; b=nDdB9LT7lwwiJXN3nEyoc
+	MCcbCYxZPuVGfNXYMQ5NK/6n6duy+gkPv1HuoObd3Eekb+sWO7U/6QB8tKHJyUJ7
+	+2OhhBmiiSnucVa+PYnHx+xqqZq/Dl/1KHPmjLEdJemBPgbPCZtfq1y9n5v3uytM
+	cNRW7oxIsfsvdhVX1cSpf4=
+Received: from localhost (unknown [101.132.132.191])
+	by gzga-smtp-mta-g2-4 (Coremail) with SMTP id _____wDnH6+xPnVmQz_YAw--.49218S2;
+	Fri, 21 Jun 2024 16:49:53 +0800 (CST)
+From: Xavier <xavier_qy@163.com>
+To: longman@redhat.com,
+	mkoutny@suse.com
+Cc: lizefan.x@bytedance.com,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Xavier <xavier_qy@163.com>
+Subject: [PATCH-cpuset v5 0/2] cpuset: use Union-Find to optimize
+Date: Fri, 21 Jun 2024 16:49:50 +0800
+Message-Id: <20240621084952.209770-1-xavier_qy@163.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <b511173c-53fe-4a93-8030-d99ed1b65bd6@redhat.com>
+References: <b511173c-53fe-4a93-8030-d99ed1b65bd6@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDnH6+xPnVmQz_YAw--.49218S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrKFyUWFWUXF43tF48XFy7Jrb_yoWfJrgE9r
+	4kuayjk3WxWF1IqayrCF95tFW29FWj9r9Yk3Z8tFZrXFsrArZrGrykXa4DX3yUXF4kAr45
+	GFyrtr4SqrnrXjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xREMKuUUUUUU==
+X-CM-SenderInfo: 50dyxvpubt5qqrwthudrp/xtbBchIFEGWXvvEkjAAAsg
 
-RFC followup to "looking into coding this up"
- - https://lore.kernel.org/all/c0fb8c2d-433d-4f8a-a06d-e6ca578ebbf0@kernel.org/
+Hi all,
 
-If there are better way to if cgroup_is_root of rstat tree?
+According to Longman's suggestion, I have added documentation describing Union-Find.
+Kindly review.
 
-Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
----
- include/linux/cgroup.h |    5 +++++
- kernel/cgroup/rstat.c  |   21 +++++++++++++++++++++
- 2 files changed, 26 insertions(+)
+Best Regards,
+Xavier
 
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 2150ca60394b..ad41cca5c3b6 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -499,6 +499,11 @@ static inline struct cgroup *cgroup_parent(struct cgroup *cgrp)
- 	return NULL;
- }
- 
-+static inline bool cgroup_is_root(struct cgroup *cgrp)
-+{
-+	return cgroup_parent(cgrp) == NULL;
-+}
-+
- /**
-  * cgroup_is_descendant - test ancestry
-  * @cgrp: the cgroup to be tested
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index fb8b49437573..5979f3dc2069 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -11,6 +11,7 @@
- 
- static DEFINE_SPINLOCK(cgroup_rstat_lock);
- static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_cpu_lock);
-+static atomic_t root_rstat_flush_ongoing = ATOMIC_INIT(0);
- 
- static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu);
- 
-@@ -350,8 +351,20 @@ __bpf_kfunc void cgroup_rstat_flush(struct cgroup *cgrp)
- {
- 	might_sleep();
- 
-+	if (atomic_read(&root_rstat_flush_ongoing))
-+		return;
-+
-+	if (cgroup_is_root(cgrp) &&
-+	    atomic_xchg(&root_rstat_flush_ongoing, 1))
-+		return;
-+
- 	__cgroup_rstat_lock(cgrp, -1);
-+
- 	cgroup_rstat_flush_locked(cgrp);
-+
-+	if (cgroup_is_root(cgrp))
-+		atomic_set(&root_rstat_flush_ongoing, 0);
-+
- 	__cgroup_rstat_unlock(cgrp, -1);
- }
- 
-@@ -368,7 +381,12 @@ void cgroup_rstat_flush_hold(struct cgroup *cgrp)
- 	__acquires(&cgroup_rstat_lock)
- {
- 	might_sleep();
-+
- 	__cgroup_rstat_lock(cgrp, -1);
-+
-+	if (atomic_read(&root_rstat_flush_ongoing))
-+		return;
-+
- 	cgroup_rstat_flush_locked(cgrp);
- }
- 
-@@ -379,6 +397,9 @@ void cgroup_rstat_flush_hold(struct cgroup *cgrp)
- void cgroup_rstat_flush_release(struct cgroup *cgrp)
- 	__releases(&cgroup_rstat_lock)
- {
-+	if (cgroup_is_root(cgrp))
-+		atomic_set(&root_rstat_flush_ongoing, 0);
-+
- 	__cgroup_rstat_unlock(cgrp, -1);
- }
- 
+Xavier (2):
+  Union-Find: add a new module in kernel library
+  cpuset: use Union-Find to optimize the merging of cpumasks
 
+ Documentation/core-api/union_find.rst         | 110 ++++++++++++++++++
+ .../zh_CN/core-api/union_find.rst             |  87 ++++++++++++++
+ MAINTAINERS                                   |   9 ++
+ include/linux/union_find.h                    |  30 +++++
+ kernel/cgroup/cpuset.c                        |  95 ++++++---------
+ lib/Makefile                                  |   2 +-
+ lib/union_find.c                              |  38 ++++++
+ 7 files changed, 309 insertions(+), 62 deletions(-)
+ create mode 100644 Documentation/core-api/union_find.rst
+ create mode 100644 Documentation/translations/zh_CN/core-api/union_find.rst
+ create mode 100644 include/linux/union_find.h
+ create mode 100644 lib/union_find.c
+
+-- 
+2.45.2
 
 
