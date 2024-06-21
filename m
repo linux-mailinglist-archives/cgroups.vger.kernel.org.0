@@ -1,246 +1,190 @@
-Return-Path: <cgroups+bounces-3264-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3266-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77822911F4E
-	for <lists+cgroups@lfdr.de>; Fri, 21 Jun 2024 10:51:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A80A9127E3
+	for <lists+cgroups@lfdr.de>; Fri, 21 Jun 2024 16:33:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99E9A1C212B4
-	for <lists+cgroups@lfdr.de>; Fri, 21 Jun 2024 08:51:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CD301C263F4
+	for <lists+cgroups@lfdr.de>; Fri, 21 Jun 2024 14:33:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE27816D9BC;
-	Fri, 21 Jun 2024 08:51:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74B122031D;
+	Fri, 21 Jun 2024 14:32:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="DkkytO23"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lw7RZSee"
 X-Original-To: cgroups@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2F5F18E20;
-	Fri, 21 Jun 2024 08:51:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28D884436;
+	Fri, 21 Jun 2024 14:32:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718959873; cv=none; b=HArHt2PB4q8r1Ypx40PWC4CGgUFcG93G4DwM9ePlkcUjFQmcE7tjDBrhIhb39zPjzNb+Sm8vPJKUSwvneQJbUiiuSOZtshl47VzdtPx6t1vQU74n3o1ErjxflRpmeH1NAw3s7iX7BY3sZsQvcOb7BJDspChGJr0KWMtUrlFlfu0=
+	t=1718980376; cv=none; b=XSW+Bi+TKPav+ZAX8DvilZ0oUl+dJt3OkQcAk2giY4wKEwfPARryNbQRA9HxHbwoBrRt9V70cCp9zYu5HX4i8BfTznEtl1Uf7aHGWoOBe1yoH9XoHnuvhJTaLfkvaoh4BgFpdHKU5eNVCDUA/G4TkivKxzF4pX4Tcwm52ll0NrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718959873; c=relaxed/simple;
-	bh=Zte5JUNqWfYMzsUShAtYW3hHHTnmNIinQoLo7kExpMU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=AYMnEnMOEbID4pS05uy7AWJ0suS8KdrYaHqkStCPPF21RuNoSYpt2sfRsE+rvMrIa9bq4B4H0sk5czAyWJh/5yDQ8Rtd0IQ2Q4d2Un2cI15al7eOdQzaUBLi/v1k2tB40WelaacNBQKz8lPkNQU2A5MCz4jG4CrFsG4XNsuitsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=DkkytO23; arc=none smtp.client-ip=220.197.31.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=f4H86
-	bcCOfTgkY5Xt2BTUJ/8giKcEdQStQuqAfO5dp8=; b=DkkytO2327zAY8bmj4lwC
-	5ke/3qdWtvgw95FRwg+BqoKephRG3S3XlrlEWTD//NpIEyjJ+TZkjLXyKVFA+gxY
-	mc0kRwmiMrJLOyTlXt1rH4nGMS7N5Gzji4T2x1lvaSwYA3AECpELHxODk19k1wNU
-	daR7iYn87mHeEO8wS+G78E=
-Received: from localhost (unknown [101.132.132.191])
-	by gzga-smtp-mta-g2-3 (Coremail) with SMTP id _____wDn_4O2PnVmSbjWEg--.56944S2;
-	Fri, 21 Jun 2024 16:49:59 +0800 (CST)
-From: Xavier <xavier_qy@163.com>
-To: longman@redhat.com,
-	mkoutny@suse.com
-Cc: lizefan.x@bytedance.com,
-	tj@kernel.org,
-	hannes@cmpxchg.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Xavier <xavier_qy@163.com>
-Subject: [PATCH-cpuset v5 2/2] cpuset: use Union-Find to optimize the merging of cpumasks
-Date: Fri, 21 Jun 2024 16:49:52 +0800
-Message-Id: <20240621084952.209770-3-xavier_qy@163.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240621084952.209770-1-xavier_qy@163.com>
-References: <b511173c-53fe-4a93-8030-d99ed1b65bd6@redhat.com>
- <20240621084952.209770-1-xavier_qy@163.com>
+	s=arc-20240116; t=1718980376; c=relaxed/simple;
+	bh=ez03aVKBlqGthUjZy/ZRNjr5TOr2Y00yZXdbgrk//tQ=;
+	h=Subject:From:To:Cc:Date:Message-ID:MIME-Version:Content-Type; b=QiZciIcY8SYWvyPig7JlTWvHz+lx81PbIPg05p9wovC1DGUh0th/HhfTRDak/DBEH3T+92vkYhiRkpNoSgh5j9GleW+qFGnkYaqfH8hZmrU9FFcJoM/F24TOigzgDkxZN7hxWtZh93MpJb4X/qsABbsAiMv/u6mAsJO/ds+qKmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lw7RZSee; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44796C4AF08;
+	Fri, 21 Jun 2024 14:32:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718980375;
+	bh=ez03aVKBlqGthUjZy/ZRNjr5TOr2Y00yZXdbgrk//tQ=;
+	h=Subject:From:To:Cc:Date:From;
+	b=Lw7RZSeeaO9duH9TTQvuqZ1NRkCsIavqwGDeNGjGj1lPcgKSG1tMmPb86gwmYTBEp
+	 QBBUS9aGRHw3hTTB+q+2eYwpmJDQMr5koen1v0X0zEO0El95ER1+Qw41KR+GLGpYLH
+	 sYIm37RwkhMnY/w6GkRTYLy0ksOaHWIpS5eQePfEAFOs8S+5j5p4O2T/aUz8iegk9L
+	 GlIpFuIJahJkUbE3fXuQNmH2OCuAkCBhIveOnA9kPe+fAVwnAHo1cNUPV3oRjJx2Kq
+	 rn6/SfVxO8alI3p8CrTDRMxmrpJU2Lu286EXChTP3D3SoLcv/g0HpR1mk35X1FeK2b
+	 OOhC//SFZB/xQ==
+Subject: [PATCH v1] cgroup/rstat: Avoid thundering herd problem by kswapd
+ across NUMA nodes
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+To: tj@kernel.org, cgroups@vger.kernel.org, yosryahmed@google.com,
+ shakeel.butt@linux.dev
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, hannes@cmpxchg.org,
+ lizefan.x@bytedance.com, longman@redhat.com, kernel-team@cloudflare.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Date: Fri, 21 Jun 2024 16:32:50 +0200
+Message-ID: <171898037079.1222367.13467317484793748519.stgit@firesoul>
+User-Agent: StGit/1.5
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDn_4O2PnVmSbjWEg--.56944S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAFWfur4kKFyUZFWUJrW3Awb_yoWrurW5pF
-	s3Cay2qrWrJryUGwsYk3y8Z34SkaykJa1Utw13Gw1fArnrA3Z29a40qFs5KayUuFyDCr1U
-	uF9xKr47Wr1UKFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U47K3UUUUU=
-X-CM-SenderInfo: 50dyxvpubt5qqrwthudrp/1tbiZR0FEGXAmib2rAAEsq
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-The process of constructing scheduling domains
- involves multiple loops and repeated evaluations, leading to numerous
- redundant and ineffective assessments that impact code efficiency.
+Avoid lock contention on the global cgroup rstat lock caused by kswapd
+starting on all NUMA nodes simultaneously. At Cloudflare, we observed
+massive issues due to kswapd and the specific mem_cgroup_flush_stats()
+call inlined in shrink_node, which takes the rstat lock.
 
-Here, we use Union-Find to optimize the merging of cpumasks. By employing
-path compression and union by rank, we effectively reduce the number of
-lookups and merge comparisons.
+On our 12 NUMA node machines, each with a kswapd kthread per NUMA node,
+we noted severe lock contention on the rstat lock. This contention
+causes 12 CPUs to waste cycles spinning every time kswapd runs.
+Fleet-wide stats (/proc/N/schedstat) for kthreads revealed that we are
+burning an average of 20,000 CPU cores fleet-wide on kswapd, primarily
+due to spinning on the rstat lock.
 
-Signed-off-by: Xavier <xavier_qy@163.com>
+To help reviewer follow code: When the Per-CPU-Pages (PCP) freelist is
+empty, __alloc_pages_slowpath calls wake_all_kswapds(), causing all
+kswapdN threads to wake up simultaneously. The kswapd thread invokes
+shrink_node (via balance_pgdat) triggering the cgroup rstat flush
+operation as part of its work. This results in kernel self-induced rstat
+lock contention by waking up all kswapd threads simultaneously.
+Leveraging this detail: balance_pgdat() have NULL value in
+target_mem_cgroup, this cause mem_cgroup_flush_stats() to do flush with
+root_mem_cgroup.
+
+To resolve the kswapd issue, we generalized the "stats_flush_ongoing"
+concept to apply to all users of cgroup rstat, not just memcg. This
+concept was originally reverted in commit 7d7ef0a4686a ("mm: memcg:
+restore subtree stats flushing"). If there is an ongoing rstat flush,
+limited to the root cgroup, the flush is skipped. This is effective as
+kswapd operates on the root tree, sufficiently mitigating the thundering
+herd problem.
+
+This lowers contention on the global rstat lock, although limited to the
+root cgroup. Flushing cgroup subtree's can still lead to lock contention.
+
+Fixes: 7d7ef0a4686a ("mm: memcg: restore subtree stats flushing").
+Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
 ---
- kernel/cgroup/cpuset.c | 95 +++++++++++++++---------------------------
- 1 file changed, 34 insertions(+), 61 deletions(-)
+ include/linux/cgroup.h |    5 +++++
+ kernel/cgroup/rstat.c  |   28 ++++++++++++++++++++++++++++
+ 2 files changed, 33 insertions(+)
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index fe76045aa5..7e527530f8 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -45,6 +45,7 @@
- #include <linux/cgroup.h>
- #include <linux/wait.h>
- #include <linux/workqueue.h>
-+#include <linux/union_find.h>
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 2150ca60394b..ad41cca5c3b6 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -499,6 +499,11 @@ static inline struct cgroup *cgroup_parent(struct cgroup *cgrp)
+ 	return NULL;
+ }
  
- DEFINE_STATIC_KEY_FALSE(cpusets_pre_enable_key);
- DEFINE_STATIC_KEY_FALSE(cpusets_enabled_key);
-@@ -172,9 +173,6 @@ struct cpuset {
- 	 */
- 	int attach_in_progress;
- 
--	/* partition number for rebuild_sched_domains() */
--	int pn;
--
- 	/* for custom sched domain */
- 	int relax_domain_level;
- 
-@@ -1007,7 +1005,7 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 	struct cpuset *cp;	/* top-down scan of cpusets */
- 	struct cpuset **csa;	/* array of all cpuset ptrs */
- 	int csn;		/* how many cpuset ptrs in csa so far */
--	int i, j, k;		/* indices for partition finding loops */
-+	int i, j;		/* indices for partition finding loops */
- 	cpumask_var_t *doms;	/* resulting partition; i.e. sched domains */
- 	struct sched_domain_attr *dattr;  /* attributes for custom domains */
- 	int ndoms = 0;		/* number of sched domains in result */
-@@ -1015,6 +1013,8 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 	struct cgroup_subsys_state *pos_css;
- 	bool root_load_balance = is_sched_load_balance(&top_cpuset);
- 	bool cgrpv2 = cgroup_subsys_on_dfl(cpuset_cgrp_subsys);
-+	struct uf_node *nodes;
-+	int nslot_update;
- 
- 	doms = NULL;
- 	dattr = NULL;
-@@ -1102,40 +1102,31 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 	if (root_load_balance && (csn == 1))
- 		goto single_root_domain;
- 
--	for (i = 0; i < csn; i++)
--		csa[i]->pn = i;
--	ndoms = csn;
-+	nodes = uf_nodes_alloc(csn);
-+	if (!nodes)
-+		goto done;
- 
--restart:
--	/* Find the best partition (set of sched domains) */
-+	/* Merge overlapping cpusets */
- 	for (i = 0; i < csn; i++) {
--		struct cpuset *a = csa[i];
--		int apn = a->pn;
--
--		for (j = 0; j < csn; j++) {
--			struct cpuset *b = csa[j];
--			int bpn = b->pn;
--
--			if (apn != bpn && cpusets_overlap(a, b)) {
--				for (k = 0; k < csn; k++) {
--					struct cpuset *c = csa[k];
--
--					if (c->pn == bpn)
--						c->pn = apn;
--				}
--				ndoms--;	/* one less element */
--				goto restart;
--			}
-+		for (j = i + 1; j < csn; j++) {
-+			if (cpusets_overlap(csa[i], csa[j]))
-+				uf_union(&nodes[i], &nodes[j]);
- 		}
- 	}
- 
-+	/* Count the total number of domains */
-+	for (i = 0; i < csn; i++) {
-+		if ((nodes[i].parent == &nodes[i]) || !nodes[i].parent)
-+			ndoms++;
-+	}
++static inline bool cgroup_is_root(struct cgroup *cgrp)
++{
++	return cgroup_parent(cgrp) == NULL;
++}
 +
- 	/*
- 	 * Now we know how many domains to create.
- 	 * Convert <csn, csa> to <ndoms, doms> and populate cpu masks.
- 	 */
- 	doms = alloc_sched_domains(ndoms);
- 	if (!doms)
--		goto done;
-+		goto free;
+ /**
+  * cgroup_is_descendant - test ancestry
+  * @cgrp: the cgroup to be tested
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index fb8b49437573..5aba95e92d31 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -11,6 +11,7 @@
  
- 	/*
- 	 * The rest of the code, including the scheduler, can deal with
-@@ -1159,47 +1150,29 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 	}
+ static DEFINE_SPINLOCK(cgroup_rstat_lock);
+ static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_cpu_lock);
++static atomic_t root_rstat_flush_ongoing = ATOMIC_INIT(0);
  
- 	for (nslot = 0, i = 0; i < csn; i++) {
--		struct cpuset *a = csa[i];
--		struct cpumask *dp;
--		int apn = a->pn;
--
--		if (apn < 0) {
--			/* Skip completed partitions */
--			continue;
--		}
--
--		dp = doms[nslot];
--
--		if (nslot == ndoms) {
--			static int warnings = 10;
--			if (warnings) {
--				pr_warn("rebuild_sched_domains confused: nslot %d, ndoms %d, csn %d, i %d, apn %d\n",
--					nslot, ndoms, csn, i, apn);
--				warnings--;
--			}
--			continue;
--		}
--
--		cpumask_clear(dp);
--		if (dattr)
--			*(dattr + nslot) = SD_ATTR_INIT;
-+		nslot_update = 0;
- 		for (j = i; j < csn; j++) {
--			struct cpuset *b = csa[j];
--
--			if (apn == b->pn) {
--				cpumask_or(dp, dp, b->effective_cpus);
-+			if (uf_find(&nodes[j]) == &nodes[i]) {
-+				struct cpumask *dp = doms[nslot];
+ static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu);
+ 
+@@ -350,8 +351,25 @@ __bpf_kfunc void cgroup_rstat_flush(struct cgroup *cgrp)
+ {
+ 	might_sleep();
+ 
++	/*
++	 * This avoids thundering herd problem on global rstat lock. When an
++	 * ongoing flush of the entire tree is in progress, then skip flush.
++	 */
++	if (atomic_read(&root_rstat_flush_ongoing))
++		return;
 +
-+				if (i == j) {
-+					nslot_update = 1;
-+					cpumask_clear(dp);
-+					if (dattr)
-+						*(dattr + nslot) = SD_ATTR_INIT;
-+				}
-+				cpumask_or(dp, dp, csa[j]->effective_cpus);
- 				cpumask_and(dp, dp, housekeeping_cpumask(HK_TYPE_DOMAIN));
- 				if (dattr)
--					update_domain_attr_tree(dattr + nslot, b);
--
--				/* Done with this partition */
--				b->pn = -1;
-+					update_domain_attr_tree(dattr + nslot, csa[j]);
- 			}
- 		}
--		nslot++;
-+		if (nslot_update)
-+			nslot++;
- 	}
- 	BUG_ON(nslot != ndoms);
--
-+free:
-+	uf_nodes_free(nodes);
- done:
- 	kfree(csa);
++	/* Grab right to be ongoing flusher, return if loosing race */
++	if (cgroup_is_root(cgrp) &&
++	    atomic_xchg(&root_rstat_flush_ongoing, 1))
++		return;
++
+ 	__cgroup_rstat_lock(cgrp, -1);
++
+ 	cgroup_rstat_flush_locked(cgrp);
++
++	if (cgroup_is_root(cgrp))
++		atomic_set(&root_rstat_flush_ongoing, 0);
++
+ 	__cgroup_rstat_unlock(cgrp, -1);
+ }
  
--- 
-2.45.2
+@@ -362,13 +380,20 @@ __bpf_kfunc void cgroup_rstat_flush(struct cgroup *cgrp)
+  * Flush stats in @cgrp's subtree and prevent further flushes.  Must be
+  * paired with cgroup_rstat_flush_release().
+  *
++ * Current invariant, not called with root cgrp.
++ *
+  * This function may block.
+  */
+ void cgroup_rstat_flush_hold(struct cgroup *cgrp)
+ 	__acquires(&cgroup_rstat_lock)
+ {
+ 	might_sleep();
++
+ 	__cgroup_rstat_lock(cgrp, -1);
++
++	if (atomic_read(&root_rstat_flush_ongoing))
++		return;
++
+ 	cgroup_rstat_flush_locked(cgrp);
+ }
+ 
+@@ -379,6 +404,9 @@ void cgroup_rstat_flush_hold(struct cgroup *cgrp)
+ void cgroup_rstat_flush_release(struct cgroup *cgrp)
+ 	__releases(&cgroup_rstat_lock)
+ {
++	if (cgroup_is_root(cgrp))
++		atomic_set(&root_rstat_flush_ongoing, 0);
++
+ 	__cgroup_rstat_unlock(cgrp, -1);
+ }
+ 
+
 
 
