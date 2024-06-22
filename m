@@ -1,55 +1,63 @@
-Return-Path: <cgroups+bounces-3283-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3284-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 071F19135EE
-	for <lists+cgroups@lfdr.de>; Sat, 22 Jun 2024 22:05:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E96809135F9
+	for <lists+cgroups@lfdr.de>; Sat, 22 Jun 2024 22:13:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 434E31F226F7
-	for <lists+cgroups@lfdr.de>; Sat, 22 Jun 2024 20:05:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A37CF282351
+	for <lists+cgroups@lfdr.de>; Sat, 22 Jun 2024 20:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E91E954757;
-	Sat, 22 Jun 2024 20:05:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78F7259168;
+	Sat, 22 Jun 2024 20:13:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="tSPgaf6k"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iIyXhw6A"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 771A817C77;
-	Sat, 22 Jun 2024 20:05:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75DF9208CA
+	for <cgroups@vger.kernel.org>; Sat, 22 Jun 2024 20:13:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719086703; cv=none; b=b9F7HxihfGCAWsw/0boTu+G7qZFFvsbjpZQXk2+S/JOYaPztZOXfR8W3Rra/0Wqs5UeFtbmiVFLI0h+20FB1Zog8Q/MfRZ3x88VNjHbd7guTzU3Qzg2e1hAEb40fE5onElYudHwFk8xuqUbi6W7ptjnl0pDv7cFbuQLA97qfoew=
+	t=1719087189; cv=none; b=mG2sqsBkEBVojlo19cIUAnP9w4S26jx7IBkVwgJwT1+eymox1f4Ecb2kAiuVGHQ8agLynxXtxqMJE0L28SUEEVntWwcSHXnrMs9Xlb0MTdF01NPk6Y1Iv6wnK2j5QVnGdd/YRwXoeOzTDexLeL2NzIZ2aO4abdTXY0o3VzKBZ44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719086703; c=relaxed/simple;
-	bh=X4RgHk+3bVHnxuD2bSbdMoym15SXyvRoyVUwm72nSeI=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=AAUKNHryHj+iMbKKOpPfzzAfhzHZu3qyCh9h+23GTjwpEyENkjZEpDIl2QpJDVCtVYOsN6RKEA5ga/TewuGYB5hlNX9he8kLK9BJn39zjOVUOj5rVUO1B1E1MNpxLtEbw0dCrBNpc82Zfp5gokkxcfLMzqMMQaQFCYOmjwvq28U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=tSPgaf6k; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1719086664; x=1719691464; i=markus.elfring@web.de;
-	bh=hXgtTs8/oQjFNPGrQzuOVGSfq9fteLe+XwONIn/tpL8=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=tSPgaf6ksSJOkTS7u67G0pUatIUuoRfWh4IxfmZRA2gah6CVIF9r4ywYlyGnGDHT
-	 wU2R1xuFoHriU42lBMhY4m8xQFSGJ62ybHJQF/8Zi77ne2L8pC3E8seLBE9IgvcbT
-	 buskwHI3SAih5p8cVvqNzcjKkQRPtQQiITyQCaD3WVa6OdnTZ96FHmxSPzM39ODm1
-	 4MEOitlBV5UxYUcShlLTsaI9Twa+K3j/Kdekk7ib55sZnLodwR9r+rmJFnlTj/2Yh
-	 dwhrFfgOM9Z3FYBpef4Xpl4ceJBVMQ9QEE/V8PW4tdv6czk/wNUuVfu6QBk0IIvdF
-	 VinWWYbGTk+FFfL9UQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.85.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MwjK2-1saAok2Qpe-014Pns; Sat, 22
- Jun 2024 22:04:24 +0200
-Message-ID: <b8792fb5-9efe-4dfc-ab61-6fa55a4b0d51@web.de>
-Date: Sat, 22 Jun 2024 22:04:22 +0200
+	s=arc-20240116; t=1719087189; c=relaxed/simple;
+	bh=9QTVTTAr/bLgfzwDbYy9kX0trwJMsoi07Zv5cyxqpSo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RSmH8VcJpkNCLgscowL8qSFNxn6derV5P4qSFQYW2DxJCDe8tWu/L5s/pE8d4hYAbq1W9Gq1rfa9D1qa9ebWcvWz/MNZPugVImaspba4VvdNfju+ovqZGwgOI7/yZaaPNtvbcueP0f59sQsFWWwkbS8YL4P09a4yuJN/oHmLUes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iIyXhw6A; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1719087186;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NVloH0O0knxKGVZtXf1+vpovAON8LePlPVCgLz6irFQ=;
+	b=iIyXhw6AdN9JdMwyxGPodclDyfFTI4MB4MlPh3duKCBgiCc95sFxEYz3zVo+LWEriZtAqk
+	ckwwhiZqBM6jO/ovEomEAlqji1REl19eSQ9TyjsQMMYE9l//zUJzAS0y2RG/boTSE+s5iI
+	BhCMPB+Fv45nXVdhdO9gr/c2KLQGRSQ=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-132-Z4Gct5fHPVa8Np_ctXthlg-1; Sat,
+ 22 Jun 2024 16:13:02 -0400
+X-MC-Unique: Z4Gct5fHPVa8Np_ctXthlg-1
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id BEA5819560AD;
+	Sat, 22 Jun 2024 20:13:00 +0000 (UTC)
+Received: from [10.22.32.34] (unknown [10.22.32.34])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 84F6719560BF;
+	Sat, 22 Jun 2024 20:12:58 +0000 (UTC)
+Message-ID: <2c70eff8-c79a-4c99-b8db-491ce25745a0@redhat.com>
+Date: Sat, 22 Jun 2024 16:12:57 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -57,58 +65,46 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Waiman Long <longman@redhat.com>, Chen Ridong <chenridong@huawei.com>,
- cgroups@vger.kernel.org, bpf@vger.kernel.org,
- Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
- Zefan Li <lizefan.x@bytedance.com>
+Subject: Re: [PATCH] cgroup/cpuset: Prevent UAF in proc_cpuset_show()
+To: Markus Elfring <Markus.Elfring@web.de>,
+ Chen Ridong <chenridong@huawei.com>, cgroups@vger.kernel.org,
+ bpf@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+ Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>
 Cc: LKML <linux-kernel@vger.kernel.org>
 References: <19648b9c-6df7-45cd-a5ae-624a3e4d860f@redhat.com>
-Subject: Re: [PATCH] cgroup/cpuset: Prevent UAF in proc_cpuset_show()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <19648b9c-6df7-45cd-a5ae-624a3e4d860f@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:2nyoN8Z62wxbrejHqKaRXiE+pJnEiesY8jOD9IS372zB9RDTIzl
- 7IAL6xnS5vnm7uoe51I9MZIUFXPHJCIN12f3LXaTNWEmUMHoEVrNLr+0I0wp/2Rz12QPUAE
- 4z3EgONNZvaUXL6sIoTa2ps/ACFJYMX9+BN8LHQA1r3E7AnC40MG1K1Q2VQGKvLOUrBXgrW
- L5SDtpRyuOiKAfB/dSzmA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:CHw2DvHij60=;F6AxIGuvAiFS9CXwETNCF/0xa9l
- 7bM6pzpPMCX3mwsDBOqhdjne84Mw17Vfv7EUcAErGbY8kTW6IcjQK5AVeehLVLy3EK8WV5G4k
- cUluvMGYDXWWnEqp2e2Q6IkhTS/Fp75SlUdFz8fFuyHhsZKTIdhGfasZXDfUMRbD3PzydfEQO
- +a9PvEAc4V0zxk1YGZMNZtHoMq/vpV5fkIDnX2KQx8Mt8UpdN8lWzYzcqAyspYu4I9HiUUu/H
- NO4n3bZLSVga7zBQeBbNuSTniArwVmKWaUtP58yYvwT3UCrXr3ILXV72xFHwBL5+b5+eWq9ve
- WqsmlR6ISXX6BTwdD/JrxPPg9brnmDpajLQjW49Qjzwp9j9MAuFhgHsIX100okYD9zgS3D9k4
- UVqNOagVMojD70iIaK8nGpx25ot7yA4gZEE1zXPA39rODqH2Ffg21oGNSEhPP6dQ+JKr7gHd2
- b+JO5CP/R9bLAKBvB6cTYx/LSitajAlXqVS49vlfdFACz3ygvquMH2yU80KqmgOJkDCnPND+W
- fWx0LFP+gM0AN195ywuWH0Z6GaXlMqk8Ler9rKuQsW6dNFmO7h+H6umoywJmGDAs7yFfrByAs
- PnxXnYDT9cGeNtxT6w1F/akoTWmham2PXlBLDg2unYkYStHM67TYvhlu0DNv4viddJk9NOODS
- QZuUwiDaaB5j+8bjF5LSDbrWhO4fDz5q9VyFgCK3u8YDmj9kioHeY3tQPsYSdLQSaUHSgULRT
- twttVMd1BzDUVkE0Eda4uvV6PofQYgR18wR8I006uj/9pkDGlnl/60VAlSOZXmvnbKxzVWmIz
- JqjENw1MPL5CiQAWk8doqWUaTsKOIAxg8QbEZjM2GwUkA=
+ <b8792fb5-9efe-4dfc-ab61-6fa55a4b0d51@web.de>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <b8792fb5-9efe-4dfc-ab61-6fa55a4b0d51@web.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-=E2=80=A6
-> +++ b/kernel/cgroup/cpuset.c
-=E2=80=A6
-> @@ -5051,10 +5066,12 @@ int proc_cpuset_show(struct seq_file *m, struct =
-pid_namespace *ns,
->  	if (!buf)
->  		goto out;
+On 6/22/24 16:04, Markus Elfring wrote:
+> …
+>> +++ b/kernel/cgroup/cpuset.c
+> …
+>> @@ -5051,10 +5066,12 @@ int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
+>>   	if (!buf)
+>>   		goto out;
+>>
+>> +	mutex_lock(&cpuset_mutex);
+>>   	css = task_get_css(tsk, cpuset_cgrp_id);
+>>   	retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
+>>   				current->nsproxy->cgroup_ns);
+>>   	css_put(css);
+>> +	mutex_unlock(&cpuset_mutex);
+> …
 >
-> +	mutex_lock(&cpuset_mutex);
->  	css =3D task_get_css(tsk, cpuset_cgrp_id);
->  	retval =3D cgroup_path_ns(css->cgroup, buf, PATH_MAX,
->  				current->nsproxy->cgroup_ns);
->  	css_put(css);
-> +	mutex_unlock(&cpuset_mutex);
-=E2=80=A6
+> Under which circumstances would you become interested to apply a statement
+> like “guard(mutex)(&cpuset_mutex);”?
+> https://elixir.bootlin.com/linux/v6.10-rc4/source/include/linux/mutex.h#L196
 
-Under which circumstances would you become interested to apply a statement
-like =E2=80=9Cguard(mutex)(&cpuset_mutex);=E2=80=9D?
-https://elixir.bootlin.com/linux/v6.10-rc4/source/include/linux/mutex.h#L1=
-96
+A mutex guard will be more appropriate if there is an error exit case 
+that needs to be handled. Otherwise, it is more straight forward and 
+easier to understand with the simple lock/unlock.
 
-Regards,
-Markus
+Cheers,
+Longman
+
 
