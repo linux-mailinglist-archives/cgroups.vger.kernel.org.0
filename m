@@ -1,61 +1,52 @@
-Return-Path: <cgroups+bounces-3277-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3279-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B96B5913284
-	for <lists+cgroups@lfdr.de>; Sat, 22 Jun 2024 09:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 916BC913373
+	for <lists+cgroups@lfdr.de>; Sat, 22 Jun 2024 13:45:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 649A61F227AA
-	for <lists+cgroups@lfdr.de>; Sat, 22 Jun 2024 07:18:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AB7F1F22D78
+	for <lists+cgroups@lfdr.de>; Sat, 22 Jun 2024 11:45:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 383FA14B078;
-	Sat, 22 Jun 2024 07:17:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="lGeJCGuR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3D8E155A34;
+	Sat, 22 Jun 2024 11:44:57 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2947F4C6B;
-	Sat, 22 Jun 2024 07:17:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73E9615382E;
+	Sat, 22 Jun 2024 11:44:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719040676; cv=none; b=JT/oEJu1jFC+690dj8Ea6MxWe7Gorfx1D9NZNu/AlVXr+HnLj90qamtV/fJ3TFTCNDI6dOgwQ3Jn73QsQODBjG2qcgE/D/i80qpGgoNERrNU8foju9zwK2/8SjlMUb6Mcl2kiW3WJQAlL+IGfQ/4s4YjK7zR6xdehaGakD1wrnU=
+	t=1719056697; cv=none; b=pkVkjN6u9B3uqU6CIsgcju1T4xowVROj4+vSOKOKM1Zf80kE64e6EwHNoZLAXZkH+HiceAjUsC30zY3PUp/fa/YemA1rVE7ZVT8zLdX/GOCQwwQqSZQCLc/isFPZULPFzP+YYRwpo/jyQBxWXt8UIe/yfYqQ6VVn0qvUAEjiA7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719040676; c=relaxed/simple;
-	bh=T9O4nMfNL264snMcAy6vophUdVlTs3RvdJVMqt8zS+w=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mV6G9zBS2L+nTOdBqghGZyMQeeT7LrxBJaiAJm5XAcpZczAUWof4tF8ULuqR2EE89yECTZmc3l1P17zWX/dyxUHABN5/Ack8wRbBiwEMVS8CSVcgCrhYueFHefdGJWVXLdtVirixOpluUw+oW5Oz9FQ9oKm2wQde4FyeNUr7QNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=lGeJCGuR; arc=none smtp.client-ip=117.135.210.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=2bzIC
-	7usDj/I+d/64DMmEa2VWZHcXlRlo9WqOfdcwd4=; b=lGeJCGuRyzummNUru9dOS
-	GQc0Ao2aVBmxDe1dickbop4B32JMPDakCovfpFThG6DVR9MLzlr8QVAVKpnihaa1
-	4vW0Wv23qP+Lg/lCJcTrMmHmUp17I3zYCp1RKNKEx9hsYwwmd5CXZMTzwfjfGFgR
-	bVOyqgwy/HExb/lyetyseY=
-Received: from localhost (unknown [101.132.132.191])
-	by gzga-smtp-mta-g2-2 (Coremail) with SMTP id _____wD3HybTeXZmUqwUAA--.6297S2;
-	Sat, 22 Jun 2024 15:14:28 +0800 (CST)
-From: Xavier <xavier_qy@163.com>
-To: tj@kernel.org,
-	longman@redhat.com
-Cc: mkoutny@suse.com,
-	lizefan.x@bytedance.com,
-	hannes@cmpxchg.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org,
-	akpm@linux-foundation.org,
-	Xavier <xavier_qy@163.com>
-Subject: [PATCH-cpuset v6 2/2] cpuset: use Union-Find to optimize the merging of cpumasks
-Date: Sat, 22 Jun 2024 15:14:24 +0800
-Message-Id: <20240622071424.215778-3-xavier_qy@163.com>
+	s=arc-20240116; t=1719056697; c=relaxed/simple;
+	bh=Y7ZpAfhDTUE6U93lIBNlr/+c6AoW+cOzf76hzYC8mwI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HL9OPbQRQJtI7Is4wa5it8BvF2oDk1kYTYeMt3DVXgN5z4S6H+wONxGVP6rnM0DQUEQ2VsltoXorWFXXp/O7ietQeBfgT/y8h7Gzo6CSCla+JCCDVv1WAd1qCjVbqjswZHGlBs8msnYb0mHYImyDeNQg62IKxIOOK7W0qsjSbH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4W5sjV4QPNzxSXn;
+	Sat, 22 Jun 2024 19:40:30 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id 11ED818007E;
+	Sat, 22 Jun 2024 19:44:46 +0800 (CST)
+Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Sat, 22 Jun
+ 2024 19:44:45 +0800
+From: Chen Ridong <chenridong@huawei.com>
+To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+	<longman@redhat.com>
+CC: <bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] cgroup: fix uaf when proc_cpuset_show
+Date: Sat, 22 Jun 2024 11:38:14 +0000
+Message-ID: <20240622113814.120907-1-chenridong@huawei.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240622071424.215778-1-xavier_qy@163.com>
-References: <ZnXsUnAi7VnX0tZJ@slm.duckdns.org>
- <20240622071424.215778-1-xavier_qy@163.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -63,182 +54,130 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3HybTeXZmUqwUAA--.6297S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAFWfur4kKFyUZFWUJrW3Awb_yoWrCw47pF
-	s3Gay29rWrJryUGwsYkay8Z34SkaykJa1Utw13Gw1rArnrA3Z2va40qFs5KFWUuryDCF1U
-	uFnxKr47WryUKFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U-J5wUUUUU=
-X-CM-SenderInfo: 50dyxvpubt5qqrwthudrp/1tbiYx0FEGV4I3AumQAFsX
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
-The process of constructing scheduling domains
- involves multiple loops and repeated evaluations, leading to numerous
- redundant and ineffective assessments that impact code efficiency.
+We found a refcount UAF bug as follows:
 
-Here, we use Union-Find to optimize the merging of cpumasks. By employing
-path compression and union by rank, we effectively reduce the number of
-lookups and merge comparisons.
+BUG: KASAN: use-after-free in cgroup_path_ns+0x112/0x150
+Read of size 8 at addr ffff8882a4b242b8 by task atop/19903
 
-Signed-off-by: Xavier <xavier_qy@163.com>
+CPU: 27 PID: 19903 Comm: atop Kdump: loaded Tainted: GF
+Call Trace:
+ dump_stack+0x7d/0xa7
+ print_address_description.constprop.0+0x19/0x170
+ ? cgroup_path_ns+0x112/0x150
+ __kasan_report.cold+0x6c/0x84
+ ? print_unreferenced+0x390/0x3b0
+ ? cgroup_path_ns+0x112/0x150
+ kasan_report+0x3a/0x50
+ cgroup_path_ns+0x112/0x150
+ proc_cpuset_show+0x164/0x530
+ proc_single_show+0x10f/0x1c0
+ seq_read_iter+0x405/0x1020
+ ? aa_path_link+0x2e0/0x2e0
+ seq_read+0x324/0x500
+ ? seq_read_iter+0x1020/0x1020
+ ? common_file_perm+0x2a1/0x4a0
+ ? fsnotify_unmount_inodes+0x380/0x380
+ ? bpf_lsm_file_permission_wrapper+0xa/0x30
+ ? security_file_permission+0x53/0x460
+ vfs_read+0x122/0x420
+ ksys_read+0xed/0x1c0
+ ? __ia32_sys_pwrite64+0x1e0/0x1e0
+ ? __audit_syscall_exit+0x741/0xa70
+ do_syscall_64+0x33/0x40
+ entry_SYSCALL_64_after_hwframe+0x67/0xcc
+
+This is also reported by: https://syzkaller.appspot.com/bug?extid=9b1ff7be974a403aa4cd
+
+This can be reproduced by the following methods:
+1.add an mdelay(1000) before acquiring the cgroup_lock In the
+ cgroup_path_ns function.
+2.$cat /proc/<pid>/cpuset   repeatly.
+3.$mount -t cgroup -o cpuset cpuset /sys/fs/cgroup/cpuset/
+$umount /sys/fs/cgroup/cpuset/   repeatly.
+
+The race that cause this bug can be shown as below:
+
+(umount)		|	(cat /proc/<pid>/cpuset)
+css_release		|	proc_cpuset_show
+css_release_work_fn	|	css = task_get_css(tsk, cpuset_cgrp_id);
+css_free_rwork_fn	|	cgroup_path_ns(css->cgroup, ...);
+cgroup_destroy_root	|	mutex_lock(&cgroup_mutex);
+rebind_subsystems	|
+cgroup_free_root 	|
+			|	// cgrp was freed, UAF
+			|	cgroup_path_ns_locked(cgrp,..);
+
+When the cpuset is initialized, the root node top_cpuset.css.cgrp
+will point to &cgrp_dfl_root.cgrp. In cgroup v1, the mount operation will
+allocate cgroup_root, and top_cpuset.css.cgrp will point to the allocated
+&cgroup_root.cgrp. When the umount operation is executed,
+top_cpuset.css.cgrp will be rebound to &cgrp_dfl_root.cgrp.
+
+The problem is that when rebinding to cgrp_dfl_root, there are cases
+where the cgroup_root allocated by setting up the root for cgroup v1
+is cached. This could lead to a Use-After-Free (UAF) if it is
+subsequently freed. The descendant cgroups of cgroup v1 can only be
+freed after the css is released. However, the css of the root will never
+be released, yet the cgroup_root should be freed when it is unmounted.
+This means that obtaining a reference to the css of the root does
+not guarantee that css.cgrp->root will not be freed.
+
+To solve this issue, we have added a cgroup reference count in
+the proc_cpuset_show function to ensure that css.cgrp->root will not
+be freed prematurely. This is a temporary solution. Let's see if anyone
+has a better solution.
+
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- kernel/cgroup/cpuset.c | 97 +++++++++++++++++-------------------------
- 1 file changed, 38 insertions(+), 59 deletions(-)
+ kernel/cgroup/cpuset.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index fe76045aa5..98e9df57c4 100644
+index c12b9fdb22a4..782eaf807173 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -45,6 +45,7 @@
- #include <linux/cgroup.h>
- #include <linux/wait.h>
- #include <linux/workqueue.h>
-+#include <linux/union_find.h>
+@@ -5045,6 +5045,7 @@ int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
+ 	char *buf;
+ 	struct cgroup_subsys_state *css;
+ 	int retval;
++	struct cgroup *root_cgroup = NULL;
  
- DEFINE_STATIC_KEY_FALSE(cpusets_pre_enable_key);
- DEFINE_STATIC_KEY_FALSE(cpusets_enabled_key);
-@@ -172,9 +173,6 @@ struct cpuset {
- 	 */
- 	int attach_in_progress;
+ 	retval = -ENOMEM;
+ 	buf = kmalloc(PATH_MAX, GFP_KERNEL);
+@@ -5052,9 +5053,28 @@ int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
+ 		goto out;
  
--	/* partition number for rebuild_sched_domains() */
--	int pn;
--
- 	/* for custom sched domain */
- 	int relax_domain_level;
- 
-@@ -1007,7 +1005,7 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 	struct cpuset *cp;	/* top-down scan of cpusets */
- 	struct cpuset **csa;	/* array of all cpuset ptrs */
- 	int csn;		/* how many cpuset ptrs in csa so far */
--	int i, j, k;		/* indices for partition finding loops */
-+	int i, j;		/* indices for partition finding loops */
- 	cpumask_var_t *doms;	/* resulting partition; i.e. sched domains */
- 	struct sched_domain_attr *dattr;  /* attributes for custom domains */
- 	int ndoms = 0;		/* number of sched domains in result */
-@@ -1015,6 +1013,8 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 	struct cgroup_subsys_state *pos_css;
- 	bool root_load_balance = is_sched_load_balance(&top_cpuset);
- 	bool cgrpv2 = cgroup_subsys_on_dfl(cpuset_cgrp_subsys);
-+	struct uf_node *nodes = NULL;
-+	int nslot_update;
- 
- 	doms = NULL;
- 	dattr = NULL;
-@@ -1102,31 +1102,26 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 	if (root_load_balance && (csn == 1))
- 		goto single_root_domain;
- 
--	for (i = 0; i < csn; i++)
--		csa[i]->pn = i;
--	ndoms = csn;
--
--restart:
--	/* Find the best partition (set of sched domains) */
--	for (i = 0; i < csn; i++) {
--		struct cpuset *a = csa[i];
--		int apn = a->pn;
--
--		for (j = 0; j < csn; j++) {
--			struct cpuset *b = csa[j];
--			int bpn = b->pn;
--
--			if (apn != bpn && cpusets_overlap(a, b)) {
--				for (k = 0; k < csn; k++) {
--					struct cpuset *c = csa[k];
-+	if (!cgrpv2) {
-+		nodes = uf_nodes_alloc(csn);
-+		if (!nodes)
-+			goto done;
- 
--					if (c->pn == bpn)
--						c->pn = apn;
--				}
--				ndoms--;	/* one less element */
--				goto restart;
-+		/* Merge overlapping cpusets */
-+		for (i = 0; i < csn; i++) {
-+			for (j = i + 1; j < csn; j++) {
-+				if (cpusets_overlap(csa[i], csa[j]))
-+					uf_union(&nodes[i], &nodes[j]);
- 			}
- 		}
-+
-+		/* Count the total number of domains */
-+		for (i = 0; i < csn; i++) {
-+			if ((nodes[i].parent == &nodes[i]) || !nodes[i].parent)
-+				ndoms++;
-+		}
-+	} else {
-+		ndoms = csn;
- 	}
- 
- 	/*
-@@ -1159,48 +1154,32 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 	}
- 
- 	for (nslot = 0, i = 0; i < csn; i++) {
--		struct cpuset *a = csa[i];
--		struct cpumask *dp;
--		int apn = a->pn;
--
--		if (apn < 0) {
--			/* Skip completed partitions */
--			continue;
--		}
--
--		dp = doms[nslot];
--
--		if (nslot == ndoms) {
--			static int warnings = 10;
--			if (warnings) {
--				pr_warn("rebuild_sched_domains confused: nslot %d, ndoms %d, csn %d, i %d, apn %d\n",
--					nslot, ndoms, csn, i, apn);
--				warnings--;
--			}
--			continue;
--		}
--
--		cpumask_clear(dp);
--		if (dattr)
--			*(dattr + nslot) = SD_ATTR_INIT;
-+		nslot_update = 0;
- 		for (j = i; j < csn; j++) {
--			struct cpuset *b = csa[j];
--
--			if (apn == b->pn) {
--				cpumask_or(dp, dp, b->effective_cpus);
-+			if (uf_find(&nodes[j]) == &nodes[i]) {
-+				struct cpumask *dp = doms[nslot];
-+
-+				if (i == j) {
-+					nslot_update = 1;
-+					cpumask_clear(dp);
-+					if (dattr)
-+						*(dattr + nslot) = SD_ATTR_INIT;
-+				}
-+				cpumask_or(dp, dp, csa[j]->effective_cpus);
- 				cpumask_and(dp, dp, housekeeping_cpumask(HK_TYPE_DOMAIN));
- 				if (dattr)
--					update_domain_attr_tree(dattr + nslot, b);
--
--				/* Done with this partition */
--				b->pn = -1;
-+					update_domain_attr_tree(dattr + nslot, csa[j]);
- 			}
- 		}
--		nslot++;
-+		if (nslot_update)
-+			nslot++;
- 	}
- 	BUG_ON(nslot != ndoms);
- 
- done:
-+	if (nodes)
-+		uf_nodes_free(nodes);
-+
- 	kfree(csa);
- 
- 	/*
+ 	css = task_get_css(tsk, cpuset_cgrp_id);
++	rcu_read_lock();
++	/*
++	 * When the cpuset subsystem is mounted on the legacy hierarchy,
++	 * the top_cpuset.css->cgroup does not hold a reference count of
++	 * cgroup_root.cgroup. This makes accessing css->cgroup very
++	 * dangerous because when the cpuset subsystem is remounted to the
++	 * default hierarchy, the cgroup_root.cgroup that css->cgroup points
++	 * to will be released, leading to a UAF issue. To avoid this problem,
++	 * get the reference count of top_cpuset.css->cgroup first.
++	 *
++	 * This is ugly!!
++	 */
++	if (css == &top_cpuset.css) {
++		cgroup_get(css->cgroup);
++		root_cgroup = css->cgroup;
++	}
++	rcu_read_unlock();
+ 	retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
+ 				current->nsproxy->cgroup_ns);
+ 	css_put(css);
++	if (root_cgroup)
++		cgroup_put(root_cgroup);
+ 	if (retval == -E2BIG)
+ 		retval = -ENAMETOOLONG;
+ 	if (retval < 0)
 -- 
-2.45.2
+2.34.1
 
 
