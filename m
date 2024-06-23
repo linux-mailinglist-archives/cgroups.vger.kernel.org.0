@@ -1,43 +1,43 @@
-Return-Path: <cgroups+bounces-3286-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3287-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C835913764
-	for <lists+cgroups@lfdr.de>; Sun, 23 Jun 2024 04:39:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDF42913765
+	for <lists+cgroups@lfdr.de>; Sun, 23 Jun 2024 04:39:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1C77283857
-	for <lists+cgroups@lfdr.de>; Sun, 23 Jun 2024 02:39:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E9231C20F31
+	for <lists+cgroups@lfdr.de>; Sun, 23 Jun 2024 02:39:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FE6EC129;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ECDDD268;
 	Sun, 23 Jun 2024 02:39:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="GHPrs92U"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Nl73rTbO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0D82944D;
-	Sun, 23 Jun 2024 02:39:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1840944E;
+	Sun, 23 Jun 2024 02:39:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719110381; cv=none; b=Fu5j+xYfkP3AZIox1FRB4M2AE5u5Fktcc8Senf8XkVjV7kBemG6YfKnbH4Qi37R+bCTSla080zDLPWBjiGWXXQxT43nnVO7u+gCM1JSMeGyd2dpz80wSCWHiyEjtwnMEP8TAWTrSZ18Buf8op5egeby3dihrpGOQ7JSH9yOSKqs=
+	t=1719110382; cv=none; b=NiONKDSRlcUN9+RZvODEUGdncCqmbKUjHFOjDBXK1XcGGqheYsyRKkJVfSZQ/criaI+Oviwq6hzBcuXS4Y6dDuLgect+dmbVivTRHTq4CzDF29j7NvSiuLWOCHq6yEbowG4pkvFyBfleArCwuw7d0mjRF4b/6DTQgE2D6Ewio2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719110381; c=relaxed/simple;
-	bh=yMhq2SDJ1qLLjWKd9KXFe93wdGSGYjFHF5/LdfzxFdU=;
+	s=arc-20240116; t=1719110382; c=relaxed/simple;
+	bh=gfgt6MOsoUMc2Co3kgD9D44YTV8Y1Wq/uaGxeaKsrUQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=p9bAhJlxq/tVDTsbggGN1m6c9H6dZxfZzyFehBbZzF79AE4DM3J2c9U6ZVP9kuaD1cGkXLTedb66xgSRwv+RE6YySMZ+cqJAYNjCUE79qF0t5ykC8LIFOYIl3PIqwEveWswMalZvXlUVdGvzV4up509pPwW3m7rU9BE3n/lRQ1w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=GHPrs92U; arc=none smtp.client-ip=220.197.31.5
+	 MIME-Version; b=P6eQXBf0NGElkxSFM2gtZVESBK7gMbHhtbrbd6O4BYMfDjqlJ6q5Zq6UnuNQXdqfyv+XXtmqhCtAOB/+Fks89qFvFe5vhv8rl3iGgyg74OItR+VS3ZCaSIVrDrJbrEhFGkHGW2ew3A6KF3JSv1aMzyH7zoqERVYZI/cWR3cVzf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Nl73rTbO; arc=none smtp.client-ip=117.135.210.3
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version:
-	Content-Type; bh=iQtY+/cPfpxxvtGtgKD3kI9HftG16nZFejGaogukvxE=;
-	b=GHPrs92UU91pgnKqS2ebEkx/cOKqG2MRSpFdSQtRhdtSgAMXdTnf1C6eFjhLy7
-	WKYuDVtNktlcV93JmSp5B+Zg0x5EoACBbVGxj7OqWZj5liGNTj5SfDD4c9/+X0p8
-	cwMcV6E2lROW1p7Ib9D02o+3HQHIkUh54eAdLeldy4qdg=
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=qctbx
+	oSUfBGOtVIcg4lCiASKBVYtbzC69YaXnAwrNqw=; b=Nl73rTbOAWeroGi+xe0Xj
+	P4+kkA+kgEw3TahTET4Mm+8BYfantTqpz8UNrHy70ReQN+ecLV6kLc3Xqkc3IwZT
+	qRaCLET8GKs7NNyIClF5Dbg9wrhxbGU2YpTeHN8AEp22ohvuwVSVJeJ0cYEyfLzj
+	vmZ+Q1RCYYSH7TZVWjYCpc=
 Received: from localhost (unknown [101.132.132.191])
-	by gzga-smtp-mta-g3-5 (Coremail) with SMTP id _____wD3Hy_HindmeLh_AA--.34610S2;
-	Sun, 23 Jun 2024 10:39:04 +0800 (CST)
+	by gzga-smtp-mta-g3-1 (Coremail) with SMTP id _____wD3P4LJindmYR5+AA--.40472S2;
+	Sun, 23 Jun 2024 10:39:05 +0800 (CST)
 From: Xavier <xavier_qy@163.com>
 To: tj@kernel.org
 Cc: longman@redhat.com,
@@ -49,9 +49,9 @@ Cc: longman@redhat.com,
 	torvalds@linux-foundation.org,
 	akpm@linux-foundation.org,
 	Xavier <xavier_qy@163.com>
-Subject: [PATCH-cpuset v7 1/2] Union-Find: add a new module in kernel library
-Date: Sun, 23 Jun 2024 10:39:00 +0800
-Message-Id: <20240623023901.218892-2-xavier_qy@163.com>
+Subject: [PATCH-cpuset v7 2/2] cpuset: use Union-Find to optimize the merging of cpumasks
+Date: Sun, 23 Jun 2024 10:39:01 +0800
+Message-Id: <20240623023901.218892-3-xavier_qy@163.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240623023901.218892-1-xavier_qy@163.com>
 References: <Znb4JBpJoGZ3LS1W@slm.duckdns.org>
@@ -62,334 +62,185 @@ List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3Hy_HindmeLh_AA--.34610S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWfJw48ury7GFyUCw47Ww4Durg_yoWDKF13pF
-	ZxGryfZw4DJryUury0krW5Aw4SvayrGrWUGa1xJ3W0yrnIyr10qF4jy34rtr95Gry2kFy8
-	XF4agw1rZ3WUJ3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07Uyv35UUUUU=
-X-CM-SenderInfo: 50dyxvpubt5qqrwthudrp/1tbiZQkHEGXAmkcMeQAAs2
+X-CM-TRANSID:_____wD3P4LJindmYR5+AA--.40472S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxAFWfur4kKFyUZFWUJrW3Awb_yoWrZF48pF
+	s3Cay2grWrJryUGwsYkay8Z34SkaykJa1Utw13Gw1rArnrA3Z2va40qFs5KFWUurWqkF1U
+	uF9xKr43Wr1UKFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U-J5wUUUUU=
+X-CM-SenderInfo: 50dyxvpubt5qqrwthudrp/1tbiZQwHEGXAmkcMqQAAsj
 
-This patch implements a union-find data structure in the kernel library,
-which includes operations for allocating nodes, freeing nodes,
-finding the root of a node, and merging two nodes.
+The process of constructing scheduling domains
+ involves multiple loops and repeated evaluations, leading to numerous
+ redundant and ineffective assessments that impact code efficiency.
+
+Here, we use Union-Find to optimize the merging of cpumasks. By employing
+path compression and union by rank, we effectively reduce the number of
+lookups and merge comparisons.
 
 Signed-off-by: Xavier <xavier_qy@163.com>
 ---
- Documentation/core-api/union_find.rst         | 101 ++++++++++++++++++
- .../zh_CN/core-api/union_find.rst             |  86 +++++++++++++++
- MAINTAINERS                                   |   9 ++
- include/linux/union_find.h                    |  24 +++++
- lib/Makefile                                  |   2 +-
- lib/union_find.c                              |  33 ++++++
- 6 files changed, 254 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/core-api/union_find.rst
- create mode 100644 Documentation/translations/zh_CN/core-api/union_find.rst
- create mode 100644 include/linux/union_find.h
- create mode 100644 lib/union_find.c
+ kernel/cgroup/cpuset.c | 99 +++++++++++++++++-------------------------
+ 1 file changed, 41 insertions(+), 58 deletions(-)
 
-diff --git a/Documentation/core-api/union_find.rst b/Documentation/core-api/union_find.rst
-new file mode 100644
-index 0000000000..38d63b16e5
---- /dev/null
-+++ b/Documentation/core-api/union_find.rst
-@@ -0,0 +1,101 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+====================
-+Union-Find in Linux
-+====================
-+
-+
-+:Date: June 21, 2024
-+:Author: Xavier <xavier_qy@163.com>
-+
-+What is Union-Find, and what is it used for?
-+------------------------------------------------
-+
-+Union-Find is a data structure used to handle the merging and querying
-+of disjoint sets. The primary operations supported by Union-Find are:
-+
-+	Initialization: Resetting each element as an individual set, with
-+		each set's initial parent node pointing to itself.
-+	Find: Determine which set a particular element belongs to, usually by
-+		returning a “representative element” of that set. This operation
-+		is used to check if two elements are in the same set.
-+	Union: Merge two sets into one.
-+
-+As a data structure used to maintain sets (groups), Union-Find is commonly
-+utilized to solve problems related to offline queries, dynamic connectivity,
-+and graph theory. It is also a key component in Kruskal's algorithm for
-+computing the minimum spanning tree, which is crucial in scenarios like
-+network routing. Consequently, Union-Find is widely referenced. Additionally,
-+Union-Find has applications in symbolic computation, register allocation,
-+and more.
-+
-+Space Complexity: O(n), where n is the number of nodes.
-+
-+Time Complexity: Using path compression can reduce the time complexity of
-+the find operation, and using union by rank can reduce the time complexity
-+of the union operation. These optimizations reduce the average time
-+complexity of each find and union operation to O(α(n)), where α(n) is the
-+inverse Ackermann function. This can be roughly considered a constant time
-+complexity for practical purposes.
-+
-+This document covers use of the Linux union-find implementation.  For more
-+information on the nature and implementation of Union-Find,  see:
-+
-+  Wikipedia entry on union-find
-+    https://en.wikipedia.org/wiki/Disjoint-set_data_structure
-+
-+Linux implementation of union-find
-+-----------------------------------
-+
-+Linux's union-find implementation resides in the file "lib/union_find.c".
-+To use it, "#include <linux/union_find.h>".
-+
-+The Union-Find data structure is defined as follows::
-+
-+	struct uf_node {
-+		struct uf_node *parent;
-+		unsigned int rank;
-+	};
-+
-+In this structure, parent points to the parent node of the current node.
-+The rank field represents the height of the current tree. During a union
-+operation, the tree with the smaller rank is attached under the tree with the
-+larger rank to maintain balance.
-+
-+Initializing Union-Find
-+--------------------
-+
-+When initializing the Union-Find data structure, a single pointer to the
-+Union-Find instance needs to be passed. Initialize the parent pointer to point
-+to itself and set the rank to 0.
-+Example::
-+
-+	struct uf_node *my_node = vzalloc(sizeof(struct uf_node));
-+	uf_nodes_init(my_node);
-+
-+Find the Root Node of Union-Find
-+--------------------------------
-+
-+This operation is mainly used to determine whether two nodes belong to the same
-+set in the Union-Find. If they have the same root, they are in the same set.
-+During the find operation, path compression is performed to improve the
-+efficiency of subsequent find operations.
-+Example::
-+
-+	int connected;
-+	struct uf_node *root1 = uf_find(&my_node[0]);
-+	struct uf_node *root2 = uf_find(&my_node[1]);
-+	if (root1 == root2)
-+		connected = 1;
-+	else
-+		connected = 0;
-+
-+Union Two Sets in Union-Find
-+----------------------------
-+
-+To union two sets in the Union-Find, you first find their respective root nodes
-+and then link the smaller node to the larger node based on the rank of the root
-+nodes.
-+Example::
-+
-+	uf_union(&my_node[0], &my_node[1]);
-diff --git a/Documentation/translations/zh_CN/core-api/union_find.rst b/Documentation/translations/zh_CN/core-api/union_find.rst
-new file mode 100644
-index 0000000000..e1b5ae88da
---- /dev/null
-+++ b/Documentation/translations/zh_CN/core-api/union_find.rst
-@@ -0,0 +1,86 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+.. include:: ../disclaimer-zh_CN.rst
-+
-+:Original: Documentation/core-api/union_find.rst
-+
-+===========================
-+Linux中的并查集（Union-Find）
-+===========================
-+
-+
-+:日期: 2024年6月21日
-+:作者: Xavier <xavier_qy@163.com>
-+
-+何为并查集，它有什么用？
-+---------------------
-+
-+并查集是一种数据结构，用于处理一些不交集的合并及查询问题。并查集支持的主要操作：
-+	初始化：将每个元素初始化为单独的集合，每个集合的初始父节点指向自身
-+	查询：查询某个元素属于哪个集合，通常是返回集合中的一个“代表元素”。这个操作是为
-+		了判断两个元素是否在同一个集合之中。
-+	合并：将两个集合合并为一个。
-+
-+并查集作为一种用于维护集合（组）的数据结构，它通常用于解决一些离线查询、动态连通性和
-+图论等相关问题，同时也是用于计算最小生成树的克鲁斯克尔算法中的关键，由于最小生成树在
-+网络路由等场景下十分重要，并查集也得到了广泛的引用。此外，并查集在符号计算，寄存器分
-+配等方面也有应用。
-+
-+空间复杂度: O(n)，n为节点数。
-+
-+时间复杂度：使用路径压缩可以减少查找操作的时间复杂度，使用按秩合并可以减少合并操作的
-+时间复杂度，使得并查集每个查询和合并操作的平均时间复杂度仅为O(α(n))，其中α(n)是反阿
-+克曼函数，可以粗略地认为并查集的操作有常数的时间复杂度。
-+
-+本文档涵盖了对Linux并查集实现的使用方法。更多关于并查集的性质和实现的信息，参见：
-+
-+  维基百科并查集词条
-+    https://en.wikipedia.org/wiki/Disjoint-set_data_structure
-+
-+并查集的Linux实现
-+----------------
-+
-+Linux的并查集实现在文件“lib/union_find.c”中。要使用它，需要
-+“#include <linux/union_find.h>”。
-+
-+并查集的数据结构定义如下::
-+
-+	struct uf_node {
-+		struct uf_node *parent;
-+		unsigned int rank;
-+	};
-+其中parent为当前节点的父节点，rank为当前树的高度，在合并时将rank小的节点接到rank大
-+的节点下面以增加平衡性。
-+
-+初始化并查集
-+---------
-+
-+初始化并查集时需要传入并查集实例的一个指针。初始化时，parent 指针指向自身，rank 设置
-+为 0。
-+示例::
-+
-+	struct uf_node *my_node = vzalloc(sizeof(struct uf_node));
-+	uf_nodes_init(my_node);
-+
-+查找并查集的根节点
-+----------------
-+
-+主要用于判断两个并查集是否属于一个集合，如果根相同，那么他们就是一个集合。在查找过程中
-+会对路径进行压缩，提高后续查找效率。
-+示例::
-+
-+	int connected;
-+	struct uf_node *root1 = uf_find(&my_node[0]);
-+	struct uf_node *root2 = uf_find(&my_node[1]);
-+	if (root1 == root2)
-+		connected = 1;
-+	else
-+		connected = 0;
-+
-+合并两个并查集
-+-------------
-+
-+对于两个相交的并查集进行合并，会首先查找它们各自的根节点，然后根据根节点秩大小，将小的
-+节点连接到大的节点下面。
-+示例::
-+
-+	uf_union(&my_node[0], &my_node[1]);
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d6c90161c7..a1a467c591 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -23054,6 +23054,15 @@ F:	drivers/cdrom/cdrom.c
- F:	include/linux/cdrom.h
- F:	include/uapi/linux/cdrom.h
- 
-+UNION-FIND
-+M:	Xavier <xavier_qy@163.com>
-+L:	linux-kernel@vger.kernel.org
-+S:	Maintained
-+F:	Documentation/core-api/union_find.rst
-+F:	Documentation/translations/zh_CN/core-api/union_find.rst
-+F:	include/linux/union_find.h
-+F:	lib/union_find.c
-+
- UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER
- R:	Alim Akhtar <alim.akhtar@samsung.com>
- R:	Avri Altman <avri.altman@wdc.com>
-diff --git a/include/linux/union_find.h b/include/linux/union_find.h
-new file mode 100644
-index 0000000000..56571c93a5
---- /dev/null
-+++ b/include/linux/union_find.h
-@@ -0,0 +1,24 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __LINUX_UNION_FIND_H
-+#define __LINUX_UNION_FIND_H
-+
-+/* Define a union-find node struct */
-+struct uf_node {
-+	struct uf_node *parent;
-+	unsigned int rank;
-+};
-+
-+/* Allocate nodes and initialize to 0 */
-+static inline void uf_nodes_init(struct uf_node *node)
-+{
-+	node->parent = node;
-+	node->rank = 0;
-+}
-+
-+/* find the root of a node*/
-+struct uf_node *uf_find(struct uf_node *node);
-+
-+/* Merge two intersecting nodes */
-+void uf_union(struct uf_node *node1, struct uf_node *node2);
-+
-+#endif /*__LINUX_UNION_FIND_H*/
-diff --git a/lib/Makefile b/lib/Makefile
-index 3b17690456..e1769e6f03 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -34,7 +34,7 @@ lib-y := ctype.o string.o vsprintf.o cmdline.o \
- 	 is_single_threaded.o plist.o decompress.o kobject_uevent.o \
- 	 earlycpio.o seq_buf.o siphash.o dec_and_lock.o \
- 	 nmi_backtrace.o win_minmax.o memcat_p.o \
--	 buildid.o objpool.o
-+	 buildid.o objpool.o union_find.o
- 
- lib-$(CONFIG_PRINTK) += dump_stack.o
- lib-$(CONFIG_SMP) += cpumask.o
-diff --git a/lib/union_find.c b/lib/union_find.c
-new file mode 100644
-index 0000000000..bb48b4b129
---- /dev/null
-+++ b/lib/union_find.c
-@@ -0,0 +1,33 @@
-+// SPDX-License-Identifier: GPL-2.0
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index fe76045aa5..d459cfddcb 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -45,6 +45,8 @@
+ #include <linux/cgroup.h>
+ #include <linux/wait.h>
+ #include <linux/workqueue.h>
 +#include <linux/union_find.h>
++#include <linux/vmalloc.h>
+ 
+ DEFINE_STATIC_KEY_FALSE(cpusets_pre_enable_key);
+ DEFINE_STATIC_KEY_FALSE(cpusets_enabled_key);
+@@ -172,9 +174,6 @@ struct cpuset {
+ 	 */
+ 	int attach_in_progress;
+ 
+-	/* partition number for rebuild_sched_domains() */
+-	int pn;
+-
+ 	/* for custom sched domain */
+ 	int relax_domain_level;
+ 
+@@ -1007,7 +1006,7 @@ static int generate_sched_domains(cpumask_var_t **domains,
+ 	struct cpuset *cp;	/* top-down scan of cpusets */
+ 	struct cpuset **csa;	/* array of all cpuset ptrs */
+ 	int csn;		/* how many cpuset ptrs in csa so far */
+-	int i, j, k;		/* indices for partition finding loops */
++	int i, j;		/* indices for partition finding loops */
+ 	cpumask_var_t *doms;	/* resulting partition; i.e. sched domains */
+ 	struct sched_domain_attr *dattr;  /* attributes for custom domains */
+ 	int ndoms = 0;		/* number of sched domains in result */
+@@ -1015,6 +1014,8 @@ static int generate_sched_domains(cpumask_var_t **domains,
+ 	struct cgroup_subsys_state *pos_css;
+ 	bool root_load_balance = is_sched_load_balance(&top_cpuset);
+ 	bool cgrpv2 = cgroup_subsys_on_dfl(cpuset_cgrp_subsys);
++	struct uf_node *nodes = NULL;
++	int nslot_update;
+ 
+ 	doms = NULL;
+ 	dattr = NULL;
+@@ -1102,31 +1103,29 @@ static int generate_sched_domains(cpumask_var_t **domains,
+ 	if (root_load_balance && (csn == 1))
+ 		goto single_root_domain;
+ 
+-	for (i = 0; i < csn; i++)
+-		csa[i]->pn = i;
+-	ndoms = csn;
+-
+-restart:
+-	/* Find the best partition (set of sched domains) */
+-	for (i = 0; i < csn; i++) {
+-		struct cpuset *a = csa[i];
+-		int apn = a->pn;
+-
+-		for (j = 0; j < csn; j++) {
+-			struct cpuset *b = csa[j];
+-			int bpn = b->pn;
++	if (!cgrpv2) {
++		nodes = vzalloc(sizeof(struct uf_node) * csn);
++		if (!nodes)
++			goto done;
+ 
+-			if (apn != bpn && cpusets_overlap(a, b)) {
+-				for (k = 0; k < csn; k++) {
+-					struct cpuset *c = csa[k];
++		for (i = 0; i < csn; i++)
++			uf_nodes_init(&nodes[i]);
+ 
+-					if (c->pn == bpn)
+-						c->pn = apn;
+-				}
+-				ndoms--;	/* one less element */
+-				goto restart;
++		/* Merge overlapping cpusets */
++		for (i = 0; i < csn; i++) {
++			for (j = i + 1; j < csn; j++) {
++				if (cpusets_overlap(csa[i], csa[j]))
++					uf_union(&nodes[i], &nodes[j]);
+ 			}
+ 		}
 +
-+struct uf_node *uf_find(struct uf_node *node)
-+{
-+	struct uf_node *parent;
-+
-+	/*Find the root node and perform path compression at the same time*/
-+	while (node->parent != node) {
-+		parent = node->parent;
-+		node->parent = parent->parent;
-+		node = parent;
-+	}
-+	return node;
-+}
-+
-+/*Function to merge two sets, using union by rank*/
-+void uf_union(struct uf_node *node1, struct uf_node *node2)
-+{
-+	struct uf_node *root1 = uf_find(node1);
-+	struct uf_node *root2 = uf_find(node2);
-+
-+	if (root1 != root2) {
-+		if (root1->rank < root2->rank) {
-+			root1->parent = root2;
-+		} else if (root1->rank > root2->rank) {
-+			root2->parent = root1;
-+		} else {
-+			root2->parent = root1;
-+			root1->rank++;
++		/* Count the total number of domains */
++		for (i = 0; i < csn; i++) {
++			if (nodes[i].parent == &nodes[i])
++				ndoms++;
 +		}
-+	}
-+}
++	} else {
++		ndoms = csn;
+ 	}
+ 
+ 	/*
+@@ -1159,48 +1158,32 @@ static int generate_sched_domains(cpumask_var_t **domains,
+ 	}
+ 
+ 	for (nslot = 0, i = 0; i < csn; i++) {
+-		struct cpuset *a = csa[i];
+-		struct cpumask *dp;
+-		int apn = a->pn;
+-
+-		if (apn < 0) {
+-			/* Skip completed partitions */
+-			continue;
+-		}
+-
+-		dp = doms[nslot];
+-
+-		if (nslot == ndoms) {
+-			static int warnings = 10;
+-			if (warnings) {
+-				pr_warn("rebuild_sched_domains confused: nslot %d, ndoms %d, csn %d, i %d, apn %d\n",
+-					nslot, ndoms, csn, i, apn);
+-				warnings--;
+-			}
+-			continue;
+-		}
+-
+-		cpumask_clear(dp);
+-		if (dattr)
+-			*(dattr + nslot) = SD_ATTR_INIT;
++		nslot_update = 0;
+ 		for (j = i; j < csn; j++) {
+-			struct cpuset *b = csa[j];
+-
+-			if (apn == b->pn) {
+-				cpumask_or(dp, dp, b->effective_cpus);
++			if (uf_find(&nodes[j]) == &nodes[i]) {
++				struct cpumask *dp = doms[nslot];
++
++				if (i == j) {
++					nslot_update = 1;
++					cpumask_clear(dp);
++					if (dattr)
++						*(dattr + nslot) = SD_ATTR_INIT;
++				}
++				cpumask_or(dp, dp, csa[j]->effective_cpus);
+ 				cpumask_and(dp, dp, housekeeping_cpumask(HK_TYPE_DOMAIN));
+ 				if (dattr)
+-					update_domain_attr_tree(dattr + nslot, b);
+-
+-				/* Done with this partition */
+-				b->pn = -1;
++					update_domain_attr_tree(dattr + nslot, csa[j]);
+ 			}
+ 		}
+-		nslot++;
++		if (nslot_update)
++			nslot++;
+ 	}
+ 	BUG_ON(nslot != ndoms);
+ 
+ done:
++	if (nodes)
++		vfree(nodes);
++
+ 	kfree(csa);
+ 
+ 	/*
 -- 
 2.45.2
 
