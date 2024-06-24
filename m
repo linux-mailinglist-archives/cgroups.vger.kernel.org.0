@@ -1,238 +1,320 @@
-Return-Path: <cgroups+bounces-3318-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3319-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B552915A1C
-	for <lists+cgroups@lfdr.de>; Tue, 25 Jun 2024 00:55:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2A27915ACB
+	for <lists+cgroups@lfdr.de>; Tue, 25 Jun 2024 01:59:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AEABB21A03
-	for <lists+cgroups@lfdr.de>; Mon, 24 Jun 2024 22:55:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69870282050
+	for <lists+cgroups@lfdr.de>; Mon, 24 Jun 2024 23:59:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684BF1A2553;
-	Mon, 24 Jun 2024 22:54:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C60F51A2C23;
+	Mon, 24 Jun 2024 23:59:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VsvwQWzD"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ONmjeTCf"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99D6647A64;
-	Mon, 24 Jun 2024 22:54:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA3A1A2576
+	for <cgroups@vger.kernel.org>; Mon, 24 Jun 2024 23:59:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719269693; cv=none; b=Cui6woEafsaDUsxh0Oh6JTKOzVS9C+tkWIJCu48Jl1Oslobl5xSVgFZiwIfWLOymPL0K8vqw8zXJzLHl4cDQQJkBx6mXbn40X9OQIxFuDNT9uqXoEhfv5RNiqKkhVbdSreh7vQqjIBlONDxMPBD3pVuLSbatq0hLxLhzC4G0a6E=
+	t=1719273567; cv=none; b=tn/qIj2YR4csXtHZDURN2n/ArcsrJeJsY2df+iOgSoSbWba8xzaNjyJmRxl2eFinb8Eu2CjgrzdeeUYXEBuwkkmkE2QZejPk74EwfeD3n1L3PmyhsPUshQME+lzcdZQXbeooLg7x9pdcl0snByhrSvvUDtF+kppv3sRI87YYcoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719269693; c=relaxed/simple;
-	bh=sElc2XuU2ff3on4aXynI8Tx39Edi1GwfSAQ4ACgrydk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ObbUTPC7q3PsNZPUsmbYShnsecgmFtfwb7Sq/PiD6yYazCDdE68GyMso4h4YRWtvpZCIslZNK8PcwTiYMOqtIigxnRYi3vN/3kJa1lvVOZUaF0RgV2AYUhDG++XN7AODEdUSzrjkXPr6GtJ5NH0Suu8QKvVyTQfHG1LCMh8VBv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VsvwQWzD; arc=none smtp.client-ip=209.85.210.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-70089223245so2824988a34.2;
-        Mon, 24 Jun 2024 15:54:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719269690; x=1719874490; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RmrF0dTmcOIfg8IkJIqr7iTWstwct6FH7y6vme7yHSs=;
-        b=VsvwQWzD5MQHpWajYQDYvNn6PZizHmFcL3kYuokfsQDrM9JRKXuY4h9QEg7uHljJwH
-         9uxfNjk8FWwOH6+7H5QsEg2lxa+CUsyObkGNl10kvhr3zJ7SisYjRnriR9+DiDppVl9t
-         6vr9LsJ1Q1mC92nzYdIj8sbiEmcPGLw0j4gU9MkEaren/OmYqU0JH0JQpI8/fgCO/Kz8
-         Mk+kNwexJptIQuPbS8Y0mdjKH8QMscWQn+2+ayffW9VUQG+1xzXK6GY5o+X95GictAkd
-         jHb4vB3MDM6I+OK5S5ZkHADgUS2NPKwGohYMlSU7aN+IokL9SJ0FB2gUHIj2Gm55r2Us
-         qkhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719269690; x=1719874490;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RmrF0dTmcOIfg8IkJIqr7iTWstwct6FH7y6vme7yHSs=;
-        b=vytOKg//2Ae5NLEYuq1OXhgB1ovlYHkLkT9odTPQfmkfXm7VaJS5LqYcuW+HxuiIK0
-         OfaT7bWGhupT9FLS5ojzkdsv1c2QU8mTW6hJyOWUAxjhUoQ7cCoDNRExWhCz6JNUScBJ
-         tK2D0XBltuqHlqIy3Q1mdbjuTVcBVY49ZM1k5hgfJ2g7gCpOTl6vJ0MYaMewYxhyLvEN
-         IpjHTRTNqQs7qUejnyhTFH02wTot9dM2EquSt5PVX8Q50/6loYxy/2ToZvoXAtnY6r5o
-         XMJZlBACCmqoRMkluvzEchc1mjQd8F7Z3hUcF8M8+ix0D+vzfoCCU77ot8+PToc8bCyv
-         ap6A==
-X-Forwarded-Encrypted: i=1; AJvYcCU2tL7XMVT9dQ5Df44EIcGHgy0BaSbtcdx3OAnKoNRYRotP8YfMSYtX2jhfkcm/E8gu1TaOQo9aCkeTR42Wf50fLs1geB2cW2Lfk4wDUaOjHTjBXwokOzR+Xl6Wcv9Y9LXQwDBQXA==
-X-Gm-Message-State: AOJu0YzRn9pLYEOcw/0MFidb2UF2XjK9qWjZTP4AJ274lTZGqnLIeDvx
-	BXCl+rWNQqr0RG/2NwqCBnHZ4AWpzut152QJxWcufDuabDB7lZBj
-X-Google-Smtp-Source: AGHT+IF1LmdDz568NfaQSwCT7YStZy+hquXQ5WPIRwD8wqfSpoWD/xHua/MASQDacD79OmYmZMmJnQ==
-X-Received: by 2002:a9d:7b43:0:b0:6f9:62e9:9f93 with SMTP id 46e09a7af769-700b12a1d3emr6253705a34.35.1719269690460;
-        Mon, 24 Jun 2024 15:54:50 -0700 (PDT)
-Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-79bce8c3775sm351009885a.59.2024.06.24.15.54.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jun 2024 15:54:49 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id F3F1A120006B;
-	Mon, 24 Jun 2024 18:54:48 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Mon, 24 Jun 2024 18:54:49 -0400
-X-ME-Sender: <xms:OPl5ZmtK0iI6Fi6Fmj2yDiYNs5sfVi4xWofdYtVeq7HtMb6VrORxfw>
-    <xme:OPl5Zrft_270b-F7XNcrI-fVMbT7rFfKk1ffl6KgnJ6rriqQbUaKfubg0dofoAeVR
-    zIbZvMBOW5onjyFUw>
-X-ME-Received: <xmr:OPl5Zhz5ngCrP5c7fRAaswsMD2tD_YRI3Ne8Qp6a2iHaWvZoJekD_J7Yxk0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfeegvddgudejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpefhteffveeuhefhveefgfehvdejkeefuefgfeegvedtheegvdelueevvdeg
-    teffueenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhlphgtrdgvvhgvnhhtshenuc
-    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhn
-    odhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejje
-    ekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhn
-    rghmvg
-X-ME-Proxy: <xmx:OPl5ZhOlMkoJgkxgJIsdhuiePPWijGaeMtXqsXL78gbK33Hj0UxT0Q>
-    <xmx:OPl5Zm8fp_sewk5eULcag-LXjClikhGnzB3gmlQ_MV8lscpvQLlY2g>
-    <xmx:OPl5ZpW4oAlTlHShqh-g_gba_UeIawTK97MDGix8R_cak6yEqnWmJw>
-    <xmx:OPl5ZvcGPlEDTBm5JZkjPJ345taw5lW9bwjSC5GWPnP4aq-9mpQjdQ>
-    <xmx:OPl5ZgeuD_g7bwcthIgo-o5M_gsriF6XWingqBniSPEcjLatoOxMzm1n>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 24 Jun 2024 18:54:48 -0400 (EDT)
-Date: Mon, 24 Jun 2024 15:54:14 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Leonardo Bras <leobras@redhat.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v1 0/4] Introduce QPW for per-cpu operations
-Message-ID: <Znn5FgqoCAUAfQhu@boqun-archlinux>
-References: <20240622035815.569665-1-leobras@redhat.com>
- <261612b9-e975-4c02-a493-7b83fa17c607@suse.cz>
+	s=arc-20240116; t=1719273567; c=relaxed/simple;
+	bh=n71HNSuDaWlLrCQVM594B5x/oTU5MOMjzbxlvKwnAks=;
+	h=Content-Type:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To; b=H7scvZRCqQYtLXvjrki6O50RnDtmiqdqqMoKpnnmTgBxpzFjUvCsBg27ZdZhLsG4G+1DrxHks3M4U9ChB6AC9/Vnhzzeg7oL8Mfch8G9udbuIUdMMVPlZzlb8C2Wo7sHxxNp08hf6iZyQfilei1XTTNsQbB59GbR/Mhdrlit+3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ONmjeTCf; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1719273564;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZzzF3xgOlJsRKpnG5UrvoUqQA4GXLlIqGHYQP2s+KYg=;
+	b=ONmjeTCffPK0Nx0nWr2esL2HYCBQHI37A8xEhIDAmqQFtShgfVLfjRJzF5dfkUDhxfp8N1
+	xD0xhv36h/Lp+/DZ/WC+z09m7mW7PITN2WEAC/U2Tpy8hOGvxXqjThob4/p00qpre1iUcX
+	cA76Zo5klonjrCwf4nWz0vuggscDiGw=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-392-GbyAzQmrOPa3PUkE5n5Qdw-1; Mon,
+ 24 Jun 2024 19:59:20 -0400
+X-MC-Unique: GbyAzQmrOPa3PUkE5n5Qdw-1
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B06A419560B0;
+	Mon, 24 Jun 2024 23:59:18 +0000 (UTC)
+Received: from [10.22.17.135] (unknown [10.22.17.135])
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id C6F3A19560AE;
+	Mon, 24 Jun 2024 23:59:16 +0000 (UTC)
+Content-Type: multipart/mixed; boundary="------------zYFHqbA6TwbLQ80GIyHAX7jS"
+Message-ID: <71a9cc3a-1b58-4051-984b-dd4f18dabf84@redhat.com>
+Date: Mon, 24 Jun 2024 19:59:15 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <261612b9-e975-4c02-a493-7b83fa17c607@suse.cz>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] cgroup: fix uaf when proc_cpuset_show
+To: chenridong <chenridong@huawei.com>, tj@kernel.org,
+ lizefan.x@bytedance.com, hannes@cmpxchg.org
+Cc: bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240622113814.120907-1-chenridong@huawei.com>
+ <19648b9c-6df7-45cd-a5ae-624a3e4d860f@redhat.com>
+ <52f72d1d-602e-4dca-85a3-adade925b056@huawei.com>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <52f72d1d-602e-4dca-85a3-adade925b056@huawei.com>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-On Mon, Jun 24, 2024 at 09:31:51AM +0200, Vlastimil Babka wrote:
-> Hi,
-> 
-> you've included tglx, which is great, but there's also LOCKING PRIMITIVES
-> section in MAINTAINERS so I've added folks from there in my reply.
+This is a multi-part message in MIME format.
+--------------zYFHqbA6TwbLQ80GIyHAX7jS
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Thanks!
+On 6/23/24 22:59, chenridong wrote:
+>
+> On 2024/6/22 23:05, Waiman Long wrote:
+>>
+>> On 6/22/24 07:38, Chen Ridong wrote:
+>>> We found a refcount UAF bug as follows:
+>>>
+>>> BUG: KASAN: use-after-free in cgroup_path_ns+0x112/0x150
+>>> Read of size 8 at addr ffff8882a4b242b8 by task atop/19903
+>>>
+>>> CPU: 27 PID: 19903 Comm: atop Kdump: loaded Tainted: GF
+>>> Call Trace:
+>>>   dump_stack+0x7d/0xa7
+>>>   print_address_description.constprop.0+0x19/0x170
+>>>   ? cgroup_path_ns+0x112/0x150
+>>>   __kasan_report.cold+0x6c/0x84
+>>>   ? print_unreferenced+0x390/0x3b0
+>>>   ? cgroup_path_ns+0x112/0x150
+>>>   kasan_report+0x3a/0x50
+>>>   cgroup_path_ns+0x112/0x150
+>>>   proc_cpuset_show+0x164/0x530
+>>>   proc_single_show+0x10f/0x1c0
+>>>   seq_read_iter+0x405/0x1020
+>>>   ? aa_path_link+0x2e0/0x2e0
+>>>   seq_read+0x324/0x500
+>>>   ? seq_read_iter+0x1020/0x1020
+>>>   ? common_file_perm+0x2a1/0x4a0
+>>>   ? fsnotify_unmount_inodes+0x380/0x380
+>>>   ? bpf_lsm_file_permission_wrapper+0xa/0x30
+>>>   ? security_file_permission+0x53/0x460
+>>>   vfs_read+0x122/0x420
+>>>   ksys_read+0xed/0x1c0
+>>>   ? __ia32_sys_pwrite64+0x1e0/0x1e0
+>>>   ? __audit_syscall_exit+0x741/0xa70
+>>>   do_syscall_64+0x33/0x40
+>>>   entry_SYSCALL_64_after_hwframe+0x67/0xcc
+>>>
+>>> This is also reported by: 
+>>> https://syzkaller.appspot.com/bug?extid=9b1ff7be974a403aa4cd
+>>>
+>>> This can be reproduced by the following methods:
+>>> 1.add an mdelay(1000) before acquiring the cgroup_lock In the
+>>>   cgroup_path_ns function.
+>>> 2.$cat /proc/<pid>/cpuset   repeatly.
+>>> 3.$mount -t cgroup -o cpuset cpuset /sys/fs/cgroup/cpuset/
+>>> $umount /sys/fs/cgroup/cpuset/   repeatly.
+>>>
+>>> The race that cause this bug can be shown as below:
+>>>
+>>> (umount)        |    (cat /proc/<pid>/cpuset)
+>>> css_release        |    proc_cpuset_show
+>>> css_release_work_fn    |    css = task_get_css(tsk, cpuset_cgrp_id);
+>>> css_free_rwork_fn    |    cgroup_path_ns(css->cgroup, ...);
+>>> cgroup_destroy_root    |    mutex_lock(&cgroup_mutex);
+>>> rebind_subsystems    |
+>>> cgroup_free_root     |
+>>>             |    // cgrp was freed, UAF
+>>>             |    cgroup_path_ns_locked(cgrp,..);
+>>>
+>>> When the cpuset is initialized, the root node top_cpuset.css.cgrp
+>>> will point to &cgrp_dfl_root.cgrp. In cgroup v1, the mount operation 
+>>> will
+>>> allocate cgroup_root, and top_cpuset.css.cgrp will point to the 
+>>> allocated
+>>> &cgroup_root.cgrp. When the umount operation is executed,
+>>> top_cpuset.css.cgrp will be rebound to &cgrp_dfl_root.cgrp.
+>>>
+>>> The problem is that when rebinding to cgrp_dfl_root, there are cases
+>>> where the cgroup_root allocated by setting up the root for cgroup v1
+>>> is cached. This could lead to a Use-After-Free (UAF) if it is
+>>> subsequently freed. The descendant cgroups of cgroup v1 can only be
+>>> freed after the css is released. However, the css of the root will 
+>>> never
+>>> be released, yet the cgroup_root should be freed when it is unmounted.
+>>> This means that obtaining a reference to the css of the root does
+>>> not guarantee that css.cgrp->root will not be freed.
+>>>
+>>> To solve this issue, we have added a cgroup reference count in
+>>> the proc_cpuset_show function to ensure that css.cgrp->root will not
+>>> be freed prematurely. This is a temporary solution. Let's see if anyone
+>>> has a better solution.
+>>>
+>>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>>> ---
+>>>   kernel/cgroup/cpuset.c | 20 ++++++++++++++++++++
+>>>   1 file changed, 20 insertions(+)
+>>>
+>>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>>> index c12b9fdb22a4..782eaf807173 100644
+>>> --- a/kernel/cgroup/cpuset.c
+>>> +++ b/kernel/cgroup/cpuset.c
+>>> @@ -5045,6 +5045,7 @@ int proc_cpuset_show(struct seq_file *m, 
+>>> struct pid_namespace *ns,
+>>>       char *buf;
+>>>       struct cgroup_subsys_state *css;
+>>>       int retval;
+>>> +    struct cgroup *root_cgroup = NULL;
+>>>         retval = -ENOMEM;
+>>>       buf = kmalloc(PATH_MAX, GFP_KERNEL);
+>>> @@ -5052,9 +5053,28 @@ int proc_cpuset_show(struct seq_file *m, 
+>>> struct pid_namespace *ns,
+>>>           goto out;
+>>>         css = task_get_css(tsk, cpuset_cgrp_id);
+>>> +    rcu_read_lock();
+>>> +    /*
+>>> +     * When the cpuset subsystem is mounted on the legacy hierarchy,
+>>> +     * the top_cpuset.css->cgroup does not hold a reference count of
+>>> +     * cgroup_root.cgroup. This makes accessing css->cgroup very
+>>> +     * dangerous because when the cpuset subsystem is remounted to the
+>>> +     * default hierarchy, the cgroup_root.cgroup that css->cgroup 
+>>> points
+>>> +     * to will be released, leading to a UAF issue. To avoid this 
+>>> problem,
+>>> +     * get the reference count of top_cpuset.css->cgroup first.
+>>> +     *
+>>> +     * This is ugly!!
+>>> +     */
+>>> +    if (css == &top_cpuset.css) {
+>>> +        cgroup_get(css->cgroup);
+>>> +        root_cgroup = css->cgroup;
+>>> +    }
+>>> +    rcu_read_unlock();
+>>>       retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
+>>>                   current->nsproxy->cgroup_ns);
+>>>       css_put(css);
+>>> +    if (root_cgroup)
+>>> +        cgroup_put(root_cgroup);
+>>>       if (retval == -E2BIG)
+>>>           retval = -ENAMETOOLONG;
+>>>       if (retval < 0)
+>>
+>> Thanks for reporting this UAF bug. Could you try the attached patch 
+>> to see if it can fix the issue?
+>>
+>
+> +/*
+> + * With a cgroup v1 mount, root_css.cgroup can be freed. We need to 
+> take a
+> + * reference to it to avoid UAF as proc_cpuset_show() may access the 
+> content
+> + * of this cgroup.
+> + */
+>  static void cpuset_bind(struct cgroup_subsys_state *root_css)
+>  {
+> +    static struct cgroup *v1_cgroup_root;
+> +
+>      mutex_lock(&cpuset_mutex);
+> +    if (v1_cgroup_root) {
+> +        cgroup_put(v1_cgroup_root);
+> +        v1_cgroup_root = NULL;
+> +    }
+>      spin_lock_irq(&callback_lock);
+>
+>      if (is_in_v2_mode()) {
+> @@ -4159,6 +4170,10 @@ static void cpuset_bind(struct 
+> cgroup_subsys_state *root_css)
+>      }
+>
+>      spin_unlock_irq(&callback_lock);
+> +    if (!cgroup_subsys_on_dfl(cpuset_cgrp_subsys)) {
+> +        v1_cgroup_root = root_css->cgroup;
+> +        cgroup_get(v1_cgroup_root);
+> +    }
+>      mutex_unlock(&cpuset_mutex);
+>  }
+>
+> Thanks for your suggestion. If we take a reference at rebind(call 
+> ->bind()) function, cgroup_root allocated when setting up root for 
+> cgroup v1 can never be released, because the reference count will 
+> never be reduced to zero.
+>
+> We have already tried similar methods to fix this issue, however doing 
+> so causes another issue as mentioned previously.
 
-> Link to full series:
-> https://lore.kernel.org/all/20240622035815.569665-1-leobras@redhat.com/
-> 
+You are right. Taking the reference in cpuset_bind() will prevent 
+cgroup_destroy_root() from being called. I had overlooked that.
 
-And apologies to Leonardo... I think this is a follow-up of:
+Now I have an even simpler fix. Could you try the attached v2 patch to 
+verify if that can fix the problem?
 
-	https://lpc.events/event/17/contributions/1484/
+Thanks,
+Longman
 
-and I did remember we had a quick chat after that which I suggested it's
-better to change to a different name, sorry that I never found time to
-write a proper rely to your previous seriese [1] as promised.
+--------------zYFHqbA6TwbLQ80GIyHAX7jS
+Content-Type: text/x-patch; charset=UTF-8;
+ name="v2-0001-cgroup-cpuset-Prevent-UAF-in-proc_cpuset_show.patch"
+Content-Disposition: attachment;
+ filename*0="v2-0001-cgroup-cpuset-Prevent-UAF-in-proc_cpuset_show.patch"
+Content-Transfer-Encoding: base64
 
-[1]: https://lore.kernel.org/lkml/20230729083737.38699-2-leobras@redhat.com/
+RnJvbSAyOTk2MjM1NTQ1NDMzY2UyNWU5MTdhZjExZjQ5ODVkN2I2ODgwNzY0IE1vbiBTZXAg
+MTcgMDA6MDA6MDAgMjAwMQpGcm9tOiBXYWltYW4gTG9uZyA8bG9uZ21hbkByZWRoYXQuY29t
+PgpEYXRlOiBNb24sIDI0IEp1biAyMDI0IDE5OjUzOjMyIC0wNDAwClN1YmplY3Q6IFtQQVRD
+SCB2Ml0gY2dyb3VwL2NwdXNldDogUHJldmVudCBVQUYgaW4gcHJvY19jcHVzZXRfc2hvdygp
+CgpUaGUgdW5tb3VudGluZyBvZiBhIGNwdXNldCBjZ3JvdXAgZmlsZXN5c3RlbSB3aWxsIGxl
+YWQgdG8gYSBjYWxsIHRvCmNwdXNldF9iaW5kKCkgdG8gcmViaW5kIGl0IGJhY2sgdG8gJmNn
+cnBfZGZsX3Jvb3QuY2dycCB2aWEgdGhlIGZvbGxvd2luZwpjYWxsIHNlcXVlbmNlLgoKICBj
+Z3JvdXBfZGVzdHJveV9yb290KCkKICAtLT4gcmViaW5kX3N1YnN5c3RlbXMoKQogIC0tPiBj
+cHVzZXRfYmluZCgpCgpUaGUgY2FsbCB0byBjcHVzZXRfYmluZCgpIGlzIGRvbmUgYWZ0ZXIg
+c2V0dGluZyB0b3BfY3B1c2V0LmNzcy5jZ3JvdXAKdG8gdGhlICZjZ3JwX2RmbF9yb290LmNn
+cnAuIFRoZSBhbGxvY2F0ZWQgdjEgY2dyb3VwIHJvb3Qgd2lsbCBiZSBmcmVlZAphZnRlciB0
+aGUgY29tcGxldGlvbiBvZiB0aGUgY3B1c2V0X2JpbmQoKSBjYWxsIGFuZCBvdGhlciBtaXNj
+ZWxsYW5lb3VzCmNsZWFudXBzLgoKRml4IHRoaXMgcG90ZW50aWFsIFVBRiBwcm9ibGVtIGJ5
+IHB1dHRpbmcgdGhlIGFjY2VzcyBhbmQgcGFyc2luZwpvZiB0b3BfY3B1c2V0LmNzcy5jZ3Jv
+dXAgdW5kZXIgY3B1c2V0X211dGV4IHRvIHN5bmNocm9uaXplIHdpdGgKY3B1c2V0X2JpbmQo
+KSBvZiB0aGUgdW5tb3VudCBvcGVyYXRpb24uIElmIHRoZSBjcHVzZXRfbXV0ZXggaXMgYWNx
+dWlyZWQKYWZ0ZXIgY3B1c2V0X2JpbmQoKSwgdG9wX2NwdXNldC5jc3MuY2dyb3VwIGlzIGd1
+YXJhbnRlZWQgdG8gcG9pbnQgdG8KY2dycF9kZmxfcm9vdC5jZ3JwLiBJZiBpdCBpcyBhY3F1
+aXJlZCBiZWZvcmUgY3B1c2V0X2JpbmQoKSwgdGhlIGFsbG9jYXRlZAp2MSBjZ3JvdXAgcm9v
+dCBjYW5ub3QgYmUgZnJlZWQgdW50aWwgYWZ0ZXIgdGhlIGNwdXNldF9tdXRleCBpcyByZWxl
+YXNlZC4KCkEgc2ltaWxhciBVQUYgcHJvYmxlbSBpbiBwcm9jX2NwdXNldF9zaG93KCkgaGFk
+IGJlZW4gcmVwb3J0ZWQgYmVmb3JlIGluClsxXS4KClsxXSBodHRwczovL3N5emthbGxlci5h
+cHBzcG90LmNvbS9idWc/ZXh0aWQ9OWIxZmY3YmU5NzRhNDAzYWE0Y2QKClJlcG9ydGVkLWJ5
+OiBDaGVuIFJpZG9uZyA8Y2hlbnJpZG9uZ0BodWF3ZWkuY29tPgpDbG9zZXM6IGh0dHBzOi8v
+c3l6a2FsbGVyLmFwcHNwb3QuY29tL2J1Zz9leHRpZD05YjFmZjdiZTk3NGE0MDNhYTRjZApT
+aWduZWQtb2ZmLWJ5OiBXYWltYW4gTG9uZyA8bG9uZ21hbkByZWRoYXQuY29tPgotLS0KIGtl
+cm5lbC9jZ3JvdXAvY3B1c2V0LmMgfCA3ICsrKysrKysKIDEgZmlsZSBjaGFuZ2VkLCA3IGlu
+c2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9rZXJuZWwvY2dyb3VwL2NwdXNldC5jIGIva2Vy
+bmVsL2Nncm91cC9jcHVzZXQuYwppbmRleCBjMTJiOWZkYjIyYTQuLjk1MzE1MGEwNmQ4MSAx
+MDA2NDQKLS0tIGEva2VybmVsL2Nncm91cC9jcHVzZXQuYworKysgYi9rZXJuZWwvY2dyb3Vw
+L2NwdXNldC5jCkBAIC01MDUxLDEwICs1MDUxLDE3IEBAIGludCBwcm9jX2NwdXNldF9zaG93
+KHN0cnVjdCBzZXFfZmlsZSAqbSwgc3RydWN0IHBpZF9uYW1lc3BhY2UgKm5zLAogCWlmICgh
+YnVmKQogCQlnb3RvIG91dDsKIAorCS8qCisJICogQWNjZXNzIHRvIGNzcy0+Y2dyb3VwIGlz
+IGd1YXJkZWQgYnkgY3B1c2V0X211dGV4IHRvIHN5bmNocm9uaXplCisJICogd2l0aCB0aGUg
+Y3B1c2V0X2JpbmQoKSBjYWxsIG9mIGEgcmFjaW5nIHYxIGNncm91cCByb290IHVubW91bnQK
+KwkgKiBvcGVyYXRpb24gdG8gcHJldmVudCBVQUYuCisJICovCisJbXV0ZXhfbG9jaygmY3B1
+c2V0X211dGV4KTsKIAljc3MgPSB0YXNrX2dldF9jc3ModHNrLCBjcHVzZXRfY2dycF9pZCk7
+CiAJcmV0dmFsID0gY2dyb3VwX3BhdGhfbnMoY3NzLT5jZ3JvdXAsIGJ1ZiwgUEFUSF9NQVgs
+CiAJCQkJY3VycmVudC0+bnNwcm94eS0+Y2dyb3VwX25zKTsKIAljc3NfcHV0KGNzcyk7CisJ
+bXV0ZXhfdW5sb2NrKCZjcHVzZXRfbXV0ZXgpOwogCWlmIChyZXR2YWwgPT0gLUUyQklHKQog
+CQlyZXR2YWwgPSAtRU5BTUVUT09MT05HOwogCWlmIChyZXR2YWwgPCAwKQotLSAKMi4zOS4z
+Cgo=
 
-> On 6/22/24 5:58 AM, Leonardo Bras wrote:
-> > The problem:
-> > Some places in the kernel implement a parallel programming strategy
-> > consisting on local_locks() for most of the work, and some rare remote
-> > operations are scheduled on target cpu. This keeps cache bouncing low since
-> > cacheline tends to be mostly local, and avoids the cost of locks in non-RT
-> > kernels, even though the very few remote operations will be expensive due
-> > to scheduling overhead.
-> > 
-> > On the other hand, for RT workloads this can represent a problem: getting
-> > an important workload scheduled out to deal with remote requests is
-> > sure to introduce unexpected deadline misses.
-> > 
-> > The idea:
-> > Currently with PREEMPT_RT=y, local_locks() become per-cpu spinlocks.
-> > In this case, instead of scheduling work on a remote cpu, it should
-> > be safe to grab that remote cpu's per-cpu spinlock and run the required
-> > work locally. Tha major cost, which is un/locking in every local function,
-> > already happens in PREEMPT_RT.
-> 
-> I've also noticed this a while ago (likely in the context of rewriting SLUB
-> to use local_lock) and asked about it on IRC, and IIRC tglx wasn't fond of
-> the idea. But I forgot the details about why, so I'll let the the locking
-> experts reply...
-> 
+--------------zYFHqbA6TwbLQ80GIyHAX7jS--
 
-I think it's a good idea, especially the new name is less confusing ;-)
-So I wonder Thomas' thoughts as well.
-
-And I think a few (micro-)benchmark numbers will help.
-
-Regards,
-Boqun
-
-> > Also, there is no need to worry about extra cache bouncing:
-> > The cacheline invalidation already happens due to schedule_work_on().
-> > 
-> > This will avoid schedule_work_on(), and thus avoid scheduling-out an 
-> > RT workload. 
-> > 
-> > For patches 2, 3 & 4, I noticed just grabing the lock and executing
-> > the function locally is much faster than just scheduling it on a
-> > remote cpu.
-> > 
-> > Proposed solution:
-> > A new interface called Queue PerCPU Work (QPW), which should replace
-> > Work Queue in the above mentioned use case. 
-> > 
-> > If PREEMPT_RT=n, this interfaces just wraps the current 
-> > local_locks + WorkQueue behavior, so no expected change in runtime.
-> > 
-> > If PREEMPT_RT=y, queue_percpu_work_on(cpu,...) will lock that cpu's
-> > per-cpu structure and perform work on it locally. This is possible
-> > because on functions that can be used for performing remote work on
-> > remote per-cpu structures, the local_lock (which is already
-> > a this_cpu spinlock()), will be replaced by a qpw_spinlock(), which
-> > is able to get the per_cpu spinlock() for the cpu passed as parameter.
-> > 
-> > Patch 1 implements QPW interface, and patches 2, 3 & 4 replaces the
-> > current local_lock + WorkQueue interface by the QPW interface in
-> > swap, memcontrol & slub interface.
-> > 
-> > Please let me know what you think on that, and please suggest
-> > improvements.
-> > 
-> > Thanks a lot!
-> > Leo
-> > 
-> > Leonardo Bras (4):
-> >   Introducing qpw_lock() and per-cpu queue & flush work
-> >   swap: apply new queue_percpu_work_on() interface
-> >   memcontrol: apply new queue_percpu_work_on() interface
-> >   slub: apply new queue_percpu_work_on() interface
-> > 
-> >  include/linux/qpw.h | 88 +++++++++++++++++++++++++++++++++++++++++++++
-> >  mm/memcontrol.c     | 20 ++++++-----
-> >  mm/slub.c           | 26 ++++++++------
-> >  mm/swap.c           | 26 +++++++-------
-> >  4 files changed, 127 insertions(+), 33 deletions(-)
-> >  create mode 100644 include/linux/qpw.h
-> > 
-> > 
-> > base-commit: 50736169ecc8387247fe6a00932852ce7b057083
-> 
 
