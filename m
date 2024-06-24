@@ -1,123 +1,238 @@
-Return-Path: <cgroups+bounces-3317-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3318-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 853A19159D0
-	for <lists+cgroups@lfdr.de>; Tue, 25 Jun 2024 00:23:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B552915A1C
+	for <lists+cgroups@lfdr.de>; Tue, 25 Jun 2024 00:55:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B77BF1C22D89
-	for <lists+cgroups@lfdr.de>; Mon, 24 Jun 2024 22:23:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4AEABB21A03
+	for <lists+cgroups@lfdr.de>; Mon, 24 Jun 2024 22:55:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5490B1A257C;
-	Mon, 24 Jun 2024 22:22:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684BF1A2553;
+	Mon, 24 Jun 2024 22:54:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ly6Jpr0b"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VsvwQWzD"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90CB01A2561
-	for <cgroups@vger.kernel.org>; Mon, 24 Jun 2024 22:22:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99D6647A64;
+	Mon, 24 Jun 2024 22:54:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719267723; cv=none; b=KTuouqI4u59eQKLE13e9bCFPzS1lziHqI37Ae8gHaCkzj/P41+pfGPB6cOl6Y7LYWX3TIVQwtet7Nbu8aIKnzeT9HOVY/E1jnNDjjJFP68RfpT3irt1VmTIwuOBXIB/JDINHvBkDvIvThepKdNVI3ngTSlkXUzTdgus4WjPERwg=
+	t=1719269693; cv=none; b=Cui6woEafsaDUsxh0Oh6JTKOzVS9C+tkWIJCu48Jl1Oslobl5xSVgFZiwIfWLOymPL0K8vqw8zXJzLHl4cDQQJkBx6mXbn40X9OQIxFuDNT9uqXoEhfv5RNiqKkhVbdSreh7vQqjIBlONDxMPBD3pVuLSbatq0hLxLhzC4G0a6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719267723; c=relaxed/simple;
-	bh=PcN2LJL6kWr6oWgE775RIznao+qaUEEZiOmFAo/x6hk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=s5Vgi1YCzfbNqkDC1MV7HeZACWX+YqUynBB/Tfuujo8eaGYM1TGFBgA3JntnbgtjlEV354CrY0WLgzK/dQartRrSbE4fA5OZqBk9o0WsX3I0VcjhKu7QcF/QHktht35XiQ6g2EP8Ap6t/yF1HUlQH/v5P4D7urwUFT5roJ2aRsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ly6Jpr0b; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a724b4f1218so236092966b.2
-        for <cgroups@vger.kernel.org>; Mon, 24 Jun 2024 15:22:01 -0700 (PDT)
+	s=arc-20240116; t=1719269693; c=relaxed/simple;
+	bh=sElc2XuU2ff3on4aXynI8Tx39Edi1GwfSAQ4ACgrydk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ObbUTPC7q3PsNZPUsmbYShnsecgmFtfwb7Sq/PiD6yYazCDdE68GyMso4h4YRWtvpZCIslZNK8PcwTiYMOqtIigxnRYi3vN/3kJa1lvVOZUaF0RgV2AYUhDG++XN7AODEdUSzrjkXPr6GtJ5NH0Suu8QKvVyTQfHG1LCMh8VBv8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VsvwQWzD; arc=none smtp.client-ip=209.85.210.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-70089223245so2824988a34.2;
+        Mon, 24 Jun 2024 15:54:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1719267720; x=1719872520; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1719269690; x=1719874490; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PcN2LJL6kWr6oWgE775RIznao+qaUEEZiOmFAo/x6hk=;
-        b=ly6Jpr0bu6ozqibhVR06YMAPRKsXj7QLTCvr/30EIIAlaRiZPcffLkrpDgtn6288zX
-         dXKORxfZXdndsXqL9etdvJYJbwH7p9ydr7rPvHEWb7VN54QObLCzVOeTaHNqV77zgL9Q
-         jT15xd3jVFoTDnBbN7AAdbOKk0eBOS6+LDjRdRvhAu41aaBdk9UWq7rx3ZxATSSMdT5A
-         WRFvrZjVpzOJJ/PhwNEEdt0TtavDKkQH2klYDaOX/v/fSe68GXq8Lw5D/G0VS2DFqIYO
-         7USpuAqhHJZFW5Z8Sgvn4pxc3/gGCYKUmAvkgWIkBZHp6lkmnSQxKpH5ADd4eHjXGLhq
-         7cGw==
+        bh=RmrF0dTmcOIfg8IkJIqr7iTWstwct6FH7y6vme7yHSs=;
+        b=VsvwQWzD5MQHpWajYQDYvNn6PZizHmFcL3kYuokfsQDrM9JRKXuY4h9QEg7uHljJwH
+         9uxfNjk8FWwOH6+7H5QsEg2lxa+CUsyObkGNl10kvhr3zJ7SisYjRnriR9+DiDppVl9t
+         6vr9LsJ1Q1mC92nzYdIj8sbiEmcPGLw0j4gU9MkEaren/OmYqU0JH0JQpI8/fgCO/Kz8
+         Mk+kNwexJptIQuPbS8Y0mdjKH8QMscWQn+2+ayffW9VUQG+1xzXK6GY5o+X95GictAkd
+         jHb4vB3MDM6I+OK5S5ZkHADgUS2NPKwGohYMlSU7aN+IokL9SJ0FB2gUHIj2Gm55r2Us
+         qkhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719267720; x=1719872520;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1719269690; x=1719874490;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PcN2LJL6kWr6oWgE775RIznao+qaUEEZiOmFAo/x6hk=;
-        b=eDBLf4z9jETQ2C37wZYVZW+bEN0vNcjmRUoN8iJgMNEiWrwLlUvTTqdnhl54jgzedf
-         yiILhCBsO//mfjjSBc2uOVAIx5PKN8wpqe+ibpOaTgGQC/T9cFXLxfebMWypWUutNbP7
-         K0CxVB8YjHPP3T7av4l/hCpf1yuSlvRXMJYetFDpMoOeH+V+NlTwV4BsCLaV33SE0E/I
-         jnB1X+9BG/tnqc8Jd2bN2S8zvbeiT0Oc6mCXm2yS6bnXIEuRXPFuJyCto3TfajW3bk3g
-         G1Q86ofspMfW8e8LNOBG1Q6uiLKfFCG5qI9PV/36xeuxUBc+qrSTjwoNJ5gVXLXjFJSf
-         WazA==
-X-Forwarded-Encrypted: i=1; AJvYcCWiI5wQxGbrBU3qH3A/rMnvGHYx9Fmb0Tx6anXoOxf3mlA8kO0BNrlHYo6OFytNbwH0wU8ngKhM3yXL+MmdZatjC+AcEpw73Q==
-X-Gm-Message-State: AOJu0Yx09LdTI8WLnDkuC96c2IquupS3e6yT/05FdOWZUwuNo14TTB/K
-	E2t0wUn2ac/hatN1BrQZ01jb/O3r6nqk/y/uljsvGzuzCYlD+i0XnV70rx87l0Pd+5jUj5R92JA
-	YtRQZPp4T/N4VRpP/cRnumpU4WxCqq60rhsqJ
-X-Google-Smtp-Source: AGHT+IFo+oka3TVDwdKDk6KZym0SSihHfv4LPK2ktJvuzlqktIKqFKnYrmXTq5Q0GH9QzykFfyUnlf10x/LmX2qpDRA=
-X-Received: by 2002:a17:906:7c49:b0:a68:b557:76f5 with SMTP id
- a640c23a62f3a-a7242e12fd3mr364963966b.69.1719267719316; Mon, 24 Jun 2024
- 15:21:59 -0700 (PDT)
+        bh=RmrF0dTmcOIfg8IkJIqr7iTWstwct6FH7y6vme7yHSs=;
+        b=vytOKg//2Ae5NLEYuq1OXhgB1ovlYHkLkT9odTPQfmkfXm7VaJS5LqYcuW+HxuiIK0
+         OfaT7bWGhupT9FLS5ojzkdsv1c2QU8mTW6hJyOWUAxjhUoQ7cCoDNRExWhCz6JNUScBJ
+         tK2D0XBltuqHlqIy3Q1mdbjuTVcBVY49ZM1k5hgfJ2g7gCpOTl6vJ0MYaMewYxhyLvEN
+         IpjHTRTNqQs7qUejnyhTFH02wTot9dM2EquSt5PVX8Q50/6loYxy/2ToZvoXAtnY6r5o
+         XMJZlBACCmqoRMkluvzEchc1mjQd8F7Z3hUcF8M8+ix0D+vzfoCCU77ot8+PToc8bCyv
+         ap6A==
+X-Forwarded-Encrypted: i=1; AJvYcCU2tL7XMVT9dQ5Df44EIcGHgy0BaSbtcdx3OAnKoNRYRotP8YfMSYtX2jhfkcm/E8gu1TaOQo9aCkeTR42Wf50fLs1geB2cW2Lfk4wDUaOjHTjBXwokOzR+Xl6Wcv9Y9LXQwDBQXA==
+X-Gm-Message-State: AOJu0YzRn9pLYEOcw/0MFidb2UF2XjK9qWjZTP4AJ274lTZGqnLIeDvx
+	BXCl+rWNQqr0RG/2NwqCBnHZ4AWpzut152QJxWcufDuabDB7lZBj
+X-Google-Smtp-Source: AGHT+IF1LmdDz568NfaQSwCT7YStZy+hquXQ5WPIRwD8wqfSpoWD/xHua/MASQDacD79OmYmZMmJnQ==
+X-Received: by 2002:a9d:7b43:0:b0:6f9:62e9:9f93 with SMTP id 46e09a7af769-700b12a1d3emr6253705a34.35.1719269690460;
+        Mon, 24 Jun 2024 15:54:50 -0700 (PDT)
+Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-79bce8c3775sm351009885a.59.2024.06.24.15.54.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jun 2024 15:54:49 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id F3F1A120006B;
+	Mon, 24 Jun 2024 18:54:48 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 24 Jun 2024 18:54:49 -0400
+X-ME-Sender: <xms:OPl5ZmtK0iI6Fi6Fmj2yDiYNs5sfVi4xWofdYtVeq7HtMb6VrORxfw>
+    <xme:OPl5Zrft_270b-F7XNcrI-fVMbT7rFfKk1ffl6KgnJ6rriqQbUaKfubg0dofoAeVR
+    zIbZvMBOW5onjyFUw>
+X-ME-Received: <xmr:OPl5Zhz5ngCrP5c7fRAaswsMD2tD_YRI3Ne8Qp6a2iHaWvZoJekD_J7Yxk0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfeegvddgudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpefhteffveeuhefhveefgfehvdejkeefuefgfeegvedtheegvdelueevvdeg
+    teffueenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhlphgtrdgvvhgvnhhtshenuc
+    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhn
+    odhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejje
+    ekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhn
+    rghmvg
+X-ME-Proxy: <xmx:OPl5ZhOlMkoJgkxgJIsdhuiePPWijGaeMtXqsXL78gbK33Hj0UxT0Q>
+    <xmx:OPl5Zm8fp_sewk5eULcag-LXjClikhGnzB3gmlQ_MV8lscpvQLlY2g>
+    <xmx:OPl5ZpW4oAlTlHShqh-g_gba_UeIawTK97MDGix8R_cak6yEqnWmJw>
+    <xmx:OPl5ZvcGPlEDTBm5JZkjPJ345taw5lW9bwjSC5GWPnP4aq-9mpQjdQ>
+    <xmx:OPl5ZgeuD_g7bwcthIgo-o5M_gsriF6XWingqBniSPEcjLatoOxMzm1n>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 24 Jun 2024 18:54:48 -0400 (EDT)
+Date: Mon, 24 Jun 2024 15:54:14 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Leonardo Bras <leobras@redhat.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v1 0/4] Introduce QPW for per-cpu operations
+Message-ID: <Znn5FgqoCAUAfQhu@boqun-archlinux>
+References: <20240622035815.569665-1-leobras@redhat.com>
+ <261612b9-e975-4c02-a493-7b83fa17c607@suse.cz>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <171923011608.1500238.3591002573732683639.stgit@firesoul>
- <CAJD7tkbHNvQoPO=8Nubrd5an7_9kSWM=5Wh5H1ZV22WD=oFVMg@mail.gmail.com>
- <tl25itxuzvjxlzliqsvghaa3auzzze6ap26pjdxt6spvhf5oqz@fvc36ntdeg4r>
- <CAJD7tkaKDcG+W+C6Po=_j4HLOYN23rtVnM0jmC077_kkrrq9xA@mail.gmail.com>
- <exnxkjyaslel2jlvvwxlmebtav4m7fszn2qouiciwhuxpomhky@ljkycu67efbx>
- <CAJD7tkaJXNfWQtoURyf-YWS7WGPMGEc5qDmZrxhH2+RE-LeEEg@mail.gmail.com>
- <a45ggqu6jcve44y7ha6m6cr3pcjc3xgyomu4ml6jbsq3zv7tte@oeovgtwh6ytg>
- <CAJD7tkZT_2tyOFq5koK0djMXj4tY8BO3CtSamPb85p=iiXCgXQ@mail.gmail.com> <qolg56e7mjloynou6j7ar7xzefqojp4cagzkb3r6duoj5i54vu@jqhi2chs4ecj>
-In-Reply-To: <qolg56e7mjloynou6j7ar7xzefqojp4cagzkb3r6duoj5i54vu@jqhi2chs4ecj>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 24 Jun 2024 15:21:22 -0700
-Message-ID: <CAJD7tka0b52zm=SjqxO-gxc0XTib=81c7nMx9MFNttwVkCVmSg@mail.gmail.com>
-Subject: Re: [PATCH V2] cgroup/rstat: Avoid thundering herd problem by kswapd
- across NUMA nodes
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, tj@kernel.org, cgroups@vger.kernel.org, 
-	hannes@cmpxchg.org, lizefan.x@bytedance.com, longman@redhat.com, 
-	kernel-team@cloudflare.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <261612b9-e975-4c02-a493-7b83fa17c607@suse.cz>
 
-On Mon, Jun 24, 2024 at 3:17=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
-v> wrote:
->
-> On Mon, Jun 24, 2024 at 02:43:02PM GMT, Yosry Ahmed wrote:
-> [...]
-> > >
-> > > > There is also
-> > > > a heuristic in zswap that may writeback more (or less) pages that i=
-t
-> > > > should to the swap device if the stats are significantly stale.
-> > > >
-> > >
-> > > Is this the ratio of MEMCG_ZSWAP_B and MEMCG_ZSWAPPED in
-> > > zswap_shrinker_count()? There is already a target memcg flush in that
-> > > function and I don't expect root memcg flush from there.
-> >
-> > I was thinking of the generic approach I suggested, where we can avoid
-> > contending on the lock if the cgroup is a descendant of the cgroup
-> > being flushed, regardless of whether or not it's the root memcg. I
-> > think this would be more beneficial than just focusing on root
-> > flushes.
->
-> Yes I agree with this but what about skipping the flush in this case?
-> Are you ok with that?
+On Mon, Jun 24, 2024 at 09:31:51AM +0200, Vlastimil Babka wrote:
+> Hi,
+> 
+> you've included tglx, which is great, but there's also LOCKING PRIMITIVES
+> section in MAINTAINERS so I've added folks from there in my reply.
 
-Sorry if I am confused, but IIUC this patch affects all root flushes,
-even for userspace reads, right? In this case I think it's not okay to
-skip the flush without waiting for the ongoing flush.
+Thanks!
+
+> Link to full series:
+> https://lore.kernel.org/all/20240622035815.569665-1-leobras@redhat.com/
+> 
+
+And apologies to Leonardo... I think this is a follow-up of:
+
+	https://lpc.events/event/17/contributions/1484/
+
+and I did remember we had a quick chat after that which I suggested it's
+better to change to a different name, sorry that I never found time to
+write a proper rely to your previous seriese [1] as promised.
+
+[1]: https://lore.kernel.org/lkml/20230729083737.38699-2-leobras@redhat.com/
+
+> On 6/22/24 5:58 AM, Leonardo Bras wrote:
+> > The problem:
+> > Some places in the kernel implement a parallel programming strategy
+> > consisting on local_locks() for most of the work, and some rare remote
+> > operations are scheduled on target cpu. This keeps cache bouncing low since
+> > cacheline tends to be mostly local, and avoids the cost of locks in non-RT
+> > kernels, even though the very few remote operations will be expensive due
+> > to scheduling overhead.
+> > 
+> > On the other hand, for RT workloads this can represent a problem: getting
+> > an important workload scheduled out to deal with remote requests is
+> > sure to introduce unexpected deadline misses.
+> > 
+> > The idea:
+> > Currently with PREEMPT_RT=y, local_locks() become per-cpu spinlocks.
+> > In this case, instead of scheduling work on a remote cpu, it should
+> > be safe to grab that remote cpu's per-cpu spinlock and run the required
+> > work locally. Tha major cost, which is un/locking in every local function,
+> > already happens in PREEMPT_RT.
+> 
+> I've also noticed this a while ago (likely in the context of rewriting SLUB
+> to use local_lock) and asked about it on IRC, and IIRC tglx wasn't fond of
+> the idea. But I forgot the details about why, so I'll let the the locking
+> experts reply...
+> 
+
+I think it's a good idea, especially the new name is less confusing ;-)
+So I wonder Thomas' thoughts as well.
+
+And I think a few (micro-)benchmark numbers will help.
+
+Regards,
+Boqun
+
+> > Also, there is no need to worry about extra cache bouncing:
+> > The cacheline invalidation already happens due to schedule_work_on().
+> > 
+> > This will avoid schedule_work_on(), and thus avoid scheduling-out an 
+> > RT workload. 
+> > 
+> > For patches 2, 3 & 4, I noticed just grabing the lock and executing
+> > the function locally is much faster than just scheduling it on a
+> > remote cpu.
+> > 
+> > Proposed solution:
+> > A new interface called Queue PerCPU Work (QPW), which should replace
+> > Work Queue in the above mentioned use case. 
+> > 
+> > If PREEMPT_RT=n, this interfaces just wraps the current 
+> > local_locks + WorkQueue behavior, so no expected change in runtime.
+> > 
+> > If PREEMPT_RT=y, queue_percpu_work_on(cpu,...) will lock that cpu's
+> > per-cpu structure and perform work on it locally. This is possible
+> > because on functions that can be used for performing remote work on
+> > remote per-cpu structures, the local_lock (which is already
+> > a this_cpu spinlock()), will be replaced by a qpw_spinlock(), which
+> > is able to get the per_cpu spinlock() for the cpu passed as parameter.
+> > 
+> > Patch 1 implements QPW interface, and patches 2, 3 & 4 replaces the
+> > current local_lock + WorkQueue interface by the QPW interface in
+> > swap, memcontrol & slub interface.
+> > 
+> > Please let me know what you think on that, and please suggest
+> > improvements.
+> > 
+> > Thanks a lot!
+> > Leo
+> > 
+> > Leonardo Bras (4):
+> >   Introducing qpw_lock() and per-cpu queue & flush work
+> >   swap: apply new queue_percpu_work_on() interface
+> >   memcontrol: apply new queue_percpu_work_on() interface
+> >   slub: apply new queue_percpu_work_on() interface
+> > 
+> >  include/linux/qpw.h | 88 +++++++++++++++++++++++++++++++++++++++++++++
+> >  mm/memcontrol.c     | 20 ++++++-----
+> >  mm/slub.c           | 26 ++++++++------
+> >  mm/swap.c           | 26 +++++++-------
+> >  4 files changed, 127 insertions(+), 33 deletions(-)
+> >  create mode 100644 include/linux/qpw.h
+> > 
+> > 
+> > base-commit: 50736169ecc8387247fe6a00932852ce7b057083
+> 
 
