@@ -1,46 +1,48 @@
-Return-Path: <cgroups+bounces-3359-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3360-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38738916A67
-	for <lists+cgroups@lfdr.de>; Tue, 25 Jun 2024 16:31:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F9CA916D1D
+	for <lists+cgroups@lfdr.de>; Tue, 25 Jun 2024 17:33:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B8A91C230D9
-	for <lists+cgroups@lfdr.de>; Tue, 25 Jun 2024 14:31:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70582B21CD4
+	for <lists+cgroups@lfdr.de>; Tue, 25 Jun 2024 15:33:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6790716D33A;
-	Tue, 25 Jun 2024 14:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8298416F0EA;
+	Tue, 25 Jun 2024 15:32:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OVpVooIv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5126416C68B;
-	Tue, 25 Jun 2024 14:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C31543ADE;
+	Tue, 25 Jun 2024 15:32:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719325794; cv=none; b=sl2OJ76IhOzR26h2+aBu2ZHvTab2Y5Bd9PPfO1akSf57/ePnxlu85HQCLyKXICaSmDoWJnaoe7syCxx0PqNnMyDRFf8RE+NXXWdamflF4FwhkrYFe+XfZBvaPombmHqzq8s+dAbyGRKTzU56p/LtDa7OyhfHuoGnMRHIh5yKnBI=
+	t=1719329577; cv=none; b=WmYmLKaVbn53W5fXz3brYcDeqy4lKev6sFJZ2sPa/pnqX7HxU3TLukarGEwUZYwMuBfwG181g7p1XrHl7SGwYKf/h+uPul8WHzD9C3EjLCdiMxjQbr2cgoTSu8lx12ojk+rebXL070w6PP9kx9Gihr7wdUtkLjDoH+ijdnRIq1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719325794; c=relaxed/simple;
-	bh=3RVvHeyAWipkeVyMwWIsWzeZ9VvPaM9h3uVyhNJkd/U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=XGHmzUyYdwwJn4J+1zeNLU5hF8egu9wjqtIczR2kvHGQZ5j/ZYZw8siFbHcy30a+x2Wss6GIGfjQZtafpe1iSefI5NzI87SEfGx5tJYm009QHnnfe/a5HqaV3v08ugyBwVdfDxXNnj6ELb11o0ZGkpnl5u+1Bhng+1RGb+Sh9bY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4W7nHg0Vvxzddj8;
-	Tue, 25 Jun 2024 22:28:15 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8F05F180085;
-	Tue, 25 Jun 2024 22:29:48 +0800 (CST)
-Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Tue, 25 Jun
- 2024 22:29:47 +0800
-Message-ID: <b5f49ae4-a905-4c64-8918-83aa53d3dbcd@huawei.com>
-Date: Tue, 25 Jun 2024 22:29:47 +0800
+	s=arc-20240116; t=1719329577; c=relaxed/simple;
+	bh=uZ8BwQJ/Kdq0iyp8vn3LgQFFUO/XtKzGirgwze/0unA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DAzJ34pY8m09UE8lv3L+F/s8m2sajOhMEcHTTkGJY0pbgYS4UOWGk6eBzc+Zhzy6lF3IVMKYzVaPqTub2Q+Ee6T4w7uCIt9XunRvSSWsUSbelye49RQvZRIehtdXuDSvDk7sbllWYmUjDSdm0aiRGzp2IQ1jsJnNbDrop0nQ9xM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OVpVooIv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C83A3C32781;
+	Tue, 25 Jun 2024 15:32:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719329576;
+	bh=uZ8BwQJ/Kdq0iyp8vn3LgQFFUO/XtKzGirgwze/0unA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=OVpVooIv/ne2KJwP31QW0B8pvv2CFLfRpajLqK33jScWmGhBOKtLs50n/Q8riekVo
+	 b2XhWqcmUwnFziccfC3QkrJWgfndsFYXnzayD2Lq+7A+hBtQ0xrIeGVk+dhrT/mWxM
+	 LtkWadLfKMF7otN1jwMyjn9nhEP8StXTvJhEAJWpfqsU40ku5jS1KSS7yv5pvZOi/P
+	 mUkKdbQX7Psjkoiwk+d9AMsRA21zryclmEdt5367GSPa7BO64Hak7ukKTaKaqYd/zu
+	 X10vIZYeLxtkcADsaeihFWqZB5i7HDnXFNxkK7/m+TUb8XYZOPug30piF3O7u/J1Ob
+	 DT60ahSF/KEbQ==
+Message-ID: <d3b5f10a-2649-446c-a6f9-9311f96e7569@kernel.org>
+Date: Tue, 25 Jun 2024 17:32:53 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -48,138 +50,134 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] cgroup: fix uaf when proc_cpuset_show
-To: Waiman Long <longman@redhat.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
-	<mkoutny@suse.com>
-CC: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
-	<bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240622113814.120907-1-chenridong@huawei.com>
- <19648b9c-6df7-45cd-a5ae-624a3e4d860f@redhat.com>
- <52f72d1d-602e-4dca-85a3-adade925b056@huawei.com>
- <71a9cc3a-1b58-4051-984b-dd4f18dabf84@redhat.com>
- <8f83ecb3-4afa-4e0b-be37-35b168eb3c7c@huawei.com>
- <ee30843f-2579-4dcf-9688-6541fd892678@redhat.com>
- <3322ce46-78a1-45c5-ad07-a982dec21c8e@huawei.com>
- <gke4hn67e2js2wcia4gopr6u26uy5epwpu7r6sepjwvp5eetql@nuwvwzg2k4dy>
- <920bbfaa-bb76-4aa1-bd07-9a552e3bfdf2@huawei.com>
- <80e87513-aa48-4548-893e-ed339690c941@redhat.com>
+Subject: Re: [PATCH V2] cgroup/rstat: Avoid thundering herd problem by kswapd
+ across NUMA nodes
+To: Yosry Ahmed <yosryahmed@google.com>, Shakeel Butt <shakeel.butt@linux.dev>
+Cc: tj@kernel.org, cgroups@vger.kernel.org, hannes@cmpxchg.org,
+ lizefan.x@bytedance.com, longman@redhat.com, kernel-team@cloudflare.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <171923011608.1500238.3591002573732683639.stgit@firesoul>
+ <CAJD7tkbHNvQoPO=8Nubrd5an7_9kSWM=5Wh5H1ZV22WD=oFVMg@mail.gmail.com>
+ <tl25itxuzvjxlzliqsvghaa3auzzze6ap26pjdxt6spvhf5oqz@fvc36ntdeg4r>
+ <CAJD7tkaKDcG+W+C6Po=_j4HLOYN23rtVnM0jmC077_kkrrq9xA@mail.gmail.com>
+ <exnxkjyaslel2jlvvwxlmebtav4m7fszn2qouiciwhuxpomhky@ljkycu67efbx>
+ <CAJD7tkaJXNfWQtoURyf-YWS7WGPMGEc5qDmZrxhH2+RE-LeEEg@mail.gmail.com>
+ <a45ggqu6jcve44y7ha6m6cr3pcjc3xgyomu4ml6jbsq3zv7tte@oeovgtwh6ytg>
+ <CAJD7tkZT_2tyOFq5koK0djMXj4tY8BO3CtSamPb85p=iiXCgXQ@mail.gmail.com>
+ <qolg56e7mjloynou6j7ar7xzefqojp4cagzkb3r6duoj5i54vu@jqhi2chs4ecj>
+ <CAJD7tka0b52zm=SjqxO-gxc0XTib=81c7nMx9MFNttwVkCVmSg@mail.gmail.com>
+ <u3jrec5n42v35f3xiigfqabajjt4onh44eyfajewnzbfqxaekw@5x2daobkkbxh>
+ <CAJD7tkaMeevj2TS_aRj_WXVi26CuuBrprYwUfQmszJnwqqJrHw@mail.gmail.com>
 Content-Language: en-US
-From: chenridong <chenridong@huawei.com>
-In-Reply-To: <80e87513-aa48-4548-893e-ed339690c941@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <CAJD7tkaMeevj2TS_aRj_WXVi26CuuBrprYwUfQmszJnwqqJrHw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemd100013.china.huawei.com (7.221.188.163)
 
 
-On 2024/6/25 22:16, Waiman Long wrote:
-> On 6/25/24 10:11, chenridong wrote:
+
+On 25/06/2024 11.28, Yosry Ahmed wrote:
+> On Mon, Jun 24, 2024 at 5:24 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
 >>
->>
->> On 2024/6/25 18:10, Michal Koutný wrote:
->>> Hello.
+>> On Mon, Jun 24, 2024 at 03:21:22PM GMT, Yosry Ahmed wrote:
+>>> On Mon, Jun 24, 2024 at 3:17 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+>>>>
+>>>> On Mon, Jun 24, 2024 at 02:43:02PM GMT, Yosry Ahmed wrote:
+>>>> [...]
+>>>>>>
+>>>>>>> There is also
+>>>>>>> a heuristic in zswap that may writeback more (or less) pages that it
+>>>>>>> should to the swap device if the stats are significantly stale.
+>>>>>>>
+>>>>>>
+>>>>>> Is this the ratio of MEMCG_ZSWAP_B and MEMCG_ZSWAPPED in
+>>>>>> zswap_shrinker_count()? There is already a target memcg flush in that
+>>>>>> function and I don't expect root memcg flush from there.
+>>>>>
+>>>>> I was thinking of the generic approach I suggested, where we can avoid
+>>>>> contending on the lock if the cgroup is a descendant of the cgroup
+>>>>> being flushed, regardless of whether or not it's the root memcg. I
+>>>>> think this would be more beneficial than just focusing on root
+>>>>> flushes.
+>>>>
+>>>> Yes I agree with this but what about skipping the flush in this case?
+>>>> Are you ok with that?
 >>>
->>> On Tue, Jun 25, 2024 at 11:12:20AM GMT, 
->>> chenridong<chenridong@huawei.com>  wrote:
->>>> I am considering whether the cgroup framework has a method to fix this
->>>> issue, as other subsystems may also have the same underlying problem.
->>>> Since the root css will not be released, but the css->cgrp will be
->>>> released.
->>> <del>First part is already done in
->>>     d23b5c5777158 ("cgroup: Make operations on the cgroup root_list 
->>> RCU safe")
->>> second part is that</del>
->>> you need to take RCU read lock and check for NULL, similar to
->>>     9067d90006df0 ("cgroup: Eliminate the need for cgroup_mutex in 
->>> proc_cgroup_show()")
->>>
->>> Does that make sense to you?
->>>
->>> A Fixes: tag would be nice, it seems at least
->>>     a79a908fd2b08 ("cgroup: introduce cgroup namespaces")
->>> played some role. (Here the RCU lock is not for cgroup_roots list 
->>> but to
->>> preserve the root cgrp itself css_free_rwork_fn/cgroup_destroy_root.
->>>
->>> HTH,
->>> Michal
+>>> Sorry if I am confused, but IIUC this patch affects all root flushes,
+>>> even for userspace reads, right? In this case I think it's not okay to
+>>> skip the flush without waiting for the ongoing flush.
 >>
->> Thank you, Michal, that is a good idea. Do you mean as below?
->>
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->>
->> index c12b9fdb22a4..2ce0542067f1 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -5051,10 +5051,17 @@ int proc_cpuset_show(struct seq_file *m, 
->> struct pid_namespace *ns,
->>         if (!buf)
->>                 goto out;
->>
->> +       rcu_read_lock();
->> +       spin_lock_irq(&css_set_lock);
->>         css = task_get_css(tsk, cpuset_cgrp_id);
->> -       retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
->> - current->nsproxy->cgroup_ns);
->> +
->> +       retval = cgroup_path_ns_locked(css->cgroup, buf, PATH_MAX,
->> +               current->nsproxy->cgroup_ns);
->>         css_put(css);
->> +
->> +       spin_unlock_irq(&css_set_lock);
->> +       cgroup_unlock();
->> +
->>         if (retval == -E2BIG)
->>                 retval = -ENAMETOOLONG;
->>
->>         if (retval < 0)
->>
-> That should work. However, I would suggest that you take 
-> task_get_css() and css_put() outside of the critical section. The 
-> task_get_css() is a while loop that may take a while to execute and 
-> you don't want run it with interrupt disabled.
->
-> Cheers,
-> Longman
->
->
->
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -5050,11 +5050,18 @@ int proc_cpuset_show(struct seq_file *m, struct 
-pid_namespace *ns,
-         buf = kmalloc(PATH_MAX, GFP_KERNEL);
-         if (!buf)
-                 goto out;
--
-         css = task_get_css(tsk, cpuset_cgrp_id);
--       retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
--                               current->nsproxy->cgroup_ns);
-+
-+       rcu_read_lock();
-+       spin_lock_irq(&css_set_lock);
-+
-+       retval = cgroup_path_ns_locked(css->cgroup, buf, PATH_MAX,
-+               current->nsproxy->cgroup_ns);
-+
-+       spin_unlock_irq(&css_set_lock);
-+       rcu_read_unlock();
-         css_put(css);
-+
-         if (retval == -E2BIG)
-                 retval = -ENAMETOOLONG;
+>> So, we differentiate between userspace and in-kernel users. For
+>> userspace, we should not skip flush and for in-kernel users, we can skip
+>> if flushing memcg is the ancestor of the given memcg. Is that what you
+>> are saying?
+> 
+> Basically, I prefer that we don't skip flushing at all and keep
+> userspace and in-kernel users the same. We can use completions to make
+> other overlapping flushers sleep instead of spin on the lock.
+> 
 
-         if (retval < 0)
+I think there are good reasons for skipping flushes for userspace when 
+reading these stats. More below.
+
+I'm looking at kernel code to spot cases where the flush MUST to be
+completed before returning.  There are clearly cases where we don't need
+100% accurate stats, evident by mem_cgroup_flush_stats_ratelimited() and
+mem_cgroup_flush_stats() that use memcg_vmstats_needs_flush().
+
+The cgroup_rstat_exit() call seems to depend on cgroup_rstat_flush() 
+being strict/accurate, because need to free the percpu resources.
+
+The obj_cgroup_may_zswap() have a comments that says it needs to get 
+accurate stats for charging.
+
+These were the two cases, I found, do you know of others?
 
 
-Yeah, that looks good, i will test for a while. I will send a new patch 
-if no other problem occurs.
+> A proof of concept is basically something like:
+> 
+> void cgroup_rstat_flush(cgroup)
+> {
+>      if (cgroup_is_descendant(cgroup, READ_ONCE(cgroup_under_flush))) {
+>          wait_for_completion_interruptible(&cgroup_under_flush->completion);
+>          return;
+>      }
 
-Thank you.
+This feels like what we would achieve by changing this to a mutex.
 
-Regards,
-Ridong
+> 
+>      __cgroup_rstat_lock(cgrp, -1);
+>      reinit_completion(&cgroup->completion);
+>      /* Any overlapping flush requests after this write will not spin
+> on the lock */
+>      WRITE_ONCE(cgroup_under_flush, cgroup);
+> 
+>      cgroup_rstat_flush_locked(cgrp);
+>      complete_all(&cgroup->completion);
+>      __cgroup_rstat_unlock(cgrp, -1);
+> }
+> 
+> There may be missing barriers or chances to reduce the window between
+> __cgroup_rstat_lock and WRITE_ONCE(), but that's what I have in mind.
+> I think it's not too complicated, but we need to check if it fixes the
+> problem.
+> 
+> If this is not preferable, then yeah, let's at least keep the
+> userspace behavior intact. This makes sure we don't affect userspace
+> negatively, and we can change it later as we please.
+
+I don't think userspace reading these stats need to be 100% accurate.
+We are only reading the io.stat, memory.stat and cpu.stat every 53 
+seconds. Reading cpu.stat print stats divided by NSEC_PER_USEC (1000).
+
+If userspace is reading these very often, then they will be killing the 
+system as it disables IRQs.
+
+On my prod system the flush of root cgroup can take 35 ms, which is not 
+good, but this inaccuracy should not matter for userspace.
+
+Please educate me on why we need accurate userspace stats?
 
 
+--Jesper
 
