@@ -1,122 +1,154 @@
-Return-Path: <cgroups+bounces-3357-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3358-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8FF6916654
-	for <lists+cgroups@lfdr.de>; Tue, 25 Jun 2024 13:38:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4967916A18
+	for <lists+cgroups@lfdr.de>; Tue, 25 Jun 2024 16:18:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B9101F22561
-	for <lists+cgroups@lfdr.de>; Tue, 25 Jun 2024 11:38:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60D67B25212
+	for <lists+cgroups@lfdr.de>; Tue, 25 Jun 2024 14:18:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A0BF14B07C;
-	Tue, 25 Jun 2024 11:38:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10C916A95F;
+	Tue, 25 Jun 2024 14:18:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SQXqTN4S"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DFA447A64;
-	Tue, 25 Jun 2024 11:38:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E300916A382
+	for <cgroups@vger.kernel.org>; Tue, 25 Jun 2024 14:18:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719315523; cv=none; b=PrBoEMUEDeWM5OGLo3/rPKZgVsNAofzZkGGnshfyuioPBU7WXajitoCW8oWhcCH1DbJHZRZVDRsaaRsiBBrmNZjc0TuHD4s0pGujUE161F3/riC/xU/m95uSaWVqq5YzPbJStf4NnHlhQPn9R8cvVStcbi7Qo7PN/HjiBBxVE2Y=
+	t=1719325090; cv=none; b=VMH3C42ANNJGMw6SYXTjI8W2uipOLPp9d16xUkmTK3ZR1R7Ajzgse574+KOjbG4NFelivDAzD1E9SbjKZJBwvRoQK/QMG3DRmLGkqhgZnURyaribsb2ZuGg3h7HbQS5p/3bRY4LIQ/WHGintBv9LiOwMx/+r0tzQEX/Bjn52MA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719315523; c=relaxed/simple;
-	bh=tuKcN7msvExSJkenmqvA0RHkiHj+FhdQ9vmYGb1gdY4=;
+	s=arc-20240116; t=1719325090; c=relaxed/simple;
+	bh=258aHTwJ8PHNVShdBmlRwFk5MhWBCxeonA2f0yI3uGw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OeIRuTr5/ni6riOpBdrWm3jvYRkK5OWHtcx2b3MrmvzWJx/GEgv+YNe7eiLdXKfb2TlG8IMQvTtBUEOeaY5fHY6rFdQKpWUs0+APYhQABc1XPRwh1YnYf8HwXfSrGqFvwhgRfA9bYk/XlOnXpkeztV/zorjnjV/IB6A8TAyZ1zg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4W7jWh211Jz4f3l1y;
-	Tue, 25 Jun 2024 19:38:24 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 619261A0189;
-	Tue, 25 Jun 2024 19:38:36 +0800 (CST)
-Received: from [10.174.179.155] (unknown [10.174.179.155])
-	by APP2 (Coremail) with SMTP id Syh0CgBn0YY6rHpmAfY0AQ--.8681S3;
-	Tue, 25 Jun 2024 19:38:36 +0800 (CST)
-Message-ID: <77ed0b42-60ac-0746-9a5b-23676e9668f2@huaweicloud.com>
-Date: Tue, 25 Jun 2024 19:38:34 +0800
+	 In-Reply-To:Content-Type; b=IwhIlX6hwx76WjzhM1QTU1SbnAHyU778ez79xq6oG15icqAKD6vqBOeEpuUUkGRsx3sfVdrkegQYNJfnrGZ6sN7LekrsW+k+Nx0Y2qG0NXks293xgJoV1SLAnHj4sYrZH2GNutGYLJkPZo+KcPYpqMyhMYjhTHHNg5yvX5dPeoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SQXqTN4S; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1719325088;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JDJanHJKnbiJNPYotPkVO2c6RbIzDk3MVlTTgVCykxk=;
+	b=SQXqTN4St4YLwrqePXiDxgLc7iRQLuDYk81viqRKYPCaj4/RoAQ93F48e1JcoxbmUDJLG8
+	rJpBGIgslYXSCTBDB+ToJnaTPC4zoO8yjDB8YXJy3DfXPYf8Mr9dShfQdAzBtCcyzuWWYR
+	8dQxSGmgMiJyOtv4Z2Ydl6ItWTkLKeQ=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-458-KsnVk9qGMTCAI2eoQhCkRg-1; Tue,
+ 25 Jun 2024 10:18:04 -0400
+X-MC-Unique: KsnVk9qGMTCAI2eoQhCkRg-1
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F28E318DB6FA;
+	Tue, 25 Jun 2024 14:17:14 +0000 (UTC)
+Received: from [10.22.10.23] (unknown [10.22.10.23])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 9BD18301BD32;
+	Tue, 25 Jun 2024 14:16:16 +0000 (UTC)
+Message-ID: <80e87513-aa48-4548-893e-ed339690c941@redhat.com>
+Date: Tue, 25 Jun 2024 10:16:15 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101
- Thunderbird/104.0
-Subject: Re: [PATCH] block: cancel all throttled bios when deleting the cgroup
-To: =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc: tj@kernel.org, josef@toxicpanda.com, hch@lst.de, axboe@kernel.dk,
- cgroups@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, yangerkun@huawei.com, yukuai1@huaweicloud.com,
- houtao1@huawei.com, yi.zhang@huawei.com, lilingfeng3@huawei.com
-References: <20240624130940.3751791-1-lilingfeng@huaweicloud.com>
- <5emugcorjnrcgczkmi7njfzwbotpqn6heu7acfho2zfkdsajpv@yrztl7hoa6ky>
-From: Li Lingfeng <lilingfeng@huaweicloud.com>
-In-Reply-To: <5emugcorjnrcgczkmi7njfzwbotpqn6heu7acfho2zfkdsajpv@yrztl7hoa6ky>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] cgroup: fix uaf when proc_cpuset_show
+To: chenridong <chenridong@huawei.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>
+Cc: tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+ bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240622113814.120907-1-chenridong@huawei.com>
+ <19648b9c-6df7-45cd-a5ae-624a3e4d860f@redhat.com>
+ <52f72d1d-602e-4dca-85a3-adade925b056@huawei.com>
+ <71a9cc3a-1b58-4051-984b-dd4f18dabf84@redhat.com>
+ <8f83ecb3-4afa-4e0b-be37-35b168eb3c7c@huawei.com>
+ <ee30843f-2579-4dcf-9688-6541fd892678@redhat.com>
+ <3322ce46-78a1-45c5-ad07-a982dec21c8e@huawei.com>
+ <gke4hn67e2js2wcia4gopr6u26uy5epwpu7r6sepjwvp5eetql@nuwvwzg2k4dy>
+ <920bbfaa-bb76-4aa1-bd07-9a552e3bfdf2@huawei.com>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <920bbfaa-bb76-4aa1-bd07-9a552e3bfdf2@huawei.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgBn0YY6rHpmAfY0AQ--.8681S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr1kWrWkXF15Xr4fuw13twb_yoW8Aw1Dpa
-	1Sv3W7Krn8Jr9ayF4vvF4F9FyfZrZ3Gr45AFn8Gw15Ar15Xr4DtrZakw4rua4xZrn3C3ya
-	vF4jqF1DZ3Wqk3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IU1zuWJUUUUU==
-X-CM-SenderInfo: polox0xjih0w46kxt4xhlfz01xgou0bp/
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-
-在 2024/6/25 18:34, Michal Koutný 写道:
-> Hello.
+On 6/25/24 10:11, chenridong wrote:
 >
-> On Mon, Jun 24, 2024 at 09:09:40PM GMT, Li Lingfeng <lilingfeng@huaweicloud.com> wrote:
->> From: Li Lingfeng <lilingfeng3@huawei.com>
+>
+> On 2024/6/25 18:10, Michal Koutný wrote:
+>> Hello.
 >>
->> When a process migrates to another cgroup and the original cgroup is deleted,
->> the restrictions of throttled bios cannot be removed. If the restrictions
->> are set too low, it will take a long time to complete these bios.
-> When pd_offline_fn is called because of disk going away, it makes sense
-> to cancel the bios. However, when pd_offline_fn is called due to cgroup
-> removal (with possibly surviving originating process), wouldn't bio
-> cancelling lead to loss of data?
-> Aha, it wouldn't -- the purpose of the function is to "flush" throttled
-> bios (in the original patch they'd immediately fail, here they the IO
-> operation may succeed).
-> Is that correct? (Wouldn't there be a more descriptive name than
-> tg_cancel_bios then?)
-Thanks for your advice. It's indeed more appropriate to use "flush" 
-instead of "cancel" here, I will change it soon.
+>> On Tue, Jun 25, 2024 at 11:12:20AM GMT, chenridong<chenridong@huawei.com>  wrote:
+>>> I am considering whether the cgroup framework has a method to fix this
+>>> issue, as other subsystems may also have the same underlying problem.
+>>> Since the root css will not be released, but the css->cgrp will be
+>>> released.
+>> <del>First part is already done in
+>> 	d23b5c5777158 ("cgroup: Make operations on the cgroup root_list RCU safe")
+>> second part is that</del>
+>> you need to take RCU read lock and check for NULL, similar to
+>> 	9067d90006df0 ("cgroup: Eliminate the need for cgroup_mutex in proc_cgroup_show()")
+>>
+>> Does that make sense to you?
+>>
+>> A Fixes: tag would be nice, it seems at least
+>> 	a79a908fd2b08 ("cgroup: introduce cgroup namespaces")
+>> played some role. (Here the RCU lock is not for cgroup_roots list but to
+>> preserve the root cgrp itself css_free_rwork_fn/cgroup_destroy_root.
+>>
+>> HTH,
+>> Michal
 >
-> And if a user is allowed to remove cgroup and use this to bypass the
-> throttling, they also must have permissions to migrate away from the
-> cgroup (and consistent config would thus allow them to change the limit
-> too), therefore this doesn't allow bypassing the throttling limit. If
-> you agree, could you please add the explanation to commit message too?
+> Thank you, Michal, that is a good idea. Do you mean as below?
+>
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>
+> index c12b9fdb22a4..2ce0542067f1 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -5051,10 +5051,17 @@ int proc_cpuset_show(struct seq_file *m, 
+> struct pid_namespace *ns,
+>         if (!buf)
+>                 goto out;
+>
+> +       rcu_read_lock();
+> +       spin_lock_irq(&css_set_lock);
+>         css = task_get_css(tsk, cpuset_cgrp_id);
+> -       retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
+> - current->nsproxy->cgroup_ns);
+> +
+> +       retval = cgroup_path_ns_locked(css->cgroup, buf, PATH_MAX,
+> +               current->nsproxy->cgroup_ns);
+>         css_put(css);
+> +
+> +       spin_unlock_irq(&css_set_lock);
+> +       cgroup_unlock();
+> +
+>         if (retval == -E2BIG)
+>                 retval = -ENAMETOOLONG;
+>
+>         if (retval < 0)
+>
+That should work. However, I would suggest that you take task_get_css() 
+and css_put() outside of the critical section. The task_get_css() is a 
+while loop that may take a while to execute and you don't want run it 
+with interrupt disabled.
 
-I didn't quite get what you mean. Do you mean this patch will cause a 
-change in mechanics, and it is necessary to add an explanation?
-
-(After deleting the original cgroup,
-  Before: the limit of the throttled bios can't be changed and the bios 
-will complete under this limit;
-  Now: the limit will be canceled and the throttled bios will be flushed 
-immediately.)
-
-> Thanks,
-> Michal
+Cheers,
+Longman
 
 
