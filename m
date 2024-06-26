@@ -1,63 +1,46 @@
-Return-Path: <cgroups+bounces-3372-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3373-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5BA029176B3
-	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2024 05:17:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BC709176E9
+	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2024 05:42:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFA5F1F22C1E
-	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2024 03:17:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21357B224AF
+	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2024 03:42:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE8E054907;
-	Wed, 26 Jun 2024 03:17:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LQ+PvRvl"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD36D762D7;
+	Wed, 26 Jun 2024 03:42:41 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C39E0134C6
-	for <cgroups@vger.kernel.org>; Wed, 26 Jun 2024 03:17:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86CBF61FE8;
+	Wed, 26 Jun 2024 03:42:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719371835; cv=none; b=ZSjpVTKZ9kJcON9sWfzGYWjdyPr770mG+3wPQPPeI6HCHE/eJ08Eg0OHL0rqh7B17gCfBvuAg0fwPpcvp3qFOOeI8GDvJ4KXYpLVqOMumzAekirpgb7B83hYxphNANsCwM8CyfP3z/IzHvoqYrsoHdex+Vd9G7qlymmlL92+z5c=
+	t=1719373361; cv=none; b=bQvQukxUYcbWC2oZlSE6V0GpNeU78i7sJAlhUmw/xy7jsidBtqP0JauMC0NEBOarYIUUrSShmMJoLxu+cxe2bioR9+5LdNlk/0JGbO+ravHZ++wohkUYY1WszMG0v8VdIPtHU+JxmG282IobCX2b7+BNcSNE71ScvmYBqgTl8Bs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719371835; c=relaxed/simple;
-	bh=9Hkq76X6FR5owdV5TMxF4xB0lDQkeuqE9LyiTtQcX7I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JtHN5+k7HaGc03szZwuwp1Z5fDf5FZYUqxse8GCTxhvNyWOLv/EamoDP2Pba9RcBgobZ3V277pTbHH1vuajooxrkmuXvDsegPPUtoWSXtTzOXpI4JYh33+2ILPlQHD9IbnyBIJrJxDjLRJ3/Tx2E1Wf2ptakBb/DULnjNnx2EHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LQ+PvRvl; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1719371832;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WtbKP8qBjyp+rTAYYW6k+Y4FwkskGh9tpkCTDr9SfMM=;
-	b=LQ+PvRvl8iOq3jO6Lg3j5NYK69qyFsAOFYiyIpN5jNEx0mmBiaEvqAsHDh8yKQaKBO2jla
-	KS1mEG2ER2Jh29MKCF4a73lW1cxUc13aIkJQtAzBJjQxM3eFcPqYSoVgLeJF2UWg3B3w98
-	3hoqPC23OZeEc/sssrQQan12Ah1Vq/4=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-54-DRZN2X6EPIWNny3g2_W_7A-1; Tue,
- 25 Jun 2024 23:17:08 -0400
-X-MC-Unique: DRZN2X6EPIWNny3g2_W_7A-1
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id EC6321956089;
-	Wed, 26 Jun 2024 03:17:06 +0000 (UTC)
-Received: from [10.22.10.23] (unknown [10.22.10.23])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id BA1A91956050;
-	Wed, 26 Jun 2024 03:17:04 +0000 (UTC)
-Message-ID: <29cfa20e-291f-4ad0-9493-04c581d080b0@redhat.com>
-Date: Tue, 25 Jun 2024 23:17:03 -0400
+	s=arc-20240116; t=1719373361; c=relaxed/simple;
+	bh=+FIaDjWmQ96JE+HXz/QXYu8q64HDKNLZ9XuSCyIHnaE=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=PeU21AsXQCWfoNJ9/KO4CTs61adu1N6QSWsdXTuELvKh5Bfmx37k7+GHYZQtoaMNTGrybCjYTmIP1E7PVyzKl5sYiTYNr5IJfom44yV99z1GUir6Y9Q+oOh231oY5yXi2Iu4Z6ScTUmAdLXnhFLkOGc3xnLvMchvEUN0N8swHeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4W86tH4xtDzdcg5;
+	Wed, 26 Jun 2024 11:40:55 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6DEB814022E;
+	Wed, 26 Jun 2024 11:42:29 +0800 (CST)
+Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Wed, 26 Jun
+ 2024 11:42:28 +0800
+Message-ID: <09f292b6-f251-412b-a79f-e242f3dced59@huawei.com>
+Date: Wed, 26 Jun 2024 11:42:28 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -66,20 +49,23 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH V2] cgroup/cpuset: Prevent UAF in proc_cpuset_show()
-To: Chen Ridong <chenridong@huawei.com>, tj@kernel.org,
- lizefan.x@bytedance.com, hannes@cmpxchg.org, adityakali@google.com,
- sergeh@kernel.org
-Cc: bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+From: chenridong <chenridong@huawei.com>
+To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+	<longman@redhat.com>, <adityakali@google.com>, <sergeh@kernel.org>
+CC: <bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+	<mkoutny@suse.com>
 References: <20240626030500.460628-1-chenridong@huawei.com>
 Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
 In-Reply-To: <20240626030500.460628-1-chenridong@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
+cc Michal Koutný
 
-On 6/25/24 23:05, Chen Ridong wrote:
+On 2024/6/26 11:05, Chen Ridong wrote:
 > An UAF can happen when /proc/cpuset is read as reported in [1].
 >
 > This can be reproduced by the following methods:
@@ -140,12 +126,6 @@ On 6/25/24 23:05, Chen Ridong wrote:
 >   
 > +int cgroup_path_ns_locked(struct cgroup *cgrp, char *buf, size_t buflen,
 > +			  struct cgroup_namespace *ns);
-
-The function prototype for cgroup_path_ns_locked() is available in 
-"kernel/cgroup/cgroup-internal.h". You just need to include 
-"cgroup-internal.h" in cpuset.c instead of exposed this internal API to 
-the world.
-
 > +
 >   #else /* !CONFIG_CGROUPS */
 >   
@@ -166,17 +146,10 @@ the world.
 > +	if (css->cgroup)
 > +		retval = cgroup_path_ns_locked(css->cgroup, buf, PATH_MAX,
 > +			current->nsproxy->cgroup_ns);
-
-Could you properly align the wrapped cgroup_ns argument?
-
-Cheers,
-Longman
-
 > +
 > +	spin_unlock_irq(&css_set_lock);
 > +	rcu_read_unlock();
 >   	css_put(css);
 >   	if (retval == -E2BIG)
 >   		retval = -ENAMETOOLONG;
-
 
