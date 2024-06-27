@@ -1,145 +1,209 @@
-Return-Path: <cgroups+bounces-3402-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3403-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B111691A892
-	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 16:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EE3F891A931
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 16:27:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C5132873F4
-	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 14:03:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88CC1281B78
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 14:27:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E24521957EE;
-	Thu, 27 Jun 2024 14:03:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAB4C13C821;
+	Thu, 27 Jun 2024 14:27:33 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 522161E877
-	for <cgroups@vger.kernel.org>; Thu, 27 Jun 2024 14:03:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.79
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0CC713A259;
+	Thu, 27 Jun 2024 14:27:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719497003; cv=none; b=A/mIfMV6QAxgnkumZAF99/uOW0fOjVw2kdMkbazqGUfmMicBhIPU/59l0eqKnIFoorduiuIGas05u0s5/k2/9Si5x2+F4081+/3ee+705J9p97eOx6LZ6ERuwuTR768xbUjmWEOBjGVZNY275OjxRdRtwQzPCBWDEdRic9g8D7g=
+	t=1719498453; cv=none; b=P2b5Q6pTSKfaHCHIS7BcPC4DV/EtNbKE9kciQ7GeQ4mYLTqbDC1hsJrI/cTnpsV1GbkxGVnMTAmA7Y9OpL6Pm1Td7jRSygfvD/OsGX8l0wzAVQXaGY7+9e0+ei36lqCWuhlp24oWjghGALK7u9ZzAVbF2uGH9j0rDbv9nV2DsdY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719497003; c=relaxed/simple;
-	bh=+8bJoWn136z+IHIcQ3q1VJ8I6TyRzK2DK1qBw0Mo1OE=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=F+8fDTUy8zBeQKPcRcgwJtLFvgVRi3D6HSBKam+Tb9315WSVivq2ITLBsEij1s9BCNdu74ElYmmXCsmIXEAHCc5Z7NhQ6ALsMrzSo+LU/9ZQrk4mWZbFC0VtRyztWBBfqn8p1tyy7qzYamcPnoZ6lkuAvcnRIT3BDE2Udsql2NU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.79
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-7f3cb65d1bbso131050839f.1
-        for <cgroups@vger.kernel.org>; Thu, 27 Jun 2024 07:03:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719497001; x=1720101801;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=M05+xEF/hUwPM/FvKNbnTKjCCqU+v6CqTylBaQQbiJQ=;
-        b=GzjrCaOyoTiDW014IG2dhvl6HjVyk8jRx1S8S/FWOu4EX3UekR/N0s4boXi7naWzcX
-         5crURiFSOqLxeHRpaVh7t43/FOtEUBHfeLQ7RsRJgaed9rmYMDq6BPr3yV7cAD3tyeUG
-         X4dCi1G1gPFi2SAaR1FkC/mfNRB3eeR1+T/tzyP7SuKYKO4UyIo6iYO4eq64CttqCkH/
-         ++CMt3fX0pO4B5fvKtpVPpR2mjgO9TYvF0yk6oN7TD57pQsVkweSt0Sx3NiUMj9XF6Mt
-         BKMZxChuqLDlnGIxovw10vPoshxkz0qByCuJ4+vnMRNvFcIlJQTZgv+nL1tmrVUqV037
-         29Lg==
-X-Gm-Message-State: AOJu0Yz976BkYgLJ3m+dlXM5cLFtQZ76iD5R9m7aTrFU/vrAMQET3a6c
-	o9Wojp+SR8AUdPWn7mjQdAlPiNc2naxkKid8sur03PAG7ko1Mc9zPqpVecqWdxNp8M9NZibe0zq
-	HkMJMHFpyha3UqVgc0l5qEStrkxN+SnRIH/x/m8hKBnBXcJ/wZ/k2IASKyw==
-X-Google-Smtp-Source: AGHT+IHvB6qSs+asZzsL79/83FCoRCk9eZ0GQ0LKUrN+h07oj3ZvZKtBPerOEyBE/mJYFQBGC5EMmXN21p2GyT8HiDol54RyURuZ
+	s=arc-20240116; t=1719498453; c=relaxed/simple;
+	bh=+hA94nBp0Z2NOG+7XiSePdvJo4tjMM+AEioEA4rngWg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=q5Sovy3ud5FOXaNwllGJgskTuDSHHUDvvY2qGGfEt/fgaQIELq5resOK+n3pS40MvFHwvTXDTgsjML3xGd4+mjTufcePF2Q3rOFV0ApISLMlPcFouIGEbQjkH2zIZmw1z+ajoIWAQJazN37Elcjr0aO91UGPEbp8Bl5CmEo2SOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4W919h10fwz4f3jt1;
+	Thu, 27 Jun 2024 22:27:20 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 478F21A0189;
+	Thu, 27 Jun 2024 22:27:27 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP2 (Coremail) with SMTP id Syh0CgBXwIXNdn1mUQAAAg--.25162S4;
+	Thu, 27 Jun 2024 22:27:27 +0800 (CST)
+From: Li Lingfeng <lilingfeng@huaweicloud.com>
+To: tj@kernel.org,
+	josef@toxicpanda.com,
+	hch@lst.de,
+	axboe@kernel.dk,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	yangerkun@huawei.com,
+	yukuai1@huaweicloud.com,
+	houtao1@huawei.com,
+	yi.zhang@huawei.com,
+	lilingfeng@huaweicloud.com,
+	lilingfeng3@huawei.com
+Subject: [PATCH v2] block: flush all throttled bios when deleting the cgroup
+Date: Thu, 27 Jun 2024 22:26:06 +0800
+Message-Id: <20240627142606.3709394-1-lilingfeng@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:db0c:0:b0:7f3:ce24:6aca with SMTP id
- ca18e2360f4ac-7f3d8dc0cf5mr3019139f.2.1719497001466; Thu, 27 Jun 2024
- 07:03:21 -0700 (PDT)
-Date: Thu, 27 Jun 2024 07:03:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f71227061bdf97e0@google.com>
-Subject: [syzbot] [cgroups?] BUG: sleeping function called from invalid
- context in cgroup_rstat_flush
-From: syzbot <syzbot+b7f13b2d0cc156edf61a@syzkaller.appspotmail.com>
-To: cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org, 
-	lizefan.x@bytedance.com, syzkaller-bugs@googlegroups.com, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgBXwIXNdn1mUQAAAg--.25162S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxWr4xWF48Gw1xGry3tr47urg_yoWrWF4rpr
+	WS9a4Ykw1Dtr9I9r4agr45JFWSva95XrWav397Ca1ayrWxtw1jqF9Yva48XFWrJFn3Cr4Y
+	vr15tr18uF18G37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUF9
+	a9DUUUU
+X-CM-SenderInfo: polox0xjih0w46kxt4xhlfz01xgou0bp/
 
-Hello,
+From: Li Lingfeng <lilingfeng3@huawei.com>
 
-syzbot found the following issue on:
+When a process migrates to another cgroup and the original cgroup is deleted,
+the restrictions of throttled bios cannot be removed. If the restrictions
+are set too low, it will take a long time to complete these bios.
 
-HEAD commit:    7c16f0a4ed1c Merge tag 'i2c-for-6.10-rc5' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1511528e980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=12f98862a3c0c799
-dashboard link: https://syzkaller.appspot.com/bug?extid=b7f13b2d0cc156edf61a
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+Refer to the process of deleting a disk to remove the restrictions and
+issue bios when deleting the cgroup.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+This makes difference on the behavior of throttled bios:
+Before: the limit of the throttled bios can't be changed and the bios will
+complete under this limit;
+Now: the limit will be canceled and the throttled bios will be flushed
+immediately.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/50560e9024e5/disk-7c16f0a4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/080c27daee72/vmlinux-7c16f0a4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c528e0da4544/bzImage-7c16f0a4.xz
+References:
+https://lore.kernel.org/r/20220318130144.1066064-4-ming.lei@redhat.com
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b7f13b2d0cc156edf61a@syzkaller.appspotmail.com
-
-BUG: sleeping function called from invalid context at kernel/cgroup/rstat.c:351
-in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 17332, name: syz-executor.4
-preempt_count: 0, expected: 0
-RCU nest depth: 1, expected: 0
-1 lock held by syz-executor.4/17332:
- #0: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
- #0: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
- #0: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: filemap_cachestat mm/filemap.c:4251 [inline]
- #0: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: __do_sys_cachestat mm/filemap.c:4407 [inline]
- #0: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: __se_sys_cachestat+0x3ee/0xbb0 mm/filemap.c:4372
-CPU: 1 PID: 17332 Comm: syz-executor.4 Not tainted 6.10.0-rc4-syzkaller-00330-g7c16f0a4ed1c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/07/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- __might_resched+0x5d4/0x780 kernel/sched/core.c:10196
- cgroup_rstat_flush+0x1e/0x50 kernel/cgroup/rstat.c:351
- workingset_test_recent+0x48a/0xa90 mm/workingset.c:473
- filemap_cachestat mm/filemap.c:4314 [inline]
- __do_sys_cachestat mm/filemap.c:4407 [inline]
- __se_sys_cachestat+0x795/0xbb0 mm/filemap.c:4372
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7ff329e7d0a9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ff32ac600c8 EFLAGS: 00000246 ORIG_RAX: 00000000000001c3
-RAX: ffffffffffffffda RBX: 00007ff329fb4120 RCX: 00007ff329e7d0a9
-RDX: 0000000020000080 RSI: 0000000020000040 RDI: 0000000000000005
-RBP: 00007ff329eec074 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007ff329fb4120 R15: 00007ffd3e0ff4a8
- </TASK>
-
-
+Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+  v1->v2:
+    Use "flush" instead of "cancel";
+    Add description of the affect of throttled bios.
+ block/blk-throttle.c | 68 ++++++++++++++++++++++++++++----------------
+ 1 file changed, 44 insertions(+), 24 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index c1bf73f8c75d..a0e5b28951ca 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -1534,6 +1534,42 @@ static void throtl_shutdown_wq(struct request_queue *q)
+ 	cancel_work_sync(&td->dispatch_work);
+ }
+ 
++static void tg_cancel_bios(struct throtl_grp *tg)
++{
++	struct throtl_service_queue *sq = &tg->service_queue;
++
++	if (tg->flags & THROTL_TG_CANCELING)
++		return;
++	/*
++	 * Set the flag to make sure throtl_pending_timer_fn() won't
++	 * stop until all throttled bios are dispatched.
++	 */
++	tg->flags |= THROTL_TG_CANCELING;
++
++	/*
++	 * Do not dispatch cgroup without THROTL_TG_PENDING or cgroup
++	 * will be inserted to service queue without THROTL_TG_PENDING
++	 * set in tg_update_disptime below. Then IO dispatched from
++	 * child in tg_dispatch_one_bio will trigger double insertion
++	 * and corrupt the tree.
++	 */
++	if (!(tg->flags & THROTL_TG_PENDING))
++		return;
++
++	/*
++	 * Update disptime after setting the above flag to make sure
++	 * throtl_select_dispatch() won't exit without dispatching.
++	 */
++	tg_update_disptime(tg);
++
++	throtl_schedule_pending_timer(sq, jiffies + 1);
++}
++
++static void throtl_pd_offline(struct blkg_policy_data *pd)
++{
++	tg_cancel_bios(pd_to_tg(pd));
++}
++
+ struct blkcg_policy blkcg_policy_throtl = {
+ 	.dfl_cftypes		= throtl_files,
+ 	.legacy_cftypes		= throtl_legacy_files,
+@@ -1541,6 +1577,7 @@ struct blkcg_policy blkcg_policy_throtl = {
+ 	.pd_alloc_fn		= throtl_pd_alloc,
+ 	.pd_init_fn		= throtl_pd_init,
+ 	.pd_online_fn		= throtl_pd_online,
++	.pd_offline_fn		= throtl_pd_offline,
+ 	.pd_free_fn		= throtl_pd_free,
+ };
+ 
+@@ -1561,32 +1598,15 @@ void blk_throtl_cancel_bios(struct gendisk *disk)
+ 	 */
+ 	rcu_read_lock();
+ 	blkg_for_each_descendant_post(blkg, pos_css, q->root_blkg) {
+-		struct throtl_grp *tg = blkg_to_tg(blkg);
+-		struct throtl_service_queue *sq = &tg->service_queue;
+-
+-		/*
+-		 * Set the flag to make sure throtl_pending_timer_fn() won't
+-		 * stop until all throttled bios are dispatched.
+-		 */
+-		tg->flags |= THROTL_TG_CANCELING;
+-
+ 		/*
+-		 * Do not dispatch cgroup without THROTL_TG_PENDING or cgroup
+-		 * will be inserted to service queue without THROTL_TG_PENDING
+-		 * set in tg_update_disptime below. Then IO dispatched from
+-		 * child in tg_dispatch_one_bio will trigger double insertion
+-		 * and corrupt the tree.
++		 * disk_release will call pd_offline_fn to cancel bios.
++		 * However, disk_release can't be called if someone get
++		 * the refcount of device and issued bios which are
++		 * inflight after del_gendisk.
++		 * Cancel bios here to ensure no bios are inflight after
++		 * del_gendisk.
+ 		 */
+-		if (!(tg->flags & THROTL_TG_PENDING))
+-			continue;
+-
+-		/*
+-		 * Update disptime after setting the above flag to make sure
+-		 * throtl_select_dispatch() won't exit without dispatching.
+-		 */
+-		tg_update_disptime(tg);
+-
+-		throtl_schedule_pending_timer(sq, jiffies + 1);
++		tg_cancel_bios(blkg_to_tg(blkg));
+ 	}
+ 	rcu_read_unlock();
+ 	spin_unlock_irq(&q->queue_lock);
+-- 
+2.39.2
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
