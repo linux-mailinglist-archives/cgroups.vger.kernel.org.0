@@ -1,198 +1,202 @@
-Return-Path: <cgroups+bounces-3391-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3392-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF02391A2EC
-	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 11:46:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADE5C91A3EB
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 12:34:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33138B22763
-	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 09:46:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0A353B21E3F
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 10:34:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E832F132492;
-	Thu, 27 Jun 2024 09:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD1CA8060D;
+	Thu, 27 Jun 2024 10:34:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="XfRHWX7c";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="XfRHWX7c"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="isuZrrqO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4AEA4D5BD;
-	Thu, 27 Jun 2024 09:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E895013DB99
+	for <cgroups@vger.kernel.org>; Thu, 27 Jun 2024 10:34:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719481575; cv=none; b=OaJPpOrYroFRQHHht6MfzDEhqbXlTKOk8tW0YcxlhNQYs4lCyTKkYeolli/GlRoFgzVFBJx/dEaKecWqBMGPt+erZ5+5SQ7ODkTzbB7RKJEX3052KC3MY+bWTQQMcETlZ75sBDtceUHp6AFDZ9/PCGOBen+jX+J26gweSK33AbM=
+	t=1719484471; cv=none; b=cbKt781Cy+Qmfj7+m0nWZz31AyzJBfWE2rFuoeygkz0butJUrwKzuPXtLvo7FskJ/kLZJOEPIREvZE2AgsQGsZKlC80KuGUthL77pQauHcDYa5dYQkNMk2PCDfo6rFbCdcf6OhndkaftNqx1hEUyqDASwYEQ3R5HCz9jWhr6kTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719481575; c=relaxed/simple;
-	bh=Vc1FxFKKZ4kIsqe09jMpdFUU4Nj/L8/uAl6xy6PikB8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O/bX9/hfKr6xLO/KIoRTyaH4lUCCC+82i5MwZPcMI1x5XFEGeuJCBCuAZ1yjfFOyR9Sxrv4P1FcPZiLUKH72nwVwI18HmHlxao06iglOxjqV/z1+efA4nbDhaUhv+odIthCKSx7uNqULTLWrKZCvP35B85skh9qqISob7M2H/bc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=XfRHWX7c; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=XfRHWX7c; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 924C221B7E;
-	Thu, 27 Jun 2024 09:46:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1719481571; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Jj9AAp3ne/E3keslQqD3JpnbJj5OzPPBYKAv+9+i9rI=;
-	b=XfRHWX7cglF3W8E5nX9gSJv7E5pesHihnyJUsMKYEJeKevKm0ZL/gG4dxG9FXnptwZsTLi
-	6WF7OGpdDftTUgrrNRmdqEuPfdQ3pwr+uZ6FegT1R/8s1kTZuvf6Tb9U0ZBqL5YFbVzQte
-	W5YSmOo9gicDgDfV5cZJ3b/3ey4IvlM=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=XfRHWX7c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1719481571; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Jj9AAp3ne/E3keslQqD3JpnbJj5OzPPBYKAv+9+i9rI=;
-	b=XfRHWX7cglF3W8E5nX9gSJv7E5pesHihnyJUsMKYEJeKevKm0ZL/gG4dxG9FXnptwZsTLi
-	6WF7OGpdDftTUgrrNRmdqEuPfdQ3pwr+uZ6FegT1R/8s1kTZuvf6Tb9U0ZBqL5YFbVzQte
-	W5YSmOo9gicDgDfV5cZJ3b/3ey4IvlM=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 824E7137DF;
-	Thu, 27 Jun 2024 09:46:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EEtfH+M0fWbFIAAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Thu, 27 Jun 2024 09:46:11 +0000
-Date: Thu, 27 Jun 2024 11:46:10 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Chen Ridong <chenridong@huawei.com>
-Cc: tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org, 
-	longman@redhat.com, adityakali@google.com, sergeh@kernel.org, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3] cgroup/cpuset: Prevent UAF in proc_cpuset_show()
-Message-ID: <6mjie6enbm5ltei4fsanz64ofukbr4gvss7ywi5sjfjxjxing7@efuhtnqvfawd>
-References: <20240626094101.472912-1-chenridong@huawei.com>
+	s=arc-20240116; t=1719484471; c=relaxed/simple;
+	bh=/NjzPjCkeQR/9FVL9SZ4g6IzWAjGvT3d86pL2oSZKlo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lbCQU5PytHbnqXk+bGAK3GLAKuSA/sTLAgnnBfcSj25GHhs7Ri8a1EPnuRAYz8aQVx+GnRJ66PeVWg4p1JZ4n5iZRIHvHpSMkDQa40Qk/x6Qc6tJrJIQBcSXOhq5ojXa/1EXZF5YnE6Ve9QiiFgN6b+m6rHXim1JvPEzjYwjqv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=isuZrrqO; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-57cf8880f95so1561477a12.3
+        for <cgroups@vger.kernel.org>; Thu, 27 Jun 2024 03:34:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1719484468; x=1720089268; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j9FS9JzVBeWa6xY6RjccFGH3HEep7Fmdm+7GGppOyXg=;
+        b=isuZrrqOT45q349s6Wl2gF4OhC7RFzrSXdDyBeXoEtdLXiK0PngmqDX2VpQzpjbat2
+         oGkGPZDH5kMTHjlDLG4CZkeofFVs65delic72FaB5bGwlTCngXRXy0CJAwzd4aWuOKlL
+         ZMSVxjd8Mz8S5ZgYae5Iif9i0Z4DhcHNtJnOKnLCYrQ0ZLJS9QNDGdT0tqFZkTUuUJUs
+         7lz6HTsMjv2o5t0mYuPorZnFVttzjzNFgHlO9UPKBE5DxbrALCJ81ET4kdT9FLuMOFk4
+         fPWyX3qeMJS3sUak4NZnuaNlAVA9DpG1GLkHOTgLJvF+T83/8hNIepcdOOXuM2CAEliE
+         BUng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719484468; x=1720089268;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j9FS9JzVBeWa6xY6RjccFGH3HEep7Fmdm+7GGppOyXg=;
+        b=NdiR/bKONNyd4cgfJpkdEUp/Dg9rAbPso1RkPcPjG2HTOuYFoXaxQ4oA2ujNnNu9so
+         IO7kF7sMvq2b5KFuTXcev1FaCkQyHVj7Rm8zDkGegPJbm6FG0hsNclNtbCmkDUUBT0C5
+         CWLw/iyxL5punv6rVDZ4qWBDpzmRGCpoonaFxB08yAHi0RZhGeAT+fi0HS4SFKrbam2Q
+         nZ+l4y0OCkzBsUowzhiBYZL8U29s5w5lpTFRqwU3gUxE6iMULh5lGlmaP2GR1IQqMCKQ
+         ckXb1C542+WreqOMBjHxiSP/DilueD6UJNPaQmMPhm66aldlYjlBm1mCBPNR6D6Mi18E
+         d2Tg==
+X-Forwarded-Encrypted: i=1; AJvYcCWeKpb3l0SDody/BmpReTr0IfYI99IgcY7wh6mPNccWJyxM++avssqOJj9h0Jswu15ASn226kiwMeViZdvGo28chwaYTl171Q==
+X-Gm-Message-State: AOJu0Yx6cLna/cWcvNnxmMtEzjJPhFYHIJNIQgbak5u5AsaoBYlMuqjN
+	0BNb80i7JgEQXGaJ1Gspdis1iQpzDIJDV9c66dpW3yE4K66kTYvG09d1GlaL9c+48CY1gv+hIBK
+	MbRMoC2+nLLJyr7ha4Dy5Zf6nxHYBqsk45ppboF8II0hYpbQH7u5WPss=
+X-Google-Smtp-Source: AGHT+IGdO93khlibtkshuAazBmWw34RWyRGVw1+TAnqsxI8uf5V5MdIMHrT8t2WBfe+sceFvDcXuReAU2O9n7qvXycM=
+X-Received: by 2002:a17:906:d96e:b0:a6f:608e:c0d0 with SMTP id
+ a640c23a62f3a-a7245ba3cc0mr1099324466b.25.1719484467646; Thu, 27 Jun 2024
+ 03:34:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="kwcaihwcr7zw77fe"
-Content-Disposition: inline
-In-Reply-To: <20240626094101.472912-1-chenridong@huawei.com>
-X-Spamd-Result: default: False [-8.11 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SIGNED_PGP(-2.00)[];
-	DWL_DNSWL_MED(-2.00)[suse.com:dkim];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 924C221B7E
-X-Spam-Flag: NO
-X-Spam-Score: -8.11
-X-Spam-Level: 
-
-
---kwcaihwcr7zw77fe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <171943667611.1638606.4158229160024621051.stgit@firesoul> <171943668946.1638606.1320095353103578332.stgit@firesoul>
+In-Reply-To: <171943668946.1638606.1320095353103578332.stgit@firesoul>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Thu, 27 Jun 2024 03:33:49 -0700
+Message-ID: <CAJD7tkbBpPqFW5fhmhcwDAfrze+aj8xFCF+3S4egBfipA4zKgQ@mail.gmail.com>
+Subject: Re: [PATCH V3 2/2] cgroup/rstat: Avoid thundering herd problem by
+ kswapd across NUMA nodes
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: tj@kernel.org, cgroups@vger.kernel.org, shakeel.butt@linux.dev, 
+	hannes@cmpxchg.org, lizefan.x@bytedance.com, longman@redhat.com, 
+	kernel-team@cloudflare.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 26, 2024 at 09:41:01AM GMT, Chen Ridong <chenridong@huawei.com>=
- wrote:
-> An UAF can happen when /proc/cpuset is read as reported in [1].
->=20
-> This can be reproduced by the following methods:
-> 1.add an mdelay(1000) before acquiring the cgroup_lock In the
->  cgroup_path_ns function.
-> 2.$cat /proc/<pid>/cpuset   repeatly.
-> 3.$mount -t cgroup -o cpuset cpuset /sys/fs/cgroup/cpuset/
-> $umount /sys/fs/cgroup/cpuset/   repeatly.
->=20
-> The race that cause this bug can be shown as below:
->=20
-> (umount)		|	(cat /proc/<pid>/cpuset)
-> css_release		|	proc_cpuset_show
-> css_release_work_fn	|	css =3D task_get_css(tsk, cpuset_cgrp_id);
-> css_free_rwork_fn	|	cgroup_path_ns(css->cgroup, ...);
-> cgroup_destroy_root	|	mutex_lock(&cgroup_mutex);
-> rebind_subsystems	|
-> cgroup_free_root 	|
-> 			|	// cgrp was freed, UAF
-> 			|	cgroup_path_ns_locked(cgrp,..);
+On Wed, Jun 26, 2024 at 2:18=E2=80=AFPM Jesper Dangaard Brouer <hawk@kernel=
+.org> wrote:
+>
+> Avoid lock contention on the global cgroup rstat lock caused by kswapd
+> starting on all NUMA nodes simultaneously. At Cloudflare, we observed
+> massive issues due to kswapd and the specific mem_cgroup_flush_stats()
+> call inlined in shrink_node, which takes the rstat lock.
+>
+> On our 12 NUMA node machines, each with a kswapd kthread per NUMA node,
+> we noted severe lock contention on the rstat lock. This contention
+> causes 12 CPUs to waste cycles spinning every time kswapd runs.
+> Fleet-wide stats (/proc/N/schedstat) for kthreads revealed that we are
+> burning an average of 20,000 CPU cores fleet-wide on kswapd, primarily
+> due to spinning on the rstat lock.
+>
+> To help reviewer follow code: When the Per-CPU-Pages (PCP) freelist is
+> empty, __alloc_pages_slowpath calls wake_all_kswapds(), causing all
+> kswapdN threads to wake up simultaneously. The kswapd thread invokes
+> shrink_node (via balance_pgdat) triggering the cgroup rstat flush
+> operation as part of its work. This results in kernel self-induced rstat
+> lock contention by waking up all kswapd threads simultaneously.
+> Leveraging this detail: balance_pgdat() have NULL value in
+> target_mem_cgroup, this cause mem_cgroup_flush_stats() to do flush with
+> root_mem_cgroup.
+>
+> To avoid this kind of thundering herd problem, kernel previously had a
+> "stats_flush_ongoing" concept, but this was removed as part of commit
+> 7d7ef0a4686a ("mm: memcg: restore subtree stats flushing"). This patch
+> reintroduce and generalized the concept to apply to all users of cgroup
+> rstat, not just memcg.
+>
+> If there is an ongoing rstat flush, and current cgroup is a descendant,
+> then it is unnecessary to do the flush. For callers to still see updated
+> stats, wait for ongoing flusher to complete before returning, but add
+> timeout as stats are already inaccurate given updaters keeps running.
+>
+> Fixes: 7d7ef0a4686a ("mm: memcg: restore subtree stats flushing").
+> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
+> ---
+> V2: https://lore.kernel.org/all/171923011608.1500238.3591002573732683639.=
+stgit@firesoul/
+> V1: https://lore.kernel.org/all/171898037079.1222367.13467317484793748519=
+.stgit@firesoul/
+> RFC: https://lore.kernel.org/all/171895533185.1084853.3033751561302228252=
+.stgit@firesoul/
+>
+>  kernel/cgroup/rstat.c |   61 ++++++++++++++++++++++++++++++++++++++++---=
+------
+>  1 file changed, 50 insertions(+), 11 deletions(-)
+>
+> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+> index 2a42be3a9bb3..f21e6b1109a4 100644
+> --- a/kernel/cgroup/rstat.c
+> +++ b/kernel/cgroup/rstat.c
+> @@ -2,6 +2,7 @@
+>  #include "cgroup-internal.h"
+>
+>  #include <linux/sched/cputime.h>
+> +#include <linux/completion.h>
+>
+>  #include <linux/bpf.h>
+>  #include <linux/btf.h>
+> @@ -11,6 +12,8 @@
+>
+>  static DEFINE_SPINLOCK(cgroup_rstat_lock);
+>  static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_cpu_lock);
+> +static struct cgroup *cgrp_rstat_ongoing_flusher;
+> +static DECLARE_COMPLETION(cgrp_rstat_flusher_done);
+>
+>  static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu);
+>
+> @@ -346,6 +349,44 @@ static void cgroup_rstat_flush_locked(struct cgroup =
+*cgrp)
+>         }
+>  }
+>
+> +#define MAX_WAIT       msecs_to_jiffies(100)
+> +/* Trylock helper that also checks for on ongoing flusher */
+> +static bool cgroup_rstat_trylock_flusher(struct cgroup *cgrp)
+> +{
+> +retry:
+> +       bool locked =3D __cgroup_rstat_trylock(cgrp, -1);
+> +       if (!locked) {
+> +               struct cgroup *cgrp_ongoing;
+> +
+> +               /* Lock is contended, lets check if ongoing flusher is al=
+ready
+> +                * taking care of this, if we are a descendant.
+> +                */
+> +               cgrp_ongoing =3D READ_ONCE(cgrp_rstat_ongoing_flusher);
+> +               if (!cgrp_ongoing)
+> +                       goto retry;
+> +
+> +               if (cgroup_is_descendant(cgrp, cgrp_ongoing)) {
+> +                       wait_for_completion_interruptible_timeout(
+> +                               &cgrp_rstat_flusher_done, MAX_WAIT);
 
-Thanks for this breakdown.
+Thanks for sending this!
 
-> ...
-> Fix this problem by using rcu_read_lock in proc_cpuset_show().
-> As cgroup root_list is already RCU-safe, css->cgroup is safe.
-> This is similar to commit 9067d90006df ("cgroup: Eliminate the
-> need for cgroup_mutex in proc_cgroup_show()")
+The reason why I suggested that the completion live in struct cgroup
+is because there is a chance here that the flush completes and another
+irrelevant flush starts between reading cgrp_rstat_ongoing_flusher and
+calling wait_for_completion_interruptible_timeout().
 
-Apologies for misleading you in my previous message about root_list.
-As I look better at proc_cpuset_show vs proc_cgroup_show, there's a
-difference and task_get_css() doesn't rely on root_list synchronization.
+This will cause the caller to wait for an irrelevant flush, which may
+be fine because today the caller would wait for the lock anyway. Just
+mentioning this in case you think this may happen enough to be a
+problem.
 
-I think it could go like this (with my extra comments)
-
-	rcu_read_lock();
-	spin_lock_irq(&css_set_lock);
-	css =3D task_css(tsk, cpuset_cgrp_id); // css is stable wrt task's migrati=
-on thanks to css_set_lock
-	cgrp =3D css->cgroup; // whatever we see here, won't be free'd thanks to R=
-CU lock and cgroup_free_root/kfree_rcu
-	retval =3D cgroup_path_ns_locked(cgrp, buf, PATH_MAX,
-				       current->nsproxy->cgroup_ns);
-	...
-
-Your patch should work thanks to the rcu_read_lock and
-cgroup_free_root/kfree_rcu and the `if (css->cgroup)` guard is
-unnecessary.
-
-So the patch is a functional fix, the reasoning in commit message is
-little off. Not sure if Tejun rebases his for-6.10-fixes (with a
-possible v4), full fixup commit for this may not be worthy.
-
-Michal
-
-
---kwcaihwcr7zw77fe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZn003wAKCRAt3Wney77B
-SanmAQC+BClDX+SIYfecEqNibSmzoe/yog4Ca+xRk1HMt39vcAEA+ZVJ66ekm3kZ
-ZS9DDuzmjib9QKbmvBM7unrDKpsEvgQ=
-=J1g9
------END PGP SIGNATURE-----
-
---kwcaihwcr7zw77fe--
+Also, I like the idea of the timeout here, it bounds the flush wait
+time. I am wondering if there's a way to log something when the
+timeout is exceeded (which probably means flushing is taking too
+long), or maybe have a debug counter if we suspect this may spam the
+log.
 
