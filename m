@@ -1,154 +1,128 @@
-Return-Path: <cgroups+bounces-3386-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3387-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C549E919A6A
-	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 00:09:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 056A291A01D
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 09:13:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 760D61F237A1
-	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2024 22:09:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A05B31F234A1
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 07:13:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C181D194083;
-	Wed, 26 Jun 2024 22:08:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25C7247A76;
+	Thu, 27 Jun 2024 07:13:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hE+RjNOg"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cL6pkM+w"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBCB418FC9D
-	for <cgroups@vger.kernel.org>; Wed, 26 Jun 2024 22:08:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA561A29A
+	for <cgroups@vger.kernel.org>; Thu, 27 Jun 2024 07:13:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719439717; cv=none; b=jmewh/5oWcP3+KmkqMcf8LYhGriQxOOdgYM1C9QhcBZ6m1gCYBvGzA1KTOSni9WMiKcEDStkAlf95L63WpyQY1eSTBwXWCirZqwjM0GbZO+ChqgoRY9WRPVvx6lLgweSaXUlEY1syCDZpyddqD3z2RawfgD0AtKGOjJkr2iErh4=
+	t=1719472413; cv=none; b=TUAu65QoIMcEvcpBg1RgI6mHbpIybj04YhfSKh5uEjWIrizgAwtSUQElaqO10BGB4yJx4VSHCE6SjnB/nQY/iYuCyZXv7M/AcZeXYW9QErFc72Qx+eGxybAWJ4mBzWcuJW3LXBniXQjUBfNjG6KY2/eoMndPvFHWjOHRdsSdfmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719439717; c=relaxed/simple;
-	bh=ow9uMzU4QlTZN49r1yOxWduojAK/284N5Vep8JME3m0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZD2ptjOkmFKGEtMm+PgTgjy/F3492rEzRmu/UPXWJYusl+/gN3xyIOcvTvIoAxtrMYHlhqwZj/gLBy0sJ5tgxWqymNVM9I7y1PWeM0LAVx5vpfzBxJ4P19eMcH/xe2vLjHrUpv4HS5UH9/jxyK9OIcIrEDYTNeI8PskhMS3NOUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hE+RjNOg; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-57ccd1111aeso1027612a12.0
-        for <cgroups@vger.kernel.org>; Wed, 26 Jun 2024 15:08:35 -0700 (PDT)
+	s=arc-20240116; t=1719472413; c=relaxed/simple;
+	bh=OunEzO/AYwbaIN0s6eaU896UIyKqDZ7uDcqDS/GgQpI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BL6SqX5lAftSMArq1Nl7Hut3ff4x9b22p7SaxPDUR9byUv4hTFsJCjqgG/KDaDq+QcpaZjISsnOu2/fKzTfyTOyF49tD0Z0FseuMkENTWfYt8h3yL//8WzXAMQUYJ/rT2rgbufh1hC3zTx9Xez/gJYCK9nSilyKtQtH4ol5mikI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cL6pkM+w; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-57d203d4682so1435606a12.0
+        for <cgroups@vger.kernel.org>; Thu, 27 Jun 2024 00:13:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1719439714; x=1720044514; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ow9uMzU4QlTZN49r1yOxWduojAK/284N5Vep8JME3m0=;
-        b=hE+RjNOgGaqdi33sArfoVdNOf849hixKyOCzYuRwWjsoXyDB7/6DaZi6e11ABu0XBY
-         ouF9DJ58jIobgecrgYlHcZg6il0Nd7O2HXKIYRZ0qRBwhQYixhIJ0HgYzp9NYSbUv/b0
-         QK8Q+PIJehQ3Pyh4e5sBbaa51wb4uiOrdGZq2A6I7Jq0RGF6jhcY0kAJortGrHVvtC6U
-         MHIyMx+WEZTueSDEFp7PHleLyVjVbQA0pfH70ArP1JQ/vJcqjANp2TYyEl7d/Sei8rbr
-         je04VjtBKgn3ljZfBNZTBM1UZeeu2VNw7/NlpD4XukYuTdiT42wFIXeDAFRSIkxS0gUL
-         KlEQ==
+        d=suse.com; s=google; t=1719472410; x=1720077210; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WjSqYVstGY+dnCOqDR7QEfoeCBWvYJSBI8B7JErfM6o=;
+        b=cL6pkM+wLOXXQSqQnyCVoAoSXVvDiJXfHze7IBnrMy3C9R+UFNmKEBZy0wr+pz5Eza
+         NbgYJyMDBaQUs5t349K72l86mtfn9um7AsQdxKebKOKrtMcoShYwj9kxVHyb4Z+9F2mQ
+         PlM6XdEaT4xtYYsmBdQsrwoGjzD9EDUP8xBGPKsqy9wIk9PSRtduFDSGmWBShaS4hbPw
+         XZ5B7hmC8ZIiDiuK538f3WXSuytK0mvuQeVUuHK7rTLJYsM6vMuW6THrc/rsoGfqM5S7
+         FJzwbBrfPTljX8D6PO2QiE6bTQH9YnF89fBjfxbTmo1zkikjA9GPynQetrXufZWtRKlI
+         NNGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719439714; x=1720044514;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ow9uMzU4QlTZN49r1yOxWduojAK/284N5Vep8JME3m0=;
-        b=aRHhKjTY4DsqHwVwBpr5s9BtSowfJBaTygzHpWAAi9lqc3NCtGxTFVOTf4N6aOmxor
-         yJ35E4mznOC+xl/g2z+QGD6X2fSGTXZ1hXhyKcRYcXNZsXlQNN/u0l3xD9HYR2oPoVJ4
-         9jddY07t/OVf1bAqYOBkELSkjgpGLd4SqONikvY4KQJu2kNcyAyMaMCFCo6GhEgkdNJj
-         MJLlJxzZiAlnCT/4rJToHa6jercT4sOlBPdKC2h++TBkBmETCV1XVwO+l2e26kF0QeiE
-         4l9I7zFD2BjPinDUtDHsVUJvykjNv9gz5Mg8YaGY+vu+Wiza+5TpWBr8m/XkU/wgrQga
-         MXtw==
-X-Forwarded-Encrypted: i=1; AJvYcCV5yunylIBfqZHPsAUu0QaP4WpTWpwffOf+zTSEMh8UhMgNe6wvn4hAexs7wPaugriTAdKNlV0ivhveRBkkGB+wZZVCOXFx9w==
-X-Gm-Message-State: AOJu0YysEMVOxEWhyGdlPJij4jubWuc4pOEdEkrUVvT2NtYA/zTxYkZS
-	SFWhpzzTVntcMCQ6CsElImu7W1lqQSmN3zV/ff6vKe3c1cM6ryYJgb0JpFtu3uYocDv26eGrBkt
-	n+0EKVkrD5aaGDtfGABfvV6dwujjP6zfBkrbZ
-X-Google-Smtp-Source: AGHT+IHi2xggiOm+Up9NomVLlotYhdckrjT5dOyCxfIdhHOlfpCFA13hcM0WF/+YkIUaXf9/7Qt0uwwB0bQyrqsQAa8=
-X-Received: by 2002:a17:906:7f05:b0:a6e:4693:1f6e with SMTP id
- a640c23a62f3a-a7242c39be2mr819395666b.29.1719439713799; Wed, 26 Jun 2024
- 15:08:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1719472410; x=1720077210;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WjSqYVstGY+dnCOqDR7QEfoeCBWvYJSBI8B7JErfM6o=;
+        b=RPn7ah4uXT7WZuEcB8AC6mlnuQx5BqgmliUA+mK1xi5q3XO1t+wW1HeVNUYh6DNsd3
+         KVvBNwEHl4DoX7xY4/nhml7PpPyGhz5kek7ATw0fxt5BPRQch5ydmp7UepTsL/LBGzk9
+         zwDEhAeS+HYlyIlXrcnhKOcgZeDJnYME76wXQuUahEHzLTgKnBGKhSQzs5Pyqitmq+hN
+         TG4/bgziUpCDOSxi08dQOYv//25snoGUEjYKddEB6K+B1scDQp1rYtphlieZhA+LM8gi
+         fHSdmlL2r3LeaPZl5F/bfCXbhyAclCe/GjPz/JZ69pKRM+Q+3FQTz8XpYdr5+fFCf17C
+         ZQzw==
+X-Forwarded-Encrypted: i=1; AJvYcCUGQz9fgjRA3esP5lNvOC4rbBgHKcXKjUKaaauDW8lqQbXY15QlqAIXmICtCkpOogmYKcrBie6bOluHKm8wfMco1qjO2VFaBQ==
+X-Gm-Message-State: AOJu0YwRihnB57dVBeBaNuEqlbo6JaPQZbF1BA19HMnC9XXwMJ3p7IoR
+	UIazASzf75xovdyCeFF++Q0uPEAvwDPI37VfxDYXaswsMZy9jsjTylrnOruhIPI=
+X-Google-Smtp-Source: AGHT+IHQM+6N2TxfZxDlu1yZpXj1sEKyksdVN3G4/fMpiXtja6nFqYy2Yne2kCXQS07WmpUm6iav4w==
+X-Received: by 2002:a17:906:ba8b:b0:a6f:4f2c:1936 with SMTP id a640c23a62f3a-a727f706bf5mr398227766b.44.1719472409930;
+        Thu, 27 Jun 2024 00:13:29 -0700 (PDT)
+Received: from localhost (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a729d71f5acsm31349466b.68.2024.06.27.00.13.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jun 2024 00:13:29 -0700 (PDT)
+Date: Thu, 27 Jun 2024 09:13:29 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Xiu Jianfeng <xiujianfeng@huawei.com>
+Cc: hannes@cmpxchg.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, akpm@linux-foundation.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] mm: memcg: remove redundant
+ seq_buf_has_overflowed()
+Message-ID: <Zn0RGTZxrEUnI1KZ@tiehlicka>
+References: <20240626094232.2432891-1-xiujianfeng@huawei.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <a45ggqu6jcve44y7ha6m6cr3pcjc3xgyomu4ml6jbsq3zv7tte@oeovgtwh6ytg>
- <CAJD7tkZT_2tyOFq5koK0djMXj4tY8BO3CtSamPb85p=iiXCgXQ@mail.gmail.com>
- <qolg56e7mjloynou6j7ar7xzefqojp4cagzkb3r6duoj5i54vu@jqhi2chs4ecj>
- <CAJD7tka0b52zm=SjqxO-gxc0XTib=81c7nMx9MFNttwVkCVmSg@mail.gmail.com>
- <u3jrec5n42v35f3xiigfqabajjt4onh44eyfajewnzbfqxaekw@5x2daobkkbxh>
- <CAJD7tkaMeevj2TS_aRj_WXVi26CuuBrprYwUfQmszJnwqqJrHw@mail.gmail.com>
- <d3b5f10a-2649-446c-a6f9-9311f96e7569@kernel.org> <CAJD7tkZ0ReOjoioACyxQ848qNMh6a93hH616jNPgX3j72thrLg@mail.gmail.com>
- <zo6shlmgicfgqdjlfbeylpdrckpaqle7gk6ksdik7kqq7axgl6@65q4m73tgnp3>
- <CAJD7tkZ_aba9N9Qe8WeaLcp_ON_jQvuP9dg4tW0919QbCLLTMA@mail.gmail.com>
- <ntpnm3kdpqexncc4hz4xmfliay3tmbasxl6zatmsauo3sruwf3@zcmgz7oq5huy>
- <CAJD7tkYqF0pmnw+PqmzPGh7NLeM2KfCwKLMhkFw3sxBOZ3biAA@mail.gmail.com>
- <a1e847a6-749b-87e8-221f-f9beb6c2ab59@linux.com> <CAJD7tkbq-dyhmgBOC0+=FeJ19D-fRpE_pz44cH7fCvtHgr45uQ@mail.gmail.com>
- <43732a44-1f90-4119-9e52-000b5a6a2f99@kernel.org>
-In-Reply-To: <43732a44-1f90-4119-9e52-000b5a6a2f99@kernel.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 26 Jun 2024 15:07:55 -0700
-Message-ID: <CAJD7tkauPM5trAhgYSC5_S_wvOA9gozPeUot-yhAW0fbF+Msag@mail.gmail.com>
-Subject: Re: [PATCH V2] cgroup/rstat: Avoid thundering herd problem by kswapd
- across NUMA nodes
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: "Christoph Lameter (Ampere)" <cl@linux.com>, Shakeel Butt <shakeel.butt@linux.dev>, tj@kernel.org, 
-	cgroups@vger.kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com, 
-	longman@redhat.com, kernel-team@cloudflare.com, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240626094232.2432891-1-xiujianfeng@huawei.com>
 
-On Wed, Jun 26, 2024 at 2:35=E2=80=AFPM Jesper Dangaard Brouer <hawk@kernel=
-.org> wrote:
->
->
->
-> On 26/06/2024 00.59, Yosry Ahmed wrote:
-> > On Tue, Jun 25, 2024 at 3:35=E2=80=AFPM Christoph Lameter (Ampere) <cl@=
-linux.com> wrote:
-> >>
-> >> On Tue, 25 Jun 2024, Yosry Ahmed wrote:
-> >>
-> >>>> In my reply above, I am not arguing to go back to the older
-> >>>> stats_flush_ongoing situation. Rather I am discussing what should be=
- the
-> >>>> best eventual solution. From the vmstats infra, we can learn that
-> >>>> frequent async flushes along with no sync flush, users are fine with=
- the
-> >>>> 'non-determinism'. Of course cgroup stats are different from vmstats
-> >>>> i.e. are hierarchical but I think we can try out this approach and s=
-ee
-> >>>> if this works or not.
-> >>>
-> >>> If we do not do sync flushing, then the same problem that happened
-> >>> with stats_flush_ongoing could occur again, right? Userspace could
-> >>> read the stats after an event, and get a snapshot of the system befor=
-e
-> >>> that event.
-> >>>
-> >>> Perhaps this is fine for vmstats if it has always been like that (I
-> >>> have no idea), or if no users make assumptions about this. But for
-> >>> cgroup stats, we have use cases that rely on this behavior.
-> >>
-> >> vmstat updates are triggered initially as needed by the shepherd task =
-and
-> >> there is no requirement that this is triggered simultaenously. We
-> >> could actually randomize the intervals in vmstat_update() a bit if thi=
-s
-> >> will help.
-> >
-> > The problem is that for cgroup stats, the behavior has been that a
-> > userspace read will trigger a flush (i.e. propagating updates). We
-> > have use cases that depend on this. If we switch to the vmstat model
-> > where updates are triggered independently from user reads, it
-> > constitutes a behavioral change.
->
-> I implemented a variant using completions as Yosry asked for:
->
-> https://lore.kernel.org/all/171943668946.1638606.1320095353103578332.stgi=
-t@firesoul/
+On Wed 26-06-24 09:42:32, Xiu Jianfeng wrote:
+> Both the end of memory_stat_format() and memcg_stat_format() will call
+> WARN_ON_ONCE(seq_buf_has_overflowed()). However, memory_stat_format()
+> is the only caller of memcg_stat_format(), when memcg is on the default
+> hierarchy, seq_buf_has_overflowed() will be executed twice, so remove
+> the reduntant one.
 
-Thanks! I will take a look at this a little bit later. I am wondering
-if you could verify if that solution fixes the problem with kswapd
-flushing?
+Shouldn't we rather remove both? Are they giving us anything useful
+actually? Would a simpl pr_warn be sufficient? Afterall all we care
+about is to learn that we need to grow the buffer size because our stats
+do not fit anymore. It is not really important whether that is an OOM or
+cgroupfs interface path.
+
+> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+> ---
+>  mm/memcontrol.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 974bd160838c..776d22bc66a2 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1846,9 +1846,6 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+>  			       vm_event_name(memcg_vm_event_stat[i]),
+>  			       memcg_events(memcg, memcg_vm_event_stat[i]));
+>  	}
+> -
+> -	/* The above should easily fit into one page */
+> -	WARN_ON_ONCE(seq_buf_has_overflowed(s));
+>  }
+>  
+>  static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s);
+> -- 
+> 2.34.1
+
+-- 
+Michal Hocko
+SUSE Labs
 
