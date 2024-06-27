@@ -1,143 +1,163 @@
-Return-Path: <cgroups+bounces-3412-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3413-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EE4791ACDB
-	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 18:31:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4538F91ADC0
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 19:16:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90B221C26348
-	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 16:31:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3A841F21C9E
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 17:16:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BF96198838;
-	Thu, 27 Jun 2024 16:31:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 735BD199E83;
+	Thu, 27 Jun 2024 17:16:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="Kx2k2th8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jdT2GY36"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7415D18B1A
-	for <cgroups@vger.kernel.org>; Thu, 27 Jun 2024 16:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234992557A;
+	Thu, 27 Jun 2024 17:16:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719505870; cv=none; b=fqZL5++tX9tNE4X+4vusWY9bD5xAwTfab1gCUQVtrXh10B/F+L49lRH63enpi9bW1FBWTF/B4/sGGEWakP71hFRZVJYsP1A67VSCGsDX2vJTZ642VQ9iHORZcUDvikWScOw1JJnKka41PactJuSezgAgFcrlPrp28Ayn0bgneo4=
+	t=1719508571; cv=none; b=atzHD0B2hwXjlIQEHOwJu3VaqRds53J3HI03CWHuSk0DhouIfEuOunNXk5DIBnOMYB19vZ9Vw9aXGcKjhloDeHcN5p2EMkJabLaaesCp5OHDE/CPsisn1IJHZV22L53015xZ/AXHMsKKftXb+EnOrv1H22xgz70Wa66Pw1OXXYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719505870; c=relaxed/simple;
-	bh=rbPUP6fg+E+zMZem2W8dw06xr/P36TLLJcmmekBMiIA=;
+	s=arc-20240116; t=1719508571; c=relaxed/simple;
+	bh=sSeDFPLANRtdCM3W5AaKh+hXR3lM6y6nXqJeEH89EL0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nQ60PhlB2hfRBlvK2fhhjvDLNJuY5Zt+mPfJJnx7QSWs35xVgn+Uz1iFRftW5Do3lKQYRIUaOVhEZJeM6kBwL/EuKpYq6nXitAF+KsGXjUCroU3Am3D1WK6uL2xArtwg8uYFsWrUixe0z2qQhodJN/bJtV0M2qwZm0qDbFMaOGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=Kx2k2th8; arc=none smtp.client-ip=209.85.219.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6b4fe2c79fdso34659166d6.0
-        for <cgroups@vger.kernel.org>; Thu, 27 Jun 2024 09:31:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1719505866; x=1720110666; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=onH/xeAbXWJK2z25s3p7/oY6URlbYd6cQ3Fa4SiGD/Y=;
-        b=Kx2k2th8KZSzWS+6RSz1xvXCEYbUyl5meM+zUOT8zbx7tkOS4l7BxtDtoh9aI0GVkZ
-         7V3vxHE/ALElxHGr61+Dkfo1rYkZg4sd9A8S2OzG3HREhLEP9QU3uU1iUoQnu/lloULW
-         ny5NrMnJR5QgvKjK3UX+rTCiXWO5iHzLUU6S+dKXlr+lAo3WD12GOfewyxUFPeAXeqgI
-         ZwSTP3ns1qGtFU2QtH6saQ6RuBMfPxSz4W7K5sRoyZlF64UfXoNvXQHQXfB9cAZzdwyp
-         bhHtyBfOhMlsNP/VO18UG2LGyabgN49vLdfPZUND/oRLPcSgAF/eZbKRTm/SFnMqEmzL
-         YkZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719505866; x=1720110666;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=onH/xeAbXWJK2z25s3p7/oY6URlbYd6cQ3Fa4SiGD/Y=;
-        b=LwudsWuosUZr4EYShlAjVm//3rQazXZ3Mc37/pvkODVmpKxTHueQdxVqZUtIeWJR/3
-         hb/AWMnvErrGr9bohNJm+QUTyXqSwwprM0wH4eTLh4aHeniskqlLLnIHqCCjBsh58G/j
-         MfUqp20zzNso1q/GcxRRe9Y3WWlR5YDD/aGvFNWwZUBTg8ToyihLTl5FLkd6kr7SPX+4
-         I7ccvAqsw0lC/ZuDCm24kWkLG4etGQBRF8quvstXfObzw/ec94GXGMngEYel3TvMi0IV
-         /3MjcnDGs8a8qxTT/hMmbpE/YHSfPOVXCqUof/nfPlgUsMINfviZ+k7tf55K2QHJGSQj
-         HkwQ==
-X-Gm-Message-State: AOJu0Yw9mJhFjskI62XUyp08AW7mPgtRF57+j/SLKNIXMyVyoA62Jv9t
-	Djwy8GqGv4iqzxGgkc1ddRl5/PrTGJkCEBBrI1HKne8OOmlD9wtsqlX7v8EWqWi+AMwmfwC7gut
-	r
-X-Google-Smtp-Source: AGHT+IGUQGL0TI0zwDVxFsmJ+/DowNwtnZ+/+BkwzrbtB6PRJZSCdHijW9zCjMKIc/PiCtphBkeRug==
-X-Received: by 2002:ad4:5aad:0:b0:6b5:8f2e:376b with SMTP id 6a1803df08f44-6b58f2e3aa2mr33489886d6.48.1719505866099;
-        Thu, 27 Jun 2024 09:31:06 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b592709b30sm6294836d6.130.2024.06.27.09.31.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jun 2024 09:31:05 -0700 (PDT)
-Date: Thu, 27 Jun 2024 12:31:00 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: syzbot <syzbot+b7f13b2d0cc156edf61a@syzkaller.appspotmail.com>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	lizefan.x@bytedance.com, syzkaller-bugs@googlegroups.com,
-	tj@kernel.org, Nhat Pham <nphamcs@gmail.com>
-Subject: Re: [syzbot] [cgroups?] BUG: sleeping function called from invalid
- context in cgroup_rstat_flush
-Message-ID: <20240627163100.GC469122@cmpxchg.org>
-References: <000000000000f71227061bdf97e0@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=UMHqe6VYJeMu7pii5hSqzKOvlDuekqmNYjoRom+R//6LIDwiCtb2jiwnFH0L0KC1xXq8r4UfmL8mQ93EQpNcBn8Rf9xcTSWTnzPQ1Jb/dm8DuDrqayOYT6f4jvbsblibjirVRRj1LH0xIQb66v/ZadWAzXo9oghtgwJL5zpslS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jdT2GY36; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CB2DC2BBFC;
+	Thu, 27 Jun 2024 17:16:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719508570;
+	bh=sSeDFPLANRtdCM3W5AaKh+hXR3lM6y6nXqJeEH89EL0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jdT2GY3651qQ8ySaOjVCeu1i6mUXn4kbzneO/06+6TL90hewAkhxeRwFIfQY2C3+a
+	 hRPnYCpnbQrMjqi4GjpSn2CqyXE8MVqbgBRTwq9Mat2vjPspxeFhMi1oGL234JB+HW
+	 vIvEFfR49tfh7YBT6j6zBoVLacpuKruzBkVjDeVeUAci2DvClA1WRoL8SlP+mYLuZv
+	 vR16hFCG8zK5xThzW2Q3wvVlXPB3bdkcWVEir6e8V60E2gSXokjDUXPEEJKtn2+zQz
+	 SDzgGknxNP9tUsP9KQkpxeBtklw7JadnygMfF/VyG8pPRiOkVBEn6Y7zBAGXoTBdj3
+	 eFiEJ7l0D/L/g==
+Date: Thu, 27 Jun 2024 19:16:07 +0200
+From: Maxime Ripard <mripard@kernel.org>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Jonathan Corbet <corbet@lwn.net>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Thomas Zimmermann <tzimmermann@suse.de>, 
+	Friedrich Vock <friedrich.vock@gmx.de>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-doc@vger.kernel.org
+Subject: Re: [RFC PATCH 2/6] drm/cgroup: Add memory accounting DRM cgroup
+Message-ID: <20240627-paper-vicugna-of-fantasy-c549ed@houat>
+References: <20240627154754.74828-1-maarten.lankhorst@linux.intel.com>
+ <20240627154754.74828-3-maarten.lankhorst@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="4x267kq4clbw44gl"
+Content-Disposition: inline
+In-Reply-To: <20240627154754.74828-3-maarten.lankhorst@linux.intel.com>
+
+
+--4x267kq4clbw44gl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000000000000f71227061bdf97e0@google.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 27, 2024 at 07:03:21AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    7c16f0a4ed1c Merge tag 'i2c-for-6.10-rc5' of git://git.ker..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1511528e980000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=12f98862a3c0c799
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b7f13b2d0cc156edf61a
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/50560e9024e5/disk-7c16f0a4.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/080c27daee72/vmlinux-7c16f0a4.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/c528e0da4544/bzImage-7c16f0a4.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+b7f13b2d0cc156edf61a@syzkaller.appspotmail.com
-> 
-> BUG: sleeping function called from invalid context at kernel/cgroup/rstat.c:351
-> in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 17332, name: syz-executor.4
-> preempt_count: 0, expected: 0
-> RCU nest depth: 1, expected: 0
-> 1 lock held by syz-executor.4/17332:
->  #0: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
->  #0: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
->  #0: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: filemap_cachestat mm/filemap.c:4251 [inline]
->  #0: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: __do_sys_cachestat mm/filemap.c:4407 [inline]
->  #0: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: __se_sys_cachestat+0x3ee/0xbb0 mm/filemap.c:4372
-> CPU: 1 PID: 17332 Comm: syz-executor.4 Not tainted 6.10.0-rc4-syzkaller-00330-g7c16f0a4ed1c #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/07/2024
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
->  __might_resched+0x5d4/0x780 kernel/sched/core.c:10196
->  cgroup_rstat_flush+0x1e/0x50 kernel/cgroup/rstat.c:351
->  workingset_test_recent+0x48a/0xa90 mm/workingset.c:473
->  filemap_cachestat mm/filemap.c:4314 [inline]
->  __do_sys_cachestat mm/filemap.c:4407 [inline]
->  __se_sys_cachestat+0x795/0xbb0 mm/filemap.c:4372
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+Hi,
 
-Ok yeah, cachestat() holds the rcu read lock, so
-workingset_test_recent() can't do a sleepable rstat flush.
+Thanks for working on this!
 
-I think the easiest fix would be to flush rstat from the root down
-(NULL) in filemap_cachestat(), before the rcu section, and add a flag
-to workingset_test_recent() to forego it. Nhat?
+On Thu, Jun 27, 2024 at 05:47:21PM GMT, Maarten Lankhorst wrote:
+> The initial version was based roughly on the rdma and misc cgroup
+> controllers, with a lot of the accounting code borrowed from rdma.
+>=20
+> The current version is a complete rewrite with page counter; it uses
+> the same min/low/max semantics as the memory cgroup as a result.
+>=20
+> There's a small mismatch as TTM uses u64, and page_counter long pages.
+> In practice it's not a problem. 32-bits systems don't really come with
+> >=3D4GB cards and as long as we're consistently wrong with units, it's
+> fine. The device page size may not be in the same units as kernel page
+> size, and each region might also have a different page size (VRAM vs GART
+> for example).
+>=20
+> The interface is simple:
+> - populate drmcgroup_device->regions[..] name and size for each active
+>   region, set num_regions accordingly.
+> - Call drm(m)cg_register_device()
+> - Use drmcg_try_charge to check if you can allocate a chunk of memory,
+>   use drmcg_uncharge when freeing it. This may return an error code,
+>   or -EAGAIN when the cgroup limit is reached. In that case a reference
+>   to the limiting pool is returned.
+> - The limiting cs can be used as compare function for
+>   drmcs_evict_valuable.
+> - After having evicted enough, drop reference to limiting cs with
+>   drmcs_pool_put.
+>=20
+> This API allows you to limit device resources with cgroups.
+> You can see the supported cards in /sys/fs/cgroup/drm.capacity
+> You need to echo +drm to cgroup.subtree_control, and then you can
+> partition memory.
+>=20
+> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> Co-developed-by: Friedrich Vock <friedrich.vock@gmx.de>
+
+I'm sorry, I should have wrote minutes on the discussion we had with TJ
+and Tvrtko the other day.
+
+We're all very interested in making this happen, but doing a "DRM"
+cgroup doesn't look like the right path to us.
+
+Indeed, we have a significant number of drivers that won't have a
+dedicated memory but will depend on DMA allocations one way or the
+other, and those pools are shared between multiple frameworks (DRM,
+V4L2, DMA-Buf Heaps, at least).
+
+This was also pointed out by Sima some time ago here:
+https://lore.kernel.org/amd-gfx/YCVOl8%2F87bqRSQei@phenom.ffwll.local/
+
+So we'll want that cgroup subsystem to be cross-framework. We settled on
+a "device" cgroup during the discussion, but I'm sure we'll have plenty
+of bikeshedding.
+
+The other thing we agreed on, based on the feedback TJ got on the last
+iterations of his series was to go for memcg for drivers not using DMA
+allocations.
+
+It's the part where I expect some discussion there too :)
+
+So we went back to a previous version of TJ's work, and I've started to
+work on:
+
+  - Integration of the cgroup in the GEM DMA and GEM VRAM helpers (this
+    works on tidss right now)
+
+  - Integration of all heaps into that cgroup but the system one
+    (working on this at the moment)
+
+  - Integration into v4l2 (next on my list)
+
+Maxime
+
+--4x267kq4clbw44gl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZn2eVwAKCRDj7w1vZxhR
+xReyAP4+9TGUgVyaERT/3Z2Q6QCqUYta9dlEvaZaPjxpE/PzCgD9GtTKU1rmEBJN
+XhhmHQ04LONiQxG4Qp4fDvfFOussXgY=
+=InwG
+-----END PGP SIGNATURE-----
+
+--4x267kq4clbw44gl--
 
