@@ -1,169 +1,140 @@
-Return-Path: <cgroups+bounces-3420-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3421-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2130891AF89
-	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 21:18:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 812E391B022
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 22:10:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CB531F22A1D
-	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 19:18:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39AAE2857DF
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 20:10:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA4C2433AB;
-	Thu, 27 Jun 2024 19:18:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89E219DF4B;
+	Thu, 27 Jun 2024 20:10:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d7D2CZnn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D+iqcigL"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 663482EAEA;
-	Thu, 27 Jun 2024 19:18:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E7B945BE4;
+	Thu, 27 Jun 2024 20:10:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719515919; cv=none; b=K0Jj7MhIp9cS5xwhlO+en8DVV1Q50svIqc2ULvi2zjAybsZz/cZrCqPSdbrpJVfNlniiU810XlQIr5hJ0gG62HZYROKuaPhjmj7JFGSN0EcnFrnbme83IGhNROoWwuKez2ZJDt5A1WdPxyNoQGEb2aoWx/0slUWgay8hIp8usRc=
+	t=1719519010; cv=none; b=YFRHR7wRxOGWDmtce+g60VBJJSwoc15AO4XlovFDqNOEIBB3FXx0BgZ7yTrJknFGw+snZ/6OBxJI9Sk37VdQRCBBurcKS4Zh3ldgwWsIwyivFN4MsFzBGDtVQD2D0Fi5qIx2QKyqyxNyEBjWygoaoZUK7yjS+cevtV1ZsCRMPkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719515919; c=relaxed/simple;
-	bh=Mfh5H1CxCCBXkdkl0aIpRYEfHebAshsjVdelkLPdtrc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=H3uiluQ9B64RxMgTOuFTwliHXAY2B8HKTGtnWcP4pH9ibZhh3gP9oWyqcpt1mlxuQHULlNeukINyWTqVDWTageDeeJc7wwdbVlVZz5cD0NwgzUr/+07v+34QLUi7WE/4TigejTrc4XgY7IPYu75dlivBpSCqswso0hBkVh7wszg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d7D2CZnn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37201C2BBFC;
-	Thu, 27 Jun 2024 19:18:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719515919;
-	bh=Mfh5H1CxCCBXkdkl0aIpRYEfHebAshsjVdelkLPdtrc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=d7D2CZnn1vLpvysuU2ME7JBu80T75XHsBcmams9VD7htZCi+hF4Mlb+rWuP6PeuYd
-	 nTEwmGb2/1RjYjY0YRwVKpzCimtihJdMevh3c1KaXTGRJtqXzBRK1DRXHWmphT2zqo
-	 0GfS2REKDcoRTlppPMsv4t3Cwe9Q6cMQUsMyGZZtz8OA4EL2dfJ4+HvaVu8l2h8EsL
-	 5S22obIng9rHhOS/10l92QiJbqB1FrtUWmimFlx5qxIfzpVX5A3fLF0KKc8j4z6a/v
-	 5Fq8vPqrQ4P3NA3XINDnmcl3o4EBbn9goW1BVV8dTNn6QnDR4Q76sA0h9lXc6RjVB3
-	 UW5qou2yLteHw==
-Message-ID: <c3875745-dae6-4b79-8c4f-86b4d7147db9@kernel.org>
-Date: Thu, 27 Jun 2024 21:18:35 +0200
+	s=arc-20240116; t=1719519010; c=relaxed/simple;
+	bh=DpfdFuOhqUucDrMCIF6H7EJVyqbWI7XGELgzC5TEoxc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BaK/PzzmcwkqznU8D10F1IQ1KdQ8t5+ki0kgw10IoJuQeX1vEroHzhSHbx7HGa4O1VIDieig87YSCNRRs18GjXnz/2lmarohnd+4cVFVOUlp+Bsuv9kVRxc0DHE7BYGVtKfvE1CBy93WtLrDxhVAA/vV5zPTvqb3X9Y46ckHHmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D+iqcigL; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-70685ab8fb1so4008151b3a.2;
+        Thu, 27 Jun 2024 13:10:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719519008; x=1720123808; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yMywSyrqyqgtj9q+Vb/QcUbABYB2OnAWGsqqi1w/fr8=;
+        b=D+iqcigLsUn9wCx9hdpSvgfSttUbkOBNkIoPJF8/7V3VKwGhdeJOa2RL5q1WXf6YZR
+         1I7kZ7sb17+DDTAgWkWDHBsaHA6WyGhknXnUue0mBHWJBnaYmbI81kbdyZ8Egy6reOqg
+         sk3LkD7bCh+XCRmkvwagYlpkL4UK4e1XFKdfOQKXyVT0H4cAYzBlxEWmFQGi6XtLgEEs
+         hXg37qN9CK8f/yhvgeq28CTYGKguE+OkOOxyvdin715jCeb9zjWG3BhBx2dZnxZ2FqbD
+         mL/t6NN+kPqOnTIssBrUXF7RcRF2hOGCK4//sKHr+XxSDD6XyMiVyk8GyBa4qN88tSVi
+         pBMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719519008; x=1720123808;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yMywSyrqyqgtj9q+Vb/QcUbABYB2OnAWGsqqi1w/fr8=;
+        b=p/Z6N9HKlpqn2kg4s72miJ/Bj1NnfalAuF7i4z0y4YuE+F5nkkm5NbNohmqkwfqmxD
+         mpBnnk6xttZ35V86gniQxrQuE6SaZvZ2nR7t3xCfj0GiojxCFCzyYkP4KtsX83XXk/xT
+         s5KB4hRHPEWy66iROFbIACGNYUPGxAAUbcQ4oYJ39KMFs9ucseVVMPCc/y9cnxr+qKyi
+         xPBUTGgeLaaNa3SI/ePwa1WuC2BU00OVzwayEtx+Q21geTEyCJVC0aQVH2ftLpl0uN3E
+         /UTm8DmgeufE1eRYKUTkRs6ZpGThJf626pbOlbVigPvlRIoEWvMbQ4FbSumaIAIWW0vl
+         1kJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXm1obwMXB8zJuqp1ds0ast8iXxNTt44roZJt6CVKVKe9Kjj/xsJt5Ex61+ThiCdd5soAtgRBDz95nXDrOaYMBarAcIrsKCR+u11gc3uKzzVH+8ip35D3DDbRcuorTBMiM3w5xxJOtCuKYxZlD3HqK+VRSq4yCG+6umG7xBcjaH8DK0
+X-Gm-Message-State: AOJu0YwH4cYvO0Zw3pW98byCLMmUi6K9ZiWziqbAGnuxlOVIAemDlAgX
+	Hn/cR7/wcsA96KKyPqrsnQ/veO9pO+bun0j79gPqp4jJ6g6hJmor
+X-Google-Smtp-Source: AGHT+IFnebtZIe/zK82pVrS8B8BYadWfNxg2e/WCrOLvCIC1x2GR4N2qDT/roI6qLuCfzPAU+E/z4w==
+X-Received: by 2002:a05:6a20:96c3:b0:1b5:ae2c:c729 with SMTP id adf61e73a8af0-1bcf7e7ec21mr14632064637.19.1719519008272;
+        Thu, 27 Jun 2024 13:10:08 -0700 (PDT)
+Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fac10d1498sm1629115ad.8.2024.06.27.13.10.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 27 Jun 2024 13:10:07 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 27 Jun 2024 10:10:06 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Li Lingfeng <lilingfeng@huaweicloud.com>
+Cc: josef@toxicpanda.com, hch@lst.de, axboe@kernel.dk, longman@redhat.com,
+	ming.lei@redhat.com, cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	yangerkun@huawei.com, yukuai1@huaweicloud.com, houtao1@huawei.com,
+	yi.zhang@huawei.com, lilingfeng3@huawei.com
+Subject: Re: [PATCH] blk-cgroup: don't clear stat in blkcg_reset_stats()
+Message-ID: <Zn3HHvcgZruLkMdn@slm.duckdns.org>
+References: <20240627090856.2345018-1-lilingfeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V3 2/2] cgroup/rstat: Avoid thundering herd problem by
- kswapd across NUMA nodes
-To: Shakeel Butt <shakeel.butt@linux.dev>, Yosry Ahmed <yosryahmed@google.com>
-Cc: tj@kernel.org, cgroups@vger.kernel.org, hannes@cmpxchg.org,
- lizefan.x@bytedance.com, longman@redhat.com, kernel-team@cloudflare.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <171943667611.1638606.4158229160024621051.stgit@firesoul>
- <171943668946.1638606.1320095353103578332.stgit@firesoul>
- <CAJD7tkbBpPqFW5fhmhcwDAfrze+aj8xFCF+3S4egBfipA4zKgQ@mail.gmail.com>
- <CAJD7tkYFKTA7aLcBE=X0jA1vKG_V+6Z-HstJRnnNrvMnjnLzHw@mail.gmail.com>
- <f4hbugpz5fudmiooxe73dbcbmi4stufm3msu4j37atv2feqhc6@ywai42srcwto>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <f4hbugpz5fudmiooxe73dbcbmi4stufm3msu4j37atv2feqhc6@ywai42srcwto>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240627090856.2345018-1-lilingfeng@huaweicloud.com>
 
+Hello,
 
+On Thu, Jun 27, 2024 at 05:08:56PM +0800, Li Lingfeng wrote:
+> The list corruption described in commit 6da668063279 ("blk-cgroup: fix
+> list corruption from resetting io stat") has no effect. It's unnecessary
+> to fix it.
 
-On 27/06/2024 20.45, Shakeel Butt wrote:
-> On Thu, Jun 27, 2024 at 04:32:03AM GMT, Yosry Ahmed wrote:
->> On Thu, Jun 27, 2024 at 3:33 AM Yosry Ahmed <yosryahmed@google.com> wrote:
-> [...]
->>>
->>> The reason why I suggested that the completion live in struct cgroup
->>> is because there is a chance here that the flush completes and another
->>> irrelevant flush starts between reading cgrp_rstat_ongoing_flusher and
->>> calling wait_for_completion_interruptible_timeout().
+I find this paragraph a bit confusing. At the time, it was broken, right?
+And if we were to memset() now, it'd break again.
+
+> As for cgroup v1, it does not use iostat any more after commit
+> ad7c3b41e86b("blk-throttle: Fix io statistics for cgroup v1"), so using
+> memset to clear iostat has no real effect.
+
+Ah, okay, this is because we made the stats blk-throtl specific but didn't
+implement ->pd_reset_stat_fn(), right?
+
+> As for cgroup v2, it will not call blkcg_reset_stats() to corrupt the
+> list.
 > 
+> The list of root cgroup can be used by both cgroup v1 and v2 while
+> non-root cgroup can't since it must be removed before switch between
+> cgroup v1 and v2.
+> So it may has effect if the list of root used by cgroup v2 was corrupted
+> after switching to cgroup v1, and switch back to cgroup v2 to use the
+> corrupted list again.
+> However, the root cgroup will not use the list any more after commit
+> ef45fe470e1e("blk-cgroup: show global disk stats in root cgroup io.stat").
 
-I didn't add this per cgroup because I fear the race of adding a 
-wait_for_completion on a cgroup that gets stuck there, but looking at 
-the code the completion API should be able to avoid this.
+Hmm... I'm still having a bit of trouble following this line of argument
+given that all the patch does is dropping stat clearing.
 
+> @@ -668,7 +645,6 @@ static int blkcg_reset_stats(struct cgroup_subsys_state *css,
+>  	 * anyway.  If you get hit by a race, retry.
+>  	 */
+>  	hlist_for_each_entry(blkg, &blkcg->blkg_list, blkcg_node) {
+> -		blkg_clear_stat(blkg);
+>  		for (i = 0; i < BLKCG_MAX_POLS; i++) {
+>  			struct blkcg_policy *pol = blkcg_policy[i];
 
-> Yes this can happen if flusher for irrelevant cgroup calls
-> reinit_completion() while the initial flusher was just about to call
-> wait_for_completion_interruptible_timeout().
-> 
+The patch looks fine to me although it'd be nice to follow up with a patch
+to implement ->pd_reset_stat_fn() for blk-throtl. I'm not quite following
+the list corruption part of argument.
 
-Restoring two main functions to assist reviewer seeing the race:
+Thanks.
 
-On 26/06/2024 23.18, Jesper Dangaard Brouer wrote:
- > +#define MAX_WAIT	msecs_to_jiffies(100)
- > +/* Trylock helper that also checks for on ongoing flusher */
- > +static bool cgroup_rstat_trylock_flusher(struct cgroup *cgrp)
- > +{
- > +retry:
- > +	bool locked = __cgroup_rstat_trylock(cgrp, -1);
- > +	if (!locked) {
- > +		struct cgroup *cgrp_ongoing;
- > +
- > +		/* Lock is contended, lets check if ongoing flusher is
- > +		 * taking care of this, if we are a descendant.
- > +		 */
- > +		cgrp_ongoing = READ_ONCE(cgrp_rstat_ongoing_flusher);
- > +		if (!cgrp_ongoing)
- > +			goto retry;
- > +
-
-Long wait/race here, can cause us to see an out-dated cgrp_ongoing.
-And then another CPU manage to reach reinit_completion() below, before
-execution continues here.
-
- > +		if (cgroup_is_descendant(cgrp, cgrp_ongoing)) {
- > +			wait_for_completion_interruptible_timeout(
- > +				&cgrp_rstat_flusher_done, MAX_WAIT);
- > +
- > +			return false;
- > +		}
- > +		__cgroup_rstat_lock(cgrp, -1, false);
- > +	}
- > +	/* Obtained lock, record this cgrp as the ongoing flusher */
- > +	reinit_completion(&cgrp_rstat_flusher_done);
- > +	WRITE_ONCE(cgrp_rstat_ongoing_flusher, cgrp);
- > +
- > +	return true; /* locked */
- > +}
- > +
- > +static void cgroup_rstat_unlock_flusher(struct cgroup *cgrp)
- > +{
- > +	WRITE_ONCE(cgrp_rstat_ongoing_flusher, NULL);
- > +	complete_all(&cgrp_rstat_flusher_done);
- > +	__cgroup_rstat_unlock(cgrp, -1);
- > +}
-
-
->>>
->>> This will cause the caller to wait for an irrelevant flush, which may
->>> be fine because today the caller would wait for the lock anyway. Just
->>> mentioning this in case you think this may happen enough to be a
->>> problem.
-
-Yes, it would wait for an irrelevant flush.
-
->>
->> Actually, I think this can happen beyond the window I described above.
->> I think it's possible that a thread waits for the flush, then gets
->> woken up when complete_all() is called, but another flusher calls
->> reinit_completion() immediately. The woken up thread will observe
->> completion->done == 0 and go to sleep again.
-> 
-> I don't think it will go to sleep again as there is no retry.
-> 
->>
->> I think most of these cases can be avoided if we make the completion
->> per cgroup. It is still possible to wait for more flushes than
->> necessary, but only if they are for the same cgroup.
-> 
-> Yeah, per-cgroup completion would avoid the problem of waiting for
-> irrelevant flush.
-
-Great, I will code up a version with per-cgroup completion.
-
---Jesper
-
+-- 
+tejun
 
