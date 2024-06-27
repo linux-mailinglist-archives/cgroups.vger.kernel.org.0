@@ -1,143 +1,173 @@
-Return-Path: <cgroups+bounces-3423-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3424-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACD6191B11B
-	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 22:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FE0791B125
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 23:03:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 672DC2814AC
-	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 20:58:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE3B1284DE3
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2024 21:03:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5155919E827;
-	Thu, 27 Jun 2024 20:58:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C652D19DFBF;
+	Thu, 27 Jun 2024 21:03:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QWyWhPIy"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bndtml/I"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B40AA14D6EB
-	for <cgroups@vger.kernel.org>; Thu, 27 Jun 2024 20:58:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C83A313FF9
+	for <cgroups@vger.kernel.org>; Thu, 27 Jun 2024 21:03:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719521920; cv=none; b=LiSv8OBYBnc/43gZTLt7wrQPDHnkRX6R7aKnlh3ryrOg06JX9AWJaUqS8QuxpHnXauIuYfhg7VkjeAj2AHsa0pUgLmMU3+U94ocZhkWUCkmg0O4vfo1Ch638vQzG26uwLyXSQo47VnvYGXWnT2chbyFn5dh0lmhH9xZF8LJRTPg=
+	t=1719522197; cv=none; b=qg2GQOEr7ssbpw+7Vi6e4lJBSGTIBzRK9WJZ8PqiEnWe/KlH2WwiFeq4p+wCLCGV07ytallOubjVPLGkvK14BKgQ158W9dErdfttARBmIKav4i7O1YE4DQfLRcisVGmWI6OeJRiOaJgw5BZEGKPZZ28BrV++6TVmyzixeepeAIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719521920; c=relaxed/simple;
-	bh=tCM8gT6NzEjkLpHDmWG4i+ch+T3fEfyNltRRgCapcis=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=amPW4JI/Ro0TthnRMEFcwRWZj/Ddy8gmybV6ibhYFYrouMhyUhJLwXUPdeIWDhC+YgS54UvlP8kh6gh+Ht0rYgO03/0cTxFFFv3HBcTKJKbUaf1zsgwCeT//4tS+SbMlbnLvdrYyVsBJ3UNIep0wGJ2BWFGyc6zsZNIT5fKKeoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QWyWhPIy; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1f70c457823so57356135ad.3
-        for <cgroups@vger.kernel.org>; Thu, 27 Jun 2024 13:58:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719521918; x=1720126718; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/uQJvg/MADuVbWccuZlM3rIObs0+4ZOEbLRDdDNvRko=;
-        b=QWyWhPIy1i73ExOunCobxHREDNNgvB7aD07JQ1cnO7mm3BUzyv5YwXJaH7z6MiiJOR
-         9PM5arRFuoG+5lZmrhMEuITKI8H8sJKvfIss1h3uWuciRBYWrb9soVCfbVzFPjkLDwf0
-         zqF3LjPH9IjPo8HGPpvaPUvByvjUW+SPteDRZOsFUqW+TGLc+hszhwyu2HEdnSQ8de4k
-         AHhpN7P4wc1NDiZLo6WfFnsmI4XXQ2YBzg7GG6TD0Pod8SeeGpw6I63PHsHGE/L8O1MO
-         K+0f+A4af8nJCqVa72qpudp5sgE5gZ2ywIj9MaBp+X005sQnyc1E9o4HLE8Wl8TuPeKO
-         tPoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719521918; x=1720126718;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/uQJvg/MADuVbWccuZlM3rIObs0+4ZOEbLRDdDNvRko=;
-        b=LRHa2nLA7zEWx8RPPiwrFxkqvein6+eMnsX6o+fKs/06Rr914jfIsqZFOsdhU4bgUZ
-         xHUJL2bkhl8WNm6pfP2JHvhL5+F/OuLv4JjK+OH079U8aQhvpytd5HcThUUI4aDtw7RT
-         E17PfdulnNoZZW5FRAJpc2hwQ/rpyktUXZvYv6e/ZJstkezs8xDSgB/f6HMCOZaSnER2
-         4OD7pgyhWFGBEhMTDz1lSU5Dgv60rVZCfPblZUlPh9v0z5wNVZ57E68DxpsYMUscEj38
-         LJj7/Iu61ADTD44GzMZ9dhpNWnblyFI6FDcNIdjwWGGDzajg2VB/3+2N8GsDnvX5mSna
-         HkzQ==
-X-Gm-Message-State: AOJu0YxRoGZEFHTxConVKNUykDFeHmk3T0rhaXsOgXeoyeh2UwVYIRFl
-	3ynl864IvDpjyEBbbZSDPwdQqRwZH6kIYdTK8OD0wTA2R20SzMSL
-X-Google-Smtp-Source: AGHT+IHzhutytml9lZ8ubKptuOSGAMWYGiEZ06sATCTbYNeYXuckClWpXcmYOHZEN9n+48uLa9FtOw==
-X-Received: by 2002:a17:902:db03:b0:1fa:18c3:2796 with SMTP id d9443c01a7336-1fa23ecdcaamr146573135ad.25.1719521917903;
-        Thu, 27 Jun 2024 13:58:37 -0700 (PDT)
-Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fac10c8b34sm2028105ad.35.2024.06.27.13.58.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jun 2024 13:58:37 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 27 Jun 2024 10:58:36 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Michael Fitz-Payne <fitzy@discourse.org>
-Cc: cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: unexpected CPU pressure measurements when applying cpu.max
- control
-Message-ID: <Zn3SfIDbZhiySAOQ@slm.duckdns.org>
-References: <d13273c1-533b-46b4-a3ab-25927a8b334e@discourse.org>
+	s=arc-20240116; t=1719522197; c=relaxed/simple;
+	bh=nJXTZf9jRv1GnZD10q0JXGqfPKCB/2lBaGZFcH1SZdg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kJgMIRXb2NMejmq1HwsI/uO+5jYqfbXxIeYQFSdG2DGVvq15wP7SntLK5n/fVTX9Ja574pk1c1IQZ7C5+Vrzv+2v29xQMf5gYSThmO6baPXeMhF22tJJ/ELsTYkGzvTTDf7k93JqVchJyHk7jJtvOR7XTa7LiaHGONcGKvO/r/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bndtml/I; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1719522194;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=92YjF2bxhqUCuV4ioUxntWjtFuSZxgrPxjvmc9Xi/h0=;
+	b=bndtml/IyaPwsEzd1q7hHe5VB25KF2acLMSOjmaB+y/8qpFfjTApAih7vrrsv19y6RqXVJ
+	hVuWqRSH34uE3mYRt0lz5DVk6s479Ksg6sfDcuy5puH8d++m7qwBBLwbz1ag2BF80HRHVH
+	SyVxRlEC95mJnJsASIJwXBY9bSB+cpg=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-235-Hben552dPBiXr5huvMhcjg-1; Thu,
+ 27 Jun 2024 17:03:09 -0400
+X-MC-Unique: Hben552dPBiXr5huvMhcjg-1
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 17AE41955DC1;
+	Thu, 27 Jun 2024 21:03:06 +0000 (UTC)
+Received: from [10.22.32.240] (unknown [10.22.32.240])
+	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 7946E1955BE0;
+	Thu, 27 Jun 2024 21:03:02 +0000 (UTC)
+Message-ID: <66095664-5a14-422a-a703-dec437577a3d@redhat.com>
+Date: Thu, 27 Jun 2024 17:03:01 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d13273c1-533b-46b4-a3ab-25927a8b334e@discourse.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] blk-cgroup: don't clear stat in blkcg_reset_stats()
+To: Li Lingfeng <lilingfeng@huaweicloud.com>, tj@kernel.org,
+ josef@toxicpanda.com, hch@lst.de, axboe@kernel.dk
+Cc: ming.lei@redhat.com, cgroups@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ yangerkun@huawei.com, yukuai1@huaweicloud.com, houtao1@huawei.com,
+ yi.zhang@huawei.com, lilingfeng3@huawei.com
+References: <20240627090856.2345018-1-lilingfeng@huaweicloud.com>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20240627090856.2345018-1-lilingfeng@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 
-(cc'ing Johannes who knows PSI a lot better than I do)
 
-Hello, Michael.
+On 6/27/24 05:08, Li Lingfeng wrote:
+> From: Li Lingfeng <lilingfeng3@huawei.com>
+>
+> The list corruption described in commit 6da668063279 ("blk-cgroup: fix
+> list corruption from resetting io stat") has no effect. It's unnecessary
+> to fix it.
+>
+> As for cgroup v1, it does not use iostat any more after commit
+> ad7c3b41e86b("blk-throttle: Fix io statistics for cgroup v1"), so using
+> memset to clear iostat has no real effect.
+> As for cgroup v2, it will not call blkcg_reset_stats() to corrupt the
+> list.
+>
+> The list of root cgroup can be used by both cgroup v1 and v2 while
+> non-root cgroup can't since it must be removed before switch between
+> cgroup v1 and v2.
+> So it may has effect if the list of root used by cgroup v2 was corrupted
+> after switching to cgroup v1, and switch back to cgroup v2 to use the
+> corrupted list again.
+> However, the root cgroup will not use the list any more after commit
+> ef45fe470e1e("blk-cgroup: show global disk stats in root cgroup io.stat").
+>
+> Although this has no negative effect, it is not necessary. Remove the
+> related code.
+You may be right that it may not be necessary in the mainline kernel, it 
+does fix the issue on distros with older kernels or some stable releases 
+where commit ad7c3b41e86b("blk-throttle: Fix io statistics for cgroup 
+v1") may not be present.
 
-On Wed, Jun 26, 2024 at 09:53:55AM +1000, Michael Fitz-Payne wrote:
-> In short, processes executing within a CPU-limited cgroup are contributing
-> to the system-wide CPU pressure measurement. This results in misleading data
-> that points toward system CPU contention, when no system-wide contention
-> exists.
+>
+> Fixes: 6da668063279 ("blk-cgroup: fix list corruption from resetting io stat")
+I don't think there should be a fixes tag or it will be backported to 
+stable releases.
+> Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
+> ---
+>   block/blk-cgroup.c | 24 ------------------------
+>   1 file changed, 24 deletions(-)
+>
+> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+> index 37e6cc91d576..1113c398a742 100644
+> --- a/block/blk-cgroup.c
+> +++ b/block/blk-cgroup.c
+> @@ -629,29 +629,6 @@ static void blkg_iostat_set(struct blkg_iostat *dst, struct blkg_iostat *src)
+>   	}
+>   }
+>   
+> -static void __blkg_clear_stat(struct blkg_iostat_set *bis)
+> -{
+> -	struct blkg_iostat cur = {0};
+> -	unsigned long flags;
+> -
+> -	flags = u64_stats_update_begin_irqsave(&bis->sync);
+> -	blkg_iostat_set(&bis->cur, &cur);
+> -	blkg_iostat_set(&bis->last, &cur);
+> -	u64_stats_update_end_irqrestore(&bis->sync, flags);
+> -}
+> -
+> -static void blkg_clear_stat(struct blkcg_gq *blkg)
+> -{
+> -	int cpu;
+> -
+> -	for_each_possible_cpu(cpu) {
+> -		struct blkg_iostat_set *s = per_cpu_ptr(blkg->iostat_cpu, cpu);
+> -
+> -		__blkg_clear_stat(s);
+> -	}
+> -	__blkg_clear_stat(&blkg->iostat);
+> -}
+> -
+>   static int blkcg_reset_stats(struct cgroup_subsys_state *css,
+>   			     struct cftype *cftype, u64 val)
+>   {
+> @@ -668,7 +645,6 @@ static int blkcg_reset_stats(struct cgroup_subsys_state *css,
+>   	 * anyway.  If you get hit by a race, retry.
+>   	 */
+>   	hlist_for_each_entry(blkg, &blkcg->blkg_list, blkcg_node) {
+> -		blkg_clear_stat(blkg);
+>   		for (i = 0; i < BLKCG_MAX_POLS; i++) {
+>   			struct blkcg_policy *pol = blkcg_policy[i];
+>   
 
-This is in line with how PSI aggregation is defined for other resources. It
-doesn't care why the pressure condition exists. e.g. If system.slice is the
-only runnable top level cgroup and it's thrashing severely due to
-memory.high, the system level metrics will be reporting full memory
-pressure.
+If you are saying that iostat is no longer used in cgroup v1, why not 
+remove the blkcg_reset_stats() and its supporting functions and 
+deprecate the v1 reset_stats control file. The file should still be 
+there to avoid userspace regression, but it will be a nop.
 
-...
-> I've compared these tests on a 5.10.0 system as well as 6.8.9 (above).
-> 
-> There are two differences I can see:
-> 
-> - On 5.10 the 'full' line is not present in either the cgroup cpu.pressure
-> interface or the kernel /proc/pressure/cpu interface. I'm assuming this was
-> added in a newer kernel at some point.
+Cheers,
+Longman
 
-Yes, because full pressures are defined in terms of CPU cycles that couldn't
-be consumed due to lack of the resource, initially, we didn't have
-definition for CPU full pressure. Later, we used that for measuring cpu.max
-throttling. It makes some sense but can also be argued that it's not quite
-the same thing.
-
-> - On 6.8.9 the 'full' line in the cgroup cpu.pressure interface appears to
-> provide accurate data based on this simple test.
-> 
-> As we know, the kernel 'full' measurement is undefined.
-
-How do you mean?
-
-> In either case, the kernel PSI interface is the canonical source from which
-> we want to read the measurements for warning us of CPU contention on our
-> fleet of machines. Due to this unexpected accounting, the values may be
-> misleading.
-> 
-> Frankly, I'm not sure of what the behaviour should be. I can see the
-> argument that the current value is correct, given the definition is 'some'
-> tasks are waiting on CPU.
-
-This sounds more like you want to measure local (non-hierarchical) pressure.
-Maybe that makes sense although I'm not sure whether this can be defined
-neatly.
-
-Thanks.
-
--- 
-tejun
 
