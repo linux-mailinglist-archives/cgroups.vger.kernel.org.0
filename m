@@ -1,246 +1,98 @@
-Return-Path: <cgroups+bounces-3451-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3454-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DD7791C383
-	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 18:14:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4573891C489
+	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 19:11:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7066E1C22AAB
-	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 16:14:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 001A82813A1
+	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 17:11:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E21851C8FD0;
-	Fri, 28 Jun 2024 16:14:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB2FB1CB321;
+	Fri, 28 Jun 2024 17:11:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="pSQNcblq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a+D4lrrQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AD42158DDC;
-	Fri, 28 Jun 2024 16:14:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 368632263A;
+	Fri, 28 Jun 2024 17:11:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719591251; cv=none; b=bYOfqV8GFJc/WuoTqd1FcO/IZ6XR6vXG4xi2hWpE/7NjGye5Tl7+uPS1Lqt2OnMqnJ2Uojvf3F7MPwHt+sKVFkZHewh1gG/pbQg474nJH/oGBhH4D5Y8FHdCdJSedq7nmmQZLAQB8O+XS5jyhWLh9BR91X6v/ozTnckMKvjvUi4=
+	t=1719594703; cv=none; b=P0ORdJFqWCcbEdO6CtPfxzmTP6RcwhJJXKjhlNZm0TWavVWIQd4QGmlX3M5CF0Jk8WVu+qFZ7jgldSIOmjTCAqvG0jqb73LGaHQwk4eRBuw+Yz9BneSgptUdaTBu/Zf9P3s34bXjsJn/7DyGDcM7OpACgvVxrvR0qeyJRg6q7Lc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719591251; c=relaxed/simple;
-	bh=/ZLjV4AtG6PE9RE64qHOYEVdhdNaKhQgUm25uI4izAI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=q4snwVZLlMRNwz4vPt0Jy5hlYOu6vm4sjZ1UVXGZYQZr1SxjW/jOgvNCNUqXeajAG+WF52Bbvi3dqb5Pwvrwmo96VwdC47igZs3tV9zlp1q4f3PDZBltnA2+kOX3DwRZT79tknx1Yn9HlcjLchwLfaAMMfFYrY242dNJ0odHuG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=pSQNcblq; arc=none smtp.client-ip=220.197.31.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=e26+2
-	q+3hBU2DBzF5851MuqgEXt4Q/cdEKTEV/s7sag=; b=pSQNcblqjulPYUuVA1ewP
-	bWx080z7JFM3P2O9bxeinUlDmYzbrJrm5dLbggXVXuQeQ1wDWcw9ycoWKjAg1S/h
-	ChMqJ2UsMDooZJce0bHBm8jKxN9oFrlmXbOnsEoYelo5eVrJQgbaxHJcHdBKREbj
-	0J42/kHedGtk1ZAFIlCfR8=
-Received: from localhost (unknown [101.132.132.191])
-	by gzga-smtp-mta-g3-5 (Coremail) with SMTP id _____wDX_yoR4X5m0+qRAw--.37690S2;
-	Sat, 29 Jun 2024 00:13:05 +0800 (CST)
-From: Xavier <xavier_qy@163.com>
-To: tj@kernel.org
-Cc: longman@redhat.com,
-	mkoutny@suse.com,
-	lizefan.x@bytedance.com,
-	hannes@cmpxchg.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org,
-	akpm@linux-foundation.org,
-	Xavier <xavier_qy@163.com>
-Subject: [PATCH-cpuset v8 2/2] cpuset: use Union-Find to optimize the merging of cpumasks
-Date: Sat, 29 Jun 2024 00:13:02 +0800
-Message-Id: <20240628161302.240043-3-xavier_qy@163.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240628161302.240043-1-xavier_qy@163.com>
-References: <Zn3UaMouBYYIMQr_@slm.duckdns.org>
- <20240628161302.240043-1-xavier_qy@163.com>
+	s=arc-20240116; t=1719594703; c=relaxed/simple;
+	bh=X85ngQ/EMGY54M7s9ym0z5iIYohmHn4ScybjJGQVeSI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SyXDIcbqxqfaWEVS64vAdwkEX3fbkRfWjbm/sUtCoFNBZu4ELHfqh4KAe63AnomPEFwRxUlS46wMr37Miz40v9v3QXVGPI4r3a0RmhKzn5ucY1cMiBRj9IO6NRvNDwfp9sG4/CE1j2z3WQhZ9t8ASIJFeyNcSTQEsJiQWBTmOXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a+D4lrrQ; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-7066f68e22cso698319b3a.2;
+        Fri, 28 Jun 2024 10:11:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719594701; x=1720199501; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q0SGdwC5uTjP4Trlz+k6ArDzPjnR77dSkAo7ukvOa7g=;
+        b=a+D4lrrQucaHJyYJUKyp83qDQrqnz/vS6E4rNnYBHPrqox55QjiD8JRM8NgMtOl+7l
+         3rzGlxOpqe6956Dy5kfmBLDIKG2ndUOD3WlQt/7fNUKjYnTg4S7cSy98f2g/6/WPgI++
+         UwOH94UdM0aRhzvUoeV8Wq1LmpLr2toovgR8E+EgALJVUcOGDvqHk5tqxXbJE+UZAhiA
+         vLyEHhRpVncZczbjIGsQ0FTaBKsw/SAEWJMhEGMJv8k5+wfDoFxCgxgeYOjdb/+MwIW1
+         3S+suES933PFYfXhAitaIM9VdGcQ4vusPWUQMmhBrL1K17iEd/E+dlPF9wyTmrVJ7cnp
+         0yjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719594701; x=1720199501;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q0SGdwC5uTjP4Trlz+k6ArDzPjnR77dSkAo7ukvOa7g=;
+        b=QUeeMwv+5DuIppxF7Tw2Mye7JcPAwJID0MwnH+VoqwSOXOWTjAvlCQbw1Muutu9EB+
+         KkTROo1wKCAHLbXiqLb6+uurATO+jm/SaZO2Kmy4FJ0ARmiyRvlwuk70S67ZGhTx8q/8
+         /2pzy0BbaKyOMvSaJNSxsUtHWiQBe4T9SRPw4/FP7H9O3KSuyGtvr8v8dt6fPF7wbh9H
+         72DiRy2Z+i0L4q6A3giGjfjGsA6IqEJIOafdF2d5WE3VAH0g2DcZZs74emwzcGXoRVOM
+         QzfkyqhXueTs4JPfTfwgctNZRdB7alvawrKH/JNpddQewCCwCt1FGJn4HuwM/1d5K7WL
+         MEpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUhDGgoRpslwwYJD/KAzEcRXHKVmsTGpmrtC1RDh+QdxrbaHbTZ4QAFc7bEog5BbpxS6A0/J1bvSsUHp4bLwyuwZDHxLTbTMGwrPumP+85vdsEHwGj1fD51vkGT/wDN87kVeNWnnQ==
+X-Gm-Message-State: AOJu0YyOYJh+hwO8gTWEBCXwoOiqxj1dq6M7ApqnwAOPGhmwNiLds75L
+	ewbYSwWX/2tBGcZCDtHjAKemAi0vArErwGJsuWRqjpmP9xKcSyXY
+X-Google-Smtp-Source: AGHT+IEWpm9rgTkImFSBsnGAXI4ejIR/0vVaoeddZt77pmzn2665cZur4JmljG33KGrixzxkJvjwTw==
+X-Received: by 2002:a05:6a20:b709:b0:1bd:fef5:ab0b with SMTP id adf61e73a8af0-1bdfef5ade4mr8505677637.8.1719594701296;
+        Fri, 28 Jun 2024 10:11:41 -0700 (PDT)
+Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fac1569f0bsm17702775ad.216.2024.06.28.10.11.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 28 Jun 2024 10:11:41 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Fri, 28 Jun 2024 07:11:39 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Chen Ridong <chenridong@huawei.com>
+Cc: lizefan.x@bytedance.com, hannes@cmpxchg.org, longman@redhat.com,
+	adityakali@google.com, sergeh@kernel.org, mkoutny@suse.com,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4] cgroup/cpuset: Prevent UAF in proc_cpuset_show()
+Message-ID: <Zn7uyzx-GdpUzaJ7@slm.duckdns.org>
+References: <20240628013604.573498-1-chenridong@huawei.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDX_yoR4X5m0+qRAw--.37690S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAFWfur4kKFyUZFWUJrW3Awb_yoWruF1fpF
-	sakay2qrWrJryUGwsakay8Zw1ak3ykJayUtwnxGw1rtr17A3Z29a40qFs3KFWUZrWq9F1U
-	uF9Igr47Wr18KFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07Ubo7tUUUUU=
-X-CM-SenderInfo: 50dyxvpubt5qqrwthudrp/xtbBchAMEGWXv5R4dgABso
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240628013604.573498-1-chenridong@huawei.com>
 
-The process of constructing scheduling domains
- involves multiple loops and repeated evaluations, leading to numerous
- redundant and ineffective assessments that impact code efficiency.
+Hello,
 
-Here, we use Union-Find to optimize the merging of cpumasks. By employing
-path compression and union by rank, we effectively reduce the number of
-lookups and merge comparisons.
+Replaced the v3 patch in cgroup/for-6.10-fixes with this version.
 
-Signed-off-by: Xavier <xavier_qy@163.com>
----
- kernel/cgroup/cpuset.c | 96 ++++++++++++++++--------------------------
- 1 file changed, 37 insertions(+), 59 deletions(-)
+Thanks.
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index fe76045aa5..c435814ba8 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -45,6 +45,8 @@
- #include <linux/cgroup.h>
- #include <linux/wait.h>
- #include <linux/workqueue.h>
-+#include <linux/union_find.h>
-+#include <linux/vmalloc.h>
- 
- DEFINE_STATIC_KEY_FALSE(cpusets_pre_enable_key);
- DEFINE_STATIC_KEY_FALSE(cpusets_enabled_key);
-@@ -172,9 +174,6 @@ struct cpuset {
- 	 */
- 	int attach_in_progress;
- 
--	/* partition number for rebuild_sched_domains() */
--	int pn;
--
- 	/* for custom sched domain */
- 	int relax_domain_level;
- 
-@@ -208,6 +207,9 @@ struct cpuset {
- 
- 	/* Remote partition silbling list anchored at remote_children */
- 	struct list_head remote_sibling;
-+
-+	/* Used to merge intersecting subsets for generate_sched_domains*/
-+	struct uf_node node;
- };
- 
- /*
-@@ -1007,7 +1009,7 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 	struct cpuset *cp;	/* top-down scan of cpusets */
- 	struct cpuset **csa;	/* array of all cpuset ptrs */
- 	int csn;		/* how many cpuset ptrs in csa so far */
--	int i, j, k;		/* indices for partition finding loops */
-+	int i, j;		/* indices for partition finding loops */
- 	cpumask_var_t *doms;	/* resulting partition; i.e. sched domains */
- 	struct sched_domain_attr *dattr;  /* attributes for custom domains */
- 	int ndoms = 0;		/* number of sched domains in result */
-@@ -1015,6 +1017,7 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 	struct cgroup_subsys_state *pos_css;
- 	bool root_load_balance = is_sched_load_balance(&top_cpuset);
- 	bool cgrpv2 = cgroup_subsys_on_dfl(cpuset_cgrp_subsys);
-+	int nslot_update;
- 
- 	doms = NULL;
- 	dattr = NULL;
-@@ -1102,31 +1105,25 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 	if (root_load_balance && (csn == 1))
- 		goto single_root_domain;
- 
--	for (i = 0; i < csn; i++)
--		csa[i]->pn = i;
--	ndoms = csn;
--
--restart:
--	/* Find the best partition (set of sched domains) */
--	for (i = 0; i < csn; i++) {
--		struct cpuset *a = csa[i];
--		int apn = a->pn;
-+	if (!cgrpv2) {
-+		for (i = 0; i < csn; i++)
-+			uf_nodes_init(&csa[i]->node);
- 
--		for (j = 0; j < csn; j++) {
--			struct cpuset *b = csa[j];
--			int bpn = b->pn;
--
--			if (apn != bpn && cpusets_overlap(a, b)) {
--				for (k = 0; k < csn; k++) {
--					struct cpuset *c = csa[k];
--
--					if (c->pn == bpn)
--						c->pn = apn;
--				}
--				ndoms--;	/* one less element */
--				goto restart;
-+		/* Merge overlapping cpusets */
-+		for (i = 0; i < csn; i++) {
-+			for (j = i + 1; j < csn; j++) {
-+				if (cpusets_overlap(csa[i], csa[j]))
-+					uf_union(&csa[i]->node, &csa[j]->node);
- 			}
- 		}
-+
-+		/* Count the total number of domains */
-+		for (i = 0; i < csn; i++) {
-+			if (csa[i]->node.parent == &csa[i]->node)
-+				ndoms++;
-+		}
-+	} else {
-+		ndoms = csn;
- 	}
- 
- 	/*
-@@ -1159,44 +1156,25 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 	}
- 
- 	for (nslot = 0, i = 0; i < csn; i++) {
--		struct cpuset *a = csa[i];
--		struct cpumask *dp;
--		int apn = a->pn;
--
--		if (apn < 0) {
--			/* Skip completed partitions */
--			continue;
--		}
--
--		dp = doms[nslot];
--
--		if (nslot == ndoms) {
--			static int warnings = 10;
--			if (warnings) {
--				pr_warn("rebuild_sched_domains confused: nslot %d, ndoms %d, csn %d, i %d, apn %d\n",
--					nslot, ndoms, csn, i, apn);
--				warnings--;
--			}
--			continue;
--		}
--
--		cpumask_clear(dp);
--		if (dattr)
--			*(dattr + nslot) = SD_ATTR_INIT;
-+		nslot_update = 0;
- 		for (j = i; j < csn; j++) {
--			struct cpuset *b = csa[j];
--
--			if (apn == b->pn) {
--				cpumask_or(dp, dp, b->effective_cpus);
-+			if (uf_find(&csa[j]->node) == &csa[i]->node) {
-+				struct cpumask *dp = doms[nslot];
-+
-+				if (i == j) {
-+					nslot_update = 1;
-+					cpumask_clear(dp);
-+					if (dattr)
-+						*(dattr + nslot) = SD_ATTR_INIT;
-+				}
-+				cpumask_or(dp, dp, csa[j]->effective_cpus);
- 				cpumask_and(dp, dp, housekeeping_cpumask(HK_TYPE_DOMAIN));
- 				if (dattr)
--					update_domain_attr_tree(dattr + nslot, b);
--
--				/* Done with this partition */
--				b->pn = -1;
-+					update_domain_attr_tree(dattr + nslot, csa[j]);
- 			}
- 		}
--		nslot++;
-+		if (nslot_update)
-+			nslot++;
- 	}
- 	BUG_ON(nslot != ndoms);
- 
 -- 
-2.45.2
-
+tejun
 
