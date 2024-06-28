@@ -1,83 +1,87 @@
-Return-Path: <cgroups+bounces-3455-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3456-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4E8A91C495
-	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 19:17:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A20EC91C60C
+	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 20:48:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1E5AEB23012
-	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 17:17:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56AF01F24D87
+	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 18:48:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C4621CB321;
-	Fri, 28 Jun 2024 17:16:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DECFC4D8A4;
+	Fri, 28 Jun 2024 18:48:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HY433JNO"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ev1KWy5x"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 751F11C9ED6;
-	Fri, 28 Jun 2024 17:16:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C779C2E633
+	for <cgroups@vger.kernel.org>; Fri, 28 Jun 2024 18:48:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719595014; cv=none; b=oxeZDyhZmODdrsIXorWlCSe0oGGcz/xVpgdoEIeAwyzd7PILlLOuOeNuGIOgRFaDDiGsmmk6qPwupBRgG1yHsIoI4ugad2kqHpM5fsQDB7d45GRoKhkO1L+2RCmKJJJZIxbvE/jzN6muawSJMifcFEmqVFwuvaOptyEwaIY0OtQ=
+	t=1719600492; cv=none; b=soioTc0/lIAqvCniA14JNgX+uMHP8IfR6PWuQ0OBdvrgvJNfRCxoieKQdyySjDIW68X2QDu7TyTgcU1NDa5CuyrglFh1n/r6TsuuyM1lW3+dbHuzYbYvsixrR7FRRseQKWLGvCCkl+gpLvnQ2NkAz+L2OA9ABQiNj61vq6Q3uvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719595014; c=relaxed/simple;
-	bh=PnSNJFMxI0eBUk/rmHNR9tDCSYkUAzwxlRBmBPkvKS8=;
+	s=arc-20240116; t=1719600492; c=relaxed/simple;
+	bh=7QRMtpyROH1I0Ue3wwqfR+H6npMHbd5QT1sp7Y7YZJU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bqhAy5CLXsWk1ZYDRrPvhl8AaW6Jh3NszyVwVLH6qyzF0aYUwkf/mvqq0mk8ix5ouZQTn1gwV8JnTQZGL1HNuKc5XDF+Vv8g2ZNMqTDZDvMesLqG83QA1afIWyUfNVVI6K3Yb/nnC5IFE/wGOGn4S6UXBZ4ILKYXcSZdqv1Arig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HY433JNO; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1fa2ea1c443so6505075ad.0;
-        Fri, 28 Jun 2024 10:16:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719595013; x=1720199813; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8QkcssybePnrl4JAQOb0kLe4ztyV51oH74DZAkItL50=;
-        b=HY433JNOpC0xdqoIdU1vV2zurUuq1TBwP89/+lJ4UF8y9tVxBjbC0KutozzI7qjUN2
-         dhGHkEHUcKUy6FlBKzQeFlXfHmPI9JgCQbl4+LiJjiKuhIdiCQoTDyEBj6CWzP+lz3ug
-         W2txzwkUwg5xAXud9mAX4fZpkEmmWg55pZLF/BEAMmbDBLYGEZpt92xHBD1XzWLctgRt
-         nhiptrvaohXuVv8NDOgkwJlEOk5amnroKWtavZHBZ7N0Syp3G/y61nECI9R/cZjxGVak
-         ixdr0ksN9bxBgf4ux0mST91YmcO+iveyPfHq2qt1qZ4R8K1g/MvbYBSYeidGcQTz3XE2
-         LZFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719595013; x=1720199813;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8QkcssybePnrl4JAQOb0kLe4ztyV51oH74DZAkItL50=;
-        b=fKuZyeHtz9KUOTC11Yn5W63uf9biFIefADMyFpShqdAlvoJb0b23F0GSos0wgAzd2N
-         /6h8RE+ZWU0ewm6QJRfs6+owB6nTFkHy5NPk6ssqZimPTWO7gMayyVHWyl5P8rgDvtcS
-         wqUABcLaD7NRTd10sGxPTZ0s0twlAVerL9yoQNs4Qg+onJs+vDzReSiIx6kNOSXbmXkj
-         KSaUwuUs1H+G3aZ/dK566b7PWNokaajHWVJDJo6x1AGLr9c7NYNixfzNNnWB+sS08NtS
-         yFeCf01PEoGwpT9YyCgOamMc6qzuQmvGmIzUauIwUDE25bEXunS6GSWyhZOQ3QHakFBH
-         aijw==
-X-Forwarded-Encrypted: i=1; AJvYcCWQjnP6s11bXajCB5BE12peIt9zj/hiCQhOA6Rh9d2fccCn0ky0raOuOpj8IMcG5ed3UFpkz1k8YITGmfuHsGM5lBRLBEMu1+vmMRXoMnNw8I08ZE9kMZoevKkMjQBBDuI2YBvopM3/VcFkpMoDebebhVnoiac+5eXSR3UcDnC6uX/t
-X-Gm-Message-State: AOJu0Yw2pS1qgqqgivC13z9V+VW+yEUiw4lmbDupdr5Dvef8xvc78j6D
-	6za5VAx7UZNEM7hbWvkUjBzUijizmAU9/YsGB0hu0hovNzT2eU2T
-X-Google-Smtp-Source: AGHT+IE1nAigDirdGXsv0n03CgMxZClyloPe7+W9S5Gw9RkG4ZBwvHR4DVubB1qcbpLe8IHnzVRj/Q==
-X-Received: by 2002:a17:902:e810:b0:1f9:b974:cbd6 with SMTP id d9443c01a7336-1fa238e4711mr183634555ad.1.1719595012620;
-        Fri, 28 Jun 2024 10:16:52 -0700 (PDT)
-Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fac10c8af8sm17896355ad.34.2024.06.28.10.16.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jun 2024 10:16:52 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 28 Jun 2024 07:16:51 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH v2] blk-throttle: fix lower control under super low iops
- limit
-Message-ID: <Zn7wA-C9LcjOmFe_@slm.duckdns.org>
-References: <20240618062108.3680835-1-yukuai1@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ce4vQ93y/44G15kKXKkr+asf+Bb0XvDS0llQTzHfmZu+ZefWl5vR51gY5hcnxXzEWhTEMccX2PGyjaJED3MDleyF/jmEFttzFmZYD0ND41jaogyUzEZaAZ3jVSFvDd3PYWA+jP9dzNMMwyjRWyjplC9EPYdWrHAv2WjtLlynV0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ev1KWy5x; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1719600489;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BPNBPdx6rKTE521JsYRdhS1BYG1MBCkTdE7R8C6b+Es=;
+	b=ev1KWy5xyLPKgwTueFUsS+spW5V5KTAxRW4zQJvEL2qVyaZkvlDoRMDPCYkv+hEjzjwzge
+	QQnMPcDkllyeWYyLuNCeo0iK41+x+03DUy8qrrKI2yvmDqbsts+sps8qLkKDxhCfn0hAPb
+	3SVp2aCVMv+XcxC789AIiDueZao7Z9k=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-210-ev6LzQVgNKmG0zzlGO3LLA-1; Fri,
+ 28 Jun 2024 14:48:06 -0400
+X-MC-Unique: ev6LzQVgNKmG0zzlGO3LLA-1
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4F6E419560AA;
+	Fri, 28 Jun 2024 18:48:03 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.3])
+	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3EB9E1955BD4;
+	Fri, 28 Jun 2024 18:48:01 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id E1B78400E5C3B; Fri, 28 Jun 2024 15:47:38 -0300 (-03)
+Date: Fri, 28 Jun 2024 15:47:38 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: Leonardo Bras <leobras@redhat.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>, Vlastimil Babka <vbabka@suse.cz>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH v1 0/4] Introduce QPW for per-cpu operations
+Message-ID: <Zn8FSqqoLIIB/LnG@tpad>
+References: <20240622035815.569665-1-leobras@redhat.com>
+ <261612b9-e975-4c02-a493-7b83fa17c607@suse.cz>
+ <Znn5FgqoCAUAfQhu@boqun-archlinux>
+ <ZnoyNQLQdyAcMxjP@LeoBras>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -86,38 +90,139 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240618062108.3680835-1-yukuai1@huaweicloud.com>
+In-Reply-To: <ZnoyNQLQdyAcMxjP@LeoBras>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 
-Sorry about the delay.
+On Mon, Jun 24, 2024 at 11:57:57PM -0300, Leonardo Bras wrote:
+> On Mon, Jun 24, 2024 at 03:54:14PM -0700, Boqun Feng wrote:
+> > On Mon, Jun 24, 2024 at 09:31:51AM +0200, Vlastimil Babka wrote:
+> > > Hi,
+> > > 
+> > > you've included tglx, which is great, but there's also LOCKING PRIMITIVES
+> > > section in MAINTAINERS so I've added folks from there in my reply.
+> > 
+> > Thanks!
+> > 
+> > > Link to full series:
+> > > https://lore.kernel.org/all/20240622035815.569665-1-leobras@redhat.com/
+> > > 
+> > 
+> > And apologies to Leonardo... I think this is a follow-up of:
+> > 
+> > 	https://lpc.events/event/17/contributions/1484/
+> > 
+> > and I did remember we had a quick chat after that which I suggested it's
+> > better to change to a different name, sorry that I never found time to
+> > write a proper rely to your previous seriese [1] as promised.
+> > 
+> > [1]: https://lore.kernel.org/lkml/20230729083737.38699-2-leobras@redhat.com/
+> 
+> That's correct, I commented about this in the end of above presentation.
+> Don't worry, and thanks for suggesting the per-cpu naming, it was very 
+> helpful on designing this solution.
+> 
+> > 
+> > > On 6/22/24 5:58 AM, Leonardo Bras wrote:
+> > > > The problem:
+> > > > Some places in the kernel implement a parallel programming strategy
+> > > > consisting on local_locks() for most of the work, and some rare remote
+> > > > operations are scheduled on target cpu. This keeps cache bouncing low since
+> > > > cacheline tends to be mostly local, and avoids the cost of locks in non-RT
+> > > > kernels, even though the very few remote operations will be expensive due
+> > > > to scheduling overhead.
+> > > > 
+> > > > On the other hand, for RT workloads this can represent a problem: getting
+> > > > an important workload scheduled out to deal with remote requests is
+> > > > sure to introduce unexpected deadline misses.
+> > > > 
+> > > > The idea:
+> > > > Currently with PREEMPT_RT=y, local_locks() become per-cpu spinlocks.
+> > > > In this case, instead of scheduling work on a remote cpu, it should
+> > > > be safe to grab that remote cpu's per-cpu spinlock and run the required
+> > > > work locally. Tha major cost, which is un/locking in every local function,
+> > > > already happens in PREEMPT_RT.
+> > > 
+> > > I've also noticed this a while ago (likely in the context of rewriting SLUB
+> > > to use local_lock) and asked about it on IRC, and IIRC tglx wasn't fond of
+> > > the idea. But I forgot the details about why, so I'll let the the locking
+> > > experts reply...
+> > > 
+> > 
+> > I think it's a good idea, especially the new name is less confusing ;-)
+> > So I wonder Thomas' thoughts as well.
+> 
+> Thanks!
+> 
+> > 
+> > And I think a few (micro-)benchmark numbers will help.
+> 
+> Last year I got some numbers on how replacing local_locks with 
+> spinlocks would impact memcontrol.c cache operations:
+> 
+> https://lore.kernel.org/all/20230125073502.743446-1-leobras@redhat.com/
+> 
+> tl;dr: It increased clocks spent in the most common this_cpu operations, 
+> while reducing clocks spent in remote operations (drain_all_stock).
+> 
+> In RT case, since local locks are already spinlocks, this cost is 
+> already paid, so we can get results like these:
+> 
+> drain_all_stock
+> cpus	Upstream 	Patched		Diff (cycles)	Diff(%)
+> 1	44331.10831	38978.03581	-5353.072507	-12.07520567
+> 8	43992.96512	39026.76654	-4966.198572	-11.2886198
+> 128	156274.6634	58053.87421	-98220.78915	-62.85138425
+> 
+> Upstream: Clocks to schedule work on remote CPU (performing not accounted)
+> Patched:  Clocks to grab remote cpu's spinlock and perform the needed work 
+> 	  locally.
+> 
+> Do you have other suggestions to use as (micro-) benchmarking?
+> 
+> Thanks!
+> Leo
 
-On Tue, Jun 18, 2024 at 02:21:08PM +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> User will configure allowed iops limit in 1s, and calculate_io_allowed()
-> will calculate allowed iops in the slice by:
-> 
-> limit * HZ / throtl_slice
-> 
-> However, if limit is quite low, the result can be 0, then
-> allowed IO in the slice is 0, this will cause missing dispatch and
-> control will be lower than limit.
-> 
-> For example, set iops_limit to 5 with HD disk, and test will found that
-> iops will be 3.
-> 
-> This is usually not a big deal, because user will unlikely to configure
-> such low iops limit, however, this is still a problem in the extreme
-> scene.
-> 
-> Fix the problem by making sure the wait time calculated by
-> tg_within_iops_limit() should allow at least one IO to be dispatched.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+One improvement which was noted when mm/page_alloc.c was converted to 
+spinlock + remote drain was that, it can bypass waiting for kwork 
+to be scheduled (on heavily loaded CPUs).
 
-Acked-by: Tejun Heo <tj@kernel.org>
+commit 443c2accd1b6679a1320167f8f56eed6536b806e
+Author: Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Date:   Fri Jun 24 13:54:22 2022 +0100
 
-Thanks.
+    mm/page_alloc: remotely drain per-cpu lists
+    
+    Some setups, notably NOHZ_FULL CPUs, are too busy to handle the per-cpu
+    drain work queued by __drain_all_pages().  So introduce a new mechanism to
+    remotely drain the per-cpu lists.  It is made possible by remotely locking
+    'struct per_cpu_pages' new per-cpu spinlocks.  A benefit of this new
+    scheme is that drain operations are now migration safe.
+    
+    There was no observed performance degradation vs.  the previous scheme.
+    Both netperf and hackbench were run in parallel to triggering the
+    __drain_all_pages(NULL, true) code path around ~100 times per second.  The
+    new scheme performs a bit better (~5%), although the important point here
+    is there are no performance regressions vs.  the previous mechanism.
+    Per-cpu lists draining happens only in slow paths.
+    
+    Minchan Kim tested an earlier version and reported;
+    
+            My workload is not NOHZ CPUs but run apps under heavy memory
+            pressure so they goes to direct reclaim and be stuck on
+            drain_all_pages until work on workqueue run.
+    
+            unit: nanosecond
+            max(dur)        avg(dur)                count(dur)
+            166713013       487511.77786438033      1283
+    
+            From traces, system encountered the drain_all_pages 1283 times and
+            worst case was 166ms and avg was 487us.
+    
+            The other problem was alloc_contig_range in CMA. The PCP draining
+            takes several hundred millisecond sometimes though there is no
+            memory pressure or a few of pages to be migrated out but CPU were
+            fully booked.
+    
+            Your patch perfectly removed those wasted time.
 
--- 
-tejun
 
