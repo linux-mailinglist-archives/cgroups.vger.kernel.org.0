@@ -1,146 +1,118 @@
-Return-Path: <cgroups+bounces-3431-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3432-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 389E691B4B3
-	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 03:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 743C191B4DF
+	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 04:04:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D09A4283FE9
-	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 01:43:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21D472838CD
+	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 02:04:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 062BD111AA;
-	Fri, 28 Jun 2024 01:42:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A5CA1429B;
+	Fri, 28 Jun 2024 02:04:28 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1718C11711;
-	Fri, 28 Jun 2024 01:42:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6219B23A8;
+	Fri, 28 Jun 2024 02:04:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719538976; cv=none; b=NIgOIPDFYt5pWTjMnkPO10GCv/01Ou+urxqBT3Ni1nrYKVz8V1HSvchhRnQc435Xomtle0ngQQ9u/VsGw6cSI8kZMWc1kFacWaeQEeM9R2F3DFtf8AvrBZNFF85CcDsTvVo4Jq7ZSyn2OCCmSbh/8ltuHh/WSpNnLBDGzjH5ntY=
+	t=1719540267; cv=none; b=DWtQ5XDRaaI9uW5cwcOiVEk1zkx2ocM92PZvKrtdYBwFK+5z84STkqgoZ3oKsP/wzMcRZz2FlxaA/qh61mVUkKi4MQufOdzyVxcVNLF8ebZvqcnFzRWALh/KgfYsWz5m9DqwXXMmRGueCD4jF8k8lyrc1CxYyN8vVw5YW3WT0L4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719538976; c=relaxed/simple;
-	bh=10ieK9j+Fg1JJ/lmqES5nKrD6yeWCfUlSvB+9we3Lp8=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XCTk65hhTAvt4MN7JmAoWEgbSCqW9OMebiObllP+jrUA0xnzRM17cI1cbQ5TT8F8Im0PS3t0hE9MwcaoPhG7NooKczU2EnN+znsc8qmdsHlwEJi0jRP5O6jjK1+iP7OmbJJiJWTYl2VicIiEwjIr6765HaUl+zTb+NpOgOizDnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4W9J4S3lLTz1X4Gv;
-	Fri, 28 Jun 2024 09:38:48 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4018F140381;
-	Fri, 28 Jun 2024 09:42:50 +0800 (CST)
-Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Fri, 28 Jun
- 2024 09:42:49 +0800
-From: Chen Ridong <chenridong@huawei.com>
-To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
-	<longman@redhat.com>, <adityakali@google.com>, <sergeh@kernel.org>,
-	<mkoutny@suse.com>
-CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH V4] cgroup/cpuset: Prevent UAF in proc_cpuset_show()
-Date: Fri, 28 Jun 2024 01:36:04 +0000
-Message-ID: <20240628013604.573498-1-chenridong@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1719540267; c=relaxed/simple;
+	bh=ofbM0xcK0jusdVrO6osOKxJNrsO1OiueOBSmdDE4d5A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CP3LDbAgoIciNKe/UCpyn4eHGm4LQLUhhcDgYw0dWZo/zsAsMXl5RCna8q2HlvgYXOMV/knG1zC5T238gscG+O2PYfZN56KjjZtXe2lBQYybyECVlcJB2F5QQFozvXHzhwql2Y3VOe/51U8tMueWR2cow8MB/mmkzyINhA4vjsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4W9Jdp6S6Fz4f3jtc;
+	Fri, 28 Jun 2024 10:04:14 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 1095F1A016E;
+	Fri, 28 Jun 2024 10:04:22 +0800 (CST)
+Received: from [10.174.179.155] (unknown [10.174.179.155])
+	by APP2 (Coremail) with SMTP id Syh0CgBn0YYkGn5meawuAg--.45870S3;
+	Fri, 28 Jun 2024 10:04:21 +0800 (CST)
+Message-ID: <c9802312-d9c9-f262-e1d3-9d3343255b6b@huaweicloud.com>
+Date: Fri, 28 Jun 2024 10:04:20 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101
+ Thunderbird/104.0
+Subject: Re: [PATCH v2] block: flush all throttled bios when deleting the
+ cgroup
+To: Tejun Heo <tj@kernel.org>
+Cc: josef@toxicpanda.com, hch@lst.de, axboe@kernel.dk, mkoutny@suse.com,
+ cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, yangerkun@huawei.com, yukuai1@huaweicloud.com,
+ houtao1@huawei.com, yi.zhang@huawei.com, lilingfeng3@huawei.com
+References: <20240627142606.3709394-1-lilingfeng@huaweicloud.com>
+ <Zn3O47DUoLliwbWm@slm.duckdns.org>
+From: Li Lingfeng <lilingfeng@huaweicloud.com>
+In-Reply-To: <Zn3O47DUoLliwbWm@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemd100013.china.huawei.com (7.221.188.163)
+X-CM-TRANSID:Syh0CgBn0YYkGn5meawuAg--.45870S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7try3Cw45XrWkur1fCw18AFb_yoW8JFy7pF
+	WfZ347KryDJr9I9F4rZr4SvrWrZrZ7Jr45Ar93K345JrW3Wr1xtFy3trWFqFy7ZF93C3Wa
+	vr1Fyr9rAF4DCFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: polox0xjih0w46kxt4xhlfz01xgou0bp/
 
-An UAF can happen when /proc/cpuset is read as reported in [1].
 
-This can be reproduced by the following methods:
-1.add an mdelay(1000) before acquiring the cgroup_lock In the
- cgroup_path_ns function.
-2.$cat /proc/<pid>/cpuset   repeatly.
-3.$mount -t cgroup -o cpuset cpuset /sys/fs/cgroup/cpuset/
-$umount /sys/fs/cgroup/cpuset/   repeatly.
+在 2024/6/28 4:43, Tejun Heo 写道:
+> Hello, Li.
+>
+> On Thu, Jun 27, 2024 at 10:26:06PM +0800, Li Lingfeng wrote:
+>> From: Li Lingfeng <lilingfeng3@huawei.com>
+>>
+>> When a process migrates to another cgroup and the original cgroup is deleted,
+>> the restrictions of throttled bios cannot be removed. If the restrictions
+>> are set too low, it will take a long time to complete these bios.
+>>
+>> Refer to the process of deleting a disk to remove the restrictions and
+>> issue bios when deleting the cgroup.
+>>
+>> This makes difference on the behavior of throttled bios:
+>> Before: the limit of the throttled bios can't be changed and the bios will
+>> complete under this limit;
+>> Now: the limit will be canceled and the throttled bios will be flushed
+>> immediately.
+> I'm not necessarily against this but the description doesn't explain why
+> this is better either. Can you please detail why this behavior is better?
+I think it may be more appropriate to remove the limit of bios after the
+cgroup is deleted, rather than let the bios continue to be throttled by a
+non-existent cgroup.
 
-The race that cause this bug can be shown as below:
+If the limit is set too low, and the original cgourp has been deleted, we
+now have no way to make the bios complete immediately, but to wait for the
+bios to slowly complete under the limit.
 
-(umount)		|	(cat /proc/<pid>/cpuset)
-css_release		|	proc_cpuset_show
-css_release_work_fn	|	css = task_get_css(tsk, cpuset_cgrp_id);
-css_free_rwork_fn	|	cgroup_path_ns(css->cgroup, ...);
-cgroup_destroy_root	|	mutex_lock(&cgroup_mutex);
-rebind_subsystems	|
-cgroup_free_root 	|
-			|	// cgrp was freed, UAF
-			|	cgroup_path_ns_locked(cgrp,..);
+Thanks.
 
-When the cpuset is initialized, the root node top_cpuset.css.cgrp
-will point to &cgrp_dfl_root.cgrp. In cgroup v1, the mount operation will
-allocate cgroup_root, and top_cpuset.css.cgrp will point to the allocated
-&cgroup_root.cgrp. When the umount operation is executed,
-top_cpuset.css.cgrp will be rebound to &cgrp_dfl_root.cgrp.
-
-The problem is that when rebinding to cgrp_dfl_root, there are cases
-where the cgroup_root allocated by setting up the root for cgroup v1
-is cached. This could lead to a Use-After-Free (UAF) if it is
-subsequently freed. The descendant cgroups of cgroup v1 can only be
-freed after the css is released. However, the css of the root will never
-be released, yet the cgroup_root should be freed when it is unmounted.
-This means that obtaining a reference to the css of the root does
-not guarantee that css.cgrp->root will not be freed.
-
-Fix this problem by using rcu_read_lock in proc_cpuset_show().
-As cgroup_root is kfree_rcu after commit d23b5c577715
-("cgroup: Make operations on the cgroup root_list RCU safe"),
-css->cgroup won't be freed during the critical section.
-To call cgroup_path_ns_locked, css_set_lock is needed, so it is safe to
-replace task_get_css with task_css.
-
-[1] https://syzkaller.appspot.com/bug?extid=9b1ff7be974a403aa4cd
-
-Fixes: a79a908fd2b0 ("cgroup: introduce cgroup namespaces")
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- kernel/cgroup/cpuset.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index c12b9fdb22a4..bcb4da8f54c8 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -21,6 +21,7 @@
-  *  License.  See the file COPYING in the main directory of the Linux
-  *  distribution for more details.
-  */
-+#include "cgroup-internal.h"
- 
- #include <linux/cpu.h>
- #include <linux/cpumask.h>
-@@ -5051,10 +5052,14 @@ int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
- 	if (!buf)
- 		goto out;
- 
--	css = task_get_css(tsk, cpuset_cgrp_id);
--	retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
--				current->nsproxy->cgroup_ns);
--	css_put(css);
-+	rcu_read_lock();
-+	spin_lock_irq(&css_set_lock);
-+	css = task_css(tsk, cpuset_cgrp_id);
-+	retval = cgroup_path_ns_locked(css->cgroup, buf, PATH_MAX,
-+				       current->nsproxy->cgroup_ns);
-+	spin_unlock_irq(&css_set_lock);
-+	rcu_read_unlock();
-+
- 	if (retval == -E2BIG)
- 		retval = -ENAMETOOLONG;
- 	if (retval < 0)
--- 
-2.34.1
+>
+> Thanks.
+>
 
 
