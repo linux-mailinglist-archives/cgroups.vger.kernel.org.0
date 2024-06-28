@@ -1,114 +1,111 @@
-Return-Path: <cgroups+bounces-3457-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3458-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 105B191C79D
-	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 22:57:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9CD591C8FB
+	for <lists+cgroups@lfdr.de>; Sat, 29 Jun 2024 00:15:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF704289942
-	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 20:56:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F01C11C21DE3
+	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 22:15:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9474F7FBA1;
-	Fri, 28 Jun 2024 20:55:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FD1A7CF16;
+	Fri, 28 Jun 2024 22:15:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="ziWuMZdc"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Cq3jLC09"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EC1079DC7
-	for <cgroups@vger.kernel.org>; Fri, 28 Jun 2024 20:55:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D70C95381A
+	for <cgroups@vger.kernel.org>; Fri, 28 Jun 2024 22:15:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719608122; cv=none; b=nPb7OXS4QrZRDzCW3NQcJXM1p8QAIsbQOyrPNo0FKZbeeEBjXL3+joHUL0FJDuy6JjSlcceu56zn6J659FxBRk6dUrJ8bwIDX+RYvDimXlUvaYMgAtUkrNb7Pm/DOO2kRof5bjlo4daPjZ24dVzOtxjh6dLCI+urn+jWbasz5A4=
+	t=1719612940; cv=none; b=paIVrvngYIAOXy60/A/sltMD2UvbcAlkPHPGOHnM5khJa7FvcfWZpQGeHYIC3MFO4U15oAdrQrx2jMS8L+2mMVt5IHhHbX5gcVB8JbEydm2k79+JhTw6ijUBz0mxuCcvyr4sO7+QeZnv34gbVn0dM+PkRrOh/VvYGSKsiUNmiLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719608122; c=relaxed/simple;
-	bh=Svpfo/LO7xG0b+T/C7wXzLSpwwsNaUuX9O3157AiNWU=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=q6ymCTNAsoFc4Ay/5rz6yNxrzVuSf8Tv8FcDtlB2/zfOHuKgt6XEQ+ICSjSmmdecPUrIdi+qlBj3gC/R1knRaaUJgLOaLJfBEwsR6F+OZejnhwbde931y9+GsJtltGWmxXqigpe+Lef66OjwDjhU9S5Q5ZD0eshwHBZ21/3QPRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=ziWuMZdc; arc=none smtp.client-ip=209.85.160.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-25989f87e20so121500fac.1
-        for <cgroups@vger.kernel.org>; Fri, 28 Jun 2024 13:55:20 -0700 (PDT)
+	s=arc-20240116; t=1719612940; c=relaxed/simple;
+	bh=+FljSmn4Grrsg7NrcyiPVuMjCR2+pSwHRt+HFRG+zT4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gC5DuYoUCa20seDDDeRuj1psEPP6haUW5S1ZGkXq4xo926DpqPxPJEaX3F7FxHoAXkEGcOfQS5/hhLtefpqZbOoFTXFzAyMoNUOFrBuvR7BrT7u3hHWWviKR0WjGRrwrDsmc4G8GwUelYMqPhpTDbHHmyFttNrD4wItWmizkeFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Cq3jLC09; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-424acfff613so10983855e9.0
+        for <cgroups@vger.kernel.org>; Fri, 28 Jun 2024 15:15:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1719608119; x=1720212919; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VvEgWHlol+DGBYutrDW5Wj/dZdUnrf63FlBowwL1/u4=;
-        b=ziWuMZdcguS2zZ8ucQHYCYqqApV9+E2y1v57K40f3ixfxc0i20uHZIwG+uN9c+qsut
-         VOur1yAHtCepFoFjzQNNNL8qk/iiWwj3OvaXFkZnAQ7Dvu7JtE6ujmr0HifF/jLBWa4y
-         L62UCmKw58ddG1gvKvYlbMo09pNP7UJ1C30jyozB/0Euh2X0C+2RgJiF1EXyxU0zi+Q1
-         811Qpdf+LHXgyouxJFszFZP15U6SOTkA8ifY+tKyLFAONQopRsUWLJvJCD/UuIVTgfml
-         kgdcvNhqTbaevMNIlRs9V1NChBM2Rm4gWBujB8RiwD1aZItW8WM33m2o7ffwjRG5/O+r
-         j7vw==
+        d=google.com; s=20230601; t=1719612937; x=1720217737; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EnG8rg72r8ffPCSx11YhZAxAKEur5ua59dSNQgnuQfA=;
+        b=Cq3jLC09UtyKLnGcVX4c53Ue6g8SoQHXBHCkQvybiarAlvmwimL4Ug4wCRoVrDZ0gS
+         xP6iMpvY0z7b4CACMLQ/4om+feeFZIm1Vl7x4X5pYZSBIfGc3c/54sqwKvqDbo6RNvF3
+         KoAs1MLZHZdZzrN3Wf6c6sGwAzAx87JjDLPOlzoTTncjFcnmjG+kSQcxcqiPjV777H86
+         re1GpyUZACSEwFGO784mAnK/TQ21vkqilwy2vf9B3vIcfGue69T0/A1vjAUvcb1Gek4T
+         Nh03HtKhqN/fAZMym48VsmiSG7y4UZ+PqQEZpK3iAudDw2gkYNvjKkUHsQW7vix2Sq7c
+         Dwyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719608119; x=1720212919;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VvEgWHlol+DGBYutrDW5Wj/dZdUnrf63FlBowwL1/u4=;
-        b=RHV6Tn23gjO2q5HtDZ6IbXIS3cFF3wHd52ul8S2qkkLirHE9ZpBm9RWQ6/klkOjEI9
-         iinHG3Fcf2IefptvkSbBnUn3IKnD4U6ZD99O6jj+R4kp4JDCXnd2FGLGeaLKRbhb3ui2
-         vk0I9jfHLVW+dyAGFsczbIXrkjksXrwdG2tuwqU3ubD5UITR8Ft/cXnLDnEelsvgcVNk
-         92W5zvmuw2b6TwIAc+3LyetUKp7yFOmKJE/RZioFIP0kK8156Dr5FO/XbpXlsIDdgxGi
-         632wxDETOXG4fKgMyYe4C4CUgt4bJD2dX+eeOZYICmKBbXgmsEKQECzFDUyGw0FUJ3ZU
-         HCFg==
-X-Gm-Message-State: AOJu0YzJZY532p+LJGooxyIWmvEootP8NbiSH9cK4MPQsK5Vvr9TPBtr
-	HnPdr/neYfq8K+J85OIUaoZQEt2FqbpORstH9srSLESBjctJck047JuoxXYAVkA=
-X-Google-Smtp-Source: AGHT+IHOrHK0Rz6XvUsgTR5CvGlJIHipE73E1BMvd4gM2EgON8ff++cWGZ67lwjV8sKJ4DV1NZE5Jw==
-X-Received: by 2002:a05:6871:3324:b0:259:862f:b898 with SMTP id 586e51a60fabf-25cf03e224fmr19822041fac.5.1719608119266;
-        Fri, 28 Jun 2024 13:55:19 -0700 (PDT)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-25d8e37ee64sm595605fac.47.2024.06.28.13.55.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Jun 2024 13:55:18 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: tj@kernel.org, josef@toxicpanda.com, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
- linux-kernel@vger.kernel.org, yukuai3@huawei.com, yi.zhang@huawei.com, 
- yangerkun@huawei.com
-In-Reply-To: <20240618062108.3680835-1-yukuai1@huaweicloud.com>
-References: <20240618062108.3680835-1-yukuai1@huaweicloud.com>
-Subject: Re: [PATCH v2] blk-throttle: fix lower control under super low
- iops limit
-Message-Id: <171960811810.898565.9691388431635837442.b4-ty@kernel.dk>
-Date: Fri, 28 Jun 2024 14:55:18 -0600
+        d=1e100.net; s=20230601; t=1719612937; x=1720217737;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EnG8rg72r8ffPCSx11YhZAxAKEur5ua59dSNQgnuQfA=;
+        b=FKVLiQvhShDczwbcYSblPJMKEAg7ZNlnEchXNwL3WNl24usvkIqeoUA+xRQyaedCjB
+         uhE197/z7RWqSrwvl2wH4qItXZEjpR7I3sNnRYd2Uonfp0QKzmf49aOzb/ZDTwQpMpxu
+         uDnOLob8OCpM/tFU/WHD24DGz3s16qvskr3rfNSFgZHjMtm2A+znJVOTdhFH23Wtd5tw
+         F8mxSND6IJrEPSCcMA7vm0fZKO5qDMLFkOZzxotsaWHnNv1Y0tJMHhfxj8C8ZCIy2KOR
+         ZLFO7lWdIhWzU+X8dUONvWa1F8TVwUbARGJONV6PD33+DvwDOZSu453eds9BgtNchALV
+         wdNA==
+X-Forwarded-Encrypted: i=1; AJvYcCUnenUzDkxoDa4IewbmKUnQhMprHTDMHXy0bboqtMmsUtgLDvUA9OsX3VEZ/NrVXszd3fLACeYQ/XVYfeO1rtvgNU2+NDN3LA==
+X-Gm-Message-State: AOJu0YxBc1LSZpZ8dhQm3Xvhjp7r2jAIy5HnVle6lSsKZYMX1cZMAPoH
+	1JjxnR5NbVyCF4uDrTB1+vDEOM+aytqpUOXJsfBVwpGA/8y6z3gtzkbu/zR1cB/KU7q8otGOhkm
+	F0gSj3HmAvlLnf6BiLm0mp1UlM1/DpzuId4vo
+X-Google-Smtp-Source: AGHT+IECZerCUyDd0NywEbdAnhdWpLjgakOOtsegyVbF35KWlN7IkS8C++spqmKiKCk2AqXQhz4EyJIPc8mgKKGXDw8=
+X-Received: by 2002:adf:b1d1:0:b0:362:ff67:272f with SMTP id
+ ffacd0b85a97d-366e94db3e5mr14589349f8f.41.1719612936743; Fri, 28 Jun 2024
+ 15:15:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14.0
+References: <171952310959.1810550.17003659816794335660.stgit@firesoul>
+ <171952312320.1810550.13209360603489797077.stgit@firesoul>
+ <4n3qu75efpznkomxytm7irwfiq44hhi4hb5igjbd55ooxgmvwa@tbgmwvcqsy75> <7ecdd625-37a0-49f1-92fc-eef9791fbe5b@kernel.org>
+In-Reply-To: <7ecdd625-37a0-49f1-92fc-eef9791fbe5b@kernel.org>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Fri, 28 Jun 2024 15:15:00 -0700
+Message-ID: <CAJD7tkaybPFoM697dtp0CiEJ2zmSYiH2+0yL+KG_LD=ZiscOJA@mail.gmail.com>
+Subject: Re: [PATCH V4 2/2] cgroup/rstat: Avoid thundering herd problem by
+ kswapd across NUMA nodes
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, tj@kernel.org, cgroups@vger.kernel.org, 
+	hannes@cmpxchg.org, lizefan.x@bytedance.com, longman@redhat.com, 
+	kernel-team@cloudflare.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+[..]
+> >> +    /* Obtained lock, record this cgrp as the ongoing flusher */
+> >> +    if (!READ_ONCE(cgrp_rstat_ongoing_flusher)) {
+> >
+> > Can the above condition will ever be false?
+> >
+>
+> Yes, I think so, because I realized that cgroup_rstat_flush_locked() can
+> release/"yield" the lock.  Thus, other CPUs/threads have a chance to
+> call cgroup_rstat_flush, and try to become the "ongoing-flusher".
 
-On Tue, 18 Jun 2024 14:21:08 +0800, Yu Kuai wrote:
-> User will configure allowed iops limit in 1s, and calculate_io_allowed()
-> will calculate allowed iops in the slice by:
-> 
-> limit * HZ / throtl_slice
-> 
-> However, if limit is quite low, the result can be 0, then
-> allowed IO in the slice is 0, this will cause missing dispatch and
-> control will be lower than limit.
-> 
-> [...]
+Right, there may actually be multiple ongoing flushers. I am now
+wondering if it would be better if we drop cgrp_rstat_ongoing_flusher
+completely, add a per-cgroup under_flush boolean/flag, and have the
+cgroup iterate its parents here to check if any of them is under_flush
+and wait for it instead.
 
-Applied, thanks!
+Yes, we have to add parent iteration here, but I think it may be fine
+because the flush path is already expensive. This will allow us to
+detect if any ongoing flush is overlapping with us, not just the one
+that happened to update cgrp_rstat_ongoing_flusher first.
 
-[1/1] blk-throttle: fix lower control under super low iops limit
-      commit: 1beabab88ecee0698ecee7b54afa9cce7046ef96
-
-Best regards,
--- 
-Jens Axboe
-
-
-
+WDYT?
 
