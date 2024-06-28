@@ -1,192 +1,146 @@
-Return-Path: <cgroups+bounces-3430-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3431-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0961291B46A
-	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 03:06:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 389E691B4B3
+	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 03:43:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3875AB212C2
-	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 01:06:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D09A4283FE9
+	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 01:43:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73343FC01;
-	Fri, 28 Jun 2024 01:06:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OqpNC25W"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 062BD111AA;
+	Fri, 28 Jun 2024 01:42:57 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F08D13D8E
-	for <cgroups@vger.kernel.org>; Fri, 28 Jun 2024 01:06:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1718C11711;
+	Fri, 28 Jun 2024 01:42:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719536801; cv=none; b=UhlJNCsU4wO98ABx7GDMYYZu4hCLHmDDxmu6MhtV+Ljc5kkmXEq2CyLi59CFG/vayqv3RSSiWFdJUDEYHS7vhNn3jey6XPwJ142rXcYK+JvsB17Ni1N6G3fKRgq7LVk/RxbvcOjgjPt6fq9g8/u0HGKh6NM3zE9ntv+QwnCxnaQ=
+	t=1719538976; cv=none; b=NIgOIPDFYt5pWTjMnkPO10GCv/01Ou+urxqBT3Ni1nrYKVz8V1HSvchhRnQc435Xomtle0ngQQ9u/VsGw6cSI8kZMWc1kFacWaeQEeM9R2F3DFtf8AvrBZNFF85CcDsTvVo4Jq7ZSyn2OCCmSbh/8ltuHh/WSpNnLBDGzjH5ntY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719536801; c=relaxed/simple;
-	bh=EdWj89pVbXZmQQrbfZ+xE1Hxi0Y4Z/pBNi+RgO87Lgc=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=mu5xVOOWy/2bTRff9aYuHRnUbg8S+j72LfP+J6jb3dwpARWeKqzIZNBI+gnwph3ydnwWA83wRncu4NxZbbqOJFfcSBW+htyKKWzug4BpVZ2srFBnH9Zq5P0UdU9p6EqPULRq3weEt42wMpTV6/2ydxrSEVlih9Stjusyq/rLkrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OqpNC25W; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1719536796;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=njkkozG9EFlh7coxFPh179Qtw83r0T/2ltt/6G5V93o=;
-	b=OqpNC25WaNh2cpmkzqneOpKAi4+F5c8sGIW20FJSMVhmMSzfYxBT5OqOkFgbmMbXux3NY3
-	U4WHCJ8S1FUOG1QTnd7DXRV9eiY6l47c/xVh1OjqhN+rdAW5/zbi0UIr7m/wQHAPSSV6M6
-	L3fRhcTmN9yPXkgmiLk+pgQ7jgIKoIQ=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-361-DsioewEANdKRqGGg7Q38Eg-1; Thu,
- 27 Jun 2024 21:06:32 -0400
-X-MC-Unique: DsioewEANdKRqGGg7Q38Eg-1
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 499A31955F03;
-	Fri, 28 Jun 2024 01:06:30 +0000 (UTC)
-Received: from [10.22.32.240] (unknown [10.22.32.240])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id BEB0F300021A;
-	Fri, 28 Jun 2024 01:06:27 +0000 (UTC)
-Message-ID: <4b86e9ec-f94d-4838-ad24-e1a3c89c9939@redhat.com>
-Date: Thu, 27 Jun 2024 21:06:26 -0400
+	s=arc-20240116; t=1719538976; c=relaxed/simple;
+	bh=10ieK9j+Fg1JJ/lmqES5nKrD6yeWCfUlSvB+9we3Lp8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=XCTk65hhTAvt4MN7JmAoWEgbSCqW9OMebiObllP+jrUA0xnzRM17cI1cbQ5TT8F8Im0PS3t0hE9MwcaoPhG7NooKczU2EnN+znsc8qmdsHlwEJi0jRP5O6jjK1+iP7OmbJJiJWTYl2VicIiEwjIr6765HaUl+zTb+NpOgOizDnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4W9J4S3lLTz1X4Gv;
+	Fri, 28 Jun 2024 09:38:48 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4018F140381;
+	Fri, 28 Jun 2024 09:42:50 +0800 (CST)
+Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Fri, 28 Jun
+ 2024 09:42:49 +0800
+From: Chen Ridong <chenridong@huawei.com>
+To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+	<longman@redhat.com>, <adityakali@google.com>, <sergeh@kernel.org>,
+	<mkoutny@suse.com>
+CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH V4] cgroup/cpuset: Prevent UAF in proc_cpuset_show()
+Date: Fri, 28 Jun 2024 01:36:04 +0000
+Message-ID: <20240628013604.573498-1-chenridong@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4 1/2] cgroup/rstat: Helper functions for locking expose
- trylock
-From: Waiman Long <longman@redhat.com>
-To: Jesper Dangaard Brouer <hawk@kernel.org>, tj@kernel.org,
- cgroups@vger.kernel.org, yosryahmed@google.com, shakeel.butt@linux.dev
-Cc: hannes@cmpxchg.org, lizefan.x@bytedance.com, kernel-team@cloudflare.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <171952310959.1810550.17003659816794335660.stgit@firesoul>
- <08062501-f3fb-4e4d-b72c-f1b0f964640f@redhat.com>
-Content-Language: en-US
-In-Reply-To: <08062501-f3fb-4e4d-b72c-f1b0f964640f@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
-On 6/27/24 18:22, Waiman Long wrote:
->
-> On 6/27/24 17:18, Jesper Dangaard Brouer wrote:
->> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
->> ---
->>   kernel/cgroup/rstat.c |   40 ++++++++++++++++++++++++++++++----------
->>   1 file changed, 30 insertions(+), 10 deletions(-)
->>
->> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
->> index fb8b49437573..2a42be3a9bb3 100644
->> --- a/kernel/cgroup/rstat.c
->> +++ b/kernel/cgroup/rstat.c
->> @@ -279,17 +279,30 @@ __bpf_hook_end();
->>    * value -1 is used when obtaining the main lock else this is the CPU
->>    * number processed last.
->>    */
->> -static inline void __cgroup_rstat_lock(struct cgroup *cgrp, int 
->> cpu_in_loop)
->> +static inline bool __cgroup_rstat_trylock(struct cgroup *cgrp, int 
->> cpu_in_loop)
->> +{
->> +    bool locked;
->> +
->> +    locked = spin_trylock_irq(&cgroup_rstat_lock);
->> +    if (!locked)
->> +        trace_cgroup_rstat_lock_contended(cgrp, cpu_in_loop, !locked);
->> +
->> +    return locked;
->> +}
->> +
->> +static inline void __cgroup_rstat_lock(struct cgroup *cgrp, int 
->> cpu_in_loop,
->> +                       bool check_contention)
->>       __acquires(&cgroup_rstat_lock)
->>   {
->> -    bool contended;
->> +    bool locked = false;
->>   -    contended = !spin_trylock_irq(&cgroup_rstat_lock);
->> -    if (contended) {
->> -        trace_cgroup_rstat_lock_contended(cgrp, cpu_in_loop, 
->> contended);
->> +    if (check_contention)
->> +        locked = __cgroup_rstat_trylock(cgrp, cpu_in_loop);
->> +
->> +    if (!locked)
->>           spin_lock_irq(&cgroup_rstat_lock);
->> -    }
->> -    trace_cgroup_rstat_locked(cgrp, cpu_in_loop, contended);
->> +
->> +    trace_cgroup_rstat_locked(cgrp, cpu_in_loop, !locked);
->>   }
->>     static inline void __cgroup_rstat_unlock(struct cgroup *cgrp, int 
->> cpu_in_loop)
->> @@ -328,7 +341,7 @@ static void cgroup_rstat_flush_locked(struct 
->> cgroup *cgrp)
->>               __cgroup_rstat_unlock(cgrp, cpu);
->>               if (!cond_resched())
->>                   cpu_relax();
->> -            __cgroup_rstat_lock(cgrp, cpu);
->> +            __cgroup_rstat_lock(cgrp, cpu, true);
->>           }
->>       }
->>   }
->> @@ -348,9 +361,16 @@ static void cgroup_rstat_flush_locked(struct 
->> cgroup *cgrp)
->>    */
->>   __bpf_kfunc void cgroup_rstat_flush(struct cgroup *cgrp)
->>   {
->> +    bool locked;
->> +
->>       might_sleep();
->>   -    __cgroup_rstat_lock(cgrp, -1);
->> +    locked = __cgroup_rstat_trylock(cgrp, -1);
->> +    if (!locked) {
->> +        /* Opportunity to ongoing flush detection */
->> +        __cgroup_rstat_lock(cgrp, -1, false);
->> +    }
->> +
->>       cgroup_rstat_flush_locked(cgrp);
->>       __cgroup_rstat_unlock(cgrp, -1);
->>   }
->> @@ -368,7 +388,7 @@ void cgroup_rstat_flush_hold(struct cgroup *cgrp)
->>       __acquires(&cgroup_rstat_lock)
->>   {
->>       might_sleep();
->> -    __cgroup_rstat_lock(cgrp, -1);
->> +    __cgroup_rstat_lock(cgrp, -1, true);
->>       cgroup_rstat_flush_locked(cgrp);
->>   }
->>
->>
-> Will it be cleaner to add a "bool *flushed" output parameter to 
-> __cgroup_rstat_lock() so that the caller can respond differently 
-> whether the flushed flag is set or not? In that way, you don't need to 
-> expose a separate trylock() API. Also your commit log is empty.
+An UAF can happen when /proc/cpuset is read as reported in [1].
 
-Looking at the use case in patch 2, I would suggest the following APIs.
+This can be reproduced by the following methods:
+1.add an mdelay(1000) before acquiring the cgroup_lock In the
+ cgroup_path_ns function.
+2.$cat /proc/<pid>/cpuset   repeatly.
+3.$mount -t cgroup -o cpuset cpuset /sys/fs/cgroup/cpuset/
+$umount /sys/fs/cgroup/cpuset/   repeatly.
 
-- bool cgroup_rstat_lock(struct cgroup *cgrp)
-- bool cgroup_rstat_lock_or_flushed(struct cgroup *cgrp)
+The race that cause this bug can be shown as below:
 
-Both will return a bool indicating a flush has already been done if 
-true. The 2nd function will not take the lock if a flush is ongoing. 
-Both will wait if a flush is ongoing.
+(umount)		|	(cat /proc/<pid>/cpuset)
+css_release		|	proc_cpuset_show
+css_release_work_fn	|	css = task_get_css(tsk, cpuset_cgrp_id);
+css_free_rwork_fn	|	cgroup_path_ns(css->cgroup, ...);
+cgroup_destroy_root	|	mutex_lock(&cgroup_mutex);
+rebind_subsystems	|
+cgroup_free_root 	|
+			|	// cgrp was freed, UAF
+			|	cgroup_path_ns_locked(cgrp,..);
 
-Cheers,
-Longman
+When the cpuset is initialized, the root node top_cpuset.css.cgrp
+will point to &cgrp_dfl_root.cgrp. In cgroup v1, the mount operation will
+allocate cgroup_root, and top_cpuset.css.cgrp will point to the allocated
+&cgroup_root.cgrp. When the umount operation is executed,
+top_cpuset.css.cgrp will be rebound to &cgrp_dfl_root.cgrp.
 
+The problem is that when rebinding to cgrp_dfl_root, there are cases
+where the cgroup_root allocated by setting up the root for cgroup v1
+is cached. This could lead to a Use-After-Free (UAF) if it is
+subsequently freed. The descendant cgroups of cgroup v1 can only be
+freed after the css is released. However, the css of the root will never
+be released, yet the cgroup_root should be freed when it is unmounted.
+This means that obtaining a reference to the css of the root does
+not guarantee that css.cgrp->root will not be freed.
+
+Fix this problem by using rcu_read_lock in proc_cpuset_show().
+As cgroup_root is kfree_rcu after commit d23b5c577715
+("cgroup: Make operations on the cgroup root_list RCU safe"),
+css->cgroup won't be freed during the critical section.
+To call cgroup_path_ns_locked, css_set_lock is needed, so it is safe to
+replace task_get_css with task_css.
+
+[1] https://syzkaller.appspot.com/bug?extid=9b1ff7be974a403aa4cd
+
+Fixes: a79a908fd2b0 ("cgroup: introduce cgroup namespaces")
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
+---
+ kernel/cgroup/cpuset.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index c12b9fdb22a4..bcb4da8f54c8 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -21,6 +21,7 @@
+  *  License.  See the file COPYING in the main directory of the Linux
+  *  distribution for more details.
+  */
++#include "cgroup-internal.h"
+ 
+ #include <linux/cpu.h>
+ #include <linux/cpumask.h>
+@@ -5051,10 +5052,14 @@ int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
+ 	if (!buf)
+ 		goto out;
+ 
+-	css = task_get_css(tsk, cpuset_cgrp_id);
+-	retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
+-				current->nsproxy->cgroup_ns);
+-	css_put(css);
++	rcu_read_lock();
++	spin_lock_irq(&css_set_lock);
++	css = task_css(tsk, cpuset_cgrp_id);
++	retval = cgroup_path_ns_locked(css->cgroup, buf, PATH_MAX,
++				       current->nsproxy->cgroup_ns);
++	spin_unlock_irq(&css_set_lock);
++	rcu_read_unlock();
++
+ 	if (retval == -E2BIG)
+ 		retval = -ENAMETOOLONG;
+ 	if (retval < 0)
+-- 
+2.34.1
 
 
