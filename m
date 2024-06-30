@@ -1,111 +1,127 @@
-Return-Path: <cgroups+bounces-3458-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3459-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9CD591C8FB
-	for <lists+cgroups@lfdr.de>; Sat, 29 Jun 2024 00:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 30F7F91D0CC
+	for <lists+cgroups@lfdr.de>; Sun, 30 Jun 2024 11:22:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F01C11C21DE3
-	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2024 22:15:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4899D1C20BBF
+	for <lists+cgroups@lfdr.de>; Sun, 30 Jun 2024 09:22:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FD1A7CF16;
-	Fri, 28 Jun 2024 22:15:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E782012D74F;
+	Sun, 30 Jun 2024 09:21:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Cq3jLC09"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="s1kNaRKi"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D70C95381A
-	for <cgroups@vger.kernel.org>; Fri, 28 Jun 2024 22:15:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70FC0282F1;
+	Sun, 30 Jun 2024 09:21:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719612940; cv=none; b=paIVrvngYIAOXy60/A/sltMD2UvbcAlkPHPGOHnM5khJa7FvcfWZpQGeHYIC3MFO4U15oAdrQrx2jMS8L+2mMVt5IHhHbX5gcVB8JbEydm2k79+JhTw6ijUBz0mxuCcvyr4sO7+QeZnv34gbVn0dM+PkRrOh/VvYGSKsiUNmiLg=
+	t=1719739319; cv=none; b=Xg/esLczxD9CJLTBl+MS0Jur+J7yVYg852jILPqP+ad12ZzhGH5FWDGUDOYri7P+DyqiIGOfA3kO1BtkqQmCVoOKz1sFfp1cojDoI2FdbiV+Wz39hS/trt41BwB6npcM8MgYdcQrOE5wU0YFLrBqrnWFTR/Zy5vM//Fx+45o5qY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719612940; c=relaxed/simple;
-	bh=+FljSmn4Grrsg7NrcyiPVuMjCR2+pSwHRt+HFRG+zT4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gC5DuYoUCa20seDDDeRuj1psEPP6haUW5S1ZGkXq4xo926DpqPxPJEaX3F7FxHoAXkEGcOfQS5/hhLtefpqZbOoFTXFzAyMoNUOFrBuvR7BrT7u3hHWWviKR0WjGRrwrDsmc4G8GwUelYMqPhpTDbHHmyFttNrD4wItWmizkeFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Cq3jLC09; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-424acfff613so10983855e9.0
-        for <cgroups@vger.kernel.org>; Fri, 28 Jun 2024 15:15:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1719612937; x=1720217737; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=EnG8rg72r8ffPCSx11YhZAxAKEur5ua59dSNQgnuQfA=;
-        b=Cq3jLC09UtyKLnGcVX4c53Ue6g8SoQHXBHCkQvybiarAlvmwimL4Ug4wCRoVrDZ0gS
-         xP6iMpvY0z7b4CACMLQ/4om+feeFZIm1Vl7x4X5pYZSBIfGc3c/54sqwKvqDbo6RNvF3
-         KoAs1MLZHZdZzrN3Wf6c6sGwAzAx87JjDLPOlzoTTncjFcnmjG+kSQcxcqiPjV777H86
-         re1GpyUZACSEwFGO784mAnK/TQ21vkqilwy2vf9B3vIcfGue69T0/A1vjAUvcb1Gek4T
-         Nh03HtKhqN/fAZMym48VsmiSG7y4UZ+PqQEZpK3iAudDw2gkYNvjKkUHsQW7vix2Sq7c
-         Dwyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719612937; x=1720217737;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EnG8rg72r8ffPCSx11YhZAxAKEur5ua59dSNQgnuQfA=;
-        b=FKVLiQvhShDczwbcYSblPJMKEAg7ZNlnEchXNwL3WNl24usvkIqeoUA+xRQyaedCjB
-         uhE197/z7RWqSrwvl2wH4qItXZEjpR7I3sNnRYd2Uonfp0QKzmf49aOzb/ZDTwQpMpxu
-         uDnOLob8OCpM/tFU/WHD24DGz3s16qvskr3rfNSFgZHjMtm2A+znJVOTdhFH23Wtd5tw
-         F8mxSND6IJrEPSCcMA7vm0fZKO5qDMLFkOZzxotsaWHnNv1Y0tJMHhfxj8C8ZCIy2KOR
-         ZLFO7lWdIhWzU+X8dUONvWa1F8TVwUbARGJONV6PD33+DvwDOZSu453eds9BgtNchALV
-         wdNA==
-X-Forwarded-Encrypted: i=1; AJvYcCUnenUzDkxoDa4IewbmKUnQhMprHTDMHXy0bboqtMmsUtgLDvUA9OsX3VEZ/NrVXszd3fLACeYQ/XVYfeO1rtvgNU2+NDN3LA==
-X-Gm-Message-State: AOJu0YxBc1LSZpZ8dhQm3Xvhjp7r2jAIy5HnVle6lSsKZYMX1cZMAPoH
-	1JjxnR5NbVyCF4uDrTB1+vDEOM+aytqpUOXJsfBVwpGA/8y6z3gtzkbu/zR1cB/KU7q8otGOhkm
-	F0gSj3HmAvlLnf6BiLm0mp1UlM1/DpzuId4vo
-X-Google-Smtp-Source: AGHT+IECZerCUyDd0NywEbdAnhdWpLjgakOOtsegyVbF35KWlN7IkS8C++spqmKiKCk2AqXQhz4EyJIPc8mgKKGXDw8=
-X-Received: by 2002:adf:b1d1:0:b0:362:ff67:272f with SMTP id
- ffacd0b85a97d-366e94db3e5mr14589349f8f.41.1719612936743; Fri, 28 Jun 2024
- 15:15:36 -0700 (PDT)
+	s=arc-20240116; t=1719739319; c=relaxed/simple;
+	bh=ZmtVjDRRyORkx9G9mXFhcB5uwPsYT4bl0KVeYtguxFc=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=IP3J0E4xLH0NfUbduWM1uQZdjpcY94vsiiQackFS+9D2jWmjM/G1bXi1cE3PoSjN539cJeCfxB/jkr1/x4Wav4O1WGQ5uEeUyY4Gf0TssPgOwM7umOs1jyu9aQjHxhLx5MYRixGuAweZ9IHqTo0AdAdQL+BZc2CRbHron/xdBms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=s1kNaRKi; arc=none smtp.client-ip=212.227.15.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1719739262; x=1720344062; i=markus.elfring@web.de;
+	bh=4Ox+CoqQktM+04G5AXkVhtsqqZbwKD/erYL39VQd7P4=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=s1kNaRKi40Si4giCINn+Ikl4gUS88NJQ2VXrZL+SevS/mvbBtyqoL71Hm4DiHTXY
+	 nOhi6GxRzONTi+mDTTJa8A2wRAd4Wyw3WhaQIcpQOULoqPM+YKmb6BWJ90Si0FmQv
+	 cIPcpjW9P0lN4VyaV3oUJQaNL6YaroocwtB9Bs7AXXYoGlCzJODYklv6YlmheZ1Kk
+	 Y9xenLnqUI75QVCJXOKTJ2GIVXClSynEt1OsYWcEBYNW2Gr56wZeMa0U+O+Oy67zI
+	 49Fh4g2/e1MSiY7jPCjF1iNVmzYORjOJTZ6moLjRkXLip8T6TUSpjr0RPAnBJP8il
+	 Zir7RbvryfeDS4vU4g==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.82.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1N8n46-1sLI6q2nLi-00yxNJ; Sun, 30
+ Jun 2024 11:21:02 +0200
+Message-ID: <e5a78840-b623-485c-b467-828a5a0b7d37@web.de>
+Date: Sun, 30 Jun 2024 11:20:58 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <171952310959.1810550.17003659816794335660.stgit@firesoul>
- <171952312320.1810550.13209360603489797077.stgit@firesoul>
- <4n3qu75efpznkomxytm7irwfiq44hhi4hb5igjbd55ooxgmvwa@tbgmwvcqsy75> <7ecdd625-37a0-49f1-92fc-eef9791fbe5b@kernel.org>
-In-Reply-To: <7ecdd625-37a0-49f1-92fc-eef9791fbe5b@kernel.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 28 Jun 2024 15:15:00 -0700
-Message-ID: <CAJD7tkaybPFoM697dtp0CiEJ2zmSYiH2+0yL+KG_LD=ZiscOJA@mail.gmail.com>
-Subject: Re: [PATCH V4 2/2] cgroup/rstat: Avoid thundering herd problem by
- kswapd across NUMA nodes
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, tj@kernel.org, cgroups@vger.kernel.org, 
-	hannes@cmpxchg.org, lizefan.x@bytedance.com, longman@redhat.com, 
-	kernel-team@cloudflare.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+To: Chen Ridong <chenridong@huawei.com>, cgroups@vger.kernel.org,
+ Aditya Kali <adityakali@google.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Serge Hallyn <sergeh@kernel.org>, Tejun Heo <tj@kernel.org>,
+ Waiman Long <longman@redhat.com>, Zefan Li <lizefan.x@bytedance.com>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <20240628013604.573498-1-chenridong@huawei.com>
+Subject: Re: [PATCH V4] cgroup/cpuset: Prevent UAF in proc_cpuset_show()
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240628013604.573498-1-chenridong@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ac2MgSGc6rRBaSoWAit1GqrwjITEH7Ep6A42evXWX0nvXHJkGIa
+ kquVJmXCPA3twtKNxnZ8hXVKkhKCKUiga+Ya2xXnoWBTXwwWZAPTJt3MOKi98T4vgfMSHWL
+ N3O/EdaIrH20bpC/0CCab1N0vax7wud/wxwsF3nVHwGC16BOP9MFXi3zAxMpo93/Zz/T00D
+ J9J3+UqDxgbDC01ZGcj+A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:OahtbHllBVo=;z4fl6hb25KLpKAsYKSrsQ3SOooU
+ BZnJoLKEMl6tWgGMgwS0yXDKejjMXPu44ds0crSQs9fR4CLZFc4PuJifEdmDQA8v1RNhgUIUZ
+ 6PQ3eAKP2Hy8/BI9ZkTRz7w+FgL7RAMWFDNi5zQwDIxym6sAXnCJUoRSjWfLCWQq/DAvTbysM
+ eHIzJKMf8TJOPRrdcq9Cq7ACFxLI8TrJZKC1ACz5tut2viPbKHS4Kn1bd+MQK5jKACmDMxk+Y
+ F95Na66X31XPG1mnw7vgEcDoZj9FtihPO4voCAr42mr1VzXLFBoHI3unmw34w+WyOHd2/NRg6
+ 5t2sZkayBrFn/LNscMQA/CEBZ1b3ke1Ocg/EHR0Edi3tF6e5c5NjCoZ1FHGazo6YeWIcokT1P
+ df6tuVWxaOI2DSFlWpMwGj7R/PxRQnLbUlT/CqZ2HLzP/nYF+Hz1x4zjkuyE6pPjZy3Ell7Ac
+ 4KKBdyBlEq74n/h6JKTO7r+1WD+P048poq4M8Hw2X20zR+VCUuGIlRm/RlbZ8wa5VnXxz3ohf
+ Zssq+VgKx60kRcpx7/uC0Em4ZRgH4h1A+gtqsdFVeBUaU7l/rOKz+gPpmQvaL0ZjX0mh00qEP
+ iCmhRq/a2k/uTNrXQM1F27SVW2b8jc2ckZ8dmNuUz5Pb6N7ul+aT9piU2w4Maq/tGWCFP5Mj0
+ e/P9rzztza8D565WCR3Q4z1lCtKMe00fu6vgnmY7FRAb6WNm0r672gvHukOixjIcNNIIeugGU
+ jscjIg6UA39xkckvzF0nzmzxnHicoNGWA8QuLuPUQh5h7/Ysb+9BhCol6W6LMT1cgxKwZu+/E
+ 8qYkAD908SgTKo+oea8GOWhRqxbvGH8F0xOKTEek5FphU=
 
-[..]
-> >> +    /* Obtained lock, record this cgrp as the ongoing flusher */
-> >> +    if (!READ_ONCE(cgrp_rstat_ongoing_flusher)) {
-> >
-> > Can the above condition will ever be false?
-> >
+=E2=80=A6
+> +++ b/kernel/cgroup/cpuset.c
+=E2=80=A6
+> @@ -5051,10 +5052,14 @@ int proc_cpuset_show(struct seq_file *m, struct =
+pid_namespace *ns,
+>  	if (!buf)
+>  		goto out;
 >
-> Yes, I think so, because I realized that cgroup_rstat_flush_locked() can
-> release/"yield" the lock.  Thus, other CPUs/threads have a chance to
-> call cgroup_rstat_flush, and try to become the "ongoing-flusher".
+> -	css =3D task_get_css(tsk, cpuset_cgrp_id);
+> -	retval =3D cgroup_path_ns(css->cgroup, buf, PATH_MAX,
+> -				current->nsproxy->cgroup_ns);
+> -	css_put(css);
+> +	rcu_read_lock();
+> +	spin_lock_irq(&css_set_lock);
+> +	css =3D task_css(tsk, cpuset_cgrp_id);
+> +	retval =3D cgroup_path_ns_locked(css->cgroup, buf, PATH_MAX,
+> +				       current->nsproxy->cgroup_ns);
+> +	spin_unlock_irq(&css_set_lock);
+> +	rcu_read_unlock();
+=E2=80=A6
 
-Right, there may actually be multiple ongoing flushers. I am now
-wondering if it would be better if we drop cgrp_rstat_ongoing_flusher
-completely, add a per-cgroup under_flush boolean/flag, and have the
-cgroup iterate its parents here to check if any of them is under_flush
-and wait for it instead.
+Under which circumstances would you become interested to apply statements
+like the following?
 
-Yes, we have to add parent iteration here, but I think it may be fine
-because the flush path is already expensive. This will allow us to
-detect if any ongoing flush is overlapping with us, not just the one
-that happened to update cgrp_rstat_ongoing_flusher first.
+* guard(rcu)();
+  https://elixir.bootlin.com/linux/v6.10-rc5/source/include/linux/rcupdate=
+.h#L1093
 
-WDYT?
+* guard(spinlock_irq)(&css_set_lock);
+  https://elixir.bootlin.com/linux/v6.10-rc5/source/include/linux/spinlock=
+.h#L567
+
+
+Regards,
+Markus
 
