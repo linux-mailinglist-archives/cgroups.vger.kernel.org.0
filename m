@@ -1,127 +1,113 @@
-Return-Path: <cgroups+bounces-3459-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3460-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30F7F91D0CC
-	for <lists+cgroups@lfdr.de>; Sun, 30 Jun 2024 11:22:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7481D91D300
+	for <lists+cgroups@lfdr.de>; Sun, 30 Jun 2024 19:03:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4899D1C20BBF
-	for <lists+cgroups@lfdr.de>; Sun, 30 Jun 2024 09:22:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35D9D2814EF
+	for <lists+cgroups@lfdr.de>; Sun, 30 Jun 2024 17:03:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E782012D74F;
-	Sun, 30 Jun 2024 09:21:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CFB7149C7C;
+	Sun, 30 Jun 2024 17:03:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="s1kNaRKi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VljQIJzD"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.4])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70FC0282F1;
-	Sun, 30 Jun 2024 09:21:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEFDA282ED;
+	Sun, 30 Jun 2024 17:03:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719739319; cv=none; b=Xg/esLczxD9CJLTBl+MS0Jur+J7yVYg852jILPqP+ad12ZzhGH5FWDGUDOYri7P+DyqiIGOfA3kO1BtkqQmCVoOKz1sFfp1cojDoI2FdbiV+Wz39hS/trt41BwB6npcM8MgYdcQrOE5wU0YFLrBqrnWFTR/Zy5vM//Fx+45o5qY=
+	t=1719767023; cv=none; b=aFJa9qi2BtI+LQP3eghnEJFFDl0isdZOOSF561CljeftYnPqJkbGYrUUMuHxM/oATtx4LOrbqE9/SEJ8V2yCVAIKGOAj3ISpP5jFpP7ebBlkvlUK83JLvkFwF+NdVb1ePB8TMZbC3uNr1BYkWI2XlZ297wpG2BPHpgsAK9/iFu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719739319; c=relaxed/simple;
-	bh=ZmtVjDRRyORkx9G9mXFhcB5uwPsYT4bl0KVeYtguxFc=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=IP3J0E4xLH0NfUbduWM1uQZdjpcY94vsiiQackFS+9D2jWmjM/G1bXi1cE3PoSjN539cJeCfxB/jkr1/x4Wav4O1WGQ5uEeUyY4Gf0TssPgOwM7umOs1jyu9aQjHxhLx5MYRixGuAweZ9IHqTo0AdAdQL+BZc2CRbHron/xdBms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=s1kNaRKi; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1719739262; x=1720344062; i=markus.elfring@web.de;
-	bh=4Ox+CoqQktM+04G5AXkVhtsqqZbwKD/erYL39VQd7P4=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=s1kNaRKi40Si4giCINn+Ikl4gUS88NJQ2VXrZL+SevS/mvbBtyqoL71Hm4DiHTXY
-	 nOhi6GxRzONTi+mDTTJa8A2wRAd4Wyw3WhaQIcpQOULoqPM+YKmb6BWJ90Si0FmQv
-	 cIPcpjW9P0lN4VyaV3oUJQaNL6YaroocwtB9Bs7AXXYoGlCzJODYklv6YlmheZ1Kk
-	 Y9xenLnqUI75QVCJXOKTJ2GIVXClSynEt1OsYWcEBYNW2Gr56wZeMa0U+O+Oy67zI
-	 49Fh4g2/e1MSiY7jPCjF1iNVmzYORjOJTZ6moLjRkXLip8T6TUSpjr0RPAnBJP8il
-	 Zir7RbvryfeDS4vU4g==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.82.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1N8n46-1sLI6q2nLi-00yxNJ; Sun, 30
- Jun 2024 11:21:02 +0200
-Message-ID: <e5a78840-b623-485c-b467-828a5a0b7d37@web.de>
-Date: Sun, 30 Jun 2024 11:20:58 +0200
+	s=arc-20240116; t=1719767023; c=relaxed/simple;
+	bh=jjOtl29A70pu8X4oM6FwG48iiDZVebDe/QwQZ12SrB0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=E9kZAPqulzpIIym/ETOISs59oa+QtFZ2xfiqDLPgNTla6akwbl6B6RtJjixHg1Jb6eUASqpH1Ej+uwCH7Q7MtqdCkpJkLMfKx077RlM1sMwHpEi3eX3cTo9fcNvrVTPFhsQoXgrezTsW9kaYOXTMj2gF4EAK+IcvYQ9ZIj3b3x8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VljQIJzD; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-706683e5249so1272090b3a.2;
+        Sun, 30 Jun 2024 10:03:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719767020; x=1720371820; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=N5owlD5lltLvAbBD17/0DblPjtl+cJf7M5OuX1U77Xg=;
+        b=VljQIJzD9ZUG2BMg5qTrrthNYv4u89uqmaZxNbyW3IY6tudxCY4erRr719M/sVgl0v
+         SeydgA+hRzvbSQG67ylr5G65Cl+uJAcfyLq2NQHQmfy5/BRWG+3X7VpA4VWOqaar2/om
+         1QsgWL4kcqxtL1zRxg5EQzuXFtRHRxtr1jwA0DrJY3uqkTaYlyLb5b/NPayqD9qWe9Tf
+         /4DNKdOa7gwg2SqPbxuBBAGVMyC/GNXWHQrKEwi9alsmLo8jzJ6my8esNXisRx9M0y/D
+         C7ZnfadC6Lzp/zZBuXo5b3fnKYByRlWHO3V5Eq2Ztul3bjcHLTBLByCjJrUq0N9IaweS
+         4EvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719767020; x=1720371820;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=N5owlD5lltLvAbBD17/0DblPjtl+cJf7M5OuX1U77Xg=;
+        b=vYAhRlmtnLT0hMUWo25eGncbLpTDEGktBnOI66aOs0PUvhhTju4b323iTsdaLvQDV0
+         LKjKx/mx/2TjTwb4gbN+d2mBc/vMZAKD2lRTLXeJa+MGjt5vl8IuKIcdouYEw1eZgcQf
+         1Q8kPqS6xedLNRFf0J51+P+sJ5ZCM6E6vhUA/rn/3/78ZohEZb3OMvNK1SwUQGHCcusD
+         m63DojpezIw1NHaaiXg1tBQFVA+cnErqF2/T/JV1/x56zQIoMpMkt6McD/TFcScuCOGW
+         wbINS5f6fSb9FHNNm04zcGf0IlYFlxj/XNWps/LNTWstwPuAUo+WZN0DJauM5dSIfB/l
+         jSXg==
+X-Forwarded-Encrypted: i=1; AJvYcCVztEjLRHTXNKINyxGas1gsMotTscjloIxmiwfcm1UvC0JOhFH9Yn2m+uS1ZYAUaFHoxR4n0o4r+WUSDPFQU1+cnAvB4fNnasr8cJUYt3cQKgL9RE5WVUkV5l0Zr8MMBosIstHl3w==
+X-Gm-Message-State: AOJu0YzeOu0wCrolsGpUv8D6JKxkNkdFrP4iMsr9A03IxZ/MuA1RZXXV
+	niaOh7FFP9MiZzUu67mqiOU8XcPgfrod/wzkkMVQhoptMK3NsAE1
+X-Google-Smtp-Source: AGHT+IHYxsuWVeTEzWjVUqY7oP9c8XAbyyBTRknQeSpRCfFrevznM+SVVPU99dZ2H5Ae+KP5a75wMQ==
+X-Received: by 2002:a05:6a20:4324:b0:1bd:23bd:4b9a with SMTP id adf61e73a8af0-1bef60f3bd8mr3111465637.9.1719767020235;
+        Sun, 30 Jun 2024 10:03:40 -0700 (PDT)
+Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c91ce17a77sm5078379a91.6.2024.06.30.10.03.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Jun 2024 10:03:39 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Sun, 30 Jun 2024 07:03:38 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: Chen Ridong <chenridong@huawei.com>, cgroups@vger.kernel.org,
+	Aditya Kali <adityakali@google.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Serge Hallyn <sergeh@kernel.org>, Waiman Long <longman@redhat.com>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V4] cgroup/cpuset: Prevent UAF in proc_cpuset_show()
+Message-ID: <ZoGP6uV2oD4AdYWP@slm.duckdns.org>
+References: <20240628013604.573498-1-chenridong@huawei.com>
+ <e5a78840-b623-485c-b467-828a5a0b7d37@web.de>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Chen Ridong <chenridong@huawei.com>, cgroups@vger.kernel.org,
- Aditya Kali <adityakali@google.com>, Johannes Weiner <hannes@cmpxchg.org>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Serge Hallyn <sergeh@kernel.org>, Tejun Heo <tj@kernel.org>,
- Waiman Long <longman@redhat.com>, Zefan Li <lizefan.x@bytedance.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <20240628013604.573498-1-chenridong@huawei.com>
-Subject: Re: [PATCH V4] cgroup/cpuset: Prevent UAF in proc_cpuset_show()
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240628013604.573498-1-chenridong@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ac2MgSGc6rRBaSoWAit1GqrwjITEH7Ep6A42evXWX0nvXHJkGIa
- kquVJmXCPA3twtKNxnZ8hXVKkhKCKUiga+Ya2xXnoWBTXwwWZAPTJt3MOKi98T4vgfMSHWL
- N3O/EdaIrH20bpC/0CCab1N0vax7wud/wxwsF3nVHwGC16BOP9MFXi3zAxMpo93/Zz/T00D
- J9J3+UqDxgbDC01ZGcj+A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:OahtbHllBVo=;z4fl6hb25KLpKAsYKSrsQ3SOooU
- BZnJoLKEMl6tWgGMgwS0yXDKejjMXPu44ds0crSQs9fR4CLZFc4PuJifEdmDQA8v1RNhgUIUZ
- 6PQ3eAKP2Hy8/BI9ZkTRz7w+FgL7RAMWFDNi5zQwDIxym6sAXnCJUoRSjWfLCWQq/DAvTbysM
- eHIzJKMf8TJOPRrdcq9Cq7ACFxLI8TrJZKC1ACz5tut2viPbKHS4Kn1bd+MQK5jKACmDMxk+Y
- F95Na66X31XPG1mnw7vgEcDoZj9FtihPO4voCAr42mr1VzXLFBoHI3unmw34w+WyOHd2/NRg6
- 5t2sZkayBrFn/LNscMQA/CEBZ1b3ke1Ocg/EHR0Edi3tF6e5c5NjCoZ1FHGazo6YeWIcokT1P
- df6tuVWxaOI2DSFlWpMwGj7R/PxRQnLbUlT/CqZ2HLzP/nYF+Hz1x4zjkuyE6pPjZy3Ell7Ac
- 4KKBdyBlEq74n/h6JKTO7r+1WD+P048poq4M8Hw2X20zR+VCUuGIlRm/RlbZ8wa5VnXxz3ohf
- Zssq+VgKx60kRcpx7/uC0Em4ZRgH4h1A+gtqsdFVeBUaU7l/rOKz+gPpmQvaL0ZjX0mh00qEP
- iCmhRq/a2k/uTNrXQM1F27SVW2b8jc2ckZ8dmNuUz5Pb6N7ul+aT9piU2w4Maq/tGWCFP5Mj0
- e/P9rzztza8D565WCR3Q4z1lCtKMe00fu6vgnmY7FRAb6WNm0r672gvHukOixjIcNNIIeugGU
- jscjIg6UA39xkckvzF0nzmzxnHicoNGWA8QuLuPUQh5h7/Ysb+9BhCol6W6LMT1cgxKwZu+/E
- 8qYkAD908SgTKo+oea8GOWhRqxbvGH8F0xOKTEek5FphU=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e5a78840-b623-485c-b467-828a5a0b7d37@web.de>
 
-=E2=80=A6
-> +++ b/kernel/cgroup/cpuset.c
-=E2=80=A6
-> @@ -5051,10 +5052,14 @@ int proc_cpuset_show(struct seq_file *m, struct =
-pid_namespace *ns,
->  	if (!buf)
->  		goto out;
->
-> -	css =3D task_get_css(tsk, cpuset_cgrp_id);
-> -	retval =3D cgroup_path_ns(css->cgroup, buf, PATH_MAX,
-> -				current->nsproxy->cgroup_ns);
-> -	css_put(css);
-> +	rcu_read_lock();
-> +	spin_lock_irq(&css_set_lock);
-> +	css =3D task_css(tsk, cpuset_cgrp_id);
-> +	retval =3D cgroup_path_ns_locked(css->cgroup, buf, PATH_MAX,
-> +				       current->nsproxy->cgroup_ns);
-> +	spin_unlock_irq(&css_set_lock);
-> +	rcu_read_unlock();
-=E2=80=A6
+Hello,
 
-Under which circumstances would you become interested to apply statements
-like the following?
+On Sun, Jun 30, 2024 at 11:20:58AM +0200, Markus Elfring wrote:
+> Under which circumstances would you become interested to apply statements
+> like the following?
+> 
+> * guard(rcu)();
+>   https://elixir.bootlin.com/linux/v6.10-rc5/source/include/linux/rcupdate.h#L1093
+> 
+> * guard(spinlock_irq)(&css_set_lock);
+>   https://elixir.bootlin.com/linux/v6.10-rc5/source/include/linux/spinlock.h#L567
 
-* guard(rcu)();
-  https://elixir.bootlin.com/linux/v6.10-rc5/source/include/linux/rcupdate=
-.h#L1093
+I don't really care either way. Neither makes meaningful difference here.
 
-* guard(spinlock_irq)(&css_set_lock);
-  https://elixir.bootlin.com/linux/v6.10-rc5/source/include/linux/spinlock=
-.h#L567
+Thanks.
 
-
-Regards,
-Markus
+-- 
+tejun
 
