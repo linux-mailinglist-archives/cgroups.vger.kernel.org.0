@@ -1,138 +1,132 @@
-Return-Path: <cgroups+bounces-3466-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3467-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CB2B91E1F6
-	for <lists+cgroups@lfdr.de>; Mon,  1 Jul 2024 16:11:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8010B91E326
+	for <lists+cgroups@lfdr.de>; Mon,  1 Jul 2024 17:02:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F6521F2447D
-	for <lists+cgroups@lfdr.de>; Mon,  1 Jul 2024 14:11:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B26551C220C4
+	for <lists+cgroups@lfdr.de>; Mon,  1 Jul 2024 15:02:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 973A216191E;
-	Mon,  1 Jul 2024 14:11:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D3CB16C849;
+	Mon,  1 Jul 2024 15:02:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="l7Ed4EuO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00E23161339;
-	Mon,  1 Jul 2024 14:11:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC1C16B739;
+	Mon,  1 Jul 2024 15:02:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719843090; cv=none; b=ePoBcWsL3v6ArjKF7SlFTmkEw3y7/3eb/z24HNPQoC9spa9TDF148/gvEU9mjJ3rJVt7KltsUSvheW8DnbZI6bJaARPrYYjPeAkBrV9jrAdCAJwPBoWejCrol0krST9fJetyhG0IaGFvz7rtIjt/hZNzEkUPRBv4cRPsmlfzWtI=
+	t=1719846130; cv=none; b=n6sWp57tyTvtK/Ej06dbR9qV8tAGa3LjkAx7h3hc1in373KY6AD8+dNY7apR9vi0klD753EnkldoYv+Iw1jX6RNUkn82pQTSJeuSTLmjFrKsN+evf4vLR79p3qlvzQDXdW++NFyVZIjxD31R6P9PJcq/NY2kPOStmiZsagAWNQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719843090; c=relaxed/simple;
-	bh=HAYSc1fN3J1cGo99xve+VO+idll9USDAhnBes8HToUM=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=pzeclwfOjQWathOEVx8jKJdq274WPez6wGgQOdf2QnAvdLkDY5OM+iYIe/epgoUZXsmBOY+jTQhwjq46px3jvEk5J/KcbEOg3j7oPx+x1BuV1IzHmWZes3YBy56qgrTjZZ4eCkzzrNNcg/pK2ievCOr5Z0lgqm+sr6zAGjxiDzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WCSXL59DhzxTn2;
-	Mon,  1 Jul 2024 22:06:58 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2CD8318006C;
-	Mon,  1 Jul 2024 22:11:24 +0800 (CST)
-Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Mon, 1 Jul
- 2024 22:11:23 +0800
-From: Chen Ridong <chenridong@huawei.com>
-To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
-	<longman@redhat.com>
-CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] cgroup/rstat: add force idle show helper
-Date: Mon, 1 Jul 2024 14:04:41 +0000
-Message-ID: <20240701140441.721997-1-chenridong@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1719846130; c=relaxed/simple;
+	bh=sfrTo7hyYfbzhRNUPumhmPzam6O6qfhQMqEfifc7xkA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D/+CZXMIN3e3wU/qry9mQMmWX7ry7fepvlN549+FNKyKb+xz71d+yQuR3P/sAXEGcRqyVKFAOsj3UKvMLGjizCnoxr8lMM8IRWDkPqg6xtQRr3xAkWwNRuXSfsGcJE5OHmSc04HyzM+5PCb5LEyQKQKBtcjTH7loui0VL7SvnVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=l7Ed4EuO; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=QewlYFdkXVk4y5FaBk6eYx20wWM+U6iYtyuvzVLFNAg=; b=l7Ed4EuOOarcvuAxcQtXJqO9hk
+	2i8hO3/kBgNa2My0ptHeiIB3ru4xpKAw1w/QIM6WyVgVs95DVUZnfCUD+SZ3LBtYLDaufsfEw0gZU
+	meJ64K6Ume5c6V5UhisntVi/KJGuNbmosaIZd7UzahkWE5dtgvJFEWDJmLUVDLM52tBhTfj1gxS1e
+	1+N9FNlkcPzM8CiwKepLw5Ds1+DO3JbiYaONzPeBVSAGk7iShHT6UfrY6cYfGk+SzMN30RGRrjYhg
+	bSbZFKrptV63SFAaWKMUwOF7iP1vjMv6J7YyjfEV56moU8dLF8KxqapMpI2WRqFOoNd/JCN2oyH8g
+	2rPbLaog==;
+Received: from [50.53.4.147] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sOIXX-00000003qAO-1wcY;
+	Mon, 01 Jul 2024 15:01:59 +0000
+Message-ID: <047579c5-582a-46ac-8967-e9ca9a90cea7@infradead.org>
+Date: Mon, 1 Jul 2024 08:01:58 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemd100013.china.huawei.com (7.221.188.163)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] cgroup/misc: Introduce misc.peak
+To: Xiu Jianfeng <xiujianfeng@huawei.com>, tj@kernel.org,
+ lizefan.x@bytedance.com, hannes@cmpxchg.org, corbet@lwn.net,
+ kamalesh.babulal@oracle.com, haitao.huang@linux.intel.com
+Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240701125259.2611466-1-xiujianfeng@huawei.com>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240701125259.2611466-1-xiujianfeng@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-In the function cgroup_base_stat_cputime_show, there are five
-instances of #ifdef, which makes the code not concise.
-To address this, add the function cgroup_force_idle_show
-to make the code more succinct.
+Hi--
 
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- kernel/cgroup/rstat.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
+On 7/1/24 5:52 AM, Xiu Jianfeng wrote:
+> Introduce misc.peak to record the historical maximum usage of the
+> resource, as in some scenarios the value of misc.max could be
+> adjusted based on the peak usage of the resource.
+> 
+> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst |  9 ++++++++
+>  include/linux/misc_cgroup.h             |  2 ++
+>  kernel/cgroup/misc.c                    | 29 +++++++++++++++++++++++++
+>  3 files changed, 40 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index ae0fdb6fc618..48ae30f2d9ab 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -2646,6 +2646,15 @@ Miscellaneous controller provides 3 interface files. If two misc resources (res_
+>  	  res_a 3
+>  	  res_b 0
+>  
+> +  misc.peak
+> +        A read-only flat-keyed file shown in the all cgroups.  It shows
 
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index fb8b49437573..71a887a051a6 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -594,40 +594,39 @@ static void root_cgroup_cputime(struct cgroup_base_stat *bstat)
- 	}
- }
- 
-+#ifdef CONFIG_SCHED_CORE
-+static void cgroup_force_idle_show(struct seq_file *seq, struct cgroup_base_stat bstat)
-+{
-+	u64 forceidle_time = bstat.forceidle_sum;
-+
-+	do_div(forceidle_time, NSEC_PER_USEC);
-+	seq_printf(seq, "core_sched.force_idle_usec %llu\n", forceidle_time);
-+}
-+#endif
-+
- void cgroup_base_stat_cputime_show(struct seq_file *seq)
- {
- 	struct cgroup *cgrp = seq_css(seq)->cgroup;
- 	u64 usage, utime, stime;
- 	struct cgroup_base_stat bstat;
--#ifdef CONFIG_SCHED_CORE
--	u64 forceidle_time;
--#endif
- 
- 	if (cgroup_parent(cgrp)) {
- 		cgroup_rstat_flush_hold(cgrp);
- 		usage = cgrp->bstat.cputime.sum_exec_runtime;
- 		cputime_adjust(&cgrp->bstat.cputime, &cgrp->prev_cputime,
- 			       &utime, &stime);
--#ifdef CONFIG_SCHED_CORE
--		forceidle_time = cgrp->bstat.forceidle_sum;
--#endif
-+		stat = cgrp->bstat;
- 		cgroup_rstat_flush_release(cgrp);
- 	} else {
- 		root_cgroup_cputime(&bstat);
- 		usage = bstat.cputime.sum_exec_runtime;
- 		utime = bstat.cputime.utime;
- 		stime = bstat.cputime.stime;
--#ifdef CONFIG_SCHED_CORE
--		forceidle_time = bstat.forceidle_sum;
--#endif
- 	}
- 
- 	do_div(usage, NSEC_PER_USEC);
- 	do_div(utime, NSEC_PER_USEC);
- 	do_div(stime, NSEC_PER_USEC);
--#ifdef CONFIG_SCHED_CORE
--	do_div(forceidle_time, NSEC_PER_USEC);
--#endif
- 
- 	seq_printf(seq, "usage_usec %llu\n"
- 		   "user_usec %llu\n"
-@@ -635,7 +634,7 @@ void cgroup_base_stat_cputime_show(struct seq_file *seq)
- 		   usage, utime, stime);
- 
- #ifdef CONFIG_SCHED_CORE
--	seq_printf(seq, "core_sched.force_idle_usec %llu\n", forceidle_time);
-+	cgroup_force_idle_show(seq, bstat);
- #endif
- }
- 
+	                               shown in all cgroups. It shows
+
+> +        the historical maximum usage of the resources in the cgroup and
+> +        its children.::
+> +
+> +	  $ cat misc.peak
+> +	  res_a 10
+> +	  res_b 8
+> +
+>    misc.max
+>          A read-write flat-keyed file shown in the non root cgroups. Allowed
+>          maximum usage of the resources in the cgroup and its children.::
+> diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
+> index e799b1f8d05b..8aa69818291e 100644
+> --- a/include/linux/misc_cgroup.h
+> +++ b/include/linux/misc_cgroup.h
+> @@ -30,11 +30,13 @@ struct misc_cg;
+>  /**
+>   * struct misc_res: Per cgroup per misc type resource
+>   * @max: Maximum limit on the resource.
+> + * $watermark: Historical maximum usage of the resource.
+
+      @watermark:
+
+>   * @usage: Current usage of the resource.
+>   * @events: Number of times, the resource limit exceeded.
+>   */
+>  struct misc_res {
+>  	u64 max;
+> +	u64 watermark;
+>  	atomic64_t usage;
+>  	atomic64_t events;
+>  };
+
+
 -- 
-2.34.1
-
+~Randy
 
