@@ -1,52 +1,52 @@
-Return-Path: <cgroups+bounces-3478-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3480-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43DC291EBEA
-	for <lists+cgroups@lfdr.de>; Tue,  2 Jul 2024 02:49:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B02291EC13
+	for <lists+cgroups@lfdr.de>; Tue,  2 Jul 2024 02:56:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00AFF283124
-	for <lists+cgroups@lfdr.de>; Tue,  2 Jul 2024 00:49:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56F142832B0
+	for <lists+cgroups@lfdr.de>; Tue,  2 Jul 2024 00:56:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E3D6FCB;
-	Tue,  2 Jul 2024 00:49:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29FB16FCB;
+	Tue,  2 Jul 2024 00:56:39 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F094393;
-	Tue,  2 Jul 2024 00:49:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A35238BFA;
+	Tue,  2 Jul 2024 00:56:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719881369; cv=none; b=aJwOqjw3fVxosJlOT0ZwUBj74Eu1ry88mH5DWCii8E/00lpk5HVQtB5SjuqgjK6nsKP3XVG/7bMfqfirINxC1OUcDlJv7/2IuzWoAMHeyH0ibv2OaRu+wVLApTYVzoZU1ywJj2fdHGkIFhJVrkUIqkAWls+VRQLRJO++D55b8Ko=
+	t=1719881799; cv=none; b=T4Dk2oSyIzhinWr6H6zv813ZNlDoedXD/JXVRbqF9+ldsh1x3SAeGnRcveJESK6e9TTYFc7/PEGU/cxuJP9nbS+WEO86ef4mjsGxB2TvzuHFqYZU36Mcf5bB6eJMKzlhQtff4Sg9768xFF3BrRpQKUa+f0QLywjDKYlZ3tekIcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719881369; c=relaxed/simple;
-	bh=AhrsQKLzA5bGsmrWY1TVtCfHRlOKgyECq1XmRebGFd8=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bdRYbH1Sm7GLxEJ1ZKgHrAmopX2aB5gipELevQlftIAn7BGBrS2EvtFjIuWexivJE0lXfxqEVKgZCC7nEV6tmf+BiVZz0VC96hcWyZeJ/WE42fIyQg+zMxx+YGDZaX/7wj3TA6zw+vUAGcSn1eIv06rMBA1qtPZekV8OacrcOas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+	s=arc-20240116; t=1719881799; c=relaxed/simple;
+	bh=EnhqeMXGbc7n+0B+x9uZXw1qozd+uPIwqq+yfJMYLl4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=I2ShXEbwNXVs2g/bohj2DuAwFpC+yhrYk985jTDWwPbBhXPpLNhNY1BG/21MubNbZJvK3pTCJ3zu7Lcqvc1W2CsuRzqaaEj3eO3RV0Veew4thikRaWKSEajl/cU8tX12i9rv2Tc2oq2P/T3NmLaIQTTU4r3UE992aoO7/fvUE4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WCklk0m1yzdftM;
-	Tue,  2 Jul 2024 08:47:46 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4WCkrf6X1gz1T4Ln;
+	Tue,  2 Jul 2024 08:52:02 +0800 (CST)
 Received: from dggpeml500023.china.huawei.com (unknown [7.185.36.114])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9796F18006C;
-	Tue,  2 Jul 2024 08:49:22 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 60C6A14037B;
+	Tue,  2 Jul 2024 08:56:34 +0800 (CST)
 Received: from hulk-vt.huawei.com (10.67.174.26) by
  dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Tue, 2 Jul 2024 08:49:22 +0800
+ 15.1.2507.39; Tue, 2 Jul 2024 08:56:34 +0800
 From: Xiu Jianfeng <xiujianfeng@huawei.com>
 To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
 	<corbet@lwn.net>, <kamalesh.babulal@oracle.com>,
 	<haitao.huang@linux.intel.com>
 CC: <cgroups@vger.kernel.org>, <linux-doc@vger.kernel.org>,
 	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 -next] cgroup/misc: Introduce misc.peak
-Date: Tue, 2 Jul 2024 00:41:08 +0000
-Message-ID: <20240702004108.2645587-1-xiujianfeng@huawei.com>
+Subject: [PATCH v3 -next] cgroup/misc: Introduce misc.peak
+Date: Tue, 2 Jul 2024 00:48:20 +0000
+Message-ID: <20240702004820.2645868-1-xiujianfeng@huawei.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -66,6 +66,7 @@ adjusted based on the peak usage of the resource.
 Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
 
 ---
+v3: fix while (0)
 v2: use cmpxchg to update the watermark
 ---
  Documentation/admin-guide/cgroup-v2.rst |  9 ++++++
@@ -112,7 +113,7 @@ index e799b1f8d05b..faf72a537596 100644
  	atomic64_t events;
  };
 diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
-index 79a3717a5803..42642a96f4dc 100644
+index 79a3717a5803..7f5180a8f461 100644
 --- a/kernel/cgroup/misc.c
 +++ b/kernel/cgroup/misc.c
 @@ -121,6 +121,17 @@ static void misc_cg_cancel_charge(enum misc_res_type type, struct misc_cg *cg,
@@ -127,7 +128,7 @@ index 79a3717a5803..42642a96f4dc 100644
 +		old = READ_ONCE(res->watermark);
 +		if (cmpxchg(&res->watermark, old, new_usage) == old)
 +			break;
-+	} while (0);
++	} while (1);
 +}
 +
  /**
