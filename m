@@ -1,113 +1,100 @@
-Return-Path: <cgroups+bounces-3491-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3492-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3093923B8B
-	for <lists+cgroups@lfdr.de>; Tue,  2 Jul 2024 12:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9221A923BDB
+	for <lists+cgroups@lfdr.de>; Tue,  2 Jul 2024 12:52:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFC6A28562D
-	for <lists+cgroups@lfdr.de>; Tue,  2 Jul 2024 10:35:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 522442835F3
+	for <lists+cgroups@lfdr.de>; Tue,  2 Jul 2024 10:52:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F84E158A16;
-	Tue,  2 Jul 2024 10:35:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B1E158DBF;
+	Tue,  2 Jul 2024 10:52:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WvEjWGzS"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="JI23kSYk"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 053B785C56;
-	Tue,  2 Jul 2024 10:35:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3278B51004;
+	Tue,  2 Jul 2024 10:52:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719916516; cv=none; b=R1mMDc3EOrEvZpLTRgDgHLac6hSj+8d7P/Ukbs5q6tCQUzWBKHZKCeAOo3XB8Yz+cxKzWesOLo0i3hJO88UoyFEg/u5AENIn6bat2/imw1ynDOkAXU47Hjf+KsL7mWxMyAWXiELR1v6uwz5WCfmP+cXE+36Em5H78rHB0MMW9jU=
+	t=1719917569; cv=none; b=F9BMcWGqQdBTShfiOCe5edDsGvITpvrBFigGVHtmwCMkjljzl1nfDVfJMqTVh2YbgBgaeU4GyDyRsFY+K+MuTU0wLrEai/LKUzPZfd3s7O7SGFElvSvtSzxUylf70RB6yJ7eDpWOHDVYk8IBTdC7AuGWaV8gALkjWUr/AN1HJFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719916516; c=relaxed/simple;
-	bh=PwVCJWNLKdS7OFxQ6pr4q5KnmpoFbEVa0L/2bGwEHGM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YExjX1CMKZPl1soSd7ShzGRfoR8IULX1LevtJGCnkTulLedOWj7ZSPknt/w6zfJyWI/X9CNFKTXX0jy5wZbx8nMlqlSNgTXNUApK0tbpOMQ9FdCDGCdXoH16Xi1g6r6Q2/QEIWsvhRPYHF2QwcB86A/14NGK3Omm6pqRiz+1u6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WvEjWGzS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A920DC116B1;
-	Tue,  2 Jul 2024 10:35:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719916515;
-	bh=PwVCJWNLKdS7OFxQ6pr4q5KnmpoFbEVa0L/2bGwEHGM=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=WvEjWGzS/5lH+NLwTbSUkCwF3MN44bZZg+IUc1t2g1+jqkPvCiJIXNkFT3oVybr/w
-	 Tqrf9FI2c4m6OeXTTeH2ptQ/dDEcIZPI2EQXoze53OF2dO0H8SMvclyo9im3a7NuBI
-	 SSB9WwkIzhjfCLvIPlKY3/V/U3KrdRpcyaHZmCvSsiZATB6UQWLEAMmmaaH/h6ifDV
-	 ROt83lpNTKgT/YSfUEeAkGDPOEEW43iNdQq6YFuyCt4h0uC0fLC7nvO3qDYTttocBY
-	 5ufh6bcJMIJIONgsUScXALOeKkFfumtWBh2dipBGo79jrmDAntjDkrEhHZFUooUNsi
-	 s5qBofsbhAiEg==
-Message-ID: <849e7b86-b971-47d7-8e31-7eee0918ea33@kernel.org>
-Date: Tue, 2 Jul 2024 12:35:12 +0200
+	s=arc-20240116; t=1719917569; c=relaxed/simple;
+	bh=bJbqoa2/V77ycGTVTB4yMvL+A2a6H6WoXcij3BEJddw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=EV8RgXdzZprSIg+oebSvGrgd1DXCPYnmTkJsKmq5pSC1Ss9qspePdAvhbB18DqTlGmlFMv9obH/9N+0uEH1QihxqPUnJ66Xh0u4am+QD4v8sTGN3X3cU80Thw6C+9y49i5yXMsJiRfl8phQlhba572vfOUuwD6/Znh/JoBuFjyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=JI23kSYk; arc=none smtp.client-ip=220.197.31.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=FG5H+
+	ft0OjPF2pTiykVUW81Gz4xzczdC/iL7+HTzPjg=; b=JI23kSYktFuqRPIpjp9KR
+	zsxHeNo/zGCPNgEl+ID8I83ZvXvpYh8728b2QhXjhPdVQ885idPEKgnzGDD2ouOC
+	MHFhE48QYwwsl2+LIUKoCkUQfzAH1W+77PffIqug8YwkJTynWGKaBelNwsz3kpJn
+	AhnNQGMwL8l/oik5VEI7AU=
+Received: from localhost (unknown [101.132.132.191])
+	by gzga-smtp-mta-g3-1 (Coremail) with SMTP id _____wC339Zj24NmFCz9AA--.25261S2;
+	Tue, 02 Jul 2024 18:50:11 +0800 (CST)
+From: Xavier <xavier_qy@163.com>
+To: tj@kernel.org
+Cc: longman@redhat.com,
+	mkoutny@suse.com,
+	lizefan.x@bytedance.com,
+	hannes@cmpxchg.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	torvalds@linux-foundation.org,
+	akpm@linux-foundation.org,
+	Xavier <xavier_qy@163.com>
+Subject: [PATCH-cpuset v9 0/2] Add Union-Find and use it to optimize cpuset
+Date: Tue,  2 Jul 2024 18:50:08 +0800
+Message-Id: <20240702105010.253933-1-xavier_qy@163.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <ZoMXN3G72xtCLjgp@slm.duckdns.org>
+References: <ZoMXN3G72xtCLjgp@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4 2/2] cgroup/rstat: Avoid thundering herd problem by
- kswapd across NUMA nodes
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, tj@kernel.org,
- cgroups@vger.kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com,
- longman@redhat.com, kernel-team@cloudflare.com, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <171952310959.1810550.17003659816794335660.stgit@firesoul>
- <171952312320.1810550.13209360603489797077.stgit@firesoul>
- <4n3qu75efpznkomxytm7irwfiq44hhi4hb5igjbd55ooxgmvwa@tbgmwvcqsy75>
- <7ecdd625-37a0-49f1-92fc-eef9791fbe5b@kernel.org>
- <CAJD7tkaybPFoM697dtp0CiEJ2zmSYiH2+0yL+KG_LD=ZiscOJA@mail.gmail.com>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <CAJD7tkaybPFoM697dtp0CiEJ2zmSYiH2+0yL+KG_LD=ZiscOJA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wC339Zj24NmFCz9AA--.25261S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZr13CF1UWFW8Xr47Xr1DJrb_yoWfZFcE9w
+	4kZay2kw1UuF1xWFW8CFyrtFZF9rW0gryvk3Z8tFy7XF4UArZrGr1vqa4DXayUXa1DAr45
+	GF98Xr4IqrnrXjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUcyCJUUUUU==
+X-CM-SenderInfo: 50dyxvpubt5qqrwthudrp/1tbiYwQQEGV4JGHXbAAAsE
 
+Hi Tejun,
 
+Thank you for thoroughly reviewing the code and pointing out the issues.
+I have made the necessary changes to the code, comments, and documentation
+based on your suggestions.
 
-On 29/06/2024 00.15, Yosry Ahmed wrote:
-> [..]
->>>> +    /* Obtained lock, record this cgrp as the ongoing flusher */
->>>> +    if (!READ_ONCE(cgrp_rstat_ongoing_flusher)) {
->>>
->>> Can the above condition will ever be false?
->>>
->>
->> Yes, I think so, because I realized that cgroup_rstat_flush_locked() can
->> release/"yield" the lock.  Thus, other CPUs/threads have a chance to
->> call cgroup_rstat_flush, and try to become the "ongoing-flusher".
-> 
-> Right, there may actually be multiple ongoing flushers. I am now
-> wondering if it would be better if we drop cgrp_rstat_ongoing_flusher
-> completely, add a per-cgroup under_flush boolean/flag, and have the
-> cgroup iterate its parents here to check if any of them is under_flush
-> and wait for it instead.
-> 
-> Yes, we have to add parent iteration here, but I think it may be fine
-> because the flush path is already expensive. This will allow us to
-> detect if any ongoing flush is overlapping with us, not just the one
-> that happened to update cgrp_rstat_ongoing_flusher first.
-> 
-> WDYT?
+Kindly review.
 
-No, I don't think we should complicate the code to "support" multiple
-ongoing flushers (there is no parallel execution of these). The lock
-yielding cause the (I assume) unintended side-effect that multiple
-ongoing flushers can exist.  We should work towards only having a single
-ongoing flusher.
+Xavier (2):
+  Union-Find: add a new module in kernel library
+  cpuset: use Union-Find to optimize the merging of cpumasks
 
-With the current kswapd rstat contention issue, yielding the lock in the
-loop, creates the worst possible case of cache-line trashing, as these
-kthreads run on 12 different NUMA nodes.
+ Documentation/core-api/union_find.rst         | 102 ++++++++++++++++++
+ .../zh_CN/core-api/union_find.rst             |  87 +++++++++++++++
+ MAINTAINERS                                   |   9 ++
+ include/linux/union_find.h                    |  41 +++++++
+ kernel/cgroup/cpuset.c                        |  95 +++++++---------
+ lib/Makefile                                  |   2 +-
+ lib/union_find.c                              |  48 +++++++++
+ 7 files changed, 324 insertions(+), 60 deletions(-)
+ create mode 100644 Documentation/core-api/union_find.rst
+ create mode 100644 Documentation/translations/zh_CN/core-api/union_find.rst
+ create mode 100644 include/linux/union_find.h
+ create mode 100644 lib/union_find.c
 
-I'm working towards changing rstat lock to a mutex.  When doing so, we
-should not yield the lock in the loop.  This will guarantee only having
-a single ongoing flusher, and reduce cache-line trashing.
+-- 
+2.45.0
 
---Jesper
 
