@@ -1,153 +1,130 @@
-Return-Path: <cgroups+bounces-3498-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3499-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD5739240B8
-	for <lists+cgroups@lfdr.de>; Tue,  2 Jul 2024 16:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C7E9E9243D8
+	for <lists+cgroups@lfdr.de>; Tue,  2 Jul 2024 18:45:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B5371C2317A
-	for <lists+cgroups@lfdr.de>; Tue,  2 Jul 2024 14:26:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 05F6C1C23427
+	for <lists+cgroups@lfdr.de>; Tue,  2 Jul 2024 16:45:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E3CA1BA888;
-	Tue,  2 Jul 2024 14:25:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D69A31BD509;
+	Tue,  2 Jul 2024 16:44:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kNeqxcg/";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mfCIB0yu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cTlHJP8o"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AC161B583E;
-	Tue,  2 Jul 2024 14:25:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54B9F1C0DCA;
+	Tue,  2 Jul 2024 16:44:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719930324; cv=none; b=N4lG2xGL5TpbxLRNi4HwFBJRLppGkwooywlHvq6oqeHbTWVZj11dG4cXgbYLGCY9ncxEtHTRJirMOTCu8TJioMWcfmTiQFCGsh9qPkScMH9PEdSDGMgW0/CDeaarNteDyvE3cnXFfbRnkrLsjHtqiwxdxK8xQvnxt6erdfM8NP0=
+	t=1719938685; cv=none; b=uKawxVTn1ONyRmNO13PE1pe5o5ZUzkoFS059KkOwD23BSLpi/+zzz6u2clpp3TDfyOee/xOky3FDzPCYTQjS09F+SYXQ+w+s+5NPYZoCnLmMG6RDGQ9iGKpbCYyrUzpJ06woRKDZfvNBMuQ/82FlDAphxGevic1tuQx1865IkxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719930324; c=relaxed/simple;
-	bh=iVY1vfSsFSEYqt9XQodSWGL/2M6yIcSREvR7X1WLMJk=;
+	s=arc-20240116; t=1719938685; c=relaxed/simple;
+	bh=Tyz3TqYU3UX8c5xyn01VKHdXHg/5NiIVo+c3mmPCbMc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VuC+MWQ5LUF/dDpZpNZQdG2UELqa2B7M9axktkYG/v+1CR2xco7ReOhmV8QUK5BIbXwstZZKpqhRp6Gr04BJzYYZ7oQx5SHH8JvRMbHdpNxMdx3qIOMTg+w3wGuS3aLKWGXxt9T9I3PZXNXrtU+2h0UUaZIldKIZUO0ovwqwtOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kNeqxcg/; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mfCIB0yu; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8D8151FBAB;
-	Tue,  2 Jul 2024 14:25:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1719930320; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iVY1vfSsFSEYqt9XQodSWGL/2M6yIcSREvR7X1WLMJk=;
-	b=kNeqxcg/3M8efqVZyYkPUn3QNc54WivORPj22uyg7GexEq0pPKf9R5O4rC0hEIsABgyoBQ
-	APVSnZIHPp/kIbtWtgoqHYo5j50sNsTvYEvgrM4ASjDMtBZaRoJbryOq7KWy5GtDSQgTjv
-	UdALnOg3s3ZoYtbQxLMY4a/ZFafy33Q=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1719930318; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iVY1vfSsFSEYqt9XQodSWGL/2M6yIcSREvR7X1WLMJk=;
-	b=mfCIB0yupx8ZNeMCkxp/wOhvrORO7czh9Tub99cpA1ewU0MWIdReZkM2u5gYekPAkofzPP
-	GHCCgeFqdEaX8Erc0yoOOLHP4oCwhBRKKhGCfEXjX2mxTSKgd5JqdAjcfaYEAn4F34fJM/
-	flwZoLAHbIxrAA6aeJIl0HWtSBzh7G0=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7A64213A9A;
-	Tue,  2 Jul 2024 14:25:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gWOjHc4NhGbDEgAAD6G6ig
-	(envelope-from <mkoutny@suse.com>); Tue, 02 Jul 2024 14:25:18 +0000
-Date: Tue, 2 Jul 2024 16:25:13 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Li Lingfeng <lilingfeng@huaweicloud.com>
-Cc: Tejun Heo <tj@kernel.org>, josef@toxicpanda.com, hch@lst.de, 
-	axboe@kernel.dk, cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, yangerkun@huawei.com, yukuai1@huaweicloud.com, 
-	houtao1@huawei.com, yi.zhang@huawei.com, lilingfeng3@huawei.com
-Subject: Re: [PATCH v2] block: flush all throttled bios when deleting the
- cgroup
-Message-ID: <7kmlqdvltacofugn7tzg6ylu25louwnmvdfa64cgdrecpveow7@rxvvbduuvjlz>
-References: <20240627142606.3709394-1-lilingfeng@huaweicloud.com>
- <Zn3O47DUoLliwbWm@slm.duckdns.org>
- <c9802312-d9c9-f262-e1d3-9d3343255b6b@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LPqfsyx1BN33hv6HnMMxV8+Gt+MKQYKYBGWC+C4OL7yE7E9t4Y1WkVOJ0ME66oP1vryMFLmS+QOcmqUFdeE361vKR+sBhev2mi/7kn1hxMUzOralSoHN6+xte8SmTv+Ne6rDacaSyayTzEpXjJ/iEuXELdHMsQha2iqZfaJTKCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cTlHJP8o; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1f9aeb96b93so30031605ad.3;
+        Tue, 02 Jul 2024 09:44:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719938683; x=1720543483; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yYQFfspilKOpcYu5H8+151P184PuyX7LYe2ftiXcF2g=;
+        b=cTlHJP8o51bskjpIItl/1BVoDE5vBv04aGSWR75cGdzL4h4+jAo0OCx8SG/JovGrqy
+         u11iOj3fb5bL9Z53IpwJjXxddmcY1kwDrB47ZLPqVSEkk8HXF1k9Orz7ZWimi6fj2t3K
+         6a2Kk0SW2uqBSLqXcoUpqV4ZTFzCubIiVMlNn4kU8uoyxyoqs5BKPIFBUfpJ1zsfcdmE
+         s+AdR4ni/Zmv9ZJG9N3JoSEunpoXzyjKJuvW3VFaCVEyyeOtA08VkrmemAcUB9EezMgU
+         UmMWj+jhG8tdJHj8GX6RNa2WDrOPfwL8NYDEWuJ9pmwLDd774rmbprQrvg3giXuYJydt
+         7BJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719938683; x=1720543483;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yYQFfspilKOpcYu5H8+151P184PuyX7LYe2ftiXcF2g=;
+        b=Lp8rhHbM6xz/nThpXap++7idiBUY60ZgOykm1dIRbB7VWUpYoDxDhIOLdpDSeZu5bZ
+         iUmC6igocC422lAAxSL5fwmNAdxZJ4wHEZiWF3SMXih5XkhgTFVd8YFyqf2dVTd/5JQD
+         U8l3zHxUSp2tCejl7MB1R6/D89QWYr8yjHfc3FJRNs7KRSLgPeF3YDiimFw16NyfU8wq
+         lrSKuKcd8dMLFjvC1jK0FiFUEYlUzgWz2O0cxfkfrtR4uxe9cVNuDaXVhOvxIv247Wgj
+         Clu/S7A8ao5Pgq2QWLzP7rxFmJG/4SUI66XPYXkH0oPtSALifLx+Qbb0gm8zuK9Z2v+o
+         6bYw==
+X-Forwarded-Encrypted: i=1; AJvYcCWXKRTLadQLx3f7yiVtZCtxvL04him0HFZ6ny6XCya+46FosOhBlsFRnQebVFAodaCPV3CxpOcbIPhSUvyxGYYSTp+HqEyYurGabzYs77/MyTPj+nXBfSsdXRhhgwsm6Nv48evd9sgD+mUUB0kJuUtyrikaOiMR/K21pRJRelh4UA==
+X-Gm-Message-State: AOJu0YyfynjBNQZUedWKM0KFMYFfNZLPfSEktLvUJWC2FKWwZASO75iN
+	1hYo43r9HD/JGR/uOGyMovi/ChXenRfQ8ofETf/Ppk8vHNWCzBOQz3IJQA==
+X-Google-Smtp-Source: AGHT+IFtRAVfGfX7WOnLBEzo8/hdJ4YwGMYKD5zNpsgpRGteKfUv7M/KfKScvhDpxNUvVD2263RTgg==
+X-Received: by 2002:a17:90b:1294:b0:2c7:c6c4:1693 with SMTP id 98e67ed59e1d1-2c93d71f47emr8104054a91.21.1719938683575;
+        Tue, 02 Jul 2024 09:44:43 -0700 (PDT)
+Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c91ce53bdasm9067348a91.23.2024.07.02.09.44.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Jul 2024 09:44:43 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 2 Jul 2024 06:44:41 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Xiu Jianfeng <xiujianfeng@huawei.com>
+Cc: lizefan.x@bytedance.com, hannes@cmpxchg.org, corbet@lwn.net,
+	kamalesh.babulal@oracle.com, haitao.huang@linux.intel.com,
+	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 -next] cgroup/misc: Introduce misc.peak
+Message-ID: <ZoQueSY_8NYcApfi@slm.duckdns.org>
+References: <20240702075718.2657635-1-xiujianfeng@huawei.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="iyowxzavzfjl2dg3"
-Content-Disposition: inline
-In-Reply-To: <c9802312-d9c9-f262-e1d3-9d3343255b6b@huaweicloud.com>
-X-Spamd-Result: default: False [-5.90 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SIGNED_PGP(-2.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huaweicloud.com:email,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Flag: NO
-X-Spam-Score: -5.90
-X-Spam-Level: 
-
-
---iyowxzavzfjl2dg3
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240702075718.2657635-1-xiujianfeng@huawei.com>
 
-On Fri, Jun 28, 2024 at 10:04:20AM GMT, Li Lingfeng <lilingfeng@huaweicloud.com> wrote:
-> I think it may be more appropriate to remove the limit of bios after the
-> cgroup is deleted, rather than let the bios continue to be throttled by a
-> non-existent cgroup.
+Hello,
 
-I'm not that familiar with this part -- can this also happen for IOs
-submitted by an exited task? (In contrast to a running task migrated
-elsewhere.)
+On Tue, Jul 02, 2024 at 07:57:18AM +0000, Xiu Jianfeng wrote:
+>  struct misc_res {
+>  	u64 max;
+> +	u64 watermark;
 
-> If the limit is set too low, and the original cgourp has been deleted, we
-> now have no way to make the bios complete immediately, but to wait for the
-> bios to slowly complete under the limit.
+atomic64_t is probably better here.
 
-It makes some sense, it's not unlike reparenting of memcg objects, IIRC
-flushed bios would actually be passed to a parent throtl_grp, right?
+>  	atomic64_t usage;
+>  	atomic64_t events;
+>  };
+...
+> +static void misc_cg_update_watermark(struct misc_res *res, u64 new_usage)
+> +{
+> +	u64 old;
+> +
 
-Thanks,
-Michal
+How about just while (true)?
 
---iyowxzavzfjl2dg3
-Content-Type: application/pgp-signature; name="signature.asc"
+> +	do {
+> +		old = READ_ONCE(res->watermark);
 
------BEGIN PGP SIGNATURE-----
+here, you can use atomic64_read().
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZoQNxgAKCRAt3Wney77B
-SWUqAP40GfmMEfXmFIR+/auvUwxfLvyefVIhE2VoOxRf/T4L2gEAsJBHXpz3Tv9h
-FBSUq6Z4uXLPnCUQ94faVWq/eJLDpQA=
-=n7yG
------END PGP SIGNATURE-----
+> +		if (new_usage <= old)
+> +			break;
+> +		if (cmpxchg(&res->watermark, old, new_usage) == old)
 
---iyowxzavzfjl2dg3--
+and atomic64_cmpxchg().
+
+> +			break;
+> +	} while (1);
+> +}
+
+Thanks.
+
+-- 
+tejun
 
