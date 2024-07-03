@@ -1,110 +1,109 @@
-Return-Path: <cgroups+bounces-3529-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3530-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B13369268C0
-	for <lists+cgroups@lfdr.de>; Wed,  3 Jul 2024 21:00:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D7C09269AA
+	for <lists+cgroups@lfdr.de>; Wed,  3 Jul 2024 22:38:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B47928B6AA
-	for <lists+cgroups@lfdr.de>; Wed,  3 Jul 2024 19:00:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 045B31F271B1
+	for <lists+cgroups@lfdr.de>; Wed,  3 Jul 2024 20:38:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E331891DC;
-	Wed,  3 Jul 2024 18:59:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB649190469;
+	Wed,  3 Jul 2024 20:38:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FJpW1Ve9"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="UJwRVIXd"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB27D1822E5;
-	Wed,  3 Jul 2024 18:59:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48A4628379;
+	Wed,  3 Jul 2024 20:38:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720033185; cv=none; b=quN80t9Va7db8617UfgldcPkncLN+hQx7/5rfETobQUEgnjqW0kdsvEFPNddcXXPGw9eV1sFU/AyJygjt5aErz7bTP/1uX58JVnT5WLycC/e/rQFxIFs/Io8QkqEXeMamkQEadPqbP5eabGJ9Tk4yeMUivHEjt3YUt7B1mkwH/g=
+	t=1720039086; cv=none; b=bPnt9G3N+4GFWUIEmAradwOKFKB97hm/8iJpcRSnJ0zeC8f3yIx4s5+J/R5Ef3iuMs79iYNBiDTKOR91pRJsJm8h93c+mTJlcquMSxt1rd1LIxCTZJ/TeOxEqgE5cF/a3BZxG+H4bBg4bu4SMZXChVOwloQdliZpPuNdV7VeMF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720033185; c=relaxed/simple;
-	bh=xZ0tMr2lgtIQKAJ+nZbTyo4OVAyOdQQFAHj/Cu8JXaI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UcehFNM5ychDaapjUvddUxQovgp2fkIU9oFYevDtgF6qsLMc9J6S24RcE9wL4TO3+CBVGKMw/EKagU9AkNWIQuEDsfmE/9oLzqrZSc64gSvnKzduhNfgnlE6GLaJmICpX4eFUh7NSecaZmlSjgeoNPIAM32HaJ1xpG0ZRDDOhMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FJpW1Ve9; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1f4a5344ec7so7981345ad.1;
-        Wed, 03 Jul 2024 11:59:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720033183; x=1720637983; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IohLYANlTWt9Y373TRe3rnVr5G7ZnH8yifT/Euy+kEI=;
-        b=FJpW1Ve97mp61jKTII0vegvRmrdETxX8aZhKcsFBcupwcWLC/+rIVd0ON7MzXeN0Mp
-         nb+SVAPxxAox9y6etNSJ/wRam8ikxtEJ44KOuUMuY4iqyM4dxZoGL1zzyx4FmYdpXEvm
-         bKbkvOl35sYTzCV+a4ztAAobTv2h6ufKvRMMFuKHTwfdhCkOxCOOWN3xFVfS0tVsnUiW
-         RBKh4dZFl0/gwHosCo4z6ylMMbJSt7QnC5X5XYMV9XEHTW3dKy7sBYoaXjrD/QmWOeC6
-         5rXwuYeyM1/TcUIheP60TTo+F1vnIXOM24YncGgSVeS9XyVQv+JfGCzgtsOuBJGXcBfc
-         T/4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720033183; x=1720637983;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IohLYANlTWt9Y373TRe3rnVr5G7ZnH8yifT/Euy+kEI=;
-        b=SdaZ93M03ch+uocSgELhNQ74I/Xb/W11a90uxnbPc5cBc6ipOJSR/Y45FbrGFGLafX
-         mBFLpiJqanQVi4prhWfEUbhaNU2VHwPCIQuSEbypdXJng9iCuJteVPwQglG4KqodIu2b
-         lnlPumTXbSWlNB7/4onFstqM+o9OnCOS881ZRuWDUN6Gw6hQvT1xjtWEjOOonWhUWQbQ
-         l/l/G/6xYbuBPnjpBFXa3ccwzvq92gl5oajntAHnY0aNxpyGVUnebwXIP8kgt+xbCo0v
-         eJmHNpYSHfrhcbjFyURchV3olOKk1qjmfzYeNQbX9GiU/Ct8VbC0ZcHyShea96pPkViY
-         2wmg==
-X-Forwarded-Encrypted: i=1; AJvYcCVaaFM9R4otqfSe/VsbKSNm8R9Gt8A6GD3RLLSZGtYbWj5D8F/rJmq1Ul7YH4NFo+fkMmP6FKywYRLGIbL9tNI8I3Dcc0RRNp2PS90aBAVSK/HH50BixKTXuhJi1Ldc0YZJcMpzhA==
-X-Gm-Message-State: AOJu0YwwH0NAn9sw/Dk8ciG2pcXJLJmTam1YiiE6k8cXrHbGnQj+MBR1
-	RUNVTdly/Zsp2dqW5pGXGtAmh6SzJeyAbtiPb8lTDDaFZm4onqxA
-X-Google-Smtp-Source: AGHT+IEbEaBFtEXU4deGZ4B50xeYx5XmQJjG8Ta1vR2LiGo/9hMeoxcCltD4gV69DA99e8ul9Ktm4g==
-X-Received: by 2002:a17:902:f543:b0:1f9:9b6d:e3f9 with SMTP id d9443c01a7336-1fb1a0c6d7dmr40739135ad.29.1720033183131;
-        Wed, 03 Jul 2024 11:59:43 -0700 (PDT)
-Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fb0c2e10dasm25676355ad.223.2024.07.03.11.59.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jul 2024 11:59:42 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 3 Jul 2024 08:59:41 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup: Protect css->cgroup write under css_set_lock
-Message-ID: <ZoWfnS6NvEoNckGO@slm.duckdns.org>
-References: <20240703185229.1849423-1-longman@redhat.com>
+	s=arc-20240116; t=1720039086; c=relaxed/simple;
+	bh=+4Ks35xAf/yZ+g6UF74Pf5H+mbGc4Y8ntl+6RsPGyps=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=UXilvFGfZRWWlf4Nb+JZ/CCkURxXm9UN3hRZsJCvdzJOGCACkt35CfXd0yiSK+NRaOGdh8g+ucGb3l+FeunDJ218RqwohqUGddmfIQz8y9CY6z/Us8yXoOIJSokcHiu/GaWeKfNdQAyOIzruhg+PHD55rJjV2qdkOjYuZNw7uAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=UJwRVIXd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 662BDC2BD10;
+	Wed,  3 Jul 2024 20:38:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1720039085;
+	bh=+4Ks35xAf/yZ+g6UF74Pf5H+mbGc4Y8ntl+6RsPGyps=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=UJwRVIXdlKeVTnmQs9Qv9fgIH8QA7Cxi3P0TeMwE5JD2MhfR5HEgkmrBN8wJS7zUy
+	 DqY6Zz7Epo6y7LFeQw4E8StHutlFYDvqvWOUsz0WRp2LDN7MUzZRlahzHbS7nWM7+u
+	 N964EPbT4uJ0ubCmlZK5jS8MAEULJN5UyvkYQAFU=
+Date: Wed, 3 Jul 2024 13:38:04 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: xiujianfeng <xiujianfeng@huawei.com>
+Cc: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+ <corbet@lwn.net>, <cgroups@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>, Sidhartha Kumar
+ <sidhartha.kumar@oracle.com>, Miaohe Lin <linmiaohe@huawei.com>, Baolin
+ Wang <baolin.wang@linux.alibaba.com>
+Subject: Re: [PATCH -next] mm/hugetlb_cgroup: introduce peak and rsvd.peak
+ to v2
+Message-Id: <20240703133804.1d8ddf90f738a7d546399b3b@linux-foundation.org>
+In-Reply-To: <6843023e-3e80-0c1c-6aab-b386ffebd668@huawei.com>
+References: <20240702125728.2743143-1-xiujianfeng@huawei.com>
+	<20240702185851.e85a742f3391857781368f6c@linux-foundation.org>
+	<6843023e-3e80-0c1c-6aab-b386ffebd668@huawei.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240703185229.1849423-1-longman@redhat.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jul 03, 2024 at 02:52:29PM -0400, Waiman Long wrote:
-> The writing of css->cgroup associated with the cgroup root in
-> rebind_subsystems() is currently protected only by cgroup_mutex.
-> However, the reading of css->cgroup in both proc_cpuset_show() and
-> proc_cgroup_show() is protected just by css_set_lock. That makes the
-> readers susceptible to racing problems like data tearing or caching.
-> It is also a problem that can be reported by KCSAN.
+On Wed, 3 Jul 2024 10:45:56 +0800 xiujianfeng <xiujianfeng@huawei.com> wrote:
+
 > 
-> This can be fixed by using READ_ONCE() and WRITE_ONCE() to access
-> css->cgroup. Alternatively, the writing of css->cgroup can be moved
-> under css_set_lock as well which is done by this patch.
 > 
-> Signed-off-by: Waiman Long <longman@redhat.com>
+> On 2024/7/3 9:58, Andrew Morton wrote:
+> > On Tue, 2 Jul 2024 12:57:28 +0000 Xiu Jianfeng <xiujianfeng@huawei.com> wrote:
+> > 
+> >> Introduce peak and rsvd.peak to v2 to show the historical maximum
+> >> usage of resources, as in some scenarios it is necessary to configure
+> >> the value of max/rsvd.max based on the peak usage of resources.
+> > 
+> > "in some scenarios it is necessary" is not a strong statement.  It
+> > would be helpful to fully describe these scenarios so that others can
+> > better understand the value of this change.
+> > 
+> 
+> Hi Andrew,
+> 
+> Is the following description acceptable for you?
+> 
+> 
+> Since HugeTLB doesn't support page reclaim, enforcing the limit at
+> page fault time implies that, the application will get SIGBUS signal
+> if it tries to fault in HugeTLB pages beyond its limit. Therefore the
+> application needs to know exactly how many HugeTLB pages it uses before
+> hand, and the sysadmin needs to make sure that there are enough
+> available on the machine for all the users to avoid processes getting
+> SIGBUS.
+> 
+> When running some open-source software, it may not be possible to know
+> the exact amount of hugetlb it consumes, so cannot correctly configure
+> the max value. If there is a peak metric, we can run the open-source
+> software first and then configure the max based on the peak value.
+> In cgroup v1, the hugetlb controller provides the max_usage_in_bytes
+> and rsvd.max_usage_in_bytes interface to display the historical maximum
+> usage, so introduce peak and rsvd.peak to v2 to address this issue.
 
-Applied to cgroup/for-6.10-fixes.
+Super, thanks for doing this.
 
-Thanks.
+It's getting late in the cycle, but the patch is simple so I'll add it
+to mm-unstable for additional exposure.  Hopefully some others can
+offer their thoughts on the desirability of this.
 
--- 
-tejun
 
