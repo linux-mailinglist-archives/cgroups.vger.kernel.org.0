@@ -1,135 +1,178 @@
-Return-Path: <cgroups+bounces-3522-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3523-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35AC592664D
-	for <lists+cgroups@lfdr.de>; Wed,  3 Jul 2024 18:44:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA4D4926714
+	for <lists+cgroups@lfdr.de>; Wed,  3 Jul 2024 19:27:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EFD11C20A92
-	for <lists+cgroups@lfdr.de>; Wed,  3 Jul 2024 16:44:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C7211F23680
+	for <lists+cgroups@lfdr.de>; Wed,  3 Jul 2024 17:27:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BCFF1822FF;
-	Wed,  3 Jul 2024 16:44:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41232185093;
+	Wed,  3 Jul 2024 17:27:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N2FIDGpd"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y9WoHKyN"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B9317164D
-	for <cgroups@vger.kernel.org>; Wed,  3 Jul 2024 16:44:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2811836C3
+	for <cgroups@vger.kernel.org>; Wed,  3 Jul 2024 17:27:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720025046; cv=none; b=A5JPL75wpGSASqHgDCNvsRq5sn9206n7faHAIGnxsQLFOdn5B4xExRzVYz6ev8lW5rgTVL0KNgIraMrFGcxc2bhyGRE/mv5bZp0hCyQV2pO1jaIEWD/hX/nuWRAEsiAkqN9LyyIdb61+3G/MsWCgBJ4+481mNT4+8UFfzVQgRqE=
+	t=1720027655; cv=none; b=ZGfWLpNdiqgVR3yaT9e1wPb6O52rhsATi01bXFbEjKz0lDFmpY0K5vzH1/PSDt2OAIbyp3LlPaEW30dGBzjP4HYvU8el+JZqJUZS3AKMlt7NXegiBPCjbD6tsua/zv/hn4t5j73xH2PcESdCRoGqnZ37q2DHsPscrEIBpQKm4N4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720025046; c=relaxed/simple;
-	bh=CBEpIJ+yTTH6tvDwHQChSIuTkQMT98fsO94PQ7OH7K8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ap0b06bBFWOpnLhUYqQU9ajmV6exXkdwxXPb6pBAE5QaWol+kyrQdlvUHSU4uQAjvzburD0iFG1djpXYbvVBisz8c9QW9QiyzK0h2EKJgq3ypRpTLXyjmLw5VatpI4SBjWndR/aAvlFC4Z30NWLAx1rRW0z6sFNvkqfhjU913dY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N2FIDGpd; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1720025043;
+	s=arc-20240116; t=1720027655; c=relaxed/simple;
+	bh=FqSyU+a73jyu6OuLG6kVV6BIzAH4QLJf32ezyh/nspQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X5oPSd8UiBORgOYFrQcu7lLWO5Vkrtlw74bZg19WV3b6SSpCrYVlo2AtnHrbxBs7EfxMEPWiUvASSya/ceI6NiWrlBvtasJa/fS4M3HAOuTxysRxefFlDeEffZ2c7YrUT192o04PGuHe36/hA2Or9uaSNQXn5KirpqIzB7tnzEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Y9WoHKyN; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: link@vivo.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1720027650;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=51F+oMGr1yPpWhqMxtr5v0yeAnKAX4iYRi0FalsXEjY=;
-	b=N2FIDGpdHP5Dt0dMnRZzMYkZYUN+lNlp5Hyaui+P6SIbHWca9Yz8GFd0G3PlUzw1volRu3
-	UD8GMtZTFqOLpSPTbn7nt6ayffPnRkfxum4MRGJpiTVCzNYcKJlWUPXr1a5q3vni++dI9H
-	GrVc+YnjVkZsXMuJzvPR0FgBjcgnQoA=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-592-Zkdvbkh8PPuYV5D4SQ8WbA-1; Wed,
- 03 Jul 2024 12:44:00 -0400
-X-MC-Unique: Zkdvbkh8PPuYV5D4SQ8WbA-1
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 62DD319560AA;
-	Wed,  3 Jul 2024 16:43:58 +0000 (UTC)
-Received: from [10.22.33.252] (unknown [10.22.33.252])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 0BDF51954B0E;
-	Wed,  3 Jul 2024 16:43:55 +0000 (UTC)
-Message-ID: <f9e55eb8-82a8-45f2-a949-1db182e95fc8@redhat.com>
-Date: Wed, 3 Jul 2024 12:43:55 -0400
+	bh=IyZPON5O6++ZHw+uOQ1ftlsCqOJ1FTyz/rf8eKpBQ2w=;
+	b=Y9WoHKyNvOR3yrZpzen3hMsN5tO7VfI+HQSl8+BSeYtnVxAC1Ec3bH2P1EVOXnntkaY3kz
+	7V0dqSdBtGdFbdeT4lPGWF0Unbk8eK9dDYlzkLWSbxjdpacMLUTU3qbea6JYFPh5SfAF/e
+	5t5pOrj19c1JrDfKXPVG43kpZdftikg=
+X-Envelope-To: roman.gushchin@linux.dev
+X-Envelope-To: hannes@cmpxchg.org
+X-Envelope-To: mhocko@kernel.org
+X-Envelope-To: muchun.song@linux.dev
+X-Envelope-To: akpm@linux-foundation.org
+X-Envelope-To: willy@infradead.org
+X-Envelope-To: david@redhat.com
+X-Envelope-To: ryan.roberts@arm.com
+X-Envelope-To: chrisl@kernel.org
+X-Envelope-To: schatzberg.dan@gmail.com
+X-Envelope-To: kasong@tencent.com
+X-Envelope-To: cgroups@vger.kernel.org
+X-Envelope-To: linux-mm@kvack.org
+X-Envelope-To: linux-kernel@vger.kernel.org
+X-Envelope-To: brauner@kernel.org
+X-Envelope-To: opensource.kernel@vivo.com
+Date: Wed, 3 Jul 2024 10:27:25 -0700
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Huan Yang <link@vivo.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, David Hildenbrand <david@redhat.com>, 
+	Ryan Roberts <ryan.roberts@arm.com>, Chris Li <chrisl@kernel.org>, 
+	Dan Schatzberg <schatzberg.dan@gmail.com>, Kairui Song <kasong@tencent.com>, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Christian Brauner <brauner@kernel.org>, opensource.kernel@vivo.com
+Subject: Re: [RFC PATCH 0/4] Introduce PMC(PER-MEMCG-CACHE)
+Message-ID: <tlnxo4rawxryyzlpiqhjaum667q2arecgp2u4rz2s3gcsxyaqo@qeffvy5ezufc>
+References: <20240702084423.1717904-1-link@vivo.com>
+ <ZoRUukQUNqGHn_x1@google.com>
+ <27a62e44-9d85-4ef2-b833-e977af039758@vivo.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH-cpuset v10 2/2] cpuset: use Union-Find to optimize the
- merging of cpumasks
-To: Xavier <xavier_qy@163.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>
-Cc: tj@kernel.org, akpm@linux-foundation.org, lizefan.x@bytedance.com,
- hannes@cmpxchg.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org
-References: <ZoRThI4lcZLxBlwc@slm.duckdns.org>
- <20240703063727.258722-1-xavier_qy@163.com>
- <20240703063727.258722-3-xavier_qy@163.com>
- <zkkadtdssdgkndojsvfwbig3xwtqvfleyw3wbg6vewjntmklxe@xle6jq7jvkv5>
- <2ea89e07.ac63.1907836ec4b.Coremail.xavier_qy@163.com>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <2ea89e07.ac63.1907836ec4b.Coremail.xavier_qy@163.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+In-Reply-To: <27a62e44-9d85-4ef2-b833-e977af039758@vivo.com>
+X-Migadu-Flow: FLOW_OUT
 
-On 7/3/24 06:49, Xavier wrote:
->
-> Hi Michal and Longman,
->
-> Please confirm my explanation about cgroup v2 below.
->
->
-> At 2024-07-03 17:40:49, "Michal Koutný" <mkoutny@suse.com> wrote:
->> On Wed, Jul 03, 2024 at 02:37:27PM GMT, Xavier <xavier_qy@163.com> wrote:
->>> @@ -1102,31 +1101,25 @@ static int generate_sched_domains(cpumask_var_t **domains,
->>>   	if (root_load_balance && (csn == 1))
->>>   		goto single_root_domain;
->>>   
->>> -	for (i = 0; i < csn; i++)
->>> -		csa[i]->pn = i;
->>> -	ndoms = csn;
->>> -
->>> -restart:
->>> -	/* Find the best partition (set of sched domains) */
->>> -	for (i = 0; i < csn; i++) {
->>> -		struct cpuset *a = csa[i];
->>> -		int apn = a->pn;
->>> -
->>> -		for (j = 0; j < csn; j++) {
->>> -			struct cpuset *b = csa[j];
->>> -			int bpn = b->pn;
->>> -
->>> -			if (apn != bpn && cpusets_overlap(a, b)) {
->>> -				for (k = 0; k < csn; k++) {
->>> -					struct cpuset *c = csa[k];
->>> +	if (!cgrpv2) {
->> I'm surprised that original code wasn't branched on this on you add it
->> here. Why is UF used only for v1 code?
->>
-> In the Patch v6, I explained to Longman that based on his new patch, the overlapping check and
-> merge operations for cpusets are skipped in the case of cgroup v2. Because for cgroup v2,
-> doms[i] is merely copied from csa[i] rather than merged.
-> This needs further confirmation from Longman.
+On Wed, Jul 03, 2024 at 10:23:35AM GMT, Huan Yang wrote:
+> 
+> 在 2024/7/3 3:27, Roman Gushchin 写道:
+[...]
+> > Hello Huan,
+> > 
+> > thank you for sharing your work.
+> thanks
+> > 
+> > Some high-level thoughts:
+> > 1) Naming is hard, but it took me quite a while to realize that you're talking
+> Haha, sorry for my pool english
+> > about free memory. Cache is obviously an overloaded term, but per-memcg-cache
+> > can mean absolutely anything (pagecache? cpu cache? ...), so maybe it's not
+> 
+> Currently, my idea is that all memory released by processes under memcg will
+> go into the `cache`,
+> 
+> and the original attributes will be ignored, and can be freely requested by
+> processes under memcg.
+> 
+> (so, dma-buf\page cache\heap\driver, so on). Maybe named PMP more friendly?
+> :)
+> 
+> > the best choice.
+> > 2) Overall an idea to have a per-memcg free memory pool makes sense to me,
+> > especially if we talk 2MB or 1GB pages (or order > 0 in general).
+> I like it too :)
+> > 3) You absolutely have to integrate the reclaim mechanism with a generic
+> > memory reclaim mechanism, which is driven by the memory pressure.
+> Yes, I all think about it.
+> > 4) You claim a ~50% performance win in your workload, which is a lot. It's not
+> > clear to me where it's coming from. It's hard to believe the page allocation/release
+> > paths are taking 50% of the cpu time. Please, clarify.
+> 
+> Let me describe it more specifically. In our test scenario, we have 8GB of
+> RAM, and our camera application
+> 
+> has a complex set of algorithms, with a peak memory requirement of up to
+> 3GB.
+> 
+> Therefore, in a multi-application background scenario, starting the camera
+> and taking photos will create a
+> 
+> very high memory pressure. In this scenario, any released memory will be
+> quickly used by other processes (such as file pages).
+> 
+> So, during the process of switching from camera capture to preview, DMA-BUF
+> memory will be released,
+> 
+> while the memory used for the preview algorithm will be simultaneously
+> requested.
+> 
+> We need to take a lot of slow path routes to obtain enough memory for the
+> preview algorithm, and it seems that the
+> 
+> just released DMA-BUF memory does not provide much help.
+> 
+> But using PMC (let's call it that for now), we are able to quickly meet the
+> memory needs of the subsequent preview process
+> 
+> with the just released DMA-BUF memory, without having to go through the slow
+> path, resulting in a significant performance improvement.
+> 
+> (of course, break migrate type may not good.)
+> 
 
-Actually, I would like to keep the cpuset merging part for both cgroup 
-v1 and v2. I did notice that the hotplug code path can sometimes cause 
-overlapping partition roots in some intermediate states. I will try to 
-get it of that and use the merging part to verify that all partition 
-roots are mutually exclusive.
+Please correct me if I am wrong, IIUC you have applcations with
+different latency or performance requirements, running on the same
+system but the system is memory constraint. You want applications with
+stringent performance requirement to go less in the allocation slowpath
+and want the lower priority (or no perf requirement) applications to do
+more slowpath work (reclaim/compaction) for themselves as well as for
+the high priority applications.
 
-Cheers,
-Longman
+What about the allocations from the softirqs or non-memcg-aware kernel
+allocations? 
+
+An alternative approach would be something similar to the watermark
+based approach. Low priority applications (or kswapds) doing
+reclaim/compaction at a higher newly defined watermark and the higher
+priority applications are protected through the usual memcg protection.
+
+I can see another use-case for whatever the solution we comeup with and
+that is userspace reliable oom-killer.
+
+Shakeel
 
 
