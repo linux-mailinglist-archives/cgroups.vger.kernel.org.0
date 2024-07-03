@@ -1,110 +1,110 @@
-Return-Path: <cgroups+bounces-3528-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3529-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED94C9268A6
-	for <lists+cgroups@lfdr.de>; Wed,  3 Jul 2024 20:53:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B13369268C0
+	for <lists+cgroups@lfdr.de>; Wed,  3 Jul 2024 21:00:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88F83B24EC8
-	for <lists+cgroups@lfdr.de>; Wed,  3 Jul 2024 18:52:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B47928B6AA
+	for <lists+cgroups@lfdr.de>; Wed,  3 Jul 2024 19:00:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B9581891DC;
-	Wed,  3 Jul 2024 18:52:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E331891DC;
+	Wed,  3 Jul 2024 18:59:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XTdlLkl7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FJpW1Ve9"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1909188CD3
-	for <cgroups@vger.kernel.org>; Wed,  3 Jul 2024 18:52:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB27D1822E5;
+	Wed,  3 Jul 2024 18:59:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720032768; cv=none; b=AWyQFa7ONsW8ny+27vlupcJKI0IvILnQL/Sbw1+h/V0FJjno2y0yYziF/NH8tJRs1wUPyl+A71nvOL0wnKPIUooyKgy+W1G+GRDzAgHCPn6+0qUHnlWmm3FiIU13/Gep+70Bzt3ZtKxpTyVoMDBV0//bdr6+2iB43J92q4lyYwY=
+	t=1720033185; cv=none; b=quN80t9Va7db8617UfgldcPkncLN+hQx7/5rfETobQUEgnjqW0kdsvEFPNddcXXPGw9eV1sFU/AyJygjt5aErz7bTP/1uX58JVnT5WLycC/e/rQFxIFs/Io8QkqEXeMamkQEadPqbP5eabGJ9Tk4yeMUivHEjt3YUt7B1mkwH/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720032768; c=relaxed/simple;
-	bh=nC4pF2dDJtE0z7GMPFXks2mAm01oErvd3B+jorED32c=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=SV2ermA5nSwVEnUoxfos0AYzWSZbd/7D9tz/mHfkqb5tnsPKkyucnyPzdI/20iZHgs/7am0REjQPsbuJrzQbYmt/zHCgRl3fC+OYxb049HrEXJFzTVmIGuAJ6p8+lZmMQ6oSr8ApOcJaBxhR62WN0G1H1nUeuZpHmUfw43RKrpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XTdlLkl7; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1720032765;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=1JfQRXvykBxI0RLs6DOfqQW6hwbzPvCYWb+yNAuMeO8=;
-	b=XTdlLkl7sRmspUDu7CZsZzoufTQ3SCc1ONWwsNL/3Fs5SKGf5GGhcaPSBSJrFy6rD1PKQb
-	FxpLey1tlS5CYi9eiosArVGyTnVBGjx73XeYDXEdtgpgWZh8+srP+dIOVfsthgx4VhoPtu
-	QlF2x2+ihm1ldeb3IU92AC5475NWgmE=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-636-umOyin8RNW66VrNeYeXLgw-1; Wed,
- 03 Jul 2024 14:52:41 -0400
-X-MC-Unique: umOyin8RNW66VrNeYeXLgw-1
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 131A51955BCB;
-	Wed,  3 Jul 2024 18:52:40 +0000 (UTC)
-Received: from llong.com (unknown [10.22.33.252])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 152F330000DD;
-	Wed,  3 Jul 2024 18:52:37 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH] cgroup: Protect css->cgroup write under css_set_lock
-Date: Wed,  3 Jul 2024 14:52:29 -0400
-Message-Id: <20240703185229.1849423-1-longman@redhat.com>
+	s=arc-20240116; t=1720033185; c=relaxed/simple;
+	bh=xZ0tMr2lgtIQKAJ+nZbTyo4OVAyOdQQFAHj/Cu8JXaI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UcehFNM5ychDaapjUvddUxQovgp2fkIU9oFYevDtgF6qsLMc9J6S24RcE9wL4TO3+CBVGKMw/EKagU9AkNWIQuEDsfmE/9oLzqrZSc64gSvnKzduhNfgnlE6GLaJmICpX4eFUh7NSecaZmlSjgeoNPIAM32HaJ1xpG0ZRDDOhMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FJpW1Ve9; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1f4a5344ec7so7981345ad.1;
+        Wed, 03 Jul 2024 11:59:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720033183; x=1720637983; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IohLYANlTWt9Y373TRe3rnVr5G7ZnH8yifT/Euy+kEI=;
+        b=FJpW1Ve97mp61jKTII0vegvRmrdETxX8aZhKcsFBcupwcWLC/+rIVd0ON7MzXeN0Mp
+         nb+SVAPxxAox9y6etNSJ/wRam8ikxtEJ44KOuUMuY4iqyM4dxZoGL1zzyx4FmYdpXEvm
+         bKbkvOl35sYTzCV+a4ztAAobTv2h6ufKvRMMFuKHTwfdhCkOxCOOWN3xFVfS0tVsnUiW
+         RBKh4dZFl0/gwHosCo4z6ylMMbJSt7QnC5X5XYMV9XEHTW3dKy7sBYoaXjrD/QmWOeC6
+         5rXwuYeyM1/TcUIheP60TTo+F1vnIXOM24YncGgSVeS9XyVQv+JfGCzgtsOuBJGXcBfc
+         T/4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720033183; x=1720637983;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IohLYANlTWt9Y373TRe3rnVr5G7ZnH8yifT/Euy+kEI=;
+        b=SdaZ93M03ch+uocSgELhNQ74I/Xb/W11a90uxnbPc5cBc6ipOJSR/Y45FbrGFGLafX
+         mBFLpiJqanQVi4prhWfEUbhaNU2VHwPCIQuSEbypdXJng9iCuJteVPwQglG4KqodIu2b
+         lnlPumTXbSWlNB7/4onFstqM+o9OnCOS881ZRuWDUN6Gw6hQvT1xjtWEjOOonWhUWQbQ
+         l/l/G/6xYbuBPnjpBFXa3ccwzvq92gl5oajntAHnY0aNxpyGVUnebwXIP8kgt+xbCo0v
+         eJmHNpYSHfrhcbjFyURchV3olOKk1qjmfzYeNQbX9GiU/Ct8VbC0ZcHyShea96pPkViY
+         2wmg==
+X-Forwarded-Encrypted: i=1; AJvYcCVaaFM9R4otqfSe/VsbKSNm8R9Gt8A6GD3RLLSZGtYbWj5D8F/rJmq1Ul7YH4NFo+fkMmP6FKywYRLGIbL9tNI8I3Dcc0RRNp2PS90aBAVSK/HH50BixKTXuhJi1Ldc0YZJcMpzhA==
+X-Gm-Message-State: AOJu0YwwH0NAn9sw/Dk8ciG2pcXJLJmTam1YiiE6k8cXrHbGnQj+MBR1
+	RUNVTdly/Zsp2dqW5pGXGtAmh6SzJeyAbtiPb8lTDDaFZm4onqxA
+X-Google-Smtp-Source: AGHT+IEbEaBFtEXU4deGZ4B50xeYx5XmQJjG8Ta1vR2LiGo/9hMeoxcCltD4gV69DA99e8ul9Ktm4g==
+X-Received: by 2002:a17:902:f543:b0:1f9:9b6d:e3f9 with SMTP id d9443c01a7336-1fb1a0c6d7dmr40739135ad.29.1720033183131;
+        Wed, 03 Jul 2024 11:59:43 -0700 (PDT)
+Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fb0c2e10dasm25676355ad.223.2024.07.03.11.59.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jul 2024 11:59:42 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 3 Jul 2024 08:59:41 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: Protect css->cgroup write under css_set_lock
+Message-ID: <ZoWfnS6NvEoNckGO@slm.duckdns.org>
+References: <20240703185229.1849423-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240703185229.1849423-1-longman@redhat.com>
 
-The writing of css->cgroup associated with the cgroup root in
-rebind_subsystems() is currently protected only by cgroup_mutex.
-However, the reading of css->cgroup in both proc_cpuset_show() and
-proc_cgroup_show() is protected just by css_set_lock. That makes the
-readers susceptible to racing problems like data tearing or caching.
-It is also a problem that can be reported by KCSAN.
+On Wed, Jul 03, 2024 at 02:52:29PM -0400, Waiman Long wrote:
+> The writing of css->cgroup associated with the cgroup root in
+> rebind_subsystems() is currently protected only by cgroup_mutex.
+> However, the reading of css->cgroup in both proc_cpuset_show() and
+> proc_cgroup_show() is protected just by css_set_lock. That makes the
+> readers susceptible to racing problems like data tearing or caching.
+> It is also a problem that can be reported by KCSAN.
+> 
+> This can be fixed by using READ_ONCE() and WRITE_ONCE() to access
+> css->cgroup. Alternatively, the writing of css->cgroup can be moved
+> under css_set_lock as well which is done by this patch.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-This can be fixed by using READ_ONCE() and WRITE_ONCE() to access
-css->cgroup. Alternatively, the writing of css->cgroup can be moved
-under css_set_lock as well which is done by this patch.
+Applied to cgroup/for-6.10-fixes.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/cgroup/cgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks.
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index ff3c14fa62e6..c8e4b62b436a 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1842,9 +1842,9 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
- 		RCU_INIT_POINTER(scgrp->subsys[ssid], NULL);
- 		rcu_assign_pointer(dcgrp->subsys[ssid], css);
- 		ss->root = dst_root;
--		css->cgroup = dcgrp;
- 
- 		spin_lock_irq(&css_set_lock);
-+		css->cgroup = dcgrp;
- 		WARN_ON(!list_empty(&dcgrp->e_csets[ss->id]));
- 		list_for_each_entry_safe(cset, cset_pos, &scgrp->e_csets[ss->id],
- 					 e_cset_node[ss->id]) {
 -- 
-2.39.3
-
+tejun
 
