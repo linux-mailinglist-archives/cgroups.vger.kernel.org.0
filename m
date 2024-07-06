@@ -1,105 +1,248 @@
-Return-Path: <cgroups+bounces-3555-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3556-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EADB929171
-	for <lists+cgroups@lfdr.de>; Sat,  6 Jul 2024 09:22:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D70A929261
+	for <lists+cgroups@lfdr.de>; Sat,  6 Jul 2024 12:02:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39C311F2278D
-	for <lists+cgroups@lfdr.de>; Sat,  6 Jul 2024 07:22:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE2111F21FCF
+	for <lists+cgroups@lfdr.de>; Sat,  6 Jul 2024 10:02:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A4E51C6A7;
-	Sat,  6 Jul 2024 07:21:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1756D482FF;
+	Sat,  6 Jul 2024 10:02:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HulDKIIM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC3981A29A;
-	Sat,  6 Jul 2024 07:21:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8833877101
+	for <cgroups@vger.kernel.org>; Sat,  6 Jul 2024 10:02:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720250514; cv=none; b=lS+kNqofGaWzsC+TQgie2pjeifvZL6lvLc0LeC6ArJw2MAJP36xBQHu3GS8guQXGKqYoGyFUh8JEO3Wr4aHeOTlPDM/Bt/2nBhpx/PPq/3nzwCaj2pjMO9hYT6oHXlFu569O0dgYG9I61ghKSW+8s0cOkbwZdvS5dHTFEVNNBCk=
+	t=1720260161; cv=none; b=c2PTX50EEu4j+bDiM04ypsf+1nOrzTNirWDAKDkwIdQHfXXnLRgbnbmpOzURELMNwPkQT73jLSM78HBmlEFbE02Pd7eCWoh6BrLUt2TMgr4fw3/OuOsHRKgXlApvPEjH0uADIP7R8VQp5n0GUGAunXajbto6L0iSt09T9/ZgOus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720250514; c=relaxed/simple;
-	bh=4PkIHvSsshrnvwvckcHor1cUfA6KuhrSvtJeWYyvYHU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h5vgf+cfmNWFXSt7w9ijMPyymdQxNOUqs7mGC41qNvCshQ0Bmprcsh/X9rDJRDxpohm46sFTp5feCMjYvLHmTKMhy0M4dwxRJFMAFPkZtgfhdXlTC8MNCh6mA6TGe0gk6S63Zg4hYrBNNr8iyV7slbO7faGXkrjGJnDGP9QUqgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WGMJH6ryPz4f3jkc;
-	Sat,  6 Jul 2024 15:21:35 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 6CB4F1A0189;
-	Sat,  6 Jul 2024 15:21:43 +0800 (CST)
-Received: from [10.174.179.155] (unknown [10.174.179.155])
-	by APP2 (Coremail) with SMTP id Syh0CgB34YaF8Ihmzu5EBQ--.55910S3;
-	Sat, 06 Jul 2024 15:21:43 +0800 (CST)
-Message-ID: <c900fece-14a4-0b64-babb-053b38ed0dbe@huaweicloud.com>
-Date: Sat, 6 Jul 2024 15:21:41 +0800
+	s=arc-20240116; t=1720260161; c=relaxed/simple;
+	bh=isJhpg0utbXYGitVHgH91Fso6v4dyfD2TAD8sLk/1j4=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=HcRpQXyv3olL5NCWZ+me5wbtV6pMeDCEH9I6Veo9THOXKuSRMtv/q8/gm/I8eiqmWvrSiNE5CRdkFH8ht83C8lczYQ/Fuy/uInmA5Qkg6LAfYv/pA7OjAJcEvUNNI+/2KLc3zfTS3EG3JCkUgtYdAKzmb5Gq78WcTZeSrf61f+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HulDKIIM; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1720260159; x=1751796159;
+  h=date:from:to:cc:subject:message-id;
+  bh=isJhpg0utbXYGitVHgH91Fso6v4dyfD2TAD8sLk/1j4=;
+  b=HulDKIIMEMuKD4jQmQiJyV2Cm78alIQCP6QV/TzV/cZ4w/qCmtGNkM3h
+   2jxDJ03Df15Gkqm2aZey7JbRMHTZXvPy5W4gvrz42aflHJTJPGUYYM4JZ
+   u24pLdLuHkvHUy3JV4fzcnY0zqYAuFCHVK+0PCLFDQ8vB6xd/KctoQJGD
+   hYVXYiBhYeGAqVSm48aN1TTOQPOrZoJildyYy9gI+YBSLAPxJoFmdJ/VS
+   FMCIoMr9LN6mnEpPxwM+vVR2TShLk1fMJDM5gbAU4xhLESfDGg5PI9PDT
+   zErCoGdrH0SV9jjPj2r4DIak8iCtsvkfn6fnFy9F2UyKlI4vFNRuXJmyU
+   w==;
+X-CSE-ConnectionGUID: ixqPPgOZSo2MNFC0AQmJug==
+X-CSE-MsgGUID: t79mtCRRRTimTxmdeNuHXw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11123"; a="34968538"
+X-IronPort-AV: E=Sophos;i="6.09,187,1716274800"; 
+   d="scan'208";a="34968538"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jul 2024 03:02:39 -0700
+X-CSE-ConnectionGUID: e2EFwQJzRWeseAc8a1UzyQ==
+X-CSE-MsgGUID: 1q+92oEXRXmwbMve8KUtKw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,187,1716274800"; 
+   d="scan'208";a="47021447"
+Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
+  by fmviesa008.fm.intel.com with ESMTP; 06 Jul 2024 03:02:38 -0700
+Received: from kbuild by 68891e0c336b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sQ2FX-000Tb2-2E;
+	Sat, 06 Jul 2024 10:02:35 +0000
+Date: Sat, 06 Jul 2024 18:02:23 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-6.11] BUILD SUCCESS
+ b824766504e49f3fdcbb8c722e70996a78c3636e
+Message-ID: <202407061821.8cdPYPLH-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101
- Thunderbird/104.0
-Subject: Re: [PATCH v2] block: flush all throttled bios when deleting the
- cgroup
-To: =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc: Tejun Heo <tj@kernel.org>, josef@toxicpanda.com, hch@lst.de,
- axboe@kernel.dk, cgroups@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, yangerkun@huawei.com, yukuai1@huaweicloud.com,
- houtao1@huawei.com, yi.zhang@huawei.com, lilingfeng3@huawei.com
-References: <20240627142606.3709394-1-lilingfeng@huaweicloud.com>
- <Zn3O47DUoLliwbWm@slm.duckdns.org>
- <c9802312-d9c9-f262-e1d3-9d3343255b6b@huaweicloud.com>
- <7kmlqdvltacofugn7tzg6ylu25louwnmvdfa64cgdrecpveow7@rxvvbduuvjlz>
-From: Li Lingfeng <lilingfeng@huaweicloud.com>
-In-Reply-To: <7kmlqdvltacofugn7tzg6ylu25louwnmvdfa64cgdrecpveow7@rxvvbduuvjlz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgB34YaF8Ihmzu5EBQ--.55910S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Jw15CFy3Zry5WFWrZw4DCFg_yoWfKFgEva
-	yjqa1vganxXa92kay7GFykCrW5GayUZryDX3yvqr47WryYyF1kJFW8uFZ5u343Aa1S9r9r
-	GFZxJas7ur1q9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUb3kFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-	Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-	1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY
-	04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
-	v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
-	1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
-	AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0D
-	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
-	VFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
-X-CM-SenderInfo: polox0xjih0w46kxt4xhlfz01xgou0bp/
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.11
+branch HEAD: b824766504e49f3fdcbb8c722e70996a78c3636e  cgroup/rstat: add force idle show helper
 
-在 2024/7/2 22:25, Michal Koutný 写道:
-> On Fri, Jun 28, 2024 at 10:04:20AM GMT, Li Lingfeng <lilingfeng@huaweicloud.com> wrote:
->> I think it may be more appropriate to remove the limit of bios after the
->> cgroup is deleted, rather than let the bios continue to be throttled by a
->> non-existent cgroup.
-> I'm not that familiar with this part -- can this also happen for IOs
-> submitted by an exited task? (In contrast to a running task migrated
-> elsewhere.)
-Yes, IOs will be throttled no matter whether the task that delivers them
-exits.
->> If the limit is set too low, and the original cgourp has been deleted, we
->> now have no way to make the bios complete immediately, but to wait for the
->> bios to slowly complete under the limit.
-> It makes some sense, it's not unlike reparenting of memcg objects, IIRC
-> flushed bios would actually be passed to a parent throtl_grp, right?
-Yes, flushed bios would be throttled by the parent throtl_grp.
-> Thanks,
-> Michal
+elapsed time: 912m
 
+configs tested: 155
+configs skipped: 4
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc-13.2.0
+alpha                            allyesconfig   gcc-13.2.0
+alpha                               defconfig   gcc-13.2.0
+arc                              allmodconfig   gcc-13.2.0
+arc                               allnoconfig   gcc-13.2.0
+arc                              allyesconfig   gcc-13.2.0
+arc                                 defconfig   gcc-13.2.0
+arc                        nsim_700_defconfig   gcc-13.2.0
+arc                 nsimosci_hs_smp_defconfig   gcc-13.2.0
+arm                              allmodconfig   gcc-13.2.0
+arm                               allnoconfig   clang-19
+arm                               allnoconfig   gcc-13.2.0
+arm                              allyesconfig   gcc-13.2.0
+arm                                 defconfig   gcc-13.2.0
+arm                       imx_v4_v5_defconfig   gcc-13.2.0
+arm                      integrator_defconfig   gcc-13.2.0
+arm                        keystone_defconfig   gcc-13.2.0
+arm                         socfpga_defconfig   gcc-13.2.0
+arm                          sp7021_defconfig   gcc-13.2.0
+arm64                            allmodconfig   clang-19
+arm64                            allmodconfig   gcc-13.2.0
+arm64                             allnoconfig   gcc-13.2.0
+arm64                               defconfig   gcc-13.2.0
+csky                              allnoconfig   gcc-13.2.0
+csky                                defconfig   gcc-13.2.0
+hexagon                          allmodconfig   clang-19
+hexagon                           allnoconfig   clang-19
+hexagon                          allyesconfig   clang-19
+i386                             allmodconfig   clang-18
+i386                             allmodconfig   gcc-13
+i386                              allnoconfig   clang-18
+i386                              allnoconfig   gcc-13
+i386                             allyesconfig   clang-18
+i386                             allyesconfig   gcc-13
+i386         buildonly-randconfig-001-20240706   clang-18
+i386         buildonly-randconfig-002-20240706   clang-18
+i386         buildonly-randconfig-002-20240706   gcc-13
+i386         buildonly-randconfig-003-20240706   clang-18
+i386         buildonly-randconfig-004-20240706   clang-18
+i386         buildonly-randconfig-004-20240706   gcc-13
+i386         buildonly-randconfig-005-20240706   clang-18
+i386         buildonly-randconfig-005-20240706   gcc-10
+i386         buildonly-randconfig-006-20240706   clang-18
+i386                                defconfig   clang-18
+i386                  randconfig-001-20240706   clang-18
+i386                  randconfig-001-20240706   gcc-13
+i386                  randconfig-002-20240706   clang-18
+i386                  randconfig-003-20240706   clang-18
+i386                  randconfig-003-20240706   gcc-13
+i386                  randconfig-004-20240706   clang-18
+i386                  randconfig-005-20240706   clang-18
+i386                  randconfig-006-20240706   clang-18
+i386                  randconfig-006-20240706   gcc-12
+i386                  randconfig-011-20240706   clang-18
+i386                  randconfig-011-20240706   gcc-11
+i386                  randconfig-012-20240706   clang-18
+i386                  randconfig-013-20240706   clang-18
+i386                  randconfig-014-20240706   clang-18
+i386                  randconfig-015-20240706   clang-18
+i386                  randconfig-015-20240706   gcc-7
+i386                  randconfig-016-20240706   clang-18
+i386                  randconfig-016-20240706   gcc-13
+loongarch                        allmodconfig   gcc-13.2.0
+loongarch                         allnoconfig   gcc-13.2.0
+loongarch                           defconfig   gcc-13.2.0
+m68k                             allmodconfig   gcc-13.2.0
+m68k                              allnoconfig   gcc-13.2.0
+m68k                             allyesconfig   gcc-13.2.0
+m68k                                defconfig   gcc-13.2.0
+m68k                        stmark2_defconfig   gcc-13.2.0
+microblaze                       allmodconfig   gcc-13.2.0
+microblaze                        allnoconfig   gcc-13.2.0
+microblaze                       allyesconfig   gcc-13.2.0
+microblaze                          defconfig   gcc-13.2.0
+mips                              allnoconfig   gcc-13.2.0
+mips                           jazz_defconfig   gcc-13.2.0
+mips                      loongson3_defconfig   gcc-13.2.0
+nios2                             allnoconfig   gcc-13.2.0
+nios2                               defconfig   gcc-13.2.0
+openrisc                          allnoconfig   gcc-13.2.0
+openrisc                         allyesconfig   gcc-13.2.0
+openrisc                            defconfig   gcc-13.2.0
+openrisc                    or1ksim_defconfig   gcc-13.2.0
+parisc                           allmodconfig   gcc-13.2.0
+parisc                            allnoconfig   gcc-13.2.0
+parisc                           allyesconfig   gcc-13.2.0
+parisc                              defconfig   gcc-13.2.0
+parisc64                            defconfig   gcc-13.2.0
+powerpc                     akebono_defconfig   gcc-13.2.0
+powerpc                          allmodconfig   gcc-13.2.0
+powerpc                           allnoconfig   gcc-13.2.0
+powerpc                          allyesconfig   clang-19
+powerpc                          allyesconfig   gcc-13.2.0
+powerpc                      bamboo_defconfig   gcc-13.2.0
+powerpc                      mgcoge_defconfig   gcc-13.2.0
+riscv                            allmodconfig   clang-19
+riscv                            allmodconfig   gcc-13.2.0
+riscv                             allnoconfig   gcc-13.2.0
+riscv                            allyesconfig   clang-19
+riscv                            allyesconfig   gcc-13.2.0
+riscv                               defconfig   gcc-13.2.0
+s390                             allmodconfig   clang-19
+s390                              allnoconfig   clang-19
+s390                              allnoconfig   gcc-13.2.0
+s390                             allyesconfig   clang-19
+s390                             allyesconfig   gcc-13.2.0
+s390                                defconfig   gcc-13.2.0
+sh                               allmodconfig   gcc-13.2.0
+sh                                allnoconfig   gcc-13.2.0
+sh                               allyesconfig   gcc-13.2.0
+sh                                  defconfig   gcc-13.2.0
+sh                           se7619_defconfig   gcc-13.2.0
+sh                           se7724_defconfig   gcc-13.2.0
+sparc                            allmodconfig   gcc-13.2.0
+sparc64                             defconfig   gcc-13.2.0
+um                               allmodconfig   clang-19
+um                               allmodconfig   gcc-13.2.0
+um                                allnoconfig   clang-17
+um                                allnoconfig   gcc-13.2.0
+um                               allyesconfig   gcc-13
+um                               allyesconfig   gcc-13.2.0
+um                                  defconfig   gcc-13.2.0
+um                             i386_defconfig   gcc-13.2.0
+um                           x86_64_defconfig   gcc-13.2.0
+x86_64                            allnoconfig   clang-18
+x86_64                           allyesconfig   clang-18
+x86_64       buildonly-randconfig-001-20240706   clang-18
+x86_64       buildonly-randconfig-002-20240706   clang-18
+x86_64       buildonly-randconfig-003-20240706   clang-18
+x86_64       buildonly-randconfig-004-20240706   clang-18
+x86_64       buildonly-randconfig-005-20240706   clang-18
+x86_64       buildonly-randconfig-006-20240706   clang-18
+x86_64                              defconfig   clang-18
+x86_64                              defconfig   gcc-13
+x86_64                randconfig-001-20240706   clang-18
+x86_64                randconfig-002-20240706   clang-18
+x86_64                randconfig-003-20240706   clang-18
+x86_64                randconfig-004-20240706   clang-18
+x86_64                randconfig-005-20240706   clang-18
+x86_64                randconfig-006-20240706   clang-18
+x86_64                randconfig-011-20240706   clang-18
+x86_64                randconfig-012-20240706   clang-18
+x86_64                randconfig-013-20240706   clang-18
+x86_64                randconfig-014-20240706   clang-18
+x86_64                randconfig-015-20240706   clang-18
+x86_64                randconfig-016-20240706   clang-18
+x86_64                randconfig-071-20240706   clang-18
+x86_64                randconfig-072-20240706   clang-18
+x86_64                randconfig-073-20240706   clang-18
+x86_64                randconfig-074-20240706   clang-18
+x86_64                randconfig-075-20240706   clang-18
+x86_64                randconfig-076-20240706   clang-18
+x86_64                          rhel-8.3-rust   clang-18
+xtensa                            allnoconfig   gcc-13.2.0
+xtensa                  nommu_kc705_defconfig   gcc-13.2.0
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
