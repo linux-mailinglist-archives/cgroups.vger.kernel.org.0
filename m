@@ -1,150 +1,105 @@
-Return-Path: <cgroups+bounces-3554-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3555-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5829B928FD7
-	for <lists+cgroups@lfdr.de>; Sat,  6 Jul 2024 02:56:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EADB929171
+	for <lists+cgroups@lfdr.de>; Sat,  6 Jul 2024 09:22:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1F3A284530
-	for <lists+cgroups@lfdr.de>; Sat,  6 Jul 2024 00:56:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39C311F2278D
+	for <lists+cgroups@lfdr.de>; Sat,  6 Jul 2024 07:22:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A596B79F4;
-	Sat,  6 Jul 2024 00:56:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hNyK+Akh"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A4E51C6A7;
+	Sat,  6 Jul 2024 07:21:54 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A08253A9
-	for <cgroups@vger.kernel.org>; Sat,  6 Jul 2024 00:56:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC3981A29A;
+	Sat,  6 Jul 2024 07:21:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720227405; cv=none; b=PZadHzWV6OhuV1bVA8WfUAnoixmCnr5yZFfoe4EBqaLg/vnaDHH3lBIF+oiLtDfVxjlukCxpaP52H0qxEo6P60bx9QNRFttblhMRG04/x+2czSXD5ds6VkIsNtEBTlrB0CqtJrDxAarV5xCDL0Bn4fYTw+5Zeq3Ay9vy4aW2eu8=
+	t=1720250514; cv=none; b=lS+kNqofGaWzsC+TQgie2pjeifvZL6lvLc0LeC6ArJw2MAJP36xBQHu3GS8guQXGKqYoGyFUh8JEO3Wr4aHeOTlPDM/Bt/2nBhpx/PPq/3nzwCaj2pjMO9hYT6oHXlFu569O0dgYG9I61ghKSW+8s0cOkbwZdvS5dHTFEVNNBCk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720227405; c=relaxed/simple;
-	bh=wwto9Nx1KOq8TXgm3m4jjxC1UDpA6N1LnMFTkOqoff8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YvIwcMPg8H+R/8ahjIwIM0eMI9usl4bgWoQ1KXiQyN+maRG/DGd2XzNBaVyoaCkzAkUNNdMj/ueZdGT8OrjkZyVOd644FzWsMQ+XnjG5nix3PkCZ9F2oBEEjRBO01/Bovv/M1KQ7NgrsClBnkJoSgrzaLkZx2wpdbjSfViktprg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hNyK+Akh; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1720227402;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ITg0RmOa/Ukje0Aga3LKBuosEtPn/Vv8C83AigEih+I=;
-	b=hNyK+AkhK9Ce2Lho2QCuTmNWFN1LNFi2jozm0pKSxOavAnsA3pRH5OcKmRoeaq5jLpZ7YM
-	8qKLqJdU/3Ad+X8AkzveiwtFQcpctMM5VeJLUhBdBiyGLfyhouXTUhGicbuuFxx6Lm/x5a
-	KHDhBWPCer4LfIplLXbZU4Fjtp5U0iw=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-227-dUIBaMa5P26nHX_6jrwTMQ-1; Fri,
- 05 Jul 2024 20:56:39 -0400
-X-MC-Unique: dUIBaMa5P26nHX_6jrwTMQ-1
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 494061956095;
-	Sat,  6 Jul 2024 00:56:38 +0000 (UTC)
-Received: from llong.com (unknown [10.22.8.212])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 8B9A83000185;
-	Sat,  6 Jul 2024 00:56:36 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH-cgroup 2/2] cgroup: Remove nr_cgrps
-Date: Fri,  5 Jul 2024 20:56:22 -0400
-Message-Id: <20240706005622.2003606-2-longman@redhat.com>
-In-Reply-To: <20240706005622.2003606-1-longman@redhat.com>
-References: <20240706005622.2003606-1-longman@redhat.com>
+	s=arc-20240116; t=1720250514; c=relaxed/simple;
+	bh=4PkIHvSsshrnvwvckcHor1cUfA6KuhrSvtJeWYyvYHU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=h5vgf+cfmNWFXSt7w9ijMPyymdQxNOUqs7mGC41qNvCshQ0Bmprcsh/X9rDJRDxpohm46sFTp5feCMjYvLHmTKMhy0M4dwxRJFMAFPkZtgfhdXlTC8MNCh6mA6TGe0gk6S63Zg4hYrBNNr8iyV7slbO7faGXkrjGJnDGP9QUqgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WGMJH6ryPz4f3jkc;
+	Sat,  6 Jul 2024 15:21:35 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 6CB4F1A0189;
+	Sat,  6 Jul 2024 15:21:43 +0800 (CST)
+Received: from [10.174.179.155] (unknown [10.174.179.155])
+	by APP2 (Coremail) with SMTP id Syh0CgB34YaF8Ihmzu5EBQ--.55910S3;
+	Sat, 06 Jul 2024 15:21:43 +0800 (CST)
+Message-ID: <c900fece-14a4-0b64-babb-053b38ed0dbe@huaweicloud.com>
+Date: Sat, 6 Jul 2024 15:21:41 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:104.0) Gecko/20100101
+ Thunderbird/104.0
+Subject: Re: [PATCH v2] block: flush all throttled bios when deleting the
+ cgroup
+To: =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc: Tejun Heo <tj@kernel.org>, josef@toxicpanda.com, hch@lst.de,
+ axboe@kernel.dk, cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, yangerkun@huawei.com, yukuai1@huaweicloud.com,
+ houtao1@huawei.com, yi.zhang@huawei.com, lilingfeng3@huawei.com
+References: <20240627142606.3709394-1-lilingfeng@huaweicloud.com>
+ <Zn3O47DUoLliwbWm@slm.duckdns.org>
+ <c9802312-d9c9-f262-e1d3-9d3343255b6b@huaweicloud.com>
+ <7kmlqdvltacofugn7tzg6ylu25louwnmvdfa64cgdrecpveow7@rxvvbduuvjlz>
+From: Li Lingfeng <lilingfeng@huaweicloud.com>
+In-Reply-To: <7kmlqdvltacofugn7tzg6ylu25louwnmvdfa64cgdrecpveow7@rxvvbduuvjlz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+X-CM-TRANSID:Syh0CgB34YaF8Ihmzu5EBQ--.55910S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jw15CFy3Zry5WFWrZw4DCFg_yoWfKFgEva
+	yjqa1vganxXa92kay7GFykCrW5GayUZryDX3yvqr47WryYyF1kJFW8uFZ5u343Aa1S9r9r
+	GFZxJas7ur1q9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb3kFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+	Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+	1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY
+	04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
+	v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
+	1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
+	AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0D
+	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+	VFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: polox0xjih0w46kxt4xhlfz01xgou0bp/
 
-With the previous patch, the nr_cgrps field in the cgroup_root structure
-is no longer being used. Just remove it.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- include/linux/cgroup-defs.h | 3 ---
- kernel/cgroup/cgroup.c      | 5 -----
- 2 files changed, 8 deletions(-)
-
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index 522ab77f0406..542334bf72df 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -581,9 +581,6 @@ struct cgroup_root {
- 	/* must follow cgrp for cgrp->ancestors[0], see above */
- 	struct cgroup *cgrp_ancestor_storage;
- 
--	/* Number of cgroups in the hierarchy, used only for /proc/cgroups */
--	atomic_t nr_cgrps;
--
- 	/* Hierarchy-specific flags */
- 	unsigned int flags;
- 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 4a818192950f..b6854ba702ca 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1327,7 +1327,6 @@ static void cgroup_destroy_root(struct cgroup_root *root)
- 
- 	cgroup_lock_and_drain_offline(&cgrp_dfl_root.cgrp);
- 
--	BUG_ON(atomic_read(&root->nr_cgrps));
- 	BUG_ON(!list_empty(&cgrp->self.children));
- 
- 	/* Rebind all subsystems back to the default hierarchy */
-@@ -2061,7 +2060,6 @@ void init_cgroup_root(struct cgroup_fs_context *ctx)
- 	struct cgroup *cgrp = &root->cgrp;
- 
- 	INIT_LIST_HEAD_RCU(&root->root_list);
--	atomic_set(&root->nr_cgrps, 1);
- 	cgrp->root = root;
- 	init_cgroup_housekeeping(cgrp);
- 
-@@ -2159,7 +2157,6 @@ int cgroup_setup_root(struct cgroup_root *root, u16 ss_mask)
- 	spin_unlock_irq(&css_set_lock);
- 
- 	BUG_ON(!list_empty(&root_cgrp->self.children));
--	BUG_ON(atomic_read(&root->nr_cgrps) != 1);
- 
- 	ret = 0;
- 	goto out;
-@@ -5383,7 +5380,6 @@ static void css_free_rwork_fn(struct work_struct *work)
- 			css_put(parent);
- 	} else {
- 		/* cgroup free path */
--		atomic_dec(&cgrp->root->nr_cgrps);
- 		if (!cgroup_on_dfl(cgrp))
- 			cgroup1_pidlist_destroy_all(cgrp);
- 		cancel_work_sync(&cgrp->release_agent_work);
-@@ -5693,7 +5689,6 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
- 
- 	/* allocation complete, commit to creation */
- 	list_add_tail_rcu(&cgrp->self.sibling, &cgroup_parent(cgrp)->self.children);
--	atomic_inc(&root->nr_cgrps);
- 	cgroup_get_live(parent);
- 
- 	/*
--- 
-2.39.3
+在 2024/7/2 22:25, Michal Koutný 写道:
+> On Fri, Jun 28, 2024 at 10:04:20AM GMT, Li Lingfeng <lilingfeng@huaweicloud.com> wrote:
+>> I think it may be more appropriate to remove the limit of bios after the
+>> cgroup is deleted, rather than let the bios continue to be throttled by a
+>> non-existent cgroup.
+> I'm not that familiar with this part -- can this also happen for IOs
+> submitted by an exited task? (In contrast to a running task migrated
+> elsewhere.)
+Yes, IOs will be throttled no matter whether the task that delivers them
+exits.
+>> If the limit is set too low, and the original cgourp has been deleted, we
+>> now have no way to make the bios complete immediately, but to wait for the
+>> bios to slowly complete under the limit.
+> It makes some sense, it's not unlike reparenting of memcg objects, IIRC
+> flushed bios would actually be passed to a parent throtl_grp, right?
+Yes, flushed bios would be throttled by the parent throtl_grp.
+> Thanks,
+> Michal
 
 
