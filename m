@@ -1,112 +1,115 @@
-Return-Path: <cgroups+bounces-3571-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3572-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F05AE92A922
-	for <lists+cgroups@lfdr.de>; Mon,  8 Jul 2024 20:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CCB192A984
+	for <lists+cgroups@lfdr.de>; Mon,  8 Jul 2024 21:02:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7E9D1F21DB4
-	for <lists+cgroups@lfdr.de>; Mon,  8 Jul 2024 18:45:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 428E41F224B3
+	for <lists+cgroups@lfdr.de>; Mon,  8 Jul 2024 19:02:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D1BF1482E6;
-	Mon,  8 Jul 2024 18:45:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF4C514B967;
+	Mon,  8 Jul 2024 19:01:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UCEM8HEd"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="II4bTgle"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B646B17C9E;
-	Mon,  8 Jul 2024 18:45:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20DE114E2E3
+	for <cgroups@vger.kernel.org>; Mon,  8 Jul 2024 19:01:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720464321; cv=none; b=T51zzVF3Zyer6tn9pwxiI1t33CqrOtfoWWXTFh8hrV0aFyurhU+zuNNR4F1dcT4yVmUr5L7ED32exc5T8tyIuA4Vj1FPznpz66BEl2B4BrOVLJp7UKvn6AJAzBUugBemUhBLQOynEH1Q40YQsUjMSzt6KKaLVxoti7VNtBfZC4I=
+	t=1720465314; cv=none; b=E/VdPBU9Zn8wuHU0XfOyF94F59xY1X1ILtq3Ft69iwZys4tLPvceiL8o0a5GomM6TnHEUQ6o/U13bzSqbGv12N5BCXFKRhsdgCiKUc/5Ra71v4Vehfy4KCWKbdSV8R42fQabqHyhwt+Aa9v3pynXwyEoT3P7hh3uTROEyNAnXxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720464321; c=relaxed/simple;
-	bh=x+md8Yw2vlsX1Vo5jhFawgklg5cgaDj76s25DaKsTuE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t0fGe2MAo3WC+rHyeh4QEXvptMYFu5V3pbfr4XrQ9EKtFsecH75w5iVfEqz7e/lNGYrWuInGusrGK0E7Vq3RgyhSmn/VaUSf7Ox8FJSTdH6twH3GxPy9XS4434Kq/0HMVTH3xGBekcYrt2sBrKfJcI77PD5KxY2CEtqtVZsAsok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UCEM8HEd; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2c9df3eb0edso1559576a91.3;
-        Mon, 08 Jul 2024 11:45:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720464319; x=1721069119; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=C7TXhObjjg10CfoE/exetflVyceR3Yc7EDIa0HGfVmw=;
-        b=UCEM8HEdPBFx8Q5xsqK/g8FKKKecjMH4F5HhUcDXePz/yXlgaueH1flB3P+hGHMPZP
-         4uO0xqwzZVdjgom4sj7Vx5B8hUD1LdDvW5w8VKsZbp2C4z6qhYvodNqMSEsmg6QbpX0I
-         v0O8soFYcpMRoKXcwHjvvEhOLvDRXVFp8UOM+SpK0xo3GeCqYJh+W4w+4Vl9SDNDIcP+
-         bkOdt9uKCZo1uW7bbqbHWAnjJGAGn/DxhMtJrwdyQ8Hag69NCtdlqa3r4QneVqgz3zmA
-         rfknvEsP/y48by+xjcQ0HHPxje5KfVLnBhiiWEvGfRwLBKYblzeDzeNySJJJhagUyA58
-         fcgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720464319; x=1721069119;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C7TXhObjjg10CfoE/exetflVyceR3Yc7EDIa0HGfVmw=;
-        b=Xeipmx+lAMci+PU3b/FkhrPxgvmyk4QPdMXAdHt0iscuejLkGusjv0p2XrPNQEnBcL
-         XYVbv6dBy3eur0TM8UUajp5/TaopLs8ihXzVUWuj8qr1JoF/aRsH/On/0gdv+JEOODH/
-         yd/kQtTTkVk7gIWb2frOQdDFY/rnvkpu5/AdQBCTcWT86v9SY32XDhO/2wqtEFZhnSHm
-         xSFkIRpSvfQarMjkMCltQgaCnN84mVNQ1sQYD7R+SR1NOdYEZVqtjlg6GCJTzWU0KXbd
-         yoA9SAYBjFkI0B8aD5X97qMDNryNND3WPwKgmxUAsNgrnxy+4sfRhCMK5mkGCCLxDcYn
-         Rukw==
-X-Forwarded-Encrypted: i=1; AJvYcCXwVK9fYxU7Pyo2qvhHVQ7ZUdKlk3fuQbrh8LebKnAGK/YD8m03JGQEn4n3MBaFDNpOXALBpadmftBRzwPsYjMdRcKCBcGA/RPa/ALudipGM7hvrBm/Hw9a2b+1g5+x3hC7bvb4ag==
-X-Gm-Message-State: AOJu0YzY7npsb1cj/V3wLVR4ojit3Zbs+BXWkVC2R+asQ8haw5kd+/sB
-	fbN4hzhSVF5IwE/Rar/dJDKKPIBu9GYOG7iE5+2NZPWXMYWJFRLF
-X-Google-Smtp-Source: AGHT+IFVh9il2ma4+p1y4h18bpW6blOTWcBiQJgR4kCqbGo/4tYu2OhH+kzL5lAsaEDZZR9TkOARhg==
-X-Received: by 2002:a17:90a:e610:b0:2c9:8d45:7bdd with SMTP id 98e67ed59e1d1-2ca35be7c96mr463994a91.10.1720464318934;
-        Mon, 08 Jul 2024 11:45:18 -0700 (PDT)
-Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c99a97c196sm8568745a91.26.2024.07.08.11.45.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Jul 2024 11:45:18 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 8 Jul 2024 08:45:17 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH-cgroup 1/2] cgroup: Show # of subsystem CSSes in
- /proc/cgroups
-Message-ID: <Zowzvf2NEOzgXYr3@slm.duckdns.org>
-References: <20240706005622.2003606-1-longman@redhat.com>
+	s=arc-20240116; t=1720465314; c=relaxed/simple;
+	bh=jP2M0JpMs2wAYT7RmW+K09ipvg9NM/5VSFNHQgyu+uk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E+cfmreoQhoo869rYYDMJD65f0RJFqn4vNSzUjakG58RaALP736YFxV2QthbLuRym68FfwlYeG+l/3yJJvuSpbz2HS94mJeeL8Q2KxfV5SolH9LnJBe8NLnktkPEBlCKyEboLmdmoSoCLgjYaxH9RDfOJyFatkunTE9NIc5AHFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=II4bTgle; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1720465312;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XLGoCNz9DClhgM4ZV9QmfktXdqX3rAlfMW12nS2PwS8=;
+	b=II4bTgleiQvzO7joiNc/vxykAR0aURCOeQkgxquDJmXdrxdxTC2fOj/stBTa5hsXbb4X55
+	qNMVH21qQ0Ld5nfM4A6uc+jf1wDT/FFkZvnajwZTwSgVTxlr3VEgG9+emCJ8Wh2bVyV9Cn
+	SSfNFKN0404bW+6t9/myrH1PWyPmQ3w=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-614-HdacGquzPCOi2M7P_MpIWw-1; Mon,
+ 08 Jul 2024 15:01:44 -0400
+X-MC-Unique: HdacGquzPCOi2M7P_MpIWw-1
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id C6E1519560B0;
+	Mon,  8 Jul 2024 19:01:41 +0000 (UTC)
+Received: from [10.22.33.83] (unknown [10.22.33.83])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 57C253000181;
+	Mon,  8 Jul 2024 19:01:40 +0000 (UTC)
+Message-ID: <b505c15b-8fd2-44f2-8e33-46ae29c2696e@redhat.com>
+Date: Mon, 8 Jul 2024 15:01:39 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240706005622.2003606-1-longman@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH-cgroup 1/2] cgroup: Show # of subsystem CSSes in
+ /proc/cgroups
+To: Tejun Heo <tj@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240706005622.2003606-1-longman@redhat.com>
+ <Zowzvf2NEOzgXYr3@slm.duckdns.org>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <Zowzvf2NEOzgXYr3@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-Hello, Waiman.
 
-On Fri, Jul 05, 2024 at 08:56:21PM -0400, Waiman Long wrote:
-> The /proc/cgroups file shows the number of cgroups for each of the
-> subsystems.  With cgroup v1, the number of CSSes is the same as the
-> number of cgroups. That is not the case anymore with cgroup v2. The
-> /proc/cgroups file cannot show the actual number of CSSes for the
-> subsystems that are bound to cgroup v2.
-> 
-> So if a v2 cgroup subsystem is leaking cgroups (typically memory
-> cgroup), we can't tell by looking at /proc/cgroups which cgroup
-> subsystems may be responsible.  This patch adds a css counter in the
-> cgroup_subsys structure to keep track of the number of CSSes for each
-> of the cgroup subsystems.
+On 7/8/24 14:45, Tejun Heo wrote:
+> Hello, Waiman.
+>
+> On Fri, Jul 05, 2024 at 08:56:21PM -0400, Waiman Long wrote:
+>> The /proc/cgroups file shows the number of cgroups for each of the
+>> subsystems.  With cgroup v1, the number of CSSes is the same as the
+>> number of cgroups. That is not the case anymore with cgroup v2. The
+>> /proc/cgroups file cannot show the actual number of CSSes for the
+>> subsystems that are bound to cgroup v2.
+>>
+>> So if a v2 cgroup subsystem is leaking cgroups (typically memory
+>> cgroup), we can't tell by looking at /proc/cgroups which cgroup
+>> subsystems may be responsible.  This patch adds a css counter in the
+>> cgroup_subsys structure to keep track of the number of CSSes for each
+>> of the cgroup subsystems.
+> The count sounds useful to me but can we add it in cgroup.stats instead?
 
-The count sounds useful to me but can we add it in cgroup.stats instead?
+That information is certainly useful to display to cgroup.stat which 
+currently only shows nr_descendants and nr_dying_descendants. So does 
+"nr_<subsys_name> <cnt>" for each cgroup subsystems look good to you or 
+do you have other suggestion?
 
-Thanks.
+The reason for this patch is because I got a bug report about leaking 
+blkio cgroup due to the information shown in /proc/cgroups. I know you 
+want do deprecate it for cgroup v2. How about adding a iine like "# 
+Deprecated for cgroup v2, use cgroup.stats file for cgroup counts" at 
+the top of /proc/cgroups when cgroup v2 is active?
 
--- 
-tejun
+Cheers,
+Longman
+
+
 
