@@ -1,65 +1,84 @@
-Return-Path: <cgroups+bounces-3601-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3602-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CC8D92DB2D
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jul 2024 23:44:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1815792DB60
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jul 2024 23:59:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAD371F228FB
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jul 2024 21:44:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95FD1B215E8
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jul 2024 21:59:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0543E143736;
-	Wed, 10 Jul 2024 21:44:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEBED13D886;
+	Wed, 10 Jul 2024 21:59:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OWoal2kw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ebpiPj9i"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E99313C9A4
-	for <cgroups@vger.kernel.org>; Wed, 10 Jul 2024 21:44:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47CB41422A6;
+	Wed, 10 Jul 2024 21:59:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720647845; cv=none; b=mzVdc9KYax8m3oWauTpmBu5BsfHlQrJd/3dxGPAQ9L8xc94if75HzOosrAUbld0IqeokRyfg3YlV2epTgrrMrMpJWTaENhTkYjqIl1ZWgfHakSvWvKatc8Ja66z976SIkU4/w7IIdlDk6P8zyeiGrET7bpqNo44lla4IUmFV6/I=
+	t=1720648754; cv=none; b=MToc1pP6MAg3pKOiP1O1WsZBwjsyYY/Kobq2DHgvr8Tw1uMS2uv9icnn2GpIFHHkSs4hCLX/T2b3X5Xeck8uCR9UrbetHKEhaTGINASk9GIbCsPWpCyux6c6J3u0WVeMeDB+pB1DxonW4qRzW/xZIlvwpp2kzIIT4SF9ujqeRUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720647845; c=relaxed/simple;
-	bh=JlkXkPNCHAMxS7MA8G46VWrDL1vn//5PG0aHUe4khZo=;
+	s=arc-20240116; t=1720648754; c=relaxed/simple;
+	bh=Ra/VIa64a9p2aYTQXs9tDQX3Jnsk5wN9WeKtgaRSi1Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pCZoXPG9R7RSZB+1tj42y74jmIX9fzY4P8VbXhMPsGa80+K9MQcgJGEzLKFyjhhV1kT5GHm/LNcEG/MsfrDFSGlavZF8yu7N7z87pTshuZekjWiKBUiXHsiiJDzvteuhnzOlyzpdg16zO2rz0ePpHBz5/za/b+KOYaHM0MBtpIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OWoal2kw; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: longman@redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1720647838;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=T2jivA9hjHCAK5sQZqUP1uRcXYWNdTNA3VPhubHQ2uk=;
-	b=OWoal2kwFKT01xXbu0bs8ombjc1N9kJwxVLZDphIEd/7TZQ1f0gi16q/3KRFGcNeg8o1x9
-	9stCtfyaWDE0xoRZ1UKv4tVkicKkqVHoEG4W2sm44p3TmvHO57LNjl7+Tbju7vj5oBVHMK
-	sYF4Nx8TVVRakcLiwDao5kWNlVOZqSs=
-X-Envelope-To: tj@kernel.org
-X-Envelope-To: lizefan.x@bytedance.com
-X-Envelope-To: hannes@cmpxchg.org
-X-Envelope-To: corbet@lwn.net
-X-Envelope-To: cgroups@vger.kernel.org
-X-Envelope-To: linux-doc@vger.kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: kamalesh.babulal@oracle.com
-Date: Wed, 10 Jul 2024 21:43:53 +0000
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qfqYlFn5Rmoqi5dsohS8tZySeOBGr7bFeey7SHZR4dWa3vD6XrC8tGiHc3a51j4s9dyVs8AaMdEC5gBmPufdG4y7ZMoYc7pGT9EfzJtjhxjdPBGaZ9kZF0KJgpiPodU+dCTmO3VkQCpc5XUT50BMrZzHHBRiqCoYYw2kaLGMK9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ebpiPj9i; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1fbc0a1494dso1318155ad.3;
+        Wed, 10 Jul 2024 14:59:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720648752; x=1721253552; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GTTWyfxS94vQpEADrnP7Gp6YumoVUZyuscVkMSUtAEU=;
+        b=ebpiPj9iBuaXfwRp2VKnw9ittm1xNmtq2fHx5paI38KvV8jMqt9OlN9ThlMCmVCcRk
+         YEp1dy3YbH6mFN7gh/mIFxGBler5gvz1XxtshpGpLTvNknBqTu0yrqylVXpF8bwfBgdT
+         JB/0xtfWTcXABtte0GtfnyBAMdgGxOTP4CIa5pzefruItUpDPyy/2J1gm/7Sf+HeL7P6
+         BmZSprdc4+K8Ijb9HyZCImQ3TAWhBcDjkuEnj5IczjpYGASPTlyG46B/A4Hg3Z901m1s
+         3mN4AmK8g+CuENbbGJqVnJeQv174xQCkibfpImKN5SlAYB/QeflehAZTkS2httLV+yBl
+         gWnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720648752; x=1721253552;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GTTWyfxS94vQpEADrnP7Gp6YumoVUZyuscVkMSUtAEU=;
+        b=uaTLr2brm23WmSj+DX8+QFamdXisS2nE4UpkSGgXnD0NT7D2EQXI+QSm+CFf5fXRaq
+         I0M3HJMvACtihHzP1McSvRF/MPqnWr7RqCZv1VBCCdgpvIEiZbhBwNDNdFGwgsRZjZZQ
+         YEDBV7fIM2I5eFqaVYufiH5C8hnTTMONpali5ulLVKcUsHwVNB6sma8SxuPqkA+Ip7QN
+         L+SwXa3KIpGjUFctHR7Q1YQwjX67UAmbdJnkWExbwCI9xKdztpx3jA2UzhqW54uMleGn
+         3TNkvjFuv7MBodObk1nK9Qx2Avp7uP33M+Eid66vr/HnOM9VY85DeeRlJ04hUhM+jC3X
+         E2EQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWlDEBTr6N1f/YZIhTm0qFiDhUc/zk3aEEDYmzT2HcQRIbxxN7rhoJjdCRlCP8WMBXjF6ypo+7N2VkyEozTgGf+bBzC6chqftrXRIMaHF0CfAqjSFdxeT2ZzoQPdxruS20jm1ovKbLSefoJzn8cYduxoCtxCv3g3Cqn5pYKIOvbEg==
+X-Gm-Message-State: AOJu0YzADNmnYaBGLmM02FLy7XQcvzLCi8kLmdMuPb4HsdhD92zaEiAH
+	hRXFCU+iDs8A/2snS6HhtWzxSZ7tMwWtyBQxF5oUQhsItrfj6RrW
+X-Google-Smtp-Source: AGHT+IEqnjYk2qahj3yH9sWC93FInUzPpcHeoyzJ98VlBS9kOCuu28w45p08diAdXUOLMyIuw/UdGw==
+X-Received: by 2002:a17:902:e74b:b0:1fb:4a8e:7673 with SMTP id d9443c01a7336-1fbb6ec4f06mr56068765ad.68.1720648752222;
+        Wed, 10 Jul 2024 14:59:12 -0700 (PDT)
+Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fbb6ad0387sm38335425ad.274.2024.07.10.14.59.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Jul 2024 14:59:11 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 10 Jul 2024 11:59:10 -1000
+From: Tejun Heo <tj@kernel.org>
 To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+Cc: Zefan Li <lizefan.x@bytedance.com>,
 	Johannes Weiner <hannes@cmpxchg.org>,
 	Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
 	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Kamalesh Babulal <kamalesh.babulal@oracle.com>
+	Kamalesh Babulal <kamalesh.babulal@oracle.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>
 Subject: Re: [PATCH v3 1/2] cgroup: Show # of subsystem CSSes in cgroup.stat
-Message-ID: <Zo8AmTVEdirZdgol@google.com>
+Message-ID: <Zo8ELsGOyFwkpKUj@slm.duckdns.org>
 References: <20240710182353.2312025-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -70,34 +89,10 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20240710182353.2312025-1-longman@redhat.com>
-X-Migadu-Flow: FLOW_OUT
+
+Hello,
 
 On Wed, Jul 10, 2024 at 02:23:52PM -0400, Waiman Long wrote:
-> Cgroup subsystem state (CSS) is an abstraction in the cgroup layer to
-> help manage different structures in various cgroup subsystems by being
-> an embedded element inside a larger structure like cpuset or mem_cgroup.
-> 
-> The /proc/cgroups file shows the number of cgroups for each of the
-> subsystems.  With cgroup v1, the number of CSSes is the same as the
-> number of cgroups.  That is not the case anymore with cgroup v2. The
-> /proc/cgroups file cannot show the actual number of CSSes for the
-> subsystems that are bound to cgroup v2.
-> 
-> So if a v2 cgroup subsystem is leaking cgroups (usually memory cgroup),
-> we can't tell by looking at /proc/cgroups which cgroup subsystems may
-> be responsible.
-> 
-> As cgroup v2 had deprecated the use of /proc/cgroups, the hierarchical
-> cgroup.stat file is now being extended to show the number of live and
-> dying CSSes associated with all the non-inhibited cgroup subsystems
-> that have been bound to cgroup v2 as long as it is not zero.  The number
-> includes CSSes in the current cgroup as well as in all the descendants
-> underneath it.  This will help us pinpoint which subsystems are
-> responsible for the increasing number of dying (nr_dying_descendants)
-> cgroups.
-> 
-> The cgroup-v2.rst file is updated to discuss this new behavior.
-> 
 > With this patch applied, a sample output from root cgroup.stat file
 > was shown below.
 > 
@@ -113,95 +108,21 @@ On Wed, Jul 10, 2024 at 02:23:52PM -0400, Waiman Long wrote:
 > 	nr_pids 54
 > 	nr_rdma 1
 > 	nr_misc 1
-> 
-> Another sample output from system.slice/cgroup.stat was:
-> 
-> 	nr_descendants 32
-> 	nr_dying_descendants 37
-> 	nr_cpu 30
-> 	nr_io 30
-> 	nr_memory 32
-> 	nr_dying_memory 37
-> 	nr_perf_event 33
-> 	nr_pids 32
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
 
-I like it way more than the previous version, thank you for the update.
+So, css may be too specific a name but this looks a bit disorganized. How
+about using controller as the common prefix? Maybe something like:
 
-> ---
->  Documentation/admin-guide/cgroup-v2.rst | 14 ++++++-
->  include/linux/cgroup-defs.h             |  7 ++++
->  kernel/cgroup/cgroup.c                  | 50 ++++++++++++++++++++++++-
->  3 files changed, 68 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> index 52763d6b2919..9031419271cd 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -981,6 +981,16 @@ All cgroup core files are prefixed with "cgroup."
->  		A dying cgroup can consume system resources not exceeding
->  		limits, which were active at the moment of cgroup deletion.
->  
-> +	  nr_<cgroup_subsys>
-> +		Total number of live cgroups associated with that cgroup
-> +		subsystem (e.g. memory) at and beneath the current
-> +		cgroup.  An entry will only be shown if it is not zero.
-> +
-> +	  nr_dying_<cgroup_subsys>
-> +		Total number of dying cgroups associated with that cgroup
-> +		subsystem (e.g. memory) beneath the current cgroup.
-> +		An entry will only be shown if it is not zero.
-> +
->    cgroup.freeze
->  	A read-write single value file which exists on non-root cgroups.
->  	Allowed values are "0" and "1". The default is "0".
-> @@ -2930,8 +2940,8 @@ Deprecated v1 Core Features
->  
->  - "cgroup.clone_children" is removed.
->  
-> -- /proc/cgroups is meaningless for v2.  Use "cgroup.controllers" file
-> -  at the root instead.
-> +- /proc/cgroups is meaningless for v2.  Use "cgroup.controllers" or
-> +  "cgroup.stat" files at the root instead.
->  
->  
->  Issues with v1 and Rationales for v2
-> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-> index b36690ca0d3f..62de18874508 100644
-> --- a/include/linux/cgroup-defs.h
-> +++ b/include/linux/cgroup-defs.h
-> @@ -210,6 +210,13 @@ struct cgroup_subsys_state {
->  	 * fields of the containing structure.
->  	 */
->  	struct cgroup_subsys_state *parent;
-> +
-> +	/*
-> +	 * Keep track of total numbers of visible and dying descendant CSSes.
-> +	 * Protected by cgroup_mutex.
-> +	 */
-> +	int nr_descendants;
-> +	int nr_dying_descendants;
->  };
->  
->  /*
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index c8e4b62b436a..18c982a06446 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -3669,12 +3669,34 @@ static int cgroup_events_show(struct seq_file *seq, void *v)
->  static int cgroup_stat_show(struct seq_file *seq, void *v)
->  {
->  	struct cgroup *cgroup = seq_css(seq)->cgroup;
-> +	struct cgroup_subsys_state *css;
-> +	int ssid;
->  
-> +	/* cgroup_mutex required for for_each_css() */
-> +	cgroup_lock();
+	nr_controllers_cpu 40
+	nr_controllers_io 40
+	nr_controllers_memory 54
+	nr_controller_perf_event 55
+	...
+	nr_dying_controllers_memory 44
 
-I *guess* it can be done under a rcu_read_lock(), isn't it?
-That would eliminate a need for the second patch as well, which
-is questionable (e.g. one unprivileged user can block others?)
+If controllers is too long, we can shorten it somehow or use subsys, maybe?
 
-Thanks!
+Thanks.
+
+-- 
+tejun
 
