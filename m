@@ -1,252 +1,207 @@
-Return-Path: <cgroups+bounces-3600-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3601-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33CBF92D843
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jul 2024 20:28:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CC8D92DB2D
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jul 2024 23:44:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2BD32816A5
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jul 2024 18:28:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAD371F228FB
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jul 2024 21:44:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0B55195FE5;
-	Wed, 10 Jul 2024 18:28:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0543E143736;
+	Wed, 10 Jul 2024 21:44:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TwIltSfA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OWoal2kw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E46AE195B08
-	for <cgroups@vger.kernel.org>; Wed, 10 Jul 2024 18:28:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E99313C9A4
+	for <cgroups@vger.kernel.org>; Wed, 10 Jul 2024 21:44:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720636116; cv=none; b=Ey62TtACCjsvjzjLKJ76toNxO2hwTTCy1i4fpcEIC55e6o3W8yly7JecvRjDmc+2inc//VfeKO+pcFqnLsneoj6lD0wenTMIft/pGkCetjDqM9fcicc9UDZ7FKEX7l8AG21CNeOL0vBJfls/99LWKcuQlw+Z5Xm/bgT+8JKYoZg=
+	t=1720647845; cv=none; b=mzVdc9KYax8m3oWauTpmBu5BsfHlQrJd/3dxGPAQ9L8xc94if75HzOosrAUbld0IqeokRyfg3YlV2epTgrrMrMpJWTaENhTkYjqIl1ZWgfHakSvWvKatc8Ja66z976SIkU4/w7IIdlDk6P8zyeiGrET7bpqNo44lla4IUmFV6/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720636116; c=relaxed/simple;
-	bh=ZVpVZPoW5DhjzOavrR5GY0hpK7EfHLGxovPutWlyOEU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lHZt5JALtVQPlE+e+4ZnfOJlPMl1pHL8HwUqBydsCpQWLXoy9lZb2oI00o224bknyw9hydWjwd7NaaP7tcR57s8CC6r8CWrobICjMQ4rlXsVl/GftFOtngI0RevRoUjVZooJ8+VT6TIoUsYr9YJpPVPqBy/pSPzVc4rcmuJxuKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TwIltSfA; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1720636113;
+	s=arc-20240116; t=1720647845; c=relaxed/simple;
+	bh=JlkXkPNCHAMxS7MA8G46VWrDL1vn//5PG0aHUe4khZo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pCZoXPG9R7RSZB+1tj42y74jmIX9fzY4P8VbXhMPsGa80+K9MQcgJGEzLKFyjhhV1kT5GHm/LNcEG/MsfrDFSGlavZF8yu7N7z87pTshuZekjWiKBUiXHsiiJDzvteuhnzOlyzpdg16zO2rz0ePpHBz5/za/b+KOYaHM0MBtpIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OWoal2kw; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: longman@redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1720647838;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qF8mAtiIKc1hNwFwVQgDd+xtcEIQ7/hxF8mGp9dv70U=;
-	b=TwIltSfAKGJwUbarX3L/fJPIFvixN1FQnXtZ4Pvh3lGSwfsDIH/Cj8kpfv1WijIhvSEnxq
-	1WdoRFDPfTUN6Hsp9YexXtLIU6zQ2P++Sb4I5NFO0tPloqfgUMXl0pBo1GD1QwR2J1tEy0
-	GmNieRDl1V/vUSKsQfMWcI8lJNsqY5c=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-347-kjVYtQYOOeyYt79GQJew1g-1; Wed,
- 10 Jul 2024 14:28:30 -0400
-X-MC-Unique: kjVYtQYOOeyYt79GQJew1g-1
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 7C03519560BF;
-	Wed, 10 Jul 2024 18:28:27 +0000 (UTC)
-Received: from [10.22.48.10] (unknown [10.22.48.10])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 93A2D3000181;
-	Wed, 10 Jul 2024 18:28:25 +0000 (UTC)
-Message-ID: <bea18088-0417-4bfc-b7aa-48489bb6a1db@redhat.com>
-Date: Wed, 10 Jul 2024 14:28:24 -0400
+	bh=T2jivA9hjHCAK5sQZqUP1uRcXYWNdTNA3VPhubHQ2uk=;
+	b=OWoal2kwFKT01xXbu0bs8ombjc1N9kJwxVLZDphIEd/7TZQ1f0gi16q/3KRFGcNeg8o1x9
+	9stCtfyaWDE0xoRZ1UKv4tVkicKkqVHoEG4W2sm44p3TmvHO57LNjl7+Tbju7vj5oBVHMK
+	sYF4Nx8TVVRakcLiwDao5kWNlVOZqSs=
+X-Envelope-To: tj@kernel.org
+X-Envelope-To: lizefan.x@bytedance.com
+X-Envelope-To: hannes@cmpxchg.org
+X-Envelope-To: corbet@lwn.net
+X-Envelope-To: cgroups@vger.kernel.org
+X-Envelope-To: linux-doc@vger.kernel.org
+X-Envelope-To: linux-kernel@vger.kernel.org
+X-Envelope-To: kamalesh.babulal@oracle.com
+Date: Wed, 10 Jul 2024 21:43:53 +0000
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Waiman Long <longman@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Kamalesh Babulal <kamalesh.babulal@oracle.com>
+Subject: Re: [PATCH v3 1/2] cgroup: Show # of subsystem CSSes in cgroup.stat
+Message-ID: <Zo8AmTVEdirZdgol@google.com>
+References: <20240710182353.2312025-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH-cgroup v2] cgroup: Show # of subsystem CSSes in root
- cgroup.stat
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Kamalesh Babulal <kamalesh.babulal@oracle.com>, Tejun Heo
- <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240709132814.2198740-1-longman@redhat.com>
- <1c0d9ee1-e80a-46da-a48d-2ab23dd04673@oracle.com>
- <4291c0ed-bc37-46de-b081-271e8b299b1d@redhat.com>
- <20240709180231.GA251628@cmpxchg.org>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240709180231.GA251628@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240710182353.2312025-1-longman@redhat.com>
+X-Migadu-Flow: FLOW_OUT
 
-On 7/9/24 14:02, Johannes Weiner wrote:
-> On Tue, Jul 09, 2024 at 12:09:05PM -0400, Waiman Long wrote:
->> On 7/9/24 11:58, Kamalesh Babulal wrote:
->>> On 7/9/24 6:58 PM, Waiman Long wrote:
->>>> The /proc/cgroups file shows the number of cgroups for each of the
->>>> subsystems.  With cgroup v1, the number of CSSes is the same as the
->>>> number of cgroups. That is not the case anymore with cgroup v2. The
->>>> /proc/cgroups file cannot show the actual number of CSSes for the
->>>> subsystems that are bound to cgroup v2.
->>>>
->>>> So if a v2 cgroup subsystem is leaking cgroups (usually memory cgroup),
->>>> we can't tell by looking at /proc/cgroups which cgroup subsystems may be
->>>> responsible.  This patch adds CSS counts in the cgroup_subsys structure
->>>> to keep track of the number of CSSes for each of the cgroup subsystems.
->>>>
->>>> As cgroup v2 had deprecated the use of /proc/cgroups, the root
->>>> cgroup.stat file is extended to show the number of outstanding CSSes
->>>> associated with all the non-inhibited cgroup subsystems that have been
->>>> bound to cgroup v2.  This will help us pinpoint which subsystems may be
->>>> responsible for the increasing number of dying (nr_dying_descendants)
->>>> cgroups.
->>>>
->>>> The cgroup-v2.rst file is updated to discuss this new behavior.
->>>>
->>>> With this patch applied, a sample output from root cgroup.stat file
->>>> was shown below.
->>>>
->>>> 	nr_descendants 53
->>>> 	nr_dying_descendants 34
->>>> 	nr_cpuset 1
->>>> 	nr_cpu 40
->>>> 	nr_io 40
->>>> 	nr_memory 87
->>>> 	nr_perf_event 54
->>>> 	nr_hugetlb 1
->>>> 	nr_pids 53
->>>> 	nr_rdma 1
->>>> 	nr_misc 1
->>>>
->>>> In this particular case, it can be seen that memory cgroup is the most
->>>> likely culprit for causing the 34 dying cgroups.
->>>>
->>>> Signed-off-by: Waiman Long <longman@redhat.com>
->>>> ---
->>>>    Documentation/admin-guide/cgroup-v2.rst | 10 ++++++++--
->>>>    include/linux/cgroup-defs.h             |  3 +++
->>>>    kernel/cgroup/cgroup.c                  | 19 +++++++++++++++++++
->>>>    3 files changed, 30 insertions(+), 2 deletions(-)
->>>>
->>>> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
->>>> index 52763d6b2919..65af2f30196f 100644
->>>> --- a/Documentation/admin-guide/cgroup-v2.rst
->>>> +++ b/Documentation/admin-guide/cgroup-v2.rst
->>>> @@ -981,6 +981,12 @@ All cgroup core files are prefixed with "cgroup."
->>>>    		A dying cgroup can consume system resources not exceeding
->>>>    		limits, which were active at the moment of cgroup deletion.
->>>>    
->>>> +	  nr_<cgroup_subsys>
->>>> +		Total number of cgroups associated with that cgroup
->>>> +		subsystem, e.g. cpuset or memory.  These cgroup counts
->>>> +		will only be shown in the root cgroup and for subsystems
->>>> +		bound to cgroup v2.
->>>> +
->>>>      cgroup.freeze
->>>>    	A read-write single value file which exists on non-root cgroups.
->>>>    	Allowed values are "0" and "1". The default is "0".
->>>> @@ -2930,8 +2936,8 @@ Deprecated v1 Core Features
->>>>    
->>>>    - "cgroup.clone_children" is removed.
->>>>    
->>>> -- /proc/cgroups is meaningless for v2.  Use "cgroup.controllers" file
->>>> -  at the root instead.
->>>> +- /proc/cgroups is meaningless for v2.  Use "cgroup.controllers" or
->>>> +  "cgroup.stat" files at the root instead.
->>>>    
->>>>    
->>>>    Issues with v1 and Rationales for v2
->>>> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
->>>> index b36690ca0d3f..522ab77f0406 100644
->>>> --- a/include/linux/cgroup-defs.h
->>>> +++ b/include/linux/cgroup-defs.h
->>>> @@ -776,6 +776,9 @@ struct cgroup_subsys {
->>>>    	 * specifies the mask of subsystems that this one depends on.
->>>>    	 */
->>>>    	unsigned int depends_on;
->>>> +
->>>> +	/* Number of CSSes, used only for /proc/cgroups */
->>>> +	atomic_t nr_csses;
->>>>    };
->>>>    
->>>>    extern struct percpu_rw_semaphore cgroup_threadgroup_rwsem;
->>>> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
->>>> index c8e4b62b436a..48eba2737b1a 100644
->>>> --- a/kernel/cgroup/cgroup.c
->>>> +++ b/kernel/cgroup/cgroup.c
->>>> @@ -3669,12 +3669,27 @@ static int cgroup_events_show(struct seq_file *seq, void *v)
->>>>    static int cgroup_stat_show(struct seq_file *seq, void *v)
->>>>    {
->>>>    	struct cgroup *cgroup = seq_css(seq)->cgroup;
->>>> +	struct cgroup_subsys *ss;
->>>> +	int i;
->>>>    
->>>>    	seq_printf(seq, "nr_descendants %d\n",
->>>>    		   cgroup->nr_descendants);
->>>>    	seq_printf(seq, "nr_dying_descendants %d\n",
->>>>    		   cgroup->nr_dying_descendants);
->>>>    
->>>> +	if (cgroup_parent(cgroup))
->>>> +		return 0;
->>>> +
->>>> +	/*
->>>> +	 * For the root cgroup, shows the number of csses associated
->>>> +	 * with each of non-inhibited cgroup subsystems bound to it.
->>>> +	 */
->>>> +	do_each_subsys_mask(ss, i, ~cgrp_dfl_inhibit_ss_mask) {
->>>> +		if (ss->root != &cgrp_dfl_root)
->>>> +			continue;
->>>> +		seq_printf(seq, "nr_%s %d\n", ss->name,
->>>> +			   atomic_read(&ss->nr_csses));
->>>> +	} while_each_subsys_mask();
->>>>    	return 0;
->>>>    }
->>>>    
->>> Thanks for adding nr_csses, the patch looks good to me. A preference comment,
->>> nr_<subsys>_css format, makes it easier to interpret the count.
->>>
->>> With or without the changes to the cgroup subsys format:
->>>
->>> Reviewed-by: Kamalesh Babulal <kamalesh.babulal@oracle.com>
->> Thanks for the review.
->>
->> CSS is a kernel internal name for cgroup subsystem state. Non kernel
->> developers or users may not know what CSS is and cgroup-v2.rst doesn't
->> mention CSS at all. So I don't think it is a good idea to add the "_css"
->> suffix. From the user point of view, the proper term to use here is the
->> number of cgroups, just like what "nr_descendants" and
->> "nr_dying_descendants" are referring to before this patch. The only
->> issue that I didn't address is the use of the proper plural form which
->> is hard for cgroup subsystem names that we have.
-> It's not quite the same right? You could have 1 dying cgroup with
-> multiple zombie subsys states. At least in theory. It could be
-> confusing to add these counts without introducing the css concept.
->
-> I also wonder if it would be better to just report the dying css
-> instead of all of them. Live ones are 1) under user control and 2)
-> easy to inspect in cgroupfs. I can see a scenario for the
-> nr_descendants aggregation ("Oh, that's a lot of subgroups!"); and a
-> scenario for dying css ("Oh, it's memory state pinning dead groups!").
-> But not so much "Oh, that's a lot of live memory controlled groups!"
->
-> I can't think of a good name for it though.
->
-> nr_dying_memory_css is a mouthful
->
-> nr_offline_memory?
->
-> nr_zombie_memory?
->
-> Should this be in debugfs?
->
-I just have sent out a v3 patch that make this hierarchical and separate 
-out live and dying csses. Let me know if you have other suggestions.
+On Wed, Jul 10, 2024 at 02:23:52PM -0400, Waiman Long wrote:
+> Cgroup subsystem state (CSS) is an abstraction in the cgroup layer to
+> help manage different structures in various cgroup subsystems by being
+> an embedded element inside a larger structure like cpuset or mem_cgroup.
+> 
+> The /proc/cgroups file shows the number of cgroups for each of the
+> subsystems.  With cgroup v1, the number of CSSes is the same as the
+> number of cgroups.  That is not the case anymore with cgroup v2. The
+> /proc/cgroups file cannot show the actual number of CSSes for the
+> subsystems that are bound to cgroup v2.
+> 
+> So if a v2 cgroup subsystem is leaking cgroups (usually memory cgroup),
+> we can't tell by looking at /proc/cgroups which cgroup subsystems may
+> be responsible.
+> 
+> As cgroup v2 had deprecated the use of /proc/cgroups, the hierarchical
+> cgroup.stat file is now being extended to show the number of live and
+> dying CSSes associated with all the non-inhibited cgroup subsystems
+> that have been bound to cgroup v2 as long as it is not zero.  The number
+> includes CSSes in the current cgroup as well as in all the descendants
+> underneath it.  This will help us pinpoint which subsystems are
+> responsible for the increasing number of dying (nr_dying_descendants)
+> cgroups.
+> 
+> The cgroup-v2.rst file is updated to discuss this new behavior.
+> 
+> With this patch applied, a sample output from root cgroup.stat file
+> was shown below.
+> 
+> 	nr_descendants 54
+> 	nr_dying_descendants 44
+> 	nr_cpuset 1
+> 	nr_cpu 40
+> 	nr_io 40
+> 	nr_memory 54
+> 	nr_dying_memory 44
+> 	nr_perf_event 55
+> 	nr_hugetlb 1
+> 	nr_pids 54
+> 	nr_rdma 1
+> 	nr_misc 1
+> 
+> Another sample output from system.slice/cgroup.stat was:
+> 
+> 	nr_descendants 32
+> 	nr_dying_descendants 37
+> 	nr_cpu 30
+> 	nr_io 30
+> 	nr_memory 32
+> 	nr_dying_memory 37
+> 	nr_perf_event 33
+> 	nr_pids 32
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-Thanks,
-Longman
+I like it way more than the previous version, thank you for the update.
 
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst | 14 ++++++-
+>  include/linux/cgroup-defs.h             |  7 ++++
+>  kernel/cgroup/cgroup.c                  | 50 ++++++++++++++++++++++++-
+>  3 files changed, 68 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index 52763d6b2919..9031419271cd 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -981,6 +981,16 @@ All cgroup core files are prefixed with "cgroup."
+>  		A dying cgroup can consume system resources not exceeding
+>  		limits, which were active at the moment of cgroup deletion.
+>  
+> +	  nr_<cgroup_subsys>
+> +		Total number of live cgroups associated with that cgroup
+> +		subsystem (e.g. memory) at and beneath the current
+> +		cgroup.  An entry will only be shown if it is not zero.
+> +
+> +	  nr_dying_<cgroup_subsys>
+> +		Total number of dying cgroups associated with that cgroup
+> +		subsystem (e.g. memory) beneath the current cgroup.
+> +		An entry will only be shown if it is not zero.
+> +
+>    cgroup.freeze
+>  	A read-write single value file which exists on non-root cgroups.
+>  	Allowed values are "0" and "1". The default is "0".
+> @@ -2930,8 +2940,8 @@ Deprecated v1 Core Features
+>  
+>  - "cgroup.clone_children" is removed.
+>  
+> -- /proc/cgroups is meaningless for v2.  Use "cgroup.controllers" file
+> -  at the root instead.
+> +- /proc/cgroups is meaningless for v2.  Use "cgroup.controllers" or
+> +  "cgroup.stat" files at the root instead.
+>  
+>  
+>  Issues with v1 and Rationales for v2
+> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+> index b36690ca0d3f..62de18874508 100644
+> --- a/include/linux/cgroup-defs.h
+> +++ b/include/linux/cgroup-defs.h
+> @@ -210,6 +210,13 @@ struct cgroup_subsys_state {
+>  	 * fields of the containing structure.
+>  	 */
+>  	struct cgroup_subsys_state *parent;
+> +
+> +	/*
+> +	 * Keep track of total numbers of visible and dying descendant CSSes.
+> +	 * Protected by cgroup_mutex.
+> +	 */
+> +	int nr_descendants;
+> +	int nr_dying_descendants;
+>  };
+>  
+>  /*
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index c8e4b62b436a..18c982a06446 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -3669,12 +3669,34 @@ static int cgroup_events_show(struct seq_file *seq, void *v)
+>  static int cgroup_stat_show(struct seq_file *seq, void *v)
+>  {
+>  	struct cgroup *cgroup = seq_css(seq)->cgroup;
+> +	struct cgroup_subsys_state *css;
+> +	int ssid;
+>  
+> +	/* cgroup_mutex required for for_each_css() */
+> +	cgroup_lock();
+
+I *guess* it can be done under a rcu_read_lock(), isn't it?
+That would eliminate a need for the second patch as well, which
+is questionable (e.g. one unprivileged user can block others?)
+
+Thanks!
 
