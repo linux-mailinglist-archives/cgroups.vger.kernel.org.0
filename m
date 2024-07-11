@@ -1,131 +1,230 @@
-Return-Path: <cgroups+bounces-3624-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3625-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 915A592EA6D
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jul 2024 16:14:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 736E592EAC8
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jul 2024 16:32:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2CBE1C212E0
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jul 2024 14:14:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DB3228220C
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jul 2024 14:32:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 345EC161900;
-	Thu, 11 Jul 2024 14:14:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Tu7Hs5cM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A61B11667FA;
+	Thu, 11 Jul 2024 14:32:21 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4493215218A
-	for <cgroups@vger.kernel.org>; Thu, 11 Jul 2024 14:14:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7149A1EB26;
+	Thu, 11 Jul 2024 14:32:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720707271; cv=none; b=qwrZRmol6edncn2+ct5cdIDbt8M4r4WZ+5FGLAgdMkTtKgi5h/1FQhDMlOD6ejfGnlRbrV9nAdx7bH7Iujk0xyAqcEItrKXJOPCVrQLaxbr4rnWk9Y1yiFLZZNa+z7FyljXt8HTtAvEfLFUvtFNia2sVDPjTdaAH2lAe+gKDd1s=
+	t=1720708341; cv=none; b=Ff/MpA4ZKFEPDe9XjwaNBHu7872HDvq87LpZPqxfH2bSrqvh9gcKehW5X5cwR6WpNhZJ37T/JerBS92P5+0P77J2tGDHOOgWHMjotZpQeZk+d0Biv8fMgSsuvD8sMLnXcvsyBF/LQnmo4JHd5+R++c8Gp9mnuFQEfm6FV2xq1t8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720707271; c=relaxed/simple;
-	bh=k6gEHt+xvUkeIRyoiWjWbAiSg5WbedFbm/FHPHtlVRs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aU44W9+MUmYxBJBXHdjGjKlpkkLO18BuqvggLnjexUHXIpzwONFwitSt/tBkmfKtEqBzILKQb6QzQP+Pd4D46zkLCQWvtrEqHl6lylcc+5RFSvmUh2voN9r0Mz+kwEsiT9YJFZhx9Fk0wrRbhbsbXCh3PznSqR5PDnezsYcdqPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Tu7Hs5cM; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-52ea7d2a039so949272e87.3
-        for <cgroups@vger.kernel.org>; Thu, 11 Jul 2024 07:14:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1720707265; x=1721312065; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ETcGYWGq4nimdvPCfHodnKlCUrAHYcZUT9Kd0lfRhLg=;
-        b=Tu7Hs5cM/U/Iw/ASeGNjbQp517UHoNZcVR756O0iesE63YWkkrQU/fV/DvOXSx5f8x
-         77oEdCzBZXmMdwIt048/owv6pyW9gn0a1wn/O98g7P5OxtOhFA4n3oMIxPtxOATV4IVI
-         hPGOgtt9SF2s27jXNA9RtIwbigfVUKmNBOlOKcRyCxm/umJXHckCFWj521L+kNfwnTNN
-         gzmE2eSQan/Hx/MLx1BQm/hpojUb3zldbVv5eTLu7iywY7p9VNCx9nwLfg80uh3U9gVw
-         nJDTxj5vz4rPXjNxDcH7nGbv4OJdPHxyhiauKu6hrrpZQ3F1F0Y9RF1lQUZeHEtJ6T/e
-         ip0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720707265; x=1721312065;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ETcGYWGq4nimdvPCfHodnKlCUrAHYcZUT9Kd0lfRhLg=;
-        b=J/xdNIBciHOEsqwAE5kVlSJzPA7NYexU06JPMoqKoX9FHCv+m9c5af5ad9/2khkxlI
-         MDFcoNJeVyNaWiTMHX1V6fcHPk26Fbhc4dwl8aWDq7En6MKMgUmJelGc+dfYDTemw6wG
-         jelTUl9/FaHZ62cju8Wz3B9QdC7SsMtoXQt7SO+Z5Mwvna+PlFhb89mxpBb2+Wc7BETE
-         NrKIA4wQx8GIgevG3SSICbgbcDZc8w8lFJQm9RC5qKYxZRnNu07UFroWhnFjgTgCh46y
-         ghabRwf9WYDvWSXGfjgEYUKX2FPzWQvXrx8m5zrmEUtme3icI8+jUf+40CdURzUylpRw
-         F0SQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWC9ODhKdwiZLxBnj1LzM4albccXaawpBaPVDz8lHmd8llzgqlTJegfzq954K7TYjrImmReuu8RXfy5PBp8Jf71AQQBQa+JOA==
-X-Gm-Message-State: AOJu0YyvqSRusg72M8UAcOnXFfxraQhXq1iQDvOYPc7l38iSlTI+ybXv
-	NTm3Qgg7Kcf6ygw0KCXYXrGXRsLF58apXahkPN/8Fji2YhXsZ8zHJlN5w6AkgPykhRFJJtQhFvE
-	z
-X-Google-Smtp-Source: AGHT+IEzPG+qu6OL9MzbpwkC6XP8o+jkAEZwKCZapFXu49qLNouCsz3lCZ+8q2VzbI+KQgfySGooLg==
-X-Received: by 2002:a19:e05e:0:b0:52e:9765:84e8 with SMTP id 2adb3069b0e04-52eb99da425mr4901525e87.66.1720707265401;
-        Thu, 11 Jul 2024 07:14:25 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a780a7ff045sm257878966b.126.2024.07.11.07.14.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jul 2024 07:14:24 -0700 (PDT)
-Date: Thu, 11 Jul 2024 16:14:23 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, 
-	Zefan Li <lizefan.x@bytedance.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH cgroup/for-6.11] cgroup: Add Michal Koutny as a maintainer
-Message-ID: <5yfatxvtkpti2mrym2kd7j4qcdu7rxkyp5xvvwcefzvpdc2mkp@q5f7ug5tij6o>
-References: <Zo8OzWUzDv3rQIiw@slm.duckdns.org>
+	s=arc-20240116; t=1720708341; c=relaxed/simple;
+	bh=up6W1K9mpxjGZ1T7a2dLYu/IsvtphCU8x2Vb6BTu6Zk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=sWzZ+Kf7q7kK24gD82ASCYCPwn9zsWjyCWIsfG2+g7cRZGOtlmgoyHqjVt0BxyqAOVE3cROPb23D8Cw3i29h4yz42sHYU8vdyYanmIU6Uz2b9OtJLXE9ja5ADPFnSDjQoEO7XMlGKe1z/owrrwth0j3ZOrqm6zMnx6PLPFk1JGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92796C116B1;
+	Thu, 11 Jul 2024 14:32:19 +0000 (UTC)
+Date: Thu, 11 Jul 2024 10:33:41 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: syzbot <syzbot+16b6ab88e66b34d09014@syzkaller.appspotmail.com>,
+ akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-trace-kernel@vger.kernel.org, lizefan.x@bytedance.com,
+ mathieu.desnoyers@efficios.com, mhiramat@kernel.org,
+ netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org
+Subject: Re: [syzbot] [mm?] possible deadlock in
+ __mmap_lock_do_trace_released
+Message-ID: <20240711103341.18a4eb4e@gandalf.local.home>
+In-Reply-To: <95930836-5b56-4c40-b2a0-2ddd4a59ae74@kernel.org>
+References: <0000000000002be09b061c483ea1@google.com>
+	<95930836-5b56-4c40-b2a0-2ddd4a59ae74@kernel.org>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5uhdydamedm7ydyu"
-Content-Disposition: inline
-In-Reply-To: <Zo8OzWUzDv3rQIiw@slm.duckdns.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+
+On Thu, 4 Jul 2024 22:12:45 +0200
+Jesper Dangaard Brouer <hawk@kernel.org> wrote:
+
+> > ============================================
+> > WARNING: possible recursive locking detected
+> > 6.10.0-rc2-syzkaller-00797-ga12978712d90 #0 Not tainted
+> > --------------------------------------------
+> > syz-executor646/5097 is trying to acquire lock:
+> > ffff8880b94387e8 (lock#9){+.+.}-{2:2}, at: local_lock_acquire include/linux/local_lock_internal.h:29 [inline]
+> > ffff8880b94387e8 (lock#9){+.+.}-{2:2}, at: __mmap_lock_do_trace_released+0x83/0x620 mm/mmap_lock.c:243
+> > 
+> > but task is already holding lock:
+> > ffff8880b94387e8 (lock#9){+.+.}-{2:2}, at: local_lock_acquire include/linux/local_lock_internal.h:29 [inline]
+> > ffff8880b94387e8 (lock#9){+.+.}-{2:2}, at: __mmap_lock_do_trace_released+0x83/0x620 mm/mmap_lock.c:243
+> > 
+> > other info that might help us debug this:
+> >   Possible unsafe locking scenario:
+> > 
+> >         CPU0
+> >         ----
+> >    lock(lock#9);
+> >    lock(lock#9);
+> > 
+> >   *** DEADLOCK ***
+
+Looks like it's trying to take the rwsem mm->mmap_lock recursively. And
+rwsems are *not* allowed to be recursively taken, as once there's a writer,
+all new acquires of the reader will block. Then you can have:
+
+   CPU0				    CPU1
+   ----				    ----
+  down_read(lockA);
+				down_write(lockA); // blocks
+  down_read(lockA); //blocks
+
+DEADLOCK!
 
 
---5uhdydamedm7ydyu
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > 
+> >   May be due to missing lock nesting notation
+> >   
+> 
+> To me, this looks like a lockdep false-positive, but I might be wrong.
+> 
+> Could someone with more LOCKDEP knowledge give their interpretation?
+> 
+> The commit[1] adds a fairly standard trylock scheme.
+> Do I need to lockdep annotate trylock's in some special way?
+> 
+>   [1] https://git.kernel.org/torvalds/c/21c38a3bd4ee3fb733
+> 
+> Also notice change uses raw_spin_lock, which might be harder for lockdep?
+> So, I also enabled CONFIG_PROVE_RAW_LOCK_NESTING in my testlab to help
+> with this, and CONFIG_PROVE_LOCKING.
+> (And obviously I also enabled LOCKDEP*)
+> 
+> --Jesper
+> 
+> > 5 locks held by syz-executor646/5097:
+> >   #0: ffff8880182eb118 (&mm->mmap_lock){++++}-{3:3}, at: mmap_read_lock include/linux/mmap_lock.h:144 [inline]
+> >   #0: ffff8880182eb118 (&mm->mmap_lock){++++}-{3:3}, at: acct_collect+0x1cf/0x830 kernel/acct.c:563
+> >   #1: ffff8880b94387e8 (lock#9){+.+.}-{2:2}, at: local_lock_acquire include/linux/local_lock_internal.h:29 [inline]
+> >   #1: ffff8880b94387e8 (lock#9){+.+.}-{2:2}, at: __mmap_lock_do_trace_released+0x83/0x620 mm/mmap_lock.c:243
+> >   #2: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+> >   #2: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
+> >   #2: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: get_memcg_path_buf mm/mmap_lock.c:139 [inline]
+> >   #2: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: get_mm_memcg_path+0xb1/0x600 mm/mmap_lock.c:209
+> >   #3: ffffffff8e333fa0 (rcu_read_lock){....}-{1:2}, at: trace_call_bpf+0xbc/0x8a0
+> >   #4: ffff8880182eb118 (&mm->mmap_lock){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:163 [inline]
+> >   #4: ffff8880182eb118 (&mm->mmap_lock){++++}-{3:3}, at: stack_map_get_build_id_offset+0x237/0x9d0 kernel/bpf/stackmap.c:141
+> > 
+> > stack backtrace:
+> > CPU: 0 PID: 5097 Comm: syz-executor646 Not tainted 6.10.0-rc2-syzkaller-00797-ga12978712d90 #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/07/2024
+> > Call Trace:
+> >   <TASK>
+> >   __dump_stack lib/dump_stack.c:88 [inline]
+> >   dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+> >   check_deadlock kernel/locking/lockdep.c:3062 [inline]
+> >   validate_chain+0x15d3/0x5900 kernel/locking/lockdep.c:3856
+> >   __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+> >   lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+> >   local_lock_acquire include/linux/local_lock_internal.h:29 [inline]
+> >   __mmap_lock_do_trace_released+0x9c/0x620 mm/mmap_lock.c:243
 
-Hello.
+Here we have:
 
-On Wed, Jul 10, 2024 at 12:44:29PM GMT, Tejun Heo <tj@kernel.org> wrote:
-> Michal has been contributing and reviewing patches across cgroup for a wh=
-ile
-> now. Add him as a maintainer.
+  static inline void mmap_read_lock(struct mm_struct *mm)
+  {
+        __mmap_lock_trace_start_locking(mm, false);
+        down_read(&mm->mmap_lock);
+        __mmap_lock_trace_acquire_returned(mm, false, true);
+  }
 
-I hope this to be helpful to you and the community.
+Which is taking the mm->mmap_lock for read.
 
-=2E..
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5536,6 +5536,7 @@ CONTROL GROUP (CGROUP)
->  M:	Tejun Heo <tj@kernel.org>
->  M:	Zefan Li <lizefan.x@bytedance.com>
->  M:	Johannes Weiner <hannes@cmpxchg.org>
-> +M:	Michal Koutn=FD <mkoutny@suse.com>
->  L:	cgroups@vger.kernel.org
->  S:	Maintained
->  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git
-=20
-Acked-by: Michal Koutn=FD <mkoutny@suse.com>
+> >   __mmap_lock_trace_released include/linux/mmap_lock.h:42 [inline]
+> >   mmap_read_unlock include/linux/mmap_lock.h:170 [inline]
+> >   bpf_mmap_unlock_mm kernel/bpf/mmap_unlock_work.h:52 [inline]
+> >   stack_map_get_build_id_offset+0x9c7/0x9d0 kernel/bpf/stackmap.c:173
+> >   __bpf_get_stack+0x4ad/0x5a0 kernel/bpf/stackmap.c:449
+> >   bpf_prog_e6cf5f9c69743609+0x42/0x46
+> >   bpf_dispatcher_nop_func include/linux/bpf.h:1243 [inline]
+> >   __bpf_prog_run include/linux/filter.h:691 [inline]
+> >   bpf_prog_run include/linux/filter.h:698 [inline]
+> >   bpf_prog_run_array include/linux/bpf.h:2104 [inline]
+> >   trace_call_bpf+0x369/0x8a0 kernel/trace/bpf_trace.c:147
+> >   perf_trace_run_bpf_submit+0x7c/0x1d0 kernel/events/core.c:10269
+> >   perf_trace_mmap_lock+0x3d7/0x510 include/trace/events/mmap_lock.h:16
 
---5uhdydamedm7ydyu
-Content-Type: application/pgp-signature; name="signature.asc"
+I'm guessing a bpf program attached to something within the same code:
 
------BEGIN PGP SIGNATURE-----
+> >   trace_mmap_lock_released include/trace/events/mmap_lock.h:50 [inline]
+> >   __mmap_lock_do_trace_released+0x5bb/0x620 mm/mmap_lock.c:243
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZo/ovQAKCRAt3Wney77B
-SVSaAQDl/jTgKWUbqGX7f4PGpzw+02qS3ODuDV7XRrjJHXM2bwD7Bs0rBaW5Zo3t
-4Ww0qfl2Qg0TLkMplYXm2qlvmy9fdQ4=
-=LWj3
------END PGP SIGNATURE-----
+Here is the same function as above where it took the mm->mmap_lock.
 
---5uhdydamedm7ydyu--
+My guess is the bpf program that attached to this event ends up calling the
+same function and it tries to take the rwsem again, and that poses a risk
+for deadlock.
+
+-- Steve
+
+> >   __mmap_lock_trace_released include/linux/mmap_lock.h:42 [inline]
+> >   mmap_read_unlock include/linux/mmap_lock.h:170 [inline]
+> >   acct_collect+0x81d/0x830 kernel/acct.c:566
+> >   do_exit+0x936/0x27e0 kernel/exit.c:853
+> >   do_group_exit+0x207/0x2c0 kernel/exit.c:1023
+> >   __do_sys_exit_group kernel/exit.c:1034 [inline]
+> >   __se_sys_exit_group kernel/exit.c:1032 [inline]
+> >   __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1032
+> >   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+> >   do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+> >   entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> > RIP: 0033:0x7f8fac26d039
+> > Code: 90 49 c7 c0 b8 ff ff ff be e7 00 00 00 ba 3c 00 00 00 eb 12 0f 1f
+> > 44 00 00 89 d0 0f 05 48 3d 00 f0 ff ff 77 1c f4 89 f0 0f 05 <48> 3d 00
+> > f0 ff ff 76 e7 f7 d8 64 41 89 00 eb df 0f 1f 80 00 00 00 RSP:
+> > 002b:00007ffd95d56e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7 RAX:
+> > ffffffffffffffda RBX: 0000000000000000 RCX: 00007f8fac26d039 RDX:
+> > 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000 RBP:
+> > 00007f8fac2e82b0 R08: ffffffffffffffb8 R09: 00000000000000a0 R10:
+> > 0000000000000000 R11: 0000000000000246 R12: 00007f8fac2e82b0 R13:
+> > 0000000000000000 R14: 00007f8fac2e8d20 R15: 00007f8fac23e1e0 </TASK>
+> > 
+> > 
+> > ---
+> > This report is generated by a bot. It may contain errors.
+> > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > 
+> > syzbot will keep track of this issue. See:
+> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > For information about bisection process
+> > see: https://goo.gl/tpsmEJ#bisection
+> > 
+> > If the report is already addressed, let syzbot know by replying with:
+> > #syz fix: exact-commit-title
+> > 
+> > If you want syzbot to run the reproducer, reply with:
+> > #syz test: git://repo/address.git branch-or-commit-hash
+> > If you attach or paste a git patch, syzbot will apply it before testing.
+> > 
+> > If you want to overwrite report's subsystems, reply with:
+> > #syz set subsystems: new-subsystem
+> > (See the list of subsystem names on the web dashboard)
+> > 
+> > If the report is a duplicate of another one, reply with:
+> > #syz dup: exact-subject-of-another-report
+> > 
+> > If you want to undo deduplication, reply with:
+> > #syz undup  
+
 
