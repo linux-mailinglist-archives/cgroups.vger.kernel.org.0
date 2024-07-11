@@ -1,77 +1,81 @@
-Return-Path: <cgroups+bounces-3638-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3639-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64F6992EFA5
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jul 2024 21:30:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CD4B92F00A
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jul 2024 22:00:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FC3B2833B4
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jul 2024 19:30:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B57B91F2437D
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jul 2024 19:59:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4083816EC1A;
-	Thu, 11 Jul 2024 19:30:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4867B19E832;
+	Thu, 11 Jul 2024 19:59:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Bpl2OKdX"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="wl3eW6oG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A649B16EB54
-	for <cgroups@vger.kernel.org>; Thu, 11 Jul 2024 19:30:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6D6E450FA
+	for <cgroups@vger.kernel.org>; Thu, 11 Jul 2024 19:59:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720726207; cv=none; b=vAaQMnLVqFeiawgE+g9YxxNSA9inMUGTjyzJyVRJ1/sdnfq6KpcAPhwG/4Yk+t4ZmYaInSQ3PYTKW7bQl6OW1zzpgVexRGmBRoVt0lByZrH3EVRi6C/WXOB3Q1Yu80SJGYVyQWZWDWVATTd251vtWXhiZekiIcxOTd+R/l7sgAQ=
+	t=1720727995; cv=none; b=SaBP8QLqOaFBhlhdxW7Sr8nok5ZDWyLNgxsf7E5TVTp+kdGNFagvgJtFRI09YmSdLuf3qdK98/QRwBKCTeCVbh/Dii6CTqvkclKQIRPotvKQ1LnrSxIVeEtfFsGtq3P/+hCYRR3crLHJIUI/NYCi6yU32hyh7qmJW4GDsJMOoug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720726207; c=relaxed/simple;
-	bh=6PZa26qh4ymqFwVL8Iv7QFaHKJWBv371YVweZ2Zn+Z4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L7ILyFby5gFrVmsT2Qk6d+wXcH9DEaIqknhg5wHOtJxvm35PGjDcB92pJ+9y/DGxyl+wWfqIAJYon0ifp8Z2DfuGN77g2IFLK0oX6UEjvhwPC6i2B+EnswDXIgsKI5qhNwYJtLtbLqA/2AIJthf/fIm8szD8p8CMYU8qMmc7V2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Bpl2OKdX; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1720726204;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=O/kdd0m2F7APQz5PEDRpjUvqai4YyztOcotNYxJFWVw=;
-	b=Bpl2OKdX+XRcobu0IMNpDQwmaUgjG6A43QPX2MqLxLlllHQNHTqv04CURCOTcvYDBUeSJY
-	JNeL5Z6Nhk0PfGtGS69UpCvq5EK4aBCNiH0dy3Xmr/UKDPpDTsE4G63ZJfHvGMVwyytDmI
-	u19WIC69OEHZpSFMMsDLYevWNwVQmvg=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-654-sovNFfwoN3ijfo5emT_STg-1; Thu,
- 11 Jul 2024 15:30:01 -0400
-X-MC-Unique: sovNFfwoN3ijfo5emT_STg-1
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 53DCD19560B1;
-	Thu, 11 Jul 2024 19:29:59 +0000 (UTC)
-Received: from [10.22.64.119] (unknown [10.22.64.119])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 59AF43000181;
-	Thu, 11 Jul 2024 19:29:57 +0000 (UTC)
-Message-ID: <a033dc74-2362-40f1-a091-b8bf22a8d3cb@redhat.com>
-Date: Thu, 11 Jul 2024 15:29:56 -0400
-Precedence: bulk
-X-Mailing-List: cgroups@vger.kernel.org
-List-Id: <cgroups.vger.kernel.org>
-List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+	s=arc-20240116; t=1720727995; c=relaxed/simple;
+	bh=ZFsNRA4oHonDs7htq9TQlbzH95+/U/2f1q+48RdjPCY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BcxGmm9Nj5bSTVUFMAPE83qZ/xbqplnMuQYbdEOBPXw6Lyw2XW6gw1AqvQ1kcMSvQawnE2X+Pae/WVlYntghw6ODKrSUhf+yYln7ztYnguwBmDE556elB+FHsAPvHw5KHh4zScLP+6JwIEhM8G+BU1Ebmp9LNrKWTunDVpQn5Zg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=wl3eW6oG; arc=none smtp.client-ip=209.85.222.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-79f19f19070so70874585a.0
+        for <cgroups@vger.kernel.org>; Thu, 11 Jul 2024 12:59:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1720727992; x=1721332792; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=v0fBzMvARzNqWDIvjkNZtGgftU6BR00tv1V56A0sRI4=;
+        b=wl3eW6oGF0nyU+9MJlx/LeYF/XzTYUj6S1aWCdB0+83FpI/C05K9KU3N7gccelZB6i
+         cqfVDKbjEpp2n68Yn+gUexD5gvuB5s217Z7UpY9EQim/OgOXaqj4aqADEn1jto8p1Jod
+         Gjk2PLHFksRK5an8e2ssA1u09X7dA8nyYt/dlVVXgmkbs1NPBXGqfDJq8JGCP7LZ+wC9
+         QW9b+a7F4B0wMMo/0+fMPiS3tRFxfKp8zH7a9Bmhtp+4Cho8xuLuCbYCSF4ObP9TBXRg
+         cmMYwWFdEA9qSbHeVerqdtL+3xPXuna7tnla45fiwNPCF3W4ELO4sorjN2YMhJyTTvNe
+         8cug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720727992; x=1721332792;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=v0fBzMvARzNqWDIvjkNZtGgftU6BR00tv1V56A0sRI4=;
+        b=fFOpFKBaAjb9RV3sU+RqJBNglRL9gO+Fc1GzPSUx1wN/1awJ18lpGCeQg6mcu2xJIu
+         ImWC7nK7vziFi3yqQdJDcbnRKsGOH1VWstLrDIdBq+eDSrWK+XGixmTaWitdgUsG9+EN
+         3PLykIKZ41X8q0wSn1RJjopqz22PEZrrC7xGcfWnG2I91JO9k3pef260BkWD7FQWskaQ
+         9CSfCPg4+YFlq9A9vNdiT3ECHqbrEB5EPIfgQJVfH/ZzYiqBRJinGP/F86CAqknlefZ8
+         EFbiHqoyCI9UrP+bHRaTf5wNM4GacOvGAHx92zKXeicAilO0BkRmb+Uk4ecBVVyFE5ed
+         Zk4g==
+X-Forwarded-Encrypted: i=1; AJvYcCWucKrl+hAZ+q4cO1MACSBProd3YJLBoNc/+G1ipepjNu6XLs4nf4hltPmfeKnTSTI+Wj89i1IDGLPvIGRPS7NnrDMH8bh9vw==
+X-Gm-Message-State: AOJu0YxHoDSHyFiBah6SIGINQglJwCVC8hHkfE5RFYC3swIQBfeVgon/
+	it6S2M5YtGJdMSzuXjlOYuwtZ+F8RzhM4hkbmEamu5FjtqJdiFrqDEd+mMbzjJU=
+X-Google-Smtp-Source: AGHT+IFiJnY/cGELlDLmvJpmQlnosRF0R2F/8VoRGVECBWJ/JmxJND9XjYQhP4M0tiwANXIyAJJhqw==
+X-Received: by 2002:a05:6214:c2f:b0:6b0:71c0:cbaa with SMTP id 6a1803df08f44-6b61bf1b857mr113709506d6.33.1720727991788;
+        Thu, 11 Jul 2024 12:59:51 -0700 (PDT)
+Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b61b9c4867sm28611176d6.26.2024.07.11.12.59.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jul 2024 12:59:51 -0700 (PDT)
+Date: Thu, 11 Jul 2024 15:59:46 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+	Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Kamalesh Babulal <kamalesh.babulal@oracle.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>
 Subject: Re: [PATCH v3 1/2] cgroup: Show # of subsystem CSSes in cgroup.stat
-To: Tejun Heo <tj@kernel.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Zefan Li <lizefan.x@bytedance.com>,
- Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Kamalesh Babulal <kamalesh.babulal@oracle.com>,
- Roman Gushchin <roman.gushchin@linux.dev>
+Message-ID: <20240711195946.GA1094169@cmpxchg.org>
 References: <20240710182353.2312025-1-longman@redhat.com>
  <20240711134927.GB456706@cmpxchg.org>
  <4e1078d6-6970-4eea-8f73-56a3815794b5@redhat.com>
@@ -81,41 +85,57 @@ References: <20240710182353.2312025-1-longman@redhat.com>
  <e5348a85-22eb-48a6-876d-3180de5c7171@redhat.com>
  <ZpArhD49OonR6Oz6@slm.duckdns.org>
  <c54651db-1a06-49f6-aea7-02768ad70756@redhat.com>
- <ZpAwx358QVr4V7RN@slm.duckdns.org>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <ZpAwx358QVr4V7RN@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Precedence: bulk
+X-Mailing-List: cgroups@vger.kernel.org
+List-Id: <cgroups.vger.kernel.org>
+List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c54651db-1a06-49f6-aea7-02768ad70756@redhat.com>
 
+On Thu, Jul 11, 2024 at 03:13:12PM -0400, Waiman Long wrote:
+> 
+> On 7/11/24 14:59, Tejun Heo wrote:
+> > On Thu, Jul 11, 2024 at 02:51:38PM -0400, Waiman Long wrote:
+> >> On 7/11/24 14:44, Tejun Heo wrote:
+> >>> Hello,
+> >>>
+> >>> On Thu, Jul 11, 2024 at 01:39:38PM -0400, Waiman Long wrote:
+> >>>> On 7/11/24 13:18, Tejun Heo wrote:
+> >>> ...
+> >>>> Currently, I use the for_each_css() macro for iteration. If you mean
+> >>>> displaying all the possible cgroup subsystems even if they are not enabled
+> >>>> for the current cgroup, I will have to manually do the iteration.
+> >>> Just wrapping it with for_each_subsys() should do, no? for_each_css() won't
+> >>> iterate anything if css doesn't exist for the cgroup.
+> >> OK, I wasn't sure if you were asking to list all the possible cgroup v2
+> >> cgroup subsystems even if they weren't enabled in the current cgroup.
+> >> Apparently, that is the case. I prefer it that way too.
+> > Yeah, I think listing all is better. If the list corresponded directly to
+> > cgroup.controllers, it may make sense to only show enabled ones but we can
+> > have dying ones and implicitly enabled memory and so on, so I think it'd be
+> > cleaner to just list them all.
+> 
+> That will means cgroup subsystems that are seldomly used like rdma, misc 
+> or even hugetlb will always be shown in all the cgroup.stat output. I 
+> actually prefer just showing those that are enabled. As for dying memory 
+> cgroups, they will only be shown in its online ancestors. We currently 
+> don't know how many level down are each of the dying ones.
 
-On 7/11/24 15:21, Tejun Heo wrote:
-> Hello,
->
-> On Thu, Jul 11, 2024 at 03:13:12PM -0400, Waiman Long wrote:
->> That will means cgroup subsystems that are seldomly used like rdma, misc or
->> even hugetlb will always be shown in all the cgroup.stat output. I actually
-> Hmm... yeah, that does increase the amount of output, but I don't know. The
-> trade-off is between consistency and brevity and I think I'd go for
-> consistency here.
->
->> prefer just showing those that are enabled. As for dying memory cgroups,
->> they will only be shown in its online ancestors. We currently don't know how
-> So, one peculiarity with memory is that when you enable io, it gets
-> implicitly enabled together and we likely wanna show that.
+It seems odd to me to not show dead ones after a cgroup has disabled
+the controller again. They still consume memory, after all, and so
+continue to be property of that cgroup afterwards.
 
-If memory is implicitly enabled, it is treated as enabled as the 
-corresponding cgroup->subsys[] entry should be set. I currently don't 
-filter out those in the cgrp_dfl_implicit_ss_mask. So perf_event, which 
-is implicitly enabled, is shown in all the cgroup.stat.
+Instead of doing for_each_css(), would it make more sense to have
 
-If you still want to display all even if some of them are not enabled, I 
-can certainly do that.
+	struct cgroup {
+		...
+		int nr_dying_subsys[CGROUP_SUBSYS_COUNT];
+		...
+	}
 
-Cheers,
-Longman
-
-
-
+and just always print them all, regardless of what is, or was,
+enabled?
 
