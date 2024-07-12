@@ -1,112 +1,120 @@
-Return-Path: <cgroups+bounces-3643-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3644-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 980B492F34B
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2024 03:10:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CBA792F352
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2024 03:16:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29F4AB2116A
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2024 01:10:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44E6828255F
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2024 01:16:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EF442114;
-	Fri, 12 Jul 2024 01:10:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA1A73D71;
+	Fri, 12 Jul 2024 01:16:00 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C9D0646;
-	Fri, 12 Jul 2024 01:10:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B92645;
+	Fri, 12 Jul 2024 01:15:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720746639; cv=none; b=HF3BCAEK1HJNAVQqlMfpIaei4ie6XQ5QHcJKIqKHdzJ5KlZXLh/hmaanZziaU2Ee+1AxxXq/we93rRrv9vYVZ8BM4x2LBGmKEunuC9QpfzB1l9SonOjsxPHHltT9JI06YYFDQwvJY7XFqHasFx4D5esU7YyIlPJnbX5m9XYncUM=
+	t=1720746960; cv=none; b=O7Do5NviuF3yeOPSM8qemQVUu9CcXRYeBor5mer35lUtcXNVETg7RrTsIciM32c2uPBbASI1wlx5dQ51JH44AD5OfbsnuObXNfi3pDeSV3AU67ChRydTJJ/Q6hh6+4Oi6lBF19E+6DPPaxXrIZS5vuA4d+qcOm5QTlZdF+am4kY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720746639; c=relaxed/simple;
-	bh=DjglkLB/XUhl1kVTjdWb/er00Rjbo3C/06LUWOMJp3k=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=sVTxAqTMnwSeEQ5EyzqiaRsJS/33G8pMUOEUJU5/hFIY38e5hxOJ9k61LALuaw+rY7RIzL1eY5zL5QbWBGe+jPQFwITRg1HE9zfS+hMCWOzuccmf7zDFwguT2f0u8GaLIaB5JKQvu1iDB7zsn0GNpGCdWPRQbOBec8WQHWrJq4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WKtnD4h6gz4f3jJ4;
-	Fri, 12 Jul 2024 09:10:24 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 5D7E31A0184;
-	Fri, 12 Jul 2024 09:10:32 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP2 (Coremail) with SMTP id Syh0CgBXwIWGgpBmoOlpBw--.16436S3;
-	Fri, 12 Jul 2024 09:10:32 +0800 (CST)
-Subject: Re: [PATCH 2/2] blk-ioprio: remove per-disk structure
-To: Bart Van Assche <bvanassche@acm.org>, Yu Kuai <yukuai1@huaweicloud.com>,
- tj@kernel.org, josef@toxicpanda.com, jack@suse.cz, axboe@kernel.dk
-Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20240711090059.3998565-1-yukuai1@huaweicloud.com>
- <20240711090059.3998565-3-yukuai1@huaweicloud.com>
- <4c8f1e4e-1b15-4afa-b1e2-084e0c4caeec@acm.org>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <520b9c10-c152-77f3-bd5a-b86a1f5ac8ea@huaweicloud.com>
-Date: Fri, 12 Jul 2024 09:10:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1720746960; c=relaxed/simple;
+	bh=DZQooscX4frirN7UCJVpBt9EYIMsRQUeEgdySVoRiQQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=HGqgvrE4bJ5RhKjO00sIZLHykqwD+bOlOUos6uKqczqpQOqmEW+0inzgSNxIo8j3KfDQ8cHpQ0qAxUSuVzwrGk7ITG3lvB4XS4SLy/ehzxZAfMk3lmbJns0En9eYvY0fZfLl/+vgTiEp1/r84Y0yq8+KfOiG4HY+20JvGMRE89I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WKtpj1Q6Yz2ClCY;
+	Fri, 12 Jul 2024 09:11:41 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0F032140337;
+	Fri, 12 Jul 2024 09:15:55 +0800 (CST)
+Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Fri, 12 Jul
+ 2024 09:15:54 +0800
+Message-ID: <5badbb85-b9e9-4170-a1b9-9b6d13135507@huawei.com>
+Date: Fri, 12 Jul 2024 09:15:53 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <4c8f1e4e-1b15-4afa-b1e2-084e0c4caeec@acm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgBXwIWGgpBmoOlpBw--.16436S3
-X-Coremail-Antispam: 1UD129KBjvdXoWruF4rGrykKF4fGr4Dur4fAFb_yoWfXrb_Ga
-	95X3sFk3y3Ars7Gan3Ar45JrZ7tFWjgr1xX34jqF9rtr4rWrWrWrnFg3yfur13Cw18Cr9r
-	Cryq9w18Gw4agjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUb3AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
-	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-	17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
-	3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-	nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] cgroup: Fix AA deadlock caused by
+ cgroup_bpf_release
+To: Tejun Heo <tj@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>
+CC: <martin.lau@linux.dev>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<andrii@kernel.org>, <eddyz87@gmail.com>, <song@kernel.org>,
+	<yonghong.song@linux.dev>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+	<sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>,
+	<lizefan.x@bytedance.com>, <hannes@cmpxchg.org>, <bpf@vger.kernel.org>,
+	<cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240607110313.2230669-1-chenridong@huawei.com>
+ <67B5A5C8-68D8-499E-AFF1-4AFE63128706@linux.dev>
+ <300f9efa-cc15-4bee-b710-25bff796bf28@huawei.com>
+ <a1b23274-4a35-4cbf-8c4c-5f770fbcc187@huawei.com>
+ <Zo9XAmjpP6y0ZDGH@google.com> <ZpAYGU7x6ioqBir5@slm.duckdns.org>
+Content-Language: en-US
+From: chenridong <chenridong@huawei.com>
+In-Reply-To: <ZpAYGU7x6ioqBir5@slm.duckdns.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
-Hi,
 
-在 2024/07/12 2:03, Bart Van Assche 写道:
-> On 7/11/24 2:00 AM, Yu Kuai wrote:
->> ioprio works on the blk-cgroup level, all disks in the same cgroup
->> are the same, and the struct ioprio_blkg doesn't have anything in it.
->> Hence register the policy is enough, because cpd_alloc/free_fn will
->> be handled for each blk-cgroup, and there is no need to activate the
->> policy for disk.
+
+On 2024/7/12 1:36, Tejun Heo wrote:
+> Hello,
 > 
-> As one can see in the output of git grep -nHEB1 '>pd_(alloc|free)_fn\(',
-> none of the pd_alloc_fn / pd_free_fn callers checks whether or not these
-> pointers are NULL. Hence my question why this patch does not trigger any
-> NULL pointer dereferences?
-
-Because the blkcg_deactivate_policy() is removed as well, there are no
-callers now... blkcg_policy_register() is still called to make sure
-cpd_(alloc|free)_fn will still be called.
-
-Thanks,
-Kuai
-
+> On Thu, Jul 11, 2024 at 03:52:34AM +0000, Roman Gushchin wrote:
+>>> The max_active of system_wq is WQ_DFL_ACTIVE(256). If all active works are
+>>> cgroup bpf release works, it will block smp_call_on_cpu work which enque
+>>> after cgroup bpf releases. So smp_call_on_cpu holding cpu_hotplug_lock will
+>>> wait for completion, but it can never get a completion because cgroup bpf
+>>> release works can not get cgroup_mutex and will never finish.
+>>> However, Placing the cgroup bpf release works on cgroup destroy will never
+>>> block smp_call_on_cpu work, which means loop is broken. Thus, it can solve
+>>> the problem.
+>>
+>> Tejun,
+>>
+>> do you have an opinion on this?
+>>
+>> If there are certain limitations from the cgroup side on what can be done
+>> in a generic work context, it would be nice to document (e.g. don't grab
+>> cgroup mutex), but I still struggle to understand what exactly is wrong
+>> with the blamed commit.
 > 
-> Thanks,
+> I think the general rule here is more "don't saturate system wqs" rather
+> than "don't grab cgroup_mutex from system_wq". system wqs are for misc
+> things which shouldn't create a large number of concurrent work items. If
+> something is going to generate 256+ concurrent work items, it should use its
+> own workqueue. We don't know what's in system wqs and can't expect its users
+> to police specific lock usages.
 > 
-> Bart.
-> .
-> 
+Thank you, Tj. That's exactly what I'm trying to convey. Just like 
+cgroup, which has its own workqueue and may create a large number of 
+release works, it is better to place all its related works on its 
+workqueue rather than on system wqs.
 
+Regards,
+Ridong
+
+> Another aspect is that the current WQ_DFL_ACTIVE is an arbitrary number I
+> came up with close to 15 years ago. Machine size has increased by multiple
+> times, if not an order of magnitude since then. So, "there can't be a
+> reasonable situation where 256 concurrency limit isn't enough" is most
+> likely not true anymore and the limits need to be pushed upward.
+> 
+> Thanks.
+> 
 
