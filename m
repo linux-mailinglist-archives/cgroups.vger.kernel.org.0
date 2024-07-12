@@ -1,113 +1,160 @@
-Return-Path: <cgroups+bounces-3649-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3650-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 873BA92F5B3
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2024 08:52:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CC7292F772
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2024 11:00:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4202A283597
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2024 06:52:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AED7F1F21FCE
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2024 09:00:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D96C13D603;
-	Fri, 12 Jul 2024 06:51:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2907143747;
+	Fri, 12 Jul 2024 09:00:18 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB14C39B;
-	Fri, 12 Jul 2024 06:51:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B7413E02D;
+	Fri, 12 Jul 2024 09:00:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720767118; cv=none; b=R45vwn+BKKOg5U/kVd4gAu+BIH3so6BAtg2XRjcifoBJ1NxKQRsGTvkETv1GXf2PUwmNe+U2SAeWoWnV+YgQUMzwGVcOuxG8KOCWUEKWHbw6AE8g3CA8p9av4fxOCT/3as/heWtB6thyOKurg/51IPGaLCrRStUzCGpm0OT+cuw=
+	t=1720774818; cv=none; b=NZho6i5h34JU0WmUev56Y+rNpMZkdZxd87pvMIW1p6+on5f7Mr/RXUDeh1YQ5H0BRwv+s18/+HoAivzo4i+t8Ac1axaB9YQD4Ceu/W7wjTC13WZgSxfhZbDU5vUCl0y/mINnx3oV9ikt5Kzv5jUDjpUAMAsnOTkee1E1Ug9e+cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720767118; c=relaxed/simple;
-	bh=N6YChGETgXAsTATwIa3SBIwBb+q0UqUKKngV4F/vp5E=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=S3i6QhYwHzTUQE4FEuYQTqON4+x8ebdZ0nx+igNrJTkVQ/LsgP+yTt+Txcc2fTGASxQLOetfw4jpmJa3mbjZi+PV9dR2lhiaQliOxcch22wCaBybFuERcHF177hUb4vq3DhjAk1+cBUsWO24MH57eH6FJbLOFJk7G30gGUUHQdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WL2M02NSzz4f3jXw;
-	Fri, 12 Jul 2024 14:51:40 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 161211A0572;
-	Fri, 12 Jul 2024 14:51:52 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP2 (Coremail) with SMTP id Syh0CgCXAIaG0pBmEsGABw--.32319S3;
-	Fri, 12 Jul 2024 14:51:51 +0800 (CST)
-Subject: Re: [PATCH 2/2] blk-ioprio: remove per-disk structure
-To: Christoph Hellwig <hch@infradead.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: Bart Van Assche <bvanassche@acm.org>, tj@kernel.org,
- josef@toxicpanda.com, jack@suse.cz, axboe@kernel.dk,
- cgroups@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20240711090059.3998565-1-yukuai1@huaweicloud.com>
- <20240711090059.3998565-3-yukuai1@huaweicloud.com>
- <4c8f1e4e-1b15-4afa-b1e2-084e0c4caeec@acm.org>
- <520b9c10-c152-77f3-bd5a-b86a1f5ac8ea@huaweicloud.com>
- <ZpC9le_FsIO0FCJQ@infradead.org>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <7803ebeb-32a1-57a9-2a65-b44de8f42eed@huaweicloud.com>
-Date: Fri, 12 Jul 2024 14:51:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1720774818; c=relaxed/simple;
+	bh=IUjQuc+xzVDbHxpaTQ8Oy+CrD0FdWfp/rAI9b+8o2Ek=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=PF3gMjh0ffLqUpGwJAhH+VNZkRRpXGcULnl3B3aOrhHdz+LiubY/N3QGBvFrVUQpAwDn3uxUubUCKAXoSW2lOtrwJGL5FuO/93AMzvXSLGuHazD9ftYwWsfpoHZWh/tMLGL4iL1/kvxQu882bwnkTzdCwWbzHyEm+8/0RrWP/0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4WL55q38Mvz1T68n;
+	Fri, 12 Jul 2024 16:55:27 +0800 (CST)
+Received: from dggpeml500023.china.huawei.com (unknown [7.185.36.114])
+	by mail.maildlp.com (Postfix) with ESMTPS id 845ED140361;
+	Fri, 12 Jul 2024 17:00:12 +0800 (CST)
+Received: from hulk-vt.huawei.com (10.67.174.26) by
+ dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Fri, 12 Jul 2024 17:00:12 +0800
+From: Xiu Jianfeng <xiujianfeng@huawei.com>
+To: <tj@kernel.org>, <josef@toxicpanda.com>, <axboe@kernel.dk>,
+	<lizefan.x@bytedance.com>, <hannes@cmpxchg.org>
+CC: <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] blk-cgroup: move congestion_count to struct blkcg
+Date: Fri, 12 Jul 2024 08:51:41 +0000
+Message-ID: <20240712085141.3288708-1-xiujianfeng@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZpC9le_FsIO0FCJQ@infradead.org>
-Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCXAIaG0pBmEsGABw--.32319S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7JFyxZF1fWF1fKw1xCr4UArb_yoWfWrcEgF
-	WkZa9Fk3sxWF9rWFsrZr4UZr9ayFyqgry2qFy7tFZrtrWagrWDGF1DG34fZFyfGw4xKryU
-	KF909r1rKrW2kjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUb3xFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_GcCE
-	3s1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
-	1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0
-	cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8Jw
-	ACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkI
-	wI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
-	WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
-	67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
-	IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1l
-	IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
-	C2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500023.china.huawei.com (7.185.36.114)
 
-Hi,
+The congestion_count was introduced by commit d09d8df3a294 ("blkcg:
+add generic throttling mechanism"), but since it is closely related
+to the blkio subsys, it is not appropriate to put it in the struct
+cgroup, so move it to struct blkcg.
 
-ÔÚ 2024/07/12 13:22, Christoph Hellwig Ð´µÀ:
-> On Fri, Jul 12, 2024 at 09:10:30AM +0800, Yu Kuai wrote:
->>> As one can see in the output of git grep -nHEB1 '>pd_(alloc|free)_fn\(',
->>> none of the pd_alloc_fn / pd_free_fn callers checks whether or not these
->>> pointers are NULL. Hence my question why this patch does not trigger any
->>> NULL pointer dereferences?
->>
->> Because the blkcg_deactivate_policy() is removed as well, there are no
->> callers now... blkcg_policy_register() is still called to make sure
->> cpd_(alloc|free)_fn will still be called.
-> 
-> Can you throw in a patch documenting this?  Any maybe add a check
-> that pd_alloc_fn / pd_free_fn exist in blkcg_activate_policy and
-> WARN and return an error otherwise?
+Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+---
+only compiling tested
+---
+ block/blk-cgroup.c          |  4 +++-
+ block/blk-cgroup.h          | 10 ++++++----
+ include/linux/cgroup-defs.h |  3 ---
+ 3 files changed, 9 insertions(+), 8 deletions(-)
 
-Of course, I realized now that just mention don't activate the policy
-from commit message is too little explanation.
-
-Thanks,
-Kuai
-
-> 
-> .
-> 
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 37e6cc91d576..01d3408c2fc6 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -2183,11 +2183,13 @@ void blk_cgroup_bio_start(struct bio *bio)
+ bool blk_cgroup_congested(void)
+ {
+ 	struct cgroup_subsys_state *css;
++	struct blkcg *blkcg;
+ 	bool ret = false;
+ 
+ 	rcu_read_lock();
+ 	for (css = blkcg_css(); css; css = css->parent) {
+-		if (atomic_read(&css->cgroup->congestion_count)) {
++		blkcg = css_to_blkcg(css);
++		if (atomic_read(&blkcg->congestion_count)) {
+ 			ret = true;
+ 			break;
+ 		}
+diff --git a/block/blk-cgroup.h b/block/blk-cgroup.h
+index bd472a30bc61..16a2fbd4adca 100644
+--- a/block/blk-cgroup.h
++++ b/block/blk-cgroup.h
+@@ -95,6 +95,8 @@ struct blkcg {
+ 	struct cgroup_subsys_state	css;
+ 	spinlock_t			lock;
+ 	refcount_t			online_pin;
++	/* If there is block congestion on this cgroup. */
++	atomic_t congestion_count;
+ 
+ 	struct radix_tree_root		blkg_tree;
+ 	struct blkcg_gq	__rcu		*blkg_hint;
+@@ -374,7 +376,7 @@ static inline void blkcg_use_delay(struct blkcg_gq *blkg)
+ 	if (WARN_ON_ONCE(atomic_read(&blkg->use_delay) < 0))
+ 		return;
+ 	if (atomic_add_return(1, &blkg->use_delay) == 1)
+-		atomic_inc(&blkg->blkcg->css.cgroup->congestion_count);
++		atomic_inc(&blkg->blkcg->congestion_count);
+ }
+ 
+ static inline int blkcg_unuse_delay(struct blkcg_gq *blkg)
+@@ -399,7 +401,7 @@ static inline int blkcg_unuse_delay(struct blkcg_gq *blkg)
+ 	if (old == 0)
+ 		return 0;
+ 	if (old == 1)
+-		atomic_dec(&blkg->blkcg->css.cgroup->congestion_count);
++		atomic_dec(&blkg->blkcg->congestion_count);
+ 	return 1;
+ }
+ 
+@@ -418,7 +420,7 @@ static inline void blkcg_set_delay(struct blkcg_gq *blkg, u64 delay)
+ 
+ 	/* We only want 1 person setting the congestion count for this blkg. */
+ 	if (!old && atomic_try_cmpxchg(&blkg->use_delay, &old, -1))
+-		atomic_inc(&blkg->blkcg->css.cgroup->congestion_count);
++		atomic_inc(&blkg->blkcg->congestion_count);
+ 
+ 	atomic64_set(&blkg->delay_nsec, delay);
+ }
+@@ -435,7 +437,7 @@ static inline void blkcg_clear_delay(struct blkcg_gq *blkg)
+ 
+ 	/* We only want 1 person clearing the congestion count for this blkg. */
+ 	if (old && atomic_try_cmpxchg(&blkg->use_delay, &old, 0))
+-		atomic_dec(&blkg->blkcg->css.cgroup->congestion_count);
++		atomic_dec(&blkg->blkcg->congestion_count);
+ }
+ 
+ /**
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index 293af7f8a694..ae04035b6cbe 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -539,9 +539,6 @@ struct cgroup {
+ 	/* used to store eBPF programs */
+ 	struct cgroup_bpf bpf;
+ 
+-	/* If there is block congestion on this cgroup. */
+-	atomic_t congestion_count;
+-
+ 	/* Used to store internal freezer state */
+ 	struct cgroup_freezer_state freezer;
+ 
+-- 
+2.34.1
 
 
