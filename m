@@ -1,156 +1,112 @@
-Return-Path: <cgroups+bounces-3642-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3643-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03B7392F163
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jul 2024 23:57:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 980B492F34B
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2024 03:10:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7C672834E2
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jul 2024 21:57:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29F4AB2116A
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2024 01:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84D021A00C1;
-	Thu, 11 Jul 2024 21:57:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="R9xMMHXe"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EF442114;
+	Fri, 12 Jul 2024 01:10:39 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6356E38F83
-	for <cgroups@vger.kernel.org>; Thu, 11 Jul 2024 21:57:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C9D0646;
+	Fri, 12 Jul 2024 01:10:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720735040; cv=none; b=m3Ieh0kg64CggrVas1BoOSdfZwAV4QkZf/EvxeOcx4QY8YjZiXRr59Sq9i9qdeDbbH5V2tO3ANTRNrtSn4QaLeruCNVa32asoaTbb/2L2kcVypQZIme6BMRNsEE7X/A1m9HulPx2O5bsdxMS1zlpj4nteR3ky/4ZQ2JARjlMeTU=
+	t=1720746639; cv=none; b=HF3BCAEK1HJNAVQqlMfpIaei4ie6XQ5QHcJKIqKHdzJ5KlZXLh/hmaanZziaU2Ee+1AxxXq/we93rRrv9vYVZ8BM4x2LBGmKEunuC9QpfzB1l9SonOjsxPHHltT9JI06YYFDQwvJY7XFqHasFx4D5esU7YyIlPJnbX5m9XYncUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720735040; c=relaxed/simple;
-	bh=fI6yQPBGaJd6Dt0pOr97WwmWU63uK/Ow13/IyMF6wwk=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=JC9Il2OI1UrL586aikdsN3aBuRjoHstiCafxQnqr0R/EY45V5RoH9zMYeG5rndK2uaU9OwoiJJlDBB6pryY1cT/E3gTMUlGBql3jayetBXdUx9ZkQDTIy2t2QtmTTyp+L7L4SXy+hznypuIvJWsTzXGVC1Rw+w18SVkRGWGosDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=R9xMMHXe; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1720735037;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZESGIe+T4x/4v/aHPLwag6NIYST3OqGfVKCQ2tuMUgM=;
-	b=R9xMMHXez6ou82hdylLYyXo594PgdvdlJtqIiDPq2UBjM9liA8B+QfmaIH1ugZGVhgmXoM
-	BjiDw+TiKcMTWsMq6RURR7WrLOUuXhtxcpUPUWGPwrXdnTe3EqDN/lNIvON8Oi6O+jZ5FO
-	MEH87XqxIr4ikpSl9mqKhBFAxJgcsFs=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-388-9kXdp_WGN7qgzxNQfFEdvA-1; Thu,
- 11 Jul 2024 17:57:15 -0400
-X-MC-Unique: 9kXdp_WGN7qgzxNQfFEdvA-1
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6D82F19560B1;
-	Thu, 11 Jul 2024 21:57:13 +0000 (UTC)
-Received: from [10.22.64.119] (unknown [10.22.64.119])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id C303919560AA;
-	Thu, 11 Jul 2024 21:57:11 +0000 (UTC)
-Message-ID: <7a2e9bd2-a0fd-4429-b22f-6a246ceb6155@redhat.com>
-Date: Thu, 11 Jul 2024 17:57:10 -0400
+	s=arc-20240116; t=1720746639; c=relaxed/simple;
+	bh=DjglkLB/XUhl1kVTjdWb/er00Rjbo3C/06LUWOMJp3k=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=sVTxAqTMnwSeEQ5EyzqiaRsJS/33G8pMUOEUJU5/hFIY38e5hxOJ9k61LALuaw+rY7RIzL1eY5zL5QbWBGe+jPQFwITRg1HE9zfS+hMCWOzuccmf7zDFwguT2f0u8GaLIaB5JKQvu1iDB7zsn0GNpGCdWPRQbOBec8WQHWrJq4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WKtnD4h6gz4f3jJ4;
+	Fri, 12 Jul 2024 09:10:24 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 5D7E31A0184;
+	Fri, 12 Jul 2024 09:10:32 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP2 (Coremail) with SMTP id Syh0CgBXwIWGgpBmoOlpBw--.16436S3;
+	Fri, 12 Jul 2024 09:10:32 +0800 (CST)
+Subject: Re: [PATCH 2/2] blk-ioprio: remove per-disk structure
+To: Bart Van Assche <bvanassche@acm.org>, Yu Kuai <yukuai1@huaweicloud.com>,
+ tj@kernel.org, josef@toxicpanda.com, jack@suse.cz, axboe@kernel.dk
+Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20240711090059.3998565-1-yukuai1@huaweicloud.com>
+ <20240711090059.3998565-3-yukuai1@huaweicloud.com>
+ <4c8f1e4e-1b15-4afa-b1e2-084e0c4caeec@acm.org>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <520b9c10-c152-77f3-bd5a-b86a1f5ac8ea@huaweicloud.com>
+Date: Fri, 12 Jul 2024 09:10:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] cgroup: Show # of subsystem CSSes in cgroup.stat
-From: Waiman Long <longman@redhat.com>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Kamalesh Babulal <kamalesh.babulal@oracle.com>,
- Roman Gushchin <roman.gushchin@linux.dev>
-References: <20240710182353.2312025-1-longman@redhat.com>
- <20240711134927.GB456706@cmpxchg.org>
- <4e1078d6-6970-4eea-8f73-56a3815794b5@redhat.com>
- <ZpAT_xu0oXjQsKM7@slm.duckdns.org>
- <76e70789-986a-44c2-bfdc-d636f425e5ae@redhat.com>
- <ZpAoD7_o8bf6yVGr@slm.duckdns.org>
- <e5348a85-22eb-48a6-876d-3180de5c7171@redhat.com>
- <ZpArhD49OonR6Oz6@slm.duckdns.org>
- <c54651db-1a06-49f6-aea7-02768ad70756@redhat.com>
- <20240711195946.GA1094169@cmpxchg.org>
- <e42f41af-e8a9-4544-9194-003d6b0f0ba8@redhat.com>
-Content-Language: en-US
-In-Reply-To: <e42f41af-e8a9-4544-9194-003d6b0f0ba8@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <4c8f1e4e-1b15-4afa-b1e2-084e0c4caeec@acm.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+X-CM-TRANSID:Syh0CgBXwIWGgpBmoOlpBw--.16436S3
+X-Coremail-Antispam: 1UD129KBjvdXoWruF4rGrykKF4fGr4Dur4fAFb_yoWfXrb_Ga
+	95X3sFk3y3Ars7Gan3Ar45JrZ7tFWjgr1xX34jqF9rtr4rWrWrWrnFg3yfur13Cw18Cr9r
+	Cryq9w18Gw4agjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb3AFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+	17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+	3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On 7/11/24 17:00, Waiman Long wrote:
-> On 7/11/24 15:59, Johannes Weiner wrote:
->> On Thu, Jul 11, 2024 at 03:13:12PM -0400, Waiman Long wrote:
->>> On 7/11/24 14:59, Tejun Heo wrote:
->>>> On Thu, Jul 11, 2024 at 02:51:38PM -0400, Waiman Long wrote:
->>>>> On 7/11/24 14:44, Tejun Heo wrote:
->>>>>> Hello,
->>>>>>
->>>>>> On Thu, Jul 11, 2024 at 01:39:38PM -0400, Waiman Long wrote:
->>>>>>> On 7/11/24 13:18, Tejun Heo wrote:
->>>>>> ...
->>>>>>> Currently, I use the for_each_css() macro for iteration. If you 
->>>>>>> mean
->>>>>>> displaying all the possible cgroup subsystems even if they are 
->>>>>>> not enabled
->>>>>>> for the current cgroup, I will have to manually do the iteration.
->>>>>> Just wrapping it with for_each_subsys() should do, no? 
->>>>>> for_each_css() won't
->>>>>> iterate anything if css doesn't exist for the cgroup.
->>>>> OK, I wasn't sure if you were asking to list all the possible 
->>>>> cgroup v2
->>>>> cgroup subsystems even if they weren't enabled in the current cgroup.
->>>>> Apparently, that is the case. I prefer it that way too.
->>>> Yeah, I think listing all is better. If the list corresponded 
->>>> directly to
->>>> cgroup.controllers, it may make sense to only show enabled ones but 
->>>> we can
->>>> have dying ones and implicitly enabled memory and so on, so I think 
->>>> it'd be
->>>> cleaner to just list them all.
->>> That will means cgroup subsystems that are seldomly used like rdma, 
->>> misc
->>> or even hugetlb will always be shown in all the cgroup.stat output. I
->>> actually prefer just showing those that are enabled. As for dying 
->>> memory
->>> cgroups, they will only be shown in its online ancestors. We currently
->>> don't know how many level down are each of the dying ones.
->> It seems odd to me to not show dead ones after a cgroup has disabled
->> the controller again. They still consume memory, after all, and so
->> continue to be property of that cgroup afterwards.
->>
->> Instead of doing for_each_css(), would it make more sense to have
->>
->>     struct cgroup {
->>         ...
->>         int nr_dying_subsys[CGROUP_SUBSYS_COUNT];
->
-> What exactly does new this array for? Is this for copying out 
-> css->nr_dying_descendants before disabling a controller? The number 
-> may be out of date when it is used. I would think we should store the 
-> actual css and clearing it again once the css is ready to be freed.
->
-> Anyway, I would suggest doing it as a separate add-on patch if we 
-> decide to do it instead of adding it to the current patch.
+Hi,
 
-Alternatively, we could delay the clearing of cgroup->subsys[] entry 
-from offline time to until the css is ready to be freed. We do need to 
-add check about the CSS_ONLINE flag when we only want to deal with 
-online csses.
+在 2024/07/12 2:03, Bart Van Assche 写道:
+> On 7/11/24 2:00 AM, Yu Kuai wrote:
+>> ioprio works on the blk-cgroup level, all disks in the same cgroup
+>> are the same, and the struct ioprio_blkg doesn't have anything in it.
+>> Hence register the policy is enough, because cpd_alloc/free_fn will
+>> be handled for each blk-cgroup, and there is no need to activate the
+>> policy for disk.
+> 
+> As one can see in the output of git grep -nHEB1 '>pd_(alloc|free)_fn\(',
+> none of the pd_alloc_fn / pd_free_fn callers checks whether or not these
+> pointers are NULL. Hence my question why this patch does not trigger any
+> NULL pointer dereferences?
 
-Cheers,
-Longman
+Because the blkcg_deactivate_policy() is removed as well, there are no
+callers now... blkcg_policy_register() is still called to make sure
+cpd_(alloc|free)_fn will still be called.
+
+Thanks,
+Kuai
+
+> 
+> Thanks,
+> 
+> Bart.
+> .
+> 
 
 
