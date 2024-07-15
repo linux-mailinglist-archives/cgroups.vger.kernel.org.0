@@ -1,69 +1,86 @@
-Return-Path: <cgroups+bounces-3682-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3685-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDFFF931956
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jul 2024 19:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 46A92931B0F
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jul 2024 21:34:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E4F0282DC3
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jul 2024 17:31:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 019D3283169
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jul 2024 19:34:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10DFC4E1C8;
-	Mon, 15 Jul 2024 17:30:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34C52136658;
+	Mon, 15 Jul 2024 19:34:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uvvXtNFy"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DQGIhepx"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DCBB3BB2E
-	for <cgroups@vger.kernel.org>; Mon, 15 Jul 2024 17:30:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D898179BD
+	for <cgroups@vger.kernel.org>; Mon, 15 Jul 2024 19:34:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721064656; cv=none; b=fHYSKx3XfIqlD/7Kz/xJUgWIk6WyBazyY+lmr0amZQoxet+3WyJR9EXBYpURIW07Nrz+u5kYIlNsa0sSAP+VvPcHHpj8zp9Ld0zcYVprDz5OuwqH6EAY7J7nC3WkvsfZXVfTk330Ru18xhfidfBaLHxNJQNqszbCTuhZxWh7GvA=
+	t=1721072074; cv=none; b=fKrAkIcdu9sGhbS28y4P9cKd1jdpJwujqhpK5kVTSP/APA2e/9AFzbt5BM6PQ7aqlqZWFmW6thRjaXE6FKPDcMeAf3whb2lpdblWdez/b28EmdTWWRMPDVZywOdXG0UPXs17ipZr77nCZjfMUOPlx7eHr3Gjvw6q96mez3X3ypw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721064656; c=relaxed/simple;
-	bh=fuFomPvJjEWyq0rlb0WrUHt+YwwZeluRKdzkdP8nJAY=;
+	s=arc-20240116; t=1721072074; c=relaxed/simple;
+	bh=C8RUPX9LfEut7+xmVjhiOqGNaYtXmgw8P+dKtJhZm8c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a5pGVN0+Z6sC4YkJsDEzLbCSTgRF9UkPYOL559L0PsF8XBUCmHVwI1q89PnMF7nbhefERvk1LsZSEy7X3IdJIuvygoKxDqflLzB/hFHIKySuauQTFzUTQcHQ+SWPKgSnZg7dS2G6t4mIAUaee4Nt38gcgOBCLIOLMOqywEzowtA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uvvXtNFy; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: longman@redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721064652;
+	 Content-Type:Content-Disposition:In-Reply-To; b=qu9db8rTMrC9QE29xSSdljngVl9Yy2MFJgN50kA6Idq+U8GOAo0eZsBWCS41uJhrv3EylbcEqsXCKPg5M3xcB68oK7omGtr7phgI+lAUbjtOegBc/QTZXWgIC4ILMmTSfjkJmnPnYbKCJneu0gHZDLjwSxe50B8nIX2C68v65pE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DQGIhepx; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1721072071;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=48LNjXEtpZ7HdIqiCDkMz54KvHv8Y9hqJYhmD6bl1e4=;
-	b=uvvXtNFyX8YfglFp7KW0c7WheJq834hIGYDnFgi1aHq9ZXcRN1DSMfwUrMXcDWueTS1HXR
-	rZEKQ01xtPmjcWDbCakRM9cSMfoPpDPbV21vxY49WDm1HgkHjDvLq8Ygg/VGgXqKs6E3jQ
-	sXpMIPGyv6RPrne82akxBSPw7Sa7p4I=
-X-Envelope-To: tj@kernel.org
-X-Envelope-To: lizefan.x@bytedance.com
-X-Envelope-To: hannes@cmpxchg.org
-X-Envelope-To: mkoutny@suse.com
-X-Envelope-To: corbet@lwn.net
-X-Envelope-To: cgroups@vger.kernel.org
-X-Envelope-To: linux-doc@vger.kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: kamalesh.babulal@oracle.com
-Date: Mon, 15 Jul 2024 17:30:46 +0000
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+	bh=1KX7IEr2zKnMtYo6NKNA4TARkllCcLg1jqXMkrl6O60=;
+	b=DQGIhepxbJimDBfW+zxceVur2jZwTkqbDCMVrLdJXruHB0D4TpSxMYx58erE83ETDamYSA
+	6bYkJmvJ0/cutabV0Kh39pRerRh/0vLO0DMEwLXwztBBRkI/I1wGUhVN0w1J0foiY1O7uv
+	uVMxFzRWNc23uYRmhBgsDQVzCNXBu7w=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-497-seHeETyFOkWXnSB293hp-Q-1; Mon,
+ 15 Jul 2024 15:34:28 -0400
+X-MC-Unique: seHeETyFOkWXnSB293hp-Q-1
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id C62E11955D44;
+	Mon, 15 Jul 2024 19:34:24 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.7])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 184B73000190;
+	Mon, 15 Jul 2024 19:34:22 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id E7095400EC901; Mon, 15 Jul 2024 15:38:27 -0300 (-03)
+Date: Mon, 15 Jul 2024 15:38:27 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: Vlastimil Babka <vbabka@suse.cz>, Thomas Gleixner <tglx@linutronix.de>
+Cc: Leonardo Bras <leobras@redhat.com>,
 	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Kamalesh Babulal <kamalesh.babulal@oracle.com>
-Subject: Re: [PATCH-cgroup v7] cgroup: Show # of subsystem CSSes in
- cgroup.stat
-Message-ID: <ZpVcxlx1VR3FaoYI@google.com>
-References: <20240715150034.2583772-1-longman@redhat.com>
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [RFC PATCH v1 0/4] Introduce QPW for per-cpu operations
+Message-ID: <ZpVsow629seGUXRz@tpad>
+References: <20240622035815.569665-1-leobras@redhat.com>
+ <261612b9-e975-4c02-a493-7b83fa17c607@suse.cz>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -72,90 +89,43 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240715150034.2583772-1-longman@redhat.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <261612b9-e975-4c02-a493-7b83fa17c607@suse.cz>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-On Mon, Jul 15, 2024 at 11:00:34AM -0400, Waiman Long wrote:
-> Cgroup subsystem state (CSS) is an abstraction in the cgroup layer to
-> help manage different structures in various cgroup subsystems by being
-> an embedded element inside a larger structure like cpuset or mem_cgroup.
+On Mon, Jun 24, 2024 at 09:31:51AM +0200, Vlastimil Babka wrote:
+> Hi,
 > 
-> The /proc/cgroups file shows the number of cgroups for each of the
-> subsystems.  With cgroup v1, the number of CSSes is the same as the
-> number of cgroups.  That is not the case anymore with cgroup v2. The
-> /proc/cgroups file cannot show the actual number of CSSes for the
-> subsystems that are bound to cgroup v2.
+> you've included tglx, which is great, but there's also LOCKING PRIMITIVES
+> section in MAINTAINERS so I've added folks from there in my reply.
+> Link to full series:
+> https://lore.kernel.org/all/20240622035815.569665-1-leobras@redhat.com/
 > 
-> So if a v2 cgroup subsystem is leaking cgroups (usually memory cgroup),
-> we can't tell by looking at /proc/cgroups which cgroup subsystems may
-> be responsible.
+> On 6/22/24 5:58 AM, Leonardo Bras wrote:
+> > The problem:
+> > Some places in the kernel implement a parallel programming strategy
+> > consisting on local_locks() for most of the work, and some rare remote
+> > operations are scheduled on target cpu. This keeps cache bouncing low since
+> > cacheline tends to be mostly local, and avoids the cost of locks in non-RT
+> > kernels, even though the very few remote operations will be expensive due
+> > to scheduling overhead.
+> > 
+> > On the other hand, for RT workloads this can represent a problem: getting
+> > an important workload scheduled out to deal with remote requests is
+> > sure to introduce unexpected deadline misses.
+> > 
+> > The idea:
+> > Currently with PREEMPT_RT=y, local_locks() become per-cpu spinlocks.
+> > In this case, instead of scheduling work on a remote cpu, it should
+> > be safe to grab that remote cpu's per-cpu spinlock and run the required
+> > work locally. Tha major cost, which is un/locking in every local function,
+> > already happens in PREEMPT_RT.
 > 
-> As cgroup v2 had deprecated the use of /proc/cgroups, the hierarchical
-> cgroup.stat file is now being extended to show the number of live and
-> dying CSSes associated with all the non-inhibited cgroup subsystems that
-> have been bound to cgroup v2. The number includes CSSes in the current
-> cgroup as well as in all the descendants underneath it.  This will help
-> us pinpoint which subsystems are responsible for the increasing number
-> of dying (nr_dying_descendants) cgroups.
-> 
-> The CSSes dying counts are stored in the cgroup structure itself
-> instead of inside the CSS as suggested by Johannes. This will allow
-> us to accurately track dying counts of cgroup subsystems that have
-> recently been disabled in a cgroup. It is now possible that a zero
-> subsystem number is coupled with a non-zero dying subsystem number.
-> 
-> The cgroup-v2.rst file is updated to discuss this new behavior.
-> 
-> With this patch applied, a sample output from root cgroup.stat file
-> was shown below.
-> 
-> 	nr_descendants 56
-> 	nr_subsys_cpuset 1
-> 	nr_subsys_cpu 43
-> 	nr_subsys_io 43
-> 	nr_subsys_memory 56
-> 	nr_subsys_perf_event 57
-> 	nr_subsys_hugetlb 1
-> 	nr_subsys_pids 56
-> 	nr_subsys_rdma 1
-> 	nr_subsys_misc 1
-> 	nr_dying_descendants 30
-> 	nr_dying_subsys_cpuset 0
-> 	nr_dying_subsys_cpu 0
-> 	nr_dying_subsys_io 0
-> 	nr_dying_subsys_memory 30
-> 	nr_dying_subsys_perf_event 0
-> 	nr_dying_subsys_hugetlb 0
-> 	nr_dying_subsys_pids 0
-> 	nr_dying_subsys_rdma 0
-> 	nr_dying_subsys_misc 0
-> 
-> Another sample output from system.slice/cgroup.stat was:
-> 
-> 	nr_descendants 34
-> 	nr_subsys_cpuset 0
-> 	nr_subsys_cpu 32
-> 	nr_subsys_io 32
-> 	nr_subsys_memory 34
-> 	nr_subsys_perf_event 35
-> 	nr_subsys_hugetlb 0
-> 	nr_subsys_pids 34
-> 	nr_subsys_rdma 0
-> 	nr_subsys_misc 0
-> 	nr_dying_descendants 30
-> 	nr_dying_subsys_cpuset 0
-> 	nr_dying_subsys_cpu 0
-> 	nr_dying_subsys_io 0
-> 	nr_dying_subsys_memory 30
-> 	nr_dying_subsys_perf_event 0
-> 	nr_dying_subsys_hugetlb 0
-> 	nr_dying_subsys_pids 0
-> 	nr_dying_subsys_rdma 0
-> 	nr_dying_subsys_misc 0
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
+> I've also noticed this a while ago (likely in the context of rewriting SLUB
+> to use local_lock) and asked about it on IRC, and IIRC tglx wasn't fond of
+> the idea. But I forgot the details about why, so I'll let the the locking
+> experts reply...
 
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+Thomas?
 
-Thanks!
+
 
