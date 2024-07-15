@@ -1,153 +1,177 @@
-Return-Path: <cgroups+bounces-3670-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3671-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5C8B930977
-	for <lists+cgroups@lfdr.de>; Sun, 14 Jul 2024 11:33:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD5D4930D65
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jul 2024 07:00:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7BD10281CA8
-	for <lists+cgroups@lfdr.de>; Sun, 14 Jul 2024 09:33:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1BED1C20EE8
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jul 2024 05:00:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4487E45038;
-	Sun, 14 Jul 2024 09:33:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CBF453E23;
+	Mon, 15 Jul 2024 05:00:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="w6wg8hOk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mSRLZHMS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.17.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 629BA3A8C0;
-	Sun, 14 Jul 2024 09:33:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78D6927457;
+	Mon, 15 Jul 2024 05:00:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720949621; cv=none; b=cngzxX/BttfcTeAqgUcxUS2gOMMQtluWd6GERDvds7K6ixKKAu0hQd26HDi0mhQlZaonnDz8TDahyywG9pSTlu8Atd8V85A/oUPsM6lCDYCpgDQ77cbNvjVujT6f0SBn9sgBncTDQaeq/C936NgBtzxgvpgaDz1IZQP3zpL/eWE=
+	t=1721019652; cv=none; b=d/9uCEAxwhrtSslrxMIrIQ2SsmKhiqCSJh91RYOf9ABWw5p9ydTa4c6Ntt0k6xFxPwqF3Ap5Y0d6qQz02aj3VCJ/jFEXF8oVGik/bzkxzPrF4zKwE6NiT3X2UiHI17JlptSbEv+BlVyi/mr+U67XACDbtyy8HV5va/CctHpsv/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720949621; c=relaxed/simple;
-	bh=66W94Qlr5tmW71QHKaOmYeVfbqOJtCFE9dnGo5yItiU=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=FEl3VLt94026YMEqnC0mrv0sci4U/2Qr8hbe3otZK0+4G8GJy9cJvBt+vPT07tirMzJnk4K8p6uOvKUgQqOt1qLm8QVIm5wcCwGMox00XXYJ2s7J6rh9X7c2oH5sfO6wrKpG0F9Su4LQCUvVuK0ZjmWpC8N+Gq30VUzR48XNFW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=w6wg8hOk; arc=none smtp.client-ip=212.227.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1720949599; x=1721554399; i=markus.elfring@web.de;
-	bh=aLeqHr1jvfeI2WXDfAAOXkAuSH/H3gXk27n2+n8sw8I=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:From:
-	 Subject:Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=w6wg8hOk9zJu/8DkrfZbROy+CIx23ZbUJlGZNaaOkpem0aXZ87rknf7p0DSSEFW4
-	 rKdpEtSYzKx8edp9j6lUHV3fShLfSZSuymtVtqVcJUvVh6h0QGjxEabAraVbLP/vP
-	 UOJoebdB3dhtY2aJHxT2Q9eVrCuPrWgNsHbriFNIiDtG9nLzoYxs/h5olj6iFkAk2
-	 d0WKWKWOUXQ42M2AqYcLV3TIy91uhFb4rNBPrQctzhxKuvo+g8rZ4M7OcGf1Asi1a
-	 ZoEbR2QiS+M8NXJKmh33+1eHnQZa8R4Vfo2Nr7QSkmfZXP5uZvxMjMJImkD6pCE9q
-	 sI2nOn4wIyTUDM29kA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.82.95]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MpU1u-1s1J1X2y3Y-00nBP7; Sun, 14
- Jul 2024 11:33:19 +0200
-Message-ID: <8ff2d1aa-4c48-4cb1-b5d5-675adb90ae81@web.de>
-Date: Sun, 14 Jul 2024 11:33:18 +0200
+	s=arc-20240116; t=1721019652; c=relaxed/simple;
+	bh=mVPA0WFc5imjRFG6WzjrqNxQsnXB53I+RJbaU5YWTJ8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=EQWw7pbqvVQKRO49S6EjQCaTVxVQEztlj38EUneQQaqu8oc+bC7Bay10yEMCdrUINh0+X4t6UVphpja6CGZMhu7DdmNvK1JS8YZcRhyr0vuuLIr86Kk75U6jYlVHUzrhCj0PgFRUtxkJaJv/JpPaXbj9l+0eyB+U0dSqRsgMysk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mSRLZHMS; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1fbe6f83957so30416355ad.3;
+        Sun, 14 Jul 2024 22:00:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721019650; x=1721624450; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:sender:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FUgrnCFDaWB/r9EzY+fD5uZ9RBUgZpRmuqaqtaj8oww=;
+        b=mSRLZHMScYmQs9c43GgoHN+hWNmcpsIb/YPW2GB6k+cuk1GGBUFfGCVCf28W0/t85z
+         u5mRA/xpWBT2dmjMmZFlVyVRyK26QLflPZUnplitD2wr7C6qwhw65IeTOawq06m4twQm
+         goT+897fPpZg9Qrez1r4CaH5pxp5/EFVK+frHwElfqSVRfHhxieFrpzJEyQhFj8G2kJZ
+         ZFfiIu/w5NUBn5TW1sco0nJUOnvM2TZoNEX05YijHjTvLjhfmJ2EmBnvPQmbpQvYV6qY
+         fJisdCuEaKXfCSx3NovnGC/UgmsE8iDUphD2C9iFGZdPmdXlqEPqY637WWwtiXx0Ff9H
+         8Uiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721019650; x=1721624450;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=FUgrnCFDaWB/r9EzY+fD5uZ9RBUgZpRmuqaqtaj8oww=;
+        b=k0qSxSgH24VovCb0nCX2t8LzkZcqEnYNL8jaDZo9WsYvKDGveBMtY9SFYDtywDHheT
+         llKWuEKCJO7k6NcXXWTN+FafbGxG9prGG89p5HPVr91F6EPoxx4V7EVPzbTQvV0xOFQr
+         r/lBqTSsokIjbm//bfa8RRkzKON6KLkQXqFbr8Dog0r1hY0z5H/hkbLIxaSOxP6TDwQZ
+         gE2lctGle3YeTL3s0hT0xwYKvhIhcJgpilON90kKeb4qnz8mnkI4g78BfM6EcsbPLczu
+         pypafbACJXkOh+V8nLs7/4Qfg5YAVpmeLYH4uQxqc/+wC3M2f0TNnRezaJA3o7nkrk4L
+         dbUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXXdLACKA+cWKCbdG2Om9gnuVkcVWXQz214ewu9ysmvEiM8F0JLaazp1YJe9CUZ5UAVd0YWM5Bxi/Nq82VQMnYXkO6Mu/I++w==
+X-Gm-Message-State: AOJu0Yynn4nezZ458PBSG0XlQ8XjuChgU3VNFOwvh9Wg5jzBc5jqpxN/
+	Vo7WYtTypr+GnTvRyKuX4nF9t1Z2851XoUXQhKgr0+seMQN/wCDb
+X-Google-Smtp-Source: AGHT+IGfnb+5ddRGS9IQ6fB7Qd/EXSywtJKl7hjJ8GCS7qMmmm+zKH3H4yZBlJ7SJnsQmBPIKOcuMg==
+X-Received: by 2002:a17:902:d18a:b0:1fb:8aa9:e2a9 with SMTP id d9443c01a7336-1fbb6d3afb5mr105294915ad.15.1721019649591;
+        Sun, 14 Jul 2024 22:00:49 -0700 (PDT)
+Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bb9c4e3sm31217965ad.75.2024.07.14.22.00.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Jul 2024 22:00:49 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Sun, 14 Jul 2024 19:00:48 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Subject: [GIT PULL] cgroup: Changes for v6.11
+Message-ID: <ZpStAERL5IH0OAps@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: cgroups@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Tejun Heo <tj@kernel.org>,
- Zefan Li <lizefan.x@bytedance.com>
-Content-Language: en-GB
-Cc: LKML <linux-kernel@vger.kernel.org>
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] cgroup: Use seq_putc() in three functions
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:SSUQHcCcuwZU/1J4YNud6Pf4kHGLlefSxecxEkkCY5lpVB9KFmq
- 3Amb657a1pqI9kpzVknExXSPL0ALVxZhWtO6RHQUFo2DDn9I2lDQPiRI95KXeQis645DQtO
- l7axU9s9p5FKRnyOfNGylG0QL+PKJmLkYA8nZ3Ec59e8yvkG7edWdPivZZAcLd868ImK+QT
- zMdl4i7tEpaZugaWO1akg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:LXgjEuqR0JE=;OPOlV7gXFyiLcWBhR4fjoI4CJRO
- CQHTUlH2NZca0iOvJjfoc10tLg1WRaaFIbMCq2HJ9zazGHi8NgeOIVAfgidmNDVXrHMHdmy5A
- YsOHlneGCPcNQhUNsV7QlPS0CFPjmJYNHvZpuCH55XRk9D5bgQI3pICPSFgEsypr8/EmnnmqM
- mEWDclMpIZxm4oHjRpslvDhNotMn9bp6gdsHfknfncqrSnhyxKPiMkaQyTFe7dCF70SoKmKzC
- SNwco9dri5Am88Ks8h9ATSLYjNJuO3mnZjQfj9Lpn2aOVlsyWWJ+gxOGGp7Q5sZCs3RViQRWk
- fr34oCiDVKZv7VZrlnotOtDWrtG1vAtqmb6OE60xyD8QFXZs0BWGuLzGn2GwW6IHM0SDqdKS3
- O1HwoZko7Np+P+0OGuh+LvsR96NTIzMwqxM/TK/M4L6wnaexK0oy5fHwSUoYd8pqBe+VDNEiP
- v30MQcZ5hcE8wYfX5eqnPXg240FL5WWkqXZokdD/gtZIwZw0vjbUPtTzQO52YQnWuOXh+qfgf
- 1z4+UMVhVvZyLAsCwZh/80ZI19veOvmT/a4QyZ55XfNJqIyAMsJy0SbMHoyJLdoU8KErfBe2D
- RPeEqYpgMjeFpt2f+VYydrQy0aPUWhxUOsVpf1LuPxIkrs3fzHY6TKVzT2jAEVE3oF6jBNFJm
- mod/VueRtplTTeGvdINtYWFt8FjsmqhWgZLSDEwprEXoOP8gNZURK9o8FFDBZtYSW8msny2s4
- IT7rSJ38J2kSGMjh8eJNkgi1lc93tMfDtzMCpYR9mqMunCZFuUHi/YBCCRZd2e6miIs2AnIe1
- 7PiDa7UJjcYrCUkY6fWTs05g==
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Sun, 14 Jul 2024 11:24:05 +0200
+The following changes since commit 55027e689933ba2e64f3d245fb1ff185b3e7fc81:
 
-Single characters should be put into a sequence.
-Thus use the corresponding function =E2=80=9Cseq_putc=E2=80=9D.
+  Merge tag 'input-for-v6.10-rc5' of git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input (2024-06-24 14:36:11 -0400)
 
-This issue was transformed by using the Coccinelle software.
+are available in the Git repository at:
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- kernel/cgroup/cgroup.c | 2 +-
- kernel/cgroup/debug.c  | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.11
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index c8e4b62b436a..9197f3c591a9 100644
-=2D-- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -6316,7 +6316,7 @@ int proc_cgroup_show(struct seq_file *m, struct pid_=
-namespace *ns,
+for you to fetch changes up to 9283ff5be1510a35356656a6c1efe14f765c936a:
 
- 			seq_puts(m, buf);
- 		} else {
--			seq_puts(m, "/");
-+			seq_putc(m, '/');
- 		}
+  Merge branch 'for-6.10-fixes' into for-6.11 (2024-07-14 18:04:03 -1000)
 
- 		if (cgroup_on_dfl(cgrp) && cgroup_is_dead(cgrp))
-diff --git a/kernel/cgroup/debug.c b/kernel/cgroup/debug.c
-index 80aa3f027ac3..d18f7dcb4def 100644
-=2D-- a/kernel/cgroup/debug.c
-+++ b/kernel/cgroup/debug.c
-@@ -55,7 +55,7 @@ static int current_css_set_read(struct seq_file *seq, vo=
-id *v)
- 	seq_printf(seq, "css_set %pK %d", cset, refcnt);
- 	if (refcnt > cset->nr_tasks)
- 		seq_printf(seq, " +%d", refcnt - cset->nr_tasks);
--	seq_puts(seq, "\n");
-+	seq_putc(seq, '\n');
+----------------------------------------------------------------
+cgroup: Changes for v6.11
 
- 	/*
- 	 * Print the css'es stored in the current css_set.
-@@ -159,7 +159,7 @@ static int cgroup_css_links_read(struct seq_file *seq,=
- void *v)
- 				extra_refs +=3D extra;
- 			}
- 		}
--		seq_puts(seq, "\n");
-+		seq_putc(seq, '\n');
+- Added Michal Koutný as a maintainer.
 
- 		list_for_each_entry(task, &cset->tasks, cg_list) {
- 			if (count++ <=3D MAX_TASKS_SHOWN_PER_CSS)
-@@ -189,7 +189,7 @@ static int cgroup_css_links_read(struct seq_file *seq,=
- void *v)
- 	if (!dead_cnt && !extra_refs && !threaded_csets)
- 		return 0;
+- Counters in pids.events were behaving inconsistently. pids.events made
+  properly hierarchical and pids.events.local added.
 
--	seq_puts(seq, "\n");
-+	seq_putc(seq, '\n');
- 	if (threaded_csets)
- 		seq_printf(seq, "threaded css_sets =3D %d\n", threaded_csets);
- 	if (extra_refs)
-=2D-
-2.45.2
+- misc.peak and misc.events.local added.
 
+- cpuset remote partition creation and cpuset.cpus.exclusive handling
+  improved.
+
+- Code cleanups, non-critical fixes, doc updates.
+
+- for-6.10-fixes is merged in to receive two non-critical fixes that didn't
+  trigger pull.
+
+----------------------------------------------------------------
+Chen Ridong (2):
+      cgroup/cpuset: Prevent UAF in proc_cpuset_show()
+      cgroup/rstat: add force idle show helper
+
+David Wang (1):
+      kernel/cgroup: cleanup cgroup_base_files when fail to add cgroup_psi_files
+
+Michal Koutný (5):
+      cgroup/pids: Separate semantics of pids.events related to pids.max
+      cgroup/pids: Make event counters hierarchical
+      cgroup/pids: Add pids.events.local
+      selftests: cgroup: Lexicographic order in Makefile
+      selftests: cgroup: Add basic tests for pids controller
+
+Oleg Nesterov (1):
+      cgroup: avoid the unnecessary list_add(dying_tasks) in cgroup_exit()
+
+Randy Dunlap (1):
+      cgroup_misc: add kernel-doc comments for enum misc_res_type
+
+Tejun Heo (2):
+      cgroup: Add Michal Koutný as a maintainer
+      Merge branch 'for-6.10-fixes' into for-6.11
+
+Waiman Long (7):
+      cgroup/cpuset: Optimize isolated partition only generate_sched_domains() calls
+      cgroup/cpuset: Fix remote root partition creation problem
+      selftest/cgroup: Fix test_cpuset_prs.sh problems reported by test robot
+      cgroup/cpuset: Delay setting of CS_CPU_EXCLUSIVE until valid partition
+      cgroup/cpuset: Make cpuset.cpus.exclusive independent of cpuset.cpus
+      selftest/cgroup: Update test_cpuset_prs.sh to match changes
+      cgroup: Protect css->cgroup write under css_set_lock
+
+Xiu Jianfeng (5):
+      cgroup/cpuset: Remove unnecessary zeroing
+      cgroup/cpuset: Update comment on callback_lock
+      cgroup/cpuset: Reduce the lock protecting CS_SCHED_LOAD_BALANCE
+      cgroup/misc: Introduce misc.peak
+      cgroup/misc: Introduce misc.events.local
+
+ Documentation/admin-guide/cgroup-v1/pids.rst      |   3 +-
+ Documentation/admin-guide/cgroup-v2.rst           |  47 +++++-
+ MAINTAINERS                                       |   1 +
+ include/linux/cgroup-defs.h                       |   7 +-
+ include/linux/misc_cgroup.h                       |  12 +-
+ kernel/cgroup/cgroup.c                            |  36 +++-
+ kernel/cgroup/cpuset.c                            | 197 ++++++++++++++++------
+ kernel/cgroup/misc.c                              |  80 ++++++++-
+ kernel/cgroup/pids.c                              | 129 +++++++++++---
+ kernel/cgroup/rstat.c                             |  37 ++--
+ tools/testing/selftests/cgroup/.gitignore         |  11 +-
+ tools/testing/selftests/cgroup/Makefile           |  25 +--
+ tools/testing/selftests/cgroup/test_cpuset_prs.sh |  75 +++++---
+ tools/testing/selftests/cgroup/test_pids.c        | 178 +++++++++++++++++++
+ 14 files changed, 679 insertions(+), 159 deletions(-)
+ create mode 100644 tools/testing/selftests/cgroup/test_pids.c
 
