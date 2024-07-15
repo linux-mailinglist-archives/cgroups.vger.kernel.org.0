@@ -1,121 +1,176 @@
-Return-Path: <cgroups+bounces-3680-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3681-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FC98931920
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jul 2024 19:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CCC4C931928
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jul 2024 19:23:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DCF31C21565
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jul 2024 17:21:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF0C01C211F0
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jul 2024 17:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53B19446D1;
-	Mon, 15 Jul 2024 17:21:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D7B9487B0;
+	Mon, 15 Jul 2024 17:23:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YTaZ1blY"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="h8boxVwV"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8BBA20323;
-	Mon, 15 Jul 2024 17:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A27E744C7B
+	for <cgroups@vger.kernel.org>; Mon, 15 Jul 2024 17:22:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721064090; cv=none; b=fvdYf1L7mrujacCoHKBbPDl8X/5MhJmc4wkzZRnzKFlNKJT1HX6qZ/QzjHyyjKgRRIiiehAfkOE9+l4qlEC/G/Ya6PyojY/+T0fARyWvQRASNoTe/y9zVAWMABarPGeI+RxJVllNJaDSOfTm673pTpLKTFTaIXj9PyuYigwTJPQ=
+	t=1721064181; cv=none; b=ipJaQjFXsX69LqdQQ10C0UqJ/ITd6zqIOVjIZd3CS2HtZQKgPPvTcYu+xOeIQKEAuZ0DKnKW7H9FdZM1tABOPIGcK24seVMUxNocbGK/A+Ocyq/KWiJIO/HS0aQUeNKCflqh8jOdPg1NpASonlgGvqXNbyBhwGHex9OP/I4SNEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721064090; c=relaxed/simple;
-	bh=YuKyZRtkNIBHN5jbSweMr/laqNyoENl8JTxzcP5OZ9w=;
+	s=arc-20240116; t=1721064181; c=relaxed/simple;
+	bh=J67CIHRUbdGmnrl2ITF7KM9nbk16I0qPrrmM1VDeTB8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uAlJYcZ9KIjokujm3Bk4LPR+0NwIDp1tBat139TAmX9M6d5WkkuFEmzdCzAJod9yH7OOOXtX/11GJ94W8C/Iqk/7ea9kop41wLJw0JFA6yxa0DOEROn3yteiP0p9c84zbSHSTxI+tZ5Unh8BEhT2X18s/DXVdRMrAYu16bs6x1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YTaZ1blY; arc=none smtp.client-ip=209.85.215.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-76cb5b6b3e4so2723502a12.1;
-        Mon, 15 Jul 2024 10:21:28 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=kNc/OVr/v0G8fqGa3KG/hRMBc5ajiOxnvHv08gP8LDoAyqYjCe2Jl4sng+gSjo8vv+A1ufP/KQrpNQGq7DoM36QoAL/jdD98kxm+xgRPl6I2pij7G6WMmmeQLZGFMZeow9Rb4zZT9SH+lwj+ZGrmG+71Zi0takIrSlMPzK9yULA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=h8boxVwV; arc=none smtp.client-ip=209.85.219.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-6b5f3348f05so28207256d6.0
+        for <cgroups@vger.kernel.org>; Mon, 15 Jul 2024 10:22:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721064088; x=1721668888; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=i9k73sA4KaYZWSPUciUi3HDdqr3lc/EAyIdqeVOGRMM=;
-        b=YTaZ1blYWRt2Ea8jiJadxWiTrHvxZ8liJrSaFMFJIOG60c6NvziOkSZInwfwBNKI7o
-         idm2qUcg/OPphaWP49uMNAgrLvavwElkU+sKsbOtevAgjJql0AJmQhtKnYUM0aGVfpym
-         mGZm7gW1eyL+daErf/B2sQd4HKLIcpDO0hQavhcXAXm7WimsV6cKHhrCTfRBDWwkmKeY
-         hcr7VYDEuP9eNxSgRbj8o5LQRZ/IYARat+yWAlHwVBvJcBBOYYZrAUGFMpoF/gWWBb4t
-         WLd8q0XzdW+DDxz65fRTCVL4ohr5RiWK7+AHOREIh0LddwfjHLEYHFYkcxjPOw1H98B8
-         absA==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1721064177; x=1721668977; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+LS+Pt/xtcW0R8fRx1VsexXvG+4qSHFVI3AS2OkJyMY=;
+        b=h8boxVwVszPgvAy2Pz9wr2EtA4dvTht84DNysl8x4DX0e6r/WQYo8rXRPEPrUycRi2
+         nxOh+IWdZpwfm2OemdTrkM08qY9Orzwf8qaoEM4lw+qfwVa0G4kjE9yt5sCSdnfv/Jib
+         POxpd6S+XywCoOoCjcHU7aqiEaN1X5pRkWv2CsiLpdbKRjalfyAov7x8MwqWAxuyPtmZ
+         lxkhFEaQrLuD7WJjZxon6Tok2I6AQ8ucXwVqWVbnD8HU7Xla7iq4ITQZUlaRgwARgkIP
+         sTKI/pYfauyDqJLOPRmS/R2/c4FFLcYQRQcd4NvO9yLKo6mgqs8SKjRQxvLWvCrjdUn0
+         foXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721064088; x=1721668888;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i9k73sA4KaYZWSPUciUi3HDdqr3lc/EAyIdqeVOGRMM=;
-        b=hFx9gywq0RW8Icbv+JEv7nOMtDZ4Gquz1biXBO6WIe+L/u7GTdEcE1iaZOnfRGmirb
-         xC5vzo2CXoUGBesz0P6YUDQRG3RSOFdPGtya0X/9T5oUKISx/vBX6XzsRZMcWLV7ZYUZ
-         cx1SgaWFjzuuR5kpkQBzSB5n2h7ULUyP2nmQ9dWdzxZBQLhEVnIQGiw9GwKxni5nLElr
-         1gaDJXEsxKQFBnQlDiWVtuAoeqqVozIiU89zOC3TshT/vITHNbGm18Off0F2PRBomDkS
-         etxqh+c6luepkK1E0l0ice6eN6SqRwJYk3Uno/jDEWP+tsrJNHZgxoDTQVjbeTo6H5Ok
-         VdoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWvOYUDZDtULEOdUFS5ClhidKIKPvVMXyw9Y5UNiG88FZRi7CONY7SEWdV2XQn4Zk6nV86lNGh7HlvLaO3qQkwS6/wZVScxmPZBbeVKqZUCgTB2GgkQQoZqqNsI3gSa+aAvoOY5
-X-Gm-Message-State: AOJu0YwgVfuMlbgdg3ni3sKEopkR4+YKFLPsL/QzU0hwI68PxBU2z1Oa
-	IvvowNIDBTwjpBc7QPEsawwxqBBWKMsDbpaAK47Fe1qjlOiX4bjD
-X-Google-Smtp-Source: AGHT+IGMeZvsUWpVQkC9G9DR/tknpdedHPhniJeUBf540YOjexOrwcOmXJRbjo2pfRCHhHE9MPBbzw==
-X-Received: by 2002:a05:6a21:10b:b0:1c2:94ad:1c5d with SMTP id adf61e73a8af0-1c3ee506766mr603367637.2.1721064087793;
-        Mon, 15 Jul 2024 10:21:27 -0700 (PDT)
-Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2cacd6da7b4sm6688202a91.46.2024.07.15.10.21.27
+        d=1e100.net; s=20230601; t=1721064177; x=1721668977;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+LS+Pt/xtcW0R8fRx1VsexXvG+4qSHFVI3AS2OkJyMY=;
+        b=FMN8F2e9zdlewqQ6WAQd0tEZomBBnEBJ1QKFuMb+ykBlxbhVMyegfrRHmhCgl/fmWb
+         u4SCuxOm5VQpI+onjz1qamaler8sPvOV+eWcgB/9D8orvDmOZtZBYANTi5FxnwiwNwr7
+         0o8f81kT5kyDZjej6oq0nvTrmGtBzWAhsusBWPphzRdGl7hUxOxK6/KOnWF9mHcAHij+
+         PNIIyStAFLM+xb7vuBljKLbg4yoe+605tq0/qZnih2upUrhAVkLn5SmyUmsz1bc1N74L
+         L1B21Ool0NJMa2s1pWs+NX2mptRgKB/N/TTDKFMEVGExT92W3xQT4hHybjW/42KWQ8BJ
+         Me/w==
+X-Forwarded-Encrypted: i=1; AJvYcCWd05ke96jbd3QyDxDN1lVaIZ6Unu0m2srwT9m+Q9+ttbPCD8H5zjav4VgTr7loAl66/lSrteBtjnMUuSPZ2n0IanVi2RqMgg==
+X-Gm-Message-State: AOJu0YzH7VG+erFO4uKZtq6d9RytANY4D0AZmfHNNd82uYjjr8cMpk2W
+	NUmJyPu4Xbw9rhSZIEDxBuhni3lO8iT7QTkUdnYE0EohfJHSqf8Dw9nQyDHgvqBK29EsmRAOtJv
+	g
+X-Google-Smtp-Source: AGHT+IHfPdDjkIPhp1T/zEM1IxAuupFbb40dXjl3O3lyXkmAszC9Y7O4atftQvaNDw/ztZPARS2yJw==
+X-Received: by 2002:a05:6214:4018:b0:6b0:6dba:c947 with SMTP id 6a1803df08f44-6b77de71b14mr4032816d6.18.1721064177246;
+        Mon, 15 Jul 2024 10:22:57 -0700 (PDT)
+Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b7619a7218sm23200826d6.73.2024.07.15.10.22.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Jul 2024 10:21:27 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Mon, 15 Jul 2024 07:21:26 -1000
-From: "tj@kernel.org" <tj@kernel.org>
-To: Boy Wu =?utf-8?B?KOWQs+WLg+iqvCk=?= <Boy.Wu@mediatek.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"boris@bur.io" <boris@bur.io>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-	"axboe@kernel.dk" <axboe@kernel.dk>,
-	Iverlin Wang =?utf-8?B?KOeOi+iLs+mclik=?= <Iverlin.Wang@mediatek.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH v2] blk-cgroup: Replace u64_sync with blkg_stat_lock for
- stats update
-Message-ID: <ZpVals5maZs4L3e0@slm.duckdns.org>
-References: <20240710061334.1888-1-boy.wu@mediatek.com>
- <Zo8HTD2AD-b51q0C@slm.duckdns.org>
- <6114fbad7bce9b15806bb9fee25a1075ecb53dd1.camel@mediatek.com>
- <ZpBIfwThiVwstlXL@slm.duckdns.org>
- <70c37035f006de3a4fde895ceeee92826cd280e0.camel@mediatek.com>
- <ZpF4Pfu83W9Wp_R9@slm.duckdns.org>
- <5a1e1bd5168696a0857b62572336c5e598cb5493.camel@mediatek.com>
+        Mon, 15 Jul 2024 10:22:56 -0700 (PDT)
+Date: Mon, 15 Jul 2024 13:22:55 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Kamalesh Babulal <kamalesh.babulal@oracle.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>
+Subject: Re: [PATCH-cgroup v7] cgroup: Show # of subsystem CSSes in
+ cgroup.stat
+Message-ID: <20240715172255.GB1321673@cmpxchg.org>
+References: <20240715150034.2583772-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5a1e1bd5168696a0857b62572336c5e598cb5493.camel@mediatek.com>
+In-Reply-To: <20240715150034.2583772-1-longman@redhat.com>
 
-Hello,
+On Mon, Jul 15, 2024 at 11:00:34AM -0400, Waiman Long wrote:
+> Cgroup subsystem state (CSS) is an abstraction in the cgroup layer to
+> help manage different structures in various cgroup subsystems by being
+> an embedded element inside a larger structure like cpuset or mem_cgroup.
+> 
+> The /proc/cgroups file shows the number of cgroups for each of the
+> subsystems.  With cgroup v1, the number of CSSes is the same as the
+> number of cgroups.  That is not the case anymore with cgroup v2. The
+> /proc/cgroups file cannot show the actual number of CSSes for the
+> subsystems that are bound to cgroup v2.
+> 
+> So if a v2 cgroup subsystem is leaking cgroups (usually memory cgroup),
+> we can't tell by looking at /proc/cgroups which cgroup subsystems may
+> be responsible.
+> 
+> As cgroup v2 had deprecated the use of /proc/cgroups, the hierarchical
+> cgroup.stat file is now being extended to show the number of live and
+> dying CSSes associated with all the non-inhibited cgroup subsystems that
+> have been bound to cgroup v2. The number includes CSSes in the current
+> cgroup as well as in all the descendants underneath it.  This will help
+> us pinpoint which subsystems are responsible for the increasing number
+> of dying (nr_dying_descendants) cgroups.
+> 
+> The CSSes dying counts are stored in the cgroup structure itself
+> instead of inside the CSS as suggested by Johannes. This will allow
+> us to accurately track dying counts of cgroup subsystems that have
+> recently been disabled in a cgroup. It is now possible that a zero
+> subsystem number is coupled with a non-zero dying subsystem number.
+> 
+> The cgroup-v2.rst file is updated to discuss this new behavior.
+> 
+> With this patch applied, a sample output from root cgroup.stat file
+> was shown below.
+> 
+> 	nr_descendants 56
+> 	nr_subsys_cpuset 1
+> 	nr_subsys_cpu 43
+> 	nr_subsys_io 43
+> 	nr_subsys_memory 56
+> 	nr_subsys_perf_event 57
+> 	nr_subsys_hugetlb 1
+> 	nr_subsys_pids 56
+> 	nr_subsys_rdma 1
+> 	nr_subsys_misc 1
+> 	nr_dying_descendants 30
+> 	nr_dying_subsys_cpuset 0
+> 	nr_dying_subsys_cpu 0
+> 	nr_dying_subsys_io 0
+> 	nr_dying_subsys_memory 30
+> 	nr_dying_subsys_perf_event 0
+> 	nr_dying_subsys_hugetlb 0
+> 	nr_dying_subsys_pids 0
+> 	nr_dying_subsys_rdma 0
+> 	nr_dying_subsys_misc 0
+> 
+> Another sample output from system.slice/cgroup.stat was:
+> 
+> 	nr_descendants 34
+> 	nr_subsys_cpuset 0
+> 	nr_subsys_cpu 32
+> 	nr_subsys_io 32
+> 	nr_subsys_memory 34
+> 	nr_subsys_perf_event 35
+> 	nr_subsys_hugetlb 0
+> 	nr_subsys_pids 34
+> 	nr_subsys_rdma 0
+> 	nr_subsys_misc 0
+> 	nr_dying_descendants 30
+> 	nr_dying_subsys_cpuset 0
+> 	nr_dying_subsys_cpu 0
+> 	nr_dying_subsys_io 0
+> 	nr_dying_subsys_memory 30
+> 	nr_dying_subsys_perf_event 0
+> 	nr_dying_subsys_hugetlb 0
+> 	nr_dying_subsys_pids 0
+> 	nr_dying_subsys_rdma 0
+> 	nr_dying_subsys_misc 0
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-On Mon, Jul 15, 2024 at 07:15:24AM +0000, Boy Wu (吳勃誼) wrote:
-> I think I get your idea. You want to replace all the u64 sync for
-> iostat. However, I have one question: why use blkg_stat_lock instead of
-> adding a spin lock for each iostat like iostat.spinlock? We don't need
-> to lock between updating different iostats, but only lock when updating
-> the same iostat.
+Looks good to me!
 
-Oh yeah, that'd be even better.
-
-Thanks.
-
--- 
-tejun
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
