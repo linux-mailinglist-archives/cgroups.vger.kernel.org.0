@@ -1,283 +1,300 @@
-Return-Path: <cgroups+bounces-3678-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3679-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B0A79317F0
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jul 2024 17:57:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A22193190B
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jul 2024 19:14:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D69861F21E6E
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jul 2024 15:57:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7ED641F21E94
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jul 2024 17:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CAE6179BD;
-	Mon, 15 Jul 2024 15:57:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67A5A3B7A8;
+	Mon, 15 Jul 2024 17:14:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=malat-biz.20230601.gappssmtp.com header.i=@malat-biz.20230601.gappssmtp.com header.b="Dmx8UYpw"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZfBIj1pz"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com [209.85.221.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22775175AE
-	for <cgroups@vger.kernel.org>; Mon, 15 Jul 2024 15:56:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A893D982
+	for <cgroups@vger.kernel.org>; Mon, 15 Jul 2024 17:14:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721059021; cv=none; b=tbkVVXn7ym+kSphyaz7OZUQWHYstU0udfnRnutuDE5rGV3PKr5ifqksw9QN9AsNRQ/LMGBNayIOgdkwEPHifVatz+M5Cal5fXBTA5C4nqYITvPONDuNyxT45vZqcdE+MohkEj+2o7lUE1YjQmBHndGhU6vMgydZJJ67a+FwC9L0=
+	t=1721063655; cv=none; b=Ph2x2IRmnGrczGIXxbPK5k4VY9MnbmkQZ8bXARXiOM/OH7ey4ZSuh3g4DiB28R4o4eAuIGcMj8zUZA1n19T9XvQLgF/wUNAbigM0+9Pyzl845LgmE8vFhDncU6V3Cu6lclJrsMvifgDaghQu+3UJBFRlSZYuYSu/XXm7eiTu8kM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721059021; c=relaxed/simple;
-	bh=ZBtcNEWCuxhE/P0iBIIXs/8CPUxtsXT1UYTc2Z9/CtU=;
-	h=From:References:MIME-Version:In-Reply-To:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gC11mU11pa8sAA1YHsXZ8OGnHJ7QdA7YPrhhjVK5SLaAI/pjP1sFZbiTJw4ZRlDRmhs/jjRW9HdybnNHhxRsfJ8qA32yRlfOX6d+PT1jLF+1+lkRjhVcSs9gN5N8YQz2pIGguCln5OWw0AMIGZSnHZ9IMe0FxnZxPrDV3h7bmoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=malat.biz; spf=none smtp.mailfrom=malat.biz; dkim=pass (2048-bit key) header.d=malat-biz.20230601.gappssmtp.com header.i=@malat-biz.20230601.gappssmtp.com header.b=Dmx8UYpw; arc=none smtp.client-ip=209.85.221.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=malat.biz
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=malat.biz
-Received: by mail-vk1-f180.google.com with SMTP id 71dfb90a1353d-4f2e147ee98so1316400e0c.0
-        for <cgroups@vger.kernel.org>; Mon, 15 Jul 2024 08:56:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=malat-biz.20230601.gappssmtp.com; s=20230601; t=1721059017; x=1721663817; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NIlhy0lO57++coqHRC76uJUG9zQeSE560AUgvjRiuDo=;
-        b=Dmx8UYpwDkTjJ6GOwgwX9IUhKZpTKd5vNjM38Q1pR9YSeAloZS/Z0MTOXpNHoQXq6Q
-         TgL8dPL3izZAJHActixyBz5zCCDKnw9JsRX/dLoMbgSuP0YhPkb9/682Dc17UAaubhtA
-         9/BbIzR+EAf3LP3yc7U6CugJQ1WOJ/PK5gYy8GIoA7L5VgQpjQ6hQJZHoIToU/BOl7o8
-         53i5EPEvbqj42UD31scJlPob84vLJkGOxniItSC5I5RO+qY7WRdJ1NiBJ4Y9BFqhU/3i
-         ZGcUNw6HwP1vh6SZ1XGeAgcqIKYRRY+UmR7oDO58NWdqn7iWsmAHv+Yiyi87eKVCmDAT
-         7QjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721059017; x=1721663817;
-        h=cc:to:subject:message-id:date:in-reply-to:mime-version:references
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NIlhy0lO57++coqHRC76uJUG9zQeSE560AUgvjRiuDo=;
-        b=pdV9ZWIqgTugq6cdqMiEJsR6Dlaqf3JV1emvhxECaA+Gv6x1mOUHwJWxYxHkuwwHBV
-         aR75hEJz70c6RLNYGqJnBUHYjwhDZWMyc0v5JvrtVMHBs3S47947I7bVthigKIluqJLa
-         Swvv7e0wjTChY0QWzd2clcpeXMaJdDxYeApsG16vgs6cRCoKWV7uh6BzkAD1c6/XiD9B
-         Ro/D+7WwpLb9wxVYRhXdsWQG7jXu/nz7+R3VcJdluHYwzkbm+qGZIHjUjby3hRzS737v
-         31IiV9g/YFSV3R0Y645KYTvyKB6aohMNzP8UqRP8M4L/XHC7SOd0ktVzW8B9mJU/lg9j
-         elOg==
-X-Forwarded-Encrypted: i=1; AJvYcCWt/da81YPwMYvsfj6tRkrhX5hF85S+fjT2ovuGURA+WL2ocd8ohZ07wpWYqCPNRgHHUTPMA4oZXBbMirqH5+LmbIeDR66chQ==
-X-Gm-Message-State: AOJu0Ywy1UETsbxH6rw+CTPGIjZN5i3QXGczB6LzJxlBllFbb9bCzS80
-	Q+OVlTAqkjkhrC22eLiZFMlS6akiVy/afRHg3ACh8ZI4WFXQNjS/QmexwMaeKv5kSMFIuBBQSBu
-	MavaPUlms59ETfTN4xkd5aA3H6oNXUHxYrnk5
-X-Google-Smtp-Source: AGHT+IEmzZqImG52QCCrXwn9JJsfJfxkA/GrxQgE9tQ6QY334XrPRQCbcN4FcvO2F6j15dGqOU5nJSRvlsuk4rTZEuU=
-X-Received: by 2002:a05:6122:d8f:b0:4ef:5744:483 with SMTP id
- 71dfb90a1353d-4f4cd2b16aemr416439e0c.6.1721059015976; Mon, 15 Jul 2024
- 08:56:55 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 15 Jul 2024 08:56:55 -0700
-From: Petr Malat <oss@malat.biz>
-References: <20240617143945.454888-1-longman@redhat.com> <20240617143945.454888-5-longman@redhat.com>
+	s=arc-20240116; t=1721063655; c=relaxed/simple;
+	bh=Z6/jcRflYorvkzPSJbby2clUiLFSEJGhDuY8G6cDM9U=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=Q3l6YLUKmwREyzqgNjThBUcwyYy3iAN7m9ReDlvH2SXB+M3zKxhqlvC/2s3Cx4eIT0qdQzg5gO13rfgiBdRd6hMiG99tkGncg/fwGaR7HM6VwYTNOvy19IO7W3nAYDxpQRnA2iByct04hWLiWpRvuOyR8inRSRALmBPGbSvRn+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZfBIj1pz; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1721063652; x=1752599652;
+  h=date:from:to:cc:subject:message-id;
+  bh=Z6/jcRflYorvkzPSJbby2clUiLFSEJGhDuY8G6cDM9U=;
+  b=ZfBIj1pzKFck1UpYeMoJiUnzQtOfk9NpZObywM0bgf3hOGQCP5rcnWpc
+   GZzieeMoJVhgGicIa28cFnaDqReqKDGeXG6uFLPgihgUlw4awsnf9fRMd
+   uRrF6aN8HJ54dYH4fHwtsSBqnEZvWNgfXeIqQFTPZXm/ma4/rC8CyO0u2
+   9OVc74cWHox0Kgin+qn8L3rRB45fgnr7H9iMvkuZIOokewhQaUfLAbuqa
+   jN3KUxY25YxxCmqIgy9vf5W+ih7uRD+AViJlGUAwBkkhwtIG0af5wctMl
+   /X7+J8mGhZ476MBVdoxXcATtGzUtSBmYKpyWd0H57VkoR1XAGNRMIK3xZ
+   w==;
+X-CSE-ConnectionGUID: gO+SlKy5Quuuqtnoip6f9A==
+X-CSE-MsgGUID: EQrWuhGNQ+uXx2GQC5SmZw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11134"; a="18593860"
+X-IronPort-AV: E=Sophos;i="6.09,210,1716274800"; 
+   d="scan'208";a="18593860"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Jul 2024 10:14:12 -0700
+X-CSE-ConnectionGUID: 06wt3khFQmad4AcPMzQVLA==
+X-CSE-MsgGUID: rSciHj1DTgixHmXc+aVOVA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,210,1716274800"; 
+   d="scan'208";a="50328841"
+Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
+  by orviesa007.jf.intel.com with ESMTP; 15 Jul 2024 10:14:11 -0700
+Received: from kbuild by 68891e0c336b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sTPH7-000eQR-0C;
+	Mon, 15 Jul 2024 17:14:09 +0000
+Date: Tue, 16 Jul 2024 01:13:19 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ acd2e2b1190753bec7f561be41780057a2fd1472
+Message-ID: <202407160116.jiyPll9T-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20240617143945.454888-5-longman@redhat.com>
-Date: Mon, 15 Jul 2024 08:56:55 -0700
-Message-ID: <CANMuvJkDjuPpcqMBM+zzNL3wA-1zVrshrMuy22kQKmLDxbsB7Q@mail.gmail.com>
-Subject: Re: [PATCH-cgroup v2 4/5] cgroup/cpuset: Make cpuset.cpus.exclusive
- independent of cpuset.cpus
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	Xavier <ghostxavier@sina.com>, Peter Hunt <pehunt@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
 
-Hi,
-I finally got some time to test this and it works exactly as we needed it to.
-Thanks a lot,
-  Petr
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: acd2e2b1190753bec7f561be41780057a2fd1472  Merge branch 'for-6.11' into for-next
 
-On Mon, Jun 17, 2024 at 10:39:44AM -0400, Waiman Long wrote:
-> The "cpuset.cpus.exclusive.effective" value is currently limited to a
-> subset of its "cpuset.cpus". This makes the exclusive CPUs distribution
-> hierarchy subsumed within the larger "cpuset.cpus" hierarchy. We have to
-> decide on what CPUs are used locally and what CPUs can be passed down as
-> exclusive CPUs down the hierarchy and combine them into "cpuset.cpus".
->
-> The advantage of the current scheme is to have only one hierarchy to
-> worry about. However, it make it harder to use as all the "cpuset.cpus"
-> values have to be properly set along the way down to the designated remote
-> partition root. It also makes it more cumbersome to find out what CPUs
-> can be used locally.
->
-> Make creation of remote partition simpler by breaking the
-> dependency of "cpuset.cpus.exclusive" on "cpuset.cpus" and make
-> them independent entities. Now we have two separate hierarchies -
-> one for setting "cpuset.cpus.effective" and the other one for setting
-> "cpuset.cpus.exclusive.effective". We may not need to set "cpuset.cpus"
-> when we activate a partition root anymore.
->
-> Also update Documentation/admin-guide/cgroup-v2.rst and cpuset.c comment
-> to document this change.
->
-> Suggested-by: Petr Malat <oss@malat.biz>
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  Documentation/admin-guide/cgroup-v2.rst |  4 +-
->  kernel/cgroup/cpuset.c                  | 67 +++++++++++++++++--------
->  2 files changed, 49 insertions(+), 22 deletions(-)
->
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> index 722e4762c4e0..2e4e74bea6ef 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -2380,8 +2380,8 @@ Cpuset Interface Files
->  	cpuset-enabled cgroups.
->
->  	This file shows the effective set of exclusive CPUs that
-> -	can be used to create a partition root.  The content of this
-> -	file will always be a subset of "cpuset.cpus" and its parent's
-> +	can be used to create a partition root.  The content
-> +	of this file will always be a subset of its parent's
->  	"cpuset.cpus.exclusive.effective" if its parent is not the root
->  	cgroup.  It will also be a subset of "cpuset.cpus.exclusive"
->  	if it is set.  If "cpuset.cpus.exclusive" is not set, it is
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 144bfc319809..fe76045aa528 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -87,7 +87,7 @@ static const char * const perr_strings[] = {
->  	[PERR_NOTEXCL]   = "Cpu list in cpuset.cpus not exclusive",
->  	[PERR_NOCPUS]    = "Parent unable to distribute cpu downstream",
->  	[PERR_HOTPLUG]   = "No cpu available due to hotplug",
-> -	[PERR_CPUSEMPTY] = "cpuset.cpus is empty",
-> +	[PERR_CPUSEMPTY] = "cpuset.cpus and cpuset.cpus.exclusive are empty",
->  	[PERR_HKEEPING]  = "partition config conflicts with housekeeping setup",
->  };
->
-> @@ -127,19 +127,28 @@ struct cpuset {
->  	/*
->  	 * Exclusive CPUs dedicated to current cgroup (default hierarchy only)
->  	 *
-> -	 * This exclusive CPUs must be a subset of cpus_allowed. A parent
-> -	 * cgroup can only grant exclusive CPUs to one of its children.
-> +	 * The effective_cpus of a valid partition root comes solely from its
-> +	 * effective_xcpus and some of the effective_xcpus may be distributed
-> +	 * to sub-partitions below & hence excluded from its effective_cpus.
-> +	 * For a valid partition root, its effective_cpus have no relationship
-> +	 * with cpus_allowed unless its exclusive_cpus isn't set.
->  	 *
-> -	 * When the cgroup becomes a valid partition root, effective_xcpus
-> -	 * defaults to cpus_allowed if not set. The effective_cpus of a valid
-> -	 * partition root comes solely from its effective_xcpus and some of the
-> -	 * effective_xcpus may be distributed to sub-partitions below & hence
-> -	 * excluded from its effective_cpus.
-> +	 * This value will only be set if either exclusive_cpus is set or
-> +	 * when this cpuset becomes a local partition root.
->  	 */
->  	cpumask_var_t effective_xcpus;
->
->  	/*
->  	 * Exclusive CPUs as requested by the user (default hierarchy only)
-> +	 *
-> +	 * Its value is independent of cpus_allowed and designates the set of
-> +	 * CPUs that can be granted to the current cpuset or its children when
-> +	 * it becomes a valid partition root. The effective set of exclusive
-> +	 * CPUs granted (effective_xcpus) depends on whether those exclusive
-> +	 * CPUs are passed down by its ancestors and not yet taken up by
-> +	 * another sibling partition root along the way.
-> +	 *
-> +	 * If its value isn't set, it defaults to cpus_allowed.
->  	 */
->  	cpumask_var_t exclusive_cpus;
->
-> @@ -230,6 +239,17 @@ static struct list_head remote_children;
->   *   2 - partition root without load balancing (isolated)
->   *  -1 - invalid partition root
->   *  -2 - invalid isolated partition root
-> + *
-> + *  There are 2 types of partitions - local or remote. Local partitions are
-> + *  those whose parents are partition root themselves. Setting of
-> + *  cpuset.cpus.exclusive are optional in setting up local partitions.
-> + *  Remote partitions are those whose parents are not partition roots. Passing
-> + *  down exclusive CPUs by setting cpuset.cpus.exclusive along its ancestor
-> + *  nodes are mandatory in creating a remote partition.
-> + *
-> + *  For simplicity, a local partition can be created under a local or remote
-> + *  partition but a remote partition cannot have any partition root in its
-> + *  ancestor chain except the cgroup root.
->   */
->  #define PRS_MEMBER		0
->  #define PRS_ROOT		1
-> @@ -709,6 +729,19 @@ static inline void free_cpuset(struct cpuset *cs)
->  	kfree(cs);
->  }
->
-> +/* Return user specified exclusive CPUs */
-> +static inline struct cpumask *user_xcpus(struct cpuset *cs)
-> +{
-> +	return cpumask_empty(cs->exclusive_cpus) ? cs->cpus_allowed
-> +						 : cs->exclusive_cpus;
-> +}
-> +
-> +static inline bool xcpus_empty(struct cpuset *cs)
-> +{
-> +	return cpumask_empty(cs->cpus_allowed) &&
-> +	       cpumask_empty(cs->exclusive_cpus);
-> +}
-> +
->  static inline struct cpumask *fetch_xcpus(struct cpuset *cs)
->  {
->  	return !cpumask_empty(cs->exclusive_cpus) ? cs->exclusive_cpus :
-> @@ -1593,7 +1626,7 @@ EXPORT_SYMBOL_GPL(cpuset_cpu_is_isolated);
->   * Return: true if xcpus is not empty, false otherwise.
->   *
->   * Starting with exclusive_cpus (cpus_allowed if exclusive_cpus is not set),
-> - * it must be a subset of cpus_allowed and parent's effective_xcpus.
-> + * it must be a subset of parent's effective_xcpus.
->   */
->  static bool compute_effective_exclusive_cpumask(struct cpuset *cs,
->  						struct cpumask *xcpus)
-> @@ -1603,12 +1636,7 @@ static bool compute_effective_exclusive_cpumask(struct cpuset *cs,
->  	if (!xcpus)
->  		xcpus = cs->effective_xcpus;
->
-> -	if (!cpumask_empty(cs->exclusive_cpus))
-> -		cpumask_and(xcpus, cs->exclusive_cpus, cs->cpus_allowed);
-> -	else
-> -		cpumask_copy(xcpus, cs->cpus_allowed);
-> -
-> -	return cpumask_and(xcpus, xcpus, parent->effective_xcpus);
-> +	return cpumask_and(xcpus, user_xcpus(cs), parent->effective_xcpus);
->  }
->
->  static inline bool is_remote_partition(struct cpuset *cs)
-> @@ -1887,8 +1915,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
->  	 */
->  	adding = deleting = false;
->  	old_prs = new_prs = cs->partition_root_state;
-> -	xcpus = !cpumask_empty(cs->exclusive_cpus)
-> -		? cs->effective_xcpus : cs->cpus_allowed;
-> +	xcpus = user_xcpus(cs);
->
->  	if (cmd == partcmd_invalidate) {
->  		if (is_prs_invalid(old_prs))
-> @@ -1916,7 +1943,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
->  		return is_partition_invalid(parent)
->  		       ? PERR_INVPARENT : PERR_NOTPART;
->  	}
-> -	if (!newmask && cpumask_empty(cs->cpus_allowed))
-> +	if (!newmask && xcpus_empty(cs))
->  		return PERR_CPUSEMPTY;
->
->  	nocpu = tasks_nocpu_error(parent, cs, xcpus);
-> @@ -3130,9 +3157,9 @@ static int update_prstate(struct cpuset *cs, int new_prs)
->  				       ? partcmd_enable : partcmd_enablei;
->
->  		/*
-> -		 * cpus_allowed cannot be empty.
-> +		 * cpus_allowed and exclusive_cpus cannot be both empty.
->  		 */
-> -		if (cpumask_empty(cs->cpus_allowed)) {
-> +		if (xcpus_empty(cs)) {
->  			err = PERR_CPUSEMPTY;
->  			goto out;
->  		}
-> --
-> 2.39.3
->
+elapsed time: 724m
+
+configs tested: 207
+configs skipped: 4
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc-13.2.0
+alpha                             allnoconfig   gcc-13.3.0
+alpha                            allyesconfig   gcc-13.3.0
+alpha                               defconfig   gcc-13.2.0
+arc                              allmodconfig   gcc-13.2.0
+arc                               allnoconfig   gcc-13.2.0
+arc                              allyesconfig   gcc-13.2.0
+arc                                 defconfig   gcc-13.2.0
+arc                   randconfig-001-20240715   gcc-13.2.0
+arc                   randconfig-002-20240715   gcc-13.2.0
+arc                           tb10x_defconfig   gcc-13.2.0
+arm                              allmodconfig   gcc-13.2.0
+arm                              allmodconfig   gcc-14.1.0
+arm                               allnoconfig   clang-19
+arm                               allnoconfig   gcc-13.2.0
+arm                              allyesconfig   gcc-13.2.0
+arm                              allyesconfig   gcc-14.1.0
+arm                         bcm2835_defconfig   clang-19
+arm                                 defconfig   gcc-13.2.0
+arm                       imx_v4_v5_defconfig   clang-19
+arm                            mps2_defconfig   clang-19
+arm                   randconfig-001-20240715   gcc-13.2.0
+arm                   randconfig-002-20240715   gcc-13.2.0
+arm                   randconfig-003-20240715   gcc-13.2.0
+arm                   randconfig-004-20240715   gcc-13.2.0
+arm                           spitz_defconfig   gcc-13.2.0
+arm64                            allmodconfig   clang-19
+arm64                            allmodconfig   gcc-13.2.0
+arm64                             allnoconfig   gcc-13.2.0
+arm64                             allnoconfig   gcc-14.1.0
+arm64                               defconfig   gcc-13.2.0
+arm64                 randconfig-001-20240715   gcc-13.2.0
+arm64                 randconfig-002-20240715   gcc-13.2.0
+arm64                 randconfig-003-20240715   gcc-13.2.0
+arm64                 randconfig-004-20240715   gcc-13.2.0
+csky                              allnoconfig   gcc-13.2.0
+csky                              allnoconfig   gcc-14.1.0
+csky                                defconfig   gcc-13.2.0
+csky                  randconfig-001-20240715   gcc-13.2.0
+csky                  randconfig-002-20240715   gcc-13.2.0
+hexagon                          allmodconfig   clang-19
+hexagon                           allnoconfig   clang-19
+hexagon                          allyesconfig   clang-19
+i386                             allmodconfig   clang-18
+i386                             allmodconfig   gcc-13
+i386                              allnoconfig   clang-18
+i386                              allnoconfig   gcc-13
+i386                             allyesconfig   clang-18
+i386                             allyesconfig   gcc-13
+i386         buildonly-randconfig-001-20240715   clang-18
+i386         buildonly-randconfig-002-20240715   clang-18
+i386         buildonly-randconfig-003-20240715   gcc-13
+i386         buildonly-randconfig-004-20240715   gcc-12
+i386         buildonly-randconfig-005-20240715   clang-18
+i386         buildonly-randconfig-006-20240715   gcc-13
+i386                                defconfig   clang-18
+i386                  randconfig-001-20240715   gcc-13
+i386                  randconfig-002-20240715   clang-18
+i386                  randconfig-003-20240715   clang-18
+i386                  randconfig-004-20240715   gcc-13
+i386                  randconfig-005-20240715   gcc-13
+i386                  randconfig-006-20240715   gcc-13
+i386                  randconfig-011-20240715   gcc-9
+i386                  randconfig-012-20240715   gcc-13
+i386                  randconfig-013-20240715   gcc-7
+i386                  randconfig-014-20240715   clang-18
+i386                  randconfig-015-20240715   clang-18
+i386                  randconfig-016-20240715   clang-18
+loongarch                        allmodconfig   gcc-14.1.0
+loongarch                         allnoconfig   gcc-13.2.0
+loongarch                         allnoconfig   gcc-14.1.0
+loongarch                           defconfig   gcc-13.2.0
+loongarch             randconfig-001-20240715   gcc-13.2.0
+loongarch             randconfig-002-20240715   gcc-13.2.0
+m68k                             allmodconfig   gcc-14.1.0
+m68k                              allnoconfig   gcc-13.2.0
+m68k                              allnoconfig   gcc-14.1.0
+m68k                             allyesconfig   gcc-14.1.0
+m68k                                defconfig   gcc-13.2.0
+m68k                        m5407c3_defconfig   gcc-13.2.0
+microblaze                       allmodconfig   gcc-14.1.0
+microblaze                        allnoconfig   gcc-13.2.0
+microblaze                        allnoconfig   gcc-14.1.0
+microblaze                       allyesconfig   gcc-14.1.0
+microblaze                          defconfig   gcc-13.2.0
+mips                              allnoconfig   gcc-13.2.0
+mips                              allnoconfig   gcc-14.1.0
+mips                           ci20_defconfig   gcc-13.2.0
+mips                           gcw0_defconfig   gcc-13.2.0
+mips                            gpr_defconfig   clang-19
+mips                           ip27_defconfig   gcc-13.2.0
+mips                      maltasmvp_defconfig   clang-19
+mips                         rt305x_defconfig   gcc-13.2.0
+nios2                             allnoconfig   gcc-13.2.0
+nios2                             allnoconfig   gcc-14.1.0
+nios2                               defconfig   gcc-13.2.0
+nios2                 randconfig-001-20240715   gcc-13.2.0
+nios2                 randconfig-002-20240715   gcc-13.2.0
+openrisc                          allnoconfig   gcc-14.1.0
+openrisc                         allyesconfig   gcc-14.1.0
+openrisc                            defconfig   gcc-14.1.0
+parisc                           allmodconfig   gcc-14.1.0
+parisc                            allnoconfig   gcc-14.1.0
+parisc                           allyesconfig   gcc-14.1.0
+parisc                              defconfig   gcc-14.1.0
+parisc                randconfig-001-20240715   gcc-13.2.0
+parisc                randconfig-002-20240715   gcc-13.2.0
+parisc64                         alldefconfig   gcc-13.2.0
+parisc64                            defconfig   gcc-13.2.0
+powerpc                          allmodconfig   gcc-14.1.0
+powerpc                           allnoconfig   gcc-14.1.0
+powerpc                          allyesconfig   clang-19
+powerpc                          allyesconfig   gcc-14.1.0
+powerpc                     asp8347_defconfig   gcc-13.2.0
+powerpc                      chrp32_defconfig   gcc-13.2.0
+powerpc                       holly_defconfig   clang-19
+powerpc                  mpc866_ads_defconfig   gcc-13.2.0
+powerpc                      ppc44x_defconfig   clang-19
+powerpc                       ppc64_defconfig   gcc-13.2.0
+powerpc                      ppc6xx_defconfig   gcc-13.2.0
+powerpc               randconfig-001-20240715   gcc-13.2.0
+powerpc               randconfig-002-20240715   gcc-13.2.0
+powerpc               randconfig-003-20240715   gcc-13.2.0
+powerpc                     redwood_defconfig   clang-19
+powerpc                    socrates_defconfig   gcc-13.2.0
+powerpc                     tqm8555_defconfig   clang-19
+powerpc                        warp_defconfig   gcc-13.2.0
+powerpc64             randconfig-001-20240715   gcc-13.2.0
+powerpc64             randconfig-002-20240715   gcc-13.2.0
+powerpc64             randconfig-003-20240715   gcc-13.2.0
+riscv                            allmodconfig   clang-19
+riscv                            allmodconfig   gcc-14.1.0
+riscv                             allnoconfig   gcc-14.1.0
+riscv                            allyesconfig   clang-19
+riscv                            allyesconfig   gcc-14.1.0
+riscv                               defconfig   clang-19
+riscv                               defconfig   gcc-14.1.0
+riscv                 randconfig-001-20240715   gcc-13.2.0
+riscv                 randconfig-002-20240715   gcc-13.2.0
+s390                             allmodconfig   clang-19
+s390                              allnoconfig   clang-19
+s390                             allyesconfig   clang-19
+s390                             allyesconfig   gcc-14.1.0
+s390                                defconfig   clang-19
+s390                                defconfig   gcc-14.1.0
+s390                  randconfig-001-20240715   gcc-13.2.0
+s390                  randconfig-002-20240715   gcc-13.2.0
+s390                       zfcpdump_defconfig   clang-19
+sh                               allmodconfig   gcc-14.1.0
+sh                                allnoconfig   gcc-13.2.0
+sh                                allnoconfig   gcc-14.1.0
+sh                               allyesconfig   gcc-14.1.0
+sh                                  defconfig   gcc-14.1.0
+sh                         ecovec24_defconfig   gcc-13.2.0
+sh                    randconfig-001-20240715   gcc-13.2.0
+sh                    randconfig-002-20240715   gcc-13.2.0
+sparc                            allmodconfig   gcc-14.1.0
+sparc                       sparc32_defconfig   gcc-13.2.0
+sparc64                             defconfig   gcc-14.1.0
+sparc64               randconfig-001-20240715   gcc-13.2.0
+sparc64               randconfig-002-20240715   gcc-13.2.0
+um                               allmodconfig   clang-19
+um                               allmodconfig   gcc-13.3.0
+um                                allnoconfig   clang-17
+um                               allyesconfig   gcc-13
+um                               allyesconfig   gcc-13.3.0
+um                                  defconfig   clang-19
+um                                  defconfig   gcc-14.1.0
+um                             i386_defconfig   gcc-13
+um                             i386_defconfig   gcc-14.1.0
+um                    randconfig-001-20240715   gcc-13.2.0
+um                    randconfig-002-20240715   gcc-13.2.0
+um                           x86_64_defconfig   clang-15
+um                           x86_64_defconfig   gcc-14.1.0
+x86_64                            allnoconfig   clang-18
+x86_64                           allyesconfig   clang-18
+x86_64       buildonly-randconfig-001-20240715   clang-18
+x86_64       buildonly-randconfig-002-20240715   clang-18
+x86_64       buildonly-randconfig-003-20240715   clang-18
+x86_64       buildonly-randconfig-004-20240715   clang-18
+x86_64       buildonly-randconfig-005-20240715   clang-18
+x86_64       buildonly-randconfig-006-20240715   clang-18
+x86_64                              defconfig   clang-18
+x86_64                              defconfig   gcc-13
+x86_64                randconfig-001-20240715   clang-18
+x86_64                randconfig-002-20240715   clang-18
+x86_64                randconfig-003-20240715   clang-18
+x86_64                randconfig-004-20240715   clang-18
+x86_64                randconfig-005-20240715   clang-18
+x86_64                randconfig-006-20240715   clang-18
+x86_64                randconfig-011-20240715   clang-18
+x86_64                randconfig-012-20240715   clang-18
+x86_64                randconfig-013-20240715   clang-18
+x86_64                randconfig-014-20240715   clang-18
+x86_64                randconfig-015-20240715   clang-18
+x86_64                randconfig-016-20240715   clang-18
+x86_64                randconfig-071-20240715   clang-18
+x86_64                randconfig-072-20240715   clang-18
+x86_64                randconfig-073-20240715   clang-18
+x86_64                randconfig-074-20240715   clang-18
+x86_64                randconfig-075-20240715   clang-18
+x86_64                randconfig-076-20240715   clang-18
+x86_64                          rhel-8.3-rust   clang-18
+xtensa                            allnoconfig   gcc-13.2.0
+xtensa                            allnoconfig   gcc-14.1.0
+xtensa                randconfig-001-20240715   gcc-13.2.0
+xtensa                randconfig-002-20240715   gcc-13.2.0
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
