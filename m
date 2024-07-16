@@ -1,67 +1,67 @@
-Return-Path: <cgroups+bounces-3709-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3710-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 151A2932EE3
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 19:10:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD904932EFC
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 19:21:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4EF52832E3
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 17:10:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CB20B22E7A
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 17:21:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4016119F49C;
-	Tue, 16 Jul 2024 17:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8476A19F48C;
+	Tue, 16 Jul 2024 17:21:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b="cDIVqv+i"
+	dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b="PPx/N/dl"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45EC919F486
-	for <cgroups@vger.kernel.org>; Tue, 16 Jul 2024 17:10:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00C631F171
+	for <cgroups@vger.kernel.org>; Tue, 16 Jul 2024 17:21:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721149828; cv=none; b=SHcS2HMuGnUHsT0iLe/sreSPpqtucwSgOHjNDELKv0qdIQSd4sOna1FS+w0PgsjsbB9sA1fuOH4e7ALS0qNYhchwGRPieud69YlNMBXBPW2nnEnc04VLXRqVILOh++jwu/rzEKQqm1WtYZM44RMD6t9Vlreqx0MQ5Q5hL/v9dzo=
+	t=1721150462; cv=none; b=qIupDFVc9GyHkSZdRgIXb4yWNMJ6fEpGKkY3GMN1flqqQjFIzwTtESx4tExC1p+43S5/G45LZKieShH6UwHMW94bcFoYcpV06PYWSB/HjguxKxHyeBK8Mp7uN/Hih7ZL0llWXX4hEVMwn9Jl/wd61QgyVQ4MhNRgj5KZGA9vcHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721149828; c=relaxed/simple;
-	bh=/1c3365id7LMdS2yg0ILYdAqscK4GzKxY0IS4H4GUy4=;
+	s=arc-20240116; t=1721150462; c=relaxed/simple;
+	bh=1sv+QNc/DGMhPMVsZ2FxSdhckTqknm0RzzQv130owTc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=teoZxF4BeFVr41HOo3XArgjPRsXZJYByUDpYIRcRSarFDdK9c4CsSbXOnNZ2ZXoJlpQgx8sNRDLvgzGGUaq+9hxwNAlMrJCy8JGvQqob01SRyTSlaTz3fFSDfERPm0a+y7O/5VsesZyQ0tUU3OeIx5JuYBBtBHoVClTDTqm80tU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=fail smtp.mailfrom=vimeo.com; dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b=cDIVqv+i; arc=none smtp.client-ip=209.85.210.180
+	 To:Cc:Content-Type; b=F+sigpksnGV6xV7moosC8u7ySyPTXHVqAerq+oZUBBqfziISCIBYoDN83C47nlCxka3+dKdk4zI7uq6ud930JPywDKd+yErwUJRkhXLZHWr4HKQggaMxjjLwpiYFC0CI9IS/Fpr9cyi24XPSTLLORHW2YOHDmxNqSMTzgQdAZec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=fail smtp.mailfrom=vimeo.com; dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b=PPx/N/dl; arc=none smtp.client-ip=209.85.215.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=vimeo.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-70cdc91d25dso458089b3a.0
-        for <cgroups@vger.kernel.org>; Tue, 16 Jul 2024 10:10:26 -0700 (PDT)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-71871d5e087so4283269a12.1
+        for <cgroups@vger.kernel.org>; Tue, 16 Jul 2024 10:21:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vimeo.com; s=google; t=1721149825; x=1721754625; darn=vger.kernel.org;
+        d=vimeo.com; s=google; t=1721150460; x=1721755260; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/1c3365id7LMdS2yg0ILYdAqscK4GzKxY0IS4H4GUy4=;
-        b=cDIVqv+iM/AnXJILCmq8Yxd7QWlwoAgm1dCouMbj+cLW/yTXHbV1U7DGrXaec7lbf6
-         0fGrPY1JF89fxxPPdqx9qjAWyCyBeIaOCcsU8pjSSuaN191XdkSOYsbmlkMTlEnlvTbm
-         uvUk66BzJu2XEWsjkHELtq0Px5RhEnUXBa3Yk=
+        bh=1sv+QNc/DGMhPMVsZ2FxSdhckTqknm0RzzQv130owTc=;
+        b=PPx/N/dl4nc/iPKwhzJnMr8F7jmHQU2IeCfojlCZ4plhnHeqePoMjId55lRYLL8+AK
+         fFcmA++DEiWyXhXpVV4EL3gRhVwRO5RnmO1FfTPd5YV/0yOM5/HZLRt/F2pkPGMDld8B
+         ex6YqAVPEdFBiz84S83pNu0GAQM66dXD2THG8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721149825; x=1721754625;
+        d=1e100.net; s=20230601; t=1721150460; x=1721755260;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/1c3365id7LMdS2yg0ILYdAqscK4GzKxY0IS4H4GUy4=;
-        b=Z/rhX1iIB0vixUGPrxWg0OIUlfux2SC7UbjDue7wnZs0PJnxlvkV5p3OMkK0AMJpCo
-         2/WdvY3KKWASMUQLphJG2zJBApnjy+27Vd7aQXavRIHrv1wKg+proMpt8/euLY3ujEqp
-         j13bn2bx7Nsa2wlYJQUGsfhiURZZVFWIN7OTuUQPkf8HTIf37kTmr6tTUyteiQPSWJnx
-         +BlLuyZkIsanvEZv+kD6vHa0pDiGAqzsfQaqllPIinorz5SvrzW6SvwXP11xOrFUrX9k
-         CQZWXMQZB21TtBe+NzjgYmEodqwo281TVjkVMR1k4wZdtFQVCroNtaIoX8p1EQR8lIz8
-         K2rA==
-X-Forwarded-Encrypted: i=1; AJvYcCWGonr6QjhCXAW3yEceYi9jPkJaahZHZ6Qt6nZF0bthdVayNUX8EBwfyia3NSvAFsiK/N9d7GMtBNToLQewgtemZD9ygW29IA==
-X-Gm-Message-State: AOJu0YwqE0z3Zm0J8Bptwc1aT5xA/F6G+KJ/dwGHBpGvocUCvhnMMRhJ
-	lK5iQDg4MO5Jb3T5xqBP9SggG7D9214LSVgFCowsXcTGJj4pv8vBhqO/jjTIizwArI6OJI0X4Zd
-	1JIbPMTV/XR5ReROA94h42A0oCtkQ5VG1FNdpNQ==
-X-Google-Smtp-Source: AGHT+IGxrFhf+t9CbrOmTbCaTrzVOqPOdzLWgYcjX29oem9uwcU5xToAeNAhBIZrmTimW7gqvO45de+d88JBZoYD3qY=
-X-Received: by 2002:a05:6a21:32a7:b0:1c3:18f8:ebc9 with SMTP id
- adf61e73a8af0-1c3f1271886mr3158626637.41.1721149825418; Tue, 16 Jul 2024
- 10:10:25 -0700 (PDT)
+        bh=1sv+QNc/DGMhPMVsZ2FxSdhckTqknm0RzzQv130owTc=;
+        b=C3RiNMd9/Uc5mxLstP5d5ssMSmev0UVpX9kXMFIIi8qLqIMWCN9VYsXkjcNRgG1ogF
+         b743soXFWqkQUABUbb2GEpT3ubZSaiOUFmjnH8N8sGMlZThLjcd2cH4JkAYkzJVTvYZR
+         GyvBtx6mAgLY5/8GQjhBOBNYKeYfOFj9M8oYnqbjyVjFaefw0KI2Kujgp7L34A4hedQL
+         xAxOD/cjNZAvYSJlxNJXSDlpGwW0+ZB0gmTqZni2HI7umPCykv0MXUjtHjb/TgzyvHmn
+         52KUOWuYooI38pNhxAxTX4mkIWLvJXVkNjSl17KoGwiGzK3pmzBCk9rGvK8FvO+SWB9f
+         bg8g==
+X-Forwarded-Encrypted: i=1; AJvYcCV4ISse/OZbtMubqOQHMHqpG6w9nYEbIng00Lc65/KXEpd94tMvquw5F1di5AipZCkGSysXB48foxEixktqjT3z1sFy+BlAyA==
+X-Gm-Message-State: AOJu0YxDeMgHz8JeJ9cKiAc+c3bkIcmcAtCh1GAfq0zT8KYin2Tpq/Km
+	o7hRe4Q9GW4kGojRWHkryCk/oexsGoL44Kdqz9LsvHyDXu6LJE2ObJ9K/kI7hfgTQLzDkAMmcg/
+	HXsYfq17kdjcGKxOMcs+r70nhL2X/mANPJNnqJA==
+X-Google-Smtp-Source: AGHT+IE0jogasMR5Vo1zc09nO8WrQEH9BAm8Vis6rzWXoOwDzxBtbsrDWTNwvTcelBY4lZmxg6D9GIcINCHKQHMTUNA=
+X-Received: by 2002:a05:6a20:430b:b0:1c0:f594:198c with SMTP id
+ adf61e73a8af0-1c3f11f7552mr3997701637.11.1721150460103; Tue, 16 Jul 2024
+ 10:21:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -69,120 +69,78 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240715203625.1462309-1-davidf@vimeo.com> <20240715203625.1462309-2-davidf@vimeo.com>
- <ZpZ6IZL482XZT1fU@tiehlicka> <ZpajW9BKCFcCCTr-@slm.duckdns.org>
-In-Reply-To: <ZpajW9BKCFcCCTr-@slm.duckdns.org>
+ <ZpZ6IZL482XZT1fU@tiehlicka> <ZpajW9BKCFcCCTr-@slm.duckdns.org> <ZpanW41dQ8DimbA3@google.com>
+In-Reply-To: <ZpanW41dQ8DimbA3@google.com>
 From: David Finkel <davidf@vimeo.com>
-Date: Tue, 16 Jul 2024 13:10:14 -0400
-Message-ID: <CAFUnj5M9CTYPcEM3=4i4rTfiU4sY4Qq8V1DXHJ00YYD2xFBvew@mail.gmail.com>
+Date: Tue, 16 Jul 2024 13:20:48 -0400
+Message-ID: <CAFUnj5PeQ-FefK+ja0BtwHZFF0QyJdN9imZQESOj+tRjHSmvow@mail.gmail.com>
 Subject: Re: [PATCH] mm, memcg: cg2 memory{.swap,}.peak write handlers
-To: Tejun Heo <tj@kernel.org>
-Cc: Michal Hocko <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>, 
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>, 
 	Andrew Morton <akpm@linux-foundation.org>, core-services@vimeo.com, 
-	Jonathan Corbet <corbet@lwn.net>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeelb@google.com>, Shuah Khan <shuah@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org, 
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org, 
 	linux-doc@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kselftest@vger.kernel.org
+	linux-kselftest@vger.kernel.org, Shakeel Butt <shakeel.butt@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jul 16, 2024 at 12:44=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
+On Tue, Jul 16, 2024 at 1:01=E2=80=AFPM Roman Gushchin <roman.gushchin@linu=
+x.dev> wrote:
 >
-> Hello,
+> On Tue, Jul 16, 2024 at 06:44:11AM -1000, Tejun Heo wrote:
+> > Hello,
+> >
+> > On Tue, Jul 16, 2024 at 03:48:17PM +0200, Michal Hocko wrote:
+> > ...
+> >
+> > The removal of resets was intentional. The problem was that it wasn't c=
+lear
+> > who owned those counters and there's no way of telling who reset what w=
+hen.
+> > It was easy to accidentally end up with multiple entities that think th=
+ey
+> > can get timed measurement by resetting.
+> >
+> > So, in general, I don't think this is a great idea. There are shortcomi=
+ngs
+> > to how memory.peak behaves in that its meaningfulness quickly declines =
+over
+> > time. This is expected and the rationale behind adding memory.peak, IIR=
+C,
+> > was that it was difficult to tell the memory usage of a short-lived cgr=
+oup.
+> >
+> > If we want to allow peak measurement of time periods, I wonder whether =
+we
+> > could do something similar to pressure triggers - ie. let users registe=
+r
+> > watchers so that each user can define their own watch periods. This is =
+more
+> > involved but more useful and less error-inducing than adding reset to a
+> > single counter.
 >
-> On Tue, Jul 16, 2024 at 03:48:17PM +0200, Michal Hocko wrote:
-> ...
-> > > This behavior is particularly useful for work scheduling systems that
-> > > need to track memory usage of worker processes/cgroups per-work-item.
-> > > Since memory can't be squeezed like CPU can (the OOM-killer has
-> > > opinions), these systems need to track the peak memory usage to compu=
-te
-> > > system/container fullness when binpacking workitems.
->
-> Swap still has bad reps but there's nothing drastically worse about it th=
-an
-> page cache. ie. If you're under memory pressure, you get thrashing one wa=
-y
-> or another. If there's no swap, the system is just memlocking anon memory
-> even when they are a lot colder than page cache, so I'm skeptical that no
-> swap + mostly anon + kernel OOM kills is a good strategy in general
-> especially given that the system behavior is not very predictable under O=
-OM
-> conditions.
+> It's definitely a better user interface and I totally agree with you rega=
+rding
+> the shortcomings of the proposed interface with a global reset. But if yo=
+u let
+> users to register a (potentially large) number of watchers, it might be q=
+uite
+> bad for the overall performance, isn't it? To mitigate it, we'll need to =
+reduce
+> the accuracy of peak values. And then the question is why not just poll i=
+t
+> periodically from userspace?
 
-The reason we need peak memory information is to let us schedule work in a =
-way
-that we generally avoid OOM conditions.
-For the workloads I work on, we generally have very little in the
-page-cache, since
-the data isn't stored locally most of the time, but streamed from
-other storage/database
-systems. For those cases, demand-paging will cause large variations in
-servicing time,
-and we'd rather restart the process than have unpredictable latency.
-The same is true for the batch/queue-work system I wrote this patch to supp=
-ort.
-We keep very little data on the local disk, so the page cache is
-relatively small.
+FWIW, as a stop-gap, we did implement periodic polling from userspace for
+the system that motivated this change, but that is unlikely to catch
+memory-usage
+spikes that have shorter timescales than the polling interval. For
+now, we're keeping
+it on cgroups v1, but that's looking like a long-term untenable position.
 
-
->
-> > As mentioned down the email thread, I consider usefulness of peak value
-> > rather limited. It is misleading when memory is reclaimed. But
-> > fundamentally I do not oppose to unifying the write behavior to reset
-> > values.
->
-> The removal of resets was intentional. The problem was that it wasn't cle=
-ar
-> who owned those counters and there's no way of telling who reset what whe=
-n.
-> It was easy to accidentally end up with multiple entities that think they
-> can get timed measurement by resetting.
->
-> So, in general, I don't think this is a great idea. There are shortcoming=
-s
-> to how memory.peak behaves in that its meaningfulness quickly declines ov=
-er
-> time. This is expected and the rationale behind adding memory.peak, IIRC,
-> was that it was difficult to tell the memory usage of a short-lived cgrou=
-p.
->
-> If we want to allow peak measurement of time periods, I wonder whether we
-> could do something similar to pressure triggers - ie. let users register
-> watchers so that each user can define their own watch periods. This is mo=
-re
-> involved but more useful and less error-inducing than adding reset to a
-> single counter.
-
-I appreciate the ownership issues with the current resetting interface
-in the other locations.
-However, this peak RSS data is not used by all that many applications
-(as evidenced by
-the fact that the memory.peak file was only added a bit over a year ago).
-I think there are enough cases where ownership is enforced externally
-that mirroring the
-existing interface to cgroup2 is sufficient.
-
-I do think a more stateful interface would be nice, but I don't know
-whether I have enough
-knowledge of memcg to implement that in a reasonable amount of time.
-
-Ownership aside, I think being able to reset the high watermark of a
-process makes it
-significantly more useful. Creating new cgroups and moving processes
-around is significantly
-heavier-weight.
 
 Thanks,
-
->
-> Johannes, what do you think?
->
-> Thanks.
->
-> --
-> tejun
-
 
 
 --=20
