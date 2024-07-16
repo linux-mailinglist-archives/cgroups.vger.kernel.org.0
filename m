@@ -1,159 +1,156 @@
-Return-Path: <cgroups+bounces-3718-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3719-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32F5C9333EA
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 23:55:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3965933415
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 00:06:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9792CB243B5
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 21:55:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6D8C7283197
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 22:06:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05E2013B2B1;
-	Tue, 16 Jul 2024 21:54:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE7B513D502;
+	Tue, 16 Jul 2024 22:06:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="u2mznDst"
+	dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b="iFYn1rCP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24C967441A
-	for <cgroups@vger.kernel.org>; Tue, 16 Jul 2024 21:54:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27C9A1860
+	for <cgroups@vger.kernel.org>; Tue, 16 Jul 2024 22:06:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721166893; cv=none; b=E98JGHlPFV9Iyw3PdJNk2xBgG0Hugh+O1hFSLfGd2/3Tcu/TxPdrn+fMNo8UNVwzIAXsRhIEEjph4vEAMbj0UDr5EVJ2FOwX9RENMBX8+YfMYLOAL1fUVugMY8waM7hvW4xHCYIBTpcq7TF/gWee5M+YsSgrqMVCOM1OG4TiQLw=
+	t=1721167590; cv=none; b=m0mH3JVJIKsKzC6NMST3HNNkKpjgC+jmmC7FGQXh5YdCgGNyjpr2xIhjiPqkgjDo1b+UMWKBw62mFL0KJkMdqaD5jgsKbVMDHQGVSC11OwEUvMclenbAQItWeaCKXtUit6tFwqwqoYWYWDftoJpB8HVA9CnOCXRHc0C4Rert3nU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721166893; c=relaxed/simple;
-	bh=5e4Ng28q28DDq+Mos/gXCE7nX4lxZLwJsuTxdK0ZCgM=;
+	s=arc-20240116; t=1721167590; c=relaxed/simple;
+	bh=w2aJTmvDOMvn6K+ayRVj7cPeNTzCuJAPOw72W6PM9lM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UkAYNW8099OypXJ4SPDG3YBuoiuUdPR/eu2E4pQARPDBpJ+aiMxI5UzpDvQBlNAwLcu406Zfwh9SJIMS8FnmkJP4bLLaEUGzrhR6PnTV/TMq1TAxJhYI/cR1cCL9zJqqDA/PCCNWQQ1bZSfR6y8SFbZOOrIMb+02Sq2k9lom3UA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=u2mznDst; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a77c1658c68so646262866b.0
-        for <cgroups@vger.kernel.org>; Tue, 16 Jul 2024 14:54:51 -0700 (PDT)
+	 To:Cc:Content-Type; b=Osq+N6Cqxj6iRmAAKXUXGbl7ZYP1pOigteDMiKMTRe4npoj0HmZbEH22UK+nEPhmlMknRGxQy93xgtsc+lC2dUIZJV1uFCWx+Jmu8WUWwJWF70463KRR+uyJEQG+/9Hi6t6pPh/nM7Li4V84/HOfcYiUScgLWjUQoN6XG9nxCCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=fail smtp.mailfrom=vimeo.com; dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b=iFYn1rCP; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=vimeo.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-70b0bc1ef81so4069763b3a.1
+        for <cgroups@vger.kernel.org>; Tue, 16 Jul 2024 15:06:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1721166890; x=1721771690; darn=vger.kernel.org;
+        d=vimeo.com; s=google; t=1721167588; x=1721772388; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TCz2Kt6Np14OnybqMGjWHHC2wl/sK9b6rMuszryzTDE=;
-        b=u2mznDstPsA5ZTNUgb0ciOTi34ZKY31aksJLu44aEZNCnH6EL0ur0jSuNV7w0SQbMk
-         77Gb1dN2MjQERkLex44VuhdzAOqorSbqQfXCnEf5rVDMzaViLSZh4JMdVyMhaGGYC8JM
-         vWSPLnZ3xDOrtghoPCrNas+sxMd7fgM6FD+7dlZM6v7hz3OwGmAdnrtsiiDjyYZsWd1L
-         zJKywWGJoCUyc9ofh6mOLQXaoIYKBsaf/uEPJrmv/v0TlEB5AG9fAo6WMojyIkvb2AJ6
-         1FpE/MymZkhqUNlLvsn8G+6QbI/DKeWd7mpR0NIAsJPfDxvE2QSczvXWpXl4K4b718gf
-         sHjQ==
+        bh=w2aJTmvDOMvn6K+ayRVj7cPeNTzCuJAPOw72W6PM9lM=;
+        b=iFYn1rCPz8Yjz2EqLEmXGiJwH/zAtHBURGmwCoilfR2SeKKpx4O0cDZlR2kk31aShx
+         GFn72ubRuT+2Rp7ns/omxxe3uiBjun9JBL+Kb5/ElpuqkjlY3ZCKKl+6zkcLC43yvdq6
+         vgenCo2lVDOAIw1tMNUvFiaHR6sKyHFJ/LcgE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721166890; x=1721771690;
+        d=1e100.net; s=20230601; t=1721167588; x=1721772388;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TCz2Kt6Np14OnybqMGjWHHC2wl/sK9b6rMuszryzTDE=;
-        b=cxMniwm4E4MFETsaktMZkXjbVoOzohw2QoBhsrNK5wDdMxCIdba9MNHkiRnoS0Xh71
-         XA8/37HsuaisHYSz373gJzo07kzM68jxh7BakFkaVDnD+9Hj2CXjSEynGtOclY8mfsVL
-         92R2zWj+2q0E44SzAP2SZ0gHXtdIixxhw/y+1KM7cCgkwySn8tcDIyrIF0UTAuk/CSr1
-         1qnsqq0HS90gyCRUe8860Idux1LEh/nxj+GFo2jIQbtYa+OU5IDZYbP04y1V6lK+EdAe
-         wFb5O3bHRW9PTr8ykumOmG9b+/qJqwHoaDI0LNtmZDU6oIB24Y38tmsVrSZNG5iP+P98
-         05xw==
-X-Forwarded-Encrypted: i=1; AJvYcCXBNKWE81+wprN5rfTD6l5w9Q/frHgkIN7ZGKyMkiwKo/dINrzzA8t4BOb1d9PZK0uqmxu+Ds+MJHWaBRjDV9QTl1ZTk/sOfw==
-X-Gm-Message-State: AOJu0YxCb2CivlUmLBRl1V98z6KvEmIywbOI9yG4ccRGpsGs741Bua8o
-	wFNTx7vDWumvtvMGPAcaiHfGqolFeAo4jjMJwDQ1MVKB+0fmc2+U0gX74DuPyojmQFDNxnnd+Js
-	eP1kYzQ8ZO58S5y4Rjy2BJ9uIr4XjDyZyiX1z
-X-Google-Smtp-Source: AGHT+IH+L98WmINi2A/vrSb7b+4tKg+cB+n8wwUAWNPhhTY5kTA7Q7W01G2LTbnOXEgy7vUpJa5vdfkX9A2/O6+vCQ8=
-X-Received: by 2002:a17:906:488:b0:a72:5bb9:b140 with SMTP id
- a640c23a62f3a-a79eaa73fc1mr237672566b.54.1721166889832; Tue, 16 Jul 2024
- 14:54:49 -0700 (PDT)
+        bh=w2aJTmvDOMvn6K+ayRVj7cPeNTzCuJAPOw72W6PM9lM=;
+        b=W682JDASY2pH2kR+2qTkQwz5NIGkLvyQoFrWrcO7XaEQ91AHdYkpn0ATWBtKaaRORh
+         CIuc4Jw5/Y8tumRszbhJ2IK9PZC7C5aIzP2yOo6F1gscHNlEN1dCOHeqsMCGQAPcZE8+
+         hUfGJCLVq3/TXy+uBC4P2JhXg/6ZwD/mmkdt9ulLy9L+T3GVRyniEm0g0qm4TvyjapPs
+         op67YYa2KKMf8FJstQslnclj+OQjipi9vc45cQ/03o+I+Pa//eSSnovAsFd2jxfejDO7
+         2Cn35Mk77jxRxRDtnFjP7CJPUSfErTRGTfq7jLxrthU1wmjF5YzqlVncylW5yfrjOges
+         yQww==
+X-Forwarded-Encrypted: i=1; AJvYcCXZqygVT8ZKNXi3PFbo2x+jJF/mmvhT48k8QOl0R/oe9SMyPo4piR1wPCpwvrR1PVi+aPJHU204okpD/f2L7MtCGCi6XeO0Bw==
+X-Gm-Message-State: AOJu0YyOMCLfHIXsw7XmWDmhtPaJAXZfITZ86WSLuQa7WnQ69kxhJXz9
+	XeD7rL05XrAbDK83aJrktmmexvAUKSeQTYw97p016tb+ZFTqIp+ml9pXoFg8WvUMMm2aztmYagz
+	/uEJh80EEvuaugT5KtZZE4JDkktNzkpR19mZ+YA==
+X-Google-Smtp-Source: AGHT+IHa4OUEBjwkyORdqOTlwB6SwJ3UGLm7iossoLCCGBgQW/WBnp341S1YhpWMm7wMFcfIxWpuIGR1HiBOvvInuxU=
+X-Received: by 2002:a05:6a20:a123:b0:1c0:7ec3:c7ae with SMTP id
+ adf61e73a8af0-1c3f12ac92dmr4304824637.47.1721167588247; Tue, 16 Jul 2024
+ 15:06:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <171952310959.1810550.17003659816794335660.stgit@firesoul>
- <171952312320.1810550.13209360603489797077.stgit@firesoul>
- <4n3qu75efpznkomxytm7irwfiq44hhi4hb5igjbd55ooxgmvwa@tbgmwvcqsy75>
- <7ecdd625-37a0-49f1-92fc-eef9791fbe5b@kernel.org> <9a7930b9-dec0-418c-8475-5a7e18b3ec68@kernel.org>
-In-Reply-To: <9a7930b9-dec0-418c-8475-5a7e18b3ec68@kernel.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Tue, 16 Jul 2024 14:54:12 -0700
-Message-ID: <CAJD7tkYX9OaAyWg=L_5v7GaKtKmptPpMGJh7Org5tcY4D-YnCw@mail.gmail.com>
-Subject: Re: [PATCH V4 2/2] cgroup/rstat: Avoid thundering herd problem by
- kswapd across NUMA nodes
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, tj@kernel.org, cgroups@vger.kernel.org, 
-	hannes@cmpxchg.org, lizefan.x@bytedance.com, longman@redhat.com, 
-	kernel-team@cloudflare.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240715203625.1462309-1-davidf@vimeo.com> <20240715203625.1462309-2-davidf@vimeo.com>
+ <ZpZ6IZL482XZT1fU@tiehlicka> <ZpajW9BKCFcCCTr-@slm.duckdns.org>
+ <Zpa1VGL5Mz63FZ0Z@tiehlicka> <ZpbRSv_dxcNNfc9H@slm.duckdns.org>
+In-Reply-To: <ZpbRSv_dxcNNfc9H@slm.duckdns.org>
+From: David Finkel <davidf@vimeo.com>
+Date: Tue, 16 Jul 2024 18:06:17 -0400
+Message-ID: <CAFUnj5MTRsFzd_EHJ7UcyjrWWUicg7wRrs2XdnVnvGiG3KmULQ@mail.gmail.com>
+Subject: Re: [PATCH] mm, memcg: cg2 memory{.swap,}.peak write handlers
+To: Tejun Heo <tj@kernel.org>
+Cc: Michal Hocko <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, core-services@vimeo.com, 
+	Jonathan Corbet <corbet@lwn.net>, Roman Gushchin <roman.gushchin@linux.dev>, Shuah Khan <shuah@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kselftest@vger.kernel.org, Shakeel Butt <shakeel.butt@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 8, 2024 at 8:26=E2=80=AFAM Jesper Dangaard Brouer <hawk@kernel.=
-org> wrote:
+On Tue, Jul 16, 2024 at 4:00=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
 >
+> Hello,
 >
-> On 28/06/2024 11.39, Jesper Dangaard Brouer wrote:
+> On Tue, Jul 16, 2024 at 08:00:52PM +0200, Michal Hocko wrote:
+> ...
+> > > If we want to allow peak measurement of time periods, I wonder whethe=
+r we
+> > > could do something similar to pressure triggers - ie. let users regis=
+ter
+> > > watchers so that each user can define their own watch periods. This i=
+s more
+> > > involved but more useful and less error-inducing than adding reset to=
+ a
+> > > single counter.
 > >
-> >
-> > On 28/06/2024 01.34, Shakeel Butt wrote:
-> >> On Thu, Jun 27, 2024 at 11:18:56PM GMT, Jesper Dangaard Brouer wrote:
-> >>> Avoid lock contention on the global cgroup rstat lock caused by kswap=
-d
-> >>> starting on all NUMA nodes simultaneously. At Cloudflare, we observed
-> >>> massive issues due to kswapd and the specific mem_cgroup_flush_stats(=
-)
-> >>> call inlined in shrink_node, which takes the rstat lock.
-> >>>
-> [...]
-> >>>   static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu);
-> >>> @@ -312,6 +315,45 @@ static inline void __cgroup_rstat_unlock(struct
-> >>> cgroup *cgrp, int cpu_in_loop)
-> >>>       spin_unlock_irq(&cgroup_rstat_lock);
-> >>>   }
-> >>> +#define MAX_WAIT    msecs_to_jiffies(100)
-> >>> +/* Trylock helper that also checks for on ongoing flusher */
-> >>> +static bool cgroup_rstat_trylock_flusher(struct cgroup *cgrp)
-> >>> +{
-> >>> +    bool locked =3D __cgroup_rstat_trylock(cgrp, -1);
-> >>> +    if (!locked) {
-> >>> +        struct cgroup *cgrp_ongoing;
-> >>> +
-> >>> +        /* Lock is contended, lets check if ongoing flusher is alrea=
-dy
-> >>> +         * taking care of this, if we are a descendant.
-> >>> +         */
-> >>> +        cgrp_ongoing =3D READ_ONCE(cgrp_rstat_ongoing_flusher);
-> >>> +        if (cgrp_ongoing && cgroup_is_descendant(cgrp, cgrp_ongoing)=
-) {
-> >>
-> >> I wonder if READ_ONCE() and cgroup_is_descendant() needs to happen
-> >> within in rcu section. On a preemptable kernel, let's say we got
-> >> preempted in between them, the flusher was unrelated and got freed
-> >> before we get the CPU. In that case we are accessing freed memory.
-> >>
-> >
-> > I have to think about this some more.
-> >
+> > I would rather not get back to that unless we have many more users that
+> > really need that. Absolute value of the memory consumption is a long
+> > living concept that doesn't make much sense most of the time. People
+> > just tend to still use it because it is much simpler to compare two dif=
+ferent
+> > values rather than something as dynamic as PSI similar metrics.
 >
-> I don't think this is necessary. We are now waiting (for completion) and
-> not skipping flush, because as part of take down function
-> cgroup_rstat_exit() is called, which will call cgroup_rstat_flush().
->
->
->   void cgroup_rstat_exit(struct cgroup *cgrp)
->   {
->         int cpu;
->         cgroup_rstat_flush(cgrp);
->
->
+> The initial justification for adding memory.peak was that it's mostly to
+> monitor short lived cgroups. Adding reset would make it used more widely,
+> which isn't necessarily a bad thing and people most likely will find ways=
+ to
+> use it creatively. I'm mostly worried that that's going to create a mess
+> down the road. Yeah, so, it's not widely useful now but adding reset make=
+s
+> it more useful and in a way which can potentially paint us into a corner.
 
-Sorry for the late response, I was traveling for a bit. I will take a
-look at your most recent version shortly. But I do have a comment
-here.
+This is a pretty low-overhead feature as-is, but we can reduce it further b=
+y
+changing it so instead of resetting the watermark on any non-empty string,
+we reset only on one particular string.
 
-I don't see how this addresses Shakeel's concern. IIUC, if the cgroup
-was freed after READ_ONCE() (and cgroup_rstat_flush() was called),
-then cgroup_is_descendant() will access freed memory. We are not
-holding the lock here so we are not preventing cgroup_rstat_flush()
-from being called for the freed cgroup, right?
+I'm thinking of something like "global_reset\n", so if we do something like=
+ the
+PSI interface later, users can write "fd_local_reset\n", and get that
+nicer behavior.
+
+This also has the benefit of allowing "echo global_reset >
+/sys/fs/cgroup/.../memory.peak" to do the right thing.
+(better names welcome)
+
+>
+> But then again, maybe this is really niche, future usages will still rema=
+in
+> very restricted, and adding something more akin to PSI triggers is way
+> over-engineering it.
+
+Yeah, I think this is niche enough that it isn't worth over-engineering.
+There is some value to keeping broad compatibility for things moving
+from cgroups v1, too.
+
+>
+> Thanks.
+>
+> --
+> tejun
+
+
+Thanks again,
+--=20
+David Finkel
+Senior Principal Software Engineer, Core Services
 
