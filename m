@@ -1,406 +1,292 @@
-Return-Path: <cgroups+bounces-3694-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3695-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C460932119
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 09:20:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ECFC932176
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 09:47:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0349C281990
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 07:20:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E92522819F1
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 07:47:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D53122263A;
-	Tue, 16 Jul 2024 07:20:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D5393CF5E;
+	Tue, 16 Jul 2024 07:47:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="X45JPT+l"
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="No0vRYJZ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21709225A8
-	for <cgroups@vger.kernel.org>; Tue, 16 Jul 2024 07:20:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 742CE58210;
+	Tue, 16 Jul 2024 07:47:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721114413; cv=none; b=e1B2+P4IFBYjFTRCYPt5aw9GYXRbsXZuPE1eAGJQWaJ4O+AS0daLEuDPWS9TZru2xR6trarDTeEs7yiGl27HZVABpsDhDTJPDKEjQ+lOQlHLCRjBXtlU1SNf8fmKDyOdRtW2rVmUmVThN/nhy0tg4m511bsYI93VcQPGPln53Rw=
+	t=1721116045; cv=none; b=Y2plIQo5r3IDrt1fC86Z021vT+fJazdkJS4mrrOI1WED3WCQZyhUlX/DJ+WUumxk4Cxxd0GQlULhYMHXGe0t9BnqFeF/+oTHs0qj9ntRa2srbJklTzKgCJBXkQYEZJhTJDXidTrwU3Vxh2Vx15J7T1e1VVQdP9cOTCt42Fxr+b4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721114413; c=relaxed/simple;
-	bh=ALc31W3uCWR9Lj90vJOo0hS+MiAERAOjPCudFEnehiQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZSFiax78fMszcI2V1TFviTilreTSVdTpHKvNqVgwJYvUujAyyOBekZRgZTWmxQHVxsV71htHoWJRZAryW3FYo58b0mcgP12uNo5OFmjXbMtnnSH9FIvHulDID2TwgV0eMlKtGh1480EywDbyIOJb7J1gOc3qn5pOJurWEYs3tJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=X45JPT+l; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a77cc73d35fso1069295666b.0
-        for <cgroups@vger.kernel.org>; Tue, 16 Jul 2024 00:20:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1721114409; x=1721719209; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Ryz13jWMVfVyvMNCAq2D9GKM+ZrB7awLhm0ebTfWLrE=;
-        b=X45JPT+lWTv8rZv7AX8dSaoryrvqvZEm0c6I/iavHHezAE+F/PlQ14MH53bE1y+DkZ
-         eDkNvqqNVx1t6sHI/4KCua9AgrT2XHRu7anGDWc+s+RKtEEPZOf77vUthb/TbGba4fw9
-         ovGJ3vRmarMJdAyTZkOM35adZth2rCa+VV8/K5S7LH5Ojl3Qfru+una0bvdEOtSI1Jnm
-         fqIFplLxnJhCn/wYvm6NdSa5ld7BV2IU26erwLwsoaEOypM8E/1dXIjqZN9kxZA1AfMG
-         bpS0iBGmah/oYI7VJ5VSQ/x8eXhBMzQM0GxMoUdnt7Bfk1gOyUpiKvqE2nKFWck5Jhx+
-         TwDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721114409; x=1721719209;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ryz13jWMVfVyvMNCAq2D9GKM+ZrB7awLhm0ebTfWLrE=;
-        b=qj1OtK/0gNi64GI5hRoUmXMyOnsJASu4FXLY7KXUcmPaSgwBuzqJ9MWNxlsL0qDXXk
-         A/m45ne74ZBYQJEsguMuCinqQArLaceFZNdjcmfO53HI+UQEfC9PDn3LTlQPbjkTYgPK
-         M5+tiD9d2OHX+cPdSmUpuanRV4Z0len8eBdC70sQBKFj3SiMOSreSSIOjvoexa9KrG+j
-         6rfoJUB8Hac79rU+WYh4i0H6STG4KKxA+bW5kI7JWq7v3FpLBE+c2oWp/YobP2t2R6+B
-         BSl5ENbWepzK4/LDAPd3nbH4U62POKAnlHex1b+8+0sl5zkRv48UbaWdrogep8HBNP3x
-         bgtg==
-X-Forwarded-Encrypted: i=1; AJvYcCU7cfgfLXWku/S9KDBM0e3CrbBCvmtofSW76GPS5bl3cDjIfIsQtmyc++MRtMLoiqZKll3RLe0ql4e8W0EVf33mOevLiLLwcA==
-X-Gm-Message-State: AOJu0YzI6Ya2GJ00WpGwbGw++x9McuaZQmtHmsifglSe+gfvRzaI+YeZ
-	nJOCx5Cv3OAxqiNRn/K19N18v+BHuA+PBBI58TCCuI4upnVIMn/2ZiXiceICYeg=
-X-Google-Smtp-Source: AGHT+IF7KAqVc8tB1cq8XGEqVn4hBgytdxCDM1K+wyDBEAdRIboXhu5uwo7R0OApSSiVBd/NbepQxQ==
-X-Received: by 2002:a17:906:4a4d:b0:a72:afd9:6109 with SMTP id a640c23a62f3a-a79edbfb0c9mr77909566b.16.1721114409305;
-        Tue, 16 Jul 2024 00:20:09 -0700 (PDT)
-Received: from localhost (109-81-86-75.rct.o2.cz. [109.81.86.75])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a79bc5d1f57sm275518966b.72.2024.07.16.00.20.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Jul 2024 00:20:09 -0700 (PDT)
-Date: Tue, 16 Jul 2024 09:20:08 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: David Finkel <davidf@vimeo.com>
-Cc: Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, core-services@vimeo.com,
-	Jonathan Corbet <corbet@lwn.net>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shuah Khan <shuah@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-	Shakeel Butt <shakeel.butt@linux.dev>
-Subject: Re: [PATCH] mm, memcg: cg2 memory{.swap,}.peak write handlers
-Message-ID: <ZpYfKI6W1uSMkt5i@tiehlicka>
-References: <20240715203625.1462309-1-davidf@vimeo.com>
- <20240715203625.1462309-2-davidf@vimeo.com>
- <CAFUnj5Oh_OsP4TikWTGT6cKKTnWLaBYpE5PGzcxLTp7b=UqLkQ@mail.gmail.com>
- <CAFUnj5MahNvM+B2zynVtcnYKJ7LZHwBNEcPKGAdz-tesDeOXcw@mail.gmail.com>
+	s=arc-20240116; t=1721116045; c=relaxed/simple;
+	bh=5uc7rrG9KrjMyPTpkNMDYR1ta11ZOmQf1e7qWomrJNg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hNqvsF+y6UPkRmk1sWU2gUySY+Y0a8WzTl7aY3971nSj4gQ8gYK+sjMqDukdxRDOfxQ8Yq9hjy1WWWSxdNd7rNVFK7oIGHDhw8pxkCh3sUVeUV0JfEuiW0Nd+14iVEuY73L08WRFMl5vHXSeWozeuqDHLlC5IsNbj12tolPNXU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=No0vRYJZ; arc=none smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 99663cac434711efb5b96b43b535fdb4-20240716
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=LKn59Eo61gPgXwLDdueCeuGeu9W7m6IyUvCxQVSnSK8=;
+	b=No0vRYJZ6fiKCoCDrc3Yr2oYco+UgTo2zEbdb2uXliyJ1CPe0crGhvr81TM4Q/vSWhoYG3lC9wgiLV4s7+6UZ2jMTXXWyesD6mN2whmP80IdoAJ9etsx9DCsheW8YU0cMzR/4kg2s6npL7Cj6o/G6RsPObkQz8BHHOqXLDNAl0M=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.40,REQID:4ec84318-5d4f-4a0d-a58a-640a0719a037,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:25,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:0
+X-CID-META: VersionHash:ba885a6,CLOUDID:692c830d-46b0-425a-97d3-4623fe284021,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:5,IP:nil,UR
+	L:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:
+	1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: 99663cac434711efb5b96b43b535fdb4-20240716
+Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw01.mediatek.com
+	(envelope-from <boy.wu@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 602789564; Tue, 16 Jul 2024 15:47:06 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 16 Jul 2024 15:47:02 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 16 Jul 2024 15:47:02 +0800
+From: boy.wu <boy.wu@mediatek.com>
+To: Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>, Jens Axboe
+	<axboe@kernel.dk>
+CC: Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, Boris Burkov <boris@bur.io>,
+	<cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-mediatek@lists.infradead.org>, <iverlin.wang@mediatek.com>, Boy Wu
+	<boy.wu@mediatek.com>
+Subject: [PATCH] blk-cgroup: Replace u64 sync with spinlock for iostat update
+Date: Tue, 16 Jul 2024 15:46:53 +0800
+Message-ID: <20240716074653.22524-1-boy.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFUnj5MahNvM+B2zynVtcnYKJ7LZHwBNEcPKGAdz-tesDeOXcw@mail.gmail.com>
+Content-Type: text/plain
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--11.866300-8.000000
+X-TMASE-MatchedRID: aeJu7N9qZHyZtBi01n3C9xafLXbshfogcx5k3wffojOHwGEm+CpYGTEG
+	FjeZwyRUzbrWhbT2b8cTMOv2lZG8w2zFfXEzaNt8wCZxkTHxccn64i5lgawyBFSOymiJfTYXZmL
+	HoWzm2fSMZBHIGOaSwOKOmN63egZIkKjL2IOi2LBbuDP8ZuCmXgApx/9nOtgkVo+424uIBNJYTM
+	99NlfBm1EXNKIgpuQj+9p3HcFJM3mVhIWL9FEuNwwfhKwa9GwDgGa+oYp5i6qgWMz+iaWIIaPFj
+	JEFr+olwXCBO/GKkVqOhzOa6g8KrUiBZ6mmQX3xiIMgDE0zxa/IQ+RZPevUbELozoV1kXEbSPck
+	h7/tXqI=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--11.866300-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP:
+	E00DA929F0B966481D5D967B554312843F43A8CF74639FB456D70D4308E86AB62000:8
+X-MTK: N
 
-On Mon 15-07-24 16:46:36, David Finkel wrote:
-> > On Mon, Jul 15, 2024 at 4:38 PM David Finkel <davidf@vimeo.com> wrote:
-> > >
-> > > Other mechanisms for querying the peak memory usage of either a process
-> > > or v1 memory cgroup allow for resetting the high watermark. Restore
-> > > parity with those mechanisms.
-> > >
-> > > For example:
-> > >  - Any write to memory.max_usage_in_bytes in a cgroup v1 mount resets
-> > >    the high watermark.
-> > >  - writing "5" to the clear_refs pseudo-file in a processes's proc
-> > >    directory resets the peak RSS.
-> > >
-> > > This change copies the cgroup v1 behavior so any write to the
-> > > memory.peak and memory.swap.peak pseudo-files reset the high watermark
-> > > to the current usage.
-> > >
-> > > This behavior is particularly useful for work scheduling systems that
-> > > need to track memory usage of worker processes/cgroups per-work-item.
-> > > Since memory can't be squeezed like CPU can (the OOM-killer has
-> > > opinions),
+From: Boy Wu <boy.wu@mediatek.com>
 
-I do not understand the OOM-killer reference here. Why does it matter?
-Could you explain please?
+In 32bit SMP systems, if multiple CPUs call blkcg_print_stat,
+it may cause blkcg_fill_root_iostats to have a concurrent problem
+on the seqlock in u64_stats_update, which will cause a deadlock
+on u64_stats_fetch_begin in blkcg_print_one_stat.
 
-> > > these systems need to track the peak memory usage to compute
-> > > system/container fullness when binpacking workitems.
+Thus, replace u64 sync with spinlock to protect iostat update.
 
-Could you elaborate some more on how you are using this please? I expect
-you recycle memcgs for different runs of workers and reset peak
-consumptions before a new run and record it after it is done. The thing
-which is not really clear to me is how the peak value really helps if it
-can vary a lot among different runs. But maybe I misunderstand.
+Fixes: ef45fe470e1e ("blk-cgroup: show global disk stats in root cgroup io.stat")
+Signed-off-by: Boy Wu <boy.wu@mediatek.com>
+---
+Change in v2:
+ - update commit message
+ - Remove u64_sync
+ - Replace spin_lock_irq with guard statement
+ - Replace blkg->q->queue_lock with blkg_stat_lock
+Change in v3:
+ - update commit message
+ - Add spinlock in blkg_iostat_set structure
+ - Replace all u64_sync with spinlock for iostat
+ - Replace blkg_stat_lock with iostat.spinlock
+---
+ block/blk-cgroup.c | 62 +++++++++++++++++++---------------------------
+ block/blk-cgroup.h |  1 +
+ 2 files changed, 26 insertions(+), 37 deletions(-)
 
-> > >
-> > > Signed-off-by: David Finkel <davidf@vimeo.com>
-> > > ---
-> > >  Documentation/admin-guide/cgroup-v2.rst       | 20 +++---
-> > >  mm/memcontrol.c                               | 23 ++++++
-> > >  .../selftests/cgroup/test_memcontrol.c        | 72 ++++++++++++++++---
-> > >  3 files changed, 99 insertions(+), 16 deletions(-)
-> > >
-> > > diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> > > index 8fbb0519d556..201d8e5d9f82 100644
-> > > --- a/Documentation/admin-guide/cgroup-v2.rst
-> > > +++ b/Documentation/admin-guide/cgroup-v2.rst
-> > > @@ -1322,11 +1322,13 @@ PAGE_SIZE multiple when read back.
-> > >         reclaim induced by memory.reclaim.
-> > >
-> > >    memory.peak
-> > > -       A read-only single value file which exists on non-root
-> > > -       cgroups.
-> > > +       A read-write single value file which exists on non-root cgroups.
-> > > +
-> > > +       The max memory usage recorded for the cgroup and its descendants since
-> > > +       either the creation of the cgroup or the most recent reset.
-> > >
-> > > -       The max memory usage recorded for the cgroup and its
-> > > -       descendants since the creation of the cgroup.
-> > > +       Any non-empty write to this file resets it to the current memory usage.
-> > > +       All content written is completely ignored.
-> > >
-> > >    memory.oom.group
-> > >         A read-write single value file which exists on non-root
-> > > @@ -1652,11 +1654,13 @@ PAGE_SIZE multiple when read back.
-> > >         Healthy workloads are not expected to reach this limit.
-> > >
-> > >    memory.swap.peak
-> > > -       A read-only single value file which exists on non-root
-> > > -       cgroups.
-> > > +       A read-write single value file which exists on non-root cgroups.
-> > > +
-> > > +       The max swap usage recorded for the cgroup and its descendants since
-> > > +       the creation of the cgroup or the most recent reset.
-> > >
-> > > -       The max swap usage recorded for the cgroup and its
-> > > -       descendants since the creation of the cgroup.
-> > > +       Any non-empty write to this file resets it to the current swap usage.
-> > > +       All content written is completely ignored.
-> > >
-> > >    memory.swap.max
-> > >         A read-write single value file which exists on non-root
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > index 8f2f1bb18c9c..abfa547615d6 100644
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -25,6 +25,7 @@
-> > >   * Copyright (C) 2020 Alibaba, Inc, Alex Shi
-> > >   */
-> > >
-> > > +#include <linux/cgroup-defs.h>
-> > >  #include <linux/page_counter.h>
-> > >  #include <linux/memcontrol.h>
-> > >  #include <linux/cgroup.h>
-> > > @@ -6915,6 +6916,16 @@ static u64 memory_peak_read(struct cgroup_subsys_state *css,
-> > >         return (u64)memcg->memory.watermark * PAGE_SIZE;
-> > >  }
-> > >
-> > > +static ssize_t memory_peak_write(struct kernfs_open_file *of,
-> > > +                                char *buf, size_t nbytes, loff_t off)
-> > > +{
-> > > +       struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-> > > +
-> > > +       page_counter_reset_watermark(&memcg->memory);
-> > > +
-> > > +       return nbytes;
-> > > +}
-> > > +
-> > >  static int memory_min_show(struct seq_file *m, void *v)
-> > >  {
-> > >         return seq_puts_memcg_tunable(m,
-> > > @@ -7232,6 +7243,7 @@ static struct cftype memory_files[] = {
-> > >                 .name = "peak",
-> > >                 .flags = CFTYPE_NOT_ON_ROOT,
-> > >                 .read_u64 = memory_peak_read,
-> > > +               .write = memory_peak_write,
-> > >         },
-> > >         {
-> > >                 .name = "min",
-> > > @@ -8201,6 +8213,16 @@ static u64 swap_peak_read(struct cgroup_subsys_state *css,
-> > >         return (u64)memcg->swap.watermark * PAGE_SIZE;
-> > >  }
-> > >
-> > > +static ssize_t swap_peak_write(struct kernfs_open_file *of,
-> > > +                                char *buf, size_t nbytes, loff_t off)
-> > > +{
-> > > +       struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-> > > +
-> > > +       page_counter_reset_watermark(&memcg->swap);
-> > > +
-> > > +       return nbytes;
-> > > +}
-> > > +
-> > >  static int swap_high_show(struct seq_file *m, void *v)
-> > >  {
-> > >         return seq_puts_memcg_tunable(m,
-> > > @@ -8283,6 +8305,7 @@ static struct cftype swap_files[] = {
-> > >                 .name = "swap.peak",
-> > >                 .flags = CFTYPE_NOT_ON_ROOT,
-> > >                 .read_u64 = swap_peak_read,
-> > > +               .write = swap_peak_write,
-> > >         },
-> > >         {
-> > >                 .name = "swap.events",
-> > > diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-> > > index 41ae8047b889..681972de673b 100644
-> > > --- a/tools/testing/selftests/cgroup/test_memcontrol.c
-> > > +++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-> > > @@ -161,12 +161,12 @@ static int alloc_pagecache_50M_check(const char *cgroup, void *arg)
-> > >  /*
-> > >   * This test create a memory cgroup, allocates
-> > >   * some anonymous memory and some pagecache
-> > > - * and check memory.current and some memory.stat values.
-> > > + * and checks memory.current, memory.peak, and some memory.stat values.
-> > >   */
-> > > -static int test_memcg_current(const char *root)
-> > > +static int test_memcg_current_peak(const char *root)
-> > >  {
-> > >         int ret = KSFT_FAIL;
-> > > -       long current;
-> > > +       long current, peak, peak_reset;
-> > >         char *memcg;
-> > >
-> > >         memcg = cg_name(root, "memcg_test");
-> > > @@ -180,12 +180,32 @@ static int test_memcg_current(const char *root)
-> > >         if (current != 0)
-> > >                 goto cleanup;
-> > >
-> > > +       peak = cg_read_long(memcg, "memory.peak");
-> > > +       if (peak != 0)
-> > > +               goto cleanup;
-> > > +
-> > >         if (cg_run(memcg, alloc_anon_50M_check, NULL))
-> > >                 goto cleanup;
-> > >
-> > > +       peak = cg_read_long(memcg, "memory.peak");
-> > > +       if (peak < MB(50))
-> > > +               goto cleanup;
-> > > +
-> > > +       peak_reset = cg_write(memcg, "memory.peak", "\n");
-> > > +       if (peak_reset != 0)
-> > > +               goto cleanup;
-> > > +
-> > > +       peak = cg_read_long(memcg, "memory.peak");
-> > > +       if (peak > MB(30))
-> > > +               goto cleanup;
-> > > +
-> > >         if (cg_run(memcg, alloc_pagecache_50M_check, NULL))
-> > >                 goto cleanup;
-> > >
-> > > +       peak = cg_read_long(memcg, "memory.peak");
-> > > +       if (peak < MB(50))
-> > > +               goto cleanup;
-> > > +
-> > >         ret = KSFT_PASS;
-> > >
-> > >  cleanup:
-> > > @@ -817,13 +837,14 @@ static int alloc_anon_50M_check_swap(const char *cgroup, void *arg)
-> > >
-> > >  /*
-> > >   * This test checks that memory.swap.max limits the amount of
-> > > - * anonymous memory which can be swapped out.
-> > > + * anonymous memory which can be swapped out. Additionally, it verifies that
-> > > + * memory.swap.peak reflects the high watermark and can be reset.
-> > >   */
-> > > -static int test_memcg_swap_max(const char *root)
-> > > +static int test_memcg_swap_max_peak(const char *root)
-> > >  {
-> > >         int ret = KSFT_FAIL;
-> > >         char *memcg;
-> > > -       long max;
-> > > +       long max, peak;
-> > >
-> > >         if (!is_swap_enabled())
-> > >                 return KSFT_SKIP;
-> > > @@ -840,6 +861,12 @@ static int test_memcg_swap_max(const char *root)
-> > >                 goto cleanup;
-> > >         }
-> > >
-> > > +       if (cg_read_long(memcg, "memory.swap.peak"))
-> > > +               goto cleanup;
-> > > +
-> > > +       if (cg_read_long(memcg, "memory.peak"))
-> > > +               goto cleanup;
-> > > +
-> > >         if (cg_read_strcmp(memcg, "memory.max", "max\n"))
-> > >                 goto cleanup;
-> > >
-> > > @@ -862,6 +889,27 @@ static int test_memcg_swap_max(const char *root)
-> > >         if (cg_read_key_long(memcg, "memory.events", "oom_kill ") != 1)
-> > >                 goto cleanup;
-> > >
-> > > +       peak = cg_read_long(memcg, "memory.peak");
-> > > +       if (peak < MB(29))
-> > > +               goto cleanup;
-> > > +
-> > > +       peak = cg_read_long(memcg, "memory.swap.peak");
-> > > +       if (peak < MB(29))
-> > > +               goto cleanup;
-> > > +
-> > > +       if (cg_write(memcg, "memory.swap.peak", "\n"))
-> > > +               goto cleanup;
-> > > +
-> > > +       if (cg_read_long(memcg, "memory.swap.peak") > MB(10))
-> > > +               goto cleanup;
-> > > +
-> > > +
-> > > +       if (cg_write(memcg, "memory.peak", "\n"))
-> > > +               goto cleanup;
-> > > +
-> > > +       if (cg_read_long(memcg, "memory.peak"))
-> > > +               goto cleanup;
-> > > +
-> > >         if (cg_run(memcg, alloc_anon_50M_check_swap, (void *)MB(30)))
-> > >                 goto cleanup;
-> > >
-> > > @@ -869,6 +917,14 @@ static int test_memcg_swap_max(const char *root)
-> > >         if (max <= 0)
-> > >                 goto cleanup;
-> > >
-> > > +       peak = cg_read_long(memcg, "memory.peak");
-> > > +       if (peak < MB(29))
-> > > +               goto cleanup;
-> > > +
-> > > +       peak = cg_read_long(memcg, "memory.swap.peak");
-> > > +       if (peak < MB(19))
-> > > +               goto cleanup;
-> > > +
-> > >         ret = KSFT_PASS;
-> > >
-> > >  cleanup:
-> > > @@ -1295,7 +1351,7 @@ struct memcg_test {
-> > >         const char *name;
-> > >  } tests[] = {
-> > >         T(test_memcg_subtree_control),
-> > > -       T(test_memcg_current),
-> > > +       T(test_memcg_current_peak),
-> > >         T(test_memcg_min),
-> > >         T(test_memcg_low),
-> > >         T(test_memcg_high),
-> > > @@ -1303,7 +1359,7 @@ struct memcg_test {
-> > >         T(test_memcg_max),
-> > >         T(test_memcg_reclaim),
-> > >         T(test_memcg_oom_events),
-> > > -       T(test_memcg_swap_max),
-> > > +       T(test_memcg_swap_max_peak),
-> > >         T(test_memcg_sock),
-> > >         T(test_memcg_oom_group_leaf_events),
-> > >         T(test_memcg_oom_group_parent_events),
-> > > --
-> > > 2.40.1
-> > >
-> >
-> >
-> > --
-> > David Finkel
-> > Senior Principal Software Engineer, Core Services
-> 
-> 
-> 
-> -- 
-> David Finkel
-> Senior Principal Software Engineer, Core Services
-
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 37e6cc91d576..4b66f37c45a0 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -329,7 +329,7 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct gendisk *disk,
+ 	INIT_WORK(&blkg->async_bio_work, blkg_async_bio_workfn);
+ #endif
+ 
+-	u64_stats_init(&blkg->iostat.sync);
++	spin_lock_init(&blkg->iostat.spinlock);
+ 	for_each_possible_cpu(cpu) {
+ 		u64_stats_init(&per_cpu_ptr(blkg->iostat_cpu, cpu)->sync);
+ 		per_cpu_ptr(blkg->iostat_cpu, cpu)->blkg = blkg;
+@@ -995,15 +995,13 @@ static void blkcg_iostat_update(struct blkcg_gq *blkg, struct blkg_iostat *cur,
+ 				struct blkg_iostat *last)
+ {
+ 	struct blkg_iostat delta;
+-	unsigned long flags;
+ 
+ 	/* propagate percpu delta to global */
+-	flags = u64_stats_update_begin_irqsave(&blkg->iostat.sync);
++	guard(spinlock_irqsave)(&blkg->iostat.spinlock);
+ 	blkg_iostat_set(&delta, cur);
+ 	blkg_iostat_sub(&delta, last);
+ 	blkg_iostat_add(&blkg->iostat.cur, &delta);
+ 	blkg_iostat_add(last, &delta);
+-	u64_stats_update_end_irqrestore(&blkg->iostat.sync, flags);
+ }
+ 
+ static void __blkcg_rstat_flush(struct blkcg *blkcg, int cpu)
+@@ -1034,7 +1032,6 @@ static void __blkcg_rstat_flush(struct blkcg *blkcg, int cpu)
+ 		struct blkcg_gq *blkg = bisc->blkg;
+ 		struct blkcg_gq *parent = blkg->parent;
+ 		struct blkg_iostat cur;
+-		unsigned int seq;
+ 
+ 		/*
+ 		 * Order assignment of `next_bisc` from `bisc->lnode.next` in
+@@ -1051,10 +1048,8 @@ static void __blkcg_rstat_flush(struct blkcg *blkcg, int cpu)
+ 			goto propagate_up; /* propagate up to parent only */
+ 
+ 		/* fetch the current per-cpu values */
+-		do {
+-			seq = u64_stats_fetch_begin(&bisc->sync);
++		scoped_guard(spinlock_irqsave, &bisc->spinlock)
+ 			blkg_iostat_set(&cur, &bisc->cur);
+-		} while (u64_stats_fetch_retry(&bisc->sync, seq));
+ 
+ 		blkcg_iostat_update(blkg, &cur, &bisc->last);
+ 
+@@ -1112,7 +1107,6 @@ static void blkcg_fill_root_iostats(void)
+ 		struct blkcg_gq *blkg = bdev->bd_disk->queue->root_blkg;
+ 		struct blkg_iostat tmp;
+ 		int cpu;
+-		unsigned long flags;
+ 
+ 		memset(&tmp, 0, sizeof(tmp));
+ 		for_each_possible_cpu(cpu) {
+@@ -1134,9 +1128,8 @@ static void blkcg_fill_root_iostats(void)
+ 				cpu_dkstats->sectors[STAT_DISCARD] << 9;
+ 		}
+ 
+-		flags = u64_stats_update_begin_irqsave(&blkg->iostat.sync);
++		guard(spinlock_irqsave)(&blkg->iostat.spinlock);
+ 		blkg_iostat_set(&blkg->iostat.cur, &tmp);
+-		u64_stats_update_end_irqrestore(&blkg->iostat.sync, flags);
+ 	}
+ }
+ 
+@@ -1145,7 +1138,6 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
+ 	struct blkg_iostat_set *bis = &blkg->iostat;
+ 	u64 rbytes, wbytes, rios, wios, dbytes, dios;
+ 	const char *dname;
+-	unsigned seq;
+ 	int i;
+ 
+ 	if (!blkg->online)
+@@ -1157,16 +1149,14 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
+ 
+ 	seq_printf(s, "%s ", dname);
+ 
+-	do {
+-		seq = u64_stats_fetch_begin(&bis->sync);
+-
++	scoped_guard(spinlock_irqsave, &bis->spinlock) {
+ 		rbytes = bis->cur.bytes[BLKG_IOSTAT_READ];
+ 		wbytes = bis->cur.bytes[BLKG_IOSTAT_WRITE];
+ 		dbytes = bis->cur.bytes[BLKG_IOSTAT_DISCARD];
+ 		rios = bis->cur.ios[BLKG_IOSTAT_READ];
+ 		wios = bis->cur.ios[BLKG_IOSTAT_WRITE];
+ 		dios = bis->cur.ios[BLKG_IOSTAT_DISCARD];
+-	} while (u64_stats_fetch_retry(&bis->sync, seq));
++	}
+ 
+ 	if (rbytes || wbytes || rios || wios) {
+ 		seq_printf(s, "rbytes=%llu wbytes=%llu rios=%llu wios=%llu dbytes=%llu dios=%llu",
+@@ -2141,7 +2131,6 @@ void blk_cgroup_bio_start(struct bio *bio)
+ 	struct blkcg *blkcg = bio->bi_blkg->blkcg;
+ 	int rwd = blk_cgroup_io_type(bio), cpu;
+ 	struct blkg_iostat_set *bis;
+-	unsigned long flags;
+ 
+ 	if (!cgroup_subsys_on_dfl(io_cgrp_subsys))
+ 		return;
+@@ -2152,30 +2141,29 @@ void blk_cgroup_bio_start(struct bio *bio)
+ 
+ 	cpu = get_cpu();
+ 	bis = per_cpu_ptr(bio->bi_blkg->iostat_cpu, cpu);
+-	flags = u64_stats_update_begin_irqsave(&bis->sync);
+-
+-	/*
+-	 * If the bio is flagged with BIO_CGROUP_ACCT it means this is a split
+-	 * bio and we would have already accounted for the size of the bio.
+-	 */
+-	if (!bio_flagged(bio, BIO_CGROUP_ACCT)) {
+-		bio_set_flag(bio, BIO_CGROUP_ACCT);
+-		bis->cur.bytes[rwd] += bio->bi_iter.bi_size;
+-	}
+-	bis->cur.ios[rwd]++;
++	scoped_guard(spinlock_irqsave, &bis->spinlock) {
++		/*
++		 * If the bio is flagged with BIO_CGROUP_ACCT it means this is a split
++		 * bio and we would have already accounted for the size of the bio.
++		 */
++		if (!bio_flagged(bio, BIO_CGROUP_ACCT)) {
++			bio_set_flag(bio, BIO_CGROUP_ACCT);
++			bis->cur.bytes[rwd] += bio->bi_iter.bi_size;
++		}
++		bis->cur.ios[rwd]++;
+ 
+-	/*
+-	 * If the iostat_cpu isn't in a lockless list, put it into the
+-	 * list to indicate that a stat update is pending.
+-	 */
+-	if (!READ_ONCE(bis->lqueued)) {
+-		struct llist_head *lhead = this_cpu_ptr(blkcg->lhead);
++		/*
++		 * If the iostat_cpu isn't in a lockless list, put it into the
++		 * list to indicate that a stat update is pending.
++		 */
++		if (!READ_ONCE(bis->lqueued)) {
++			struct llist_head *lhead = this_cpu_ptr(blkcg->lhead);
+ 
+-		llist_add(&bis->lnode, lhead);
+-		WRITE_ONCE(bis->lqueued, true);
++			llist_add(&bis->lnode, lhead);
++			WRITE_ONCE(bis->lqueued, true);
++		}
+ 	}
+ 
+-	u64_stats_update_end_irqrestore(&bis->sync, flags);
+ 	cgroup_rstat_updated(blkcg->css.cgroup, cpu);
+ 	put_cpu();
+ }
+diff --git a/block/blk-cgroup.h b/block/blk-cgroup.h
+index bd472a30bc61..b9544969a131 100644
+--- a/block/blk-cgroup.h
++++ b/block/blk-cgroup.h
+@@ -44,6 +44,7 @@ struct blkg_iostat {
+ };
+ 
+ struct blkg_iostat_set {
++	spinlock_t			spinlock;
+ 	struct u64_stats_sync		sync;
+ 	struct blkcg_gq		       *blkg;
+ 	struct llist_node		lnode;
 -- 
-Michal Hocko
-SUSE Labs
+2.18.0
+
 
