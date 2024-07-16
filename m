@@ -1,205 +1,214 @@
-Return-Path: <cgroups+bounces-3716-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3717-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DDE19332D7
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 22:18:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B6D693336A
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 23:14:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EE701F226C2
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 20:18:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DBCD1C2224C
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 21:14:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 034A019E83D;
-	Tue, 16 Jul 2024 20:18:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B814C144D0A;
+	Tue, 16 Jul 2024 21:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b="YnX1VKh5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OmB+ltOQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A59D249F5
-	for <cgroups@vger.kernel.org>; Tue, 16 Jul 2024 20:18:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A7F9142E86;
+	Tue, 16 Jul 2024 21:13:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721161116; cv=none; b=WVff96zv2p9icl85/2kVLicNx76vlCUq3GqtHjwL5Nl13E2xjrUIdpVy0bdp+WI/IdVy53uC73SBk4VsbVbKsa84tfV88gVsXw+ccxhUhoaghtt6DapyvE98tzb6xbVGJneleZQLLvCxJbjAAk1tPUjvcXoYTHk5vzbibUEBQIU=
+	t=1721164420; cv=none; b=WwTf26G1/i1227I2KAFJoeYZbQxH0tkl2zmn3QyJ4hMcfyVoVvugA6jH1Bd6BCHbM+j+JZBH4HMFGS+67uEkeRLZI8+FplYVwhamZcyPSsMAO74SQXZQpDDS+QbgzHUfRC4vzJCubTsVzsvmroum/d3yE4ztFAKipub2B/t0xBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721161116; c=relaxed/simple;
-	bh=FyC5BZh6YjG7u8zcZ2c65+wWIIwNIpHTlJEujslh7io=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Uf0HzPZiLcbXv5kYyg37PnbefmI3FHNrfSHvNYBBlXMFsmXhqspKtKndvOhhVcSZ8LiVjk77LSj3BtUjERdf5IAr/J9DQY1AAKOk3CC9oGjXE6GJFy7Nfih/M8NFH+szI3+NSy7durxWLAuQMisOwOuW+w11L+T1HHiYyrX2DY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=fail smtp.mailfrom=vimeo.com; dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b=YnX1VKh5; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=vimeo.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-70b1808dee9so4079039b3a.2
-        for <cgroups@vger.kernel.org>; Tue, 16 Jul 2024 13:18:34 -0700 (PDT)
+	s=arc-20240116; t=1721164420; c=relaxed/simple;
+	bh=9iC87dpWlEete4vWmjJZ/0kZqeyGrcAPBgky9h1AQi8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A3k3e1blXzJpp6H6IgFkY14id928aJ6ReGsv7dKDIYadAg95YxjTmqsY+Q9g1lIqJF4HjYqlFT56XLfdWJkhQlF/CKbEPNwyYnStFA5ZNaMT7fGoA6vQh4q/sX82wrvPR3xiMwsM6QnZ9s4HRE8+uZh6SA5rGmcI3LbtrN1F3EE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OmB+ltOQ; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-70b2a0542c2so5664813b3a.3;
+        Tue, 16 Jul 2024 14:13:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vimeo.com; s=google; t=1721161114; x=1721765914; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FyC5BZh6YjG7u8zcZ2c65+wWIIwNIpHTlJEujslh7io=;
-        b=YnX1VKh5XW5EboJ4GQIWXyXWyCxnZh1UkXSIxYaZEChmU/Mz/epz1v3t32+Toido5N
-         5UJCaREKfzelTtZO/Fvn01A3zLAyGSPQHW8srIYwKa0byygpww3sKTj2csnxjW1WgEoV
-         mIKTNvzsYOcRbaxULhi1blI9eTkwCTqjdnNpQ=
+        d=gmail.com; s=20230601; t=1721164417; x=1721769217; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ag5NdJlDjgGBhuGOZDzJcu7IZkmLpKyxnSbjG+hkilc=;
+        b=OmB+ltOQAbD1cnIF8uvsqBkbzhH/3coeN9/3JSRxQcqlgpeQzRrbj8iqf5FsBki3gR
+         gBwFrnYQyibour3nRSjN5J3VYF9SlUiY2kNs2OIORFGK99yFVAcq9c40wzFE5anSJTDe
+         QyHu1whwCLZt9ygTOLJZkQCkBTanpFt9Hd9swgsN1ANSoRy2dhqKKxoOrwQoOaoWLI84
+         DC1wUABcsCaZbyY2SEh2MHPDzt0QfXvCsJIevAHZ44Y8u6U1vQgqmRJ+4shCGcHblVbL
+         kniBMFzGLTHl4UcWrdjoeVb1kccNTZYD9E2Qy4vyCtb79aKse7U7RK1EqT9ToFh4jGrh
+         DF0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721161114; x=1721765914;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1721164417; x=1721769217;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FyC5BZh6YjG7u8zcZ2c65+wWIIwNIpHTlJEujslh7io=;
-        b=uHD370/JlLV7K7wC58W4r4q9FoJwRdH0fYewoLAzF4znclTh295iw1n5aluOC8VGfr
-         wv2jGSoyZE1PYBI5TAHAlnokfctjNlRfzsLo9/hoy2EwcR7HeX+eizVqiz2J+/qpvTpP
-         yMT+bAXa00CO3OVuMqQlyKLTCdVKfW52p5YJVvOcmXhuCD6yO+c/4BagPLTjqInrChuj
-         uqCsY2MT4Hb4AWV3KcOMg6FbNcTvukW9qG9bmKWmByS1sEw5RajT3EOWOveYrpTY8UkI
-         1FZsIgLdVZo2n9opGNratfffHvb2i83RohF+a0KsVLQJzynMlDV7jCl84RlqfS9mpIOW
-         dnFw==
-X-Forwarded-Encrypted: i=1; AJvYcCXczOZUjWMdtFtGjioSHEdW8XdwUud7CywSl0U9U5Bn92WeSqDKslSHdzausLKdHG54I5E/Ax/BUvCe3VpN3x3HVOs6od05EQ==
-X-Gm-Message-State: AOJu0Yw40gV9HuknMVrEd+BX+USJdqxYKuUTeJMaV90TKYvfbKmXLJXK
-	8PXMEIhj8oslgoyBZXm/TsaE1F4hFEfJ02bF3MYrXqrUb/RmvBcYE/GO8h0RfrQjd68dRTmlh+7
-	afgNWT4hjuP/zldvBDkjdLt1rrcBHJm3xEyoOEg==
-X-Google-Smtp-Source: AGHT+IEFgQRryyYjffP1tMyu+yRGi+Lu74CsJaCnG4LnNTpPp6GXalOUh/HXJ0e/K/ocxUbYqr7+Or8rdlcaOJ96Yo4=
-X-Received: by 2002:a05:6a00:1491:b0:70b:23d9:98ae with SMTP id
- d2e1a72fcca58-70c2e9d2173mr3909520b3a.28.1721161114136; Tue, 16 Jul 2024
- 13:18:34 -0700 (PDT)
+        bh=Ag5NdJlDjgGBhuGOZDzJcu7IZkmLpKyxnSbjG+hkilc=;
+        b=qKS1DIhOduu4ecJ/Ebk4xIbkAQDfYfR7GoXU0yfYHkIleP/xD3tEYgFCpNYcUZEUQI
+         At4GwLE37XaWi6jmaoNYYKcKnn37aPQBpRucKTS2RYiP4Amn/j0yxua5BXuc35UDtOcT
+         gf2Nl+WIQu0amsaXz2aXI6Ca/ltCU/zGQGFQrT4YP9C8lDJRDZN8T7/L5qxsgiZ9bmNU
+         y24k4MXJFGMJdYeqxAjMD0KRCyt/dusiNe6TwTKesIR+pHZoD/OcswiaGfG9jaKh//gT
+         C3I1Yo+A7gJMicGMV99uBj693hGs0FOhSkoTpT4QibakXYB6CNJqPlEGGb6hAJvtSx95
+         rKyw==
+X-Forwarded-Encrypted: i=1; AJvYcCVXNEYHgOz9yik8ewFEkdm56PxZ9yryNcQN6jnvRsJ8d3WXqriGQHPI8MDH7QRA54K/Ef4LZ17PMoaKKxnx+pLGP2lrECcH09COe89ddWmwMRXmvUbnS3LguZ9SsD73+gGIgqDq330Xd/zgtVIFggXx3Za6mgtUBoglIvoFRVpa6eBc
+X-Gm-Message-State: AOJu0Yxdw0/7IJPnxGZwd8MPrwKP6kOnqwMYwpjt70X+G7fJDnsuCxDj
+	aYdgwQrKRg7Lng8oLu7zEdzCjwYIkiGkqdrMnrDbyVhyuEsS1/zA
+X-Google-Smtp-Source: AGHT+IEvPNah8o8ElhR2lXdjKaUmNu2BHdD7tWO6AdHw+HwAq26CaXaLi2pF9DM3SbCMdFzYQrtBvg==
+X-Received: by 2002:a05:6a20:729c:b0:1c1:89f8:8609 with SMTP id adf61e73a8af0-1c3f10e02d5mr4669359637.0.1721164417106;
+        Tue, 16 Jul 2024 14:13:37 -0700 (PDT)
+Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b7eca7a7bsm6795727b3a.152.2024.07.16.14.13.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jul 2024 14:13:36 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 16 Jul 2024 11:13:35 -1000
+From: Tejun Heo <tj@kernel.org>
+To: "boy.wu" <boy.wu@mediatek.com>
+Cc: Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Boris Burkov <boris@bur.io>, cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, iverlin.wang@mediatek.com
+Subject: Re: [PATCH v3] blk-cgroup: Replace u64 sync with spinlock for iostat
+ update
+Message-ID: <Zpbify32lel9J-5I@slm.duckdns.org>
+References: <20240716075206.23121-1-boy.wu@mediatek.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240715203625.1462309-1-davidf@vimeo.com> <20240715203625.1462309-2-davidf@vimeo.com>
- <ZpZ6IZL482XZT1fU@tiehlicka> <ZpajW9BKCFcCCTr-@slm.duckdns.org>
- <CAFUnj5M9CTYPcEM3=4i4rTfiU4sY4Qq8V1DXHJ00YYD2xFBvew@mail.gmail.com> <ZpbOezMVYkYdQV_s@slm.duckdns.org>
-In-Reply-To: <ZpbOezMVYkYdQV_s@slm.duckdns.org>
-From: David Finkel <davidf@vimeo.com>
-Date: Tue, 16 Jul 2024 16:18:23 -0400
-Message-ID: <CAFUnj5NLTz4yQHpucvwgWqKgC2oeotHMC3h6QyS_XHD2O7wJTA@mail.gmail.com>
-Subject: Re: [PATCH] mm, memcg: cg2 memory{.swap,}.peak write handlers
-To: Tejun Heo <tj@kernel.org>
-Cc: Michal Hocko <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, core-services@vimeo.com, 
-	Jonathan Corbet <corbet@lwn.net>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeelb@google.com>, Shuah Khan <shuah@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240716075206.23121-1-boy.wu@mediatek.com>
 
-On Tue, Jul 16, 2024 at 3:48=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Tue, Jul 16, 2024 at 01:10:14PM -0400, David Finkel wrote:
-> > > Swap still has bad reps but there's nothing drastically worse about i=
-t than
-> > > page cache. ie. If you're under memory pressure, you get thrashing on=
-e way
-> > > or another. If there's no swap, the system is just memlocking anon me=
-mory
-> > > even when they are a lot colder than page cache, so I'm skeptical tha=
-t no
-> > > swap + mostly anon + kernel OOM kills is a good strategy in general
-> > > especially given that the system behavior is not very predictable und=
-er OOM
-> > > conditions.
-> >
-> > The reason we need peak memory information is to let us schedule work i=
-n a
-> > way that we generally avoid OOM conditions. For the workloads I work on=
-,
-> > we generally have very little in the page-cache, since the data isn't
-> > stored locally most of the time, but streamed from other storage/databa=
-se
-> > systems. For those cases, demand-paging will cause large variations in
-> > servicing time, and we'd rather restart the process than have
-> > unpredictable latency. The same is true for the batch/queue-work system=
- I
-> > wrote this patch to support. We keep very little data on the local disk=
-,
-> > so the page cache is relatively small.
->
-> You can detect these conditions more reliably and *earlier* using PSI
-> triggers with swap enabled than hard allocations and OOM kills. Then, you
-> can take whatever decision you want to take including killing the job
-> without worrying about the whole system severely suffering. You can even =
-do
-> things like freezing the cgroup and taking backtraces and collecting othe=
-r
-> debug info to better understand why the memory usage is blowing up.
->
-> There are of course multiple ways to go about things but I think it's use=
-ful
-> to note that hard alloc based on peak usage + OOM kills likely isn't the
-> best way here.
+Hello, Boy.
 
-To be clear, my goal with peak memory tracking is to bin-pack in a way
-that I don't encounter OOMs. I'd prefer to have a bit of headroom and
-avoid OOMs if I can.
+So, looking at the patch, I'm not sure per-blkg lock makes sense.
 
-PSI does seem like a wonderful tool, and I do intend to use it, but
-since it's a reactive
-signal and doesn't provide absolute values for the total memory usage
-that we'd need to
-figure out in our central scheduler which work can cohabitate (and how
-many instances),
-it complements memory.peak rather than replacing my need for it.
+On Tue, Jul 16, 2024 at 03:52:06PM +0800, boy.wu wrote:
+> @@ -995,15 +995,13 @@ static void blkcg_iostat_update(struct blkcg_gq *blkg, struct blkg_iostat *cur,
+>  				struct blkg_iostat *last)
+>  {
+>  	struct blkg_iostat delta;
+> -	unsigned long flags;
+>  
+>  	/* propagate percpu delta to global */
+> -	flags = u64_stats_update_begin_irqsave(&blkg->iostat.sync);
+> +	guard(spinlock_irqsave)(&blkg->iostat.spinlock);
+>  	blkg_iostat_set(&delta, cur);
+>  	blkg_iostat_sub(&delta, last);
+>  	blkg_iostat_add(&blkg->iostat.cur, &delta);
+>  	blkg_iostat_add(last, &delta);
+> -	u64_stats_update_end_irqrestore(&blkg->iostat.sync, flags);
+>  }
 
-FWIW, at the moment, we have some (partially broken) OOM-detection,
-which does make
-sense to swap out for PSI tracking/trigger-watching that takes care of
-scaling down workers
-when there's resource-pressure.
-(Thanks for pointing out that PSI is generally a better signal than
-OOMs for memory pressure)
+This is already called with blkg_stat_lock held.
 
+> @@ -1051,10 +1048,8 @@ static void __blkcg_rstat_flush(struct blkcg *blkcg, int cpu)
+>  			goto propagate_up; /* propagate up to parent only */
+>  
+>  		/* fetch the current per-cpu values */
+> -		do {
+> -			seq = u64_stats_fetch_begin(&bisc->sync);
+> +		scoped_guard(spinlock_irqsave, &bisc->spinlock)
+>  			blkg_iostat_set(&cur, &bisc->cur);
+> -		} while (u64_stats_fetch_retry(&bisc->sync, seq));
 
-Thanks again,
+This is per-cpu stat and we should keep using u64_sync for them.
 
->
-> ...
-> > I appreciate the ownership issues with the current resetting interface =
-in
-> > the other locations. However, this peak RSS data is not used by all tha=
-t
-> > many applications (as evidenced by the fact that the memory.peak file w=
-as
-> > only added a bit over a year ago). I think there are enough cases where
-> > ownership is enforced externally that mirroring the existing interface =
-to
-> > cgroup2 is sufficient.
->
-> It's fairly new addition and its utility is limited, so it's not that wid=
-ely
-> used. Adding reset makes it more useful but in a way which can be
-> deterimental in the long term.
->
-> > I do think a more stateful interface would be nice, but I don't know
-> > whether I have enough knowledge of memcg to implement that in a reasona=
-ble
-> > amount of time.
->
-> Right, this probably isn't trivial.
->
-> > Ownership aside, I think being able to reset the high watermark of a
-> > process makes it significantly more useful. Creating new cgroups and
-> > moving processes around is significantly heavier-weight.
->
-> Yeah, the setup / teardown cost can be non-trivial for short lived cgroup=
-s.
-> I agree that having some way of measuring peak in different time interval=
-s
-> can be useful.
->
-> Thanks.
->
-> --
-> tejun
+> @@ -1134,9 +1128,8 @@ static void blkcg_fill_root_iostats(void)
+>  				cpu_dkstats->sectors[STAT_DISCARD] << 9;
+>  		}
+>  
+> -		flags = u64_stats_update_begin_irqsave(&blkg->iostat.sync);
+> +		guard(spinlock_irqsave)(&blkg->iostat.spinlock);
+>  		blkg_iostat_set(&blkg->iostat.cur, &tmp);
+> -		u64_stats_update_end_irqrestore(&blkg->iostat.sync, flags);
+>  	}
+>  }
+...
+> @@ -1157,16 +1149,14 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
+>  
+>  	seq_printf(s, "%s ", dname);
+>  
+> -	do {
+> -		seq = u64_stats_fetch_begin(&bis->sync);
+> -
+> +	scoped_guard(spinlock_irqsave, &bis->spinlock) {
+>  		rbytes = bis->cur.bytes[BLKG_IOSTAT_READ];
+>  		wbytes = bis->cur.bytes[BLKG_IOSTAT_WRITE];
+>  		dbytes = bis->cur.bytes[BLKG_IOSTAT_DISCARD];
+>  		rios = bis->cur.ios[BLKG_IOSTAT_READ];
+>  		wios = bis->cur.ios[BLKG_IOSTAT_WRITE];
+>  		dios = bis->cur.ios[BLKG_IOSTAT_DISCARD];
+> -	} while (u64_stats_fetch_retry(&bis->sync, seq));
+> +	}
 
+The above two are the only places which can potentially benefit from
+per-blkg lock but these aren't hot paths. I'd just use blkg_stat_lock for
+the above.
 
+> @@ -2152,30 +2141,29 @@ void blk_cgroup_bio_start(struct bio *bio)
+>  
+>  	cpu = get_cpu();
+>  	bis = per_cpu_ptr(bio->bi_blkg->iostat_cpu, cpu);
+> -	flags = u64_stats_update_begin_irqsave(&bis->sync);
+> -
+> -	/*
+> -	 * If the bio is flagged with BIO_CGROUP_ACCT it means this is a split
+> -	 * bio and we would have already accounted for the size of the bio.
+> -	 */
+> -	if (!bio_flagged(bio, BIO_CGROUP_ACCT)) {
+> -		bio_set_flag(bio, BIO_CGROUP_ACCT);
+> -		bis->cur.bytes[rwd] += bio->bi_iter.bi_size;
+> -	}
+> -	bis->cur.ios[rwd]++;
+> +	scoped_guard(spinlock_irqsave, &bis->spinlock) {
+> +		/*
+> +		 * If the bio is flagged with BIO_CGROUP_ACCT it means this is a split
+> +		 * bio and we would have already accounted for the size of the bio.
+> +		 */
+> +		if (!bio_flagged(bio, BIO_CGROUP_ACCT)) {
+> +			bio_set_flag(bio, BIO_CGROUP_ACCT);
+> +			bis->cur.bytes[rwd] += bio->bi_iter.bi_size;
+> +		}
+> +		bis->cur.ios[rwd]++;
+>  
+> -	/*
+> -	 * If the iostat_cpu isn't in a lockless list, put it into the
+> -	 * list to indicate that a stat update is pending.
+> -	 */
+> -	if (!READ_ONCE(bis->lqueued)) {
+> -		struct llist_head *lhead = this_cpu_ptr(blkcg->lhead);
+> +		/*
+> +		 * If the iostat_cpu isn't in a lockless list, put it into the
+> +		 * list to indicate that a stat update is pending.
+> +		 */
+> +		if (!READ_ONCE(bis->lqueued)) {
+> +			struct llist_head *lhead = this_cpu_ptr(blkcg->lhead);
+>  
+> -		llist_add(&bis->lnode, lhead);
+> -		WRITE_ONCE(bis->lqueued, true);
+> +			llist_add(&bis->lnode, lhead);
+> +			WRITE_ONCE(bis->lqueued, true);
+> +		}
 
---=20
-David Finkel
-Senior Principal Software Engineer, Core Services
+These are per-cpu stat updates which should keep using u64_sync. We don't
+want to incur locking overhead for stat updates in the hot issue path.
+
+Thanks.
+
+-- 
+tejun
 
