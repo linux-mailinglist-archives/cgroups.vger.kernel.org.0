@@ -1,162 +1,189 @@
-Return-Path: <cgroups+bounces-3703-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3702-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E7709327A8
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 15:39:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8A139327A6
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 15:39:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27CA1285C97
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 13:39:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2AB3DB2271E
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 13:39:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 627EC19ADAA;
-	Tue, 16 Jul 2024 13:39:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3137219ADAC;
+	Tue, 16 Jul 2024 13:39:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b="h7Jg8z7z"
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DB4D19ADB1;
-	Tue, 16 Jul 2024 13:39:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F6AD14386C
+	for <cgroups@vger.kernel.org>; Tue, 16 Jul 2024 13:39:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721137183; cv=none; b=VpA4WI7bDcL6K0UVSAp/4xVTFYhPxAW/M2nBlL6s0zZbleKDVz0Pi1D8nx6ZKXGy0p+QT1Cjoek4ob1f8/vejFvxQbJfBrXJbnrn0x1U8cp7OSvDKfaXI1fz3Ispp3LQZe3T7sezEg8C18e0PFDGvGCFxjSe4eB1jwQLxu9bVZc=
+	t=1721137177; cv=none; b=E2f/rCgMx3P6rMD3O4QFj9bHzkQxBsNBI/8hoAt4bXCGti1RxQq1kEz3KHv0r9Qo2wqLQwRvcCY1QT/rwf5j67+IY/PLXMZdyzqaz7GgB9dK7kiCFOX4WnszP4o8QK+oqCdNtd0psE0nztU04AhhRu1xWLEw7w9sGzPE1hMICSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721137183; c=relaxed/simple;
-	bh=/B1Uwq/PitS5XFJ0CIRuXcyGgq5rm49B8F+kxIhIZzs=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DJ0yDkPOdG64xxUcmg1Gf0TE32xmBQrPPP0gINsGKJg5x0DPkdGUo3M6UDIyjpvLhpZw/fl3DhckRojs9YqUaGFdiQ+QZ985Dn+zddcuzyxAZ86XBTqp0ZwYPNNz0kuqrjovwmxMHvJXK7DteOEw95Yx3SuJmzD0XLhdGrn6Ji0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WNg9s6t35zdhyn;
-	Tue, 16 Jul 2024 21:37:53 +0800 (CST)
-Received: from dggpeml500023.china.huawei.com (unknown [7.185.36.114])
-	by mail.maildlp.com (Postfix) with ESMTPS id 4CE99180064;
-	Tue, 16 Jul 2024 21:39:37 +0800 (CST)
-Received: from hulk-vt.huawei.com (10.67.174.26) by
- dggpeml500023.china.huawei.com (7.185.36.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Tue, 16 Jul 2024 21:39:37 +0800
-From: Xiu Jianfeng <xiujianfeng@huawei.com>
-To: <tj@kernel.org>, <josef@toxicpanda.com>, <axboe@kernel.dk>,
-	<lizefan.x@bytedance.com>, <hannes@cmpxchg.org>, <mkoutny@suse.com>
-CC: <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 -next] blk-cgroup: move congestion_count to struct blkcg
-Date: Tue, 16 Jul 2024 13:30:58 +0000
-Message-ID: <20240716133058.3491350-1-xiujianfeng@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1721137177; c=relaxed/simple;
+	bh=sa/S9BUnkuh7riQ38FnqtofoY2nQOcei+QSKBaXW8x4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Mfj7+SXxW1eqbaPY3IgbdWBhF/ecu69gEE8RvPTuID+Gq7lCFpsx8cnhMTKO7I18j6DyO5vBM8T9TxHfED1rqkQLhg9lXDs8eeit3kT1vHmEHOouD8EXeki5KlA2UM9hiQkV0w/lkCLUXlSjsx+DvGBXxt7gtceLus5b83JHIYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=fail smtp.mailfrom=vimeo.com; dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b=h7Jg8z7z; arc=none smtp.client-ip=209.85.166.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=vimeo.com
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-8036ce66164so223335239f.3
+        for <cgroups@vger.kernel.org>; Tue, 16 Jul 2024 06:39:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vimeo.com; s=google; t=1721137174; x=1721741974; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YW+mzHCCEAL/Dc8/KBWky+xkhTLtxxONIcmsaUT5KqU=;
+        b=h7Jg8z7zJFB+M0KHVAsr8iU3g/rKcyQTlVxJN3RM4pL0baZCbGOHbNHUBMGmZqQ66C
+         FAYIhKNnwVB7Eu9AD8OsiKj7Z0O77veVMcTSV9s7oyCVP8ZkrzKiUzcZKt3ttCWzS5/2
+         9mIWI3sWVSRf9zE/BwWXXHFvyfQr057MB9/po=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721137174; x=1721741974;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YW+mzHCCEAL/Dc8/KBWky+xkhTLtxxONIcmsaUT5KqU=;
+        b=DspEud2Ok+2gxrTb/WX4IfDiT+6/cV/wBNc3mIT+ps15ou4zfVjVqxuo+c1ujkMYvn
+         tnYBcyvUn2VBglb7/bXNQZ1Vk1XlDf0n9ihYhLGhxzn828e7lD+mCXrMyz7BKC1GZcwO
+         1zD3mydYBsXL1fOsLs2LXlILOWI+TwLH5Ifr4tpw79E9rFOVzCPL11qB60zoOUm3QDIp
+         stLiEVyqS1LDrOIT3nuMU8snkCPsuB36eOg0F30SCD1KK8FRcj5n99/D9lgwtAP+ozO4
+         tuRrcUkBNXkjp03pWY3pSjH4+RDZFkXEtu388qp0gPBTXG2uMma9MKcWpZQXlBucA7NK
+         DcDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXhrIHy+JY3gRwyFcz0QU8Luysf+BzACOSxrkmO9x+jKuBzj+38/nqd+3SE5zi/bTiCwBVyCKYYH5FOqBmib1NUGDiZx1YJwA==
+X-Gm-Message-State: AOJu0Ywb6e3nM9T9VtqGyAoj4wI03GxDBUFbkfkXXuMSKMMdHlvipf2Z
+	nQyDpZKfYbUzsgOxmWKN4WYDhAPj+84QcOsAjFHE4g79nNu7N8PWkVbw9SOb1F5hGFBzOAyMaxg
+	2DPtQk65Tk/pl4ragqxrTBCFRiOJyVDyWhUlULA==
+X-Google-Smtp-Source: AGHT+IFAW6xD2cRw42K+ikziVp4S7EEpVyEzWOobZokAgbO77o8tjQsQwHXYPrPwZ6wknA35Un4xwKN+/cd1Bihx4nQ=
+X-Received: by 2002:a05:6602:6417:b0:803:980e:5b38 with SMTP id
+ ca18e2360f4ac-81574541183mr302910339f.1.1721137174472; Tue, 16 Jul 2024
+ 06:39:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500023.china.huawei.com (7.185.36.114)
+References: <20240715203625.1462309-1-davidf@vimeo.com> <20240715203625.1462309-2-davidf@vimeo.com>
+ <CAFUnj5Oh_OsP4TikWTGT6cKKTnWLaBYpE5PGzcxLTp7b=UqLkQ@mail.gmail.com>
+ <CAFUnj5MahNvM+B2zynVtcnYKJ7LZHwBNEcPKGAdz-tesDeOXcw@mail.gmail.com>
+ <ZpYfKI6W1uSMkt5i@tiehlicka> <CAFUnj5Mb82Yjih4-xZMS2Ge+1Oj+zm-ZVaoTak_SisZnv6G-0w@mail.gmail.com>
+ <ZpZzYM6kdQmq7TPI@tiehlicka>
+In-Reply-To: <ZpZzYM6kdQmq7TPI@tiehlicka>
+From: David Finkel <davidf@vimeo.com>
+Date: Tue, 16 Jul 2024 09:39:22 -0400
+Message-ID: <CAFUnj5O=-3LRuTFPNZHpMB=SCbVgpNriuB2UHZkNreC4QQ5Q1w@mail.gmail.com>
+Subject: Re: [PATCH] mm, memcg: cg2 memory{.swap,}.peak write handlers
+To: Michal Hocko <mhocko@suse.com>
+Cc: Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	core-services@vimeo.com, Jonathan Corbet <corbet@lwn.net>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shuah Khan <shuah@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
+	cgroups@vger.kernel.org, linux-doc@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kselftest@vger.kernel.org, Shakeel Butt <shakeel.butt@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The congestion_count was introduced into the struct cgroup by
-commit d09d8df3a294 ("blkcg: add generic throttling mechanism"),
-but since it is closely related to the blkio subsys, it is not
-appropriate to put it in the struct cgroup, so let's move it to
-struct blkcg. There should be no functional changes because blkcg
-is per cgroup.
+On Tue, Jul 16, 2024 at 9:19=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Tue 16-07-24 08:47:59, David Finkel wrote:
+> > On Tue, Jul 16, 2024 at 3:20=E2=80=AFAM Michal Hocko <mhocko@suse.com> =
+wrote:
+> > >
+> > > On Mon 15-07-24 16:46:36, David Finkel wrote:
+> > > > > On Mon, Jul 15, 2024 at 4:38=E2=80=AFPM David Finkel <davidf@vime=
+o.com> wrote:
+> > > > > >
+> > > > > > Other mechanisms for querying the peak memory usage of either a=
+ process
+> > > > > > or v1 memory cgroup allow for resetting the high watermark. Res=
+tore
+> > > > > > parity with those mechanisms.
+> > > > > >
+> > > > > > For example:
+> > > > > >  - Any write to memory.max_usage_in_bytes in a cgroup v1 mount =
+resets
+> > > > > >    the high watermark.
+> > > > > >  - writing "5" to the clear_refs pseudo-file in a processes's p=
+roc
+> > > > > >    directory resets the peak RSS.
+> > > > > >
+> > > > > > This change copies the cgroup v1 behavior so any write to the
+> > > > > > memory.peak and memory.swap.peak pseudo-files reset the high wa=
+termark
+> > > > > > to the current usage.
+> > > > > >
+> > > > > > This behavior is particularly useful for work scheduling system=
+s that
+> > > > > > need to track memory usage of worker processes/cgroups per-work=
+-item.
+> > > > > > Since memory can't be squeezed like CPU can (the OOM-killer has
+> > > > > > opinions),
+> > >
+> > > I do not understand the OOM-killer reference here. Why does it matter=
+?
+> > > Could you explain please?
+> >
+> > Sure, we're attempting to bin-packing work based on past items of the s=
+ame type.
+> > With CPU, we can provision for the mean CPU-time per-wall-time to get
+> > a lose "cores"
+> > concept that we use for binpacking. With CPU, if we end up with a bit
+> > of contention,
+> > everything just gets a bit slower while the schedule arbitrates among c=
+groups.
+> >
+> > However, with memory, you only have so much physical memory for the out=
+er memcg.
+> > If we pack things too tightly on memory, the OOM-killer is going to kil=
+l
+> > something to free up memory. In some cases that's fine, but provisionin=
+g for the
+> > peak memory for that "type" of work-item mostly avoids this issue.
+>
+> It is still not clear to me how the memory reclaim falls into that. Are
+> your workloads mostly unreclaimable (e.g. anon mostly consumers without
+> any swap)? Why I am asking? Well, if the workload's memory is
+> reclaimable then the peak memory consumption is largely misleading
+> because an unknown portion of that memory consumption is hidden by the
+> reclaimed portion of it. This is not really specific to the write
+> handlers to reset the value though so I do not want to digress this
+> patch too much. I do not have objections to the patch itself. Clarifying
+> the usecase with your followup here would be nice.
 
-Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
----
- block/blk-cgroup.c          |  7 ++++---
- block/blk-cgroup.h          | 10 ++++++----
- include/linux/cgroup-defs.h |  3 ---
- 3 files changed, 10 insertions(+), 10 deletions(-)
+Thanks, I'm happy to clarify things!
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 37e6cc91d576..69e70964398c 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -2182,12 +2182,13 @@ void blk_cgroup_bio_start(struct bio *bio)
- 
- bool blk_cgroup_congested(void)
- {
--	struct cgroup_subsys_state *css;
-+	struct blkcg *blkcg;
- 	bool ret = false;
- 
- 	rcu_read_lock();
--	for (css = blkcg_css(); css; css = css->parent) {
--		if (atomic_read(&css->cgroup->congestion_count)) {
-+	for (blkcg = css_to_blkcg(blkcg_css()); blkcg;
-+	     blkcg = blkcg_parent(blkcg)) {
-+		if (atomic_read(&blkcg->congestion_count)) {
- 			ret = true;
- 			break;
- 		}
-diff --git a/block/blk-cgroup.h b/block/blk-cgroup.h
-index bd472a30bc61..864fad4a850b 100644
---- a/block/blk-cgroup.h
-+++ b/block/blk-cgroup.h
-@@ -95,6 +95,8 @@ struct blkcg {
- 	struct cgroup_subsys_state	css;
- 	spinlock_t			lock;
- 	refcount_t			online_pin;
-+	/* If there is block congestion on this cgroup. */
-+	atomic_t			congestion_count;
- 
- 	struct radix_tree_root		blkg_tree;
- 	struct blkcg_gq	__rcu		*blkg_hint;
-@@ -374,7 +376,7 @@ static inline void blkcg_use_delay(struct blkcg_gq *blkg)
- 	if (WARN_ON_ONCE(atomic_read(&blkg->use_delay) < 0))
- 		return;
- 	if (atomic_add_return(1, &blkg->use_delay) == 1)
--		atomic_inc(&blkg->blkcg->css.cgroup->congestion_count);
-+		atomic_inc(&blkg->blkcg->congestion_count);
- }
- 
- static inline int blkcg_unuse_delay(struct blkcg_gq *blkg)
-@@ -399,7 +401,7 @@ static inline int blkcg_unuse_delay(struct blkcg_gq *blkg)
- 	if (old == 0)
- 		return 0;
- 	if (old == 1)
--		atomic_dec(&blkg->blkcg->css.cgroup->congestion_count);
-+		atomic_dec(&blkg->blkcg->congestion_count);
- 	return 1;
- }
- 
-@@ -418,7 +420,7 @@ static inline void blkcg_set_delay(struct blkcg_gq *blkg, u64 delay)
- 
- 	/* We only want 1 person setting the congestion count for this blkg. */
- 	if (!old && atomic_try_cmpxchg(&blkg->use_delay, &old, -1))
--		atomic_inc(&blkg->blkcg->css.cgroup->congestion_count);
-+		atomic_inc(&blkg->blkcg->congestion_count);
- 
- 	atomic64_set(&blkg->delay_nsec, delay);
- }
-@@ -435,7 +437,7 @@ static inline void blkcg_clear_delay(struct blkcg_gq *blkg)
- 
- 	/* We only want 1 person clearing the congestion count for this blkg. */
- 	if (old && atomic_try_cmpxchg(&blkg->use_delay, &old, 0))
--		atomic_dec(&blkg->blkcg->css.cgroup->congestion_count);
-+		atomic_dec(&blkg->blkcg->congestion_count);
- }
- 
- /**
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index 293af7f8a694..ae04035b6cbe 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -539,9 +539,6 @@ struct cgroup {
- 	/* used to store eBPF programs */
- 	struct cgroup_bpf bpf;
- 
--	/* If there is block congestion on this cgroup. */
--	atomic_t congestion_count;
--
- 	/* Used to store internal freezer state */
- 	struct cgroup_freezer_state freezer;
- 
--- 
-2.34.1
+That's a good point about peak-RSS being unreliable if the memory's reclaim=
+able.
 
+The memory is mostly unreclaimable. It's almost all anonymous mmap,
+with a few local files that would be resident in buffercache. (but
+generally aren't mmaped)
+We don't run with swap enabled on the systems for a few reasons.
+In particular, kubernetes disallows swap, which ties our hands, but
+even if it didn't,
+demand paging from disk tends to stall any useful work, so we'd rather
+see the OOM-killer invoked, anyway.
+
+(we actually have some plans for disabling OOM-kills in these cgroups
+and letting the userspace process
+managing these memcgs handle work-throttling and worker-killing when
+there are OOM-conditions, but that's another story :) )
+
+>
+> Thanks for the clarification!
+> --
+> Michal Hocko
+> SUSE Labs
+
+
+
+--=20
+David Finkel
+Senior Principal Software Engineer, Core Services
 
