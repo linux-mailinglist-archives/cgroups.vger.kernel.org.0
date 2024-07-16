@@ -1,41 +1,42 @@
-Return-Path: <cgroups+bounces-3695-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3696-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ECFC932176
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 09:47:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3781932180
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 09:53:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E92522819F1
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 07:47:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2A324B21801
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2024 07:53:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D5393CF5E;
-	Tue, 16 Jul 2024 07:47:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7766D3BB32;
+	Tue, 16 Jul 2024 07:52:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="No0vRYJZ"
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="hnYVYX+7"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 742CE58210;
-	Tue, 16 Jul 2024 07:47:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 517A64C74;
+	Tue, 16 Jul 2024 07:52:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721116045; cv=none; b=Y2plIQo5r3IDrt1fC86Z021vT+fJazdkJS4mrrOI1WED3WCQZyhUlX/DJ+WUumxk4Cxxd0GQlULhYMHXGe0t9BnqFeF/+oTHs0qj9ntRa2srbJklTzKgCJBXkQYEZJhTJDXidTrwU3Vxh2Vx15J7T1e1VVQdP9cOTCt42Fxr+b4=
+	t=1721116372; cv=none; b=ttnzVf+tt2bE8oaNBQeWGVc98vMVCQvBQrhyHDr8v6vIONhPhbb13B5CWS+d8ilqA2k2SjfOJrueame6G6YSo1v8b/1tTCXlCc4zEwuS3j8B5Y0pVIoH2TeCRWMxUNuBhN+wceWyH6woZQe1ndlNboyeQ27FtoZC9u+4t5lDpGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721116045; c=relaxed/simple;
+	s=arc-20240116; t=1721116372; c=relaxed/simple;
 	bh=5uc7rrG9KrjMyPTpkNMDYR1ta11ZOmQf1e7qWomrJNg=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hNqvsF+y6UPkRmk1sWU2gUySY+Y0a8WzTl7aY3971nSj4gQ8gYK+sjMqDukdxRDOfxQ8Yq9hjy1WWWSxdNd7rNVFK7oIGHDhw8pxkCh3sUVeUV0JfEuiW0Nd+14iVEuY73L08WRFMl5vHXSeWozeuqDHLlC5IsNbj12tolPNXU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=No0vRYJZ; arc=none smtp.client-ip=60.244.123.138
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LqbFcXaWi185y8g3NkgYWB01Vs3Ui8uR/h62cto8+cyH65oEbRtPtVuQwAd+51RmrCkeivOBu5IP7zbuul+EDMZ//92JTR3CuBtOqBYWBj7ob5ptC8pMCU6iKw5W38l1cSKvF4gwDNrsdl6heSJPd4t20NoNpY2rPpRjpKbJFiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=hnYVYX+7; arc=none smtp.client-ip=60.244.123.138
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 99663cac434711efb5b96b43b535fdb4-20240716
+X-UUID: 6067477e434811efb5b96b43b535fdb4-20240716
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
 	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=LKn59Eo61gPgXwLDdueCeuGeu9W7m6IyUvCxQVSnSK8=;
-	b=No0vRYJZ6fiKCoCDrc3Yr2oYco+UgTo2zEbdb2uXliyJ1CPe0crGhvr81TM4Q/vSWhoYG3lC9wgiLV4s7+6UZ2jMTXXWyesD6mN2whmP80IdoAJ9etsx9DCsheW8YU0cMzR/4kg2s6npL7Cj6o/G6RsPObkQz8BHHOqXLDNAl0M=;
+	b=hnYVYX+7p9MVV3BhZXLLs4/LQEanl4cv9/V4/kLJdaOpXZuIgk/2VWNXiL2g2dy1T85TANUZ9rSP+Oajlof3BGcT0uoVJOhmSgF1xm2EtCVwhG7XpPTiFM9fWjwhrQa5PL4eebcOaaUg6X2M40QsCV72neROypEw+m3AaxJxXPc=;
+X-CID-CACHE: Type:Local,Time:202407161547+08,HitQuantity:1
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.40,REQID:4ec84318-5d4f-4a0d-a58a-640a0719a037,IP:0,U
+X-CID-O-INFO: VERSION:1.1.40,REQID:8bdfee71-8f8b-4de4-bb00-85dada6e92da,IP:0,U
 	RL:0,TC:0,Content:-25,EDM:25,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTI
 	ON:release,TS:0
 X-CID-META: VersionHash:ba885a6,CLOUDID:692c830d-46b0-425a-97d3-4623fe284021,B
@@ -45,18 +46,18 @@ X-CID-META: VersionHash:ba885a6,CLOUDID:692c830d-46b0-425a-97d3-4623fe284021,B
 X-CID-BVR: 0
 X-CID-BAS: 0,_,0,_
 X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 99663cac434711efb5b96b43b535fdb4-20240716
-Received: from mtkmbs14n1.mediatek.inc [(172.21.101.75)] by mailgw01.mediatek.com
+X-UUID: 6067477e434811efb5b96b43b535fdb4-20240716
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
 	(envelope-from <boy.wu@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 602789564; Tue, 16 Jul 2024 15:47:06 +0800
+	with ESMTP id 1902591506; Tue, 16 Jul 2024 15:52:40 +0800
 Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ MTKMBS14N2.mediatek.inc (172.21.101.76) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 16 Jul 2024 15:47:02 +0800
+ 15.2.1118.26; Tue, 16 Jul 2024 15:52:39 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
  mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 16 Jul 2024 15:47:02 +0800
+ 15.2.1118.26 via Frontend Transport; Tue, 16 Jul 2024 15:52:39 +0800
 From: boy.wu <boy.wu@mediatek.com>
 To: Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>, Jens Axboe
 	<axboe@kernel.dk>
@@ -66,9 +67,9 @@ CC: Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
 	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
 	<linux-mediatek@lists.infradead.org>, <iverlin.wang@mediatek.com>, Boy Wu
 	<boy.wu@mediatek.com>
-Subject: [PATCH] blk-cgroup: Replace u64 sync with spinlock for iostat update
-Date: Tue, 16 Jul 2024 15:46:53 +0800
-Message-ID: <20240716074653.22524-1-boy.wu@mediatek.com>
+Subject: [PATCH v3] blk-cgroup: Replace u64 sync with spinlock for iostat update
+Date: Tue, 16 Jul 2024 15:52:06 +0800
+Message-ID: <20240716075206.23121-1-boy.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -90,7 +91,7 @@ X-TM-AS-User-Blocked-Sender: No
 X-TMASE-Result: 10--11.866300-8.000000
 X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
 X-TM-SNTS-SMTP:
-	E00DA929F0B966481D5D967B554312843F43A8CF74639FB456D70D4308E86AB62000:8
+	9AF1EA2C7774CC56D1B87B197E4E94559A0CE677E0D6E0E611350B3A934B048A2000:8
 X-MTK: N
 
 From: Boy Wu <boy.wu@mediatek.com>
