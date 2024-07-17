@@ -1,169 +1,213 @@
-Return-Path: <cgroups+bounces-3741-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3742-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7948D93412A
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 19:07:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3562C934187
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 19:38:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04ADE1F24776
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 17:07:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C5611C2127F
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 17:38:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F6E71822E1;
-	Wed, 17 Jul 2024 17:04:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16CB71822DD;
+	Wed, 17 Jul 2024 17:38:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="OBTpYwvE"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ia+k/mM7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D54BA1E4B0
-	for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 17:04:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DC6B469D
+	for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 17:38:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721235857; cv=none; b=txKMjxGpYHOocR6S9OoixWk+vsIx4GhOyLYWCGeD0+3/MsPkHHz84jcq1XuhZmRD7bt49AvJHQXMhWXBuTHPPkqrQHbVdurbxKsvXowJHlRMuhgJLjGmwaPSRvxIe3ydYwmSV9tZMcR558naDZicLPatE0AsT1XX3aAICGBhnJg=
+	t=1721237897; cv=none; b=frCscbN5ABMhkAQ8Jl9+eVx+n0zgFBcyISZKCGzKk4zYk6IRhVdgGcRE1K8lET/qStWl+yd+L6JiiYDJm7hgAUyqzNn5EJomq/tF/pdhkr1bT7SUljj7zJpsn+dTtXnxmDBJBYcvNOE6jryarkPp5jxBRPFCRDqJd968gNSPAaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721235857; c=relaxed/simple;
-	bh=mrS2oiESaegLvEzkRpferI0fA006AnGF1b7o4wPWsKM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ibJ5Islcb3OqyXBUyh2AiQIByoMPX0t59k06t+dNlBB2c7rcyuTeyC0OHoWAh8CeFV1ykSp24Koy+jYA9eAcmiE6XWh1GP+G1vejKm7WTo8kpHrC++rGfR0NgZziyZQHHzrWf4wRoQ2MJXs2ioTQD/SEuuYzM796JkIX2RfpB3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=OBTpYwvE; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-447eb65d366so41967481cf.1
-        for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 10:04:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1721235853; x=1721840653; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=iRUnGmde0gGroE3rQQ9XsC/MMS7y6d0VThMieKRFaBg=;
-        b=OBTpYwvE9jJp03AZsY2Q1y1Mw2t99iLXjUYaoo6XXB/LLl8RdxsN1mJkVCmQarPV8O
-         Fix4hym+0EHDcnTNn33iCKbb7mqGFFsN2sza+zJNQp+RrAbqSQM+eFrDLBY+MbiGXIv7
-         oWJED627fIT6GUNAyRZLTN1vqik5qzqt8VJpJr9PyL6WGOjP5Cg6zdLe9p4Ss2+pnLqJ
-         jNWfBIKlh4STUqx+c5pTArtiwvQ4KTImdYHDhQjpxOPxktvxFz8EmtraVkXmuN0jg+UD
-         GRG9ybrmqNv9sKp7eBCVKfgSSz/k9UTY3VcOZbocwbE5V4kffX4Nmda6hzfm6JMwaG6y
-         848w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721235853; x=1721840653;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iRUnGmde0gGroE3rQQ9XsC/MMS7y6d0VThMieKRFaBg=;
-        b=anmJ9vM3GxdeigQ17TqQ2jCEvHm7+AIe+jXPTkAO4DpXv/6iNNOlBE2RbwyQ/JeRMJ
-         OLKXTZTthPYFnKlRQc5nJ20yKpl3W1OtqrznadNtStni4+RowDbkNAWlTeVglEuRl3NQ
-         jDV4lWpW0WgbdPLtCZdtZfCrJK0012TCxZpJClmvHVdz7bheS2/HgmhU4x5Iii1ZFRAu
-         JXzV1YUFcbbh4/a9lf8V5KrT5sj9/R5EQz2HRE/iCXrK9yM7C9YUcOXVliKqQu3RKHLp
-         /rBdAeeuWwEv1chcJtRa32QREKMjgxD2Ho2pdpVRhUNql+Xrm5VvQAfpdvxsVVKiRtrf
-         BMHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVbkjsHAiaOqNpjbj5dSMY5p8rFadprXZjFowRxD8Vg/P+ckUoxFYfKCvNVXS1hO3VPRhwQaMQZrCivBYRNVARLAkn6X7poYg==
-X-Gm-Message-State: AOJu0Yz3KFc1nDyDMP37Q2DXc4h66ZJIa5rRdOWx8dhbcmlOpgdwff38
-	yyjhBENVZ6FNeMAF6Pr1jGmVDi4hDorhqpW8lHkay8xQyUJpCOpdMuzGIdBLFCs=
-X-Google-Smtp-Source: AGHT+IFWhIiuqTrPrLgEKk9yyoBUOyaQC4cIo3mPC9fwvmoBNcNRFbthBE/KZxwdgchUpEIo5TEs+A==
-X-Received: by 2002:a05:6214:5198:b0:6b5:6a1:f89a with SMTP id 6a1803df08f44-6b78caf6152mr37393066d6.2.1721235853523;
-        Wed, 17 Jul 2024 10:04:13 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b79c4f68f7sm143776d6.40.2024.07.17.10.04.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jul 2024 10:04:13 -0700 (PDT)
-Date: Wed, 17 Jul 2024 13:04:08 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: Michal Hocko <mhocko@suse.com>, David Finkel <davidf@vimeo.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, core-services@vimeo.com,
-	Jonathan Corbet <corbet@lwn.net>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeelb@google.com>, Shuah Khan <shuah@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] mm, memcg: cg2 memory{.swap,}.peak write handlers
-Message-ID: <20240717170408.GC1321673@cmpxchg.org>
-References: <20240715203625.1462309-1-davidf@vimeo.com>
- <20240715203625.1462309-2-davidf@vimeo.com>
- <ZpZ6IZL482XZT1fU@tiehlicka>
- <ZpajW9BKCFcCCTr-@slm.duckdns.org>
+	s=arc-20240116; t=1721237897; c=relaxed/simple;
+	bh=y4XpeGRxkRobm+17Rc4jFcUaNZp43qIiW26ADRi71zQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rntK1//fQ5VgfBWWAQhLAnuoPWtNKcS0utXFGn0EzGHAU279eWwf1JbYtXgxRjK/qeqcWPnoJKl1Gai07c/wIrfMd1M7WiRbeNiCOEU957ltTASpTExTjF6Nn63cgWEAuztEUpJo7/2U58HMBZU4gzmNkQ8+QiE8762q+mnyR4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ia+k/mM7; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1721237895;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ho73z9I5NiBU0wesdxPZDVws1RgteUppy4Fw+aIYmBI=;
+	b=Ia+k/mM7LynJR6QP3xYS4LdYgpFFbonuHqGK2+21yPUb5fkZ/gGJNXbtbXM47alo4iZUm6
+	CUQg6OBFp4dV2Fphkl3Qo0BnUkQNMBgefOi9TIY8+k8e6tGjHfxRzkLeedfRuBsDOnNA+M
+	BsBR+QKS+g+sp6xrwNHeN4Tfy/umwVE=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-55-LpNPs6eCMKmdR_gguvlxMQ-1; Wed,
+ 17 Jul 2024 13:38:09 -0400
+X-MC-Unique: LpNPs6eCMKmdR_gguvlxMQ-1
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 54DE619560B3;
+	Wed, 17 Jul 2024 17:38:07 +0000 (UTC)
+Received: from [10.22.16.209] (unknown [10.22.16.209])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 5B6A01955F40;
+	Wed, 17 Jul 2024 17:37:58 +0000 (UTC)
+Message-ID: <f448f66b-7a91-4281-8f77-159541cbacff@redhat.com>
+Date: Wed, 17 Jul 2024 13:37:56 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZpajW9BKCFcCCTr-@slm.duckdns.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] blk-cgroup: Replace u64 sync with spinlock for iostat
+ update
+To: "tj@kernel.org" <tj@kernel.org>, =?UTF-8?B?Qm95IFd1ICjlkLPli4Poqrwp?=
+ <Boy.Wu@mediatek.com>
+Cc: "boris@bur.io" <boris@bur.io>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ "axboe@kernel.dk" <axboe@kernel.dk>,
+ =?UTF-8?B?SXZlcmxpbiBXYW5nICjnjovoi7PpnJYp?= <Iverlin.Wang@mediatek.com>,
+ "josef@toxicpanda.com" <josef@toxicpanda.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+ "angelogioacchino.delregno@collabora.com"
+ <angelogioacchino.delregno@collabora.com>
+References: <20240716075206.23121-1-boy.wu@mediatek.com>
+ <Zpbify32lel9J-5I@slm.duckdns.org>
+ <c5bcbcbaeacdb805adc75c26f92ec69f26ad7706.camel@mediatek.com>
+ <5560c690cc6de67139a9b2e45c7a11938b70fc58.camel@mediatek.com>
+ <1b19b68adb34410bf6dc8fd3f50e4b82c1a014e4.camel@mediatek.com>
+ <Zpf3ks2drDZ7ULTa@slm.duckdns.org>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <Zpf3ks2drDZ7ULTa@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-On Tue, Jul 16, 2024 at 06:44:11AM -1000, Tejun Heo wrote:
+On 7/17/24 12:55, tj@kernel.org wrote:
 > Hello,
-> 
-> On Tue, Jul 16, 2024 at 03:48:17PM +0200, Michal Hocko wrote:
-> ...
-> > > This behavior is particularly useful for work scheduling systems that
-> > > need to track memory usage of worker processes/cgroups per-work-item.
-> > > Since memory can't be squeezed like CPU can (the OOM-killer has
-> > > opinions), these systems need to track the peak memory usage to compute
-> > > system/container fullness when binpacking workitems.
-> 
-> Swap still has bad reps but there's nothing drastically worse about it than
-> page cache. ie. If you're under memory pressure, you get thrashing one way
-> or another. If there's no swap, the system is just memlocking anon memory
-> even when they are a lot colder than page cache, so I'm skeptical that no
-> swap + mostly anon + kernel OOM kills is a good strategy in general
-> especially given that the system behavior is not very predictable under OOM
-> conditions.
-> 
-> > As mentioned down the email thread, I consider usefulness of peak value
-> > rather limited. It is misleading when memory is reclaimed. But
-> > fundamentally I do not oppose to unifying the write behavior to reset
-> > values.
-> 
-> The removal of resets was intentional. The problem was that it wasn't clear
-> who owned those counters and there's no way of telling who reset what when.
-> It was easy to accidentally end up with multiple entities that think they
-> can get timed measurement by resetting.
-> 
-> So, in general, I don't think this is a great idea. There are shortcomings
-> to how memory.peak behaves in that its meaningfulness quickly declines over
-> time. This is expected and the rationale behind adding memory.peak, IIRC,
-> was that it was difficult to tell the memory usage of a short-lived cgroup.
-> 
-> If we want to allow peak measurement of time periods, I wonder whether we
-> could do something similar to pressure triggers - ie. let users register
-> watchers so that each user can define their own watch periods. This is more
-> involved but more useful and less error-inducing than adding reset to a
-> single counter.
-> 
-> Johannes, what do you think?
+>
+> Does something like the following work for you?
+>
+> Thanks.
+>
+> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+> index 37e6cc91d576..ec1d191f5c83 100644
+> --- a/block/blk-cgroup.c
+> +++ b/block/blk-cgroup.c
+> @@ -329,7 +329,6 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct gendisk *disk,
+>   	INIT_WORK(&blkg->async_bio_work, blkg_async_bio_workfn);
+>   #endif
+>   
+> -	u64_stats_init(&blkg->iostat.sync);
+>   	for_each_possible_cpu(cpu) {
+>   		u64_stats_init(&per_cpu_ptr(blkg->iostat_cpu, cpu)->sync);
+>   		per_cpu_ptr(blkg->iostat_cpu, cpu)->blkg = blkg;
+> @@ -632,24 +631,26 @@ static void blkg_iostat_set(struct blkg_iostat *dst, struct blkg_iostat *src)
+>   static void __blkg_clear_stat(struct blkg_iostat_set *bis)
+>   {
+>   	struct blkg_iostat cur = {0};
+> -	unsigned long flags;
+>   
+> -	flags = u64_stats_update_begin_irqsave(&bis->sync);
+>   	blkg_iostat_set(&bis->cur, &cur);
+>   	blkg_iostat_set(&bis->last, &cur);
+> -	u64_stats_update_end_irqrestore(&bis->sync, flags);
+>   }
+>   
+>   static void blkg_clear_stat(struct blkcg_gq *blkg)
+>   {
+> +	unsigned long flags;
+>   	int cpu;
+>   
+> +	raw_spin_lock_irqsave(&blkg_stat_lock, flags);
+> +
+>   	for_each_possible_cpu(cpu) {
+>   		struct blkg_iostat_set *s = per_cpu_ptr(blkg->iostat_cpu, cpu);
+>   
+>   		__blkg_clear_stat(s);
+>   	}
+>   	__blkg_clear_stat(&blkg->iostat);
+> +
+> +	raw_spin_unlock_irqrestore(&blkg_stat_lock, flags);
+>   }
+>   
+>   static int blkcg_reset_stats(struct cgroup_subsys_state *css,
+> @@ -998,12 +999,10 @@ static void blkcg_iostat_update(struct blkcg_gq *blkg, struct blkg_iostat *cur,
+>   	unsigned long flags;
+>   
+>   	/* propagate percpu delta to global */
+> -	flags = u64_stats_update_begin_irqsave(&blkg->iostat.sync);
+>   	blkg_iostat_set(&delta, cur);
+>   	blkg_iostat_sub(&delta, last);
+>   	blkg_iostat_add(&blkg->iostat.cur, &delta);
+>   	blkg_iostat_add(last, &delta);
+> -	u64_stats_update_end_irqrestore(&blkg->iostat.sync, flags);
+>   }
+>   
+>   static void __blkcg_rstat_flush(struct blkcg *blkcg, int cpu)
+> @@ -1134,9 +1133,9 @@ static void blkcg_fill_root_iostats(void)
+>   				cpu_dkstats->sectors[STAT_DISCARD] << 9;
+>   		}
+>   
+> -		flags = u64_stats_update_begin_irqsave(&blkg->iostat.sync);
+> +		raw_spin_lock_irqsave(&blkg_stat_lock, flags);
+>   		blkg_iostat_set(&blkg->iostat.cur, &tmp);
+> -		u64_stats_update_end_irqrestore(&blkg->iostat.sync, flags);
+> +		raw_spin_unlock_irqrestore(&blkg_stat_lock, flags);
+>   	}
+>   }
+>   
+> @@ -1145,7 +1144,6 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
+>   	struct blkg_iostat_set *bis = &blkg->iostat;
+>   	u64 rbytes, wbytes, rios, wios, dbytes, dios;
+>   	const char *dname;
+> -	unsigned seq;
+>   	int i;
+>   
+>   	if (!blkg->online)
+> @@ -1157,16 +1155,14 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
+>   
+>   	seq_printf(s, "%s ", dname);
+>   
+> -	do {
+> -		seq = u64_stats_fetch_begin(&bis->sync);
+> -
+> -		rbytes = bis->cur.bytes[BLKG_IOSTAT_READ];
+> -		wbytes = bis->cur.bytes[BLKG_IOSTAT_WRITE];
+> -		dbytes = bis->cur.bytes[BLKG_IOSTAT_DISCARD];
+> -		rios = bis->cur.ios[BLKG_IOSTAT_READ];
+> -		wios = bis->cur.ios[BLKG_IOSTAT_WRITE];
+> -		dios = bis->cur.ios[BLKG_IOSTAT_DISCARD];
+> -	} while (u64_stats_fetch_retry(&bis->sync, seq));
+> +	raw_spin_lock_irq(&blkg_stat_lock);
+> +	rbytes = bis->cur.bytes[BLKG_IOSTAT_READ];
+> +	wbytes = bis->cur.bytes[BLKG_IOSTAT_WRITE];
+> +	dbytes = bis->cur.bytes[BLKG_IOSTAT_DISCARD];
+> +	rios = bis->cur.ios[BLKG_IOSTAT_READ];
+> +	wios = bis->cur.ios[BLKG_IOSTAT_WRITE];
+> +	dios = bis->cur.ios[BLKG_IOSTAT_DISCARD];
+> +	raw_spin_unlock_irq(&blkg_stat_lock, flags);
+>   
+>   	if (rbytes || wbytes || rios || wios) {
+>   		seq_printf(s, "rbytes=%llu wbytes=%llu rios=%llu wios=%llu dbytes=%llu dios=%llu",
+>
+bis->sync is still being used in blk_cgroup_bio_start(). Replacing it 
+with a global lock may kill performance. We may have to use a per-cpu 
+lock if we want to go this route of eliminating bis->sync.
 
-I'm also not a fan of the ability to reset globally.
+Cheers,
+Longman
 
-I seem to remember a scheme we discussed some time ago to do local
-state tracking without having the overhead in the page counter
-fastpath. The new data that needs to be tracked is a pc->local_peak
-(in the page_counter) and an fd->peak (in the watcher's file state).
-
-1. Usage peak is tracked in pc->watermark, and now also in pc->local_peak.
-
-2. Somebody opens the memory.peak. Initialize fd->peak = -1.
-
-3. If they write, set fd->peak = pc->local_peak = usage.
-
-4. Usage grows.
-
-5. They read(). A conventional reader has fd->peak == -1, so we return
-   pc->watermark. If the fd has been written to, return max(fd->peak, pc->local_peak).
-
-6. Usage drops.
-
-7. New watcher opens and writes. Bring up all existing watchers'
-   fd->peak (that aren't -1) to pc->local_peak *iff* latter is bigger.
-   Then set the new fd->peak = pc->local_peak = current usage as in 3.
-
-8. See 5. again for read() from each watcher.
-
-This way all fd's can arbitrarily start tracking new local peaks with
-write(). The operation in the charging fast path is cheap. The write()
-is O(existing_watchers), which seems reasonable. It's fully backward
-compatible with conventional open() + read() users.
 
