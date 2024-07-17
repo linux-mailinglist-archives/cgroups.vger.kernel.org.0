@@ -1,95 +1,89 @@
-Return-Path: <cgroups+bounces-3740-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3741-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3417A9340D7
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 18:55:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7948D93412A
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 19:07:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E33CA2841DB
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 16:55:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04ADE1F24776
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 17:07:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B8EF1822D8;
-	Wed, 17 Jul 2024 16:55:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F6E71822E1;
+	Wed, 17 Jul 2024 17:04:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bPSgql4I"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="OBTpYwvE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E76A817F39B;
-	Wed, 17 Jul 2024 16:55:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D54BA1E4B0
+	for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 17:04:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721235350; cv=none; b=nx1yXADfmdkH7PLsz7OhtQgCCwM+kqVjs7P5fe8fxQ/pfMFPmNJgOpqq4EOwgZl/70HgERs+RLEiZ4lYNsCw2AXeGiynRC5c6ZUb4OnOCgxgQyUSXwwCxAKt5tBlxpo6GH6e9lYx7tJ2wWGrQh3iND4faODsmcjOQjQ0tiJ2DaI=
+	t=1721235857; cv=none; b=txKMjxGpYHOocR6S9OoixWk+vsIx4GhOyLYWCGeD0+3/MsPkHHz84jcq1XuhZmRD7bt49AvJHQXMhWXBuTHPPkqrQHbVdurbxKsvXowJHlRMuhgJLjGmwaPSRvxIe3ydYwmSV9tZMcR558naDZicLPatE0AsT1XX3aAICGBhnJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721235350; c=relaxed/simple;
-	bh=OMKDrp/asr1LQFTLOo46Z1gdnD0fhU2xBx0AsoHdoM4=;
+	s=arc-20240116; t=1721235857; c=relaxed/simple;
+	bh=mrS2oiESaegLvEzkRpferI0fA006AnGF1b7o4wPWsKM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XUClbf/7xTvJ6Xz9wBGy4bOPQ5nBLt27mryzUad78Ou1fH9WCj7aqW3bzKPKimxL4dPofeiCdFAZ5LwftIc1Em4DQ2qA66t3wSIuRARbSFuBjxiLhdMF2fF1GOoR5h2JojNHQP20X5XUHRosqJ/2bzUYfvK5Z86cYtmRYCijlWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bPSgql4I; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1fc5549788eso5136165ad.1;
-        Wed, 17 Jul 2024 09:55:48 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ibJ5Islcb3OqyXBUyh2AiQIByoMPX0t59k06t+dNlBB2c7rcyuTeyC0OHoWAh8CeFV1ykSp24Koy+jYA9eAcmiE6XWh1GP+G1vejKm7WTo8kpHrC++rGfR0NgZziyZQHHzrWf4wRoQ2MJXs2ioTQD/SEuuYzM796JkIX2RfpB3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=OBTpYwvE; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-447eb65d366so41967481cf.1
+        for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 10:04:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721235348; x=1721840148; darn=vger.kernel.org;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1721235853; x=1721840653; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=68LWjL5/SKjz0tO65i0BltVGGa8T/WWLEoQAHGMQU/Q=;
-        b=bPSgql4IZhW9Didboyc9a1e3GYBVIkqHHy+eaMB/g8bARWNhlzw0BkBjpzVlbWuGAV
-         Q7JeW8D0Gl25YL56smDrIZ+UQs08kBVYpo2yqz4UIyymQVi1nCtTy2bi4+ONtQDl6+CL
-         NSLTNLyw0pjMDe+Vmke89Uq2k6/86asP3+HtO837ZUasVuAwo5zQQLwAFFf4X62zWm0o
-         au23U8aBqI1VOK31ySETNiHoXS7l5jY02ptYCdE97ZXYOELgJMI63NOfZdThOhH1i2Y2
-         /MrSJ39Pa0QIp7/Qhm0De+EjMhLx0bKQqM+TLEsbYFWRfq4MOidFVDa8NLJ0BFJRJFIa
-         CCcw==
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iRUnGmde0gGroE3rQQ9XsC/MMS7y6d0VThMieKRFaBg=;
+        b=OBTpYwvE9jJp03AZsY2Q1y1Mw2t99iLXjUYaoo6XXB/LLl8RdxsN1mJkVCmQarPV8O
+         Fix4hym+0EHDcnTNn33iCKbb7mqGFFsN2sza+zJNQp+RrAbqSQM+eFrDLBY+MbiGXIv7
+         oWJED627fIT6GUNAyRZLTN1vqik5qzqt8VJpJr9PyL6WGOjP5Cg6zdLe9p4Ss2+pnLqJ
+         jNWfBIKlh4STUqx+c5pTArtiwvQ4KTImdYHDhQjpxOPxktvxFz8EmtraVkXmuN0jg+UD
+         GRG9ybrmqNv9sKp7eBCVKfgSSz/k9UTY3VcOZbocwbE5V4kffX4Nmda6hzfm6JMwaG6y
+         848w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721235348; x=1721840148;
+        d=1e100.net; s=20230601; t=1721235853; x=1721840653;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=68LWjL5/SKjz0tO65i0BltVGGa8T/WWLEoQAHGMQU/Q=;
-        b=ubsRie6xYaOi7rSRP8MyALchnh2b9L/0NW/BytQrxjlGoffK0sj68VTbfMZilU8jWi
-         qbpNlfb3mudjHvCr+C1n5uduSg1po75la504O8wr8He0z/1UquKgld8wLe7coZ9ZpxIu
-         urzChe5Qj0tZhZHYuqY+LjcPHrJ8QCaVF97KBWerAaOjwEVJALoeEcmKdtict6bMcKBV
-         iH/kJFHr4kqOU8qlxq903sY36J6qXZfcpE20HbzrAozXYmvo5jaDR1cTZ8CCwK349Aic
-         0ycP46Vh3MJDDrFdJ0V1pgvVCz/ZFHIp0EQuLKCIhCBXXOdRn/k4pnSlKZKRrZKJ9ySR
-         WhrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVMS5l0NlUd0QicuPamQjjFgElAiyrtIYzxGcLq7Z8IDkFQYvXobhPUR7rmv47nhjrE1srXfPjb1ALmJA3rlLbzMOXxRNq+QvcthgrNz8Na50CgmMoQp0/4gQsi4d7JH19/cIueMej2IrqMWO2TeltGIsloCXZs7dz0OHDh7E39lm2f
-X-Gm-Message-State: AOJu0YzEsL+dELT5UUFvrRFOy5aK7Y9DJMdbIvAoJ2hyLzdLIH3LwIQ+
-	0Mto00B8GSqN58Wgy1JmRA/2g1zFUqw8s2Efot5/gVlQkomJLbAuV95BRQ==
-X-Google-Smtp-Source: AGHT+IEh/cgX/fwSr/Qf+rkCnE+FwhUG7QRMVZIlEKOXguTlAFPyDJHm9nWwN1jNvQkd90th0Ikb6Q==
-X-Received: by 2002:a17:903:234d:b0:1fb:67ee:6de7 with SMTP id d9443c01a7336-1fc4e131d9fmr23895775ad.23.1721235348035;
-        Wed, 17 Jul 2024 09:55:48 -0700 (PDT)
-Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bc384ecsm77469445ad.208.2024.07.17.09.55.47
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iRUnGmde0gGroE3rQQ9XsC/MMS7y6d0VThMieKRFaBg=;
+        b=anmJ9vM3GxdeigQ17TqQ2jCEvHm7+AIe+jXPTkAO4DpXv/6iNNOlBE2RbwyQ/JeRMJ
+         OLKXTZTthPYFnKlRQc5nJ20yKpl3W1OtqrznadNtStni4+RowDbkNAWlTeVglEuRl3NQ
+         jDV4lWpW0WgbdPLtCZdtZfCrJK0012TCxZpJClmvHVdz7bheS2/HgmhU4x5Iii1ZFRAu
+         JXzV1YUFcbbh4/a9lf8V5KrT5sj9/R5EQz2HRE/iCXrK9yM7C9YUcOXVliKqQu3RKHLp
+         /rBdAeeuWwEv1chcJtRa32QREKMjgxD2Ho2pdpVRhUNql+Xrm5VvQAfpdvxsVVKiRtrf
+         BMHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVbkjsHAiaOqNpjbj5dSMY5p8rFadprXZjFowRxD8Vg/P+ckUoxFYfKCvNVXS1hO3VPRhwQaMQZrCivBYRNVARLAkn6X7poYg==
+X-Gm-Message-State: AOJu0Yz3KFc1nDyDMP37Q2DXc4h66ZJIa5rRdOWx8dhbcmlOpgdwff38
+	yyjhBENVZ6FNeMAF6Pr1jGmVDi4hDorhqpW8lHkay8xQyUJpCOpdMuzGIdBLFCs=
+X-Google-Smtp-Source: AGHT+IFWhIiuqTrPrLgEKk9yyoBUOyaQC4cIo3mPC9fwvmoBNcNRFbthBE/KZxwdgchUpEIo5TEs+A==
+X-Received: by 2002:a05:6214:5198:b0:6b5:6a1:f89a with SMTP id 6a1803df08f44-6b78caf6152mr37393066d6.2.1721235853523;
+        Wed, 17 Jul 2024 10:04:13 -0700 (PDT)
+Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b79c4f68f7sm143776d6.40.2024.07.17.10.04.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Jul 2024 09:55:47 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 17 Jul 2024 06:55:46 -1000
-From: "tj@kernel.org" <tj@kernel.org>
-To: Boy Wu =?utf-8?B?KOWQs+WLg+iqvCk=?= <Boy.Wu@mediatek.com>
-Cc: "boris@bur.io" <boris@bur.io>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"axboe@kernel.dk" <axboe@kernel.dk>,
-	Iverlin Wang =?utf-8?B?KOeOi+iLs+mclik=?= <Iverlin.Wang@mediatek.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH v3] blk-cgroup: Replace u64 sync with spinlock for iostat
- update
-Message-ID: <Zpf3ks2drDZ7ULTa@slm.duckdns.org>
-References: <20240716075206.23121-1-boy.wu@mediatek.com>
- <Zpbify32lel9J-5I@slm.duckdns.org>
- <c5bcbcbaeacdb805adc75c26f92ec69f26ad7706.camel@mediatek.com>
- <5560c690cc6de67139a9b2e45c7a11938b70fc58.camel@mediatek.com>
- <1b19b68adb34410bf6dc8fd3f50e4b82c1a014e4.camel@mediatek.com>
+        Wed, 17 Jul 2024 10:04:13 -0700 (PDT)
+Date: Wed, 17 Jul 2024 13:04:08 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Tejun Heo <tj@kernel.org>
+Cc: Michal Hocko <mhocko@suse.com>, David Finkel <davidf@vimeo.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>, core-services@vimeo.com,
+	Jonathan Corbet <corbet@lwn.net>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>, Shuah Khan <shuah@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] mm, memcg: cg2 memory{.swap,}.peak write handlers
+Message-ID: <20240717170408.GC1321673@cmpxchg.org>
+References: <20240715203625.1462309-1-davidf@vimeo.com>
+ <20240715203625.1462309-2-davidf@vimeo.com>
+ <ZpZ6IZL482XZT1fU@tiehlicka>
+ <ZpajW9BKCFcCCTr-@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -98,112 +92,78 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1b19b68adb34410bf6dc8fd3f50e4b82c1a014e4.camel@mediatek.com>
+In-Reply-To: <ZpajW9BKCFcCCTr-@slm.duckdns.org>
 
-Hello,
+On Tue, Jul 16, 2024 at 06:44:11AM -1000, Tejun Heo wrote:
+> Hello,
+> 
+> On Tue, Jul 16, 2024 at 03:48:17PM +0200, Michal Hocko wrote:
+> ...
+> > > This behavior is particularly useful for work scheduling systems that
+> > > need to track memory usage of worker processes/cgroups per-work-item.
+> > > Since memory can't be squeezed like CPU can (the OOM-killer has
+> > > opinions), these systems need to track the peak memory usage to compute
+> > > system/container fullness when binpacking workitems.
+> 
+> Swap still has bad reps but there's nothing drastically worse about it than
+> page cache. ie. If you're under memory pressure, you get thrashing one way
+> or another. If there's no swap, the system is just memlocking anon memory
+> even when they are a lot colder than page cache, so I'm skeptical that no
+> swap + mostly anon + kernel OOM kills is a good strategy in general
+> especially given that the system behavior is not very predictable under OOM
+> conditions.
+> 
+> > As mentioned down the email thread, I consider usefulness of peak value
+> > rather limited. It is misleading when memory is reclaimed. But
+> > fundamentally I do not oppose to unifying the write behavior to reset
+> > values.
+> 
+> The removal of resets was intentional. The problem was that it wasn't clear
+> who owned those counters and there's no way of telling who reset what when.
+> It was easy to accidentally end up with multiple entities that think they
+> can get timed measurement by resetting.
+> 
+> So, in general, I don't think this is a great idea. There are shortcomings
+> to how memory.peak behaves in that its meaningfulness quickly declines over
+> time. This is expected and the rationale behind adding memory.peak, IIRC,
+> was that it was difficult to tell the memory usage of a short-lived cgroup.
+> 
+> If we want to allow peak measurement of time periods, I wonder whether we
+> could do something similar to pressure triggers - ie. let users register
+> watchers so that each user can define their own watch periods. This is more
+> involved but more useful and less error-inducing than adding reset to a
+> single counter.
+> 
+> Johannes, what do you think?
 
-Does something like the following work for you?
+I'm also not a fan of the ability to reset globally.
 
-Thanks.
+I seem to remember a scheme we discussed some time ago to do local
+state tracking without having the overhead in the page counter
+fastpath. The new data that needs to be tracked is a pc->local_peak
+(in the page_counter) and an fd->peak (in the watcher's file state).
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 37e6cc91d576..ec1d191f5c83 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -329,7 +329,6 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct gendisk *disk,
- 	INIT_WORK(&blkg->async_bio_work, blkg_async_bio_workfn);
- #endif
- 
--	u64_stats_init(&blkg->iostat.sync);
- 	for_each_possible_cpu(cpu) {
- 		u64_stats_init(&per_cpu_ptr(blkg->iostat_cpu, cpu)->sync);
- 		per_cpu_ptr(blkg->iostat_cpu, cpu)->blkg = blkg;
-@@ -632,24 +631,26 @@ static void blkg_iostat_set(struct blkg_iostat *dst, struct blkg_iostat *src)
- static void __blkg_clear_stat(struct blkg_iostat_set *bis)
- {
- 	struct blkg_iostat cur = {0};
--	unsigned long flags;
- 
--	flags = u64_stats_update_begin_irqsave(&bis->sync);
- 	blkg_iostat_set(&bis->cur, &cur);
- 	blkg_iostat_set(&bis->last, &cur);
--	u64_stats_update_end_irqrestore(&bis->sync, flags);
- }
- 
- static void blkg_clear_stat(struct blkcg_gq *blkg)
- {
-+	unsigned long flags;
- 	int cpu;
- 
-+	raw_spin_lock_irqsave(&blkg_stat_lock, flags);
-+
- 	for_each_possible_cpu(cpu) {
- 		struct blkg_iostat_set *s = per_cpu_ptr(blkg->iostat_cpu, cpu);
- 
- 		__blkg_clear_stat(s);
- 	}
- 	__blkg_clear_stat(&blkg->iostat);
-+
-+	raw_spin_unlock_irqrestore(&blkg_stat_lock, flags);
- }
- 
- static int blkcg_reset_stats(struct cgroup_subsys_state *css,
-@@ -998,12 +999,10 @@ static void blkcg_iostat_update(struct blkcg_gq *blkg, struct blkg_iostat *cur,
- 	unsigned long flags;
- 
- 	/* propagate percpu delta to global */
--	flags = u64_stats_update_begin_irqsave(&blkg->iostat.sync);
- 	blkg_iostat_set(&delta, cur);
- 	blkg_iostat_sub(&delta, last);
- 	blkg_iostat_add(&blkg->iostat.cur, &delta);
- 	blkg_iostat_add(last, &delta);
--	u64_stats_update_end_irqrestore(&blkg->iostat.sync, flags);
- }
- 
- static void __blkcg_rstat_flush(struct blkcg *blkcg, int cpu)
-@@ -1134,9 +1133,9 @@ static void blkcg_fill_root_iostats(void)
- 				cpu_dkstats->sectors[STAT_DISCARD] << 9;
- 		}
- 
--		flags = u64_stats_update_begin_irqsave(&blkg->iostat.sync);
-+		raw_spin_lock_irqsave(&blkg_stat_lock, flags);
- 		blkg_iostat_set(&blkg->iostat.cur, &tmp);
--		u64_stats_update_end_irqrestore(&blkg->iostat.sync, flags);
-+		raw_spin_unlock_irqrestore(&blkg_stat_lock, flags);
- 	}
- }
- 
-@@ -1145,7 +1144,6 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
- 	struct blkg_iostat_set *bis = &blkg->iostat;
- 	u64 rbytes, wbytes, rios, wios, dbytes, dios;
- 	const char *dname;
--	unsigned seq;
- 	int i;
- 
- 	if (!blkg->online)
-@@ -1157,16 +1155,14 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
- 
- 	seq_printf(s, "%s ", dname);
- 
--	do {
--		seq = u64_stats_fetch_begin(&bis->sync);
--
--		rbytes = bis->cur.bytes[BLKG_IOSTAT_READ];
--		wbytes = bis->cur.bytes[BLKG_IOSTAT_WRITE];
--		dbytes = bis->cur.bytes[BLKG_IOSTAT_DISCARD];
--		rios = bis->cur.ios[BLKG_IOSTAT_READ];
--		wios = bis->cur.ios[BLKG_IOSTAT_WRITE];
--		dios = bis->cur.ios[BLKG_IOSTAT_DISCARD];
--	} while (u64_stats_fetch_retry(&bis->sync, seq));
-+	raw_spin_lock_irq(&blkg_stat_lock);
-+	rbytes = bis->cur.bytes[BLKG_IOSTAT_READ];
-+	wbytes = bis->cur.bytes[BLKG_IOSTAT_WRITE];
-+	dbytes = bis->cur.bytes[BLKG_IOSTAT_DISCARD];
-+	rios = bis->cur.ios[BLKG_IOSTAT_READ];
-+	wios = bis->cur.ios[BLKG_IOSTAT_WRITE];
-+	dios = bis->cur.ios[BLKG_IOSTAT_DISCARD];
-+	raw_spin_unlock_irq(&blkg_stat_lock, flags);
- 
- 	if (rbytes || wbytes || rios || wios) {
- 		seq_printf(s, "rbytes=%llu wbytes=%llu rios=%llu wios=%llu dbytes=%llu dios=%llu",
+1. Usage peak is tracked in pc->watermark, and now also in pc->local_peak.
+
+2. Somebody opens the memory.peak. Initialize fd->peak = -1.
+
+3. If they write, set fd->peak = pc->local_peak = usage.
+
+4. Usage grows.
+
+5. They read(). A conventional reader has fd->peak == -1, so we return
+   pc->watermark. If the fd has been written to, return max(fd->peak, pc->local_peak).
+
+6. Usage drops.
+
+7. New watcher opens and writes. Bring up all existing watchers'
+   fd->peak (that aren't -1) to pc->local_peak *iff* latter is bigger.
+   Then set the new fd->peak = pc->local_peak = current usage as in 3.
+
+8. See 5. again for read() from each watcher.
+
+This way all fd's can arbitrarily start tracking new local peaks with
+write(). The operation in the charging fast path is cheap. The write()
+is O(existing_watchers), which seems reasonable. It's fully backward
+compatible with conventional open() + read() users.
 
