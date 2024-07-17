@@ -1,204 +1,130 @@
-Return-Path: <cgroups+bounces-3734-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3735-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB48193401F
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 18:04:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 286C9934021
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 18:06:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37EBC1F22C88
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 16:04:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A451EB220D2
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 16:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91FB117F362;
-	Wed, 17 Jul 2024 16:04:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9022317FACE;
+	Wed, 17 Jul 2024 16:05:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UU5SZjmq"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xQ0thuGq"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A268B1E4B0
-	for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 16:04:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E873A1D69E
+	for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 16:05:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721232292; cv=none; b=C/75A1oadYgIwW0+4sD9OJtnQu11mENgr/MvyFEgSyE9TM/J0N4bvDrUn3bWhRvKIyX+jMVI2yzhNNJTKcV4/V2NyY0zeuYBqe65rA2vttylzx5MRAy97zNu8fn7z9wARbtZ91LAp4VNsVLSsCuBgfQYRHkeyPLKAnDj7XpXUVc=
+	t=1721232355; cv=none; b=mwGdTVA9jaV/c3r8lMbsgVLsOh+SDfeWq8ZQSB8ryFcfemZCeQHcFMSZAcLOPhQy7wdM0GibJkB+AhTskVuyiCBRt39SggezPz6yM/UBoKdb9Xd0G44ftxI7QD5y8OfZQCANiFDbRuV8NFoXe6bL7yVWgX1XLw5jCyWjRKVRN6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721232292; c=relaxed/simple;
-	bh=AoAZcZDBufYR6+8XmPD3d85dxJzmXDI3rW9IHEM0hhM=;
+	s=arc-20240116; t=1721232355; c=relaxed/simple;
+	bh=YcjsHP54RpwUKtiYpkm/nJMYQg9aJFKhLDJMn31KcwA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sqW98VB8ob6Umj2G9/rWLy/+sg0d9bKFch1sZiM5v1peNmln+p2LFPLOh1V6+2jzyTrkzwr2zqXjaJlhDpkDpzlAKcJM57YzCBYL25HAJwSZ1xBH2yCBT1/LQkhQrQXWs/rlQNNC5oENavOYhP59UiQnhl9AXjXLm5qiajnzNS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UU5SZjmq; arc=none smtp.client-ip=209.85.218.51
+	 To:Cc:Content-Type; b=dMlQk7G2LPVAv2jh/ML75aCxNCPfCdCUya2vD6kGQtscosbYIz4o691/2GOGhmJJ1NKrgNAINNTWl/Rlluh2pqJ6Gz1ykoABpIPySPGP8gsKPZtO07kz9OkV12Kpiy5Pjx1K2EiBsoyjwomlNaFc+lm2oN6DGLIRoN9ewVQP81E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xQ0thuGq; arc=none smtp.client-ip=209.85.218.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a79fe8e6282so93693066b.2
-        for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 09:04:50 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a6fd513f18bso737700066b.3
+        for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 09:05:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1721232289; x=1721837089; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1721232352; x=1721837152; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XKIjwSAQrkgMVgtHKV1uhwl6zysvp7/fR9dohyVGsJc=;
-        b=UU5SZjmqxuGffg/iAIvKWIXjPjv2y9wIbhoGB/OgJtOvWL0aVeMdYDV2DUkM4iLQPq
-         4dYEVMVlRKPS69a80aZP3O/Xef450tZrcyUq7w/ZPsvRzU1VH5gJqCsB+scDoHAqimdS
-         7ZlF0ZqY3G7Ge/esPnWGxHlGnkOmGFrc1FU9RwmEAGNU41mJhvSJAATjsWcRntIEUqkj
-         A3hAfVxkRdj8oIvLitGYthwfyIgd48Zk97nJUNfursU8yhliLMRiBzhdK2uih0y+CQIQ
-         aNFOa/Qmy1Rpi7kCFKC3unZsTl4BFGUuwUvig5dNv9xDv3WRyDxUBdPj/bd6LTreNOJ8
-         +/HQ==
+        bh=7XzbkbJcXikIhEb+ZP9zYLgNCMH4osHfm1Sg9VEiM7Q=;
+        b=xQ0thuGqB7hpZsxBYTT+o0e8j8k+TlRqVXirqALZ47HjLSMi98klJpUkYYI+mhImf6
+         BYfZu8NdvUozBKsQ6DC5bfBgJYEu83w4ETPBMYRrhr149KymWaojk2cx5ts1Bvnx1Kpn
+         FrxrpbFgc+ek0e4KBQMYdlkp3Bj3ueQwTJDoUwfQJaZOUeehHZM/ao8aAkJhQ2rSaDKA
+         rSwZ7EfGi7pdF16tmvBuKMvWt+MAQbKreIp4VKJLmogF5RgQL0zoSoxc/s9w2TNqTCdw
+         pkVFeq6KpKBbQPg8XIAy8xknUbIg5o4qXFnr7ueYUHsDVdCwQQtTfEFRqZ6yQwFVfe0M
+         vh3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721232289; x=1721837089;
+        d=1e100.net; s=20230601; t=1721232352; x=1721837152;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XKIjwSAQrkgMVgtHKV1uhwl6zysvp7/fR9dohyVGsJc=;
-        b=p3KI1XpaMrbFJ2Nr31TCzRQ7YS6ynpOIBhelsHbIiGc9Gj3wUc71IZb75BlJDFm4N1
-         ayuE9DVPNj6Puoy/e8gE7F/vSL7540nvGht3g8IuAkLEXU7RyekL8uoTrlsEAar2Ek0i
-         qBpNNoP5FG0oWiyKOdEJyuO86qADi647QJLadvMNhouER71umkIue+NfFIRBNMtRw3Gg
-         ixJBnUrCao4K3LYF7rwprR+2XaxciRVy4n8ErVL2yCGVN1io0ZBWyyMOg66tfPi1zVg6
-         IMcixCDU4etDWj+gs9hXvYXx8mEvihfasZKb3UbFlawT3X4cvAV28D9F8YPLc5GMhEGW
-         9DnQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUGaYSsNgcVTPcR6IjLbXXHz1AlKrL6CI1cGdtS48rPAoZLzx8KbRWi0dD8OP0X+J/y8Vou1UXzUr085E/obgx/sgt3lWa2iw==
-X-Gm-Message-State: AOJu0YyGsKNAtzvdbuBjh4qcBb5TvGj+vOxRKnR3iX4ro4BlNQEN5jpQ
-	BEOWHaRSzIwmDIphpusUjuFz6ZfA5bHBZFbGN6qJp/sdqzjcCsRiPZJXhXGwb8jtAjSLMXKStJb
-	YvibWMlqcAJHQXsgn9Wej5Sq7wwFs8HsBFAXq
-X-Google-Smtp-Source: AGHT+IE+KGZPn8v42uAvYqn/WiCl5jZpR4/bzecrp0HAsD5IbBc4tqOnEKm34cqpnXBi+3JZQ/CJ/A4sgAhzyL14cIU=
-X-Received: by 2002:a17:906:718:b0:a6f:b885:2042 with SMTP id
- a640c23a62f3a-a7a011e5186mr164953166b.18.1721232288273; Wed, 17 Jul 2024
- 09:04:48 -0700 (PDT)
+        bh=7XzbkbJcXikIhEb+ZP9zYLgNCMH4osHfm1Sg9VEiM7Q=;
+        b=gXZhJXSbsvrgJqeOV+V6I8sBsWYbOR1TLUbVP/rK/AY/Y+AvFz3G8H51INethxUElD
+         BXmyncI/Xh2u1H1P3MmhKwUTj9c7aZjhFZZMoejZ7tYSbNXUUQRTmg67HmP69annbq3p
+         S0yMOtlC3LuoygUYKvoQVIr1yZe7YG1ZEF53vVzwz5jm6OIxlYXyhUzBWxV9zJxdRbr9
+         o5+f2EBQ7V3OzXKcKsg1NK9mQ+ZHiRm0DSj0Wsn7PHk2IyTXcnBBBjpCfB0L0pnHBA09
+         WCH+l8FVw4TkCuh94GKtZ1T+6E67V7jzSHGIE6Ayo+eOKFUee/JG5mB0XtFltNNguOGI
+         zzcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUwQPnCRyslYy3MbtWU3TgoKAZ9d8iKD5KLj0w8IVQun+6ugr1oV2Bk32W4p3C34pir3CkL50WfL8UGb6+DB/Q+SeoScZABDw==
+X-Gm-Message-State: AOJu0YxIqAGe5E+HqH6y+raCCoRyGsYDS44yn7qD+Ry9Ac+CBoAT8RHL
+	KNgnZlytV5ZENgwzPTveIQaiOqAgpELmrmkWf05Hg+vy7yzOlpXOYFvpuhyDoO4AVd+IMnRwKBA
+	63XApgoDmaAvdLdvQZENX55NsNpn5zPXeWSqB
+X-Google-Smtp-Source: AGHT+IF612kZUE8JtTrcOb7CBHDJfT/vFSLwBjbycByRk2UQLAz14lfAY2/3C531BxfWpFzgaaEvnI7pwI9M7gPPalQ=
+X-Received: by 2002:a17:906:1444:b0:a6f:e456:4207 with SMTP id
+ a640c23a62f3a-a7a01352c5fmr121415666b.61.1721232351397; Wed, 17 Jul 2024
+ 09:05:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <171952310959.1810550.17003659816794335660.stgit@firesoul>
- <171952312320.1810550.13209360603489797077.stgit@firesoul>
- <4n3qu75efpznkomxytm7irwfiq44hhi4hb5igjbd55ooxgmvwa@tbgmwvcqsy75>
- <7ecdd625-37a0-49f1-92fc-eef9791fbe5b@kernel.org> <9a7930b9-dec0-418c-8475-5a7e18b3ec68@kernel.org>
- <CAJD7tkYX9OaAyWg=L_5v7GaKtKmptPpMGJh7Org5tcY4D-YnCw@mail.gmail.com> <e656b89a-1dcd-4fcc-811a-a7222232acc7@kernel.org>
-In-Reply-To: <e656b89a-1dcd-4fcc-811a-a7222232acc7@kernel.org>
+References: <172070450139.2992819.13210624094367257881.stgit@firesoul>
+ <a4e67f81-6946-47c0-907e-5431e7e01eb1@kernel.org> <CAJD7tkYV3iwk-ZJcr_==V4e24yH-1NaCYFUL7wDaQEi8ZXqfqQ@mail.gmail.com>
+ <623e62c5-3045-4dca-9f2c-ed15b8d3bad8@redhat.com>
+In-Reply-To: <623e62c5-3045-4dca-9f2c-ed15b8d3bad8@redhat.com>
 From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 17 Jul 2024 09:04:07 -0700
-Message-ID: <CAJD7tkZg4N9k7dUnTSJ06fjPdB9Ei=6JDjHW5UU_J91euyboSw@mail.gmail.com>
-Subject: Re: [PATCH V4 2/2] cgroup/rstat: Avoid thundering herd problem by
+Date: Wed, 17 Jul 2024 09:05:15 -0700
+Message-ID: <CAJD7tkZ6WOtbtiMy_2nemLQnHgO_tC0cfH1tJF-vD-Lb8PoUuA@mail.gmail.com>
+Subject: Re: [PATCH V7 1/2] cgroup/rstat: Avoid thundering herd problem by
  kswapd across NUMA nodes
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, tj@kernel.org, cgroups@vger.kernel.org, 
-	hannes@cmpxchg.org, lizefan.x@bytedance.com, longman@redhat.com, 
+To: Waiman Long <longman@redhat.com>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, tj@kernel.org, cgroups@vger.kernel.org, 
+	shakeel.butt@linux.dev, hannes@cmpxchg.org, lizefan.x@bytedance.com, 
 	kernel-team@cloudflare.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 17, 2024 at 12:46=E2=80=AFAM Jesper Dangaard Brouer <hawk@kerne=
-l.org> wrote:
+On Tue, Jul 16, 2024 at 8:00=E2=80=AFPM Waiman Long <longman@redhat.com> wr=
+ote:
 >
->
->
-> On 16/07/2024 23.54, Yosry Ahmed wrote:
-> > On Mon, Jul 8, 2024 at 8:26=E2=80=AFAM Jesper Dangaard Brouer <hawk@ker=
-nel.org> wrote:
+> On 7/16/24 20:35, Yosry Ahmed wrote:
+> > [..]
 > >>
+> >> This is a clean (meaning no cadvisor interference) example of kswapd
+> >> starting simultaniously on many NUMA nodes, that in 27 out of 98 cases
+> >> hit the race (which is handled in V6 and V7).
 > >>
-> >> On 28/06/2024 11.39, Jesper Dangaard Brouer wrote:
-> >>>
-> >>>
-> >>> On 28/06/2024 01.34, Shakeel Butt wrote:
-> >>>> On Thu, Jun 27, 2024 at 11:18:56PM GMT, Jesper Dangaard Brouer wrote=
-:
-> >>>>> Avoid lock contention on the global cgroup rstat lock caused by ksw=
-apd
-> >>>>> starting on all NUMA nodes simultaneously. At Cloudflare, we observ=
-ed
-> >>>>> massive issues due to kswapd and the specific mem_cgroup_flush_stat=
-s()
-> >>>>> call inlined in shrink_node, which takes the rstat lock.
-> >>>>>
-> >> [...]
-> >>>>>    static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu)=
-;
-> >>>>> @@ -312,6 +315,45 @@ static inline void __cgroup_rstat_unlock(struc=
-t
-> >>>>> cgroup *cgrp, int cpu_in_loop)
-> >>>>>        spin_unlock_irq(&cgroup_rstat_lock);
-> >>>>>    }
-> >>>>> +#define MAX_WAIT    msecs_to_jiffies(100)
-> >>>>> +/* Trylock helper that also checks for on ongoing flusher */
-> >>>>> +static bool cgroup_rstat_trylock_flusher(struct cgroup *cgrp)
-> >>>>> +{
-> >>>>> +    bool locked =3D __cgroup_rstat_trylock(cgrp, -1);
-> >>>>> +    if (!locked) {
-> >>>>> +        struct cgroup *cgrp_ongoing;
-> >>>>> +
-> >>>>> +        /* Lock is contended, lets check if ongoing flusher is alr=
-eady
-> >>>>> +         * taking care of this, if we are a descendant.
-> >>>>> +         */
-> >>>>> +        cgrp_ongoing =3D READ_ONCE(cgrp_rstat_ongoing_flusher);
-> >>>>> +        if (cgrp_ongoing && cgroup_is_descendant(cgrp, cgrp_ongoin=
-g)) {
-> >>>>
-> >>>> I wonder if READ_ONCE() and cgroup_is_descendant() needs to happen
-> >>>> within in rcu section. On a preemptable kernel, let's say we got
-> >>>> preempted in between them, the flusher was unrelated and got freed
-> >>>> before we get the CPU. In that case we are accessing freed memory.
-> >>>>
-> >>>
-> >>> I have to think about this some more.
-> >>>
+> >> The BPF "cnt" maps are getting cleared every second, so this
+> >> approximates per sec numbers.  This patch reduce pressure on the lock,
+> >> but we are still seeing (kfunc:vmlinux:cgroup_rstat_flush_locked) full
+> >> flushes approx 37 per sec (every 27 ms). On the positive side
+> >> ongoing_flusher mitigation stopped 98 per sec of these.
 > >>
-> >> I don't think this is necessary. We are now waiting (for completion) a=
-nd
-> >> not skipping flush, because as part of take down function
-> >> cgroup_rstat_exit() is called, which will call cgroup_rstat_flush().
+> >> In this clean kswapd case the patch removes the lock contention issue
+> >> for kswapd. The lock_contended cases 27 seems to be all related to
+> >> handled_race cases 27.
 > >>
-> >>
-> >>    void cgroup_rstat_exit(struct cgroup *cgrp)
-> >>    {
-> >>          int cpu;
-> >>          cgroup_rstat_flush(cgrp);
-> >>
-> >>
+> >> The remaning high flush rate should also be addressed, and we should
+> >> also work on aproaches to limit this like my ealier proposal[1].
+> > I honestly don't think a high number of flushes is a problem on its
+> > own as long as we are not spending too much time flushing, especially
+> > when we have magnitude-based thresholding so we know there is
+> > something to flush (although it may not be relevant to what we are
+> > doing).
 > >
-> > Sorry for the late response, I was traveling for a bit. I will take a
-> > look at your most recent version shortly. But I do have a comment
-> > here.
-> >
-> > I don't see how this addresses Shakeel's concern. IIUC, if the cgroup
-> > was freed after READ_ONCE() (and cgroup_rstat_flush() was called),
-> > then cgroup_is_descendant() will access freed memory. We are not
-> > holding the lock here so we are not preventing cgroup_rstat_flush()
-> > from being called for the freed cgroup, right?
+> > If we keep observing a lot of lock contention, one thing that I
+> > thought about is to have a variant of spin_lock with a timeout. This
+> > limits the flushing latency, instead of limiting the number of flushes
+> > (which I believe is the wrong metric to optimize).
 >
-> If we go back to only allowing root-cgroup to be ongoing-flusher, then
-> we could do a cgroup_rstat_flush(root) in cgroup_rstat_exit() to be sure
-> nothing is left waiting for completion scheme. Right?
+> Except for semaphore, none of our locking primitives allow for a timeout
+> parameter. For sleeping locks, I don't think it is hard to add variants
+> with timeout parameter, but not the spinning locks.
 
-I am still not sure I understand how this helps.
-
-We still need to call cgroup_is_descendant() because in cgroup v1 we
-may have multiple root cgroups, right?
-
-So it is still possible that the cgroup is freed after READ_ONCE() and
-cgroup_is_descendant() accesses freed memory. Unless of course we have
-other guarantees that the root cgroups will not go away.
-
-Since at this point we are not holding the rstat lock, or actually
-waiting for the ongoing flush (yet), I don't see how any
-cgroup_rstat_flush() calls in the cgroup exit paths will help.
-
-I actually think RCU may not help either for non-root cgroups, because
-we call cgroup_rstat_flush() in cgroup_rstat_exit(), which is called
-*after* the RCU grace period, and the cgroup is freed right away after
-that. We may need to replace kfree(cgrp) with kfree_rcu(cgrp) in
-css_free_rwork_fn().
-
->
-> IMHO the code is getting too complicated with sub-cgroup's as ongoing
-> flushers which also required having 'completion' queues per cgroup.
-> We should go back to only doing this for the root-cgroup.
-
-Because of multiple root cgroups in cgroup v1, we may still need that
-anyway, right?
-
-Please let me know if I am missing something.
+Thanks for pointing this out. I am assuming a mutex with a timeout
+will also address the priority inversion problem that Shakeel was
+talking about AFAICT.
 
