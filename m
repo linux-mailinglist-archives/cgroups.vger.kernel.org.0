@@ -1,268 +1,180 @@
-Return-Path: <cgroups+bounces-3752-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3753-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 522259343B6
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 23:14:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 193449344DA
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 00:39:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4C9EB239F5
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 21:14:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 239DF1C210E9
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 22:39:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D036D1850A0;
-	Wed, 17 Jul 2024 21:14:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4C6D4AEF7;
+	Wed, 17 Jul 2024 22:39:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b="ayGYkAje"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="c7wzssSI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 034461850B8
-	for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 21:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41F0218EBF;
+	Wed, 17 Jul 2024 22:38:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721250841; cv=none; b=lln+lJ9zgtHVZRA9R9Cq/V2B7OCdjVqENElNv5TvMvBZEFD6UlU+0lKq6lTzjp5Wu4QbSxpZ0LNVwdacsr3ywHvXEQy2VLeND71Qk9G6+IUCVMRDMusjLxwgyJj4sf+goa/f+EVP4kp03Dxf/Bh1N2BU0crOz5BlI1y1MH1Hyh8=
+	t=1721255946; cv=none; b=hZxnVatYHokssO2zE4pWFYlnKBRuy/kmysBaGsVFdyd3H5esYBWjH3cqXaUIvFq4KUklOJJOEm9evqr6VmnsgvBzgVRe05Y2vLb1mW32fvUsbNz8/gzx1LEHkzNoB1bYaGmB+bJcG/xfTjxYUBV4qpmuKafeyWOlhFRHW48o9pI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721250841; c=relaxed/simple;
-	bh=JkU4klHktphurufRlUTdyDTeLTt6/HE8rdePKvAFCqo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RYyzBqz6pXK/Ek52rexm6ybZHdfkPU8Ongn1ajuLoc7lFDzo5LuV60A+2a3pocV6RbpnqtKi443Gk4dc9GGXXvvvkmQLlw0ksuSZsFZ5Z1OpcWzC72CJrJ34gm89l5SES+6WQN7p2xS3/4LfXW3ZgmS/Jp2eK2ReTe0eFKHRT1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=fail smtp.mailfrom=vimeo.com; dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b=ayGYkAje; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=vimeo.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-70b703eda27so56628b3a.3
-        for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 14:13:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vimeo.com; s=google; t=1721250839; x=1721855639; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K/0JM5dLFFD4LF1dsWbX1JlSJvSEH5yTSYQQKpq7BAo=;
-        b=ayGYkAjeboexBSGku8WC5EwA+F9ihvjQw56tS5O/P0idKuiznok++oNV2Qd6Mhmv3E
-         Wi0yfycCc03Xs/EfrtaRYHKTBew4uLnR4FEtWCAh4Ia7QIWbvPCBaLtAfBPRN0zwXpYN
-         1ON64vArm2hH7oOnklFC98FS0Y6kSvl3sh9wI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721250839; x=1721855639;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K/0JM5dLFFD4LF1dsWbX1JlSJvSEH5yTSYQQKpq7BAo=;
-        b=ZCdbL0c1BT80ty/9lrrN5pSzILhIWpLavDmJhXW2pYol2nCdrw01Jn515wE4QpiNDs
-         zv/s0y2VRM8zItYWxxm8B4bgzqhqPe5NGQzFlObb1sf1dHpFNTgvQxgrXe0Nu9hzIkQF
-         DSEV/EgfR3bwXkJCUYVFS1xibcz2dmU1J9V/m5NIG7HT/qnSODUSz/wdaGcUevLu3oYj
-         kM3/Aa7PKrkHaKiGYKOn45/gnoOGmj9x/r38mXtkbL6VJtWXMFKrwxO01qzhvGaslZLD
-         otBLc9h8lafX5jJKS0+BMg7xKI+X/0woLfNx3pdqa9xScqaBfrleXocNM1vDyBtgcgFq
-         vVEA==
-X-Forwarded-Encrypted: i=1; AJvYcCUxjtc7/lEHzvXpBGkS+T2HH9UM1F84s8VkdEuRwhAD/7A2KFSxe0klyfp9PB5uLxWyeLaml0TrurpmHK8smFUktpBnZOxRqw==
-X-Gm-Message-State: AOJu0YzcRuVr6Z69YKgVXGSmDLdMQ6p1mcgYWXjT45dgnp64eRHN+CQQ
-	kV7P85XHGu8UJAk5PWSF4IOwTFEbfMfbNH01Ifzj7wFHyjjNCjznHb2nsZaf21cdB1CK78T/wiJ
-	X8G432M1lnvLOW23EQ4T6zJ9ESP/aTyRXPYnY8g==
-X-Google-Smtp-Source: AGHT+IGxH/WHmAcJpGEJZcvrvdSJnI8QejnDNGq+5KD9M1pb0aI5cslGuiI7fRDd2gbrzdU64Q7pro0QCqIfKTD9Rd0=
-X-Received: by 2002:aa7:9301:0:b0:70b:18f:45dd with SMTP id
- d2e1a72fcca58-70ce4f3ed7amr2644993b3a.32.1721250839049; Wed, 17 Jul 2024
- 14:13:59 -0700 (PDT)
+	s=arc-20240116; t=1721255946; c=relaxed/simple;
+	bh=w48PPchZPTIIhTq4Pc4vB0tJRN0Ye+y8ILrpMAW65tU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jCmMMKAPcWpQ5bfhdQ+tnBePDhpm+okM9xAqxQs7xuN3iD62NpfJROEOtK+Ri5kBrIv9rdxSmA+UjPPqQzVM78EJC3Qs+xGJXvq9DU9YWOlCfiNYuw4JM+InGF94C1E2M+mTdHlC8n1e7Zt89pfrD2QfMwy0V7stmc6QpSr/XIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=c7wzssSI; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1721255917; x=1721860717; i=quwenruo.btrfs@gmx.com;
+	bh=xPrZzVvNcdHdHnuGibZ5iF0WjkNUK2IMySL628CV+78=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=c7wzssSI1DS/wbdDhHS0PRgf3EPYQ6ZKC4jA2UM5kZFkbfszqBwYsbd8Ua+x8Kee
+	 ppmQnHQyE0v0m5ke/agYCW02UIIPIjsVSEUpPPjaYIvXqmQG6oPQYd/GXqXfAlHbU
+	 S/TLKwYEDYXbJy1zNfz8TuG96uhy1PhDH1PZxX5Hss5cyBUigo/YXw+AEc38KW28U
+	 3MHJnAQ9nG2lpa+eX28KmlHUK4ot/OspjOEXm99VNNeqx53ZMH8pu1qsmcUlKVCjK
+	 bU+/7zeOGKNBIIr0KCu5sVZz+npZWhghA5Wtb0sPsKAQLKqJJE4/UjFM4b8x9pvDj
+	 DRIJf09roiEcPnd1Yw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MmULx-1s4GC52DhJ-00eQUd; Thu, 18
+ Jul 2024 00:38:37 +0200
+Message-ID: <9c0d7ce7-b17d-4d41-b98a-c50fd0c2c562@gmx.com>
+Date: Thu, 18 Jul 2024 08:08:29 +0930
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240715203625.1462309-1-davidf@vimeo.com> <20240715203625.1462309-2-davidf@vimeo.com>
- <ZpZ6IZL482XZT1fU@tiehlicka> <ZpajW9BKCFcCCTr-@slm.duckdns.org>
- <20240717170408.GC1321673@cmpxchg.org> <CAFUnj5OA0KaC54M9vd8W+NZJwz5Jw25u-BStO=Bi2An=98Ruwg@mail.gmail.com>
- <20240717204453.GD1321673@cmpxchg.org>
-In-Reply-To: <20240717204453.GD1321673@cmpxchg.org>
-From: David Finkel <davidf@vimeo.com>
-Date: Wed, 17 Jul 2024 17:13:47 -0400
-Message-ID: <CAFUnj5OGJtR0wqOZVUh8QQ3gaw4gmatsEN1LcBdcwN_wx-LUug@mail.gmail.com>
-Subject: Re: [PATCH] mm, memcg: cg2 memory{.swap,}.peak write handlers
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, core-services@vimeo.com, 
-	Jonathan Corbet <corbet@lwn.net>, Roman Gushchin <roman.gushchin@linux.dev>, Shuah Khan <shuah@kernel.org>, 
-	Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kselftest@vger.kernel.org, Shakeel Butt <shakeel.butt@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] mm: skip memcg for certain address space
+To: Michal Hocko <mhocko@suse.com>, "Vlastimil Babka (SUSE)"
+ <vbabka@kernel.org>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+ linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Cgroups <cgroups@vger.kernel.org>
+References: <cover.1720572937.git.wqu@suse.com>
+ <8faa191c-a216-4da0-a92c-2456521dcf08@kernel.org>
+ <Zpft2A_gzfAYBFfZ@tiehlicka>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00iVQUJDToH
+ pgAKCRDCPZHzoSX+qNKACACkjDLzCvcFuDlgqCiS4ajHAo6twGra3uGgY2klo3S4JespWifr
+ BLPPak74oOShqNZ8yWzB1Bkz1u93Ifx3c3H0r2vLWrImoP5eQdymVqMWmDAq+sV1Koyt8gXQ
+ XPD2jQCrfR9nUuV1F3Z4Lgo+6I5LjuXBVEayFdz/VYK63+YLEAlSowCF72Lkz06TmaI0XMyj
+ jgRNGM2MRgfxbprCcsgUypaDfmhY2nrhIzPUICURfp9t/65+/PLlV4nYs+DtSwPyNjkPX72+
+ LdyIdY+BqS8cZbPG5spCyJIlZonADojLDYQq4QnufARU51zyVjzTXMg5gAttDZwTH+8LbNI4
+ mm2YzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCY00ibgUJDToHvwAK
+ CRDCPZHzoSX+qK6vB/9yyZlsS+ijtsvwYDjGA2WhVhN07Xa5SBBvGCAycyGGzSMkOJcOtUUf
+ tD+ADyrLbLuVSfRN1ke738UojphwkSFj4t9scG5A+U8GgOZtrlYOsY2+cG3R5vjoXUgXMP37
+ INfWh0KbJodf0G48xouesn08cbfUdlphSMXujCA8y5TcNyRuNv2q5Nizl8sKhUZzh4BascoK
+ DChBuznBsucCTAGrwPgG4/ul6HnWE8DipMKvkV9ob1xJS2W4WJRPp6QdVrBWJ9cCdtpR6GbL
+ iQi22uZXoSPv/0oUrGU+U5X4IvdnvT+8viPzszL5wXswJZfqfy8tmHM85yjObVdIG6AlnrrD
+In-Reply-To: <Zpft2A_gzfAYBFfZ@tiehlicka>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:+4QnQQP9BMboYyQs/2n6exd6SgObnrelKctk2B0hezSTPpkkRXq
+ X5NZRZyQp3GTQdm+7/xScAWghDvDh2iaU4LspcflVEX0OU6Kk26U/ef1E6cFfvsZ+x0UQGk
+ 7n057tPnx3upVMzo+3NQIijTwA2XZjJNNZAU99QNgzfIKatR8O6aEwSkiRijIlDyR4HXvOj
+ NZNPWmulF3N/aGIkgqDEw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:E+pFkZCKcYg=;Ff5j60pZla+04l+O8uUjORN1zWX
+ txyIEsMY1aKh7ptBLNi2luTljwmerzSR5nJuwYP/F7g/SXwC1Cys7offurMow9cThssabKNfV
+ ieX4ILgEncc9BVSOMaO2F9hfn/Vf8i7i6KJNKCfr6onp6018D48+aHPx3UCdZcqdHhTxKHQ9G
+ Wt4urgTFn6jlG0zVM7liRaxOui9lXZLpIeQINvygxcM4GPb0JNI+LqwEQ0nMrpG75aF2ccGm1
+ hs1nXN8VwF097DY21oEHh/YWW2A1sdMVRQJR67vTtb6Kcz+ta1ynrIGcFYNQmH43hawdZDXnM
+ RASirepRD65tUJkvSyQd4R3UUdw37XMUg0W8J24i+5zd2Yq3MVaPV3Q/WP4Zi4776di5PcmV1
+ ctLl5d6KU7TBY83aUjHh+abDAxnzPqwLRluk+NXVZLXXpMjYzrYHW8QhCMG3DoKiRaO/M4Jus
+ 9jQKnwiy4eXgEdXweT26tpwlr3skDZMAK9Tx1lBLPdWmSr5/ptS2PJv2Qt7ZHvEOJjVZHedoh
+ VjRupimWNMKtGyyr+KJ6112qep+vsW36f2h+6AsNmypcQRJhrc9IYstTceNyRY6wVZvH/Hb9a
+ coHqiBya9b5ybn2W5YQ+8dvaOX7D875+YGYvk1O2vLffnIhZcfn0/6INr9icE3AVFt1EKJbxe
+ rQc3MM1faGUqY46IHxIAJ/V7I0pDHz6Qdg7i0qayNmKfywtr/GufnKBxYSZF7b0kAmG+c00Ea
+ doivp7GomWRR/sjUZQhO7CEQxMGwHigJOPJlfEwoQqukVcfOexujynxDsfPe1MMAsaCWmntcP
+ D96vCUX/xUMwE6h0fzk5m5WA==
 
-On Wed, Jul 17, 2024 at 4:44=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Wed, Jul 17, 2024 at 04:14:07PM -0400, David Finkel wrote:
-> > On Wed, Jul 17, 2024 at 1:04=E2=80=AFPM Johannes Weiner <hannes@cmpxchg=
-.org> wrote:
-> > >
-> > > On Tue, Jul 16, 2024 at 06:44:11AM -1000, Tejun Heo wrote:
-> > > > Hello,
-> > > >
-> > > > On Tue, Jul 16, 2024 at 03:48:17PM +0200, Michal Hocko wrote:
-> > > > ...
-> > > > > > This behavior is particularly useful for work scheduling system=
-s that
-> > > > > > need to track memory usage of worker processes/cgroups per-work=
--item.
-> > > > > > Since memory can't be squeezed like CPU can (the OOM-killer has
-> > > > > > opinions), these systems need to track the peak memory usage to=
- compute
-> > > > > > system/container fullness when binpacking workitems.
-> > > >
-> > > > Swap still has bad reps but there's nothing drastically worse about=
- it than
-> > > > page cache. ie. If you're under memory pressure, you get thrashing =
-one way
-> > > > or another. If there's no swap, the system is just memlocking anon =
-memory
-> > > > even when they are a lot colder than page cache, so I'm skeptical t=
-hat no
-> > > > swap + mostly anon + kernel OOM kills is a good strategy in general
-> > > > especially given that the system behavior is not very predictable u=
-nder OOM
-> > > > conditions.
-> > > >
-> > > > > As mentioned down the email thread, I consider usefulness of peak=
- value
-> > > > > rather limited. It is misleading when memory is reclaimed. But
-> > > > > fundamentally I do not oppose to unifying the write behavior to r=
-eset
-> > > > > values.
-> > > >
-> > > > The removal of resets was intentional. The problem was that it wasn=
-'t clear
-> > > > who owned those counters and there's no way of telling who reset wh=
-at when.
-> > > > It was easy to accidentally end up with multiple entities that thin=
-k they
-> > > > can get timed measurement by resetting.
-> > > >
-> > > > So, in general, I don't think this is a great idea. There are short=
-comings
-> > > > to how memory.peak behaves in that its meaningfulness quickly decli=
-nes over
-> > > > time. This is expected and the rationale behind adding memory.peak,=
- IIRC,
-> > > > was that it was difficult to tell the memory usage of a short-lived=
- cgroup.
-> > > >
-> > > > If we want to allow peak measurement of time periods, I wonder whet=
-her we
-> > > > could do something similar to pressure triggers - ie. let users reg=
-ister
-> > > > watchers so that each user can define their own watch periods. This=
- is more
-> > > > involved but more useful and less error-inducing than adding reset =
-to a
-> > > > single counter.
-> > > >
-> > > > Johannes, what do you think?
-> > >
-> > > I'm also not a fan of the ability to reset globally.
-> > >
-> > > I seem to remember a scheme we discussed some time ago to do local
-> > > state tracking without having the overhead in the page counter
-> > > fastpath. The new data that needs to be tracked is a pc->local_peak
-> > > (in the page_counter) and an fd->peak (in the watcher's file state).
-> > >
-> > > 1. Usage peak is tracked in pc->watermark, and now also in pc->local_=
-peak.
-> > >
-> > > 2. Somebody opens the memory.peak. Initialize fd->peak =3D -1.
-> > >
-> > > 3. If they write, set fd->peak =3D pc->local_peak =3D usage.
-> > >
-> > > 4. Usage grows.
-> > >
-> > > 5. They read(). A conventional reader has fd->peak =3D=3D -1, so we r=
-eturn
-> > >    pc->watermark. If the fd has been written to, return max(fd->peak,=
- pc->local_peak).
-> > >
-> > > 6. Usage drops.
-> > >
-> > > 7. New watcher opens and writes. Bring up all existing watchers'
-> > >    fd->peak (that aren't -1) to pc->local_peak *iff* latter is bigger=
-.
-> > >    Then set the new fd->peak =3D pc->local_peak =3D current usage as =
-in 3.
-> > >
-> > > 8. See 5. again for read() from each watcher.
-> > >
-> > > This way all fd's can arbitrarily start tracking new local peaks with
-> > > write(). The operation in the charging fast path is cheap. The write(=
-)
-> > > is O(existing_watchers), which seems reasonable. It's fully backward
-> > > compatible with conventional open() + read() users.
-> >
-> > That scheme seems viable, but it's a lot more work to implement and mai=
-ntain
-> > than a simple global reset.
-> >
-> > Since that scheme maintains a separate pc->local_peak, it's not mutuall=
-y
-> > exclusive with implementing a global reset now. (as long as we reserve =
-a
-> > way to distinguish the different kinds of writes).
-> >
-> > As discussed on other sub-threads, this might be too niche to be worth
-> > the significant complexity of avoiding a global reset. (especially when
-> > users would likely be moving from cgroups v1 which does have a global r=
-eset)
->
-> The problem is that once global resetting is allowed, it makes the
-> number reported in memory.peak unreliable for everyone. You just don't
-> know, and can't tell, if somebody wrote to it recently. It's not too
-> much of a leap to say this breaks the existing interface contract.
 
-It does make it hard to tell when it was reset, however, it also allows som=
+
+=E5=9C=A8 2024/7/18 01:44, Michal Hocko =E5=86=99=E9=81=93:
+> On Wed 17-07-24 17:55:23, Vlastimil Babka (SUSE) wrote:
+>> Hi,
+>>
+>> you should have Ccd people according to get_maintainers script to get a
+>> reply faster. Let me Cc the MEMCG section.
+>>
+>> On 7/10/24 3:07 AM, Qu Wenruo wrote:
+>>> Recently I'm hitting soft lockup if adding an order 2 folio to a
+>>> filemap using GFP_NOFS | __GFP_NOFAIL. The softlockup happens at memcg
+>>> charge code, and I guess that's exactly what __GFP_NOFAIL is expected =
+to
+>>> do, wait indefinitely until the request can be met.
+>>
+>> Seems like a bug to me, as the charging of __GFP_NOFAIL in
+>> try_charge_memcg() should proceed to the force: part AFAICS and just go=
+ over
+>> the limit.
+>>
+>> I was suspecting mem_cgroup_oom() a bit earlier return true, causing th=
 e
-very powerful commandline interactions that aren't possible if you need to
-keep a persistent fd open.
-
-I have run things in cgroups to measure peak memory and CPU-time for
-things that have subprocesses. If I needed to keep a persistent fd open
-in order to reset the high watermark, it would have been far less useful.
-
-Honestly, I don't see a ton of value in tracking the peak memory if I
-can't reset it.
-It's not my use-case, but, there are a lot of cases where process-startup u=
-ses
-a lot more memory than the steady-state, so the sysadmin might want to
-measure that startup peak and any later peaks separately.
-
-In my use-case, I do have a long-lived process managing the cgroups
-for its workers, so I could keep an fd around and reset it as necessary.
-However, I do sometimes shell into the relevant k8s container and poke
-at the cgroups with a shell, and having to dup that managing processes'
-FD somehow to check the high watermark while debugging would be
-rather annoying. (although definitely not a dealbreaker)
-
+>> retry loop, due to GFP_NOFS. But it seems out_of_memory() should be
+>> specifically proceeding for GFP_NOFS if it's memcg oom. But I might be
+>> missing something else. Anyway we should know what exactly is going fir=
+st.
 >
-> You have to decide whether the above is worth implementing. But my
-> take is that the downsides of the simpler solution outweigh its
-> benefits.
+> Correct. memcg oom code will invoke the memcg OOM killer for NOFS
+> requests. See out_of_memory
+>
+>          /*
+>           * The OOM killer does not compensate for IO-less reclaim.
+>           * But mem_cgroup_oom() has to invoke the OOM killer even
+>           * if it is a GFP_NOFS allocation.
+>           */
+>          if (!(oc->gfp_mask & __GFP_FS) && !is_memcg_oom(oc))
+>                  return true;
+>
+> That means that there will be a victim killed, charges reclaimed and
+> forward progress made. If there is no victim then the charging path will
+> bail out and overcharge.
+>
+> Also the reclaim should have cond_rescheds in the reclaim path. If that
+> is not sufficient it should be fixed rather than workaround.
 
-There are a few parts to my reticence to implement something
-more complicated.
- 1) Correctly cleaning up when one of those FDs gets closed can
-     be subtle
- 2) It's a lot of code, in some very sensitive portions of the kernel,
-     so I'd need to test that code a lot more than I do for slapping
-     a new entrypoint on the existing watermark reset of the
-     page_counter.
- 3) For various reasons, the relevant workload runs on
-     Google Kubernetes Engine with their Container Optimised OS.
-     If the patch is simple enough, I can request that Google
-     cherry-pick the relevant commit, so we don't have to wait
-     over a year for the next LTS kernel to roll out before we
-     can switch to cgroups v2.
+Another question is, I only see this hang with larger folio (order 2 vs
+the old order 0) when adding to the same address space.
 
-It would be a nice personal challenge to implement the solution
-you suggest, but it's definitely not something I'd knock out in the
-next couple days.
+Does the folio order has anything related to the problem or just a
+higher order makes it more possible?
+
+
+And finally, even without the hang problem, does it make any sense to
+skip all the possible memcg charge completely, either to reduce latency
+or just to reduce GFP_NOFAIL usage, for those user inaccessible inodes?
 
 Thanks,
---=20
-David Finkel
-Senior Principal Software Engineer, Core Services
+Qu
 
