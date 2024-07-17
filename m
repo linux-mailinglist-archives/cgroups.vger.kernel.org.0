@@ -1,183 +1,124 @@
-Return-Path: <cgroups+bounces-3747-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3748-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C62EA93425E
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 20:44:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 764AD934274
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 20:56:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 38BEB2838F3
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 18:44:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FC8F1F22C9B
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 18:56:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB5691836CC;
-	Wed, 17 Jul 2024 18:43:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 721011836C2;
+	Wed, 17 Jul 2024 18:55:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dvIBS5ry"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Zzp9vkkj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F111822CA
-	for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 18:43:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96E54181CFA
+	for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 18:55:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721241839; cv=none; b=Ad9von3z5c32bXP4/lILfhFZtujREAyc3mVvSni5K59Wdr/NTkZksNJGf3LDMLIoemh2iN9Ujayck4x9zIez4HidBvEvwQp7n4LkaTjnzKVUbkRKfU6ONkpzkNbhmKD4s/eg8GORbI94/hyrRVxZvP5umN3SW2UjIxmPphIH+xM=
+	t=1721242556; cv=none; b=O0oVYKj1r7q8LG8wULvmZ6KPPNM4ddMyopRNz1L97af1YHgxiodIydc2wZLJk0ISrgPAJ9FaEWnvy0D7zIYrBh+eRLW+2RlHJ3dAlRIN/AUm+ttzp+wmUWXTRYa3ohzX/22fAaTjY3Y9f3xDDMB1oJpi5Z6AVjO3YjJjfgvfxkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721241839; c=relaxed/simple;
-	bh=K4IFnmEXsaTDJkNINgh/bn2QU1W1CN8bTFfUBICjeXQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZLvW9jb7AO9zJoVazoPqKIi48r5BB+urT0Kb8TZ/SWkuhBjybdmXasJEQX18xAh8+PwhOtF4LWyYrQEJp47gZT19m3jpjHc0LEicKNfj/lh9nhUXWHVWUasNTiC49UV+JlLbFsbr7395F8oEtg90wy7vzxsvahGvJ0ptYbJDFHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dvIBS5ry; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5a108354819so862267a12.0
-        for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 11:43:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1721241836; x=1721846636; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZrLop0WXR5l6C8CwplY6UuCHzt6tM7NAzgoyEdBYBm8=;
-        b=dvIBS5ryc43WhECjXSiqIgw+1v29zukjH3hmZuhplTyoF36ex7usWuepKPUChWqpWz
-         +iQHXReQOsOUspYLvVRXZVI/MapTDcSKZDLFhiEeO06JjCEVRhcnqqs5JPXwipOazzGh
-         k7HkhNTthgKyuWFB8VdQ1FeSwF7s8TwbCCZGMM5gzKvH8nzxzbP0yQ0PgErHkz4poWyu
-         cSrnnqPw6zzscU8Zzt/T+q2oDtw/ySKr8fldanD8oLZZYPOaisvKEcm7w93G/H16kwBF
-         0YjkNiaNKt82eUY272kERH0wl0byeESeuL9vG6mEt6So/+kKH2DWuQtcxROb3bW07fvt
-         YN8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721241836; x=1721846636;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZrLop0WXR5l6C8CwplY6UuCHzt6tM7NAzgoyEdBYBm8=;
-        b=Ctaj8V0k/RIYV7b9/5OkxLLRAP+Z0gm7sVnoKrkICjw80UwoYOHSFJSJawgzj8YNtl
-         waOqDCbJ0H+Qj7oL1oE/l9fHrN4ps1Y0ejtTevN9+Zjcqem4OrFE+gqMaHLkGB8mlff1
-         qlCRpnCrE5bHg9iLNttM7MlwHCeR06xr+Kw4P4MWVx+ELZymKfrBTcrs4+IjugBja7Co
-         fGblKjZ9t+ZnuEzqu8EbAmL3v9f5OvRvhwdCGDHz72201FImnG9pJO+P8+/cGQlnXnsC
-         KOsaa+7ftYDZN5zdWSAnS8xhitPSWIgGsaf0hkJ1C1LlSmSi0QLwIg++p46FwDEfQQlZ
-         UFbA==
-X-Forwarded-Encrypted: i=1; AJvYcCWK6vh6D75OwrFxjfR3Ze99DzrNVs7xlUxm7OZ3074tC6zFf2A+A9dic4P7agsIg0KNIazBPCunXlxNDEcNWiioqIIEWvhSmQ==
-X-Gm-Message-State: AOJu0YwY6+yvPln00gEyL4nku53yUvlWEAyjjE5lLDRk9OJMyKx9BqfK
-	Ku8qug091Zkdx9f27uo28J9jQD0nQ5E5ZCLSs8lyedoPIOlh0oFm0WcKSGChPYcdWmW6KUIZWbM
-	kk55cXNupQpI9wAO0W5MG/vPvAU1NLdXolZ8b
-X-Google-Smtp-Source: AGHT+IF8RdKoDfVtGRrva1w5brn8g7mEl2nXivUh40LMHs36jzVVAz3m0gkm067oLrutSxcYTkEZdggGOrahc9xfi4E=
-X-Received: by 2002:a17:906:384c:b0:a6f:e75b:2b39 with SMTP id
- a640c23a62f3a-a7a011d333amr149443066b.42.1721241835572; Wed, 17 Jul 2024
- 11:43:55 -0700 (PDT)
+	s=arc-20240116; t=1721242556; c=relaxed/simple;
+	bh=1ypNYqyJd5+/3wMS25bBg2wSCYkGAoz3khgoCCUzXvU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fmGHD+aKP2FblpAJjRU6UeETtWO2F9wY0cJcMO5ncgqFQ+9VhybuIp+AdkBA9+9S+4JQif+G/7x5P4EgxwxhWXQKcQS7ANncAvnS6dzDZgb/NnVVuxbzlY5T9a7qKVHFjbfQrrsDbJuYm67WkzpoBIjrA2OXdU1/PRSHPZdpKj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Zzp9vkkj; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1721242553;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=42DJEZQ1MdHTtg7QJxt70aly4kDVOHsjcs6e6lW7JWQ=;
+	b=Zzp9vkkjVIjHgDbj0VcBgMIx9Mf/cnP8IG72EkK/s05TIajFxtxJB8xbROM/gq1aSDmrIu
+	n10UxQlMXaJtbl73o0e6KjAq3ly1ni9uC8yd7roMNoEUf02/NLq0pewxM79rqAP2eWM8F9
+	cARxbGYwBD67Y6th16It3QAHhpCbNZg=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-510-GJ8a38dFOd6eX2lsh8TOXQ-1; Wed,
+ 17 Jul 2024 14:55:48 -0400
+X-MC-Unique: GJ8a38dFOd6eX2lsh8TOXQ-1
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 899E01979058;
+	Wed, 17 Jul 2024 18:55:41 +0000 (UTC)
+Received: from [10.22.16.209] (unknown [10.22.16.209])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 696931955F21;
+	Wed, 17 Jul 2024 18:55:38 +0000 (UTC)
+Message-ID: <48fa8bc9-9f8d-4406-9137-88a555883ea2@redhat.com>
+Date: Wed, 17 Jul 2024 14:55:37 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <172070450139.2992819.13210624094367257881.stgit@firesoul>
- <CAJD7tkYFwz_=kxCk-Tp4QfwKgK0C26+QzZQvbVxkAx8m9CLSFg@mail.gmail.com>
- <8c123882-a5c5-409a-938b-cb5aec9b9ab5@kernel.org> <CAJD7tkbFPt-eTHkqtLxuOoV59eaqauodz008btEECT--x3VcBA@mail.gmail.com>
- <de05ebf2-2baa-493e-a6a8-acf43702824b@kernel.org>
-In-Reply-To: <de05ebf2-2baa-493e-a6a8-acf43702824b@kernel.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 17 Jul 2024 11:43:17 -0700
-Message-ID: <CAJD7tkaxQeGbTckq-9Oepp=n56i-871SmCBjgjz2VBMOU1L7DA@mail.gmail.com>
-Subject: Re: [PATCH V7 1/2] cgroup/rstat: Avoid thundering herd problem by
- kswapd across NUMA nodes
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: tj@kernel.org, cgroups@vger.kernel.org, shakeel.butt@linux.dev, 
-	hannes@cmpxchg.org, lizefan.x@bytedance.com, longman@redhat.com, 
-	kernel-team@cloudflare.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] blk-cgroup: Replace u64 sync with spinlock for iostat
+ update
+To: "tj@kernel.org" <tj@kernel.org>
+Cc: =?UTF-8?B?Qm95IFd1ICjlkLPli4Poqrwp?= <Boy.Wu@mediatek.com>,
+ "boris@bur.io" <boris@bur.io>,
+ "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ "axboe@kernel.dk" <axboe@kernel.dk>,
+ =?UTF-8?B?SXZlcmxpbiBXYW5nICjnjovoi7PpnJYp?= <Iverlin.Wang@mediatek.com>,
+ "josef@toxicpanda.com" <josef@toxicpanda.com>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+ "angelogioacchino.delregno@collabora.com"
+ <angelogioacchino.delregno@collabora.com>
+References: <20240716075206.23121-1-boy.wu@mediatek.com>
+ <Zpbify32lel9J-5I@slm.duckdns.org>
+ <c5bcbcbaeacdb805adc75c26f92ec69f26ad7706.camel@mediatek.com>
+ <5560c690cc6de67139a9b2e45c7a11938b70fc58.camel@mediatek.com>
+ <1b19b68adb34410bf6dc8fd3f50e4b82c1a014e4.camel@mediatek.com>
+ <Zpf3ks2drDZ7ULTa@slm.duckdns.org>
+ <f448f66b-7a91-4281-8f77-159541cbacff@redhat.com>
+ <ZpgB9kCAxAAXAtSi@slm.duckdns.org>
+ <134fc34c-10b8-4d00-aaca-8285efce9899@redhat.com>
+ <ZpgMajKn2O521H2s@slm.duckdns.org>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <ZpgMajKn2O521H2s@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-[..]
-> > What I think we should be doing is either supporting multiple
-> > ongoing_flushers (by replacing the global variable with a per-cgroup
-> > flag, perhaps), or biting the bullet and start using a mutex to drop
-> > lock yielding. If there aren't any concerns beyond priority inversion
-> > (raised by Shakeel), maybe adding a mutex_lock_timeout() variant as I
-> > suggested could fix this issue (and also put a bound on the flushing
-> > latency in general)?
-> >
+
+On 7/17/24 14:24, tj@kernel.org wrote:
+> Hello,
 >
-> The mutex_lock_timeout is an interesting idea, but not a primitive we
-> have available today, right?
+> On Wed, Jul 17, 2024 at 02:18:39PM -0400, Waiman Long wrote:
+>> Well, it can be confusing whether we are dealing with blkg->iostat or
+>> blkg->iostat_cpu. In many cases, we are dealing with iostat_cpu instead of
+>> iostat like __blkcg_rstat_flush() and blkg_clear_stat(). So we can't
+>> eliminate the use of u64_stats_update_begin_irqsave() in those cases.
+> I mean, we need to distinguish them. For 32bits, blkg->iostat has multiple
+> updaters, so we can't use u64_sync; however, blkg->iostat_cpu has only one
+> updater (except blkg_clear_stat() which I don't think we need to worry too
+> much about), so u64_sync is fine.
 
-We don't, but Waiman said it shouldn't be difficult to add:
-https://lore.kernel.org/lkml/623e62c5-3045-4dca-9f2c-ed15b8d3bad8@redhat.com/
+I was wrong about __blkcg_rstat_flush(). Right, the main updater of 
+iostat_cpu is  blk_cgroup_bio_start(). We do need to drop down some 
+comment on what is protected by u64_sync and what is by blkg_stat_lock 
+though. It can be confusing.
 
->
-> p.s. I have 5 prod machines running with mutex change, and I've not
-> gotten any SRE complaints.
+Cheers,
+Longman
 
-That's nice!
-
->
->
-> > (I suppose the latter is preferrable)
-> >
-> >>
-> >> IMHO we should go back to only doing ongoing_flusher for root-cgroup.
-> >> There is really low chance of sub-trees flushes being concurrent enough
-> >> to benefit from this, and it cause issues and needs (ugly) race handling.
-> >>
-> >> Further more sub-tree flushing doesn't take as long time as level 0
-> >> flushing, which further lower the chance of concurrent flushes.
-> >
-> > I agree that the race handling is not pretty, and we can try to
-> > improve the implementation or handle the race in other ways. However,
-> > I think that skipping flushes for subtrees is valuable. I am not sure
-> > about the cgroup arrangement in your use case, but we do have cgroups
-> > with a lot of tasks in them (and/or child cgroups). If there is memory
-> > pressure (or hit the cgroup limit), they all may go into direct
-> > reclaim concurrently, so skipping flushes could really be beneficial.
-> >
-> > Of course, if the difference in complexity is not justified, we can go
-> > back to only supporting root cgroups for ongoing_flusher for now. But
-> > as I mentioned in the v4 email thread, some of the complexity may
-> > still remain anyway as we have multiple root cgroups in v1.
-> >
->
-> Having an incremental step with "only supporting root cgroups for
-> ongoing_flusher for now" is a good step forward IMHO.
-> As you could see in grafana plot, this would be a significant production
-> improvement on its own, as it avoids wasting CPU resources spinning on
-> the lock.
-
-I am not opposed to this at all. All I am saying is, if we need to
-handle most complexity anyway due to multiple root cgroups in v1, then
-might as well support subtrees too.
-
->
-> Being able to have multiple root cgroups, due to in v1, does pose an
-> implementation problem.  Only having a single root, would allow to have
-> a race-free cmpxchg scheme.
-> Would it be reasonable to only support v2?
-
-The rstat code has so far been v1/v2 agnostic AFAICT, and Google is
-still using cgroup v1, so I naturally prefer we keep supporting both
-v1 and v2 going forward.
-
-> If so, how can I match on this?
-
-cgroup_on_dfl() is basically testing if a cgroup is on v2, but I
-really want to keep v1 included if possible :/
-
->
-> >>
-> >> Let's get some quick data on flush times from production, to support my
-> >> claim:
-> >
-> > Thanks for the data. I agree that in general root flushes will be a
-> > lot more expensive than subtree flushes, but keep in mind that the
-> > data may look really different depends on the cgroup setup. As I
-> > mentioned, I think we should still support subtree flushes unless the
-> > difference in complexity is not justified.
-> >
->
-> It would be really valuable if you could provide production data on the
-> lock-hold times, just like I did with below bpftrace script...
-> Is that possible, please?
-
-Unfortunately, we don't have the infrastructure to do this :/
-
-But again, I am not objecting to only supporting root cgroups as
-ongoing flushers for now if there is a justifiable complexity
-difference. So this shouldn't be a blocker.
 
