@@ -1,130 +1,134 @@
-Return-Path: <cgroups+bounces-3735-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3736-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 286C9934021
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 18:06:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6552F934035
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 18:14:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A451EB220D2
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 16:06:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FB0E282FC8
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 16:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9022317FACE;
-	Wed, 17 Jul 2024 16:05:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1954181CE9;
+	Wed, 17 Jul 2024 16:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xQ0thuGq"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Q6M546F2"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E873A1D69E
-	for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 16:05:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87228181BBF
+	for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 16:14:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721232355; cv=none; b=mwGdTVA9jaV/c3r8lMbsgVLsOh+SDfeWq8ZQSB8ryFcfemZCeQHcFMSZAcLOPhQy7wdM0GibJkB+AhTskVuyiCBRt39SggezPz6yM/UBoKdb9Xd0G44ftxI7QD5y8OfZQCANiFDbRuV8NFoXe6bL7yVWgX1XLw5jCyWjRKVRN6M=
+	t=1721232861; cv=none; b=V7uyYttVPFryExXGvTu18ZJVqVuMNktvlN2jmNhAmpPVCQxBWtoKJxsqHPHM+nJoaYv15KSg7fR+OUdTKX0q+cQTCh5D71cxoEjYZMQnKGxGU6tGFEsSaICkR2papLItB1kU1KckqP4u2kQpQRhKG5amwgmS8IeGqzQnYe8TqjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721232355; c=relaxed/simple;
-	bh=YcjsHP54RpwUKtiYpkm/nJMYQg9aJFKhLDJMn31KcwA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dMlQk7G2LPVAv2jh/ML75aCxNCPfCdCUya2vD6kGQtscosbYIz4o691/2GOGhmJJ1NKrgNAINNTWl/Rlluh2pqJ6Gz1ykoABpIPySPGP8gsKPZtO07kz9OkV12Kpiy5Pjx1K2EiBsoyjwomlNaFc+lm2oN6DGLIRoN9ewVQP81E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xQ0thuGq; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a6fd513f18bso737700066b.3
-        for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 09:05:53 -0700 (PDT)
+	s=arc-20240116; t=1721232861; c=relaxed/simple;
+	bh=q8fVv0T5FVDBujEE/b4d3zMSxxuIbpFIDCgMVagifYc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G0kOJCEFmmeC9L8+IE7X2sFWg+L4ciDdH5uY+nf6+UIpx6QYhxWToo4JsTgi3cdHQXBSG5FNsVzTPxvNsEzwzOlvbvrYG/NsLt66FI0B8HYJfmCTFiy2WmBaIqJvWk9dj1kpzxs9BqpWQ33BRIOP5xiG4K1SDRWvU09SNJH4mS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Q6M546F2; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5a10835487fso654303a12.1
+        for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 09:14:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1721232352; x=1721837152; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7XzbkbJcXikIhEb+ZP9zYLgNCMH4osHfm1Sg9VEiM7Q=;
-        b=xQ0thuGqB7hpZsxBYTT+o0e8j8k+TlRqVXirqALZ47HjLSMi98klJpUkYYI+mhImf6
-         BYfZu8NdvUozBKsQ6DC5bfBgJYEu83w4ETPBMYRrhr149KymWaojk2cx5ts1Bvnx1Kpn
-         FrxrpbFgc+ek0e4KBQMYdlkp3Bj3ueQwTJDoUwfQJaZOUeehHZM/ao8aAkJhQ2rSaDKA
-         rSwZ7EfGi7pdF16tmvBuKMvWt+MAQbKreIp4VKJLmogF5RgQL0zoSoxc/s9w2TNqTCdw
-         pkVFeq6KpKBbQPg8XIAy8xknUbIg5o4qXFnr7ueYUHsDVdCwQQtTfEFRqZ6yQwFVfe0M
-         vh3g==
+        d=suse.com; s=google; t=1721232858; x=1721837658; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LEwhtems285VRp+VcimErqgA9+/z6aK+6Ol/iXReRes=;
+        b=Q6M546F2sELtiBpjZj7tshnmLGplWsbXze3I4jCWtJdHg5FRfKONk8g8gqUYxQPl0J
+         aSb4d9WWgODb+mvzYf7znlI/EdO4u0yvWceQnNgY+13FAxbW36rDp9mcnfM4Ku7bdAUM
+         tdjM3ZfJym+lqyJC6Ip0c+pfuA+TZTzw+DI86L9DOFprp0ALKFOUXvNSmuZkjaImZsvZ
+         ORIsfJJfqceUt3e/Y52c9x/awsrh6+KQ/EjWpu2ShCwkMRZBE3xsDm0HQDYwT/HaCwWC
+         hqKroIHJH2EZtbGq2Dh5F6kJMpY63YaZf9/Tl+vYgoofj6rNG4WuNryPY8tskwfhb5TW
+         Gfxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721232352; x=1721837152;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7XzbkbJcXikIhEb+ZP9zYLgNCMH4osHfm1Sg9VEiM7Q=;
-        b=gXZhJXSbsvrgJqeOV+V6I8sBsWYbOR1TLUbVP/rK/AY/Y+AvFz3G8H51INethxUElD
-         BXmyncI/Xh2u1H1P3MmhKwUTj9c7aZjhFZZMoejZ7tYSbNXUUQRTmg67HmP69annbq3p
-         S0yMOtlC3LuoygUYKvoQVIr1yZe7YG1ZEF53vVzwz5jm6OIxlYXyhUzBWxV9zJxdRbr9
-         o5+f2EBQ7V3OzXKcKsg1NK9mQ+ZHiRm0DSj0Wsn7PHk2IyTXcnBBBjpCfB0L0pnHBA09
-         WCH+l8FVw4TkCuh94GKtZ1T+6E67V7jzSHGIE6Ayo+eOKFUee/JG5mB0XtFltNNguOGI
-         zzcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUwQPnCRyslYy3MbtWU3TgoKAZ9d8iKD5KLj0w8IVQun+6ugr1oV2Bk32W4p3C34pir3CkL50WfL8UGb6+DB/Q+SeoScZABDw==
-X-Gm-Message-State: AOJu0YxIqAGe5E+HqH6y+raCCoRyGsYDS44yn7qD+Ry9Ac+CBoAT8RHL
-	KNgnZlytV5ZENgwzPTveIQaiOqAgpELmrmkWf05Hg+vy7yzOlpXOYFvpuhyDoO4AVd+IMnRwKBA
-	63XApgoDmaAvdLdvQZENX55NsNpn5zPXeWSqB
-X-Google-Smtp-Source: AGHT+IF612kZUE8JtTrcOb7CBHDJfT/vFSLwBjbycByRk2UQLAz14lfAY2/3C531BxfWpFzgaaEvnI7pwI9M7gPPalQ=
-X-Received: by 2002:a17:906:1444:b0:a6f:e456:4207 with SMTP id
- a640c23a62f3a-a7a01352c5fmr121415666b.61.1721232351397; Wed, 17 Jul 2024
- 09:05:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1721232858; x=1721837658;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LEwhtems285VRp+VcimErqgA9+/z6aK+6Ol/iXReRes=;
+        b=m83+/IXfEJvWqS9sY8eYpkvVt5eaQQhmHQ1c7a6c+axKFLTCr69PBPqyPOR1EF/7pQ
+         gunAmaRDff2ySpucktpzMrivittIqf/5L0EKfRsRTVYS5mDVECUiB7KRXsNygo5YFvaJ
+         nuIrdRrvNJXk6/8BfVlsj3q9oJM8dv1G6S9BJmejiAkhfpseqV2YwwkCZYJlyhuxqtYJ
+         R/uUjJjHVjI0T1N2OfSAB02XbRjp+neJQRMB7a+G9ZDySvzX1a+wLiMGQTEB2DjmRBW3
+         DLvVN/O1E8HuDAEZVBbvELwlDnF/KqRSxu0N28jB9QMQ8q5GOTjb3EktOcokWvni+Rwt
+         6gxg==
+X-Forwarded-Encrypted: i=1; AJvYcCXNuI4YEVeFzw2T4wFoJ5NJK3b8y8R3IcNqYCObijKtjbaIpxO/RFfbYu3Pm1nLfxw9ymwhHomOtGRAGCbaNNIsmM8l0spesA==
+X-Gm-Message-State: AOJu0Yy6kRRoy7SWUn6xvtXLiR/35nk76O+iKmEafP4rDZEOUi7LwqlR
+	z6R7PUA61ac0Br4BIL76vBVxoZgpW0/+dDQD1lLq7Xp+lZeZzaA+6FBqNJkPyD4=
+X-Google-Smtp-Source: AGHT+IFvguqbwiQzSbD3S1ODpOLNKCNwaosZroB1gY+Xq6Ja1OO6D7EXUW+FPqr+DM5hB6DiiOcNoQ==
+X-Received: by 2002:a17:906:490d:b0:a77:c0f5:69cc with SMTP id a640c23a62f3a-a7a01352eb4mr151904066b.61.1721232857851;
+        Wed, 17 Jul 2024 09:14:17 -0700 (PDT)
+Received: from localhost (109-81-86-75.rct.o2.cz. [109.81.86.75])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a79bc7f21afsm456637366b.119.2024.07.17.09.14.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jul 2024 09:14:17 -0700 (PDT)
+Date: Wed, 17 Jul 2024 18:14:16 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Cgroups <cgroups@vger.kernel.org>
+Subject: Re: [PATCH 0/2] mm: skip memcg for certain address space
+Message-ID: <Zpft2A_gzfAYBFfZ@tiehlicka>
+References: <cover.1720572937.git.wqu@suse.com>
+ <8faa191c-a216-4da0-a92c-2456521dcf08@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <172070450139.2992819.13210624094367257881.stgit@firesoul>
- <a4e67f81-6946-47c0-907e-5431e7e01eb1@kernel.org> <CAJD7tkYV3iwk-ZJcr_==V4e24yH-1NaCYFUL7wDaQEi8ZXqfqQ@mail.gmail.com>
- <623e62c5-3045-4dca-9f2c-ed15b8d3bad8@redhat.com>
-In-Reply-To: <623e62c5-3045-4dca-9f2c-ed15b8d3bad8@redhat.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 17 Jul 2024 09:05:15 -0700
-Message-ID: <CAJD7tkZ6WOtbtiMy_2nemLQnHgO_tC0cfH1tJF-vD-Lb8PoUuA@mail.gmail.com>
-Subject: Re: [PATCH V7 1/2] cgroup/rstat: Avoid thundering herd problem by
- kswapd across NUMA nodes
-To: Waiman Long <longman@redhat.com>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, tj@kernel.org, cgroups@vger.kernel.org, 
-	shakeel.butt@linux.dev, hannes@cmpxchg.org, lizefan.x@bytedance.com, 
-	kernel-team@cloudflare.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8faa191c-a216-4da0-a92c-2456521dcf08@kernel.org>
 
-On Tue, Jul 16, 2024 at 8:00=E2=80=AFPM Waiman Long <longman@redhat.com> wr=
-ote:
->
-> On 7/16/24 20:35, Yosry Ahmed wrote:
-> > [..]
-> >>
-> >> This is a clean (meaning no cadvisor interference) example of kswapd
-> >> starting simultaniously on many NUMA nodes, that in 27 out of 98 cases
-> >> hit the race (which is handled in V6 and V7).
-> >>
-> >> The BPF "cnt" maps are getting cleared every second, so this
-> >> approximates per sec numbers.  This patch reduce pressure on the lock,
-> >> but we are still seeing (kfunc:vmlinux:cgroup_rstat_flush_locked) full
-> >> flushes approx 37 per sec (every 27 ms). On the positive side
-> >> ongoing_flusher mitigation stopped 98 per sec of these.
-> >>
-> >> In this clean kswapd case the patch removes the lock contention issue
-> >> for kswapd. The lock_contended cases 27 seems to be all related to
-> >> handled_race cases 27.
-> >>
-> >> The remaning high flush rate should also be addressed, and we should
-> >> also work on aproaches to limit this like my ealier proposal[1].
-> > I honestly don't think a high number of flushes is a problem on its
-> > own as long as we are not spending too much time flushing, especially
-> > when we have magnitude-based thresholding so we know there is
-> > something to flush (although it may not be relevant to what we are
-> > doing).
-> >
-> > If we keep observing a lot of lock contention, one thing that I
-> > thought about is to have a variant of spin_lock with a timeout. This
-> > limits the flushing latency, instead of limiting the number of flushes
-> > (which I believe is the wrong metric to optimize).
->
-> Except for semaphore, none of our locking primitives allow for a timeout
-> parameter. For sleeping locks, I don't think it is hard to add variants
-> with timeout parameter, but not the spinning locks.
+On Wed 17-07-24 17:55:23, Vlastimil Babka (SUSE) wrote:
+> Hi,
+> 
+> you should have Ccd people according to get_maintainers script to get a
+> reply faster. Let me Cc the MEMCG section.
+> 
+> On 7/10/24 3:07 AM, Qu Wenruo wrote:
+> > Recently I'm hitting soft lockup if adding an order 2 folio to a
+> > filemap using GFP_NOFS | __GFP_NOFAIL. The softlockup happens at memcg
+> > charge code, and I guess that's exactly what __GFP_NOFAIL is expected to
+> > do, wait indefinitely until the request can be met.
+> 
+> Seems like a bug to me, as the charging of __GFP_NOFAIL in
+> try_charge_memcg() should proceed to the force: part AFAICS and just go over
+> the limit.
+> 
+> I was suspecting mem_cgroup_oom() a bit earlier return true, causing the
+> retry loop, due to GFP_NOFS. But it seems out_of_memory() should be
+> specifically proceeding for GFP_NOFS if it's memcg oom. But I might be
+> missing something else. Anyway we should know what exactly is going first.
 
-Thanks for pointing this out. I am assuming a mutex with a timeout
-will also address the priority inversion problem that Shakeel was
-talking about AFAICT.
+Correct. memcg oom code will invoke the memcg OOM killer for NOFS
+requests. See out_of_memory 
+
+        /*
+         * The OOM killer does not compensate for IO-less reclaim.
+         * But mem_cgroup_oom() has to invoke the OOM killer even
+         * if it is a GFP_NOFS allocation.
+         */
+        if (!(oc->gfp_mask & __GFP_FS) && !is_memcg_oom(oc))
+                return true;
+
+That means that there will be a victim killed, charges reclaimed and
+forward progress made. If there is no victim then the charging path will
+bail out and overcharge.
+
+Also the reclaim should have cond_rescheds in the reclaim path. If that
+is not sufficient it should be fixed rather than workaround.
+-- 
+Michal Hocko
+SUSE Labs
 
