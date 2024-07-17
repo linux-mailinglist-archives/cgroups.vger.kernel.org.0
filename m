@@ -1,178 +1,209 @@
-Return-Path: <cgroups+bounces-3739-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3740-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DEF79340C5
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 18:50:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3417A9340D7
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 18:55:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A146C1C20C94
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 16:50:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E33CA2841DB
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jul 2024 16:55:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD42181D02;
-	Wed, 17 Jul 2024 16:50:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B8EF1822D8;
+	Wed, 17 Jul 2024 16:55:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wnGQ3ZL9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bPSgql4I"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55D0F181CFA
-	for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 16:50:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E76A817F39B;
+	Wed, 17 Jul 2024 16:55:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721235037; cv=none; b=CGWHjAKu99rZVPaUSeS+7g+S9UuqIqMY5hEdCH4SSslbc9adz4GHN7YFp+5xPO45IIGiuNw3J8r3b8ihzKgXOctZFeL1P/sZAlVWMILAGfCVyZXckJwTNK+DXpFd1RhqCOlR3PBUnF7m5lc2i5pDZLYITj+m08FqrpyRRJp4d78=
+	t=1721235350; cv=none; b=nx1yXADfmdkH7PLsz7OhtQgCCwM+kqVjs7P5fe8fxQ/pfMFPmNJgOpqq4EOwgZl/70HgERs+RLEiZ4lYNsCw2AXeGiynRC5c6ZUb4OnOCgxgQyUSXwwCxAKt5tBlxpo6GH6e9lYx7tJ2wWGrQh3iND4faODsmcjOQjQ0tiJ2DaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721235037; c=relaxed/simple;
-	bh=brMoMeNLF25cQ84wJRpgrYCmQeirKUbdzKcB39u7okY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=faDWOd3+aKXHY9/dxkUWpE79FgWWVe3lERWIG6R/IuU6/NGZhpv2rqsjFxWVy4z4P3haoNLdHvXtIWrlYbdeLkeOifwRpgQxwINdfjmskxcChD6yzRGXjRYDHr388dkH/lReE21NhfmQRZMoYOJ+iiOnk3/sPuGJzGsRkZmwMRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wnGQ3ZL9; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5a108354819so701026a12.0
-        for <cgroups@vger.kernel.org>; Wed, 17 Jul 2024 09:50:35 -0700 (PDT)
+	s=arc-20240116; t=1721235350; c=relaxed/simple;
+	bh=OMKDrp/asr1LQFTLOo46Z1gdnD0fhU2xBx0AsoHdoM4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XUClbf/7xTvJ6Xz9wBGy4bOPQ5nBLt27mryzUad78Ou1fH9WCj7aqW3bzKPKimxL4dPofeiCdFAZ5LwftIc1Em4DQ2qA66t3wSIuRARbSFuBjxiLhdMF2fF1GOoR5h2JojNHQP20X5XUHRosqJ/2bzUYfvK5Z86cYtmRYCijlWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bPSgql4I; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1fc5549788eso5136165ad.1;
+        Wed, 17 Jul 2024 09:55:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1721235033; x=1721839833; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xTNGHnvQ6RG3vz/xqvoqZtrVCx1QoR7aN9z9QUd/56U=;
-        b=wnGQ3ZL9zMkQNxejkYrlTO0dQ9R3qjI0W9ghbVcB17X+OFkZuZnSGsWEHXIotc431z
-         0HjHzFF/DNzCuqGgJmRC39+i1VR3s0xPaDvBwMlMQWAyJFaJXI6XdLqKfnlOn8Xeu0xK
-         Bq0S4q3ecq/lytqbKcQz8/Jv5NBuDaEjzzuzaPn7FoyQEDnS2e8GV7gtR/eYGYR4isE5
-         NXvqTsKNw/UBmIS3Na8sgXPcK1+GjYE2CUz59XvwWZl8ZSKVWRN98bmaJULNAmnjPt6m
-         ERWDBOMhWhTQWUMjRGPCIskFBGSN/QAidWByC5/rzf+uqy/7Yhw4SB/IxMfh9a11vlzB
-         rPdA==
+        d=gmail.com; s=20230601; t=1721235348; x=1721840148; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=68LWjL5/SKjz0tO65i0BltVGGa8T/WWLEoQAHGMQU/Q=;
+        b=bPSgql4IZhW9Didboyc9a1e3GYBVIkqHHy+eaMB/g8bARWNhlzw0BkBjpzVlbWuGAV
+         Q7JeW8D0Gl25YL56smDrIZ+UQs08kBVYpo2yqz4UIyymQVi1nCtTy2bi4+ONtQDl6+CL
+         NSLTNLyw0pjMDe+Vmke89Uq2k6/86asP3+HtO837ZUasVuAwo5zQQLwAFFf4X62zWm0o
+         au23U8aBqI1VOK31ySETNiHoXS7l5jY02ptYCdE97ZXYOELgJMI63NOfZdThOhH1i2Y2
+         /MrSJ39Pa0QIp7/Qhm0De+EjMhLx0bKQqM+TLEsbYFWRfq4MOidFVDa8NLJ0BFJRJFIa
+         CCcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721235033; x=1721839833;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1721235348; x=1721840148;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xTNGHnvQ6RG3vz/xqvoqZtrVCx1QoR7aN9z9QUd/56U=;
-        b=qq2R+uTKcsTQGGfATKqkGVgnCmsGgQHK9tniPcGsoTJKImtjCakVnvys9QooLvQtP9
-         nFiZlJtDEsfLuPDn93g5h+Qt/Byowqmh0Mras6gL2GLqxUA3XoZ653v6m6/FSznrsP+P
-         BUyqDvpNjzBWpMnbDKU3L+UhgjFFYTm8Zo96KgVJnvsr8pgm3Ah3S9PRzbsvJXPysJi4
-         iAbPgoo1yFyZE5lzCgTaMQ2+cetjYdwISH4FcZhFaJ7B47u6LsbT4J8vb21r4ylfipwX
-         EHBpNFl7Hrfjjd6GN/OZAfFbkpvjcfZkvNO7llul6Kfnab1oznEsrToJ35mOk8+NUANn
-         yCeg==
-X-Forwarded-Encrypted: i=1; AJvYcCW1KcFiEy1lq0jq0xQEU+9hbRIHlxBl0LNw5X+yh3ZAOrLv/Tc9QMWbJcL85io7wZ6ohOzpkTP5Ibsk0I1TfKvz0vuOYDqEFg==
-X-Gm-Message-State: AOJu0Yy3TfsAAKULzd2Yfm93pFAQ5yja3QIMeTHXioW5u8j5UwxHpVj+
-	wGN55ZEk50L3yzpwNboL5a6yrdORH4ZfFKqtB4FX4YVAm1MzE+g2kILq9QyeQMEAHlPDOfqz++w
-	8wcwxwpM2nmBlktbcdrax9NYNQ9n8zg7VV/pT
-X-Google-Smtp-Source: AGHT+IGqZ84dAhFoS4O9crcKXggKs4NB/xqx5YRXOru5heEmpY3ot7CFAr2+9x16/lLYK/bZsph4bqXikfqjRlzPzDs=
-X-Received: by 2002:a17:906:1c12:b0:a77:cca9:b216 with SMTP id
- a640c23a62f3a-a7a011bc7d4mr147771066b.33.1721235033083; Wed, 17 Jul 2024
- 09:50:33 -0700 (PDT)
+        bh=68LWjL5/SKjz0tO65i0BltVGGa8T/WWLEoQAHGMQU/Q=;
+        b=ubsRie6xYaOi7rSRP8MyALchnh2b9L/0NW/BytQrxjlGoffK0sj68VTbfMZilU8jWi
+         qbpNlfb3mudjHvCr+C1n5uduSg1po75la504O8wr8He0z/1UquKgld8wLe7coZ9ZpxIu
+         urzChe5Qj0tZhZHYuqY+LjcPHrJ8QCaVF97KBWerAaOjwEVJALoeEcmKdtict6bMcKBV
+         iH/kJFHr4kqOU8qlxq903sY36J6qXZfcpE20HbzrAozXYmvo5jaDR1cTZ8CCwK349Aic
+         0ycP46Vh3MJDDrFdJ0V1pgvVCz/ZFHIp0EQuLKCIhCBXXOdRn/k4pnSlKZKRrZKJ9ySR
+         WhrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVMS5l0NlUd0QicuPamQjjFgElAiyrtIYzxGcLq7Z8IDkFQYvXobhPUR7rmv47nhjrE1srXfPjb1ALmJA3rlLbzMOXxRNq+QvcthgrNz8Na50CgmMoQp0/4gQsi4d7JH19/cIueMej2IrqMWO2TeltGIsloCXZs7dz0OHDh7E39lm2f
+X-Gm-Message-State: AOJu0YzEsL+dELT5UUFvrRFOy5aK7Y9DJMdbIvAoJ2hyLzdLIH3LwIQ+
+	0Mto00B8GSqN58Wgy1JmRA/2g1zFUqw8s2Efot5/gVlQkomJLbAuV95BRQ==
+X-Google-Smtp-Source: AGHT+IEh/cgX/fwSr/Qf+rkCnE+FwhUG7QRMVZIlEKOXguTlAFPyDJHm9nWwN1jNvQkd90th0Ikb6Q==
+X-Received: by 2002:a17:903:234d:b0:1fb:67ee:6de7 with SMTP id d9443c01a7336-1fc4e131d9fmr23895775ad.23.1721235348035;
+        Wed, 17 Jul 2024 09:55:48 -0700 (PDT)
+Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bc384ecsm77469445ad.208.2024.07.17.09.55.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jul 2024 09:55:47 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 17 Jul 2024 06:55:46 -1000
+From: "tj@kernel.org" <tj@kernel.org>
+To: Boy Wu =?utf-8?B?KOWQs+WLg+iqvCk=?= <Boy.Wu@mediatek.com>
+Cc: "boris@bur.io" <boris@bur.io>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+	"axboe@kernel.dk" <axboe@kernel.dk>,
+	Iverlin Wang =?utf-8?B?KOeOi+iLs+mclik=?= <Iverlin.Wang@mediatek.com>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>
+Subject: Re: [PATCH v3] blk-cgroup: Replace u64 sync with spinlock for iostat
+ update
+Message-ID: <Zpf3ks2drDZ7ULTa@slm.duckdns.org>
+References: <20240716075206.23121-1-boy.wu@mediatek.com>
+ <Zpbify32lel9J-5I@slm.duckdns.org>
+ <c5bcbcbaeacdb805adc75c26f92ec69f26ad7706.camel@mediatek.com>
+ <5560c690cc6de67139a9b2e45c7a11938b70fc58.camel@mediatek.com>
+ <1b19b68adb34410bf6dc8fd3f50e4b82c1a014e4.camel@mediatek.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <172070450139.2992819.13210624094367257881.stgit@firesoul>
- <a4e67f81-6946-47c0-907e-5431e7e01eb1@kernel.org> <CAJD7tkYV3iwk-ZJcr_==V4e24yH-1NaCYFUL7wDaQEi8ZXqfqQ@mail.gmail.com>
- <100caebf-c11c-45c9-b864-d8562e2a5ac5@kernel.org>
-In-Reply-To: <100caebf-c11c-45c9-b864-d8562e2a5ac5@kernel.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 17 Jul 2024 09:49:54 -0700
-Message-ID: <CAJD7tkaBKTiMzSkXfaKO5EO58aN708L4XBS3cX85JvxVpcNkQQ@mail.gmail.com>
-Subject: Re: [PATCH V7 1/2] cgroup/rstat: Avoid thundering herd problem by
- kswapd across NUMA nodes
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: tj@kernel.org, cgroups@vger.kernel.org, shakeel.butt@linux.dev, 
-	hannes@cmpxchg.org, lizefan.x@bytedance.com, longman@redhat.com, 
-	kernel-team@cloudflare.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1b19b68adb34410bf6dc8fd3f50e4b82c1a014e4.camel@mediatek.com>
 
-On Wed, Jul 17, 2024 at 9:36=E2=80=AFAM Jesper Dangaard Brouer <hawk@kernel=
-.org> wrote:
->
->
->
->
-> On 17/07/2024 02.35, Yosry Ahmed wrote:
-> > [..]
-> >>
-> >>
-> >> This is a clean (meaning no cadvisor interference) example of kswapd
-> >> starting simultaniously on many NUMA nodes, that in 27 out of 98 cases
-> >> hit the race (which is handled in V6 and V7).
-> >>
-> >> The BPF "cnt" maps are getting cleared every second, so this
-> >> approximates per sec numbers.  This patch reduce pressure on the lock,
-> >> but we are still seeing (kfunc:vmlinux:cgroup_rstat_flush_locked) full
-> >> flushes approx 37 per sec (every 27 ms). On the positive side
-> >> ongoing_flusher mitigation stopped 98 per sec of these.
-> >>
-> >> In this clean kswapd case the patch removes the lock contention issue
-> >> for kswapd. The lock_contended cases 27 seems to be all related to
-> >> handled_race cases 27.
-> >>
-> >> The remaning high flush rate should also be addressed, and we should
-> >> also work on aproaches to limit this like my ealier proposal[1].
-> >
-> > I honestly don't think a high number of flushes is a problem on its
-> > own as long as we are not spending too much time flushing, especially
-> > when we have magnitude-based thresholding so we know there is
-> > something to flush (although it may not be relevant to what we are
-> > doing).
-> >
->
-> We are "spending too much time flushing" see below.
->
-> > If we keep observing a lot of lock contention, one thing that I
-> > thought about is to have a variant of spin_lock with a timeout. This
-> > limits the flushing latency, instead of limiting the number of flushes
-> > (which I believe is the wrong metric to optimize).
-> >
-> > It also seems to me that we are doing a flush each 27ms, and your
-> > proposed threshold was once per 50ms. It doesn't seem like a
-> > fundamental difference.
-> >
->
->
-> Looking at the production numbers for the time the lock is held for level=
- 0:
->
-> @locked_time_level[0]:
-> [4M, 8M)     623 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@               |
-> [8M, 16M)    860 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> [16M, 32M)   295 |@@@@@@@@@@@@@@@@@                                   |
-> [32M, 64M)   275 |@@@@@@@@@@@@@@@@                                    |
->
-> The time is in nanosec, so M corresponds to ms (milliseconds).
->
-> With 36 flushes per second (as shown earlier) this is a flush every
-> 27.7ms.  It is not unreasonable (from above data) that the flush time
-> also spend 27ms, which means that we spend a full CPU second flushing.
-> That is spending too much time flushing.
->
-> This around 1 sec CPU usage for kswapd is also quite clear in the
-> attached grafana graph for when server was rebooted into this V7 kernel.
->
-> I choose 50ms because at the time I saw flush taking around 30ms, and I
-> view the flush time as queue service-time.  When arrival-rate is faster
-> than service-time, then a queue will form.  So, choosing 50ms as
-> arrival-rate gave me some headroom.  As I mentioned earlier, optimally
-> this threshold should be dynamically measured.
+Hello,
 
-Thanks for the data. Yeah this doesn't look good.
+Does something like the following work for you?
 
-Does it make sense to just throttle flushers at some point to increase
-the chances of coalescing multiple flushers?
+Thanks.
 
-Otherwise I think it makes sense in this case to ratelimit flushing in
-general. Although instead of just checking how much time elapsed since
-the last flush, can we use something like __ratelimit()?
-
-This will make sure that we skip flushes when we actually have a high
-rate of flushing over a period of time, not because two flushes
-happened to be requested in close succession and the flushing rate is
-generally low.
-
->
-> --Jesper
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 37e6cc91d576..ec1d191f5c83 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -329,7 +329,6 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct gendisk *disk,
+ 	INIT_WORK(&blkg->async_bio_work, blkg_async_bio_workfn);
+ #endif
+ 
+-	u64_stats_init(&blkg->iostat.sync);
+ 	for_each_possible_cpu(cpu) {
+ 		u64_stats_init(&per_cpu_ptr(blkg->iostat_cpu, cpu)->sync);
+ 		per_cpu_ptr(blkg->iostat_cpu, cpu)->blkg = blkg;
+@@ -632,24 +631,26 @@ static void blkg_iostat_set(struct blkg_iostat *dst, struct blkg_iostat *src)
+ static void __blkg_clear_stat(struct blkg_iostat_set *bis)
+ {
+ 	struct blkg_iostat cur = {0};
+-	unsigned long flags;
+ 
+-	flags = u64_stats_update_begin_irqsave(&bis->sync);
+ 	blkg_iostat_set(&bis->cur, &cur);
+ 	blkg_iostat_set(&bis->last, &cur);
+-	u64_stats_update_end_irqrestore(&bis->sync, flags);
+ }
+ 
+ static void blkg_clear_stat(struct blkcg_gq *blkg)
+ {
++	unsigned long flags;
+ 	int cpu;
+ 
++	raw_spin_lock_irqsave(&blkg_stat_lock, flags);
++
+ 	for_each_possible_cpu(cpu) {
+ 		struct blkg_iostat_set *s = per_cpu_ptr(blkg->iostat_cpu, cpu);
+ 
+ 		__blkg_clear_stat(s);
+ 	}
+ 	__blkg_clear_stat(&blkg->iostat);
++
++	raw_spin_unlock_irqrestore(&blkg_stat_lock, flags);
+ }
+ 
+ static int blkcg_reset_stats(struct cgroup_subsys_state *css,
+@@ -998,12 +999,10 @@ static void blkcg_iostat_update(struct blkcg_gq *blkg, struct blkg_iostat *cur,
+ 	unsigned long flags;
+ 
+ 	/* propagate percpu delta to global */
+-	flags = u64_stats_update_begin_irqsave(&blkg->iostat.sync);
+ 	blkg_iostat_set(&delta, cur);
+ 	blkg_iostat_sub(&delta, last);
+ 	blkg_iostat_add(&blkg->iostat.cur, &delta);
+ 	blkg_iostat_add(last, &delta);
+-	u64_stats_update_end_irqrestore(&blkg->iostat.sync, flags);
+ }
+ 
+ static void __blkcg_rstat_flush(struct blkcg *blkcg, int cpu)
+@@ -1134,9 +1133,9 @@ static void blkcg_fill_root_iostats(void)
+ 				cpu_dkstats->sectors[STAT_DISCARD] << 9;
+ 		}
+ 
+-		flags = u64_stats_update_begin_irqsave(&blkg->iostat.sync);
++		raw_spin_lock_irqsave(&blkg_stat_lock, flags);
+ 		blkg_iostat_set(&blkg->iostat.cur, &tmp);
+-		u64_stats_update_end_irqrestore(&blkg->iostat.sync, flags);
++		raw_spin_unlock_irqrestore(&blkg_stat_lock, flags);
+ 	}
+ }
+ 
+@@ -1145,7 +1144,6 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
+ 	struct blkg_iostat_set *bis = &blkg->iostat;
+ 	u64 rbytes, wbytes, rios, wios, dbytes, dios;
+ 	const char *dname;
+-	unsigned seq;
+ 	int i;
+ 
+ 	if (!blkg->online)
+@@ -1157,16 +1155,14 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
+ 
+ 	seq_printf(s, "%s ", dname);
+ 
+-	do {
+-		seq = u64_stats_fetch_begin(&bis->sync);
+-
+-		rbytes = bis->cur.bytes[BLKG_IOSTAT_READ];
+-		wbytes = bis->cur.bytes[BLKG_IOSTAT_WRITE];
+-		dbytes = bis->cur.bytes[BLKG_IOSTAT_DISCARD];
+-		rios = bis->cur.ios[BLKG_IOSTAT_READ];
+-		wios = bis->cur.ios[BLKG_IOSTAT_WRITE];
+-		dios = bis->cur.ios[BLKG_IOSTAT_DISCARD];
+-	} while (u64_stats_fetch_retry(&bis->sync, seq));
++	raw_spin_lock_irq(&blkg_stat_lock);
++	rbytes = bis->cur.bytes[BLKG_IOSTAT_READ];
++	wbytes = bis->cur.bytes[BLKG_IOSTAT_WRITE];
++	dbytes = bis->cur.bytes[BLKG_IOSTAT_DISCARD];
++	rios = bis->cur.ios[BLKG_IOSTAT_READ];
++	wios = bis->cur.ios[BLKG_IOSTAT_WRITE];
++	dios = bis->cur.ios[BLKG_IOSTAT_DISCARD];
++	raw_spin_unlock_irq(&blkg_stat_lock, flags);
+ 
+ 	if (rbytes || wbytes || rios || wios) {
+ 		seq_printf(s, "rbytes=%llu wbytes=%llu rios=%llu wios=%llu dbytes=%llu dios=%llu",
 
