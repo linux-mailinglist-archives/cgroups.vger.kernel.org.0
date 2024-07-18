@@ -1,165 +1,148 @@
-Return-Path: <cgroups+bounces-3764-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3765-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BCBA93496C
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 09:57:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 020EC934995
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 10:09:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B1D91F22B96
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 07:57:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1C621F23785
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 08:09:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0CB77F2C;
-	Thu, 18 Jul 2024 07:57:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74B4278C9D;
+	Thu, 18 Jul 2024 08:09:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="bHAlKkqP"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="TzWi95UD"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A40774058
-	for <cgroups@vger.kernel.org>; Thu, 18 Jul 2024 07:57:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CED99768EE
+	for <cgroups@vger.kernel.org>; Thu, 18 Jul 2024 08:09:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721289436; cv=none; b=l2sW6SdymuTFmfUHB3uuO5zUHRC15zMUCQh4Ezq52h+cJgumlbBoFifAxbJwo6JdRdniWvNDzW+qxBwkDyk/XujKte4euDKDhtiM9m/4y7wwOSskmy3uxBjUYj+tg+OYkJRpKqDf7d04YuDmz1CKx/NOwkADAZLal0tWoMF9O00=
+	t=1721290175; cv=none; b=PpzcMZFHw+JixLdQz4BEVzEDQEuSdjj4JxazFS+bH9S2kClZtQJQ5aVkF2w8iPo9cugCwvQHjHhDFuQctL5NF3HnLv+iUVl+gURrGHeAXirqz5w81sXQD5ZT0NawTSb+Y1+d3RQq1nuGmFoIB3ttEEfXXPKzSV5AxVRjtZ6ElMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721289436; c=relaxed/simple;
-	bh=HrjvJMm7kPmpD6F/G745DlsSIlmTJa+UuDxTFfrK0Nk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Af8aiibSx2UBkgq4xC3TemLvVODBKBXW2C/64u9oyp0KfK+pic6uIBcqabIrt/1kgEhDTSmowWPO3NIWhrFzqoiiOVUm3erOaNYUfEjnGHgaj6fdU8Sdaiu08Ku+oBmWQNmIX/D7I2NUV/q2rNHHy4r8bhNYwwF8i6yYj9fkMns=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=bHAlKkqP; arc=none smtp.client-ip=209.85.208.171
+	s=arc-20240116; t=1721290175; c=relaxed/simple;
+	bh=TDYm5PZVfZHPLUELKTZw/I1/ewmmqaWyG3B3esIwX0o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jIigiqJguXgBzr2ochEF7F/zZljQLJkS96wmtXFkSprOlpD9MukOxDZdJQXT8F0rSDn4HfFA3w5XDZx4SCr4/ZAmTgy37nOyCHJUjtQqvhqNILQMWBiob6gKKmLIAiZeXPykXVdVFdobJ93Jlix3zwxY2mZxUbxYu1OT85NjfZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=TzWi95UD; arc=none smtp.client-ip=209.85.167.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2eee083c044so5768851fa.3
-        for <cgroups@vger.kernel.org>; Thu, 18 Jul 2024 00:57:13 -0700 (PDT)
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-52ea0f18500so23250e87.3
+        for <cgroups@vger.kernel.org>; Thu, 18 Jul 2024 01:09:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1721289432; x=1721894232; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ryf/L9F3W+yS7sE2LI6OBmRUvcJA5RPJZdjnYSn/YoA=;
-        b=bHAlKkqPLvptUMGsZSnY4Yxxk68FWVPR75EeiR3AndgRWChnRyppPBD7OuIGvCc9R5
-         N1mHASM5uHYaBFSuwuTK0aripEUtO6fvnra+NqWmuxSWnzoGxbAtunvkNe62iZzIF8Cx
-         gWkxPX3NqGFqNbBscaN9WNQmApHRlFArMgnnsShEdCH5Npb0N/xpTXOARTUd1NU5dCMi
-         ytSHi4EIoJ7nV6bsVCCl4dZCVEvsokhXjLpGfQyjUvgYiCI4D0ab66I8tgzjfu4a0qsC
-         94iZSWXs5krE/a/4wMj+744rE8ZHNqYO0QieWG9Setx7VtpGMAql410rDp9A3unOdGH8
-         EGDw==
+        d=suse.com; s=google; t=1721290171; x=1721894971; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=tXMh51KVDkJmQr+NxLPzI9t9Kwi4FwG+tK/QlWBahKs=;
+        b=TzWi95UDhOtfJrxTJ5O+Dqqgm7t96Pc5jM2LjfuDMEw5ZIp8ZH7WwMEf53WZX+v4jw
+         18dE6qLgUDCwxrpLVrXFT5w6EZoWaAZSQIbz8SIUKLom0chLcEZ1q5xfV4auELrX/OlS
+         gtWyu9mYI2+S4y0mGlPfCjScFxZlkq8rCzN/GH4pMR9RVEHvcijtDpfU8SAmAlumSNxv
+         pjQANwSnQk9d8Yje15uzxtkzfISwceeIBI/mmrwUIFhgfXbTcsoYCnAkGioFvRcgxXvF
+         q7SfeVyH7ZQaYzE50UxQDYBxOkWlWTC0kCpgFDhucYnBObJKUcYKGFThSZTGXeKZyp56
+         Ml2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721289432; x=1721894232;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ryf/L9F3W+yS7sE2LI6OBmRUvcJA5RPJZdjnYSn/YoA=;
-        b=NuFh6Wt+RZTiBSAaLQuevaWVOzLOpbMSHp2M9cwHV0T36aCSFxMdhnIUg/buQkLmB7
-         5HQlngj+OrVq8/dL2mDvmq49Drk6avXuhsslLKde7mYCBdhvzVPHtfmVCy1w0ILo8jgg
-         Kn51QGANqlep9sc5I+C7Mrg4p6W+YgdgNZdxCLnJ9pOsb45aLNB2QgJberoj9nSqT3D+
-         NCjPJTYqA89hqKjkeN1D0QXbi/Leay/Ha0ZgONkAIaVEXMqz3/pQwABqjvj4CatqsXx/
-         JXxpoeWUuQ73lrntm2ZtPAFirsQWHZsro986mO40SvYb3ON17mv1J+5BOS/SAG7GE//x
-         FaMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXepYRR+vzarof2eRZzb/0JHuDJ4PWzK8XWI2raWFloBKlI/2xmwI8zUIpVfBCIeTSCkZvUihflfVFVS8YCAh6bnbgAMa1Nqw==
-X-Gm-Message-State: AOJu0Yx2+BdTYll5UxnXBWnHEzavfqVq5e8/iuckcrGdxFbr4HsfuZAh
-	8aW9FJmr6RvSCqRu+kPd/X+7xsdZGcjzH95OsH8vvop/9+L5eS820KKJ12cJbJE=
-X-Google-Smtp-Source: AGHT+IEQZF07rHCNHOIAn/kygtiNr2VBjTyAwR8GmB+YwDBsRxlbRFz1ItA3TV5u6JgIyFN42ZARwg==
-X-Received: by 2002:a2e:8185:0:b0:2ee:9521:1436 with SMTP id 38308e7fff4ca-2ef05ca1b4cmr10708341fa.28.1721289431871;
-        Thu, 18 Jul 2024 00:57:11 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2cb77541bd2sm24111a91.53.2024.07.18.00.57.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Jul 2024 00:57:11 -0700 (PDT)
-Message-ID: <304fdaa9-81d8-40ae-adde-d1e91b47b4c0@suse.com>
-Date: Thu, 18 Jul 2024 17:27:05 +0930
+        d=1e100.net; s=20230601; t=1721290171; x=1721894971;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tXMh51KVDkJmQr+NxLPzI9t9Kwi4FwG+tK/QlWBahKs=;
+        b=eyt6z8wxJ5RY4bPnVzZGPZFDADIFeA+Q8yMyGJ8z2qoT45Oedg/YC0Ef4bZ46OOfRa
+         fE3L4r0M/9rjNbS285F867KPbaJiWPIWHH6mKHSkXnmhTp9Q4qrPOM9OVOJ5wRZkDsgt
+         b7dqN2SIPoJ56JnA3oVZnDl4SqvBCYsSSLLOTR+Zczj1MUwc6h/nxHYNn21vg/f0qf16
+         vtZ3E+DJW0OCGAYgE0Z6p2QkYpNp5NlI5pv9MUjTS1fERD9uCWIKoLTPOjIh5OX2MWUZ
+         Tn0g68jdF2WSun+odeMnWlDXMT9YaH9jtQ6d0acBRWlpIMzTBC4IArmUfDmIYvHi7UML
+         IbLA==
+X-Forwarded-Encrypted: i=1; AJvYcCU57yU+1VMUuDIwIZnwwzyQZhjJnTFLijzEh5yqjbr7JTo9aYBd4V2KA1g5pGHgIePUUSmJSE36YuC8SMNWONnH73Ag6K8Qeg==
+X-Gm-Message-State: AOJu0Yxj+RVh0QN0rupL5lqMAEjF5/qs78QiJripVQm/YbtRhBgEGGHz
+	VRkOmjXN6p/GYeiCJqo8HqU4jR9HmnMCe8wSbmtX5+nYYpYRUSH/ardv7SEJ3do=
+X-Google-Smtp-Source: AGHT+IGegX6hhcdBy2hHYfDBsDRJkiHBdAAF1OXnxmmpbPiUGv7h+8z8jYIwpVOTdMuMRgTCMfHFxQ==
+X-Received: by 2002:a05:6512:3c93:b0:52e:7f6b:5786 with SMTP id 2adb3069b0e04-52ee543f25emr2769637e87.61.1721290170831;
+        Thu, 18 Jul 2024 01:09:30 -0700 (PDT)
+Received: from localhost (109-81-94-157.rct.o2.cz. [109.81.94.157])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a79bc7ff9fbsm531461866b.154.2024.07.18.01.09.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jul 2024 01:09:30 -0700 (PDT)
+Date: Thu, 18 Jul 2024 10:09:29 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Qu Wenruo <wqu@suse.com>
+Cc: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
+	Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Cgroups <cgroups@vger.kernel.org>,
+	Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH 0/2] mm: skip memcg for certain address space
+Message-ID: <ZpjNuWpzH9NC5ni6@tiehlicka>
+References: <cover.1720572937.git.wqu@suse.com>
+ <8faa191c-a216-4da0-a92c-2456521dcf08@kernel.org>
+ <Zpft2A_gzfAYBFfZ@tiehlicka>
+ <9c0d7ce7-b17d-4d41-b98a-c50fd0c2c562@gmx.com>
+ <9572fc2b-12b0-41a3-82dc-bb273bfdd51d@kernel.org>
+ <ZpjDeSrZ40El5ALW@tiehlicka>
+ <304fdaa9-81d8-40ae-adde-d1e91b47b4c0@suse.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] mm: skip memcg for certain address space
-To: Michal Hocko <mhocko@suse.com>, "Vlastimil Babka (SUSE)"
- <vbabka@kernel.org>
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
- linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
- Johannes Weiner <hannes@cmpxchg.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Cgroups <cgroups@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>
-References: <cover.1720572937.git.wqu@suse.com>
- <8faa191c-a216-4da0-a92c-2456521dcf08@kernel.org>
- <Zpft2A_gzfAYBFfZ@tiehlicka> <9c0d7ce7-b17d-4d41-b98a-c50fd0c2c562@gmx.com>
- <9572fc2b-12b0-41a3-82dc-bb273bfdd51d@kernel.org>
- <ZpjDeSrZ40El5ALW@tiehlicka>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <ZpjDeSrZ40El5ALW@tiehlicka>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <304fdaa9-81d8-40ae-adde-d1e91b47b4c0@suse.com>
 
-
-
-在 2024/7/18 16:55, Michal Hocko 写道:
-> On Thu 18-07-24 09:17:42, Vlastimil Babka (SUSE) wrote:
->> On 7/18/24 12:38 AM, Qu Wenruo wrote:
-> [...]
->>> Does the folio order has anything related to the problem or just a
->>> higher order makes it more possible?
->>
->> I didn't spot anything in the memcg charge path that would depend on the
->> order directly, hm. Also what kernel version was showing these soft lockups?
+On Thu 18-07-24 17:27:05, Qu Wenruo wrote:
 > 
-> Correct. Order just defines the number of charges to be reclaimed.
-> Unlike the page allocator path we do not have any specific requirements
-> on the memory to be released.
-
-So I guess the higher folio order just brings more pressure to trigger 
-the problem?
-
 > 
->>> And finally, even without the hang problem, does it make any sense to
->>> skip all the possible memcg charge completely, either to reduce latency
->>> or just to reduce GFP_NOFAIL usage, for those user inaccessible inodes?
+> 在 2024/7/18 16:55, Michal Hocko 写道:
+> > On Thu 18-07-24 09:17:42, Vlastimil Babka (SUSE) wrote:
+> > > On 7/18/24 12:38 AM, Qu Wenruo wrote:
+> > [...]
+> > > > Does the folio order has anything related to the problem or just a
+> > > > higher order makes it more possible?
+> > > 
+> > > I didn't spot anything in the memcg charge path that would depend on the
+> > > order directly, hm. Also what kernel version was showing these soft lockups?
+> > 
+> > Correct. Order just defines the number of charges to be reclaimed.
+> > Unlike the page allocator path we do not have any specific requirements
+> > on the memory to be released.
 > 
-> Let me just add to the pile of questions. Who does own this memory?
+> So I guess the higher folio order just brings more pressure to trigger the
+> problem?
 
-A special inode inside btrfs, we call it btree_inode, which is not 
-accessible out of the btrfs module, and its lifespan is the same as the 
-mounted btrfs filesystem.
+It increases the reclaim target (in number of pages to reclaim). That
+might contribute but we are cond_resched-ing in shrink_node_memcgs and
+also down the path in shrink_lruvec etc. So higher target shouldn't
+cause soft lockups unless we have a bug there - e.g. not triggering any
+of those paths with empty LRUs and looping somewhere. Not sure about
+MGLRU state of things TBH.
+ 
+> > > > And finally, even without the hang problem, does it make any sense to
+> > > > skip all the possible memcg charge completely, either to reduce latency
+> > > > or just to reduce GFP_NOFAIL usage, for those user inaccessible inodes?
+> > 
+> > Let me just add to the pile of questions. Who does own this memory?
+> 
+> A special inode inside btrfs, we call it btree_inode, which is not
+> accessible out of the btrfs module, and its lifespan is the same as the
+> mounted btrfs filesystem.
 
-The inode is kept inside memory (btrfs_fs_info::btree_inode), it's 
-initialized at the first mount, and released upon the last unmount.
+But the memory charge is attributed to the caller unless you tell
+otherwise. So if this is really an internal use and you use a shared
+infrastructure which expects the current task to be owner of the charged
+memory then you need to wrap the initialization into set_active_memcg
+scope.
 
-The address_space_operation() are special that it doesn't implement any 
-read/readahead.
-Only write/release/invalidate/migrate functions are implemented.
-
-The read are triggered and handled all inside btrfs itself.
-
-Thanks,
-Qu
+-- 
+Michal Hocko
+SUSE Labs
 
