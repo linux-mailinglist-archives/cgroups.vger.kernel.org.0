@@ -1,120 +1,210 @@
-Return-Path: <cgroups+bounces-3778-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3779-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C34693537F
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 23:18:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DF9C937043
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 23:49:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C11BC1F2184E
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 21:18:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D0F51F22012
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 21:49:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 740A977107;
-	Thu, 18 Jul 2024 21:15:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B96711459FF;
+	Thu, 18 Jul 2024 21:49:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ChBNs4ui"
+	dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b="n5WF6ICT"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81D43A28D;
-	Thu, 18 Jul 2024 21:15:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0CF1145B0B
+	for <cgroups@vger.kernel.org>; Thu, 18 Jul 2024 21:49:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721337333; cv=none; b=Oe81KO6OSd0EviIxoQl0BT3cvS4lPNURi7IJh/5lDlHlNovDMmZ1SXMfH+KE3tVdHVY0iFbXNe9Oj5vg09SkS+q/7MOsrrN+y58m5uGAIBBAAeH21PDy3fouyUEO61jRVw0YslqWD3ONRLKWmbewOeZWcmmPD1W2HtKcDTIi9ro=
+	t=1721339381; cv=none; b=dbQU3DjdG2R7OYfB4SPnyOCPwGm8xJUJkzsCVMFLp9yMCvsm22uQW8A4fSztwC8YHGlwv69u+e/ZQtd0+gXeosYkGP9fZ/laLtw9PE+CFOeQst77jyamTvu9kc/5yMHyOhkYBCp4AxCKYw5PJ1W9UqJlP5ruNJ3d+ZSo7kqevE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721337333; c=relaxed/simple;
-	bh=9mJ5wmdO4bm4+n7EafdLXeF8u89gMbbd3ZwBipeTu6I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DQ3V+QxtyRMULGX9g0QvVUMs0g4jEbFYMWYv8kmondDQ9lyoxlRG77qRnhsPuoySIHtUXyKw5rUuOjR+4cJufMu04RQzS/f9O6TAe9o5lVoJuirAkPXaUOB82NLt5NSHaCsSKSFu6aRJiwl32VaIhB+wWN4cdo3BZAsS/G2QpNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ChBNs4ui; arc=none smtp.client-ip=209.85.215.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-75e7e110e89so791837a12.3;
-        Thu, 18 Jul 2024 14:15:30 -0700 (PDT)
+	s=arc-20240116; t=1721339381; c=relaxed/simple;
+	bh=UipBClRhuga+7eGM83ijNAcVasZf8QTyN9VWIlxbtSI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AMqF41UCQDFlJMaZZkdIGEiwQnMCMFamSteN4q45BMXWnYHucDoFgH7J/dEVqrPZqxcnMbZZrqoEGJcVuS0ny6SJcnGpbMKoTf2eUlv48lGELRO9T0w+6lFhXOEyc+eRqw11+xb6fawTUNvSRR6VjxVfvZkxYAMdr7IiVTXNzR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=fail smtp.mailfrom=vimeo.com; dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b=n5WF6ICT; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=vimeo.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-70b0ebd1ef9so217839b3a.2
+        for <cgroups@vger.kernel.org>; Thu, 18 Jul 2024 14:49:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721337330; x=1721942130; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/0auihaX9QkuNb5Qm1JcvF0jC8t0q/ycofneQ+RbNug=;
-        b=ChBNs4uim19hnSoNEJIdJbKfsfaHx4fHq9607fIi2uJkTqloRgBzd+eF7+OEHBUMCf
-         5wvmdoHrKQBRqDU/223Teo88B/xmPpuHJqc64GZH/yVrKQBDExieZFfW9PFuDArQL1gS
-         1F9bzGIbwjosW2AFzBMpvw2kK+Lo5FD25YKUYzG/PPNSKjPUk1dTg7R3oJevaleGrcqv
-         3DtDxFpXuul3U2MNpLfS/Yafk7AjKmPznB5gzkitCQRCPP+Rx0yGc8h0ENdkoV3wYTaS
-         qPh7UdFHeyHAxPexNuutGEZT5nRS1a8z6ap2lU7JuniOWumE//ih8m/zVIUUvbdvpjQB
-         IiTQ==
+        d=vimeo.com; s=google; t=1721339379; x=1721944179; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ImNfl0lxisTrDz2TQ4vM0mgYT84J4/46xCk2xuscFRE=;
+        b=n5WF6ICT2VTE/LfmoLKPkG98Qw49gKE8dPqGa9UkBasgfx5iIqFjRVI/I7CDZOoTW6
+         vr+rARytj3YzVhTSXomq80cuJFb4Uz3evNZnT65oBfhiMPLN+hYNNAisgWYixPl4KZXG
+         iCqnRsuqNZVNSdYGMaayQfFdHLxyscj7DoVl8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721337330; x=1721942130;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1721339379; x=1721944179;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/0auihaX9QkuNb5Qm1JcvF0jC8t0q/ycofneQ+RbNug=;
-        b=Ua9GXaZpdFQ10FyBBjjS0YBgM3pJ1hk7zBv67g+lloA67r20ib2N94kwNvI548g+Nw
-         YZaD0xww9RemKE2kIc/fG6MBmPL8gWAc3FcWiQNMncibwJV+en+eQ9J4J1C/r9PR+2fH
-         S21rfWWCZ+v4fgrSQJ1pMdaq3XPu+OFH8QJl0Yxc4W6vf7c8R3K6p5LYdaFlMicC4QU+
-         PX7S1B8p8yDa/bIYuaFHI6KEtvHkwmubT2B23A0e6d6VqsAv/tuvNcqoiqYqSE5qUt5S
-         QAvZmGtbNvuFqt3V3MMKih0HAlB+CeQOlcbtvggXpvWP4uFEyWU7//zScCUh9jFbXglV
-         +sIA==
-X-Forwarded-Encrypted: i=1; AJvYcCUZXkFYuC/RaLMuzjuvIV289hqTn0+dOUJ/bIXU5f+Xq3UEEpEOJCnXTilqpARbxXuQ0Sk+GasCD6qcIIU03EIuByWM2VHHzlfil93qmZrDf0mybuZV5RX6zA6aOZVFfG2xid5nnzgGub0mh4Vb8PXjZ3fJO5l9Q44jnv0vw+rhFq9Z
-X-Gm-Message-State: AOJu0YwyBXzBDs0XuFDqf8rtWF3E2JPT+HOup928YUyDjfVONG3i4Gdj
-	uWsc19XGxCExWvaJYIpGD/DrhXAYd9id+qzSTH0uEkmLfAzqbYTX
-X-Google-Smtp-Source: AGHT+IEzvKX6abFCuyAD2x0BS8ix3G4cXfdKksDDsoZuZtDnnZow0Vh1MnuqD3v6DJxjydy4SuuorQ==
-X-Received: by 2002:a05:6a20:c901:b0:1c3:b2da:cdff with SMTP id adf61e73a8af0-1c3fdb10556mr6962771637.0.1721337330009;
-        Thu, 18 Jul 2024 14:15:30 -0700 (PDT)
-Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fd64b4a29bsm174255ad.15.2024.07.18.14.15.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jul 2024 14:15:29 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 18 Jul 2024 11:15:28 -1000
-From: Tejun Heo <tj@kernel.org>
-To: "boy.wu" <boy.wu@mediatek.com>
-Cc: Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Boris Burkov <boris@bur.io>, cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, iverlin.wang@mediatek.com
-Subject: Re: [PATCH v4] blk-cgroup: Replace u64 sync with spinlock for iostat
-Message-ID: <ZpmF8HJsuefjC7Xr@slm.duckdns.org>
-References: <20240718084112.12202-1-boy.wu@mediatek.com>
+        bh=ImNfl0lxisTrDz2TQ4vM0mgYT84J4/46xCk2xuscFRE=;
+        b=gK4Hiqm5skvO+EcB6Exj+YrB5TFLThdltgVgr9zrp81oW84JhrfdCuTZcVkXPY3neT
+         FTrm3z1a3sZjt4oayrn3iBY36a7DBJT378Nc7RXd7LlAfvtEjHAep1Tq2Ub0GMMBmLna
+         7z4S4tFtzXDUM0NymEe6mB2KtSBUqRzKVv745X5YG3Tq6rqvFwRTKuGWv+7XfT49saWa
+         /cnEsJ9lRMXeyuieGEfuWJdkJtyS7tDp8tRFyBitzIuUIe/B6KHKKM11eHyfGU0rFsU2
+         /ibMg0LMhpdD9Upq1HWDqZNQ2xAILRa2OGBWmh0NR9z692QvTrs8jTAzolaFAzcUX24v
+         HpFA==
+X-Forwarded-Encrypted: i=1; AJvYcCUX3gzCtIwbtx6lINWMVET893WLD3dpSWa2rTL++FulRLdiZb05ZqJA/EIDhsBHZC+e6VbP2k9nMDdECLwNxFSJTwJVX9Jcbg==
+X-Gm-Message-State: AOJu0YwEN03j2AOaKYYIxKfHV5dc2be0soGdiHxGZgu3HaVqlcl9HMnl
+	NJGTjcn/n5rLaOgYyKX1XmBUMEFRfMphtkjRHGHOLCMo5nPmTB6zwcQeyfRXTOMkMGU7UHJbjbz
+	ga+TI7ZOhuqOpE0pvkm+D4MuPuJNb+f0U1aqxcQ==
+X-Google-Smtp-Source: AGHT+IHOUHCFW3BqLlA/XU4s+sjNOKmckQbyQ1DXqrZy31IA0S9B3ukOd/g0Ze9UvEkpyp5dZDi44gENSMuTlNUh0f8=
+X-Received: by 2002:a05:6a00:a1a:b0:705:c029:c993 with SMTP id
+ d2e1a72fcca58-70cfc906b99mr1040207b3a.14.1721339379143; Thu, 18 Jul 2024
+ 14:49:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240718084112.12202-1-boy.wu@mediatek.com>
+References: <20240715203625.1462309-1-davidf@vimeo.com> <20240715203625.1462309-2-davidf@vimeo.com>
+ <ZpZ6IZL482XZT1fU@tiehlicka> <ZpajW9BKCFcCCTr-@slm.duckdns.org> <20240717170408.GC1321673@cmpxchg.org>
+In-Reply-To: <20240717170408.GC1321673@cmpxchg.org>
+From: David Finkel <davidf@vimeo.com>
+Date: Thu, 18 Jul 2024 17:49:28 -0400
+Message-ID: <CAFUnj5OkHp3fYjByCnXJQ51rog93DsimSoc1qxcU7UyKw-nFrw@mail.gmail.com>
+Subject: Re: [PATCH] mm, memcg: cg2 memory{.swap,}.peak write handlers
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, core-services@vimeo.com, 
+	Jonathan Corbet <corbet@lwn.net>, Roman Gushchin <roman.gushchin@linux.dev>, Shuah Khan <shuah@kernel.org>, 
+	Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kselftest@vger.kernel.org, Shakeel Butt <shakeel.butt@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Wed, Jul 17, 2024 at 1:04=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> On Tue, Jul 16, 2024 at 06:44:11AM -1000, Tejun Heo wrote:
+> > Hello,
+> >
+> > On Tue, Jul 16, 2024 at 03:48:17PM +0200, Michal Hocko wrote:
+> > ...
+> > > > This behavior is particularly useful for work scheduling systems th=
+at
+> > > > need to track memory usage of worker processes/cgroups per-work-ite=
+m.
+> > > > Since memory can't be squeezed like CPU can (the OOM-killer has
+> > > > opinions), these systems need to track the peak memory usage to com=
+pute
+> > > > system/container fullness when binpacking workitems.
+> >
+> > Swap still has bad reps but there's nothing drastically worse about it =
+than
+> > page cache. ie. If you're under memory pressure, you get thrashing one =
+way
+> > or another. If there's no swap, the system is just memlocking anon memo=
+ry
+> > even when they are a lot colder than page cache, so I'm skeptical that =
+no
+> > swap + mostly anon + kernel OOM kills is a good strategy in general
+> > especially given that the system behavior is not very predictable under=
+ OOM
+> > conditions.
+> >
+> > > As mentioned down the email thread, I consider usefulness of peak val=
+ue
+> > > rather limited. It is misleading when memory is reclaimed. But
+> > > fundamentally I do not oppose to unifying the write behavior to reset
+> > > values.
+> >
+> > The removal of resets was intentional. The problem was that it wasn't c=
+lear
+> > who owned those counters and there's no way of telling who reset what w=
+hen.
+> > It was easy to accidentally end up with multiple entities that think th=
+ey
+> > can get timed measurement by resetting.
+> >
+> > So, in general, I don't think this is a great idea. There are shortcomi=
+ngs
+> > to how memory.peak behaves in that its meaningfulness quickly declines =
+over
+> > time. This is expected and the rationale behind adding memory.peak, IIR=
+C,
+> > was that it was difficult to tell the memory usage of a short-lived cgr=
+oup.
+> >
+> > If we want to allow peak measurement of time periods, I wonder whether =
+we
+> > could do something similar to pressure triggers - ie. let users registe=
+r
+> > watchers so that each user can define their own watch periods. This is =
+more
+> > involved but more useful and less error-inducing than adding reset to a
+> > single counter.
+> >
+> > Johannes, what do you think?
+>
+> I'm also not a fan of the ability to reset globally.
+>
+> I seem to remember a scheme we discussed some time ago to do local
+> state tracking without having the overhead in the page counter
+> fastpath. The new data that needs to be tracked is a pc->local_peak
+> (in the page_counter) and an fd->peak (in the watcher's file state).
+>
+> 1. Usage peak is tracked in pc->watermark, and now also in pc->local_peak=
+.
+>
+> 2. Somebody opens the memory.peak. Initialize fd->peak =3D -1.
+>
+> 3. If they write, set fd->peak =3D pc->local_peak =3D usage.
+>
+> 4. Usage grows.
+>
+> 5. They read(). A conventional reader has fd->peak =3D=3D -1, so we retur=
+n
+>    pc->watermark. If the fd has been written to, return max(fd->peak, pc-=
+>local_peak).
+>
+> 6. Usage drops.
+>
+> 7. New watcher opens and writes. Bring up all existing watchers'
+>    fd->peak (that aren't -1) to pc->local_peak *iff* latter is bigger.
+>    Then set the new fd->peak =3D pc->local_peak =3D current usage as in 3=
+.
+>
+> 8. See 5. again for read() from each watcher.
+>
+> This way all fd's can arbitrarily start tracking new local peaks with
+> write(). The operation in the charging fast path is cheap. The write()
+> is O(existing_watchers), which seems reasonable. It's fully backward
+> compatible with conventional open() + read() users.
 
-On Thu, Jul 18, 2024 at 04:41:12PM +0800, boy.wu wrote:
->  static void blkg_clear_stat(struct blkcg_gq *blkg)
->  {
->  	int cpu;
->  
-> +#if BITS_PER_LONG == 32
-> +	guard(raw_spinlock_irqsave)(&blkg_stat_lock);
-> +#endif
+I spent some time today attempting to implement this.
+Here's a branch on github that compiles, and I think is close to what you
+described, but is definitely still a WIP:
 
-Can you please collect the ifdefs into a single place? If guard can be used
-for that, that's great. If not, just spin_lock/unlock wrappers are fine too,
-but please collect them into a single place and add a comment explaining why
-this is necessary and why u64_sync isn't being used.
+https://github.com/torvalds/linux/compare/master...dfinkel:linux:memcg2_mem=
+ory_peak_fd_session
 
-Also, for blkg_clear_stat(), we're running a slight chance of clearing of
-iostat_cpu racing against state updates from the hot path. Given the
-circumstances - stat reset is an cgroup1-only feature which isn't used
-widely and a problematic interface to begin with, I believe this is a valid
-choice but it needs to be noted.
+Since there seems to be significant agreement that this approach is better
+long-term as a kernel interface, if that continues, I can factor out some o=
+f
+the changes so it supports both memory.peak and memory.swap.peak,
+fix the tests, and clean up any style issues tomorrow.
 
-Thanks.
+Also, If there are opinions on whether the cgroup_lock is a reasonable way
+of handling this synchronization, or if I should add a more appropriate spi=
+nlock
+or mutex onto either the pagecounter or the memcg, I'm all ears.
 
--- 
-tejun
+(I can mail the WIP change as-is if that's prefered to github)
+
+--=20
+David Finkel
+Senior Principal Software Engineer, Core Services
 
