@@ -1,168 +1,148 @@
-Return-Path: <cgroups+bounces-3772-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3773-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A1CD934AC6
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 11:19:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96FB3934AC7
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 11:19:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E63CD286D28
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 09:19:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C92761C2151E
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 09:19:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B03AD81205;
-	Thu, 18 Jul 2024 09:19:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9E98063C;
+	Thu, 18 Jul 2024 09:19:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="hW5P9sA5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LzdAj7PB"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5FAC78C8F
-	for <cgroups@vger.kernel.org>; Thu, 18 Jul 2024 09:19:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F4863399B;
+	Thu, 18 Jul 2024 09:19:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721294379; cv=none; b=E78ViF/Q6CO5MRrltsitlYtmxVqSLluTU09MQ5nOon0o71xoUynEOlrfKxKfXOP317r9BzgIi4UngisjN0c0mFIaPiq7Vh9uMfFXTwml85PAgUTe4a7kXl1gv4we/Azwz8ZeLktS+0j89ojH30BIBDdTgz0X5TeWSuZ2Ll/oDGs=
+	t=1721294391; cv=none; b=VOASWuwIVwVj/oCrmOy9xEaZEjJz2HocaWmetitjXcH6w2CQKiz0AoD8ewst/Mkf82AQK/NAj/y1avNP7+ab1M6wNw1xW6S/mp4WRg2uKYmoifGvynGWmYNqArIiLmHu3hAFroQsTjJHuVDF323hszEjiXoQjSI+jKpKQwfI0Gs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721294379; c=relaxed/simple;
-	bh=cRBLaAKsjg60Bgx2QXSb7J4tMBoVTvtjecD2r8glEB8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=pTGzYa7E65B8ZcqN/j5++F83fuDoM1UlSfFTwpYubzwLR2n7rqqEkmRxOSluezloMUs5o/qG7VijrwD9KC7bbjZchWAXuXYVJYZTimF221jzjK2gZLb0ewuBtUvkcCo867LV38O00PSaukM1wnb6Z+tTEtPZkLPljCQtqH9X0H8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=hW5P9sA5; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-70cec4aa1e4so372055b3a.1
-        for <cgroups@vger.kernel.org>; Thu, 18 Jul 2024 02:19:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1721294376; x=1721899176; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nU8sLB6vIuteXJgQPw++2LFGLgdg5qqMxhtbiU9nCuo=;
-        b=hW5P9sA5J79fn1lfpVhbqXUrzS6hrFO1fV51TCepZLMi/JIMkCRMUoTL/RJoyBV2JA
-         yog2/pVXAx7zXNt/fYij/fmByjIy6coyPX+V0o7SCqMIgCTd/JY7UzdPIeq10VYZcwiN
-         5qS9lc4BCD920m48APKn2yQuUk6TjDzzQ7zgUD1gzkAwfTDhZRj36g5HaRH9XDH1uO6g
-         q4d7VwTBZC1MrhpyRExkJtOVqaE8muZs6elO/tM0Ejf/CqCpdHpPU+/QBBc9ywm30sMz
-         K+affVksDU4ew6bjzfm8Ksev/aBW762kDtA45u9zXhAUv0Cqd6e8BzGB8HuWEt+5oUY1
-         gacA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721294376; x=1721899176;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nU8sLB6vIuteXJgQPw++2LFGLgdg5qqMxhtbiU9nCuo=;
-        b=Amm3dtAFIlyMGfEb2SHZdpCekmglSwoRsC26ym0TuiKOvV7P/G6v46WMKvYXc3zpNq
-         u+5GO5o2jBy1kG/qmisv+DwWLsTip1lTne9znUS9s1fNfLf4cEvSDUkpro/iG5gtmWqS
-         a3N9LAArqwAbVvB9BBft6gR8TmcqEUZh7iKlqdw3XRH55F5OKehc1gTET/7uXElI9TSp
-         cF3yRN7+dnvJtD4xdu7mAswR1YGgVmwlHSN71VbAFv8HEdGDNgO01sV6NWj0q938cWyi
-         V/NTBhqhHzZGVpZYanKInboY1tuDycua/Z8UHcxxQrJB4PGcaMd1+IwgkhgODCnS1c3x
-         zctA==
-X-Gm-Message-State: AOJu0YxKF0NqJdtouq1Pc+7L/jkggh/EME/tgDWGXmMRf1DUvLdcpJWE
-	vu/TGyPqGJvgu/ZtPcImjzIHaRnrZ26yBoLmpZWbaz5i4HUPWjImqVupEAcUgWM=
-X-Google-Smtp-Source: AGHT+IGOaTVMJyS7kT7lM0bn1HJi6pUMyC1NCcBFyE3paLzEIwtWXl/YIIWAEle3euPKuYGHJElEaQ==
-X-Received: by 2002:a05:6a00:3d0a:b0:705:6a0a:de14 with SMTP id d2e1a72fcca58-70ce4f47fd3mr4979886b3a.1.1721294376045;
-        Thu, 18 Jul 2024 02:19:36 -0700 (PDT)
-Received: from PXLDJ45XCM.bytedance.net ([61.213.176.12])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70b7eca8c01sm9830421b3a.172.2024.07.18.02.19.29
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 18 Jul 2024 02:19:35 -0700 (PDT)
-From: Muchun Song <songmuchun@bytedance.com>
-To: hannes@cmpxchg.org,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	akpm@linux-foundation.org
-Cc: cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm: kmem: remove mem_cgroup_from_obj()
-Date: Thu, 18 Jul 2024 17:18:21 +0800
-Message-Id: <20240718091821.44740-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+	s=arc-20240116; t=1721294391; c=relaxed/simple;
+	bh=JHPP4Mp0x8FuvmMJ+shD192GYO/rYQu/8eEDu1L9I1E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qJb0GzNPIpSWuM6UdlU2ObCK9dZZCKvoZfbgn3i7tjprVRtmJJikEmaQjTcWZ135aubx3/tptMzAnbWkq2JepE/vIAOvMgZuyuXPV0QaUtegQdxVUcETBHWugZmTcRyNhH6mNEyprtRKOCQjSEwfdCW5GdE6pqwWdH6Thjp3ylU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LzdAj7PB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A71E6C116B1;
+	Thu, 18 Jul 2024 09:19:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721294391;
+	bh=JHPP4Mp0x8FuvmMJ+shD192GYO/rYQu/8eEDu1L9I1E=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=LzdAj7PBpfaUWnjrKQvjbs5b6Ko64yKMlkZfPMpy3Kyk+27Tn8OtyokBYQmg3zA57
+	 qEeaZi7kgRVZkFerLWxaQI1FI6TRaM+0WNx/v1wIKybd913OIhZmMSnM342TcCkRaT
+	 bRwB/L3i4ymQKUsrjqks+1mkZbVW6dGkh4bAhcDae3PiKb/BnU/EBNI1tGMi6Jhqeb
+	 waaGnaAgXsV4SJRURc7sRsPiYeJYHst8f3kjmCLT5w/rkpAFWrytjuwkFz/lgFqcU1
+	 cUWSehAFjaAyzag9/ZiP6gkSNyWzi/U/pYe17ipi/YX8OusKZEA+Q+RBrLh8R9yNkU
+	 1l8IytZxncCdA==
+Message-ID: <6b193cd1-ee30-4fd8-a748-ed266fe4bc37@kernel.org>
+Date: Thu, 18 Jul 2024 11:19:46 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] mm: skip memcg for certain address space
+Content-Language: en-US
+To: Qu Wenruo <wqu@suse.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+ Michal Hocko <mhocko@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Cgroups <cgroups@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>
+References: <cover.1720572937.git.wqu@suse.com>
+ <8faa191c-a216-4da0-a92c-2456521dcf08@kernel.org>
+ <Zpft2A_gzfAYBFfZ@tiehlicka> <9c0d7ce7-b17d-4d41-b98a-c50fd0c2c562@gmx.com>
+ <9572fc2b-12b0-41a3-82dc-bb273bfdd51d@kernel.org>
+ <3cc3e652-e058-4995-8347-337ae605ebab@suse.com>
+ <ea6cfaf6-bdb8-48a4-bf59-9f54f36b112e@kernel.org>
+ <2b48a095-97e6-43bc-9f7c-13dd31ce00b8@suse.com>
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+In-Reply-To: <2b48a095-97e6-43bc-9f7c-13dd31ce00b8@suse.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-There is no user of mem_cgroup_from_obj(), remove it.
+On 7/18/24 10:50 AM, Qu Wenruo wrote:
+> 
+> 
+> 在 2024/7/18 17:58, Vlastimil Babka (SUSE) 写道:
+>> On 7/18/24 9:52 AM, Qu Wenruo wrote:
+>>>
+>>> The previous rc kernel. IIRC it's v6.10-rc6.
+>>>
+>>> But that needs extra btrfs patches, or btrfs are still only doing the
+>>> order-0 allocation, then add the order-0 folio into the filemap.
+>>>
+>>> The extra patch just direct btrfs to allocate an order 2 folio (matching
+>>> the default 16K nodesize), then attach the folio to the metadata filemap.
+>>>
+>>> With extra coding handling corner cases like different folio sizes etc.
+>> 
+>> Hm right, but the same code is triggered for high-order folios (at least for
+>> user mappable page cache) today by some filesystems AFAIK, so we should be
+>> seeing such lockups already? btrfs case might be special that it's for the
+>> internal node as you explain, but that makes no difference for
+>> filemap_add_folio(), right? Or is it the only user with GFP_NOFS? Also is
+>> that passed as gfp directly or are there some extra scoped gfp resctrictions
+>> involved? (memalloc_..._save()).
+> 
+> I'm not sure about other fses, but for that hang case, it's very 
+> metadata heavy, and ALL folios for that btree inode filemap is in order 
+> 2, since we're always allocating the order folios using GFP_NOFAIL, and 
+> attaching that folio into the filemap using GFP_NOFAIL too.
+> 
+> Not sure if other fses can have such situation.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- include/linux/memcontrol.h |  6 ------
- mm/memcontrol.c            | 32 +-------------------------------
- 2 files changed, 1 insertion(+), 37 deletions(-)
+Doh right of course, the __GFP_NOFAIL is the special part compared to the
+usual page cache usage.
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 394fd0a887ae7..461313307ec23 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1862,7 +1862,6 @@ static inline int memcg_kmem_id(struct mem_cgroup *memcg)
- 	return memcg ? memcg->kmemcg_id : -1;
- }
- 
--struct mem_cgroup *mem_cgroup_from_obj(void *p);
- struct mem_cgroup *mem_cgroup_from_slab_obj(void *p);
- 
- static inline void count_objcg_event(struct obj_cgroup *objcg,
-@@ -1925,11 +1924,6 @@ static inline int memcg_kmem_id(struct mem_cgroup *memcg)
- 	return -1;
- }
- 
--static inline struct mem_cgroup *mem_cgroup_from_obj(void *p)
--{
--	return NULL;
--}
--
- static inline struct mem_cgroup *mem_cgroup_from_slab_obj(void *p)
- {
- 	return NULL;
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index fabce2b50c695..d04fb1ae870e9 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3076,37 +3076,7 @@ struct mem_cgroup *mem_cgroup_from_obj_folio(struct folio *folio, void *p)
- 
- /*
-  * Returns a pointer to the memory cgroup to which the kernel object is charged.
-- *
-- * A passed kernel object can be a slab object, vmalloc object or a generic
-- * kernel page, so different mechanisms for getting the memory cgroup pointer
-- * should be used.
-- *
-- * In certain cases (e.g. kernel stacks or large kmallocs with SLUB) the caller
-- * can not know for sure how the kernel object is implemented.
-- * mem_cgroup_from_obj() can be safely used in such cases.
-- *
-- * The caller must ensure the memcg lifetime, e.g. by taking rcu_read_lock(),
-- * cgroup_mutex, etc.
-- */
--struct mem_cgroup *mem_cgroup_from_obj(void *p)
--{
--	struct folio *folio;
--
--	if (mem_cgroup_disabled())
--		return NULL;
--
--	if (unlikely(is_vmalloc_addr(p)))
--		folio = page_folio(vmalloc_to_page(p));
--	else
--		folio = virt_to_folio(p);
--
--	return mem_cgroup_from_obj_folio(folio, p);
--}
--
--/*
-- * Returns a pointer to the memory cgroup to which the kernel object is charged.
-- * Similar to mem_cgroup_from_obj(), but faster and not suitable for objects,
-- * allocated using vmalloc().
-+ * It is not suitable for objects allocated using vmalloc().
-  *
-  * A passed kernel object must be a slab object or a generic kernel page.
-  *
--- 
-2.20.1
+> [...]
+>>> If I understand it correctly, we have implemented release_folio()
+>>> callback, which does the btrfs metadata checks to determine if we can
+>>> release the current folio, and avoid releasing folios that's still under
+>>> IO etc.
+>> 
+>> I see, thanks. Sounds like there might be potentially some suboptimal
+>> handling in that the folio will appear inactive because there's no
+>> references that folio_check_references() can detect, unless there's some
+>> folio_mark_accessed() calls involved (I see some FGP_ACCESSED in btrfs so
+>> maybe that's fine enough) so reclaim could consider it often, only to be
+>> stopped by release_folio failing.
+> 
+> For the page accessed part, btrfs handles it by 
+> mark_extent_buffer_accessed() call, and it's called every time we try to 
+> grab an extent buffer structure (the structure used to represent a 
+> metadata block inside btrfs).
+> 
+> So the accessed flag part should be fine I guess?
+
+Sounds good then, thanks!
+
+> Thanks,
+> Qu
+>> 
+>>>>
+>>>> (sorry if the questions seem noob, I'm not that much familiar with the page
+>>>> cache side of mm)
+>>>
+>>> No worry at all, I'm also a newbie on the whole mm part.
+>>>
+>>> Thanks,
+>>> Qu
+>>>
+>>>>
+>>>>> Thanks,
+>>>>> Qu
+>>>>
+>> 
 
 
