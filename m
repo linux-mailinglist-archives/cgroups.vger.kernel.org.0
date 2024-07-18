@@ -1,251 +1,204 @@
-Return-Path: <cgroups+bounces-3769-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3770-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 257BC934A22
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 10:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 89DCA934A70
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 10:51:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A76A1F24CAF
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 08:42:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08A131F28143
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 08:51:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 923587D3EF;
-	Thu, 18 Jul 2024 08:42:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 501077F498;
+	Thu, 18 Jul 2024 08:50:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="f7uD2/F7"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UL3Lz5fn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 783933B784;
-	Thu, 18 Jul 2024 08:42:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5DEE7D071
+	for <cgroups@vger.kernel.org>; Thu, 18 Jul 2024 08:50:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721292125; cv=none; b=UlKkxI+0JIzzllN8gwIErQto9Gr4FcN2NZZ58Y9DPOS89DvobUlQ8VH+GFXyud5HJ4rZ2SUYqX9u+wT5Wnje5YJX7NghyVpDjNHpNNu+zKWJzzPcKFP1R5JrHwPgHmi8V5AV85Mh7g07OuB7cIrr030fFMe6NyIjLvhEobx804w=
+	t=1721292659; cv=none; b=PW6d9Gqa1g6WQY7/wTeBEnQDZN1vUZ5eWyFEWPlz0j7Q1975BrRn/yI3cs9PRUe3rXfUz6H1TTWraq+OkWfd1gs9UIwKQdk9sdBXCXR4TY4HXvilLA6FyjQ21RsI1Kh64cWlbW27ufVK0EM4jJJTEqJHjIJsgqfu5UPRDfZjwTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721292125; c=relaxed/simple;
-	bh=bZxPqhxRGdkOe6ZLtw3jKcUWDWSwAmYsYQ61dXx/HOM=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=n8PIYb4gV/t2p7F6PPCiu5NEaXDnGbSnNnjw/TFc5E3SVGQL4f++IjkfMMO/JycI3aVxEZLzzxeIOHb5VdBIeqr6S/1lYVf6Yuwi6Js0Y6jkpw+K7em2ZBqUWCTbo6Eb031M+zwNHL9W1QyusGTZmLWu36tfPlLVhyKwkKI3OEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=f7uD2/F7; arc=none smtp.client-ip=210.61.82.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 954dd25644e111ef87684b57767b52b1-20240718
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=7cJPIYBOZKxw9By0YCCiUkOLCsHVgJUmv6aYpcZa7dk=;
-	b=f7uD2/F7SkTFOfUYHRiR66c1Sk2Hi+FvaLxUyzevtOaezO80RN9BEmg9rJz0ekolP6FcjJKCmy60GT9YNMmNRLexmkAAKLL1IU6+2uEkN9hQuRq471+y4EiQKy4L4L7F6aKrVpqXMzhVQbP3pHW84cehEMVTCGJ5M5Da7rTWl4o=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.40,REQID:53f467ad-055b-4c6d-be37-d96deb48ce75,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-25
-X-CID-META: VersionHash:ba885a6,CLOUDID:6b877245-a117-4f46-a956-71ffeac67bfa,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
-	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 954dd25644e111ef87684b57767b52b1-20240718
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
-	(envelope-from <boy.wu@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 717439943; Thu, 18 Jul 2024 16:41:53 +0800
-Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 18 Jul 2024 16:41:53 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 18 Jul 2024 16:41:53 +0800
-From: boy.wu <boy.wu@mediatek.com>
-To: Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>, Jens Axboe
-	<axboe@kernel.dk>
-CC: Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>, Boris Burkov <boris@bur.io>,
-	<cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mediatek@lists.infradead.org>, <iverlin.wang@mediatek.com>, Boy Wu
-	<boy.wu@mediatek.com>
-Subject: [PATCH v4] blk-cgroup: Replace u64 sync with spinlock for iostat
-Date: Thu, 18 Jul 2024 16:41:12 +0800
-Message-ID: <20240718084112.12202-1-boy.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+	s=arc-20240116; t=1721292659; c=relaxed/simple;
+	bh=VPu62giElvSUJKmPo2jdxFfPi7JYDtl3cgHfi6gxuFk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bMnnAktZZQVfXquAxQgCEDgn3Rg8sH6XtP/vQl2AirEeaP++flFlKSgLg58fuUCEu7Fy/1e/NQ5Ep3SUthIF2VLjQHJDwnyJjOULdMurphrqU/Hr3zX7Z5aizxJQnB4V1PfXUK2TRIbFwIz9YNNYe8t92+Z034VMLHZllS7e51s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UL3Lz5fn; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2eedea0fd88so7304311fa.2
+        for <cgroups@vger.kernel.org>; Thu, 18 Jul 2024 01:50:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1721292655; x=1721897455; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=aUXyH26QNSmClAbWu6W2K8UP580WeU1e6kGYqEWCyBc=;
+        b=UL3Lz5fnjpXWxruFOrin4uyehMFBc6+/B+ylHg3kT4P38jHafz+2dTf9aAnhB07MYc
+         ucjPCCgeicJKpqxVLhCr6qJ/j8Oqu+0Md/QG3qTIni+wl+HRnoHL1yRxccCtBgBry3CN
+         NxZcMCA/xskNiVd9eRKfT32cCT+K2KVFNGVSnRoK87ev6Ev017MCg83nhHiA7H+GtIUn
+         3nmPPkyU742PEnqXQj6MAZvo5UqQuP7iV9LTzbi3p6MiTADIN8xmJH1A04Y25uOmsmeQ
+         f2/ueuT9jzlUf011X8R9Kg3UmCSPBr5bHdo+T+Y9BFmC+jPeOgHePEbhNDjfe6q9uEtu
+         UFWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721292655; x=1721897455;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aUXyH26QNSmClAbWu6W2K8UP580WeU1e6kGYqEWCyBc=;
+        b=h5+roEpY/cIM/MqzbQlPmwNRF1ercIJWRMGpjZGexmDn4wBLiE6bGx2uJG0F2fiFI6
+         D7/QsZ/1EUuJ9l85fBCtvkpeoQNoPli7VMeflZX0ybScmTv4Ou+j7KX+s8+SpqoXEGxM
+         lHAzgpTxdclZ/bUn4R1J8jZu8jg37MllprG2yYgEGwbpovhdwzqpkLV/igWqS3Uu4mji
+         bNLks0jJjq4d7g0X1NOhkRl2qVeaG3wM7xSLoBL6FrYGsdXV6XSI56d94t3s6+OGG+nx
+         asDOmGBUmAYYlXNLUH8mJVURKQxpqA4Zuj8Y/z9VijYAfbj09BEYvoIOXYSjkU43RGTX
+         N+Qw==
+X-Forwarded-Encrypted: i=1; AJvYcCVHkDsRNrsZcocQGHjCv7DA4ByH5H3AmCTjMsTa4oJa32+D/1i3d2uwvhMN23NUWLPC4bLvwjOZ3KAa2FhdmUU1b+o86fFTJQ==
+X-Gm-Message-State: AOJu0YwG7gZ6VXqCgpVGdUKCt8anjJAZLoDh3XI3+iURvf7zvtvcfEXc
+	TSDyLHYFV+v/8DmN2Cu0jVTw/WYu6n0BcapQPheO2pdh145d6mqnAwd/Oy4ZVq8=
+X-Google-Smtp-Source: AGHT+IGhsQ8lEw/txY+HPUhGhnwqdejZRwl/YC9UMsP50V4lGYEbG7/8EsXBTOPhcMRIw3DDB6FHXA==
+X-Received: by 2002:a05:651c:1542:b0:2ee:8777:f87a with SMTP id 38308e7fff4ca-2ef05ca17b5mr13735131fa.29.1721292654698;
+        Thu, 18 Jul 2024 01:50:54 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bc274edsm87809815ad.154.2024.07.18.01.50.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jul 2024 01:50:54 -0700 (PDT)
+Message-ID: <2b48a095-97e6-43bc-9f7c-13dd31ce00b8@suse.com>
+Date: Thu, 18 Jul 2024 18:20:47 +0930
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--7.618200-8.000000
-X-TMASE-MatchedRID: YZKi2GGnn9+ZtBi01n3C9xafLXbshfogcx5k3wffojOHwGEm+CpYGTEG
-	FjeZwyRUzbrWhbT2b8cTMOv2lZG8w2zFfXEzaNt8wCZxkTHxccn64i5lgawyBFSOymiJfTYXZmL
-	HoWzm2fS1hH+43GdK0QG2ORx9EyapCCk23kSAVszovZduO2AF9zQAp53S718HVo+424uIBNJYTM
-	99NlfBm1EXNKIgpuQj+9p3HcFJM3mVhIWL9FEuN54CIKY/Hg3AGdQnQSTrKGPEQdG7H66TyH4gK
-	q42LRYkpO8ojRYm4lcl4rDZgwtgKw3kTcv9FMbtpUElRFcYt7l+3BndfXUhXQ==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--7.618200-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: F123CDD9A65F6182C8CF3180A6DA8AB398AC9F1B101EEA855735D2109E5C8CC32000:8
-X-MTK: N
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] mm: skip memcg for certain address space
+To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
+ Qu Wenruo <quwenruo.btrfs@gmx.com>, Michal Hocko <mhocko@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Cgroups <cgroups@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>
+References: <cover.1720572937.git.wqu@suse.com>
+ <8faa191c-a216-4da0-a92c-2456521dcf08@kernel.org>
+ <Zpft2A_gzfAYBFfZ@tiehlicka> <9c0d7ce7-b17d-4d41-b98a-c50fd0c2c562@gmx.com>
+ <9572fc2b-12b0-41a3-82dc-bb273bfdd51d@kernel.org>
+ <3cc3e652-e058-4995-8347-337ae605ebab@suse.com>
+ <ea6cfaf6-bdb8-48a4-bf59-9f54f36b112e@kernel.org>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <ea6cfaf6-bdb8-48a4-bf59-9f54f36b112e@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-From: Boy Wu <boy.wu@mediatek.com>
 
-In 32bit SMP systems, if multiple CPUs call blkcg_print_stat,
-it may cause blkcg_fill_root_iostats to have a concurrent problem
-on the seqlock in u64_stats_update, which will cause a deadlock
-on u64_stats_fetch_begin in blkcg_print_one_stat.
 
-Thus, replace u64 sync with spinlock to protect iostat.
+在 2024/7/18 17:58, Vlastimil Babka (SUSE) 写道:
+> On 7/18/24 9:52 AM, Qu Wenruo wrote:
+>>
+>>
+>> 在 2024/7/18 16:47, Vlastimil Babka (SUSE) 写道:
+>>> On 7/18/24 12:38 AM, Qu Wenruo wrote:
+>> [...]
+>>>> Another question is, I only see this hang with larger folio (order 2 vs
+>>>> the old order 0) when adding to the same address space.
+>>>>
+>>>> Does the folio order has anything related to the problem or just a
+>>>> higher order makes it more possible?
+>>>
+>>> I didn't spot anything in the memcg charge path that would depend on the
+>>> order directly, hm. Also what kernel version was showing these soft lockups?
+>>
+>> The previous rc kernel. IIRC it's v6.10-rc6.
+>>
+>> But that needs extra btrfs patches, or btrfs are still only doing the
+>> order-0 allocation, then add the order-0 folio into the filemap.
+>>
+>> The extra patch just direct btrfs to allocate an order 2 folio (matching
+>> the default 16K nodesize), then attach the folio to the metadata filemap.
+>>
+>> With extra coding handling corner cases like different folio sizes etc.
+> 
+> Hm right, but the same code is triggered for high-order folios (at least for
+> user mappable page cache) today by some filesystems AFAIK, so we should be
+> seeing such lockups already? btrfs case might be special that it's for the
+> internal node as you explain, but that makes no difference for
+> filemap_add_folio(), right? Or is it the only user with GFP_NOFS? Also is
+> that passed as gfp directly or are there some extra scoped gfp resctrictions
+> involved? (memalloc_..._save()).
 
-Fixes: ef45fe470e1e ("blk-cgroup: show global disk stats in root cgroup io.stat")
-Signed-off-by: Boy Wu <boy.wu@mediatek.com>
----
-Change in v2:
- - update commit message
- - Remove u64_sync
- - Replace spin_lock_irq with guard statement
- - Replace blkg->q->queue_lock with blkg_stat_lock
-Change in v3:
- - update commit message
- - Add spinlock in blkg_iostat_set structure
- - Replace all u64_sync with spinlock for iostat
- - Replace blkg_stat_lock with iostat.spinlock
-Change in v4:
- - update commit message
- - Remove spinlock in blkg_iostat_set structure
- - Replace iostat.spinlock with blkg_stat_lock
- - Add 32-bit systems only define
----
- block/blk-cgroup.c | 34 +++++++++++++---------------------
- 1 file changed, 13 insertions(+), 21 deletions(-)
+I'm not sure about other fses, but for that hang case, it's very 
+metadata heavy, and ALL folios for that btree inode filemap is in order 
+2, since we're always allocating the order folios using GFP_NOFAIL, and 
+attaching that folio into the filemap using GFP_NOFAIL too.
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 37e6cc91d576..faa604c6fab9 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -329,7 +329,6 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct gendisk *disk,
- 	INIT_WORK(&blkg->async_bio_work, blkg_async_bio_workfn);
- #endif
- 
--	u64_stats_init(&blkg->iostat.sync);
- 	for_each_possible_cpu(cpu) {
- 		u64_stats_init(&per_cpu_ptr(blkg->iostat_cpu, cpu)->sync);
- 		per_cpu_ptr(blkg->iostat_cpu, cpu)->blkg = blkg;
-@@ -632,18 +631,18 @@ static void blkg_iostat_set(struct blkg_iostat *dst, struct blkg_iostat *src)
- static void __blkg_clear_stat(struct blkg_iostat_set *bis)
- {
- 	struct blkg_iostat cur = {0};
--	unsigned long flags;
- 
--	flags = u64_stats_update_begin_irqsave(&bis->sync);
- 	blkg_iostat_set(&bis->cur, &cur);
- 	blkg_iostat_set(&bis->last, &cur);
--	u64_stats_update_end_irqrestore(&bis->sync, flags);
- }
- 
- static void blkg_clear_stat(struct blkcg_gq *blkg)
- {
- 	int cpu;
- 
-+#if BITS_PER_LONG == 32
-+	guard(raw_spinlock_irqsave)(&blkg_stat_lock);
-+#endif
- 	for_each_possible_cpu(cpu) {
- 		struct blkg_iostat_set *s = per_cpu_ptr(blkg->iostat_cpu, cpu);
- 
-@@ -995,15 +994,12 @@ static void blkcg_iostat_update(struct blkcg_gq *blkg, struct blkg_iostat *cur,
- 				struct blkg_iostat *last)
- {
- 	struct blkg_iostat delta;
--	unsigned long flags;
- 
- 	/* propagate percpu delta to global */
--	flags = u64_stats_update_begin_irqsave(&blkg->iostat.sync);
- 	blkg_iostat_set(&delta, cur);
- 	blkg_iostat_sub(&delta, last);
- 	blkg_iostat_add(&blkg->iostat.cur, &delta);
- 	blkg_iostat_add(last, &delta);
--	u64_stats_update_end_irqrestore(&blkg->iostat.sync, flags);
- }
- 
- static void __blkcg_rstat_flush(struct blkcg *blkcg, int cpu)
-@@ -1034,7 +1030,6 @@ static void __blkcg_rstat_flush(struct blkcg *blkcg, int cpu)
- 		struct blkcg_gq *blkg = bisc->blkg;
- 		struct blkcg_gq *parent = blkg->parent;
- 		struct blkg_iostat cur;
--		unsigned int seq;
- 
- 		/*
- 		 * Order assignment of `next_bisc` from `bisc->lnode.next` in
-@@ -1051,10 +1046,7 @@ static void __blkcg_rstat_flush(struct blkcg *blkcg, int cpu)
- 			goto propagate_up; /* propagate up to parent only */
- 
- 		/* fetch the current per-cpu values */
--		do {
--			seq = u64_stats_fetch_begin(&bisc->sync);
--			blkg_iostat_set(&cur, &bisc->cur);
--		} while (u64_stats_fetch_retry(&bisc->sync, seq));
-+		blkg_iostat_set(&cur, &bisc->cur);
- 
- 		blkcg_iostat_update(blkg, &cur, &bisc->last);
- 
-@@ -1112,7 +1104,6 @@ static void blkcg_fill_root_iostats(void)
- 		struct blkcg_gq *blkg = bdev->bd_disk->queue->root_blkg;
- 		struct blkg_iostat tmp;
- 		int cpu;
--		unsigned long flags;
- 
- 		memset(&tmp, 0, sizeof(tmp));
- 		for_each_possible_cpu(cpu) {
-@@ -1133,10 +1124,10 @@ static void blkcg_fill_root_iostats(void)
- 			tmp.bytes[BLKG_IOSTAT_DISCARD] +=
- 				cpu_dkstats->sectors[STAT_DISCARD] << 9;
- 		}
--
--		flags = u64_stats_update_begin_irqsave(&blkg->iostat.sync);
-+#if BITS_PER_LONG == 32
-+		guard(raw_spinlock_irqsave)(&blkg_stat_lock);
-+#endif
- 		blkg_iostat_set(&blkg->iostat.cur, &tmp);
--		u64_stats_update_end_irqrestore(&blkg->iostat.sync, flags);
- 	}
- }
- 
-@@ -1145,7 +1136,6 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
- 	struct blkg_iostat_set *bis = &blkg->iostat;
- 	u64 rbytes, wbytes, rios, wios, dbytes, dios;
- 	const char *dname;
--	unsigned seq;
- 	int i;
- 
- 	if (!blkg->online)
-@@ -1157,16 +1147,18 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
- 
- 	seq_printf(s, "%s ", dname);
- 
--	do {
--		seq = u64_stats_fetch_begin(&bis->sync);
--
-+#if BITS_PER_LONG == 32
-+	scoped_guard(raw_spinlock_irqsave, &blkg_stat_lock) {
-+#endif
- 		rbytes = bis->cur.bytes[BLKG_IOSTAT_READ];
- 		wbytes = bis->cur.bytes[BLKG_IOSTAT_WRITE];
- 		dbytes = bis->cur.bytes[BLKG_IOSTAT_DISCARD];
- 		rios = bis->cur.ios[BLKG_IOSTAT_READ];
- 		wios = bis->cur.ios[BLKG_IOSTAT_WRITE];
- 		dios = bis->cur.ios[BLKG_IOSTAT_DISCARD];
--	} while (u64_stats_fetch_retry(&bis->sync, seq));
-+#if BITS_PER_LONG == 32
-+	}
-+#endif
- 
- 	if (rbytes || wbytes || rios || wios) {
- 		seq_printf(s, "rbytes=%llu wbytes=%llu rios=%llu wios=%llu dbytes=%llu dios=%llu",
--- 
-2.18.0
+Not sure if other fses can have such situation.
 
+[...]
+>> If I understand it correctly, we have implemented release_folio()
+>> callback, which does the btrfs metadata checks to determine if we can
+>> release the current folio, and avoid releasing folios that's still under
+>> IO etc.
+> 
+> I see, thanks. Sounds like there might be potentially some suboptimal
+> handling in that the folio will appear inactive because there's no
+> references that folio_check_references() can detect, unless there's some
+> folio_mark_accessed() calls involved (I see some FGP_ACCESSED in btrfs so
+> maybe that's fine enough) so reclaim could consider it often, only to be
+> stopped by release_folio failing.
+
+For the page accessed part, btrfs handles it by 
+mark_extent_buffer_accessed() call, and it's called every time we try to 
+grab an extent buffer structure (the structure used to represent a 
+metadata block inside btrfs).
+
+So the accessed flag part should be fine I guess?
+
+Thanks,
+Qu
+> 
+>>>
+>>> (sorry if the questions seem noob, I'm not that much familiar with the page
+>>> cache side of mm)
+>>
+>> No worry at all, I'm also a newbie on the whole mm part.
+>>
+>> Thanks,
+>> Qu
+>>
+>>>
+>>>> Thanks,
+>>>> Qu
+>>>
+> 
 
