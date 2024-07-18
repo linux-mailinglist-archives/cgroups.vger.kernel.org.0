@@ -1,119 +1,216 @@
-Return-Path: <cgroups+bounces-3762-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3763-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 522779348BB
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 09:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 86435934962
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 09:53:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E6042820A4
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 07:26:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4584A283576
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 07:53:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6872770E5;
-	Thu, 18 Jul 2024 07:25:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68497711F;
+	Thu, 18 Jul 2024 07:52:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="R+D+F+Pd"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Wb6bcu8l"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84FC24D9FE
-	for <cgroups@vger.kernel.org>; Thu, 18 Jul 2024 07:25:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5780774058
+	for <cgroups@vger.kernel.org>; Thu, 18 Jul 2024 07:52:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721287550; cv=none; b=eZ5miozhx1Jsye74g0NCeOwFy04qAGKO6GTP9pFVSLQ7D4KWKF/P408ezCgIA4Yr8ecgIMd+QlUzUacdoFIp3wYg0BGmSKjAxWlJ55OKLKrDnQF5nJiqvbXOCmM+vU8a49dXnLxDiwUi/jy/hCgWcxPDomhUz9LnOKXZzboWezc=
+	t=1721289173; cv=none; b=K3KvOo1H9YhlS3M2pNR5sjAGRHCIdZdtHgueH9qTRS7r9f/59xfz0kYwr4XxRjfqyVVptQuuGjEg+RtPaNZSIlGHIE2fJ3i0w58CJO99amy3IRSST4va4vq+dDedpyzS8r4sxuOjADe0kTk88bnVU3nnXvXZ2W5mYiSfGUxw4Fc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721287550; c=relaxed/simple;
-	bh=jOELyCaGkaykG65k6MmracYS/rExwA+PASAjNC9tR1s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EKVTyR4rYfbu/vyTRIbTYAEaxbQoKH567a5E0H4U9Gt3sVx041NUUeeFKGCx7Sm0QKLFyZZTr1VvEBFiskmUhENuYbybmQsjPxDCAY9yh2K6P3slLgwVoMkIQpezrKKtg5RXwBX8OplINLP2IlpKyhqkqB98uCedmXQJKi8bKY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=R+D+F+Pd; arc=none smtp.client-ip=209.85.218.45
+	s=arc-20240116; t=1721289173; c=relaxed/simple;
+	bh=gZ+mg6geoezziew2mhl2AtLEm35HWHVK2lpCX0HMns4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LnkOk0G9uPbeQSfRdLMe6FXhEaj9HoJVuWzLFTHHbyIzEsbEQ8A3By9G214rfUfn3lmkkX+n3thfmJFhjdrjInTJtZPnzmwNksQO3xIi340qo13jYjJefeCkql4VIqS5zcXX1GbHLnTJscmCK2Ij1cXi/wcEMtu3alx/KKfznqA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Wb6bcu8l; arc=none smtp.client-ip=209.85.208.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a77e6dd7f72so41068266b.3
-        for <cgroups@vger.kernel.org>; Thu, 18 Jul 2024 00:25:48 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2eefc3d707dso6314671fa.0
+        for <cgroups@vger.kernel.org>; Thu, 18 Jul 2024 00:52:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1721287547; x=1721892347; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vcwItFS0olVkauOdW6Vv7zuIp6VerMiLVs+nxpD7snM=;
-        b=R+D+F+Pd7eEov5CEC3E6Jahz6RRxYkraAcLn11NmjqCAxPmrNjPkeBSit8FU4TeVKJ
-         iEVYz5eWnirxY2TUGaY8GMpfFwJtvhd5X9WzUabUYMOyIe6sb/P6bN3x3yVeBk+bF7Cr
-         Xw2kZ/tbR6mZj8s21DAzyZyVZkTAqdyCB9WIVgIwnBgsXxvzc+NKr9Q8b3xGBUEIkNyq
-         k7JYUVBoSgS5XTXgXp2toLmua12gBkdaXBHgmnL3ID7jJe9KuOejemLt9VO05G//Qq1H
-         thS5fDAmeQdT2YScbNfW0492k+f+68DL67SLFjt2vrW2f1jwjzVHRmAqhIXWjDBPee6I
-         MOtA==
+        d=suse.com; s=google; t=1721289169; x=1721893969; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=ItcZOxEWC9jKArqH07Fv+He9OxE1gAM7tmpwWQe9zzE=;
+        b=Wb6bcu8l9TR2nVCCK79x9HqGMhiO9w6rxCzaFFTSIZFQUnmwFrxSQw0dToNhgnOQD0
+         dTyg8ZUF+Jt4QzPgwJx0ynNgUlVGS837c5knPSthFM8SJSlQgBTss5sEWFH6jZNUehPq
+         U0Vga8TJTs8jvpKTbKi1eo9BaI+cKE0FJCxrkfhEHvbeYqrhI0AghkR+LJ28A/BZw4t0
+         7IWdaZohYiICwdAHyMmCsPbnXUaS8g39+6gYKoSfIEzB5WBo+y9KJQ5ZPYqKjFtosRY7
+         83A+gpkOzdrQtK1vUktcowrdq8KJZ6nPXhzElrOHSm+bqtio0VvVfug+dMIjIfcFRHrx
+         pUPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721287547; x=1721892347;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1721289169; x=1721893969;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vcwItFS0olVkauOdW6Vv7zuIp6VerMiLVs+nxpD7snM=;
-        b=sBZNHKGdQ6SUofwPJJA0qpr+FKD3/oPPjHzP6JMML63Im07HrU+BqlwgfMyRwqYT57
-         jKVB4mvvDefLH9Mz2LkNvx+p+TZ7ETq9UO0XY3DxJ8kFz1L0fg8Tt+dta4R8BPjkJWwT
-         aOGY3KBhWohVxL/1Ao4/35dCC4STB+1nEOcP/zzW49d/mXX+0/j1G780BbCkb8sJPIb/
-         KrpFzWparMhcLL8RTRHScC2O4b9yUz5sUpf+qRreuGCyjxuAKLSjhR1UEWMijT4ZBUf5
-         jRj4Kz6B37GJ1DRi+LHtf5YfpiCXHIEoncjyP8KMd49hgxKeMZC8E7I4lPyuL5FN4aC0
-         oX9A==
-X-Forwarded-Encrypted: i=1; AJvYcCVBXnialQgLdeNm5OSIExLvMzLBLxLJxcz0Xl3tAConBpm9wR/Z/7VPDE8YyZW+EHtV3W8h9SvKVRKRz0FTZgeR1fow1Xebdg==
-X-Gm-Message-State: AOJu0YxOg4uKcJxzjYARLYMwa0hSR7eOcSejdT73bSnAkpy5XCx/GQAQ
-	9d2syGeuG2hYhCFemWn5iqrS+wyKb+4vNvsGUw6n/ni5yK1Bjm1LGO6By0kE5Mk=
-X-Google-Smtp-Source: AGHT+IGaCt90Cox8GLORF2aRGCefxdPNLoxyupkBnqx9dhi7qboXugiP0cfGKgo+Px64AVA42Y6xeg==
-X-Received: by 2002:a17:906:fb86:b0:a77:e1fb:7df0 with SMTP id a640c23a62f3a-a7a01138eb1mr265615566b.2.1721287546791;
-        Thu, 18 Jul 2024 00:25:46 -0700 (PDT)
-Received: from localhost (109-81-94-157.rct.o2.cz. [109.81.94.157])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a79bc7ff7a7sm522358266b.155.2024.07.18.00.25.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jul 2024 00:25:46 -0700 (PDT)
-Date: Thu, 18 Jul 2024 09:25:45 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-	linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Cgroups <cgroups@vger.kernel.org>,
-	Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH 0/2] mm: skip memcg for certain address space
-Message-ID: <ZpjDeSrZ40El5ALW@tiehlicka>
-References: <cover.1720572937.git.wqu@suse.com>
- <8faa191c-a216-4da0-a92c-2456521dcf08@kernel.org>
- <Zpft2A_gzfAYBFfZ@tiehlicka>
- <9c0d7ce7-b17d-4d41-b98a-c50fd0c2c562@gmx.com>
- <9572fc2b-12b0-41a3-82dc-bb273bfdd51d@kernel.org>
+        bh=ItcZOxEWC9jKArqH07Fv+He9OxE1gAM7tmpwWQe9zzE=;
+        b=BZxhvYW9OMthrb/77HD3eKrmTI9jynfyzWM7bM0v0kVNgEvVXez9zHrnI9xmtJLJ+b
+         egI2V2jm87zOpZwxZe/o1EPnnOoeGBl3ZE62Q4F6ZGhRRzKpuxhID1gZKheKqH8dxlyx
+         KYYbars+iysdem/Z4OQCy90Ty6CdZhLEALXiZZgYzDlJUX4spQlHSNANZGoR3JJLGTKC
+         5SJ9uIR8Ocn3xWD0YHJ5rr2jnAleb7QUaq4y8Q5RHHp8+YdUzJQROGqNnK+kXdCxnFgk
+         14O3XumDADThJjjFO4f6R25nOmaq3/ycQ60hqF4vDu5CQ0Q2J8Wt/EWJP7EqsDY+xO/q
+         4U7w==
+X-Forwarded-Encrypted: i=1; AJvYcCU96YZxT0Bh5ZCVeU2xRmxGV8KeV4q6hCnBrJHDYnmo48dShEhYWO07GZMjtOFTYokcJk1/0E2V0Y8YC+wLKwWn0Z3zWbcCmA==
+X-Gm-Message-State: AOJu0Yw1T6I7c0gi0j71o6JyE6yzVjJQm6xjQr05CMOCQl6fXgEnL/GS
+	6lnJvmBQX2P37erVFMjoGa0nDEp7p6m4hspSrTHIVdr4JYea14CX/qQKdbU5n5U=
+X-Google-Smtp-Source: AGHT+IHSLlJlVxe4hTKCuBdztBtQFfrHPSw+bG3aGP5TG/PL63MfSusrvKjUmhO3C9+6OMznKQ/l0Q==
+X-Received: by 2002:a2e:bc0c:0:b0:2ec:56b9:259b with SMTP id 38308e7fff4ca-2ef05d45b55mr12993411fa.49.1721289169134;
+        Thu, 18 Jul 2024 00:52:49 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2cb772c1ce1sm32210a91.7.2024.07.18.00.52.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 18 Jul 2024 00:52:48 -0700 (PDT)
+Message-ID: <3cc3e652-e058-4995-8347-337ae605ebab@suse.com>
+Date: Thu, 18 Jul 2024 17:22:41 +0930
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] mm: skip memcg for certain address space
+To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,
+ Qu Wenruo <quwenruo.btrfs@gmx.com>, Michal Hocko <mhocko@suse.com>
+Cc: linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Cgroups <cgroups@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>
+References: <cover.1720572937.git.wqu@suse.com>
+ <8faa191c-a216-4da0-a92c-2456521dcf08@kernel.org>
+ <Zpft2A_gzfAYBFfZ@tiehlicka> <9c0d7ce7-b17d-4d41-b98a-c50fd0c2c562@gmx.com>
+ <9572fc2b-12b0-41a3-82dc-bb273bfdd51d@kernel.org>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
 In-Reply-To: <9572fc2b-12b0-41a3-82dc-bb273bfdd51d@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu 18-07-24 09:17:42, Vlastimil Babka (SUSE) wrote:
+
+
+在 2024/7/18 16:47, Vlastimil Babka (SUSE) 写道:
 > On 7/18/24 12:38 AM, Qu Wenruo wrote:
 [...]
-> > Does the folio order has anything related to the problem or just a
-> > higher order makes it more possible?
+>> Another question is, I only see this hang with larger folio (order 2 vs
+>> the old order 0) when adding to the same address space.
+>>
+>> Does the folio order has anything related to the problem or just a
+>> higher order makes it more possible?
 > 
 > I didn't spot anything in the memcg charge path that would depend on the
 > order directly, hm. Also what kernel version was showing these soft lockups?
 
-Correct. Order just defines the number of charges to be reclaimed.
-Unlike the page allocator path we do not have any specific requirements
-on the memory to be released. 
+The previous rc kernel. IIRC it's v6.10-rc6.
 
-> > And finally, even without the hang problem, does it make any sense to
-> > skip all the possible memcg charge completely, either to reduce latency
-> > or just to reduce GFP_NOFAIL usage, for those user inaccessible inodes?
+But that needs extra btrfs patches, or btrfs are still only doing the 
+order-0 allocation, then add the order-0 folio into the filemap.
 
-Let me just add to the pile of questions. Who does own this memory?
+The extra patch just direct btrfs to allocate an order 2 folio (matching 
+the default 16K nodesize), then attach the folio to the metadata filemap.
 
--- 
-Michal Hocko
-SUSE Labs
+With extra coding handling corner cases like different folio sizes etc.
+
+> 
+>> And finally, even without the hang problem, does it make any sense to
+>> skip all the possible memcg charge completely, either to reduce latency
+>> or just to reduce GFP_NOFAIL usage, for those user inaccessible inodes?
+> 
+> Is it common to even use the filemap code for such metadata that can't be
+> really mapped to userspace?
+
+At least XFS/EXT4 doesn't use filemap to handle their metadata. One of 
+the reason is, btrfs has pretty large metadata structure.
+Not only for the regular filesystem things, but also data checksum.
+
+Even using the default CRC32C algo, it's 4 bytes per 4K data.
+Thus things can go crazy pretty easily, and that's the reason why btrfs 
+is still sticking to the filemap solution.
+
+> How does it even interact with reclaim, do they
+> become part of the page cache and are scanned by reclaim together with data
+> that is mapped?
+
+Yes, it's handled just like all other filemaps, it's also using page 
+cache, and all the lru/scanning things.
+
+The major difference is, we only implement a small subset of the address 
+operations:
+
+- write
+- release
+- invalidate
+- migrate
+- dirty (debug only, otherwise falls back to filemap_dirty_folio())
+
+Note there is no read operations, as it's btrfs itself triggering the 
+metadata read, thus there is no read/readahead.
+Thus we're in the full control of the page cache, e.g. determine the 
+folio size to be added into the filemap.
+
+The filemap infrastructure provides 2 good functionalities:
+
+- (Page) Cache
+   So that we can easily determine if we really need to read from the
+   disk, and this can save us a lot of random IOs.
+
+- Reclaiming
+
+And of course the page cache of the metadata inode won't be 
+cloned/shared to any user accessible inode.
+
+> How are the lru decisions handled if there are no references
+> for PTE access bits. Or can they be even reclaimed, or because there may
+> e.g. other open inodes pinning this metadata, the reclaim is impossible?
+
+If I understand it correctly, we have implemented release_folio() 
+callback, which does the btrfs metadata checks to determine if we can 
+release the current folio, and avoid releasing folios that's still under 
+IO etc.
+
+> 
+> (sorry if the questions seem noob, I'm not that much familiar with the page
+> cache side of mm)
+
+No worry at all, I'm also a newbie on the whole mm part.
+
+Thanks,
+Qu
+
+> 
+>> Thanks,
+>> Qu
+> 
 
