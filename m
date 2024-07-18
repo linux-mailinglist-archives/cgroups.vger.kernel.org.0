@@ -1,63 +1,48 @@
-Return-Path: <cgroups+bounces-3759-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3760-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D3B7934641
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 04:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B3A519348A1
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 09:17:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E3A71C2198C
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 02:22:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC6311C216AE
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2024 07:17:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7E9420B33;
-	Thu, 18 Jul 2024 02:22:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 490926F2E5;
+	Thu, 18 Jul 2024 07:17:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Chm9TWFn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nES1GApa"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C7C15C3
-	for <cgroups@vger.kernel.org>; Thu, 18 Jul 2024 02:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF9E819E;
+	Thu, 18 Jul 2024 07:17:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721269345; cv=none; b=j17Ie0MsgAOxsQ3/4QhlV2aO5kkA5+DQTURp6/0FFkWW7bUWARJq48bOB5WG5Caaq7sRSQZ1ubOKURrZzIOi5MfbwAU6tBTalpSTgRqSw+NF6oyFv6CYJ1c+i8xM/XTVghx+xLCs2L9Bkjbg7fJaVTgGRJYQfcz7+GKeXlv2IUg=
+	t=1721287068; cv=none; b=F8F2TS31ho7OqQclFQ+PxEuB+RLVRNi+fjWkvma2jnETOX+FZ81jn4cPvvBP+V7+0jk0vjOWjFlIiH0/0lgt8PxJrcXYotRvi1vFtM+mj+t0tpb1kZsdSdEFleYwFm8JL/aTEUGjhPo71iXFjmcd7adKI9c5y4EGN+hTr40rqAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721269345; c=relaxed/simple;
-	bh=dREXj+0w+CFnbqC/KdsZ8rUAi8ch+xarvadXOl5uRj4=;
+	s=arc-20240116; t=1721287068; c=relaxed/simple;
+	bh=6geIF7vYh23EULIWqeZnsJ4uWp50DaQE9puxPgPkEPU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NGOjaWuwOgxKk3rVie6eMpxmSvz9ZpFufC9MidfZ9043DmpZxNsCWcGdYDhZ9TzoWNFEqDvIAt2XnsssyHIr9+MU+Ml5n7gqCoENtx1FMGDUYr6PRBTshC6eGp7Kf0tl9VvN9usnUvdHE/xf4UMBgbUVfChgrmLQXe1vv7Mb0IQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Chm9TWFn; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1721269342;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=op/3tKtTGqIBuOoiHm9+X+k3cZHvHECwan0paq2e89w=;
-	b=Chm9TWFnSeh87nTyiEwgYyK7Rcy/Hlm43RBRNw3xOuYMy7ExDUu4fd2N3S/2u9QJzCnJDN
-	QGWkbh4QzMQ226xx574PBRuX8YH6LPsZq85cjrPTOOu6hVvfnmqZoIuop1cYqvRo29Wkth
-	Mv7/RoWfBnguqYLiaaTfhuxi/QLBHxg=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-471-8WNXbSF4NHyNwiJs-RVBGw-1; Wed,
- 17 Jul 2024 22:22:16 -0400
-X-MC-Unique: 8WNXbSF4NHyNwiJs-RVBGw-1
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 2C5BA1955D56;
-	Thu, 18 Jul 2024 02:22:13 +0000 (UTC)
-Received: from [10.22.16.209] (unknown [10.22.16.209])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 9E4E319560B2;
-	Thu, 18 Jul 2024 02:22:09 +0000 (UTC)
-Message-ID: <0addf17f-1dc8-40f1-970a-9a3d44b14d71@redhat.com>
-Date: Wed, 17 Jul 2024 22:22:08 -0400
+	 In-Reply-To:Content-Type; b=igRabNQbF7hV+gH6wCu5MVczMLivKHduaUlasNradXdSPC6v7+6+ydx+et+Vt7dx3tb9vLjdAH99Wy7+Ed08k1eamH4pQpCn1hpLtRDPCpHcRlJFOPdiVo/XbzndWtHKsSL1p4kRJClGPaX+hj7WhnRnAK4JC6FZ0k5TNMcpzYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nES1GApa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1211CC116B1;
+	Thu, 18 Jul 2024 07:17:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721287067;
+	bh=6geIF7vYh23EULIWqeZnsJ4uWp50DaQE9puxPgPkEPU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=nES1GApabH95lkwjPEerwfUV3d3HaWGeswuGNZvyXJaxVH+NDrSiEbHzElzDI/4/d
+	 OZV2a4VOE6KG0p/LyojZ8XoIMwDqTRwSdQluY6axPMDs97aN9c37U97HFJiiuJvyR3
+	 /GVKsoI1iJwjwO2xMOUBtF6AWodp4iyX6k6QSE66GTDKzg+crb9kt58cknByoeKkrn
+	 LMFa0ZuKrUZIGOXNef3kt07LKZCwlg8MebpXNGkDS9HP/w2s0Ym6Ng3675jBPWSOvm
+	 Wsy5kvel9o6w0HtxAyZoRE7Bo9dbtw3vEykC09U4DY95haJ6MbyKtUfSfFBdVrCm2A
+	 WGYhicI76sgxQ==
+Message-ID: <9572fc2b-12b0-41a3-82dc-bb273bfdd51d@kernel.org>
+Date: Thu, 18 Jul 2024 09:17:42 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -65,50 +50,88 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm, memcg: cg2 memory{.swap,}.peak write handlers
-To: Tejun Heo <tj@kernel.org>
-Cc: David Finkel <davidf@vimeo.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>, core-services@vimeo.com,
- Jonathan Corbet <corbet@lwn.net>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shuah Khan <shuah@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- cgroups@vger.kernel.org, linux-doc@vger.kernel.org, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, Shakeel Butt <shakeel.butt@linux.dev>
-References: <20240715203625.1462309-1-davidf@vimeo.com>
- <20240715203625.1462309-2-davidf@vimeo.com> <ZpZ6IZL482XZT1fU@tiehlicka>
- <ZpajW9BKCFcCCTr-@slm.duckdns.org> <20240717170408.GC1321673@cmpxchg.org>
- <CAFUnj5OA0KaC54M9vd8W+NZJwz5Jw25u-BStO=Bi2An=98Ruwg@mail.gmail.com>
- <20240717204453.GD1321673@cmpxchg.org>
- <CAFUnj5OGJtR0wqOZVUh8QQ3gaw4gmatsEN1LcBdcwN_wx-LUug@mail.gmail.com>
- <85a67b00-9ae7-42a1-87e0-19b5563b9a0f@redhat.com>
- <Zphu4SDGCJ-IExnf@slm.duckdns.org>
+Subject: Re: [PATCH 0/2] mm: skip memcg for certain address space
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Michal Hocko <mhocko@suse.com>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+ linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Cgroups <cgroups@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>
+References: <cover.1720572937.git.wqu@suse.com>
+ <8faa191c-a216-4da0-a92c-2456521dcf08@kernel.org>
+ <Zpft2A_gzfAYBFfZ@tiehlicka> <9c0d7ce7-b17d-4d41-b98a-c50fd0c2c562@gmx.com>
 Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <Zphu4SDGCJ-IExnf@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+In-Reply-To: <9c0d7ce7-b17d-4d41-b98a-c50fd0c2c562@gmx.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+On 7/18/24 12:38 AM, Qu Wenruo wrote:
+> 在 2024/7/18 01:44, Michal Hocko 写道:
+>> On Wed 17-07-24 17:55:23, Vlastimil Babka (SUSE) wrote:
+>>> Hi,
+>>>
+>>> you should have Ccd people according to get_maintainers script to get a
+>>> reply faster. Let me Cc the MEMCG section.
+>>>
+>>> On 7/10/24 3:07 AM, Qu Wenruo wrote:
+>>>> Recently I'm hitting soft lockup if adding an order 2 folio to a
+>>>> filemap using GFP_NOFS | __GFP_NOFAIL. The softlockup happens at memcg
+>>>> charge code, and I guess that's exactly what __GFP_NOFAIL is expected to
+>>>> do, wait indefinitely until the request can be met.
+>>>
+>>> Seems like a bug to me, as the charging of __GFP_NOFAIL in
+>>> try_charge_memcg() should proceed to the force: part AFAICS and just go over
+>>> the limit.
+>>>
+>>> I was suspecting mem_cgroup_oom() a bit earlier return true, causing the
+>>> retry loop, due to GFP_NOFS. But it seems out_of_memory() should be
+>>> specifically proceeding for GFP_NOFS if it's memcg oom. But I might be
+>>> missing something else. Anyway we should know what exactly is going first.
+>>
+>> Correct. memcg oom code will invoke the memcg OOM killer for NOFS
+>> requests. See out_of_memory
+>>
+>>          /*
+>>           * The OOM killer does not compensate for IO-less reclaim.
+>>           * But mem_cgroup_oom() has to invoke the OOM killer even
+>>           * if it is a GFP_NOFS allocation.
+>>           */
+>>          if (!(oc->gfp_mask & __GFP_FS) && !is_memcg_oom(oc))
+>>                  return true;
+>>
+>> That means that there will be a victim killed, charges reclaimed and
+>> forward progress made. If there is no victim then the charging path will
+>> bail out and overcharge.
+>>
+>> Also the reclaim should have cond_rescheds in the reclaim path. If that
+>> is not sufficient it should be fixed rather than workaround.
+> 
+> Another question is, I only see this hang with larger folio (order 2 vs
+> the old order 0) when adding to the same address space.
+> 
+> Does the folio order has anything related to the problem or just a
+> higher order makes it more possible?
 
-On 7/17/24 21:24, Tejun Heo wrote:
-> On Wed, Jul 17, 2024 at 07:48:40PM -0400, Waiman Long wrote:
-> ...
->> How about letting .peak shows two numbers? The first one is the peak since
->> the creation of the cgroup and cannot be reset. The second one is a local
->> maximum that can be reset to 0. We just to keep track of one more counter
->> that should be simple enough to implement.
-> What Johannes suggested seems to hit all the marks - it's efficient and
-> relatively simple, the overhead is only on the users of the facility, and
-> flexible in a straightforward manner. I have a hard time buying the argument
-> that it's more difficult to use - the benefit to cost ratio seems pretty
-> clear. Given that, I'm not sure why we'd want to add something fishy that
-> can lead to longterm problems.
+I didn't spot anything in the memcg charge path that would depend on the
+order directly, hm. Also what kernel version was showing these soft lockups?
 
-On second thought, it is a change in the user interface that may break 
-existing apps that use the peak file. So it is probably better to go 
-with Johannes' suggestion.
+> And finally, even without the hang problem, does it make any sense to
+> skip all the possible memcg charge completely, either to reduce latency
+> or just to reduce GFP_NOFAIL usage, for those user inaccessible inodes?
 
-Thanks,
-Longman
+Is it common to even use the filemap code for such metadata that can't be
+really mapped to userspace? How does it even interact with reclaim, do they
+become part of the page cache and are scanned by reclaim together with data
+that is mapped? How are the lru decisions handled if there are no references
+for PTE access bits. Or can they be even reclaimed, or because there may
+e.g. other open inodes pinning this metadata, the reclaim is impossible?
+
+(sorry if the questions seem noob, I'm not that much familiar with the page
+cache side of mm)
+
+> Thanks,
+> Qu
 
 
