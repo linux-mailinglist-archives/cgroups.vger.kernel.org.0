@@ -1,117 +1,89 @@
-Return-Path: <cgroups+bounces-3788-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3789-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41A3A9372B8
-	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 05:23:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05E05937340
+	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 07:30:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFAFB28269C
-	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 03:23:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AA6C282868
+	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 05:30:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF63168D0;
-	Fri, 19 Jul 2024 03:23:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553F43D556;
+	Fri, 19 Jul 2024 05:30:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UWh3Tojt"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="t0e+IOZY"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD49F10A09
-	for <cgroups@vger.kernel.org>; Fri, 19 Jul 2024 03:23:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7823D3B2BB;
+	Fri, 19 Jul 2024 05:30:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721359424; cv=none; b=adpkn35tyoaq74mk8JwPnh/pNCEK20TE1FwUMufxhM7z8/695zaK7nuJtRLzm3bVqyCuhWOrI6QVzcsnBOd5SljDX30ozJCkwUso5bo5JLdvZX/x3ZoQ0/dMtlkMdYSEVoudCQq8Hq7h+r28Oe6o81YQeKAaqyTfSOPmeodBru8=
+	t=1721367012; cv=none; b=Dg5c8C+bbBlpmsIK643GYIzyG0BGzZzAFnt4UKmCO5t8XL7dGq0LBVWwb9j8Bw0wRP+90F4x+1abAGrCcGa2monO0sSBmFHHcCQ3YCSYV+NofczccL4NvqPre1LfBJTgbarThvR5raWheELVC4kTRJP+D12RPtfvFmDI3B/PzpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721359424; c=relaxed/simple;
-	bh=LzYtUaIzvRbkHQvbn06to4re3EBwEBR0G3sdQDN5Hq4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RatAPuXXSWppoNjMr4E+kft1fYt6EWKAB4R6eJaSg9iyVN7HmzS1j9q0e60O67xw9UgYkN2pCodewiG3H3/7+7xAzXuMf7v0AzIWAfSoI+4Gsn4ZydRl+TLhUdifwii1EG2Utqvi94b3RiMc3gamP9wQhYGEzv+TjXQyAsiWyDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UWh3Tojt; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1721359421;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4g/2by4UFmJt1nLIIzaKlS2HPKjw7tCpSzx5XVWX0GE=;
-	b=UWh3Tojtet9EbrziMb7JJdHUFv+p6SDLevcXUZUeAA/SZc8phEdHAWs5VxzcvVNNX99wHF
-	Bb4PK1cxxMHnil9o/x0OmDm8KywpvLvA2XQ1hjd2+fcQVpDfb6phrEcbbLh1fJvcEE1Ke5
-	25adrJoetq/O/bP0lZp0NhrfOe8y0Wk=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-182-QO0slx50PEa2lPJEq-XW8w-1; Thu,
- 18 Jul 2024 23:23:35 -0400
-X-MC-Unique: QO0slx50PEa2lPJEq-XW8w-1
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 9E6561955F43;
-	Fri, 19 Jul 2024 03:23:32 +0000 (UTC)
-Received: from [10.22.32.50] (unknown [10.22.32.50])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 0C698195605A;
-	Fri, 19 Jul 2024 03:23:28 +0000 (UTC)
-Message-ID: <fcb8f0ec-59ff-4f79-82dd-7eaf2530aef3@redhat.com>
-Date: Thu, 18 Jul 2024 23:23:28 -0400
+	s=arc-20240116; t=1721367012; c=relaxed/simple;
+	bh=SxbgklmrZ19aCcL/gEJ9uSFdFPoVHHFGisNPEcy+iow=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X0DLiVpGLc8nCCgkGbB92epHQaCYRt6Sv+DiR+iDpc2sZTaSOrNxSxDRe/6YrpaohdM8Z71+lmWCT/2yZudNGkrD6gQCoUD1KFlyLok4kkNeFFEoThETIcANj+Vtvn56BNqVO6NU0Lm1uGrVd09srrERB0gdDtfr55NPhxh2MoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=t0e+IOZY; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=/11wDjA1QdM7Ho6aoI43I5AAS9ZLVtqv9q62TK6FpsU=; b=t0e+IOZYOuIj3Z3BU9kbKabqgE
+	o4zDFroaI3xzlvgJT+dx65G5TClwVVoI36dkBGNBNYks/rBoHC6K0kFZ7qwY3d0FggJCQi3zX5MHg
+	dUbt4HKc3fGZnk/yuszkYNhRVG9r7L39xuII3RarcTBMSvskd5kWpsqsiul+ZwPBMANexyBwO9sDj
+	5i+HS8bjr+s75KkRwy6wPFNT+FzmUvWb49EinYRqzFJ2qtPUbzcEbuvdIaM2NB+ncB2e45kvDyBAU
+	EzT7J3tAd7asq5aNZWND488mFvuFoy57qR0alTwgLViLphNi59c9MKSIemxqEa+QR9P5VyCeq1ZIn
+	oARScVMA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sUgBi-00000001dqz-43Af;
+	Fri, 19 Jul 2024 05:29:50 +0000
+Date: Thu, 18 Jul 2024 22:29:50 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: bvanassche@acm.org, jack@suse.cz, hch@infradead.org, tj@kernel.org,
+	josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH v2 1/3] blk-cgroup: check for pd_(alloc|free)_fn in
+ blkcg_activate_policy()
+Message-ID: <Zpn5zvcC4TbDxeKU@infradead.org>
+References: <20240719023431.3800647-1-yukuai1@huaweicloud.com>
+ <20240719023431.3800647-2-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm, memcg: cg2 memory{.swap,}.peak write handlers
-To: David Finkel <davidf@vimeo.com>, Johannes Weiner <hannes@cmpxchg.org>
-Cc: Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
- Muchun Song <muchun.song@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>, core-services@vimeo.com,
- Jonathan Corbet <corbet@lwn.net>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shuah Khan <shuah@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- cgroups@vger.kernel.org, linux-doc@vger.kernel.org, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, Shakeel Butt <shakeel.butt@linux.dev>
-References: <20240715203625.1462309-1-davidf@vimeo.com>
- <20240715203625.1462309-2-davidf@vimeo.com> <ZpZ6IZL482XZT1fU@tiehlicka>
- <ZpajW9BKCFcCCTr-@slm.duckdns.org> <20240717170408.GC1321673@cmpxchg.org>
- <CAFUnj5OkHp3fYjByCnXJQ51rog93DsimSoc1qxcU7UyKw-nFrw@mail.gmail.com>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <CAFUnj5OkHp3fYjByCnXJQ51rog93DsimSoc1qxcU7UyKw-nFrw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240719023431.3800647-2-yukuai1@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
+On Fri, Jul 19, 2024 at 10:34:29AM +0800, Yu Kuai wrote:
+> +	/*
+> +	 * Make sure cpd/pd_alloc_fn and cpd/pd_free_fn in pairs, and policy
+> +	 * without pd_alloc_fn/pd_free_fn can't be activated.
+> +	 */
+>  	if ((!pol->cpd_alloc_fn ^ !pol->cpd_free_fn) ||
+>  		(!pol->pd_alloc_fn ^ !pol->pd_free_fn))
+>  		goto err_unlock;
+> -- 
 
-On 7/18/24 17:49, David Finkel wrote:
-> I spent some time today attempting to implement this.
-> Here's a branch on github that compiles, and I think is close to what you
-> described, but is definitely still a WIP:
->
-> https://github.com/torvalds/linux/compare/master...dfinkel:linux:memcg2_memory_peak_fd_session
->
-> Since there seems to be significant agreement that this approach is better
-> long-term as a kernel interface, if that continues, I can factor out some of
-> the changes so it supports both memory.peak and memory.swap.peak,
-> fix the tests, and clean up any style issues tomorrow.
->
-> Also, If there are opinions on whether the cgroup_lock is a reasonable way
-> of handling this synchronization, or if I should add a more appropriate spinlock
-> or mutex onto either the pagecounter or the memcg, I'm all ears.
+I know this is existing code, but can you fix up the incorrect
+indentation while you touch this:
 
-cgroup_lock() should only be used by the cgroup core code, though there 
-are exceptions.
+ 	if ((!pol->cpd_alloc_fn ^ !pol->cpd_free_fn) ||
+ 	    (!pol->pd_alloc_fn ^ !pol->pd_free_fn))
 
-You may or may not need lock protection depending on what data you want 
-to protect and if there is any chance that concurrent race may screw 
-thing up. If lock protection is really needed, add your own lock to 
-protect the data. Since your critical sections seem to be pretty short, 
-a regular spinlock will be enough.
+Otherwise looks good:
 
-Cheers,
-Longman
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
