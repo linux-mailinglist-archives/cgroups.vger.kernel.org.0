@@ -1,227 +1,186 @@
-Return-Path: <cgroups+bounces-3802-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3803-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BCB5937690
-	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 12:19:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B77F93769F
+	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 12:29:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 667BC1C2172B
-	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 10:19:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9F641F21548
+	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 10:29:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 360E17E0E8;
-	Fri, 19 Jul 2024 10:19:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFAE883CA1;
+	Fri, 19 Jul 2024 10:29:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gtfzIRlx";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rE9/7n1f";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gtfzIRlx";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rE9/7n1f"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kUjE8tRy";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="N0cCXhpt"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 241ACEEC0;
-	Fri, 19 Jul 2024 10:19:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9684681211;
+	Fri, 19 Jul 2024 10:29:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721384391; cv=none; b=sx0TaspCIt6H2X0Y/MZEcGXACIQYMjqAs06w28NNVzHecJPZe1yJ8Kuke06MmC27wOL9iSvbBmJjBV7N5Lp7MewlBGfX1wJ9Pl/2GP8dCwS3FtTkqPzNXEX1yGuXfMJrPospuB9vf0510ZYUCuFTJ4kitNcwyR2nvyuBRPpDAvo=
+	t=1721384947; cv=none; b=nb6EzM/P4sMPqccE5rrN9ay979pxddCTTbDUlKmclcCVxm3sfwJxthb8TZrCyZYbgz9YkxKn/ToMB+YnBKWU5srVOFeGNBrkgZxeV8M6iDVozVRo0fhUG4kZb5oUCrE5oAzyX0N+9LO7yvVJJmkfNC1cEpYjL9tP54FbAnmY0bg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721384391; c=relaxed/simple;
-	bh=9AygWlUlL2505iQHzAdahIowXvIXWoq/FpUKnJoJGa4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C3D/hbY4ajpq2XCbmaHznKImyVa9CgfQf2N5M6B21WJ3XL9aeO53K8hJnpsGObtTVS8Qm6Z2hEjmPnNQs3+z1vazHB1i46JN/LW5C/pLQub4GZlT2h/1JbrPd1z3czhzGL01kw8Hl34rXeeJA0iDZ53jMTdzg99FZIlfjIvwmPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gtfzIRlx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rE9/7n1f; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gtfzIRlx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rE9/7n1f; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	s=arc-20240116; t=1721384947; c=relaxed/simple;
+	bh=FIEcQU411c1AIWDow5qcVzixkDLzqfoTbIEFUseO+uo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=f7l9s/H/Qzp7dr/xQNL969FWksCU/KWe7+JUtwFDkakw0GPFNaEMm4LqZPjujLTyexP/lxk9OvvoY7gfRLyKpQc0gLC8XPo0D5Gf5DjJVFZ7yL8O2c8ARWR0LtKtitlyUQN/4AoQgGu/xFwLa0Z3aMvA6wSyD/1xUYq8ugDI8fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kUjE8tRy; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=N0cCXhpt; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 58E481F79D;
-	Fri, 19 Jul 2024 10:19:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1721384387; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=RSuDlg+J+tVHw2R4a9tcYRk2Cgc8UrOlWrMiOFc5SZ0=;
-	b=gtfzIRlxWD04caK+bh1x6Umr6D+1TzY7w4/e/jGdF4us1NGgUEgqt+D9voe2E4XYhJerif
-	FwxUYaRLiZX73lpWPD+9YaPYwm/FVITJfL6b9qCsy3iXX2n56zAKbfm4QQlmQCow7qzCDu
-	EGdVL3TF4EWsdk9Rcalf/7boJX299os=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1721384387;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=RSuDlg+J+tVHw2R4a9tcYRk2Cgc8UrOlWrMiOFc5SZ0=;
-	b=rE9/7n1fpR7cktmpNAQkt9Ha0GULM9mrC3sF5PBu7oH5L+63XmjRIFQv6pkA3kS/EmVX1/
-	BV2c+mwe8FbuCCBg==
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 89B0A1F79C;
+	Fri, 19 Jul 2024 10:29:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1721384943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Qtm81WYplQY/AAVE+NrlpaQY5A14Fa+JQGPgeZwLP7s=;
+	b=kUjE8tRyOmOdPAyWL4CBjzaS/NVNEkkTK2cCUGMd6FGRlGfOpSkX1k8dnRLhE22/kkYMs1
+	veShvo1sOPZmC8ScySjC4IuSl1IUW7Gv69bFaiEqyq5b0xzPF4pCatlwV9nNcaLshURqBU
+	ne9YJUD8iJ4ra/eySL2bzpZYZZ70DOk=
 Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1721384387; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=RSuDlg+J+tVHw2R4a9tcYRk2Cgc8UrOlWrMiOFc5SZ0=;
-	b=gtfzIRlxWD04caK+bh1x6Umr6D+1TzY7w4/e/jGdF4us1NGgUEgqt+D9voe2E4XYhJerif
-	FwxUYaRLiZX73lpWPD+9YaPYwm/FVITJfL6b9qCsy3iXX2n56zAKbfm4QQlmQCow7qzCDu
-	EGdVL3TF4EWsdk9Rcalf/7boJX299os=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1721384387;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=RSuDlg+J+tVHw2R4a9tcYRk2Cgc8UrOlWrMiOFc5SZ0=;
-	b=rE9/7n1fpR7cktmpNAQkt9Ha0GULM9mrC3sF5PBu7oH5L+63XmjRIFQv6pkA3kS/EmVX1/
-	BV2c+mwe8FbuCCBg==
+	dkim=pass header.d=suse.com header.s=susede1 header.b=N0cCXhpt
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1721384942; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=Qtm81WYplQY/AAVE+NrlpaQY5A14Fa+JQGPgeZwLP7s=;
+	b=N0cCXhpt2SCpaK7AW96VukSBqDoY0iuRsjUIvxuJOQ/BY0eQPPPTCaAzPmpSOiQhP1eMDJ
+	X1uuZctIRy+BzkCeucZW9mysk6u0Mt/JKzh3bZOPA0N5z3WChhAJrEXM1DttYhmIefKRM9
+	fX3TAGftsZ66xSBObx8JP3tHWI7RNqI=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 36ECC132CB;
-	Fri, 19 Jul 2024 10:19:47 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ADF06132CB;
+	Fri, 19 Jul 2024 10:28:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id X177DMM9mmaJVgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 19 Jul 2024 10:19:47 +0000
-Message-ID: <5c9f852f-f00b-4543-830b-7dd71d5042e0@suse.cz>
-Date: Fri, 19 Jul 2024 12:19:46 +0200
+	id iTNQGes/mmb5WAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Fri, 19 Jul 2024 10:28:59 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [PATCH v7 0/3] btrfs: try to allocate larger folios for metadata
+Date: Fri, 19 Jul 2024 19:58:38 +0930
+Message-ID: <cover.1721384771.git.wqu@suse.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 1/3] memcontrol: define root_mem_cgroup for
- CONFIG_MEMCG=n cases
-Content-Language: en-US
-To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
- shakeel.butt@linux.dev, muchun.song@linux.dev, cgroups@vger.kernel.org,
- linux-mm@kvack.org
-References: <cover.1721380449.git.wqu@suse.com>
- <299298648bc5689b2f163c7876936179338301ba.1721380449.git.wqu@suse.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- EP+ylKVEKb0Q2A==
-In-Reply-To: <299298648bc5689b2f163c7876936179338301ba.1721380449.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 89B0A1F79C
 X-Spam-Flag: NO
-X-Spam-Score: -4.29
-X-Spamd-Result: default: False [-4.29 / 50.00];
-	REPLY(-4.00)[];
+X-Spam-Score: -0.01
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-0.01 / 50.00];
+	MID_CONTAINS_FROM(1.00)[];
+	DWL_DNSWL_LOW(-1.00)[suse.com:dkim];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MX_GOOD(-0.01)[];
+	TO_DN_NONE(0.00)[];
 	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+]
 X-Spam-Level: 
+X-Spamd-Bar: /
 
-On 7/19/24 11:16 AM, Qu Wenruo wrote:
-> There is an incoming btrfs patchset, which will use @root_mem_cgroup as
-> the active cgroup to attach metadata folios to its internal btree
-> inode, so that btrfs can skip the possibly costly charge for the
-> internal inode which is only accessible by btrfs itself.
-> 
-> However @root_mem_cgroup is not always defined (not defined for
-> CONFIG_MEMCG=n case), thus all such callers need to do the extra
-> handling for different CONFIG_MEMCG settings.
-> 
-> So here we add a special macro definition of root_mem_cgroup, making it
-> to always be NULL.
-> 
-> The advantage of this, other than pulling the pointer definition out,
-> is that we will avoid wasting global data section space for such
-> pointer.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  include/linux/memcontrol.h | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 030d34e9d117..a268585babdc 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -329,8 +329,6 @@ struct mem_cgroup {
->   */
->  #define MEMCG_CHARGE_BATCH 64U
->  
-> -extern struct mem_cgroup *root_mem_cgroup;
-> -
+[CHANGELOG]
+v7:
+- Fix an accidentially removed line caused by previous modification
+  attempt
+  Previously I was moving that line to the common branch to
+  unconditionally define root_mem_cgroup pointer.
+  But that's later discarded and changed to use macro definition, but
+  forgot to add back the original line.
 
-This breaks the CONFIG_MEMCG=y case?
+v6:
+- Add a new root_mem_cgroup definition for CONFIG_MEMCG=n cases
+  So that users of root_mem_cgroup no longer needs to check
+  CONFIG_MEMCG.
+  This is to fix the compile error for CONFIG_MEMCG=n cases.
 
->  enum page_memcg_data_flags {
->  	/* page->memcg_data is a pointer to an slabobj_ext vector */
->  	MEMCG_DATA_OBJEXTS = (1UL << 0),
-> @@ -346,6 +344,12 @@ enum page_memcg_data_flags {
->  
->  #define __FIRST_OBJEXT_FLAG	(1UL << 0)
->  
-> +/*
-> + * For CONFIG_MEMCG=n case, still define a root_mem_cgroup, but that will
-> + * always be NULL and not taking any global data section space.
-> + */
-> +#define root_mem_cgroup		(NULL)
-> +
->  #endif /* CONFIG_MEMCG */
->  
->  enum objext_flags {
+- Slight rewording of the 2nd patch
+
+v5:
+- Use root memcgroup to attach folios to btree inode filemap
+- Only try higher order folio once without NOFAIL nor extra retry
+
+v4:
+- Hide the feature behind CONFIG_BTRFS_DEBUG
+  So that end users won't be affected (aka, still per-page based
+  allocation) meanwhile we can do more testing on this new behavior.
+
+v3:
+- Rebased to the latest for-next branch
+- Use PAGE_ALLOC_COSTLY_ORDER to determine whether to use __GFP_NOFAIL
+- Add a dependency MM patch "mm/page_alloc: unify the warning on NOFAIL
+  and high order allocation"
+  This allows us to use NOFAIL up to 32K nodesize, and makes sure for
+  default 16K nodesize, all metadata would go 16K folios
+
+v2:
+- Rebased to handle the change in "btrfs: cache folio size and shift in extent_buffer"
+
+This is the latest update on the attempt to utilize larger folios for
+btrfs metadata.
+
+The previous version exposed a reproducibe hang at btrfs/187, where we
+hang at filemap_add_folio() around its memcgroup charge code.
+
+Even without the problem, I still believe for btree inode we do not
+really need all the memcgroup charge, nor using __GFP_NOFAIL to work
+around the possible memcgroup limits.
+
+So in this update, suggested by the memcgroup people from SUSE, there is
+a new patch to make btree inode filemap folio attaching to use the root
+memcgroup, so that we won't be limited by the memcgroup.
+
+Then for the patch enabling the larger folio, I reverted back to the old
+behavior that we only try larger folio once without extra retry, just to
+be extra safe.
+
+
+Qu Wenruo (3):
+  memcontrol: define root_mem_cgroup for CONFIG_MEMCG=n cases
+  btrfs: always uses root memcgroup for filemap_add_folio()
+  btrfs: prefer to allocate larger folio for metadata
+
+ fs/btrfs/extent_io.c       | 112 ++++++++++++++++++++++++++-----------
+ include/linux/memcontrol.h |   6 ++
+ 2 files changed, 84 insertions(+), 34 deletions(-)
+
+-- 
+2.45.2
 
 
