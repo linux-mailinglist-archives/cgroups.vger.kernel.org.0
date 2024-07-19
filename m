@@ -1,78 +1,85 @@
-Return-Path: <cgroups+bounces-3816-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3817-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 710D2937B75
-	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 19:14:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A94E2937B84
+	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 19:22:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DC041F227FA
-	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 17:14:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 646E928110B
+	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 17:22:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEE44145FF4;
-	Fri, 19 Jul 2024 17:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5994F1465B7;
+	Fri, 19 Jul 2024 17:22:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xWNjI9oj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LqT3KPww"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB87E146596
-	for <cgroups@vger.kernel.org>; Fri, 19 Jul 2024 17:14:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB58413A276;
+	Fri, 19 Jul 2024 17:22:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721409266; cv=none; b=JJSrTpaneDumtIBP/ITJAxg2/cHed/Dko8wW8JmP8ZZYg3enMchUqDGM6KWaIBkJHOXDsdz+G8lRDUwQCWJ9FUkyovF8+q/uj7uuDcJ/seXBVrqpKDkaupHUYiEwkErH4TUVY4t3MM9cz1DYq9eYpLCczegRV3RDzZ1a6hslIWo=
+	t=1721409741; cv=none; b=c8hPV0gUXtxnaQAx9VY+gtKfj942D03Ai1XuNf2eCfSbsn883xDQW5DrL6qkfA03ep1TMLitKdoZKe/fdcQkFqpGxlb6a6IYEBBi53rPL3CocZbiN/UvIYj26w1utjKs316PnUfh71QFh2ordEWLnTGDO1aEGgl7ECWsI/xY6Y0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721409266; c=relaxed/simple;
-	bh=mYaVUoz6q9HApOTCAivw+gLMnYFegVEsw6n+AQmkCgs=;
+	s=arc-20240116; t=1721409741; c=relaxed/simple;
+	bh=75TilRr4eqURd4BYhRdC+4i5DBcTEC8oQUDTsnw8sMo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IiyaCv9VSnR71WulLOu1fsLtTpXzh7YP7KahboHJBlTiE/8mT/ntDQp82psPyGi+0+a9JgYw/poNCv6u/z0qFnLqZg/w2lPNWe+pbNT7y3UWORFh+CIn8QaAlJspIgSFuLe7+2WL05AeGff8DXTOi04nvNSszffFfD0KDGZyIzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xWNjI9oj; arc=none smtp.client-ip=91.218.175.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: oliver.sang@intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721409261;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=egmwmVsNFFcGbmO5tacperJARE+TcCGVGcK24AEGTAU=;
-	b=xWNjI9ojEHouTgxIsAiA0MEGVrJzRyHPL2fd29qfE7B8duTglwa8hajluUCXqRMVqJRMFy
-	DLZFqH3LWoNchuQFl2Dt5jzV3+JbcZJioVKLPElJ/8YAo3PnFqJUh+JvFUqngGyLcX9rmG
-	rDa0nVogSnkQk7lvNEb8gz1tvcipKDc=
-X-Envelope-To: oe-lkp@lists.linux.dev
-X-Envelope-To: lkp@intel.com
-X-Envelope-To: linux-mm@kvack.org
-X-Envelope-To: akpm@linux-foundation.org
-X-Envelope-To: shakeel.butt@linux.dev
-X-Envelope-To: hannes@cmpxchg.org
-X-Envelope-To: mhocko@kernel.org
-X-Envelope-To: muchun.song@linux.dev
-X-Envelope-To: cgroups@vger.kernel.org
-X-Envelope-To: ying.huang@intel.com
-X-Envelope-To: feng.tang@intel.com
-X-Envelope-To: fengwei.yin@intel.com
-Date: Fri, 19 Jul 2024 17:14:16 +0000
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Oliver Sang <oliver.sang@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-	ying.huang@intel.com, feng.tang@intel.com, fengwei.yin@intel.com
-Subject: Re: [linux-next:master] [mm]  98c9daf5ae:  aim7.jobs-per-min -29.4%
- regression
-Message-ID: <Zpqe6NSVBQGiS86m@google.com>
-References: <202407121335.31a10cb6-oliver.sang@intel.com>
- <ZpF-A9rl8TiuZJPZ@google.com>
- <ZpUux8bvpL8ARYDE@xsang-OptiPlex-9020>
- <ZpWgP-h5X7GKj1ay@google.com>
- <ZpYm9clw/f8f/tEj@xsang-OptiPlex-9020>
+	 Content-Type:Content-Disposition:In-Reply-To; b=BpQBxBC1clNu8UHoaXBcdkHcRPaIbRCaR25FJWjYQObHR0j9VPRrpUCUFMikg6H3t/ZKEGXnjghGKpR9spgyjdhnMp/LyHbB6hTaYixr+T9t0byE2B6uTA59fh5z9aosJDzVn2q65repY9Kwoh5jx5I7nnAo2hzQoVXmRaWkVv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LqT3KPww; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-70af5fbf0d5so814548b3a.1;
+        Fri, 19 Jul 2024 10:22:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721409739; x=1722014539; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=egpF0SEnIXYb7MnIEEOBfEQ/CaSDz8TBIJfjNcsV5l0=;
+        b=LqT3KPwwUgiWMDW3ynrPPsYhkwTMYPiF6QoLKZHYB/PnCBleI0AA16BR1c9QphdQ8U
+         DfFIC0oeNjAMQrucr92tFA4mSxCZCZHZxoM7/Wz945k9K2Ot3yhePUHbQEapRlADtw2z
+         O5e75ue29vuDejNMEjX8BzSVNWSRBIN2pYlgTwwr4GH/HUO7/ZdEOmGMwQ0QvyF2UdSt
+         UrNmRg2iq3A0TTufOtM3S3ku7W6HhEsNpNyrjad2mBdnGdbzJAzBiKTEfIfvtx9LFqc3
+         NvtKo6I7vt4PfDDo/8g4WoAjhel5vQGy2YJ3M11TgEaDMeq7JBplX5To+xVsWmqZZfKN
+         crVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721409739; x=1722014539;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=egpF0SEnIXYb7MnIEEOBfEQ/CaSDz8TBIJfjNcsV5l0=;
+        b=sxWSzF5wR2iLtLKQy0V4kmu/suGqUaQzl77DMtpQBDXdSOOMML6ntWJt9mrjSk0sfy
+         EQf1eZSzD3QtAoTDYwclD8B30xlDDj3Or8oW/Bpy7bubUp4r2sXTZglcELrjI+r7q3i7
+         AQCibL0CdJK6fLh63NriFHtUeMn0V+4IZSmyYzqiG7pkmLU8T2OCzP2MKJ2x+6h9s94j
+         2GzF5YcBOFTCBCY8VbF9uqxTu8GLE+YQPseA8Wa/FA5jp0S0N4lJCfFLs6FgdZNFOqIg
+         gv5VLjCAxvkw7YoQZhIbzGp9pbpRb6XsszY2ZSzO5cxRaFRmdV89lTKJQX5q0g6UwT02
+         k8Dg==
+X-Forwarded-Encrypted: i=1; AJvYcCVXaQqYfTv+FQSxLXggCHs6LIaA7NkQb1qpmoOaP86Gl1dqWMUUA8gnq/5ASI4sXxRbTemqPsQjMWbrVu8nsd4GF1DGrcVDqPpzSKcqIEszO9m2EvAnD51tm8+5Aw1Ah5N1s2l2JzWvR1SGtrBh6VqnqR44bcqzX0hK9PStF50h3t6r
+X-Gm-Message-State: AOJu0YxR1/vXUwFuxtWjmOOKOjzKFNAdn948U+kLh24Ab/vMECT7mrug
+	GMTs5x8zGU0Ali+YmUmUdpd/A5kSBuOksNuu6s4InOFqrySMl3Lu
+X-Google-Smtp-Source: AGHT+IEeNgTrAkzxHGoPidL1EgMwE+24N/lIEMV3sziwJeEce9gTRudT1TJSTYzrYKkBc2+BS6ympQ==
+X-Received: by 2002:aa7:88c2:0:b0:706:5daf:efa5 with SMTP id d2e1a72fcca58-70cfd51f315mr5762976b3a.9.1721409738838;
+        Fri, 19 Jul 2024 10:22:18 -0700 (PDT)
+Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70cff491217sm1429064b3a.30.2024.07.19.10.22.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jul 2024 10:22:18 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Fri, 19 Jul 2024 07:22:16 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: hch@infradead.org, bvanassche@acm.org, jack@suse.cz,
+	josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH v3 1/3] blk-cgroup: check for pd_(alloc|free)_fn in
+ blkcg_activate_policy()
+Message-ID: <ZpqgyCEhr6s4pXDc@slm.duckdns.org>
+References: <20240719071506.158075-1-yukuai1@huaweicloud.com>
+ <20240719071506.158075-2-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -81,70 +88,24 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZpYm9clw/f8f/tEj@xsang-OptiPlex-9020>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240719071506.158075-2-yukuai1@huaweicloud.com>
 
-On Tue, Jul 16, 2024 at 03:53:25PM +0800, Oliver Sang wrote:
-> hi, Roman,
+On Fri, Jul 19, 2024 at 03:15:04PM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
 > 
-> On Mon, Jul 15, 2024 at 10:18:39PM +0000, Roman Gushchin wrote:
-> > On Mon, Jul 15, 2024 at 10:14:31PM +0800, Oliver Sang wrote:
-> > > hi, Roman Gushchin,
-> > > 
-> > > On Fri, Jul 12, 2024 at 07:03:31PM +0000, Roman Gushchin wrote:
-> > > > On Fri, Jul 12, 2024 at 02:04:48PM +0800, kernel test robot wrote:
-> > > > > 
-> > > > > 
-> > > > > Hello,
-> > > > > 
-> > > > > kernel test robot noticed a -29.4% regression of aim7.jobs-per-min on:
-> > > > > 
-> > > > > 
-> > > > > commit: 98c9daf5ae6be008f78c07b744bcff7bcc6e98da ("mm: memcg: guard memcg1-specific members of struct mem_cgroup_per_node")
-> > > > > https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
-> > > > 
-> > > > Hello,
-> > > > 
-> > > > thank you for the report!
-> > > > 
-> > > > I'd expect that the regression should be fixed by the commit
-> > > > "mm: memcg: add cache line padding to mem_cgroup_per_node".
-> > > > 
-> > > > Can you, please, confirm that it's not the case?
-> > > > 
-> > > > Thank you!
-> > > 
-> > > in our this aim7 test, we found the performance partially recovered by
-> > > "mm: memcg: add cache line padding to mem_cgroup_per_node" but not fully
-> > 
-> > Thank you for providing the detailed information!
-> > 
-> > Can you, please, check if the following patch resolves the regression entirely?
+> Currently all policies implement pd_(alloc|free)_fn, however, this is
+> not necessary for ioprio that only works for blkcg, not blkg.
 > 
-> no. in our tests, the following patch has little impact.
-> I directly apply it upon 6df13230b6 (if this is not the proper applyment, please
-> let me know, thanks)
+> There are no functional changes, prepare to cleanup activating ioprio
+> policy.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-Hm, interesting. And thank you for the confirmation, you did everything correct.
-Because the only thing the original patch did was a removal of few fields from
-the mem_cgroup_per_node struct, there are not many options left here.
-Would you mind to try the following patch?
+Acked-by: Tejun Heo <tj@kernel.org>
 
-Thank you and really appreciate your help!
+Thanks.
 
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 7e2eb091049a..0e5bf25d324f 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -109,6 +109,7 @@ struct mem_cgroup_per_node {
-
-        /* Fields which get updated often at the end. */
-        struct lruvec           lruvec;
-+       CACHELINE_PADDING(_pad2_);
-        unsigned long           lru_zone_size[MAX_NR_ZONES][NR_LRU_LISTS];
-        struct mem_cgroup_reclaim_iter  iter;
- };
-
-
+-- 
+tejun
 
