@@ -1,244 +1,112 @@
-Return-Path: <cgroups+bounces-3810-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3811-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1705C93798F
-	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 17:08:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA401937A14
+	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 17:41:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72DF7B22FFC
-	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 15:07:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72D641F22751
+	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 15:41:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67968144D16;
-	Fri, 19 Jul 2024 15:07:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E499A145A19;
+	Fri, 19 Jul 2024 15:41:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AuSyW/Ds"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="hGRntHaX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AF5C13C9A9;
-	Fri, 19 Jul 2024 15:07:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 641DE145A08
+	for <cgroups@vger.kernel.org>; Fri, 19 Jul 2024 15:41:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721401625; cv=none; b=OpJbwMicCSyHbNHH5xZQ75hwmREnqLwExLiQRuTbVULrclT5eMNgl7A67ccP5JwxSPbVZHiYK/qAJwktlRO2XM/lBamHCT5+POJH4ig2KDBIBtQX67o3xTTZFk/j4eGs0GkwkDAHPwmzG9l7sEttvIivvefcr3G2JmuBa790KlM=
+	t=1721403695; cv=none; b=RNYfJjagXWEUGLthGgTCHcf+mArc4/2O3sEH/gpP32L3E1yzTLFeUy5yKXYP7LcxLClPfZUBWXEL6KbDkSC0P+BFcqNlUSRfPQqxfkr6vnDoSjQkK0sLG/ycNLTV7temEZL5jkiyWtHyoOIbLgcR1ySoWA5BD4dmnXUnGv67lmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721401625; c=relaxed/simple;
-	bh=x04UtHiRnBmbGEix0/mydpwkC0IHcU9T1GhoF957Vmc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=prwJXm1Mq6jZ7gQVjGoXkCRpMC4wYP4P1YO1GoLWFbkQVOKv5+tUOaenNmeWynbrovRGFAcc8WDBqGEyonHdNLKaUgFNG2eQugPU6/DVr03wai5qy5/lCMT3WwY7icFeLAt0qdIlzmh0uWkoYQgkM5KLlwGzNkjirRjKEGu7GWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AuSyW/Ds; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A262CC32782;
-	Fri, 19 Jul 2024 15:07:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721401624;
-	bh=x04UtHiRnBmbGEix0/mydpwkC0IHcU9T1GhoF957Vmc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=AuSyW/DsXnC3QKZ+0iOmvBiMeLVrz3Pw4vL/gsgBpkKpBiEPTuumYbYNNemIo/jLl
-	 sag+tTgidEcB1JX7nfTbvxbyXhoaBuOFt6X/zsfSC4bR7Nw8fd1weqlxbT/CwoJVZ1
-	 Tbcud/Iy+8seN7hOp5NTOSIYQrqdxvVLtIPxwEEIftGEr2KWLajvIdrq55bcmPAJ7I
-	 gLdUuZlvf1CzpORzVdRZ9AMItAUBEQQ8SdUJ3S3zTiJUVZ/4MSc/0wpCqw4/YVM/Oo
-	 d6Gi02q2OUqP4VA305fuw3Hx7S4iKfxxQDFIUeql+o2LzlCp9MRvCfjp/04RwAnR1d
-	 NZ17/7lOgN5aA==
-Message-ID: <2794de3c-673b-45ea-8897-df1ada9c6717@kernel.org>
-Date: Fri, 19 Jul 2024 17:07:01 +0200
+	s=arc-20240116; t=1721403695; c=relaxed/simple;
+	bh=QQoq6N067yrt/y8qeQyfNuF0R8Ry1rABV4f6knZiZqQ=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=S/LPxMOohgX0qRv5zzJRaNLfzAlUuHm3bAxNIe+2+zm7mVI7LW+rJtebvNPa2sUKejPHLYU3mWo5SBSTEW+1FaNHVKIora9TJ8CSMlNDULnX9LrAABIrgrEG8gxl76j+dUsrtbYFKDh/dTrpNA1yqvPtJ6jBvsHg96eLKLs7Brw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=hGRntHaX; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-70b0116588cso52504b3a.3
+        for <cgroups@vger.kernel.org>; Fri, 19 Jul 2024 08:41:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1721403694; x=1722008494; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KZWKVNt73AG90ek9S3k9hOscFljMGUkenJRmULy2xfM=;
+        b=hGRntHaXYutPqYCtAEtV0MjB+bYk2bSQROLetr+74/u0D+L6GqYahFe8vHA3J/1m7U
+         G+9uxy4s2qJ5wCDcyCPY2aTj3UahlyRWO1CuvwX7HVqssL+pw/bJpoLEoE3SYxmpNNrU
+         vJnsQm7Ego3P7Daw+nd0aIeaI9LMVfL7LXAzruv1Lsg18GO3DR9t/VIKOzf2SnlPX8iZ
+         wdW1nidNNNT2RfjdjavxywUWVd/tUWWu4vdyO8gQMz4I7upBQyg9DrNapWoaiGBjn0HA
+         YIsWlfWGu2uE8D621g2VqiuHIU2/4HY2R3k3KmkiQlEyi5l3X3dbuY6xxOJg2DyHjBNG
+         f3pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721403694; x=1722008494;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KZWKVNt73AG90ek9S3k9hOscFljMGUkenJRmULy2xfM=;
+        b=ak+eXamT0psxlYN6s1db2o7lUBheHMTgyD4R2XOatcNknqKPhuzg4FXN6rSViypcul
+         eou8AN1p29YQV9xsWhdIPAhceFZhK1BtebUvJCXIZilpLBxi7vQsf7UBsSIkAfUg39Sj
+         pT9hKQopY6OHYcsipmZu+h4UQnKtv4ivk+wcIsZkaBwa5axejB21IxAjyWeAncpYXCn7
+         jnc9EQ4V8i/tc/qWeyy9bvEok3xp7sxqHBcJ+tpYAZbPziHvvgMwgUskeOHiw+ElEJOz
+         kgtBHWwVyNgJKRGMiTSf19xAzWyRYIfHMM0aFxgPGBSZk18uGGPMsOUBXWlRSzV+CKWh
+         2B5w==
+X-Gm-Message-State: AOJu0Yxobg4Pfj+Jfk3HJgYmD/ATcBoGd5QZmD8nBmraHU4AjlxxaXPd
+	JFKnYA3ibdnBs+6J2zdFn1iFCNf9MR+p0Ja3rtwlsbHc/ifgn3VMLLel0ZQQE0s=
+X-Google-Smtp-Source: AGHT+IGCPJf4uACUKwnddKZTp8XxBr73j8zaLpJGjhGEWSOurNMxyXPvSNi6Rqi6ya+v0VPj3gPgvw==
+X-Received: by 2002:a05:6a00:391b:b0:704:173c:5111 with SMTP id d2e1a72fcca58-70d08635b76mr242254b3a.3.1721403693595;
+        Fri, 19 Jul 2024 08:41:33 -0700 (PDT)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70cff49164bsm1380338b3a.18.2024.07.19.08.41.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jul 2024 08:41:33 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: tj@kernel.org, josef@toxicpanda.com, lizefan.x@bytedance.com, 
+ hannes@cmpxchg.org, mkoutny@suse.com, Xiu Jianfeng <xiujianfeng@huawei.com>
+Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240716133058.3491350-1-xiujianfeng@huawei.com>
+References: <20240716133058.3491350-1-xiujianfeng@huawei.com>
+Subject: Re: [PATCH v2 -next] blk-cgroup: move congestion_count to struct
+ blkcg
+Message-Id: <172140369204.12552.9366107896766797330.b4-ty@kernel.dk>
+Date: Fri, 19 Jul 2024 09:41:32 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V7 1/2] cgroup/rstat: Avoid thundering herd problem by
- kswapd across NUMA nodes
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: tj@kernel.org, cgroups@vger.kernel.org, shakeel.butt@linux.dev,
- hannes@cmpxchg.org, lizefan.x@bytedance.com, longman@redhat.com,
- kernel-team@cloudflare.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <172070450139.2992819.13210624094367257881.stgit@firesoul>
- <CAJD7tkYFwz_=kxCk-Tp4QfwKgK0C26+QzZQvbVxkAx8m9CLSFg@mail.gmail.com>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <CAJD7tkYFwz_=kxCk-Tp4QfwKgK0C26+QzZQvbVxkAx8m9CLSFg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14.0
 
 
-
-On 17/07/2024 02.30, Yosry Ahmed wrote:
-> On Thu, Jul 11, 2024 at 6:28 AM Jesper Dangaard Brouer <hawk@kernel.org> wrote:
->>
->> Avoid lock contention on the global cgroup rstat lock caused by kswapd
->> starting on all NUMA nodes simultaneously. At Cloudflare, we observed
->> massive issues due to kswapd and the specific mem_cgroup_flush_stats()
->> call inlined in shrink_node, which takes the rstat lock.
->>
->> On our 12 NUMA node machines, each with a kswapd kthread per NUMA node,
->> we noted severe lock contention on the rstat lock. This contention
->> causes 12 CPUs to waste cycles spinning every time kswapd runs.
->> Fleet-wide stats (/proc/N/schedstat) for kthreads revealed that we are
->> burning an average of 20,000 CPU cores fleet-wide on kswapd, primarily
->> due to spinning on the rstat lock.
->>
->> Help reviewers follow code: __alloc_pages_slowpath calls wake_all_kswapds
->> causing all kswapdN threads to wake up simultaneously. The kswapd thread
->> invokes shrink_node (via balance_pgdat) triggering the cgroup rstat flush
->> operation as part of its work. This results in kernel self-induced rstat
->> lock contention by waking up all kswapd threads simultaneously. Leveraging
->> this detail: balance_pgdat() have NULL value in target_mem_cgroup, this
->> cause mem_cgroup_flush_stats() to do flush with root_mem_cgroup.
->>
->> To avoid this kind of thundering herd problem, kernel previously had a
->> "stats_flush_ongoing" concept, but this was removed as part of commit
->> 7d7ef0a4686a ("mm: memcg: restore subtree stats flushing"). This patch
->> reintroduce and generalized the concept to apply to all users of cgroup
->> rstat, not just memcg.
->>
->> If there is an ongoing rstat flush, and current cgroup is a descendant,
->> then it is unnecessary to do the flush. For callers to still see updated
->> stats, wait for ongoing flusher to complete before returning, but add
->> timeout as stats are already inaccurate given updaters keeps running.
->>
->> Fixes: 7d7ef0a4686a ("mm: memcg: restore subtree stats flushing").
->> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
+On Tue, 16 Jul 2024 13:30:58 +0000, Xiu Jianfeng wrote:
+> The congestion_count was introduced into the struct cgroup by
+> commit d09d8df3a294 ("blkcg: add generic throttling mechanism"),
+> but since it is closely related to the blkio subsys, it is not
+> appropriate to put it in the struct cgroup, so let's move it to
+> struct blkcg. There should be no functional changes because blkcg
+> is per cgroup.
 > 
-> Thanks for working on this, Jesper! I love the data you collected here!
-> 
-> I think the commit subject and message should be changed to better
-> describe the patch. This is a patch that exclusively modifies cgroup
-> code, yet the subject is about kswapd. This change affects all users
-> of rstat flushing.
-> 
-> I think a better subject would be:
-> "cgroup/rstat: avoid flushing if there is an ongoing overlapping
-> flush" or similar.
-> 
+> [...]
 
-Took this for V8.
- 
-https://lore.kernel.org/all/172139415725.3084888.13770938453137383953.stgit@firesoul
+Applied, thanks!
 
-> The commit message should first describe the cgroup change, and then
-> use kswapd as a brief example/illustration of how the problem
-> manifests in practice. You should also include a brief summary of the
-> numbers you collected from prod.
-> 
+[1/1] blk-cgroup: move congestion_count to struct blkcg
+      commit: 89ed6c9ac69ec398ccb648f5f675b43e8ca679ca
 
-Update desc in V8
-
->> ---
->> V6: https://lore.kernel.org/all/172052399087.2357901.4955042377343593447.stgit@firesoul/
->> V5: https://lore.kernel.org/all/171956951930.1897969.8709279863947931285.stgit@firesoul/
->> V4: https://lore.kernel.org/all/171952312320.1810550.13209360603489797077.stgit@firesoul/
->> V3: https://lore.kernel.org/all/171943668946.1638606.1320095353103578332.stgit@firesoul/
->> V2: https://lore.kernel.org/all/171923011608.1500238.3591002573732683639.stgit@firesoul/
->> V1: https://lore.kernel.org/all/171898037079.1222367.13467317484793748519.stgit@firesoul/
->> RFC: https://lore.kernel.org/all/171895533185.1084853.3033751561302228252.stgit@firesoul/
->>
->>   include/linux/cgroup-defs.h |    2 +
->>   kernel/cgroup/rstat.c       |   95 ++++++++++++++++++++++++++++++++++++++-----
->>   2 files changed, 85 insertions(+), 12 deletions(-)
->>
->> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-[...]
->> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
->> index fb8b49437573..fe2a81a310bb 100644
->> --- a/kernel/cgroup/rstat.c
->> +++ b/kernel/cgroup/rstat.c
-[...]
->>   static inline void __cgroup_rstat_unlock(struct cgroup *cgrp, int cpu_in_loop)
->> @@ -299,6 +316,53 @@ static inline void __cgroup_rstat_unlock(struct cgroup *cgrp, int cpu_in_loop)
->>          spin_unlock_irq(&cgroup_rstat_lock);
->>   }
->>
->> +#define MAX_WAIT       msecs_to_jiffies(100)
->> +/* Trylock helper that also checks for on ongoing flusher */
->> +static bool cgroup_rstat_trylock_flusher(struct cgroup *cgrp)
->> +{
->> +       struct cgroup *ongoing;
->> +       bool locked;
->> +
->> +       /* Check if ongoing flusher is already taking care of this, if
-> 
-> nit: I think commonly the comment would start on a new line after /*.
-> 
-
-We use this comment style in networking code.
-I've updated it to follow this subsystem.
+Best regards,
+-- 
+Jens Axboe
 
 
->> +        * we are a descendant skip work, but wait for ongoing flusher
->> +        * to complete work.
->> +        */
->> +retry:
->> +       ongoing = READ_ONCE(cgrp_rstat_ongoing_flusher);
->> +       if (ongoing && cgroup_is_descendant(cgrp, ongoing)) {
->> +               wait_for_completion_interruptible_timeout(
->> +                       &ongoing->flush_done, MAX_WAIT);
->> +               /* TODO: Add tracepoint here */
->> +               return false;
->> +       }
->> +
->> +       locked = __cgroup_rstat_trylock(cgrp, -1);
->> +       if (!locked) {
->> +               /* Contended: Handle loosing race for ongoing flusher */
-> 
-> nit: losing
->
 
-Thanks for catching this subtle wording issue.
-
-
->> +               if (!ongoing && READ_ONCE(cgrp_rstat_ongoing_flusher))
->> +                       goto retry;
->> +
->> +               __cgroup_rstat_lock(cgrp, -1, false);
->> +       }
->> +       /* Obtained lock, record this cgrp as the ongoing flusher */
-> 
-> Do we want a comment here to explain why there could be an existing
-> ongoing flusher (i.e. due to multiple ongoing flushers)? I think it's
-> not super obvious.
-
-Extended this in V8.
-
-> 
->> +       ongoing = READ_ONCE(cgrp_rstat_ongoing_flusher);
->> +       if (!ongoing) {
->> +               reinit_completion(&cgrp->flush_done);
->> +               WRITE_ONCE(cgrp_rstat_ongoing_flusher, cgrp);
->> +       }
->> +       return true; /* locked */
-> 
-> Would it be better to explain the return value of the function in the
-> comment above it?
-> 
-
-Fixed this in V8.
-
->> +}
->> +
->> +static void cgroup_rstat_unlock_flusher(struct cgroup *cgrp)
->> +{
->> +       /* Detect if we are the ongoing flusher */
-> 
-> I think this is a bit obvious.
-> 
-
-True, removed comment.
-
->> +       if (cgrp == READ_ONCE(cgrp_rstat_ongoing_flusher)) {
->> +               WRITE_ONCE(cgrp_rstat_ongoing_flusher, NULL);
->> +               complete_all(&cgrp->flush_done);
->> +       }
->> +       __cgroup_rstat_unlock(cgrp, -1);
->> +}
->> +
-[...]
-
-
-Thanks for going through and commenting on the code! :-)
-
---Jesper
 
