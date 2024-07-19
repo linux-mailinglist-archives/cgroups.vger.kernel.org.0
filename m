@@ -1,84 +1,69 @@
-Return-Path: <cgroups+bounces-3819-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3820-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B750937B8C
-	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 19:24:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67019937B8E
+	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 19:25:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CAE61C21CBE
-	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 17:24:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1EBD01F228B4
+	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 17:25:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D6CC1465B7;
-	Fri, 19 Jul 2024 17:23:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F7DF1465B7;
+	Fri, 19 Jul 2024 17:25:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lTAmH6EU"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HPGxgh4W"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D53783A19;
-	Fri, 19 Jul 2024 17:23:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C55BC2BB0D
+	for <cgroups@vger.kernel.org>; Fri, 19 Jul 2024 17:25:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721409836; cv=none; b=LrEoRtLBsfJm/ZvVNc4HOorVPjxHwbmMOsvVkKQar0JTFt/9U47vnoLSx3fMrudjwPSFJAJVQP60n1Aa+Wyiu+ySqiG4GtyRpQdu54KJnNiDyOg4m5ftx0iMdBnAE4mvVf7dM5eIL/CwjxnuKh0FuL0esf2FesumE20KhlZ0HY0=
+	t=1721409918; cv=none; b=OtGd53nznQ3sDdwTqCzNqcHn+qVFr76yTblUNHVNOgABXZonZh9emQTqC6vxwqJ8Kgw3/ARoj8RVx/BPhyE2mBSWIDsUkMuyRvHFiWOePo51T/PdLNZ1tXvYnYdDUJXlgejYQjSdb35rn5bAWkLMxUSj66HBgi5eyH0jHhhk+1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721409836; c=relaxed/simple;
-	bh=TB7I4linzNl4RNrfp2dWbMAJboA3F2yr1iWc1mqD2hs=;
+	s=arc-20240116; t=1721409918; c=relaxed/simple;
+	bh=UvlBE0//T873lE7ymYCFQ60QVNwdI+r7MaJb5Sbvo6s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GMZbrfufgnBIfV8zaIKkPN9GiA5EIuiwi5UZCfdC771EbbHb1KjptLhcphB2ETyo5IEwi0rUE0I7KA1/kf0l9LEGroYowWXSMXeydc0wd6Lp2R4uv2OOc73DVKo0LrXAuchZSJr+v6cS+95df695kI9DR51vXMvF+wgFiRVvOy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lTAmH6EU; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-70af8128081so904411b3a.1;
-        Fri, 19 Jul 2024 10:23:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721409834; x=1722014634; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TkS//gCMVMuBRd9EzWV7Fa9nwlOYfQmq2cQD6cBevW8=;
-        b=lTAmH6EUrS9B4myZ69j7fz8O6AsFlQKfwm7fpwc4+WUeW/cnI6pGEmFgvnSUwESFAq
-         IhQGc02KmBdwgSmC1tmcWtUTXRhO9iLKtBIYOxXawIwSAQgTuRMV3gAo/nc8RcklQvBu
-         J4ET9X6Vh1ZlljE91hSDrUdeSCWn7K1nP5ZEwHfpy8CnPkjYNq+7FuhhjW+v3WWpHAu9
-         TDI0hhScvvP8VrkRUsdsJ0L+vobtpNRuQGXHn48cpfzwVwST2lSXL0zfQ6zYk3nOSGYv
-         7ud40uF6mBbNy+VC2E9QFp1zVaPHUNHXrLgVJbcJyGabvDjhjHbI2ApshuU9xnLazB20
-         Qpbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721409834; x=1722014634;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TkS//gCMVMuBRd9EzWV7Fa9nwlOYfQmq2cQD6cBevW8=;
-        b=eVL2EQnjhmTQpmUohB6+ITqaBR0HZ8TAGh2hFY8stWeecguUwEfuxff+mYbkKPqpty
-         9cXSKdud2QbP52ihm2rFTJXr9S4m3Lc6WgHib6OxSguuUd1z67MjpvYR1E0p4EbWO0VD
-         LzF39wcAWfDz+Q3n2HO7uAkCWXuAbwNTGgbai9ADCif9HdjmsFPHXgAAG+t6rC2IQ4t/
-         2HerXKKuoZyt+c/jMm8AkjJZVrd4OSYsmSvdSdQ/fJLlslWxvbT9mXqVSbO2RPG7k5OO
-         kvxbixb2CzkRM6RyVe5+LBer5vRIpngWsBBYHAzuV20TNjTgnNTl4ZtXFQkflWKV/qka
-         2YEw==
-X-Forwarded-Encrypted: i=1; AJvYcCVN7rgSA4Eh64rrN3Mfbyh40D6cTjNUNWitFAjZkLFWZjJFRbDpaz50riSUdVpCQ+Mv7zAtYs05ZFFvjcstMgECw4+DAc3ZKaBIBTw5nYaNlAg1ESbxn/PkqdksNRLFGCMOuT/T3cUkTxsw94CPUFocxDufDwbm0xIxyvcJKDwQy483
-X-Gm-Message-State: AOJu0YxAKmdDqkljEq4imUjAKXgnAFbXgwktTX6tT8BfXYCkdg1DWZhr
-	XK/1OCxwhnKBpmoOSD5z+SrTRAn0nRq7FpgmM95BRELM2H6Td2BQ
-X-Google-Smtp-Source: AGHT+IF7KMOYvFx0j/Hy6EqPeJ3AWYuSWiqTT7/jmWqFIV32BOgWFqRronPaPlsoWkYe/Dp2WeEozw==
-X-Received: by 2002:a05:6a20:8410:b0:1c3:a411:dc49 with SMTP id adf61e73a8af0-1c3fdddad7emr10734374637.51.1721409833778;
-        Fri, 19 Jul 2024 10:23:53 -0700 (PDT)
-Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fd6f4313f8sm7223305ad.189.2024.07.19.10.23.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jul 2024 10:23:53 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 19 Jul 2024 07:23:52 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: hch@infradead.org, bvanassche@acm.org, jack@suse.cz,
-	josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH v3 3/3] blk-ioprio: remove per-disk structure
-Message-ID: <ZpqhKAvTD2z00kyy@slm.duckdns.org>
-References: <20240719071506.158075-1-yukuai1@huaweicloud.com>
- <20240719071506.158075-4-yukuai1@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ToriNg5xdrQI8PF/rSd5DfH9qxF4QmzxuhBk0FgKaiQeK/OToiwd+AtVGxuqGOyNAVe+HS+ljJcRSaenJzyBIaUT1ZJ4vZnMkBe28fbjHqpeDo6zqIW9hUWGfleHulm6yxK7SL8Q+U71CuVxvlUZZ4ASmCJzMJN7D0UCuUFcQi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HPGxgh4W; arc=none smtp.client-ip=91.218.175.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: hannes@cmpxchg.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1721409914;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5pkR6DEf3Lxs0SOZWGvsdocjpD6jlthCnw0cI5XnXA8=;
+	b=HPGxgh4WXhi970lJv9mLD2zgsEXk5Br5M5Qr9SoH6cgR9mEKImc7D2lKOL8uraoncWomzR
+	c139mioxVqtRDBcZPqYznQD/OPMe9WnPzrOlNdfN533MXRmyrz/b91oqqSKg4Lu3RvvZrz
+	7XM8U+HqDkJdrORbI/OuKNDy7gQmgts=
+X-Envelope-To: wqu@suse.com
+X-Envelope-To: linux-btrfs@vger.kernel.org
+X-Envelope-To: mhocko@kernel.org
+X-Envelope-To: shakeel.butt@linux.dev
+X-Envelope-To: muchun.song@linux.dev
+X-Envelope-To: cgroups@vger.kernel.org
+X-Envelope-To: linux-mm@kvack.org
+X-Envelope-To: mhocko@suse.com
+X-Envelope-To: vbabka@kernel.org
+Date: Fri, 19 Jul 2024 17:25:09 +0000
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+	mhocko@kernel.org, shakeel.butt@linux.dev, muchun.song@linux.dev,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@kernel.org>
+Subject: Re: [PATCH v7 2/3] btrfs: always uses root memcgroup for
+ filemap_add_folio()
+Message-ID: <ZpqhddM6-DnbfC7T@google.com>
+References: <cover.1721384771.git.wqu@suse.com>
+ <6a9ba2c8e70c7b5c4316404612f281a031f847da.1721384771.git.wqu@suse.com>
+ <20240719170206.GA3242034@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -87,25 +72,84 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240719071506.158075-4-yukuai1@huaweicloud.com>
+In-Reply-To: <20240719170206.GA3242034@cmpxchg.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Jul 19, 2024 at 03:15:06PM +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
+On Fri, Jul 19, 2024 at 01:02:06PM -0400, Johannes Weiner wrote:
+> On Fri, Jul 19, 2024 at 07:58:40PM +0930, Qu Wenruo wrote:
+> > [BACKGROUND]
+> > The function filemap_add_folio() charges the memory cgroup,
+> > as we assume all page caches are accessible by user space progresses
+> > thus needs the cgroup accounting.
+> > 
+> > However btrfs is a special case, it has a very large metadata thanks to
+> > its support of data csum (by default it's 4 bytes per 4K data, and can
+> > be as large as 32 bytes per 4K data).
+> > This means btrfs has to go page cache for its metadata pages, to take
+> > advantage of both cache and reclaim ability of filemap.
+> > 
+> > This has a tiny problem, that all btrfs metadata pages have to go through
+> > the memcgroup charge, even all those metadata pages are not
+> > accessible by the user space, and doing the charging can introduce some
+> > latency if there is a memory limits set.
+> > 
+> > Btrfs currently uses __GFP_NOFAIL flag as a workaround for this cgroup
+> > charge situation so that metadata pages won't really be limited by
+> > memcgroup.
+> > 
+> > [ENHANCEMENT]
+> > Instead of relying on __GFP_NOFAIL to avoid charge failure, use root
+> > memory cgroup to attach metadata pages.
+> > 
+> > With root memory cgroup, we directly skip the charging part, and only
+> > rely on __GFP_NOFAIL for the real memory allocation part.
+> > 
+> > Suggested-by: Michal Hocko <mhocko@suse.com>
+> > Suggested-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+> > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > ---
+> >  fs/btrfs/extent_io.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> > 
+> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> > index aa7f8148cd0d..cfeed7673009 100644
+> > --- a/fs/btrfs/extent_io.c
+> > +++ b/fs/btrfs/extent_io.c
+> > @@ -2971,6 +2971,7 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+> >  
+> >  	struct btrfs_fs_info *fs_info = eb->fs_info;
+> >  	struct address_space *mapping = fs_info->btree_inode->i_mapping;
+> > +	struct mem_cgroup *old_memcg;
+> >  	const unsigned long index = eb->start >> PAGE_SHIFT;
+> >  	struct folio *existing_folio = NULL;
+> >  	int ret;
+> > @@ -2981,8 +2982,17 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+> >  	ASSERT(eb->folios[i]);
+> >  
+> >  retry:
+> > +	/*
+> > +	 * Btree inode is a btrfs internal inode, and not exposed to any
+> > +	 * user.
+> > +	 * Furthermore we do not want any cgroup limits on this inode.
+> > +	 * So we always use root_mem_cgroup as our active memcg when attaching
+> > +	 * the folios.
+> > +	 */
+> > +	old_memcg = set_active_memcg(root_mem_cgroup);
+> >  	ret = filemap_add_folio(mapping, eb->folios[i], index + i,
+> >  				GFP_NOFS | __GFP_NOFAIL);
+> > +	set_active_memcg(old_memcg);
 > 
-> ioprio works on the blk-cgroup level, all disks in the same cgroup
-> are the same, and the struct ioprio_blkg doesn't have anything in it.
-> Hence register the policy is enough, because cpd_alloc/free_fn will
-> be handled for each blk-cgroup, and there is no need to activate the
-> policy for disk. Hence remove blk_ioprio_init/exit and
-> ioprio_alloc/free_pd.
+> It looks correct. But it's going through all dance to set up
+> current->active_memcg, then have the charge path look that up,
+> css_get(), call try_charge() only to bail immediately, css_put(), then
+> update current->active_memcg again. All those branches are necessary
+> when we want to charge to a "real" other cgroup. But in this case, we
+> always know we're not charging, so it seems uncalled for.
 > 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Wouldn't it be a lot simpler (and cheaper) to have a
+> filemap_add_folio_nocharge()?
 
-Acked-by: Tejun Heo <tj@kernel.org>
-
-Thanks.
-
--- 
-tejun
+Time to restore GFP_NOACCOUNT? I think it might be useful for allocating objects
+which are shared across the entire system and/or unlikely will go away under
+the memory pressure.
 
