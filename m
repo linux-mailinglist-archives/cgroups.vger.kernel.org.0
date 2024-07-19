@@ -1,145 +1,184 @@
-Return-Path: <cgroups+bounces-3821-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3822-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAC9B937B9A
-	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 19:32:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDD8E937C38
+	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 20:13:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A17671F219B2
-	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 17:32:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B01B2832C8
+	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 18:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4AB6146A73;
-	Fri, 19 Jul 2024 17:31:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8D33146A76;
+	Fri, 19 Jul 2024 18:13:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gQHGVkWw"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="A4wlPLhM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17250146A72;
-	Fri, 19 Jul 2024 17:31:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A3142746B
+	for <cgroups@vger.kernel.org>; Fri, 19 Jul 2024 18:13:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721410317; cv=none; b=J8OA4QF4eLv5IuzECrfdOzWGwkjK3ClE0z9Pm8Ky1gS4LwWgHcju8IzcFY7V5Oj7ntBgnMG52STycJEMRX6HeqCrSTsUff2Vm7/i2r7gPBTfFbW3vnAMSyACaZJJkEhpajIufZTIlecKXx3bGRIr/0e4mqu/Kp1bkBZPeDWrDyA=
+	t=1721412822; cv=none; b=FRdp1vsIn5DhsB1VnLjo5DthOzW7WOuhrOfM5RITVVttgDtwVE2RastZluVb8TmPSAqqQHFt8ZRiFqUmQtrTUWFkbfa7SU0gyBn09fZlqIKf/4ygbVILaRt+NgRt28dG3ddpTzlIpSwmk6bjt62+zvjAZhFK1Dhtk+QAqzEhMfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721410317; c=relaxed/simple;
-	bh=kwetyPKGOW4u/OrTUJz8Yw6DPPnSPhY2KQ5TC6vHHeA=;
+	s=arc-20240116; t=1721412822; c=relaxed/simple;
+	bh=32zNyKgl9F/vi7TIXtY1pDCcbcQEj3CRShBeS4KycAA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JQnw1ae6m1Qb6pwGddeMy3paTvQxF8GKCOAEe/mMYjM5iQV5GrI03Tji/WCsGJ5YNRSqm6gYHvMWv6gnN7k6na7Ojm7H67iih6aYp5EVZDVUVsXb0c4kizNPKPGsf0n+FWycaFqPolc22uK71IL72vCoEw7nroSMC+10QuzGmXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gQHGVkWw; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1fc65329979so15664585ad.0;
-        Fri, 19 Jul 2024 10:31:55 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=gM73yeOMgCnm4Yn0XZ0Mv56xkxpBDKQkJgtRcgJbL73miMLI248rEQolX7o8rJvQGzI/NXgG0i9wE/gjqM38JaOB24GncB3JvTSNFSlyYYR95fsdY6IveY5Y8u0ee+eFLvqJoPRBywSWk/wfY5mt4bs7KgW2ssFZ/eOktuAwe1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=A4wlPLhM; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-3683178b226so795228f8f.1
+        for <cgroups@vger.kernel.org>; Fri, 19 Jul 2024 11:13:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721410315; x=1722015115; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6ZbMHz0p5DWuVseBb2N8rhX28Nxn5bBUC6D+VNe4hHM=;
-        b=gQHGVkWwSp8T6LffMGm2bRwfKY/sSdMkSP1Vi37rK6A1voQnOfLQ7mZEXAxXmkuGNI
-         9nkFaE6hsez2Oa+taaKGUBB6jtSCVXWvwUdoE7tioR0poQN7NJPEkkOJ4QKiLfcOmoZk
-         zyYHyrdr1dmmGPBafg1+RClwxnMKj7bNFObxdaGrnZiEK7zH4SChyI0yPtMWYAZ6SLXn
-         aO7206XkSapP4sxIDBrQXsbPGhHe47TVMcEBAIvHnpPvuZK9M034lR7DTfMe3zFNjwst
-         c8/UR52Hvto1sXJPpt0xVtRdhxQlqzQmlhn/wgiGUp/dB7M3Y53rq4wbR5R3UngLMIbx
-         9KJg==
+        d=suse.com; s=google; t=1721412818; x=1722017618; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jtkgtrgq5T9527z52jU1fuPROGptcAZm6NwuubLRp0s=;
+        b=A4wlPLhMsnQTT91q051JRXMCj/S0mAHdxfa6ffW/wMzQZMYayoG+2ri1GxxOEfYZUp
+         4NxYRByKCMWgq6lAjhldYTIhEry1Ug+NzY+fR0oPpQ4+uSZKMHonB7xJ059ShjFYLKwt
+         XqOlYcsWpjTYIB/iZMFJZTAiLhGiZzDVS/8p7HaWcOBsdJMe5FaITvNzGaetI+06EcIP
+         iFZQXzMSKYBAVWeNiY9qrDDk3Wl1jgDXroHRhs6OGO2ro1iEWEkKsVCYbHJ4SaWsPfDN
+         yEmiXXHYtBUf4Ry0ACkA42e5KbhHOIetMUVfyUxo+XsyuccmLs+wBPB8xlGHtRc91ODA
+         uYaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721410315; x=1722015115;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6ZbMHz0p5DWuVseBb2N8rhX28Nxn5bBUC6D+VNe4hHM=;
-        b=bartIFUSmJGSxk5AUlA5Z572/eQpfWr5aeu+kKtKmlFOm/dF9kMRVAxA6N6++rit6v
-         m3wvW6Le9JK4etlvie+bhJO9SuVVYCLsM0xOUYxqLqtCZJasKziEelwzPO/iSPJZY2ze
-         B1rHtm2QGjdKm/foEO92fEcfbDnftgrviPxR7TWi29biKa7KcUfZ4eM95IDfG+wgYob2
-         4Jz9jJRRkEzf/OI9EupI7/KJqNI6dhQslBGmWf8sQ3TEnnHzMAWXmNUQZyCe0QI+Ki8O
-         DEumr1AfL99nAxFfyLvbXE66Ewc/Sr+s1O6khzO6QydMCNDPPR7CL3bLkQwiZuqq5D0n
-         nT1g==
-X-Forwarded-Encrypted: i=1; AJvYcCW4pap9c4JCK3nX8l1rHJunix4w9hDK8Xa1E1mjqOhXyW5YE00I81Z6pFl+W+GMLcLuu4lFGZRTzF/CRfRKKwcKrd6y3+Yoj8q/owlURXjY16QwNB1UwdyyDH1wWb9v/22FIT7sZR1M9xxyZvfAoFbXGGPM5tfKb4yJga5bCM8HAoxj
-X-Gm-Message-State: AOJu0YwHmMens86LZ9hERJtxwn+4IAdQBjWKAKINgfUao8aLB/uFgxiO
-	XOLpvtvzBz05HGv/rNimpRgrOeBEVYVYuuSSOYJybTGUSRHb9XHhrQqTRA==
-X-Google-Smtp-Source: AGHT+IFsThoFkOXcqDTCyPseR9byS+0442uGUbWIB1NvdVDLi0q/DrexI8yvkm4IqTHzGS1Ss2DQJQ==
-X-Received: by 2002:a17:902:ec91:b0:1f9:d0da:5b2f with SMTP id d9443c01a7336-1fd745879femr4471445ad.39.1721410315354;
-        Fri, 19 Jul 2024 10:31:55 -0700 (PDT)
-Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fd6f48875esm7196225ad.287.2024.07.19.10.31.54
+        d=1e100.net; s=20230601; t=1721412818; x=1722017618;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jtkgtrgq5T9527z52jU1fuPROGptcAZm6NwuubLRp0s=;
+        b=Ryu6jN9aCkf69UfaaU2c1tdjQFUUMcvIESALbdkmwIdDZ7uxAGV1D4qmTM3w1n2juF
+         K41VXhh3EHpOcoBmdTYmlwd4QHVno/hEGMhffSKGguse0xhRA4poVITsOy1eXLf9o7S0
+         1i6rMz9kfMXR3lOIvLLtX0RYu1d5xZ+BNhOekYQCZhePrllzN+0lO4HyKo8YGFckb/Yt
+         I+nXZYryUm2kaZk6V5BYRWpjYsMgNrWr1I8L0NJb18BbSPJV9o4YDDQzWpwMomH+Dwzd
+         wpEo7BMSstE6BqqZ3sGsKjeAzLfMH5TEE0RwScajFBYZnUfmrTCKgg+UybK/pglUaepz
+         h4MA==
+X-Forwarded-Encrypted: i=1; AJvYcCWv4uX6lUweQowtoRGa06aWKg79gROwwwsTensFW5T3xNT/VzcvwkzUexafNvXjFbDdIchgrdELeFS0fJXoI7xJz8bUPxuLhw==
+X-Gm-Message-State: AOJu0YzOawxUv9a+iC6DIoEtqUkCjXURVUXwC5Yv2jNurxzWXZ7wv0Df
+	8FnKaIiUjwtv/iKVTvsOxu4s1azAm+89g6ZQAAmYw5daov4OaF+e4aF8q+iMkrs=
+X-Google-Smtp-Source: AGHT+IFX6MK/dNO28N7btu/BHuth1OXIjPKoRHbGCTlplFaJwfwdjS2joP6EcRYcvcM+RpKYHrt2xw==
+X-Received: by 2002:a5d:4b0e:0:b0:368:7a18:908c with SMTP id ffacd0b85a97d-3687a18926amr1457236f8f.51.1721412817507;
+        Fri, 19 Jul 2024 11:13:37 -0700 (PDT)
+Received: from localhost (109-81-94-157.rct.o2.cz. [109.81.94.157])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-427d2a6fd5fsm59755435e9.22.2024.07.19.11.13.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jul 2024 10:31:54 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 19 Jul 2024 07:31:53 -1000
-From: "tj@kernel.org" <tj@kernel.org>
-To: Boy Wu =?utf-8?B?KOWQs+WLg+iqvCk=?= <Boy.Wu@mediatek.com>
-Cc: "boris@bur.io" <boris@bur.io>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	"axboe@kernel.dk" <axboe@kernel.dk>,
-	Iverlin Wang =?utf-8?B?KOeOi+iLs+mclik=?= <Iverlin.Wang@mediatek.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH v4] blk-cgroup: Replace u64 sync with spinlock for iostat
-Message-ID: <ZpqjCVxSAV-Q7Yhy@slm.duckdns.org>
-References: <20240718084112.12202-1-boy.wu@mediatek.com>
- <ZpmF8HJsuefjC7Xr@slm.duckdns.org>
- <00c595a16b4e96ae56973ac2ce586f6ad736059f.camel@mediatek.com>
+        Fri, 19 Jul 2024 11:13:37 -0700 (PDT)
+Date: Fri, 19 Jul 2024 20:13:36 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org,
+	Vlastimil Babka <vbabka@kernel.org>
+Subject: Re: [PATCH v7 2/3] btrfs: always uses root memcgroup for
+ filemap_add_folio()
+Message-ID: <Zpqs0HdfPCy2hfDh@tiehlicka>
+References: <cover.1721384771.git.wqu@suse.com>
+ <6a9ba2c8e70c7b5c4316404612f281a031f847da.1721384771.git.wqu@suse.com>
+ <20240719170206.GA3242034@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <00c595a16b4e96ae56973ac2ce586f6ad736059f.camel@mediatek.com>
+In-Reply-To: <20240719170206.GA3242034@cmpxchg.org>
 
-Hello, Boy.
+On Fri 19-07-24 13:02:06, Johannes Weiner wrote:
+> On Fri, Jul 19, 2024 at 07:58:40PM +0930, Qu Wenruo wrote:
+> > [BACKGROUND]
+> > The function filemap_add_folio() charges the memory cgroup,
+> > as we assume all page caches are accessible by user space progresses
+> > thus needs the cgroup accounting.
+> > 
+> > However btrfs is a special case, it has a very large metadata thanks to
+> > its support of data csum (by default it's 4 bytes per 4K data, and can
+> > be as large as 32 bytes per 4K data).
+> > This means btrfs has to go page cache for its metadata pages, to take
+> > advantage of both cache and reclaim ability of filemap.
+> > 
+> > This has a tiny problem, that all btrfs metadata pages have to go through
+> > the memcgroup charge, even all those metadata pages are not
+> > accessible by the user space, and doing the charging can introduce some
+> > latency if there is a memory limits set.
+> > 
+> > Btrfs currently uses __GFP_NOFAIL flag as a workaround for this cgroup
+> > charge situation so that metadata pages won't really be limited by
+> > memcgroup.
+> > 
+> > [ENHANCEMENT]
+> > Instead of relying on __GFP_NOFAIL to avoid charge failure, use root
+> > memory cgroup to attach metadata pages.
+> > 
+> > With root memory cgroup, we directly skip the charging part, and only
+> > rely on __GFP_NOFAIL for the real memory allocation part.
+> > 
+> > Suggested-by: Michal Hocko <mhocko@suse.com>
+> > Suggested-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+> > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > ---
+> >  fs/btrfs/extent_io.c | 10 ++++++++++
+> >  1 file changed, 10 insertions(+)
+> > 
+> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> > index aa7f8148cd0d..cfeed7673009 100644
+> > --- a/fs/btrfs/extent_io.c
+> > +++ b/fs/btrfs/extent_io.c
+> > @@ -2971,6 +2971,7 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+> >  
+> >  	struct btrfs_fs_info *fs_info = eb->fs_info;
+> >  	struct address_space *mapping = fs_info->btree_inode->i_mapping;
+> > +	struct mem_cgroup *old_memcg;
+> >  	const unsigned long index = eb->start >> PAGE_SHIFT;
+> >  	struct folio *existing_folio = NULL;
+> >  	int ret;
+> > @@ -2981,8 +2982,17 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+> >  	ASSERT(eb->folios[i]);
+> >  
+> >  retry:
+> > +	/*
+> > +	 * Btree inode is a btrfs internal inode, and not exposed to any
+> > +	 * user.
+> > +	 * Furthermore we do not want any cgroup limits on this inode.
+> > +	 * So we always use root_mem_cgroup as our active memcg when attaching
+> > +	 * the folios.
+> > +	 */
+> > +	old_memcg = set_active_memcg(root_mem_cgroup);
+> >  	ret = filemap_add_folio(mapping, eb->folios[i], index + i,
+> >  				GFP_NOFS | __GFP_NOFAIL);
 
-On Fri, Jul 19, 2024 at 01:47:35AM +0000, Boy Wu (吳勃誼) wrote:
-...
-> If it is for readability, I think keeping using u64 sync instead of
-> replacing it with spinlock is better, because what u64 sync protects is
-> 64-bit data for 32-bit systems, while spinlock can be used for many
-> other reasons. The root cause of this issue is just the incorrect use
+I thoutght you've said that NOFAIL was added to workaround memcg
+charges. Can you remove it when memcg is out of the picture?
 
-Yeah, but it can't be used when there are multiple updaters.
+It would be great to add some background about how much memory are we
+talking about. Because this might require memcg configuration in some
+setups.
 
-> of u64 sync. Adding back the missing spinlock for the correct usage of
-> u64 sync is simpler. Is there any benefit to replacing u64 sync with
-> spinlock?
-
-It doesn't make sense to protect u64_sync with a spinlock. Both are only
-needed on 32bit. What's the point of having both? Also, note that iostat_cpu
-is also updated from two paths - bio issue and stat reset. If you want to
-keep that u64_sync, the only way to avoid possible deadlocks is adding
-spinlock in the bio issue path too, which will be pretty expensive.
-
-> > Also, for blkg_clear_stat(), we're running a slight chance of
-> > clearing of
-> > iostat_cpu racing against state updates from the hot path. Given the
-> > circumstances - stat reset is an cgroup1-only feature which isn't
-> > used
-> > widely and a problematic interface to begin with, I believe this is a
-> > valid
-> > choice but it needs to be noted.
+> > +	set_active_memcg(old_memcg);
 > 
-> I don't get this part, but if this is another issue, maybe another
-> patch would be better?
+> It looks correct. But it's going through all dance to set up
+> current->active_memcg, then have the charge path look that up,
+> css_get(), call try_charge() only to bail immediately, css_put(), then
+> update current->active_memcg again. All those branches are necessary
+> when we want to charge to a "real" other cgroup. But in this case, we
+> always know we're not charging, so it seems uncalled for.
+> 
+> Wouldn't it be a lot simpler (and cheaper) to have a
+> filemap_add_folio_nocharge()?
 
-It's the same issue. Reset is another writer and whenever you have more than
-one writers w/ u64_sync, there's a chance of deadlocks. So, iostat_cpu also
-has two writers - bio issue and stat reset. If you want to keep using
-u64_sync in both places, the only way to do it is adding spinlock protection
-to both paths, which is an expensive thing to do for the bio issue path. So,
-here, we'd rather just give up and let stat resetting be racy on 32bit.
-
-Thanks.
+Yes, that would certainly simplify things. From the previous discussion
+I understood that there would be broader scopes which would opt-out from
+charging. If this is really about a single filemap_add_folio call then
+having a variant without doesn't call mem_cgroup_charge sounds like a
+much more viable option and also it doesn't require to make any memcg
+specific changes.
 
 -- 
-tejun
+Michal Hocko
+SUSE Labs
 
