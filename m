@@ -1,136 +1,145 @@
-Return-Path: <cgroups+bounces-3827-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3828-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CCEE937DEF
-	for <lists+cgroups@lfdr.de>; Sat, 20 Jul 2024 01:02:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED8F1937EF7
+	for <lists+cgroups@lfdr.de>; Sat, 20 Jul 2024 06:53:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A820282324
-	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2024 23:02:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90C461F21AA4
+	for <lists+cgroups@lfdr.de>; Sat, 20 Jul 2024 04:53:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3178148827;
-	Fri, 19 Jul 2024 23:02:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DADD3C157;
+	Sat, 20 Jul 2024 04:52:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="G1mjbLP4"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="a8IX53ys"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CA3AC8C7
-	for <cgroups@vger.kernel.org>; Fri, 19 Jul 2024 23:02:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D544B67D
+	for <cgroups@vger.kernel.org>; Sat, 20 Jul 2024 04:52:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721430133; cv=none; b=jBuSCVF4QD3Iowv6MtUl+X8XB6Ef6+046qLaYMBdUuij86xLOS7VvaUCN8IqJOoJbvuv9ZJRMVYIz76MZ3htTQqM0pufAzgFqcLiDRDwcKr7v4azWe/d6zJiB3khwpKoq7EuJ/H7n18agvlc/XBpiZpqzxMK3RIipsAeuYmIZ80=
+	t=1721451179; cv=none; b=RebKLXDELaz4+Wa4g4p9Y3eX++A3MllThgXdYolzj5zBSV758L7Ucjn0YuW/lpht1eseJcOEv0RyiApGpNjkaFCKFY5PsaFzfz5oLCdjET2Ht8vmDCmkoiOaD0MyTEGK0MQRFbiT0D9u2fMNqFfE8ErXxPKlectmk/Sec7hCmXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721430133; c=relaxed/simple;
-	bh=9W7XgB4rsZGerv02WanbEritEOYoNHH9GxwVAPTgL2g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bKn52P4PzKWXDxn+JEyTj5F9PQzSGHvliHxfBCMI9OyJOVsGUD3MWzYCCgaApDyDPa1NOEPgF+R8hgRd6RBCdhol6S2xzmEak9dpWGkAfEnAsZYe++IznMIGFmFZQOEMzbixtA1L9kAcTmYg7BtwlLqizsahhf40Fai9qrNE6Yw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=G1mjbLP4; arc=none smtp.client-ip=95.215.58.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: yosryahmed@google.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721430127;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=l0zD0aA4CXe4tpOLD1gGPpbJDDXrQ2vOJBNWM34Kaa0=;
-	b=G1mjbLP4/VizFq7tfwvP/yTuxNlKmKxb/zMUkDEmgh0Dut/p/A99cJkLgmPsjRpMAAfTz+
-	RuI5kSSsMG+YO8hX08qxBK76kQYb1qYKV12vGGahL1BaQXd0W5PR8JdWI7HLP8ITMqNfNo
-	mYs6BDEbF9CXlBYzkMoYw7tpSNzDOF4=
-X-Envelope-To: hawk@kernel.org
-X-Envelope-To: tj@kernel.org
-X-Envelope-To: cgroups@vger.kernel.org
-X-Envelope-To: hannes@cmpxchg.org
-X-Envelope-To: lizefan.x@bytedance.com
-X-Envelope-To: longman@redhat.com
-X-Envelope-To: kernel-team@cloudflare.com
-X-Envelope-To: linux-mm@kvack.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-Date: Fri, 19 Jul 2024 16:01:59 -0700
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, tj@kernel.org, 
-	cgroups@vger.kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com, longman@redhat.com, 
-	kernel-team@cloudflare.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V7 1/2] cgroup/rstat: Avoid thundering herd problem by
- kswapd across NUMA nodes
-Message-ID: <mlrz5ek6zx2dyw3kfikv4girua4lqblkl3ri6qbpmpblprx6kc@fflln5bhjbl4>
-References: <172070450139.2992819.13210624094367257881.stgit@firesoul>
- <a4e67f81-6946-47c0-907e-5431e7e01eb1@kernel.org>
- <CAJD7tkYV3iwk-ZJcr_==V4e24yH-1NaCYFUL7wDaQEi8ZXqfqQ@mail.gmail.com>
- <100caebf-c11c-45c9-b864-d8562e2a5ac5@kernel.org>
- <k3aiufe36mb2re3fyfzam4hqdeshvbqcashxiyb5grn7w2iz2s@2oeaei6klok3>
- <CAJD7tkZbOf7125mcuN-EQdn6MB=dEasHWpoLmY1p-KCjjRxGXQ@mail.gmail.com>
+	s=arc-20240116; t=1721451179; c=relaxed/simple;
+	bh=UoLdUAJAryghMfc6CeCPhFdMgTNMlLLrJiaNMLYtDUQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Q5fLfM8TtmXVkNMEQ6WAg3kr+A+K4IenGL4HfCGhUNunGmMbXbgh4Ol7gHHaF5hAD1qqr7rSqllKxpCyPJd9S5XwYWJRwaxYU2K0jhBBb77Xk22EgumLmL9FJozaWaGk1YA0BMG99IlYo8GzowNfp3KKEO2g7yZ12X28WIwd1IA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=a8IX53ys; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-52eafa1717bso2111500e87.2
+        for <cgroups@vger.kernel.org>; Fri, 19 Jul 2024 21:52:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1721451176; x=1722055976; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fSRulvHWjoBy0HLcI6v4db2avURTI4j4zJY+qVX3PAA=;
+        b=a8IX53ysK6PSEBpNtiu/S8YefBzfW/cNabzTYv6ZMqleZL8dAJ2fQSb3Tkz9618kcO
+         e8o+lzDLUKQbrlCU3brki9JL0kne5tctdmOzPM5yA9We/Spu0FdTDTqgA0j6C4nZlBD0
+         Iymys9DDboJjcr2zcTYb72hCv1S/Dp2WeqcEXJ1v+4d0C2LiG9fmJ0qlZdP1vxTL+99I
+         3FoTCvcjDb1cVemF1eoZYuK5ypW9KVFARMm+miZy5f5WuWQMwMGGVuuP2cM/UEHVq3NS
+         /k3AJP3Izf4H7W2Jqy5xN2SaLGfo5rhLx3N65FbpMiRFG/+4DT5kKddVoS/yqkodvhIi
+         zyAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721451176; x=1722055976;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fSRulvHWjoBy0HLcI6v4db2avURTI4j4zJY+qVX3PAA=;
+        b=e9qNMdtigKYZQ9LSxwId7MNHtMJiXcw7cbjFL1gBqHFYp8W90lbbuJG/o5hJGJ6isJ
+         r818X7Ia48epQj6h4cEGum5mwr1gzmY4KkrIbiNXWnskeQe+I3xW9Jh6EJLk2k18DPdg
+         oyIcwPHui4b2qUQjV3aCuRmVRQOF/IsFx83b+M96/EQ9/QqgYgUAeLymCI7iZQHZtCFL
+         BBdXmGJkAE2eP+LDfTyWSs8iAwSVE3L8KR4viv4qpafxfqSS3hV8z0TUvKxYsPsxgjZ4
+         XQ8UI6E8vyAxe9XIFHxdTKBho8az3iRIz1t8iY5mFBEAaWUQ0neL7OL8q4sBxh+9xaob
+         q8vw==
+X-Forwarded-Encrypted: i=1; AJvYcCUwUpHoHXUiRrggjQ+EsxlcRskFhn3E0zSa4rFt2GzGpMBK6g9hke8wTkb3kFhKsJ2G8Foy7u3EvBgZruqrp6DY1NIK8BSuag==
+X-Gm-Message-State: AOJu0Yyc4cT1Crq/Xt4DBIpa4z67BNXo2A1C/ae76lPz6vOzcr9mbwhL
+	c6/gx8UGBzRf3FeTeJPciMVEFSl3rhLsQ1ZUoMtKR/tnazJqw2PKvIs7NLiSPJvaLZaha5zgQGE
+	b1Zn0tWv9mSuFhrAuIT0YgI4Xsknb5srwi+vJ
+X-Google-Smtp-Source: AGHT+IEuqDE8qtcuvEHCdMjPK+szxTU34wSvAmUMiAVDP0uGH3fdV3MdBRkljmhPdZlIdRmQlRwnnVbtKUVXHMJDaA0=
+X-Received: by 2002:a05:6512:2351:b0:52c:8920:875 with SMTP id
+ 2adb3069b0e04-52ef8d960ffmr873936e87.20.1721451175516; Fri, 19 Jul 2024
+ 21:52:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkZbOf7125mcuN-EQdn6MB=dEasHWpoLmY1p-KCjjRxGXQ@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+References: <172070450139.2992819.13210624094367257881.stgit@firesoul>
+ <a4e67f81-6946-47c0-907e-5431e7e01eb1@kernel.org> <CAJD7tkYV3iwk-ZJcr_==V4e24yH-1NaCYFUL7wDaQEi8ZXqfqQ@mail.gmail.com>
+ <100caebf-c11c-45c9-b864-d8562e2a5ac5@kernel.org> <k3aiufe36mb2re3fyfzam4hqdeshvbqcashxiyb5grn7w2iz2s@2oeaei6klok3>
+ <5ccc693a-2142-489d-b3f1-426758883c1e@kernel.org> <iso3venoxgfdd6mtc6xatahxqqpev3ddl3sry72aoprpbavt5h@izhokjdp6ga6>
+In-Reply-To: <iso3venoxgfdd6mtc6xatahxqqpev3ddl3sry72aoprpbavt5h@izhokjdp6ga6>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Fri, 19 Jul 2024 21:52:17 -0700
+Message-ID: <CAJD7tkYWnT8bB8UjPPWa1eFvRY3G7RbiM_8cKrj+jhHz_6N_YA@mail.gmail.com>
+Subject: Re: [PATCH V7 1/2] cgroup/rstat: Avoid thundering herd problem by
+ kswapd across NUMA nodes
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, tj@kernel.org, cgroups@vger.kernel.org, 
+	hannes@cmpxchg.org, lizefan.x@bytedance.com, longman@redhat.com, 
+	kernel-team@cloudflare.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 18, 2024 at 08:11:32PM GMT, Yosry Ahmed wrote:
-> On Thu, Jul 18, 2024 at 5:41 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+On Fri, Jul 19, 2024 at 3:48=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
+v> wrote:
+>
+> On Fri, Jul 19, 2024 at 09:54:41AM GMT, Jesper Dangaard Brouer wrote:
 > >
-> > Hi Jesper,
 > >
-> > On Wed, Jul 17, 2024 at 06:36:28PM GMT, Jesper Dangaard Brouer wrote:
+> > On 19/07/2024 02.40, Shakeel Butt wrote:
+> > > Hi Jesper,
 > > >
-> > [...]
+> > > On Wed, Jul 17, 2024 at 06:36:28PM GMT, Jesper Dangaard Brouer wrote:
+> > > >
+> > > [...]
+> > > >
+> > > >
+> > > > Looking at the production numbers for the time the lock is held for=
+ level 0:
+> > > >
+> > > > @locked_time_level[0]:
+> > > > [4M, 8M)     623 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@            =
+   |
+> > > > [8M, 16M)    860 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@=
+@@@|
+> > > > [16M, 32M)   295 |@@@@@@@@@@@@@@@@@                                =
+   |
+> > > > [32M, 64M)   275 |@@@@@@@@@@@@@@@@                                 =
+   |
+> > > >
 > > >
-> > >
-> > > Looking at the production numbers for the time the lock is held for level 0:
-> > >
-> > > @locked_time_level[0]:
-> > > [4M, 8M)     623 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@               |
-> > > [8M, 16M)    860 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> > > [16M, 32M)   295 |@@@@@@@@@@@@@@@@@                                   |
-> > > [32M, 64M)   275 |@@@@@@@@@@@@@@@@                                    |
-> > >
+> > > Is it possible to get the above histogram for other levels as well?
 > >
-> > Is it possible to get the above histogram for other levels as well? I
-> > know this is 12 numa node machine, how many total CPUs are there?
+> > Data from other levels available in [1]:
+> >  [1]
+> > https://lore.kernel.org/all/8c123882-a5c5-409a-938b-cb5aec9b9ab5@kernel=
+.org/
 > >
-> > > The time is in nanosec, so M corresponds to ms (milliseconds).
-> > >
-> > > With 36 flushes per second (as shown earlier) this is a flush every
-> > > 27.7ms.  It is not unreasonable (from above data) that the flush time
-> > > also spend 27ms, which means that we spend a full CPU second flushing.
-> > > That is spending too much time flushing.
+> > IMHO the data shows we will get most out of skipping level-0 root-cgrou=
+p
+> > flushes.
 > >
-> > One idea to further reduce this time is more fine grained flush
-> > skipping. At the moment we either skip the whole flush or not. How
-> > about we make this decision per-cpu? We already have per-cpu updates
-> > data and if it is less than MEMCG_CHARGE_BATCH, skip flush on that cpu.
-> 
-> Good idea.
-> 
-> I think we would need a per-subsystem callback to decide whether we
-> want to flush the cgroup or not. This needs to happen in the core
-> rstat flushing code (not the memcg flushing code), as we need to make
-> sure we do not remove the cgroup from the per-cpu updated tree if we
-> don't flush it.
+>
+> Thanks a lot of the data. Are all or most of these locked_time_level[0]
+> from kswapds? This just motivates me to strongly push the ratelimited
+> flush patch of mine (which would be orthogonal to your patch series).
 
-Unless we have per-subsystem update tree, I don't think per-subsystem
-callback would work or we would be flushing all if any subsystem wants
-it. Anyways we can discuss when we have data that it really helps.
+Jesper and I were discussing a better ratelimiting approach, whether
+it's measuring the time since the last flush, or only skipping if we
+have a lot of flushes in a specific time frame (using __ratelimit()).
+I believe this would be better than the current memcg ratelimiting
+approach, and we can remove the latter.
 
-> 
-> More generally, I think we should be able to have a "force" flush API
-> that skips all optimizations and ensures that a flush occurs. I think
-> this will be needed in the cgroup_rstat_exit() path, where stats of a
-> cgroup being freed must be propagated to its parent, no matter how
-> insignificant they may be, to avoid inconsistencies.
+WDYT?
 
-Agree.
+>
+> Shakeel
 
