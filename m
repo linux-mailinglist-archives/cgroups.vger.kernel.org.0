@@ -1,112 +1,203 @@
-Return-Path: <cgroups+bounces-3835-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3836-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 355AC938A21
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jul 2024 09:35:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52930938A55
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jul 2024 09:46:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8F652816C0
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jul 2024 07:35:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7614A1C20257
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jul 2024 07:46:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5407F5380F;
-	Mon, 22 Jul 2024 07:34:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DC1156257;
+	Mon, 22 Jul 2024 07:46:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="N1XcTg8q"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oY1O8i41"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48E032E40E
-	for <cgroups@vger.kernel.org>; Mon, 22 Jul 2024 07:34:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB7BE155CB3
+	for <cgroups@vger.kernel.org>; Mon, 22 Jul 2024 07:46:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721633698; cv=none; b=Pn81aY8TegbruQI79FbDr756fZD+WdgOK+R52B71C5GTXckL0yMUPRd6eiuxBx4RjYgm9U6XNO/NxnQFiNnvB0vT8g2OTGcLC8L8BqNFsIxmuanQWhk7cZrWgX0/xdVku/3RHAdibF+EfpLzqobxFs3M9q3IasVUmmBvp3WBPTo=
+	t=1721634373; cv=none; b=O2IOw/Tq8CYGCfJ2vFaBy7zJPHmypKvVbXjdyxx8pnwSJxWz6BVFWip65EMjwG0ZUsga8OoxC6eAuGBRpYh1wUQXQeU42mrjnRsZaGpVoqCS4wEkHJNn4tIp6ZWgIi4vGDC1gPrgb4Cnf1NjsckxfkPEAP1jwST+CH7j6QoAVWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721633698; c=relaxed/simple;
-	bh=5I00kJ1IC/ju/fEuCiFmfghY0goYro6giF/Jc1eniek=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fy1h/tUxF/TMC//elU72p58ywLHrnzV1DIlYQz5sqt066+2BBOl9Mb/qKXAON5vF4g19kLl18RE6dlv7smfLKNXeZgJ0aywRIMb4hKAPyYLsHPrIfMHv2ybUJfX7HmJ0ZwYNZwjOajfjgTljExsSYB/3xG9HQCw1Er8G4ilFGXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=N1XcTg8q; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a79a7d1a0dbso378552766b.2
-        for <cgroups@vger.kernel.org>; Mon, 22 Jul 2024 00:34:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1721633695; x=1722238495; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LsvUE0o57OouoC7fjzRG0Fp0z7u/TQO/RaOGGl1k+XY=;
-        b=N1XcTg8qKqLxBPl4sQSqBCCgBTTU5kbnOqQQaNlfv97AGdCdT9bVj4CHWghoOlRql8
-         OXgwuxOTvQm5b8yykLh21aeLTM+2JEJIar0/8bjcHwvcuSiA9X+/g431rMa1EtSXIYl2
-         wkR1/znkHM4e5cu9JEAPSX646W2OfWw4AhDCUy062WTpqn94stONf+nKNOEgmDvH4HO6
-         XkK6x/w/bNeFNzAjzG0L9nK6baMCS6IxrVFjdAMRRPikxEMLGt/+5c1vVQDGI0RjRU1t
-         jH5m1RnDN+Jv/ywJxNUhD7XIVqkxDJNalHEPu+iKB12VZ+XmOMdWw1OJoshaKNpm5DyL
-         Ydjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721633695; x=1722238495;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LsvUE0o57OouoC7fjzRG0Fp0z7u/TQO/RaOGGl1k+XY=;
-        b=xRHg/L0tGe4ozbk2vvwj4SZbXlJaQRIF8n6rwq185SMU0hOmwXzDikOLjv8BMRSrlQ
-         lSXsMffhn2Fc3AfjdxkbuSF9Ml4H//fnaWymui3OisqEl6icJP4rig36b6TstKylC7XZ
-         cBm5Yxxbb3RuINsCMdMNQ6DABSuvsnrexOHx5IEiHcQs3NOl0ARo2npkFNWyGz025KUS
-         ziLyXPjn4PbXwC9xaaU97bkFU5Th9Yc1m3a3z082i0modYt5UcqSqwz+ue96bBS7iW4w
-         cSxPtyDlOAOfAAHhYBpJVL8yOjsV0gZ8mVuy9H7ba2rLhrlK3wDEA5tClDAZIItLI+XI
-         yJMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWotmCysjOqIjthi0XI7Z+lKvkFqTFJLcKyyi8z/aWm5YCxWXqHvbF6kPI8yKV/p8pxGoFSxQ3gYjK2SlgNOQsXZ4ZkvMfrzQ==
-X-Gm-Message-State: AOJu0YwGBenaFK1C3jUwSH5CyYlQswl6ioEfiK5FgqhcgudscEVq67c0
-	XxeYeF+KvxsiaWE0sfKyH6V5GacwFfoqDL1zOvm39lYy+D5isFF8QY7lxKtR5CA=
-X-Google-Smtp-Source: AGHT+IEmWXROwHA87dq+wBT3GDAicPjakH0kJc74UbfmBRFfMAtxkJmSTHsiP8RgLPulsbfgFkyeVQ==
-X-Received: by 2002:a17:906:c142:b0:a77:dd5c:d7f4 with SMTP id a640c23a62f3a-a7a4bf39ab2mr351235466b.15.1721633694678;
-        Mon, 22 Jul 2024 00:34:54 -0700 (PDT)
-Received: from localhost ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7a3c91e052sm384748366b.153.2024.07.22.00.34.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jul 2024 00:34:54 -0700 (PDT)
-Date: Mon, 22 Jul 2024 09:34:53 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Qu Wenruo <wqu@suse.com>,
-	linux-btrfs@vger.kernel.org, roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev, muchun.song@linux.dev,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	Vlastimil Babka <vbabka@kernel.org>
-Subject: Re: [PATCH v7 2/3] btrfs: always uses root memcgroup for
- filemap_add_folio()
-Message-ID: <Zp4LnZS3MSqzM08J@tiehlicka>
-References: <cover.1721384771.git.wqu@suse.com>
- <6a9ba2c8e70c7b5c4316404612f281a031f847da.1721384771.git.wqu@suse.com>
- <20240719170206.GA3242034@cmpxchg.org>
- <Zpqs0HdfPCy2hfDh@tiehlicka>
- <9202429f-e933-4212-a513-e065ba02517a@gmx.com>
+	s=arc-20240116; t=1721634373; c=relaxed/simple;
+	bh=LDhKpDLrdI3N8cptvMB+KnFzM4gxNCTzU7kYnwSHj28=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=f9S3w1BAQ6RhY2KflzAWNvZi8zJ746GccJ/qKMVodeNHQ6ICLNedN4XLteKwLo1Qu9d21ndnxIZt7Dtt1Wj5UkEizFzatdsS63Aj0V1OJgrs62u4wMEzd8gv+MsN456MyBNrhIDtvYobWOWXhcJD6IruTZuJRfbqJbZRNtdG/8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oY1O8i41; arc=none smtp.client-ip=95.215.58.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: songmuchun@bytedance.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1721634367;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2DvJeNnfExF7u6zH1jSiObdNgef3OT+XWYUKS2Aah9o=;
+	b=oY1O8i41AG97/AXEIyP2bmkEgOb4d23jRBbKoixeX3ZsfdUOmZWzJInb9M1keqFnzmQLjh
+	8E9jICrXZRLG3rY/hj1Wveq5c7iC2Lv2QB9VF7eY4udd+J/zw5qI3Ven3vuwpktBiLiPN+
+	4PsIqlf36R67n8oQCy8/N4tzCCpBnBU=
+X-Envelope-To: hannes@cmpxchg.org
+X-Envelope-To: mhocko@kernel.org
+X-Envelope-To: roman.gushchin@linux.dev
+X-Envelope-To: shakeel.butt@linux.dev
+X-Envelope-To: muchun.song@linux.dev
+X-Envelope-To: akpm@linux-foundation.org
+X-Envelope-To: cgroups@vger.kernel.org
+X-Envelope-To: linux-mm@kvack.org
+X-Envelope-To: linux-kernel@vger.kernel.org
+Message-ID: <d30c7de3-65b5-4b5c-9046-4eed2c7d0b57@linux.dev>
+Date: Mon, 22 Jul 2024 15:46:02 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9202429f-e933-4212-a513-e065ba02517a@gmx.com>
+Subject: Re: [PATCH] mm: kmem: add lockdep assertion to obj_cgroup_memcg
+To: Muchun Song <songmuchun@bytedance.com>, hannes@cmpxchg.org,
+ mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+ muchun.song@linux.dev, akpm@linux-foundation.org
+Cc: cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240722070810.46016-1-songmuchun@bytedance.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <20240722070810.46016-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Sat 20-07-24 07:41:19, Qu Wenruo wrote:
-[...]
-> So according to the trend, I'm pretty sure VFS people will reject such
-> new interface just to skip accounting.
+On 2024/7/22 15:08, Muchun Song wrote:
+> The obj_cgroup_memcg() is supposed to safe to prevent the returned
+> memory cgroup from being freed only when the caller is holding the
+> rcu read lock or objcg_lock or cgroup_mutex. It is very easy to
+> ignore thoes conditions when users call some upper APIs which call
+> obj_cgroup_memcg() internally like mem_cgroup_from_slab_obj() (See
+> the link below). So it is better to add lockdep assertion to
+> obj_cgroup_memcg() to find those issues ASAP.
 
-I would just give it a try with your usecase described. If this is a
-nogo then the root cgroup workaround is still available.
+Yeah, some users care about the lifetime of returned memcg, while
+some other users maybe not.
 
-> Thus the GFP_NO_ACCOUNT solution looks more feasible.
+Maybe a dumb question, can we just make objcg hold the refcount of
+its pointed memcg? So the users of that objcg don't need to care
+about the refcount of memcg? (We could switch the refcount from
+old memcg to the new memcg when objcg switch memcg pointer, right?)
 
-So we have GFP_ACCOUNT to opt in for accounting and now we should be
-adding GFP_NO_ACCOUNT to override it? This doesn't sound like a good use
-of gfp flags (which we do not have infinitely) and it is also quite
-confusing TBH.
--- 
-Michal Hocko
-SUSE Labs
+Thanks.
+
+> 
+> Because there is no user of obj_cgroup_memcg() holding objcg_lock
+> to make the returned memory cgroup safe, do not add objcg_lock
+> assertion (We should export objcg_lock if we really want to do)
+> and leave a comment to indicate it is intentional.
+> 
+> Some users like __mem_cgroup_uncharge() do not care the lifetime
+> of the returned memory cgroup, which just want to know if the
+> folio is charged to a memory cgroup, therefore, they do not need
+> to hold the needed locks. In which case, introduce a new helper
+> folio_memcg_charged() to do this. Compare it to folio_memcg(), it
+> could eliminate a memory access of objcg->memcg for kmem, actually,
+> a really small gain.
+> 
+> Link: https://lore.kernel.org/all/20240718083607.42068-1-songmuchun@bytedance.com/
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>   include/linux/memcontrol.h | 22 +++++++++++++++++++---
+>   mm/memcontrol.c            |  6 +++---
+>   2 files changed, 22 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index fc94879db4dff..d616c50025098 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -360,11 +360,13 @@ static inline bool folio_memcg_kmem(struct folio *folio);
+>    * After the initialization objcg->memcg is always pointing at
+>    * a valid memcg, but can be atomically swapped to the parent memcg.
+>    *
+> - * The caller must ensure that the returned memcg won't be released:
+> - * e.g. acquire the rcu_read_lock or css_set_lock.
+> + * The caller must ensure that the returned memcg won't be released.
+>    */
+>   static inline struct mem_cgroup *obj_cgroup_memcg(struct obj_cgroup *objcg)
+>   {
+> +	WARN_ON_ONCE(!rcu_read_lock_held() &&
+> +		  /* !lockdep_is_held(&objcg_lock) && */
+> +		     !lockdep_is_held(&cgroup_mutex));
+>   	return READ_ONCE(objcg->memcg);
+>   }
+>   
+> @@ -438,6 +440,19 @@ static inline struct mem_cgroup *folio_memcg(struct folio *folio)
+>   	return __folio_memcg(folio);
+>   }
+>   
+> +/*
+> + * folio_memcg_charged - If a folio is charged to a memory cgroup.
+> + * @folio: Pointer to the folio.
+> + *
+> + * Returns true if folio is charged to a memory cgroup, otherwise returns false.
+> + */
+> +static inline bool folio_memcg_charged(struct folio *folio)
+> +{
+> +	if (folio_memcg_kmem(folio))
+> +		return __folio_objcg(folio) != NULL;
+> +	return __folio_memcg(folio) != NULL;
+> +}
+> +
+>   /**
+>    * folio_memcg_rcu - Locklessly get the memory cgroup associated with a folio.
+>    * @folio: Pointer to the folio.
+> @@ -454,7 +469,6 @@ static inline struct mem_cgroup *folio_memcg_rcu(struct folio *folio)
+>   	unsigned long memcg_data = READ_ONCE(folio->memcg_data);
+>   
+>   	VM_BUG_ON_FOLIO(folio_test_slab(folio), folio);
+> -	WARN_ON_ONCE(!rcu_read_lock_held());
+>   
+>   	if (memcg_data & MEMCG_DATA_KMEM) {
+>   		struct obj_cgroup *objcg;
+> @@ -463,6 +477,8 @@ static inline struct mem_cgroup *folio_memcg_rcu(struct folio *folio)
+>   		return obj_cgroup_memcg(objcg);
+>   	}
+>   
+> +	WARN_ON_ONCE(!rcu_read_lock_held());
+> +
+>   	return (struct mem_cgroup *)(memcg_data & ~OBJEXTS_FLAGS_MASK);
+>   }
+>   
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 622d4544edd24..3da0284573857 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2366,7 +2366,7 @@ void mem_cgroup_cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
+>   
+>   static void commit_charge(struct folio *folio, struct mem_cgroup *memcg)
+>   {
+> -	VM_BUG_ON_FOLIO(folio_memcg(folio), folio);
+> +	VM_BUG_ON_FOLIO(folio_memcg_charged(folio), folio);
+>   	/*
+>   	 * Any of the following ensures page's memcg stability:
+>   	 *
+> @@ -4617,7 +4617,7 @@ void __mem_cgroup_uncharge(struct folio *folio)
+>   	struct uncharge_gather ug;
+>   
+>   	/* Don't touch folio->lru of any random page, pre-check: */
+> -	if (!folio_memcg(folio))
+> +	if (!folio_memcg_charged(folio))
+>   		return;
+>   
+>   	uncharge_gather_clear(&ug);
+> @@ -4662,7 +4662,7 @@ void mem_cgroup_replace_folio(struct folio *old, struct folio *new)
+>   		return;
+>   
+>   	/* Page cache replacement: new folio already charged? */
+> -	if (folio_memcg(new))
+> +	if (folio_memcg_charged(new))
+>   		return;
+>   
+>   	memcg = folio_memcg(old);
 
