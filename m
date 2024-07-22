@@ -1,157 +1,146 @@
-Return-Path: <cgroups+bounces-3852-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3853-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 686269396C2
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jul 2024 00:59:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11EC39396CA
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jul 2024 01:06:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 141C01F22197
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jul 2024 22:59:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C14742822FD
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jul 2024 23:06:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD98449622;
-	Mon, 22 Jul 2024 22:59:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3C99376E7;
+	Mon, 22 Jul 2024 23:06:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tSofeIJp"
+	dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b="FDB1fnot"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F81A44C68
-	for <cgroups@vger.kernel.org>; Mon, 22 Jul 2024 22:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00FEE3770D
+	for <cgroups@vger.kernel.org>; Mon, 22 Jul 2024 23:06:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721689147; cv=none; b=gAbUu9kgXQzZ1zT+7noUtphi98mXLxyYNOYAEp9hHtWWHzwEvpuGtM53gVGkEIopLFscPyBIoobDpMoIHLO24nsTNBG9mdgnzdBfpp0YLqxAM6vGjA5azM07oLYx6tn16N3bA1rPr5dflQzxqD3KcqgSRhHf7FuAgz2mAPpp/H8=
+	t=1721689584; cv=none; b=ptDwH82DOwH6y4kNJlYWYeVAHXQ0DJSiQYoyTXDt2oG3L5CbGFsCQOp6jwpxa4Ohq7p/WX5p2qR2ATnGTSK82Tz8ZHfkGBnUjzO5Mtle/3OH6BJ33WmyriYk8KmbgTIzgt9SIl+M3CTflWL+Yn+JUf3sODO71OkwGaJaG4PuOMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721689147; c=relaxed/simple;
-	bh=sJkRB3TGTMF3v5QNVdVwGobtNUlQluw8gVvg/+BnPjE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YoFact+ib35iSZChWzlVZEfUGITWUW545Z+j972zq+ysiCXHyOQUqS/Yg7dYGcE0IU7JHwuWHrsRuiMYPidMRkiltLiCUGlYVFvdWDIkjsJ3vFwSSmrwzwkWRq9KQgfuO2AgrzuwyaV2VkqBnlXTD31vzlQH8uFWPLXd/ZW+2A4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tSofeIJp; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: yosryahmed@google.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721689142;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lnMFQME55Z/WVJKRcDsm0NmURfzs9UA9CICS+vyuQrk=;
-	b=tSofeIJp2Lu+QLtJIvS80D1fWbnhQuBb67hzp4bJWiWIeTu1CNfwp4UisFobiqpumLeoMB
-	bN54JfBPFp+U0Bb4pNdzDWgSpt6jXrEetgNcFY6hq/E1PNxTs35LV3600sPXAyZ95IfE2y
-	IYr/LNS8SYwzOZYxtN6bA1A5yzi5jGM=
-X-Envelope-To: hawk@kernel.org
-X-Envelope-To: tj@kernel.org
-X-Envelope-To: cgroups@vger.kernel.org
-X-Envelope-To: hannes@cmpxchg.org
-X-Envelope-To: lizefan.x@bytedance.com
-X-Envelope-To: longman@redhat.com
-X-Envelope-To: kernel-team@cloudflare.com
-X-Envelope-To: linux-mm@kvack.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-Date: Mon, 22 Jul 2024 15:58:56 -0700
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, tj@kernel.org, 
-	cgroups@vger.kernel.org, hannes@cmpxchg.org, lizefan.x@bytedance.com, longman@redhat.com, 
-	kernel-team@cloudflare.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V7 1/2] cgroup/rstat: Avoid thundering herd problem by
- kswapd across NUMA nodes
-Message-ID: <ujfbtpvs6lpsuasz5dxvvcgyv2xorlhs2wjpjnpdyeicukwevx@2qj642cgn2ie>
-References: <a4e67f81-6946-47c0-907e-5431e7e01eb1@kernel.org>
- <CAJD7tkYV3iwk-ZJcr_==V4e24yH-1NaCYFUL7wDaQEi8ZXqfqQ@mail.gmail.com>
- <100caebf-c11c-45c9-b864-d8562e2a5ac5@kernel.org>
- <k3aiufe36mb2re3fyfzam4hqdeshvbqcashxiyb5grn7w2iz2s@2oeaei6klok3>
- <5ccc693a-2142-489d-b3f1-426758883c1e@kernel.org>
- <iso3venoxgfdd6mtc6xatahxqqpev3ddl3sry72aoprpbavt5h@izhokjdp6ga6>
- <CAJD7tkYWnT8bB8UjPPWa1eFvRY3G7RbiM_8cKrj+jhHz_6N_YA@mail.gmail.com>
- <t5vnayr43kpi2nn7adjgbct4ijfganbowoubfcxynpewiixvei@7kprlv6ek7vd>
- <CAJD7tkZV3PF7TR2HWxXxkhhS8oajOwX1VG7czdTQb8tRY9Jwpw@mail.gmail.com>
- <x45wrx26boy2junfx6wzrfgdlvhvw6gji5grreadcrobs6jvhu@o5bn2hcpxul3>
+	s=arc-20240116; t=1721689584; c=relaxed/simple;
+	bh=h3B/ptabEkBFRtNuCOTg/VeZx20EG7AeMAcYUrooFjg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rQ6IFiYjMNcXwakZbZxKPU3QMbaf3ZCBPbBiUrryxPqJrdxv+tU9PHCgAKd7lUHgnADQ+EwMIZJGzNvK8XWchNC8WG/O7BHccI6yTEahdu2X1JR3qq1hsTqOcZaKK+N/ph0AFJNO96goDDsCRl5Jx7dwgCk2XYn+iPruM/nA3eQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=fail smtp.mailfrom=vimeo.com; dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b=FDB1fnot; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=vimeo.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-7a264a24ea7so1030681a12.3
+        for <cgroups@vger.kernel.org>; Mon, 22 Jul 2024 16:06:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vimeo.com; s=google; t=1721689582; x=1722294382; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hJTmpjGOdE4PBe1bESQVvDpEGil/BWgnfDXbEPkh0oQ=;
+        b=FDB1fnot6Jv/AQtvCabGlzCwoGKHGXsf0Xl5krhS1BpWP/1RX61xHZini/ejBIYKAo
+         0w7NfBcGD4C0gjGFamrucMyCmOxP4GVA08EzvMaDGBikJd4JpXOuL/48TWFGorXy00c0
+         iqdtTUjxSZV89FeJLeDayDsxtxFj0J17HsOkg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721689582; x=1722294382;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hJTmpjGOdE4PBe1bESQVvDpEGil/BWgnfDXbEPkh0oQ=;
+        b=m+NqLQjM/oJVPVjtIRZp8LmjjdvyH9EmsZCKYxgx5Tx79Ho216JF5u8DbWw1IGoL+5
+         cJs51bkXP4FdyzO4UtOx17/ys/BSXwBQeSKyo3hE8RqLUSlp2dQSVpdZ3c+lQKxrNPPF
+         R/+RfYSLBjHsflJSwqxLq8Go9IwkkfCXgxG8/RpaumqzygrxavXyEFWMnxmWueSgc9Ne
+         4A0wfoeeDHX9Z2qFQMEOSf3Xvaxt+hcUTyCT5JjIFhGKqI8lVPxikCA4hcIfU402dsnH
+         wUhhD73e6PlZuFDtBZOWMy6vIP2X2G6kbPMB4VELg5nh06yXJHK7LSe928DswSg34c6Z
+         GBmw==
+X-Forwarded-Encrypted: i=1; AJvYcCUX9LnVRZm6w9drJAYt0juKJvaUs4nnLCK5niDcb+XXh0ZM6rWUs986yJlAtfj+X17O8Q97Vy77PzDgif5vd+YebSS/ud4TdQ==
+X-Gm-Message-State: AOJu0Yye+gA6GtQMAoawBaY0SCqKES83mQsfbib/66xsQUeLU0JDO7kP
+	amTL2hAMWAeWK04EvD3uUksNm/pSob74QfjcDM/8qyxbqZWk9hRAy5VjgmGJVS6tB068ABgFf+8
+	JdD17iymEFJ4+1WcS4wfQ+yMqZOYdfx8n8xDRVg==
+X-Google-Smtp-Source: AGHT+IER6ikq3RTY3TyMM01zi2l2zzP3nCn5Yl0SNA2nd/2d6WglMNmwZD//tkR85CfK4zkR6essvr9J0t+vSd7lUOY=
+X-Received: by 2002:a17:90a:a114:b0:2cd:4593:2a8e with SMTP id
+ 98e67ed59e1d1-2cd45932ad1mr5460589a91.15.1721689581952; Mon, 22 Jul 2024
+ 16:06:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <x45wrx26boy2junfx6wzrfgdlvhvw6gji5grreadcrobs6jvhu@o5bn2hcpxul3>
-X-Migadu-Flow: FLOW_OUT
+References: <20240722151713.2724855-1-davidf@vimeo.com> <20240722151713.2724855-2-davidf@vimeo.com>
+ <Zp6jSoB14boeGhWH@google.com> <CAFUnj5MF4nKq0B7aWWyBpK3b5EZh7W4+xAmeg5SMwpd7gHptsA@mail.gmail.com>
+ <9abf7f84-c103-4280-825c-b382edb9b8fe@redhat.com>
+In-Reply-To: <9abf7f84-c103-4280-825c-b382edb9b8fe@redhat.com>
+From: David Finkel <davidf@vimeo.com>
+Date: Mon, 22 Jul 2024 19:06:10 -0400
+Message-ID: <CAFUnj5NJnxHg3uWASoS9N=7S8LRxYc1T5zGmQrPiBbF2PXHr-w@mail.gmail.com>
+Subject: Re: [PATCH] mm, memcg: cg2 memory{.swap,}.peak write handlers
+To: Waiman Long <longman@redhat.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Tejun Heo <tj@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, core-services@vimeo.com, 
+	Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Shuah Khan <shuah@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jul 22, 2024 at 02:32:03PM GMT, Shakeel Butt wrote:
-> On Mon, Jul 22, 2024 at 01:12:35PM GMT, Yosry Ahmed wrote:
-> > On Mon, Jul 22, 2024 at 1:02 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> > >
-> > > On Fri, Jul 19, 2024 at 09:52:17PM GMT, Yosry Ahmed wrote:
-> > > > On Fri, Jul 19, 2024 at 3:48 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> > > > >
-> > > > > On Fri, Jul 19, 2024 at 09:54:41AM GMT, Jesper Dangaard Brouer wrote:
-> > > > > >
-> > > > > >
-> > > > > > On 19/07/2024 02.40, Shakeel Butt wrote:
-> > > > > > > Hi Jesper,
-> > > > > > >
-> > > > > > > On Wed, Jul 17, 2024 at 06:36:28PM GMT, Jesper Dangaard Brouer wrote:
-> > > > > > > >
-> > > > > > > [...]
-> > > > > > > >
-> > > > > > > >
-> > > > > > > > Looking at the production numbers for the time the lock is held for level 0:
-> > > > > > > >
-> > > > > > > > @locked_time_level[0]:
-> > > > > > > > [4M, 8M)     623 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@               |
-> > > > > > > > [8M, 16M)    860 |@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@|
-> > > > > > > > [16M, 32M)   295 |@@@@@@@@@@@@@@@@@                                   |
-> > > > > > > > [32M, 64M)   275 |@@@@@@@@@@@@@@@@                                    |
-> > > > > > > >
-> > > > > > >
-> > > > > > > Is it possible to get the above histogram for other levels as well?
-> > > > > >
-> > > > > > Data from other levels available in [1]:
-> > > > > >  [1]
-> > > > > > https://lore.kernel.org/all/8c123882-a5c5-409a-938b-cb5aec9b9ab5@kernel.org/
-> > > > > >
-> > > > > > IMHO the data shows we will get most out of skipping level-0 root-cgroup
-> > > > > > flushes.
-> > > > > >
-> > > > >
-> > > > > Thanks a lot of the data. Are all or most of these locked_time_level[0]
-> > > > > from kswapds? This just motivates me to strongly push the ratelimited
-> > > > > flush patch of mine (which would be orthogonal to your patch series).
-> > > >
-> > > > Jesper and I were discussing a better ratelimiting approach, whether
-> > > > it's measuring the time since the last flush, or only skipping if we
-> > > > have a lot of flushes in a specific time frame (using __ratelimit()).
-> > > > I believe this would be better than the current memcg ratelimiting
-> > > > approach, and we can remove the latter.
-> > > >
-> > > > WDYT?
-> > >
-> > > The last statement gives me the impression that you are trying to fix
-> > > something that is not broken. The current ratelimiting users are ok, the
-> > > issue is with the sync flushers. Or maybe you are suggesting that the new
-> > > ratelimiting will be used for all sync flushers and current ratelimiting
-> > > users and the new ratelimiting will make a good tradeoff between the
-> > > accuracy and potential flush stall?
-> > 
-> > The latter. Basically the idea is to have more informed and generic
-> > ratelimiting logic in the core rstat flushing code (e.g. using
-> > __ratelimit()), which would apply to ~all flushers*. Then, we ideally
-> > wouldn't need mem_cgroup_flush_stats_ratelimited() at all.
-> > 
-> 
-> I wonder if we really need a universal ratelimit. As you noted below
-> there are cases where we want exact stats and then we know there are
-> cases where accurate stats are not needed but they are very performance
-> sensitive. Aiming to have a solution which will ignore such differences
-> might be a futile effort.
-> 
+On Mon, Jul 22, 2024 at 3:47=E2=80=AFPM Waiman Long <longman@redhat.com> wr=
+ote:
+>
+> On 7/22/24 15:30, David Finkel wrote:
+> >>> diff --git a/mm/page_counter.c b/mm/page_counter.c
+> >>> index db20d6452b71..40d5f4990218 100644
+> >>> --- a/mm/page_counter.c
+> >>> +++ b/mm/page_counter.c
+> >>> @@ -82,6 +82,8 @@ void page_counter_charge(struct page_counter *count=
+er, unsigned long nr_pages)
+> >>>                 */
+> >>>                if (new > READ_ONCE(c->watermark))
+> >>>                        WRITE_ONCE(c->watermark, new);
+> >>> +             if (new > READ_ONCE(c->local_watermark))
+> >>> +                     WRITE_ONCE(c->local_watermark, new);
+> >> Hm, can't we have a single comparison on the hot path?
+> >> Also, we read and write c->local_watermark speculatively here, Idk if =
+it's still
+> >> acceptable with an ability to reset watermarks "locally". Maybe it is,=
+ but
+> >> it definitely deserves at least a comment with an explanation.
+> > Unfortunately, since the two watermarks may be reset at different
+> > times I don't think we
+> > can consolidate.
+> > e.g. I think that if the usage peaked, dropped down a bit and then was
+> > going back
+> > up again when the "local_watermark" was reset, we'll continue only
+> > bumping local_watermark,
+> > but we don't want to touch "watermark" until we hit that watermark agai=
+n.
+> If we make page_counter_reset_watermark() reset the local_watermark as we=
+ll,
+> we can guarantee "local_watermark <=3D watermark" and wrap one check insi=
+de
+> the other.
+>
+>          if (new > READ_ONCE(c->local_watermark)) {
+>                  WRITE_ONCE(c->local_watermark, new);
+>                  if (new > READ_ONCE(c->watermark))
+>                          WRITE_ONCE(c->watermark, new);
+>          }
+>
+> Cheers,
+> Longman
+>
 
-BTW I am not against it. If we can achieve this with minimal regression
-and maintainence burden then it would be preferable.
+Hmm, yeah, given that we'll only be resetting one of the two, I think I'll
+use this option.
+The branch predictor should make that second check pretty
+much a noop in the common-case when we enter the outer if, too.
+
+Thanks!
+
+--=20
+David Finkel
+Senior Principal Software Engineer, Core Services
 
