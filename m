@@ -1,80 +1,55 @@
-Return-Path: <cgroups+bounces-3863-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3864-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC89793A4C5
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jul 2024 19:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5161693A6E2
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jul 2024 20:39:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8805A283E0B
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jul 2024 17:15:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07EB4282CE1
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jul 2024 18:39:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D1FD17BD5;
-	Tue, 23 Jul 2024 17:15:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEAC4158873;
+	Tue, 23 Jul 2024 18:39:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="euIksZmS"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Lf69A3py"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA87815688E
-	for <cgroups@vger.kernel.org>; Tue, 23 Jul 2024 17:15:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B89313D600
+	for <cgroups@vger.kernel.org>; Tue, 23 Jul 2024 18:39:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721754915; cv=none; b=SGO5H+PT5M1Cub/YBALL0DrB2Wp0X6mbNMyTZB0GkbvajDIdEs4y6avyID28Rj8d/U6pcwQU7FreSoeml1FcvDcQUkjSKsnP4GZuOvdlsaRIX5yFu8L1btSyoeokUEBvi4LIDxxBoORlWgKRbqRgsyn4IgMpcf+DK0MX68tkBB0=
+	t=1721759985; cv=none; b=hb+NnwFx8i42EfuLWrZFhSoeF8+TfIWcOldw2qbUfQou1ZWXEVB/4Rl18ds72eP9saeFhCVPmq7n1n8+YWA3L4Hlrjzul4Uug0YEvpPYK/4+94VkDwiIY5d7S8rP67sjMiF5Ez5gy0FytKbEJLlRG7HQ8uRfSoLf9aI4vJG0x9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721754915; c=relaxed/simple;
-	bh=2QinIKl01BYviRchpWq/nNONs7eDAT1sG9Q27g5MtLQ=;
+	s=arc-20240116; t=1721759985; c=relaxed/simple;
+	bh=npOXAJAXWdonyqNOK+IhpoN3O1dHycSFUkOtHGv9yhs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GeHHfWVQzsMqh+eWd7qrNkjzVqXnScmxGyB/EpPx/a77zCXE7VE8EH17jiId3M5/eVmbtLC1mp4rm7ehegXiT+Xfb1gVyxxIkzae42tqF7RS1V54R408p6HfR1ca/8Ir7il9I+P6pDK8ZhzCih39h+xQbiO3yqyR3keJojxtzeo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=euIksZmS; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1721754912;
+	 Content-Type:Content-Disposition:In-Reply-To; b=q3L7HleEwaeM+9bNHxKF19z8CGl41JqG8QFEktVGicy2UKjJfraeTU1YpujZ772hKcSZ91huSGU1F3Fi5EOxNzuAB3eqF9473lgvbAJkVA8Vo8UyUtKD4mScF3/9Hv0iEcohnM1TOVmWOINBB0nW8DJ/O0wBdXbWArWaB03/gJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Lf69A3py; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 23 Jul 2024 11:39:33 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1721759981;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=48En1slowwZTq+Dy/oIa0R4wANx/Eecm2csRiLHBo6U=;
-	b=euIksZmSuWei6rA12KOhQnfWHA2jioM1/FUqlG5/sp4UuiOX47RLEapdqzzp5+ktgpFrtR
-	bIV03WDjzdMmkdtCyTzh8BCVwlkpQz5ylKxl+9UEAabxmHBSa6JVchKqsJqq3OPYCDxafK
-	1s5tDGjSHhLtxEQHA/xBk4N/oZErUhw=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-442-hVtQla4sNLq_bwaQT9zOmA-1; Tue,
- 23 Jul 2024 13:15:04 -0400
-X-MC-Unique: hVtQla4sNLq_bwaQT9zOmA-1
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1BB2D1955D45;
-	Tue, 23 Jul 2024 17:15:01 +0000 (UTC)
-Received: from tpad.localdomain (unknown [10.96.133.4])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 77132195605A;
-	Tue, 23 Jul 2024 17:14:59 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-	id F2B23400DF27F; Tue, 23 Jul 2024 14:14:34 -0300 (-03)
-Date: Tue, 23 Jul 2024 14:14:34 -0300
-From: Marcelo Tosatti <mtosatti@redhat.com>
-To: Leonardo Bras <leobras@redhat.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH v1 0/4] Introduce QPW for per-cpu operations
-Message-ID: <Zp/k+rJuVV+EcXqL@tpad>
-References: <20240622035815.569665-1-leobras@redhat.com>
+	bh=k5VmKZyH3j0WUjWPZGHhKWDE4amCUXUtXuqAGRmce9Q=;
+	b=Lf69A3pyC9Cl+9XC0Cm/jXZKXUMDzQlH6WeHZLuZWXjQO0gxunzf8a7sFijcJ3oRHe037C
+	s4daK/hPZ8xnvgv1Jt5yLH1T0EUyuG8MOox2KCMaDExg0PZsu9DLz0pvWKwXs0VzQ58Dyp
+	sqApIQ2S8IAn3CGyRAf7/PICmZSbyTo=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Muchun Song <songmuchun@bytedance.com>
+Cc: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	muchun.song@linux.dev, akpm@linux-foundation.org, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: kmem: add lockdep assertion to obj_cgroup_memcg
+Message-ID: <i2oflmxuymmqrn37l5uxadibfrfapr3rf5vwzbvrsfenc6fdjy@xqk2ttcxtswi>
+References: <20240722070810.46016-1-songmuchun@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -83,60 +58,134 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240622035815.569665-1-leobras@redhat.com>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+In-Reply-To: <20240722070810.46016-1-songmuchun@bytedance.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, Jun 22, 2024 at 12:58:08AM -0300, Leonardo Bras wrote:
-> The problem:
-> Some places in the kernel implement a parallel programming strategy
-> consisting on local_locks() for most of the work, and some rare remote
-> operations are scheduled on target cpu. This keeps cache bouncing low since
-> cacheline tends to be mostly local, and avoids the cost of locks in non-RT
-> kernels, even though the very few remote operations will be expensive due
-> to scheduling overhead.
+On Mon, Jul 22, 2024 at 03:08:10PM GMT, Muchun Song wrote:
+> The obj_cgroup_memcg() is supposed to safe to prevent the returned
+> memory cgroup from being freed only when the caller is holding the
+> rcu read lock or objcg_lock or cgroup_mutex. It is very easy to
+> ignore thoes conditions when users call some upper APIs which call
+> obj_cgroup_memcg() internally like mem_cgroup_from_slab_obj() (See
+> the link below). So it is better to add lockdep assertion to
+> obj_cgroup_memcg() to find those issues ASAP.
 > 
-> On the other hand, for RT workloads this can represent a problem: getting
-> an important workload scheduled out to deal with remote requests is
-> sure to introduce unexpected deadline misses.
+> Because there is no user of obj_cgroup_memcg() holding objcg_lock
+> to make the returned memory cgroup safe, do not add objcg_lock
+> assertion (We should export objcg_lock if we really want to do)
+> and leave a comment to indicate it is intentional.
+> 
 
-Another hang with a busy polling workload (kernel update hangs on
-grub2-probe):
+Do we expect non-memcg code to access objcg_lock? To me this is some
+internal implementation detail of memcg and should not be accessible
+outside memcg code. So, I would recommend to not mention objcg_lock at
+all.
 
-[342431.665417] INFO: task grub2-probe:24484 blocked for more than 622 seconds.
-[342431.665458]       Tainted: G        W      X  -------  ---  5.14.0-438.el9s.x86_64+rt #1
-[342431.665488] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[342431.665515] task:grub2-probe     state:D stack:0     pid:24484 ppid:24455  flags:0x00004002
-[342431.665523] Call Trace:
-[342431.665525]  <TASK>
-[342431.665527]  __schedule+0x22a/0x580
-[342431.665537]  schedule+0x30/0x80
-[342431.665539]  schedule_timeout+0x153/0x190
-[342431.665543]  ? preempt_schedule_thunk+0x16/0x30
-[342431.665548]  ? preempt_count_add+0x70/0xa0
-[342431.665554]  __wait_for_common+0x8b/0x1c0
-[342431.665557]  ? __pfx_schedule_timeout+0x10/0x10
-[342431.665560]  __flush_work.isra.0+0x15b/0x220
-[342431.665565]  ? __pfx_wq_barrier_func+0x10/0x10
-[342431.665570]  __lru_add_drain_all+0x17d/0x220
-[342431.665576]  invalidate_bdev+0x28/0x40
-[342431.665583]  blkdev_common_ioctl+0x714/0xa30
-[342431.665588]  ? bucket_table_alloc.isra.0+0x1/0x150
-[342431.665593]  ? cp_new_stat+0xbb/0x180
-[342431.665599]  blkdev_ioctl+0x112/0x270
-[342431.665603]  ? security_file_ioctl+0x2f/0x50
-[342431.665609]  __x64_sys_ioctl+0x87/0xc0
-[342431.665614]  do_syscall_64+0x5c/0xf0
-[342431.665619]  ? __ct_user_enter+0x89/0x130
-[342431.665623]  ? syscall_exit_to_user_mode+0x22/0x40
-[342431.665625]  ? do_syscall_64+0x6b/0xf0
-[342431.665627]  ? __ct_user_enter+0x89/0x130
-[342431.665629]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-[342431.665635] RIP: 0033:0x7f39856c757b
-[342431.665666] RSP: 002b:00007ffd9541c488 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-[342431.665670] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f39856c757b
-[342431.665673] RDX: 0000000000000000 RSI: 0000000000001261 RDI: 0000000000000005
-[342431.665674] RBP: 00007ffd9541c540 R08: 0000000000000003 R09: 006164732f766564
-[342431.665676] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd9543ca68
-[342431.665678] R13: 000055ea758a0708 R14: 000055ea759de338 R15: 00007f398586f000
+> Some users like __mem_cgroup_uncharge() do not care the lifetime
+> of the returned memory cgroup, which just want to know if the
+> folio is charged to a memory cgroup, therefore, they do not need
+> to hold the needed locks. In which case, introduce a new helper
+> folio_memcg_charged() to do this. Compare it to folio_memcg(), it
+> could eliminate a memory access of objcg->memcg for kmem, actually,
+> a really small gain.
+> 
+> Link: https://lore.kernel.org/all/20240718083607.42068-1-songmuchun@bytedance.com/
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  include/linux/memcontrol.h | 22 +++++++++++++++++++---
+>  mm/memcontrol.c            |  6 +++---
+>  2 files changed, 22 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index fc94879db4dff..d616c50025098 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -360,11 +360,13 @@ static inline bool folio_memcg_kmem(struct folio *folio);
+>   * After the initialization objcg->memcg is always pointing at
+>   * a valid memcg, but can be atomically swapped to the parent memcg.
+>   *
+> - * The caller must ensure that the returned memcg won't be released:
+> - * e.g. acquire the rcu_read_lock or css_set_lock.
+> + * The caller must ensure that the returned memcg won't be released.
+>   */
+>  static inline struct mem_cgroup *obj_cgroup_memcg(struct obj_cgroup *objcg)
+>  {
+> +	WARN_ON_ONCE(!rcu_read_lock_held() &&
+> +		  /* !lockdep_is_held(&objcg_lock) && */
 
+> +		     !lockdep_is_held(&cgroup_mutex));
+>  	return READ_ONCE(objcg->memcg);
+>  }
+>  
+> @@ -438,6 +440,19 @@ static inline struct mem_cgroup *folio_memcg(struct folio *folio)
+>  	return __folio_memcg(folio);
+>  }
+>  
+> +/*
+> + * folio_memcg_charged - If a folio is charged to a memory cgroup.
+> + * @folio: Pointer to the folio.
+> + *
+> + * Returns true if folio is charged to a memory cgroup, otherwise returns false.
+> + */
+> +static inline bool folio_memcg_charged(struct folio *folio)
+> +{
+> +	if (folio_memcg_kmem(folio))
+> +		return __folio_objcg(folio) != NULL;
+> +	return __folio_memcg(folio) != NULL;
+> +}
+> +
+>  /**
+>   * folio_memcg_rcu - Locklessly get the memory cgroup associated with a folio.
+>   * @folio: Pointer to the folio.
+> @@ -454,7 +469,6 @@ static inline struct mem_cgroup *folio_memcg_rcu(struct folio *folio)
+>  	unsigned long memcg_data = READ_ONCE(folio->memcg_data);
+>  
+>  	VM_BUG_ON_FOLIO(folio_test_slab(folio), folio);
+> -	WARN_ON_ONCE(!rcu_read_lock_held());
+>  
+>  	if (memcg_data & MEMCG_DATA_KMEM) {
+>  		struct obj_cgroup *objcg;
+> @@ -463,6 +477,8 @@ static inline struct mem_cgroup *folio_memcg_rcu(struct folio *folio)
+>  		return obj_cgroup_memcg(objcg);
+>  	}
+>  
+> +	WARN_ON_ONCE(!rcu_read_lock_held());
+> +
+>  	return (struct mem_cgroup *)(memcg_data & ~OBJEXTS_FLAGS_MASK);
+>  }
+>  
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 622d4544edd24..3da0284573857 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2366,7 +2366,7 @@ void mem_cgroup_cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  
+>  static void commit_charge(struct folio *folio, struct mem_cgroup *memcg)
+>  {
+> -	VM_BUG_ON_FOLIO(folio_memcg(folio), folio);
+> +	VM_BUG_ON_FOLIO(folio_memcg_charged(folio), folio);
+>  	/*
+>  	 * Any of the following ensures page's memcg stability:
+>  	 *
+> @@ -4617,7 +4617,7 @@ void __mem_cgroup_uncharge(struct folio *folio)
+>  	struct uncharge_gather ug;
+>  
+>  	/* Don't touch folio->lru of any random page, pre-check: */
+> -	if (!folio_memcg(folio))
+> +	if (!folio_memcg_charged(folio))
+>  		return;
+>  
+>  	uncharge_gather_clear(&ug);
+> @@ -4662,7 +4662,7 @@ void mem_cgroup_replace_folio(struct folio *old, struct folio *new)
+>  		return;
+>  
+>  	/* Page cache replacement: new folio already charged? */
+> -	if (folio_memcg(new))
+> +	if (folio_memcg_charged(new))
+>  		return;
+>  
+>  	memcg = folio_memcg(old);
+> -- 
+> 2.20.1
+> 
 
