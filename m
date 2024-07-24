@@ -1,140 +1,371 @@
-Return-Path: <cgroups+bounces-3870-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3871-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCC0693AA7B
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 03:15:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0A8893AADA
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 04:00:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9918D284547
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 01:15:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7533C1F219C6
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 02:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0119D33C9;
-	Wed, 24 Jul 2024 01:15:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 665FCA95E;
+	Wed, 24 Jul 2024 02:00:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aEY+x/oM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAB48D520;
-	Wed, 24 Jul 2024 01:15:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB86E1843
+	for <cgroups@vger.kernel.org>; Wed, 24 Jul 2024 02:00:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721783725; cv=none; b=HloCPHIufDBmv0FfF9t0fVNJ9f4XrbNOUvy2JdSNkeIdv1xjnFctpqgMFXAIJZQZ5mKUUO3S3Sy9OusVrijOwBuTMQEzgJjh0sNwH+sIiZcyE5yZDdPeGU/8NwDmoMgVbgekc/CT/kaT14Z0dGJxaWJXEwb+Qy+ZjCsVd9PN7hk=
+	t=1721786436; cv=none; b=jF/EjUNsKKYTvy7nbJEoXjFtxYHGX0Basz7bCw1sB3YHJ/duwIA8d9zte6Dewx73T/bSd/4i50fdmlGF/zR91EU1UbNnw08nlOhQyiM2yra2SnMgYdObchKSMcqFBoS9+Dpl4MZLNXgyKOecNEgvG4GpTth0rGR0/a5wwjL56DM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721783725; c=relaxed/simple;
-	bh=lW2m5iVKPpm0+RMHbNOubqiUOyTGy/9/MrRD/c2T7tE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZILjxYBQFo3J4XeoCfPemC06WkbNJOhALmWXSmkji340QsD3oy7FLsm0qFt4UfPdk795Z0RnN0IJXU08YQmDsLTr+KNYJdjGrqjFrff8Zgq86ay+xus5mj5V1wmQ8yjEEezK9UcMrXsip1qELk51g/Yoif2Rjb7ANxFZ4rqmpa0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WTGD9732fz2ClSf;
-	Wed, 24 Jul 2024 09:10:49 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7EE9918002B;
-	Wed, 24 Jul 2024 09:15:14 +0800 (CST)
-Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Wed, 24 Jul
- 2024 09:15:13 +0800
-From: Chen Ridong <chenridong@huawei.com>
-To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
-	<longman@redhat.com>, <adityakali@google.com>, <sergeh@kernel.org>,
-	<mkoutny@suse.com>
-CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] cgroup/cpuset: remove child_ecpus_count
-Date: Wed, 24 Jul 2024 01:08:03 +0000
-Message-ID: <20240724010803.2195033-1-chenridong@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1721786436; c=relaxed/simple;
+	bh=YSV3AELW940LblRqbQXsJeV1QEzWEgmgn7ba9H+77h4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=D9uDaLpJQAv6y79IDhaDll1wGmNOLVWKBeCMDa0wmwJDtMiMUwX4uKC7Ahm91ytW04G1/JwuQHfeLWh9NaQ7wHWtxEuppFoizjczFAByLGVfRUjNbyGFnN2rlQcMrzaNUM9GpMqubNB1FLPdYmXl+ibGYpnEDqnWxHwGyY2flio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aEY+x/oM; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1721786432;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=K5OU1tlVEf37yozw1Jzdh4onEtDz5GT0HzAdLDY6Fx4=;
+	b=aEY+x/oMerRK0TeQ71/ZGYQf/upsq1yXmZ5KVg54MEuK0bRXYyzqVGEIm83ry7EHV+FZci
+	VxEqWFtDW6ULbNH8upPHMSfAaX0ecr5i1vSdsr7ZfxRiX+trwXTtHdDvdKTc13sJXjdb2L
+	7TS7v1DsAyo9saZIU+1Z4YkYHIvkuvc=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-342-E8C6fW20MqeJSXc84qJx1g-1; Tue,
+ 23 Jul 2024 21:55:30 -0400
+X-MC-Unique: E8C6fW20MqeJSXc84qJx1g-1
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1466E1955EA7;
+	Wed, 24 Jul 2024 01:55:24 +0000 (UTC)
+Received: from [10.22.33.107] (unknown [10.22.33.107])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 5239F1955DCD;
+	Wed, 24 Jul 2024 01:55:20 +0000 (UTC)
+Message-ID: <22a95c76-4e9e-482e-b95d-cb0f01971d98@redhat.com>
+Date: Tue, 23 Jul 2024 21:55:19 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemd100013.china.huawei.com (7.221.188.163)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] mm, memcg: cg2 memory{.swap,}.peak write handlers
+To: David Finkel <davidf@vimeo.com>, Muchun Song <muchun.song@linux.dev>,
+ Tejun Heo <tj@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: core-services@vimeo.com, Jonathan Corbet <corbet@lwn.net>,
+ Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>,
+ Shuah Khan <shuah@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-mm@kvack.org,
+ linux-kselftest@vger.kernel.org
+References: <20240723233149.3226636-1-davidf@vimeo.com>
+ <20240723233149.3226636-2-davidf@vimeo.com>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20240723233149.3226636-2-davidf@vimeo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-The child_ecpus_count variable was previously used to update
-sibling cpumask when parent's effective_cpus is updated. However, it became
-obsolete after commit e2ffe502ba45 ("cgroup/cpuset: Add
-cpuset.cpus.exclusive for v2"). It should be removed.
+On 7/23/24 19:31, David Finkel wrote:
+> Other mechanisms for querying the peak memory usage of either a process
+> or v1 memory cgroup allow for resetting the high watermark. Restore
+> parity with those mechanisms, but with a less racy API.
+>
+> For example:
+>   - Any write to memory.max_usage_in_bytes in a cgroup v1 mount resets
+>     the high watermark.
+>   - writing "5" to the clear_refs pseudo-file in a processes's proc
+>     directory resets the peak RSS.
+>
+> This change is an evolution of a previous patch, which mostly copied the
+> cgroup v1 behavior, however, there were concerns about races/ownership
+> issues with a global reset, so instead this change makes the reset
+> filedescriptor-local.
+>
+> Writing a specific string to the memory.peak and memory.swap.peak
+> pseudo-files reset the high watermark to the current usage for
+> subsequent reads through that same fd.
+>
+> Notably, following Johannes's suggestion, this implementation moves the
+> O(fds that have written) behavior onto the fd write(2) path. Instead, on
+> the page-allocation path, we simply add one additional watermark to
+> conditionally bump per-hierarchy level in the page-counter.
+>
+> Additionally, this takes Longman's suggestion of nesting the
+> page-charging-path checks for the two watermarks to reduce the number of
+> common-case comparisons.
+>
+> This behavior is particularly useful for work scheduling systems that
+> need to track memory usage of worker processes/cgroups per-work-item.
+> Since memory can't be squeezed like CPU can (the OOM-killer has
+> opinions), these systems need to track the peak memory usage to compute
+> system/container fullness when binpacking workitems.
+>
+> Most notably, Vimeo's use-case involves a system that's doing global
+> binpacking across many Kubernetes pods/containers, and while we can use
+> PSI for some local decisions about overload, we strive to avoid packing
+> workloads too tightly in the first place. To facilitate this, we track
+> the peak memory usage. However, since we run with long-lived workers (to
+> amortize startup costs) we need a way to track the high watermark while
+> a work-item is executing. Polling runs the risk of missing short spikes
+> that last for timescales below the polling interval, and peak memory
+> tracking at the cgroup level is otherwise perfect for this use-case.
+>
+> As this data is used to ensure that binpacked work ends up with
+> sufficient headroom, this use-case mostly avoids the inaccuracies
+> surrounding reclaimable memory.
+>
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> Suggested-by: Waiman Long <longman@redhat.com>
+> Signed-off-by: David Finkel <davidf@vimeo.com>
+> ---
+>   Documentation/admin-guide/cgroup-v2.rst |  26 ++++--
+>   include/linux/cgroup-defs.h             |   5 +
+>   include/linux/cgroup.h                  |   3 +
+>   include/linux/memcontrol.h              |   5 +
+>   include/linux/page_counter.h            |   6 +-
+>   kernel/cgroup/cgroup-internal.h         |   2 +
+>   kernel/cgroup/cgroup.c                  |   7 ++
+>   mm/memcontrol.c                         | 117 ++++++++++++++++++++++--
+>   mm/page_counter.c                       |  30 ++++--
+>   9 files changed, 174 insertions(+), 27 deletions(-)
+Could you use the "-v <n>" option of git-format-patch to add a version 
+number to the patch title? Without that, it can be confusing as to 
+whether the patch is new or a resend of the previous one.
+>
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index 86311c2907cd3..01554cf6e55b4 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1333,11 +1333,16 @@ The following nested keys are defined.
+>   	all the existing limitations and potential future extensions.
+>   
+>     memory.peak
+> -	A read-only single value file which exists on non-root
+> -	cgroups.
+> +	A read-write single value file which exists on non-root cgroups.
+> +
+> +	The max memory usage recorded for the cgroup and its descendants since
+> +	either the creation of the cgroup or the most recent reset for that FD.
+>   
+> -	The max memory usage recorded for the cgroup and its
+> -	descendants since the creation of the cgroup.
+> +	A write of the string "reset" to this file resets it to the
+> +	current memory usage for subsequent reads through the same
+> +	file descriptor.
+> +	Attempts to write any other non-empty string will return EINVAL
+> +	(modulo leading and trailing whitespace).
+>   
+>     memory.oom.group
+>   	A read-write single value file which exists on non-root
+> @@ -1663,11 +1668,16 @@ The following nested keys are defined.
+>   	Healthy workloads are not expected to reach this limit.
+>   
+>     memory.swap.peak
+> -	A read-only single value file which exists on non-root
+> -	cgroups.
+> +	A read-write single value file which exists on non-root cgroups.
+> +
+> +	The max swap usage recorded for the cgroup and its descendants since
+> +	the creation of the cgroup or the most recent reset for that FD.
+>   
+> -	The max swap usage recorded for the cgroup and its
+> -	descendants since the creation of the cgroup.
+> +	A write of the string "reset" to this file resets it to the
+> +	current memory usage for subsequent reads through the same
+> +	file descriptor.
+> +	Attempts to write any other non-empty string will return EINVAL
+> +	(modulo leading and trailing whitespace).
+>   
+>     memory.swap.max
+>   	A read-write single value file which exists on non-root
+> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+> index ae04035b6cbe5..2188ea76ab327 100644
+> --- a/include/linux/cgroup-defs.h
+> +++ b/include/linux/cgroup-defs.h
+> @@ -775,6 +775,11 @@ struct cgroup_subsys {
+>   
+>   extern struct percpu_rw_semaphore cgroup_threadgroup_rwsem;
+>   
+> +struct cgroup_of_peak {
+> +	long			value;
+> +	struct list_head	list;
+> +};
+The name "cgroup_of_peak" is kind of confusing. Maybe local_peak?
+> +This structure is used to store the initial page counter value when the reset command is issue
+>   /**
+>    * cgroup_threadgroup_change_begin - threadgroup exclusion for cgroups
+>    * @tsk: target task
+> diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+> index c60ba0ab14627..3e0563753cc3e 100644
+> --- a/include/linux/cgroup.h
+> +++ b/include/linux/cgroup.h
+> @@ -11,6 +11,7 @@
+>   
+>   #include <linux/sched.h>
+>   #include <linux/nodemask.h>
+> +#include <linux/list.h>
+Doubly linked list is very commonly used data structure in the kernel. 
+It is implicitly included in a lot of headers. So I don't believe you 
+need to explicitly include it here.
+>   #include <linux/rculist.h>
+>   #include <linux/cgroupstats.h>
+>   #include <linux/fs.h>
+> @@ -854,4 +855,6 @@ static inline void cgroup_bpf_put(struct cgroup *cgrp) {}
+>   
+>   struct cgroup *task_get_cgroup1(struct task_struct *tsk, int hierarchy_id);
+>   
+> +struct cgroup_of_peak *of_peak(struct kernfs_open_file *of);
+> +
+>   #endif /* _LINUX_CGROUP_H */
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 7e2eb091049a0..4fa4f0e931d26 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -192,6 +192,11 @@ struct mem_cgroup {
+>   		struct page_counter memsw;	/* v1 only */
+>   	};
+>   
+> +	/* registered local peak watchers */
+> +	struct list_head memory_peaks;
+> +	struct list_head swap_peaks;
+> +	spinlock_t	 peaks_lock;
+> +
+>   	/* Range enforcement for interrupt charges */
+>   	struct work_struct high_work;
+>   
+> diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
+> index 904c52f97284f..860f313182e77 100644
+> --- a/include/linux/page_counter.h
+> +++ b/include/linux/page_counter.h
+> @@ -26,6 +26,7 @@ struct page_counter {
+>   	atomic_long_t children_low_usage;
+>   
+>   	unsigned long watermark;
+> +	unsigned long local_watermark; /* track min of fd-local resets */
+track "min"? I thought it is used to track local maximum after a reset.
+>   	unsigned long failcnt;
+>   
+>   	/* Keep all the read most fields in a separete cacheline. */
+> @@ -78,7 +79,10 @@ int page_counter_memparse(const char *buf, const char *max,
+>   
+>   static inline void page_counter_reset_watermark(struct page_counter *counter)
+>   {
+> -	counter->watermark = page_counter_read(counter);
+> +	unsigned long usage = page_counter_read(counter);
+> +
+> +	counter->watermark = usage;
+> +	counter->local_watermark = usage;
+>   }
+>   
 
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- kernel/cgroup/cpuset.c | 13 -------------
- 1 file changed, 13 deletions(-)
+Could you set the local_watermark first before setting watermark? There 
+is a very small time window that the invariant "local_watermark <= 
+watermark" is not true.
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 40ec4abaf440..146bf9258db2 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -188,10 +188,8 @@ struct cpuset {
- 	/*
- 	 * Default hierarchy only:
- 	 * use_parent_ecpus - set if using parent's effective_cpus
--	 * child_ecpus_count - # of children with use_parent_ecpus set
- 	 */
- 	int use_parent_ecpus;
--	int child_ecpus_count;
- 
- 	/*
- 	 * number of SCHED_DEADLINE tasks attached to this cpuset, so that we
-@@ -1512,7 +1510,6 @@ static void reset_partition_data(struct cpuset *cs)
- 	if (!cpumask_and(cs->effective_cpus,
- 			 parent->effective_cpus, cs->cpus_allowed)) {
- 		cs->use_parent_ecpus = true;
--		parent->child_ecpus_count++;
- 		cpumask_copy(cs->effective_cpus, parent->effective_cpus);
- 	}
- }
-@@ -1689,10 +1686,7 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
- 	isolcpus_updated = partition_xcpus_add(new_prs, NULL, tmp->new_cpus);
- 	list_add(&cs->remote_sibling, &remote_children);
- 	if (cs->use_parent_ecpus) {
--		struct cpuset *parent = parent_cs(cs);
--
- 		cs->use_parent_ecpus = false;
--		parent->child_ecpus_count--;
- 	}
- 	spin_unlock_irq(&callback_lock);
- 	update_unbound_workqueue_cpumask(isolcpus_updated);
-@@ -2320,12 +2314,9 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp,
- 			cpumask_copy(tmp->new_cpus, parent->effective_cpus);
- 			if (!cp->use_parent_ecpus) {
- 				cp->use_parent_ecpus = true;
--				parent->child_ecpus_count++;
- 			}
- 		} else if (cp->use_parent_ecpus) {
- 			cp->use_parent_ecpus = false;
--			WARN_ON_ONCE(!parent->child_ecpus_count);
--			parent->child_ecpus_count--;
- 		}
- 
- 		if (remote)
-@@ -4139,7 +4130,6 @@ static int cpuset_css_online(struct cgroup_subsys_state *css)
- 		cpumask_copy(cs->effective_cpus, parent->effective_cpus);
- 		cs->effective_mems = parent->effective_mems;
- 		cs->use_parent_ecpus = true;
--		parent->child_ecpus_count++;
- 	}
- 	spin_unlock_irq(&callback_lock);
- 
-@@ -4206,10 +4196,7 @@ static void cpuset_css_offline(struct cgroup_subsys_state *css)
- 		update_flag(CS_SCHED_LOAD_BALANCE, cs, 0);
- 
- 	if (cs->use_parent_ecpus) {
--		struct cpuset *parent = parent_cs(cs);
--
- 		cs->use_parent_ecpus = false;
--		parent->child_ecpus_count--;
- 	}
- 
- 	cpuset_dec();
--- 
-2.34.1
+>   void page_counter_calculate_protection(struct page_counter *root,
+> diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
+> index 520b90dd97eca..c964dd7ff967a 100644
+> --- a/kernel/cgroup/cgroup-internal.h
+> +++ b/kernel/cgroup/cgroup-internal.h
+> @@ -81,6 +81,8 @@ struct cgroup_file_ctx {
+>   	struct {
+>   		struct cgroup_pidlist	*pidlist;
+>   	} procs1;
+> +
+> +	struct cgroup_of_peak peak;
+>   };
+>   
+>   /*
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index c8e4b62b436a4..0a97cb2ef1245 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -1972,6 +1972,13 @@ static int cgroup2_parse_param(struct fs_context *fc, struct fs_parameter *param
+>   	return -EINVAL;
+>   }
+>   
+> +struct cgroup_of_peak *of_peak(struct kernfs_open_file *of)
+> +{
+> +	struct cgroup_file_ctx *ctx = of->priv;
+> +
+> +	return &ctx->peak;
+> +}
+> +
+>   static void apply_cgroup_root_flags(unsigned int root_flags)
+>   {
+>   	if (current->nsproxy->cgroup_ns == &init_cgroup_ns) {
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 9603717886877..2176a2da1aa83 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -25,6 +25,7 @@
+>    * Copyright (C) 2020 Alibaba, Inc, Alex Shi
+>    */
+>   
+> +#include <linux/cgroup-defs.h>
+>   #include <linux/page_counter.h>
+>   #include <linux/memcontrol.h>
+>   #include <linux/cgroup.h>
+> @@ -41,6 +42,7 @@
+>   #include <linux/rcupdate.h>
+>   #include <linux/limits.h>
+>   #include <linux/export.h>
+> +#include <linux/list.h>
+>   #include <linux/mutex.h>
+>   #include <linux/rbtree.h>
+>   #include <linux/slab.h>
+> @@ -3558,6 +3560,9 @@ static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
+>   
+>   	INIT_WORK(&memcg->high_work, high_work_func);
+>   	vmpressure_init(&memcg->vmpressure);
+> +	INIT_LIST_HEAD(&memcg->memory_peaks);
+> +	INIT_LIST_HEAD(&memcg->swap_peaks);
+> +	spin_lock_init(&memcg->peaks_lock);
+>   	memcg->socket_pressure = jiffies;
+>   	memcg1_memcg_init(memcg);
+>   	memcg->kmemcg_id = -1;
+> @@ -3950,12 +3955,90 @@ static u64 memory_current_read(struct cgroup_subsys_state *css,
+>   	return (u64)page_counter_read(&memcg->memory) * PAGE_SIZE;
+>   }
+>   
+> -static u64 memory_peak_read(struct cgroup_subsys_state *css,
+> -			    struct cftype *cft)
+> +static int peak_show(struct seq_file *sf, void *v, struct page_counter *pc)
+>   {
+> -	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+> +	struct cgroup_of_peak *ofp = of_peak(sf->private);
+> +	s64 fd_peak = ofp->value, peak;
+> +
+> +	/* User wants global or local peak? */
+> +	if (fd_peak == -1)
+> +		peak = pc->watermark;
+> +	else
+> +		peak = max(fd_peak, (s64)pc->local_watermark);
+Should you save the local_watermark value into ofp->value if 
+local_watermark is bigger? This will ensure that each successive read of 
+the fd is monotonically increasing. Otherwise the value may go up or 
+down if there are multiple resets in between.
+
+Cheers,
+Longman
 
 
