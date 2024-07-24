@@ -1,457 +1,205 @@
-Return-Path: <cgroups+bounces-3868-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3869-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B47693A9E6
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 01:32:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4B6F93AA3D
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 02:53:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE6191F23490
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jul 2024 23:32:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7F5F1C22718
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 00:53:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FB011494B1;
-	Tue, 23 Jul 2024 23:32:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=relay.vimeo.com header.i=@relay.vimeo.com header.b="lWbnB1Pr"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B1DD4A35;
+	Wed, 24 Jul 2024 00:53:40 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from m47-110.mailgun.net (m47-110.mailgun.net [69.72.47.110])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E539149C4B
-	for <cgroups@vger.kernel.org>; Tue, 23 Jul 2024 23:32:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.72.47.110
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C361028FD;
+	Wed, 24 Jul 2024 00:53:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721777524; cv=none; b=KnwXxi56uvv6avnb3gdm+PJmuw9SEu8zEvvQI20eCLZHH212gNITXMHBOWi0YZYts2eCp2pzcRpw2XcCT2T7Tx8iBXOmuGzFpl08f8h1c12MdhUfoND3utjsF5NHTqR7mSV+RS8TXvLtquQ6JK6fy+uCd4EsRCf7CaZ6gnl0TOU=
+	t=1721782420; cv=none; b=ttIDHpTusrIjA2Rf2kIkG//68YiipPLrvm/kNni3w1L7BpNZ22Wo0DFouuSVyuUmM68Zb0+EE/AFTtxMAfbB+2lbOwFLIDwm5LkMGEoCIZeugv4U40OmmKrtOBHKatoCoqHdXTXiwUFAn0Akr3XhOZOFD0O04L28rOVKiGJ1Ne8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721777524; c=relaxed/simple;
-	bh=PUcsM/fIEpCBs64C6OM9dall8whx4qUci7W0ucIt04Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SEsP99B2DBpd0A51m2U7eG0Ou1yGc2/xzhjJt4HU0NnEoI7pmtKua+dmrMVn5Ge6luK+bmtyGJgmPin7D4C6a2bxZEg5U31to5We0M+KQVzNOUq8a6H5cbpGaarEhCcHeIeowZ2W/Vs3BCWhCa5Eu1vGq5/SE6d/XXvKOvN7T8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=pass smtp.mailfrom=relay.vimeo.com; dkim=pass (1024-bit key) header.d=relay.vimeo.com header.i=@relay.vimeo.com header.b=lWbnB1Pr; arc=none smtp.client-ip=69.72.47.110
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=relay.vimeo.com
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=relay.vimeo.com; q=dns/txt; s=mailo; t=1721777522; x=1721784722;
- h=Content-Transfer-Encoding: MIME-Version: References: In-Reply-To: Message-Id: Date: Subject: Subject: Cc: To: To: From: From: Sender: Sender;
- bh=t2iHNmDNFh2Lhloylho+v4Z/hy/KUWvSDvmAzMoAG5g=;
- b=lWbnB1PrBinb3d0n/kkWO81D7lqKbSXoJ6L1wulURYA7PnHuQPBEI0pjEegpFpNA9rTAniSPqtZLgk93Qb5Fetj/yCQhltU/liMMGwNZPQ2Hf4p4EKX89RA3qn8KColnAnxR4lNS87O0iKfrW8YKvy8B23RTLv/KvHhzix3deWI=
-X-Mailgun-Sending-Ip: 69.72.47.110
-X-Mailgun-Sid: WyIzY2RlYyIsImNncm91cHNAdmdlci5rZXJuZWwub3JnIiwiOWQyYTFjIl0=
-Received: from smtp.vimeo.com (215.71.185.35.bc.googleusercontent.com [35.185.71.215])
- by 9ee007f60f00 with SMTP id 66a03d72cb8a873c2ea87611 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Jul 2024 23:32:02 GMT
-Sender: davidf=vimeo.com@relay.vimeo.com
-Received: from nutau (gke-sre-us-east1-main-7f6ba6de-bm2w.c.vimeo-core.internal [10.56.27.208])
-	by smtp.vimeo.com (Postfix) with ESMTP id 6065164D5F;
-	Tue, 23 Jul 2024 23:32:02 +0000 (UTC)
-Received: by nutau (Postfix, from userid 1001)
-	id 40707B4133E; Tue, 23 Jul 2024 19:32:02 -0400 (EDT)
-From: David Finkel <davidf@vimeo.com>
-To: Muchun Song <muchun.song@linux.dev>,
-	Tejun Heo <tj@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: core-services@vimeo.com,
-	Jonathan Corbet <corbet@lwn.net>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Shuah Khan <shuah@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	David Finkel <davidf@vimeo.com>
-Subject: [PATCH 2/2] mm, memcg: cg2 memory{.swap,}.peak write tests
-Date: Tue, 23 Jul 2024 19:31:49 -0400
-Message-Id: <20240723233149.3226636-3-davidf@vimeo.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240723233149.3226636-1-davidf@vimeo.com>
-References: <20240723233149.3226636-1-davidf@vimeo.com>
+	s=arc-20240116; t=1721782420; c=relaxed/simple;
+	bh=H7Z9Sy5C9QluRaOVOhSXM/dPEdUmz4QH30oBCXALxgk=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=qpxHcFKEcE5fIL7DF4XYqKyefTAgwS6CoYjsvrnV/HaMC62p+kLSJaTcQj6XvAnkeopaq7q2P4zcs2VV5cgn+FKntMh4tQHsF7GTxcULHzZLou3kah578zMuuoDIxVhKpOKOZFuHVxEGzaZDX/GzFMvyL3L+Dfb40uAzMKqtktA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4WTFlQ5YmLzQmPP;
+	Wed, 24 Jul 2024 08:49:22 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8312F140485;
+	Wed, 24 Jul 2024 08:53:33 +0800 (CST)
+Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Wed, 24 Jul
+ 2024 08:53:32 +0800
+Message-ID: <a0d22f13-ac54-49b7-b22a-b319cb542cae@huawei.com>
+Date: Wed, 24 Jul 2024 08:53:31 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -v2] cgroup: fix deadlock caused by cgroup_mutex and
+ cpu_hotplug_lock
+From: chenridong <chenridong@huawei.com>
+To: <martin.lau@linux.dev>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<andrii@kernel.org>, <eddyz87@gmail.com>, <song@kernel.org>,
+	<yonghong.song@linux.dev>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+	<sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>, <tj@kernel.org>,
+	<lizefan.x@bytedance.com>, <hannes@cmpxchg.org>, <roman.gushchin@linux.dev>
+CC: <bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240719025232.2143638-1-chenridong@huawei.com>
+Content-Language: en-US
+In-Reply-To: <20240719025232.2143638-1-chenridong@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
-Extend two existing tests to cover extracting memory usage through the
-newly mutable memory.peak and memory.swap.peak handlers.
 
-In particular, make sure to exercise adding and removing watchers with
-overlapping lifetimes so the less-trivial logic gets tested.
 
-Signed-off-by: David Finkel <davidf@vimeo.com>
----
- tools/testing/selftests/cgroup/cgroup_util.c  |  22 ++
- tools/testing/selftests/cgroup/cgroup_util.h  |   2 +
- .../selftests/cgroup/test_memcontrol.c        | 226 +++++++++++++++++-
- 3 files changed, 242 insertions(+), 8 deletions(-)
+On 2024/7/19 10:52, Chen Ridong wrote:
+> We found a hung_task problem as shown below:
+> 
+> INFO: task kworker/0:0:8 blocked for more than 327 seconds.
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:kworker/0:0     state:D stack:13920 pid:8     ppid:2       flags:0x00004000
+> Workqueue: events cgroup_bpf_release
+> Call Trace:
+>   <TASK>
+>   __schedule+0x5a2/0x2050
+>   ? find_held_lock+0x33/0x100
+>   ? wq_worker_sleeping+0x9e/0xe0
+>   schedule+0x9f/0x180
+>   schedule_preempt_disabled+0x25/0x50
+>   __mutex_lock+0x512/0x740
+>   ? cgroup_bpf_release+0x1e/0x4d0
+>   ? cgroup_bpf_release+0xcf/0x4d0
+>   ? process_scheduled_works+0x161/0x8a0
+>   ? cgroup_bpf_release+0x1e/0x4d0
+>   ? mutex_lock_nested+0x2b/0x40
+>   ? __pfx_delay_tsc+0x10/0x10
+>   mutex_lock_nested+0x2b/0x40
+>   cgroup_bpf_release+0xcf/0x4d0
+>   ? process_scheduled_works+0x161/0x8a0
+>   ? trace_event_raw_event_workqueue_execute_start+0x64/0xd0
+>   ? process_scheduled_works+0x161/0x8a0
+>   process_scheduled_works+0x23a/0x8a0
+>   worker_thread+0x231/0x5b0
+>   ? __pfx_worker_thread+0x10/0x10
+>   kthread+0x14d/0x1c0
+>   ? __pfx_kthread+0x10/0x10
+>   ret_from_fork+0x59/0x70
+>   ? __pfx_kthread+0x10/0x10
+>   ret_from_fork_asm+0x1b/0x30
+>   </TASK>
+> 
+> This issue can be reproduced by the following methods:
+> 1. A large number of cpuset cgroups are deleted.
+> 2. Set cpu on and off repeatly.
+> 3. Set watchdog_thresh repeatly.
+> 
+> The reason for this issue is cgroup_mutex and cpu_hotplug_lock are
+> acquired in different tasks, which may lead to deadlock.
+> It can lead to a deadlock through the following steps:
+> 1. A large number of cgroups are deleted, which will put a large
+>     number of cgroup_bpf_release works into system_wq. The max_active
+>     of system_wq is WQ_DFL_ACTIVE(256). When cgroup_bpf_release can not
+>     get cgroup_metux, it may cram system_wq, and it will block work
+>     enqueued later.
+> 2. Setting watchdog_thresh will hold cpu_hotplug_lock.read and put
+>     smp_call_on_cpu work into system_wq. However it may be blocked by
+>     step 1.
+> 3. Cpu offline requires cpu_hotplug_lock.write, which is blocked by step 2.
+> 4. When a cpuset is deleted, cgroup release work is placed on
+>     cgroup_destroy_wq, it will hold cgroup_metux and acquire
+>     cpu_hotplug_lock.read. Acquiring cpu_hotplug_lock.read is blocked by
+>     cpu_hotplug_lock.write as mentioned by step 3. Finally, it forms a
+>     loop and leads to a deadlock.
+> 
+> cgroup_destroy_wq(step4)	cpu offline(step3)		WatchDog(step2)			system_wq(step1)
+> 												......
+> 								__lockup_detector_reconfigure:
+> 								P(cpu_hotplug_lock.read)
+> 								...
+> 				...
+> 				percpu_down_write:
+> 				P(cpu_hotplug_lock.write)
+> 												...256+ works
+> 												cgroup_bpf_release:
+> 												P(cgroup_mutex)
+> 								smp_call_on_cpu:
+> 								Wait system_wq
+> ...
+> css_killed_work_fn:
+> P(cgroup_mutex)
+> ...
+> cpuset_css_offline:
+> P(cpu_hotplug_lock.read)
+> 
+> To fix the problem, place cgroup_bpf_release works on cgroup_destroy_wq,
+> which can break the loop and solve the problem. System wqs are for misc
+> things which shouldn't create a large number of concurrent work items.
+> If something is going to generate >WQ_DFL_ACTIVE(256) concurrent work
+> items, it should use its own dedicated workqueue.
+> 
+> Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf from cgroup itself")
+> Link: https://lore.kernel.org/cgroups/e90c32d2-2a85-4f28-9154-09c7d320cb60@huawei.com/T/#t
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+> ---
+>   kernel/bpf/cgroup.c             | 2 +-
+>   kernel/cgroup/cgroup-internal.h | 1 +
+>   kernel/cgroup/cgroup.c          | 2 +-
+>   3 files changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> index 8ba73042a239..a611a1274788 100644
+> --- a/kernel/bpf/cgroup.c
+> +++ b/kernel/bpf/cgroup.c
+> @@ -334,7 +334,7 @@ static void cgroup_bpf_release_fn(struct percpu_ref *ref)
+>   	struct cgroup *cgrp = container_of(ref, struct cgroup, bpf.refcnt);
+>   
+>   	INIT_WORK(&cgrp->bpf.release_work, cgroup_bpf_release);
+> -	queue_work(system_wq, &cgrp->bpf.release_work);
+> +	queue_work(cgroup_destroy_wq, &cgrp->bpf.release_work);
+>   }
+>   
+>   /* Get underlying bpf_prog of bpf_prog_list entry, regardless if it's through
+> diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
+> index 520b90dd97ec..9e57f3e9316e 100644
+> --- a/kernel/cgroup/cgroup-internal.h
+> +++ b/kernel/cgroup/cgroup-internal.h
+> @@ -13,6 +13,7 @@
+>   extern spinlock_t trace_cgroup_path_lock;
+>   extern char trace_cgroup_path[TRACE_CGROUP_PATH_LEN];
+>   extern void __init enable_debug_cgroup(void);
+> +extern struct workqueue_struct *cgroup_destroy_wq;
+>   
+>   /*
+>    * cgroup_path() takes a spin lock. It is good practice not to take
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index e32b6972c478..3317e03fe2fb 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -124,7 +124,7 @@ DEFINE_PERCPU_RWSEM(cgroup_threadgroup_rwsem);
+>    * destruction work items don't end up filling up max_active of system_wq
+>    * which may lead to deadlock.
+>    */
+> -static struct workqueue_struct *cgroup_destroy_wq;
+> +struct workqueue_struct *cgroup_destroy_wq;
+>   
+>   /* generate an array of cgroup subsystem pointers */
+>   #define SUBSYS(_x) [_x ## _cgrp_id] = &_x ## _cgrp_subsys,
 
-diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
-index 432db923bced0..1e2d46636a0ca 100644
---- a/tools/testing/selftests/cgroup/cgroup_util.c
-+++ b/tools/testing/selftests/cgroup/cgroup_util.c
-@@ -141,6 +141,16 @@ long cg_read_long(const char *cgroup, const char *control)
- 	return atol(buf);
- }
- 
-+long cg_read_long_fd(int fd)
-+{
-+	char buf[128];
-+
-+	if (pread(fd, buf, sizeof(buf), 0) <= 0)
-+		return -1;
-+
-+	return atol(buf);
-+}
-+
- long cg_read_key_long(const char *cgroup, const char *control, const char *key)
- {
- 	char buf[PAGE_SIZE];
-@@ -183,6 +193,18 @@ int cg_write(const char *cgroup, const char *control, char *buf)
- 	return ret == len ? 0 : ret;
- }
- 
-+/*
-+ * Returns fd on success, or -1 on failure.
-+ * (fd should be closed with close() as usual)
-+ */
-+int cg_open(const char *cgroup, const char *control, int flags)
-+{
-+	char path[PATH_MAX];
-+
-+	snprintf(path, sizeof(path), "%s/%s", cgroup, control);
-+	return open(path, flags);
-+}
-+
- int cg_write_numeric(const char *cgroup, const char *control, long value)
- {
- 	char buf[64];
-diff --git a/tools/testing/selftests/cgroup/cgroup_util.h b/tools/testing/selftests/cgroup/cgroup_util.h
-index e8d04ac9e3d23..19b131ee77072 100644
---- a/tools/testing/selftests/cgroup/cgroup_util.h
-+++ b/tools/testing/selftests/cgroup/cgroup_util.h
-@@ -34,9 +34,11 @@ extern int cg_read_strcmp(const char *cgroup, const char *control,
- extern int cg_read_strstr(const char *cgroup, const char *control,
- 			  const char *needle);
- extern long cg_read_long(const char *cgroup, const char *control);
-+extern long cg_read_long_fd(int fd);
- long cg_read_key_long(const char *cgroup, const char *control, const char *key);
- extern long cg_read_lc(const char *cgroup, const char *control);
- extern int cg_write(const char *cgroup, const char *control, char *buf);
-+extern int cg_open(const char *cgroup, const char *control, int flags);
- int cg_write_numeric(const char *cgroup, const char *control, long value);
- extern int cg_run(const char *cgroup,
- 		  int (*fn)(const char *cgroup, void *arg),
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index 41ae8047b8895..30730a3c26412 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -161,12 +161,12 @@ static int alloc_pagecache_50M_check(const char *cgroup, void *arg)
- /*
-  * This test create a memory cgroup, allocates
-  * some anonymous memory and some pagecache
-- * and check memory.current and some memory.stat values.
-+ * and checks memory.current, memory.peak, and some memory.stat values.
-  */
--static int test_memcg_current(const char *root)
-+static int test_memcg_current_peak(const char *root)
- {
- 	int ret = KSFT_FAIL;
--	long current;
-+	long current, peak, peak_reset;
- 	char *memcg;
- 
- 	memcg = cg_name(root, "memcg_test");
-@@ -180,15 +180,108 @@ static int test_memcg_current(const char *root)
- 	if (current != 0)
- 		goto cleanup;
- 
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak != 0)
-+		goto cleanup;
-+
- 	if (cg_run(memcg, alloc_anon_50M_check, NULL))
- 		goto cleanup;
- 
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak < MB(50))
-+		goto cleanup;
-+
-+	/*
-+	 * We'll open a few FDs for the same memory.peak file to exercise the free-path
-+	 * We need at least three to be closed in a different order than writes occurred to test
-+	 * the linked-list handling.
-+	 */
-+	int peak_fd = cg_open(memcg, "memory.peak", O_RDWR | O_APPEND | O_CLOEXEC);
-+
-+	if (peak_fd == -1)
-+		goto cleanup;
-+
-+	bool fd2_closed = false, fd3_closed = false, fd4_closed = false;
-+	int peak_fd2 = cg_open(memcg, "memory.peak", O_RDWR | O_APPEND | O_CLOEXEC);
-+
-+	if (peak_fd2 == -1)
-+		goto cleanup;
-+
-+	int peak_fd3 = cg_open(memcg, "memory.peak", O_RDWR | O_APPEND | O_CLOEXEC);
-+
-+	if (peak_fd3 == -1)
-+		goto cleanup;
-+
-+	static const char reset_string[] = "reset\n";
-+
-+	peak_reset = write(peak_fd, reset_string, sizeof(reset_string));
-+	if (peak_reset != sizeof(reset_string))
-+		goto cleanup;
-+
-+	peak_reset = write(peak_fd2, reset_string, sizeof(reset_string));
-+	if (peak_reset != sizeof(reset_string))
-+		goto cleanup;
-+
-+	peak_reset = write(peak_fd3, reset_string, sizeof(reset_string));
-+	if (peak_reset != sizeof(reset_string))
-+		goto cleanup;
-+
-+	/* Make sure a completely independent read isn't affected by our  FD-local reset above*/
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak < MB(50))
-+		goto cleanup;
-+
-+	fd2_closed = true;
-+	if (close(peak_fd2))
-+		goto cleanup;
-+
-+	int peak_fd4 = cg_open(memcg, "memory.peak", O_RDWR | O_APPEND | O_CLOEXEC);
-+
-+	if (peak_fd4 == -1)
-+		goto cleanup;
-+
-+	peak_reset = write(peak_fd4, reset_string, sizeof(reset_string));
-+	if (peak_reset != sizeof(reset_string))
-+		goto cleanup;
-+
-+	peak = cg_read_long_fd(peak_fd);
-+	if (peak > MB(30) || peak < 0)
-+		goto cleanup;
-+
- 	if (cg_run(memcg, alloc_pagecache_50M_check, NULL))
- 		goto cleanup;
- 
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak < MB(50))
-+		goto cleanup;
-+
-+	/* Make sure everything is back to normal */
-+	peak = cg_read_long_fd(peak_fd);
-+	if (peak < MB(50))
-+		goto cleanup;
-+
-+	peak = cg_read_long_fd(peak_fd4);
-+	if (peak < MB(50))
-+		goto cleanup;
-+
-+	fd3_closed = true;
-+	if (close(peak_fd3))
-+		goto cleanup;
-+
-+	fd4_closed = true;
-+	if (close(peak_fd4))
-+		goto cleanup;
-+
- 	ret = KSFT_PASS;
- 
- cleanup:
-+	close(peak_fd);
-+	if (!fd2_closed)
-+		close(peak_fd2);
-+	if (!fd3_closed)
-+		close(peak_fd3);
-+	if (!fd4_closed)
-+		close(peak_fd4);
- 	cg_destroy(memcg);
- 	free(memcg);
- 
-@@ -817,13 +910,16 @@ static int alloc_anon_50M_check_swap(const char *cgroup, void *arg)
- 
- /*
-  * This test checks that memory.swap.max limits the amount of
-- * anonymous memory which can be swapped out.
-+ * anonymous memory which can be swapped out. Additionally, it verifies that
-+ * memory.swap.peak reflects the high watermark and can be reset.
-  */
--static int test_memcg_swap_max(const char *root)
-+static int test_memcg_swap_max_peak(const char *root)
- {
- 	int ret = KSFT_FAIL;
- 	char *memcg;
--	long max;
-+	long max, peak;
-+
-+	static const char reset_string[] = "reset\n";
- 
- 	if (!is_swap_enabled())
- 		return KSFT_SKIP;
-@@ -840,6 +936,45 @@ static int test_memcg_swap_max(const char *root)
- 		goto cleanup;
- 	}
- 
-+	int swap_peak_fd = cg_open(memcg, "memory.swap.peak",
-+				   O_RDWR | O_APPEND | O_CLOEXEC);
-+
-+	if (swap_peak_fd == -1)
-+		goto cleanup;
-+
-+	int mem_peak_fd = cg_open(memcg, "memory.peak", O_RDWR | O_APPEND | O_CLOEXEC);
-+
-+	if (mem_peak_fd == -1)
-+		goto cleanup;
-+
-+	if (cg_read_long(memcg, "memory.swap.peak"))
-+		goto cleanup;
-+
-+	if (cg_read_long_fd(swap_peak_fd))
-+		goto cleanup;
-+
-+	/* switch the swap and mem fds into local-peak tracking mode*/
-+	int peak_reset = write(swap_peak_fd, reset_string, sizeof(reset_string));
-+
-+	if (peak_reset != sizeof(reset_string))
-+		goto cleanup;
-+
-+	if (cg_read_long_fd(swap_peak_fd))
-+		goto cleanup;
-+
-+	if (cg_read_long(memcg, "memory.peak"))
-+		goto cleanup;
-+
-+	if (cg_read_long_fd(mem_peak_fd))
-+		goto cleanup;
-+
-+	peak_reset = write(mem_peak_fd, reset_string, sizeof(reset_string));
-+	if (peak_reset != sizeof(reset_string))
-+		goto cleanup;
-+
-+	if (cg_read_long_fd(mem_peak_fd))
-+		goto cleanup;
-+
- 	if (cg_read_strcmp(memcg, "memory.max", "max\n"))
- 		goto cleanup;
- 
-@@ -862,6 +997,61 @@ static int test_memcg_swap_max(const char *root)
- 	if (cg_read_key_long(memcg, "memory.events", "oom_kill ") != 1)
- 		goto cleanup;
- 
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak < MB(29))
-+		goto cleanup;
-+
-+	peak = cg_read_long(memcg, "memory.swap.peak");
-+	if (peak < MB(29))
-+		goto cleanup;
-+
-+	peak = cg_read_long_fd(mem_peak_fd);
-+	if (peak < MB(29))
-+		goto cleanup;
-+
-+	peak = cg_read_long_fd(swap_peak_fd);
-+	if (peak < MB(29))
-+		goto cleanup;
-+
-+	/*
-+	 * open, reset and close the peak swap on another FD to make sure
-+	 * multiple extant fds don't corrupt the linked-list
-+	 */
-+	peak_reset = cg_write(memcg, "memory.swap.peak", (char *)reset_string);
-+	if (peak_reset)
-+		goto cleanup;
-+
-+	peak_reset = cg_write(memcg, "memory.peak", (char *)reset_string);
-+	if (peak_reset)
-+		goto cleanup;
-+
-+	/* actually reset on the fds */
-+	peak_reset = write(swap_peak_fd, reset_string, sizeof(reset_string));
-+	if (peak_reset != sizeof(reset_string))
-+		goto cleanup;
-+
-+	peak_reset = write(mem_peak_fd, reset_string, sizeof(reset_string));
-+	if (peak_reset != sizeof(reset_string))
-+		goto cleanup;
-+
-+	peak = cg_read_long_fd(swap_peak_fd);
-+	if (peak > MB(10))
-+		goto cleanup;
-+
-+	/*
-+	 * The cgroup is now empty, but there may be a page or two associated
-+	 * with the open FD accounted to it.
-+	 */
-+	peak = cg_read_long_fd(mem_peak_fd);
-+	if (peak > MB(1))
-+		goto cleanup;
-+
-+	if (cg_read_long(memcg, "memory.peak") < MB(29))
-+		goto cleanup;
-+
-+	if (cg_read_long(memcg, "memory.swap.peak") < MB(29))
-+		goto cleanup;
-+
- 	if (cg_run(memcg, alloc_anon_50M_check_swap, (void *)MB(30)))
- 		goto cleanup;
- 
-@@ -869,9 +1059,29 @@ static int test_memcg_swap_max(const char *root)
- 	if (max <= 0)
- 		goto cleanup;
- 
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak < MB(29))
-+		goto cleanup;
-+
-+	peak = cg_read_long(memcg, "memory.swap.peak");
-+	if (peak < MB(29))
-+		goto cleanup;
-+
-+	peak = cg_read_long_fd(mem_peak_fd);
-+	if (peak < MB(29))
-+		goto cleanup;
-+
-+	peak = cg_read_long_fd(swap_peak_fd);
-+	if (peak < MB(19))
-+		goto cleanup;
-+
- 	ret = KSFT_PASS;
- 
- cleanup:
-+	if (close(mem_peak_fd))
-+		ret = KSFT_FAIL;
-+	if (close(swap_peak_fd))
-+		ret = KSFT_FAIL;
- 	cg_destroy(memcg);
- 	free(memcg);
- 
-@@ -1295,7 +1505,7 @@ struct memcg_test {
- 	const char *name;
- } tests[] = {
- 	T(test_memcg_subtree_control),
--	T(test_memcg_current),
-+	T(test_memcg_current_peak),
- 	T(test_memcg_min),
- 	T(test_memcg_low),
- 	T(test_memcg_high),
-@@ -1303,7 +1513,7 @@ struct memcg_test {
- 	T(test_memcg_max),
- 	T(test_memcg_reclaim),
- 	T(test_memcg_oom_events),
--	T(test_memcg_swap_max),
-+	T(test_memcg_swap_max_peak),
- 	T(test_memcg_sock),
- 	T(test_memcg_oom_group_leaf_events),
- 	T(test_memcg_oom_group_parent_events),
--- 
-2.40.1
-
+Friendly ping.
 
