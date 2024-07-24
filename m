@@ -1,84 +1,52 @@
-Return-Path: <cgroups+bounces-3877-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3878-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30F5393AF67
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 11:53:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 753D493AFDD
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 12:31:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A85621F2178B
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 09:53:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF2131C2237D
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 10:31:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD4715350B;
-	Wed, 24 Jul 2024 09:53:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Cy9f4KBp"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB29415099A;
+	Wed, 24 Jul 2024 10:31:34 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A4C1152160
-	for <cgroups@vger.kernel.org>; Wed, 24 Jul 2024 09:53:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58AB1C6A3;
+	Wed, 24 Jul 2024 10:31:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721814806; cv=none; b=bfkscg70TtP3zjNpmU9kyliS+Wwzk+GvmTQoFnhXxZGOqiD1e2kg3WlaA9rsHrgg8rFXWMC4+aVvFiNlOnBaok2nOiv05H2V07M///sqza+Q/iojCNwA+NLnJ+lLvqDdaaCuDPlxjYrjoeSjLNSZ22YJ5Ox0ougHHpXf4w9BoZQ=
+	t=1721817094; cv=none; b=h+vleaqLP8menq+Y8VTkgXeyXKWVJafWKbayV9v/ZrFmR0/gjVG+sgxDDyJ0vcv//SQcvxTnChsrInh5s2hSs5ciMjOXlgedNRaeebDkGLhMqA3oPlJ79XqjJBNoMr+RGQ3YuJ5P0FSdEHd+nqauVmTLOuL8QYKK2qqT0QVJZ6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721814806; c=relaxed/simple;
-	bh=+2sIhdpfQYCNtz090jbEOfXX066AW8OJGfzVGgws3Kg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=V1X6JzoUtm7NBqozAekzF2LgWjoZGYusq6cB4WaLjHVaPpXKV8st6GeY4eqJHF3DNaeKF5z86s1M7OFu4gS/h3twY5Vq+DyUs52wHlKYpJYzEqxUlHpJpL05Et39iWKrxc+fXoWIlOn32lNbuGiKCFvJBlj0G4ecF0m9tv0BoPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Cy9f4KBp; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1fc5239faebso12610895ad.1
-        for <cgroups@vger.kernel.org>; Wed, 24 Jul 2024 02:53:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1721814802; x=1722419602; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/+Pi9ykJgDXDaJ4tze/4eRzB5JgzMNRwhMMIIYD9f6s=;
-        b=Cy9f4KBpS2OddEBMoDdcR3OcBkNebJ7CsxZsMX0K/zSLt9pDHnstz0hMz7Ag2dh9O2
-         hwHmqdsXKghMm4QSSaW4IuuAm5c2JH3ErxpAICZdKzz8d6id1WldG4nyK3p80QbYW1Vq
-         BYsG2nxVfohjuoUR5gR4T7A1et5k4glK3qEdkOl26mcmlkc5MsWOdEawcl/sYZMtgMBW
-         292RbTrBNNTiDNMiDO0RHnYXaD11DHb2+C6zD6z2GTRtFBEY70DopTmg3TlTZS3BWzwd
-         CC40aGMHNHR/qopqgxZQUhxlxvTBXLtGgG2ErPMQfKv8DhdBkoecVuSuQpBQfXspZJZs
-         w8hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721814802; x=1722419602;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/+Pi9ykJgDXDaJ4tze/4eRzB5JgzMNRwhMMIIYD9f6s=;
-        b=wO3TFAxQRPM6UIeu6qgmGSfD+60zpnFNFXJtr+eU9IWvzK2jz59ulWAKRedVv8j485
-         b0GCxS2O5X2vvubx2WWHwzVyPkXrEF7FYXE4ldKRACi8rjIjTNmZovC4j9lwSFlLQJHQ
-         uVVK2sdiCg8mIC7wyQygyaDFCrZrD4k/br7rQY1oz5x9it9EVzHX+/jbzleQXpDyk5uF
-         /NO4ooNduytqIU+bXHtJyqrx61fPhKaDiedumhlSkjAspFW9G2ZuYUGNu+CmVSA7Auzx
-         NUNcdYyJNyTZpnV5SEKSXhN5yX33IutYjPSx1cuBdUIRG4HkkFigXFne7fls1SmIVgQ4
-         W0jA==
-X-Gm-Message-State: AOJu0Yyqw5W+FjDwvSn3FqqUcMzqvLaoESvFOPPOEDe81gm/qdecXlKn
-	XbWJrw+vRC0/bxUyh6FpLgiWmITEFTVHl1/LBIragOa3yFCDDgTnqcMabkHB9G0=
-X-Google-Smtp-Source: AGHT+IHB3WwwOeRp8JWZP344FPZEZNd311bvbABQQU0UAKM6DV8pqhPHlbDVM2DQMrU5wlZOgwxKpQ==
-X-Received: by 2002:a17:903:645:b0:1fd:6766:684f with SMTP id d9443c01a7336-1fdd216e7b5mr19969225ad.31.1721814802424;
-        Wed, 24 Jul 2024 02:53:22 -0700 (PDT)
-Received: from PXLDJ45XCM.bytedance.net ([139.177.225.240])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fd6f25b3a7sm90232325ad.60.2024.07.24.02.53.16
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Wed, 24 Jul 2024 02:53:21 -0700 (PDT)
-From: Muchun Song <songmuchun@bytedance.com>
-To: hannes@cmpxchg.org,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	akpm@linux-foundation.org
-Cc: cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2] mm: kmem: add lockdep assertion to obj_cgroup_memcg
-Date: Wed, 24 Jul 2024 17:53:07 +0800
-Message-Id: <20240724095307.81264-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+	s=arc-20240116; t=1721817094; c=relaxed/simple;
+	bh=w0wktJIDPkZ5XL009t7kRPm6AfiMdDyu0W+392dIUvk=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=smKWoPmj17LkcPuPUFTpXqK9djs8w/4o+sPqWHUp0US1CjwY/M2TMAzLlb7kS1oLvT0Ewl1rzmXlCe85Y8gvPqXhfF2uRsiz3ZM9sWM9chEZffW1Vwrw58ti7ZI9l1TIoh6mA7j1AGBXqqQt43Mje/UkFgdWj598INFdeF5PR2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4WTVZF4mFXzQmDN;
+	Wed, 24 Jul 2024 18:27:17 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id D5CD8180100;
+	Wed, 24 Jul 2024 18:31:28 +0800 (CST)
+Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Wed, 24 Jul
+ 2024 18:31:28 +0800
+From: Chen Ridong <chenridong@huawei.com>
+To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+	<longman@redhat.com>, <adityakali@google.com>, <sergeh@kernel.org>,
+	<mkoutny@suse.com>
+CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 -next] cgroup/cpuset: remove child_ecpus_count
+Date: Wed, 24 Jul 2024 10:24:18 +0000
+Message-ID: <20240724102418.2213801-1-chenridong@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -86,126 +54,98 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
-The obj_cgroup_memcg() is supposed to safe to prevent the returned
-memory cgroup from being freed only when the caller is holding the
-rcu read lock or objcg_lock or cgroup_mutex. It is very easy to
-ignore thoes conditions when users call some upper APIs which call
-obj_cgroup_memcg() internally like mem_cgroup_from_slab_obj() (See
-the link below). So it is better to add lockdep assertion to
-obj_cgroup_memcg() to find those issues ASAP.
+The child_ecpus_count variable was previously used to update
+sibling cpumask when parent's effective_cpus is updated. However, it became
+obsolete after commit e2ffe502ba45 ("cgroup/cpuset: Add
+cpuset.cpus.exclusive for v2"). It should be removed.
 
-Because there is no user of obj_cgroup_memcg() holding objcg_lock
-to make the returned memory cgroup safe, do not add objcg_lock
-assertion (We should export objcg_lock if we really want to do).
-Additionally, this is some internal implementation detail of memcg
-and should not be accessible outside memcg code.
-
-Some users like __mem_cgroup_uncharge() do not care the lifetime
-of the returned memory cgroup, which just want to know if the
-folio is charged to a memory cgroup, therefore, they do not need
-to hold the needed locks. In which case, introduce a new helper
-folio_memcg_charged() to do this. Compare it to folio_memcg(), it
-could eliminate a memory access of objcg->memcg for kmem, actually,
-a really small gain.
-
-Link: https://lore.kernel.org/all/20240718083607.42068-1-songmuchun@bytedance.com/
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
-v2:
- - Remove mention of objcg_lock in obj_cgroup_memcg()(Shakeel Butt).
+ kernel/cgroup/cpuset.c | 25 ++++---------------------
+ 1 file changed, 4 insertions(+), 21 deletions(-)
 
- include/linux/memcontrol.h | 20 +++++++++++++++++---
- mm/memcontrol.c            |  6 +++---
- 2 files changed, 20 insertions(+), 6 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index fc94879db4dff..742351945f683 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -360,11 +360,11 @@ static inline bool folio_memcg_kmem(struct folio *folio);
-  * After the initialization objcg->memcg is always pointing at
-  * a valid memcg, but can be atomically swapped to the parent memcg.
-  *
-- * The caller must ensure that the returned memcg won't be released:
-- * e.g. acquire the rcu_read_lock or css_set_lock.
-+ * The caller must ensure that the returned memcg won't be released.
-  */
- static inline struct mem_cgroup *obj_cgroup_memcg(struct obj_cgroup *objcg)
- {
-+	WARN_ON_ONCE(!rcu_read_lock_held() && !lockdep_is_held(&cgroup_mutex));
- 	return READ_ONCE(objcg->memcg);
- }
- 
-@@ -438,6 +438,19 @@ static inline struct mem_cgroup *folio_memcg(struct folio *folio)
- 	return __folio_memcg(folio);
- }
- 
-+/*
-+ * folio_memcg_charged - If a folio is charged to a memory cgroup.
-+ * @folio: Pointer to the folio.
-+ *
-+ * Returns true if folio is charged to a memory cgroup, otherwise returns false.
-+ */
-+static inline bool folio_memcg_charged(struct folio *folio)
-+{
-+	if (folio_memcg_kmem(folio))
-+		return __folio_objcg(folio) != NULL;
-+	return __folio_memcg(folio) != NULL;
-+}
-+
- /**
-  * folio_memcg_rcu - Locklessly get the memory cgroup associated with a folio.
-  * @folio: Pointer to the folio.
-@@ -454,7 +467,6 @@ static inline struct mem_cgroup *folio_memcg_rcu(struct folio *folio)
- 	unsigned long memcg_data = READ_ONCE(folio->memcg_data);
- 
- 	VM_BUG_ON_FOLIO(folio_test_slab(folio), folio);
--	WARN_ON_ONCE(!rcu_read_lock_held());
- 
- 	if (memcg_data & MEMCG_DATA_KMEM) {
- 		struct obj_cgroup *objcg;
-@@ -463,6 +475,8 @@ static inline struct mem_cgroup *folio_memcg_rcu(struct folio *folio)
- 		return obj_cgroup_memcg(objcg);
- 	}
- 
-+	WARN_ON_ONCE(!rcu_read_lock_held());
-+
- 	return (struct mem_cgroup *)(memcg_data & ~OBJEXTS_FLAGS_MASK);
- }
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 622d4544edd24..3da0284573857 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2366,7 +2366,7 @@ void mem_cgroup_cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
- 
- static void commit_charge(struct folio *folio, struct mem_cgroup *memcg)
- {
--	VM_BUG_ON_FOLIO(folio_memcg(folio), folio);
-+	VM_BUG_ON_FOLIO(folio_memcg_charged(folio), folio);
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 40ec4abaf440..d4322619e59a 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -188,10 +188,8 @@ struct cpuset {
  	/*
- 	 * Any of the following ensures page's memcg stability:
- 	 *
-@@ -4617,7 +4617,7 @@ void __mem_cgroup_uncharge(struct folio *folio)
- 	struct uncharge_gather ug;
+ 	 * Default hierarchy only:
+ 	 * use_parent_ecpus - set if using parent's effective_cpus
+-	 * child_ecpus_count - # of children with use_parent_ecpus set
+ 	 */
+ 	int use_parent_ecpus;
+-	int child_ecpus_count;
  
- 	/* Don't touch folio->lru of any random page, pre-check: */
--	if (!folio_memcg(folio))
-+	if (!folio_memcg_charged(folio))
- 		return;
+ 	/*
+ 	 * number of SCHED_DEADLINE tasks attached to this cpuset, so that we
+@@ -1512,7 +1510,6 @@ static void reset_partition_data(struct cpuset *cs)
+ 	if (!cpumask_and(cs->effective_cpus,
+ 			 parent->effective_cpus, cs->cpus_allowed)) {
+ 		cs->use_parent_ecpus = true;
+-		parent->child_ecpus_count++;
+ 		cpumask_copy(cs->effective_cpus, parent->effective_cpus);
+ 	}
+ }
+@@ -1688,12 +1685,8 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
+ 	spin_lock_irq(&callback_lock);
+ 	isolcpus_updated = partition_xcpus_add(new_prs, NULL, tmp->new_cpus);
+ 	list_add(&cs->remote_sibling, &remote_children);
+-	if (cs->use_parent_ecpus) {
+-		struct cpuset *parent = parent_cs(cs);
+-
++	if (cs->use_parent_ecpus)
+ 		cs->use_parent_ecpus = false;
+-		parent->child_ecpus_count--;
+-	}
+ 	spin_unlock_irq(&callback_lock);
+ 	update_unbound_workqueue_cpumask(isolcpus_updated);
  
- 	uncharge_gather_clear(&ug);
-@@ -4662,7 +4662,7 @@ void mem_cgroup_replace_folio(struct folio *old, struct folio *new)
- 		return;
+@@ -2318,15 +2311,10 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp,
+ 		 */
+ 		if (is_in_v2_mode() && !remote && cpumask_empty(tmp->new_cpus)) {
+ 			cpumask_copy(tmp->new_cpus, parent->effective_cpus);
+-			if (!cp->use_parent_ecpus) {
++			if (!cp->use_parent_ecpus)
+ 				cp->use_parent_ecpus = true;
+-				parent->child_ecpus_count++;
+-			}
+-		} else if (cp->use_parent_ecpus) {
++		} else if (cp->use_parent_ecpus)
+ 			cp->use_parent_ecpus = false;
+-			WARN_ON_ONCE(!parent->child_ecpus_count);
+-			parent->child_ecpus_count--;
+-		}
  
- 	/* Page cache replacement: new folio already charged? */
--	if (folio_memcg(new))
-+	if (folio_memcg_charged(new))
- 		return;
+ 		if (remote)
+ 			goto get_css;
+@@ -4139,7 +4127,6 @@ static int cpuset_css_online(struct cgroup_subsys_state *css)
+ 		cpumask_copy(cs->effective_cpus, parent->effective_cpus);
+ 		cs->effective_mems = parent->effective_mems;
+ 		cs->use_parent_ecpus = true;
+-		parent->child_ecpus_count++;
+ 	}
+ 	spin_unlock_irq(&callback_lock);
  
- 	memcg = folio_memcg(old);
+@@ -4205,12 +4192,8 @@ static void cpuset_css_offline(struct cgroup_subsys_state *css)
+ 	    is_sched_load_balance(cs))
+ 		update_flag(CS_SCHED_LOAD_BALANCE, cs, 0);
+ 
+-	if (cs->use_parent_ecpus) {
+-		struct cpuset *parent = parent_cs(cs);
+-
++	if (cs->use_parent_ecpus)
+ 		cs->use_parent_ecpus = false;
+-		parent->child_ecpus_count--;
+-	}
+ 
+ 	cpuset_dec();
+ 	clear_bit(CS_ONLINE, &cs->flags);
 -- 
-2.20.1
+2.34.1
 
 
