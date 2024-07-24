@@ -1,188 +1,219 @@
-Return-Path: <cgroups+bounces-3881-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3882-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D6E293B37D
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 17:20:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5F5E93B4A6
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 18:12:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77B40B21A4B
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 15:20:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7CF63281A8B
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 16:12:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB19D15956C;
-	Wed, 24 Jul 2024 15:20:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E884615ECC3;
+	Wed, 24 Jul 2024 16:11:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="foq0aGZe"
+	dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b="PcVixm1C"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B52D29E;
-	Wed, 24 Jul 2024 15:20:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B00A915ECC1
+	for <cgroups@vger.kernel.org>; Wed, 24 Jul 2024 16:11:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721834415; cv=none; b=D5r+uEcgeJSfpkuhf7r3StpWglny+Zpuz7aTdYJRSZuc6LmfhM0I/FZEeNJdaXKscIaOBAZbFgMeF2D5/JhW5ONaeIVL1+zkt3zlDzRfc4eDPomhPAs5hG0dgVGPqpnBgoCzUrhnvreTrZwEJB+v2jTecIOw4jaLKRPk7HuNnOw=
+	t=1721837516; cv=none; b=HDlmpw1J2zaynOn3foMpwZ9xbSuddj8cxtgzDXTOtXrz/R9MMXvrAHz98f2puC6F4KoV/6sLVJYPYVDFo9CDxzYg7jrvQJJMEzZvlA7SvhLGh2LVf9PAbm589Pc5IW6WWbWn2urYSzsBG3kQK/kBCDzszvUcYU2QjLCBDLaBun0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721834415; c=relaxed/simple;
-	bh=qeXLUpoZGsZRPbAT3HnF46SuxY7YTRrZMXLruO62MZ4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Me19OrlCEfYzutpeWH/QfKoGTItNx7KbFeKIpDZJfRZjrvgxWj2QRKSRE5jPm62cWre9Z3/0LqyH0kjXxRdJVcJoZyy6CFR2QGMDbK/dCPZgJVWS0uKLn1UFSPJizzJfyZUyM7WHqYaD0NGsUBec7j8EaZDlfTvGBvUaj927CKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=foq0aGZe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D6D3C32781;
-	Wed, 24 Jul 2024 15:20:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721834415;
-	bh=qeXLUpoZGsZRPbAT3HnF46SuxY7YTRrZMXLruO62MZ4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=foq0aGZehOfXyqCf95kJdLCejTjAEe6euW8dlRJJ7u9hGgh36hPbajH3m3Suml4LV
-	 z61gO5OonvF224YmrWKT1dYlX1XAI9bZezjUI1jfVVqUwY0zGPvG/kP8ttPu6VOokS
-	 JxfEX1hGt9bq1tbyACJJi4J+fCwrXPziPYtniQ+HUUSWstnFvwG4x7L15Ec36jyO5u
-	 itQ87DTpaNObbcl+W8KnQuLwyng0WIngITLq/J4qvh6TScZSsWmTPYSS3OxKkAOvwq
-	 lpFkpGr8FTJXHPniV87OFfsML7dm5u2ppm6NkzcnH964YfzNxuIKgVNohknyOXu2jw
-	 rGxJomXCH6pPw==
-Message-ID: <610dc6fa-6681-4c9e-bffb-ef6d299dd169@kernel.org>
-Date: Wed, 24 Jul 2024 17:20:09 +0200
+	s=arc-20240116; t=1721837516; c=relaxed/simple;
+	bh=qhtyapTbsggYtY42G73TnJUgJLWCx+iLeJg6LE2bXmQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=plNlt+mGStYpHCZEyNw/GA0ZETsZNNT9L/U5cMrxURwgMMiby2SzFA/Bhi9jUwU177TPYB2arblIlC2i5o8Nvc5MyoAfVGdAkS9wSiB/cXdWFdR3QEL99sraGY2HMZOxZTC1SA3oxgFfTjjmPNIojgwg/988IM0jU9uLvO7/DUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=fail smtp.mailfrom=vimeo.com; dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b=PcVixm1C; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=vimeo.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-70d150e8153so4158b3a.0
+        for <cgroups@vger.kernel.org>; Wed, 24 Jul 2024 09:11:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vimeo.com; s=google; t=1721837513; x=1722442313; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ukA2Zx3b8wZGOkUcJ2HRKI3kn32vcEPpsjBc+UAQhVc=;
+        b=PcVixm1C3HESsKeDfpE9iGembUDBREu5olz9z8eGpMb+59Ngq0an86maZiYT7Pf7Xx
+         Unk1yb66ROCpJL6eWh2tY7qaSTg7bH3h+rue4lfFyG3nDACHATVs+Ka6EF0iFx2xfAWt
+         Advy1+BfpABscHxbnh7tYAc4qO1odR+tdY5dA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721837513; x=1722442313;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ukA2Zx3b8wZGOkUcJ2HRKI3kn32vcEPpsjBc+UAQhVc=;
+        b=pFIB3L1NCItztXco4a3z8DVAjPXMsmc67u84K4wrA0RJhTQVgPbFR9hWhc2Jm/eFBb
+         T/k7PtkEATAdNDeDLW4j4Bcq46ZgBnsmMfhRWDQAgB4q3m9oAMY6SwRbgsxHrLceKnWR
+         4Pmqchsa85ErqF/uVz/nVDJb6h0AK4e2pXcls48D2OVso5lJld2mRsKYORFQYAAjfr1l
+         M9xicx3T4jTXODl0OpTBNyoya7+Sk7YoogzbQ5kzFn23CGhHXLtjsQBy/+4MoqIOKwMs
+         SkuwiC4bDB3Mb/7oJp4+2p6HSftMBfVqcm0p2FiCkj8fFq8Gu4jgxblrC92L6LjfrA/7
+         JaCA==
+X-Forwarded-Encrypted: i=1; AJvYcCUQPhR5NwqOTiMjIh1aZHPM9BM7COFlcKBNWC5+PaXVRxxtQ0hvoV73xlB66vsV4k2kqB6r0goCCtr4Mq/6+dMzoLsbVYEz2g==
+X-Gm-Message-State: AOJu0YwiGJVbIF8DR3gxqVPh4PUqzZ52fNHLGNjF7EQDxqxK5PGjOsPA
+	R/b6C9mz/62FkElpWO2s/eyzxE7adlu6e8IZTAInZ9o+nu0Jv3t5vjmpaDEP2fWOiZt71RWdbKq
+	sx4gIBQGX2zpHfdzpoBhH70OYyXijtWOxoKo9Ag==
+X-Google-Smtp-Source: AGHT+IFft/rd5GJFaDCp1Z+xZGOXG6YGzwJeUwPo+FT5WjcIvrkdnSROQL9L0yZcM6+GlwIV+LphZ/daRpk+t+KK0sM=
+X-Received: by 2002:a05:6a00:6f60:b0:708:41c4:8849 with SMTP id
+ d2e1a72fcca58-70eaa220707mr165997b3a.9.1721837512611; Wed, 24 Jul 2024
+ 09:11:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm: kmem: add lockdep assertion to obj_cgroup_memcg
-Content-Language: en-US
-To: Muchun Song <songmuchun@bytedance.com>, hannes@cmpxchg.org,
- mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
- muchun.song@linux.dev, akpm@linux-foundation.org
-Cc: cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240724095307.81264-1-songmuchun@bytedance.com>
-From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-In-Reply-To: <20240724095307.81264-1-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240723233149.3226636-1-davidf@vimeo.com> <20240723233149.3226636-2-davidf@vimeo.com>
+ <22a95c76-4e9e-482e-b95d-cb0f01971d98@redhat.com> <20240724114905.GB389003@cmpxchg.org>
+In-Reply-To: <20240724114905.GB389003@cmpxchg.org>
+From: David Finkel <davidf@vimeo.com>
+Date: Wed, 24 Jul 2024 12:11:41 -0400
+Message-ID: <CAFUnj5O6f2NFitEX0R505ydTsfQnLpgVk4dzMdkf-3GTLfCUDw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm, memcg: cg2 memory{.swap,}.peak write handlers
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Waiman Long <longman@redhat.com>, Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	core-services@vimeo.com, Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Shuah Khan <shuah@kernel.org>, 
+	Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 7/24/24 11:53 AM, Muchun Song wrote:
-> The obj_cgroup_memcg() is supposed to safe to prevent the returned
-> memory cgroup from being freed only when the caller is holding the
-> rcu read lock or objcg_lock or cgroup_mutex. It is very easy to
-> ignore thoes conditions when users call some upper APIs which call
-> obj_cgroup_memcg() internally like mem_cgroup_from_slab_obj() (See
-> the link below). So it is better to add lockdep assertion to
-> obj_cgroup_memcg() to find those issues ASAP.
-> 
-> Because there is no user of obj_cgroup_memcg() holding objcg_lock
-> to make the returned memory cgroup safe, do not add objcg_lock
-> assertion (We should export objcg_lock if we really want to do).
-> Additionally, this is some internal implementation detail of memcg
-> and should not be accessible outside memcg code.
-> 
-> Some users like __mem_cgroup_uncharge() do not care the lifetime
-> of the returned memory cgroup, which just want to know if the
-> folio is charged to a memory cgroup, therefore, they do not need
-> to hold the needed locks. In which case, introduce a new helper
-> folio_memcg_charged() to do this. Compare it to folio_memcg(), it
-> could eliminate a memory access of objcg->memcg for kmem, actually,
-> a really small gain.
-> 
-> Link: https://lore.kernel.org/all/20240718083607.42068-1-songmuchun@bytedance.com/
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
-> v2:
->  - Remove mention of objcg_lock in obj_cgroup_memcg()(Shakeel Butt).
-> 
->  include/linux/memcontrol.h | 20 +++++++++++++++++---
->  mm/memcontrol.c            |  6 +++---
->  2 files changed, 20 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index fc94879db4dff..742351945f683 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -360,11 +360,11 @@ static inline bool folio_memcg_kmem(struct folio *folio);
->   * After the initialization objcg->memcg is always pointing at
->   * a valid memcg, but can be atomically swapped to the parent memcg.
->   *
-> - * The caller must ensure that the returned memcg won't be released:
-> - * e.g. acquire the rcu_read_lock or css_set_lock.
-> + * The caller must ensure that the returned memcg won't be released.
->   */
->  static inline struct mem_cgroup *obj_cgroup_memcg(struct obj_cgroup *objcg)
->  {
-> +	WARN_ON_ONCE(!rcu_read_lock_held() && !lockdep_is_held(&cgroup_mutex));
+On Wed, Jul 24, 2024 at 7:49=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> On Tue, Jul 23, 2024 at 09:55:19PM -0400, Waiman Long wrote:
+> > Could you use the "-v <n>" option of git-format-patch to add a version
+> > number to the patch title? Without that, it can be confusing as to
+> > whether the patch is new or a resend of the previous one.
+>
+> +1
 
-Maybe lockdep_assert_once() would be a better fit?
+Sorry, I forgot that that flag exists.
+I'll use that with the next patch. (which I'll send out shortly)
 
->  	return READ_ONCE(objcg->memcg);
->  }
->  
-> @@ -438,6 +438,19 @@ static inline struct mem_cgroup *folio_memcg(struct folio *folio)
->  	return __folio_memcg(folio);
->  }
->  
-> +/*
-> + * folio_memcg_charged - If a folio is charged to a memory cgroup.
-> + * @folio: Pointer to the folio.
-> + *
-> + * Returns true if folio is charged to a memory cgroup, otherwise returns false.
-> + */
-> +static inline bool folio_memcg_charged(struct folio *folio)
-> +{
-> +	if (folio_memcg_kmem(folio))
-> +		return __folio_objcg(folio) != NULL;
-> +	return __folio_memcg(folio) != NULL;
-> +}
-> +
->  /**
->   * folio_memcg_rcu - Locklessly get the memory cgroup associated with a folio.
->   * @folio: Pointer to the folio.
-> @@ -454,7 +467,6 @@ static inline struct mem_cgroup *folio_memcg_rcu(struct folio *folio)
->  	unsigned long memcg_data = READ_ONCE(folio->memcg_data);
->  
->  	VM_BUG_ON_FOLIO(folio_test_slab(folio), folio);
-> -	WARN_ON_ONCE(!rcu_read_lock_held());
->  
->  	if (memcg_data & MEMCG_DATA_KMEM) {
->  		struct obj_cgroup *objcg;
-> @@ -463,6 +475,8 @@ static inline struct mem_cgroup *folio_memcg_rcu(struct folio *folio)
->  		return obj_cgroup_memcg(objcg);
->  	}
->  
-> +	WARN_ON_ONCE(!rcu_read_lock_held());
-> +
->  	return (struct mem_cgroup *)(memcg_data & ~OBJEXTS_FLAGS_MASK);
->  }
->  
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 622d4544edd24..3da0284573857 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2366,7 +2366,7 @@ void mem_cgroup_cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
->  
->  static void commit_charge(struct folio *folio, struct mem_cgroup *memcg)
->  {
-> -	VM_BUG_ON_FOLIO(folio_memcg(folio), folio);
-> +	VM_BUG_ON_FOLIO(folio_memcg_charged(folio), folio);
->  	/*
->  	 * Any of the following ensures page's memcg stability:
->  	 *
-> @@ -4617,7 +4617,7 @@ void __mem_cgroup_uncharge(struct folio *folio)
->  	struct uncharge_gather ug;
->  
->  	/* Don't touch folio->lru of any random page, pre-check: */
-> -	if (!folio_memcg(folio))
-> +	if (!folio_memcg_charged(folio))
->  		return;
->  
->  	uncharge_gather_clear(&ug);
-> @@ -4662,7 +4662,7 @@ void mem_cgroup_replace_folio(struct folio *old, struct folio *new)
->  		return;
->  
->  	/* Page cache replacement: new folio already charged? */
-> -	if (folio_memcg(new))
-> +	if (folio_memcg_charged(new))
->  		return;
->  
->  	memcg = folio_memcg(old);
+>
+> > > @@ -775,6 +775,11 @@ struct cgroup_subsys {
+> > >
+> > >   extern struct percpu_rw_semaphore cgroup_threadgroup_rwsem;
+> > >
+> > > +struct cgroup_of_peak {
+> > > +   long                    value;
+> > > +   struct list_head        list;
+> > > +};
+> > The name "cgroup_of_peak" is kind of confusing. Maybe local_peak?
+>
+> It's the peak associated with an 'of' (which is a known concept in
+> cgroup code), and it pairs up nicely with of_peak(). I'd prefer
+> keeping that over local_peak.
+>
+> > > @@ -26,6 +26,7 @@ struct page_counter {
+> > >     atomic_long_t children_low_usage;
+> > >
+> > >     unsigned long watermark;
+> > > +   unsigned long local_watermark; /* track min of fd-local resets */
+> > track "min"? I thought it is used to track local maximum after a reset.
+>
+> Yeah, the comment doesn't sound quite right.
+Yeah, it's not explicitly the min. At reset-time, it's the current
+value at reset-time, and all the fd-local
+watermarks will all be greater than or equal.
+Which does effectively make it the min of watermarks at the time it's
+being set by the reset code.
 
+However, yeah, the page-charging code will increase it, which makes it
+not a min.
+
+>
+> However, I think we'd be hard-pressed to explain correctly and
+> comprehensively what this thing does in <40 characters.
+>
+> I'd just remove the comment tbh.
+Yeah, I definitely didn't think that comment through.
+Deleting.
+>
+> > > @@ -78,7 +79,10 @@ int page_counter_memparse(const char *buf, const c=
+har *max,
+> > >
+> > >   static inline void page_counter_reset_watermark(struct page_counter=
+ *counter)
+> > >   {
+> > > -   counter->watermark =3D page_counter_read(counter);
+> > > +   unsigned long usage =3D page_counter_read(counter);
+> > > +
+> > > +   counter->watermark =3D usage;
+> > > +   counter->local_watermark =3D usage;
+> > >   }
+> > >
+> >
+> > Could you set the local_watermark first before setting watermark? There
+> > is a very small time window that the invariant "local_watermark <=3D
+> > watermark" is not true.
+>
+> Does it matter? Only cgroup1 supports global resets; only cgroup2
+> supports local peaks watching. This doesn't add anything to the race
+> that already exists between reset and global watermark update on cg1.
+>
+Hmm, since the global watermark update is now conditional on both watermark=
+s
+being <=3D the current usage, it does make sense.
+Witht that said, since we're assigning without any barriers, as-is,
+the CPU and compiler are quite free to re-order them anyway.
+
+I've swapped them and added a comment.
+> > > @@ -3950,12 +3955,90 @@ static u64 memory_current_read(struct cgroup_=
+subsys_state *css,
+> > >     return (u64)page_counter_read(&memcg->memory) * PAGE_SIZE;
+> > >   }
+> > >
+> > > -static u64 memory_peak_read(struct cgroup_subsys_state *css,
+> > > -                       struct cftype *cft)
+> > > +static int peak_show(struct seq_file *sf, void *v, struct page_count=
+er *pc)
+> > >   {
+> > > -   struct mem_cgroup *memcg =3D mem_cgroup_from_css(css);
+> > > +   struct cgroup_of_peak *ofp =3D of_peak(sf->private);
+> > > +   s64 fd_peak =3D ofp->value, peak;
+> > > +
+> > > +   /* User wants global or local peak? */
+> > > +   if (fd_peak =3D=3D -1)
+> > > +           peak =3D pc->watermark;
+> > > +   else
+> > > +           peak =3D max(fd_peak, (s64)pc->local_watermark);
+> > Should you save the local_watermark value into ofp->value if
+> > local_watermark is bigger? This will ensure that each successive read o=
+f
+> > the fd is monotonically increasing. Otherwise the value may go up or
+> > down if there are multiple resets in between.
+>
+> The reset saves local_watermark into ofp->value if it's bigger..?
+>
+> I do see another problem, though. The compiler might issue multiple
+> reads to ofp->value in arbitrary order. We could print max(-1, ...)
+> which is nonsense. Saving ofp->value into a local variable is the
+> right idea, but the compiler might still issue two reads anyway. It
+> needs a READ_ONCE() to force a single read.
+Thanks, I didn't realize the compiler had the latitude to decide to
+read from that
+struct field a second time when referencing the local variable.
+
+Added.
+>
+> I'd use unsigned long for fd_peak. This way the "specialness" is on
+> the -1UL comparison. The max() must be between two positive numbers,
+> so the (s64) there is confusing.
+I've switched fd_peak to `u64`.
+
+Thanks again,
+
+--
+David Finkel
+Senior Principal Software Engineer, Core Services
 
