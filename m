@@ -1,52 +1,58 @@
-Return-Path: <cgroups+bounces-3878-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3879-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 753D493AFDD
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 12:31:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EDAF93B01C
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 13:09:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF2131C2237D
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 10:31:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB0ED282FE5
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 11:09:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB29415099A;
-	Wed, 24 Jul 2024 10:31:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47032156967;
+	Wed, 24 Jul 2024 11:09:36 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from mail115-24.sinamail.sina.com.cn (mail115-24.sinamail.sina.com.cn [218.30.115.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58AB1C6A3;
-	Wed, 24 Jul 2024 10:31:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 011A62595
+	for <cgroups@vger.kernel.org>; Wed, 24 Jul 2024 11:09:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721817094; cv=none; b=h+vleaqLP8menq+Y8VTkgXeyXKWVJafWKbayV9v/ZrFmR0/gjVG+sgxDDyJ0vcv//SQcvxTnChsrInh5s2hSs5ciMjOXlgedNRaeebDkGLhMqA3oPlJ79XqjJBNoMr+RGQ3YuJ5P0FSdEHd+nqauVmTLOuL8QYKK2qqT0QVJZ6s=
+	t=1721819376; cv=none; b=fGkGsUQDmBdah+SVzS/PDQHraNDiJrPXjE4urAXUWosQ6mUa4/IwHAdGlYEmLRxnr3RaGDHx1MMKR+5a2q9RGD4rJEWHhPzWUomP4TBpJz8HX4OWY9vBQW6g7nBTVlOiAguVG0t3GqIJwH8qVvq3WVrwhab5RczkPgFOQ3gqVDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721817094; c=relaxed/simple;
-	bh=w0wktJIDPkZ5XL009t7kRPm6AfiMdDyu0W+392dIUvk=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=smKWoPmj17LkcPuPUFTpXqK9djs8w/4o+sPqWHUp0US1CjwY/M2TMAzLlb7kS1oLvT0Ewl1rzmXlCe85Y8gvPqXhfF2uRsiz3ZM9sWM9chEZffW1Vwrw58ti7ZI9l1TIoh6mA7j1AGBXqqQt43Mje/UkFgdWj598INFdeF5PR2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4WTVZF4mFXzQmDN;
-	Wed, 24 Jul 2024 18:27:17 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id D5CD8180100;
-	Wed, 24 Jul 2024 18:31:28 +0800 (CST)
-Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Wed, 24 Jul
- 2024 18:31:28 +0800
-From: Chen Ridong <chenridong@huawei.com>
-To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
-	<longman@redhat.com>, <adityakali@google.com>, <sergeh@kernel.org>,
-	<mkoutny@suse.com>
-CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 -next] cgroup/cpuset: remove child_ecpus_count
-Date: Wed, 24 Jul 2024 10:24:18 +0000
-Message-ID: <20240724102418.2213801-1-chenridong@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1721819376; c=relaxed/simple;
+	bh=oCBu+tALEqoFMR5TeQaavc+3AeBXIoz+D/GHlEzjLAA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ApjlqzKmPYcCC5CCKcF2IYEnlAxtjJpuYthXN48WjU01kS5BfQDD5upsvakjR1NN/+v5QvDjBQV4LVi7og/De0cH5IUD4+sZiBlscW+UOhmq0tedF+USmUJclelq4VG+A29LA4jiLzi8ouh3Jz/3RUsqwBA8iU/oQ6xeom+rhvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.65.159])
+	by sina.com (10.185.250.22) with ESMTP
+	id 66A0E0B90000162A; Wed, 24 Jul 2024 19:08:44 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 3186927602718
+X-SMAIL-UIID: 236FD2331CA04DD1A0CDFFA64C3113AA-20240724-190844-1
+From: Hillf Danton <hdanton@sina.com>
+To: Chen Ridong <chenridong@huawei.com>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>,
+	tj@kernel.org,
+	bpf@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -v2] cgroup: fix deadlock caused by cgroup_mutex and cpu_hotplug_lock
+Date: Wed, 24 Jul 2024 19:08:34 +0800
+Message-Id: <20240724110834.2010-1-hdanton@sina.com>
+In-Reply-To: <20240719025232.2143638-1-chenridong@huawei.com>
+References: 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -54,98 +60,92 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemd100013.china.huawei.com (7.221.188.163)
 
-The child_ecpus_count variable was previously used to update
-sibling cpumask when parent's effective_cpus is updated. However, it became
-obsolete after commit e2ffe502ba45 ("cgroup/cpuset: Add
-cpuset.cpus.exclusive for v2"). It should be removed.
+On Fri, 19 Jul 2024 02:52:32 +0000 Chen Ridong <chenridong@huawei.com>
+> We found a hung_task problem as shown below:
+> 
+> INFO: task kworker/0:0:8 blocked for more than 327 seconds.
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:kworker/0:0     state:D stack:13920 pid:8     ppid:2       flags:0x00004000
+> Workqueue: events cgroup_bpf_release
+> Call Trace:
+>  <TASK>
+>  __schedule+0x5a2/0x2050
+>  ? find_held_lock+0x33/0x100
+>  ? wq_worker_sleeping+0x9e/0xe0
+>  schedule+0x9f/0x180
+>  schedule_preempt_disabled+0x25/0x50
+>  __mutex_lock+0x512/0x740
+>  ? cgroup_bpf_release+0x1e/0x4d0
+>  ? cgroup_bpf_release+0xcf/0x4d0
+>  ? process_scheduled_works+0x161/0x8a0
+>  ? cgroup_bpf_release+0x1e/0x4d0
+>  ? mutex_lock_nested+0x2b/0x40
+>  ? __pfx_delay_tsc+0x10/0x10
+>  mutex_lock_nested+0x2b/0x40
+>  cgroup_bpf_release+0xcf/0x4d0
+>  ? process_scheduled_works+0x161/0x8a0
+>  ? trace_event_raw_event_workqueue_execute_start+0x64/0xd0
+>  ? process_scheduled_works+0x161/0x8a0
+>  process_scheduled_works+0x23a/0x8a0
+>  worker_thread+0x231/0x5b0
+>  ? __pfx_worker_thread+0x10/0x10
+>  kthread+0x14d/0x1c0
+>  ? __pfx_kthread+0x10/0x10
+>  ret_from_fork+0x59/0x70
+>  ? __pfx_kthread+0x10/0x10
+>  ret_from_fork_asm+0x1b/0x30
+>  </TASK>
+> 
+> This issue can be reproduced by the following methods:
+> 1. A large number of cpuset cgroups are deleted.
+> 2. Set cpu on and off repeatly.
+> 3. Set watchdog_thresh repeatly.
+> 
+> The reason for this issue is cgroup_mutex and cpu_hotplug_lock are
+> acquired in different tasks, which may lead to deadlock.
+> It can lead to a deadlock through the following steps:
+> 1. A large number of cgroups are deleted, which will put a large
+>    number of cgroup_bpf_release works into system_wq. The max_active
+>    of system_wq is WQ_DFL_ACTIVE(256). When cgroup_bpf_release can not
+>    get cgroup_metux, it may cram system_wq, and it will block work
+>    enqueued later.
+> 2. Setting watchdog_thresh will hold cpu_hotplug_lock.read and put
+>    smp_call_on_cpu work into system_wq. However it may be blocked by
+>    step 1.
+> 3. Cpu offline requires cpu_hotplug_lock.write, which is blocked by step 2.
+> 4. When a cpuset is deleted, cgroup release work is placed on
+>    cgroup_destroy_wq, it will hold cgroup_metux and acquire
+>    cpu_hotplug_lock.read. Acquiring cpu_hotplug_lock.read is blocked by
+>    cpu_hotplug_lock.write as mentioned by step 3. Finally, it forms a
+>    loop and leads to a deadlock.
+> 
+> cgroup_destroy_wq(step4)	cpu offline(step3)		WatchDog(step2)			system_wq(step1)
+> 												......
+> 								__lockup_detector_reconfigure:
+> 								P(cpu_hotplug_lock.read)
+> 								...
+> 				...
+> 				percpu_down_write:
+> 				P(cpu_hotplug_lock.write)
+> 												...256+ works
+> 												cgroup_bpf_release:
+> 												P(cgroup_mutex)
+> 								smp_call_on_cpu:
+> 								Wait system_wq
+> ...
+> css_killed_work_fn:
+> P(cgroup_mutex)
+> ...
+> cpuset_css_offline:
+> P(cpu_hotplug_lock.read) 
+>
+	worker_thread()
+	manage_workers()
+	maybe_create_worker()
+	create_worker() // has nothing to do with WQ_DFL_ACTIVE
+	process_scheduled_works()
 
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- kernel/cgroup/cpuset.c | 25 ++++---------------------
- 1 file changed, 4 insertions(+), 21 deletions(-)
-
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 40ec4abaf440..d4322619e59a 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -188,10 +188,8 @@ struct cpuset {
- 	/*
- 	 * Default hierarchy only:
- 	 * use_parent_ecpus - set if using parent's effective_cpus
--	 * child_ecpus_count - # of children with use_parent_ecpus set
- 	 */
- 	int use_parent_ecpus;
--	int child_ecpus_count;
- 
- 	/*
- 	 * number of SCHED_DEADLINE tasks attached to this cpuset, so that we
-@@ -1512,7 +1510,6 @@ static void reset_partition_data(struct cpuset *cs)
- 	if (!cpumask_and(cs->effective_cpus,
- 			 parent->effective_cpus, cs->cpus_allowed)) {
- 		cs->use_parent_ecpus = true;
--		parent->child_ecpus_count++;
- 		cpumask_copy(cs->effective_cpus, parent->effective_cpus);
- 	}
- }
-@@ -1688,12 +1685,8 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
- 	spin_lock_irq(&callback_lock);
- 	isolcpus_updated = partition_xcpus_add(new_prs, NULL, tmp->new_cpus);
- 	list_add(&cs->remote_sibling, &remote_children);
--	if (cs->use_parent_ecpus) {
--		struct cpuset *parent = parent_cs(cs);
--
-+	if (cs->use_parent_ecpus)
- 		cs->use_parent_ecpus = false;
--		parent->child_ecpus_count--;
--	}
- 	spin_unlock_irq(&callback_lock);
- 	update_unbound_workqueue_cpumask(isolcpus_updated);
- 
-@@ -2318,15 +2311,10 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp,
- 		 */
- 		if (is_in_v2_mode() && !remote && cpumask_empty(tmp->new_cpus)) {
- 			cpumask_copy(tmp->new_cpus, parent->effective_cpus);
--			if (!cp->use_parent_ecpus) {
-+			if (!cp->use_parent_ecpus)
- 				cp->use_parent_ecpus = true;
--				parent->child_ecpus_count++;
--			}
--		} else if (cp->use_parent_ecpus) {
-+		} else if (cp->use_parent_ecpus)
- 			cp->use_parent_ecpus = false;
--			WARN_ON_ONCE(!parent->child_ecpus_count);
--			parent->child_ecpus_count--;
--		}
- 
- 		if (remote)
- 			goto get_css;
-@@ -4139,7 +4127,6 @@ static int cpuset_css_online(struct cgroup_subsys_state *css)
- 		cpumask_copy(cs->effective_cpus, parent->effective_cpus);
- 		cs->effective_mems = parent->effective_mems;
- 		cs->use_parent_ecpus = true;
--		parent->child_ecpus_count++;
- 	}
- 	spin_unlock_irq(&callback_lock);
- 
-@@ -4205,12 +4192,8 @@ static void cpuset_css_offline(struct cgroup_subsys_state *css)
- 	    is_sched_load_balance(cs))
- 		update_flag(CS_SCHED_LOAD_BALANCE, cs, 0);
- 
--	if (cs->use_parent_ecpus) {
--		struct cpuset *parent = parent_cs(cs);
--
-+	if (cs->use_parent_ecpus)
- 		cs->use_parent_ecpus = false;
--		parent->child_ecpus_count--;
--	}
- 
- 	cpuset_dec();
- 	clear_bit(CS_ONLINE, &cs->flags);
--- 
-2.34.1
-
+Given idle worker created independent of WQ_DFL_ACTIVE before handling
+work item, no deadlock could rise in your scenario above.
 
