@@ -1,184 +1,188 @@
-Return-Path: <cgroups+bounces-3880-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3881-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55D7593B0B3
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 13:49:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D6E293B37D
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 17:20:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 720031C21289
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 11:49:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77B40B21A4B
+	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 15:20:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2BA7156F28;
-	Wed, 24 Jul 2024 11:49:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB19D15956C;
+	Wed, 24 Jul 2024 15:20:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="NGiOWrAu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="foq0aGZe"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18EC315575F
-	for <cgroups@vger.kernel.org>; Wed, 24 Jul 2024 11:49:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B52D29E;
+	Wed, 24 Jul 2024 15:20:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721821754; cv=none; b=mcMA8w56HQHuvTfcr6neLzcNxdL2GrdkYMuhLecZSTTgqqgXFyT+Ll+FA0+w050GNj2NxCqhr6JllJBp4HsdmThpiUdqYR9k1dThE1mHX5Pa5FPmm9IPE2JR/YKwJalFleS7rQyFaN8pu10ZpCCzFRJhaREVco1lCfA7UXpBlo0=
+	t=1721834415; cv=none; b=D5r+uEcgeJSfpkuhf7r3StpWglny+Zpuz7aTdYJRSZuc6LmfhM0I/FZEeNJdaXKscIaOBAZbFgMeF2D5/JhW5ONaeIVL1+zkt3zlDzRfc4eDPomhPAs5hG0dgVGPqpnBgoCzUrhnvreTrZwEJB+v2jTecIOw4jaLKRPk7HuNnOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721821754; c=relaxed/simple;
-	bh=q5BNZZnYXCfz5BQs4aahSBIwit5DV28WbPMtKTqD8JI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WQwx9YcNGE+1Xk6yObZhSKlhTBtZp96sYIPGHONXkZNPeJbZsrdqtFAg8dvBoiOQyvgXcRww9IJoKIqL3Lrm/0MURtrO8P65+CimxwrI+4sG9JrNJ+ecv4H7WRBC4NAm/zTg2TJ04Ye0Hzjn5+DoGv5/SO7dFqsRD0PE4SyzGa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=NGiOWrAu; arc=none smtp.client-ip=209.85.222.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-79f1b569ab7so308064385a.3
-        for <cgroups@vger.kernel.org>; Wed, 24 Jul 2024 04:49:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1721821751; x=1722426551; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2AZJKrk8iITWmBZL5VKywEjtBZAHwrNAU5Vz8WqNcz8=;
-        b=NGiOWrAuyPKKBkVypFAkC8EbtbMdPeKi+kyPu6ibaQgF3oJEtIW4rMEEayeqj8QGVH
-         WKiCxiZFwo90fsVrp629GvKXhbDsDRkCQfMftZ064sRcrMu1gmNsKjGR8eqEHssxu5xE
-         yU/lc19SOTbXixogxf8AvtvEptODA35uK5fPcJsMslfHAT9i3OVIRz5FlBf7wDTqBiZT
-         1rE/1UiPaCrGDhW1/gJXK/4D2Y31SI2M/2c+jP9Ds+LnKYEDOZtt5eQ325J8SYPjOV8V
-         vrnORsc7sTBrw7PChCvkDQwd1GFYxCguq3oyVbroFwGhAYH4qIAB7oO3gtBQSVnMggDr
-         4gIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721821751; x=1722426551;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2AZJKrk8iITWmBZL5VKywEjtBZAHwrNAU5Vz8WqNcz8=;
-        b=QR+R+gSoXKDjsRxihXxdeUuDc3XirhbuxtjPyUPbaltSMILfnZ3YP6LTJBuWjSDSzV
-         ofn6HDnZpYa6CDjTNQYYf98rNPA0TZBWHEja3ZJMsh/Y610BhcElXEs6sVucOolducQy
-         Imff9FCWSeUXYNLryTpI26aGUubQfI7wvqqgPZEJG1mSacQMoJjZKmoqAR5QqonRyUbF
-         EEaZ8N4W5GzkbD9bVd8XsFp5wCwc4G91R8Ivl+psZrCB+Fkxz8qakKVckpyijsnXLdxR
-         wPG2l9t6nOZhc3svuFy48O35oZraGyUkgMrh4aaqUM99suCVFF3s19z53lSyA/ACp36i
-         cWMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVzxYJHShtkqwQj3K+Ii1dxk/aZr3ve5MqQsUD7Pw1rDL9TpYFjgfwU8R/bXWWJbc8dEl/LMK0vpEH55wvexp+uxN9ekN/DPw==
-X-Gm-Message-State: AOJu0YyJ5Xparm+2Qs3lrEeHSOovAKjd9ojR6H+7qj/9v1cucrf+ECMI
-	uK+syOc3BfXHIcxKclIwAFBQN2p4fVwBhUlmRqIU66I8mY+bpXO3xdX5+lO/Jfs=
-X-Google-Smtp-Source: AGHT+IH+ncWONYNFlORvxZR9kiEz5v28cZwt8KEfLHZR4owEBgNh00LBs1VgQWphxGekAbR+pUmsXg==
-X-Received: by 2002:a05:620a:4548:b0:79f:8a7:eb87 with SMTP id af79cd13be357-7a1a1344844mr1567340085a.42.1721821750783;
-        Wed, 24 Jul 2024 04:49:10 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a19907a6b2sm571074685a.101.2024.07.24.04.49.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jul 2024 04:49:10 -0700 (PDT)
-Date: Wed, 24 Jul 2024 07:49:05 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Waiman Long <longman@redhat.com>
-Cc: David Finkel <davidf@vimeo.com>, Muchun Song <muchun.song@linux.dev>,
-	Tejun Heo <tj@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>, core-services@vimeo.com,
-	Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Shuah Khan <shuah@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm, memcg: cg2 memory{.swap,}.peak write handlers
-Message-ID: <20240724114905.GB389003@cmpxchg.org>
-References: <20240723233149.3226636-1-davidf@vimeo.com>
- <20240723233149.3226636-2-davidf@vimeo.com>
- <22a95c76-4e9e-482e-b95d-cb0f01971d98@redhat.com>
+	s=arc-20240116; t=1721834415; c=relaxed/simple;
+	bh=qeXLUpoZGsZRPbAT3HnF46SuxY7YTRrZMXLruO62MZ4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Me19OrlCEfYzutpeWH/QfKoGTItNx7KbFeKIpDZJfRZjrvgxWj2QRKSRE5jPm62cWre9Z3/0LqyH0kjXxRdJVcJoZyy6CFR2QGMDbK/dCPZgJVWS0uKLn1UFSPJizzJfyZUyM7WHqYaD0NGsUBec7j8EaZDlfTvGBvUaj927CKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=foq0aGZe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D6D3C32781;
+	Wed, 24 Jul 2024 15:20:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721834415;
+	bh=qeXLUpoZGsZRPbAT3HnF46SuxY7YTRrZMXLruO62MZ4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=foq0aGZehOfXyqCf95kJdLCejTjAEe6euW8dlRJJ7u9hGgh36hPbajH3m3Suml4LV
+	 z61gO5OonvF224YmrWKT1dYlX1XAI9bZezjUI1jfVVqUwY0zGPvG/kP8ttPu6VOokS
+	 JxfEX1hGt9bq1tbyACJJi4J+fCwrXPziPYtniQ+HUUSWstnFvwG4x7L15Ec36jyO5u
+	 itQ87DTpaNObbcl+W8KnQuLwyng0WIngITLq/J4qvh6TScZSsWmTPYSS3OxKkAOvwq
+	 lpFkpGr8FTJXHPniV87OFfsML7dm5u2ppm6NkzcnH964YfzNxuIKgVNohknyOXu2jw
+	 rGxJomXCH6pPw==
+Message-ID: <610dc6fa-6681-4c9e-bffb-ef6d299dd169@kernel.org>
+Date: Wed, 24 Jul 2024 17:20:09 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <22a95c76-4e9e-482e-b95d-cb0f01971d98@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm: kmem: add lockdep assertion to obj_cgroup_memcg
+Content-Language: en-US
+To: Muchun Song <songmuchun@bytedance.com>, hannes@cmpxchg.org,
+ mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+ muchun.song@linux.dev, akpm@linux-foundation.org
+Cc: cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240724095307.81264-1-songmuchun@bytedance.com>
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+In-Reply-To: <20240724095307.81264-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jul 23, 2024 at 09:55:19PM -0400, Waiman Long wrote:
-> Could you use the "-v <n>" option of git-format-patch to add a version 
-> number to the patch title? Without that, it can be confusing as to 
-> whether the patch is new or a resend of the previous one.
-
-+1
-
-> > @@ -775,6 +775,11 @@ struct cgroup_subsys {
-> >   
-> >   extern struct percpu_rw_semaphore cgroup_threadgroup_rwsem;
-> >   
-> > +struct cgroup_of_peak {
-> > +	long			value;
-> > +	struct list_head	list;
-> > +};
-> The name "cgroup_of_peak" is kind of confusing. Maybe local_peak?
-
-It's the peak associated with an 'of' (which is a known concept in
-cgroup code), and it pairs up nicely with of_peak(). I'd prefer
-keeping that over local_peak.
-
-> > @@ -26,6 +26,7 @@ struct page_counter {
-> >   	atomic_long_t children_low_usage;
-> >   
-> >   	unsigned long watermark;
-> > +	unsigned long local_watermark; /* track min of fd-local resets */
-> track "min"? I thought it is used to track local maximum after a reset.
-
-Yeah, the comment doesn't sound quite right.
-
-However, I think we'd be hard-pressed to explain correctly and
-comprehensively what this thing does in <40 characters.
-
-I'd just remove the comment tbh.
-
-> > @@ -78,7 +79,10 @@ int page_counter_memparse(const char *buf, const char *max,
-> >   
-> >   static inline void page_counter_reset_watermark(struct page_counter *counter)
-> >   {
-> > -	counter->watermark = page_counter_read(counter);
-> > +	unsigned long usage = page_counter_read(counter);
-> > +
-> > +	counter->watermark = usage;
-> > +	counter->local_watermark = usage;
-> >   }
-> >   
+On 7/24/24 11:53 AM, Muchun Song wrote:
+> The obj_cgroup_memcg() is supposed to safe to prevent the returned
+> memory cgroup from being freed only when the caller is holding the
+> rcu read lock or objcg_lock or cgroup_mutex. It is very easy to
+> ignore thoes conditions when users call some upper APIs which call
+> obj_cgroup_memcg() internally like mem_cgroup_from_slab_obj() (See
+> the link below). So it is better to add lockdep assertion to
+> obj_cgroup_memcg() to find those issues ASAP.
 > 
-> Could you set the local_watermark first before setting watermark? There 
-> is a very small time window that the invariant "local_watermark <= 
-> watermark" is not true.
+> Because there is no user of obj_cgroup_memcg() holding objcg_lock
+> to make the returned memory cgroup safe, do not add objcg_lock
+> assertion (We should export objcg_lock if we really want to do).
+> Additionally, this is some internal implementation detail of memcg
+> and should not be accessible outside memcg code.
+> 
+> Some users like __mem_cgroup_uncharge() do not care the lifetime
+> of the returned memory cgroup, which just want to know if the
+> folio is charged to a memory cgroup, therefore, they do not need
+> to hold the needed locks. In which case, introduce a new helper
+> folio_memcg_charged() to do this. Compare it to folio_memcg(), it
+> could eliminate a memory access of objcg->memcg for kmem, actually,
+> a really small gain.
+> 
+> Link: https://lore.kernel.org/all/20240718083607.42068-1-songmuchun@bytedance.com/
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+> v2:
+>  - Remove mention of objcg_lock in obj_cgroup_memcg()(Shakeel Butt).
+> 
+>  include/linux/memcontrol.h | 20 +++++++++++++++++---
+>  mm/memcontrol.c            |  6 +++---
+>  2 files changed, 20 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index fc94879db4dff..742351945f683 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -360,11 +360,11 @@ static inline bool folio_memcg_kmem(struct folio *folio);
+>   * After the initialization objcg->memcg is always pointing at
+>   * a valid memcg, but can be atomically swapped to the parent memcg.
+>   *
+> - * The caller must ensure that the returned memcg won't be released:
+> - * e.g. acquire the rcu_read_lock or css_set_lock.
+> + * The caller must ensure that the returned memcg won't be released.
+>   */
+>  static inline struct mem_cgroup *obj_cgroup_memcg(struct obj_cgroup *objcg)
+>  {
+> +	WARN_ON_ONCE(!rcu_read_lock_held() && !lockdep_is_held(&cgroup_mutex));
 
-Does it matter? Only cgroup1 supports global resets; only cgroup2
-supports local peaks watching. This doesn't add anything to the race
-that already exists between reset and global watermark update on cg1.
+Maybe lockdep_assert_once() would be a better fit?
 
-> > @@ -3950,12 +3955,90 @@ static u64 memory_current_read(struct cgroup_subsys_state *css,
-> >   	return (u64)page_counter_read(&memcg->memory) * PAGE_SIZE;
-> >   }
-> >   
-> > -static u64 memory_peak_read(struct cgroup_subsys_state *css,
-> > -			    struct cftype *cft)
-> > +static int peak_show(struct seq_file *sf, void *v, struct page_counter *pc)
-> >   {
-> > -	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-> > +	struct cgroup_of_peak *ofp = of_peak(sf->private);
-> > +	s64 fd_peak = ofp->value, peak;
-> > +
-> > +	/* User wants global or local peak? */
-> > +	if (fd_peak == -1)
-> > +		peak = pc->watermark;
-> > +	else
-> > +		peak = max(fd_peak, (s64)pc->local_watermark);
-> Should you save the local_watermark value into ofp->value if 
-> local_watermark is bigger? This will ensure that each successive read of 
-> the fd is monotonically increasing. Otherwise the value may go up or 
-> down if there are multiple resets in between.
+>  	return READ_ONCE(objcg->memcg);
+>  }
+>  
+> @@ -438,6 +438,19 @@ static inline struct mem_cgroup *folio_memcg(struct folio *folio)
+>  	return __folio_memcg(folio);
+>  }
+>  
+> +/*
+> + * folio_memcg_charged - If a folio is charged to a memory cgroup.
+> + * @folio: Pointer to the folio.
+> + *
+> + * Returns true if folio is charged to a memory cgroup, otherwise returns false.
+> + */
+> +static inline bool folio_memcg_charged(struct folio *folio)
+> +{
+> +	if (folio_memcg_kmem(folio))
+> +		return __folio_objcg(folio) != NULL;
+> +	return __folio_memcg(folio) != NULL;
+> +}
+> +
+>  /**
+>   * folio_memcg_rcu - Locklessly get the memory cgroup associated with a folio.
+>   * @folio: Pointer to the folio.
+> @@ -454,7 +467,6 @@ static inline struct mem_cgroup *folio_memcg_rcu(struct folio *folio)
+>  	unsigned long memcg_data = READ_ONCE(folio->memcg_data);
+>  
+>  	VM_BUG_ON_FOLIO(folio_test_slab(folio), folio);
+> -	WARN_ON_ONCE(!rcu_read_lock_held());
+>  
+>  	if (memcg_data & MEMCG_DATA_KMEM) {
+>  		struct obj_cgroup *objcg;
+> @@ -463,6 +475,8 @@ static inline struct mem_cgroup *folio_memcg_rcu(struct folio *folio)
+>  		return obj_cgroup_memcg(objcg);
+>  	}
+>  
+> +	WARN_ON_ONCE(!rcu_read_lock_held());
+> +
+>  	return (struct mem_cgroup *)(memcg_data & ~OBJEXTS_FLAGS_MASK);
+>  }
+>  
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 622d4544edd24..3da0284573857 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2366,7 +2366,7 @@ void mem_cgroup_cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
+>  
+>  static void commit_charge(struct folio *folio, struct mem_cgroup *memcg)
+>  {
+> -	VM_BUG_ON_FOLIO(folio_memcg(folio), folio);
+> +	VM_BUG_ON_FOLIO(folio_memcg_charged(folio), folio);
+>  	/*
+>  	 * Any of the following ensures page's memcg stability:
+>  	 *
+> @@ -4617,7 +4617,7 @@ void __mem_cgroup_uncharge(struct folio *folio)
+>  	struct uncharge_gather ug;
+>  
+>  	/* Don't touch folio->lru of any random page, pre-check: */
+> -	if (!folio_memcg(folio))
+> +	if (!folio_memcg_charged(folio))
+>  		return;
+>  
+>  	uncharge_gather_clear(&ug);
+> @@ -4662,7 +4662,7 @@ void mem_cgroup_replace_folio(struct folio *old, struct folio *new)
+>  		return;
+>  
+>  	/* Page cache replacement: new folio already charged? */
+> -	if (folio_memcg(new))
+> +	if (folio_memcg_charged(new))
+>  		return;
+>  
+>  	memcg = folio_memcg(old);
 
-The reset saves local_watermark into ofp->value if it's bigger..?
-
-I do see another problem, though. The compiler might issue multiple
-reads to ofp->value in arbitrary order. We could print max(-1, ...)
-which is nonsense. Saving ofp->value into a local variable is the
-right idea, but the compiler might still issue two reads anyway. It
-needs a READ_ONCE() to force a single read.
-
-I'd use unsigned long for fd_peak. This way the "specialness" is on
-the -1UL comparison. The max() must be between two positive numbers,
-so the (s64) there is confusing.
 
