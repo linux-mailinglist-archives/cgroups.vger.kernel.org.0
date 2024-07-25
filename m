@@ -1,119 +1,174 @@
-Return-Path: <cgroups+bounces-3888-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3889-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C4AE93B929
-	for <lists+cgroups@lfdr.de>; Thu, 25 Jul 2024 00:38:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 078F793BA68
+	for <lists+cgroups@lfdr.de>; Thu, 25 Jul 2024 03:48:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C39928559C
-	for <lists+cgroups@lfdr.de>; Wed, 24 Jul 2024 22:38:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2698284195
+	for <lists+cgroups@lfdr.de>; Thu, 25 Jul 2024 01:48:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79A3413CA8D;
-	Wed, 24 Jul 2024 22:38:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rzRNgrUt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 794B56FB8;
+	Thu, 25 Jul 2024 01:48:50 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 754EB200B7
-	for <cgroups@vger.kernel.org>; Wed, 24 Jul 2024 22:38:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD415567F;
+	Thu, 25 Jul 2024 01:48:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721860731; cv=none; b=JFctRqoVbuWYOtw2RZFHVvFY+9Hl0NUmDVpIqWXoMhi5PZ84SzoFjQyqRiaOfsFVY0PIaelWUCllkkyJKxRx7x9Ixt6i+ckh2uHm+Qaqd35NKBpDEZc/SxquYIsoY7wv7glQU5mcBfKAOYbRf7ELVl5260SHDR2UnavuDqdZyt8=
+	t=1721872130; cv=none; b=d7MJcysbLxP83VDeizsWkIJN9dJOjk2fWP8nynKMPw7CZQz6HcUbEhSi75CuklQGmc0qIPb5yaAzVRMOQ8gyNa0skZTzwMuO5/1UlkDvrcE6UBXEoOHgg20jE8yI5cyjGwPfplv/sFcCPcLyc1JwKURXKp+hNJubfeBDylYCg9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721860731; c=relaxed/simple;
-	bh=G1cvcVivMUdlgb85diYQo5+jyRv2eMTLJYL/jByZQPQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ww52juR8HnTPuD9SbV7OWZAv84dBReOT18z0PtWkPZFY76Z/6GLQ/PhuR60B0FMDlFfapgGQQSQG6g+j7AuqfqBH669+syVAf7YiiLda+GJNNM733RCGg1+OEiieijY+88Iwlbqq+ALThWnvc2O4KGf96llCe65fF5DAA54fdoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rzRNgrUt; arc=none smtp.client-ip=91.218.175.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 24 Jul 2024 22:38:43 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721860727;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Fa12xhcwGYWhKFU8YlB18e+bkbQbKpTyxv5JolLajyI=;
-	b=rzRNgrUta71PEusaTqtjES9ZeQ2BsHFx5T0w/qmy0FzuUvsUQrlE1gMAhDgUM1RdPfbsGa
-	eio+MV6v96WLahF445gldpaoeRQz6TJdZNQZvQEDSmP5cSJ5bHpaPiXadDBDbNsHfRU+df
-	AAmuKB+h+0dUE702S4EynQXbJLeF23Q=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Cc: Muchun Song <songmuchun@bytedance.com>, hannes@cmpxchg.org,
-	mhocko@kernel.org, shakeel.butt@linux.dev, muchun.song@linux.dev,
-	akpm@linux-foundation.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm: kmem: add lockdep assertion to obj_cgroup_memcg
-Message-ID: <ZqGCc5EjtBGGZMD5@google.com>
-References: <20240724095307.81264-1-songmuchun@bytedance.com>
- <610dc6fa-6681-4c9e-bffb-ef6d299dd169@kernel.org>
+	s=arc-20240116; t=1721872130; c=relaxed/simple;
+	bh=ZOqUap9ZIFAa0oA5dK3qqGY70Hb+gcTYUSfSf/CUZ1o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=llQTy+ctgwb4Nhvg+v8lmmhSOcTG8l4XaY9a3NAvpMwPm+vhgtWgvvaMKOWbd6rZvedDStjPdpRyyf5FQf7QaSy4vmwS8YOhlA4LBR+2bYQItiYCM9rTZxy5PS5x6MwICOGg8+Xi1v4emQna24Q3xjEWKH6oqPz87nsYq/R9+tU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WTtzG4NRDzMqrD;
+	Thu, 25 Jul 2024 09:46:50 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0A70D180088;
+	Thu, 25 Jul 2024 09:48:38 +0800 (CST)
+Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Thu, 25 Jul
+ 2024 09:48:37 +0800
+Message-ID: <53ed023b-c86c-498a-b1fc-2b442059f6af@huawei.com>
+Date: Thu, 25 Jul 2024 09:48:36 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <610dc6fa-6681-4c9e-bffb-ef6d299dd169@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -v2] cgroup: fix deadlock caused by cgroup_mutex and
+ cpu_hotplug_lock
+To: Hillf Danton <hdanton@sina.com>
+CC: Roman Gushchin <roman.gushchin@linux.dev>, <tj@kernel.org>,
+	<bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240724110834.2010-1-hdanton@sina.com>
+Content-Language: en-US
+From: chenridong <chenridong@huawei.com>
+In-Reply-To: <20240724110834.2010-1-hdanton@sina.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
-On Wed, Jul 24, 2024 at 05:20:09PM +0200, Vlastimil Babka (SUSE) wrote:
-> On 7/24/24 11:53 AM, Muchun Song wrote:
-> > The obj_cgroup_memcg() is supposed to safe to prevent the returned
-> > memory cgroup from being freed only when the caller is holding the
-> > rcu read lock or objcg_lock or cgroup_mutex. It is very easy to
-> > ignore thoes conditions when users call some upper APIs which call
-> > obj_cgroup_memcg() internally like mem_cgroup_from_slab_obj() (See
-> > the link below). So it is better to add lockdep assertion to
-> > obj_cgroup_memcg() to find those issues ASAP.
-> > 
-> > Because there is no user of obj_cgroup_memcg() holding objcg_lock
-> > to make the returned memory cgroup safe, do not add objcg_lock
-> > assertion (We should export objcg_lock if we really want to do).
-> > Additionally, this is some internal implementation detail of memcg
-> > and should not be accessible outside memcg code.
-> > 
-> > Some users like __mem_cgroup_uncharge() do not care the lifetime
-> > of the returned memory cgroup, which just want to know if the
-> > folio is charged to a memory cgroup, therefore, they do not need
-> > to hold the needed locks. In which case, introduce a new helper
-> > folio_memcg_charged() to do this. Compare it to folio_memcg(), it
-> > could eliminate a memory access of objcg->memcg for kmem, actually,
-> > a really small gain.
-> > 
-> > Link: https://lore.kernel.org/all/20240718083607.42068-1-songmuchun@bytedance.com/
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> > v2:
-> >  - Remove mention of objcg_lock in obj_cgroup_memcg()(Shakeel Butt).
-> > 
-> >  include/linux/memcontrol.h | 20 +++++++++++++++++---
-> >  mm/memcontrol.c            |  6 +++---
-> >  2 files changed, 20 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index fc94879db4dff..742351945f683 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -360,11 +360,11 @@ static inline bool folio_memcg_kmem(struct folio *folio);
-> >   * After the initialization objcg->memcg is always pointing at
-> >   * a valid memcg, but can be atomically swapped to the parent memcg.
-> >   *
-> > - * The caller must ensure that the returned memcg won't be released:
-> > - * e.g. acquire the rcu_read_lock or css_set_lock.
-> > + * The caller must ensure that the returned memcg won't be released.
-> >   */
-> >  static inline struct mem_cgroup *obj_cgroup_memcg(struct obj_cgroup *objcg)
-> >  {
-> > +	WARN_ON_ONCE(!rcu_read_lock_held() && !lockdep_is_held(&cgroup_mutex));
+
+
+On 2024/7/24 19:08, Hillf Danton wrote:
+> On Fri, 19 Jul 2024 02:52:32 +0000 Chen Ridong <chenridong@huawei.com>
+>> We found a hung_task problem as shown below:
+>>
+>> INFO: task kworker/0:0:8 blocked for more than 327 seconds.
+>> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+>> task:kworker/0:0     state:D stack:13920 pid:8     ppid:2       flags:0x00004000
+>> Workqueue: events cgroup_bpf_release
+>> Call Trace:
+>>   <TASK>
+>>   __schedule+0x5a2/0x2050
+>>   ? find_held_lock+0x33/0x100
+>>   ? wq_worker_sleeping+0x9e/0xe0
+>>   schedule+0x9f/0x180
+>>   schedule_preempt_disabled+0x25/0x50
+>>   __mutex_lock+0x512/0x740
+>>   ? cgroup_bpf_release+0x1e/0x4d0
+>>   ? cgroup_bpf_release+0xcf/0x4d0
+>>   ? process_scheduled_works+0x161/0x8a0
+>>   ? cgroup_bpf_release+0x1e/0x4d0
+>>   ? mutex_lock_nested+0x2b/0x40
+>>   ? __pfx_delay_tsc+0x10/0x10
+>>   mutex_lock_nested+0x2b/0x40
+>>   cgroup_bpf_release+0xcf/0x4d0
+>>   ? process_scheduled_works+0x161/0x8a0
+>>   ? trace_event_raw_event_workqueue_execute_start+0x64/0xd0
+>>   ? process_scheduled_works+0x161/0x8a0
+>>   process_scheduled_works+0x23a/0x8a0
+>>   worker_thread+0x231/0x5b0
+>>   ? __pfx_worker_thread+0x10/0x10
+>>   kthread+0x14d/0x1c0
+>>   ? __pfx_kthread+0x10/0x10
+>>   ret_from_fork+0x59/0x70
+>>   ? __pfx_kthread+0x10/0x10
+>>   ret_from_fork_asm+0x1b/0x30
+>>   </TASK>
+>>
+>> This issue can be reproduced by the following methods:
+>> 1. A large number of cpuset cgroups are deleted.
+>> 2. Set cpu on and off repeatly.
+>> 3. Set watchdog_thresh repeatly.
+>>
+>> The reason for this issue is cgroup_mutex and cpu_hotplug_lock are
+>> acquired in different tasks, which may lead to deadlock.
+>> It can lead to a deadlock through the following steps:
+>> 1. A large number of cgroups are deleted, which will put a large
+>>     number of cgroup_bpf_release works into system_wq. The max_active
+>>     of system_wq is WQ_DFL_ACTIVE(256). When cgroup_bpf_release can not
+>>     get cgroup_metux, it may cram system_wq, and it will block work
+>>     enqueued later.
+>> 2. Setting watchdog_thresh will hold cpu_hotplug_lock.read and put
+>>     smp_call_on_cpu work into system_wq. However it may be blocked by
+>>     step 1.
+>> 3. Cpu offline requires cpu_hotplug_lock.write, which is blocked by step 2.
+>> 4. When a cpuset is deleted, cgroup release work is placed on
+>>     cgroup_destroy_wq, it will hold cgroup_metux and acquire
+>>     cpu_hotplug_lock.read. Acquiring cpu_hotplug_lock.read is blocked by
+>>     cpu_hotplug_lock.write as mentioned by step 3. Finally, it forms a
+>>     loop and leads to a deadlock.
+>>
+>> cgroup_destroy_wq(step4)	cpu offline(step3)		WatchDog(step2)			system_wq(step1)
+>> 												......
+>> 								__lockup_detector_reconfigure:
+>> 								P(cpu_hotplug_lock.read)
+>> 								...
+>> 				...
+>> 				percpu_down_write:
+>> 				P(cpu_hotplug_lock.write)
+>> 												...256+ works
+>> 												cgroup_bpf_release:
+>> 												P(cgroup_mutex)
+>> 								smp_call_on_cpu:
+>> 								Wait system_wq
+>> ...
+>> css_killed_work_fn:
+>> P(cgroup_mutex)
+>> ...
+>> cpuset_css_offline:
+>> P(cpu_hotplug_lock.read)
+>>
+> 	worker_thread()
+> 	manage_workers()
+> 	maybe_create_worker()
+> 	create_worker() // has nothing to do with WQ_DFL_ACTIVE
+> 	process_scheduled_works()
 > 
-> Maybe lockdep_assert_once() would be a better fit?
+> Given idle worker created independent of WQ_DFL_ACTIVE before handling
+> work item, no deadlock could rise in your scenario above.
 
-100%.
+Hello Hillf, did you mean to say this issue couldn't happen?
+I wish it hadn't happen, as it took me a long time to figure out.
+However, it did happen. It could be reproduced with the method I 
+offered, You can access the scripts using this link: 
+https://lore.kernel.org/cgroups/e90c32d2-2a85-4f28-9154-09c7d320cb60@huawei.com/T/#t.
+
+It's not about how the pool's workers were created, but rather the 
+limit(system_wq ) of workqueue. If system_wq reaches its max_active 
+limit, the work enqueued afterward will be placed on 
+pwq->inactive_works. In this scenario described above, the problem is 
+all active works(cgroup_bpf_release) are blocked, and the 
+inactive_works(smp_call_on_cpu) couldn't be executed when it forms a loop.
+
+We have discussed this before in V1, you can find in the Link.
+
+Thanks
+Ridong
 
