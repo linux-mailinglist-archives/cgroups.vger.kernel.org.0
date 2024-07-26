@@ -1,172 +1,138 @@
-Return-Path: <cgroups+bounces-3918-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3919-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD76693D967
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jul 2024 22:00:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D587493D987
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jul 2024 22:05:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64C6F285BDD
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jul 2024 20:00:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F976B21C35
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jul 2024 20:05:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 523C91494DA;
-	Fri, 26 Jul 2024 19:58:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 086BA4D8B6;
+	Fri, 26 Jul 2024 20:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="C69uBCv0"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e976p+he"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 797C4149002
-	for <cgroups@vger.kernel.org>; Fri, 26 Jul 2024 19:58:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53D481F5E6;
+	Fri, 26 Jul 2024 20:05:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722023924; cv=none; b=MRi1SdzRXO/MlecxMNuNepEYOpACL5xTY5ogDBld8zSkP9lIT9vt4tuIEB3D3ruqrr7jeTKtD6eXcsofdH7kE6zW5qvY7HVVV4RNDAhhMiyLzakNcLatNHWuvhlhydxj7kJHxn7LT6iNnSMa5fmKPW8D0Px75lLmPxIvrhXxfww=
+	t=1722024301; cv=none; b=Kq/H0O/SSijiooJVkom0Dww2i7aPnYIYLM88smAlq9S/i4maNh5zAvk1b1/M0PfxL4ev0Ruy7P9VUpG5/yn7lPIEq9Ti0FR3TlKNdTSVpvYYWflnk+35P3S1MYmLhIqS7VcewoQ/210ZEQ6WdC4g7EWZLwMkbEFUCo7Qz/WpmvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722023924; c=relaxed/simple;
-	bh=QutQBA4+F1mkHxd8UoybUqxKU4ZvurRY1ADm/Qy/mA4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BGo5pi4QG27812T6XXLBOE7/v4mztbWmiJVVOmdM3E6/Za6czNZobImBlmVkPnhs5RUawuYuLxP0inu2ZfqCNH/mBd+mCV6zpmupuHNlxOh3O6XdWK/otEVMqK3E8yKx7ErfOBNriwJOAC5w18d4+ktxOsaEGLBZJWg8hahVyT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=C69uBCv0; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1722023921;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kKI9yEEsS8+SM44w165mJuuRy+Lum2O5d34PkmrfIkA=;
-	b=C69uBCv0pn0fZMe0gVJ1GlSAmSFeBkQQNaso1Pt6qXFnCwZyebXcywpZpF3iOdLMw23GxF
-	8l8becMEYLR1kOezwTMe+aPs0/aNoGcXTgZx/cSTv15MwyC5n4gFGWFYlnlKp7054jROYI
-	umMCoJ/P7/Dbgm3y9KefkVKh7iz6wQU=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-90-CxuctCT5NyqfGWgcEHKXEQ-1; Fri,
- 26 Jul 2024 15:58:36 -0400
-X-MC-Unique: CxuctCT5NyqfGWgcEHKXEQ-1
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 94D9C1955D47;
-	Fri, 26 Jul 2024 19:58:34 +0000 (UTC)
-Received: from [10.2.16.80] (unknown [10.2.16.80])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id A02E81955F40;
-	Fri, 26 Jul 2024 19:58:31 +0000 (UTC)
-Message-ID: <5145be53-9bfc-42a9-b8e2-d035d151a115@redhat.com>
-Date: Fri, 26 Jul 2024 15:58:30 -0400
+	s=arc-20240116; t=1722024301; c=relaxed/simple;
+	bh=sHIyIkVFEupEjWxKl+pASpe17z/wLOaJYpi0rVW6CZc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UPKwzaKQI5naBf0qydjcje5uTcUVEw4uO0JerLSih5FNLVOj2tg+e3M/oUSCyAlSmJ/GkU7f/+UDankJskoT4ITMfnH2lo7G9/+XeD1U+cFELh8wB/LpGtP4V2jLvcUtiOVYymx/Zt+oAsMTfPrTL2LMQeo+BMvXWpG8TwqS91E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e976p+he; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-70d150e8153so854984b3a.0;
+        Fri, 26 Jul 2024 13:05:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722024300; x=1722629100; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VDR2eZY5MHlmYwIoRqIyPiGp3vg1WqH7CWNgUfzBoP0=;
+        b=e976p+heVHzNR34LrC3APHljUDI3BF7bniJxwtCQsPP1BRiqWcJbGo6XkbPluo8Eia
+         Koglt90OFdvh1kI/2MqbrNYv67nwnJsH1c3+tZwFBpEoVG8cEoydhKUrvuXib9HypoP6
+         wWyMSYRMaWWmzasOTA4syL2A64vTa/65RpPt9LhWmZKK0+m1L2ujMKQXAE0mwUl1kyWD
+         l64eTIN78fnECCscZ7ngJrdl4xloV/64c2e9H6KjdYGmkus33xoZTSGBaMxE7xl4L910
+         gI/AnTUTjvScH6IzwYT/bYqT2nh7nwdTU6VQx4VGKtMZ/06M/sw/rSLTKc3QLgS/i9GJ
+         G/UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722024300; x=1722629100;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VDR2eZY5MHlmYwIoRqIyPiGp3vg1WqH7CWNgUfzBoP0=;
+        b=nW+78nGHEXTaflaaO5y4wd4BPudaCM74elGdNqAAzSHZ+6h7Mvp5OYXkDw+SGz4BP8
+         9/IxcggmLziRuV3/gfC+IwZUJLtahXsLURbIwJa5az5XcLaX/E+YFkl4Rx1wMb9T/cOB
+         UKOnqLKwJee2BNxS8FC9lhSlgd8yh5DeWGBPS9OQ4uM6qTwk9R2mA2H6dz8O92P2BXd3
+         zafj2NEG9c1TBVV/elcRAkuqX9+CvwfA3GGQGkXG/9yiDjre8laSw66hxU43Eg3jmzIc
+         Yx46lQHonXT8JI3bsIrM5UMIOvkky3jUwxTwTokGYf+/4vHjHTVYqHJJPZs7U0rF6skp
+         fOJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV4sdX6ediUJ2vvLdu7tVqZwYM8lCfI15M9Frfcke+IzsFvNUfQH6HJW9xxjaSZd46WBtAw44tYAg5kzBwpr3fRbx+bdtKep88mpiNTlZjaUnPjpmSsXxmE17QQGjRZaVDOnpuEy9ziIs8IzEG8h9FLHjwzMv/dxf5I6ESOcnqzQw==
+X-Gm-Message-State: AOJu0Yz2kMoF41NHpNfhbVYIZbbLtIrqhuLMLVmLTQq0DVwmCU0gcOOY
+	yBYAB8vPF2Om/1yCaYEZkcxhRJIAQEHCxXAQKOaJHjnVnGhEHzX4
+X-Google-Smtp-Source: AGHT+IHNyKobZSB2Z0LwzzaaLZhrE0kcunwzzLJqK8cqABikL3rpajppk8xBArSL5bPdOIjnRqDXSg==
+X-Received: by 2002:a05:6a00:a89:b0:70b:5368:a212 with SMTP id d2e1a72fcca58-70ece822e52mr677217b3a.15.1722024299459;
+        Fri, 26 Jul 2024 13:04:59 -0700 (PDT)
+Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7a9f7c744c4sm3179803a12.14.2024.07.26.13.04.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Jul 2024 13:04:58 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Fri, 26 Jul 2024 10:04:57 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: Waiman Long <longman@redhat.com>, Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Kamalesh Babulal <kamalesh.babulal@oracle.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>
+Subject: Re: [PATCH-cgroup v4] cgroup: Show # of subsystem CSSes in
+ cgroup.stat
+Message-ID: <ZqQBaeAH_IfpRTnv@slm.duckdns.org>
+References: <20240711025153.2356213-1-longman@redhat.com>
+ <23hhazcy34yercbmsogrljvxatfmy6b7avtqrurcze3354defk@zpekfjpgyp6h>
+ <0efbedff-3456-4e6a-8d2d-79b89a18864d@redhat.com>
+ <qozzqah5blnsvc73jrhfuldsaxwsoluuewvgpukzgcuud4nqgc@xnctlkgk5yjv>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 -next] cgroup/cpuset: add decrease attach_in_progress
- helpers
-To: Chen Ridong <chenridong@huawei.com>, tj@kernel.org,
- lizefan.x@bytedance.com, hannes@cmpxchg.org, adityakali@google.com,
- sergeh@kernel.org, mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240726010502.2226806-1-chenridong@huawei.com>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240726010502.2226806-1-chenridong@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <qozzqah5blnsvc73jrhfuldsaxwsoluuewvgpukzgcuud4nqgc@xnctlkgk5yjv>
 
-On 7/25/24 21:05, Chen Ridong wrote:
-> There are several functions to decrease attach_in_progress, and they
-> will wake up cpuset_attach_wq when attach_in_progress is zero. So,
-> add a helper to make it concise.
->
-> Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> ---
->   kernel/cgroup/cpuset.c | 39 ++++++++++++++++++++++++---------------
->   1 file changed, 24 insertions(+), 15 deletions(-)
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index d4322619e59a..fa0c2fc5d383 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -490,6 +490,26 @@ static inline void check_insane_mems_config(nodemask_t *nodes)
->   	}
->   }
->   
-> +/*
-> + * decrease cs->attach_in_progress.
-> + * wake_up cpuset_attach_wq if cs->attach_in_progress==0.
-> + */
-> +static inline void dec_attach_in_progress_locked(struct cpuset *cs)
-> +{
-> +	lockdep_assert_held(&cpuset_mutex);
-> +
-> +	cs->attach_in_progress--;
-> +	if (!cs->attach_in_progress)
-> +		wake_up(&cpuset_attach_wq);
-> +}
-> +
-> +static inline void dec_attach_in_progress(struct cpuset *cs)
-> +{
-> +	mutex_lock(&cpuset_mutex);
-> +	dec_attach_in_progress_locked(cs);
-> +	mutex_unlock(&cpuset_mutex);
-> +}
-> +
->   /*
->    * Cgroup v2 behavior is used on the "cpus" and "mems" control files when
->    * on default hierarchy or when the cpuset_v2_mode flag is set by mounting
-> @@ -3421,9 +3441,7 @@ static void cpuset_cancel_attach(struct cgroup_taskset *tset)
->   	cs = css_cs(css);
->   
->   	mutex_lock(&cpuset_mutex);
-> -	cs->attach_in_progress--;
-> -	if (!cs->attach_in_progress)
-> -		wake_up(&cpuset_attach_wq);
-> +	dec_attach_in_progress_locked(cs);
->   
->   	if (cs->nr_migrate_dl_tasks) {
->   		int cpu = cpumask_any(cs->effective_cpus);
-> @@ -3538,9 +3556,7 @@ static void cpuset_attach(struct cgroup_taskset *tset)
->   		reset_migrate_dl_data(cs);
->   	}
->   
-> -	cs->attach_in_progress--;
-> -	if (!cs->attach_in_progress)
-> -		wake_up(&cpuset_attach_wq);
-> +	dec_attach_in_progress_locked(cs);
->   
->   	mutex_unlock(&cpuset_mutex);
->   }
-> @@ -4283,11 +4299,7 @@ static void cpuset_cancel_fork(struct task_struct *task, struct css_set *cset)
->   	if (same_cs)
->   		return;
->   
-> -	mutex_lock(&cpuset_mutex);
-> -	cs->attach_in_progress--;
-> -	if (!cs->attach_in_progress)
-> -		wake_up(&cpuset_attach_wq);
-> -	mutex_unlock(&cpuset_mutex);
-> +	dec_attach_in_progress(cs);
->   }
->   
->   /*
-> @@ -4319,10 +4331,7 @@ static void cpuset_fork(struct task_struct *task)
->   	guarantee_online_mems(cs, &cpuset_attach_nodemask_to);
->   	cpuset_attach_task(cs, task);
->   
-> -	cs->attach_in_progress--;
-> -	if (!cs->attach_in_progress)
-> -		wake_up(&cpuset_attach_wq);
-> -
-> +	dec_attach_in_progress_locked(cs);
->   	mutex_unlock(&cpuset_mutex);
->   }
->   
-Reviewed-by: Waiman Long <longman@redhat.com>
+Hello,
 
+On Fri, Jul 26, 2024 at 10:19:05AM +0200, Michal Koutný wrote:
+> On Thu, Jul 25, 2024 at 04:05:42PM GMT, Waiman Long <longman@redhat.com> wrote:
+> > > There's also 'debug' subsys. Have you looked at (extending) that wrt
+> > > dying csses troubleshooting?
+> > > It'd be good to document here why you decided against it.
+> > The config that I used for testing doesn't include CONFIG_CGROUP_DEBUG.
+> 
+> I mean if you enable CONFIG_CGROUP_DEBUG, there is 'debug' controller
+> that exposes files like debug.csses et al.
+> 
+> > That is why "debug" doesn't show up in the sample outputs. The CSS #
+> > for the debug subsystem should show up if it is enabled.
+> 
+> So these "debugging" numbers could be implemented via debug subsys. So I
+> wondered why it's not done this way. That reasoning is missing in the
+> commit message.
+
+While this is a bit of implementation detail, it's also something which can
+be pretty relevant in production, so my preference is to show them in
+cgroup.stat. The recursive stats is something not particularly easy to
+collect from the debug controller proper anyway.
+
+One problem with debug subsys is that it's unclear whether they are safe to
+use and can be depended upon in production. Not that anything it shows
+currently is particularly risky but the contract around the debug controller
+is that it's debug stuff and developers may do silly things with it (e.g.
+doing high complexity iterations and what not).
+
+The debug controller, in general, I'm not sure how useful it is. It does
+nothing that drgn scripts can't do and doesn't really have enough extra
+benefits that make it better. We didn't have drgn back when it was added, so
+it's there for historical reasons, but I don't think it's a good idea to
+expand on it.
+
+Thanks.
+
+-- 
+tejun
 
