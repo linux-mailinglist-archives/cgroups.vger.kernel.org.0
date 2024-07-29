@@ -1,171 +1,205 @@
-Return-Path: <cgroups+bounces-3929-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3930-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91EDC93F3E2
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jul 2024 13:23:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0EB293F6C3
+	for <lists+cgroups@lfdr.de>; Mon, 29 Jul 2024 15:34:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 110BF1F227C1
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jul 2024 11:23:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B1C0280E9D
+	for <lists+cgroups@lfdr.de>; Mon, 29 Jul 2024 13:34:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2749C146584;
-	Mon, 29 Jul 2024 11:20:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B206149C4D;
+	Mon, 29 Jul 2024 13:34:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b="B1JWRcRj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D52E1487EF;
-	Mon, 29 Jul 2024 11:20:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7397E1487E1
+	for <cgroups@vger.kernel.org>; Mon, 29 Jul 2024 13:34:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722252053; cv=none; b=vFq+Lf1+r6Tff530AlvWxCLRXM/q1DO9f/iytzMFv8v13ZC60BIrToug2z8dhulEGHqZsGAYdSb8DtC2PVlVcMCRJvSfXRrF/8qI6/LjH8sg5ClRlGhnZr6O9YjZVWHMQ2WB55xGFzJo4cNRuVMWcn3iDqzJclfHiyvKl8cU23A=
+	t=1722260077; cv=none; b=Tz48wa1YY6J8tlqtmS978OIJRO4UoBIcZyCQkoe3RpXbAuSgmKKbzr8xTVjIsdwP32gXBnkKCt/YtBurE0QMYNaZvofiK8EXelKXwAKDbm3ntWhbA3mVD5Knfpn2Xkiq0ZhJdA9Y25tMqvdbzgrc6L7wVjbhjK2d48w2LF3wWvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722252053; c=relaxed/simple;
-	bh=3o+xGQr03Jf+1hwzWOtExoVKrWWhSy5uzL5gBhqxjfc=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=kEyyWxoDS1awjA1P0cOAaKBfWJfR/kex+Gy1ACjjC2GlvkLIMBTZMDg77SI00NYfI0OsEdM6+H/hLnJEwYwJj2mA+A1Nm2jftPkLPYh0OjfKFlVcmoyY0bW0UaqdGLonWp6T+bWHZ6HEkzDKzQwtUuukj2D5GGysWwucKA+DjfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WXbWV0HvHz4f3jt8;
-	Mon, 29 Jul 2024 19:20:38 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 9A2D41A07B6;
-	Mon, 29 Jul 2024 19:20:46 +0800 (CST)
-Received: from [10.67.110.112] (unknown [10.67.110.112])
-	by APP2 (Coremail) with SMTP id Syh0CgCn3r0Me6dm7i++AA--.9139S2;
-	Mon, 29 Jul 2024 19:20:46 +0800 (CST)
-Message-ID: <9ffe2032-4910-e991-64c7-28486d6c969d@huaweicloud.com>
-Date: Mon, 29 Jul 2024 19:20:44 +0800
+	s=arc-20240116; t=1722260077; c=relaxed/simple;
+	bh=ZRRAXAL2qzerQWENWGXjykSCIR3Xt52xsCDhhqLF8Aw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HYzDPdnqBv/ZGznz05ZMCCHeaOyW6jN0Lqi8xkwfKLZmDmNotXQ2Ki6WmFGUjBO0MmPOQwEVyrGAtpMWW7Em3wt+dg4NVQlz91lBcy+Q0KV1zjQDgtNofTrnfSSaLUQkZuE9Yid9hrZ8juC3rgjWBjB1qUGkLmW6LUdpnhVBZNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=fail smtp.mailfrom=vimeo.com; dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b=B1JWRcRj; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=vimeo.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-70d2b921c48so2383668b3a.1
+        for <cgroups@vger.kernel.org>; Mon, 29 Jul 2024 06:34:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vimeo.com; s=google; t=1722260075; x=1722864875; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tvWuoWcBz1GpvEecxVauV4qhtqCu4z7eC3CZ78S9mDw=;
+        b=B1JWRcRjN0TOOog2M6MrG6MRpGe69yVUFsaGYdVGKtl1YET0dcSQB8KbA+rvOk3OOQ
+         KUsqEXv5adjfmN2OG5xXIcWa5sEJ7gBBkUbxereXJ+HK0Y8+Xtn2em29ErBXYtbI/hDT
+         d/4pLxLXJkEQQaGMVkSNVW5EobatiXn4eN6eM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722260075; x=1722864875;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tvWuoWcBz1GpvEecxVauV4qhtqCu4z7eC3CZ78S9mDw=;
+        b=QW6x6bBkmeyVGErYB43UGggY8AK6J7nrwU9mDQx/jkVUXqyKmDssnu9cLwgzZZvdKf
+         I4DznFkeZE2Qmu4acaa8FIfNP63A9BFy44+JXCHAgsqoX4WWJTsIl2cikDd8eA4V6VSk
+         LJ0GmQHr+y5YMF4d0g3/g4VG2lXQBOiBiNEeCfzxxhUkPJ+X6tCgAhJIGlUZJr+tYp9+
+         FKN1La/Wi1Eh71pc+n1gPfntyRDgLRcAsC6dEKgUyE22k4xaZoBmTblHgxg+vlrzUeO0
+         2U0kdD/zN3IklbxwU2AAG8f6tGbTl7Z18jc9dOus/1kSpGj0PxTW57vcmhhF8IpYMG5d
+         dPlA==
+X-Forwarded-Encrypted: i=1; AJvYcCV5R+uv+WZ0Ui1Qka14GtGpGO+HryNIDt21H8Mm+ieKjVVqa1Mnfgn7PF8V4M8OHJ252dD5RoBz6f0xtv/3Lx+4FWEpPMsnBw==
+X-Gm-Message-State: AOJu0YyL8XoCchw2CoIJdy+sNbdAhI7ve4ahBxLvKY5q8j/uJIgg4BHb
+	3nFO6LTbCngh6DfuyAcvJ8+IBvAGTsItVK3zM9ZV/fMB4CCDr+8UfWJa0WRFO1bhOI6LSyciZ+l
+	aZbATs8wgQPE17YjZ7Fcz7vwRIieBvG+wmFnyKQ==
+X-Google-Smtp-Source: AGHT+IHL1B4yv7dqzfE+at5TpW8qgzJgJa+v3PgxakxDfs21btY8jOQ0oemCyPqsr1+gTZTemCP0UAlXrEYN68qF1k4=
+X-Received: by 2002:a05:6a00:807:b0:70d:3587:c665 with SMTP id
+ d2e1a72fcca58-70ece9fc3d9mr6189837b3a.2.1722260074510; Mon, 29 Jul 2024
+ 06:34:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH -next] cgroup/cpuset: Remove cpuset_slab_spread_rotor
-Content-Language: en-US
-From: Xiu Jianfeng <xiujianfeng@huaweicloud.com>
-To: longman@redhat.com, lizefan.x@bytedance.com, mingo@redhat.com,
- peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org,
- tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240713085916.3373085-1-xiujianfeng@huawei.com>
-In-Reply-To: <20240713085916.3373085-1-xiujianfeng@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgCn3r0Me6dm7i++AA--.9139S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWF1UAw13Cr4kZF17trWrXwb_yoW5AFy7p3
-	WqkFW5Jr48JFyUuw4DJw1DAryY9w18XF45G3WFgwn5JFW2yF4qkF1kArnxXry09r98Crsx
-	GFZxGrs09asFqFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU92b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
-	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
-	MI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
-	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
-	6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
-	BIdaVFxhVjvjDU0xZFpf9x07URq2NUUUUU=
-X-CM-SenderInfo: x0lxyxpdqiv03j6k3tpzhluzxrxghudrp/
+References: <20240724161942.3448841-1-davidf@vimeo.com> <20240724161942.3448841-2-davidf@vimeo.com>
+ <5xlwzzz3gs4rk5df32kfh7fx5ftj3a4iwryqxdb4c3oniuehwk@d5kum5xr4uw6>
+In-Reply-To: <5xlwzzz3gs4rk5df32kfh7fx5ftj3a4iwryqxdb4c3oniuehwk@d5kum5xr4uw6>
+From: David Finkel <davidf@vimeo.com>
+Date: Mon, 29 Jul 2024 09:34:23 -0400
+Message-ID: <CAFUnj5O9bijcu6grPoFh0h7mTVAP-bajeJDq1-jtqWuaJbv8XQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] mm, memcg: cg2 memory{.swap,}.peak write handlers
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	core-services@vimeo.com, Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Shuah Khan <shuah@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kselftest@vger.kernel.org, Waiman Long <longman@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi Michal,
 
-Friendly ping...
+On Fri, Jul 26, 2024 at 10:16=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.c=
+om> wrote:
+>
+> Hello David.
+>
+> On Wed, Jul 24, 2024 at 12:19:41PM GMT, David Finkel <davidf@vimeo.com> w=
+rote:
+> > Writing a specific string to the memory.peak and memory.swap.peak
+> > pseudo-files reset the high watermark to the current usage for
+> > subsequent reads through that same fd.
+>
+> This is elegant and nice work! (Caught my attention, so a few nits below.=
+)
 
+Thanks!
 
-On 2024/7/13 16:59, Xiu Jianfeng wrote:
-> Since the SLAB implementation was removed in v6.8, so the
-> cpuset_slab_spread_rotor is no longer used and can be removed.
-> 
-> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
-> ---
->  include/linux/cpuset.h |  6 ------
->  include/linux/sched.h  |  1 -
->  kernel/cgroup/cpuset.c | 13 -------------
->  kernel/fork.c          |  1 -
->  4 files changed, 21 deletions(-)
-> 
-> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-> index de4cf0ee96f7..2a6981eeebf8 100644
-> --- a/include/linux/cpuset.h
-> +++ b/include/linux/cpuset.h
-> @@ -113,7 +113,6 @@ extern int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
->  			    struct pid *pid, struct task_struct *tsk);
->  
->  extern int cpuset_mem_spread_node(void);
-> -extern int cpuset_slab_spread_node(void);
->  
->  static inline int cpuset_do_page_mem_spread(void)
->  {
-> @@ -246,11 +245,6 @@ static inline int cpuset_mem_spread_node(void)
->  	return 0;
->  }
->  
-> -static inline int cpuset_slab_spread_node(void)
-> -{
-> -	return 0;
-> -}
-> -
->  static inline int cpuset_do_page_mem_spread(void)
->  {
->  	return 0;
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index 75138bf70da3..e151da1675fe 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1248,7 +1248,6 @@ struct task_struct {
->  	/* Sequence number to catch updates: */
->  	seqcount_spinlock_t		mems_allowed_seq;
->  	int				cpuset_mem_spread_rotor;
-> -	int				cpuset_slab_spread_rotor;
->  #endif
->  #ifdef CONFIG_CGROUPS
->  	/* Control Group info protected by css_set_lock: */
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 40ec4abaf440..ba7f7f967565 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -5028,19 +5028,6 @@ int cpuset_mem_spread_node(void)
->  	return cpuset_spread_node(&current->cpuset_mem_spread_rotor);
->  }
->  
-> -/**
-> - * cpuset_slab_spread_node() - On which node to begin search for a slab page
-> - */
-> -int cpuset_slab_spread_node(void)
-> -{
-> -	if (current->cpuset_slab_spread_rotor == NUMA_NO_NODE)
-> -		current->cpuset_slab_spread_rotor =
-> -			node_random(&current->mems_allowed);
-> -
-> -	return cpuset_spread_node(&current->cpuset_slab_spread_rotor);
-> -}
-> -EXPORT_SYMBOL_GPL(cpuset_mem_spread_node);
-> -
->  /**
->   * cpuset_mems_allowed_intersects - Does @tsk1's mems_allowed intersect @tsk2's?
->   * @tsk1: pointer to task_struct of some task.
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index 08e13b919d80..559e8df1672a 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -2313,7 +2313,6 @@ __latent_entropy struct task_struct *copy_process(
->  #endif
->  #ifdef CONFIG_CPUSETS
->  	p->cpuset_mem_spread_rotor = NUMA_NO_NODE;
-> -	p->cpuset_slab_spread_rotor = NUMA_NO_NODE;
->  	seqcount_spinlock_init(&p->mems_allowed_seq, &p->alloc_lock);
->  #endif
->  #ifdef CONFIG_TRACE_IRQFLAGS
+You can thank Johannes for the algorithm.
+>
+> > --- a/include/linux/cgroup-defs.h
+> > +++ b/include/linux/cgroup-defs.h
+> > @@ -775,6 +775,11 @@ struct cgroup_subsys {
+> >
+> >  extern struct percpu_rw_semaphore cgroup_threadgroup_rwsem;
+> >
+> > +struct cgroup_of_peak {
+> > +     long                    value;
+>
+> Wouldn't this better be unsigned like watermarks themselves?
 
+Hmm, interesting question.
+I originally set that to be signed to handle the special value of -1.
+However, that's kind of irrelevant if I'm casting it to an unsigned
+u64 in the only place that value's being handled.
+
+I've switched this over now.
+
+>
+> > +     struct list_head        list;
+> > +};
+>
+>
+> > --- a/include/linux/page_counter.h
+> > +++ b/include/linux/page_counter.h
+> > @@ -26,6 +26,7 @@ struct page_counter {
+> >       atomic_long_t children_low_usage;
+> >
+> >       unsigned long watermark;
+> > +     unsigned long local_watermark;
+>
+> At first, I struggled understading what the locality is (when the local
+> value is actually in of_peak), IIUC, it's more about temporal position.
+>
+> I'd suggest a comment (if not a name) like:
+>         /* latest reset watermark */
+> > +     unsigned long local_watermark;
+
+Yeah, I had a comment before that was a bit inaccurate, and was
+advised to remove it instead of trying to fix it in a previous round.
+
+I've added one that says "Latest cg2 reset watermark".
+
+>
+>
+> > +
+> > +     /* User wants global or local peak? */
+> > +     if (fd_peak =3D=3D -1UL)
+>
+> Here you use typed -1UL but not in other places. (Maybe define an
+> explicit macro value ((unsigned long)-1)?)
+Good idea!
+
+>
+> > +static ssize_t peak_write(struct kernfs_open_file *of, char *buf, size=
+_t nbytes,
+> > +                       loff_t off, struct page_counter *pc,
+> > +                       struct list_head *watchers)
+> > +{
+> ...
+> > +     list_for_each_entry(peer_ctx, watchers, list)
+> > +             if (usage > peer_ctx->value)
+> > +                     peer_ctx->value =3D usage;
+>
+> The READ_ONCE() in peak_show() suggests it could be WRITE_ONCE() here.
+
+Good point. I've sprinkled a few more READ_ONCE and WRITE_ONCE calls.
+
+>
+> > +
+> > +     /* initial write, register watcher */
+> > +     if (ofp->value =3D=3D -1)
+> > +             list_add(&ofp->list, watchers);
+> > +
+> > +     ofp->value =3D usage;
+>
+> Move the registration before iteration and drop the extra assignment?
+My original reason is that I could avoid an extra list hop and conditional,
+but at this point I see two reasons to keep it separate:
+ - We need to reset this value either way. If it's already been reset, it m=
+ay
+   not get reset by the loop.
+ - since these are now unsigned ints, -1 compares greater than everything,
+   so it would need a special case (or an additional cast). (Assuming we're
+   on a system that uses twos complement)
+- I think it's a bit clearer this way
+
+>
+> Thanks,
+> Michal
+
+Thanks for the review!
+
+--
+David Finkel
+Senior Principal Software Engineer, Core Services
 
