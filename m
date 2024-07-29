@@ -1,84 +1,84 @@
-Return-Path: <cgroups+bounces-3930-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3931-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0EB293F6C3
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jul 2024 15:34:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B49393F6D4
+	for <lists+cgroups@lfdr.de>; Mon, 29 Jul 2024 15:37:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B1C0280E9D
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jul 2024 13:34:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B216EB21321
+	for <lists+cgroups@lfdr.de>; Mon, 29 Jul 2024 13:37:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B206149C4D;
-	Mon, 29 Jul 2024 13:34:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 976F314A095;
+	Mon, 29 Jul 2024 13:37:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b="B1JWRcRj"
+	dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b="FlpIE8aw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7397E1487E1
-	for <cgroups@vger.kernel.org>; Mon, 29 Jul 2024 13:34:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 230EC149015
+	for <cgroups@vger.kernel.org>; Mon, 29 Jul 2024 13:37:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722260077; cv=none; b=Tz48wa1YY6J8tlqtmS978OIJRO4UoBIcZyCQkoe3RpXbAuSgmKKbzr8xTVjIsdwP32gXBnkKCt/YtBurE0QMYNaZvofiK8EXelKXwAKDbm3ntWhbA3mVD5Knfpn2Xkiq0ZhJdA9Y25tMqvdbzgrc6L7wVjbhjK2d48w2LF3wWvQ=
+	t=1722260270; cv=none; b=ndybd81EYwi9Jn8hbJvQOvmMLryfYYQ/zNrdkgi3Id9iNypjyswCjoHFAOGZYxug3wD7NzKihV5Ct07N3P17CjuN/kJuVR4aRJft2NY1nWRJYz7yEIfqF6sq84w07iqC4gPAZicPuBoQYokQe1lxAQPGqTUjErjK28U7ozuwsPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722260077; c=relaxed/simple;
-	bh=ZRRAXAL2qzerQWENWGXjykSCIR3Xt52xsCDhhqLF8Aw=;
+	s=arc-20240116; t=1722260270; c=relaxed/simple;
+	bh=yG95b8+bC4kOE+uaI8opD8vDKWLRODfkFzlGoBvrT+s=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HYzDPdnqBv/ZGznz05ZMCCHeaOyW6jN0Lqi8xkwfKLZmDmNotXQ2Ki6WmFGUjBO0MmPOQwEVyrGAtpMWW7Em3wt+dg4NVQlz91lBcy+Q0KV1zjQDgtNofTrnfSSaLUQkZuE9Yid9hrZ8juC3rgjWBjB1qUGkLmW6LUdpnhVBZNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=fail smtp.mailfrom=vimeo.com; dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b=B1JWRcRj; arc=none smtp.client-ip=209.85.210.169
+	 To:Cc:Content-Type; b=QB3n3MYZhHFtr868psjk82iFx79j/UXIu+tU0KY7FnxVJxLe2qN3bfFfpyWhmisaLtEFUhdkikvqwZyDv8aDS12GesK9XzLpbXgE8Iml2CGcNEZjYZXpEVceHnBbvEkkzfJexSSB8ulh2o188yr7BIiX4RXxEFpXWfPBqLPnNr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=fail smtp.mailfrom=vimeo.com; dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b=FlpIE8aw; arc=none smtp.client-ip=209.85.210.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=vimeo.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-70d2b921c48so2383668b3a.1
-        for <cgroups@vger.kernel.org>; Mon, 29 Jul 2024 06:34:35 -0700 (PDT)
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-70d162eef54so2068056b3a.3
+        for <cgroups@vger.kernel.org>; Mon, 29 Jul 2024 06:37:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vimeo.com; s=google; t=1722260075; x=1722864875; darn=vger.kernel.org;
+        d=vimeo.com; s=google; t=1722260268; x=1722865068; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tvWuoWcBz1GpvEecxVauV4qhtqCu4z7eC3CZ78S9mDw=;
-        b=B1JWRcRjN0TOOog2M6MrG6MRpGe69yVUFsaGYdVGKtl1YET0dcSQB8KbA+rvOk3OOQ
-         KUsqEXv5adjfmN2OG5xXIcWa5sEJ7gBBkUbxereXJ+HK0Y8+Xtn2em29ErBXYtbI/hDT
-         d/4pLxLXJkEQQaGMVkSNVW5EobatiXn4eN6eM=
+        bh=sVlA1fdRbUzGUAt+y6uU46luMcytNgyhT35LNSCEVFI=;
+        b=FlpIE8awr0cTwKExXUN4iBYmqWqHwMJfgkTsUPn3rZoChr+1ZTfybqcEcHMBBgNrCA
+         UfWYShJ/dKI+3SfRhH/KQmuM1Xfluw/U7s0AJnZNA54MrNVGCaBVHb4C8RZkebG4agNB
+         1Sp2VyRup8IFSC9jKmYyAii/ykANZ72Are/I8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722260075; x=1722864875;
+        d=1e100.net; s=20230601; t=1722260268; x=1722865068;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tvWuoWcBz1GpvEecxVauV4qhtqCu4z7eC3CZ78S9mDw=;
-        b=QW6x6bBkmeyVGErYB43UGggY8AK6J7nrwU9mDQx/jkVUXqyKmDssnu9cLwgzZZvdKf
-         I4DznFkeZE2Qmu4acaa8FIfNP63A9BFy44+JXCHAgsqoX4WWJTsIl2cikDd8eA4V6VSk
-         LJ0GmQHr+y5YMF4d0g3/g4VG2lXQBOiBiNEeCfzxxhUkPJ+X6tCgAhJIGlUZJr+tYp9+
-         FKN1La/Wi1Eh71pc+n1gPfntyRDgLRcAsC6dEKgUyE22k4xaZoBmTblHgxg+vlrzUeO0
-         2U0kdD/zN3IklbxwU2AAG8f6tGbTl7Z18jc9dOus/1kSpGj0PxTW57vcmhhF8IpYMG5d
-         dPlA==
-X-Forwarded-Encrypted: i=1; AJvYcCV5R+uv+WZ0Ui1Qka14GtGpGO+HryNIDt21H8Mm+ieKjVVqa1Mnfgn7PF8V4M8OHJ252dD5RoBz6f0xtv/3Lx+4FWEpPMsnBw==
-X-Gm-Message-State: AOJu0YyL8XoCchw2CoIJdy+sNbdAhI7ve4ahBxLvKY5q8j/uJIgg4BHb
-	3nFO6LTbCngh6DfuyAcvJ8+IBvAGTsItVK3zM9ZV/fMB4CCDr+8UfWJa0WRFO1bhOI6LSyciZ+l
-	aZbATs8wgQPE17YjZ7Fcz7vwRIieBvG+wmFnyKQ==
-X-Google-Smtp-Source: AGHT+IHL1B4yv7dqzfE+at5TpW8qgzJgJa+v3PgxakxDfs21btY8jOQ0oemCyPqsr1+gTZTemCP0UAlXrEYN68qF1k4=
-X-Received: by 2002:a05:6a00:807:b0:70d:3587:c665 with SMTP id
- d2e1a72fcca58-70ece9fc3d9mr6189837b3a.2.1722260074510; Mon, 29 Jul 2024
- 06:34:34 -0700 (PDT)
+        bh=sVlA1fdRbUzGUAt+y6uU46luMcytNgyhT35LNSCEVFI=;
+        b=LtGdMC9l6KSE9ROnwSabhXjN+gNfmD7Y+Nt6Pg2xKFOiFSb6QNEEgkQiI4kJO0NTmM
+         7qhhPe+tfJpwO5yoPK4hb4BG33ST7Rrv+anW8HilMo71aSOJNuJRt/UzlMtzSuEq5vYt
+         JiONjhJN7hsYASLGa5iXJLuk3z66GeOyDCMVyLI3nz6/GKwsvOgtI4k+O6qbTfP2S/Bp
+         hFYMcfI+7Q3aENp2cJ19icphAPH/NuAQ5sXU4Q7Yy4MWwwPEKz4/bsac5p3xhNhatCsr
+         PEoHPrKe+8DaD6MznhaYWmHo8MFdJz9sWXfPIAyb4Oa9YDZliNlVlKY4QOACKo3W/ORl
+         l8HA==
+X-Forwarded-Encrypted: i=1; AJvYcCVm9JAZ2VlwolwDVpkYoW0mvWPTCj1pf4P8YqfGIS/9/mSHExisrNVlvwJ8vsIeu3SeqjI+5mtkTmws+Iq0zm3duQteZ2FoCA==
+X-Gm-Message-State: AOJu0YzWmK7rDyI1wLp2X3CWPnxkMInN0KNf+pWEhQEt6/tHi3sytIPv
+	TR/Qj+aUJIxjq9yuAhNR5Ho7cVeyuyzKtWuXMmnWGqX+RBZhilWFu+AAibLAoN36qPT+5sbL9UA
+	NM8mP3fdVoqslhp1yTaKUsbQD1I+3jiMv6SvxpA==
+X-Google-Smtp-Source: AGHT+IF61PUOxYopexvONqf7EeqGxcofDSZYfNicSgd0cvdI1gdvPurED0XAgonezp6ozKF6WcHIo+B+gfQ7euXDvTg=
+X-Received: by 2002:aa7:88c5:0:b0:70d:262e:7279 with SMTP id
+ d2e1a72fcca58-70ecea01412mr6938042b3a.3.1722260268207; Mon, 29 Jul 2024
+ 06:37:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240724161942.3448841-1-davidf@vimeo.com> <20240724161942.3448841-2-davidf@vimeo.com>
- <5xlwzzz3gs4rk5df32kfh7fx5ftj3a4iwryqxdb4c3oniuehwk@d5kum5xr4uw6>
-In-Reply-To: <5xlwzzz3gs4rk5df32kfh7fx5ftj3a4iwryqxdb4c3oniuehwk@d5kum5xr4uw6>
+References: <20240723233149.3226636-1-davidf@vimeo.com> <20240723233149.3226636-2-davidf@vimeo.com>
+ <ZqQFaz07jIg4ZKib@slm.duckdns.org>
+In-Reply-To: <ZqQFaz07jIg4ZKib@slm.duckdns.org>
 From: David Finkel <davidf@vimeo.com>
-Date: Mon, 29 Jul 2024 09:34:23 -0400
-Message-ID: <CAFUnj5O9bijcu6grPoFh0h7mTVAP-bajeJDq1-jtqWuaJbv8XQ@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] mm, memcg: cg2 memory{.swap,}.peak write handlers
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	core-services@vimeo.com, Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>, 
+Date: Mon, 29 Jul 2024 09:37:37 -0400
+Message-ID: <CAFUnj5Op_SZ0sx7wCii=EWgx-nXycpMe1=961Z8ayOeAFSb2yA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm, memcg: cg2 memory{.swap,}.peak write handlers
+To: Tejun Heo <tj@kernel.org>
+Cc: Muchun Song <muchun.song@linux.dev>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, core-services@vimeo.com, 
+	Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>, 
 	Shakeel Butt <shakeel.butt@linux.dev>, Shuah Khan <shuah@kernel.org>, 
 	Johannes Weiner <hannes@cmpxchg.org>, Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org, 
 	linux-doc@vger.kernel.org, linux-mm@kvack.org, 
@@ -86,120 +86,41 @@ Cc: Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Michal,
+Hi Tejun,
 
-On Fri, Jul 26, 2024 at 10:16=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.c=
-om> wrote:
+On Fri, Jul 26, 2024 at 4:22=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
 >
-> Hello David.
+> Hello, David.
 >
-> On Wed, Jul 24, 2024 at 12:19:41PM GMT, David Finkel <davidf@vimeo.com> w=
-rote:
-> > Writing a specific string to the memory.peak and memory.swap.peak
-> > pseudo-files reset the high watermark to the current usage for
-> > subsequent reads through that same fd.
->
-> This is elegant and nice work! (Caught my attention, so a few nits below.=
-)
-
-Thanks!
-
-You can thank Johannes for the algorithm.
->
-> > --- a/include/linux/cgroup-defs.h
-> > +++ b/include/linux/cgroup-defs.h
-> > @@ -775,6 +775,11 @@ struct cgroup_subsys {
-> >
-> >  extern struct percpu_rw_semaphore cgroup_threadgroup_rwsem;
-> >
-> > +struct cgroup_of_peak {
-> > +     long                    value;
->
-> Wouldn't this better be unsigned like watermarks themselves?
-
-Hmm, interesting question.
-I originally set that to be signed to handle the special value of -1.
-However, that's kind of irrelevant if I'm casting it to an unsigned
-u64 in the only place that value's being handled.
-
-I've switched this over now.
-
->
-> > +     struct list_head        list;
-> > +};
->
->
-> > --- a/include/linux/page_counter.h
-> > +++ b/include/linux/page_counter.h
-> > @@ -26,6 +26,7 @@ struct page_counter {
-> >       atomic_long_t children_low_usage;
-> >
-> >       unsigned long watermark;
-> > +     unsigned long local_watermark;
->
-> At first, I struggled understading what the locality is (when the local
-> value is actually in of_peak), IIUC, it's more about temporal position.
->
-> I'd suggest a comment (if not a name) like:
->         /* latest reset watermark */
-> > +     unsigned long local_watermark;
-
-Yeah, I had a comment before that was a bit inaccurate, and was
-advised to remove it instead of trying to fix it in a previous round.
-
-I've added one that says "Latest cg2 reset watermark".
-
->
->
-> > +
-> > +     /* User wants global or local peak? */
-> > +     if (fd_peak =3D=3D -1UL)
->
-> Here you use typed -1UL but not in other places. (Maybe define an
-> explicit macro value ((unsigned long)-1)?)
-Good idea!
-
->
-> > +static ssize_t peak_write(struct kernfs_open_file *of, char *buf, size=
-_t nbytes,
-> > +                       loff_t off, struct page_counter *pc,
-> > +                       struct list_head *watchers)
-> > +{
+> On Tue, Jul 23, 2024 at 07:31:48PM -0400, David Finkel wrote:
 > ...
-> > +     list_for_each_entry(peer_ctx, watchers, list)
-> > +             if (usage > peer_ctx->value)
-> > +                     peer_ctx->value =3D usage;
+> > +     A write of the string "reset" to this file resets it to the
+> > +     current memory usage for subsequent reads through the same
+> > +     file descriptor.
+> > +     Attempts to write any other non-empty string will return EINVAL
+> > +     (modulo leading and trailing whitespace).
 >
-> The READ_ONCE() in peak_show() suggests it could be WRITE_ONCE() here.
+> Let's just please do any write. We don't want to add complex write semant=
+ics
+> to these files. Writing anything to reset these files is an established
+> pattern and I don't think we gain anything by making this more complicate=
+d.
 
-Good point. I've sprinkled a few more READ_ONCE and WRITE_ONCE calls.
-
->
-> > +
-> > +     /* initial write, register watcher */
-> > +     if (ofp->value =3D=3D -1)
-> > +             list_add(&ofp->list, watchers);
-> > +
-> > +     ofp->value =3D usage;
->
-> Move the registration before iteration and drop the extra assignment?
-My original reason is that I could avoid an extra list hop and conditional,
-but at this point I see two reasons to keep it separate:
- - We need to reset this value either way. If it's already been reset, it m=
-ay
-   not get reset by the loop.
- - since these are now unsigned ints, -1 compares greater than everything,
-   so it would need a special case (or an additional cast). (Assuming we're
-   on a system that uses twos complement)
-- I think it's a bit clearer this way
+I still think something more limited is right here, but it seems that
+there's consensus
+that accepting all non-empty writes is the right option here, so I've
+removed the check.
+The next patchset will accept any (non-empty) write.
 
 >
-> Thanks,
-> Michal
+> Thanks.
+>
+> --
+> tejun
 
-Thanks for the review!
 
---
+Thanks,
+--=20
 David Finkel
 Senior Principal Software Engineer, Core Services
 
