@@ -1,116 +1,109 @@
-Return-Path: <cgroups+bounces-4018-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4019-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 931A994233B
-	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 01:06:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F6F3942351
+	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 01:13:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C451B1C22826
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2024 23:06:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E6E2B2451E
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2024 23:13:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F14818EFF4;
-	Tue, 30 Jul 2024 23:06:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC77F18FDC1;
+	Tue, 30 Jul 2024 23:13:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FfNL0jv/"
+	dkim=pass (1024-bit key) header.d=relay.vimeo.com header.i=@relay.vimeo.com header.b="SAaGeZyu"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from m47-110.mailgun.net (m47-110.mailgun.net [69.72.47.110])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B372C18A6CE;
-	Tue, 30 Jul 2024 23:06:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06C918CC01
+	for <cgroups@vger.kernel.org>; Tue, 30 Jul 2024 23:13:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.72.47.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722380786; cv=none; b=s2uk6sMMkvqQWWApvki0hzpLM+a3UfjyKtcy/GCrs4QBimR80H8vauxaJDXzKZm791p74VnXRPLa2+IXArjUAxBTcTZajvsOkjupZMr/srU/HOYqyInVDb7JHDbCDnuPdl6s2oBN8OXptv/BK7kIEoyYDcIGbqr8XRyakbbIHFk=
+	t=1722381196; cv=none; b=hVSGozvy1peA2V05EuMgALHBMwpegrTu8lHCUhTCeOcQ+Pq4MHvi+2gUbMsgAxtaWiAplUdxlSzhgdwwJDYPcuO454sFJ8meAnQU6GgXKavnAdDBYbS8gIec+mRsUlWisYhrefkWmJm3S8u68KwesD+cOABGU+CDBc5byfy87zk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722380786; c=relaxed/simple;
-	bh=Op69JpkQbbxme1B12cNzAavcMe2Pz6PcH+hqgtsgECw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OY2+0yKj78osMbu/sron//b7HLyX3FEspftv4C1zlzZ6G1MRFeJy1hmhP8mKZT11iBdMbnxdosV+FFFpKdcZHhpDhu3wEGje5klnid59JDY0xaHGLXdXhPbE8DdEiNY8cQyMOZErb2sQTRewLhMfcHGT2ZuW25Qn/OBKwGhgZKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FfNL0jv/; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1fdd6d81812so41389115ad.1;
-        Tue, 30 Jul 2024 16:06:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722380784; x=1722985584; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=L6lB3zfnMbEB0fLiWI7+IIRHRj4kgKjTW/X0L+tCnBY=;
-        b=FfNL0jv/pERUTffIg7mykpbs8YFGyP5XnwvH+LajCiXyQgiThR+JzfjOY0Oeaig0TJ
-         3vnVmGnqRuAju97qC/C9P3dCaSStxP3UHmG9hr5JN5UmtTJFpWXV+DwdzdjnXVabajif
-         Y32VPu8AS1xoa0r0LFQNh3ytxZz70MrT2uJbE8RDKrk5MSKcv/5M6jhhZaOgvVwxTGQs
-         w0YtPlS63i1tprD5BKXtnx9MpsZkz2JL/z9HwhlUcxvdDa9xq9t3ZRC+pEFJJ608p4mF
-         MAKRNcDAObIUTg4QwwF/qAB4djfFFlbOGSOyoJt1Uu8xLM8Gl3cBGzBB1HX5R4LRhesL
-         ytBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722380784; x=1722985584;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=L6lB3zfnMbEB0fLiWI7+IIRHRj4kgKjTW/X0L+tCnBY=;
-        b=ub19sUMX3DqI5fDVxPu7uY+dnEj22Zhkl/S6QmzeRjHyFpoTpMmugX2Ww06/PDTnv4
-         k2JBpB3ZXzQgfmzAjW+pvk6BI2EsUxac63c9bE0n63ryMg6M0uuPvbfd0Jl+026mG5kt
-         ikKeSRiu/kaRgMp7+4ELik5i5F2v5WQ25zBIWUNjjIIilzWcIsMK2V7CVy/+zln2KxXU
-         6pDJUdHz2X36BSKfaUe2Yna5/D8BWEGj7KnLw2jpEsQdkZZQ4q38sKniif38C12IBH7c
-         WM+OEoRnpgqILXAyAZYwca/yJ/2scQ0BDPzCg77pzEh2zqnzmIjMQCHSUebR7+Lih3GO
-         zBTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUQIjdO9nPx9VCYrF+yQqMl+toDMKjRS9qQb9aRi3xZp6KodimeF8IRuRU/XDCrKTakc1kPpl96V2GFkylhkevUmgGqZVcLv3dwAxkFwZ4LmLTw5e9IeASARQMsTaEw8BijxHJjHQ==
-X-Gm-Message-State: AOJu0YyRJxTnsql9SaX53ZLpcR1HXjWAru90szYjHOKuTmfjxpFVFnVf
-	KQGKHwANNb6OwIZsr6v3W5EqyngARYZhQRk6P3hjQened178kNEt
-X-Google-Smtp-Source: AGHT+IGcMNK/qfM/GFq6voKuNe58wyU1uRMv7LMAUZsaKck7J8HvPBr5zu6ho22w115CMemADOXQbA==
-X-Received: by 2002:a17:903:7cc:b0:1fc:5f3a:4d9a with SMTP id d9443c01a7336-1ff0491ac2cmr130268935ad.58.1722380783867;
-        Tue, 30 Jul 2024 16:06:23 -0700 (PDT)
-Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fed7d37b9asm107607185ad.114.2024.07.30.16.06.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jul 2024 16:06:23 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 30 Jul 2024 13:06:22 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Xavier <xavier_qy@163.com>
-Cc: Waiman Long <longman@redhat.com>, akpm@linux-foundation.org,
-	lizefan.x@bytedance.com, hannes@cmpxchg.org,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	torvalds@linux-foundation.org, mkoutny@suse.com
-Subject: Re: Re: [PATCH-cpuset v11 0/2] Add Union-Find and use it to optimize
- cpuset
-Message-ID: <Zqlx7gY2PnDPLj1R@slm.duckdns.org>
-References: <f9e55eb8-82a8-45f2-a949-1db182e95fc8@redhat.com>
- <20240704062444.262211-1-xavier_qy@163.com>
- <e20fe0dc-a3ef-4f55-a991-6efe1a9ddecd@redhat.com>
- <ZowyKf3RlMI0q1P-@slm.duckdns.org>
- <5c90d42c.2c03.190fc5fb1c8.Coremail.xavier_qy@163.com>
+	s=arc-20240116; t=1722381196; c=relaxed/simple;
+	bh=W/5CntLbeB1Dw6lpz+OWwaeLeOn8lSO1+7ZN7FmmsyQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lT0vQR21cVXPS8qqzUAeIOZ9V4hfE6HD9fgjo0XFZ2NhbXwqW65teUNNupOUI/tYTuDxA2u62P18Seqn6PrtxDIYhFjcaakjrtovkMaOv2PasUyCd+WvodlQx014GwoP2wSJgaS4awWKQFPFGTk0DFiYOGnJqr+n01BXpT9RlnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=pass smtp.mailfrom=relay.vimeo.com; dkim=pass (1024-bit key) header.d=relay.vimeo.com header.i=@relay.vimeo.com header.b=SAaGeZyu; arc=none smtp.client-ip=69.72.47.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=relay.vimeo.com
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=relay.vimeo.com; q=dns/txt; s=mailo; t=1722381193; x=1722388393;
+ h=Content-Transfer-Encoding: MIME-Version: Message-Id: Date: Subject: Subject: Cc: To: To: From: From: Sender: Sender;
+ bh=HFw6Itzm+RFqrqKfDRiCjS9+G+PGLdndYUWiXGJxZPI=;
+ b=SAaGeZyu7hp+34HTgx0vmV5cKS1DWbGO9XJdwCqG0mZtFbL4NBBBFYbPMXR4XAbREW1FjNoTXmp3oa5AfoeXt06imjZZ+kVRii/AJS/gzXSGPFVnPmaBA12X3fD9CXAdHy70/RFu55cZl4LzxKI7x7n/abg8nK694jT0j7qh1ag=
+X-Mailgun-Sending-Ip: 69.72.47.110
+X-Mailgun-Sid: WyIzY2RlYyIsImNncm91cHNAdmdlci5rZXJuZWwub3JnIiwiOWQyYTFjIl0=
+Received: from smtp.vimeo.com (215.71.185.35.bc.googleusercontent.com [35.185.71.215])
+ by 9a3eac76c4d6 with SMTP id 66a973892c8e1673cb6a35c6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 30 Jul 2024 23:13:13 GMT
+Sender: davidf=vimeo.com@relay.vimeo.com
+Received: from nutau (gke-sre-us-east1-main-4c35368b-hrdh.c.vimeo-core.internal [10.56.27.209])
+	by smtp.vimeo.com (Postfix) with ESMTP id 23D9365CC2;
+	Tue, 30 Jul 2024 23:13:13 +0000 (UTC)
+Received: by nutau (Postfix, from userid 1001)
+	id C06F0B40AC9; Tue, 30 Jul 2024 19:13:12 -0400 (EDT)
+From: David Finkel <davidf@vimeo.com>
+To: Muchun Song <muchun.song@linux.dev>,
+	Tejun Heo <tj@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: core-services@vimeo.com,
+	Jonathan Corbet <corbet@lwn.net>,
+	Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Shuah Khan <shuah@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+Subject: [PATCH v7] mm, memcg: cg2 memory{.swap,}.peak write handlers
+Date: Tue, 30 Jul 2024 19:13:02 -0400
+Message-Id: <20240730231304.761942-1-davidf@vimeo.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5c90d42c.2c03.190fc5fb1c8.Coremail.xavier_qy@163.com>
+Content-Transfer-Encoding: 8bit
 
-Hello,
+This revision only updates the tests from the previous revision[1], and
+integrates an Acked-by[2] and a Reviewed-By[3] into the first commit
+message.
 
-On Mon, Jul 29, 2024 at 10:44:08AM +0800, Xavier wrote:
-> I saw on kernel.org that v6.11-rc1 has been released. It might be time to start merging
-> this patch. 
 
-Merged two patches.
+Documentation/admin-guide/cgroup-v2.rst          |  22 ++-
+include/linux/cgroup-defs.h                      |   5 +
+include/linux/cgroup.h                           |   3 +
+include/linux/memcontrol.h                       |   5 +
+include/linux/page_counter.h                     |  11 +-
+kernel/cgroup/cgroup-internal.h                  |   2 +
+kernel/cgroup/cgroup.c                           |   7 +
+mm/memcontrol.c                                  | 116 +++++++++++++--
+mm/page_counter.c                                |  30 +++-
+tools/testing/selftests/cgroup/cgroup_util.c     |  22 +++
+tools/testing/selftests/cgroup/cgroup_util.h     |   2 +
+tools/testing/selftests/cgroup/test_memcontrol.c | 264 ++++++++++++++++++++++++++++++++-
+12 files changed, 454 insertions(+), 35 deletions(-)
 
-> By the way,  I have submitted an optimization patch for RT group scheduling, but after
-> two rounds of communication, I haven't received any further responses. Could you
-> provide me with some advice?
-> 
-> https://lore.kernel.org/all/20240627172156.235421-1-xavier_qy@163.com/
+[1]: https://lore.kernel.org/cgroups/20240729143743.34236-1-davidf@vimeo.com/T/
+[2]: https://lore.kernel.org/cgroups/20240729143743.34236-1-davidf@vimeo.com/T/#m807225dd0944b0bf78419639272bf6602fe053fc
+[3]: https://lore.kernel.org/cgroups/20240729143743.34236-1-davidf@vimeo.com/T/#meac510a72b4a282fe1e5edec3323c2204d46cf11
 
-I'm not sure I have a useful advice other than just pinging again.
 
-Thanks.
+Thank you all for the support and reviews so far!
 
--- 
-tejun
+David Finkel
+Senior Principal Software Engineer
+Vimeo Inc.
+
+
+
 
