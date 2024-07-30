@@ -1,75 +1,52 @@
-Return-Path: <cgroups+bounces-3933-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-3936-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80564940055
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jul 2024 23:23:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F383940406
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2024 04:00:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E2961F226AD
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jul 2024 21:23:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 187F4282C17
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2024 02:00:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4804F18E752;
-	Mon, 29 Jul 2024 21:23:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=relay.vimeo.com header.i=@relay.vimeo.com header.b="M/XK7BsX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10351BE68;
+	Tue, 30 Jul 2024 02:00:37 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from m35-116.mailgun.net (m35-116.mailgun.net [69.72.35.116])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CCA518D4AF
-	for <cgroups@vger.kernel.org>; Mon, 29 Jul 2024 21:23:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.72.35.116
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 081CD8C13;
+	Tue, 30 Jul 2024 02:00:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722288186; cv=none; b=HQs+R6XCCyytBbUfYmVR4RG6Q8/OxcCRwAqgvje6q5LD+7FdRECHSX5+HtA7w+5YHGTL50V19h52vMLbdXkZuqZ4QVmPyU8TyODlsFj+WP3VINqB1OFubXY1rxEUHB5jryMpgReDW8GvuZWcplmA8kMJp9r7chSAUpIpk7LjN7c=
+	t=1722304836; cv=none; b=mnBXw2dAE5CnjdrtsYMOphQTgGYLDMTaAH6O5WtJC7WohcRUjh13ZJBONVSnlP5hq+abzZIdADGpftkKj0xehT6ukg6nNLixPL2E+6bC67ijIDtUl2Tz7MaG5RCu3BRhR4VPwLKMKd+Pb19dTSkf6sVeenhIg/lWLONNhAuBXTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722288186; c=relaxed/simple;
-	bh=mV20kFAXH41ztz8wYbzf9MoSExP42SEu0mNOk+vb0fA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mSCRY9PQnZ8s2sNWfgComfJO54I0eiGACQoLQWnS5cOLR5vcEgyFd6ar7Xrp6a5bO9HlGOkjME/oaPLH0yaFf42dki2nijWtA9wwUdfbbs7WR0mzcEe9r6Nnyxx7jgt84yjsGs+8Ps6mmPrAH//riqVF9TVMx0COqrpGkZ2ktLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=pass smtp.mailfrom=relay.vimeo.com; dkim=pass (1024-bit key) header.d=relay.vimeo.com header.i=@relay.vimeo.com header.b=M/XK7BsX; arc=none smtp.client-ip=69.72.35.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=relay.vimeo.com
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=relay.vimeo.com; q=dns/txt; s=mailo; t=1722288182; x=1722295382;
- h=Content-Transfer-Encoding: MIME-Version: References: In-Reply-To: Message-Id: Date: Subject: Subject: Cc: To: To: From: From: Sender: Sender;
- bh=H3UMxB4M7BrujHBPr+UgcfPfxgI2rlDhcD8iL3igSy4=;
- b=M/XK7BsXSHOLe84nAHAP6i7AQUWOWpeNieQQpAzlDNlm1zDrk3+8SRY3v7RESQbawpx0wg+D+ZpzBSF6McFuOLRdlvlCbgS8Vra0Bz1A2wz3FqttSqkjGR9z0ovXZiwZmVgRFMVf2QDwPm2kiiYuDzZ7yW2zAEb6ciDNxA2xLJ4=
-X-Mailgun-Sending-Ip: 69.72.35.116
-X-Mailgun-Sid: WyIzY2RlYyIsImNncm91cHNAdmdlci5rZXJuZWwub3JnIiwiOWQyYTFjIl0=
-Received: from smtp.vimeo.com (215.71.185.35.bc.googleusercontent.com [35.185.71.215])
- by 5a80eff7c455 with SMTP id 66a808364527901af3858a2c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 29 Jul 2024 21:23:02 GMT
-Sender: davidf=vimeo.com@relay.vimeo.com
-Received: from nutau (gke-sre-us-east1-main-7f6ba6de-loec.c.vimeo-core.internal [10.56.27.213])
-	by smtp.vimeo.com (Postfix) with ESMTP id 17B7C65CBB;
-	Mon, 29 Jul 2024 21:23:02 +0000 (UTC)
-Received: by nutau (Postfix, from userid 1001)
-	id 0D850B40AC9; Mon, 29 Jul 2024 10:38:11 -0400 (EDT)
-From: David Finkel <davidf@vimeo.com>
-To: Muchun Song <muchun.song@linux.dev>,
-	Tejun Heo <tj@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: core-services@vimeo.com,
-	Jonathan Corbet <corbet@lwn.net>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Shuah Khan <shuah@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	David Finkel <davidf@vimeo.com>
-Subject: [PATCH v6 2/2] mm, memcg: cg2 memory{.swap,}.peak write tests
-Date: Mon, 29 Jul 2024 10:37:43 -0400
-Message-Id: <20240729143743.34236-3-davidf@vimeo.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240729143743.34236-1-davidf@vimeo.com>
-References: <20240729143743.34236-1-davidf@vimeo.com>
+	s=arc-20240116; t=1722304836; c=relaxed/simple;
+	bh=/1b095bXodeSp67nwRh/N0nYHZ5rkiE8L6ajk6Rlg8Q=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Sys81NHds7vRoH8ZT6T5hlDVQBl/dehoHtNShBsfoxDZuVTUaJneUVt2pY819TbYOW+RIMaya2v2cSoOE+++ld3zWPU0Dkfj3mvRmEgpkjA0c2KDd5qubW+Fz5DZTY94UskYRV+9RvzxSvuAWYsoMRPL97LFJK37BS4QAZSp4n0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4WXyxV2WNvz28fvL;
+	Tue, 30 Jul 2024 09:55:58 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5C9081A0170;
+	Tue, 30 Jul 2024 10:00:30 +0800 (CST)
+Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Tue, 30 Jul
+ 2024 10:00:29 +0800
+From: Chen Ridong <chenridong@huawei.com>
+To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+	<longman@redhat.com>, <adityakali@google.com>, <sergeh@kernel.org>
+CC: <bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH] cgroup/cpuset: fix panic caused by partcmd_update
+Date: Tue, 30 Jul 2024 01:53:16 +0000
+Message-ID: <20240730015316.2324188-1-chenridong@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -77,386 +54,95 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
-Extend two existing tests to cover extracting memory usage through the
-newly mutable memory.peak and memory.swap.peak handlers.
+We find a bug as below:
+BUG: unable to handle page fault for address: 00000003
+PGD 0 P4D 0
+Oops: 0000 [#1] PREEMPT SMP NOPTI
+CPU: 3 PID: 358 Comm: bash Tainted: G        W I        6.6.0-10893-g60d6
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/4
+RIP: 0010:partition_sched_domains_locked+0x483/0x600
+Code: 01 48 85 d2 74 0d 48 83 05 29 3f f8 03 01 f3 48 0f bc c2 89 c0 48 9
+RSP: 0018:ffffc90000fdbc58 EFLAGS: 00000202
+RAX: 0000000100000003 RBX: ffff888100b3dfa0 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 000000000002fe80
+RBP: ffff888100b3dfb0 R08: 0000000000000001 R09: 0000000000000000
+R10: ffffc90000fdbcb0 R11: 0000000000000004 R12: 0000000000000002
+R13: ffff888100a92b48 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007f44a5425740(0000) GS:ffff888237d80000(0000) knlGS:0000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000100030973 CR3: 000000010722c000 CR4: 00000000000006e0
+Call Trace:
+ <TASK>
+ ? show_regs+0x8c/0xa0
+ ? __die_body+0x23/0xa0
+ ? __die+0x3a/0x50
+ ? page_fault_oops+0x1d2/0x5c0
+ ? partition_sched_domains_locked+0x483/0x600
+ ? search_module_extables+0x2a/0xb0
+ ? search_exception_tables+0x67/0x90
+ ? kernelmode_fixup_or_oops+0x144/0x1b0
+ ? __bad_area_nosemaphore+0x211/0x360
+ ? up_read+0x3b/0x50
+ ? bad_area_nosemaphore+0x1a/0x30
+ ? exc_page_fault+0x890/0xd90
+ ? __lock_acquire.constprop.0+0x24f/0x8d0
+ ? __lock_acquire.constprop.0+0x24f/0x8d0
+ ? asm_exc_page_fault+0x26/0x30
+ ? partition_sched_domains_locked+0x483/0x600
+ ? partition_sched_domains_locked+0xf0/0x600
+ rebuild_sched_domains_locked+0x806/0xdc0
+ update_partition_sd_lb+0x118/0x130
+ cpuset_write_resmask+0xffc/0x1420
+ cgroup_file_write+0xb2/0x290
+ kernfs_fop_write_iter+0x194/0x290
+ new_sync_write+0xeb/0x160
+ vfs_write+0x16f/0x1d0
+ ksys_write+0x81/0x180
+ __x64_sys_write+0x21/0x30
+ x64_sys_call+0x2f25/0x4630
+ do_syscall_64+0x44/0xb0
+ entry_SYSCALL_64_after_hwframe+0x78/0xe2
+RIP: 0033:0x7f44a553c887
 
-In particular, make sure to exercise adding and removing watchers with
-overlapping lifetimes so the less-trivial logic gets tested.
+It can be reproduced with cammands:
+cd /sys/fs/cgroup/
+mkdir test
+cd test/
+echo +cpuset > ../cgroup.subtree_control
+echo root > cpuset.cpus.partition
+echo 0-3 > cpuset.cpus // 3 is nproc
 
-Signed-off-by: David Finkel <davidf@vimeo.com>
+This issue is caused by the incorrect rebuilding of scheduling domains.
+In this scenario, test/cpuset.cpus.partition should be an invalid root
+and should not trigger the rebuilding of scheduling domains. When calling
+update_parent_effective_cpumask with partcmd_update, if newmask is not
+null, it should recheck newmask whether there are cpus is available
+for parect/cs that has tasks.
+
+Fixes: 0c7f293efc87 ("cgroup/cpuset: Add cpuset.cpus.exclusive.effective for v2")
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- tools/testing/selftests/cgroup/cgroup_util.c  |  22 ++
- tools/testing/selftests/cgroup/cgroup_util.h  |   2 +
- .../selftests/cgroup/test_memcontrol.c        | 229 +++++++++++++++++-
- 3 files changed, 245 insertions(+), 8 deletions(-)
+ kernel/cgroup/cpuset.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
-index 432db923bced0..1e2d46636a0ca 100644
---- a/tools/testing/selftests/cgroup/cgroup_util.c
-+++ b/tools/testing/selftests/cgroup/cgroup_util.c
-@@ -141,6 +141,16 @@ long cg_read_long(const char *cgroup, const char *control)
- 	return atol(buf);
- }
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 40ec4abaf440..a9b6d56eeffa 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -1991,6 +1991,8 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
+ 			part_error = PERR_CPUSEMPTY;
+ 			goto write_error;
+ 		}
++		/* Check newmask again, whether cpus are available for parent/cs */
++		nocpu |= tasks_nocpu_error(parent, cs, newmask);
  
-+long cg_read_long_fd(int fd)
-+{
-+	char buf[128];
-+
-+	if (pread(fd, buf, sizeof(buf), 0) <= 0)
-+		return -1;
-+
-+	return atol(buf);
-+}
-+
- long cg_read_key_long(const char *cgroup, const char *control, const char *key)
- {
- 	char buf[PAGE_SIZE];
-@@ -183,6 +193,18 @@ int cg_write(const char *cgroup, const char *control, char *buf)
- 	return ret == len ? 0 : ret;
- }
- 
-+/*
-+ * Returns fd on success, or -1 on failure.
-+ * (fd should be closed with close() as usual)
-+ */
-+int cg_open(const char *cgroup, const char *control, int flags)
-+{
-+	char path[PATH_MAX];
-+
-+	snprintf(path, sizeof(path), "%s/%s", cgroup, control);
-+	return open(path, flags);
-+}
-+
- int cg_write_numeric(const char *cgroup, const char *control, long value)
- {
- 	char buf[64];
-diff --git a/tools/testing/selftests/cgroup/cgroup_util.h b/tools/testing/selftests/cgroup/cgroup_util.h
-index e8d04ac9e3d23..19b131ee77072 100644
---- a/tools/testing/selftests/cgroup/cgroup_util.h
-+++ b/tools/testing/selftests/cgroup/cgroup_util.h
-@@ -34,9 +34,11 @@ extern int cg_read_strcmp(const char *cgroup, const char *control,
- extern int cg_read_strstr(const char *cgroup, const char *control,
- 			  const char *needle);
- extern long cg_read_long(const char *cgroup, const char *control);
-+extern long cg_read_long_fd(int fd);
- long cg_read_key_long(const char *cgroup, const char *control, const char *key);
- extern long cg_read_lc(const char *cgroup, const char *control);
- extern int cg_write(const char *cgroup, const char *control, char *buf);
-+extern int cg_open(const char *cgroup, const char *control, int flags);
- int cg_write_numeric(const char *cgroup, const char *control, long value);
- extern int cg_run(const char *cgroup,
- 		  int (*fn)(const char *cgroup, void *arg),
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index 41ae8047b8895..f54c1f75b6da7 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -161,13 +161,15 @@ static int alloc_pagecache_50M_check(const char *cgroup, void *arg)
- /*
-  * This test create a memory cgroup, allocates
-  * some anonymous memory and some pagecache
-- * and check memory.current and some memory.stat values.
-+ * and checks memory.current, memory.peak, and some memory.stat values.
-  */
--static int test_memcg_current(const char *root)
-+static int test_memcg_current_peak(const char *root)
- {
- 	int ret = KSFT_FAIL;
--	long current;
-+	long current, peak, peak_reset;
- 	char *memcg;
-+	bool fd2_closed = false, fd3_closed = false, fd4_closed = false;
-+	int peak_fd = -1, peak_fd2 = -1, peak_fd3 = -1, peak_fd4 = -1;
- 
- 	memcg = cg_name(root, "memcg_test");
- 	if (!memcg)
-@@ -180,15 +182,108 @@ static int test_memcg_current(const char *root)
- 	if (current != 0)
- 		goto cleanup;
- 
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak != 0)
-+		goto cleanup;
-+
- 	if (cg_run(memcg, alloc_anon_50M_check, NULL))
- 		goto cleanup;
- 
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak < MB(50))
-+		goto cleanup;
-+
-+	/*
-+	 * We'll open a few FDs for the same memory.peak file to exercise the free-path
-+	 * We need at least three to be closed in a different order than writes occurred to test
-+	 * the linked-list handling.
-+	 */
-+	peak_fd = cg_open(memcg, "memory.peak", O_RDWR | O_APPEND | O_CLOEXEC);
-+
-+	if (peak_fd == -1)
-+		goto cleanup;
-+
-+	peak_fd2 = cg_open(memcg, "memory.peak", O_RDWR | O_APPEND | O_CLOEXEC);
-+
-+	if (peak_fd2 == -1)
-+		goto cleanup;
-+
-+	peak_fd3 = cg_open(memcg, "memory.peak", O_RDWR | O_APPEND | O_CLOEXEC);
-+
-+	if (peak_fd3 == -1)
-+		goto cleanup;
-+
-+	/* any non-empty string resets, but make it clear */
-+	static const char reset_string[] = "reset\n";
-+
-+	peak_reset = write(peak_fd, reset_string, sizeof(reset_string));
-+	if (peak_reset != sizeof(reset_string))
-+		goto cleanup;
-+
-+	peak_reset = write(peak_fd2, reset_string, sizeof(reset_string));
-+	if (peak_reset != sizeof(reset_string))
-+		goto cleanup;
-+
-+	peak_reset = write(peak_fd3, reset_string, sizeof(reset_string));
-+	if (peak_reset != sizeof(reset_string))
-+		goto cleanup;
-+
-+	/* Make sure a completely independent read isn't affected by our  FD-local reset above*/
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak < MB(50))
-+		goto cleanup;
-+
-+	fd2_closed = true;
-+	if (close(peak_fd2))
-+		goto cleanup;
-+
-+	peak_fd4 = cg_open(memcg, "memory.peak", O_RDWR | O_APPEND | O_CLOEXEC);
-+
-+	if (peak_fd4 == -1)
-+		goto cleanup;
-+
-+	peak_reset = write(peak_fd4, reset_string, sizeof(reset_string));
-+	if (peak_reset != sizeof(reset_string))
-+		goto cleanup;
-+
-+	peak = cg_read_long_fd(peak_fd);
-+	if (peak > MB(30) || peak < 0)
-+		goto cleanup;
-+
- 	if (cg_run(memcg, alloc_pagecache_50M_check, NULL))
- 		goto cleanup;
- 
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak < MB(50))
-+		goto cleanup;
-+
-+	/* Make sure everything is back to normal */
-+	peak = cg_read_long_fd(peak_fd);
-+	if (peak < MB(50))
-+		goto cleanup;
-+
-+	peak = cg_read_long_fd(peak_fd4);
-+	if (peak < MB(50))
-+		goto cleanup;
-+
-+	fd3_closed = true;
-+	if (close(peak_fd3))
-+		goto cleanup;
-+
-+	fd4_closed = true;
-+	if (close(peak_fd4))
-+		goto cleanup;
-+
- 	ret = KSFT_PASS;
- 
- cleanup:
-+	close(peak_fd);
-+	if (!fd2_closed)
-+		close(peak_fd2);
-+	if (!fd3_closed)
-+		close(peak_fd3);
-+	if (!fd4_closed)
-+		close(peak_fd4);
- 	cg_destroy(memcg);
- 	free(memcg);
- 
-@@ -817,13 +912,17 @@ static int alloc_anon_50M_check_swap(const char *cgroup, void *arg)
- 
- /*
-  * This test checks that memory.swap.max limits the amount of
-- * anonymous memory which can be swapped out.
-+ * anonymous memory which can be swapped out. Additionally, it verifies that
-+ * memory.swap.peak reflects the high watermark and can be reset.
-  */
--static int test_memcg_swap_max(const char *root)
-+static int test_memcg_swap_max_peak(const char *root)
- {
- 	int ret = KSFT_FAIL;
- 	char *memcg;
--	long max;
-+	long max, peak;
-+
-+	/* any non-empty string resets */
-+	static const char reset_string[] = "foobarbaz";
- 
- 	if (!is_swap_enabled())
- 		return KSFT_SKIP;
-@@ -840,6 +939,45 @@ static int test_memcg_swap_max(const char *root)
- 		goto cleanup;
- 	}
- 
-+	int swap_peak_fd = cg_open(memcg, "memory.swap.peak",
-+				   O_RDWR | O_APPEND | O_CLOEXEC);
-+
-+	if (swap_peak_fd == -1)
-+		goto cleanup;
-+
-+	int mem_peak_fd = cg_open(memcg, "memory.peak", O_RDWR | O_APPEND | O_CLOEXEC);
-+
-+	if (mem_peak_fd == -1)
-+		goto cleanup;
-+
-+	if (cg_read_long(memcg, "memory.swap.peak"))
-+		goto cleanup;
-+
-+	if (cg_read_long_fd(swap_peak_fd))
-+		goto cleanup;
-+
-+	/* switch the swap and mem fds into local-peak tracking mode*/
-+	int peak_reset = write(swap_peak_fd, reset_string, sizeof(reset_string));
-+
-+	if (peak_reset != sizeof(reset_string))
-+		goto cleanup;
-+
-+	if (cg_read_long_fd(swap_peak_fd))
-+		goto cleanup;
-+
-+	if (cg_read_long(memcg, "memory.peak"))
-+		goto cleanup;
-+
-+	if (cg_read_long_fd(mem_peak_fd))
-+		goto cleanup;
-+
-+	peak_reset = write(mem_peak_fd, reset_string, sizeof(reset_string));
-+	if (peak_reset != sizeof(reset_string))
-+		goto cleanup;
-+
-+	if (cg_read_long_fd(mem_peak_fd))
-+		goto cleanup;
-+
- 	if (cg_read_strcmp(memcg, "memory.max", "max\n"))
- 		goto cleanup;
- 
-@@ -862,6 +1000,61 @@ static int test_memcg_swap_max(const char *root)
- 	if (cg_read_key_long(memcg, "memory.events", "oom_kill ") != 1)
- 		goto cleanup;
- 
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak < MB(29))
-+		goto cleanup;
-+
-+	peak = cg_read_long(memcg, "memory.swap.peak");
-+	if (peak < MB(29))
-+		goto cleanup;
-+
-+	peak = cg_read_long_fd(mem_peak_fd);
-+	if (peak < MB(29))
-+		goto cleanup;
-+
-+	peak = cg_read_long_fd(swap_peak_fd);
-+	if (peak < MB(29))
-+		goto cleanup;
-+
-+	/*
-+	 * open, reset and close the peak swap on another FD to make sure
-+	 * multiple extant fds don't corrupt the linked-list
-+	 */
-+	peak_reset = cg_write(memcg, "memory.swap.peak", (char *)reset_string);
-+	if (peak_reset)
-+		goto cleanup;
-+
-+	peak_reset = cg_write(memcg, "memory.peak", (char *)reset_string);
-+	if (peak_reset)
-+		goto cleanup;
-+
-+	/* actually reset on the fds */
-+	peak_reset = write(swap_peak_fd, reset_string, sizeof(reset_string));
-+	if (peak_reset != sizeof(reset_string))
-+		goto cleanup;
-+
-+	peak_reset = write(mem_peak_fd, reset_string, sizeof(reset_string));
-+	if (peak_reset != sizeof(reset_string))
-+		goto cleanup;
-+
-+	peak = cg_read_long_fd(swap_peak_fd);
-+	if (peak > MB(10))
-+		goto cleanup;
-+
-+	/*
-+	 * The cgroup is now empty, but there may be a page or two associated
-+	 * with the open FD accounted to it.
-+	 */
-+	peak = cg_read_long_fd(mem_peak_fd);
-+	if (peak > MB(1))
-+		goto cleanup;
-+
-+	if (cg_read_long(memcg, "memory.peak") < MB(29))
-+		goto cleanup;
-+
-+	if (cg_read_long(memcg, "memory.swap.peak") < MB(29))
-+		goto cleanup;
-+
- 	if (cg_run(memcg, alloc_anon_50M_check_swap, (void *)MB(30)))
- 		goto cleanup;
- 
-@@ -869,9 +1062,29 @@ static int test_memcg_swap_max(const char *root)
- 	if (max <= 0)
- 		goto cleanup;
- 
-+	peak = cg_read_long(memcg, "memory.peak");
-+	if (peak < MB(29))
-+		goto cleanup;
-+
-+	peak = cg_read_long(memcg, "memory.swap.peak");
-+	if (peak < MB(29))
-+		goto cleanup;
-+
-+	peak = cg_read_long_fd(mem_peak_fd);
-+	if (peak < MB(29))
-+		goto cleanup;
-+
-+	peak = cg_read_long_fd(swap_peak_fd);
-+	if (peak < MB(19))
-+		goto cleanup;
-+
- 	ret = KSFT_PASS;
- 
- cleanup:
-+	if (close(mem_peak_fd))
-+		ret = KSFT_FAIL;
-+	if (close(swap_peak_fd))
-+		ret = KSFT_FAIL;
- 	cg_destroy(memcg);
- 	free(memcg);
- 
-@@ -1295,7 +1508,7 @@ struct memcg_test {
- 	const char *name;
- } tests[] = {
- 	T(test_memcg_subtree_control),
--	T(test_memcg_current),
-+	T(test_memcg_current_peak),
- 	T(test_memcg_min),
- 	T(test_memcg_low),
- 	T(test_memcg_high),
-@@ -1303,7 +1516,7 @@ struct memcg_test {
- 	T(test_memcg_max),
- 	T(test_memcg_reclaim),
- 	T(test_memcg_oom_events),
--	T(test_memcg_swap_max),
-+	T(test_memcg_swap_max_peak),
- 	T(test_memcg_sock),
- 	T(test_memcg_oom_group_leaf_events),
- 	T(test_memcg_oom_group_parent_events),
+ 		/*
+ 		 * partcmd_update with newmask:
 -- 
-2.40.1
+2.34.1
 
 
