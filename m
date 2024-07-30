@@ -1,84 +1,82 @@
-Return-Path: <cgroups+bounces-4005-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4006-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E57F942057
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2024 21:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EDFB9420F0
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2024 21:46:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8206C1C23620
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2024 19:10:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71C3B1C231A0
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2024 19:46:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E895718C91D;
-	Tue, 30 Jul 2024 19:10:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA8B18991F;
+	Tue, 30 Jul 2024 19:46:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="cskqiIVA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XbcdKZXk"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E386618A6B8
-	for <cgroups@vger.kernel.org>; Tue, 30 Jul 2024 19:10:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752B01AA3D8;
+	Tue, 30 Jul 2024 19:46:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722366630; cv=none; b=VFSeH8efRTeIMLR7wZ/r6wlqjzSXFV6piTr4HidweEXUlJntcydWIOCeqV8O8dZhk7W9/HGMq+EbRshPbEYri/ly1s0EbFwqiNT6od0veDyWg5iviYhSiHwwD22Sla0vwKEtkcWZHQI9dzdVpHDhrewkg7zW6zmGdljgXvXPtbs=
+	t=1722368779; cv=none; b=ZIzzJR3Vq3G7B04ViR9UuQCiwIFjsMZCTheTo0/ZMl19Bg0cAU6do2O08mlM+mvTMKyNuO5rase/z82HYrq8+GlNfe1ERVfM1oQbipucocaysXjCGBpfwOVF/W3ZB/avY3rydgrgqLuEpIO24CLyVJwkHqZXQrN8C4Z4ZZfNico=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722366630; c=relaxed/simple;
-	bh=cprG9uguQ5xQAd65VG0OmI1dSJ/AIFZZf/rzJXIqOG0=;
+	s=arc-20240116; t=1722368779; c=relaxed/simple;
+	bh=17zOcnzZrgNhjFFUqQ4WpBx9LqKRgttSoVYETyk4/Es=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k2jEEnNa2OozsIiDbZCc3Y1I9RW5I7xjhN73vyf2Oipx6q4ceycqKEYRhjeu1shSCJhdWMOI+BC/tx45hfj0GODYb0K1nXJ3SFW9F/jpLVDp4Z3rwBpqN0Glj9xhoAYmHt0ecOsBtvauuGHC9DNtpv+LFj+4a/+RtApnUO3PZIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=cskqiIVA; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6659e81bc68so39836557b3.0
-        for <cgroups@vger.kernel.org>; Tue, 30 Jul 2024 12:10:27 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=DA30wxiFw3u+mZTG7bj8e71Yod9oZx0OJt/q0Ht5g2D7bfaQZPZFXSGdovVsVKgGvG2YBFGQOdCKBa4u98cCe8NGBFTG1hAHktn5FHLVx91lymLs+YR49VmhUdBA+YZSH0dX7cW7tqoz4Q87UR+F8r5MIwkbvkZmjSU7BV+28u0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XbcdKZXk; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-7afd1aeac83so199407a12.0;
+        Tue, 30 Jul 2024 12:46:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1722366627; x=1722971427; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1722368778; x=1722973578; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6GUnz9l9Hov01YwHIE/X99jR0yCQ8jWPdAfQd5kTxAs=;
-        b=cskqiIVAToN8u5ifsNa0Ulq7laX0u7m8tS/Wl+D6PimGeNtq+U5Z0/BwHUtu4/JtCb
-         aW1LvkVXUqvQeVwsETU8Fo3LKdiWzlzXJx/mEumEGJduxRJIsXyiVENDoBZDHQb3cKx2
-         gNNvvVey/3/LdT17UM5DEqAyHhnzvdGno5iy1GaVFnRZF0CxCFpHAzsTI+wZcyhvEiJN
-         CrI+T4hxjE3hUA/dYsEmDhOS4O6DsihpgpKyqG8CDvqbTxMMWONvy75dv1yZOr9kj8ZY
-         oE0asvQyZ/OBGG321K2Bz18mjufhZpGO35gOC5Rgsvju5PhA+VxPOMcF5vGGK6SMk4ta
-         gnRw==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1kiwEizSLwu4XdpvfoIH937YfwtOhGy+O7LwlixDIWw=;
+        b=XbcdKZXkKsRxwm4IVsjvguMduFGLxQyAl8iAPuvtYIx9vUyFKIrACTFtEdmHDF6+/Z
+         o3kO5KlcDb0rvik+AMfCVfY3OC/zamZqGoA9RGVxFAlSzXUjw3x+pE0nlrbwVc5fK+si
+         gNUBJZszeKG/P++jd47S3p+QKNUxPcpLZj6AZEFBFL0jtHe/XJtseNK9quIxquYCeI29
+         /xY44yccoYyd9knqr1WTrG0E1wwY1ymc2rgVfROLIpQTxqdnpflvRTbL/83HBxK3/geg
+         VoAy0yaaS0ctvqnydlXlUtU/Wtrm7nQLq1vtS/yizGvH9W+Tni+K0+eECiJgpaGJXOSQ
+         sicg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722366627; x=1722971427;
+        d=1e100.net; s=20230601; t=1722368778; x=1722973578;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6GUnz9l9Hov01YwHIE/X99jR0yCQ8jWPdAfQd5kTxAs=;
-        b=baKsnU/RkLr6+aW7jFYdm01A4f++ffdbcZ+8F4qVeFpVZj14ft7n7fXXwwnhfnXQsD
-         YSask6i485YrnfybaqhbejQQG9l9HQ1dR+sMshd+TAvGvgcU1G/aRBN9dPZeASw/AgNk
-         3ph9P8VCJ2xD6mhHNMsfdrt3vMLC/5rrAIN6ku44K4nnz5Y07uFTszo+/GowQ4pZur6A
-         07mkaoDqwOmEvp2iWqcl+bUWV7guLBSK5nRNAJ+TEwCZPFZoM7ZHKJR/7APxU3A9GiKz
-         5VOzpLvLxsTT9tyOMkSxRSRvNLt6mKgixiL6k3DpKWM6wr/YRvWdY4yFfGRCQOW2wzv/
-         IMkw==
-X-Forwarded-Encrypted: i=1; AJvYcCX9L40oIQ0gaHozq8c6hKpDlSxfELGIdk/eSwiuNrfh65cGFTZ7caDUP7oTLvkaieB/Wb6KCOWejn7PnaECUfQbTg6MLreBcw==
-X-Gm-Message-State: AOJu0YzkUV5MvJw0ivTa1SCD4ORZqqbN4q2EO82GfrILnu2UICGfsrJi
-	keM15z1dfbE6rKrKj/ywA78pCjD5ONc1SUuhrSm0ya8QIfRFiiWklSzMGRlOGombtD7RapdCf+X
-	o
-X-Google-Smtp-Source: AGHT+IFlD3BEKMaeWaD720WWKRAG4+pH3jrjmCrAEylXJ2sjoD6Kq8sCVxrr8pWB9p2fWNe43d139w==
-X-Received: by 2002:a0d:dac6:0:b0:618:95a3:70b9 with SMTP id 00721157ae682-67a09592d49mr116965087b3.36.1722366626922;
-        Tue, 30 Jul 2024 12:10:26 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6756c44ceb7sm26204097b3.140.2024.07.30.12.10.26
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1kiwEizSLwu4XdpvfoIH937YfwtOhGy+O7LwlixDIWw=;
+        b=MCq39CLW+SHEdOw+7edLUw9TYmOOCLg8aLisinC1ClY4nAtstqL4633mnBneFM4Ot0
+         yUY0/CmYv97QluoxU+GgH8XSRNeCeXKDW9867uzhcsfJzO9omCdX4zuDxUYEkuq6o2b9
+         B5fyUm3/P51qxqn+V1bWYAJSd8aSadcruT7RuaDAo1YuVnHpGKTBrr6bn2eH0m1nSrmC
+         +3FPpPbRSUS3/NXfEJ+2M/GRsFb+NFLREQN0MrWp9OeHoc2hqJoetI8Fv831/47qywAE
+         Kf6OqBAvjmOKz6d8eTB34lxi/PB1RGhx2pte4UwRF07oqfathc2QtG43USU/iBGXOWpd
+         zSaw==
+X-Forwarded-Encrypted: i=1; AJvYcCVwgzMOaVJjI/fuk5hltPDSTyJPU6gbURsEszbojnDXlnW70Ka9VeURvafXkQwcNOH6EHrZNI/LT5Q0ml/kqcrOhz3p4HbJBIOkShQdxtwsaCylB6NTdcMV8R+qKQBUzpQ7vnxGkQ==
+X-Gm-Message-State: AOJu0YwXja2ryk340jRRKqa+ekpZAwSGCz1AP1r8+aQ3YyVaWTIPFq5O
+	VKFgswBMF9/ih6CiF271m2QKE6qWN2WodRG0d/DKUDuZacHZyDLn
+X-Google-Smtp-Source: AGHT+IEp+jlW4bLVCppdNp9IVsJNhg7Hs5KjXrUrEVU38si0CImg6+lHQiFXPuYhxbB/Ao6bwnZO3A==
+X-Received: by 2002:a17:90a:c718:b0:2c7:c5f5:1c72 with SMTP id 98e67ed59e1d1-2cfcab126fcmr4930239a91.13.1722368777605;
+        Tue, 30 Jul 2024 12:46:17 -0700 (PDT)
+Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2cf28c7b3d4sm11243910a91.18.2024.07.30.12.46.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jul 2024 12:10:26 -0700 (PDT)
-Date: Tue, 30 Jul 2024 15:10:25 -0400
-From: Josef Bacik <josef@toxicpanda.com>
-To: viro@kernel.org
-Cc: linux-fsdevel@vger.kernel.org, amir73il@gmail.com, bpf@vger.kernel.org,
-	brauner@kernel.org, cgroups@vger.kernel.org, kvm@vger.kernel.org,
-	netdev@vger.kernel.org, torvalds@linux-foundation.org
-Subject: Re: [PATCH 08/39] experimental: convert fs/overlayfs/file.c to
- CLASS(...)
-Message-ID: <20240730191025.GB3830393@perftesting>
-References: <20240730050927.GC5334@ZenIV>
- <20240730051625.14349-1-viro@kernel.org>
- <20240730051625.14349-8-viro@kernel.org>
+        Tue, 30 Jul 2024 12:46:15 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 30 Jul 2024 09:46:14 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Chen Ridong <chenridong@huawei.com>
+Cc: lizefan.x@bytedance.com, hannes@cmpxchg.org, longman@redhat.com,
+	adityakali@google.com, sergeh@kernel.org, mkoutny@suse.com,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 -next] cgroup/cpuset: remove child_ecpus_count
+Message-ID: <ZqlDBuH2kbK3PT6I@slm.duckdns.org>
+References: <20240724102418.2213801-1-chenridong@huawei.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -87,120 +85,20 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240730051625.14349-8-viro@kernel.org>
+In-Reply-To: <20240724102418.2213801-1-chenridong@huawei.com>
 
-On Tue, Jul 30, 2024 at 01:15:54AM -0400, viro@kernel.org wrote:
-> From: Al Viro <viro@zeniv.linux.org.uk>
+On Wed, Jul 24, 2024 at 10:24:18AM +0000, Chen Ridong wrote:
+> The child_ecpus_count variable was previously used to update
+> sibling cpumask when parent's effective_cpus is updated. However, it became
+> obsolete after commit e2ffe502ba45 ("cgroup/cpuset: Add
+> cpuset.cpus.exclusive for v2"). It should be removed.
 > 
-> There are four places where we end up adding an extra scope
-> covering just the range from constructor to destructor;
-> not sure if that's the best way to handle that.
-> 
-> The functions in question are ovl_write_iter(), ovl_splice_write(),
-> ovl_fadvise() and ovl_copyfile().
-> 
-> This is very likely *NOT* the final form of that thing - it
-> needs to be discussed.
-> 
-> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> ---
->  fs/overlayfs/file.c | 72 ++++++++++++++++++---------------------------
->  1 file changed, 29 insertions(+), 43 deletions(-)
-> 
-> diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-> index 4b9e145bc7b8..a2911c632137 100644
-> --- a/fs/overlayfs/file.c
-> +++ b/fs/overlayfs/file.c
-> @@ -132,6 +132,8 @@ static struct fderr ovl_real_fdget(const struct file *file)
->  	return ovl_real_fdget_meta(file, false);
->  }
->  
-> +DEFINE_CLASS(fd_real, struct fderr, fdput(_T), ovl_real_fdget(file), struct file *file)
-> +
->  static int ovl_open(struct inode *inode, struct file *file)
->  {
->  	struct dentry *dentry = file_dentry(file);
-> @@ -174,7 +176,6 @@ static int ovl_release(struct inode *inode, struct file *file)
->  static loff_t ovl_llseek(struct file *file, loff_t offset, int whence)
->  {
->  	struct inode *inode = file_inode(file);
-> -	struct fderr real;
->  	const struct cred *old_cred;
->  	loff_t ret;
->  
-> @@ -190,7 +191,7 @@ static loff_t ovl_llseek(struct file *file, loff_t offset, int whence)
->  			return vfs_setpos(file, 0, 0);
->  	}
->  
-> -	real = ovl_real_fdget(file);
-> +	CLASS(fd_real, real)(file);
->  	if (fd_empty(real))
->  		return fd_error(real);
->  
-> @@ -211,8 +212,6 @@ static loff_t ovl_llseek(struct file *file, loff_t offset, int whence)
->  	file->f_pos = fd_file(real)->f_pos;
->  	ovl_inode_unlock(inode);
->  
-> -	fdput(real);
-> -
->  	return ret;
->  }
->  
-> @@ -253,8 +252,6 @@ static void ovl_file_accessed(struct file *file)
->  static ssize_t ovl_read_iter(struct kiocb *iocb, struct iov_iter *iter)
->  {
->  	struct file *file = iocb->ki_filp;
-> -	struct fderr real;
-> -	ssize_t ret;
->  	struct backing_file_ctx ctx = {
->  		.cred = ovl_creds(file_inode(file)->i_sb),
->  		.user_file = file,
-> @@ -264,22 +261,18 @@ static ssize_t ovl_read_iter(struct kiocb *iocb, struct iov_iter *iter)
->  	if (!iov_iter_count(iter))
->  		return 0;
->  
-> -	real = ovl_real_fdget(file);
-> +	CLASS(fd_real, real)(file);
->  	if (fd_empty(real))
->  		return fd_error(real);
->  
-> -	ret = backing_file_read_iter(fd_file(real), iter, iocb, iocb->ki_flags,
-> -				     &ctx);
-> -	fdput(real);
-> -
-> -	return ret;
-> +	return backing_file_read_iter(fd_file(real), iter, iocb, iocb->ki_flags,
-> +				      &ctx);
->  }
->  
->  static ssize_t ovl_write_iter(struct kiocb *iocb, struct iov_iter *iter)
->  {
->  	struct file *file = iocb->ki_filp;
->  	struct inode *inode = file_inode(file);
-> -	struct fderr real;
->  	ssize_t ret;
->  	int ifl = iocb->ki_flags;
->  	struct backing_file_ctx ctx = {
-> @@ -295,7 +288,9 @@ static ssize_t ovl_write_iter(struct kiocb *iocb, struct iov_iter *iter)
->  	/* Update mode */
->  	ovl_copyattr(inode);
->  
-> -	real = ovl_real_fdget(file);
-> +	{
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
 
-Is this what we want to do from a code cleanliness standpoint?  This feels
-pretty ugly to me, I feal like it would be better to have something like
+Applied to cgroup/for-6.12 w/ the {} Waiman pointed out Restored.
 
-scoped_class(fd_real, real) {
-	// code
-}
+Thanks.
 
-rather than the {} at the same indent level as the underlying block.
-
-I don't feel super strongly about this, but I do feel like we need to either
-explicitly say "this is the way/an acceptable way to do this" from a code
-formatting standpoint, or we need to come up with a cleaner way of representing
-the scoped area.  Thanks,
-
-Josef
+-- 
+tejun
 
