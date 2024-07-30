@@ -1,82 +1,83 @@
-Return-Path: <cgroups+bounces-4013-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4014-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 309A0942295
-	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 00:14:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A4769422EE
+	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 00:29:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E850A286AA2
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2024 22:14:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 254B1281D74
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2024 22:29:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9143018E02B;
-	Tue, 30 Jul 2024 22:14:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88F4B190070;
+	Tue, 30 Jul 2024 22:29:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iSZI4ZLV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MS8YDn39"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D33B31AA3C3;
-	Tue, 30 Jul 2024 22:14:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E728D157466;
+	Tue, 30 Jul 2024 22:29:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722377690; cv=none; b=EYcqOzUVTxU1nYAWaJLlbrwUdVzTgNVx3o7dcFhjTUcti15gWIewiEfZyVdb3PxWepjC0ch3jPQ3AZBz4ysnRC91dCNxkoVAyvGMz2uSIi7K0cTXwenPWg0d3dXVMOyQDWQ22NC74BdHdJoo7jaVzZMdy2Pwvhsxb3iSZ9/e+Ks=
+	t=1722378578; cv=none; b=uKVpGjoT5SAupZJx4wmDN6E4/ZnpiV9p8RXAJHomnB7x3l/QF61etKG5myiIhGsHDuIWYFEce1f8zQZXUxJszS1T7Z9g19a8VZQDE1+qXjVzWT7oNmDOeUn/KUO5ISFE2An+W+NdYjYIW+Lmq6du7kE4/tdZnvIAmPVfv16a8bU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722377690; c=relaxed/simple;
-	bh=E+b8ujX7bguvXqf7N/m1AXx3cZLbyhJGYmSw/0+EpMo=;
+	s=arc-20240116; t=1722378578; c=relaxed/simple;
+	bh=2RMHV4d5NjJxz6HUYb+Sms0zlAjGFqcIpujxTAW79OE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=naS3zzKGAXhJ+wvWWroZ/6Q8hVgWZFWsBrGPi3sNiQ+eTtN+sxe5rJ0DYOUeCbHbG6gtVcwOTSdS4IoAW4vwpBBOhNh6VlhIWsi2xQJCIkgx8yjjb7jXi3w0YUIHIEcLmClVzUCuBAOJ6BRvqTrxuiMSCDak2cWqMPuMA4lgxZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iSZI4ZLV; arc=none smtp.client-ip=209.85.215.172
+	 Content-Type:Content-Disposition:In-Reply-To; b=t6IgPBnDxxFzSs+T3EL1p3/k7uyreq6VRfFP+mBN3zP/7WMucZBgIe5sq5K9s8Jb8Ke79+ff8jpS4ncFLxiFDFoYQpPmPY4oPUeErAYx/sh+89c2v2il7UP5bXh0bIevrmEmPSMUx8AAVxi9MIpMQxiHckMD2hHDN1V3FjlXHtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MS8YDn39; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-7a211a272c2so243797a12.1;
-        Tue, 30 Jul 2024 15:14:48 -0700 (PDT)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1fd9e70b592so33519385ad.3;
+        Tue, 30 Jul 2024 15:29:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722377688; x=1722982488; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1722378576; x=1722983376; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=B16lMJLjZ5QFXnHsYRnPAdBRJBP0j3bpJT50otO42ys=;
-        b=iSZI4ZLVsfxarWb3VuPw0Fo9oDRF1AcZKZv6l9KhfofKOV6jRtQB64NTx06JE1hTYk
-         mi5jU3r2vLrII/jZG2eDiWbYg0JtOyJGck+LJ1tIC06wQNv8wKXxib8ziNPkOfjkfGCU
-         I995oHtvNVtuczjnUGkwb0fXI1HdTkBQmACHsgBiyIHzFvYvzHCPkEW8AfZfZsMaHjRG
-         wkplHLD49IlfN2aNBAd1dsoials17BL9Ju46PobOkcpuQnJnwyWlNHZ0GVRpEBk2+ZcR
-         5YaGz+kDEThO9UZdBIdeIiWvE3VuiJtt8ovBB950k9TExme3o/Uk6jr0Zsf1ibQcM/P/
-         cHNQ==
+        bh=wubjsLA9Pfrz1RUDGqNYYIEp2h10KWcO+ZTm6F7lL1g=;
+        b=MS8YDn39uGBVuUxpp9N92hHIvc56nAHireUqvPytKo3dB5ihCIi8UXJ9MDnJG6Eu8k
+         csGH9ZQEwTMkwMqtfT/MIhBBIFrweQdFWLpRw3dsheR750ltMAmmhLFZYmikAaI3m0gl
+         0DYatAB0Mx7tPQxzkE8VqETNI6mCO4iZGIgqCmBrsLc7v4sGk49EbC3kqtIK0Y3saTiB
+         6WbLtr2m/7nRdYLOC0OWjm2gohqy7YqHSgeL40pAhbTGQzmxJkTqEa9c43g1XjpDePa+
+         fg73dNag6B88pRMj2Z/pPOh7ATZ2InXxirFuNxcBqjWxqVF4lqWxAGFvZu6vo1iJ0y2t
+         PMWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722377688; x=1722982488;
+        d=1e100.net; s=20230601; t=1722378576; x=1722983376;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B16lMJLjZ5QFXnHsYRnPAdBRJBP0j3bpJT50otO42ys=;
-        b=vmw5JaXRAfNKe+H8Oj8eh1gcT3jxLq4LvmWCVaSWvkDZIY3evr3iSxCsGOQFpLCY7u
-         58WodlOxl+9D2jp+hXivX+fC1+llDbyqAK8HUjGU8NmouZqEBsI91vBvM3cYk2VZPgB1
-         io3N2pEWKiFp4UngLSZ2eR0+hBKdrrevR6BJhIr0MT/zCwQF688yIKP6Av8++A4w74pq
-         NPyEVqqpTOw29FG2fqyD4+DlXmKIpvLlKDAhBpBkRzEwDUEgY/b1x8gWugXLt0aDoLQY
-         PK6fExHYM2S14Sgz/AvFKTutqaO5hk3/4oIBbkFk9EvMuNtTD6Kuk1JgQ9mMQohv2edc
-         ph9A==
-X-Forwarded-Encrypted: i=1; AJvYcCXjH/T2GzRwzrLr0Fh1VDOpsmawE0JocgaNK/2AIn672YtZinqhcxYYdPOJcUYGxyuaHIv0ptBr2zzin4+OJO9tyi6RHmaww62nty2kybDxnC+tl9a4BaXaxMEEtNg34VwEZb7a4g==
-X-Gm-Message-State: AOJu0YzMKy/csivqTC88jD1gE9YyslUvjyQFIehmoiUjFeCLa6+rsTHb
-	nWOyDDySTXBsjMPvn1ZEwwc51RyEoVrdNgtRMa4EFb2MYegi/mD3aGO6NQ==
-X-Google-Smtp-Source: AGHT+IG4IyJ2Elz3UMtMYa6q3gbGa5OSCP0Rj+jQeEKoAxYQnM2nJVEy9jsdUMTA5CeuWMSYLsXk+Q==
-X-Received: by 2002:a17:90b:17c6:b0:2c8:5055:e24f with SMTP id 98e67ed59e1d1-2cfcaab41dfmr5408192a91.2.1722377687948;
-        Tue, 30 Jul 2024 15:14:47 -0700 (PDT)
+        bh=wubjsLA9Pfrz1RUDGqNYYIEp2h10KWcO+ZTm6F7lL1g=;
+        b=ijUXg3lViK8rUgsWrck7aD8rBvkVF2kCGBHgpUAA7QHeSm124bAEi1sweg1YjIj6pw
+         9PupHrEnGpd6XvtYA6bP4gmw2ACE4XHNlzFxhrZv4NdJ4UrcORH3DrRNPWYD2vM8eHSK
+         GNv4+F/+EwW7S+nFBH/DsUIvlvVvCQ0ouDFXtcPFCblneyH+YDoTgitkxys8xYFNHCui
+         aFtrUL39LwSPSYeevQS3Z0eFUpIry0JepP3iLa2WnWhC9TKq5CSl8v7BVvwuHQ75Orkg
+         INqR9VhYv6AlbtJKHoyWkcl5oCltNAJzuj/fA6rZGIpm4YQSfcySGTZ2lPZCKWgKvjJS
+         A3Vg==
+X-Forwarded-Encrypted: i=1; AJvYcCW5eV6ZHzHE9u3qcn2mKvOQ+XhxL+gr3W9obQbBoPuosIhoWspIROUnZGg0BCN2MN2SmtKjp6lB5F1FTYTwwy/Q9kMo5XFRGgc3mfBj6bl16tMt6DFGUfZv263Mx/tg6HzdoNV7Zw==
+X-Gm-Message-State: AOJu0YxitKcRGLu1r0HHMRCYLRn6wmN+kAPkWyaSyqvhlboph1OKZDxN
+	e4luVVMShqr8DRt/fpODg0sRQBdxvrhyhguSBCvHhLZt25AmeRuW
+X-Google-Smtp-Source: AGHT+IFBvt0i2ECELFib8beenl5MXAf11naCxmnyGMQ7CLPWwOWj2NGhocDdpFwshdAMYDVj3mrIig==
+X-Received: by 2002:a17:903:24f:b0:1fc:4aa0:fb14 with SMTP id d9443c01a7336-1ff047811c1mr115817205ad.2.1722378576136;
+        Tue, 30 Jul 2024 15:29:36 -0700 (PDT)
 Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2cf28e376ecsm11088302a91.47.2024.07.30.15.14.47
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fed7f6dc27sm107059365ad.237.2024.07.30.15.29.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jul 2024 15:14:47 -0700 (PDT)
+        Tue, 30 Jul 2024 15:29:35 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 30 Jul 2024 12:14:46 -1000
+Date: Tue, 30 Jul 2024 12:29:34 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Xiu Jianfeng <xiujianfeng@huaweicloud.com>
-Cc: lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	xiujianfeng@huawei.com
-Subject: Re: [PATCH v2 -next] cgroup/pids: Avoid spurious event notification
-Message-ID: <Zqll1sNJB4qQc0s2@slm.duckdns.org>
-References: <20240730032920.3690263-1-xiujianfeng@huaweicloud.com>
+To: Xiu Jianfeng <xiujianfeng@huawei.com>
+Cc: longman@redhat.com, lizefan.x@bytedance.com, mingo@redhat.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, hannes@cmpxchg.org, mkoutny@suse.com,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] cgroup/cpuset: Remove cpuset_slab_spread_rotor
+Message-ID: <ZqlpTgb8L_J8i-cX@slm.duckdns.org>
+References: <20240713085916.3373085-1-xiujianfeng@huawei.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -85,36 +86,15 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240730032920.3690263-1-xiujianfeng@huaweicloud.com>
+In-Reply-To: <20240713085916.3373085-1-xiujianfeng@huawei.com>
 
-On Tue, Jul 30, 2024 at 03:29:20AM +0000, Xiu Jianfeng wrote:
-> From: Xiu Jianfeng <xiujianfeng@huawei.com>
+On Sat, Jul 13, 2024 at 08:59:16AM +0000, Xiu Jianfeng wrote:
+> Since the SLAB implementation was removed in v6.8, so the
+> cpuset_slab_spread_rotor is no longer used and can be removed.
 > 
-> Currently when a process in a group forks and fails due to it's
-> parent's max restriction, all the cgroups from 'pids_forking' to root
-> will generate event notifications but only the cgroups from
-> 'pids_over_limit' to root will increase the counter of PIDCG_MAX.
-> 
-> Consider this scenario: there are 4 groups A, B, C,and D, the
-> relationships are as follows, and user is watching on C.pids.events.
-> 
-> root->A->B->C->D
-> 
-> When a process in D forks and fails due to B.max restriction, the
-> user will get a spurious event notification because when he wakes up
-> and reads C.pids.events, he will find that the content has not changed.
-> 
-> To address this issue, only the cgroups from 'pids_over_limit' to root
-> will have their PIDCG_MAX counters increased and event notifications
-> generated.
-> 
-> Fixes: 385a635cacfe ("cgroup/pids: Make event counters hierarchical")
 > Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
 
-Applied to cgroup/for-6.12.
-
-Note that spurious events are explicitly allowed. Anyone watching an events
-file should keep track of the reported values to detect actual events.
+Applied cgroup/for-6.12.
 
 Thanks.
 
