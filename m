@@ -1,73 +1,122 @@
-Return-Path: <cgroups+bounces-4011-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4012-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8858A942180
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2024 22:18:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3308B942209
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2024 23:12:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAA491C22F85
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2024 20:18:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1C6B284D28
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2024 21:12:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D584918C916;
-	Tue, 30 Jul 2024 20:18:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E07B918CC1F;
+	Tue, 30 Jul 2024 21:12:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="jwEVD59/"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="AfLb+6tR"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB7B18B482;
-	Tue, 30 Jul 2024 20:18:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC33138B;
+	Tue, 30 Jul 2024 21:12:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722370719; cv=none; b=cQqunxVt2L2Uo6kFzUB5cy7nnJf8/3zgNH4uzXvPHrC+pevwbVRMuTBjPOMBzwVm1aoB+mWbu+MRGdxpxs4aye4dvICp1lxjETPPDfMVRe+uqTAy41tf7wPjFAFLIga3bUT4KclCo32dTjQBvWvEXbq9IBebmruq8rgd3YX9KTk=
+	t=1722373949; cv=none; b=uShFL92EgWbcegcriStpk1ONhaJglcqXLT67JBjnIGdAvexbThlbyTnOJGlO5Ms8JbLRhVNHqVshlgh9x441xGHOuq6njhUGpGGKB6x9vy8ZFgYHeVUiRhzrv+rZS4H9tJYpQ8bSx0MCGDPz8sf8NA7fZcBlpWpwL/Bigr2KESM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722370719; c=relaxed/simple;
-	bh=Rl/+3HeX6qIGurmUZjt7d/d0g5+si7+DJaacpXjNcHI=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=WrjTmqOgLeB+LRkK7zNaxkIwMeD63/iCDr/kQtdXDrNCY8jtfzBKgt7W259RuNyZCUcvcAJyX+NteB4bsnlfsHgWmmJo2nNWwYD+o1Y+ARuPwuvxmQufMVzZVJ3weDEJbvefWEmdcDReHQX7h0Ymc7r1gmsPt81aq3/gsEMGN4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=jwEVD59/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CC03C32782;
-	Tue, 30 Jul 2024 20:18:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1722370718;
-	bh=Rl/+3HeX6qIGurmUZjt7d/d0g5+si7+DJaacpXjNcHI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=jwEVD59/I0D5axzFYGYXNSK3om8omEvvbfiiSYSN5fzUGkxgZgkCoYgeyAGNSGv65
-	 94UQ5DeoX84KGiteLIAyEciMASAOwziMW5yVdkE72naT3U/4b5Eq56f6n1kWoMSLoV
-	 U/WHi8F2WocI4GTRvALWDFjjLvOD1qrzqsU/gvuA=
-Date: Tue, 30 Jul 2024 13:18:22 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: Muchun Song <songmuchun@bytedance.com>, hannes@cmpxchg.org,
- mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
- muchun.song@linux.dev, vbabka@kernel.org, cgroups@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] mm: kmem: add lockdep assertion to obj_cgroup_memcg
-Message-Id: <20240730131822.a170e6da169da396a833aa4f@linux-foundation.org>
-In-Reply-To: <3c4b978b-b1fe-42d2-b1a7-a58609433f3c@samsung.com>
-References: <20240725094330.72537-1-songmuchun@bytedance.com>
-	<CGME20240730185206eucas1p28b14a1d9802ce2703bd13edc75e1b55d@eucas1p2.samsung.com>
-	<3c4b978b-b1fe-42d2-b1a7-a58609433f3c@samsung.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1722373949; c=relaxed/simple;
+	bh=cEk83l4mWONqpD4v1BQ3vkO7xHMQ560brpMG+0bHCOE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uPFVsu2wVAQVkfdZJ2uI1amAOeN8dnQuwDZPBfEEU5YJ44kOPJkGnYWvmPgoPWT/W9R8dDOC0AJoiC3oev+RiFg4zfmLnJgME54uv2ab7hSfXzsCJnHshSMBu2wwkTR5oN+daM5c4rJ7+IC8f2BDRQq1akVIuTBn+M/dVBLTKPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=AfLb+6tR; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=juLNTGfDHj50atuMhk7dbWzwjGHWgRDm70U6RaLXPeI=; b=AfLb+6tRV/VaQlwK13wMXFAbnO
+	vU63GJMLfBvuV5wJiW28+O+73IOccKalEjRgaSVawG/Z1x5KYwtMw9cis8PulfGTR5zJTk4+dwweP
+	82HSUu5kEr3nipS5EwFKI3MjT7E6np3n0g4MXRjQw4iD6Z2XXPXtJLKcae/NR9QXRN+kc4sWcQWA0
+	MIowMYuz1WqKP3J640l9+NLShXeP2fNoioj6rs1pow6c8sd7BR+oBCQaQmeYwIbcl8CWDeykeSC0h
+	wtO4zqR7tY46hCgdf2bom5NnVZAPfBcjnuOUgCLe4m4lx4cN3eNRirNgjYbX+wU9ydJEGss3NETCV
+	cbcOMWMw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1sYu8v-00000000KBN-2OVT;
+	Tue, 30 Jul 2024 21:12:25 +0000
+Date: Tue, 30 Jul 2024 22:12:25 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: viro@kernel.org, linux-fsdevel@vger.kernel.org, amir73il@gmail.com,
+	bpf@vger.kernel.org, brauner@kernel.org, cgroups@vger.kernel.org,
+	kvm@vger.kernel.org, netdev@vger.kernel.org,
+	torvalds@linux-foundation.org
+Subject: Re: [PATCH 08/39] experimental: convert fs/overlayfs/file.c to
+ CLASS(...)
+Message-ID: <20240730211225.GH5334@ZenIV>
+References: <20240730050927.GC5334@ZenIV>
+ <20240730051625.14349-1-viro@kernel.org>
+ <20240730051625.14349-8-viro@kernel.org>
+ <20240730191025.GB3830393@perftesting>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240730191025.GB3830393@perftesting>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Tue, 30 Jul 2024 20:52:04 +0200 Marek Szyprowski <m.szyprowski@samsung.com> wrote:
+On Tue, Jul 30, 2024 at 03:10:25PM -0400, Josef Bacik wrote:
+> On Tue, Jul 30, 2024 at 01:15:54AM -0400, viro@kernel.org wrote:
+> > From: Al Viro <viro@zeniv.linux.org.uk>
+> > 
+> > There are four places where we end up adding an extra scope
+> > covering just the range from constructor to destructor;
+> > not sure if that's the best way to handle that.
+> > 
+> > The functions in question are ovl_write_iter(), ovl_splice_write(),
+> > ovl_fadvise() and ovl_copyfile().
+> > 
+> > This is very likely *NOT* the final form of that thing - it
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > needs to be discussed.
 
-> This patch landed in today's linux-next as commit 230b2f1f31b9 ("mm: 
-> kmem: add lockdep assertion to obj_cgroup_memcg"). I my tests I found 
-> that it triggers the following warning on Debian bookworm/sid system 
-> image running under QEMU RISCV64:
+> Is this what we want to do from a code cleanliness standpoint?  This feels
+> pretty ugly to me, I feal like it would be better to have something like
+> 
+> scoped_class(fd_real, real) {
+> 	// code
+> }
+> 
+> rather than the {} at the same indent level as the underlying block.
+> 
+> I don't feel super strongly about this, but I do feel like we need to either
+> explicitly say "this is the way/an acceptable way to do this" from a code
+> formatting standpoint, or we need to come up with a cleaner way of representing
+> the scoped area.
 
-Thanks.  I'll drop the patch while this gets sorted out, to be nice to
-linux-next users.
+That's a bit painful in these cases - sure, we can do something like
+	scoped_class(fd_real, real)(file) {
+		if (fd_empty(fd_real)) {
+			ret = fd_error(real);
+			break;
+		}
+		old_cred = ovl_override_creds(file_inode(file)->i_sb);
+		ret = vfs_fallocate(fd_file(real), mode, offset, len);
+		revert_creds(old_cred);
+
+		/* Update size */
+		ovl_file_modified(file);  
+	}
+but that use of break would need to be documented.  And IMO anything like
+        scoped_cond_guard (mutex_intr, return -ERESTARTNOINTR,
+			   &task->signal->cred_guard_mutex) {
+is just distasteful ;-/  Control flow should _not_ be hidden that way;
+it's hard on casual reader.
+
+The variant I'd put in there is obviously not suitable for merge - we need
+something else, the question is what that something should be...
 
