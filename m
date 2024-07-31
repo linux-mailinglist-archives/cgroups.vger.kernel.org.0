@@ -1,144 +1,117 @@
-Return-Path: <cgroups+bounces-4043-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4044-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3E1C943404
-	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 18:17:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 393369434A7
+	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 19:02:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F6BFB25AA5
-	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 16:17:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B458C287EF8
+	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 17:02:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9121E1A76C2;
-	Wed, 31 Jul 2024 16:17:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AC8C1BD503;
+	Wed, 31 Jul 2024 17:02:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Z1zHSZM4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QJT/tAjZ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 381C317BA0;
-	Wed, 31 Jul 2024 16:17:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CFB91BD4EC;
+	Wed, 31 Jul 2024 17:02:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722442637; cv=none; b=Cqz8pNU3D0aeNR8x7PNyBQ9MHYF4crv+GVZtTigs6tcNn0s5intdkroUUxlXvaKoQPQ7k9kooP6T3tOTQ6epjffEUeSzR+/B449OM7JELvLH6g3o6pUlvdpa1MPWnT1zrdigW4Tzfasg1sh2fL7fVREz4ZbT7dekm2S1xmygoDM=
+	t=1722445351; cv=none; b=X7hjqbSVxqwOQrXvuvIajjTvIK9+hZObDhU3Iw8p++tRyJqbKB4Wy1SYiqRdK2e/Xa6miRqbnnvA/fhGWlfZt++1fhOVVx1iZpQb5AmAa+j4ulwskUE5ZWDhH6d9MTPOy21RaTsZobTv3gS2suGbJ4zEI0Io73oSqKzjAxjuU3c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722442637; c=relaxed/simple;
-	bh=o4Mg7vGFFDdh5GzpJdq3GqHcTrDwf5S/DobsTje7KZ4=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=FLV6FA01f25J89dcEtiMrXRDpukNI3arm0pQeT4UWCucC0tyrlQBywT64H1BWPec+FoZ54K67cewdjcDBv0ac+AU3W6t6rlshcOw1/Uz/Ak3GWYDQy3dACDM8FFzBkDiBGwe/GeBwWKFm1HFj/D2pF66e4NXfKtGrhQZifJ5BVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Z1zHSZM4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34F2FC116B1;
-	Wed, 31 Jul 2024 16:17:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1722442636;
-	bh=o4Mg7vGFFDdh5GzpJdq3GqHcTrDwf5S/DobsTje7KZ4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Z1zHSZM48wVFFlJqF1StVZOLw9IG/5ID/2e4qXWkhfUgK1S62W74TkucFn3eixaa6
-	 BBsstP1IUCZyQMPE/DAvSqZJq5diHwxXSiPTHLoH7Xcm7M6qIbfz1XbnT4p+Bgi84d
-	 C5Up9oY/oVPtVn4kfqnCL1+L4+URhAF2nXLQFQBk=
-Date: Wed, 31 Jul 2024 09:17:15 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Zhiguo Jiang <justinjiang@vivo.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, Will Deacon
- <will@kernel.org>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick
- Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>, Arnd
- Bergmann <arnd@arndb.de>, Johannes Weiner <hannes@cmpxchg.org>, Michal
- Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- linux-arch@vger.kernel.org, cgroups@vger.kernel.org, Barry Song
- <21cnbao@gmail.com>, kernel test robot <lkp@intel.com>,
- opensource.kernel@vivo.com
-Subject: Re: [PATCH v2 0/3] mm: tlb swap entries batch async release
-Message-Id: <20240731091715.b78969467c002fa3a120e034@linux-foundation.org>
-In-Reply-To: <20240731133318.527-1-justinjiang@vivo.com>
-References: <20240731133318.527-1-justinjiang@vivo.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1722445351; c=relaxed/simple;
+	bh=c8Ltgw/DPOdU02C582LSHG5lm90+Rm07EJ771Vi5GpY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tZ2r/6vLZYQk4axCfnGzNDeiHKa8tA+rDIh6qkh6SQFMDZP1Rnv7lOaqpTfrJpXC0EjCPwgLDoKhqExWSX29mhPJtIOY0WI8rcLHoe1+Bojt0uRAQGSLuGYS/p7a0b+maOFE7EaRqsYfw/jYXPTuG1bAYzrLTnGNapy6WDJcvDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QJT/tAjZ; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1fd69e44596so9254785ad.1;
+        Wed, 31 Jul 2024 10:02:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722445349; x=1723050149; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CdlSb92YdWekG68UtHx/Hvmif5Dl5k6gnXTiIqybP6g=;
+        b=QJT/tAjZWbFLs30v1U19jx22v6umz1qPK8HiZBlmKbeOvmmmknLFnX2XdqS0W+k+n/
+         d0nlG8eoXBvpV25iddMG+xNdqRBMWjZV31dAPP8JfPnKAw8aR+sEBOikCtCinsurY0e7
+         CiLHZ0Olup7B2ipAYUxkph21xXd8xpWE6+JTXk7HrblmmxdzIj6+uNrHQ7DqCm2bjlps
+         B1sf1cj9+uf0ElAE3bqknjYke6nxKhjJh9SIf34O2+FXHjJNOgubAsmkUT9Jz3O96+ZD
+         67vuTqNjV1xndYbePY5Pfq8mJKtW0ycerfAEQdGCiGTOHq167yK0lItI1WzKtGiU05hh
+         cQXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722445349; x=1723050149;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CdlSb92YdWekG68UtHx/Hvmif5Dl5k6gnXTiIqybP6g=;
+        b=JG8IYLVwBjYnkKFprZqm0IEjTn7QPw7SRYN41hmi+MHdNAGPxDe6fQITaD/ZuWQTOc
+         KZmtc3o5haNSr9A0UJAGtfXZl+z25+lOtsdjijIY31NHf8zCu79pMP7GNT3bKNuWhD4s
+         etv6wUb5uUgmLh0l6p1qt4krdZTJRlksV2oZiI4ZEPnfNfR+TF98N/pFBPH0nnd45yty
+         KVgAkw//UJ3pCgod5245CZqFox5A94Ypc42+EoLxmAUkBBVjBkeHrn4kKHhEpxDVYTXM
+         KOde5djKf98JEZ90JC5wWz5YCYxh6JZwc/FMXAD8qY1CYgm4uPZ5Pa4socWpaK8bXbY4
+         L3cw==
+X-Forwarded-Encrypted: i=1; AJvYcCW9jtwK89djk97EwvqVZFnE5Z+FWjjXjkoF1sg+mVR0nmjZD8jrIFjeNDZYZsih+QAR9n2vnQNHXOb4Zpk3gHWXJl22qvJNNsQj4mQYquhLbruGVZnSWffeDFFcBndo8ya+J+eLuIKesbD9Cs8wadOENOTMDrSnSid7XGghvOP8DQ==
+X-Gm-Message-State: AOJu0YxuKQEtMMbayLaPVfPgv0Hk0E161HN2vnZzo7lTaSSihaJHzgNB
+	WBCVz6rRR4lrUhAWkbMClgRLNUd/r6Olx+H34+oIG+V2YuEizF46
+X-Google-Smtp-Source: AGHT+IGzP9iZ5bObshHYNlvI7zXr7wwZL6e/ehgLqjD7JV17E6X+9wiBV0YaAT+0S+gd75mXxAW7Ew==
+X-Received: by 2002:a17:903:230f:b0:1fd:8f4d:2392 with SMTP id d9443c01a7336-1ff37bbd5f7mr96564925ad.1.1722445348632;
+        Wed, 31 Jul 2024 10:02:28 -0700 (PDT)
+Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fed7f67528sm122287045ad.227.2024.07.31.10.02.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jul 2024 10:02:28 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 31 Jul 2024 07:02:26 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: Waiman Long <longman@redhat.com>, Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Kamalesh Babulal <kamalesh.babulal@oracle.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>
+Subject: Re: [PATCH-cgroup v7] cgroup: Show # of subsystem CSSes in
+ cgroup.stat
+Message-ID: <ZqpuIgdNLLwyjT9n@slm.duckdns.org>
+References: <20240715150034.2583772-1-longman@redhat.com>
+ <ZqmDpLTm6tKhAmYv@slm.duckdns.org>
+ <4cb4bczascgy4w774k7y5z5yewvl4civpkuhl46g73ckvoubj2@ag2cfvgayfqs>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4cb4bczascgy4w774k7y5z5yewvl4civpkuhl46g73ckvoubj2@ag2cfvgayfqs>
 
-On Wed, 31 Jul 2024 21:33:14 +0800 Zhiguo Jiang <justinjiang@vivo.com> wrote:
-
-> The main reasons for the prolonged exit of a background process is the
-
-The kernel really doesn't have a concept of a "background process". 
-It's a userspace concept - perhaps "the parent process isn't waiting on
-this process via wait()".
-
-I assume here you're referring to an Android userspace concept?  I
-expect that when Android "backgrounds" a process, it does lots of
-things to that process.  Perhaps scheduling priority, perhaps
-alteration of various MM tunables, etc.
-
-So rather than referring to "backgrounding" it would be better to
-identify what tuning alterations are made to such processes to bring
-about this behavior.
-
-> time-consuming release of its swap entries. The proportion of swap memory
-> occupied by the background process increases with its duration in the
-> background, and after a period of time, this value can reach 60% or more.
-
-Again, what is it about the tuning of such processes which causes this
-behavior?
-
-> Additionally, the relatively lengthy path for releasing swap entries
-> further contributes to the longer time required for the background process
-> to release its swap entries.
+On Wed, Jul 31, 2024 at 11:41:39AM +0200, Michal Koutný wrote:
+...
+> I think the commit message is missing something like this:
 > 
-> In the multiple background applications scenario, when launching a large
-> memory application such as a camera, system may enter a low memory state,
-> which will triggers the killing of multiple background processes at the
-> same time. Due to multiple exiting processes occupying multiple CPUs for
-> concurrent execution, the current foreground application's CPU resources
-> are tight and may cause issues such as lagging.
+> | 'debug' controller wasn't used to provide this information because
+> | the controller is not recommended in productions kernels, also many of
+> | them won't enable CONFIG_CGROUP_DEBUG by default.
+> | 
+> | Similar information could be retrieved with debuggers like drgn but
+> | that's also not always available (e.g. lockdown) and the additional
+> | cost of runtime tracking here is deemed marginal.
 > 
-> To solve this problem, we have introduced the multiple exiting process
-> asynchronous swap memory release mechanism, which isolates and caches
-> swap entries occupied by multiple exit processes, and hands them over
-> to an asynchronous kworker to complete the release. This allows the
-> exiting processes to complete quickly and release CPU resources. We have
-> validated this modification on the products and achieved the expected
-> benefits.
+> or a 'Link:' to the discussion ;-)
 
-Dumb question: why can't this be done in userspace?  The exiting
-process does fork/exit and lets the child do all this asynchronous freeing?
+I updated the commit message to include the paras and Link to this thread.
 
-> It offers several benefits:
-> 1. Alleviate the high system cpu load caused by multiple exiting
->    processes running simultaneously.
-> 2. Reduce lock competition in swap entry free path by an asynchronous
->    kworker instead of multiple exiting processes parallel execution.
+Thanks.
 
-Why is lock contention reduced?  The same amount of work needs to be
-done.
-
-> 3. Release memory occupied by exiting processes more efficiently.
-
-Probably it's slightly less efficient.
-
-There are potential problems with this approach of passing work to a
-kernel thread:
-
-- The process will exit while its resources are still allocated.  But
-  its parent process assumes those resources are now all freed and the
-  parent process then proceeds to allocate resources.  This results in
-  a time period where peak resource consumption is higher than it was
-  before such a change.
-
-- If all CPUs are running in userspace with realtime policy
-  (SCHED_FIFO, for example) then the kworker thread will not run,
-  indefinitely.
-
-- Work which should have been accounted to the exiting process will
-  instead go unaccounted.  
-
-So please fully address all these potential issues.
-
+-- 
+tejun
 
