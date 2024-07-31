@@ -1,162 +1,124 @@
-Return-Path: <cgroups+bounces-4025-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4026-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6B1594247C
-	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 04:19:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ED6894249D
+	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 04:56:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5F3DB24049
-	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 02:19:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB6F6285623
+	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 02:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD6D7107A0;
-	Wed, 31 Jul 2024 02:19:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CjFk1R4j"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DB4A175A1;
+	Wed, 31 Jul 2024 02:56:22 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com [209.85.222.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00DA412B63;
-	Wed, 31 Jul 2024 02:19:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67EC21BDDF;
+	Wed, 31 Jul 2024 02:56:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722392345; cv=none; b=C+OGW1fVd2MxfYcUZ09OCndcxuUvNYz5A38V4n9nEfXwvTEjLlQnd92gchCvkVeOVHcTj/fU6lEVv9USg0GrxoCFWatIVyPqeQbC73eWcopC7Z6ylFAxHMyGc/5h+iGNizBpQPqQYJ1jHdk27lNlibrcyUPuScB24u81yf4eoIY=
+	t=1722394582; cv=none; b=rOyAFVVTn2d/vP7tQw3hCHTc68aThnsdVJ1mbhN32vTLkwN4pnv3ulRZHIOqpgNVq7l5j93ktIk8wEdumw2ZqGI+drnwWom6YiDtJQ472i4pnwCZu9GembXvXukzzBWrTVPGgs3rD37yLy/RTmL0KT0KijrwMh8LPJzL8JqKnow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722392345; c=relaxed/simple;
-	bh=psVZlw9PpG9cw5fogbCKd62dVx/dheAvsRci2ZwK2Vc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tnrwlVS/BrrngHu6ofNCYcndvNsIPj67y3+BDQZyjS+h5WzjZS5443N5nX1Hk/s38UiLQoq2EzxUyH+co5wzLUz0GiJHHbbw9i/ZSiT1kskdvI5yWezjnDvFDPZKGTVibQowvr1SR5b18BNVHWpGneoQx9FHEA0eF81ZJpzIzA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CjFk1R4j; arc=none smtp.client-ip=209.85.222.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-81ff6a80cbbso1499310241.1;
-        Tue, 30 Jul 2024 19:19:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722392343; x=1722997143; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EuTTBgp92FvKs6e3kX5RBQcJaA1lmI6qmSNZuE7MUYw=;
-        b=CjFk1R4jn9AEVIy1N9rLXWX4iHxnhB1+gtWwvWage1NfdyXWoDxTc3+MCzOaOmQkmZ
-         IgTf+Yrqsnsqso/4qXJAuAvp37NpreBxb/Sh2aG/PTLBEFfwlQaDAfKJWCfvjck+aPh5
-         qmHTK5koE/WXWXMe82/7i1eWJrFltCc/SageOqYoBDwqQd1JVeVyWT7obDGq+fFhgiCc
-         YkGSyXiP3Uho9YgXDPHgX0aNhgtSWYEgKgsM6/nxpCiK4lMeG5SKKH7W09HAj7q0Hsyo
-         oVryHp/T3ynYxuxAMaZRdPfmDCqEnKWof6aIFUvAPhWYeagvfb7/BebGGtbmaO7VCSMN
-         SQ3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722392343; x=1722997143;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EuTTBgp92FvKs6e3kX5RBQcJaA1lmI6qmSNZuE7MUYw=;
-        b=NV7jWltCXQGH4Ug20CJbDAcrm8A9C+DChYpVvbnqI3r3paFfNQPwYPc2nW7zcJSF63
-         qi6FtBmgsfWdiKQMA47f6cRuNigig75ANZnqFIjbr7OcctDEuU73pT2PrmdL9Kc6SP5i
-         OCTaBy+eIvESF34lI/hDCqZdyS7tXLV0/OOF2hkEBmlbn5ngaWG5E+4c6NdDcCco31Fx
-         JQs4agu1868FNORjzznDRcQKiJlZW4a9YMGOlbSHIKqwyixBdTDNUUutfOhoA+IFAkGf
-         erh9zs3eOdCPAZpI74WD5ATmKJ4zZgqVUaVEXtnKI7dUYr86wZ9TwN3ZUp25ZhcGvdr8
-         EOPg==
-X-Forwarded-Encrypted: i=1; AJvYcCUu72AB14VsDsFsnlbXXWswEoo3wepEaX4nYWQXCDKKWC6K3LSoCkkEF74NtqrqXUHyypQQJVRBHfgRsu1tiq/n4I7aTTCNmJaAeAsXz3Hyi6uE+rddTKNQhkLrcRKlB7odhhG8+AlFGdOPbyC5U2XhdfkrVHm9DuCpwhj1juHt5YI=
-X-Gm-Message-State: AOJu0Yx9hTsBtALlSa2XQRrDY/z2iqjhTWkXtXS65arxgjUnOdDWgFk/
-	GPEEgWkQv1zy6h9F6sZnIHlsqWJwxp01AV8it51DJoVFRYWz4rppQrPKn8EcD+3ruL53pmxcN2J
-	70ZmmE92lGbJwS6Vct/t/0GSiXf8=
-X-Google-Smtp-Source: AGHT+IET32HsRUmh5QkmUwiju7XuwyuRfEv3IIhJFoZqlfnE3LGBqWMtNG5FTioR1NG2RfcEAUn/nvMGw2OZ8dW8FGQ=
-X-Received: by 2002:a05:6102:2909:b0:493:badb:74ef with SMTP id
- ada2fe7eead31-493fad48fdcmr13920389137.26.1722392342815; Tue, 30 Jul 2024
- 19:19:02 -0700 (PDT)
+	s=arc-20240116; t=1722394582; c=relaxed/simple;
+	bh=Ir8ZY6v8/t8OwbnCW7ZLF1/6eyvsdQSaOHsDbbmuWlk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oXF71uilO5tbia6OPhhOjs5R05j71K25FpVFmVlz22fG6lJM9ox93A4HFObFCoz38BSugt512x6W6wZ49TtKjOee12pybo9sStKuUy8VcyryRwPJvQmCQ/pwJPqTHgawB8OjAUvGLCV+gkKXGYlP9qocIwz2ij0aK58qWBlAYMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WYcDK6Dh2z4f3jHk;
+	Wed, 31 Jul 2024 10:56:01 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id C7ADB1A07BA;
+	Wed, 31 Jul 2024 10:56:15 +0800 (CST)
+Received: from [10.67.110.112] (unknown [10.67.110.112])
+	by APP3 (Coremail) with SMTP id _Ch0CgAHarjOp6lm3VRNAQ--.37254S2;
+	Wed, 31 Jul 2024 10:56:15 +0800 (CST)
+Message-ID: <555ce52c-ba32-37d9-13de-a05f773b21f2@huaweicloud.com>
+Date: Wed, 31 Jul 2024 10:56:14 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240730114426.511-1-justinjiang@vivo.com>
-In-Reply-To: <20240730114426.511-1-justinjiang@vivo.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Wed, 31 Jul 2024 10:18:49 +0800
-Message-ID: <CAGsJ_4xdnQjQyJVMfN7ZSW3OMvJhFRErjwMGSCDZACQOVWeesw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] mm: tlb swap entries batch async release
-To: Zhiguo Jiang <justinjiang@vivo.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>, 
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick Piggin <npiggin@gmail.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, linux-arch@vger.kernel.org, cgroups@vger.kernel.org, 
-	opensource.kernel@vivo.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH v2 -next] cgroup/pids: Avoid spurious event notification
+To: Tejun Heo <tj@kernel.org>
+Cc: lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, xiujianfeng@huawei.com
+References: <20240730032920.3690263-1-xiujianfeng@huaweicloud.com>
+ <Zqll1sNJB4qQc0s2@slm.duckdns.org>
+Content-Language: en-US
+From: Xiu Jianfeng <xiujianfeng@huaweicloud.com>
+In-Reply-To: <Zqll1sNJB4qQc0s2@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:_Ch0CgAHarjOp6lm3VRNAQ--.37254S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KrWxtrWftr17Cr1rtryDAwb_yoW8Xr4xp3
+	95J3WrtFWkJw12kFs0q39rWryrZrZ7Jrs5JFn5X3yfGr42gryagF42kFyj934kZr1xZw1Y
+	qa1jga93Aay5Z37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AF
+	wI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UK2N
+	tUUUUU=
+X-CM-SenderInfo: x0lxyxpdqiv03j6k3tpzhluzxrxghudrp/
 
-On Tue, Jul 30, 2024 at 7:44=E2=80=AFPM Zhiguo Jiang <justinjiang@vivo.com>=
- wrote:
->
-> The main reasons for the prolonged exit of a background process is the
-> time-consuming release of its swap entries. The proportion of swap memory
-> occupied by the background process increases with its duration in the
-> background, and after a period of time, this value can reach 60% or more.
 
-Do you know the reason? Could they be contending for a cluster lock or
-something?
-Is there any perf data or flamegraph available here?
 
-> Additionally, the relatively lengthy path for releasing swap entries
-> further contributes to the longer time required for the background proces=
-s
-> to release its swap entries.
->
-> In the multiple background applications scenario, when launching a large
-> memory application such as a camera, system may enter a low memory state,
-> which will triggers the killing of multiple background processes at the
-> same time. Due to multiple exiting processes occupying multiple CPUs for
-> concurrent execution, the current foreground application's CPU resources
-> are tight and may cause issues such as lagging.
->
-> To solve this problem, we have introduced the multiple exiting process
-> asynchronous swap memory release mechanism, which isolates and caches
-> swap entries occupied by multiple exit processes, and hands them over
-> to an asynchronous kworker to complete the release. This allows the
-> exiting processes to complete quickly and release CPU resources. We have
-> validated this modification on the products and achieved the expected
-> benefits.
->
-> It offers several benefits:
-> 1. Alleviate the high system cpu load caused by multiple exiting
->    processes running simultaneously.
-> 2. Reduce lock competition in swap entry free path by an asynchronous
+On 2024/7/31 6:14, Tejun Heo wrote:
+> On Tue, Jul 30, 2024 at 03:29:20AM +0000, Xiu Jianfeng wrote:
+>> From: Xiu Jianfeng <xiujianfeng@huawei.com>
+>>
+>> Currently when a process in a group forks and fails due to it's
+>> parent's max restriction, all the cgroups from 'pids_forking' to root
+>> will generate event notifications but only the cgroups from
+>> 'pids_over_limit' to root will increase the counter of PIDCG_MAX.
+>>
+>> Consider this scenario: there are 4 groups A, B, C,and D, the
+>> relationships are as follows, and user is watching on C.pids.events.
+>>
+>> root->A->B->C->D
+>>
+>> When a process in D forks and fails due to B.max restriction, the
+>> user will get a spurious event notification because when he wakes up
+>> and reads C.pids.events, he will find that the content has not changed.
+>>
+>> To address this issue, only the cgroups from 'pids_over_limit' to root
+>> will have their PIDCG_MAX counters increased and event notifications
+>> generated.
+>>
+>> Fixes: 385a635cacfe ("cgroup/pids: Make event counters hierarchical")
+>> Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+> 
+> Applied to cgroup/for-6.12.
+> 
+> Note that spurious events are explicitly allowed. Anyone watching an events
+> file should keep track of the reported values to detect actual events.
 
- Do you have data on which lock is affected? Could it be a cluster lock?
+Hi Tejun,
 
->    kworker instead of multiple exiting processes parallel execution.
-> 3. Release memory occupied by exiting processes more efficiently.
->
-> Zhiguo Jiang (2):
->   mm: move task_is_dying to h headfile
->   mm: tlb: multiple exiting processes's swap entries async release
->
->  include/asm-generic/tlb.h |  50 +++++++
->  include/linux/mm_types.h  |  58 ++++++++
->  include/linux/oom.h       |   6 +
->  mm/memcontrol.c           |   6 -
->  mm/memory.c               |   3 +-
->  mm/mmu_gather.c           | 297 ++++++++++++++++++++++++++++++++++++++
->  6 files changed, 413 insertions(+), 7 deletions(-)
->  mode change 100644 =3D> 100755 include/asm-generic/tlb.h
->  mode change 100644 =3D> 100755 include/linux/mm_types.h
->  mode change 100644 =3D> 100755 include/linux/oom.h
->  mode change 100644 =3D> 100755 mm/memcontrol.c
->  mode change 100644 =3D> 100755 mm/memory.c
->  mode change 100644 =3D> 100755 mm/mmu_gather.c
+Thank you for your clarification. I thought it was not allowed.
 
-Can you check your local filesystem to determine why you're running
-the chmod command?
+Anyway, it's always good to avoid spurious events and disturbances to
+users IMO.
 
->
-> --
-> 2.39.0
->
+> 
+> Thanks.
+> 
 
-Thanks
-Barry
 
