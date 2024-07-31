@@ -1,205 +1,157 @@
-Return-Path: <cgroups+bounces-4047-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4048-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0D149436B4
-	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 21:47:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E68A59436C1
+	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 21:52:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 216DD1C216FF
-	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 19:47:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 971CA2840B4
+	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 19:52:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C13C5148FF3;
-	Wed, 31 Jul 2024 19:47:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF75B14F125;
+	Wed, 31 Jul 2024 19:52:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u0L820fc"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Q72fWqRe"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E64018044;
-	Wed, 31 Jul 2024 19:47:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF63E45023
+	for <cgroups@vger.kernel.org>; Wed, 31 Jul 2024 19:52:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722455249; cv=none; b=XXMvYv7oK9WKypZsyI17F2H/6FJL2ovjavN+vh2y4hQ9bxPGcFOfpTd7oLlKZcpo1qqEJv+as1KR74LSDJIBTbHYieUGDBSKifjx10ApfdNFbo/jxm96tALzs+nyl4FPBnDaySbMapilHE/wGAxLqZSrg0gz5t9fZmFLp8AHDko=
+	t=1722455539; cv=none; b=BFPeoX5+Vs4OFuCdPmktpvlQr6arL0TnHnz5SYUsHAX7LwkolXf6m7wH+++L5O80ZOhm/busdBM8MzXs2RMI/G+a9qlslPnPrzOzg+oz4uYLQVCfdqtra/RqKuPAwq9RDOlXJ8ozuwiSEavDsnn4ByJpUZaDcM8oMSJwlqBzMfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722455249; c=relaxed/simple;
-	bh=Q2e7po8J+L6F35gasVB8tGKFXWuPCBzWtFxt9x2NrGQ=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XL6triDAYahrsUYwrmWxO8DTq+lHjG2gwe2W8O3Z/AKubiMKIXKDsxDFZEeyfAlog1H+5pXVTqn3G+/0ZZsLzSr3xcxCB4FNOdOSsdzjNDWwlaPKJBvrSWCMvHvo7EflzukpQE1KXeeIr2hmIlCqeNacPVlhcDFsD2tt0mekr0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u0L820fc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1F23C116B1;
-	Wed, 31 Jul 2024 19:47:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722455249;
-	bh=Q2e7po8J+L6F35gasVB8tGKFXWuPCBzWtFxt9x2NrGQ=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=u0L820fc2XQ8WzMEYAVX39p5MrG9oz4sqnYgcqtpSKKKwTVDAkf1Zzcl+eDq7UdJ1
-	 WMW2zjUp0/RoJJYfCqHiyIazcRKWwvd+rDfCKgwRdJBM6MRWBk9Gk/PcYdmrHlzhck
-	 eWDkClLNs1bEYw7hEh1zwQGThMZg8UxS3yG8nVGvPg03NloQr+uZ9ns4UHiCmJFcgL
-	 fGkHJ3wCd9FvOYqCEo8vek0nchdAxcv05Zb5PyaHOB9C5LSGgpvBidbGVCSyOoCTKK
-	 JkBLFvGHe+Tkt/67tH8jiu8AGCeXq2SDv8zTwYana19BSEEecUNZs/nBSdhiUCdq0p
-	 NodnBpuSKnjMA==
-Subject: [PATCH V9 2/2] cgroup/rstat: add tracepoints for ongoing flusher
- waits
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-To: tj@kernel.org, cgroups@vger.kernel.org, yosryahmed@google.com,
- shakeel.butt@linux.dev
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, hannes@cmpxchg.org,
- lizefan.x@bytedance.com, longman@redhat.com, kernel-team@cloudflare.com,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Date: Wed, 31 Jul 2024 21:47:24 +0200
-Message-ID: <172245523597.3147408.4165443154847854225.stgit@firesoul>
-In-Reply-To: <172245504313.3147408.12138439169548255896.stgit@firesoul>
-References: <172245504313.3147408.12138439169548255896.stgit@firesoul>
-User-Agent: StGit/1.5
+	s=arc-20240116; t=1722455539; c=relaxed/simple;
+	bh=5wKwM2WjspVaSSkYmcKPggPVFKPJi93u2e/t2OgWwDc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type:Content-Disposition; b=A4Xk+PHOorK4y3YnWZRCml0Laq/q4lgj9/iIMVDsQAkAJVp3PH8YH55wK4ZMXz6H+VlHDgGoFbIiILNKpkP2VgIoPxRvS35iQlRimHKTGFM5YoOG5hJcQjrksUKCN7q3mlmp/tmIKkFk/seWJ+HaSWtUAcygQVm3cWfDlyHTSHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Q72fWqRe; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1722455537;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cTZVFu7K6+uiaFa+bz2TYcCEINvR6BMH3QXaK+vFRmQ=;
+	b=Q72fWqReiiq9ASr07l3aArPOm6bUywe28l1yagPUghj3DSDoeI6+p2lDQnwqk6p+0Lg44V
+	EGm/nWMQ9FMaa4KhRvwozXALJu6YdFMwFhXju+4+j69MkOio30GVEVNBBVqFrSJ5XcN4kU
+	ZokBjzpHGUOks6bZb+x4Bs6es0Vfkag=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-403-xVfPXJGZOtaIJrSQDvuqQQ-1; Wed, 31 Jul 2024 15:52:15 -0400
+X-MC-Unique: xVfPXJGZOtaIJrSQDvuqQQ-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-79efb1181ddso647279485a.1
+        for <cgroups@vger.kernel.org>; Wed, 31 Jul 2024 12:52:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722455535; x=1723060335;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cTZVFu7K6+uiaFa+bz2TYcCEINvR6BMH3QXaK+vFRmQ=;
+        b=guGJUU4BERsHeGwQ193g/9UgTqSY9i7MWf9bWc585iSBdEfDO8gC04rI3yfPWBfTt+
+         TmEQAQ1iVWQlYelzXo03tbFXKrLb/4gRUz5Q0Pq9r0l6vNEl6z3MU22wTcSDBkziUNsc
+         iguE7YVO/DY9LmPrQyfqLAv+ZF75lFIgiIAhsmNFN/L3eNF+IY1P3Ok+xz2eQiMO61dQ
+         +VdsSxwl/NfubstPcC30Ns4Nbazp5gBvv+/+v9grnzLrQoiFejclnU7roFwn2zEbYk8X
+         L5iF752Xc/erNMbcZxAvMVsWeKbBad/tiblujNAOQB9iM3e/nAPJPMj7EFXfPKaIwNpw
+         SlDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUMvmrd06gfK9vdDnq2atDP4NoA/+fEpKBfS+xZms69Gjhi88k8TD+lFQkSk7jTdtH5L2oCU0nsnsKL4oYtbuBIxjaJJtYbsw==
+X-Gm-Message-State: AOJu0YyxKWOA9hEcp9b19mf1bmGxzf4isWOexP1rGzxOBa1SJcpwiAnZ
+	oi4boFcvnMnIFwpNCQmF5X3cw77wTlssCRPRfmUWzH7RPDbzvo7TBu9jURaoniRp5Px+ZdpARtW
+	mtufwFntW1daqSvBZ3w62r33uDD+IcELiNkMYbF/5cLUDrO+FwymX7qE=
+X-Received: by 2002:a05:620a:4109:b0:79f:b0e:2e70 with SMTP id af79cd13be357-7a30c6e268bmr27103185a.55.1722455535063;
+        Wed, 31 Jul 2024 12:52:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGzhuQ/z0VlR0lBY46ZsSRSDGD9PSMp9Yhs26uV9BPy+b5xNpe/oJVl9BHdbGlhD4R9L+KWtw==
+X-Received: by 2002:a05:620a:4109:b0:79f:b0e:2e70 with SMTP id af79cd13be357-7a30c6e268bmr27100085a.55.1722455534705;
+        Wed, 31 Jul 2024 12:52:14 -0700 (PDT)
+Received: from LeoBras.redhat.com ([2804:1b3:a803:da7:cfdf:ab65:d193:5573])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a1f89bf270sm310411285a.92.2024.07.31.12.52.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jul 2024 12:52:14 -0700 (PDT)
+From: Leonardo Bras <leobras@redhat.com>
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Leonardo Bras <leobras@redhat.com>,
+	Yury Norov <yury.norov@gmail.com>,
+	anna-maria@linutronix.de,
+	bristot@redhat.com,
+	bsegall@google.com,
+	cgroups@vger.kernel.org,
+	dietmar.eggemann@arm.com,
+	frederic@kernel.org,
+	gregkh@linuxfoundation.org,
+	hannes@cmpxchg.org,
+	imran.f.khan@oracle.com,
+	juri.lelli@redhat.com,
+	linux-kernel@vger.kernel.org,
+	lizefan.x@bytedance.com,
+	longman@redhat.com,
+	mgorman@suse.de,
+	mingo@redhat.com,
+	paulmck@kernel.org,
+	peterz@infradead.org,
+	rafael@kernel.org,
+	riel@surriel.com,
+	rostedt@goodmis.org,
+	tglx@linutronix.de,
+	tj@kernel.org,
+	vincent.guittot@linaro.org,
+	vschneid@redhat.com
+Subject: Re: [PATCH 2/6] sched/topology: optimize topology_span_sane()
+Date: Wed, 31 Jul 2024 16:52:05 -0300
+Message-ID: <ZqqV5OxZPHUgjhag@LeoBras>
+X-Mailer: git-send-email 2.46.0
+In-Reply-To: <9fb7adfc-701b-427c-a08e-a007e3159601@wanadoo.fr>
+References: <20240513220146.1461457-1-yury.norov@gmail.com> <20240513220146.1461457-3-yury.norov@gmail.com> <9fb7adfc-701b-427c-a08e-a007e3159601@wanadoo.fr>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-These tracepoints were practical to measure ongoing flusher
-wait time behavior and see that race do occur in production.
+On Tue, May 14, 2024 at 10:53:00PM +0200, Christophe JAILLET wrote:
+> Le 14/05/2024 à 00:01, Yury Norov a écrit :
+> > The function may call cpumask_equal with tl->mask(cpu) == tl->mask(i),
+> > even though cpu != i. In such case, cpumask_equal() would always return
+> > true, and we can proceed to the next CPU immediately.
+> > 
+> > Signed-off-by: Yury Norov <yury.norov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+> > ---
+> >   kernel/sched/topology.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> > index 99ea5986038c..eb9eb17b0efa 100644
+> > --- a/kernel/sched/topology.c
+> > +++ b/kernel/sched/topology.c
+> > @@ -2360,7 +2360,7 @@ static bool topology_span_sane(struct sched_domain_topology_level *tl,
+> >   	 * breaks the linking done for an earlier span.
+> >   	 */
+> >   	for_each_cpu(i, cpu_map) {
+> > -		if (i == cpu)
+> > +		if (i == cpu || tl->mask(cpu) == tl->mask(i))
+> >   			continue;
+> >   		/*
+> >   		 * We should 'and' all those masks with 'cpu_map' to exactly
+> 
+> Hi,
+> 
+> does it make sense to pre-compute tl->mask(cpu) outside the for_each_cpu()?
 
-Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
----
- include/trace/events/cgroup.h |   56 +++++++++++++++++++++++++++++++++++++++++
- kernel/cgroup/rstat.c         |   21 ++++++++++++---
- 2 files changed, 73 insertions(+), 4 deletions(-)
+Looks like a good idea to me.
 
-diff --git a/include/trace/events/cgroup.h b/include/trace/events/cgroup.h
-index af2755bda6eb..81f57fa751c4 100644
---- a/include/trace/events/cgroup.h
-+++ b/include/trace/events/cgroup.h
-@@ -296,6 +296,62 @@ DEFINE_EVENT(cgroup_rstat, cgroup_rstat_cpu_unlock_fastpath,
- 	TP_ARGS(cgrp, cpu, contended)
- );
- 
-+DECLARE_EVENT_CLASS(cgroup_ongoing,
-+
-+	TP_PROTO(struct cgroup *cgrp, struct cgroup *cgrp_ongoing, \
-+		 long res, unsigned int race, ktime_t ts),
-+
-+	TP_ARGS(cgrp, cgrp_ongoing, res, race, ts),
-+
-+	TP_STRUCT__entry(
-+		__field(	int,		root			)
-+		__field(	int,		level			)
-+		__field(	u64,		id			)
-+		__field(	u64,		id_ongoing		)
-+		__field(	ktime_t,	ts			)
-+		__field(	long,		res			)
-+		__field(	u64,		race			)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->root = cgrp->root->hierarchy_id;
-+		__entry->id = cgroup_id(cgrp);
-+		__entry->level = cgrp->level;
-+		__entry->id_ongoing = cgroup_id(cgrp_ongoing);
-+		__entry->res = res;
-+		__entry->race = race;
-+		__entry->ts = ts;
-+	),
-+
-+	TP_printk("root=%d id=%llu level=%d ongoing_flusher=%llu res=%ld race=%llu ts=%lld",
-+		  __entry->root, __entry->id, __entry->level,
-+		  __entry->id_ongoing, __entry->res, __entry->race, __entry->ts)
-+);
-+
-+DEFINE_EVENT(cgroup_ongoing, cgroup_ongoing_flusher,
-+
-+	TP_PROTO(struct cgroup *cgrp, struct cgroup *cgrp_ongoing, \
-+		 long res, unsigned int race, ktime_t ts),
-+
-+	TP_ARGS(cgrp, cgrp_ongoing, res, race, ts)
-+);
-+
-+DEFINE_EVENT(cgroup_ongoing, cgroup_ongoing_flusher_wait,
-+
-+	TP_PROTO(struct cgroup *cgrp, struct cgroup *cgrp_ongoing, \
-+		 long res, unsigned int race, ktime_t ts),
-+
-+	TP_ARGS(cgrp, cgrp_ongoing, res, race, ts)
-+);
-+
-+DEFINE_EVENT(cgroup_ongoing, cgroup_ongoing_flusher_yield,
-+
-+	TP_PROTO(struct cgroup *cgrp, struct cgroup *cgrp_ongoing, \
-+		 long res, unsigned int race, ktime_t ts),
-+
-+	TP_ARGS(cgrp, cgrp_ongoing, res, race, ts)
-+);
-+
- #endif /* _TRACE_CGROUP_H */
- 
- /* This part must be outside protection */
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index 463f9807ec7e..c343506b2c7b 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -328,6 +328,7 @@ static inline void __cgroup_rstat_unlock(struct cgroup *cgrp, int cpu_in_loop)
- static bool cgroup_rstat_trylock_flusher(struct cgroup *cgrp)
- {
- 	struct cgroup *ongoing;
-+	unsigned int race = 0;
- 	bool locked;
- 
- 	/*
-@@ -338,17 +339,25 @@ static bool cgroup_rstat_trylock_flusher(struct cgroup *cgrp)
- retry:
- 	ongoing = READ_ONCE(cgrp_rstat_ongoing_flusher);
- 	if (ongoing && cgroup_is_descendant(cgrp, ongoing)) {
--		wait_for_completion_interruptible_timeout(
-+		ktime_t ts = ktime_get_mono_fast_ns();
-+		long res = 0;
-+
-+		trace_cgroup_ongoing_flusher(cgrp, ongoing, 0, race, ts);
-+
-+		res = wait_for_completion_interruptible_timeout(
- 			&ongoing->flush_done, MAX_WAIT);
--		/* TODO: Add tracepoint here */
-+		trace_cgroup_ongoing_flusher_wait(cgrp, ongoing, res, race, ts);
-+
- 		return false;
- 	}
- 
- 	locked = __cgroup_rstat_trylock(cgrp, -1);
- 	if (!locked) {
- 		/* Contended: Handle losing race for ongoing flusher */
--		if (!ongoing && READ_ONCE(cgrp_rstat_ongoing_flusher))
-+		if (!ongoing && READ_ONCE(cgrp_rstat_ongoing_flusher)) {
-+			race++;
- 			goto retry;
-+		}
- 
- 		__cgroup_rstat_lock(cgrp, -1, true);
- 	}
-@@ -357,7 +366,8 @@ static bool cgroup_rstat_trylock_flusher(struct cgroup *cgrp)
- 	 * Due to lock yielding, we might obtain lock while another
- 	 * ongoing flusher (that isn't a parent) owns ongoing_flusher.
- 	 */
--	if (!READ_ONCE(cgrp_rstat_ongoing_flusher)) {
-+	ongoing = READ_ONCE(cgrp_rstat_ongoing_flusher);
-+	if (!ongoing) {
- 		/*
- 		 * Limit to top-level as lock yielding allows others to obtain
- 		 * lock without being ongoing_flusher. Leading to cgroup that
-@@ -368,6 +378,9 @@ static bool cgroup_rstat_trylock_flusher(struct cgroup *cgrp)
- 			reinit_completion(&cgrp->flush_done);
- 			WRITE_ONCE(cgrp_rstat_ongoing_flusher, cgrp);
- 		}
-+	} else {
-+		/* Detect multiple flushers as ongoing yielded lock */
-+		trace_cgroup_ongoing_flusher_yield(cgrp, ongoing, 0, 0, 0);
- 	}
- 	return true;
- }
+Leo 
 
+> 
+> CJ
+> 
 
 
