@@ -1,117 +1,132 @@
-Return-Path: <cgroups+bounces-4044-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4045-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 393369434A7
-	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 19:02:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEE0594358B
+	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 20:20:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B458C287EF8
-	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 17:02:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80DE11F22698
+	for <lists+cgroups@lfdr.de>; Wed, 31 Jul 2024 18:20:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AC8C1BD503;
-	Wed, 31 Jul 2024 17:02:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15AD31465A8;
+	Wed, 31 Jul 2024 18:20:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QJT/tAjZ"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QHrDunwf"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CFB91BD4EC;
-	Wed, 31 Jul 2024 17:02:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E4F145BE3;
+	Wed, 31 Jul 2024 18:20:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722445351; cv=none; b=X7hjqbSVxqwOQrXvuvIajjTvIK9+hZObDhU3Iw8p++tRyJqbKB4Wy1SYiqRdK2e/Xa6miRqbnnvA/fhGWlfZt++1fhOVVx1iZpQb5AmAa+j4ulwskUE5ZWDhH6d9MTPOy21RaTsZobTv3gS2suGbJ4zEI0Io73oSqKzjAxjuU3c=
+	t=1722450003; cv=none; b=ds3vq+Ouu2aCLzM8A+zZKppml+XOW9Hobq6MRtj9uGTpxS8CUF41ZjB3rZmrYZ3DYzv/H8mZTQ8Hnt43WG0+CF1wmkLc0Y4cJywtejdBzArGrYhNUhLp6uXY+GNfY/BSI+TtGNPpEkVeFSQoEzrrM8up5jCxZvmVyV+2pIi28KM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722445351; c=relaxed/simple;
-	bh=c8Ltgw/DPOdU02C582LSHG5lm90+Rm07EJ771Vi5GpY=;
+	s=arc-20240116; t=1722450003; c=relaxed/simple;
+	bh=mhUJZkJDoBn6UrBK6j9k/Zhefn6WhHvCy2ysDMhWtOg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tZ2r/6vLZYQk4axCfnGzNDeiHKa8tA+rDIh6qkh6SQFMDZP1Rnv7lOaqpTfrJpXC0EjCPwgLDoKhqExWSX29mhPJtIOY0WI8rcLHoe1+Bojt0uRAQGSLuGYS/p7a0b+maOFE7EaRqsYfw/jYXPTuG1bAYzrLTnGNapy6WDJcvDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QJT/tAjZ; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1fd69e44596so9254785ad.1;
-        Wed, 31 Jul 2024 10:02:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722445349; x=1723050149; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CdlSb92YdWekG68UtHx/Hvmif5Dl5k6gnXTiIqybP6g=;
-        b=QJT/tAjZWbFLs30v1U19jx22v6umz1qPK8HiZBlmKbeOvmmmknLFnX2XdqS0W+k+n/
-         d0nlG8eoXBvpV25iddMG+xNdqRBMWjZV31dAPP8JfPnKAw8aR+sEBOikCtCinsurY0e7
-         CiLHZ0Olup7B2ipAYUxkph21xXd8xpWE6+JTXk7HrblmmxdzIj6+uNrHQ7DqCm2bjlps
-         B1sf1cj9+uf0ElAE3bqknjYke6nxKhjJh9SIf34O2+FXHjJNOgubAsmkUT9Jz3O96+ZD
-         67vuTqNjV1xndYbePY5Pfq8mJKtW0ycerfAEQdGCiGTOHq167yK0lItI1WzKtGiU05hh
-         cQXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722445349; x=1723050149;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CdlSb92YdWekG68UtHx/Hvmif5Dl5k6gnXTiIqybP6g=;
-        b=JG8IYLVwBjYnkKFprZqm0IEjTn7QPw7SRYN41hmi+MHdNAGPxDe6fQITaD/ZuWQTOc
-         KZmtc3o5haNSr9A0UJAGtfXZl+z25+lOtsdjijIY31NHf8zCu79pMP7GNT3bKNuWhD4s
-         etv6wUb5uUgmLh0l6p1qt4krdZTJRlksV2oZiI4ZEPnfNfR+TF98N/pFBPH0nnd45yty
-         KVgAkw//UJ3pCgod5245CZqFox5A94Ypc42+EoLxmAUkBBVjBkeHrn4kKHhEpxDVYTXM
-         KOde5djKf98JEZ90JC5wWz5YCYxh6JZwc/FMXAD8qY1CYgm4uPZ5Pa4socWpaK8bXbY4
-         L3cw==
-X-Forwarded-Encrypted: i=1; AJvYcCW9jtwK89djk97EwvqVZFnE5Z+FWjjXjkoF1sg+mVR0nmjZD8jrIFjeNDZYZsih+QAR9n2vnQNHXOb4Zpk3gHWXJl22qvJNNsQj4mQYquhLbruGVZnSWffeDFFcBndo8ya+J+eLuIKesbD9Cs8wadOENOTMDrSnSid7XGghvOP8DQ==
-X-Gm-Message-State: AOJu0YxuKQEtMMbayLaPVfPgv0Hk0E161HN2vnZzo7lTaSSihaJHzgNB
-	WBCVz6rRR4lrUhAWkbMClgRLNUd/r6Olx+H34+oIG+V2YuEizF46
-X-Google-Smtp-Source: AGHT+IGzP9iZ5bObshHYNlvI7zXr7wwZL6e/ehgLqjD7JV17E6X+9wiBV0YaAT+0S+gd75mXxAW7Ew==
-X-Received: by 2002:a17:903:230f:b0:1fd:8f4d:2392 with SMTP id d9443c01a7336-1ff37bbd5f7mr96564925ad.1.1722445348632;
-        Wed, 31 Jul 2024 10:02:28 -0700 (PDT)
-Received: from localhost (dhcp-141-239-149-160.hawaiiantel.net. [141.239.149.160])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fed7f67528sm122287045ad.227.2024.07.31.10.02.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jul 2024 10:02:28 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 31 Jul 2024 07:02:26 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: Waiman Long <longman@redhat.com>, Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Kamalesh Babulal <kamalesh.babulal@oracle.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>
-Subject: Re: [PATCH-cgroup v7] cgroup: Show # of subsystem CSSes in
- cgroup.stat
-Message-ID: <ZqpuIgdNLLwyjT9n@slm.duckdns.org>
-References: <20240715150034.2583772-1-longman@redhat.com>
- <ZqmDpLTm6tKhAmYv@slm.duckdns.org>
- <4cb4bczascgy4w774k7y5z5yewvl4civpkuhl46g73ckvoubj2@ag2cfvgayfqs>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gjpuWtC1uDS9oJ8OPfJJuumiQiCxfsLpexmJ54cTjhmxmUtRgFK175UXFz6sUgozW4+nQMC9cg3aRKxsXdRyirrIDHLVJTjOoOtoyzUspNFlktjcmXhiqBt4avOGhIClZzH6WN4gMMBfAtHP75YC2sIrMgBM3EuFiVvJsHWylEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QHrDunwf; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1722450001; x=1753986001;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mhUJZkJDoBn6UrBK6j9k/Zhefn6WhHvCy2ysDMhWtOg=;
+  b=QHrDunwfmTljnjUMhJp4vd5IXXUNGVW/dgSH/T/RyNzOlzNJbKuDoxpt
+   wZyHV+t86/OpZ2CoTrVC5r794mqkDPGyh42bsdd1BFl/ph2X1w33RfMb0
+   mr8AREaPMDqxH+7ES+IuOn29VRBkgv3131Og+oR2bioLqlQdcfRJM/jod
+   FF1L+JOcnRCjuugoQf1VxZ68UUqkPIgmoHQ9WLM3FSyKlTH7grazvfHIm
+   nbg4gYyzn5/U+xp8fHUtG69qRccZdnfKyF/swvf3ydSFTgkQzS0PVVFiE
+   OQASByNZMbLsmG8N3L9oj1NQJjiOMcstWbNCMsPcn6bTi3DC59uXjb7OY
+   Q==;
+X-CSE-ConnectionGUID: Un/HTtHSSXaxC+gn2TF7Hg==
+X-CSE-MsgGUID: xAQGIqJNSXCILtYcEE9g7Q==
+X-IronPort-AV: E=McAfee;i="6700,10204,11150"; a="23268184"
+X-IronPort-AV: E=Sophos;i="6.09,251,1716274800"; 
+   d="scan'208";a="23268184"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jul 2024 11:20:00 -0700
+X-CSE-ConnectionGUID: g2GxWhHnQRqpX6Q0Gsc6Bw==
+X-CSE-MsgGUID: RwGiN8jVSjmeOtf88aroXA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,251,1716274800"; 
+   d="scan'208";a="55368613"
+Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
+  by orviesa007.jf.intel.com with ESMTP; 31 Jul 2024 11:19:56 -0700
+Received: from kbuild by 68891e0c336b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sZDvV-000uhg-0v;
+	Wed, 31 Jul 2024 18:19:53 +0000
+Date: Thu, 1 Aug 2024 02:19:19 +0800
+From: kernel test robot <lkp@intel.com>
+To: Zhiguo Jiang <justinjiang@vivo.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	Nick Piggin <npiggin@kernel.dk>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Arnd Bergmann <arnd@arndb.de>, Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>, linux-arch@vger.kernel.org,
+	cgroups@vger.kernel.org, Barry Song <21cnbao@gmail.com>
+Cc: oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	opensource.kernel@vivo.com
+Subject: Re: [PATCH 2/2] mm: tlb: add tlb swap entries batch async release
+Message-ID: <202408010150.13yZScv6-lkp@intel.com>
+References: <20240730114426.511-3-justinjiang@vivo.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4cb4bczascgy4w774k7y5z5yewvl4civpkuhl46g73ckvoubj2@ag2cfvgayfqs>
+In-Reply-To: <20240730114426.511-3-justinjiang@vivo.com>
 
-On Wed, Jul 31, 2024 at 11:41:39AM +0200, Michal Koutný wrote:
-...
-> I think the commit message is missing something like this:
-> 
-> | 'debug' controller wasn't used to provide this information because
-> | the controller is not recommended in productions kernels, also many of
-> | them won't enable CONFIG_CGROUP_DEBUG by default.
-> | 
-> | Similar information could be retrieved with debuggers like drgn but
-> | that's also not always available (e.g. lockdown) and the additional
-> | cost of runtime tracking here is deemed marginal.
-> 
-> or a 'Link:' to the discussion ;-)
+Hi Zhiguo,
 
-I updated the commit message to include the paras and Link to this thread.
+kernel test robot noticed the following build warnings:
 
-Thanks.
+[auto build test WARNING on akpm-mm/mm-everything]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Zhiguo-Jiang/mm-move-task_is_dying-to-h-headfile/20240730-215136
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20240730114426.511-3-justinjiang%40vivo.com
+patch subject: [PATCH 2/2] mm: tlb: add tlb swap entries batch async release
+config: i386-randconfig-061-20240731 (https://download.01.org/0day-ci/archive/20240801/202408010150.13yZScv6-lkp@intel.com/config)
+compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240801/202408010150.13yZScv6-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202408010150.13yZScv6-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+>> mm/mmu_gather.c:54:10: sparse: sparse: symbol 'nr_exiting_processes' was not declared. Should it be static?
+   mm/mmu_gather.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h):
+   include/linux/page-flags.h:235:46: sparse: sparse: self-comparison always evaluates to false
+   include/linux/page-flags.h:235:46: sparse: sparse: self-comparison always evaluates to false
+
+vim +/nr_exiting_processes +54 mm/mmu_gather.c
+
+    53	
+  > 54	atomic_t nr_exiting_processes = ATOMIC_INIT(0);
+    55	static struct kmem_cache *swap_gather_cachep;
+    56	static struct workqueue_struct *swapfree_wq;
+    57	static DEFINE_STATIC_KEY_TRUE(tlb_swap_asyncfree_disabled);
+    58	
 
 -- 
-tejun
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
