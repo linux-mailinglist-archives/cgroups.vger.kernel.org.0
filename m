@@ -1,226 +1,281 @@
-Return-Path: <cgroups+bounces-4061-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4062-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 659419444E2
-	for <lists+cgroups@lfdr.de>; Thu,  1 Aug 2024 08:54:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C48F394459D
+	for <lists+cgroups@lfdr.de>; Thu,  1 Aug 2024 09:37:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAAFEB20B94
-	for <lists+cgroups@lfdr.de>; Thu,  1 Aug 2024 06:54:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79FD428414A
+	for <lists+cgroups@lfdr.de>; Thu,  1 Aug 2024 07:37:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC64158557;
-	Thu,  1 Aug 2024 06:54:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 163EA16D9A0;
+	Thu,  1 Aug 2024 07:37:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b="gStPPzx2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BEILie34"
 X-Original-To: cgroups@vger.kernel.org
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2051.outbound.protection.outlook.com [40.107.215.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 017A015748F;
-	Thu,  1 Aug 2024 06:54:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.215.51
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722495287; cv=fail; b=Q8IsjtNxhdOMkcJHoLJRKCptW5xVc4KsrBbNKFARm+VPJECJwN7+ByQmxTFb4wE1jMjj496eK6I5xL65H9f7AWBqXDmO6TdluJHjY5uuaSs6vn8j0LZ0iFau5Nhe0Vz3A3GGMX/malc8jm4tWo/EVzIYwqa45rV/WD4uo5Ita3g=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722495287; c=relaxed/simple;
-	bh=E2hHsjDaFFFwGnVv/bPaXVomk7xeiDb31aF92OYuoXY=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=XVHAp8DUWyIAaXSAygVdRvlGJYtXQJYs36m3e8+BnmRRwX//XYH88nleJDtSxoPzofzVoov5TQj0BMMDAukXjo6JZHGuZEo8imMMm3kiXMn6CTBpS7vyw4ColZ0q63722+58szLTl88nFnsXAoDvRXaaxWxwuFQK+KSHdTpxHKM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com; spf=pass smtp.mailfrom=vivo.com; dkim=pass (2048-bit key) header.d=vivo.com header.i=@vivo.com header.b=gStPPzx2; arc=fail smtp.client-ip=40.107.215.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vivo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vivo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=C5K9oOe54qf7ZN7dKwQkGw8nmZuXfaprg07/x87B4ZjbOjcuI1GgMvS2+okiUoxDITedcgsiXrZmBWOI1ZtgKHYHpS3I1HTWVDb1PNCCRCTg+IKKVKxQuL4HP7djqTm9ZmcoakZX4lIcZW/m6aKEeSzX3joNmWLdGEE3l2oKyDDCfT+TaC0CvjvMKaZYZ3jDdyv4B6I0HhHz/bHflPDoAHNvDkDGbu21YjK3X3c01mR/0Kdj+AZDAnDco3AqnaSzRbbeItjgyY4OyMbu2D2woXM7GEXZ7KDWN3JLsBVen5g3SIA674bOiTZCMQwKCCTmor+bmpCsdEaBCtiyCkRo5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LM0qvX/De6C5F0IRlJaRFL1CLHiRsa0e8RLNw6uQVIM=;
- b=CXiBBJP2N89hgg9HaTJZj7xGuQmsYjAtyyoQC7QHYeZ1/Ee/cAsNCui5igCjZG0ABO1wS/RXixI7bnYtZG7UzGA6XyyFECwe9545dI79R9htSU9LBDA9hDPMWvqZN38GxFM8axMOoBpA6P8fxRnNEq9H8/JWewf584dXB75ILqEzxcrrjUUn/OTA2XQa7DmWTjSi+AKmdFp1GXjVFFGJz4oiNOyxwH0apDWzyGGd/rgFcntMaUwvJIv2+xiWi+BaR0AjM3Xy5a9PCnnOsQo1B2BAaWNzg0o8IhZBQNnlj3Q7QavhGm5cyLrPlA172wQ/CXvvbJfuENKs9M93bSWlEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
- dkim=pass header.d=vivo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LM0qvX/De6C5F0IRlJaRFL1CLHiRsa0e8RLNw6uQVIM=;
- b=gStPPzx2ZmjMrv28bCxuvF+9PuqXSX18d5TLdEAMeDuZvO9DeZTrREYCSdh8VXF+mh+FzIDXG9eDwEAj0hcyHtbnTJM2i4xIq2LJ0uucmo0ftw+8+BiBeAy+pIT474J2dm33Ls0zE2ShhcuBt0yzyqM7cnXn4Q4oLZ7pwxyNLQGjj4KzH8xLEKK52IPO86guiuHwzO5fKXUV5NAiHCh6LjDRP3tw7s7Ofhfb+hIohLwQlY5fVGuauzduTA2NAywT3GzeKeI3M7FBNx1m43NapBBjFst8zZ6+hSaeu3mnYxzEiVvYkcrv5tY/36xoaBNMWhhHhyr7uEhJXZWdgOERJQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vivo.com;
-Received: from JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
- by SEZPR06MB7227.apcprd06.prod.outlook.com (2603:1096:101:233::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.22; Thu, 1 Aug
- 2024 06:54:36 +0000
-Received: from JH0PR06MB6849.apcprd06.prod.outlook.com
- ([fe80::ed24:a6cd:d489:c5ed]) by JH0PR06MB6849.apcprd06.prod.outlook.com
- ([fe80::ed24:a6cd:d489:c5ed%3]) with mapi id 15.20.7828.016; Thu, 1 Aug 2024
- 06:54:36 +0000
-Message-ID: <4379c4cb-3b09-4ad7-8859-54949f778c78@vivo.com>
-Date: Thu, 1 Aug 2024 14:54:32 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] mm: tlb: add tlb swap entries batch async release
-To: kernel test robot <lkp@intel.com>,
- Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- Will Deacon <will@kernel.org>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
- Nick Piggin <npiggin@kernel.dk>, Peter Zijlstra <peterz@infradead.org>,
- Arnd Bergmann <arnd@arndb.de>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- linux-arch@vger.kernel.org, cgroups@vger.kernel.org,
- Barry Song <21cnbao@gmail.com>
-Cc: oe-kbuild-all@lists.linux.dev,
- Linux Memory Management List <linux-mm@kvack.org>, opensource.kernel@vivo.com
-References: <20240730114426.511-3-justinjiang@vivo.com>
- <202408010150.13yZScv6-lkp@intel.com>
-From: zhiguojiang <justinjiang@vivo.com>
-In-Reply-To: <202408010150.13yZScv6-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: SI2PR02CA0027.apcprd02.prod.outlook.com
- (2603:1096:4:195::14) To JH0PR06MB6849.apcprd06.prod.outlook.com
- (2603:1096:990:47::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29E3B158529;
+	Thu,  1 Aug 2024 07:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1722497827; cv=none; b=JE0eeckkPZemnAcC+Noi3BLAYk2N39YKqF19GpGA4+UZDWA9FH86RKM+i2pEj9fdRVY/N++i6vhXl04jjVLssaVBTnBzhGX41Ave7pCvTsaVGYXQrylwXT5MvgmVotdV3yxDS2BRcFOQPZ8rSsVwjs/A9QYVuXO7E5i6fCpBics=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1722497827; c=relaxed/simple;
+	bh=WaUR4hy93i4Ek9LDJ+97SoWsUtXnI8FAu3DXyuoQc5A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NQ+uNheu8NkdkAFtU7UAuzQWmIpKZSx8lUXHffcPj+/gmYMhBcrRQtJpsBiHzED1njgFnCZubq/iAqbVu6BuyvnHLON1mBH7HDAWdayVGgBrLJGdno35Go3HtQ6LHYvQ53gQPfMUgmdzdZxABO7Wa18mnX4oeo2+jRzVFF0RuHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BEILie34; arc=none smtp.client-ip=209.85.217.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-492a8333cb1so1699631137.3;
+        Thu, 01 Aug 2024 00:37:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722497825; x=1723102625; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sfuN7vtcTfjCBA2br92dqKx97adSDLYFKLRcwy0cyB8=;
+        b=BEILie34Xgjoz5OdPq5k722hSaPBOw5DH2xGASRzjkRkOB9GYpIj3JJrMutHTNsnj3
+         iemj5lLKWRGrYAfptvLYfVlr0TH/9nTpAsudM09irbf/X0f8LurIcc1DoQNFtUnGhq8U
+         3gcTxzIctGzuqWBBWlVs+J4utI5wmsj+z3w8qTMyAdgyk14aLU4ln4Mc+gOiQAHdV+vp
+         F1x0jBzXDC/XE6PIDRaG+vlYzwiUkeNxJcAsX256uZ0PPCVVuiuTMxj0MxIZu2bgxFX0
+         M0iQhAtvogDiKrC9pp//OmNtnG+x132nO0ydBNOuxkWEE/5tUbynWvTvdygWcO7J1Id+
+         SxEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722497825; x=1723102625;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sfuN7vtcTfjCBA2br92dqKx97adSDLYFKLRcwy0cyB8=;
+        b=KOg4rNAOU4oTjlhPGi4PnY9Www6YP9lys76+1iZgy+u1KW976q2HHD1bDOg0zuGQeH
+         zews7JnjZlLkGkQuzlLtC1cF68xsK0UhSf5is1qijX3O9RDlvN53m0RyY+s/ozWw5V/H
+         aykx1ERZKLw9Gy2Q5gBe05ZSxUJS7rL4E97LNDG4fEaIBliTQmp7CgXz49t9NEh73M+r
+         HqSqqNeVPyA6u4J1xLPNgFohlonk+2YboSYkrEtIrRvpCB3XC3aNgLJYlE45XfaJFJre
+         cPwkwj1GhN1+y5vIJLnzppwIIrhnIbvCY9k1q/Lt2h8UomurWyrbgvFkwXVx/NAKm+mP
+         Fr0A==
+X-Forwarded-Encrypted: i=1; AJvYcCUu7ORTNBFknVszSy8d6GZh8ZG/IHVdl5j+UHTUyLUg6OFfH0ZL1/k7pK7JxL2uzd89NoVDdSu0k5GVwHmz@vger.kernel.org, AJvYcCVNriCBXX0mpY8cNSixKW6aJ7DXQgEoTyFQZhROI/yMwfunj4pTuthRewKJPVeMHwIJN+myCkjY@vger.kernel.org, AJvYcCVdjLazOgBXA2CD1D6WzCnajomIvbFyk+AKlFMEKxEJ/TXCxSrYbjbnDW4PGDd83GSzErQPPu9DzQBqNQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyJWtDhU33WOZiBU2ZdkI9gcLC0O6BQodjVgn0L+5Cdu3NFwNV2
+	TJwX32X56LYbTwfzloZVR1KhZAgaCASs7hjNUgTi5xFzAliDqgGl1Lw5YhX2goB0qbd4R3HM9er
+	Xxfuk8+lAKLkdJKK78nlRbBSCmXM=
+X-Google-Smtp-Source: AGHT+IGx04si4V8GDZUMjmPGLAJNMLD/FLSH9iT4JiQeGnLtSZxzfZoLY2gFZ+CbFpGugwviVfBE/7dkB9wixnRK3ZY=
+X-Received: by 2002:a05:6102:3f51:b0:493:bf46:7f00 with SMTP id
+ ada2fe7eead31-4945069ca67mr2432377137.5.1722497824850; Thu, 01 Aug 2024
+ 00:37:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: JH0PR06MB6849:EE_|SEZPR06MB7227:EE_
-X-MS-Office365-Filtering-Correlation-Id: 38de77bb-38bb-490a-aba5-08dcb1f6ce77
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|376014|1800799024|7416014|921020|43062017;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?Z2svZzhtOHlZbEo1QkplZnBvMGYvSWtJaUFHSHEwRWxXeEZRb2ZlbWowUzI1?=
- =?utf-8?B?TWdwN0g5V2ZLR3l3TWpZR25uOGZjZTYwVEpLd0U4ZXRrT21adGgyZlVXNDFq?=
- =?utf-8?B?TnN1aUNJNzVjS1N1cGQxNXdPVW9vYnI4R2pQMzRsM2l0cnVVR041U3l3aUdY?=
- =?utf-8?B?M05BQThwNnl5M3lDRGlobHZWakhLQ2ViUVlJekFqM1FvYkVpakxTdE5sRFVJ?=
- =?utf-8?B?OWZpYVJrNXdtRUJIWnFCRGZOSzJ1VFVOeTkzeHZPUU56WHo4ZFRSaEJ3Z1NW?=
- =?utf-8?B?VU5aOTM2VHFMZjBqN1VERm5DbFVKQ3BmV3BHV3RVSW1PMEF3bVIxZGFWZ0FV?=
- =?utf-8?B?cldZeXhncXd0ZW1PVEdTY2pvbXFpa2dsME5zMi9rMnRtai9jc0IzNUJzdHVx?=
- =?utf-8?B?Njc5V2tPYUpGZFlxdGlKK0JWdlQvbWsvNWZIUEdqa0E0aG9MMkdBT1E2ME14?=
- =?utf-8?B?bGhsS3l4Qmx1TDJrZSt2K3JXbDc4M2QrUWVuTEROSk0rK3ZZSXBUWVdwSDlC?=
- =?utf-8?B?T3dkVk55M0xLTzg0MlZUZXA4dHNkV3lRME9WWTU0RmlvL0JlVG9MZjlXNXAw?=
- =?utf-8?B?bjlGZlN3U29RZm1DTGdXWWs1RFpPQlhHWTk2U093dTdJbGY5T0NEWkVQVm5F?=
- =?utf-8?B?cEptL3JQalRSOVp2dy91bE9JVXJpVCtKNklINml0cjJmakpLbnIrNmRjL0F0?=
- =?utf-8?B?aG1IeHdwSndBTHJUck14cmtDTWpzT3JHaktUVGtDV2pTdmxmUDZpRmFuYmxQ?=
- =?utf-8?B?VXZLeXZzYlJrZmpZaTZzRS8zc1NtRjB6NHlFT0ZMYjNUdTNpRkx0M0Z1Y29C?=
- =?utf-8?B?MVZtM3FORDk4dEhPL0QyRHNLbHpWc3d6ZWt0NStZYnhNUlJyY2xFSDQzVmJR?=
- =?utf-8?B?a0JyaGNYQnkzbG5ZWndmUFpFOGNtVGFkWVd3SHNFWVU0ZlI4ZEdPNUNzSC9s?=
- =?utf-8?B?SjdBNks4Q0YxM2lUWWtJaVBreGdOdEZiSDVMZExwbS85R1p2QlFXbzNaTThP?=
- =?utf-8?B?c0U3RmJ4OEtDWThzVmdodWNtY1BLL1ZyYmIzZmVla0g4S0tGbUxudk5LWG1U?=
- =?utf-8?B?bUJXTE4vTXprWGp2TlJrRGgyMjBOU2RLZ2NnM053M2RVQnFCMlpna29sMjF4?=
- =?utf-8?B?d3JCZXcvMjZSQXZRalgyTE1zbUY3dThlQlpJMU5VdGJUY1p6NmUwdlJkdjZp?=
- =?utf-8?B?RWVZb21RbTJsaGdkQlZ1aFhObVlEWi9CZ2FJV1BHQ3dFZm9yWEREVWtkZWNH?=
- =?utf-8?B?azQ1dG5LS0E4M0xGUjk2eWwzZEYraHFkOXpEMkQrQVAvME5jQVBJdnZWZWkx?=
- =?utf-8?B?aVpJNzZ4ZkVDNkRMUDlvNWFzcURaWFlhWnQxcS80aWRhU3FRRjczL1p5ckMv?=
- =?utf-8?B?UmluNmxxcHFHK0VhakthZ0R4Q1IxMzBMdTV4cXIyaHY5OUNGZ2VLNktZTTRZ?=
- =?utf-8?B?elc2OGtRR2xMVEp5RXl1ZnNRb0p3SENqbVN6a1Z6U1NJcDNJVllvcXMrVXM4?=
- =?utf-8?B?elNEdVdoTTFQYUk1RHlkT1JYUmpZVW8zN2lYQVVjYjdMSjNhejV2NE5Pc1Jm?=
- =?utf-8?B?NHZlZjlUZXFQKzVjOVE2YzBLNm9ZcXhNL2txN2J6dEswT2lUUDNuSWpteWpU?=
- =?utf-8?B?K1pWdWZtSW9QTEUyRXQxK2k1NFJ1QXZ5TDhyUGNwd0RZeGhXUEFHbjdXbkov?=
- =?utf-8?B?Qit5V2N3bmNxVVpDSFZ6MnZKdEVXZGtkM1lLWlYzN0tTUlIzVmIrNGNmY2dt?=
- =?utf-8?B?L01LS1V0UUxZM3kzT0JnMHp2MEQxYWp6dFdtblRNMFExRWEwQVF3dnVaZkxt?=
- =?utf-8?Q?PZryEUdtXKxQjLewMBs9h4Nk3qcTwnnMyvqKs=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:JH0PR06MB6849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024)(7416014)(921020)(43062017);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?ZnZXLzZXVXlUNlRLTHc4RjBrOVRONzhQZUh2Y3VZUVdLdzVMNUZ1ai9ia0NF?=
- =?utf-8?B?dzMrZlFYcjBYQUYzQVRodGFnTFB1N0FIbCtUUVFrcXhJMFptdzZNMVluU0JK?=
- =?utf-8?B?UUVGcVM3WGhhU3RlYXZxNUQ5dWhMdHdua0lJUklBMVN1NmVqS29POWJyTWVU?=
- =?utf-8?B?elNteUIvVkNuTVVXeXJmSDB6ZmhhWVltZjVPeDNCdjlubEg3STkwQ1RBZFlM?=
- =?utf-8?B?NDVIeWJLZTFjMXpVeDdEVGxRaWVOMkgrVEJIZXBXL3FFcS8xbHN3TzBlU1BF?=
- =?utf-8?B?S3BLVkt4TkNEZjNadS9jL3QwVzM5ZWZuNEFZak8vWXJBbTh0OHNVRGVhNjUv?=
- =?utf-8?B?cmlPU2VOaldpSDdibmMzdkJHUTBBalExanFJQzJtV3Avb1FQbm9GbHZUWStR?=
- =?utf-8?B?ODI0Si9LaFl6NG9TajR0REloVVhXN2RMU3ljbnA2UEtIRGNsZ003eU5Dd0pD?=
- =?utf-8?B?RlZQTnllWUh6b01sb0lpeVNwV1k2eEZXdnVSRE1rL0I2MkxuYWhveHVxMUJW?=
- =?utf-8?B?eTQvbXVBUjB5ZjdaTXJyV044WVJGYkZNT25YQ1hSTm1yTkF4aFhMdTlxM3FQ?=
- =?utf-8?B?Zjg5ZExUVXNrQVB3OGhFTWlJa1Y3N290anQ4SkdJYkNFOVZ0Y1pyZldpVzV4?=
- =?utf-8?B?VWo0d3ExMnV3S1ZkcFd0azFKUG00Q0paSFVVTHpydlZTV2lYTzkyTnp3TzRQ?=
- =?utf-8?B?M0s2UGFiSUVQMktQMEVtT3NScUJGVzFOMHdZVzk5aStseVZPSmxoRDlvb2RD?=
- =?utf-8?B?TFlUTFI2ME5sWUZkUXJVdE9yYUFPemF2TE1IZUN4NCs5NFp5R0dIT2krZE1o?=
- =?utf-8?B?UkhLVTNSTWFxVzRwOS92OW1lS3NLRkEyZThaSlcxb0ZRMXdoRktQL2VvdzRk?=
- =?utf-8?B?cERLak9VM3dYcWFGZVZWZW5zbUo2Z0MwQUxWcS9DdC9DQ0k5Z0dIVk9QOTJD?=
- =?utf-8?B?VnU4RmN6RnlxNXRTSUpGeEdvc21NSWdCWFJRdFBUaTR3YVczWjFjRitCbk1S?=
- =?utf-8?B?N2VWcGRDTDl5ZDRwenlnZ2orZ01MMmFlWWp0S3Z4SFg5KzlkYnJlSnh5N0l2?=
- =?utf-8?B?Z1pvR29XakZ2enJOMEI2ckluZTF3T29sYWpuYktCbFdycWMzS3pVeTI5QzUy?=
- =?utf-8?B?ZEhhRkxYTTRUSy9QdGk2MHUyaU1kNUZ1UGRUZXNwN3NlSENEd2g4dVBkQjYy?=
- =?utf-8?B?bmd4Qk54Q1hDMXFaVWRZNHIycEVEVUljc0RMRG9vckpBbXpFaEk1dVdOZnVR?=
- =?utf-8?B?ZmQvUm0wc2lCcTZPcE5nMGNtejhqZ0R3NWtzS08zOE01dWk3R3k1dWZ1SDhp?=
- =?utf-8?B?ZVB1WGk1S1NYdjBlSzNiZmtBTjJUS01TNkVqQ2pjd1luangxVkZWUUtjWWUv?=
- =?utf-8?B?TzNmUU9zNCtLT25EelNqbVQ0djkwNEdkN1BzaFhPejNsTGd2UlZsc0xGRWNI?=
- =?utf-8?B?UkxYVGFrQjlORGpPcVFyME9uN1JvcUdObUJ4WG9UNy93Tk4rOEVvOVZGNW1I?=
- =?utf-8?B?R3VSL0I5RHhyak9YbEl4dlF5N3hvd2dCVkRHQ3Rjc1FXWVpnSWs4Ylk3NlQv?=
- =?utf-8?B?K1lMNVkzSTV6WGFHRkxZd0hCK1JIa3lDYmRvQytnNS9Qck9hbXV6TnBRMXhY?=
- =?utf-8?B?ZDFNK2FIbHJLRzVYOFg1MU9XUkhuWnpHZHJZaHQwWTRibWFzcWgyNkdzdjVa?=
- =?utf-8?B?b0NqL2NTTkY5RjViRnhCQ3FJYzkvYTFVME50U1R5TFQvR0U2OUFwblFWbFYw?=
- =?utf-8?B?eElCZUhUMVUxWDNtbTVocU9Rd0M4cTZVZmo3azdVbWhMVU5CUW1rWUFIcklY?=
- =?utf-8?B?TWVmdTV6SFB0NUhFbCtBcXZ5RE9RVC9vRGNrMlAwVG81WStRNU9Eb01qRTVm?=
- =?utf-8?B?Z1E1VUdJNisrdW5UTGo5WER3d3FIYkNwTVN3NnExYlNtV0RRd3Q4NnZONkFT?=
- =?utf-8?B?Y1pTeXlCWVkyUE1HQ29pRFgzV1IwS1NBZUNCZ2NPbXVKejJUN2g2WXE1bTBH?=
- =?utf-8?B?VWRpNXVCcHkxVUl6YXVsSmFwZWsyNXQrdHh3RzNDM1o3cDMreUVUdmN1ZTVL?=
- =?utf-8?B?dFh0U0JKRGExZWVuUlZYbTR3MTJONUduVWIvUzVHQ1dDQXR0Z2Jia2QzYjBC?=
- =?utf-8?Q?MgwmPH2tZWAPeRJxgkGsYvjyD?=
-X-OriginatorOrg: vivo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38de77bb-38bb-490a-aba5-08dcb1f6ce77
-X-MS-Exchange-CrossTenant-AuthSource: JH0PR06MB6849.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Aug 2024 06:54:36.4857
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: X0/IVc/W5TcieAlJ7wBHYv1slLjiAKGKw91RbFSZCOrA99gr9ufKwu5F+YNoN0eZPNf2PpiXRw2JX7uBYPQL6A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB7227
+References: <20240731133318.527-1-justinjiang@vivo.com> <20240731091715.b78969467c002fa3a120e034@linux-foundation.org>
+ <dbead7ca-e9a4-4ee8-9247-4e1ba9f6695c@vivo.com>
+In-Reply-To: <dbead7ca-e9a4-4ee8-9247-4e1ba9f6695c@vivo.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Thu, 1 Aug 2024 15:36:52 +0800
+Message-ID: <CAGsJ_4xv--92w+hOVWtMtYK-0TsR6z67xiHEXCvuRNvXx71b2A@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] mm: tlb swap entries batch async release
+To: zhiguojiang <justinjiang@vivo.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>, 
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick Piggin <npiggin@gmail.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, linux-arch@vger.kernel.org, cgroups@vger.kernel.org, 
+	kernel test robot <lkp@intel.com>, opensource.kernel@vivo.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Aug 1, 2024 at 2:31=E2=80=AFPM zhiguojiang <justinjiang@vivo.com> w=
+rote:
+>
+>
+>
+> =E5=9C=A8 2024/8/1 0:17, Andrew Morton =E5=86=99=E9=81=93:
+> > [Some people who received this message don't often get email from akpm@=
+linux-foundation.org. Learn why this is important at https://aka.ms/LearnAb=
+outSenderIdentification ]
+> >
+> > On Wed, 31 Jul 2024 21:33:14 +0800 Zhiguo Jiang <justinjiang@vivo.com> =
+wrote:
+> >
+> >> The main reasons for the prolonged exit of a background process is the
+> > The kernel really doesn't have a concept of a "background process".
+> > It's a userspace concept - perhaps "the parent process isn't waiting on
+> > this process via wait()".
+> >
+> > I assume here you're referring to an Android userspace concept?  I
+> > expect that when Android "backgrounds" a process, it does lots of
+> > things to that process.  Perhaps scheduling priority, perhaps
+> > alteration of various MM tunables, etc.
+> >
+> > So rather than referring to "backgrounding" it would be better to
+> > identify what tuning alterations are made to such processes to bring
+> > about this behavior.
+> Hi Andrew Morton,
+>
+> Thank you for your review and comments.
+>
+> You are right. The "background process" here refers to the process
+> corresponding to an Android application switched to the background.
+> In fact, this patch is applicable to any exiting process.
+>
+> The further explaination the concept of "multiple exiting processes",
+> is that it refers to different processes owning independent mm rather
+> than sharing the same mm.
+>
+> I will use "mm" to describe process instead of "background" in next
+> version.
+> >
+> >> time-consuming release of its swap entries. The proportion of swap mem=
+ory
+> >> occupied by the background process increases with its duration in the
+> >> background, and after a period of time, this value can reach 60% or mo=
+re.
+> > Again, what is it about the tuning of such processes which causes this
+> > behavior?
+> When system is low memory, memory recycling will be trigged, where
+> anonymous folios in the process will be continuously reclaimed, resulting
+> in an increase of swap entries occupies by this process. So when the
+> process is killed, it takes more time to release it's swap entries over
+> time.
+>
+> Testing datas of process occuping different physical memory sizes at
+> different time points:
+> Testing Platform: 8GB RAM
+> Testing procedure:
+> After booting up, start 15 processes first, and then observe the
+> physical memory size occupied by the last launched process at
+> different time points.
+>
+> Example:
+> The process launched last: com.qiyi.video
+> |  memory type  |  0min  |  1min  | BG 5min | BG 10min | BG 15min |
+> -------------------------------------------------------------------
+> |     VmRSS(KB) | 453832 | 252300 |  204364 |   199944 |  199748  |
+> |   RssAnon(KB) | 247348 |  99296 |   71268 |    67808 |   67660  |
+> |   RssFile(KB) | 205536 | 152020 |  132144 |   131184 |  131136  |
+> |  RssShmem(KB) |   1048 |    984 |     952 |     952  |     952  |
+> |    VmSwap(KB) | 202692 | 334852 |  362880 |   366340 |  366488  |
+> | Swap ratio(%) | 30.87% | 57.03% |  63.97% |   64.69% |  64.72%  |
+> min - minute.
+>
+> Based on the above datas, we can know that the swap ratio occupied by
+> the process gradually increases over time.
+
+If I understand correctly, during zap_pte_range(), if 64.72% of the anonymo=
+us
+pages are actually swapped out, you end up zapping 100 PTEs but only freein=
+g
+36.28 pages of memory. By doing this asynchronously, you prevent the
+swap_release operation from blocking the process of zapping normal
+PTEs that are mapping to memory.
+
+Could you provide data showing the improvements after implementing
+asynchronous freeing of swap entries?
 
 
+> >
+> >> Additionally, the relatively lengthy path for releasing swap entries
+> >> further contributes to the longer time required for the background pro=
+cess
+> >> to release its swap entries.
+> >>
+> >> In the multiple background applications scenario, when launching a lar=
+ge
+> >> memory application such as a camera, system may enter a low memory sta=
+te,
+> >> which will triggers the killing of multiple background processes at th=
+e
+> >> same time. Due to multiple exiting processes occupying multiple CPUs f=
+or
+> >> concurrent execution, the current foreground application's CPU resourc=
+es
+> >> are tight and may cause issues such as lagging.
+> >>
+> >> To solve this problem, we have introduced the multiple exiting process
+> >> asynchronous swap memory release mechanism, which isolates and caches
+> >> swap entries occupied by multiple exit processes, and hands them over
+> >> to an asynchronous kworker to complete the release. This allows the
+> >> exiting processes to complete quickly and release CPU resources. We ha=
+ve
+> >> validated this modification on the products and achieved the expected
+> >> benefits.
+> > Dumb question: why can't this be done in userspace?  The exiting
+> > process does fork/exit and lets the child do all this asynchronous free=
+ing?
+> The logic optimization for kernel releasing swap entries cannot be
+> implemented in userspace. The multiple exiting processes here own
+> their independent mm, rather than parent and child processes share the
+> same mm. Therefore, when the kernel executes multiple exiting process
+> simultaneously, they will definitely occupy multiple CPU core resources
+> to complete it.
+> >> It offers several benefits:
+> >> 1. Alleviate the high system cpu load caused by multiple exiting
+> >>     processes running simultaneously.
+> >> 2. Reduce lock competition in swap entry free path by an asynchronous
+> >>     kworker instead of multiple exiting processes parallel execution.
+> > Why is lock contention reduced?  The same amount of work needs to be
+> > done.
+> When multiple CPU cores run to release the different swap entries belong
+> to different exiting processes simultaneously, cluster lock or swapinfo
+> lock may encounter lock contention issues, and while an asynchronous
+> kworker that only occupies one CPU core is used to complete this work,
+> it can reduce the probability of lock contention and free up the
+> remaining CPU core resources for other non-exiting processes to use.
+> >
+> >> 3. Release memory occupied by exiting processes more efficiently.
+> > Probably it's slightly less efficient.
+> We observed that using an asynchronous kworker can result in more free
+> memory earlier. When multiple processes exit simultaneously, due to CPU
+> core resources competition, these exiting processes remain in a
+> runnable state for a long time and cannot release their occupied memory
+> resources timely.
+> >
+> > There are potential problems with this approach of passing work to a
+> > kernel thread:
+> >
+> > - The process will exit while its resources are still allocated.  But
+> >    its parent process assumes those resources are now all freed and the
+> >    parent process then proceeds to allocate resources.  This results in
+> >    a time period where peak resource consumption is higher than it was
+> >    before such a change.
+> - I don't think this modification will cause such a problem. Perhaps I
+>    haven't fully understood your meaning yet. Can you give me a specific
+>    example?
 
-在 2024/8/1 2:19, kernel test robot 写道:
-> Hi Zhiguo,
->
-> kernel test robot noticed the following build warnings:
->
-> [auto build test WARNING on akpm-mm/mm-everything]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Zhiguo-Jiang/mm-move-task_is_dying-to-h-headfile/20240730-215136
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-> patch link:    https://lore.kernel.org/r/20240730114426.511-3-justinjiang%40vivo.com
-> patch subject: [PATCH 2/2] mm: tlb: add tlb swap entries batch async release
-> config: i386-randconfig-061-20240731 (https://download.01.org/0day-ci/archive/20240801/202408010150.13yZScv6-lkp@intel.com/config)
-> compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240801/202408010150.13yZScv6-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202408010150.13yZScv6-lkp@intel.com/
->
-> sparse warnings: (new ones prefixed by >>)
-Hi,
+Normally, after completing zap_pte_range, your swap slots are returned to
+the swap file, except for a few slot caches. However, with the asynchronous
+approach, it means that even after your process has completely exited,
+ some swap slots might still not be released to the system. This could
+potentially starve other processes waiting for swap slots to perform
+swap-outs. I assume this isn't a critical issue for you because, in the
+case of killing processes, freeing up memory is more important than
+releasing swap entries?
 
-I have fix this compilation warning issue in the bellow patch. Please
-kindly help to test with this patch.
-https://lore.kernel.org/linux-mm/20240801065035.621-1-justinjiang@vivo.com/T/#u
+
+> > - If all CPUs are running in userspace with realtime policy
+> >    (SCHED_FIFO, for example) then the kworker thread will not run,
+> >    indefinitely.
+> - In my clumsy understanding, the execution priority of kernel threads
+>    should not be lower than that of the exiting process, and the
+>    asynchronous kworker execution should only be triggered when the
+>    process exits. The exiting process should not be set to SCHED_LFO,
+>    so when the exiting process is executed, the asynchronous kworker
+>    should also have opportunity to get timely execution.
+> > - Work which should have been accounted to the exiting process will
+> >    instead go unaccounted.
+> - You are right, the statistics of process exit time may no longer be
+>    complete.
+> > So please fully address all these potential issues.
+> Thanks
+> Zhiguo
+>
 
 Thanks
-Zhiguo
->>> mm/mmu_gather.c:54:10: sparse: sparse: symbol 'nr_exiting_processes' was not declared. Should it be static?
->     mm/mmu_gather.c: note: in included file (through include/linux/mmzone.h, include/linux/gfp.h):
->     include/linux/page-flags.h:235:46: sparse: sparse: self-comparison always evaluates to false
->     include/linux/page-flags.h:235:46: sparse: sparse: self-comparison always evaluates to false
->
-> vim +/nr_exiting_processes +54 mm/mmu_gather.c
->
->      53	
->    > 54	atomic_t nr_exiting_processes = ATOMIC_INIT(0);
->      55	static struct kmem_cache *swap_gather_cachep;
->      56	static struct workqueue_struct *swapfree_wq;
->      57	static DEFINE_STATIC_KEY_TRUE(tlb_swap_asyncfree_disabled);
->      58	
->
-
+Barry
 
