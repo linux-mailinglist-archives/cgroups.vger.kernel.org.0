@@ -1,273 +1,155 @@
-Return-Path: <cgroups+bounces-4065-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4066-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B946944A86
-	for <lists+cgroups@lfdr.de>; Thu,  1 Aug 2024 13:40:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0D4F94509A
+	for <lists+cgroups@lfdr.de>; Thu,  1 Aug 2024 18:32:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 255B21C21A91
-	for <lists+cgroups@lfdr.de>; Thu,  1 Aug 2024 11:40:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D8901F23DDC
+	for <lists+cgroups@lfdr.de>; Thu,  1 Aug 2024 16:32:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E357C18FC75;
-	Thu,  1 Aug 2024 11:40:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 623FD1B3F37;
+	Thu,  1 Aug 2024 16:31:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YVKlo7I+"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UiZqNOQF"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0620718E051;
-	Thu,  1 Aug 2024 11:40:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A34C713C9A3
+	for <cgroups@vger.kernel.org>; Thu,  1 Aug 2024 16:31:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722512451; cv=none; b=loVtCbbbvjN/X/QNIcbH8vCCpD22OurkHCTP1iVDDpBuzK0Nz05lB7f3QazoyesSoncnP/K/lJzJfz5dbZ8H4wKeuA0Tdtrbod4zmTtFsbGYbluswo6C7egvqjmQR2SAcdjFQV3Pqu0tGEjsz6kmKYawAch7AGklYbumJkHuuhE=
+	t=1722529917; cv=none; b=LHVxg1NCpItriBiQXlBH1bKCHI74O0c6PL+wRFewl6KTWBe/HpB5caXUHPbr9BKsS9UziC9wf4hujOTfHDwjUUelONMErj6k3IPstcYUXOOd0LgzuvZcts5H8rBdZUz6kaDFmiX+IcuHYSJXsaYnMcDfVtx9hpV81P1qRSRL4Ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722512451; c=relaxed/simple;
-	bh=mz53Znxhu4njp0b5GbjEvsbrkbMH+RLvtS17yyEemDY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J1bScslDHrsArmUV86ZJn0FTfsAsT+9q5VA91/yCTo+HKr6PbwKD8ojbVHSPuQS01iYiv5TRliNKkaHtjSaV+Bm3z7JTtZhOVkJ32s/4epp44WzQsUC2+PsIJuz1DLxw4NU677Z1h+eSiD2KAaIa/SEb0lQi/BI28lakuONXun8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YVKlo7I+; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a7a91cdcc78so409934366b.3;
-        Thu, 01 Aug 2024 04:40:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722512448; x=1723117248; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k4h0C3m16RHauZJhat03rjfnW666/JF+l3iulFI7afA=;
-        b=YVKlo7I+6A+suqSPMNy+L5WufvNXwLG7QyuJOenMZDhMz4o86uTsbaN3hSSG5TmUE+
-         gi/vUwvwQZeTrxzQqi/xiZHYBUHwWdu0OypNE3gz4ro3hzqs8A2Oki7wFVV2KynHUN+f
-         baDjjdAD55CX051SW/FdwUmsMMzwcAR6r3Fpo3xSXb1HySg6i5cx+crZRswCOVBsuIv5
-         /w2FptqirKTqSYW+T5Jm3RFiySKLPebrmtRK3MHrfYkE7MoM77wrUx5I/BGoYRIkNBwB
-         cj4pzFtfIX/iFSupW43DNCVyaMG++9ehZqJxKl0KkiokoxBH+U3bM1mx3AwZzFFT4TQt
-         mQ4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722512448; x=1723117248;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k4h0C3m16RHauZJhat03rjfnW666/JF+l3iulFI7afA=;
-        b=oBwVAWLsDSq51iju2JC04tk+iqC0vt9vRV0vfSpZN+6V6tuf8iDLuxxktQWc9U+wNz
-         kOXrSMCODbQbw5/qdlNVaGKVnYfFB2nW/D0Ko5awrGCnXH4v3Cx4kAiMNu1F4vy7qptE
-         1LT/zd+dNo6NLxvtklctCkAQ8gY0SaXKIrNAoIj23ZTOAxpp9RfoFEXi4mRw68Lk7tVa
-         KR8XuQaFpUPhkSSjNQmFcT6nv4lTnZuybCi+yjd7Ex6lqN49ICv0+MbyUcSUVI+jkkUw
-         vUdqUQMPfNqGQx0VDabyRbBSGdO4pnipDIuZyfemWdXu16mt/kHnfTtAxmOuemE7yVRZ
-         3WVg==
-X-Forwarded-Encrypted: i=1; AJvYcCWCdD6L96tMrsqAR2jrPaVBkfkX6QjMEdwziOayTuQ53nt8/1/s0wfKy98SA4VyL5zOQOuIiijdT97HmuKgydaj14mlVvNKPeCr2eJusTAZL4wBHixgjk91h+1jj6BlURgbcdN//w==
-X-Gm-Message-State: AOJu0Yww2KKt8/514CKPUNOkpZVX1tQWGG7Bb0NQ7aXX2lzWQa8IMh4F
-	7eAGZlBRg3nmf/pqI2fbaGv1RhyfsFXVZxcrDK7Dz5KTbhq2yGuADpda8kl4zpl5mNvfmg5eXZr
-	VfYKivndwWPNv8exhYjj3IIrYyos=
-X-Google-Smtp-Source: AGHT+IGvq30QUdJ2Ae3lQEO36wJYwLrAji75UF3q3P+jQkl895vx2DLPN9vA1jIrFJbik/B0ppK5WjmLrJ6gbLUaeTw=
-X-Received: by 2002:a05:6402:14d0:b0:5a1:5692:b5f9 with SMTP id
- 4fb4d7f45d1cf-5b700f8a256mr1773662a12.38.1722512447847; Thu, 01 Aug 2024
- 04:40:47 -0700 (PDT)
+	s=arc-20240116; t=1722529917; c=relaxed/simple;
+	bh=kOqKi1gvp/YX1LyIRZvf1c8hhwmtLvO07SQgA4gCSC4=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=b8xhGiXm5L4TvHJCfZxDFAJDde18g+eEkZI4GUTKBimyuqbLRLOSpmRfy/gPg3kEsA/sNbXnjBQX571eNtN71ooXbb4MBR6bzrniz0b5Oms3o5vvUAh2AW/HejPy/k0AY2ipbjCgtgebdOsTn4LSq7/egA2+wIHuSF/K4GU41Tg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UiZqNOQF; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1722529914;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nx2Psos8etE3ac3qTeYb/V7tISoRmYtQMJJ4hSX1mTQ=;
+	b=UiZqNOQFLCCCGnjMPS68mFdWiA42gBSznWXqYWuk5MjMY+GGOzAbGUmOaet6JGwwwzYJJL
+	H6vB6YqJZCZizq1UaxLq+bTzu+imQ8CgspgLtBvNsx/tudOlzmoMbvxwXMsI4HdnfyzbUf
+	V09t2IepuJfsry/XlISB0BiOYIL+5qk=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-681-Akv2kPmIMF6IzrXTpu4RIw-1; Thu,
+ 01 Aug 2024 12:31:49 -0400
+X-MC-Unique: Akv2kPmIMF6IzrXTpu4RIw-1
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A22B51955D4A;
+	Thu,  1 Aug 2024 16:31:47 +0000 (UTC)
+Received: from [10.2.16.25] (unknown [10.2.16.25])
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id B545119560AA;
+	Thu,  1 Aug 2024 16:31:45 +0000 (UTC)
+Message-ID: <a3cee760-398f-4661-b4b5-f2fcfd5de7b7@redhat.com>
+Date: Thu, 1 Aug 2024 12:31:44 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240801045430.48694-1-ioworker0@gmail.com> <2527d5a4-de1f-4c93-b7ee-fdd6fbe2a6f0@kernel.org>
-In-Reply-To: <2527d5a4-de1f-4c93-b7ee-fdd6fbe2a6f0@kernel.org>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Thu, 1 Aug 2024 19:40:10 +0800
-Message-ID: <CAK1f24knBez71sEvcfFoFuyvap+=3LzsRrmW-+fLsqV3WkyMBA@mail.gmail.com>
-Subject: Re: [BUG] mm/cgroupv2: memory.min may lead to an OOM error
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Cc: akpm@linux-foundation.org, 21cnbao@gmail.com, ryan.roberts@arm.com, 
-	david@redhat.com, shy828301@gmail.com, ziy@nvidia.com, libang.li@antgroup.com, 
-	baolin.wang@linux.alibaba.com, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] cgroup/cpuset: Do not clear xcpus when clearing
+ cpus
+From: Waiman Long <longman@redhat.com>
+To: Chen Ridong <chenridong@huawei.com>, tj@kernel.org,
+ lizefan.x@bytedance.com, hannes@cmpxchg.org, adityakali@google.com,
+ sergeh@kernel.org
+Cc: bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240731092102.2369580-1-chenridong@huawei.com>
+ <6a79b50a-ad74-4b1b-a98c-7da8ef341b24@redhat.com>
+Content-Language: en-US
+In-Reply-To: <6a79b50a-ad74-4b1b-a98c-7da8ef341b24@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-Hi Vlastimil,
 
-Thanks a lot for paying attention!
-
-On Thu, Aug 1, 2024 at 6:35=E2=80=AFPM Vlastimil Babka (SUSE) <vbabka@kerne=
-l.org> wrote:
+On 7/31/24 23:22, Waiman Long wrote:
+> On 7/31/24 05:21, Chen Ridong wrote:
+>> After commit 737bb142a00d ("cgroup/cpuset: Make cpuset.cpus.exclusive
+>> independent of cpuset.cpus"), cpuset.cpus.exclusive and cpuset.cpus
+>> became independent. However we found that 
+>> cpuset.cpus.exclusive.effective
+>> is cleared when cpuset.cpus is clear. To fix this issue, just remove 
+>> xcpus
+>> clearing when cpuset.cpus is being cleared.
+>>
+>> It can be reproduced as below:
+>> cd /sys/fs/cgroup/
+>> mkdir test
+>> echo +cpuset > cgroup.subtree_control
+>> cd test
+>> echo 3 > cpuset.cpus.exclusive
+>> cat cpuset.cpus.exclusive.effective
+>> 3
+>> echo > cpuset.cpus
+>> cat cpuset.cpus.exclusive.effective // was cleared
+>>
+>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>> ---
+>>   kernel/cgroup/cpuset.c | 5 ++---
+>>   1 file changed, 2 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index a9b6d56eeffa..248c39bebbe9 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -2523,10 +2523,9 @@ static int update_cpumask(struct cpuset *cs, 
+>> struct cpuset *trialcs,
+>>        * that parsing.  The validate_change() call ensures that cpusets
+>>        * with tasks have cpus.
+>>        */
+>> -    if (!*buf) {
+>> +    if (!*buf)
+>>           cpumask_clear(trialcs->cpus_allowed);
+>> -        cpumask_clear(trialcs->effective_xcpus);
+>> -    } else {
+>> +    else {
+>>           retval = cpulist_parse(buf, trialcs->cpus_allowed);
+>>           if (retval < 0)
+>>               return retval;
 >
-> On 8/1/24 06:54, Lance Yang wrote:
-> > Hi all,
-> >
-> > It's possible to encounter an OOM error if both parent and child cgroup=
-s are
-> > configured such that memory.min and memory.max are set to the same valu=
-es, as
-> > is practice in Kubernetes.
+> Yes, that is a corner case bug that has not been properly handled.
 >
-> Is it a practice in Kubernetes since forever or a recent one? Did it work
-> differently before?
-
-The memory.min is only applied when the Kubernetes memory QoS feature gate
-is enabled, which is disabled by default.
-
+> Reviewed-by: Waiman Long <longman@redhat.com>
 >
-> > Hmm... I'm not sure that whether this behavior is a bug or an expected =
-aspect of
-> > the kernel design.
->
-> Hmm I'm not a memcg expert, so I cc'd some.
->
-> > To reproduce the bug, we can follow these command-based steps:
-> >
-> > 1. Check Kernel Version and OS release:
-> >
-> >     ```
-> >     $ uname -r
-> >     6.10.0-rc5+
->
-> Were older kernels behaving the same?
+With a second thought, I think we should keep the clearing of 
+effective_xcpus if exclusive_cpus is empty. IOW
 
-I tested another machine and it behaved the same way.
-
-# uname -r
-5.14.0-427.24.1.el9_4.x86_64
-
-# cat /etc/os-release
-NAME=3D"Rocky Linux"
-VERSION=3D"9.4 (Blue Onyx)"
-...
-
->
-> Anyway memory.min documentations says "Hard memory protection. If the mem=
-ory
-> usage of a cgroup is within its effective min boundary, the cgroup=E2=80=
-=99s memory
-> won=E2=80=99t be reclaimed under any conditions. If there is no unprotect=
-ed
-> reclaimable memory available, OOM killer is invoked."
->
-> So to my non-expert opinion this behavior seems valid. if you set min to =
-the
-> same value as max and then reach the max, you effectively don't allow any
-> reclaim, so the memcg OOM kill is the only option AFAICS?
-
-I completely agree that this behavior seems valid ;)
-
-However, if the child cgroup doesn't exist and we add a process to the 'tes=
-t'
-cgroup, then attempt to create a large file(2GB) using dd, we won't encount=
-er
-an OOM error; everything works as expected.
-
-Hmm... I'm a bit confused about that.
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 6ba8313f1fc3..2023cd68d9bc 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -2516,7 +2516,8 @@ static int update_cpumask(struct cpuset *cs, 
+struct cpuset *trialcs,
+          */
+         if (!*buf) {
+                 cpumask_clear(trialcs->cpus_allowed);
+-               cpumask_clear(trialcs->effective_xcpus);
++               if (cpumask_empty(trialcs->exclusive_cpus))
++ cpumask_clear(trialcs->effective_xcpus);
+         } else {
+                 retval = cpulist_parse(buf, trialcs->cpus_allowed);
+                 if (retval < 0)
 
 Thanks,
-Lance
+Longman
 
->
-> >     $ cat /etc/os-release
-> >     PRETTY_NAME=3D"Ubuntu 24.04 LTS"
-> >     NAME=3D"Ubuntu"
-> >     VERSION_ID=3D"24.04"
-> >     VERSION=3D"24.04 LTS (Noble Numbat)"
-> >     VERSION_CODENAME=3Dnoble
-> >     ID=3Dubuntu
-> >     ID_LIKE=3Ddebian
-> >     HOME_URL=3D"<https://www.ubuntu.com/>"
-> >     SUPPORT_URL=3D"<https://help.ubuntu.com/>"
-> >     BUG_REPORT_URL=3D"<https://bugs.launchpad.net/ubuntu/>"
-> >     PRIVACY_POLICY_URL=3D"<https://www.ubuntu.com/legal/terms-and-polic=
-ies/privacy-policy>"
-> >     UBUNTU_CODENAME=3Dnoble
-> >     LOGO=3Dubuntu-logo
-> >
-> >     ```
-> >
-> > 2. Navigate to the cgroup v2 filesystem, create a test cgroup, and set =
-memory settings:
-> >
-> >     ```
-> >     $ cd /sys/fs/cgroup/
-> >     $ stat -fc %T /sys/fs/cgroup
-> >     cgroup2fs
-> >     $ mkdir test
-> >     $ echo "+memory" > cgroup.subtree_control
-> >     $ mkdir test/test-child
-> >     $ echo 1073741824 > memory.max
-> >     $ echo 1073741824 > memory.min
-> >     $ cat memory.max
-> >     1073741824
-> >     $ cat memory.min
-> >     1073741824
-> >     $ cat memory.low
-> >     0
-> >     $ cat memory.high
-> >     max
-> >     ```
-> >
-> > 3. Set up and check memory settings in the child cgroup:
-> >
-> >     ```
-> >     $ cd test-child
-> >     $ echo 1073741824 > memory.max
-> >     $ echo 1073741824 > memory.min
-> >     $ cat memory.max
-> >     1073741824
-> >     $ cat memory.min
-> >     1073741824
-> >     $ cat memory.low
-> >     0
-> >     $ cat memory.high
-> >     max
-> >     ```
-> >
-> > 4. Add process to the child cgroup and verify:
-> >
-> >     ```
-> >     $ echo $$ > cgroup.procs
-> >     $ cat cgroup.procs
-> >     1131
-> >     1320
-> >     $ ps -ef|grep 1131
-> >     root        1131    1014  0 10:45 pts/0    00:00:00 -bash
-> >     root        1321    1131 99 11:06 pts/0    00:00:00 ps -ef
-> >     root        1322    1131  0 11:06 pts/0    00:00:00 grep --color=3D=
-auto 1131
-> >     ```
-> >
-> > 5. Attempt to create a large file using dd and observe the process bein=
-g killed:
-> >
-> >     ```
-> >     $ dd if=3D/dev/zero of=3D/tmp/2gbfile bs=3D10M count=3D200
-> >     Killed
-> >     ```
-> >
-> > 6. Check kernel messages related to the OOM event:
-> >
-> >     ```
-> >     $ dmesg
-> >     ...
-> >     [ 1341.112388] oom-kill:constraint=3DCONSTRAINT_MEMCG,nodemask=3D(n=
-ull),cpuset=3D/,mems_allowed=3D0,oom_memcg=3D/test,task_memcg=3D/test/test-=
-child,task=3Ddd,pid=3D1324,uid=3D0
-> >     [ 1341.112418] Memory cgroup out of memory: Killed process 1324 (dd=
-) total-vm:15548kB, anon-rss:10240kB, file-rss:1764kB, shmem-rss:0kB, UID:0=
- pgtables:76kB oom_score_adj:0
-> >     ```
-> >
-> > 7. Reduce the `memory.min` setting in the child cgroup and attempt the =
-same large file creation, and then this issue is resolved.
-> >
-> >     ```
-> >     # echo 107374182 > memory.min
-> >     # dd if=3D/dev/zero of=3D/tmp/2gbfile bs=3D10M count=3D200
-> >     200+0 records in
-> >     200+0 records out
-> >     2097152000 bytes (2.1 GB, 2.0 GiB) copied, 1.8713 s, 1.1 GB/s
-> >     ```
-> >
-> > Thanks,
-> > Lance
-> >
->
 
