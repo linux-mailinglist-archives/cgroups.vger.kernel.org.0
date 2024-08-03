@@ -1,58 +1,54 @@
-Return-Path: <cgroups+bounces-4074-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4075-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 916B094664A
-	for <lists+cgroups@lfdr.de>; Sat,  3 Aug 2024 01:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 877CC946826
+	for <lists+cgroups@lfdr.de>; Sat,  3 Aug 2024 08:25:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBE0FB21A58
-	for <lists+cgroups@lfdr.de>; Fri,  2 Aug 2024 23:58:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB689B21358
+	for <lists+cgroups@lfdr.de>; Sat,  3 Aug 2024 06:25:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B2A13B580;
-	Fri,  2 Aug 2024 23:58:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hNkoehj8"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 001BD7D401;
+	Sat,  3 Aug 2024 06:25:42 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F55613A879
-	for <cgroups@vger.kernel.org>; Fri,  2 Aug 2024 23:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D090A847B;
+	Sat,  3 Aug 2024 06:25:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722643119; cv=none; b=DSGXXE81TfqUGLpur2BXSLIx+hlMhZkV6m2shLB1hx/y6iGLYbk1DMMlP0kks8gr1X0sut3Q4vWKdr9G+sdK/Sx1/ak+LNY0QBo9V9+OFUF0oyOsPzXDQ/N2Te4lA6AZPq9NCmz5KeyWYb+MAF9dcJ5N56PuqaGzMV9S4BVJn4Q=
+	t=1722666341; cv=none; b=SajK/zpv6J7lB7+KYSlQqLwI5BJSkuN3Q4L5+f9ol5kHeRy4N3U1ubox5bjGq6uzG3QKPuwsRMoruSXG/fo+RDuaA3DisxdbGDMyx96R7aAu46qse1wr91RTpBBoseCKGH8SjU8RYsAGCS+YuK3HCczmPCEevAPAEyweJVzjQ7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722643119; c=relaxed/simple;
-	bh=ek/Twkf/0KzDJOxl6HALvLL1GFA3f53vbYPKmu0cq8Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZWn+l6k/61oIpsfutHmNjeNWwECcHl3PKnYEsCniUDBQUkx3K2CKnEXVRKGY4Vfj6gu3MAtYO3ZDtKfophkc5qnVxY882tfWuaTwjQzBi64Rex4XzkYXIHbpkE0Lo+gr49CXd+FT0s+71ZDzUHDZFMEm4LILfUZe1awJDp2D4P4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hNkoehj8; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1722643114;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=vIQpQxNg2MyXYsuSEiANpsXDOnYEMzwRDvdV46avMd4=;
-	b=hNkoehj8SQFvqoNGAU3xYIlPtkmBu3wq4mO2bfPvELiR4pHFgu49d0eJr1gYnD62kxfOME
-	JOraAP21UfmZ9Z63EmTk1QSXiRXxr/LbPDu8MQUNCQUdUqRzYz0a3HHUOu/gidzcR4imVv
-	sTMkN1wPpVjOPFiooS0YmHx4jFKLSDI=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	linux-mm@kvack.org,
+	s=arc-20240116; t=1722666341; c=relaxed/simple;
+	bh=nqpbm8WEcjBvV/nU61W2jnnnozZceO08/0FEReAeuPc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=E/1m36SFTo0N2k+bs7Mkx5eEFph0xnQf3H/VOpZj/Jo7i6i22M5AMtsShMMUb0TSuSNRRkKJmWJ7RLMFjp98iNVwzIfaJqHwGpJHq4yC1zgQBGn698RjJylLsz+8gmh36CaImPDYs9fnkFxWdCn+Q0AFAHwoR1T7D45nhH/H4uw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WbXkS699Cz4f3jMl;
+	Sat,  3 Aug 2024 14:25:20 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id E80B91A0359;
+	Sat,  3 Aug 2024 14:25:33 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.67.174.26])
+	by APP2 (Coremail) with SMTP id Syh0CgCn3r1cza1m5YuCAg--.16339S2;
+	Sat, 03 Aug 2024 14:25:33 +0800 (CST)
+From: Xiu Jianfeng <xiujianfeng@huaweicloud.com>
+To: tj@kernel.org,
+	lizefan.x@bytedance.com,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>,
-	cgroups@vger.kernel.org
-Subject: [PATCH] memcg: protect concurrent access to mem_cgroup_idr
-Date: Fri,  2 Aug 2024 16:58:22 -0700
-Message-ID: <20240802235822.1830976-1-shakeel.butt@linux.dev>
+	xiujianfeng@huawei.com
+Subject: [PATCH -next] cgroup/pids: Remove unreachable paths of pids_{can,cancel}_fork
+Date: Sat,  3 Aug 2024 06:16:07 +0000
+Message-Id: <20240803061607.50470-1-xiujianfeng@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -60,99 +56,74 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-CM-TRANSID:Syh0CgCn3r1cza1m5YuCAg--.16339S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7WFy7Wr1DAFWkKw4UGrW3Wrg_yoW8WFykpF
+	nxC3s7KFWUWas8uw1UtrZ3ZryfKan3W34Uur4kJ3yftw12yw13GFyqyw10vry3Xry2gw17
+	JF4Yka1agw1jvF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0E
+	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
+	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+	k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
+	xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
+X-CM-SenderInfo: x0lxyxpdqiv03j6k3tpzhluzxrxghudrp/
 
-The commit 73f576c04b94 ("mm: memcontrol: fix cgroup creation failure
-after many small jobs") decoupled the memcg IDs from the CSS ID space to
-fix the cgroup creation failures. It introduced IDR to maintain the
-memcg ID space. The IDR depends on external synchronization mechanisms
-for modifications. For the mem_cgroup_idr, the idr_alloc() and
-idr_replace() happen within css callback and thus are protected through
-cgroup_mutex from concurrent modifications. However idr_remove() for
-mem_cgroup_idr was not protected against concurrency and can be run
-concurrently for different memcgs when they hit their refcnt to zero.
-Fix that.
+From: Xiu Jianfeng <xiujianfeng@huawei.com>
 
-We have been seeing list_lru based kernel crashes at a low frequency in
-our fleet for a long time. These crashes were in different part of
-list_lru code including list_lru_add(), list_lru_del() and reparenting
-code. Upon further inspection, it looked like for a given object (dentry
-and inode), the super_block's list_lru didn't have list_lru_one for the
-memcg of that object. The initial suspicions were either the object is
-not allocated through kmem_cache_alloc_lru() or somehow
-memcg_list_lru_alloc() failed to allocate list_lru_one() for a memcg but
-returned success. No evidence were found for these cases.
+According to the implement of cgroup_css_set_fork() and the usage in
+the cpuset controller which also has .can_fork and .cancel_fork hooks,
+the argument 'cset' for these two hooks must not be NULL, so remove
+the unrechable paths in thse two hooks.
 
-Looking more deeper, we started seeing situations where valid memcg's id
-is not present in mem_cgroup_idr and in some cases multiple valid memcgs
-have same id and mem_cgroup_idr is pointing to one of them. So, the most
-reasonable explanation is that these situations can happen due to race
-between multiple idr_remove() calls or race between
-idr_alloc()/idr_replace() and idr_remove(). These races are causing
-multiple memcgs to acquire the same ID and then offlining of one of them
-would cleanup list_lrus on the system for all of them. Later access from
-other memcgs to the list_lru cause crashes due to missing list_lru_one.
-
-Fixes: 73f576c04b94 ("mm: memcontrol: fix cgroup creation failure after many small jobs")
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
 ---
- mm/memcontrol.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+ kernel/cgroup/pids.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b889a7fbf382..8971d3473a7b 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3364,11 +3364,28 @@ static void memcg_wb_domain_size_changed(struct mem_cgroup *memcg)
- 
- #define MEM_CGROUP_ID_MAX	((1UL << MEM_CGROUP_ID_SHIFT) - 1)
- static DEFINE_IDR(mem_cgroup_idr);
-+static DEFINE_SPINLOCK(memcg_idr_lock);
-+
-+static int mem_cgroup_alloc_id(void)
-+{
-+	int ret;
-+
-+	idr_preload(GFP_KERNEL);
-+	spin_lock(&memcg_idr_lock);
-+	ret = idr_alloc(&mem_cgroup_idr, NULL, 1, MEM_CGROUP_ID_MAX + 1,
-+			GFP_NOWAIT);
-+	spin_unlock(&memcg_idr_lock);
-+	idr_preload_end();
-+	return ret;
-+}
- 
- static void mem_cgroup_id_remove(struct mem_cgroup *memcg)
+diff --git a/kernel/cgroup/pids.c b/kernel/cgroup/pids.c
+index 34aa63d7c9c6..8f61114c36dd 100644
+--- a/kernel/cgroup/pids.c
++++ b/kernel/cgroup/pids.c
+@@ -272,15 +272,10 @@ static void pids_event(struct pids_cgroup *pids_forking,
+  */
+ static int pids_can_fork(struct task_struct *task, struct css_set *cset)
  {
- 	if (memcg->id.id > 0) {
-+		spin_lock(&memcg_idr_lock);
- 		idr_remove(&mem_cgroup_idr, memcg->id.id);
-+		spin_unlock(&memcg_idr_lock);
-+
- 		memcg->id.id = 0;
- 	}
+-	struct cgroup_subsys_state *css;
+ 	struct pids_cgroup *pids, *pids_over_limit;
+ 	int err;
+ 
+-	if (cset)
+-		css = cset->subsys[pids_cgrp_id];
+-	else
+-		css = task_css_check(current, pids_cgrp_id, true);
+-	pids = css_pids(css);
++	pids = css_pids(cset->subsys[pids_cgrp_id]);
+ 	err = pids_try_charge(pids, 1, &pids_over_limit);
+ 	if (err)
+ 		pids_event(pids, pids_over_limit);
+@@ -290,14 +285,9 @@ static int pids_can_fork(struct task_struct *task, struct css_set *cset)
+ 
+ static void pids_cancel_fork(struct task_struct *task, struct css_set *cset)
+ {
+-	struct cgroup_subsys_state *css;
+ 	struct pids_cgroup *pids;
+ 
+-	if (cset)
+-		css = cset->subsys[pids_cgrp_id];
+-	else
+-		css = task_css_check(current, pids_cgrp_id, true);
+-	pids = css_pids(css);
++	pids = css_pids(cset->subsys[pids_cgrp_id]);
+ 	pids_uncharge(pids, 1);
  }
-@@ -3502,8 +3519,7 @@ static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
- 	if (!memcg)
- 		return ERR_PTR(error);
  
--	memcg->id.id = idr_alloc(&mem_cgroup_idr, NULL,
--				 1, MEM_CGROUP_ID_MAX + 1, GFP_KERNEL);
-+	memcg->id.id = mem_cgroup_alloc_id();
- 	if (memcg->id.id < 0) {
- 		error = memcg->id.id;
- 		goto fail;
-@@ -3648,7 +3664,9 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
- 	 * publish it here at the end of onlining. This matches the
- 	 * regular ID destruction during offlining.
- 	 */
-+	spin_lock(&memcg_idr_lock);
- 	idr_replace(&mem_cgroup_idr, memcg, memcg->id.id);
-+	spin_unlock(&memcg_idr_lock);
- 
- 	return 0;
- offline_kmem:
 -- 
-2.43.5
+2.34.1
 
 
