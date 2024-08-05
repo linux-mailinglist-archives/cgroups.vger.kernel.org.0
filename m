@@ -1,233 +1,132 @@
-Return-Path: <cgroups+bounces-4096-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4097-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1062C9481F3
-	for <lists+cgroups@lfdr.de>; Mon,  5 Aug 2024 20:52:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA43E9483BA
+	for <lists+cgroups@lfdr.de>; Mon,  5 Aug 2024 22:53:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC34228B768
-	for <lists+cgroups@lfdr.de>; Mon,  5 Aug 2024 18:51:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C0AB283FC9
+	for <lists+cgroups@lfdr.de>; Mon,  5 Aug 2024 20:53:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31EDE15F418;
-	Mon,  5 Aug 2024 18:51:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2A48165EF9;
+	Mon,  5 Aug 2024 20:53:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="toRI6xnh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tv67lRO/"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DA3215E5BE
-	for <cgroups@vger.kernel.org>; Mon,  5 Aug 2024 18:51:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08AC18469;
+	Mon,  5 Aug 2024 20:53:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722883902; cv=none; b=XyAgLhyEeO/55vRVuGe44k7vUTnrPTMru8127GmzzK/lcb7E2Pd5qYSXy6xg+NHKPScCuaZLOWs17A1U1fQXDEhpX6BEVtSqo1elMsLH9qVenCi2jcS9vnMuwpeHPpKBOx0Qof964v4imqgnY93t3cjZpsy0KpwjCz8ub4++Zkk=
+	t=1722891202; cv=none; b=q0MKbgNnWibKNVuOKhazn05saMr2rw+nRcmO2a+acxjvtCMdpF0rzhREgwYspTATj0p/Ls16WzmLubF5KBHYVeXti8uTQs897k3bMggbHhkML35AygQLqSyyPiCa1MRwBTCQqzChHfehYaEgesX8H4W7MHOnRPz+2dwLt7qEWpE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722883902; c=relaxed/simple;
-	bh=XUNBVdRu82qhkjmoWjq/FDLz55z9+9+gFi6fUvzxQLw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WIMoK0uxX2EHoA26p0U9A35aStIgbt2ZRGzQyZwXlGl+nRHUxSLxw/LXqlKqgs+FRczz70lDC4HQW/NVc+crPFYoaEUZWRNdGzGRbdlrhiXmrVrTGGaw2DWBRcyb2t0gSUskaY64gcaV6HIXB3+xcKwmgX+zFvqTSVpv/pIDvT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=toRI6xnh; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-530ae4ef29dso11647765e87.3
-        for <cgroups@vger.kernel.org>; Mon, 05 Aug 2024 11:51:39 -0700 (PDT)
+	s=arc-20240116; t=1722891202; c=relaxed/simple;
+	bh=y1xo8rwkPsGbX5QYPhg43l5VAHouRl6947m47UdVhfE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TAiIkHjIpKl1kd0ice2CC7rLbvgPfL0yCo7VSTgi/1nzt3+E7jkJ1a4AwzsO7Fsv3Xu6FBiJUNa4Qusc8PJEDSumAD2G3d8Em6v4kygLP7pqb//1HQjfXwcB8JYWe7ltutGppfEMLLYUT3iR4hyEEvuAPgLw5Ga1W1+wRcpVHlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tv67lRO/; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1ff3d5c6e9eso51262465ad.1;
+        Mon, 05 Aug 2024 13:53:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1722883898; x=1723488698; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zX73mTG4pcwMAjmlvY0/Y+DmA7ujKlG2GvsuKR4ZF4c=;
-        b=toRI6xnhXHQQx7IhZ3OF45AJSV27EjLOzcJHlD7IG3ipv9mleODFHGbdW7uepr4OeC
-         hDqodljvkEW8NKZpp5GcOgDIeWockS2CTMMq/fjee7+PqbwJOU/ppvUug82XOvYKgzEl
-         bUbHbakoCIM05anrFLivtssHp0jC4TxCj88+FFTduk85kCSOc+I42eNEMTVRLol3Brkx
-         EfgzAzeslAfmiJ96Sl1MB5taZi/+BcaFqrS44iL389JheZprSyHQn0N18XHJEqCg7drT
-         ZrReP94w5vdkWYxa/yPMsOw/xpDBqhE2CEXFgxjm+pMnXusrYVjD5om1+TWBjzMPVTYv
-         Injg==
+        d=gmail.com; s=20230601; t=1722891200; x=1723496000; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0HoHqms9+0/tY2gizWucMJ9q6stXqDnf9Flrxt6daeU=;
+        b=Tv67lRO/JBPb8jegHj33o9xmR7NrzQc3RxMnVD7PRXczaJQgEM5RI1C7UaJqO+eMXI
+         XeUSqR9D6V/YC/2mo5EVgvBe4Oes/0QxU5LHaz6sk6Jwc2V/kizuamw7lZUTc45RXURQ
+         f82bRnRVL23R6FgoosT9Qem2j7svWBb72buzW2G8H4OxCBeqa9NT7cWBjKvDIe0D4fy0
+         gm1oMswF7/q/Yn9kv94McyWwUTsHIGq2OhZ7XF3jNxEqvaclLbUtUJ7Y3S1BdepAYQOY
+         ycuDmo80R8fuAPNRVjKAXnXeI0Ur7IsTiX+1tcovlD+VYYDEES/GmYNKMBkZJlc9/ECK
+         4RwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722883898; x=1723488698;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1722891200; x=1723496000;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zX73mTG4pcwMAjmlvY0/Y+DmA7ujKlG2GvsuKR4ZF4c=;
-        b=niR4KzsunGG9j0Ybi8J6UYG8jshvTNC0QoFrqIGxFhrdszCd8w8ki4yCt8HssAnB3G
-         rVtmtKAfM1IPIh8apWg4D0tA7jz8KGeN+3D7SU0sBshIAbLfDsjMpJdZA2/EPZcQRPKV
-         VwXmWwqjcDI4ZthEk0hyQRos2xXbaba1ctdIygEQxOCjs3yO9o/Q+0q/pwx0qdmqMif6
-         G9Ezl41om6Scivg5jBi1xyklvBBWWthayT7yVnj14DCmgr/mcHIOZzNLV+xjpfonK1JV
-         qHmQSigw+oo/2R8wRePXL9l7l2+Bvx/gHwtDyB7MbNwDTq7VBtpanilUWzYXEtx9q7Rq
-         EjIA==
-X-Forwarded-Encrypted: i=1; AJvYcCUhcDQifzVeyRynZq2pT/jsaioBUZiZwsk3xl+Kp3FXQGtpSmIoXbfYnmZUrX2VdtUEfXVEOqqDpfcG4SKT0IWWjxjtk5Lc5Q==
-X-Gm-Message-State: AOJu0YyoyKGVUGLSCruKU3snA2Zq8S0xyyN7snzKPPVIti0bllSD6oEB
-	aBzGvYto2MpUgWbd8v9PUhknHENsCHKll81jMmjb4YAHryhSrDBTyxYgLGPwgH4mEkDgrSTteXC
-	aSnal5UsXkOuPGkAiD3yuUU/pNF5RwdHRUSxy
-X-Google-Smtp-Source: AGHT+IE/sthJa9woVQs/VxN/0k7SdSe1WSEegFQyAFsfnWxXYHSAr3iFGKf1qkAZH0DCQxNnjakEwf+pGoTSthFNq54=
-X-Received: by 2002:a05:6512:2399:b0:52c:9877:71b7 with SMTP id
- 2adb3069b0e04-530bb3bd153mr11647817e87.59.1722883897453; Mon, 05 Aug 2024
- 11:51:37 -0700 (PDT)
+        bh=0HoHqms9+0/tY2gizWucMJ9q6stXqDnf9Flrxt6daeU=;
+        b=mYbPqksPXbifF0on3tdqQP+j4RRYxeb00eQgTGaZW2Wzkm5oCJaYXYZtw5o5zjEX66
+         RZjhRGLeUkErtiJ2dm49tD418kBOV8/1UANLvb3JKiilPhO0N1XJnPC4nG0nBwZH99yu
+         ta24FCPDZ92LuZkVS2Kfi4LdhNtcvDJ7v1f7JV/ygjo/Zna5xbxBq5B3kpYgbvI+Dsnx
+         rkk2hSGUbbZ4mNBa1RWDHZFR67d6m59pjPvIOThN3qIWsp4K5LbXcM2j/QAOhJvF+23G
+         ymRgVfOSFlK9H3zYCsuAgDzsRlh0rXaBx2NzAAmKFn7GeMEfBvSv95syT6RaHO5BNnvN
+         9sQA==
+X-Forwarded-Encrypted: i=1; AJvYcCUXIKv7g1Ow7SrjcJAhSFdTImfjktYHYfd54clQ2G3Bhp12Ira9UhveLE5aA/2R8TWHC64X010QrmY1iyN2bA/4N9s4cyyuLVkxwT7RSP6X6rod2WgBdwnY1jzjktgaWTVfjuX793kXiCfl5JDexNuQz7gYuPRmTZa9U7rU1+CB2RmAJcCjxg==
+X-Gm-Message-State: AOJu0Yya4FJ5x/KPGhe2YwECC1vyNP8miOaEpV0wUaln1qrtZVryVNYm
+	CO8VB48ER/e6KY14U4TSZE5X5f4hG19HNNdY6ekE/XkMvkhgykGx
+X-Google-Smtp-Source: AGHT+IER7MImBl1ax6v5k1mCVCuO9iad5adNijX3pUG8zDdywVTk9JecqjehUPEVVLbLmp9HprRSjQ==
+X-Received: by 2002:a17:903:1c2:b0:1f7:1655:825c with SMTP id d9443c01a7336-1ff573d903bmr114138625ad.36.1722891200121;
+        Mon, 05 Aug 2024 13:53:20 -0700 (PDT)
+Received: from localhost (dhcp-72-235-129-167.hawaiiantel.net. [72.235.129.167])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1ff58f26064sm73042265ad.57.2024.08.05.13.53.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Aug 2024 13:53:19 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Mon, 5 Aug 2024 10:53:18 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Chen Ridong <chenridong@huawei.com>
+Subject: Re: [PATCH-cgroup 2/5] cgroup/cpuset: Clear effective_xcpus on
+ cpus_allowed clearing only if cpus.exclusive not set
+Message-ID: <ZrE7vkGZsBRdlaQP@slm.duckdns.org>
+References: <20240805013019.724300-1-longman@redhat.com>
+ <20240805013019.724300-3-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <172139415725.3084888.13770938453137383953.stgit@firesoul>
- <CAJD7tkaVwpYWu_c+vgr7mJiWzFofq9jmx-hyOx1i5kkHWc62dg@mail.gmail.com>
- <c55f852b-39b7-4bf9-a054-0e7933912730@kernel.org> <CAJD7tkaZuiSCj4RZ2v6jOCtwiv++YNQxA0x6MEp-HrHaYO6_9g@mail.gmail.com>
- <ee0f7d29-1385-4799-ab4b-6080ca7fd74b@kernel.org> <CAJD7tkYL-az+bSXH-CYBLJS2FQ6WtNDOSsxnUZhkixHeBrBmbg@mail.gmail.com>
- <ef58d81c-6266-4999-ac1e-04d330196f9a@kernel.org>
-In-Reply-To: <ef58d81c-6266-4999-ac1e-04d330196f9a@kernel.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 5 Aug 2024 11:50:59 -0700
-Message-ID: <CAJD7tkb6ug3JpPi6s1+xHf=1K6-vVOH-8wPTzWbG8v6CJ0MT6Q@mail.gmail.com>
-Subject: Re: [PATCH V8 1/2] cgroup/rstat: Avoid flushing if there is an
- ongoing overlapping flush
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: tj@kernel.org, cgroups@vger.kernel.org, shakeel.butt@linux.dev, 
-	hannes@cmpxchg.org, lizefan.x@bytedance.com, longman@redhat.com, 
-	kernel-team@cloudflare.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240805013019.724300-3-longman@redhat.com>
 
-On Mon, Aug 5, 2024 at 7:24=E2=80=AFAM Jesper Dangaard Brouer <hawk@kernel.=
-org> wrote:
->
->
-> On 02/08/2024 18.10, Yosry Ahmed wrote:
-> > On Fri, Aug 2, 2024 at 4:43=E2=80=AFAM Jesper Dangaard Brouer <hawk@ker=
-nel.org> wrote:
-> >>
-> >>
-> >> On 30/07/2024 20.54, Yosry Ahmed wrote:
-> >>> [..]
-> >>>>
-> >>>> Well... I'm still not convinced that it makes sense to have level >=
-=3D 2
-> >>>> be the ongoing flusher.
-> >>>>
-> >>>> E.g. if a level 2 cgroup becomes ongoing flusher, and kswapd starts =
-12
-> >>>> NUMA flushes at the same time, then the code will have these 12 kswa=
-pd
-> >>>> threads spin on the lock, until ongoing flusher finishes. That is li=
-kely
-> >>>> what happened above (for a level 1).  These 12 spinning (root) flush=
-ers
-> >>>> will not recheck ongoing_flusher and will all flush the root
-> >>>> (unnecessarily 11 times).
-> >>>
-> >>> Hmm regardless of whether or not the level-2 cgroup becomes the
-> >>> ongoing flusher, the kswapd threads will all spin on the lock anyway
-> >>> since none of them can be the ongoing flusher until the level-2 cgrou=
-p
-> >>> finishes. Right?
-> >>>
-> >>> Is the scenario you have in mind that the level-2 cgroup starts
-> >>> flushing at the same time as kswapd, so there is a race on who gets t=
-o
-> >>> be the ongoing flusher? In this case as well, whoever gets the lock
-> >>> will be the ongoing flusher anyway.
-> >>>
-> >>> Not allowing whoever is holding the lock to be the ongoing flusher
-> >>> based on level is only useful when we can have multiple ongoing
-> >>> flushers (with lock yielding). Right?
-> >>>
-> >>> Perhaps I am missing something here.
-> >>>
-> >>>>
-> >>>> So, I don't think it is a good idea to have anything else that the r=
-oot
-> >>>> as the ongoing flusher.
-> >>>>
-> >>>> Can you explain/convince me why having sub-cgroups as ongoing flushe=
-r is
-> >>>> an advantage?
-> >>>
-> >>> I just don't see the benefit of the special casing here as I mentione=
-d
-> >>> above. If I missed something please let me know.
-> >>>
-> >>
-> >> I do think you missed something. Let me try to explain this in another
-> >> way. (I hope my frustrations doesn't shine through).
-> >>
-> >> The main purpose of the patch is/was to stop the thundering herd of
-> >> kswapd thread flushing (root-cgrp) at exactly the same time, leading t=
-o
-> >> lock contention. This happens all-the-time/constantly in production.
-> >>
-> >> The first versions (where ongoing was limited to root/level=3D0) solve=
-d
-> >> this 100%.  The patches that generalized this to be all levels can
-> >> become ongoing flush, doesn't solve the problem any-longer!
-> >>
-> >> I hope it is clear what fails. E.g. When a level>0 becomes ongoing
-> >> flusher, and 12 kswapd simultaneously does a level=3D0/root-cgrp flush=
-,
-> >> then we have 12 CPU cores spinning on the rstat lock. (These 12 kswapd
-> >> threads will all go-through completing the flush, as they do not
-> >> discover/recheck that ongoing flush was previously became their own le=
-vel).
-> >
-> > I think we may be speaking past one another, let me try to clarify :)
-> >
-> > I agree with your assessment, all I am saying is that this restriction
-> > is only needed because of lock yielding, and can be removed after that
-> > IIUC.
-> >
-> > The problem when we allow non-root ongoing flushers now is that when
-> > the kswapd thread are woken up and the first one of them gets the lock
-> > and does the flush, it may be find that the ongoing_flusher is already
-> > set by another non-root flusher that yielded the lock. In this case,
-> > the following kswapd flushers will spin on the lock instead of waiting
-> > for the first kswapd to finish.
-> >
-> > If we remove lock yielding, then the above scenario cannot happen.
->
-> I think, this is where we disagree/talk-past-each-other.  Looking at the
-> code, I do believe the the situation *also* occurs without any lock
-> yielding involved.  Yes, the situation if far-worse when we have lock
-> yielding, but it also happens in the default case.
->
-> > When the lock/mutex is held by a flusher, it is guaranteed that
-> > ongoing_flusher is NULL and can be set by the flusher. In this case,
-> > we should allow any cgroup to be the ongoing_flusher because there can
-> > only be one anyway.
-> >
->
-> With current patch proposal [V8 or V9].
-> Assuming we have no lock yielding.
->
-> Do we agree that 12 kswapd threads will be waiting on the lock, when a
-> level>0 were ongoing flusher when they were started?
-> Then level>0 finishes being ongoing flushed.
-> Then kswapd0 gets lock, observe NULL as ongoing, and becomes ongoing.
-> Then kswapd1 gets lock, observe NULL as ongoing, and becomes ongoing.
-> Then kswapd2 gets lock, observe NULL as ongoing, and becomes ongoing.
-> Then kswapd3 gets lock, observe NULL as ongoing, and becomes ongoing.
-> Then kswapd4 gets lock, observe NULL as ongoing, and becomes ongoing.
-> Then kswapd5 gets lock, observe NULL as ongoing, and becomes ongoing.
-> Then kswapd6 gets lock, observe NULL as ongoing, and becomes ongoing.
-> [etc]
+On Sun, Aug 04, 2024 at 09:30:16PM -0400, Waiman Long wrote:
+> Commit e2ffe502ba45 ("cgroup/cpuset: Add cpuset.cpus.exclusive for
+> v2") adds a user writable cpuset.cpus.exclusive file for setting
+> exclusive CPUs to be used for the creation of partitions. Since then
+> effective_xcpus depends on both the cpuset.cpus and cpuset.cpus.exclusive
+> setting. If cpuset.cpus.exclusive is set, effective_xcpus will depend
+> only on cpuset.cpus.exclusive.  When it is not set, effective_xcpus
+> will be set according to the cpuset.cpus value when the cpuset becomes
+> a valid partition root.
+> 
+> When cpuset.cpus is being cleared by the user, effective_xcpus should
+> only be cleared when cpuset.cpus.exclusive is not set. However, that
+> is not currently the case.
+> 
+>   # cd /sys/fs/cgroup/
+>   # mkdir test
+>   # echo +cpuset > cgroup.subtree_control
+>   # cd test
+>   # echo 3 > cpuset.cpus.exclusive
+>   # cat cpuset.cpus.exclusive.effective
+>   3
+>   # echo > cpuset.cpus
+>   # cat cpuset.cpus.exclusive.effective // was cleared
+> 
+> Fix it by clearing effective_xcpus only if cpuset.cpus.exclusive is
+> not set.
+> 
+> Fixes: e2ffe502ba45 ("cgroup/cpuset: Add cpuset.cpus.exclusive for v2")
+> Reported-by: Chen Ridong <chenridong@huawei.com>
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-How does preventing the level>0 cgroup from becoming the
-ongoing_flusher change the above scenario? kswapd threads will still
-observe NULL as ongoing and spin on the lock, right?
+Applied 1-2 to cgroup/for-6.11-fixes w/ stable cc'd.
 
-(Still assuming no lock yielding)
+Thanks.
 
->
-> Please, let me know if I misunderstood my own code, and you believe this
-> scenario cannot happen.
->
-> When above happens, then patch didn't solve the kswapd thundering herd
-> issue that we observe in production.
->
-> The point/problem is that once kswapd is waiting on the lock, then code
-> doesn't re-check the ongoing flusher, and every kswapd thread will be
-> spinning and every kswapd thread will need to go through the flush.
-> When a kswapd thread gets the lock, then it will observe ongoing as
-> NULL, so it cannot detect that another level=3D0 just were the ongoing.
->
-> --Jesper
+-- 
+tejun
 
