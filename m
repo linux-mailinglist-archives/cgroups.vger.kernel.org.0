@@ -1,82 +1,57 @@
-Return-Path: <cgroups+bounces-4094-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4095-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E1D6947FC9
-	for <lists+cgroups@lfdr.de>; Mon,  5 Aug 2024 18:59:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BD6594803A
+	for <lists+cgroups@lfdr.de>; Mon,  5 Aug 2024 19:25:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B8681C20E91
-	for <lists+cgroups@lfdr.de>; Mon,  5 Aug 2024 16:59:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 104331F2375F
+	for <lists+cgroups@lfdr.de>; Mon,  5 Aug 2024 17:25:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5508415CD79;
-	Mon,  5 Aug 2024 16:59:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B00B215EFC1;
+	Mon,  5 Aug 2024 17:25:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="Kx8OYBrv"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pJ9HXd8k"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 952B42C684
-	for <cgroups@vger.kernel.org>; Mon,  5 Aug 2024 16:59:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC92D15E5D6
+	for <cgroups@vger.kernel.org>; Mon,  5 Aug 2024 17:25:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722877182; cv=none; b=eOwy+5zwwmxrZWrAdY31aTB7fB/nrEltKkPNVtGmMowoD4lA7wFAvinbW5MmHrZpEbDNXGpx2Sy6NKGljkJSrFWh5b+VK913kC6IRhO8zye+GgLmHfGT+IEzi3zYNJ20YYDAFJluUSC8IjmMJQmDelWUF+rEKEvcvyySLIriKfE=
+	t=1722878737; cv=none; b=E3AIdZ9R0xVXMvHUgg/YAFqLz3cpSuc0iNyVPTtzLv7sGnB14vIHJgqVfXEkH+rLOGzkQ6BXQZAmlNUO5iA7fVsU1LefCX8seIdPB60QDjGCPwClDYx6CUiIMlq5dz63gLesNoprjAW5cyZwsNoDDQz5p02AO3eD5yYo8H8ulJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722877182; c=relaxed/simple;
-	bh=jzSHPWgtcFGK0Tt/clWdJLEFG4a0MsPE8k3d/lXoqFw=;
+	s=arc-20240116; t=1722878737; c=relaxed/simple;
+	bh=7U3dA9WJ1nSbD9BK478v5XFq5q47fjoaS/XE+g12PTA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CdKTOYG5bdpdDxFbyUs9CrUBITLsbz0XYH4dl2WunMCUlk254buk4CKQhbFv3ms0RGxkxsbxiAcMlvo24ySDLF4UxNnHqRgmKTaCmJmgdnk4CaS87FlEmZVyGMohWFRafhb2JpfCBg39XOL81WyaP0dldJhIX9czXyQcevtalX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=Kx8OYBrv; arc=none smtp.client-ip=209.85.210.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-70945a007f0so5644896a34.2
-        for <cgroups@vger.kernel.org>; Mon, 05 Aug 2024 09:59:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1722877178; x=1723481978; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4sY3wVahkeTjr7y3XzuhW2Q3UgOPrPRQ13FjqmX75pg=;
-        b=Kx8OYBrvBRcbBGJmfITCv0zwdFpgbtXOKn6ebMB/QEIIU2c7XZ8bXjN8lDwqkZTZsa
-         15sJAavygR0IE0T+h/ge7QOtTElAizY9W7w/KtVm7Axw3YyAxUjVQtJUu2neME2nsrrN
-         JVIGfOLeLnyPYBSjWCnBEGK9vNyqY10RmPlxiUlNiDGKVZu+PUxIb8F5k2HgeMNqwK6A
-         kdBgfkqQ19WldppM7rvPgdJQU/YiVrYoy0tgsi5rmnnSd92HIXj82KyJnpYKGEoUUMfz
-         1a8fKoWs1rpno1EzMXSQY11O8p2G/iPm7KlDOliCDewGPUVCUoLhNxg5SuMH4Cb/Iwph
-         F+ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722877178; x=1723481978;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4sY3wVahkeTjr7y3XzuhW2Q3UgOPrPRQ13FjqmX75pg=;
-        b=vGTpfS4mPQz373VKIJbWMFPAkOoGkR4u6M20FD8g8A1NFjnby+pyAJoPeYJjMq5pjs
-         Ko/+kS1sdoJ17561EM+Pz3WQS6juj7pJuCGG8oCqGpehDq7gxHdCChjMeSmj/Wgw4qVP
-         lmLy5e+8p2ec6UKRYAnfFOfknTCFV+2fuvCRdoFLfgapk5OoqVEDTIPfOk5p3uzBgxnH
-         2eHW8DjKZb1EhO8tWzvm4LDvEpa9MJaodng3WhyfzUfS8MGbbeQaMspj2wt3VGB+RD8l
-         nJ5pOLuBotRofXA39HCwNZWs5iZhtNIA+sH0t7mw42NT+Ot0X3t2k6nW+QWMGF/DplK2
-         h/OQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVCvFuq1ECPixqpQazJIxvJCOZI6nfFMcY0a92h/4BMDszlu3+0D+UWpQxZIZeWcB47Ng0RTYx+fo1zB4EoYCv9lg9+hMpU/g==
-X-Gm-Message-State: AOJu0YxdTw50fsognZZsayPnV9nzm4XWH08hmkJWKionZJr1gqABTEZd
-	w96kbxkgpFsyBsCL8xKSHR5W9VFR/rauelHUkyQMagOSd+coKt/Rddj2MBD76XE=
-X-Google-Smtp-Source: AGHT+IFMxRsrpmwDYJ+JtzAr+Cs0xEeI2ll7tUvkgy3WI1DpJ38nhDEPZEy+gLiEAOohp95KGIz6Gg==
-X-Received: by 2002:a05:6830:b85:b0:709:4c6a:b98a with SMTP id 46e09a7af769-709b996d713mr14582748a34.30.1722877178571;
-        Mon, 05 Aug 2024 09:59:38 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a34f78b7a5sm368699085a.122.2024.08.05.09.59.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Aug 2024 09:59:38 -0700 (PDT)
-Date: Mon, 5 Aug 2024 12:59:37 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y444X4kIJoj5G3C3AqmKtH3RJ3zkxQnta2tjohN8/uT+fGqEQaZkSSiH8Fd6Qig4XpMp3UQpioRmA7POqU7FXiSRn46AgInjKXFqK60NXvOgBKQxu9KmOMEdrjiM2vVOvFxLjnHJmiDOI0Pz1X9IXsHEZVBJPezojNEn4WI6pXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pJ9HXd8k; arc=none smtp.client-ip=91.218.175.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 5 Aug 2024 17:25:25 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1722878731;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BSyIpocgo4EjXlHcEmDY7pMivTvSufzck5K4nc0PmSE=;
+	b=pJ9HXd8kIZl7wly61z0L0jQolO/0ZwVJmeDFniZGVaVBCJSlJ8YDC2+ch0yunrst6sntqO
+	vvGVqOcGhjZSe2ROPbys/LDgZPHv2Dno1J2AREnPUa7d4FcRszQC4U2EkZs9xHXSrlXkpy
+	4PBOA4ZTqLynya7x7OeZMGdZOT2ol/A=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
 To: Shakeel Butt <shakeel.butt@linux.dev>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
 	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
 	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	Meta kernel team <kernel-team@meta.com>, cgroups@vger.kernel.org
 Subject: Re: [PATCH] memcg: protect concurrent access to mem_cgroup_idr
-Message-ID: <20240805165937.GA322282@cmpxchg.org>
+Message-ID: <ZrELBVxrf7tM1NjI@google.com>
 References: <20240802235822.1830976-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -87,6 +62,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20240802235822.1830976-1-shakeel.butt@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
 On Fri, Aug 02, 2024 at 04:58:22PM -0700, Shakeel Butt wrote:
 > The commit 73f576c04b94 ("mm: memcontrol: fix cgroup creation failure
@@ -119,14 +95,10 @@ On Fri, Aug 02, 2024 at 04:58:22PM -0700, Shakeel Butt wrote:
 > multiple memcgs to acquire the same ID and then offlining of one of them
 > would cleanup list_lrus on the system for all of them. Later access from
 > other memcgs to the list_lru cause crashes due to missing list_lru_one.
-> 
-> Fixes: 73f576c04b94 ("mm: memcontrol: fix cgroup creation failure after many small jobs")
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-Great catch. This has been busted for ages, but the race is so
-unlikely that it stayed low profile.
+Great catch!
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
 
-It probably should be Cc: stable as well.
+Thanks
 
