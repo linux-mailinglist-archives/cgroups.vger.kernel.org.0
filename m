@@ -1,104 +1,138 @@
-Return-Path: <cgroups+bounces-4108-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4109-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 470A59497CA
-	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2024 20:56:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95FB99498E6
+	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2024 22:16:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA9D6B22461
-	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2024 18:56:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6DF81C21079
+	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2024 20:16:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB9B8811E2;
-	Tue,  6 Aug 2024 18:56:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0F3154456;
+	Tue,  6 Aug 2024 20:16:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="GVcCwj3G"
+	dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b="gs72Azaw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7548933086;
-	Tue,  6 Aug 2024 18:56:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4CA97E0F4
+	for <cgroups@vger.kernel.org>; Tue,  6 Aug 2024 20:16:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722970593; cv=none; b=Ggm0N4L+vb21CQuhuTjsIZdK8k23H/hdcqfSqyK2y71lCEuaYzwkUO8PZRi5NPhK5PCh4Q7q+NEj6QafW1BqCD9uZARv3Vodu8n2JQlhQcKfTWeavLZ5HW8KegYbUQ2HhI9rgRrpNH+Kzn9O4YO5yI33VYomdSZLoCUPCYCOt5w=
+	t=1722975404; cv=none; b=lktsxnEsXCvCeQkxRJvWspFun67saWEGnjn732E7gNaWMubJ53DbTzjKfND3zE8t0DkwwM9bf3d4TTncU+aKt7OhYRrA3lrzUVPNIET5+El0tWEBCqRhaCjcuCTssGU+BxiDs2ebcg/h3D4sm2+Mq7P78d9H2xQ00a2l6v0mBfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722970593; c=relaxed/simple;
-	bh=cC2lYjJPOeCXoHkjABZhWFF525BVkW0UMBevjJbsMX4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b3HCt5XgSAjo6mFUryCVttJUaVYSxVRNsb+OnFT4rizQpsMmhw9VMeqSN2HiLaUTbajNHgHYj3HXL+6sO8w5aQ5uCJyxIdPfWJjCn0YspwJBp0viy7xox+NNoX4yX3tGTmp1+QjSrrTnmD40+5ahkMH/5sPfWIKkKSyyDQiSolw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=GVcCwj3G; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=4QvL4Jpw3sWWcTod5vrw50TbAHneXynBbbFzWGbutx0=; b=GVcCwj3Gq9bsNgfn1o6TjClFyh
-	u4x+Y+jCz/o1aUHRdU7z3odrKI7aqY1Wppyxek0zYktl/d9HRIpZ8qUiFpnAKoROmkKwn0wKfm8Dl
-	fSnasluhuD9guL9rMUi/8T12i82E5BlQ5KmJ39etn7UoPrPoPGqOOk6Ud6ueQd2XZSNB6ySVVDoTd
-	WDlGO3+tWytNAlWaTL90lrUvXgjVcdBX8EednBPbkjpxafm466rFZn5fczyHzb+iT7gEK6+TP5VhK
-	bE2qUpf8kkN1cG1Z5k3WxzcWjfMxfy98Si2V05qGWtSwKaYz0ChH+kBpwccHpfqxviI4sfI4ZmvmK
-	/feOO63w==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1sbPMC-000000022Sq-0GHK;
-	Tue, 06 Aug 2024 18:56:28 +0000
-Date: Tue, 6 Aug 2024 19:56:28 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: linux-fsdevel@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Christian Brauner <brauner@kernel.org>, bpf@vger.kernel.org,
-	Amir Goldstein <amir73il@gmail.com>, kvm@vger.kernel.org,
-	cgroups@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCHSET][RFC] struct fd and memory safety
-Message-ID: <20240806185628.GR5334@ZenIV>
-References: <20240730050927.GC5334@ZenIV>
- <20240806175859.GT676757@ziepe.ca>
+	s=arc-20240116; t=1722975404; c=relaxed/simple;
+	bh=wmNIyw9GfP97kFsvXGRb22gPsp3TKcMyPea6l0UwV1o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=l6Uuqq6wXS3cGcA/7/l1OsikOOmdK0XoeqLGRt9YMwF+WVM5Obkav5fU3AWDfy2/Ly9vpkSwjWVhcnf9a+ilifrZk2kFYJxom3cQhVKegzAqFHGe7tI+hsOIbhVpoaW7J7eKD4WPla7qlfgoRRafvdoh0vZsIZRoDRqXTsIOD7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=fail smtp.mailfrom=vimeo.com; dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b=gs72Azaw; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=vimeo.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-70eb73a9f14so724471b3a.2
+        for <cgroups@vger.kernel.org>; Tue, 06 Aug 2024 13:16:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vimeo.com; s=google; t=1722975402; x=1723580202; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/7ljGM0irjWendNnux5k7jsBLUadWXI+HcIMyBsdx1A=;
+        b=gs72AzawManMBskwkstP4Jyz44cru3nxgOL7EmPDQUQskYWC/xptsYs8mplje18ZMs
+         ekZLxM87dTcs24SRMAxoVE76UAgwkK2dHnjvAlOLz3ABKlO7qGePEWDOsl256JOpESDT
+         Fit6qdxi0TQ5jx/Iv6Z730nTv+NU4ogkMUmmM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722975402; x=1723580202;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/7ljGM0irjWendNnux5k7jsBLUadWXI+HcIMyBsdx1A=;
+        b=X0cL+99S3F//qHAFWCPCeOoohV3HrMWbOwAt6u6esAomL537g1T7PhHtvSADhdKwz4
+         NASsQZQMrYFAkKh/IiSo83hMgogSlc8+aqnUI+gFkxvMyQdZ/BPiUqU36H5rmiQCbZ6u
+         73DqWS/6RlTkfvyxOzI8aCmy3si+XqhoSWElzEnr2c1mque76anUD5iqJUuRLvitM00Q
+         lgHviSmaI66sV1Zsfq8LhK25hXCTlU1SV2Asx/+aDS8sezadbrHdOw7r9zvBA0bdNcpc
+         9Z7Xq+ZHf9QfrdkJIxH2u65Uj3kGDm3qfBWjM2IcjYclNiM5quOzd8ZPUPhmgWEWRRlN
+         4XlA==
+X-Forwarded-Encrypted: i=1; AJvYcCXaAQZFRdzPlEq7oYPnPGOz3vzqMwgROsM8eyrEa1SEUPJY9FUnkKsfIRA/R5qlYIV2ctKBpxFjg539avmsUGtSu0bfKQ8XFQ==
+X-Gm-Message-State: AOJu0YzKqJLWjqdJve8hDtSqVqSXvb9wEJr3IxL9gAsPBpf0rj1r0ujI
+	LYKsFTM8fnlmCn1azCV8f7NqYR6yPgPaVXqtNB1gFrm1MSqAfmWIzPvgcZb+ee0Jz/8b6+ybmzG
+	0BYulko9N0DaSlnGSVGLob+2/CqdaXB4+mlFfTw==
+X-Google-Smtp-Source: AGHT+IHv0AN++1OdFYFThfaFBPC/QvFLeShPR/7012JBfWJkUQxlr8Fi2xoKQeWo0FlTjWcTIHRMaayWlN1DRcfdEII=
+X-Received: by 2002:a05:6a20:438d:b0:1c4:c160:2859 with SMTP id
+ adf61e73a8af0-1c6995d4947mr23275824637.31.1722975401973; Tue, 06 Aug 2024
+ 13:16:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240806175859.GT676757@ziepe.ca>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20240730231304.761942-1-davidf@vimeo.com>
+In-Reply-To: <20240730231304.761942-1-davidf@vimeo.com>
+From: David Finkel <davidf@vimeo.com>
+Date: Tue, 6 Aug 2024 16:16:30 -0400
+Message-ID: <CAFUnj5Nq_UwZUy9+i-Mp+TDghQWUX7MHpmh8uDTH790HAH2ZNA@mail.gmail.com>
+Subject: Re: [PATCH v7] mm, memcg: cg2 memory{.swap,}.peak write handlers
+To: Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Andrew Morton <akpm@linux-foundation.org>
+Cc: core-services@vimeo.com, Jonathan Corbet <corbet@lwn.net>, 
+	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Shuah Khan <shuah@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Zefan Li <lizefan.x@bytedance.com>, cgroups@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kselftest@vger.kernel.org, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 06, 2024 at 02:58:59PM -0300, Jason Gunthorpe wrote:
-> On Tue, Jul 30, 2024 at 06:09:27AM +0100, Al Viro wrote:
-> 
-> > 	* ib_uverbs_open_xrcd().  FWIW, a closer look shows that the
-> > damn thing is buggy - it accepts _any_ descriptor and pins the associated
-> > inode.  mount tmpfs, open a file there, feed it to that, unmount and
-> > watch the show...
-> 
-> What happens? There is still an igrab() while it is in the red black
-> tree?
+On Tue, Jul 30, 2024 at 7:13=E2=80=AFPM David Finkel <davidf@vimeo.com> wro=
+te:
+>
+> This revision only updates the tests from the previous revision[1], and
+> integrates an Acked-by[2] and a Reviewed-By[3] into the first commit
+> message.
+>
+>
+> Documentation/admin-guide/cgroup-v2.rst          |  22 ++-
+> include/linux/cgroup-defs.h                      |   5 +
+> include/linux/cgroup.h                           |   3 +
+> include/linux/memcontrol.h                       |   5 +
+> include/linux/page_counter.h                     |  11 +-
+> kernel/cgroup/cgroup-internal.h                  |   2 +
+> kernel/cgroup/cgroup.c                           |   7 +
+> mm/memcontrol.c                                  | 116 +++++++++++++--
+> mm/page_counter.c                                |  30 +++-
+> tools/testing/selftests/cgroup/cgroup_util.c     |  22 +++
+> tools/testing/selftests/cgroup/cgroup_util.h     |   2 +
+> tools/testing/selftests/cgroup/test_memcontrol.c | 264 ++++++++++++++++++=
+++++++++++++++-
+> 12 files changed, 454 insertions(+), 35 deletions(-)
+>
+> [1]: https://lore.kernel.org/cgroups/20240729143743.34236-1-davidf@vimeo.=
+com/T/
+> [2]: https://lore.kernel.org/cgroups/20240729143743.34236-1-davidf@vimeo.=
+com/T/#m807225dd0944b0bf78419639272bf6602fe053fc
+> [3]: https://lore.kernel.org/cgroups/20240729143743.34236-1-davidf@vimeo.=
+com/T/#meac510a72b4a282fe1e5edec3323c2204d46cf11
+>
+>
+> Thank you all for the support and reviews so far!
+>
+> David Finkel
+> Senior Principal Software Engineer
+> Vimeo Inc.
+>
+>
+>
 
-... which does not render the mount busy.
+Tejun or Andrew,
 
-> > AFAICS, that's done for the sake of libibverbs and
-> > I've no idea how it's actually used - all examples I'd been able to
-> > find use -1 for descriptor here.  Needs to be discussed with infiniband
-> > folks (Sean Hefty?).  For now, leave that as-is.
-> 
-> The design seems insane, but it is what it is from 20 years ago..
-> 
-> Userspace can affiliate this "xrc domain" with a file in the
-> filesystem. Any file. That is actually a deliberate part of the API.
-> 
-> This is done as some ugly way to pass xrc domain object from process A
-> to process B. IIRC the idea is process A will affiliate the object
-> with a file and then B will be able to access the shared object if B
-> is able to open the file.
-> 
-> It looks like the code keeps a red/black tree of this association, and
-> holds an igrab while the inode is in that tree..
+This change seems to have stalled a bit.
+Are there any further changes necessary to get this patch merged into
+a staging branch so it's ready for 6.12?
 
-You need a mount (or file) reference to prevent fs destruction by umount.
-igrab() pins an _inode_, but the caller must arrange for the hosting
-filesystem to stay alive.
+Thanks,
+--=20
+David Finkel
+Senior Principal Software Engineer, Core Services
 
