@@ -1,60 +1,63 @@
-Return-Path: <cgroups+bounces-4117-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4118-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC36D949B5D
-	for <lists+cgroups@lfdr.de>; Wed,  7 Aug 2024 00:36:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A124949B62
+	for <lists+cgroups@lfdr.de>; Wed,  7 Aug 2024 00:39:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 915181F24C3F
-	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2024 22:36:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1407CB21AFF
+	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2024 22:39:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF9E717166E;
-	Tue,  6 Aug 2024 22:36:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B66DA172BD3;
+	Tue,  6 Aug 2024 22:39:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="SFifop10"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ZRMda+aD"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B4E77F08;
-	Tue,  6 Aug 2024 22:36:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B5CB77F08;
+	Tue,  6 Aug 2024 22:39:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722983799; cv=none; b=PYfOOVOYsuK/Qtz7FKTpNrsEqR2B5O/C4g23UU2+4Jh5MxXhgzDLQCLBIgG2mhr79rmqtk/jVJ2pslJVcgCMJ6HBYCZXu0SxXix3fAOu8qA6Y92SKNbD42jpd3z/MSY07/z5FHASNGiyKSDtRqllkcsgRqEOJSdzixvUAcVYLgw=
+	t=1722983989; cv=none; b=XlO292GKSfUZ9slEBiKLyh7MMsCkzVsxBGhsAy09tZgt+vCTi1Yhq6gOs5TVBS6MyrpS46kt7y1ZccDcXvUVYo+2EqHTWZ8ce0mC+CRXXGots0c/pKZpS9su0s7djIWPZji6evO+b6cpdN6bBt1pF4C06MjLbPUi8RIiCkvjJmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722983799; c=relaxed/simple;
-	bh=PAlV09qvEwZ1jZlVGjPzhfejB6qpRR8rsMaenH13gP0=;
+	s=arc-20240116; t=1722983989; c=relaxed/simple;
+	bh=jJmEId4R3kd51IiNhFHMyrGgMqYmLtP9jg6gv8iF2/8=;
 	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=FhNX7cP/gTGAjkl9t753KUvi2ETVlg0mVpybqNAXOLeq6gkehasKFuGsN313ljBLsYrbLYUos/brJJV0/c4rbX0c3xoR2XeDFzokZNdVSlXQzXFSDfVVFmX4qhDluSZPkuHGEHPINJsjJqBaoMgk2e1hQpHr46UESUNgqFTlxHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=SFifop10; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B08FC32786;
-	Tue,  6 Aug 2024 22:36:38 +0000 (UTC)
+	 Mime-Version:Content-Type; b=XLVTOyT7TcUY28LleTuPLUg6fiV/IBPOdSl6Ce8Q6zncKutpwqYl6JZLXB/JzCwGmmqhmsQH0b2zGhcp2NbFChkNHc+ytQeLd59BcPtK4t3De2uFPlgJREl/Rsf2cJya1ZJNQnYxpWJbOgLoQK6TPMtCZd6LDr460KMOubdHURA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=ZRMda+aD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 592E3C32786;
+	Tue,  6 Aug 2024 22:39:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1722983798;
-	bh=PAlV09qvEwZ1jZlVGjPzhfejB6qpRR8rsMaenH13gP0=;
+	s=korg; t=1722983989;
+	bh=jJmEId4R3kd51IiNhFHMyrGgMqYmLtP9jg6gv8iF2/8=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=SFifop10KUd+U0OWJeE8gRsUQiKirUVAVAJ31rl/YPKOBbH5SHB8MWzVXDnnX/uSR
-	 SmrISqZ65OdSBGw5Uzz7xZOOZDDhuwKyjXsCky1gzD5RcAlkWtUVHdiYc0WNkGFXUL
-	 azUOvNxuwvb+o4txTSN6vl569Tkb2akDyT3a5JNo=
-Date: Tue, 6 Aug 2024 15:36:37 -0700
+	b=ZRMda+aDNhZBB7biIqVBaqsKAzmfTdkIf1Yoa2TeLrWVE6ulp7wdRlaFWo7ZRf1Zj
+	 VNgrxBVr3tOGrBYX50Qjj5m51QBm5QtwAjWjsjmo6WD918JPcbJK7JK4wc3Lo1xb9o
+	 JMFhe1OqgXmwYNJy7gUjEyTsyGADGodHs4iBcnYQ=
+Date: Tue, 6 Aug 2024 15:39:47 -0700
 From: Andrew Morton <akpm@linux-foundation.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: David Finkel <davidf@vimeo.com>, Muchun Song <muchun.song@linux.dev>,
- Roman Gushchin <roman.gushchin@linux.dev>, core-services@vimeo.com,
- Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>, Shakeel
- Butt <shakeel.butt@linux.dev>, Shuah Khan <shuah@kernel.org>, Johannes
- Weiner <hannes@cmpxchg.org>, Zefan Li <lizefan.x@bytedance.com>,
- cgroups@vger.kernel.org, linux-doc@vger.kernel.org, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, Michal =?UTF-8?B?S291dG7DvQ==?=
- <mkoutny@suse.com>
-Subject: Re: [PATCH v7] mm, memcg: cg2 memory{.swap,}.peak write handlers
-Message-Id: <20240806153637.4549ee6c1d1300042dd01c4c@linux-foundation.org>
-In-Reply-To: <ZrKFJyADBI_cLdX4@slm.duckdns.org>
-References: <20240730231304.761942-1-davidf@vimeo.com>
-	<CAFUnj5Nq_UwZUy9+i-Mp+TDghQWUX7MHpmh8uDTH790HAH2ZNA@mail.gmail.com>
-	<ZrKFJyADBI_cLdX4@slm.duckdns.org>
+To: Barry Song <21cnbao@gmail.com>
+Cc: zhiguojiang <justinjiang@vivo.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+ "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, Nick Piggin
+ <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann
+ <arnd@arndb.de>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko
+ <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, Shakeel
+ Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ linux-arch@vger.kernel.org, cgroups@vger.kernel.org, kernel test robot
+ <lkp@intel.com>, opensource.kernel@vivo.com
+Subject: Re: [PATCH v2 0/3] mm: tlb swap entries batch async release
+Message-Id: <20240806153947.1af20ffccfb42f1e8d981d6f@linux-foundation.org>
+In-Reply-To: <CAGsJ_4x1tLEmRFbnUYcNYtV73SyBYpBtAx_syjfcnjrom-R+4w@mail.gmail.com>
+References: <20240731133318.527-1-justinjiang@vivo.com>
+	<20240731091715.b78969467c002fa3a120e034@linux-foundation.org>
+	<dbead7ca-e9a4-4ee8-9247-4e1ba9f6695c@vivo.com>
+	<20240806133823.5cb3f27ef30c42dad5d0c3e8@linux-foundation.org>
+	<CAGsJ_4x1tLEmRFbnUYcNYtV73SyBYpBtAx_syjfcnjrom-R+4w@mail.gmail.com>
 X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -62,46 +65,36 @@ List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, 6 Aug 2024 10:18:47 -1000 Tejun Heo <tj@kernel.org> wrote:
+On Wed, 7 Aug 2024 04:32:09 +0800 Barry Song <21cnbao@gmail.com> wrote:
 
-> On Tue, Aug 06, 2024 at 04:16:30PM -0400, David Finkel wrote:
-> > On Tue, Jul 30, 2024 at 7:13 PM David Finkel <davidf@vimeo.com> wrote:
-> > >
-> > > This revision only updates the tests from the previous revision[1], and
-> > > integrates an Acked-by[2] and a Reviewed-By[3] into the first commit
-> > > message.
-> > >
-> > >
-> > > Documentation/admin-guide/cgroup-v2.rst          |  22 ++-
-> > > include/linux/cgroup-defs.h                      |   5 +
-> > > include/linux/cgroup.h                           |   3 +
-> > > include/linux/memcontrol.h                       |   5 +
-> > > include/linux/page_counter.h                     |  11 +-
-> > > kernel/cgroup/cgroup-internal.h                  |   2 +
-> > > kernel/cgroup/cgroup.c                           |   7 +
-> > > mm/memcontrol.c                                  | 116 +++++++++++++--
-> > > mm/page_counter.c                                |  30 +++-
-> > > tools/testing/selftests/cgroup/cgroup_util.c     |  22 +++
-> > > tools/testing/selftests/cgroup/cgroup_util.h     |   2 +
-> > > tools/testing/selftests/cgroup/test_memcontrol.c | 264 ++++++++++++++++++++++++++++++++-
-> > > 12 files changed, 454 insertions(+), 35 deletions(-)
-> ...
-> > Tejun or Andrew,
-> > 
-> > This change seems to have stalled a bit.
-> > Are there any further changes necessary to get this patch merged into
-> > a staging branch so it's ready for 6.12?
+> > > their independent mm, rather than parent and child processes share the
+> > > same mm. Therefore, when the kernel executes multiple exiting process
+> > > simultaneously, they will definitely occupy multiple CPU core resources
+> > > to complete it.
+> >
+> > What I'm asking is why not change those userspace processes so that they
+> > fork off a child process which shares the MM (shared mm_struct) and
+> > then the original process exits, leaving the asynchronously-running
+> > child to clean up the MM resources.
 > 
-> Oh, it sits between cgroup core and memcg, so I guess it wasn't clear who
-> should take it. Given that the crux of the change is in memcg, I think -mm
-> would be a better fit. Andrew, can you please take these patches? FWIW,
+> Not Zhiguo. From my perspective as a phone engineer, this issue isn't related
+> to the parent-child process or the wait() function. Phones rely heavily on
+> mechanisms similar to the OOM killer to function efficiently. For instance,
+> if you're using apps like YouTube, TikTok, and Facebook, and then you
+> open the camera app to take a photo, the camera app becomes the foreground
+> process and demands a lot of memory. In this scenario, the phone might
+> decide to terminate the most memory-consuming and less important apps,
+> such as TikTok or YouTube, to free up memory for the camera app. TikTok
+> and YouTube become less important because they are no longer occupying
+> the phone's screen and have moved to the background. The faster TikTok
+> and YouTube can be unmapped, the quicker the camera app can launch,
+> enhancing the user experience.
 
-I took 'em on Aug 4.  David, your spam folder beckons?
+I don't see how this relates to my question.
 
->  Acked-by: Tejun Heo <tj@kernel.org>
-
-Added, thanks.
+Userspace can arrange for these resources to be released in an
+asynchronous fashion (can't it?).  So why change the kernel to do that?
 
