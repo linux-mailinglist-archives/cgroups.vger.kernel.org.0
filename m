@@ -1,248 +1,279 @@
-Return-Path: <cgroups+bounces-4102-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4103-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D339C948FDF
-	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2024 15:01:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2818949295
+	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2024 16:05:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 797A62835AE
-	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2024 13:01:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A858F28653A
+	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2024 14:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 534611C57A8;
-	Tue,  6 Aug 2024 13:01:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9601D6DDB;
+	Tue,  6 Aug 2024 14:03:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="i76UqWAq"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lXIk2aN3"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 614C41C3F08
-	for <cgroups@vger.kernel.org>; Tue,  6 Aug 2024 13:01:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDC791D54FB
+	for <cgroups@vger.kernel.org>; Tue,  6 Aug 2024 14:03:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722949312; cv=none; b=pTfvTx+YTOZOO+kwp7ld6yVE3Sk6HyCfFidtFXaTUn0fsM+sq82zdh6wImGIuv6kLqaGlp7VClrRBDNCEjhWcAEW7OSf63rjDiJHKOLwZba6M+RQyTQ96Q/p/V/RAvSrlbK87fDXV7fcBBDWv4vGO/gz43zjyLg8pviJthyPkBc=
+	t=1722953004; cv=none; b=dkcGiz0VSiS8rA15KNmCoby4BYXzenFfPUN30jDbnZ/HpD5slc4+T7FytFJaBHdrs5v0O9y0AtSQ740tvffphUMyg8uZEX8QTHC7hEo8A5IAkUTms2GwkMrgm3nNkwmD/IjaZ/UxuA4+/hrnHjTLOi9myOuwmulvfeQmQqiSFYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722949312; c=relaxed/simple;
-	bh=XGHVtA53ndm8tu52HB2cm7xGUUoAVG2gnIVZD/zuSXE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CrlCPCYdkX/oXhqDElaAF5z2t2prz+D8c9g1YE9PuHf9USBK488TETWk98+79NLAXa5LU7XKEFfVkg5RnyI99oTpDVvKjdweZzF5Al11gakMkntNYofKILpqLtHbdNitya9rLJjfN484PWqmh+StcSVnkC5/VHJTFieUMQk1/8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=i76UqWAq; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2eea0cbc96bso1270121fa.2
-        for <cgroups@vger.kernel.org>; Tue, 06 Aug 2024 06:01:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1722949307; x=1723554107; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZWaPqrk0Ji9UdhOsGVUggVZW2Ffw4bKnDm4+9jC3vKo=;
-        b=i76UqWAqEs2KeYCdDz8sPsJrKAkI5MHczuEDwKbHgwMFULeNGbCYsjp14xtyWHD9R2
-         a8Y9ZSep2m4GD3YHQdZNXuJdlK966VijFv+f5Qnr5RM5HQNdXGYRS3oEgmeKHFY7NzYS
-         OFKH7B5R+l9BnowGdbahAjnCFkQ4+ByhY8wfY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722949307; x=1723554107;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZWaPqrk0Ji9UdhOsGVUggVZW2Ffw4bKnDm4+9jC3vKo=;
-        b=Omq2+3oSQ6XrZEJLXIRGOHAuVXTR/len5hN0Er+oc046LYSikBEJOkWQsG8dd6c4E6
-         BwPRZ+B2HMMLgUibbvh8Vq0XbEJLHi+r+XEvtNfUkgLeImtIV5oDp0VboQ+C+2gHwSeA
-         arbVtphJ7To1cdoo4wmU9zPWyAWEL2IW0avC1YDJB2D6SW9Sdrk5ZmgYYwoKczvbU+Gg
-         RhOujBdt5TkgglLa8n6SLVR/Q/ksL3e4ksdSphYVJDkXmrjGBB3OPlFQ8E40Ex29WYuV
-         5rasekc1pHPvgwKpn1ljWEmaQWI31UwLLBvvPYexqBHJGUqy1YVyOCtqOgsSL8pQ1YJC
-         9Y8g==
-X-Forwarded-Encrypted: i=1; AJvYcCXZIgRieslYYOhY4S8SMLZTVstaB49AT5sQqOK9MiPzcUz64zkcjEO1RZjLyZ5BOxgKS8N7AM9C@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw/cXqnGG+Jl63dzKSFjjcWuXs0z9jjvTlpWpeaZgPucDhNT/a/
-	jd2eOQ/6x3GlQmMPQoEHeWQ7kx4axGxFhEKLTWqhZ+ZXMlU34C+uh7PJ2DBRET8=
-X-Google-Smtp-Source: AGHT+IGBILqIWLNLhTGm47B+BmFPkDFKRX0XFMxi6y7ZZfWYiY/LEw2NnlFOMQ1ijpWL3jroPbc9qA==
-X-Received: by 2002:a2e:3313:0:b0:2ef:2405:ff63 with SMTP id 38308e7fff4ca-2f15aafc20bmr51509691fa.5.1722949307034;
-        Tue, 06 Aug 2024 06:01:47 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5bb884cddf4sm2712126a12.66.2024.08.06.06.01.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Aug 2024 06:01:46 -0700 (PDT)
-Date: Tue, 6 Aug 2024 15:01:44 +0200
-From: Daniel Vetter <daniel.vetter@ffwll.ch>
-To: Tvrtko Ursulin <tursulin@ursulin.net>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>, intel-xe@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jonathan Corbet <corbet@lwn.net>, David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Friedrich Vock <friedrich.vock@gmx.de>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-doc@vger.kernel.org
-Subject: Re: [RFC PATCH 2/6] drm/cgroup: Add memory accounting DRM cgroup
-Message-ID: <ZrIeuLi88jqbQ0FH@phenom.ffwll.local>
-Mail-Followup-To: Tvrtko Ursulin <tursulin@ursulin.net>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>, intel-xe@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jonathan Corbet <corbet@lwn.net>, David Airlie <airlied@gmail.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Friedrich Vock <friedrich.vock@gmx.de>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-doc@vger.kernel.org
-References: <20240627154754.74828-1-maarten.lankhorst@linux.intel.com>
- <20240627154754.74828-3-maarten.lankhorst@linux.intel.com>
- <20240627-paper-vicugna-of-fantasy-c549ed@houat>
- <6cb7c074-55cb-4825-9f80-5cf07bbd6745@linux.intel.com>
- <20240628-romantic-emerald-snake-7b26ca@houat>
- <70289c58-7947-4347-8600-658821a730b0@linux.intel.com>
- <40ef0eed-c514-4ec1-9486-2967f23824be@ursulin.net>
+	s=arc-20240116; t=1722953004; c=relaxed/simple;
+	bh=zvuIIRs5tP5z0gTTc2602gABNc39mzp+asglSnrnELE=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=Q+Bf0vFgTuES+ZeljiMTBPe1FDY9YmiEMvyBFSe2U/UlJe5BzBz42lxzNpIm/tNTq1ZzyfUDKEfjEliEc14o8E+c1kTBvFba9SbuO8ugpdJJColj59ex/zF7sATMwSslW7Z6PcB1RtbR5quWAoKxCx33KUiOV/7HZf5vxmHQi1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lXIk2aN3; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1722953002; x=1754489002;
+  h=date:from:to:cc:subject:message-id;
+  bh=zvuIIRs5tP5z0gTTc2602gABNc39mzp+asglSnrnELE=;
+  b=lXIk2aN3qRl/+vHuH/Kj1jBlCJmYfheyq0s6yLJuxb6Epc1EfC6KMLZ/
+   M8LvuKNisyMYQ2VaygLb6eBQv0FdsW9ZGgiOjEk1S2yAM4ARiI+xtonF3
+   GbuE/woauAlUStA0kkXlS8y2CT1syryrSNiTAAHFA7HGQH7ftdEEvVHsX
+   LvHpXLP0JN9fjIiVFmIVG2YLk1Ra15c8aO4NX6pIWvKj6MZPGdncgW1o0
+   uEbZTnuQpN2BF7PZ0VE1DOvw6k3nesqU1REkIPDbljzyp7QLnYGjGZwnm
+   wqOuD+Ir7enaQ/HwbmA6fGrEWHPKHTAc7EA7tlqGnJjpjK3asZ3wEknzb
+   w==;
+X-CSE-ConnectionGUID: ocIDP2dsQ0aNjZybfhqbjA==
+X-CSE-MsgGUID: niL4QXZfTiOYbR6A1LhDCg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11156"; a="32355168"
+X-IronPort-AV: E=Sophos;i="6.09,268,1716274800"; 
+   d="scan'208";a="32355168"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Aug 2024 07:02:58 -0700
+X-CSE-ConnectionGUID: 6WPPYFccSkSePJn3MkMoRw==
+X-CSE-MsgGUID: Gp1kAUSxS4Gae/yBcM9sJQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,268,1716274800"; 
+   d="scan'208";a="56170812"
+Received: from unknown (HELO b6bf6c95bbab) ([10.239.97.151])
+  by fmviesa006.fm.intel.com with ESMTP; 06 Aug 2024 07:02:56 -0700
+Received: from kbuild by b6bf6c95bbab with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sbKm6-0004Xk-2N;
+	Tue, 06 Aug 2024 14:02:54 +0000
+Date: Tue, 06 Aug 2024 22:02:15 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ 33ed8884df3dc955ef9d8756a007b5289b96e3bb
+Message-ID: <202408062213.XqJd8hBL-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <40ef0eed-c514-4ec1-9486-2967f23824be@ursulin.net>
-X-Operating-System: Linux phenom 6.9.10-amd64 
 
-On Mon, Jul 01, 2024 at 06:01:41PM +0100, Tvrtko Ursulin wrote:
-> 
-> On 01/07/2024 10:25, Maarten Lankhorst wrote:
-> > Den 2024-06-28 kl. 16:04, skrev Maxime Ripard:
-> > > Hi,
-> > > 
-> > > On Thu, Jun 27, 2024 at 09:22:56PM GMT, Maarten Lankhorst wrote:
-> > > > Den 2024-06-27 kl. 19:16, skrev Maxime Ripard:
-> > > > > Hi,
-> > > > > 
-> > > > > Thanks for working on this!
-> > > > > 
-> > > > > On Thu, Jun 27, 2024 at 05:47:21PM GMT, Maarten Lankhorst wrote:
-> > > > > > The initial version was based roughly on the rdma and misc cgroup
-> > > > > > controllers, with a lot of the accounting code borrowed from rdma.
-> > > > > > 
-> > > > > > The current version is a complete rewrite with page counter; it uses
-> > > > > > the same min/low/max semantics as the memory cgroup as a result.
-> > > > > > 
-> > > > > > There's a small mismatch as TTM uses u64, and page_counter long pages.
-> > > > > > In practice it's not a problem. 32-bits systems don't really come with
-> > > > > > > =4GB cards and as long as we're consistently wrong with units, it's
-> > > > > > fine. The device page size may not be in the same units as kernel page
-> > > > > > size, and each region might also have a different page size (VRAM vs GART
-> > > > > > for example).
-> > > > > > 
-> > > > > > The interface is simple:
-> > > > > > - populate drmcgroup_device->regions[..] name and size for each active
-> > > > > >     region, set num_regions accordingly.
-> > > > > > - Call drm(m)cg_register_device()
-> > > > > > - Use drmcg_try_charge to check if you can allocate a chunk of memory,
-> > > > > >     use drmcg_uncharge when freeing it. This may return an error code,
-> > > > > >     or -EAGAIN when the cgroup limit is reached. In that case a reference
-> > > > > >     to the limiting pool is returned.
-> > > > > > - The limiting cs can be used as compare function for
-> > > > > >     drmcs_evict_valuable.
-> > > > > > - After having evicted enough, drop reference to limiting cs with
-> > > > > >     drmcs_pool_put.
-> > > > > > 
-> > > > > > This API allows you to limit device resources with cgroups.
-> > > > > > You can see the supported cards in /sys/fs/cgroup/drm.capacity
-> > > > > > You need to echo +drm to cgroup.subtree_control, and then you can
-> > > > > > partition memory.
-> > > > > > 
-> > > > > > Signed-off-by: Maarten Lankhorst<maarten.lankhorst@linux.intel.com>
-> > > > > > Co-developed-by: Friedrich Vock<friedrich.vock@gmx.de>
-> > > > > I'm sorry, I should have wrote minutes on the discussion we had with TJ
-> > > > > and Tvrtko the other day.
-> > > > > 
-> > > > > We're all very interested in making this happen, but doing a "DRM"
-> > > > > cgroup doesn't look like the right path to us.
-> > > > > 
-> > > > > Indeed, we have a significant number of drivers that won't have a
-> > > > > dedicated memory but will depend on DMA allocations one way or the
-> > > > > other, and those pools are shared between multiple frameworks (DRM,
-> > > > > V4L2, DMA-Buf Heaps, at least).
-> > > > > 
-> > > > > This was also pointed out by Sima some time ago here:
-> > > > > https://lore.kernel.org/amd-gfx/YCVOl8%2F87bqRSQei@phenom.ffwll.local/
-> > > > > 
-> > > > > So we'll want that cgroup subsystem to be cross-framework. We settled on
-> > > > > a "device" cgroup during the discussion, but I'm sure we'll have plenty
-> > > > > of bikeshedding.
-> > > > > 
-> > > > > The other thing we agreed on, based on the feedback TJ got on the last
-> > > > > iterations of his series was to go for memcg for drivers not using DMA
-> > > > > allocations.
-> > > > > 
-> > > > > It's the part where I expect some discussion there too :)
-> > > > > 
-> > > > > So we went back to a previous version of TJ's work, and I've started to
-> > > > > work on:
-> > > > > 
-> > > > >     - Integration of the cgroup in the GEM DMA and GEM VRAM helpers (this
-> > > > >       works on tidss right now)
-> > > > > 
-> > > > >     - Integration of all heaps into that cgroup but the system one
-> > > > >       (working on this at the moment)
-> > > > 
-> > > > Should be similar to what I have then. I think you could use my work to
-> > > > continue it.
-> > > > 
-> > > > I made nothing DRM specific except the name, if you renamed it the device
-> > > > resource management cgroup and changed the init function signature to take a
-> > > > name instead of a drm pointer, nothing would change. This is exactly what
-> > > > I'm hoping to accomplish, including reserving memory.
-> > > 
-> > > I've started to work on rebasing my current work onto your series today,
-> > > and I'm not entirely sure how what I described would best fit. Let's
-> > > assume we have two KMS device, one using shmem, one using DMA
-> > > allocations, two heaps, one using the page allocator, the other using
-> > > CMA, and one v4l2 device using dma allocations.
-> > > 
-> > > So we would have one KMS device and one heap using the page allocator,
-> > > and one KMS device, one heap, and one v4l2 driver using the DMA
-> > > allocator.
-> > > 
-> > > Would these make different cgroup devices, or different cgroup regions?
-> > 
-> > Each driver would register a device, whatever feels most logical for that device I suppose.
-> > 
-> > My guess is that a prefix would also be nice here, so register a device with name of drm/$name or v4l2/$name, heap/$name. I didn't give it much thought and we're still experimenting, so just try something. :)
-> > 
-> > There's no limit to amount of devices, I only fixed amount of pools to match TTM, but even that could be increased arbitrarily. I just don't think there is a point in doing so.
-> 
-> Do we need a plan for top level controls which do not include region names?
-> If the latter will be driver specific then I am thinking of ease of
-> configuring it all from the outside. Especially considering that one cgroup
-> can have multiple devices in it.
-> 
-> Second question is about double accounting for shmem backed objects. I think
-> they will be seen, for drivers which allocate backing store at buffer
-> objects creation time, under the cgroup of process doing the creation, in
-> the existing memory controller. Right?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: 33ed8884df3dc955ef9d8756a007b5289b96e3bb  Merge branch 'for-6.12' into for-next
 
-We currently don't set __GFP_ACCOUNT respectively use GFP_KERNEL_ACCOUNT,
-so no. Unless someone allocates them with GFP_USER ...
+elapsed time: 998m
 
-> Is there a chance to exclude those from there and only have them in this new
-> controller? Or would the opposite be a better choice? That is, not see those
-> in the device memory controller but only in the existing one.
+configs tested: 186
+configs skipped: 6
 
-I missed this, so jumping in super late. I think guidance from Tejun was
-to go the other way around: Exclude allocations from normal system
-memory from device cgroups and instead make sure it's tracked in the
-existing memcg.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Which might mean we need memcg shrinkers and the assorted pain ...
+tested configs:
+alpha                             allnoconfig   gcc-13.2.0
+alpha                            allyesconfig   gcc-13.3.0
+alpha                               defconfig   gcc-13.2.0
+arc                              allmodconfig   gcc-13.2.0
+arc                               allnoconfig   gcc-13.2.0
+arc                              allyesconfig   gcc-13.2.0
+arc                                 defconfig   gcc-13.2.0
+arc                        nsimosci_defconfig   gcc-13.2.0
+arc                   randconfig-001-20240806   gcc-13.2.0
+arc                   randconfig-002-20240806   gcc-13.2.0
+arm                              allmodconfig   gcc-13.2.0
+arm                               allnoconfig   gcc-13.2.0
+arm                              allyesconfig   gcc-13.2.0
+arm                                 defconfig   gcc-13.2.0
+arm                            dove_defconfig   gcc-13.2.0
+arm                          ep93xx_defconfig   gcc-13.2.0
+arm                           imxrt_defconfig   clang-20
+arm                          ixp4xx_defconfig   clang-20
+arm                         orion5x_defconfig   gcc-13.2.0
+arm                          pxa3xx_defconfig   clang-20
+arm                            qcom_defconfig   gcc-13.2.0
+arm                   randconfig-001-20240806   gcc-13.2.0
+arm                   randconfig-002-20240806   gcc-13.2.0
+arm                   randconfig-003-20240806   gcc-13.2.0
+arm                   randconfig-004-20240806   gcc-13.2.0
+arm                           spitz_defconfig   clang-20
+arm64                            alldefconfig   clang-20
+arm64                            allmodconfig   gcc-13.2.0
+arm64                             allnoconfig   gcc-13.2.0
+arm64                               defconfig   gcc-13.2.0
+arm64                 randconfig-001-20240806   gcc-13.2.0
+arm64                 randconfig-002-20240806   gcc-13.2.0
+arm64                 randconfig-003-20240806   gcc-13.2.0
+arm64                 randconfig-004-20240806   gcc-13.2.0
+csky                              allnoconfig   gcc-13.2.0
+csky                                defconfig   gcc-13.2.0
+csky                  randconfig-001-20240806   gcc-13.2.0
+csky                  randconfig-002-20240806   gcc-13.2.0
+hexagon                          allmodconfig   clang-20
+hexagon                          allyesconfig   clang-20
+i386                             allmodconfig   clang-18
+i386                             allmodconfig   gcc-12
+i386                              allnoconfig   clang-18
+i386                              allnoconfig   gcc-12
+i386                             allyesconfig   clang-18
+i386                             allyesconfig   gcc-12
+i386         buildonly-randconfig-001-20240806   gcc-11
+i386         buildonly-randconfig-002-20240806   gcc-11
+i386         buildonly-randconfig-003-20240806   gcc-11
+i386         buildonly-randconfig-004-20240806   gcc-11
+i386         buildonly-randconfig-005-20240806   gcc-11
+i386         buildonly-randconfig-006-20240806   gcc-11
+i386                                defconfig   clang-18
+i386                  randconfig-001-20240806   gcc-11
+i386                  randconfig-002-20240806   gcc-11
+i386                  randconfig-003-20240806   gcc-11
+i386                  randconfig-004-20240806   gcc-11
+i386                  randconfig-005-20240806   gcc-11
+i386                  randconfig-006-20240806   gcc-11
+i386                  randconfig-011-20240806   gcc-11
+i386                  randconfig-012-20240806   gcc-11
+i386                  randconfig-013-20240806   gcc-11
+i386                  randconfig-014-20240806   gcc-11
+i386                  randconfig-015-20240806   gcc-11
+i386                  randconfig-016-20240806   gcc-11
+loongarch                        allmodconfig   gcc-14.1.0
+loongarch                         allnoconfig   gcc-13.2.0
+loongarch                           defconfig   gcc-13.2.0
+loongarch             randconfig-001-20240806   gcc-13.2.0
+loongarch             randconfig-002-20240806   gcc-13.2.0
+m68k                             allmodconfig   gcc-14.1.0
+m68k                              allnoconfig   gcc-13.2.0
+m68k                             allyesconfig   gcc-14.1.0
+m68k                                defconfig   gcc-13.2.0
+microblaze                       allmodconfig   gcc-14.1.0
+microblaze                        allnoconfig   gcc-13.2.0
+microblaze                       allyesconfig   gcc-14.1.0
+microblaze                          defconfig   gcc-13.2.0
+mips                              allnoconfig   gcc-13.2.0
+mips                          ath25_defconfig   clang-20
+mips                 decstation_r4k_defconfig   clang-20
+mips                          eyeq5_defconfig   clang-20
+mips                           ip28_defconfig   gcc-13.2.0
+nios2                         10m50_defconfig   gcc-13.2.0
+nios2                             allnoconfig   gcc-13.2.0
+nios2                               defconfig   gcc-13.2.0
+nios2                 randconfig-001-20240806   gcc-13.2.0
+nios2                 randconfig-002-20240806   gcc-13.2.0
+openrisc                          allnoconfig   gcc-14.1.0
+openrisc                         allyesconfig   gcc-14.1.0
+openrisc                            defconfig   gcc-14.1.0
+parisc                           allmodconfig   gcc-14.1.0
+parisc                            allnoconfig   gcc-14.1.0
+parisc                           allyesconfig   gcc-14.1.0
+parisc                              defconfig   gcc-14.1.0
+parisc                randconfig-001-20240806   gcc-13.2.0
+parisc                randconfig-002-20240806   gcc-13.2.0
+parisc64                            defconfig   gcc-13.2.0
+powerpc                          allmodconfig   gcc-14.1.0
+powerpc                           allnoconfig   gcc-14.1.0
+powerpc                          allyesconfig   gcc-14.1.0
+powerpc                        cell_defconfig   clang-20
+powerpc                       ebony_defconfig   gcc-13.2.0
+powerpc                 mpc836x_rdk_defconfig   clang-20
+powerpc                 mpc837x_rdb_defconfig   gcc-13.2.0
+powerpc                  mpc866_ads_defconfig   gcc-13.2.0
+powerpc                  mpc885_ads_defconfig   gcc-13.2.0
+powerpc               randconfig-001-20240806   gcc-13.2.0
+powerpc               randconfig-003-20240806   gcc-13.2.0
+powerpc                     tqm5200_defconfig   gcc-13.2.0
+powerpc                     tqm8540_defconfig   gcc-13.2.0
+powerpc                        warp_defconfig   clang-20
+powerpc64             randconfig-001-20240806   gcc-13.2.0
+powerpc64             randconfig-002-20240806   gcc-13.2.0
+powerpc64             randconfig-003-20240806   gcc-13.2.0
+riscv                            allmodconfig   gcc-14.1.0
+riscv                             allnoconfig   gcc-14.1.0
+riscv                            allyesconfig   gcc-14.1.0
+riscv                               defconfig   clang-20
+riscv                               defconfig   gcc-14.1.0
+riscv                 randconfig-001-20240806   gcc-13.2.0
+riscv                 randconfig-002-20240806   gcc-13.2.0
+s390                             allmodconfig   clang-20
+s390                              allnoconfig   clang-20
+s390                              allnoconfig   gcc-14.1.0
+s390                             allyesconfig   clang-20
+s390                             allyesconfig   gcc-14.1.0
+s390                                defconfig   gcc-14.1.0
+s390                  randconfig-001-20240806   gcc-13.2.0
+s390                  randconfig-002-20240806   gcc-13.2.0
+sh                               allmodconfig   gcc-14.1.0
+sh                                allnoconfig   gcc-13.2.0
+sh                               allyesconfig   gcc-14.1.0
+sh                                  defconfig   gcc-14.1.0
+sh                    randconfig-001-20240806   gcc-13.2.0
+sh                    randconfig-002-20240806   gcc-13.2.0
+sh                           se7343_defconfig   gcc-13.2.0
+sparc                            allmodconfig   gcc-14.1.0
+sparc                       sparc32_defconfig   gcc-13.2.0
+sparc64                             defconfig   gcc-14.1.0
+sparc64               randconfig-001-20240806   gcc-13.2.0
+sparc64               randconfig-002-20240806   gcc-13.2.0
+um                               allmodconfig   clang-20
+um                               allmodconfig   gcc-13.3.0
+um                                allnoconfig   clang-17
+um                                allnoconfig   gcc-14.1.0
+um                               allyesconfig   gcc-12
+um                               allyesconfig   gcc-13.3.0
+um                                  defconfig   gcc-14.1.0
+um                             i386_defconfig   gcc-14.1.0
+um                    randconfig-001-20240806   gcc-13.2.0
+um                    randconfig-002-20240806   gcc-13.2.0
+um                           x86_64_defconfig   gcc-14.1.0
+x86_64                            allnoconfig   clang-18
+x86_64                           allyesconfig   clang-18
+x86_64       buildonly-randconfig-001-20240806   clang-18
+x86_64       buildonly-randconfig-002-20240806   clang-18
+x86_64       buildonly-randconfig-003-20240806   clang-18
+x86_64       buildonly-randconfig-004-20240806   clang-18
+x86_64       buildonly-randconfig-005-20240806   clang-18
+x86_64       buildonly-randconfig-006-20240806   clang-18
+x86_64                              defconfig   clang-18
+x86_64                              defconfig   gcc-11
+x86_64                randconfig-001-20240806   clang-18
+x86_64                randconfig-002-20240806   clang-18
+x86_64                randconfig-003-20240806   clang-18
+x86_64                randconfig-004-20240806   clang-18
+x86_64                randconfig-005-20240806   clang-18
+x86_64                randconfig-006-20240806   clang-18
+x86_64                randconfig-011-20240806   clang-18
+x86_64                randconfig-012-20240806   clang-18
+x86_64                randconfig-013-20240806   clang-18
+x86_64                randconfig-014-20240806   clang-18
+x86_64                randconfig-015-20240806   clang-18
+x86_64                randconfig-016-20240806   clang-18
+x86_64                randconfig-071-20240806   clang-18
+x86_64                randconfig-072-20240806   clang-18
+x86_64                randconfig-073-20240806   clang-18
+x86_64                randconfig-074-20240806   clang-18
+x86_64                randconfig-075-20240806   clang-18
+x86_64                randconfig-076-20240806   clang-18
+x86_64                          rhel-8.3-rust   clang-18
+xtensa                           alldefconfig   gcc-13.2.0
+xtensa                            allnoconfig   gcc-13.2.0
+xtensa                randconfig-001-20240806   gcc-13.2.0
+xtensa                randconfig-002-20240806   gcc-13.2.0
 
-Also I don't think we ever reached some agreement on where things like cma
-allocations should be accounted for in this case.
--Sima
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
