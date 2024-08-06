@@ -1,86 +1,61 @@
-Return-Path: <cgroups+bounces-4107-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4108-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E4F8949737
-	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2024 19:59:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 470A59497CA
+	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2024 20:56:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A2D81F24108
-	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2024 17:59:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA9D6B22461
+	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2024 18:56:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8453176C61;
-	Tue,  6 Aug 2024 17:59:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB9B8811E2;
+	Tue,  6 Aug 2024 18:56:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="dfdWBFOl"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="GVcCwj3G"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE4CF7441A
-	for <cgroups@vger.kernel.org>; Tue,  6 Aug 2024 17:59:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7548933086;
+	Tue,  6 Aug 2024 18:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722967143; cv=none; b=ieLozC8sHJoY8iztQtoUpThXAjJmcI45r2FVtJK5dTuZmru/NMNWvgZYfkJJ8WLxd4KmmhS2LNfX5VDhi5NO7V3V6Mr8YuhokiGBkiRMhc5ndln6E7qHdVY66oQCgYfb2JLMFDyJcS9vF/ONcoi70LU28x1z62cGVQpaBddnMO8=
+	t=1722970593; cv=none; b=Ggm0N4L+vb21CQuhuTjsIZdK8k23H/hdcqfSqyK2y71lCEuaYzwkUO8PZRi5NPhK5PCh4Q7q+NEj6QafW1BqCD9uZARv3Vodu8n2JQlhQcKfTWeavLZ5HW8KegYbUQ2HhI9rgRrpNH+Kzn9O4YO5yI33VYomdSZLoCUPCYCOt5w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722967143; c=relaxed/simple;
-	bh=Vr4ssX3LexIo2N6PgFRtbpKq5//JSwMuoHCZ2wWW88c=;
+	s=arc-20240116; t=1722970593; c=relaxed/simple;
+	bh=cC2lYjJPOeCXoHkjABZhWFF525BVkW0UMBevjJbsMX4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AQcP5vmPxapQbozFbBVTl1O21Y5uT/cQaltTSDk/F4hPqSEELgV2N4LYXfdiQiHeF1Y2eq4ePAAagaOWJEVf6O/2BHsT9/K3vKzNlmcSQmIXNIktdYiAMKyP5HEIKnUcs8fzgTFHRsPkC23jeieLjQMxr3anrfIXMkPZ6LHC9o4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=dfdWBFOl; arc=none smtp.client-ip=209.85.167.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3dc16d00ba6so490161b6e.0
-        for <cgroups@vger.kernel.org>; Tue, 06 Aug 2024 10:59:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1722967141; x=1723571941; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9reD6LjBIDqI3rzCI/2rJ/w7uTHYKxSa2MJZ9OknCy8=;
-        b=dfdWBFOlaaALwxoIKu0QSosUVGXBLx4UNDbO54AvopPTo9IOW8/NzY9mQXQfJfHnpv
-         7S+3ol2Kbt2hYwvLqhGzwl9aquRu/80zuvfXeD6qaKnefoTHn1mRUmb9tw2IRpaGYVcz
-         V731EOf8WLioZ7giCcg44U6TR2aJXJi3q088YwzTDxAI4nRl32JY5XDG//QtE/QCAnj5
-         cPgbU+W8RIW/rSq2Aun0u4bDRnnVGQ9BM+BabAKkBk6oy0GLaUZju+XBwww6a/3e3Pbq
-         MVMTU9QkSngPFAzPaeeQAhEkOkJJcOEKOCznKXrrmloa7gGU1ZZOb6mpSfSzE3Spsaid
-         fplg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722967141; x=1723571941;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9reD6LjBIDqI3rzCI/2rJ/w7uTHYKxSa2MJZ9OknCy8=;
-        b=FW9CsW035OK+inq3nw78tUZ/VPNKZjMD4ASFXFuwglYS0bA0mxAdVQoS/Iutonn1Zw
-         FuTr6VIiCKrCDhDHUvQWmvEW9BhkkPfr5LNqxTrvTQhfAQyuzSqyGcsqOkQ9yCtoGdyO
-         bpS8T1I0k7mQviYfBJRPHBYWttMGvCLURkv8jnf837mpG5vvIJhSMI/mRnbxXKpjZ5MR
-         8VOEz/piapzaN59XqONUlWGQmcc/S7U2gaziLJGcSGRDPyWP2lmlqRLZRZo82ZhVk2qg
-         Npyiz3QA4mpucVW2TUi0zv5tsKTvjF1SU2A+0bATaI0dKeNLVY4d3DEdzot7qE9i02ws
-         B03w==
-X-Forwarded-Encrypted: i=1; AJvYcCVQ9kGHR/gDHfdeDSCYOCKteNmN7sejEXu/C6nEjTNG+6JXorYomF1dVzNPRbWb+HEc07gkJf3TWgU/pVna6aw53x1VRlNZZg==
-X-Gm-Message-State: AOJu0YxrDq5QfX67+jfo/9VfHRmThSeKICHU8LZ+ZBlIvCJv9cYL1QbX
-	Y+ceh/LlEX5mKRrWB6BOe9T7oGlnU+gdWn5med714sMHW6TEuFLu9Yy7zdFNbKM=
-X-Google-Smtp-Source: AGHT+IEwktuJ1CtYSzQb94QGzgaDodUnXytdXmjscinDnu4jw335ZRMBxJxoUFxjs8sU40IQz5cmUA==
-X-Received: by 2002:a05:6808:2212:b0:3d9:e1d1:157e with SMTP id 5614622812f47-3db5582e299mr22117856b6e.35.1722967140874;
-        Tue, 06 Aug 2024 10:59:00 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4518a6c547asm39893111cf.30.2024.08.06.10.59.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Aug 2024 10:59:00 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1sbOSZ-00Fhpe-RT;
-	Tue, 06 Aug 2024 14:58:59 -0300
-Date: Tue, 6 Aug 2024 14:58:59 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Al Viro <viro@zeniv.linux.org.uk>
+	 Content-Type:Content-Disposition:In-Reply-To; b=b3HCt5XgSAjo6mFUryCVttJUaVYSxVRNsb+OnFT4rizQpsMmhw9VMeqSN2HiLaUTbajNHgHYj3HXL+6sO8w5aQ5uCJyxIdPfWJjCn0YspwJBp0viy7xox+NNoX4yX3tGTmp1+QjSrrTnmD40+5ahkMH/5sPfWIKkKSyyDQiSolw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=GVcCwj3G; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=4QvL4Jpw3sWWcTod5vrw50TbAHneXynBbbFzWGbutx0=; b=GVcCwj3Gq9bsNgfn1o6TjClFyh
+	u4x+Y+jCz/o1aUHRdU7z3odrKI7aqY1Wppyxek0zYktl/d9HRIpZ8qUiFpnAKoROmkKwn0wKfm8Dl
+	fSnasluhuD9guL9rMUi/8T12i82E5BlQ5KmJ39etn7UoPrPoPGqOOk6Ud6ueQd2XZSNB6ySVVDoTd
+	WDlGO3+tWytNAlWaTL90lrUvXgjVcdBX8EednBPbkjpxafm466rFZn5fczyHzb+iT7gEK6+TP5VhK
+	bE2qUpf8kkN1cG1Z5k3WxzcWjfMxfy98Si2V05qGWtSwKaYz0ChH+kBpwccHpfqxviI4sfI4ZmvmK
+	/feOO63w==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1sbPMC-000000022Sq-0GHK;
+	Tue, 06 Aug 2024 18:56:28 +0000
+Date: Tue, 6 Aug 2024 19:56:28 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: linux-fsdevel@vger.kernel.org,
 	Linus Torvalds <torvalds@linux-foundation.org>,
 	Christian Brauner <brauner@kernel.org>, bpf@vger.kernel.org,
 	Amir Goldstein <amir73il@gmail.com>, kvm@vger.kernel.org,
 	cgroups@vger.kernel.org, netdev@vger.kernel.org
 Subject: Re: [PATCHSET][RFC] struct fd and memory safety
-Message-ID: <20240806175859.GT676757@ziepe.ca>
+Message-ID: <20240806185628.GR5334@ZenIV>
 References: <20240730050927.GC5334@ZenIV>
+ <20240806175859.GT676757@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -89,35 +64,41 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240730050927.GC5334@ZenIV>
+In-Reply-To: <20240806175859.GT676757@ziepe.ca>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Tue, Jul 30, 2024 at 06:09:27AM +0100, Al Viro wrote:
+On Tue, Aug 06, 2024 at 02:58:59PM -0300, Jason Gunthorpe wrote:
+> On Tue, Jul 30, 2024 at 06:09:27AM +0100, Al Viro wrote:
+> 
+> > 	* ib_uverbs_open_xrcd().  FWIW, a closer look shows that the
+> > damn thing is buggy - it accepts _any_ descriptor and pins the associated
+> > inode.  mount tmpfs, open a file there, feed it to that, unmount and
+> > watch the show...
+> 
+> What happens? There is still an igrab() while it is in the red black
+> tree?
 
-> 	* ib_uverbs_open_xrcd().  FWIW, a closer look shows that the
-> damn thing is buggy - it accepts _any_ descriptor and pins the associated
-> inode.  mount tmpfs, open a file there, feed it to that, unmount and
-> watch the show...
+... which does not render the mount busy.
 
-What happens? There is still an igrab() while it is in the red black
-tree?
+> > AFAICS, that's done for the sake of libibverbs and
+> > I've no idea how it's actually used - all examples I'd been able to
+> > find use -1 for descriptor here.  Needs to be discussed with infiniband
+> > folks (Sean Hefty?).  For now, leave that as-is.
+> 
+> The design seems insane, but it is what it is from 20 years ago..
+> 
+> Userspace can affiliate this "xrc domain" with a file in the
+> filesystem. Any file. That is actually a deliberate part of the API.
+> 
+> This is done as some ugly way to pass xrc domain object from process A
+> to process B. IIRC the idea is process A will affiliate the object
+> with a file and then B will be able to access the shared object if B
+> is able to open the file.
+> 
+> It looks like the code keeps a red/black tree of this association, and
+> holds an igrab while the inode is in that tree..
 
-> AFAICS, that's done for the sake of libibverbs and
-> I've no idea how it's actually used - all examples I'd been able to
-> find use -1 for descriptor here.  Needs to be discussed with infiniband
-> folks (Sean Hefty?).  For now, leave that as-is.
-
-The design seems insane, but it is what it is from 20 years ago..
-
-Userspace can affiliate this "xrc domain" with a file in the
-filesystem. Any file. That is actually a deliberate part of the API.
-
-This is done as some ugly way to pass xrc domain object from process A
-to process B. IIRC the idea is process A will affiliate the object
-with a file and then B will be able to access the shared object if B
-is able to open the file.
-
-It looks like the code keeps a red/black tree of this association, and
-holds an igrab while the inode is in that tree..
-
-Jason
+You need a mount (or file) reference to prevent fs destruction by umount.
+igrab() pins an _inode_, but the caller must arrange for the hosting
+filesystem to stay alive.
 
