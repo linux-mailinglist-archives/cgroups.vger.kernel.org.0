@@ -1,169 +1,360 @@
-Return-Path: <cgroups+bounces-4123-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4116-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF5BC949C46
-	for <lists+cgroups@lfdr.de>; Wed,  7 Aug 2024 01:25:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E79F8949B4E
+	for <lists+cgroups@lfdr.de>; Wed,  7 Aug 2024 00:32:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BDA9B222AD
-	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2024 23:25:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 683031F2345F
+	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2024 22:32:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7B39175D5F;
-	Tue,  6 Aug 2024 23:25:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B7E17279E;
+	Tue,  6 Aug 2024 22:32:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fN7oSuah"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XJJ2xgZN"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16362158DC0;
-	Tue,  6 Aug 2024 23:25:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3298913C809;
+	Tue,  6 Aug 2024 22:32:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722986734; cv=none; b=CYhJLD8ASbFqq11Cnys8MJoBkdj4QLhIgSF2jVMvQ6rhTXB2UNwbNEya7/tZXN/6KF5NUDWzjhZXsbOm2ZTSfbDWuIJr0TxERFX5IxY8Bo3bZWgjtvbv20YR/FgMYfmi/pdS+gj6kS8D1CK3aeEnDlUPb5LGT+/M7bbCbcViU6M=
+	t=1722983554; cv=none; b=QOSqdBQR7uaenmQi1UoBMjgwnESNCXA9kBWZBQPWrWiIPZk5C5KIC5qVoT+VRIaYVuizICP/VELSaUybkgqYjXbFwfDsTEIWItL4LQo3RrNZXdRr4ynFXroxiMkyyKiYyN5KvuypBbQWsDnVvksqsCMPAFWX0Rc067dn8lq9FpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722986734; c=relaxed/simple;
-	bh=6ZRRPBKkMSaxmVdpbwsaWDoYkf+fA6dKf22zWHhMhSM=;
+	s=arc-20240116; t=1722983554; c=relaxed/simple;
+	bh=leEYgUvoPvWJnLdNfwt5o7egZWNN2kQLjZpPsubAb6k=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CYg/ycRQK4EIMlbrBQOYbIwiVDSzCImA3NRHiLTtgIXQbi6Kqtw8EFzhVF0fYAJ6jcVQsXsni63t1WEp3swIE25ngINBRDai1uyytESZboa3Gkc/X/xhT413o5N/XzEZGp++X+y2PsqC9GZT3EQ97IOEHqXKEVP62efxD/DE8i0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fN7oSuah; arc=none smtp.client-ip=209.85.221.177
+	 To:Cc:Content-Type; b=Ai8ysmAOD+MuBcGrNRx3RhiJv9WT++oAxdK+ab+CvE24KrHh/pYBXXpiWdvlfrLEGBzThjtS2CR+0Z7NsO+JvXOoCSrZxrFXdN0M+B3nmyfsBjXot7FUPnvl3oIIySa6eRadi+qtEJMH/CaVwIK+W+Ut4rYtkzdYfo6LXgV/PDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XJJ2xgZN; arc=none smtp.client-ip=209.85.216.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4f6be9d13cdso431798e0c.3;
-        Tue, 06 Aug 2024 16:25:32 -0700 (PDT)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2cb4b7fef4aso881460a91.0;
+        Tue, 06 Aug 2024 15:32:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722986732; x=1723591532; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1722983552; x=1723588352; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Kn1X94t9UKU9+zjgXbaa22ND3HJp/723o1tByU9QibM=;
-        b=fN7oSuahZqOuV9bwzX8MutX9bPcA37DntcIT9EfhN1NQMuQotcycU42cYFduY9+aC6
-         wY68KzBEqazH+P+f5krmjzKiH1KNqeOPzMy6AYGL/EFQungJknARWehZgtaEzoeH+ZWb
-         acDzbxE9YxkEWZUT7A5CpSQ4gjMKr+K5B5B/djThRGdsiK3/qq0ANoHtrZ3IksIR1PW8
-         UUamSDKAl09hktLAxVHBQJs7Zi30ID1WGPrLy/zrxzobhlq2Fm98S8m46PSqbUVs+kaB
-         bxu8z+fehaor9dn2t65NAbw6DsvQaqKd3UVhoUP0hl8+XHk38soRu1TM0RrA8zq8c1GB
-         oZOA==
+        bh=UvxS0dtaG39iN3MDbCHCO5j0u4dk9U4/Rq1cmGTMqE4=;
+        b=XJJ2xgZNaZnzxKDgLXym1FQk1VExQCTP2Ib0r6WFFP8iwFcQk3+9/mCNlzE087IOXY
+         oeL9Q3wNE2rJul8T77Q6h/Lwj4q3lnJETSmDDBuKnNRHNolBp4UfK03cPw6QSIEaXaVq
+         teiH4X0SM1zdkGRSc3/LBShGHmUb2G/sDJTPl5Kt40lvYZ81C+DbiEqm0PXyx140HllM
+         1Re2ii1sqG6nr8JR0bM4Ukd+pyn2nD3JgNnzqhXkaGPnbkL2qlFOlLWZ/Tgm4NcutZD2
+         SO2LH2BoLNFomXEbwVBqK4ZoGaBkRv6OujfABNDI7k4gn9kz4v7nQvv9zVkY8ozw9NFT
+         w1nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722986732; x=1723591532;
+        d=1e100.net; s=20230601; t=1722983552; x=1723588352;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Kn1X94t9UKU9+zjgXbaa22ND3HJp/723o1tByU9QibM=;
-        b=up0JnKkuIW6f7tflnMqMng32mfOdVDrnvt0K/GRiawEX0oSHPy4ELfikfXpRJ+XPHD
-         /CUgyemBryPeWlVKDIx3gs9dAtAWUOuX7NOtTCf78qv9g7d+fGvlwDpFfoKtPhvziNI0
-         fP2X7cRU1z3CiE+ozSnadgQ1111LW70FB5atygvZwDtf63EvN+CnJL8KEYinvLjFbeDk
-         v4uV3wZvRe1JLHgJcV427RQZxZdO5hwqPRI/4Cb64/IEcw656JrvH1P2tkVSFrYBHt1L
-         Ofa+6Zg/GiFgLVT2+XW0yQN0sdUba92a8CkxjOI1bqN8ok74pgOna4RvuqpeUSOIF0Xj
-         FemA==
-X-Forwarded-Encrypted: i=1; AJvYcCX+/mJ0OIjRoLPv/xGVs/xtgAgaaZeABHxEcZ2AWTSKVoszdYuFMHF9GRq2tZmPLyuGrdfccah1JwqtU1P0omC/e43govvdifX2PxvhJyzNIq817aIzLr6jJCqsk+vCcGtogCTurF2breJ5lXS6S60vha0XvlkT3gjIqJ8sFyWf+s0=
-X-Gm-Message-State: AOJu0YwEZ/Mb5m/7hG5LgvSpEXSgpXIiQbLUP9KSDkznRErzYpXTry6r
-	rvnYZDXEeHeqxSUDFDloQ+cqtVslL6hDxPcKdtnGRUE8RxcJcB1ufGnpGlkXGr19ZBr12cxPAxY
-	1nS50claPn4bX7dL1D3LCWvVCDUg=
-X-Google-Smtp-Source: AGHT+IEt3+EX9yk7C1SBDu+blfaTia7GUs2USzvugPfeSyBWkcu2ovT9O6mqRNcPjjj9TmjJxepfcQVNhkNVZUXd6AU=
-X-Received: by 2002:a05:6122:311b:b0:4f6:ca2:ad0 with SMTP id
- 71dfb90a1353d-4f89ff45ec9mr13580385e0c.1.1722986731757; Tue, 06 Aug 2024
- 16:25:31 -0700 (PDT)
+        bh=UvxS0dtaG39iN3MDbCHCO5j0u4dk9U4/Rq1cmGTMqE4=;
+        b=vW+r8hrf0h95pCBTQVo3j2LzO6DhpklfPYzZvSM56hWyT7r0WQX70m4iS/x6RSTLV6
+         6r/PY2x253E6jCPwD1o7rp3cGUVV1ZLaLtaqJ9qfSGjY4qQK+D9dC83u5HyeIDYY3bUs
+         2yUIIQrgg9reBB5ErLkJsYPffe6V/5IhEx0MZ0HuhJBWnZS9PMQnn5+osz/iXQyw8D70
+         FA/+8l9jz6CICUUqPUDuAaLOwh2+WvECBTYjPmIdjsq/BbLm1FmZFh85GpIri9dcGMW7
+         3JwBXB/uYyuPSk0qXtq1PKFDi7WTC970NrUP4cHUQZgyQdomMdKxJVCxm5kpFEDO3YN8
+         BhAA==
+X-Forwarded-Encrypted: i=1; AJvYcCUYqI6/HABR0evgbKCkUPwH1Gyz3tHXYHp7LePjRQulrWzfbHIsXwhz5V1hoc0Bt0uvi96cgLC3JEp6nYVjfvJhK5EhdLRsT1P0NW22528bjMLQTJZu/FKJGlabRkBfKxrqwylNEqK6ja4flq7gihgp8vwiZvFiYqQIGDo58FbHWSCF+290BEy2AA==
+X-Gm-Message-State: AOJu0YwFmlOpb7spsSyl13jwshAgRp553xKgV/xEsxZhTOHj35mc8uA5
+	3nPXKaDxUnbv988WPDfVKJSv1KWX/NCxxW30fyXyDRiqZ+sqkEEQK11PY3H1Av0X5q0/W7Cj1k2
+	Pf8idtZ8zHUKNB4EOKMUi0kcf6FkSJTHg
+X-Google-Smtp-Source: AGHT+IEtlEPVqCq+xX4ug5f2DuXvupAmSeX/5y+TmwkIXkpruMTgXasxCkPgpCT7eJcqS5qs9i5wkJ05VWorf2T0nT0=
+X-Received: by 2002:a17:90a:fe88:b0:2c9:7fba:d88b with SMTP id
+ 98e67ed59e1d1-2cff9419943mr19926118a91.14.1722983552377; Tue, 06 Aug 2024
+ 15:32:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240731133318.527-1-justinjiang@vivo.com> <20240731091715.b78969467c002fa3a120e034@linux-foundation.org>
- <dbead7ca-e9a4-4ee8-9247-4e1ba9f6695c@vivo.com> <20240806133823.5cb3f27ef30c42dad5d0c3e8@linux-foundation.org>
- <CAGsJ_4x1tLEmRFbnUYcNYtV73SyBYpBtAx_syjfcnjrom-R+4w@mail.gmail.com> <20240806153947.1af20ffccfb42f1e8d981d6f@linux-foundation.org>
-In-Reply-To: <20240806153947.1af20ffccfb42f1e8d981d6f@linux-foundation.org>
-From: Barry Song <21cnbao@gmail.com>
-Date: Wed, 7 Aug 2024 06:21:20 +0800
-Message-ID: <CAGsJ_4wVT7uHFdExwPxFD=91Wvn1RR_7L6ACvpQuWteKWOaJag@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] mm: tlb swap entries batch async release
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: zhiguojiang <justinjiang@vivo.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Will Deacon <will@kernel.org>, "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
-	Nick Piggin <npiggin@gmail.com>, Peter Zijlstra <peterz@infradead.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, linux-arch@vger.kernel.org, cgroups@vger.kernel.org, 
-	kernel test robot <lkp@intel.com>, opensource.kernel@vivo.com
+References: <20240730050927.GC5334@ZenIV> <20240730051625.14349-1-viro@kernel.org>
+ <20240730051625.14349-17-viro@kernel.org>
+In-Reply-To: <20240730051625.14349-17-viro@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 6 Aug 2024 15:32:20 -0700
+Message-ID: <CAEf4BzZipqBVhoY-S+WdeQ8=MhpKk-2dE_ESfGpV-VTm31oQUQ@mail.gmail.com>
+Subject: Re: [PATCH 17/39] bpf: resolve_pseudo_ldimm64(): take handling of a
+ single ldimm64 insn into helper
+To: viro@kernel.org, bpf@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org, amir73il@gmail.com, brauner@kernel.org, 
+	cgroups@vger.kernel.org, kvm@vger.kernel.org, netdev@vger.kernel.org, 
+	torvalds@linux-foundation.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 7, 2024 at 6:39=E2=80=AFAM Andrew Morton <akpm@linux-foundation=
-.org> wrote:
+On Mon, Jul 29, 2024 at 10:20=E2=80=AFPM <viro@kernel.org> wrote:
 >
-> On Wed, 7 Aug 2024 04:32:09 +0800 Barry Song <21cnbao@gmail.com> wrote:
+> From: Al Viro <viro@zeniv.linux.org.uk>
 >
-> > > > their independent mm, rather than parent and child processes share =
-the
-> > > > same mm. Therefore, when the kernel executes multiple exiting proce=
-ss
-> > > > simultaneously, they will definitely occupy multiple CPU core resou=
-rces
-> > > > to complete it.
-> > >
-> > > What I'm asking is why not change those userspace processes so that t=
-hey
-> > > fork off a child process which shares the MM (shared mm_struct) and
-> > > then the original process exits, leaving the asynchronously-running
-> > > child to clean up the MM resources.
-> >
-> > Not Zhiguo. From my perspective as a phone engineer, this issue isn't r=
-elated
-> > to the parent-child process or the wait() function. Phones rely heavily=
- on
-> > mechanisms similar to the OOM killer to function efficiently. For insta=
-nce,
-> > if you're using apps like YouTube, TikTok, and Facebook, and then you
-> > open the camera app to take a photo, the camera app becomes the foregro=
-und
-> > process and demands a lot of memory. In this scenario, the phone might
-> > decide to terminate the most memory-consuming and less important apps,
-> > such as TikTok or YouTube, to free up memory for the camera app. TikTok
-> > and YouTube become less important because they are no longer occupying
-> > the phone's screen and have moved to the background. The faster TikTok
-> > and YouTube can be unmapped, the quicker the camera app can launch,
-> > enhancing the user experience.
+> Equivalent transformation.  For one thing, it's easier to follow that way=
+.
+> For another, that simplifies the control flow in the vicinity of struct f=
+d
+> handling in there, which will allow a switch to CLASS(fd) and make the
+> thing much easier to verify wrt leaks.
 >
-> I don't see how this relates to my question.
+> Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> ---
+>  kernel/bpf/verifier.c | 342 +++++++++++++++++++++---------------------
+>  1 file changed, 172 insertions(+), 170 deletions(-)
 >
-> Userspace can arrange for these resources to be released in an
-> asynchronous fashion (can't it?).  So why change the kernel to do that?
 
-I don't believe that userspace can distinguish between swap entries
-and PTEs that point to folios.
+This looks unnecessarily intrusive. I think it's best to extract the
+logic of fetching and adding bpf_map by fd into a helper and that way
+contain fdget + fdput logic nicely. Something like below, which I can
+send to bpf-next.
 
-If we are killing tiktok now, we will be performing munmap
-and zap_pte_range(). The PTEs for tiktok might look like this:
+commit b5eec08241cc0263e560551de91eda73ccc5987d
+Author: Andrii Nakryiko <andrii@kernel.org>
+Date:   Tue Aug 6 14:31:34 2024 -0700
 
-PTE0 - page
-PTE1 - swap
-PTE2 - swap
-PTE3 - page
-PTE4 - swap
-PTE5 - swap
-PTE6 - swap
-PTE7 - page
+    bpf: factor out fetching bpf_map from FD and adding it to used_maps lis=
+t
 
-Currently, zap_pte_range is freeing all PTEs one by one. While PTE0,
-PTE2, and PTE7 can contribute to freeing memory and help accelerate
-the launch of the new camera app, PTE1, PTE3, PTE4, PTE5, and
-PTE6 do not. They are blocking the memory release of PTE0, PTE2,
-and PTE7.
+    Factor out the logic to extract bpf_map instances from FD embedded in
+    bpf_insns, adding it to the list of used_maps (unless it's already
+    there, in which case we just reuse map's index). This simplifies the
+    logic in resolve_pseudo_ldimm64(), especially around `struct fd`
+    handling, as all that is now neatly contained in the helper and doesn't
+    leak into a dozen error handling paths.
 
-By handling this in kernel space, freeing memory and releasing
-swaps won't block each other:
+    Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-T1                                             T2
-PTE0 - page              PTE1 -SWAP
-PTE3 - page              PTE2-SWAP
-PTE7 - page              PTE4 -SWAP
-...
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index df3be12096cf..14e4ef687a59 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -18865,6 +18865,58 @@ static bool bpf_map_is_cgroup_storage(struct
+bpf_map *map)
+         map->map_type =3D=3D BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE);
+ }
 
-On phones, over 60% of an app's memory could be in swap. This 60%
-is obstructing the normal memory release for munmap.
++/* Add map behind fd to used maps list, if it's not already there, and ret=
+urn
++ * its index. Also set *reused to true if this map was already in the list=
+ of
++ * used maps.
++ * Returns <0 on error, or >=3D 0 index, on success.
++ */
++static int add_used_map_from_fd(struct bpf_verifier_env *env, int fd,
+bool *reused)
++{
++    struct fd f =3D fdget(fd);
++    struct bpf_map *map;
++    int i;
++
++    map =3D __bpf_map_get(f);
++    if (IS_ERR(map)) {
++        verbose(env, "fd %d is not pointing to valid bpf_map\n", fd);
++        return PTR_ERR(map);
++    }
++
++    /* check whether we recorded this map already */
++    for (i =3D 0; i < env->used_map_cnt; i++) {
++        if (env->used_maps[i] =3D=3D map) {
++            *reused =3D true;
++            fdput(f);
++            return i;
++        }
++    }
++
++    if (env->used_map_cnt >=3D MAX_USED_MAPS) {
++        verbose(env, "The total number of maps per program has
+reached the limit of %u\n",
++            MAX_USED_MAPS);
++        fdput(f);
++        return -E2BIG;
++    }
++
++    if (env->prog->sleepable)
++        atomic64_inc(&map->sleepable_refcnt);
++
++    /* hold the map. If the program is rejected by verifier,
++     * the map will be released by release_maps() or it
++     * will be used by the valid program until it's unloaded
++     * and all maps are released in bpf_free_used_maps()
++     */
++    bpf_map_inc(map);
++
++    *reused =3D false;
++    env->used_maps[env->used_map_cnt++] =3D map;
++
++    fdput(f);
++
++    return env->used_map_cnt - 1;
++
++}
++
+ /* find and rewrite pseudo imm in ld_imm64 instructions:
+  *
+  * 1. if it accesses map FD, replace it with actual map pointer.
+@@ -18876,7 +18928,7 @@ static int resolve_pseudo_ldimm64(struct
+bpf_verifier_env *env)
+ {
+     struct bpf_insn *insn =3D env->prog->insnsi;
+     int insn_cnt =3D env->prog->len;
+-    int i, j, err;
++    int i, err;
 
-Thanks
-Barry
+     err =3D bpf_prog_calc_tag(env->prog);
+     if (err)
+@@ -18893,9 +18945,10 @@ static int resolve_pseudo_ldimm64(struct
+bpf_verifier_env *env)
+         if (insn[0].code =3D=3D (BPF_LD | BPF_IMM | BPF_DW)) {
+             struct bpf_insn_aux_data *aux;
+             struct bpf_map *map;
+-            struct fd f;
++            int map_idx;
+             u64 addr;
+             u32 fd;
++            bool reused;
+
+             if (i =3D=3D insn_cnt - 1 || insn[1].code !=3D 0 ||
+                 insn[1].dst_reg !=3D 0 || insn[1].src_reg !=3D 0 ||
+@@ -18956,20 +19009,18 @@ static int resolve_pseudo_ldimm64(struct
+bpf_verifier_env *env)
+                 break;
+             }
+
+-            f =3D fdget(fd);
+-            map =3D __bpf_map_get(f);
+-            if (IS_ERR(map)) {
+-                verbose(env, "fd %d is not pointing to valid bpf_map\n", f=
+d);
+-                return PTR_ERR(map);
+-            }
++            map_idx =3D add_used_map_from_fd(env, fd, &reused);
++            if (map_idx < 0)
++                return map_idx;
++            map =3D env->used_maps[map_idx];
++
++            aux =3D &env->insn_aux_data[i];
++            aux->map_index =3D map_idx;
+
+             err =3D check_map_prog_compatibility(env, map, env->prog);
+-            if (err) {
+-                fdput(f);
++            if (err)
+                 return err;
+-            }
+
+-            aux =3D &env->insn_aux_data[i];
+             if (insn[0].src_reg =3D=3D BPF_PSEUDO_MAP_FD ||
+                 insn[0].src_reg =3D=3D BPF_PSEUDO_MAP_IDX) {
+                 addr =3D (unsigned long)map;
+@@ -18978,13 +19029,11 @@ static int resolve_pseudo_ldimm64(struct
+bpf_verifier_env *env)
+
+                 if (off >=3D BPF_MAX_VAR_OFF) {
+                     verbose(env, "direct value offset of %u is not
+allowed\n", off);
+-                    fdput(f);
+                     return -EINVAL;
+                 }
+
+                 if (!map->ops->map_direct_value_addr) {
+                     verbose(env, "no direct value access support for
+this map type\n");
+-                    fdput(f);
+                     return -EINVAL;
+                 }
+
+@@ -18992,7 +19041,6 @@ static int resolve_pseudo_ldimm64(struct
+bpf_verifier_env *env)
+                 if (err) {
+                     verbose(env, "invalid access to map value
+pointer, value_size=3D%u off=3D%u\n",
+                         map->value_size, off);
+-                    fdput(f);
+                     return err;
+                 }
+
+@@ -19003,70 +19051,39 @@ static int resolve_pseudo_ldimm64(struct
+bpf_verifier_env *env)
+             insn[0].imm =3D (u32)addr;
+             insn[1].imm =3D addr >> 32;
+
+-            /* check whether we recorded this map already */
+-            for (j =3D 0; j < env->used_map_cnt; j++) {
+-                if (env->used_maps[j] =3D=3D map) {
+-                    aux->map_index =3D j;
+-                    fdput(f);
+-                    goto next_insn;
+-                }
+-            }
+-
+-            if (env->used_map_cnt >=3D MAX_USED_MAPS) {
+-                verbose(env, "The total number of maps per program
+has reached the limit of %u\n",
+-                    MAX_USED_MAPS);
+-                fdput(f);
+-                return -E2BIG;
+-            }
+-
+-            if (env->prog->sleepable)
+-                atomic64_inc(&map->sleepable_refcnt);
+-            /* hold the map. If the program is rejected by verifier,
+-             * the map will be released by release_maps() or it
+-             * will be used by the valid program until it's unloaded
+-             * and all maps are released in bpf_free_used_maps()
+-             */
+-            bpf_map_inc(map);
+-
+-            aux->map_index =3D env->used_map_cnt;
+-            env->used_maps[env->used_map_cnt++] =3D map;
++            /* proceed with extra checks only if its newly added used map =
+*/
++            if (reused)
++                goto next_insn;
+
+             if (bpf_map_is_cgroup_storage(map) &&
+                 bpf_cgroup_storage_assign(env->prog->aux, map)) {
+                 verbose(env, "only one cgroup storage of each type is
+allowed\n");
+-                fdput(f);
+                 return -EBUSY;
+             }
+             if (map->map_type =3D=3D BPF_MAP_TYPE_ARENA) {
+                 if (env->prog->aux->arena) {
+                     verbose(env, "Only one arena per program\n");
+-                    fdput(f);
+                     return -EBUSY;
+                 }
+                 if (!env->allow_ptr_leaks || !env->bpf_capable) {
+                     verbose(env, "CAP_BPF and CAP_PERFMON are
+required to use arena\n");
+-                    fdput(f);
+                     return -EPERM;
+                 }
+                 if (!env->prog->jit_requested) {
+                     verbose(env, "JIT is required to use arena\n");
+-                    fdput(f);
+                     return -EOPNOTSUPP;
+                 }
+                 if (!bpf_jit_supports_arena()) {
+                     verbose(env, "JIT doesn't support arena\n");
+-                    fdput(f);
+                     return -EOPNOTSUPP;
+                 }
+                 env->prog->aux->arena =3D (void *)map;
+                 if (!bpf_arena_get_user_vm_start(env->prog->aux->arena)) {
+                     verbose(env, "arena's user address must be set
+via map_extra or mmap()\n");
+-                    fdput(f);
+                     return -EINVAL;
+                 }
+             }
+
+-            fdput(f);
+ next_insn:
+             insn++;
+             i++;
+
+
+
+[...]
 
