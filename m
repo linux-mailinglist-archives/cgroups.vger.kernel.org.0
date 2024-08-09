@@ -1,237 +1,313 @@
-Return-Path: <cgroups+bounces-4176-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4177-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E331C94C802
-	for <lists+cgroups@lfdr.de>; Fri,  9 Aug 2024 03:23:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDF1394C817
+	for <lists+cgroups@lfdr.de>; Fri,  9 Aug 2024 03:37:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B272D1C21F53
-	for <lists+cgroups@lfdr.de>; Fri,  9 Aug 2024 01:23:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2EBC0B219B5
+	for <lists+cgroups@lfdr.de>; Fri,  9 Aug 2024 01:37:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B458F49;
-	Fri,  9 Aug 2024 01:23:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 438F28F54;
+	Fri,  9 Aug 2024 01:37:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JAsI2n3w"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OUisiK8J"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7483916419;
-	Fri,  9 Aug 2024 01:23:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723166597; cv=none; b=Y+SvtgpUCTnHf4vR4K4gJtJo9x/K8+dXjdEwwi8t02pJYoTNrgLFA7+3WA6p0zaPkvb4ZAP14Hfw/2xy/p/jOO3E0gI426/k6gIF2HuComL0VRcv9+qhOTBWQ+F09WfzEMGyVRcSQxjhqFVmljkrjTsfVfbXNP6nVZ2O3ATPGPI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723166597; c=relaxed/simple;
-	bh=QfAZBS4GejPe4aSNdqRUxycvxP0gcOc3pmsy8Yr2lCQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rVXwxuWrTRMqpTwyHrymZK+hqUH7eD8Hlo9lEW5lK9QYEh3xoAwVqkKyTQRLDOjsPdwRMFmaWWja1aBp3+6deUYWG6hKSOiScpLHYXieVFKRv1Rxyer68r8Y3l7OyE9WXSkSfUggcIjM8ChwV1ktbRWf3L520Fs27hAdTuynmpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JAsI2n3w; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-428243f928fso15258965e9.0;
-        Thu, 08 Aug 2024 18:23:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723166594; x=1723771394; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F3DjGbT2aLpp9iseww7zvuSC6N2dborSRxte3s5JRsY=;
-        b=JAsI2n3wT/XJb2rWBJzVW0YNq5a6n0XpFDc7yYSbchGpf7dJkzMYcisopiAkZU8tT1
-         J6TpROrCUYxGw0QgC27lozRLQd5a4uUp30917I1bGqh8ZFgxIynuFA44/M2zVh8a0GOA
-         zY/uMU6NYxM0YmM1wKDuMGgz3dHviwNtitKjzyCV2mgS3AYv7Vvo87ZiP9KoHmBGW3Fy
-         YP/6bUFF3TkwU1kod7sPHIPuMNlNRHTdnMMegJrCjhx7TMeUod2MEKL9u+IlDyChF2X7
-         YUZsPhdYTX/RP+l27qI2dE3uklxUt5trl4mNu97IFIxPtQAsx3ojyT38mbdEQ4bipU2x
-         IwWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723166594; x=1723771394;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F3DjGbT2aLpp9iseww7zvuSC6N2dborSRxte3s5JRsY=;
-        b=nmkNojXpbetKFCLU3HqHWPUYJ1g95ypDeXpP52YPitaGvdZ/YPc3Mop6YkigSMLEcv
-         thq3LYU1JnanVoPb2zW6oJNirPdcY+/bK+2r/vn6zUSTDVVe5aBzKGjA6e9L+F0/pgcT
-         rg8jNtiTFIByGDYaYPThB3JBJ/yV0PM5g7sBUuQb/mZj/5yy8vx7gkkZLQCNhSVAe0Ne
-         WLglqhyM2gHAUVzgJ5izBwKoRIpNBVqaFGozKuPniSipv2MpCm08WEk1zLkjCxrKLCyW
-         nHj0boDdwvhjCfGs7DdKV1bsRi22BajA29qCKE09K71JXpT7fBbjFM0d4LesHh7NDZTg
-         lkbg==
-X-Forwarded-Encrypted: i=1; AJvYcCU6EGAeHkFskCExQ78EIOgi7VSZub8hjlBsYWyJQvhpvc1E6E9I+Qt2xHL0cvovDhdyn3NfkHJ8DA==@vger.kernel.org, AJvYcCUGEiLbvHkrQb5ALZfbbQW9niAEBYFmQXMAecxVLrPn348xmXz4SgQsSwH6GLFwP0xbE1k=@vger.kernel.org, AJvYcCUl86teQckyjraV2CBm91+RBw08XEylCfpqIttYiXybC5nXT1ON4nQwC6JF8V3YYrMso82cs7JZ@vger.kernel.org, AJvYcCWUv4KTYXa1g+P4HhrdR0vZCK+uftA8RJx6iYGLkXvtLNcyl02fLLKrHXJSt92S6Yk3MyS3@vger.kernel.org, AJvYcCWoMqpPYtod5oJwr+YsQchM5qt2NSzQ6KFQ7d2onfnpTjvPxlyVo1YG7cNlSaGwhnfJrrCrZ7QmgSZbur9iqQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyerTHP0jztCEeLfZLn2fGmKl8m4emXLFb6oxS3gimT52Op8yg2
-	SdJFxr8/l2Fu0t7FRhR07Ljcrk3KijyeKTQkDypwzydzf/zIIP63DdYwnchtfy5H4LdrJU43JVi
-	y4HnPIh2UNfN+gdOXlOanu5Rh080=
-X-Google-Smtp-Source: AGHT+IEczA4JxzigX7BfBtlnZI47DVmwIhzMmfVxMqZ+wK1QS6ljlNJAF+x8rFbhe+4uOEqkzsD12yK42LIMLMWG98Q=
-X-Received: by 2002:a05:600c:1c27:b0:428:e30:fa8d with SMTP id
- 5b1f17b1804b1-4290aedf987mr30435955e9.6.1723166593361; Thu, 08 Aug 2024
- 18:23:13 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81E4C8801
+	for <cgroups@vger.kernel.org>; Fri,  9 Aug 2024 01:37:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1723167429; cv=fail; b=SuAJ8LNR5NhhkVeEGMHx3UpweQ8T+HzCrSY0vHUGm+7UEhut6Q/gkITNdZ12O+NPfN3pjeDtkIJAnPqBjyBF6AAEU879XPysYXBmcPjmedi5wMcMUpynKcGcbLiB//Yqf3dXE2iBOwTZqGT8kn65ofZSyWzfo3vcWQJxA8ONQnI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1723167429; c=relaxed/simple;
+	bh=d+IOAv9KOEwcqCVOew72NfTpMkiVa2KR5N5SjIrBzk4=;
+	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
+	 Content-Disposition:MIME-Version; b=frDlDFwVIyPcqj42iNWkZIi3hQa6TqT1W9YzgFNCn2nc9ns494wN2AOX1yddc0gJZnl/H2m0Qg+64fTBqpYZs/IU8g+y8bmvuYKm7fz147a2pX5D0c9mKu+Lu1mlYn9nU/2rt1AU9FQjoF7tp6Oy/6rvDT5kHjDPBFb1yUMF1aU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OUisiK8J; arc=fail smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1723167427; x=1754703427;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=d+IOAv9KOEwcqCVOew72NfTpMkiVa2KR5N5SjIrBzk4=;
+  b=OUisiK8J3A5uEjsRXz3xyd/E3DAdnZ2C0sADovIqJUXWAun7j8hFiyLa
+   EGDOlKwCcIk6mxilWQcsBEvi3X5t28px6jTsJxNw/N0z5fNaaThIb9Q9I
+   EkZvmrTGayZrbzXX6eOWUahQkoZjLpiNUdStSTVx7xq+ZY6zbMsk0VkAe
+   AcQiuUnX+CSznG8Bhzzsd3yaaNApOfupD67jZkpJpRtv09osBpYTGIapD
+   lZ5kQLWbGWfyRdoKx503e0z0dNs+W2iV3WLQM3GLZPw3+qEe3qUL9zJUT
+   O8ejqbyo/6zFILMSMYnvNWK2gBEkPKRK3rRbrg+pBNNex8/Pw4BEGaqVr
+   Q==;
+X-CSE-ConnectionGUID: 1BWSM1zxR2Wdek70q++8rA==
+X-CSE-MsgGUID: Ql6XtYuzRfW4vX3HKxsZIg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11158"; a="21485212"
+X-IronPort-AV: E=Sophos;i="6.09,274,1716274800"; 
+   d="scan'208";a="21485212"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Aug 2024 18:37:06 -0700
+X-CSE-ConnectionGUID: e5HioqhUTkOTraUXKD1KcA==
+X-CSE-MsgGUID: eJlDst5TQG+F81+sCfHG8Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,274,1716274800"; 
+   d="scan'208";a="88288003"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 08 Aug 2024 18:37:06 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Thu, 8 Aug 2024 18:37:05 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Thu, 8 Aug 2024 18:37:04 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Thu, 8 Aug 2024 18:37:04 -0700
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Thu, 8 Aug 2024 18:37:04 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=rQBxh6uBuCmc+DXN9FR8J9W4396MCaiqGSGH1zg40VbII9S3tGLT+Q96amTw9gnO1394vdbwOmlILUp0fqCx1sBQOVnyUAPcnGbKGVL+aso7Fis7/iZ5BEg9YrP/4nJr86ZqcqQmgmr0fg12wUaVorJfak/om4ELUBrBQzgDA8pN/o0W6BTqQyT6sb1q7aiiHvbca13NDn4qwo2vF+XeMN+oMFz5a5Vbe6xsDX2lYOsYGOeOCpuiolm7leZUE3BTCHjhaMj5zDpIawhmZs550t/msNiOjuhKV6/ztUKf0iUa0nxcaJqkT739chu9ji24eLbSwSIWWebUV/XgG0NQCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kElBXF2blLpS+4vznvxwumPnF1/iQVStsnO8jHgnhFM=;
+ b=fNL22LXo631sgRy1Vsg0W0fexgmawJy+NEsoQBrOnQ6Jk2qGxTrwDCEpA+JwE0opoo4nZEkRG31+mCZfBfmeBOGxe/9FfAlxNemuglpDkff1sBYs+o9Pu4/a+DZKboiYrELcnwC/lCIwq+jjdkUye5bhn2durt7GnNNSEobHpm5eIbIbCh+1jCrX/1QbXYx77P8jlbTD73jO98hoedT/NA9Et/e0j6P9n9MdXtY+TntOooPqI0ApIYGjDxKSc5xCog6GwpA+WHBmRoCo4Jy2WvBcSEKYuL/0mSHJq7rYhZTbFSvMdQEkBy0vI2rmg3nEhOxzmSBwYkjil7Sn0Q6DJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by IA1PR11MB7271.namprd11.prod.outlook.com (2603:10b6:208:429::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7828.30; Fri, 9 Aug
+ 2024 01:36:57 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c%5]) with mapi id 15.20.7828.023; Fri, 9 Aug 2024
+ 01:36:57 +0000
+Date: Fri, 9 Aug 2024 09:36:46 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: Waiman Long <longman@redhat.com>
+CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, Linux Memory Management List
+	<linux-mm@kvack.org>, Tejun Heo <tj@kernel.org>, Johannes Weiner
+	<hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, "Kamalesh
+ Babulal" <kamalesh.babulal@oracle.com>, Michal =?iso-8859-1?Q?Koutn=FD?=
+	<mkoutny@suse.com>, <cgroups@vger.kernel.org>, <oliver.sang@intel.com>
+Subject: [linux-next:master] [cgroup]  ab03125268:
+ WARNING:at_kernel/cgroup/cgroup.c:#css_release_work_fn
+Message-ID: <202408090947.ec19afd3-oliver.sang@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: SG2P153CA0003.APCP153.PROD.OUTLOOK.COM (2603:1096::13) To
+ LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240730050927.GC5334@ZenIV> <20240730051625.14349-1-viro@kernel.org>
- <20240730051625.14349-17-viro@kernel.org> <CAEf4BzZipqBVhoY-S+WdeQ8=MhpKk-2dE_ESfGpV-VTm31oQUQ@mail.gmail.com>
- <20240807-fehlschlag-entfiel-f03a6df0e735@brauner> <CAEf4BzaeFTn41pP_hbcrCTKNZjwt3TPojv0_CYbP=+973YnWiA@mail.gmail.com>
- <CAADnVQKZW--EOkn5unFybxTKPNw-6rPB+=mY+cy_yUUsXe8R-w@mail.gmail.com> <CAEf4Bzauw1tD4UsyhX1PmRs_Y1MzfPqsoRUf40cmNuu7SJKi9w@mail.gmail.com>
-In-Reply-To: <CAEf4Bzauw1tD4UsyhX1PmRs_Y1MzfPqsoRUf40cmNuu7SJKi9w@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 8 Aug 2024 18:23:02 -0700
-Message-ID: <CAADnVQ+55NKkEaAsjGh52=VsSgr9G-qvjBCPmaPrTxiN6eCZOw@mail.gmail.com>
-Subject: Re: [PATCH 17/39] bpf: resolve_pseudo_ldimm64(): take handling of a
- single ldimm64 insn into helper
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Christian Brauner <brauner@kernel.org>, viro@kernel.org, bpf <bpf@vger.kernel.org>, 
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, Amir Goldstein <amir73il@gmail.com>, 
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, kvm@vger.kernel.org, 
-	Network Development <netdev@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|IA1PR11MB7271:EE_
+X-MS-Office365-Filtering-Correlation-Id: 482b131b-fdaf-4570-ce9f-08dcb813c167
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?dsuNNW6VjBwXuHVypSka72UAHu573tQ99u55+emZTQKt4pHQsfEg+9n2Cd5j?=
+ =?us-ascii?Q?zEa2GzExRWBdK71WMY41hi04Lf6Xj9POT+KeXHf28ExCkEWaN2iQJLt3CM4I?=
+ =?us-ascii?Q?GFHO19AwNWpZm+DvEEnDaTRCtSrNC1lAvWJ8xZ1zYk25qbPK8ud2ZkNP205o?=
+ =?us-ascii?Q?P8xIMM1VXECyL8l/IMQ2kOjcrge0AXVNPgQtKkoP3V8FuFaND7wi6HTyrlUd?=
+ =?us-ascii?Q?Hm8lqMLs3uPKLhkJLTotBrbwYnLyM3vLTg29LFFidwwATlRBfwldDiTxJ9bQ?=
+ =?us-ascii?Q?oXU56+wHAcEScTWnkD7OFyOPRmzhX0uzUZWQZ18KIXG41nIBkQYOqvNVqjgt?=
+ =?us-ascii?Q?pVC67JNbAdVaRrxuso948FzTyPi/OAi61JRx5gosjabAiLBp2sEJSIjRGFiJ?=
+ =?us-ascii?Q?R0gMYwTq5y7UVShnTCIikevkTNhZvBn0xDxXnJEigUu0htTz3xa9xhxSehCo?=
+ =?us-ascii?Q?82/OuN6PUs2pVpefsGuJ3N83stwrihe1iNcnhLGNmn0h7pBlib3cjpeovL66?=
+ =?us-ascii?Q?VX5mb4bQF6lOLRDQTijxc7Q/jh3YmIaAZGIA3s3hV3ydygK8ehAfFeICyrf2?=
+ =?us-ascii?Q?LYZ8bCczH6DBpGYw5otRWA1fi3Tu8kLb3tvilYshOzP+9I16Fx5+ux7DF86+?=
+ =?us-ascii?Q?/l2KBj+DdgwmHpDfqAJj6RbP24kq+SSsQ2thbSKy106FSXTil3V26whWm7mt?=
+ =?us-ascii?Q?tDr2bn35wzY6dhonrGquYP91rvp7MJpWvebowy9jhnpFMakWoEJg6ydbsRiT?=
+ =?us-ascii?Q?ZitSNewOlOAInjjKh4ZV7RQxxYIPgJqGrLeuTcN483RbO/zvcrvU9ZFYwvCr?=
+ =?us-ascii?Q?3Z893nICoktlCsNlDUxutRTkTacUvqlZ1qOHrgxO1u3vcXKhY12MGtmE4SiL?=
+ =?us-ascii?Q?GZVAlRJaC+Zxj9ySKKY184pV68yHPXtZEX/f/8EBB7aKiQF2IlISHGHOdPQe?=
+ =?us-ascii?Q?BzfdwBHZJrw/owOcpJASaO68+ge35hDo+IW2T9Nm6vhG93Mdgi8doMxpmiYV?=
+ =?us-ascii?Q?bv3nw+7X8sWOg/dgVzPbgUjX33mQ+QZQfAmaI3i36O2ZaGz3TfnlnBtsEIyc?=
+ =?us-ascii?Q?5TUt4x6hT8jJ+C3tO3ZgjRFhM/IMayksBLxL7c1MTTMe/XVMNdjeSlVDMIFl?=
+ =?us-ascii?Q?8GGckiYCf7TDAZQVw1f70eb/XPj/rs1gw2V/6dz841U+gm/jruX6szb4AINx?=
+ =?us-ascii?Q?8ONqgXHvkfJ0upZ7SumeuQDuE9zPuQciqUVTF8wvw1B9bUCe8U8z8FXZqPOE?=
+ =?us-ascii?Q?ElxAe7Py7tVza9DtEJFR0qZc4F8JtlZlKPweM1J+/x3esTf+0wBnV8g5KTSy?=
+ =?us-ascii?Q?zls=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?fmXD6AG8Tjl0j7TYlnpxJoBj9Jmj4LDNVPFhyVI4GKr9ZM24EHjkfvciI+rC?=
+ =?us-ascii?Q?pAYu9tDrrK3+m0D0VgNf9EAobL6GEPzX4cczNUhvlvbv0fvnXQXTPwxG49uF?=
+ =?us-ascii?Q?iE7D62WsI8NeopML0cNN8YzJZLjmUzD8tSpSPIS7vPHlxJqAWDci2q6RfeOi?=
+ =?us-ascii?Q?cUURPSTrfd4T7/8zOcKLkjD1URQBjuYHr5TC8clp/efu3sQbJas15VH5GJH2?=
+ =?us-ascii?Q?KDsbIGAbJH5Q7AOAAgezT6vz28AgFGGtDSceE37K59wGiYADV0uGedc8Tff2?=
+ =?us-ascii?Q?DCu796niQlQvj2jGQPwhd8zwZ8pXgRU70RcuhtJ02AWLAnyO3BOmbYJj+N8M?=
+ =?us-ascii?Q?RDk7N1aihSOtK9vgQCDkRmZyo2ckLVP5plFRgSS6YJ3stCUKZX0VsjApE5G6?=
+ =?us-ascii?Q?BTrtPOZXpjPCfdKHq3QNoxWRfUmDQNNfPeL3qj1Q3QeKmjKJ0hVL4uppuVJC?=
+ =?us-ascii?Q?USKBS+ASDZ8pT/PuHUEfGmegwG9UMc4DnNrXRxw2LPjXL3MdthqRGh9DrLPg?=
+ =?us-ascii?Q?EmNdsyH9NdT0mQ40S7vRJyzJrnp9RRzXH4rRTABXWYuRaIHk0BQUM/NQAL1V?=
+ =?us-ascii?Q?1OKOy2j47NLt1oKXHDug69mljm2aswzk33FGxs7Qed5BZzyQg4suJoGYCqlu?=
+ =?us-ascii?Q?6yTd0G+dB6zF4+R4j49Pa595DpuWvoB4ULCGFBpzC0x9XsFb+k0a1vI3rTQM?=
+ =?us-ascii?Q?KaZQ7HMlyAF4vmsY3GZoleJFaSLsSXLciV93BvIrhC0vHGDq26G1ZPF5vFNM?=
+ =?us-ascii?Q?Tp+yRJa4cwxuvnzToFjQ55gfoFTCrWPTDd/P7EgLLpLWt8BBcwj60vvaDJ1P?=
+ =?us-ascii?Q?jI9UdVDJ3vCaC4vd78IxJAQwrl/4zdpicbU9vdEfIWWPoqPYgC/1HGKi5FMO?=
+ =?us-ascii?Q?JKeT+eDGrmFWecfkvdN3eqXyx9v2ZwvADJ4aBs4xMCFZjSycaCt1RCKW6qv0?=
+ =?us-ascii?Q?wVOK4NwbUfCB7Gt2P/gtoslwl+cEUFs+qI34LE7BzU8K5ehgTnxV8jW9E/mT?=
+ =?us-ascii?Q?6GME18mwl74rnPxHr0PbseAypWmgWhW/MWXSZIPjRRXrxI5ldeEKTmsjBe82?=
+ =?us-ascii?Q?EfGCJymBrcbSlSqqjHHv7U44MiNFBXoZr17Jd+6ba42ctaDkOyb6fCVDyw1r?=
+ =?us-ascii?Q?utBn6ff+6ThM6b5uMVkkiatcJ9b1c7t1+m2/Xj+2ss8hqYWKuX8fnB/RYwHf?=
+ =?us-ascii?Q?/085KvYUJy0pEU3bmOABEBYt/52FJRfQTmP1L68SHHIHawfTf1vQTzhodU5E?=
+ =?us-ascii?Q?B6ZaHQAJXXDHAL+UoNNt7xIXapwyvPAVqqBUYaCJECyYK8fgJqyVEwGFWCNn?=
+ =?us-ascii?Q?fDH4uYV6v5CHktUYWS7fX0BvUGqVXNRQLam2mx3ZzFov3mZzwQYgmdpevM1l?=
+ =?us-ascii?Q?8wgSXfobS6+v5VbCC0UjohuNAaGbJUs3LCvmWq30Vpy2prXqkcWCnmjdckkW?=
+ =?us-ascii?Q?MRQSoHt6mJcke8xHaiKvD/io18K0jOnCSrrvknB91MKUkO/HnOCu9OfpNYVb?=
+ =?us-ascii?Q?FRhxYNdq4pODN6VPZaFVOcOtyRvhVIw9BKmv3qUKWXJYjkjTs5WB7E2c969B?=
+ =?us-ascii?Q?Pn85fqEsl3jxvn60KNn3s7mkL9IgMn0sIFAC3UnBbNjtZOCSlsHBgaMCzZAB?=
+ =?us-ascii?Q?iQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 482b131b-fdaf-4570-ce9f-08dcb813c167
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Aug 2024 01:36:57.1825
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: K+dQA5/BnWKnuNCWHHR4BJ9My5a4qtPJ5LqcsDX+dGudvaARP+wv1rxSsKrKloCzKlG8AK3m4WVJmz+Nr4BwQw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7271
+X-OriginatorOrg: intel.com
 
-On Thu, Aug 8, 2024 at 1:35=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Aug 8, 2024 at 9:51=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Wed, Aug 7, 2024 at 8:31=E2=80=AFAM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Wed, Aug 7, 2024 at 3:30=E2=80=AFAM Christian Brauner <brauner@ker=
-nel.org> wrote:
-> > > >
-> > > > On Tue, Aug 06, 2024 at 03:32:20PM GMT, Andrii Nakryiko wrote:
-> > > > > On Mon, Jul 29, 2024 at 10:20=E2=80=AFPM <viro@kernel.org> wrote:
-> > > > > >
-> > > > > > From: Al Viro <viro@zeniv.linux.org.uk>
-> > > > > >
-> > > > > > Equivalent transformation.  For one thing, it's easier to follo=
-w that way.
-> > > > > > For another, that simplifies the control flow in the vicinity o=
-f struct fd
-> > > > > > handling in there, which will allow a switch to CLASS(fd) and m=
-ake the
-> > > > > > thing much easier to verify wrt leaks.
-> > > > > >
-> > > > > > Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> > > > > > ---
-> > > > > >  kernel/bpf/verifier.c | 342 +++++++++++++++++++++-------------=
---------
-> > > > > >  1 file changed, 172 insertions(+), 170 deletions(-)
-> > > > > >
-> > > > >
-> > > > > This looks unnecessarily intrusive. I think it's best to extract =
-the
-> > > > > logic of fetching and adding bpf_map by fd into a helper and that=
- way
-> > > > > contain fdget + fdput logic nicely. Something like below, which I=
- can
-> > > > > send to bpf-next.
-> > > > >
-> > > > > commit b5eec08241cc0263e560551de91eda73ccc5987d
-> > > > > Author: Andrii Nakryiko <andrii@kernel.org>
-> > > > > Date:   Tue Aug 6 14:31:34 2024 -0700
-> > > > >
-> > > > >     bpf: factor out fetching bpf_map from FD and adding it to use=
-d_maps list
-> > > > >
-> > > > >     Factor out the logic to extract bpf_map instances from FD emb=
-edded in
-> > > > >     bpf_insns, adding it to the list of used_maps (unless it's al=
-ready
-> > > > >     there, in which case we just reuse map's index). This simplif=
-ies the
-> > > > >     logic in resolve_pseudo_ldimm64(), especially around `struct =
-fd`
-> > > > >     handling, as all that is now neatly contained in the helper a=
-nd doesn't
-> > > > >     leak into a dozen error handling paths.
-> > > > >
-> > > > >     Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > > >
-> > > > > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > > > > index df3be12096cf..14e4ef687a59 100644
-> > > > > --- a/kernel/bpf/verifier.c
-> > > > > +++ b/kernel/bpf/verifier.c
-> > > > > @@ -18865,6 +18865,58 @@ static bool bpf_map_is_cgroup_storage(st=
-ruct
-> > > > > bpf_map *map)
-> > > > >          map->map_type =3D=3D BPF_MAP_TYPE_PERCPU_CGROUP_STORAGE)=
-;
-> > > > >  }
-> > > > >
-> > > > > +/* Add map behind fd to used maps list, if it's not already ther=
-e, and return
-> > > > > + * its index. Also set *reused to true if this map was already i=
-n the list of
-> > > > > + * used maps.
-> > > > > + * Returns <0 on error, or >=3D 0 index, on success.
-> > > > > + */
-> > > > > +static int add_used_map_from_fd(struct bpf_verifier_env *env, in=
-t fd,
-> > > > > bool *reused)
-> > > > > +{
-> > > > > +    struct fd f =3D fdget(fd);
-> > > >
-> > > > Use CLASS(fd, f)(fd) and you can avoid all that fdput() stuff.
-> > >
-> > > That was the point of Al's next patch in the series, so I didn't want
-> > > to do it in this one that just refactored the logic of adding maps.
-> > > But I can fold that in and send it to bpf-next.
-> >
-> > +1.
-> >
-> > The bpf changes look ok and Andrii's approach is easier to grasp.
-> > It's better to route bpf conversion to CLASS(fd,..) via bpf-next,
-> > so it goes through bpf CI and our other testing.
-> >
-> > bpf patches don't seem to depend on newly added CLASS(fd_pos, ...
-> > and fderr, so pretty much independent from other patches.
->
-> Ok, so CLASS(fd, f) won't work just yet because of peculiar
-> __bpf_map_get() contract: if it gets valid struct fd but it doesn't
-> contain a valid struct bpf_map, then __bpf_map_get() does fdput()
-> internally. In all other cases the caller has to do fdput() and
-> returned struct bpf_map's refcount has to be bumped by the caller
-> (__bpf_map_get() doesn't do that, I guess that's why it's
-> double-underscored).
->
-> I think the reason it was done was just a convenience to not have to
-> get/put bpf_map for temporary uses (and instead rely on file's
-> reference keeping bpf_map alive), plus we have bpf_map_inc() and
-> bpf_map_inc_uref() variants, so in some cases we need to bump just
-> refcount, and in some both user and normal refcounts.
->
-> So can't use CLASS(fd, ...) without some more clean up.
->
-> Alexei, how about changing __bpf_map_get(struct fd f) to
-> __bpf_map_get_from_fd(int ufd), doing fdget/fdput internally, and
-> always returning bpf_map with (normal) refcount bumped (if successful,
-> of course). We can then split bpf_map_inc_with_uref() into just
-> bpf_map_inc() and bpf_map_inc_uref(), and callers will be able to do
-> extra uref-only increment, if necessary.
->
-> I can do that as a pre-patch, there are about 15 callers, so not too
-> much work to clean this up. Let me know.
 
-Yeah. Let's kill __bpf_map_get(struct fd ..) altogether.
-This logic was added in 2014.
-fdget() had to be first and fdput() last to make sure
-the map won't disappear while sys_bpf command is running.
-All of the places can use bpf_map_get(), bpf_map_put() pair
-and rely on map->refcnt, but...
 
-- it's atomic64_inc(&map->refcnt); The cost is probably
-in the noise compared to all the work that map sys_bpf commands do.
+Hello,
 
-- It also opens new fuzzing opportunity to do some map operation
-in one thread and close(map_fd) in the other, so map->usercnt can
-drop to zero and map_release_uref() cleanup can start while
-the other thread is still busy doing something like map_update_elem().
-It can be mitigated by doing bpf_map_get_with_uref(), but two
-atomic64_inc() is kinda too much.
+kernel test robot noticed "WARNING:at_kernel/cgroup/cgroup.c:#css_release_work_fn" on:
 
-So let's remove __bpf_map_get() and replace all users with bpf_map_get(),
-but we may need to revisit that later.
+commit: ab03125268679e058e1e7b6612f6d12610761769 ("cgroup: Show # of subsystem CSSes in cgroup.stat")
+https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+
+[test failed on linux-next/master 222a3380f92b8791d4eeedf7cd750513ff428adf]
+
+in testcase: kernel-selftests
+version: kernel-selftests-x86_64-977d51cf-1_20240508
+with following parameters:
+
+	group: cgroup
+
+
+
+compiler: gcc-12
+test machine: 16 threads 1 sockets Intel(R) Xeon(R) E-2278G CPU @ 3.40GHz (Coffee Lake) with 32G memory
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202408090947.ec19afd3-oliver.sang@intel.com
+
+
+[  329.344633][   T27] ------------[ cut here ]------------
+[ 329.352806][ T27] WARNING: CPU: 1 PID: 27 at kernel/cgroup/cgroup.c:5468 css_release_work_fn (kernel/cgroup/cgroup.c:5468) 
+[  329.364374][   T27] Modules linked in: openvswitch nf_conncount nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 psample btrfs blake2b_generic xor zstd_compress raid6_pq libcrc32c intel_rapl_msr intel_rapl_common x86_pkg_temp_thermal intel_powerclamp coretemp sd_mod kvm_intel sg kvm crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel sha512_ssse3 rapl ast ahci intel_wmi_thunderbolt wmi_bmof libahci video drm_shmem_helper intel_cstate ppdev drm_kms_helper mei_me intel_ish_ipc i2c_i801 i2c_designware_platform intel_uncore parport_pc libata i2c_designware_core idma64 i2c_smbus mei acpi_power_meter intel_ishtp intel_pch_thermal ie31200_edac parport acpi_ipmi wmi ipmi_devintf pinctrl_cannonlake ipmi_msghandler acpi_tad acpi_pad binfmt_misc loop fuse drm dm_mod ip_tables sch_fq_codel
+[  329.438923][   T27] CPU: 1 UID: 0 PID: 27 Comm: kworker/1:0 Not tainted 6.11.0-rc1-00007-gab0312526867 #1
+[  329.449669][   T27] Hardware name: Intel Corporation Mehlow UP Server Platform/Moss Beach Server, BIOS CNLSE2R1.R00.X188.B13.1903250419 03/25/2019
+[  329.464003][   T27] Workqueue: cgroup_destroy css_release_work_fn
+[ 329.471393][ T27] RIP: 0010:css_release_work_fn (kernel/cgroup/cgroup.c:5468) 
+[ 329.478404][ T27] Code: 00 00 fc ff df 48 89 fa 48 c1 ea 03 0f b6 04 02 84 c0 74 08 3c 03 0f 8e 73 04 00 00 8b 8d b0 00 00 00 85 c9 0f 84 b2 01 00 00 <0f> 0b 49 8d bc 24 10 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89
+All code
+========
+   0:	00 00                	add    %al,(%rax)
+   2:	fc                   	cld    
+   3:	ff                   	(bad)  
+   4:	df 48 89             	fisttps -0x77(%rax)
+   7:	fa                   	cli    
+   8:	48 c1 ea 03          	shr    $0x3,%rdx
+   c:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax
+  10:	84 c0                	test   %al,%al
+  12:	74 08                	je     0x1c
+  14:	3c 03                	cmp    $0x3,%al
+  16:	0f 8e 73 04 00 00    	jle    0x48f
+  1c:	8b 8d b0 00 00 00    	mov    0xb0(%rbp),%ecx
+  22:	85 c9                	test   %ecx,%ecx
+  24:	0f 84 b2 01 00 00    	je     0x1dc
+  2a:*	0f 0b                	ud2    		<-- trapping instruction
+  2c:	49 8d bc 24 10 01 00 	lea    0x110(%r12),%rdi
+  33:	00 
+  34:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  3b:	fc ff df 
+  3e:	48                   	rex.W
+  3f:	89                   	.byte 0x89
+
+Code starting with the faulting instruction
+===========================================
+   0:	0f 0b                	ud2    
+   2:	49 8d bc 24 10 01 00 	lea    0x110(%r12),%rdi
+   9:	00 
+   a:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  11:	fc ff df 
+  14:	48                   	rex.W
+  15:	89                   	.byte 0x89
+[  329.499252][   T27] RSP: 0018:ffffc90000337c90 EFLAGS: 00010202
+[  329.506527][   T27] RAX: 0000000000000003 RBX: 0000000000000000 RCX: 0000000000000000
+[  329.515801][   T27] RDX: 0000000000000001 RSI: 0000000000000000 RDI: ffff88886dde0288
+[  329.525032][   T27] RBP: ffff88885d2ee068 R08: ffffffff85688cbc R09: fffffbfff0f10188
+[  329.534328][   T27] R10: ffffffff87880c47 R11: 0000000000000040 R12: ffff88886dde0000
+[  329.543601][   T27] R13: 000000000000001b R14: ffffffff85688c20 R15: ffff888118c08020
+[  329.552847][   T27] FS:  0000000000000000(0000) GS:ffff8887e3680000(0000) knlGS:0000000000000000
+[  329.563170][   T27] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  329.571124][   T27] CR2: 000055f6ec637108 CR3: 000000087927e002 CR4: 00000000003706f0
+[  329.580442][   T27] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  329.589740][   T27] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  329.599048][   T27] Call Trace:
+[  329.603695][   T27]  <TASK>
+[ 329.607990][ T27] ? __warn (kernel/panic.c:735) 
+[ 329.613444][ T27] ? css_release_work_fn (kernel/cgroup/cgroup.c:5468) 
+[ 329.620132][ T27] ? report_bug (lib/bug.c:180 lib/bug.c:219) 
+[ 329.625961][ T27] ? handle_bug (arch/x86/kernel/traps.c:239) 
+[ 329.631620][ T27] ? exc_invalid_op (arch/x86/kernel/traps.c:260 (discriminator 1)) 
+[ 329.637638][ T27] ? asm_exc_invalid_op (arch/x86/include/asm/idtentry.h:621) 
+[ 329.644006][ T27] ? css_release_work_fn (kernel/cgroup/cgroup.c:5468) 
+[ 329.650668][ T27] process_one_work (kernel/workqueue.c:3231) 
+[ 329.656971][ T27] ? __pfx_lock_acquire (kernel/locking/lockdep.c:5727) 
+[ 329.663388][ T27] ? __pfx_process_one_work (kernel/workqueue.c:3133) 
+[ 329.670157][ T27] ? assign_work (kernel/workqueue.c:1202) 
+[ 329.676137][ T27] ? lock_is_held_type (kernel/locking/lockdep.c:5500 kernel/locking/lockdep.c:5831) 
+[ 329.682560][ T27] worker_thread (kernel/workqueue.c:3306 kernel/workqueue.c:3390) 
+[ 329.688584][ T27] ? __pfx_worker_thread (kernel/workqueue.c:3339) 
+[ 329.695127][ T27] kthread (kernel/kthread.c:389) 
+[ 329.700585][ T27] ? __pfx_kthread (kernel/kthread.c:342) 
+[ 329.706591][ T27] ret_from_fork (arch/x86/kernel/process.c:147) 
+[ 329.712434][ T27] ? __pfx_kthread (kernel/kthread.c:342) 
+[ 329.718451][ T27] ret_from_fork_asm (arch/x86/entry/entry_64.S:257) 
+[  329.724624][   T27]  </TASK>
+[  329.729125][   T27] irq event stamp: 179927
+[ 329.734853][ T27] hardirqs last enabled at (179941): console_unlock (arch/x86/include/asm/irqflags.h:42 arch/x86/include/asm/irqflags.h:97 arch/x86/include/asm/irqflags.h:155 kernel/printk/printk.c:341 kernel/printk/printk.c:2801 kernel/printk/printk.c:3120) 
+[ 329.745845][ T27] hardirqs last disabled at (179954): console_unlock (kernel/printk/printk.c:339 kernel/printk/printk.c:2801 kernel/printk/printk.c:3120) 
+[ 329.756837][ T27] softirqs last enabled at (179968): handle_softirqs (arch/x86/include/asm/preempt.h:26 kernel/softirq.c:401 kernel/softirq.c:582) 
+[ 329.767923][ T27] softirqs last disabled at (179963): __irq_exit_rcu (kernel/softirq.c:589 kernel/softirq.c:428 kernel/softirq.c:637) 
+[  329.778925][   T27] ---[ end trace 0000000000000000 ]---
+
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20240809/202408090947.ec19afd3-oliver.sang@intel.com
+
+
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
 
