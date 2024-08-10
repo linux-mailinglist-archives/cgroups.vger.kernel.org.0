@@ -1,87 +1,94 @@
-Return-Path: <cgroups+bounces-4191-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4192-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7F4994DA2E
-	for <lists+cgroups@lfdr.de>; Sat, 10 Aug 2024 04:39:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4171494DA47
+	for <lists+cgroups@lfdr.de>; Sat, 10 Aug 2024 05:30:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84AE8282608
-	for <lists+cgroups@lfdr.de>; Sat, 10 Aug 2024 02:39:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C336228322F
+	for <lists+cgroups@lfdr.de>; Sat, 10 Aug 2024 03:30:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC0E13213E;
-	Sat, 10 Aug 2024 02:39:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AA4A139CEE;
+	Sat, 10 Aug 2024 03:30:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qAZCCvTN"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="iKBHWi4d"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70FC1799F
-	for <cgroups@vger.kernel.org>; Sat, 10 Aug 2024 02:39:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E73FD3A1BA;
+	Sat, 10 Aug 2024 03:30:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723257571; cv=none; b=Fj8IkZ6gUkua2uRuFf2Po4UtmETRjVE3EhlZi8UcwyRdL5lAEMdoAdKKHsTys5AyWGnvFTLyEtRM2oylbupzPJ5XFnxoxlUvohTM4K1TSIVZCzYpNaf8Urlr1xiDqWEQf3UGY+giOUaIn0QZt3aRWsO9+bqzSLk1dlAYKEqwpok=
+	t=1723260603; cv=none; b=NIe6RXkWSxWnUsf2GJSk1BvgM9AhzQ+aCcHKkmUVxkcH0jFk96ygQCVT8lxNqcnuoK0iYMdQ9XC57xPpq3K+vByW1ZQW0iUaRr9u0RWBoWPoW8QasRNJ+gHlpM3XAgHZ4nFHSudC04fyxhDxlUd2n7/scxO9b0oZG0dzmc62uuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723257571; c=relaxed/simple;
-	bh=+weEgowa/sf3AGpmMQCdg5onlZflD/OQ1Rk7FS6GN4A=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=AsedP66nwSZL7YA+GiXyN8Sp6mee9+kHncj6yx0oahpwJ0tO8glk/ft/dDrkVfS44vFqSSK4yhp1M5fZO019imVnASn0WyDzpNJrBYzRCmnAtWbtTn0eO7Vz5V7izzH8oMzZ2/A+LtuD2DgF/87xiug6sqe0i+iaXknURjkLRSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qAZCCvTN; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Content-Type: text/plain;
-	charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1723257566;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nI+Vi4pbj0gTCrjL7DMWl6AgcfOJvlF0DoxzDvU62co=;
-	b=qAZCCvTN+nVPafsEp6qVwXKPq06wHrt4RBcMMu7V+s7rzc1tzF7VlhTLNgg8wqeK4awn8Q
-	l93xiM3ku8MTrGEowOu+XmXcm0jLvQv7VINKf6if/UjuSDBbgOSin4YgpHzitU85jEBZ7v
-	sQ9SgslhesrDKyrfPL1z2CsAR1ynrfg=
+	s=arc-20240116; t=1723260603; c=relaxed/simple;
+	bh=JG+S2VriE6vC0cT+340V8uthrcWccIelXM0OAvLdhgI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BDmR4jgNqWOH+xWNlIIUsHFvUVDBMXNfLd9NL7MvT5DZ7pywlA7Og2J/IRsfeYF3wIxb418ftXbYRszYuVluXTsD8xz4HF4FxYX4yeSC1jMUfLNBUfsHr/ogtvtSXQlmFpXBhF5miH7/BE4j0zNV09K6kVu/8HzAD1rvcX91KqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=iKBHWi4d; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=ln3k/EoX0oy3RTS4qxSKawW+zSS5fT3VDPUtbvDbogs=; b=iKBHWi4dDscoWrVq2GpUUY+I5f
+	CANm6lIKUVTom7BQ4pQZh8oyxyXPsoKSfYmrCkES5HHakyaboJ6cdw1q3Nq5KTuobtQ9kjZ6cGdi1
+	s/Z1ST9zS5Po7DZab5R4djkM/KMWMmakyJtSuvBGb0wtxbreWHNrmSNzRPnr6pu4Y1zXyvTERigcD
+	Z4P7HN20LWzh9JLiu8b3ZeW0lBHSqTZGzTnsMEHHILRuYbwk7SR4W9//R9pdWb9qKgA06Uw3aEkUA
+	k+tuEOb4mM3SwOHzU82Jntj/OZeLiFg82/PMzlQw/p7WkMcg6UmEzK/F+z/B+iYOLHGRelFE8UFeF
+	0SETaWIg==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1sccng-00000000Km3-0pCw;
+	Sat, 10 Aug 2024 03:29:52 +0000
+Date: Sat, 10 Aug 2024 04:29:52 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Christian Brauner <brauner@kernel.org>, viro@kernel.org,
+	bpf <bpf@vger.kernel.org>,
+	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+	kvm@vger.kernel.org, Network Development <netdev@vger.kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH 17/39] bpf: resolve_pseudo_ldimm64(): take handling of a
+ single ldimm64 insn into helper
+Message-ID: <20240810032952.GB13701@ZenIV>
+References: <20240730050927.GC5334@ZenIV>
+ <20240730051625.14349-1-viro@kernel.org>
+ <20240730051625.14349-17-viro@kernel.org>
+ <CAEf4BzZipqBVhoY-S+WdeQ8=MhpKk-2dE_ESfGpV-VTm31oQUQ@mail.gmail.com>
+ <20240807-fehlschlag-entfiel-f03a6df0e735@brauner>
+ <CAEf4BzaeFTn41pP_hbcrCTKNZjwt3TPojv0_CYbP=+973YnWiA@mail.gmail.com>
+ <CAADnVQKZW--EOkn5unFybxTKPNw-6rPB+=mY+cy_yUUsXe8R-w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.600.62\))
-Subject: Re: [PATCH] memcg: replace memcg ID idr with xarray
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20240809172618.2946790-1-shakeel.butt@linux.dev>
-Date: Sat, 10 Aug 2024 10:38:50 +0800
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Linux Memory Management List <linux-mm@kvack.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Meta kernel team <kernel-team@meta.com>,
- cgroups@vger.kernel.org,
- Matthew Wilcox <willy@infradead.org>
-Content-Transfer-Encoding: 7bit
-Message-Id: <C0B6D310-2EE0-4DCC-B41A-E682C1E018AA@linux.dev>
-References: <20240809172618.2946790-1-shakeel.butt@linux.dev>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQKZW--EOkn5unFybxTKPNw-6rPB+=mY+cy_yUUsXe8R-w@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
+On Thu, Aug 08, 2024 at 09:51:34AM -0700, Alexei Starovoitov wrote:
 
-
-> On Aug 10, 2024, at 01:26, Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> The bpf changes look ok and Andrii's approach is easier to grasp.
+> It's better to route bpf conversion to CLASS(fd,..) via bpf-next,
+> so it goes through bpf CI and our other testing.
 > 
-> At the moment memcg IDs are managed through IDR which requires external
-> synchronization mechanisms and makes the allocation code a bit awkward.
-> Let's switch to xarray and make the code simpler.
-> 
-> Suggested-by: Matthew Wilcox <willy@infradead.org>
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> bpf patches don't seem to depend on newly added CLASS(fd_pos, ...
+> and fderr, so pretty much independent from other patches.
 
-Reviewed-by: Muchun Song <muchun.song@linux.dev>
-
-Thanks.
-
+Representation change and switch to accessors do matter, though.
+OTOH, I can put just those into never-rebased branch (basically,
+"introduce fd_file(), convert all accessors to it" +
+"struct fd representation change" + possibly "add struct fd constructors,
+get rid of __to_fd()", for completeness sake), so you could pull it.
+Otherwise you'll get textual conflicts on all those f.file vs. fd_file(f)...
 
