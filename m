@@ -1,72 +1,72 @@
-Return-Path: <cgroups+bounces-4195-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4196-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFD5194DD7A
-	for <lists+cgroups@lfdr.de>; Sat, 10 Aug 2024 17:29:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BECA794DD96
+	for <lists+cgroups@lfdr.de>; Sat, 10 Aug 2024 18:08:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D53A91C20C67
-	for <lists+cgroups@lfdr.de>; Sat, 10 Aug 2024 15:29:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7A37A281D57
+	for <lists+cgroups@lfdr.de>; Sat, 10 Aug 2024 16:08:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0B5B161306;
-	Sat, 10 Aug 2024 15:29:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9149158D92;
+	Sat, 10 Aug 2024 16:08:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hJ6BbtvU"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="edL1cNkw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1C7016089A
-	for <cgroups@vger.kernel.org>; Sat, 10 Aug 2024 15:29:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B0B73C062
+	for <cgroups@vger.kernel.org>; Sat, 10 Aug 2024 16:08:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723303757; cv=none; b=fB2IPeMVKOKYTq1q/qcHhGvOUGth0Ggn55OHTUf78rjkdnCj26Yaau+m6ZZBTv+FNv6qdW4rAiDp3iujHY7xl2DEbKTCsUEnEpf9hO0adTrF6TxwpLVQjt4HSN7YhUqCIwyp/gux1RXPWcrHyh6SeJaMYpmzCqrDc/rXw6VS8XE=
+	t=1723306090; cv=none; b=H8E3Y6PL/fWVRH3staX+mOuvS576Z9pE/cKk1uwLChbiwvLV9I5FGkL8ildQvIdMlJvRxvYmjZ6541bZR5itd7wQzCYsun/GJ1zAprlCdfcheMAx6szO+PE3xzs9snIrtuc2STsJNmirCxiPjz/eWxZB8q/Md18CJfPRBeHc32A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723303757; c=relaxed/simple;
-	bh=VvOJM8LffJSOcPHfmx55iW0GOhsQx8b2bcx4f/SDiSc=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=dDJyU8cXkox7fzmMBmp+JnCS291n76DPybhpS75/rkr9Abyn2ogrdCa66+0kBCZqyw1JxtHazQgevFQ2N3tXYJOuvXTdg2c8wyGsPeKEQyGENXY+a2ULRn4LSgKfHK4/XS+KDOY+PvySqGjdaDFjgO6POUAsTDv9S7KRzP5Rbwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hJ6BbtvU; arc=none smtp.client-ip=198.175.65.20
+	s=arc-20240116; t=1723306090; c=relaxed/simple;
+	bh=x5SzoEbfmoDnEngyOf0ee3rzl98RDhXlkZDaPPompw8=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=tb5mSBii8nZrcPNsPdrbm7/q4z0X83CZs7mspS8FoJHcp4rvrY47AcyyAs18rG6jt9+RYXaTdRcypaNh18C719X++Ecn8OzhaJgo1UE7FFpZ0TUBh6iQ7NBJapt2H8XZ+YxAFcpdP9G/a4QVzEAV/JDuo/rI3ruGVlwGfO2gWFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=edL1cNkw; arc=none smtp.client-ip=198.175.65.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1723303746; x=1754839746;
+  t=1723306088; x=1754842088;
   h=date:from:to:cc:subject:message-id;
-  bh=VvOJM8LffJSOcPHfmx55iW0GOhsQx8b2bcx4f/SDiSc=;
-  b=hJ6BbtvUEiS5BVPe6BK7+aLiSmrhlPa1ieOdBwfiaaXNSfK/wqo0MCQ8
-   /f6I3nCSGiXibRl6iS9gLmer388UFO7VaQlL+J8SNE56bBz0jA60/dgGE
-   oTBJYi5lslEsdm3rXrHF1Ddr9dX1jWk5c5LMVAkzG1exY1I4zsSqGyom6
-   RFmuFzGzOzXZsqIOq0bbDqZh7nEG1EFf/eRhuuyUx7DE1B+5/rZ0lmhTQ
-   +xR2DdvKh+qFXgvulPurL1pLQG6Qq+QmrudJhV2CU4g3MaqzyityFeN5A
-   EipXnOnHd54ITGHCQhiNaxG5Hk1d6Ta1679KN9HEHpeWccdPVy2vizC+s
+  bh=x5SzoEbfmoDnEngyOf0ee3rzl98RDhXlkZDaPPompw8=;
+  b=edL1cNkwxL+BdhJ/tmFn5Yz2/oHblu/go5D/X7eskIjPrq1y7Mpqh5w5
+   BWCQ2oNAxoq10JJveiKKYDs1fpb+VoZZwPwM05OFxVW/fA5WSs6cH85C5
+   vPW8FEmFN36fzs/ie5vTP5gQYLa9V+gKVF9d6E7TfysQE5T3IjJEb4IYs
+   CUFrdIzn7muNdeMsD5ehZXmMW7xClOj9gJN3IfhjaD+SXbgqO8wvk/Djp
+   qw1duvRDgbQcmmhSrINVX767s+RJzzA9LQ38v40nPw3vxho88x2YL7EKz
+   j497F7qr+ZI/Tj1SIAftLnUMNYNAifSyyv99wqDBPNU4AMwWJP0K6Tc9K
    g==;
-X-CSE-ConnectionGUID: cc4oww5BSyWArgrgCmvc4A==
-X-CSE-MsgGUID: snts9y32Ql2rBaTceBwSsw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11160"; a="21275300"
+X-CSE-ConnectionGUID: D8GZVo1uTCaZB4AlwP3V0g==
+X-CSE-MsgGUID: KVPePjfRTSu2i0l+j0AKtQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11160"; a="43983353"
 X-IronPort-AV: E=Sophos;i="6.09,279,1716274800"; 
-   d="scan'208";a="21275300"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2024 08:29:06 -0700
-X-CSE-ConnectionGUID: UtvykdaBRM+ktU+X9eeA2g==
-X-CSE-MsgGUID: Jn6LGFocR9u+rq2KIuCNxg==
+   d="scan'208";a="43983353"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Aug 2024 09:08:07 -0700
+X-CSE-ConnectionGUID: XlpdW0rtSZeAxNPi026sqA==
+X-CSE-MsgGUID: tqK/cEd8Tk6ClLEwCvfaqw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.09,279,1716274800"; 
-   d="scan'208";a="57808646"
+   d="scan'208";a="62684163"
 Received: from unknown (HELO b6bf6c95bbab) ([10.239.97.151])
-  by fmviesa008.fm.intel.com with ESMTP; 10 Aug 2024 08:29:04 -0700
+  by orviesa005.jf.intel.com with ESMTP; 10 Aug 2024 09:08:06 -0700
 Received: from kbuild by b6bf6c95bbab with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1sco1e-000A3P-27;
-	Sat, 10 Aug 2024 15:29:02 +0000
-Date: Sat, 10 Aug 2024 23:28:39 +0800
+	id 1scodP-000A5Z-38;
+	Sat, 10 Aug 2024 16:08:03 +0000
+Date: Sun, 11 Aug 2024 00:07:44 +0800
 From: kernel test robot <lkp@intel.com>
 To: Tejun Heo <tj@kernel.org>
 Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- d8454758e6e40489085b012e23654648362c18d3
-Message-ID: <202408102337.Iy2igSPW-lkp@intel.com>
+Subject: [tj-cgroup:for-6.12] BUILD SUCCESS
+ 9b103943ab281d137df1cdb48dcef329a87e0a06
+Message-ID: <202408110042.sRqV8yX1-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -74,13 +74,13 @@ List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: d8454758e6e40489085b012e23654648362c18d3  Merge branch 'for-6.12' into for-next
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.12
+branch HEAD: 9b103943ab281d137df1cdb48dcef329a87e0a06  cgroup: Fix incorrect WARN_ON_ONCE() in css_release_work_fn()
 
-elapsed time: 1356m
+elapsed time: 1396m
 
-configs tested: 221
-configs skipped: 7
+configs tested: 219
+configs skipped: 6
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -262,11 +262,9 @@ sparc                            allmodconfig   gcc-14.1.0
 sparc64                             defconfig   gcc-14.1.0
 sparc64               randconfig-001-20240810   gcc-13.2.0
 sparc64               randconfig-002-20240810   gcc-13.2.0
-um                               allmodconfig   clang-20
 um                               allmodconfig   gcc-13.3.0
 um                                allnoconfig   clang-17
 um                                allnoconfig   gcc-14.1.0
-um                               allyesconfig   gcc-12
 um                               allyesconfig   gcc-13.3.0
 um                                  defconfig   gcc-14.1.0
 um                             i386_defconfig   gcc-14.1.0
