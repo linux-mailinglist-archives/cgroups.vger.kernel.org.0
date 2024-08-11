@@ -1,115 +1,132 @@
-Return-Path: <cgroups+bounces-4197-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4198-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58ACB94E1BA
-	for <lists+cgroups@lfdr.de>; Sun, 11 Aug 2024 17:01:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74AE094E2E2
+	for <lists+cgroups@lfdr.de>; Sun, 11 Aug 2024 22:17:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0724F281419
-	for <lists+cgroups@lfdr.de>; Sun, 11 Aug 2024 15:00:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 06B291F2108E
+	for <lists+cgroups@lfdr.de>; Sun, 11 Aug 2024 20:17:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BFD414A0B3;
-	Sun, 11 Aug 2024 15:00:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18EE014F9F4;
+	Sun, 11 Aug 2024 20:16:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AIw+pSyt"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wZNlx0iQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5F53B64E;
-	Sun, 11 Aug 2024 15:00:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C9C411CAB
+	for <cgroups@vger.kernel.org>; Sun, 11 Aug 2024 20:16:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723388453; cv=none; b=hkhZSBsHeM9g+p7yzhsMpLi6vOD9xUaxvbMLLOmAM8tlhx1pE2PeUtWnlV37k5Y+P8H9vy8iXagy978REhLarNPgESOoFd0nrZ2pL+xsS8RaSZzU+5KMXkr0NKyTWrsmp+BKYd6HrWk18d33Ag/zy5cgBVhqPpudJUskoz5YHIs=
+	t=1723407417; cv=none; b=c+eZG1BbUM0p2SA4JdcqmhU7TgQU+nc+8976dQUxi0dUmtPOGrCNGkAI8t/sodbFYurS76nMBYWt+QQcl5vaDw8LBhPY5O3rff9X2b44pHLC/F/kj//jXeDbpSgXv7AV70xMQTlqEtlNfk06N0DMqJlqrotwQArqGmYMLa4j/ao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723388453; c=relaxed/simple;
-	bh=S9IJOizBISp63DNmHQaW5E+RvhnQ/UMlG1+NU22jFDk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k0dhXH0uH0VBx5FgCPxB765NMXPEw44jo47bSzmr1sHn/VizH2WZnT7T4FaibWYAhn5AlFzcaBOTT4FljQyuPwkiMrO+uoFoVo8YKE6tQd9sWjvOzKZYGAf7rKaDn66aQ0oNZdcQz1GQBuVykvESrEleL1jgLuA/V4t10y4r9NY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AIw+pSyt; arc=none smtp.client-ip=209.85.210.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-7093abb12edso2640470a34.3;
-        Sun, 11 Aug 2024 08:00:51 -0700 (PDT)
+	s=arc-20240116; t=1723407417; c=relaxed/simple;
+	bh=tmD2Y5QmLgqhxfA/Y0E9f318SD+AiDzfhZG38n1nVAY=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=C6Yp/QbaZfkQGMo6u5iaCjGAqtNgIx1w590RQXelspMCfFjxPuhSHt9Q8pnw9nvzOHDmFEt1Pp2/JLuvhaJqgD6/xh99NRzMvlWypkN5Jl1919kN0/Q2WmaFJBzTL0W5q6xoyMZyz1oAID/PVrYXG8Rzkr+oO3triMOEhi5e0gw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wZNlx0iQ; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-200aa53d6d2so224285ad.0
+        for <cgroups@vger.kernel.org>; Sun, 11 Aug 2024 13:16:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723388451; x=1723993251; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pfBc+ff67QC7mdj/Loo7l4PIYi+bwKE4KNgOnmb8TNU=;
-        b=AIw+pSytbaHRdON10Ru5adGfBWgoVfusjnnp++FkL16fJUcyoxtt4y30qSBXz42J8L
-         dla1GPP1GKN9M3tjymBIcsmYtzNzeS0R0QzEWsNN06ofQGjAA0/sbW8+SPmHrdSeEah6
-         O8Qrpe4u92UqrqUYDtuNSA2jYxN6V0wn6D7d4yT1ReoAlaCuQoSShXRyqtbFeMkHYLJQ
-         P6aY1F5PrEYlxfUTyWKcRuVvegTOy2sdWeZrP8d1u+InIzi0wl5mEzSvUTv8QXskmwiE
-         abMYpsGXkKq17pmBEynngcxeK0ydPG6t7UjnCRT0LNSomK/WxZJzN3YtjblDg9p1SwSv
-         dznA==
+        d=google.com; s=20230601; t=1723407416; x=1724012216; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FAhUoo5pDgGhIiuV+sHAbITY8GMWO4IlHepz/Cnoit4=;
+        b=wZNlx0iQ+83BKOOdCDkB5acqnq6AwwThYqEIcjtIaaXqTQ8CkwHisqLcMrZUjpyEc2
+         /c6rrY33lzUVoOETetM6fwvttU/wL2yyxyYJ6ZNsJZhyh7ubumDFsPJjJQTlImEUKyIB
+         PvSkRJ4SaHstwhDwCzMHjSkwuDnGyk0Fo1UNndh63ZC0kV6VxUrzg+v4ETt39kRpa9oh
+         OYf/Zu7bs0bvtIfqsZUzV2V63/i8IAzIK3ee9xcEdLANdKBk8k4Bo02K4daF/Ovr8hfO
+         Pk5x5Giqc6v7XzBfLfTjb29CrFLPl+vCFk58U+cuBp5KcC9ABO9L66u1xM9Vr7OXp+T1
+         +RYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723388451; x=1723993251;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pfBc+ff67QC7mdj/Loo7l4PIYi+bwKE4KNgOnmb8TNU=;
-        b=eyuiovVZgFNAHwMi1+atm91vjMWnl2CLYann1RNEjFwkXKIVNZoP02rUhOLZ4jCous
-         QaTLj0PU8x4VHg8FEPQ5O8KdErHMH/XB/c6Av+U/AS04Jfb4c9J1D85/i1fCGNwuIA7K
-         99QlxPq6sh0cl6PCUakHBtha57MqQXX1JlypyW2hGE63TDwmAgqh1H1PC1kyaCxkQxR6
-         lJtFZGCMQTgDm0ANVQt5q5LhuwcSS/6cvuSSiJpT/gMPvCOJvIwoxnz6ak6tlVzIVus/
-         73CcQfKJ2JI2soNl6EFMuRJGSVagZaedeTmAJjYtrZEnK7sew2azYGi3J+yZQEaMJtIj
-         y+fQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUtDSg340lzxCpC1whLzy87NiLnXj7dgceoe7bgkSwMjiv1wb0jd20dLKsxG9ipIsUJPbXTyJTqZd2cLoSMEs35sYgwo8MzrXCqHuITq9ejBgjXRO8SVbK3j1qX+mmQAyEnZAnZcBVbXO+DGXXwibgjSORTn4gddV0PxvOah8Y9TrUIPvUTUQ==
-X-Gm-Message-State: AOJu0Yww++wV9M3n78qyh44DCa8xMLVkQJPpfDpL/3sW0D8ZPq5cOFCF
-	EhjnTuRudFYE/4BRZ0aMoYC9XoT0j8jTNiybv4UGv6WBcrI7L4jJ
-X-Google-Smtp-Source: AGHT+IEMA414kW03hmeGkCEkocWgIKzclm9K+gA1MhdJCW4WGO0QgA0cpEC+ZM64V/Fm2ASyi6bF/Q==
-X-Received: by 2002:a05:6830:621c:b0:704:45b5:6464 with SMTP id 46e09a7af769-70b7c47cb7dmr10612414a34.29.1723388450627;
-        Sun, 11 Aug 2024 08:00:50 -0700 (PDT)
-Received: from localhost.localdomain ([49.37.215.150])
-        by smtp.googlemail.com with ESMTPSA id 41be03b00d2f7-7c3dbe04068sm2711311a12.6.2024.08.11.08.00.46
+        d=1e100.net; s=20230601; t=1723407416; x=1724012216;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FAhUoo5pDgGhIiuV+sHAbITY8GMWO4IlHepz/Cnoit4=;
+        b=XwjUIeVMVd6FK02flvtVHwSDt8GH6nvuK8aDPGzgMfyjm70apmsBVoTKVGwXVf/sym
+         stTmHgBNIFdywxyI3p5Nywz9f1V0qlqYUuKGcTJZcU3oVBl5xAbCpKFq03XvTX4T0BD1
+         q4IFm7XrGy7Uqa5gksVBd2dtKUzgMLE7TlcJFr1h67C2c+dC019mVXhaJOi0JkZenOEG
+         Upl2VNKZcjOfzxzV4j7vwWxj7O2CSvJThf5e9iIxZxV2KPyNcIzJxKlJHukCVkb14pfe
+         Dnm0gk+5KV4mECcvICn7sP1EWzQROg07g/odGpQDu4IZuvK4Ruc65fekhMMgUWQvnksc
+         z3TA==
+X-Forwarded-Encrypted: i=1; AJvYcCVdaGJ16kBCIxvnN/cu5FZf5tdEIxRqHD1Ppf1NZWqnThLtQPqzC3UkMZH1xlEw0EHRBZ6CGuUQkI5efdDblhXK6w4wxAg3aQ==
+X-Gm-Message-State: AOJu0YzQjNn0EtRCGwrjJWCtU9ZMXwVl7aqiRCbBQDGq1+dLl4ElMItb
+	0YdqbbfXK04JtZnN2XK1Smsx9jr4N8oyArX/OctFpq0WFfcMmhWsngRKnyb8fA==
+X-Google-Smtp-Source: AGHT+IFv4yaKcppkZbdBT6BpaVbXa612XbC3+tUsPYrhO7uViPdMKbr68w5ZQhUbQvBnYT+D3oGyBQ==
+X-Received: by 2002:a17:903:1c6:b0:1ff:4746:8ccf with SMTP id d9443c01a7336-200bbe23396mr3228185ad.26.1723407415369;
+        Sun, 11 Aug 2024 13:16:55 -0700 (PDT)
+Received: from [2620:0:1008:15:49ba:9fa:21c6:8a73] ([2620:0:1008:15:49ba:9fa:21c6:8a73])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-200bbb39c05sm25687225ad.276.2024.08.11.13.16.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Aug 2024 08:00:50 -0700 (PDT)
-From: Mohammed Anees <pvmohammedanees2003@gmail.com>
-To: hannes@cmpxchg.org,
-	yosryahmed@google.com,
-	nphamcs@gmail.com,
-	chengming.zhou@linux.dev,
-	tj@kernel.org,
-	lizefan.x@bytedance.com,
-	mkoutny@suse.com,
-	shuah@kernel.org
-Cc: Mohammed Anees <pvmohammedanees2003@gmail.com>,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] kselftest/cgroup: Add missing newline in test_zswap.c
-Date: Sun, 11 Aug 2024 10:58:58 -0400
-Message-ID: <20240811145900.433711-1-pvmohammedanees2003@gmail.com>
-X-Mailer: git-send-email 2.43.0
+        Sun, 11 Aug 2024 13:16:54 -0700 (PDT)
+Date: Sun, 11 Aug 2024 13:16:53 -0700 (PDT)
+From: David Rientjes <rientjes@google.com>
+To: Kaiyang Zhao <kaiyang2@cs.cmu.edu>
+cc: linux-mm@kvack.org, cgroups@vger.kernel.org, roman.gushchin@linux.dev, 
+    shakeel.butt@linux.dev, muchun.song@linux.dev, akpm@linux-foundation.org, 
+    mhocko@kernel.org, nehagholkar@meta.com, abhishekd@meta.com, 
+    hannes@cmpxchg.org
+Subject: Re: [PATCH] mm,memcg: provide per-cgroup counters for NUMA balancing
+ operations
+In-Reply-To: <20240809212115.59291-1-kaiyang2@cs.cmu.edu>
+Message-ID: <e34a841c-c4c6-30fd-ca20-312c84654c34@google.com>
+References: <20240809212115.59291-1-kaiyang2@cs.cmu.edu>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-Signed-off-by: Mohammed Anees <pvmohammedanees2003@gmail.com>
----
- tools/testing/selftests/cgroup/test_zswap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, 9 Aug 2024, kaiyang2@cs.cmu.edu wrote:
 
-diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
-index 190096017..7c849d836 100644
---- a/tools/testing/selftests/cgroup/test_zswap.c
-+++ b/tools/testing/selftests/cgroup/test_zswap.c
-@@ -351,7 +351,7 @@ static int test_zswap_writeback(const char *root, bool wb)
- 		goto out;
- 
- 	if (wb != !!zswpwb_after) {
--		ksft_print_msg("zswpwb_after is %ld while wb is %s",
-+		ksft_print_msg("zswpwb_after is %ld while wb is %s\n",
- 				zswpwb_after, wb ? "enabled" : "disabled");
- 		goto out;
- 	}
--- 
-2.43.0
+> From: Kaiyang Zhao <kaiyang2@cs.cmu.edu>
+> 
+> The ability to observe the demotion and promotion decisions made by the
+> kernel on a per-cgroup basis is important for monitoring and tuning
+> containerized workloads on either NUMA machines or machines
+> equipped with tiered memory.
+> 
+> Different containers in the system may experience drastically different
+> memory tiering actions that cannot be distinguished from the global
+> counters alone.
+> 
+> For example, a container running a workload that has a much hotter
+> memory accesses will likely see more promotions and fewer demotions,
+> potentially depriving a colocated container of top tier memory to such
+> an extent that its performance degrades unacceptably.
+> 
+> For another example, some containers may exhibit longer periods between
+> data reuse, causing much more numa_hint_faults than numa_pages_migrated.
+> In this case, tuning hot_threshold_ms may be appropriate, but the signal
+> can easily be lost if only global counters are available.
+> 
+> This patch set adds five counters to
+> memory.stat in a cgroup: numa_pages_migrated, numa_pte_updates,
+> numa_hint_faults, pgdemote_kswapd and pgdemote_direct.
+> 
+> count_memcg_events_mm() is added to count multiple event occurrences at
+> once, and get_mem_cgroup_from_folio() is added because we need to get a
+> reference to the memcg of a folio before it's migrated to track
+> numa_pages_migrated. The accounting of PGDEMOTE_* is moved to
+> shrink_inactive_list() before being changed to per-cgroup.
+> 
+> Signed-off-by: Kaiyang Zhao <kaiyang2@cs.cmu.edu>
 
+Hi Kaiyang, have you considered per-memcg control over NUMA balancing 
+operations as well?
+
+Wondering if that's the direction that you're heading in, because it would 
+be very useful to be able to control NUMA balancing at memcg granularity 
+on multi-tenant systems.
+
+I mentioned this at LSF/MM/BPF this year.  If people believe this is out 
+of scope for memcg, that would be good feedback as well.
 
