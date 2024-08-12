@@ -1,369 +1,251 @@
-Return-Path: <cgroups+bounces-4204-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4205-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4D0494EFD2
-	for <lists+cgroups@lfdr.de>; Mon, 12 Aug 2024 16:41:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49D7394F11F
+	for <lists+cgroups@lfdr.de>; Mon, 12 Aug 2024 17:01:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 360AE1F233EA
-	for <lists+cgroups@lfdr.de>; Mon, 12 Aug 2024 14:41:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03101280E03
+	for <lists+cgroups@lfdr.de>; Mon, 12 Aug 2024 15:01:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D665518132A;
-	Mon, 12 Aug 2024 14:41:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AC8F184540;
+	Mon, 12 Aug 2024 15:01:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PDt991gA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hpl1q4FI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 927AD14C5A4;
-	Mon, 12 Aug 2024 14:41:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFF3B1E877;
+	Mon, 12 Aug 2024 15:01:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723473690; cv=none; b=KmiKss/xgRJN7wjBuNI2Wut7KubdVy9cFHygVauk9OcB3JFDB6+ht3Vy997Zs65zjFeisUAJiitwNIV+t353Unt0j3z5ZoZjUl/QYkth49reJNzF8GMzwHdAhzmjJf6YDXIZJQ3/eplH2yFKXad8nkt0tjQkoEWF3tv8W9t6KrY=
+	t=1723474873; cv=none; b=ZPtINduobIrd1Av3o0RdJfJYwHcnWsMFMC3Xgcuw/T4l1P3wRY3ZeBWfSqnCI6HvsDloAO/DlFnQdjLrUQtLx2HvHym1ti/XJdLDwDxxHCHWlBcwxap7jq6idIAWGTIUIz0lpcnt/l4YlB770KZZaQnuGlGbIs/tqJhWJ3uaoaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723473690; c=relaxed/simple;
-	bh=6kRnKXC8ZWBXeu1SrJ69LeK8v5L7MzOYhhDtPffcaFw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TFz5bSgW/D71WTtAnEfYKEbz3IgzXCLGYYEMft0MxvxBONcesdO2i+MIegtpphErwprxbRyMDsbZkBazzc6Lw6J3Bq9U3Nj98JBVnJHTZAsPRfhHyGLFPheDtga9EJ8MrCctbX4F4L7kHXS/t2aso+FBhZKZzTSly1/c9q9KWOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PDt991gA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43511C32782;
-	Mon, 12 Aug 2024 14:41:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723473690;
-	bh=6kRnKXC8ZWBXeu1SrJ69LeK8v5L7MzOYhhDtPffcaFw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=PDt991gAdhARwtSG028BsrlJ10WbrEQwNhss/mxR1yBr6l/a+Z8m34Fo7RKfDs5tR
-	 KhZr7qEVVvPQS/Y1WX0PTpPYszdJzKRKfaG0wkdoV+pxda4btL/PKDPpA51GRYeWPY
-	 OmCi3VKWtjE1Mp/SSg1fo8wYDah+NlB7R2+8tycy5rxHbX/Nga9L6FdZ8/QAB8w8pZ
-	 151xQ+g0I8dit3yMiiwjyNjY9OASAn/yoFQZQPLbPnb0B4rXJ1fGeUqeoKKtcJVxxR
-	 DTimYohOdxEGGcCx6dr/tJXqSqqoSw+lhVp/MTjyXuenGmwQqSf77abvDVU9UNvdbn
-	 vk2KRlG1CXgVw==
-Message-ID: <693177aa-16f0-432a-baa4-3b862dee48c9@kernel.org>
-Date: Mon, 12 Aug 2024 16:41:26 +0200
+	s=arc-20240116; t=1723474873; c=relaxed/simple;
+	bh=qtB7NZu+mhN/3RRkvOviezr09/JmUlBr4PSiAywVbTY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=aMKG4dyeC8GBaRg35bldouywZKlFQKBDQA5WnFKEYByOI2I3THD4fwICwPV0GVpa8Ru8T/ytm9wZ00b81ZOz4S1NRxjlIz8vXWptQVMnBHG8Gn+UGkkcCu6VHLDNN/FcnZfDm8VEruzC3ihhKm9golua5EX5NaUB1YLOFtLngQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hpl1q4FI; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-7107b16be12so3659627b3a.3;
+        Mon, 12 Aug 2024 08:01:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723474871; x=1724079671; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=lSAp163vx0UuVbaXPTfbO7fD1LAtlFyXrCv1ZVeziqY=;
+        b=hpl1q4FIHzgHp/3Vs9ujeFq63Iper3bv4arqOBqbS8cA1V75iKzw12Kwtt9mZHRfag
+         ZlcSZkCZCvf8w6rFrt5oFXJUsqJRWGQ0e7jPRfe48OYmpJg9qp13NMwQcOkLD2XZxobR
+         bDKmcz0Ojesk27b6n6VZFJBU6oU+vOljF7dI55Gq8uOSMgPunu2hDmPvZwSuIF0Ys4Ur
+         03zZjeGW5wz/NZK+BdIb+k0lRtJRMLZo76pd2bK+r0QcSk4IIb++EkM2uLJmv+0MWNra
+         I2spaAlcD3Qc/fI1MGYaYPXUzQfMUgp56jodnin3P20DaW7tXIgLh8B5E3B1XFX27R9r
+         EubQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723474871; x=1724079671;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lSAp163vx0UuVbaXPTfbO7fD1LAtlFyXrCv1ZVeziqY=;
+        b=rwb7mNuqS8eb1cFVP19Q4fiFXzM+hwVn5X7tIWIqCkmIBQMDus5SYRou9OOd35B5MM
+         Lc9v01yxT5njyWc+P070lgTej4fjNDhBvLJCG5gf71DbpiTPpxj4m1AT9Yr0yzdO20oO
+         5RKnIkOi3bZBTvf+V04osGXU+RPkCeLNO3Ysw1pfFtXg/la+8v4pS5Yd2YtTMETkWLBQ
+         1x8lqKCXNvefJ7/lDKdv8aqkdxkWfrQiPw+YqBZ4aKaMU48ABl1vbbfsZlKSyHKMMkFG
+         8UGjbPBonCcKFceHqaZbV0bNtykgs2/YGJPN1OLgNtfp/kE78YTw/f4jZ+aidepIxzUi
+         pGDw==
+X-Forwarded-Encrypted: i=1; AJvYcCXkINiCmIaDSOHQZQmpEkvlm/+XTW2hKrsZ2Ykvj4CGP4KnWIFBFTQfGlUdFUlWzUS1xktCnnIhRnSr91uqJhcjeJHODgySy9D4glTOeujLoweCwgEXdYDwpO5GwW1FlOwiMLH4Xw/prNJojji7ZM03+haLnL0iuLAheXxSSkk4iygq
+X-Gm-Message-State: AOJu0YxwhQcX7SilAgUDJXh0xFNeS1qrOpQqT4P4CHDaMPkJr5qLgi7j
+	jkZOjSJJNqcpHnNvU/m8BoR6hrjQdzJpEtDdJjbLZ5+LBOjWlFwF
+X-Google-Smtp-Source: AGHT+IGh3SqpY5xyiidrIgiDY1lk35G5U0l0oc4IB+YQwEgHl2mDIOEsvV2Sz1kosVyBw1Tu78RqqQ==
+X-Received: by 2002:a05:6a21:3945:b0:1c2:8eb7:19cd with SMTP id adf61e73a8af0-1c8d758ff6emr832729637.42.1723474870466;
+        Mon, 12 Aug 2024 08:01:10 -0700 (PDT)
+Received: from localhost.localdomain ([43.129.202.66])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7c3dbea9527sm4298859a12.93.2024.08.12.08.01.06
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Mon, 12 Aug 2024 08:01:10 -0700 (PDT)
+From: Lance Yang <ioworker0@gmail.com>
+To: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	cgroups@vger.kernel.org
+Cc: josef@toxicpanda.com,
+	tj@kernel.org,
+	fujita.tomonori@lab.ntt.co.jp,
+	boqun.feng@gmail.com,
+	a.hindborg@samsung.com,
+	paolo.valente@unimore.it,
+	axboe@kernel.dk,
+	vbabka@kernel.org,
+	mkoutny@suse.com,
+	david@redhat.com,
+	21cnbao@gmail.com,
+	baolin.wang@linux.alibaba.com,
+	libang.li@antgroup.com,
+	Lance Yang <ioworker0@gmail.com>
+Subject: [BUG] cgroupv2/blk: inconsistent I/O behavior in Cgroup v2 with set device wbps and wiops
+Date: Mon, 12 Aug 2024 23:00:30 +0800
+Message-ID: <20240812150049.8252-1-ioworker0@gmail.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V9 1/2] cgroup/rstat: Avoid flushing if there is an
- ongoing overlapping flush
-To: tj@kernel.org, cgroups@vger.kernel.org, yosryahmed@google.com,
- shakeel.butt@linux.dev
-Cc: hannes@cmpxchg.org, lizefan.x@bytedance.com, longman@redhat.com,
- kernel-team@cloudflare.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <172245504313.3147408.12138439169548255896.stgit@firesoul>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <172245504313.3147408.12138439169548255896.stgit@firesoul>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Hi all,
+
+I've run into a problem with Cgroup v2 where it doesn't seem to correctly limit
+I/O operations when I set both wbps and wiops for a device. However, if I only
+set wbps, then everything works as expected.
+
+To reproduce the problem, we can follow these command-based steps:
+
+1. **System Information:**
+   - Kernel Version and OS Release:
+     ```
+     $ uname -r
+     6.10.0-rc5+
+
+     $ cat /etc/os-release
+     PRETTY_NAME="Ubuntu 24.04 LTS"
+     NAME="Ubuntu"
+     VERSION_ID="24.04"
+     VERSION="24.04 LTS (Noble Numbat)"
+     VERSION_CODENAME=noble
+     ID=ubuntu
+     ID_LIKE=debian
+     HOME_URL="https://www.ubuntu.com/"
+     SUPPORT_URL="https://help.ubuntu.com/"
+     BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+     PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+     UBUNTU_CODENAME=noble
+     LOGO=ubuntu-logo
+     ```
+
+2. **Device Information and Settings:**
+   - List Block Devices and Scheduler:
+     ```
+     $ lsblk
+     NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+     sda     8:0    0   4.4T  0 disk
+     └─sda1  8:1    0   4.4T  0 part /data
+     ...
+
+     $ cat /sys/block/sda/queue/scheduler
+     none [mq-deadline] kyber bfq
+
+     $ cat /sys/block/sda/queue/rotational
+     1
+     ```
+
+3. **Reproducing the problem:**
+   - Navigate to the cgroup v2 filesystem and configure I/O settings:
+     ```
+     $ cd /sys/fs/cgroup/
+     $ stat -fc %T /sys/fs/cgroup
+     cgroup2fs
+     $ mkdir test
+     $ echo "8:0 wbps=10485760 wiops=100000" > io.max
+     ```
+     In this setup:
+     wbps=10485760 sets the write bytes per second limit to 10 MB/s.
+     wiops=100000 sets the write I/O operations per second limit to 100,000.
+
+   - Add process to the cgroup and verify:
+     ```
+     $ echo $$ > cgroup.procs
+     $ cat cgroup.procs
+     3826771
+     3828513
+     $ ps -ef|grep 3826771
+     root     3826771 3826768  0 22:04 pts/1    00:00:00 -bash
+     root     3828761 3826771  0 22:06 pts/1    00:00:00 ps -ef
+     root     3828762 3826771  0 22:06 pts/1    00:00:00 grep --color=auto 3826771
+     ```
+
+   - Observe I/O performance using `dd` commands and `iostat`:
+     ```
+     $ dd if=/dev/zero of=/data/file1 bs=512M count=1 &
+     $ dd if=/dev/zero of=/data/file1 bs=512M count=1 &
+     ```
+     ```
+     $ iostat -d 1 -h -y -p sda
+     
+	   tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn    kB_dscd Device
+     7.00         0.0k         1.3M         0.0k       0.0k       1.3M       0.0k sda
+     7.00         0.0k         1.3M         0.0k       0.0k       1.3M       0.0k sda1
 
 
-
-On 31/07/2024 21.47, Jesper Dangaard Brouer wrote:
-> This patch reintroduces and generalizes the "stats_flush_ongoing" concept
-> to avoid redundant flushes if there is an ongoing flush, addressing lock
-> contention issues on the global cgroup rstat lock.
-> 
-> At Cloudflare, we observed significant performance degradation due to
-> lock contention on the rstat lock, primarily caused by kswapd. The
-> specific mem_cgroup_flush_stats() call inlined in shrink_node, which
-> takes the rstat lock, is particularly problematic.
-> 
-> On our 12 NUMA node machines, each with a kswapd kthread per NUMA node, we
-> noted severe lock contention on the rstat lock, causing 12 CPUs to waste
-> cycles spinning every time kswapd runs. Fleet-wide stats (/proc/N/schedstat)
-> for kthreads revealed that we are burning an average of 20,000 CPU cores
-> fleet-wide on kswapd, primarily due to spinning on the rstat lock.
-> 
-> Here's a brief overview of the issue:
-> - __alloc_pages_slowpath calls wake_all_kswapds, causing all kswapdN threads
->    to wake up simultaneously.
-> - The kswapd thread invokes shrink_node (via balance_pgdat), triggering the
->    cgroup rstat flush operation as part of its work.
-> - balance_pgdat() has a NULL value in target_mem_cgroup, causing
->    mem_cgroup_flush_stats() to flush with root_mem_cgroup.
-> 
-> The kernel previously addressed this with a "stats_flush_ongoing" concept,
-> which was removed in commit 7d7ef0a4686a ("mm: memcg: restore subtree stats
-> flushing"). This patch reintroduces and generalizes the concept to apply to
-> all users of cgroup rstat, not just memcg.
-> 
-> If there is an ongoing rstat flush and the current cgroup is a descendant, a
-> new flush is unnecessary. To ensure callers still receive updated stats,
-> they wait for the ongoing flush to complete before returning, but with a
-> timeout, as stats may already be inaccurate due to continuous updates.
-> 
-> Lock yielding causes complications for ongoing flushers. Therefore, we limit
-> which cgroup can become ongoing flusher to top-level, as lock yielding
-> allows others to obtain the lock without being the ongoing flusher, leading
-> to a situation where a cgroup that isn't a descendant obtains the lock via
-> yielding. Thus, we prefer an ongoing flusher with many descendants. If and
-> when the lock yielding is removed, such as when changing this to a mutex,
-> we can simplify this code.
-> 
-> This change significantly reduces lock contention, especially in
-> environments with multiple NUMA nodes, thereby improving overall system
-> performance.
-> 
-> Fixes: 7d7ef0a4686a ("mm: memcg: restore subtree stats flushing").
-> Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
-> ---
-> V9:
->   - Fix logic for 'already_contended'
->   - Didn't address the refcnt suggestion, need more input from experts
->   - I'll deploy this ASAP to my production experiment hosts and report back
-> 
-> V8: https://lore.kernel.org/all/172139415725.3084888.13770938453137383953.stgit@firesoul
-> V7: https://lore.kernel.org/all/172070450139.2992819.13210624094367257881.stgit@firesoul
-> V6: https://lore.kernel.org/all/172052399087.2357901.4955042377343593447.stgit@firesoul/
-> V5: https://lore.kernel.org/all/171956951930.1897969.8709279863947931285.stgit@firesoul/
-> V4: https://lore.kernel.org/all/171952312320.1810550.13209360603489797077.stgit@firesoul/
-> V3: https://lore.kernel.org/all/171943668946.1638606.1320095353103578332.stgit@firesoul/
-> V2: https://lore.kernel.org/all/171923011608.1500238.3591002573732683639.stgit@firesoul/
-> V1: https://lore.kernel.org/all/171898037079.1222367.13467317484793748519.stgit@firesoul/
-> RFC: https://lore.kernel.org/all/171895533185.1084853.3033751561302228252.stgit@firesoul/
-> 
-> 
->   include/linux/cgroup-defs.h |    2 +
->   kernel/cgroup/rstat.c       |  113 ++++++++++++++++++++++++++++++++++++++-----
->   2 files changed, 103 insertions(+), 12 deletions(-)
-> 
-> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-> index b36690ca0d3f..a33b37514c29 100644
-> --- a/include/linux/cgroup-defs.h
-> +++ b/include/linux/cgroup-defs.h
-> @@ -548,6 +548,8 @@ struct cgroup {
->   #ifdef CONFIG_BPF_SYSCALL
->   	struct bpf_local_storage __rcu  *bpf_cgrp_storage;
->   #endif
-> +	/* completion queue for cgrp_rstat_ongoing_flusher */
-> +	struct completion flush_done;
->   
->   	/* All ancestors including self */
->   	struct cgroup *ancestors[];
-> diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-> index fb8b49437573..463f9807ec7e 100644
-> --- a/kernel/cgroup/rstat.c
-> +++ b/kernel/cgroup/rstat.c
-> @@ -2,6 +2,7 @@
->   #include "cgroup-internal.h"
->   
->   #include <linux/sched/cputime.h>
-> +#include <linux/completion.h>
->   
->   #include <linux/bpf.h>
->   #include <linux/btf.h>
-> @@ -11,6 +12,7 @@
->   
->   static DEFINE_SPINLOCK(cgroup_rstat_lock);
->   static DEFINE_PER_CPU(raw_spinlock_t, cgroup_rstat_cpu_lock);
-> +static struct cgroup *cgrp_rstat_ongoing_flusher = NULL;
->   
->   static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu);
->   
-> @@ -279,17 +281,32 @@ __bpf_hook_end();
->    * value -1 is used when obtaining the main lock else this is the CPU
->    * number processed last.
->    */
-> -static inline void __cgroup_rstat_lock(struct cgroup *cgrp, int cpu_in_loop)
-> +static inline bool __cgroup_rstat_trylock(struct cgroup *cgrp, int cpu_in_loop)
-> +{
-> +	bool locked;
-> +
-> +	locked = spin_trylock_irq(&cgroup_rstat_lock);
-> +	if (!locked)
-> +		trace_cgroup_rstat_lock_contended(cgrp, cpu_in_loop, true);
-> +	else
-> +		trace_cgroup_rstat_locked(cgrp, cpu_in_loop, false);
-> +
-> +	return locked;
-> +}
-> +
-> +static inline void __cgroup_rstat_lock(struct cgroup *cgrp, int cpu_in_loop,
-> +				       bool already_contended)
->   	__acquires(&cgroup_rstat_lock)
->   {
-> -	bool contended;
-> +	bool locked = false;
->   
-> -	contended = !spin_trylock_irq(&cgroup_rstat_lock);
-> -	if (contended) {
-> -		trace_cgroup_rstat_lock_contended(cgrp, cpu_in_loop, contended);
-> +	if (!already_contended) /* Skip trylock if already contended */
-> +		locked = __cgroup_rstat_trylock(cgrp, cpu_in_loop);
-> +
-> +	if (!locked) {
->   		spin_lock_irq(&cgroup_rstat_lock);
-> +		trace_cgroup_rstat_locked(cgrp, cpu_in_loop, true);
->   	}
-> -	trace_cgroup_rstat_locked(cgrp, cpu_in_loop, contended);
->   }
->   
->   static inline void __cgroup_rstat_unlock(struct cgroup *cgrp, int cpu_in_loop)
-> @@ -299,6 +316,71 @@ static inline void __cgroup_rstat_unlock(struct cgroup *cgrp, int cpu_in_loop)
->   	spin_unlock_irq(&cgroup_rstat_lock);
->   }
->   
-> +#define MAX_WAIT	msecs_to_jiffies(100)
-> +/**
-> + * cgroup_rstat_trylock_flusher - Trylock that checks for on ongoing flusher
-> + * @cgrp: target cgroup
-> + *
-> + * Function return value follow trylock semantics. Returning true when lock is
-> + * obtained. Returning false when not locked and it detected flushing can be
-> + * skipped as another ongoing flusher took care of the flush.
-> + */
-> +static bool cgroup_rstat_trylock_flusher(struct cgroup *cgrp)
-> +{
-> +	struct cgroup *ongoing;
-> +	bool locked;
-> +
-> +	/*
-> +	 * Check if ongoing flusher is already taking care of this, if
-> +	 * we are a descendant skip work, but wait for ongoing flusher
-> +	 * to complete work.
-> +	 */
-> +retry:
-> +	ongoing = READ_ONCE(cgrp_rstat_ongoing_flusher);
-> +	if (ongoing && cgroup_is_descendant(cgrp, ongoing)) {
-> +		wait_for_completion_interruptible_timeout(
-> +			&ongoing->flush_done, MAX_WAIT);
-> +		/* TODO: Add tracepoint here */
-> +		return false;
-> +	}
-> +
-> +	locked = __cgroup_rstat_trylock(cgrp, -1);
-
-State "A": Obtaining lock here.
-
-(Remember that userspace can attach a tracepoint program to the locked 
-event.)
-
-> +	if (!locked) {
-> +		/* Contended: Handle losing race for ongoing flusher */
-
-State "B": Seeing lock was held by someone else.
-
-> +		if (!ongoing && READ_ONCE(cgrp_rstat_ongoing_flusher))
-> +			goto retry;
-> +
-
-This race handling code isn't good enough.
-
-> +		__cgroup_rstat_lock(cgrp, -1, true);
-> +	}
-> +	/*
-> +	 * Obtained lock, record this cgrp as the ongoing flusher.
-> +	 * Due to lock yielding, we might obtain lock while another
-> +	 * ongoing flusher (that isn't a parent) owns ongoing_flusher.
-> +	 */
-> +	if (!READ_ONCE(cgrp_rstat_ongoing_flusher)) {
-> +		/*
-> +		 * Limit to top-level as lock yielding allows others to obtain
-> +		 * lock without being ongoing_flusher. Leading to cgroup that
-> +		 * isn't descendant to obtain lock via yielding. So, prefer
-> +		 * ongoing_flusher with many descendants.
-> +		 */
-> +		if (cgrp->level < 2) {
-> +			reinit_completion(&cgrp->flush_done);
-> +			WRITE_ONCE(cgrp_rstat_ongoing_flusher, cgrp);
-
-Time between State "A" and writing cgrp_rstat_ongoing_flusher, can be
-easily be affected by loading BPF tracepoint programs.
-
-E.g. when I in production load a bpftrace prog on tracepoint
-cgroup_rstat_locked then the kswapd thundering herd problem comes back,
-because BPF-prog delay State "A" updating ongoing, then State "B"
-observe cgrp_rstat_ongoing_flusher is unset in race check.
-(Note, due to lock yield, it is possible that no ongoing_flusher is set
-and locked is held, so we cannot always goto retry when we observe lock
-is held but no ongoing is set).
-
-In [V2] we had a race free implementation that used cmpxchg().
-I will go back to the drawing board with V2 as the inspiration.
+      tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn    kB_dscd Device
+     5.00         0.0k         1.2M         0.0k       0.0k       1.2M       0.0k sda
+     5.00         0.0k         1.2M         0.0k       0.0k       1.2M       0.0k sda1
 
 
-[V2] 
-https://lore.kernel.org/all/171923011608.1500238.3591002573732683639.stgit@firesoul/
+      tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn    kB_dscd Device
+    21.00         0.0k         1.4M         0.0k       0.0k       1.4M       0.0k sda
+    21.00         0.0k         1.4M         0.0k       0.0k       1.4M       0.0k sda1
 
-> +		}
-> +	}
-> +	return true;
-> +}
-> +
-> +static void cgroup_rstat_unlock_flusher(struct cgroup *cgrp)
-> +{
-> +	if (cgrp == READ_ONCE(cgrp_rstat_ongoing_flusher)) {
-> +		WRITE_ONCE(cgrp_rstat_ongoing_flusher, NULL);
-> +		complete_all(&cgrp->flush_done);
-> +	}
-> +	__cgroup_rstat_unlock(cgrp, -1);
-> +}
-> +
->   /* see cgroup_rstat_flush() */
->   static void cgroup_rstat_flush_locked(struct cgroup *cgrp)
->   	__releases(&cgroup_rstat_lock) __acquires(&cgroup_rstat_lock)
-> @@ -328,7 +410,7 @@ static void cgroup_rstat_flush_locked(struct cgroup *cgrp)
->   			__cgroup_rstat_unlock(cgrp, cpu);
->   			if (!cond_resched())
->   				cpu_relax();
-> -			__cgroup_rstat_lock(cgrp, cpu);
-> +			__cgroup_rstat_lock(cgrp, cpu, false);
->   		}
->   	}
->   }
-> @@ -350,9 +432,11 @@ __bpf_kfunc void cgroup_rstat_flush(struct cgroup *cgrp)
->   {
->   	might_sleep();
->   
-> -	__cgroup_rstat_lock(cgrp, -1);
-> +	if (!cgroup_rstat_trylock_flusher(cgrp))
-> +		return;
-> +
->   	cgroup_rstat_flush_locked(cgrp);
-> -	__cgroup_rstat_unlock(cgrp, -1);
-> +	cgroup_rstat_unlock_flusher(cgrp);
->   }
->   
->   /**
-> @@ -368,8 +452,11 @@ void cgroup_rstat_flush_hold(struct cgroup *cgrp)
->   	__acquires(&cgroup_rstat_lock)
->   {
->   	might_sleep();
-> -	__cgroup_rstat_lock(cgrp, -1);
-> -	cgroup_rstat_flush_locked(cgrp);
-> +
-> +	if (cgroup_rstat_trylock_flusher(cgrp))
-> +		cgroup_rstat_flush_locked(cgrp);
-> +	else
-> +		__cgroup_rstat_lock(cgrp, -1, false);
->   }
->   
->   /**
-> @@ -379,7 +466,7 @@ void cgroup_rstat_flush_hold(struct cgroup *cgrp)
->   void cgroup_rstat_flush_release(struct cgroup *cgrp)
->   	__releases(&cgroup_rstat_lock)
->   {
-> -	__cgroup_rstat_unlock(cgrp, -1);
-> +	cgroup_rstat_unlock_flusher(cgrp);
->   }
->   
->   int cgroup_rstat_init(struct cgroup *cgrp)
-> @@ -401,6 +488,8 @@ int cgroup_rstat_init(struct cgroup *cgrp)
->   		u64_stats_init(&rstatc->bsync);
->   	}
->   
-> +	init_completion(&cgrp->flush_done);
-> +
->   	return 0;
->   }
->   
-> 
-> 
+
+      tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn    kB_dscd Device
+     5.00         0.0k         1.2M         0.0k       0.0k       1.2M       0.0k sda
+     5.00         0.0k         1.2M         0.0k       0.0k       1.2M       0.0k sda1
+
+
+      tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn    kB_dscd Device
+     5.00         0.0k         1.2M         0.0k       0.0k       1.2M       0.0k sda
+     5.00         0.0k         1.2M         0.0k       0.0k       1.2M       0.0k sda1
+
+
+      tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn    kB_dscd Device
+  1848.00         0.0k       448.1M         0.0k       0.0k     448.1M       0.0k sda
+  1848.00         0.0k       448.1M         0.0k       0.0k     448.1M       0.0k sda1
+     ```
+Initially, the write speed is slow (<2MB/s) then suddenly bursts to several
+hundreds of MB/s.
+
+   - Testing with wiops set to max:
+     ```
+     echo "8:0 wbps=10485760 wiops=max" > io.max
+     $ dd if=/dev/zero of=/data/file1 bs=512M count=1 &
+     $ dd if=/dev/zero of=/data/file1 bs=512M count=1 &
+     ```
+     ```
+     $ iostat -d 1 -h -y -p sda
+
+      tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn    kB_dscd Device
+    48.00         0.0k        10.0M         0.0k       0.0k      10.0M       0.0k sda
+    48.00         0.0k        10.0M         0.0k       0.0k      10.0M       0.0k sda1
+
+
+      tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn    kB_dscd Device
+    40.00         0.0k        10.0M         0.0k       0.0k      10.0M       0.0k sda
+    40.00         0.0k        10.0M         0.0k       0.0k      10.0M       0.0k sda1
+
+
+      tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn    kB_dscd Device
+    41.00         0.0k        10.0M         0.0k       0.0k      10.0M       0.0k sda
+    41.00         0.0k        10.0M         0.0k       0.0k      10.0M       0.0k sda1
+
+
+      tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn    kB_dscd Device
+    46.00         0.0k        10.0M         0.0k       0.0k      10.0M       0.0k sda
+    46.00         0.0k        10.0M         0.0k       0.0k      10.0M       0.0k sda1
+
+
+      tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn    kB_dscd Device
+    55.00         0.0k        10.2M         0.0k       0.0k      10.2M       0.0k sda
+    55.00         0.0k        10.2M         0.0k       0.0k      10.2M       0.0k sda1
+     ```
+The iostat output shows the write operations as stabilizing at around 10 MB/s,
+which aligns with the defined limit of 10 MB/s. After setting wiops to max, the
+I/O limits appear to work as expected. 
+
+
+Thanks,
+Lance
 
