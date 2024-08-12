@@ -1,120 +1,121 @@
-Return-Path: <cgroups+bounces-4208-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4209-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7D1A94F56F
-	for <lists+cgroups@lfdr.de>; Mon, 12 Aug 2024 18:57:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 590FA94F7E6
+	for <lists+cgroups@lfdr.de>; Mon, 12 Aug 2024 22:06:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74046283604
-	for <lists+cgroups@lfdr.de>; Mon, 12 Aug 2024 16:57:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6922B2204C
+	for <lists+cgroups@lfdr.de>; Mon, 12 Aug 2024 20:06:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF5E4187571;
-	Mon, 12 Aug 2024 16:57:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6794194152;
+	Mon, 12 Aug 2024 20:05:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="EXPsSksu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U/B89nmS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F1EE18950A
-	for <cgroups@vger.kernel.org>; Mon, 12 Aug 2024 16:57:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 588EF190079;
+	Mon, 12 Aug 2024 20:05:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723481838; cv=none; b=Jq0FBNdiDMxQp92ixw3H6+CQgUGXk2hj3fnNNKQgFCDI6GbtQ7pHo/CYlQjWN5+0gy/HlwFFE/5/Z4fHdu7xlRNl8SOGY3hlewRVw73CkEtd5RT+sFWpNRMzHpF1h7L84fkWHU4OV6YRBtsh4MS5DL8UcWjlPFoL7+to7xtXoeg=
+	t=1723493134; cv=none; b=R90nkxIftYCck3s7l+Ohc0pTRVOuxc+63WAUmErZ9A4bKfx69UMTryWdzDH2TfQyUPfCDyNrgvZKWFyQaI1a/BWsvJBlnnjhMN8CA5icSZmZBoduAFPM8KCJ+Km08C6c+h6cW+iB3ZmJbMrVbsGkhfN80Teo+do5/wbOVyVPogY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723481838; c=relaxed/simple;
-	bh=MSWheAYOm5uORv3/WCtLXbFVBaYVV4paR3isdB7aaWA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dlr/ZO2VmetA+7Ok37rPDeFBOVidcERTSYkyyJdcNffVhilv1ubaI+ibKm7ZoHH+fWvZblp2s7tu4jMv6l+/PQEulrl2pb9Dv9iXMimYtiSpFklF7pOwfBz/yzQuKiUcridqLhd3B3uTXO3n3yCI3Q04agqtWv+1Gkf1XGgEw00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=EXPsSksu; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a7ab5fc975dso358489466b.1
-        for <cgroups@vger.kernel.org>; Mon, 12 Aug 2024 09:57:16 -0700 (PDT)
+	s=arc-20240116; t=1723493134; c=relaxed/simple;
+	bh=VVu+KZSQsorUfB0SZirPjH/lXsE4flsSEaW8bF6PkNw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Yyj7V4ZW+dTvIB8v9YavMDkB0yo//IuCAuAUaCgGNQqNV7RGK9xKbcNT3p+Dbg2zn69NwFEWJNqsIN2i4ecIrb/qN1X0AH60l1IGK9FNYxG97829ZlD4J7bI9olHrpJcUHqQg8pN8wiFp1eWP55ojOnJhzwoIA6mSjogZm/XCHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U/B89nmS; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2cd34c8c588so3145122a91.0;
+        Mon, 12 Aug 2024 13:05:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1723481835; x=1724086635; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MSWheAYOm5uORv3/WCtLXbFVBaYVV4paR3isdB7aaWA=;
-        b=EXPsSksulhbu14+eyHeEEuTIuu3w4K7i756tPidsMd3NbXQcyAYLlAyyYtPsz+WY7Y
-         OhMuw5t/G1FI2KjPtdjNrczewmFQHP8ZxpIOX6/wb2eBbX48dXmaU4vxEfUQshtnBBpw
-         /GCDGm/QOWfGczOJM52ws0vAbfen8YyaZ7X+F1/p8CizS9pBIRrA4m+KR1fsxGu4pmp2
-         5bmxOPacewTFQvqCaYlBSg14tSvmvkhgasKktyjUCeLTyy7rqQFimFs1iGPtEwuYv44t
-         StBA3ZyhNLqWQY7z1Bve48G/TQM8prkqq20pbDOiROVEap40y1m/wodYjd0x4VD8AHTT
-         JnJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723481835; x=1724086635;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1723493131; x=1724097931; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MSWheAYOm5uORv3/WCtLXbFVBaYVV4paR3isdB7aaWA=;
-        b=RU/L3bRjS7sjnzS6HjRPT48B8TRIvKEF7IqURD1CxfivgjfYWwjfrOjHP782iUjrg+
-         YPyTJxB7b5Wggp2/5kATaJ5CRoRKPs8Os95rBKtfD1oZqMqvLLwPfo70SXOS7gucUZoN
-         9DfdizfyaIeAVwVBPufJODJJDAqDfRu004+Oyu8+Rmtf/EQ+gTvhQRPRfNB/SDxPKJOV
-         7tIBCLTE+M0W2aKDKCAP9X8CEUoLRsTsh+Vu9f6o5TScBSOr1tZ4DrXTtrhsxU+rpX0w
-         2phkxscZmc/ovNelUTD0NZZNJH1YlsVCq8velQXls+C3zE21sGVvsCo3kWuvf+2gQpj0
-         aypw==
-X-Forwarded-Encrypted: i=1; AJvYcCWqgOOQcsDlbjv03mGfueQm8RFKAkLha+uKQAwKcqPgXy7gbggxIBnjH57+j5DpiE4OCWnZXt/4Hn6feLdcaC/Bmj4unsisZg==
-X-Gm-Message-State: AOJu0Yxv+aloDqB6ucFgHTNJsDM0/vptbZluszx79oQhqqtEYTebw/rl
-	KtW9Z3XO1UKqBgF94TtFNULHY2hMFZeHH95RqZfHY0P1mQxehm6m4dZZD71baXs=
-X-Google-Smtp-Source: AGHT+IG8DI/8ApiuNEjifMrK4rBjseINuAZz4OESjCkxUQKd+mruXpNXcSB3i9JLyRHHNcr+bNoYiQ==
-X-Received: by 2002:a17:907:d841:b0:a7a:acae:3420 with SMTP id a640c23a62f3a-a80ed2c4d3emr67882666b.49.1723481834870;
-        Mon, 12 Aug 2024 09:57:14 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a80bb08f6b8sm243602566b.20.2024.08.12.09.57.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Aug 2024 09:57:14 -0700 (PDT)
-Date: Mon, 12 Aug 2024 18:57:12 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Chen Ridong <chenridong@huawei.com>
-Cc: tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org, 
-	longman@redhat.com, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next 1/2] cgroup: update comment about delegation
-Message-ID: <qk63o7tqgwt246tmjhvpnzd5ojuuhbndn44tdc54newzws3i5x@igea5nmzcoz5>
-References: <20240812073746.3070616-1-chenridong@huawei.com>
- <20240812073746.3070616-2-chenridong@huawei.com>
+        bh=VVu+KZSQsorUfB0SZirPjH/lXsE4flsSEaW8bF6PkNw=;
+        b=U/B89nmSiK245IxUnGrIbJEy/gYzutwZWzegSqpLBDRWyI+7nVSq4sYytl/hFeUpsY
+         23C61q3J/Frdc8+xuRewLMoqFWrT0A7C9ZHTm9vt1YAtLm1zsmtAQwlKsuHtTmz9xMLL
+         B/G1pqoqAc+Xxrx9z/EqiLN0VvtM3QUXKVeOhoLglLEu91UdU4/ziov3HoYd+sz8oQrn
+         pV0tziNG9ryXkKhStIIOfS/e9nufX2EVhj8Pr6jIUKqun4NMj8hYo6Sx1w2fLhBf/1MR
+         B8NKJdMyE7m+G6O6Q61ul6VH2DGDCqgGwyH1DGLm/AhznBXxga/YdauC9dTDl/8/fBQs
+         hYiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723493131; x=1724097931;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VVu+KZSQsorUfB0SZirPjH/lXsE4flsSEaW8bF6PkNw=;
+        b=QZUijWcOrx68Cl30jG+8rUSNpf4ZsIknianaBS+ygtpSJmx+WZXba1edKwSk//MsNy
+         vPyCnWTC6VSxU2VETGphBeLv5wcLtqCgfH82spI+BpyDg4tiKW7+QaJ9Oywqfu8Tj+XB
+         weaptQsTutJiNgxSuuS1VsGQqIcd2Xs/k5hmZiM9ZuPBynioNO2sq8IEmsGqkYmiywHl
+         GeFF6temiapzy3x02AqxYXXpw6BrryphkYsOEJWKTamBKDR6CdJ5KYIaNvq2cGDOeCi8
+         pHpesM4s1kv7PyHBBDYO2YwmUo+GcLmgnzGmXwz7NrkACNbrI1ThX/ySqsDAN+HATwFW
+         0fbg==
+X-Forwarded-Encrypted: i=1; AJvYcCX8rpQkdDCmqh4YSSdOohTOvnUjflyP5d2HJeRfitpJ+R8MXwQUuQ9swvYftcdfNaj8sV5ZkurHM9yLe7ssXjkOL44/bJXfsGQwOI1p+DjqDFVBTlHhgrzjn6h92A/xKdf0DMM7yK4eenZewA8BwmtjCWN5qb+J6F7Ie19MuS/VCgvGKWxo2bjOnl+Lz+iorVTfQ4u2Bpy55cXnHbyvRc14lv93FivAlIk=
+X-Gm-Message-State: AOJu0YyvL30+rz8Ge1vgcvwll9Q21hGWpHAcUKFmiDm5yW1fLq8x9aKH
+	bc7D1ICoTBt2s9oFUxT8KUcjZTvZ2Re66mB3JDXSnZGZrMyuf16WWpx4NImGFPGNb8FvR7y0DtR
+	xJRmlFzZgWkl3qFzeY8UvMxkf3B2ina/q
+X-Google-Smtp-Source: AGHT+IHz+aAA83Gm+taaLfYraLEur6TUFDXGJd8A/3O3VjbNsRj7u2VfGxSpn4DmYnPJwdOzH/t3d0GqStcPj6jZJbM=
+X-Received: by 2002:a17:90b:4f8b:b0:2c9:81c6:b0eb with SMTP id
+ 98e67ed59e1d1-2d3924d607fmr1490575a91.5.1723493131549; Mon, 12 Aug 2024
+ 13:05:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="is5odoxrqipkobog"
-Content-Disposition: inline
-In-Reply-To: <20240812073746.3070616-2-chenridong@huawei.com>
+References: <20240730050927.GC5334@ZenIV> <20240730051625.14349-1-viro@kernel.org>
+ <20240730051625.14349-17-viro@kernel.org> <CAEf4BzZipqBVhoY-S+WdeQ8=MhpKk-2dE_ESfGpV-VTm31oQUQ@mail.gmail.com>
+ <20240807-fehlschlag-entfiel-f03a6df0e735@brauner> <CAEf4BzaeFTn41pP_hbcrCTKNZjwt3TPojv0_CYbP=+973YnWiA@mail.gmail.com>
+ <CAADnVQKZW--EOkn5unFybxTKPNw-6rPB+=mY+cy_yUUsXe8R-w@mail.gmail.com> <20240810032952.GB13701@ZenIV>
+In-Reply-To: <20240810032952.GB13701@ZenIV>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 12 Aug 2024 13:05:19 -0700
+Message-ID: <CAEf4Bzb=yJKSByBktNXQDd8rqWPNCU9EWziqQhFBnCVuTGKCdg@mail.gmail.com>
+Subject: Re: [PATCH 17/39] bpf: resolve_pseudo_ldimm64(): take handling of a
+ single ldimm64 insn into helper
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Christian Brauner <brauner@kernel.org>, viro@kernel.org, 
+	bpf <bpf@vger.kernel.org>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
+	Amir Goldstein <amir73il@gmail.com>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, kvm@vger.kernel.org, 
+	Network Development <netdev@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Aug 9, 2024 at 8:29=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> wr=
+ote:
+>
+> On Thu, Aug 08, 2024 at 09:51:34AM -0700, Alexei Starovoitov wrote:
+>
+> > The bpf changes look ok and Andrii's approach is easier to grasp.
+> > It's better to route bpf conversion to CLASS(fd,..) via bpf-next,
+> > so it goes through bpf CI and our other testing.
+> >
+> > bpf patches don't seem to depend on newly added CLASS(fd_pos, ...
+> > and fderr, so pretty much independent from other patches.
+>
+> Representation change and switch to accessors do matter, though.
+> OTOH, I can put just those into never-rebased branch (basically,
+> "introduce fd_file(), convert all accessors to it" +
+> "struct fd representation change" + possibly "add struct fd constructors,
+> get rid of __to_fd()", for completeness sake), so you could pull it.
+> Otherwise you'll get textual conflicts on all those f.file vs. fd_file(f)=
+...
 
---is5odoxrqipkobog
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yep, makes sense. Let's do that, we can merge that branch into
+bpf-next/master and I will follow up with my changes on top of that.
 
-On Mon, Aug 12, 2024 at 07:37:45AM GMT, Chen Ridong <chenridong@huawei.com> wrote:
-> There are three interfaces that delegatee was not allowed to write.
-
-Actually, the right way is to query
-/sys/kernel/cgroup/delegate
-
-> However, cgroup.threads was missed at some place, just add it.
-
-When you're at it, could you change the docs to refer to the generic
-definition of set set of delegatable files where it makes sense.
-
-Thanks,
-Michal
-
---is5odoxrqipkobog
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZro+5gAKCRAt3Wney77B
-SbJ9AP9qJuDZGebJ0/ukBJ5kkcdviUeldQJlj4sv6mz0BpetkgEA4p2fTqTxn3I4
-h4lm0fR7jVm1mHsw1OmVLtv0TPHczg4=
-=IYjR
------END PGP SIGNATURE-----
-
---is5odoxrqipkobog--
+Let's just drop the do_one_ldimm64() extraction, and keep fdput(f)
+logic, plus add fd_file() accessor changes. I'll then add a switch to
+CLASS(fd) after a bit more BPF-specific clean ups. This code is pretty
+sensitive, so I'd rather have all the non-trivial refactoring done
+separately. Thanks!
 
