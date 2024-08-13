@@ -1,139 +1,243 @@
-Return-Path: <cgroups+bounces-4245-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4246-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F35D950FC2
-	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 00:30:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 673BC9510BE
+	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 01:46:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A4A41F2426C
-	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 22:30:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 137AC284A07
+	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 23:46:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D3DA17C7BD;
-	Tue, 13 Aug 2024 22:30:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FD561AB53F;
+	Tue, 13 Aug 2024 23:46:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mBRKlPf1"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="2ZTeVl1n"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C7A6370
-	for <cgroups@vger.kernel.org>; Tue, 13 Aug 2024 22:30:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B46383BF;
+	Tue, 13 Aug 2024 23:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723588249; cv=none; b=N6sMG5zGLfxgWdOxAmt2UGT+OpNURV5WsqUv7gtiwPWMZM7mIkK/2SwGqVJRY61wDS3CCKurU+ohhTUU2k9swOKlCqTcO0haRa7dk2B4UppywFrNKGk5CDE9SHLw7UzITbp+N7ft5Hbb91qyROAQzPhIV0Bc/xXqqgd1i2YUyyI=
+	t=1723592767; cv=none; b=peIppLUwa+SBw2VgzcX+UFn99Pm3lsAn+BFHWSbVbVF7yiY4DxVSpyvjgqxe+CyCcFpOq+IKKCOaJBILnKFMJnotIgsciaUlnE2+B3f+nzqIIaieRVwNYl+eDx2jqp/cu4sZJ1YO4I7OrtbNkk1qKkPVAYXjeNIpxMWhMHk/1dU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723588249; c=relaxed/simple;
-	bh=gQOJ+4j78T6EtE908WMXHt3z2FLrSRsdpVclT7uyjy4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CINEXsfnHO0iPbMUFr/dXek1H7e2rCo6/gB9OxGALOL3gWUgK7Q8/gghlGXKwz90PZxeDf8Ess1fmuWhX5b03y4onwdlGv7L+eYQGBMCfv6phveph4ywBJkCG0I8ogA117B1CPqjofZitJs91KN7ExdH3AV76sdQr9SjgUg6soM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mBRKlPf1; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 13 Aug 2024 15:30:40 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1723588245;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+aS5ftMGKo/Ru7Ti/UB5xv32zI9bpFTAyHk1po8m4DE=;
-	b=mBRKlPf19qmSOJKwWoZtfmEMPwu4TlmUiCfA0BhVZYOH71LHF+YSnZoHvNl7uW6RssnpVb
-	bsl025VbXhHtN977rOKoz7tcGu9vw1qzO6HpTczdlJGeiiPiLiWjDYOtkZANgMGVEoLY9c
-	v9612sDqGPK+yFjIpDes0ugxnCoukaA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, Yu Zhao <yuzhao@google.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2] memcg: use ratelimited stats flush in the reclaim
-Message-ID: <kneukn6m4dhuxxfl3yymrtilvjfmtkxmxz35wothcflxs5btwv@nsgywqvpdn76>
-References: <20240813215358.2259750-1-shakeel.butt@linux.dev>
- <CAJD7tkbm6GxVpRo+9fBreBJxJ=VaQbFoc6PcnQ+ag5bnvqE+qA@mail.gmail.com>
+	s=arc-20240116; t=1723592767; c=relaxed/simple;
+	bh=SHgY4ZvnWkFc93CY6rQuMpZOg5xNuwIcczixIIZwUis=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fm+W3Zp3rf4zpSzHKIfhMgzJVRWacDVw80CpGl6UU7GIqDoLN/86h4iX8UelNXxoUP+zSyAdf1VzLJo1TBDJdy6xVnN3ihBSpEXTh+rOywB0gU2Yu2jjH7nV67QaekH5FLTA5jn8rw2jDeWr/ZFhf5XX5AKlI3bvK48wt3PaEi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=2ZTeVl1n; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=btvoCIHjpMVaBKfPYLfJYOWHcXgBOeBZSXsRuU6oyxo=; b=2ZTeVl1nNyBkwimbRyXw0IBhgm
+	wG48wQMzJjVYoWaclTlRSp8ooSuX1D+uuSx81NOkFpLcPG7S6uMxIxRNDfAvMQ1aGwYVNb8r4HXUo
+	pjYocvWZEVvsL20WKpLG1rwmCDpNO5+A9Ex0tmOiCKZBfTUWoep88gurhldDm+kgWq4AkExJ+nUZU
+	Q2V1HgsM4pf5r3HG2RjH3dVMlZPkB9QsymsFQkDHbJhHz0EgHxUwe7wRWQKGi4m65Ovkzq0MbpRKY
+	X9bhe2L0n+dljceBTRMSzdbl0NSpfhKhV+B1fImnZDz7JEbDDNmiR+xfzjJH3/k3WAMyIAfYtqNhG
+	DZ0XLwQw==;
+Received: from [50.53.9.16] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1se1Cy-00000005DRu-0WM0;
+	Tue, 13 Aug 2024 23:45:46 +0000
+Message-ID: <227f9190-e065-462e-9a25-0ebd5e3dc955@infradead.org>
+Date: Tue, 13 Aug 2024 16:45:42 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkbm6GxVpRo+9fBreBJxJ=VaQbFoc6PcnQ+ag5bnvqE+qA@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 7/7] Docs/admin-guide/mm/workingset_report: document
+ sysfs and memcg interfaces
+To: Yuanchu Xie <yuanchu@google.com>, David Hildenbrand <david@redhat.com>,
+ "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+ Khalid Aziz <khalid.aziz@oracle.com>, Henry Huang <henry.hj@antgroup.com>,
+ Yu Zhao <yuzhao@google.com>, Dan Williams <dan.j.williams@intel.com>,
+ Gregory Price <gregory.price@memverge.com>, Huang Ying
+ <ying.huang@intel.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Lance Yang <ioworker0@gmail.com>,
+ Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Kalesh Singh <kaleshsingh@google.com>, Wei Xu <weixugc@google.com>,
+ David Rientjes <rientjes@google.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Johannes Weiner
+ <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Muchun Song <muchun.song@linux.dev>, Shuah Khan <shuah@kernel.org>,
+ Yosry Ahmed <yosryahmed@google.com>, Matthew Wilcox <willy@infradead.org>,
+ Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>,
+ Kairui Song <kasong@tencent.com>, "Michael S. Tsirkin" <mst@redhat.com>,
+ Vasily Averin <vasily.averin@linux.dev>, Nhat Pham <nphamcs@gmail.com>,
+ Miaohe Lin <linmiaohe@huawei.com>, Qi Zheng <zhengqi.arch@bytedance.com>,
+ Abel Wu <wuyun.abel@bytedance.com>,
+ "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20240813165619.748102-1-yuanchu@google.com>
+ <20240813165619.748102-8-yuanchu@google.com>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240813165619.748102-8-yuanchu@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Aug 13, 2024 at 02:58:51PM GMT, Yosry Ahmed wrote:
-> On Tue, Aug 13, 2024 at 2:54 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> >
-> > The Meta prod is seeing large amount of stalls in memcg stats flush
-> > from the memcg reclaim code path. At the moment, this specific callsite
-> > is doing a synchronous memcg stats flush. The rstat flush is an
-> > expensive and time consuming operation, so concurrent relaimers will
-> > busywait on the lock potentially for a long time. Actually this issue is
-> > not unique to Meta and has been observed by Cloudflare [1] as well. For
-> > the Cloudflare case, the stalls were due to contention between kswapd
-> > threads running on their 8 numa node machines which does not make sense
-> > as rstat flush is global and flush from one kswapd thread should be
-> > sufficient for all. Simply replace the synchronous flush with the
-> > ratelimited one.
-> >
-> > One may raise a concern on potentially using 2 sec stale (at worst)
-> > stats for heuristics like desirable inactive:active ratio and preferring
-> > inactive file pages over anon pages but these specific heuristics do not
-> > require very precise stats and also are ignored under severe memory
-> > pressure.
-> >
-> > More specifically for this code path, the stats are needed for two
-> > specific heuristics:
-> >
-> > 1. Deactivate LRUs
-> > 2. Cache trim mode
-> >
-> > The deactivate LRUs heuristic is to maintain a desirable inactive:active
-> > ratio of the LRUs. The specific stats needed are WORKINGSET_ACTIVATE*
-> > and the hierarchical LRU size. The WORKINGSET_ACTIVATE* is needed to
-> > check if there is a refault since last snapshot and the LRU size are
-> > needed for the desirable ratio between inactive and active LRUs. See the
-> > table below on how the desirable ratio is calculated.
-> >
-> > /* total     target    max
-> >  * memory    ratio     inactive
-> >  * -------------------------------------
-> >  *   10MB       1         5MB
-> >  *  100MB       1        50MB
-> >  *    1GB       3       250MB
-> >  *   10GB      10       0.9GB
-> >  *  100GB      31         3GB
-> >  *    1TB     101        10GB
-> >  *   10TB     320        32GB
-> >  */
-> >
-> > The desirable ratio only changes at the boundary of 1 GiB, 10 GiB,
-> > 100 GiB, 1 TiB and 10 TiB. There is no need for the precise and accurate
-> > LRU size information to calculate this ratio. In addition, if
-> > deactivation is skipped for some LRU, the kernel will force deactive on
-> > the severe memory pressure situation.
-> >
-> > For the cache trim mode, inactive file LRU size is read and the kernel
-> > scales it down based on the reclaim iteration (file >> sc->priority) and
-> > only checks if it is zero or not. Again precise information is not
-> > needed.
-> >
-> > This patch has been running on Meta fleet for several months and we have
-> > not observed any issues. Please note that MGLRU is not impacted by this
-> > issue at all as it avoids rstat flushing completely.
-> >
-> > Link: https://lore.kernel.org/all/6ee2518b-81dd-4082-bdf5-322883895ffc@kernel.org [1]
-> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+Hi,
+
+On 8/13/24 9:56 AM, Yuanchu Xie wrote:
+> Add workingset reporting documentation for better discoverability of
+> its sysfs and memcg interfaces. Also document the required kernel
+> config to enable workingset reporting.
 > 
-> Just curious, does Jesper's patch help with this problem?
+> Change-Id: Ib9dfc9004473baa6ef26ca7277d220b6199517de
+> Signed-off-by: Yuanchu Xie <yuanchu@google.com>
+> ---
+>  Documentation/admin-guide/mm/index.rst        |   1 +
+>  .../admin-guide/mm/workingset_report.rst      | 105 ++++++++++++++++++
+>  2 files changed, 106 insertions(+)
+>  create mode 100644 Documentation/admin-guide/mm/workingset_report.rst
+> 
 
-If you are asking if I have tested Jesper's patch in Meta's production
-then no, I have not tested it. Also I have not taken a look at the
-latest from Jesper as I was stuck in some other issues.
+> diff --git a/Documentation/admin-guide/mm/workingset_report.rst b/Documentation/admin-guide/mm/workingset_report.rst
+> new file mode 100644
+> index 000000000000..ddcc0c33a8df
+> --- /dev/null
+> +++ b/Documentation/admin-guide/mm/workingset_report.rst
+> @@ -0,0 +1,105 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=================
+> +Workingset Report
+> +=================
+> +Workingset report provides a view of memory coldness in user-defined
+> +time intervals, i.e. X bytes are Y milliseconds cold. It breaks down
 
+                   e.g., X bytes are Y milliseconds cold.
+
+> +the user pages in the system per-NUMA node, per-memcg, for both
+> +anonymous and file pages into histograms that look like:
+> +::
+> +
+> +    1000 anon=137368 file=24530
+> +    20000 anon=34342 file=0
+> +    30000 anon=353232 file=333608
+> +    40000 anon=407198 file=206052
+> +    9223372036854775807 anon=4925624 file=892892
+> +
+> +The workingset reports can be used to drive proactive reclaim, by
+> +identifying the number of cold bytes in a memcg, then writing to
+> +``memory.reclaim``.
+> +
+> +Quick start
+> +===========
+> +Build the kernel with the following configurations. The report relies
+> +on Multi-gen LRU for page coldness.
+> +
+> +* ``CONFIG_LRU_GEN=y``
+> +* ``CONFIG_LRU_GEN_ENABLED=y``
+> +* ``CONFIG_WORKINGSET_REPORT=y``
+> +
+> +Optionally, the aging kernel daemon can be enabled with the following
+> +configuration.
+> +* ``CONFIG_WORKINGSET_REPORT_AGING=y``
+> +
+> +Sysfs interfaces
+> +================
+> +``/sys/devices/system/node/nodeX/workingset_report/page_age`` provides
+> +a per-node page age histogram, showing an aggregate of the node's lruvecs.
+> +Reading this file causes a hierarchical aging of all lruvecs, scanning
+> +pages and creates a new Multi-gen LRU generation in each lruvec.
+> +For example:
+> +::
+> +
+> +    1000 anon=0 file=0
+> +    2000 anon=0 file=0
+> +    100000 anon=5533696 file=5566464
+> +    18446744073709551615 anon=0 file=0
+> +
+> +``/sys/devices/system/node/nodeX/workingset_report/page_age_intervals``
+> +is a comma separated list of time in milliseconds that configures what
+
+        comma-separated
+
+> +the page age histogram uses for aggregation. For the above histogram,
+> +the intervals are:
+> +::
+
+I guess just change the "are:" to "are::" and change the line that only
+contains "::" to a blank line.  Otherwise there is a warning:
+
+Documentation/admin-guide/mm/workingset_report.rst:54: ERROR: Unexpected indentation.
+
+
+> +    1000,2000,100000
+> +
+> +``/sys/devices/system/node/nodeX/workingset_report/refresh_interval``
+> +defines the amount of time the report is valid for in milliseconds.
+> +When a report is still valid, reading the ``page_age`` file shows
+> +the existing valid report, instead of generating a new one.
+> +
+> +``/sys/devices/system/node/nodeX/workingset_report/report_threshold``
+> +specifies how often the userspace agent can be notified for node
+> +memory pressure, in milliseconds. When a node reaches its low
+> +watermarks and wakes up kswapd, programs waiting on ``page_age`` are
+> +woken up so they can read the histogram and make policy decisions.
+> +
+> +Memcg interface
+> +===============
+> +While ``page_age_interval`` is defined per-node in sysfs, ``page_age``,
+> +``refresh_interval`` and ``report_threshold`` are available per-memcg.
+> +
+> +``/sys/fs/cgroup/.../memory.workingset.page_age``
+> +The memcg equivalent of the sysfs workingset page age histogram
+> +breaks down the workingset of this memcg and its children into
+> +page age intervals. Each node is prefixed with a node header and
+> +a newline. Non-proactive direct reclaim on this memcg can also
+> +wake up userspace agents that are waiting on this file.
+> +e.g.
+
+   E.g.
+
+> +::
+> +
+> +    N0
+> +    1000 anon=0 file=0
+> +    2000 anon=0 file=0
+> +    3000 anon=0 file=0
+> +    4000 anon=0 file=0
+> +    5000 anon=0 file=0
+> +    18446744073709551615 anon=0 file=0
+> +
+> +``/sys/fs/cgroup/.../memory.workingset.refresh_interval``
+> +The memcg equivalent of the sysfs refresh interval. A per-node
+> +number of how much time a page age histogram is valid for, in
+> +milliseconds.
+> +e.g.
+
+   E.g.
+
+> +::
+> +
+> +    echo N0=2000 > memory.workingset.refresh_interval
+> +
+> +``/sys/fs/cgroup/.../memory.workingset.report_threshold``
+> +The memcg equivalent of the sysfs report threshold. A per-node
+> +number of how often userspace agent waiting on the page age
+> +histogram can be woken up, in milliseconds.
+> +e.g.
+
+   E.g.
+
+> +::
+> +
+> +    echo N0=1000 > memory.workingset.report_threshold
+
+-- 
+~Randy
 
