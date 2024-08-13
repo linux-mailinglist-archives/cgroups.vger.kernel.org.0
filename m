@@ -1,398 +1,279 @@
-Return-Path: <cgroups+bounces-4224-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4225-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 701E794FE96
-	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 09:21:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E7A9950ADE
+	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 18:59:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23203284F4F
-	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 07:21:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 677AB1C21837
+	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 16:59:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A52E61FDA;
-	Tue, 13 Aug 2024 07:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78A431A2566;
+	Tue, 13 Aug 2024 16:59:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YXUsElVn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C2CE61FE1;
-	Tue, 13 Aug 2024 07:19:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08D111A0B07
+	for <cgroups@vger.kernel.org>; Tue, 13 Aug 2024 16:59:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723533586; cv=none; b=X7K9M2zyjyIewHdY099R9sDBPx8DQ6HVac0Sdk6OIqzThZTXXz0rlI2hPS7pozYjZwGcO6ZTKdA3ZE+d1F87MiCffg3HByXhCvLEmUpi7Xl5lbdcyKjMzTJtxFPxqKQt2Pdg6VpY9lGgsMrUykEkCeaopqGnBKukdmrL0SpA42g=
+	t=1723568379; cv=none; b=jWeFoqKU04iGXdksWOS7g+GBSc7PrLFh3s0pAc56pbrQ/BKxaQOo38fqseUeQNPY5SABeJ2y4wj09qO8J9PA12mKFNYYsvUKpx9xyeFUsbXiPkt8EMmxutOXak8VmuSHmfRNsb1dDLXhDcGQE5dkp7FZI7uXjOXqMHd6wXqzzJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723533586; c=relaxed/simple;
-	bh=MsHPtoGfdkKL32wcOwNbbKPA8cWdJmUejW5yqRpHsEQ=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=umDpzZJWqHCi7NmrkqR7JPXbOVoMv8CBBYmRUaOjClY3gONdpP4ktQmaamsZ3tpS3vzAeBqzO/0oPM2BXIEZ/5Dyu1UfqwRmsm2MMmZrB/fY9OAqRQ7ZjFGBWPJA2+l0b5c6jKct56ADcWVQX8N8yMfbMDL88ROhuu1Fpq8+Umg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WjjSG07ZQz4f3js9;
-	Tue, 13 Aug 2024 15:19:26 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id AF82A1A1640;
-	Tue, 13 Aug 2024 15:19:39 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP4 (Coremail) with SMTP id gCh0CgAXPoQGCbtmqTo9Bg--.10334S3;
-	Tue, 13 Aug 2024 15:19:36 +0800 (CST)
-Subject: Re: [BUG] cgroupv2/blk: inconsistent I/O behavior in Cgroup v2 with
- set device wbps and wiops
-To: Yu Kuai <yukuai1@huaweicloud.com>, Lance Yang <ioworker0@gmail.com>
-Cc: =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
- cgroups@vger.kernel.org, josef@toxicpanda.com, tj@kernel.org,
- fujita.tomonori@lab.ntt.co.jp, boqun.feng@gmail.com, a.hindborg@samsung.com,
- paolo.valente@unimore.it, axboe@kernel.dk, vbabka@kernel.org,
- david@redhat.com, 21cnbao@gmail.com, baolin.wang@linux.alibaba.com,
- libang.li@antgroup.com, "yukuai (C)" <yukuai3@huawei.com>,
- "yukuai (C)" <yukuai3@huawei.com>
-References: <20240812150049.8252-1-ioworker0@gmail.com>
- <zjbn575huc6pk7jpv2ipoayfk4bvfu5z5imb5muk5drksa7p3q@xcr5imtt4zro>
- <9ede36af-fca4-ed41-6b7e-cef157c640bb@huaweicloud.com>
- <CAK1f24mwzXa8Az5WFYu+1UopTCStDWx3yDr1RugLwphS-hWizw@mail.gmail.com>
- <eef1f655-4fff-618d-4b8e-447230ec8ed9@huaweicloud.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <7c3499ac-faa7-cc0c-2d90-b8291fce5492@huaweicloud.com>
-Date: Tue, 13 Aug 2024 15:19:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1723568379; c=relaxed/simple;
+	bh=qfKOwpt8OZsB6if97prZ2PbPUwEsMQoPfwGvCamgHOs=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=AVlTkngA3TnNU1Hfvk8w4xvkHYCMDUgIv7gvqBuhaSlEUmEw3LdEDA+wC0Eq+Qa3nonSYKeR/xYF64/TpwNxNhRkxJHVLXwbMZCNJoVkVpu3u9ILnHPugeGTe3S7qNBXu+IzQc0E16oIh5IxSGnu+XXt1vkkA9ncVFT+GR7OVac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yuanchu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YXUsElVn; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yuanchu.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-e0e3eb3feaeso9494083276.2
+        for <cgroups@vger.kernel.org>; Tue, 13 Aug 2024 09:59:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1723568376; x=1724173176; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Bv4SVjHgUZOhoTb1OWwMYpUDeJnXwVqeg4+bbTG2FbM=;
+        b=YXUsElVnZI2R17MGGaC+AkC4usx1O9rshSJyj3aw2U+Eb0K/rpH33i5N5oYn0zKY9D
+         mcNCtw+PoBEVWRbHARX0/Zln/cBex5p9S5iUzX+NI6kuaoQ33baLuZkVtNAh9yEu0uBw
+         A/rFNLUmd3MgkgdGECChf87NBFYKN+6IkVREKJFLMMykEeCwfpp0mISxldzG7iRPmIZl
+         ldZFhl2Mngug2u2/VbhCFKIWwiBrFoT/vmlspTse/gs3uEkoVGhIGk4g2a4z4kjcxLXg
+         yVN0Sf3PZpphtGR6A/IWZMzM5qV6udypRSlAojZTP2GD/rlWAsMAIkpSvsj3sacRvuYs
+         KgIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723568376; x=1724173176;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Bv4SVjHgUZOhoTb1OWwMYpUDeJnXwVqeg4+bbTG2FbM=;
+        b=UXreHp35rHI+XzN8ZnD8oS7R5VjoZgX0m393Dx8ps4EJ1p1Q4BrgVhy1//uI8r7YBk
+         qWUJOaRh1tQz/WtIOpW5aIDLYVci1zF3LTBTaFrN0tUpHMLCqZUeUT0B6bp2yUF1Ei5q
+         dnx2DH/rc/kqJFgPhb6648Tt1bc3KQDFLgRdcsB22VCswcWbtnC/6V6DRUS4/NSnx4oV
+         Xi6ueDsb00uZfwNZrzSixasULEcSqDN4CKgz0+ubDeqEylqRBkhoZomr6j1Z9Qi6F/pI
+         98EqD43hIkd2uzUyQ9X8+7tg5Oa1eG7PTcJ17cdLRri37o0pK4z51E+Hhbd4q4bAoAcI
+         bIew==
+X-Forwarded-Encrypted: i=1; AJvYcCUG5gxbJkd9qjIccFIFeReehr3/NG3dIVkMD6t5g1XK4S0vJ7XB6L/ioT3g5oD5I4ZAcOEq2dd8+29iH7vfihcM0xrRs00cdA==
+X-Gm-Message-State: AOJu0YxE2gKoiKGQw2czzsgBnXCFckb3yKlaKfmYRye/YfHgC66h0B6c
+	JLRxOoo6dv2i5uFHxfZF5ArKYlkh8ibWmveIPr6TexAVkgMLqtgOoNEPApNDWf1pDH+hNjLjskB
+	EJUA0wQ==
+X-Google-Smtp-Source: AGHT+IFhhfIujG8uqC2QMmL5ZeYf4GNZcSGDr17DVlIcY0LVjF5xR47VsuGiOOLjceaKtQ5GHcSYn/ofKs8V
+X-Received: from yuanchu-desktop.svl.corp.google.com ([2620:15c:2a3:200:b50c:66e8:6532:a371])
+ (user=yuanchu job=sendgmr) by 2002:a25:9709:0:b0:e0b:bcd2:b2ee with SMTP id
+ 3f1490d57ef6-e1155aa5875mr280276.6.1723568376005; Tue, 13 Aug 2024 09:59:36
+ -0700 (PDT)
+Date: Tue, 13 Aug 2024 09:56:11 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <eef1f655-4fff-618d-4b8e-447230ec8ed9@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAXPoQGCbtmqTo9Bg--.10334S3
-X-Coremail-Antispam: 1UD129KBjvAXoWfJr4DCw4kGw47KF18KrW7Jwb_yoW8GF1fWo
-	WYgr4xJF1rXw45KayUJw1fJryrG34kAFnrXr9xXr43Arn3tw47t34Uta48Xay3JryIgrs7
-	ZF15K3y5CFyxJr1rn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-	AaLaJ3UjIYCTnIWjp_UUUYW7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20EY4v20xva
-	j40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2
-	x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8
-	Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-	xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-	6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-	0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
-	n2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2
-	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0x
-	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
-	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
-	kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjTRNJ5oDUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.46.0.76.ge559c4bf1a-goog
+Message-ID: <20240813165619.748102-1-yuanchu@google.com>
+Subject: [PATCH v3 0/7] mm: workingset reporting
+From: Yuanchu Xie <yuanchu@google.com>
+To: David Hildenbrand <david@redhat.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>, 
+	Khalid Aziz <khalid.aziz@oracle.com>, Henry Huang <henry.hj@antgroup.com>, 
+	Yu Zhao <yuzhao@google.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Gregory Price <gregory.price@memverge.com>, Huang Ying <ying.huang@intel.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Lance Yang <ioworker0@gmail.com>, 
+	Randy Dunlap <rdunlap@infradead.org>, Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Kalesh Singh <kaleshsingh@google.com>, Wei Xu <weixugc@google.com>, 
+	David Rientjes <rientjes@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Shuah Khan <shuah@kernel.org>, Yosry Ahmed <yosryahmed@google.com>, 
+	Matthew Wilcox <willy@infradead.org>, Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>, 
+	Kairui Song <kasong@tencent.com>, "Michael S. Tsirkin" <mst@redhat.com>, 
+	Vasily Averin <vasily.averin@linux.dev>, Nhat Pham <nphamcs@gmail.com>, 
+	Miaohe Lin <linmiaohe@huawei.com>, Qi Zheng <zhengqi.arch@bytedance.com>, 
+	Abel Wu <wuyun.abel@bytedance.com>, "Vishal Moola (Oracle)" <vishal.moola@gmail.com>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, Yuanchu Xie <yuanchu@google.com>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+Changes from PATCH v2 -> v3:
+- Fixed typos in commit messages and documentation
+  (Lance Yang, Randy Dunlap)
+- Split out the force_scan patch to be reviewed separately
+- Added benchmarks from Ghait Ouled Amar Ben Cheikh
+- Fixed reported compile error without CONFIG_MEMCG
 
-在 2024/08/13 14:39, Yu Kuai 写道:
-> Hi,
-> 
-> 在 2024/08/13 13:00, Lance Yang 写道:
->> Hi Kuai,
->>
->> Thanks a lot for jumping in!
->>
->> On Tue, Aug 13, 2024 at 9:37 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>>
->>> Hi,
->>>
->>> 在 2024/08/12 23:43, Michal Koutný 写道:
->>>> +Cc Kuai
->>>>
->>>> On Mon, Aug 12, 2024 at 11:00:30PM GMT, Lance Yang 
->>>> <ioworker0@gmail.com> wrote:
->>>>> Hi all,
->>>>>
->>>>> I've run into a problem with Cgroup v2 where it doesn't seem to 
->>>>> correctly limit
->>>>> I/O operations when I set both wbps and wiops for a device. 
->>>>> However, if I only
->>>>> set wbps, then everything works as expected.
->>>>>
->>>>> To reproduce the problem, we can follow these command-based steps:
->>>>>
->>>>> 1. **System Information:**
->>>>>      - Kernel Version and OS Release:
->>>>>        ```
->>>>>        $ uname -r
->>>>>        6.10.0-rc5+
->>>>>
->>>>>        $ cat /etc/os-release
->>>>>        PRETTY_NAME="Ubuntu 24.04 LTS"
->>>>>        NAME="Ubuntu"
->>>>>        VERSION_ID="24.04"
->>>>>        VERSION="24.04 LTS (Noble Numbat)"
->>>>>        VERSION_CODENAME=noble
->>>>>        ID=ubuntu
->>>>>        ID_LIKE=debian
->>>>>        HOME_URL="https://www.ubuntu.com/"
->>>>>        SUPPORT_URL="https://help.ubuntu.com/"
->>>>>        BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
->>>>>        
->>>>> PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy" 
->>>>>
->>>>>        UBUNTU_CODENAME=noble
->>>>>        LOGO=ubuntu-logo
->>>>>        ```
->>>>>
->>>>> 2. **Device Information and Settings:**
->>>>>      - List Block Devices and Scheduler:
->>>>>        ```
->>>>>        $ lsblk
->>>>>        NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
->>>>>        sda     8:0    0   4.4T  0 disk
->>>>>        └─sda1  8:1    0   4.4T  0 part /data
->>>>>        ...
->>>>>
->>>>>        $ cat /sys/block/sda/queue/scheduler
->>>>>        none [mq-deadline] kyber bfq
->>>>>
->>>>>        $ cat /sys/block/sda/queue/rotational
->>>>>        1
->>>>>        ```
->>>>>
->>>>> 3. **Reproducing the problem:**
->>>>>      - Navigate to the cgroup v2 filesystem and configure I/O 
->>>>> settings:
->>>>>        ```
->>>>>        $ cd /sys/fs/cgroup/
->>>>>        $ stat -fc %T /sys/fs/cgroup
->>>>>        cgroup2fs
->>>>>        $ mkdir test
->>>>>        $ echo "8:0 wbps=10485760 wiops=100000" > io.max
->>>>>        ```
->>>>>        In this setup:
->>>>>        wbps=10485760 sets the write bytes per second limit to 10 MB/s.
->>>>>        wiops=100000 sets the write I/O operations per second limit 
->>>>> to 100,000.
->>>>>
->>>>>      - Add process to the cgroup and verify:
->>>>>        ```
->>>>>        $ echo $$ > cgroup.procs
->>>>>        $ cat cgroup.procs
->>>>>        3826771
->>>>>        3828513
->>>>>        $ ps -ef|grep 3826771
->>>>>        root     3826771 3826768  0 22:04 pts/1    00:00:00 -bash
->>>>>        root     3828761 3826771  0 22:06 pts/1    00:00:00 ps -ef
->>>>>        root     3828762 3826771  0 22:06 pts/1    00:00:00 grep 
->>>>> --color=auto 3826771
->>>>>        ```
->>>>>
->>>>>      - Observe I/O performance using `dd` commands and `iostat`:
->>>>>        ```
->>>>>        $ dd if=/dev/zero of=/data/file1 bs=512M count=1 &
->>>>>        $ dd if=/dev/zero of=/data/file1 bs=512M count=1 &
->>>
->>> You're testing buffer IO here, and I don't see that write back cgroup is
->>> enabled. Is this test intentional? Why not test direct IO?
->>
->> Yes, I was testing buffered I/O and can confirm that 
->> CONFIG_CGROUP_WRITEBACK
->> was enabled.
->>
->> $ cat /boot/config-6.10.0-rc5+ |grep CONFIG_CGROUP_WRITEBACK
->> CONFIG_CGROUP_WRITEBACK=y
->>
->> We intend to configure both wbps (write bytes per second) and wiops
->> (write I/O operations
->> per second) for the containers. IIUC, this setup will effectively
->> restrict both their block device
->> I/Os and buffered I/Os.
->>
->>> Why not test direct IO?
->>
->> I was testing direct IO as well. However it did not work as expected with
->> `echo "8:0 wbps=10485760 wiops=100000" > io.max`.
->>
->> $ time dd if=/dev/zero of=/data/file7 bs=512M count=1 oflag=direct
-> 
-> So, you're issuing one huge IO, with 512M.
->> 1+0 records in
->> 1+0 records out
->> 536870912 bytes (537 MB, 512 MiB) copied, 51.5962 s, 10.4 MB/s
-> 
-> And this result looks correct. Please noted that blk-throtl works before
-> IO submit, while iostat reports IO that are done. A huge IO can be
-> throttled for a long time.
->>
->> real 0m51.637s
->> user 0m0.000s
->> sys 0m0.313s
->>
->> $ iostat -d 1 -h -y -p sda
->>   tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn
->> kB_dscd Device
->>       9.00         0.0k         1.3M         0.0k       0.0k       1.3M
->>        0.0k sda
->>       9.00         0.0k         1.3M         0.0k       0.0k       1.3M
->>        0.0k sda1
-> 
-> I don't understand yet is why there are few IO during the wait. Can you
-> test for a raw disk to bypass filesystem?
+Changes from PATCH v1 -> v2:
+- Updated selftest to use ksft_test_result_code instead of switch-case
+  (Muhammad Usama Anjum)
+- Included more use cases in the cover letter
+  (Huang, Ying)
+- Added documentation for sysfs and memcg interfaces
+- Added an aging-specific struct lru_gen_mm_walk in struct pglist_data
+  to avoid allocating for each lruvec.
 
-To be updated, I add a debug patch for this:
+Changes from RFC v3 -> PATCH v1:
+- Updated selftest to use ksft_print_msg instead of fprintf(stderr, ...)
+  (Muhammad Usama Anjum)
+- Included more detail in patch skipping pmd_young with force_scan
+  (Huang, Ying)
+- Deferred reaccess histogram as a followup
+- Removed per-memcg page age interval configs for simplicity
 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index dc6140fa3de0..3b2648c17079 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -1119,8 +1119,10 @@ static void blk_throtl_dispatch_work_fn(struct 
-work_struct *work)
+Changes from RFC v2 -> RFC v3:
+- Update to v6.8
+- Added an aging kernel thread (gated behind config)
+- Added basic selftests for sysfs interface files
+- Track swapped out pages for reaccesses
+- Refactoring and cleanup
+- Dropped the virtio-balloon extension to make things manageable
 
-         if (!bio_list_empty(&bio_list_on_stack)) {
-                 blk_start_plug(&plug);
--               while ((bio = bio_list_pop(&bio_list_on_stack)))
-+               while ((bio = bio_list_pop(&bio_list_on_stack))) {
-+                       printk("%s: bio done %lu %px\n", __func__, 
-bio_sectors(bio), bio);
-                         submit_bio_noacct_nocheck(bio);
-+               }
-                 blk_finish_plug(&plug);
-         }
-  }
-@@ -1606,6 +1608,8 @@ bool __blk_throtl_bio(struct bio *bio)
-         bool throttled = false;
-         struct throtl_data *td = tg->td;
+Changes from RFC v1 -> RFC v2:
+- Refactored the patchs into smaller pieces
+- Renamed interfaces and functions from wss to wsr (Working Set Reporting)
+- Fixed build errors when CONFIG_WSR is not set
+- Changed working_set_num_bins to u8 for virtio-balloon
+- Added support for per-NUMA node reporting for virtio-balloon
 
-+       printk("%s: bio start %lu %px\n", __func__, bio_sectors(bio), bio);
-+
-         rcu_read_lock();
-         spin_lock_irq(&q->queue_lock);
-         sq = &tg->service_queue;
-@@ -1649,6 +1653,7 @@ bool __blk_throtl_bio(struct bio *bio)
-                 tg = sq_to_tg(sq);
-                 if (!tg) {
-                         bio_set_flag(bio, BIO_BPS_THROTTLED);
-+                       printk("%s: bio done %lu %px\n", __func__, 
-bio_sectors(bio), bio);
-                         goto out_unlock;
-                 }
-         }
+[rfc v1]
+https://lore.kernel.org/linux-mm/20230509185419.1088297-1-yuanchu@google.com/
+[rfc v2]
+https://lore.kernel.org/linux-mm/20230621180454.973862-1-yuanchu@google.com/
+[rfc v3]
+https://lore.kernel.org/linux-mm/20240327213108.2384666-1-yuanchu@google.com/
 
-For dirct IO with raw disk:
+This patch series provides workingset reporting of user pages in
+lruvecs, of which coldness can be tracked by accessed bits and fd
+references. However, the concept of workingset applies generically to
+all types of memory, which could be kernel slab caches, discardable
+userspace caches (databases), or CXL.mem. Therefore, data sources might
+come from slab shrinkers, device drivers, or the userspace. IMO, the
+kernel should provide a set of workingset interfaces that should be
+generic enough to accommodate the various use cases, and be extensible
+to potential future use cases. The current proposed interfaces are not
+sufficient in that regard, but I would like to start somewhere, solicit
+feedback, and iterate.
 
-with or without wiops, the result is the same:
+Use cases
+==========
+Job scheduling
+On overcommitted hosts, workingset information allows the job scheduler
+to right-size each job and land more jobs on the same host or NUMA node,
+and in the case of a job with increasing workingset, policy decisions
+can be made to migrate other jobs off the host/NUMA node, or oom-kill
+the misbehaving job. If the job shape is very different from the machine
+shape, knowing the workingset per-node can also help inform page
+allocation policies.
 
-[  469.736098] __blk_throtl_bio: bio start 2128 ffff8881014c08c0
-[  469.736903] __blk_throtl_bio: bio start 2144 ffff88817852ec80
-[  469.737585] __blk_throtl_bio: bio start 2096 ffff88817852f080
-[  469.738392] __blk_throtl_bio: bio start 2096 ffff88817852f480
-[  469.739358] __blk_throtl_bio: bio start 2064 ffff88817852e880
-[  469.740330] __blk_throtl_bio: bio start 2112 ffff88817852fa80
-[  469.741262] __blk_throtl_bio: bio start 2080 ffff88817852e280
-[  469.742280] __blk_throtl_bio: bio start 2096 ffff88817852e080
-[  469.743281] __blk_throtl_bio: bio start 2104 ffff88817852f880
-[  469.744309] __blk_throtl_bio: bio start 2240 ffff88817852e680
-[  469.745050] __blk_throtl_bio: bio start 2184 ffff88817852e480
-[  469.745857] __blk_throtl_bio: bio start 2120 ffff88817852f680
-[  469.746779] __blk_throtl_bio: bio start 2512 ffff88817852fe80
-[  469.747611] __blk_throtl_bio: bio start 2488 ffff88817852f280
-[  469.748242] __blk_throtl_bio: bio start 2120 ffff88817852ee80
-[  469.749159] __blk_throtl_bio: bio start 2256 ffff88817852fc80
-[  469.750087] __blk_throtl_bio: bio start 2576 ffff88817852ea80
-[  469.750802] __blk_throtl_bio: bio start 2112 ffff8881014a3a80
-[  469.751586] __blk_throtl_bio: bio start 2240 ffff8881014a2880
-[  469.752383] __blk_throtl_bio: bio start 2160 ffff8881014a2e80
-[  469.753289] __blk_throtl_bio: bio start 2248 ffff8881014a3c80
-[  469.754024] __blk_throtl_bio: bio start 2536 ffff8881014a2680
-[  469.754913] __blk_throtl_bio: bio start 2088 ffff8881014a3080
-[  469.766036] __blk_throtl_bio: bio start 211344 ffff8881014a3280
-[  469.842366] blk_throtl_dispatch_work_fn: bio done 2128 ffff8881014c08c0
-[  469.952627] blk_throtl_dispatch_work_fn: bio done 2144 ffff88817852ec80
-[  470.048729] blk_throtl_dispatch_work_fn: bio done 2096 ffff88817852f080
-[  470.152642] blk_throtl_dispatch_work_fn: bio done 2096 ffff88817852f480
-[  470.256661] blk_throtl_dispatch_work_fn: bio done 2064 ffff88817852e880
-[  470.360662] blk_throtl_dispatch_work_fn: bio done 2112 ffff88817852fa80
-[  470.464626] blk_throtl_dispatch_work_fn: bio done 2080 ffff88817852e280
-[  470.568652] blk_throtl_dispatch_work_fn: bio done 2096 ffff88817852e080
-[  470.672623] blk_throtl_dispatch_work_fn: bio done 2104 ffff88817852f880
-[  470.776620] blk_throtl_dispatch_work_fn: bio done 2240 ffff88817852e680
-[  470.889801] blk_throtl_dispatch_work_fn: bio done 2184 ffff88817852e480
-[  470.992686] blk_throtl_dispatch_work_fn: bio done 2120 ffff88817852f680
-[  471.112633] blk_throtl_dispatch_work_fn: bio done 2512 ffff88817852fe80
-[  471.232680] blk_throtl_dispatch_work_fn: bio done 2488 ffff88817852f280
-[  471.336695] blk_throtl_dispatch_work_fn: bio done 2120 ffff88817852ee80
-[  471.448645] blk_throtl_dispatch_work_fn: bio done 2256 ffff88817852fc80
-[  471.576632] blk_throtl_dispatch_work_fn: bio done 2576 ffff88817852ea80
-[  471.680709] blk_throtl_dispatch_work_fn: bio done 2112 ffff8881014a3a80
-[  471.792680] blk_throtl_dispatch_work_fn: bio done 2240 ffff8881014a2880
-[  471.896682] blk_throtl_dispatch_work_fn: bio done 2160 ffff8881014a2e80
-[  472.008698] blk_throtl_dispatch_work_fn: bio done 2248 ffff8881014a3c80
-[  472.136630] blk_throtl_dispatch_work_fn: bio done 2536 ffff8881014a2680
-[  472.240678] blk_throtl_dispatch_work_fn: bio done 2088 ffff8881014a3080
-[  482.560633] blk_throtl_dispatch_work_fn: bio done 211344 ffff8881014a3280
+Proactive reclaim
+Workingset information allows the a container manager to proactively
+reclaim memory while not impacting a job's performance. While PSI may
+provide a reactive measure of when a proactive reclaim has reclaimed too
+much, workingset reporting allows the policy to be more accurate and
+flexible.
 
-Hence the upper layer issue some small IO first, then with a 100+MB IO,
-and wait time looks correct.
+Ballooning (similar to proactive reclaim)
+While this patch series does not extend the virtio-balloon device,
+balloon policies benefit from workingset to more precisely determine
+the size of the memory balloon. On desktops/laptops/mobile devices where
+memory is scarce and overcommitted, the balloon sizing in multiple VMs
+running on the same device can be orchestrated with workingset reports
+from each one.
 
-Then, I retest for xfs, result are still the same with or without wiops:
+Promotion/Demotion
+If different mechanisms are used for promition and demotion, workingset
+information can help connect the two and avoid pages being migrated back
+and forth.
+For example, given a promotion hot page threshold defined in reaccess
+distance of N seconds (promote pages accessed more often than every N
+seconds). The threshold N should be set so that ~80% (e.g.) of pages on
+the fast memory node passes the threshold. This calculation can be done
+with workingset reports.
+To be directly useful for promotion policies, the workingset report
+interfaces need to be extended to report hotness and gather hotness
+information from the devices[1].
 
-[ 1175.907019] __blk_throtl_bio: bio start 8192 ffff88816daf8480
-[ 1175.908224] __blk_throtl_bio: bio start 8192 ffff88816daf8e80
-[ 1175.910618] __blk_throtl_bio: bio start 8192 ffff88816daf9280
-[ 1175.911991] __blk_throtl_bio: bio start 8192 ffff88816daf8280
-[ 1175.913187] __blk_throtl_bio: bio start 8192 ffff88816daf9080
-[ 1175.914904] __blk_throtl_bio: bio start 8192 ffff88816daf9680
-[ 1175.916099] __blk_throtl_bio: bio start 8192 ffff88816daf8880
-[ 1175.917844] __blk_throtl_bio: bio start 8192 ffff88816daf8c80
-[ 1175.919025] __blk_throtl_bio: bio start 8192 ffff88816daf8a80
-[ 1175.920868] __blk_throtl_bio: bio start 8192 ffff888178a84080
-[ 1175.922068] __blk_throtl_bio: bio start 8192 ffff888178a84280
-[ 1175.923819] __blk_throtl_bio: bio start 8192 ffff888178a84480
-[ 1175.925017] __blk_throtl_bio: bio start 8192 ffff888178a84680
-[ 1175.926851] __blk_throtl_bio: bio start 8192 ffff888178a84880
-[ 1175.928025] __blk_throtl_bio: bio start 8192 ffff888178a84a80
-[ 1175.929806] __blk_throtl_bio: bio start 8192 ffff888178a84c80
-[ 1175.931007] __blk_throtl_bio: bio start 8192 ffff888178a84e80
-[ 1175.932852] __blk_throtl_bio: bio start 8192 ffff888178a85080
-[ 1175.934041] __blk_throtl_bio: bio start 8192 ffff888178a85280
-[ 1175.935892] __blk_throtl_bio: bio start 8192 ffff888178a85480
-[ 1175.937074] __blk_throtl_bio: bio start 8192 ffff888178a85680
-[ 1175.938860] __blk_throtl_bio: bio start 8192 ffff888178a85880
-[ 1175.940053] __blk_throtl_bio: bio start 8192 ffff888178a85a80
-[ 1175.941824] __blk_throtl_bio: bio start 8192 ffff888178a85c80
-[ 1175.943040] __blk_throtl_bio: bio start 8192 ffff888178a85e80
-[ 1175.944945] __blk_throtl_bio: bio start 8192 ffff88816b046080
-[ 1175.946156] __blk_throtl_bio: bio start 8192 ffff88816b046280
-[ 1175.948261] __blk_throtl_bio: bio start 8192 ffff88816b046480
-[ 1175.949521] __blk_throtl_bio: bio start 8192 ffff88816b046680
-[ 1175.950877] __blk_throtl_bio: bio start 8192 ffff88816b046880
-[ 1175.952051] __blk_throtl_bio: bio start 8192 ffff88816b046a80
-[ 1175.954313] __blk_throtl_bio: bio start 8192 ffff88816b046c80
-[ 1175.955530] __blk_throtl_bio: bio start 8192 ffff88816b046e80
-[ 1175.957370] __blk_throtl_bio: bio start 8192 ffff88816b047080
-[ 1175.958818] __blk_throtl_bio: bio start 8192 ffff88816b047280
-[ 1175.960093] __blk_throtl_bio: bio start 8192 ffff88816b047480
-[ 1175.961900] __blk_throtl_bio: bio start 8192 ffff88816b047680
-[ 1175.963070] __blk_throtl_bio: bio start 8192 ffff88816b047880
-[ 1175.965262] __blk_throtl_bio: bio start 8192 ffff88816b047a80
-[ 1175.966527] __blk_throtl_bio: bio start 8192 ffff88816b047c80
-[ 1175.967928] __blk_throtl_bio: bio start 8192 ffff88816b047e80
-[ 1175.969124] __blk_throtl_bio: bio start 8192 ffff888170e84080
-[ 1175.971369] __blk_throtl_bio: bio start 8192 ffff888170e84280
+[1]
+https://www.opencompute.org/documents/ocp-cms-hotness-tracking-requirements-white-paper-pdf-1
 
+Sysfs and Cgroup Interfaces
+==========
+The interfaces are detailed in the patches that introduce them. The main
+idea here is we break down the workingset per-node per-memcg into time
+intervals (ms), e.g.
 
-Hence xfs is always issuing 4MB IO, that's whay stable wbps can be
-observed by iostat. The main difference is that a 100+MB IO is issued
-from the last test and throttle for about 10+s.
+1000 anon=137368 file=24530
+20000 anon=34342 file=0
+30000 anon=353232 file=333608
+40000 anon=407198 file=206052
+9223372036854775807 anon=4925624 file=892892
 
-Then for your case, you might want to comfirm what kind of IO are
-submitted from upper layer.
+I realize this does not generalize well to hotness information, but I
+lack the intuition for an abstraction that presents hotness in a useful
+way. Based on a recent proposal for move_phys_pages[2], it seems like
+userspace tiering software would like to move specific physical pages,
+instead of informing the kernel "move x number of hot pages to y
+device". Please advise.
 
-Thanks,
-Kuai
-> 
-> Thanks,
-> Kuai
-> 
-> 
-> .
-> 
+[2]
+https://lore.kernel.org/lkml/20240319172609.332900-1-gregory.price@memverge.com/
+
+Implementation
+==========
+Currently, the reporting of user pages is based off of MGLRU, and
+therefore requires CONFIG_LRU_GEN=y. We would benefit from more MGLRU
+generations for a more fine-grained workingset report. I will make the
+generation count configurable in the next version. The workingset
+reporting mechanism is gated behind CONFIG_WORKINGSET_REPORT, and the
+aging thread is behind CONFIG_WORKINGSET_REPORT_AGING.
+
+Benchmarks
+==========
+Ghait Ouled Amar Ben Cheikh has implemented a simple "reclaim everything
+colder than 10 seconds every 40 seconds" policy and ran Linux compile
+and redis from the phoronix test suite. The results are in his repo:
+https://github.com/miloudi98/WMO
+
+Yuanchu Xie (7):
+  mm: aggregate working set information into histograms
+  mm: use refresh interval to rate-limit workingset report aggregation
+  mm: report workingset during memory pressure driven scanning
+  mm: extend working set reporting to memcgs
+  mm: add kernel aging thread for workingset reporting
+  selftest: test system-wide workingset reporting
+  Docs/admin-guide/mm/workingset_report: document sysfs and memcg
+    interfaces
+
+ Documentation/admin-guide/mm/index.rst        |   1 +
+ .../admin-guide/mm/workingset_report.rst      | 105 ++++
+ drivers/base/node.c                           |   6 +
+ include/linux/memcontrol.h                    |  21 +
+ include/linux/mmzone.h                        |   9 +
+ include/linux/workingset_report.h             |  97 +++
+ mm/Kconfig                                    |  15 +
+ mm/Makefile                                   |   2 +
+ mm/internal.h                                 |  18 +
+ mm/memcontrol.c                               | 184 +++++-
+ mm/mm_init.c                                  |   2 +
+ mm/mmzone.c                                   |   2 +
+ mm/vmscan.c                                   |  56 +-
+ mm/workingset_report.c                        | 561 ++++++++++++++++++
+ mm/workingset_report_aging.c                  | 127 ++++
+ tools/testing/selftests/mm/.gitignore         |   1 +
+ tools/testing/selftests/mm/Makefile           |   3 +
+ tools/testing/selftests/mm/run_vmtests.sh     |   5 +
+ .../testing/selftests/mm/workingset_report.c  | 306 ++++++++++
+ .../testing/selftests/mm/workingset_report.h  |  39 ++
+ .../selftests/mm/workingset_report_test.c     | 330 +++++++++++
+ 21 files changed, 1885 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/admin-guide/mm/workingset_report.rst
+ create mode 100644 include/linux/workingset_report.h
+ create mode 100644 mm/workingset_report.c
+ create mode 100644 mm/workingset_report_aging.c
+ create mode 100644 tools/testing/selftests/mm/workingset_report.c
+ create mode 100644 tools/testing/selftests/mm/workingset_report.h
+ create mode 100644 tools/testing/selftests/mm/workingset_report_test.c
+
+-- 
+2.46.0.76.ge559c4bf1a-goog
 
 
