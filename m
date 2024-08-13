@@ -1,111 +1,165 @@
-Return-Path: <cgroups+bounces-4216-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4217-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDCE894FB98
-	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 04:07:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C6D694FC45
+	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 05:32:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C4361C220C7
-	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 02:07:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C70B1F22C6E
+	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 03:32:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DD49125A9;
-	Tue, 13 Aug 2024 02:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A3F91BC40;
+	Tue, 13 Aug 2024 03:32:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="wntuwfQe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mbg7Os3R"
 X-Original-To: cgroups@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62451B27D;
-	Tue, 13 Aug 2024 02:06:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A70E81BC39;
+	Tue, 13 Aug 2024 03:32:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723514818; cv=none; b=Jdo73GzOrte/xkK8pi7DJjiPC1BEm9VmajPKkemDkCAIPAujWrlz2ca+UHWC748jm8PK8haPaePx4UMsIIY1SRbQkggihTbvrpNT17RT7jO7zVjBTokqwcpf4DJH15ZHY68rg2Jvnm8VIis8PpUlFFMD59bABiiiRVfJWAWVwUA=
+	t=1723519970; cv=none; b=hlt4lQhArZzK+LsUw1A677gFvR6gO5gD3O6RkEnhxY6Rv7Dia3oxSrhJiodQ0/lg8h/7kGPuSDaVxMrsMjcXb8kpvXuy/67E/9mhwQXUcWhnQYP5IW0zQwQCSSrvGCjnwyA2zhUQSYlCZH9eLLbYFivgmsSIw3cmoFFZ36D4ArY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723514818; c=relaxed/simple;
-	bh=corVORvV5k/DGCqcVkY6rnEC5BkIcEdPfj2clKEZgII=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XQmIG0HX8ye8DdnAabRDYWhNrEo61Q3kgqkUpAD9EHkof4ADCBGpfsWXS1Ex5Phyl48L/nFeL670lZqTXc41XeFkjvOw+vWM/264el27ynKbqyqsTlBinAs3hd5PIJl60oHhymswuPJX5dZigcxNbdJFfJnYB1I14Aysk/LRjZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=wntuwfQe; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=txsNHBxQvWtLf0VpxS59PXDVocFGq080wGelPeQfVz0=; b=wntuwfQeuuOoqMv0Qf7ZjfFRmV
-	4Tv3wJQChMzeZxtJ71bIS3Arst0jMGCeUUtlXzMyGENsDQcDPugimaIxQnJ63v/xMX9Bx2SKl6kPt
-	pR+0jg4lKgPTJHwnny3VqQO3xgJnaRtJA9s5OsFEpQIPh4hPAmgkizyWkXpQmWJNxIyWCJNJu1mhU
-	B+7salhZ2nOxTpcj6TCO/ulx2mPxb4Kcui5i4gO+YM+v9TjErXQXp5cs2C285mjS+kLIf9i1JbTgO
-	iR6s+EXWk7M5/jbqJA/absXhsT6/zNhIMf52lNYceshXf7ls5qlLbFZ+UYvqUG/Iliq1CMudxdYWh
-	iJ7vlvSQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1sdgvz-00000001GNS-3BM1;
-	Tue, 13 Aug 2024 02:06:51 +0000
-Date: Tue, 13 Aug 2024 03:06:51 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Christian Brauner <brauner@kernel.org>, viro@kernel.org,
-	bpf <bpf@vger.kernel.org>,
-	Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-	kvm@vger.kernel.org, Network Development <netdev@vger.kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 17/39] bpf: resolve_pseudo_ldimm64(): take handling of a
- single ldimm64 insn into helper
-Message-ID: <20240813020651.GJ13701@ZenIV>
-References: <20240730050927.GC5334@ZenIV>
- <20240730051625.14349-1-viro@kernel.org>
- <20240730051625.14349-17-viro@kernel.org>
- <CAEf4BzZipqBVhoY-S+WdeQ8=MhpKk-2dE_ESfGpV-VTm31oQUQ@mail.gmail.com>
- <20240807-fehlschlag-entfiel-f03a6df0e735@brauner>
- <CAEf4BzaeFTn41pP_hbcrCTKNZjwt3TPojv0_CYbP=+973YnWiA@mail.gmail.com>
- <CAADnVQKZW--EOkn5unFybxTKPNw-6rPB+=mY+cy_yUUsXe8R-w@mail.gmail.com>
- <20240810032952.GB13701@ZenIV>
- <CAEf4Bzb=yJKSByBktNXQDd8rqWPNCU9EWziqQhFBnCVuTGKCdg@mail.gmail.com>
+	s=arc-20240116; t=1723519970; c=relaxed/simple;
+	bh=VfZKpzSzmxeCP+ISk3acmz4CxXRITaKL5T/IGvJTi+Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Zsx9W5tWKLAFKYhQ155qVaZT5dfiYIt1A3YzKNnjX+j17JPEnjF5A3MPcbOHqtJIvnESneJ5Q3XIJIhPvXmiZgNJLnc/SgxNncL9caw+3X/qpn8XhGCf4our+gDuX+ztmMwkqCkukTzgxe6omsG8VvjbigSyIOkeHRrEcDgM+HA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mbg7Os3R; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-7ae3d7222d4so3488866a12.3;
+        Mon, 12 Aug 2024 20:32:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723519968; x=1724124768; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VfZKpzSzmxeCP+ISk3acmz4CxXRITaKL5T/IGvJTi+Q=;
+        b=mbg7Os3RAD59PViOLvpbChvTi/DIanI+AaQJyGt92MdNw+K6IjLuTRDdqYiaTEwkzz
+         LW4XVBfRRT1/4VGRwSKa/3NN5/Bjqf8sVJCxD78DSiCux3eSbIuaUGIZb9zrErbxAIuP
+         dxM9m/nJ2zGKN/RhZjKwxGvEV0ikdK90MCWqphsizJIz2vRCojjtIadQeBSIhsVvqljC
+         PT+kaQkmzCMPJfkyvPPuyav34Q3pIzVaag+GQ0SChb8NSJk0XtWMohdB4WBd++AV1a0/
+         SKmvfuKzkid2j/q4+SuTWgMccbOkHyeurfyMTYF2fGv9oR60n5BLYJfQjixX3hOd6f9o
+         +S9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723519968; x=1724124768;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VfZKpzSzmxeCP+ISk3acmz4CxXRITaKL5T/IGvJTi+Q=;
+        b=hQwvrmpWcnRyo42Hk1B4CqPQj4qrJ8lqcL+3ctxclVELhqS93JC73dvHwYoEuFw9Qi
+         o+W2c0SUOC208m7rd7ujsUPa8DfUnpWw75aZAogNOy9cvgmurguDfBmU1q0J5LGJ7tFx
+         dDjBjHcENRGwUHypXublDCPj183WTN1Nuk1cI0qSZGqj27VLgM6smQwuclCKbtyhyl0C
+         Pnu6VZHj5GsD4RE2C26B1/Tw7ZeCvIK0KNCueLzlmtgtsApC2zYHfGP3NvtQHYlgxwFx
+         fM5tpIoMShDQ9i7v9GuzrbhinBV6pcRuQlkHGh98QUBYtdog5H8Yac75f8G/UBMdFqzq
+         XMKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWg5e0lU1cCJAC6I9GhEcnG2uBxjka/KWK0EF6PBFiBkjW8elDaCsvyKOfn/EgyePmOqRIjmc2p1rphXg8N9EKESxd+lzYreLQm6qn52CStTV1dN2qnAiIAZy/QZiChQ2CoY45wSYllrT9ONZ6wWymmLK1bH+5jmIfgP5bA4PeQ1I4HUvTGc3NphC5VbkEj/OCx5OfglkmwxaXibvQOQz4yaVkUdcJKzrE=
+X-Gm-Message-State: AOJu0YwQYCGW/AxsZlqiSz8kuOgdL5RtN9rcYyIjSapbO1/VnQo1w7ls
+	DauZ4WjhsiaFnTi4FKT1wN5nx3qFj0v+/x+P4bXJcodhxNpXP9f/jREmJmEzvvKUSsE59684RkS
+	Q/Iu1thpSxIT4z01ZX7mDprDD1X4=
+X-Google-Smtp-Source: AGHT+IFh/5uOEOg72gpS6vOsn2g3n3u2/ODBL1YjJAJxMbMVs16tdzK2dKIlRduQHPcaa0PYK8jzxCJwm051A8lpwD8=
+X-Received: by 2002:a17:90a:460f:b0:2c9:95c7:7521 with SMTP id
+ 98e67ed59e1d1-2d3924d2a73mr2756900a91.1.1723519967564; Mon, 12 Aug 2024
+ 20:32:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzb=yJKSByBktNXQDd8rqWPNCU9EWziqQhFBnCVuTGKCdg@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20240730050927.GC5334@ZenIV> <20240730051625.14349-1-viro@kernel.org>
+ <20240730051625.14349-17-viro@kernel.org> <CAEf4BzZipqBVhoY-S+WdeQ8=MhpKk-2dE_ESfGpV-VTm31oQUQ@mail.gmail.com>
+ <20240807-fehlschlag-entfiel-f03a6df0e735@brauner> <CAEf4BzaeFTn41pP_hbcrCTKNZjwt3TPojv0_CYbP=+973YnWiA@mail.gmail.com>
+ <CAADnVQKZW--EOkn5unFybxTKPNw-6rPB+=mY+cy_yUUsXe8R-w@mail.gmail.com>
+ <20240810032952.GB13701@ZenIV> <CAEf4Bzb=yJKSByBktNXQDd8rqWPNCU9EWziqQhFBnCVuTGKCdg@mail.gmail.com>
+ <20240813020651.GJ13701@ZenIV>
+In-Reply-To: <20240813020651.GJ13701@ZenIV>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 12 Aug 2024 20:32:34 -0700
+Message-ID: <CAEf4BzbNfA0usftdY16jg=+zD5zadM5BsDqtcZqd1y9+G0cfLA@mail.gmail.com>
+Subject: Re: [PATCH 17/39] bpf: resolve_pseudo_ldimm64(): take handling of a
+ single ldimm64 insn into helper
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Christian Brauner <brauner@kernel.org>, viro@kernel.org, 
+	bpf <bpf@vger.kernel.org>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
+	Amir Goldstein <amir73il@gmail.com>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, kvm@vger.kernel.org, 
+	Network Development <netdev@vger.kernel.org>, Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 12, 2024 at 01:05:19PM -0700, Andrii Nakryiko wrote:
-> On Fri, Aug 9, 2024 at 8:29???PM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >
-> > On Thu, Aug 08, 2024 at 09:51:34AM -0700, Alexei Starovoitov wrote:
-> >
-> > > The bpf changes look ok and Andrii's approach is easier to grasp.
-> > > It's better to route bpf conversion to CLASS(fd,..) via bpf-next,
-> > > so it goes through bpf CI and our other testing.
+On Mon, Aug 12, 2024 at 7:06=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> w=
+rote:
+>
+> On Mon, Aug 12, 2024 at 01:05:19PM -0700, Andrii Nakryiko wrote:
+> > On Fri, Aug 9, 2024 at 8:29???PM Al Viro <viro@zeniv.linux.org.uk> wrot=
+e:
 > > >
-> > > bpf patches don't seem to depend on newly added CLASS(fd_pos, ...
-> > > and fderr, so pretty much independent from other patches.
+> > > On Thu, Aug 08, 2024 at 09:51:34AM -0700, Alexei Starovoitov wrote:
+> > >
+> > > > The bpf changes look ok and Andrii's approach is easier to grasp.
+> > > > It's better to route bpf conversion to CLASS(fd,..) via bpf-next,
+> > > > so it goes through bpf CI and our other testing.
+> > > >
+> > > > bpf patches don't seem to depend on newly added CLASS(fd_pos, ...
+> > > > and fderr, so pretty much independent from other patches.
+> > >
+> > > Representation change and switch to accessors do matter, though.
+> > > OTOH, I can put just those into never-rebased branch (basically,
+> > > "introduce fd_file(), convert all accessors to it" +
+> > > "struct fd representation change" + possibly "add struct fd construct=
+ors,
+> > > get rid of __to_fd()", for completeness sake), so you could pull it.
+> > > Otherwise you'll get textual conflicts on all those f.file vs. fd_fil=
+e(f)...
 > >
-> > Representation change and switch to accessors do matter, though.
-> > OTOH, I can put just those into never-rebased branch (basically,
-> > "introduce fd_file(), convert all accessors to it" +
-> > "struct fd representation change" + possibly "add struct fd constructors,
-> > get rid of __to_fd()", for completeness sake), so you could pull it.
-> > Otherwise you'll get textual conflicts on all those f.file vs. fd_file(f)...
-> 
-> Yep, makes sense. Let's do that, we can merge that branch into
-> bpf-next/master and I will follow up with my changes on top of that.
-> 
-> Let's just drop the do_one_ldimm64() extraction, and keep fdput(f)
-> logic, plus add fd_file() accessor changes. I'll then add a switch to
-> CLASS(fd) after a bit more BPF-specific clean ups. This code is pretty
-> sensitive, so I'd rather have all the non-trivial refactoring done
-> separately. Thanks!
+> > Yep, makes sense. Let's do that, we can merge that branch into
+> > bpf-next/master and I will follow up with my changes on top of that.
+> >
+> > Let's just drop the do_one_ldimm64() extraction, and keep fdput(f)
+> > logic, plus add fd_file() accessor changes. I'll then add a switch to
+> > CLASS(fd) after a bit more BPF-specific clean ups. This code is pretty
+> > sensitive, so I'd rather have all the non-trivial refactoring done
+> > separately. Thanks!
+>
+> Done (#stable-struct_fd);
 
-Done (#stable-struct_fd); BTW, which tree do you want "convert __bpf_prog_get()
-to CLASS(fd)" to go through?
+great, thanks, I'll look at this tomorrow
+
+> BTW, which tree do you want "convert __bpf_prog_get()
+> to CLASS(fd)" to go through?
+
+So we seem to have the following for BPF-related stuff:
+
+[PATCH 16/39] convert __bpf_prog_get() to CLASS(fd, ...)
+
+This looks to be ready to go in.
+
+[PATCH 17/39] bpf: resolve_pseudo_ldimm64(): take handling of a single
+ldimm64 insn into helper
+
+This one I'd like to rework differently and land it through bpf-next.
+
+[PATCH 18/39] bpf maps: switch to CLASS(fd, ...)
+
+This one touches __bpf_map_get() which I'm going to remove or refactor
+as part of the abovementioned refactoring, so there will be conflicts.
+
+[PATCH 19/39] fdget_raw() users: switch to CLASS(fd_raw, ...)
+
+This one touches a bunch of cases across multiple systems, including
+BPF's kernel/bpf/bpf_inode_storage.c.
+
+
+So how about this. We take #16 as is through bpf-next, change how #17
+is done, take 18 mostly as is but adjust as necessary. As for #19, if
+you could split out changes in bpf_inode_storage.c to a separate
+patch, we can also apply it in bpf-next as one coherent set. I'll send
+all that as one complete patch set for you to do the final review.
+
+WDYT?
 
