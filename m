@@ -1,112 +1,246 @@
-Return-Path: <cgroups+bounces-4233-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4234-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2627B950C21
-	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 20:21:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3392950C26
+	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 20:24:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C515F1F224BC
-	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 18:21:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6839D1F22417
+	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 18:24:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3D4E1A0723;
-	Tue, 13 Aug 2024 18:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7E031A2574;
+	Tue, 13 Aug 2024 18:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b="HEb1DCRK"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HZgE2J/7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECAB643155
-	for <cgroups@vger.kernel.org>; Tue, 13 Aug 2024 18:21:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B149F35894
+	for <cgroups@vger.kernel.org>; Tue, 13 Aug 2024 18:24:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723573291; cv=none; b=uAWc4YkxMngcawoqgk4Kl90KlvaRmMazLrM4XrudovW8ODgAher28I+LvQ2TRAtRsKuMj4RwsBLeDpIlkdQrm3tnpzHqkvhgYgKg/b032Ru0nLMuiuuOFE4QM/NPXL/dw+JO7RHLC+UPxQKZ+pa9DBBDlPsYIoO1nb8FqJtLF3E=
+	t=1723573462; cv=none; b=lIwoWdf3PryqYs9/fkYHCGtYT2OgFhF74gG6NYUbBJ7NPycnVl60cMVZBvyu7nbOytHg+qXhM9Hu49brNGtVCsSzrxsKiuYgw9vrIs0gEUIFxBuXz/mSKSz+d0vEJ8tmYFHvBk1EoETg0mOoZf7Cx6JKBuWVNdbEJxdLio8P2bU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723573291; c=relaxed/simple;
-	bh=RkoPZNXVHHad8Jd9754GoREbOaQjonahlrs0ZLGF4/Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YpjNhFyAo1WB942+6nsp3C06JRogSaI6WlaH4OZroZdkQkmRpOv2F6hXDruMQwDrWkHTo0W6yqxydTb5E6TmvO9GcAjOoDgiEmtWhTMLEBsrbf34Oe7eCDvwx7IHqP77aL7nK9vATN+5UbT0wdSQrMAy2Ta08YUVkr46Tx3he6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu; spf=pass smtp.mailfrom=andrew.cmu.edu; dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b=HEb1DCRK; arc=none smtp.client-ip=209.85.222.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=andrew.cmu.edu
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-7a4df9dc885so13746885a.0
-        for <cgroups@vger.kernel.org>; Tue, 13 Aug 2024 11:21:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.cmu.edu; s=google-2021; t=1723573286; x=1724178086; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4srqY1VfFiOMLNs/NhVDn1626nsyX4ITdrlzQ6L/6mo=;
-        b=HEb1DCRK+qd+OKjVB/nm9qn6HMK9nFIkyNCYjanhTNLZIbOM9wNJJ0rMl3+8LftHJc
-         /MUtFcswpu3cHpuRzHbZw+ep8Qk9wnCDEgM1lEWRS6VCGywrYLUZZ0RUgKPOZnfks7Ac
-         nPMc2dNXGEf0eRuZNyLm8PKNDNgUTmBTsKL0xl2wxzS5oMSaTpGbTtFfgWCuw8i9gjuW
-         OmO0CavisTBauyJu5YT2tgOJ82JJ2Q+SZz9wTxZcCZvggqGiZKOzR1cfDT5dBphH7YTo
-         482d/2PBQ7+v9gI5NrsiHoJKaU8/j6Qkh0hvKf+ZB50xSvdG86qpVx76SMVWRuEJVpGJ
-         nXPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723573286; x=1724178086;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4srqY1VfFiOMLNs/NhVDn1626nsyX4ITdrlzQ6L/6mo=;
-        b=j04l5UdhWBBmoecWKs1EzE/upAynAZ7RPGi9/sukfhJ0J/gqDUpUan+KacuGHEJYM+
-         8p0aahTlg2j61J9bblSImFcOFSghQm4McD2BmlZpPONtUNaoTiB2AL4GacnakV/bWLwL
-         i2dFs/rFaMw3LxICNflKU6rTA0v6yioKlYFhaJN5frYkpoOJQAbMJv8BuMWSw528Lf4l
-         5B/wCavMESzI9fygtOr893E4IVTwGXyff6IL2Sl4rkxkAXVkhJBTl8mdBVSm1RbPACqs
-         QvQNi7UV+XU6fE+1lGS9QG7yZcpwhAo0DY/cmnhNfexxd239QvZ51OgWHFb6wniw9bQ5
-         ydZA==
-X-Forwarded-Encrypted: i=1; AJvYcCXMitsf0ofkSACfECN7BjiDEpMOY/doGsYL6T+GbZrZ9QmtGOSXcmNUz4PP9ON/Xcvg4VZIQMaOFHTdXeq//qjKQO3xX7MY7Q==
-X-Gm-Message-State: AOJu0YzC27ZpZMK7XIv6DnDYj8P/aXFbJFuWCZk4I3TgOnwELawzt9Mb
-	OarHdvj1cMC+W4Cm07h6jvHjVNqRG4rm8AAFysoRspu1AzzHwMkYS6yWEu8XilXZanZ2B2JGwPw
-	cwQ==
-X-Google-Smtp-Source: AGHT+IE1AvRjfihIaTOyLrEW8dJCgcyY2eVQa95vZY+zLbcE73c0pa9MNuuc5TzPQHUA0ITZ8qMdsA==
-X-Received: by 2002:a05:620a:4504:b0:7a2:1bc:be05 with SMTP id af79cd13be357-7a4e38c4c51mr697580085a.31.1723573285919;
-        Tue, 13 Aug 2024 11:21:25 -0700 (PDT)
-Received: from localhost.localhost (pool-74-98-231-160.pitbpa.fios.verizon.net. [74.98.231.160])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a4c7d72091sm361400085a.42.2024.08.13.11.21.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Aug 2024 11:21:25 -0700 (PDT)
-Date: Tue, 13 Aug 2024 18:21:20 +0000
-From: Kaiyang Zhao <kaiyang2@cs.cmu.edu>
-To: David Rientjes <rientjes@google.com>
-Cc: linux-mm@kvack.org, cgroups@vger.kernel.org, roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev, muchun.song@linux.dev,
-	akpm@linux-foundation.org, mhocko@kernel.org, nehagholkar@meta.com,
-	abhishekd@meta.com, hannes@cmpxchg.org
-Subject: Re: [PATCH] mm,memcg: provide per-cgroup counters for NUMA balancing
- operations
-Message-ID: <ZrukILyQhMAKWwTe@localhost.localhost>
-References: <20240809212115.59291-1-kaiyang2@cs.cmu.edu>
- <e34a841c-c4c6-30fd-ca20-312c84654c34@google.com>
- <ZrqRXtVAkbC-q9SP@localhost.localhost>
- <284406af-56b8-4b66-750f-10f9d38cfac7@google.com>
+	s=arc-20240116; t=1723573462; c=relaxed/simple;
+	bh=Wf89HB0JuBuXM/v6zgDf4chaaOhtvYYLu8c84Gc4k5E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nDXNqZthntT0YdYCgSY4BKmiehzFQf0Oerc93cLxGOAXhx6wjZOrIqo7p7cjwSoEPuyHe9HM2hwKEMyP5wMTy2gvvomHSEgo/uTXUsPxIgQ1DL1qQoCtYmI7wLI1BSkEU61Uf9xN3xi4B4KGdAfFLRhf0/OoMvwdJme8zwGJI7A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HZgE2J/7; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1723573459;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZjeRpoHvIJg5MafdM5/VBNm6LQMFYWDnbQpg1j0Ad4c=;
+	b=HZgE2J/7Z+jTTxe3eDctZVlui84kM4JXcm9eV8W73luWCdYV8u7mt+MlVJkshd0X5PPLbP
+	0ME4BYQ1MOk5wEJaE9vaJ4tjm321AJayQtCAj5cddcswl56VzOYnZvVOKNJUylQ8P4yMgo
+	CbrhkyrqoBwJBEkFngvADmeizxfLBXE=
+Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-20-Gu2X6rZNPP6Xwvztoi3viw-1; Tue,
+ 13 Aug 2024 14:24:16 -0400
+X-MC-Unique: Gu2X6rZNPP6Xwvztoi3viw-1
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 25BCC1925388;
+	Tue, 13 Aug 2024 18:24:10 +0000 (UTC)
+Received: from [10.2.16.208] (unknown [10.2.16.208])
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id C4FA619560A3;
+	Tue, 13 Aug 2024 18:24:00 +0000 (UTC)
+Message-ID: <6ca76824-331f-407f-afa6-bf75cdca6d96@redhat.com>
+Date: Tue, 13 Aug 2024 14:23:57 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <284406af-56b8-4b66-750f-10f9d38cfac7@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 7/7] Docs/admin-guide/mm/workingset_report: document
+ sysfs and memcg interfaces
+To: Yuanchu Xie <yuanchu@google.com>, David Hildenbrand <david@redhat.com>,
+ "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+ Khalid Aziz <khalid.aziz@oracle.com>, Henry Huang <henry.hj@antgroup.com>,
+ Yu Zhao <yuzhao@google.com>, Dan Williams <dan.j.williams@intel.com>,
+ Gregory Price <gregory.price@memverge.com>, Huang Ying
+ <ying.huang@intel.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Lance Yang <ioworker0@gmail.com>, Randy Dunlap <rdunlap@infradead.org>,
+ Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Kalesh Singh <kaleshsingh@google.com>, Wei Xu <weixugc@google.com>,
+ David Rientjes <rientjes@google.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Johannes Weiner
+ <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Muchun Song <muchun.song@linux.dev>, Shuah Khan <shuah@kernel.org>,
+ Yosry Ahmed <yosryahmed@google.com>, Matthew Wilcox <willy@infradead.org>,
+ Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>,
+ Kairui Song <kasong@tencent.com>, "Michael S. Tsirkin" <mst@redhat.com>,
+ Vasily Averin <vasily.averin@linux.dev>, Nhat Pham <nphamcs@gmail.com>,
+ Miaohe Lin <linmiaohe@huawei.com>, Qi Zheng <zhengqi.arch@bytedance.com>,
+ Abel Wu <wuyun.abel@bytedance.com>,
+ "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20240813165619.748102-1-yuanchu@google.com>
+ <20240813165619.748102-8-yuanchu@google.com>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20240813165619.748102-8-yuanchu@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-On Mon, Aug 12, 2024 at 10:09:55PM -0700, David Rientjes wrote:
-> Does this include top-tier specific memory limits as well?
 
-Yes, we plan to have top-tier specific memory protection (like memory.low)
-and memory limit (like memory.high). Exactly what the interface will
-look like will probably depends on the community feedback. Maybe it's
-just adding a memory_top_tier.low/high knob, maybe something else.
+On 8/13/24 12:56, Yuanchu Xie wrote:
+> Add workingset reporting documentation for better discoverability of
+> its sysfs and memcg interfaces. Also document the required kernel
+> config to enable workingset reporting.
+>
+> Change-Id: Ib9dfc9004473baa6ef26ca7277d220b6199517de
+> Signed-off-by: Yuanchu Xie <yuanchu@google.com>
+> ---
+>   Documentation/admin-guide/mm/index.rst        |   1 +
+>   .../admin-guide/mm/workingset_report.rst      | 105 ++++++++++++++++++
 
-> And is your primary motivation the promotion path through NUMA Balancing 
-> or are you also looking at demotion to develop a comprehensive policy for 
-> memory placement using these limits?
+The new memory cgroup control files need to be documented in 
+Documentation/admin-guide/cgroup-v2.rst as well.
 
-Both promotion and demotion/reclaim path. If we want top-tier memory
-protection and limit, moderating both promotion and demotion is I think
-a must for converging on a stable distribution of memory usage on top-tier
-and slower tier.
+Cheers,
+Longman
 
-Kaiyang
+>   2 files changed, 106 insertions(+)
+>   create mode 100644 Documentation/admin-guide/mm/workingset_report.rst
+>
+> diff --git a/Documentation/admin-guide/mm/index.rst b/Documentation/admin-guide/mm/index.rst
+> index 8b35795b664b..61a2a347fc91 100644
+> --- a/Documentation/admin-guide/mm/index.rst
+> +++ b/Documentation/admin-guide/mm/index.rst
+> @@ -41,4 +41,5 @@ the Linux memory management.
+>      swap_numa
+>      transhuge
+>      userfaultfd
+> +   workingset_report
+>      zswap
+> diff --git a/Documentation/admin-guide/mm/workingset_report.rst b/Documentation/admin-guide/mm/workingset_report.rst
+> new file mode 100644
+> index 000000000000..ddcc0c33a8df
+> --- /dev/null
+> +++ b/Documentation/admin-guide/mm/workingset_report.rst
+> @@ -0,0 +1,105 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +=================
+> +Workingset Report
+> +=================
+> +Workingset report provides a view of memory coldness in user-defined
+> +time intervals, i.e. X bytes are Y milliseconds cold. It breaks down
+> +the user pages in the system per-NUMA node, per-memcg, for both
+> +anonymous and file pages into histograms that look like:
+> +::
+> +
+> +    1000 anon=137368 file=24530
+> +    20000 anon=34342 file=0
+> +    30000 anon=353232 file=333608
+> +    40000 anon=407198 file=206052
+> +    9223372036854775807 anon=4925624 file=892892
+> +
+> +The workingset reports can be used to drive proactive reclaim, by
+> +identifying the number of cold bytes in a memcg, then writing to
+> +``memory.reclaim``.
+> +
+> +Quick start
+> +===========
+> +Build the kernel with the following configurations. The report relies
+> +on Multi-gen LRU for page coldness.
+> +
+> +* ``CONFIG_LRU_GEN=y``
+> +* ``CONFIG_LRU_GEN_ENABLED=y``
+> +* ``CONFIG_WORKINGSET_REPORT=y``
+> +
+> +Optionally, the aging kernel daemon can be enabled with the following
+> +configuration.
+> +* ``CONFIG_WORKINGSET_REPORT_AGING=y``
+> +
+> +Sysfs interfaces
+> +================
+> +``/sys/devices/system/node/nodeX/workingset_report/page_age`` provides
+> +a per-node page age histogram, showing an aggregate of the node's lruvecs.
+> +Reading this file causes a hierarchical aging of all lruvecs, scanning
+> +pages and creates a new Multi-gen LRU generation in each lruvec.
+> +For example:
+> +::
+> +
+> +    1000 anon=0 file=0
+> +    2000 anon=0 file=0
+> +    100000 anon=5533696 file=5566464
+> +    18446744073709551615 anon=0 file=0
+> +
+> +``/sys/devices/system/node/nodeX/workingset_report/page_age_intervals``
+> +is a comma separated list of time in milliseconds that configures what
+> +the page age histogram uses for aggregation. For the above histogram,
+> +the intervals are:
+> +::
+> +    1000,2000,100000
+> +
+> +``/sys/devices/system/node/nodeX/workingset_report/refresh_interval``
+> +defines the amount of time the report is valid for in milliseconds.
+> +When a report is still valid, reading the ``page_age`` file shows
+> +the existing valid report, instead of generating a new one.
+> +
+> +``/sys/devices/system/node/nodeX/workingset_report/report_threshold``
+> +specifies how often the userspace agent can be notified for node
+> +memory pressure, in milliseconds. When a node reaches its low
+> +watermarks and wakes up kswapd, programs waiting on ``page_age`` are
+> +woken up so they can read the histogram and make policy decisions.
+> +
+> +Memcg interface
+> +===============
+> +While ``page_age_interval`` is defined per-node in sysfs, ``page_age``,
+> +``refresh_interval`` and ``report_threshold`` are available per-memcg.
+> +
+> +``/sys/fs/cgroup/.../memory.workingset.page_age``
+> +The memcg equivalent of the sysfs workingset page age histogram
+> +breaks down the workingset of this memcg and its children into
+> +page age intervals. Each node is prefixed with a node header and
+> +a newline. Non-proactive direct reclaim on this memcg can also
+> +wake up userspace agents that are waiting on this file.
+> +e.g.
+> +::
+> +
+> +    N0
+> +    1000 anon=0 file=0
+> +    2000 anon=0 file=0
+> +    3000 anon=0 file=0
+> +    4000 anon=0 file=0
+> +    5000 anon=0 file=0
+> +    18446744073709551615 anon=0 file=0
+> +
+> +``/sys/fs/cgroup/.../memory.workingset.refresh_interval``
+> +The memcg equivalent of the sysfs refresh interval. A per-node
+> +number of how much time a page age histogram is valid for, in
+> +milliseconds.
+> +e.g.
+> +::
+> +
+> +    echo N0=2000 > memory.workingset.refresh_interval
+> +
+> +``/sys/fs/cgroup/.../memory.workingset.report_threshold``
+> +The memcg equivalent of the sysfs report threshold. A per-node
+> +number of how often userspace agent waiting on the page age
+> +histogram can be woken up, in milliseconds.
+> +e.g.
+> +::
+> +
+> +    echo N0=1000 > memory.workingset.report_threshold
+
 
