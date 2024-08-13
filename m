@@ -1,78 +1,82 @@
-Return-Path: <cgroups+bounces-4237-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4238-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6FD0950E18
-	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 22:48:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97C1C950E1A
+	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 22:48:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93CA12840BB
-	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 20:48:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E391284EDC
+	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 20:48:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A37B1A7049;
-	Tue, 13 Aug 2024 20:47:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E6D61A7065;
+	Tue, 13 Aug 2024 20:47:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="j6VWNOfY"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vsOcKd0s"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7F83B192
-	for <cgroups@vger.kernel.org>; Tue, 13 Aug 2024 20:47:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65EF41A3BAE
+	for <cgroups@vger.kernel.org>; Tue, 13 Aug 2024 20:47:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723582075; cv=none; b=qEJGi7GVgb9U4ViCbmN8Ft5IOK1zd66yV7qmfoanfQiMtTlWNsIw1ogFxXS+TAaS8ypHagthWIZStt15gix9cZ0XmAwLloZeDFfNMVp3n9jZEUV12vBPESkvO3TPt+V4pNml/Ys34DUuAz0ojSB3bxhGQNwuXg7UvrWYhDx5ib8=
+	t=1723582076; cv=none; b=kMbWAS48pv7giwXaA3DpKH4P72ytHagW0UDtLdBrMgNnjVOvAm02u3CnWLAvI1fXKP8bEDVA1lIo8sQo/USTZJFYUqR6NO/g2YJuNPU4i+x9qYOAshmC0t60JusJRBXK+EK6KY2/Lc8cQARJmsKlub7ZVmJcUGsA1or3Abaaxtg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723582075; c=relaxed/simple;
-	bh=x8+0SHcDmVGIqKZHn79dfKmGygZtA2zzr59rfOJVeY0=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=PqY3D+oKfGHcamvDkZI3TNWS5vDEPdGM9iWRCfZT7YfER9sUIGglerK3ILDyrKYMZf1nDyaZqAOjegOB8i0YQz7fT4bxlQe/HPVZqv8Zd2wQga29CaVRiFWoMd8/oHghclcXCoW0dLsbRtY+A2vZJrAfSzitOYJBotrQ9rMBBCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kinseyho.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=j6VWNOfY; arc=none smtp.client-ip=209.85.128.202
+	s=arc-20240116; t=1723582076; c=relaxed/simple;
+	bh=aQJok3gSjvHmXRiPrNrzugTOpERQ4gz+fm2rPvjru2I=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=cVcVREzN6CL6/3G+lL/CKpxYmmVOvVD44i1SHwCa5Yjx+8DGke6iyFzbWZEw9CgWnVcUChU34DkMuybSswqCp+kz/kWXbEh1IPzfqavtCvaAN5KbKMsYm+8g1x/0tsEgCelaHq+fPnoaztQAJ6e1jA+rIF2IadxgPFRwguCPofU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kinseyho.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vsOcKd0s; arc=none smtp.client-ip=209.85.215.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kinseyho.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6688c44060fso136690057b3.2
-        for <cgroups@vger.kernel.org>; Tue, 13 Aug 2024 13:47:53 -0700 (PDT)
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-7a28217cfecso5360555a12.2
+        for <cgroups@vger.kernel.org>; Tue, 13 Aug 2024 13:47:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1723582073; x=1724186873; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=6VTAXcSzg2nJxUF/QOoTMCzcY75N5+KjH45iaTDlnBg=;
-        b=j6VWNOfYgpptKR0mePrlKzNq4RsmgwAa0iDL8zfyx9k0cFtydGL4fy40hsDzaw0nwm
-         /a1XRfpHgLGWHId0TZEyoFLL1XYrdbmf6WrKdI+Rqx2PGGOq4DnQLmtGsfdaO8qAqHtb
-         T47A1jB49KPMltSCbjr7M10KyWmovOtYg4Yrj98GFjk6MbJJAe/tMJfTnhcjnbthEjqn
-         KmhmbV0VwS1B5wWq37uMz7sdd0gIR4PGGdeDdIotb0zlzKE6M97gVR9FQ7FvKlRkrMyX
-         paYPHZ/ASwJDEr7shIHL1dNmqbHmCeJ8tUeHN+A+VTh9TE+Kxx7/kZ2k8JWIsVaBXly5
-         YB9Q==
+        d=google.com; s=20230601; t=1723582075; x=1724186875; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BYWJhwEE6NYCkgyDLBhCsOHKcazNm9LYuzYyiRCtiIM=;
+        b=vsOcKd0sLbpv/ij/D4qpGkGeeJcPivdojRl/gizzBRZCMS5pJVL4G9XfiVuX6ThhFX
+         PyjGOtPs+9LsYUIsjw2yCwnVg4MzWzjL0+sBmPlGkLgGdDBsB8iapH/7Q4Zpl+2BEJ0m
+         6tTJR6EA+1YuS7zP6HakykyqKAxOi9P3sMQqtp46A10WrWCU9lGITSR/oS23oXWbxVEx
+         5TBSJiz7MmXXRW6ZJXVoKZGWIONA3rOGQtGTyPnf9uDEYxcJVCDqW27YSlKLRoY7MfQ7
+         9n+Y1Qr//iZiQpvjsS1V9DR65nscfmw7tNbyDJfY8d7R9Ytq1cHKog3E3m5mhHFPrQbL
+         nN/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723582073; x=1724186873;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6VTAXcSzg2nJxUF/QOoTMCzcY75N5+KjH45iaTDlnBg=;
-        b=wTSYCV2Wjbfh3SzdqisZU4Imw0RLu4Gtb7EgTXafwv9uG4P2/lgjKVZ4wguJbiER7W
-         gNcXSxu8+vK4DGxRyeJpY8mcgi6Fnm8WVo3G+qiInUtUh2vhx4e0DuqTBQw5Jz6Dq+Xm
-         OWgv4SxTAs11KlqLRIp1e7KFgthMO84yFCU/Z7kvrx/1aO0utL3V/7gUo0RO5be209n0
-         QWQ2h4nFe6FpgzZ0C9tM7hprH7fhCykzHKMX9s10xF79KMmWgiMhyC7r9z1tR9+ETqjk
-         dPwo7AvyXi8VY6u/v/6ipt2MDFTewyj+NIElaT/hev3YtcnE8lR34cNnIIBK+rFAstYc
-         Br5g==
-X-Forwarded-Encrypted: i=1; AJvYcCVDkRLQYjSIQ7kyr1MFNiMqU8nkasVfYwELVXZu8Q+EhC5R6lhFBtkCtsFwOooLgUv9biPvKP/K6375gGYUh9eo0X5nZIssSQ==
-X-Gm-Message-State: AOJu0Yw/Sx/e40hD2oCoKb/Biqq7MjhxK47qgvWCJblR+GKYYTWg9Dn5
-	NpsjWqxweE/H4hE837xHswdKt+P8o8h2xnfuYRuQouWkuoEIIQhZv/h9XrOMd30XSiNq79Sc3TK
-	lWMMISet+ww==
-X-Google-Smtp-Source: AGHT+IFzblsx6HVwSONVyuq1qq/U8tF5umc8wK7YjkPphN9wlYyR7AcobNhp+giR2cU9kqZsxLwEY6K/rtnFFQ==
+        d=1e100.net; s=20230601; t=1723582075; x=1724186875;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BYWJhwEE6NYCkgyDLBhCsOHKcazNm9LYuzYyiRCtiIM=;
+        b=Zaj93dRK0IzkQndMj1jypZ4AZ780R4SbC9foFTyx0xRvBb+Yb+6oJiHuwwMdP4tFR0
+         Mwo2C8VWzoNnQjvAhvFJZcUdf7mbyOHW148hzdADj+IYNh6Qj3Hx0jD6BN7soxobgn6J
+         zBB6parHhpES01ShyRCBJZDPhG1Yee/N7i8XONJgG+pD46Lzr8uFNi1G4BgfPK21bTw8
+         3ejc2c/EKx+b9E0dgzEF8ORWhAuKUNHaZmcpQZWuBBiuz9NfA7Xv2Pr5UcEaqUPhPpLU
+         8Fsw31OLpjrpaj1wMPDioHjt2RaOpTVGnK4yI6/zbF2S3fRUzU66p12TwzZBz1mJOfwT
+         8Dng==
+X-Forwarded-Encrypted: i=1; AJvYcCWa1wsKhtIr+R38Emwq0rMREey3LgjNE9ubQloXRHrFB3+q+JqmjnPC4SV7buk9zVNiGT/vX2nFU6TSss5+4awptMl8v8y7nQ==
+X-Gm-Message-State: AOJu0YyRckY8HHofdxHo9Izt86En7hmBlPKe/AqTTJpa8/SzNtCSPxVC
+	SU4u+3/jXoBl4x9yTS2mAYSIZkuTQ43XIH0r4wA3DYk4ZLjm4pE024s9OvjQDK+FV5qp2l6GsUK
+	EDwmauTyQTw==
+X-Google-Smtp-Source: AGHT+IHxMBB1WIpSpQKruSLzaZb5mFQ79yQ49km4F0bFBxJKf7BgUc4XswgMUAKJQxmwnNey7FUrSuzdOv6Aag==
 X-Received: from kinseyct.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:46b])
- (user=kinseyho job=sendgmr) by 2002:a0d:d385:0:b0:673:b39a:92ea with SMTP id
- 00721157ae682-6ac997f8a9cmr286847b3.7.1723582072721; Tue, 13 Aug 2024
- 13:47:52 -0700 (PDT)
-Date: Tue, 13 Aug 2024 20:47:10 +0000
+ (user=kinseyho job=sendgmr) by 2002:a63:114a:0:b0:694:4311:6eb4 with SMTP id
+ 41be03b00d2f7-7c6a587fd3fmr1059a12.8.1723582074503; Tue, 13 Aug 2024 13:47:54
+ -0700 (PDT)
+Date: Tue, 13 Aug 2024 20:47:11 +0000
+In-Reply-To: <20240813204716.842811-1-kinseyho@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240813204716.842811-1-kinseyho@google.com>
 X-Mailer: git-send-email 2.46.0.76.ge559c4bf1a-goog
-Message-ID: <20240813204716.842811-1-kinseyho@google.com>
-Subject: [PATCH mm-unstable v2 0/5] Improve mem_cgroup_iter()
+Message-ID: <20240813204716.842811-2-kinseyho@google.com>
+Subject: [PATCH mm-unstable v2 1/5] cgroup: clarify css sibling linkage is
+ protected by cgroup_mutex or RCU
 From: Kinsey Ho <kinseyho@google.com>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
@@ -83,31 +87,79 @@ Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
 	Kinsey Ho <kinseyho@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Incremental cgroup iteration is being used again [1]. This patchset
-improves the reliability of mem_cgroup_iter(). It also improves
-simplicity and code readability.
+Explicitly document that css sibling/descendant linkage is protected by
+cgroup_mutex or RCU. Also, document in css_next_descendant_pre() and
+similar functions that is isn't necessary to hold a ref on @pos.
 
-[1] https://lore.kernel.org/20240514202641.2821494-1-hannes@cmpxchg.org/
---
+The following changes in this patchset rely on this clarification
+for simplification in memcg iteration code.
 
-v2: add patch to clarify css sibling linkage is RCU protected. The
-kernel build bot RCU sparse error from v1 has been ignored.
-v1: https://lore.kernel.org/20240724190214.1108049-1-kinseyho@google.com/
+Suggested-By: Yosry Ahmed <yosryahmed@google.com>
+Signed-Off-By: Kinsey Ho <kinseyho@google.com>
 
-Kinsey Ho (5):
-  cgroup: clarify css sibling linkage is protected by cgroup_mutex or
-    RCU
-  mm: don't hold css->refcnt during traversal
-  mm: increment gen # before restarting traversal
-  mm: restart if multiple traversals raced
-  mm: clean up mem_cgroup_iter()
+---
+ include/linux/cgroup-defs.h |  6 +++++-
+ kernel/cgroup/cgroup.c      | 16 +++++++++-------
+ 2 files changed, 14 insertions(+), 8 deletions(-)
 
- include/linux/cgroup-defs.h |  6 ++-
- include/linux/memcontrol.h  |  6 +--
- kernel/cgroup/cgroup.c      | 16 +++----
- mm/memcontrol.c             | 84 +++++++++++++++----------------------
- 4 files changed, 51 insertions(+), 61 deletions(-)
-
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index 7fc2d0195f56..6862243bd1c2 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -172,7 +172,11 @@ struct cgroup_subsys_state {
+ 	/* reference count - access via css_[try]get() and css_put() */
+ 	struct percpu_ref refcnt;
+ 
+-	/* siblings list anchored at the parent's ->children */
++	/*
++	 * siblings list anchored at the parent's ->children
++	 *
++	 * linkage is protected by cgroup_mutex or RCU
++	 */
+ 	struct list_head sibling;
+ 	struct list_head children;
+ 
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 0a97cb2ef124..ece2316e2bca 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -4602,8 +4602,9 @@ struct cgroup_subsys_state *css_next_child(struct cgroup_subsys_state *pos,
+  *
+  * While this function requires cgroup_mutex or RCU read locking, it
+  * doesn't require the whole traversal to be contained in a single critical
+- * section.  This function will return the correct next descendant as long
+- * as both @pos and @root are accessible and @pos is a descendant of @root.
++ * section. Additionally, it isn't necessary to hold onto a reference to @pos.
++ * This function will return the correct next descendant as long as both @pos
++ * and @root are accessible and @pos is a descendant of @root.
+  *
+  * If a subsystem synchronizes ->css_online() and the start of iteration, a
+  * css which finished ->css_online() is guaranteed to be visible in the
+@@ -4651,8 +4652,9 @@ EXPORT_SYMBOL_GPL(css_next_descendant_pre);
+  *
+  * While this function requires cgroup_mutex or RCU read locking, it
+  * doesn't require the whole traversal to be contained in a single critical
+- * section.  This function will return the correct rightmost descendant as
+- * long as @pos is accessible.
++ * section. Additionally, it isn't necessary to hold onto a reference to @pos.
++ * This function will return the correct rightmost descendant as long as @pos
++ * is accessible.
+  */
+ struct cgroup_subsys_state *
+ css_rightmost_descendant(struct cgroup_subsys_state *pos)
+@@ -4696,9 +4698,9 @@ css_leftmost_descendant(struct cgroup_subsys_state *pos)
+  *
+  * While this function requires cgroup_mutex or RCU read locking, it
+  * doesn't require the whole traversal to be contained in a single critical
+- * section.  This function will return the correct next descendant as long
+- * as both @pos and @cgroup are accessible and @pos is a descendant of
+- * @cgroup.
++ * section. Additionally, it isn't necessary to hold onto a reference to @pos.
++ * This function will return the correct next descendant as long as both @pos
++ * and @cgroup are accessible and @pos is a descendant of @cgroup.
+  *
+  * If a subsystem synchronizes ->css_online() and the start of iteration, a
+  * css which finished ->css_online() is guaranteed to be visible in the
 -- 
 2.46.0.76.ge559c4bf1a-goog
 
