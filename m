@@ -1,123 +1,314 @@
-Return-Path: <cgroups+bounces-4220-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4221-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDF9594FD0F
-	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 07:10:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E505794FD18
+	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 07:12:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61C2E1F221B2
-	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 05:10:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14EFF1C22821
+	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 05:12:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1A58219EB;
-	Tue, 13 Aug 2024 05:09:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2C9C225AF;
+	Tue, 13 Aug 2024 05:12:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Mvfnoxv2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IycqIcAQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 285241C68C
-	for <cgroups@vger.kernel.org>; Tue, 13 Aug 2024 05:09:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFAC623741;
+	Tue, 13 Aug 2024 05:12:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723525799; cv=none; b=WM4gnVoPV+3hM7R2mvCAbb37OnCLsJgAIsgYr8Abbwb0B/VrwjJtmYLpv9C4Bx6/Gy9IMUdoeL01vCeUwb5y+d+l4acfsUPd34RaV8+qPZi6brAWk5V/3cLPCiiXo0qjut99w2HAHrzXp5oV1HJ7xzG49fII0UenfZXqhEtJbTI=
+	t=1723525924; cv=none; b=BerdiVMQVHqHLYlU1NyFU38q6H9mBiMmEgk6XyzVubPja9ruTH8PhuNjGQI0WdwUJa2V8yRVYE6jLMOCmAly846hpZ661TGAs7xvfWxB4AxgRr4zOYjjPinCOUiBOzFq9EAHi4Ut2B1ab6bjLnYnnp3U0Im/nRFzIgFK03mMi+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723525799; c=relaxed/simple;
-	bh=Dcl/gHh+26jW3IUuBhjJO/+Tjz9vSvZTpOazD//w/VU=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=HnP88NTLjQoTrS3JOd9ZihWZjNHe7xnDTgTOq/kWhvCyDkjxvK/kjq1uGycIS1NNSwIOw/SKgOaRfiM2K/HlWYkUff7VBMTdjddqZYeOKllg0lfemv77dG59IJBTLeNkmHqfLyfCVTo6hCKL0h95S+hoYDAKDhU6Bf1krSVGl8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Mvfnoxv2; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-200aa53d6d2so57815ad.0
-        for <cgroups@vger.kernel.org>; Mon, 12 Aug 2024 22:09:57 -0700 (PDT)
+	s=arc-20240116; t=1723525924; c=relaxed/simple;
+	bh=HNZ4GYQXMWOoLmkS3WzlJc5HrZQW/hblLbhux2481/w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YVeBPMEVXu6cXEYKto35Nk5l7p673oGNvBqQKnuf3z2DlNTHG6qRAb+0rFi+BmK3WVZHNLXaDaElJoj/G5R8RnBQlGFSSIQBP1b/KR6i8fYrycNmT/Le0MBwshmkJgvO1zEtY13zh7oE22EXz9BRUzejXQy5pH7lmT0VZoab2yE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IycqIcAQ; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5a10bb7bcd0so6254101a12.3;
+        Mon, 12 Aug 2024 22:12:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1723525797; x=1724130597; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=v1QYFau/BoTzy76SOWuTODxBFqibSdOTdy65uJMl6Iw=;
-        b=Mvfnoxv269in7OXaaEK7Yp1j7zoDnYMgtUI2bZ2uGbFYWO+ByBbuswOspdMoAmi5ld
-         LUh2oN/MZslcefe3kvBPAyBmNwLMK608rPMmIZRF7uFMUr0g7il6q63EQIkbnWcXQ4Xm
-         YYEIhL48ACktuefnQjC0wRjK7ZpPHWPf3ym2WwbPil/c+dC6bCRnYwR0Q6kdEjcveMbj
-         1mV5OZqUG/nLpeJZqySxtD6+DGPjekDvb1RGoNi+lFr4IP3RyBsSWjOK1UsrtKkWxYNm
-         7V395WeQWrOgpOXNPU90w4SWTCojSt7gKr7+yc+MUq50RHMpQCJiWuiC1B7pYhRDlX5D
-         dCEA==
+        d=gmail.com; s=20230601; t=1723525921; x=1724130721; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xhT2Y2oF/uJ6fCpK+SpF85ANnuI7c6Ysyk5Jyojf0og=;
+        b=IycqIcAQboXiO/yq/CXFqUpT22Sf2QrIYkgPGgdHOBabkcsmQFiFXmZxY2HjGZjcqy
+         LLxCzFtlF6Vke0DLDp5tILZbeK/F+UldxjQpDuJt76DE9dMzyOzx20Kv+zipf/dbec2p
+         wBzm3zyTkyKk1gMQeK7B9uTAGWur5cq+VEr5Q9JtO4HDTZOV+a4kW+AxLuh/otcOcjHe
+         F64HtOLMSnsjURlioaMeGr/8PdTNudW00Fc3+3n5h+OQG/6vlhTmjBSUga6XfqPsPoXp
+         qVb246D8ZlvInNtdJHvcOrrabQGI/IWcwASpuzxiyLhmcAJq0N1tPmSdxvyWf89vvqyL
+         r+Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723525797; x=1724130597;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v1QYFau/BoTzy76SOWuTODxBFqibSdOTdy65uJMl6Iw=;
-        b=aTPtqSbciVlGTNd7jxaZbaqlMcQgj9XwH5fI9yeN5vXPbX9yotFXA69+DbRjOd53M0
-         cxfCjLbBLJVFsg7THfhtBq3lovO5ouMGyNWhUyq48F50p7aHKivL0GgoXkrdshUdhO7S
-         yN4Em0i6awQpAr0SjJ8p6PNLYkvW0jypA5rpyv4gv8PaMfXT7XeA0uR1rG+sr88UbtUi
-         AqjrzGPNFLRr3hZiQir/FGWD5TO9dKcp8lMcvNr+VQzxrK6RiepbIs8lPJ6lOvo6FeXl
-         1bTSJMseZUCQ8YjGUfMKGR24ZV+K30zq+BgwTVGunTbiCBh2XW4T0+Lr4VOv08VvnpAF
-         w3aA==
-X-Forwarded-Encrypted: i=1; AJvYcCURvGcFByRe6kSq+Bn2GHjyHoFYewRovr0br6R4ruYBAJY1D8p40tiG07GtViYs4tfwvm6hB/PMHmUVgyTuuzbu/nP7KXHNcA==
-X-Gm-Message-State: AOJu0YwhkTXP7cx/Zi18gbyP/VQKkhndr+OQF/1MnMTZ3RnxgLaopQ/K
-	7yipvuaw+xLxatLrzppdqVVgTCoHwS6N7AhQrb0gWeE+HZSq5vX9AJXNlf+gAA==
-X-Google-Smtp-Source: AGHT+IENkwUd9JvkyJ8WZbppPJls1rnH7OlPA+oSb9ghodPLmXaV1doVf6u+fPEMV5OfZQX90Fh5Nw==
-X-Received: by 2002:a17:902:f948:b0:1f6:5bba:8ea3 with SMTP id d9443c01a7336-201cdc4fdb4mr591195ad.25.1723525797103;
-        Mon, 12 Aug 2024 22:09:57 -0700 (PDT)
-Received: from [2620:0:1008:15:499:4e79:c57b:11f5] ([2620:0:1008:15:499:4e79:c57b:11f5])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-201cd14ac10sm5161755ad.102.2024.08.12.22.09.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Aug 2024 22:09:56 -0700 (PDT)
-Date: Mon, 12 Aug 2024 22:09:55 -0700 (PDT)
-From: David Rientjes <rientjes@google.com>
-To: Kaiyang Zhao <kaiyang2@cs.cmu.edu>
-cc: linux-mm@kvack.org, cgroups@vger.kernel.org, roman.gushchin@linux.dev, 
-    shakeel.butt@linux.dev, muchun.song@linux.dev, akpm@linux-foundation.org, 
-    mhocko@kernel.org, nehagholkar@meta.com, abhishekd@meta.com, 
-    hannes@cmpxchg.org
-Subject: Re: [PATCH] mm,memcg: provide per-cgroup counters for NUMA balancing
- operations
-In-Reply-To: <ZrqRXtVAkbC-q9SP@localhost.localhost>
-Message-ID: <284406af-56b8-4b66-750f-10f9d38cfac7@google.com>
-References: <20240809212115.59291-1-kaiyang2@cs.cmu.edu> <e34a841c-c4c6-30fd-ca20-312c84654c34@google.com> <ZrqRXtVAkbC-q9SP@localhost.localhost>
+        d=1e100.net; s=20230601; t=1723525921; x=1724130721;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xhT2Y2oF/uJ6fCpK+SpF85ANnuI7c6Ysyk5Jyojf0og=;
+        b=Sh+nXna6S1DXunR/740CdjD1tOIJ4GCGPZgsdsX98jP86PM1n3UnQQd41ajKMtY1Yr
+         kk9KFUVb6sH+zquhE+dZWAjLXRoj/pOfTw97ZMfIOgcL9ZObPOdUEzP8H2qbVs05T9ha
+         3s8+mrCb2b9cHQRUVdLrKZJ7hq8zAOW7lbf1dabINBkgzNgIkXFotwQ0/AscnQbfBHf2
+         3h6cxiAouGswIl2BUY+7UMeC4olPID3OXbddw0AjPQRaLMLkE3LohuuVePsq1NCbrTMn
+         Y01rI57ZCJxjjZfyfhna5fB3dx2aMgjZWttD2GdvTyb4qCMT3flt3SBLTZYklvEz+lXF
+         FHTA==
+X-Forwarded-Encrypted: i=1; AJvYcCUFD+IcT1VLo+MEBRos2+aj21WS4VzGHYfhlQz3vOI2Zj6ThAyewnbMFUuEFwAAhErUqF+QuWD4AzFJcCRRovCsAFncAjMfAaot+JhJ6IkWmduTYiunX8Vj7rBX6rc3sO6IeHGpmp0c1w8+DEIKFA0YkTs1RT8MCj1SsDmhXO48mtMR
+X-Gm-Message-State: AOJu0YwV3zaT5znuhUaB3uuOGwJRQQeH0ydS/F1+Tk/ZNuJ95DEg+ejr
+	hFDjVwi3GCdhehoyKU9fiHTMDQ6WwjEjDX878+Wkhaxix0LOUZzZrPj+P7fFW8VMzlv6+8+MJym
+	QEaQOmemPCIHB2oNrVLNw9cZFDDuvQFe9ddI=
+X-Google-Smtp-Source: AGHT+IHY9qm5hOo0rihOZU0LIYFyLAAviDBaIbzofcC8Ywjoc5SlO7vwoHvwiGbR5dMn7tBFWDnGueFQeDifIUQjjIY=
+X-Received: by 2002:a05:6402:3511:b0:5a0:e62c:61bd with SMTP id
+ 4fb4d7f45d1cf-5bd44c698b1mr1424586a12.29.1723525920619; Mon, 12 Aug 2024
+ 22:12:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20240812150049.8252-1-ioworker0@gmail.com> <zjbn575huc6pk7jpv2ipoayfk4bvfu5z5imb5muk5drksa7p3q@xcr5imtt4zro>
+In-Reply-To: <zjbn575huc6pk7jpv2ipoayfk4bvfu5z5imb5muk5drksa7p3q@xcr5imtt4zro>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Tue, 13 Aug 2024 13:11:24 +0800
+Message-ID: <CAK1f24=QwFrh3CfpV8kBrBsGVcyyLtfaNpy6ju8JJZctXqF+Xg@mail.gmail.com>
+Subject: Re: [BUG] cgroupv2/blk: inconsistent I/O behavior in Cgroup v2 with
+ set device wbps and wiops
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	linux-block@vger.kernel.org, cgroups@vger.kernel.org, josef@toxicpanda.com, 
+	tj@kernel.org, fujita.tomonori@lab.ntt.co.jp, boqun.feng@gmail.com, 
+	a.hindborg@samsung.com, paolo.valente@unimore.it, axboe@kernel.dk, 
+	vbabka@kernel.org, david@redhat.com, 21cnbao@gmail.com, 
+	baolin.wang@linux.alibaba.com, libang.li@antgroup.com, 
+	Yu Kuai <yukuai3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 12 Aug 2024, Kaiyang Zhao wrote:
+Hi Michal,
 
-> On Sun, Aug 11, 2024 at 01:16:53PM -0700, David Rientjes wrote:
-> > Hi Kaiyang, have you considered per-memcg control over NUMA balancing 
-> > operations as well?
-> > 
-> > Wondering if that's the direction that you're heading in, because it would 
-> > be very useful to be able to control NUMA balancing at memcg granularity 
-> > on multi-tenant systems.
-> > 
-> > I mentioned this at LSF/MM/BPF this year.  If people believe this is out 
-> > of scope for memcg, that would be good feedback as well.
-> 
-> Yes that's exactly where we are heading -- per-cgroup control of NUMA
-> balancing operations in the context of memory tiering with CXL memory,
-> by extending the concept of memory.low and memory.high. The use case is
-> enabling a fair share of top tier memory across containers.
-> 
+Thanks a lot for jumping in!
 
-Thanks Kaiyang, that will be very useful to test out, looking forward to 
-seeing the patches!
+On Mon, Aug 12, 2024 at 11:43=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.c=
+om> wrote:
+>
+> +Cc Kuai
+>
+> On Mon, Aug 12, 2024 at 11:00:30PM GMT, Lance Yang <ioworker0@gmail.com> =
+wrote:
+> > Hi all,
+> >
+> > I've run into a problem with Cgroup v2 where it doesn't seem to correct=
+ly limit
+> > I/O operations when I set both wbps and wiops for a device. However, if=
+ I only
+> > set wbps, then everything works as expected.
+> >
+> > To reproduce the problem, we can follow these command-based steps:
+> >
+> > 1. **System Information:**
+> >    - Kernel Version and OS Release:
+> >      ```
+> >      $ uname -r
+> >      6.10.0-rc5+
+> >
+> >      $ cat /etc/os-release
+> >      PRETTY_NAME=3D"Ubuntu 24.04 LTS"
+> >      NAME=3D"Ubuntu"
+> >      VERSION_ID=3D"24.04"
+> >      VERSION=3D"24.04 LTS (Noble Numbat)"
+> >      VERSION_CODENAME=3Dnoble
+> >      ID=3Dubuntu
+> >      ID_LIKE=3Ddebian
+> >      HOME_URL=3D"https://www.ubuntu.com/"
+> >      SUPPORT_URL=3D"https://help.ubuntu.com/"
+> >      BUG_REPORT_URL=3D"https://bugs.launchpad.net/ubuntu/"
+> >      PRIVACY_POLICY_URL=3D"https://www.ubuntu.com/legal/terms-and-polic=
+ies/privacy-policy"
+> >      UBUNTU_CODENAME=3Dnoble
+> >      LOGO=3Dubuntu-logo
+> >      ```
+> >
+> > 2. **Device Information and Settings:**
+> >    - List Block Devices and Scheduler:
+> >      ```
+> >      $ lsblk
+> >      NAME    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+> >      sda     8:0    0   4.4T  0 disk
+> >      =E2=94=94=E2=94=80sda1  8:1    0   4.4T  0 part /data
+> >      ...
+> >
+> >      $ cat /sys/block/sda/queue/scheduler
+> >      none [mq-deadline] kyber bfq
+> >
+> >      $ cat /sys/block/sda/queue/rotational
+> >      1
+> >      ```
+> >
+> > 3. **Reproducing the problem:**
+> >    - Navigate to the cgroup v2 filesystem and configure I/O settings:
+> >      ```
+> >      $ cd /sys/fs/cgroup/
+> >      $ stat -fc %T /sys/fs/cgroup
+> >      cgroup2fs
+> >      $ mkdir test
+> >      $ echo "8:0 wbps=3D10485760 wiops=3D100000" > io.max
+> >      ```
+> >      In this setup:
+> >      wbps=3D10485760 sets the write bytes per second limit to 10 MB/s.
+> >      wiops=3D100000 sets the write I/O operations per second limit to 1=
+00,000.
+> >
+> >    - Add process to the cgroup and verify:
+> >      ```
+> >      $ echo $$ > cgroup.procs
+> >      $ cat cgroup.procs
+> >      3826771
+> >      3828513
+> >      $ ps -ef|grep 3826771
+> >      root     3826771 3826768  0 22:04 pts/1    00:00:00 -bash
+> >      root     3828761 3826771  0 22:06 pts/1    00:00:00 ps -ef
+> >      root     3828762 3826771  0 22:06 pts/1    00:00:00 grep --color=
+=3Dauto 3826771
+> >      ```
+> >
+> >    - Observe I/O performance using `dd` commands and `iostat`:
+> >      ```
+> >      $ dd if=3D/dev/zero of=3D/data/file1 bs=3D512M count=3D1 &
+> >      $ dd if=3D/dev/zero of=3D/data/file1 bs=3D512M count=3D1 &
+> >      ```
+> >      ```
+> >      $ iostat -d 1 -h -y -p sda
+> >
+> >          tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wr=
+tn    kB_dscd Device
+> >      7.00         0.0k         1.3M         0.0k       0.0k       1.3M =
+      0.0k sda
+> >      7.00         0.0k         1.3M         0.0k       0.0k       1.3M =
+      0.0k sda1
+> >
+> >
+> >       tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn =
+   kB_dscd Device
+> >      5.00         0.0k         1.2M         0.0k       0.0k       1.2M =
+      0.0k sda
+> >      5.00         0.0k         1.2M         0.0k       0.0k       1.2M =
+      0.0k sda1
+> >
+> >
+> >       tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn =
+   kB_dscd Device
+> >     21.00         0.0k         1.4M         0.0k       0.0k       1.4M =
+      0.0k sda
+> >     21.00         0.0k         1.4M         0.0k       0.0k       1.4M =
+      0.0k sda1
+> >
+> >
+> >       tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn =
+   kB_dscd Device
+> >      5.00         0.0k         1.2M         0.0k       0.0k       1.2M =
+      0.0k sda
+> >      5.00         0.0k         1.2M         0.0k       0.0k       1.2M =
+      0.0k sda1
+> >
+> >
+> >       tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn =
+   kB_dscd Device
+> >      5.00         0.0k         1.2M         0.0k       0.0k       1.2M =
+      0.0k sda
+> >      5.00         0.0k         1.2M         0.0k       0.0k       1.2M =
+      0.0k sda1
+> >
+> >
+> >       tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn =
+   kB_dscd Device
+> >   1848.00         0.0k       448.1M         0.0k       0.0k     448.1M =
+      0.0k sda
+> >   1848.00         0.0k       448.1M         0.0k       0.0k     448.1M =
+      0.0k sda1
+> >      ```
+> > Initially, the write speed is slow (<2MB/s) then suddenly bursts to sev=
+eral
+> > hundreds of MB/s.
+>
+> What it would be on average?
+> IOW how long would the whole operation in throttled cgroup take?
+>
+> >
+> >    - Testing with wiops set to max:
+> >      ```
+> >      echo "8:0 wbps=3D10485760 wiops=3Dmax" > io.max
+> >      $ dd if=3D/dev/zero of=3D/data/file1 bs=3D512M count=3D1 &
+> >      $ dd if=3D/dev/zero of=3D/data/file1 bs=3D512M count=3D1 &
+> >      ```
+> >      ```
+> >      $ iostat -d 1 -h -y -p sda
+> >
+> >       tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn =
+   kB_dscd Device
+> >     48.00         0.0k        10.0M         0.0k       0.0k      10.0M =
+      0.0k sda
+> >     48.00         0.0k        10.0M         0.0k       0.0k      10.0M =
+      0.0k sda1
+> >
+> >
+> >       tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn =
+   kB_dscd Device
+> >     40.00         0.0k        10.0M         0.0k       0.0k      10.0M =
+      0.0k sda
+> >     40.00         0.0k        10.0M         0.0k       0.0k      10.0M =
+      0.0k sda1
+> >
+> >
+> >       tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn =
+   kB_dscd Device
+> >     41.00         0.0k        10.0M         0.0k       0.0k      10.0M =
+      0.0k sda
+> >     41.00         0.0k        10.0M         0.0k       0.0k      10.0M =
+      0.0k sda1
+> >
+> >
+> >       tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn =
+   kB_dscd Device
+> >     46.00         0.0k        10.0M         0.0k       0.0k      10.0M =
+      0.0k sda
+> >     46.00         0.0k        10.0M         0.0k       0.0k      10.0M =
+      0.0k sda1
+> >
+> >
+> >       tps    kB_read/s    kB_wrtn/s    kB_dscd/s    kB_read    kB_wrtn =
+   kB_dscd Device
+> >     55.00         0.0k        10.2M         0.0k       0.0k      10.2M =
+      0.0k sda
+> >     55.00         0.0k        10.2M         0.0k       0.0k      10.2M =
+      0.0k sda1
+> >      ```
+> > The iostat output shows the write operations as stabilizing at around 1=
+0 MB/s,
+> > which aligns with the defined limit of 10 MB/s. After setting wiops to =
+max, the
+> > I/O limits appear to work as expected.
+> >
+> >
+> > Thanks,
+> > Lance
+>
+> Thanks for the report Lance. Is this something you started seeing after
+> a kernel update or switch to cgroup v2? (Or you simply noticed with this
+> setup only?)
 
-Does this include top-tier specific memory limits as well?
+I just switched to cgroup v2 to begin testing, as we intend to have
+containers run
+in cgroup v2. Testing on both the 5.14.0 and mainline versions ;)
 
-And is your primary motivation the promotion path through NUMA Balancing 
-or are you also looking at demotion to develop a comprehensive policy for 
-memory placement using these limits?
+Thanks again for your time!
+Lance
 
-> I'm collaborating with Meta on this, and we already have an implementation
-> and some experiments done. The patches will go out soon. If others have 
-> thoughts on this, please chime in.
-> 
-
-I have lots of thoughts, but not sure if the primary motivation is around 
-promotion only here :)
+>
+>
+> Michal
 
