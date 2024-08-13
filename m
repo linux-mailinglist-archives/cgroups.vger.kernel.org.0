@@ -1,190 +1,139 @@
-Return-Path: <cgroups+bounces-4244-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4245-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A34BF950F66
-	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 23:59:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F35D950FC2
+	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 00:30:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 566FE28569C
-	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 21:59:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A4A41F2426C
+	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 22:30:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CC341AAE11;
-	Tue, 13 Aug 2024 21:59:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D3DA17C7BD;
+	Tue, 13 Aug 2024 22:30:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZJxrfRsY"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mBRKlPf1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52FE61E498
-	for <cgroups@vger.kernel.org>; Tue, 13 Aug 2024 21:59:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C7A6370
+	for <cgroups@vger.kernel.org>; Tue, 13 Aug 2024 22:30:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723586373; cv=none; b=dXkNiysTIhwYhj0F/5eURE0wEfzkwtoUSUABTOQm6IXWAUtHA1w3vRLgcDD2BJfmtdEqPA17XaYoau4ruh8RcdgSoFBbX9niw677sfpb0e+5ovSfDT8AxSTV4cSBOOQaMKh9OXPwSgduHf9hWNDOkoQ1NFVuXv7kZxwR6Fvxl7g=
+	t=1723588249; cv=none; b=N6sMG5zGLfxgWdOxAmt2UGT+OpNURV5WsqUv7gtiwPWMZM7mIkK/2SwGqVJRY61wDS3CCKurU+ohhTUU2k9swOKlCqTcO0haRa7dk2B4UppywFrNKGk5CDE9SHLw7UzITbp+N7ft5Hbb91qyROAQzPhIV0Bc/xXqqgd1i2YUyyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723586373; c=relaxed/simple;
-	bh=/utoQ7QhykoB3OmPAdObcVrX3Z1NvdQTn/S1AAQy0Rk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=kCHPIhdBfarfi9d0j+LV0NHSk1j00bKRV2huV5Qt3JHL3bV5sXtnvggGaZ429M6FDe2JZbulS3MRotPvRSOIn6Nq36cfAFEkGOko3NgqoZkN6Jj0HjpZwO8yXDnKdI6hMSEdUPSuGOWzjltzZ7vM/rpBTNUmumpjsfai+fwwmyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZJxrfRsY; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a7d2a9a23d9so670082866b.3
-        for <cgroups@vger.kernel.org>; Tue, 13 Aug 2024 14:59:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1723586369; x=1724191169; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ue2knfvsIDz2WfMwE8l0p1USDW2XxsIyv+dv3fPEPdw=;
-        b=ZJxrfRsYhgXrfOnm6XkGbFX+kH3MaZscvOLRpECnKgR3OajPOPyyEtU4tpuXL5/OpF
-         gBrdhrjm25JKbIiOUGsHrfPSGelSlscSpWfEIQ/IbkAtqkGhU8kFh4LSboqbelg1e/bp
-         PYfvWJfVYpykq566ub+bIq1KW9pFWMFF+moemMm7rowHCjrY+i+4+/uKWiN8n8gdUn5K
-         aCdF0glRxzzU9OEEMZvL3lydKKhRdurt06FKu0AGvAZZx2ybshfMFVN6QHLQEZB/T/8D
-         +MW4kfRgp7xVofB44KxxPJ2s0+0UjCIAJYCCwEKigL08a6InAOJ0Tla+GxAqS30Xd5in
-         ydUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723586369; x=1724191169;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ue2knfvsIDz2WfMwE8l0p1USDW2XxsIyv+dv3fPEPdw=;
-        b=Vcz8V5woUbtllSeRrMEA09f2ioS4ihdVXeMKqfEFGlUw5ZH+jZqTR/c1r5t1fkjRlB
-         9ZArCL18u/ZZGr5snnE6szVeyRw3jdDrv6i8Ye1Pp/Q7tgWAIj4jFbSYYYr4oJ0mNPPs
-         QNdjPEqWt9hvFCMM1kW9BblmYMFreLqmyLB/Ce+PnKRURqmHhBQw60RNzgCshqhZVuJG
-         ogoj895qEq2NX2aXMlRgJzbOI/7o+y5IQoALMK4xpxSx2kcPYyRBIt3rNBcucLejvMuq
-         271DbhnXKm6LFyJem4BE7KuBZZv8Y0IJw2polZV6ltW+pMqnBaJR/n273ZS8vhMyW3q1
-         CuWg==
-X-Forwarded-Encrypted: i=1; AJvYcCW5LpJELB9LPntl6QObvfLD8Yt7t8g1TcSbZHO1Ril4KoRirzB1HLk12k0Iu5lZ/mUfjeZB1vkAGR9fWMnWGIDMWzgNmM/vQA==
-X-Gm-Message-State: AOJu0YxOhomTvdq/6i5/1WaA27gIoLT5EoArxLE+jJ7W1HFnMm5XCR+N
-	TN2hE9fLgT91ObrwMR3ISYr91MZDxdh8KzSbIN1pMND+su89QjaG7up5HRkYPz8oxaFhmji/Svl
-	ck49ki3narQ1+JnSh+FYpdc4jm2N3wODaZv8+
-X-Google-Smtp-Source: AGHT+IEBRN1K/plIqsXb/K1MyLsFF+JdwEJJrbd5ljEbZT4hYhRrTUCF07gzxpJnAS2CZizqvknI2SOE39UIDkrMt84=
-X-Received: by 2002:a17:906:d7d2:b0:a77:f2c5:84bf with SMTP id
- a640c23a62f3a-a8366c2f1eamr54414566b.2.1723586368927; Tue, 13 Aug 2024
- 14:59:28 -0700 (PDT)
+	s=arc-20240116; t=1723588249; c=relaxed/simple;
+	bh=gQOJ+4j78T6EtE908WMXHt3z2FLrSRsdpVclT7uyjy4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CINEXsfnHO0iPbMUFr/dXek1H7e2rCo6/gB9OxGALOL3gWUgK7Q8/gghlGXKwz90PZxeDf8Ess1fmuWhX5b03y4onwdlGv7L+eYQGBMCfv6phveph4ywBJkCG0I8ogA117B1CPqjofZitJs91KN7ExdH3AV76sdQr9SjgUg6soM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mBRKlPf1; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 13 Aug 2024 15:30:40 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1723588245;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+aS5ftMGKo/Ru7Ti/UB5xv32zI9bpFTAyHk1po8m4DE=;
+	b=mBRKlPf19qmSOJKwWoZtfmEMPwu4TlmUiCfA0BhVZYOH71LHF+YSnZoHvNl7uW6RssnpVb
+	bsl025VbXhHtN977rOKoz7tcGu9vw1qzO6HpTczdlJGeiiPiLiWjDYOtkZANgMGVEoLY9c
+	v9612sDqGPK+yFjIpDes0ugxnCoukaA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, Yu Zhao <yuzhao@google.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2] memcg: use ratelimited stats flush in the reclaim
+Message-ID: <kneukn6m4dhuxxfl3yymrtilvjfmtkxmxz35wothcflxs5btwv@nsgywqvpdn76>
+References: <20240813215358.2259750-1-shakeel.butt@linux.dev>
+ <CAJD7tkbm6GxVpRo+9fBreBJxJ=VaQbFoc6PcnQ+ag5bnvqE+qA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240813215358.2259750-1-shakeel.butt@linux.dev>
-In-Reply-To: <20240813215358.2259750-1-shakeel.butt@linux.dev>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Tue, 13 Aug 2024 14:58:51 -0700
-Message-ID: <CAJD7tkbm6GxVpRo+9fBreBJxJ=VaQbFoc6PcnQ+ag5bnvqE+qA@mail.gmail.com>
-Subject: Re: [PATCH v2] memcg: use ratelimited stats flush in the reclaim
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Jesper Dangaard Brouer <hawk@kernel.org>, Yu Zhao <yuzhao@google.com>, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Meta kernel team <kernel-team@meta.com>, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkbm6GxVpRo+9fBreBJxJ=VaQbFoc6PcnQ+ag5bnvqE+qA@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Aug 13, 2024 at 2:54=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
-v> wrote:
->
-> The Meta prod is seeing large amount of stalls in memcg stats flush
-> from the memcg reclaim code path. At the moment, this specific callsite
-> is doing a synchronous memcg stats flush. The rstat flush is an
-> expensive and time consuming operation, so concurrent relaimers will
-> busywait on the lock potentially for a long time. Actually this issue is
-> not unique to Meta and has been observed by Cloudflare [1] as well. For
-> the Cloudflare case, the stalls were due to contention between kswapd
-> threads running on their 8 numa node machines which does not make sense
-> as rstat flush is global and flush from one kswapd thread should be
-> sufficient for all. Simply replace the synchronous flush with the
-> ratelimited one.
->
-> One may raise a concern on potentially using 2 sec stale (at worst)
-> stats for heuristics like desirable inactive:active ratio and preferring
-> inactive file pages over anon pages but these specific heuristics do not
-> require very precise stats and also are ignored under severe memory
-> pressure.
->
-> More specifically for this code path, the stats are needed for two
-> specific heuristics:
->
-> 1. Deactivate LRUs
-> 2. Cache trim mode
->
-> The deactivate LRUs heuristic is to maintain a desirable inactive:active
-> ratio of the LRUs. The specific stats needed are WORKINGSET_ACTIVATE*
-> and the hierarchical LRU size. The WORKINGSET_ACTIVATE* is needed to
-> check if there is a refault since last snapshot and the LRU size are
-> needed for the desirable ratio between inactive and active LRUs. See the
-> table below on how the desirable ratio is calculated.
->
-> /* total     target    max
->  * memory    ratio     inactive
->  * -------------------------------------
->  *   10MB       1         5MB
->  *  100MB       1        50MB
->  *    1GB       3       250MB
->  *   10GB      10       0.9GB
->  *  100GB      31         3GB
->  *    1TB     101        10GB
->  *   10TB     320        32GB
->  */
->
-> The desirable ratio only changes at the boundary of 1 GiB, 10 GiB,
-> 100 GiB, 1 TiB and 10 TiB. There is no need for the precise and accurate
-> LRU size information to calculate this ratio. In addition, if
-> deactivation is skipped for some LRU, the kernel will force deactive on
-> the severe memory pressure situation.
->
-> For the cache trim mode, inactive file LRU size is read and the kernel
-> scales it down based on the reclaim iteration (file >> sc->priority) and
-> only checks if it is zero or not. Again precise information is not
-> needed.
->
-> This patch has been running on Meta fleet for several months and we have
-> not observed any issues. Please note that MGLRU is not impacted by this
-> issue at all as it avoids rstat flushing completely.
->
-> Link: https://lore.kernel.org/all/6ee2518b-81dd-4082-bdf5-322883895ffc@ke=
-rnel.org [1]
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+On Tue, Aug 13, 2024 at 02:58:51PM GMT, Yosry Ahmed wrote:
+> On Tue, Aug 13, 2024 at 2:54 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> >
+> > The Meta prod is seeing large amount of stalls in memcg stats flush
+> > from the memcg reclaim code path. At the moment, this specific callsite
+> > is doing a synchronous memcg stats flush. The rstat flush is an
+> > expensive and time consuming operation, so concurrent relaimers will
+> > busywait on the lock potentially for a long time. Actually this issue is
+> > not unique to Meta and has been observed by Cloudflare [1] as well. For
+> > the Cloudflare case, the stalls were due to contention between kswapd
+> > threads running on their 8 numa node machines which does not make sense
+> > as rstat flush is global and flush from one kswapd thread should be
+> > sufficient for all. Simply replace the synchronous flush with the
+> > ratelimited one.
+> >
+> > One may raise a concern on potentially using 2 sec stale (at worst)
+> > stats for heuristics like desirable inactive:active ratio and preferring
+> > inactive file pages over anon pages but these specific heuristics do not
+> > require very precise stats and also are ignored under severe memory
+> > pressure.
+> >
+> > More specifically for this code path, the stats are needed for two
+> > specific heuristics:
+> >
+> > 1. Deactivate LRUs
+> > 2. Cache trim mode
+> >
+> > The deactivate LRUs heuristic is to maintain a desirable inactive:active
+> > ratio of the LRUs. The specific stats needed are WORKINGSET_ACTIVATE*
+> > and the hierarchical LRU size. The WORKINGSET_ACTIVATE* is needed to
+> > check if there is a refault since last snapshot and the LRU size are
+> > needed for the desirable ratio between inactive and active LRUs. See the
+> > table below on how the desirable ratio is calculated.
+> >
+> > /* total     target    max
+> >  * memory    ratio     inactive
+> >  * -------------------------------------
+> >  *   10MB       1         5MB
+> >  *  100MB       1        50MB
+> >  *    1GB       3       250MB
+> >  *   10GB      10       0.9GB
+> >  *  100GB      31         3GB
+> >  *    1TB     101        10GB
+> >  *   10TB     320        32GB
+> >  */
+> >
+> > The desirable ratio only changes at the boundary of 1 GiB, 10 GiB,
+> > 100 GiB, 1 TiB and 10 TiB. There is no need for the precise and accurate
+> > LRU size information to calculate this ratio. In addition, if
+> > deactivation is skipped for some LRU, the kernel will force deactive on
+> > the severe memory pressure situation.
+> >
+> > For the cache trim mode, inactive file LRU size is read and the kernel
+> > scales it down based on the reclaim iteration (file >> sc->priority) and
+> > only checks if it is zero or not. Again precise information is not
+> > needed.
+> >
+> > This patch has been running on Meta fleet for several months and we have
+> > not observed any issues. Please note that MGLRU is not impacted by this
+> > issue at all as it avoids rstat flushing completely.
+> >
+> > Link: https://lore.kernel.org/all/6ee2518b-81dd-4082-bdf5-322883895ffc@kernel.org [1]
+> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> 
+> Just curious, does Jesper's patch help with this problem?
 
-Just curious, does Jesper's patch help with this problem?
+If you are asking if I have tested Jesper's patch in Meta's production
+then no, I have not tested it. Also I have not taken a look at the
+latest from Jesper as I was stuck in some other issues.
 
-> ---
-> Changes since v1:
-> - Updated the commit message.
->
->  mm/vmscan.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
->
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 008b62abf104..82318464cd5e 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2282,10 +2282,11 @@ static void prepare_scan_control(pg_data_t *pgdat=
-, struct scan_control *sc)
->         target_lruvec =3D mem_cgroup_lruvec(sc->target_mem_cgroup, pgdat)=
-;
->
->         /*
-> -        * Flush the memory cgroup stats, so that we read accurate per-me=
-mcg
-> -        * lruvec stats for heuristics.
-> +        * Flush the memory cgroup stats in rate-limited way as we don't =
-need
-> +        * most accurate stats here. We may switch to regular stats flush=
-ing
-> +        * in the future once it is cheap enough.
->          */
-> -       mem_cgroup_flush_stats(sc->target_mem_cgroup);
-> +       mem_cgroup_flush_stats_ratelimited(sc->target_mem_cgroup);
->
->         /*
->          * Determine the scan balance between anon and file LRUs.
-> --
-> 2.43.5
->
 
