@@ -1,115 +1,114 @@
-Return-Path: <cgroups+bounces-4236-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4237-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40838950CC0
-	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 21:02:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6FD0950E18
+	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 22:48:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D18EBB24B26
-	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 19:02:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93CA12840BB
+	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2024 20:48:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7ABD1A3BD5;
-	Tue, 13 Aug 2024 19:02:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A37B1A7049;
+	Tue, 13 Aug 2024 20:47:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CSdhxiQy"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="j6VWNOfY"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B0EC1A3BC4;
-	Tue, 13 Aug 2024 19:02:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD7F83B192
+	for <cgroups@vger.kernel.org>; Tue, 13 Aug 2024 20:47:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723575724; cv=none; b=GyRQMovpgVs+r2Ew674SH8T3rQ4n7d4O5oXMbI5QpMnmnY8CsugNbzSQD5BwIE0MmQXKSibhE3LXYtoqBQMzttwlNS10xC8Spychkv0G+FuS5m2AqKDJiLsvRCP0qYPuN88nplawu6wQYB03yoEc1IZd0XmQ3+F/GmFRS5q2tOE=
+	t=1723582075; cv=none; b=qEJGi7GVgb9U4ViCbmN8Ft5IOK1zd66yV7qmfoanfQiMtTlWNsIw1ogFxXS+TAaS8ypHagthWIZStt15gix9cZ0XmAwLloZeDFfNMVp3n9jZEUV12vBPESkvO3TPt+V4pNml/Ys34DUuAz0ojSB3bxhGQNwuXg7UvrWYhDx5ib8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723575724; c=relaxed/simple;
-	bh=Zn1CdejGdzH3qrvO4azODSklzSoXsl0lU9zBAeb/I6s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rVaXHxtAVXUMK1C+HmpNUfRcoMxfXOfEu9QaufGAO1woRjZSb8aeOayI/bmrct0UpORnqp+t5eMCxXWVM0NS9QzftR0zywWoaVpN7bVyolvZpxG3EE42ei5v5hEclE72yaT/tLB555r1p3K3I6UozIYm6+HcGAYOjxWrD6yEjOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CSdhxiQy; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1fc47abc040so38986155ad.0;
-        Tue, 13 Aug 2024 12:02:02 -0700 (PDT)
+	s=arc-20240116; t=1723582075; c=relaxed/simple;
+	bh=x8+0SHcDmVGIqKZHn79dfKmGygZtA2zzr59rfOJVeY0=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=PqY3D+oKfGHcamvDkZI3TNWS5vDEPdGM9iWRCfZT7YfER9sUIGglerK3ILDyrKYMZf1nDyaZqAOjegOB8i0YQz7fT4bxlQe/HPVZqv8Zd2wQga29CaVRiFWoMd8/oHghclcXCoW0dLsbRtY+A2vZJrAfSzitOYJBotrQ9rMBBCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kinseyho.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=j6VWNOfY; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kinseyho.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6688c44060fso136690057b3.2
+        for <cgroups@vger.kernel.org>; Tue, 13 Aug 2024 13:47:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723575722; x=1724180522; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=s068iVhOZ+3GA1IKeu19ZmOzE72AR5vLObVpRyMcB40=;
-        b=CSdhxiQyxdr7iXMyHs4j/GzDDQywY3fePUJOl49GoIHMLZC+AVyNmzsPRUcHi7JQEP
-         Dn1CHY0yn3HluK8g0QSk9N0GhJyTEEOqc678A5GwLTBFsZg/nlT/lsiBZIPqfz9uPmWI
-         FN+h53C22Gj+UipsjVOJoJhBNPmhAXA9R07vThSOttpNQxwq7zDiA7LGExPIa0ry9vBz
-         vgsN+rAmeQCWNDF1B4QssGIAB/o1eYF+sOWZr+pCQ8Te+Z5WPfzkJ7caRPcikS5hMWOW
-         jr2wuJYOMsA+XeoLCx+hRKry8EF5LOSe41/gEsLnwGeyXB9ZXPvZTlw7RxnZtXCuKHyq
-         Xptw==
+        d=google.com; s=20230601; t=1723582073; x=1724186873; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6VTAXcSzg2nJxUF/QOoTMCzcY75N5+KjH45iaTDlnBg=;
+        b=j6VWNOfYgpptKR0mePrlKzNq4RsmgwAa0iDL8zfyx9k0cFtydGL4fy40hsDzaw0nwm
+         /a1XRfpHgLGWHId0TZEyoFLL1XYrdbmf6WrKdI+Rqx2PGGOq4DnQLmtGsfdaO8qAqHtb
+         T47A1jB49KPMltSCbjr7M10KyWmovOtYg4Yrj98GFjk6MbJJAe/tMJfTnhcjnbthEjqn
+         KmhmbV0VwS1B5wWq37uMz7sdd0gIR4PGGdeDdIotb0zlzKE6M97gVR9FQ7FvKlRkrMyX
+         paYPHZ/ASwJDEr7shIHL1dNmqbHmCeJ8tUeHN+A+VTh9TE+Kxx7/kZ2k8JWIsVaBXly5
+         YB9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723575722; x=1724180522;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s068iVhOZ+3GA1IKeu19ZmOzE72AR5vLObVpRyMcB40=;
-        b=rmuR2QAW+Ib20bswjnWzrQNjzxRjQvdUk4TGxZZIuayko1mKDDuNP6YXMivxOAuVff
-         VHGeIJyhZnQmF+N2V4UKbC9BF4bL4nCrx/dMC1tqDpgR8ohoRSi6AicXoqXrkzO9571I
-         97b3fPqU8N7Dlx9ioVqotFGSfBD3LHF/9p+ZRb8h8sVOMHFZiN7VwUMq3tmmPasZfX2f
-         8tM/Y+V5j1Sq/ECFKhPY3Xk5LyGWDGQ7e+ocIdO1201TFXseXksJXGXVfBVQgZWKq/Gw
-         eUfVj5pL2Uv4N3aXUs1NfaAtxKldWJRRfzifWJ2Xqm4qcUXj2LE//M00OUt2Rdb9Py6e
-         GvzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX66vidcBKSyVtZPzprlHVJrKwesog9jqXzTZ3O3470GqMv/1RVK3qTcN39JKVEoWRN2c7uM5HWLuU5OXUu4S2IMycOHNbLDQ/jsEECCJLqT9RiGcRDsZjlsg7vu9pDrVTP2BYU6w==
-X-Gm-Message-State: AOJu0Yy0lHQEEDlTDbLOnVkN72/HmkELiuD3UgSc1tzNrH5XK22bnaK0
-	oJrGJC1WWPL1FacHCt6b1PcyboDBpeXy3mzqodNF4E3j/iSPq7DI
-X-Google-Smtp-Source: AGHT+IF9dG5BwSTQD03rkROc00ErVNht2yV1WtWbGXemgrllsq31QSL+oNbku2+JddTKt1na1aXRhw==
-X-Received: by 2002:a17:902:db02:b0:1ff:493:8de1 with SMTP id d9443c01a7336-201d63bc2acmr6884165ad.1.1723575722165;
-        Tue, 13 Aug 2024 12:02:02 -0700 (PDT)
-Received: from localhost (dhcp-72-235-129-167.hawaiiantel.net. [72.235.129.167])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-201cd1a93d7sm16985145ad.149.2024.08.13.12.02.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Aug 2024 12:02:01 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 13 Aug 2024 09:02:00 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: Chen Ridong <chenridong@huawei.com>, lizefan.x@bytedance.com,
-	hannes@cmpxchg.org, longman@redhat.com, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next 2/2] cgroup: Disallow delegatee to write all
- interfaces outsize of cgroup ns
-Message-ID: <ZrutqDox2rrr7dlA@slm.duckdns.org>
-References: <20240812073746.3070616-1-chenridong@huawei.com>
- <20240812073746.3070616-3-chenridong@huawei.com>
- <ex5gnhcoobbw74se4uchhqj2lsrcjx5bsh6m5lva2xmujv7uae@34vwukkwhkbc>
+        d=1e100.net; s=20230601; t=1723582073; x=1724186873;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6VTAXcSzg2nJxUF/QOoTMCzcY75N5+KjH45iaTDlnBg=;
+        b=wTSYCV2Wjbfh3SzdqisZU4Imw0RLu4Gtb7EgTXafwv9uG4P2/lgjKVZ4wguJbiER7W
+         gNcXSxu8+vK4DGxRyeJpY8mcgi6Fnm8WVo3G+qiInUtUh2vhx4e0DuqTBQw5Jz6Dq+Xm
+         OWgv4SxTAs11KlqLRIp1e7KFgthMO84yFCU/Z7kvrx/1aO0utL3V/7gUo0RO5be209n0
+         QWQ2h4nFe6FpgzZ0C9tM7hprH7fhCykzHKMX9s10xF79KMmWgiMhyC7r9z1tR9+ETqjk
+         dPwo7AvyXi8VY6u/v/6ipt2MDFTewyj+NIElaT/hev3YtcnE8lR34cNnIIBK+rFAstYc
+         Br5g==
+X-Forwarded-Encrypted: i=1; AJvYcCVDkRLQYjSIQ7kyr1MFNiMqU8nkasVfYwELVXZu8Q+EhC5R6lhFBtkCtsFwOooLgUv9biPvKP/K6375gGYUh9eo0X5nZIssSQ==
+X-Gm-Message-State: AOJu0Yw/Sx/e40hD2oCoKb/Biqq7MjhxK47qgvWCJblR+GKYYTWg9Dn5
+	NpsjWqxweE/H4hE837xHswdKt+P8o8h2xnfuYRuQouWkuoEIIQhZv/h9XrOMd30XSiNq79Sc3TK
+	lWMMISet+ww==
+X-Google-Smtp-Source: AGHT+IFzblsx6HVwSONVyuq1qq/U8tF5umc8wK7YjkPphN9wlYyR7AcobNhp+giR2cU9kqZsxLwEY6K/rtnFFQ==
+X-Received: from kinseyct.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:46b])
+ (user=kinseyho job=sendgmr) by 2002:a0d:d385:0:b0:673:b39a:92ea with SMTP id
+ 00721157ae682-6ac997f8a9cmr286847b3.7.1723582072721; Tue, 13 Aug 2024
+ 13:47:52 -0700 (PDT)
+Date: Tue, 13 Aug 2024 20:47:10 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ex5gnhcoobbw74se4uchhqj2lsrcjx5bsh6m5lva2xmujv7uae@34vwukkwhkbc>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.46.0.76.ge559c4bf1a-goog
+Message-ID: <20240813204716.842811-1-kinseyho@google.com>
+Subject: [PATCH mm-unstable v2 0/5] Improve mem_cgroup_iter()
+From: Kinsey Ho <kinseyho@google.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	Yosry Ahmed <yosryahmed@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, mkoutny@suse.com, 
+	Kinsey Ho <kinseyho@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+Incremental cgroup iteration is being used again [1]. This patchset
+improves the reliability of mem_cgroup_iter(). It also improves
+simplicity and code readability.
 
-On Mon, Aug 12, 2024 at 06:57:06PM +0200, Michal Koutný wrote:
-...
-> You could also have increased the ancestral limit (if there was any)
-> echo max > dlgt_grp_ns/pids.max // similarly allowed
-> 
-> If you're a root (or otherwise have sufficient permissions) and you can
-> _see_ an ancestral cgroup, you can write to its attributes according to
-> permissions. Thus the delegation works via cgroup ns (in)visibility but
-> cgroup ns root is visible on both sides of the boundary hence the extra
-> check.
+[1] https://lore.kernel.org/20240514202641.2821494-1-hannes@cmpxchg.org/
+--
 
-Yeah, the intended usage scenario w/ NS delegation is that the delegatee
-won't be able to see the ancetral cgroups beyond the delegation point. Chen,
-is this from an actual usecase? If so, can you describe what's going on?
+v2: add patch to clarify css sibling linkage is RCU protected. The
+kernel build bot RCU sparse error from v1 has been ignored.
+v1: https://lore.kernel.org/20240724190214.1108049-1-kinseyho@google.com/
 
-Thanks.
+Kinsey Ho (5):
+  cgroup: clarify css sibling linkage is protected by cgroup_mutex or
+    RCU
+  mm: don't hold css->refcnt during traversal
+  mm: increment gen # before restarting traversal
+  mm: restart if multiple traversals raced
+  mm: clean up mem_cgroup_iter()
+
+ include/linux/cgroup-defs.h |  6 ++-
+ include/linux/memcontrol.h  |  6 +--
+ kernel/cgroup/cgroup.c      | 16 +++----
+ mm/memcontrol.c             | 84 +++++++++++++++----------------------
+ 4 files changed, 51 insertions(+), 61 deletions(-)
 
 -- 
-tejun
+2.46.0.76.ge559c4bf1a-goog
+
 
