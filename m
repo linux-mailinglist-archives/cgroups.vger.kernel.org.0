@@ -1,171 +1,131 @@
-Return-Path: <cgroups+bounces-4282-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4283-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2721495260F
-	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 00:58:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17894952611
+	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 01:03:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D2D91F258EC
-	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 22:58:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4188D1C21434
+	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 23:03:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F0A514EC79;
-	Wed, 14 Aug 2024 22:58:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08DFB148305;
+	Wed, 14 Aug 2024 23:03:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lE/MFm5w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nq9uIHw7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2377F14C5AF
-	for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 22:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E50BB13C820;
+	Wed, 14 Aug 2024 23:03:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723676314; cv=none; b=mYArCpdEIi7XHC0D2GxhsMut2yqyI+lALkxPsDu8v+mWqbchjJU4MhZlGqgqgATBkf88sVJHydW0J9JCSwtr8n2ux6J7inoxVmLj2CEGmCfgsEwjmG364GSwNUOD+7l9taifVUUvzDLYfn+Mlg2srFQl1jlmnk3KRE1rB1/LLOY=
+	t=1723676608; cv=none; b=KcMDwVohasaZ7k+Z/KbXD6IZPPBP8qCwOw76bfcG/p39LURV0Y7hP5EjD/9dUH7R9WldUrcNg9jG4Z6K1M+win9d/rE3FVyErD4VAdAhimA8lL1mjulhE6woufmKi3KSsJoOX27mm+FPCsfRZAg5S9aeTa+hA9yI0Ifd+16L5r8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723676314; c=relaxed/simple;
-	bh=sEi7TbGO5Ntmfn1pMdHe8wajqxgmYCz4bKVOA5JfU/E=;
+	s=arc-20240116; t=1723676608; c=relaxed/simple;
+	bh=CSdwfR1oJWa/9mmNmOt/w0AcbH/8rOyV+raQPm8sLYw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Gp6iLiku4z87arDDoPnTPu8aXS6cMiDEcCuCp3Xcizykwx9K7lSDy46+GBR3tP6KPMtjepm1VHopFMXdOSkgwf0I+RQDhjQt3qdN/3BadkDBxE06w5sibHpZJi0EQS7iZszDmmgPt4fzfnzB/JG669qMmt7FCpLv8RPcwpp5dTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lE/MFm5w; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-690ad83d4d7so4386647b3.3
-        for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 15:58:30 -0700 (PDT)
+	 To:Cc:Content-Type; b=r032TcWjpXUZs2VyE8kwQk2OIfnHNjWW6suOMgA17pL5tSxmWIY3ry+Q/6ZcB4/uWdq382O92cjXkYu2d+R+pqMsOgo0VrnVHtyETmIR+P8g3wUlV861SFlzK98xhX1mlJv0zn0CnSFQxth5GW4uTWfoh3TypO3eYqgAxsuhW6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nq9uIHw7; arc=none smtp.client-ip=209.85.167.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3db23a60850so232129b6e.0;
+        Wed, 14 Aug 2024 16:03:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1723676310; x=1724281110; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1723676605; x=1724281405; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RUWhNpMZkVm29wzcKzyvQXZAILOf6Dv4XUMwNXkvgdM=;
-        b=lE/MFm5ws8bJAKH4HcVUqvlxk56e5Mc/rjdt7xJVKVcSaqH3GsxaspWUvHKRusE1Ru
-         pf/eYRayXZ6IaHQe/dy1xhPSBvDb/2KedDKPFqbvoGFBxt2bKtLj9jcT/MZF9/4wmFtA
-         /yIHMVzd0D5Eh8BLdTOwPFbiY9fwbDXM+bEJeBgxwDZq/ok3XFDKsSQfAo+92760EoaP
-         XWjRX9eYFgooqh0XzbHozG+4NKe6ownpRznGBD4REz3AxcnaDVnj6+qpakPlu/HyWu1/
-         qyor267bS3r99LDTNYE1AJoNti9vwQMFWZ805mPXt8xEC93QkjJ8KDFZwXuVI015V3/E
-         Q20w==
+        bh=lBlJcNHTXrvCXg2KqHerDo3Dz+CUwdwlIOy68HBZaZQ=;
+        b=nq9uIHw7lNWMTSbK6RFXnx7ExdTKQ2KSXQWdC4U54BKYNkSe/4eRGWEqlCt1b/BzZX
+         +mvqmxpZw8xeP9xu2FsblzjSIxi1KV2Ok4A9vApaJNMYXOFFEYuAyLSWDfoSbkDN1Utg
+         nviE2dVoCpwxFHUlrW5zt+RQip0v3TyF1CtriTIXAYId4vZpl5lyU+zH125YF0KlSaHV
+         80jAhkDFK+auaUqxDUSOsz0801b6JfBdRzUc6942Fnwg55yyiHdgousvcOul0xcu9U+t
+         5wsFDCog/cyq82SC70YJOIPB1KxvUAxVyNo0ovXZvyvVsRM4d9Sy3zmIpf4UXoNaMcaZ
+         +B+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723676310; x=1724281110;
+        d=1e100.net; s=20230601; t=1723676605; x=1724281405;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RUWhNpMZkVm29wzcKzyvQXZAILOf6Dv4XUMwNXkvgdM=;
-        b=q/PBaFFhkqt+0fwdH7W5ZGy6Q9rjeRdFQ0HCHVnaRm1UTjcvWZhF/+XmcreZmShnN8
-         XkbragkWEhO3u+FVTXZpVRb9qy7jG70cCe3cgK/Azdm+Q4sZwZlg85b+yAMEKCi/+Izj
-         iOf385AYU/m1dP6/FerfNKRosHbz/wVWV2ss/BiQWBezA3aat3i9X4VIBbgOJ+TG6OMv
-         Jgb+DGb/kMy+UJ7SzifNoHNMyqOZFWohWVh6Eb7YwNVY3jpDVKN7c61bGR8ac4YHzBGQ
-         PDOIACkjYBXjki/72BpIpw4cqUfPAEMgxQgKE00TdmL7w9q0RkiLcdgt1T2/CEkj0unG
-         D1jQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW4Gorj8nKZkltEfPzW1hi3fI02trVG5uVR12lDSiPkHd/U1MRWq3GpjEOo8Vg49qSsPWKVvpULBDDWfmlL+Oflzj6cRVhMQg==
-X-Gm-Message-State: AOJu0YyCrNOzdfRRjyaBFn9+Q38I+hLLQZefPzH8ual/UrHPhBm5chl3
-	xO7y2dj2kXJV9LTWew5yLsKlq723HM7lR5SZuYfE1GJ8IxUuovenhWPc2/FB39kTUTvbYAoYcU4
-	T9VO3RAcuHaUdMtVpRttx8UIY7NmZttO06O6y
-X-Google-Smtp-Source: AGHT+IH159x/1XCLV9wWews52LhEjNNWRHC/963OVVJzDAiE2ggKEqH5sqJkpLLbOepWnA2AvwREk7Iozx3FPc4qEkk=
-X-Received: by 2002:a5b:60c:0:b0:e11:67d7:e7cb with SMTP id
- 3f1490d57ef6-e1167d7ed0emr2635021276.19.1723676309851; Wed, 14 Aug 2024
- 15:58:29 -0700 (PDT)
+        bh=lBlJcNHTXrvCXg2KqHerDo3Dz+CUwdwlIOy68HBZaZQ=;
+        b=Vu4NI0uJ63XP7UUOGUmHkCHP7eqqHtYlEF5nSxX1i1ZBmxdx72dCbGmuzd95FrVgTN
+         5NK/koVt40P/YAnG4CrA/cx0e32eE4UJEHA5S1lMzH/vI429/WTIZnnfueUWalU6tvzI
+         gLY+f5wYsADEJJqS5UUlQA182+bLqjKFqeu4WJAqe6sgzSXOhXjFW8BYBsL9Vs8xXscV
+         ZJB+tuAdOFdfusPuo0Jk6AYw78wpes5FqHaeWdEZqXDR8A+TeFSc6kmxJ0fZGKX1tZyH
+         3nkoHlNR6YongeiKREDnpqU+j4K/J8QK5O4Dy3xsFKQO6jwlySjl8vMgfoCiG7lfPdyq
+         zG9w==
+X-Forwarded-Encrypted: i=1; AJvYcCXBd2wTawiMIO1IR/apFINpXB4hyYpSJFSEbsFAHVfaAnjWxBl7gwGXo3PERxPmksAD5vkCnMv8WUMJAcflBvuZErGomtu7nXGeTtVeCwTfo3IAdzQOFKrT1g5YBHz1YWAXbHgyEA==
+X-Gm-Message-State: AOJu0YwEXCtHA8rhIRdhejycrg5P3MtCjbqD3+EPe3zkOVHfqC1kDELg
+	UgpPb+TtZmxiRPXA9zvzzBzvObkcPCe7FDHOa4iatpRutURGtIsCOCgp6JYB/n3eGHix1Dmw4OQ
+	Kelq8EGrDPnubfzA+/3OpH+RWa3w=
+X-Google-Smtp-Source: AGHT+IEKmQOIO99Cy2PnIM81KCFOVa4ilM/m0cRNuICz2NTtbhgzxazeUf63/NlAzJ6BqYTxuNKaRq+f3SJXFIotd7Q=
+X-Received: by 2002:a05:6358:528d:b0:1b1:a7f4:fee4 with SMTP id
+ e5c5f4694b2df-1b1aab8453dmr519220855d.14.1723676604637; Wed, 14 Aug 2024
+ 16:03:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240814220021.3208384-1-shakeel.butt@linux.dev> <20240814220021.3208384-5-shakeel.butt@linux.dev>
-In-Reply-To: <20240814220021.3208384-5-shakeel.butt@linux.dev>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Wed, 14 Aug 2024 15:58:18 -0700
-Message-ID: <CABdmKX0Kv57Lo2xC7mJXOePObFhkCDdr1mAK71nurXZOQNVDPg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] memcg: initiate deprecation of pressure_level
+References: <20240813215358.2259750-1-shakeel.butt@linux.dev>
+ <CAJD7tkbm6GxVpRo+9fBreBJxJ=VaQbFoc6PcnQ+ag5bnvqE+qA@mail.gmail.com>
+ <kneukn6m4dhuxxfl3yymrtilvjfmtkxmxz35wothcflxs5btwv@nsgywqvpdn76>
+ <edf4f619-8735-48a3-9607-d24c33c8e450@kernel.org> <vyi7d5fw4d3h5osolpu4reyhcqylgnfi6uz32z67dpektbc2dz@jpu4ob34a2ug>
+In-Reply-To: <vyi7d5fw4d3h5osolpu4reyhcqylgnfi6uz32z67dpektbc2dz@jpu4ob34a2ug>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Wed, 14 Aug 2024 16:03:13 -0700
+Message-ID: <CAKEwX=Mc9U_eEqoEYtwdfOUZTa=gboLtbF5FGy4pL--A54JJDw@mail.gmail.com>
+Subject: Re: [PATCH v2] memcg: use ratelimited stats flush in the reclaim
 To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>, Yosry Ahmed <yosryahmed@google.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
 	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Meta kernel team <kernel-team@meta.com>, cgroups@vger.kernel.org
+	Muchun Song <muchun.song@linux.dev>, Yu Zhao <yuzhao@google.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>, 
+	cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 14, 2024 at 3:00=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
+On Wed, Aug 14, 2024 at 9:32=E2=80=AFAM Shakeel Butt <shakeel.butt@linux.de=
 v> wrote:
 >
-> The pressure_level in memcg v1 provides memory pressure notifications to
-> the user space. At the moment it provides notifications for three levels
-> of memory pressure i.e. low, medium and critical, which are defined
-> based on internal memory reclaim implementation details. More
-> specifically the ratio or scanned and reclaimed pages during a memory
+>
+> Ccing Nhat
+>
+> On Wed, Aug 14, 2024 at 02:57:38PM GMT, Jesper Dangaard Brouer wrote:
+> > I suspect the next whac-a-mole will be the rstat flush for the slab cod=
+e
+> > that kswapd also activates via shrink_slab, that via
+> > shrinker->count_objects() invoke count_shadow_nodes().
+> >
+>
+> Actually count_shadow_nodes() is already using ratelimited version.
+> However zswap_shrinker_count() is still using the sync version. Nhat is
+> modifying this code at the moment and we can ask if we really need most
+> accurate values for MEMCG_ZSWAP_B and MEMCG_ZSWAPPED for the zswap
+> writeback heuristic.
 
-"ratio of"
+You are referring to this, correct:
 
-> reclaim. However this is not robust as there are workloads with mostly
-> unreclaimable user memory or kernel memory.
->
-> For v2, the users can use PSI for memory pressure status of the system
-> or the cgroup. Let's start the deprecation process for pressure_level
-> and add warnings to gather the info on how the current users are using
-> this interface and how they can be used to PSI.
->
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+mem_cgroup_flush_stats(memcg);
+nr_backing =3D memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
+nr_stored =3D memcg_page_state(memcg, MEMCG_ZSWAPPED);
 
-Reviewed-by: T.J. Mercier <tjmercier@google.com>
+It's already a bit less-than-accurate - as you pointed out in another
+discussion, it takes into account the objects and sizes of the entire
+subtree, rather than just the ones charged to the current (memcg,
+node) combo. Feel free to optimize this away!
 
+In fact, I should probably replace this with another (atomic?) counter
+in zswap_lruvec_state struct, which tracks the post-compression size.
+That way, we'll have a better estimate of the compression factor -
+total post-compression size /  (length of LRU * page size), and
+perhaps avoid the whole stat flushing path altogether...
 
-> ---
-> Changes since v1:
-> - Fix build (T.J. Mercier)
 >
->  Documentation/admin-guide/cgroup-v1/memory.rst | 8 ++++++--
->  mm/memcontrol-v1.c                             | 3 +++
->  2 files changed, 9 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentati=
-on/admin-guide/cgroup-v1/memory.rst
-> index 0042206414c8..270501db9f4e 100644
-> --- a/Documentation/admin-guide/cgroup-v1/memory.rst
-> +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-> @@ -86,6 +86,8 @@ Brief summary of control files.
->                                       used.
->   memory.force_empty                 trigger forced page reclaim
->   memory.pressure_level              set memory pressure notifications
-> +                                     This knob is deprecated and shouldn=
-'t be
-> +                                     used.
->   memory.swappiness                  set/show swappiness parameter of vms=
-can
->                                      (See sysctl's vm.swappiness)
->   memory.move_charge_at_immigrate     set/show controls of moving charges
-> @@ -898,8 +900,10 @@ At reading, current status of OOM is shown.
->            The number of processes belonging to this cgroup killed by any
->            kind of OOM killer.
->
-> -11. Memory Pressure
-> -=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +11. Memory Pressure (DEPRECATED)
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +THIS IS DEPRECATED!
->
->  The pressure level notifications can be used to monitor the memory
->  allocation cost; based on the pressure, applications can implement
-> diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
-> index 334a02597d9a..52aecdae2c28 100644
-> --- a/mm/memcontrol-v1.c
-> +++ b/mm/memcontrol-v1.c
-> @@ -1913,6 +1913,9 @@ static ssize_t memcg_write_event_control(struct ker=
-nfs_open_file *of,
->                 event->register_event =3D mem_cgroup_oom_register_event;
->                 event->unregister_event =3D mem_cgroup_oom_unregister_eve=
-nt;
->         } else if (!strcmp(name, "memory.pressure_level")) {
-> +               pr_warn_once("pressure_level is deprecated and will be re=
-moved. "
-> +                            "Please report your usecase to linux-mm-@kva=
-ck.org "
-> +                            "if you depend on this functionality. \n");
->                 event->register_event =3D vmpressure_register_event;
->                 event->unregister_event =3D vmpressure_unregister_event;
->         } else if (!strcmp(name, "memory.memsw.usage_in_bytes")) {
-> --
-> 2.43.5
->
+> > --Jesper
 
