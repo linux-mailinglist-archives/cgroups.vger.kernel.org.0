@@ -1,87 +1,54 @@
-Return-Path: <cgroups+bounces-4254-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4255-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDA9A95207F
-	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 18:52:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC58D9520FA
+	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 19:21:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D56D21C220D0
-	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 16:52:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 615861F2409D
+	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 17:21:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677701BB69B;
-	Wed, 14 Aug 2024 16:52:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 019211BBBE4;
+	Wed, 14 Aug 2024 17:21:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C0OKZ8Jy"
+	dkim=pass (2048-bit key) header.d=yhndnzj.com header.i=@yhndnzj.com header.b="rX0Hz9+x"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-4317.proton.ch (mail-4317.proton.ch [185.70.43.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5FEE3FB3B;
-	Wed, 14 Aug 2024 16:52:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D510C1B9B2D;
+	Wed, 14 Aug 2024 17:20:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723654364; cv=none; b=XzMn61POENsijO20KgqN2YcFUp0jM3P9GUI06MnY4a0qK6xeCy0OBuJyTCywJX+3Vj/dCz344yE1I2Q/osZ89BCuJceIA9m9N/NZmoEmAwcJvCcxkGqcEmO6J2AeQeMFTSukcXAS/2xcAKu9lq0aL/URn57JgZOrYm9hDRYs7oA=
+	t=1723656062; cv=none; b=Q+Yvl+9BIKW5L32TQoyW9kO8SdyXRmJgxCUiWINZvsIZnFoSvwpH/+M6WkmG+D6hbMtzygDANBi4S8six2xi1+mEjv98b4PlIytlqF4dx9UCVJvo20YHAfxTK1ALsuitrtUmwCkQAWPG8+gXC5FeBdByxp+hWTJeq8lSEVEXHe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723654364; c=relaxed/simple;
-	bh=/6m0qSF7kuGWPsSrbBYZyFDfh5jbCnZ7GTbLGiS5hq0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GQelCk5Qa/8p/bCNrkEmCuV4rtT1ITT5bocEQe9/iKHpNrm7I+U1Wn8DLhLEUPFdt3aInHzqTEpADLI4SrHuqxosotjD6XKFBX5tOCb9Bc0nhAUZWsIqZE7RXSnx1Q6InPwK5CLUd5mbMDAXOWeL3TollBkdbHHTr4WgVNp+0f0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C0OKZ8Jy; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-70d2b921c48so5272813b3a.1;
-        Wed, 14 Aug 2024 09:52:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723654362; x=1724259162; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pd/aOCuXphBlRcvtyvS54badApxKrCop/fAGiNRmQ/Q=;
-        b=C0OKZ8JyDQsp3sT870wL0RaCM1anOvqHdAkjHpdUVKZ5F1PLVNHxJvoceo+6sjk+q8
-         olU5SFPeS/mkUnpsMYGKaAhHIROW9bYE4/BANsuI7l+xGTl3La2+mRm3rPUkaXsgkK6Q
-         ykGsh7IN2Gy+w3l6ZUTmK+DdZ8RNKCFCmv483co+hTttDfISDTXxlXp9FenHPwbqPRqk
-         XVcw1kqga1C3wB+YvYcozkSvnVT7urKU66XqrEs8zTo/bQorwXPtKa6ZSFi+sgGYStBz
-         GBLtifKLkM5xoB1dfUPaLjuaw/wdAi1b+DPudyimuSmRKrBKCw1mKHpJUIhdk4ByG52N
-         jfXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723654362; x=1724259162;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pd/aOCuXphBlRcvtyvS54badApxKrCop/fAGiNRmQ/Q=;
-        b=bTcvOIM35h+oVi6AiEeYL8b7Xss9kaBhNVqC182zintA87OZzb3p7dcv4E90mcr6LZ
-         eD4MZp7B76Zf+KmCL5me3G2cnG20ny/Ru/Rgzwmdut3GZ+76Kq2GoxYvFDe9mzKJC25v
-         hIGAu6j5cS91tBW0xFYrGLbNHU80+0C/pgBxpKAHO/z+MOkzPjpqppHZ8Tn2kXIt5C8w
-         5t5s2yXupVQbytLGPWAcevXDFmcGRtETfQMgABo2obaYcFN19fj5G56A7gMX7ygChL2q
-         kDY2l7MD2XNdGBCmG/YMI22v9cEvtGWSCSwSL+U4740ZZLYWaea2mwjkiNMZw/7cf61q
-         JLCg==
-X-Forwarded-Encrypted: i=1; AJvYcCXGlNSWVKd0PNh7ktl3R920a2XwWxRTPOVlR+LUFFU0l9SxSAGPVgKJuJFrVnJT2Dh5YkoQlEgF/ienTsZtlbBByS2W27wue0szrkPW3zrm89ZVQjEhKtbGyKmYMi0zY2yLIdOKqA==
-X-Gm-Message-State: AOJu0YwQjNatwQeHYsST1bpmDKeTTpzg9YzlK64dQPTEEO8LQQR8qN4L
-	v8M5QK4Mi5lIIdJhkHf+jOC7t1LgzuphqsnqnrRQnBSCvOAwDUkVUCMgOw==
-X-Google-Smtp-Source: AGHT+IEkYeQgi1yZAIOw3POqd+m9hRdXewQLMNVHJCePYNZKLMu/86pfmLKvKRJiTsWCcorQpAXCzg==
-X-Received: by 2002:a05:6a21:398d:b0:1c4:a1f4:3490 with SMTP id adf61e73a8af0-1c8eaf54203mr4176453637.39.1723654361793;
-        Wed, 14 Aug 2024 09:52:41 -0700 (PDT)
-Received: from localhost (dhcp-72-235-129-167.hawaiiantel.net. [72.235.129.167])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d3ac7ca35fsm2013998a91.9.2024.08.14.09.52.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Aug 2024 09:52:41 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 14 Aug 2024 06:52:39 -1000
-From: Tejun Heo <tj@kernel.org>
-To: chenridong <chenridong@huawei.com>
-Cc: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	lizefan.x@bytedance.com, hannes@cmpxchg.org, longman@redhat.com,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next 2/2] cgroup: Disallow delegatee to write all
- interfaces outsize of cgroup ns
-Message-ID: <Zrzg1xUSyw_GpMHH@slm.duckdns.org>
-References: <20240812073746.3070616-1-chenridong@huawei.com>
- <20240812073746.3070616-3-chenridong@huawei.com>
- <ex5gnhcoobbw74se4uchhqj2lsrcjx5bsh6m5lva2xmujv7uae@34vwukkwhkbc>
- <ZrutqDox2rrr7dlA@slm.duckdns.org>
- <e3bc3535-39af-4993-af29-bd4bd688d984@huawei.com>
+	s=arc-20240116; t=1723656062; c=relaxed/simple;
+	bh=IgZ7iXb0VplK9LNa2MsWb2FY183hnDcwKBS1+wCHqWU=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=nBM0cdWSyoy0/wQ+TrDgexn7na6LoAbLICUegN5KGFSJOjPKQ9fOLYQicxGVcB/po6OZY2AgUCMLQt+c3Kj27SvFutkPB+QOflCDZ/C/DW2d/XlGlAvG0jZsFutzI1l/gedTRd5RB0p2FP8bsYwBTSSmYju8kkoEygQyaPwqKHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yhndnzj.com; spf=pass smtp.mailfrom=yhndnzj.com; dkim=pass (2048-bit key) header.d=yhndnzj.com header.i=@yhndnzj.com header.b=rX0Hz9+x; arc=none smtp.client-ip=185.70.43.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yhndnzj.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yhndnzj.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yhndnzj.com;
+	s=protonmail; t=1723656056; x=1723915256;
+	bh=IgZ7iXb0VplK9LNa2MsWb2FY183hnDcwKBS1+wCHqWU=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=rX0Hz9+xpmgIMUX2RhrFnScChBoAd+veIg6XS7a0ra8P/29v+kwF5Sst8pVelnspP
+	 gTV3bmKGNI+6A6DG9Q3YfgfEpmSB+FuW3jCsDxwqf927kgqteRdYmD9Lh7qGDdPqj2
+	 YCzOh8qvPHJa/EKDeMu9NSSLWbw0hTkUifMSw6cdOP1amBg7eBgSybrG09xfWc8ir+
+	 m75d0ZebHQivD8kuz+X/6t9bsqPUN6AgW6M6kgS+dSbN4VFxeBY7vEGYWzr9t+nhqQ
+	 U/AaoQnWum2NzNyEw17V8/y2wHIS1mMd2nC9kRO5trqpVUWNnGZ8ZoEuwckMDZTKWB
+	 /vf2P2I9wUunw==
+Date: Wed, 14 Aug 2024 17:20:54 +0000
+To: linux-kernel@vger.kernel.org
+From: Mike Yuan <me@yhndnzj.com>
+Cc: linux-mm@kvack.org, cgroups@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Muchun Song <muchun.song@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, Roman Gushchin <roman.gushchin@linux.dev>, Michal Hocko <mhocko@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>, Mike Yuan <me@yhndnzj.com>
+Subject: [PATCH] mm/memcontrol: respect zswap.writeback setting from parent cg too
+Message-ID: <20240814171800.23558-1-me@yhndnzj.com>
+Feedback-ID: 102487535:user:proton
+X-Pm-Message-ID: 969223f01f1ac371f277dee78cd59a00649796cc
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -89,40 +56,58 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e3bc3535-39af-4993-af29-bd4bd688d984@huawei.com>
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+Currently, the behavior of zswap.writeback wrt.
+the cgroup hierarchy seems a bit odd. Unlike zswap.max,
+it doesn't honor the value from parent cgroups. This
+surfaced when people tried to globally disable zswap writeback,
+i.e. reserve physical swap space only for hibernation [1] -
+disabling zswap.writeback only for the root cgroup results
+in subcgroups with zswap.writeback=3D1 still performing writeback.
 
-On Wed, Aug 14, 2024 at 04:09:59PM +0800, chenridong wrote:
-...
-> Hi，TJ， We plan to use delegation in cgroup-v2, so I am conducting some
-> tests.
-> As doc mentions 'Because the resource control interface files in a given
-> directory control the distribution of the parent's resources, the delegatee
-> shouldn't be allowed to write to them.' However I found a root can write
-> parent's file(cgroup.subtree_control) to change the resource limits(a
-> fraudulent method). I believe this could pose a risk in some scenarios where
-> a root enters a new cgroup ns without unmounting original cgroup system, and
-> it can break limitations. For instance, running a docker with --privileged,
-> could this be a risk?
-> 
-> So I sent this patch to discuss whether this case should be addressed?
+The consistency became more noticeable after I introduced
+the MemoryZSwapWriteback=3D systemd unit setting [2] for
+controlling the knob. The patch assumed that the kernel would
+enforce the value of parent cgroups. It could probably be
+workarounded from systemd's side, by going up the slice unit
+tree and inherit the value. Yet I think it's more sensible
+to make it behave consistently with zswap.max and friends.
 
-That sounsd like a misconfiguration. cgroup NS doesn't make much sense if
-you don't limit the actual visibility. The interface is half broken in that
-situation anyway and if you're leaking filesystem visibility into a
-supposedly isolated container, relaxed resource limits aren't biggest of
-your problems.
+[1] https://wiki.archlinux.org/title/Power_management/Suspend_and_hibernate=
+#Disable_zswap_writeback_to_use_the_swap_space_only_for_hibernation
+[2] https://github.com/systemd/systemd/pull/31734
 
-While the proposed change isn't necessarily a bad idea, it's a behavior
-change and I don't either modifying existing behavior or introducing a new
-mount flag is justified here. Maybe just update the documentation indicating
-that the ancestral cgroups shouldn't be visible in a delegated ns?
+Signed-off-by: Mike Yuan <me@yhndnzj.com>
+---
+ mm/memcontrol.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-Thanks.
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 8f2f1bb18c9c..2dcdaaf358ce 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -8423,7 +8423,14 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *ob=
+jcg, size_t size)
+ bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg)
+ {
+ =09/* if zswap is disabled, do not block pages going to the swapping devic=
+e */
+-=09return !is_zswap_enabled() || !memcg || READ_ONCE(memcg->zswap_writebac=
+k);
++=09if (!is_zswap_enabled())
++=09=09return true;
++
++=09for (; memcg; memcg =3D parent_mem_cgroup(memcg))
++=09=09if (!READ_ONCE(memcg->zswap_writeback))
++=09=09=09return false;
++
++=09return true;
+ }
+=20
+ static u64 zswap_current_read(struct cgroup_subsys_state *css,
+--=20
+2.46.0
 
--- 
-tejun
+
 
