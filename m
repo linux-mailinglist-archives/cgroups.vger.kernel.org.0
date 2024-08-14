@@ -1,153 +1,447 @@
-Return-Path: <cgroups+bounces-4286-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4287-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12491952650
-	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 01:49:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72086952653
+	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 01:52:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 808481F2310D
-	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 23:49:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C18C9282CA7
+	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 23:51:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7FD014B976;
-	Wed, 14 Aug 2024 23:49:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2FA014B963;
+	Wed, 14 Aug 2024 23:51:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YDmvp0ms"
+	dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b="NurmDrYT"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD1CF13D530
-	for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 23:49:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10BB639FE5
+	for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 23:51:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723679363; cv=none; b=Vv1kZIXK+SJoitLB2xm/NYR6wgEkUEYAFxLtHMNW9hOrjVj14hoQrUE3HoHPXjdOwOYIuZpzjRgA/+Jz9MVxHSpxFUsAJr46H6B7ADgeNt4xHGsS0j6Dwf5iuPomVdkogfvIgR1FqR1UewUCwjeq/nZsQUurUrcaT//iBtJ9deE=
+	t=1723679515; cv=none; b=SSAZ9qF/puepRZIIlT7jF+9+0z9nZnKFhIMgZpyac1PcMJb5HlPBAjsNFtou0M/LJm1l+2fTOrnQKBy+wzXxInsEv2TaahZDTOa5s5JROp2irkGKOVVS4PkVJ4lC2p/M/hSDrQMY9v94K+JcYsDwSRKVwvsM5BWyclU45es0XbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723679363; c=relaxed/simple;
-	bh=cb/o6chSPTzdRgz6gMapK3784sGMbBBzEtc69McXxac=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XmjW1XcaimKEg+EQTf+/pF16lH10Y2dTveVLnwMuuEDNs61x0wwtVGaRWJ3aU84WGIvDlpNFd3TGV5MViMxpdgX+NN00/7zeo7oX32n9dw8lbJ67K9kKUV2wsli1u4cvbOQ4Ke7SOZCt73diPIxiT/rD+zeu6dqDPWoSXvMq6Ok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YDmvp0ms; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a7b2dbd81e3so74918666b.1
-        for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 16:49:21 -0700 (PDT)
+	s=arc-20240116; t=1723679515; c=relaxed/simple;
+	bh=tKqz/1F8sSQNPskGehEeZ3Z11xnDFJyu2SVoUjwu2fk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LEOj3L+wBvfL5VTf1PWVezr7W3F8kf17Glc67kf/c8YqtsU5VefOwdWQUUdKvV+8fxr6XPRKR6u2ZrCwwKc7XrPezzqh7AQ9kn5t+6ANbYOVVvnK8COa2t5ymjbrHPmhogVDCLGXnVQqi510Dx3659VkVPcF+juVoA5Z0Q3MvnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu; spf=pass smtp.mailfrom=andrew.cmu.edu; dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b=NurmDrYT; arc=none smtp.client-ip=209.85.222.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=andrew.cmu.edu
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7a1d024f775so26737085a.2
+        for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 16:51:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1723679360; x=1724284160; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iR9toIBu65OWjI9Foi4Md7PGhS/0hqYEv1lXZk/IfmI=;
-        b=YDmvp0msCDVAOJiS11mwPhigpaIxIGH1SOV4MoArn+RCWL7fbgJ9lkpTCcyqzseyXx
-         XbZHPBoor5XcIFn7oi8bVVoRRRMp1Kqy3LPdrfyy9FE1JnrpwiR9jlUjYBle7gV9UWZY
-         aTb6nl4aL7VOUVpLZ8KC+q6/o1AtxK8zdaY09tLWYvwzeImnRXDCOhiLqg7QtD+M3o/9
-         D7LIAkna3rdlo2eHEXjEt1Rw6D0psZOwSbbhQFR0gDrT2IsbeYSK+yp5VICa1k6dvxeA
-         uKqbzvsadD60TV6KjvOEuYM04MdOz4QR/6dx05lvqlZMaf5yQ1UN5fYtjn1yRiGelVGa
-         k2ew==
+        d=cs.cmu.edu; s=google-2021; t=1723679510; x=1724284310; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QI/UyWKPgwLmZvkjXzIfDdUOXSQShsaJDtHcw3KBWRc=;
+        b=NurmDrYTo93Yxg40ClTvSa7Isj1Kl/Serltz6RupjGogRbBUhbFZiKOtv+y7dX8/aW
+         L0f6FSaHEC309iiynEnCBKEUTaZEesGO5xf6d6DRJ8EeOJl7SHrODMp9YzTfBpxzOf8V
+         SD1koLJGYVzUA03BifZ5pF2PGs1fjdxQbZ0onyLmIx6zV5PwFA6rtEvGqRwnZG0aIfsd
+         zmWbzV+7eWJmU0ZCKILKnGcoxBlypyw/+yQRP4PpPw90wTFb6VxVXGhL5VMxqAryG1E+
+         /e6eN8Zbozz8GxK0Wht1sngvwwObR2fy7+X9nTJgJIowKKJ4DtxhGFWIey5QDOBqFIic
+         xLqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723679360; x=1724284160;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iR9toIBu65OWjI9Foi4Md7PGhS/0hqYEv1lXZk/IfmI=;
-        b=m7bWYjHiHJomr1eRWju7Du74/dooLN+umb+Ljk4/4wl+PVPBPiW6c3iPKZjXUemSNM
-         6B2EVzu9fzyngqcRa3nrgVXHxEfoDPzud0YlmO6scDR7r354xGoJm7ZO7DC2ji0/pTtP
-         ENHD1BDepVx8r2gVr+Cla0yu4AN4NCOJBJAFzlYPRpkfSx+ekhr3uXONdFnh/e9UddYM
-         pUv1AWoAlzXjSo54lB/Zn7f4gimaxmlvOP89WR6qkphhAXBuelwifTwm85hkgrBtbxoA
-         Q7P/aQyn1xUKt4CeaC5a8bAT4OT8GYrCBdMcxOpE+wrTpiwi91fYozIktWbCj2Yc07zm
-         DXQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW+kuuuxpmpWjnhUQ0GfbHCTXjEPz4a2JY00CS2JH+gxEmVvvZtg4DxayGGWRm/sCsC/fO+AKOSw8v34bM+uBxAbiFht9eD0Q==
-X-Gm-Message-State: AOJu0Yy8R2SNZxI1ovpFQFOxue8VNbp0uqvaWrHf9RCnF08RhVA6Hxun
-	QxLY/qY9XRr/MazzwbhjNwEbtcHKUjmci2WMdXiI1QrbI+pXg6agR3O/U7AniWqskiQ8ctrAJ2J
-	MVSpcijhBTVSIRKmb528tm9mG7ohjvCd5wcCU
-X-Google-Smtp-Source: AGHT+IFzAxfVcguQ92qXWa0puGpF0cYBqQh/zL+5WNiS/bI9UofldFxVGZQ+xQOXBxga06UZFh7sI+CLQDrboiRxSD8=
-X-Received: by 2002:a17:907:e697:b0:a7a:a2e3:3734 with SMTP id
- a640c23a62f3a-a8366d4424fmr281247866b.28.1723679359618; Wed, 14 Aug 2024
- 16:49:19 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1723679510; x=1724284310;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QI/UyWKPgwLmZvkjXzIfDdUOXSQShsaJDtHcw3KBWRc=;
+        b=w+F0XAe8jzrh0E+13urz0iTCPC9wduwZqmhgzzKQqNkjBUr7Y/Ba/N3mHWYTidAfoR
+         3PyIhfK5EiVDSX0ELSXm6kjOKv5KgSNCUgfEtC85VdQGVQlY6o0SJsRyMa7g2ITnnn/k
+         WsYLFNj2bRo0NsAN5BL5jxQFHQOdWRMdflFXy8EIEQOkCKIWeJ6yZR9ejEomNqq0NlsQ
+         Sn6fuFLDbJk7CaDu67V6ykBGRGgNbGfdb+h9QpqUFVFYKgLDKahd5mx+/roW5PHLLb2I
+         cyfMXkjOViz+FPKnQF2TLJcRNeyL06V1+ZdljN2TnpFh+VdZFCQzx6BH4YYt2vSVa3ss
+         teeA==
+X-Forwarded-Encrypted: i=1; AJvYcCXc5EIRY0o/L8t7jHdui/TyBZGx+Y9+TzC11oaRyII3+8q2/wMwE9rFF1Lex3lLWY3pp2SZu6Y6v3jLlUAZ/H2CzutpiJ1myw==
+X-Gm-Message-State: AOJu0YwEMzbFi09/2thgb0/J+EgchMKs5KlJi+JFDYyqARZEcBikCXML
+	Ex5772B3CKCZqovPTH15wohncvy1+jmVLHtujQRIytqFqzzZFETHmSKGq/jvOw==
+X-Google-Smtp-Source: AGHT+IG4+OafkK5f6JGwZAlLkxO1hp5lLlCY04hsGsGv2xpt+1do+G8lU+wFdHh3QeK0gqNaBENP0A==
+X-Received: by 2002:a05:620a:4049:b0:79b:b571:4c13 with SMTP id af79cd13be357-7a4ee3e4ff4mr474370785a.63.1723679509854;
+        Wed, 14 Aug 2024 16:51:49 -0700 (PDT)
+Received: from localhost (pool-74-98-231-160.pitbpa.fios.verizon.net. [74.98.231.160])
+        by smtp.gmail.com with UTF8SMTPSA id af79cd13be357-7a4ff0e42e9sm18717685a.88.2024.08.14.16.51.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 14 Aug 2024 16:51:49 -0700 (PDT)
+From: kaiyang2@cs.cmu.edu
+To: linux-mm@kvack.org,
+	cgroups@vger.kernel.org
+Cc: roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	akpm@linux-foundation.org,
+	mhocko@kernel.org,
+	nehagholkar@meta.com,
+	abhishekd@meta.com,
+	hannes@cmpxchg.org,
+	weixugc@google.com,
+	rientjes@google.com,
+	Kaiyang Zhao <kaiyang2@cs.cmu.edu>
+Subject: [PATCH v4] mm,memcg: provide per-cgroup counters for NUMA balancing operations
+Date: Wed, 14 Aug 2024 23:51:22 +0000
+Message-ID: <20240814235122.252309-1-kaiyang2@cs.cmu.edu>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240813215358.2259750-1-shakeel.butt@linux.dev>
- <CAJD7tkbm6GxVpRo+9fBreBJxJ=VaQbFoc6PcnQ+ag5bnvqE+qA@mail.gmail.com>
- <kneukn6m4dhuxxfl3yymrtilvjfmtkxmxz35wothcflxs5btwv@nsgywqvpdn76>
- <edf4f619-8735-48a3-9607-d24c33c8e450@kernel.org> <vyi7d5fw4d3h5osolpu4reyhcqylgnfi6uz32z67dpektbc2dz@jpu4ob34a2ug>
- <CAKEwX=Mc9U_eEqoEYtwdfOUZTa=gboLtbF5FGy4pL--A54JJDw@mail.gmail.com> <5psrsuvzabh2gwj7lmf6p2swgw4d4svi2zqr4p6bmmfjodspcw@fexbskbtchs7>
-In-Reply-To: <5psrsuvzabh2gwj7lmf6p2swgw4d4svi2zqr4p6bmmfjodspcw@fexbskbtchs7>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 14 Aug 2024 16:48:42 -0700
-Message-ID: <CAJD7tkaBfWWS32VYAwkgyfzkD_WbUUbx+rrK-Cc6OT7UN27DYA@mail.gmail.com>
-Subject: Re: [PATCH v2] memcg: use ratelimited stats flush in the reclaim
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Nhat Pham <nphamcs@gmail.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Yu Zhao <yuzhao@google.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Wed, Aug 14, 2024 at 4:42=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
-v> wrote:
->
-> On Wed, Aug 14, 2024 at 04:03:13PM GMT, Nhat Pham wrote:
-> > On Wed, Aug 14, 2024 at 9:32=E2=80=AFAM Shakeel Butt <shakeel.butt@linu=
-x.dev> wrote:
-> > >
-> > >
-> > > Ccing Nhat
-> > >
-> > > On Wed, Aug 14, 2024 at 02:57:38PM GMT, Jesper Dangaard Brouer wrote:
-> > > > I suspect the next whac-a-mole will be the rstat flush for the slab=
- code
-> > > > that kswapd also activates via shrink_slab, that via
-> > > > shrinker->count_objects() invoke count_shadow_nodes().
-> > > >
-> > >
-> > > Actually count_shadow_nodes() is already using ratelimited version.
-> > > However zswap_shrinker_count() is still using the sync version. Nhat =
-is
-> > > modifying this code at the moment and we can ask if we really need mo=
-st
-> > > accurate values for MEMCG_ZSWAP_B and MEMCG_ZSWAPPED for the zswap
-> > > writeback heuristic.
-> >
-> > You are referring to this, correct:
-> >
-> > mem_cgroup_flush_stats(memcg);
-> > nr_backing =3D memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
-> > nr_stored =3D memcg_page_state(memcg, MEMCG_ZSWAPPED);
-> >
-> > It's already a bit less-than-accurate - as you pointed out in another
-> > discussion, it takes into account the objects and sizes of the entire
-> > subtree, rather than just the ones charged to the current (memcg,
-> > node) combo. Feel free to optimize this away!
-> >
-> > In fact, I should probably replace this with another (atomic?) counter
-> > in zswap_lruvec_state struct, which tracks the post-compression size.
-> > That way, we'll have a better estimate of the compression factor -
-> > total post-compression size /  (length of LRU * page size), and
-> > perhaps avoid the whole stat flushing path altogether...
-> >
->
-> That sounds like much better solution than relying on rstat for accurate
-> stats.
+From: Kaiyang Zhao <kaiyang2@cs.cmu.edu>
 
-We can also use such atomic counters in obj_cgroup_may_zswap() and
-eliminate the rstat flush there as well. Same for zswap_current_read()
-probably.
+The ability to observe the demotion and promotion decisions made by the
+kernel on a per-cgroup basis is important for monitoring and tuning
+containerized workloads on machines equipped with tiered memory.
 
-Most in-kernel flushers really only need a few stats, so I am
-wondering if it's better to incrementally move these ones outside of
-the rstat framework and completely eliminate in-kernel flushers. For
-instance, MGLRU does not require the flush that reclaim does as
-Shakeel pointed out.
+Different containers in the system may experience drastically different
+memory tiering actions that cannot be distinguished from the global
+counters alone.
 
-This will solve so many scalability problems that all of us have
-observed at some point or another and tried to optimize. I believe
-using rstat for userspace reads was the original intention anyway.
+For example, a container running a workload that has a much hotter
+memory accesses will likely see more promotions and fewer demotions,
+potentially depriving a colocated container of top tier memory to such
+an extent that its performance degrades unacceptably.
+
+For another example, some containers may exhibit longer periods between
+data reuse, causing much more numa_hint_faults than numa_pages_migrated.
+In this case, tuning hot_threshold_ms may be appropriate, but the signal
+can easily be lost if only global counters are available.
+
+In the long term, we hope to introduce per-cgroup control of promotion
+and demotion actions to implement memory placement policies in tiering.
+
+This patch set adds seven counters to memory.stat in a cgroup:
+numa_pages_migrated, numa_pte_updates, numa_hint_faults, pgdemote_kswapd,
+pgdemote_khugepaged, pgdemote_direct and pgpromote_success. pgdemote_*
+and pgpromote_success are also available in memory.numa_stat.
+
+count_memcg_events_mm() is added to count multiple event occurrences at
+once, and get_mem_cgroup_from_folio() is added because we need to get a
+reference to the memcg of a folio before it's migrated to track
+numa_pages_migrated. The accounting of PGDEMOTE_* is moved to
+shrink_inactive_list() before being changed to per-cgroup.
+
+Signed-off-by: Kaiyang Zhao <kaiyang2@cs.cmu.edu>
+---
+v4:
+- added documentation of the memcg counters in cgroup-v2.rst
+- added a hint of future directions in the changelog
+
+v3:
+- added pgpromote_success as suggested by Wei Xu
+
+v2:
+- fixed compilation error when CONFIG_NUMA_BALANCING is off
+- fixed doc warning due to missing parameter description in
+get_mem_cgroup_from_folio
+
+ Documentation/admin-guide/cgroup-v2.rst | 19 +++++++++++
+ include/linux/memcontrol.h              | 24 +++++++++++--
+ include/linux/vmstat.h                  |  1 +
+ mm/memcontrol.c                         | 45 +++++++++++++++++++++++++
+ mm/memory.c                             |  3 ++
+ mm/mempolicy.c                          |  4 ++-
+ mm/migrate.c                            |  7 ++--
+ mm/vmscan.c                             |  8 ++---
+ 8 files changed, 101 insertions(+), 10 deletions(-)
+
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 49b32cde3801..f11ede7b18d7 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1617,6 +1617,25 @@ The following nested keys are defined.
+ 		Usually because failed to allocate some continuous swap space
+ 		for the huge page.
+ 
++	  numa_pages_migrated (npn)
++		Number of pages migrated by NUMA balancing.
++
++	  numa_pte_updates (npn)
++		Number of pages whose page table entries are modified by
++		NUMA balancing to produce NUMA hinting faults on access.
++
++	  numa_hint_faults (npn)
++		Number of NUMA hinting faults.
++
++	  pgdemote_kswapd
++		Number of pages demoted by kswapd.
++
++	  pgdemote_direct
++		Number of pages demoted directly.
++
++	  pgdemote_khugepaged
++		Number of pages demoted by khugepaged.
++
+   memory.numa_stat
+ 	A read-only nested-keyed file which exists on non-root cgroups.
+ 
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 44f7fb7dc0c8..90ecd2dbca06 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -768,6 +768,8 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm);
+ 
+ struct mem_cgroup *get_mem_cgroup_from_current(void);
+ 
++struct mem_cgroup *get_mem_cgroup_from_folio(struct folio *folio);
++
+ struct lruvec *folio_lruvec_lock(struct folio *folio);
+ struct lruvec *folio_lruvec_lock_irq(struct folio *folio);
+ struct lruvec *folio_lruvec_lock_irqsave(struct folio *folio,
+@@ -1012,8 +1014,8 @@ static inline void count_memcg_folio_events(struct folio *folio,
+ 		count_memcg_events(memcg, idx, nr);
+ }
+ 
+-static inline void count_memcg_event_mm(struct mm_struct *mm,
+-					enum vm_event_item idx)
++static inline void count_memcg_events_mm(struct mm_struct *mm,
++					enum vm_event_item idx, unsigned long count)
+ {
+ 	struct mem_cgroup *memcg;
+ 
+@@ -1023,10 +1025,16 @@ static inline void count_memcg_event_mm(struct mm_struct *mm,
+ 	rcu_read_lock();
+ 	memcg = mem_cgroup_from_task(rcu_dereference(mm->owner));
+ 	if (likely(memcg))
+-		count_memcg_events(memcg, idx, 1);
++		count_memcg_events(memcg, idx, count);
+ 	rcu_read_unlock();
+ }
+ 
++static inline void count_memcg_event_mm(struct mm_struct *mm,
++					enum vm_event_item idx)
++{
++	count_memcg_events_mm(mm, idx, 1);
++}
++
+ static inline void memcg_memory_event(struct mem_cgroup *memcg,
+ 				      enum memcg_memory_event event)
+ {
+@@ -1246,6 +1254,11 @@ static inline struct mem_cgroup *get_mem_cgroup_from_current(void)
+ 	return NULL;
+ }
+ 
++static inline struct mem_cgroup *get_mem_cgroup_from_folio(struct folio *folio)
++{
++	return NULL;
++}
++
+ static inline
+ struct mem_cgroup *mem_cgroup_from_css(struct cgroup_subsys_state *css)
+ {
+@@ -1468,6 +1481,11 @@ static inline void count_memcg_folio_events(struct folio *folio,
+ {
+ }
+ 
++static inline void count_memcg_events_mm(struct mm_struct *mm,
++					enum vm_event_item idx, unsigned long count)
++{
++}
++
+ static inline
+ void count_memcg_event_mm(struct mm_struct *mm, enum vm_event_item idx)
+ {
+diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+index 9eb77c9007e6..d2761bf8ff32 100644
+--- a/include/linux/vmstat.h
++++ b/include/linux/vmstat.h
+@@ -32,6 +32,7 @@ struct reclaim_stat {
+ 	unsigned nr_ref_keep;
+ 	unsigned nr_unmap_fail;
+ 	unsigned nr_lazyfree_fail;
++	unsigned nr_demoted;
+ };
+ 
+ /* Stat data for system wide items */
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 4884629f0ce5..9a338978eeae 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -307,6 +307,12 @@ static const unsigned int memcg_node_stat_items[] = {
+ #ifdef CONFIG_SWAP
+ 	NR_SWAPCACHE,
+ #endif
++#ifdef CONFIG_NUMA_BALANCING
++	PGPROMOTE_SUCCESS,
++#endif
++	PGDEMOTE_KSWAPD,
++	PGDEMOTE_DIRECT,
++	PGDEMOTE_KHUGEPAGED,
+ };
+ 
+ static const unsigned int memcg_stat_items[] = {
+@@ -437,6 +443,11 @@ static const unsigned int memcg_vm_event_stat[] = {
+ 	THP_SWPOUT,
+ 	THP_SWPOUT_FALLBACK,
+ #endif
++#ifdef CONFIG_NUMA_BALANCING
++	NUMA_PAGE_MIGRATE,
++	NUMA_PTE_UPDATES,
++	NUMA_HINT_FAULTS,
++#endif
+ };
+ 
+ #define NR_MEMCG_EVENTS ARRAY_SIZE(memcg_vm_event_stat)
+@@ -978,6 +989,24 @@ struct mem_cgroup *get_mem_cgroup_from_current(void)
+ 	return memcg;
+ }
+ 
++/**
++ * get_mem_cgroup_from_folio - Obtain a reference on a given folio's memcg.
++ * @folio: folio from which memcg should be extracted.
++ */
++struct mem_cgroup *get_mem_cgroup_from_folio(struct folio *folio)
++{
++	struct mem_cgroup *memcg = folio_memcg(folio);
++
++	if (mem_cgroup_disabled())
++		return NULL;
++
++	rcu_read_lock();
++	if (!memcg || WARN_ON_ONCE(!css_tryget(&memcg->css)))
++		memcg = root_mem_cgroup;
++	rcu_read_unlock();
++	return memcg;
++}
++
+ /**
+  * mem_cgroup_iter - iterate over memory cgroup hierarchy
+  * @root: hierarchy root
+@@ -1383,6 +1412,13 @@ static const struct memory_stat memory_stats[] = {
+ 	{ "workingset_restore_anon",	WORKINGSET_RESTORE_ANON		},
+ 	{ "workingset_restore_file",	WORKINGSET_RESTORE_FILE		},
+ 	{ "workingset_nodereclaim",	WORKINGSET_NODERECLAIM		},
++
++	{ "pgdemote_kswapd",		PGDEMOTE_KSWAPD		},
++	{ "pgdemote_direct",		PGDEMOTE_DIRECT		},
++	{ "pgdemote_khugepaged",	PGDEMOTE_KHUGEPAGED	},
++#ifdef CONFIG_NUMA_BALANCING
++	{ "pgpromote_success",		PGPROMOTE_SUCCESS	},
++#endif
+ };
+ 
+ /* The actual unit of the state item, not the same as the output unit */
+@@ -1407,6 +1443,9 @@ static int memcg_page_state_output_unit(int item)
+ 	/*
+ 	 * Workingset state is actually in pages, but we export it to userspace
+ 	 * as a scalar count of events, so special case it here.
++	 *
++	 * Demotion and promotion activities are exported in pages, consistent
++	 * with their global counterparts.
+ 	 */
+ 	switch (item) {
+ 	case WORKINGSET_REFAULT_ANON:
+@@ -1416,6 +1455,12 @@ static int memcg_page_state_output_unit(int item)
+ 	case WORKINGSET_RESTORE_ANON:
+ 	case WORKINGSET_RESTORE_FILE:
+ 	case WORKINGSET_NODERECLAIM:
++	case PGDEMOTE_KSWAPD:
++	case PGDEMOTE_DIRECT:
++	case PGDEMOTE_KHUGEPAGED:
++#ifdef CONFIG_NUMA_BALANCING
++	case PGPROMOTE_SUCCESS:
++#endif
+ 		return 1;
+ 	default:
+ 		return memcg_page_state_unit(item);
+diff --git a/mm/memory.c b/mm/memory.c
+index 0ed3603aaf31..13b679ad182c 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -5400,6 +5400,9 @@ int numa_migrate_check(struct folio *folio, struct vm_fault *vmf,
+ 	vma_set_access_pid_bit(vma);
+ 
+ 	count_vm_numa_event(NUMA_HINT_FAULTS);
++#ifdef CONFIG_NUMA_BALANCING
++	count_memcg_folio_events(folio, NUMA_HINT_FAULTS, 1);
++#endif
+ 	if (folio_nid(folio) == numa_node_id()) {
+ 		count_vm_numa_event(NUMA_HINT_FAULTS_LOCAL);
+ 		*flags |= TNF_FAULT_LOCAL;
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index b3b5f376471f..b646fab3e45e 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -676,8 +676,10 @@ unsigned long change_prot_numa(struct vm_area_struct *vma,
+ 	tlb_gather_mmu(&tlb, vma->vm_mm);
+ 
+ 	nr_updated = change_protection(&tlb, vma, addr, end, MM_CP_PROT_NUMA);
+-	if (nr_updated > 0)
++	if (nr_updated > 0) {
+ 		count_vm_numa_events(NUMA_PTE_UPDATES, nr_updated);
++		count_memcg_events_mm(vma->vm_mm, NUMA_PTE_UPDATES, nr_updated);
++	}
+ 
+ 	tlb_finish_mmu(&tlb);
+ 
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 6e32098ac2dc..dbfa910ec24b 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -2668,6 +2668,8 @@ int migrate_misplaced_folio(struct folio *folio, struct vm_area_struct *vma,
+ 	int nr_remaining;
+ 	unsigned int nr_succeeded;
+ 	LIST_HEAD(migratepages);
++	struct mem_cgroup *memcg = get_mem_cgroup_from_folio(folio);
++	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, pgdat);
+ 
+ 	list_add(&folio->lru, &migratepages);
+ 	nr_remaining = migrate_pages(&migratepages, alloc_misplaced_dst_folio,
+@@ -2677,12 +2679,13 @@ int migrate_misplaced_folio(struct folio *folio, struct vm_area_struct *vma,
+ 		putback_movable_pages(&migratepages);
+ 	if (nr_succeeded) {
+ 		count_vm_numa_events(NUMA_PAGE_MIGRATE, nr_succeeded);
++		count_memcg_events(memcg, NUMA_PAGE_MIGRATE, nr_succeeded);
+ 		if ((sysctl_numa_balancing_mode & NUMA_BALANCING_MEMORY_TIERING)
+ 		    && !node_is_toptier(folio_nid(folio))
+ 		    && node_is_toptier(node))
+-			mod_node_page_state(pgdat, PGPROMOTE_SUCCESS,
+-					    nr_succeeded);
++			mod_lruvec_state(lruvec, PGPROMOTE_SUCCESS, nr_succeeded);
+ 	}
++	mem_cgroup_put(memcg);
+ 	BUG_ON(!list_empty(&migratepages));
+ 	return nr_remaining ? -EAGAIN : 0;
+ }
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index da6ba3206827..a118a55bbed5 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1018,9 +1018,6 @@ static unsigned int demote_folio_list(struct list_head *demote_folios,
+ 		      (unsigned long)&mtc, MIGRATE_ASYNC, MR_DEMOTION,
+ 		      &nr_succeeded);
+ 
+-	mod_node_page_state(pgdat, PGDEMOTE_KSWAPD + reclaimer_offset(),
+-			    nr_succeeded);
+-
+ 	return nr_succeeded;
+ }
+ 
+@@ -1519,7 +1516,8 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
+ 	/* 'folio_list' is always empty here */
+ 
+ 	/* Migrate folios selected for demotion */
+-	nr_reclaimed += demote_folio_list(&demote_folios, pgdat);
++	stat->nr_demoted = demote_folio_list(&demote_folios, pgdat);
++	nr_reclaimed += stat->nr_demoted;
+ 	/* Folios that could not be demoted are still in @demote_folios */
+ 	if (!list_empty(&demote_folios)) {
+ 		/* Folios which weren't demoted go back on @folio_list */
+@@ -1985,6 +1983,8 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
+ 	spin_lock_irq(&lruvec->lru_lock);
+ 	move_folios_to_lru(lruvec, &folio_list);
+ 
++	__mod_lruvec_state(lruvec, PGDEMOTE_KSWAPD + reclaimer_offset(),
++					stat.nr_demoted);
+ 	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, -nr_taken);
+ 	item = PGSTEAL_KSWAPD + reclaimer_offset();
+ 	if (!cgroup_reclaim(sc))
+-- 
+2.43.0
+
 
