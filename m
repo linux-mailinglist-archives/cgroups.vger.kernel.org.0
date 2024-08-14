@@ -1,47 +1,47 @@
-Return-Path: <cgroups+bounces-4271-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4272-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DE529524DF
-	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 23:41:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 071279524E3
+	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 23:42:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81D02B20ACB
-	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 21:41:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A68A21F24ACB
+	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 21:42:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 776FC1C7B6F;
-	Wed, 14 Aug 2024 21:41:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CEE41C822D;
+	Wed, 14 Aug 2024 21:42:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VtnBZ7+2"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hB5dbF5f"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADCA81B0125
-	for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 21:41:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19FA21BF300
+	for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 21:42:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723671688; cv=none; b=KzqiOs7Z/DZUw3r0UEyP2lGBVFJjtFuQmO4MIISdhz970cr5qAHVmImKMcMv8UHsAj81eVmHhltOuR04hlPfXRFsFabsu+VtN6nraPeHlsMPP+pHXrAv1Rnsr2ufrIhqwYd/wgZ7cK+YZlVb3f1IqrBwWqN49pT/ij7lrNJ1/5c=
+	t=1723671745; cv=none; b=eTSNiRdHI/i5xd2aAZm+ampBc5wiInReFAtUX8ZSUHLMQCDJ4yxfHcsXO/X3wjzu5NA282hcGj1/AJTI/8BQVSWN0Shhjq3/PQDDY4TnAnTnDRBYiY1/iVti25RSYVKfZriEFOKnoCriJh5I68HTnTgnV83IHldQe30GuSf9o1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723671688; c=relaxed/simple;
-	bh=MBo6i4B+ud6F72Xe3hryLxnM611i6puIHcpoluR7Nus=;
+	s=arc-20240116; t=1723671745; c=relaxed/simple;
+	bh=Eze1YvBlqw+MJZLfh9h6nFHyLnOwPgc0LLqwoNhKx1o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pg/bsGQOQ5C9e0FP6aql/unpdaqTI2Hl8Ac2ACwL5mne7V7tAEkSYxYXJ38Im+alrNydZ1qbODGXkz3VQ5h9EAio/bu4D0W/YVpGo5hyx1II51oUiZ8Dv+76VG6h0s5D1opLcHNE5KC5BUa92DTG3rpe2JQxNH/7+yhakng8jJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VtnBZ7+2; arc=none smtp.client-ip=91.218.175.182
+	 Content-Type:Content-Disposition:In-Reply-To; b=f8AfB4xvDbcauQch9S+WprN4cU4SKQXITbAAHgfpZ7q5wZNipSX4BqL8Eey3uFlzzRuaZ9ISf+7K45YW3tmP2BaqBGf/fLYOlNyD/2Xcrq/NRgsajX8n2Rp8Xs1hDlG29NyskiJo3vMvI+bd35qCFnAa+xa9L5Fa21TQOioRobY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hB5dbF5f; arc=none smtp.client-ip=95.215.58.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 14 Aug 2024 14:41:13 -0700
+Date: Wed, 14 Aug 2024 14:42:13 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1723671681;
+	t=1723671739;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XkZH7xVDbhk7zC0mNzM98IJtjGbzpC00H/rbbebB8o8=;
-	b=VtnBZ7+2ryBAY6leshpfKVYYOcVSdoAq8sDcEJZgqhk5SIjS3N1KTxoF/B7BlzLGMzcgP5
-	cAS5xpwDMoSmtwlUXbcDI53hk1t1TQg8Gk0OA7bsUQxM3PcQT3EhZJwd/Yejk+rClxwbN3
-	Q1Kv6Gsk8RCpql7Nf1nIO+9pZSzWsjE=
+	bh=OIhfQtAttnBaCpCE+ey5b1+F0FxQnhTmRpcsEUiZYG0=;
+	b=hB5dbF5f5HKHT9IkH7wIxVJs4zWWmjrgTJohxAnDR5uve3hQCRMeHNnXF6mcWjjJCA1FSU
+	UM2vkmYMyXiIBFRQEBcCzKrxEycYztbmeod0EflCrPTu1bcD1DMN6o5N5Gf1R7tgeQv8ED
+	rDhR9sejBHpc4Zs+4henHSjSXJVnyhM=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: "T.J. Mercier" <tjmercier@google.com>
@@ -49,11 +49,11 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
 	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org, 
 	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH 3/4] memcg: initiate deprecation of oom_control
-Message-ID: <vixhnru2gag4wav5m2qesoihlhuce75s662ccxcekdp3ba44kj@ml7tlkaefqsx>
+Subject: Re: [PATCH 1/4] memcg: initiate deprecation of v1 tcp accounting
+Message-ID: <n4yebzbpida7q7g4ajgjkp5nefxn3mkxpm2lfvpp27zfe7sydb@gf6gcmfg55rl>
 References: <20240814202825.2694077-1-shakeel.butt@linux.dev>
- <20240814202825.2694077-4-shakeel.butt@linux.dev>
- <CABdmKX2HvW3qZ9zrTq0Gz6q0Gg7_XubVY22o3GJoTOhQg=V+8Q@mail.gmail.com>
+ <20240814202825.2694077-2-shakeel.butt@linux.dev>
+ <CABdmKX07o8ywPNoTDL_tM6qn46TXeLbhHoQEtBpFBXJkWdAc7A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -63,93 +63,77 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CABdmKX2HvW3qZ9zrTq0Gz6q0Gg7_XubVY22o3GJoTOhQg=V+8Q@mail.gmail.com>
+In-Reply-To: <CABdmKX07o8ywPNoTDL_tM6qn46TXeLbhHoQEtBpFBXJkWdAc7A@mail.gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Wed, Aug 14, 2024 at 02:00:03PM GMT, T.J. Mercier wrote:
-> On Wed, Aug 14, 2024 at 1:29 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+On Wed, Aug 14, 2024 at 01:59:15PM GMT, T.J. Mercier wrote:
+> On Wed, Aug 14, 2024 at 1:28 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
 > >
-> > The oom_control provides functionality to disable memcg oom-killer,
-> > notifications on oom-kill and reading the stats regarding oom-kills.
-> > This interface was mainly introduced to provide functionality for
-> > userspace oom-killers. However it is not robust enough and only supports
-> > OOM handling in the page fault path.
+> > Memcg v1 provides opt-in TCP memory accounting feature. However it is
+> > mostly unused due to its performance impact on the network traffic. In
+> > v2, the TCP memory is accounted in the regular memory usage and is
+> > transparent to the users but they can observe the TCP memory usage
+> > through memcg stats.
 > >
-> > For v2, the users can use the combination of memory.events notifications
-> > and memory.high interface to provide userspace OOM-killing functionality.
-> > Let's start the deprecation process for v1 and gather the info on how
-> > the current users are using this interface and work on providing a more
-> > robust functionality in v2.
+> > Let's initiate the deprecation process of memcg v1's tcp accounting
+> > functionality and add warnings to gather if there are any users and if
+> > there are, collect how they are using it and plan to provide them better
+> > alternative in v2.
 > >
 > > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 > > ---
-> >  Documentation/admin-guide/cgroup-v1/memory.rst | 8 ++++++--
-> >  mm/memcontrol-v1.c                             | 7 +++++++
-> >  2 files changed, 13 insertions(+), 2 deletions(-)
+> >  Documentation/admin-guide/cgroup-v1/memory.rst | 8 ++++++++
+> >  mm/memcontrol-v1.c                             | 3 +++
+> >  2 files changed, 11 insertions(+)
 > >
 > > diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-> > index afe5e95e9f7b..74cea6712d06 100644
+> > index 9cde26d33843..fb6d3e2a6395 100644
 > > --- a/Documentation/admin-guide/cgroup-v1/memory.rst
 > > +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-> > @@ -92,6 +92,8 @@ Brief summary of control files.
-> >                                       This knob is deprecated and shouldn't be
-> >                                       used.
-> >   memory.oom_control                 set/show oom controls.
+> > @@ -105,10 +105,18 @@ Brief summary of control files.
+> >   memory.kmem.max_usage_in_bytes      show max kernel memory usage recorded
+> >
+> >   memory.kmem.tcp.limit_in_bytes      set/show hard limit for tcp buf memory
 > > +                                     This knob is deprecated and shouldn't be
 > > +                                     used.
-> >   memory.numa_stat                   show the number of memory usage per numa
-> >                                      node
-> >   memory.kmem.limit_in_bytes          Deprecated knob to set and read the kernel
-> > @@ -846,8 +848,10 @@ It's applicable for root and non-root cgroup.
+> >   memory.kmem.tcp.usage_in_bytes      show current tcp buf memory allocation
+> > +                                     This knob is deprecated and shouldn't be
+> > +                                     used.
+> >   memory.kmem.tcp.failcnt             show the number of tcp buf memory usage
+> > +                                     This knob is deprecated and shouldn't be
+> > +                                     used.
+> >                                      hits limits
+> 
+> Looks like you split the description (that has weird grammar) here.
+> 
+
+Thanks for catching. Bad paste line. Will fix.
+
+> >   memory.kmem.tcp.max_usage_in_bytes  show max tcp buf memory usage recorded
+> > +                                     This knob is deprecated and shouldn't be
+> > +                                     used.
+> >  ==================================== ==========================================
 > >
-> >  .. _cgroup-v1-memory-oom-control:
-> >
-> > -10. OOM Control
-> > -===============
-> > +10. OOM Control (DEPRECATED)
-> > +============================
-> > +
-> > +THIS IS DEPRECATED!
-> >
-> >  memory.oom_control file is for OOM notification and other controls.
-> >
+> >  1. History
 > > diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
-> > index e0bb54e42011..07343e338e4e 100644
+> > index 9725c731fb21..b8e2ee454eaa 100644
 > > --- a/mm/memcontrol-v1.c
 > > +++ b/mm/memcontrol-v1.c
-> > @@ -1907,6 +1907,9 @@ static ssize_t memcg_write_event_control(struct kernfs_open_file *of,
-> >                 event->register_event = mem_cgroup_usage_register_event;
-> >                 event->unregister_event = mem_cgroup_usage_unregister_event;
-> >         } else if (!strcmp(name, "memory.oom_control")) {
-> > +               pr_warn_once("oom_control is deprecated and will be removed. "
-> > +                            "Please report your usecase to linux-mm-@kvack.org"
-> > +                            " if you depend on this functionality. \n";
-> 
-> Missing close paren?
-
-Ah, thanks for catching that. I compile tested the old version before
-moving text around. Anyways, will resend.
-
-> 
-> >                 event->register_event = mem_cgroup_oom_register_event;
-> >                 event->unregister_event = mem_cgroup_oom_unregister_event;
-> >         } else if (!strcmp(name, "memory.pressure_level")) {
-> > @@ -2754,6 +2757,10 @@ static int mem_cgroup_oom_control_write(struct cgroup_subsys_state *css,
-> >  {
-> >         struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-> >
-> > +       pr_warn_once("oom_control is deprecated and will be removed. "
-> > +                    "Please report your usecase to linux-mm-@kvack.org if you "
-> > +                    "depend on this functionality. \n";
-> > +
-> 
-> Missing close paren?
-> 
-> >         /* cannot set to root cgroup and only 0 and 1 are allowed */
-> >         if (mem_cgroup_is_root(memcg) || !((val == 0) || (val == 1)))
-> >                 return -EINVAL;
+> > @@ -2447,6 +2447,9 @@ static ssize_t mem_cgroup_write(struct kernfs_open_file *of,
+> >                         ret = 0;
+> >                         break;
+> >                 case _TCP:
+> > +                       pr_warn_once("kmem.tcp.limit_in_bytes is deprecated and will be removed. "
+> > +                                    "Please report your usecase to linux-mm@kvack.org if you "
+> > +                                    "depend on this functionality.\n");
+> >                         ret = memcg_update_tcp_max(memcg, nr_pages);
+> >                         break;
+> >                 }
 > > --
 > > 2.43.5
 > >
-> >
+> Otherwise LGTM
+> Reviewed-by: T.J. Mercier <tjmercier@google.com>
+
+Thanks.
 
