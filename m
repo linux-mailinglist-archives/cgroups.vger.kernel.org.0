@@ -1,82 +1,82 @@
-Return-Path: <cgroups+bounces-4281-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4282-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5472295260C
-	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 00:58:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2721495260F
+	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 00:58:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD68C1F23D66
-	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 22:58:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D2D91F258EC
+	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 22:58:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E319714EC7D;
-	Wed, 14 Aug 2024 22:58:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F0A514EC79;
+	Wed, 14 Aug 2024 22:58:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KU2Zm+yT"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lE/MFm5w"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18F23146A7D
-	for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 22:58:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2377F14C5AF
+	for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 22:58:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723676297; cv=none; b=Lv7MyaQVnGmsGTEGpIRaJGptauFl5nDNIcS9aDjFqrzcLX4AFtgkaKNN0NwYBvN2c1zst5j9aoebpe4yI7KmPJEf9fXTiAl/t1QnMDL7WXk2MeE47ZB8ms5DJ3HMPk5N01Doe5RFJc3u6LTqgh9/rM737ionK0qm3sLQ96Hxc2c=
+	t=1723676314; cv=none; b=mYArCpdEIi7XHC0D2GxhsMut2yqyI+lALkxPsDu8v+mWqbchjJU4MhZlGqgqgATBkf88sVJHydW0J9JCSwtr8n2ux6J7inoxVmLj2CEGmCfgsEwjmG364GSwNUOD+7l9taifVUUvzDLYfn+Mlg2srFQl1jlmnk3KRE1rB1/LLOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723676297; c=relaxed/simple;
-	bh=esJkp6pzrDl7pn0Vhi+Sf5H4Ge/O5im0wu9OPiZHzxI=;
+	s=arc-20240116; t=1723676314; c=relaxed/simple;
+	bh=sEi7TbGO5Ntmfn1pMdHe8wajqxgmYCz4bKVOA5JfU/E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oAJ7LDOJSuxSxEDpbMtq7A6mPG18BYRIrED+KAKgDQmxF4hSMsiU/3ZMHuI+u/miVICoaDDYeIo+xbvlOAXb6E1YtnlGn128vhEnJBFmc6TgW2+TJus3bMN12zotAfVqv6+twM7wOTdqkRc3gJYlpbZAdoXPmwtJtOJipFvpsCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KU2Zm+yT; arc=none smtp.client-ip=209.85.219.177
+	 To:Cc:Content-Type; b=Gp6iLiku4z87arDDoPnTPu8aXS6cMiDEcCuCp3Xcizykwx9K7lSDy46+GBR3tP6KPMtjepm1VHopFMXdOSkgwf0I+RQDhjQt3qdN/3BadkDBxE06w5sibHpZJi0EQS7iZszDmmgPt4fzfnzB/JG669qMmt7FCpLv8RPcwpp5dTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lE/MFm5w; arc=none smtp.client-ip=209.85.128.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-e0b9589a72dso422234276.3
-        for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 15:58:15 -0700 (PDT)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-690ad83d4d7so4386647b3.3
+        for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 15:58:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1723676295; x=1724281095; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1723676310; x=1724281110; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0LH9IZekz4kND2PuGVCdvgpQgNSIkQ3LAaUsAOTaDg8=;
-        b=KU2Zm+yTf+hNIvw6XXQG0kWQG34wVo5ru1OfTnFa0/CH9JNFLv0wRHnBLe79+MO0ns
-         q3EcNtCXRgdqVm4VqcgzQN875afO7wRhUvuBCmhOhx55HXV7v9+8PrFAQI1QoJkx8AIo
-         7SS844nEpR3XGUZ/SVrz+QC0qIsVm52ALVwvm/d1o037rXoTutpUmBx9sgbLiP1vNO7U
-         Lhz808fk0vKwQXYz8CdRazDX8E+WxfAgZz8oc8WlDfQVs0AA9Z95ISjH1f7H2r+wcaXj
-         3yqkN0TEYNuvY2+09vvJPoFvOy6BwF2achYvyeUECL2YbwJCjRqGUdTDApI+T08pLHP0
-         GvQQ==
+        bh=RUWhNpMZkVm29wzcKzyvQXZAILOf6Dv4XUMwNXkvgdM=;
+        b=lE/MFm5ws8bJAKH4HcVUqvlxk56e5Mc/rjdt7xJVKVcSaqH3GsxaspWUvHKRusE1Ru
+         pf/eYRayXZ6IaHQe/dy1xhPSBvDb/2KedDKPFqbvoGFBxt2bKtLj9jcT/MZF9/4wmFtA
+         /yIHMVzd0D5Eh8BLdTOwPFbiY9fwbDXM+bEJeBgxwDZq/ok3XFDKsSQfAo+92760EoaP
+         XWjRX9eYFgooqh0XzbHozG+4NKe6ownpRznGBD4REz3AxcnaDVnj6+qpakPlu/HyWu1/
+         qyor267bS3r99LDTNYE1AJoNti9vwQMFWZ805mPXt8xEC93QkjJ8KDFZwXuVI015V3/E
+         Q20w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723676295; x=1724281095;
+        d=1e100.net; s=20230601; t=1723676310; x=1724281110;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0LH9IZekz4kND2PuGVCdvgpQgNSIkQ3LAaUsAOTaDg8=;
-        b=fog5blcVAmWgZFkTbmdyGr31S9ZMSTXhWbDV3JCO/lfe5/z3jtIsOlwLBHM8djhLFx
-         ruK0NQVN6HipLw+qYnmNHei9a1KHtVylU4QqmQFWi6UEvk4uTs1NzkxCOkGbUW+9303A
-         ZjMlm6gHOOu3OgYi20eX0I9+wYvTlfGvFAFHOZ2IJgqO7/K5dg0E3JF7Ei7hEnPlCiwz
-         ttdDmuFU1Ox/8NA49ZTSW1/AZNDzwOZ4LPTBdAsumUzyWAQBdVEnSjl4KkLEMO0ekj4u
-         x5mVlO/3JsapUrgiTZ88NbzjzrTGw72xXsKFdiotVWFaCpEiV2S3Av6C/6vSOjU5Aewq
-         4I9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWVm5l6u0P8j7z/qDh5o934J91SYQmSEHEGxbm5GxOX3MXvSrtc1M94rTGOp26iiWZgqhnDPrMl@vger.kernel.org
-X-Gm-Message-State: AOJu0YxyBghAR76xEKrxKRkCXu5zE8YRvo2tr+0osjtLTz7rpe7LIMWN
-	bi3VMbSY0HMEUlyOthNHsAR23+YXoseJ9r3zvPjLG+6xWF5gzulU005jq9U8J8n0lCxXGPbBaYI
-	CSXb6SOyU/akbbcB+fDUiAgieLwfSA6U50XP6
-X-Google-Smtp-Source: AGHT+IGMh670qk/wVX9LikwlOg/tM7AX9HaJJ+9M/wLsONwxycfHG8idh1uP1XZ/P7iHetg0R2VUp1EhYjZ/V33KXSw=
-X-Received: by 2002:a05:6902:1021:b0:e08:5bd7:6bdb with SMTP id
- 3f1490d57ef6-e1155a426eemr5238466276.3.1723676294551; Wed, 14 Aug 2024
- 15:58:14 -0700 (PDT)
+        bh=RUWhNpMZkVm29wzcKzyvQXZAILOf6Dv4XUMwNXkvgdM=;
+        b=q/PBaFFhkqt+0fwdH7W5ZGy6Q9rjeRdFQ0HCHVnaRm1UTjcvWZhF/+XmcreZmShnN8
+         XkbragkWEhO3u+FVTXZpVRb9qy7jG70cCe3cgK/Azdm+Q4sZwZlg85b+yAMEKCi/+Izj
+         iOf385AYU/m1dP6/FerfNKRosHbz/wVWV2ss/BiQWBezA3aat3i9X4VIBbgOJ+TG6OMv
+         Jgb+DGb/kMy+UJ7SzifNoHNMyqOZFWohWVh6Eb7YwNVY3jpDVKN7c61bGR8ac4YHzBGQ
+         PDOIACkjYBXjki/72BpIpw4cqUfPAEMgxQgKE00TdmL7w9q0RkiLcdgt1T2/CEkj0unG
+         D1jQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW4Gorj8nKZkltEfPzW1hi3fI02trVG5uVR12lDSiPkHd/U1MRWq3GpjEOo8Vg49qSsPWKVvpULBDDWfmlL+Oflzj6cRVhMQg==
+X-Gm-Message-State: AOJu0YyCrNOzdfRRjyaBFn9+Q38I+hLLQZefPzH8ual/UrHPhBm5chl3
+	xO7y2dj2kXJV9LTWew5yLsKlq723HM7lR5SZuYfE1GJ8IxUuovenhWPc2/FB39kTUTvbYAoYcU4
+	T9VO3RAcuHaUdMtVpRttx8UIY7NmZttO06O6y
+X-Google-Smtp-Source: AGHT+IH159x/1XCLV9wWews52LhEjNNWRHC/963OVVJzDAiE2ggKEqH5sqJkpLLbOepWnA2AvwREk7Iozx3FPc4qEkk=
+X-Received: by 2002:a5b:60c:0:b0:e11:67d7:e7cb with SMTP id
+ 3f1490d57ef6-e1167d7ed0emr2635021276.19.1723676309851; Wed, 14 Aug 2024
+ 15:58:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240814220021.3208384-1-shakeel.butt@linux.dev> <20240814220021.3208384-4-shakeel.butt@linux.dev>
-In-Reply-To: <20240814220021.3208384-4-shakeel.butt@linux.dev>
+References: <20240814220021.3208384-1-shakeel.butt@linux.dev> <20240814220021.3208384-5-shakeel.butt@linux.dev>
+In-Reply-To: <20240814220021.3208384-5-shakeel.butt@linux.dev>
 From: "T.J. Mercier" <tjmercier@google.com>
-Date: Wed, 14 Aug 2024 15:58:03 -0700
-Message-ID: <CABdmKX3cqsFBe3dA2P3MrNjFbwg4zH9wLuE=W0FrzuT0cOiY7A@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] memcg: initiate deprecation of oom_control
+Date: Wed, 14 Aug 2024 15:58:18 -0700
+Message-ID: <CABdmKX0Kv57Lo2xC7mJXOePObFhkCDdr1mAK71nurXZOQNVDPg@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] memcg: initiate deprecation of pressure_level
 To: Shakeel Butt <shakeel.butt@linux.dev>
 Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
 	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
@@ -88,27 +88,25 @@ Content-Transfer-Encoding: quoted-printable
 On Wed, Aug 14, 2024 at 3:00=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
 v> wrote:
 >
-> The oom_control provides functionality to disable memcg oom-killer,
-> notifications on oom-kill and reading the stats regarding oom-kills.
-> This interface was mainly introduced to provide functionality for
-> userspace oom-killers. However it is not robust enough and only supports
-> OOM handling in the page fault path.
+> The pressure_level in memcg v1 provides memory pressure notifications to
+> the user space. At the moment it provides notifications for three levels
+> of memory pressure i.e. low, medium and critical, which are defined
+> based on internal memory reclaim implementation details. More
+> specifically the ratio or scanned and reclaimed pages during a memory
+
+"ratio of"
+
+> reclaim. However this is not robust as there are workloads with mostly
+> unreclaimable user memory or kernel memory.
 >
-> For v2, the users can use the combination of memory.events notifications
-> and memory.high interface to provide userspace OOM-killing functionality.
-
-Might be worth it to mention PSI here too for userspace OOM-killing?
-(It's what LMKD does for Android.)
-
-> Let's start the deprecation process for v1 and gather the info on how
-> the current users are using this interface and work on providing a more
-> robust functionality in v2.
+> For v2, the users can use PSI for memory pressure status of the system
+> or the cgroup. Let's start the deprecation process for pressure_level
+> and add warnings to gather the info on how the current users are using
+> this interface and how they can be used to PSI.
 >
 > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
 Reviewed-by: T.J. Mercier <tjmercier@google.com>
-
-
 
 
 > ---
@@ -116,75 +114,57 @@ Reviewed-by: T.J. Mercier <tjmercier@google.com>
 > - Fix build (T.J. Mercier)
 >
 >  Documentation/admin-guide/cgroup-v1/memory.rst | 8 ++++++--
->  mm/memcontrol-v1.c                             | 7 +++++++
->  2 files changed, 13 insertions(+), 2 deletions(-)
+>  mm/memcontrol-v1.c                             | 3 +++
+>  2 files changed, 9 insertions(+), 2 deletions(-)
 >
 > diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentati=
 on/admin-guide/cgroup-v1/memory.rst
-> index 6831c6c16e3f..0042206414c8 100644
+> index 0042206414c8..270501db9f4e 100644
 > --- a/Documentation/admin-guide/cgroup-v1/memory.rst
 > +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-> @@ -92,6 +92,8 @@ Brief summary of control files.
->                                       This knob is deprecated and shouldn=
-'t be
+> @@ -86,6 +86,8 @@ Brief summary of control files.
 >                                       used.
->   memory.oom_control                 set/show oom controls.
+>   memory.force_empty                 trigger forced page reclaim
+>   memory.pressure_level              set memory pressure notifications
 > +                                     This knob is deprecated and shouldn=
 't be
 > +                                     used.
->   memory.numa_stat                   show the number of memory usage per =
-numa
->                                      node
->   memory.kmem.limit_in_bytes          Deprecated knob to set and read the=
- kernel
-> @@ -846,8 +848,10 @@ It's applicable for root and non-root cgroup.
+>   memory.swappiness                  set/show swappiness parameter of vms=
+can
+>                                      (See sysctl's vm.swappiness)
+>   memory.move_charge_at_immigrate     set/show controls of moving charges
+> @@ -898,8 +900,10 @@ At reading, current status of OOM is shown.
+>            The number of processes belonging to this cgroup killed by any
+>            kind of OOM killer.
 >
->  .. _cgroup-v1-memory-oom-control:
->
-> -10. OOM Control
-> -=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +10. OOM Control (DEPRECATED)
+> -11. Memory Pressure
+> -=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +11. Memory Pressure (DEPRECATED)
 > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
+=3D=3D=3D=3D=3D=3D=3D=3D
 > +
 > +THIS IS DEPRECATED!
 >
->  memory.oom_control file is for OOM notification and other controls.
->
+>  The pressure level notifications can be used to monitor the memory
+>  allocation cost; based on the pressure, applications can implement
 > diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
-> index e0bb54e42011..334a02597d9a 100644
+> index 334a02597d9a..52aecdae2c28 100644
 > --- a/mm/memcontrol-v1.c
 > +++ b/mm/memcontrol-v1.c
-> @@ -1907,6 +1907,9 @@ static ssize_t memcg_write_event_control(struct ker=
+> @@ -1913,6 +1913,9 @@ static ssize_t memcg_write_event_control(struct ker=
 nfs_open_file *of,
->                 event->register_event =3D mem_cgroup_usage_register_event=
-;
->                 event->unregister_event =3D mem_cgroup_usage_unregister_e=
-vent;
->         } else if (!strcmp(name, "memory.oom_control")) {
-> +               pr_warn_once("oom_control is deprecated and will be remov=
-ed. "
-> +                            "Please report your usecase to linux-mm-@kva=
-ck.org"
-> +                            " if you depend on this functionality. \n");
 >                 event->register_event =3D mem_cgroup_oom_register_event;
 >                 event->unregister_event =3D mem_cgroup_oom_unregister_eve=
 nt;
 >         } else if (!strcmp(name, "memory.pressure_level")) {
-> @@ -2754,6 +2757,10 @@ static int mem_cgroup_oom_control_write(struct cgr=
-oup_subsys_state *css,
->  {
->         struct mem_cgroup *memcg =3D mem_cgroup_from_css(css);
->
-> +       pr_warn_once("oom_control is deprecated and will be removed. "
-> +                    "Please report your usecase to linux-mm-@kvack.org i=
-f you "
-> +                    "depend on this functionality. \n");
-> +
->         /* cannot set to root cgroup and only 0 and 1 are allowed */
->         if (mem_cgroup_is_root(memcg) || !((val =3D=3D 0) || (val =3D=3D =
-1)))
->                 return -EINVAL;
+> +               pr_warn_once("pressure_level is deprecated and will be re=
+moved. "
+> +                            "Please report your usecase to linux-mm-@kva=
+ck.org "
+> +                            "if you depend on this functionality. \n");
+>                 event->register_event =3D vmpressure_register_event;
+>                 event->unregister_event =3D vmpressure_unregister_event;
+>         } else if (!strcmp(name, "memory.memsw.usage_in_bytes")) {
 > --
 > 2.43.5
 >
