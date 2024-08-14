@@ -1,114 +1,169 @@
-Return-Path: <cgroups+bounces-4267-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4268-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15FAC952441
-	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 22:54:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06ACF95245B
+	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 22:59:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48EAD1C21745
-	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 20:54:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C69F1F2447D
+	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 20:59:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 870991C57AF;
-	Wed, 14 Aug 2024 20:52:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB0C51C5792;
+	Wed, 14 Aug 2024 20:59:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="u9QNpxPL"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="T6qAyX8X"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4649D1D545
-	for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 20:52:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D1C41BC069
+	for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 20:59:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723668723; cv=none; b=T1qJAVcfblGSyFifdsil00CpQ244d4vZz+suIkM4jN33Cc1I/MIyk4sJGWYmzD8t7R/Cm+CPCUkFvNLdjoD5IwHcem8tYbc5lPq0SRkMvebJsMnZTxeyyrawSImEX2L2SFWbIOqQkcGdB8HuSfiAbPE3Em03hAxtizO28MSooEY=
+	t=1723669171; cv=none; b=YrX9l75ALGrXTKuRKkwwRsif3uO2ueUSvNHlsIJ8LArG9NHBVbq7rKn/rJFBMoEnhfx/CtgxtAz2CSEi/b6BYuyVo3tCcj/cievmdtZKANjlDnrinCYRJg2znOt5vX74i/91FPDw5eAV+AvKSsUo71X0HDc3QfBYOMpi2jB1SN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723668723; c=relaxed/simple;
-	bh=+2uyCP79sVA3+SCyRIYroJ/LtfahWV9TyMiSxufHXQE=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Zgb54Ho7SNUPNpi4f3HT20KNORxz3BXyLogyCN/mB92fR9BJy5XUIbCF93VasWMhv6YZYoLYsVvVZ095kRGQZLGs7raML4btl8MuYFqRlaTeF3KAdtZVzboLTVSf7bpjfgW2lKuIG9bXrThdgIhVbUL9Zi7+xfFDk6K3xJVi6e0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=u9QNpxPL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8705FC116B1;
-	Wed, 14 Aug 2024 20:52:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1723668723;
-	bh=+2uyCP79sVA3+SCyRIYroJ/LtfahWV9TyMiSxufHXQE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=u9QNpxPLHLOc2gJi93X48j9NR6/RexgsfDUppFD1aFwaShU/QiC3f2DzCnpyljCGL
-	 sjjEQiDw+5mV/rXHWyig2SvkOmw3FnxY8MFGLiPuMkVGWUFHqT0k3Et9Qu+m3fV13o
-	 RL4ixLTN1qIL3HTtUVIVKDdSeXTPw55hC2zWosA8=
-Date: Wed, 14 Aug 2024 13:52:01 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: kaiyang2@cs.cmu.edu
-Cc: linux-mm@kvack.org, cgroups@vger.kernel.org, roman.gushchin@linux.dev,
- shakeel.butt@linux.dev, muchun.song@linux.dev, mhocko@kernel.org,
- nehagholkar@meta.com, abhishekd@meta.com, hannes@cmpxchg.org,
- weixugc@google.com, rientjes@google.com
-Subject: Re: [PATCH v3] mm,memcg: provide per-cgroup counters for NUMA
- balancing operations
-Message-Id: <20240814135201.58cd0760bbeab13fcea82c4a@linux-foundation.org>
-In-Reply-To: <20240814174227.30639-1-kaiyang2@cs.cmu.edu>
-References: <20240814174227.30639-1-kaiyang2@cs.cmu.edu>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1723669171; c=relaxed/simple;
+	bh=z/++biqcPLbdFhnEZO3OZrkvvr7TgPxYik694Y2Qbm4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lqn2nm6u2Nbu22St4QDcjxjyYcbubT9dOy22xYERYC0me6VjOEKqLAgZqZP9KUDdXshUpJqT9S9+D007n1d93MrgfcRS+HveL1oyyI9tib+6say96DDT43libvlK3tEeVYQyqKKNya/yLsd1NmhnGilrhbN8ZYuO+jWP0gvBPlM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=T6qAyX8X; arc=none smtp.client-ip=209.85.219.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-e116b591e15so387185276.3
+        for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 13:59:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1723669167; x=1724273967; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7KLTTn/hjmzFSkfe2zHJsLIOkpo44yYFx9b8AKrmGa4=;
+        b=T6qAyX8XPpWSab7vsTRL+nThcPGMpMQwjoaer4d6d5P1rGGgXDmIj8a9mgYjS+gNV+
+         fU2VYmzoV9qwTZbumLu5Imlwz8yMCbJjG0PtWcVEGDo/daZek0eR8GR5uPBGjBGRn8FK
+         0n1tT/RRLgJsgz/jb7qbN6CZ+8FzR2w826eSmIoV0zDl+icRlRJtzi7zGo0u7TRN4j84
+         Aki5Xcscojj3G3RSFOSWfuXF2ibGjn7njNcpFDLRahxgruUo6wLFlLF04ak6wSUfOzJj
+         tgGxYhsnLUIH6cXAxdXNERg7QNPrdE3PksZCI5wt0DqGeGluTj6gFSI+8miRVo3XXjTx
+         z4xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723669167; x=1724273967;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7KLTTn/hjmzFSkfe2zHJsLIOkpo44yYFx9b8AKrmGa4=;
+        b=PTJbCEhuiRoMkxriM2QaQV+J8X9pOcsH8iUKrWBTKzQwMqLFFn3ldI/6cs/iGjq5x7
+         TtbQ9zZSsLA+snNgnLcF+jCraCyY0ctdc+QfLQMyX/dccrFrbh9IJmsA0SdAsuf3PQkh
+         La6JZwluwvYUKoiMczAam1TQE+GUtNp012yz89RYz2EUr6tleWiNb/bsW8JMRfkmwya1
+         pOVbE+GPx0F6jKuC4zhPGr3nGf6OqrAfIrv0i/q2TmeNo6+ap4j4VMhS5yH8vPZ+vfI6
+         IUVCWlXjISc8KgC705t7JdwE8w3+8u+Vt8m5plsEumNaLBrG4Ak6J38gK3RwTxHnOUYA
+         L4Eg==
+X-Forwarded-Encrypted: i=1; AJvYcCWeHs9GDa/OzN2/8/LQ6YqCLagWq2j9VXox8ap2oO79ZIZcwFHZF1ky7IkgiItWDUPo5+vv2ZOWFK3yYJ61E93YXXaqNBuoIg==
+X-Gm-Message-State: AOJu0Ywqye/+Wc5gkxaYMdcKVP0xKnXqNqai5cNVQSvLU3b55W+4VqMv
+	gHaORvBJSVOBZz9N+WvBok0WG6XgeZkMqs6FcUiNeeLTCu1a0Y/UeYluHB+4pbFcmYuIxPioCgf
+	pimfktj5NWekyeMz2jVhk9sgWG8E2HuX9TPjJ
+X-Google-Smtp-Source: AGHT+IG6u9xXVM5sR6V6akfNNtSjFrQtV99kTT+jKruHC8y3/HDjw2NnRNFY4ZhQmcIEGdS9c4P0PYvFzO2HxMdto5A=
+X-Received: by 2002:a05:6902:2804:b0:e0b:9412:328f with SMTP id
+ 3f1490d57ef6-e1155bd1112mr3928570276.56.1723669167090; Wed, 14 Aug 2024
+ 13:59:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240814202825.2694077-1-shakeel.butt@linux.dev> <20240814202825.2694077-2-shakeel.butt@linux.dev>
+In-Reply-To: <20240814202825.2694077-2-shakeel.butt@linux.dev>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Wed, 14 Aug 2024 13:59:15 -0700
+Message-ID: <CABdmKX07o8ywPNoTDL_tM6qn46TXeLbhHoQEtBpFBXJkWdAc7A@mail.gmail.com>
+Subject: Re: [PATCH 1/4] memcg: initiate deprecation of v1 tcp accounting
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Meta kernel team <kernel-team@meta.com>, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 14 Aug 2024 17:42:27 +0000 kaiyang2@cs.cmu.edu wrote:
-
-> From: Kaiyang Zhao <kaiyang2@cs.cmu.edu>
-> 
-> The ability to observe the demotion and promotion decisions made by the
-> kernel on a per-cgroup basis is important for monitoring and tuning
-> containerized workloads on either NUMA machines or machines
-> equipped with tiered memory.
-> 
-> Different containers in the system may experience drastically different
-> memory tiering actions that cannot be distinguished from the global
-> counters alone.
-> 
-> For example, a container running a workload that has a much hotter
-> memory accesses will likely see more promotions and fewer demotions,
-> potentially depriving a colocated container of top tier memory to such
-> an extent that its performance degrades unacceptably.
-> 
-> For another example, some containers may exhibit longer periods between
-> data reuse, causing much more numa_hint_faults than numa_pages_migrated.
-> In this case, tuning hot_threshold_ms may be appropriate, but the signal
-> can easily be lost if only global counters are available.
-> 
-> This patch set adds seven counters to memory.stat in a cgroup:
-> numa_pages_migrated, numa_pte_updates, numa_hint_faults, pgdemote_kswapd,
-> pgdemote_khugepaged, pgdemote_direct and pgpromote_success. pgdemote_*
-> and pgpromote_success are also available in memory.numa_stat.
-> 
-> count_memcg_events_mm() is added to count multiple event occurrences at
-> once, and get_mem_cgroup_from_folio() is added because we need to get a
-> reference to the memcg of a folio before it's migrated to track
-> numa_pages_migrated. The accounting of PGDEMOTE_* is moved to
-> shrink_inactive_list() before being changed to per-cgroup.
+On Wed, Aug 14, 2024 at 1:28=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
+v> wrote:
 >
-> ...
+> Memcg v1 provides opt-in TCP memory accounting feature. However it is
+> mostly unused due to its performance impact on the network traffic. In
+> v2, the TCP memory is accounted in the regular memory usage and is
+> transparent to the users but they can observe the TCP memory usage
+> through memcg stats.
 >
-> @@ -1383,6 +1412,13 @@ static const struct memory_stat memory_stats[] = {
->  	{ "workingset_restore_anon",	WORKINGSET_RESTORE_ANON		},
->  	{ "workingset_restore_file",	WORKINGSET_RESTORE_FILE		},
->  	{ "workingset_nodereclaim",	WORKINGSET_NODERECLAIM		},
-> +
-> +	{ "pgdemote_kswapd",		PGDEMOTE_KSWAPD		},
-> +	{ "pgdemote_direct",		PGDEMOTE_DIRECT		},
-> +	{ "pgdemote_khugepaged",	PGDEMOTE_KHUGEPAGED	},
-> +#ifdef CONFIG_NUMA_BALANCING
-> +	{ "pgpromote_success",		PGPROMOTE_SUCCESS	},
-> +#endif
->  };
+> Let's initiate the deprecation process of memcg v1's tcp accounting
+> functionality and add warnings to gather if there are any users and if
+> there are, collect how they are using it and plan to provide them better
+> alternative in v2.
+>
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> ---
+>  Documentation/admin-guide/cgroup-v1/memory.rst | 8 ++++++++
+>  mm/memcontrol-v1.c                             | 3 +++
+>  2 files changed, 11 insertions(+)
+>
+> diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentati=
+on/admin-guide/cgroup-v1/memory.rst
+> index 9cde26d33843..fb6d3e2a6395 100644
+> --- a/Documentation/admin-guide/cgroup-v1/memory.rst
+> +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
+> @@ -105,10 +105,18 @@ Brief summary of control files.
+>   memory.kmem.max_usage_in_bytes      show max kernel memory usage record=
+ed
+>
+>   memory.kmem.tcp.limit_in_bytes      set/show hard limit for tcp buf mem=
+ory
+> +                                     This knob is deprecated and shouldn=
+'t be
+> +                                     used.
+>   memory.kmem.tcp.usage_in_bytes      show current tcp buf memory allocat=
+ion
+> +                                     This knob is deprecated and shouldn=
+'t be
+> +                                     used.
+>   memory.kmem.tcp.failcnt             show the number of tcp buf memory u=
+sage
+> +                                     This knob is deprecated and shouldn=
+'t be
+> +                                     used.
+>                                      hits limits
 
-Please document these in Documentation/admin-guide/cgroup-v2.rst
+Looks like you split the description (that has weird grammar) here.
 
+>   memory.kmem.tcp.max_usage_in_bytes  show max tcp buf memory usage recor=
+ded
+> +                                     This knob is deprecated and shouldn=
+'t be
+> +                                     used.
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+>
+>  1. History
+> diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
+> index 9725c731fb21..b8e2ee454eaa 100644
+> --- a/mm/memcontrol-v1.c
+> +++ b/mm/memcontrol-v1.c
+> @@ -2447,6 +2447,9 @@ static ssize_t mem_cgroup_write(struct kernfs_open_=
+file *of,
+>                         ret =3D 0;
+>                         break;
+>                 case _TCP:
+> +                       pr_warn_once("kmem.tcp.limit_in_bytes is deprecat=
+ed and will be removed. "
+> +                                    "Please report your usecase to linux=
+-mm@kvack.org if you "
+> +                                    "depend on this functionality.\n");
+>                         ret =3D memcg_update_tcp_max(memcg, nr_pages);
+>                         break;
+>                 }
+> --
+> 2.43.5
+>
+Otherwise LGTM
+Reviewed-by: T.J. Mercier <tjmercier@google.com>
 
