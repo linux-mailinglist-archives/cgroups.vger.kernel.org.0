@@ -1,47 +1,47 @@
-Return-Path: <cgroups+bounces-4278-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4279-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C01B4952526
-	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 00:01:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E25B4952529
+	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 00:01:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D8A9284B6A
-	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 22:01:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2703EB225E5
+	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 22:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3179414AD3B;
-	Wed, 14 Aug 2024 22:00:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D66114B97E;
+	Wed, 14 Aug 2024 22:00:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HBHvyvqn"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="I3mM4/fd"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F19B14A4E1
-	for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 22:00:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F0E214B970
+	for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 22:00:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723672838; cv=none; b=LILKJDlDA4e9hU75hvq9/CXQucLcXqDn96cphnvnM1C2c9nUHBZ4A06JFSeAQm+xgCiJoohdnfWrTOngj43/JTG/0JFgbuF7DiQ6WaJdQaHN++YvpR6//U0RLEI3QQMQD6xrQZhrQ1tn1xWe9+sYLYK4/A8U0iYU5AM+HeEpDww=
+	t=1723672843; cv=none; b=ddG2F52LF9knUPdTSN7KwCWHBug+qsduL5feYaQpSg7fu8SPbWV7gTTE09bT857gtLt2NoCH7YGu7M/ZBucSZPVe8iNyDGuNBz5DsBhyn5M4XaTxpgIQz/BjxNLeWqPBTk+CiqR1D1Pa9hPr+4sUoNyLvVAsq7fVI3n5Y0WDTn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723672838; c=relaxed/simple;
-	bh=4nPlmXdtET7MVF2oXpX8zknFPgJ1pueCHJDwjPJOqaY=;
+	s=arc-20240116; t=1723672843; c=relaxed/simple;
+	bh=uvmJdKlphzCDj9J+1c4DYKQn2WXN+iiCPTHzulFPE/A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cJbFqapNjvz/gFOr+5//g3aBchGuVL4gaUg9C7/u3bFXBZDlH520xqU2+Rgu6KXVBpbsCq8Fv5UUVfnmeBN4e1skfDLfaWW1764QlDFqraZNb4lVu4b1tGR8pHR+pu95Y4afhBHWcVPDxsSHExeWBQEnXV2O6PfPYlO4zFSujIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HBHvyvqn; arc=none smtp.client-ip=95.215.58.180
+	 MIME-Version; b=HbD4jWTnXOi51upaOdkWeEwQIe4JRDUGFANcuRUVYO/qvvkRT1ObVNaR4ATXDPll+fQuY5fvVMz/mHbvDdydE5e1BfjmoWnhc23Sc6kJRGonksWW/ylcJnE1RRQAFdnw2YC4Bd9V5xbLoudN6JxJr+qBVVvuns1AqAVvH3nkVHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=I3mM4/fd; arc=none smtp.client-ip=95.215.58.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1723672834;
+	t=1723672838;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bxBQAPwN/d0yRus9CPsgbp4gq2sSHEHQBj1gyuLTZQI=;
-	b=HBHvyvqnJWDy2mfX8AyaYzjISdzwSgxz2cvwPXfH0XnskTfGEsloaA1BghnYM50KtOxdUo
-	pLH2sSEIXZGGGiRvvssuaZ8nSapVbNgIOb3GN0fuNkxAI9knDZphSZMcqFUq8YXwUhtLt4
-	7cNR0GdTGzxwAlyo2uAsX0niIultcOA=
+	bh=iTKRX6spDgpXKN9MCF3Pa/WT+sJ1zV3S3bnMyq0x3A4=;
+	b=I3mM4/fdtZrE8ernV/ewmEGCnnv0Puhieiwj1WeFt7TAcdjW2hGuBxWLTrIULHCnqRNurT
+	oiZYA9pG0E2wMZrCeKPKzwJ6sgUokA9GJcg3v8HdLCGRlbVuv9sI2eyRbbfeR+5NZM6qqt
+	YIzUsK4ItOg3v+4dIOfOEedmgWMevSs=
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>,
@@ -53,9 +53,9 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>,
 	linux-kernel@vger.kernel.org,
 	Meta kernel team <kernel-team@meta.com>,
 	cgroups@vger.kernel.org
-Subject: [PATCH v2 3/4] memcg: initiate deprecation of oom_control
-Date: Wed, 14 Aug 2024 15:00:20 -0700
-Message-ID: <20240814220021.3208384-4-shakeel.butt@linux.dev>
+Subject: [PATCH v2 4/4] memcg: initiate deprecation of pressure_level
+Date: Wed, 14 Aug 2024 15:00:21 -0700
+Message-ID: <20240814220021.3208384-5-shakeel.butt@linux.dev>
 In-Reply-To: <20240814220021.3208384-1-shakeel.butt@linux.dev>
 References: <20240814220021.3208384-1-shakeel.butt@linux.dev>
 Precedence: bulk
@@ -67,17 +67,18 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-The oom_control provides functionality to disable memcg oom-killer,
-notifications on oom-kill and reading the stats regarding oom-kills.
-This interface was mainly introduced to provide functionality for
-userspace oom-killers. However it is not robust enough and only supports
-OOM handling in the page fault path.
+The pressure_level in memcg v1 provides memory pressure notifications to
+the user space. At the moment it provides notifications for three levels
+of memory pressure i.e. low, medium and critical, which are defined
+based on internal memory reclaim implementation details. More
+specifically the ratio or scanned and reclaimed pages during a memory
+reclaim. However this is not robust as there are workloads with mostly
+unreclaimable user memory or kernel memory.
 
-For v2, the users can use the combination of memory.events notifications
-and memory.high interface to provide userspace OOM-killing functionality.
-Let's start the deprecation process for v1 and gather the info on how
-the current users are using this interface and work on providing a more
-robust functionality in v2.
+For v2, the users can use PSI for memory pressure status of the system
+or the cgroup. Let's start the deprecation process for pressure_level
+and add warnings to gather the info on how the current users are using
+this interface and how they can be used to PSI.
 
 Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 ---
@@ -85,60 +86,49 @@ Changes since v1:
 - Fix build (T.J. Mercier)
 
  Documentation/admin-guide/cgroup-v1/memory.rst | 8 ++++++--
- mm/memcontrol-v1.c                             | 7 +++++++
- 2 files changed, 13 insertions(+), 2 deletions(-)
+ mm/memcontrol-v1.c                             | 3 +++
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
 diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-index 6831c6c16e3f..0042206414c8 100644
+index 0042206414c8..270501db9f4e 100644
 --- a/Documentation/admin-guide/cgroup-v1/memory.rst
 +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-@@ -92,6 +92,8 @@ Brief summary of control files.
-                                      This knob is deprecated and shouldn't be
+@@ -86,6 +86,8 @@ Brief summary of control files.
                                       used.
-  memory.oom_control		     set/show oom controls.
+  memory.force_empty		     trigger forced page reclaim
+  memory.pressure_level		     set memory pressure notifications
 +                                     This knob is deprecated and shouldn't be
 +                                     used.
-  memory.numa_stat		     show the number of memory usage per numa
- 				     node
-  memory.kmem.limit_in_bytes          Deprecated knob to set and read the kernel
-@@ -846,8 +848,10 @@ It's applicable for root and non-root cgroup.
+  memory.swappiness		     set/show swappiness parameter of vmscan
+ 				     (See sysctl's vm.swappiness)
+  memory.move_charge_at_immigrate     set/show controls of moving charges
+@@ -898,8 +900,10 @@ At reading, current status of OOM is shown.
+           The number of processes belonging to this cgroup killed by any
+           kind of OOM killer.
  
- .. _cgroup-v1-memory-oom-control:
- 
--10. OOM Control
--===============
-+10. OOM Control (DEPRECATED)
-+============================
+-11. Memory Pressure
+-===================
++11. Memory Pressure (DEPRECATED)
++================================
 +
 +THIS IS DEPRECATED!
  
- memory.oom_control file is for OOM notification and other controls.
- 
+ The pressure level notifications can be used to monitor the memory
+ allocation cost; based on the pressure, applications can implement
 diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
-index e0bb54e42011..334a02597d9a 100644
+index 334a02597d9a..52aecdae2c28 100644
 --- a/mm/memcontrol-v1.c
 +++ b/mm/memcontrol-v1.c
-@@ -1907,6 +1907,9 @@ static ssize_t memcg_write_event_control(struct kernfs_open_file *of,
- 		event->register_event = mem_cgroup_usage_register_event;
- 		event->unregister_event = mem_cgroup_usage_unregister_event;
- 	} else if (!strcmp(name, "memory.oom_control")) {
-+		pr_warn_once("oom_control is deprecated and will be removed. "
-+			     "Please report your usecase to linux-mm-@kvack.org"
-+			     " if you depend on this functionality. \n");
+@@ -1913,6 +1913,9 @@ static ssize_t memcg_write_event_control(struct kernfs_open_file *of,
  		event->register_event = mem_cgroup_oom_register_event;
  		event->unregister_event = mem_cgroup_oom_unregister_event;
  	} else if (!strcmp(name, "memory.pressure_level")) {
-@@ -2754,6 +2757,10 @@ static int mem_cgroup_oom_control_write(struct cgroup_subsys_state *css,
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
- 
-+	pr_warn_once("oom_control is deprecated and will be removed. "
-+		     "Please report your usecase to linux-mm-@kvack.org if you "
-+		     "depend on this functionality. \n");
-+
- 	/* cannot set to root cgroup and only 0 and 1 are allowed */
- 	if (mem_cgroup_is_root(memcg) || !((val == 0) || (val == 1)))
- 		return -EINVAL;
++		pr_warn_once("pressure_level is deprecated and will be removed. "
++			     "Please report your usecase to linux-mm-@kvack.org "
++			     "if you depend on this functionality. \n");
+ 		event->register_event = vmpressure_register_event;
+ 		event->unregister_event = vmpressure_unregister_event;
+ 	} else if (!strcmp(name, "memory.memsw.usage_in_bytes")) {
 -- 
 2.43.5
 
