@@ -1,64 +1,59 @@
-Return-Path: <cgroups+bounces-4284-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4285-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5EB295264A
-	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 01:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BABD995264E
+	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 01:47:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5705AB21240
-	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 23:42:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53A13B217D8
+	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 23:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA08714A609;
-	Wed, 14 Aug 2024 23:42:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C5D614A61E;
+	Wed, 14 Aug 2024 23:47:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UUWPIp72"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vYvHjkeI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DD3E13C820
-	for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 23:42:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DA8D39FE5
+	for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 23:47:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723678961; cv=none; b=j2OCZE2VXe+BaeKp5T50fvaKiRNEJXzpIzLvaBIlToa2hKz5Ai9g3Fyw/W/1UmSdgHJLc4M2InYM4wAHRFxBCC2v18hr0daQYjC9Ivk7t6ZcseOJ9G10k2b6+46E+0BEdZ5H6ZmjG+W06T9HR7Wcga6rugZtkHR9U2qNdIRALUs=
+	t=1723679239; cv=none; b=VNEBFW01uY1vXlZYS7s/O5PO7fqnDqefaN3K0dRkERy0qqxFonfTWKUbIwqPtTlql3ckqE2a2RtklrV1UdBv68kp3obHBghSTazRj/WjoNZZeEh3tS/9tOi6k9C+iyk8FEyMyICUM/45SPj9BpX0uIgq2d4KcKy8NdaIhjBIkBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723678961; c=relaxed/simple;
-	bh=lR4FffDeSePt0AVj0hB+l38MewoPYskiDBb2i6DJw2o=;
+	s=arc-20240116; t=1723679239; c=relaxed/simple;
+	bh=akyWnb8XtSM+K4RMyiYNItd+nb1RFuJVXeBA6Yz/2FY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m8inT1NhpzicC9WHrtFCuo3YENnpF+PErQpSOVQ3RS62l0XFUJw75SQYj7Lx3IH0q4En3dyTB53pY5GfYLtA535nSQHswkFfwsfoZc1XE614Ny8e6u/yS/MagUtyffqS5IBGetrR3IkQAfQMVrx+5YebzLULMHtRiW7wckoK1jQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UUWPIp72; arc=none smtp.client-ip=95.215.58.176
+	 Content-Type:Content-Disposition:In-Reply-To; b=C076OHsENBnSbPrgAyCt39pO9xRRWHE0cp7tIArDS8mKU2nPla/lxsRaC9oRjBljKdSezHz1I/qN6Yu51syUSE5u/V4MjKO9QG8i7ZaXePHe/IBVsFzoZYhGeGEId865spk1pMuTzTKugJec/iqs4Xp/lX9id28FIHu2X5sk4ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vYvHjkeI; arc=none smtp.client-ip=95.215.58.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 14 Aug 2024 16:42:31 -0700
+Date: Wed, 14 Aug 2024 16:47:10 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1723678957;
+	t=1723679234;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=powCy6WP/JGwsZWWQApUZ1BP4yfZE6Dxn7LVxtqo9Gg=;
-	b=UUWPIp72abgqNrtwuevubD420Lr2wsihLdU+wC1Q3kouZEfNgYs9JCg4l3JTBFkKu5abjp
-	jAyjwR0qFEs6JIQtCvGugDwsfnXOKtQdIheb1IGRieo4GMblOQVlx/5XfNdajZiKrHd0VW
-	/24nBr5bCdyz6ZSYvASgEp9SGjUB01c=
+	bh=Jg+s4mYzcdav/XM5wUxFRJ/VTK1SLADq2GMhI8NVFig=;
+	b=vYvHjkeIzOd9u2FtJot7z+v8W/8RcvA86Zm0RxrNUdZvYUMV6N+0cBiqXzQLKb7mncY91h
+	LvDOX7VhoIWN+CMT+8V5xpxeW1J37rZ8PLOcBOtZd1YQ/HJGgrQ12Tcjj9rd2MYBjBiry7
+	LLYDXxaRXlqSm/28keYycwFmST7uLC8=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Yosry Ahmed <yosryahmed@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
 	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, Yu Zhao <yuzhao@google.com>, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Meta kernel team <kernel-team@meta.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2] memcg: use ratelimited stats flush in the reclaim
-Message-ID: <5psrsuvzabh2gwj7lmf6p2swgw4d4svi2zqr4p6bmmfjodspcw@fexbskbtchs7>
-References: <20240813215358.2259750-1-shakeel.butt@linux.dev>
- <CAJD7tkbm6GxVpRo+9fBreBJxJ=VaQbFoc6PcnQ+ag5bnvqE+qA@mail.gmail.com>
- <kneukn6m4dhuxxfl3yymrtilvjfmtkxmxz35wothcflxs5btwv@nsgywqvpdn76>
- <edf4f619-8735-48a3-9607-d24c33c8e450@kernel.org>
- <vyi7d5fw4d3h5osolpu4reyhcqylgnfi6uz32z67dpektbc2dz@jpu4ob34a2ug>
- <CAKEwX=Mc9U_eEqoEYtwdfOUZTa=gboLtbF5FGy4pL--A54JJDw@mail.gmail.com>
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] memcg: initiate deprecation of oom_control
+Message-ID: <ed3r5qqldjzhpvt2jmygaly6zdhksz4hpknd3v2avufyi5fpep@e7dzdumnczzv>
+References: <20240814220021.3208384-1-shakeel.butt@linux.dev>
+ <20240814220021.3208384-4-shakeel.butt@linux.dev>
+ <CABdmKX3cqsFBe3dA2P3MrNjFbwg4zH9wLuE=W0FrzuT0cOiY7A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -68,45 +63,42 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKEwX=Mc9U_eEqoEYtwdfOUZTa=gboLtbF5FGy4pL--A54JJDw@mail.gmail.com>
+In-Reply-To: <CABdmKX3cqsFBe3dA2P3MrNjFbwg4zH9wLuE=W0FrzuT0cOiY7A@mail.gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Wed, Aug 14, 2024 at 04:03:13PM GMT, Nhat Pham wrote:
-> On Wed, Aug 14, 2024 at 9:32 AM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+On Wed, Aug 14, 2024 at 03:58:03PM GMT, T.J. Mercier wrote:
+> On Wed, Aug 14, 2024 at 3:00 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
 > >
+> > The oom_control provides functionality to disable memcg oom-killer,
+> > notifications on oom-kill and reading the stats regarding oom-kills.
+> > This interface was mainly introduced to provide functionality for
+> > userspace oom-killers. However it is not robust enough and only supports
+> > OOM handling in the page fault path.
 > >
-> > Ccing Nhat
-> >
-> > On Wed, Aug 14, 2024 at 02:57:38PM GMT, Jesper Dangaard Brouer wrote:
-> > > I suspect the next whac-a-mole will be the rstat flush for the slab code
-> > > that kswapd also activates via shrink_slab, that via
-> > > shrinker->count_objects() invoke count_shadow_nodes().
-> > >
-> >
-> > Actually count_shadow_nodes() is already using ratelimited version.
-> > However zswap_shrinker_count() is still using the sync version. Nhat is
-> > modifying this code at the moment and we can ask if we really need most
-> > accurate values for MEMCG_ZSWAP_B and MEMCG_ZSWAPPED for the zswap
-> > writeback heuristic.
+> > For v2, the users can use the combination of memory.events notifications
+> > and memory.high interface to provide userspace OOM-killing functionality.
 > 
-> You are referring to this, correct:
-> 
-> mem_cgroup_flush_stats(memcg);
-> nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
-> nr_stored = memcg_page_state(memcg, MEMCG_ZSWAPPED);
-> 
-> It's already a bit less-than-accurate - as you pointed out in another
-> discussion, it takes into account the objects and sizes of the entire
-> subtree, rather than just the ones charged to the current (memcg,
-> node) combo. Feel free to optimize this away!
-> 
-> In fact, I should probably replace this with another (atomic?) counter
-> in zswap_lruvec_state struct, which tracks the post-compression size.
-> That way, we'll have a better estimate of the compression factor -
-> total post-compression size /  (length of LRU * page size), and
-> perhaps avoid the whole stat flushing path altogether...
-> 
+> Might be worth it to mention PSI here too for userspace OOM-killing?
+> (It's what LMKD does for Android.)
 
-That sounds like much better solution than relying on rstat for accurate
-stats.
+I think Andrew will fix the commit messages for others, let me request
+to replace the first sentence of this paragraph with the following text.
+
+"For v2, the users can use the combination of memory.events
+notifications, memory.high and PSI to provide userspace OOM-killing
+functionality. Actually LMKD in Android and OOMd in systemd and Meta
+infrastructure already uses PSI with combination of other stats to
+implement userspace OOM-killing."
+
+> 
+> > Let's start the deprecation process for v1 and gather the info on how
+> > the current users are using this interface and work on providing a more
+> > robust functionality in v2.
+> >
+> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> 
+> Reviewed-by: T.J. Mercier <tjmercier@google.com>
+
+Thanks
+
 
