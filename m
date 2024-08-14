@@ -1,131 +1,167 @@
-Return-Path: <cgroups+bounces-4264-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4265-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C290952366
-	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 22:29:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 184D495242A
+	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 22:52:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6C541C214EF
-	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 20:29:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C332C28A9E2
+	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2024 20:52:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B3581C57B7;
-	Wed, 14 Aug 2024 20:29:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EA6A1C68AD;
+	Wed, 14 Aug 2024 20:43:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uYIww40y"
+	dkim=pass (2048-bit key) header.d=yhndnzj.com header.i=@yhndnzj.com header.b="ixyFmKni"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+Received: from mail-4317.proton.ch (mail-4317.proton.ch [185.70.43.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D40C1B8EBE
-	for <cgroups@vger.kernel.org>; Wed, 14 Aug 2024 20:29:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B940A1BE87B;
+	Wed, 14 Aug 2024 20:43:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723667350; cv=none; b=f3bJVa72qSfeWhuDzUh+ZyKWbYjOnuvs413xTe/OdVLR07bvdjtDU/0OstQf9SYFc+yVO0S42swHoRR965UeByxdKi+M4OiZ3xgjJBOc+IEixmvvEMv5hzgHmS+1Pglo/Ir06bJ7ZP4S9SVeJJGX1CfD1Pm8r41+RU0pAALpVJ8=
+	t=1723668197; cv=none; b=F1uGXIAQM8fwNkJTjPWXJXiF0ywNykH6gUu9fnGAI7y1b2sgclT88icOixQbHF8xtgSEDJ/ihCYdtoNLZ2r7YLUlMZIQ3mhAgkIffUPLniPsW5TOIy2hM5iO9aisxAwgGNo13zDE6fR9pctVY7MDmjyfQIy/Z+JcJIiQ/Ykh/2c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723667350; c=relaxed/simple;
-	bh=ZxXKk8CRxRvsA2lfcJFJ4euvtuZOpZlA6H8+DVhUuoA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Ppgc1aMG63YiNp2BopfpgMWI6CQqZXZ0LnWo1L92UYOa2WJeGd26PEBSrtSBJYfRCcEi2cRhwHfo77xNfcfbPVCHKKgYFRgg3/Aq/5AiACjtjsi3TVm/gnLNmVGhorJoJ/R1FoUDTdhYcNF8Jm8r2rDWfHFy41trOLkyLeYsxm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uYIww40y; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1723667344;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3eCpg6JY4xdfuSX+uQFFlngNTZJeJ79jR/+n8cnnPGg=;
-	b=uYIww40yZ2Xis6U+cV8wV/Qs15VdbFr767xvkUF6MKj22Z5GbZZ3gW76QyP813dZJJC4cN
-	MmTNF4nMADLnjKP+viVJokLJazSp/Zr/b+oElSTlj+7+bo5blba50dZR8ER7c/fKvtdwrG
-	2YVGk1D8gSWKSpDZE6ngs16vo+I9uI4=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>,
-	cgroups@vger.kernel.org
-Subject: [PATCH 4/4] memcg: initiate deprecation of pressure_level
-Date: Wed, 14 Aug 2024 13:28:25 -0700
-Message-ID: <20240814202825.2694077-5-shakeel.butt@linux.dev>
-In-Reply-To: <20240814202825.2694077-1-shakeel.butt@linux.dev>
-References: <20240814202825.2694077-1-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1723668197; c=relaxed/simple;
+	bh=wOMrogBp49YTG/FcTV+4nAmr5uB92wczucA2j1jKDYY=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WuAI/XzQyLx/DOywk/zleyYFWnAZ+JvhJLc455SmTz7P+UpsFabWjaoOmIMYG8EezK9N5na6NMVS2f4ldcP9HoTpbHmSVN96KG9CN4rjeKME+pNBpW/IFjgyLzUt3kj/9V23aOVgO5e1Dobd+LlRrzHC8CyrbkGzpBOXX2x01B4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yhndnzj.com; spf=pass smtp.mailfrom=yhndnzj.com; dkim=pass (2048-bit key) header.d=yhndnzj.com header.i=@yhndnzj.com header.b=ixyFmKni; arc=none smtp.client-ip=185.70.43.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yhndnzj.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yhndnzj.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yhndnzj.com;
+	s=protonmail; t=1723668190; x=1723927390;
+	bh=wOMrogBp49YTG/FcTV+4nAmr5uB92wczucA2j1jKDYY=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=ixyFmKniqxypjGAKbwzbOWnniShM5sGQqu7zYES/X/U3O8ECOJh4H7HJnbr0FjvgH
+	 NlAgAug2PyWGSjcBcrH01ZU69mtDPEE4bQlgkpK3YFzlClZL3JuvFKqVXLs5wMCjw/
+	 kXGq6d7gS7gjMVoyyrreWXcxF32+Pqe+R0CmO2Pqs4UifjX/kfEbvOMJXtBw7rM2CG
+	 PPok2NOqFHmFXaetZazLfPKx/eD8a0bL2TsEaLTtrZyGO8dOaZk0Idy87t6oQDyrwL
+	 Cjtpu7VFiVe2qdWTLSrEzxHMhsaVTWGY2r5GdKyWw3jknts+tNKfnRzapaOzHsKB0n
+	 yNrTfYrnhkstw==
+Date: Wed, 14 Aug 2024 20:43:07 +0000
+To: Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>
+From: Mike Yuan <me@yhndnzj.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>, Muchun Song <muchun.song@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, Roman Gushchin <roman.gushchin@linux.dev>, Michal Hocko <mhocko@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH] mm/memcontrol: respect zswap.writeback setting from parent cg too
+Message-ID: <a2f67cbcc987cdb2d907f9c133e7fcb6a848992d.camel@yhndnzj.com>
+In-Reply-To: <CAJD7tkZ_jNuYQsGMyS1NgMf335Gi4_x5Ybkts_=+g5OyjtJQDQ@mail.gmail.com>
+References: <20240814171800.23558-1-me@yhndnzj.com> <CAKEwX=NrOBg0rKJnXGaiK9-PWeUDS+c3cFmaFFV0RrE8GkNZZA@mail.gmail.com> <CAJD7tkZ_jNuYQsGMyS1NgMf335Gi4_x5Ybkts_=+g5OyjtJQDQ@mail.gmail.com>
+Feedback-ID: 102487535:user:proton
+X-Pm-Message-ID: cedc392e816fb90eb89fe531465e56ebe2b9e7a2
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-The pressure_level in memcg v1 provides memory pressure notifications to
-the user space. At the moment it provides notifications for three levels
-of memory pressure i.e. low, medium and critical, which are defined
-based on internal memory reclaim implementation details. More
-specifically the ratio or scanned and reclaimed pages during a memory
-reclaim. However this is not robust as there are workloads with mostly
-unreclaimable user memory or kernel memory.
+On 2024-08-14 at 13:22 -0700, Yosry Ahmed wrote:
+> On Wed, Aug 14, 2024 at 12:52=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wr=
+ote:
+> >=20
+> > On Wed, Aug 14, 2024 at 10:20=E2=80=AFAM Mike Yuan <me@yhndnzj.com> wro=
+te:
+> > >=20
+> > > Currently, the behavior of zswap.writeback wrt.
+> > > the cgroup hierarchy seems a bit odd. Unlike zswap.max,
+> > > it doesn't honor the value from parent cgroups. This
+> > > surfaced when people tried to globally disable zswap writeback,
+> > > i.e. reserve physical swap space only for hibernation [1] -
+> > > disabling zswap.writeback only for the root cgroup results
+> > > in subcgroups with zswap.writeback=3D1 still performing writeback.
+> > >=20
+> > > The consistency became more noticeable after I introduced
+> > > the MemoryZSwapWriteback=3D systemd unit setting [2] for
+> > > controlling the knob. The patch assumed that the kernel would
+> > > enforce the value of parent cgroups. It could probably be
+> > > workarounded from systemd's side, by going up the slice unit
+> > > tree and inherit the value. Yet I think it's more sensible
+> > > to make it behave consistently with zswap.max and friends.
+> >=20
+> > May I ask you to add/clarify this new expected behavior in
+> > Documentation/admin-guide/cgroup-v2.rst?
+> >=20
+> > >=20
+> > > [1]
+> > > https://wiki.archlinux.org/title/Power_management/Suspend_and_hiberna=
+te#Disable_zswap_writeback_to_use_the_swap_space_only_for_hibernation
+> >=20
+> > This is an interesting use case. Never envisioned this when I
+> > developed this feature :)
+> >=20
+> > > [2] https://github.com/systemd/systemd/pull/31734
+> > >=20
+> > > Signed-off-by: Mike Yuan <me@yhndnzj.com>
+> > > ---
+> >=20
+> > Personally, I don't feel too strongly about this one way or
+> > another. I
+> > guess you can make a case that people want to disable zswap
+> > writeback
+> > by default, and only selectively enable it for certain descendant
+> > workloads - for convenience, they would set memory.zswap.writeback
+> > =3D=3D
+> > 0 at root, then enable it on selected descendants?
+> >=20
+> > It's not super expensive IMHO - we already perform upward traversal
+> > on
+> > every zswap store. This wouldn't be the end of the world.
+> >=20
+> > Yosry, Johannes - how do you two feel about this?
+>=20
+> I wasn't CC'd on this, but found it by chance :) I think there is a
+> way for the zswap maintainers entry to match any patch that mentions
+> "zswap", not just based on files, right?
+>=20
+> Anyway, both use cases make sense to me, disabling writeback
+> system-wide or in an entire subtree, and disabling writeback on the
+> root and then selectively enabling it. I am slightly inclined to the
+> first one (what this patch does).
+>=20
+> Considering the hierarchical cgroup knobs work, we usually use the
+> most restrictive limit among the ancestors. I guess it ultimately
+> depends on how we define "most restrictive". Disabling writeback is
+> restrictive in the sense that you don't have access to free some
+> zswap
+> space to reclaim more memory. OTOH, disabling writeback also means
+> that your zswapped memory won't go to disk under memory pressure, so
+> in that sense it would be restrictive to force writeback :)
+>=20
+> Usually, the "default" is the non-restrictive thing, and then you can
+> set restrictions that apply to all children (e.g. no limits are set
+> by
+> default). Since writeback is enabled by default, it seems like the
+> restriction would be disabling writeback. Hence, it would make sense
+> to inherit zswap disabling (i.e. only writeback if all ancestors
+> allow
+> it, like this patch does).
+>=20
 
-For v2, the users can use PSI for memory pressure status of the system
-or the cgroup. Let's start the deprecation process for pressure_level
-and add warnings to gather the info on how the current users are using
-this interface and how they can be used to PSI.
+Yeah, I thought about the other way around and reached the same
+conclusion.
+And there's permission boundary in the mix too - if root disables zswap
+writeback for its cgroup, the subcgroups, which could possibly be owned
+by other users, should not be able to reenable this.
 
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
----
- Documentation/admin-guide/cgroup-v1/memory.rst | 8 ++++++--
- mm/memcontrol-v1.c                             | 3 +++
- 2 files changed, 9 insertions(+), 2 deletions(-)
+> What we do today dismisses inheritance completely, so it seems to me
+> like it should be changed anyway.
+>=20
+> I am thinking out loud here, let me know if my reasoning makes sense
+> to you.
+>=20
+> >=20
+> > Code looks solid to me - I think the upward tree traversal should
+> > be
+> > safe, as long as memcg is valid (since memcg holds reference to its
+> > parent IIRC).
+> >=20
 
-diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-index 74cea6712d06..8ec1faf08b6b 100644
---- a/Documentation/admin-guide/cgroup-v1/memory.rst
-+++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-@@ -86,6 +86,8 @@ Brief summary of control files.
-                                      used.
-  memory.force_empty		     trigger forced page reclaim
-  memory.pressure_level		     set memory pressure notifications
-+                                     This knob is deprecated and shouldn't be
-+                                     used.
-  memory.swappiness		     set/show swappiness parameter of vmscan
- 				     (See sysctl's vm.swappiness)
-  memory.move_charge_at_immigrate     set/show controls of moving charges
-@@ -898,8 +900,10 @@ At reading, current status of OOM is shown.
-           The number of processes belonging to this cgroup killed by any
-           kind of OOM killer.
- 
--11. Memory Pressure
--===================
-+11. Memory Pressure (DEPRECATED)
-+================================
-+
-+THIS IS DEPRECATED!
- 
- The pressure level notifications can be used to monitor the memory
- allocation cost; based on the pressure, applications can implement
-diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
-index 07343e338e4e..420c7d15f12a 100644
---- a/mm/memcontrol-v1.c
-+++ b/mm/memcontrol-v1.c
-@@ -1913,6 +1913,9 @@ static ssize_t memcg_write_event_control(struct kernfs_open_file *of,
- 		event->register_event = mem_cgroup_oom_register_event;
- 		event->unregister_event = mem_cgroup_oom_unregister_event;
- 	} else if (!strcmp(name, "memory.pressure_level")) {
-+		pr_warn_once("pressure_level is deprecated and will be removed. "
-+			     "Please report your usecase to linux-mm-@kvack.org "
-+			     "if you depend on this functionality. \n";
- 		event->register_event = vmpressure_register_event;
- 		event->unregister_event = vmpressure_unregister_event;
- 	} else if (!strcmp(name, "memory.memsw.usage_in_bytes")) {
--- 
-2.43.5
 
 
