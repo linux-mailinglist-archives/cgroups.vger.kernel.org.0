@@ -1,47 +1,47 @@
-Return-Path: <cgroups+bounces-4297-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4298-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6790B9528BD
-	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 07:06:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62A2B9528BF
+	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 07:06:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01062B2458A
-	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 05:06:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 881221C21C15
+	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 05:06:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 740A97603F;
-	Thu, 15 Aug 2024 05:05:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEBDA558BC;
+	Thu, 15 Aug 2024 05:05:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SSufFwWC"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NYVUPZKR"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 410EB57CA7
-	for <cgroups@vger.kernel.org>; Thu, 15 Aug 2024 05:05:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A90DE770FB
+	for <cgroups@vger.kernel.org>; Thu, 15 Aug 2024 05:05:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723698331; cv=none; b=g5XFfkmx5SL5X/PyRlDNkRTTsO601QFceRsamv80T952qtuGii3RJyzuO2B3V8I2nW/+Ws9i+fiZpp3b1iUus/FNMmZ8ktufOcpOta/Ofei1PbOl+yO9ByB3G1WghLazQOJXrFWxsfYikhcLcuTeJcmOdq+5BwYP2yx3V5DsfNw=
+	t=1723698334; cv=none; b=UJrx/aVgjdSNoDRFNnRYt4CoFCU4GFkYcJZvQGxAF+N7HKUwb8thAjn9+9gdB4HtJ33/kV97lBOi8aOOaVzrHrbadjsra+p2+UzqphXyDY6pAetdQ7kbIEHBCwNXN9LRF9A8dQEkX0N8RB1yjddN6bxU3vZ06SmFL44le07nqk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723698331; c=relaxed/simple;
-	bh=w2nLldFMuC5Tr8Vr6K5HqqB5Y9jJ5YmbY7CMAtSZ01E=;
+	s=arc-20240116; t=1723698334; c=relaxed/simple;
+	bh=MKb9TW3XdiHBxtx0ixgaD7Un8jsOM0OHH6SCCv6yV9Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LRl2UWVjqGzo2M9lxdQrxkutMDZ3vWB/5hJaNB78WUuqi/JAyuMVTtSfWqsewRN4m3l83UKH5F/yUdrfOpgRgYIMoGipdsJw8bY4AY6HF6Qqp3ZeCVnXS4dKVy94Lv8dwWGn21ncoBC1b/RL6XbtqmIVfMn7fbBkwfMsQavaZKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SSufFwWC; arc=none smtp.client-ip=91.218.175.174
+	 MIME-Version; b=JlKNzy5M2GfeL6eJhMGnFcx3VbhUFqk78CW39FuIbc/wRzmKPsnP7UeQ5l7OthGSuqBTlc9gUMWdszr0UvLCj3U2/NG7tUVFr//Xs+0OXvvyK8YORLTHxKgiDyHUU1vtJ/uo//4xQbb3VCqlHQg7IRMuJASV0qE+gDa5+OivjCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NYVUPZKR; arc=none smtp.client-ip=95.215.58.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1723698327;
+	t=1723698330;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zygVeQZHpWPOjOtuooWei0ElZsFf2qNUmjbZYRpm8Xo=;
-	b=SSufFwWCrJB8eaH9sXXX9w33eVNxPwPO5BWCNuheXLzNVABd7WZoEprGHuGIUwlN5GrBBN
-	bVriG0DCZ4Y2PnWVKHGPrswvS5dnKDx0K7ZRYh+l9vgp2IrJN7Zpuj595kZK5teC4UFSfz
-	Cy3IRk3vBQKDfZD2kKNw68eArrfs2y8=
+	bh=0zs8JI6aVxhuUibp1uzMfh5rP7bzFpoEcwMysAA/4Ek=;
+	b=NYVUPZKRDyftYd4jWKz6eJxpMyBBS3VYXLMedsgvZjz0oPrIH3OYf1IEUOh5sCV80li/Yu
+	lRk4xUdMr+RC9MPZFLr5K+eHQNx/j4b06zQD++GNIoNGumkjKOsymupdndD2XKl7eIJPZ/
+	fZZxpp/v/SLIuu1a9AMlglYO45I0+R4=
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>,
@@ -53,9 +53,9 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>,
 	linux-kernel@vger.kernel.org,
 	Meta kernel team <kernel-team@meta.com>,
 	cgroups@vger.kernel.org
-Subject: [PATCH 3/7] memcg: move mem_cgroup_charge_statistics to v1 code
-Date: Wed, 14 Aug 2024 22:04:49 -0700
-Message-ID: <20240815050453.1298138-4-shakeel.butt@linux.dev>
+Subject: [PATCH 4/7] memcg: move v1 events and statistics code to v1 file
+Date: Wed, 14 Aug 2024 22:04:50 -0700
+Message-ID: <20240815050453.1298138-5-shakeel.butt@linux.dev>
 In-Reply-To: <20240815050453.1298138-1-shakeel.butt@linux.dev>
 References: <20240815050453.1298138-1-shakeel.butt@linux.dev>
 Precedence: bulk
@@ -67,131 +67,178 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-There are no callers of mem_cgroup_charge_statistics() in the v2 code
-base, so move it to the v1 only code and rename it to
-memcg1_charge_statistics().
+Currently the common code path for charge commit, swapout and batched
+uncharge are executing v1 only code which is completely useless for the
+v2 deployments where CONFIG_MEMCG_V1 is disabled. In addition, it is
+mucking with IRQs which might be slow on some architectures. Let's move
+all of this code to v1 only code and remove them from v2 only
+deployments.
 
 Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 ---
- mm/memcontrol-v1.c | 17 +++++++++++++++--
- mm/memcontrol-v1.h |  3 ++-
- mm/memcontrol.c    | 19 +++----------------
- 3 files changed, 20 insertions(+), 19 deletions(-)
+ mm/memcontrol-v1.c | 37 +++++++++++++++++++++++++++++++++++++
+ mm/memcontrol-v1.h | 14 ++++++++++++++
+ mm/memcontrol.c    | 33 ++++-----------------------------
+ 3 files changed, 55 insertions(+), 29 deletions(-)
 
 diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
-index 0ce1807ba468..73587e6417c5 100644
+index 73587e6417c5..ffb7246b3f35 100644
 --- a/mm/memcontrol-v1.c
 +++ b/mm/memcontrol-v1.c
-@@ -853,9 +853,9 @@ static int mem_cgroup_move_account(struct folio *folio,
- 	nid = folio_nid(folio);
- 
- 	local_irq_disable();
--	mem_cgroup_charge_statistics(to, nr_pages);
-+	memcg1_charge_statistics(to, nr_pages);
- 	memcg1_check_events(to, nid);
--	mem_cgroup_charge_statistics(from, -nr_pages);
-+	memcg1_charge_statistics(from, -nr_pages);
- 	memcg1_check_events(from, nid);
- 	local_irq_enable();
- out:
-@@ -1439,6 +1439,19 @@ static void mem_cgroup_threshold(struct mem_cgroup *memcg)
+@@ -1502,6 +1502,43 @@ void memcg1_check_events(struct mem_cgroup *memcg, int nid)
  	}
  }
  
-+void memcg1_charge_statistics(struct mem_cgroup *memcg, int nr_pages)
++void memcg1_commit_charge(struct folio *folio, struct mem_cgroup *memcg)
 +{
-+	/* pagein of a big page is an event. So, ignore page size */
-+	if (nr_pages > 0)
-+		__count_memcg_events(memcg, PGPGIN, 1);
-+	else {
-+		__count_memcg_events(memcg, PGPGOUT, 1);
-+		nr_pages = -nr_pages; /* for event */
-+	}
++	unsigned long flags;
 +
-+	__this_cpu_add(memcg->events_percpu->nr_page_events, nr_pages);
++	local_irq_save(flags);
++	memcg1_charge_statistics(memcg, folio_nr_pages(folio));
++	memcg1_check_events(memcg, folio_nid(folio));
++	local_irq_restore(flags);
 +}
 +
- #define THRESHOLDS_EVENTS_TARGET 128
- #define SOFTLIMIT_EVENTS_TARGET 1024
- 
++void memcg1_swapout(struct folio *folio, struct mem_cgroup *memcg)
++{
++	/*
++	 * Interrupts should be disabled here because the caller holds the
++	 * i_pages lock which is taken with interrupts-off. It is
++	 * important here to have the interrupts disabled because it is the
++	 * only synchronisation we have for updating the per-CPU variables.
++	 */
++	preempt_disable_nested();
++	VM_WARN_ON_IRQS_ENABLED();
++	memcg1_charge_statistics(memcg, -folio_nr_pages(folio));
++	preempt_enable_nested();
++	memcg1_check_events(memcg, folio_nid(folio));
++}
++
++void memcg1_uncharge_batch(struct mem_cgroup *memcg, unsigned long pgpgout,
++			   unsigned long nr_memory, int nid)
++{
++	unsigned long flags;
++
++	local_irq_save(flags);
++	__count_memcg_events(memcg, PGPGOUT, pgpgout);
++	__this_cpu_add(memcg->events_percpu->nr_page_events, nr_memory);
++	memcg1_check_events(memcg, nid);
++	local_irq_restore(flags);
++}
++
+ static int compare_thresholds(const void *a, const void *b)
+ {
+ 	const struct mem_cgroup_threshold *_a = a;
 diff --git a/mm/memcontrol-v1.h b/mm/memcontrol-v1.h
-index fb7d439f19de..ef72d0b7c5c6 100644
+index ef72d0b7c5c6..376d021a2bf4 100644
 --- a/mm/memcontrol-v1.h
 +++ b/mm/memcontrol-v1.h
-@@ -7,7 +7,6 @@
- 
- /* Cgroup v1 and v2 common declarations */
- 
--void mem_cgroup_charge_statistics(struct mem_cgroup *memcg, int nr_pages);
- int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 		     unsigned int nr_pages);
- 
-@@ -116,6 +115,7 @@ bool memcg1_oom_prepare(struct mem_cgroup *memcg, bool *locked);
- void memcg1_oom_finish(struct mem_cgroup *memcg, bool locked);
- void memcg1_oom_recover(struct mem_cgroup *memcg);
- 
-+void memcg1_charge_statistics(struct mem_cgroup *memcg, int nr_pages);
+@@ -118,6 +118,11 @@ void memcg1_oom_recover(struct mem_cgroup *memcg);
+ void memcg1_charge_statistics(struct mem_cgroup *memcg, int nr_pages);
  void memcg1_check_events(struct mem_cgroup *memcg, int nid);
  
++void memcg1_commit_charge(struct folio *folio, struct mem_cgroup *memcg);
++void memcg1_swapout(struct folio *folio, struct mem_cgroup *memcg);
++void memcg1_uncharge_batch(struct mem_cgroup *memcg, unsigned long pgpgout,
++			   unsigned long nr_memory, int nid);
++
  void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s);
-@@ -147,6 +147,7 @@ static inline bool memcg1_oom_prepare(struct mem_cgroup *memcg, bool *locked) {
- static inline void memcg1_oom_finish(struct mem_cgroup *memcg, bool locked) {}
- static inline void memcg1_oom_recover(struct mem_cgroup *memcg) {}
  
-+static inline void memcg1_charge_statistics(struct mem_cgroup *memcg, int nr_pages) {}
+ void memcg1_account_kmem(struct mem_cgroup *memcg, int nr_pages);
+@@ -150,6 +155,15 @@ static inline void memcg1_oom_recover(struct mem_cgroup *memcg) {}
+ static inline void memcg1_charge_statistics(struct mem_cgroup *memcg, int nr_pages) {}
  static inline void memcg1_check_events(struct mem_cgroup *memcg, int nid) {}
  
++static inline void memcg1_commit_charge(struct folio *folio,
++					struct mem_cgroup *memcg) {}
++
++static inline void memcg1_swapout(struct folio *folio, struct mem_cgroup *memcg) {}
++
++static inline void memcg1_uncharge_batch(struct mem_cgroup *memcg,
++					 unsigned long pgpgout,
++					 unsigned long nr_memory, int nid) {}
++
  static inline void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s) {}
+ 
+ static inline void memcg1_account_kmem(struct mem_cgroup *memcg, int nr_pages) {}
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 7ea511119567..f8db9924d5dc 100644
+index f8db9924d5dc..c4b06f26ccfd 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -848,19 +848,6 @@ unsigned long memcg_events_local(struct mem_cgroup *memcg, int event)
- 	return READ_ONCE(memcg->vmstats->events_local[i]);
- }
- 
--void mem_cgroup_charge_statistics(struct mem_cgroup *memcg, int nr_pages)
--{
--	/* pagein of a big page is an event. So, ignore page size */
--	if (nr_pages > 0)
--		__count_memcg_events(memcg, PGPGIN, 1);
--	else {
--		__count_memcg_events(memcg, PGPGOUT, 1);
--		nr_pages = -nr_pages; /* for event */
--	}
--
--	__this_cpu_add(memcg->events_percpu->nr_page_events, nr_pages);
--}
--
- struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p)
+@@ -2383,11 +2383,7 @@ void mem_cgroup_commit_charge(struct folio *folio, struct mem_cgroup *memcg)
  {
- 	/*
-@@ -2398,7 +2385,7 @@ void mem_cgroup_commit_charge(struct folio *folio, struct mem_cgroup *memcg)
+ 	css_get(&memcg->css);
  	commit_charge(folio, memcg);
- 
- 	local_irq_disable();
--	mem_cgroup_charge_statistics(memcg, folio_nr_pages(folio));
-+	memcg1_charge_statistics(memcg, folio_nr_pages(folio));
- 	memcg1_check_events(memcg, folio_nid(folio));
- 	local_irq_enable();
+-
+-	local_irq_disable();
+-	memcg1_charge_statistics(memcg, folio_nr_pages(folio));
+-	memcg1_check_events(memcg, folio_nid(folio));
+-	local_irq_enable();
++	memcg1_commit_charge(folio, memcg);
  }
-@@ -4775,7 +4762,7 @@ void mem_cgroup_replace_folio(struct folio *old, struct folio *new)
+ 
+ static inline void __mod_objcg_mlstate(struct obj_cgroup *objcg,
+@@ -4608,8 +4604,6 @@ static inline void uncharge_gather_clear(struct uncharge_gather *ug)
+ 
+ static void uncharge_batch(const struct uncharge_gather *ug)
+ {
+-	unsigned long flags;
+-
+ 	if (ug->nr_memory) {
+ 		page_counter_uncharge(&ug->memcg->memory, ug->nr_memory);
+ 		if (do_memsw_account())
+@@ -4621,11 +4615,7 @@ static void uncharge_batch(const struct uncharge_gather *ug)
+ 		memcg1_oom_recover(ug->memcg);
+ 	}
+ 
+-	local_irq_save(flags);
+-	__count_memcg_events(ug->memcg, PGPGOUT, ug->pgpgout);
+-	__this_cpu_add(ug->memcg->events_percpu->nr_page_events, ug->nr_memory);
+-	memcg1_check_events(ug->memcg, ug->nid);
+-	local_irq_restore(flags);
++	memcg1_uncharge_batch(ug->memcg, ug->pgpgout, ug->nr_memory, ug->nid);
+ 
+ 	/* drop reference from uncharge_folio */
+ 	css_put(&ug->memcg->css);
+@@ -4732,7 +4722,6 @@ void mem_cgroup_replace_folio(struct folio *old, struct folio *new)
+ {
+ 	struct mem_cgroup *memcg;
+ 	long nr_pages = folio_nr_pages(new);
+-	unsigned long flags;
+ 
+ 	VM_BUG_ON_FOLIO(!folio_test_locked(old), old);
+ 	VM_BUG_ON_FOLIO(!folio_test_locked(new), new);
+@@ -4760,11 +4749,7 @@ void mem_cgroup_replace_folio(struct folio *old, struct folio *new)
+ 
+ 	css_get(&memcg->css);
  	commit_charge(new, memcg);
- 
- 	local_irq_save(flags);
--	mem_cgroup_charge_statistics(memcg, nr_pages);
-+	memcg1_charge_statistics(memcg, nr_pages);
- 	memcg1_check_events(memcg, folio_nid(new));
- 	local_irq_restore(flags);
+-
+-	local_irq_save(flags);
+-	memcg1_charge_statistics(memcg, nr_pages);
+-	memcg1_check_events(memcg, folio_nid(new));
+-	local_irq_restore(flags);
++	memcg1_commit_charge(new, memcg);
  }
-@@ -5020,7 +5007,7 @@ void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry)
- 	 * only synchronisation we have for updating the per-CPU variables.
- 	 */
- 	memcg_stats_lock();
--	mem_cgroup_charge_statistics(memcg, -nr_entries);
-+	memcg1_charge_statistics(memcg, -nr_entries);
- 	memcg_stats_unlock();
- 	memcg1_check_events(memcg, folio_nid(folio));
+ 
+ /**
+@@ -5000,17 +4985,7 @@ void mem_cgroup_swapout(struct folio *folio, swp_entry_t entry)
+ 		page_counter_uncharge(&memcg->memsw, nr_entries);
+ 	}
+ 
+-	/*
+-	 * Interrupts should be disabled here because the caller holds the
+-	 * i_pages lock which is taken with interrupts-off. It is
+-	 * important here to have the interrupts disabled because it is the
+-	 * only synchronisation we have for updating the per-CPU variables.
+-	 */
+-	memcg_stats_lock();
+-	memcg1_charge_statistics(memcg, -nr_entries);
+-	memcg_stats_unlock();
+-	memcg1_check_events(memcg, folio_nid(folio));
+-
++	memcg1_swapout(folio, memcg);
+ 	css_put(&memcg->css);
+ }
  
 -- 
 2.43.5
