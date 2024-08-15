@@ -1,60 +1,65 @@
-Return-Path: <cgroups+bounces-4312-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4313-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BDB9953AE5
-	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 21:34:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A74F953C6F
+	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 23:16:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAB1D1F262F0
-	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 19:34:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CAD71C21D82
+	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2024 21:16:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7C2F71747;
-	Thu, 15 Aug 2024 19:34:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DEEC14B97E;
+	Thu, 15 Aug 2024 21:16:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IJtNTPNz"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FHqBFdpM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF5E87BB15
-	for <cgroups@vger.kernel.org>; Thu, 15 Aug 2024 19:34:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A7C181AC8;
+	Thu, 15 Aug 2024 21:16:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723750481; cv=none; b=ir0N0Yc5quahwgB0q8C/t28YnjWMSlOkpi1c3vyC89PLNllpwfIH7ASmSqk2FK/bozE5hqgEcMIYFtYJIRs8xVvoPBRxL1PogMgEqx2Um0B+S9cp4By3bZcBcte0XlDMemSITIFT04E7nn3rLbDN3v4W1L/2z/h2heK2cO6gfnU=
+	t=1723756602; cv=none; b=ggH43C4o0rhxbNKTLwKzrlUI8WoS5hTfMC+t4F9X2PD+C/j4RadBJSxLVZ84D1jJhWDf+1zLIAuMw/SZGpZwabkWOlk0F7cFaVh+SP13vVq0WahdUYIqrVDAF/fa3smCQSis5HavjnHPrrVXatFx3ppJSC9UKFLCK+VZKer6/6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723750481; c=relaxed/simple;
-	bh=wmh+5u/NoknKVdww2Ij9XAmjKQSJXTj/O5xeSPlCzQg=;
+	s=arc-20240116; t=1723756602; c=relaxed/simple;
+	bh=PBA4Ln8lIjVagUzDRvfyQYRjlu83b2/CSeXAl5ZAL8I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q2bBecDDbAbP+I1LGB2pTCoNZqnT+JplLYxJaOywwxfmYJ/WXk7QG0aXS5l3j1drF2nD60SWMsXNUcetKqX5klULCcIyhevevb1qRT2A9R2u5QiV9TcPA4oBCTw+ANCO60AHMXXb698K0k2o15YmD5QBaeAgkJNRceY+wMiWrKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IJtNTPNz; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 15 Aug 2024 19:34:32 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1723750477;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JX8hMzQyvTzhq1dmJHRzPorgDlX9GQbPr5AORp1ohCI=;
-	b=IJtNTPNzSu0ieL/YMx9fnGOialFCiwR3A19CgU0DM1A8tqM9HgIKcKLtoYgSPWONvFHwAq
-	lbnIhwsSFi8XMAacckAVG6Q8jRmU07uli16LW92LeaPj8S1s32NfTJWJyDY46rK4wq/+2R
-	7255dzoZcSJ5JWIkxsaIVJxWb0/7ef0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=njHJ7U70pjU7WGuGDijSR9sP4ZnSE2odoI8mRbL+Q27QF7oBrIedhnvl8497ew0+ZEkU4tMnFXU6UBdG2kFpFXvMSf+SLIUGCR2WhbKwOXzj6KE8/XF2WGnSAmMhXPd4r0Jmd2d/dOCsXQjwRNXPajFsa6uFOwXA/yuKtvhSV2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=FHqBFdpM; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=wVrshdgc5r4mBDt3sLx4Vu72sbLxT+zdRw8VaO2LgwU=; b=FHqBFdpMR0fSUdDqEFPZ1ujvqt
+	ZjOVAXoZcKmsBhvKFP2Bkm7pHlUIJ/Sa1yrQ0UKruvR7CPWMoALIhwtH8a1II/uiFHALHJasonaSP
+	15JC13KaliZ75mxBzCnAaPa6i5Bh5sN9i/haxtz9I1dSodd5wXWX3N4hvKkpZf1KNwMdS25f5HGhO
+	LzqDd1wy8fNskrB7q7ViaVJSO8A0WpVzfUE8qWqjxtwaRCxib2gv7g3lKnCJKsYM5WH9SVxSkRsBP
+	IH5sJlXLQliZZsfnk1JTlOfgcWz1Vjol/gXnpSfnAz/JgcvxlOewEYav8qt91ydmucqj4hGa07Kal
+	zuXLdElA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sehpb-00000002b12-2mPQ;
+	Thu, 15 Aug 2024 21:16:27 +0000
+Date: Thu, 15 Aug 2024 22:16:27 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
 	Michal Hocko <mhocko@kernel.org>,
 	Muchun Song <muchun.song@linux.dev>,
 	"T . J . Mercier" <tjmercier@google.com>, linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH 1/7] memcg: move v1 only percpu stats in separate struct
-Message-ID: <Zr5YSLdtHdFZoQQI@google.com>
-References: <20240815050453.1298138-1-shakeel.butt@linux.dev>
- <20240815050453.1298138-2-shakeel.butt@linux.dev>
+	Meta kernel team <kernel-team@meta.com>, cgroups@vger.kernel.org,
+	Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v2] memcg: replace memcg ID idr with xarray
+Message-ID: <Zr5wK7oUcUoB44OF@casper.infradead.org>
+References: <20240815155402.3630804-1-shakeel.butt@linux.dev>
+ <Zr5Xn45wEJytFTl8@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -63,48 +68,17 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240815050453.1298138-2-shakeel.butt@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <Zr5Xn45wEJytFTl8@google.com>
 
-On Wed, Aug 14, 2024 at 10:04:47PM -0700, Shakeel Butt wrote:
-> At the moment struct memcg_vmstats_percpu contains two v1 only fields
-> which consumes memory even when CONFIG_MEMCG_V1 is not enabled. In
-> addition there are v1 only functions accessing them and are in the main
-> memcontrol source file and can not be moved to v1 only source file due
-> to these fields. Let's move these fields into their own struct. Later
-> patches will move the functions accessing them to v1 source file and
-> only allocate these fields when CONFIG_MEMCG_V1 is enabled.
-> 
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> ---
->  include/linux/memcontrol.h |  2 ++
->  mm/memcontrol-v1.h         | 19 +++++++++++++++++++
->  mm/memcontrol.c            | 18 +++++++++---------
->  3 files changed, 30 insertions(+), 9 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 90ecd2dbca06..e21a1541adeb 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -70,6 +70,7 @@ struct mem_cgroup_id {
->  };
->  
->  struct memcg_vmstats_percpu;
-> +struct memcg1_events_percpu;
->  struct memcg_vmstats;
->  struct lruvec_stats_percpu;
->  struct lruvec_stats;
-> @@ -254,6 +255,7 @@ struct mem_cgroup {
->  	struct list_head objcg_list;
->  
->  	struct memcg_vmstats_percpu __percpu *vmstats_percpu;
-> +	struct memcg1_events_percpu __percpu *events_percpu;
+On Thu, Aug 15, 2024 at 07:31:43PM +0000, Roman Gushchin wrote:
+> There is another subtle change here: xa_alloc() returns -EBUSY in the case
+> of the address space exhaustion, while the old code returned -ENOSPC.
+> It's unlikely a big practical problem.
 
-It wasn't really obvious until the patch [6/7] why it's not
-under CONFIG_MEMCG_V1, but otherwise the series looks great to me.
+I decided that EBUSY was the right errno for this situation;
 
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
-for the whole series.
+#define EBUSY           16      /* Device or resource busy */
+#define ENOSPC          28      /* No space left on device */
 
-Thank you!
+ENOSPC seemed wrong; the device isn't out of space.
 
