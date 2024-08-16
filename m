@@ -1,227 +1,143 @@
-Return-Path: <cgroups+bounces-4330-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4331-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00754954CB6
-	for <lists+cgroups@lfdr.de>; Fri, 16 Aug 2024 16:45:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 87F0A954E90
+	for <lists+cgroups@lfdr.de>; Fri, 16 Aug 2024 18:15:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81C311F22288
-	for <lists+cgroups@lfdr.de>; Fri, 16 Aug 2024 14:45:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C5DB1F21AA6
+	for <lists+cgroups@lfdr.de>; Fri, 16 Aug 2024 16:15:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 474E71BE85D;
-	Fri, 16 Aug 2024 14:44:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8689A136E30;
+	Fri, 16 Aug 2024 16:15:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yhndnzj.com header.i=@yhndnzj.com header.b="JjTQLGGi"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yv32sMAq"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-4317.proton.ch (mail-4317.proton.ch [185.70.43.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 448C21BDAAE
-	for <cgroups@vger.kernel.org>; Fri, 16 Aug 2024 14:44:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C463642AAA
+	for <cgroups@vger.kernel.org>; Fri, 16 Aug 2024 16:15:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723819468; cv=none; b=FbTWW7Ah4tXz2OxktqousGXrYQNOdKu2s5yOUV/RMsNj9ekrwgGqzxDpUoIW1MQNxElBzEUYr68fO0e9GwlOsgq8+Nf9aEioBmpusGSYjGw+AoFxrv/LWz193/iyNvC0+qxpIEDiOtTuJZcI3EFQ99gr+hspoesgYQv5dLNFLtQ=
+	t=1723824916; cv=none; b=RQE+AbOK0CaDQ/O25SrxLswSnlwd9EgPC80YDBGCw8CDFx0QtXZxJyBw5ErPv6TmwsK4yy4vtWGdwmcT7diS55k2cCskhQeD1dci4XidfpgJlgqxxiuQuxZGSXgcxKqvOQ7VtyqSxc3XeknU/q7gB58l8PnvnNTtsRIx5pDN42E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723819468; c=relaxed/simple;
-	bh=Gc1o9cTUJaR+h1yUcosk0h+kJQ8Gs/QU31qzG4T87Rw=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=n0kP9w5NdQHsTXGzS7YCuSqAqOE5VCyF8+qDGDd3oFlWOmPyLgyTisaPYhDDRWmPdBB8aZ6V3i0u9iDcIw0Puet/+otFzoiPnIyoyi6HCqHp1yubEgLk1l29bBcjlNbUQ0+RyTV/OLYzUM/8R/hgtFaztDhmxpEKszDQx/1A/Kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yhndnzj.com; spf=pass smtp.mailfrom=yhndnzj.com; dkim=pass (2048-bit key) header.d=yhndnzj.com header.i=@yhndnzj.com header.b=JjTQLGGi; arc=none smtp.client-ip=185.70.43.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yhndnzj.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yhndnzj.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yhndnzj.com;
-	s=protonmail; t=1723819464; x=1724078664;
-	bh=Gc1o9cTUJaR+h1yUcosk0h+kJQ8Gs/QU31qzG4T87Rw=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=JjTQLGGikdm9o1KJKl5Wy2RXkAkVAlk2WRhuTLS+tj2GTKMACiDWbyLVz+xj5DUeF
-	 yt7pXmuEFlIYlNMzMEg+cGwYiWqMA5qAVlTITTF0XKbIQ5bKA536tY8eJOBysCVcOX
-	 iN5TQTWzMmSQgFJToxGs+tVNbJ08ko0Y4HgUhpcj+UMfQm9nQS22iX+BCZH5wp4eMk
-	 wIX232jFNlAit5iD1RqUbaV/x3J/sHvB3eCWXkh3NMFfWfkgRXfoTB/2t3P8WKlZ1w
-	 Yq2ALMWShSWVJdsLoOgTvMveUsPrV5ghncW41HIkScRxSTa9hu+b4iqTc4Lt6SmpHN
-	 awwDbuBpyTBzg==
-Date: Fri, 16 Aug 2024 14:44:19 +0000
-To: linux-kernel@vger.kernel.org
-From: Mike Yuan <me@yhndnzj.com>
-Cc: Mike Yuan <me@yhndnzj.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, Muchun Song <muchun.song@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, Roman Gushchin <roman.gushchin@linux.dev>, Michal Hocko <mhocko@kernel.org>
-Subject: [PATCH v2 2/2] selftests: test_zswap: add test for hierarchical zswap.writeback
-Message-ID: <20240816144344.18135-2-me@yhndnzj.com>
-In-Reply-To: <20240816144344.18135-1-me@yhndnzj.com>
-References: <20240816144344.18135-1-me@yhndnzj.com>
-Feedback-ID: 102487535:user:proton
-X-Pm-Message-ID: 98424e4be63cbb1cd3dc1512fd5d74a155ca5d44
+	s=arc-20240116; t=1723824916; c=relaxed/simple;
+	bh=9yAwGCZHdgmyh1W/M4Ieg+n7bg/nBi73jrflY+JfztM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PAB+6ZiRh9f+1kK5SxupVQ3DOpr3YK5+hn61BuBJZNSKU0duDiGrSa0QyVxAf8kpLBN3ZOEnG27cP2viBeT+6IZqUE7qeCByd0GgQbxc9RrKsYoCLjp1/wA1WdEtxDmdbsvQjIgRIA3zr1xtwqp+OgzVD3mO4TwZIjoFwhybXc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yv32sMAq; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-690b6cbce11so21082597b3.2
+        for <cgroups@vger.kernel.org>; Fri, 16 Aug 2024 09:15:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1723824914; x=1724429714; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iGB75WNp2k3B7jPw4mKOAIQo0L1IpYb0wqaeqHh4s6w=;
+        b=yv32sMAqJhjfY4d/490XlQxNRr/9zncBJDEV/S9vJkxqjBEu8YJoh6gK5IAaiKtZDw
+         ISPvf8K4v2RQCf3Hl05coFNYkjAARj+VWDtjGrYHBs8e0NVp06SLaicCiWS698ZoK21X
+         RTTKUcbLBltEzCKdQG/RipJ0xIgq3fIf6AYHeNxNT5F5QrjwSrnCxFuhYM4hTLYq8fnm
+         Paw7UUBmKYaXq48mvhYKGgJMmAPZA5tESRpxAe1n7oyOKrcvJiYzwDiOambjO9cK3NFm
+         gn60OU3KFyWcWod0SCv+TO6EHRICiP4EZnLt29lWEOBBNLPAcj1274NbZu7+4QcW3zIk
+         9QiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723824914; x=1724429714;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iGB75WNp2k3B7jPw4mKOAIQo0L1IpYb0wqaeqHh4s6w=;
+        b=HVz0/lHZSLmMTC3jCP2LQWvxn5mO01Vsl3azBhKT3zVb93cleQJ3rIlejiq9V+0DAi
+         Sw+gLr7CG8oHnu4kGVjEYLbhuD+WKBUYkSPrTXOz2g1UQcJxP75yGuOhcgq4I0BSK6Fg
+         UHbTUCdRNuipyd2Hm2w4giK34v+LMO1gfklxuAhdOyjcqk2XAgsc8rqREnXCPp/uWKoU
+         B7KAcCoH1PsTCueyOweBx/zaW4ExRDCHHi97SUCuxXCGC1RT/STeSuvKoU3lQiKgpHEJ
+         aY4+/dRGmOd1+Q5PfakPsehKLU71nhN2tZ6eXXE/RBuGsu3js/3OO4w/Zkl7WN3nzAPB
+         NxeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUyx14Sqv+Ziu8wl18Wq5yam2RXTycOWd07eJRiLYw2ixCCJfTZaUsPV4vjl/PbQUIBh4ARNDvUm2YpdqOE4cnrbKFw+t768A==
+X-Gm-Message-State: AOJu0YxHaHJ9RMuPWhfVnRCLaUjgd/WXWWwCSCJrKdtDb7Eh7awrLAyD
+	DNGOjMSlp5e1pzqAexbM5v9RMfm8hOZQw1E+PBZvhPOgsjfE9Ux7sGYpDpROMG2m7jocRLII2of
+	beRePsLIjWlSBM92BVga9qHrKNEbR9knwxwov
+X-Google-Smtp-Source: AGHT+IGN9bKv/c0GyHlyxEeZPUueQdw36mZHlzwKYbGCbDIVXo6Qmf8fAlROL3QiPP9HsyO4r754ovZtBdYN34UZpiU=
+X-Received: by 2002:a05:690c:c8c:b0:6b0:ea82:9760 with SMTP id
+ 00721157ae682-6b1b996ce64mr44413447b3.27.1723824913603; Fri, 16 Aug 2024
+ 09:15:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240813204716.842811-1-kinseyho@google.com> <20240813204716.842811-3-kinseyho@google.com>
+ <qh77aw6nnsytwtux6f2bkzmene3fzrh4skegvqktlw4b47jgea@oxovqnsrulef>
+In-Reply-To: <qh77aw6nnsytwtux6f2bkzmene3fzrh4skegvqktlw4b47jgea@oxovqnsrulef>
+From: Kinsey Ho <kinseyho@google.com>
+Date: Fri, 16 Aug 2024 12:15:01 -0400
+Message-ID: <CAF6N3nV3RPaiS9E4=-ABXQ-F++J=E8goSquN1cq2S_TuftUNxg@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable v2 2/5] mm: don't hold css->refcnt during traversal
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	Yosry Ahmed <yosryahmed@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Ensure that zswap.writeback check goes up the cgroup tree.
+Hi Michal,
 
-Signed-off-by: Mike Yuan <me@yhndnzj.com>
----
- tools/testing/selftests/cgroup/test_zswap.c | 69 ++++++++++++++-------
- 1 file changed, 48 insertions(+), 21 deletions(-)
+Thank you for reviewing this patchset!
 
-diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/se=
-lftests/cgroup/test_zswap.c
-index 190096017f80..7da6f9dc1066 100644
---- a/tools/testing/selftests/cgroup/test_zswap.c
-+++ b/tools/testing/selftests/cgroup/test_zswap.c
-@@ -263,15 +263,13 @@ static int test_zswapin(const char *root)
- static int attempt_writeback(const char *cgroup, void *arg)
- {
- =09long pagesize =3D sysconf(_SC_PAGESIZE);
--=09char *test_group =3D arg;
- =09size_t memsize =3D MB(4);
- =09char buf[pagesize];
- =09long zswap_usage;
--=09bool wb_enabled;
-+=09bool wb_enabled =3D *(bool *) arg;
- =09int ret =3D -1;
- =09char *mem;
-=20
--=09wb_enabled =3D cg_read_long(test_group, "memory.zswap.writeback");
- =09mem =3D (char *)malloc(memsize);
- =09if (!mem)
- =09=09return ret;
-@@ -288,12 +286,12 @@ static int attempt_writeback(const char *cgroup, void=
- *arg)
- =09=09memcpy(&mem[i], buf, pagesize);
-=20
- =09/* Try and reclaim allocated memory */
--=09if (cg_write_numeric(test_group, "memory.reclaim", memsize)) {
-+=09if (cg_write_numeric(cgroup, "memory.reclaim", memsize)) {
- =09=09ksft_print_msg("Failed to reclaim all of the requested memory\n");
- =09=09goto out;
- =09}
-=20
--=09zswap_usage =3D cg_read_long(test_group, "memory.zswap.current");
-+=09zswap_usage =3D cg_read_long(cgroup, "memory.zswap.current");
-=20
- =09/* zswpin */
- =09for (int i =3D 0; i < memsize; i +=3D pagesize) {
-@@ -303,7 +301,7 @@ static int attempt_writeback(const char *cgroup, void *=
-arg)
- =09=09}
- =09}
-=20
--=09if (cg_write_numeric(test_group, "memory.zswap.max", zswap_usage/2))
-+=09if (cg_write_numeric(cgroup, "memory.zswap.max", zswap_usage/2))
- =09=09goto out;
-=20
- =09/*
-@@ -312,7 +310,7 @@ static int attempt_writeback(const char *cgroup, void *=
-arg)
- =09 * If writeback is disabled, memory reclaim will fail as zswap is limit=
-ed and
- =09 * it can't writeback to swap.
- =09 */
--=09ret =3D cg_write_numeric(test_group, "memory.reclaim", memsize);
-+=09ret =3D cg_write_numeric(cgroup, "memory.reclaim", memsize);
- =09if (!wb_enabled)
- =09=09ret =3D (ret =3D=3D -EAGAIN) ? 0 : -1;
-=20
-@@ -321,12 +319,38 @@ static int attempt_writeback(const char *cgroup, void=
- *arg)
- =09return ret;
- }
-=20
-+static int test_zswap_writeback_one(const char *cgroup, bool wb)
-+{
-+=09long zswpwb_before, zswpwb_after;
-+
-+=09zswpwb_before =3D get_cg_wb_count(cgroup);
-+=09if (zswpwb_before !=3D 0) {
-+=09=09ksft_print_msg("zswpwb_before =3D %ld instead of 0\n", zswpwb_before=
-);
-+=09=09return -1;
-+=09}
-+
-+=09if (cg_run(cgroup, attempt_writeback, (void *) &wb))
-+=09=09return -1;
-+
-+=09/* Verify that zswap writeback occurred only if writeback was enabled *=
-/
-+=09zswpwb_after =3D get_cg_wb_count(cgroup);
-+=09if (zswpwb_after < 0)
-+=09=09return -1;
-+
-+=09if (wb !=3D !!zswpwb_after) {
-+=09=09ksft_print_msg("zswpwb_after is %ld while wb is %s",
-+=09=09=09=09zswpwb_after, wb ? "enabled" : "disabled");
-+=09=09return -1;
-+=09}
-+
-+=09return 0;
-+}
-+
- /* Test to verify the zswap writeback path */
- static int test_zswap_writeback(const char *root, bool wb)
- {
--=09long zswpwb_before, zswpwb_after;
- =09int ret =3D KSFT_FAIL;
--=09char *test_group;
-+=09char *test_group, *test_group_child =3D NULL;
-=20
- =09test_group =3D cg_name(root, "zswap_writeback_test");
- =09if (!test_group)
-@@ -336,29 +360,32 @@ static int test_zswap_writeback(const char *root, boo=
-l wb)
- =09if (cg_write(test_group, "memory.zswap.writeback", wb ? "1" : "0"))
- =09=09goto out;
-=20
--=09zswpwb_before =3D get_cg_wb_count(test_group);
--=09if (zswpwb_before !=3D 0) {
--=09=09ksft_print_msg("zswpwb_before =3D %ld instead of 0\n", zswpwb_before=
-);
-+=09if (test_zswap_writeback_one(test_group, wb))
- =09=09goto out;
--=09}
-=20
--=09if (cg_run(test_group, attempt_writeback, (void *) test_group))
-+=09if (cg_write(test_group, "memory.zswap.max", "max"))
-+=09=09goto out;
-+=09if (cg_write(test_group, "cgroup.subtree_control", "+memory"))
- =09=09goto out;
-=20
--=09/* Verify that zswap writeback occurred only if writeback was enabled *=
-/
--=09zswpwb_after =3D get_cg_wb_count(test_group);
--=09if (zswpwb_after < 0)
-+=09test_group_child =3D cg_name(test_group, "zswap_writeback_test_child");
-+=09if (!test_group_child)
-+=09=09goto out;
-+=09if (cg_create(test_group_child))
-+=09=09goto out;
-+=09if (cg_write(test_group_child, "memory.zswap.writeback", "1"))
- =09=09goto out;
-=20
--=09if (wb !=3D !!zswpwb_after) {
--=09=09ksft_print_msg("zswpwb_after is %ld while wb is %s",
--=09=09=09=09zswpwb_after, wb ? "enabled" : "disabled");
-+=09if (test_zswap_writeback_one(test_group_child, wb))
- =09=09goto out;
--=09}
-=20
- =09ret =3D KSFT_PASS;
-=20
- out:
-+=09if (test_group_child) {
-+=09=09cg_destroy(test_group_child);
-+=09=09free(test_group_child);
-+=09}
- =09cg_destroy(test_group);
- =09free(test_group);
- =09return ret;
---=20
-2.46.0
+On Wed, Aug 14, 2024 at 5:00=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
+>
+> On Tue, Aug 13, 2024 at 08:47:12PM GMT, Kinsey Ho <kinseyho@google.com> w=
+rote:
+> > To obtain the pointer to the next memcg position, mem_cgroup_iter()
+> > currently holds css->refcnt during memcg traversal only to put
+> > css->refcnt at the end of the routine. This isn't necessary as an
+> > rcu_read_lock is already held throughout the function. The use of
+> > the RCU read lock with css_next_descendant_pre() guarantees that
+> > sibling linkage is safe without holding a ref on the passed-in @css.
+> >
+> > Remove css->refcnt usage during traversal by leveraging RCU.
+> >
+> > Signed-off-by: Kinsey Ho <kinseyho@google.com>
+> > ---
+> >  include/linux/memcontrol.h |  2 +-
+> >  mm/memcontrol.c            | 18 +-----------------
+> >  2 files changed, 2 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index 90ecd2dbca06..1aaed2f1f6ae 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -75,7 +75,7 @@ struct lruvec_stats_percpu;
+> >  struct lruvec_stats;
+> >
+> >  struct mem_cgroup_reclaim_iter {
+> > -     struct mem_cgroup *position;
+> > +     struct mem_cgroup __rcu *position;
+>
+> I'm not sure about this annotation.
+> This pointer could be modified concurrently with RCU read sections with
+> the cmpxchg which would assume that's equivalent with
+> rcu_assign_pointer(). (Which it might be but it's not idiomatic, so it
+> causes some head wrapping.)
+> Isn't this situation covered with a regular pointer and
+> READ_ONCE()+cmpxchg?
 
+Yes, that's a good point =E2=80=93 this situation is covered with a regular
+pointer and READ_ONCE() + cmpxchg(). I'll make the change to remove
+the __rcu tag and replace rcu_dereference() with READ_ONCE() and send
+it out in v3. (This also rids of the sparse errors seen in v1)
 
+Thanks for pointing this out.
+
+Best,
+Kinsey
 
