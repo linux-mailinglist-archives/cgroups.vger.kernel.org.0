@@ -1,183 +1,319 @@
-Return-Path: <cgroups+bounces-4335-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4336-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 628BF9555AF
-	for <lists+cgroups@lfdr.de>; Sat, 17 Aug 2024 08:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A97D9555E6
+	for <lists+cgroups@lfdr.de>; Sat, 17 Aug 2024 08:52:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70B2E1C21761
-	for <lists+cgroups@lfdr.de>; Sat, 17 Aug 2024 06:00:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C03191C21193
+	for <lists+cgroups@lfdr.de>; Sat, 17 Aug 2024 06:52:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23115824AF;
-	Sat, 17 Aug 2024 06:00:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=azul.com header.i=@azul.com header.b="NDpZxpSB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF58D132121;
+	Sat, 17 Aug 2024 06:52:25 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2121.outbound.protection.outlook.com [40.107.95.121])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31573A23;
-	Sat, 17 Aug 2024 06:00:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.95.121
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723874429; cv=fail; b=URT8dLOw6ybBrnuRv2mtfgQYQI27tF4IW7RFXJ1jmYrZa4bbOC44jDUc+HeaxWO+R9MdKjHCDR7VTT8X9O/k/+nWJBr4a6MF91gLG8BM3o0djUxu2HqO2GfASvC57LtY7p+KTOd/dNqyOxrHmn30YscaKX/jGiv3bQtFX+FmOug=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723874429; c=relaxed/simple;
-	bh=qNtHJ0wV8ljR4F/QaQASPrWc1NKCnBqpQOXTOGscmb4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=eodVaQM9jQrP5RqZMpI1OcvrYuxEFJihLhJyd5zWbzKNBWHHHQ8SjqubSu23dzJXI9uAMuy4lbviuXKAwHxoXhxd+c0ODoKGOgw1ILp6VUJKJ34fq+YlrZpX7HeMemsg5peo3txQ7XoYvNiL+JbgDSpS+ASAEp5deYkfm7hZifk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=azul.com; spf=pass smtp.mailfrom=azul.com; dkim=pass (2048-bit key) header.d=azul.com header.i=@azul.com header.b=NDpZxpSB; arc=fail smtp.client-ip=40.107.95.121
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=azul.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azul.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=mCF3qVJuF2iQrJUOmwLxFR/CdAB1BasTxmB3/X09MRMpEOf8oOgJWn/ydze1Xm3E37iF6nuCV3g+xsheRJMjUxlL7T7cJ2maAGk2y+Kaok3+t19nZ0fiGr+UojaARiTkw9U7GOZW3BLFeQV37u4y08vhpA5x+sg8HRAJyQFEcQRfaNTxKvmg/j0x1s40dsJ3SfBjPywxQoZMV9DeL9bHCMtBW5sgfwnVKpvRJzXvl8PSity24VbbeHzYEGjmDrkwDHNw5jnoycmjqZVyy/qWsDAVagR9qd/nDf3bz1lmXIYEMBM6CqcmTHw0gghAVuLKo8u8W6BYLzsFPADhvoE/IA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/43rgoNmvz0lRaJgiAhMjG7+NgNKANmXI1UCZUkRq5s=;
- b=Xd5cwydiNeXeVYpww/7Oo6Fb45tzbtMXoV9S1Cb5/s9Y5oS7R4wHZQD8qU/0G2SG51DkfEXTLLTvT0Z8GS5o2TR/lEpBmbAhWiZeycKEVpwsu+oZ5f75HLdtkPQFwNqtZy5O0KY8pSqEcp/iPmCSgOknLQKPoL0b4rQOTmMaRkra7wuftZwA6MA7eo0gwAMOtuNN8JCjgW3+ZEiZwTyxSXDs+MrOcvYyRTSHLsVAotgILkXOgfwGpDo+/oIQalVgHvQfr46AiNyx+S76EsVqCcN5ZcxkzvORE7UU6I/aAZNrSCViIAeLMMcJ0Ufz8B2+mzLLSf3/KP9sKfILFwBr4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=azul.com; dmarc=pass action=none header.from=azul.com;
- dkim=pass header.d=azul.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=azul.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/43rgoNmvz0lRaJgiAhMjG7+NgNKANmXI1UCZUkRq5s=;
- b=NDpZxpSBHaD9f8DL3Ga3LETCFzK781LU3l5gVwjg7JVWsi3EEfFw6RJR9hbqIpDEZp0rDM5RG41/kybTKbqZyOB2CG0KgyRX4AAtAzbycbcd7Nru0OHVBM5r6fPONV1B7h0BgkekrUqxcFjjuaYIq0XuInZvmTw2+fU02qJJbWEG0mNBlDEDD/+sW4QAwH+prwp84cY3JwFFRC0uJNy6EuRx58DszAEWYlqtRemTOgQJ5xl4R/Zn3a0YxA6NhVNxK+AIp09N31PCLjC58d0SNt4PK86aMwUSD32rCoflJR6pG3lPuno3kWWBij0399t4gSZNweZ9bk6ofdWUpSH0sQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=azul.com;
-Received: from DM6PR11MB3225.namprd11.prod.outlook.com (2603:10b6:5:5b::32) by
- CH0PR11MB5233.namprd11.prod.outlook.com (2603:10b6:610:e0::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7875.20; Sat, 17 Aug 2024 06:00:25 +0000
-Received: from DM6PR11MB3225.namprd11.prod.outlook.com
- ([fe80::b3d7:390d:73a1:6170]) by DM6PR11MB3225.namprd11.prod.outlook.com
- ([fe80::b3d7:390d:73a1:6170%3]) with mapi id 15.20.7875.016; Sat, 17 Aug 2024
- 06:00:25 +0000
-Date: Sat, 17 Aug 2024 14:00:15 +0800
-From: Jan Kratochvil <jkratochvil@azul.com>
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-	cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [RFC PATCH v5 0/3] Add memory.max.effective for application's
- allocators
-Message-ID: <ZsA8b9806Xl8AxLZ@host2.jankratochvil.net>
-References: <20240606152232.20253-1-mkoutny@suse.com>
- <ZmH8pNkk2MHvvCzb@P9FQF9L96D>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZmH8pNkk2MHvvCzb@P9FQF9L96D>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-X-ClientProxiedBy: MW4PR03CA0244.namprd03.prod.outlook.com
- (2603:10b6:303:b4::9) To DM6PR11MB3225.namprd11.prod.outlook.com
- (2603:10b6:5:5b::32)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA47D43152
+	for <cgroups@vger.kernel.org>; Sat, 17 Aug 2024 06:52:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1723877545; cv=none; b=DL07CVxEER/TKj/k3d0XsLPf70f4L4wUaHlMmr+y12tRT9eZuDg9WnaAkIHuw7j05+1CxMagV0oS+3E+Y/hgRIq6cYrnR2ksN6Xfz7vfhB6wic1634XuOhfcPNS/8fG9EBCzqUEycuaKEoDyKiDChqXV/toL1dgp29vQEjvFJi8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1723877545; c=relaxed/simple;
+	bh=h1fCjK/WIByJ9rx9DApomzX/D1Bg8yCddNpd3OdUOPY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=MixKuf4LuLrq0iIJGVkITop3mnfDch/Wuzfk7RXYU67kn7F1Vr4dcHbJX6rnm4N/AMtXJeuE8wDhtem+Yf7bqsyzArAAF7oy20ZlBqPfrsClBF4xcdaBJCQq5BniG0ZtFnFE1luVWl5HV0qq1SkA9vpguRz7qMesi62MlQclut8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-39d244820edso22530975ab.3
+        for <cgroups@vger.kernel.org>; Fri, 16 Aug 2024 23:52:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723877543; x=1724482343;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q4Qade8iv/yodhHht3ujpuNl+dPwbhOloEjWWYVpVSg=;
+        b=bIIJ5uN0QkWhy3yQvp+ODFxZgFpz91twwKZk6tXSdRnT0bdyk5lvl+7eJJN3LIl6kt
+         14JPWFxci1R5HfUpGut9t9lXuVmj3ySQ4grOEuskvwYWoJ88OH2CpM13Els4aajx4uRS
+         Vz0V49AvEpY9sVX89CfPGXfebY1lCWt5hbfycDA71UpZEcn/Zruf9Prtr9LZQPr7lEsL
+         XVqxkUu4/AVBCRrLU5+VVtHATKuhYUlj8/qkAJc/yqJ8C22JuxJzR3yu8P9Iw2A8rjCh
+         ZxHPRnLBS136MFi/jQas4tc9QvmeW4XhpffBbcaXgiImtNr2fl187c+HaihI3+t764Ur
+         +y1Q==
+X-Gm-Message-State: AOJu0Ywb8xoIkAgPilIz1M/YCX42LZStav1xPoLjuxCoyd5izNRmFpwe
+	efFRVcjUr8nL6ACw1WKl3qk3m9bGBkq/dW5rNxqy3vd1MdB/EiOivn0AUq2QM4ZdSh6s/c6s2Rf
+	4Ln8z/2YirdcrR5NM37kfi3gbgE9p5OJ9ZPIYJUaUfzoXCCwkqY1GSCo=
+X-Google-Smtp-Source: AGHT+IH0VpumDUuZHUV0sIajA3TfLtshcwr2uFxMidXEIPRQidrSQVIbw5cysuGH1IvKvShb4chWXNUgHIBo0FcfekOp8fxo1hOq
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR11MB3225:EE_|CH0PR11MB5233:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1d9dbcc0-0d03-4995-1096-08dcbe81e358
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?MdYf9cG25Lw1EERrWcv6ybdplZfHVavlA+ZT0Ay5GXn8ZcN7w7p1WQiMd3tA?=
- =?us-ascii?Q?mHUG7cXNY9F6ov4kOPgm46MjSw0L6jHIfVYaRHq3vJUl0XPc/lIvrfF4wHj0?=
- =?us-ascii?Q?1T26qw+jOx9DTsXgV030tcGqWkbq9HlJ4DZq5lzoPLNkJ6A721fVY924Q8kJ?=
- =?us-ascii?Q?Eb1SSgn2rYXItILcd/gmO88JZBrJETvF03s+DAQ0v7G3vQ8qXBOMlUHit4pK?=
- =?us-ascii?Q?sfGWpcDpY11kkq/t/Pd0zj76U5nWkdoHM9K2AOOe3XbiHm3q58AHnv3hQqf7?=
- =?us-ascii?Q?MY8vo7O5OMvI1/nVJlvO4/kVUnRdukxttyLr5+BfRWHjOIaBgcE8CmxASxxl?=
- =?us-ascii?Q?QktJOH9QSfIyIKbAaMH+K0rbOD3DwxdD7tP8XldoFlw1w3XR9Lv1Jm9O24+G?=
- =?us-ascii?Q?/AEHqu9aPnuz23F/qz8qlxeT2lOsxVqnO6IVzEiJ+Si8U7FjCemRfHw43Oq1?=
- =?us-ascii?Q?G3+5TrPmLuSdOPOL8hkmFN8sh6ttgEMbVi1Z5MKz1yAG3hZj7Ags9wkIotjv?=
- =?us-ascii?Q?HsIBS250h7LUZskvLiMChcJUYwoaB3ICEbmA8+UVSKbunF5clHrtdJlxrDAn?=
- =?us-ascii?Q?V2CdDCQYX9djthnSUOIkYgc1IUUA4fl9gDcFBDX/SiMHaBI/FgqSEUJ1cn4P?=
- =?us-ascii?Q?FiDPW2k/H2vJFyj+gmuF8YkMc0tjxdAIVmVTIh7pO2n1H2T+SYaT5cFhkh39?=
- =?us-ascii?Q?h3QyHVBz2H4E2EygrBpQedHoYpVMz/V2CFZaiSwXRzfXBDGN5r1CMmwBGB0p?=
- =?us-ascii?Q?IF/QFoHfe178yDjs2+7vIynxw2M1GcK9HFom3RXwNNyo+ZfZyaJWz3gUnKbI?=
- =?us-ascii?Q?j9dblb6uNcOJgAFydKKM1Pzw0tOz7M8XgIP44BZrdKyOUGOTfm47cCICqude?=
- =?us-ascii?Q?BynPjwo8EawuBMvmOZiel/JAWjAHSNlDB9vkDnGflcVqwEMFuGFw37rxNEIv?=
- =?us-ascii?Q?ZACmCfhUq7JN89Cua7tWJVFOYbxbWpr9vbzto/Aw9V2s/rOrpIhFagUFlaTc?=
- =?us-ascii?Q?1pmnhjK7X7g56zC6xAUJn37ZLdp9KCcMj420B4SwtJOW5vr5ea93tlJc+Iun?=
- =?us-ascii?Q?xxd+3t68clRiU7zIQ8obyMyiAeIRVb/I1gjtvNxkAKztDEk1el3gRZDF/wDU?=
- =?us-ascii?Q?AIZe0T9+nqA5Koxm3U7BhsglpbasZnPrqkiz/hmhcCWGliYGtNkju+Fazpd6?=
- =?us-ascii?Q?fbeAd3mGbcIbbq1isjuk08PWX0cVxRn/RDMiv8l3lUsE6BVyLowvILj+KMU7?=
- =?us-ascii?Q?x+27eotUG006DFiO8fWK9MPuxcNeGREtrAzHYoK9aqU1KebIUwk52tQEogLR?=
- =?us-ascii?Q?RgNiOeGUxGfty+BDQb8YGOR/U2ZfcXvIX+hIHiWzyJh8Pw=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB3225.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?1Lb3L8M30RmbBlA9Iwg5XdbWCZH1Bzh9sqf7cbY9PSn73spYx4T/nWg2IgMc?=
- =?us-ascii?Q?DSNgen9PxvOyU7PgbB06EbdYl3HHBfsBorIwnl2OTT1lA4XrVFBkewOWxKCn?=
- =?us-ascii?Q?4notlwzzgyJKXFADRLHe8FP2uJ9EnQNSDGceoIikXg8l2j6T3Cx8YDZFr0Wo?=
- =?us-ascii?Q?qMSzsh4dnCSoGAAxVvdzcbWUFU+xk8jpOurLo9YzjEUraQhRSFHHI4W0cCk9?=
- =?us-ascii?Q?zJ+hv6MkzRjIwbBNN4FzqY9JJHldcLlLzWWtGJUPcK0RB7NxINL9ro0DKoYN?=
- =?us-ascii?Q?w+v+QAWudij9XadEnFqkPj4ASAYTVn1kzl7hT6Q+NF37lChn4+pDzSDY4C54?=
- =?us-ascii?Q?PMZlwY8LaNH7qHc63hutEAqXDCwpuBCoE7/PrJhqxip787QNN7eBUZ1bDGyf?=
- =?us-ascii?Q?jYvTmwUM/QdLf/hBirviJOrheRYdVVbHNPX8jmFVQrirm+wF10x5i2Ac4gvx?=
- =?us-ascii?Q?J4yL8lMEr1sQvT3YK8rj34Qgo4eEiujQyP4sKU5UnLsGyzBueAZ8KUWHMQ0g?=
- =?us-ascii?Q?AcH1RN3H+pz5lPWmYD8irt0Fvv//o+vyWbUJtK8L6O+A4fJ3hel0Z+IHF4at?=
- =?us-ascii?Q?cJNjBcYVJcipOPJOi7htg6xFkRJxhie5Rd0DpTI4xRg88e6dBkoCT3W1o1vW?=
- =?us-ascii?Q?H2lDNgPlOKru4UABf9RgEVt3Bm5XCR138LkSwvRKX19V3e31GDVflZnXxeeI?=
- =?us-ascii?Q?cigwLiu6Z1P6hhBPY+dou7wPmrYqVPbGmPBWujqPNF6pqDWwL4uBcSlcQmpN?=
- =?us-ascii?Q?QglRj5RNKcT75mgNVhRO5AXdcQEbG/rV9BiE9PSwwb5neJA5d9dTxQi2GGxb?=
- =?us-ascii?Q?WYOJ5xRiITP1nnkmNrvlZuUqXfwvsRxij61ecYR12yYoOsxP5U4ar+iiXWVd?=
- =?us-ascii?Q?1ViCjn5TNEyKVv8W4NabVuk0EqVI23zA4p86ebvJKnA/qz8ToZ6vo5vmqaLg?=
- =?us-ascii?Q?iX/bR0BqZPQEVIKjERufwio+y8qY/LgRcHZC0gEio8r165jPuLkSMtOMCoc7?=
- =?us-ascii?Q?HvUDmXHHPBRKLfw2jqSybEJCrRg4BBpqhd9KOI/ExIrN4YVyqetVhkuY9Qbg?=
- =?us-ascii?Q?Am7Wey0DwnRxFVtpz5zligc/SzyAC7SO5/Ottl4VwlOkhARKLMXUMJLAtILA?=
- =?us-ascii?Q?vRCWYZUS0/gfGeiM9Fj6662vXFFmpdjr1je20OcXWI15V+5NyffIidgnfDyD?=
- =?us-ascii?Q?wZzkBpiPr5ceARVqzAIN8VRO+yoxD2E3BHcoz1HdAug5LfVfHyAyqatqkAvI?=
- =?us-ascii?Q?XSNKqbaj4+YB2TGMp9xnITlwrZKlZ+8POr91FPliVQJsI1zJ8y9vdgxXFCBk?=
- =?us-ascii?Q?Aur1oXEK5SmsSXmWXBuR49ZVLDvP7ZC3tQXFELLsHYzwzWEd8dA4+HkvyWj/?=
- =?us-ascii?Q?wcH59qUefOv3G9moVy9xJf1LF60to6KxnC1AaJrWlvfIxpCLV+gN3XDPnN0F?=
- =?us-ascii?Q?7w02vzcrqjnXIiCQSWYVy+4lXSAx4p09mEFWsXPBX+n9/3FeeBdHUoj9Gy81?=
- =?us-ascii?Q?Lp9YSQ+9O4Mne2EOGpINLgCOWsw5b982y0My2Nv1SE/fyOlf238uZHKJasEz?=
- =?us-ascii?Q?Nm6PWclHAZB6EPJXsYK8zrPMnI2l0QSLc33f4q07kUht6O2RIJr1RxubsvqL?=
- =?us-ascii?Q?yRtJxBmZMQvqENXMGGMVJRo=3D?=
-X-OriginatorOrg: azul.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1d9dbcc0-0d03-4995-1096-08dcbe81e358
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB3225.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Aug 2024 06:00:25.6005
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: c480eb31-2b17-43d7-b4c7-9bcb20cc4bf2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xV9G44nCRNx7TX5md2CcXvjT2vcpzYBxFbzW8L3Ow19UxqddqIdOVuYI1YGx5/6rZ8hpP786iYcLgDZcZu8zRA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5233
+X-Received: by 2002:a05:6e02:12c7:b0:39a:ea86:12f2 with SMTP id
+ e9e14a558f8ab-39d26d95738mr4720435ab.6.1723877542779; Fri, 16 Aug 2024
+ 23:52:22 -0700 (PDT)
+Date: Fri, 16 Aug 2024 23:52:22 -0700
+In-Reply-To: <000000000000e540f3061fc68863@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000092ef86061fdb849b@google.com>
+Subject: Re: [syzbot] [cgroups?] possible deadlock in task_rq_lock
+From: syzbot <syzbot+ca14b36a46a8c541b509@syzkaller.appspotmail.com>
+To: cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org, 
+	lizefan.x@bytedance.com, mkoutny@suse.com, syzkaller-bugs@googlegroups.com, 
+	tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 07 Jun 2024 02:15:00 +0800, Roman Gushchin wrote:
-> If the goal is to detect how much memory would it be possible to allocate,
-> I'm not sure that knowing all memory.max limits upper in the hierarchy
-> really buys anything without knowing actual usages and a potential
-> for memory reclaim across the entire tree.
-> 
-> E.g.:
-> 
-> A (max = 100G)
-> | \
-> B  C
-> 
-> C's effective max will come out as 100G, but if B.anon_usage = 100G and
-> there is no swap, the actual number is 0.
+syzbot has found a reproducer for the following issue on:
 
-Yes, it would be better to subtract the used memory from ancestor (and thus
-even current) cgroups. The original use case of this feature is for cloud
-nodes running a single Java JVM where the sibling cgroups are not an issue.
+HEAD commit:    367b5c3d53e5 Add linux-next specific files for 20240816
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=147f345b980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=61ba6f3b22ee5467
+dashboard link: https://syzkaller.appspot.com/bug?extid=ca14b36a46a8c541b509
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13d6dbf3980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=142413c5980000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0b1b4e3cad3c/disk-367b5c3d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/5bb090f7813c/vmlinux-367b5c3d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6674cb0709b1/bzImage-367b5c3d.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ca14b36a46a8c541b509@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+======================================================
+WARNING: possible circular locking dependency detected
+6.11.0-rc3-next-20240816-syzkaller #0 Not tainted
+------------------------------------------------------
+kworker/u8:7/5301 is trying to acquire lock:
+ffffffff8e815038 ((console_sem).lock){-...}-{2:2}, at: down_trylock+0x20/0xa0 kernel/locking/semaphore.c:139
+
+but task is already holding lock:
+ffff8880b913ea58 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:587
+
+which lock already depends on the new lock.
 
 
-Jan Kratochvil
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&rq->__lock){-.-.}-{2:2}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5762
+       _raw_spin_lock_nested+0x31/0x40 kernel/locking/spinlock.c:378
+       raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:587
+       raw_spin_rq_lock kernel/sched/sched.h:1485 [inline]
+       task_rq_lock+0xc6/0x360 kernel/sched/core.c:689
+       cgroup_move_task+0x92/0x2d0 kernel/sched/psi.c:1161
+       css_set_move_task+0x72e/0x950 kernel/cgroup/cgroup.c:898
+       cgroup_post_fork+0x256/0x880 kernel/cgroup/cgroup.c:6690
+       copy_process+0x3ab1/0x3e30 kernel/fork.c:2620
+       kernel_clone+0x226/0x8f0 kernel/fork.c:2806
+       user_mode_thread+0x132/0x1a0 kernel/fork.c:2884
+       rest_init+0x23/0x300 init/main.c:712
+       start_kernel+0x47a/0x500 init/main.c:1103
+       x86_64_start_reservations+0x2a/0x30 arch/x86/kernel/head64.c:507
+       x86_64_start_kernel+0x9f/0xa0 arch/x86/kernel/head64.c:488
+       common_startup_64+0x13e/0x147
+
+-> #1 (&p->pi_lock){-.-.}-{2:2}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5762
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
+       class_raw_spinlock_irqsave_constructor include/linux/spinlock.h:551 [inline]
+       try_to_wake_up+0xb0/0x1470 kernel/sched/core.c:4113
+       up+0x72/0x90 kernel/locking/semaphore.c:191
+       __up_console_sem kernel/printk/printk.c:340 [inline]
+       __console_unlock kernel/printk/printk.c:2801 [inline]
+       console_unlock+0x22f/0x4d0 kernel/printk/printk.c:3120
+       vprintk_emit+0x5dc/0x7c0 kernel/printk/printk.c:2348
+       dev_vprintk_emit+0x2ae/0x330 drivers/base/core.c:4921
+       dev_printk_emit+0xdd/0x120 drivers/base/core.c:4932
+       _dev_warn+0x122/0x170 drivers/base/core.c:4988
+       _request_firmware+0xd2c/0x12b0 drivers/base/firmware_loader/main.c:910
+       request_firmware_work_func+0x12a/0x280 drivers/base/firmware_loader/main.c:1165
+       process_one_work kernel/workqueue.c:3232 [inline]
+       process_scheduled_works+0xa63/0x1850 kernel/workqueue.c:3313
+       worker_thread+0x86d/0xd10 kernel/workqueue.c:3390
+       kthread+0x2f0/0x390 kernel/kthread.c:389
+       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+-> #0 ((console_sem).lock){-...}-{2:2}:
+       check_prev_add kernel/locking/lockdep.c:3136 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3255 [inline]
+       validate_chain+0x18e0/0x5900 kernel/locking/lockdep.c:3871
+       __lock_acquire+0x137a/0x2040 kernel/locking/lockdep.c:5145
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5762
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
+       down_trylock+0x20/0xa0 kernel/locking/semaphore.c:139
+       __down_trylock_console_sem+0x109/0x250 kernel/printk/printk.c:323
+       console_trylock kernel/printk/printk.c:2754 [inline]
+       console_trylock_spinning kernel/printk/printk.c:1958 [inline]
+       vprintk_emit+0x2aa/0x7c0 kernel/printk/printk.c:2347
+       _printk+0xd5/0x120 kernel/printk/printk.c:2373
+       __report_bug lib/bug.c:195 [inline]
+       report_bug+0x346/0x500 lib/bug.c:219
+       handle_bug+0x60/0x90 arch/x86/kernel/traps.c:285
+       exc_invalid_op+0x1a/0x50 arch/x86/kernel/traps.c:309
+       asm_exc_invalid_op+0x1a/0x20 arch/x86/include/asm/idtentry.h:621
+       lockdep_assert_rq_held kernel/sched/sched.h:1476 [inline]
+       rq_clock kernel/sched/sched.h:1624 [inline]
+       replenish_dl_new_period kernel/sched/deadline.c:777 [inline]
+       update_curr_dl_se+0x66f/0x920 kernel/sched/deadline.c:1511
+       update_curr+0x575/0xb20 kernel/sched/fair.c:1176
+       put_prev_entity+0x3d/0x210 kernel/sched/fair.c:5505
+       put_prev_task_fair+0x4d/0x80 kernel/sched/fair.c:8686
+       put_prev_task kernel/sched/sched.h:2423 [inline]
+       put_prev_task_balance+0x11d/0x190 kernel/sched/core.c:5886
+       __pick_next_task+0xc6/0x2f0 kernel/sched/core.c:5946
+       pick_next_task kernel/sched/core.c:6012 [inline]
+       __schedule+0x725/0x4ad0 kernel/sched/core.c:6594
+       preempt_schedule_common+0x84/0xd0 kernel/sched/core.c:6818
+       preempt_schedule+0xe1/0xf0 kernel/sched/core.c:6842
+       preempt_schedule_thunk+0x1a/0x30 arch/x86/entry/thunk.S:12
+       __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
+       _raw_spin_unlock_irqrestore+0x130/0x140 kernel/locking/spinlock.c:194
+       task_rq_unlock kernel/sched/sched.h:1759 [inline]
+       __sched_setscheduler+0xf35/0x1ba0 kernel/sched/syscalls.c:858
+       _sched_setscheduler kernel/sched/syscalls.c:880 [inline]
+       sched_setscheduler_nocheck+0x190/0x2e0 kernel/sched/syscalls.c:927
+       kthread+0x1aa/0x390 kernel/kthread.c:370
+       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+
+other info that might help us debug this:
+
+Chain exists of:
+  (console_sem).lock --> &p->pi_lock --> &rq->__lock
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&rq->__lock);
+                               lock(&p->pi_lock);
+                               lock(&rq->__lock);
+  lock((console_sem).lock);
+
+ *** DEADLOCK ***
+
+1 lock held by kworker/u8:7/5301:
+ #0: ffff8880b913ea58 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:587
+
+stack backtrace:
+CPU: 1 UID: 0 PID: 5301 Comm: kworker/u8:7 Not tainted 6.11.0-rc3-next-20240816-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2189
+ check_prev_add kernel/locking/lockdep.c:3136 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3255 [inline]
+ validate_chain+0x18e0/0x5900 kernel/locking/lockdep.c:3871
+ __lock_acquire+0x137a/0x2040 kernel/locking/lockdep.c:5145
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5762
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
+ down_trylock+0x20/0xa0 kernel/locking/semaphore.c:139
+ __down_trylock_console_sem+0x109/0x250 kernel/printk/printk.c:323
+ console_trylock kernel/printk/printk.c:2754 [inline]
+ console_trylock_spinning kernel/printk/printk.c:1958 [inline]
+ vprintk_emit+0x2aa/0x7c0 kernel/printk/printk.c:2347
+ _printk+0xd5/0x120 kernel/printk/printk.c:2373
+ __report_bug lib/bug.c:195 [inline]
+ report_bug+0x346/0x500 lib/bug.c:219
+ handle_bug+0x60/0x90 arch/x86/kernel/traps.c:285
+ exc_invalid_op+0x1a/0x50 arch/x86/kernel/traps.c:309
+ asm_exc_invalid_op+0x1a/0x20 arch/x86/include/asm/idtentry.h:621
+RIP: 0010:lockdep_assert_rq_held kernel/sched/sched.h:1476 [inline]
+RIP: 0010:rq_clock kernel/sched/sched.h:1624 [inline]
+RIP: 0010:replenish_dl_new_period kernel/sched/deadline.c:777 [inline]
+RIP: 0010:update_curr_dl_se+0x66f/0x920 kernel/sched/deadline.c:1511
+Code: b5 50 fe ff ff 4c 89 ff ba 20 00 00 00 e8 e9 4f 00 00 e9 58 fe ff ff 4c 89 ef be 20 00 00 00 e8 b7 13 00 00 e9 46 fe ff ff 90 <0f> 0b 90 e9 be fb ff ff 89 f1 80 e1 07 38 c1 0f 8c b5 f9 ff ff 48
+RSP: 0018:ffffc9000417f6c8 EFLAGS: 00010046
+RAX: 0000000000000000 RBX: ffff8880b903ea40 RCX: 0000000000000003
+RDX: dffffc0000000000 RSI: ffffffff8c0adfc0 RDI: ffffffff8c60a8c0
+RBP: 0000000000000031 R08: ffff8880b902c883 R09: 1ffff11017205910
+R10: dffffc0000000000 R11: ffffed1017205911 R12: ffff8880b903f468
+R13: ffff8880b903f428 R14: 1ffff11017207e8f R15: ffff8880b903f858
+ update_curr+0x575/0xb20 kernel/sched/fair.c:1176
+ put_prev_entity+0x3d/0x210 kernel/sched/fair.c:5505
+ put_prev_task_fair+0x4d/0x80 kernel/sched/fair.c:8686
+ put_prev_task kernel/sched/sched.h:2423 [inline]
+ put_prev_task_balance+0x11d/0x190 kernel/sched/core.c:5886
+ __pick_next_task+0xc6/0x2f0 kernel/sched/core.c:5946
+ pick_next_task kernel/sched/core.c:6012 [inline]
+ __schedule+0x725/0x4ad0 kernel/sched/core.c:6594
+ preempt_schedule_common+0x84/0xd0 kernel/sched/core.c:6818
+ preempt_schedule+0xe1/0xf0 kernel/sched/core.c:6842
+ preempt_schedule_thunk+0x1a/0x30 arch/x86/entry/thunk.S:12
+ __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
+ _raw_spin_unlock_irqrestore+0x130/0x140 kernel/locking/spinlock.c:194
+ task_rq_unlock kernel/sched/sched.h:1759 [inline]
+ __sched_setscheduler+0xf35/0x1ba0 kernel/sched/syscalls.c:858
+ _sched_setscheduler kernel/sched/syscalls.c:880 [inline]
+ sched_setscheduler_nocheck+0x190/0x2e0 kernel/sched/syscalls.c:927
+ kthread+0x1aa/0x390 kernel/kthread.c:370
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+WARNING: CPU: 1 PID: 5301 at kernel/sched/sched.h:1476 lockdep_assert_rq_held kernel/sched/sched.h:1476 [inline]
+WARNING: CPU: 1 PID: 5301 at kernel/sched/sched.h:1476 rq_clock kernel/sched/sched.h:1624 [inline]
+WARNING: CPU: 1 PID: 5301 at kernel/sched/sched.h:1476 replenish_dl_new_period kernel/sched/deadline.c:777 [inline]
+WARNING: CPU: 1 PID: 5301 at kernel/sched/sched.h:1476 update_curr_dl_se+0x66f/0x920 kernel/sched/deadline.c:1511
+Modules linked in:
+CPU: 1 UID: 0 PID: 5301 Comm: kworker/u8:7 Not tainted 6.11.0-rc3-next-20240816-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
+RIP: 0010:lockdep_assert_rq_held kernel/sched/sched.h:1476 [inline]
+RIP: 0010:rq_clock kernel/sched/sched.h:1624 [inline]
+RIP: 0010:replenish_dl_new_period kernel/sched/deadline.c:777 [inline]
+RIP: 0010:update_curr_dl_se+0x66f/0x920 kernel/sched/deadline.c:1511
+Code: b5 50 fe ff ff 4c 89 ff ba 20 00 00 00 e8 e9 4f 00 00 e9 58 fe ff ff 4c 89 ef be 20 00 00 00 e8 b7 13 00 00 e9 46 fe ff ff 90 <0f> 0b 90 e9 be fb ff ff 89 f1 80 e1 07 38 c1 0f 8c b5 f9 ff ff 48
+RSP: 0018:ffffc9000417f6c8 EFLAGS: 00010046
+RAX: 0000000000000000 RBX: ffff8880b903ea40 RCX: 0000000000000003
+RDX: dffffc0000000000 RSI: ffffffff8c0adfc0 RDI: ffffffff8c60a8c0
+RBP: 0000000000000031 R08: ffff8880b902c883 R09: 1ffff11017205910
+R10: dffffc0000000000 R11: ffffed1017205911 R12: ffff8880b903f468
+R13: ffff8880b903f428 R14: 1ffff11017207e8f R15: ffff8880b903f858
+FS:  0000000000000000(0000) GS:ffff8880b9100000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f69bb64cd58 CR3: 0000000078782000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ update_curr+0x575/0xb20 kernel/sched/fair.c:1176
+ put_prev_entity+0x3d/0x210 kernel/sched/fair.c:5505
+ put_prev_task_fair+0x4d/0x80 kernel/sched/fair.c:8686
+ put_prev_task kernel/sched/sched.h:2423 [inline]
+ put_prev_task_balance+0x11d/0x190 kernel/sched/core.c:5886
+ __pick_next_task+0xc6/0x2f0 kernel/sched/core.c:5946
+ pick_next_task kernel/sched/core.c:6012 [inline]
+ __schedule+0x725/0x4ad0 kernel/sched/core.c:6594
+ preempt_schedule_common+0x84/0xd0 kernel/sched/core.c:6818
+ preempt_schedule+0xe1/0xf0 kernel/sched/core.c:6842
+ preempt_schedule_thunk+0x1a/0x30 arch/x86/entry/thunk.S:12
+ __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
+ _raw_spin_unlock_irqrestore+0x130/0x140 kernel/locking/spinlock.c:194
+ task_rq_unlock kernel/sched/sched.h:1759 [inline]
+ __sched_setscheduler+0xf35/0x1ba0 kernel/sched/syscalls.c:858
+ _sched_setscheduler kernel/sched/syscalls.c:880 [inline]
+ sched_setscheduler_nocheck+0x190/0x2e0 kernel/sched/syscalls.c:927
+ kthread+0x1aa/0x390 kernel/kthread.c:370
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
