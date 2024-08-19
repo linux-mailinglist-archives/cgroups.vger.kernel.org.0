@@ -1,192 +1,279 @@
-Return-Path: <cgroups+bounces-4354-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4355-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1387D95742E
-	for <lists+cgroups@lfdr.de>; Mon, 19 Aug 2024 21:09:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D362E95744B
+	for <lists+cgroups@lfdr.de>; Mon, 19 Aug 2024 21:20:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE3862856D1
-	for <lists+cgroups@lfdr.de>; Mon, 19 Aug 2024 19:09:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 546E21F247C2
+	for <lists+cgroups@lfdr.de>; Mon, 19 Aug 2024 19:20:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 934471D6DB6;
-	Mon, 19 Aug 2024 19:09:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7CA361FD7;
+	Mon, 19 Aug 2024 19:19:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IoGnGo5D"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="XDvgHIN1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F74B1D6DA7
-	for <cgroups@vger.kernel.org>; Mon, 19 Aug 2024 19:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBC811DC463
+	for <cgroups@vger.kernel.org>; Mon, 19 Aug 2024 19:19:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724094589; cv=none; b=JCdm93T2+sJFhE7iMmp9D3x1I9sT/Ae31sHblRFC4Cq8IOnuMF3gn6fxzXYH6FoztdCV/iKx+3cjqa5oFhqH35GUhNunKH/oP7EtsoEDGUOMgtXbL5BmJYjGTLXZtP5b7w+86CcCadGnxnfAQDiJLrx72C9LKG2mpqlskZHSCQ0=
+	t=1724095188; cv=none; b=HcaLM1mqdm2HxwsptKzSbQMAg+iodq6z6/5NK9y4TK3vagwPTjrsfkM39iir5T/4w+aNQvcSiU503Bjso3TuRWmha46cEYnGiI149iBQjmWADIBrQZVYA0O3wCAJc4ftF4v4krG0d9O4+Bz8leXtUyzSDBnQmaok+2cdlVAJZyc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724094589; c=relaxed/simple;
-	bh=38M6B6nAfyLtnpECmOFdqw/6sYPFm0aJQrtir4RF/q8=;
+	s=arc-20240116; t=1724095188; c=relaxed/simple;
+	bh=8vjIWzmx4KTL7ajgUxXEjxrazirQfyoLTM19Fh0tBnc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J1aNAfJxvQtGyvUqLP4mzQbNqzDr5c00VrLJwVcGSKmQj9/woP9E5TMbsSh40SkZOKd2mNaAEYn7WoXOZtvQ8mZ/biS4zaMOBV5n4F5mMDwgz5XiBmh8505dMJ2Xt0XubR6BCSFkPw2hs29DLU6JVHH5bKXMUhIeNKsZWQocXuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IoGnGo5D; arc=none smtp.client-ip=209.85.218.42
+	 To:Cc:Content-Type; b=m667CrVZysxRGvWIuBazdWMLWcVKKA4vJsdPiZuH/g6zuKmdTBfSrOBc8wBc0wShHMI+5Pj25VylYrwprfpbbrh1DmlkVFWPr99uDgPMZhHuooWkyWmeT4zyCrkXp3udtIByhIUQz3YDTveiX585k5MpDTma+clLewMZrn+XiKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=XDvgHIN1; arc=none smtp.client-ip=209.85.208.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a7a81bd549eso383109966b.3
-        for <cgroups@vger.kernel.org>; Mon, 19 Aug 2024 12:09:47 -0700 (PDT)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5a10835487fso7177282a12.1
+        for <cgroups@vger.kernel.org>; Mon, 19 Aug 2024 12:19:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1724094586; x=1724699386; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1724095185; x=1724699985; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=B8keNgyq5Y1CiFPJpkWT/ZTIazYWWYL5qY5ay8DSsuU=;
-        b=IoGnGo5DtHiBfKYXvXJUZsIOt9sFyvikUdF4s98FcWwCPbO2A21mv3mTcS96YDdH26
-         +jKnwNrp7ss+nQ7dbtxce/2R19Zw5qU94JJy2FfGLbWYtGu6pE/SBww8y3534hJOuGb3
-         wkEDyWUoOV6xyjWrGnrX9/3SBwj1QXFCUJ4ry8ae/fIYgTwFN3R4lU36cM5ga/PAxQkO
-         J3EaPMTqZvQXqNyEbA+vA8oQOV4JI0i0qL2navbLtEv1cYAk4E9YDe4CXxCIs5izqi2t
-         fPKyY/UtHkpLvejnrYLyR2sRRtZzyt3x45nckQfomUI5ngK1j/f6Sp0UAYt3n9PNpct4
-         0hrQ==
+        bh=YZM5zMJ0sB4lMiTqOGEZX6UeVloMpJCvx8UgNki8n98=;
+        b=XDvgHIN1+tfhrjAP7kEWe5ivV4XmNfY0Wtv7BwFt378EdLa1WezBbkbbqZ21Zwnb+I
+         041CT77HW0gL5X6k5NR3xmWbbtAbCagCe7gBkyokbUrJHi9x0ls7y5b+dHZ1kuaI9+2F
+         ooo6WGU/bc6Ogge0ipfC2Khgmj6knJqQxHRhIb+OUK8grDk0Hefrp9K1SqqhCItzPavQ
+         x58nhpjnaa+2KfEvhycql3UtWZGgKYgxg+KaOMRoWMML+aRzrfRh0HsMLmmrib++J/0F
+         TcMMEdRFg6/GGxEjMk8l38r4QbTVONz2bMAbFBilcO5MXXbXqk06jSYt218ShcY9Oa5U
+         RVUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724094586; x=1724699386;
+        d=1e100.net; s=20230601; t=1724095185; x=1724699985;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=B8keNgyq5Y1CiFPJpkWT/ZTIazYWWYL5qY5ay8DSsuU=;
-        b=J1pNPXmOySUYZy8GrQah/5sl55tjm1m31nm4sSA/HI8vt+Jn7FN51EoMc/+b3E3llz
-         5GxXmNiLuZ+L6NdhCdH3XnlPSbN8fFqsHMm82F/fntc4nv/VfSpJcxgIh6NZ1PyjZoaz
-         aigXcUZzkwrqcQ8t+j2BMt4L72hbwMm+04e747IN1t6BZ3x2+DfnX+pjBB0RI9H3J4Dp
-         MpdbNUBh+8w0vRu2BITuEg8ki5fwQVrix+hrtaOkPIkaVm/4Z42VJVgcgkMeh4N30xM7
-         LKydbmTH1d/u5j69Abou1eXL+3t0PLADlGtW5JlyxbQGxpS+AmT+vfbdvn6IgSx45Z8k
-         Yl/A==
-X-Forwarded-Encrypted: i=1; AJvYcCVcNcFe7bFdN5Bqjdh924HYhinVaEjoevAMdH9HA/+6T/WREkMUu6jwq1i0Lh9c0QM+Pl+axzolGLhsxSOF0epuLh/jmn5szQ==
-X-Gm-Message-State: AOJu0YyYn3pKGJbICK271aDsabMrswx0uxg5C54p+WfOV3oS4mxpM3DU
-	gbUAgUDGEB52SfDVaQXjgk8fdKtypkNWA10FflbGFdWnG3dEcPSGBVmkL7ZXMxy94peRtZMUPVT
-	JajIg+1Cz/jaCkR/uJaiWqLHzHa64dzSIzDR9U4tEr+Mq4cwhmg==
-X-Google-Smtp-Source: AGHT+IGuKI69R41BZuJTwuz2InUwf8+whd8Hm0hr6/vouCAUsHezmuQBN4on3koeWHj1yT93eqQMGmKyg9R2P+SWPgw=
-X-Received: by 2002:a17:907:97c3:b0:a7a:bae8:f2a1 with SMTP id
- a640c23a62f3a-a8392a03c21mr988519966b.42.1724094585132; Mon, 19 Aug 2024
- 12:09:45 -0700 (PDT)
+        bh=YZM5zMJ0sB4lMiTqOGEZX6UeVloMpJCvx8UgNki8n98=;
+        b=wIghjHod0M+jzVmKo2zwoqgylSO2OgpdRMjL09ef2tImzueS4XcIljCocmckRI1AiT
+         U/CUz/j6GRSiHAZItcI+ES0726MUe83DKxlCG0ticBoTaF1XL9VaICn/VI1vRA8phXdA
+         xl28nbOSJ/fAypzstgOff13JNp/iZIsvjJQ0jt5jn2+0q2QjrlyF2eU27JzEkRx6XEHa
+         ywKCxzosyevATAhbNAuQH3jHiIp5FsIOp1vYqZOi8rywBjlUXAAUOJsSw/x2/Gxw2uYo
+         gQjieqauoBybvBQZBGwJ6a7r2TWDQRTO73M4jOotiPxB1xNUkblT1GIJCV14qv2rIG2M
+         Yk6w==
+X-Forwarded-Encrypted: i=1; AJvYcCXTbPQamSpR1O39kdgQN/ydXayDtUJ5uq6AkSaihhYhlD0N8u3hE6dbU58WsU1U4m2NCsBYepZBCdpdQgu3Y1xL+hohIvz/WQ==
+X-Gm-Message-State: AOJu0YwNzVXVuXNGR0760deTc0u68OQ6QeaVDVE5eGDSO3k8fxo1lTjN
+	Zu4jOhDw1sjFWmzp3aSc044o8TCK6s9cxIWgdykARJNM33SxL4Pv5jpyIB4oKrnWhbZrB4rLOrT
+	NoOfkaanSEORxstgXlZAXx4++xq73XNwKnHvi
+X-Google-Smtp-Source: AGHT+IHMItryRi8P70QAVbdIuSGoqw5A/WfIe0nTbfG9cMvEsczl2pfv6OH6aJAnOsvEnmXPd7UYyKKeG2aHjAG0ZG4=
+X-Received: by 2002:a17:906:d7c4:b0:a79:7f94:8a73 with SMTP id
+ a640c23a62f3a-a839292df2emr843653666b.20.1724095184459; Mon, 19 Aug 2024
+ 12:19:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240816144344.18135-1-me@yhndnzj.com>
-In-Reply-To: <20240816144344.18135-1-me@yhndnzj.com>
+References: <20240816144344.18135-1-me@yhndnzj.com> <20240816144344.18135-2-me@yhndnzj.com>
+In-Reply-To: <20240816144344.18135-2-me@yhndnzj.com>
 From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 19 Aug 2024 12:09:09 -0700
-Message-ID: <CAJD7tkajuiBDV9Hk8Z+f_-f4ZZf81o4CP3LFLVbfZbrvn4RrUA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] mm/memcontrol: respect zswap.writeback setting
- from parent cg too
-To: Nhat Pham <nphamcs@gmail.com>, Mike Yuan <me@yhndnzj.com>
+Date: Mon, 19 Aug 2024 12:19:08 -0700
+Message-ID: <CAJD7tkYRiA7113ehpXoiafJtk8Z+j6nV_bQWK0xoX3KaK6=wcQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] selftests: test_zswap: add test for hierarchical zswap.writeback
+To: Mike Yuan <me@yhndnzj.com>
 Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Muchun Song <muchun.song@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Michal Hocko <mhocko@kernel.org>
+	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Muchun Song <muchun.song@linux.dev>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Michal Hocko <mhocko@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Fri, Aug 16, 2024 at 7:44=E2=80=AFAM Mike Yuan <me@yhndnzj.com> wrote:
 >
-> Currently, the behavior of zswap.writeback wrt.
-> the cgroup hierarchy seems a bit odd. Unlike zswap.max,
-> it doesn't honor the value from parent cgroups. This
-> surfaced when people tried to globally disable zswap writeback,
-> i.e. reserve physical swap space only for hibernation [1] -
-> disabling zswap.writeback only for the root cgroup results
-> in subcgroups with zswap.writeback=3D1 still performing writeback.
->
-> The inconsistency became more noticeable after I introduced
-> the MemoryZSwapWriteback=3D systemd unit setting [2] for
-> controlling the knob. The patch assumed that the kernel would
-> enforce the value of parent cgroups. It could probably be
-> workarounded from systemd's side, by going up the slice unit
-> tree and inheriting the value. Yet I think it's more sensible
-> to make it behave consistently with zswap.max and friends.
->
-> [1] https://wiki.archlinux.org/title/Power_management/Suspend_and_hiberna=
-te#Disable_zswap_writeback_to_use_the_swap_space_only_for_hibernation
-> [2] https://github.com/systemd/systemd/pull/31734
->
-> Changes in v2:
-> - Actually base on latest tree (is_zswap_enabled() -> zswap_is_enabled())
-> - Updated Documentation/admin-guide/cgroup-v2.rst to reflect the change
->
-> Link to v1: https://lore.kernel.org/linux-kernel/20240814171800.23558-1-m=
-e@yhndnzj.com/
->
-> Cc: Nhat Pham <nphamcs@gmail.com>
-> Cc: Yosry Ahmed <yosryahmed@google.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Ensure that zswap.writeback check goes up the cgroup tree.
+
+Too concise :) Perhaps a little bit of description of what you are
+doing would be helpful.
+
 >
 > Signed-off-by: Mike Yuan <me@yhndnzj.com>
-> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
-
-LGTM,
-Acked-by: Yosry Ahmed <yosryahmed@google.com>
-
 > ---
->  Documentation/admin-guide/cgroup-v2.rst | 5 ++++-
->  mm/memcontrol.c                         | 9 ++++++++-
->  2 files changed, 12 insertions(+), 2 deletions(-)
+>  tools/testing/selftests/cgroup/test_zswap.c | 69 ++++++++++++++-------
+>  1 file changed, 48 insertions(+), 21 deletions(-)
 >
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admi=
-n-guide/cgroup-v2.rst
-> index 86311c2907cd..80906cea4264 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1719,7 +1719,10 @@ The following nested keys are defined.
->    memory.zswap.writeback
->         A read-write single value file. The default value is "1". The
->         initial value of the root cgroup is 1, and when a new cgroup is
-> -       created, it inherits the current value of its parent.
-> +       created, it inherits the current value of its parent. Note that
-> +       this setting is hierarchical, i.e. the writeback would be
-> +       implicitly disabled for child cgroups if the upper hierarchy
-> +       does so.
->
->         When this is set to 0, all swapping attempts to swapping devices
->         are disabled. This included both zswap writebacks, and swapping d=
-ue
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index f29157288b7d..327b2b030639 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5320,7 +5320,14 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *=
-objcg, size_t size)
->  bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg)
+> diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/=
+selftests/cgroup/test_zswap.c
+> index 190096017f80..7da6f9dc1066 100644
+> --- a/tools/testing/selftests/cgroup/test_zswap.c
+> +++ b/tools/testing/selftests/cgroup/test_zswap.c
+> @@ -263,15 +263,13 @@ static int test_zswapin(const char *root)
+>  static int attempt_writeback(const char *cgroup, void *arg)
 >  {
->         /* if zswap is disabled, do not block pages going to the swapping=
- device */
-> -       return !zswap_is_enabled() || !memcg || READ_ONCE(memcg->zswap_wr=
-iteback);
-> +       if (!zswap_is_enabled())
-> +               return true;
-
-This is orthogonal to this patch, but I just realized that we
-completely ignore memory.zswap_writeback if zswap is disabled. This
-means that if a cgroup has disabled writeback, then zswap is globally
-disabled for some reason, we stop respecting the cgroup knob. I guess
-the rationale could be that we want to help get pages out of zswap as
-much as possible to honor zswap's disablement? Nhat, did I get that
-right?
-
-I feel like it's a little bit odd to be honest, but I don't have a
-strong opinion on it. Maybe we should document this behavior better.
-
-
-> +
-> +       for (; memcg; memcg =3D parent_mem_cgroup(memcg))
-> +               if (!READ_ONCE(memcg->zswap_writeback))
-> +                       return false;
-> +
-> +       return true;
+>         long pagesize =3D sysconf(_SC_PAGESIZE);
+> -       char *test_group =3D arg;
+>         size_t memsize =3D MB(4);
+>         char buf[pagesize];
+>         long zswap_usage;
+> -       bool wb_enabled;
+> +       bool wb_enabled =3D *(bool *) arg;
+>         int ret =3D -1;
+>         char *mem;
+>
+> -       wb_enabled =3D cg_read_long(test_group, "memory.zswap.writeback")=
+;
+>         mem =3D (char *)malloc(memsize);
+>         if (!mem)
+>                 return ret;
+> @@ -288,12 +286,12 @@ static int attempt_writeback(const char *cgroup, vo=
+id *arg)
+>                 memcpy(&mem[i], buf, pagesize);
+>
+>         /* Try and reclaim allocated memory */
+> -       if (cg_write_numeric(test_group, "memory.reclaim", memsize)) {
+> +       if (cg_write_numeric(cgroup, "memory.reclaim", memsize)) {
+>                 ksft_print_msg("Failed to reclaim all of the requested me=
+mory\n");
+>                 goto out;
+>         }
+>
+> -       zswap_usage =3D cg_read_long(test_group, "memory.zswap.current");
+> +       zswap_usage =3D cg_read_long(cgroup, "memory.zswap.current");
+>
+>         /* zswpin */
+>         for (int i =3D 0; i < memsize; i +=3D pagesize) {
+> @@ -303,7 +301,7 @@ static int attempt_writeback(const char *cgroup, void=
+ *arg)
+>                 }
+>         }
+>
+> -       if (cg_write_numeric(test_group, "memory.zswap.max", zswap_usage/=
+2))
+> +       if (cg_write_numeric(cgroup, "memory.zswap.max", zswap_usage/2))
+>                 goto out;
+>
+>         /*
+> @@ -312,7 +310,7 @@ static int attempt_writeback(const char *cgroup, void=
+ *arg)
+>          * If writeback is disabled, memory reclaim will fail as zswap is=
+ limited and
+>          * it can't writeback to swap.
+>          */
+> -       ret =3D cg_write_numeric(test_group, "memory.reclaim", memsize);
+> +       ret =3D cg_write_numeric(cgroup, "memory.reclaim", memsize);
+>         if (!wb_enabled)
+>                 ret =3D (ret =3D=3D -EAGAIN) ? 0 : -1;
+>
+> @@ -321,12 +319,38 @@ static int attempt_writeback(const char *cgroup, vo=
+id *arg)
+>         return ret;
 >  }
 >
->  static u64 zswap_current_read(struct cgroup_subsys_state *css,
+> +static int test_zswap_writeback_one(const char *cgroup, bool wb)
+> +{
+> +       long zswpwb_before, zswpwb_after;
+> +
+> +       zswpwb_before =3D get_cg_wb_count(cgroup);
+> +       if (zswpwb_before !=3D 0) {
+> +               ksft_print_msg("zswpwb_before =3D %ld instead of 0\n", zs=
+wpwb_before);
+> +               return -1;
+> +       }
+> +
+> +       if (cg_run(cgroup, attempt_writeback, (void *) &wb))
+> +               return -1;
+> +
+> +       /* Verify that zswap writeback occurred only if writeback was ena=
+bled */
+> +       zswpwb_after =3D get_cg_wb_count(cgroup);
+> +       if (zswpwb_after < 0)
+> +               return -1;
+> +
+> +       if (wb !=3D !!zswpwb_after) {
+> +               ksft_print_msg("zswpwb_after is %ld while wb is %s",
+> +                               zswpwb_after, wb ? "enabled" : "disabled"=
+);
+> +               return -1;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  /* Test to verify the zswap writeback path */
+>  static int test_zswap_writeback(const char *root, bool wb)
+>  {
+> -       long zswpwb_before, zswpwb_after;
+>         int ret =3D KSFT_FAIL;
+> -       char *test_group;
+> +       char *test_group, *test_group_child =3D NULL;
 >
-> base-commit: d07b43284ab356daf7ec5ae1858a16c1c7b6adab
+>         test_group =3D cg_name(root, "zswap_writeback_test");
+>         if (!test_group)
+> @@ -336,29 +360,32 @@ static int test_zswap_writeback(const char *root, b=
+ool wb)
+>         if (cg_write(test_group, "memory.zswap.writeback", wb ? "1" : "0"=
+))
+>                 goto out;
+>
+> -       zswpwb_before =3D get_cg_wb_count(test_group);
+> -       if (zswpwb_before !=3D 0) {
+> -               ksft_print_msg("zswpwb_before =3D %ld instead of 0\n", zs=
+wpwb_before);
+> +       if (test_zswap_writeback_one(test_group, wb))
+>                 goto out;
+> -       }
+>
+> -       if (cg_run(test_group, attempt_writeback, (void *) test_group))
+> +       if (cg_write(test_group, "memory.zswap.max", "max"))
+> +               goto out;
+
+Why is this needed? Isn't this the default value?
+
+> +       if (cg_write(test_group, "cgroup.subtree_control", "+memory"))
+>                 goto out;
+>
+> -       /* Verify that zswap writeback occurred only if writeback was ena=
+bled */
+> -       zswpwb_after =3D get_cg_wb_count(test_group);
+> -       if (zswpwb_after < 0)
+> +       test_group_child =3D cg_name(test_group, "zswap_writeback_test_ch=
+ild");
+> +       if (!test_group_child)
+> +               goto out;
+> +       if (cg_create(test_group_child))
+> +               goto out;
+
+I'd rather have all the hierarchy setup at the beginning of the test,
+before the actual test logic. I don't feel strongly about it though.
+
+> +       if (cg_write(test_group_child, "memory.zswap.writeback", "1"))
+>                 goto out;
+
+Is the idea here that we always hardcode the child's zswap.writeback
+to 1, and the parent's zswap.writeback changes from 0 to 1, and we
+check that the parent's value is what matters?
+I think we need a comment here.
+
+TBH, I expected a separate test that checks different combinations of
+parent and child values (e.g. also verifies that if the parent is
+enabled but child is disabled, writeback is disabled).
+
+>
+> -       if (wb !=3D !!zswpwb_after) {
+> -               ksft_print_msg("zswpwb_after is %ld while wb is %s",
+> -                               zswpwb_after, wb ? "enabled" : "disabled"=
+);
+> +       if (test_zswap_writeback_one(test_group_child, wb))
+>                 goto out;
+> -       }
+>
+>         ret =3D KSFT_PASS;
+>
+>  out:
+> +       if (test_group_child) {
+> +               cg_destroy(test_group_child);
+> +               free(test_group_child);
+> +       }
+>         cg_destroy(test_group);
+>         free(test_group);
+>         return ret;
 > --
 > 2.46.0
 >
