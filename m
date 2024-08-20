@@ -1,343 +1,125 @@
-Return-Path: <cgroups+bounces-4371-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4372-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31A56958314
-	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 11:45:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 381EF958375
+	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 12:01:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE144286503
-	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 09:45:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 390D91C2425B
+	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 10:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAFE21898F2;
-	Tue, 20 Aug 2024 09:44:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE70018C93C;
+	Tue, 20 Aug 2024 10:00:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yhndnzj.com header.i=@yhndnzj.com header.b="LNUcxZh7"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dhhcYPD7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-40136.proton.ch (mail-40136.proton.ch [185.70.40.136])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5FC03E47B
-	for <cgroups@vger.kernel.org>; Tue, 20 Aug 2024 09:44:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0DDE18C03D
+	for <cgroups@vger.kernel.org>; Tue, 20 Aug 2024 10:00:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724147045; cv=none; b=IjuNZ240GDyNgt1c4HTFZ4HlqgSAM5sUddaKNc3kLjsMiDkbYsJmiKF0gp3pC2uhCu/Tal/k/D8HspvivqzetvONwI9RGXjLvqiVlQ8C+Xn6PHhI4tLMt1Ym0sXMOaGdtTx+LgxkIBLzhBP5ZWc58m2ADne2dM/pDFvVEqnqNyg=
+	t=1724148059; cv=none; b=to35ux6FgLcQdyKSAq1s/VcMWJostIIkeIegkrTrvjEctAr6UH2BIfhayynpzu4wiMI9kFXzFbCc6ScrY0yCVx07G7FhjbStx19pLSgUXxZ+xyM+5dlVqrK7xwPfTJPfj/DBeFQ4gV7BOvHa4dCygN1UZupBdK9ogqwqxHeAdKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724147045; c=relaxed/simple;
-	bh=UXN6Hz41fsT5CwoupTSUwp6fKqMOLT7VeoPg8p0GPK8=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IgNvnllOv3QuLKFPhVHwJw+6BJ/D9yTecoilOZw1kxwxZgOcuCWMy/71Yl7hZDYwdAQgpBgzy9j/ZX58X4E/kyaCUksTe20MaVIvj+tXznUZdgHxK2l+nT3BiisRwVvWpk3O90vYWEsPKtqC2CT3yFAvHNbWb4R+bqNkbB703tE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yhndnzj.com; spf=pass smtp.mailfrom=yhndnzj.com; dkim=pass (2048-bit key) header.d=yhndnzj.com header.i=@yhndnzj.com header.b=LNUcxZh7; arc=none smtp.client-ip=185.70.40.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yhndnzj.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yhndnzj.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yhndnzj.com;
-	s=protonmail; t=1724147041; x=1724406241;
-	bh=UXN6Hz41fsT5CwoupTSUwp6fKqMOLT7VeoPg8p0GPK8=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=LNUcxZh7VjzfmogmZP9wTdIpKPwWaKpGxoRtGTXeDbaDr3xejBfXdaAEnpQKkOIud
-	 BCxF01p5/sdcq8hmwjv/86qRDR7BAPVosEqVdfTXxpiuE/bEFcWdVee380cY2O9tuI
-	 R0jzEnIsy1Jm63PR3QnUPOXvMP4P+T3RASDiATkirSc1U7JQqsSCvQCOOP9/FFwQD2
-	 GcjGhprIhO1Vu02MpB5P6hRzjYATsD6OwQryiWQwTBWy4D/RsjFuOpe2xpANfzGr4B
-	 SsbYwQd0h07lLODDhwSdhwRqiWwwte7zkePgIk0nSsjQptKszgjKBUIGTcJqeQftql
-	 zRzfK+XFuhkMQ==
-Date: Tue, 20 Aug 2024 09:43:54 +0000
-To: Yosry Ahmed <yosryahmed@google.com>
-From: Mike Yuan <me@yhndnzj.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, Muchun Song <muchun.song@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, Roman Gushchin <roman.gushchin@linux.dev>, Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH v2 2/2] selftests: test_zswap: add test for hierarchical zswap.writeback
-Message-ID: <9e39ed273b5e25e3d2f33c5a2b8e3131efbfcedc.camel@yhndnzj.com>
-In-Reply-To: <CAJD7tkYRiA7113ehpXoiafJtk8Z+j6nV_bQWK0xoX3KaK6=wcQ@mail.gmail.com>
-References: <20240816144344.18135-1-me@yhndnzj.com> <20240816144344.18135-2-me@yhndnzj.com> <CAJD7tkYRiA7113ehpXoiafJtk8Z+j6nV_bQWK0xoX3KaK6=wcQ@mail.gmail.com>
-Feedback-ID: 102487535:user:proton
-X-Pm-Message-ID: 822ab96bf117f3804cbe182c28e1d2c5b8ec1278
+	s=arc-20240116; t=1724148059; c=relaxed/simple;
+	bh=bWtnqhRI/JuTkpJ+WLDRzhJVDXOqPx+pGUcrSL2lqYQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BhJeAMfnmR6u1Px85OHsE77M0Y53gKko9CHKsnZ5Gerk2djTyL2S4CteE7pCLTznnx8QylsKVRP9UztoRgcHkFggNueWvX/D9Rm8ZiXv3HxifiwABaqcFs+/1czmMm013VwkLqt/Gw1UxGKQPkNaF8D92QHQAzgmzba8T5Ipfys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dhhcYPD7; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a7aa086b077so552157766b.0
+        for <cgroups@vger.kernel.org>; Tue, 20 Aug 2024 03:00:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1724148056; x=1724752856; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bWtnqhRI/JuTkpJ+WLDRzhJVDXOqPx+pGUcrSL2lqYQ=;
+        b=dhhcYPD7+cDdZL7SIMO7+5ihYrd4Gm0BoT3zJNglQ96hnaes/aWJYkDw1vAGJmZ+bm
+         XTEOPfsgVybNkFp+WBcX4f5cihutEuhAQz7bP38vLiTBRtgR7DUnxvSRQzc2XbejT6IZ
+         pNmy63Sj5VD0KxXNiQqAkFvkVndhB3Xbf9S1lSh4mQVLrIuydQJN3XoOuT/qOmyM4eKS
+         PqIJJ/XalAGcciQNE/9d5mSEV7RgCmAuVcqFPkg7srIGmCOq4/xSvZsEmrQDFjRJLWm/
+         ivwk3IZKEmFh/xEzkJ06o0BR+sj2z6OPuozMY0SgsiwMTO3lOsEsvZFG1gOuCjJe/UIC
+         x+Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724148056; x=1724752856;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bWtnqhRI/JuTkpJ+WLDRzhJVDXOqPx+pGUcrSL2lqYQ=;
+        b=m/maqDLBtUfsB1JtJARLukZjXtxaTxovgKDg4AUUgdUiPcAymqbgJvBzl37qgQ81wE
+         SJCBH/Rx9WGsnUScIoGrHHBoUzm94xOrPFeSeyoI5csS2oXwzDmWzR3pQlRBBYYUX76o
+         xilK5vyKEn7BLrocbpwFwlysLJ5ImWbfkMCoYttF0C9KyP5RRAPMEjBEstSeWkPw+gOz
+         Pv8EHgVltQq7AWANzLnKd5gC8gWQz+BQeGyq5BDZ7nDz09+hFKkX2Jvhk/JRkJqu+r5Q
+         oTW1tWbiag2IhRp/Mgxap4uz9JW/FNZVAxq1wp9qPibZmqUyLwzTTcC+Ocj/v8CSkaYg
+         T3sA==
+X-Forwarded-Encrypted: i=1; AJvYcCX6muvsNKMAqPVCbNsNi6eo2ysM/drOM/eAaNi+MZHx50Np/ub0TiLdX1uHEH+8NmW+0CY3fwLx7hdKDAlnJFjbcWfoWzCJ3A==
+X-Gm-Message-State: AOJu0YzC0PhWOCOLNAcBsu2064Sw/zlXpVLh1qsk158YMj/VDrUt5JLG
+	FuuhqBmxZZ3Ld/s2MDHBVzFH25B4iZiAM9nZ4Pq/Az5neu7bBFZCy1117eVoyEc=
+X-Google-Smtp-Source: AGHT+IGE3PxS/8B9eIPrX7NxB0OYZw1vG3KBe6ZRFywGBUkcNdU+qDHyI4oW4rHxkVwksuQSpJI//A==
+X-Received: by 2002:a17:907:1c9e:b0:a77:cd51:3b32 with SMTP id a640c23a62f3a-a8647b6ec91mr119130366b.62.1724148055852;
+        Tue, 20 Aug 2024 03:00:55 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a8383934508sm744346266b.101.2024.08.20.03.00.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Aug 2024 03:00:55 -0700 (PDT)
+Date: Tue, 20 Aug 2024 12:00:53 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: Li Lingfeng <lilingfeng@huaweicloud.com>, josef@toxicpanda.com, 
+	hch@lst.de, axboe@kernel.dk, cgroups@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, yukuai1@huaweicloud.com, 
+	houtao1@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com, 
+	lilingfeng3@huawei.com
+Subject: Re: [PATCH v3] block: flush all throttled bios when deleting the
+ cgroup
+Message-ID: <k56cnz7q5hxzh6hqmw4gnxobr2wlo6xryf4jqlky3mylcs4px4@zrhciaca2asy>
+References: <20240817071108.1919729-1-lilingfeng@huaweicloud.com>
+ <ZsO4ArRKhZrtDoey@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 2024-08-19 at 12:19 -0700, Yosry Ahmed wrote:
-> On Fri, Aug 16, 2024 at 7:44=E2=80=AFAM Mike Yuan <me@yhndnzj.com> wrote:
-> >=20
-> > Ensure that zswap.writeback check goes up the cgroup tree.
->=20
-> Too concise :) Perhaps a little bit of description of what you are
-> doing would be helpful.
-
-The patch has been merged into mm-unstable tree. Do I need to
-send a v3 to resolve the comments?
-
-> >=20
-> > Signed-off-by: Mike Yuan <me@yhndnzj.com>
-> > ---
-> > =C2=A0tools/testing/selftests/cgroup/test_zswap.c | 69 ++++++++++++++--=
--
-> > ----
-> > =C2=A01 file changed, 48 insertions(+), 21 deletions(-)
-> >=20
-> > diff --git a/tools/testing/selftests/cgroup/test_zswap.c
-> > b/tools/testing/selftests/cgroup/test_zswap.c
-> > index 190096017f80..7da6f9dc1066 100644
-> > --- a/tools/testing/selftests/cgroup/test_zswap.c
-> > +++ b/tools/testing/selftests/cgroup/test_zswap.c
-> > @@ -263,15 +263,13 @@ static int test_zswapin(const char *root)
-> > =C2=A0static int attempt_writeback(const char *cgroup, void *arg)
-> > =C2=A0{
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 long pagesize =3D sysconf(_S=
-C_PAGESIZE);
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 char *test_group =3D arg;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 size_t memsize =3D MB(4);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 char buf[pagesize];
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 long zswap_usage;
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool wb_enabled;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool wb_enabled =3D *(bool *) arg=
-;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret =3D -1;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 char *mem;
-> >=20
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 wb_enabled =3D cg_read_long(test_=
-group,
-> > "memory.zswap.writeback");
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mem =3D (char *)malloc(memsi=
-ze);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!mem)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
-> > @@ -288,12 +286,12 @@ static int attempt_writeback(const char
-> > *cgroup, void *arg)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 memcpy(&mem[i], buf, pagesize);
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Try and reclaim allocated=
- memory */
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cg_write_numeric(test_group, =
-"memory.reclaim",
-> > memsize)) {
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cg_write_numeric(cgroup, "mem=
-ory.reclaim", memsize)) {
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 ksft_print_msg("Failed to reclaim all of the
-> > requested memory\n");
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> >=20
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 zswap_usage =3D cg_read_long(test=
-_group,
-> > "memory.zswap.current");
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 zswap_usage =3D cg_read_long(cgro=
-up, "memory.zswap.current");
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* zswpin */
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 for (int i =3D 0; i < memsiz=
-e; i +=3D pagesize) {
-> > @@ -303,7 +301,7 @@ static int attempt_writeback(const char
-> > *cgroup, void *arg)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 }
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> >=20
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cg_write_numeric(test_group, =
-"memory.zswap.max",
-> > zswap_usage/2))
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cg_write_numeric(cgroup, "mem=
-ory.zswap.max",
-> > zswap_usage/2))
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
-> > @@ -312,7 +310,7 @@ static int attempt_writeback(const char
-> > *cgroup, void *arg)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * If writeback is disa=
-bled, memory reclaim will fail as
-> > zswap is limited and
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * it can't writeback t=
-o swap.
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D cg_write_numeric(test_gro=
-up, "memory.reclaim",
-> > memsize);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D cg_write_numeric(cgroup, =
-"memory.reclaim", memsize);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!wb_enabled)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D (ret =3D=3D -EAGAIN) ? 0 : -1;
-> >=20
-> > @@ -321,12 +319,38 @@ static int attempt_writeback(const char
-> > *cgroup, void *arg)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
-> > =C2=A0}
-> >=20
-> > +static int test_zswap_writeback_one(const char *cgroup, bool wb)
-> > +{
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 long zswpwb_before, zswpwb_after;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 zswpwb_before =3D get_cg_wb_count=
-(cgroup);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (zswpwb_before !=3D 0) {
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 ksft_print_msg("zswpwb_before =3D %ld instead of
-> > 0\n", zswpwb_before);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 return -1;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cg_run(cgroup, attempt_writeb=
-ack, (void *) &wb))
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 return -1;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Verify that zswap writeback oc=
-curred only if writeback
-> > was enabled */
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 zswpwb_after =3D get_cg_wb_count(=
-cgroup);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (zswpwb_after < 0)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 return -1;
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (wb !=3D !!zswpwb_after) {
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 ksft_print_msg("zswpwb_after is %ld while wb is
-> > %s",
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 zswpwb_after, wb ? "enabled" :
-> > "disabled");
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 return -1;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> > +
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
-> > +}
-> > +
-> > =C2=A0/* Test to verify the zswap writeback path */
-> > =C2=A0static int test_zswap_writeback(const char *root, bool wb)
-> > =C2=A0{
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 long zswpwb_before, zswpwb_after;
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret =3D KSFT_FAIL;
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 char *test_group;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 char *test_group, *test_group_chi=
-ld =3D NULL;
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 test_group =3D cg_name(root,=
- "zswap_writeback_test");
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!test_group)
-> > @@ -336,29 +360,32 @@ static int test_zswap_writeback(const char
-> > *root, bool wb)
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cg_write(test_group, "me=
-mory.zswap.writeback", wb ? "1"
-> > : "0"))
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
-> >=20
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 zswpwb_before =3D get_cg_wb_count=
-(test_group);
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (zswpwb_before !=3D 0) {
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 ksft_print_msg("zswpwb_before =3D %ld instead of
-> > 0\n", zswpwb_before);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (test_zswap_writeback_one(test=
-_group, wb))
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> >=20
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cg_run(test_group, attempt_wr=
-iteback, (void *)
-> > test_group))
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cg_write(test_group, "memory.=
-zswap.max", "max"))
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 goto out;
->=20
-> Why is this needed? Isn't this the default value?
-
-attempt_writeback() would modify it.
-
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cg_write(test_group, "cgroup.=
-subtree_control",
-> > "+memory"))
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
-> >=20
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Verify that zswap writeback oc=
-curred only if writeback
-> > was enabled */
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 zswpwb_after =3D get_cg_wb_count(=
-test_group);
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (zswpwb_after < 0)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 test_group_child =3D cg_name(test=
-_group,
-> > "zswap_writeback_test_child");
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!test_group_child)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 goto out;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cg_create(test_group_child))
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 goto out;
->=20
-> I'd rather have all the hierarchy setup at the beginning of the test,
-> before the actual test logic. I don't feel strongly about it though.
->=20
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cg_write(test_group_child, "m=
-emory.zswap.writeback",
-> > "1"))
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
->=20
-> Is the idea here that we always hardcode the child's zswap.writeback
-> to 1, and the parent's zswap.writeback changes from 0 to 1, and we
-> check that the parent's value is what matters?
-> I think we need a comment here.
-
-Yes, indeed.
-
-> TBH, I expected a separate test that checks different combinations of
-> parent and child values (e.g. also verifies that if the parent is
-> enabled but child is disabled, writeback is disabled).
-
-That's (implicitly) covered by the test itself IIUC? The parent cgroup
-here is in turn the child of root cgroup.
-
-> >=20
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (wb !=3D !!zswpwb_after) {
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 ksft_print_msg("zswpwb_after is %ld while wb is
-> > %s",
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 zswpwb_after, wb ? "enabled" :
-> > "disabled");
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (test_zswap_writeback_one(test=
-_group_child, wb))
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D KSFT_PASS;
-> >=20
-> > =C2=A0out:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (test_group_child) {
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 cg_destroy(test_group_child);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 free(test_group_child);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cg_destroy(test_group);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free(test_group);
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
-> > --
-> > 2.46.0
-> >=20
-> >=20
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="3hqaf5xszdcakr5n"
+Content-Disposition: inline
+In-Reply-To: <ZsO4ArRKhZrtDoey@slm.duckdns.org>
 
 
+--3hqaf5xszdcakr5n
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Aug 19, 2024 at 11:24:18AM GMT, Tejun Heo <tj@kernel.org> wrote:
+> I still don't see why this behavior is better. Wouldn't this make it easy to
+> escape IO limits by creating cgroups, doing a bunch of IOs and then deleting
+> them?
+
+IIUC, bios are flushed to parent throttl group, so if there's an
+ancestral limit, it should be honored. (I find this similar to memcg
+reparenting.)
+
+Mere create + set limit + delete falls under the same delegation scope,
+so if that limit is bypassed, it is only self-shooting in the leg.
+Shortening the lifetime of offlined structures is benefitial, no?
+
+Michal
+
+--3hqaf5xszdcakr5n
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZsRpUwAKCRAt3Wney77B
+SWVkAP4rVAcf8/rGbwJarR3fhhbeDC6WwPUzDJ8CX8Vedw6MJQEAlc4hWQw2q8ZX
+K+DRgWzsjRm2cS6gEPunEX4GMP+/xwI=
+=ck8I
+-----END PGP SIGNATURE-----
+
+--3hqaf5xszdcakr5n--
 
