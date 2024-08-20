@@ -1,134 +1,216 @@
-Return-Path: <cgroups+bounces-4373-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4374-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC0DE95865A
-	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 14:00:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13161958779
+	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 15:01:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 176961C24524
-	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 12:00:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 181471C21D4F
+	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 13:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A554D18F2C0;
-	Tue, 20 Aug 2024 11:59:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A804D18FDDE;
+	Tue, 20 Aug 2024 13:00:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="NZg8fdQ2"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="laO+dyCv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 972DA18EFE5
-	for <cgroups@vger.kernel.org>; Tue, 20 Aug 2024 11:59:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A9452BAEB
+	for <cgroups@vger.kernel.org>; Tue, 20 Aug 2024 13:00:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724155198; cv=none; b=KqdQltLikCxptTQgYluDaPRel0OD5o1UgHnKRtLZSX/UqiDzpXvVLXBWU/otWBBRfYFMSiv6p3q5qjaQPdfVyC2yxStT6Du8WGBEZR2eJuTeZbt763mwnjUmqijwpSAzPz7y4Uuf0IqJq5BjizaIqUO/vIDgoumUqen7TT2fSNE=
+	t=1724158855; cv=none; b=nz/THeLSWvRQU+OxJL0o8+4NBjDRxE7nm6b+6ncrbd/oEfH/gtnBYEElmVtu6ImOnDGOlMcYnIeIzUMcWWyQh9SJYkUhdAXENcedrSuXI6NfnnM/895iNHBZMIO8nl4H5aclncPxDfRFXQb5dZvULXmNqVtKZWoXmQT52K2uAv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724155198; c=relaxed/simple;
-	bh=Fq/xweB6DECDmKQbmytl29CTiLmUyRhS9q8ArnfiM8M=;
+	s=arc-20240116; t=1724158855; c=relaxed/simple;
+	bh=zhEVvf/8ae7zkCvJwHGZWYWO5HMcGw4uFVnrq5d2+M4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dw7P6a31Q3G8D7KySupIaGUUNaW/GetTdlRmE2IdvcNCpcxiIA8o/G6m39O+DLN95Ycwe95PTjZqlokset37euZ1TvK9iuYgZYP9qM2QjSk69tTvY5SnleOtNeLfvinhg5mpF15D74gfn5SiXzrQ+KpoAzCFKo4mrGqkVx0HG24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=NZg8fdQ2; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a8647056026so92289066b.0
-        for <cgroups@vger.kernel.org>; Tue, 20 Aug 2024 04:59:56 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rjdo4q6oWBZH4xUAqBJbbQExvxBUAjZEH0uJc7Os54qjVKg/ICcu63P1MkdUuULS7VEVvoeP+Voh6r/3cmU7FhYIxL9uZiEh+WlbmjXQ4lRNXSKfofoGktjO70u/9HwYlG/dVNEW+Ve48wh2dZJ5SZjpoYBlbi/ud7N5w7lc06M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=laO+dyCv; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-451a0b04f6bso34521491cf.2
+        for <cgroups@vger.kernel.org>; Tue, 20 Aug 2024 06:00:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1724155195; x=1724759995; darn=vger.kernel.org;
+        d=gourry.net; s=google; t=1724158852; x=1724763652; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/ok6dysghFHVigyRo3DH9cQOmyL3eWl3oXud5BKTx3k=;
-        b=NZg8fdQ2O1zYysygTWf8KGTp2mCvVZuwI2LRJiaBbhon6PLr9TopzwzgkYn0i0RauS
-         CJtN16fz1fCCyx4elGlGa28hG1TtZ/51CbdQrt2D7+Bl3m1yEjOsEuG/qvfC0B8rcZVh
-         7OQ57Nc2DuCRk1JJeorZyQk5q1k6C8CwvAB/MQhR7dkKDtdkvHAtYbqKYZ2dF6Spv414
-         f+mSUX7g9E6fm7RDnezJKopAMM54j8IVrozpl4Td8R+pvR38rn/ARup1dinYuvjBMfmD
-         4BiDr5K/W5o55ot/DS7DIYzPoKqDQeeMIAArpdgPj/Jwmw5t3xwMC0vLgUfvVqNCsxNM
-         W5QA==
+        bh=j52XYJE2ICKQlINPQl+zW5CQKy5fCOrlHtppgGWQcXM=;
+        b=laO+dyCv6CulVMqm4hlnC3CImpsfr6Tf9kaCF1hrQTwCMNCLQtTXPKK2/u3bACv3wb
+         2TFoKq4niLCq0V+0NNO44uZxFafCFhG890T3QOPOF5lQKLHWkcxzix2srJMaU48VsUxm
+         oSxl2WO5FwOV1UInXtjTYTyQTizgNrUO6QfVuviwGxGlMA0xOCr9KagPSTCRjw93c3EM
+         quLM2ijwxfXbt5fT12gaGgCLbQV3Y5LJJPykBOguVbOrMtkJWWthL+KwDcCe8LjsAzgL
+         zpCjrNo38Qo4d2Cy66+fc0frhw6uHBKkMFWxu/BPc2sgVM9skPUf81UH/x4RFDUea6Yb
+         Mq0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724155195; x=1724759995;
+        d=1e100.net; s=20230601; t=1724158852; x=1724763652;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/ok6dysghFHVigyRo3DH9cQOmyL3eWl3oXud5BKTx3k=;
-        b=Nb4pt5MeAF1lTBdkfq0Bix3VfYrCGgTuS6s2SJh0e97nDASFUuc2sFKRU9AJSjhMNH
-         mrH5tp4lDpo60w8tERqgBtlAQ6nov9zyg9j0NHnY/DwjGoY/lBW+NzItkqO97h0S31h7
-         sMztdy84BLJVtmV9k+tCeHR3reQF19yBVRNWi2XcCK9JEvJjpVFrF5QEWMwTjkkBBaWU
-         zlWA+4eUuO8Mp8Oy3PY4yg1pu01HQBN2061bA+WpdkYWgs2C8ZmdNT27cVOLhoVygACx
-         lGns92iAm48yNKX3Z4f0FNgrSCqZ9HHjtpGaR/OfKemVZeLfHcvPC+Wo8w3zcfKoZHkd
-         ymVg==
-X-Forwarded-Encrypted: i=1; AJvYcCUKcCe659ONrpyWPmg8hLrdMCNhVXlp3NsJZQIczp5ofDmVw+XxgFazeD48mGAzcrtaiF0FjDFL@vger.kernel.org
-X-Gm-Message-State: AOJu0YxE5A6l5Mk2EizQE/fxBAg0AhdtliybQPrg2B020kD6sBL3pG5u
-	RZVjpnm2EE+07UE60VY0cx2oEtVsO7J0sd7BpinBKjYI6OMALdD2O6imqffHctY=
-X-Google-Smtp-Source: AGHT+IHzpM00fkrHeTvxg9EkEg42LSJ/v4KOU5xgMNB21uMZaO/jkIpJj7Y+mXEKN1yBe+c3h8QkAQ==
-X-Received: by 2002:a17:906:d265:b0:a7d:3a85:7a3e with SMTP id a640c23a62f3a-a8392a494a3mr908782366b.59.1724155194593;
-        Tue, 20 Aug 2024 04:59:54 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a83839470ebsm755475766b.159.2024.08.20.04.59.53
+        bh=j52XYJE2ICKQlINPQl+zW5CQKy5fCOrlHtppgGWQcXM=;
+        b=uJDzLzkAWZ8b9UdGV8Gq554G4mRcupTRHrgwyFO7BzfaUtr7HBU6NRHVrPZGyBBp2n
+         RgRNg+FMGAFhmPaCP+Ep0zy4AddLlIqDIvshEX/0JCuc3FlRCgE1qBEVvZAzw1W1z8ES
+         XXHl1wMiywyc2v8yIGIpZxLuxFT8ZOjdspCNy6U/jz3pdKBhnmnPM+kFx2CoOyR0KeIr
+         OVwRPMDo49hmNQx4xwkDFD6rzQyoR+eDjoXcJPIFi3Wog3wYV4m4ePnv8KwBE+hqL5Y+
+         6QhEmQft/DSkalJ5QLI05CQbJw7msuxWPcWOSawPfNmz91soEWFrCH09AgnThsBUcGhJ
+         9HKg==
+X-Forwarded-Encrypted: i=1; AJvYcCVGz6Gf8hwq23cz9//7MZAsHEkXEM5n5j9/syxT/JHrF69fUfxGFYk0ZsDdliSpaUuAGbfVXiXo@vger.kernel.org
+X-Gm-Message-State: AOJu0YxX/Nd9dokX53aIKgqXH8Kh5K2bjnK4DbaeyH67FkCksPcrEW07
+	d1PuFxE7NEs8d/hL9auCWCh6B8knJoNbbG9cSDs49lgnqH2gQhUuEz3yKGst9uU=
+X-Google-Smtp-Source: AGHT+IFogz/OKodC6xvuV+JQ0O1UMwu8nhnZCifjPnotmW7jOJBTqcnoRS5m2elNnoCh4kakCFzN+Q==
+X-Received: by 2002:a05:622a:6186:b0:453:6cb2:c8d1 with SMTP id d75a77b69052e-45374310eaemr144853771cf.37.1724158852033;
+        Tue, 20 Aug 2024 06:00:52 -0700 (PDT)
+Received: from PC2K9PVX.TheFacebook.com (ip-185-104-139-70.ptr.icomera.net. [185.104.139.70])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-45369fd716csm50159141cf.4.2024.08.20.06.00.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Aug 2024 04:59:53 -0700 (PDT)
-Date: Tue, 20 Aug 2024 13:59:52 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Kinsey Ho <kinseyho@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>
-Subject: Re: [PATCH mm-unstable v2 4/5] mm: restart if multiple traversals
- raced
-Message-ID: <cjvz3rhv2wkoev3gwikb72x4ecwx76lpdvxvur3qdzpnykyvvb@k44wu2ec2htf>
-References: <20240813204716.842811-1-kinseyho@google.com>
- <20240813204716.842811-5-kinseyho@google.com>
- <zh4ccaje54qbi6a62rvlhclysyaymw76bona4qtd53k4ogjuv7@tppv2q4zgyjk>
- <CAF6N3nXmQ=+j5VNf16KL6Ma8RaO0o-Nv=C7reJKQOzdpHzWOsg@mail.gmail.com>
+        Tue, 20 Aug 2024 06:00:51 -0700 (PDT)
+Date: Tue, 20 Aug 2024 09:00:37 -0400
+From: Gregory Price <gourry@gourry.net>
+To: Yuanchu Xie <yuanchu@google.com>
+Cc: David Hildenbrand <david@redhat.com>,
+	"Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+	Khalid Aziz <khalid.aziz@oracle.com>,
+	Henry Huang <henry.hj@antgroup.com>, Yu Zhao <yuzhao@google.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Gregory Price <gregory.price@memverge.com>,
+	Huang Ying <ying.huang@intel.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Lance Yang <ioworker0@gmail.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	Kalesh Singh <kaleshsingh@google.com>, Wei Xu <weixugc@google.com>,
+	David Rientjes <rientjes@google.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>, Shuah Khan <shuah@kernel.org>,
+	Yosry Ahmed <yosryahmed@google.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>,
+	Kairui Song <kasong@tencent.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Vasily Averin <vasily.averin@linux.dev>,
+	Nhat Pham <nphamcs@gmail.com>, Miaohe Lin <linmiaohe@huawei.com>,
+	Qi Zheng <zhengqi.arch@bytedance.com>,
+	Abel Wu <wuyun.abel@bytedance.com>,
+	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] mm: workingset reporting
+Message-ID: <ZsSTdY5hsv05jcj-@PC2K9PVX.TheFacebook.com>
+References: <20240813165619.748102-1-yuanchu@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ajk7qmdwnuv6drcb"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAF6N3nXmQ=+j5VNf16KL6Ma8RaO0o-Nv=C7reJKQOzdpHzWOsg@mail.gmail.com>
+In-Reply-To: <20240813165619.748102-1-yuanchu@google.com>
 
+On Tue, Aug 13, 2024 at 09:56:11AM -0700, Yuanchu Xie wrote:
+> This patch series provides workingset reporting of user pages in
+> lruvecs, of which coldness can be tracked by accessed bits and fd
+> references. However, the concept of workingset applies generically to
+> all types of memory, which could be kernel slab caches, discardable
+> userspace caches (databases), or CXL.mem. Therefore, data sources might
+> come from slab shrinkers, device drivers, or the userspace. IMO, the
+> kernel should provide a set of workingset interfaces that should be
+> generic enough to accommodate the various use cases, and be extensible
+> to potential future use cases. The current proposed interfaces are not
+> sufficient in that regard, but I would like to start somewhere, solicit
+> feedback, and iterate.
+>
+... snip ... 
+> Use cases
+> ==========
+> Promotion/Demotion
+> If different mechanisms are used for promition and demotion, workingset
+> information can help connect the two and avoid pages being migrated back
+> and forth.
+> For example, given a promotion hot page threshold defined in reaccess
+> distance of N seconds (promote pages accessed more often than every N
+> seconds). The threshold N should be set so that ~80% (e.g.) of pages on
+> the fast memory node passes the threshold. This calculation can be done
+> with workingset reports.
+> To be directly useful for promotion policies, the workingset report
+> interfaces need to be extended to report hotness and gather hotness
+> information from the devices[1].
+> 
+> [1]
+> https://www.opencompute.org/documents/ocp-cms-hotness-tracking-requirements-white-paper-pdf-1
+> 
+> Sysfs and Cgroup Interfaces
+> ==========
+> The interfaces are detailed in the patches that introduce them. The main
+> idea here is we break down the workingset per-node per-memcg into time
+> intervals (ms), e.g.
+> 
+> 1000 anon=137368 file=24530
+> 20000 anon=34342 file=0
+> 30000 anon=353232 file=333608
+> 40000 anon=407198 file=206052
+> 9223372036854775807 anon=4925624 file=892892
+> 
+> I realize this does not generalize well to hotness information, but I
+> lack the intuition for an abstraction that presents hotness in a useful
+> way. Based on a recent proposal for move_phys_pages[2], it seems like
+> userspace tiering software would like to move specific physical pages,
+> instead of informing the kernel "move x number of hot pages to y
+> device". Please advise.
+> 
+> [2]
+> https://lore.kernel.org/lkml/20240319172609.332900-1-gregory.price@memverge.com/
+> 
 
---ajk7qmdwnuv6drcb
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Just as a note on this work, this is really a testing interface.  The
+end-goal is not to merge such an interface that is user-facing like
+move_phys_pages, but instead to have something like a triggered kernel
+task that has a directive of "Promote X pages from Device A".
 
-On Fri, Aug 16, 2024 at 12:27:27PM GMT, Kinsey Ho <kinseyho@google.com> wro=
-te:
-> Hi Michal,
->=20
-> > I may be missing (literal) context but I'd suggest not moving the memcg
-> > assignment and leverage
-> >         if (memcg !=3D NULL)
-> >                 css_put(memcg->css)
-> > so that the is-root comparison needn't be repeated.
->=20
-> I might also be misunderstanding you with respect to the is-root
-> comparison =E2=80=93 the reason the memcg assignment is moved is because =
-it is
-> possible that on the restart added in this patch, css could be NULL.
+This work is more of an open collaboration for prototyping such that we
+don't have to plumb it through the kernel from the start and assess the
+usefulness of the hardware hotness collection mechanism.
 
-I've played with this applied up to 4/5 and I see more changes would be
-needed to preserve the function. Please disregard my initial suggestion
-':-)
+---
 
-Michal
+More generally on promotion, I have been considering recently a problem
+with promoting unmapped pagecache pages - since they are not subject to
+NUMA hint faults.  I started looking at PG_accessed and PG_workingset as
+a potential mechanism to trigger promotion - but i'm starting to see a
+pattern of competing priorities between reclaim (LRU/MGLRU) logic and
+promotion logic.
 
---ajk7qmdwnuv6drcb
-Content-Type: application/pgp-signature; name="signature.asc"
+Reclaim is triggered largely under memory pressure - which means co-opting
+reclaim logic for promotion is at best logically confusing, and at worst
+likely to introduce regressions.  The LRU/MGLRU logic is written largely
+for reclaim, not promotion.  This makes hacking promotion in after the
+fact rather dubious - the design choices don't match.
 
------BEGIN PGP SIGNATURE-----
+One example: if a page moves from inactive->active (or old->young), we
+could treat this as a page "becoming hot" and mark it for promotion, but
+this potentially punishes pages on the "active/younger" lists which are
+themselves hotter.
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZsSFNQAKCRAt3Wney77B
-Sbe0AQCqKc678v6xKlFe6veLAdsc1gPRVpg9yKjZ3q02OmMDAAD+KpFdcpw2LANz
-Y88ecO/8A4H/9QQ8MQ4PqwfNql79bgA=
-=znwP
------END PGP SIGNATURE-----
+I'm starting to think separate demotion/reclaim and promotion components
+are warranted. This could take the form of a separate kernel worker that
+occasionally gets scheduled to manage a promotion list, or even the
+addition of a PG_promote flag to decouple reclaim and promotion logic
+completely.  Separating the structures entirely would be good to allow
+both demotion/reclaim and promotion to occur concurrently (although this
+seems problematic under memory pressure).
 
---ajk7qmdwnuv6drcb--
+Would like to know your thoughts here.  If we can decide to segregate
+promotion and demotion logic, it might go a long way to simplify the
+existing interfaces and formalize transactions between the two.
+
+(also if you're going to LPC, might be worth a chat in person)
+
+~Gregory
 
