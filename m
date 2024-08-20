@@ -1,136 +1,96 @@
-Return-Path: <cgroups+bounces-4361-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4362-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 734C6957ABE
-	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 03:07:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89283957B84
+	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 04:38:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BE201C20DB3
-	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 01:07:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E70D1F22926
+	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 02:38:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54E821429A;
-	Tue, 20 Aug 2024 01:07:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E3393D3B3;
+	Tue, 20 Aug 2024 02:37:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="17kfsx7X"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CMjjkQ5J"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 772E412B73
-	for <cgroups@vger.kernel.org>; Tue, 20 Aug 2024 01:07:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B27EED8
+	for <cgroups@vger.kernel.org>; Tue, 20 Aug 2024 02:37:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724116045; cv=none; b=tVsVWKGEu7d7SMEh1opFku/jJ+MtJV/XfXvmLrgJbu8w4EP8NGog+nppaPU4ch+EIGum6BtWp3tb+COV4aQoKVmT79LMcg2EXiUmLdGMpVNVwOD8p0Lf4fMzKysI4j5JEnrGqA9CtiUQHZavNm79cwrlUMLFSACvYE3cv655nnM=
+	t=1724121476; cv=none; b=c86b1wpfHIv1IK9IAiag/0N7b42c+9YqOV4TIyKoOcu2uowxnqsWNXhhQPEQqqquux4uE3xpMnqrRIF1gAg15fwD2qYDDNIhtxS27nHzG0vphDEWuCK20O+xpaX5g+zsfYfrgS9gjm0z9UDmRuQMgSnS1DL+tBQHoE6h7/JkALE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724116045; c=relaxed/simple;
-	bh=w9Z0/ePq+VtztcYvMD5t1di1u7sZ7xrCsQcAWPLd8vg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Cr6ImfRbBntHXqW14mo1wQ5ajKKDvdqiqX+M/IyldbnD8si57xY6umWZYXYnJhvetVVG2CmFE99eOmnL6Fvg4c8wQ/DL8QYnbE52pFf30Vw/9mqGp6cT/Otie4YDz0VQGlbF0HiJpyeG9gZCwUiGO6RFpY/OKN+UgkVZ/k93ytw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=17kfsx7X; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a7a843bef98so555915966b.2
-        for <cgroups@vger.kernel.org>; Mon, 19 Aug 2024 18:07:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1724116042; x=1724720842; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Gqhda1EU3PbjzNUk/FZsxe6yiuKmVbG1fdaEhUu1EC0=;
-        b=17kfsx7XLMlJgAQQ7pK7Fx/4kz4FxHwrjaQXjWel3qxhja7Wqf7Ayh6eGh1WP7Ff2P
-         8t6zyhjyFNtuArFX3okmAzVXOs457fyORIrKqzAq35Z6q5P/rHMHuparzmIQF1CQObcP
-         cfOo59O1+n1igY8wOzpjPt807mugFkziU3KJkIjhz5oXIkUQsvmjM51N7TWy0/6McY26
-         zdVToH07t3OUH3tfGBpZeSWY6qlKcK2sXm8NaKz/3nUS7otH7cbkdaacW3FbrlUD3Z81
-         /ASWIz64DVfBQ/KOgdXjH7+tPKX69zZZyehMzm7QMhld3SINPfyrV0s9BwDyiKa1QbBj
-         nP8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724116042; x=1724720842;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Gqhda1EU3PbjzNUk/FZsxe6yiuKmVbG1fdaEhUu1EC0=;
-        b=JC02NDtw5mdtNxgkqKXCZvKHyEGuF3+SmUvrgUvdx/KOWH+Bc25Qd3p7gN8w/8eB74
-         PeKpMUyR/5pAvCoALRgU3+6i+6p5iFf8xAjKYopmgcaLpsMUcXGzQTwkQp9T3/5ZfUNp
-         tIwSXo7zp73STMbarOQrtMa7luRUnQCAo+1MtK6+CoTsdU/KzLK4rpKcWZJfnQ96NkqC
-         mKoXUv1mWKZbvW8B7AN81Ny1vyEBa5r6t4/tcJBbMIW9NIJOJXrz371zGKfR94Xi4FAf
-         bGaXjqv6bdrNvwZU41a4uajnQVDQQuN5E6sIzeM5Lv/ljyqWeA1MdVT9uq5awCYUM/6e
-         3BXw==
-X-Forwarded-Encrypted: i=1; AJvYcCWksfQjGgFaQSjIlVjrD+bL3WBC+rRwevojTUXhwaTMfcg+RGi70rVLStI1+cdP0aPvmISoRA5d@vger.kernel.org
-X-Gm-Message-State: AOJu0Yywjz4wgJ6lJmwlbmLxHPGzCTm8im6XspdD+hDpsVuM1QtBwYEo
-	BTXRP9TrTQAYmBdKV3qFgonWqphEmg54xtvp5zM1V1FtQfWeJpLEEAefSgPC3/A6sRJ/UAnpcOL
-	gFEto8UaDbygdWeLu3CVbJpeKWoVcKf6BnMsh
-X-Google-Smtp-Source: AGHT+IEpkyUPILcopb9spEmmNOJKOwpaXky/Jpzd8/ecb/9jPe0K0empPeLKdt9L4CjKeVSqvN+DMqH6lUtSvDsHlUw=
-X-Received: by 2002:a17:907:7e84:b0:a77:b784:deba with SMTP id
- a640c23a62f3a-a83928a416cmr886060466b.6.1724116040985; Mon, 19 Aug 2024
- 18:07:20 -0700 (PDT)
+	s=arc-20240116; t=1724121476; c=relaxed/simple;
+	bh=hx04v2eQBOgTZVAZ7KON4hX+YpxEpVLGosF0ZgIZpQg=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=sc7wbukIfFEeesdQDryamJt3U5lRVCndQ964k52zNEIZExBSLpJf9pYy/6A3Ws/d6bR7qzuASM5Xwu0Lbocxdq5L1o5ANJURK9xFeIIiKM9q50vn6MW1U6sM5hybfvLftOM0yQMEWs8Bx/ADFW9rxBVho7A7ybU3K5penBwx52k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CMjjkQ5J; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Content-Type: text/plain;
+	charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1724121472;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YswQe8pDVgtxcv4I7cGkqok1RAga6VHIduWtMUdKToQ=;
+	b=CMjjkQ5Jpn/xysHdkNs8bPNCe+t1ermXgSMEq/Ub0O9ed0ZtFSPJctwnoc0lg3f657VsEr
+	WQ32d8QFoo6pm9b8SBy9E0PzY6ShZzjBuFUg9/Ff+NBfAd9wvBZAQBbF9jctE+K8oEau3s
+	aIgtL4aNLa06/61f2uNIP/6WOkfsrDQ=
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240814171800.23558-1-me@yhndnzj.com> <CAKEwX=NrOBg0rKJnXGaiK9-PWeUDS+c3cFmaFFV0RrE8GkNZZA@mail.gmail.com>
- <CAJD7tkZ_jNuYQsGMyS1NgMf335Gi4_x5Ybkts_=+g5OyjtJQDQ@mail.gmail.com>
- <a2f67cbcc987cdb2d907f9c133e7fcb6a848992d.camel@yhndnzj.com>
- <CAKEwX=MDZdAHei3=UyYrsgWqyt-41_vOdCvTxj35O62NZhcN2A@mail.gmail.com>
- <20240815150819.9873910fa73a3f9f5e37ef4d@linux-foundation.org>
- <CAJD7tkZ3v9N1D=0SSphPFMETbih5DadcAiOK=VVv=7J6_ohytQ@mail.gmail.com>
- <CAKEwX=Pz4Pe-CAevBvxUCpPZJ-fRseLN4T35Wt3mb84gqCY25w@mail.gmail.com>
- <CAJD7tkaY3FsL-9YeDuVG=QtCK-dgm71EJ2L_T3KfGUa9VW_JkA@mail.gmail.com> <20240819180131.27b0ea66dd50b83c85102540@linux-foundation.org>
-In-Reply-To: <20240819180131.27b0ea66dd50b83c85102540@linux-foundation.org>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 19 Aug 2024 18:06:43 -0700
-Message-ID: <CAJD7tkY5u4vYRytMb+nuW3VhA9xHEPVux=vv_+k9oA1haFxa9A@mail.gmail.com>
-Subject: Re: [PATCH] mm/memcontrol: respect zswap.writeback setting from
- parent cg too
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Nhat Pham <nphamcs@gmail.com>, Mike Yuan <me@yhndnzj.com>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	Muchun Song <muchun.song@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Michal Hocko <mhocko@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
+Subject: Re: [PATCH] mm: kmem: fix split_page_memcg()
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <wvsagtywkr5rjn3y6fjz4wewmsyymxulim4zabunonmtxe4q4c@i7fd6bnwrbwp>
+Date: Tue, 20 Aug 2024 10:37:12 +0800
+Cc: Muchun Song <songmuchun@bytedance.com>,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ cgroups@vger.kernel.org,
+ Linux Memory Management List <linux-mm@kvack.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ syzbot <syzbot+ef4ecf7b6bdc4157bfa4@syzkaller.appspotmail.com>
+Content-Transfer-Encoding: 7bit
+Message-Id: <D5816457-E0F4-4571-A81F-DE46C27F8C3D@linux.dev>
+References: <20240819080415.44964-1-songmuchun@bytedance.com>
+ <wvsagtywkr5rjn3y6fjz4wewmsyymxulim4zabunonmtxe4q4c@i7fd6bnwrbwp>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Aug 19, 2024 at 6:01=E2=80=AFPM Andrew Morton <akpm@linux-foundatio=
-n.org> wrote:
->
-> On Mon, 19 Aug 2024 12:05:44 -0700 Yosry Ahmed <yosryahmed@google.com> wr=
-ote:
->
-> > > Ah yeah, I was thinking this could be done in a follow-up patch.
-> > >
-> > > But yes, please - documentation. Preferably everything together as v2=
-.
-> > >
-> > > >
-> > > > Also, do we want a Fixes tag and to backport this so that current
-> > > > users get the new behavior ASAP?
-> > >
-> > > Hmm, I wonder if it's more confusing for users to change the behavior
-> > > in older kernels.
-> > >
-> > > (OTOH, if this already is what people expect, then yeah it's a good
-> > > idea to backport).
-> >
-> > My rationale is that if people will inevitably get the behavior change
-> > when they upgrade their kernel, I'd rather they get it sooner rather
-> > than later, before more users start depending on the old behavior.
-> >
-> > I am guessing there is a chance this is not what backports are meant
-> > for. Andrew, any thoughts on this?
->
-> I agree.  It does depend on how long the old behavior has been out in
-> the field, and on our assessment of how many people are likely to
-> inconvenienced.  So... yes please, what is that Fixes:?
->
 
-It's commit 501a06fe8e4c ("zswap: memcontrol: implement zswap
-writeback disabling"). It landed in v6.8.
 
-I suspect there aren't many users that depend on the old behavior so
-far, so I would prefer to get this backported so that it's less likely
-that more (or any) users start depending on the old behavior.
+> On Aug 19, 2024, at 23:37, Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> 
+> On Mon, Aug 19, 2024 at 04:04:15PM GMT, Muchun Song wrote:
+>> split_page_memcg() does not care about the returned memcg for kmem
+>> pages, so folio_memcg_charged() should be used, otherwise obj_cgroup_memcg
+>> will complain about this.
+> 
+> Basically avoid calling folio_memcg() for folio_memcg_kmem(folio),
+> correct?
+
+Yes. Unless you hold rcu lock.
+
+> 
+>> 
+>> Reported-by: syzbot+ef4ecf7b6bdc4157bfa4@syzkaller.appspotmail.com
+>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> 
+> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+> 
+
+Thanks.
 
