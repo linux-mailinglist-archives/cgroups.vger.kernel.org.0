@@ -1,121 +1,102 @@
-Return-Path: <cgroups+bounces-4378-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4379-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A9DC958CC0
-	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 19:07:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C833958DD0
+	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 20:11:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC42D1C21CAA
-	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 17:07:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26DEF282D74
+	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 18:11:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FAB71BBBE0;
-	Tue, 20 Aug 2024 17:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9162D1BD507;
+	Tue, 20 Aug 2024 18:11:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UBxTDU83"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cogYgMp6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 108231922D3;
-	Tue, 20 Aug 2024 17:06:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C630E2F5E
+	for <cgroups@vger.kernel.org>; Tue, 20 Aug 2024 18:11:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724173618; cv=none; b=oeq7sqI47lTm4IvWWD7g+/lZ+hWqpUFf0KDLPfmp/450yEoPcg3pZzwz/qGAWzTig6CDjDQ4uzN2pl/HHASlsP3h/kAjZL1OIXS7HrWRtps+LmAjW7JLO2VWhLSF9cnnqtTof5eQiihlAN3On1EOriViuAoICxCCIkhpAzo+SHA=
+	t=1724177484; cv=none; b=n6TH8vZkY4VZCQsLO3NXA1pUKDzMZiftzioCTD7GViVLxmLcJDc6hAYDzMpmoT4ltOX1tXOlTm8p9cJgfUt1i1SG0oQ1ewMt8gihVA0x0h2DbWwz7DNGojrtYF0hO1iXoV1T7J+yYZdHszkv/kcVbeZZHjVr0ANngxwrd4gmWLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724173618; c=relaxed/simple;
-	bh=54shCYsL8YfYX+WHefs2opAhdifYsoSBgiNhfTTnphg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b2yDz0yymf/x49vwMjRg1vqmLWMzXac9KJexp2eGqgPhCZRZUQNNJiPxahzbJZM7k3503A+nixtmWIoRSb62tBnHMXjOBcu1EqXsBfVgoNGXrnQp1UYCJgYPBL0B0SANAprCmAdVy/eXANbyZMxSDLtuTgCURUIDmZER7x9j7+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UBxTDU83; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-20208830de8so34561515ad.1;
-        Tue, 20 Aug 2024 10:06:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724173616; x=1724778416; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=alquEjzt3pV+GF2ki+CPGlhnJrvecsAgoJSLznrwbU8=;
-        b=UBxTDU83d5muAqIaKURFs92gsc531c0S4m/TOp5PwD4xD0ZCPfEUt8Skf4R0kcYuLH
-         Hw75Ig9W1VyGwHDaBwi7MIlFZE91R+cSS5KrpkkjDzNEIwL5f5FnBd5nJCK264M5HhtV
-         CraWuO17wy2/jFkRGIg8Z8jkNFYM3vNPbsrItoAk843yWZGvN2a8tEJwRfns8so0GwBI
-         0SxFIYXXN9YYd6CabtPwhZU5/eBjjeDPvuBDS7qcmfLWdOijGKM62xbSfzngnklzArdC
-         WOI2s5bYoLJl4zDENB5alK70beJK7pqQxrp6nhdGWqVxCZ+Oih6+tNl6zVwDsqQaLnyo
-         Gj/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724173616; x=1724778416;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=alquEjzt3pV+GF2ki+CPGlhnJrvecsAgoJSLznrwbU8=;
-        b=UOFadAbb6NEWVZGfOoWgkageP04bJS4sJGJ8chxScu5JYXDLTiQZWbduJ/P2DQOIs4
-         OXxE5DcHdoya/xSPG11AVp6AlUiFRpSehaxXj8QC5Jd69gwFazo2pbnW80KBHZIb4ypB
-         /5Q3C4aBrM3BJXGQOiM1vyeCkcReTGiWWC/NK5CNIfEVwYEJ17X7R1rC+acze9aNdeNj
-         kAezKkcrYjOx0oiUTLBN86hdekpPrIpfHXWFokQQsEv6BY0sfylXqe+Kg8T1yYvm7xhA
-         Blzd72zQmKAiCOJ8ln2gLjW6wbnY2gih8WOVOPGiB92umTz7QN9nXJdhLIaB4mQTdf9f
-         paKA==
-X-Forwarded-Encrypted: i=1; AJvYcCW+wItVQa2xosAjocDG7qtWglc3GZkDZAwhWlNFMJzN1XWQe9lAoJ+t8nFY+2ph+9ZYpPE+09zB0s3YPfk84Tyx4ZvViSio+sXe7EEo7wV3debSUQLoF8q1E/2DAbmZL4d42jxudsPrrgttMaUP5DSQGHYY2Ox3fopy3HjMnKllQc53
-X-Gm-Message-State: AOJu0Yw4VpJ7hAhWuA8Rtp65S42gXUrDXVOuyJPpzQTHX/A9cm3qb5nf
-	k1kHZ3/h/O2JjkY2tWkkbH/AFXjlFSrQJnDEd1IYe4wpsbVKPozRVWKodw==
-X-Google-Smtp-Source: AGHT+IG0ZJ3QnQNSFMIEj2D5KZRJp7M8hlmcBNA0ELfAoeqxfCY3D5JUeqlYGGLA68f5YTVJI2Koiw==
-X-Received: by 2002:a17:902:dace:b0:1fd:93d2:fb67 with SMTP id d9443c01a7336-2031517e689mr34277165ad.52.1724173616231;
-        Tue, 20 Aug 2024 10:06:56 -0700 (PDT)
-Received: from localhost (dhcp-72-235-129-167.hawaiiantel.net. [72.235.129.167])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-202592bdf7fsm21652645ad.181.2024.08.20.10.06.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Aug 2024 10:06:55 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 20 Aug 2024 07:06:54 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Li Lingfeng <lilingfeng@huaweicloud.com>
-Cc: josef@toxicpanda.com, hch@lst.de, mkoutny@suse.com, axboe@kernel.dk,
-	cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, yukuai1@huaweicloud.com,
-	houtao1@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com,
-	yukuai3@huawei.com, lilingfeng3@huawei.com
-Subject: Re: [PATCH v3] block: flush all throttled bios when deleting the
- cgroup
-Message-ID: <ZsTNLor7XoJ9dOVx@slm.duckdns.org>
-References: <20240817071108.1919729-1-lilingfeng@huaweicloud.com>
+	s=arc-20240116; t=1724177484; c=relaxed/simple;
+	bh=XneMk5AB/Ld/0ua5fEq1d5ZamL6PKW09l/gnJDxRGI4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AJ9cbxaszMub/wAfT9rfpOj2sX/tWKqEPl5aS1UoWKfgu1blLdB3EVEPOHXZ+LUHI3qrwGL9m+ZzHlIpx+8zgAZ6pzac+YaVHjB43snW2gfU4Dcnins/ssiuH5XCHjs3XrjyHP6PTTcCj4/C9LTx9DDNilPASzGc2N2vyUepWZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cogYgMp6; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1724177481;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=31k+mAE770tGzqnLjWcSobz9pBP+AeP9eCIK52t8r5E=;
+	b=cogYgMp6CLJv4OoznFWbRG6rgbDnBM2oIR8W6o7a5xejVv6r3S5IX8fHRBTAjvjMcUdWtM
+	CCEzAixkkrqsqKs7eVR2FdoJgzbvwh8WEMH30rka0yjACTb0RdWJcyU4bR2AMJw/vnHfc5
+	J7IbCmWc4l+QuEOF3IltlIR64iZHtig=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-575-M1tRIWW5MJKJtlo0oKE-zw-1; Tue,
+ 20 Aug 2024 14:11:19 -0400
+X-MC-Unique: M1tRIWW5MJKJtlo0oKE-zw-1
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5F3781872552;
+	Tue, 20 Aug 2024 18:10:25 +0000 (UTC)
+Received: from [10.2.17.12] (unknown [10.2.17.12])
+	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 4BB131955BE1;
+	Tue, 20 Aug 2024 18:10:22 +0000 (UTC)
+Message-ID: <ed6c0892-459a-4af0-96fe-a22b6252b49a@redhat.com>
+Date: Tue, 20 Aug 2024 14:10:22 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240817071108.1919729-1-lilingfeng@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 -next 0/3] Some optimizations about cpuset
+To: Chen Ridong <chenridong@huawei.com>, tj@kernel.org,
+ lizefan.x@bytedance.com, hannes@cmpxchg.org, adityakali@google.com,
+ sergeh@kernel.org, mkoutny@suse.com
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240820030126.236997-1-chenridong@huawei.com>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20240820030126.236997-1-chenridong@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 
-On Sat, Aug 17, 2024 at 03:11:08PM +0800, Li Lingfeng wrote:
-> From: Li Lingfeng <lilingfeng3@huawei.com>
-> 
-> When a process migrates to another cgroup and the original cgroup is deleted,
-> the restrictions of throttled bios cannot be removed. If the restrictions
-> are set too low, it will take a long time to complete these bios.
-> 
-> Refer to the process of deleting a disk to remove the restrictions and
-> issue bios when deleting the cgroup.
-> 
-> This makes difference on the behavior of throttled bios:
-> Before: the limit of the throttled bios can't be changed and the bios will
-> complete under this limit;
-> Now: the limit will be canceled and the throttled bios will be flushed
-> immediately.
-> 
-> References:
-> [1] https://lore.kernel.org/r/20220318130144.1066064-4-ming.lei@redhat.com
-> [2] https://lore.kernel.org/all/da861d63-58c6-3ca0-2535-9089993e9e28@huaweicloud.com/
-> 
-> Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
+On 8/19/24 23:01, Chen Ridong wrote:
+> The first patch changes from v1:
+> 	Rename PERR_PMT to PERR_ACCESS, and update comments.
+> 	Move 'xcpus_empty() check' up for local and remote partition.
+>
+> The follow patches have been reviewed by Longman.
+> cgroup/cpuset: remove fetch_xcpus
+> cgroup/cpuset: remove use_parent_ecpus of cpuset
+>
+> Chen Ridong (3):
+>    cgroup/cpuset: Correct invalid remote parition prs
+>    cgroup/cpuset: remove fetch_xcpus
+>    cgroup/cpuset: remove use_parent_ecpus of cpuset
+>
+>   kernel/cgroup/cpuset.c | 71 ++++++++++++++----------------------------
+>   1 file changed, 23 insertions(+), 48 deletions(-)
+>
+For the series,
 
-Acked-by: Tejun Heo <tj@kernel.org>
+Reviewed-by: Waiman Long <longman@redhat.com>
 
-Thanks.
-
--- 
-tejun
 
