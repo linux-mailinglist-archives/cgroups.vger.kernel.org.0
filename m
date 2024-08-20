@@ -1,113 +1,121 @@
-Return-Path: <cgroups+bounces-4377-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4378-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF0A4958B48
-	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 17:29:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A9DC958CC0
+	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 19:07:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15FEBB22960
-	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 15:29:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC42D1C21CAA
+	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2024 17:07:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04DC7196C67;
-	Tue, 20 Aug 2024 15:28:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FAB71BBBE0;
+	Tue, 20 Aug 2024 17:06:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MoF2/Lbf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UBxTDU83"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 552BC194145;
-	Tue, 20 Aug 2024 15:28:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 108231922D3;
+	Tue, 20 Aug 2024 17:06:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724167714; cv=none; b=Z4F9RSme6OvXy1SMGA1ZnEPl69j7b5ZKrYy+6uvtmeICeNe5Vzrnu9bgkZKtoh/3IMRkwzw44VNbvBr2w74AGG9M/+3h58pcNVAa+H0X8eNyvg5mzDJA/FMDr8prK7TWeu71ycoU+UD/+dBxvv5tf0TWipjDYEkjhmkN5ccydY8=
+	t=1724173618; cv=none; b=oeq7sqI47lTm4IvWWD7g+/lZ+hWqpUFf0KDLPfmp/450yEoPcg3pZzwz/qGAWzTig6CDjDQ4uzN2pl/HHASlsP3h/kAjZL1OIXS7HrWRtps+LmAjW7JLO2VWhLSF9cnnqtTof5eQiihlAN3On1EOriViuAoICxCCIkhpAzo+SHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724167714; c=relaxed/simple;
-	bh=y5Ia15R1fE4O56YNp2nFk/C9bDA7ReCdChu+/M43J94=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y0cF85eyDsQOGJXJdhgFfkbDu+BcLgXT54DgZsvBZoQ5HwlHWBarKPlMeFC+2m33L8JfOtGEU5OC/sHFuK1IRgtOca1rNrMvNuTg6+gX7JUlL/i/1eE9srSfl1BGAN6CaUlvlmSdGQszv6ggNTKtTL91fWYa8xYQJAlaM15zRqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MoF2/Lbf; arc=none smtp.client-ip=209.85.219.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1724173618; c=relaxed/simple;
+	bh=54shCYsL8YfYX+WHefs2opAhdifYsoSBgiNhfTTnphg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b2yDz0yymf/x49vwMjRg1vqmLWMzXac9KJexp2eGqgPhCZRZUQNNJiPxahzbJZM7k3503A+nixtmWIoRSb62tBnHMXjOBcu1EqXsBfVgoNGXrnQp1UYCJgYPBL0B0SANAprCmAdVy/eXANbyZMxSDLtuTgCURUIDmZER7x9j7+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UBxTDU83; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-6bf784346b9so26116456d6.2;
-        Tue, 20 Aug 2024 08:28:33 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-20208830de8so34561515ad.1;
+        Tue, 20 Aug 2024 10:06:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724167712; x=1724772512; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y5Ia15R1fE4O56YNp2nFk/C9bDA7ReCdChu+/M43J94=;
-        b=MoF2/LbfUBB9X2s7RCC42cs2uHIZYy3h4nk7t8Sn0S4ksMz/2AWFQKS/GE6oAxUA8c
-         ZhnUlyNRwwgfLFGaB5B7mYJtvXyqT01mDiyGD1Mowl5ZvXd/zSo97MGdcT1G0J2J+Lr1
-         rUAvHDZX9s3Yh9gQu/CvcSzrTrlvDIPrbHn9ZzTMky3vp840jnMF35QseKAF8SWNtrpr
-         lKav47U+x7cKCwrBODGwRtzT8Fxy/mi5TScnZlrUvjV741tookvQFBM8RemXZEqL68+Y
-         Cccj/40PPj9O9vnmeeBbWkEoIdhOD5V4ZxADxwmOkekCwrwAC4wGxGcs2fWt3XrkDyJI
-         UuIw==
+        d=gmail.com; s=20230601; t=1724173616; x=1724778416; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=alquEjzt3pV+GF2ki+CPGlhnJrvecsAgoJSLznrwbU8=;
+        b=UBxTDU83d5muAqIaKURFs92gsc531c0S4m/TOp5PwD4xD0ZCPfEUt8Skf4R0kcYuLH
+         Hw75Ig9W1VyGwHDaBwi7MIlFZE91R+cSS5KrpkkjDzNEIwL5f5FnBd5nJCK264M5HhtV
+         CraWuO17wy2/jFkRGIg8Z8jkNFYM3vNPbsrItoAk843yWZGvN2a8tEJwRfns8so0GwBI
+         0SxFIYXXN9YYd6CabtPwhZU5/eBjjeDPvuBDS7qcmfLWdOijGKM62xbSfzngnklzArdC
+         WOI2s5bYoLJl4zDENB5alK70beJK7pqQxrp6nhdGWqVxCZ+Oih6+tNl6zVwDsqQaLnyo
+         Gj/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724167712; x=1724772512;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1724173616; x=1724778416;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=y5Ia15R1fE4O56YNp2nFk/C9bDA7ReCdChu+/M43J94=;
-        b=cJLJxbWd/J63ICbjN2mSTw+tTE1RBBXVy1VaQYonvKBS3esWLn4tmIOPKkxVEMzq6K
-         wxSG6JJ3BsmYsUQsfnakDrMCaPez2kP0NFJS6h6gxT/7xLNulourC8zzDMdGynfGSMuU
-         y2myQ+1bXUQ/M9nZarexs2AsQ/E1x+RPcp9PdcIBv50YijrUaqZ3PSNNW3S80r+xqCJE
-         fxWgYkcyUgiEYz6KMfJx3QYywUmMLpM8Q/3fV8vrVRZP+alttKoY+VKTRZadFjKMaqeC
-         NCiTzRiYQ6smyUwB7l+oYqEMWTzjOKETsuytFMyD5dgjq6m3Iuxb1iw9rTzKkZe+xv5C
-         v7Tw==
-X-Forwarded-Encrypted: i=1; AJvYcCXAJ3lLqf/BGkj7NzAL2Ng1t06cYa1jk5fmd1xvVFC3cuJWdcHT1zCIrk6tT8ZszFcEUdhb+FtrxZyn2vRAYdKJpPqyx+R5LiHvVriVLW7UAQOGJuj4NuGPqUGamiqToRcBQAZGvg==
-X-Gm-Message-State: AOJu0Ywq+Oog27dEpd1fmUqfd+W7OqWkBQ09dZMk2pRUp27rC5qew5pO
-	LF7rHKOl28PbEmPLy5yzfd6fp8nrb2RYn1oY3xduif4+rLJsW11GXb6re+2kuzs9+gFaKUVGjG9
-	PWn4v/dAYo8uN1j24kwqFE7xMypg=
-X-Google-Smtp-Source: AGHT+IEqV9KEp2q8t9Yhwj+Novgkh6GlV2kQA5X+VhM+qBpbdD4m3xNHVA7TQ8IloKWoot40nDKdLpQ//xqy6n5FrqE=
-X-Received: by 2002:a05:6214:4608:b0:6bd:70ce:e413 with SMTP id
- 6a1803df08f44-6bf7cdef914mr179802206d6.30.1724167712113; Tue, 20 Aug 2024
- 08:28:32 -0700 (PDT)
+        bh=alquEjzt3pV+GF2ki+CPGlhnJrvecsAgoJSLznrwbU8=;
+        b=UOFadAbb6NEWVZGfOoWgkageP04bJS4sJGJ8chxScu5JYXDLTiQZWbduJ/P2DQOIs4
+         OXxE5DcHdoya/xSPG11AVp6AlUiFRpSehaxXj8QC5Jd69gwFazo2pbnW80KBHZIb4ypB
+         /5Q3C4aBrM3BJXGQOiM1vyeCkcReTGiWWC/NK5CNIfEVwYEJ17X7R1rC+acze9aNdeNj
+         kAezKkcrYjOx0oiUTLBN86hdekpPrIpfHXWFokQQsEv6BY0sfylXqe+Kg8T1yYvm7xhA
+         Blzd72zQmKAiCOJ8ln2gLjW6wbnY2gih8WOVOPGiB92umTz7QN9nXJdhLIaB4mQTdf9f
+         paKA==
+X-Forwarded-Encrypted: i=1; AJvYcCW+wItVQa2xosAjocDG7qtWglc3GZkDZAwhWlNFMJzN1XWQe9lAoJ+t8nFY+2ph+9ZYpPE+09zB0s3YPfk84Tyx4ZvViSio+sXe7EEo7wV3debSUQLoF8q1E/2DAbmZL4d42jxudsPrrgttMaUP5DSQGHYY2Ox3fopy3HjMnKllQc53
+X-Gm-Message-State: AOJu0Yw4VpJ7hAhWuA8Rtp65S42gXUrDXVOuyJPpzQTHX/A9cm3qb5nf
+	k1kHZ3/h/O2JjkY2tWkkbH/AFXjlFSrQJnDEd1IYe4wpsbVKPozRVWKodw==
+X-Google-Smtp-Source: AGHT+IG0ZJ3QnQNSFMIEj2D5KZRJp7M8hlmcBNA0ELfAoeqxfCY3D5JUeqlYGGLA68f5YTVJI2Koiw==
+X-Received: by 2002:a17:902:dace:b0:1fd:93d2:fb67 with SMTP id d9443c01a7336-2031517e689mr34277165ad.52.1724173616231;
+        Tue, 20 Aug 2024 10:06:56 -0700 (PDT)
+Received: from localhost (dhcp-72-235-129-167.hawaiiantel.net. [72.235.129.167])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-202592bdf7fsm21652645ad.181.2024.08.20.10.06.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Aug 2024 10:06:55 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Tue, 20 Aug 2024 07:06:54 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Li Lingfeng <lilingfeng@huaweicloud.com>
+Cc: josef@toxicpanda.com, hch@lst.de, mkoutny@suse.com, axboe@kernel.dk,
+	cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, yukuai1@huaweicloud.com,
+	houtao1@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com,
+	yukuai3@huawei.com, lilingfeng3@huawei.com
+Subject: Re: [PATCH v3] block: flush all throttled bios when deleting the
+ cgroup
+Message-ID: <ZsTNLor7XoJ9dOVx@slm.duckdns.org>
+References: <20240817071108.1919729-1-lilingfeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240814171800.23558-1-me@yhndnzj.com> <CAKEwX=NrOBg0rKJnXGaiK9-PWeUDS+c3cFmaFFV0RrE8GkNZZA@mail.gmail.com>
- <CAJD7tkZ_jNuYQsGMyS1NgMf335Gi4_x5Ybkts_=+g5OyjtJQDQ@mail.gmail.com>
- <a2f67cbcc987cdb2d907f9c133e7fcb6a848992d.camel@yhndnzj.com>
- <CAKEwX=MDZdAHei3=UyYrsgWqyt-41_vOdCvTxj35O62NZhcN2A@mail.gmail.com>
- <20240815150819.9873910fa73a3f9f5e37ef4d@linux-foundation.org>
- <CAJD7tkZ3v9N1D=0SSphPFMETbih5DadcAiOK=VVv=7J6_ohytQ@mail.gmail.com>
- <CAKEwX=Pz4Pe-CAevBvxUCpPZJ-fRseLN4T35Wt3mb84gqCY25w@mail.gmail.com>
- <CAJD7tkaY3FsL-9YeDuVG=QtCK-dgm71EJ2L_T3KfGUa9VW_JkA@mail.gmail.com>
- <20240819180131.27b0ea66dd50b83c85102540@linux-foundation.org> <CAJD7tkY5u4vYRytMb+nuW3VhA9xHEPVux=vv_+k9oA1haFxa9A@mail.gmail.com>
-In-Reply-To: <CAJD7tkY5u4vYRytMb+nuW3VhA9xHEPVux=vv_+k9oA1haFxa9A@mail.gmail.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Tue, 20 Aug 2024 11:28:21 -0400
-Message-ID: <CAKEwX=M-BDNNJo5-LXj3iR51BksH4t-fZhFDD4Kt_DvNqj7oUQ@mail.gmail.com>
-Subject: Re: [PATCH] mm/memcontrol: respect zswap.writeback setting from
- parent cg too
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Mike Yuan <me@yhndnzj.com>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	Muchun Song <muchun.song@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Michal Hocko <mhocko@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240817071108.1919729-1-lilingfeng@huaweicloud.com>
 
-On Mon, Aug 19, 2024 at 9:07=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
->
-> It's commit 501a06fe8e4c ("zswap: memcontrol: implement zswap
-> writeback disabling"). It landed in v6.8.
->
-> I suspect there aren't many users that depend on the old behavior so
-> far, so I would prefer to get this backported so that it's less likely
-> that more (or any) users start depending on the old behavior.
+On Sat, Aug 17, 2024 at 03:11:08PM +0800, Li Lingfeng wrote:
+> From: Li Lingfeng <lilingfeng3@huawei.com>
+> 
+> When a process migrates to another cgroup and the original cgroup is deleted,
+> the restrictions of throttled bios cannot be removed. If the restrictions
+> are set too low, it will take a long time to complete these bios.
+> 
+> Refer to the process of deleting a disk to remove the restrictions and
+> issue bios when deleting the cgroup.
+> 
+> This makes difference on the behavior of throttled bios:
+> Before: the limit of the throttled bios can't be changed and the bios will
+> complete under this limit;
+> Now: the limit will be canceled and the throttled bios will be flushed
+> immediately.
+> 
+> References:
+> [1] https://lore.kernel.org/r/20220318130144.1066064-4-ming.lei@redhat.com
+> [2] https://lore.kernel.org/all/da861d63-58c6-3ca0-2535-9089993e9e28@huaweicloud.com/
+> 
+> Signed-off-by: Li Lingfeng <lilingfeng3@huawei.com>
 
-Agree - let's backport it then. In hindsight, I feel like this is
-already what users assume. We don't rely on the assumption internally,
-but at least one client of ours has asked for clarifications about
-this.
+Acked-by: Tejun Heo <tj@kernel.org>
+
+Thanks.
+
+-- 
+tejun
 
