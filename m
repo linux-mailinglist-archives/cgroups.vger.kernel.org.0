@@ -1,205 +1,146 @@
-Return-Path: <cgroups+bounces-4405-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4406-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00004959FB4
-	for <lists+cgroups@lfdr.de>; Wed, 21 Aug 2024 16:25:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9EBE95A219
+	for <lists+cgroups@lfdr.de>; Wed, 21 Aug 2024 17:58:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A4A01F24105
-	for <lists+cgroups@lfdr.de>; Wed, 21 Aug 2024 14:25:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92ACF1F23566
+	for <lists+cgroups@lfdr.de>; Wed, 21 Aug 2024 15:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 089441B2ED1;
-	Wed, 21 Aug 2024 14:24:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C02FD1B3B14;
+	Wed, 21 Aug 2024 15:51:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gIngLvTD"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="G40paiaX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AC831B2522
-	for <cgroups@vger.kernel.org>; Wed, 21 Aug 2024 14:24:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 656D31B3B10
+	for <cgroups@vger.kernel.org>; Wed, 21 Aug 2024 15:51:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724250261; cv=none; b=OL3uc/alObjJbTe0JSlixXE1ycEAHKFzGoRyYaRF1vQf48E9xpNjTODSmwAGJfMzF7zX2JRHfL78ZDdCJlDfdgP5XX9q7JU1BcGjPH7dfHh+e7VGk19kCCEFrzLVkPu9J98RNz4sdsx1DWA5bMjz+lZaHLO49Bc7dekjcNaqpYo=
+	t=1724255505; cv=none; b=ewced4w285glEOoe4qvDELc2ClcyrPAwebjHzO3NYZEw9IJWTNM5mTrFTMHbdqC8dBYQ4g4ggKWUQfqBWZek3oNaUjlq9Z25d7CylxfxUVbVLy4NpFS3gBgrbwb2AYLFGZnrVROkYp6a5JrX2LRIqfXPKNVNe/SRSBhkIl2/8GM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724250261; c=relaxed/simple;
-	bh=SbaKy7M3iE/iWGnMcfHyAGQhs+86ELqmpXUKEJwfOsc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YrwxMapcBvfs2Lywk5MIxXRfGhxI0VgjJbZhwgG62yTPnqObEueGkWXSI2YNZzyNzckqz7IBMl2Md5G8Bt+4nDIk3pvdlY+bfDNViUbWGrQuXI7ASogSLPgMk5X4Ed18WnK0b7fRzHzgCXiearQhkOAqAuLzUFngYTWAL0ZcMfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gIngLvTD; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1724250258;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BJv1xpOkewDzgnM873vJ2OOFBXS4HrZ11ebZ2D3bLl8=;
-	b=gIngLvTDP6keeIOm2pUAdAKpPyDVOfTT56oV4Ml9eFgr+TdHzpaWGgqtAjeURLcrwfRoab
-	sDkW2iSupsowljnP+MXiwleav6N52jXhrYs0Ya+1EDMPK9WBu4GnEheEph5u2QtTfSYSbD
-	rGR9Sry/+l5s4yToqk9eYGIuUD/qVRU=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-247-MJswKancPfOAfp4rZEyvCQ-1; Wed,
- 21 Aug 2024 10:24:11 -0400
-X-MC-Unique: MJswKancPfOAfp4rZEyvCQ-1
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3C3F11955BFE;
-	Wed, 21 Aug 2024 14:24:03 +0000 (UTC)
-Received: from llong.com (unknown [10.2.16.124])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id D1BB71955BF7;
-	Wed, 21 Aug 2024 14:23:50 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Zefan Li <lizefan.x@bytedance.com>,
-	Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	Costa Shulyupin <cshulyup@redhat.com>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH v2 2/2] cgroup/cpuset: Exclude isolated CPUs from housekeeping CPU masks
-Date: Wed, 21 Aug 2024 10:23:12 -0400
-Message-ID: <20240821142312.236970-3-longman@redhat.com>
-In-Reply-To: <20240821142312.236970-1-longman@redhat.com>
-References: <20240821142312.236970-1-longman@redhat.com>
+	s=arc-20240116; t=1724255505; c=relaxed/simple;
+	bh=cfh3VaxFY12L6b9joBjAiMhKraXefyPDD9m7bT9Dn2c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d6y0tlgr7GYJ/gXnwWUhEXkPGDnzWrbn6aWLgYa9+OfuiY2FCL82ph/2gXu1cFVYTsSkWiWV+sYAkpp08XE6X8a5dWWiRe5HwV6ZeCScKARuLyXRaoiRluc9mLHsR2CvkPR15fesGKdX2iDXCkKln7JAFVPXO8ANTXfVq7I7nz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=G40paiaX; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5bf006f37daso1718213a12.1
+        for <cgroups@vger.kernel.org>; Wed, 21 Aug 2024 08:51:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1724255502; x=1724860302; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cfh3VaxFY12L6b9joBjAiMhKraXefyPDD9m7bT9Dn2c=;
+        b=G40paiaX4UWMZUwDMVjAbts3FUyXdWZdRSDEvqqLqhHtcvIpuIIUykA3X3FZjUlN7+
+         D+qYRp1uT8jPDXzcOLVu4py+t9D9XX4SPfZnbD+INDrViaVJ2bNQsqsJKhuqkyz9tTPg
+         hdmJi0v0Z5IUUM/tllDJkhQc2WDykOkdLyM3n+Myjv4onkFNI4FJCkBeb3WrEU4QEtPH
+         fWKltE00kBLF12i3qdSbnNK6BiVINnrqAwnnW5u9fn8766vZvJ3qRdqScvGUa1xTVSpe
+         OmdsacLLI3XpsV94F2+DM4YJ6KUqDeFUAwvhaukOH/uix++ZjvoBfz6LL0IUEcV53x48
+         L8aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724255502; x=1724860302;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cfh3VaxFY12L6b9joBjAiMhKraXefyPDD9m7bT9Dn2c=;
+        b=AyznPuUTMb9e6ZNy0F4tn0nvklqzn3zyqnQq0Lh/zicm+adBNXpPbKVAeD1v4qyR3O
+         3PvJfee8eposo22ivgSQme2t+VSR0ZqY1mEdyWjei7miRkyqxFYrc86GPMSwbk/CD+uj
+         nB1MTMcSRv5K03rPw0myNe3S1TEa51Jk+fs1HyyGooVtr6UFSeACu48i3i2w0tjzETGN
+         gGiKCG8AJcy/CwFjsrPwCYZaMLacH0tJK5Yhb2Z0GXDpRZ3+pn1tfBKUvBMwPQmL8tGL
+         kDNr4PTycmQlPpf80oYfmPAFgZcCOnKIP/PHPHJkmz9FT1ACPGS4IdgPWRdFz62dOJK8
+         L63g==
+X-Forwarded-Encrypted: i=1; AJvYcCUsxIXKSHkdu6gCLuf0G/0yCE2+06qN8LbRK9aOtFtPek0KZe/zvtbwd/Cy/ieu55yA59Hjmlpr@vger.kernel.org
+X-Gm-Message-State: AOJu0YzYLjFNYBxDoNENuIOkPG9XZUFT7kIcbwIDEJpzoClTDNVwqEgG
+	6LZxQqgRAPLgQg12p9dFJZGatDwISOmzbm4L2U/MZjc3yJ8u4OkAJP8I/DRUPQ8=
+X-Google-Smtp-Source: AGHT+IHRKfOJRBIX00yACT9S6yJfNIRBD216Xy8o/dC87m9xqH+xwqjdfV16ljYKmJn/kNtjrDyw8w==
+X-Received: by 2002:a05:6402:909:b0:5be:ecd9:c73e with SMTP id 4fb4d7f45d1cf-5bf2bfcb322mr101221a12.2.1724255501446;
+        Wed, 21 Aug 2024 08:51:41 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5bebbbe26fcsm8247046a12.5.2024.08.21.08.51.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Aug 2024 08:51:40 -0700 (PDT)
+Date: Wed, 21 Aug 2024 17:51:39 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Li Lingfeng <lilingfeng@huaweicloud.com>
+Cc: tj@kernel.org, josef@toxicpanda.com, hch@lst.de, axboe@kernel.dk, 
+	longman@redhat.com, ming.lei@redhat.com, cgroups@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, yukuai1@huaweicloud.com, 
+	houtao1@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com, 
+	lilingfeng3@huawei.com
+Subject: Re: [PATCH v2] blk-cgroup: don't clear stat in blkcg_reset_stats()
+Message-ID: <migrlemuqjqff6y64o6ukfkuil6uwuarwvyg3xymfphnicznna@sy5dwhovytuz>
+References: <20240821020756.786000-1-lilingfeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="u64mvz7adyyl3xft"
+Content-Disposition: inline
+In-Reply-To: <20240821020756.786000-1-lilingfeng@huaweicloud.com>
 
-Call the newly introduced housekeeping_exlude_isolcpus() function to
-exclude isolated CPUs from the selected housekeeping CPU masks. This
-is in addition to the exclusion of isolated CPUs from the workqueue
-unbound CPU mask.
 
-Almost all the existing housekeeping cpumasks can be referenced at run
-time. Right now all of them except HK_TYPE_TICK and HK_TYPE_MANAGED_IRQ
-will be updated in the creation, deletion and modification of isolated
-partitions. More investigation will be done on the other two types.
+--u64mvz7adyyl3xft
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Waiman Long <longman@redhat.com>
-Acked-by: Tejun Heo <tj@kernel.org>
----
- kernel/cgroup/cpuset.c | 34 +++++++++++++++++++++++++++-------
- 1 file changed, 27 insertions(+), 7 deletions(-)
+Hello.
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 8b40df89c3c1..d3cf4b2e44c7 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -233,6 +233,15 @@ static bool		have_boot_isolcpus;
- /* List of remote partition root children */
- static struct list_head remote_children;
- 
-+/*
-+ * The following sets of housekeeping cpumasks can be referenced at run time
-+ * and hence should be updated for CPU isolation.
-+ */
-+#define HOUSEKEEPING_FLAGS	(BIT(HK_TYPE_TIMER)  | BIT(HK_TYPE_RCU)  |\
-+				 BIT(HK_TYPE_SCHED)  | BIT(HK_TYPE_MISC) |\
-+				 BIT(HK_TYPE_DOMAIN) | BIT(HK_TYPE_WQ)   |\
-+				 BIT(HK_TYPE_KTHREAD))
-+
- /*
-  * A flag to force sched domain rebuild at the end of an operation while
-  * inhibiting it in the intermediate stages when set. Currently it is only
-@@ -1588,7 +1597,15 @@ static bool partition_xcpus_del(int old_prs, struct cpuset *parent,
- 	return isolcpus_updated;
- }
- 
--static void update_unbound_workqueue_cpumask(bool isolcpus_updated)
-+/**
-+ * update_isolation_cpumasks - Update external isolation CPU masks
-+ * @isolcpus_updated - @true if isolation CPU masks update needed
-+ *
-+ * The following external CPU masks will be updated if necessary:
-+ * - workqueue unbound cpumask
-+ * - housekeeping cpumasks
-+ */
-+static void update_isolation_cpumasks(bool isolcpus_updated)
- {
- 	int ret;
- 
-@@ -1598,7 +1615,10 @@ static void update_unbound_workqueue_cpumask(bool isolcpus_updated)
- 		return;
- 
- 	ret = workqueue_unbound_exclude_cpumask(isolated_cpus);
--	WARN_ON_ONCE(ret < 0);
-+	if (WARN_ON_ONCE(ret < 0))
-+		return;
-+	ret = housekeeping_exlude_isolcpus(isolated_cpus, HOUSEKEEPING_FLAGS);
-+	WARN_ON_ONCE((ret < 0) && (ret != -EOPNOTSUPP));
- }
- 
- /**
-@@ -1681,7 +1701,7 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
- 	isolcpus_updated = partition_xcpus_add(new_prs, NULL, tmp->new_cpus);
- 	list_add(&cs->remote_sibling, &remote_children);
- 	spin_unlock_irq(&callback_lock);
--	update_unbound_workqueue_cpumask(isolcpus_updated);
-+	update_isolation_cpumasks(isolcpus_updated);
- 
- 	/*
- 	 * Proprogate changes in top_cpuset's effective_cpus down the hierarchy.
-@@ -1717,7 +1737,7 @@ static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
- 		cs->prs_err = PERR_INVCPUS;
- 	reset_partition_data(cs);
- 	spin_unlock_irq(&callback_lock);
--	update_unbound_workqueue_cpumask(isolcpus_updated);
-+	update_isolation_cpumasks(isolcpus_updated);
- 
- 	/*
- 	 * Proprogate changes in top_cpuset's effective_cpus down the hierarchy.
-@@ -1769,7 +1789,7 @@ static void remote_cpus_update(struct cpuset *cs, struct cpumask *newmask,
- 	if (deleting)
- 		isolcpus_updated += partition_xcpus_del(prs, NULL, tmp->delmask);
- 	spin_unlock_irq(&callback_lock);
--	update_unbound_workqueue_cpumask(isolcpus_updated);
-+	update_isolation_cpumasks(isolcpus_updated);
- 
- 	/*
- 	 * Proprogate changes in top_cpuset's effective_cpus down the hierarchy.
-@@ -2140,7 +2160,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
- 		WARN_ON_ONCE(parent->nr_subparts < 0);
- 	}
- 	spin_unlock_irq(&callback_lock);
--	update_unbound_workqueue_cpumask(isolcpus_updated);
-+	update_isolation_cpumasks(isolcpus_updated);
- 
- 	if ((old_prs != new_prs) && (cmd == partcmd_update))
- 		update_partition_exclusive(cs, new_prs);
-@@ -3193,7 +3213,7 @@ static int update_prstate(struct cpuset *cs, int new_prs)
- 	else if (new_xcpus_state)
- 		partition_xcpus_newstate(old_prs, new_prs, cs->effective_xcpus);
- 	spin_unlock_irq(&callback_lock);
--	update_unbound_workqueue_cpumask(new_xcpus_state);
-+	update_isolation_cpumasks(new_xcpus_state);
- 
- 	/* Force update if switching back to member */
- 	update_cpumasks_hier(cs, &tmpmask, !new_prs ? HIER_CHECKALL : 0);
--- 
-2.43.5
+On Wed, Aug 21, 2024 at 10:07:56AM GMT, Li Lingfeng <lilingfeng@huaweicloud.com> wrote:
+> The list of root cgroup can be used by both cgroup v1 and v2 while
+> non-root cgroup can't since it must be removed before switch between
+> cgroup v1 and v2.
+> So it may has effect if the list of root used by cgroup v2 was corrupted
+> after switching to cgroup v1, and switch back to cgroup v2 to use the
+> corrupted list again.
 
+> However, the root cgroup will not use the list any more after commit
+> ef45fe470e1e("blk-cgroup: show global disk stats in root cgroup io.stat").
+
+How come? Before that patch the root file was excluded with
+CFTYPE_NOT_ON_ROOT. IOW how has that patch an effect on llist traversal?
+
+(It doesn't matter, your patch doesn't restore memset anyway.)
+
+This is the reasoning how I understand it:
+
+| The removed function clears blkg.iostat structures that is only used on
+| v2 whereas the function can only be called with v1 hierarchy attached.
+| Zeroing effect could potentially be visible root blkcg "shared" between
+| v1 and v2 but v2 actually synthesizes stats differently for root.
+
+> Although this has no negative effect, it is not necessary. Remove the
+> related code for cleanup. No function change.
+
+I'm impressed by the amount of analysis you did to potentially remove
+the unused function. If you feel like cleaning up more or sectioning,
+see also [1] or [2] for inspiration.
+
+Thanks,
+Michal
+
+[1] https://lore.kernel.org/all/20240625005906.106920-14-roman.gushchin@linux.dev/
+[2] https://lore.kernel.org/all/20240628210317.272856-1-roman.gushchin@linux.dev/
+
+--u64mvz7adyyl3xft
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZsYNCAAKCRAt3Wney77B
+STQRAP964BvPrWyhD3E2FATcSU9VzePaYOlzM2RkLQ1ceB9lVQEA6kUkdWtBIY0V
+S39zAIVDUBJ2oJfcZCF3K0zwdtLkbA8=
+=rh/X
+-----END PGP SIGNATURE-----
+
+--u64mvz7adyyl3xft--
 
