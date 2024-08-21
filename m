@@ -1,63 +1,63 @@
-Return-Path: <cgroups+bounces-4384-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4385-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 002A9959263
-	for <lists+cgroups@lfdr.de>; Wed, 21 Aug 2024 03:54:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 986C4959265
+	for <lists+cgroups@lfdr.de>; Wed, 21 Aug 2024 03:54:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2512A1C2209D
-	for <lists+cgroups@lfdr.de>; Wed, 21 Aug 2024 01:54:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F2EA1F23606
+	for <lists+cgroups@lfdr.de>; Wed, 21 Aug 2024 01:54:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C5C474BED;
-	Wed, 21 Aug 2024 01:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 204E812C486;
+	Wed, 21 Aug 2024 01:54:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TpY1ml17"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nMG9kKWb"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A17456440;
-	Wed, 21 Aug 2024 01:54:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0100973446;
+	Wed, 21 Aug 2024 01:54:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724205262; cv=none; b=rEFnJadVqfOtDFZGoSIX8g63h5pgQA5i7UmyacdQTXioWqv3jC6RYW98BhB2ESepyZe7NTHhUW1/N5Omq1A8G5W4vuq6HuY2g39bQqWFintCPqKwWvpqEpHZLlxxRxsLfKrSLCFnibm5ydM1b89Ozo6mCwjaPVM34zKSkZ7eib0=
+	t=1724205263; cv=none; b=PiYOH3ztqAZ00wgCI3PMfhp2uFM/0Z7xZoi5U+KXqo9nSVDLZfhcav9VVyh7zpEbvI2Jn/vUZ1LaDlhhSy5YLM0nuAoEDfasTaJyvcizHCR04e4sSAI1ACaAn2WYP2GK2RcxjYfSZ2OEY7mkNSesP2aqAJKjlBP2GGz/0C6tYQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724205262; c=relaxed/simple;
-	bh=aBp+AO4BxlLvxNYOsjganDc4V0zfIfXD4mqngD4w4vw=;
+	s=arc-20240116; t=1724205263; c=relaxed/simple;
+	bh=Gctnl1uIi0yVsQryw5O0kyrWBmCxjEZPN7g3AwSIGyg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mI1ZuObKlWt2vHg7hCAHjHAMMul2c27ERGaOx/OQs0V6YJ4zoftKQFIPiKsSrlU0wfiWrMtmF7IB3AISKkYSD5PYGFvr0UJoXMobHho4WwDSMQkXPSEOGOiM1PHFutBopPdQ+NzkaCsrwhlcIxPVbI6r8a5jj6BnUJZJhexeiVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TpY1ml17; arc=none smtp.client-ip=198.175.65.11
+	 MIME-Version; b=CgrHuhz/MIcg3K3vwTIi3F3v4U+GGKDKivU7w9ZS5DjyssN1zDB0MsW1tFeG1uO6g50PdRrV4iYmvAyT+T/G4cPWfagalt8zUYy3ZR/SWwdiRPB0VIWWEy9NfWg1djAOQXckysy8PCz4X5X1RLd8QmkoBztLRh5DOzEXnoHh3F4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nMG9kKWb; arc=none smtp.client-ip=198.175.65.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1724205260; x=1755741260;
+  t=1724205262; x=1755741262;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=aBp+AO4BxlLvxNYOsjganDc4V0zfIfXD4mqngD4w4vw=;
-  b=TpY1ml17AOkOV5ST2IBfnorXFlPr0qn/tg6zgDjLTtitWTocdbuPPbTU
-   pgV+vujWRd0PA36KHTzPYyx7OUioNYxosGdPC2VgXoy4oF/SROD2RMBlT
-   YD6lCTKao5f5Rkf4krT9vKd2vHNz1+vja3LsVfDYxb2nXBoVIq8/8AX4U
-   EJ486Qn6X5EjQFOjshIKxVanP4lDphfrxaFNdZ0gO0cbxiHSGe9npiHQo
-   AHTU7Yd03NtlP3f2exILBfq4w51ItpfI34KbKADvdIabqNotzAbv7R9f2
-   UWYfF69iYp95CiOWzTyB0zO+JrZoNJwQRJvmYmn/FLi+5/E46Ez12KUJl
+  bh=Gctnl1uIi0yVsQryw5O0kyrWBmCxjEZPN7g3AwSIGyg=;
+  b=nMG9kKWb/dX1Svv0J1Oe/2a6t5l1prABIpN+b8atmywaymTuPLA8IK2Q
+   JFboQ0qMGlZmoxbezHDZxv2uWG4KduZYbO+jUi/haEBjOMszVm9xKMpa/
+   VsZt7fIcwaOln7bAMoRqayFGc5hsUglq2enMGyO93XPB3GDOhD8sj8y5Q
+   lQ725Egknn7cdSnXI3SJbPnr6uYUjY/bvTAp/Yf5ELD8afU27ORHss/y4
+   DeyuXyV1zuEBvD3lOxJNUjEbjb0IqU/LsMpfzUGC+CgElqKVEFR+0bx2c
+   lWS9aueEI+PGgKUnA4xrjRjVagJ1VjOJTSG8WhXw5Z1huM3DJ1QjpI5xy
    Q==;
-X-CSE-ConnectionGUID: edJkvbLwT4KHXRDAUlCxCQ==
-X-CSE-MsgGUID: bWT11sEWT3WvEiId2hCGbA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11170"; a="33107830"
+X-CSE-ConnectionGUID: 8/J5WpfDT2mVnKAqlYk91g==
+X-CSE-MsgGUID: 9aG+eeM8TRetZ54cKWkitQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11170"; a="33107842"
 X-IronPort-AV: E=Sophos;i="6.10,163,1719903600"; 
-   d="scan'208";a="33107830"
+   d="scan'208";a="33107842"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
   by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2024 18:54:16 -0700
-X-CSE-ConnectionGUID: McdZgyEJTcaFqup/v69sng==
-X-CSE-MsgGUID: UGridlf7QACJ/OblBvXbTw==
+X-CSE-ConnectionGUID: mfNwC1JETdWMQdm0xrxvZA==
+X-CSE-MsgGUID: MQCVRAAgTLiXV2OOpybvJQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.10,163,1719903600"; 
-   d="scan'208";a="61078578"
+   d="scan'208";a="61078581"
 Received: from b4969164b36c.jf.intel.com ([10.165.59.5])
-  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2024 18:54:14 -0700
+  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Aug 2024 18:54:15 -0700
 From: Haitao Huang <haitao.huang@linux.intel.com>
 To: jarkko@kernel.org,
 	dave.hansen@linux.intel.com,
@@ -83,9 +83,9 @@ Cc: zhiquan1.li@intel.com,
 	mikko.ylinen@linux.intel.com,
 	yangjie@microsoft.com,
 	chrisyan@microsoft.com
-Subject: [PATCH v16 01/16] x86/sgx: Replace boolean parameters with enums
-Date: Tue, 20 Aug 2024 18:53:49 -0700
-Message-ID: <20240821015404.6038-2-haitao.huang@linux.intel.com>
+Subject: [PATCH v16 02/16] cgroup/misc: Add per resource callbacks for CSS events
+Date: Tue, 20 Aug 2024 18:53:50 -0700
+Message-ID: <20240821015404.6038-3-haitao.huang@linux.intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240821015404.6038-1-haitao.huang@linux.intel.com>
 References: <20240821015404.6038-1-haitao.huang@linux.intel.com>
@@ -97,249 +97,227 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Replace boolean parameters for 'reclaim' in the function
-sgx_alloc_epc_page() and its callers with an enum.
+From: Kristen Carlson Accardi <kristen@linux.intel.com>
 
-Also opportunistically remove non-static declaration of
-__sgx_alloc_epc_page() and a typo
+The misc cgroup controller (subsystem) currently does not perform
+resource type specific action for Cgroups Subsystem State (CSS) events:
+the 'css_alloc' event when a cgroup is created and the 'css_free' event
+when a cgroup is destroyed.
 
+Define callbacks for those events and allow resource providers to
+register the callbacks per resource type as needed. This will be
+utilized later by the EPC misc cgroup support implemented in the SGX
+driver.
+
+The SGX callbacks will need to access the 'struct misc_cg'.  Pass
+'struct misc_cg' to the callbacks but not the 'struct misc_res' because
+the latter doesn't have a pointer pointing back to 'struct misc_cg'.
+
+Link: https://lore.kernel.org/lkml/op.2kdw36otwjvjmi@hhuan26-mobl.amr.corp.intel.com/
+
+Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
+Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
 Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-Suggested-by: Jarkko Sakkinen <jarkko@kernel.org>
-Suggested-by: Dave Hansen <dave.hansen@intel.com>
 Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Reviewed-by: Kai Huang <kai.huang@intel.com>
+Reviewed-by: Tejun Heo <tj@kernel.org>
 Tested-by: Jarkko Sakkinen <jarkko@kernel.org>
 ---
- arch/x86/kernel/cpu/sgx/encl.c  | 12 ++++++------
- arch/x86/kernel/cpu/sgx/encl.h  |  4 ++--
- arch/x86/kernel/cpu/sgx/ioctl.c | 10 +++++-----
- arch/x86/kernel/cpu/sgx/main.c  | 14 +++++++-------
- arch/x86/kernel/cpu/sgx/sgx.h   | 13 +++++++++++--
- arch/x86/kernel/cpu/sgx/virt.c  |  2 +-
- 6 files changed, 32 insertions(+), 23 deletions(-)
+V16:
+- Don't call the ops if capacity is zero. (Kai)
+- Simplify the last paragraph of the commit message. (Kai)
 
-diff --git a/arch/x86/kernel/cpu/sgx/encl.c b/arch/x86/kernel/cpu/sgx/encl.c
-index 279148e72459..f474179b6f77 100644
---- a/arch/x86/kernel/cpu/sgx/encl.c
-+++ b/arch/x86/kernel/cpu/sgx/encl.c
-@@ -217,7 +217,7 @@ static struct sgx_epc_page *sgx_encl_eldu(struct sgx_encl_page *encl_page,
- 	struct sgx_epc_page *epc_page;
- 	int ret;
+V15:
+- Style fixes (Jarkko, Kai)
+- _misc_cg_res_free() takes the last index. Only call ->free() for those res types with ->alloc() successfully called. (Ridong)
+
+V12:
+- Add comments in commit to clarify reason to pass in misc_cg, not
+misc_res. (Kai)
+- Remove unlikely (Kai)
+
+V8:
+- Abstract out _misc_cg_res_free() and _misc_cg_res_alloc() (Jarkko)
+
+V7:
+- Make ops one per resource type and store them in array (Michal)
+- Rename the ops struct to misc_res_ops, and enforce the constraints of required callback
+functions (Jarkko)
+- Moved addition of priv field to patch 4 where it was used first. (Jarkko)
+
+V6:
+- Create ops struct for per resource callbacks (Jarkko)
+- Drop max_write callback (Dave, Michal)
+- Style fixes (Kai)
+---
+ include/linux/misc_cgroup.h | 11 +++++
+ kernel/cgroup/misc.c        | 88 ++++++++++++++++++++++++++++++++++---
+ 2 files changed, 93 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
+index 49eef10c8e59..e5159770a68e 100644
+--- a/include/linux/misc_cgroup.h
++++ b/include/linux/misc_cgroup.h
+@@ -28,6 +28,16 @@ struct misc_cg;
  
--	epc_page = sgx_alloc_epc_page(encl_page, false);
-+	epc_page = sgx_alloc_epc_page(encl_page, SGX_NO_RECLAIM);
- 	if (IS_ERR(epc_page))
- 		return epc_page;
- 
-@@ -359,14 +359,14 @@ static vm_fault_t sgx_encl_eaug_page(struct vm_area_struct *vma,
- 		goto err_out_unlock;
- 	}
- 
--	epc_page = sgx_alloc_epc_page(encl_page, false);
-+	epc_page = sgx_alloc_epc_page(encl_page, SGX_NO_RECLAIM);
- 	if (IS_ERR(epc_page)) {
- 		if (PTR_ERR(epc_page) == -EBUSY)
- 			vmret =  VM_FAULT_NOPAGE;
- 		goto err_out_unlock;
- 	}
- 
--	va_page = sgx_encl_grow(encl, false);
-+	va_page = sgx_encl_grow(encl, SGX_NO_RECLAIM);
- 	if (IS_ERR(va_page)) {
- 		if (PTR_ERR(va_page) == -EBUSY)
- 			vmret = VM_FAULT_NOPAGE;
-@@ -1232,8 +1232,8 @@ void sgx_zap_enclave_ptes(struct sgx_encl *encl, unsigned long addr)
- 
- /**
-  * sgx_alloc_va_page() - Allocate a Version Array (VA) page
-- * @reclaim: Reclaim EPC pages directly if none available. Enclave
-- *           mutex should not be held if this is set.
-+ * @reclaim: Whether reclaim EPC pages directly if none available. Enclave
-+ *           mutex should not be held for SGX_DO_RECLAIM.
-  *
-  * Allocate a free EPC page and convert it to a Version Array (VA) page.
-  *
-@@ -1241,7 +1241,7 @@ void sgx_zap_enclave_ptes(struct sgx_encl *encl, unsigned long addr)
-  *   a VA page,
-  *   -errno otherwise
-  */
--struct sgx_epc_page *sgx_alloc_va_page(bool reclaim)
-+struct sgx_epc_page *sgx_alloc_va_page(enum sgx_reclaim reclaim)
- {
- 	struct sgx_epc_page *epc_page;
- 	int ret;
-diff --git a/arch/x86/kernel/cpu/sgx/encl.h b/arch/x86/kernel/cpu/sgx/encl.h
-index f94ff14c9486..fe15ade02ca1 100644
---- a/arch/x86/kernel/cpu/sgx/encl.h
-+++ b/arch/x86/kernel/cpu/sgx/encl.h
-@@ -116,14 +116,14 @@ struct sgx_encl_page *sgx_encl_page_alloc(struct sgx_encl *encl,
- 					  unsigned long offset,
- 					  u64 secinfo_flags);
- void sgx_zap_enclave_ptes(struct sgx_encl *encl, unsigned long addr);
--struct sgx_epc_page *sgx_alloc_va_page(bool reclaim);
-+struct sgx_epc_page *sgx_alloc_va_page(enum sgx_reclaim reclaim);
- unsigned int sgx_alloc_va_slot(struct sgx_va_page *va_page);
- void sgx_free_va_slot(struct sgx_va_page *va_page, unsigned int offset);
- bool sgx_va_page_full(struct sgx_va_page *va_page);
- void sgx_encl_free_epc_page(struct sgx_epc_page *page);
- struct sgx_encl_page *sgx_encl_load_page(struct sgx_encl *encl,
- 					 unsigned long addr);
--struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl, bool reclaim);
-+struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl, enum sgx_reclaim reclaim);
- void sgx_encl_shrink(struct sgx_encl *encl, struct sgx_va_page *va_page);
- 
- #endif /* _X86_ENCL_H */
-diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-index b65ab214bdf5..793a0ba2cb16 100644
---- a/arch/x86/kernel/cpu/sgx/ioctl.c
-+++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -17,7 +17,7 @@
- #include "encl.h"
- #include "encls.h"
- 
--struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl, bool reclaim)
-+struct sgx_va_page *sgx_encl_grow(struct sgx_encl *encl, enum sgx_reclaim reclaim)
- {
- 	struct sgx_va_page *va_page = NULL;
- 	void *err;
-@@ -64,7 +64,7 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
- 	struct file *backing;
- 	long ret;
- 
--	va_page = sgx_encl_grow(encl, true);
-+	va_page = sgx_encl_grow(encl, SGX_DO_RECLAIM);
- 	if (IS_ERR(va_page))
- 		return PTR_ERR(va_page);
- 	else if (va_page)
-@@ -83,7 +83,7 @@ static int sgx_encl_create(struct sgx_encl *encl, struct sgx_secs *secs)
- 
- 	encl->backing = backing;
- 
--	secs_epc = sgx_alloc_epc_page(&encl->secs, true);
-+	secs_epc = sgx_alloc_epc_page(&encl->secs, SGX_DO_RECLAIM);
- 	if (IS_ERR(secs_epc)) {
- 		ret = PTR_ERR(secs_epc);
- 		goto err_out_backing;
-@@ -269,13 +269,13 @@ static int sgx_encl_add_page(struct sgx_encl *encl, unsigned long src,
- 	if (IS_ERR(encl_page))
- 		return PTR_ERR(encl_page);
- 
--	epc_page = sgx_alloc_epc_page(encl_page, true);
-+	epc_page = sgx_alloc_epc_page(encl_page, SGX_DO_RECLAIM);
- 	if (IS_ERR(epc_page)) {
- 		kfree(encl_page);
- 		return PTR_ERR(epc_page);
- 	}
- 
--	va_page = sgx_encl_grow(encl, true);
-+	va_page = sgx_encl_grow(encl, SGX_DO_RECLAIM);
- 	if (IS_ERR(va_page)) {
- 		ret = PTR_ERR(va_page);
- 		goto err_out_free;
-diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-index 27892e57c4ef..e64073fb4256 100644
---- a/arch/x86/kernel/cpu/sgx/main.c
-+++ b/arch/x86/kernel/cpu/sgx/main.c
-@@ -464,14 +464,14 @@ static struct sgx_epc_page *__sgx_alloc_epc_page_from_node(int nid)
- /**
-  * __sgx_alloc_epc_page() - Allocate an EPC page
-  *
-- * Iterate through NUMA nodes and reserve ia free EPC page to the caller. Start
-+ * Iterate through NUMA nodes and reserve a free EPC page to the caller. Start
-  * from the NUMA node, where the caller is executing.
-  *
-  * Return:
-  * - an EPC page:	A borrowed EPC pages were available.
-  * - NULL:		Out of EPC pages.
-  */
--struct sgx_epc_page *__sgx_alloc_epc_page(void)
-+static struct sgx_epc_page *__sgx_alloc_epc_page(void)
- {
- 	struct sgx_epc_page *page;
- 	int nid_of_current = numa_node_id();
-@@ -543,12 +543,12 @@ int sgx_unmark_page_reclaimable(struct sgx_epc_page *page)
- /**
-  * sgx_alloc_epc_page() - Allocate an EPC page
-  * @owner:	the owner of the EPC page
-- * @reclaim:	reclaim pages if necessary
-+ * @reclaim:	whether reclaim pages if necessary
-  *
-  * Iterate through EPC sections and borrow a free EPC page to the caller. When a
-  * page is no longer needed it must be released with sgx_free_epc_page(). If
-- * @reclaim is set to true, directly reclaim pages when we are out of pages. No
-- * mm's can be locked when @reclaim is set to true.
-+ * @reclaim is set to SGX_DO_RECLAIM, directly reclaim pages when we are out of
-+ * pages. No mm's can be locked for SGX_DO_RECLAIM.
-  *
-  * Finally, wake up ksgxd when the number of pages goes below the watermark
-  * before returning back to the caller.
-@@ -557,7 +557,7 @@ int sgx_unmark_page_reclaimable(struct sgx_epc_page *page)
-  *   an EPC page,
-  *   -errno on error
-  */
--struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
-+struct sgx_epc_page *sgx_alloc_epc_page(void *owner, enum sgx_reclaim reclaim)
- {
- 	struct sgx_epc_page *page;
- 
-@@ -571,7 +571,7 @@ struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim)
- 		if (list_empty(&sgx_active_page_list))
- 			return ERR_PTR(-ENOMEM);
- 
--		if (!reclaim) {
-+		if (reclaim == SGX_NO_RECLAIM) {
- 			page = ERR_PTR(-EBUSY);
- 			break;
- 		}
-diff --git a/arch/x86/kernel/cpu/sgx/sgx.h b/arch/x86/kernel/cpu/sgx/sgx.h
-index d2dad21259a8..ca34cd4f58ac 100644
---- a/arch/x86/kernel/cpu/sgx/sgx.h
-+++ b/arch/x86/kernel/cpu/sgx/sgx.h
-@@ -29,6 +29,16 @@
- /* Pages on free list */
- #define SGX_EPC_PAGE_IS_FREE		BIT(1)
+ #include <linux/cgroup.h>
  
 +/**
-+ * enum sgx_reclaim - Whether EPC reclamation is allowed within a function.
-+ * %SGX_NO_RECLAIM:		Do not reclaim EPC pages.
-+ * %SGX_DO_RECLAIM:		Reclaim EPC pages as needed.
++ * struct misc_res_ops: per resource type callback ops.
++ * @alloc: invoked for resource specific initialization when cgroup is allocated.
++ * @free: invoked for resource specific cleanup when cgroup is deallocated.
 + */
-+enum sgx_reclaim {
-+	SGX_NO_RECLAIM,
-+	SGX_DO_RECLAIM
++struct misc_res_ops {
++	int (*alloc)(struct misc_cg *cg);
++	void (*free)(struct misc_cg *cg);
 +};
 +
- struct sgx_epc_page {
- 	unsigned int section;
- 	u16 flags;
-@@ -83,13 +93,12 @@ static inline void *sgx_get_epc_virt_addr(struct sgx_epc_page *page)
- 	return section->virt_addr + index * PAGE_SIZE;
+ /**
+  * struct misc_res: Per cgroup per misc type resource
+  * @max: Maximum limit on the resource.
+@@ -62,6 +72,7 @@ struct misc_cg {
+ 
+ u64 misc_cg_res_total_usage(enum misc_res_type type);
+ int misc_cg_set_capacity(enum misc_res_type type, u64 capacity);
++int misc_cg_set_ops(enum misc_res_type type, const struct misc_res_ops *ops);
+ int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg, u64 amount);
+ void misc_cg_uncharge(enum misc_res_type type, struct misc_cg *cg, u64 amount);
+ 
+diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
+index 0e26068995a6..f3ce896d2c21 100644
+--- a/kernel/cgroup/misc.c
++++ b/kernel/cgroup/misc.c
+@@ -39,6 +39,9 @@ static struct misc_cg root_cg;
+  */
+ static u64 misc_res_capacity[MISC_CG_RES_TYPES];
+ 
++/* Resource type specific operations */
++static const struct misc_res_ops *misc_res_ops[MISC_CG_RES_TYPES];
++
+ /**
+  * parent_misc() - Get the parent of the passed misc cgroup.
+  * @cgroup: cgroup whose parent needs to be fetched.
+@@ -105,6 +108,41 @@ int misc_cg_set_capacity(enum misc_res_type type, u64 capacity)
+ }
+ EXPORT_SYMBOL_GPL(misc_cg_set_capacity);
+ 
++/**
++ * misc_cg_set_ops() - register resource specific operations.
++ * @type: Type of the misc res.
++ * @ops: Operations for the given type.
++ *
++ * The callbacks in @ops will not be invoked if the capacity of @type is 0.
++ *
++ * Context: Any context.
++ * Return:
++ * * %0 - Successfully registered the operations.
++ * * %-EINVAL - If @type is invalid, or the operations missing any required callbacks.
++ */
++int misc_cg_set_ops(enum misc_res_type type, const struct misc_res_ops *ops)
++{
++	if (!valid_type(type))
++		return -EINVAL;
++
++	if (!ops)
++		return -EINVAL;
++
++	if (!ops->alloc) {
++		pr_err("%s: alloc missing\n", __func__);
++		return -EINVAL;
++	}
++
++	if (!ops->free) {
++		pr_err("%s: free missing\n", __func__);
++		return -EINVAL;
++	}
++
++	misc_res_ops[type] = ops;
++	return 0;
++}
++EXPORT_SYMBOL_GPL(misc_cg_set_ops);
++
+ /**
+  * misc_cg_cancel_charge() - Cancel the charge from the misc cgroup.
+  * @type: Misc res type in misc cg to cancel the charge from.
+@@ -439,6 +477,36 @@ static struct cftype misc_cg_files[] = {
+ 	{}
+ };
+ 
++static inline void _misc_cg_res_free(struct misc_cg *cg, enum misc_res_type last)
++{
++	enum misc_res_type i;
++
++	for (i = 0; i <= last; i++)
++		if (misc_res_ops[i] && READ_ONCE(misc_res_capacity[i]))
++			misc_res_ops[i]->free(cg);
++}
++
++static inline int _misc_cg_res_alloc(struct misc_cg *cg)
++{
++	enum misc_res_type i;
++	int ret;
++
++	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
++		WRITE_ONCE(cg->res[i].max, MAX_NUM);
++		atomic64_set(&cg->res[i].usage, 0);
++
++		if (misc_res_ops[i] && READ_ONCE(misc_res_capacity[i])) {
++			ret = misc_res_ops[i]->alloc(cg);
++			if (ret) {
++				_misc_cg_res_free(cg, i);
++				return ret;
++			}
++		}
++	}
++
++	return 0;
++}
++
+ /**
+  * misc_cg_alloc() - Allocate misc cgroup.
+  * @parent_css: Parent cgroup.
+@@ -451,20 +519,25 @@ static struct cftype misc_cg_files[] = {
+ static struct cgroup_subsys_state *
+ misc_cg_alloc(struct cgroup_subsys_state *parent_css)
+ {
+-	enum misc_res_type i;
+-	struct misc_cg *cg;
++	struct misc_cg *parent_cg, *cg;
++	int ret;
+ 
+ 	if (!parent_css) {
++		parent_cg = &root_cg;
+ 		cg = &root_cg;
+ 	} else {
+ 		cg = kzalloc(sizeof(*cg), GFP_KERNEL);
+ 		if (!cg)
+ 			return ERR_PTR(-ENOMEM);
++		parent_cg = css_misc(parent_css);
+ 	}
+ 
+-	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
+-		WRITE_ONCE(cg->res[i].max, MAX_NUM);
+-		atomic64_set(&cg->res[i].usage, 0);
++	ret = _misc_cg_res_alloc(cg);
++	if (ret) {
++		if (likely(parent_css))
++			kfree(cg);
++
++		return ERR_PTR(ret);
+ 	}
+ 
+ 	return &cg->css;
+@@ -478,7 +551,10 @@ misc_cg_alloc(struct cgroup_subsys_state *parent_css)
+  */
+ static void misc_cg_free(struct cgroup_subsys_state *css)
+ {
+-	kfree(css_misc(css));
++	struct misc_cg *cg = css_misc(css);
++
++	_misc_cg_res_free(cg, MISC_CG_RES_TYPES - 1);
++	kfree(cg);
  }
  
--struct sgx_epc_page *__sgx_alloc_epc_page(void);
- void sgx_free_epc_page(struct sgx_epc_page *page);
- 
- void sgx_reclaim_direct(void);
- void sgx_mark_page_reclaimable(struct sgx_epc_page *page);
- int sgx_unmark_page_reclaimable(struct sgx_epc_page *page);
--struct sgx_epc_page *sgx_alloc_epc_page(void *owner, bool reclaim);
-+struct sgx_epc_page *sgx_alloc_epc_page(void *owner, enum sgx_reclaim reclaim);
- 
- void sgx_ipi_cb(void *info);
- 
-diff --git a/arch/x86/kernel/cpu/sgx/virt.c b/arch/x86/kernel/cpu/sgx/virt.c
-index 7aaa3652e31d..e7fdc3a9abae 100644
---- a/arch/x86/kernel/cpu/sgx/virt.c
-+++ b/arch/x86/kernel/cpu/sgx/virt.c
-@@ -46,7 +46,7 @@ static int __sgx_vepc_fault(struct sgx_vepc *vepc,
- 	if (epc_page)
- 		return 0;
- 
--	epc_page = sgx_alloc_epc_page(vepc, false);
-+	epc_page = sgx_alloc_epc_page(vepc, SGX_NO_RECLAIM);
- 	if (IS_ERR(epc_page))
- 		return PTR_ERR(epc_page);
- 
+ /* Cgroup controller callbacks */
 -- 
 2.43.0
 
