@@ -1,61 +1,61 @@
-Return-Path: <cgroups+bounces-4404-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4405-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BE4F959FAE
-	for <lists+cgroups@lfdr.de>; Wed, 21 Aug 2024 16:24:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00004959FB4
+	for <lists+cgroups@lfdr.de>; Wed, 21 Aug 2024 16:25:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 306BC1C21B9A
-	for <lists+cgroups@lfdr.de>; Wed, 21 Aug 2024 14:24:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A4A01F24105
+	for <lists+cgroups@lfdr.de>; Wed, 21 Aug 2024 14:25:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E308D1B1D56;
-	Wed, 21 Aug 2024 14:24:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 089441B2ED1;
+	Wed, 21 Aug 2024 14:24:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FUR94aa+"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gIngLvTD"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 105CD199FBF
-	for <cgroups@vger.kernel.org>; Wed, 21 Aug 2024 14:24:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AC831B2522
+	for <cgroups@vger.kernel.org>; Wed, 21 Aug 2024 14:24:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724250254; cv=none; b=GQJXSZqNpyM44Hz9BRiVWyxyfq6SMsAlGkQgKFzZ5lVNr7ORRfptRq11N7SB8fzwNLyaF11Km5dy2B4apijaq32jIVizlabjKV/PxkzoLF1VcsD/UfajTxG0D8EIvn1FKapjppVvucm2jgA1BWZFQTiuPSL4QnEk7E/fCgZFWiE=
+	t=1724250261; cv=none; b=OL3uc/alObjJbTe0JSlixXE1ycEAHKFzGoRyYaRF1vQf48E9xpNjTODSmwAGJfMzF7zX2JRHfL78ZDdCJlDfdgP5XX9q7JU1BcGjPH7dfHh+e7VGk19kCCEFrzLVkPu9J98RNz4sdsx1DWA5bMjz+lZaHLO49Bc7dekjcNaqpYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724250254; c=relaxed/simple;
-	bh=ucvLF7O3c0fVe3grdDe8hC7wK+PVqro19mTiQ6WlIxE=;
+	s=arc-20240116; t=1724250261; c=relaxed/simple;
+	bh=SbaKy7M3iE/iWGnMcfHyAGQhs+86ELqmpXUKEJwfOsc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PDROV9j92hxRs841Ieo+iXFdVs5xdv2Xm8CAoML7Al/LOdLI00ZQVY0zHAVNsw9nKEMZhaI2FtPGhWAQ7sNW49x2dXJRBK560a+I8EjNpxuQiQHIJAmHxsB/yl8bheQgcn4nIPhO13iw4hJdEk8DKD2Qk8DrKRlk0ec6S3LSHC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FUR94aa+; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=YrwxMapcBvfs2Lywk5MIxXRfGhxI0VgjJbZhwgG62yTPnqObEueGkWXSI2YNZzyNzckqz7IBMl2Md5G8Bt+4nDIk3pvdlY+bfDNViUbWGrQuXI7ASogSLPgMk5X4Ed18WnK0b7fRzHzgCXiearQhkOAqAuLzUFngYTWAL0ZcMfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gIngLvTD; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1724250252;
+	s=mimecast20190719; t=1724250258;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Ubu7FGsbiPY4OkqdpCtx75CbCRBk1e7tlQXTGsPq+NQ=;
-	b=FUR94aa+ZVYaHDHXvyLa31uX8qPTtxwu2XNoloeovmX0gtaDhTXWHzov9R++bYAum1NK46
-	PAPI8TKJwC3jf0e0aBhiANRxdrlooewHjnRHo+ktf1J0P6jmehPC00yRET6iHcW5gCwZO5
-	TylM6vZiCNYQkR26kGmWzTlrKVPU9qA=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+	bh=BJv1xpOkewDzgnM873vJ2OOFBXS4HrZ11ebZ2D3bLl8=;
+	b=gIngLvTDP6keeIOm2pUAdAKpPyDVOfTT56oV4Ml9eFgr+TdHzpaWGgqtAjeURLcrwfRoab
+	sDkW2iSupsowljnP+MXiwleav6N52jXhrYs0Ya+1EDMPK9WBu4GnEheEph5u2QtTfSYSbD
+	rGR9Sry/+l5s4yToqk9eYGIuUD/qVRU=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-118-z-Cukw-INYK51YqESshV2Q-1; Wed,
- 21 Aug 2024 10:24:08 -0400
-X-MC-Unique: z-Cukw-INYK51YqESshV2Q-1
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-247-MJswKancPfOAfp4rZEyvCQ-1; Wed,
+ 21 Aug 2024 10:24:11 -0400
+X-MC-Unique: MJswKancPfOAfp4rZEyvCQ-1
 Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E9062195F184;
-	Wed, 21 Aug 2024 14:23:58 +0000 (UTC)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3C3F11955BFE;
+	Wed, 21 Aug 2024 14:24:03 +0000 (UTC)
 Received: from llong.com (unknown [10.2.16.124])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id C308C196BBD9;
-	Wed, 21 Aug 2024 14:23:41 +0000 (UTC)
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id D1BB71955BF7;
+	Wed, 21 Aug 2024 14:23:50 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Zefan Li <lizefan.x@bytedance.com>,
 	Tejun Heo <tj@kernel.org>,
@@ -75,9 +75,9 @@ Cc: linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org,
 	Costa Shulyupin <cshulyup@redhat.com>,
 	Waiman Long <longman@redhat.com>
-Subject: [PATCH v2 1/2] sched/isolation: Exclude dynamically isolated CPUs from housekeeping masks
-Date: Wed, 21 Aug 2024 10:23:11 -0400
-Message-ID: <20240821142312.236970-2-longman@redhat.com>
+Subject: [PATCH v2 2/2] cgroup/cpuset: Exclude isolated CPUs from housekeeping CPU masks
+Date: Wed, 21 Aug 2024 10:23:12 -0400
+Message-ID: <20240821142312.236970-3-longman@redhat.com>
 In-Reply-To: <20240821142312.236970-1-longman@redhat.com>
 References: <20240821142312.236970-1-longman@redhat.com>
 Precedence: bulk
@@ -89,185 +89,116 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-The housekeeping CPU masks, set up by the "isolcpus" and "nohz_full"
-boot command line options, are used at boot time to exclude selected CPUs
-from running some kernel background processes to minimize disturbance
-to latency sensitive userspace applications. Some of housekeeping CPU
-masks are also checked at run time to avoid using those isolated CPUs.
+Call the newly introduced housekeeping_exlude_isolcpus() function to
+exclude isolated CPUs from the selected housekeeping CPU masks. This
+is in addition to the exclusion of isolated CPUs from the workqueue
+unbound CPU mask.
 
-The cpuset subsystem is now able to dynamically create a set of isolated
-CPUs to be used in isolated cpuset partitions. The long term goal is
-to make the degree of isolation as close as possible to what can be
-done statically using those boot command line options.
-
-This patch is a step in that direction by making the housekeeping CPU
-mask APIs exclude the dynamically isolated CPUs when they are called
-at run time. The housekeeping CPU masks will fall back to the bootup
-default when all the dynamically isolated CPUs are released.
-
-A new housekeeping_exlude_isolcpus() function is added which is to be
-called by the cpuset subsystem to provide a list of isolated CPUs to
-be excluded.
+Almost all the existing housekeeping cpumasks can be referenced at run
+time. Right now all of them except HK_TYPE_TICK and HK_TYPE_MANAGED_IRQ
+will be updated in the creation, deletion and modification of isolated
+partitions. More investigation will be done on the other two types.
 
 Signed-off-by: Waiman Long <longman@redhat.com>
+Acked-by: Tejun Heo <tj@kernel.org>
 ---
- include/linux/sched/isolation.h |   8 +++
- kernel/sched/isolation.c        | 112 +++++++++++++++++++++++++++++++-
- 2 files changed, 119 insertions(+), 1 deletion(-)
+ kernel/cgroup/cpuset.c | 34 +++++++++++++++++++++++++++-------
+ 1 file changed, 27 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-index 2b461129d1fa..d64fa4e60138 100644
---- a/include/linux/sched/isolation.h
-+++ b/include/linux/sched/isolation.h
-@@ -27,6 +27,8 @@ extern bool housekeeping_enabled(enum hk_type type);
- extern void housekeeping_affine(struct task_struct *t, enum hk_type type);
- extern bool housekeeping_test_cpu(int cpu, enum hk_type type);
- extern void __init housekeeping_init(void);
-+extern int housekeeping_exlude_isolcpus(const struct cpumask *isolcpus,
-+					unsigned long flags);
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 8b40df89c3c1..d3cf4b2e44c7 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -233,6 +233,15 @@ static bool		have_boot_isolcpus;
+ /* List of remote partition root children */
+ static struct list_head remote_children;
  
- #else
- 
-@@ -54,6 +56,12 @@ static inline bool housekeeping_test_cpu(int cpu, enum hk_type type)
++/*
++ * The following sets of housekeeping cpumasks can be referenced at run time
++ * and hence should be updated for CPU isolation.
++ */
++#define HOUSEKEEPING_FLAGS	(BIT(HK_TYPE_TIMER)  | BIT(HK_TYPE_RCU)  |\
++				 BIT(HK_TYPE_SCHED)  | BIT(HK_TYPE_MISC) |\
++				 BIT(HK_TYPE_DOMAIN) | BIT(HK_TYPE_WQ)   |\
++				 BIT(HK_TYPE_KTHREAD))
++
+ /*
+  * A flag to force sched domain rebuild at the end of an operation while
+  * inhibiting it in the intermediate stages when set. Currently it is only
+@@ -1588,7 +1597,15 @@ static bool partition_xcpus_del(int old_prs, struct cpuset *parent,
+ 	return isolcpus_updated;
  }
  
- static inline void housekeeping_init(void) { }
-+
-+static inline int housekeeping_exlude_isolcpus(struct cpumask *isolcpus,
-+					       unsigned long flags)
-+{
-+	return -EOPNOTSUPP;
-+}
- #endif /* CONFIG_CPU_ISOLATION */
- 
- static inline bool housekeeping_cpu(int cpu, enum hk_type type)
-diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 5891e715f00d..3018ba81eb65 100644
---- a/kernel/sched/isolation.c
-+++ b/kernel/sched/isolation.c
-@@ -28,7 +28,16 @@ struct housekeeping {
- 	unsigned long flags;
- };
- 
--static struct housekeeping housekeeping;
-+static struct housekeeping housekeeping __read_mostly;
-+
-+/*
-+ * Boot time housekeeping cpumask and flags
+-static void update_unbound_workqueue_cpumask(bool isolcpus_updated)
++/**
++ * update_isolation_cpumasks - Update external isolation CPU masks
++ * @isolcpus_updated - @true if isolation CPU masks update needed
 + *
-+ * If more than one of nohz_full or isolcpus are specified, the cpumask must
-+ * be the same or the setup will fail.
++ * The following external CPU masks will be updated if necessary:
++ * - workqueue unbound cpumask
++ * - housekeeping cpumasks
 + */
-+static cpumask_var_t boot_hk_cpumask;
-+static unsigned long  boot_hk_flags;
- 
- bool housekeeping_enabled(enum hk_type type)
++static void update_isolation_cpumasks(bool isolcpus_updated)
  {
-@@ -253,3 +262,104 @@ static int __init housekeeping_isolcpus_setup(char *str)
- 	return housekeeping_setup(str, flags);
+ 	int ret;
+ 
+@@ -1598,7 +1615,10 @@ static void update_unbound_workqueue_cpumask(bool isolcpus_updated)
+ 		return;
+ 
+ 	ret = workqueue_unbound_exclude_cpumask(isolated_cpus);
+-	WARN_ON_ONCE(ret < 0);
++	if (WARN_ON_ONCE(ret < 0))
++		return;
++	ret = housekeeping_exlude_isolcpus(isolated_cpus, HOUSEKEEPING_FLAGS);
++	WARN_ON_ONCE((ret < 0) && (ret != -EOPNOTSUPP));
  }
- __setup("isolcpus=", housekeeping_isolcpus_setup);
-+
-+/*
-+ * Save bootup housekeeping cpumask and flags
-+ */
-+static int housekeeping_save(void)
-+{
-+	enum hk_type type;
-+
-+	boot_hk_flags = housekeeping.flags;
-+	for_each_set_bit(type, &housekeeping.flags, HK_TYPE_MAX) {
-+		if (!alloc_cpumask_var(&boot_hk_cpumask, GFP_KERNEL))
-+			return -ENOMEM;
-+		cpumask_copy(boot_hk_cpumask, housekeeping.cpumasks[type]);
-+		break;
-+	}
-+	return 0;
-+}
-+
-+/*
-+ * Exclude the given dynamically isolated CPUs from the housekeeping CPUs
-+ * External synchronization is required to make sure that concurrent call to
-+ * this function will not happen.
-+ *
-+ * [TODO] The housekeeping cpumasks and flags at bootup time are currently
-+ * preserved as cpuset dynamic CPU isolation isn't as good as boot time CPU
-+ * isolation yet. Once dynamic CPU isolation is close to boot time isolation,
-+ * we will not need to save the bootup values and will allow them to be
-+ * overridden.
-+ *
-+ * Return: 0 if successful, an error code if not
-+ */
-+int housekeeping_exlude_isolcpus(const struct cpumask *isolcpus, unsigned long flags)
-+{
-+	static unsigned long alloc_flags;
-+	static cpumask_var_t tmp_mask;
-+	static bool excluded;	/* @true if some CPUs have been excluded */
-+	static bool inited;	/* @true if called before */
-+
-+	bool isolate_none = !isolcpus || cpumask_empty(isolcpus);
-+	enum hk_type type;
-+
-+	lockdep_assert_cpus_held();
-+
-+	if (isolate_none && (!inited || !excluded))
-+		return 0;
-+
-+	if (unlikely(!inited)) {
-+		if (!alloc_cpumask_var(&tmp_mask, GFP_KERNEL))
-+			return -ENOMEM;
-+		if (housekeeping.flags) {
-+			int err = housekeeping_save();
-+
-+			if (err)
-+				return err;
-+		}
-+		alloc_flags = housekeeping.flags;
-+		inited = true;
-+	}
-+
-+	if (isolate_none) {
-+		excluded = false;
-+
-+		/*
-+		 * Reset housekeeping to bootup default
-+		 */
-+		for_each_set_bit(type, &boot_hk_flags, HK_TYPE_MAX)
-+			cpumask_copy(housekeeping.cpumasks[type], boot_hk_cpumask);
-+
-+		WRITE_ONCE(housekeeping.flags, boot_hk_flags);
-+		if (!boot_hk_flags && static_key_enabled(&housekeeping_overridden))
-+			static_key_disable_cpuslocked(&housekeeping_overridden.key);
-+		return 0;
-+	}
-+
-+	/*
-+	 * Setting up the new housekeeping cpumasks
-+	 */
-+	for_each_set_bit(type, &flags, HK_TYPE_MAX) {
-+		const struct cpumask *src_mask;
-+
-+		if (!(BIT(type) & alloc_flags)) {
-+			if (!alloc_cpumask_var(&housekeeping.cpumasks[type], GFP_KERNEL))
-+				return -ENOMEM;
-+			alloc_flags |= BIT(type);
-+		}
-+		src_mask = (BIT(type) & boot_hk_flags)
-+			 ? boot_hk_cpumask : cpu_possible_mask;
-+		/*
-+		 * Make sure there is at least one online housekeeping CPU
-+		 */
-+		cpumask_andnot(tmp_mask, src_mask, isolcpus);
-+		if (!cpumask_intersects(tmp_mask, cpu_online_mask))
-+			return -EINVAL;	/* Invalid isolated CPUs */
-+		cpumask_copy(housekeeping.cpumasks[type], tmp_mask);
-+	}
-+	WRITE_ONCE(housekeeping.flags, boot_hk_flags | flags);
-+	excluded = true;
-+	if (!static_key_enabled(&housekeeping_overridden))
-+		static_key_enable_cpuslocked(&housekeeping_overridden.key);
-+	return 0;
-+}
+ 
+ /**
+@@ -1681,7 +1701,7 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
+ 	isolcpus_updated = partition_xcpus_add(new_prs, NULL, tmp->new_cpus);
+ 	list_add(&cs->remote_sibling, &remote_children);
+ 	spin_unlock_irq(&callback_lock);
+-	update_unbound_workqueue_cpumask(isolcpus_updated);
++	update_isolation_cpumasks(isolcpus_updated);
+ 
+ 	/*
+ 	 * Proprogate changes in top_cpuset's effective_cpus down the hierarchy.
+@@ -1717,7 +1737,7 @@ static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
+ 		cs->prs_err = PERR_INVCPUS;
+ 	reset_partition_data(cs);
+ 	spin_unlock_irq(&callback_lock);
+-	update_unbound_workqueue_cpumask(isolcpus_updated);
++	update_isolation_cpumasks(isolcpus_updated);
+ 
+ 	/*
+ 	 * Proprogate changes in top_cpuset's effective_cpus down the hierarchy.
+@@ -1769,7 +1789,7 @@ static void remote_cpus_update(struct cpuset *cs, struct cpumask *newmask,
+ 	if (deleting)
+ 		isolcpus_updated += partition_xcpus_del(prs, NULL, tmp->delmask);
+ 	spin_unlock_irq(&callback_lock);
+-	update_unbound_workqueue_cpumask(isolcpus_updated);
++	update_isolation_cpumasks(isolcpus_updated);
+ 
+ 	/*
+ 	 * Proprogate changes in top_cpuset's effective_cpus down the hierarchy.
+@@ -2140,7 +2160,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
+ 		WARN_ON_ONCE(parent->nr_subparts < 0);
+ 	}
+ 	spin_unlock_irq(&callback_lock);
+-	update_unbound_workqueue_cpumask(isolcpus_updated);
++	update_isolation_cpumasks(isolcpus_updated);
+ 
+ 	if ((old_prs != new_prs) && (cmd == partcmd_update))
+ 		update_partition_exclusive(cs, new_prs);
+@@ -3193,7 +3213,7 @@ static int update_prstate(struct cpuset *cs, int new_prs)
+ 	else if (new_xcpus_state)
+ 		partition_xcpus_newstate(old_prs, new_prs, cs->effective_xcpus);
+ 	spin_unlock_irq(&callback_lock);
+-	update_unbound_workqueue_cpumask(new_xcpus_state);
++	update_isolation_cpumasks(new_xcpus_state);
+ 
+ 	/* Force update if switching back to member */
+ 	update_cpumasks_hier(cs, &tmpmask, !new_prs ? HIER_CHECKALL : 0);
 -- 
 2.43.5
 
