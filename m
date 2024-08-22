@@ -1,126 +1,141 @@
-Return-Path: <cgroups+bounces-4410-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4411-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E223395AC54
-	for <lists+cgroups@lfdr.de>; Thu, 22 Aug 2024 06:01:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7028695BAC0
+	for <lists+cgroups@lfdr.de>; Thu, 22 Aug 2024 17:43:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A2031F23027
-	for <lists+cgroups@lfdr.de>; Thu, 22 Aug 2024 04:01:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0FB86B284E0
+	for <lists+cgroups@lfdr.de>; Thu, 22 Aug 2024 15:43:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E14EA1CA89;
-	Thu, 22 Aug 2024 04:01:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D750F1CCB32;
+	Thu, 22 Aug 2024 15:41:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WZUTdksn"
+	dkim=pass (2048-bit key) header.d=ovs.to header.i=@ovs.to header.b="C0xpy0xL"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+Received: from qs51p00im-qukt01072102.me.com (qs51p00im-qukt01072102.me.com [17.57.155.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B3582E416;
-	Thu, 22 Aug 2024 04:01:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90E981CC164
+	for <cgroups@vger.kernel.org>; Thu, 22 Aug 2024 15:41:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.57.155.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724299267; cv=none; b=Gm/ZbaeInhGkz4RcGpT21LRzExd4nPNkcq/+WxDPTgJUITJxsCFWNGiQgW/R0Ne3pGakLEze8vBbfup2QqmLhrxPRZKO8mn+m2Db1/wjcg72He+dfPOXWANiMcml0IiTjRNj04KJvolHwnnJLidOVDAf9SxwQvD6fyXLCK/bEd8=
+	t=1724341304; cv=none; b=cEAalwWhEtwdECp1+M2+cAx0AIsgdXiO2AmgdR9CZGanFwudNkNc15hFRJuSdmKvU9z9ifdTGSqY66C+wN/sYtwXNRof4KUCfKHKUApCyi+XUkfiZaEKOwb2rVLzsmBBjId9FgNOXDO0NVW0yd6rbg4Cx60Vj6qpg1w7AZxgm/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724299267; c=relaxed/simple;
-	bh=F/gSLtnKYiZ+iHz/9zkLaDxiaF4alUERFDL39holi40=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=fNujtI0BoY5sA+qhlGsgcjUHVgFvFiLBqRokKZpuOmKIG4qj0iYXnkywSLLC9AE5UwrbM8FwHE2pPTO9Ar20oSPi0Ump3KgMVZyL5eiTfMpmER0W0rsqCtPgDDtCwF8jtx/dYYo8TSMy8wIQ2lNiaXLQ9lPr5B6ZQRiHrf74No4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WZUTdksn; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1724299266; x=1755835266;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=F/gSLtnKYiZ+iHz/9zkLaDxiaF4alUERFDL39holi40=;
-  b=WZUTdksnv/dblUFuXguSuD2YPePL+ptGid+Kvw/LpvkKCwdn4R0p1miN
-   swk2IGeay21ONHyrsqk0I2i0t32SdRfJZJi0mSnP73PnecDgOievdmn4P
-   lSftQ9+k0xYNrlV8yLc8DwR12imc+k5V8JFXqedM5rv3BDKJpkiBHf2bu
-   ci5JO+ROTMCfULbJPThSb01tRJ94nBLaxUTli/1yaw6UnJlv8sarbkIkO
-   A90QM5tvfR+Swvscl0bOA308gbWPKxdn+bNFsXLW/ms8m7Mfm8d6yQjXw
-   h/bnbqpW00nO2Ti3WtpxoJlzUPZ4/AIPiyAl6XKpzE/LOPrL6IZ73oXIR
-   w==;
-X-CSE-ConnectionGUID: 7Ts3LtA1QSedT9+9L64VXA==
-X-CSE-MsgGUID: cw0bsFtvQ0iH7caB8WWNRA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11171"; a="26561838"
-X-IronPort-AV: E=Sophos;i="6.10,165,1719903600"; 
-   d="scan'208";a="26561838"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Aug 2024 21:01:05 -0700
-X-CSE-ConnectionGUID: Yt8gNyoYQSuimIeoYG0wlw==
-X-CSE-MsgGUID: LJUScDFqQImHR1DrzI32DA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,165,1719903600"; 
-   d="scan'208";a="61167903"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.246.119.97])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/AES256-SHA; 21 Aug 2024 21:00:56 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: jarkko@kernel.org, dave.hansen@linux.intel.com, kai.huang@intel.com,
- tj@kernel.org, mkoutny@suse.com, chenridong@huawei.com,
- linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
- cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
- hpa@zytor.com, sohil.mehta@intel.com, tim.c.chen@linux.intel.com, "Haitao
- Huang" <haitao.huang@linux.intel.com>
-Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
- zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
- yangjie@microsoft.com, chrisyan@microsoft.com
-Subject: Re: [PATCH v16 09/16] x86/sgx: Add basic EPC reclamation flow for
- cgroup
-References: <20240821015404.6038-1-haitao.huang@linux.intel.com>
- <20240821015404.6038-10-haitao.huang@linux.intel.com>
-Date: Wed, 21 Aug 2024 23:00:53 -0500
+	s=arc-20240116; t=1724341304; c=relaxed/simple;
+	bh=gJf+WP3qPo8Mj4YRr2X4VxgDyom2ZYEm9UHgmYR3aTg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=X100QHvM//5b5gP2yiH1FOAqKmc7tQpyCnAr6Xo+HIZNgLpFk8tnRkG7KdBRl0NhKgxCPoWcXEmEsVXd1ZWE77mvygyD/+9dMWVm2/QrhjEQgbvPm4rlVyT93ZigjrQf6K61ZP+HY0Bwhd747Ks3TEC30PRSjpjK+LOXiL2EgZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ovs.to; spf=pass smtp.mailfrom=ovs.to; dkim=pass (2048-bit key) header.d=ovs.to header.i=@ovs.to header.b=C0xpy0xL; arc=none smtp.client-ip=17.57.155.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ovs.to
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ovs.to
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ovs.to; s=sig1;
+	t=1724341301; bh=J2P0ooKk+oC7F7/g+fMxDtMyooWKC/Yb36wlelM+op4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=C0xpy0xLTuXV1q6Uya/4lxsaYNXJH0QrTkptBsoCP3Wdxb0xu8a+f4G7v1M4lhkXS
+	 Fa5jK1eIiUp5xCj6vBck33KmUm3aHvp3MmrfHmSOc2UZinLAjgJdxVAprRo+/ckPTa
+	 xPnEhTxbxdgty979iXlFC4e3zsc4nNJy9ehK96UDK+FKGIL4jqVbfhG+SBaW/Vai5Q
+	 SrKG6eCnz/YjdbJmhQy71POzKGhUvoRH9qn+TVEHPVyXLdXZo9PRlAACc47wDeOrb3
+	 S+lTmnu6aVr7UULOuwB+C0Er0Zp7e9/t7/kaI8P6Dq6e2/m45fm1zXAAoJPjC+Lj7r
+	 Z310qPavlgNfg==
+Received: from localhost (qs51p00im-dlb-asmtp-mailmevip.me.com [17.57.155.28])
+	by qs51p00im-qukt01072102.me.com (Postfix) with ESMTPSA id E22603402D2;
+	Thu, 22 Aug 2024 15:41:39 +0000 (UTC)
+From: Konstantin Ovsepian <ovs@ovs.to>
+To: tj@kernel.org,
+	josef@toxicpanda.com,
+	axboe@kernel.dk,
+	cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org
+Cc: leitao@debian.org,
+	ovs@meta.com
+Subject: [PATCH] blk_iocost: fix more out of bound shifts
+Date: Thu, 22 Aug 2024 08:41:36 -0700
+Message-ID: <20240822154137.2627818-1-ovs@ovs.to>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2svz3rfywjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <20240821015404.6038-10-haitao.huang@linux.intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: RLwHhUOxEtne5qUSfsKGQJ35PAHUIzDD
+X-Proofpoint-ORIG-GUID: RLwHhUOxEtne5qUSfsKGQJ35PAHUIzDD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-22_09,2024-08-22_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 adultscore=0
+ mlxscore=0 clxscore=1030 phishscore=0 malwarescore=0 bulkscore=0
+ mlxlogscore=805 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2308100000 definitions=main-2408220118
 
-> +static struct sgx_cgroup *sgx_cgroup_next_descendant_pre(struct  
-> sgx_cgroup *root,
-> +							 struct sgx_cgroup *cg)
-> +{
-> +	struct cgroup_subsys_state *next;
-> +
-> +	rcu_read_lock();
-> +	for (;;) {
-> +		next = css_next_descendant_pre(&cg->cg->css, &root->cg->css);
+Recently running UBSAN caught few out of bound shifts in the
+ioc_forgive_debts() function:
 
-I  messed it up in a last minute change and rebase. Above should be:
+UBSAN: shift-out-of-bounds in block/blk-iocost.c:2142:38
+shift exponent 80 is too large for 64-bit type 'u64' (aka 'unsigned long
+long')
+...
+UBSAN: shift-out-of-bounds in block/blk-iocost.c:2144:30
+shift exponent 80 is too large for 64-bit type 'u64' (aka 'unsigned long
+long')
+...
+Call Trace:
+<IRQ>
+dump_stack_lvl+0xca/0x130
+__ubsan_handle_shift_out_of_bounds+0x22c/0x280
+? __lock_acquire+0x6441/0x7c10
+ioc_timer_fn+0x6cec/0x7750
+? blk_iocost_init+0x720/0x720
+? call_timer_fn+0x5d/0x470
+call_timer_fn+0xfa/0x470
+? blk_iocost_init+0x720/0x720
+__run_timer_base+0x519/0x700
+...
 
-+	struct cgroup_subsys_state *next = &cg->cg->css;
+Actual impact of this issue was not identified but I propose to fix the
+undefined behaviour.
+The proposed fix to prevent those out of bound shifts consist of
+precalculating exponent before using it the shift operations by taking
+min value from the actual exponent and maximum possible number of bits.
+
+Reported-by: Breno Leitao <leitao@debian.org>
+Signed-off-by: Konstantin Ovsepian <ovs@ovs.to>
+---
+ block/blk-iocost.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index 690ca99dfaca..5a6098a3db57 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -2076,7 +2076,7 @@ static void ioc_forgive_debts(struct ioc *ioc, u64 usage_us_sum, int nr_debtors,
+ 			      struct ioc_now *now)
+ {
+ 	struct ioc_gq *iocg;
+-	u64 dur, usage_pct, nr_cycles;
++	u64 dur, usage_pct, nr_cycles, nr_cycles_shift;
+ 
+ 	/* if no debtor, reset the cycle */
+ 	if (!nr_debtors) {
+@@ -2138,10 +2138,12 @@ static void ioc_forgive_debts(struct ioc *ioc, u64 usage_us_sum, int nr_debtors,
+ 		old_debt = iocg->abs_vdebt;
+ 		old_delay = iocg->delay;
+ 
++		nr_cycles_shift = min_t(u64, nr_cycles, BITS_PER_LONG - 1);
+ 		if (iocg->abs_vdebt)
+-			iocg->abs_vdebt = iocg->abs_vdebt >> nr_cycles ?: 1;
++			iocg->abs_vdebt = iocg->abs_vdebt >> nr_cycles_shift ?: 1;
 +
-+	rcu_read_lock();
-+	for (;;) {
-+		next = css_next_descendant_pre(next, &root->cg->css);
+ 		if (iocg->delay)
+-			iocg->delay = iocg->delay >> nr_cycles ?: 1;
++			iocg->delay = iocg->delay >> nr_cycles_shift ?: 1;
+ 
+ 		iocg_kick_waitq(iocg, true, now);
+ 
+-- 
+2.43.5
 
-Fixed in a branch here:  
-https://github.com/haitaohuang/linux/tree/sgx_cg_upstream_v16_plus
-Will include in next version or update if needed.
-
-> +		if (!next) {
-> +			next = &root->cg->css;
-> +			break;
-> +		}
-> +
-> +		if (css_tryget(next))
-> +			break;
-> +	}
-> +	rcu_read_unlock();
-> +
-> +	return sgx_cgroup_from_misc_cg(css_misc(next));
-> +}
-> +
-BR
-Haitao
 
