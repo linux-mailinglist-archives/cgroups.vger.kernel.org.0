@@ -1,141 +1,295 @@
-Return-Path: <cgroups+bounces-4411-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4412-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7028695BAC0
-	for <lists+cgroups@lfdr.de>; Thu, 22 Aug 2024 17:43:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7093795BDB0
+	for <lists+cgroups@lfdr.de>; Thu, 22 Aug 2024 19:47:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0FB86B284E0
-	for <lists+cgroups@lfdr.de>; Thu, 22 Aug 2024 15:43:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2319C285D91
+	for <lists+cgroups@lfdr.de>; Thu, 22 Aug 2024 17:47:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D750F1CCB32;
-	Thu, 22 Aug 2024 15:41:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9137B1CF283;
+	Thu, 22 Aug 2024 17:47:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ovs.to header.i=@ovs.to header.b="C0xpy0xL"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UHUaQn2O"
 X-Original-To: cgroups@vger.kernel.org
-Received: from qs51p00im-qukt01072102.me.com (qs51p00im-qukt01072102.me.com [17.57.155.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90E981CC164
-	for <cgroups@vger.kernel.org>; Thu, 22 Aug 2024 15:41:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.57.155.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9495B1CC8A7
+	for <cgroups@vger.kernel.org>; Thu, 22 Aug 2024 17:47:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724341304; cv=none; b=cEAalwWhEtwdECp1+M2+cAx0AIsgdXiO2AmgdR9CZGanFwudNkNc15hFRJuSdmKvU9z9ifdTGSqY66C+wN/sYtwXNRof4KUCfKHKUApCyi+XUkfiZaEKOwb2rVLzsmBBjId9FgNOXDO0NVW0yd6rbg4Cx60Vj6qpg1w7AZxgm/c=
+	t=1724348867; cv=none; b=ARHp5bNcsMldZ+RCvHoodSY+csSUC7Kn5TY9+BTl1JdGgZeuyVPuyRkDHSBLaov/6MoaJppf0Rr3zPrC76MqHzq8bl9j+KIMZpk09/tT2NedvL4AaIt63YOVBJC4fBO91ojk/eC3OdWKF9tfl2YbXpNOLCuukGOdz0so6zboA9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724341304; c=relaxed/simple;
-	bh=gJf+WP3qPo8Mj4YRr2X4VxgDyom2ZYEm9UHgmYR3aTg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=X100QHvM//5b5gP2yiH1FOAqKmc7tQpyCnAr6Xo+HIZNgLpFk8tnRkG7KdBRl0NhKgxCPoWcXEmEsVXd1ZWE77mvygyD/+9dMWVm2/QrhjEQgbvPm4rlVyT93ZigjrQf6K61ZP+HY0Bwhd747Ks3TEC30PRSjpjK+LOXiL2EgZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ovs.to; spf=pass smtp.mailfrom=ovs.to; dkim=pass (2048-bit key) header.d=ovs.to header.i=@ovs.to header.b=C0xpy0xL; arc=none smtp.client-ip=17.57.155.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ovs.to
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ovs.to
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ovs.to; s=sig1;
-	t=1724341301; bh=J2P0ooKk+oC7F7/g+fMxDtMyooWKC/Yb36wlelM+op4=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=C0xpy0xLTuXV1q6Uya/4lxsaYNXJH0QrTkptBsoCP3Wdxb0xu8a+f4G7v1M4lhkXS
-	 Fa5jK1eIiUp5xCj6vBck33KmUm3aHvp3MmrfHmSOc2UZinLAjgJdxVAprRo+/ckPTa
-	 xPnEhTxbxdgty979iXlFC4e3zsc4nNJy9ehK96UDK+FKGIL4jqVbfhG+SBaW/Vai5Q
-	 SrKG6eCnz/YjdbJmhQy71POzKGhUvoRH9qn+TVEHPVyXLdXZo9PRlAACc47wDeOrb3
-	 S+lTmnu6aVr7UULOuwB+C0Er0Zp7e9/t7/kaI8P6Dq6e2/m45fm1zXAAoJPjC+Lj7r
-	 Z310qPavlgNfg==
-Received: from localhost (qs51p00im-dlb-asmtp-mailmevip.me.com [17.57.155.28])
-	by qs51p00im-qukt01072102.me.com (Postfix) with ESMTPSA id E22603402D2;
-	Thu, 22 Aug 2024 15:41:39 +0000 (UTC)
-From: Konstantin Ovsepian <ovs@ovs.to>
-To: tj@kernel.org,
-	josef@toxicpanda.com,
-	axboe@kernel.dk,
-	cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org
-Cc: leitao@debian.org,
-	ovs@meta.com
-Subject: [PATCH] blk_iocost: fix more out of bound shifts
-Date: Thu, 22 Aug 2024 08:41:36 -0700
-Message-ID: <20240822154137.2627818-1-ovs@ovs.to>
-X-Mailer: git-send-email 2.43.5
+	s=arc-20240116; t=1724348867; c=relaxed/simple;
+	bh=q6Acx4w/gpPfq64/oulJYn/HYe7pYYoDgXScvJE6EYc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FrXon1CCNktvMzGjdHZZ58mbCc4I5f4nzqL+1ULXk+rnL2aKA/WVV2wAMIkUdbF1Qx81tpO6/1Azxqa1HGpH1g3AlyuzWvDdXf2aS32ssizXo7NHrWIjQvHLikYmQrkobCsQk9qO2J1dZPwzHl9fmcQz4Ich8YViYDFLlpJcp7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UHUaQn2O; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a7a843bef98so129548266b.2
+        for <cgroups@vger.kernel.org>; Thu, 22 Aug 2024 10:47:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1724348864; x=1724953664; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+d+/3JN2j+IR6X0GnobgQBaQc+2mwLkx4YG52rHVeyw=;
+        b=UHUaQn2OiZcFMYqxYSMjSs0W0DAvkitoOOxF3eDluxLbmWJEysZwui5IRxE2W1JARh
+         T2fKRdP8THj4vE4qYOHRre7c/EcW2kdZ9RxjgN+l5FCts8OdH8cxyA+pQwDmr5wgKRZ3
+         G7D3jyKZTsk92EYMxz+MIh8BPpkxu3JaRawmlG9y/O5DA02NtlAVLPDq9waKbcZ/Lln8
+         sHMuIprTAjl+Bp7cdhGxeoJLdHbtfndbfFVQbFpnVGE5APO7Uxnt3KqOnaY+HapR3W0T
+         lDvwtLEMWc8LYhxiaK66wR6bzda2zaTPbixXY0i/6Ju5rbKqvqB9rvY6e8tiTQmWQsNL
+         R3NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724348864; x=1724953664;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+d+/3JN2j+IR6X0GnobgQBaQc+2mwLkx4YG52rHVeyw=;
+        b=acHnnWOSt0545ZfwMS0BFU5E4aMLzTAuFDlRsugcbFqivt0LHwhZ4OkG474+sK+1XX
+         Lkc7MBLLOhLGuDsVdX/qHZ07sUcFpoZnd4F7n+IXSefYdejQf07F3IuqZTutnkZKJNk9
+         lbUrz5PO1PUrUckilUqG8YaMg9rEYOpA0PL8AhRhOCoagI64zjovW795InrWaRu1NKVX
+         uV9UXBgEoObQpbHUyjCWLSM8UdEgzKkSoYWjmfIzkoL/EJTcy17xv/QuC9B2WVJGoa1E
+         IOq4+l0Y/PAhXq6L9eFaF4YHhmnqqZuAnbx0Ld4DeJwSWyfm4MAtnAIhloAnlVNW4iMx
+         tKAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUclI1vMs3BJuP39SXFRTWwEzNYzQEYoqPjV65lLO6hZ7VgQAxmrgraM/1KDBD9BGF+CfsE/s3C@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx7TSHFZuXu6Q/NIZs2mrhKtHPHIMRmuzakLgwv103TK5NJZDwB
+	JJ8dedHwtlU+tmVhbOrYApkrKFEWWZrUNjngwqPQ6DwE0FuqumtcWSrGkJZOKJ3PHmDqArlqwyT
+	F939RlexSg/eDSkeu3p+l8PMR1oSpEexRLDw/
+X-Google-Smtp-Source: AGHT+IEIB/sAcCVMEpN3z08j+zbYb8nUxKknSRWyl3cnas6NGtB+MeRmDWhfLCACOfDLHCFajCUgiqMgcKAl/lGIRG8=
+X-Received: by 2002:a17:907:5cb:b0:a86:700f:93c0 with SMTP id
+ a640c23a62f3a-a8691b64e4emr280264866b.35.1724348863010; Thu, 22 Aug 2024
+ 10:47:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: RLwHhUOxEtne5qUSfsKGQJ35PAHUIzDD
-X-Proofpoint-ORIG-GUID: RLwHhUOxEtne5qUSfsKGQJ35PAHUIzDD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-22_09,2024-08-22_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 adultscore=0
- mlxscore=0 clxscore=1030 phishscore=0 malwarescore=0 bulkscore=0
- mlxlogscore=805 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2308100000 definitions=main-2408220118
+References: <20240816144344.18135-1-me@yhndnzj.com> <20240816144344.18135-2-me@yhndnzj.com>
+ <CAJD7tkYRiA7113ehpXoiafJtk8Z+j6nV_bQWK0xoX3KaK6=wcQ@mail.gmail.com> <9e39ed273b5e25e3d2f33c5a2b8e3131efbfcedc.camel@yhndnzj.com>
+In-Reply-To: <9e39ed273b5e25e3d2f33c5a2b8e3131efbfcedc.camel@yhndnzj.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Thu, 22 Aug 2024 10:47:05 -0700
+Message-ID: <CAJD7tkYpKA+iGFsan6B0GWT6_bOPX+83hjMQnmR11F6WX1vhiw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] selftests: test_zswap: add test for hierarchical zswap.writeback
+To: Mike Yuan <me@yhndnzj.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Muchun Song <muchun.song@linux.dev>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Michal Hocko <mhocko@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Recently running UBSAN caught few out of bound shifts in the
-ioc_forgive_debts() function:
+On Tue, Aug 20, 2024 at 2:44=E2=80=AFAM Mike Yuan <me@yhndnzj.com> wrote:
+>
+> On 2024-08-19 at 12:19 -0700, Yosry Ahmed wrote:
+> > On Fri, Aug 16, 2024 at 7:44=E2=80=AFAM Mike Yuan <me@yhndnzj.com> wrot=
+e:
+> > >
+> > > Ensure that zswap.writeback check goes up the cgroup tree.
+> >
+> > Too concise :) Perhaps a little bit of description of what you are
+> > doing would be helpful.
+>
+> The patch has been merged into mm-unstable tree. Do I need to
+> send a v3 to resolve the comments?
 
-UBSAN: shift-out-of-bounds in block/blk-iocost.c:2142:38
-shift exponent 80 is too large for 64-bit type 'u64' (aka 'unsigned long
-long')
-...
-UBSAN: shift-out-of-bounds in block/blk-iocost.c:2144:30
-shift exponent 80 is too large for 64-bit type 'u64' (aka 'unsigned long
-long')
-...
-Call Trace:
-<IRQ>
-dump_stack_lvl+0xca/0x130
-__ubsan_handle_shift_out_of_bounds+0x22c/0x280
-? __lock_acquire+0x6441/0x7c10
-ioc_timer_fn+0x6cec/0x7750
-? blk_iocost_init+0x720/0x720
-? call_timer_fn+0x5d/0x470
-call_timer_fn+0xfa/0x470
-? blk_iocost_init+0x720/0x720
-__run_timer_base+0x519/0x700
-...
+You can send a new version and Andrew usually replaces them. If the
+changes are too trivial sometimes Andrew is nice enough to make
+amendments directly :)
 
-Actual impact of this issue was not identified but I propose to fix the
-undefined behaviour.
-The proposed fix to prevent those out of bound shifts consist of
-precalculating exponent before using it the shift operations by taking
-min value from the actual exponent and maximum possible number of bits.
+>
+> > >
+> > > Signed-off-by: Mike Yuan <me@yhndnzj.com>
+> > > ---
+> > >  tools/testing/selftests/cgroup/test_zswap.c | 69 ++++++++++++++---
+> > > ----
+> > >  1 file changed, 48 insertions(+), 21 deletions(-)
+> > >
+> > > diff --git a/tools/testing/selftests/cgroup/test_zswap.c
+> > > b/tools/testing/selftests/cgroup/test_zswap.c
+> > > index 190096017f80..7da6f9dc1066 100644
+> > > --- a/tools/testing/selftests/cgroup/test_zswap.c
+> > > +++ b/tools/testing/selftests/cgroup/test_zswap.c
+> > > @@ -263,15 +263,13 @@ static int test_zswapin(const char *root)
+> > >  static int attempt_writeback(const char *cgroup, void *arg)
+> > >  {
+> > >         long pagesize =3D sysconf(_SC_PAGESIZE);
+> > > -       char *test_group =3D arg;
+> > >         size_t memsize =3D MB(4);
+> > >         char buf[pagesize];
+> > >         long zswap_usage;
+> > > -       bool wb_enabled;
+> > > +       bool wb_enabled =3D *(bool *) arg;
+> > >         int ret =3D -1;
+> > >         char *mem;
+> > >
+> > > -       wb_enabled =3D cg_read_long(test_group,
+> > > "memory.zswap.writeback");
+> > >         mem =3D (char *)malloc(memsize);
+> > >         if (!mem)
+> > >                 return ret;
+> > > @@ -288,12 +286,12 @@ static int attempt_writeback(const char
+> > > *cgroup, void *arg)
+> > >                 memcpy(&mem[i], buf, pagesize);
+> > >
+> > >         /* Try and reclaim allocated memory */
+> > > -       if (cg_write_numeric(test_group, "memory.reclaim",
+> > > memsize)) {
+> > > +       if (cg_write_numeric(cgroup, "memory.reclaim", memsize)) {
+> > >                 ksft_print_msg("Failed to reclaim all of the
+> > > requested memory\n");
+> > >                 goto out;
+> > >         }
+> > >
+> > > -       zswap_usage =3D cg_read_long(test_group,
+> > > "memory.zswap.current");
+> > > +       zswap_usage =3D cg_read_long(cgroup, "memory.zswap.current");
+> > >
+> > >         /* zswpin */
+> > >         for (int i =3D 0; i < memsize; i +=3D pagesize) {
+> > > @@ -303,7 +301,7 @@ static int attempt_writeback(const char
+> > > *cgroup, void *arg)
+> > >                 }
+> > >         }
+> > >
+> > > -       if (cg_write_numeric(test_group, "memory.zswap.max",
+> > > zswap_usage/2))
+> > > +       if (cg_write_numeric(cgroup, "memory.zswap.max",
+> > > zswap_usage/2))
+> > >                 goto out;
+> > >
+> > >         /*
+> > > @@ -312,7 +310,7 @@ static int attempt_writeback(const char
+> > > *cgroup, void *arg)
+> > >          * If writeback is disabled, memory reclaim will fail as
+> > > zswap is limited and
+> > >          * it can't writeback to swap.
+> > >          */
+> > > -       ret =3D cg_write_numeric(test_group, "memory.reclaim",
+> > > memsize);
+> > > +       ret =3D cg_write_numeric(cgroup, "memory.reclaim", memsize);
+> > >         if (!wb_enabled)
+> > >                 ret =3D (ret =3D=3D -EAGAIN) ? 0 : -1;
+> > >
+> > > @@ -321,12 +319,38 @@ static int attempt_writeback(const char
+> > > *cgroup, void *arg)
+> > >         return ret;
+> > >  }
+> > >
+> > > +static int test_zswap_writeback_one(const char *cgroup, bool wb)
+> > > +{
+> > > +       long zswpwb_before, zswpwb_after;
+> > > +
+> > > +       zswpwb_before =3D get_cg_wb_count(cgroup);
+> > > +       if (zswpwb_before !=3D 0) {
+> > > +               ksft_print_msg("zswpwb_before =3D %ld instead of
+> > > 0\n", zswpwb_before);
+> > > +               return -1;
+> > > +       }
+> > > +
+> > > +       if (cg_run(cgroup, attempt_writeback, (void *) &wb))
+> > > +               return -1;
+> > > +
+> > > +       /* Verify that zswap writeback occurred only if writeback
+> > > was enabled */
+> > > +       zswpwb_after =3D get_cg_wb_count(cgroup);
+> > > +       if (zswpwb_after < 0)
+> > > +               return -1;
+> > > +
+> > > +       if (wb !=3D !!zswpwb_after) {
+> > > +               ksft_print_msg("zswpwb_after is %ld while wb is
+> > > %s",
+> > > +                               zswpwb_after, wb ? "enabled" :
+> > > "disabled");
+> > > +               return -1;
+> > > +       }
+> > > +
+> > > +       return 0;
+> > > +}
+> > > +
+> > >  /* Test to verify the zswap writeback path */
+> > >  static int test_zswap_writeback(const char *root, bool wb)
+> > >  {
+> > > -       long zswpwb_before, zswpwb_after;
+> > >         int ret =3D KSFT_FAIL;
+> > > -       char *test_group;
+> > > +       char *test_group, *test_group_child =3D NULL;
+> > >
+> > >         test_group =3D cg_name(root, "zswap_writeback_test");
+> > >         if (!test_group)
+> > > @@ -336,29 +360,32 @@ static int test_zswap_writeback(const char
+> > > *root, bool wb)
+> > >         if (cg_write(test_group, "memory.zswap.writeback", wb ? "1"
+> > > : "0"))
+> > >                 goto out;
+> > >
+> > > -       zswpwb_before =3D get_cg_wb_count(test_group);
+> > > -       if (zswpwb_before !=3D 0) {
+> > > -               ksft_print_msg("zswpwb_before =3D %ld instead of
+> > > 0\n", zswpwb_before);
+> > > +       if (test_zswap_writeback_one(test_group, wb))
+> > >                 goto out;
+> > > -       }
+> > >
+> > > -       if (cg_run(test_group, attempt_writeback, (void *)
+> > > test_group))
+> > > +       if (cg_write(test_group, "memory.zswap.max", "max"))
+> > > +               goto out;
+> >
+> > Why is this needed? Isn't this the default value?
+>
+> attempt_writeback() would modify it.
 
-Reported-by: Breno Leitao <leitao@debian.org>
-Signed-off-by: Konstantin Ovsepian <ovs@ovs.to>
----
- block/blk-iocost.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+Oh yes, missed that.
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 690ca99dfaca..5a6098a3db57 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -2076,7 +2076,7 @@ static void ioc_forgive_debts(struct ioc *ioc, u64 usage_us_sum, int nr_debtors,
- 			      struct ioc_now *now)
- {
- 	struct ioc_gq *iocg;
--	u64 dur, usage_pct, nr_cycles;
-+	u64 dur, usage_pct, nr_cycles, nr_cycles_shift;
- 
- 	/* if no debtor, reset the cycle */
- 	if (!nr_debtors) {
-@@ -2138,10 +2138,12 @@ static void ioc_forgive_debts(struct ioc *ioc, u64 usage_us_sum, int nr_debtors,
- 		old_debt = iocg->abs_vdebt;
- 		old_delay = iocg->delay;
- 
-+		nr_cycles_shift = min_t(u64, nr_cycles, BITS_PER_LONG - 1);
- 		if (iocg->abs_vdebt)
--			iocg->abs_vdebt = iocg->abs_vdebt >> nr_cycles ?: 1;
-+			iocg->abs_vdebt = iocg->abs_vdebt >> nr_cycles_shift ?: 1;
-+
- 		if (iocg->delay)
--			iocg->delay = iocg->delay >> nr_cycles ?: 1;
-+			iocg->delay = iocg->delay >> nr_cycles_shift ?: 1;
- 
- 		iocg_kick_waitq(iocg, true, now);
- 
--- 
-2.43.5
+>
+> > > +       if (cg_write(test_group, "cgroup.subtree_control",
+> > > "+memory"))
+> > >                 goto out;
+> > >
+> > > -       /* Verify that zswap writeback occurred only if writeback
+> > > was enabled */
+> > > -       zswpwb_after =3D get_cg_wb_count(test_group);
+> > > -       if (zswpwb_after < 0)
+> > > +       test_group_child =3D cg_name(test_group,
+> > > "zswap_writeback_test_child");
+> > > +       if (!test_group_child)
+> > > +               goto out;
+> > > +       if (cg_create(test_group_child))
+> > > +               goto out;
+> >
+> > I'd rather have all the hierarchy setup at the beginning of the test,
+> > before the actual test logic. I don't feel strongly about it though.
+> >
+> > > +       if (cg_write(test_group_child, "memory.zswap.writeback",
+> > > "1"))
+> > >                 goto out;
+> >
+> > Is the idea here that we always hardcode the child's zswap.writeback
+> > to 1, and the parent's zswap.writeback changes from 0 to 1, and we
+> > check that the parent's value is what matters?
+> > I think we need a comment here.
+>
+> Yes, indeed.
+>
+> > TBH, I expected a separate test that checks different combinations of
+> > parent and child values (e.g. also verifies that if the parent is
+> > enabled but child is disabled, writeback is disabled).
+>
+> That's (implicitly) covered by the test itself IIUC? The parent cgroup
+> here is in turn the child of root cgroup.
 
+This assumes that the root has zswap writeback enabled, but that's a
+fair assumption as otherwise all the writeback tests will fail.
+
+TBH I'd prefer a standalone test rather than these implicitly tested scenar=
+ios.
 
