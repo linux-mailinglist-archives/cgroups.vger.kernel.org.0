@@ -1,72 +1,72 @@
-Return-Path: <cgroups+bounces-4426-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4427-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E26D95CBFE
-	for <lists+cgroups@lfdr.de>; Fri, 23 Aug 2024 14:05:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1730695CC3F
+	for <lists+cgroups@lfdr.de>; Fri, 23 Aug 2024 14:20:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD0241F24EAA
-	for <lists+cgroups@lfdr.de>; Fri, 23 Aug 2024 12:05:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6AFF9B21F37
+	for <lists+cgroups@lfdr.de>; Fri, 23 Aug 2024 12:20:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F2BA18454D;
-	Fri, 23 Aug 2024 12:05:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 958CE184548;
+	Fri, 23 Aug 2024 12:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kLyY1w48"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xa6v6zEA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56586469D;
-	Fri, 23 Aug 2024 12:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8BEE9457;
+	Fri, 23 Aug 2024 12:19:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724414732; cv=none; b=N6HStA3Z1Us/6pYWx0WgSQW9LWWEKehRrHaY9HGeHZD+bg0VD5ZEI49GSJshf5gYUlJYzS5rg9ef9eOsbi5i2SaBsc8AaSyVMJiQEXMcYvJxncBpthJSRov/HFC8EWq4gJRSbP3SRmIQO679sOqaJ46oCtXMvkDPIesfyxzwISk=
+	t=1724415598; cv=none; b=AXf/6i9y690jAndxsSn/pyOZ8lHa+3ASqCrtHlg8VWmcvRD9ktyeEiQi8wQA1eT62sMEko58s7Wo66wZ5fvDleXFE5vCF1Z7wxxjqhWj592hmP1SLqpOQdLIwayc9hujAZfyH2eAgFJnigiDi/SlrZY8OB2qEqMgUEqB5gTi99M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724414732; c=relaxed/simple;
-	bh=l+hCrY5l9keGyncU+U1dVQs3d0AfB9D3PDkeHQUNa08=;
+	s=arc-20240116; t=1724415598; c=relaxed/simple;
+	bh=UNUCMHj/hyaQMFc8KHdZF7HyFyUqAA9VUiUHkYXLnpM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NmcpecUnUeUK/1hjzqUCO9nIIyliqDh+54XHdusRCdYZ8ag1/dzY3NE9euCswA0XDebRh+wnlo3oA5QnPZAN/dwyJCtC5n3+RJsWVA3pFTgjR/Rzlmq+BrPcI8pcjtA7PhuTH7hu+XNNysi97wofobQu9YegKzpaWeTdfb5gCbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kLyY1w48; arc=none smtp.client-ip=209.85.214.182
+	 MIME-Version; b=DEQKhnPrBB9/1iaUqhwp94lUU/9oVPS9As8CP948Oe/ZaTAfSa2jCmqfLngdLZ1Uq5zeWc5CQll8HSKKLQBcqBjQP4xxMPu0decOBOgI3tpxL/iZWQJxGcy4QJaHxRHaWx37nz79GAKqDQDosUoxcTtPHNDex2XfXbdcAm4HRmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xa6v6zEA; arc=none smtp.client-ip=209.85.210.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-20227ba378eso16925775ad.0;
-        Fri, 23 Aug 2024 05:05:30 -0700 (PDT)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-7140ff4b1e9so1564857b3a.3;
+        Fri, 23 Aug 2024 05:19:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724414730; x=1725019530; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1724415596; x=1725020396; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=D0VE6+ZYrN9BjyYYtqs8go1pj9o6RckfxkFxS0nV9kY=;
-        b=kLyY1w48Lg+OzqNxBlDTnDXDZJ/7Lc8YCLAWw61fkW3XC0R86pYHMjd0LHHHIR7bpi
-         MZtDmRUMDMwCiCSkr0CykUdCK32XX2aQE6j8G5xI4BbxNnQS4U6fCpCCt5UkzQc37qF+
-         yTSRd1NOCB9oZ77hp+eAk0EIsyE10PpsWgqc0HrU67y1i8beew9kA10DNzQfTpknRiDj
-         SkP7q8HTj6md98i+sbso7zlhvT9u438oz4Pm8PPVxYKWiST7tqDATmVvKYtHLIFEKfAj
-         VUqbwIQW4UNhaN6meM4VCt6r6TzTKp2DtBMwrmqmmt3vB4ajlXMO01dFchwZqE9XbiDO
-         3Wdg==
+        bh=UNUCMHj/hyaQMFc8KHdZF7HyFyUqAA9VUiUHkYXLnpM=;
+        b=Xa6v6zEA7tUCKrIb6hfZzLzdaLXhpfT2d2451CCsYTs4yXdJX4Kz4r7iLdu4VE2Blj
+         2Lf8rVGpxBdHDIuYerhg3qfo9+TRgmlRMsK3N9NYQl37FHC9fEnG7PzqUr6ludPTb3do
+         9+G0/OOE6QiUmVPVOVzdEPvssmdYdCtGlDmH/fkE7UoFxulZBvucPnuRtf90lZszHlH6
+         lYQNkmZwMv/1ua27NiRDVurAeMC4avrRL5/OSoG9NK+lWn2RHkmz4DtapRGltGI5231D
+         NaUE+M5fRqXPmQUgYLuUwMa/6Ub/iaA3Afm4g6MoccobCzRxrynXRif0Apg7UoIPR1Da
+         9CBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724414730; x=1725019530;
+        d=1e100.net; s=20230601; t=1724415596; x=1725020396;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=D0VE6+ZYrN9BjyYYtqs8go1pj9o6RckfxkFxS0nV9kY=;
-        b=BnLCtUUjktCVJXzNMjz4O8TgZGL6p8n/mOkrQqtNOOykSh3xwOxqqA4vnIkELLFrl+
-         JgUySQeAkVMefhl6tsPg0NcVnKh3v4PiWinNc5zRR3z2vtKjPA1I2BQXPW/dvN8qzo2o
-         Jx2YC4cMJUPQu8JtUuz3ErtjsKeuHhhFVUUMo83R1QMF13zhJLFk/8Tna8PNBoozkpmC
-         9M/99SGQDKDd+IPSzaVxrz7wfhTLF4IUxoc+AVPkkpHSdOkF0CkeRE0UBJ0uNnOGBX1j
-         pyo4Z+Abtf22jO0kl2+JkWb59K8rkn0B+maMYVP5HUxuGA8rpzWnWnmH31iHNe95SRWO
-         IlWw==
-X-Forwarded-Encrypted: i=1; AJvYcCUATl0drz2vfIROQtvPZixz/cLHqF1LMxK5ENDbWLDTkVxqvxyV1kdLMKKzUM/HADR+Xv3mJDpL@vger.kernel.org, AJvYcCUrhDWktRQMvg8RECBDGtT0h2jgJzw5rsfTVoRN6sH/IaJCbKyPDTqPQrhQgrPuBhSz3W7fOeTn3ZjW9v8=@vger.kernel.org, AJvYcCWNyhFZXnMFRgSkyXm2bPkHQb9wJVGjN+4AO8g2DGkuOvNCvVRoMiB8/z+AGw7KvWcQLTL1/3vb5bS4zgqF@vger.kernel.org
-X-Gm-Message-State: AOJu0YzFlyDzqLFbCP0P91pDLaVtgkbwy5g3ZRv0NlaORGcBoIndvKXm
-	9jVczmVWi4xwN2Dw/rjI+JdPwb18Xk1dI3xUMtq5xu0EocuetOJN
-X-Google-Smtp-Source: AGHT+IEO6vi7aDxUStR4vKn6XDyg1NSSxU2zhFU6iMHn0Wj3RSHkrpPNZRQJloReLTJaYDsR8rgAIA==
-X-Received: by 2002:a17:902:e88f:b0:1fd:96e1:801e with SMTP id d9443c01a7336-2039e4f6ae6mr17650795ad.51.1724414729187;
-        Fri, 23 Aug 2024 05:05:29 -0700 (PDT)
+        bh=UNUCMHj/hyaQMFc8KHdZF7HyFyUqAA9VUiUHkYXLnpM=;
+        b=kq/jVRHk7tJZgDjImDSRD7lft69ECCOxnygvZ2zX9UWBpW5qljDLXyJ/tbtoZRGt1S
+         Ft65jKSe2L4m6QeSZwLMJPnks8flOYyltoWQ+c2SuPQTfEyYOwlYVGO43N3r5pWsCT5X
+         ti2hHestAcBCNscn1FDGHp7HaEDF4jccWOFjOhvtpgFfQupLcGPVz6dr919kNvbyKzsa
+         Zbno8aRxoB2jBPzY65t8LCVsD4kwME4Nuq9UU3QDT43qS/eFzgIP943ljZiz/y/rINkg
+         0SEm5e5aeC6LWBZuweTTdxPvZbhn0Fb+3eE0w8H355w6jLQaY/PPEKugDaBrGnRODLb+
+         Pl0A==
+X-Forwarded-Encrypted: i=1; AJvYcCVK1XWCsQ3DNBxNzMrf7ZCh09js8gagqBHBpFGOG6Z247diqJvZ38+v91NfolAS6o0lUpdGi1/sahfjWYwm@vger.kernel.org, AJvYcCWvgtBX8whVrmU74OeKF0PzBBDL1SKIRErg0tcjCXgknszoWpMvuYrowNxsAsIz6yNcPPgHah7L@vger.kernel.org, AJvYcCXCKfaHkFI5dmLEb/b/hmKholwPHhghpBZK6NQi5NJXZaLMMBEGUArqVIN+w+K0BlAgEynYodElts8QYMM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyY8J8ym/cyqBUUCBGmW3hLzxTV6s80VyiW7S+YtAQk4/IoQzaX
+	WV8spB+fWgdF1kGxxvvXyvLbmN1do+liqHfgfIAdykDyiLy6xneA
+X-Google-Smtp-Source: AGHT+IGzc7ioPCbQCUlxcip72zBvSMtYRgGsnomQD6AMKfga1Ybtd8vRCH2kemIvGrXuqleOIpl3tQ==
+X-Received: by 2002:a05:6a20:e18a:b0:1c3:ff33:246b with SMTP id adf61e73a8af0-1cc89ed999cmr2643659637.40.1724415595687;
+        Fri, 23 Aug 2024 05:19:55 -0700 (PDT)
 Received: from EBJ9932692.tcent.cn ([124.156.216.125])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20385609dddsm27009595ad.196.2024.08.23.05.05.23
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7cd9ad5529csm2955543a12.68.2024.08.23.05.19.48
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 23 Aug 2024 05:05:28 -0700 (PDT)
+        Fri, 23 Aug 2024 05:19:55 -0700 (PDT)
 From: Lance Yang <ioworker0@gmail.com>
 To: yukuai1@huaweicloud.com
 Cc: 21cnbao@gmail.com,
@@ -89,8 +89,8 @@ Cc: 21cnbao@gmail.com,
 	vbabka@kernel.org,
 	yukuai3@huawei.com
 Subject: Re: [BUG] cgroupv2/blk: inconsistent I/O behavior in Cgroup v2 with set device wbps and wiops
-Date: Fri, 23 Aug 2024 20:05:02 +0800
-Message-ID: <20240823120510.61853-1-ioworker0@gmail.com>
+Date: Fri, 23 Aug 2024 20:19:39 +0800
+Message-ID: <20240823121939.65934-1-ioworker0@gmail.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <7c3499ac-faa7-cc0c-2d90-b8291fce5492@huaweicloud.com>
 References: <7c3499ac-faa7-cc0c-2d90-b8291fce5492@huaweicloud.com>
@@ -100,336 +100,138 @@ List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-My bad, I got tied up with some stuff :(
-
-Hmm... tried your debug patch today, but my test results are different from
-yours. So let's take a look at direct IO with raw disk first.
-
-```
-$ lsblk
-NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
-sda      8:0    0   90G  0 disk
-├─sda1   8:1    0    1G  0 part /boot/efi
-└─sda2   8:2    0 88.9G  0 part /
-sdb      8:16   0   10G  0 disk
-
-$ cat  /sys/block/sda/queue/scheduler
-none [mq-deadline]
-
-$ cat  /sys/block/sda/queue/rotational
-0
-
-$ cat  /sys/block/sdb/queue/rotational
-0
-
-$ cat  /sys/block/sdb/queue/scheduler
-none [mq-deadline]
-
-$ cat /boot/config-6.11.0-rc3+ |grep CONFIG_CGROUP_
-# CONFIG_CGROUP_FAVOR_DYNMODS is not set
-CONFIG_CGROUP_WRITEBACK=y
-CONFIG_CGROUP_SCHED=y
-CONFIG_CGROUP_PIDS=y
-CONFIG_CGROUP_RDMA=y
-CONFIG_CGROUP_FREEZER=y
-CONFIG_CGROUP_HUGETLB=y
-CONFIG_CGROUP_DEVICE=y
-CONFIG_CGROUP_CPUACCT=y
-CONFIG_CGROUP_PERF=y
-CONFIG_CGROUP_BPF=y
-CONFIG_CGROUP_MISC=y
-# CONFIG_CGROUP_DEBUG is not set
-CONFIG_CGROUP_NET_PRIO=y
-CONFIG_CGROUP_NET_CLASSID=y
-
-$ cd /sys/fs/cgroup/test/ && cat cgroup.controllers
-cpu io memory pids
-
-$ cat io.weight
-default 100
-
-$ cat io.prio.class
-no-change
-```
-
-With wiops, the result is as follows:
-
-```
-$ echo "8:16 wbps=10485760 wiops=100000" > io.max
-
-$ dd if=/dev/zero of=/dev/sdb bs=50M count=1 oflag=direct
-1+0 records in
-1+0 records out
-52428800 bytes (52 MB, 50 MiB) copied, 5.05893 s, 10.4 MB/s
-
-$ dmesg -T
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 2984 ffff0000fb3a8f00
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 6176 ffff0000fb3a97c0
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 7224 ffff0000fb3a9180
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 16384 ffff0000fb3a8640
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 16384 ffff0000fb3a9400
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 16384 ffff0000fb3a8c80
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 16384 ffff0000fb3a9040
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 16384 ffff0000fb3a92c0
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 4096 ffff0000fb3a8000
-[Fri Aug 23 11:04:08 2024] blk_throtl_dispatch_work_fn: bio done 2984 ffff0000fb3a8f00
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 1400 ffff0000fb3a8f00
-[Fri Aug 23 11:04:08 2024] blk_throtl_dispatch_work_fn: bio done 6176 ffff0000fb3a97c0
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 3616 ffff0000fb3a97c0
-[Fri Aug 23 11:04:08 2024] blk_throtl_dispatch_work_fn: bio done 7224 ffff0000fb3a9180
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 4664 ffff0000fb3a9180
-[Fri Aug 23 11:04:09 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000fb3a8640
-[Fri Aug 23 11:04:09 2024] __blk_throtl_bio: bio start 13824 ffff0000fb3a8640
-[Fri Aug 23 11:04:10 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000fb3a9400
-[Fri Aug 23 11:04:10 2024] __blk_throtl_bio: bio start 13824 ffff0000fb3a9400
-[Fri Aug 23 11:04:11 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000fb3a8c80
-[Fri Aug 23 11:04:11 2024] __blk_throtl_bio: bio start 13824 ffff0000fb3a8c80
-[Fri Aug 23 11:04:12 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000fb3a9040
-[Fri Aug 23 11:04:12 2024] __blk_throtl_bio: bio start 13824 ffff0000fb3a9040
-[Fri Aug 23 11:04:12 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000fb3a92c0
-[Fri Aug 23 11:04:12 2024] __blk_throtl_bio: bio start 13824 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 4096 ffff0000fb3a8000
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 1536 ffff0000fb3a8000
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 1536 ffff0000fb3a8000
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 1400 ffff0000fb3a8f00
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 3616 ffff0000fb3a97c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 1056 ffff0000fb3a97c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 1056 ffff0000fb3a97c0
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 4664 ffff0000fb3a9180
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 2104 ffff0000fb3a9180
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 2104 ffff0000fb3a9180
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 11264 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 11264 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 8704 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 8704 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 6144 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 6144 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 3584 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 3584 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 1024 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 1024 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 11264 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 11264 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 8704 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 8704 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 6144 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 6144 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 3584 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 3584 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 1024 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 1024 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 11264 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 11264 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 8704 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 8704 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 6144 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 6144 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 3584 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 3584 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 1024 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 1024 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 11264 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 11264 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 8704 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 8704 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 6144 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 6144 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 3584 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 3584 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 1024 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 1024 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 11264 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 11264 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 8704 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 8704 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 6144 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 6144 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 3584 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 3584 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 1024 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 1024 ffff0000fb3a92c0
-```
-
-And without wiops, the result is quite different:
-
-```
-$ echo "8:16 wbps=10485760 wiops=max" > io.max
-
-$ dd if=/dev/zero of=/dev/sdb bs=50M count=1 oflag=direct
-1+0 records in
-1+0 records out
-52428800 bytes (52 MB, 50 MiB) copied, 5.08187 s, 10.3 MB/s
-
-$ dmesg -T
-[Fri Aug 23 10:59:10 2024] __blk_throtl_bio: bio start 2880 ffff0000c74659c0
-[Fri Aug 23 10:59:10 2024] __blk_throtl_bio: bio start 6992 ffff00014f621b80
-[Fri Aug 23 10:59:10 2024] __blk_throtl_bio: bio start 92528 ffff00014f620dc0
-[Fri Aug 23 10:59:10 2024] blk_throtl_dispatch_work_fn: bio done 2880 ffff0000c74659c0
-[Fri Aug 23 10:59:11 2024] blk_throtl_dispatch_work_fn: bio done 6992 ffff00014f621b80
-[Fri Aug 23 10:59:15 2024] blk_throtl_dispatch_work_fn: bio done 92528 ffff00014f620dc0
-```
-
-Then, I retested for ext4 as you did.
-
-```
-$ lsblk
-NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
-sda      8:0    0   90G  0 disk
-├─sda1   8:1    0    1G  0 part /boot/efi
-└─sda2   8:2    0 88.9G  0 part /
-sdb      8:16   0   10G  0 disk
-
-$ df -T /data
-Filesystem     Type 1K-blocks     Used Available Use% Mounted on
-/dev/sda2      ext4  91222760 54648704  31894224  64% /
-```
+Forget to add the test result of buffered IO:
 
 With wiops, the result is as follows:
 
 ```
 $ echo "8:0 wbps=10485760 wiops=100000" > io.max
 
-$ rm -rf /data/file1 && dd if=/dev/zero of=/data/file1 bs=50M count=1 oflag=direct
+$ rm -rf /data/file1 && dd if=/dev/zero of=/data/file1 bs=50M count=1
 1+0 records in
 1+0 records out
-52428800 bytes (52 MB, 50 MiB) copied, 5.06227 s, 10.4 MB/s
+52428800 bytes (52 MB, 50 MiB) copied, 0.062217 s, 843 MB/s
 
 $ dmesg -T
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 2984 ffff0000fb3a8f00
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 6176 ffff0000fb3a97c0
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 7224 ffff0000fb3a9180
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 16384 ffff0000fb3a8640
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 16384 ffff0000fb3a9400
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 16384 ffff0000fb3a8c80
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 16384 ffff0000fb3a9040
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 16384 ffff0000fb3a92c0
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 4096 ffff0000fb3a8000
-[Fri Aug 23 11:04:08 2024] blk_throtl_dispatch_work_fn: bio done 2984 ffff0000fb3a8f00
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 1400 ffff0000fb3a8f00
-[Fri Aug 23 11:04:08 2024] blk_throtl_dispatch_work_fn: bio done 6176 ffff0000fb3a97c0
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 3616 ffff0000fb3a97c0
-[Fri Aug 23 11:04:08 2024] blk_throtl_dispatch_work_fn: bio done 7224 ffff0000fb3a9180
-[Fri Aug 23 11:04:08 2024] __blk_throtl_bio: bio start 4664 ffff0000fb3a9180
-[Fri Aug 23 11:04:09 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000fb3a8640
-[Fri Aug 23 11:04:09 2024] __blk_throtl_bio: bio start 13824 ffff0000fb3a8640
-[Fri Aug 23 11:04:10 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000fb3a9400
-[Fri Aug 23 11:04:10 2024] __blk_throtl_bio: bio start 13824 ffff0000fb3a9400
-[Fri Aug 23 11:04:11 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000fb3a8c80
-[Fri Aug 23 11:04:11 2024] __blk_throtl_bio: bio start 13824 ffff0000fb3a8c80
-[Fri Aug 23 11:04:12 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000fb3a9040
-[Fri Aug 23 11:04:12 2024] __blk_throtl_bio: bio start 13824 ffff0000fb3a9040
-[Fri Aug 23 11:04:12 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000fb3a92c0
-[Fri Aug 23 11:04:12 2024] __blk_throtl_bio: bio start 13824 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 4096 ffff0000fb3a8000
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 1536 ffff0000fb3a8000
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 1536 ffff0000fb3a8000
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 1400 ffff0000fb3a8f00
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 3616 ffff0000fb3a97c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 1056 ffff0000fb3a97c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 1056 ffff0000fb3a97c0
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 4664 ffff0000fb3a9180
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 2104 ffff0000fb3a9180
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 2104 ffff0000fb3a9180
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 11264 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 11264 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 8704 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 8704 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 6144 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 6144 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 3584 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 3584 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 1024 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 1024 ffff0000fb3a8640
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 11264 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 11264 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 8704 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 8704 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 6144 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 6144 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 3584 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 3584 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 1024 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 1024 ffff0000fb3a9400
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 11264 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 11264 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 8704 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 8704 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 6144 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 6144 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 3584 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 3584 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 1024 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 1024 ffff0000fb3a8c80
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 11264 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 11264 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 8704 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 8704 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 6144 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 6144 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 3584 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 3584 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 1024 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 1024 ffff0000fb3a9040
-[Fri Aug 23 11:04:13 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 11264 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 11264 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 8704 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 8704 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 6144 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 6144 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 3584 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 3584 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio start 1024 ffff0000fb3a92c0
-[Fri Aug 23 11:04:13 2024] __blk_throtl_bio: bio done 1024 ffff0000fb3a92c0
+[Fri Aug 23 12:09:10 2024] __blk_throtl_bio: bio start 16384 ffff0000ce5ac500
+[Fri Aug 23 12:09:10 2024] __blk_throtl_bio: bio start 16384 ffff0000ce5adb80
+[Fri Aug 23 12:09:10 2024] __blk_throtl_bio: bio start 16384 ffff0000ce5ac140
+[Fri Aug 23 12:09:10 2024] __blk_throtl_bio: bio start 16384 ffff0000ce5acdc0
+[Fri Aug 23 12:09:10 2024] __blk_throtl_bio: bio start 16384 ffff0000ce5ac280
+[Fri Aug 23 12:09:10 2024] __blk_throtl_bio: bio start 16384 ffff0000ce5ada40
+[Fri Aug 23 12:09:10 2024] __blk_throtl_bio: bio start 4096 ffff0000ce5adcc0
+[Fri Aug 23 12:09:10 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000ce5ac500
+[Fri Aug 23 12:09:10 2024] __blk_throtl_bio: bio start 13824 ffff0000ce5ac500
+[Fri Aug 23 12:09:11 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000ce5adb80
+[Fri Aug 23 12:09:11 2024] __blk_throtl_bio: bio start 13824 ffff0000ce5adb80
+[Fri Aug 23 12:09:12 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000ce5ac140
+[Fri Aug 23 12:09:12 2024] __blk_throtl_bio: bio start 13824 ffff0000ce5ac140
+[Fri Aug 23 12:09:13 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000ce5acdc0
+[Fri Aug 23 12:09:13 2024] __blk_throtl_bio: bio start 13824 ffff0000ce5acdc0
+[Fri Aug 23 12:09:14 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000ce5ac280
+[Fri Aug 23 12:09:14 2024] __blk_throtl_bio: bio start 13824 ffff0000ce5ac280
+[Fri Aug 23 12:09:14 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000ce5ada40
+[Fri Aug 23 12:09:14 2024] __blk_throtl_bio: bio start 13824 ffff0000ce5ada40
+[Fri Aug 23 12:09:15 2024] blk_throtl_dispatch_work_fn: bio done 4096 ffff0000ce5adcc0
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 1536 ffff0000ce5adcc0
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 1536 ffff0000ce5adcc0
+[Fri Aug 23 12:09:15 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000ce5ac500
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 11264 ffff0000ce5ac500
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 11264 ffff0000ce5ac500
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 8704 ffff0000ce5ac500
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 8704 ffff0000ce5ac500
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 6144 ffff0000ce5ac500
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 6144 ffff0000ce5ac500
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 3584 ffff0000ce5ac500
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 3584 ffff0000ce5ac500
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 1024 ffff0000ce5ac500
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 1024 ffff0000ce5ac500
+[Fri Aug 23 12:09:15 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000ce5adb80
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 11264 ffff0000ce5adb80
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 11264 ffff0000ce5adb80
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 8704 ffff0000ce5adb80
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 8704 ffff0000ce5adb80
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 6144 ffff0000ce5adb80
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 6144 ffff0000ce5adb80
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 3584 ffff0000ce5adb80
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 3584 ffff0000ce5adb80
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 1024 ffff0000ce5adb80
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 1024 ffff0000ce5adb80
+[Fri Aug 23 12:09:15 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000ce5ac140
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 11264 ffff0000ce5ac140
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 11264 ffff0000ce5ac140
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 8704 ffff0000ce5ac140
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 8704 ffff0000ce5ac140
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 6144 ffff0000ce5ac140
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 6144 ffff0000ce5ac140
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 3584 ffff0000ce5ac140
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 3584 ffff0000ce5ac140
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 1024 ffff0000ce5ac140
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 1024 ffff0000ce5ac140
+[Fri Aug 23 12:09:15 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000ce5acdc0
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 11264 ffff0000ce5acdc0
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 11264 ffff0000ce5acdc0
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 8704 ffff0000ce5acdc0
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 8704 ffff0000ce5acdc0
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 6144 ffff0000ce5acdc0
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 6144 ffff0000ce5acdc0
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 3584 ffff0000ce5acdc0
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 3584 ffff0000ce5acdc0
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 1024 ffff0000ce5acdc0
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 1024 ffff0000ce5acdc0
+[Fri Aug 23 12:09:15 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000ce5ac280
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 11264 ffff0000ce5ac280
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 11264 ffff0000ce5ac280
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 8704 ffff0000ce5ac280
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 8704 ffff0000ce5ac280
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 6144 ffff0000ce5ac280
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 6144 ffff0000ce5ac280
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 3584 ffff0000ce5ac280
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 3584 ffff0000ce5ac280
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 1024 ffff0000ce5ac280
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 1024 ffff0000ce5ac280
+[Fri Aug 23 12:09:15 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000ce5ada40
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 11264 ffff0000ce5ada40
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 11264 ffff0000ce5ada40
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 8704 ffff0000ce5ada40
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 8704 ffff0000ce5ada40
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 6144 ffff0000ce5ada40
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 6144 ffff0000ce5ada40
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 3584 ffff0000ce5ada40
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 3584 ffff0000ce5ada40
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 1024 ffff0000ce5ada40
+[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 1024 ffff0000ce5ada40
 ```
 
-And without wiops, the result is also quite different:
+And without wiops, the result is quite different as well:
 
 ```
 $ echo "8:0 wbps=10485760 wiops=max" > io.max
 
-$ rm -rf /data/file1 && dd if=/dev/zero of=/data/file1 bs=50M count=1 oflag=direct
+$ rm -rf /data/file1 && dd if=/dev/zero of=/data/file1 bs=50M count=1
 1+0 records in
 1+0 records out
-52428800 bytes (52 MB, 50 MiB) copied, 5.03759 s, 10.4 MB/s
+52428800 bytes (52 MB, 50 MiB) copied, 0.0791369 s, 663 MB/s
 
 $ dmesg -T
-[Fri Aug 23 11:05:07 2024] __blk_throtl_bio: bio start 2904 ffff0000c4e9f2c0
-[Fri Aug 23 11:05:07 2024] __blk_throtl_bio: bio start 5984 ffff0000c4e9e000
-[Fri Aug 23 11:05:07 2024] __blk_throtl_bio: bio start 7496 ffff0000c4e9e3c0
-[Fri Aug 23 11:05:07 2024] __blk_throtl_bio: bio start 16384 ffff0000c4e9eb40
-[Fri Aug 23 11:05:07 2024] __blk_throtl_bio: bio start 16384 ffff0000c4e9f540
-[Fri Aug 23 11:05:07 2024] __blk_throtl_bio: bio start 16384 ffff0000c4e9e780
-[Fri Aug 23 11:05:07 2024] __blk_throtl_bio: bio start 16384 ffff0000c4e9ea00
-[Fri Aug 23 11:05:07 2024] __blk_throtl_bio: bio start 16384 ffff0000c4e9f900
-[Fri Aug 23 11:05:07 2024] __blk_throtl_bio: bio start 4096 ffff0000c4e9e8c0
-[Fri Aug 23 11:05:07 2024] blk_throtl_dispatch_work_fn: bio done 2904 ffff0000c4e9f2c0
-[Fri Aug 23 11:05:07 2024] blk_throtl_dispatch_work_fn: bio done 5984 ffff0000c4e9e000
-[Fri Aug 23 11:05:08 2024] blk_throtl_dispatch_work_fn: bio done 7496 ffff0000c4e9e3c0
-[Fri Aug 23 11:05:09 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000c4e9eb40
-[Fri Aug 23 11:05:09 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000c4e9f540
-[Fri Aug 23 11:05:10 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000c4e9e780
-[Fri Aug 23 11:05:11 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000c4e9ea00
-[Fri Aug 23 11:05:12 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000c4e9f900
-[Fri Aug 23 11:05:12 2024] blk_throtl_dispatch_work_fn: bio done 4096 ffff0000c4e9e8c0
+[Fri Aug 23 12:16:50 2024] __blk_throtl_bio: bio start 16384 ffff0000f87ca3c0
+[Fri Aug 23 12:16:50 2024] __blk_throtl_bio: bio start 16384 ffff0000f87ca000
+[Fri Aug 23 12:16:50 2024] __blk_throtl_bio: bio start 16384 ffff0000f87cb2c0
+[Fri Aug 23 12:16:50 2024] __blk_throtl_bio: bio start 16384 ffff0000f87cb040
+[Fri Aug 23 12:16:50 2024] __blk_throtl_bio: bio start 16384 ffff0000f87cac80
+[Fri Aug 23 12:16:50 2024] __blk_throtl_bio: bio start 16384 ffff0000f87cb400
+[Fri Aug 23 12:16:50 2024] __blk_throtl_bio: bio start 4096 ffff0000f87ca640
+[Fri Aug 23 12:16:51 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000f87ca3c0
+[Fri Aug 23 12:16:52 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000f87ca000
+[Fri Aug 23 12:16:53 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000f87cb2c0
+[Fri Aug 23 12:16:54 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000f87cb040
+[Fri Aug 23 12:16:54 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000f87cac80
+[Fri Aug 23 12:16:55 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000f87cb400
+[Fri Aug 23 12:16:55 2024] blk_throtl_dispatch_work_fn: bio done 4096 ffff0000f87ca640
 ```
 
-Hmm... I still hava two questions here:
-1. Is wbps an average value?
-2. What's the difference between setting 'max' and setting a very high value for 'wiops'?
-
-Thanks a lot again for your time!
+Thanks,
 Lance
 
