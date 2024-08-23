@@ -1,51 +1,51 @@
-Return-Path: <cgroups+bounces-4414-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4424-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00AC695CA05
-	for <lists+cgroups@lfdr.de>; Fri, 23 Aug 2024 12:10:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BE6E95CA1A
+	for <lists+cgroups@lfdr.de>; Fri, 23 Aug 2024 12:13:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 263741C2307D
-	for <lists+cgroups@lfdr.de>; Fri, 23 Aug 2024 10:10:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCCFA1F25DD1
+	for <lists+cgroups@lfdr.de>; Fri, 23 Aug 2024 10:13:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D276185B62;
-	Fri, 23 Aug 2024 10:09:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3148718BB8F;
+	Fri, 23 Aug 2024 10:09:06 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 046541BF3A;
-	Fri, 23 Aug 2024 10:08:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A567189500;
+	Fri, 23 Aug 2024 10:09:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724407740; cv=none; b=o/mPwmnAVo+GpZnsGlzWGrFmwLZexci9NcN73NI/hyWJXKTc1zAB2qnjX+3q0shICjbpsOg9AZc75GYWmQ+GKOr3JJZywDLQM47sM66aHIJZv8MUBWCt/vsiPFOFJhpcOIc6DBUjbSWbSKR+Jk/hlUczrW41j3G+cYMWLSgYObw=
+	t=1724407746; cv=none; b=I+OE4i20c4O4FslwvDlVrxylHhBvjUa1joZYsqGxZbEL8ScKpggx+mIU8cMX/FHI0FkA7+AF7upPainLDI0rAUi8OaRSWZg6/qoyf0lTFxqTb6kbDu0/o6iCmVT07282TZnoN4Z03q631cEXwT+nMcWnhEuV5LWCOo1KnI2s5RA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724407740; c=relaxed/simple;
-	bh=FBKQGEQD/pNFgchyqh4ENLTYory28/taic55pTHfxt4=;
+	s=arc-20240116; t=1724407746; c=relaxed/simple;
+	bh=j3zL8I0pcLMXsB+25tZyByz3UqnjlpTvVrtGvVZUt0A=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uejjP8cXIMNK/7/8+FqD4OTLHrsQUGRvve3KjjOzHGwVBhJ5wsWpM23JD9cgnea9FuE2LllT8mLbdQIbWqOvz/TsNbPYNthmNoGhok/AHYIv9bQj9grjwFBu6xdGNvTEjSj1NzAAUlCiom7eVd3RyV4PXWOoMINRonbXaL2K+IQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+	 MIME-Version:Content-Type; b=AYYCh8DXxbZqSLb4gciI3gS5FCZSKinVzuGmiHYCr/jVtREueCjoxvnUxq41QMPu1ybhJBkzQs3cMC3ObL1gEacj+lAtuKDDFQ/M2dhDKSbBjP04O+jDaGkF8aF2uGO1rA3NjYxlo4BdFOmuqgr8tqaTGWvc1pN0fgfggpVzRrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Wqwl64Nwjz2Cmvt;
-	Fri, 23 Aug 2024 18:08:50 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WqwkQ0cdlzyP56;
+	Fri, 23 Aug 2024 18:08:14 +0800 (CST)
 Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 71B9E1A0188;
+	by mail.maildlp.com (Postfix) with ESMTPS id E13E81800A4;
 	Fri, 23 Aug 2024 18:08:55 +0800 (CST)
 Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
  (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Fri, 23 Aug
- 2024 18:08:54 +0800
+ 2024 18:08:55 +0800
 From: Chen Ridong <chenridong@huawei.com>
 To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
 	<longman@redhat.com>, <mkoutny@suse.com>, <chenridong@huawei.com>
 CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1 -next 03/11] cgroup/cpuset: move memory_pressure to cpuset-v1.c
-Date: Fri, 23 Aug 2024 10:01:02 +0000
-Message-ID: <20240823100110.472120-4-chenridong@huawei.com>
+Subject: [PATCH v1 -next 04/11] cgroup/cpuset: move relax_domain_level to cpuset-v1.c
+Date: Fri, 23 Aug 2024 10:01:03 +0000
+Message-ID: <20240823100110.472120-5-chenridong@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240823100110.472120-1-chenridong@huawei.com>
 References: <20240823100110.472120-1-chenridong@huawei.com>
@@ -60,330 +60,213 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemd100013.china.huawei.com (7.221.188.163)
 
-Collection of memory_pressure can be enabled by writing 1 to the cpuset
-file 'memory_pressure_enabled', which is only for cpuset-v1. Therefore,
-move the corresponding code to cpuset-v1.c.
+Setting domain level is not supported at cpuset v2, so move corresponding
+code into cpuset-v1.c.
 
-Currently, the 'fmeter_init' and 'fmeter_getrate' functions are called
-at cpuset.c, so expose them to cpuset.c.
+The 'cpuset_write_s64' and 'cpuset_read_s64' are only used for setting
+domain level, move them to cpuset-v1.c. Currently, expose to cpuset.c.
+After cpuset legacy interface files are move to cpuset-v1.c, they can
+be static. The 'rebuild_sched_domains_locked' is exposed to cpuset-v1.c.
+
+The change from original code is that using 'cpuset_lock' and
+'cpuset_unlock' functions to lock or unlock cpuset_mutex.
 
 Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- kernel/cgroup/cpuset-internal.h |   7 ++
- kernel/cgroup/cpuset-v1.c       | 134 ++++++++++++++++++++++++++++++++
- kernel/cgroup/cpuset.c          | 134 --------------------------------
- 3 files changed, 141 insertions(+), 134 deletions(-)
+ kernel/cgroup/cpuset-internal.h |  6 +++-
+ kernel/cgroup/cpuset-v1.c       | 59 +++++++++++++++++++++++++++++++
+ kernel/cgroup/cpuset.c          | 62 ++-------------------------------
+ 3 files changed, 66 insertions(+), 61 deletions(-)
 
 diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-index 333666a7a947..83795873dac0 100644
+index 83795873dac0..634152630ab5 100644
 --- a/kernel/cgroup/cpuset-internal.h
 +++ b/kernel/cgroup/cpuset-internal.h
-@@ -238,4 +238,11 @@ static inline int is_spread_slab(const struct cpuset *cs)
+@@ -238,11 +238,15 @@ static inline int is_spread_slab(const struct cpuset *cs)
  	return test_bit(CS_SPREAD_SLAB, &cs->flags);
  }
  
-+/*
-+ * cpuset-v1.c
-+ */
++void rebuild_sched_domains_locked(void);
 +
-+void fmeter_init(struct fmeter *fmp);
-+int fmeter_getrate(struct fmeter *fmp);
-+
+ /*
+  * cpuset-v1.c
+  */
+-
+ void fmeter_init(struct fmeter *fmp);
+ int fmeter_getrate(struct fmeter *fmp);
++int cpuset_write_s64(struct cgroup_subsys_state *css, struct cftype *cft,
++			    s64 val);
++s64 cpuset_read_s64(struct cgroup_subsys_state *css, struct cftype *cft);
+ 
  #endif /* __CPUSET_INTERNAL_H */
 diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
-index ae166eb4f75d..f17ba44bc566 100644
+index f17ba44bc566..175638f2e7b7 100644
 --- a/kernel/cgroup/cpuset-v1.c
 +++ b/kernel/cgroup/cpuset-v1.c
-@@ -2,3 +2,137 @@
- 
- #include "cpuset-internal.h"
- 
-+/*
-+ * Frequency meter - How fast is some event occurring?
-+ *
-+ * These routines manage a digitally filtered, constant time based,
-+ * event frequency meter.  There are four routines:
-+ *   fmeter_init() - initialize a frequency meter.
-+ *   fmeter_markevent() - called each time the event happens.
-+ *   fmeter_getrate() - returns the recent rate of such events.
-+ *   fmeter_update() - internal routine used to update fmeter.
-+ *
-+ * A common data structure is passed to each of these routines,
-+ * which is used to keep track of the state required to manage the
-+ * frequency meter and its digital filter.
-+ *
-+ * The filter works on the number of events marked per unit time.
-+ * The filter is single-pole low-pass recursive (IIR).  The time unit
-+ * is 1 second.  Arithmetic is done using 32-bit integers scaled to
-+ * simulate 3 decimal digits of precision (multiplied by 1000).
-+ *
-+ * With an FM_COEF of 933, and a time base of 1 second, the filter
-+ * has a half-life of 10 seconds, meaning that if the events quit
-+ * happening, then the rate returned from the fmeter_getrate()
-+ * will be cut in half each 10 seconds, until it converges to zero.
-+ *
-+ * It is not worth doing a real infinitely recursive filter.  If more
-+ * than FM_MAXTICKS ticks have elapsed since the last filter event,
-+ * just compute FM_MAXTICKS ticks worth, by which point the level
-+ * will be stable.
-+ *
-+ * Limit the count of unprocessed events to FM_MAXCNT, so as to avoid
-+ * arithmetic overflow in the fmeter_update() routine.
-+ *
-+ * Given the simple 32 bit integer arithmetic used, this meter works
-+ * best for reporting rates between one per millisecond (msec) and
-+ * one per 32 (approx) seconds.  At constant rates faster than one
-+ * per msec it maxes out at values just under 1,000,000.  At constant
-+ * rates between one per msec, and one per second it will stabilize
-+ * to a value N*1000, where N is the rate of events per second.
-+ * At constant rates between one per second and one per 32 seconds,
-+ * it will be choppy, moving up on the seconds that have an event,
-+ * and then decaying until the next event.  At rates slower than
-+ * about one in 32 seconds, it decays all the way back to zero between
-+ * each event.
-+ */
-+
-+#define FM_COEF 933		/* coefficient for half-life of 10 secs */
-+#define FM_MAXTICKS ((u32)99)   /* useless computing more ticks than this */
-+#define FM_MAXCNT 1000000	/* limit cnt to avoid overflow */
-+#define FM_SCALE 1000		/* faux fixed point scale */
-+
-+/* Initialize a frequency meter */
-+void fmeter_init(struct fmeter *fmp)
-+{
-+	fmp->cnt = 0;
-+	fmp->val = 0;
-+	fmp->time = 0;
-+	spin_lock_init(&fmp->lock);
-+}
-+
-+/* Internal meter update - process cnt events and update value */
-+static void fmeter_update(struct fmeter *fmp)
-+{
-+	time64_t now;
-+	u32 ticks;
-+
-+	now = ktime_get_seconds();
-+	ticks = now - fmp->time;
-+
-+	if (ticks == 0)
-+		return;
-+
-+	ticks = min(FM_MAXTICKS, ticks);
-+	while (ticks-- > 0)
-+		fmp->val = (FM_COEF * fmp->val) / FM_SCALE;
-+	fmp->time = now;
-+
-+	fmp->val += ((FM_SCALE - FM_COEF) * fmp->cnt) / FM_SCALE;
-+	fmp->cnt = 0;
-+}
-+
-+/* Process any previous ticks, then bump cnt by one (times scale). */
-+static void fmeter_markevent(struct fmeter *fmp)
-+{
-+	spin_lock(&fmp->lock);
-+	fmeter_update(fmp);
-+	fmp->cnt = min(FM_MAXCNT, fmp->cnt + FM_SCALE);
-+	spin_unlock(&fmp->lock);
-+}
-+
-+/* Process any previous ticks, then return current value. */
-+int fmeter_getrate(struct fmeter *fmp)
-+{
-+	int val;
-+
-+	spin_lock(&fmp->lock);
-+	fmeter_update(fmp);
-+	val = fmp->val;
-+	spin_unlock(&fmp->lock);
-+	return val;
-+}
-+
-+/*
-+ * Collection of memory_pressure is suppressed unless
-+ * this flag is enabled by writing "1" to the special
-+ * cpuset file 'memory_pressure_enabled' in the root cpuset.
-+ */
-+
-+int cpuset_memory_pressure_enabled __read_mostly;
-+
-+/*
-+ * __cpuset_memory_pressure_bump - keep stats of per-cpuset reclaims.
-+ *
-+ * Keep a running average of the rate of synchronous (direct)
-+ * page reclaim efforts initiated by tasks in each cpuset.
-+ *
-+ * This represents the rate at which some task in the cpuset
-+ * ran low on memory on all nodes it was allowed to use, and
-+ * had to enter the kernels page reclaim code in an effort to
-+ * create more free memory by tossing clean pages or swapping
-+ * or writing dirty pages.
-+ *
-+ * Display to user space in the per-cpuset read-only file
-+ * "memory_pressure".  Value displayed is an integer
-+ * representing the recent rate of entry into the synchronous
-+ * (direct) page reclaim by any task attached to the cpuset.
-+ */
-+
-+void __cpuset_memory_pressure_bump(void)
-+{
-+	rcu_read_lock();
-+	fmeter_markevent(&task_cs(current)->fmeter);
-+	rcu_read_unlock();
-+}
-+
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index b36050e39558..342ce34c8c6f 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -2990,107 +2990,6 @@ static int update_prstate(struct cpuset *cs, int new_prs)
- 	return 0;
- }
- 
--/*
-- * Frequency meter - How fast is some event occurring?
-- *
-- * These routines manage a digitally filtered, constant time based,
-- * event frequency meter.  There are four routines:
-- *   fmeter_init() - initialize a frequency meter.
-- *   fmeter_markevent() - called each time the event happens.
-- *   fmeter_getrate() - returns the recent rate of such events.
-- *   fmeter_update() - internal routine used to update fmeter.
-- *
-- * A common data structure is passed to each of these routines,
-- * which is used to keep track of the state required to manage the
-- * frequency meter and its digital filter.
-- *
-- * The filter works on the number of events marked per unit time.
-- * The filter is single-pole low-pass recursive (IIR).  The time unit
-- * is 1 second.  Arithmetic is done using 32-bit integers scaled to
-- * simulate 3 decimal digits of precision (multiplied by 1000).
-- *
-- * With an FM_COEF of 933, and a time base of 1 second, the filter
-- * has a half-life of 10 seconds, meaning that if the events quit
-- * happening, then the rate returned from the fmeter_getrate()
-- * will be cut in half each 10 seconds, until it converges to zero.
-- *
-- * It is not worth doing a real infinitely recursive filter.  If more
-- * than FM_MAXTICKS ticks have elapsed since the last filter event,
-- * just compute FM_MAXTICKS ticks worth, by which point the level
-- * will be stable.
-- *
-- * Limit the count of unprocessed events to FM_MAXCNT, so as to avoid
-- * arithmetic overflow in the fmeter_update() routine.
-- *
-- * Given the simple 32 bit integer arithmetic used, this meter works
-- * best for reporting rates between one per millisecond (msec) and
-- * one per 32 (approx) seconds.  At constant rates faster than one
-- * per msec it maxes out at values just under 1,000,000.  At constant
-- * rates between one per msec, and one per second it will stabilize
-- * to a value N*1000, where N is the rate of events per second.
-- * At constant rates between one per second and one per 32 seconds,
-- * it will be choppy, moving up on the seconds that have an event,
-- * and then decaying until the next event.  At rates slower than
-- * about one in 32 seconds, it decays all the way back to zero between
-- * each event.
-- */
--
--#define FM_COEF 933		/* coefficient for half-life of 10 secs */
--#define FM_MAXTICKS ((u32)99)   /* useless computing more ticks than this */
--#define FM_MAXCNT 1000000	/* limit cnt to avoid overflow */
--#define FM_SCALE 1000		/* faux fixed point scale */
--
--/* Initialize a frequency meter */
--static void fmeter_init(struct fmeter *fmp)
--{
--	fmp->cnt = 0;
--	fmp->val = 0;
--	fmp->time = 0;
--	spin_lock_init(&fmp->lock);
--}
--
--/* Internal meter update - process cnt events and update value */
--static void fmeter_update(struct fmeter *fmp)
--{
--	time64_t now;
--	u32 ticks;
--
--	now = ktime_get_seconds();
--	ticks = now - fmp->time;
--
--	if (ticks == 0)
--		return;
--
--	ticks = min(FM_MAXTICKS, ticks);
--	while (ticks-- > 0)
--		fmp->val = (FM_COEF * fmp->val) / FM_SCALE;
--	fmp->time = now;
--
--	fmp->val += ((FM_SCALE - FM_COEF) * fmp->cnt) / FM_SCALE;
--	fmp->cnt = 0;
--}
--
--/* Process any previous ticks, then bump cnt by one (times scale). */
--static void fmeter_markevent(struct fmeter *fmp)
--{
--	spin_lock(&fmp->lock);
--	fmeter_update(fmp);
--	fmp->cnt = min(FM_MAXCNT, fmp->cnt + FM_SCALE);
--	spin_unlock(&fmp->lock);
--}
--
--/* Process any previous ticks, then return current value. */
--static int fmeter_getrate(struct fmeter *fmp)
--{
--	int val;
--
--	spin_lock(&fmp->lock);
--	fmeter_update(fmp);
--	val = fmp->val;
--	spin_unlock(&fmp->lock);
--	return val;
--}
--
- static struct cpuset *cpuset_attach_old_cs;
- 
- /*
-@@ -4780,39 +4679,6 @@ void cpuset_print_current_mems_allowed(void)
+@@ -136,3 +136,62 @@ void __cpuset_memory_pressure_bump(void)
  	rcu_read_unlock();
  }
  
--/*
-- * Collection of memory_pressure is suppressed unless
-- * this flag is enabled by writing "1" to the special
-- * cpuset file 'memory_pressure_enabled' in the root cpuset.
-- */
--
--int cpuset_memory_pressure_enabled __read_mostly;
--
--/*
-- * __cpuset_memory_pressure_bump - keep stats of per-cpuset reclaims.
-- *
-- * Keep a running average of the rate of synchronous (direct)
-- * page reclaim efforts initiated by tasks in each cpuset.
-- *
-- * This represents the rate at which some task in the cpuset
-- * ran low on memory on all nodes it was allowed to use, and
-- * had to enter the kernels page reclaim code in an effort to
-- * create more free memory by tossing clean pages or swapping
-- * or writing dirty pages.
-- *
-- * Display to user space in the per-cpuset read-only file
-- * "memory_pressure".  Value displayed is an integer
-- * representing the recent rate of entry into the synchronous
-- * (direct) page reclaim by any task attached to the cpuset.
-- */
--
--void __cpuset_memory_pressure_bump(void)
++static int update_relax_domain_level(struct cpuset *cs, s64 val)
++{
++#ifdef CONFIG_SMP
++	if (val < -1 || val > sched_domain_level_max + 1)
++		return -EINVAL;
++#endif
++
++	if (val != cs->relax_domain_level) {
++		cs->relax_domain_level = val;
++		if (!cpumask_empty(cs->cpus_allowed) &&
++		    is_sched_load_balance(cs))
++			rebuild_sched_domains_locked();
++	}
++
++	return 0;
++}
++
++int cpuset_write_s64(struct cgroup_subsys_state *css, struct cftype *cft,
++			    s64 val)
++{
++	struct cpuset *cs = css_cs(css);
++	cpuset_filetype_t type = cft->private;
++	int retval = -ENODEV;
++
++	cpus_read_lock();
++	cpuset_lock();
++	if (!is_cpuset_online(cs))
++		goto out_unlock;
++
++	switch (type) {
++	case FILE_SCHED_RELAX_DOMAIN_LEVEL:
++		retval = update_relax_domain_level(cs, val);
++		break;
++	default:
++		retval = -EINVAL;
++		break;
++	}
++out_unlock:
++	cpuset_unlock();
++	cpus_read_unlock();
++	return retval;
++}
++
++s64 cpuset_read_s64(struct cgroup_subsys_state *css, struct cftype *cft)
++{
++	struct cpuset *cs = css_cs(css);
++	cpuset_filetype_t type = cft->private;
++
++	switch (type) {
++	case FILE_SCHED_RELAX_DOMAIN_LEVEL:
++		return cs->relax_domain_level;
++	default:
++		BUG();
++	}
++
++	/* Unreachable but makes gcc happy */
++	return 0;
++}
++
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 342ce34c8c6f..552a190f553e 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -1069,7 +1069,7 @@ partition_and_rebuild_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
+  *
+  * Call with cpuset_mutex held.  Takes cpus_read_lock().
+  */
+-static void rebuild_sched_domains_locked(void)
++void rebuild_sched_domains_locked(void)
+ {
+ 	struct cgroup_subsys_state *pos_css;
+ 	struct sched_domain_attr *attr;
+@@ -1121,7 +1121,7 @@ static void rebuild_sched_domains_locked(void)
+ 	partition_and_rebuild_sched_domains(ndoms, doms, attr);
+ }
+ #else /* !CONFIG_SMP */
+-static void rebuild_sched_domains_locked(void)
++void rebuild_sched_domains_locked(void)
+ {
+ }
+ #endif /* CONFIG_SMP */
+@@ -2788,23 +2788,6 @@ bool current_cpuset_is_being_rebound(void)
+ 	return ret;
+ }
+ 
+-static int update_relax_domain_level(struct cpuset *cs, s64 val)
 -{
--	rcu_read_lock();
--	fmeter_markevent(&task_cs(current)->fmeter);
--	rcu_read_unlock();
+-#ifdef CONFIG_SMP
+-	if (val < -1 || val > sched_domain_level_max + 1)
+-		return -EINVAL;
+-#endif
+-
+-	if (val != cs->relax_domain_level) {
+-		cs->relax_domain_level = val;
+-		if (!cpumask_empty(cs->cpus_allowed) &&
+-		    is_sched_load_balance(cs))
+-			rebuild_sched_domains_locked();
+-	}
+-
+-	return 0;
 -}
 -
- #ifdef CONFIG_PROC_PID_CPUSET
+ /**
+  * update_tasks_flags - update the spread flags of tasks in the cpuset.
+  * @cs: the cpuset in which each task's spread flags needs to be changed
+@@ -3267,32 +3250,6 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
+ 	return retval;
+ }
+ 
+-static int cpuset_write_s64(struct cgroup_subsys_state *css, struct cftype *cft,
+-			    s64 val)
+-{
+-	struct cpuset *cs = css_cs(css);
+-	cpuset_filetype_t type = cft->private;
+-	int retval = -ENODEV;
+-
+-	cpus_read_lock();
+-	mutex_lock(&cpuset_mutex);
+-	if (!is_cpuset_online(cs))
+-		goto out_unlock;
+-
+-	switch (type) {
+-	case FILE_SCHED_RELAX_DOMAIN_LEVEL:
+-		retval = update_relax_domain_level(cs, val);
+-		break;
+-	default:
+-		retval = -EINVAL;
+-		break;
+-	}
+-out_unlock:
+-	mutex_unlock(&cpuset_mutex);
+-	cpus_read_unlock();
+-	return retval;
+-}
+-
  /*
-  * proc_cpuset_show()
+  * Common handling for a write to a "cpus" or "mems" file.
+  */
+@@ -3443,21 +3400,6 @@ static u64 cpuset_read_u64(struct cgroup_subsys_state *css, struct cftype *cft)
+ 	return 0;
+ }
+ 
+-static s64 cpuset_read_s64(struct cgroup_subsys_state *css, struct cftype *cft)
+-{
+-	struct cpuset *cs = css_cs(css);
+-	cpuset_filetype_t type = cft->private;
+-	switch (type) {
+-	case FILE_SCHED_RELAX_DOMAIN_LEVEL:
+-		return cs->relax_domain_level;
+-	default:
+-		BUG();
+-	}
+-
+-	/* Unreachable but makes gcc happy */
+-	return 0;
+-}
+-
+ static int sched_partition_show(struct seq_file *seq, void *v)
+ {
+ 	struct cpuset *cs = css_cs(seq_css(seq));
 -- 
 2.34.1
 
