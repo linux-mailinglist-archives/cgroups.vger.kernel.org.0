@@ -1,98 +1,102 @@
-Return-Path: <cgroups+bounces-4430-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4431-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2B5E95D34D
-	for <lists+cgroups@lfdr.de>; Fri, 23 Aug 2024 18:27:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A91DC95D7A8
+	for <lists+cgroups@lfdr.de>; Fri, 23 Aug 2024 22:21:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3C3A1C23386
-	for <lists+cgroups@lfdr.de>; Fri, 23 Aug 2024 16:27:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBC4D1C22E89
+	for <lists+cgroups@lfdr.de>; Fri, 23 Aug 2024 20:21:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F4B118BC38;
-	Fri, 23 Aug 2024 16:27:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yhndnzj.com header.i=@yhndnzj.com header.b="DQHbWinR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 112591A0B0F;
+	Fri, 23 Aug 2024 20:13:21 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-4018.proton.ch (mail-4018.proton.ch [185.70.40.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5549218B49C
-	for <cgroups@vger.kernel.org>; Fri, 23 Aug 2024 16:27:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EBE2193406;
+	Fri, 23 Aug 2024 20:13:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724430445; cv=none; b=NI4G6NiwISJiHj6ODw6RBFIchzqGZsvecb78jQnBmXIdGzSnuDdMlhAVci/BwaSbyvbFFnuI07LelM/CLUALFAPa6q91s9XE7sdwP3Yfd3/jBpwxb/oLN+pewStxnODx+ook4spk3gR5Om8CGfMYyW+bShQG5Pq9I945PrzCtSU=
+	t=1724444000; cv=none; b=Fd3f7e9EmNo8TRxA2gSLOaEGtJAsC9m5U6OUeln44M22Ap4LLKPrL+vVhnxqdcuE+aVBhpusn6ueLAVEI7hMskISLc45vVoheClMRpXS0GuIPY5bsRPWgN2B4l4NjYNxcJB2uA59/fVcAjcQfKSLbwa/y1ow5tBnTrkSRTWkvro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724430445; c=relaxed/simple;
-	bh=0tWunSXFDZ1yWnXSWuVl55xeq0RST5tuq2LjnMj+T6Q=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=G6uFuN0+azgamXQLqWAGixR4Ickf2y84iqaOZuWwEXCIcWFYKoCgMnDRSZzULWpklf75eABjUggRxppSkFERUJYmKd3FM9/Y1aoZkcXDyDC4ri6nsgz9kUhhD8iBBEB9PNLro9rFuAV8n26fBI14sIpKWCORmzih+uLDsaLTTMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yhndnzj.com; spf=pass smtp.mailfrom=yhndnzj.com; dkim=pass (2048-bit key) header.d=yhndnzj.com header.i=@yhndnzj.com header.b=DQHbWinR; arc=none smtp.client-ip=185.70.40.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yhndnzj.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yhndnzj.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yhndnzj.com;
-	s=protonmail; t=1724430435; x=1724689635;
-	bh=q54uHymsuuCJEUwRG3OoSXXb4G9nERztgFbdZCGsU1k=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=DQHbWinRSf8CSE01rY0HlqkE38LF2s/U/brRHorICuBLyeylZpqxeaAgxSWjFF4Bk
-	 GzMcMuahFDfIY90587qr4QwIu0Qm/PZOnlvDfWMJporXBGgkzG+Xn0mA8PKjAu+9Us
-	 x0ppn3sJfYmNs9baC0DW+jm11o3S2HdS9wyH2hSj4qaR/vmJsHf9E0WCaQCDrVD9Jv
-	 elGMu0jSg3pn3KrMGO2UfyWmE0jaHb/To++mf7eX5rMWiOTW6qliZCz7uYCZvwz1o3
-	 /G/RmNPfP8a2wZOx5w38D+DH27NBNp1caftLqeDNqnE4hPFJU/YSsQD1cPhDrecrH2
-	 gv8yWTiimiHTQ==
-Date: Fri, 23 Aug 2024 16:27:11 +0000
-To: linux-kernel@vger.kernel.org
-From: Mike Yuan <me@yhndnzj.com>
-Cc: Mike Yuan <me@yhndnzj.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, Muchun Song <muchun.song@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, Roman Gushchin <roman.gushchin@linux.dev>, Michal Hocko <mhocko@kernel.org>
-Subject: [PATCH v3 3/3] Documentation/cgroup-v2: clarify that zswap.writeback is ignored if zswap is disabled
-Message-ID: <20240823162506.12117-3-me@yhndnzj.com>
-In-Reply-To: <20240823162506.12117-1-me@yhndnzj.com>
-References: <20240823162506.12117-1-me@yhndnzj.com>
-Feedback-ID: 102487535:user:proton
-X-Pm-Message-ID: 9391cbe5faffb78cda607cff6563b688bbb16fc0
+	s=arc-20240116; t=1724444000; c=relaxed/simple;
+	bh=RCs8061MAHw1Hf3jXWEZ6peQlwmgcoa6k+irlbDKSno=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=owNlT4W4b8wD2aZF0N2v4tbs+dZ/GBaCLAM598wTsVX42Y+bs4+WQ6VWKSAD5FU2EXFYgMIeKdUjqZrpY3xhruNfWhSns9cmBLYHEWT4dzPUxZPYkxJC0Otq5MhloUibare5KAq/lzDmoXzomOutiTxyQs87iFxFMR5/tfuBysE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-e117059666eso2383315276.3;
+        Fri, 23 Aug 2024 13:13:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724443998; x=1725048798;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6HRLvSVYoUA3QBwpU3cDmJZgLCkpfSlO1Oln5B6eEg8=;
+        b=YM+OjLf+Cm9RNkyZgyAfMoreDNyuLX7/YTYZJLAh/42vWXh3jSIOQRwnuDjxDIr7Hh
+         Dbcfhbf9TcZR+AnPQ6jBPjvHfurBuea4oS9l0vpcnbAHYoBJRhxkmfSF8AzL/KGP09Cl
+         Tnj5Tn/Qwj8iFW/MM3b0P/m09Xn5cF5wAOqaUmefcDeI68LoPTeUz5SyQ80tg/0d7e5K
+         BLwppqjSNzVNQzrWlx0eXmMUsV8vzEYHeLoIH30ZkEGa5PCrT5U2ywv2lUUi+7tQM2A8
+         OBSTI/xCILnloPLloO85Ez1EIuheQdzfRvwmHJFabKOXdOUVmFJOOlnuf6FnlP7LdI1R
+         X24A==
+X-Forwarded-Encrypted: i=1; AJvYcCWLC6S32R4zYkwzhQekmd8M+Tu0FpZZQXDU649WxN0iKiNTj/CyCHzZqqRlz+bAiY5a7IRegV/2@vger.kernel.org, AJvYcCWppu7gmtFSNJCDg1Hcyjo/PSKCaHhAszX5oztUtWe/YUkgisCXj+2n3KbEJzfwajzUC9oLfymwSgzTEq1t@vger.kernel.org, AJvYcCXm8bOSKxU18v6xmXAZ5mnqL+4hX43MY8b1Y9aMojoKAvQC2aAQdX97+AlNppK4A0MjTBItpj36EgmvPhydUhNP@vger.kernel.org
+X-Gm-Message-State: AOJu0YwQ92RxbKGbZYcnzdhYZLe7De7ERucZIz3mxvR+jNLw7XwqeIOZ
+	zbJYhHO85yyLWTDVzUca7st9SWwDd/ghr1K5I8Ya3hcjX96SNTjZ
+X-Google-Smtp-Source: AGHT+IECOE6SN1Kqu7ax53usnoRUpUNPDXenmgckuF/+9zJtSPaJ7fp0Cm2UMgwaXQvFr9ULitx0QA==
+X-Received: by 2002:a05:6902:1b06:b0:e11:7578:ffbb with SMTP id 3f1490d57ef6-e17a864e010mr3309054276.36.1724443998254;
+        Fri, 23 Aug 2024 13:13:18 -0700 (PDT)
+Received: from localhost (fwdproxy-frc-004.fbsv.net. [2a03:2880:21ff:4::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e178e4638e6sm780134276.20.2024.08.23.13.13.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Aug 2024 13:13:17 -0700 (PDT)
+From: Joshua@web.codeaurora.org, Hahn@web.codeaurora.org,
+	joshua.hahn6@gmail.com
+To: tj@kernel.org
+Cc: lizefan.x@bytedance.com,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	shuah@kernel.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH 0/2] Exposing nice CPU usage to userspace
+Date: Fri, 23 Aug 2024 13:05:16 -0700
+Message-ID: <20240823201317.156379-1-joshua.hahn6@gmail.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-As discussed in [1], zswap-related settings natually
-lose their effect when zswap is disabled, specifically
-zswap.writeback here. Be explicit about this behavior.
+From: Joshua Hahn <joshua.hahn6@gmail.com>
 
-[1] https://lore.kernel.org/linux-kernel/CAKEwX=3DMhbwhh-=3DxxCU-RjMXS_n=3D=
-RpV3Gtznb2m_3JgL+jzz++g@mail.gmail.com/
+Niced CPU usage is a metric reported in host-level /proc/stat, but is
+not reported in cgroup-level statistics in cpu.stat. However, when a
+host contains multiple tasks across different workloads, it becomes
+difficult to gauage how much of the task is being spent on niced
+processes based on /proc/stat alone, since host-level metrics do not
+provide this cgroup-level granularity.
 
-Cc: Nhat Pham <nphamcs@gmail.com>
-Cc: Yosry Ahmed <yosryahmed@google.com>
+Exposing this metric will allow load balancers to correctly probe the
+niced CPU metric for each workload, and make more informed decisions
+when directing higher priority tasks.
 
-Signed-off-by: Mike Yuan <me@yhndnzj.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 2 ++
- 1 file changed, 2 insertions(+)
+Joshua Hahn (2):
+  Tracking cgroup-level niced CPU time
+  Selftests for niced CPU statistics
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-=
-guide/cgroup-v2.rst
-index 95c18bc17083..a1723e402596 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1731,6 +1731,8 @@ The following nested keys are defined.
-=20
- =09Note that this is subtly different from setting memory.swap.max to
- =090, as it still allows for pages to be written to the zswap pool.
-+=09This setting has no effect if zswap is disabled, and swapping
-+=09would be allowed unless memory.swap.max is set to 0.
-=20
-   memory.pressure
- =09A read-only nested-keyed file.
---=20
-2.46.0
+ include/linux/cgroup-defs.h               |  1 +
+ kernel/cgroup/rstat.c                     | 16 ++++-
+ tools/testing/selftests/cgroup/test_cpu.c | 72 +++++++++++++++++++++++
+ 3 files changed, 86 insertions(+), 3 deletions(-)
 
+-- 
+2.43.5
 
 
