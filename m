@@ -1,237 +1,170 @@
-Return-Path: <cgroups+bounces-4427-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4428-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1730695CC3F
-	for <lists+cgroups@lfdr.de>; Fri, 23 Aug 2024 14:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EB6A195D34A
+	for <lists+cgroups@lfdr.de>; Fri, 23 Aug 2024 18:27:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6AFF9B21F37
-	for <lists+cgroups@lfdr.de>; Fri, 23 Aug 2024 12:20:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C561B2159E
+	for <lists+cgroups@lfdr.de>; Fri, 23 Aug 2024 16:27:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 958CE184548;
-	Fri, 23 Aug 2024 12:19:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D580C18BB92;
+	Fri, 23 Aug 2024 16:27:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xa6v6zEA"
+	dkim=pass (2048-bit key) header.d=yhndnzj.com header.i=@yhndnzj.com header.b="PMK7RTWW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-4317.proton.ch (mail-4317.proton.ch [185.70.43.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8BEE9457;
-	Fri, 23 Aug 2024 12:19:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C03118A6DE;
+	Fri, 23 Aug 2024 16:27:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724415598; cv=none; b=AXf/6i9y690jAndxsSn/pyOZ8lHa+3ASqCrtHlg8VWmcvRD9ktyeEiQi8wQA1eT62sMEko58s7Wo66wZ5fvDleXFE5vCF1Z7wxxjqhWj592hmP1SLqpOQdLIwayc9hujAZfyH2eAgFJnigiDi/SlrZY8OB2qEqMgUEqB5gTi99M=
+	t=1724430440; cv=none; b=H394GRerdnWHcR5eDJl4BD3jcQCDvnn3JahoVY9kBiCZki1y1seFTKtAnA9KIoXN0Me4we1OED3ot4Y1wuL9I+fDS68nsym/iWDiVxQBTnpfiAs1r/pRdP7+fnOMc+x1eLsZitvONn9VJFoHWUNOoatzpDa8TCN1zgpCV8tXnvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724415598; c=relaxed/simple;
-	bh=UNUCMHj/hyaQMFc8KHdZF7HyFyUqAA9VUiUHkYXLnpM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DEQKhnPrBB9/1iaUqhwp94lUU/9oVPS9As8CP948Oe/ZaTAfSa2jCmqfLngdLZ1Uq5zeWc5CQll8HSKKLQBcqBjQP4xxMPu0decOBOgI3tpxL/iZWQJxGcy4QJaHxRHaWx37nz79GAKqDQDosUoxcTtPHNDex2XfXbdcAm4HRmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xa6v6zEA; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-7140ff4b1e9so1564857b3a.3;
-        Fri, 23 Aug 2024 05:19:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724415596; x=1725020396; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UNUCMHj/hyaQMFc8KHdZF7HyFyUqAA9VUiUHkYXLnpM=;
-        b=Xa6v6zEA7tUCKrIb6hfZzLzdaLXhpfT2d2451CCsYTs4yXdJX4Kz4r7iLdu4VE2Blj
-         2Lf8rVGpxBdHDIuYerhg3qfo9+TRgmlRMsK3N9NYQl37FHC9fEnG7PzqUr6ludPTb3do
-         9+G0/OOE6QiUmVPVOVzdEPvssmdYdCtGlDmH/fkE7UoFxulZBvucPnuRtf90lZszHlH6
-         lYQNkmZwMv/1ua27NiRDVurAeMC4avrRL5/OSoG9NK+lWn2RHkmz4DtapRGltGI5231D
-         NaUE+M5fRqXPmQUgYLuUwMa/6Ub/iaA3Afm4g6MoccobCzRxrynXRif0Apg7UoIPR1Da
-         9CBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724415596; x=1725020396;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UNUCMHj/hyaQMFc8KHdZF7HyFyUqAA9VUiUHkYXLnpM=;
-        b=kq/jVRHk7tJZgDjImDSRD7lft69ECCOxnygvZ2zX9UWBpW5qljDLXyJ/tbtoZRGt1S
-         Ft65jKSe2L4m6QeSZwLMJPnks8flOYyltoWQ+c2SuPQTfEyYOwlYVGO43N3r5pWsCT5X
-         ti2hHestAcBCNscn1FDGHp7HaEDF4jccWOFjOhvtpgFfQupLcGPVz6dr919kNvbyKzsa
-         Zbno8aRxoB2jBPzY65t8LCVsD4kwME4Nuq9UU3QDT43qS/eFzgIP943ljZiz/y/rINkg
-         0SEm5e5aeC6LWBZuweTTdxPvZbhn0Fb+3eE0w8H355w6jLQaY/PPEKugDaBrGnRODLb+
-         Pl0A==
-X-Forwarded-Encrypted: i=1; AJvYcCVK1XWCsQ3DNBxNzMrf7ZCh09js8gagqBHBpFGOG6Z247diqJvZ38+v91NfolAS6o0lUpdGi1/sahfjWYwm@vger.kernel.org, AJvYcCWvgtBX8whVrmU74OeKF0PzBBDL1SKIRErg0tcjCXgknszoWpMvuYrowNxsAsIz6yNcPPgHah7L@vger.kernel.org, AJvYcCXCKfaHkFI5dmLEb/b/hmKholwPHhghpBZK6NQi5NJXZaLMMBEGUArqVIN+w+K0BlAgEynYodElts8QYMM=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyY8J8ym/cyqBUUCBGmW3hLzxTV6s80VyiW7S+YtAQk4/IoQzaX
-	WV8spB+fWgdF1kGxxvvXyvLbmN1do+liqHfgfIAdykDyiLy6xneA
-X-Google-Smtp-Source: AGHT+IGzc7ioPCbQCUlxcip72zBvSMtYRgGsnomQD6AMKfga1Ybtd8vRCH2kemIvGrXuqleOIpl3tQ==
-X-Received: by 2002:a05:6a20:e18a:b0:1c3:ff33:246b with SMTP id adf61e73a8af0-1cc89ed999cmr2643659637.40.1724415595687;
-        Fri, 23 Aug 2024 05:19:55 -0700 (PDT)
-Received: from EBJ9932692.tcent.cn ([124.156.216.125])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7cd9ad5529csm2955543a12.68.2024.08.23.05.19.48
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 23 Aug 2024 05:19:55 -0700 (PDT)
-From: Lance Yang <ioworker0@gmail.com>
-To: yukuai1@huaweicloud.com
-Cc: 21cnbao@gmail.com,
-	a.hindborg@samsung.com,
-	axboe@kernel.dk,
-	baolin.wang@linux.alibaba.com,
-	boqun.feng@gmail.com,
-	cgroups@vger.kernel.org,
-	david@redhat.com,
-	fujita.tomonori@lab.ntt.co.jp,
-	ioworker0@gmail.com,
-	josef@toxicpanda.com,
-	libang.li@antgroup.com,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	mkoutny@suse.com,
-	paolo.valente@unimore.it,
-	tj@kernel.org,
-	vbabka@kernel.org,
-	yukuai3@huawei.com
-Subject: Re: [BUG] cgroupv2/blk: inconsistent I/O behavior in Cgroup v2 with set device wbps and wiops
-Date: Fri, 23 Aug 2024 20:19:39 +0800
-Message-ID: <20240823121939.65934-1-ioworker0@gmail.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <7c3499ac-faa7-cc0c-2d90-b8291fce5492@huaweicloud.com>
-References: <7c3499ac-faa7-cc0c-2d90-b8291fce5492@huaweicloud.com>
+	s=arc-20240116; t=1724430440; c=relaxed/simple;
+	bh=ffKM+8huncSUY8KqXLjU/DT6jLHtBI7/F4U3axGJqJI=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=CQTF4TP/I7fgn5KKShZd9cc8FGJTkLRQNbQkuq+PmGvYOY4yTsaH0RHI7JuZzbAd70FKKgrTLrVAIG/vZop7FYCl5HxRLT3u87ZkIO9w+0Jn3QHPAIJPUGzyfxskPpv19LKar5vkiOWBXGUIXWlxjFB2NBGk3d1Z6dX4K2xqIyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yhndnzj.com; spf=pass smtp.mailfrom=yhndnzj.com; dkim=pass (2048-bit key) header.d=yhndnzj.com header.i=@yhndnzj.com header.b=PMK7RTWW; arc=none smtp.client-ip=185.70.43.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yhndnzj.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yhndnzj.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yhndnzj.com;
+	s=protonmail; t=1724430429; x=1724689629;
+	bh=7LV5wuij5UHvq2TzSAXYR/Fp+ylFof5gSswrfbA2tBU=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=PMK7RTWWQ6HcUw0ixQgF0emg4ra1NhSx9KpxtrQMlLZYDWnFBZy0RQO1CwCmjCMQM
+	 OnmXPC9rN66VxdZYrhN3DKTzN4R+aIATv5/e9Y+eA3XhN7o/7n/WUm99K54f0Zro2+
+	 n+VEfPQ4vl2CnM4RCh6qFXzfZSJkwrkHfFM46H01QfwvgAPY7GPMn+BMRyzfQR1anh
+	 QJtwfmfojLVv+CQ0DKU0Xkf+3/CTbaqJLJP6pygG6H+efzD49m6AfgSu0UjpdvuT+I
+	 VwiD9tCmdJVex+RBKf02uM5qASyWyHPvBP38SXprzDIo0iNEc3K29ltQOZ23schN7d
+	 zN915e3f1w1Zw==
+Date: Fri, 23 Aug 2024 16:27:06 +0000
+To: linux-kernel@vger.kernel.org
+From: Mike Yuan <me@yhndnzj.com>
+Cc: Mike Yuan <me@yhndnzj.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, Muchun Song <muchun.song@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, Roman Gushchin <roman.gushchin@linux.dev>, Michal Hocko <mhocko@kernel.org>, =?utf-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, stable@vger.kernel.org
+Subject: [PATCH v3 1/3] mm/memcontrol: respect zswap.writeback setting from parent cg too
+Message-ID: <20240823162506.12117-1-me@yhndnzj.com>
+Feedback-ID: 102487535:user:proton
+X-Pm-Message-ID: 1aeab9fed9e0166d41ca57d11d544d5490bc3859
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Forget to add the test result of buffered IO:
+Currently, the behavior of zswap.writeback wrt.
+the cgroup hierarchy seems a bit odd. Unlike zswap.max,
+it doesn't honor the value from parent cgroups. This
+surfaced when people tried to globally disable zswap writeback,
+i.e. reserve physical swap space only for hibernation [1] -
+disabling zswap.writeback only for the root cgroup results
+in subcgroups with zswap.writeback=3D1 still performing writeback.
 
-With wiops, the result is as follows:
+The inconsistency became more noticeable after I introduced
+the MemoryZSwapWriteback=3D systemd unit setting [2] for
+controlling the knob. The patch assumed that the kernel would
+enforce the value of parent cgroups. It could probably be
+workarounded from systemd's side, by going up the slice unit
+tree and inheriting the value. Yet I think it's more sensible
+to make it behave consistently with zswap.max and friends.
 
-```
-$ echo "8:0 wbps=10485760 wiops=100000" > io.max
+[1] https://wiki.archlinux.org/title/Power_management/Suspend_and_hibernate=
+#Disable_zswap_writeback_to_use_the_swap_space_only_for_hibernation
+[2] https://github.com/systemd/systemd/pull/31734
 
-$ rm -rf /data/file1 && dd if=/dev/zero of=/data/file1 bs=50M count=1
-1+0 records in
-1+0 records out
-52428800 bytes (52 MB, 50 MiB) copied, 0.062217 s, 843 MB/s
+Changes in v3:
+- Additionally drop inheritance of zswap.writeback setting
+  on cgroup creation, which is no longer needed
+Link to v2: https://lore.kernel.org/linux-kernel/20240816144344.18135-1-me@=
+yhndnzj.com/
 
-$ dmesg -T
-[Fri Aug 23 12:09:10 2024] __blk_throtl_bio: bio start 16384 ffff0000ce5ac500
-[Fri Aug 23 12:09:10 2024] __blk_throtl_bio: bio start 16384 ffff0000ce5adb80
-[Fri Aug 23 12:09:10 2024] __blk_throtl_bio: bio start 16384 ffff0000ce5ac140
-[Fri Aug 23 12:09:10 2024] __blk_throtl_bio: bio start 16384 ffff0000ce5acdc0
-[Fri Aug 23 12:09:10 2024] __blk_throtl_bio: bio start 16384 ffff0000ce5ac280
-[Fri Aug 23 12:09:10 2024] __blk_throtl_bio: bio start 16384 ffff0000ce5ada40
-[Fri Aug 23 12:09:10 2024] __blk_throtl_bio: bio start 4096 ffff0000ce5adcc0
-[Fri Aug 23 12:09:10 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000ce5ac500
-[Fri Aug 23 12:09:10 2024] __blk_throtl_bio: bio start 13824 ffff0000ce5ac500
-[Fri Aug 23 12:09:11 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000ce5adb80
-[Fri Aug 23 12:09:11 2024] __blk_throtl_bio: bio start 13824 ffff0000ce5adb80
-[Fri Aug 23 12:09:12 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000ce5ac140
-[Fri Aug 23 12:09:12 2024] __blk_throtl_bio: bio start 13824 ffff0000ce5ac140
-[Fri Aug 23 12:09:13 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000ce5acdc0
-[Fri Aug 23 12:09:13 2024] __blk_throtl_bio: bio start 13824 ffff0000ce5acdc0
-[Fri Aug 23 12:09:14 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000ce5ac280
-[Fri Aug 23 12:09:14 2024] __blk_throtl_bio: bio start 13824 ffff0000ce5ac280
-[Fri Aug 23 12:09:14 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000ce5ada40
-[Fri Aug 23 12:09:14 2024] __blk_throtl_bio: bio start 13824 ffff0000ce5ada40
-[Fri Aug 23 12:09:15 2024] blk_throtl_dispatch_work_fn: bio done 4096 ffff0000ce5adcc0
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 1536 ffff0000ce5adcc0
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 1536 ffff0000ce5adcc0
-[Fri Aug 23 12:09:15 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000ce5ac500
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 11264 ffff0000ce5ac500
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 11264 ffff0000ce5ac500
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 8704 ffff0000ce5ac500
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 8704 ffff0000ce5ac500
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 6144 ffff0000ce5ac500
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 6144 ffff0000ce5ac500
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 3584 ffff0000ce5ac500
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 3584 ffff0000ce5ac500
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 1024 ffff0000ce5ac500
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 1024 ffff0000ce5ac500
-[Fri Aug 23 12:09:15 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000ce5adb80
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 11264 ffff0000ce5adb80
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 11264 ffff0000ce5adb80
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 8704 ffff0000ce5adb80
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 8704 ffff0000ce5adb80
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 6144 ffff0000ce5adb80
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 6144 ffff0000ce5adb80
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 3584 ffff0000ce5adb80
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 3584 ffff0000ce5adb80
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 1024 ffff0000ce5adb80
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 1024 ffff0000ce5adb80
-[Fri Aug 23 12:09:15 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000ce5ac140
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 11264 ffff0000ce5ac140
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 11264 ffff0000ce5ac140
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 8704 ffff0000ce5ac140
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 8704 ffff0000ce5ac140
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 6144 ffff0000ce5ac140
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 6144 ffff0000ce5ac140
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 3584 ffff0000ce5ac140
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 3584 ffff0000ce5ac140
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 1024 ffff0000ce5ac140
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 1024 ffff0000ce5ac140
-[Fri Aug 23 12:09:15 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000ce5acdc0
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 11264 ffff0000ce5acdc0
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 11264 ffff0000ce5acdc0
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 8704 ffff0000ce5acdc0
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 8704 ffff0000ce5acdc0
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 6144 ffff0000ce5acdc0
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 6144 ffff0000ce5acdc0
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 3584 ffff0000ce5acdc0
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 3584 ffff0000ce5acdc0
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 1024 ffff0000ce5acdc0
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 1024 ffff0000ce5acdc0
-[Fri Aug 23 12:09:15 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000ce5ac280
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 11264 ffff0000ce5ac280
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 11264 ffff0000ce5ac280
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 8704 ffff0000ce5ac280
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 8704 ffff0000ce5ac280
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 6144 ffff0000ce5ac280
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 6144 ffff0000ce5ac280
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 3584 ffff0000ce5ac280
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 3584 ffff0000ce5ac280
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 1024 ffff0000ce5ac280
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 1024 ffff0000ce5ac280
-[Fri Aug 23 12:09:15 2024] blk_throtl_dispatch_work_fn: bio done 13824 ffff0000ce5ada40
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 11264 ffff0000ce5ada40
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 11264 ffff0000ce5ada40
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 8704 ffff0000ce5ada40
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 8704 ffff0000ce5ada40
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 6144 ffff0000ce5ada40
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 6144 ffff0000ce5ada40
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 3584 ffff0000ce5ada40
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 3584 ffff0000ce5ada40
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio start 1024 ffff0000ce5ada40
-[Fri Aug 23 12:09:15 2024] __blk_throtl_bio: bio done 1024 ffff0000ce5ada40
-```
+Changes in v2:
+- Actually base on latest tree (is_zswap_enabled() -> zswap_is_enabled())
+- Update Documentation/admin-guide/cgroup-v2.rst to reflect the change
+Link to v1: https://lore.kernel.org/linux-kernel/20240814171800.23558-1-me@=
+yhndnzj.com/
 
-And without wiops, the result is quite different as well:
+Cc: Nhat Pham <nphamcs@gmail.com>
+Cc: Yosry Ahmed <yosryahmed@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Michal Koutn=C3=BD <mkoutny@suse.com>
 
-```
-$ echo "8:0 wbps=10485760 wiops=max" > io.max
+Fixes: 501a06fe8e4c ("zswap: memcontrol: implement zswap writeback disablin=
+g")
+Cc: <stable@vger.kernel.org>
 
-$ rm -rf /data/file1 && dd if=/dev/zero of=/data/file1 bs=50M count=1
-1+0 records in
-1+0 records out
-52428800 bytes (52 MB, 50 MiB) copied, 0.0791369 s, 663 MB/s
+Signed-off-by: Mike Yuan <me@yhndnzj.com>
+Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+Acked-by: Yosry Ahmed <yosryahmed@google.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst |  7 ++++---
+ mm/memcontrol.c                         | 12 +++++++++---
+ 2 files changed, 13 insertions(+), 6 deletions(-)
 
-$ dmesg -T
-[Fri Aug 23 12:16:50 2024] __blk_throtl_bio: bio start 16384 ffff0000f87ca3c0
-[Fri Aug 23 12:16:50 2024] __blk_throtl_bio: bio start 16384 ffff0000f87ca000
-[Fri Aug 23 12:16:50 2024] __blk_throtl_bio: bio start 16384 ffff0000f87cb2c0
-[Fri Aug 23 12:16:50 2024] __blk_throtl_bio: bio start 16384 ffff0000f87cb040
-[Fri Aug 23 12:16:50 2024] __blk_throtl_bio: bio start 16384 ffff0000f87cac80
-[Fri Aug 23 12:16:50 2024] __blk_throtl_bio: bio start 16384 ffff0000f87cb400
-[Fri Aug 23 12:16:50 2024] __blk_throtl_bio: bio start 4096 ffff0000f87ca640
-[Fri Aug 23 12:16:51 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000f87ca3c0
-[Fri Aug 23 12:16:52 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000f87ca000
-[Fri Aug 23 12:16:53 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000f87cb2c0
-[Fri Aug 23 12:16:54 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000f87cb040
-[Fri Aug 23 12:16:54 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000f87cac80
-[Fri Aug 23 12:16:55 2024] blk_throtl_dispatch_work_fn: bio done 16384 ffff0000f87cb400
-[Fri Aug 23 12:16:55 2024] blk_throtl_dispatch_work_fn: bio done 4096 ffff0000f87ca640
-```
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-=
+guide/cgroup-v2.rst
+index 86311c2907cd..95c18bc17083 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1717,9 +1717,10 @@ The following nested keys are defined.
+ =09entries fault back in or are written out to disk.
+=20
+   memory.zswap.writeback
+-=09A read-write single value file. The default value is "1". The
+-=09initial value of the root cgroup is 1, and when a new cgroup is
+-=09created, it inherits the current value of its parent.
++=09A read-write single value file. The default value is "1".
++=09Note that this setting is hierarchical, i.e. the writeback would be
++=09implicitly disabled for child cgroups if the upper hierarchy
++=09does so.
+=20
+ =09When this is set to 0, all swapping attempts to swapping devices
+ =09are disabled. This included both zswap writebacks, and swapping due
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index f29157288b7d..d563fb515766 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3613,8 +3613,7 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *pare=
+nt_css)
+ =09memcg1_soft_limit_reset(memcg);
+ #ifdef CONFIG_ZSWAP
+ =09memcg->zswap_max =3D PAGE_COUNTER_MAX;
+-=09WRITE_ONCE(memcg->zswap_writeback,
+-=09=09!parent || READ_ONCE(parent->zswap_writeback));
++=09WRITE_ONCE(memcg->zswap_writeback, true);
+ #endif
+ =09page_counter_set_high(&memcg->swap, PAGE_COUNTER_MAX);
+ =09if (parent) {
+@@ -5320,7 +5319,14 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *ob=
+jcg, size_t size)
+ bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg)
+ {
+ =09/* if zswap is disabled, do not block pages going to the swapping devic=
+e */
+-=09return !zswap_is_enabled() || !memcg || READ_ONCE(memcg->zswap_writebac=
+k);
++=09if (!zswap_is_enabled())
++=09=09return true;
++
++=09for (; memcg; memcg =3D parent_mem_cgroup(memcg))
++=09=09if (!READ_ONCE(memcg->zswap_writeback))
++=09=09=09return false;
++
++=09return true;
+ }
+=20
+ static u64 zswap_current_read(struct cgroup_subsys_state *css,
 
-Thanks,
-Lance
+base-commit: 47ac09b91befbb6a235ab620c32af719f8208399
+--=20
+2.46.0
+
+
 
