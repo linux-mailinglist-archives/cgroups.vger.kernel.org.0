@@ -1,88 +1,102 @@
-Return-Path: <cgroups+bounces-4471-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4472-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A04F95F9D1
-	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 21:40:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DAA695F9D5
+	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 21:41:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC99DB20D53
-	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 19:40:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 493B3282CFD
+	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 19:41:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF2FC1991D5;
-	Mon, 26 Aug 2024 19:40:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E1D19922D;
+	Mon, 26 Aug 2024 19:41:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VhYUjN1O"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jDJdjVLp"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78AE680034;
-	Mon, 26 Aug 2024 19:40:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C42182877
+	for <cgroups@vger.kernel.org>; Mon, 26 Aug 2024 19:41:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724701222; cv=none; b=hiH3j58StVYSaoVfY3dmoPzb9poG99yGg5P6KQtCVu4SmzzjTTm6D6aicUI0wJFfw5Pnk0McDmCKLvwnxaQv1aUvfdgiTD/729yDHUXN6+FLPYZktGqMZdSLglaNsHLVZoId8OWXvNdawQPlb0lNwUQPPmKoT8LLjGEg4wY0DZw=
+	t=1724701294; cv=none; b=qk/6hFU07OKbSNhjFdQOZmEb7O5mziy6RdfAbKcG+tirdg40BfYtP01TzPZwkHDUIwx/1ItH+bZ48UC5w66ITpoFBuJQ8zwgsyvbWfQBVIrkI6xWCy7m4hMNBAsyKbk8coaBNo0yrJMKwzpMtLEHi3J8Gf7AMuSIc80J6BDChzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724701222; c=relaxed/simple;
-	bh=iX7LV2kphm8h3qEmrJT4IcBuv9Gi7k++1WPKkYQPA5k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ytpo8hRvUWCmeEaNUI9QdZsSdkbvhfW9DryrIuwGQBKhcJVpfU/BwYVHP/MItmmiZ5yCGt4PevO7oNi5GNGLPf1p1pHzvTRYExjJVLAYNkDv2otDIBb+1XKDUnSEGQUm8pQBvBPp4NV1aV5h+aT+nDZwSVdfDz6gp/ZR1JgIJCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VhYUjN1O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFD80C8B7A3;
-	Mon, 26 Aug 2024 19:40:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724701221;
-	bh=iX7LV2kphm8h3qEmrJT4IcBuv9Gi7k++1WPKkYQPA5k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VhYUjN1OXeYECp4Ix3FITP9NU1ORVBUuLNpPjGiCbsmf3bcdBsFiEtKrEOAkQhPrk
-	 4wIBXPJWGWRXxnmWNsIeksOUogy2+vcFg7be9MvGzKRAkpIzgtL4QpFPCrwgLsObhs
-	 BWYlYtouTlyaWxEUss7gAYKWV6AvcYVYbC4HrjPDcKE8oIIU3EUQFKVzBHN8qi65gq
-	 mHCEIgBvQQJNJ+oMZqIlOPfV76tAF5A+r5xUOdepinjpbABvgk2fZd7t3VO4lKHAFz
-	 JU8iXYB1tyebhHPadZkXDIq8bGkzVLQtYNFr9lZBXtjqf44qOzm+aItaNTVeMoHmjC
-	 yhpgsHFUhOhWg==
-Date: Mon, 26 Aug 2024 09:40:20 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Chen Ridong <chenridong@huawei.com>, lizefan.x@bytedance.com,
-	hannes@cmpxchg.org, adityakali@google.com, sergeh@kernel.org,
-	mkoutny@suse.com, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, chenridong@huaweicloud.com
-Subject: Re: [PATCH v2 -next 09/11] cgroup/cpuset: move v1 interfaces to
- cpuset-v1.c
-Message-ID: <ZszaJFzcmBskojVS@slm.duckdns.org>
-References: <20240826132703.558956-1-chenridong@huawei.com>
- <20240826132703.558956-10-chenridong@huawei.com>
- <eaef1faf-c3f3-4664-ae7d-5cca611925e4@redhat.com>
+	s=arc-20240116; t=1724701294; c=relaxed/simple;
+	bh=YBbRZtirXd6o7CwjpvmKYRPMTiOmSsS+A1fhHpSoiiw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MZW+UWn9Cwx1W0+lAH6LkaOQ13CaFZMnhRGUVLd/wXAZQyNzxc1ngr3M/YqenHXMAnvkWRclSCIRKfKTm+uvnCx4+7PuYA3gOvAgypVhTYAL2RS7c7YjLI1VpX17Ig/QmOjIGXWpDaUrnid6e85/d8RFnb0K2353NTCyMNLM6tQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jDJdjVLp; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1724701292;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Tc+FMU3SHLP9qdwgTJG7YvFdlWIWsDbgpSsFFf4KmPg=;
+	b=jDJdjVLpbQMaJ+fhWhqBHgoZOAYZKyK8k7EUxB55InRd6ILKVX7RQixi9qt++YKWMqUo4J
+	BXrLdcE2GD/fYAFdvbcd+maRi+v1NnwSdKaeAg1TSjkvLN6yHTuMbhkcMdSdFbzFoadlGE
+	sXAzosBz/HwK6Pme3HweUKAD7C8ie8k=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-175-u7nz4JulMR2-YyLoAQGHrA-1; Mon,
+ 26 Aug 2024 15:41:28 -0400
+X-MC-Unique: u7nz4JulMR2-YyLoAQGHrA-1
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 10EAE1956064;
+	Mon, 26 Aug 2024 19:41:27 +0000 (UTC)
+Received: from [10.2.16.157] (unknown [10.2.16.157])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id D468C19560A3;
+	Mon, 26 Aug 2024 19:41:24 +0000 (UTC)
+Message-ID: <102a1760-6440-4535-aaf4-d7c1aa6e97b3@redhat.com>
+Date: Mon, 26 Aug 2024 15:41:23 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <eaef1faf-c3f3-4664-ae7d-5cca611925e4@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH-cgroup 0/2] cgroup/cpuset: Account for boot time isolated
+ CPUs
+To: Tejun Heo <tj@kernel.org>
+Cc: Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20240820195536.202066-1-longman@redhat.com>
+ <ce01caf5-e576-4614-b6b8-0206da1a7c49@redhat.com>
+ <ZszSDG7GlvKQTydh@slm.duckdns.org>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <ZszSDG7GlvKQTydh@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-On Mon, Aug 26, 2024 at 03:30:14PM -0400, Waiman Long wrote:
-...
-> Another alternative is to include cpuset-v1.c directly into cpuset.c like
-> 
-> #ifdef CONFIG_CPUSETS_V1
-> #include "cpuset-v1.c"
-> #else
->    ....
-> #endif
-> 
-> Then you don't need to change the names and will not need cpuset-internal.h.
-> It is up to you to decide what you want to do.
 
-FWIW, I'd prefer to have cpuset1_ prefixed functions declared in cpuset1.h
-or something rather than including .c file.
+On 8/26/24 15:05, Tejun Heo wrote:
+> Hello, Waiman.
+>
+> On Mon, Aug 26, 2024 at 03:01:21PM -0400, Waiman Long wrote:
+>> Ping! Any comment on these patches?
+> cgroup side looks fine to me. Ping isol people?
 
-Thanks.
+This patchset is specific to cpuset code and doesn't touch any isolation 
+code at all. My other isolation related patch series [1] does have a 
+dependency on this one to work correctly.
 
--- 
-tejun
+[1] https://lore.kernel.org/lkml/20240821142312.236970-1-longman@redhat.com/
+
+Cheers,
+Longman
+
 
