@@ -1,239 +1,237 @@
-Return-Path: <cgroups+bounces-4484-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4485-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C257695FDC8
-	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 01:29:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2758D95FDD2
+	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 01:43:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25539B21C1F
-	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 23:29:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44EE41C218BF
+	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 23:43:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA0419DF4A;
-	Mon, 26 Aug 2024 23:29:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A41119CD08;
+	Mon, 26 Aug 2024 23:43:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rTYE7Zqv"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2jobZu2O"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE34313DB90
-	for <cgroups@vger.kernel.org>; Mon, 26 Aug 2024 23:29:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC2E1482E6
+	for <cgroups@vger.kernel.org>; Mon, 26 Aug 2024 23:43:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724714972; cv=none; b=MouFOBE/n953czPYAVhV+wJcff9urcIi7BHoj7+xiajGLIVWZwiTm68z0Hxurr/a/bi+eiwcVA77Wi3XPCB5+KhqM7qg+gkG9LMGtkR9zE/tR7Q7zuFDO3U8Em9odJN4FN+tuVcr5VYnZAaQysJsOEUSZPpphIT9/SnLlbOFF8k=
+	t=1724715797; cv=none; b=Wt0iaeL6fDWOausMG0iK1mz8Rt3gCX662P/D4/Vxv6IbWwIJDgEEg2DBURCuOe1jufVKKIks+lLj4geXVT+uDkeamiIC3oKvBLXww8/F2jMOYCJMRefxUWFEH2FFwJbHnTHg5dZaC711f/FRDbEvGWMEWqGyQwAU4VsBb6K6yPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724714972; c=relaxed/simple;
-	bh=b+OnWvaM5mAUfIHEp73rjbRARRW+hBWHaiy/8SntOOM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Bs6ySyYgnew6sXHc7CKt6c1ISO8qPPlNehWgdbmcRmBwYrbOfEXH7s7MCj+6o60ljmh4VEff0D5+AceB9TAirCFhwKDI/0C8lghuN2lrqWzS3uzgJbNi6i+cqkpmwIOo1ECy9RVgbo++TXAMiPLTmQpU6ho7M0jPSiyYNNtRZuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rTYE7Zqv; arc=none smtp.client-ip=91.218.175.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724714966;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=MuChY2rLsaLG7Ru19DVvVTp3mYPf/6WrV6IB7Wjk9P8=;
-	b=rTYE7ZqvmmfLseZfj6zFKiBTrdCvEreY1ReWOBF01UpApr6rmkdCecmgyExt1Fgjo61nnF
-	c+pXChcn8XC50zdRluEn1wZ8+EWrLK94m+B1uQ3nSp45AFU4J5oi3Q7Uep6iKvZrSWqcc+
-	nfaQXsRJyGcjVI78KSEgm9aNJv9pnfE=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	David Rientjes <rientjes@google.com>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Eric Dumazet <edumazet@google.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>,
-	cgroups@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH v1] memcg: add charging of already allocated slab objects
-Date: Mon, 26 Aug 2024 16:29:08 -0700
-Message-ID: <20240826232908.4076417-1-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1724715797; c=relaxed/simple;
+	bh=aLKvXwCQ8CpZX8jumViMtPWTpxywDphZ6fLhEFAOD9U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UTqzRzLVmUaVKBVxwdnXjNK5e8wHB8xQOFKKdJ2An+J/aYZ7lv7BPX5MERACl0cXOycyWs2AqBseJRvJaliH+KkGwlgnzNYto5p0hXhFs39ol0uFJ8RHquVy5d8itGWwzXVFYuIYMHa9PsnDupboSN6UUUEY1aj4dOMIDKmrlS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2jobZu2O; arc=none smtp.client-ip=209.85.166.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-39d2a107aebso81185ab.0
+        for <cgroups@vger.kernel.org>; Mon, 26 Aug 2024 16:43:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1724715794; x=1725320594; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dnincskxIZjFY36curyurg9fJCPd6cnHUMKQnuVVoFk=;
+        b=2jobZu2OZCmcjuR6xeSEPHogVnKQb6uUhW7xz2CpqQrA5LChdZ5h6HcX0uaQjiVgbn
+         MDiCK5/sv74DYnY7ykBZTpamu1x5zEmWQp/fhtxrnUo5nGYFn6WO2A4bt883/4rrlo9T
+         XgmoDnl/nVqD61siUHUoOAvBrtkqLWKu5T+1iWsRXPwjDPuvMbjhMhaKdUt8EFZN3qqF
+         SkvBTMtVA5oN5mqhbtdkpXvx9cKcf03u27YPY1/WLpC9Rh0s7u1v3RRZOvBpkUWYP5QI
+         O2lNfTISv8Sg15fXfL5Ot223AC57B8NWfE+Q5aUHkPUsUb7rj7kefbGBzNO3aV5npbP7
+         v7jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724715794; x=1725320594;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dnincskxIZjFY36curyurg9fJCPd6cnHUMKQnuVVoFk=;
+        b=sZxCAW/rn8I4y5sIknoIv1lKbOluuImL7yxUltWKigR5I/BTxUYkObh8tcdHTj1LKW
+         ml/vvViEhRJvo1TrY8hEtoY0IEzglQLJD0c+tNb6IGARm+6+rqiEIxSlKOwAe1QXL+7K
+         5jilWCasY88IaJYYFwvhG8/nQdb019a2igNaQS10ytpvUSbNWsFt8pzKtFJ+vNkk+uKL
+         O3v0CmmUM5zmNHA5EXudHqK0akZAfOQL7tIlECXzXi8VdggpE8iRIr65uug30+FkZ667
+         28KWFe2wYSTWBdWiacfKfJdUnCBFdvh0+TlookxeW02zTGcel6NlULf0VJNzmU1r8Ood
+         UWmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXmD2KrSp79y2d3RZzdljpKpeOVp33lVs4Ac1nlDtrOeEjK35bXZW726iTLFCtZhPmxOZi96Zu6@vger.kernel.org
+X-Gm-Message-State: AOJu0YzMdkBsWHFql8V+l+McGv+DFL7ancmZGpc95lpC6BlKXfKTt9Z5
+	gVfoNE9/DbRK4DRlKnMj9b3Lt2BgFeDiZKwRjdBSQn/ssdV5PydifllCViPZyYl+2jBgqlWNfgx
+	RLV5xASZQ//PVU+y/FWmcaAMQmuUuxk7CDanf
+X-Google-Smtp-Source: AGHT+IFE60KjWQ+LhatMhLcNn4ylcp/3BX1PMZw7JB2CKalx7ld2SR1EOoZ3z8exQZ8pHnycdnnra1ayimhJIxisGrc=
+X-Received: by 2002:a05:6e02:18c7:b0:381:24d7:7cc6 with SMTP id
+ e9e14a558f8ab-39e65ea0ae0mr778165ab.3.1724715794374; Mon, 26 Aug 2024
+ 16:43:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240813165619.748102-1-yuanchu@google.com> <ZsSTdY5hsv05jcj-@PC2K9PVX.TheFacebook.com>
+In-Reply-To: <ZsSTdY5hsv05jcj-@PC2K9PVX.TheFacebook.com>
+From: Yuanchu Xie <yuanchu@google.com>
+Date: Mon, 26 Aug 2024 16:43:01 -0700
+Message-ID: <CAJj2-QGtvvrhjH_h1wL3FCg4HgZU27rqxSCDZzPws81yPK_DvQ@mail.gmail.com>
+Subject: Re: [PATCH v3 0/7] mm: workingset reporting
+To: gourry@gourry.net
+Cc: David Hildenbrand <david@redhat.com>, "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>, 
+	Khalid Aziz <khalid.aziz@oracle.com>, Henry Huang <henry.hj@antgroup.com>, 
+	Yu Zhao <yuzhao@google.com>, Dan Williams <dan.j.williams@intel.com>, 
+	Gregory Price <gregory.price@memverge.com>, Huang Ying <ying.huang@intel.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Lance Yang <ioworker0@gmail.com>, 
+	Randy Dunlap <rdunlap@infradead.org>, Muhammad Usama Anjum <usama.anjum@collabora.com>, 
+	Kalesh Singh <kaleshsingh@google.com>, Wei Xu <weixugc@google.com>, 
+	David Rientjes <rientjes@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Shuah Khan <shuah@kernel.org>, Yosry Ahmed <yosryahmed@google.com>, 
+	Matthew Wilcox <willy@infradead.org>, Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>, 
+	Kairui Song <kasong@tencent.com>, "Michael S. Tsirkin" <mst@redhat.com>, 
+	Vasily Averin <vasily.averin@linux.dev>, Nhat Pham <nphamcs@gmail.com>, 
+	Miaohe Lin <linmiaohe@huawei.com>, Qi Zheng <zhengqi.arch@bytedance.com>, 
+	Abel Wu <wuyun.abel@bytedance.com>, "Vishal Moola (Oracle)" <vishal.moola@gmail.com>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-At the moment, the slab objects are charged to the memcg at the
-allocation time. However there are cases where slab objects are
-allocated at the time where the right target memcg to charge it to is
-not known. One such case is the network sockets for the incoming
-connection which are allocated in the softirq context.
+On Tue, Aug 20, 2024 at 6:00=E2=80=AFAM Gregory Price <gourry@gourry.net> w=
+rote:
+>
+> On Tue, Aug 13, 2024 at 09:56:11AM -0700, Yuanchu Xie wrote:
+> > This patch series provides workingset reporting of user pages in
+> > lruvecs, of which coldness can be tracked by accessed bits and fd
+> > references. However, the concept of workingset applies generically to
+> > all types of memory, which could be kernel slab caches, discardable
+> > userspace caches (databases), or CXL.mem. Therefore, data sources might
+> > come from slab shrinkers, device drivers, or the userspace. IMO, the
+> > kernel should provide a set of workingset interfaces that should be
+> > generic enough to accommodate the various use cases, and be extensible
+> > to potential future use cases. The current proposed interfaces are not
+> > sufficient in that regard, but I would like to start somewhere, solicit
+> > feedback, and iterate.
+> >
+> ... snip ...
+> > Use cases
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > Promotion/Demotion
+> > If different mechanisms are used for promition and demotion, workingset
+> > information can help connect the two and avoid pages being migrated bac=
+k
+> > and forth.
+> > For example, given a promotion hot page threshold defined in reaccess
+> > distance of N seconds (promote pages accessed more often than every N
+> > seconds). The threshold N should be set so that ~80% (e.g.) of pages on
+> > the fast memory node passes the threshold. This calculation can be done
+> > with workingset reports.
+> > To be directly useful for promotion policies, the workingset report
+> > interfaces need to be extended to report hotness and gather hotness
+> > information from the devices[1].
+> >
+> > [1]
+> > https://www.opencompute.org/documents/ocp-cms-hotness-tracking-requirem=
+ents-white-paper-pdf-1
+> >
+> > Sysfs and Cgroup Interfaces
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > The interfaces are detailed in the patches that introduce them. The mai=
+n
+> > idea here is we break down the workingset per-node per-memcg into time
+> > intervals (ms), e.g.
+> >
+> > 1000 anon=3D137368 file=3D24530
+> > 20000 anon=3D34342 file=3D0
+> > 30000 anon=3D353232 file=3D333608
+> > 40000 anon=3D407198 file=3D206052
+> > 9223372036854775807 anon=3D4925624 file=3D892892
+> >
+> > I realize this does not generalize well to hotness information, but I
+> > lack the intuition for an abstraction that presents hotness in a useful
+> > way. Based on a recent proposal for move_phys_pages[2], it seems like
+> > userspace tiering software would like to move specific physical pages,
+> > instead of informing the kernel "move x number of hot pages to y
+> > device". Please advise.
+> >
+> > [2]
+> > https://lore.kernel.org/lkml/20240319172609.332900-1-gregory.price@memv=
+erge.com/
+> >
+>
+> Just as a note on this work, this is really a testing interface.  The
+> end-goal is not to merge such an interface that is user-facing like
+> move_phys_pages, but instead to have something like a triggered kernel
+> task that has a directive of "Promote X pages from Device A".
+>
+> This work is more of an open collaboration for prototyping such that we
+> don't have to plumb it through the kernel from the start and assess the
+> usefulness of the hardware hotness collection mechanism.
 
-Couple hundred thousand connections are very normal on large loaded
-server and almost all of those sockets underlying those connections get
-allocated in the softirq context and thus not charged to any memcg.
-However later at the accept() time we know the right target memcg to
-charge. Let's add new API to charge already allocated objects, so we can
-have better accounting of the memory usage.
+Understood. I think we previously had this exchange and I forgot to
+remove the mentions from the cover letter.
 
-To measure the performance impact of this change, tcp_crr is used from
-the neper [1] performance suite. Basically it is a network ping pong
-test with new connection for each ping pong.
+>
+> ---
+>
+> More generally on promotion, I have been considering recently a problem
+> with promoting unmapped pagecache pages - since they are not subject to
+> NUMA hint faults.  I started looking at PG_accessed and PG_workingset as
+> a potential mechanism to trigger promotion - but i'm starting to see a
+> pattern of competing priorities between reclaim (LRU/MGLRU) logic and
+> promotion logic.
 
-The server and the client are run inside 3 level of cgroup hierarchy
-using the following commands:
+In this case, IMO hardware support would be good as it could provide
+the kernel with exactly what pages are hot, and it would not care
+whether a page is mapped or not. I recall there being some CXL
+proposal on this, but I'm not sure whether it has settled into a
+standard yet.
 
-Server:
- $ tcp_crr -6
+>
+> Reclaim is triggered largely under memory pressure - which means co-optin=
+g
+> reclaim logic for promotion is at best logically confusing, and at worst
+> likely to introduce regressions.  The LRU/MGLRU logic is written largely
+> for reclaim, not promotion.  This makes hacking promotion in after the
+> fact rather dubious - the design choices don't match.
+>
+> One example: if a page moves from inactive->active (or old->young), we
+> could treat this as a page "becoming hot" and mark it for promotion, but
+> this potentially punishes pages on the "active/younger" lists which are
+> themselves hotter.
 
-Client:
- $ tcp_crr -6 -c -H ${server_ip}
+To avoid punishing pages on the "young" list, one could insert the
+page into a "less young" generation, but it would be difficult to have
+a fixed policy for this in the kernel, so it may be best for this to
+be configurable via BPF. One could insert the page in the middle of
+the active/inactive list, but that would in effect create multiple
+generations.
 
-If the client and server run on different machines with 50 GBPS NIC,
-there is no visible impact of the change.
+>
+> I'm starting to think separate demotion/reclaim and promotion components
+> are warranted. This could take the form of a separate kernel worker that
+> occasionally gets scheduled to manage a promotion list, or even the
+> addition of a PG_promote flag to decouple reclaim and promotion logic
+> completely.  Separating the structures entirely would be good to allow
+> both demotion/reclaim and promotion to occur concurrently (although this
+> seems problematic under memory pressure).
+>
+> Would like to know your thoughts here.  If we can decide to segregate
+> promotion and demotion logic, it might go a long way to simplify the
+> existing interfaces and formalize transactions between the two.
 
-For the same machine experiment with v6.11-rc5 as base.
+The two systems still have to interact, so separating the two would
+essentially create a new policy that decides whether the
+demotion/reclaim or the promotion policy is in effect. If promotion
+could figure out where to insert the page in terms of generations,
+wouldn't that be simpler?
 
-          base (throughput)     with-patch
-tcp_crr   14545 (+- 80)         14463 (+- 56)
+>
+> (also if you're going to LPC, might be worth a chat in person)
 
-It seems like the performance impact is within the noise.
+I cannot make it to LPC. :( Sadness
 
-Link: https://github.com/google/neper [1]
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
----
-
-Changes since the RFC:
-- Added check for already charged slab objects.
-- Added performance results from neper's tcp_crr
-
- include/linux/slab.h            |  1 +
- mm/slub.c                       | 54 +++++++++++++++++++++++++++++++++
- net/ipv4/inet_connection_sock.c |  5 +--
- 3 files changed, 58 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index eb2bf4629157..05cfab107c72 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -547,6 +547,7 @@ void *kmem_cache_alloc_lru_noprof(struct kmem_cache *s, struct list_lru *lru,
- 			    gfp_t gfpflags) __assume_slab_alignment __malloc;
- #define kmem_cache_alloc_lru(...)	alloc_hooks(kmem_cache_alloc_lru_noprof(__VA_ARGS__))
- 
-+bool kmem_cache_charge(void *objp, gfp_t gfpflags);
- void kmem_cache_free(struct kmem_cache *s, void *objp);
- 
- kmem_buckets *kmem_buckets_create(const char *name, slab_flags_t flags,
-diff --git a/mm/slub.c b/mm/slub.c
-index c9d8a2497fd6..580683597b5c 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -2185,6 +2185,16 @@ void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab, void **p,
- 
- 	__memcg_slab_free_hook(s, slab, p, objects, obj_exts);
- }
-+
-+static __fastpath_inline
-+bool memcg_slab_post_charge(struct kmem_cache *s, void *p, gfp_t flags)
-+{
-+	if (likely(!memcg_kmem_online()))
-+		return true;
-+
-+	return __memcg_slab_post_alloc_hook(s, NULL, flags, 1, &p);
-+}
-+
- #else /* CONFIG_MEMCG */
- static inline bool memcg_slab_post_alloc_hook(struct kmem_cache *s,
- 					      struct list_lru *lru,
-@@ -2198,6 +2208,13 @@ static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
- 					void **p, int objects)
- {
- }
-+
-+static inline bool memcg_slab_post_charge(struct kmem_cache *s,
-+					  void *p,
-+					  gfp_t flags)
-+{
-+	return true;
-+}
- #endif /* CONFIG_MEMCG */
- 
- /*
-@@ -4062,6 +4079,43 @@ void *kmem_cache_alloc_lru_noprof(struct kmem_cache *s, struct list_lru *lru,
- }
- EXPORT_SYMBOL(kmem_cache_alloc_lru_noprof);
- 
-+#define KMALLOC_TYPE (SLAB_KMALLOC | SLAB_CACHE_DMA | \
-+		      SLAB_ACCOUNT | SLAB_RECLAIM_ACCOUNT)
-+
-+bool kmem_cache_charge(void *objp, gfp_t gfpflags)
-+{
-+	struct slabobj_ext *slab_exts;
-+	struct kmem_cache *s;
-+	struct folio *folio;
-+	struct slab *slab;
-+	unsigned long off;
-+
-+	if (!memcg_kmem_online())
-+		return true;
-+
-+	folio = virt_to_folio(objp);
-+	if (unlikely(!folio_test_slab(folio)))
-+		return false;
-+
-+	slab = folio_slab(folio);
-+	s = slab->slab_cache;
-+
-+	/* Ignore KMALLOC_NORMAL cache to avoid circular dependency. */
-+	if ((s->flags & KMALLOC_TYPE) == SLAB_KMALLOC)
-+		return true;
-+
-+	/* Ignore already charged objects. */
-+	slab_exts = slab_obj_exts(slab);
-+	if (slab_exts) {
-+		off = obj_to_index(s, slab, objp);
-+		if (unlikely(slab_exts[off].objcg))
-+			return true;
-+	}
-+
-+	return memcg_slab_post_charge(s, objp, gfpflags);
-+}
-+EXPORT_SYMBOL(kmem_cache_charge);
-+
- /**
-  * kmem_cache_alloc_node - Allocate an object on the specified node
-  * @s: The cache to allocate from.
-diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-index 64d07b842e73..3c13ca8c11fb 100644
---- a/net/ipv4/inet_connection_sock.c
-+++ b/net/ipv4/inet_connection_sock.c
-@@ -715,6 +715,7 @@ struct sock *inet_csk_accept(struct sock *sk, struct proto_accept_arg *arg)
- 	release_sock(sk);
- 	if (newsk && mem_cgroup_sockets_enabled) {
- 		int amt = 0;
-+		gfp_t gfp = GFP_KERNEL | __GFP_NOFAIL;
- 
- 		/* atomically get the memory usage, set and charge the
- 		 * newsk->sk_memcg.
-@@ -731,8 +732,8 @@ struct sock *inet_csk_accept(struct sock *sk, struct proto_accept_arg *arg)
- 		}
- 
- 		if (amt)
--			mem_cgroup_charge_skmem(newsk->sk_memcg, amt,
--						GFP_KERNEL | __GFP_NOFAIL);
-+			mem_cgroup_charge_skmem(newsk->sk_memcg, amt, gfp);
-+		kmem_cache_charge(newsk, gfp);
- 
- 		release_sock(newsk);
- 	}
--- 
-2.43.5
-
+Yuanchu
 
