@@ -1,56 +1,56 @@
-Return-Path: <cgroups+bounces-4463-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4464-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F7E795F8E0
-	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 20:19:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F6DD95F8FB
+	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 20:30:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D0E3B22331
-	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 18:19:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67A341C216A0
+	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 18:30:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B764581AB4;
-	Mon, 26 Aug 2024 18:19:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DC191991B3;
+	Mon, 26 Aug 2024 18:29:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kduJ2JbL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ltW5hL44"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E3972B9B0;
-	Mon, 26 Aug 2024 18:19:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D34DA18FC83
+	for <cgroups@vger.kernel.org>; Mon, 26 Aug 2024 18:29:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724696373; cv=none; b=JWpnSMkBU46J8L9A8qfIR1QIXXFjk2hhI8KegllDG+ciUpI42oFVWW7dBd3omrgxPv5md1MY5Zz3ZspQma8Nsicx9SGe7JKBZlie8F3SHlykJIkK6vOWP1bITpvZ+bWBfyuk2H7o/VlK2cEN+64Jj3kC0kB/FnrX+NF3mJKP/U0=
+	t=1724696992; cv=none; b=kd+3J6mIknBQZkBdv5/wg6/Ni35mOn1fO0DJaSBSL1wk/NfM3pniPJMTXdYw+ZPxHZXGPaRvaESZr5c/mZeG8xvFCzfVkDN1jpMyU8+ZfD2+dPUOlFNTidbOwgvUivClHiAKrZHe2s5a65C2i5paJH3RS5a3ajXTVwxYKTT1b4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724696373; c=relaxed/simple;
-	bh=HiDwydrWBWpTLMEtWaYGMPMkxiH9FwgHVIe1nh3vqYI=;
+	s=arc-20240116; t=1724696992; c=relaxed/simple;
+	bh=c60b7Mg6iVPLbQjWE69pxVj66BXVrOoksd2Qdb+OnLs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=teUdFbh6AS7O/ips+ZbGBY2SwIrRht9Z2drwfM1Yk/p610pNKdDHCdTPrkJh4IMGw6XB1Kalccq6ZJx+IwfUuxMpm9rODFR4MH6O0wtqH9XXvDdK9MDMheN9N2QUnLfwMQXridJbL44CZ7vJzyVQREHHxeR/eJQhzGgdhxyMnWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kduJ2JbL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C09C3C8B7D6;
-	Mon, 26 Aug 2024 18:19:32 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=VkQAhpEOctbI/Bv13cWjhIChnWEoiz2BCLzQD9n+sCMEDNty8XmTshc0AAnsXBRFqLQweYUO/rmmF3gqMg5v6Zu84A3aIbitT0A+AzSFWbmneM48PEFrBuOCB4L+nJdU1qVGnTXyi92QlWnUOVqNPs7fYHt+HAxFfi1F9nYo6QM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ltW5hL44; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3453FC8B7AD;
+	Mon, 26 Aug 2024 18:29:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724696372;
-	bh=HiDwydrWBWpTLMEtWaYGMPMkxiH9FwgHVIe1nh3vqYI=;
+	s=k20201202; t=1724696992;
+	bh=c60b7Mg6iVPLbQjWE69pxVj66BXVrOoksd2Qdb+OnLs=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kduJ2JbLCqIIKpuhel8LiEP2z2QShwqhJOtFQ/XDxZMaphDHKvrPXqNGFqQuOUbaf
-	 Heu7roiz5ohUXt+DoB28quzUY0G5HbO/tWQgUUyp8bZvdrUDqu//fqtRi9EXkY/MOE
-	 bBsj1DYccy9R/1YBGeXrR6HwQ+K/iDsDavhd8zBSRZLyXdgek74bIUW0r2+mE3FJU3
-	 xTmrdF20RMd8CV1uSye1UCzH1CTFX4cRFXcpN8ESDYTQ4QXL3eIe0/yHrnCJflqFob
-	 ttKSD6/uNiWQKhA8PGZoaSxiNsFRdg8vPkYUnSAv4foLVLDFHOPDu1L9Rd/mypiSx0
-	 rLgae+SrIrNEQ==
-Date: Mon, 26 Aug 2024 08:19:31 -1000
+	b=ltW5hL44rNLU01BUO4vjJtf35W2z3CRzXWsQ1bbuUj5HHnQQAro23OcSw1KYSgo5R
+	 AopE3g20zJ8xs/ENdksC26dgN0RgFj3bOl6oDjEf5hsJcQJLUnXuGZvGfN/muW2hHt
+	 6aezisF4rNugPti7MWFFumPSTqcnEPM8f4957HCzmEonA+kKm86iKh46RBKZsmJTVA
+	 e+HyH+Q0VU6vbDVgGEvjcN4c6LAVd4PopkjSCop/XDUePBa/otjRt64GFWeNIc3KHe
+	 FzPBJ4YqC7Pwusc23LrolaLQsZa7iVzI6yzMP56J+n/n2ZSEy1Nr80v25GPWImN7T+
+	 etyY/T49fuQaA==
+Date: Mon, 26 Aug 2024 08:29:51 -1000
 From: Tejun Heo <tj@kernel.org>
-To: JoshuaHahnjoshua.hahn6@gmail.com
-Cc: lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
-	shuah@kernel.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 1/2] Tracking cgroup-level niced CPU time
-Message-ID: <ZszHM_UV24aSWTC8@slm.duckdns.org>
-References: <20240823201317.156379-1-joshua.hahn6@gmail.com>
- <20240823201317.156379-2-joshua.hahn6@gmail.com>
+To: StanPlatinum <liuwj0129@foxmail.com>
+Cc: mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
+	muchun.song@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org,
+	weijieliu@nankai.edu.cn, lizhi16@hust.edu.cn, 15086729272@163.com
+Subject: Re: [PATCH] Integrating Namespaces and Cgroups for Enhanced Resource
+ Management
+Message-ID: <ZszJnxg6PYLaqLwM@slm.duckdns.org>
+References: <tencent_BFC5A388F2922E5FB6F3FE2E3A3662561809@qq.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -59,22 +59,20 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240823201317.156379-2-joshua.hahn6@gmail.com>
+In-Reply-To: <tencent_BFC5A388F2922E5FB6F3FE2E3A3662561809@qq.com>
 
 Hello,
 
-On Fri, Aug 23, 2024 at 01:05:17PM -0700, JoshuaHahnjoshua.hahn6@gmail.com wrote:
-> From: Joshua Hahn <joshua.hahn6@gmail.com>
-> 
-> Cgroup-level CPU statistics currently include time spent on
-> user/system processes, but do not include niced CPU time (despite
-> already being tracked). This patch exposes niced CPU time to the
-> userspace, allowing users to get a better understanding of their
-> hardware limits and can facilitate better load-balancing.
+On Sat, Aug 24, 2024 at 09:17:11PM +0800, StanPlatinum wrote:
+> This patch not only strengthens the Linux kernel's resource management
+> framework but also enhances > security and efficiency in containerized
+> environments. We expect the community to take heed of this issue and
+> collaborate in enhancing the security of cgroups.
 
-You aren't talking about the in-kernel scheduler's load balancer, right? If
-so, can you please update the description? This is a bit too confusing for a
-commit message for a kernel commit.
+This might be a great idea but it won't get any traction if you post it like
+this. If you actually want this to happen, it would be a good idea to look
+at how linux kernel development is generally done and try to follow the
+conventions.
 
 Thanks.
 
