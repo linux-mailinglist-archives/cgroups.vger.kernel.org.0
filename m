@@ -1,45 +1,46 @@
-Return-Path: <cgroups+bounces-4477-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4478-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AA5F95FD90
-	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 00:58:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B8A895FD92
+	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 00:58:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E2402825C0
-	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 22:58:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E80E1C21EB8
+	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 22:58:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A13199EA3;
-	Mon, 26 Aug 2024 22:58:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4631E19D88B;
+	Mon, 26 Aug 2024 22:58:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FTFbxB8S"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mgSsKvjZ"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B60198845;
-	Mon, 26 Aug 2024 22:58:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2410146A71;
+	Mon, 26 Aug 2024 22:58:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724713108; cv=none; b=MQXJeWgZIxKp3IrMElnIQ5whqgAHSX+J/5nMppI1brvoKWllaQJP4G1EbholvSABhp/clAcWEYBXzcKDodRSTAnCnEUKaTftloMfFcAC2RoqjBuoJwMEcfFiT4jIRP8UbfUDoQnrXbzO54raKZfZuEK2vQFQ7jfydZiC36t+ouI=
+	t=1724713109; cv=none; b=iaOxCBM12QRIbje595DrYzcb3rjRM/mBirTvQfSxKb5zxP6p2tRP5Bv+MZFonyBaMb25tLKDAPbCZIVhPxRv0QwAOs/BL5vF+NhhUZ0jSkWbhs0mNpANyNFGizQNECsnIEV4DyjcGuDQ5sKD3vrnFd0DxDu7qwHB06n9Ort3Wn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724713108; c=relaxed/simple;
-	bh=e6lLBcx4ERTTLg8tRujSMSZE/P5cT3AkTyBpKv97ESU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=a89MgEJD3r/0SfDEQe9vpzHhUp0GdgAXhxn9Q9yhbsNl8L5mb02/HH2GLMw6sfeH8CtmuiOiZpGDqIyRuQzPjAAAHo8sqJiGBNtZ0cqGEEVLp//UrsC4TFMNdkstNjTCUetRjg4OxXn48hbvn5e885kdmkmwaqa2ogCtBb2PCGY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FTFbxB8S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F48FC8B7A1;
-	Mon, 26 Aug 2024 22:58:27 +0000 (UTC)
+	s=arc-20240116; t=1724713109; c=relaxed/simple;
+	bh=V7eWotD3RvBzT00ThTcvcIyr7zj/8YFMKCmeFlAb3Ls=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=QPvSAazRH1aVBVZdoyyNiS66id//kGTfwdvTX8sYzKIDsO0HL45xehkKH/la1v5uC0zqgpMmYBPSb4vFka583DURgPubbhwcOYo4inPnDn1CVt1TFJ8hsekfJDBjRSoct5T0dEbfmizswpXZvRRMuJ5cPEWM5cfBcOmkZ86Fe5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mgSsKvjZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E4A1C8B7A9;
+	Mon, 26 Aug 2024 22:58:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724713107;
-	bh=e6lLBcx4ERTTLg8tRujSMSZE/P5cT3AkTyBpKv97ESU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=FTFbxB8STnSYaaw04zm/Ayp3R2ovXuQCGJCe3vU5hfYRb6S9b6PLTJo0M4lLSVfCv
-	 W4rKGmb1xJjum0w06xylUoRlZjF2Fr7s9OUFGqvCHoq7dY4xSp6gmEsOZjXUPQvJJM
-	 CW91ItY+M/vmmEucyGIRUfVzVaQzrB4V3w+N39PNd9MwH1XMca04zfEoaXeaxCfPNA
-	 bRBxa4apHRS6dx/Zi20ZSbcSUW1e1MPw0w47rgGuHlxi3wysOwlhNbKsX8aUBOC22s
-	 J0yIIRexDd8w2gR6iWWbVAZv8HMG2JLfHl5kM/HZ6BJ4O56mQAWKXntfEUBaFGPQu4
-	 6iayWTYkWgmBQ==
+	s=k20201202; t=1724713108;
+	bh=V7eWotD3RvBzT00ThTcvcIyr7zj/8YFMKCmeFlAb3Ls=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=mgSsKvjZ8R/BEvYhM5kS1OJe3YaSZQ/35krtGJpdlwRqloNuO3EudL4qKGVN/ay3t
+	 D27MRZEAHyTVlD3V4AXJ6hcdhYX3zptrdUJWJSQ35qzVR5KWLQUydgded1RSFkM6lE
+	 1r/wpCUI0UZpA5MRDKigumhrysgX+iavcb7hh/W4uiC4gJ/nUS/CkupgNBD2Hs/BpN
+	 LUVe4KEr6tHoYMdBRkoqR7wxLqlN4JQ+w5v8ELnz8AJxmXxu13u8rRBq1hWsOWUDiL
+	 g3vIzTZX8yq1Zf848QNQZ+wcFQ0bcKiE08Uor9PnSPuIcMOR/0yf2FmQrWzSi6Rj0p
+	 GWvTULkjBhFWg==
 From: Tejun Heo <tj@kernel.org>
 To: void@manifault.com,
 	peterz@infradead.org,
@@ -49,11 +50,18 @@ Cc: cgroups@vger.kernel.org,
 	hannes@cmpxchg.org,
 	mkoutny@suse.com,
 	kernel-team@meta.com,
-	linux-kernel@vger.kernel.org
-Subject: [PATCHSET v2 sched_ext/for-6.12] sched_ext: Add cgroup support
-Date: Mon, 26 Aug 2024 12:57:38 -1000
-Message-ID: <20240826225822.791578-1-tj@kernel.org>
+	linux-kernel@vger.kernel.org,
+	Tejun Heo <tj@kernel.org>,
+	David Vernet <dvernet@meta.com>,
+	Josh Don <joshdon@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Barret Rhoden <brho@google.com>
+Subject: [PATCH 1/5] sched: Expose css_tg()
+Date: Mon, 26 Aug 2024 12:57:39 -1000
+Message-ID: <20240826225822.791578-2-tj@kernel.org>
 X-Mailer: git-send-email 2.46.0
+In-Reply-To: <20240826225822.791578-1-tj@kernel.org>
+References: <20240826225822.791578-1-tj@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -62,55 +70,59 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is v2 of sched_ext cgroup support patchset. Changes from v1
-(http://lkml.kernel.org/r/20240808002550.731248-1-tj@kernel.org) are:
+A new BPF extensible sched_class will use css_tg() in the init and exit
+paths to visit all task_groups by walking cgroups.
 
-- cgroup interface file visiblity toggling based on SCX_OPS flags is dropped
-  as it caused more confusion than helping anything. sched_ext now just
-  warns when unimplemented features are used.
+v4: __setscheduler_prio() is already exposed. Dropped from this patch.
 
-This was originally taken from the cgroup integration part of the sched_ext
-v6 patchset:
+v3: Dropped SCHED_CHANGE_BLOCK() as upstream is adding more generic cleanup
+    mechanism.
 
-  http://lkml.kernel.org/r/20240501151312.635565-1-tj@kernel.org
+v2: Expose SCHED_CHANGE_BLOCK() too and update the description.
 
-This patchset is on top of sched_ext/for-6.12 (9ad2861b773d ("sched_ext:
-Allow dequeue_task_scx to fail")) and contains the following patches:
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Reviewed-by: David Vernet <dvernet@meta.com>
+Acked-by: Josh Don <joshdon@google.com>
+Acked-by: Hao Luo <haoluo@google.com>
+Acked-by: Barret Rhoden <brho@google.com>
+---
+ kernel/sched/core.c  | 5 -----
+ kernel/sched/sched.h | 5 +++++
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
- 0001-sched-Expose-css_tg.patch
- 0002-sched-Make-cpu_shares_read_u64-use-tg_weight.patch
- 0003-sched-Introduce-CONFIG_GROUP_SCHED_WEIGHT.patch
- 0004-sched_ext-Add-cgroup-support.patch
- 0005-sched_ext-Add-a-cgroup-scheduler-which-uses-flattene.patch
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index b0cec06bb1fa..a59ac9b11e3b 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8957,11 +8957,6 @@ void sched_move_task(struct task_struct *tsk)
+ 	}
+ }
+ 
+-static inline struct task_group *css_tg(struct cgroup_subsys_state *css)
+-{
+-	return css ? container_of(css, struct task_group, css) : NULL;
+-}
+-
+ static struct cgroup_subsys_state *
+ cpu_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+ {
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 2416b3866256..07333c545ddc 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -515,6 +515,11 @@ static inline int walk_tg_tree(tg_visitor down, tg_visitor up, void *data)
+ 	return walk_tg_tree_from(&root_task_group, down, up, data);
+ }
+ 
++static inline struct task_group *css_tg(struct cgroup_subsys_state *css)
++{
++	return css ? container_of(css, struct task_group, css) : NULL;
++}
++
+ extern int tg_nop(struct task_group *tg, void *data);
+ 
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+-- 
+2.46.0
 
- 0001-0003 are sched core preparations. Straightforward. No functional
- changes.
-
- 0004 adds cgroup support to sched_ext.
-
- 0005 implements an example scheduler which uses the cgroup support.
-
-The patchset is also available in the following git branch:
-
- git://git.kernel.org/pub/scm/linux/kernel/git/tj/sched_ext.git scx-cgroup-v2
-
-diffstat follows. Thanks.
-
- include/linux/sched/ext.h                       |    3
- init/Kconfig                                    |   10
- kernel/sched/core.c                             |   98 +++-
- kernel/sched/ext.c                              |  519 ++++++++++++++++++++++++-
- kernel/sched/ext.h                              |   22 +
- kernel/sched/sched.h                            |   14
- tools/sched_ext/Makefile                        |    2
- tools/sched_ext/README.md                       |   12
- tools/sched_ext/include/scx/common.bpf.h        |    1
- tools/sched_ext/scx_flatcg.bpf.c                |  949 ++++++++++++++++++++++++++++++++++++++++++++++
- tools/sched_ext/scx_flatcg.c                    |  233 +++++++++++
- tools/sched_ext/scx_flatcg.h                    |   51 ++
- tools/testing/selftests/sched_ext/maximal.bpf.c |   32 +
- 13 files changed, 1906 insertions(+), 40 deletions(-)
-
---
-tejun
 
