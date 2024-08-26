@@ -1,88 +1,99 @@
-Return-Path: <cgroups+bounces-4465-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4466-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 670BF95F906
-	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 20:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 440D695F90D
+	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 20:36:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B20C1F24A59
-	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 18:35:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAB3F1F24BC8
+	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 18:36:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3487018A95E;
-	Mon, 26 Aug 2024 18:35:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D39051991D8;
+	Mon, 26 Aug 2024 18:35:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s9kNKGik"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DWsCZYVb"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E32D92C1AC;
-	Mon, 26 Aug 2024 18:35:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 923232C1AC;
+	Mon, 26 Aug 2024 18:35:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724697305; cv=none; b=A3oc1UkJFLAjwa/cPgl4lkwTeeRiTghvEQcDUvOP+jyChq0Xsb06s27P1PhAUDhU5LhKYi6BMZVEjG/wyYYsVylNVsoraYjF6sg8owMhnY+60vN9SDgQirhVSJaIB1flYCgI+62oLqE+W0PzBmn/KGeLmuv582+8qz9sOSO8wMo=
+	t=1724697357; cv=none; b=mCy1thEKp5lRuJaZi7DPogIwNdKU0nwPSj0kErpvgHVnug/mZ+owEe/WKfVCJ1LnHickUpi8RJfDMbt540GRfTtSg/6sUOwAsOR4td0PMy0qq8BLLh1IP7DqxyJEFqWiG0RoEY0fWTopuUOcPO3haEzrDAL52y0ViUGgHOgXiAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724697305; c=relaxed/simple;
-	bh=WJUAZ2Dnc20rY85yKNE4tfrmUEmCUGOXJQaQKBPAr9E=;
+	s=arc-20240116; t=1724697357; c=relaxed/simple;
+	bh=41OWzCeR717jbdyTy5lfbsmYoBvRHigvaotbcJ+AcAI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QPOUZJTjANCej56hPA9IceaD5QyJKDsn3DdIFtg7FrSb99w+UcXVl1aSvHVNph2Nvmh6ioLs8zrUdFszb/e13TNgMbSsnmRAVApaeoUyyiwH0/EklB9yifBZPu6l2BaBw8/5g1QIDrnAAfe2CQwSr0/uF2WGztE8Mx0qh+0br6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s9kNKGik; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ED00C4DDF5;
-	Mon, 26 Aug 2024 18:35:04 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=GPWs1bOskkQ6xFxHZ+Evun9O2bpcxJLDHDE8ibpYiEYiPJczi5NMShGMSruIMqwxX68lM9vA/+C+HolaSt6oUsToAogGBquCrF5VWQTU/jEyJCD+RtXupTV5CA5hAhCm3FWuX9kGCRrhIeY09hXfakvI6GyS3GjPFGwP9KXuRKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DWsCZYVb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 533BCC4FEA2;
+	Mon, 26 Aug 2024 18:35:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724697304;
-	bh=WJUAZ2Dnc20rY85yKNE4tfrmUEmCUGOXJQaQKBPAr9E=;
+	s=k20201202; t=1724697357;
+	bh=41OWzCeR717jbdyTy5lfbsmYoBvRHigvaotbcJ+AcAI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=s9kNKGikqxa2n8dwiS0KYPv3mxnWfzvEtamLt2bCcvBMrVu0riREh5f9h7nO+MnOy
-	 EgJp6E6VI9dLYmWYOYwv1fx7J23oOqWmFbbG81eMF5JCe56UUH18cmd3e/pKPkD+zI
-	 kfYj0NE5LJ79JFD63oED2A8g32ucuPF6imZ57daUJJf8I/OKzeL+FNCOaKw9lDBr6b
-	 IJfRdLn/p4mgr0e4/toMcTlfJodHPAi/bKVnD0yXH/wa9hAo+FFWrIElsY33vmbJi7
-	 +Hzzp60KT6vyImJDzxyLFx2o8Sq6a8Hnf3EU/Cz9hPNropubo5BYFDwdG9cr6dMvPL
-	 ediOM5/42em0A==
-Date: Mon, 26 Aug 2024 08:35:03 -1000
+	b=DWsCZYVbTvpTbiWR8zNBWtHhYKp9jv7lmXpAq0Ve4WBwkg5UEweHGCqroHSdbzJBp
+	 +22hgLR2M8eQNGewc4vs215HcyxZ0bBfAYBEZb/QAY0VAkFbFBMh8pPSPtKYlGGexE
+	 0qtGp3j1mHl+OGBWMD9JSpyFAbH/aMB3leoezrxeNO9P+VnN04nH9abTTZbRbv/b2k
+	 aHa32etdRPFtOHvMcWcERGqVrK1jpAO3JnM3tUXps6pzEoXFt+0/OOpyOBkA5wcu9g
+	 RaIYOQONHXN74u8vPRixzyB6ZEU9z4dah7Jw7SDUQBhqjrRNqr5r+j0R3mJCm0A3qt
+	 6AJCKXLFuB8Aw==
+Date: Mon, 26 Aug 2024 08:35:56 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: void@manifault.com, peterz@infradead.org, mingo@redhat.com,
-	cgroups@vger.kernel.org, lizefan.x@bytedance.com,
-	hannes@cmpxchg.org, kernel-team@meta.com,
-	linux-kernel@vger.kernel.org, David Vernet <dvernet@meta.com>,
-	Josh Don <joshdon@google.com>, Hao Luo <haoluo@google.com>,
-	Barret Rhoden <brho@google.com>
-Subject: Re: [PATCH 1/7] cgroup: Implement cgroup_show_cftypes()
-Message-ID: <ZszK1zQJSjuEO4r5@slm.duckdns.org>
-References: <20240808002550.731248-1-tj@kernel.org>
- <20240808002550.731248-2-tj@kernel.org>
- <qsdgtsunxgbxb6lf7x7m5777jxmumddomsofuuimqenoyliabx@assdbc6zj2ag>
+To: Konstantin Ovsepian <ovs@ovs.to>
+Cc: josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org, leitao@debian.org, ovs@meta.com
+Subject: Re: [PATCH] blk_iocost: fix more out of bound shifts
+Message-ID: <ZszLDKNSPsSAEXxr@slm.duckdns.org>
+References: <20240822154137.2627818-1-ovs@ovs.to>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <qsdgtsunxgbxb6lf7x7m5777jxmumddomsofuuimqenoyliabx@assdbc6zj2ag>
+In-Reply-To: <20240822154137.2627818-1-ovs@ovs.to>
 
-Hello, Michal.
-
-On Tue, Aug 20, 2024 at 04:38:40PM +0200, Michal Koutný wrote:
-> On Wed, Aug 07, 2024 at 02:25:23PM GMT, Tejun Heo <tj@kernel.org> wrote:
-> > +void cgroup_show_cftype(struct cftype *cft, bool show)
-> > +{
-> > +	struct cgroup_subsys *ss = cft->ss;
-> > +	struct cgroup *root = ss ? &ss->root->cgrp : &cgrp_dfl_root.cgrp;
+On Thu, Aug 22, 2024 at 08:41:36AM -0700, Konstantin Ovsepian wrote:
+> Recently running UBSAN caught few out of bound shifts in the
+> ioc_forgive_debts() function:
 > 
-> Strictly speaking, this (v1) cgroup_root dereference should be guarded
-> with cgroup_mutex too (should be the root destroy concurrently).
+> UBSAN: shift-out-of-bounds in block/blk-iocost.c:2142:38
+> shift exponent 80 is too large for 64-bit type 'u64' (aka 'unsigned long
+> long')
+> ...
+> UBSAN: shift-out-of-bounds in block/blk-iocost.c:2144:30
+> shift exponent 80 is too large for 64-bit type 'u64' (aka 'unsigned long
+> long')
+> ...
+> Call Trace:
+> <IRQ>
+> dump_stack_lvl+0xca/0x130
+> __ubsan_handle_shift_out_of_bounds+0x22c/0x280
+> ? __lock_acquire+0x6441/0x7c10
+> ioc_timer_fn+0x6cec/0x7750
+> ? blk_iocost_init+0x720/0x720
+> ? call_timer_fn+0x5d/0x470
+> call_timer_fn+0xfa/0x470
+> ? blk_iocost_init+0x720/0x720
+> __run_timer_base+0x519/0x700
+> ...
+> 
+> Actual impact of this issue was not identified but I propose to fix the
+> undefined behaviour.
+> The proposed fix to prevent those out of bound shifts consist of
+> precalculating exponent before using it the shift operations by taking
+> min value from the actual exponent and maximum possible number of bits.
+> 
+> Reported-by: Breno Leitao <leitao@debian.org>
+> Signed-off-by: Konstantin Ovsepian <ovs@ovs.to>
 
-Ah, right. I think I might just drop this patch. Hiding and showing the
-interface files dynamically doesn't seem to work that well in practive (ie.
-it causes more production problems than it solves). Something a bit more
-boring like triggering a warning when a unimplemented feature is used is
-probably better here.
+Acked-by: Tejun Heo <tj@kernel.org>
 
 Thanks.
 
