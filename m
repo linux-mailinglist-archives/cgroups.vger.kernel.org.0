@@ -1,110 +1,128 @@
-Return-Path: <cgroups+bounces-4473-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4474-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CF4B95F9F1
-	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 21:47:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 526E595FA70
+	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 22:13:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F9AA1C2193D
-	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 19:47:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5915B22ACB
+	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2024 20:13:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C60001993BD;
-	Mon, 26 Aug 2024 19:47:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 403C5199EA3;
+	Mon, 26 Aug 2024 20:13:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="B2pXPN9C"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Opd4iwsJ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23867130ADA
-	for <cgroups@vger.kernel.org>; Mon, 26 Aug 2024 19:47:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95F051991AD
+	for <cgroups@vger.kernel.org>; Mon, 26 Aug 2024 20:13:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724701642; cv=none; b=uMwY/1D5S+b/V8cUNM6VtOPpf99mH/xAPpJS9a7UZfp5Ab817PeiEHUrQgxy3qXRWoBETuF1YtQbS7RAaW7/yDUwlBaGtNK6fbtPd+zuMv0QeksLqiH7Bn4uLihXG0SadsMl6IMw9e4jX78zj7+ljMw9VuTHEiFwaOjejK+GVEY=
+	t=1724703229; cv=none; b=DMXF5CaecZlXoEPOUnDqBox5bzCAgrX8YNZqabGXksQ8SeCpcbqB1pZ66Pc3HD9cqxiq2sK9wYAoULeZIZbopPMMIlGzAM5wQaI5bCHoZ50y5R9sY9BcPBtLmQ9hTO3OSMxVo73iSi1t1LOkl6s+EMeA+LaUWH5mWPBmFSh4fl0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724701642; c=relaxed/simple;
-	bh=k+9W/nw17jlBjjtfac2axE2lhU/IXbWLpg+gT0rR8JI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=D89A4NFCyLxkzaSBHp4S2WHNebt7EdcYAppJc4jNjQWPF/ipJqdSVC+4g+XQkz5Kzysr4vTn+UnRq8FOKcbjrUihcaJUmOr0XZ7w9DgEH+epe8/YIMjVIxE20Yw+mXI/FqutDFbzNV8Zh5tm5G7v916Ld8OkgQQHKsfZW/f2FqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=B2pXPN9C; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1724701640;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+qhWVNvkXNJ4Pj/gRvSvQxzHwZIu1ZYnGi5nOysGGjk=;
-	b=B2pXPN9CRhN0Ra21tUiriMnd+ProH40TBGbD5LAWVXwi2vkgo6Z3dJRhMbuBMN5ZuuHyXY
-	RLi2UECOxJxD/l3K7l0ioz5TrbkynSIhbGGogTUcl9PvDLUYZUbW7YSr1V2pHjBhGovWIP
-	RlW6QnCEFA+nMZglePDzhQFsfgzt1v8=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-333-hAwK9ZWPPzyDKeQ5KdUDlQ-1; Mon,
- 26 Aug 2024 15:47:13 -0400
-X-MC-Unique: hAwK9ZWPPzyDKeQ5KdUDlQ-1
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5E3C81955BF4;
-	Mon, 26 Aug 2024 19:47:09 +0000 (UTC)
-Received: from [10.2.16.157] (unknown [10.2.16.157])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 0862C300019C;
-	Mon, 26 Aug 2024 19:47:06 +0000 (UTC)
-Message-ID: <9793ce0d-842a-4876-860a-9b7b8d538e45@redhat.com>
-Date: Mon, 26 Aug 2024 15:47:06 -0400
+	s=arc-20240116; t=1724703229; c=relaxed/simple;
+	bh=dWd5qv6eBqkAl29vi+ZlXsW/zewDNUzH8lPaDyWvxkM=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=rR4G/3/scN3sVy+27vkbYK2DMc2CK4Xr922RjeMmwQuKSW+r3XSQipxuXxTALAB712I0NmNqu4RTQnq2C46SDGfu8YP887vC+q7wZcE7/jjvrdOycDTs571UPiwsGR6agbeEQUhSSQUZ24FZCcLWbRGw75PpWcgKdc+MTas+22E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Opd4iwsJ; arc=none smtp.client-ip=209.85.166.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-39d47a9ffb9so16319845ab.1
+        for <cgroups@vger.kernel.org>; Mon, 26 Aug 2024 13:13:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1724703225; x=1725308025; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IudeqtVAq8N+IIPnbH3rPVPQhvZk+3E2+WjQQtP0t1c=;
+        b=Opd4iwsJdBchTwYeG4GURQNo1OtuoLUux/3KwpliLmLv6r12HiAl3dQHrnToFweDvh
+         ObYr1fyKBhnhF1BTPn6E7WE1PVJXlmgwoU1zq7GYejcBEo5GXVhQn1LzuoOcpE13ojDy
+         hxDqMiOvJdamdxwDebrYeP1dUBhYM3yPALtG273aOl78WjC3u9kmPgsV4fe2Esl2uUeU
+         7Tiu4hLiwBPMwYolXMDsgGCtQI724km9rnooUgPfxqr39/IDMfYw3ctBydOAaHT9Hn/h
+         PbPdjXTy/PRVHd+z9KqcohRH/zVcdElnMHLNjRa5U5pH1G9GKg5XLfSVs1X5dp9JD7hJ
+         En6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724703225; x=1725308025;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IudeqtVAq8N+IIPnbH3rPVPQhvZk+3E2+WjQQtP0t1c=;
+        b=odK6FQm0CywRcNVIRc8SW4WheYVyqJ7Pr4dUKcBt+RrkE9RtK/f+DHpbu2mM0MiWbL
+         uzDE+ATmzJrFDGUuSqStyAneDZgWaVzmXvFzVUch61qKN10WvYYhEtofYfiWdL+ejjQJ
+         OKVnDIj60Cedq2YbhL6fjmXYntDB2OYx3uoDU/dBBIyE29rha3RlxKEOZyNjDsvR+fDs
+         fhuEThC91s/oIIMuChlIq9lImRug9fCP3A4ZAjSk+1ifsmNnRN9YBjSCCsF6Pxi+es8d
+         2+KCdOBUAN1ioPgVSIitt/GuhnFKa39FxNOB84xXOF/5lVSEst2A55ej9w0lUUox4+yz
+         yLsw==
+X-Forwarded-Encrypted: i=1; AJvYcCXyw90U1vsfDhmFjguS+QUCcNW+r+Onh/jW5gdqaVtsM+8KowbEIRWc721i7xYoSQ58/btReJrf@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzn1fUNJWx1MB8x59mezN09r5SxzR7+Mnx7oFoEDXwZWscoon4Z
+	kDJyibGU6tk2pm6jO6/C3Jh/af+eC2LGG9c979lfUo1ZOxwOFbk6nDSgAc3PHGg=
+X-Google-Smtp-Source: AGHT+IHAFmJILxeAH8CPDsKKgho4CjhO/zttTxjz1xDlDIe16dflTQ7KHxmp24dTv/r+d7RYkXtOlw==
+X-Received: by 2002:a92:cda3:0:b0:39b:3387:515b with SMTP id e9e14a558f8ab-39e63dd8e0dmr10459335ab.1.1724703225554;
+        Mon, 26 Aug 2024 13:13:45 -0700 (PDT)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4ce70f5ca7csm2361772173.63.2024.08.26.13.13.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Aug 2024 13:13:45 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: tj@kernel.org, josef@toxicpanda.com, cgroups@vger.kernel.org, 
+ linux-block@vger.kernel.org, Konstantin Ovsepian <ovs@ovs.to>
+Cc: leitao@debian.org, ovs@meta.com
+In-Reply-To: <20240822154137.2627818-1-ovs@ovs.to>
+References: <20240822154137.2627818-1-ovs@ovs.to>
+Subject: Re: [PATCH] blk_iocost: fix more out of bound shifts
+Message-Id: <172470322478.220079.4635873970554219426.b4-ty@kernel.dk>
+Date: Mon, 26 Aug 2024 14:13:44 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 -next 09/11] cgroup/cpuset: move v1 interfaces to
- cpuset-v1.c
-To: Tejun Heo <tj@kernel.org>
-Cc: Chen Ridong <chenridong@huawei.com>, lizefan.x@bytedance.com,
- hannes@cmpxchg.org, adityakali@google.com, sergeh@kernel.org,
- mkoutny@suse.com, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- chenridong@huaweicloud.com
-References: <20240826132703.558956-1-chenridong@huawei.com>
- <20240826132703.558956-10-chenridong@huawei.com>
- <eaef1faf-c3f3-4664-ae7d-5cca611925e4@redhat.com>
- <ZszaJFzcmBskojVS@slm.duckdns.org>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <ZszaJFzcmBskojVS@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14.1
 
 
-On 8/26/24 15:40, Tejun Heo wrote:
-> On Mon, Aug 26, 2024 at 03:30:14PM -0400, Waiman Long wrote:
+On Thu, 22 Aug 2024 08:41:36 -0700, Konstantin Ovsepian wrote:
+> Recently running UBSAN caught few out of bound shifts in the
+> ioc_forgive_debts() function:
+> 
+> UBSAN: shift-out-of-bounds in block/blk-iocost.c:2142:38
+> shift exponent 80 is too large for 64-bit type 'u64' (aka 'unsigned long
+> long')
 > ...
->> Another alternative is to include cpuset-v1.c directly into cpuset.c like
->>
->> #ifdef CONFIG_CPUSETS_V1
->> #include "cpuset-v1.c"
->> #else
->>     ....
->> #endif
->>
->> Then you don't need to change the names and will not need cpuset-internal.h.
->> It is up to you to decide what you want to do.
-> FWIW, I'd prefer to have cpuset1_ prefixed functions declared in cpuset1.h
-> or something rather than including .c file.
+> UBSAN: shift-out-of-bounds in block/blk-iocost.c:2144:30
+> shift exponent 80 is too large for 64-bit type 'u64' (aka 'unsigned long
+> long')
+> ...
+> Call Trace:
+> <IRQ>
+> dump_stack_lvl+0xca/0x130
+> __ubsan_handle_shift_out_of_bounds+0x22c/0x280
+> ? __lock_acquire+0x6441/0x7c10
+> ioc_timer_fn+0x6cec/0x7750
+> ? blk_iocost_init+0x720/0x720
+> ? call_timer_fn+0x5d/0x470
+> call_timer_fn+0xfa/0x470
+> ? blk_iocost_init+0x720/0x720
+> __run_timer_base+0x519/0x700
+> ...
+> 
+> [...]
 
-Sure. Let's have "cpuset1_" prefix if it is v1 specific and "cpuset_" 
-prefix if it is used by both v1 and v2. That applies only to newly 
-exposed names.
+Applied, thanks!
 
-Cheers,
-Longman
+[1/1] blk_iocost: fix more out of bound shifts
+      commit: 9bce8005ec0dcb23a58300e8522fe4a31da606fa
+
+Best regards,
+-- 
+Jens Axboe
+
+
 
 
