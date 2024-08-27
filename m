@@ -1,52 +1,55 @@
-Return-Path: <cgroups+bounces-4489-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4490-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B01B59601A5
-	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 08:29:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A97C99601A6
+	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 08:29:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67C901F22D74
-	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 06:29:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24716B21CEE
+	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 06:29:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82F46149E0E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F682149E13;
 	Tue, 27 Aug 2024 06:29:03 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81C70146D68;
-	Tue, 27 Aug 2024 06:29:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47798148853;
+	Tue, 27 Aug 2024 06:29:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724740143; cv=none; b=bellF7eQJ7nWiaEhH4AGWScBUqU9ZzON1m0dEWm6av6FNMuLZgu/ntYNTzghMA3ojCCHS+XPjVtlCo2s/ndTwfO7SWmW7/gWyk/f20FqRSHUJPkXzecU2ObYOhm+QXkpkj880KHCB1X3pEiL4HUNWRUHS+MSGNA0cueZF2RlTYQ=
+	t=1724740143; cv=none; b=Ku6nJoqq7aB0Cylh7cs6uKMcOgQ0uEBSUJmFpt3uZ6Gf77mpG18DtwxX99tFsO7sGSnegZ+zNtRmiywMqBBULGTQ53IMmhuwv8BcVT6wEyzhejWTYeHRR4ZxkBOLX+14Di5ntKhJfVmVfTDo+2WlQQvILL6y7L+XbMakBnflqoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1724740143; c=relaxed/simple;
-	bh=NqJqmcTcq+7y4he0nh5cqPcFccxFcRxwn+lMDOyvFdI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JipfSiHKTiDl0EOWtO3SzvGbgNH8lcNzPWG8enCwrMwfxtRxiP3sNuGZqsGM3R9o0hsv8+2chWaF4LGHQWkK/mHp7dCyB0f2izOGib+nXpdlZ6yBGDpEJdIHx9NBAy9KZQqeFz+ydL/YiGA3NGnSSQi2cIw3WXAXGXyMtrBeCIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+	bh=/3RW9Jm8hCnuWorlqUbkb70RNWvHSm5Zd4o0IVNb+Q4=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=g53NGV3aBbQQpiKDrjtRmny2f1t3GUDGvdtYUKHdWxzxOYgcwOpvclMMpXY0aq9TNVlPDez7KWTKOG9e3E9RFfEQDIlIgZfiytO15ifelK8eEyvzlGJHZm2WWI4MZbnFpN+gGPPKpHjXLdAm2Zs5V1wPnu29YFs/0+MGrSoDf4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4WtHgM13ZTz1S77s;
-	Tue, 27 Aug 2024 14:28:47 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WtHfg0GwkzyQT3;
+	Tue, 27 Aug 2024 14:28:11 +0800 (CST)
 Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8237D1A016C;
+	by mail.maildlp.com (Postfix) with ESMTPS id E5717180064;
 	Tue, 27 Aug 2024 14:28:57 +0800 (CST)
 Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
  (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Tue, 27 Aug
- 2024 14:28:56 +0800
+ 2024 14:28:57 +0800
 From: Chen Ridong <chenridong@huawei.com>
 To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
 	<longman@redhat.com>, <adityakali@google.com>, <sergeh@kernel.org>,
 	<mkoutny@suse.com>
 CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 -next 00/12] cgroup:cpuset:separate legacy cgroup v1 code and put under config option
-Date: Tue, 27 Aug 2024 06:20:59 +0000
-Message-ID: <20240827062111.580296-1-chenridong@huawei.com>
+Subject: [PATCH v3 -next 01/12] cgroup/cpuset: introduce cpuset-v1.c
+Date: Tue, 27 Aug 2024 06:21:00 +0000
+Message-ID: <20240827062111.580296-2-chenridong@huawei.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240827062111.580296-1-chenridong@huawei.com>
+References: <20240827062111.580296-1-chenridong@huawei.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -58,60 +61,71 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  kwepemd100013.china.huawei.com (7.221.188.163)
 
-Cgroups v2 have been around for a while and many users have fully adopted
-them, so they never use cgroups v1 features and functionality. Yet they
-have to "pay" for the cgroup v1 support anyway:
-1) the kernel binary contains an unused cgroup v1 code,
-2) some code paths have additional checks which are not needed,
-3) some common structures like task_struct and mem_cgroup contain unused
-   cgroup v1-specific members.
+This patch introduces the cgroup/cpuset-v1.c source file which will be
+used for all legacy (cgroup v1) cpuset cgroup code. It also introduces
+cgroup/cpuset-internal.h to keep declarations shared between
+cgroup/cpuset.c and cpuset/cpuset-v1.c.
 
-Cgroup memory controller has already separated legacy code to
-memory-v1.c. So it is time to do the same thing for cpuset controller.
+As of now, let's compile it if CONFIG_CPUSET is set. Later on it can be
+switched to use a separate config option, so that the legacy code won't be
+compiled if not required.
 
-This patchset aims to do:
-1) moving cgroup v1-specific cpuset code to the new cpuset-v1.c file,
-2) putting definitions shared by cpuset.c and cpuset-v1.c into the
-   cpuset-internal.h header,
-3) introducing the CONFIG_CPUSETS_V1 config option, turned off by default,
-4) making cpuset-v1.c to compile only if CONFIG_CPUSETS_V1 is set.
-
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
-V3:
-- Delete blank line at the end of file.
-- Rename some generic functions name with cpuset_/cpuset1_ prefix.
-
-V2:
-- Update to base on the latest cgroup/for-6.12.
-- Add CONFIG_CPUSETS_V1 for cpuset_memory_pressure_bump.
-
-Chen Ridong (12):
-  cgroup/cpuset: introduce cpuset-v1.c
-  cgroup/cpuset: move common code to cpuset-internal.h
-  cgroup/cpuset: move memory_pressure to cpuset-v1.c
-  cgroup/cpuset: move relax_domain_level to cpuset-v1.c
-  cgroup/cpuset: move memory_spread to cpuset-v1.c
-  cgroup/cpuset: add callback_lock helper
-  cgroup/cpuset: move legacy hotplug update to cpuset-v1.c
-  cgroup/cpuset: move validate_change_legacy to cpuset-v1.c
-  cgroup/cpuset: move v1 interfaces to cpuset-v1.c
-  cgroup/cpuset: rename functions shared between v1 and v2
-  cgroup/cpuset: guard cpuset-v1 code under CONFIG_CPUSETS_V1
-  cgroup/cpuset: add sefltest for cpuset v1
-
- MAINTAINERS                                   |   3 +
- include/linux/cpuset.h                        |   4 +
- init/Kconfig                                  |  13 +
- kernel/cgroup/Makefile                        |   1 +
- kernel/cgroup/cpuset-internal.h               | 304 ++++++
- kernel/cgroup/cpuset-v1.c                     | 562 +++++++++++
- kernel/cgroup/cpuset.c                        | 908 +-----------------
- .../selftests/cgroup/test_cpuset_v1_base.sh   |  77 ++
- 8 files changed, 1013 insertions(+), 859 deletions(-)
+ MAINTAINERS                     | 2 ++
+ kernel/cgroup/Makefile          | 2 +-
+ kernel/cgroup/cpuset-internal.h | 6 ++++++
+ kernel/cgroup/cpuset-v1.c       | 3 +++
+ 4 files changed, 12 insertions(+), 1 deletion(-)
  create mode 100644 kernel/cgroup/cpuset-internal.h
  create mode 100644 kernel/cgroup/cpuset-v1.c
- create mode 100755 tools/testing/selftests/cgroup/test_cpuset_v1_base.sh
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 82e3924816d2..3b5ec1cafd95 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5698,6 +5698,8 @@ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git
+ F:	Documentation/admin-guide/cgroup-v1/cpusets.rst
+ F:	include/linux/cpuset.h
++F:	kernel/cgroup/cpuset-internal.h
++F:	kernel/cgroup/cpuset-v1.c
+ F:	kernel/cgroup/cpuset.c
+ F:	tools/testing/selftests/cgroup/test_cpuset.c
+ F:	tools/testing/selftests/cgroup/test_cpuset_prs.sh
+diff --git a/kernel/cgroup/Makefile b/kernel/cgroup/Makefile
+index 12f8457ad1f9..005ac4c675cb 100644
+--- a/kernel/cgroup/Makefile
++++ b/kernel/cgroup/Makefile
+@@ -4,6 +4,6 @@ obj-y := cgroup.o rstat.o namespace.o cgroup-v1.o freezer.o
+ obj-$(CONFIG_CGROUP_FREEZER) += legacy_freezer.o
+ obj-$(CONFIG_CGROUP_PIDS) += pids.o
+ obj-$(CONFIG_CGROUP_RDMA) += rdma.o
+-obj-$(CONFIG_CPUSETS) += cpuset.o
++obj-$(CONFIG_CPUSETS) += cpuset.o cpuset-v1.o
+ obj-$(CONFIG_CGROUP_MISC) += misc.o
+ obj-$(CONFIG_CGROUP_DEBUG) += debug.o
+diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
+new file mode 100644
+index 000000000000..034de3cbf3ad
+--- /dev/null
++++ b/kernel/cgroup/cpuset-internal.h
+@@ -0,0 +1,6 @@
++/* SPDX-License-Identifier: GPL-2.0-or-later */
++
++#ifndef __CPUSET_INTERNAL_H
++#define __CPUSET_INTERNAL_H
++
++#endif /* __CPUSET_INTERNAL_H */
+diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
+new file mode 100644
+index 000000000000..bdec4b196986
+--- /dev/null
++++ b/kernel/cgroup/cpuset-v1.c
+@@ -0,0 +1,3 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include "cpuset-internal.h"
 -- 
 2.34.1
 
