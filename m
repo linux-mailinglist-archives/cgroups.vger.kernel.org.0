@@ -1,45 +1,46 @@
-Return-Path: <cgroups+bounces-4486-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4487-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36FBF95FE77
-	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 03:45:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC31B95FE7F
+	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 03:47:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B724CB2114F
-	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 01:45:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 686271F21F3C
+	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 01:47:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC888F58;
-	Tue, 27 Aug 2024 01:45:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8998A8F66;
+	Tue, 27 Aug 2024 01:47:36 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4791E10940;
-	Tue, 27 Aug 2024 01:45:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F4F0610C;
+	Tue, 27 Aug 2024 01:47:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724723125; cv=none; b=npwzUFaXHy3PMgOWRiNAlEtR1pmlmxZ6WrkyNI6g6QE6KMHlmc9/f21G8zN3jZ7dEiZNgvv2uBb8p6YdUTX3eBq74GmCLaLAJdH5dfStWwZM+XulguYv1Onhv8ijZ0OWTPPfYa6DlFqICxzSDudOkADk+TMWid0H6NIAX3Gil5A=
+	t=1724723256; cv=none; b=R46Lun4+BHTGk62+8R90ve8nQtIvytUVSAyMdxI43cYr6MWoZdxwy5zfsYWDM9pU/9qz7n/6tZ2JhYvtMEibxAAaYpe8VD+rskFBmdKY/AFrou6RDD4aaQnDdHh7nRQWiHurlIx7Aektw1J0MSv7/v5Fq8iyY3uM+BMJbzWH0vE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724723125; c=relaxed/simple;
-	bh=YcdCXFygTeYZfRSCx3dM34ECi2IF6ufvwaUkWhroW1k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tKy4UoJsG9ekCr6vEwoDClX752/B+DO7bqSOsYI9by9y967eT3OEIMK7vYXM4aZFVoYuZfNzKI0Ub3Chv1m64MQrkzLBhDktdRsHh2udbDgjZNOczkZ5DMU8dvZfum3oAz2wmq3R0iZhWNyj/RFTUdioW+4DxpuAg3tIHTSds6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Wt9Mx4bHlz4f3jjk;
-	Tue, 27 Aug 2024 09:45:01 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 87EF71A15B3;
-	Tue, 27 Aug 2024 09:45:11 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP2 (Coremail) with SMTP id Syh0CgC367qmL81mtwxDCw--.21821S2;
-	Tue, 27 Aug 2024 09:45:11 +0800 (CST)
-Message-ID: <465d8842-d118-41a8-b571-1f79f32bbe97@huaweicloud.com>
-Date: Tue, 27 Aug 2024 09:45:10 +0800
+	s=arc-20240116; t=1724723256; c=relaxed/simple;
+	bh=NWVpJt6OANH3ysPHjZ2B+1M+5IOXGK9SHbhGWio8vQI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=tPx/eHfyOWV95BnsyS5E7ZRx8Xd2rL2MiSTKDE1d1OuQMXCXEcbreUPoT6RbDo+J9QxxFupa2Ac7e0X63sOdhW5gWKUTcvbIArwPstUGtpTGguKm6ZO8q98EfAuyD283MoJ3Q2PxSPkjQu8/OH9V++2CGgCRohb6+Lz90SQb1n8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Wt9Pv0h7lz16PQM;
+	Tue, 27 Aug 2024 09:46:43 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id 6F8851800D3;
+	Tue, 27 Aug 2024 09:47:29 +0800 (CST)
+Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Tue, 27 Aug
+ 2024 09:47:28 +0800
+Message-ID: <4feacb1b-5b6e-4e5f-b621-78ec3cd57a01@huawei.com>
+Date: Tue, 27 Aug 2024 09:47:28 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -47,125 +48,57 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 -next 01/11] cgroup/cpuset: introduce cpuset-v1.c
-To: Waiman Long <longman@redhat.com>, tj@kernel.org, lizefan.x@bytedance.com,
- hannes@cmpxchg.org, adityakali@google.com, sergeh@kernel.org,
- mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 -next 09/11] cgroup/cpuset: move v1 interfaces to
+ cpuset-v1.c
+To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>
+CC: <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>, <adityakali@google.com>,
+	<sergeh@kernel.org>, <mkoutny@suse.com>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <chenridong@huaweicloud.com>
 References: <20240826132703.558956-1-chenridong@huawei.com>
- <20240826132703.558956-2-chenridong@huawei.com>
- <53f17d71-c710-4720-ada7-8b81afc0c5e1@redhat.com>
+ <20240826132703.558956-10-chenridong@huawei.com>
+ <eaef1faf-c3f3-4664-ae7d-5cca611925e4@redhat.com>
+ <ZszaJFzcmBskojVS@slm.duckdns.org>
+ <9793ce0d-842a-4876-860a-9b7b8d538e45@redhat.com>
 Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <53f17d71-c710-4720-ada7-8b81afc0c5e1@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: chenridong <chenridong@huawei.com>
+In-Reply-To: <9793ce0d-842a-4876-860a-9b7b8d538e45@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgC367qmL81mtwxDCw--.21821S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWFW5GFyrAF1fKFyrZF4DXFb_yoW5uF15pF
-	ykGFyrA3y3GF10k34vg3Wv9F95Kw48t3WUG3WqqF1kZF12q3WY9F1q934YgFyUGFs7ur48
-	tFsxZrW29r1jq3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUF1v3UUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
 
 
-On 2024/8/27 3:07, Waiman Long wrote:
-> On 8/26/24 09:26, Chen Ridong wrote:
->> This patch introduces the cgroup/cpuset-v1.c source file which will be
->> used for all legacy (cgroup v1) cpuset cgroup code. It also introduces
->> cgroup/cpuset-internal.h to keep declarations shared between
->> cgroup/cpuset.c and cpuset/cpuset-v1.c.
->>
->> As of now, let's compile it if CONFIG_CPUSET is set. Later on it can be
->> switched to use a separate config option, so that the legacy code 
->> won't be
->> compiled if not required.
->>
->> Signed-off-by: Chen Ridong <chenridong@huawei.com>
->> ---
->>   MAINTAINERS                     | 2 ++
->>   kernel/cgroup/Makefile          | 2 +-
->>   kernel/cgroup/cpuset-internal.h | 7 +++++++
->>   kernel/cgroup/cpuset-v1.c       | 4 ++++
->>   4 files changed, 14 insertions(+), 1 deletion(-)
->>   create mode 100644 kernel/cgroup/cpuset-internal.h
->>   create mode 100644 kernel/cgroup/cpuset-v1.c
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 82e3924816d2..3b5ec1cafd95 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -5698,6 +5698,8 @@ S:    Maintained
->>   T:    git git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git
->>   F:    Documentation/admin-guide/cgroup-v1/cpusets.rst
->>   F:    include/linux/cpuset.h
->> +F:    kernel/cgroup/cpuset-internal.h
->> +F:    kernel/cgroup/cpuset-v1.c
->>   F:    kernel/cgroup/cpuset.c
->>   F:    tools/testing/selftests/cgroup/test_cpuset.c
->>   F:    tools/testing/selftests/cgroup/test_cpuset_prs.sh
->> diff --git a/kernel/cgroup/Makefile b/kernel/cgroup/Makefile
->> index 12f8457ad1f9..005ac4c675cb 100644
->> --- a/kernel/cgroup/Makefile
->> +++ b/kernel/cgroup/Makefile
->> @@ -4,6 +4,6 @@ obj-y := cgroup.o rstat.o namespace.o cgroup-v1.o 
->> freezer.o
->>   obj-$(CONFIG_CGROUP_FREEZER) += legacy_freezer.o
->>   obj-$(CONFIG_CGROUP_PIDS) += pids.o
->>   obj-$(CONFIG_CGROUP_RDMA) += rdma.o
->> -obj-$(CONFIG_CPUSETS) += cpuset.o
->> +obj-$(CONFIG_CPUSETS) += cpuset.o cpuset-v1.o
->>   obj-$(CONFIG_CGROUP_MISC) += misc.o
->>   obj-$(CONFIG_CGROUP_DEBUG) += debug.o
->> diff --git a/kernel/cgroup/cpuset-internal.h 
->> b/kernel/cgroup/cpuset-internal.h
->> new file mode 100644
->> index 000000000000..6605be417e32
->> --- /dev/null
->> +++ b/kernel/cgroup/cpuset-internal.h
->> @@ -0,0 +1,7 @@
->> +/* SPDX-License-Identifier: GPL-2.0-or-later */
->> +
->> +#ifndef __CPUSET_INTERNAL_H
->> +#define __CPUSET_INTERNAL_H
->> +
->> +#endif /* __CPUSET_INTERNAL_H */
->> +
->> diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
->> new file mode 100644
->> index 000000000000..ae166eb4f75d
->> --- /dev/null
->> +++ b/kernel/cgroup/cpuset-v1.c
->> @@ -0,0 +1,4 @@
->> +// SPDX-License-Identifier: GPL-2.0-or-later
->> +
->> +#include "cpuset-internal.h"
->> +
+On 2024/8/27 3:47, Waiman Long wrote:
 > 
-> Don't leave a blank line at the end of a file. You will get the 
-> following error when applying the patch.
+> On 8/26/24 15:40, Tejun Heo wrote:
+>> On Mon, Aug 26, 2024 at 03:30:14PM -0400, Waiman Long wrote:
+>> ...
+>>> Another alternative is to include cpuset-v1.c directly into cpuset.c 
+>>> like
+>>>
+>>> #ifdef CONFIG_CPUSETS_V1
+>>> #include "cpuset-v1.c"
+>>> #else
+>>>     ....
+>>> #endif
+>>>
+>>> Then you don't need to change the names and will not need 
+>>> cpuset-internal.h.
+>>> It is up to you to decide what you want to do.
+>> FWIW, I'd prefer to have cpuset1_ prefixed functions declared in 
+>> cpuset1.h
+>> or something rather than including .c file.
 > 
-> 0001-cgroup_cpuset-introduce-cpuset-v1.c.patch:70: new blank line at EOF.
-> 
-> All your patches except the last one have this problem.
+> Sure. Let's have "cpuset1_" prefix if it is v1 specific and "cpuset_" 
+> prefix if it is used by both v1 and v2. That applies only to newly 
+> exposed names.
 > 
 > Cheers,
 > Longman
+> 
+I will rename the functions with cpuset1_/cpuset_ prefix.
 
-Thank you, will fix it.
-
-Best regards,
+Thanks,
 Ridong
-
 
