@@ -1,52 +1,52 @@
-Return-Path: <cgroups+bounces-4492-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4494-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DDB99601AA
-	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 08:29:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68A829601AC
+	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 08:29:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D57F31F22DD0
-	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 06:29:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1751A283536
+	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 06:29:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8B10153835;
-	Tue, 27 Aug 2024 06:29:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55DA1155300;
+	Tue, 27 Aug 2024 06:29:04 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA2FB148302;
-	Tue, 27 Aug 2024 06:29:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55EB0148FE5;
+	Tue, 27 Aug 2024 06:29:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724740143; cv=none; b=Kq2XWqh+djULmTh86k/J1v9MRCjzh9ygMKSbvWp+7nkPq+NZ5JbsTQT2ze7woMQ/VBIBEc0D3vqZRFENOLYJ+LYln9UikHUeO9IGVqMGEtf2X0nDLtwiv6Xp2ZP0/Ds27XhbfVlcSapkf2WfBS/RagP9OIHt+QN313zoVhFgZko=
+	t=1724740144; cv=none; b=hDZs3Ct18W7IGPd7VYFEY0lLTdTDsXJ9Rkh6UgKlI5VT0A2qrRRetnp7jMnljd9IrxJW6ihPJQg4OY2Q3tgz14tgt/04ZtxFJtl+xRSVcUnXU/NRXfYtc13N7qq6szYNIudfrsrsc4qoae/vuvP3fEXaWuFG2woXV7E7uRpcmys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724740143; c=relaxed/simple;
-	bh=ZLv1r7Ko4oryC4beQPJA/3rM14P+MXREEu4MrhZ6M+g=;
+	s=arc-20240116; t=1724740144; c=relaxed/simple;
+	bh=njUIEpqvTgq7WgFyeHqjBAjRs8jP8RdL/IRk3R9A/9E=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SA17tgg6OWRWXH064Xb7aHrUluHCzeMZ5MwiaD+Q5QIqPjuyhss3JLnsfrMd1puv/KjuHlyeDdWxpStIvxB1NNcG8COpH5mY5Yu/LvXIpAZuDPFEcSZlJqxZU/+tVfvXQV3KN4YAlVCidZh0/pKwFSnLZaobbAcnxkmRfCNIWP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+	 MIME-Version:Content-Type; b=c5sqNeCxPjFzUxC42f+gFzRyRO8v70vXhT9OQCgcAmvAcdaESjmUoocAKCmypj5SK7B4uaNWkJFYzxZRonU2IzTMASSnSdigTbWnKp/0Ivqdp+EzTG1B1okxvoHfbt9SgQAV6kpFuZHoLDojMrkvB4MhkyQiJ47FgFzUu7pMjjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4WtHgN5XQsz1j7H4;
-	Tue, 27 Aug 2024 14:28:48 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WtHdC32Q8zfbdL;
+	Tue, 27 Aug 2024 14:26:55 +0800 (CST)
 Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 59DD7140154;
+	by mail.maildlp.com (Postfix) with ESMTPS id BA0311402DE;
 	Tue, 27 Aug 2024 14:28:58 +0800 (CST)
 Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
  (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Tue, 27 Aug
- 2024 14:28:57 +0800
+ 2024 14:28:58 +0800
 From: Chen Ridong <chenridong@huawei.com>
 To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
 	<longman@redhat.com>, <adityakali@google.com>, <sergeh@kernel.org>,
 	<mkoutny@suse.com>
 CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 -next 02/12] cgroup/cpuset: move common code to cpuset-internal.h
-Date: Tue, 27 Aug 2024 06:21:01 +0000
-Message-ID: <20240827062111.580296-3-chenridong@huawei.com>
+Subject: [PATCH v3 -next 03/12] cgroup/cpuset: move memory_pressure to cpuset-v1.c
+Date: Tue, 27 Aug 2024 06:21:02 +0000
+Message-ID: <20240827062111.580296-4-chenridong@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240827062111.580296-1-chenridong@huawei.com>
 References: <20240827062111.580296-1-chenridong@huawei.com>
@@ -61,555 +61,330 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  kwepemd100013.china.huawei.com (7.221.188.163)
 
-Move some declarations that will be used for cpuset v1 and v2,
-including 'cpuset struct', 'cpuset_flagbits_t', cpuset_filetype_t,etc.
-No logical change.
+Collection of memory_pressure can be enabled by writing 1 to the cpuset
+file 'memory_pressure_enabled', which is only for cpuset-v1. Therefore,
+move the corresponding code to cpuset-v1.c.
+
+Currently, the 'fmeter_init' and 'fmeter_getrate' functions are called
+at cpuset.c, so expose them to cpuset.c.
 
 Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- kernel/cgroup/cpuset-internal.h | 235 +++++++++++++++++++++++++++++++
- kernel/cgroup/cpuset.c          | 236 +-------------------------------
- 2 files changed, 236 insertions(+), 235 deletions(-)
+ kernel/cgroup/cpuset-internal.h |   7 ++
+ kernel/cgroup/cpuset-v1.c       | 134 ++++++++++++++++++++++++++++++++
+ kernel/cgroup/cpuset.c          | 134 --------------------------------
+ 3 files changed, 141 insertions(+), 134 deletions(-)
 
 diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-index 034de3cbf3ad..ffea3eefebdf 100644
+index ffea3eefebdf..7911c86bf012 100644
 --- a/kernel/cgroup/cpuset-internal.h
 +++ b/kernel/cgroup/cpuset-internal.h
-@@ -3,4 +3,239 @@
- #ifndef __CPUSET_INTERNAL_H
- #define __CPUSET_INTERNAL_H
+@@ -238,4 +238,11 @@ static inline int is_spread_slab(const struct cpuset *cs)
+ 	return test_bit(CS_SPREAD_SLAB, &cs->flags);
+ }
  
-+#include <linux/union_find.h>
-+#include <linux/cpumask.h>
-+#include <linux/spinlock.h>
-+#include <linux/cpuset.h>
-+#include <linux/cgroup.h>
-+
-+/* See "Frequency meter" comments, below. */
-+
-+struct fmeter {
-+	int cnt;		/* unprocessed events count */
-+	int val;		/* most recent output value */
-+	time64_t time;		/* clock (secs) when val computed */
-+	spinlock_t lock;	/* guards read or write of above */
-+};
-+
 +/*
-+ * Invalid partition error code
++ * cpuset-v1.c
 + */
-+enum prs_errcode {
-+	PERR_NONE = 0,
-+	PERR_INVCPUS,
-+	PERR_INVPARENT,
-+	PERR_NOTPART,
-+	PERR_NOTEXCL,
-+	PERR_NOCPUS,
-+	PERR_HOTPLUG,
-+	PERR_CPUSEMPTY,
-+	PERR_HKEEPING,
-+	PERR_ACCESS,
-+};
 +
-+/* bits in struct cpuset flags field */
-+typedef enum {
-+	CS_ONLINE,
-+	CS_CPU_EXCLUSIVE,
-+	CS_MEM_EXCLUSIVE,
-+	CS_MEM_HARDWALL,
-+	CS_MEMORY_MIGRATE,
-+	CS_SCHED_LOAD_BALANCE,
-+	CS_SPREAD_PAGE,
-+	CS_SPREAD_SLAB,
-+} cpuset_flagbits_t;
-+
-+/* The various types of files and directories in a cpuset file system */
-+
-+typedef enum {
-+	FILE_MEMORY_MIGRATE,
-+	FILE_CPULIST,
-+	FILE_MEMLIST,
-+	FILE_EFFECTIVE_CPULIST,
-+	FILE_EFFECTIVE_MEMLIST,
-+	FILE_SUBPARTS_CPULIST,
-+	FILE_EXCLUSIVE_CPULIST,
-+	FILE_EFFECTIVE_XCPULIST,
-+	FILE_ISOLATED_CPULIST,
-+	FILE_CPU_EXCLUSIVE,
-+	FILE_MEM_EXCLUSIVE,
-+	FILE_MEM_HARDWALL,
-+	FILE_SCHED_LOAD_BALANCE,
-+	FILE_PARTITION_ROOT,
-+	FILE_SCHED_RELAX_DOMAIN_LEVEL,
-+	FILE_MEMORY_PRESSURE_ENABLED,
-+	FILE_MEMORY_PRESSURE,
-+	FILE_SPREAD_PAGE,
-+	FILE_SPREAD_SLAB,
-+} cpuset_filetype_t;
-+
-+struct cpuset {
-+	struct cgroup_subsys_state css;
-+
-+	unsigned long flags;		/* "unsigned long" so bitops work */
-+
-+	/*
-+	 * On default hierarchy:
-+	 *
-+	 * The user-configured masks can only be changed by writing to
-+	 * cpuset.cpus and cpuset.mems, and won't be limited by the
-+	 * parent masks.
-+	 *
-+	 * The effective masks is the real masks that apply to the tasks
-+	 * in the cpuset. They may be changed if the configured masks are
-+	 * changed or hotplug happens.
-+	 *
-+	 * effective_mask == configured_mask & parent's effective_mask,
-+	 * and if it ends up empty, it will inherit the parent's mask.
-+	 *
-+	 *
-+	 * On legacy hierarchy:
-+	 *
-+	 * The user-configured masks are always the same with effective masks.
-+	 */
-+
-+	/* user-configured CPUs and Memory Nodes allow to tasks */
-+	cpumask_var_t cpus_allowed;
-+	nodemask_t mems_allowed;
-+
-+	/* effective CPUs and Memory Nodes allow to tasks */
-+	cpumask_var_t effective_cpus;
-+	nodemask_t effective_mems;
-+
-+	/*
-+	 * Exclusive CPUs dedicated to current cgroup (default hierarchy only)
-+	 *
-+	 * The effective_cpus of a valid partition root comes solely from its
-+	 * effective_xcpus and some of the effective_xcpus may be distributed
-+	 * to sub-partitions below & hence excluded from its effective_cpus.
-+	 * For a valid partition root, its effective_cpus have no relationship
-+	 * with cpus_allowed unless its exclusive_cpus isn't set.
-+	 *
-+	 * This value will only be set if either exclusive_cpus is set or
-+	 * when this cpuset becomes a local partition root.
-+	 */
-+	cpumask_var_t effective_xcpus;
-+
-+	/*
-+	 * Exclusive CPUs as requested by the user (default hierarchy only)
-+	 *
-+	 * Its value is independent of cpus_allowed and designates the set of
-+	 * CPUs that can be granted to the current cpuset or its children when
-+	 * it becomes a valid partition root. The effective set of exclusive
-+	 * CPUs granted (effective_xcpus) depends on whether those exclusive
-+	 * CPUs are passed down by its ancestors and not yet taken up by
-+	 * another sibling partition root along the way.
-+	 *
-+	 * If its value isn't set, it defaults to cpus_allowed.
-+	 */
-+	cpumask_var_t exclusive_cpus;
-+
-+	/*
-+	 * This is old Memory Nodes tasks took on.
-+	 *
-+	 * - top_cpuset.old_mems_allowed is initialized to mems_allowed.
-+	 * - A new cpuset's old_mems_allowed is initialized when some
-+	 *   task is moved into it.
-+	 * - old_mems_allowed is used in cpuset_migrate_mm() when we change
-+	 *   cpuset.mems_allowed and have tasks' nodemask updated, and
-+	 *   then old_mems_allowed is updated to mems_allowed.
-+	 */
-+	nodemask_t old_mems_allowed;
-+
-+	struct fmeter fmeter;		/* memory_pressure filter */
-+
-+	/*
-+	 * Tasks are being attached to this cpuset.  Used to prevent
-+	 * zeroing cpus/mems_allowed between ->can_attach() and ->attach().
-+	 */
-+	int attach_in_progress;
-+
-+	/* for custom sched domain */
-+	int relax_domain_level;
-+
-+	/* number of valid local child partitions */
-+	int nr_subparts;
-+
-+	/* partition root state */
-+	int partition_root_state;
-+
-+	/*
-+	 * number of SCHED_DEADLINE tasks attached to this cpuset, so that we
-+	 * know when to rebuild associated root domain bandwidth information.
-+	 */
-+	int nr_deadline_tasks;
-+	int nr_migrate_dl_tasks;
-+	u64 sum_migrate_dl_bw;
-+
-+	/* Invalid partition error code, not lock protected */
-+	enum prs_errcode prs_err;
-+
-+	/* Handle for cpuset.cpus.partition */
-+	struct cgroup_file partition_file;
-+
-+	/* Remote partition silbling list anchored at remote_children */
-+	struct list_head remote_sibling;
-+
-+	/* Used to merge intersecting subsets for generate_sched_domains */
-+	struct uf_node node;
-+};
-+
-+static inline struct cpuset *css_cs(struct cgroup_subsys_state *css)
-+{
-+	return css ? container_of(css, struct cpuset, css) : NULL;
-+}
-+
-+/* Retrieve the cpuset for a task */
-+static inline struct cpuset *task_cs(struct task_struct *task)
-+{
-+	return css_cs(task_css(task, cpuset_cgrp_id));
-+}
-+
-+static inline struct cpuset *parent_cs(struct cpuset *cs)
-+{
-+	return css_cs(cs->css.parent);
-+}
-+
-+/* convenient tests for these bits */
-+static inline bool is_cpuset_online(struct cpuset *cs)
-+{
-+	return test_bit(CS_ONLINE, &cs->flags) && !css_is_dying(&cs->css);
-+}
-+
-+static inline int is_cpu_exclusive(const struct cpuset *cs)
-+{
-+	return test_bit(CS_CPU_EXCLUSIVE, &cs->flags);
-+}
-+
-+static inline int is_mem_exclusive(const struct cpuset *cs)
-+{
-+	return test_bit(CS_MEM_EXCLUSIVE, &cs->flags);
-+}
-+
-+static inline int is_mem_hardwall(const struct cpuset *cs)
-+{
-+	return test_bit(CS_MEM_HARDWALL, &cs->flags);
-+}
-+
-+static inline int is_sched_load_balance(const struct cpuset *cs)
-+{
-+	return test_bit(CS_SCHED_LOAD_BALANCE, &cs->flags);
-+}
-+
-+static inline int is_memory_migrate(const struct cpuset *cs)
-+{
-+	return test_bit(CS_MEMORY_MIGRATE, &cs->flags);
-+}
-+
-+static inline int is_spread_page(const struct cpuset *cs)
-+{
-+	return test_bit(CS_SPREAD_PAGE, &cs->flags);
-+}
-+
-+static inline int is_spread_slab(const struct cpuset *cs)
-+{
-+	return test_bit(CS_SPREAD_SLAB, &cs->flags);
-+}
++void fmeter_init(struct fmeter *fmp);
++int fmeter_getrate(struct fmeter *fmp);
 +
  #endif /* __CPUSET_INTERNAL_H */
+diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
+index bdec4b196986..e7d137ff57cf 100644
+--- a/kernel/cgroup/cpuset-v1.c
++++ b/kernel/cgroup/cpuset-v1.c
+@@ -1,3 +1,137 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ 
+ #include "cpuset-internal.h"
++
++/*
++ * Frequency meter - How fast is some event occurring?
++ *
++ * These routines manage a digitally filtered, constant time based,
++ * event frequency meter.  There are four routines:
++ *   fmeter_init() - initialize a frequency meter.
++ *   fmeter_markevent() - called each time the event happens.
++ *   fmeter_getrate() - returns the recent rate of such events.
++ *   fmeter_update() - internal routine used to update fmeter.
++ *
++ * A common data structure is passed to each of these routines,
++ * which is used to keep track of the state required to manage the
++ * frequency meter and its digital filter.
++ *
++ * The filter works on the number of events marked per unit time.
++ * The filter is single-pole low-pass recursive (IIR).  The time unit
++ * is 1 second.  Arithmetic is done using 32-bit integers scaled to
++ * simulate 3 decimal digits of precision (multiplied by 1000).
++ *
++ * With an FM_COEF of 933, and a time base of 1 second, the filter
++ * has a half-life of 10 seconds, meaning that if the events quit
++ * happening, then the rate returned from the fmeter_getrate()
++ * will be cut in half each 10 seconds, until it converges to zero.
++ *
++ * It is not worth doing a real infinitely recursive filter.  If more
++ * than FM_MAXTICKS ticks have elapsed since the last filter event,
++ * just compute FM_MAXTICKS ticks worth, by which point the level
++ * will be stable.
++ *
++ * Limit the count of unprocessed events to FM_MAXCNT, so as to avoid
++ * arithmetic overflow in the fmeter_update() routine.
++ *
++ * Given the simple 32 bit integer arithmetic used, this meter works
++ * best for reporting rates between one per millisecond (msec) and
++ * one per 32 (approx) seconds.  At constant rates faster than one
++ * per msec it maxes out at values just under 1,000,000.  At constant
++ * rates between one per msec, and one per second it will stabilize
++ * to a value N*1000, where N is the rate of events per second.
++ * At constant rates between one per second and one per 32 seconds,
++ * it will be choppy, moving up on the seconds that have an event,
++ * and then decaying until the next event.  At rates slower than
++ * about one in 32 seconds, it decays all the way back to zero between
++ * each event.
++ */
++
++#define FM_COEF 933		/* coefficient for half-life of 10 secs */
++#define FM_MAXTICKS ((u32)99)   /* useless computing more ticks than this */
++#define FM_MAXCNT 1000000	/* limit cnt to avoid overflow */
++#define FM_SCALE 1000		/* faux fixed point scale */
++
++/* Initialize a frequency meter */
++void fmeter_init(struct fmeter *fmp)
++{
++	fmp->cnt = 0;
++	fmp->val = 0;
++	fmp->time = 0;
++	spin_lock_init(&fmp->lock);
++}
++
++/* Internal meter update - process cnt events and update value */
++static void fmeter_update(struct fmeter *fmp)
++{
++	time64_t now;
++	u32 ticks;
++
++	now = ktime_get_seconds();
++	ticks = now - fmp->time;
++
++	if (ticks == 0)
++		return;
++
++	ticks = min(FM_MAXTICKS, ticks);
++	while (ticks-- > 0)
++		fmp->val = (FM_COEF * fmp->val) / FM_SCALE;
++	fmp->time = now;
++
++	fmp->val += ((FM_SCALE - FM_COEF) * fmp->cnt) / FM_SCALE;
++	fmp->cnt = 0;
++}
++
++/* Process any previous ticks, then bump cnt by one (times scale). */
++static void fmeter_markevent(struct fmeter *fmp)
++{
++	spin_lock(&fmp->lock);
++	fmeter_update(fmp);
++	fmp->cnt = min(FM_MAXCNT, fmp->cnt + FM_SCALE);
++	spin_unlock(&fmp->lock);
++}
++
++/* Process any previous ticks, then return current value. */
++int fmeter_getrate(struct fmeter *fmp)
++{
++	int val;
++
++	spin_lock(&fmp->lock);
++	fmeter_update(fmp);
++	val = fmp->val;
++	spin_unlock(&fmp->lock);
++	return val;
++}
++
++/*
++ * Collection of memory_pressure is suppressed unless
++ * this flag is enabled by writing "1" to the special
++ * cpuset file 'memory_pressure_enabled' in the root cpuset.
++ */
++
++int cpuset_memory_pressure_enabled __read_mostly;
++
++/*
++ * __cpuset_memory_pressure_bump - keep stats of per-cpuset reclaims.
++ *
++ * Keep a running average of the rate of synchronous (direct)
++ * page reclaim efforts initiated by tasks in each cpuset.
++ *
++ * This represents the rate at which some task in the cpuset
++ * ran low on memory on all nodes it was allowed to use, and
++ * had to enter the kernels page reclaim code in an effort to
++ * create more free memory by tossing clean pages or swapping
++ * or writing dirty pages.
++ *
++ * Display to user space in the per-cpuset read-only file
++ * "memory_pressure".  Value displayed is an integer
++ * representing the recent rate of entry into the synchronous
++ * (direct) page reclaim by any task attached to the cpuset.
++ */
++
++void __cpuset_memory_pressure_bump(void)
++{
++	rcu_read_lock();
++	fmeter_markevent(&task_cs(current)->fmeter);
++	rcu_read_unlock();
++}
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 7db55eed63cf..61763dd70de5 100644
+index 61763dd70de5..17f7984a41f5 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -22,11 +22,9 @@
-  *  distribution for more details.
-  */
- #include "cgroup-internal.h"
-+#include "cpuset-internal.h"
+@@ -2990,107 +2990,6 @@ static int update_prstate(struct cpuset *cs, int new_prs)
+ 	return 0;
+ }
  
- #include <linux/cpu.h>
--#include <linux/cpumask.h>
--#include <linux/cpuset.h>
--#include <linux/delay.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
- #include <linux/kernel.h>
-@@ -40,13 +38,10 @@
- #include <linux/sched/mm.h>
- #include <linux/sched/task.h>
- #include <linux/security.h>
--#include <linux/spinlock.h>
- #include <linux/oom.h>
- #include <linux/sched/isolation.h>
--#include <linux/cgroup.h>
- #include <linux/wait.h>
- #include <linux/workqueue.h>
--#include <linux/union_find.h>
- 
- DEFINE_STATIC_KEY_FALSE(cpusets_pre_enable_key);
- DEFINE_STATIC_KEY_FALSE(cpusets_enabled_key);
-@@ -58,31 +53,6 @@ DEFINE_STATIC_KEY_FALSE(cpusets_enabled_key);
-  */
- DEFINE_STATIC_KEY_FALSE(cpusets_insane_config_key);
- 
--/* See "Frequency meter" comments, below. */
+-/*
+- * Frequency meter - How fast is some event occurring?
+- *
+- * These routines manage a digitally filtered, constant time based,
+- * event frequency meter.  There are four routines:
+- *   fmeter_init() - initialize a frequency meter.
+- *   fmeter_markevent() - called each time the event happens.
+- *   fmeter_getrate() - returns the recent rate of such events.
+- *   fmeter_update() - internal routine used to update fmeter.
+- *
+- * A common data structure is passed to each of these routines,
+- * which is used to keep track of the state required to manage the
+- * frequency meter and its digital filter.
+- *
+- * The filter works on the number of events marked per unit time.
+- * The filter is single-pole low-pass recursive (IIR).  The time unit
+- * is 1 second.  Arithmetic is done using 32-bit integers scaled to
+- * simulate 3 decimal digits of precision (multiplied by 1000).
+- *
+- * With an FM_COEF of 933, and a time base of 1 second, the filter
+- * has a half-life of 10 seconds, meaning that if the events quit
+- * happening, then the rate returned from the fmeter_getrate()
+- * will be cut in half each 10 seconds, until it converges to zero.
+- *
+- * It is not worth doing a real infinitely recursive filter.  If more
+- * than FM_MAXTICKS ticks have elapsed since the last filter event,
+- * just compute FM_MAXTICKS ticks worth, by which point the level
+- * will be stable.
+- *
+- * Limit the count of unprocessed events to FM_MAXCNT, so as to avoid
+- * arithmetic overflow in the fmeter_update() routine.
+- *
+- * Given the simple 32 bit integer arithmetic used, this meter works
+- * best for reporting rates between one per millisecond (msec) and
+- * one per 32 (approx) seconds.  At constant rates faster than one
+- * per msec it maxes out at values just under 1,000,000.  At constant
+- * rates between one per msec, and one per second it will stabilize
+- * to a value N*1000, where N is the rate of events per second.
+- * At constant rates between one per second and one per 32 seconds,
+- * it will be choppy, moving up on the seconds that have an event,
+- * and then decaying until the next event.  At rates slower than
+- * about one in 32 seconds, it decays all the way back to zero between
+- * each event.
+- */
 -
--struct fmeter {
--	int cnt;		/* unprocessed events count */
--	int val;		/* most recent output value */
--	time64_t time;		/* clock (secs) when val computed */
--	spinlock_t lock;	/* guards read or write of above */
--};
+-#define FM_COEF 933		/* coefficient for half-life of 10 secs */
+-#define FM_MAXTICKS ((u32)99)   /* useless computing more ticks than this */
+-#define FM_MAXCNT 1000000	/* limit cnt to avoid overflow */
+-#define FM_SCALE 1000		/* faux fixed point scale */
+-
+-/* Initialize a frequency meter */
+-static void fmeter_init(struct fmeter *fmp)
+-{
+-	fmp->cnt = 0;
+-	fmp->val = 0;
+-	fmp->time = 0;
+-	spin_lock_init(&fmp->lock);
+-}
+-
+-/* Internal meter update - process cnt events and update value */
+-static void fmeter_update(struct fmeter *fmp)
+-{
+-	time64_t now;
+-	u32 ticks;
+-
+-	now = ktime_get_seconds();
+-	ticks = now - fmp->time;
+-
+-	if (ticks == 0)
+-		return;
+-
+-	ticks = min(FM_MAXTICKS, ticks);
+-	while (ticks-- > 0)
+-		fmp->val = (FM_COEF * fmp->val) / FM_SCALE;
+-	fmp->time = now;
+-
+-	fmp->val += ((FM_SCALE - FM_COEF) * fmp->cnt) / FM_SCALE;
+-	fmp->cnt = 0;
+-}
+-
+-/* Process any previous ticks, then bump cnt by one (times scale). */
+-static void fmeter_markevent(struct fmeter *fmp)
+-{
+-	spin_lock(&fmp->lock);
+-	fmeter_update(fmp);
+-	fmp->cnt = min(FM_MAXCNT, fmp->cnt + FM_SCALE);
+-	spin_unlock(&fmp->lock);
+-}
+-
+-/* Process any previous ticks, then return current value. */
+-static int fmeter_getrate(struct fmeter *fmp)
+-{
+-	int val;
+-
+-	spin_lock(&fmp->lock);
+-	fmeter_update(fmp);
+-	val = fmp->val;
+-	spin_unlock(&fmp->lock);
+-	return val;
+-}
+-
+ static struct cpuset *cpuset_attach_old_cs;
+ 
+ /*
+@@ -4780,39 +4679,6 @@ void cpuset_print_current_mems_allowed(void)
+ 	rcu_read_unlock();
+ }
+ 
+-/*
+- * Collection of memory_pressure is suppressed unless
+- * this flag is enabled by writing "1" to the special
+- * cpuset file 'memory_pressure_enabled' in the root cpuset.
+- */
+-
+-int cpuset_memory_pressure_enabled __read_mostly;
 -
 -/*
-- * Invalid partition error code
+- * __cpuset_memory_pressure_bump - keep stats of per-cpuset reclaims.
+- *
+- * Keep a running average of the rate of synchronous (direct)
+- * page reclaim efforts initiated by tasks in each cpuset.
+- *
+- * This represents the rate at which some task in the cpuset
+- * ran low on memory on all nodes it was allowed to use, and
+- * had to enter the kernels page reclaim code in an effort to
+- * create more free memory by tossing clean pages or swapping
+- * or writing dirty pages.
+- *
+- * Display to user space in the per-cpuset read-only file
+- * "memory_pressure".  Value displayed is an integer
+- * representing the recent rate of entry into the synchronous
+- * (direct) page reclaim by any task attached to the cpuset.
 - */
--enum prs_errcode {
--	PERR_NONE = 0,
--	PERR_INVCPUS,
--	PERR_INVPARENT,
--	PERR_NOTPART,
--	PERR_NOTEXCL,
--	PERR_NOCPUS,
--	PERR_HOTPLUG,
--	PERR_CPUSEMPTY,
--	PERR_HKEEPING,
--	PERR_ACCESS,
--};
 -
- static const char * const perr_strings[] = {
- 	[PERR_INVCPUS]   = "Invalid cpu list in cpuset.cpus.exclusive",
- 	[PERR_INVPARENT] = "Parent is an invalid partition root",
-@@ -95,117 +65,6 @@ static const char * const perr_strings[] = {
- 	[PERR_ACCESS]    = "Enable partition not permitted",
- };
- 
--struct cpuset {
--	struct cgroup_subsys_state css;
+-void __cpuset_memory_pressure_bump(void)
+-{
+-	rcu_read_lock();
+-	fmeter_markevent(&task_cs(current)->fmeter);
+-	rcu_read_unlock();
+-}
 -
--	unsigned long flags;		/* "unsigned long" so bitops work */
--
--	/*
--	 * On default hierarchy:
--	 *
--	 * The user-configured masks can only be changed by writing to
--	 * cpuset.cpus and cpuset.mems, and won't be limited by the
--	 * parent masks.
--	 *
--	 * The effective masks is the real masks that apply to the tasks
--	 * in the cpuset. They may be changed if the configured masks are
--	 * changed or hotplug happens.
--	 *
--	 * effective_mask == configured_mask & parent's effective_mask,
--	 * and if it ends up empty, it will inherit the parent's mask.
--	 *
--	 *
--	 * On legacy hierarchy:
--	 *
--	 * The user-configured masks are always the same with effective masks.
--	 */
--
--	/* user-configured CPUs and Memory Nodes allow to tasks */
--	cpumask_var_t cpus_allowed;
--	nodemask_t mems_allowed;
--
--	/* effective CPUs and Memory Nodes allow to tasks */
--	cpumask_var_t effective_cpus;
--	nodemask_t effective_mems;
--
--	/*
--	 * Exclusive CPUs dedicated to current cgroup (default hierarchy only)
--	 *
--	 * The effective_cpus of a valid partition root comes solely from its
--	 * effective_xcpus and some of the effective_xcpus may be distributed
--	 * to sub-partitions below & hence excluded from its effective_cpus.
--	 * For a valid partition root, its effective_cpus have no relationship
--	 * with cpus_allowed unless its exclusive_cpus isn't set.
--	 *
--	 * This value will only be set if either exclusive_cpus is set or
--	 * when this cpuset becomes a local partition root.
--	 */
--	cpumask_var_t effective_xcpus;
--
--	/*
--	 * Exclusive CPUs as requested by the user (default hierarchy only)
--	 *
--	 * Its value is independent of cpus_allowed and designates the set of
--	 * CPUs that can be granted to the current cpuset or its children when
--	 * it becomes a valid partition root. The effective set of exclusive
--	 * CPUs granted (effective_xcpus) depends on whether those exclusive
--	 * CPUs are passed down by its ancestors and not yet taken up by
--	 * another sibling partition root along the way.
--	 *
--	 * If its value isn't set, it defaults to cpus_allowed.
--	 */
--	cpumask_var_t exclusive_cpus;
--
--	/*
--	 * This is old Memory Nodes tasks took on.
--	 *
--	 * - top_cpuset.old_mems_allowed is initialized to mems_allowed.
--	 * - A new cpuset's old_mems_allowed is initialized when some
--	 *   task is moved into it.
--	 * - old_mems_allowed is used in cpuset_migrate_mm() when we change
--	 *   cpuset.mems_allowed and have tasks' nodemask updated, and
--	 *   then old_mems_allowed is updated to mems_allowed.
--	 */
--	nodemask_t old_mems_allowed;
--
--	struct fmeter fmeter;		/* memory_pressure filter */
--
--	/*
--	 * Tasks are being attached to this cpuset.  Used to prevent
--	 * zeroing cpus/mems_allowed between ->can_attach() and ->attach().
--	 */
--	int attach_in_progress;
--
--	/* for custom sched domain */
--	int relax_domain_level;
--
--	/* number of valid local child partitions */
--	int nr_subparts;
--
--	/* partition root state */
--	int partition_root_state;
--
--	/*
--	 * number of SCHED_DEADLINE tasks attached to this cpuset, so that we
--	 * know when to rebuild associated root domain bandwidth information.
--	 */
--	int nr_deadline_tasks;
--	int nr_migrate_dl_tasks;
--	u64 sum_migrate_dl_bw;
--
--	/* Invalid partition error code, not lock protected */
--	enum prs_errcode prs_err;
--
--	/* Handle for cpuset.cpus.partition */
--	struct cgroup_file partition_file;
--
--	/* Remote partition silbling list anchored at remote_children */
--	struct list_head remote_sibling;
--
--	/* Used to merge intersecting subsets for generate_sched_domains */
--	struct uf_node node;
--};
--
+ #ifdef CONFIG_PROC_PID_CPUSET
  /*
-  * Legacy hierarchy call to cgroup_transfer_tasks() is handled asynchrously
-  */
-@@ -274,22 +133,6 @@ struct tmpmasks {
- 	cpumask_var_t new_cpus;		/* For update_cpumasks_hier() */
- };
- 
--static inline struct cpuset *css_cs(struct cgroup_subsys_state *css)
--{
--	return css ? container_of(css, struct cpuset, css) : NULL;
--}
--
--/* Retrieve the cpuset for a task */
--static inline struct cpuset *task_cs(struct task_struct *task)
--{
--	return css_cs(task_css(task, cpuset_cgrp_id));
--}
--
--static inline struct cpuset *parent_cs(struct cpuset *cs)
--{
--	return css_cs(cs->css.parent);
--}
--
- void inc_dl_tasks_cs(struct task_struct *p)
- {
- 	struct cpuset *cs = task_cs(p);
-@@ -304,59 +147,6 @@ void dec_dl_tasks_cs(struct task_struct *p)
- 	cs->nr_deadline_tasks--;
- }
- 
--/* bits in struct cpuset flags field */
--typedef enum {
--	CS_ONLINE,
--	CS_CPU_EXCLUSIVE,
--	CS_MEM_EXCLUSIVE,
--	CS_MEM_HARDWALL,
--	CS_MEMORY_MIGRATE,
--	CS_SCHED_LOAD_BALANCE,
--	CS_SPREAD_PAGE,
--	CS_SPREAD_SLAB,
--} cpuset_flagbits_t;
--
--/* convenient tests for these bits */
--static inline bool is_cpuset_online(struct cpuset *cs)
--{
--	return test_bit(CS_ONLINE, &cs->flags) && !css_is_dying(&cs->css);
--}
--
--static inline int is_cpu_exclusive(const struct cpuset *cs)
--{
--	return test_bit(CS_CPU_EXCLUSIVE, &cs->flags);
--}
--
--static inline int is_mem_exclusive(const struct cpuset *cs)
--{
--	return test_bit(CS_MEM_EXCLUSIVE, &cs->flags);
--}
--
--static inline int is_mem_hardwall(const struct cpuset *cs)
--{
--	return test_bit(CS_MEM_HARDWALL, &cs->flags);
--}
--
--static inline int is_sched_load_balance(const struct cpuset *cs)
--{
--	return test_bit(CS_SCHED_LOAD_BALANCE, &cs->flags);
--}
--
--static inline int is_memory_migrate(const struct cpuset *cs)
--{
--	return test_bit(CS_MEMORY_MIGRATE, &cs->flags);
--}
--
--static inline int is_spread_page(const struct cpuset *cs)
--{
--	return test_bit(CS_SPREAD_PAGE, &cs->flags);
--}
--
--static inline int is_spread_slab(const struct cpuset *cs)
--{
--	return test_bit(CS_SPREAD_SLAB, &cs->flags);
--}
--
- static inline int is_partition_valid(const struct cpuset *cs)
- {
- 	return cs->partition_root_state > 0;
-@@ -3529,30 +3319,6 @@ static void cpuset_attach(struct cgroup_taskset *tset)
- 	mutex_unlock(&cpuset_mutex);
- }
- 
--/* The various types of files and directories in a cpuset file system */
--
--typedef enum {
--	FILE_MEMORY_MIGRATE,
--	FILE_CPULIST,
--	FILE_MEMLIST,
--	FILE_EFFECTIVE_CPULIST,
--	FILE_EFFECTIVE_MEMLIST,
--	FILE_SUBPARTS_CPULIST,
--	FILE_EXCLUSIVE_CPULIST,
--	FILE_EFFECTIVE_XCPULIST,
--	FILE_ISOLATED_CPULIST,
--	FILE_CPU_EXCLUSIVE,
--	FILE_MEM_EXCLUSIVE,
--	FILE_MEM_HARDWALL,
--	FILE_SCHED_LOAD_BALANCE,
--	FILE_PARTITION_ROOT,
--	FILE_SCHED_RELAX_DOMAIN_LEVEL,
--	FILE_MEMORY_PRESSURE_ENABLED,
--	FILE_MEMORY_PRESSURE,
--	FILE_SPREAD_PAGE,
--	FILE_SPREAD_SLAB,
--} cpuset_filetype_t;
--
- static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
- 			    u64 val)
- {
+  * proc_cpuset_show()
 -- 
 2.34.1
 
