@@ -1,46 +1,46 @@
-Return-Path: <cgroups+bounces-4512-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4513-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54609961692
-	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 20:15:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D34EF961696
+	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 20:15:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 875D71C22FBE
-	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 18:15:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DBB11F23B44
+	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2024 18:15:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED0991D27B8;
-	Tue, 27 Aug 2024 18:15:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0F41D27AC;
+	Tue, 27 Aug 2024 18:15:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aQ0F7iOG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D1glkD46"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6ACE1D279D;
-	Tue, 27 Aug 2024 18:15:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6A1C1CF2B8;
+	Tue, 27 Aug 2024 18:15:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724782519; cv=none; b=I7phVyB8Docl2ze13j7PPPB9qRruTOPrKCx95HOeUi6KVJzYjV3PDdGkD2gGYt5S+hTTNdeOY8gy8LxMVcoZafwDNkX/vuGfBZmSN+5RMqIsvIpSnK2c+ZxE6VJ+VCOK0Ccr7xVmyNlR/p8w8c8STU+4qcgsBPUfd02oHBwCje4=
+	t=1724782543; cv=none; b=Cpmr2I6lbypau5bRDvMkuxk/3lSy1+nj4mRvJu6BOy4WGoim9PwHCa7rBSoyzFvZ7B+E19QJNNoQ/a9E5RvB3wjygXxFGUBKp92JSCr+m7k6ddk0WM+clzAK36besCcAl5kHL38AOnoWj4ylhEq8KXMl3HburkdcBs7sHrGKayI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724782519; c=relaxed/simple;
-	bh=6wrO4imU4MwjakQht2O2MvehVpVYewcFDFcIkLEK+Uk=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=iuG0qZ+y4fpN0pcXpfFdDTAucp9PJEFEvsYe8YRFOXT/wKxDyyVSfAZL5fBawE8knhuOe1AU7q4vrPTyyCQEJ5YqW0kZo9wBsySM/UYqmWADfl02cUds5LOBL+63G5c8xvbDQev6bmLD+9OSk6XQIq5Jvjqm8thsr+M/6AhugUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aQ0F7iOG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B5F4C567C2;
-	Tue, 27 Aug 2024 18:15:18 +0000 (UTC)
+	s=arc-20240116; t=1724782543; c=relaxed/simple;
+	bh=4+JgWpiSu97u6O4C8eU4TdFqqADaU4vGUi5rtkUrPPQ=;
+	h=Mime-Version:Content-Type:Date:Message-Id:To:Cc:Subject:From:
+	 References:In-Reply-To; b=ppTW7GkNt3KegXPIV7Q4ddk4JZjqVockBIM9gBJEMUzQyT8h6BU7D1CcmtNt2DXLCsXQJVaCzT/ZAJudq3ajOSSyGz4ICB9LeB001DF1kkpfkvSjqLqJrVE+o96J9MBZm54i58StyNmHRlbVBPgKBSvlIig8Yw0ycwH/GmvGKis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D1glkD46; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7AD7C567C2;
+	Tue, 27 Aug 2024 18:15:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724782519;
-	bh=6wrO4imU4MwjakQht2O2MvehVpVYewcFDFcIkLEK+Uk=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=aQ0F7iOGL9xReQnx9xoqcczVk92Y+EtBRqznvlwq8yteza29zi7rx4pLvtrIFROjU
-	 DV+A3i6Y6/qWoy6km9q9X0fCUIaECGxSb1VVw5fUPwN8dKgGEkaXRh6djAudnM2ndK
-	 5M53M/B9z2XlhUdc9XKHmZhwHWUn0TorFaiWnQV404TW/4bcHIl8DHURI0Z5AGJYtF
-	 4IxvN4rCnp7SslSlJPZ7Owyzzb2sc80xFw7jo941IQHM1o+H4aHpVCEwQjyc1gcBex
-	 dtU/NzBhhZ/GDTAFHulgWv70Piot3T30hz4qjtjbyDpoYOAuAtGKAL8NzgLDC9VRsI
-	 eaos+4/4PRCNQ==
+	s=k20201202; t=1724782542;
+	bh=4+JgWpiSu97u6O4C8eU4TdFqqADaU4vGUi5rtkUrPPQ=;
+	h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
+	b=D1glkD46FBWhK5xSsEdA6sYQd36cUFKJO/7BDYpCb+I8fnUCZswpAGlNJQqJ1lyVj
+	 oLN2cLSPuH2lQItXWRwjxkKzz6k/NJGNouN7ngHoopWFXrKTho8qLy+W5pxpTgDC6+
+	 UloRgo0tlFzBR+g5qtOJeC8nXyr6BWH+GI7ZVfb6/do0IsKS777I892nHS+LyfevYk
+	 OtIVOmY8yuBUeC8GZPK3GV5DtY9flCllOtCcyBc2KTQ8FLauuJEtuqLVTt/eDdakf8
+	 DcMo7cNgBPhoBYrfXuZTBi3BMNX1ANy38nPLjJfPoPssH77jIayiUTst3KnuKKeBCi
+	 68wtjJd3PCJIw==
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -49,14 +49,8 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Date: Tue, 27 Aug 2024 21:15:15 +0300
-Message-Id: <D3QWDGUOJ4NF.1I16RTUH9Z45U@kernel.org>
-Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
- <zhanb@microsoft.com>, <anakrish@microsoft.com>,
- <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
- <chrisyan@microsoft.com>
-Subject: Re: [PATCH v16 08/16] x86/sgx: Encapsulate uses of the global LRU
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
+Date: Tue, 27 Aug 2024 21:15:38 +0300
+Message-Id: <D3QWDRKVYJ25.2TPQTKQ3CWDDZ@kernel.org>
 To: "Haitao Huang" <haitao.huang@linux.intel.com>,
  <dave.hansen@linux.intel.com>, <kai.huang@intel.com>, <tj@kernel.org>,
  <mkoutny@suse.com>, <chenridong@huawei.com>,
@@ -64,35 +58,106 @@ To: "Haitao Huang" <haitao.huang@linux.intel.com>,
  <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
  <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
  <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
+Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
+ <zhanb@microsoft.com>, <anakrish@microsoft.com>,
+ <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
+ <chrisyan@microsoft.com>
+Subject: Re: [PATCH v16 09/16] x86/sgx: Add basic EPC reclamation flow for
+ cgroup
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
 X-Mailer: aerc 0.17.0
 References: <20240821015404.6038-1-haitao.huang@linux.intel.com>
- <20240821015404.6038-9-haitao.huang@linux.intel.com>
-In-Reply-To: <20240821015404.6038-9-haitao.huang@linux.intel.com>
+ <20240821015404.6038-10-haitao.huang@linux.intel.com>
+In-Reply-To: <20240821015404.6038-10-haitao.huang@linux.intel.com>
 
 On Wed Aug 21, 2024 at 4:53 AM EEST, Haitao Huang wrote:
-> To support the per-cgroup reclamation, each cgroup will have its own
-> "per-cgroup LRU" and EPC pages will be in its owner cgroup's LRU instead
-> of the global LRU. Abstract the code that is directly working with the
-> global LRU into functions reusable with per-cgroup LRUs.
+> Currently in the EPC page allocation, the kernel simply fails the
+> allocation when the current EPC cgroup fails to charge due to its usage
+> reaching limit.  This is not ideal.  When that happens, a better way is
+> to reclaim EPC page(s) from the current EPC cgroup to reduce its usage
+> so the new allocation can succeed.
 >
-> Currently the basic reclamation procedure, sgx_reclaim_pages() directly
-> reclaims pages from the global LRU. Change it to take in an LRU.
+> Currently, all EPC pages are tracked in a single global LRU, and the
+> "global EPC reclamation" supports the following 3 cases:
 >
-> Note the global EPC reclamation will still be needed when the total EPC
-> usage reaches the system capacity while usages of some cgroups are below
-> their respective limits. Create a separate wrapper for the global
-> reclamation, sgx_reclaim_pages_global(), passing in the global LRU to
-> the new sgx_reclaim_pages() now. Later it will be revised to reclaim
-> from multiple LRUs from all EPC cgroups instead of a single global LRU.
+> 1) On-demand asynchronous reclamation: For allocation requests that can
+>    not wait for reclamation but can be retried, an asynchronous
+>    reclamation is triggered, in which the global reclaimer, ksgxd, keeps
+>    reclaiming EPC pages until the free page count is above a minimal
+>    threshold.
 >
-> Wrap the existing emptiness check of the global LRU with a helper so
-> that it can be changed later to work with multiple LRUs when per-cgroup
-> LRU comes to play.
+> 2) On-demand synchronous reclamation: For allocations that can wait for
+>    reclamation, the EPC page allocator, sgx_alloc_epc_page() reclaims
+>    EPC page(s) immediately until at least one free page is available for
+>    allocation.
 >
-> Also the per-cgroup EPC reclaim and global EPC reclaim will have
-> different check on whether they should be done.  Rename the existing
-> sgx_should_reclaim() to sgx_should_reclaim_global() to separate the two
-> cases.
+> 3) Preemptive reclamation: For some allocation requests, e.g.,
+>    allocation for reloading a reclaimed page to change its permissions
+>    or page type, the kernel invokes sgx_reclaim_direct() to preemptively
+>    reclaim EPC page(s) as a best effort to minimize on-demand
+>    reclamation for subsequent allocations.
+>
+> Similarly, a "per-cgroup reclamation" is needed to support the above 3
+> cases as well:
+>
+> 1) For on-demand asynchronous reclamation, a per-cgroup reclamation
+>    needs to be invoked to maintain a minimal difference between the
+>    usage and the limit for each cgroup, analogous to the minimal free
+>    page threshold  maintained by the global reclaimer.
+>
+> 2) For on-demand synchronous reclamation, sgx_cgroup_try_charge() needs
+>    to invoke the per-cgroup reclamation until the cgroup usage become
+>    at least one page lower than its limit.
+>
+> 3) For preemptive reclamation, sgx_reclaim_direct() needs to invoke the
+>    per-cgroup reclamation to minimize per-cgroup on-demand reclamation
+>    for subsequent allocations.
+>
+> To support the per-cgroup reclamation, introduce a "per-cgroup LRU" to
+> track all EPC pages belong to the owner cgroup to utilize the existing
+> sgx_reclaim_pages().
+>
+> Currently, the global reclamation treats all EPC pages equally as it
+> scans all EPC pages in FIFO order in the global LRU.  The "per-cgroup
+> reclamation" needs to somehow achieve the same fairness of all EPC pages
+> that are tracked in the multiple LRUs of the given cgroup and all the
+> descendants to reflect the nature of the cgroup.
+>
+> The idea is to achieve such fairness by scanning "all EPC cgroups" of
+> the subtree (the given cgroup and all the descendants) equally in turns,
+> and in the scan to each cgroup, apply the existing sgx_reclaim_pages()
+> to its LRU. This basic flow is encapsulated in a new function,
+> sgx_cgroup_reclaim_pages().
+>
+> Export sgx_reclaim_pages() for use in sgx_cgroup_reclaim_pages(). And
+> modify sgx_reclaim_pages() to return the number of pages scanned so
+> sgx_cgroup_reclaim_pages() can track scanning progress and determine
+> whether enough scanning is done or to continue the scanning for next
+> descendant.
+>
+> Whenever reclaiming in a subtree of a given root is needed, start the
+> scanning from the next descendant where scanning was stopped at last
+> time.  To keep track of the next descendant cgroup to scan, add a new
+> field, next_cg, in the sgx_cgroup struct.  Create an iterator function,
+> sgx_cgroup_next_get(), atomically returns a valid reference of the
+> descendant for next round of scanning and advances @next_cg to next
+> valid descendant in a preorder walk. This iterator function is used in
+> sgx_cgroup_reclaim_pages() to iterate descendants for scanning.
+> Separately also advances @next_cg to next valid descendant when the
+> cgroup referenced by @next_cg is to be freed.
+>
+> Add support for on-demand synchronous reclamation in
+> sgx_cgroup_try_charge(), applying sgx_cgroup_reclaim_pages() iteratively
+> until cgroup usage is lower than its limit.
+>
+> Later patches will reuse sgx_cgroup_reclaim_pages() to add support for
+> asynchronous and preemptive reclamation.
+>
+> Note all reclaimable EPC pages are still tracked in the global LRU thus
+> no per-cgroup reclamation is actually active at the moment: -ENOMEM is
+> returned by __sgx_cgroup_try_charge() when LRUs are empty. Per-cgroup
+> tracking and reclamation will be turned on in the end after all
+> necessary infrastructure is in place.
 >
 > Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
 > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
