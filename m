@@ -1,97 +1,95 @@
-Return-Path: <cgroups+bounces-4537-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4538-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DD0F961D07
-	for <lists+cgroups@lfdr.de>; Wed, 28 Aug 2024 05:31:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3970D9623C5
+	for <lists+cgroups@lfdr.de>; Wed, 28 Aug 2024 11:41:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A38421C211C6
-	for <lists+cgroups@lfdr.de>; Wed, 28 Aug 2024 03:31:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA507282792
+	for <lists+cgroups@lfdr.de>; Wed, 28 Aug 2024 09:41:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC01C143C63;
-	Wed, 28 Aug 2024 03:31:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ADF2166312;
+	Wed, 28 Aug 2024 09:41:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=unitytrustfinancial.com header.i=@unitytrustfinancial.com header.b="bFQK/Jyp"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from globelaneexpress.com (globelaneexpress.com [31.220.3.217])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB6714287
-	for <cgroups@vger.kernel.org>; Wed, 28 Aug 2024 03:31:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ADCE16132F
+	for <cgroups@vger.kernel.org>; Wed, 28 Aug 2024 09:41:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=31.220.3.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724815865; cv=none; b=TXY2RjwEtDBZBsm1/j+7OrdThOIbbrDd0iYTlGi8MmqVoz+LFMOmFf93+dOHiwrnd9FGdNrzvDWgPx43pTVmiLr/BR9M7nrd7FyTKyuU1yYkZKy4xlU3S38UR8d/a6zOpypFD7HB1T6qLvC4g6y4DF5nHFQCFYH/0mWdTGn5RBI=
+	t=1724838104; cv=none; b=WJMc80zJR2dsAp+qgKiluI//yYLebTyJDSMZcAQy82O8UVxZ5cgrvfnZOPNMG28B7iqaqov/pzX/k4kUeqX6ZDw+s7HF9iDqRYyv7YL7DVXduVboSuJ2sFM8/PC9TTZdZWXp4pG55H+ict07lftVrve4ntmVyamrXeUWP14Ziqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724815865; c=relaxed/simple;
-	bh=rGfTbjB/IrseFEx3IwAHyLUhBJHgnuEKuPFplJBEDm8=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Xmm0GjgICZHDGVutnDnSZcUiQy1SE6xoNwRvxu90aQ5XAF7pPBteLCQH26YeZORzmMAjnjFQ7QzGJDClLle7vPl2ICLfd/QzrDhIFEJolv26qFnHzEg5bCo9+OcZoFnXQMaVGfdsmW+XqzA/a5sOYvYovzCeYHIXd4F2jp8159I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-81f8edd7370so732951739f.1
-        for <cgroups@vger.kernel.org>; Tue, 27 Aug 2024 20:31:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724815862; x=1725420662;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vu5uJIf/8g8dj3Yf1bX3ohQRMUDAmS7B1nSWGrngtyA=;
-        b=w6z6a50Wq/YABSVcacsBG4KsmylrPuQ/gf73T4nd+WnZGwC+rgtxkUnwbkjMYLkYLZ
-         VSrqzNWcnj25H8qcOBMnHybLyP6ph/AzAlzvuG5xLXtD/rU/V0qT4LGDg1qDD1ermCBI
-         DttFLu6Ej31b0eK/1ZEMtLemqqJ8FEw44HzancIKdmFitr4eRUswoJLueiCncqo4uvWR
-         Z0QGFuv4V6jBqLwo02bwhZADdm2CANrV04QS8feRLyHHFatQmXm5mDYUbdA8fQD6MUU5
-         aH2QkVTjiWARz90G+V3GJ0epzxGDxYPeFsAv4GhAv1h78l8tV0AU5IcYQ5nJoIYwGTwQ
-         x9ag==
-X-Forwarded-Encrypted: i=1; AJvYcCXdrZs3VNjqO+f+9vqYCTedwtbzxQ+0suz8eJI2d2NiItK0UrfAn3UH4wF3QiFRtV7LfIx18bFG@vger.kernel.org
-X-Gm-Message-State: AOJu0YxY5SFeR7MxO9WOwaZtQFhjifyYawCFQSuJtBQMq2wPPXeKbmaF
-	SUKSVHDm60CB7sTcHuCHL2UU/G265Fc0IBleHGza1pz+MyuBya1BuW3bWRFEbtyizD5jN5YG7bD
-	mYaXQuJuEQrka+lae4MYwN0V/LxY2+cUN00iPh6lk984gg7RK/BBo9wE=
-X-Google-Smtp-Source: AGHT+IEq8u5/q/T/KHaia+Jqn7A0HsIJt8R9RZERwYw9F9VvKOGMfK5bKs62RG9i16fQQ3jpz+ESgjyw7fdzdoTzuweYCtivkz/x
+	s=arc-20240116; t=1724838104; c=relaxed/simple;
+	bh=jGlQjVgShWaVNPBUuyRUOk56Om/DWzPsx99tbSnuIvE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Jl5v4U+pXYzr05gmlWMhJ037iGAVleakXtA3MMcJ5FljnNq8phZuM2MjG39+yopiqnDnzxatUbGn9qCR8m/m7etasUj/3/AAzJVtB/nbhckuhWAYKgTts3tG40+WHxyLRZwdjzvOVo4Y3d7jaSUPbcKiIGDa+u+V2RXQDmisZwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unitytrustfinancial.com; spf=pass smtp.mailfrom=unitytrustfinancial.com; dkim=pass (2048-bit key) header.d=unitytrustfinancial.com header.i=@unitytrustfinancial.com header.b=bFQK/Jyp; arc=none smtp.client-ip=31.220.3.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unitytrustfinancial.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unitytrustfinancial.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=unitytrustfinancial.com; s=default; h=Content-Transfer-Encoding:
+	Content-Type:MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Sender:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=OhbKwx+DBwme6pCk0eKZ/IMpViUnoaxYBuEZkAtNlfE=; b=bFQK/JypFeqkgOS6H45hXrv3L7
+	On7qVqhDvesTAeYVivydUeI6C3kZL03wEBhyU7GttrTg0FxhquNkkWNIe0rRSh5fOIBFI9mS/Niwb
+	ugQIVstsslu9D1866CNLBjzMpaNXLqZEmr16GgrmD1K4M7M8chTan/IP8Fe6tjjYHKLYy+YkudAK+
+	zXhNZCUy3/nM20esSh/hErA9hqBkXT4bsKKUZJ5r97R2/2J6fg+RRbuBov3YOMhv7VjVCKCNSNe3q
+	NIZWeNjagzBh8dQksYKJErl7fqhUQayVWbriVigfTTB1hA3y5IUe8rPAf5Ma1c26masUTsMfw24bn
+	5YZ5arwg==;
+Received: from [84.38.132.26] (port=49603)
+	by nl6.nlkoddos.com with esmtpa (Exim 4.96.2)
+	(envelope-from <inquiry@unitytrustfinancial.com>)
+	id 1sjFB2-00CqJH-35
+	for cgroups@vger.kernel.org;
+	Wed, 28 Aug 2024 11:41:36 +0200
+Reply-To: vivian@internationaluniforms.com
+From: Vivian <inquiry@unitytrustfinancial.com>
+To: cgroups@vger.kernel.org
+Subject: Request For Inquiry
+Date: 28 Aug 2024 12:41:36 +0300
+Message-ID: <20240828124136.57A52F04EA483ED1@unitytrustfinancial.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:7306:b0:4bd:4861:d7f8 with SMTP id
- 8926c6da1cb9f-4cec4f922cbmr24918173.4.1724815862301; Tue, 27 Aug 2024
- 20:31:02 -0700 (PDT)
-Date: Tue, 27 Aug 2024 20:31:02 -0700
-In-Reply-To: <00000000000041df050616f6ba4e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c69eb60620b5fc4b@google.com>
-Subject: Re: [syzbot] [mm?] possible deadlock in __mmap_lock_do_trace_start_locking
-From: syzbot <syzbot+6ff90931779bcdfc840c@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, axelrasmussen@google.com, 
-	cgroups@vger.kernel.org, hannes@cmpxchg.org, hawk@kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-trace-kernel@vger.kernel.org, lizefan.x@bytedance.com, 
-	longman@redhat.com, mathieu.desnoyers@efficios.com, mhiramat@kernel.org, 
-	netdev@vger.kernel.org, penguin-kernel@I-love.SAKURA.ne.jp, 
-	penguin-kernel@i-love.sakura.ne.jp, rostedt@goodmis.org, 
-	syzkaller-bugs@googlegroups.com, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - nl6.nlkoddos.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - unitytrustfinancial.com
+X-Get-Message-Sender-Via: nl6.nlkoddos.com: authenticated_id: inquiry@unitytrustfinancial.com
+X-Authenticated-Sender: nl6.nlkoddos.com: inquiry@unitytrustfinancial.com
 
-syzbot suspects this issue was fixed by commit:
+Dear Supplier
 
-commit 7d6be67cfdd4a53cea7147313ca13c531e3a470f
-Author: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Date:   Fri Jun 21 01:08:41 2024 +0000
+Nice to contact you again
+Hope this mail find you well
 
-    mm: mmap_lock: replace get_memcg_path_buf() with on-stack buffer
+We are interested in importing your product
+i would like to place an order from your company this month,
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1412f697980000
-start commit:   36534d3c5453 tcp: use signed arithmetic in tcp_rtx_probe0_..
-git tree:       bpf
-kernel config:  https://syzkaller.appspot.com/x/.config?x=333ebe38d43c42e2
-dashboard link: https://syzkaller.appspot.com/bug?extid=6ff90931779bcdfc840c
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1585acfa980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17bdb7ee980000
+kindly send me your catalogue and price through our E-MAIL or=20
+skype,
+Please treat this as urgent
 
-If the result looks correct, please mark the issue as fixed by replying with:
+thanks
 
-#syz fix: mm: mmap_lock: replace get_memcg_path_buf() with on-stack buffer
+Purchase Manager vivian
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Email: vivian@internationaluniforms.com
+Beim Strohhause 2
+20097 Hamburg =E2=80=93 Germany
+Phone:  +49/40/284 24-321
+Fax:  +49/40/284 24-236
 
