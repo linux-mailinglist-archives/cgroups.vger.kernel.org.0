@@ -1,191 +1,214 @@
-Return-Path: <cgroups+bounces-4547-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4548-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5B2B96346F
-	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 00:11:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 526C4963538
+	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 01:10:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 166261C23DAD
-	for <lists+cgroups@lfdr.de>; Wed, 28 Aug 2024 22:11:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D10771F23598
+	for <lists+cgroups@lfdr.de>; Wed, 28 Aug 2024 23:10:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 253551AC429;
-	Wed, 28 Aug 2024 22:11:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB8411AD3FD;
+	Wed, 28 Aug 2024 23:10:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YyTo2tSg"
+	dkim=pass (2048-bit key) header.d=ucr.edu header.i=@ucr.edu header.b="EIvF278X";
+	dkim=pass (1024-bit key) header.d=ucr.edu header.i=@ucr.edu header.b="UZpdHcJ5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx-lax3-1.ucr.edu (mx-lax3-1.ucr.edu [169.235.156.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A6E4167D97
-	for <cgroups@vger.kernel.org>; Wed, 28 Aug 2024 22:11:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FB0F158DCD
+	for <cgroups@vger.kernel.org>; Wed, 28 Aug 2024 23:10:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=169.235.156.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724883098; cv=none; b=U8M3Y8vJhB9MZx3DVwguJ5h3EESkRAn6NKDCCX3QnabNSxMOe6BQ3qZy7SQomRHKiOS8HtqrnYBoH7qZ2VMsFwMou2OPprMYvOGMrV+tfyW2+sVOpgIuzUl3E4Qvgosf8JBhs51rndUXCoiqMI3HpNL8qazfJG+UB/aeyFoOBck=
+	t=1724886602; cv=none; b=px5r4cxHzGmQ5pxJAmCL/DAnkV0UYoixUK/GuY7d8fJvBJsEZWwaCcQ0FD2nd7+37JAwZn99/WatWe2913gPOpDHIaKi/Y+cTPiOegIptQL6xTN56PCGDgfDcEKxWPnxcRY+SwTFyuVK4+DnFsOgbaU+g0Li9hiZjmEzGyGuEOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724883098; c=relaxed/simple;
-	bh=+4ZR8TmNP149UNg/rEkmkqbp5wBf3ItFGqtlod4sc+M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jrBOWhHHgEXp5Yp2kDYCxrIAOffi6XArPGjHMOiGJfLLZg5fXobhZBAQ3ICDSbX/YF+0CfwEvKDF0Tsyq5rK4j4nYYatt/TLIGkLpGn5MgzuufaFtP51wDKUvVO6Ghv9t5kkAjHIg4VfKT1gbq1pKuDBArbuBoy6fwYRypJ+vMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YyTo2tSg; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-534366c1aa2so6367726e87.1
-        for <cgroups@vger.kernel.org>; Wed, 28 Aug 2024 15:11:36 -0700 (PDT)
+	s=arc-20240116; t=1724886602; c=relaxed/simple;
+	bh=xCowhrFNDBwFKLbw1efe3nEMDbDoY7A95IkeYotAsOQ=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=Nh06NAW0AQIvqGKc29gUc93HXbESZRvgVmH61D8CBT1SEBg8gKpqlKFTsaHEP0VHpn7FUosAJMTuJv5UMZ9bvTHIA9Lru6IjMfJ5envRHsWAhMIqhdFSKZ3Szv+aXuDVVnCrp5juvLH90oRuWm6JtD6lalXVI9xsGotpCXLNHGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ucr.edu; spf=pass smtp.mailfrom=ucr.edu; dkim=pass (2048-bit key) header.d=ucr.edu header.i=@ucr.edu header.b=EIvF278X; dkim=pass (1024-bit key) header.d=ucr.edu header.i=@ucr.edu header.b=UZpdHcJ5; arc=none smtp.client-ip=169.235.156.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ucr.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucr.edu
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
+  t=1724886601; x=1756422601;
+  h=dkim-signature:x-google-dkim-signature:
+   x-forwarded-encrypted:x-gm-message-state:
+   x-google-smtp-source:mime-version:from:date:message-id:
+   subject:to:cc:content-type:x-cse-connectionguid:
+   x-cse-msgguid;
+  bh=xCowhrFNDBwFKLbw1efe3nEMDbDoY7A95IkeYotAsOQ=;
+  b=EIvF278Xr7jLycioqsrw2WaqWiw6A6IwnnqDTvaExBOnQmkr2+wLNnD5
+   rxwVQ46WYTbGCpHwyE7MyJJVxHfL/b4kKo+5kx28khwVr+FbEoL/IZ2ND
+   5YwE0MuhBbml30smzM/Vf4uGNk/Cypy5PKcplKoQ0+lTOU4ItJztYNKMU
+   7gau6Mv/h8c2dbagd6Ee6TG6djuaU1OaUQciISJvDLWAQk2Nwy5Do6T18
+   /AJwvRSnO3eJJPq0l+4paPia8LLY67aOuaxZ8SJqhfsqTFTyWjOBOJb/7
+   3IWYzLpB9TQCwwPpVjjs6B+4Aaucaky+is5DL/ayVL2EjNoscy7kxR459
+   g==;
+X-CSE-ConnectionGUID: HtZlh0z+TzeC+xHEaUSGOg==
+X-CSE-MsgGUID: olInY41US7GcpgNn1al2mQ==
+Received: from mail-pj1-f70.google.com ([209.85.216.70])
+  by smtp-lax3-1.ucr.edu with ESMTP/TLS/TLS_AES_256_GCM_SHA384; 28 Aug 2024 16:10:01 -0700
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2d3c9a5c673so34046a91.1
+        for <cgroups@vger.kernel.org>; Wed, 28 Aug 2024 16:10:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1724883095; x=1725487895; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/cedSdGJF8fk6JLURCpMr14nIZjcEqUjClDXhK33nqo=;
-        b=YyTo2tSgVStr9F/JLEqOAdUV+waOFlrRgKZ5jb4SP1FR1/PosaVWu2CmELsKVuUGtm
-         eqVVhZoP4FvKkIUuxFYNufGYgkJskZ1K0hIJMbuYRyh9+SDAXYBZCgQiiDfIXRmKenvc
-         4YXPkWJxBqcvh5nXF0UEHLvDe+XULXk6jbCZc50d8gBK8SESeFuVYBk7ELqdKWls9jyQ
-         yFlaQjIe+PGfAL/EoTmGlbHCF5gcxCiWfuJOenAT/H9LCdQ0mF8Ri/OT//RBZ0vPIyJB
-         HML75JkwFeNGdwt8aqGet5vUypAydbDjt0SDAYcsWSJpvxLzn0qudiLKJ13a+KfwpvOS
-         qBVA==
+        d=ucr.edu; s=rmail; t=1724886600; x=1725491400; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=1Qq45i3lF6rQjVvLCprXvQiGAo7T/IQyWfebCNoyFG0=;
+        b=UZpdHcJ5kNv7SERZxpdJ8TUDagrJ+ZwVEs2Hsr8xfS/mLlgXVHvOrpHBDoy7FLQiTp
+         LZkXahJSZwvAv9sOTl2R74Q4yk1Tuq+fE0/SshDELl05kpKmKh7yJsCiUiWSJO0cVLfn
+         psUbJbvtEGafHSaQGR6nLv1fViVytSUSw5s94=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724883095; x=1725487895;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/cedSdGJF8fk6JLURCpMr14nIZjcEqUjClDXhK33nqo=;
-        b=JOq9LQltqnyRt/L/IKQ9UFm0rdezA6QyZWOyTAnHLfavMpOdQ8XnbIrhkLvqapNho3
-         hdLVIMnnomd0FuobC6P458OeYEaIoGR2k7/vk2kko2XBb9HKUJV9Nvq8kWOXma4nneNV
-         JuwdtJe6fngEV5RNk2srMEQPbU9MIjhZ7ZPTMsRtO/nDaYB+EEofuISn7ZYGn7tnczrY
-         B0Xk4BA+jUCxWcBA++5k2m2882oRA+Hfo+7rmCdotYV4uyg1vy5sAfw8IOAvQTUHLTb9
-         Lqj0O6J+DhyUYkcmUoDFZT5ArWe44pqjXpEZks7fSPfsiYSLTLxlxBTv0TCndts5xOIg
-         ofMw==
-X-Forwarded-Encrypted: i=1; AJvYcCUtt9VfVy/u/CvRjEmFBv6PPG3ZxuYb0kHyNfzCUZFnaw24RApWwvdg0cmSY6mY0IvglnvC2VSi@vger.kernel.org
-X-Gm-Message-State: AOJu0YxMyvEh3A//GKWaR5mj+Hz7UgD/7oohqfxU26ZNhrzbasRWIdkz
-	10GteH8HeEZIENiulAP28HokwHKPf/dWHxkZlXkXU5DuuxgN7znlTzsUYDdFWVh7Ge+QJqw6Znh
-	ELZfn+iaE3G4hP6cnjbZMeKhDuIccCJDk5ljz
-X-Google-Smtp-Source: AGHT+IE7FgxeEp3oK3h/EHwPYj0Q+GKF27lVD8LDpzLVsN055ZLe7P8ayw7s6FdJcYtn6UQg5NpMNs5TEutsWVNnHFI=
-X-Received: by 2002:a05:6512:3d07:b0:533:4191:fa47 with SMTP id
- 2adb3069b0e04-5353e5b1135mr381607e87.47.1724883094592; Wed, 28 Aug 2024
- 15:11:34 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1724886600; x=1725491400;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1Qq45i3lF6rQjVvLCprXvQiGAo7T/IQyWfebCNoyFG0=;
+        b=enNBLp8YVQEMwO0K/j1iobbhYQ5Oq2nCMy+zSkwKo+h+YJlmNowiRcDbLmNV/G89B+
+         /WF9kdo4hdai1+SkINfe9lK4176VhAuHjjXQA7KojEMAjpjRy46Z9D3GL5ZhWMcBICOn
+         9w8iCPe/1TOyPWH49UtAjhjlf1zTXXx+XD05aeazc1hIsLyqKO/EJUZDKhqQ+/Lm1/jy
+         ob612wiuJEliGV7TYWNvOjZ883a3noZoWLjNjEeVT6bqxJtwJkvylTliVfdQ/OFevM6N
+         dlsD1OC95GrfInUyAOaz1dhXsZ9mmBfLjM9fCWBN93xYzReIBB+vrq9lzXMbhSJTA4w1
+         1OUA==
+X-Forwarded-Encrypted: i=1; AJvYcCUYDumS/xZaY+Z8HWAPrELa7c4dejJeSHe0ODZrLBUycD5s81HF2TKalmADKtj1PKLPSAUj6G+v@vger.kernel.org
+X-Gm-Message-State: AOJu0YyGMTBjefpdvfrn9EsZBTTWkjWQuDOGzLBs6bg/Hc5lcTzK0kbB
+	TMNBIplm9+zEmh8ahyKqqSXC0XCEOco/U2xRnb5ZnqicPY0SqlJOTM+M3t/0FupiqHj7MVgeqbA
+	+AxuvszPamjE1ewxvwbddJw6cLMgrNK5p78LqC12t/DBiQZ36YOBcL33iFXyi/ePrWn4MVOmKV0
+	vl4Ot2WDZxnqHNk25BKl8CYEg/drsZgaY=
+X-Received: by 2002:a17:90b:3685:b0:2d1:ca16:554d with SMTP id 98e67ed59e1d1-2d85617bfd0mr965952a91.4.1724886599625;
+        Wed, 28 Aug 2024 16:09:59 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFUc7nP6xZmRc2Zzo2ImVNf+ihu5N7n2QKpqXqzFRcsQPfqWjTaTKsyqWwr5+p8RCpdng2BLbljt7ZaCBccyBo=
+X-Received: by 2002:a17:90b:3685:b0:2d1:ca16:554d with SMTP id
+ 98e67ed59e1d1-2d85617bfd0mr965932a91.4.1724886599181; Wed, 28 Aug 2024
+ 16:09:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240827235228.1591842-1-shakeel.butt@linux.dev>
- <CAJD7tkawaUoTBQLW1tUfFc06uBacjJH7d6iUFE+fzM5+jgOBig@mail.gmail.com>
- <pq2zzjvxxzxcqtnf2eabp3whooysr7qbh75ts6fyzhipmtxjwf@q2jw57d5qkir>
- <CAJD7tka_OKPisXGDO56WMb6sRnYxHe2UDAh14d6VX1BW2E3usA@mail.gmail.com> <zjvmhbfzxpv4ujc5v7c4aojpsecmaqrznyd34lukst57kx5h43@2necqcieafy5>
-In-Reply-To: <zjvmhbfzxpv4ujc5v7c4aojpsecmaqrznyd34lukst57kx5h43@2necqcieafy5>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 28 Aug 2024 15:10:56 -0700
-Message-ID: <CAJD7tkZNMsw9NjE8Xh7vDhbbr2p4QPN8C3W4Jpp+-a_OXuhQLQ@mail.gmail.com>
-Subject: Re: [PATCH v2] memcg: add charging of already allocated slab objects
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Vlastimil Babka <vbabka@suse.cz>, 
-	David Rientjes <rientjes@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	Eric Dumazet <edumazet@google.com>, "David S . Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>, 
-	cgroups@vger.kernel.org, netdev@vger.kernel.org
+From: Xingyu Li <xli399@ucr.edu>
+Date: Wed, 28 Aug 2024 16:09:49 -0700
+Message-ID: <CALAgD-6Uy-2kVrj05SeCiN4wZu75Vq5-TCEsiUGzYwzjO4+Ahg@mail.gmail.com>
+Subject: BUG: general protection fault in get_mem_cgroup_from_objcg
+To: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	shakeel.butt@linux.dev, muchun.song@linux.dev, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc: Yu Hao <yhao016@ucr.edu>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Aug 28, 2024 at 1:16=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
-v> wrote:
->
-> On Wed, Aug 28, 2024 at 12:42:02PM GMT, Yosry Ahmed wrote:
-> > On Wed, Aug 28, 2024 at 12:14=E2=80=AFPM Shakeel Butt <shakeel.butt@lin=
-ux.dev> wrote:
-> > >
-> > > On Tue, Aug 27, 2024 at 05:34:24PM GMT, Yosry Ahmed wrote:
-> > > > On Tue, Aug 27, 2024 at 4:52=E2=80=AFPM Shakeel Butt <shakeel.butt@=
-linux.dev> wrote:
-> > > [...]
-> > > > > +
-> > > > > +#define KMALLOC_TYPE (SLAB_KMALLOC | SLAB_CACHE_DMA | \
-> > > > > +                     SLAB_ACCOUNT | SLAB_RECLAIM_ACCOUNT)
-> > > > > +
-> > > > > +static __fastpath_inline
-> > > > > +bool memcg_slab_post_charge(void *p, gfp_t flags)
-> > > > > +{
-> > > > > +       struct slabobj_ext *slab_exts;
-> > > > > +       struct kmem_cache *s;
-> > > > > +       struct folio *folio;
-> > > > > +       struct slab *slab;
-> > > > > +       unsigned long off;
-> > > > > +
-> > > > > +       folio =3D virt_to_folio(p);
-> > > > > +       if (!folio_test_slab(folio)) {
-> > > > > +               return __memcg_kmem_charge_page(folio_page(folio,=
- 0), flags,
-> > > > > +                                               folio_order(folio=
-)) =3D=3D 0;
-> > > >
-> > > > Will this charge the folio again if it was already charged? It seem=
-s
-> > > > like we avoid this for already charged slab objects below but not
-> > > > here.
-> > > >
-> > >
-> > > Thanks for catchig this. It's an easy fix and will do in v3.
-> > >
-> > > > > +       }
-> > > > > +
-> > > > > +       slab =3D folio_slab(folio);
-> > > > > +       s =3D slab->slab_cache;
-> > > > > +
-> > > > > +       /* Ignore KMALLOC_NORMAL cache to avoid circular dependen=
-cy. */
-> > > > > +       if ((s->flags & KMALLOC_TYPE) =3D=3D SLAB_KMALLOC)
-> > > > > +               return true;
-> > > >
-> > > > Would it be clearer to check if the slab cache is one of
-> > > > kmalloc_caches[KMALLOC_NORMAL]? This should be doable by comparing =
-the
-> > > > address of the slab cache with the addresses of
-> > > > kmalloc_cache[KMALLOC_NORMAL] (perhaps in a helper). I need to refe=
-r
-> > > > to your reply to Roman to understand why this works.
-> > > >
-> > >
-> > > Do you mean looping over kmalloc_caches[KMALLOC_NORMAL] and comparing
-> > > the given slab cache address? Nah man why do long loop of pointer
-> > > comparisons when we can simply check the flag of the given kmem cache=
-.
-> > > Also this array will increase with the recent proposed random kmalloc
-> > > caches.
-> >
-> > Oh I thought kmalloc_caches[KMALLOC_NORMAL] is an array of the actual
-> > struct kmem_cache objects, so I thought we can just check if:
-> > s >=3D kmalloc_caches[KMALLOC_NORMAL][0] &&
-> > s >=3D kmalloc_caches[KMALLOC_NORMAL][LAST_INDEX]
-> >
-> > I just realized it's an array of pointers, so we would need to loop
-> > and compare them.
-> >
-> > I still find the flags comparisons unclear and not very future-proof
-> > tbh. I think we can just store the type in struct kmem_cache? I think
-> > there are multiple holes there.
->
-> Do you mean adding a new SLAB_KMALLOC_NORMAL? I will wait for SLAB
-> maintainers for their opinion on that. BTW this kind of checks are in
-> the kernel particularly for gfp flags.
+Hi,
 
-I meant maybe in new_kmalloc_cache() pass in 'type' to
-create_kmalloc_cache() and store it in struct kmem_cache (we'd want a
-KMALLOC_NONE a similar for non-kmalloc caches). Having a new flag like
-SLAB_KMALLOC_NORMAL would also work.
+We found a bug in Linux 6.10 using syzkaller. It is possibly a  null
+pointer dereference bug.
+The reprodcuer is
+https://gist.github.com/freexxxyyy/315733cb1dc3bc8cbe055b457c1918c0
 
-Or maybe using the flags to deduce the kmalloc cache type is fine, but
-in this case I think a well-documented helper that takes in a
-kmem_cache and restores a type based on the combination of flags would
-be better.
+The bug report is:
 
-I just think in this case it's easy for the flags to change from under
-us here, and the code is not very clear.
+Syzkaller hit 'general protection fault in get_mem_cgroup_from_objcg' bug.
 
-Hopefully the slab maintainers will tell us what they think here, my
-concerns could very possibly be unfounded.
+Oops: general protection fault, probably for non-canonical address
+0xdffffc000000000a: 0000 [#1] PREEMPT SMP KASAN PTI
+KASAN: null-ptr-deref in range [0x0000000000000050-0x0000000000000057]
+CPU: 0 PID: 8129 Comm: syz-executor347 Not tainted 6.10.0 #13
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+RIP: 0010:css_tryget include/linux/cgroup_refcnt.h:44 [inline]
+RIP: 0010:get_mem_cgroup_from_objcg+0xb1/0x150 include/linux/memcontrol.h:536
+Code: 49 83 c4 10 4c 89 e5 48 c1 ed 03 42 80 7c 2d 00 00 74 08 4c 89
+e7 e8 3e 3e f8 ff 4d 8b 3c 24 49 8d 5f 54 48 89 d8 48 c1 e8 03 <42> 0f
+b6 04 28 84 c0 75 14 f6 03 01 75 25 49 8d 7f 10 e8 a8 ac 00
+RSP: 0018:ffffc9000abb74e8 EFLAGS: 00010207
+RAX: 000000000000000a RBX: 0000000000000054 RCX: ffff888014bd5a00
+RDX: 0000000000000000 RSI: ffffffff8ba956c0 RDI: ffffffff8ba95680
+RBP: 1ffff110057e4c72 R08: dffffc0000000000 R09: 1ffffffff221f8b0
+R10: dffffc0000000000 R11: fffffbfff221f8b1 R12: ffff88802bf26390
+R13: dffffc0000000000 R14: ffffffff81fc1db9 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff888063a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f5504f14000 CR3: 000000001e6f2000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ obj_cgroup_uncharge_pages mm/memcontrol.c:3392 [inline]
+ refill_obj_stock+0x41e/0x6b0 mm/memcontrol.c:3665
+ obj_cgroup_uncharge mm/memcontrol.c:3714 [inline]
+ __memcg_slab_free_hook+0x1db/0x310 mm/memcontrol.c:3801
+ memcg_slab_free_hook mm/slub.c:2130 [inline]
+ slab_free mm/slub.c:4435 [inline]
+ kmem_cache_free+0x194/0x280 mm/slub.c:4513
+ anon_vma_chain_free mm/rmap.c:147 [inline]
+ unlink_anon_vmas+0x58b/0x5e0 mm/rmap.c:447
+ free_pgtables+0x215/0xbb0 mm/memory.c:386
+ exit_mmap+0x435/0xa20 mm/mmap.c:3352
+ __mmput+0x114/0x3b0 kernel/fork.c:1346
+ exit_mm+0x207/0x2e0 kernel/exit.c:567
+ do_exit+0x996/0x2560 kernel/exit.c:863
+ do_group_exit+0x1fd/0x2b0 kernel/exit.c:1025
+ get_signal+0x1697/0x1730 kernel/signal.c:2909
+ arch_do_signal_or_restart+0x92/0x7f0 arch/x86/kernel/signal.c:310
+ exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
+ syscall_exit_to_user_mode+0x95/0x280 kernel/entry/common.c:218
+ do_syscall_64+0x8a/0x150 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x67/0x6f
+RIP: 0033:0x7f3ec1159bed
+Code: Unable to access opcode bytes at 0x7f3ec1159bc3.
+RSP: 002b:00007fff23d68ba8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: 0000000000000002 RBX: 0000000000000003 RCX: 00007f3ec1159bed
+RDX: 0000000020000080 RSI: 0000000000000001 RDI: 0000000000000003
+RBP: 0000000000000000 R08: 002367732f766564 R09: 00007fff23d68c30
+R10: 000000000000000f R11: 0000000000000246 R12: 0000000000000001
+R13: 00007fff23d68bf0 R14: 0000000000000000 R15: 00007fff23d68c30
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:css_tryget include/linux/cgroup_refcnt.h:44 [inline]
+RIP: 0010:get_mem_cgroup_from_objcg+0xb1/0x150 include/linux/memcontrol.h:536
+Code: 49 83 c4 10 4c 89 e5 48 c1 ed 03 42 80 7c 2d 00 00 74 08 4c 89
+e7 e8 3e 3e f8 ff 4d 8b 3c 24 49 8d 5f 54 48 89 d8 48 c1 e8 03 <42> 0f
+b6 04 28 84 c0 75 14 f6 03 01 75 25 49 8d 7f 10 e8 a8 ac 00
+RSP: 0018:ffffc9000abb74e8 EFLAGS: 00010207
+RAX: 000000000000000a RBX: 0000000000000054 RCX: ffff888014bd5a00
+RDX: 0000000000000000 RSI: ffffffff8ba956c0 RDI: ffffffff8ba95680
+RBP: 1ffff110057e4c72 R08: dffffc0000000000 R09: 1ffffffff221f8b0
+R10: dffffc0000000000 R11: fffffbfff221f8b1 R12: ffff88802bf26390
+R13: dffffc0000000000 R14: ffffffff81fc1db9 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff888063a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f5504f14000 CR3: 000000001a258000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0: 49 83 c4 10           add    $0x10,%r12
+   4: 4c 89 e5             mov    %r12,%rbp
+   7: 48 c1 ed 03           shr    $0x3,%rbp
+   b: 42 80 7c 2d 00 00     cmpb   $0x0,0x0(%rbp,%r13,1)
+  11: 74 08                 je     0x1b
+  13: 4c 89 e7             mov    %r12,%rdi
+  16: e8 3e 3e f8 ff       call   0xfff83e59
+  1b: 4d 8b 3c 24           mov    (%r12),%r15
+  1f: 49 8d 5f 54           lea    0x54(%r15),%rbx
+  23: 48 89 d8             mov    %rbx,%rax
+  26: 48 c1 e8 03           shr    $0x3,%rax
+* 2a: 42 0f b6 04 28       movzbl (%rax,%r13,1),%eax <-- trapping instruction
+  2f: 84 c0                 test   %al,%al
+  31: 75 14                 jne    0x47
+  33: f6 03 01             testb  $0x1,(%rbx)
+  36: 75 25                 jne    0x5d
+  38: 49 8d 7f 10           lea    0x10(%r15),%rdi
+  3c: e8                   .byte 0xe8
+  3d: a8 ac                 test   $0xac,%al
+
+
+
+
+-- 
+Yours sincerely,
+Xingyu
 
