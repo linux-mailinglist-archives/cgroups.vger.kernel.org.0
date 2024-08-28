@@ -1,82 +1,82 @@
-Return-Path: <cgroups+bounces-4540-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4541-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C58C6962EE4
-	for <lists+cgroups@lfdr.de>; Wed, 28 Aug 2024 19:49:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AFD7962EE5
+	for <lists+cgroups@lfdr.de>; Wed, 28 Aug 2024 19:49:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 048A21C21731
-	for <lists+cgroups@lfdr.de>; Wed, 28 Aug 2024 17:49:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58DE1285B96
+	for <lists+cgroups@lfdr.de>; Wed, 28 Aug 2024 17:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1F701A7AE3;
-	Wed, 28 Aug 2024 17:49:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8419B1A76B9;
+	Wed, 28 Aug 2024 17:49:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Yl1hoI1/"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="D/CqHwv5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34B6E1A705D
-	for <cgroups@vger.kernel.org>; Wed, 28 Aug 2024 17:49:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D958A1A76A9
+	for <cgroups@vger.kernel.org>; Wed, 28 Aug 2024 17:49:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724867375; cv=none; b=njMsvKDVcylO9s0UC4Q8HRKHzSsiR9N61lqD1hHPjK91ZhoVGdyFMhaRi0M+fgfgS3Z/vs5GNJhXnYUZNEk4DidUWAOiLtonJBt/4fT7oIALfM2DHVfwniuM6LO8Mj/ANLkGKqVUwazXLLEZ0ls6i4BHBS1RpleLUyp8dnw2iV4=
+	t=1724867381; cv=none; b=XQvDhkGbQf+QacOwm2aCjd9y6bCHaQekMva3pUSKaQg8+xGqxgQNEGE+jIqYAYycjRj8EL1873PtxmjhLpY/GQSCW+kXHErzL4Yff3hBhHOUtRQalJYQQvVdZLO2MHkGAezBl+CBqblL5pnnSdf2Lj1o6YT688qca9DEKjHw52A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724867375; c=relaxed/simple;
-	bh=aDE3/DKrfhnHsPGNKsCJRM7x+xvPEnRxpqQ1AnnBWEM=;
+	s=arc-20240116; t=1724867381; c=relaxed/simple;
+	bh=RB0gYDlrNJiZM9gMOPtX9bPUIJv5wG4yrnIl4zbzdR8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JlAz8KF0N/m6lz9mRfrxUG9VSNYDv/RhDZMqFcssoWnuX8dGGyFFdIJZrAFDHySStgufotPyJh4Be45ywKdjuyYm6Zc5zrUfANyPl2Xh6p8DgNbaXP1ISp6zeEhHLrLeoibfmLqkhd8TV4dUgLV8d1+229Pn3AI8c9yeYPrncLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Yl1hoI1/; arc=none smtp.client-ip=209.85.160.170
+	 To:Cc:Content-Type; b=dvyvnNmx5zmFawEqbUoIVXyre0ciriiKMR5+CJT07Mgs5ua3l0OcQUHbsMvcabybgKx6mIW3/XjHwQFxIJQAzTBjuLhnaMLVuAB8XiOxIwPewPthQbe3fouZNsu4alAMeKj92MmmN7FgY6xfJU281JjnZDXRZH4QSJVfdiyFIeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=D/CqHwv5; arc=none smtp.client-ip=209.85.160.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-4567deb9f9dso20371cf.1
-        for <cgroups@vger.kernel.org>; Wed, 28 Aug 2024 10:49:32 -0700 (PDT)
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4567fe32141so3731cf.0
+        for <cgroups@vger.kernel.org>; Wed, 28 Aug 2024 10:49:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1724867372; x=1725472172; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1724867379; x=1725472179; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aDE3/DKrfhnHsPGNKsCJRM7x+xvPEnRxpqQ1AnnBWEM=;
-        b=Yl1hoI1/AKZX+2PZgX9yFpOqwy3oYnjGxeseiv5tD4RxStrr2bEhMA8xc1fI4/8ptP
-         +ieCH5CLO6d1rBVhAhY5YF7FVXYulCngzSIFQW4mwNjQFoCXVa1VbitJce1ZQ56PalIl
-         wfqb/csg23vsR5VxWra4TdE44B1XP8Z3bBMSL/GWCmlPx/UIb+gT9U/VNYV5QJuHGth6
-         tovIzlyPBc6kANsG6nexaEtvXZRFoEBIDzd9pcTp1Pr6bCZcU1X8dESXAlVy4PpJwf5F
-         4NJgkM4liEgm0A5ha5rpR0a3YG2b/jjP/irsFjBIJGCxArMWvAhZ7EBUlc6kCcLhM9tj
-         zroQ==
+        bh=RB0gYDlrNJiZM9gMOPtX9bPUIJv5wG4yrnIl4zbzdR8=;
+        b=D/CqHwv5uhyfmEGFK4XYZScKucS4zob6THJFqlLp8KFLn+z3e8NazklJLRTGVEDZ9l
+         /7WvgGOLozoIbIazms/ij6bqz7sIdHY/U94/+a/c3ulKN8Xg1QHpNcH9sItKtO/t1VPO
+         Ey9TSCPNtvJUG5XAZy8uIweOpD7V5YDaDNtL2blNRP46g3EolKN8szMJWeJQi0gMbwEJ
+         81rnWzRlodrF2l+1/EocQJTZAK0Eku22PmnDZwanjRFlIJNdZoB/s0ao0TuZGLBGtTzg
+         hALZK8N9DOsx0phbXERUcYbPM2y6atMjO3bTyTyVu1qZphPv7LciVCH2+K1YJvaD1qOZ
+         0xxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724867372; x=1725472172;
+        d=1e100.net; s=20230601; t=1724867379; x=1725472179;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aDE3/DKrfhnHsPGNKsCJRM7x+xvPEnRxpqQ1AnnBWEM=;
-        b=QgblLlrVT4LhSvuJOwTAitkDVWTKHN79d0cNwiF9sxjLFQi043H3Ut5E/WAZZSiyvc
-         LGgT3UUKyaVEG83yV0F7xdKl7t1iqiKaua7WktuXnxfuKWgG2qMGhUHlVPkq6cLBDiRz
-         Lv01Tvk4/8fmLvJbV4xpVN8vQYvPltJO1oraRXOCExPveqV7bww1EETNuaFO/Re+mSg7
-         ymOzrjFlsnbY8sVugtfkF8KdHTxnvb9U61VBAd8FKk0diRv92piMLdZThyIts4qAp0xr
-         h9WkJysO5D4QIz1MpUoyekXM1p1pjlamudpXV+Z6u8HyAARoncOUTrNfBuPWdXC+V9s/
-         rUpg==
-X-Forwarded-Encrypted: i=1; AJvYcCWmTJpJBjp6FDLjyVk4Q8bOQ8ZABkaK8703w3nvV5bAzgYcZG4Ia1Op4OoBuPyoOLYwlCyqpWLy@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywmkaadx8kXIQmZ+9E3jCLltiMCn0FsaRKvO/gtxCyQ7xDH/aZP
-	7pleMr1gKFy+wTM4P9JrAhaaFXumUBhXUOmtX6W8LmlhDS3goIB8fFFrNouePIkwzUeYsQEj2OV
-	DqLABjoEVCGbFHYwGuDELq+Gc4/vsABFht8VUfPuHN7KQknXmGA==
-X-Google-Smtp-Source: AGHT+IG4aL6108P6ITzETjngxN9DfIkjrJd7iPcDgQ+blSAFzi8AqbC0n0lCxGYQ4Dl+bUU1WJUlKUcFIvJPftTyGXg=
-X-Received: by 2002:ac8:7d4c:0:b0:453:5668:444e with SMTP id
- d75a77b69052e-4567fbbbc61mr100361cf.2.1724867371883; Wed, 28 Aug 2024
- 10:49:31 -0700 (PDT)
+        bh=RB0gYDlrNJiZM9gMOPtX9bPUIJv5wG4yrnIl4zbzdR8=;
+        b=s2Qi57I62eM0updx+ajTy4bycXsTnlBvuFT674fUYhTvXy4ZbaSW3/fI7c1xt4tiip
+         QWgm6Eowx9x+ahNa/mVv1Mp3X2eHCFFdXiG8wuYnQ+qnHHQEfrRayIM4mOwr7tHxi++P
+         O0yhDlZwRnnmQoNGItlZ0HJYGVcDE4CLUEPSPgDflnmhAPUGpmhCOgKihtbjUtMx8ru2
+         39Grv/J/vlude788TvzTS+cOx+t7LFQgOQ8dWzXt/D3XHDlm5ybnOLhPHbwCwqCr9wk2
+         XefrfplF8lfOEDW531Sy2+6hLQrg/qRfgisQzWWbhS7OPWQ8JKHyczTZGfw8JzicHA9A
+         ltpw==
+X-Forwarded-Encrypted: i=1; AJvYcCUU38ivpsDp9IWMaJN3AZiWofZGyStkgHYYEku3szyRutFvoYbp38zlp34kcy1kZ2MGDsfFps6Q@vger.kernel.org
+X-Gm-Message-State: AOJu0YynoiDb5k4TUjhgRxX4O8iJet1KuZsGl/jn9POWorcoJ/BsJQ1s
+	Ve329B4c2T380RvuyZNqhCDToFVyT7GWoyMge4efOB2zdzhjRkZ6VIYlWBhdnIN+82RIc9TnUNl
+	nVWwPpRCYsO1Hmcay1hRA/Rp+YluGw5bWSMuX
+X-Google-Smtp-Source: AGHT+IEKMHHGJtLqzfE5OLqcqKU8/kPCWNZdnQNkYHAgAgw0nhFgAtmur8/MwM72yoqZWIkF41V9O79fVwQTWov+owQ=
+X-Received: by 2002:a05:622a:390:b0:44f:cb30:8b71 with SMTP id
+ d75a77b69052e-4566e2acf5bmr3573481cf.25.1724867378580; Wed, 28 Aug 2024
+ 10:49:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240827230753.2073580-1-kinseyho@google.com> <20240827230753.2073580-5-kinseyho@google.com>
-In-Reply-To: <20240827230753.2073580-5-kinseyho@google.com>
+References: <20240827230753.2073580-1-kinseyho@google.com> <20240827230753.2073580-6-kinseyho@google.com>
+In-Reply-To: <20240827230753.2073580-6-kinseyho@google.com>
 From: "T.J. Mercier" <tjmercier@google.com>
-Date: Wed, 28 Aug 2024 10:49:20 -0700
-Message-ID: <CABdmKX0kVYj6a8wntFoi1nZ0UfjKR9Y-oLfoOO_a_XhisuN-xg@mail.gmail.com>
-Subject: Re: [PATCH mm-unstable v3 4/5] mm: restart if multiple traversals raced
+Date: Wed, 28 Aug 2024 10:49:26 -0700
+Message-ID: <CABdmKX2GbvqtB2dED7hNKYtMLwu=akanYUVN3DS3Vtgbcde8bw@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable v3 5/5] mm: clean up mem_cgroup_iter()
 To: Kinsey Ho <kinseyho@google.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
 	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
@@ -90,14 +90,10 @@ Content-Transfer-Encoding: quoted-printable
 On Tue, Aug 27, 2024 at 4:11=E2=80=AFPM Kinsey Ho <kinseyho@google.com> wro=
 te:
 >
-> Currently, if multiple reclaimers raced on the same position, the
-> reclaimers which detect the race will still reclaim from the same memcg.
-> Instead, the reclaimers which detect the race should move on to the next
-> memcg in the hierarchy.
+> A clean up to make variable names more clear and to improve code
+> readability.
 >
-> So, in the case where multiple traversals race, jump back to the start
-> of the mem_cgroup_iter() function to find the next memcg in the
-> hierarchy to reclaim from.
+> No functional change.
 >
 > Signed-off-by: Kinsey Ho <kinseyho@google.com>
 
