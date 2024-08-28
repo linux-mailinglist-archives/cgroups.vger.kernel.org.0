@@ -1,112 +1,124 @@
-Return-Path: <cgroups+bounces-4543-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4544-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4C9E9630A6
-	for <lists+cgroups@lfdr.de>; Wed, 28 Aug 2024 21:04:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5818D9630CC
+	for <lists+cgroups@lfdr.de>; Wed, 28 Aug 2024 21:14:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82D312878C4
-	for <lists+cgroups@lfdr.de>; Wed, 28 Aug 2024 19:04:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 019891F21AB8
+	for <lists+cgroups@lfdr.de>; Wed, 28 Aug 2024 19:14:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C2361AB531;
-	Wed, 28 Aug 2024 19:04:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB3011ABEA4;
+	Wed, 28 Aug 2024 19:14:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K2ALeeyA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RQzxnD0r"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D0AB155316
-	for <cgroups@vger.kernel.org>; Wed, 28 Aug 2024 19:03:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AB251AB522
+	for <cgroups@vger.kernel.org>; Wed, 28 Aug 2024 19:14:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724871842; cv=none; b=HFNcZkvQNmHoBXir+gSg7H+12un63mOCV22yRF20vFbozbjFgx4+uxlA1HGKwHi9Ipnv1t/ddJtgpA7ZihlAti5TEV/V1+xJHsONVEJ2fWkPx44u3Pe3kKWfQLKjEivej83o8y5u6QUnq0tqWR/OvKRKxEWfeJARiJJppM/CDeM=
+	t=1724872481; cv=none; b=MQL7Gx695plXbNxIDTTQihA0jHOB/iL32690nBtz13IV3d6s4HsbZGp1HP/E1mbfmUN6OoppUlO4fboGXH5tpOKshRuZWsxQGTZPpmY0TA1Lzy85JCR8cowbboeCBlyLY01Abir+xOzkPGH/f+zP70kV+wM9O/kQw6DmU7UwrdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724871842; c=relaxed/simple;
-	bh=YRKAlMOxna+bxN7n5yTMSkuaQlQNsXOc/8IG9jDt9/g=;
+	s=arc-20240116; t=1724872481; c=relaxed/simple;
+	bh=QEa3xcVWuBnPZMg7VkJxZ9EV8CjqQRcUGFDZDB9+AQQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AHlqemdGbKf1Y4d3Oy7t40GhjQUqTJVVDli2Fc/8inoEHQ4dbhxn+J4RmNHjwo6LKtP7LlGpBdBkrYfO1TwdCjwKK1inO5wX/5bF6sCKyX64O5dUhBhWjQNO8KkA2r7iYdZ+QFna3bsYMTj14GzHKII0oNxX0AeQ0VYu1YLloaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K2ALeeyA; arc=none smtp.client-ip=91.218.175.176
+	 Content-Type:Content-Disposition:In-Reply-To; b=d8svlz6uq81A7E96p5OKgd1YT8nzzaOsfWdrLRHh3e98fuN7f2UaUoho1QrcXz1APw5strkG8oh00hUpK1zXMa4bAbZWHGJpL1zvOCU1N5GDsvCRPDWmXGzxS0m6e5SIPK/a2rRNBP3kAHYTu1WS3TeHIUdqIM4at1jDTpD29wc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RQzxnD0r; arc=none smtp.client-ip=95.215.58.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 28 Aug 2024 12:03:47 -0700
+Date: Wed, 28 Aug 2024 12:14:30 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724871837;
+	t=1724872478;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=j7vkDyir+DMrxX+HGm5Ta48lUpr2OMfmyuMnb1CIktI=;
-	b=K2ALeeyATuD5JWGchJFR5gsyyuMm7THk7aHTDFHr6e83Ffrdzp/9RjjjjTcyTlbHI4BBrD
-	IzXEqYz3NBwTZ/Qrb0nmDnDELPUQNbI+VqsUl2PRJp1x0AarYG5err9xiLm3VVjdGO54WM
-	U3u/VnwamuC2tX4goM0KqKWdtkQiQN4=
+	bh=qpXQCd3cHPTc7+LnUSfvlOIjwY7yTBbxtN2+2WagTe8=;
+	b=RQzxnD0rb7twgkRCrNnll66J54fVZJ/zkE8FG8tk6sw1QrFo+IihvKWDjlADxsInTIF+x+
+	pz2MmMCUOBTlwuY6bU+BtcedaZx35+WTF5tVuWxMih8mtqK8NEAOffRMyh5ErahNz6Ajet
+	CGO3G6oZMU+7J/7M554Vcg5deIgtHHQ=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Muchun Song <muchun.song@linux.dev>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Vlastimil Babka <vbabka@suse.cz>, 
-	David Rientjes <rientjes@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	Eric Dumazet <edumazet@google.com>, "David S . Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Linux Memory Management List <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Meta kernel team <kernel-team@meta.com>, cgroups@vger.kernel.org, netdev <netdev@vger.kernel.org>
-Subject: Re: [PATCH v1] memcg: add charging of already allocated slab objects
-Message-ID: <a5rzw7uuf7pgrhhut7keoy66c6u4rgiuxx2qmwywbvl2iktfku@23dzxczejcet>
-References: <20240826232908.4076417-1-shakeel.butt@linux.dev>
- <Zs1CuLa-SE88jRVx@google.com>
- <yiyx4fh6dklqpexfstkzp3gf23hjpbjujci2o6gs7nb4sutzvb@b5korjrjio3m>
- <EA5F7851-B519-4570-B299-8A096A09D6E7@linux.dev>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Vlastimil Babka <vbabka@suse.cz>, David Rientjes <rientjes@google.com>, 
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, Eric Dumazet <edumazet@google.com>, 
+	"David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Paolo Abeni <pabeni@redhat.com>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Meta kernel team <kernel-team@meta.com>, cgroups@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v2] memcg: add charging of already allocated slab objects
+Message-ID: <pq2zzjvxxzxcqtnf2eabp3whooysr7qbh75ts6fyzhipmtxjwf@q2jw57d5qkir>
+References: <20240827235228.1591842-1-shakeel.butt@linux.dev>
+ <CAJD7tkawaUoTBQLW1tUfFc06uBacjJH7d6iUFE+fzM5+jgOBig@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <EA5F7851-B519-4570-B299-8A096A09D6E7@linux.dev>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkawaUoTBQLW1tUfFc06uBacjJH7d6iUFE+fzM5+jgOBig@mail.gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-Hi Muchun,
-
-On Wed, Aug 28, 2024 at 10:36:06AM GMT, Muchun Song wrote:
-> 
-> 
-> > On Aug 28, 2024, at 01:23, Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> > 
+On Tue, Aug 27, 2024 at 05:34:24PM GMT, Yosry Ahmed wrote:
+> On Tue, Aug 27, 2024 at 4:52 PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
 [...]
-> >> 
-> >> Does it handle the case of a too-big-to-be-a-slab-object allocation?
-> >> I think it's better to handle it properly. Also, why return false here?
-> >> 
-> > 
-> > Yes I will fix the too-big-to-be-a-slab-object allocations. I presume I
-> > should just follow the kfree() hanlding on !folio_test_slab() i.e. that
-> > the given object is the large or too-big-to-be-a-slab-object.
+> > +
+> > +#define KMALLOC_TYPE (SLAB_KMALLOC | SLAB_CACHE_DMA | \
+> > +                     SLAB_ACCOUNT | SLAB_RECLAIM_ACCOUNT)
+> > +
+> > +static __fastpath_inline
+> > +bool memcg_slab_post_charge(void *p, gfp_t flags)
+> > +{
+> > +       struct slabobj_ext *slab_exts;
+> > +       struct kmem_cache *s;
+> > +       struct folio *folio;
+> > +       struct slab *slab;
+> > +       unsigned long off;
+> > +
+> > +       folio = virt_to_folio(p);
+> > +       if (!folio_test_slab(folio)) {
+> > +               return __memcg_kmem_charge_page(folio_page(folio, 0), flags,
+> > +                                               folio_order(folio)) == 0;
 > 
-> Hi Shakeel,
-> 
-> If we decide to do this, I suppose you will use memcg_kmem_charge_page
-> to charge big-object. To be consistent, I suggest renaming kmem_cache_charge
-> to memcg_kmem_charge to handle both slab object and big-object. And I saw
-> all the functions related to object charging is moved to memcontrol.c (e.g.
-> __memcg_slab_post_alloc_hook), so maybe we should also do this for
-> memcg_kmem_charge?
+> Will this charge the folio again if it was already charged? It seems
+> like we avoid this for already charged slab objects below but not
+> here.
 > 
 
-If I understand you correctly, you are suggesting to handle the general
-kmem charging and slab's large kmalloc (size > KMALLOC_MAX_CACHE_SIZE)
-together with memcg_kmem_charge(). However that is not possible due to
-slab path updating NR_SLAB_UNRECLAIMABLE_B stats while no updates for
-this stat in the general kmem charging path (__memcg_kmem_charge_page in
-page allocation code path).
+Thanks for catchig this. It's an easy fix and will do in v3.
 
-Also this general kmem charging path is used by many other users like
-vmalloc, kernel stack and thus we can not just plainly stuck updates to
-NR_SLAB_UNRECLAIMABLE_B in that path.
+> > +       }
+> > +
+> > +       slab = folio_slab(folio);
+> > +       s = slab->slab_cache;
+> > +
+> > +       /* Ignore KMALLOC_NORMAL cache to avoid circular dependency. */
+> > +       if ((s->flags & KMALLOC_TYPE) == SLAB_KMALLOC)
+> > +               return true;
+> 
+> Would it be clearer to check if the slab cache is one of
+> kmalloc_caches[KMALLOC_NORMAL]? This should be doable by comparing the
+> address of the slab cache with the addresses of
+> kmalloc_cache[KMALLOC_NORMAL] (perhaps in a helper). I need to refer
+> to your reply to Roman to understand why this works.
+> 
 
-Thanks for taking a look.
+Do you mean looping over kmalloc_caches[KMALLOC_NORMAL] and comparing
+the given slab cache address? Nah man why do long loop of pointer
+comparisons when we can simply check the flag of the given kmem cache.
+Also this array will increase with the recent proposed random kmalloc
+caches.
+
+Thanks,
 Shakeel
 
