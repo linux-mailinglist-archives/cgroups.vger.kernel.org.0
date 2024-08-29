@@ -1,631 +1,280 @@
-Return-Path: <cgroups+bounces-4591-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4592-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AB18964C77
-	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 19:03:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53A32964CFB
+	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 19:39:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF4C11C22A38
-	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 17:03:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CF41282CFC
+	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 17:39:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78C361B86F6;
-	Thu, 29 Aug 2024 16:59:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 823161B6548;
+	Thu, 29 Aug 2024 17:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OZcgW0RQ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iQXwmBqT";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lHOsBi8Z";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iQXwmBqT";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lHOsBi8Z"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 341491B78E3
-	for <cgroups@vger.kernel.org>; Thu, 29 Aug 2024 16:59:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 512FD4D8AD;
+	Thu, 29 Aug 2024 17:39:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724950778; cv=none; b=Mjwwc4LAXhc7Ruly6x7xtaEAOCulq17qeEWkqL0fivIgrjaMVaPm/zpg5aa8dbI2lXjPaPYiKijB0iu/9CTk2xCbtkloCOdJPeQ1qr+5J6Sh9+Bbz7SvOzZuwfHdUiwS4PyG4+IBs4PL+vA6bAQOAX5/+JTKmnEql94rNqBPOLw=
+	t=1724953176; cv=none; b=s5OWsSlVW0FcUbr4lhry3Kc7Tf1msK8NXZyjgzNmMgI7SnSJe6DzdFu3DMJb7B7trnjlttsWhEXX5OisvfhfiOC6jZYEJ3g79AuYXmCdbIkIDupA97E3G3pySxEUxUSqOG1CMCxoaCT7McGA82137EjPpA+NISj4KXfwDVb7zjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724950778; c=relaxed/simple;
-	bh=K/LffPhHgsVkQ8Hmirto/gEaeHVv422Lba8I+gXg09M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qnDCW0TsKTpjC+vRzGyxsWzryHXc4tSK/0yGPCu+RUd4M4lfBJfB34yzLsBJwAUSzc8fqoxbzHtFxo4kEjZK7od4RGh24HEULL+a/a1SJ2iSz2+IOYOxxU9/aEeQDV558AqivqdYK7P+6rGA9uZdn3V+Bz5XBFwhYGMeYOCHTUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OZcgW0RQ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1724950775;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=up1+iyu0HvtZL5E+EXssaXi/TIZa1G2RQW1zOiYjenc=;
-	b=OZcgW0RQ3yGOJkGcses7URm2tVppK7re0FJh0pT1ZrT534HtQ6We0a6w0oebpbmT18t+nj
-	79M0NPmjm6ViiUsYvpza1yzo8zhZbChGJDuiaVzw6MtbRvVMskRRNlQ7HtOKc2RSpaSltD
-	uwb6GnjPcNEbsikIuiMw4znRUbs3eBQ=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-669-1KRbKMh9NyG_mK90LyPUkA-1; Thu,
- 29 Aug 2024 12:59:30 -0400
-X-MC-Unique: 1KRbKMh9NyG_mK90LyPUkA-1
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	s=arc-20240116; t=1724953176; c=relaxed/simple;
+	bh=m0bNnA/F1PUbxFYlW3mu2ORO/RgzKqGUvIV3bXnYGDg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bt3oHpHdKssG5XCtSyuFiB8kvmj3IgGs+ZocUhC0bNvX7JFk1gs2Z/f2C7lzCycKcJWPUHXmfRvqWNDMQhNdi/uaH9Bz56TNVruh3KuSQ0elQektcwDzKnUXr60mvaMU9rMGT9+b0pgqM/40Vcrw5laBwvfAU1RWqSLLa+IO7UM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iQXwmBqT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lHOsBi8Z; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iQXwmBqT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lHOsBi8Z; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D2DEC195420D;
-	Thu, 29 Aug 2024 16:59:27 +0000 (UTC)
-Received: from t14s.redhat.com (unknown [10.39.193.245])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id DD5A51955F66;
-	Thu, 29 Aug 2024 16:59:17 +0000 (UTC)
-From: David Hildenbrand <david@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	x86@kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	David Hildenbrand <david@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Andy Lutomirski <luto@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>
-Subject: [PATCH v1 17/17] mm: stop maintaining the per-page mapcount of large folios (CONFIG_NO_PAGE_MAPCOUNT)
-Date: Thu, 29 Aug 2024 18:56:20 +0200
-Message-ID: <20240829165627.2256514-18-david@redhat.com>
-In-Reply-To: <20240829165627.2256514-1-david@redhat.com>
-References: <20240829165627.2256514-1-david@redhat.com>
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 7308A1F454;
+	Thu, 29 Aug 2024 17:39:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1724953172; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=knYaAgVRYgshjI/uTZOG3uXVzF6WdqSQAdgmVYbAPhg=;
+	b=iQXwmBqTb6gtNnQLpZcv6wOaz9oWVyOmrqO+nCgQdragRwcUpFPDngzsUVg//UQPbksLIs
+	LPSnbyRRy4EZKP3NbrWGbwcLVrlLVwZPwGztnJh6tu7dyDJRzd8F4kSRU2ppsgJo2SisZ4
+	PwxcKcfZYaRauiu0DfCd0M000f24too=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1724953172;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=knYaAgVRYgshjI/uTZOG3uXVzF6WdqSQAdgmVYbAPhg=;
+	b=lHOsBi8ZqDK3eBDaqyO3bHzw7Buj+HXZBcKAx8nd5xkil7TVzehaH3n8VvfmSaX6hm7TC+
+	+acazPPRYDFZpjCA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1724953172; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=knYaAgVRYgshjI/uTZOG3uXVzF6WdqSQAdgmVYbAPhg=;
+	b=iQXwmBqTb6gtNnQLpZcv6wOaz9oWVyOmrqO+nCgQdragRwcUpFPDngzsUVg//UQPbksLIs
+	LPSnbyRRy4EZKP3NbrWGbwcLVrlLVwZPwGztnJh6tu7dyDJRzd8F4kSRU2ppsgJo2SisZ4
+	PwxcKcfZYaRauiu0DfCd0M000f24too=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1724953172;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=knYaAgVRYgshjI/uTZOG3uXVzF6WdqSQAdgmVYbAPhg=;
+	b=lHOsBi8ZqDK3eBDaqyO3bHzw7Buj+HXZBcKAx8nd5xkil7TVzehaH3n8VvfmSaX6hm7TC+
+	+acazPPRYDFZpjCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4E47F13408;
+	Thu, 29 Aug 2024 17:39:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 16mzElSy0GY4DwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 29 Aug 2024 17:39:32 +0000
+Message-ID: <a21841c4-6d40-42cb-88cb-eee5f80ccf11@suse.cz>
+Date: Thu, 29 Aug 2024 19:39:32 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] memcg: add charging of already allocated slab objects
+Content-Language: en-US
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Muchun Song <muchun.song@linux.dev>, David Rientjes <rientjes@google.com>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, Eric Dumazet <edumazet@google.com>,
+ "David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>,
+ cgroups@vger.kernel.org, netdev@vger.kernel.org
+References: <20240827235228.1591842-1-shakeel.butt@linux.dev>
+ <9fb06d9b-dec5-4300-acef-bbce51a9a0c1@suse.cz>
+ <mvxyevmpzwatlt7z4fdjakvuixmp5hcqmvo3467kzlgp2xkbgf@xumnm2y6xxrg>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <mvxyevmpzwatlt7z4fdjakvuixmp5hcqmvo3467kzlgp2xkbgf@xumnm2y6xxrg>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,cmpxchg.org,kernel.org,linux.dev,google.com,gmail.com,davemloft.net,redhat.com,kvack.org,vger.kernel.org,meta.com];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[]
+X-Spam-Score: -2.80
+X-Spam-Flag: NO
 
-Everything is in place to stop using the per-page mapcounts in large
-folios with CONFIG_NO_PAGE_MAPCOUNT: the mapcount of tail pages will always
-be logically 0 (-1 value), just like it currently is for hugetlb folios
-already, and the page mapcount of the head page is either 0 (-1 value)
-or contains a page type (e.g., hugetlb).
+On 8/29/24 18:10, Shakeel Butt wrote:
+> On Thu, Aug 29, 2024 at 11:42:10AM GMT, Vlastimil Babka wrote:
+>> On 8/28/24 01:52, Shakeel Butt wrote:
+>> > At the moment, the slab objects are charged to the memcg at the
+>> > allocation time. However there are cases where slab objects are
+>> > allocated at the time where the right target memcg to charge it to is
+>> > not known. One such case is the network sockets for the incoming
+>> > connection which are allocated in the softirq context.
+>> > 
+>> > Couple hundred thousand connections are very normal on large loaded
+>> > server and almost all of those sockets underlying those connections get
+>> > allocated in the softirq context and thus not charged to any memcg.
+>> > However later at the accept() time we know the right target memcg to
+>> > charge. Let's add new API to charge already allocated objects, so we can
+>> > have better accounting of the memory usage.
+>> > 
+>> > To measure the performance impact of this change, tcp_crr is used from
+>> > the neper [1] performance suite. Basically it is a network ping pong
+>> > test with new connection for each ping pong.
+>> > 
+>> > The server and the client are run inside 3 level of cgroup hierarchy
+>> > using the following commands:
+>> > 
+>> > Server:
+>> >  $ tcp_crr -6
+>> > 
+>> > Client:
+>> >  $ tcp_crr -6 -c -H ${server_ip}
+>> > 
+>> > If the client and server run on different machines with 50 GBPS NIC,
+>> > there is no visible impact of the change.
+>> > 
+>> > For the same machine experiment with v6.11-rc5 as base.
+>> > 
+>> >           base (throughput)     with-patch
+>> > tcp_crr   14545 (+- 80)         14463 (+- 56)
+>> > 
+>> > It seems like the performance impact is within the noise.
+>> > 
+>> > Link: https://github.com/google/neper [1]
+>> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+>> > ---
+>> > v1: https://lore.kernel.org/all/20240826232908.4076417-1-shakeel.butt@linux.dev/
+>> > Changes since v1:
+>> > - Correctly handle large allocations which bypass slab
+>> > - Rearrange code to avoid compilation errors for !CONFIG_MEMCG builds
+>> > 
+>> > RFC: https://lore.kernel.org/all/20240824010139.1293051-1-shakeel.butt@linux.dev/
+>> > Changes since the RFC:
+>> > - Added check for already charged slab objects.
+>> > - Added performance results from neper's tcp_crr
+>> > 
+>> >  include/linux/slab.h            |  1 +
+>> >  mm/slub.c                       | 51 +++++++++++++++++++++++++++++++++
+>> >  net/ipv4/inet_connection_sock.c |  5 ++--
+>> >  3 files changed, 55 insertions(+), 2 deletions(-)
+>> 
+>> I can take the v3 in slab tree, if net people ack?
+> 
+> Thanks.
+> 
+>> 
+>> BTW, will this be also useful for Linus's idea of charging struct files only
+>> after they exist? But IIRC there was supposed to be also a part where we
+>> have a way to quickly determine if we're not over limit (while allowing some
+>> overcharge to make it quicker).
+>>
+> 
+> Do you have link to those discussions or pointers to the code? From what
+> you have described, I think this should work. We have the relevant gfp
+> flags to control the charging behavior (with some caveats).
 
-Maintaining _nr_pages_mapped without per-page mapcounts is impossible,
-so that one also has to go with CONFIG_NO_PAGE_MAPCOUNT.
+I think this was the last part of the discussion, and in the cover letter of
+that there are links to the older threads for more context
 
-There are two remaining implications:
+https://lore.kernel.org/all/CAHk-%3DwhgFtbTxCAg2CWQtDj7n6CEyzvdV1wcCj2qpMfpw0%3Dm1A@mail.gmail.com/
 
-(1) Per-node, per-cgroup and per-lruvec stats of "NR_ANON_MAPPED"
-    ("mapped anonymous memory") and "NR_FILE_MAPPED"
-    ("mapped file memory"):
+>> Because right now this just overcharges unconditionally, but that's
+>> understandable when the irq context creating the socket can't know the memcg
+>> upfront. In the open() situation this is different.
+>> 
+> 
+> For networking we deliberately overcharges in the irq context (if
+> needed) and the course correct in the task context. However networking
+> stack is very robust due to mechanisms like backoff, retransmit to handle
+> situations like packet drops, allocation failures, congestion etc. Other
+> subsystem are not that robust against ENOMEM. Once I have more detail I
+> can follow up on the struct files case.
 
-    As soon as any page of the folio is mapped -- folio_mapped() -- we
-    now account the complete folio as mapped. Once the last page is
-    unmapped -- !folio_mapped() -- we account the complete folio as
-    unmapped.
+Ack. Agreed with Roman that it would be a separate followup change.
 
-    This implies that ...
-
-    * "AnonPages" and "Mapped" in /proc/meminfo and
-      /sys/devices/system/node/*/meminfo
-    * cgroup v2: "anon" and "file_mapped" in "memory.stat" and
-      "memory.numa_stat"
-    * cgroup v1: "rss" and "mapped_file" in "memory.stat" and
-      "memory.numa_stat
-
-    ... can now appear higher than before. But note that these folios do
-    consume that memory, simply not all pages are actually currently
-    mapped.
-
-    It's worth nothing that other accounting in the kernel (esp. cgroup
-    charging on allocation) is not affected by this change.
-
-    [why oh why is "anon" called "rss" in cgroup v1]
-
- (2) Detecting partial mappings
-
-     Detecting whether anon THP are partially mapped gets a bit more
-     unreliable. As long as a single MM maps such a large folio
-     ("exclusively mapped"), we can reliably detect it. Especially before
-     fork() / after a short-lived child process quit, we will detect
-     partial mappings reliably, which is the common case.
-
-     In essence, if the average per-page mapcount in an anon THP is < 1,
-     we know for sure that we have a partial mapping.
-
-     However, as soon as multiple MMs are involved, we might miss detecting
-     partial mappings: this might be relevant with long-lived child
-     processes. If we have a fully-mapped anon folio before fork(), once
-     our child processes and our parent all unmap (zap/COW) the same pages
-     (but not the complete folio), we might not detect the partial mapping.
-     However, once the child processes quit we would detect the partial
-     mapping.
-
-     How relevant this case is in practice remains to be seen.
-     Swapout/migration will likely mitigate this.
-
-     In the future, RMAP walkers should check for that for "mapped shared"
-     anon folios, and flag them for deferred-splitting.
-
-There are a couple of remaining per-page mapcount users we won't
-touch for now:
-
- (1) __dump_folio(): we'll tackle that separately later. For now, it
-     will always read effective mapcount of "0" for pages in large folios.
-
- (2) include/trace/events/page_ref.h: we should rework the whole
-     handling to be folio-aware and simply trace folio_mapcount(). Let's
-     leave it around for now, might still be helpful to trace the raw
-     page mapcount value (e.g., including the page type).
-
- (3) mm/mm_init.c: to initialize the mapcount/type field to -1. Will be
-     required until we decoupled type+mapcount (e.g., moving it into
-     "struct folio"), and until we initialize the type+mapcount when
-     allocating a folio.
-
- (4) mm/page_alloc.c: to sanity-check that the mapcount/type field is -1
-     when a page gets freed. We could probably remove at least the tail
-     page mapcount check in non-debug environments.
-
-Some added ifdefery seems unavoidable for now: at least it's mostly
-limited to the rmap add/remove core primitives.
-
-Extend documentation.
-
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- .../admin-guide/cgroup-v1/memory.rst          |  4 ++
- Documentation/admin-guide/cgroup-v2.rst       | 10 ++-
- Documentation/filesystems/proc.rst            | 10 ++-
- Documentation/mm/transhuge.rst                | 31 +++++++---
- include/linux/mm_types.h                      |  4 ++
- include/linux/rmap.h                          | 10 ++-
- mm/internal.h                                 | 21 +++++--
- mm/page_alloc.c                               |  2 +
- mm/rmap.c                                     | 61 +++++++++++++++++++
- 9 files changed, 133 insertions(+), 20 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-index 270501db9f4e8..2e2bbf944eea9 100644
---- a/Documentation/admin-guide/cgroup-v1/memory.rst
-+++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-@@ -615,6 +615,10 @@ memory.stat file includes following statistics:
- 
- 	'rss + mapped_file" will give you resident set size of cgroup.
- 
-+	Note that some kernel configurations might account complete larger
-+	allocations (e.g., THP) towards 'rss' and 'mapped_file', even if
-+	only some, but not all that memory is mapped.
-+
- 	(Note: file and shmem may be shared among other cgroups. In that case,
- 	mapped_file is accounted only when the memory cgroup is owner of page
- 	cache.)
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index e25e8b2698b95..039bdf49854f3 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1429,7 +1429,10 @@ The following nested keys are defined.
- 
- 	  anon
- 		Amount of memory used in anonymous mappings such as
--		brk(), sbrk(), and mmap(MAP_ANONYMOUS)
-+		brk(), sbrk(), and mmap(MAP_ANONYMOUS). Note that
-+		some kernel configurations might account complete larger
-+		allocations (e.g., THP) if only some, but not all the
-+		memory of such an allocation is mapped anymore.
- 
- 	  file
- 		Amount of memory used to cache filesystem data,
-@@ -1472,7 +1475,10 @@ The following nested keys are defined.
- 		Amount of application memory swapped out to zswap.
- 
- 	  file_mapped
--		Amount of cached filesystem data mapped with mmap()
-+		Amount of cached filesystem data mapped with mmap(). Note
-+		that some kernel configurations might account complete
-+		larger allocations (e.g., THP) if only some, but not
-+		not all the memory of such an allocation is mapped.
- 
- 	  file_dirty
- 		Amount of cached filesystem data that was modified but
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index 7cbab4135f244..c6d6474738577 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -1148,9 +1148,15 @@ Dirty
- Writeback
-               Memory which is actively being written back to the disk
- AnonPages
--              Non-file backed pages mapped into userspace page tables
-+              Non-file backed pages mapped into userspace page tables. Note that
-+              some kernel configurations might consider all pages part of a
-+              larger allocation (e.g., THP) as "mapped", as soon as a single
-+              page is mapped.
- Mapped
--              files which have been mmapped, such as libraries
-+              files which have been mmapped, such as libraries. Note that some
-+              kernel configurations might consider all pages part of a larger
-+              allocation (e.g., THP) as "mapped", as soon as a single page is
-+              mapped.
- Shmem
-               Total memory used by shared memory (shmem) and tmpfs
- KReclaimable
-diff --git a/Documentation/mm/transhuge.rst b/Documentation/mm/transhuge.rst
-index 0ee58108a4d14..0d34f3ac13d8c 100644
---- a/Documentation/mm/transhuge.rst
-+++ b/Documentation/mm/transhuge.rst
-@@ -116,23 +116,28 @@ pages:
-     succeeds on tail pages.
- 
-   - map/unmap of a PMD entry for the whole THP increment/decrement
--    folio->_entire_mapcount, increment/decrement folio->_large_mapcount
--    and also increment/decrement folio->_nr_pages_mapped by ENTIRELY_MAPPED
--    when _entire_mapcount goes from -1 to 0 or 0 to -1.
-+    folio->_entire_mapcount and folio->_large_mapcount.
- 
-     With CONFIG_MM_ID, we also maintain the two slots for tracking MM
-     owners (MM ID and corresponding mapcount), and the current status
-     ("mapped shared" vs. "mapped exclusively").
- 
-+    With CONFIG_PAGE_MAPCOUNT, we also increment/decrement
-+    folio->_nr_pages_mapped by ENTIRELY_MAPPED when _entire_mapcount goes
-+    from -1 to 0 or 0 to -1.
-+
-   - map/unmap of individual pages with PTE entry increment/decrement
--    page->_mapcount, increment/decrement folio->_large_mapcount and also
--    increment/decrement folio->_nr_pages_mapped when page->_mapcount goes
--    from -1 to 0 or 0 to -1 as this counts the number of pages mapped by PTE.
-+    folio->_large_mapcount.
- 
-     With CONFIG_MM_ID, we also maintain the two slots for tracking MM
-     owners (MM ID and corresponding mapcount), and the current status
-     ("mapped shared" vs. "mapped exclusively").
- 
-+    With CONFIG_PAGE_MAPCOUNT, we also increment/decrement
-+    page->_mapcount and increment/decrement folio->_nr_pages_mapped when
-+    page->_mapcount goes from -1 to 0 or 0 to -1 as this counts the number
-+    of pages mapped by PTE.
-+
- split_huge_page internally has to distribute the refcounts in the head
- page to the tail pages before clearing all PG_head/tail bits from the page
- structures. It can be done easily for refcounts taken by page table
-@@ -159,8 +164,8 @@ clear where references should go after split: it will stay on the head page.
- Note that split_huge_pmd() doesn't have any limitations on refcounting:
- pmd can be split at any point and never fails.
- 
--Partial unmap and deferred_split_folio()
--========================================
-+Partial unmap and deferred_split_folio() (anon THP only)
-+========================================================
- 
- Unmapping part of THP (with munmap() or other way) is not going to free
- memory immediately. Instead, we detect that a subpage of THP is not in use
-@@ -175,3 +180,13 @@ a THP crosses a VMA boundary.
- The function deferred_split_folio() is used to queue a folio for splitting.
- The splitting itself will happen when we get memory pressure via shrinker
- interface.
-+
-+With CONFIG_PAGE_MAPCOUNT, we reliably detect partial mappings based on
-+folio->_nr_pages_mapped.
-+
-+With CONFIG_NO_PAGE_MAPCOUNT, we detect partial mappings based on the
-+average per-page mapcount in a THP: if the average is < 1, an anon THP is
-+certainly partially mapped. As long as only a single process maps a THP,
-+this detection is reliable. With long-running child processes, there can
-+be scenarios where partial mappings can currently not be detected, and
-+might need asynchronous detection during memory reclaim in the future.
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 6d27856686439..2adf1839bcb0d 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -378,7 +378,11 @@ struct folio {
- 				struct {
- 					atomic_t _large_mapcount;
- 					atomic_t _entire_mapcount;
-+#ifdef CONFIG_PAGE_MAPCOUNT
- 					atomic_t _nr_pages_mapped;
-+#else /* !CONFIG_PAGE_MAPCOUNT */
-+					int _unused_1;
-+#endif /* !CONFIG_PAGE_MAPCOUNT */
- 					atomic_t _pincount;
- #ifdef CONFIG_MM_ID
- 					int _mm0_mapcount;
-diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-index ff2a16864deed..345d93636b2b1 100644
---- a/include/linux/rmap.h
-+++ b/include/linux/rmap.h
-@@ -219,7 +219,7 @@ static __always_inline void folio_set_large_mapcount(struct folio *folio,
- 	VM_WARN_ON_ONCE(folio->_mm1_mapcount >= 0);
- }
- 
--static __always_inline void folio_add_large_mapcount(struct folio *folio,
-+static __always_inline int folio_add_large_mapcount(struct folio *folio,
- 		int diff, struct vm_area_struct *vma)
- {
- 	const unsigned int mm_id = vma->vm_mm->mm_id;
-@@ -264,11 +264,12 @@ static __always_inline void folio_add_large_mapcount(struct folio *folio,
- 		folio_clear_large_mapped_exclusively(folio);
- 	}
- 	folio_unlock_large_mapcount_data(folio);
-+	return mapcount_val + 1;
- }
- #define folio_inc_large_mapcount(folio, vma) \
- 	folio_add_large_mapcount(folio, 1, vma)
- 
--static __always_inline void folio_sub_large_mapcount(struct folio *folio,
-+static __always_inline int folio_sub_large_mapcount(struct folio *folio,
- 		int diff, struct vm_area_struct *vma)
- {
- 	const unsigned int mm_id = vma->vm_mm->mm_id;
-@@ -294,6 +295,7 @@ static __always_inline void folio_sub_large_mapcount(struct folio *folio,
- 	    folio->_mm1_mapcount == mapcount_val)
- 		folio_set_large_mapped_exclusively(folio);
- 	folio_unlock_large_mapcount_data(folio);
-+	return mapcount_val + 1;
- }
- #define folio_dec_large_mapcount(folio, vma) \
- 	folio_sub_large_mapcount(folio, 1, vma)
-@@ -493,9 +495,11 @@ static __always_inline void __folio_dup_file_rmap(struct folio *folio,
- 			break;
- 		}
- 
-+#ifdef CONFIG_PAGE_MAPCOUNT
- 		do {
- 			atomic_inc(&page->_mapcount);
- 		} while (page++, --nr_pages > 0);
-+#endif
- 		folio_add_large_mapcount(folio, orig_nr_pages, dst_vma);
- 		break;
- 	case RMAP_LEVEL_PMD:
-@@ -592,7 +596,9 @@ static __always_inline int __folio_try_dup_anon_rmap(struct folio *folio,
- 		do {
- 			if (PageAnonExclusive(page))
- 				ClearPageAnonExclusive(page);
-+#ifdef CONFIG_PAGE_MAPCOUNT
- 			atomic_inc(&page->_mapcount);
-+#endif
- 		} while (page++, --nr_pages > 0);
- 		folio_add_large_mapcount(folio, orig_nr_pages, dst_vma);
- 		break;
-diff --git a/mm/internal.h b/mm/internal.h
-index da38c747c73d4..9fb78ce3c2eb3 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -60,6 +60,13 @@ struct folio_batch;
- 
- void page_writeback_init(void);
- 
-+/*
-+ * Flags passed to __show_mem() and show_free_areas() to suppress output in
-+ * various contexts.
-+ */
-+#define SHOW_MEM_FILTER_NODES		(0x0001u)	/* disallowed nodes */
-+
-+#ifdef CONFIG_PAGE_MAPCOUNT
- /*
-  * If a 16GB hugetlb folio were mapped by PTEs of all of its 4kB pages,
-  * its nr_pages_mapped would be 0x400000: choose the ENTIRELY_MAPPED bit
-@@ -69,12 +76,6 @@ void page_writeback_init(void);
- #define ENTIRELY_MAPPED		0x800000
- #define FOLIO_PAGES_MAPPED	(ENTIRELY_MAPPED - 1)
- 
--/*
-- * Flags passed to __show_mem() and show_free_areas() to suppress output in
-- * various contexts.
-- */
--#define SHOW_MEM_FILTER_NODES		(0x0001u)	/* disallowed nodes */
--
- /*
-  * How many individual pages have an elevated _mapcount.  Excludes
-  * the folio's entire_mapcount.
-@@ -85,6 +86,12 @@ static inline int folio_nr_pages_mapped(const struct folio *folio)
- {
- 	return atomic_read(&folio->_nr_pages_mapped) & FOLIO_PAGES_MAPPED;
- }
-+#else /* !CONFIG_PAGE_MAPCOUNT */
-+static inline int folio_nr_pages_mapped(const struct folio *folio)
-+{
-+	return -1;
-+}
-+#endif /* !CONFIG_PAGE_MAPCOUNT */
- 
- /*
-  * Retrieve the first entry of a folio based on a provided entry within the
-@@ -663,7 +670,9 @@ static inline void prep_compound_head(struct page *page, unsigned int order)
- 	folio_set_order(folio, order);
- 	atomic_set(&folio->_large_mapcount, -1);
- 	atomic_set(&folio->_entire_mapcount, -1);
-+#ifdef CONFIG_PAGE_MAPCOUNT
- 	atomic_set(&folio->_nr_pages_mapped, 0);
-+#endif /* CONFIG_PAGE_MAPCOUNT */
- 	atomic_set(&folio->_pincount, 0);
- #ifdef CONFIG_MM_ID
- 	folio->_mm0_mapcount = -1;
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index c81f29e29b82d..bdb57540cdffa 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -951,10 +951,12 @@ static int free_tail_page_prepare(struct page *head_page, struct page *page)
- 			bad_page(page, "nonzero large_mapcount");
- 			goto out;
- 		}
-+#ifdef CONFIG_PAGE_MAPCOUNT
- 		if (unlikely(atomic_read(&folio->_nr_pages_mapped))) {
- 			bad_page(page, "nonzero nr_pages_mapped");
- 			goto out;
- 		}
-+#endif
- 		if (unlikely(atomic_read(&folio->_pincount))) {
- 			bad_page(page, "nonzero pincount");
- 			goto out;
-diff --git a/mm/rmap.c b/mm/rmap.c
-index 226b188499f91..888394ff9dd5b 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1156,7 +1156,9 @@ static __always_inline unsigned int __folio_add_rmap(struct folio *folio,
- 		struct page *page, int nr_pages, struct vm_area_struct *vma,
- 		enum rmap_level level, int *nr_pmdmapped)
- {
-+#ifdef CONFIG_PAGE_MAPCOUNT
- 	atomic_t *mapped = &folio->_nr_pages_mapped;
-+#endif /* CONFIG_PAGE_MAPCOUNT */
- 	const int orig_nr_pages = nr_pages;
- 	int first = 0, nr = 0;
- 
-@@ -1169,6 +1171,7 @@ static __always_inline unsigned int __folio_add_rmap(struct folio *folio,
- 			break;
- 		}
- 
-+#ifdef CONFIG_PAGE_MAPCOUNT
- 		do {
- 			first += atomic_inc_and_test(&page->_mapcount);
- 		} while (page++, --nr_pages > 0);
-@@ -1178,9 +1181,18 @@ static __always_inline unsigned int __folio_add_rmap(struct folio *folio,
- 			nr = first;
- 
- 		folio_add_large_mapcount(folio, orig_nr_pages, vma);
-+#else /* !CONFIG_PAGE_MAPCOUNT */
-+		nr = folio_add_large_mapcount(folio, orig_nr_pages, vma);
-+		if (nr == orig_nr_pages)
-+			/* Was completely unmapped. */
-+			nr = folio_large_nr_pages(folio);
-+		else
-+			nr = 0;
-+#endif /* CONFIG_PAGE_MAPCOUNT */
- 		break;
- 	case RMAP_LEVEL_PMD:
- 		first = atomic_inc_and_test(&folio->_entire_mapcount);
-+#ifdef CONFIG_PAGE_MAPCOUNT
- 		if (first) {
- 			nr = atomic_add_return_relaxed(ENTIRELY_MAPPED, mapped);
- 			if (likely(nr < ENTIRELY_MAPPED + ENTIRELY_MAPPED)) {
-@@ -1195,6 +1207,16 @@ static __always_inline unsigned int __folio_add_rmap(struct folio *folio,
- 			}
- 		}
- 		folio_inc_large_mapcount(folio, vma);
-+#else /* !CONFIG_PAGE_MAPCOUNT */
-+		if (first)
-+			*nr_pmdmapped = folio_large_nr_pages(folio);
-+		nr = folio_inc_large_mapcount(folio, vma);
-+		if (nr == 1)
-+			/* Was completely unmapped. */
-+			nr = folio_large_nr_pages(folio);
-+		else
-+			nr = 0;
-+#endif /* CONFIG_PAGE_MAPCOUNT */
- 		break;
- 	}
- 	return nr;
-@@ -1332,6 +1354,7 @@ static __always_inline void __folio_add_anon_rmap(struct folio *folio,
- 			break;
- 		}
- 	}
-+#ifdef CONFIG_PAGE_MAPCOUNT
- 	for (i = 0; i < nr_pages; i++) {
- 		struct page *cur_page = page + i;
- 
-@@ -1341,6 +1364,10 @@ static __always_inline void __folio_add_anon_rmap(struct folio *folio,
- 				   folio_entire_mapcount(folio) > 1)) &&
- 				 PageAnonExclusive(cur_page), folio);
- 	}
-+#else /* !CONFIG_PAGE_MAPCOUNT */
-+	VM_WARN_ON_FOLIO(!folio_test_large(folio) && PageAnonExclusive(page) &&
-+			 atomic_read(&folio->_mapcount) > 0, folio);
-+#endif /* !CONFIG_PAGE_MAPCOUNT */
- 
- 	/*
- 	 * For large folio, only mlock it if it's fully mapped to VMA. It's
-@@ -1445,19 +1472,25 @@ void folio_add_new_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
- 			struct page *page = folio_page(folio, i);
- 
- 			/* increment count (starts at -1) */
-+#ifdef CONFIG_PAGE_MAPCOUNT
- 			atomic_set(&page->_mapcount, 0);
-+#endif /* CONFIG_PAGE_MAPCOUNT */
- 			if (exclusive)
- 				SetPageAnonExclusive(page);
- 		}
- 
- 		folio_set_large_mapcount(folio, nr, vma);
-+#ifdef CONFIG_PAGE_MAPCOUNT
- 		atomic_set(&folio->_nr_pages_mapped, nr);
-+#endif /* CONFIG_PAGE_MAPCOUNT */
- 	} else {
- 		nr = folio_large_nr_pages(folio);
- 		/* increment count (starts at -1) */
- 		atomic_set(&folio->_entire_mapcount, 0);
- 		folio_set_large_mapcount(folio, 1, vma);
-+#ifdef CONFIG_PAGE_MAPCOUNT
- 		atomic_set(&folio->_nr_pages_mapped, ENTIRELY_MAPPED);
-+#endif /* CONFIG_PAGE_MAPCOUNT */
- 		if (exclusive)
- 			SetPageAnonExclusive(&folio->page);
- 		nr_pmdmapped = nr;
-@@ -1527,7 +1560,9 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
- 		struct page *page, int nr_pages, struct vm_area_struct *vma,
- 		enum rmap_level level)
- {
-+#ifdef CONFIG_PAGE_MAPCOUNT
- 	atomic_t *mapped = &folio->_nr_pages_mapped;
-+#endif /* CONFIG_PAGE_MAPCOUNT */
- 	int last = 0, nr = 0, nr_pmdmapped = 0;
- 	bool partially_mapped = false;
- 
-@@ -1540,6 +1575,7 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
- 			break;
- 		}
- 
-+#ifdef CONFIG_PAGE_MAPCOUNT
- 		folio_sub_large_mapcount(folio, nr_pages, vma);
- 		do {
- 			last += atomic_add_negative(-1, &page->_mapcount);
-@@ -1550,8 +1586,20 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
- 			nr = last;
- 
- 		partially_mapped = nr && atomic_read(mapped);
-+#else /* !CONFIG_PAGE_MAPCOUNT */
-+		nr = folio_sub_large_mapcount(folio, nr_pages, vma);
-+		if (!nr) {
-+			/* Now completely unmapped. */
-+			nr = folio_nr_pages(folio);
-+		} else {
-+			partially_mapped = nr < folio_large_nr_pages(folio) &&
-+					   !folio_entire_mapcount(folio);
-+			nr = 0;
-+		}
-+#endif /* !CONFIG_PAGE_MAPCOUNT */
- 		break;
- 	case RMAP_LEVEL_PMD:
-+#ifdef CONFIG_PAGE_MAPCOUNT
- 		folio_dec_large_mapcount(folio, vma);
- 		last = atomic_add_negative(-1, &folio->_entire_mapcount);
- 		if (last) {
-@@ -1569,6 +1617,19 @@ static __always_inline void __folio_remove_rmap(struct folio *folio,
- 		}
- 
- 		partially_mapped = nr && nr < nr_pmdmapped;
-+#else /* !CONFIG_PAGE_MAPCOUNT */
-+		last = atomic_add_negative(-1, &folio->_entire_mapcount);
-+		if (last)
-+			nr_pmdmapped = folio_large_nr_pages(folio);
-+		nr = folio_dec_large_mapcount(folio, vma);
-+		if (!nr) {
-+			/* Now completely unmapped. */
-+			nr = folio_large_nr_pages(folio);
-+		} else {
-+			partially_mapped = last && nr < folio_large_nr_pages(folio);
-+			nr = 0;
-+		}
-+#endif /* !CONFIG_PAGE_MAPCOUNT */
- 		break;
- 	}
- 
--- 
-2.46.0
+> thanks,
+> Shakeel
+> 
+> 
 
 
