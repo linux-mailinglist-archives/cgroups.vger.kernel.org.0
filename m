@@ -1,61 +1,61 @@
-Return-Path: <cgroups+bounces-4586-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4587-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E562F964C67
-	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 19:01:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBB67964C6A
+	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 19:02:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 48D3DB26CA8
-	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 17:01:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2466EB26DCA
+	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 17:02:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1BEC1B81D8;
-	Thu, 29 Aug 2024 16:58:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF39E1BA29D;
+	Thu, 29 Aug 2024 16:59:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dBcckey0"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="J3qa2j9Z"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00BFB1B654B
-	for <cgroups@vger.kernel.org>; Thu, 29 Aug 2024 16:58:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0836E1B86C6
+	for <cgroups@vger.kernel.org>; Thu, 29 Aug 2024 16:59:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724950733; cv=none; b=UidyLQ9JJbzOUYLXphsSJw567tU0zHAu4f04o4XKYY5J0dETlSI5+xIfTIZPMLToIwOeSPYJJ81eosnNu6mzgkLTS9n6LxETKd0onnN7va/5zwG6SIkp7edrx/juh4JfEBfhrdaWhB763wEu+NQcQhelQwW5GHFeFdn1qo6c6BU=
+	t=1724950744; cv=none; b=SIp3GHP4a53xda6Q7o109a9TmEdAr/vnhFrtr4bE8fi53da150OmOWEJbTo4rcVhauz2H4e7z78/JiyPahDm9MbF87FRgQPZy0HVpv/We9t/iqIBLvORPCUM3YkbiR+JmpLtS5rKC2p2ypdKnD/Y86XGeKgX+qPpdFRgHjlkgYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724950733; c=relaxed/simple;
-	bh=wEDT3WYv5QAv16j+geOxf9Xm27ml+se5kydOVg5W9Ik=;
+	s=arc-20240116; t=1724950744; c=relaxed/simple;
+	bh=HNUw6L79YorAY7Er9IcXo5/0qoizTqeiSeFuYwU1AX8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iLLqC6VhB8xCN1Tn9MKhfs+gh5+aiBpELlY7wfdH2vWj1Wi3NMAYN+EDatV5KHYmIKaKvz5aWyrp3HnezDoTaHMRC7alxEuXNmWYJYYsf52NRwDqiWlpAKF5gyIzw0iu0svOrj2Eb2t/wCIcpftPsD77ZG3IHZS+3AZD19JGXjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dBcckey0; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=DjnlS0ykJV8JK1wlYDN3jNJf2r9ShPUWq+Nt57vhwdJrg6EARsKeswFALXFphuHrL8U1e/JwpxofJl12a6H4fF9JkYOqy3dfim7JJqr6Fg/DqCb+rCE14PUTVYiftMGL7sVEPKTJ6ySk3ZwtgIjN14Zw+dZ3vZkBzcbDqnE/v+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=J3qa2j9Z; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1724950731;
+	s=mimecast20190719; t=1724950742;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Xlz/Hr/MLXsaGBmeoyntSanirDE8WH40+jKnaAIxWt4=;
-	b=dBcckey0SV5Mu7E722IS7FYctXFFDjABXZhGiIlnkTRJtPUiuTPBdgwUHKaEgCa3xJD305
-	QOFpRgPImGh3eRG/ZNecyGtXPzjt78ZDtXaNo0csdJCDDxo2IUARGmDmbbqD8ixKxpTYPz
-	Epl3ZSNcvZYZkj4B9ZnF7gWIdRhr/Xc=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
+	bh=/4w50puZlu0HXrTGynq7fLz3hKXbxnRdIDDiKfwRwdI=;
+	b=J3qa2j9ZKziDd7F3wFEJ+uJV6/sRv7Xp0evk4ma7rlGZdhevZT6D572ObuTk+VbXxV8Wup
+	Xe8BELbKpQIaUmahIru4dvbAbJ0oUfMWDxiBv8LEK4PrfWX32UxF2kspctwVNVsF4SB+4o
+	lojxuy8wh0GcUoDn/9QzwtGZa8Y/ECo=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-302-FFTH9f1IPp2QjlcNQc8UoQ-1; Thu,
- 29 Aug 2024 12:58:45 -0400
-X-MC-Unique: FFTH9f1IPp2QjlcNQc8UoQ-1
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-251-I4RGjMuXNxC500-cFdsqyQ-1; Thu,
+ 29 Aug 2024 12:58:55 -0400
+X-MC-Unique: I4RGjMuXNxC500-cFdsqyQ-1
 Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A6ADE190308D;
-	Thu, 29 Aug 2024 16:58:43 +0000 (UTC)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4912C18F498B;
+	Thu, 29 Aug 2024 16:58:51 +0000 (UTC)
 Received: from t14s.redhat.com (unknown [10.39.193.245])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 3F3A51955F21;
-	Thu, 29 Aug 2024 16:58:31 +0000 (UTC)
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 1C0F81955F21;
+	Thu, 29 Aug 2024 16:58:44 +0000 (UTC)
 From: David Hildenbrand <david@redhat.com>
 To: linux-kernel@vger.kernel.org
 Cc: linux-mm@kvack.org,
@@ -75,9 +75,9 @@ Cc: linux-mm@kvack.org,
 	Ingo Molnar <mingo@redhat.com>,
 	Borislav Petkov <bp@alien8.de>,
 	Dave Hansen <dave.hansen@linux.intel.com>
-Subject: [PATCH v1 12/17] mm: remove per-page mapcount dependency in folio_likely_mapped_shared() (CONFIG_NO_PAGE_MAPCOUNT)
-Date: Thu, 29 Aug 2024 18:56:15 +0200
-Message-ID: <20240829165627.2256514-13-david@redhat.com>
+Subject: [PATCH v1 13/17] fs/proc/page: remove per-page mapcount dependency for /proc/kpagecount (CONFIG_NO_PAGE_MAPCOUNT)
+Date: Thu, 29 Aug 2024 18:56:16 +0200
+Message-ID: <20240829165627.2256514-14-david@redhat.com>
 In-Reply-To: <20240829165627.2256514-1-david@redhat.com>
 References: <20240829165627.2256514-1-david@redhat.com>
 Precedence: bulk
@@ -89,151 +89,120 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-Let's remove the dependency on the mapcount of the first folio page in
-large folios and consequently any "false negatives" from
-folio_likely_mapped_shared().
+Let's implement an alternative when per-page mapcounts in large folios
+are no longer maintained -- soon with CONFIG_NO_PAGE_MAPCOUNT.
 
-In theory, we could implement this change only with CONFIG_MM_ID,
-without gluing it to another config option. But we'll be a bit
-careful for the time being, because folio_likely_mapped_shared() can now
-return "false positives" more frequently. Glue it to
-CONFIG_NO_PAGE_MAPCOUNT, which expresses the "EXPERIMENTAL" character for
-now.
+For large folios, we'll return the per-page average mapcount within the
+folio, except when the average is 0 but the folio is mapped: then we
+return 1.
 
-Let's reuse our new MM ownership tracking infrastructure for large folios.
-Thoroughly document the changed semantics. We might now detect that a
-folio as "mapped shared" although it no longer is -- this can only happen
-if more than two MMs mapped a folio at the same time, and neither of the
-first two is the last one mapping the folio.
+For hugetlb folios and for large folios that are fully mapped
+into all address spaces, there is no change.
 
-"false positives" in this context are certainly better than "false
-negatives" when it comes to enforcing policies (e.g., is process 1
-allowed to migrate a folio that might also be used by another process?),
-but in an ideal world we wouldn't have these "false positives" either.
+As an alternative, we could simply return 0 for non-hugetlb large folios,
+or disable this legacy interface with CONFIG_NO_PAGE_MAPCOUNT.
 
-It's worth noting that there will not be a change for small folios and
-hugetlb folios. In general, for PMD-mapped THP we don't expect a change,
-only for PTE-mapped THP.
-
-This will affect various users of folio_likely_mapped_shared():
-
-(1) khugepaged counts PTEs that target shared folios towards the
-    max_ptes_shared. With false positives we might collapse too little,
-    with false negatives too much.
-
-(2) NUMA hinting: PROT_NONE NUMA protection will be skipped for shared
-    folios in COW mappings. With false positives we skip too many, with
-    false negatives we don't skip some we should be skipping.
-
-    During NUMA hinting faults, we will set TNF_SHARED with shared folios
-    in shared mappings. With false positives we set it too often, with
-    false negatives not often enough.
-
-    During NUMA hinting faults, we will reject to migrate shared folios in
-    mappings with execute permissions (expectation: shared libraries).
-    With false positives we reject to migrate some, with false negatives
-    we migrate too many.
-
-(3) MADV_COLD / MADV_PAGEOUT / MADV_FREE will not try splitting PTE-mapped
-    THPs that are considered shared but not fully covered by the
-    requested range, consequently not processing them. With false
-    positives we will not split+process some we could have processed, with
-    false negatives we split some folios we probably shouldn't have split.
-
-(4) mbind() / migrate_pages() / move_pages() will refuse to migrate shared
-    folios unless MPOL_MF_MOVE_ALL is effective (requires CAP_SYS_NICE).
-    With false positives we reject to migrate some folios that could be
-    migrated, with false negatives we migrate some folios that shouldn't
-    have been migrated.
-
-(5) folio_referenced_one() will skip exclusive swapbacked folios in
-    dying processes. Shared folios will not be skipped. With false
-    positives we might skip this optimization, with false negatives we
-    might apply this optimization wrongly.
-
-Likely (3) and (4) are not really used a lot on folios that are heavily
-shared among processes -- rather on anonymous memory (mostly from a
-single parent process) or almost-exclusively mmap'ed files.
-
-Similarly (1) is not expected to matter much in practice, and if so,
-only for long-running child processes after fork(). But even here, it's
-unlikely that it matters in practice.
-
-(5) is not expected to matter much at all, it's a new optimization
-either way.
-
-(2) is interesting: the expectation here is that for anon folios it
-might not make a big difference. For file-backed pages it might,
-we'll have to learn about that.
-
-Long story short: this paves the way for a complete
-CONFIG_NO_PAGE_MAPCOUNT implementation, but maybe we'll have to
-switch to another MM ownership tracking later.
+But the information exposed by this interface can still be valuable, and
+frequently we deal with fully-mapped large folios where the average
+corresponds to the actual page mapcount. So we'll leave it like this for
+now and document the new behavior.
 
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- include/linux/mm.h | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+ Documentation/admin-guide/mm/pagemap.rst |  7 +++++-
+ fs/proc/internal.h                       | 31 ++++++++++++++++++++++++
+ fs/proc/page.c                           | 18 +++++++++++---
+ 3 files changed, 52 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 98411e53da916..b37f20b26776d 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2142,9 +2142,9 @@ static inline size_t folio_size(const struct folio *folio)
-  * are independent.
-  *
-  * As precise information is not easily available for all folios, this function
-- * estimates the number of MMs ("sharers") that are currently mapping a folio
-- * using the number of times the first page of the folio is currently mapped
-- * into page tables.
-+ * must sometimes estimate the number of MMs ("sharers") that are currently
-+ * mapping a folio using the number of times the first page of the folio is
-+ * currently mapped into page tables.
-  *
-  * For small anonymous folios and anonymous hugetlb folios, the return
-  * value will be exactly correct: non-KSM folios can only be mapped at most once
-@@ -2152,13 +2152,21 @@ static inline size_t folio_size(const struct folio *folio)
-  * considered shared even if mapped multiple times into the same MM.
-  *
-  * For other folios, the result can be fuzzy:
-- *    #. For partially-mappable large folios (THP), the return value can wrongly
-- *       indicate "mapped exclusively" (false negative) when the folio is
-- *       only partially mapped into at least one MM.
-+ *    #. With CONFIG_PAGE_MAPCOUNT: For partially-mappable large folios (THP),
-+ *       the return value can wrongly indicate "mapped exclusively" (false
-+ *       negative) when the folio is only partially mapped into at least one MM.
-+ *    #. With CONFIG_NO_PAGE_MAPCOUNT: For partially-mappable large folios
-+ *       (THP), the return value can wrongly indicate "mapped shared" (false
-+ *       positive) in some scenarios. This can only happen if two MMs are
-+ *       already mapping a folio and a more MM starts mapping the folio. We
-+ *       would still the detect the folio as "mapped shared" after the first
-+ *       two MMs no longer map the folio.
-  *    #. For pagecache folios (including hugetlb), the return value can wrongly
-  *       indicate "mapped shared" (false positive) when two VMAs in the same MM
-  *       cover the same file range.
-  *
-+ * With CONFIG_MM_ID, this function will never return "false negatives".
-+ *
-  * Further, this function only considers current page table mappings that
-  * are tracked using the folio mapcount(s).
-  *
-@@ -2183,12 +2191,16 @@ static inline bool folio_likely_mapped_shared(struct folio *folio)
- 	if (mapcount <= 1)
- 		return false;
+diff --git a/Documentation/admin-guide/mm/pagemap.rst b/Documentation/admin-guide/mm/pagemap.rst
+index caba0f52dd36c..49590306c61a0 100644
+--- a/Documentation/admin-guide/mm/pagemap.rst
++++ b/Documentation/admin-guide/mm/pagemap.rst
+@@ -42,7 +42,12 @@ There are four components to pagemap:
+    skip over unmapped regions.
  
-+#ifdef CONFIG_PAGE_MAPCOUNT
- 	/* If any page is mapped more than once we treat it "mapped shared". */
- 	if (folio_entire_mapcount(folio) || mapcount > folio_large_nr_pages(folio))
- 		return true;
+  * ``/proc/kpagecount``.  This file contains a 64-bit count of the number of
+-   times each page is mapped, indexed by PFN.
++   times each page is mapped, indexed by PFN. Some kernel configurations do
++   not track the precise number of times a page part of a larger allocation
++   (e.g., THP) is mapped. In these configurations, the average number of
++   mappings per page in this larger allocation is returned instead. However,
++   if any page of the large allocation is mapped, the returned value will
++   be at least 1.
  
- 	/* Let's guess based on the first subpage. */
- 	return atomic_read(&folio->_mapcount) > 0;
-+#else /* !CONFIG_PAGE_MAPCOUNT */
-+	return !folio_test_large_mapped_exclusively(folio);
-+#endif /* !CONFIG_PAGE_MAPCOUNT */
+ The page-types tool in the tools/mm directory can be used to query the
+ number of times a page is mapped.
+diff --git a/fs/proc/internal.h b/fs/proc/internal.h
+index cc520168f8b69..3c687f97e18c4 100644
+--- a/fs/proc/internal.h
++++ b/fs/proc/internal.h
+@@ -174,6 +174,37 @@ static inline int folio_precise_page_mapcount(struct folio *folio,
+ 	return mapcount;
  }
  
- #ifndef HAVE_ARCH_MAKE_FOLIO_ACCESSIBLE
++/**
++ * folio_average_page_mapcount() - Average number of mappings per page in this
++ *				   folio
++ * @folio: The folio.
++ *
++ * The average number of present user page table entries that reference each
++ * page in this folio as tracked via the RMAP: either referenced directly
++ * (PTE) or as part of a larger area that covers this page (e.g., PMD).
++ *
++ * Returns: The average number of mappings per page in this folio. 0 for
++ * folios that are not mapped to user space or are not tracked via the RMAP
++ * (e.g., shared zeropage).
++ */
++static inline int folio_average_page_mapcount(struct folio *folio)
++{
++	int mapcount, entire_mapcount;
++	unsigned int adjust;
++
++	if (!folio_test_large(folio))
++		return atomic_read(&folio->_mapcount) + 1;
++
++	mapcount = folio_large_mapcount(folio);
++	entire_mapcount = folio_entire_mapcount(folio);
++	if (mapcount <= entire_mapcount)
++		return entire_mapcount;
++	mapcount -= entire_mapcount;
++
++	adjust = folio_large_nr_pages(folio) / 2;
++	return ((mapcount + adjust) >> folio_large_order(folio)) +
++		entire_mapcount;
++}
+ /*
+  * array.c
+  */
+diff --git a/fs/proc/page.c b/fs/proc/page.c
+index a55f5acefa974..c7838de949287 100644
+--- a/fs/proc/page.c
++++ b/fs/proc/page.c
+@@ -67,9 +67,21 @@ static ssize_t kpagecount_read(struct file *file, char __user *buf,
+ 		 * memmaps that were actually initialized.
+ 		 */
+ 		page = pfn_to_online_page(pfn);
+-		if (page)
+-			mapcount = folio_precise_page_mapcount(page_folio(page),
+-							       page);
++		if (page) {
++			struct folio *folio = page_folio(page);
++
++#ifdef CONFIG_PAGE_MAPCOUNT
++			mapcount = folio_precise_page_mapcount(folio, page);
++#else /* !CONFIG_PAGE_MAPCOUNT */
++			/*
++			 * Indicate the per-page average, but at least "1" for
++			 * mapped folios.
++			 */
++			mapcount = folio_average_page_mapcount(folio);
++			if (!mapcount && folio_test_large(folio) && folio_mapped(folio))
++				mapcount = 1;
++#endif /* !CONFIG_PAGE_MAPCOUNT */
++		}
+ 
+ 		if (put_user(mapcount, out)) {
+ 			ret = -EFAULT;
 -- 
 2.46.0
 
