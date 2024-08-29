@@ -1,149 +1,141 @@
-Return-Path: <cgroups+bounces-4569-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4570-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8DF9964951
-	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 17:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC691964A86
+	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 17:49:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 634A41F230A2
-	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 15:00:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E2451F244A3
+	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 15:49:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68251195FD5;
-	Thu, 29 Aug 2024 15:00:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A00AD1B3B18;
+	Thu, 29 Aug 2024 15:49:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="GWmagH0U"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FG2DPyp9"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 501481AE04E
-	for <cgroups@vger.kernel.org>; Thu, 29 Aug 2024 15:00:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99ED51922E6
+	for <cgroups@vger.kernel.org>; Thu, 29 Aug 2024 15:49:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724943625; cv=none; b=DjdMWUMeaRLqBqHRsRqIjuulqotr9X4mf+O3whaUqifttb/G4C5Id3kIk6nNlK2jjtMB2APS5RWQrgRO+H+9OC/4mGELpeZoehbMj+dKLHGaGUAqOTFQV7xaC+coXeUxafjbEcLconaKr7VspZZ9dsk0FXZQgdAPgSBSvT4JPuA=
+	t=1724946580; cv=none; b=nXJaUG4CKIzlHwznbbFPZhXMMiBJkJtny36Zk2tyhr4wdcMVtu1qWdBNbIlcbTOoso1QPn29gdILpImYomwddmnFxfvMgfD9o1/SEU7KZVvMZFpwn+HDideDJruN2rIcBswZ3uO4Fqze00+kPbSCc3iwITiiQvay1PtGMb7b+6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724943625; c=relaxed/simple;
-	bh=sVn91xrolhVEEiy6TWS8+uyci7ep+YQUPghYPzFMyK0=;
+	s=arc-20240116; t=1724946580; c=relaxed/simple;
+	bh=ugyvySIO2uNTkY3T/MUNXgyaVyZ2XD1kpVyCqFgpWE0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KMYjvd+ucMAsiRtsFKZ0P7FAxsLeMhAYVix2aU+AN7eMCpicmfGNtumtQa2gXhgD0y8Ql+UozOwvcKa61Lm1ea/Wd2rINn4y1Z5lN1GgOwtJZiNMkZV9GBZNLg4XX+B3xGYNhgl3CZTifpeUray0DZy3ye46U2w8YdtJhezpX4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=GWmagH0U; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-367990aaef3so457427f8f.0
-        for <cgroups@vger.kernel.org>; Thu, 29 Aug 2024 08:00:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1724943621; x=1725548421; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=nabzqbq3d4n7upoEt7nD8rDZUukL6YPjVtAA5PPRGA4=;
-        b=GWmagH0UtvPlHZx8+UT/ZyeEkQ/MGhryAEjiHzcMr4euf9W+kS5q6wZXu+rX8vqysM
-         bC5dH31v9OH+7cFCZhCzPDYkgk4jml7ejONpPCXkQA18YBkbm1UxhQmRfSBdQp5ZoXMe
-         JJN1AWpPuUGQZsJymBNiWBstfC5PW6HR9psoKUtFayWf9lrfkRXJuCDEylpnnLx7HnOW
-         VCTzrQk3rfcNTSC/Ekpf3txiMmcTWYBOlV2eunmi55VlNCyTt2IyWK2lJw5HfEZEN9ev
-         kf8RRLKSxW3KNrGEwclpou3MG79FOX2Hm14FsEYgCcjLTDnBurIDZcL7zqFFhtf0hYF0
-         hA7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724943621; x=1725548421;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nabzqbq3d4n7upoEt7nD8rDZUukL6YPjVtAA5PPRGA4=;
-        b=D+ykPObmrVchW47QLnSBv6itgy9KTcXlV3z6RG6L3bC39bm7vun+KVYKwFKB5T3XP9
-         Lr4KEQQfKmJCaRS+gPaH+xxuxFWz8RQYMMiyJOT7OotVSkgjmRHpL5kdOG1X7HRpkQR/
-         O1q8ZU3ifCp5k0nYmpwj8wDPSOXb9pvVWrEMGrGQjoCZFMXdOUxix191l9x2Rx/Abbtn
-         f6hGrNd1nbNcfS8Vsz9imIW2XbpnC0X5pdthMz9xU5wHym2dLiJXCZCcAMUQfX+GE87y
-         PG/FUH7LYBdAvUQDDlkQbkENdl4koEE4D4MJ0g6ihG0b6jcALTuHDmxMG51cD2zwIPqc
-         OkYA==
-X-Forwarded-Encrypted: i=1; AJvYcCV6hrOJVo4irBGmjoYXB33oljieoxfV3gUGyqpugSpmC1ZLrNWGUECdWgEgNkaelssnbJ/MNZc1@vger.kernel.org
-X-Gm-Message-State: AOJu0YyZdF5MpeElrNoMjMgs4mY7wUnzNOzc/E8qMuHViJ4p8neSobFm
-	2QnO4xVmn8ab6DeNbIrxlKRU66giGat7lI9EBUaHY9FRNpo6H9FvPrcqdmyYCeM=
-X-Google-Smtp-Source: AGHT+IFGM3zEq1G1Y27SykyTrp93FIcWQs50mww6UNMM9UAx7l9nMYelCvutFX66Xd9aJmaFkviA7w==
-X-Received: by 2002:a05:600c:3b10:b0:427:d8f2:5dee with SMTP id 5b1f17b1804b1-42bb01bb04dmr27517565e9.15.1724943621333;
-        Thu, 29 Aug 2024 08:00:21 -0700 (PDT)
-Received: from localhost (109-81-82-19.rct.o2.cz. [109.81.82.19])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3749ee4ab0bsm1629466f8f.16.2024.08.29.08.00.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Aug 2024 08:00:20 -0700 (PDT)
-Date: Thu, 29 Aug 2024 17:00:19 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: Zhongkun He <hezhongkun.hzk@bytedance.com>
-Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev, muchun.song@linux.dev,
-	lizefan.x@bytedance.com, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [External] Re: [RFC PATCH 0/2] Add disable_unmap_file arg to
- memory.reclaim
-Message-ID: <ZtCNA3iKd0_mH8Bf@tiehlicka>
-References: <20240829101918.3454840-1-hezhongkun.hzk@bytedance.com>
- <ZtBMO1owCU3XmagV@tiehlicka>
- <CACSyD1Ok62n-SF8fGrDQq_JC4SUSvFb-6QjgjnkD9=JacCJiYg@mail.gmail.com>
- <ZtBglyqZz_uGDnOS@tiehlicka>
- <CACSyD1NWVe9gjo15xsPnh-JUEsacawf47uoiu439tRO7K+ov5g@mail.gmail.com>
- <ZtB5Vn69L27oodEq@tiehlicka>
- <CACSyD1Ny8OFxZkVPaskpnTDXgWZLBNK04GwjynT2a0ahUwKcAw@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pONJlgA5wpNRyhjQHdmrBm+yEzlWhF43Fpa8izYYVTZna3v8vml7Tmv/muiD1vULnkyqURYtGIwllz7/MJjv7LIwge1CR9Dt65db05HJS+HZQxZHTsVz0q5PfttdlmI1kN3H6ZWwVAOZg2MAYp8g9tMH2+DK9fp2FjG2Wr6SZIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FG2DPyp9; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 29 Aug 2024 08:49:29 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1724946576;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JSVZiXj9uWNsdq1CBv+qiytgVutH4w3/0Njr6e1mFG0=;
+	b=FG2DPyp9orc0RU6IR4u4nURavRjF22n5a/J740GoG1zfzgAUlDCqamGIA3VjPaCLdQNchZ
+	xUTHqVPrMvi0y8SG8PzZA+xJgXeUlQBZ6zsxocob5xVk45+e2C8dy4wYQY5Xrss549CaNW
+	ZunWROmbBtjp53RvCLZV9owEL4jM97Y=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Muchun Song <muchun.song@linux.dev>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Vlastimil Babka <vbabka@suse.cz>, 
+	David Rientjes <rientjes@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+	Eric Dumazet <edumazet@google.com>, "David S . Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Linux Memory Management List <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Meta kernel team <kernel-team@meta.com>, cgroups@vger.kernel.org, netdev <netdev@vger.kernel.org>
+Subject: Re: [PATCH v1] memcg: add charging of already allocated slab objects
+Message-ID: <nt5zhccndtrj2pyyjm6wkah4iizzijdamaqce24t7nqioy4c5y@3vtipktwtzkn>
+References: <20240826232908.4076417-1-shakeel.butt@linux.dev>
+ <Zs1CuLa-SE88jRVx@google.com>
+ <yiyx4fh6dklqpexfstkzp3gf23hjpbjujci2o6gs7nb4sutzvb@b5korjrjio3m>
+ <EA5F7851-B519-4570-B299-8A096A09D6E7@linux.dev>
+ <a5rzw7uuf7pgrhhut7keoy66c6u4rgiuxx2qmwywbvl2iktfku@23dzxczejcet>
+ <97F404E9-C3C2-4BD2-9539-C40237E71B2B@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACSyD1Ny8OFxZkVPaskpnTDXgWZLBNK04GwjynT2a0ahUwKcAw@mail.gmail.com>
+In-Reply-To: <97F404E9-C3C2-4BD2-9539-C40237E71B2B@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu 29-08-24 22:30:09, Zhongkun He wrote:
-> On Thu, Aug 29, 2024 at 9:36 PM Michal Hocko <mhocko@suse.com> wrote:
-[...]
-> > Seeing this my main question is whether we should focus on swappiness
-> > behavior more than adding a very strange and very targetted reclaim
-> > mode. After all we have a mapped memory and executables protection in
-> > place. So in the end this is more about balance between anon vs. file
-> > LRUs.
-> >
+On Thu, Aug 29, 2024 at 10:36:01AM GMT, Muchun Song wrote:
 > 
-> I  have a question about the swappiness, if set the swappiness=0, we can only
-> reclaim the file pages. but we do not have an option to disable the reclaim from
-> file pages because there are faster storages for the swap without IO, like zram
-> and zswap.  I wonder if we can give it a try in this direction.
-
-I do not think we should give any guarantee that 200 will only reclaim
-anon pages. But having that heavily anon oriented makes sense and I
-thought this was an existing semantic.
-
-[...]
-> > > The delay of the task becomes more serious because reading data will
-> > > be slower.  Hot pages will thrash repeatedly between the memory and
-> > > the disk.
-> >
-> > Doesn't refault stats and IO cost aspect of the reclaim when balancing
-> > LRUs dealing with this situation already? Why it doesn't work in your
-> > case? Have you tried to investigate that?
 > 
-> OK, I'll try to reproduce the problem again. but IIUC, we could not reclaim
-> pages from one side. Please see this 'commit d483a5dd009  ("mm:
-> vmscan: limit the range of LRU type balancing")'  [1]
+> > On Aug 29, 2024, at 03:03, Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> > 
+> > Hi Muchun,
+> > 
+> > On Wed, Aug 28, 2024 at 10:36:06AM GMT, Muchun Song wrote:
+> >> 
+> >> 
+> >>> On Aug 28, 2024, at 01:23, Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> >>> 
+> > [...]
+> >>>> 
+> >>>> Does it handle the case of a too-big-to-be-a-slab-object allocation?
+> >>>> I think it's better to handle it properly. Also, why return false here?
+> >>>> 
+> >>> 
+> >>> Yes I will fix the too-big-to-be-a-slab-object allocations. I presume I
+> >>> should just follow the kfree() hanlding on !folio_test_slab() i.e. that
+> >>> the given object is the large or too-big-to-be-a-slab-object.
+> >> 
+> >> Hi Shakeel,
+> >> 
+> >> If we decide to do this, I suppose you will use memcg_kmem_charge_page
+> >> to charge big-object. To be consistent, I suggest renaming kmem_cache_charge
+> >> to memcg_kmem_charge to handle both slab object and big-object. And I saw
+> >> all the functions related to object charging is moved to memcontrol.c (e.g.
+> >> __memcg_slab_post_alloc_hook), so maybe we should also do this for
+> >> memcg_kmem_charge?
+> >> 
+> > 
+> > If I understand you correctly, you are suggesting to handle the general
+> > kmem charging and slab's large kmalloc (size > KMALLOC_MAX_CACHE_SIZE)
+> > together with memcg_kmem_charge(). However that is not possible due to
+> > slab path updating NR_SLAB_UNRECLAIMABLE_B stats while no updates for
+> > this stat in the general kmem charging path (__memcg_kmem_charge_page in
+> > page allocation code path).
+> > 
+> > Also this general kmem charging path is used by many other users like
+> > vmalloc, kernel stack and thus we can not just plainly stuck updates to
+> > NR_SLAB_UNRECLAIMABLE_B in that path.
 > 
-> Unless this condition is met:
-> sc->file_is_tiny =
->             file + free <= total_high_wmark &&
->             !(sc->may_deactivate & DEACTIVATE_ANON) &&
->             anon >> sc->priority;
-
-There have been some changes in this area where swappiness was treated
-differently so it would make sense to investigate with the current mm
-tree.
-
-> [1]: https://lore.kernel.org/all/20200520232525.798933-15-hannes@cmpxchg.org/T/#u
+> Sorry, maybe I am not clear . To make sure we are on the same page, let
+> me clarify my thought. In your v2, I thought if we can rename
+> kmem_cache_charge() to memcg_kmem_charge() since kmem_cache_charge()
+> already has handled both big-slab-object (size > KMALLOC_MAX_CACHE_SIZE)
+> and small-slab-object cases. You know, we have a function of
+> memcg_kmem_charge_page() which could be used for charging big-slab-object
+> but not small-slab-object. So I thought maybe memcg_kmem_charge() is a
+> good name for it to handle both cases. And if we do this, how about moving
+> this new function to memcontrol.c since all memcg charging functions are
+> moved to memcontrol.c instead of slub.c.
 > 
-> > --
-> > Michal Hocko
-> > SUSE Labs
 
--- 
-Michal Hocko
-SUSE Labs
+Oh you want the core function to be in memcontrol.c. I don't have any
+strong opinion where the code should exist but I do want the interface
+to still be kmem_cache_charge() because that is what we are providing to
+the users which charging slab objects. Yes some of those might be
+big-slab-objects but that is transparent to the users.
+
+Anyways, for now I will go with my current approach but on the followup
+will explore and discuss with you on which code should exist in which
+file. I hope that is acceptable to you.
+
+thanks,
+Shakeel
 
