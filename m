@@ -1,216 +1,132 @@
-Return-Path: <cgroups+bounces-4565-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4566-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71891964624
-	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 15:16:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C3A09646DA
+	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 15:37:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2CA11F2562A
-	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 13:16:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFF1F1C20FAE
+	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 13:37:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDBA118CC16;
-	Thu, 29 Aug 2024 13:16:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B1371AAE06;
+	Thu, 29 Aug 2024 13:36:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="JfbvytNj"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="e4r6pdKj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCF711A76A4
-	for <cgroups@vger.kernel.org>; Thu, 29 Aug 2024 13:16:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F03AE1A76BE
+	for <cgroups@vger.kernel.org>; Thu, 29 Aug 2024 13:36:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724937365; cv=none; b=BBssZCV5F21MtazzOe32QJyRSAuCj/0R7fJy2OfiftlCuIPrEXIKlv+Rm+mnd74LxfD+oCLItFm5F6mLy98kPVoJT0Ej6H0Kpr6DNDoPhOj/D5PLXqfuweGKgyk8ymK64oHvHKaaX9vZpvDEwtE41/6E3Y5esT+cSH6urZBavW0=
+	t=1724938587; cv=none; b=q2/MW5ztajyQInMFssYnJne99KUk9ocSo/IxNwABKMXkDdKMlJ9sY8o0Jh/xFqsEx0q3JKD4A4baBwqIfEFlbnEQEEoWru0Injaildn/1Ku42sVvVYd8DLoCbaKL7QfTamnlueYXtiAZwbWn9z52a4IpuktKTC+ZOnCOGON0hMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724937365; c=relaxed/simple;
-	bh=e/WUvS7o+iUBTbPcXTgn+ASDZHn5Ivg8BT5PmvfYugo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CmuQgmeJkbQmsW74oT9YyhUxfhf6VrKD8N95TYXHfv3cYD105lvbrU/sdNG20izOBof3MKl+rsaU3JKmHRj3niqOMl28ivCvtyHnSy6HEHFANY5C6/NGh9n4eXsC9qsBaBryHpjPpmCgssbDNUXQo0iB9k5lo8b6qdE7/yIYbv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=JfbvytNj; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5334879ba28so887102e87.3
-        for <cgroups@vger.kernel.org>; Thu, 29 Aug 2024 06:16:03 -0700 (PDT)
+	s=arc-20240116; t=1724938587; c=relaxed/simple;
+	bh=ZeMJUIxFKueAM+1gPkeqgvS13tV5orxhIMCtghsgqXg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kYT+wvraRkVtTt51mIKftmNSHEl4T1RYSit8m8sm0YHgynnWJJhPMIGY5nU16M7Bdu76aXvyOLW7BoTY+ulTM4o/i9tibKuPaOaKgRe68iWsq01yduw4ZKT0g8NcU0vtHIP07eGC0Di4CzExXDXvMCLgijT9TjGqLnqYzsCo16o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=e4r6pdKj; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-428e3129851so6177585e9.3
+        for <cgroups@vger.kernel.org>; Thu, 29 Aug 2024 06:36:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1724937362; x=1725542162; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e/WUvS7o+iUBTbPcXTgn+ASDZHn5Ivg8BT5PmvfYugo=;
-        b=JfbvytNjMyJ3bYzq5obHkcTimJBJ63V8/arNphVq2tSXPpTeugNjzWIAjveTwYstQz
-         Qxf2CKnEysgTCsN8O5xCY7M5cBJk+ujlG/in4Jb4rEK/PSM/CDG1C6CJGf1ljwtEmsoX
-         /OpMWkns2FlLN5DWXH/OlT1jCq0FCM1g3OMldSMYxcUpa9obS1vW3ekr28fhuGLjEo0O
-         +plXvEeeYIyey7hIU4/s7RCIxeGIyxjHYU5/aYlaQz9LOLDo5a7oEeQ0mjVfY54kMO9u
-         EP8Ar0nTMbrUUgwnmKnUKoK3TxePD+iIxwOA4//GtX/JxSKD3zlbp/QUNYqiumPHhl51
-         EkJA==
+        d=suse.com; s=google; t=1724938583; x=1725543383; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=wwzrWSl4QmNb//4oM3ybSBFzbuQXvWdfQdlCdZCtaZA=;
+        b=e4r6pdKjPdGe/L+u3mt/ch9JZVadpiKCr2uAcj/fdYoqvTbA3v4x9eo6O+jKThkFeO
+         D+/kHToYGF7f750MuLbYE20fFAYP0CBDf7XQZCtHQuXimtqOQpI6flSMSSG27u+uAfWy
+         KK2VshhkUnYrY64rT9mRt84kPSCFbMJokBldEPRQnpt9Pi3Jwm9pr6TIjtIyPWqufobe
+         96+PYKAcb1LJMrUOOBBuamw9ufKX++u5U6Ff2Cm+Pgnb50CEaKMMKlsivtmV0PKQVDY+
+         t2+MztI9c9+KTVhdMboBXEg0SKpIjGKpSN1I8yPzzDG1wF3wYMufroW2HzdMyGisT6b5
+         O6Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724937362; x=1725542162;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=e/WUvS7o+iUBTbPcXTgn+ASDZHn5Ivg8BT5PmvfYugo=;
-        b=VXSWsq+ow9yw7mNJgFmB0gDyE8IZ6n2u7FaqjCsl8W8p0g+xOhj1mRk5YsuIhf+le2
-         sdnNp95ohL0znET3D63uGssUI+ihn6zdo+dkE3G0Err1CODhxaHyHex4jHlGracfDPzH
-         0tN0beBOcGYDP4Dgfy93lqB+5Goo82VwKE2oyz4zlRv/8TDpa2QbnFGYpL0aPRNgh/QU
-         2waplHxWaJR25dfWvYlyQzXCH/yEIy6vcocPrdtIKIBZbuRpmDSvc0w0nknJp16Dxmso
-         1mvawcE5i2VNrjc8kAJ3aUncwFL1ICpuqyZMCw20tf2jVBmb6k5pOo/MTUBK+t9UTxVR
-         bSQg==
-X-Forwarded-Encrypted: i=1; AJvYcCWLWJAPDd6BQygbxnCzfyjkcT+ZN+GbBi4nw0Wb3JwHE7hNpHReXDRVrOGsjZJrn/9zYxeh2vNa@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6x3SUKsWJiP6QwG83X9frMiDvvnn81ThuzSf15srPpJYVpuJw
-	wfxsSkwgeNcNaaZeUvfkqTZqvQAGwp8IQWQbTqh+whbKjqLTwo9PLuVWELTRXymyG6PDtxxfSRG
-	8TlBpANozEfWOb+lye7feAZjZ/rbfi60792G0Ug==
-X-Google-Smtp-Source: AGHT+IHjyGQz5NP4fFZPSi+bp5f5hV+whwoKce2ggHgKq4FyBIX3MhcdolfSvWRE7Ugmvx17JWG6SjaJw25/lF7vaJk=
-X-Received: by 2002:a05:6512:1248:b0:52e:7ef1:7c6e with SMTP id
- 2adb3069b0e04-5353e5bddaemr1965579e87.51.1724937361579; Thu, 29 Aug 2024
- 06:16:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1724938583; x=1725543383;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wwzrWSl4QmNb//4oM3ybSBFzbuQXvWdfQdlCdZCtaZA=;
+        b=NqB3TyIGOen6LEnGXdUzQt/iStMD6HP3GzLZFBxv13cWdss7TLBmve4ttBvxF7FNYJ
+         0zF3O/ji2a4zisCxDpDxQ9nzRtn2IlfEdwKmFyi4DVW6lm282jeCnwrFavOeiT8cKxsg
+         WuoH+RsCVwu5DXk/Y56eRF0MiIDCKUqZ2FBTlRVVat7gGnXKCePzFKA6VSCSUdVyr0PI
+         tAEY8xnnag9ESVPpLFLd+EJQnaY1mnyvsT65r15OlP3qbup4d7rk0Ig6v4SiuhjE+UpH
+         sECP4MMKTeSzWcXgL+ArpwFPdpBJpyd9sashpcpv21lv+jdc4NSDV8ln/2Zx4/xRpQ0P
+         VJAA==
+X-Forwarded-Encrypted: i=1; AJvYcCVW8gGcTr/p3KJF+2ih5Q/5iAlr+ZG1kmyLMt1wrl6AtlkV1iAFrAeglCfRuP8ohFiB/aLqtp9d@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywm/SGRLw4S97AsjtI2I6J4E00UOGAGtsW2rggv9YA+vy0ZRkz4
+	1HpnHP1EcYdIEPWP716OR3ChomxVb3YmRlwGHvtGyoZz+jGE3Cmylp8BmqL8uNw=
+X-Google-Smtp-Source: AGHT+IF2hWzIo4nvH7VaruPdmF/MnzuPCFARU8YeDyU0mXMLL5O5B66d3cJOBON82KFLLD/if11uUg==
+X-Received: by 2002:a05:600c:4594:b0:426:6d1a:d497 with SMTP id 5b1f17b1804b1-42bb01b993amr23949655e9.12.1724938583239;
+        Thu, 29 Aug 2024 06:36:23 -0700 (PDT)
+Received: from localhost (109-81-82-19.rct.o2.cz. [109.81.82.19])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42bb9593c32sm4208105e9.48.2024.08.29.06.36.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Aug 2024 06:36:22 -0700 (PDT)
+Date: Thu, 29 Aug 2024 15:36:22 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Zhongkun He <hezhongkun.hzk@bytedance.com>
+Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev, muchun.song@linux.dev,
+	lizefan.x@bytedance.com, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [External] Re: [RFC PATCH 0/2] Add disable_unmap_file arg to
+ memory.reclaim
+Message-ID: <ZtB5Vn69L27oodEq@tiehlicka>
+References: <20240829101918.3454840-1-hezhongkun.hzk@bytedance.com>
+ <ZtBMO1owCU3XmagV@tiehlicka>
+ <CACSyD1Ok62n-SF8fGrDQq_JC4SUSvFb-6QjgjnkD9=JacCJiYg@mail.gmail.com>
+ <ZtBglyqZz_uGDnOS@tiehlicka>
+ <CACSyD1NWVe9gjo15xsPnh-JUEsacawf47uoiu439tRO7K+ov5g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240829101918.3454840-1-hezhongkun.hzk@bytedance.com>
- <ZtBMO1owCU3XmagV@tiehlicka> <CACSyD1Ok62n-SF8fGrDQq_JC4SUSvFb-6QjgjnkD9=JacCJiYg@mail.gmail.com>
- <ZtBglyqZz_uGDnOS@tiehlicka>
-In-Reply-To: <ZtBglyqZz_uGDnOS@tiehlicka>
-From: Zhongkun He <hezhongkun.hzk@bytedance.com>
-Date: Thu, 29 Aug 2024 21:15:50 +0800
-Message-ID: <CACSyD1NWVe9gjo15xsPnh-JUEsacawf47uoiu439tRO7K+ov5g@mail.gmail.com>
-Subject: Re: [External] Re: [RFC PATCH 0/2] Add disable_unmap_file arg to memory.reclaim
-To: Michal Hocko <mhocko@suse.com>
-Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
-	shakeel.butt@linux.dev, muchun.song@linux.dev, lizefan.x@bytedance.com, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACSyD1NWVe9gjo15xsPnh-JUEsacawf47uoiu439tRO7K+ov5g@mail.gmail.com>
 
-On Thu, Aug 29, 2024 at 7:51=E2=80=AFPM Michal Hocko <mhocko@suse.com> wrot=
-e:
->
-> On Thu 29-08-24 18:37:07, Zhongkun He wrote:
-> > On Thu, Aug 29, 2024 at 6:24=E2=80=AFPM Michal Hocko <mhocko@suse.com> =
-wrote:
-> > >
-> > > On Thu 29-08-24 18:19:16, Zhongkun He wrote:
-> > > > This patch proposes augmenting the memory.reclaim interface with a
-> > > > disable_unmap_file argument that will skip the mapped pages in
-> > > > that reclaim attempt.
-> > > >
-> > > > For example:
-> > > >
-> > > > echo "2M disable_unmap_file" > /sys/fs/cgroup/test/memory.reclaim
-> > > >
-> > > > will perform reclaim on the test cgroup with no mapped file page.
-> > > >
-> > > > The memory.reclaim is a useful interface. We can carry out proactiv=
-e
-> > > > memory reclaim in the user space, which can increase the utilizatio=
-n
-> > > > rate of memory.
-> > > >
-> > > > In the actual usage scenarios, we found that when there are suffici=
-ent
-> > > > anonymous pages, mapped file pages with a relatively small proporti=
-on
-> > > > would still be reclaimed. This is likely to cause an increase in
-> > > > refaults and an increase in task delay, because mapped file pages
-> > > > usually include important executable codes, data, and shared librar=
-ies,
-> > > > etc. According to the verified situation, if we can skip this part =
-of
-> > > > the memory, the task delay will be reduced.
-> > >
-> > > Do you have examples of workloads where this is demonstrably helps an=
-d
-> > > cannot be tuned via swappiness?
+On Thu 29-08-24 21:15:50, Zhongkun He wrote:
+> On Thu, Aug 29, 2024 at 7:51 PM Michal Hocko <mhocko@suse.com> wrote:
+[...]
+> > Is this some artificial workload or something real world?
 > >
-> > Sorry, I put the test workload in the second patch. Please have a look.
->
-> I have missed those as they are not threaded to the cover letter. You
-> can either use --in-reply-to when sending patches separately from the
-> cover letter or use can use --compose/--cover-leter when sending patches
-> through git-send-email
+> 
+> This is an artificial workload to show the detail of this case more
+> easily. But we have encountered this problem on our servers.
 
-Got it, thanks. I encountered a problem after sending the cover letter, so
-I resent the others without --in-reply-to.
+This is always good to mention in the changelog. If you can observe this
+in real workloads it is good to get numbers from those because
+artificial workloads tend to overshoot the underlying problem and we can
+potentially miss the practical contributors to the problem.
 
->
-> > Even if there are sufficient anonymous pages and a small number of
-> > page cache and mapped file pages, mapped file pages will still be recla=
-imed.
-> > Here is an example of anonymous pages being sufficient but mapped
-> > file pages still being reclaimed:
-> > Swappiness has been set to the maximum value.
-> >
-> > cat memory.stat | grep -wE 'anon|file|file_mapped'
-> > anon 3406462976
-> > file 332967936
-> > file_mapped 300302336
-> >
-> > echo 1g > memory.reclaim swappiness=3D200 > memory.reclaim
-> > cat memory.stat | grep -wE 'anon|file|file_mapped'
-> > anon 2613276672
-> > file 52523008
-> > file_mapped 30982144
->
-> This seems to be 73% (ano) vs 27% (file) balance. 90% of the
-> file LRU seems to be mapped which matches 90% of file LRU reclaimed
-> memory to be mapped. So the reclaim is proportional there.
->
-> But I do understand that this is still unexpected when swappiness=3D200
-> should make reclaim anon oriented. Is this MGLRU or regular LRU
-> implementation?
->
+Seeing this my main question is whether we should focus on swappiness
+behavior more than adding a very strange and very targetted reclaim
+mode. After all we have a mapped memory and executables protection in
+place. So in the end this is more about balance between anon vs. file
+LRUs.
 
-This is a regular LRU implementation and the MGLRU has the same questions
-but performs better. Please have a look:
+> If the performance of the disk is poor, like HDD, the situation will
+> become even worse.
 
-root@vm:/sys/fs/cgroup/test# cat /sys/kernel/mm/lru_gen/enabled
-0x0007
+Doesn't that impact swapin/out as well? Or do you happen to have a
+faster storage for the swap?
 
-root@vm:/sys/fs/cgroup/test# cat memory.stat | grep -wE 'anon|file|file_map=
-ped'
-anon 3310338048
-file 293498880
-file_mapped 273506304
+> The delay of the task becomes more serious because reading data will
+> be slower.  Hot pages will thrash repeatedly between the memory and
+> the disk. 
 
-root@vm:/sys/fs/cgroup/test# echo 1g > memory.reclaim swappiness=3D200 >
-memory.reclaim
-
-root@vm:/sys/fs/cgroup/test# cat memory.stat | grep -wE 'anon|file|file_map=
-ped'
-anon 2373173248
-file 157233152
-file_mapped 146173952
-
-root@vm:/sys/fs/cgroup/test# echo 1g > memory.reclaim swappiness=3D200 >
-memory.reclaim
-root@vm:/sys/fs/cgroup/test# cat memory.stat | grep -wE 'anon|file|file_map=
-ped'
-anon 1370886144
-file 85663744
-file_mapped 78118912
-
-> Is this some artificial workload or something real world?
->
-
-This is an artificial workload to show the detail of this case more
-easily. But we have encountered
-this problem on our servers. If the performance of the disk is poor,
-like HDD, the situation will
-become even worse. The delay of the task becomes more serious because
-reading data will be slower.
-Hot pages will thrash repeatedly between the memory and the disk. At
-this time, the pressure on the
-disk will also be greater. If there are many tasks using this disk, it
-will also affect other tasks.
-
-That was the background of this case.
-
->
-> --
-> Michal Hocko
-> SUSE Labs
+Doesn't refault stats and IO cost aspect of the reclaim when balancing
+LRUs dealing with this situation already? Why it doesn't work in your
+case? Have you tried to investigate that?
+-- 
+Michal Hocko
+SUSE Labs
 
