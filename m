@@ -1,70 +1,73 @@
-Return-Path: <cgroups+bounces-4560-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4561-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 921189641AE
-	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 12:28:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4B6B9641B3
+	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 12:28:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B9B028B3CE
-	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 10:27:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9E671C2117E
+	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2024 10:28:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B217F1B1D7F;
-	Thu, 29 Aug 2024 10:20:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA2EA1B29D4;
+	Thu, 29 Aug 2024 10:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="bdVeulaL"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="MKxaSjVm"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2316194A54
-	for <cgroups@vger.kernel.org>; Thu, 29 Aug 2024 10:20:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB13F1B29C0
+	for <cgroups@vger.kernel.org>; Thu, 29 Aug 2024 10:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724926852; cv=none; b=J94OYad0Jkpm3qnPZdehoGebj6LWV/Or4fyhtbRng27m8jQz2nEOpvQPGpRfic3P8gB/TiVfFJ7iMmngL86+GJwuOUqxZRnHO5DGBw+JJ2QvCLQaBcmtly68jQhX01hWFjnQgh+IArMn+WVqg02ZYvZPSuxpjQ891sSVIsevo+o=
+	t=1724926860; cv=none; b=HkQkpaH/4hd6dvTyw3ouyHXbR+zwU7Zb+zfsL688hrDt9qzL58VKpVQzXeq2TlGwB4rPKycbz7kyQHWgKK/l/GKaFexqAXV1ORuxHrWE/Ith4qzF2Spk1MPN3KMlpVxuvFcR9rW4Lp6hgZEud0jgdtx4xSRU/fyBwahEnTqzGyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724926852; c=relaxed/simple;
-	bh=nKiNAOHeWEvVLr0FHI5tGygqqNgOzHtNVsY+xRNlHiw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XdSYiGSFEbZbwRk0cvkXmD7TC3QX7bj9u7VUD0o1drIXuv62b6fGlS3xN9AW/PkI+xTb4y/RQchd+xzsdy09di0AX50s4/j5+bkFG+Li1nViqfquPt31wEIhGTM2f/bf0I6wK7tqihpWwuHN1+B3QC/Dm267cMPMvAY1x8o/Spk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=bdVeulaL; arc=none smtp.client-ip=209.85.214.172
+	s=arc-20240116; t=1724926860; c=relaxed/simple;
+	bh=40c3l0mWajhxNNgMzb4upe+3sYMx9023oFtW46W0GCo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=L30BisuKSei2RCeQ06DB1GMYXT4JtdzuEJYnh12qlVeKTn0o6W426V7lGbnfCAhOaa7bYd3Zo6aaVviw19mz+BnpNTz5/oCsDFbeG/SfAYbkp2J87rwJKN4monBiPVmevp3+/8pOKbfgi72S9AdqgDDGCz5y1H/M3vwF+Gs29Bs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=MKxaSjVm; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-201d5af11a4so4132725ad.3
-        for <cgroups@vger.kernel.org>; Thu, 29 Aug 2024 03:20:50 -0700 (PDT)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-201d5af11a4so4133655ad.3
+        for <cgroups@vger.kernel.org>; Thu, 29 Aug 2024 03:20:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1724926850; x=1725531650; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IjshDs/Uxrgcfjr5jDqtbHwONktfCrAQk2fGGuPSrO0=;
-        b=bdVeulaLvI6KXxSzRdDW3g3o7XyOvjCdA+NS8Ywlfcmxp3UVVydEasdliPtJW+ZKrA
-         lpkIlc2vuy2JsJhKbOP22ynUWVIQPbiqj3VPumFMqR2FIOPzM5j9vKlv9Pjhd+ffV/rG
-         Z+EO9GrFL54N/M0em1ZTzp+NDxLzYLjAjCmNsEJuj3rLuQnGlh1pWvfahDjdgiIwyFSE
-         CuZ5uzBUGhd4MwCvOcHPLBurMV1chWuoTnuUPWWKU2xXSF0/2TaO296FpizNVAPbp1+8
-         avbcYNvP57P2hUEGqaFlIUHbDluc5mNBp5tHH3Skqj2zsak6PcFO6PQ1h5W2X1hgpOJw
-         bPaw==
+        d=bytedance.com; s=google; t=1724926858; x=1725531658; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LxEuLGuLLlfpVLUQyjdn9XrbJexFuQp9KlY1lBVI+bg=;
+        b=MKxaSjVm9BXskdU+F0QHgJeMpDXMoOy5cuUE/88V/jo6ZuAGC4BvgqSMHMRRXu/6uR
+         CkYZZXUkfoww6v267HmYa7L7Wan1ohRPznY4vb4xJHosART0Uajn9tbWEmxHJiG1u9ld
+         sLGCcdsVlPzyC568FyfEiIvPW2bOLIhhw2I/1uRsfTwoN4ye/yKjYHrMAN4V7DWp/M19
+         nDXvZBEa3h2edkM8ZQRDkjuXjjWNJQwL/trBu3S5hpCzSbtjo5mCDqovUOx4TwzitmLB
+         XtSasddh5vShMpZXtQQGXl9uS5fOPF+ME2rS3QEbrLLkHIKJzRrotWr3dbdf3gAto90d
+         f2cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724926850; x=1725531650;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IjshDs/Uxrgcfjr5jDqtbHwONktfCrAQk2fGGuPSrO0=;
-        b=PEOieWydrLJScsxD5KkCeL8T+zxidSMyEk+9skJgex+Kh+Ef4hTdQoFe9aUJggKNUa
-         d6LY8jy45lJMJr+c01S5gDug2PP8P/a8s2UTmLNJ+S1t2Y5zIW29Kwj9UJpzOLCu1799
-         AbMuh8bpVOn4V6On3pOBmQ0F+qKX/N/rQhQbmHVlqpYLLmqkBiwkk+6JMSQdJMSkE+Tq
-         38/bGjUOaemSap8wTDEoNK1laCnEkbSxwB0LIt0b5a6/7OmO4QNOTawnWSlr6vhPBrnA
-         Bxx8evysbeJgLB2Hh4OsygBCiEt1zc+eNZSTpcYWywgoqNh5L6oQHjriXyIuIJF9LnrB
-         4IPA==
-X-Forwarded-Encrypted: i=1; AJvYcCW0CB7LEcs8UfWZWms1CZqAgktYuV0dCH6Xwt9SX9cPLGIZIhAXhQXvuddwffvJ+QAO6/odOhbI@vger.kernel.org
-X-Gm-Message-State: AOJu0YyfEbzeYFs3M+KRZr6hnsLZtJ/l0UkPwuuLUfal8TWRQ7OfsTg5
-	L7YppM3UFPJGrx6KxbMwQ9x1tSP/XSmLU0UQTlruUAUDqJuYddU1yAzKMTiC3i8=
-X-Google-Smtp-Source: AGHT+IGdl0UcdnYDfDgFEzVC4k/yFpeWbl6UrHniAh9IltC24M18uuh9SesGq3bbAB7noPRGR0hr/Q==
-X-Received: by 2002:a17:902:e74e:b0:1fb:8aa9:e2a9 with SMTP id d9443c01a7336-2050c345affmr28095435ad.15.1724926849984;
-        Thu, 29 Aug 2024 03:20:49 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1724926858; x=1725531658;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LxEuLGuLLlfpVLUQyjdn9XrbJexFuQp9KlY1lBVI+bg=;
+        b=i84GpgO0G74Mq+xB3I/f/OjoywA0SM/mNoBfZoIOlEHDqOlm/3epkvs/E1WjvX+THE
+         Ncg83A00fkW/NlB9zU9x8IiNVCHzWxrZUsUVbT1dsikgI0QcY8Gw2qpirp/qtoUcAQha
+         dQ4w44Sthh65sv0nMyUZziHicgFrhPTHvOJ+qAcgixSIbmLYyyaNFXewwiMvWCH9Yu4D
+         Ed2PwNd+LMYeJtkJMNoQoc9zbwgGrbdukBztaaE+tGkuD5kR2ibqH402JttnkZXedDSe
+         eDaqxUmMT7MGJAH0Mi3QJnDMeTx3Qgp3nlSus1LxOU7W9orvhRvG/lAy2Qsc/TgXh8nn
+         28vA==
+X-Forwarded-Encrypted: i=1; AJvYcCU0fqrGNP74sytyYsvocUkTEGLM71h1JDG3Bju4r9xqeAYNNZ2UEYVXsipNNxNpdyvO6lKfbwJl@vger.kernel.org
+X-Gm-Message-State: AOJu0YwOtcSPadphET5GM8ErtfPIUKfLTClQoDh800qCix9fbFN+FOVy
+	HzUIL8QHg8p3MOIyYLfJO+ssgSVchKOSDI0EKM8u4OwsxdudOS/NhlAVqflfEhTSG/bxw3leVlT
+	d
+X-Google-Smtp-Source: AGHT+IGiChsduuOeCBhmi3FuNaA5wdY9oxIgLe+AT8c04YtsobEYBqNcPH6TPr9CWLw8iWUvRNwL9g==
+X-Received: by 2002:a17:903:8c8:b0:202:3762:ff88 with SMTP id d9443c01a7336-2050c4d2ebbmr33268465ad.63.1724926858195;
+        Thu, 29 Aug 2024 03:20:58 -0700 (PDT)
 Received: from n37-034-248.byted.org ([180.184.51.134])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-205155673a2sm8355725ad.303.2024.08.29.03.20.45
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-205155673a2sm8355725ad.303.2024.08.29.03.20.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Aug 2024 03:20:48 -0700 (PDT)
+        Thu, 29 Aug 2024 03:20:56 -0700 (PDT)
 From: Zhongkun He <hezhongkun.hzk@bytedance.com>
 To: akpm@linux-foundation.org,
 	hannes@cmpxchg.org,
@@ -77,10 +80,12 @@ Cc: roman.gushchin@linux.dev,
 	linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org,
 	Zhongkun He <hezhongkun.hzk@bytedance.com>
-Subject: [RFC PATCH 1/2] mm: vmscan: modify the semantics of scan_control.may_unmap to UNMAP_ANON and UNMAP_FILE
-Date: Thu, 29 Aug 2024 18:20:38 +0800
-Message-Id: <20240829102039.3455842-1-hezhongkun.hzk@bytedance.com>
+Subject: [RFC PATCH 2/2] mm: memcg: add disbale_unmap_file arg to memory.reclaim
+Date: Thu, 29 Aug 2024 18:20:39 +0800
+Message-Id: <20240829102039.3455842-2-hezhongkun.hzk@bytedance.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20240829102039.3455842-1-hezhongkun.hzk@bytedance.com>
+References: <20240829102039.3455842-1-hezhongkun.hzk@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -89,171 +94,138 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is a preparation patch to add disable_unmap_file arg to memory.reclaim.
+Allow proactively memory reclaimers to submit an additional
+disbale_unmap_file argument to memory.reclaim. This will
+skip the mapped file for that reclaim attempt.
 
-So far, the value of scan_control.may_unmap has only two types, true or false,
-which represents whether pages can be unmapped for reclamation in the reclamation
-path. It cannot distinguish between file pages and anonymous pages, so we cannot
-make a more accurate choice when proactively reclaiming memory in user space. In
-practical experience, mapped file pages are crucial for the operation of the program,
-usually containing important executable code, data, and shared libraries, etc.
-Therefore, it is necessary to make a more accurate distinction.
+For example:
+
+echo "2M disable_unmap_file" > /sys/fs/cgroup/test/memory.reclaim
+
+will perform reclaim on the test cgroup with no mapped file page.
+
+The memory.reclaim is a useful interface. We can carry out proactive
+memory reclaim in the user space, which can increase the utilization
+rate of memory. In the actual usage scenarios, we found that when
+there are sufficient anonymous pages, mapped file pages with a
+relatively small proportion would still be reclaimed. This is likely
+to cause an increase in refaults and an increase in task delay,
+because mapped file pages usually include important executable codes,
+data, and shared libraries, etc. According to the verified situation,
+if we can skip this part of the memory, the business delay will be reduced.
+
+Even if there are sufficient anonymous pages and a small number of
+page cache and mapped file pages, mapped file pages will still be reclaimed.
+Here is an example of anonymous pages being sufficient but mapped
+file pages still being reclaimed:
+
+cat memory.stat | grep -wE 'anon|file|file_mapped'
+anon 3406462976
+file 332967936
+file_mapped 300302336
+
+echo 1g > memory.reclaim swappiness=200 > memory.reclaim
+cat memory.stat | grep -wE 'anon|file|file_mapped'
+anon 2613276672
+file 52523008
+file_mapped 30982144
+
+echo 1g > memory.reclaim swappiness=200 > memory.reclaim
+cat memory.stat | grep -wE 'anon|file|file_mapped'
+anon 1552130048
+file 39759872
+file_mapped 20299776
+
+With this patch, the file_mapped pages will be skiped.
+
+echo 1g > memory.reclaim swappiness=200 disable_unmap_file  > memory.reclaim
+cat memory.stat | grep -wE 'anon|file|file_mapped'
+anon 480059392
+file 37978112
+file_mapped 20299776
+
+IMO,it is difficult to balance the priorities of various pages in the kernel,
+there are too many scenarios to consider. However, for the scenario of proactive
+memory reclaim in user space, we can make a simple judgment in this case.
 
 Signed-off-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
 ---
- mm/vmscan.c | 61 +++++++++++++++++++++++++++++++++++++++++------------
- 1 file changed, 47 insertions(+), 14 deletions(-)
+ include/linux/swap.h | 1 +
+ mm/memcontrol.c      | 9 +++++++--
+ mm/vmscan.c          | 4 ++++
+ 3 files changed, 12 insertions(+), 2 deletions(-)
 
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index ca533b478c21..49df8f3748e8 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -409,6 +409,7 @@ extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+ 
+ #define MEMCG_RECLAIM_MAY_SWAP (1 << 1)
+ #define MEMCG_RECLAIM_PROACTIVE (1 << 2)
++#define MEMCG_RECLAIM_DIS_UNMAP_FILE (1 << 3)
+ #define MIN_SWAPPINESS 0
+ #define MAX_SWAPPINESS 200
+ extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 35431035e782..7b0181553b0c 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -4282,11 +4282,13 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
+ 
+ enum {
+ 	MEMORY_RECLAIM_SWAPPINESS = 0,
++	MEMORY_RECLAIM_DISABLE_UNMAP_FILE,
+ 	MEMORY_RECLAIM_NULL,
+ };
+ 
+ static const match_table_t tokens = {
+ 	{ MEMORY_RECLAIM_SWAPPINESS, "swappiness=%d"},
++	{ MEMORY_RECLAIM_DISABLE_UNMAP_FILE, "disable_unmap_file"},
+ 	{ MEMORY_RECLAIM_NULL, NULL },
+ };
+ 
+@@ -4297,7 +4299,7 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+ 	unsigned int nr_retries = MAX_RECLAIM_RETRIES;
+ 	unsigned long nr_to_reclaim, nr_reclaimed = 0;
+ 	int swappiness = -1;
+-	unsigned int reclaim_options;
++	unsigned int reclaim_options = 0;
+ 	char *old_buf, *start;
+ 	substring_t args[MAX_OPT_ARGS];
+ 
+@@ -4320,12 +4322,15 @@ static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+ 			if (swappiness < MIN_SWAPPINESS || swappiness > MAX_SWAPPINESS)
+ 				return -EINVAL;
+ 			break;
++		case MEMORY_RECLAIM_DISABLE_UNMAP_FILE:
++			reclaim_options = MEMCG_RECLAIM_DIS_UNMAP_FILE;
++			break;
+ 		default:
+ 			return -EINVAL;
+ 		}
+ 	}
+ 
+-	reclaim_options	= MEMCG_RECLAIM_MAY_SWAP | MEMCG_RECLAIM_PROACTIVE;
++	reclaim_options	|= MEMCG_RECLAIM_MAY_SWAP | MEMCG_RECLAIM_PROACTIVE;
+ 	while (nr_reclaimed < nr_to_reclaim) {
+ 		/* Will converge on zero, but reclaim enforces a minimum */
+ 		unsigned long batch_size = (nr_to_reclaim - nr_reclaimed) / 4;
 diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 283e3f9d652b..50ac714cba2f 100644
+index 50ac714cba2f..1b58126a8246 100644
 --- a/mm/vmscan.c
 +++ b/mm/vmscan.c
-@@ -107,8 +107,11 @@ struct scan_control {
- 	/* Writepage batching in laptop mode; RECLAIM_WRITE */
- 	unsigned int may_writepage:1;
- 
-+	#define UNMAP_ANON 1
-+	#define UNMAP_FILE 2
-+	#define UNMAP_ANON_AND_FILE UNMAP_ANON + UNMAP_FILE
- 	/* Can mapped folios be reclaimed? */
--	unsigned int may_unmap:1;
-+	unsigned int may_unmap:2;
- 
- 	/* Can folios be swapped as part of reclaim? */
- 	unsigned int may_swap:1;
-@@ -1083,8 +1086,23 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
- 		if (unlikely(!folio_evictable(folio)))
- 			goto activate_locked;
- 
--		if (!sc->may_unmap && folio_mapped(folio))
--			goto keep_locked;
-+		if (folio_mapped(folio)) {
-+			switch (sc->may_unmap) {
-+			/* The most likely case. */
-+			case UNMAP_ANON_AND_FILE:
-+				break;
-+			case UNMAP_ANON:
-+				if (!folio_test_anon(folio))
-+					goto keep_locked;
-+				break;
-+			case UNMAP_FILE:
-+				if (folio_test_anon(folio))
-+					goto keep_locked;
-+				break;
-+			default:
-+				goto keep_locked;
-+			}
-+		}
- 
- 		/* folio_update_gen() tried to promote this page? */
- 		if (lru_gen_enabled() && !ignore_references &&
-@@ -1563,7 +1581,7 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
- {
- 	struct scan_control sc = {
- 		.gfp_mask = GFP_KERNEL,
--		.may_unmap = 1,
-+		.may_unmap = UNMAP_ANON_AND_FILE,
- 	};
- 	struct reclaim_stat stat;
- 	unsigned int nr_reclaimed;
-@@ -1688,8 +1706,23 @@ static unsigned long isolate_lru_folios(unsigned long nr_to_scan,
- 
- 		if (!folio_test_lru(folio))
- 			goto move;
--		if (!sc->may_unmap && folio_mapped(folio))
--			goto move;
-+
-+		if (folio_mapped(folio)) {
-+			switch (sc->may_unmap) {
-+			case UNMAP_ANON_AND_FILE:
-+				break;
-+			case UNMAP_ANON:
-+				if (!folio_test_anon(folio))
-+					goto move;
-+				break;
-+			case UNMAP_FILE:
-+				if (folio_test_anon(folio))
-+					goto move;
-+				break;
-+			default:
-+				goto move;
-+			}
-+		}
- 
- 		/*
- 		 * Be careful not to clear the lru flag until after we're
-@@ -2135,7 +2168,7 @@ static unsigned int reclaim_folio_list(struct list_head *folio_list,
- 	struct scan_control sc = {
- 		.gfp_mask = GFP_KERNEL,
- 		.may_writepage = 1,
--		.may_unmap = 1,
-+		.may_unmap = UNMAP_ANON_AND_FILE,
- 		.may_swap = 1,
- 		.no_demotion = 1,
- 	};
-@@ -5467,7 +5500,7 @@ static ssize_t lru_gen_seq_write(struct file *file, const char __user *src,
- 	int err = -EINVAL;
- 	struct scan_control sc = {
- 		.may_writepage = true,
--		.may_unmap = true,
-+		.may_unmap = UNMAP_ANON_AND_FILE,
- 		.may_swap = true,
- 		.reclaim_idx = MAX_NR_ZONES - 1,
- 		.gfp_mask = GFP_KERNEL,
-@@ -6482,7 +6515,7 @@ unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
- 		.nodemask = nodemask,
- 		.priority = DEF_PRIORITY,
- 		.may_writepage = !laptop_mode,
--		.may_unmap = 1,
-+		.may_unmap = UNMAP_ANON_AND_FILE,
- 		.may_swap = 1,
- 	};
- 
-@@ -6526,7 +6559,7 @@ unsigned long mem_cgroup_shrink_node(struct mem_cgroup *memcg,
- 		.nr_to_reclaim = SWAP_CLUSTER_MAX,
- 		.target_mem_cgroup = memcg,
- 		.may_writepage = !laptop_mode,
--		.may_unmap = 1,
-+		.may_unmap = UNMAP_ANON_AND_FILE,
- 		.reclaim_idx = MAX_NR_ZONES - 1,
- 		.may_swap = !noswap,
- 	};
-@@ -6572,7 +6605,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 		.target_mem_cgroup = memcg,
- 		.priority = DEF_PRIORITY,
- 		.may_writepage = !laptop_mode,
--		.may_unmap = 1,
-+		.may_unmap = UNMAP_ANON_AND_FILE,
+@@ -6609,6 +6609,10 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
  		.may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
  		.proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
  	};
-@@ -6837,7 +6870,7 @@ static int balance_pgdat(pg_data_t *pgdat, int order, int highest_zoneidx)
- 	struct scan_control sc = {
- 		.gfp_mask = GFP_KERNEL,
- 		.order = order,
--		.may_unmap = 1,
-+		.may_unmap = UNMAP_ANON_AND_FILE,
- 	};
- 
- 	set_task_reclaim_state(current, &sc.reclaim_state);
-@@ -7304,7 +7337,7 @@ unsigned long shrink_all_memory(unsigned long nr_to_reclaim)
- 		.reclaim_idx = MAX_NR_ZONES - 1,
- 		.priority = DEF_PRIORITY,
- 		.may_writepage = 1,
--		.may_unmap = 1,
-+		.may_unmap = UNMAP_ANON_AND_FILE,
- 		.may_swap = 1,
- 		.hibernation_mode = 1,
- 	};
-@@ -7462,7 +7495,7 @@ static int __node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask, unsigned in
- 		.order = order,
- 		.priority = NODE_RECLAIM_PRIORITY,
- 		.may_writepage = !!(node_reclaim_mode & RECLAIM_WRITE),
--		.may_unmap = !!(node_reclaim_mode & RECLAIM_UNMAP),
-+		.may_unmap = !!(node_reclaim_mode & RECLAIM_UNMAP) ? UNMAP_ANON_AND_FILE : 0,
- 		.may_swap = 1,
- 		.reclaim_idx = gfp_zone(gfp_mask),
- 	};
++
++	if (reclaim_options & MEMCG_RECLAIM_DIS_UNMAP_FILE)
++		sc.may_unmap &= ~UNMAP_FILE;
++
+ 	/*
+ 	 * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
+ 	 * equal pressure on all the nodes. This is based on the assumption that
 -- 
 2.20.1
 
