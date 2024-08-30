@@ -1,70 +1,70 @@
-Return-Path: <cgroups+bounces-4644-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4645-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C00049668A8
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 20:04:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0F10966939
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 20:58:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E20CD1C23689
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 18:04:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9457283FCA
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 18:58:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765891BAEE3;
-	Fri, 30 Aug 2024 18:04:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A04411BC099;
+	Fri, 30 Aug 2024 18:58:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aeJ2XGHT"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CNH1DZq0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7943D1BAEF6
-	for <cgroups@vger.kernel.org>; Fri, 30 Aug 2024 18:04:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A0B1BBBE8
+	for <cgroups@vger.kernel.org>; Fri, 30 Aug 2024 18:58:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725041057; cv=none; b=q781SiYW5B/mskXl9JCH3qmjm+Th19xt/2jW80mocHth/v7Varu+CBrXt9zU8LhDxP0sZm0iXmph/j03QsXs3Jadz5vSMeO1d1Nnj1B7uvIOOawqxImxvSHWjrjJy+I75xwrbHrq9BeAmX0mpwnl5SQ02uLQfaSDYaSEd2ca9Z4=
+	t=1725044300; cv=none; b=BOjls8vTlsyz+CIGQ/DwEcqcYtMgWxwPw9MrKKR98hfAWzcfs8lLp5mlu9QU3FJ9CC5P2uc3OgFkDhrELGRHbejJXv6HJNVojK+t5DNU3H0D5WL+piDayrNHwqnuYIjPy/GujAy7IvRIy5WmEXuv3VNuc0vQwLcz8CYVCHxFx7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725041057; c=relaxed/simple;
-	bh=EBtYIn/UzgCwtXVUOgQGNeHiEVTEozkl0lHq31mKb/0=;
+	s=arc-20240116; t=1725044300; c=relaxed/simple;
+	bh=xRoBQ/oq+gT5YpsAkNHTlvl9LLh8kHrX89dUdo46+2g=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GEUeystRMTZ0oVZGhLD3M9UGDHA+VvjXSNVuZj6RcVLGJbkN7MmUtFEvHpSMHRvnofEmzzV+/AMnxchyxZ0r0ery+6g0tsOKtJrL+eBwwVGRkKSkMp3iAbwKO4Vvp+lx6cRj7b+HYcIrLkUO71pD9T+8z2L2TFBJomhNGv7vskw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aeJ2XGHT; arc=none smtp.client-ip=209.85.218.52
+	 To:Cc:Content-Type; b=DC/5U1LBWiTp3cEZ1wNiDwoxfMoy1NWczrYbr+wSWy6OyzFzb5L+QeKucOFIUXoQ3JL+SdWuGmSlqxhp83ubPFV2wXxhvvULyVl06DoYPejIFyodoKDaouZYru09o5F3uq+hXwWq7MZhegh7NdBGz3OYL1JkTjvxh3QtsNY9de0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CNH1DZq0; arc=none smtp.client-ip=209.85.217.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a868b8bb0feso256234566b.0
-        for <cgroups@vger.kernel.org>; Fri, 30 Aug 2024 11:04:15 -0700 (PDT)
+Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-498d7ab8fefso812718137.1
+        for <cgroups@vger.kernel.org>; Fri, 30 Aug 2024 11:58:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1725041054; x=1725645854; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1725044297; x=1725649097; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VMJEJ0mgWPS/u1UL/uZmUQxpZyJybEAjbxvXKENMJBs=;
-        b=aeJ2XGHT+CEQVrhaOVyPB49sH80o0x/7bpF0To5qNeMwdK1q2FL2o5/LLSfYSu4Fcq
-         pSY+ofwCiu14318RH2uvX62sxyu7IVEIuEAS8YE1uOrCyvDOYqXhYeSrbNLlXTf0TUl2
-         Xq5nGa4gOFXbtj74e0Ijl9PefRpNjxkdNM8VsFu3DUKEUInFQaDMo4UAoWjJ3C6bvOQJ
-         aFU8D6rYD91Oq2YmD7d0XiYg8FaJQITU9HVbbHGTnVO9f0Cvwb63pgTEgspOQm7znBgv
-         CFc7GR6q4d350mGgrh9cROVcQjMyEKFXAnrxFQMrnCY1sMO24RbF4nZ8D9tAwuG6kr56
-         Zn2Q==
+        bh=UZnolaJe4rajFezTVdnx4rNTF9qWiAa95B6Y1PiHIzA=;
+        b=CNH1DZq0kjDPRs8fZCsXsKZTsK8BikDe3NfuFvDLtBJ+lFB+B1HHquMmsMumTi2y65
+         /H0MZ0qVEM/kT8ak4lLgGZYshjgyutaqttYhA9oRb9mcjgqiyrB92NS7DfwfXD+aqEd3
+         iFOpGBpyMRfgS2DS+q0ILs267RjyJ0oD1m3s3Pwsnp8txey2KJoyA8sgv/zWXpf6WLCX
+         zd5yIp6ojVD4ItFvobBklmwGek/39J8VBwUOx0aiq1PCQy6j2nTizSPOuxSn8Emwct/m
+         P4/H0/jkqDK8ebbWIABGmGoiPWNRyeGKVNOsbCIFEAcuTXY/hUY15Vt9cU01FSqVMOwP
+         2Ilw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725041054; x=1725645854;
+        d=1e100.net; s=20230601; t=1725044297; x=1725649097;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VMJEJ0mgWPS/u1UL/uZmUQxpZyJybEAjbxvXKENMJBs=;
-        b=CycGiAPvuxgdWO8iiakHOsKtdvE4PTjQgHM+DTty18uGpRJKsB/6XIDAQMRo/Dsxdj
-         FgjK4W1Q4xMr73HhtE4WIm/g1UhFRNpClNUzFyZ4zz3hkf1RAS+WRk0LhO+Zm2fs4KSn
-         d8w0mmnyeXFefDx9YkmaeZzvN7hAiWqu0MwP3X78dyUOBqT4q+hkvC7g7ssi7CWrtPnt
-         M7iamnehNIWoRiXc+TIjfEhO3vxrBHcK+iijduTYa2IqDFS0CnJOGhkKJgKCcL9+nsHK
-         WyFB75xHKaaZ+zskoCrwrOGB/jNoN9uIJ1rsVJ9FqgR84ncNP7VXMmKUHYOml/jHkpQz
-         +QOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWx6NtkpQcykZ4S4SLCqDysc1sC/aakInbp9OiGGjWLkv3AnoAOtUv1PnP78kkp68gN/HPMz+bZ@vger.kernel.org
-X-Gm-Message-State: AOJu0YzRjkvzCLGy7PPTojw5kF+sOCe1Mu9HLrfIaGDX97OewxUyOJZ8
-	OGFIozSTJ+yva5ZEAgs29tNfR0hG0C6dSTTe60ONczBfe63ANez0/RhCzOkdqartPZn81+21PwB
-	MXTTUXN3lJOmlNbv8vUhAV5X5Y5i1WMyckBSB
-X-Google-Smtp-Source: AGHT+IFkyiuWYnkDIp71WVsWgP2T1HZJoDhkqxwhm486aWIEW5rmTrY+udAgGqOeeDcK/tb9koL6OWG1lM6HODvxYHI=
-X-Received: by 2002:a17:907:980c:b0:a86:8f57:7de0 with SMTP id
- a640c23a62f3a-a89a37aa9famr218363766b.49.1725041053012; Fri, 30 Aug 2024
- 11:04:13 -0700 (PDT)
+        bh=UZnolaJe4rajFezTVdnx4rNTF9qWiAa95B6Y1PiHIzA=;
+        b=LF5WU/0jo0wAA3m1pxqkGL8enujXCn5xY+TnXCxMn7ClnqY0WyRTdrujqKFPs+c1ER
+         MXgfypzGkBKTUMiRwcbjFQSnyZQJZyHZdh9FzkSOG6g+ELfuz817udCjiSiBB/UH63uH
+         z5X55NRVqCVwQ+ndLrXfFIUFK0JLS4WCMoPTgfuZQibMzQW/DRrEO7O/PbR1KS+Rkvkp
+         MG8S+OKdKFVgpTVZRQgImntNQz2mEfq77qUtWs4y3xQY9oNs6ikMEGQpJpXcOl7Zxn5o
+         ijT6m7sCT18XgFlQ/qSLbj27Kqi+TqNoJygmG1GS2Wh2hRU1rRK7Pu4Q9hIKjQhYcZOU
+         2AlA==
+X-Forwarded-Encrypted: i=1; AJvYcCXfyhsBtuQ7xSK+p8L9AVDhgmljyDH2BJjoqPiJ0rL/HECaHiZcFqnbH06hmZtIv130/7h2vyPe@vger.kernel.org
+X-Gm-Message-State: AOJu0Yylmw4cO7zN3I2sxXlS+DjOZYtChlByNCMARRD/h20sXBaHNLeF
+	UTQ2YitCPoOSYrps0EPovlvYr0HylGc8qnz3WXwklxNZ227KQwJSo93ufcaCTq+uZC3y5Dk1p4H
+	+akyovKCznfzhSUlCW4KVP4LZ4FEJekmiiZNW
+X-Google-Smtp-Source: AGHT+IGVFNnng9wGBLPpCd921vapxG6IB+z9LW8W57dvIrFD/XNsZVHaAdv3h9rBeqTdJxQYrdHGR3zH4uSABjy1MVc=
+X-Received: by 2002:a05:6102:370e:b0:493:c3b2:b5ba with SMTP id
+ ada2fe7eead31-49a7773522cmr415968137.6.1725044297205; Fri, 30 Aug 2024
+ 11:58:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -73,12 +73,11 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <000000000000817cf10620e20d33@google.com>
 In-Reply-To: <000000000000817cf10620e20d33@google.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 30 Aug 2024 11:03:35 -0700
-Message-ID: <CAJD7tkZDMHqSs9eZZN5Hb34a-Wxcu+HwjOgpqXPiyGk7CA78hw@mail.gmail.com>
+From: Yu Zhao <yuzhao@google.com>
+Date: Fri, 30 Aug 2024 12:57:38 -0600
+Message-ID: <CAOUHufZ_GFPfq_Nx=4oBWOs+gRDdpe7gdSbdYPNQk+uLx9Nv8g@mail.gmail.com>
 Subject: Re: [syzbot] [cgroups?] [mm?] KCSAN: data-race in mem_cgroup_iter / mem_cgroup_iter
-To: syzbot <syzbot+e099d407346c45275ce9@syzkaller.appspotmail.com>, 
-	Kinsey Ho <kinseyho@google.com>
+To: syzbot <syzbot+e099d407346c45275ce9@syzkaller.appspotmail.com>
 Cc: akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
 	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, 
 	muchun.song@linux.dev, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
@@ -86,7 +85,7 @@ Cc: akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 30, 2024 at 1:05=E2=80=AFAM syzbot
+On Fri, Aug 30, 2024 at 2:05=E2=80=AFAM syzbot
 <syzbot+e099d407346c45275ce9@syzkaller.appspotmail.com> wrote:
 >
 > Hello,
@@ -123,11 +122,6 @@ it:
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 > BUG: KCSAN: data-race in mem_cgroup_iter / mem_cgroup_iter
-
-+Kinsey Ho
-
-This looks relevant to the recent mem_cgroup_iter() changes.
-
 >
 > read-write to 0xffff888114b82668 of 4 bytes by task 5527 on cpu 1:
 >  mem_cgroup_iter+0x28e/0x380 mm/memcontrol.c:1080
@@ -215,15 +209,6 @@ oogle 08/06/2024
 >
 > If the report is already addressed, let syzbot know by replying with:
 > #syz fix: exact-commit-title
->
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
->
+
+#syz fix: mm: restart if multiple traversals raced
 
