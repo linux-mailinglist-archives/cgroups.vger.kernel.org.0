@@ -1,55 +1,57 @@
-Return-Path: <cgroups+bounces-4620-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4621-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF41D966010
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 13:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 36E6396621A
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 14:56:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 833971F288F0
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 11:09:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC35B1F24C69
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 12:56:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BAA0199FB4;
-	Fri, 30 Aug 2024 11:06:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC5D4199951;
+	Fri, 30 Aug 2024 12:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lGiWByJk"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="1oQccz+x"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47B9815C153;
-	Fri, 30 Aug 2024 11:06:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50F6216DC3D;
+	Fri, 30 Aug 2024 12:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725016014; cv=none; b=K3dpGnN9PxHb8dE7F0OINdDWah3/Nz3ppG8RTl884voHtZhs2t2VfqftGtLwBYQh8VnS4zK+TYP9HV9ZzJCVsrje0SHCEbptigpeTuub0OkIymCp6WAvnhh5/zD8FMT1cUsqLsRTStiG3+X4WMCydAn1Pps0+fajaZofYPSPAWQ=
+	t=1725022603; cv=none; b=qSO7xdE5oFKrIpX4xfcbcRbkKlIyvaTX7GZd/sWhxY9zD8orkDUa1pQEo0kGrxa/rzFsSxLzJn6iQEG9JmHRra0XtO0VyGNvBekEq2OWsuUB7vuz38AzvtMdgHN2BENnR54jawr/sT8Ynm/rr6R7rEpoVLNDaLBXJSBwF6uLf+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725016014; c=relaxed/simple;
-	bh=zidPzPAWhV07kEXgyrT1WmbLrzldnbGPEyASdiaK8Ns=;
+	s=arc-20240116; t=1725022603; c=relaxed/simple;
+	bh=HDdh0qw8j46tMuVtpmR8HaScjp3wTf6OwP0fyiqI3T0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sPFrmA7JcXYWq5Vs1jAsPFcdtZ/3XJXtVFosvPXeASKvn9CfYIbV6YwfWsKOQUdXkep+glBN039cwkBy4MLXFrrW1NiCICgJMEx62nQl3gMlX0qJm1PJaRlURYLVFP+vOOGyNkohKgoGSjSDfC0+edAOa4NQnJlpYkNuva6x208=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lGiWByJk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6474C4CEC2;
-	Fri, 30 Aug 2024 11:06:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725016013;
-	bh=zidPzPAWhV07kEXgyrT1WmbLrzldnbGPEyASdiaK8Ns=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=L9tipzIam84yrWSXpBUzTF/tcSdi9ZA0gpVW0j+ZVXriCP6WJnmJTMvLPSWRhtseTbigLA+9ORGl9foT+1oVkR/J5yQmcmFUvB+2+QfvereOqqprJJIXgWmhbKgaKkcM8r2XIcZ0KGwpRK+R4lHbSoFbyaAnTwc8N1ElIP0ykxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=1oQccz+x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CD60C4CEC2;
+	Fri, 30 Aug 2024 12:56:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1725022603;
+	bh=HDdh0qw8j46tMuVtpmR8HaScjp3wTf6OwP0fyiqI3T0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lGiWByJkH5+Cv8a35yJy2SbUIgoM3HpCkqZZob8eiVKSGQUtwP8s1J1B/x/zn5mgG
-	 G94Y28L0KyFT6wr9aSfbtkkjvTddaPMGmcpTNiw/p7HNk4MqzARy3GOrfDndxc46kw
-	 6nJtIyPNWaCr6zoGKTK3v8V7zsppt4knoZXGSd2G1vBDIWjoq3ySRos7hPG3K0Zc6R
-	 bqYqyGkMaYg8tjY7+s2u3rJi/V3FMjUIhXB32nHFMG/NThEq0n8QOynKwavTz4jzhq
-	 wbfsA+ePUoScxXrBUo4qrJs5SMN/L83wfmGxzzoFydyl+gNyFBIDUreD1MGZsu2RFc
-	 34784x5EbxzGw==
-Date: Fri, 30 Aug 2024 01:06:52 -1000
-From: Tejun Heo <tj@kernel.org>
-To: void@manifault.com, peterz@infradead.org, mingo@redhat.com
-Cc: cgroups@vger.kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-	mkoutny@suse.com, kernel-team@meta.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCHSET v2 sched_ext/for-6.12] sched_ext: Add cgroup support
-Message-ID: <ZtGnzJsP8Smzx7JX@slm.duckdns.org>
-References: <20240826225822.791578-1-tj@kernel.org>
+	b=1oQccz+xZwRmnQq64cq6k543woWMPa1J5UAJWOf/gFnfXB5DpzIyJgLpoGTPP6emF
+	 cz+BUl9UGjQ6w2Cd59SLhsknxnqEzAE3OySGGiAwTZZyVPBStQnZbqfBqKq2jnSqs0
+	 wI5myt960HRb7AssjmwM2SIbh253J+EfYmY0Pjcg=
+Date: Fri, 30 Aug 2024 14:56:39 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Shivani Agarwal <shivani.agarwal@broadcom.com>
+Cc: stable@vger.kernel.org, longman@redhat.com, lizefan.x@bytedance.com,
+	tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com,
+	adityakali@google.com, sergeh@kernel.org, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org, ajay.kaher@broadcom.com,
+	alexey.makhalov@broadcom.com, vasavi.sirnapalli@broadcom.com,
+	Chen Ridong <chenridong@huawei.com>,
+	Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH v5.10-v5.15] cgroup/cpuset: Prevent UAF in
+ proc_cpuset_show()
+Message-ID: <2024083031-jinx-erupt-6780@gregkh>
+References: <20240830050453.692795-1-shivani.agarwal@broadcom.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -58,42 +60,68 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240826225822.791578-1-tj@kernel.org>
+In-Reply-To: <20240830050453.692795-1-shivani.agarwal@broadcom.com>
 
-On Mon, Aug 26, 2024 at 12:57:38PM -1000, Tejun Heo wrote:
-> This is v2 of sched_ext cgroup support patchset. Changes from v1
-> (http://lkml.kernel.org/r/20240808002550.731248-1-tj@kernel.org) are:
+On Thu, Aug 29, 2024 at 10:04:53PM -0700, Shivani Agarwal wrote:
+> From: Chen Ridong <chenridong@huawei.com>
 > 
-> - cgroup interface file visiblity toggling based on SCX_OPS flags is dropped
->   as it caused more confusion than helping anything. sched_ext now just
->   warns when unimplemented features are used.
+> [ Upstream commit 1be59c97c83ccd67a519d8a49486b3a8a73ca28a ]
 > 
-> This was originally taken from the cgroup integration part of the sched_ext
-> v6 patchset:
+> An UAF can happen when /proc/cpuset is read as reported in [1].
 > 
->   http://lkml.kernel.org/r/20240501151312.635565-1-tj@kernel.org
+> This can be reproduced by the following methods:
+> 1.add an mdelay(1000) before acquiring the cgroup_lock In the
+>  cgroup_path_ns function.
+> 2.$cat /proc/<pid>/cpuset   repeatly.
+> 3.$mount -t cgroup -o cpuset cpuset /sys/fs/cgroup/cpuset/
+> $umount /sys/fs/cgroup/cpuset/   repeatly.
 > 
-> This patchset is on top of sched_ext/for-6.12 (9ad2861b773d ("sched_ext:
-> Allow dequeue_task_scx to fail")) and contains the following patches:
+> The race that cause this bug can be shown as below:
 > 
->  0001-sched-Expose-css_tg.patch
->  0002-sched-Make-cpu_shares_read_u64-use-tg_weight.patch
->  0003-sched-Introduce-CONFIG_GROUP_SCHED_WEIGHT.patch
->  0004-sched_ext-Add-cgroup-support.patch
->  0005-sched_ext-Add-a-cgroup-scheduler-which-uses-flattene.patch
+> (umount)		|	(cat /proc/<pid>/cpuset)
+> css_release		|	proc_cpuset_show
+> css_release_work_fn	|	css = task_get_css(tsk, cpuset_cgrp_id);
+> css_free_rwork_fn	|	cgroup_path_ns(css->cgroup, ...);
+> cgroup_destroy_root	|	mutex_lock(&cgroup_mutex);
+> rebind_subsystems	|
+> cgroup_free_root	|
+> 			|	// cgrp was freed, UAF
+> 			|	cgroup_path_ns_locked(cgrp,..);
 > 
->  0001-0003 are sched core preparations. Straightforward. No functional
->  changes.
+> When the cpuset is initialized, the root node top_cpuset.css.cgrp
+> will point to &cgrp_dfl_root.cgrp. In cgroup v1, the mount operation will
+> allocate cgroup_root, and top_cpuset.css.cgrp will point to the allocated
+> &cgroup_root.cgrp. When the umount operation is executed,
+> top_cpuset.css.cgrp will be rebound to &cgrp_dfl_root.cgrp.
 > 
->  0004 adds cgroup support to sched_ext.
+> The problem is that when rebinding to cgrp_dfl_root, there are cases
+> where the cgroup_root allocated by setting up the root for cgroup v1
+> is cached. This could lead to a Use-After-Free (UAF) if it is
+> subsequently freed. The descendant cgroups of cgroup v1 can only be
+> freed after the css is released. However, the css of the root will never
+> be released, yet the cgroup_root should be freed when it is unmounted.
+> This means that obtaining a reference to the css of the root does
+> not guarantee that css.cgrp->root will not be freed.
 > 
->  0005 implements an example scheduler which uses the cgroup support.
+> Fix this problem by using rcu_read_lock in proc_cpuset_show().
+> As cgroup_root is kfree_rcu after commit d23b5c577715
+> ("cgroup: Make operations on the cgroup root_list RCU safe"),
+> css->cgroup won't be freed during the critical section.
+> To call cgroup_path_ns_locked, css_set_lock is needed, so it is safe to
+> replace task_get_css with task_css.
+> 
+> [1] https://syzkaller.appspot.com/bug?extid=9b1ff7be974a403aa4cd
+> 
+> Fixes: a79a908fd2b0 ("cgroup: introduce cgroup namespaces")
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+> Signed-off-by: Tejun Heo <tj@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> Signed-off-by: Shivani Agarwal <shivani.agarwal@broadcom.com>
+> ---
+>  kernel/cgroup/cpuset.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
 
-The sched core part is minimal with this series. Peter, unless you object,
-I'll route these through sched_ext/for-6.12.
+Now queued up, thanks.
 
-Thanks.
-
--- 
-tejun
+greg k-h
 
