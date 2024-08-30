@@ -1,90 +1,100 @@
-Return-Path: <cgroups+bounces-4650-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4651-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E1F5966A25
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 22:01:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E70BA966A31
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 22:06:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52A8D1C21D09
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 20:01:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A43F7283C41
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 20:06:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAFC81BF311;
-	Fri, 30 Aug 2024 20:01:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAE3A1BF32F;
+	Fri, 30 Aug 2024 20:06:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XTJj33sl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WoRy7XE1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 883C91BF301;
-	Fri, 30 Aug 2024 20:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1DBC1B86D6;
+	Fri, 30 Aug 2024 20:06:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725048076; cv=none; b=FYh77qCIXAAlTJj8UpkVd6MXAzzsAd+IbcXNflvnalwypAg1AmBivtbY91YSuil5SbXC82SOBEpjJbzWepHm48Ul0qHxQMaW4wTTd5mK/B54n8vOYCVkpGj937Jf9Ah+YKTontpyewYYXGejcbbc8EthwblFcGyv9uBcjIkHNlE=
+	t=1725048383; cv=none; b=sA9AGtR0X2stM7xq1Fcd8ZTMHJ1Xg3HtbeiEM878RT0BJfQ5ru0XOG21lBxCSFrPjUGZs9AgJ+5AIHxcVDxBSmhDiFfcl0n9LczMZCPJmvjOaBZo2P4QYKATj0nPEscmNp0gD4W/DYRxm22a3L8XqHqK6Ntm60SLwVoZ2OyhRRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725048076; c=relaxed/simple;
-	bh=IkNP+rL0nE1/+pswh0mJ/JZVMjfOwbI1RsqL5MB1ZL4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s/fYqY+ZAkx4DrILoaXLeEY2fl0bU7ccec5+NuVw3hCmnG4N77D3OX+9XmNx698YckxRf2umI1WT5Roz0P6alwwBO8JR/hKAkxGMSEPPUtEy3LYJ5Veke7wwsl6hTiD/dcfKktdR2wtyGoAEVlqr9vsev5NDM2NO6aSeZ0ASrzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XTJj33sl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CAFBC4CEC2;
-	Fri, 30 Aug 2024 20:01:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725048076;
-	bh=IkNP+rL0nE1/+pswh0mJ/JZVMjfOwbI1RsqL5MB1ZL4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XTJj33sl8cjMbJ/5OUF34D0LBkaYPmoy0kiGAGdEynbFNkc4rz/oW4lkeoVNglSfl
-	 3OuN+kv8lRIFVtZB6l63+55TGcAo+pJJq+zGHRMHxn1hYYNX5nFwYDeh8FwZg3ulAg
-	 Ft8RbuU66qio4kz2Y+4cJS0zH9Ay7y1t5DvS3aHZbvFu8FCyMOYgwdC+ILfXA8rWWc
-	 l3WHAKkWJ+af1h8R49ZryZsjfoiKRUGsjVgOH3vlMqldu02hnEBtyLKWWtZPfbhmsz
-	 8rhGJFtkrASUR/DBpb8qMPcdiD+BY1ZyCLx64djaz+Ads4e6xEObNEMfQZdtEUzi4r
-	 b+r4zkACv8FOg==
-Date: Fri, 30 Aug 2024 10:01:15 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Chen Ridong <chenridong@huawei.com>
-Cc: lizefan.x@bytedance.com, hannes@cmpxchg.org, longman@redhat.com,
-	adityakali@google.com, sergeh@kernel.org, mkoutny@suse.com,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	chenridong@huaweicloud.com
-Subject: Re: [PATCH v4 -next 00/12] cgroup:cpuset:separate legacy cgroup v1
- code and put under config option
-Message-ID: <ZtIlC7pH17WkGXE6@slm.duckdns.org>
-References: <20240830100229.953012-1-chenridong@huawei.com>
+	s=arc-20240116; t=1725048383; c=relaxed/simple;
+	bh=cWSiC3lXQnjNwNsl8WkPzx8Q6+jpP9g7prZ8FN3pDiU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lsPadvJ240RaghaSWnBbC5lC+s0fNaZmaYi4ncwMGAh99OHh9SdWmuOFaVsU1v5/Qs8KBOqBX9CMkZalA/mqi7oNfsijdc6UzjLjJd4QfInRWPlly1VYleIlEKOVh2qb3JELHm1263whCkyxq7sGD/4NRQcMteGmaSRgXu5AR6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WoRy7XE1; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5353d0b7463so3993512e87.3;
+        Fri, 30 Aug 2024 13:06:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725048380; x=1725653180; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=cWSiC3lXQnjNwNsl8WkPzx8Q6+jpP9g7prZ8FN3pDiU=;
+        b=WoRy7XE1I4/xznFIwggo7Q6yNSmMuRifFJweOCfFGog0ojEK8SxPGZIpEyfSfWpp0O
+         CYJKDlDn+/3NNr904lAtGqCJknmookK3cgEMpN8nexptc8uIXBt3f6p1k7T4qrhyRr8k
+         cLjIqjQaG19oGbTZ+zQ3nf4BJzROEG5ztWJguSCCnIhTrtpL1/xnIcuEahwkTzNjByxq
+         YSjpdpo6DTtIxx9MeLNBs2iiKzAVkKgjL6Gtq1moBqKmr3arqpRDdV+Xid21RdTdMgMl
+         sY2WRUEmNgRXMtExBVzWxMUoUl98IKZfRUxICGexOgeX4QH3O8DZ2hkRzA1L2VDd/PUN
+         KvBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725048380; x=1725653180;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cWSiC3lXQnjNwNsl8WkPzx8Q6+jpP9g7prZ8FN3pDiU=;
+        b=uCxAP9+UaR6qnhkAyngAbpXCvJpIyZCPeu7egrFT+434mfEwzmgX+1K0d59YJygF6K
+         ahuijhUl5fbCfraXJ23rzPcqREe83V9L4Ew0yDLp8dzTWv3Ub8SYiyw5Rjv0TFclsbIA
+         NaK6Kkrlz+qwkwFfIOEnPfHNOL46doPMd69MVLDsKtdlEqvPilgjQWPT8aMKraYhGt6H
+         kISDYTCGmuXm9Oifw6WzP1FiyohTbKOVqnyPyprv8GQ/4sEPsO0mfHaZudl6AQryIDG/
+         DQ/55cbo8SdFfKURrE/sLto6y4HqnW91IhsvqXpCVBZiEVnRrl+wwyzyp3a06KIL4fjU
+         /29g==
+X-Forwarded-Encrypted: i=1; AJvYcCU05Rlrpkss84As7uCELYp+9o4/qomFauKuX1XTW6d3U6jxHQpd8PZLzejYuVN6hFX86kZLCxnN2qON4E0=@vger.kernel.org, AJvYcCWg3sLck6iGnUVp3s2zsbkAhDtB4zP6XQntWCVBxJSoKfw1qvhpyR+gYA82X/Pqn49FZySdhVIxXcY3ATpigjS2@vger.kernel.org
+X-Gm-Message-State: AOJu0YwYWOpqEhypdQFn/+5KfBSgIFBimjujsPM+6oXrGlMEyFBmu3Lb
+	ou2xHxraYOtjKFHq67S/t49uG4iMaSEQsp0XG2RKWwJjaTSuBPPjvITYIIHKe+uYL6AzvJYKTSA
+	/0ndjFOUToScCTZo30HCvmQ2oscY=
+X-Google-Smtp-Source: AGHT+IFvRM/OgbBe7Gr0V4rG8sg0ZG+w5OS2fFDBcptAHWkTHk8VHqd2Jhi7uoYeQyRVWNMtCfi/T1jVxes+Fy0z+cU=
+X-Received: by 2002:a05:6512:acb:b0:533:4505:5b2a with SMTP id
+ 2adb3069b0e04-53546b4a8c9mr2832666e87.28.1725048379086; Fri, 30 Aug 2024
+ 13:06:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240830100229.953012-1-chenridong@huawei.com>
+References: <20240830141939.723729-1-joshua.hahnjy@gmail.com>
+ <20240830141939.723729-2-joshua.hahnjy@gmail.com> <ZtIgdEt9RSU4MCIP@slm.duckdns.org>
+In-Reply-To: <ZtIgdEt9RSU4MCIP@slm.duckdns.org>
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+Date: Fri, 30 Aug 2024 16:06:07 -0400
+Message-ID: <CAN+CAwP-VnCAH=OpNSG7HbBj3TJsrRQ2Rcs=e6X9DGrTEQLKuA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] Tracking cgroup-level niced CPU time
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, lizefan.x@bytedance.com, mkoutny@suse.com, 
+	shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Aug 30, 2024 at 10:02:17AM +0000, Chen Ridong wrote:
-> Cgroups v2 have been around for a while and many users have fully adopted
-> them, so they never use cgroups v1 features and functionality. Yet they
-> have to "pay" for the cgroup v1 support anyway:
-> 1) the kernel binary contains an unused cgroup v1 code,
-> 2) some code paths have additional checks which are not needed,
-> 3) some common structures like task_struct and mem_cgroup contain unused
->    cgroup v1-specific members.
-> 
-> Cgroup memory controller has already separated legacy code to
-> memory-v1.c. So it is time to do the same thing for cpuset controller.
-> 
-> This patchset aims to do:
-> 1) moving cgroup v1-specific cpuset code to the new cpuset-v1.c file,
-> 2) putting definitions shared by cpuset.c and cpuset-v1.c into the
->    cpuset-internal.h header,
-> 3) introducing the CONFIG_CPUSETS_V1 config option, turned off by default,
-> 4) making cpuset-v1.c to compile only if CONFIG_CPUSETS_V1 is set.
+Hello, thank you for reviewing the v2.
 
-Applied the series to cgroup/for-6.12.
+> Patch looks fine to me but can you please do the followings?
+>
+> - Add subsystem prefix to the patch titles. Look other commits for examples.
+> - Add Signed-off-by to both.
+> --
+> tejun
 
-Thanks.
+I will send out a v3 with the signed-off-by, and I will add
+cgroup/rstat to the patch title.
+Thank you again!
 
--- 
-tejun
+Joshua
 
