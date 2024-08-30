@@ -1,214 +1,139 @@
-Return-Path: <cgroups+bounces-4645-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4646-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0F10966939
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 20:58:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7BCE966944
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 21:05:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9457283FCA
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 18:58:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 648CD1F235DB
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 19:05:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A04411BC099;
-	Fri, 30 Aug 2024 18:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE02F1BC9FF;
+	Fri, 30 Aug 2024 19:04:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CNH1DZq0"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="05cdAgAn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-vs1-f51.google.com (mail-vs1-f51.google.com [209.85.217.51])
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A0B1BBBE8
-	for <cgroups@vger.kernel.org>; Fri, 30 Aug 2024 18:58:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 016331B29D2
+	for <cgroups@vger.kernel.org>; Fri, 30 Aug 2024 19:04:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725044300; cv=none; b=BOjls8vTlsyz+CIGQ/DwEcqcYtMgWxwPw9MrKKR98hfAWzcfs8lLp5mlu9QU3FJ9CC5P2uc3OgFkDhrELGRHbejJXv6HJNVojK+t5DNU3H0D5WL+piDayrNHwqnuYIjPy/GujAy7IvRIy5WmEXuv3VNuc0vQwLcz8CYVCHxFx7k=
+	t=1725044696; cv=none; b=PwobuBittNUaQOtooIzYNBhlcnQZWV6vy7ceCLGVqEWzo2U0tkQuFO/7QU17WcvrLCSD1n6rg5nL19rhhG7zuO6hjggMAcOVWHt3wDfmuWXyU/BahPoh/mckwmXdViDJfuQcfW6xX8vb8tfQ8Ym0YDj2+a6qwPc78DjPUGJ9bfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725044300; c=relaxed/simple;
-	bh=xRoBQ/oq+gT5YpsAkNHTlvl9LLh8kHrX89dUdo46+2g=;
+	s=arc-20240116; t=1725044696; c=relaxed/simple;
+	bh=k0LS5qtBUswMgqvBfneiqFMpv3IOMEx9hyg1k8+1YPM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DC/5U1LBWiTp3cEZ1wNiDwoxfMoy1NWczrYbr+wSWy6OyzFzb5L+QeKucOFIUXoQ3JL+SdWuGmSlqxhp83ubPFV2wXxhvvULyVl06DoYPejIFyodoKDaouZYru09o5F3uq+hXwWq7MZhegh7NdBGz3OYL1JkTjvxh3QtsNY9de0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CNH1DZq0; arc=none smtp.client-ip=209.85.217.51
+	 To:Cc:Content-Type; b=VJ4Oqu+Mv/X0KJeIRDKBUgmzovQxmnyJp92o3TQtONuo6sLoBMYoC71P4hi2aois5jIXcpeKU1jVYKXkZl67rAi/i/dzQV1ljOEpe8evQGtshAcxT+fee7iAPzMS+TqeRSFsU5OLFyiaedxmHb2OkwIPDiGylQYCR5fR2hWHrHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=05cdAgAn; arc=none smtp.client-ip=209.85.167.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f51.google.com with SMTP id ada2fe7eead31-498d7ab8fefso812718137.1
-        for <cgroups@vger.kernel.org>; Fri, 30 Aug 2024 11:58:18 -0700 (PDT)
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3df03d1f1ddso1356340b6e.0
+        for <cgroups@vger.kernel.org>; Fri, 30 Aug 2024 12:04:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1725044297; x=1725649097; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1725044694; x=1725649494; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UZnolaJe4rajFezTVdnx4rNTF9qWiAa95B6Y1PiHIzA=;
-        b=CNH1DZq0kjDPRs8fZCsXsKZTsK8BikDe3NfuFvDLtBJ+lFB+B1HHquMmsMumTi2y65
-         /H0MZ0qVEM/kT8ak4lLgGZYshjgyutaqttYhA9oRb9mcjgqiyrB92NS7DfwfXD+aqEd3
-         iFOpGBpyMRfgS2DS+q0ILs267RjyJ0oD1m3s3Pwsnp8txey2KJoyA8sgv/zWXpf6WLCX
-         zd5yIp6ojVD4ItFvobBklmwGek/39J8VBwUOx0aiq1PCQy6j2nTizSPOuxSn8Emwct/m
-         P4/H0/jkqDK8ebbWIABGmGoiPWNRyeGKVNOsbCIFEAcuTXY/hUY15Vt9cU01FSqVMOwP
-         2Ilw==
+        bh=2+oed5X3ICd5fPpoJH1QwaNbZnd+/2NqwMirUoUrwaQ=;
+        b=05cdAgAnYcQGkomCEufhYs8qmpB3wgHyUrb3b5KD5UNQKRu+S0phtePBH4kj9XY//Z
+         6tg1DXlyLmzYkH5kQF3wIvyMO+KoF9XIZw3/F1GIcGmM+0qdoFMHix3bnwneKrhcXE9n
+         OIVKLHuGFR7DWqMUNF+xfO9Peva7ZHiXvhFQwVK5xxjwMf2rZLp0Ip7SHS2Fy0PTeaUg
+         Dh89kJUlc8vgVuSbIYOoXQKU21A4K/I4lirKRMFj61vmzJFD0QfiiGbKpPH5Ri/aRU62
+         KaivOgqolS8BwRv02E6tueZUdVCG0olDnkhDeR8XKOg2YdbAtfVSsXvpeLaj3sjio67U
+         Or1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725044297; x=1725649097;
+        d=1e100.net; s=20230601; t=1725044694; x=1725649494;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UZnolaJe4rajFezTVdnx4rNTF9qWiAa95B6Y1PiHIzA=;
-        b=LF5WU/0jo0wAA3m1pxqkGL8enujXCn5xY+TnXCxMn7ClnqY0WyRTdrujqKFPs+c1ER
-         MXgfypzGkBKTUMiRwcbjFQSnyZQJZyHZdh9FzkSOG6g+ELfuz817udCjiSiBB/UH63uH
-         z5X55NRVqCVwQ+ndLrXfFIUFK0JLS4WCMoPTgfuZQibMzQW/DRrEO7O/PbR1KS+Rkvkp
-         MG8S+OKdKFVgpTVZRQgImntNQz2mEfq77qUtWs4y3xQY9oNs6ikMEGQpJpXcOl7Zxn5o
-         ijT6m7sCT18XgFlQ/qSLbj27Kqi+TqNoJygmG1GS2Wh2hRU1rRK7Pu4Q9hIKjQhYcZOU
-         2AlA==
-X-Forwarded-Encrypted: i=1; AJvYcCXfyhsBtuQ7xSK+p8L9AVDhgmljyDH2BJjoqPiJ0rL/HECaHiZcFqnbH06hmZtIv130/7h2vyPe@vger.kernel.org
-X-Gm-Message-State: AOJu0Yylmw4cO7zN3I2sxXlS+DjOZYtChlByNCMARRD/h20sXBaHNLeF
-	UTQ2YitCPoOSYrps0EPovlvYr0HylGc8qnz3WXwklxNZ227KQwJSo93ufcaCTq+uZC3y5Dk1p4H
-	+akyovKCznfzhSUlCW4KVP4LZ4FEJekmiiZNW
-X-Google-Smtp-Source: AGHT+IGVFNnng9wGBLPpCd921vapxG6IB+z9LW8W57dvIrFD/XNsZVHaAdv3h9rBeqTdJxQYrdHGR3zH4uSABjy1MVc=
-X-Received: by 2002:a05:6102:370e:b0:493:c3b2:b5ba with SMTP id
- ada2fe7eead31-49a7773522cmr415968137.6.1725044297205; Fri, 30 Aug 2024
- 11:58:17 -0700 (PDT)
+        bh=2+oed5X3ICd5fPpoJH1QwaNbZnd+/2NqwMirUoUrwaQ=;
+        b=SuchQzORxGuWrZL1z48qs84oFTx8Fx9oDbFKt6a8/BtxGHyvkgiLaZF6vWXpyS4A8B
+         YH5mx5RqNJ/kPVhHTV7RAOVmHt7vMEQ04Glt2v3FtA2HjyyYatX1hTeszRua0+nBDecI
+         ZEW9OPwjhLoQAtDAt0R353JEipjMSQ6MCnLZPjUWiHSxqWNmRh0LOqIDMalKifnJG05+
+         w/KJKwXGf4uW2deXh6KirfpTeaJ9mJXBcRqxVSCNmserCLx3NUVEWOOlMHx0s+ZfFQBD
+         HZ/x5ZT5oN9OuzQn7Do4UbA7w40z3bpFukTCf9Rcy2FFIkUNcUmBoc058FnaO9Jec1TG
+         ID5g==
+X-Forwarded-Encrypted: i=1; AJvYcCVOO7Ja+0AyjCj26QUyD4I47xNa2E1IuknQICWJqJ++GHHrb2bihce/QRUs+teZFcrkZQQ+V1kO@vger.kernel.org
+X-Gm-Message-State: AOJu0YzH1rXKSoP+1lhFsqv4qM8x9c5poAgnaAFDrPqMRTXH5yw+xrxn
+	D4qWOfdVp+PhiYwt9Tcz6XdBch1fdbjGixVcy/md4809X2nX1VQvO5LZOwLe3Pw1pOwAS+XawEL
+	idIKRRNQHr7TZaQKbyGAtqfvsm5AGFH872n4K
+X-Google-Smtp-Source: AGHT+IHX9aU8yWEDpT+grmlscohk5Q8oTiUVyrd49xn2AheCv+N+Z7EnIH9qwE1WwtSRS8d6p9mAAqZrO4lBWzUbTTs=
+X-Received: by 2002:a05:6808:4c0e:b0:3d9:2601:891c with SMTP id
+ 5614622812f47-3df05dbe483mr6485390b6e.30.1725044693783; Fri, 30 Aug 2024
+ 12:04:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <000000000000817cf10620e20d33@google.com>
-In-Reply-To: <000000000000817cf10620e20d33@google.com>
+References: <20240827230753.2073580-1-kinseyho@google.com> <20240827230753.2073580-5-kinseyho@google.com>
+ <56d42242-37fe-b94f-d3cb-00673f1e5efb@google.com> <CAF6N3nVWPJT+qrcz2jGw+sNoKge1qgDGSYg5f0Ur8a6O8ziUQg@mail.gmail.com>
+In-Reply-To: <CAF6N3nVWPJT+qrcz2jGw+sNoKge1qgDGSYg5f0Ur8a6O8ziUQg@mail.gmail.com>
 From: Yu Zhao <yuzhao@google.com>
-Date: Fri, 30 Aug 2024 12:57:38 -0600
-Message-ID: <CAOUHufZ_GFPfq_Nx=4oBWOs+gRDdpe7gdSbdYPNQk+uLx9Nv8g@mail.gmail.com>
-Subject: Re: [syzbot] [cgroups?] [mm?] KCSAN: data-race in mem_cgroup_iter / mem_cgroup_iter
-To: syzbot <syzbot+e099d407346c45275ce9@syzkaller.appspotmail.com>
-Cc: akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, 
-	muchun.song@linux.dev, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
-	syzkaller-bugs@googlegroups.com
+Date: Fri, 30 Aug 2024 13:04:17 -0600
+Message-ID: <CAOUHufbREU2C0_r3K7Aqj01nYW+WeWyoPJZAkHkTM+6nbUsWGw@mail.gmail.com>
+Subject: Re: [PATCH mm-unstable v3 4/5] mm: restart if multiple traversals raced
+To: Kinsey Ho <kinseyho@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Hugh Dickins <hughd@google.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	Yosry Ahmed <yosryahmed@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, mkoutny@suse.com, 
+	baolin.wang@linux.alibaba.com, tjmercier@google.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 30, 2024 at 2:05=E2=80=AFAM syzbot
-<syzbot+e099d407346c45275ce9@syzkaller.appspotmail.com> wrote:
+On Fri, Aug 30, 2024 at 11:45=E2=80=AFAM Kinsey Ho <kinseyho@google.com> wr=
+ote:
 >
-> Hello,
+> On Fri, Aug 30, 2024 at 3:04=E2=80=AFAM Hugh Dickins <hughd@google.com> w=
+rote:
+> >
+> > mm-unstable commit 954dd0848c61 needs the fix below to be merged in;
+> > but the commit after it (the 5/5) then renames "memcg" to "next",
+> > so that one has to be adjusted too.
+> >
+> > [PATCH] mm: restart if multiple traversals raced: fix
+> >
+> > mem_cgroup_iter() reset memcg to NULL before the goto restart, so that
+> > goto out_unlock does not then return an ungotten memcg, causing oopses
+> > on stale memcg in many places (often in memcg_rstat_updated()).
+> >
+> > Signed-off-by: Hugh Dickins <hughd@google.com>
+> > ---
+> >  mm/memcontrol.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 6f66ac0ad4f0..dd82dd1e1f0a 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -1049,6 +1049,7 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgr=
+oup *root,
+> >                 if (cmpxchg(&iter->position, pos, memcg) !=3D pos) {
+> >                         if (css && css !=3D &root->css)
+> >                                 css_put(css);
+> > +                       memcg =3D NULL;
+> >                         goto restart;
+> >                 }
+> >
+> > --
+> > 2.35.3
 >
-> syzbot found the following issue on:
+> Hi Andrew,
 >
-> HEAD commit:    20371ba12063 Merge tag 'drm-fixes-2024-08-30' of https://=
-g..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D107a846398000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D6fafac02e339c=
-c84
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3De099d407346c452=
-75ce9
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Deb=
-ian) 2.40
->
-> Unfortunately, I don't have any reproducer for this issue yet.
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/4a8763df1c20/dis=
-k-20371ba1.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/f9678a905383/vmlinu=
-x-20371ba1.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/ef6e49adc393/b=
-zImage-20371ba1.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+e099d407346c45275ce9@syzkaller.appspotmail.com
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> BUG: KCSAN: data-race in mem_cgroup_iter / mem_cgroup_iter
->
-> read-write to 0xffff888114b82668 of 4 bytes by task 5527 on cpu 1:
->  mem_cgroup_iter+0x28e/0x380 mm/memcontrol.c:1080
->  shrink_node_memcgs mm/vmscan.c:5924 [inline]
->  shrink_node+0x74a/0x1d40 mm/vmscan.c:5948
->  shrink_zones mm/vmscan.c:6192 [inline]
->  do_try_to_free_pages+0x3c6/0xc50 mm/vmscan.c:6254
->  try_to_free_mem_cgroup_pages+0x1f3/0x4f0 mm/vmscan.c:6586
->  try_charge_memcg+0x2bc/0x810 mm/memcontrol.c:2210
->  try_charge mm/memcontrol-v1.h:20 [inline]
->  charge_memcg mm/memcontrol.c:4439 [inline]
->  mem_cgroup_swapin_charge_folio+0x107/0x1a0 mm/memcontrol.c:4524
->  __read_swap_cache_async+0x2b7/0x520 mm/swap_state.c:516
->  swap_cluster_readahead+0x276/0x3f0 mm/swap_state.c:680
->  swapin_readahead+0xe4/0x760 mm/swap_state.c:882
->  do_swap_page+0x3da/0x1ef0 mm/memory.c:4119
->  handle_pte_fault mm/memory.c:5524 [inline]
->  __handle_mm_fault mm/memory.c:5664 [inline]
->  handle_mm_fault+0x8cb/0x2a30 mm/memory.c:5832
->  do_user_addr_fault arch/x86/mm/fault.c:1338 [inline]
->  handle_page_fault arch/x86/mm/fault.c:1481 [inline]
->  exc_page_fault+0x3b9/0x650 arch/x86/mm/fault.c:1539
->  asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
->
-> read to 0xffff888114b82668 of 4 bytes by task 5528 on cpu 0:
->  mem_cgroup_iter+0xba/0x380 mm/memcontrol.c:1018
->  shrink_node_memcgs mm/vmscan.c:5869 [inline]
->  shrink_node+0x458/0x1d40 mm/vmscan.c:5948
->  shrink_zones mm/vmscan.c:6192 [inline]
->  do_try_to_free_pages+0x3c6/0xc50 mm/vmscan.c:6254
->  try_to_free_mem_cgroup_pages+0x1f3/0x4f0 mm/vmscan.c:6586
->  try_charge_memcg+0x2bc/0x810 mm/memcontrol.c:2210
->  try_charge mm/memcontrol-v1.h:20 [inline]
->  charge_memcg mm/memcontrol.c:4439 [inline]
->  mem_cgroup_swapin_charge_folio+0x107/0x1a0 mm/memcontrol.c:4524
->  __read_swap_cache_async+0x2b7/0x520 mm/swap_state.c:516
->  swap_cluster_readahead+0x276/0x3f0 mm/swap_state.c:680
->  swapin_readahead+0xe4/0x760 mm/swap_state.c:882
->  do_swap_page+0x3da/0x1ef0 mm/memory.c:4119
->  handle_pte_fault mm/memory.c:5524 [inline]
->  __handle_mm_fault mm/memory.c:5664 [inline]
->  handle_mm_fault+0x8cb/0x2a30 mm/memory.c:5832
->  do_user_addr_fault arch/x86/mm/fault.c:1389 [inline]
->  handle_page_fault arch/x86/mm/fault.c:1481 [inline]
->  exc_page_fault+0x296/0x650 arch/x86/mm/fault.c:1539
->  asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
->  __get_user_8+0x11/0x20 arch/x86/lib/getuser.S:94
->  fetch_robust_entry kernel/futex/core.c:783 [inline]
->  exit_robust_list+0x31/0x280 kernel/futex/core.c:811
->  futex_cleanup kernel/futex/core.c:1043 [inline]
->  futex_exit_release+0xe3/0x130 kernel/futex/core.c:1144
->  exit_mm_release+0x1a/0x30 kernel/fork.c:1637
->  exit_mm+0x38/0x190 kernel/exit.c:544
->  do_exit+0x55e/0x1720 kernel/exit.c:869
->  do_group_exit+0x102/0x150 kernel/exit.c:1031
->  get_signal+0xf2f/0x1080 kernel/signal.c:2917
->  arch_do_signal_or_restart+0x95/0x4b0 arch/x86/kernel/signal.c:310
->  exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
->  exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
->  __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
->  syscall_exit_to_user_mode+0x59/0x130 kernel/entry/common.c:218
->  do_syscall_64+0xd6/0x1c0 arch/x86/entry/common.c:89
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
->
-> value changed: 0x00000522 -> 0x00000528
->
-> Reported by Kernel Concurrency Sanitizer on:
-> CPU: 0 UID: 0 PID: 5528 Comm: syz.3.488 Not tainted 6.11.0-rc5-syzkaller-=
-00176-g20371ba12063 #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 08/06/2024
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> syz.3.488 (5528) used greatest stack depth: 9096 bytes left
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
+> Would you prefer that I resend the series with Hugh's fix inserted?
 
-#syz fix: mm: restart if multiple traversals raced
+Please send a new version to get this properly fixed, preferably move
+the initialization of `memcg` from the declaration to right below
+`restart`, and also add the following footers:
+
+Reported-by: syzbot+e099d407346c45275ce9@syzkaller.appspotmail.com
+Closes: https://lore.kernel.org/000000000000817cf10620e20d33@google.com/
 
