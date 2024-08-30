@@ -1,189 +1,186 @@
-Return-Path: <cgroups+bounces-4602-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4603-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAAAD96575D
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 08:10:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C602965960
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 10:05:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75C501F24F9F
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 06:10:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D945C2819BD
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 08:05:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23C1E14D44F;
-	Fri, 30 Aug 2024 06:10:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Wigjlgn+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 142D916A92F;
+	Fri, 30 Aug 2024 08:05:24 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBDB753389
-	for <cgroups@vger.kernel.org>; Fri, 30 Aug 2024 06:10:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CDB2166F0D
+	for <cgroups@vger.kernel.org>; Fri, 30 Aug 2024 08:05:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724998242; cv=none; b=Pu7gl5HSOjZa8r7gUfhrZHawPY6w+kmQHA6Sw/k+iR3+fia3OLYhOgFVjDVu7KXmGeh2IgSsc2ESGgKPRfvCqPmFI1h7dybZY4+sVCJh1jeTI8BpNKDpDSVxbekJXkYrXJkH1cFMt+tb8fv1cEI6XqbFK4LaNdOk7jAdLjd8uIs=
+	t=1725005123; cv=none; b=OH1JdGhG1JYZNIbYcvjos6WlfergT5fMz+VArvZ2QEJyZdrT8/A7GmCyWzP2vAJ27kNEr/zg+8SzDKWjiPXsa/OUKRMJgNIZkGAsyH+/nXTaIHZqJhgcVZxMMwhXRvemDDIC3VRypnOeMMHr6Z2Q9oN8JogCb+8oaPTCODAHr8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724998242; c=relaxed/simple;
-	bh=nkHJbeEg0+QEjgdCbTpKvNB45+hmK9J6uhHUFwVHosU=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=bSFJ2RXz8PKFexgDBYBnYwtxcetX+1mUcLkxrixkOXZGyRWrLLqb+S+MmHmQuQw/kb2C/glId8GhC2LEHLEzx/AFGekSVwbYsKpqqDVgnBYt5rCm5BIQBTn+ihjTEdp244Advpr7/qvqtJRl+7B82hmKntRn/ywLrMBU4HK6K08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Wigjlgn+; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Content-Type: text/plain;
-	charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1724998239;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nkHJbeEg0+QEjgdCbTpKvNB45+hmK9J6uhHUFwVHosU=;
-	b=Wigjlgn+sIZ3NIO96mtgt0axwGAJBzKGSc1KMvciFjPOCGlYdCNu5D48n351f/f7R7IK5S
-	4xp05lYeArtrcngFl+gGUYx7YKrPOMOUPi0fGuzMKMRM7eIPyBsxEMxsffQQm5bZ2QJIu3
-	XSPiLgY/5PlPdxI00yzLKHgZfuUGY2E=
+	s=arc-20240116; t=1725005123; c=relaxed/simple;
+	bh=5bxH43X77Gu2Y9/t8j76aLLa2m9qKHtm2jfHVQ3UmXc=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=E7jHL90dr+S7470gp6f9F/Lyoc60iUE3YcH2u2B1FO3em6jwVdIB1/Iey9iRqqW76sIfP0PgYSQDfNY/ZvFR/6xmye4Jh8yZPld1Ab5XL98A6bXfhEgH/5y2fGMFYMirVqKuEy3PuGxbm//SibrAzBPzXE5xJ1svQDytlTeqY3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-82a29c9d39dso24750139f.2
+        for <cgroups@vger.kernel.org>; Fri, 30 Aug 2024 01:05:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725005121; x=1725609921;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=U9D39ijUcX6E97R2kAMdljqeFOm8YJ4EqXsQjchNZiY=;
+        b=pHrW0ktDBxhrXTdGoL+76Oku7dRT0SXZ5mJoRWlJs3sk1/6/dZOj3gWqoCB4vRbllr
+         b8IP9WqehjMid46SKaGoK2KdbB5q2AIuroBvhRSJ0ZzY33QuWlCq+S3nWZi8i2DhNB+i
+         1TChXudUQDd17EX5EIA9i5sMrohjpSO7x0XRL3Ml1Yimi1ICwqj3xjtEyEqmjXQJ2Yj2
+         NidxYPcbngOWYvY5UVLFHGsCWmzZSgGqyJb2BxfAhi7AZwCTLdAQO0rlZsJ3AKbb95Qp
+         XM1MFrs/YzDo82Y3spVkk8JctVm8kjAjtTidhk38YCLAQHDWuQMpbRb4jt1ekfk7Xj4/
+         2pjw==
+X-Forwarded-Encrypted: i=1; AJvYcCXnSBelHJY9CsScWbrGF8B7frJMhJ0ceWY/bKH1c1GQBOldeiDaXj5hxHc641dG3vzfqCtqO2qj@vger.kernel.org
+X-Gm-Message-State: AOJu0YwVbzCl85u00hlVAnkQBQnGkGqTvHJoki8LNZo+GRG5Up7K6fP+
+	h+CN3uBI1mD7GlX57fqQPusjH7ZweKeNkCHQtTQsOCwlY844qslpFeCG0ET4i2jbCOKu893V0My
+	I+F3F9WIfgy5hS8WlorZ1GVXSflJpzFaal3+S2N/c/YsrLhkEWr2NC8c=
+X-Google-Smtp-Source: AGHT+IH6dTGzDaHrL29Cb2aP05jI7sTyMfIbtjCfwK9fwwhTB7LcWl252s1jdPMPExyEnJ6/XTmAd/D8Zrder1VHeO2X1txxNHvh
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
-Subject: Re: [PATCH v1] memcg: add charging of already allocated slab objects
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <nt5zhccndtrj2pyyjm6wkah4iizzijdamaqce24t7nqioy4c5y@3vtipktwtzkn>
-Date: Fri, 30 Aug 2024 14:09:57 +0800
-Cc: Roman Gushchin <roman.gushchin@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>,
- Vlastimil Babka <vbabka@suse.cz>,
- David Rientjes <rientjes@google.com>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>,
- Eric Dumazet <edumazet@google.com>,
- "David S . Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Linux Memory Management List <linux-mm@kvack.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Meta kernel team <kernel-team@meta.com>,
- cgroups@vger.kernel.org,
- netdev <netdev@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <6088647D-147A-4704-BBA1-8CEDEDAE2885@linux.dev>
-References: <20240826232908.4076417-1-shakeel.butt@linux.dev>
- <Zs1CuLa-SE88jRVx@google.com>
- <yiyx4fh6dklqpexfstkzp3gf23hjpbjujci2o6gs7nb4sutzvb@b5korjrjio3m>
- <EA5F7851-B519-4570-B299-8A096A09D6E7@linux.dev>
- <a5rzw7uuf7pgrhhut7keoy66c6u4rgiuxx2qmwywbvl2iktfku@23dzxczejcet>
- <97F404E9-C3C2-4BD2-9539-C40237E71B2B@linux.dev>
- <nt5zhccndtrj2pyyjm6wkah4iizzijdamaqce24t7nqioy4c5y@3vtipktwtzkn>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+MIME-Version: 1.0
+X-Received: by 2002:a92:c54a:0:b0:39b:2133:8ee5 with SMTP id
+ e9e14a558f8ab-39f40ed447cmr493765ab.1.1725005121545; Fri, 30 Aug 2024
+ 01:05:21 -0700 (PDT)
+Date: Fri, 30 Aug 2024 01:05:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000817cf10620e20d33@google.com>
+Subject: [syzbot] [cgroups?] [mm?] KCSAN: data-race in mem_cgroup_iter / mem_cgroup_iter
+From: syzbot <syzbot+e099d407346c45275ce9@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, 
+	muchun.song@linux.dev, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    20371ba12063 Merge tag 'drm-fixes-2024-08-30' of https://g..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=107a8463980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fafac02e339cc84
+dashboard link: https://syzkaller.appspot.com/bug?extid=e099d407346c45275ce9
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/4a8763df1c20/disk-20371ba1.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f9678a905383/vmlinux-20371ba1.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ef6e49adc393/bzImage-20371ba1.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e099d407346c45275ce9@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KCSAN: data-race in mem_cgroup_iter / mem_cgroup_iter
+
+read-write to 0xffff888114b82668 of 4 bytes by task 5527 on cpu 1:
+ mem_cgroup_iter+0x28e/0x380 mm/memcontrol.c:1080
+ shrink_node_memcgs mm/vmscan.c:5924 [inline]
+ shrink_node+0x74a/0x1d40 mm/vmscan.c:5948
+ shrink_zones mm/vmscan.c:6192 [inline]
+ do_try_to_free_pages+0x3c6/0xc50 mm/vmscan.c:6254
+ try_to_free_mem_cgroup_pages+0x1f3/0x4f0 mm/vmscan.c:6586
+ try_charge_memcg+0x2bc/0x810 mm/memcontrol.c:2210
+ try_charge mm/memcontrol-v1.h:20 [inline]
+ charge_memcg mm/memcontrol.c:4439 [inline]
+ mem_cgroup_swapin_charge_folio+0x107/0x1a0 mm/memcontrol.c:4524
+ __read_swap_cache_async+0x2b7/0x520 mm/swap_state.c:516
+ swap_cluster_readahead+0x276/0x3f0 mm/swap_state.c:680
+ swapin_readahead+0xe4/0x760 mm/swap_state.c:882
+ do_swap_page+0x3da/0x1ef0 mm/memory.c:4119
+ handle_pte_fault mm/memory.c:5524 [inline]
+ __handle_mm_fault mm/memory.c:5664 [inline]
+ handle_mm_fault+0x8cb/0x2a30 mm/memory.c:5832
+ do_user_addr_fault arch/x86/mm/fault.c:1338 [inline]
+ handle_page_fault arch/x86/mm/fault.c:1481 [inline]
+ exc_page_fault+0x3b9/0x650 arch/x86/mm/fault.c:1539
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+
+read to 0xffff888114b82668 of 4 bytes by task 5528 on cpu 0:
+ mem_cgroup_iter+0xba/0x380 mm/memcontrol.c:1018
+ shrink_node_memcgs mm/vmscan.c:5869 [inline]
+ shrink_node+0x458/0x1d40 mm/vmscan.c:5948
+ shrink_zones mm/vmscan.c:6192 [inline]
+ do_try_to_free_pages+0x3c6/0xc50 mm/vmscan.c:6254
+ try_to_free_mem_cgroup_pages+0x1f3/0x4f0 mm/vmscan.c:6586
+ try_charge_memcg+0x2bc/0x810 mm/memcontrol.c:2210
+ try_charge mm/memcontrol-v1.h:20 [inline]
+ charge_memcg mm/memcontrol.c:4439 [inline]
+ mem_cgroup_swapin_charge_folio+0x107/0x1a0 mm/memcontrol.c:4524
+ __read_swap_cache_async+0x2b7/0x520 mm/swap_state.c:516
+ swap_cluster_readahead+0x276/0x3f0 mm/swap_state.c:680
+ swapin_readahead+0xe4/0x760 mm/swap_state.c:882
+ do_swap_page+0x3da/0x1ef0 mm/memory.c:4119
+ handle_pte_fault mm/memory.c:5524 [inline]
+ __handle_mm_fault mm/memory.c:5664 [inline]
+ handle_mm_fault+0x8cb/0x2a30 mm/memory.c:5832
+ do_user_addr_fault arch/x86/mm/fault.c:1389 [inline]
+ handle_page_fault arch/x86/mm/fault.c:1481 [inline]
+ exc_page_fault+0x296/0x650 arch/x86/mm/fault.c:1539
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+ __get_user_8+0x11/0x20 arch/x86/lib/getuser.S:94
+ fetch_robust_entry kernel/futex/core.c:783 [inline]
+ exit_robust_list+0x31/0x280 kernel/futex/core.c:811
+ futex_cleanup kernel/futex/core.c:1043 [inline]
+ futex_exit_release+0xe3/0x130 kernel/futex/core.c:1144
+ exit_mm_release+0x1a/0x30 kernel/fork.c:1637
+ exit_mm+0x38/0x190 kernel/exit.c:544
+ do_exit+0x55e/0x1720 kernel/exit.c:869
+ do_group_exit+0x102/0x150 kernel/exit.c:1031
+ get_signal+0xf2f/0x1080 kernel/signal.c:2917
+ arch_do_signal_or_restart+0x95/0x4b0 arch/x86/kernel/signal.c:310
+ exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
+ syscall_exit_to_user_mode+0x59/0x130 kernel/entry/common.c:218
+ do_syscall_64+0xd6/0x1c0 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+value changed: 0x00000522 -> 0x00000528
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 0 UID: 0 PID: 5528 Comm: syz.3.488 Not tainted 6.11.0-rc5-syzkaller-00176-g20371ba12063 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
+==================================================================
+syz.3.488 (5528) used greatest stack depth: 9096 bytes left
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> On Aug 29, 2024, at 23:49, Shakeel Butt <shakeel.butt@linux.dev> =
-wrote:
->=20
-> On Thu, Aug 29, 2024 at 10:36:01AM GMT, Muchun Song wrote:
->>=20
->>=20
->>> On Aug 29, 2024, at 03:03, Shakeel Butt <shakeel.butt@linux.dev> =
-wrote:
->>>=20
->>> Hi Muchun,
->>>=20
->>> On Wed, Aug 28, 2024 at 10:36:06AM GMT, Muchun Song wrote:
->>>>=20
->>>>=20
->>>>> On Aug 28, 2024, at 01:23, Shakeel Butt <shakeel.butt@linux.dev> =
-wrote:
->>>>>=20
->>> [...]
->>>>>>=20
->>>>>> Does it handle the case of a too-big-to-be-a-slab-object =
-allocation?
->>>>>> I think it's better to handle it properly. Also, why return false =
-here?
->>>>>>=20
->>>>>=20
->>>>> Yes I will fix the too-big-to-be-a-slab-object allocations. I =
-presume I
->>>>> should just follow the kfree() hanlding on !folio_test_slab() i.e. =
-that
->>>>> the given object is the large or too-big-to-be-a-slab-object.
->>>>=20
->>>> Hi Shakeel,
->>>>=20
->>>> If we decide to do this, I suppose you will use =
-memcg_kmem_charge_page
->>>> to charge big-object. To be consistent, I suggest renaming =
-kmem_cache_charge
->>>> to memcg_kmem_charge to handle both slab object and big-object. And =
-I saw
->>>> all the functions related to object charging is moved to =
-memcontrol.c (e.g.
->>>> __memcg_slab_post_alloc_hook), so maybe we should also do this for
->>>> memcg_kmem_charge?
->>>>=20
->>>=20
->>> If I understand you correctly, you are suggesting to handle the =
-general
->>> kmem charging and slab's large kmalloc (size > =
-KMALLOC_MAX_CACHE_SIZE)
->>> together with memcg_kmem_charge(). However that is not possible due =
-to
->>> slab path updating NR_SLAB_UNRECLAIMABLE_B stats while no updates =
-for
->>> this stat in the general kmem charging path =
-(__memcg_kmem_charge_page in
->>> page allocation code path).
->>>=20
->>> Also this general kmem charging path is used by many other users =
-like
->>> vmalloc, kernel stack and thus we can not just plainly stuck updates =
-to
->>> NR_SLAB_UNRECLAIMABLE_B in that path.
->>=20
->> Sorry, maybe I am not clear . To make sure we are on the same page, =
-let
->> me clarify my thought. In your v2, I thought if we can rename
->> kmem_cache_charge() to memcg_kmem_charge() since kmem_cache_charge()
->> already has handled both big-slab-object (size > =
-KMALLOC_MAX_CACHE_SIZE)
->> and small-slab-object cases. You know, we have a function of
->> memcg_kmem_charge_page() which could be used for charging =
-big-slab-object
->> but not small-slab-object. So I thought maybe memcg_kmem_charge() is =
-a
->> good name for it to handle both cases. And if we do this, how about =
-moving
->> this new function to memcontrol.c since all memcg charging functions =
-are
->> moved to memcontrol.c instead of slub.c.
->>=20
->=20
-> Oh you want the core function to be in memcontrol.c. I don't have any
-> strong opinion where the code should exist but I do want the interface
-> to still be kmem_cache_charge() because that is what we are providing =
-to
-> the users which charging slab objects. Yes some of those might be
-> big-slab-objects but that is transparent to the users.
->=20
-> Anyways, for now I will go with my current approach but on the =
-followup
-> will explore and discuss with you on which code should exist in which
-> file. I hope that is acceptable to you.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Fine. No problem.
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Thanks.
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
->=20
-> thanks,
-> Shakeel
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-
+If you want to undo deduplication, reply with:
+#syz undup
 
