@@ -1,204 +1,146 @@
-Return-Path: <cgroups+bounces-4624-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4625-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 532CD96640D
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 16:20:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9657596643E
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 16:33:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2E581F215E7
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 14:20:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5701B2346B
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 14:33:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E1B1B2EC3;
-	Fri, 30 Aug 2024 14:19:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 289DF1B251C;
+	Fri, 30 Aug 2024 14:33:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iczwQk3G"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aU1ECVCv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 049721A4AA1;
-	Fri, 30 Aug 2024 14:19:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6ED9E18A950
+	for <cgroups@vger.kernel.org>; Fri, 30 Aug 2024 14:33:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725027585; cv=none; b=nq7u2izlJ4NXT6/Z6bFXx+kFJk576cxlY0HY5/L4DN28oZytmz8VTLClGShJOo7e3peR4WXgDF699WJ+Ixce9uOPgMM7iOs3eN898LLeRfAaSFRQj4VFce+QCcu6uNc2WgDgIUUyEYKGaUn5LJjFCi8OVBky4oUhHfb9jjtNvJo=
+	t=1725028407; cv=none; b=sg7YrQq9ehCYfEtXr+p9Su9I9Ro97R0KyK7uwukRW2WWxw0KEe4wQI0l8uDYX3OU9eKL94QzRuX427U5UeS2LOzAzvG5lWHFhbmJdaEG3W5XxfOw5fGglnjEBvVZFYFNyBu2R5aeH6IGY9OoHxIRpR5i9XhIidv6+McqaPdzUw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725027585; c=relaxed/simple;
-	bh=0ZWXXcdMHQD7yQhOFHjj1ApmLTmEwbfaGpySJmAc0GU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DSPe4s9st9IgvR2I+PqidBvOoD913gRPbJpkKO8nmwdl3wMTthWS+R1MwKVqcj0eitx11Lld7tEi1gyC9rJptHfExsUnx2obVPIsO/K23Ehsuic5M3KRX5FOsarrwPAVX+Lm7XgczJvezRTMGiDEoLKddBuSHUGsZn0scuGAPRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iczwQk3G; arc=none smtp.client-ip=209.85.128.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6b8f13f28fbso16544467b3.1;
-        Fri, 30 Aug 2024 07:19:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725027583; x=1725632383; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E28ANgGeyclkwdvrEsGewBjyWcjmIbB2+4duJTvxOC4=;
-        b=iczwQk3G34k6zWyn87QU1hNS3kRm0iyvBw+k3p11MiyNx5TFoIGYi7ZN9J6cz0KmUq
-         7KwWTCXOawM4hbMHafvxfkAiuVBr07033f4JL9L006w+chm8X4EYlbGDbIyh9ztYCBKU
-         yRFNLZXwVJaLM7NUPEtgNW4lk9qgZTSMVFhMVa4B56gwtC6cuT/t1u6l6eH5iWbI/cSd
-         8fWrCqdp2c44I+wxB1MNoxG5uGmkSXCftSViLAMh55pF/Hk6PO1ea23er8+eJNkBgUtH
-         FRYwOnWIAc2nkl8pogPrfmMI66mIq4hUpTWAsYdu4MjAjrya9nvs35KAeVlJvkyr3+xS
-         Eu2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725027583; x=1725632383;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E28ANgGeyclkwdvrEsGewBjyWcjmIbB2+4duJTvxOC4=;
-        b=j6TIejTFko3yl8ldnMWgZm2K4NQQH6QkLEbHkX7dbL5f8YcUoi+WOyo2dcFdY6ueuF
-         f5BbeuIrupB2+tsAu85LNIH2Ndl9qpkY0fKRzKjdPZEGDN1xTvH1QROO42F/XmwjJniG
-         NaF+Hhmojqjw5C0Nz/t7n4HEUAX7zncR2lk/5faamvOXpLww+WeTW0dugc8SFpIkmBYs
-         vVTSTpZTT0XtbkGrNe7biqcJ+2pTBEss/7rQyuv6xt+F9HwDcMvjXfJZ1cbfYJBkXyPI
-         as4CI1MeTVwNlvwvcys6goXKsa+Ztlmr+tT9AElXbdsLV+IgkUaUj/bY4/AnPvvTKOkW
-         d6bA==
-X-Forwarded-Encrypted: i=1; AJvYcCV4UX5fT0Ah/RNZk6XxJmb33gfJDi4dSBrhAxmxcKH+Op9kI1kuNWPbvdVLb6d3FVSj8baOQjJfswSqHWmTT8a6@vger.kernel.org, AJvYcCXLZ6yNYTgQWWNkyZAzgl9UvCwuzL5y/irNtXNCf8129BoRfbbse4cp0kO/lDk1wwOrb0+/xDkFsZd6B/8=@vger.kernel.org
-X-Gm-Message-State: AOJu0YzWhYXVb/5jJwF2gEsKti+v9GkttZFBU/OEHgd0aAsTSZa9XIxc
-	7slVjeqqmTHWsdH5gnLotJj6qlMHZnj9/QmyeAWKf6u+tiAlJUHm
-X-Google-Smtp-Source: AGHT+IEPrI7de3sge5ZBRVxhZHeVGTtMGUTtY3ac6kjqnSITAAGtuNS8BSze+euKi6ssBr8aREq7Cw==
-X-Received: by 2002:a05:690c:3386:b0:6ae:ce24:3d5 with SMTP id 00721157ae682-6d40e08366bmr26669877b3.17.1725027582807;
-        Fri, 30 Aug 2024 07:19:42 -0700 (PDT)
-Received: from localhost (fwdproxy-frc-005.fbsv.net. [2a03:2880:21ff:5::face:b00c])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6d2d4485613sm6425717b3.70.2024.08.30.07.19.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Aug 2024 07:19:42 -0700 (PDT)
-From: Joshua Hahn <joshua.hahnjy@gmail.com>
-To: tj@kernel.org
-Cc: cgroups@vger.kernel.org,
-	hannes@cmpxchg.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	lizefan.x@bytedance.com,
-	mkoutny@suse.com,
-	shuah@kernel.org
-Subject: [PATCH v2 2/2] Selftests for niced CPU statistics
-Date: Fri, 30 Aug 2024 07:19:39 -0700
-Message-ID: <20240830141939.723729-3-joshua.hahnjy@gmail.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <20240830141939.723729-1-joshua.hahnjy@gmail.com>
-References: <20240830141939.723729-1-joshua.hahnjy@gmail.com>
+	s=arc-20240116; t=1725028407; c=relaxed/simple;
+	bh=Z9TvoLYNagTODd4i2+BAcS6gF/9LpxgSMPXmSsaH77I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ikqldi32Ibt7p0JkxVpMcPCaOOfF/g1B5nNLKFTE/CoydSTqD1WqCgz8CK0bKHf1O5OJFrWvW2StrTw+tAYKrZxiOXPZ9CQY8oPrBhjEme7hcdVoMzcbxvdreFQZ/if7+/DzV0t5FM4SRNV99LBadGNu8fRFP58k2k6F4mihvrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aU1ECVCv; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1725028405;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TbKYhWJQmd4aTvmQBdXsKTdxEaSRx7bVj4GRaT9+/4A=;
+	b=aU1ECVCvm+ynCHgcjzIgD5/bZTBIFEa3R9XeJ5Pf8r8E9YXU4uDp1Dh3Q7T2hSTMAF4wm4
+	hCSYSnZbfqPLT8VpgZ6kNnJq+hCgrp2c+B2GovIVBALK9ScvrxVZeIDe7+pidfW7f2laWb
+	6zobLxWsSOQ9oCVrBkOMKuHDwqcs31A=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-691-pk9AKLqGMMadO2TdSjOeiA-1; Fri,
+ 30 Aug 2024 10:33:21 -0400
+X-MC-Unique: pk9AKLqGMMadO2TdSjOeiA-1
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 72046197767C;
+	Fri, 30 Aug 2024 14:33:16 +0000 (UTC)
+Received: from [10.2.16.212] (unknown [10.2.16.212])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id EAFAC1955F6B;
+	Fri, 30 Aug 2024 14:33:13 +0000 (UTC)
+Message-ID: <65c89464-88bf-418e-bfe1-2d3c0822dbd5@redhat.com>
+Date: Fri, 30 Aug 2024 10:33:13 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 -next 00/12] cgroup:cpuset:separate legacy cgroup v1
+ code and put under config option
+To: Chen Ridong <chenridong@huawei.com>, tj@kernel.org,
+ lizefan.x@bytedance.com, hannes@cmpxchg.org, adityakali@google.com,
+ sergeh@kernel.org, mkoutny@suse.com
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ chenridong@huaweicloud.com
+References: <20240830100229.953012-1-chenridong@huawei.com>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20240830100229.953012-1-chenridong@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-From: Joshua Hahn <joshua.hahn6@gmail.com>
+On 8/30/24 06:02, Chen Ridong wrote:
+> Cgroups v2 have been around for a while and many users have fully adopted
+> them, so they never use cgroups v1 features and functionality. Yet they
+> have to "pay" for the cgroup v1 support anyway:
+> 1) the kernel binary contains an unused cgroup v1 code,
+> 2) some code paths have additional checks which are not needed,
+> 3) some common structures like task_struct and mem_cgroup contain unused
+>     cgroup v1-specific members.
+>
+> Cgroup memory controller has already separated legacy code to
+> memory-v1.c. So it is time to do the same thing for cpuset controller.
+>
+> This patchset aims to do:
+> 1) moving cgroup v1-specific cpuset code to the new cpuset-v1.c file,
+> 2) putting definitions shared by cpuset.c and cpuset-v1.c into the
+>     cpuset-internal.h header,
+> 3) introducing the CONFIG_CPUSETS_V1 config option, turned off by default,
+> 4) making cpuset-v1.c to compile only if CONFIG_CPUSETS_V1 is set.
+>
+> ---
+> V4:
+> - Rename legacy_files to cpuset1_files.
+> - Revert rebuild_sched_domain and fmeter_init rename.
+>
+> V3:
+> - Delete blank line at the end of file.
+> - Rename some generic functions name with cpuset_/cpuset1_ prefix.
+>
+> V2:
+> - Update to base on the latest cgroup/for-6.12.
+> - Add CONFIG_CPUSETS_V1 for cpuset_memory_pressure_bump.
+>
+> Chen Ridong (12):
+>    cgroup/cpuset: introduce cpuset-v1.c
+>    cgroup/cpuset: move common code to cpuset-internal.h
+>    cgroup/cpuset: move memory_pressure to cpuset-v1.c
+>    cgroup/cpuset: move relax_domain_level to cpuset-v1.c
+>    cgroup/cpuset: move memory_spread to cpuset-v1.c
+>    cgroup/cpuset: add callback_lock helper
+>    cgroup/cpuset: move legacy hotplug update to cpuset-v1.c
+>    cgroup/cpuset: move validate_change_legacy to cpuset-v1.c
+>    cgroup/cpuset: move v1 interfaces to cpuset-v1.c
+>    cgroup/cpuset: rename functions shared between v1 and v2
+>    cgroup/cpuset: guard cpuset-v1 code under CONFIG_CPUSETS_V1
+>    cgroup/cpuset: add sefltest for cpuset v1
+>
+>   MAINTAINERS                                   |   3 +
+>   include/linux/cpuset.h                        |   4 +
+>   init/Kconfig                                  |  13 +
+>   kernel/cgroup/Makefile                        |   1 +
+>   kernel/cgroup/cpuset-internal.h               | 304 ++++++
+>   kernel/cgroup/cpuset-v1.c                     | 562 +++++++++++
+>   kernel/cgroup/cpuset.c                        | 892 +-----------------
+>   .../selftests/cgroup/test_cpuset_v1_base.sh   |  77 ++
+>   8 files changed, 1005 insertions(+), 851 deletions(-)
+>   create mode 100644 kernel/cgroup/cpuset-internal.h
+>   create mode 100644 kernel/cgroup/cpuset-v1.c
+>   create mode 100755 tools/testing/selftests/cgroup/test_cpuset_v1_base.sh
+>
+For the series,
 
-Creates a cgroup with a single nice CPU hog process running.
-fork() is called to generate the nice process because un-nicing is
-not possible (see man nice(3)). If fork() was not used to generate
-the CPU hog, we would run the rest of the cgroup selftest suite as a
-nice process.
----
- tools/testing/selftests/cgroup/test_cpu.c | 72 +++++++++++++++++++++++
- 1 file changed, 72 insertions(+)
-
-diff --git a/tools/testing/selftests/cgroup/test_cpu.c b/tools/testing/selftests/cgroup/test_cpu.c
-index dad2ed82f3ef..cd5550391f49 100644
---- a/tools/testing/selftests/cgroup/test_cpu.c
-+++ b/tools/testing/selftests/cgroup/test_cpu.c
-@@ -8,6 +8,7 @@
- #include <pthread.h>
- #include <stdio.h>
- #include <time.h>
-+#include <unistd.h>
- 
- #include "../kselftest.h"
- #include "cgroup_util.h"
-@@ -229,6 +230,76 @@ static int test_cpucg_stats(const char *root)
- 	return ret;
- }
- 
-+/*
-+ * Creates a nice process that consumes CPU and checks that the elapsed
-+ * usertime in the cgroup is close to the expected time.
-+ */
-+static int test_cpucg_nice(const char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	int status;
-+	long user_usec, nice_usec;
-+	long usage_seconds = 2;
-+	long expected_nice_usec = usage_seconds * USEC_PER_SEC;
-+	char *cpucg;
-+	pid_t pid;
-+
-+	cpucg = cg_name(root, "cpucg_test");
-+	if (!cpucg)
-+		goto cleanup;
-+
-+	if (cg_create(cpucg))
-+		goto cleanup;
-+
-+	user_usec = cg_read_key_long(cpucg, "cpu.stat", "user_usec");
-+	nice_usec = cg_read_key_long(cpucg, "cpu.stat", "nice_usec");
-+	if (user_usec != 0 || nice_usec != 0)
-+		goto cleanup;
-+
-+	/*
-+	 * We fork here to create a new process that can be niced without
-+	 * polluting the nice value of other selftests
-+	 */
-+	pid = fork();
-+	if (pid < 0) {
-+		goto cleanup;
-+	} else if (pid == 0) {
-+		struct cpu_hog_func_param param = {
-+			.nprocs = 1,
-+			.ts = {
-+				.tv_sec = usage_seconds,
-+				.tv_nsec = 0,
-+			},
-+			.clock_type = CPU_HOG_CLOCK_PROCESS,
-+		};
-+
-+		/* Try to keep niced CPU usage as constrained to hog_cpu as possible */
-+		nice(1);
-+		cg_run(cpucg, hog_cpus_timed, (void *)&param);
-+		exit(0);
-+	} else {
-+		waitpid(pid, &status, 0);
-+		if (!WIFEXITED(status))
-+			goto cleanup;
-+
-+		user_usec = cg_read_key_long(cpucg, "cpu.stat", "user_usec");
-+		nice_usec = cg_read_key_long(cpucg, "cpu.stat", "nice_usec");
-+		if (nice_usec > user_usec || user_usec <= 0)
-+			goto cleanup;
-+
-+		if (!values_close(nice_usec, expected_nice_usec, 1))
-+			goto cleanup;
-+
-+		ret = KSFT_PASS;
-+	}
-+
-+cleanup:
-+	cg_destroy(cpucg);
-+	free(cpucg);
-+
-+	return ret;
-+}
-+
- static int
- run_cpucg_weight_test(
- 		const char *root,
-@@ -686,6 +757,7 @@ struct cpucg_test {
- } tests[] = {
- 	T(test_cpucg_subtree_control),
- 	T(test_cpucg_stats),
-+	T(test_cpucg_nice),
- 	T(test_cpucg_weight_overprovisioned),
- 	T(test_cpucg_weight_underprovisioned),
- 	T(test_cpucg_nested_weight_overprovisioned),
--- 
-2.43.5
+Acked-by: Waiman Long <longman@redhat.com>
 
 
