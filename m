@@ -1,69 +1,71 @@
-Return-Path: <cgroups+bounces-4600-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4601-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC0E996556D
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 04:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C752C9656A8
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 07:05:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C6941F23AFD
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 02:56:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BEE11F249DD
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 05:05:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1621C136325;
-	Fri, 30 Aug 2024 02:56:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E0E414D2B4;
+	Fri, 30 Aug 2024 05:05:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="CHoKoGvU"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="hCFnixCw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A51E38DD6
-	for <cgroups@vger.kernel.org>; Fri, 30 Aug 2024 02:55:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A57A91D1301
+	for <cgroups@vger.kernel.org>; Fri, 30 Aug 2024 05:05:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724986560; cv=none; b=mUlxyhazhQ+L+361RsrXxciSbCARRW+kqhSPBexbnVf2Aru5NFYeS6yzu3Z9Bi0m96mkDUCO5ifdIZ9UPww9SO2RDtJ7PIFdeeWPMhn+BSbatvBT8NWERpiCrQXmEpKBux1gE5jIup/WufkN5mUl+UTYgEd+PAuSZlkX96u1SYo=
+	t=1724994314; cv=none; b=nJWhTvNM85M1gC9ehtQtYHwjfh9j9yfEv2ehcEBRnHPxIFjYOgvvwQ+TZLeIHvpTTMtj6hXI4U2bIb7RQ6RCJonzy8LxaggQs80vs70I830ja6cEzm5Q3P37abTUcpCMsgQy+34wpfmiyY4WGjkPbrmfoW2gSYLLMYZHfKWMdbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724986560; c=relaxed/simple;
+	s=arc-20240116; t=1724994314; c=relaxed/simple;
 	bh=0EFniWYpHhsJb8FrdPLeExLhBz8HAE5CjvnzkalyGtY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eeSuqREjZmR2stDtSst5dpaa9gC3aJpO1mD3HEUnI2s88tOMuogHGFoNt4YN7HVNlywJmE9GIcXEV4a24sWre+xRVJqfTvLZHT6Sj/SgYy/fPG89ftOovbxng9iIMq89DH3RoV7c6lVx4GTIp+KdiGO1C18aUyKzfkt7iSdruj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=CHoKoGvU; arc=none smtp.client-ip=209.85.214.176
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=nL1B15Kf2Tx5wEnqY9JZ/KrxRAJ/Ysi9tO9XSe3EZaeio46Zfs6LQaEIzuzP0yov+IH13lswAj5peGJQduF2aOKWE0oSRKUJpWhiO6EFvVnknb6+qEMnh+UDyGuJSMZN5K8a9H9v6JsZ1ERwPjCTXyLOQ2ySajFSfVo+/u+/y+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=hCFnixCw; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2025031eb60so11685665ad.3
-        for <cgroups@vger.kernel.org>; Thu, 29 Aug 2024 19:55:58 -0700 (PDT)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2050b059357so11646255ad.2
+        for <cgroups@vger.kernel.org>; Thu, 29 Aug 2024 22:05:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1724986558; x=1725591358; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1724994311; x=1725599111; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
         bh=aZPZfZqC3mBdycoYdenoJPylLkOydS6FcokJngh3hNI=;
-        b=CHoKoGvUYG+cqNvqgleP9sg6RhwI/0T3/8OQUvOA0OP8Mlo/OaYqu0uqF32F22tBVP
-         DHZ0ZA5t7vzSg5sb1xV+SOfDJhuY4UsvGaElWME0OApcBhURlprAo4dxYtXJiWKrNBQI
-         N0w8vp6FKLCUOGebTgYTvGKQTmKgeVQjoODm8=
+        b=hCFnixCwqPHmW/i0ReTzzoxks59j8qXOKlDLMJ+uw1JjTni1C7LNzOgXuN1faCEyGr
+         nEZPgRT/rSo2nGQL/23FwqNuWg7PKvntJrGSR+4259N4kj6jrWjUO0xFX8ZKXeO+duZg
+         zCTJIHTKawusxqUrca300h0Se/Io/SvHnxmtc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724986558; x=1725591358;
+        d=1e100.net; s=20230601; t=1724994311; x=1725599111;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
         bh=aZPZfZqC3mBdycoYdenoJPylLkOydS6FcokJngh3hNI=;
-        b=j4ayPrzx2+hMUpnPakSly229qICMQ0+i+smJ6EHEHEwRejsCt/Hs6fYKOMYwGfPlrm
-         yXApovnGGiVnk5SIwsIKeE8zZME+qE3YoWpdRZWpwK80clxd4VdiIfTic4wIJ9Oh3dvP
-         eBnpKOS/GAOYb0nUDf1xb+cg5/TnDaJFLgI5gJTQum92MClXQfhbh6KSVUk41N3+d7Pe
-         e9ttEEuoKNsqg6qWkU5Bom4qcAT53MMTNEipJXE2iLOX5rL/Ph2/Ei163U4wMnAwmFP4
-         kwlm7RxYiFx96R47V2MUqYNrdKZ2Ksl3B16P739ibqV0T+CGZaZ+V2fusNCvmGgxZH7A
-         ODGg==
-X-Forwarded-Encrypted: i=1; AJvYcCUyauAs4jBaqU4pF19p1jAwEbOS5mT8kyl3WOYFwcV3p/l3zjDj7BEeA0ahT8sm6131djsuUC7F@vger.kernel.org
-X-Gm-Message-State: AOJu0YxzeHXiSHov1v+uNQWWwF8HkgECm5I0VlwAZHQ9PuV5w8WvoONJ
-	+GIca1frjMbij+6COBKBtZrh2IUe8OdzwB6Bag1UohpoVkoNn/3sxmkl7TPqwQ==
-X-Google-Smtp-Source: AGHT+IF86Ys1NtYkMlA8W6bC13Z56ZAIJWWnVmkRBC+DeA4gimJaHXVyKNtbRuRVktDoB9Dg/oYgpQ==
-X-Received: by 2002:a17:902:ec88:b0:202:883:bd6 with SMTP id d9443c01a7336-2050c4c8a3fmr67819605ad.63.1724986558232;
-        Thu, 29 Aug 2024 19:55:58 -0700 (PDT)
+        b=edGUH2KXOUu+b/anQRU/yYGHcxJu6U8NmJi0hjmgXN9wF3L6kxNZSWH1G4azgcRqWY
+         qRfybdS7GpGEoDJS9735oR77nyZvaSLBk3bydSq0o/jQC3qG2j1QUtdwrrqShqE/h0u2
+         cMxprJoByXi4pymF3zY0H9KQOB4ckpwj9iAPxBhrl6kFxie+97dxGJSrgNZ+uJLdFrjn
+         pndYVfXU0ymIkEjwnrG//wjeNPl4XtG2jUExRxFCA7DVmMwYySZ9nCtvu/gWMP64/VH1
+         sKO70/8KVqWutCgQl/iFdXslf70ElPE8dt0mvA1196oOG+AlCPfhtswD0ZF/Kej+j7+P
+         pQEw==
+X-Forwarded-Encrypted: i=1; AJvYcCWA8gpPD+6+mHnCuc9d5jLKgzk4T+Yf3eLBkSrGn1fJSHGN61VxOF+6iD+3mCEUqR8Q/17GIDQB@vger.kernel.org
+X-Gm-Message-State: AOJu0YwcLX94d1UrtN0EtdapsvdxnC+6ijod0NQKdO8fiP1VdrYVB1Y7
+	B7IIfWztGkN5Hx6B7zK7G3ssHlVf2FSjrhqnJGFtBA3FL/8roJ7DY5Rv4/RT3g==
+X-Google-Smtp-Source: AGHT+IG2ZpIcJB8JEhz863I2jzVyW6qGkIBXIGHqgGsA6ZZSbaBGKttZ3ypFGMQeN7yasOjia2SZnQ==
+X-Received: by 2002:a17:902:f54e:b0:202:3324:68bd with SMTP id d9443c01a7336-2050c4ba585mr53368965ad.43.1724994310725;
+        Thu, 29 Aug 2024 22:05:10 -0700 (PDT)
 Received: from shivania.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2051555a29asm17871795ad.272.2024.08.29.19.55.56
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20515566c03sm19280095ad.300.2024.08.29.22.05.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Aug 2024 19:55:57 -0700 (PDT)
+        Thu, 29 Aug 2024 22:05:10 -0700 (PDT)
 From: Shivani Agarwal <shivani.agarwal@broadcom.com>
-To: longman@redhat.com,
+To: stable@vger.kernel.org,
+	gregkh@linuxfoundation.org
+Cc: longman@redhat.com,
 	lizefan.x@bytedance.com,
 	tj@kernel.org,
 	hannes@cmpxchg.org,
@@ -71,16 +73,16 @@ To: longman@redhat.com,
 	adityakali@google.com,
 	sergeh@kernel.org,
 	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: ajay.kaher@broadcom.com,
+	linux-kernel@vger.kernel.org,
+	ajay.kaher@broadcom.com,
 	alexey.makhalov@broadcom.com,
 	vasavi.sirnapalli@broadcom.com,
 	Chen Ridong <chenridong@huawei.com>,
 	Sasha Levin <sashal@kernel.org>,
 	Shivani Agarwal <shivani.agarwal@broadcom.com>
 Subject: [PATCH v5.10-v5.15] cgroup/cpuset: Prevent UAF in proc_cpuset_show()
-Date: Thu, 29 Aug 2024 19:55:45 -0700
-Message-Id: <20240830025545.692351-1-shivani.agarwal@broadcom.com>
+Date: Thu, 29 Aug 2024 22:04:53 -0700
+Message-Id: <20240830050453.692795-1-shivani.agarwal@broadcom.com>
 X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
