@@ -1,134 +1,123 @@
-Return-Path: <cgroups+bounces-4606-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4608-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62782965DE1
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 12:04:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95B52965E04
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 12:10:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94D831C230DF
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 10:04:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20FA3B20CD1
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 10:10:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 444BE17B428;
-	Fri, 30 Aug 2024 10:04:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wnTjAowH"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D5D517C215;
+	Fri, 30 Aug 2024 10:10:25 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DEC116D302
-	for <cgroups@vger.kernel.org>; Fri, 30 Aug 2024 10:04:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6A717B506;
+	Fri, 30 Aug 2024 10:10:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725012257; cv=none; b=Ht8WbDtAg6i2jathT63IRIqQZR/vkUX0nQlScXN4YXbGOFe/NvXAAs/ayD3+NB7w+i8/rk+O8SZauVOlRseY/YFQRsUR93DxeX9ZelR3DNgMD4QYq39uJp1q7tyiXGa3kuCFKMGwCyYqaWSwMgMJE684CX9pHbLxvrkbamkVs/Y=
+	t=1725012625; cv=none; b=dhNilFp48EOeqSp/wMZeGThjNfFyUfQ7yYVtx/0N22HMHTG5VqZgXBELbGOCVE6cJUDu4DIQHuJRiw5mkctrqtD3LvTZnn/FloUe2U3j0yvxW/PxP0z7+D40v3hOhdjNzLa9NGiO2ZGbxRPSASAdThlzun8LP0W0OIRKhMJCdb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725012257; c=relaxed/simple;
-	bh=rB5RQoOEvZgZP+NkbrNvUyrH/QmtFkl8k1kEu/UtBHE=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=TzER/2ZzBDXLYn6U2AK+A5RJP7r7JJ3HDTJOiaX3IWViHu4oCcNOJOYWxVJsX+YBv7vU2TSIxfRoPgkRgYw5T2w0bHfyFhZGKVUNLyCK8sZmAa8qhFvUbWkOxgVa6hpHuMvZw9erZEx3/jZUVUobXe1ocKmsws4DwUTjScShot0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wnTjAowH; arc=none smtp.client-ip=209.85.166.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-39e6a1e0079so6323255ab.0
-        for <cgroups@vger.kernel.org>; Fri, 30 Aug 2024 03:04:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1725012254; x=1725617054; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3lZ9Hn/+qhJZklOxutGWnGoGesi1GdFiMvyIIRsd9s4=;
-        b=wnTjAowHTlVPpq8BiM9fvpO+XwgwjSzb/rPhLXCtrj4yYqUOB3BwCOJHXCObNsHg/+
-         CBG2DZ2PKk6PfMW2KzcIGERWrujCNN/ESjcVTlENOmCMXlwvy0DuKlGsM+/ajh9YzVho
-         yZc/Y4frLr+YomzXgK3CFEoqj2uPDJyYq7WOO2NRdpBwFygOsRubcPHIAWRO84BniFu6
-         rPuecBYUYG7uwInY6PLpE4j152rv+eVwBqalQI824jNzXofKzv5xSljTv91Um5zJaov+
-         iHO3oX6t754C0DGVQK7do6DlLsSYV/LsxaOQbFAhUbflJZvKgQkDy6ajod2CZ5ubb8ch
-         TfTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725012254; x=1725617054;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3lZ9Hn/+qhJZklOxutGWnGoGesi1GdFiMvyIIRsd9s4=;
-        b=fdJbANQvlE2P60uue70cTHO1Q2Mq6zaiTQQXtA9TT6gR/ikxj5JLVqzb7crdys+CnF
-         YJJgRdYWBef6P0CKQ1N0jWSQSbB6UPMwlSkZxVpzju6kxs7t1j2SbsoVwS3fGJjvuvD4
-         NOdy3lOrqy/bvYtDdYAF5pJ9G0Ek3ORM0FnJo/hMaYoW5331J91SY72nG4GJDEdWGmu/
-         /ZnWXHjB1wnr5rYnj39ofvGKAiJaR8MI5kOdds7GDvtwzYH03BwZpFGDg1OaNJ+rDQ37
-         7a+QKnlzQNVBoMkXbSy4UIT2UQVAod55TeB0Lfghma7dWjwfSahECo87Obj3lSo7hfKK
-         mlmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWN1D8Ch/U46b387BZ11ldsq/zVNPrn83DgDDt4SVxxZpPmwg/jE5h5UsQ32VP9G4EkrVsDUYVc@vger.kernel.org
-X-Gm-Message-State: AOJu0YxBb4WD+3RzEwybs7ZDtgMfMHfzKYvGa9zQe93fmBTzvNvVeOvU
-	u6r2qj4vWTnOGY9BXYqpRdfjr5aGS16niS7KZRyE3d30T4f6gHv1juYqXgAeuA==
-X-Google-Smtp-Source: AGHT+IFHoSWzOOyn/+aRzsSVpFBM0RLJuqHCe/Z7Zw6PGRR+A0tTUlzRXDP9DWiAX4B3kTu48B1vIQ==
-X-Received: by 2002:a05:6e02:178f:b0:39d:47cf:2c7f with SMTP id e9e14a558f8ab-39f3788c68bmr64439415ab.24.1725012254489;
-        Fri, 30 Aug 2024 03:04:14 -0700 (PDT)
-Received: from darker.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7d22e774c6fsm2618822a12.35.2024.08.30.03.04.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Aug 2024 03:04:13 -0700 (PDT)
-Date: Fri, 30 Aug 2024 03:04:01 -0700 (PDT)
-From: Hugh Dickins <hughd@google.com>
-To: Andrew Morton <akpm@linux-foundation.org>, Kinsey Ho <kinseyho@google.com>
-cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-    Yosry Ahmed <yosryahmed@google.com>, 
-    Roman Gushchin <roman.gushchin@linux.dev>, 
-    Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-    Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-    Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-    mkoutny@suse.com, baolin.wang@linux.alibaba.com, tjmercier@google.com, 
-    hughd@google.com
-Subject: Re: [PATCH mm-unstable v3 4/5] mm: restart if multiple traversals
- raced
-In-Reply-To: <20240827230753.2073580-5-kinseyho@google.com>
-Message-ID: <56d42242-37fe-b94f-d3cb-00673f1e5efb@google.com>
-References: <20240827230753.2073580-1-kinseyho@google.com> <20240827230753.2073580-5-kinseyho@google.com>
+	s=arc-20240116; t=1725012625; c=relaxed/simple;
+	bh=qS2Hn9IVe31ApnuSqkfxlL8kDdPzhguV+3WhVSCJLfg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OzqrB8hZbWsTKNaTXD/1IkqaLXMa1SIijmW/gUOT0CZFRKmDD/AfeourfSo1GTS24wqxzQVSu28nVi3EfJu/fdyoXwu9AnrNxv2eM9fA+P0fKUPoTyfIWtuCVVRlbdURZlw6VloQBCoJJQEcpfL2Go42EyNjnmKYf3+q9U5/S1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4WwDPZ2LkhzpV7F;
+	Fri, 30 Aug 2024 18:08:34 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id 55134180AE6;
+	Fri, 30 Aug 2024 18:10:19 +0800 (CST)
+Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Fri, 30 Aug
+ 2024 18:10:18 +0800
+From: Chen Ridong <chenridong@huawei.com>
+To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+	<longman@redhat.com>, <adityakali@google.com>, <sergeh@kernel.org>,
+	<mkoutny@suse.com>
+CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<chenridong@huaweicloud.com>
+Subject: [PATCH v4 -next 00/12] cgroup:cpuset:separate legacy cgroup v1 code and put under config option
+Date: Fri, 30 Aug 2024 10:02:17 +0000
+Message-ID: <20240830100229.953012-1-chenridong@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
-On Tue, 27 Aug 2024, Kinsey Ho wrote:
+Cgroups v2 have been around for a while and many users have fully adopted
+them, so they never use cgroups v1 features and functionality. Yet they
+have to "pay" for the cgroup v1 support anyway:
+1) the kernel binary contains an unused cgroup v1 code,
+2) some code paths have additional checks which are not needed,
+3) some common structures like task_struct and mem_cgroup contain unused
+   cgroup v1-specific members.
 
-> Currently, if multiple reclaimers raced on the same position, the
-> reclaimers which detect the race will still reclaim from the same memcg.
-> Instead, the reclaimers which detect the race should move on to the next
-> memcg in the hierarchy.
-> 
-> So, in the case where multiple traversals race, jump back to the start
-> of the mem_cgroup_iter() function to find the next memcg in the
-> hierarchy to reclaim from.
-> 
-> Signed-off-by: Kinsey Ho <kinseyho@google.com>
+Cgroup memory controller has already separated legacy code to
+memory-v1.c. So it is time to do the same thing for cpuset controller.
 
-mm-unstable commit 954dd0848c61 needs the fix below to be merged in;
-but the commit after it (the 5/5) then renames "memcg" to "next",
-so that one has to be adjusted too.
+This patchset aims to do:
+1) moving cgroup v1-specific cpuset code to the new cpuset-v1.c file,
+2) putting definitions shared by cpuset.c and cpuset-v1.c into the
+   cpuset-internal.h header,
+3) introducing the CONFIG_CPUSETS_V1 config option, turned off by default,
+4) making cpuset-v1.c to compile only if CONFIG_CPUSETS_V1 is set.
 
-[PATCH] mm: restart if multiple traversals raced: fix
-
-mem_cgroup_iter() reset memcg to NULL before the goto restart, so that
-goto out_unlock does not then return an ungotten memcg, causing oopses
-on stale memcg in many places (often in memcg_rstat_updated()).
-
-Signed-off-by: Hugh Dickins <hughd@google.com>
 ---
- mm/memcontrol.c | 1 +
- 1 file changed, 1 insertion(+)
+V4:
+- Rename legacy_files to cpuset1_files.
+- Revert rebuild_sched_domain and fmeter_init rename.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 6f66ac0ad4f0..dd82dd1e1f0a 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1049,6 +1049,7 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
- 		if (cmpxchg(&iter->position, pos, memcg) != pos) {
- 			if (css && css != &root->css)
- 				css_put(css);
-+			memcg = NULL;
- 			goto restart;
- 		}
- 
+V3:
+- Delete blank line at the end of file.
+- Rename some generic functions name with cpuset_/cpuset1_ prefix.
+
+V2:
+- Update to base on the latest cgroup/for-6.12.
+- Add CONFIG_CPUSETS_V1 for cpuset_memory_pressure_bump.
+
+Chen Ridong (12):
+  cgroup/cpuset: introduce cpuset-v1.c
+  cgroup/cpuset: move common code to cpuset-internal.h
+  cgroup/cpuset: move memory_pressure to cpuset-v1.c
+  cgroup/cpuset: move relax_domain_level to cpuset-v1.c
+  cgroup/cpuset: move memory_spread to cpuset-v1.c
+  cgroup/cpuset: add callback_lock helper
+  cgroup/cpuset: move legacy hotplug update to cpuset-v1.c
+  cgroup/cpuset: move validate_change_legacy to cpuset-v1.c
+  cgroup/cpuset: move v1 interfaces to cpuset-v1.c
+  cgroup/cpuset: rename functions shared between v1 and v2
+  cgroup/cpuset: guard cpuset-v1 code under CONFIG_CPUSETS_V1
+  cgroup/cpuset: add sefltest for cpuset v1
+
+ MAINTAINERS                                   |   3 +
+ include/linux/cpuset.h                        |   4 +
+ init/Kconfig                                  |  13 +
+ kernel/cgroup/Makefile                        |   1 +
+ kernel/cgroup/cpuset-internal.h               | 304 ++++++
+ kernel/cgroup/cpuset-v1.c                     | 562 +++++++++++
+ kernel/cgroup/cpuset.c                        | 892 +-----------------
+ .../selftests/cgroup/test_cpuset_v1_base.sh   |  77 ++
+ 8 files changed, 1005 insertions(+), 851 deletions(-)
+ create mode 100644 kernel/cgroup/cpuset-internal.h
+ create mode 100644 kernel/cgroup/cpuset-v1.c
+ create mode 100755 tools/testing/selftests/cgroup/test_cpuset_v1_base.sh
+
 -- 
-2.35.3
+2.34.1
+
 
