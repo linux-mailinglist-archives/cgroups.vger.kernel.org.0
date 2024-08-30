@@ -1,39 +1,39 @@
-Return-Path: <cgroups+bounces-4614-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4619-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D78B7965E11
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 12:11:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0703F965E1C
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 12:12:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FA4D287F97
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 10:11:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C8041C24771
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 10:12:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD16A18E34B;
-	Fri, 30 Aug 2024 10:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36AC018FDC8;
+	Fri, 30 Aug 2024 10:10:30 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E341117D344;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB2BF18890C;
 	Fri, 30 Aug 2024 10:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725012628; cv=none; b=TUEsrqXOjU62tr0lU1b6BGOssV10VJ2QRXs9NUZd3Twl+i9qA0vVDUmrSW/MHMIOCIG/anDdLBehNFng/fW02m0G997xfNTMghygxhCXtV0JT8dWnSp24a+BxjDyUbdHj8epwXcGRZozsmDqC2DZv+N5BPoFgbc9pyF1ZtJGraM=
+	t=1725012630; cv=none; b=dyq1vRR5glnwc9ljq30WxRmohutyj9HHMh0G64cZ/r4MUMUWkiHd77BB8znUisS81dvhdfupP9Pm3YrQ9FAn+flFGs+oYOJey0fBkNuLs7m0S/WSyO0PQMFxF9TPmxYsQ/T248eaAs+sXLujnCb3a/RQh2XY1FFG/LZRrhtLUbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725012628; c=relaxed/simple;
-	bh=RmVjTeL6CWp4qI5aCkIFx6hlxA6JJ862sLIPHxCXxxE=;
+	s=arc-20240116; t=1725012630; c=relaxed/simple;
+	bh=L1ak/fs6J6Lm8aCHrl9qTuQm07Z5uJPHE48AO98G+sk=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MPGrm0WFfygS/6oIdyAOTLmJoTDFzZCIg8FV6zHE3zatUOGU12MARKFilHPJVnUQuWxKQQfc9NztAwvc6aMjLHUQaicz6DVrzt41uDgSJ1LI2h6Wk7am3hCrtzRkqIux8F1p5lz0G+D+E6YLL8zxYfDNnsG1mX6lqDrVMLVfA6c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+	 MIME-Version:Content-Type; b=G3lmEJX8e6JiSn9LIqMl/a1jZfy6tstvaE6BHpqEEAP5y0+17smuujjO8Fa6JUwrKrpKjg/911m9d9LCCpw8q3V0r6Jq/hC3sfOMMEqjWBpz3Ml7fSpbkpXt85198IoZmbWoi3syW5iY7c6WedpINMXBW2Y1F7rGbUX/2zRtBVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4WwDRQ0JBpz1j718;
-	Fri, 30 Aug 2024 18:10:10 +0800 (CST)
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4WwDRP2wzfz1S9Ts;
+	Fri, 30 Aug 2024 18:10:09 +0800 (CST)
 Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id B195C140360;
+	by mail.maildlp.com (Postfix) with ESMTPS id CDFAB1402C7;
 	Fri, 30 Aug 2024 18:10:23 +0800 (CST)
 Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
  (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
@@ -45,9 +45,9 @@ To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
 	<mkoutny@suse.com>
 CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<chenridong@huaweicloud.com>
-Subject: [PATCH v4 -next 08/12] cgroup/cpuset: move validate_change_legacy to cpuset-v1.c
-Date: Fri, 30 Aug 2024 10:02:25 +0000
-Message-ID: <20240830100229.953012-9-chenridong@huawei.com>
+Subject: [PATCH v4 -next 09/12] cgroup/cpuset: move v1 interfaces to cpuset-v1.c
+Date: Fri, 30 Aug 2024 10:02:26 +0000
+Message-ID: <20240830100229.953012-10-chenridong@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240830100229.953012-1-chenridong@huawei.com>
 References: <20240830100229.953012-1-chenridong@huawei.com>
@@ -62,215 +62,513 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  kwepemd100013.china.huawei.com (7.221.188.163)
 
-The validate_change_legacy functions is used for v1, move it to
-cpuset-v1.c. And two micro 'cpuset_for_each_child' and
-'cpuset_for_each_descendant_pre' are common for v1 and v2, move them to
+Move legacy cpuset controller interfaces files and corresponding code
+into cpuset-v1.c. 'update_flag', 'cpuset_write_resmask' and
+'cpuset_common_seq_show' are also used for v1, so declare them in
 cpuset-internal.h.
+
+'cpuset_write_s64', 'cpuset_read_s64' and 'fmeter_getrate' are only used
+cpuset-v1.c now, make it static.
 
 Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- kernel/cgroup/cpuset-internal.h | 29 +++++++++++++
- kernel/cgroup/cpuset-v1.c       | 45 ++++++++++++++++++++
- kernel/cgroup/cpuset.c          | 73 ---------------------------------
- 3 files changed, 74 insertions(+), 73 deletions(-)
+ kernel/cgroup/cpuset-internal.h |   9 +-
+ kernel/cgroup/cpuset-v1.c       | 194 ++++++++++++++++++++++++++++++-
+ kernel/cgroup/cpuset.c          | 195 +-------------------------------
+ 3 files changed, 199 insertions(+), 199 deletions(-)
 
 diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-index 7cd30ad809d5..07551ff0812e 100644
+index 07551ff0812e..a6c71c86e58d 100644
 --- a/kernel/cgroup/cpuset-internal.h
 +++ b/kernel/cgroup/cpuset-internal.h
-@@ -238,6 +238,34 @@ static inline int is_spread_slab(const struct cpuset *cs)
- 	return test_bit(CS_SPREAD_SLAB, &cs->flags);
- }
- 
-+/**
-+ * cpuset_for_each_child - traverse online children of a cpuset
-+ * @child_cs: loop cursor pointing to the current child
-+ * @pos_css: used for iteration
-+ * @parent_cs: target cpuset to walk children of
-+ *
-+ * Walk @child_cs through the online children of @parent_cs.  Must be used
-+ * with RCU read locked.
-+ */
-+#define cpuset_for_each_child(child_cs, pos_css, parent_cs)		\
-+	css_for_each_child((pos_css), &(parent_cs)->css)		\
-+		if (is_cpuset_online(((child_cs) = css_cs((pos_css)))))
-+
-+/**
-+ * cpuset_for_each_descendant_pre - pre-order walk of a cpuset's descendants
-+ * @des_cs: loop cursor pointing to the current descendant
-+ * @pos_css: used for iteration
-+ * @root_cs: target cpuset to walk ancestor of
-+ *
-+ * Walk @des_cs through the online descendants of @root_cs.  Must be used
-+ * with RCU read locked.  The caller may modify @pos_css by calling
-+ * css_rightmost_descendant() to skip subtree.  @root_cs is included in the
-+ * iteration and the first node to be visited.
-+ */
-+#define cpuset_for_each_descendant_pre(des_cs, pos_css, root_cs)	\
-+	css_for_each_descendant_pre((pos_css), &(root_cs)->css)		\
-+		if (is_cpuset_online(((des_cs) = css_cs((pos_css)))))
-+
- void rebuild_sched_domains_locked(void);
- void callback_lock_irq(void);
+@@ -271,15 +271,16 @@ void callback_lock_irq(void);
  void callback_unlock_irq(void);
-@@ -258,5 +286,6 @@ void update_tasks_flags(struct cpuset *cs);
- void hotplug_update_tasks_legacy(struct cpuset *cs,
- 			    struct cpumask *new_cpus, nodemask_t *new_mems,
- 			    bool cpus_updated, bool mems_updated);
-+int validate_change_legacy(struct cpuset *cur, struct cpuset *trial);
+ void update_tasks_cpumask(struct cpuset *cs, struct cpumask *new_cpus);
+ void update_tasks_nodemask(struct cpuset *cs);
++int update_flag(cpuset_flagbits_t bit, struct cpuset *cs, int turning_on);
++ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
++				    char *buf, size_t nbytes, loff_t off);
++int cpuset_common_seq_show(struct seq_file *sf, void *v);
  
- #endif /* __CPUSET_INTERNAL_H */
+ /*
+  * cpuset-v1.c
+  */
++extern struct cftype legacy_files[];
+ void fmeter_init(struct fmeter *fmp);
+-int fmeter_getrate(struct fmeter *fmp);
+-int cpuset_write_s64(struct cgroup_subsys_state *css, struct cftype *cft,
+-			    s64 val);
+-s64 cpuset_read_s64(struct cgroup_subsys_state *css, struct cftype *cft);
+ void cpuset_update_task_spread_flags(struct cpuset *cs,
+ 					struct task_struct *tsk);
+ void update_tasks_flags(struct cpuset *cs);
 diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
-index ebc71c5d2568..c9e6c5590117 100644
+index c9e6c5590117..0ccc440c468a 100644
 --- a/kernel/cgroup/cpuset-v1.c
 +++ b/kernel/cgroup/cpuset-v1.c
-@@ -327,3 +327,48 @@ void hotplug_update_tasks_legacy(struct cpuset *cs,
- 		schedule_work(&s->work);
- 	}
+@@ -100,7 +100,7 @@ static void fmeter_markevent(struct fmeter *fmp)
+ }
+ 
+ /* Process any previous ticks, then return current value. */
+-int fmeter_getrate(struct fmeter *fmp)
++static int fmeter_getrate(struct fmeter *fmp)
+ {
+ 	int val;
+ 
+@@ -161,7 +161,7 @@ static int update_relax_domain_level(struct cpuset *cs, s64 val)
+ 	return 0;
+ }
+ 
+-int cpuset_write_s64(struct cgroup_subsys_state *css, struct cftype *cft,
++static int cpuset_write_s64(struct cgroup_subsys_state *css, struct cftype *cft,
+ 			    s64 val)
+ {
+ 	struct cpuset *cs = css_cs(css);
+@@ -187,7 +187,7 @@ int cpuset_write_s64(struct cgroup_subsys_state *css, struct cftype *cft,
+ 	return retval;
+ }
+ 
+-s64 cpuset_read_s64(struct cgroup_subsys_state *css, struct cftype *cft)
++static s64 cpuset_read_s64(struct cgroup_subsys_state *css, struct cftype *cft)
+ {
+ 	struct cpuset *cs = css_cs(css);
+ 	cpuset_filetype_t type = cft->private;
+@@ -372,3 +372,191 @@ int validate_change_legacy(struct cpuset *cur, struct cpuset *trial)
+ out:
+ 	return ret;
  }
 +
-+/*
-+ * is_cpuset_subset(p, q) - Is cpuset p a subset of cpuset q?
-+ *
-+ * One cpuset is a subset of another if all its allowed CPUs and
-+ * Memory Nodes are a subset of the other, and its exclusive flags
-+ * are only set if the other's are set.  Call holding cpuset_mutex.
-+ */
-+
-+static int is_cpuset_subset(const struct cpuset *p, const struct cpuset *q)
++static u64 cpuset_read_u64(struct cgroup_subsys_state *css, struct cftype *cft)
 +{
-+	return	cpumask_subset(p->cpus_allowed, q->cpus_allowed) &&
-+		nodes_subset(p->mems_allowed, q->mems_allowed) &&
-+		is_cpu_exclusive(p) <= is_cpu_exclusive(q) &&
-+		is_mem_exclusive(p) <= is_mem_exclusive(q);
++	struct cpuset *cs = css_cs(css);
++	cpuset_filetype_t type = cft->private;
++
++	switch (type) {
++	case FILE_CPU_EXCLUSIVE:
++		return is_cpu_exclusive(cs);
++	case FILE_MEM_EXCLUSIVE:
++		return is_mem_exclusive(cs);
++	case FILE_MEM_HARDWALL:
++		return is_mem_hardwall(cs);
++	case FILE_SCHED_LOAD_BALANCE:
++		return is_sched_load_balance(cs);
++	case FILE_MEMORY_MIGRATE:
++		return is_memory_migrate(cs);
++	case FILE_MEMORY_PRESSURE_ENABLED:
++		return cpuset_memory_pressure_enabled;
++	case FILE_MEMORY_PRESSURE:
++		return fmeter_getrate(&cs->fmeter);
++	case FILE_SPREAD_PAGE:
++		return is_spread_page(cs);
++	case FILE_SPREAD_SLAB:
++		return is_spread_slab(cs);
++	default:
++		BUG();
++	}
++
++	/* Unreachable but makes gcc happy */
++	return 0;
++}
++
++static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
++			    u64 val)
++{
++	struct cpuset *cs = css_cs(css);
++	cpuset_filetype_t type = cft->private;
++	int retval = 0;
++
++	cpus_read_lock();
++	cpuset_lock();
++	if (!is_cpuset_online(cs)) {
++		retval = -ENODEV;
++		goto out_unlock;
++	}
++
++	switch (type) {
++	case FILE_CPU_EXCLUSIVE:
++		retval = update_flag(CS_CPU_EXCLUSIVE, cs, val);
++		break;
++	case FILE_MEM_EXCLUSIVE:
++		retval = update_flag(CS_MEM_EXCLUSIVE, cs, val);
++		break;
++	case FILE_MEM_HARDWALL:
++		retval = update_flag(CS_MEM_HARDWALL, cs, val);
++		break;
++	case FILE_SCHED_LOAD_BALANCE:
++		retval = update_flag(CS_SCHED_LOAD_BALANCE, cs, val);
++		break;
++	case FILE_MEMORY_MIGRATE:
++		retval = update_flag(CS_MEMORY_MIGRATE, cs, val);
++		break;
++	case FILE_MEMORY_PRESSURE_ENABLED:
++		cpuset_memory_pressure_enabled = !!val;
++		break;
++	case FILE_SPREAD_PAGE:
++		retval = update_flag(CS_SPREAD_PAGE, cs, val);
++		break;
++	case FILE_SPREAD_SLAB:
++		retval = update_flag(CS_SPREAD_SLAB, cs, val);
++		break;
++	default:
++		retval = -EINVAL;
++		break;
++	}
++out_unlock:
++	cpuset_unlock();
++	cpus_read_unlock();
++	return retval;
 +}
 +
 +/*
-+ * validate_change_legacy() - Validate conditions specific to legacy (v1)
-+ *                            behavior.
++ * for the common functions, 'private' gives the type of file
 + */
-+int validate_change_legacy(struct cpuset *cur, struct cpuset *trial)
-+{
-+	struct cgroup_subsys_state *css;
-+	struct cpuset *c, *par;
-+	int ret;
 +
-+	WARN_ON_ONCE(!rcu_read_lock_held());
++struct cftype legacy_files[] = {
++	{
++		.name = "cpus",
++		.seq_show = cpuset_common_seq_show,
++		.write = cpuset_write_resmask,
++		.max_write_len = (100U + 6 * NR_CPUS),
++		.private = FILE_CPULIST,
++	},
 +
-+	/* Each of our child cpusets must be a subset of us */
-+	ret = -EBUSY;
-+	cpuset_for_each_child(c, css, cur)
-+		if (!is_cpuset_subset(c, trial))
-+			goto out;
++	{
++		.name = "mems",
++		.seq_show = cpuset_common_seq_show,
++		.write = cpuset_write_resmask,
++		.max_write_len = (100U + 6 * MAX_NUMNODES),
++		.private = FILE_MEMLIST,
++	},
 +
-+	/* On legacy hierarchy, we must be a subset of our parent cpuset. */
-+	ret = -EACCES;
-+	par = parent_cs(cur);
-+	if (par && !is_cpuset_subset(trial, par))
-+		goto out;
++	{
++		.name = "effective_cpus",
++		.seq_show = cpuset_common_seq_show,
++		.private = FILE_EFFECTIVE_CPULIST,
++	},
 +
-+	ret = 0;
-+out:
-+	return ret;
-+}
++	{
++		.name = "effective_mems",
++		.seq_show = cpuset_common_seq_show,
++		.private = FILE_EFFECTIVE_MEMLIST,
++	},
++
++	{
++		.name = "cpu_exclusive",
++		.read_u64 = cpuset_read_u64,
++		.write_u64 = cpuset_write_u64,
++		.private = FILE_CPU_EXCLUSIVE,
++	},
++
++	{
++		.name = "mem_exclusive",
++		.read_u64 = cpuset_read_u64,
++		.write_u64 = cpuset_write_u64,
++		.private = FILE_MEM_EXCLUSIVE,
++	},
++
++	{
++		.name = "mem_hardwall",
++		.read_u64 = cpuset_read_u64,
++		.write_u64 = cpuset_write_u64,
++		.private = FILE_MEM_HARDWALL,
++	},
++
++	{
++		.name = "sched_load_balance",
++		.read_u64 = cpuset_read_u64,
++		.write_u64 = cpuset_write_u64,
++		.private = FILE_SCHED_LOAD_BALANCE,
++	},
++
++	{
++		.name = "sched_relax_domain_level",
++		.read_s64 = cpuset_read_s64,
++		.write_s64 = cpuset_write_s64,
++		.private = FILE_SCHED_RELAX_DOMAIN_LEVEL,
++	},
++
++	{
++		.name = "memory_migrate",
++		.read_u64 = cpuset_read_u64,
++		.write_u64 = cpuset_write_u64,
++		.private = FILE_MEMORY_MIGRATE,
++	},
++
++	{
++		.name = "memory_pressure",
++		.read_u64 = cpuset_read_u64,
++		.private = FILE_MEMORY_PRESSURE,
++	},
++
++	{
++		.name = "memory_spread_page",
++		.read_u64 = cpuset_read_u64,
++		.write_u64 = cpuset_write_u64,
++		.private = FILE_SPREAD_PAGE,
++	},
++
++	{
++		/* obsolete, may be removed in the future */
++		.name = "memory_spread_slab",
++		.read_u64 = cpuset_read_u64,
++		.write_u64 = cpuset_write_u64,
++		.private = FILE_SPREAD_SLAB,
++	},
++
++	{
++		.name = "memory_pressure_enabled",
++		.flags = CFTYPE_ONLY_ON_ROOT,
++		.read_u64 = cpuset_read_u64,
++		.write_u64 = cpuset_write_u64,
++		.private = FILE_MEMORY_PRESSURE_ENABLED,
++	},
++
++	{ }	/* terminate */
++};
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index b93ef0b48eae..4412a4168902 100644
+index 4412a4168902..2f52fe488f3a 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -180,34 +180,6 @@ static struct cpuset top_cpuset = {
- 	.remote_sibling = LIST_HEAD_INIT(top_cpuset.remote_sibling),
+@@ -1107,8 +1107,6 @@ enum partition_cmd {
+ 	partcmd_invalidate,	/* Make partition invalid	  */
  };
  
--/**
-- * cpuset_for_each_child - traverse online children of a cpuset
-- * @child_cs: loop cursor pointing to the current child
-- * @pos_css: used for iteration
-- * @parent_cs: target cpuset to walk children of
-- *
-- * Walk @child_cs through the online children of @parent_cs.  Must be used
-- * with RCU read locked.
-- */
--#define cpuset_for_each_child(child_cs, pos_css, parent_cs)		\
--	css_for_each_child((pos_css), &(parent_cs)->css)		\
--		if (is_cpuset_online(((child_cs) = css_cs((pos_css)))))
--
--/**
-- * cpuset_for_each_descendant_pre - pre-order walk of a cpuset's descendants
-- * @des_cs: loop cursor pointing to the current descendant
-- * @pos_css: used for iteration
-- * @root_cs: target cpuset to walk ancestor of
-- *
-- * Walk @des_cs through the online descendants of @root_cs.  Must be used
-- * with RCU read locked.  The caller may modify @pos_css by calling
-- * css_rightmost_descendant() to skip subtree.  @root_cs is included in the
-- * iteration and the first node to be visited.
-- */
--#define cpuset_for_each_descendant_pre(des_cs, pos_css, root_cs)	\
--	css_for_each_descendant_pre((pos_css), &(root_cs)->css)		\
--		if (is_cpuset_online(((des_cs) = css_cs((pos_css)))))
--
- /*
-  * There are two global locks guarding cpuset structures - cpuset_mutex and
-  * callback_lock. We also require taking task_lock() when dereferencing a
-@@ -403,22 +375,6 @@ static void guarantee_online_mems(struct cpuset *cs, nodemask_t *pmask)
- 	nodes_and(*pmask, cs->effective_mems, node_states[N_MEMORY]);
+-static int update_flag(cpuset_flagbits_t bit, struct cpuset *cs,
+-		       int turning_on);
+ static void update_sibling_cpumasks(struct cpuset *parent, struct cpuset *cs,
+ 				    struct tmpmasks *tmp);
+ 
+@@ -2703,7 +2701,7 @@ bool current_cpuset_is_being_rebound(void)
+  * Call with cpuset_mutex held.
+  */
+ 
+-static int update_flag(cpuset_flagbits_t bit, struct cpuset *cs,
++int update_flag(cpuset_flagbits_t bit, struct cpuset *cs,
+ 		       int turning_on)
+ {
+ 	struct cpuset *trialcs;
+@@ -3088,59 +3086,10 @@ static void cpuset_attach(struct cgroup_taskset *tset)
+ 	mutex_unlock(&cpuset_mutex);
  }
  
--/*
-- * is_cpuset_subset(p, q) - Is cpuset p a subset of cpuset q?
-- *
-- * One cpuset is a subset of another if all its allowed CPUs and
-- * Memory Nodes are a subset of the other, and its exclusive flags
-- * are only set if the other's are set.  Call holding cpuset_mutex.
-- */
--
--static int is_cpuset_subset(const struct cpuset *p, const struct cpuset *q)
+-static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
+-			    u64 val)
 -{
--	return	cpumask_subset(p->cpus_allowed, q->cpus_allowed) &&
--		nodes_subset(p->mems_allowed, q->mems_allowed) &&
--		is_cpu_exclusive(p) <= is_cpu_exclusive(q) &&
--		is_mem_exclusive(p) <= is_mem_exclusive(q);
--}
+-	struct cpuset *cs = css_cs(css);
+-	cpuset_filetype_t type = cft->private;
+-	int retval = 0;
 -
- /**
-  * alloc_cpumasks - allocate three cpumasks for cpuset
-  * @cs:  the cpuset that have cpumasks to be allocated.
-@@ -549,35 +505,6 @@ static inline bool cpusets_are_exclusive(struct cpuset *cs1, struct cpuset *cs2)
- 	return true;
- }
- 
--/*
-- * validate_change_legacy() - Validate conditions specific to legacy (v1)
-- *                            behavior.
-- */
--static int validate_change_legacy(struct cpuset *cur, struct cpuset *trial)
--{
--	struct cgroup_subsys_state *css;
--	struct cpuset *c, *par;
--	int ret;
+-	cpus_read_lock();
+-	mutex_lock(&cpuset_mutex);
+-	if (!is_cpuset_online(cs)) {
+-		retval = -ENODEV;
+-		goto out_unlock;
+-	}
 -
--	WARN_ON_ONCE(!rcu_read_lock_held());
--
--	/* Each of our child cpusets must be a subset of us */
--	ret = -EBUSY;
--	cpuset_for_each_child(c, css, cur)
--		if (!is_cpuset_subset(c, trial))
--			goto out;
--
--	/* On legacy hierarchy, we must be a subset of our parent cpuset. */
--	ret = -EACCES;
--	par = parent_cs(cur);
--	if (par && !is_cpuset_subset(trial, par))
--		goto out;
--
--	ret = 0;
--out:
--	return ret;
+-	switch (type) {
+-	case FILE_CPU_EXCLUSIVE:
+-		retval = update_flag(CS_CPU_EXCLUSIVE, cs, val);
+-		break;
+-	case FILE_MEM_EXCLUSIVE:
+-		retval = update_flag(CS_MEM_EXCLUSIVE, cs, val);
+-		break;
+-	case FILE_MEM_HARDWALL:
+-		retval = update_flag(CS_MEM_HARDWALL, cs, val);
+-		break;
+-	case FILE_SCHED_LOAD_BALANCE:
+-		retval = update_flag(CS_SCHED_LOAD_BALANCE, cs, val);
+-		break;
+-	case FILE_MEMORY_MIGRATE:
+-		retval = update_flag(CS_MEMORY_MIGRATE, cs, val);
+-		break;
+-	case FILE_MEMORY_PRESSURE_ENABLED:
+-		cpuset_memory_pressure_enabled = !!val;
+-		break;
+-	case FILE_SPREAD_PAGE:
+-		retval = update_flag(CS_SPREAD_PAGE, cs, val);
+-		break;
+-	case FILE_SPREAD_SLAB:
+-		retval = update_flag(CS_SPREAD_SLAB, cs, val);
+-		break;
+-	default:
+-		retval = -EINVAL;
+-		break;
+-	}
+-out_unlock:
+-	mutex_unlock(&cpuset_mutex);
+-	cpus_read_unlock();
+-	return retval;
 -}
 -
  /*
-  * validate_change() - Used to validate that any proposed cpuset change
-  *		       follows the structural rules for cpusets.
+  * Common handling for a write to a "cpus" or "mems" file.
+  */
+-static ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
++ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
+ 				    char *buf, size_t nbytes, loff_t off)
+ {
+ 	struct cpuset *cs = css_cs(of_css(of));
+@@ -3215,7 +3164,7 @@ static ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
+  * and since these maps can change value dynamically, one could read
+  * gibberish by doing partial reads while a list was changing.
+  */
+-static int cpuset_common_seq_show(struct seq_file *sf, void *v)
++int cpuset_common_seq_show(struct seq_file *sf, void *v)
+ {
+ 	struct cpuset *cs = css_cs(seq_css(sf));
+ 	cpuset_filetype_t type = seq_cft(sf)->private;
+@@ -3256,37 +3205,6 @@ static int cpuset_common_seq_show(struct seq_file *sf, void *v)
+ 	return ret;
+ }
+ 
+-static u64 cpuset_read_u64(struct cgroup_subsys_state *css, struct cftype *cft)
+-{
+-	struct cpuset *cs = css_cs(css);
+-	cpuset_filetype_t type = cft->private;
+-	switch (type) {
+-	case FILE_CPU_EXCLUSIVE:
+-		return is_cpu_exclusive(cs);
+-	case FILE_MEM_EXCLUSIVE:
+-		return is_mem_exclusive(cs);
+-	case FILE_MEM_HARDWALL:
+-		return is_mem_hardwall(cs);
+-	case FILE_SCHED_LOAD_BALANCE:
+-		return is_sched_load_balance(cs);
+-	case FILE_MEMORY_MIGRATE:
+-		return is_memory_migrate(cs);
+-	case FILE_MEMORY_PRESSURE_ENABLED:
+-		return cpuset_memory_pressure_enabled;
+-	case FILE_MEMORY_PRESSURE:
+-		return fmeter_getrate(&cs->fmeter);
+-	case FILE_SPREAD_PAGE:
+-		return is_spread_page(cs);
+-	case FILE_SPREAD_SLAB:
+-		return is_spread_slab(cs);
+-	default:
+-		BUG();
+-	}
+-
+-	/* Unreachable but makes gcc happy */
+-	return 0;
+-}
+-
+ static int sched_partition_show(struct seq_file *seq, void *v)
+ {
+ 	struct cpuset *cs = css_cs(seq_css(seq));
+@@ -3350,113 +3268,6 @@ static ssize_t sched_partition_write(struct kernfs_open_file *of, char *buf,
+ 	return retval ?: nbytes;
+ }
+ 
+-/*
+- * for the common functions, 'private' gives the type of file
+- */
+-
+-static struct cftype legacy_files[] = {
+-	{
+-		.name = "cpus",
+-		.seq_show = cpuset_common_seq_show,
+-		.write = cpuset_write_resmask,
+-		.max_write_len = (100U + 6 * NR_CPUS),
+-		.private = FILE_CPULIST,
+-	},
+-
+-	{
+-		.name = "mems",
+-		.seq_show = cpuset_common_seq_show,
+-		.write = cpuset_write_resmask,
+-		.max_write_len = (100U + 6 * MAX_NUMNODES),
+-		.private = FILE_MEMLIST,
+-	},
+-
+-	{
+-		.name = "effective_cpus",
+-		.seq_show = cpuset_common_seq_show,
+-		.private = FILE_EFFECTIVE_CPULIST,
+-	},
+-
+-	{
+-		.name = "effective_mems",
+-		.seq_show = cpuset_common_seq_show,
+-		.private = FILE_EFFECTIVE_MEMLIST,
+-	},
+-
+-	{
+-		.name = "cpu_exclusive",
+-		.read_u64 = cpuset_read_u64,
+-		.write_u64 = cpuset_write_u64,
+-		.private = FILE_CPU_EXCLUSIVE,
+-	},
+-
+-	{
+-		.name = "mem_exclusive",
+-		.read_u64 = cpuset_read_u64,
+-		.write_u64 = cpuset_write_u64,
+-		.private = FILE_MEM_EXCLUSIVE,
+-	},
+-
+-	{
+-		.name = "mem_hardwall",
+-		.read_u64 = cpuset_read_u64,
+-		.write_u64 = cpuset_write_u64,
+-		.private = FILE_MEM_HARDWALL,
+-	},
+-
+-	{
+-		.name = "sched_load_balance",
+-		.read_u64 = cpuset_read_u64,
+-		.write_u64 = cpuset_write_u64,
+-		.private = FILE_SCHED_LOAD_BALANCE,
+-	},
+-
+-	{
+-		.name = "sched_relax_domain_level",
+-		.read_s64 = cpuset_read_s64,
+-		.write_s64 = cpuset_write_s64,
+-		.private = FILE_SCHED_RELAX_DOMAIN_LEVEL,
+-	},
+-
+-	{
+-		.name = "memory_migrate",
+-		.read_u64 = cpuset_read_u64,
+-		.write_u64 = cpuset_write_u64,
+-		.private = FILE_MEMORY_MIGRATE,
+-	},
+-
+-	{
+-		.name = "memory_pressure",
+-		.read_u64 = cpuset_read_u64,
+-		.private = FILE_MEMORY_PRESSURE,
+-	},
+-
+-	{
+-		.name = "memory_spread_page",
+-		.read_u64 = cpuset_read_u64,
+-		.write_u64 = cpuset_write_u64,
+-		.private = FILE_SPREAD_PAGE,
+-	},
+-
+-	{
+-		/* obsolete, may be removed in the future */
+-		.name = "memory_spread_slab",
+-		.read_u64 = cpuset_read_u64,
+-		.write_u64 = cpuset_write_u64,
+-		.private = FILE_SPREAD_SLAB,
+-	},
+-
+-	{
+-		.name = "memory_pressure_enabled",
+-		.flags = CFTYPE_ONLY_ON_ROOT,
+-		.read_u64 = cpuset_read_u64,
+-		.write_u64 = cpuset_write_u64,
+-		.private = FILE_MEMORY_PRESSURE_ENABLED,
+-	},
+-
+-	{ }	/* terminate */
+-};
+-
+ /*
+  * This is currently a minimal set for the default hierarchy. It can be
+  * expanded later on by migrating more features and control files from v1.
 -- 
 2.34.1
 
