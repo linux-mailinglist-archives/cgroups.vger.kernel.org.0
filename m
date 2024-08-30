@@ -1,100 +1,117 @@
-Return-Path: <cgroups+bounces-4651-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4652-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E70BA966A31
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 22:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43910966A97
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 22:35:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A43F7283C41
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 20:06:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02622284A2E
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2024 20:35:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAE3A1BF32F;
-	Fri, 30 Aug 2024 20:06:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF6711BF808;
+	Fri, 30 Aug 2024 20:34:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WoRy7XE1"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BOti94d7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1DBC1B86D6;
-	Fri, 30 Aug 2024 20:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8582D1BE256
+	for <cgroups@vger.kernel.org>; Fri, 30 Aug 2024 20:34:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725048383; cv=none; b=sA9AGtR0X2stM7xq1Fcd8ZTMHJ1Xg3HtbeiEM878RT0BJfQ5ru0XOG21lBxCSFrPjUGZs9AgJ+5AIHxcVDxBSmhDiFfcl0n9LczMZCPJmvjOaBZo2P4QYKATj0nPEscmNp0gD4W/DYRxm22a3L8XqHqK6Ntm60SLwVoZ2OyhRRc=
+	t=1725050098; cv=none; b=hJva3yw4QC4wOyjNsjo9jJW1Q7CDSutg2fmm1qmKwHwqGT9F7rMWkBPTSO6mGOy3yFLE2eg9OveCw5F4S5bEfrLBODNDNEBlEuKdl6/5X2gILB2CHeGkGYTLus0py2Ad7ylM0k/GZl9tJ2sazUeRDV1RTAEQF3uRI30pSIshrJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725048383; c=relaxed/simple;
-	bh=cWSiC3lXQnjNwNsl8WkPzx8Q6+jpP9g7prZ8FN3pDiU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lsPadvJ240RaghaSWnBbC5lC+s0fNaZmaYi4ncwMGAh99OHh9SdWmuOFaVsU1v5/Qs8KBOqBX9CMkZalA/mqi7oNfsijdc6UzjLjJd4QfInRWPlly1VYleIlEKOVh2qb3JELHm1263whCkyxq7sGD/4NRQcMteGmaSRgXu5AR6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WoRy7XE1; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5353d0b7463so3993512e87.3;
-        Fri, 30 Aug 2024 13:06:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1725048380; x=1725653180; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=cWSiC3lXQnjNwNsl8WkPzx8Q6+jpP9g7prZ8FN3pDiU=;
-        b=WoRy7XE1I4/xznFIwggo7Q6yNSmMuRifFJweOCfFGog0ojEK8SxPGZIpEyfSfWpp0O
-         CYJKDlDn+/3NNr904lAtGqCJknmookK3cgEMpN8nexptc8uIXBt3f6p1k7T4qrhyRr8k
-         cLjIqjQaG19oGbTZ+zQ3nf4BJzROEG5ztWJguSCCnIhTrtpL1/xnIcuEahwkTzNjByxq
-         YSjpdpo6DTtIxx9MeLNBs2iiKzAVkKgjL6Gtq1moBqKmr3arqpRDdV+Xid21RdTdMgMl
-         sY2WRUEmNgRXMtExBVzWxMUoUl98IKZfRUxICGexOgeX4QH3O8DZ2hkRzA1L2VDd/PUN
-         KvBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725048380; x=1725653180;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cWSiC3lXQnjNwNsl8WkPzx8Q6+jpP9g7prZ8FN3pDiU=;
-        b=uCxAP9+UaR6qnhkAyngAbpXCvJpIyZCPeu7egrFT+434mfEwzmgX+1K0d59YJygF6K
-         ahuijhUl5fbCfraXJ23rzPcqREe83V9L4Ew0yDLp8dzTWv3Ub8SYiyw5Rjv0TFclsbIA
-         NaK6Kkrlz+qwkwFfIOEnPfHNOL46doPMd69MVLDsKtdlEqvPilgjQWPT8aMKraYhGt6H
-         kISDYTCGmuXm9Oifw6WzP1FiyohTbKOVqnyPyprv8GQ/4sEPsO0mfHaZudl6AQryIDG/
-         DQ/55cbo8SdFfKURrE/sLto6y4HqnW91IhsvqXpCVBZiEVnRrl+wwyzyp3a06KIL4fjU
-         /29g==
-X-Forwarded-Encrypted: i=1; AJvYcCU05Rlrpkss84As7uCELYp+9o4/qomFauKuX1XTW6d3U6jxHQpd8PZLzejYuVN6hFX86kZLCxnN2qON4E0=@vger.kernel.org, AJvYcCWg3sLck6iGnUVp3s2zsbkAhDtB4zP6XQntWCVBxJSoKfw1qvhpyR+gYA82X/Pqn49FZySdhVIxXcY3ATpigjS2@vger.kernel.org
-X-Gm-Message-State: AOJu0YwYWOpqEhypdQFn/+5KfBSgIFBimjujsPM+6oXrGlMEyFBmu3Lb
-	ou2xHxraYOtjKFHq67S/t49uG4iMaSEQsp0XG2RKWwJjaTSuBPPjvITYIIHKe+uYL6AzvJYKTSA
-	/0ndjFOUToScCTZo30HCvmQ2oscY=
-X-Google-Smtp-Source: AGHT+IFvRM/OgbBe7Gr0V4rG8sg0ZG+w5OS2fFDBcptAHWkTHk8VHqd2Jhi7uoYeQyRVWNMtCfi/T1jVxes+Fy0z+cU=
-X-Received: by 2002:a05:6512:acb:b0:533:4505:5b2a with SMTP id
- 2adb3069b0e04-53546b4a8c9mr2832666e87.28.1725048379086; Fri, 30 Aug 2024
- 13:06:19 -0700 (PDT)
+	s=arc-20240116; t=1725050098; c=relaxed/simple;
+	bh=oGI9YR13810+qfWg8KknXvRTSXv+EhfiLvOHw7EJAj8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=krp3xubXxebYYU7EFpb6HPDDtYPdm3MYzP7BLzptsuKrE4WjvJLo8xqgoXLgLuAB/NeSZ7aV4lKcJkDKAO0xBDnTkZ08/X8UD05NqT5j+nbGI7/IeNLSAoDq0x3oFA8AIEmBox7iOfbMdiEzs/gvb7sGAJwPIvBtdodJ/LXnQ8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BOti94d7; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Fri, 30 Aug 2024 20:34:46 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1725050093;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=N2MSZCjedrpsmWdTZ6nvWovh/uXXPtdm+g3LPj1tQbc=;
+	b=BOti94d7W0NPg/IHRInQnb6PRJY9TO9UZceWZQtPuLKwNaHmSFPyhW/a1EFIupa4RsHq4G
+	OUmVh944d6mSiaejsihDCCf568qT6aj+JhSkM44cEXYP9nTaQQLCh3NijTC6OjUEodkVB1
+	7nL2FE4ym7bVmNk7Lz6fIoEX7R+B9hA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Muchun Song <muchun.song@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	David Rientjes <rientjes@google.com>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Eric Dumazet <edumazet@google.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>, cgroups@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH v2] memcg: add charging of already allocated slab objects
+Message-ID: <ZtIs5qx0QBB8FqGI@google.com>
+References: <20240827235228.1591842-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240830141939.723729-1-joshua.hahnjy@gmail.com>
- <20240830141939.723729-2-joshua.hahnjy@gmail.com> <ZtIgdEt9RSU4MCIP@slm.duckdns.org>
-In-Reply-To: <ZtIgdEt9RSU4MCIP@slm.duckdns.org>
-From: Joshua Hahn <joshua.hahnjy@gmail.com>
-Date: Fri, 30 Aug 2024 16:06:07 -0400
-Message-ID: <CAN+CAwP-VnCAH=OpNSG7HbBj3TJsrRQ2Rcs=e6X9DGrTEQLKuA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] Tracking cgroup-level niced CPU time
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, lizefan.x@bytedance.com, mkoutny@suse.com, 
-	shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240827235228.1591842-1-shakeel.butt@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-Hello, thank you for reviewing the v2.
+On Tue, Aug 27, 2024 at 04:52:28PM -0700, Shakeel Butt wrote:
+41;2500;0c> At the moment, the slab objects are charged to the memcg at the
+> allocation time. However there are cases where slab objects are
+> allocated at the time where the right target memcg to charge it to is
+> not known. One such case is the network sockets for the incoming
+> connection which are allocated in the softirq context.
+> 
+> Couple hundred thousand connections are very normal on large loaded
+> server and almost all of those sockets underlying those connections get
+> allocated in the softirq context and thus not charged to any memcg.
+> However later at the accept() time we know the right target memcg to
+> charge. Let's add new API to charge already allocated objects, so we can
+> have better accounting of the memory usage.
+> 
+> To measure the performance impact of this change, tcp_crr is used from
+> the neper [1] performance suite. Basically it is a network ping pong
+> test with new connection for each ping pong.
+> 
+> The server and the client are run inside 3 level of cgroup hierarchy
+> using the following commands:
+> 
+> Server:
+>  $ tcp_crr -6
+> 
+> Client:
+>  $ tcp_crr -6 -c -H ${server_ip}
+> 
+> If the client and server run on different machines with 50 GBPS NIC,
+> there is no visible impact of the change.
+> 
+> For the same machine experiment with v6.11-rc5 as base.
+> 
+>           base (throughput)     with-patch
+> tcp_crr   14545 (+- 80)         14463 (+- 56)
+> 
+> It seems like the performance impact is within the noise.
+> 
+> Link: https://github.com/google/neper [1]
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-> Patch looks fine to me but can you please do the followings?
->
-> - Add subsystem prefix to the patch titles. Look other commits for examples.
-> - Add Signed-off-by to both.
-> --
-> tejun
+Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
 
-I will send out a v3 with the signed-off-by, and I will add
-cgroup/rstat to the patch title.
-Thank you again!
-
-Joshua
+Thanks!
 
