@@ -1,72 +1,72 @@
-Return-Path: <cgroups+bounces-4656-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4657-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38676967134
-	for <lists+cgroups@lfdr.de>; Sat, 31 Aug 2024 13:14:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E6EE9671B2
+	for <lists+cgroups@lfdr.de>; Sat, 31 Aug 2024 15:10:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BAAEB22548
-	for <lists+cgroups@lfdr.de>; Sat, 31 Aug 2024 11:14:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E48E61F22A1F
+	for <lists+cgroups@lfdr.de>; Sat, 31 Aug 2024 13:10:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1403617E007;
-	Sat, 31 Aug 2024 11:14:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED2E4C81;
+	Sat, 31 Aug 2024 13:10:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mABfVi6H"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PT/d9N4i"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438C714EC64
-	for <cgroups@vger.kernel.org>; Sat, 31 Aug 2024 11:14:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BB1610A1C
+	for <cgroups@vger.kernel.org>; Sat, 31 Aug 2024 13:10:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725102843; cv=none; b=l9Df64LfbLTifDh+wBX6kN3srH5IMnsckqeWXfgKchQOD7KICGsZa2ylHiSu/yr4b4m8hzsBdMDhpamdRJQp66fzkkijRj0A82kM8p3bTOArMq4dh/F8CNyROBQ3Ws2isHgFF5mtVPTBF8n19V/+RGbqBi53IWLQp9EJoMMFDNk=
+	t=1725109808; cv=none; b=tx+E4BFy16wahTs0hDgcQjsGuCke2QenzFU74fOmem9NQQegpYzywOD9WpMtr6ES/X9T33Ub2irV/AHnzqnXFKD6Qy2ZJOkTIfebmHcni1so1/MlyNd/00Mtvn5oOL6C5l5mrXeGH3gkPjKyCJt0N/sGpTwB4asrCFfBry1GsJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725102843; c=relaxed/simple;
-	bh=bq0UDEwUTxoNHId/JLJVyE8pUNuuD8Qr5lw5aqje9+E=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=LaXtLEol4zJxIkF0A65kuA7DuCQRcVi00TVe/mV7NGuO+qKEneINxX4Qr3SczGp3PKGUECvJRuH4m+I70Fv8Vv469FXozI+POPlJ6fjkPplCaYAuTkJVmZT4IsT/PHq80/CioSNx9wAdMDyyIITkWCbjlAejp9Mzos2kVQXSJXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mABfVi6H; arc=none smtp.client-ip=192.198.163.18
+	s=arc-20240116; t=1725109808; c=relaxed/simple;
+	bh=G3Vvbn3dFDgCSa4ZuIRyYXTbDsyVLdfH+bCcEExwEAk=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=jlbjY8+nKcu1zVZrewOSpO7cL4SUfptvZtS2ZaLXVwgrYgahv1zFbt1badYCukYYjkkJa5ejgCwUuTJUbknII8BXGGFIRZhlHvMxRWmPntsthk2WTaoodb0eAQGLR32BtH7TcO2AmkG36xueUzrH2Vd3eG28vssV81LqMeg9rN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PT/d9N4i; arc=none smtp.client-ip=192.198.163.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1725102842; x=1756638842;
+  t=1725109807; x=1756645807;
   h=date:from:to:cc:subject:message-id;
-  bh=bq0UDEwUTxoNHId/JLJVyE8pUNuuD8Qr5lw5aqje9+E=;
-  b=mABfVi6H80YIwdQQCIhpZpVoP30MVTaIIKhMyvgUbFoOAnKlLlEG4U8h
-   wVyD6aEUI8BEjNoRUuQfmhSAZyRqZnUQq4mwPEw2iql1e0Oo1+S2ZdKy4
-   xBkSW65EeLJpe3rxPGXEnDv24vfhLAR+tcNUQr+Svdi6TZdL374gV6lG4
-   hkZEBDMEvsuMy1ITzk0HoXV2zvtvQmNzDgyvk97enNgubMoG9zssVyOho
-   PP2wrYlPEjoNgbXbtOnwpnB7ouIEINz2w+EJ75EBnv6pYbjP7phQKh/3A
-   hKeryq3dYE5GH2LgNlnLxokDiwHnfAjo+9r+TfxTGuxZESTCpdI/5UxHc
-   A==;
-X-CSE-ConnectionGUID: x3nZetxWRfCF62/9gUV8pw==
-X-CSE-MsgGUID: ksObyTtyQiGCh8+anO6EUw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11180"; a="23256193"
+  bh=G3Vvbn3dFDgCSa4ZuIRyYXTbDsyVLdfH+bCcEExwEAk=;
+  b=PT/d9N4iM6UGfMbzhYQ40w22U4+a8dSvJLmG81sHYNoEibCnhX3yVopH
+   KGJcz64bslWkV3biqWJkN5V53hhkcvfL+nO/VRjS+xegaZlzXuYQDp8Np
+   9nq/hD5Lci3QZ6J0ykdBox3uemEzvAuvgdkeofXNWcMgMX7VhaKLvANRN
+   QmD0/V5sbTISzPKNKCbMos630jPz/WqMgXRLaEitJKUdWyzEDf6C3eKuL
+   LWUJOktlWscsrh5Eda5wVATCfiidl4+X64JCJCy5v7nos7YeNLtn4DBrH
+   tzfd4KiiK1xEt+h2jrgKc7H86WJ3LQImwjeyPXfuWVAxO67o47apJK3GU
+   w==;
+X-CSE-ConnectionGUID: 3d6paDILTySuukBD18q+BA==
+X-CSE-MsgGUID: BIv9dBpkQ1mBB7TRKkheLw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11181"; a="49131150"
 X-IronPort-AV: E=Sophos;i="6.10,191,1719903600"; 
-   d="scan'208";a="23256193"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2024 04:14:01 -0700
-X-CSE-ConnectionGUID: De9L28aXRL+A1CdEt7Q1Gw==
-X-CSE-MsgGUID: LS3murzmRSe7PTLgtcb9nw==
+   d="scan'208";a="49131150"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2024 06:10:06 -0700
+X-CSE-ConnectionGUID: bS0luu3STmKjpnJA7r4r+w==
+X-CSE-MsgGUID: Fuo7HLtOSpe8wq2X0MiZDQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.10,191,1719903600"; 
-   d="scan'208";a="94865515"
+   d="scan'208";a="101635704"
 Received: from lkp-server01.sh.intel.com (HELO 9c6b1c7d3b50) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 31 Aug 2024 04:14:01 -0700
+  by orviesa001.jf.intel.com with ESMTP; 31 Aug 2024 06:10:05 -0700
 Received: from kbuild by 9c6b1c7d3b50 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1skM3K-0002fK-06;
-	Sat, 31 Aug 2024 11:13:58 +0000
-Date: Sat, 31 Aug 2024 19:13:04 +0800
+	id 1skNre-0002li-1m;
+	Sat, 31 Aug 2024 13:10:02 +0000
+Date: Sat, 31 Aug 2024 21:09:33 +0800
 From: kernel test robot <lkp@intel.com>
 To: Tejun Heo <tj@kernel.org>
 Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:test] BUILD REGRESSION
- a5ab7b05a3c825f23d74106f3304de7d024cff8a
-Message-ID: <202408311901.uiiWSU8M-lkp@intel.com>
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ 9b0698129c722cb6d514fea9d97eda49df9c60be
+Message-ID: <202408312131.qOnzF2DT-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -74,47 +74,16 @@ List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git test
-branch HEAD: a5ab7b05a3c825f23d74106f3304de7d024cff8a  cgroup/cpuset: add sefltest for cpuset v1
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: 9b0698129c722cb6d514fea9d97eda49df9c60be  Merge branch 'for-6.12' into for-next
 
-Error/Warning reports:
-
-https://lore.kernel.org/oe-kbuild-all/202408311612.mQTuO946-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202408311651.vwwxEpKn-lkp@intel.com
-
-Error/Warning: (recently discovered and may have been fixed)
-
-kernel/cgroup/cpuset-v1.c:163:2: error: call to undeclared function 'cpus_read_lock'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-kernel/cgroup/cpuset-v1.c:163:9: error: implicit declaration of function 'cpus_read_lock'; did you mean 'rcu_read_lock'? [-Wimplicit-function-declaration]
-kernel/cgroup/cpuset-v1.c:178:2: error: call to undeclared function 'cpus_read_unlock'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-kernel/cgroup/cpuset-v1.c:178:9: error: implicit declaration of function 'cpus_read_unlock'; did you mean 'rcu_read_unlock'? [-Wimplicit-function-declaration]
-
-Error/Warning ids grouped by kconfigs:
-
-recent_errors
-|-- arm64-allmodconfig
-|   |-- kernel-cgroup-cpuset-v1.c:error:call-to-undeclared-function-cpus_read_lock-ISO-C99-and-later-do-not-support-implicit-function-declarations
-|   `-- kernel-cgroup-cpuset-v1.c:error:call-to-undeclared-function-cpus_read_unlock-ISO-C99-and-later-do-not-support-implicit-function-declarations
-|-- loongarch-allmodconfig
-|   |-- kernel-cgroup-cpuset-v1.c:error:implicit-declaration-of-function-cpus_read_lock
-|   `-- kernel-cgroup-cpuset-v1.c:error:implicit-declaration-of-function-cpus_read_unlock
-|-- powerpc-allyesconfig
-|   |-- kernel-cgroup-cpuset-v1.c:error:call-to-undeclared-function-cpus_read_lock-ISO-C99-and-later-do-not-support-implicit-function-declarations
-|   `-- kernel-cgroup-cpuset-v1.c:error:call-to-undeclared-function-cpus_read_unlock-ISO-C99-and-later-do-not-support-implicit-function-declarations
-|-- riscv-allmodconfig
-|   |-- kernel-cgroup-cpuset-v1.c:error:call-to-undeclared-function-cpus_read_lock-ISO-C99-and-later-do-not-support-implicit-function-declarations
-|   `-- kernel-cgroup-cpuset-v1.c:error:call-to-undeclared-function-cpus_read_unlock-ISO-C99-and-later-do-not-support-implicit-function-declarations
-|-- riscv-allyesconfig
-|   |-- kernel-cgroup-cpuset-v1.c:error:call-to-undeclared-function-cpus_read_lock-ISO-C99-and-later-do-not-support-implicit-function-declarations
-|   `-- kernel-cgroup-cpuset-v1.c:error:call-to-undeclared-function-cpus_read_unlock-ISO-C99-and-later-do-not-support-implicit-function-declarations
-`-- s390-allmodconfig
-    |-- kernel-cgroup-cpuset-v1.c:error:call-to-undeclared-function-cpus_read_lock-ISO-C99-and-later-do-not-support-implicit-function-declarations
-    `-- kernel-cgroup-cpuset-v1.c:error:call-to-undeclared-function-cpus_read_unlock-ISO-C99-and-later-do-not-support-implicit-function-declarations
-
-elapsed time: 883m
+elapsed time: 1000m
 
 configs tested: 110
 configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
 tested configs:
 alpha                             allnoconfig   gcc-14.1.0
