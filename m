@@ -1,149 +1,110 @@
-Return-Path: <cgroups+bounces-4672-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4673-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2A7996886E
-	for <lists+cgroups@lfdr.de>; Mon,  2 Sep 2024 15:06:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B45AC968993
+	for <lists+cgroups@lfdr.de>; Mon,  2 Sep 2024 16:14:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 86CA31F22317
-	for <lists+cgroups@lfdr.de>; Mon,  2 Sep 2024 13:06:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 713DE283B6D
+	for <lists+cgroups@lfdr.de>; Mon,  2 Sep 2024 14:14:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05A95205E16;
-	Mon,  2 Sep 2024 13:05:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AC9619F11F;
+	Mon,  2 Sep 2024 14:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=yhndnzj.com header.i=@yhndnzj.com header.b="Pz+Rc1H6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mail-4018.proton.ch (mail-4018.proton.ch [185.70.40.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 054CF20FA8B;
-	Mon,  2 Sep 2024 13:05:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73EDE19F10F
+	for <cgroups@vger.kernel.org>; Mon,  2 Sep 2024 14:13:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725282304; cv=none; b=Xu5ZKgjC76QfUcWxpa5DLxHIvCYlybdKIs3lLY6+QpeI0ZEuxNLrSQqcOHeFJuSx+H9QBQxsky24tFUvrbHXj9vuRDl84P/eTj+HqMtPvHsP2/rGseH024oYvGGYE6teivflLGfa1egkWqR+JSoGBpWM1jInPO1jlGbaVtUKkzw=
+	t=1725286440; cv=none; b=VAm2tU4Wu2Vgs9brA0iWNfQOoJks8NWZctdrPpI5CIeFspfYqPWQzglgDD9hDgH/apkHeohPKvcxNOq3GhDP952WBQEzulO2+1+JHEdCICsGIyDV+Fj8Tf/kKq8IYAVgAq2hm6Qnnl3X7l0m2t/XpX73AJ2StM7c5I7T2rAUTNQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725282304; c=relaxed/simple;
-	bh=ZAypMsXgtUK/eCBt8/+FW02SBEJ1WO0KZLcjZtuROzY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=T0flRoRJgBB0DQdMx8kvzSpWItNKxHiPkersWAHM88CMxlsRO+GWEV+ir9OvOCZG9zlozP+Z8jOOBgycwdnNy3YeOvI3+ppqcowVAd12/tIl08QzbbfMEFEqc/+g5n2BfUijz6d7Fo0uufAN8+BqICkKI5wQSpt1uSXQb5vM6Sc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Wy89Y5B7Yz4f3jqx;
-	Mon,  2 Sep 2024 21:04:49 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id E3CCB1A0568;
-	Mon,  2 Sep 2024 21:04:59 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgDH+8f1t9Vm9+rAAA--.25569S8;
-	Mon, 02 Sep 2024 21:04:59 +0800 (CST)
-From: Yu Kuai <yukuai1@huaweicloud.com>
-To: jack@suse.cz,
-	tj@kernel.org,
-	josef@toxicpanda.com,
-	axboe@kernel.dk,
-	paolo.valente@unimore.it,
-	mauro.andreolini@unimore.it,
-	avanzini.arianna@gmail.com
-Cc: cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	yukuai3@huawei.com,
-	yukuai1@huaweicloud.com,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH for-6.12 4/4] block, bfq: use bfq_reassign_last_bfqq() in bfq_bfqq_move()
-Date: Mon,  2 Sep 2024 21:03:29 +0800
-Message-Id: <20240902130329.3787024-5-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240902130329.3787024-1-yukuai1@huaweicloud.com>
-References: <20240902130329.3787024-1-yukuai1@huaweicloud.com>
+	s=arc-20240116; t=1725286440; c=relaxed/simple;
+	bh=uGPV9tAR75BtaCLwmnuCOAw4KGDFFnJEqjWSWmwE5Gs=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=a5ZXEG+oCzqkpPKmyBNmo2Mc8a88LdXELC9OUQixmTNa6caYJv7MPO3X3IP5vEyxRsEnkqZAP2bad3Aurv0Fv3VaIQ238/qkE/cVXw+X0IcMMuwcPuuZgnkQL4XDmEPTYxW8Kr0h4r/v6IFBVsgHNq6ds0vN5U+pb3Ua4CkhLog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yhndnzj.com; spf=pass smtp.mailfrom=yhndnzj.com; dkim=pass (2048-bit key) header.d=yhndnzj.com header.i=@yhndnzj.com header.b=Pz+Rc1H6; arc=none smtp.client-ip=185.70.40.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=yhndnzj.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yhndnzj.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yhndnzj.com;
+	s=protonmail2; t=1725286429; x=1725545629;
+	bh=uGPV9tAR75BtaCLwmnuCOAw4KGDFFnJEqjWSWmwE5Gs=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=Pz+Rc1H6l8xE+LNq1VflhrnR6hZy/Zy65dlMYNFu0Q8+2bXbIZ8uwxqaYPoqjRD18
+	 eHNaNmifT8ruB1nWzp4M976xXzqEIpjnI/i8sg906lFytRLJH5mLzDehjT3c5dNfeH
+	 olHtHEN6vipEHN+87gDxRj1iVr3lLiZVKbig94IjnwUcfcYczG2oPfBkF2OFiAy7pO
+	 PsHkX1Wx1+KZeSTOogz0TkTPux4oi5KkSfScEeXHulppwGMkWDrNXzeiHZNbRBsVwi
+	 SAxKg2a8G+fqZcYOA0Q4/R+0sOE95H+JTuSkM6W1mHWMUuMRxmcWsm+nhDRIkWr0Qe
+	 JWO4oYs9ILFfg==
+Date: Mon, 02 Sep 2024 14:13:43 +0000
+To: Andrew Morton <akpm@linux-foundation.org>
+From: Mike Yuan <me@yhndnzj.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Muchun Song <muchun.song@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, Roman Gushchin <roman.gushchin@linux.dev>, Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH v3 3/3] Documentation/cgroup-v2: clarify that zswap.writeback is ignored if zswap is disabled
+Message-ID: <d305db940e461c92a618dd26224144a5105274b3.camel@yhndnzj.com>
+In-Reply-To: <20240823162506.12117-3-me@yhndnzj.com>
+References: <20240823162506.12117-1-me@yhndnzj.com> <20240823162506.12117-3-me@yhndnzj.com>
+Feedback-ID: 102487535:user:proton
+X-Pm-Message-ID: 1b059982da0bd1a3cba5619155b6e8cc6ca71b5c
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDH+8f1t9Vm9+rAAA--.25569S8
-X-Coremail-Antispam: 1UD129KBjvJXoW7ur4fGF15Jw17WF45XryxXwb_yoW8trW3pa
-	nIgw47XF4UGr4rZr4UJ3WDXrn3WFn5u3srtrnYv340yw17Ar1aqFsIy34xXrWIqrZ3Arsx
-	Z34Yg3s7Zr17KrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
-	bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-	AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI
-	42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
-	CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnI
-	WIevJa73UjIFyTuYvjfUOyIUUUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-From: Yu Kuai <yukuai3@huawei.com>
+> As discussed in [1], zswap-related settings natually
+> lose their effect when zswap is disabled, specifically
+> zswap.writeback here. Be explicit about this behavior.
+>=20
+> [1]
+> https://lore.kernel.org/linux-kernel/CAKEwX=3DMhbwhh-=3DxxCU-RjMXS_n=3DRp=
+V3Gtznb2m_3JgL+jzz++g@mail.gmail.com/
+>=20
+> Cc: Nhat Pham <nphamcs@gmail.com>
+> Cc: Yosry Ahmed <yosryahmed@google.com>
+>=20
+> Signed-off-by: Mike Yuan <me@yhndnzj.com>
+> ---
+> =C2=A0Documentation/admin-guide/cgroup-v2.rst | 2 ++
+> =C2=A01 file changed, 2 insertions(+)
+>=20
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst
+> b/Documentation/admin-guide/cgroup-v2.rst
+> index 95c18bc17083..a1723e402596 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1731,6 +1731,8 @@ The following nested keys are defined.
+> =C2=A0
+> =C2=A0=09Note that this is subtly different from setting
+> memory.swap.max to
+> =C2=A0=090, as it still allows for pages to be written to the zswap
+> pool.
+> +=09This setting has no effect if zswap is disabled, and
+> swapping
+> +=09would be allowed unless memory.swap.max is set to 0.
+> =C2=A0
+> =C2=A0=C2=A0 memory.pressure
+> =C2=A0=09A read-only nested-keyed file.
 
-Instead of open coding it, there are no functional changes.
+Hmm, Andrew, it seems that the commit messages of this and the previous
+patch are somehow reversed/mismatched? [1][2] Could you please confirm
+and fix it?
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/bfq-cgroup.c  | 7 +------
- block/bfq-iosched.c | 4 ++--
- block/bfq-iosched.h | 2 ++
- 3 files changed, 5 insertions(+), 8 deletions(-)
-
-diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-index b758693697c0..9fb9f3533150 100644
---- a/block/bfq-cgroup.c
-+++ b/block/bfq-cgroup.c
-@@ -679,12 +679,7 @@ void bfq_bfqq_move(struct bfq_data *bfqd, struct bfq_queue *bfqq,
- 		bfq_put_idle_entity(bfq_entity_service_tree(entity), entity);
- 	bfqg_and_blkg_put(old_parent);
- 
--	if (entity->parent &&
--	    entity->parent->last_bfqq_created == bfqq)
--		entity->parent->last_bfqq_created = NULL;
--	else if (bfqd->last_bfqq_created == bfqq)
--		bfqd->last_bfqq_created = NULL;
--
-+	bfq_reassign_last_bfqq(bfqq, NULL);
- 	entity->parent = bfqg->my_entity;
- 	entity->sched_data = &bfqg->sched_data;
- 	/* pin down bfqg and its associated blkg  */
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index ca766b7d5560..d1bf2b8a3576 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -3097,8 +3097,8 @@ static void bfq_bfqq_save_state(struct bfq_queue *bfqq)
- }
- 
- 
--static void
--bfq_reassign_last_bfqq(struct bfq_queue *cur_bfqq, struct bfq_queue *new_bfqq)
-+void bfq_reassign_last_bfqq(struct bfq_queue *cur_bfqq,
-+			    struct bfq_queue *new_bfqq)
- {
- 	if (cur_bfqq->entity.parent &&
- 	    cur_bfqq->entity.parent->last_bfqq_created == cur_bfqq)
-diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
-index 08ddf2cfae5b..e16d96e2367b 100644
---- a/block/bfq-iosched.h
-+++ b/block/bfq-iosched.h
-@@ -1156,6 +1156,8 @@ void bfq_del_bfqq_busy(struct bfq_queue *bfqq, bool expiration);
- void bfq_add_bfqq_busy(struct bfq_queue *bfqq);
- void bfq_add_bfqq_in_groups_with_pending_reqs(struct bfq_queue *bfqq);
- void bfq_del_bfqq_in_groups_with_pending_reqs(struct bfq_queue *bfqq);
-+void bfq_reassign_last_bfqq(struct bfq_queue *cur_bfqq,
-+			    struct bfq_queue *new_bfqq);
- 
- /* --------------- end of interface of B-WF2Q+ ---------------- */
- 
--- 
-2.39.2
+[1]:
+https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git/commit/?h=3Dmm-=
+unstable&id=3Deef275964326760bb55803b167854981cab97e55
+[2]:
+https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git/commit/?h=3Dmm-=
+unstable&id=3D42c3628a37400c2bc4199b9f8423be701646d4e0
 
 
