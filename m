@@ -1,157 +1,81 @@
-Return-Path: <cgroups+bounces-4674-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4675-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3608E968B41
-	for <lists+cgroups@lfdr.de>; Mon,  2 Sep 2024 17:45:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D5D2968F0F
+	for <lists+cgroups@lfdr.de>; Mon,  2 Sep 2024 23:02:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 672DD1C22582
-	for <lists+cgroups@lfdr.de>; Mon,  2 Sep 2024 15:45:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D101D1C222BA
+	for <lists+cgroups@lfdr.de>; Mon,  2 Sep 2024 21:02:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD7BA1A2634;
-	Mon,  2 Sep 2024 15:45:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A3FB15666D;
+	Mon,  2 Sep 2024 21:02:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="J9jt39xt"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="RNeVQhL6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC1CA19C553
-	for <cgroups@vger.kernel.org>; Mon,  2 Sep 2024 15:45:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB0AF1A4E6C;
+	Mon,  2 Sep 2024 21:02:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725291945; cv=none; b=W15tKI+S81LD7/fFzQKdTTwI1WEt3qAE1n/bzobCEIY/LjBhSjvrGi4jJnso67YPHjKhu8T/xFSaH1KsMFJX/hUcp0KIREN+10fZxWNc+DkYBx1g37Rz+Pam5padG1/3i8LGy9Nkv1xQbgJmUxp9Mrtxu9UJPKCiCs+0U5tBdX8=
+	t=1725310974; cv=none; b=kTXPciy9EKbmiVDNCgflS/Ltrdbf/kx8VPpwdLTGthwpJQ41xm4/VlgboaJahIRCo/tpYfML9INb6RubsvWfdkiOspWfBrJQ6ARqfJtYvhml4vE3SLpRuNh+MMOm92BZRTQQPhuyjhHuChTPglq1mR5iAWH3zGbyuaDC43KdI8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725291945; c=relaxed/simple;
-	bh=WfNDbFKaXEQ+UWHsRcQOC0oApgX22xfzOoTR1bFeDKw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u/Rj94cVTNWQkTaKBI9JNjQ6/Hrn+2E9xBt/yrN07oVGh7JRiYs1b9M1PmCdmmB8PRNKswDU9BqNN7wR3yIlb2bv1YZhFz/WkFBaghsIHmJkHnJKu6rDJFGe4i9CNEt8veZ+D9oeBTzIaHzMFk4EaJJiSt1LrroLL9waB0O3PDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=J9jt39xt; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2f029e9c9cfso53998741fa.2
-        for <cgroups@vger.kernel.org>; Mon, 02 Sep 2024 08:45:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1725291942; x=1725896742; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VOSvR4tMpfpkU/JecxX/SlQqf0ig96cu+JpUFgP7gSQ=;
-        b=J9jt39xtf8MEVsUOzpdVBEr/VDkIMf9THG+VRdAH8oHSJsdm8zQJKMrekipkli4Uz4
-         tLavPykw4hpSQTl/d4ryHmimPSNY093084mUr2Nv4RnakLxWBOVOMdzmCVuQhIhP07KI
-         WMNuJu7oWF+ZBxDl4XanHClIZlcL6582qOEbT7c+ixUwLV5g870qpPqZXb3EBR0A19HR
-         Di1u5QVgOThUh+7XAMGZhrF8L+eb6BwcVExkGJQ4ADrfV1OSOb+rRNQSCQNj/70BDexF
-         AgygmuGbce+kLONjOcpozneBZcOWSKZ3UUhu+cS7Orpy7zPCRKm71dMhpkOa1h53hHTp
-         ZGng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725291942; x=1725896742;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VOSvR4tMpfpkU/JecxX/SlQqf0ig96cu+JpUFgP7gSQ=;
-        b=mUdlPenPHozxB5UYHw9n/AHticsciUw1MAmeZxkCIqCkEQ4VEksAD9Xw5bt5VjoCqq
-         A6BKczL/eznGp6/2LPFRAw+osQQNH2IgmSy7/SwntKcNg42h68ed5ZNXdVd27rR4cuhq
-         CyXqI3Ssnkp6O31JBNSIVLXmO4fuvl57zUZepGa2UL4fRzi0TCEajcpe7ZyBs71wNyiS
-         xZurKj5V0WC4l5mQ2CCdV5NCf+S/RJ4TIE9pYSvIUZLJd6DQxAwhZUXTp7QxPMstj3np
-         Va9yui87BsfkvObKfAMzXb/fOTz2F+CEUY73lThqp/vCQ2Ni2wyIsTWkLn0HNR6W57O3
-         P6DQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV67EwMpX9E+Bd5qZGj6GbCLInMlBsduoLqT+2F71gsQo1kNNjxOQy0FdE+Wo16kwxSoGVepoJf@vger.kernel.org
-X-Gm-Message-State: AOJu0YwY64lUfJi90buOBFjRaElZqYkiBpi/CEVMVvmcKU/R8UijNhqD
-	i3p76i9kr1bmMOWe04gpzGieT+v+INOfW7eQ2YVo7U+fzKWPGg4kfoxnYxePEKaQHH+kyP9GSEJ
-	F
-X-Google-Smtp-Source: AGHT+IFgi/MueWlxs3WBPqBpaI2dWmWxiH/V1PyeAg+px8C/9CVU5AJ/GqLVc1fypY/h30wt2uBgxg==
-X-Received: by 2002:a05:6512:ea8:b0:535:456e:f56f with SMTP id 2adb3069b0e04-53546bffe51mr10454338e87.58.1725291941544;
-        Mon, 02 Sep 2024 08:45:41 -0700 (PDT)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a89891968f4sm569547566b.106.2024.09.02.08.45.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Sep 2024 08:45:40 -0700 (PDT)
-Date: Mon, 2 Sep 2024 17:45:39 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Joshua Hahn <joshua.hahnjy@gmail.com>
-Cc: tj@kernel.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, lizefan.x@bytedance.com, 
-	shuah@kernel.org
-Subject: Re: [PATCH v2 0/2] Exposing nice CPU usage to userspace
-Message-ID: <mhugflcvgtv2iwyz2i63dkteur3xhnqn5qi37gzwc7mkt4sfn7@32kenf3bnhzf>
-References: <20240830141939.723729-1-joshua.hahnjy@gmail.com>
+	s=arc-20240116; t=1725310974; c=relaxed/simple;
+	bh=qmUm/SLESS3Ku1lLFFuoU2gDnj+R64XXYu5wCxKeIPg=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=d6k/hgE99fKwfDtfp+Mo5Al41CuxLRkO2m3MP55WcDkGReFHtl6izs9/2iONclvcr6BlexDjm06N9QUX/gTpqfpp5Ut6uZWwbFNAtzkemDhfXka38uUfHaKXPSEbJGe84rfCz1TdFHqtBf1/ttV7z73oazjl+u3+ZOV6sLB0rRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=RNeVQhL6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA96EC4CEC2;
+	Mon,  2 Sep 2024 21:02:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1725310974;
+	bh=qmUm/SLESS3Ku1lLFFuoU2gDnj+R64XXYu5wCxKeIPg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=RNeVQhL6YzIxWcUl1Bp2L9TmSjs82a75OMYYBJqeQhkpvRFiyUQhKqWl3A6xwf3qF
+	 3GDbh0dzdGsLOmnXZT9NzMTXDCOOEvV4Unk9lVra2sHKG+3W/zum/QtMbduIuMoGXm
+	 +fZoqy8lGxurMIgfSYMIDzJtxEbjO9jLP93d31Lg=
+Date: Mon, 2 Sep 2024 14:02:53 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Mike Yuan <me@yhndnzj.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed
+ <yosryahmed@google.com>, Johannes Weiner <hannes@cmpxchg.org>, Muchun Song
+ <muchun.song@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, Roman
+ Gushchin <roman.gushchin@linux.dev>, Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH v3 3/3] Documentation/cgroup-v2: clarify that
+ zswap.writeback is ignored if zswap is disabled
+Message-Id: <20240902140253.13be47a393ccacff3d728e32@linux-foundation.org>
+In-Reply-To: <d305db940e461c92a618dd26224144a5105274b3.camel@yhndnzj.com>
+References: <20240823162506.12117-1-me@yhndnzj.com>
+	<20240823162506.12117-3-me@yhndnzj.com>
+	<d305db940e461c92a618dd26224144a5105274b3.camel@yhndnzj.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="pjp4wemvnp3oxeku"
-Content-Disposition: inline
-In-Reply-To: <20240830141939.723729-1-joshua.hahnjy@gmail.com>
-
-
---pjp4wemvnp3oxeku
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 
-Hello Joshua.
+On Mon, 02 Sep 2024 14:13:43 +0000 Mike Yuan <me@yhndnzj.com> wrote:
 
-On Fri, Aug 30, 2024 at 07:19:37AM GMT, Joshua Hahn <joshua.hahnjy@gmail.co=
-m> wrote:
-> Exposing this metric will allow users to accurately probe the niced CPU
-> metric for each workload, and make more informed decisions when
-> directing higher priority tasks.
+> > +	This setting has no effect if zswap is disabled, and
+> > swapping
+> > +	would be allowed unless memory.swap.max is set to 0.
+> > =A0
+> > =A0=A0 memory.pressure
+> > =A0	A read-only nested-keyed file.
+>=20
+> Hmm, Andrew, it seems that the commit messages of this and the previous
+> patch are somehow reversed/mismatched? [1][2] Could you please confirm
+> and fix it?
 
-I'm afraid I can't still appreciate exposing this value:
-
-- It makes (some) sense only on leave cgroups (where variously nice'd
-  tasks are competing against each other). Not so much on inner node
-  cgroups (where it's a mere sum but sibling cgroups could have different
-  weights, so the absolute times would contribute differently).
-
-- When all tasks have nice > 0 (or nice <=3D 0), it loses any information
-  it could have had.
-
-(Thus I don't know whether to commit to exposing that value via cgroups.)
-
-I wonder, wouldn't your use case be equally served by some
-post-processing [1] of /sys/kernel/debug/sched/debug info which is
-already available?
-
-Regards,
-Michal
-
-[1]
-Your metric is supposed to represent
-	=CE=A3_i^tasks =E2=88=AB_t is_nice(i, t) dt
-
-If I try to address the second remark by looking at
-	=CE=A3_i^tasks =E2=88=AB_t nice(i, t) dt
-
-and that resembles (nice=3D0 ~ weight=3D1024)
-	=CE=A3_i^tasks =E2=88=AB_t weight(i, t) dt
-
-swap sum and int
-	=E2=88=AB_t =CE=A3_i^tasks weight(i, t) dt
-
-where
-	=CE=A3_i^tasks weight(i, t)=20
-
-can be taken from
-	/sys/kernel/debug/sched/debug:cfs_rq[0].load_avg
-
-above is only for CPU nr=3D0. So processing would mean sampling that file
-over all CPUs and time.
-
---pjp4wemvnp3oxeku
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZtXdoAAKCRAt3Wney77B
-Se8gAQDRh3DgBLtj3DCNCk75FE2vtjfD+GRH6awHFPeBC2A+IwEAxBg0GoPbsEYV
-jr31hYEW3dftJtxBNrZ5yUFj2uTuXAc=
-=DYNI
------END PGP SIGNATURE-----
-
---pjp4wemvnp3oxeku--
+Yup thanks, a side-effect of turning a three-patch series into a
+one-patch hotfix and a two-patch series.
 
