@@ -1,73 +1,63 @@
-Return-Path: <cgroups+bounces-4697-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4698-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FCB096BF2A
-	for <lists+cgroups@lfdr.de>; Wed,  4 Sep 2024 15:55:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFF7196C51B
+	for <lists+cgroups@lfdr.de>; Wed,  4 Sep 2024 19:17:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CE2028A329
-	for <lists+cgroups@lfdr.de>; Wed,  4 Sep 2024 13:55:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 283E21F2879F
+	for <lists+cgroups@lfdr.de>; Wed,  4 Sep 2024 17:17:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 168BD1DB55B;
-	Wed,  4 Sep 2024 13:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A9DA1E133D;
+	Wed,  4 Sep 2024 17:17:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="AfVP21Ef"
+	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="Otv2TYlt"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C29A1DAC5D
-	for <cgroups@vger.kernel.org>; Wed,  4 Sep 2024 13:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F59E5EE8D;
+	Wed,  4 Sep 2024 17:17:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725458105; cv=none; b=QoMKavpRATdW+kAYCu373IJcjrscV02o1opKZE7korg0zEAjbXWhFlV+lvEBdVXBXqEIyRJRVQ5CstUaDtO4eEKnALfxNdXGv4v18vE+y9n1aLsx8F6vM7wEkUYua/diU9CuLHPa5yQP8sFaSPwV9pZmkdm8/NsUCYs3wNGUj70=
+	t=1725470244; cv=none; b=nADQnODREbexdtZY4xJChyan3M65lxTJwY5L2jE/uAh6dPin+/J4hEpnsX05PGtUItDemphIaGwY1pWwBRauAe1cb6KZfhOTLa7fE7+QKPixrQrsNbKDYnudMbOTfEilyDfistCbwpPDoyIiIXq/EgHilYL/ehAxaCmhOUhuuVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725458105; c=relaxed/simple;
-	bh=G9TWLJ5Qcqe5/+6+DCHM88NkcdYLAIpLajkqunioBH0=;
+	s=arc-20240116; t=1725470244; c=relaxed/simple;
+	bh=LRXV9Q0dFTBf2mdXNPCxnch8TO71ErFZVKpeSFu/W8I=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RPFHH6mM6YgOSNiaxpmRxYCiSsK8e4p7j/k+uAqkOu2W256F8Ku96Yq0UroWxG/7wM1DpGXwLvSEkz5IqJOQCg2LGd8+jpxPZgw4RdBj3n90Wsc+MbWxd52ctm2MMn3AthRtXLkJLonBDKniQUJybUmiGrikiik4oljS7J7wih8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=AfVP21Ef; arc=none smtp.client-ip=209.85.166.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3a018296fffso2086165ab.2
-        for <cgroups@vger.kernel.org>; Wed, 04 Sep 2024 06:55:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1725458103; x=1726062903; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oF5PiVstO1bSVn0uGppYTW7lTYTwkYc95VjzklZhkF4=;
-        b=AfVP21EfCIFzF2+MqebsBlbguMO84/+jrsaAQUfJ9/LXcqG9rf418ORU6711RPQHDS
-         knCveCZTKuJCaueIFO1XzzY9OWNZvGD6eXiAs0DF0Ye9DmatQO8+H71JA31vCUKQuh25
-         L39jpTUr257HfCyb6S5w67CLCYRJwvL0kpCx7q9yTm5ejuE0Fe2FucDSDs79k+ImBx2u
-         992U5rjqW2EKskgcBLxA3ICShhPVSR9QIkGsteoi8qZXJiHhxOETErJ0OVkS8C3YNI5k
-         OyFo0Rjq7BNKsV6G450dbOf+dMaUyJD7mnbphNMfulj5Q5tSGZtLLFxLWVtAwmfYN6k8
-         X2Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725458103; x=1726062903;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oF5PiVstO1bSVn0uGppYTW7lTYTwkYc95VjzklZhkF4=;
-        b=YNVPUotLaiH92T+TBHAiCeS8ygbE2+1YeD70Bc3UZoV6SD3NhomZX8suVePODy/Jt5
-         5tYv4yLLsJaX82A9sz3DIBs+lK7MCUGOanuQkUEjIghcqPcPJq/vPY81ijzE3yFDQDhV
-         LLBFhsj8aG9Cw81EBrUD3IEzjL18IlPXrCHNb71bJp0/H/drNEf3niRxqR4f0HI24eKh
-         QsP3SXffZFCuuHiyUaylZVknlunx2qZ9Q4ise/dMtEAPoCZHdfcWOjCeNDTy2tEzEz6y
-         m063keeuTT3XXjt9YWknK9l0jhkM1tgUiP9RYeeuQCYf34SsSKe0GoeRd7QKBCYgsQje
-         4BBA==
-X-Gm-Message-State: AOJu0YyDMJ7BSEXwmWxVQW6ATfNMfxmaaYj67ZnveV62kk1gKCogbzgb
-	h/O+W61ix2uQpq8+IJDbYYQIv9mJY7hMQ8zGg0PJIyOTeez+Zfb9AuHz6UEhoeY=
-X-Google-Smtp-Source: AGHT+IEh4dvLQ3fPzZIYoRvC2kmG6Tqk81n0JWgsiNRAqvk43xqMT4zgjhYnO9n1kzwMTRb76YKEbQ==
-X-Received: by 2002:a05:6e02:1569:b0:3a0:1828:31d9 with SMTP id e9e14a558f8ab-3a018283360mr15675225ab.24.1725458103506;
-        Wed, 04 Sep 2024 06:55:03 -0700 (PDT)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-39f3af97220sm36719625ab.11.2024.09.04.06.55.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Sep 2024 06:55:02 -0700 (PDT)
-Message-ID: <edfe3c80-c359-44a0-889c-1a879532175a@kernel.dk>
-Date: Wed, 4 Sep 2024 07:55:01 -0600
+	 In-Reply-To:Content-Type; b=SOju7PpuZO5yzdq0GPAoYA/xpoxaJrZfNupVZknocjeDFTnMTjcYh5L1+B/tGN72KyQQTCpM1fHzCEJyi/bZ7hHYni7Cpzg8oV9avci4u2jTly8MWKz19ckhKfKOMpn6iZhbsClzPi5qPjZ/FJ10swq8tyzsPGhJ2a/2Be6UQMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=Otv2TYlt; arc=none smtp.client-ip=199.89.1.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+Received: from localhost (localhost [127.0.0.1])
+	by 008.lax.mailroute.net (Postfix) with ESMTP id 4WzTh24Qq1z6ClY8n;
+	Wed,  4 Sep 2024 17:17:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:from:from:content-language:references:subject:subject
+	:user-agent:mime-version:date:date:message-id:received:received;
+	 s=mr01; t=1725470237; x=1728062238; bh=LRXV9Q0dFTBf2mdXNPCxnch8
+	TO71ErFZVKpeSFu/W8I=; b=Otv2TYltZtmCvIltxmhaan4a2MKRFpvHBoG/3BJc
+	xcjmyBfDUb9+RaVft5CkyZ/HUVtpTHbUZYaMjbaykJCkOp67XSh4lzl31ENHf/0e
+	I7m9ajBIUDUFsrbyExUMivRLXmeucohh/NJUIgxsK4ukuHai2NjpkOMnvUZPwlL/
+	wYzwj3qeMOJBH8CCY4eUofU6y9gxATARcjNXcR9FhgdncHnPGkyiSOBazcp+/BUj
+	Tt3owaaJ8Oze1BtVWjzacMbRQMEqX7X3ukmQ2Vv1Y4+1LcVCh0kAiwipLVgCjWG/
+	2ZK4tCmhPrADRg+t+TnkFzfPB5Xn1mp/O6g8ZvyyMTE/Mw==
+X-Virus-Scanned: by MailRoute
+Received: from 008.lax.mailroute.net ([127.0.0.1])
+ by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
+ id NOWhUI4Vb90D; Wed,  4 Sep 2024 17:17:17 +0000 (UTC)
+Received: from [100.66.154.22] (unknown [104.135.204.82])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: bvanassche@acm.org)
+	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4WzTgs5MbBz6ClbJB;
+	Wed,  4 Sep 2024 17:17:13 +0000 (UTC)
+Message-ID: <db586849-a7d6-44b2-96d0-113629f8d8f9@acm.org>
+Date: Wed, 4 Sep 2024 10:17:11 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -77,7 +67,7 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH for-6.12 0/4] block, bfq: fix corner cases related to bfqq
  merging
-To: Yu Kuai <yukuai1@huaweicloud.com>, Bart Van Assche <bvanassche@acm.org>,
+To: Yu Kuai <yukuai1@huaweicloud.com>, Jens Axboe <axboe@kernel.dk>,
  jack@suse.cz, tj@kernel.org, josef@toxicpanda.com, paolo.valente@unimore.it,
  mauro.andreolini@unimore.it, avanzini.arianna@gmail.com
 Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
@@ -89,15 +79,13 @@ References: <20240902130329.3787024-1-yukuai1@huaweicloud.com>
  <b5b0e655-fb17-4967-9104-4386710ee8db@acm.org>
  <80732d0d-e1a6-8b5e-791d-7c8a8091159a@huaweicloud.com>
 Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
+From: Bart Van Assche <bvanassche@acm.org>
 In-Reply-To: <80732d0d-e1a6-8b5e-791d-7c8a8091159a@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-On 9/3/24 8:45 PM, Yu Kuai wrote:
-> Hi,
-> 
-> ? 2024/09/04 10:28, Bart Van Assche ??:
+On 9/3/24 7:45 PM, Yu Kuai wrote:
+> =E5=9C=A8 2024/09/04 10:28, Bart Van Assche =E5=86=99=E9=81=93:
 >> On 9/3/24 6:32 PM, Yu Kuai wrote:
 >>> We do have customers are using bfq in downstream kernels, and we are
 >>> still running lots of test for bfq.
@@ -107,19 +95,22 @@ On 9/3/24 8:45 PM, Yu Kuai wrote:
 >>
 >> If Android device vendors would stop using BFQ, my job would become
 >> easier.
-> 
+>=20
 > I'm confused now, I think keep maintaining BFQ won't stop you from
 > adding new functionality to another scheduler, right? Is this something
 > that all scheduler have to support?
 
-With fear of putting words into Bart's mouth, perhaps he's saying that
-the BFQ is a bit of a mess and it'd be nice if we had a cleaner version
-of some of the features it brings. But having someone actually maintain
-it and perhaps clean it up a bit and reduce the complexity would be a
-good thing. Really it's the authors choice on where to best spend his or
-her time.
+As long as the BFQ I/O scheduler does not get deprecated, there will be
+Android device vendors that select it for their devices. BFQ bug reports
+are either sent to one of my colleagues or to myself.
 
--- 
-Jens Axboe
+For Android devices that use UFS storage, we noticed that the
+mq-deadline scheduler is good enough. The device boot time is shorter
+and I'm not aware of any significant differences in application startup
+time.
+
+Thanks,
+
+Bart.
 
 
