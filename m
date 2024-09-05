@@ -1,40 +1,40 @@
-Return-Path: <cgroups+bounces-4718-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4717-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9475396DAD0
-	for <lists+cgroups@lfdr.de>; Thu,  5 Sep 2024 15:50:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5C7096DACD
+	for <lists+cgroups@lfdr.de>; Thu,  5 Sep 2024 15:50:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40DB31F238E6
-	for <lists+cgroups@lfdr.de>; Thu,  5 Sep 2024 13:50:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6038CB20D45
+	for <lists+cgroups@lfdr.de>; Thu,  5 Sep 2024 13:50:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFDC319EEA7;
-	Thu,  5 Sep 2024 13:49:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D96719DFB8;
+	Thu,  5 Sep 2024 13:49:41 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C3F019DF4D;
-	Thu,  5 Sep 2024 13:49:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D945519DF76;
+	Thu,  5 Sep 2024 13:49:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725544186; cv=none; b=aSNCyA6SFcqGdcK2K6rxpJjkXacpa6VRXHq6ws7aHQ4hS8uDHs6wjT9xL2trh8zT3WibmZqVwNukuoEsejTLw/ln3Y+amez4ZZSSSACKB7w/dFNsv105Q/RDVEfu4XWU61o7DqLMz0FOzqL8a8ZqMoaPBzOTT8Dit0BJ+0hfyoQ=
+	t=1725544181; cv=none; b=ukccfLgTlMV3sFZu4PM3zNAK4jzf5d0poOsGO/jGry3zGaSFd17WpTK7W5HZQERlpq82PBhUPH0gCcGrgISGo9PZgD+rCTJV5tuWoAjJVjmR2T7slfAfOJb3pSchGhqPjMiueb9NcKiX9UZ4Bdfz26aY6qIY0t92jUz0+dDLFjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725544186; c=relaxed/simple;
-	bh=eaNJhufH2kiE0k+7vdq6DTSxFjm+o875MPHJ4a7ZTOc=;
+	s=arc-20240116; t=1725544181; c=relaxed/simple;
+	bh=duIcmcapnLvgS8EADyMQQhxQqGvNu2gkdOzmng6AXAk=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=XFwZ4EPK9nBbVLG8w4SaCcA+IxHj2j5kbI6WSiREgtNOdUr5Y8mpy1cCt+ypyljHE1vh4H+/kwJuO/ekZgdVlU5/RYnatlZJoNxc4yZ6BEYtYAenVua4X8ZJDyUcd06MXk9e3OWqZjcphw1H/jmaGJF2K5bltU517qaozfc+jj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+	 MIME-Version:Content-Type; b=ro0IMQC3iSLNqQqBI2W5FH6BD5fQRLoDS7TynSpEurUR+jXEmDehHFndSC97ImdZtjN5Ja2lC1ffpq52Tu6LpIc5LRlBLCXplLlGWfF8+H9l+1u7n/MSUM3jMbEFwBYowPvuRBaT9aXFtghyHf2sYuv5cU15NQ+It3N/oNilrXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4X00w50Tgpz69VN;
-	Thu,  5 Sep 2024 21:44:37 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4X011Q4rTMz1j89M;
+	Thu,  5 Sep 2024 21:49:14 +0800 (CST)
 Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id C52BB140417;
-	Thu,  5 Sep 2024 21:49:35 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 4647E14037C;
+	Thu,  5 Sep 2024 21:49:36 +0800 (CST)
 Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
  (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Thu, 5 Sep
@@ -45,9 +45,9 @@ To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
 	<mkoutny@suse.com>
 CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<chenridong@huaweicloud.com>
-Subject: [PATCH v1 -next 2/3] cgroup/freezer: Reduce redundant propagation for cgroup_propagate_frozen
-Date: Thu, 5 Sep 2024 13:41:29 +0000
-Message-ID: <20240905134130.1176443-3-chenridong@huawei.com>
+Subject: [PATCH v1 -next 3/3] cgroup/freezer: Add freeze selftest
+Date: Thu, 5 Sep 2024 13:41:30 +0000
+Message-ID: <20240905134130.1176443-4-chenridong@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240905134130.1176443-1-chenridong@huawei.com>
 References: <20240905134130.1176443-1-chenridong@huawei.com>
@@ -62,87 +62,131 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemd100013.china.huawei.com (7.221.188.163)
 
-When a cgroup is frozen/unfrozen, it will always propagate down to up.
-However it is unnecessary to propagate to the top every time. This patch
-aims to reduce redundant propagation for cgroup_propagate_frozen.
-
-For example, subtree like:
-	a
-	|
-	b
-      / | \
-     c  d  e
-If c is frozen, and d and e are not frozen now, it doesn't have to
-propagate to a; Only when c, d and e are all frozen, b and a could be set
-to frozen. Therefore, if nr_frozen_descendants is not equal to
-nr_descendants, just stop propagate. If a descendant is frozen, the
-parent's nr_frozen_descendants add child->nr_descendants + 1. This can
-reduce redundant propagation.
+Add selftest to test cgroup.freeze and check cgroup.events state.
 
 Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- kernel/cgroup/freezer.c | 31 +++++++++++++++++++++++--------
- 1 file changed, 23 insertions(+), 8 deletions(-)
+ .../testing/selftests/cgroup/test_freezer.sh  | 111 ++++++++++++++++++
+ 1 file changed, 111 insertions(+)
+ create mode 100755 tools/testing/selftests/cgroup/test_freezer.sh
 
-diff --git a/kernel/cgroup/freezer.c b/kernel/cgroup/freezer.c
-index 02af6c1fa957..e4bcc41b6a30 100644
---- a/kernel/cgroup/freezer.c
-+++ b/kernel/cgroup/freezer.c
-@@ -13,7 +13,7 @@
-  */
- static void cgroup_propagate_frozen(struct cgroup *cgrp, bool frozen)
- {
--	int desc = 1;
-+	struct cgroup *child = cgrp;
- 
- 	/*
- 	 * If the new state is frozen, some freezing ancestor cgroups may change
-@@ -23,23 +23,38 @@ static void cgroup_propagate_frozen(struct cgroup *cgrp, bool frozen)
- 	 */
- 	while ((cgrp = cgroup_parent(cgrp))) {
- 		if (frozen) {
--			cgrp->freezer.nr_frozen_descendants += desc;
-+			/*
-+			 * A cgroup is frozen, parent nr frozen descendants should add
-+			 * nr cgroups of the entire subtree , including child itself.
-+			 */
-+			cgrp->freezer.nr_frozen_descendants += child->nr_descendants + 1;
+diff --git a/tools/testing/selftests/cgroup/test_freezer.sh b/tools/testing/selftests/cgroup/test_freezer.sh
+new file mode 100755
+index 000000000000..7178980b1db8
+--- /dev/null
++++ b/tools/testing/selftests/cgroup/test_freezer.sh
+@@ -0,0 +1,111 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# Test freeze hierarchy state
++#
++ROOT_PATH=/sys/fs/cgroup
++skip_test() {
++	echo "$1"
++	echo "Test SKIPPED"
++	exit 4 # ksft_skip
++}
 +
-+			/*
-+			 * If there is other descendant is not frozen,
-+			 * cgrp and its parent couldn't be frozen, just break
-+			 */
-+			if (cgrp->freezer.nr_frozen_descendants !=
-+			    cgrp->nr_descendants)
-+				break;
++write_freeze() {
++	path=$1
++	value=$2
++	echo $value > $ROOT_PATH/$path/cgroup.freeze
++}
 +
-+			child = cgrp;
- 			if (!test_bit(CGRP_FROZEN, &cgrp->flags) &&
--			    test_bit(CGRP_FREEZE, &cgrp->flags) &&
--			    cgrp->freezer.nr_frozen_descendants ==
--			    cgrp->nr_descendants) {
-+			    test_bit(CGRP_FREEZE, &cgrp->flags)) {
- 				set_bit(CGRP_FROZEN, &cgrp->flags);
- 				cgroup_file_notify(&cgrp->events_file);
- 				TRACE_CGROUP_PATH(notify_frozen, cgrp, 1);
--				desc++;
- 			}
- 		} else {
--			cgrp->freezer.nr_frozen_descendants -= desc;
-+			cgrp->freezer.nr_frozen_descendants -= (child->nr_descendants + 1);
++get_event_frozen()
++{
++	path=$1
++	return $(cat $ROOT_PATH/$path/cgroup.events | grep frozen | awk '{print $2}')
++}
 +
-+			child = cgrp;
- 			if (test_bit(CGRP_FROZEN, &cgrp->flags)) {
- 				clear_bit(CGRP_FROZEN, &cgrp->flags);
- 				cgroup_file_notify(&cgrp->events_file);
- 				TRACE_CGROUP_PATH(notify_frozen, cgrp, 0);
--				desc++;
-+			} else {
-+				/* If parent is unfrozen, don't have to propagate more */
-+				break;
- 			}
- 		}
- 	}
++# the test subtree:
++#        A
++#       / \
++#      B   C
++#    / | \  \
++#    D E F   G
++#   /
++#  H
++
++PATH_MATRIX=(
++	'A'
++	'A/B'
++	'A/C'
++	'A/B/D'
++	'A/B/E'
++	'A/B/F'
++	'A/C/G'
++	'A/B/D/H'
++)
++CGRP_CNT=${#PATH_MATRIX[@]}
++
++# Interface value to set/check
++ITF_MATRIX=(
++	#value write to freeze         expect event value
++	#A  B  C  D  E  F  G  H  |  A  B  C  D  E  F  G  H
++	'1  0  0  0  0  0  0  0     1  1  1  1  1  1  1  1'
++	'1  1  0  0  0  0  0  0     1  1  1  1  1  1  1  1'
++	'1  0  1  0  0  0  0  0     1  1  1  1  1  1  1  1'
++	'0  0  0  0  0  0  0  0     0  0  0  0  0  0  0  0'
++
++	'1  1  1  1  0  0  0  0     1  1  1  1  1  1  1  1'
++	'1  1  1  0  0  0  0  0     1  1  1  1  1  1  1  1'
++	'1  1  0  0  0  0  0  0     1  1  1  1  1  1  1  1'
++	'1  0  0  0  0  0  0  0     1  1  1  1  1  1  1  1'
++
++	'0  0  0  1  0  0  0  0     0  0  0  1  0  0  0  1'
++	'0  0  0  1  0  0  0  1     0  0  0  1  0  0  0  1'
++	'0  0  0  1  0  0  0  0     0  0  0  1  0  0  0  1'
++	'0  0  1  1  0  0  0  0     0  0  1  1  0  0  1  1'
++	'0  0  0  0  0  0  0  0     0  0  0  0  0  0  0  0'
++)
++
++prepare()
++{
++	for i in "${PATH_MATRIX[@]}" ; do
++		path="$ROOT_PATH/$i"
++		mkdir $path
++	done
++}
++
++do_clean()
++{
++	for(( i=$CGRP_CNT-1; i>=0; i-- ));do
++		path="/sys/fs/cgroup/${PATH_MATRIX[i]}"
++		rmdir $path
++	done
++}
++
++run_test()
++{
++	prepare
++	cgrp_cnt="${PATH_MATRIX[@]}"
++	for i in "${ITF_MATRIX[@]}" ; do
++		args=($i)
++		#write freeze
++		for(( j=0; j<$CGRP_CNT; j++ ));do
++			write_freeze "${PATH_MATRIX[j]}" ${args[j]}
++		done
++		#event frozen should eq expected value
++		for(( j=0; j<$CGRP_CNT; j++ ));do
++			get_event_frozen "${PATH_MATRIX[j]}"
++			if [ $? -ne ${args[j + $CGRP_CNT]} ];then
++				echo "failed: $i"
++				do_clean
++				exit 1
++			fi
++		done
++	done
++	do_clean
++}
++
++start_time=$(date +%s%N)
++run_test
++end_time=$(date +%s%N)
++elapsed_time=$((end_time - start_time))
++echo "Test PASSED, elapsed_time:$elapsed_time (ns)"
++exit 0
 -- 
 2.34.1
 
