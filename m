@@ -1,53 +1,53 @@
-Return-Path: <cgroups+bounces-4716-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4718-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C54CA96DACB
-	for <lists+cgroups@lfdr.de>; Thu,  5 Sep 2024 15:50:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9475396DAD0
+	for <lists+cgroups@lfdr.de>; Thu,  5 Sep 2024 15:50:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C3D91F232D8
-	for <lists+cgroups@lfdr.de>; Thu,  5 Sep 2024 13:50:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40DB31F238E6
+	for <lists+cgroups@lfdr.de>; Thu,  5 Sep 2024 13:50:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4327619DFA2;
-	Thu,  5 Sep 2024 13:49:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFDC319EEA7;
+	Thu,  5 Sep 2024 13:49:46 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234DF19DF63;
-	Thu,  5 Sep 2024 13:49:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C3F019DF4D;
+	Thu,  5 Sep 2024 13:49:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725544181; cv=none; b=J+HTI8d20a+TXL+MWvizL8YYAJFzf9XEVV8WplGNewepP8YC1z6hELX/dM5vUjVQ2WsL8kkCCK8kJp9uQG0rz63j8KiAPDzZO9SuydezJIQMYgPHsjNy6Gfiz7x3R7N91AVrJvACv8BDlUEg7QgKIOnop8AekRn2uG4nMgxyqNM=
+	t=1725544186; cv=none; b=aSNCyA6SFcqGdcK2K6rxpJjkXacpa6VRXHq6ws7aHQ4hS8uDHs6wjT9xL2trh8zT3WibmZqVwNukuoEsejTLw/ln3Y+amez4ZZSSSACKB7w/dFNsv105Q/RDVEfu4XWU61o7DqLMz0FOzqL8a8ZqMoaPBzOTT8Dit0BJ+0hfyoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725544181; c=relaxed/simple;
-	bh=R+Vnw5tKaSfBtW48WqKC3LkRd2Ii+HXWOaCPrYYNEWs=;
+	s=arc-20240116; t=1725544186; c=relaxed/simple;
+	bh=eaNJhufH2kiE0k+7vdq6DTSxFjm+o875MPHJ4a7ZTOc=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iYEZvZfgngZkOm3YVRF8YRVnLp9swXBxV51Ayg9L3fAi6P/cFxRstQYgbU0w9jqRh4ZBZy25P1vlq+iqvrgPt4IuVYMglrRUVdSiitRqh+fleWSBtzHCp0CG97bUMCSbpkvWePJk84U3NwZWLPZwGpUGwQ7F5fv+FFZhElI5xrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+	 MIME-Version:Content-Type; b=XFwZ4EPK9nBbVLG8w4SaCcA+IxHj2j5kbI6WSiREgtNOdUr5Y8mpy1cCt+ypyljHE1vh4H+/kwJuO/ekZgdVlU5/RYnatlZJoNxc4yZ6BEYtYAenVua4X8ZJDyUcd06MXk9e3OWqZjcphw1H/jmaGJF2K5bltU517qaozfc+jj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.48])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4X010h1PFLzyR9v;
-	Thu,  5 Sep 2024 21:48:36 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4X00w50Tgpz69VN;
+	Thu,  5 Sep 2024 21:44:37 +0800 (CST)
 Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 569EC18006C;
+	by mail.maildlp.com (Postfix) with ESMTPS id C52BB140417;
 	Thu,  5 Sep 2024 21:49:35 +0800 (CST)
 Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
  (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Thu, 5 Sep
- 2024 21:49:34 +0800
+ 2024 21:49:35 +0800
 From: Chen Ridong <chenridong@huawei.com>
 To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
 	<longman@redhat.com>, <adityakali@google.com>, <sergeh@kernel.org>,
 	<mkoutny@suse.com>
 CC: <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<chenridong@huaweicloud.com>
-Subject: [PATCH v1 -next 1/3] cgroup/freezer: Reduce redundant traversal for cgroup_freeze
-Date: Thu, 5 Sep 2024 13:41:28 +0000
-Message-ID: <20240905134130.1176443-2-chenridong@huawei.com>
+Subject: [PATCH v1 -next 2/3] cgroup/freezer: Reduce redundant propagation for cgroup_propagate_frozen
+Date: Thu, 5 Sep 2024 13:41:29 +0000
+Message-ID: <20240905134130.1176443-3-chenridong@huawei.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240905134130.1176443-1-chenridong@huawei.com>
 References: <20240905134130.1176443-1-chenridong@huawei.com>
@@ -62,102 +62,87 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  kwepemd100013.china.huawei.com (7.221.188.163)
 
-Whether a cgroup is frozen is determined solely by whether it is set to
-to be frozen and whether its parent is frozen. Currently, when is cgroup
-is frozen or unfrozen, it iterates through the entire subtree to freeze
-or unfreeze its descentdants. However, this is unesessary for a cgroup
-that does not change its effective frozen status. This path aims to skip
-the subtree if its parent does not have a change in effective freeze.
+When a cgroup is frozen/unfrozen, it will always propagate down to up.
+However it is unnecessary to propagate to the top every time. This patch
+aims to reduce redundant propagation for cgroup_propagate_frozen.
 
-For an example, subtree like, a-b-c-d-e-f-g, when a is frozen, the
-entire tree is frozen. If we freeze b and c again, it is unesessary to
-iterate d, e, f and g. So does that If we unfreeze b/c.
+For example, subtree like:
+	a
+	|
+	b
+      / | \
+     c  d  e
+If c is frozen, and d and e are not frozen now, it doesn't have to
+propagate to a; Only when c, d and e are all frozen, b and a could be set
+to frozen. Therefore, if nr_frozen_descendants is not equal to
+nr_descendants, just stop propagate. If a descendant is frozen, the
+parent's nr_frozen_descendants add child->nr_descendants + 1. This can
+reduce redundant propagation.
 
 Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- include/linux/cgroup-defs.h |  2 +-
- kernel/cgroup/freezer.c     | 41 ++++++++++++++++++++++---------------
- 2 files changed, 26 insertions(+), 17 deletions(-)
+ kernel/cgroup/freezer.c | 31 +++++++++++++++++++++++--------
+ 1 file changed, 23 insertions(+), 8 deletions(-)
 
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index d3aca2c61154..e9d175a1bf94 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -393,7 +393,7 @@ struct cgroup_freezer_state {
- 	bool freeze;
- 
- 	/* Should the cgroup actually be frozen? */
--	int e_freeze;
-+	bool e_freeze;
- 
- 	/* Fields below are protected by css_set_lock */
- 
 diff --git a/kernel/cgroup/freezer.c b/kernel/cgroup/freezer.c
-index 617861a54793..02af6c1fa957 100644
+index 02af6c1fa957..e4bcc41b6a30 100644
 --- a/kernel/cgroup/freezer.c
 +++ b/kernel/cgroup/freezer.c
-@@ -45,6 +45,21 @@ static void cgroup_propagate_frozen(struct cgroup *cgrp, bool frozen)
- 	}
- }
+@@ -13,7 +13,7 @@
+  */
+ static void cgroup_propagate_frozen(struct cgroup *cgrp, bool frozen)
+ {
+-	int desc = 1;
++	struct cgroup *child = cgrp;
  
-+/*
-+ * Update cgroup freezer.e_freeze
-+ * e_freeze will be set to true if freeze == true or parent's e_freeze == true
-+ */
-+static inline void cgroup_update_efreeze(struct cgroup *cgrp)
-+{
-+	struct cgroup *parent = cgroup_parent(cgrp);
-+	bool p_e = false;
+ 	/*
+ 	 * If the new state is frozen, some freezing ancestor cgroups may change
+@@ -23,23 +23,38 @@ static void cgroup_propagate_frozen(struct cgroup *cgrp, bool frozen)
+ 	 */
+ 	while ((cgrp = cgroup_parent(cgrp))) {
+ 		if (frozen) {
+-			cgrp->freezer.nr_frozen_descendants += desc;
++			/*
++			 * A cgroup is frozen, parent nr frozen descendants should add
++			 * nr cgroups of the entire subtree , including child itself.
++			 */
++			cgrp->freezer.nr_frozen_descendants += child->nr_descendants + 1;
 +
-+	if (parent)
-+		p_e = parent->freezer.e_freeze;
++			/*
++			 * If there is other descendant is not frozen,
++			 * cgrp and its parent couldn't be frozen, just break
++			 */
++			if (cgrp->freezer.nr_frozen_descendants !=
++			    cgrp->nr_descendants)
++				break;
 +
-+	cgrp->freezer.e_freeze = cgrp->freezer.freeze | p_e;
-+}
++			child = cgrp;
+ 			if (!test_bit(CGRP_FROZEN, &cgrp->flags) &&
+-			    test_bit(CGRP_FREEZE, &cgrp->flags) &&
+-			    cgrp->freezer.nr_frozen_descendants ==
+-			    cgrp->nr_descendants) {
++			    test_bit(CGRP_FREEZE, &cgrp->flags)) {
+ 				set_bit(CGRP_FROZEN, &cgrp->flags);
+ 				cgroup_file_notify(&cgrp->events_file);
+ 				TRACE_CGROUP_PATH(notify_frozen, cgrp, 1);
+-				desc++;
+ 			}
+ 		} else {
+-			cgrp->freezer.nr_frozen_descendants -= desc;
++			cgrp->freezer.nr_frozen_descendants -= (child->nr_descendants + 1);
 +
- /*
-  * Revisit the cgroup frozen state.
-  * Checks if the cgroup is really frozen and perform all state transitions.
-@@ -262,6 +277,7 @@ void cgroup_freeze(struct cgroup *cgrp, bool freeze)
- 	struct cgroup_subsys_state *css;
- 	struct cgroup *dsct;
- 	bool applied = false;
-+	bool old_e;
- 
- 	lockdep_assert_held(&cgroup_mutex);
- 
-@@ -282,22 +298,15 @@ void cgroup_freeze(struct cgroup *cgrp, bool freeze)
- 		if (cgroup_is_dead(dsct))
- 			continue;
- 
--		if (freeze) {
--			dsct->freezer.e_freeze++;
--			/*
--			 * Already frozen because of ancestor's settings?
--			 */
--			if (dsct->freezer.e_freeze > 1)
--				continue;
--		} else {
--			dsct->freezer.e_freeze--;
--			/*
--			 * Still frozen because of ancestor's settings?
--			 */
--			if (dsct->freezer.e_freeze > 0)
--				continue;
--
--			WARN_ON_ONCE(dsct->freezer.e_freeze < 0);
-+		/*
-+		 * If old e_freeze eq new e_freeze, no change, its children
-+		 * will not be affected. So do nothing and skip the subtree
-+		 */
-+		old_e = dsct->freezer.e_freeze;
-+		cgroup_update_efreeze(dsct);
-+		if (dsct->freezer.e_freeze == old_e) {
-+			css = css_rightmost_descendant(css);
-+			continue;
++			child = cgrp;
+ 			if (test_bit(CGRP_FROZEN, &cgrp->flags)) {
+ 				clear_bit(CGRP_FROZEN, &cgrp->flags);
+ 				cgroup_file_notify(&cgrp->events_file);
+ 				TRACE_CGROUP_PATH(notify_frozen, cgrp, 0);
+-				desc++;
++			} else {
++				/* If parent is unfrozen, don't have to propagate more */
++				break;
+ 			}
  		}
- 
- 		/*
+ 	}
 -- 
 2.34.1
 
