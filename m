@@ -1,213 +1,135 @@
-Return-Path: <cgroups+bounces-4710-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4711-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45BC496CBCC
-	for <lists+cgroups@lfdr.de>; Thu,  5 Sep 2024 02:33:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D4A996CC62
+	for <lists+cgroups@lfdr.de>; Thu,  5 Sep 2024 03:48:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5F921F277CD
-	for <lists+cgroups@lfdr.de>; Thu,  5 Sep 2024 00:33:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFA36287EEC
+	for <lists+cgroups@lfdr.de>; Thu,  5 Sep 2024 01:48:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23673179A8;
-	Thu,  5 Sep 2024 00:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aLHhJAhB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1D30BE5E;
+	Thu,  5 Sep 2024 01:48:32 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87FBA168B1
-	for <cgroups@vger.kernel.org>; Thu,  5 Sep 2024 00:31:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06378F6E;
+	Thu,  5 Sep 2024 01:48:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725496318; cv=none; b=YRjYLb2wzA+k829lgkhriCe4bG/u9Vxl1ip9e/o7WHBXbbg2umnfHbMGh2NbaYgldb/Epub4X1ipGCR+t6f6e76W1vPRe/GyziaDD2ZhdYkRPGvfoLGFv4RBQUjih5FvNqGroTXmC1tLSmnIdEjfcu1vzeAqqEvHfsTTrI8uTzM=
+	t=1725500912; cv=none; b=MGDpEH7a5ILRVdGw2lonoy+J6YsdJCUgmIxMLTC0GK+4FD87R/9zDm/Y5IvGIM6DZKsQOYf3tICRY6rm7c5FJaACdPURH/eDoWSwXRsHVp4mN2FHT+A+qXFB3HioNO+LIho8a9NRbS6KqUnr8SJ/mDCvqogTHP3ZCt25wiCRHlE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725496318; c=relaxed/simple;
-	bh=rNTFMsSf4ipv9IfY2q02hT078vD9+pCTekO9b6Df+h4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=DKjx58kP9gd+X7A6LKnFmWQMA3nASHTAYfDO5YsJYGRyxbE/2kBJKrS/nny8JukaK3q5N5Ewy+oUS9T5/KUmC2J8reJTOrw5ctMH9x3Ms7kW4xL31ObZHnw9eBeUQh9lVuw9hELmG3/hfE+XxnxemjbgK7QktpZ3WLsjnICsqLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kinseyho.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aLHhJAhB; arc=none smtp.client-ip=209.85.215.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kinseyho.bounces.google.com
-Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-7cf546bbcffso289073a12.1
-        for <cgroups@vger.kernel.org>; Wed, 04 Sep 2024 17:31:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1725496317; x=1726101117; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UFlJk+bdMFXrL5bkGb5l4QnCCI5p7k/K3Pj8oKz1txU=;
-        b=aLHhJAhBI8aHQsrfn5T2wGgEdvoqYMAihfPSqMf7j71JfQQf95Qjhr9OUaPxkBNqm7
-         bIbw2SWiHwkDTXHEiKVFfHT2XQXJVvNQE+fGpPR2eFoAG903g9rsECuXJ6xAda67ZdZO
-         zwabj2j1YQGv7G7BNlScoTqGE9eWH7+3HKohzIGxvFa4iFjd2OO10G6AaaOh7xFwLkFk
-         cvByu+MdmIhbg8+FLZ1oQl5qkcMw6gEq+Oq2VFFQSJIej0MBQ2g/gCdKqw/6JUauL2WH
-         pPLcUeNJw5Vwxg4K6wEoK1KYQ0oycGwzWOUpuENJ+HeESptf9/nlwgCKLHwPvEPaH89w
-         qnAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725496317; x=1726101117;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=UFlJk+bdMFXrL5bkGb5l4QnCCI5p7k/K3Pj8oKz1txU=;
-        b=OVBfz35fgCwNN4dkUTkP6EHThOxEdAbJQsDakthvxRGPrwYaVvLkdO7sWgLqOtqWru
-         wMXdqec2W8mgBNS178/tjZbA74Un9Zz76ahbmjKQffjMPR5ou/fNpxyLQPAtY/QJC5Lh
-         JdEja6enXoLaif0wMgaNC/c/wnoO7S5seGEfjotqdIDn5stYh8HXLadyJLtXSXD+z4ZA
-         ppYn2EgwLnxoeJaQZ8LENyi0DUz/EO0+R/RYHNsrtE40+Bh7/n8CpY7bG0DxWjI0dvLR
-         ZJ1ByLTtQP/fd156V+ja4Wm+GPp/GYhEqxorheaJhqjnGAMMwLcPKuiUFtkD05uSRiOr
-         eiNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWHYt11t8Tui0bCfthgOWBdgLN1Alz2IUrNmRSO75JDO0wIs33HfEX+axEZVHqOLrxL0jDxmuI0@vger.kernel.org
-X-Gm-Message-State: AOJu0YxUhswkX6jJV7JkeZvPUEbCs7rfSzPzLP661kwRszHltDzLrQ0I
-	JH61uX42F1rRA9gIzdWB88J7jCliXJ0MJKOZEcNgloKJU+tvnRWLAACeriON+O3qqmoWJ0+nxAL
-	WAyfzeJXYCA==
-X-Google-Smtp-Source: AGHT+IFCmyZz1oeuwdzh9ujb+lyKCdb7Lv33IMyUDlAfA9IgJETASTtABlliPQg/ISAiLVSGlddqDM0VzXnGuQ==
-X-Received: from kinseyct.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:46b])
- (user=kinseyho job=sendgmr) by 2002:a05:6a02:2385:b0:6c4:5b35:c986 with SMTP
- id 41be03b00d2f7-7d50176fca8mr4225a12.8.1725496316657; Wed, 04 Sep 2024
- 17:31:56 -0700 (PDT)
-Date: Thu,  5 Sep 2024 00:30:54 +0000
-In-Reply-To: <20240905003058.1859929-1-kinseyho@google.com>
+	s=arc-20240116; t=1725500912; c=relaxed/simple;
+	bh=yIphmlHathP5Wz8+1/m1DOpN6KOZy/rtpCdj9vcnA+I=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=L91/G29Jb8oIBFD6/2/8xD+ZhQlnCkLXX2lXN0kxu9gqTrqDIMsqffMpakvzXbgsQwlHWXRd/WBF2+D1FeIl6iJECteTygrN2m3umHIi47rQGtt5uyHv/3+VI6uY/GHYZmOCqhDXlGQ3Ym3terUC6rA7vyajAtUp/+gqDdXNvNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Wzj1W6dMgz4f3jkP;
+	Thu,  5 Sep 2024 09:48:15 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 3FA0A1A0925;
+	Thu,  5 Sep 2024 09:48:26 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP4 (Coremail) with SMTP id gCh0CgDH+8foDdlmObuyAQ--.63759S3;
+	Thu, 05 Sep 2024 09:48:26 +0800 (CST)
+Subject: Re: [PATCH for-6.12 0/4] block, bfq: fix corner cases related to bfqq
+ merging
+To: Bart Van Assche <bvanassche@acm.org>, Yu Kuai <yukuai1@huaweicloud.com>,
+ Jens Axboe <axboe@kernel.dk>, jack@suse.cz, tj@kernel.org,
+ josef@toxicpanda.com, paolo.valente@unimore.it, mauro.andreolini@unimore.it,
+ avanzini.arianna@gmail.com
+Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+ "yukuai (C)" <yukuai3@huawei.com>
+References: <20240902130329.3787024-1-yukuai1@huaweicloud.com>
+ <2ee05037-fb4f-4697-958b-46f0ae7d9cdd@kernel.dk>
+ <c2a6d239-aa96-f767-9767-9e9ea929b014@huaweicloud.com>
+ <b5b0e655-fb17-4967-9104-4386710ee8db@acm.org>
+ <80732d0d-e1a6-8b5e-791d-7c8a8091159a@huaweicloud.com>
+ <db586849-a7d6-44b2-96d0-113629f8d8f9@acm.org>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <52711505-53db-315c-0e39-143fe8379514@huaweicloud.com>
+Date: Thu, 5 Sep 2024 09:48:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240905003058.1859929-1-kinseyho@google.com>
-X-Mailer: git-send-email 2.46.0.469.g59c65b2a67-goog
-Message-ID: <20240905003058.1859929-6-kinseyho@google.com>
-Subject: [PATCH mm-unstable v4 5/5] mm: clean up mem_cgroup_iter()
-From: Kinsey Ho <kinseyho@google.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	Yosry Ahmed <yosryahmed@google.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, mkoutny@suse.com, 
-	"T . J . Mercier" <tjmercier@google.com>, Hugh Dickins <hughd@google.com>, Kinsey Ho <kinseyho@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+In-Reply-To: <db586849-a7d6-44b2-96d0-113629f8d8f9@acm.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgDH+8foDdlmObuyAQ--.63759S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tF4DGw4DKFy8AF18Zw4fXwb_yoW8Gw47pa
+	y8ta42yrsrJry5C3sFqw1jkrySkrZIy347tr1DXryYkr9I93Wft3W5t39Y9asrZw1xZw1j
+	9FWrZ3Z3Cw1kA3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBF14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x
+	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
+	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
+	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
+	CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUZYFZUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-A clean up to make variable names more clear and to improve code
-readability.
+Hi,
 
-No functional change.
+在 2024/09/05 1:17, Bart Van Assche 写道:
+> On 9/3/24 7:45 PM, Yu Kuai wrote:
+>> 在 2024/09/04 10:28, Bart Van Assche 写道:
+>>> On 9/3/24 6:32 PM, Yu Kuai wrote:
+>>>> We do have customers are using bfq in downstream kernels, and we are
+>>>> still running lots of test for bfq.
+>>>
+>>> It may take less time to add any missing functionality to another I/O
+>>> scheduler rather than to keep maintaining BFQ.
+>>>
+>>> If Android device vendors would stop using BFQ, my job would become
+>>> easier.
+>>
+>> I'm confused now, I think keep maintaining BFQ won't stop you from
+>> adding new functionality to another scheduler, right? Is this something
+>> that all scheduler have to support?
+> 
+> As long as the BFQ I/O scheduler does not get deprecated, there will be
+> Android device vendors that select it for their devices. BFQ bug reports
+> are either sent to one of my colleagues or to myself.
 
-Signed-off-by: Kinsey Ho <kinseyho@google.com>
-Reviewed-by: T.J. Mercier <tjmercier@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Michal Koutn=C3=BD <mkoutny@suse.com>
-Cc: Muchun Song <muchun.song@linux.dev>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Yosry Ahmed <yosryahmed@google.com>
-Cc: Zefan Li <lizefan.x@bytedance.com>
-Cc: Hugh Dickins <hughd@google.com>
----
- mm/memcontrol.c | 32 ++++++++++++--------------------
- 1 file changed, 12 insertions(+), 20 deletions(-)
+Then, you can share them to me now, I'll like to help.
+> 
+> For Android devices that use UFS storage, we noticed that the
+> mq-deadline scheduler is good enough. The device boot time is shorter
+> and I'm not aware of any significant differences in application startup
+> time.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index ce5d066393c9..31db8467f19d 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -989,8 +989,8 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *r=
-oot,
- {
- 	struct mem_cgroup_reclaim_iter *iter;
- 	struct cgroup_subsys_state *css;
--	struct mem_cgroup *memcg;
--	struct mem_cgroup *pos =3D NULL;
-+	struct mem_cgroup *pos;
-+	struct mem_cgroup *next;
-=20
- 	if (mem_cgroup_disabled())
- 		return NULL;
-@@ -1000,14 +1000,13 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgrou=
-p *root,
-=20
- 	rcu_read_lock();
- restart:
--	memcg =3D NULL;
-+	next =3D NULL;
-=20
- 	if (reclaim) {
- 		int gen;
--		struct mem_cgroup_per_node *mz;
-+		int nid =3D reclaim->pgdat->node_id;
-=20
--		mz =3D root->nodeinfo[reclaim->pgdat->node_id];
--		iter =3D &mz->iter;
-+		iter =3D &root->nodeinfo[nid]->iter;
- 		gen =3D atomic_read(&iter->generation);
-=20
- 		/*
-@@ -1020,29 +1019,22 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgrou=
-p *root,
- 			goto out_unlock;
-=20
- 		pos =3D READ_ONCE(iter->position);
--	} else if (prev) {
-+	} else
- 		pos =3D prev;
--	}
-=20
- 	css =3D pos ? &pos->css : NULL;
-=20
--	for (;;) {
--		css =3D css_next_descendant_pre(css, &root->css);
--		if (!css) {
--			break;
--		}
--
-+	while ((css =3D css_next_descendant_pre(css, &root->css))) {
- 		/*
- 		 * Verify the css and acquire a reference.  The root
- 		 * is provided by the caller, so we know it's alive
- 		 * and kicking, and don't take an extra reference.
- 		 */
--		if (css =3D=3D &root->css || css_tryget(css)) {
-+		if (css =3D=3D &root->css || css_tryget(css))
- 			break;
--		}
- 	}
-=20
--	memcg =3D mem_cgroup_from_css(css);
-+	next =3D mem_cgroup_from_css(css);
-=20
- 	if (reclaim) {
- 		/*
-@@ -1050,13 +1042,13 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgrou=
-p *root,
- 		 * thread, so check that the value hasn't changed since we read
- 		 * it to avoid reclaiming from the same cgroup twice.
- 		 */
--		if (cmpxchg(&iter->position, pos, memcg) !=3D pos) {
-+		if (cmpxchg(&iter->position, pos, next) !=3D pos) {
- 			if (css && css !=3D &root->css)
- 				css_put(css);
- 			goto restart;
- 		}
-=20
--		if (!memcg) {
-+		if (!next) {
- 			atomic_inc(&iter->generation);
-=20
- 			/*
-@@ -1075,7 +1067,7 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup =
-*root,
- 	if (prev && prev !=3D root)
- 		css_put(&prev->css);
-=20
--	return memcg;
-+	return next;
- }
-=20
- /**
---=20
-2.46.0.469.g59c65b2a67-goog
+We're using bfq for HDD, performance overhead in bfq is not less,
+like you said, if bfq doen't show better results in UFS storage, and you
+don't want to use the io control feature, you can choose not to use it,
+however, remove bfq will be too aggressive.
+
+Thanks,
+Kuai
+
+> 
+> Thanks,
+> 
+> Bart.
+> 
+> .
+> 
 
 
