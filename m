@@ -1,123 +1,116 @@
-Return-Path: <cgroups+bounces-4772-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4773-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55C55972016
-	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2024 19:11:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80FD397204F
+	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2024 19:21:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D77EEB21000
-	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2024 17:11:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34D3D1F215C7
+	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2024 17:21:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75CB016DECB;
-	Mon,  9 Sep 2024 17:11:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3160916F27E;
+	Mon,  9 Sep 2024 17:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="G72779+A"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="N1Tyz1gs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBC4928DCC
-	for <cgroups@vger.kernel.org>; Mon,  9 Sep 2024 17:11:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 890D4282E2
+	for <cgroups@vger.kernel.org>; Mon,  9 Sep 2024 17:20:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725901910; cv=none; b=fyIm1llUbpAe2bihkBDGydSupsT4Ny+u+idWaBMw35nSOrXSq9mZg6cVmfqMZMQWPeHYgrsW4E5XB0eTCekzzw+/68XRiTR1V+Do8ybuuhC9r/IUUCKt011EWjbAAYV2v2aW8uHxJYUjvHKJnYd1hGrfVkO5Kdo3hbl2xA3tR7Y=
+	t=1725902460; cv=none; b=P9uCbUNoaULuare9XC/PAnRUvqz9HBABL41h9uwaXsGaibuOpZQ6cSH04EniE1vyC2X8oskMOpZJzHVoINrutW6kJ0y5jOw737UEYORJP6sWOt/bAcDcXH1b2yoAMFxpFChWRD8B6qQoTI1jMDcv7Hj9FEyvIBS5oNcgso44Qg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725901910; c=relaxed/simple;
-	bh=r+ZU8gNNLR/8chxxYc09PyuYjlJr/F3ojm4v2CmNguY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EnkyPQ85l7GCid9I0EcC5zoU6Kns9ZWYqI+XcJ9mexPNWBihDhtD0B5OypshGSHCQPCvWwRdptC9eBoONixxbWfem5Il0ZEbjt31E/kv7rmWyTBKMHyIJ85EquBfxjJuKgHGsQniS/QR32DqneiVuDAYMfKXQ9BvRL7atsjqaMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=G72779+A; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1725901907;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sPmyMHMjUgK4J6uH/6k3HGCVCNeoH/3DSKZDu28dDeM=;
-	b=G72779+A2LE1OiiNygyoeHF8rRSpL3kbEdyGv/JVq45tXQR89pKbTXQyBNUCycqQ+hiKM7
-	VAkogVY7hZTd0boSiRR44txj/WYOqcItciW13iSkfcGWCS/iavst3qROmOl6PzIso6qhmf
-	d4kEm6tRbcitiE7lRtKNjvrEE+S7A6c=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-86-ZqL4uUw_MMKYOfI5xKuowA-1; Mon,
- 09 Sep 2024 13:11:46 -0400
-X-MC-Unique: ZqL4uUw_MMKYOfI5xKuowA-1
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B98AC19560AE;
-	Mon,  9 Sep 2024 17:11:43 +0000 (UTC)
-Received: from [10.2.16.126] (unknown [10.2.16.126])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id CBEA81956048;
-	Mon,  9 Sep 2024 17:11:40 +0000 (UTC)
-Message-ID: <8d1440af-bf06-43e9-b7c3-10b2ce8ce7d2@redhat.com>
-Date: Mon, 9 Sep 2024 13:11:39 -0400
+	s=arc-20240116; t=1725902460; c=relaxed/simple;
+	bh=CFGndf6+Xj/OcozYle3EJLLaDe3XNlSVsUPxx6tiLjI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DjdvAY45g6AdElp3xWw+mu/rbPa9g/aPjcLFhtdz3vBK3an5BaMc+V4CciYr1LOZRYeZcFKhswO9DzbTMVPxf4Dt7ptzYV2brT7x9bdqeOL9d3KaxE7OjeXH5e1GdlVaQiFE/MfSf76cTw+wg0ak0v4mj4+y4P8/6J1bX4iJmzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=N1Tyz1gs; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a8d2daa2262so211113366b.1
+        for <cgroups@vger.kernel.org>; Mon, 09 Sep 2024 10:20:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1725902457; x=1726507257; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CFGndf6+Xj/OcozYle3EJLLaDe3XNlSVsUPxx6tiLjI=;
+        b=N1Tyz1gsYTR+RD4N6oP9E3fWeqETO/xWc6Sn1arnbuAL2Z8uvvJ5sfTOcnldIoDLS7
+         jCuqpm4dCm6ejuR+JPLUyKP0JB7Ano9juJeTkBxOZYFGQGDxEdFoZXHH1Fahb4248RRL
+         wB4CKHtrAmffSSe3KFjgdyo251RqCEqMS2k/h+9+b1MHskLjpeiGaN2f+fRd3e+xJDNs
+         Z0UIUMpQBf+yVigkQ1JagBdRqdX8YG3mYNrmm2U6nhCdUcgfZB491jLcf0SOl67O4Rr+
+         kgKy+s3aToc6cAHh8LO8OVSwUAP9V5w31+m/x2WNj3rxHLKZVGiY8RWeFYvnc5YyhtyY
+         LJ1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725902457; x=1726507257;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CFGndf6+Xj/OcozYle3EJLLaDe3XNlSVsUPxx6tiLjI=;
+        b=kexxRWQ9l6Sbk0uYKNU1uTzbsE0xb6O3uZUub8ote/urkzgLbxemJoTLvUjfxaHpqn
+         r3nFMJ93/Xa+JQEP1bX5wBXyWIAs802wuDc639u7Lut1HLprT8xlFg5Sum3AcEJMOYAr
+         Q+XBr66bfxKl3K0rdY/Rxmlcu74OJ5NtkoL61GHVPo563qxYL/LkiSq+1W481z3NYXgu
+         qMx3bfAcGd7ehv4hVIRReVHn9d3Rf8pWEeyhH343r1j8WszDWBwqAHnwfnoGhxbVfCP3
+         jGA5KbMT0OpwOglWw8oRF4pGRdU2+wlTU7F1xq4MblyOWauqhIYjjvLqxiToGSLRr6iQ
+         iJ6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV6Du5Hxvfca0ptRfq7C6rnvbLkSWn6V/OyRXq2UXMt6SzuiIfNa4CHNkT9masfVJ3GhCRdJA0O@vger.kernel.org
+X-Gm-Message-State: AOJu0YyacouzmTWEXu88SZusbIeT1/v4GoA5svsQs/c+fNc69CEDyXe8
+	yBkS3reI758CY4rMGjt+M7RfZtzKx5LC4GYTSYQhsqyZMtWIErGnNGQ3GRDXLusVKkmgPihEmbG
+	YZ+/RXrD7n9fjIqxPfSiyPobPZ4xayZ8yBXvV
+X-Google-Smtp-Source: AGHT+IHEMkXRi8Qojfd5ZuTkY9ul6MC80RogKg7lfulxwokHMBECv3XZL6XRA4yYXJEOQGWoOekFvGU/bnyKPClSXW4=
+X-Received: by 2002:a17:907:1c23:b0:a8d:2e3a:5303 with SMTP id
+ a640c23a62f3a-a8d2e3a54c6mr540762566b.39.1725902456088; Mon, 09 Sep 2024
+ 10:20:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/4] cgroup: Do not report unavailable v1 controllers in
- /proc/cgroups
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>,
- Chen Ridong <chenridong@huawei.com>
-References: <20240909163223.3693529-1-mkoutny@suse.com>
- <20240909163223.3693529-5-mkoutny@suse.com>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240909163223.3693529-5-mkoutny@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+References: <20240905173422.1565480-1-shakeel.butt@linux.dev>
+ <CAJD7tkbWLYG7-G9G7MNkcA98gmGDHd3DgS38uF6r5o60H293rQ@mail.gmail.com>
+ <qk3437v2as6pz2zxu4uaniqfhpxqd3qzop52zkbxwbnzgssi5v@br2hglnirrgx>
+ <572688a7-8719-4f94-a5cd-e726486c757d@suse.cz> <CAJD7tkZ+PYqvq6oUHtrtq1JE670A+kUBcOAbtRVudp1JBPkCwA@mail.gmail.com>
+ <e7ec0800-f551-4b32-ad26-f625f88962f1@suse.cz> <CAJD7tkZNGETjvuA97=PGy-MfmF--n6GdSfOCHboScP+wN1gTag@mail.gmail.com>
+ <bda30291-ab04-4b72-89c1-b4cb4373cfce@suse.cz>
+In-Reply-To: <bda30291-ab04-4b72-89c1-b4cb4373cfce@suse.cz>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Mon, 9 Sep 2024 10:20:18 -0700
+Message-ID: <CAJD7tkZpbS-ArHC16sfysKcWjM0BwQCuNoKAQhRoPA-OV5Mv1A@mail.gmail.com>
+Subject: Re: [PATCH v4] memcg: add charging of already allocated slab objects
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	David Rientjes <rientjes@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+	Eric Dumazet <edumazet@google.com>, "David S . Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>, 
+	cgroups@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 9/9/24 12:32, Michal Koutný wrote:
-> This is a followup to CONFIG-urability of cpuset and memory controllers
-> for v1 hierarchies. Make the output in /proc/cgroups reflect that
-> !CONFIG_CPUSETS_V1 is like !CONFIG_CPUSETS and
-> !CONFIG_MEMCG_V1 is like !CONFIG_MEMCG.
+On Mon, Sep 9, 2024 at 12:59=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
 >
-> The intended effect is that hiding the unavailable controllers will hint
-> users not to try mounting them on v1.
+> On 9/6/24 19:38, Yosry Ahmed wrote:
+> >> But in case of kmalloc() the allocation must have been still attempted=
+ with
+> >> __GFP_ACCOUNT so a kmalloc-cg cache is used even if the charging fails=
+.
+> >
+> > It is still possible that the initial allocation did not have
+> > __GFP_ACCOUNT, but not from a KMALLOC_NORMAL cache (e.g. KMALLOC_DMA
+> > or KMALLOC_RECLAIM). In this case kmem_cache_charge() should still
+> > work, right?
 >
-> Signed-off-by: Michal Koutný <mkoutny@suse.com>
-> ---
->   kernel/cgroup/cgroup-v1.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-> index 784337694a4be..e28d5f0d20ed0 100644
-> --- a/kernel/cgroup/cgroup-v1.c
-> +++ b/kernel/cgroup/cgroup-v1.c
-> @@ -681,11 +681,14 @@ int proc_cgroupstats_show(struct seq_file *m, void *v)
->   	 * cgroup_mutex contention.
->   	 */
->   
-> -	for_each_subsys(ss, i)
-> +	for_each_subsys(ss, i) {
-> +		if (cgroup1_subsys_absent(ss))
-> +			continue;
->   		seq_printf(m, "%s\t%d\t%d\t%d\n",
->   			   ss->legacy_name, ss->root->hierarchy_id,
->   			   atomic_read(&ss->root->nr_cgrps),
->   			   cgroup_ssid_enabled(i));
-> +	}
->   
->   	return 0;
->   }
-Reviewed-by: Waiman Long <longman@redhat.com>
+> Yeah it would work, but that's rather a corner case implementation detail=
+ so
+> it's better to just require __GFP_ACCOUNT for kmalloc() in the comment.
 
+Fair enough, thanks!
 
