@@ -1,115 +1,120 @@
-Return-Path: <cgroups+bounces-4765-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4766-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B617971D9E
-	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2024 17:10:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64BE1971F46
+	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2024 18:32:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8E54284D6B
-	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2024 15:10:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FE8F1F23B99
+	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2024 16:32:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 008F2381C7;
-	Mon,  9 Sep 2024 15:09:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EEB1168488;
+	Mon,  9 Sep 2024 16:32:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="GginV7mD"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ObFN8+UA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 735171B27D
-	for <cgroups@vger.kernel.org>; Mon,  9 Sep 2024 15:09:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E810165EE8
+	for <cgroups@vger.kernel.org>; Mon,  9 Sep 2024 16:32:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725894582; cv=none; b=Pw5wKQq4Zl57eoAK97YZvaKfEdRogRdEYGIU8+gaXk63j1ojusTMIrTfql+lRwLsl8Ik/Vb48GN0621+whoKBzieNBvAxf6BWi/qAct5XiEG434G2ypsf3FzGzxlug07z7cUqF52V0k4sUttpUxTKD/vels7VfO4K2FMwou/zYw=
+	t=1725899549; cv=none; b=cYDZjdBvSdzJ/Lm4NLx9soNR84bNHB/AI61TMQ5RSPrx0acPB8ZADNmmUAPP8kH988EoCIP+1YdrqASX0UwiarNpR4QsvfZR8P33XuEuAArmOjg7lQUR+atpVMpbNQoSbNKmC5w30TQPvHRklDPFZg3u2+1vTdKe3DrUY+T0Npg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725894582; c=relaxed/simple;
-	bh=mVq9S72lk5b5xTO/FfOh3PUK79hfKisoPxEm6dY2/Zk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=ADz9z/Q2jYehqHjEJs4Tqv34DFAS91TXRUO6SJeEKKrBKGBpXMcy+xCfKICe8mJO+c95YH+v4TYIvpHfLtVdMx0kSArQfqEZhq0a6ky0kSqzhfL6hnQ+PecgMcIGcLqZzYj+tFSVxqdARwURUW/vyjfG6/atI613FXQGykS0mLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=GginV7mD; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-718d91eef2eso1991281b3a.1
-        for <cgroups@vger.kernel.org>; Mon, 09 Sep 2024 08:09:41 -0700 (PDT)
+	s=arc-20240116; t=1725899549; c=relaxed/simple;
+	bh=2dl50MWEQzC24F83Se6WYTJB2+6Ho7Nrx7KziWZ9PfU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rdjlhcir/nI4p4ts5WKyu6yjfMIKkJ7MpeHRyDWdhqJKW/3oSztY6uFzKax2qJt7ClcNbuJC3Mj9+lhtrSdhkYIOPYDgLK9yxr+M/jiHjIVkTmCuLoaCzNN34gxoaXVogQ7XD+fBuVVp3ZL598tO3eCV6jGGL290Vklvbbka7Ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ObFN8+UA; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-42cb58d810eso8001055e9.0
+        for <cgroups@vger.kernel.org>; Mon, 09 Sep 2024 09:32:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1725894580; x=1726499380; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jXq1QAWAAsQrYNlJmOFWR9qiaSyJPA0zyCX7aY9ZQ1w=;
-        b=GginV7mDlum/PUuoJf13Wlfvv01cS3gr+aqN0e263izKQuL8U9nn0vG9gQIwykX1Jb
-         uRB0y84NuBUfcQOmZTjgvsvNZHRcsHRn24j4aGIiD90RPj1oJDTxIAGkdRgIcyrY6LTT
-         +Z2jChAARIITpoHdsctmhWyePoup4v7Jx+UXRsBfB8BxdBvNVv9ec2S/1mQk3PWj8/pg
-         5a3qMDvZIi85yKz4LVioXGlg6FXtM3R9DpKHY4s7wpkiKAYH90RzZThnNCGUjNjzwvcx
-         6g+o0T7YVWQzKh7YYBPzFShE4xzSaJJm3bOckmgnGpQy7W/hWSL0zlCYESmdY4as9LUN
-         fFeg==
+        d=suse.com; s=google; t=1725899545; x=1726504345; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=01TvFQ8Q33lZ5OEXLtjKixrpDvHdGUhYpWD+3boosg0=;
+        b=ObFN8+UA/cOYbahX9w7VMKtcrUNj8MwbCEcOEDk975Zos4MI9CdAlrZ0Qs3+xAYaLj
+         ElaWQ20WbCstXDFQqD4wcsxypjNF6RT8/yg53YllAXpYv1xo+PDxnneUwNfGYAJ8qHOJ
+         uAfRMr/eaFMQBE15b2yST3DAI5IZM4Y1z9NKTsj1ePqeaM8Iq+x8wYrNo2c+wjZ0GhZH
+         0ZigccmrPL59vl6FgUbvMmomHFNbfcAZbhLf93LRRMvvSTGCc1pVjyeQxcezg677/fyz
+         aXb9qgOqHdA+AzkIePO4liMP96LF8NWSKNXlx6o/Hs5CR7oz5mUrDWXx9AJe2T2YAOm+
+         0X6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725894580; x=1726499380;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jXq1QAWAAsQrYNlJmOFWR9qiaSyJPA0zyCX7aY9ZQ1w=;
-        b=YnEDJh1a+Gg8Va8hYkTbkWG97Ix6i/399LIRYYKC9nl6yiJWV3Zb9A+Igo1lhhWznv
-         VfFgaxY2lcOg+tgs3lD6j9GSOrSIBYqdChRUmU0lgUnQga8KNbqpcgaGWkDt7dGh7uRq
-         VdJnMZEykYGo5D0B7SxCZ13PrRJ+/8eIuUEhQQykC8bSrvy14MxGgsGcFjAVFXTzV8LY
-         O10f3wSs9ICKmSzlCdpXbr4XYMZBZcPldk/l9hnzA1C7VcOVSG+rsgi/J7rLSznBnfC3
-         xfv5+9k1b4iIvDHYm5QkbgCAt/nFChNW6t0/EDpYNH8TZj9ks1LWRJ3UIi6EdFWB+Jsk
-         QmQg==
-X-Forwarded-Encrypted: i=1; AJvYcCVSyKNejZApvHKarigPkXA2sYL++69112vtvA8bbfLLASeAmY71A0M0l/BX1RG1wno/Uhr0u2Cp@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyc7LyIViMqxhDBdtxwPqPAbp0q7Tr0yLKoEJH5hVnvuRE4QQUE
-	2MipiD/1RKu9zzsYdXw07kTMZktQ8Sqf8j+Ayo7/Kthx7l3mZSX8oYbADOCNuPnY8sRnBHaqda5
-	A
-X-Google-Smtp-Source: AGHT+IEvd2jWK6AbqOEXtcOcRMgffXGRbsFWC1ymbvQmWwpnadQlLSPtVyBn+FRcmaDqcgaSeIBSdA==
-X-Received: by 2002:a05:6a00:3213:b0:717:83bc:6df3 with SMTP id d2e1a72fcca58-71783bc6f5cmr23496474b3a.11.1725894580245;
-        Mon, 09 Sep 2024 08:09:40 -0700 (PDT)
-Received: from [127.0.0.1] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-718e58c1d6esm3632805b3a.75.2024.09.09.08.09.39
+        d=1e100.net; s=20230601; t=1725899545; x=1726504345;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=01TvFQ8Q33lZ5OEXLtjKixrpDvHdGUhYpWD+3boosg0=;
+        b=CQy4zmJ4VPGbWMNpuHBBfRxRscWh92JejZuXmHNvoashfTLDWKdZJG8oEXNgjLzk3h
+         ZJw/6BhKKZMgxsy0GOYlJKfa/MYWnMm5IaB0w+FAgW507AqqIGE4j2vkaus7aFSHX387
+         YOMoFHrfidsTxuvB9pJD4ZQBh6/BE4Pazz1GQIk7i/R4srfx+o3kIMTyfEOmM4U1Va6p
+         FSNDN/KUUgHQxHPTlzgHsCaJiASj0XKrFiaxfSYnSEnAMaJjT3BjXfJZUK5wekjge2KA
+         BQFDwihvfQZTeFGFkSgCsnp0Cnhr2QxRzEjucN45Bbm7i8yiLBGv9xYW30GiDHcryCMj
+         oxUQ==
+X-Gm-Message-State: AOJu0Ywo/ACsfSo65bX7154GpIcOruadGBiOBxqF3VeYRdiKJ5TPQLc5
+	9DOp+3bPJT8/jL3KnmsYZ72XQWZa4xrD8uvlSFk2h29qYCy/q7JHlyH0t2kuQQz3qExn9OcGsRN
+	7
+X-Google-Smtp-Source: AGHT+IEoB20U25poJ8OoF6N2TSMoqHcMm3X67rhrGHHhO2tZ7wzs4+DbWWaBCovC49KP4Vwd5vxErg==
+X-Received: by 2002:a5d:4ec9:0:b0:374:bd00:d1e with SMTP id ffacd0b85a97d-378a89e6350mr137262f8f.3.1725899545364;
+        Mon, 09 Sep 2024 09:32:25 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3789564a072sm6478606f8f.2.2024.09.09.09.32.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Sep 2024 08:09:39 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: Felix Moessbauer <felix.moessbauer@siemens.com>
-Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org, 
- io-uring@vger.kernel.org, cgroups@vger.kernel.org, dqminh@cloudflare.com, 
- longman@redhat.com, adriaan.schmidt@siemens.com, 
- florian.bezdeka@siemens.com, stable@vger.kernel.org
-In-Reply-To: <20240909150036.55921-1-felix.moessbauer@siemens.com>
-References: <20240909150036.55921-1-felix.moessbauer@siemens.com>
-Subject: Re: [PATCH 1/1] io_uring/sqpoll: do not allow pinning outside of
- cpuset
-Message-Id: <172589457900.297669.16381515839828801822.b4-ty@kernel.dk>
-Date: Mon, 09 Sep 2024 09:09:39 -0600
+        Mon, 09 Sep 2024 09:32:25 -0700 (PDT)
+From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Cc: Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Chen Ridong <chenridong@huawei.com>
+Subject: [PATCH 0/4] Followups to controllers' v1 compilation
+Date: Mon,  9 Sep 2024 18:32:19 +0200
+Message-ID: <20240909163223.3693529-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The group of patches builds upon recent dissection of memory and cpuset
+controller v1 code to under a separate configuration option. The goal of
+them patches is to produce behavior that appears to v1 controlelr users
+same like if the controller wasn't compiled at all (and no change to v2
+users).
+Plus there are two preceding patches with cleanups I came across when
+looking at the new code.
+
+Michal Koutný (4):
+  memcg: Cleanup with !CONFIG_MEMCG_V1
+  cgroup/cpuset: Expose cpuset filesystem with cpuset v1 only
+  cgroup: Disallow mounting v1 hierarchies without controller
+    implementation
+  cgroup: Do not report unavailable v1 controllers in /proc/cgroups
+
+ kernel/cgroup/cgroup-v1.c | 17 ++++++++++++++---
+ kernel/cgroup/cgroup.c    |  4 ++--
+ mm/memcontrol-v1.h        |  2 --
+ 3 files changed, 16 insertions(+), 7 deletions(-)
 
 
-On Mon, 09 Sep 2024 17:00:36 +0200, Felix Moessbauer wrote:
-> The submit queue polling threads are userland threads that just never
-> exit to the userland. When creating the thread with IORING_SETUP_SQ_AFF,
-> the affinity of the poller thread is set to the cpu specified in
-> sq_thread_cpu. However, this CPU can be outside of the cpuset defined
-> by the cgroup cpuset controller. This violates the rules defined by the
-> cpuset controller and is a potential issue for realtime applications.
-> 
-> [...]
-
-Applied, thanks!
-
-[1/1] io_uring/sqpoll: do not allow pinning outside of cpuset
-      commit: f011c9cf04c06f16b24f583d313d3c012e589e50
-
-Best regards,
+base-commit: 8c7e22fc917a0d76794ebf3fcd81f9d91cee4f5d
 -- 
-Jens Axboe
-
-
+2.46.0
 
 
