@@ -1,68 +1,70 @@
-Return-Path: <cgroups+bounces-4766-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4767-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64BE1971F46
-	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2024 18:32:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DA82971F48
+	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2024 18:32:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FE8F1F23B99
-	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2024 16:32:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BE10B23641
+	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2024 16:32:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EEB1168488;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7CC916A955;
 	Mon,  9 Sep 2024 16:32:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ObFN8+UA"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="eTejcysy"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E810165EE8
-	for <cgroups@vger.kernel.org>; Mon,  9 Sep 2024 16:32:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99FE0165F05
+	for <cgroups@vger.kernel.org>; Mon,  9 Sep 2024 16:32:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725899549; cv=none; b=cYDZjdBvSdzJ/Lm4NLx9soNR84bNHB/AI61TMQ5RSPrx0acPB8ZADNmmUAPP8kH988EoCIP+1YdrqASX0UwiarNpR4QsvfZR8P33XuEuAArmOjg7lQUR+atpVMpbNQoSbNKmC5w30TQPvHRklDPFZg3u2+1vTdKe3DrUY+T0Npg=
+	t=1725899549; cv=none; b=LJGfWmXKdoipulx6jtMZw9bdp6bcGDgSukc+SsKyFpLqssV73a87FcaVltCoXNw1lCKCPhLp3UheZqA+xtANRTo8MMxabnYGW6ks3SwRMYjryqWhcqpC27uwB9YHt+Dms4yzExW6oaIQ2zA5T/AQPk8UT97uWeFPwOJ4g7prwAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1725899549; c=relaxed/simple;
-	bh=2dl50MWEQzC24F83Se6WYTJB2+6Ho7Nrx7KziWZ9PfU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rdjlhcir/nI4p4ts5WKyu6yjfMIKkJ7MpeHRyDWdhqJKW/3oSztY6uFzKax2qJt7ClcNbuJC3Mj9+lhtrSdhkYIOPYDgLK9yxr+M/jiHjIVkTmCuLoaCzNN34gxoaXVogQ7XD+fBuVVp3ZL598tO3eCV6jGGL290Vklvbbka7Ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ObFN8+UA; arc=none smtp.client-ip=209.85.128.48
+	bh=5wi8Dcw3wd8SAW+yjS2gtvuUpo3vzMFwvlt6X1nV1HE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ka+7ru1N9TVZqTljiuoRc0bX2K1RPtpI48s+Y+VUuHN8S/6PjZ6uDXyyMAIR63Ka4G7kLYONI3FhzP/+/PEC1j366GFZ5fU6RCa486v4od83oiwb7fuP84tJvKqc+3MvbrWMCReufeqoC/Cq8B+uOCHPi5Sf2kQb/DfJMcdhXLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=eTejcysy; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-42cb58d810eso8001055e9.0
-        for <cgroups@vger.kernel.org>; Mon, 09 Sep 2024 09:32:26 -0700 (PDT)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-42cb0f28bfbso19937895e9.1
+        for <cgroups@vger.kernel.org>; Mon, 09 Sep 2024 09:32:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1725899545; x=1726504345; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=01TvFQ8Q33lZ5OEXLtjKixrpDvHdGUhYpWD+3boosg0=;
-        b=ObFN8+UA/cOYbahX9w7VMKtcrUNj8MwbCEcOEDk975Zos4MI9CdAlrZ0Qs3+xAYaLj
-         ElaWQ20WbCstXDFQqD4wcsxypjNF6RT8/yg53YllAXpYv1xo+PDxnneUwNfGYAJ8qHOJ
-         uAfRMr/eaFMQBE15b2yST3DAI5IZM4Y1z9NKTsj1ePqeaM8Iq+x8wYrNo2c+wjZ0GhZH
-         0ZigccmrPL59vl6FgUbvMmomHFNbfcAZbhLf93LRRMvvSTGCc1pVjyeQxcezg677/fyz
-         aXb9qgOqHdA+AzkIePO4liMP96LF8NWSKNXlx6o/Hs5CR7oz5mUrDWXx9AJe2T2YAOm+
-         0X6A==
+        d=suse.com; s=google; t=1725899546; x=1726504346; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qcEdQE9kkUNRmd1oSgPgT8tBtd/F56AnD10peYUx9eU=;
+        b=eTejcysyVlGYCEHDZ4Lx3IWvY73sExclGQ0Lfu6SGEjAMvz+rDx0nqemrVY7OzGEXm
+         vI/IAw0xT+hvV1wyyzGO8uNF4clDjkVTUrIe+gFfXqBbZE6BAtEvK6RtSOxFhjKyFxN3
+         MNX/4i/pwigu5QVoroJr0P5HhTi2i8j9R165J7JkuW2zq0d5srrc73PCN8jWC/W4WAYx
+         0cGTdJQUvVU5bvzrfV8M+BeAx3+N7bJ/JiHjE03VgXoiByOvfTrini/FaIj409EyNctP
+         qYhlQzEjtZ60jgJ1E4Ch8iekHi7asfpokYK3qX1slxYVEwgUFxlOmKDZ6MIKERgsIRo6
+         6FhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725899545; x=1726504345;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=01TvFQ8Q33lZ5OEXLtjKixrpDvHdGUhYpWD+3boosg0=;
-        b=CQy4zmJ4VPGbWMNpuHBBfRxRscWh92JejZuXmHNvoashfTLDWKdZJG8oEXNgjLzk3h
-         ZJw/6BhKKZMgxsy0GOYlJKfa/MYWnMm5IaB0w+FAgW507AqqIGE4j2vkaus7aFSHX387
-         YOMoFHrfidsTxuvB9pJD4ZQBh6/BE4Pazz1GQIk7i/R4srfx+o3kIMTyfEOmM4U1Va6p
-         FSNDN/KUUgHQxHPTlzgHsCaJiASj0XKrFiaxfSYnSEnAMaJjT3BjXfJZUK5wekjge2KA
-         BQFDwihvfQZTeFGFkSgCsnp0Cnhr2QxRzEjucN45Bbm7i8yiLBGv9xYW30GiDHcryCMj
-         oxUQ==
-X-Gm-Message-State: AOJu0Ywo/ACsfSo65bX7154GpIcOruadGBiOBxqF3VeYRdiKJ5TPQLc5
-	9DOp+3bPJT8/jL3KnmsYZ72XQWZa4xrD8uvlSFk2h29qYCy/q7JHlyH0t2kuQQz3qExn9OcGsRN
-	7
-X-Google-Smtp-Source: AGHT+IEoB20U25poJ8OoF6N2TSMoqHcMm3X67rhrGHHhO2tZ7wzs4+DbWWaBCovC49KP4Vwd5vxErg==
-X-Received: by 2002:a5d:4ec9:0:b0:374:bd00:d1e with SMTP id ffacd0b85a97d-378a89e6350mr137262f8f.3.1725899545364;
+        d=1e100.net; s=20230601; t=1725899546; x=1726504346;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qcEdQE9kkUNRmd1oSgPgT8tBtd/F56AnD10peYUx9eU=;
+        b=GmnZdgjqa36r3OA+qJPOb09VYJ4IS32UyKx/X9JKOGcrWCZ29zWkOJ/sIASvHC+mAf
+         dNWhetiaQZeJzqlN5ehA9UI0eQl5kpXewCBIvHOzl/PVZbvK8bRWYg2b75PxgGdfMXV+
+         nEHUGL7D/7EuWppgxP/q6d9o57CRWyYGtL+RRxwmasdFMsIsFQ7f/RHQt27S2t7JK3ls
+         /i6LUUyMlqrtKa2jdqYrGSGd09nqdtscL00Tyh7lKcHALlvQteK+wK/zcAlKD8nKKvCk
+         YJBOvnvjijLTO45bZY5SAmyjDY4/zsIIcV+Dnf7FNVpLBJ9Jpcq1/VcDdGoiyYb0QS03
+         uAWQ==
+X-Gm-Message-State: AOJu0YybBkE9cRbqTuYQFcwakOphrrHBv7GgmpMWT4pERZgZ6hdvz3lM
+	OkmPnKYgYpbS9CmSHdq2SUHfd0NvIqY3yg798N46TeiBzcYP9gzs56OJzLDy8LlZ6Ne6nLdiFwL
+	T
+X-Google-Smtp-Source: AGHT+IFYKssoeiQ8071s5mgXvgeKUkJPqXfUO0b5wcMLkjdGWzc7MF/UiF8wCm6ppGL882KotfQOTg==
+X-Received: by 2002:a05:600c:1c81:b0:42c:bbd5:af70 with SMTP id 5b1f17b1804b1-42cbbd5b273mr10759625e9.30.1725899545970;
         Mon, 09 Sep 2024 09:32:25 -0700 (PDT)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3789564a072sm6478606f8f.2.2024.09.09.09.32.24
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3789564a072sm6478606f8f.2.2024.09.09.09.32.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 09 Sep 2024 09:32:25 -0700 (PDT)
 From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
@@ -79,10 +81,12 @@ Cc: Tejun Heo <tj@kernel.org>,
 	Muchun Song <muchun.song@linux.dev>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Chen Ridong <chenridong@huawei.com>
-Subject: [PATCH 0/4] Followups to controllers' v1 compilation
-Date: Mon,  9 Sep 2024 18:32:19 +0200
-Message-ID: <20240909163223.3693529-1-mkoutny@suse.com>
+Subject: [PATCH 1/4] memcg: Cleanup with !CONFIG_MEMCG_V1
+Date: Mon,  9 Sep 2024 18:32:20 +0200
+Message-ID: <20240909163223.3693529-2-mkoutny@suse.com>
 X-Mailer: git-send-email 2.46.0
+In-Reply-To: <20240909163223.3693529-1-mkoutny@suse.com>
+References: <20240909163223.3693529-1-mkoutny@suse.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -92,28 +96,27 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The group of patches builds upon recent dissection of memory and cpuset
-controller v1 code to under a separate configuration option. The goal of
-them patches is to produce behavior that appears to v1 controlelr users
-same like if the controller wasn't compiled at all (and no change to v2
-users).
-Plus there are two preceding patches with cleanups I came across when
-looking at the new code.
+Extern declarations have no definitions with !CONFIG_MEMCG_V1 and no
+users, drop them altogether.
 
-Michal Koutný (4):
-  memcg: Cleanup with !CONFIG_MEMCG_V1
-  cgroup/cpuset: Expose cpuset filesystem with cpuset v1 only
-  cgroup: Disallow mounting v1 hierarchies without controller
-    implementation
-  cgroup: Do not report unavailable v1 controllers in /proc/cgroups
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+---
+ mm/memcontrol-v1.h | 2 --
+ 1 file changed, 2 deletions(-)
 
- kernel/cgroup/cgroup-v1.c | 17 ++++++++++++++---
- kernel/cgroup/cgroup.c    |  4 ++--
- mm/memcontrol-v1.h        |  2 --
- 3 files changed, 16 insertions(+), 7 deletions(-)
-
-
-base-commit: 8c7e22fc917a0d76794ebf3fcd81f9d91cee4f5d
+diff --git a/mm/memcontrol-v1.h b/mm/memcontrol-v1.h
+index 56d7eaa982741..db2ebf8bea6c5 100644
+--- a/mm/memcontrol-v1.h
++++ b/mm/memcontrol-v1.h
+@@ -140,8 +140,6 @@ static inline bool memcg1_charge_skmem(struct mem_cgroup *memcg, unsigned int nr
+ 				       gfp_t gfp_mask) { return true; }
+ static inline void memcg1_uncharge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages) {}
+ 
+-extern struct cftype memsw_files[];
+-extern struct cftype mem_cgroup_legacy_files[];
+ #endif	/* CONFIG_MEMCG_V1 */
+ 
+ #endif	/* __MM_MEMCONTROL_V1_H */
 -- 
 2.46.0
 
