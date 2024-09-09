@@ -1,43 +1,43 @@
-Return-Path: <cgroups+bounces-4757-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4758-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B04D971B69
-	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2024 15:44:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85F20971B6C
+	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2024 15:44:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B67E21C231D5
-	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2024 13:44:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 113FF1F22D32
+	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2024 13:44:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AFA91BAEC9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 556BC1BAEDC;
 	Mon,  9 Sep 2024 13:43:54 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 107DC1B9B5D;
-	Mon,  9 Sep 2024 13:43:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38DC01BA263;
+	Mon,  9 Sep 2024 13:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725889434; cv=none; b=agH/YFpUGcegckyAUNY3YLpSfR45QOYbAauTAePJVZemJ7soi9UwW6x+3x3AS6z0RNv8hH3/gtC4lKjhVoFS4ZOX4ktMWbKFQhmUc/sOXJ5eAnhvaAt8r9oTb1+nwA7FycqfoddTR/Oyxs9eJAtrB/49YCjHH79FSdha/M4312g=
+	t=1725889434; cv=none; b=n7wX2CqVkQIWkZTWmJ/DQHCGNcXpfbpK0Y6kTTBuTz4MWD9WrnoRtsslFLzvmcRQWO/UCVDeKv+yvQSfY9hmXkhQzYt7WoHC8GNilrwJzv9PvseiuOO7Nmbp++gWDb/XL36tevbtI7dePVnUeLM6MpTtnSLNex+0qNnhc+9JMbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1725889434; c=relaxed/simple;
-	bh=ERlW1t0BP3jOgkBpItYCSrBfBGF5N75z0Zv9CK9xJsw=;
+	bh=Y6TWkZzkr6fJXfIzW5ghH0ju77NoPXhsGSxEbjnHY70=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eVpVPt9j/eatoCTnA2yYzRxD5qc+H+PgQBbjEUJj+ZkO/dYR57KtZiIPZkl9cYrBVRI87nzFfCwW/cgJFz5ckUkekdcQxlgZUhQIxf1+Z+91OjTgvT9eJEwjl9nre3TpaVo4mif+9C0qzL4rP19J2D5Ick5Q7QGNa9NZsKpcZTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=aH3wRSZZ+zeA/4z5cIU8/4SXMTumHUok4iajgEDqbOdEAUWmeVOXnLnqnzOsbFuDABhoFfRKGoujkrnm9Grqvw67MsENu9Te2lRg7wMnXcqLFw8/KVd+Ai5BcgZDbeOqevaiCHjpNK6RYi8P4SgsDrCPQmm6AhNWq8vWqaQAqlM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4X2Sj634FLz4f3jqr;
-	Mon,  9 Sep 2024 21:43:38 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4X2Sj20t8vz4f3jdh;
+	Mon,  9 Sep 2024 21:43:34 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id F02651A058E;
-	Mon,  9 Sep 2024 21:43:48 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 6E77C1A161E;
+	Mon,  9 Sep 2024 21:43:49 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgCn28eQ+95mhC1hAw--.55605S10;
-	Mon, 09 Sep 2024 21:43:48 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgCn28eQ+95mhC1hAw--.55605S11;
+	Mon, 09 Sep 2024 21:43:49 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
 To: jack@suse.cz,
 	tj@kernel.org,
@@ -50,9 +50,9 @@ Cc: cgroups@vger.kernel.org,
 	yukuai1@huaweicloud.com,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com
-Subject: [PATCH for-6.12 6/7] block, bfq: remove local variable 'bfqq_already_existing' in bfq_init_rq()
-Date: Mon,  9 Sep 2024 21:41:53 +0800
-Message-Id: <20240909134154.954924-7-yukuai1@huaweicloud.com>
+Subject: [PATCH for-6.12 7/7] block, bfq: factor out a helper to split bfqq in bfq_init_rq()
+Date: Mon,  9 Sep 2024 21:41:54 +0800
+Message-Id: <20240909134154.954924-8-yukuai1@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240909134154.954924-1-yukuai1@huaweicloud.com>
 References: <20240909134154.954924-1-yukuai1@huaweicloud.com>
@@ -63,10 +63,10 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCn28eQ+95mhC1hAw--.55605S10
-X-Coremail-Antispam: 1UD129KBjvJXoW7tr13GFW8ZFWfCFy5Kr1UAwb_yoW8ZF4xpw
-	sxGa1a9F47Jr1agr45JF1UAr13KF1rWr9xGrsxG34xtFW2ywnFq3Z0yw1rXFyfWrWkZr13
-	Zr1Fq398Cr4DJF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgCn28eQ+95mhC1hAw--.55605S11
+X-Coremail-Antispam: 1UD129KBjvJXoWxCw4Uur4DGr4fCw4rWr1rJFb_yoWrurW3p3
+	W3Kw43Zr48JF4Ygr45J3W5Aw1fKr4fW3sxKrWfX34rJryDJwnavFn0yw1rXF4S9rWkJrnx
+	Zr1Fq3yDCr4xJFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUmI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -85,74 +85,156 @@ X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
 From: Yu Kuai <yukuai3@huawei.com>
 
-Now that 'bfqq_already_existing' is only used in one branch, it can be
-removed. There are no functional changes.
+Make code cleaner, there are no functional changes.
 
 Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- block/bfq-iosched.c | 37 ++++++++++++++++---------------------
- 1 file changed, 16 insertions(+), 21 deletions(-)
+ block/bfq-iosched.c | 109 +++++++++++++++++++++++---------------------
+ 1 file changed, 58 insertions(+), 51 deletions(-)
 
 diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 54f6eae2763d..7936e8bc166a 100644
+index 7936e8bc166a..0747d9d0e48c 100644
 --- a/block/bfq-iosched.c
 +++ b/block/bfq-iosched.c
-@@ -6877,7 +6877,6 @@ static struct bfq_queue *bfq_init_rq(struct request *rq)
+@@ -6737,11 +6737,10 @@ bfq_split_bfqq(struct bfq_io_cq *bic, struct bfq_queue *bfqq)
+ 	return NULL;
+ }
+ 
+-static struct bfq_queue *bfq_get_bfqq_handle_split(struct bfq_data *bfqd,
+-						   struct bfq_io_cq *bic,
+-						   struct bio *bio,
+-						   bool split, bool is_sync,
+-						   bool *new_queue)
++static struct bfq_queue *
++__bfq_get_bfqq_handle_split(struct bfq_data *bfqd, struct bfq_io_cq *bic,
++			    struct bio *bio, bool split, bool is_sync,
++			    bool *new_queue)
+ {
+ 	unsigned int act_idx = bfq_actuator_index(bfqd, bio);
+ 	struct bfq_queue *bfqq = bic_to_bfqq(bic, is_sync, act_idx);
+@@ -6845,6 +6844,59 @@ static struct bfq_queue *bfq_waker_bfqq(struct bfq_queue *bfqq)
+ 	return waker_bfqq;
+ }
+ 
++static struct bfq_queue *bfq_get_bfqq_handle_split(struct bfq_data *bfqd,
++						   struct bfq_io_cq *bic,
++						   struct bio *bio,
++						   unsigned int idx,
++						   bool is_sync)
++{
++	struct bfq_queue *waker_bfqq;
++	struct bfq_queue *bfqq;
++	bool new_queue = false;
++
++	bfqq = __bfq_get_bfqq_handle_split(bfqd, bic, bio, false, is_sync,
++					   &new_queue);
++	if (unlikely(new_queue))
++		return bfqq;
++
++	/* If the queue was seeky for too long, break it apart. */
++	if (!bfq_bfqq_coop(bfqq) || !bfq_bfqq_split_coop(bfqq) ||
++	    bic->bfqq_data[idx].stably_merged)
++		return bfqq;
++
++	waker_bfqq = bfq_waker_bfqq(bfqq);
++
++	/* Update bic before losing reference to bfqq */
++	if (bfq_bfqq_in_large_burst(bfqq))
++		bic->bfqq_data[idx].saved_in_large_burst = true;
++
++	bfqq = bfq_split_bfqq(bic, bfqq);
++	if (bfqq) {
++		bfq_bfqq_resume_state(bfqq, bfqd, bic, true);
++		return bfqq;
++	}
++
++	bfqq = __bfq_get_bfqq_handle_split(bfqd, bic, bio, true, is_sync, NULL);
++	if (unlikely(bfqq == &bfqd->oom_bfqq))
++		return bfqq;
++
++	bfq_bfqq_resume_state(bfqq, bfqd, bic, false);
++	bfqq->waker_bfqq = waker_bfqq;
++	bfqq->tentative_waker_bfqq = NULL;
++
++	/*
++	 * If the waker queue disappears, then new_bfqq->waker_bfqq must be
++	 * reset. So insert new_bfqq into the
++	 * woken_list of the waker. See
++	 * bfq_check_waker for details.
++	 */
++	if (waker_bfqq)
++		hlist_add_head(&bfqq->woken_list_node,
++			       &bfqq->waker_bfqq->woken_list);
++
++	return bfqq;
++}
++
+ /*
+  * If needed, init rq, allocate bfq data structures associated with
+  * rq, and increment reference counters in the destination bfq_queue
+@@ -6876,7 +6928,6 @@ static struct bfq_queue *bfq_init_rq(struct request *rq)
+ 	struct bfq_io_cq *bic;
  	const int is_sync = rq_is_sync(rq);
  	struct bfq_queue *bfqq;
- 	bool new_queue = false;
--	bool bfqq_already_existing = false;
+-	bool new_queue = false;
  	unsigned int a_idx = bfq_actuator_index(bfqd, bio);
  
  	if (unlikely(!rq->elv.icq))
-@@ -6918,31 +6917,27 @@ static struct bfq_queue *bfq_init_rq(struct request *rq)
- 				bfqq = bfq_get_bfqq_handle_split(bfqd, bic, bio,
- 								 true, is_sync,
- 								 NULL);
--				if (unlikely(bfqq == &bfqd->oom_bfqq))
--					bfqq_already_existing = true;
--				else
-+				if (likely(bfqq != &bfqd->oom_bfqq)) {
- 					bfq_bfqq_resume_state(bfqq, bfqd, bic,
- 							      false);
-+					bfqq->waker_bfqq = waker_bfqq;
-+					bfqq->tentative_waker_bfqq = NULL;
-+
-+					/*
-+					 * If the waker queue disappears, then
-+					 * new_bfqq->waker_bfqq must be
-+					 * reset. So insert new_bfqq into the
-+					 * woken_list of the waker. See
-+					 * bfq_check_waker for details.
-+					 */
-+					if (waker_bfqq)
-+						hlist_add_head(
-+							&bfqq->woken_list_node,
-+							&bfqq->waker_bfqq->woken_list);
-+				}
- 			} else {
--				bfqq_already_existing = true;
- 				bfq_bfqq_resume_state(bfqq, bfqd, bic, true);
- 			}
--
--			if (!bfqq_already_existing) {
--				bfqq->waker_bfqq = waker_bfqq;
--				bfqq->tentative_waker_bfqq = NULL;
--
--				/*
--				 * If the waker queue disappears, then
--				 * new_bfqq->waker_bfqq must be
--				 * reset. So insert new_bfqq into the
--				 * woken_list of the waker. See
--				 * bfq_check_waker for details.
--				 */
--				if (waker_bfqq)
--					hlist_add_head(&bfqq->woken_list_node,
--						       &bfqq->waker_bfqq->woken_list);
--			}
- 		}
- 	}
+@@ -6893,53 +6944,9 @@ static struct bfq_queue *bfq_init_rq(struct request *rq)
+ 		return RQ_BFQQ(rq);
  
+ 	bic = icq_to_bic(rq->elv.icq);
+-
+ 	bfq_check_ioprio_change(bic, bio);
+-
+ 	bfq_bic_update_cgroup(bic, bio);
+-
+-	bfqq = bfq_get_bfqq_handle_split(bfqd, bic, bio, false, is_sync,
+-					 &new_queue);
+-
+-	if (likely(!new_queue)) {
+-		/* If the queue was seeky for too long, break it apart. */
+-		if (bfq_bfqq_coop(bfqq) && bfq_bfqq_split_coop(bfqq) &&
+-			!bic->bfqq_data[a_idx].stably_merged) {
+-			struct bfq_queue *waker_bfqq = bfq_waker_bfqq(bfqq);
+-
+-			/* Update bic before losing reference to bfqq */
+-			if (bfq_bfqq_in_large_burst(bfqq))
+-				bic->bfqq_data[a_idx].saved_in_large_burst =
+-					true;
+-
+-			bfqq = bfq_split_bfqq(bic, bfqq);
+-			if (!bfqq) {
+-				bfqq = bfq_get_bfqq_handle_split(bfqd, bic, bio,
+-								 true, is_sync,
+-								 NULL);
+-				if (likely(bfqq != &bfqd->oom_bfqq)) {
+-					bfq_bfqq_resume_state(bfqq, bfqd, bic,
+-							      false);
+-					bfqq->waker_bfqq = waker_bfqq;
+-					bfqq->tentative_waker_bfqq = NULL;
+-
+-					/*
+-					 * If the waker queue disappears, then
+-					 * new_bfqq->waker_bfqq must be
+-					 * reset. So insert new_bfqq into the
+-					 * woken_list of the waker. See
+-					 * bfq_check_waker for details.
+-					 */
+-					if (waker_bfqq)
+-						hlist_add_head(
+-							&bfqq->woken_list_node,
+-							&bfqq->waker_bfqq->woken_list);
+-				}
+-			} else {
+-				bfq_bfqq_resume_state(bfqq, bfqd, bic, true);
+-			}
+-		}
+-	}
++	bfqq = bfq_get_bfqq_handle_split(bfqd, bic, bio, a_idx, is_sync);
+ 
+ 	bfqq_request_allocated(bfqq);
+ 	bfqq->ref++;
 -- 
 2.39.2
 
