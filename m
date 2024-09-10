@@ -1,47 +1,48 @@
-Return-Path: <cgroups+bounces-4807-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4805-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F249C9739EC
-	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 16:33:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E93A9739EA
+	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 16:33:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A67201F26B51
-	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 14:33:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8149D1C2493C
+	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 14:33:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6A64195FE8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CA11194C8B;
 	Tue, 10 Sep 2024 14:33:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=siemens.com header.i=felix.moessbauer@siemens.com header.b="TRrGEo4l"
+	dkim=pass (2048-bit key) header.d=siemens.com header.i=felix.moessbauer@siemens.com header.b="Dc/KxDbE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mta-65-226.siemens.flowmailer.net (mta-65-226.siemens.flowmailer.net [185.136.65.226])
+Received: from mta-65-227.siemens.flowmailer.net (mta-65-227.siemens.flowmailer.net [185.136.65.227])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9137678C8D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C0371922DC
 	for <cgroups@vger.kernel.org>; Tue, 10 Sep 2024 14:33:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.136.65.226
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.136.65.227
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725978816; cv=none; b=WagPvjrBOV4TvnZud4SoY45NOtxWrJ5i917cQfDGy1aJbIfxwG8w03txBishYOTgeKLBPN8N8shVNAIu5hG3gIZRDv6Jra3Zq5Swsquw8sMjN7e7sJSfYPTNOH7nYJNWM4+vijKQp8+MvER6DBc6MZf1dBooo367lircx95lFLw=
+	t=1725978816; cv=none; b=P9NcXEQKgpGkFkNgbGVc2VN2XdrNrNxIMv97L3iRWgzIqaM85747vMGrsIkDk1cby6uDyzxhiHBqct3EpaiLRQE/xmdslzAbzzcIZJOIGafV3HplNisYDMnbaTka2q69C9QKWTOb05XnBTX1BO14505T3oOi0rln1t8sBnMK+bM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1725978816; c=relaxed/simple;
-	bh=poE8grF23H6F7X6kladvopyA9WzGBQJEyFVgCwLsZQE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gUv+01PYy9cVfmvRq6A6Fz0R+yabYNIXDAa/ocpc2c5Hn8P2y9PGY8b64/m9phDA0Tb3RzF1gTR0451AN76PWei49dAMdXkB3g68fDHo0Dox9+0MLfhcTcugULKfXOk+6yp7kLna+cK4HE0N4Sijsv99kiQ7YXjEeUPzbFwDJMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com; dkim=pass (2048-bit key) header.d=siemens.com header.i=felix.moessbauer@siemens.com header.b=TRrGEo4l; arc=none smtp.client-ip=185.136.65.226
+	bh=JJ+DdDXeUJ6flbA+QfumePVA4yIjXcT651pOhkeHREY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=WIJj9XR9jfYTiw4BWz/L7snK3nXquy1mpq0LA9O9gMGZg19mTewT1916Xwh9g3KhxmdvRUv+wDWNFjsmWN2lh0DD8IPKvLNp1Ch9DFj4nLQa0iTADNzJ5MI9Y961/mXV1eUAEkPsaXfSbBzjV9EyqSdFXyF1pMIWkCSUTxxDpwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com; dkim=pass (2048-bit key) header.d=siemens.com header.i=felix.moessbauer@siemens.com header.b=Dc/KxDbE; arc=none smtp.client-ip=185.136.65.227
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rts-flowmailer.siemens.com
-Received: by mta-65-226.siemens.flowmailer.net with ESMTPSA id 20240910143329277c3bb09aa368d616
+Received: by mta-65-227.siemens.flowmailer.net with ESMTPSA id 20240910143330aff2034db2c3f26778
         for <cgroups@vger.kernel.org>;
-        Tue, 10 Sep 2024 16:33:29 +0200
+        Tue, 10 Sep 2024 16:33:30 +0200
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; s=fm1;
  d=siemens.com; i=felix.moessbauer@siemens.com;
- h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc;
- bh=YhEk9dDDTR4Esasd68P4fshsCaDrjR3/+F0dNLo1y8c=;
- b=TRrGEo4lTdKAcEt7WDLBAJz+Y09fpohs3hI/QT7+E0IZDpaV422/VtQbok/drlU2vdFW9x
- Z5Z26hUFvrIFu228o1URCSF5fJqMGY8mC6cSSd7M65WWDUzEVbmKyEYjE+Lbv+FgrzXWZyRa
- XonRCtlanYnHT5dLX3r8TvCPjN7HEDm4ZxJKFAQG/Ygs7p1qMJg5z6Qrjr44GMDL9AAESA8N
- lhCo0W5gAlTA0AN9Xvr3YrA7tRHl/a8hhWIEAVh67RA1d9oxIlltM2q8zfMWUrMwwaxtbEfe
- YMvYQuGGjDw3ca9aer5lgz6DDjdbqJvXu58g+v6r1LnjZSlIbmilQ25A==;
+ h=Date:From:Subject:To:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding:Cc:References:In-Reply-To;
+ bh=o/hbiqvNhfjZcBz7cNxNDB+PJkwANn7n0tH6iRSE4no=;
+ b=Dc/KxDbEOSo2DKI8ACmHiQSlwWT61RF1uGFT9sYhRRNOdwVHf/bbGPezZV9ecoeaXbuIbN
+ NdR2oyU9IHiA9dy6xbqMJBURHnN2LiCF7fFXzs/f6/YJuqYE88ZvpTSQ8jwlw8dZi0lwmhNy
+ zoIxocgBUtKDpbkdutsE8ZgVyVtlqxTFwO/dm0NHhCpxbB6nM8/tTA/Qjzte3TPrneNu3+Bl
+ JgUGoq9TKbNajrdUQg1vIhR4lh3pjeiwYTijej8AGl2Pnl0vHCTCKkTO9HH5REPUBs4ZHR/g
+ DKIvMq6ZkqWLZB8LMrGou34+0PVj14Jxe82qFexknKiH7K3Fe7dydW/Q==;
 From: Felix Moessbauer <felix.moessbauer@siemens.com>
 To: axboe@kernel.dk
 Cc: asml.silence@gmail.com,
@@ -53,9 +54,11 @@ Cc: asml.silence@gmail.com,
 	adriaan.schmidt@siemens.com,
 	florian.bezdeka@siemens.com,
 	Felix Moessbauer <felix.moessbauer@siemens.com>
-Subject: [PATCH 0/2] io_uring/io-wq: respect cgroup cpusets
-Date: Tue, 10 Sep 2024 16:33:18 +0200
-Message-Id: <20240910143320.123234-1-felix.moessbauer@siemens.com>
+Subject: [PATCH 1/2] io_uring/io-wq: do not allow pinning outside of cpuset
+Date: Tue, 10 Sep 2024 16:33:19 +0200
+Message-Id: <20240910143320.123234-2-felix.moessbauer@siemens.com>
+In-Reply-To: <20240910143320.123234-1-felix.moessbauer@siemens.com>
+References: <20240910143320.123234-1-felix.moessbauer@siemens.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -66,41 +69,67 @@ Content-Transfer-Encoding: 8bit
 X-Flowmailer-Platform: Siemens
 Feedback-ID: 519:519-1321639:519-21489:flowmailer
 
-Hi,
+The io work queue polling threads are userland threads that just never
+exit to the userland. By that, they are also assigned to a cgroup (the
+group of the creating task).
 
-this series continues the affinity cleanup work started in
-io_uring/sqpoll. It has been tested against the liburing testsuite
-(make runtests), whereby the read-mshot test always fails:
+When changing the affinity of the io_wq thread via syscall, we must only
+allow cpumasks within the ambient limits. These are defined by the cpuset
+controller of the cgroup (if enabled).
 
-  Running test read-mshot.t
-  Buffer ring register failed -22
-  test_inc 0 0 failed                                                                                                                          
-  Test read-mshot.t failed with ret 1     
+Fixes: da64d6db3bd3 ("io_uring: One wqe per wq")
+Signed-off-by: Felix Moessbauer <felix.moessbauer@siemens.com>
+---
+ io_uring/io-wq.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
-However, this test also fails on a non-patched linux-next @ 
-bc83b4d1f086. The test wq-aff.t succeeds if at least cpu 0,1 are in
-the set and fails otherwise. This is expected, as the test wants
-to pin on these cpus. I'll send a patch for liburing to skip that test
-in case this pre-condition is not met.
-
-Regarding backporting: I would like to backport these patches to 6.1 as
-well, as they affect our realtime applications. However, in-between 6.1
-and next there is a major change da64d6db3bd3 ("io_uring: One wqe per
-wq"), which makes the backport tricky. While I don't think we want to
-backport this change, would a dedicated backport of the two pinning
-patches for the old multi-queue implementation have a chance to be accepted?
-
-Best regards,
-Felix Moessbauer
-Siemens AG
-
-Felix Moessbauer (2):
-  io_uring/io-wq: do not allow pinning outside of cpuset
-  io_uring/io-wq: limit io poller cpuset to ambient one
-
- io_uring/io-wq.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
-
+diff --git a/io_uring/io-wq.c b/io_uring/io-wq.c
+index f1e7c670add8..c7055a8895d7 100644
+--- a/io_uring/io-wq.c
++++ b/io_uring/io-wq.c
+@@ -13,6 +13,7 @@
+ #include <linux/slab.h>
+ #include <linux/rculist_nulls.h>
+ #include <linux/cpu.h>
++#include <linux/cpuset.h>
+ #include <linux/task_work.h>
+ #include <linux/audit.h>
+ #include <linux/mmu_context.h>
+@@ -1322,17 +1323,29 @@ static int io_wq_cpu_offline(unsigned int cpu, struct hlist_node *node)
+ 
+ int io_wq_cpu_affinity(struct io_uring_task *tctx, cpumask_var_t mask)
+ {
++	cpumask_var_t allowed_mask;
++	int ret = 0;
++
+ 	if (!tctx || !tctx->io_wq)
+ 		return -EINVAL;
+ 
++	if (!alloc_cpumask_var(&allowed_mask, GFP_KERNEL))
++		return -ENOMEM;
++
+ 	rcu_read_lock();
+-	if (mask)
+-		cpumask_copy(tctx->io_wq->cpu_mask, mask);
+-	else
+-		cpumask_copy(tctx->io_wq->cpu_mask, cpu_possible_mask);
++	cpuset_cpus_allowed(tctx->io_wq->task, allowed_mask);
++	if (mask) {
++		if (cpumask_subset(mask, allowed_mask))
++			cpumask_copy(tctx->io_wq->cpu_mask, mask);
++		else
++			ret = -EINVAL;
++	} else {
++		cpumask_copy(tctx->io_wq->cpu_mask, allowed_mask);
++	}
+ 	rcu_read_unlock();
+ 
+-	return 0;
++	free_cpumask_var(allowed_mask);
++	return ret;
+ }
+ 
+ /*
 -- 
 2.39.2
 
