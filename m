@@ -1,193 +1,250 @@
-Return-Path: <cgroups+bounces-4780-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4781-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 918DE972569
-	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 00:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D03F797269A
+	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 03:31:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A9EED1C22D15
-	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2024 22:46:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F32C51C2252D
+	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 01:31:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FC1918C927;
-	Mon,  9 Sep 2024 22:46:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NykPSQLU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B48DC4204B;
+	Tue, 10 Sep 2024 01:31:52 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 252DE130495
-	for <cgroups@vger.kernel.org>; Mon,  9 Sep 2024 22:46:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D2A5695;
+	Tue, 10 Sep 2024 01:31:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725921980; cv=none; b=it3XxgABObYcQSTkCaI9Fxc9XN8uUyTDFII8CjNKfEevRBCXhF7ZW6oZ7jYulP31Px85i9aCkqIcZJx8Cr9xHNZJz9Jr8ZX+irzCbHZo7hKaV8cZmywaUH7wXwMB4ILomSoJaAxB21jhgtyh8OV89X0Hc1eNht5cu2UfZrhLJQg=
+	t=1725931912; cv=none; b=rqvBoXL/fJw0TEoLjLK1gKdycYFxFN2I+H+WMKsT7U2WH1FY/6Wa6UW13awJsSEhvTsUkzE9wHEQnBou/oCsgetgaSZgjVWx1V4K3fNcbEYZd2HPTuguyIVn8iIfRKFr8z3TtXoDwgmq4FN+1L46H/BaDinmeRt3bRBCO8unJO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725921980; c=relaxed/simple;
-	bh=ivV8pT1HPafO5qkP6QSSBMPWoTIZ0Ouk7L0wgC1uFLE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pocPSoVY0XwUw5w/lqTr3pvxZaFju8dWrS5tKEuLZauPdLxX9pCzxWwFKBGyhidx6zmpgXuL3P1uaA8+e5uC/eCDdNOctwOftpnb5bbn6vEXSdAshF53vQqPOK+MxhVw1m9Wkv16d0vIMun6nHD9SpimCQij5wp79gx6OKpHsdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NykPSQLU; arc=none smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a8b155b5e9eso7332266b.1
-        for <cgroups@vger.kernel.org>; Mon, 09 Sep 2024 15:46:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1725921977; x=1726526777; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C+4nk3SFLT9yU/DUYdXVzczQcb969uRly8G5xeotbKQ=;
-        b=NykPSQLUiDMWnf5sMrZvBYyeN/mtwQrKhVTZFmei7FQQJj5Sj6dWYvxDO6ikS8NG7P
-         SenH8FFoRsbNEkmGW+MXY4BxcCWfAytdB6Z39vg2c22VwS9eTpjpmAkA8ZxecHW+PQqr
-         AD6S8pvlvXjSUtPVKW00mEUgsOnsBJqVW9otGGhJjqGqysz5kIQWSNOBHByF1WNCaFaO
-         xiJYbMuI2Av2SiiqtIFnD+2F5MVJvuUMQkN2YPVPFMnVP1s8Pp5CMQHKmvMXKtnhC2rg
-         ArceGVWJGJXs2xFAyntB/EPiikY1wNXkWzTUD12/DfGw4TZv7KAnBY37VEoWz1Z+plne
-         Iz+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725921977; x=1726526777;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C+4nk3SFLT9yU/DUYdXVzczQcb969uRly8G5xeotbKQ=;
-        b=UiZYcPs3eAeje6rhJVLn7BpO9i7udeJmxCYZ+HFX2YutiZjf8Rh9BTSiAFxRvNGLT/
-         0OoI6pHu3f4ZtSNc8dBdmP32vNf0wKqPrUTUkTcRJ/ZtQ3j8MlqjtcNRL2coKb50p6dG
-         MHUMdzI7YRxz+FpaLcTzEB5nCknBs+bZDzH3yoS1rqpuzOgp8NPntoNBrMTkUADCVMm8
-         puOdItHuCDzpvLsEf/GfqzujPQ8Jn+FejKeBfAX6ef+glKykMZJQyHMShSpV2XokqIoX
-         Q7SXFODrqO8v+k0izpSr66nGlS7lUl34HZ+vrRabzedP9jH9TXC86YJQn1aJErp1VUwX
-         9YAA==
-X-Forwarded-Encrypted: i=1; AJvYcCVlV+BX9p3g7f4Wfypp+1fhKL/ewlYnzwI2hCvN7wfUU+gFqJ6DQdeaVOWu1GzJShIlpKa0k75n@vger.kernel.org
-X-Gm-Message-State: AOJu0YyVYJHRv05SJvbxLdaksHAZt11vPmWG3lC90tQtz1w78ZdJ2m1m
-	M2h1heeOaMQ7SHqp8qK7XkCvUV8xSsyus3tV7hqLBsRunFEOI3pC7oizz2K2lEDkGMMjpdJ9iBa
-	IlpcO4K6tmnnrmPrbXtOe7CrwFXYkOeeTm9NQ
-X-Google-Smtp-Source: AGHT+IE8SJIxL8bgKMRqVhb4TImGa7tJCf1vic0Kcz0oVFDND6rhGcAvC4TZk1H/fFVF2PRs4rnKCc4ZpEELaQ+mrDU=
-X-Received: by 2002:a17:906:fe4a:b0:a7a:9fe9:99e7 with SMTP id
- a640c23a62f3a-a8a8885da54mr1045293466b.41.1725921976626; Mon, 09 Sep 2024
- 15:46:16 -0700 (PDT)
+	s=arc-20240116; t=1725931912; c=relaxed/simple;
+	bh=S7Z1cGFHh5sWS+TsBJHRcmpg3hVPKg/xmER13R9dUE0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=toISx8iRFRcQq+7kOMXZZ1da7k8DAzU6nYRpy/+eAspuIFrJ82hhcpXgTwQRgY8r+YzJpSRHBiFEJ/3xkpzw6MLm6WyIRXF389pg9dPN9tovpsSHD/dXRsDTYFXyFe8CGX6vSMkiwtmIGaupQpx2tO8893nYhhikWWncMdOdKq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4X2mPs0kTwz4f3kvh;
+	Tue, 10 Sep 2024 09:31:29 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 4061F1A07B6;
+	Tue, 10 Sep 2024 09:31:45 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP4 (Coremail) with SMTP id gCh0CgCXzMh9od9mInePAw--.1036S2;
+	Tue, 10 Sep 2024 09:31:43 +0800 (CST)
+Message-ID: <07501c67-3b18-48e3-8929-e773d8d6920f@huaweicloud.com>
+Date: Tue, 10 Sep 2024 09:31:41 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240830082244.156923-1-jingxiangzeng.cas@gmail.com>
-In-Reply-To: <20240830082244.156923-1-jingxiangzeng.cas@gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 9 Sep 2024 15:45:39 -0700
-Message-ID: <CAJD7tkb6320POwiWaSmZFUYRh44_BStwjc2nhL3Wangy1qWYxQ@mail.gmail.com>
-Subject: Re: [PATCH] mm/memcontrol: add per-memcg pgpgin/pswpin counter
-To: Jingxiang Zeng <linuszeng@tencent.com>
-Cc: linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/1] cgroup: fix deadlock caused by cgroup_mutex and
+ cpu_hotplug_lock
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Chen Ridong <chenridong@huawei.com>
+Cc: martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@google.com, haoluo@google.com, jolsa@kernel.org, tj@kernel.org,
+ lizefan.x@bytedance.com, hannes@cmpxchg.org, roman.gushchin@linux.dev,
+ bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240817093334.6062-1-chenridong@huawei.com>
+ <20240817093334.6062-2-chenridong@huawei.com>
+ <kz6e3oadkmrl7elk6z765t2hgbcqbd2fxvb2673vbjflbjxqck@suy4p2mm7dvw>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <kz6e3oadkmrl7elk6z765t2hgbcqbd2fxvb2673vbjflbjxqck@suy4p2mm7dvw>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCXzMh9od9mInePAw--.1036S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jw4UtFWUJw1rGF45uF1fCrg_yoWxGF17pr
+	s0vw1UKF48Wr1v9ayvgayaqFWFkw4vgF47JFZ5Jw1jyrW3Xr12vr129r4YvFZ7Gr93Zrn0
+	vay3Zr90gas8trJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6r1S6rWUM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Fri, Aug 30, 2024 at 1:23=E2=80=AFAM Jingxiang Zeng
-<jingxiangzeng.cas@gmail.com> wrote:
->
-> From: Jingxiang Zeng <linuszeng@tencent.com>
->
-> In proactive memory reclamation scenarios, it is necessary to
-> estimate the pswpin and pswpout metrics of the cgroup to
-> determine whether to continue reclaiming anonymous pages in
-> the current batch. This patch will collect these metrics and
-> expose them.
 
-Could you add more details about the use case?
 
-By "reclaiming anonymous pages", do you mean using memory.reclaim with
-swappiness=3D200?
+On 2024/9/9 22:19, Michal Koutný wrote:
+> On Sat, Aug 17, 2024 at 09:33:34AM GMT, Chen Ridong <chenridong@huawei.com> wrote:
+>> The reason for this issue is cgroup_mutex and cpu_hotplug_lock are
+>> acquired in different tasks, which may lead to deadlock.
+>> It can lead to a deadlock through the following steps:
+>> 1. A large number of cpusets are deleted asynchronously, which puts a
+>>     large number of cgroup_bpf_release works into system_wq. The max_active
+>>     of system_wq is WQ_DFL_ACTIVE(256). Consequently, all active works are
+>>     cgroup_bpf_release works, and many cgroup_bpf_release works will be put
+>>     into inactive queue. As illustrated in the diagram, there are 256 (in
+>>     the acvtive queue) + n (in the inactive queue) works.
+>> 2. Setting watchdog_thresh will hold cpu_hotplug_lock.read and put
+>>     smp_call_on_cpu work into system_wq. However step 1 has already filled
+>>     system_wq, 'sscs.work' is put into inactive queue. 'sscs.work' has
+>>     to wait until the works that were put into the inacvtive queue earlier
+>>     have executed (n cgroup_bpf_release), so it will be blocked for a while.
+>> 3. Cpu offline requires cpu_hotplug_lock.write, which is blocked by step 2.
+>> 4. Cpusets that were deleted at step 1 put cgroup_release works into
+>>     cgroup_destroy_wq. They are competing to get cgroup_mutex all the time.
+>>     When cgroup_metux is acqured by work at css_killed_work_fn, it will
+>>     call cpuset_css_offline, which needs to acqure cpu_hotplug_lock.read.
+>>     However, cpuset_css_offline will be blocked for step 3.
+>> 5. At this moment, there are 256 works in active queue that are
+>>     cgroup_bpf_release, they are attempting to acquire cgroup_mutex, and as
+>>     a result, all of them are blocked. Consequently, sscs.work can not be
+>>     executed. Ultimately, this situation leads to four processes being
+>>     blocked, forming a deadlock.
+>>
+>> system_wq(step1)		WatchDog(step2)			cpu offline(step3)	cgroup_destroy_wq(step4)
+>> ...
+>> 2000+ cgroups deleted asyn
+>> 256 actives + n inactives
+>> 				__lockup_detector_reconfigure
+>> 				P(cpu_hotplug_lock.read)
+>> 				put sscs.work into system_wq
+>> 256 + n + 1(sscs.work)
+>> sscs.work wait to be executed
+>> 				warting sscs.work finish
+>> 								percpu_down_write
+>> 								P(cpu_hotplug_lock.write)
+>> 								...blocking...
+>> 											css_killed_work_fn
+>> 											P(cgroup_mutex)
+>> 											cpuset_css_offline
+>> 											P(cpu_hotplug_lock.read)
+>> 											...blocking...
+>> 256 cgroup_bpf_release
+>> mutex_lock(&cgroup_mutex);
+>> ..blocking...
+> 
+> Thanks, Ridong, for laying this out.
+> Let me try to extract the core of the deps above.
+> 
+> The correct lock ordering is: cgroup_mutex then cpu_hotplug_lock.
+> However, the smp_call_on_cpu() under cpus_read_lock may lead to
+> a deadlock (ABBA over those two locks).
+> 
 
-Why not just use PGPGOUT to figure out how many pages were reclaimed?
-Do you find a significant amount of file pages getting reclaimed with
-swappiness=3D200?
+That's right.
 
->
-> Signed-off-by: Jingxiang Zeng <linuszeng@tencent.com>
-> ---
->  mm/memcontrol-v1.c | 2 ++
->  mm/memcontrol.c    | 2 ++
->  mm/page_io.c       | 4 ++++
->  3 files changed, 8 insertions(+)
->
-> diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
-> index b37c0d870816..44803cbea38a 100644
-> --- a/mm/memcontrol-v1.c
-> +++ b/mm/memcontrol-v1.c
-> @@ -2729,6 +2729,8 @@ static const char *const memcg1_stat_names[] =3D {
->  static const unsigned int memcg1_events[] =3D {
->         PGPGIN,
->         PGPGOUT,
-> +       PSWPIN,
-> +       PSWPOUT,
+> This is OK
+> 	thread T					system_wq worker
+> 	
+> 	  						lock(cgroup_mutex) (II)
+> 							...
+> 							unlock(cgroup_mutex)
+> 	down(cpu_hotplug_lock.read)
+> 	smp_call_on_cpu
+> 	  queue_work_on(cpu, system_wq, scss) (I)
+> 							scss.func
+> 	  wait_for_completion(scss)
+> 	up(cpu_hotplug_lock.read)
+> 
+> However, there is no ordering between (I) and (II) so they can also happen
+> in opposite
+> 
+> 	thread T					system_wq worker
+> 	
+> 	down(cpu_hotplug_lock.read)
+> 	smp_call_on_cpu
+> 	  queue_work_on(cpu, system_wq, scss) (I)
+> 	  						lock(cgroup_mutex)  (II)
+> 							...
+> 							unlock(cgroup_mutex)
+> 							scss.func
+> 	  wait_for_completion(scss)
+> 	up(cpu_hotplug_lock.read)
+> 
+> And here the thread T + system_wq worker effectively call
+> cpu_hotplug_lock and cgroup_mutex in the wrong order. (And since they're
+> two threads, it won't be caught by lockdep.)
+> 
+> By that reasoning any holder of cgroup_mutex on system_wq makes system
+> susceptible to a deadlock (in presence of cpu_hotplug_lock waiting
+> writers + cpuset operations). And the two work items must meet in same
+> worker's processing hence probability is low (zero?) with less than
+> WQ_DFL_ACTIVE items.
+> 
+> (And more generally, any lock that is ordered before cpu_hotplug_lock
+> should not be taken in system_wq work functions. Or at least such works
+> items should not saturate WQ_DFL_ACTIVE workers.)
+> 
+> Wrt other uses of cgroup_mutex, I only see
+>    bpf_map_free_in_work
+>      queue_work(system_unbound_wq)
+>        bpf_map_free_deferred
+>          ops->map_free == cgroup_storage_map_free
+>            cgroup_lock()
+> which is safe since it uses a different workqueue than system_wq.
+> 
+>> To fix the problem, place cgroup_bpf_release works on cgroup_destroy_wq,
+>> which can break the loop and solve the problem.
+> 
+> Yes, it moves the problematic cgroup_mutex holder away from system_wq
+> and cgroup_destroy_wq could not cause similar problems because there are
+> no explicit waiter for particular work items or its flushing.
+> 
+> 
+>> System wqs are for misc things which shouldn't create a large number
+>> of concurrent work items.  If something is going to generate
+>>> WQ_DFL_ACTIVE(256) concurrent work
+>> items, it should use its own dedicated workqueue.
+> 
+> Actually, I'm not sure (because I lack workqueue knowledge) if producing
+> less than WQ_DFL_ACTIVE work items completely eliminates the chance of
+> two offending work items producing the wrong lock ordering.
+> 
 
-memory.reclaim is not exposed in cgroup v1, so assuming these are only
-used for such proactive reclaim, we don't need to add them here.
+If producing less than WQ_DFL_ACTIVE work items, it won't lead to a 
+deadlock. Because scss.func can be executed and doesn't have to wait for 
+work that holds cgroup_mutex to be completed. Therefore, the probability 
+is low and this issue can only be reproduced under pressure test.
 
->         PGFAULT,
->         PGMAJFAULT,
->  };
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 087a8cb1a6d8..dde3d026f174 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -418,6 +418,8 @@ static const unsigned int memcg_vm_event_stat[] =3D {
->         PGPGIN,
->         PGPGOUT,
->  #endif
-> +       PSWPIN,
-> +       PSWPOUT,
->         PGSCAN_KSWAPD,
->         PGSCAN_DIRECT,
->         PGSCAN_KHUGEPAGED,
-> diff --git a/mm/page_io.c b/mm/page_io.c
-> index b6f1519d63b0..4bc77d1c6bfa 100644
-> --- a/mm/page_io.c
-> +++ b/mm/page_io.c
-> @@ -310,6 +310,7 @@ static inline void count_swpout_vm_event(struct folio=
- *folio)
->         }
->         count_mthp_stat(folio_order(folio), MTHP_STAT_SWPOUT);
->  #endif
-> +       count_memcg_folio_events(folio, PSWPOUT, folio_nr_pages(folio));
->         count_vm_events(PSWPOUT, folio_nr_pages(folio));
->  }
->
-> @@ -505,6 +506,7 @@ static void sio_read_complete(struct kiocb *iocb, lon=
-g ret)
->                 for (p =3D 0; p < sio->pages; p++) {
->                         struct folio *folio =3D page_folio(sio->bvec[p].b=
-v_page);
->
-> +                       count_memcg_folio_events(folio, PSWPIN, folio_nr_=
-pages(folio));
->                         folio_mark_uptodate(folio);
->                         folio_unlock(folio);
->                 }
-> @@ -588,6 +590,7 @@ static void swap_read_folio_bdev_sync(struct folio *f=
-olio,
->          * attempt to access it in the page fault retry time check.
->          */
->         get_task_struct(current);
-> +       count_memcg_folio_events(folio, PSWPIN, folio_nr_pages(folio));
->         count_vm_event(PSWPIN);
->         submit_bio_wait(&bio);
->         __end_swap_bio_read(&bio);
-> @@ -603,6 +606,7 @@ static void swap_read_folio_bdev_async(struct folio *=
-folio,
->         bio->bi_iter.bi_sector =3D swap_folio_sector(folio);
->         bio->bi_end_io =3D end_swap_bio_read;
->         bio_add_folio_nofail(bio, folio, folio_size(folio), 0);
-> +       count_memcg_folio_events(folio, PSWPIN, folio_nr_pages(folio));
->         count_vm_event(PSWPIN);
->         submit_bio(bio);
->  }
-> --
-> 2.43.5
->
->
+> 
+>> Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf from cgroup itself")
+> 
+> I'm now indifferent whether this is needed (perhaps in the sense it is
+> the _latest_ of multiple changes that contributed to possibility of this
+> deadlock scenario).
+> 
+> 
+>> Link: https://lore.kernel.org/cgroups/e90c32d2-2a85-4f28-9154-09c7d320cb60@huawei.com/T/#t
+>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>> ---
+>>   kernel/bpf/cgroup.c             | 2 +-
+>>   kernel/cgroup/cgroup-internal.h | 1 +
+>>   kernel/cgroup/cgroup.c          | 2 +-
+>>   3 files changed, 3 insertions(+), 2 deletions(-)
+> 
+> I have convinved myself now that you can put
+> 
+> Reviewed-by: Michal Koutný <mkoutny@suse.com>
+> 
+> Regards,
+> Michal
+
+Thank you very much.
+
+Best Regards,
+Ridong
+
 
