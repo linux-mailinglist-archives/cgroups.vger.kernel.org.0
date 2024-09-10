@@ -1,103 +1,105 @@
-Return-Path: <cgroups+bounces-4790-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4791-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E652C972A45
-	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 09:09:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C948D972B2A
+	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 09:49:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C997D283EEB
-	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 07:09:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B9021F2370A
+	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 07:49:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B72F17CA03;
-	Tue, 10 Sep 2024 07:08:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C951181B9A;
+	Tue, 10 Sep 2024 07:48:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vVSTO2TF"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Ckyc9NiD"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B99183CA0
-	for <cgroups@vger.kernel.org>; Tue, 10 Sep 2024 07:08:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE47D17E00A;
+	Tue, 10 Sep 2024 07:48:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725952111; cv=none; b=o1ttGkIEXEM2gOKwToQPk0ZCLl+sN6Paaf7b68sKGihOAyOKduxV6pqo0ytjuVw7cBpDUsJHSTaJDuEO0lCXec5qAD6CGWYysvEQba1tQOv2TqNH9SKDTl/y7PJn6BHcjzbpS2WbZfu+qWCl51x70WjVx64ky32XNHeWiANGp04=
+	t=1725954536; cv=none; b=D1XiepCbqUwjEPqMKax5YYDgZ+ZHd88odsi8JnOenyjZZQcSsaN9e9VOSX9zMua9Ywyh2V+0TvDZQ2BkQXs9Qs0u8E0GWg1dbYyZsqtZMxMTFF2UWGBVrDQ5H4+4souYKZHf9aMk401LyDFBdWYC9ihLbuW+fFsJUskinVHHWx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725952111; c=relaxed/simple;
-	bh=OLklJSVQNOQI9DT75fzTGObFLfetL3kq3g7TnME/nQQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XPsuzvswdUkEm3JWPBRu5tR+fbNVe0ZuDQzRfrlgSEeLsdLpzagdEcFEbJqRC1mN4jldrVMZaUipTnriR4EI7pYug3/v84iOHcskfsvZ/UO1ywqpco71pdUF43aVvBMWIlts+OJha2drqb23e5q+Nb3Jnlcq4GtCyrm0sYsZuNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vVSTO2TF; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 10 Sep 2024 00:08:17 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1725952106;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vplBtqjlTg4eBgWma6lIzm6/3ie/7e5vk9lsOVwoc9o=;
-	b=vVSTO2TFJfh1EBJG/XSokcOFNomrhN3BkYDziVC4NY2avzIdL6S/ILOCI72lp+3AsqkUmD
-	IJkeVKGcSo68y2a+HxMZyf5W+b18idowDgAk3gy7qu1MQ1hnmkRuvVOi+EMIedD5CNhRAh
-	7Rv1kTIzsdPeW7p7GQLEJ5U36BCkjeM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Jingxiang Zeng <linuszeng@tencent.com>
-Cc: linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/memcontrol: add per-memcg pgpgin/pswpin counter
-Message-ID: <e5k22kuavnli72v3lmeezrewut6hvhfdpteouj3ii6dmcdiiin@2e3dlbs4ahe2>
-References: <20240830082244.156923-1-jingxiangzeng.cas@gmail.com>
+	s=arc-20240116; t=1725954536; c=relaxed/simple;
+	bh=HOHVrdoi1+eH8qohrRBQf4/a6+x7SJsmj2ojmQX2gl4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=At5qv4Zl2qy3SHXfwUdmDZrpBqdaOorXHJTQ5eEDUYG02Gc9IH17KSLpit1KyFOb6AFQQYlNE55wz3LesCIGZytdhDqhb49ZNRbnH1RL+lWx5kezBvSFzLEU+GRmLZRI36sIHRpD2HXdilrLWboRyVilrH89P/8b7nkhcevwtHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Ckyc9NiD; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1725954530; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=ORSeM/D/iyAEx3ScduXILHkRmDH4FWmKtuAsaeTitYc=;
+	b=Ckyc9NiDBwDQzDmZe9f40itTBxbrPKBDeFGtFKN3XGzLKrk5kg/iZq8h/nlhv5iBcIG2/VR5sKbmmXzNXDc2KQYHiODI+WO+2aHdszrna/lRe1GQLS2f6M8kEVx2MRBdzpLQS/YQl2UFUQ7v874vHFT+2QNRSZM8bUWh/0Up1G0=
+Received: from e69e13503.et15sqa.tbsite.net(mailfrom:liusong@linux.alibaba.com fp:SMTPD_---0WEjgEnu_1725954512)
+          by smtp.aliyun-inc.com;
+          Tue, 10 Sep 2024 15:48:50 +0800
+From: Liu Song <liusong@linux.alibaba.com>
+To: tj@kernel.org,
+	lizefan.x@bytedance.com,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	liusong@linux.alibaba.com
+Subject: [RFC PATCH] sched, cgroup: cgroup1 can also take the non-RUNTIME_INF min
+Date: Tue, 10 Sep 2024 15:48:32 +0800
+Message-Id: <20240910074832.62536-1-liusong@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.6.gb485710b
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240830082244.156923-1-jingxiangzeng.cas@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Fri, Aug 30, 2024 at 04:22:44PM GMT, Jingxiang Zeng wrote:
-> From: Jingxiang Zeng <linuszeng@tencent.com>
-> 
-> In proactive memory reclamation scenarios, it is necessary to
-> estimate the pswpin and pswpout metrics of the cgroup to
-> determine whether to continue reclaiming anonymous pages in
-> the current batch. This patch will collect these metrics and
-> expose them.
+For the handling logic of child_quota, there is no need to distinguish
+between cgroup1 and cgroup2, so unify the handling logic here.
 
-Please explain a bit more on how these metrics will be used to make
-a decision to continue to do proactive reclaim or not.
+Signed-off-by: Liu Song <liusong@linux.alibaba.com>
+---
+ kernel/sched/core.c | 21 +++++----------------
+ 1 file changed, 5 insertions(+), 16 deletions(-)
 
-> 
-> Signed-off-by: Jingxiang Zeng <linuszeng@tencent.com>
-> ---
->  mm/memcontrol-v1.c | 2 ++
->  mm/memcontrol.c    | 2 ++
->  mm/page_io.c       | 4 ++++
->  3 files changed, 8 insertions(+)
-> 
-> diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
-> index b37c0d870816..44803cbea38a 100644
-> --- a/mm/memcontrol-v1.c
-> +++ b/mm/memcontrol-v1.c
-> @@ -2729,6 +2729,8 @@ static const char *const memcg1_stat_names[] = {
->  static const unsigned int memcg1_events[] = {
->  	PGPGIN,
->  	PGPGOUT,
-> +	PSWPIN,
-> +	PSWPOUT,
->  	PGFAULT,
->  	PGMAJFAULT,
->  };
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index e752146e59a4..8418c67faa69 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -9501,23 +9501,12 @@ static int tg_cfs_schedulable_down(struct task_group *tg, void *data)
+ 		parent_quota = parent_b->hierarchical_quota;
+ 
+ 		/*
+-		 * Ensure max(child_quota) <= parent_quota.  On cgroup2,
+-		 * always take the non-RUNTIME_INF min.  On cgroup1, only
+-		 * inherit when no limit is set. In both cases this is used
+-		 * by the scheduler to determine if a given CFS task has a
+-		 * bandwidth constraint at some higher level.
++		 * Ensure max(child_quota) <= parent_quota.
+ 		 */
+-		if (cgroup_subsys_on_dfl(cpu_cgrp_subsys)) {
+-			if (quota == RUNTIME_INF)
+-				quota = parent_quota;
+-			else if (parent_quota != RUNTIME_INF)
+-				quota = min(quota, parent_quota);
+-		} else {
+-			if (quota == RUNTIME_INF)
+-				quota = parent_quota;
+-			else if (parent_quota != RUNTIME_INF && quota > parent_quota)
+-				return -EINVAL;
+-		}
++		if (quota == RUNTIME_INF)
++			quota = parent_quota;
++		else if (parent_quota != RUNTIME_INF)
++			quota = min(quota, parent_quota);
+ 	}
+ 	cfs_b->hierarchical_quota = quota;
+ 
+-- 
+2.19.1.6.gb485710b
 
-As Yosry said, no need to add these in v1.
-
-thanks,
-Shakeel
 
