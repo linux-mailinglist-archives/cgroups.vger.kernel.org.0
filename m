@@ -1,155 +1,129 @@
-Return-Path: <cgroups+bounces-4801-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4802-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24C179735FA
-	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 13:14:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 270E4973646
+	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 13:33:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5BCB285FAA
-	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 11:14:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 934E5B26CE1
+	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 11:33:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FD1918C925;
-	Tue, 10 Sep 2024 11:13:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DD8618C036;
+	Tue, 10 Sep 2024 11:33:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="XUjRwzyz"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Pl1JxxZJ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE9FF1862B8;
-	Tue, 10 Sep 2024 11:13:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.97
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99C871DFE8
+	for <cgroups@vger.kernel.org>; Tue, 10 Sep 2024 11:33:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725966836; cv=none; b=UOaNe8gE/8Qcj/H1p9UZ5K7TVQtVlRLvVt/fLvEPxTSuNrb3PA3Agvac1VbGAaiOJhpHnIb0AefIc1+j0pu8qn79PLOjTbFH0yLX1nQ2QE3N9YhgQCV6Lk7VwPQ54Qg2uwblSU2b8tGKLQAUc0v2hcaBNof0fDkrgqt6PFnAJOw=
+	t=1725967989; cv=none; b=HHN1BGQNJrNP6gxsro9CiF2Y1Dk7FGmKnvzTBmpGpA/f4np/kHvkHPU1BKNRK8336SNxUKjr6OrnuU4DcMr/QOAwlBWqN5vQovvNXadOc4iRTgRhq6SliFwbjbA09Z7/IxwGONPZMKrAhiIMT6p6H2LSVGTqMejTQB6y7a0lmSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725966836; c=relaxed/simple;
-	bh=ss8YI24+bwtpoeauo+RapxXHfzwXYRLVuejgUIR7Ams=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=CS9lKyf89GAuH7VlvUm8nv59NRVHs/betytEdvds0dHIcFlSbNgvN9H9k8S6hF+ZtgX8rGpszAy0Y/aTEkkxlmA8f8vlpNG35Whskujcr5IdgeLm4KewZiCDMcQl/4swQBP279xtaAKPhws2HwPNb6bVhHLVSV5k6CEDB+NX2qw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=XUjRwzyz; arc=none smtp.client-ip=115.124.30.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1725966825; h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
-	bh=KBIey+3aqcnDOe1MADYXNZUTujmQY9SdJ4Gt4wOtH2E=;
-	b=XUjRwzyzSj1xyqmYyHk785tw/FjkjvRU4+dS5Obn/YlYjD8j1PuTAIrZtS0uJ8gPNk5Ec1NGoB1ME6KGBwOIQw2Eq6gX7flpQpUFh8BghcCS18seBWBtnZagTIysEtkiEAlcsX3c6Oyt+H3KV6ypRDs5M4/B7KADTOwJjNTLfGY=
-Received: from smtpclient.apple(mailfrom:liusong@linux.alibaba.com fp:SMTPD_---0WEkHz5h_1725966823)
-          by smtp.aliyun-inc.com;
-          Tue, 10 Sep 2024 19:13:44 +0800
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1725967989; c=relaxed/simple;
+	bh=dD7MFjjgq+OQH2QBt4N1yvwPwT2h9sYXw3+FI4Ewxj8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d76Nc7ywTmabXp32+IrMLDWb5zpp4QkgBeD0jolN8F9BdxBckPimfmikb8mh0Tiw3jMpMYoX+o0sa3JfG21Su2aoCXQafqQaV/ILmBPQv8vItsGVE+99Y5GrPMkdgX3CrUK811gCBwaPySdiKTrctV6BVrrE9JSplH0xnjChqFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Pl1JxxZJ; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-42cc8782869so1209915e9.2
+        for <cgroups@vger.kernel.org>; Tue, 10 Sep 2024 04:33:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1725967986; x=1726572786; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dD7MFjjgq+OQH2QBt4N1yvwPwT2h9sYXw3+FI4Ewxj8=;
+        b=Pl1JxxZJisyly8w86iYg2y+Mb+439aH6kkFbrzg9RMyrFTOKJMjjOrAnLrkKBExo8E
+         JEAd4jGdY2smVwdXCOp1+murDKWmYty+f7Ceo1veIr936w66bwISkPXMLmAEXmTVvU2L
+         qNaMTAmLBfTpcEJVirgjkrd2574CsSkUg+yTyKXU6Fwk/mLurXnGZr+3fRdxiTYBrpdf
+         T8FSoJSZhh9E1pCuuOVnmeMz73RjQ6YPMfGZoNL1iUiRC2VxMQh3zyCT8jXoCW9EMiAl
+         GF04xvvR7WXoSSt9mLJntZIP/PaZxtkcq7F7eekMyWCogyDl5qjBJT+85R4lNIDewmeb
+         /BGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725967986; x=1726572786;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dD7MFjjgq+OQH2QBt4N1yvwPwT2h9sYXw3+FI4Ewxj8=;
+        b=sW9t2ss6JweK9mt66wL/XrrHSPJLY36qzWgnKopRZsZnUSKRkHMAgK9PBd7QDNXp9d
+         wj8LxKIXiBmTU7GV0Ryh0Bao/ctRTSbDJJPVn5FREQynhzO2UmnUVk3+PBk7A8Cot15H
+         lhYo+rVeMWoWq1A/WbkwICZUTss0+w3dp1iesrsB2FEgHNzroV+dxCmjAsRMIde4rjeQ
+         g292BIvtV721DklkyzBGvWiIjCvha9Q53lU++8Qz1SsXsO4t4Q8GFu+lfeyoffAJ6g86
+         k9JIR1hCjIEp92qqv8vhnC+MaR/6WlKgoNQ9XNOPUrzAHC9we2vMMcS8PHiRo4dNMZCl
+         /J6A==
+X-Forwarded-Encrypted: i=1; AJvYcCX+CYoclvxY7ceSz1IY7QNCSgzNLboN18LL9tV14Bdoi7TenTeYkfDlMT9RRIS8s0JRE1nXTP1o@vger.kernel.org
+X-Gm-Message-State: AOJu0YxM1zgDKYFH/pthmldqOzRJPJOhPVoYZhk8GR7Gx+lCBuGKddRX
+	P8QKCCEego906Wu1pW1+yVESYLrjRWtu0vvb+mZdzGd+ELHhbzWtp5RQUKfMnj0=
+X-Google-Smtp-Source: AGHT+IGCPZLNgtlgfTNoYPlP2/OXuhE7b6NC9+f/tt5lOx4XUHFWh+Bf+oV6lVEI1P/mevSIl8vfIw==
+X-Received: by 2002:a5d:6608:0:b0:371:a60e:a821 with SMTP id ffacd0b85a97d-37889682bdbmr8233340f8f.38.1725967985769;
+        Tue, 10 Sep 2024 04:33:05 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3789564b02asm8736427f8f.4.2024.09.10.04.33.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Sep 2024 04:33:05 -0700 (PDT)
+Date: Tue, 10 Sep 2024 13:33:03 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: Chen Ridong <chenridong@huawei.com>, tj@kernel.org, 
+	lizefan.x@bytedance.com, hannes@cmpxchg.org, longman@redhat.com, adityakali@google.com, 
+	sergeh@kernel.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 -next 2/3] cgroup/freezer: Reduce redundant
+ propagation for cgroup_propagate_frozen
+Message-ID: <x7bbfxw4bq4bjzz5q2viqsf6ogczzbmws5kdudqqcditjbpjln@y35o6uumvhc6>
+References: <20240905134130.1176443-1-chenridong@huawei.com>
+ <20240905134130.1176443-3-chenridong@huawei.com>
+ <cieafhuvoj4xby634ezy244j4fi555aytp65cqefw3floxejjj@gn7kcaetqwlj>
+ <5a29e13b-7956-4f68-8c39-92183e5ed0ca@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.600.62\))
-Subject: Re: [RFC PATCH] sched, cgroup: cgroup1 can also take the
- non-RUNTIME_INF min
-From: =?utf-8?B?5YiY5bWp?= <liusong@linux.alibaba.com>
-In-Reply-To: <20240910104949.GA318990@pauld.westford.csb>
-Date: Tue, 10 Sep 2024 19:13:32 +0800
-Cc: tj@kernel.org,
- lizefan.x@bytedance.com,
- hannes@cmpxchg.org,
- =?utf-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="jko4zp6g33zza3wu"
+Content-Disposition: inline
+In-Reply-To: <5a29e13b-7956-4f68-8c39-92183e5ed0ca@huaweicloud.com>
+
+
+--jko4zp6g33zza3wu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <0339F628-43F2-40D1-B199-5E641C238CAC@linux.alibaba.com>
-References: <20240910074832.62536-1-liusong@linux.alibaba.com>
- <20240910104949.GA318990@pauld.westford.csb>
-To: Phil Auld <pauld@redhat.com>
-X-Mailer: Apple Mail (2.3774.600.62)
 
+On Tue, Sep 10, 2024 at 11:08:12AM GMT, Chen Ridong <chenridong@huaweicloud=
+=2Ecom> wrote:
+> > This should be correct also wrt cgroup creation and removal.
+> >=20
+> Before calling cgroup_freeze, cgroup_freeze_write have hold the
+> cgroup_mutex, could parent's nr_frozen_descendants be changed?
 
+Sorry for ambigious wording, I meant that the code you posted appears
+to me to be correct (and safe) wrt cgroup tree operations -- thanks to
+css_set_lock because frozen bookkeeping is under it (cgroup_mutex would
+be too heavy weight for all possible callers of
+cgroup_propagate_frozen(), namely cgroup_enter_frozen).
 
-> 2024=E5=B9=B49=E6=9C=8810=E6=97=A5 18:49=EF=BC=8CPhil Auld =
-<pauld@redhat.com> =E5=86=99=E9=81=93=EF=BC=9A
->=20
->=20
-> Hi,
->=20
-> On Tue, Sep 10, 2024 at 03:48:32PM +0800 Liu Song wrote:
->> For the handling logic of child_quota, there is no need to =
-distinguish
->> between cgroup1 and cgroup2, so unify the handling logic here.
->>=20
->> Signed-off-by: Liu Song <liusong@linux.alibaba.com>
->> ---
->> kernel/sched/core.c | 21 +++++----------------
->> 1 file changed, 5 insertions(+), 16 deletions(-)
->>=20
->> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->> index e752146e59a4..8418c67faa69 100644
->> --- a/kernel/sched/core.c
->> +++ b/kernel/sched/core.c
->> @@ -9501,23 +9501,12 @@ static int tg_cfs_schedulable_down(struct =
-task_group *tg, void *data)
->> parent_quota =3D parent_b->hierarchical_quota;
->>=20
->> /*
->> - * Ensure max(child_quota) <=3D parent_quota.  On cgroup2,
->> - * always take the non-RUNTIME_INF min.  On cgroup1, only
->> - * inherit when no limit is set. In both cases this is used
->> - * by the scheduler to determine if a given CFS task has a
->> - * bandwidth constraint at some higher level.
->=20
-> This comment is here for a reason. Please don't remove it.
+Or do you suggest the current form would need cgroup_mutex
+synchronization somehow?
 
-Hi
+Michal
 
-I don=E2=80=99t see why cgroup1 needs to impose this restriction while =
-cgroup2
-can directly take the non-RUNTIME_INF minimum value. What is the
-necessity of this?=20
+--jko4zp6g33zza3wu
+Content-Type: application/pgp-signature; name="signature.asc"
 
-It seems more reasonable to unify the handling logic. Even if the child
-group quota exceeds the parent group quota, it would not actually take
-effect.=20
+-----BEGIN PGP SIGNATURE-----
 
-However, if the parent group quota is reset to a larger value, then the
-child group quota would have actual significance. Therefore, the =
-handling
-logic should be consistent between cgroup1 and cgroup2.
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZuAubAAKCRAt3Wney77B
+ScGSAP44qGFORSW3hcoRiepum0F8MuDlZBVBJyH56WhdCn7VdgD/fhim9MJ2+dGR
+PnfqWIuBO5ZO817o8cQTaJkCxbFxgQs=
+=SwvN
+-----END PGP SIGNATURE-----
 
-Thanks
-
-
->=20
->> + * Ensure max(child_quota) <=3D parent_quota.
->> */
->> - if (cgroup_subsys_on_dfl(cpu_cgrp_subsys)) {
->> - if (quota =3D=3D RUNTIME_INF)
->> - quota =3D parent_quota;
->> - else if (parent_quota !=3D RUNTIME_INF)
->> - quota =3D min(quota, parent_quota);
->> - } else {
->> - if (quota =3D=3D RUNTIME_INF)
->> - quota =3D parent_quota;
->> - else if (parent_quota !=3D RUNTIME_INF && quota > parent_quota)
->> - return -EINVAL;
->> - }
->> + if (quota =3D=3D RUNTIME_INF)
->> + quota =3D parent_quota;
->> + else if (parent_quota !=3D RUNTIME_INF)
->> + quota =3D min(quota, parent_quota);
->> }
->> cfs_b->hierarchical_quota =3D quota;
->>=20
->=20
-> I don't think there is a need to optimize this slow path
-> to allow setting invalid values which have to be handled in
-> fast paths.   And this will change expected behavior.
->=20
-> So NAK.
->=20
-> Cheers,
-> Phil
->=20
-> --
-
+--jko4zp6g33zza3wu--
 
