@@ -1,73 +1,83 @@
-Return-Path: <cgroups+bounces-4824-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4825-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4994F974385
-	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 21:32:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E4359743D0
+	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 22:02:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8137B23CB4
-	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 19:32:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D6F61C256E9
+	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 20:02:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EE7C1A76C3;
-	Tue, 10 Sep 2024 19:32:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F3F1850B5;
+	Tue, 10 Sep 2024 20:02:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kTU3h1P1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CCrrW5HD"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A573195980;
-	Tue, 10 Sep 2024 19:32:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD842176252;
+	Tue, 10 Sep 2024 20:02:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725996755; cv=none; b=rG2TXdhodrTdrtKQi/QAErR+dRRQQH1WVGwAy1l2s0zAkUUdkD0k2RcRT5ljizeoLvx7FI2yJUUeOpRh7m9kIjd6DRGmafUwmmSR1ToC8DXHRuy+rK9eoQBygee5Hq6BPGJAmBJuTJWv6AdlzMMP662as+5LuR0ZBDEH9h87kjI=
+	t=1725998567; cv=none; b=Lzoz9eSpkeIVxcuMO/PcD+RBIf0R+SR1VMMd2HIRX974YORDQ/Fbf5YO+ArSnvMfGQB1K0VqHYoG7fNdwYAduYkFutcpEejE8QjoLP9vx2jVi2L4TSX5AwUtkzE8pO5xqHqu4p+Gr4yvnuUoy+T3/gm+NaaZ3oK8rdBKPcdVRMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725996755; c=relaxed/simple;
-	bh=8KNjWThaQ/M3fiK1yel9ljDbzc7cSpc+av0Szx/QNK4=;
+	s=arc-20240116; t=1725998567; c=relaxed/simple;
+	bh=dp2BYi02YNW2K4ppjPhhoQskIQuheiFsgBa6IjkUdgE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Bgap+w5LfUo1e3TF6os6P+Api+DewHCYaD6F1Tn9E/rthjYKAHcJCQ7m2EQAvKhADWUG4JA2j+PPQXbM013E2BBdTdDjCmsdIjZ6oqp61uGsyflTejV9zwyrPyj5t4QOA5URbD+KyTApsAwvsmaxQOm5NnQ8/6FeSdx+q6aJkHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kTU3h1P1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E25EBC4CEC3;
-	Tue, 10 Sep 2024 19:32:34 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ikf+A0pGH74NxLme1vAbCRdakogI+AXE+ngiily+UbO5j4X9VLGj2xuA2Pvm9g11g4EzN0verfzwh5svqKpyi4JKo3zUu6JQ1WJ/8dcbE64STcovxHXkF06IRQomDx0Bnxx0lCE1piz34UKWnZePQxDXzlW/WU82YJbmnNcZShA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CCrrW5HD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35AD8C4CEC3;
+	Tue, 10 Sep 2024 20:02:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725996755;
-	bh=8KNjWThaQ/M3fiK1yel9ljDbzc7cSpc+av0Szx/QNK4=;
+	s=k20201202; t=1725998566;
+	bh=dp2BYi02YNW2K4ppjPhhoQskIQuheiFsgBa6IjkUdgE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=kTU3h1P1cZjXXQQjPVUPIAi4dUuLWtQzOYk2uZvP7icuLgD1bn9+GoqlGRLpyQKQI
-	 Z0j43QFw0pUvoBYi5waO50EYeo9dN5X4omuAC+xDYVmop+kn4NaPF4p1PyIPSOjx+N
-	 vNC5j9eVUKL8TYT/ueUQyWrjK6Vcee4I48zg+erA+NGT4H8ARaCg83+qCAtvcShJY+
-	 3MBsMI5bUM3ddzNX6QdeBP1NLmzVoSolYnL0W0IC0VixcG1FYEe+YiweDVdKwWDvZy
-	 lfLG02SbqeXuKzHfYOcBRmdBmJU26Vn+QoicgXihboQSyx3ZFcrdSw6J4iNbf6AfoC
-	 DNUzyOr359Nxg==
-Date: Tue, 10 Sep 2024 09:32:33 -1000
+	b=CCrrW5HDLWDTCJpkMca0FuyQ2ykh64DrNfXbg09aIbFbjBa5u/n9/CXA3+ABSeVM+
+	 kN2Y3zqwk7ULyotnjkr38RYdT8VdoH85OHtMPWrr7D6XiwERy4rvRgAFh/71udauq+
+	 HbG9qkbZ1MBA3paBnbfY3L/beuWLLsBk+4kAaODBMQkaLxp2Y4S6wVxHdqzfZBf2Nr
+	 jl3VQCrhXszie4rtnxEJPAkklqTwSd6tZyPqEhpFGFf0p59dqcjnAgEluTldHWRJME
+	 CMNYVtcDBHTBzRC7klzVRs17RBKz+7i+1Cru659WDFymsWzKI2RoiCK2rJavuWHhpg
+	 sTYmC5Y8LMnWw==
+Date: Tue, 10 Sep 2024 10:02:45 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Liu Song <liusong@linux.alibaba.com>
-Cc: lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] sched, cgroup: cgroup1 can also take the
- non-RUNTIME_INF min
-Message-ID: <ZuCe0U1Kwr0hYoOz@slm.duckdns.org>
-References: <20240910074832.62536-1-liusong@linux.alibaba.com>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Chen Ridong <chenridong@huawei.com>
+Subject: Re: [PATCH 2/4] cgroup/cpuset: Expose cpuset filesystem with cpuset
+ v1 only
+Message-ID: <ZuCl5ZwuV9zaYXRd@slm.duckdns.org>
+References: <20240909163223.3693529-1-mkoutny@suse.com>
+ <20240909163223.3693529-3-mkoutny@suse.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240910074832.62536-1-liusong@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240909163223.3693529-3-mkoutny@suse.com>
 
-On Tue, Sep 10, 2024 at 03:48:32PM +0800, Liu Song wrote:
-> For the handling logic of child_quota, there is no need to distinguish
-> between cgroup1 and cgroup2, so unify the handling logic here.
+On Mon, Sep 09, 2024 at 06:32:21PM +0200, Michal Koutný wrote:
+> The cpuset filesystem is a legacy interface to cpuset controller with
+> (pre-)v1 features. It makes little sense to co-mount it on systems
+> without cpuset v1, so do no build it when cpuset v1 is not built
+> neither.
 > 
-> Signed-off-by: Liu Song <liusong@linux.alibaba.com>
+> Signed-off-by: Michal Koutný <mkoutny@suse.com>
 
-It doens't make much sense to change the interface for cgroup1 at this
-point. Let's please leave it as-is.
+Applied to cgroup/for-6.12 w/ a typo fix and Waiman's reviewed-by added.
 
 Thanks.
 
