@@ -1,112 +1,115 @@
-Return-Path: <cgroups+bounces-4835-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4836-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1391E9744B4
-	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 23:19:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C04E97460A
+	for <lists+cgroups@lfdr.de>; Wed, 11 Sep 2024 00:39:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B2AF71F26AE2
-	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 21:19:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CF741C257E6
+	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2024 22:39:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 164011AAE38;
-	Tue, 10 Sep 2024 21:19:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F56D1AC42D;
+	Tue, 10 Sep 2024 22:39:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J81oXUlp"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="JrPRhMlj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C26A823774;
-	Tue, 10 Sep 2024 21:19:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 946961ABEB7
+	for <cgroups@vger.kernel.org>; Tue, 10 Sep 2024 22:39:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726003159; cv=none; b=Lm+9Tad8aVIUBz1TrrWFSxPVitVmtzo3QTX7ZO3byWLj6kchtQ9pBtGWuuE9ewsMEp+WytyhUG7VRHNqgf1ASTKDQfEy9n6Elh18XG7bTnf9zUQIEzOzsH9nOeYy7LB34L9wvsaJCfbl4biGU5lpDLomhWTesNgP5rUdW7xu908=
+	t=1726007979; cv=none; b=n99MfD0kViPGu8ED3NIcIV3bezQjgWC6V/IRGckn8fOcX2grCYRGt/fenbn0jlTABGinKw64Q5C2qThGlk1HRbFVOxwmCjug41jA1u/6bZrk3yDGZXvYiyFDzf6S9Juke7BF3kh7shc0dtI58UWG27ATZL86bDW8/5HOcDEpl+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726003159; c=relaxed/simple;
-	bh=MPDj1SGwwOCMCVLZEATJhLlQx2eSypRL742ONHdEA9w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tNu7qYB/GAZtr2G10taMxuiu2DQhHNqMU2g51/57tI57bPPz8jJF0Ybld1R7y2uHA4wMtYWJPx8bwLKa/Ad9VyVLLFzFYvyUM+EPx0nz5p/5PJreosHAglhJF9T/MsBhNvARYQS8ATp/WnMyTXGCkFTH9G3/j1tw93+hQb+rhPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J81oXUlp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CC8EC4CEC3;
-	Tue, 10 Sep 2024 21:19:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726003159;
-	bh=MPDj1SGwwOCMCVLZEATJhLlQx2eSypRL742ONHdEA9w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=J81oXUlp4rb/gPRGW4izOxRdjVlQp3bOHkB3dcKqNO957k9Z3BCDe/Yh6x3c8roXh
-	 5wZnDE8UnoMDhlXxVgJUYWXCDKsOewChcLFzcjNbSKiLDATGLK33Z4zSTzfC1FFmRW
-	 K+EWsGyoOP6dqJbajljQSyelKKGlP9Xuwmoz/AE6R6cJnQQ8oLD8at1U6Us24sGrDO
-	 XC1NxKaRyUFis84fUDk7ylXlnzjTBlzizvQ6caS0Mqimw6pXoXjl8yW0Ed1mJ2ZrAV
-	 Pec5oJ9Dymsedw3pPwrmMhL2I2jxXapLVCGG+cpVHsuoajJJGSEVtZk6ZtBVQsLoiY
-	 dINUPvBxtge+Q==
-Date: Tue, 10 Sep 2024 11:19:18 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: josef@toxicpanda.com, axboe@kernel.dk, cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH for-6.12 2/2] blk-throttle: support prioritized
- processing of metadata
-Message-ID: <ZuC31sqB6qUd_Gut@slm.duckdns.org>
+	s=arc-20240116; t=1726007979; c=relaxed/simple;
+	bh=pjZtiX3I24/dylwpsaxDdsLg57zYZcJN9pg9emc6ADk=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=A1yVv7TrP/5D9LFwwKtODvftl2zZVn7GCGqoM6UxedkwKifwU6w5jlgzxzu1GSx4UdRLBfgVULMX+aKkSFdUA4YklcIMja8oG5kMYmj0A2/OJGHPK3BVu6jMd/V4zRZ/QuJ3ezaMwF4ikNwicfUe5/JsLY4JuKPoGC2H02lW8UE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=JrPRhMlj; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2d87a1f0791so3904778a91.2
+        for <cgroups@vger.kernel.org>; Tue, 10 Sep 2024 15:39:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1726007976; x=1726612776; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FigzNtvrWKZXxuePOe6tACCaPjx0X2YKNkQWmTB03Mg=;
+        b=JrPRhMljpOk+QH14/2bwp976jpU8RrjFhUmzL6BJMeAcC/y/2p8I/C8OzUh6VWoLaK
+         frOGbppGi8m4kT3yF3XCVIzZEKjnrv+DceePQ+GdNPYmfYwZPqoFrRmg/fF6V9BkOEA9
+         0Kdv9TT77fpVu0Jd2nsiSE0PVLT3AeB+mrgftohzqV4in5QAc6/D/nJNYRYNzw28el0I
+         sDgkl8Q1NhzFS34xqRuOrKfsZCuYORwQz6JqfcG+PTTFGn5NbFCu72CHSKm7hH3bDhCm
+         jeNRXuxBAv3SKJRKLalvA8cfwvXBssYjKKeJRfB+fIdMQ32f/h4+nzi6kOWJmVtkBrvo
+         ac5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726007976; x=1726612776;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FigzNtvrWKZXxuePOe6tACCaPjx0X2YKNkQWmTB03Mg=;
+        b=k25QAtqB/36OnXRX304EWUy48Mpy2Ej88+2tC76LuEYL9Q5euaL6OIAwl3r86sDUlT
+         nJxDurKMEpgQsM+cdrpByrBeLFALBDn9TN/13rLgpVR+Vz0ObgR8Snz3T5AK/DjodgAz
+         9NC+oL50gn9t168na60zIDODykDDorBtAjnEoFG8/NoHJgOAoy8+WQp5lL4FTpjhV7ra
+         +dYc3Li7wk5Xir57dpmkPiMIzte4acN9F4US413oxOtPDTBl/pBOaAjCPRThFPX36wty
+         SCf/NN4dG0mcJEvfy+xLZL1qZQowgg8vP/7QQuAbAz7HgM8Qz/2OfyKHqH28G1I3qtkB
+         28XQ==
+X-Gm-Message-State: AOJu0Yxy/ViP8RmmLULdoFTggmSVu+E1xgoNsYV8ne3AAenMS4R/9NHe
+	e8eeQgcUtNqWvqcld3OO+m3YpZ3iDO4Q0hhPbrIllkvVHOEFZOz3uqKKMIB0UvE=
+X-Google-Smtp-Source: AGHT+IF0GR1i0sQ5Ook6LfpBSmPCQc8y7EcbXQCHLNWwVcaj/n7ugGPsvdjl+SA0g3BIZABPUKDddg==
+X-Received: by 2002:a17:90b:1c03:b0:2c4:b0f0:8013 with SMTP id 98e67ed59e1d1-2dad4efdf95mr16206730a91.11.1726007975834;
+        Tue, 10 Sep 2024 15:39:35 -0700 (PDT)
+Received: from [127.0.0.1] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2dadc127c5bsm9023783a91.52.2024.09.10.15.39.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Sep 2024 15:39:35 -0700 (PDT)
+From: Jens Axboe <axboe@kernel.dk>
+To: tj@kernel.org, josef@toxicpanda.com, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, yukuai3@huawei.com, yi.zhang@huawei.com, 
+ yangerkun@huawei.com
+In-Reply-To: <20240903135149.271857-1-yukuai1@huaweicloud.com>
 References: <20240903135149.271857-1-yukuai1@huaweicloud.com>
- <20240903135149.271857-3-yukuai1@huaweicloud.com>
+Subject: Re: [PATCH for-6.12 0/2] blk-throttle: support prioritized
+ processing of metadata
+Message-Id: <172600797465.158663.18224445908631477542.b4-ty@kernel.dk>
+Date: Tue, 10 Sep 2024 16:39:34 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240903135149.271857-3-yukuai1@huaweicloud.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14.1
 
-On Tue, Sep 03, 2024 at 09:51:49PM +0800, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> Currently, blk-throttle handle all IO fifo, hence if data IO is
-> throttled and then meta IO is dispatched, the meta IO will have to wait
-> for the data IO, causing priority inversion problems.
-> 
-> This patch support to handle metadata first and then pay debt while
-> throttling data.
-> 
-> Test script: use cgroup v1 to throttle root cgroup, then create new
-> dir and file while write back is throttled
-> 
-> test() {
->   mkdir /mnt/test/xxx
->   touch /mnt/test/xxx/1
->   sync /mnt/test/xxx
->   sync /mnt/test/xxx
-> }
-> 
-> mkfs.ext4 -F /dev/nvme0n1 -E lazy_itable_init=0,lazy_journal_init=0
-> mount /dev/nvme0n1 /mnt/test
-> 
-> echo "259:0 $((1024*1024))" > /sys/fs/cgroup/blkio/blkio.throttle.write_bps_device
-> dd if=/dev/zero of=/mnt/test/foo1 bs=16M count=1 conv=fdatasync status=none &
-> sleep 4
-> 
-> time test
-> echo "259:0 0" > /sys/fs/cgroup/blkio/blkio.throttle.write_bps_device
-> 
-> sleep 1
-> umount /dev/nvme0n1
-> 
-> Test result: time cost for creating new dir and file
-> before this patch:  14s
-> after this patch:   0.1s
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-This is a lot simpler than I expected. Great.
+On Tue, 03 Sep 2024 21:51:47 +0800, Yu Kuai wrote:
+> Yu Kuai (2):
+>   blk-throttle: remove last_low_overflow_time
+>   blk-throttle: support prioritized processing of metadata
+> 
+> block/blk-throttle.c | 69 +++++++++++++++++++++++++++-----------------
+>  block/blk-throttle.h |  2 --
+>  2 files changed, 42 insertions(+), 29 deletions(-)
+> 
+> [...]
 
- Acked-by: Tejun Heo <tj@kernel.org>
+Applied, thanks!
 
-Thanks.
+[1/2] blk-throttle: remove last_low_overflow_time
+      commit: 3bf73e6283ef0bae4e27dad62309e50e3bf7ee88
+[2/2] blk-throttle: support prioritized processing of metadata
+      commit: 29390bb5661d49d10424ad8e915230de1f7074c9
 
+Best regards,
 -- 
-tejun
+Jens Axboe
+
+
+
 
