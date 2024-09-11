@@ -1,117 +1,250 @@
-Return-Path: <cgroups+bounces-4843-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4844-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12C6E9753E9
-	for <lists+cgroups@lfdr.de>; Wed, 11 Sep 2024 15:30:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 659F8975452
+	for <lists+cgroups@lfdr.de>; Wed, 11 Sep 2024 15:46:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBBF1288A8E
-	for <lists+cgroups@lfdr.de>; Wed, 11 Sep 2024 13:30:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDD7C1F26B5B
+	for <lists+cgroups@lfdr.de>; Wed, 11 Sep 2024 13:45:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0224A1A2627;
-	Wed, 11 Sep 2024 13:28:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 404851A7AF9;
+	Wed, 11 Sep 2024 13:39:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="vA01a1YP"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U16vg97Q"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-io1-f48.google.com (mail-io1-f48.google.com [209.85.166.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E5021A255A
-	for <cgroups@vger.kernel.org>; Wed, 11 Sep 2024 13:28:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4201A3A98
+	for <cgroups@vger.kernel.org>; Wed, 11 Sep 2024 13:39:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726061302; cv=none; b=M4Z4NPsvMquNiXIetx9VVg1svksrBOMBUilfT7i45an2pehI9JdOL9WmVKAVpF6qqj3Xb82lv7e1jOje53N68O6/6wl57fFJgDLFVwMCt2dk7lNCD2BL1mHHzBnbPmorQ8xL9UlAiKpDw+LSL73IQv/saK/i74oqwme4/vDMkGc=
+	t=1726061991; cv=none; b=eFyR4eKEt9fy6Rt2/PNCw57iS7Kdpq3lNPOUv+WQlf+o9k8fS0PCN/6icjmcP6WaY2km2/zOKfjEm4JDk44pFqsex69ZePKtbTulp9ZhtmoS8icT98BZzjP4wasFdUx2nAabIJEihlEJJmcd4sGBaVnhqpGPRqtFmH2AshmZl+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726061302; c=relaxed/simple;
-	bh=4Aq3EGL6vjZOV0V8QUAKM9cPAmFz583dltN7Bh4jhE4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=nHtHSaxL2MHRabZfXgDa/tZc15kyOBoHYDgctHsXJDgHI2Xx8iNqrvtYxQOXUTJVoIFKNvU6zeOASa4Y5wegy48mikWIzHWzam0yHrm7k+oRf+IyabYiWeXcFSYvIQiXDMAJCtBkD64Y2nvlTWf1K0z4jMZUo08lPEu+P3AaylI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=vA01a1YP; arc=none smtp.client-ip=209.85.166.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f48.google.com with SMTP id ca18e2360f4ac-82cd872755dso183860339f.1
-        for <cgroups@vger.kernel.org>; Wed, 11 Sep 2024 06:28:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1726061300; x=1726666100; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bovJNT5vymtg0/+LN4HIO7mrl/RKcmaAfiJmsEEKKg4=;
-        b=vA01a1YPMF9acfWLPe7sYypU0acd1YDJH4mJ4byYxTA9SuZLnZDCU0bEGV/C7OgQsd
-         xwfZuxJH/QgQGUYhQixkirCQnyuqPwjJv1AlKBdYmVM9dGY7t0oUj152PQfzqGvkcMZY
-         oTitwnUyY53Zw/iZdIB7+WLvqzar1hG2TrWaDSUWmtnTtN8VYGsS0uaSQcJgyBpQ+1u8
-         4Dx+bVXs1Wj5aT1JT8n0JhJIWqxXzUfsNy+D91Cqgh3KGes3IEN0qQUUpW2B+sRH950D
-         H8RZ7ykgmhnws4t6JdEteY3MsvRJr8WWu+cP80JYBWfmb86rlppQtKowM1miJYFrySTS
-         Xu5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726061300; x=1726666100;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bovJNT5vymtg0/+LN4HIO7mrl/RKcmaAfiJmsEEKKg4=;
-        b=PnmyWlTIv2xaof687KMObgFWpdGAKHT+7U/SoC/J9ooKXgzAnyK0AkJ/+GOe66A4P8
-         vHOR5/7yeA7gCqDlI7P4PI59H9Ybjq6Z8yDtMguKfRS0JCX6VFKcY/YEQ9ad4yGysonv
-         NM1BJnvNHJxpGsxUjdJURMJr3RBjsZj9m4AyWnTPgXfkLo4DLMrPmZtxjoZAVEDF7gEl
-         aN2sqhdmGeutma6M6pSO1wmwVsj/O9hyhyeG32HFzFSKvCu3q+NwG8tXFN8ZfhdoH7sw
-         n0VFmABGQztwm8cG/7G7+UHeTSV3HRAquZz5HVvAsvwHppPlgT3zsHmYiQ+1DuSSgkat
-         MznQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXrHV9hctKl2q83M00FEaqW87tH8VDUmEYa+waVx1eLLbh6FYHk5Z67aymLMF4He5PvDCsyxcvC@vger.kernel.org
-X-Gm-Message-State: AOJu0YzE+XHZclhu+x7TeGhL+0wwkYw4ZjemhYRy9ZK6i7t9Tk4RPpEa
-	HMEjnf67m/iL8tQRMpBdsFi4+CXEsy+ZSYaknzld4sd3sw6J10CGJhk3iYxAgYU=
-X-Google-Smtp-Source: AGHT+IEEyHDqkjl8SeQPyVpXiKMNrTIBX51J/e+C4e938rN1IJwaXThSnaa6qkQovcsMbydA0TBZgA==
-X-Received: by 2002:a05:6602:6d07:b0:82d:754:5026 with SMTP id ca18e2360f4ac-82d075464e1mr586939539f.4.1726061300302;
-        Wed, 11 Sep 2024 06:28:20 -0700 (PDT)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id ca18e2360f4ac-82aa73536fasm263926739f.17.2024.09.11.06.28.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Sep 2024 06:28:19 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: Felix Moessbauer <felix.moessbauer@siemens.com>
-Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org, 
- io-uring@vger.kernel.org, cgroups@vger.kernel.org, dqminh@cloudflare.com, 
- longman@redhat.com, adriaan.schmidt@siemens.com, 
- florian.bezdeka@siemens.com
-In-Reply-To: <20240910171157.166423-1-felix.moessbauer@siemens.com>
-References: <20240910171157.166423-1-felix.moessbauer@siemens.com>
-Subject: Re: [PATCH v3 0/2] io_uring/io-wq: respect cgroup cpusets
-Message-Id: <172606129845.167290.7805052336711734654.b4-ty@kernel.dk>
-Date: Wed, 11 Sep 2024 07:28:18 -0600
+	s=arc-20240116; t=1726061991; c=relaxed/simple;
+	bh=j0hfvJ4Zgr0nQD+pP1C+IElAPHeSAWmAVfVG9dK27pI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=s/VEskPSs8lXdqmVmljhLzazi+NTG9IUclreR+hOmg7N8fNigtek96cQrYQMNt7PNqpyPpUgvRx57poL32lbPk2yoDAgMppYTHnpyrLpmrXTg/90pRQWeoIxL8Frjarkwm7h1P/ygnk3HeDND7gZaNfRQhHzYlbNeJS5LE5bXZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U16vg97Q; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1726061988;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VvwU4cqki9TtrB27KP2JwOIZHnNDzLJG2G+q3XLkyHM=;
+	b=U16vg97QLxg2tSqkxWo/Uec7VzN7UTyTS+MXwToXbhJj7mfRCyxZNhuE5BshaBy2VZuFMT
+	2iOcK+ZZO2iAkSPLRzAMGmjz1fh6eR6uu3wA+dXbcnvVdflulxvgWqJHrL00DeGF4MzwOF
+	qOdPNiLZgmZUEdDmBjcklis8pVR08V0=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-116-VyqdG2tONZesNhXAM0qVnw-1; Wed,
+ 11 Sep 2024 09:39:47 -0400
+X-MC-Unique: VyqdG2tONZesNhXAM0qVnw-1
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 96CDF1955F45;
+	Wed, 11 Sep 2024 13:39:43 +0000 (UTC)
+Received: from [10.2.16.53] (unknown [10.2.16.53])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 57EFB19560AB;
+	Wed, 11 Sep 2024 13:39:38 +0000 (UTC)
+Message-ID: <c2776802-1136-405f-a172-2996fafd3780@redhat.com>
+Date: Wed, 11 Sep 2024 09:39:37 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v1 1/4] Introducing qpw_lock() and per-cpu queue &
+ flush work
+To: Leonardo Bras <leobras@redhat.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>, Christoph Lameter <cl@linux.com>,
+ Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>,
+ Joonsoo Kim <iamjoonsoo.kim@lge.com>, Vlastimil Babka <vbabka@suse.cz>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Marcelo Tosatti <mtosatti@redhat.com>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-mm@kvack.org
+References: <20240622035815.569665-1-leobras@redhat.com>
+ <20240622035815.569665-2-leobras@redhat.com>
+ <f69793ab-41c3-4ae2-a8b1-355e629ffd0b@redhat.com> <ZuFD8bR01GhPbPH6@LeoBras>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <ZuFD8bR01GhPbPH6@LeoBras>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14.1
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
+On 9/11/24 03:17, Leonardo Bras wrote:
+> On Wed, Sep 04, 2024 at 05:39:01PM -0400, Waiman Long wrote:
+>> On 6/21/24 23:58, Leonardo Bras wrote:
+>>> Some places in the kernel implement a parallel programming strategy
+>>> consisting on local_locks() for most of the work, and some rare remote
+>>> operations are scheduled on target cpu. This keeps cache bouncing low since
+>>> cacheline tends to be mostly local, and avoids the cost of locks in non-RT
+>>> kernels, even though the very few remote operations will be expensive due
+>>> to scheduling overhead.
+>>>
+>>> On the other hand, for RT workloads this can represent a problem: getting
+>>> an important workload scheduled out to deal with some unrelated task is
+>>> sure to introduce unexpected deadline misses.
+>>>
+>>> It's interesting, though, that local_lock()s in RT kernels become
+>>> spinlock(). We can make use of those to avoid scheduling work on a remote
+>>> cpu by directly updating another cpu's per_cpu structure, while holding
+>>> it's spinlock().
+>>>
+>>> In order to do that, it's necessary to introduce a new set of functions to
+>>> make it possible to get another cpu's per-cpu "local" lock (qpw_{un,}lock*)
+>>> and also the corresponding queue_percpu_work_on() and flush_percpu_work()
+>>> helpers to run the remote work.
+>>>
+>>> On non-RT kernels, no changes are expected, as every one of the introduced
+>>> helpers work the exactly same as the current implementation:
+>>> qpw_{un,}lock*()        ->  local_{un,}lock*() (ignores cpu parameter)
+>>> queue_percpu_work_on()  ->  queue_work_on()
+>>> flush_percpu_work()     ->  flush_work()
+>>>
+>>> For RT kernels, though, qpw_{un,}lock*() will use the extra cpu parameter
+>>> to select the correct per-cpu structure to work on, and acquire the
+>>> spinlock for that cpu.
+>>>
+>>> queue_percpu_work_on() will just call the requested function in the current
+>>> cpu, which will operate in another cpu's per-cpu object. Since the
+>>> local_locks() become spinlock()s in PREEMPT_RT, we are safe doing that.
+>>>
+>>> flush_percpu_work() then becomes a no-op since no work is actually
+>>> scheduled on a remote cpu.
+>>>
+>>> Some minimal code rework is needed in order to make this mechanism work:
+>>> The calls for local_{un,}lock*() on the functions that are currently
+>>> scheduled on remote cpus need to be replaced by qpw_{un,}lock_n*(), so in
+>>> RT kernels they can reference a different cpu. It's also necessary to use a
+>>> qpw_struct instead of a work_struct, but it just contains a work struct
+>>> and, in PREEMPT_RT, the target cpu.
+>>>
+>>> This should have almost no impact on non-RT kernels: few this_cpu_ptr()
+>>> will become per_cpu_ptr(,smp_processor_id()).
+>>>
+>>> On RT kernels, this should improve performance and reduce latency by
+>>> removing scheduling noise.
+>>>
+>>> Signed-off-by: Leonardo Bras <leobras@redhat.com>
+>>> ---
+>>>    include/linux/qpw.h | 88 +++++++++++++++++++++++++++++++++++++++++++++
+>>>    1 file changed, 88 insertions(+)
+>>>    create mode 100644 include/linux/qpw.h
+>>>
+>>> diff --git a/include/linux/qpw.h b/include/linux/qpw.h
+>>> new file mode 100644
+>>> index 000000000000..ea2686a01e5e
+>>> --- /dev/null
+>>> +++ b/include/linux/qpw.h
+>>> @@ -0,0 +1,88 @@
+>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>> +#ifndef _LINUX_QPW_H
+>>> +#define _LINUX_QPW_H
+>>> +
+>>> +#include "linux/local_lock.h"
+>>> +#include "linux/workqueue.h"
+>>> +
+>>> +#ifndef CONFIG_PREEMPT_RT
+>>> +
+>>> +struct qpw_struct {
+>>> +	struct work_struct work;
+>>> +};
+>>> +
+>>> +#define qpw_lock(lock, cpu)					\
+>>> +	local_lock(lock)
+>>> +
+>>> +#define qpw_unlock(lock, cpu)					\
+>>> +	local_unlock(lock)
+>>> +
+>>> +#define qpw_lock_irqsave(lock, flags, cpu)			\
+>>> +	local_lock_irqsave(lock, flags)
+>>> +
+>>> +#define qpw_unlock_irqrestore(lock, flags, cpu)			\
+>>> +	local_unlock_irqrestore(lock, flags)
+>>> +
+>>> +#define queue_percpu_work_on(c, wq, qpw)			\
+>>> +	queue_work_on(c, wq, &(qpw)->work)
+>>> +
+>>> +#define flush_percpu_work(qpw)					\
+>>> +	flush_work(&(qpw)->work)
+>>> +
+>>> +#define qpw_get_cpu(qpw)					\
+>>> +	smp_processor_id()
+>>> +
+>>> +#define INIT_QPW(qpw, func, c)					\
+>>> +	INIT_WORK(&(qpw)->work, (func))
+>>> +
+>>> +#else /* !CONFIG_PREEMPT_RT */
+>>> +
+>>> +struct qpw_struct {
+>>> +	struct work_struct work;
+>>> +	int cpu;
+>>> +};
+>>> +
+>>> +#define qpw_lock(__lock, cpu)					\
+>>> +	do {							\
+>>> +		migrate_disable();				\
+>>> +		spin_lock(per_cpu_ptr((__lock), cpu));		\
+>>> +	} while (0)
+>>> +
+>>> +#define qpw_unlock(__lock, cpu)					\
+>>> +	do {							\
+>>> +		spin_unlock(per_cpu_ptr((__lock), cpu));	\
+>>> +		migrate_enable();				\
+>>> +	} while (0)
+>> Why there is a migrate_disable/enable() call in qpw_lock/unlock()? The
+>> rt_spin_lock/unlock() calls have already include a migrate_disable/enable()
+>> pair.
+> This was copied from PREEMPT_RT=y local_locks.
+>
+> In my tree, I see:
+>
+> #define __local_unlock(__lock)					\
+> 	do {							\
+> 		spin_unlock(this_cpu_ptr((__lock)));		\
+> 		migrate_enable();				\
+> 	} while (0)
+>
+> But you are right:
+> For PREEMPT_RT=y, spin_{un,}lock() will be defined in spinlock_rt.h
+> as rt_spin{un,}lock(), which already runs migrate_{en,dis}able().
+>
+> On the other hand, for spin_lock() will run migrate_disable() just before
+> finishing the function, and local_lock() will run it before calling
+> spin_lock() and thus, before spin_acquire().
+>
+> (local_unlock looks like to have an unnecessary extra migrate_enable(),
+> though).
+>
+> I am not sure if it's actually necessary to run this extra
+> migrate_disable() in local_lock() case, maybe Thomas could help us
+> understand this.
+>
+> But sure, if we can remove this from local_{un,}lock(), I am sure we can
+> also remove this from qpw.
 
-On Tue, 10 Sep 2024 19:11:55 +0200, Felix Moessbauer wrote:
-> this series continues the affinity cleanup work started in
-> io_uring/sqpoll. It has been successfully tested against the liburing
-> testsuite (make runtests), liburing @ caae94903d2e201.
-> 
-> The test wq-aff.t succeeds if at least cpu 0,1 are in
-> the set and fails otherwise. This is expected, as the test wants
-> to pin on these cpus. I'll send a patch for liburing to skip that test
-> in case this pre-condition is not met.
-> 
-> [...]
+I see. I believe the reason for this extra migrate_disable/enable() is 
+to protect the this_cpu_ptr() call to prevent switching to another CPU 
+right after this_cpu_ptr() but before the migrate_disable() inside 
+rt_spin_lock(). So keep the migrate_disable/enable() as is.
 
-Applied, thanks!
-
-[1/2] io_uring/io-wq: do not allow pinning outside of cpuset
-      commit: 0997aa5497c714edbb349ca366d28bd550ba3408
-[2/2] io_uring/io-wq: inherit cpuset of cgroup in io worker
-      commit: 84eacf177faa605853c58e5b1c0d9544b88c16fd
-
-Best regards,
--- 
-Jens Axboe
-
-
+Cheers,
+Longman
 
 
