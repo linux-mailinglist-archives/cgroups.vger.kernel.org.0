@@ -1,232 +1,315 @@
-Return-Path: <cgroups+bounces-4839-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4840-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75DB6974AEC
-	for <lists+cgroups@lfdr.de>; Wed, 11 Sep 2024 09:03:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D4BC974B15
+	for <lists+cgroups@lfdr.de>; Wed, 11 Sep 2024 09:17:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E32B287EE8
-	for <lists+cgroups@lfdr.de>; Wed, 11 Sep 2024 07:03:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51C8B1C246EB
+	for <lists+cgroups@lfdr.de>; Wed, 11 Sep 2024 07:17:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D0113AA20;
-	Wed, 11 Sep 2024 07:02:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 775A013C80C;
+	Wed, 11 Sep 2024 07:17:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=siemens.com header.i=@siemens.com header.b="eirPgQsT"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aLnpR3zM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2062.outbound.protection.outlook.com [40.107.21.62])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2615F78C6C;
-	Wed, 11 Sep 2024 07:02:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.62
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726038152; cv=fail; b=Y9CmdrA0qfhLwACOiN513kB9CuUbDrm3dZRGHaIz/ghU2vqPiWuUXjWrF+F9vGShDBTVokVFBPVy4+htzDUe0FEwgdPGG1SKZmX77eOwplc+XmjG9ElOZ8r51k17iK2Ys6ZAHiaAWsP2sqUNwWJwJW9riUHomlvn2ii4HTqysmY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726038152; c=relaxed/simple;
-	bh=ehEwbj+taaCYWCz48M9VvX0HllB95+WU1YBIg41p4xQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=qwiv5GvPG/SjMgMnXktNKaerU4CGm3Qr8rRxZOLHbnlBzyDJ36HubO1QnG91FP+mb/LcKcJ64YTNomuUokrQ47bRxYJSpnBIGDISxoRreLQZsWUJq2V3erDq1vCc9HJHkn5GgUZEGYqDvTzoccPzW5UMvl/tvMf+/JLwBcSMKRw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com; spf=pass smtp.mailfrom=siemens.com; dkim=pass (2048-bit key) header.d=siemens.com header.i=@siemens.com header.b=eirPgQsT; arc=fail smtp.client-ip=40.107.21.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=siemens.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=siemens.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=gujUhvKmsEgkG4VVIuZfYfAUQTpD5myv357vorQ7BNiMMRTwv1d+5d1pxplySMcVgiWuKi3JeOWADH/D8VxGfM99iOReOpDbhSEtK0YZnZTEsbZS3XZfPCafnN6eZX7x0UxO95STx19DQBnxrZ/YZIKYJREJJyAD3gKr4cUoP0ue3POw7/94mfQFcfQ4COTEbTXJ2avJDesJxZjA7XYlqg7YptSzGz1RcL8gCjUtm7dm5pqdKbe0KtPrCc5XnDp/lNNav6ngP0uV+TyEc5rwnwNEtKRvJ/yUNeqGx98HKglLkFGaG1+FDmyOT4jstGpiDaWNk9aNfenQImLG8711xw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ehEwbj+taaCYWCz48M9VvX0HllB95+WU1YBIg41p4xQ=;
- b=fyJIPtazRvw75355XAqtvMGgZrlmUQR099qJHerdo558stHitrcLIkjYcsN4j/3R9TTKxATHHcRXCUln5txDnxC4n+JWPsveWCPka1E1zD2Q2+UkssI76uq4FH99XUZ472Wbn1MnkgiwDjhb8s1YQapVKmOPaNcIU/BUxnO3ODUK2c30e5hZRXM8dMm48dUAd+C6qzXglFbzkjx1fTA5tmGSW5gaBRsRaXiJmKY0SotBS3aasewYFnXjPo/G2ifjnyGCAp3dmmsz4D4GEDB0haNrYQnmI/RKqo2uFkK1XBKDELl7ob5ctw8zJgoa1R6+gA3TB+R3RrZgF/xA04syag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=siemens.com; dmarc=pass action=none header.from=siemens.com;
- dkim=pass header.d=siemens.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=siemens.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ehEwbj+taaCYWCz48M9VvX0HllB95+WU1YBIg41p4xQ=;
- b=eirPgQsTcWUhjH3Qkr2VRmN529yF8BwzBxiP7xh77Em/edL3ax8Lk86fvPwgbYSCsN1f2E6yDnSgy8AkOuln4Ryn7mf/A3a0/6rRwz+1GJcq0a4SWtUqD9onTnggNTwryOuynD4xcX1vyNbgtF0BDbItKl1Z2/kj+1DPfJXw1ixq1YE/WxXe8eafn+MWyAQBPM1PEL2/cHCMeKKSB7l3TnSqP0k06ApgWo4XqUk+xSSrpBUithFFu9IUCr/1Jh5CbRKjJfy1oIpf47w8WVhKs9sfm9yAmdl11Eab0qaBO7v6+lzpvNwKmTPaM/NZWitObTrfzs33LZ54I3tisTqkZQ==
-Received: from DU0PR10MB6828.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:47f::13)
- by DU0PR10MB6755.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:473::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7939.24; Wed, 11 Sep
- 2024 07:02:25 +0000
-Received: from DU0PR10MB6828.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::8198:b4e0:8d12:3dfe]) by DU0PR10MB6828.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::8198:b4e0:8d12:3dfe%4]) with mapi id 15.20.7939.022; Wed, 11 Sep 2024
- 07:02:25 +0000
-From: "MOESSBAUER, Felix" <felix.moessbauer@siemens.com>
-To: "longman@redhat.com" <longman@redhat.com>, "axboe@kernel.dk"
-	<axboe@kernel.dk>
-CC: "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "Schmidt, Adriaan"
-	<adriaan.schmidt@siemens.com>, "Bezdeka, Florian"
-	<florian.bezdeka@siemens.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "asml.silence@gmail.com"
-	<asml.silence@gmail.com>, "io-uring@vger.kernel.org"
-	<io-uring@vger.kernel.org>, "dqminh@cloudflare.com" <dqminh@cloudflare.com>
-Subject: Re: [PATCH v3 2/2] io_uring/io-wq: inherit cpuset of cgroup in io
- worker
-Thread-Topic: [PATCH v3 2/2] io_uring/io-wq: inherit cpuset of cgroup in io
- worker
-Thread-Index: AQHbA6SU7psinHbY70Kphop1exYxy7JRSlQAgADffgA=
-Date: Wed, 11 Sep 2024 07:02:25 +0000
-Message-ID: <4eddbc8f761c113fb098b81ed4c542827664abb3.camel@siemens.com>
-References: <20240910171157.166423-1-felix.moessbauer@siemens.com>
-	 <20240910171157.166423-3-felix.moessbauer@siemens.com>
-	 <1589cf94-6d27-4575-bcea-e36c3667b260@redhat.com>
-In-Reply-To: <1589cf94-6d27-4575-bcea-e36c3667b260@redhat.com>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.46.4-2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=siemens.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR10MB6828:EE_|DU0PR10MB6755:EE_
-x-ms-office365-filtering-correlation-id: 0dc45317-8012-4170-e43c-08dcd22fb133
-x-ms-exchange-atpmessageproperties: SA
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|1800799024|376014|366016|38070700018;
-x-microsoft-antispam-message-info:
- =?utf-8?B?S2UwWFFBdlpHeHB1VGxhREVtZTRZakE2czNqeGVqR29BaFhMS2VzaWh1a0Zz?=
- =?utf-8?B?bWVDcWJSVkpjbTFQbnBVd3g3T29pY0hxY0dQazhxRzhQTWdVaUk3T0xhVmht?=
- =?utf-8?B?elZTVDI2QkE1ZUF5UlFjS1o2V0cvdXJlV3hEb1FtWHBPNW02a2RzZC9TdmVH?=
- =?utf-8?B?bURwdnZuZE1tN3MwR2puSndnQVJkSUlBK2Q3LytnczEycXhxZFNyU25rakw2?=
- =?utf-8?B?T0laWmlxeXc4ZHk4Nm5Sd01ESVk1REhkenFUcFNYckNwTWpNdTE4NG5xRnVN?=
- =?utf-8?B?S2Y4L0FYWjV0elJSMlpTSU8zdkRiZHd3WnRQM2twY3pYMHFlWmJkNDNzeE14?=
- =?utf-8?B?bDYzY0VIem5yZDZ6akhnalE1Y0R1RkttNjZtVDRsM0Rtcy9TUnBlV252NGpM?=
- =?utf-8?B?MTNxS3FYUXcwazZkU2doM3VPUW83U1J0Vk1XNVIzUWxFU0R2SXBaU2JLZ21N?=
- =?utf-8?B?WnpSdlVkWHo0TWtVUkdNajJzS3hZY0g2dkcvM2NCdklxNFc4a3BWOE90TzJi?=
- =?utf-8?B?MjNEa2RTdDNkbnBWem1UY2l5Sjk5K21BNVFISU9jTzdiNEVMMjFCK01mZjJh?=
- =?utf-8?B?blVWcms0b2xGUm5lVTFsTmNDL05BclA4dVR3bE5uT2hXY3QwUEpsM09Bak1P?=
- =?utf-8?B?NkJ0MjVESzRqRkxZME9QLzRDNXBmNkY5bXNwZUJOdWlCOEpuc1F4ZG5Sa2c0?=
- =?utf-8?B?NnQxZ2tLSGVCQm9jMXNpY3hJRWR1a2w2VWFzelNydGgwRHhURU9NcGZsQUF4?=
- =?utf-8?B?eFVDSFNMNVdMdmNWMG1UWXd5QUIwc01mTGplK0FnRldxZ09ORDlwazZnTjAr?=
- =?utf-8?B?Q2RPTVFERFY0TW4yYVZER090b1BwNkwwWGJManppblp6WDBLbll4S1N3UThP?=
- =?utf-8?B?MHhQVWpTRjYwM0pabWh2TmwzK254eEtTOFpONDRvMHdKczVVT0owWnVVMllO?=
- =?utf-8?B?SnhiUGhTYkJ6U21nd2JBOE4wb25DcW53NUtLUWVXTEtsZTZ4cnBzZ3FjbkU5?=
- =?utf-8?B?Y1lGaVVmQ2N5bEcwS3diTCsxeDFxRno5ZFdwV0twdFpvYzNLVWpZeGVJa012?=
- =?utf-8?B?Mk54NDF5MmZZOVU2bTJBWTVFWVphdDZsM2M1UUU1ZE1ZVVhKRHUzLy85ekhF?=
- =?utf-8?B?RUM1NkYxdjZ5enh4dFl4aW1oMjU4eGVJYVhJQm92ZXBqZmRoTjdFRTZSbHFh?=
- =?utf-8?B?WHppRVN1VDJIaFBKcE5HbGxLVzVFb0dvRnM1L1RlVE40dDlVR20rUHdydHZh?=
- =?utf-8?B?QkZGaUNJOVMvMjZYRmxkYU9MQkJCNnorMkh1RXpzU3VEemJrOGxIb05peExH?=
- =?utf-8?B?VGJpT0RIMzRaZXBod254ZGtVQ3RvUE84eXZQV2hkZVdoVWYyaXhveW1xcDN0?=
- =?utf-8?B?ZE5IRFQvTVRlUmNMdG9wdkpYcHd3N1hHNGwzbEE0dXRJN0lpOXhBYW9hQ2lp?=
- =?utf-8?B?QzdOeXpPMFBkSXZDVnlWMjNtZkhDTkRaMnJkMUtTSG9Ndnk3RUszY1d3WHBC?=
- =?utf-8?B?WGZmZDU4dFR6RCtvOU5LOURFcWZKWWswTU1xUnZ1WkpFUHJqRXF1OVlNSEdB?=
- =?utf-8?B?N0NIb3B5NDIxaUxYaVl6SzlHOWlNM2V1eUtvczJ1RkNlRkVIRFZDRndTck1k?=
- =?utf-8?B?cW9XVGhlVVluUkhodStkMkxZZmNUeEZUOUtTcHZaeWd3ZGt5dGFvaUNvMFBQ?=
- =?utf-8?B?R3BIc3F6dEkyWTdBYVFBN1NEdnoza1YvenNJcFdmTDhhZkZEMUtjcE8vRFJF?=
- =?utf-8?B?TkN3NlhKWDN6UTRHZE1uelBsKzNEWU9BbFNZeFQ2S2MwdVhZV2RwdEg1K29v?=
- =?utf-8?B?Z25wdGJuWCtIZ1JUR3VrUDlLcFNNVnBKbitkbzAzYmUxajRRajdYUTEzUldW?=
- =?utf-8?B?NmpGcEwwSHJtTkszVEwwQlEvTkFnYSt4TFBaN05HNEdlZ1E9PQ==?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR10MB6828.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(366016)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?RmFGb1dibTlsSm81R1Q2TC92VTdESHhIdGJudTJiL2hEU0hvaExsdWVPc3Z2?=
- =?utf-8?B?UFN5MW1RY0s1SE01Zk9UV1hvcWw0eHQ0bzYwWGpEYS83YVlsNytDNGRvek4x?=
- =?utf-8?B?UzFMWWdFeXNRRzErMFFFeEhJbDlxTFU1bldvdHFkRE02TGo4RkIxWHBTMVRa?=
- =?utf-8?B?OGhVTHp3aHRVSVZ5dHNaU3BXK0ZRRmRQNG9XOGJEMGpLcTY1VzZvYXZWUGNa?=
- =?utf-8?B?WHJ5UEIxaVdCOG10NG5DUGRhMzkvem5tamJ6SThBSHpWQVJsUjhneUVqcXhI?=
- =?utf-8?B?M1VSSGJPNEFtdHIycnpVUmdlTlRwM1VpVkdxU1NjZDNtcjRQNytQRisvaE1z?=
- =?utf-8?B?Tmt2R0pJUlF6Tk9VMTFnOTB5NkZYOUNVeFhGS21UWkJNd1orYXRadDh4Z3BS?=
- =?utf-8?B?NTNTYTRZL3g2aUdmZU5iQ0k3cDNRenp4SS9QQ2ZETk9PTlcyMEpqK1B2Qi9u?=
- =?utf-8?B?Y25VUDRKbjlKRDJweDE3bzN3RVhLVlVzL1FGWHQ2TEpPYjVreDZaRklIaVhX?=
- =?utf-8?B?QUpGaDVZUFZnWnlzb09DKy80b1NEU2h1dHNuc1IyVjRLMHBzZzJxZHFxZWtL?=
- =?utf-8?B?akNmWTVzWU5NTGVDRnNxRnlqU2ZQdVM0eHlGbFVrSVZCVjhrQ2Z0RFNESDIz?=
- =?utf-8?B?Ynh4ekpNeHVvQUtQZkpJUjBpVXQrcytIcVlyWm0vVjZGM0F5ak9jZG16SHJ6?=
- =?utf-8?B?MXRIWHVXS3BEOWRYWHBHeEQ3Yi8wR2xjbGs5V2pHR3NtZ2NOUUo1b2pYU3o5?=
- =?utf-8?B?dllwQ2lyUzI2UVRQd05NckJuVWxnWWROcStycVlYbXIrQnJSRDd5WGJSMU5O?=
- =?utf-8?B?U3FFU09MbysyOXZUbUpRVUlqa3kyTkNCM0lPM1JrcEptaHVVa0M3elh6Vmlw?=
- =?utf-8?B?WGNPdkxMK2VFajlJRGtyakVBaURZMEhScVN1VEdCM3grSEdaZ0wxOUsxYUtZ?=
- =?utf-8?B?UUtaSDZzVUlLWjkvS2dMMC9EUWVWVmJSWU16cEIvUGFDUElGVTU5emt4dTJT?=
- =?utf-8?B?cmVJSnoxa01qc1lFZDlkRmVCSFRVUUUwK2ZjeUpqdi9TZy9ySVhlaE1ndmY1?=
- =?utf-8?B?SUIwckpwbnNCNENsSitmQ21ZWTArMVZVY3Bpeis1a1RTQWtvUHpiM09sWFAz?=
- =?utf-8?B?V2JZclNsd0ExS2xFbE9QY2NmREV3ZWhDbU1LTk8zUjZLeG1Jc0pnRWZtZmxJ?=
- =?utf-8?B?YXdQc2xTd3grSHd1dGFCUjZLZzN5RXhZMXFNUCtIbGFaRmQzM3FLeFJDZ1E1?=
- =?utf-8?B?QWJVRW55UWRneFR3dG1TQ1RLMlJXZHdyeUxjNWtQbmdCTkNhYWtUdW5lMG5P?=
- =?utf-8?B?dE8yN2hFYVV5VWVrQ01TM3htaGNiRFR2UDNUS0d1anRiRURJRGpqOThjaEox?=
- =?utf-8?B?c2dEMXI3TWZRQkI0ODJNU3kzMDNjb3hRVTA3emo5ZVYrS0hLQzNwMlhHS01I?=
- =?utf-8?B?dk01ZHlhd0YxbkszeFg2QldKNkdiWVphNWxDTUV6ZGh2VGtIaS9RNEdMaWYw?=
- =?utf-8?B?UUo0aUcwbVFhdk9pRlVKeWh3Y0lhVEpnVUV3NzVJS05hYVAyQStuMzllT1hi?=
- =?utf-8?B?MnBWQnNSYnlKRkNYeG9NcjF4WjJkOUsvaWhuVCtzMDA5WFg0TGhUTVpaRUZT?=
- =?utf-8?B?TlZBZkVFV2tvcmdxTUJ5SnRTdHJyUXA4WjdBVFNITUluRlVybmJza2h3ZFNT?=
- =?utf-8?B?alB3VHc4VlZORnYxUzBDU29NTUN2Mkh5czlCRWhkc1U0WVJyT3Y5MXFTWWVV?=
- =?utf-8?B?dFArMW1zTWR0ZDAxVTlscHlsYzZEK1hvV3ZOYXplRWM4cG1BTTAxQXlQdTVH?=
- =?utf-8?B?RUEyMUZMemx1Zy9MVU5PbjVnSndQd0htMU1WU3A2STBlZStRN2l3TVdCYjRQ?=
- =?utf-8?B?L3I4NW5hT2RXWWlxQytSUW13aHVIRjZKTzRuclNTeXJ6aVJtMTFjWEdIcS9C?=
- =?utf-8?B?OGl5NUNVSkRZRkN4RXY2c2x3OGwyblVzbVBud1ZlVWpncXMyOXc4emxPQlND?=
- =?utf-8?B?Z0h0bmNBREpGcmRMQUNSTHJRc2pEQVFsTlRlV1MxSkx4U25yVUtMOHVYa1dl?=
- =?utf-8?B?d0svNHBFT3d6VEkxWW5wdHlMQVRXZWYvOWtkbFY0NVpSb010SUFUTHBvSHI1?=
- =?utf-8?B?SjJZSmgvWldJbXJTUGFTQmN0dVd2eG1YejlJVitNbHl1MkpoUjEvVnRRalJ6?=
- =?utf-8?B?Wkovd3IrME03b1ZDeSs1ZmY2WnJoeTJIa2NKdUlhR1h4RVZWcVVhd1dzQmpr?=
- =?utf-8?Q?tgP3Wpwi5xgYKvxa63mlVPVZ+2jeZLca3ZSDTXfNAA=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <6C1156DCCBE44B4E911FD3C5E06129D9@EURPRD10.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A778F1311B6
+	for <cgroups@vger.kernel.org>; Wed, 11 Sep 2024 07:17:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1726039055; cv=none; b=VFo+1A5g4RGjcW5Gcwq5y5l2j/V6Rzc+RWGU/rvD5zxXk+OS4TokTfQa8PfsIqucx5IYY0XWZFPYp4jqr7yTZ68Sx5rHh/6Rot0CFi+IK4xBjah4NE9kv+iGfvgeuzG3NsTdy0j2TEQVCvU2cMNFinaSPSYFh2x9grRehTGjyZM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1726039055; c=relaxed/simple;
+	bh=rAXfuwy7B2+QXySHJ14taKQMc/nkJ5KahS/kgFJm4Vc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type:Content-Disposition; b=HEdUJZcYhSj3mqEnpHy10QS92CB66Ys642zTWyGGTdaRwysb7QyMOVwKlsga11SnYSXJ6CEoP+rByjBST3XSvxv1H01gwLguC4AKgvUCAvb0EjWS72Il895gWqS5eL5A3Dwef6G58cn9RIhNX7hv2ssxtmH24Cg770hDbkV3JR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aLnpR3zM; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1726039051;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EWS0zdSRA6QBuHeVPu9p9QQM9sNJybBO18pUWus00es=;
+	b=aLnpR3zMgnFoTWzjOX2FV1arDVLmrebiMwrfyAkj+znGb7cpMIsdLwgnOuG2qDsKekdVvj
+	35WTW82AGZuyDiG7YB0EsccKTuxP+IBdw1bT9ROTi03bFc0FX7uLOETBE/Zyv6sLKOG049
+	a7v2EoT6MtuiCfxWLHsEVUTOfyhgpxw=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-84-1MMtOtQ8OXGtjJFHuJiCPg-1; Wed, 11 Sep 2024 03:17:30 -0400
+X-MC-Unique: 1MMtOtQ8OXGtjJFHuJiCPg-1
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-7d4f9974c64so5180766a12.1
+        for <cgroups@vger.kernel.org>; Wed, 11 Sep 2024 00:17:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726039049; x=1726643849;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EWS0zdSRA6QBuHeVPu9p9QQM9sNJybBO18pUWus00es=;
+        b=Nqn4hEmPxV+IqKCB2NTfueNKT4i45dF+wjrPY0hBbUPmo4zXF3Q7GaeZCD40C9S3/u
+         DAxsfX8D1dR8EdAMHZsJQdd2NKkNr7oaiEvWOV+yYq+dAlxkiW6aYQ/DUgW8rblutR1y
+         1ineJ+c4G7ZypCuARt/jybJREOvcx2W7Hp+WgPubMn/55PhngnLZLT6rKS38ASgycT1R
+         PP9bpVIv9yXUERrD3nxmIT0vP5NfyvqtxuSxzbO3mh8PrU73/EJBrUeI9LHNTxNLnu9w
+         RPqx76glompydgZ/eenAVr7nNIkEJhHU9QzfNgD2G5ycje+gk2ft+44qi1sjvs7wNgM3
+         W6Lg==
+X-Forwarded-Encrypted: i=1; AJvYcCXvagFt/jqpVoMwFBrdm2cjuXM0xeqKG/cfr4fT+hKAPwklRunSuyE0vzM3kk68wZDsy0V7Rz5Z@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy0+gsPSKgT7eH2vy7uSjK1+Hh7fD3SvRGxjfybBVeb07O7mytT
+	q2Hn5V8SIrm2CFSoPVvg6JO85K1+maqj5XK95zpA+DR0JI8bKVMW0WtiPosxKd3l0bjxJsG29q+
+	eFi8/LD3rjbXLzWA7VdNPQSF/b2fF5Rbfg3jf7iOurhKTsrwWdbbapDo=
+X-Received: by 2002:a05:6a20:d526:b0:1ce:cde2:4458 with SMTP id adf61e73a8af0-1cf5e15710amr5116826637.35.1726039049179;
+        Wed, 11 Sep 2024 00:17:29 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGfPMdzQCpRyvsuzf833UGi7nTs6J1w1LxjL6dvBwUdC2XXOTOBOy5/7LWeNy6FfSCYJeydpA==
+X-Received: by 2002:a05:6a20:d526:b0:1ce:cde2:4458 with SMTP id adf61e73a8af0-1cf5e15710amr5116788637.35.1726039048478;
+        Wed, 11 Sep 2024 00:17:28 -0700 (PDT)
+Received: from localhost.localdomain ([2804:1b3:a800:3c59:c8f1:7d33:571a:fde2])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7db12af2c69sm419278a12.38.2024.09.11.00.17.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Sep 2024 00:17:27 -0700 (PDT)
+From: Leonardo Bras <leobras@redhat.com>
+To: Waiman Long <longman@redhat.com>
+Cc: Leonardo Bras <leobras@redhat.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>,
+	Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [RFC PATCH v1 1/4] Introducing qpw_lock() and per-cpu queue & flush work
+Date: Wed, 11 Sep 2024 04:17:05 -0300
+Message-ID: <ZuFD8bR01GhPbPH6@LeoBras>
+X-Mailer: git-send-email 2.46.0
+In-Reply-To: <f69793ab-41c3-4ae2-a8b1-355e629ffd0b@redhat.com>
+References: <20240622035815.569665-1-leobras@redhat.com> <20240622035815.569665-2-leobras@redhat.com> <f69793ab-41c3-4ae2-a8b1-355e629ffd0b@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: siemens.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR10MB6828.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0dc45317-8012-4170-e43c-08dcd22fb133
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Sep 2024 07:02:25.7834
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 38ae3bcd-9579-4fd4-adda-b42e1495d55a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: riwgLFzmcDGTLV6Mms0xSn7Zx6LT+WzKyRmn7XYbHDUj6fs52D84H360RPIjt/ga7FKkDimQEXfNNETNFH31qL9odw2EbJCT7C4Ko9Uq/1A=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR10MB6755
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-T24gVHVlLCAyMDI0LTA5LTEwIGF0IDEzOjQyIC0wNDAwLCBXYWltYW4gTG9uZyB3cm90ZToNCj4g
-DQo+IE9uIDkvMTAvMjQgMTM6MTEsIEZlbGl4IE1vZXNzYmF1ZXIgd3JvdGU6DQo+ID4gVGhlIGlv
-IHdvcmtlciB0aHJlYWRzIGFyZSB1c2VybGFuZCB0aHJlYWRzIHRoYXQganVzdCBuZXZlciBleGl0
-IHRvDQo+ID4gdGhlDQo+ID4gdXNlcmxhbmQuIEJ5IHRoYXQsIHRoZXkgYXJlIGFsc28gYXNzaWdu
-ZWQgdG8gYSBjZ3JvdXAgKHRoZSBncm91cCBvZg0KPiA+IHRoZQ0KPiA+IGNyZWF0aW5nIHRhc2sp
-Lg0KPiANCj4gVGhlIGlvLXdxIHRhc2sgaXMgbm90IGFjdHVhbGx5IGFzc2lnbmVkIHRvIGEgY2dy
-b3VwLiBUbyBiZWxvbmcgdG8gYSANCj4gY2dyb3VwLCBpdHMgcGlkIGhhcyB0byBiZSBwcmVzZW50
-IHRvIHRoZSBjZ3JvdXAucHJvY3Mgb2YgdGhlIA0KPiBjb3JyZXNwb25kaW5nIGNncm91cCwgd2hp
-Y2ggaXMgbm90IHRoZSBjYXNlIGhlcmUuDQoNCkhpLCB0aGFua3MgZm9yIGp1bXBpbmcgaW4uIEFz
-IHNhaWQsIEknbSBub3QgdG9vIGZhbWlsaWFyIHdpdGggdGhlDQppbnRlcm5hbHMgb2YgdGhlIGlv
-IHdvcmtlciB0aHJlYWRzLiBOb25ldGhlbGVzcywgdGhlIGtlcm5lbCBwcmVzZW50cw0KdGhlIGNn
-cm91cCBhc3NpZ25tZW50IHF1aXRlIGNvbnNpc3RlbnRseS4gVGhpcyBob3dldmVyIGNvbnRyYWRp
-Y3RzIHlvdXINCnN0YXRlbWVudCBmcm9tIGFib3ZlLiBFeGFtcGxlOg0KDQpwaWQgICAgIHRpZA0K
-NjQ4NDYwICA2NDg0NjAgIFNDSEVEX09USEVSICAgMjAgIFMgICAgMCAgMC0xICAuL3Rlc3Qvd3Et
-YWZmLnQNCjY0ODQ2MCAgNjQ4NDYxICBTQ0hFRF9PVEhFUiAgIDIwICBTICAgIDEgIDEgICAgaW91
-LXNxcC02NDg0NjANCjY0ODQ2MCAgNjQ4NDYyICBTQ0hFRF9PVEhFUiAgIDIwICBTICAgIDAgIDAg
-ICAgaW91LXdyay02NDg0NjENCg0KV2hlbiBJIG5vdyBjaGVjayB0aGUgY2dyb3VwLnByb2NzLCBJ
-IGp1c3Qgc2VlIHRoZSA2NDg0NjAsIHdoaWNoIGlzDQpleHBlY3RlZCBhcyB0aGlzIHRoZSBwcm9j
-ZXNzICh3aXRoIGl0cyBtYWluIHRocmVhZCkuIENoZWNraW5nDQpjZ3JvdXAudGhyZWFkcyBzaG93
-cyBhbGwgdGhyZWUgdGlkcy4NCg0KV2hlbiBjaGVja2luZyB0aGUgb3RoZXIgd2F5IHJvdW5kLCBJ
-IGdldCB0aGUgc2FtZSBpbmZvcm1hdGlvbjoNCiRjYXQgL3Byb2MvNjQ4NDYwL3Rhc2svNjQ4NDYx
-L2Nncm91cCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCjA6Oi91c2VyLnNsaWNl
-L3VzZXItMTAwMC5zbGljZS9zZXNzaW9uLTEuc2NvcGUNCiRjYXQgL3Byb2MvNjQ4NDYwL3Rhc2sv
-NjQ4NDYyL2Nncm91cCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICANCjA6Oi91c2Vy
-LnNsaWNlL3VzZXItMTAwMC5zbGljZS9zZXNzaW9uLTEuc2NvcGUNCg0KTm93IEknbSB3b25kZXJp
-bmcgaWYgaXQgaXMganVzdCBwcmVzZW50ZWQgaW5jb3JyZWN0bHksIG9yIGlmIHRoZXNlDQp0YXNr
-cyBpbmRlZWQgYmVsb25nIHRvIHRoZSBtZW50aW9uZWQgY2dyb3VwPw0KDQo+IE15IHVuZGVyc3Rh
-bmRpbmcgaXMNCj4gdGhhdCB5b3UgYXJlIGp1c3QgcmVzdHJpY3RpbmcgdGhlIENQVSBhZmZpbml0
-eSB0byBmb2xsb3cgdGhlIGNwdXNldA0KPiBvZiANCj4gdGhlIGNvcnJlc3BvbmRpbmcgdXNlciB0
-YXNrIHRoYXQgY3JlYXRlcyBpdC4gVGhlIENQVSBhZmZpbml0eQ0KPiAoY3B1bWFzaykgDQo+IGlz
-IGp1c3Qgb25lIG9mIHRoZSBtYW55IHJlc291cmNlcyBjb250cm9sbGVkIGJ5IGEgY2dyb3VwLiBU
-aGF0DQo+IHByb2JhYmx5IA0KPiBuZWVkcyB0byBiZSBjbGFyaWZpZWQuDQoNClRoYXQncyBjbGVh
-ci4gTG9va2luZyBhdCB0aGUgYmlnZ2VyIHBpY3R1cmUsIEkgd2FudCB0byBlbnN1cmUgdGhhdCB0
-aGUNCmlvIHdvcmtlcnMgZG8gbm90IGJyZWFrIG91dCBvZiB0aGUgY2dyb3VwIGxpbWl0cyAoSSBj
-YWxsZWQgaXQgImFtYmllbnQiDQpiZWZvcmUsIHNpbWlsYXIgdG8gdGhlIGNhcGFiaWxpdGVzKSwg
-YmVjYXVzZSB0aGlzIGJyZWFrcyB0aGUgaXNvbGF0aW9uDQphc3N1bXB0aW9uLiBJbiBvdXIgY2Fz
-ZSwgd2UgYXJlIG1vc3RseSBpbnRlcmVzdGVkIGluIG5vdCBsZWF2aW5nIHRoZQ0KY3B1c2V0LCBh
-cyB3ZSB1c2UgdGhhdCB0byBwZXJmb3JtIHN5c3RlbSBwYXJ0aXRpb25pbmcgaW50byByZWFsdGlt
-ZSBhbmQNCm5vbiByZWFsdGltZSBwYXJ0cy4NCg0KPiANCj4gQmVzaWRlcyBjcHVtYXNrLCB0aGUg
-Y3B1c2V0IGNvbnRyb2xsZXIgYWxzbyBjb250cm9scyB0aGUgbm9kZSBtYXNrIG9mDQo+IHRoZSBt
-ZW1vcnkgbm9kZXMgYWxsb3dlZC4NCg0KWWVzLCBhbmQgdGhhdCBpcyBlc3BlY2lhbGx5IGltcG9y
-dGFudCBhcyBzb21lIG1lbW9yeSBjYW4gYmUgImNsb3NlciIgdG8NCnRoZSBJT3MgdGhhbiBvdGhl
-cnMuDQoNCkJlc3QgcmVnYXJkcywNCkZlbGl4DQoNCi0tIA0KU2llbWVucyBBRywgVGVjaG5vbG9n
-eQ0KTGludXggRXhwZXJ0IENlbnRlcg0KDQoNCg==
+On Wed, Sep 04, 2024 at 05:39:01PM -0400, Waiman Long wrote:
+> On 6/21/24 23:58, Leonardo Bras wrote:
+> > Some places in the kernel implement a parallel programming strategy
+> > consisting on local_locks() for most of the work, and some rare remote
+> > operations are scheduled on target cpu. This keeps cache bouncing low since
+> > cacheline tends to be mostly local, and avoids the cost of locks in non-RT
+> > kernels, even though the very few remote operations will be expensive due
+> > to scheduling overhead.
+> > 
+> > On the other hand, for RT workloads this can represent a problem: getting
+> > an important workload scheduled out to deal with some unrelated task is
+> > sure to introduce unexpected deadline misses.
+> > 
+> > It's interesting, though, that local_lock()s in RT kernels become
+> > spinlock(). We can make use of those to avoid scheduling work on a remote
+> > cpu by directly updating another cpu's per_cpu structure, while holding
+> > it's spinlock().
+> > 
+> > In order to do that, it's necessary to introduce a new set of functions to
+> > make it possible to get another cpu's per-cpu "local" lock (qpw_{un,}lock*)
+> > and also the corresponding queue_percpu_work_on() and flush_percpu_work()
+> > helpers to run the remote work.
+> > 
+> > On non-RT kernels, no changes are expected, as every one of the introduced
+> > helpers work the exactly same as the current implementation:
+> > qpw_{un,}lock*()        ->  local_{un,}lock*() (ignores cpu parameter)
+> > queue_percpu_work_on()  ->  queue_work_on()
+> > flush_percpu_work()     ->  flush_work()
+> > 
+> > For RT kernels, though, qpw_{un,}lock*() will use the extra cpu parameter
+> > to select the correct per-cpu structure to work on, and acquire the
+> > spinlock for that cpu.
+> > 
+> > queue_percpu_work_on() will just call the requested function in the current
+> > cpu, which will operate in another cpu's per-cpu object. Since the
+> > local_locks() become spinlock()s in PREEMPT_RT, we are safe doing that.
+> > 
+> > flush_percpu_work() then becomes a no-op since no work is actually
+> > scheduled on a remote cpu.
+> > 
+> > Some minimal code rework is needed in order to make this mechanism work:
+> > The calls for local_{un,}lock*() on the functions that are currently
+> > scheduled on remote cpus need to be replaced by qpw_{un,}lock_n*(), so in
+> > RT kernels they can reference a different cpu. It's also necessary to use a
+> > qpw_struct instead of a work_struct, but it just contains a work struct
+> > and, in PREEMPT_RT, the target cpu.
+> > 
+> > This should have almost no impact on non-RT kernels: few this_cpu_ptr()
+> > will become per_cpu_ptr(,smp_processor_id()).
+> > 
+> > On RT kernels, this should improve performance and reduce latency by
+> > removing scheduling noise.
+> > 
+> > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> > ---
+> >   include/linux/qpw.h | 88 +++++++++++++++++++++++++++++++++++++++++++++
+> >   1 file changed, 88 insertions(+)
+> >   create mode 100644 include/linux/qpw.h
+> > 
+> > diff --git a/include/linux/qpw.h b/include/linux/qpw.h
+> > new file mode 100644
+> > index 000000000000..ea2686a01e5e
+> > --- /dev/null
+> > +++ b/include/linux/qpw.h
+> > @@ -0,0 +1,88 @@
+> > +/* SPDX-License-Identifier: GPL-2.0 */
+> > +#ifndef _LINUX_QPW_H
+> > +#define _LINUX_QPW_H
+> > +
+> > +#include "linux/local_lock.h"
+> > +#include "linux/workqueue.h"
+> > +
+> > +#ifndef CONFIG_PREEMPT_RT
+> > +
+> > +struct qpw_struct {
+> > +	struct work_struct work;
+> > +};
+> > +
+> > +#define qpw_lock(lock, cpu)					\
+> > +	local_lock(lock)
+> > +
+> > +#define qpw_unlock(lock, cpu)					\
+> > +	local_unlock(lock)
+> > +
+> > +#define qpw_lock_irqsave(lock, flags, cpu)			\
+> > +	local_lock_irqsave(lock, flags)
+> > +
+> > +#define qpw_unlock_irqrestore(lock, flags, cpu)			\
+> > +	local_unlock_irqrestore(lock, flags)
+> > +
+> > +#define queue_percpu_work_on(c, wq, qpw)			\
+> > +	queue_work_on(c, wq, &(qpw)->work)
+> > +
+> > +#define flush_percpu_work(qpw)					\
+> > +	flush_work(&(qpw)->work)
+> > +
+> > +#define qpw_get_cpu(qpw)					\
+> > +	smp_processor_id()
+> > +
+> > +#define INIT_QPW(qpw, func, c)					\
+> > +	INIT_WORK(&(qpw)->work, (func))
+> > +
+> > +#else /* !CONFIG_PREEMPT_RT */
+> > +
+> > +struct qpw_struct {
+> > +	struct work_struct work;
+> > +	int cpu;
+> > +};
+> > +
+> > +#define qpw_lock(__lock, cpu)					\
+> > +	do {							\
+> > +		migrate_disable();				\
+> > +		spin_lock(per_cpu_ptr((__lock), cpu));		\
+> > +	} while (0)
+> > +
+> > +#define qpw_unlock(__lock, cpu)					\
+> > +	do {							\
+> > +		spin_unlock(per_cpu_ptr((__lock), cpu));	\
+> > +		migrate_enable();				\
+> > +	} while (0)
+> 
+> Why there is a migrate_disable/enable() call in qpw_lock/unlock()? The
+> rt_spin_lock/unlock() calls have already include a migrate_disable/enable()
+> pair.
+
+This was copied from PREEMPT_RT=y local_locks.
+
+In my tree, I see:
+
+#define __local_unlock(__lock)					\
+	do {							\
+		spin_unlock(this_cpu_ptr((__lock)));		\
+		migrate_enable();				\
+	} while (0)
+
+But you are right:
+For PREEMPT_RT=y, spin_{un,}lock() will be defined in spinlock_rt.h
+as rt_spin{un,}lock(), which already runs migrate_{en,dis}able().
+
+On the other hand, for spin_lock() will run migrate_disable() just before 
+finishing the function, and local_lock() will run it before calling 
+spin_lock() and thus, before spin_acquire().
+
+(local_unlock looks like to have an unnecessary extra migrate_enable(), 
+though).
+
+I am not sure if it's actually necessary to run this extra 
+migrate_disable() in local_lock() case, maybe Thomas could help us 
+understand this.
+
+But sure, if we can remove this from local_{un,}lock(), I am sure we can 
+also remove this from qpw.
+
+
+> 
+> > +
+> > +#define qpw_lock_irqsave(lock, flags, cpu)			\
+> > +	do {							\
+> > +		typecheck(unsigned long, flags);		\
+> > +		flags = 0;					\
+> > +		qpw_lock(lock, cpu);				\
+> > +	} while (0)
+> > +
+> > +#define qpw_unlock_irqrestore(lock, flags, cpu)			\
+> > +	qpw_unlock(lock, cpu)
+> > +
+> > +#define queue_percpu_work_on(c, wq, qpw)			\
+> > +	do {							\
+> > +		struct qpw_struct *__qpw = (qpw);		\
+> > +		WARN_ON((c) != __qpw->cpu);			\
+> > +		__qpw->work.func(&__qpw->work);			\
+> > +	} while (0)
+> > +
+> > +#define flush_percpu_work(qpw)					\
+> > +	do {} while (0)
+> > +
+> > +#define qpw_get_cpu(w)						\
+> > +	container_of((w), struct qpw_struct, work)->cpu
+> > +
+> > +#define INIT_QPW(qpw, func, c)					\
+> > +	do {							\
+> > +		struct qpw_struct *__qpw = (qpw);		\
+> > +		INIT_WORK(&__qpw->work, (func));		\
+> > +		__qpw->cpu = (c);				\
+> > +	} while (0)
+> > +
+> > +#endif /* CONFIG_PREEMPT_RT */
+> > +#endif /* LINUX_QPW_H */
+> 
+> You may also consider adding a documentation file about the
+> qpw_lock/unlock() calls.
+
+Sure, will do when I send the non-RFC version. Thanks for pointing that 
+out!
+
+> 
+> Cheers,
+> Longman
+> 
+
+Thanks!
+Leo
+
 
