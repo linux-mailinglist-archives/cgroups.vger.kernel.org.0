@@ -1,78 +1,78 @@
-Return-Path: <cgroups+bounces-4840-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4841-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D4BC974B15
-	for <lists+cgroups@lfdr.de>; Wed, 11 Sep 2024 09:17:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B21D2974B1B
+	for <lists+cgroups@lfdr.de>; Wed, 11 Sep 2024 09:19:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51C8B1C246EB
-	for <lists+cgroups@lfdr.de>; Wed, 11 Sep 2024 07:17:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6F911C24838
+	for <lists+cgroups@lfdr.de>; Wed, 11 Sep 2024 07:19:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 775A013C80C;
-	Wed, 11 Sep 2024 07:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DDBF824BD;
+	Wed, 11 Sep 2024 07:19:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aLnpR3zM"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="T4JBm2uh"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A778F1311B6
-	for <cgroups@vger.kernel.org>; Wed, 11 Sep 2024 07:17:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B64D478685
+	for <cgroups@vger.kernel.org>; Wed, 11 Sep 2024 07:19:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726039055; cv=none; b=VFo+1A5g4RGjcW5Gcwq5y5l2j/V6Rzc+RWGU/rvD5zxXk+OS4TokTfQa8PfsIqucx5IYY0XWZFPYp4jqr7yTZ68Sx5rHh/6Rot0CFi+IK4xBjah4NE9kv+iGfvgeuzG3NsTdy0j2TEQVCvU2cMNFinaSPSYFh2x9grRehTGjyZM=
+	t=1726039145; cv=none; b=Ahx3yJ3zjmkacWLga0tPRP8PhBmvVqPJ82U1b7z/05VFHSfKCtni1W9PVrUi/zZTcc8iYui0JDQ/ppYy5TjFtZUVGkdaqBKSSXFGph+J/MNpRwbhhDhzrcNUTgnFo4v6rdybJBFP0P+YP/650BBlkbKRVa2sxMdKG/lJKmKGVhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726039055; c=relaxed/simple;
-	bh=rAXfuwy7B2+QXySHJ14taKQMc/nkJ5KahS/kgFJm4Vc=;
+	s=arc-20240116; t=1726039145; c=relaxed/simple;
+	bh=vJ8/VVSP7FSiF+01wOzw6BdOMh0sWzFQyjzunfZuPbo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=HEdUJZcYhSj3mqEnpHy10QS92CB66Ys642zTWyGGTdaRwysb7QyMOVwKlsga11SnYSXJ6CEoP+rByjBST3XSvxv1H01gwLguC4AKgvUCAvb0EjWS72Il895gWqS5eL5A3Dwef6G58cn9RIhNX7hv2ssxtmH24Cg770hDbkV3JR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aLnpR3zM; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version:Content-Type:Content-Disposition; b=nYh+wRk0ytLzI05UHwo9qntPQVtHT/Wv57jkak9o8poQLEZgGgQL21opa+aUsqDHHX+86iUJqYdbmG9D5k2ohemBj6/2GOLjZo/NnQUZ5CX4+XyfePWHvIaxcLpPY23h+srR92e30RA8OZdubH/f0/5ukVINhavurgMopq59mqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=T4JBm2uh; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1726039051;
+	s=mimecast20190719; t=1726039142;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EWS0zdSRA6QBuHeVPu9p9QQM9sNJybBO18pUWus00es=;
-	b=aLnpR3zMgnFoTWzjOX2FV1arDVLmrebiMwrfyAkj+znGb7cpMIsdLwgnOuG2qDsKekdVvj
-	35WTW82AGZuyDiG7YB0EsccKTuxP+IBdw1bT9ROTi03bFc0FX7uLOETBE/Zyv6sLKOG049
-	a7v2EoT6MtuiCfxWLHsEVUTOfyhgpxw=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=WExmWVFUVT+GeIi/yPIGow20ZicextOrMJ+vbOaBSZo=;
+	b=T4JBm2uh0PRqA3P8TsHzb5VIzlOt/05UGww+uobu1N8WMemFQpuX5Hg68GnaKNMgm8yLBS
+	J5j8cQ1uqpbadIioo7B/wK7dC2+K0Fi+XxuJg47PTsrFgn7r+PedxtBF22FOvoOW2jG1Ps
+	Vb7r1BNlSPfAoffYfs7vbWnpXwYq+es=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-84-1MMtOtQ8OXGtjJFHuJiCPg-1; Wed, 11 Sep 2024 03:17:30 -0400
-X-MC-Unique: 1MMtOtQ8OXGtjJFHuJiCPg-1
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-7d4f9974c64so5180766a12.1
-        for <cgroups@vger.kernel.org>; Wed, 11 Sep 2024 00:17:30 -0700 (PDT)
+ us-mta-102-XAr_yQ9WOYyWtlgMuTYPEw-1; Wed, 11 Sep 2024 03:19:01 -0400
+X-MC-Unique: XAr_yQ9WOYyWtlgMuTYPEw-1
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-718e82769aeso2691988b3a.0
+        for <cgroups@vger.kernel.org>; Wed, 11 Sep 2024 00:19:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726039049; x=1726643849;
+        d=1e100.net; s=20230601; t=1726039140; x=1726643940;
         h=content-transfer-encoding:content-disposition:mime-version
          :references:in-reply-to:message-id:date:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EWS0zdSRA6QBuHeVPu9p9QQM9sNJybBO18pUWus00es=;
-        b=Nqn4hEmPxV+IqKCB2NTfueNKT4i45dF+wjrPY0hBbUPmo4zXF3Q7GaeZCD40C9S3/u
-         DAxsfX8D1dR8EdAMHZsJQdd2NKkNr7oaiEvWOV+yYq+dAlxkiW6aYQ/DUgW8rblutR1y
-         1ineJ+c4G7ZypCuARt/jybJREOvcx2W7Hp+WgPubMn/55PhngnLZLT6rKS38ASgycT1R
-         PP9bpVIv9yXUERrD3nxmIT0vP5NfyvqtxuSxzbO3mh8PrU73/EJBrUeI9LHNTxNLnu9w
-         RPqx76glompydgZ/eenAVr7nNIkEJhHU9QzfNgD2G5ycje+gk2ft+44qi1sjvs7wNgM3
-         W6Lg==
-X-Forwarded-Encrypted: i=1; AJvYcCXvagFt/jqpVoMwFBrdm2cjuXM0xeqKG/cfr4fT+hKAPwklRunSuyE0vzM3kk68wZDsy0V7Rz5Z@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy0+gsPSKgT7eH2vy7uSjK1+Hh7fD3SvRGxjfybBVeb07O7mytT
-	q2Hn5V8SIrm2CFSoPVvg6JO85K1+maqj5XK95zpA+DR0JI8bKVMW0WtiPosxKd3l0bjxJsG29q+
-	eFi8/LD3rjbXLzWA7VdNPQSF/b2fF5Rbfg3jf7iOurhKTsrwWdbbapDo=
-X-Received: by 2002:a05:6a20:d526:b0:1ce:cde2:4458 with SMTP id adf61e73a8af0-1cf5e15710amr5116826637.35.1726039049179;
-        Wed, 11 Sep 2024 00:17:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGfPMdzQCpRyvsuzf833UGi7nTs6J1w1LxjL6dvBwUdC2XXOTOBOy5/7LWeNy6FfSCYJeydpA==
-X-Received: by 2002:a05:6a20:d526:b0:1ce:cde2:4458 with SMTP id adf61e73a8af0-1cf5e15710amr5116788637.35.1726039048478;
-        Wed, 11 Sep 2024 00:17:28 -0700 (PDT)
+        bh=WExmWVFUVT+GeIi/yPIGow20ZicextOrMJ+vbOaBSZo=;
+        b=MdgV1Uv225XTY8RLUhXj1t6M1WBvZW56MwynMGhMvaU2PoTAtusXglL0RiUlK0g9XA
+         z2SCWYbLJwy5XXfsxknzH20mIUDZQrH+ytjhkpOpYBt2GAZh510dfvAow0wfbAWR9rkX
+         iiV/lD8F6Z42k7TQmMgvQbk629+If9lnQaHPvrMVcBK5e5MT8J+dpN33Nr7ObyvArlSG
+         kuu3rFL3uiba3ChbHWMDKBnhn6lL74KCq7F8xcTQ/6/Oor98yalHEk/kxHX5+M6LDFpC
+         27GCFW9faa0W2ELk59lw1qW9O6sSRVpqMbXxmqjW98vOefYX6RY1b9f7wBdMBEt738mM
+         ElUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUFYJZTjInlL1YKfWZiZOGR5XeUQU1JIkGBflkuYv6GgOTqIum2ae+LZikiqSHlY5BqEaKctx6D@vger.kernel.org
+X-Gm-Message-State: AOJu0YwEzWLGUh5xwjZ0+yzvztPJAYai+0dNNwrzA/FJREc4B2mljFif
+	XkcgCUsMT6EBBSBk7aCrYdT05mEYgulCe3G6ml6qbi2CvWG0GEfejyEZ1joyVv1EJd71VjI1d81
+	1xyvNzTo4VeyErEpiKpA6xy5189dX6pMPTQJu3Eb08G3LBAnn74wB1xI=
+X-Received: by 2002:a05:6a00:66c8:b0:70a:f576:beeb with SMTP id d2e1a72fcca58-71916df6fdfmr2660106b3a.15.1726039140083;
+        Wed, 11 Sep 2024 00:19:00 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGc3lptb75oVWaJldXqEJfWwtFJcwuDY5ronghp6vVOfZyKrsvLvrHkcR+YcX3R+mxuPDiR2Q==
+X-Received: by 2002:a05:6a00:66c8:b0:70a:f576:beeb with SMTP id d2e1a72fcca58-71916df6fdfmr2660082b3a.15.1726039139608;
+        Wed, 11 Sep 2024 00:18:59 -0700 (PDT)
 Received: from localhost.localdomain ([2804:1b3:a800:3c59:c8f1:7d33:571a:fde2])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7db12af2c69sm419278a12.38.2024.09.11.00.17.23
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71908fc8febsm2466665b3a.19.2024.09.11.00.18.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Sep 2024 00:17:27 -0700 (PDT)
+        Wed, 11 Sep 2024 00:18:59 -0700 (PDT)
 From: Leonardo Bras <leobras@redhat.com>
 To: Waiman Long <longman@redhat.com>
 Cc: Leonardo Bras <leobras@redhat.com>,
@@ -94,215 +94,109 @@ Cc: Leonardo Bras <leobras@redhat.com>,
 	cgroups@vger.kernel.org,
 	linux-mm@kvack.org
 Subject: Re: [RFC PATCH v1 1/4] Introducing qpw_lock() and per-cpu queue & flush work
-Date: Wed, 11 Sep 2024 04:17:05 -0300
-Message-ID: <ZuFD8bR01GhPbPH6@LeoBras>
+Date: Wed, 11 Sep 2024 04:18:42 -0300
+Message-ID: <ZuFEUk2jsRRWNG1I@LeoBras>
 X-Mailer: git-send-email 2.46.0
-In-Reply-To: <f69793ab-41c3-4ae2-a8b1-355e629ffd0b@redhat.com>
-References: <20240622035815.569665-1-leobras@redhat.com> <20240622035815.569665-2-leobras@redhat.com> <f69793ab-41c3-4ae2-a8b1-355e629ffd0b@redhat.com>
+In-Reply-To: <a9fdcd85-633c-4e88-9e1f-db0b9d3b745c@redhat.com>
+References: <20240622035815.569665-1-leobras@redhat.com> <20240622035815.569665-2-leobras@redhat.com> <f69793ab-41c3-4ae2-a8b1-355e629ffd0b@redhat.com> <a9fdcd85-633c-4e88-9e1f-db0b9d3b745c@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 
-On Wed, Sep 04, 2024 at 05:39:01PM -0400, Waiman Long wrote:
-> On 6/21/24 23:58, Leonardo Bras wrote:
-> > Some places in the kernel implement a parallel programming strategy
-> > consisting on local_locks() for most of the work, and some rare remote
-> > operations are scheduled on target cpu. This keeps cache bouncing low since
-> > cacheline tends to be mostly local, and avoids the cost of locks in non-RT
-> > kernels, even though the very few remote operations will be expensive due
-> > to scheduling overhead.
-> > 
-> > On the other hand, for RT workloads this can represent a problem: getting
-> > an important workload scheduled out to deal with some unrelated task is
-> > sure to introduce unexpected deadline misses.
-> > 
-> > It's interesting, though, that local_lock()s in RT kernels become
-> > spinlock(). We can make use of those to avoid scheduling work on a remote
-> > cpu by directly updating another cpu's per_cpu structure, while holding
-> > it's spinlock().
-> > 
-> > In order to do that, it's necessary to introduce a new set of functions to
-> > make it possible to get another cpu's per-cpu "local" lock (qpw_{un,}lock*)
-> > and also the corresponding queue_percpu_work_on() and flush_percpu_work()
-> > helpers to run the remote work.
-> > 
-> > On non-RT kernels, no changes are expected, as every one of the introduced
-> > helpers work the exactly same as the current implementation:
-> > qpw_{un,}lock*()        ->  local_{un,}lock*() (ignores cpu parameter)
-> > queue_percpu_work_on()  ->  queue_work_on()
-> > flush_percpu_work()     ->  flush_work()
-> > 
-> > For RT kernels, though, qpw_{un,}lock*() will use the extra cpu parameter
-> > to select the correct per-cpu structure to work on, and acquire the
-> > spinlock for that cpu.
-> > 
-> > queue_percpu_work_on() will just call the requested function in the current
-> > cpu, which will operate in another cpu's per-cpu object. Since the
-> > local_locks() become spinlock()s in PREEMPT_RT, we are safe doing that.
-> > 
-> > flush_percpu_work() then becomes a no-op since no work is actually
-> > scheduled on a remote cpu.
-> > 
-> > Some minimal code rework is needed in order to make this mechanism work:
-> > The calls for local_{un,}lock*() on the functions that are currently
-> > scheduled on remote cpus need to be replaced by qpw_{un,}lock_n*(), so in
-> > RT kernels they can reference a different cpu. It's also necessary to use a
-> > qpw_struct instead of a work_struct, but it just contains a work struct
-> > and, in PREEMPT_RT, the target cpu.
-> > 
-> > This should have almost no impact on non-RT kernels: few this_cpu_ptr()
-> > will become per_cpu_ptr(,smp_processor_id()).
-> > 
-> > On RT kernels, this should improve performance and reduce latency by
-> > removing scheduling noise.
-> > 
-> > Signed-off-by: Leonardo Bras <leobras@redhat.com>
-> > ---
-> >   include/linux/qpw.h | 88 +++++++++++++++++++++++++++++++++++++++++++++
-> >   1 file changed, 88 insertions(+)
-> >   create mode 100644 include/linux/qpw.h
-> > 
-> > diff --git a/include/linux/qpw.h b/include/linux/qpw.h
-> > new file mode 100644
-> > index 000000000000..ea2686a01e5e
-> > --- /dev/null
-> > +++ b/include/linux/qpw.h
-> > @@ -0,0 +1,88 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +#ifndef _LINUX_QPW_H
-> > +#define _LINUX_QPW_H
-> > +
-> > +#include "linux/local_lock.h"
-> > +#include "linux/workqueue.h"
-> > +
-> > +#ifndef CONFIG_PREEMPT_RT
-> > +
-> > +struct qpw_struct {
-> > +	struct work_struct work;
-> > +};
-> > +
-> > +#define qpw_lock(lock, cpu)					\
-> > +	local_lock(lock)
-> > +
-> > +#define qpw_unlock(lock, cpu)					\
-> > +	local_unlock(lock)
-> > +
-> > +#define qpw_lock_irqsave(lock, flags, cpu)			\
-> > +	local_lock_irqsave(lock, flags)
-> > +
-> > +#define qpw_unlock_irqrestore(lock, flags, cpu)			\
-> > +	local_unlock_irqrestore(lock, flags)
-> > +
-> > +#define queue_percpu_work_on(c, wq, qpw)			\
-> > +	queue_work_on(c, wq, &(qpw)->work)
-> > +
-> > +#define flush_percpu_work(qpw)					\
-> > +	flush_work(&(qpw)->work)
-> > +
-> > +#define qpw_get_cpu(qpw)					\
-> > +	smp_processor_id()
-> > +
-> > +#define INIT_QPW(qpw, func, c)					\
-> > +	INIT_WORK(&(qpw)->work, (func))
-> > +
-> > +#else /* !CONFIG_PREEMPT_RT */
-> > +
-> > +struct qpw_struct {
-> > +	struct work_struct work;
-> > +	int cpu;
-> > +};
-> > +
-> > +#define qpw_lock(__lock, cpu)					\
-> > +	do {							\
-> > +		migrate_disable();				\
-> > +		spin_lock(per_cpu_ptr((__lock), cpu));		\
-> > +	} while (0)
-> > +
-> > +#define qpw_unlock(__lock, cpu)					\
-> > +	do {							\
-> > +		spin_unlock(per_cpu_ptr((__lock), cpu));	\
-> > +		migrate_enable();				\
-> > +	} while (0)
+On Wed, Sep 04, 2024 at 08:08:12PM -0400, Waiman Long wrote:
+> On 9/4/24 17:39, Waiman Long wrote:
+> > On 6/21/24 23:58, Leonardo Bras wrote:
+> > > Some places in the kernel implement a parallel programming strategy
+> > > consisting on local_locks() for most of the work, and some rare remote
+> > > operations are scheduled on target cpu. This keeps cache bouncing
+> > > low since
+> > > cacheline tends to be mostly local, and avoids the cost of locks in
+> > > non-RT
+> > > kernels, even though the very few remote operations will be
+> > > expensive due
+> > > to scheduling overhead.
+> > > 
+> > > On the other hand, for RT workloads this can represent a problem:
+> > > getting
+> > > an important workload scheduled out to deal with some unrelated task is
+> > > sure to introduce unexpected deadline misses.
+> > > 
+> > > It's interesting, though, that local_lock()s in RT kernels become
+> > > spinlock(). We can make use of those to avoid scheduling work on a
+> > > remote
+> > > cpu by directly updating another cpu's per_cpu structure, while holding
+> > > it's spinlock().
+> > > 
+> > > In order to do that, it's necessary to introduce a new set of
+> > > functions to
+> > > make it possible to get another cpu's per-cpu "local" lock
+> > > (qpw_{un,}lock*)
+> > > and also the corresponding queue_percpu_work_on() and
+> > > flush_percpu_work()
+> > > helpers to run the remote work.
+> > > 
+> > > On non-RT kernels, no changes are expected, as every one of the
+> > > introduced
+> > > helpers work the exactly same as the current implementation:
+> > > qpw_{un,}lock*()        ->  local_{un,}lock*() (ignores cpu parameter)
+> > > queue_percpu_work_on()  ->  queue_work_on()
+> > > flush_percpu_work()     ->  flush_work()
+> > > 
+> > > For RT kernels, though, qpw_{un,}lock*() will use the extra cpu
+> > > parameter
+> > > to select the correct per-cpu structure to work on, and acquire the
+> > > spinlock for that cpu.
+> > > 
+> > > queue_percpu_work_on() will just call the requested function in the
+> > > current
+> > > cpu, which will operate in another cpu's per-cpu object. Since the
+> > > local_locks() become spinlock()s in PREEMPT_RT, we are safe doing that.
+> > > 
+> > > flush_percpu_work() then becomes a no-op since no work is actually
+> > > scheduled on a remote cpu.
+> > > 
+> > > Some minimal code rework is needed in order to make this mechanism work:
+> > > The calls for local_{un,}lock*() on the functions that are currently
+> > > scheduled on remote cpus need to be replaced by qpw_{un,}lock_n*(),
+> > > so in
+> > > RT kernels they can reference a different cpu. It's also necessary
+> > > to use a
+> > > qpw_struct instead of a work_struct, but it just contains a work struct
+> > > and, in PREEMPT_RT, the target cpu.
+> > > 
+> > > This should have almost no impact on non-RT kernels: few this_cpu_ptr()
+> > > will become per_cpu_ptr(,smp_processor_id()).
+> > > 
+> > > On RT kernels, this should improve performance and reduce latency by
+> > > removing scheduling noise.
+> > > 
+> > > Signed-off-by: Leonardo Bras <leobras@redhat.com>
+> > > ---
+> > >   include/linux/qpw.h | 88 +++++++++++++++++++++++++++++++++++++++++++++
+> > >   1 file changed, 88 insertions(+)
+> > >   create mode 100644 include/linux/qpw.h
+> > > 
+> > > diff --git a/include/linux/qpw.h b/include/linux/qpw.h
+> > > new file mode 100644
+> > > index 000000000000..ea2686a01e5e
+> > > --- /dev/null
+> > > +++ b/include/linux/qpw.h
+> > > @@ -0,0 +1,88 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > +#ifndef _LINUX_QPW_H
+> > > +#define _LINUX_QPW_H
 > 
-> Why there is a migrate_disable/enable() call in qpw_lock/unlock()? The
-> rt_spin_lock/unlock() calls have already include a migrate_disable/enable()
-> pair.
+> I would suggest adding a comment with a brief description of what
+> qpw_lock/unlock() are for and their use cases. The "qpw" prefix itself isn't
+> intuitive enough for a casual reader to understand what they are for.
 
-This was copied from PREEMPT_RT=y local_locks.
-
-In my tree, I see:
-
-#define __local_unlock(__lock)					\
-	do {							\
-		spin_unlock(this_cpu_ptr((__lock)));		\
-		migrate_enable();				\
-	} while (0)
-
-But you are right:
-For PREEMPT_RT=y, spin_{un,}lock() will be defined in spinlock_rt.h
-as rt_spin{un,}lock(), which already runs migrate_{en,dis}able().
-
-On the other hand, for spin_lock() will run migrate_disable() just before 
-finishing the function, and local_lock() will run it before calling 
-spin_lock() and thus, before spin_acquire().
-
-(local_unlock looks like to have an unnecessary extra migrate_enable(), 
-though).
-
-I am not sure if it's actually necessary to run this extra 
-migrate_disable() in local_lock() case, maybe Thomas could help us 
-understand this.
-
-But sure, if we can remove this from local_{un,}lock(), I am sure we can 
-also remove this from qpw.
-
-
-> 
-> > +
-> > +#define qpw_lock_irqsave(lock, flags, cpu)			\
-> > +	do {							\
-> > +		typecheck(unsigned long, flags);		\
-> > +		flags = 0;					\
-> > +		qpw_lock(lock, cpu);				\
-> > +	} while (0)
-> > +
-> > +#define qpw_unlock_irqrestore(lock, flags, cpu)			\
-> > +	qpw_unlock(lock, cpu)
-> > +
-> > +#define queue_percpu_work_on(c, wq, qpw)			\
-> > +	do {							\
-> > +		struct qpw_struct *__qpw = (qpw);		\
-> > +		WARN_ON((c) != __qpw->cpu);			\
-> > +		__qpw->work.func(&__qpw->work);			\
-> > +	} while (0)
-> > +
-> > +#define flush_percpu_work(qpw)					\
-> > +	do {} while (0)
-> > +
-> > +#define qpw_get_cpu(w)						\
-> > +	container_of((w), struct qpw_struct, work)->cpu
-> > +
-> > +#define INIT_QPW(qpw, func, c)					\
-> > +	do {							\
-> > +		struct qpw_struct *__qpw = (qpw);		\
-> > +		INIT_WORK(&__qpw->work, (func));		\
-> > +		__qpw->cpu = (c);				\
-> > +	} while (0)
-> > +
-> > +#endif /* CONFIG_PREEMPT_RT */
-> > +#endif /* LINUX_QPW_H */
-> 
-> You may also consider adding a documentation file about the
-> qpw_lock/unlock() calls.
-
-Sure, will do when I send the non-RFC version. Thanks for pointing that 
-out!
+Agree, I am also open to discuss a more intuitive naming for these.
 
 > 
 > Cheers,
