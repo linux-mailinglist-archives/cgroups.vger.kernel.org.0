@@ -1,109 +1,120 @@
-Return-Path: <cgroups+bounces-4853-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4854-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65D80975CE2
-	for <lists+cgroups@lfdr.de>; Thu, 12 Sep 2024 00:06:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DC14975E81
+	for <lists+cgroups@lfdr.de>; Thu, 12 Sep 2024 03:28:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 198801F23B2B
-	for <lists+cgroups@lfdr.de>; Wed, 11 Sep 2024 22:06:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFCFA1C22657
+	for <lists+cgroups@lfdr.de>; Thu, 12 Sep 2024 01:28:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FA16183088;
-	Wed, 11 Sep 2024 22:05:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="iRsCyLuu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FCCF2C1BA;
+	Thu, 12 Sep 2024 01:28:48 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1617D145B2C
-	for <cgroups@vger.kernel.org>; Wed, 11 Sep 2024 22:05:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26EC62B9A5
+	for <cgroups@vger.kernel.org>; Thu, 12 Sep 2024 01:28:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726092358; cv=none; b=AG8Eh3s20t0BtLVDk5gJ2rL4An5mj3YGOwX0Mvz/sIXUv8YsMvjjEkS2DjuELff5Mmy1CZ7G777fa3Ild+ulhCN7J4rfrmxP5RR9dSL/wrQ0xXFm5iMcEmRz6JHplcXAGa3T5kF1F+Hk9SOloX/Ds1G/UTsmHDW7FSlT2iw4r2Y=
+	t=1726104528; cv=none; b=gNEd8wZuVM3pZ/j5lP5YXeAlM3B5rZwGfvFyEWczsM3MMhSJy0E3OTPqFLovH9v2P5vOBwqnZyQ1XLWEtCc0siRLblq1Kz/Aa6wUs18BKA+Wld8AkufnNwHNvqWZap1sj8Lwv6ZPu9N1Fn8iFR68RkDjOwBArtGSWaZ73jgCoJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726092358; c=relaxed/simple;
-	bh=4eWae7FOAKdBlxcxq2mEpg0H5cK66+VncijT1wT9M+U=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=c7SzXV+5Zzqjo8q7mAUY031U7GWzgF3J4TodHWViB5i4DsKQ2egLhAIy7LjzZVGQfr3hIcZZKLLgHa6E7uXMx3uGYeoB28NkV7ZZ5zUQT89iHALb8JCXogKPqcBW5HFvJMqT6FKcgRb/JQQpxrNfhrohKDOBUjlq1RoHRKSeZ6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=iRsCyLuu; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-6bce380eb96so232972a12.0
-        for <cgroups@vger.kernel.org>; Wed, 11 Sep 2024 15:05:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1726092355; x=1726697155; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aT6C3xXVFHramxKhQNyUko7uCMTmKteekD3PIenNBQQ=;
-        b=iRsCyLuuQwGkgQdp1qapRKosAt5CPYIxqpf7pfpQI1tMkPOwWlBJ3uy1gTcpSo5tE2
-         COq/4lqUZ/nVJ1qZjaxpt8Aym+3ZpUn5ccwOw8eA1SGzsfyff0VSsbyd4SEgUVkMPYsa
-         7/Cp0gaprGFPnJDYRf8OG+l3xyTtn3oLgbte3C1oNDaJiIVDBjeA41JqHDvL4/BPpnnN
-         Le1KREJjl1beqFUoeA1/JTsL2UbdaFepwR+/6ESdEK+t6F6/sOzqS6trRr/WDVQHsd1D
-         IEcuRhIDghbqi38cuO00f709Chaa+NJesSj/cAAi6gMQWPXr9MQPLHo1FBf7Sx49soPZ
-         hrig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726092355; x=1726697155;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aT6C3xXVFHramxKhQNyUko7uCMTmKteekD3PIenNBQQ=;
-        b=Af8v6TrmIyFhu/BLDlrFGQAbENg0pElTT85WGTmlkNL5/d8T94Q/ne00rRBMkridHn
-         2oUgSdErlqoP/oGMLH8vurvfVF5E919bDYyObrikhPB4igq2R41/jhmC5QX1U0f56eej
-         mqDu27aMjTTWiDFm1g2NHM2YWRBN/cFQFRPffnXDEEedpRxoBrIU1f7qlvh/pKeMTE19
-         2z7s7+KhsS7tL7QD/IhXxKf7phImWY78hIC23wm7chGI5Ev8kJuUVhr+QhvpL3Y+dV6h
-         mDsAL+WEmPNUQzbjhh/2uZoWCrvysRKXbQvDJ+KdCkVYcnIJgqA8scHMNQ4K7l5cxfk0
-         2cFA==
-X-Forwarded-Encrypted: i=1; AJvYcCWSqltnAp8YDOwRZudloGbxCa+h92G8y0xvGhvW22MhV5asOI1O7XJ3Wqfu9lyRc2FcfwSWBEEO@vger.kernel.org
-X-Gm-Message-State: AOJu0YzigmbUwkyXISOiPbL0JEnp5VGkFnuP565yWKlDtE7TeeUAqLkv
-	rDNb07p1rdfdKG75qf0bOmFEhhBYTLjjLBYFII1Hl802yI3quRDatTbkhLhPu2M=
-X-Google-Smtp-Source: AGHT+IEuqFEGAfJiOaQ4nh1MTrdynUjOWncE9qCeCiHOZ6JbwtAJ7RttrGToWUO/kBAcYF3XVN+a+w==
-X-Received: by 2002:a17:902:f68f:b0:206:88fa:54a6 with SMTP id d9443c01a7336-2076e361a14mr10671435ad.21.1726092355362;
-        Wed, 11 Sep 2024 15:05:55 -0700 (PDT)
-Received: from [127.0.0.1] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2076afdd4easm3908905ad.148.2024.09.11.15.05.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Sep 2024 15:05:54 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
- cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
- Colin Ian King <colin.i.king@gmail.com>
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240911214124.197403-1-colin.i.king@gmail.com>
-References: <20240911214124.197403-1-colin.i.king@gmail.com>
-Subject: Re: [PATCH][next] blk_iocost: make read-only static array
- vrate_adj_pct const
-Message-Id: <172609235387.422440.3089154405009965533.b4-ty@kernel.dk>
-Date: Wed, 11 Sep 2024 16:05:53 -0600
+	s=arc-20240116; t=1726104528; c=relaxed/simple;
+	bh=Qig5rm0Ksk2JjuQr5hTtLwhbCI3pWi54JOPgr7+uOM4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=SpXVCt9pPQJkaJXmli6DLUbD1XsvEvtfZ396D7Cbrmoofx9LfOG/LfiDhdxmlCiWyRFv8dTjvDxcofYcJaLKUVVyEGm+GG4RrY+SNAuBVeEsfKI17lvR31bwOaVY92kXEWh7tv7MknSJZgM6Pti/wd/iG3xZDVm/hGSawHeReH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4X40DS1Fj9z1RBdH;
+	Thu, 12 Sep 2024 09:27:36 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8F163140132;
+	Thu, 12 Sep 2024 09:28:43 +0800 (CST)
+Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Thu, 12 Sep
+ 2024 09:28:43 +0800
+From: Chen Ridong <chenridong@huawei.com>
+To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+	<longman@redhat.com>, <adityakali@google.com>, <sergeh@kernel.org>,
+	<mkoutny@suse.com>, <guro@fb.com>
+CC: <cgroups@vger.kernel.org>
+Subject: [PATCH v2 -next 0/3] Some optimizations about freezer
+Date: Thu, 12 Sep 2024 01:20:34 +0000
+Message-ID: <20240912012037.1324165-1-chenridong@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
+We optimized the freezer to reduce redundant loops, and we add helper
+to make code concise.
 
-On Wed, 11 Sep 2024 22:41:24 +0100, Colin Ian King wrote:
-> The static array vrate_adj_pct is read-only, so make it const as
-> well.
-> 
-> 
+We tested the following subtree:
+   0
+ / | \ \
+A  B C  1
+      / | \ \
+     A  B C  2
+        .....
+	         n
+               / | \
+              A  B C
+We tested is by following steps:
+1. freeze 0
+2. unfreeze 0
+3. freeze 0
+4. freeze 1
+We measured the elapsed time(ns).
 
-Applied, thanks!
+n=10
+	freeze 0	unfreeze 0	freeze 0	freeze 1
+BEFORE	106179390	94016050	110423650	95063770
+AFTER	96473608	91054188	94936398	93198510
 
-[1/1] blk_iocost: make read-only static array vrate_adj_pct const
-      commit: cc089684664ebd379f1451aab65eb50f4008b381
+n=50
+	freeze 0	unfreeze 0	freeze 0	freeze 1
+BEFORE	109506660	105643800	105970220	96948940
+AFTER	105244651	97357482	97517358	88466266
 
-Best regards,
+n=100
+	freeze 0	unfreeze 0	freeze 0	freeze 1
+BEFORE	127944210	122049330	120988900	101232850
+AFTER	117298106	107034146	105696895	91977833
+
+As shown above, after optimizations, we can save elapsed time.
+By freezing 0 and subsequently freezing 1, the elapsed time is consistent,
+indicating that our optimizations are highly effective.
+
+---
+v2:
+- open code inside the loop of cgroup_freeze instead of inline function.
+- add helper to make code concise.
+- remove selftest script(There are hierarchy test in test_freeze.c, I
+  think that is enough for this series).
+
+Chen Ridong (3):
+  cgroup/freezer: Reduce redundant traversal for cgroup_freeze
+  cgroup/freezer: Add cgroup CGRP_FROZEN flag update helper
+  cgroup/freezer: Reduce redundant propagation for
+    cgroup_propagate_frozen
+
+ include/linux/cgroup-defs.h |   6 +-
+ kernel/cgroup/freezer.c     | 110 ++++++++++++++++++------------------
+ 2 files changed, 59 insertions(+), 57 deletions(-)
+
 -- 
-Jens Axboe
-
-
+2.34.1
 
 
