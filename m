@@ -1,80 +1,79 @@
-Return-Path: <cgroups+bounces-4879-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4878-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE462978AE4
-	for <lists+cgroups@lfdr.de>; Fri, 13 Sep 2024 23:54:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F01C978AE2
+	for <lists+cgroups@lfdr.de>; Fri, 13 Sep 2024 23:54:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B94CB216EE
-	for <lists+cgroups@lfdr.de>; Fri, 13 Sep 2024 21:54:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACA101F232AE
+	for <lists+cgroups@lfdr.de>; Fri, 13 Sep 2024 21:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A12EA16F0EB;
-	Fri, 13 Sep 2024 21:54:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE88B433A9;
+	Fri, 13 Sep 2024 21:54:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l+2wC8Fw"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ElPd+2ko"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2CF1155A4F;
-	Fri, 13 Sep 2024 21:54:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A75F4154BEC;
+	Fri, 13 Sep 2024 21:54:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726264477; cv=none; b=FK7KTDP6vyb97FHkh94i5K3dT0cRjCIx9qICezSqRaQXYpuJfnm0NwJovF6QApaK/0C3DwsZ6inL3vhPH/BdokEcAONTmotdd+xzeN8HSZNHZj+g5Fd9BCJ5lEP1wL2M8ja1dT48BpxSDb2TMTbpp81eXrgEAlRrqhfX8W1WUgk=
+	t=1726264475; cv=none; b=JA9zoRUZbQ8bM2Aprldlf6NmhQePE61vbp2bTvIS7CCHWU2sr0CmxmeXsdNieNNiVXyBN8UqaGQPbH8G8GW0CxQKoiKZi/xLbcflfiAfp6eZA0bd+b65M7sS/CTH88PQYIGF6dPSo+upWWwrqCMy7gk8pthvS5pPbuBNKtj6ceY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726264477; c=relaxed/simple;
-	bh=zAwlk67tqKRq3ykb3Dq/lPmctb9a7uuG+dbiA68cadA=;
+	s=arc-20240116; t=1726264475; c=relaxed/simple;
+	bh=3lZUdhEvXyxFpVtcD0HH4jrUJUk05bEvQqokX6JrCz4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tiZbuGrbEVKahl+GXjPF7I5wtZdJ+FP70CU4saB1NKtGTEBKvpMOtl1S5CGit9jCqbrTiLFTcuhUhWVgARIHyzPc9lTdRu/wbBhHEfbaDbgCv2zGatoKFR2p8g1/w4UAKXojxfp7jTJvCCIPLApYvkdVsQ0slMvjXJexoroaXb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l+2wC8Fw; arc=none smtp.client-ip=198.175.65.14
+	 Content-Type:Content-Disposition:In-Reply-To; b=qQDyHm6ZcsNWnINGY0hvCipxQ5sjAs79lqJm3JI5NHixvfREHrb5eB8YcH6dCZXEyR/jzVZsCnoysvaMVbZyEI8U6zH1c+OxWUyQyGbxFwzn++swgo6Q2wJ+pGKk5fsevbXtf6ZR43kUYbaCp1lS+ZNZ5n9XFC2ZlC9nplGucNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ElPd+2ko; arc=none smtp.client-ip=198.175.65.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1726264476; x=1757800476;
+  t=1726264475; x=1757800475;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=zAwlk67tqKRq3ykb3Dq/lPmctb9a7uuG+dbiA68cadA=;
-  b=l+2wC8FwoUf4jv/m9AM4NRcj4YUfouCYP0vBIl3Vt6x3Ia4u41tFL51g
-   YUxgyNQ6s2DlUIu7RyRMBwVa/2RZuBiTVSC1Ww8QTM5e8OIsgEkZG16YV
-   v7H7r4GUsGO3ODDcmzIpec5+c6isY/8vZX0rm1VcWxg9upnwqXGsU3gmF
-   b2NX8LJ5o7ky4lHqR2YBCTCwTts1ebn3RW0FfGEaYh5rCTSxy5TL/DzJt
-   A3FRBnwv4FzMp+7aW6c4qfCEBOKdn0+UbJSWnlYqdgprBeb56adDSDMiC
-   SOH2CY4YFfVm5n4R0mVrVwrmSxPVBTsgE3PM5L/46LoGAewjO6H+icqM4
-   A==;
-X-CSE-ConnectionGUID: gCbj0OLlQCGNBssXS9LvyQ==
-X-CSE-MsgGUID: 66RUN85vSOWmVDkg05o5sA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11194"; a="28964284"
+  bh=3lZUdhEvXyxFpVtcD0HH4jrUJUk05bEvQqokX6JrCz4=;
+  b=ElPd+2koc8YuwJQX8CUsp/A6xT4jSljKoWNpDTzzGmfdwJpFheAY3VXG
+   qk7BOT12nZ7mBVG6FwIA/Qj4V+RwCkoSA7JuRJr1x5Aa8IrZFlmRzqaVX
+   1awTZ9BMCDhFAMW3la11qhxu+7PWxZAhni9mnsMYLx2C6KGLkMy/uWFn/
+   s3gh0mbU/dLoXDOQg3R121CD2JIiRCP9dSeJLSKAYIGr7wJd0u+NIBki8
+   GJms7vQJr3BWWB8NRLRMNoj2MWPzcPOLUVVSkvBpDeILqvQWQWmHYtIeR
+   bBLi2DLKEfX4OVoV/Iotapo/3EbtNhoZu2EoKwKCFQHLGGTslC+JH5dkW
+   w==;
+X-CSE-ConnectionGUID: hYiEnINYTpCNfCjdBoGBxg==
+X-CSE-MsgGUID: 4xgU9nOoRA+K1pnmkUVJTA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11194"; a="28964273"
 X-IronPort-AV: E=Sophos;i="6.10,227,1719903600"; 
-   d="scan'208";a="28964284"
+   d="scan'208";a="28964273"
 Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2024 14:54:32 -0700
-X-CSE-ConnectionGUID: FOi80xTeS1Oe+X0B2eo2eQ==
-X-CSE-MsgGUID: XvYNeoeQRMufVwcHM+SBeA==
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2024 14:54:31 -0700
+X-CSE-ConnectionGUID: Gt72Uv39TH+t4tZEuHFxyQ==
+X-CSE-MsgGUID: L8tABuovQbKL349MY0ASiA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.10,227,1719903600"; 
-   d="scan'208";a="72802514"
+   d="scan'208";a="72802513"
 Received: from lkp-server01.sh.intel.com (HELO 53e96f405c61) ([10.239.97.150])
   by fmviesa004.fm.intel.com with ESMTP; 13 Sep 2024 14:54:28 -0700
 Received: from kbuild by 53e96f405c61 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1spEFF-00074a-1x;
+	id 1spEFF-00074Y-1n;
 	Fri, 13 Sep 2024 21:54:25 +0000
-Date: Sat, 14 Sep 2024 05:53:55 +0800
+Date: Sat, 14 Sep 2024 05:54:03 +0800
 From: kernel test robot <lkp@intel.com>
 To: Jesper Dangaard Brouer <hawk@kernel.org>, tj@kernel.org,
 	cgroups@vger.kernel.org, yosryahmed@google.com,
 	shakeel.butt@linux.dev
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Jesper Dangaard Brouer <hawk@kernel.org>, hannes@cmpxchg.org,
-	lizefan.x@bytedance.com, longman@redhat.com,
+Cc: oe-kbuild-all@lists.linux.dev, Jesper Dangaard Brouer <hawk@kernel.org>,
+	hannes@cmpxchg.org, lizefan.x@bytedance.com, longman@redhat.com,
 	kernel-team@cloudflare.com, linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH V11] cgroup/rstat: Avoid flushing if there is an ongoing
  root flush
-Message-ID: <202409140533.2vt8QPj8-lkp@intel.com>
+Message-ID: <202409140533.XqO09tth-lkp@intel.com>
 References: <172616070094.2055617.17676042522679701515.stgit@firesoul>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -101,137 +100,89 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Jesper-Dangaard-Brouer/cg
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
 patch link:    https://lore.kernel.org/r/172616070094.2055617.17676042522679701515.stgit%40firesoul
 patch subject: [PATCH V11] cgroup/rstat: Avoid flushing if there is an ongoing root flush
-config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20240914/202409140533.2vt8QPj8-lkp@intel.com/config)
-compiler: clang version 18.1.8 (https://github.com/llvm/llvm-project 3b5b5c1ec4a3095ab096dd780e84d7ab81f3d7ff)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240914/202409140533.2vt8QPj8-lkp@intel.com/reproduce)
+config: i386-randconfig-141-20240914 (https://download.01.org/0day-ci/archive/20240914/202409140533.XqO09tth-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240914/202409140533.XqO09tth-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202409140533.2vt8QPj8-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202409140533.XqO09tth-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
->> mm/vmscan.c:2265:2: error: call to undeclared function 'mem_cgroup_flush_stats_relaxed'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-    2265 |         mem_cgroup_flush_stats_relaxed(sc->target_mem_cgroup);
-         |         ^
-   mm/vmscan.c:2265:2: note: did you mean 'mem_cgroup_flush_stats_ratelimited'?
-   include/linux/memcontrol.h:1429:20: note: 'mem_cgroup_flush_stats_ratelimited' declared here
-    1429 | static inline void mem_cgroup_flush_stats_ratelimited(struct mem_cgroup *memcg)
-         |                    ^
-   1 error generated.
+   mm/zswap.c: In function 'zswap_shrinker_count':
+>> mm/zswap.c:1225:17: error: implicit declaration of function 'mem_cgroup_flush_stats_relaxed'; did you mean 'mem_cgroup_flush_stats_ratelimited'? [-Werror=implicit-function-declaration]
+    1225 |                 mem_cgroup_flush_stats_relaxed(memcg);
+         |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |                 mem_cgroup_flush_stats_ratelimited
+   cc1: some warnings being treated as errors
 
 
-vim +/mem_cgroup_flush_stats_relaxed +2265 mm/vmscan.c
+vim +1225 mm/zswap.c
 
-  2250	
-  2251	static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
-  2252	{
-  2253		unsigned long file;
-  2254		struct lruvec *target_lruvec;
-  2255	
-  2256		if (lru_gen_enabled())
-  2257			return;
-  2258	
-  2259		target_lruvec = mem_cgroup_lruvec(sc->target_mem_cgroup, pgdat);
-  2260	
-  2261		/*
-  2262		 * Flush the memory cgroup stats, so that we read accurate per-memcg
-  2263		 * lruvec stats for heuristics.
-  2264		 */
-> 2265		mem_cgroup_flush_stats_relaxed(sc->target_mem_cgroup);
-  2266	
-  2267		/*
-  2268		 * Determine the scan balance between anon and file LRUs.
-  2269		 */
-  2270		spin_lock_irq(&target_lruvec->lru_lock);
-  2271		sc->anon_cost = target_lruvec->anon_cost;
-  2272		sc->file_cost = target_lruvec->file_cost;
-  2273		spin_unlock_irq(&target_lruvec->lru_lock);
-  2274	
-  2275		/*
-  2276		 * Target desirable inactive:active list ratios for the anon
-  2277		 * and file LRU lists.
-  2278		 */
-  2279		if (!sc->force_deactivate) {
-  2280			unsigned long refaults;
-  2281	
-  2282			/*
-  2283			 * When refaults are being observed, it means a new
-  2284			 * workingset is being established. Deactivate to get
-  2285			 * rid of any stale active pages quickly.
-  2286			 */
-  2287			refaults = lruvec_page_state(target_lruvec,
-  2288					WORKINGSET_ACTIVATE_ANON);
-  2289			if (refaults != target_lruvec->refaults[WORKINGSET_ANON] ||
-  2290				inactive_is_low(target_lruvec, LRU_INACTIVE_ANON))
-  2291				sc->may_deactivate |= DEACTIVATE_ANON;
-  2292			else
-  2293				sc->may_deactivate &= ~DEACTIVATE_ANON;
-  2294	
-  2295			refaults = lruvec_page_state(target_lruvec,
-  2296					WORKINGSET_ACTIVATE_FILE);
-  2297			if (refaults != target_lruvec->refaults[WORKINGSET_FILE] ||
-  2298			    inactive_is_low(target_lruvec, LRU_INACTIVE_FILE))
-  2299				sc->may_deactivate |= DEACTIVATE_FILE;
-  2300			else
-  2301				sc->may_deactivate &= ~DEACTIVATE_FILE;
-  2302		} else
-  2303			sc->may_deactivate = DEACTIVATE_ANON | DEACTIVATE_FILE;
-  2304	
-  2305		/*
-  2306		 * If we have plenty of inactive file pages that aren't
-  2307		 * thrashing, try to reclaim those first before touching
-  2308		 * anonymous pages.
-  2309		 */
-  2310		file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
-  2311		if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE) &&
-  2312		    !sc->no_cache_trim_mode)
-  2313			sc->cache_trim_mode = 1;
-  2314		else
-  2315			sc->cache_trim_mode = 0;
-  2316	
-  2317		/*
-  2318		 * Prevent the reclaimer from falling into the cache trap: as
-  2319		 * cache pages start out inactive, every cache fault will tip
-  2320		 * the scan balance towards the file LRU.  And as the file LRU
-  2321		 * shrinks, so does the window for rotation from references.
-  2322		 * This means we have a runaway feedback loop where a tiny
-  2323		 * thrashing file LRU becomes infinitely more attractive than
-  2324		 * anon pages.  Try to detect this based on file LRU size.
-  2325		 */
-  2326		if (!cgroup_reclaim(sc)) {
-  2327			unsigned long total_high_wmark = 0;
-  2328			unsigned long free, anon;
-  2329			int z;
-  2330	
-  2331			free = sum_zone_node_page_state(pgdat->node_id, NR_FREE_PAGES);
-  2332			file = node_page_state(pgdat, NR_ACTIVE_FILE) +
-  2333				   node_page_state(pgdat, NR_INACTIVE_FILE);
-  2334	
-  2335			for (z = 0; z < MAX_NR_ZONES; z++) {
-  2336				struct zone *zone = &pgdat->node_zones[z];
-  2337	
-  2338				if (!managed_zone(zone))
-  2339					continue;
-  2340	
-  2341				total_high_wmark += high_wmark_pages(zone);
-  2342			}
-  2343	
-  2344			/*
-  2345			 * Consider anon: if that's low too, this isn't a
-  2346			 * runaway file reclaim problem, but rather just
-  2347			 * extreme pressure. Reclaim as per usual then.
-  2348			 */
-  2349			anon = node_page_state(pgdat, NR_INACTIVE_ANON);
-  2350	
-  2351			sc->file_is_tiny =
-  2352				file + free <= total_high_wmark &&
-  2353				!(sc->may_deactivate & DEACTIVATE_ANON) &&
-  2354				anon >> sc->priority;
-  2355		}
-  2356	}
-  2357	
+  1197	
+  1198	static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
+  1199			struct shrink_control *sc)
+  1200	{
+  1201		struct mem_cgroup *memcg = sc->memcg;
+  1202		struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(sc->nid));
+  1203		unsigned long nr_backing, nr_stored, nr_freeable, nr_protected;
+  1204	
+  1205		if (!zswap_shrinker_enabled || !mem_cgroup_zswap_writeback_enabled(memcg))
+  1206			return 0;
+  1207	
+  1208		/*
+  1209		 * The shrinker resumes swap writeback, which will enter block
+  1210		 * and may enter fs. XXX: Harmonize with vmscan.c __GFP_FS
+  1211		 * rules (may_enter_fs()), which apply on a per-folio basis.
+  1212		 */
+  1213		if (!gfp_has_io_fs(sc->gfp_mask))
+  1214			return 0;
+  1215	
+  1216		/*
+  1217		 * For memcg, use the cgroup-wide ZSWAP stats since we don't
+  1218		 * have them per-node and thus per-lruvec. Careful if memcg is
+  1219		 * runtime-disabled: we can get sc->memcg == NULL, which is ok
+  1220		 * for the lruvec, but not for memcg_page_state().
+  1221		 *
+  1222		 * Without memcg, use the zswap pool-wide metrics.
+  1223		 */
+  1224		if (!mem_cgroup_disabled()) {
+> 1225			mem_cgroup_flush_stats_relaxed(memcg);
+  1226			nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
+  1227			nr_stored = memcg_page_state(memcg, MEMCG_ZSWAPPED);
+  1228		} else {
+  1229			nr_backing = zswap_total_pages();
+  1230			nr_stored = atomic_read(&zswap_stored_pages);
+  1231		}
+  1232	
+  1233		if (!nr_stored)
+  1234			return 0;
+  1235	
+  1236		nr_protected =
+  1237			atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_protected);
+  1238		nr_freeable = list_lru_shrink_count(&zswap_list_lru, sc);
+  1239		/*
+  1240		 * Subtract the lru size by an estimate of the number of pages
+  1241		 * that should be protected.
+  1242		 */
+  1243		nr_freeable = nr_freeable > nr_protected ? nr_freeable - nr_protected : 0;
+  1244	
+  1245		/*
+  1246		 * Scale the number of freeable pages by the memory saving factor.
+  1247		 * This ensures that the better zswap compresses memory, the fewer
+  1248		 * pages we will evict to swap (as it will otherwise incur IO for
+  1249		 * relatively small memory saving).
+  1250		 *
+  1251		 * The memory saving factor calculated here takes same-filled pages into
+  1252		 * account, but those are not freeable since they almost occupy no
+  1253		 * space. Hence, we may scale nr_freeable down a little bit more than we
+  1254		 * should if we have a lot of same-filled pages.
+  1255		 */
+  1256		return mult_frac(nr_freeable, nr_backing, nr_stored);
+  1257	}
+  1258	
 
 -- 
 0-DAY CI Kernel Test Service
