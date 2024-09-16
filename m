@@ -1,43 +1,43 @@
-Return-Path: <cgroups+bounces-4891-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4893-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D0F297A0D0
-	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2024 14:01:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E53A097A1DE
+	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2024 14:11:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D594F282B21
-	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2024 12:01:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 141CC1C215F6
+	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2024 12:11:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BA9C154C14;
-	Mon, 16 Sep 2024 12:01:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36E69155335;
+	Mon, 16 Sep 2024 12:11:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="tG06mijx"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="sLYNvfuN"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05C30A95E;
-	Mon, 16 Sep 2024 12:01:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D14149C57;
+	Mon, 16 Sep 2024 12:11:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726488080; cv=none; b=P/5d9lD6HCIOjpoqLhaCitSQLNSXr+huJ8WtPdF2+pU7kvsM8vDL1kyOxGugZ6fVkf6GAbG9fIGDee45/XFRO9+BVzaQ1zkFpyhj9+ZgTKogw4+JzDFM3Phu0TuPBMUxQw7LGqaa3W0HD8QuScbiFtJSb2wUUsVctglS0/7yS1w=
+	t=1726488673; cv=none; b=IjqzL4N9IajvX+udPersw8F4ydt0BJyDApTY1UcxGsB6+44qutU5O7D++ANR+BOz99LGKLwdhGeyVlCCRny7yAxxRFqbT5DmxUK+q3dHbQ7DEh06Hn7zFuBWTjdD0oyaXNzvefAwgatlOVhTBP4ukdmSGzA8Fji06KdLiaFXOWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726488080; c=relaxed/simple;
-	bh=YWhgczJP+LWTtEm5E4ikkBy2xeb3qB3sgLDWaMkLX28=;
+	s=arc-20240116; t=1726488673; c=relaxed/simple;
+	bh=KF9V7WAKGEGo2sWoJRZr2rSfu6ylnZ/czmDbtV3+NuM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Lj5MyUoFcVI1k76T7OtHPTH8k7IjjuYgx0/q1B6EEa67GIfbOgju3pKif4+wxAtkujlqKXMisWDMfyee8fx9wpWo8b/ICx8H+M5YUtlqLkG4O35UfQMmVogO9mq3qKdp9OVN4L2d26CDFJ5ujBLLI832NkVq/3RAg/hMe8FQExY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=tG06mijx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70571C4CEC4;
-	Mon, 16 Sep 2024 12:01:19 +0000 (UTC)
+	 MIME-Version; b=X1ki8RfssdIer3CmIIlgDo4tBa9cv+yT3O+cZrvCq2F5xlOJfOBrC6lmoKQ1QVN6/cJYfG3U5qDoeiZdxVYjx0TXHqsIrV/7kSQKJXhKdkzhTbSIAh237T1BZNgrbZ0fMJ5precGoufzS6+DCPmLHJBrn0Gsj0O+C0hpWtXjXtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=sLYNvfuN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70345C4CEC4;
+	Mon, 16 Sep 2024 12:11:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1726488079;
-	bh=YWhgczJP+LWTtEm5E4ikkBy2xeb3qB3sgLDWaMkLX28=;
+	s=korg; t=1726488672;
+	bh=KF9V7WAKGEGo2sWoJRZr2rSfu6ylnZ/czmDbtV3+NuM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tG06mijxDFBjZoNVA/GagoRszQ933xByDlxYD7VyDahsphg9hXWglPEYt6RD20koW
-	 iFqijGPU5aVrogROV2x82ueRGuiKy6uFK0XMDS37DmvqRBXJ4oYidHX9mwfxcY05mU
-	 u7UwA1qva7Wjp4Hb/UflMppBRfOovFpp7z90AFbA=
+	b=sLYNvfuNaX79BLvbx/w7aPIaJ3zn9U4ql1S6620qUF7fO+lK2+btvb59dFpmQqabc
+	 h20zxoCCCiiHlffyv3i2A1QeMmxd3zd37vCdbsuhN5DfxbuakLrvMsc75hhbD9o6UU
+	 0T5G1/8hfBYTAv2Eka3dmGo4w8aBB1GpBbrC0uZA=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -47,12 +47,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Florian Westphal <fw@strlen.de>,
 	Pablo Neira Ayuso <pablo@netfilter.org>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.1 52/63] netfilter: nft_socket: make cgroupsv2 matching work with namespaces
-Date: Mon, 16 Sep 2024 13:44:31 +0200
-Message-ID: <20240916114222.900057413@linuxfoundation.org>
+Subject: [PATCH 6.6 73/91] netfilter: nft_socket: make cgroupsv2 matching work with namespaces
+Date: Mon, 16 Sep 2024 13:44:49 +0200
+Message-ID: <20240916114226.881382740@linuxfoundation.org>
 X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20240916114221.021192667@linuxfoundation.org>
-References: <20240916114221.021192667@linuxfoundation.org>
+In-Reply-To: <20240916114224.509743970@linuxfoundation.org>
+References: <20240916114224.509743970@linuxfoundation.org>
 User-Agent: quilt/0.67
 X-stable: review
 X-Patchwork-Hint: ignore
@@ -64,7 +64,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-6.1-stable review patch.  If anyone has any objections, please let me know.
+6.6-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -128,7 +128,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 38 insertions(+), 3 deletions(-)
 
 diff --git a/net/netfilter/nft_socket.c b/net/netfilter/nft_socket.c
-index 0f37738e4b26..8722f712c019 100644
+index 765ffd6e06bc..12cdff640492 100644
 --- a/net/netfilter/nft_socket.c
 +++ b/net/netfilter/nft_socket.c
 @@ -9,7 +9,8 @@
