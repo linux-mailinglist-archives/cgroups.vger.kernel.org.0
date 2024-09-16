@@ -1,56 +1,58 @@
-Return-Path: <cgroups+bounces-4894-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4895-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59B2897A217
-	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2024 14:22:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA96097A21D
+	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2024 14:23:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D496285D13
-	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2024 12:22:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A7A81C210EE
+	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2024 12:23:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AF82154423;
-	Mon, 16 Sep 2024 12:22:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38256154C14;
+	Mon, 16 Sep 2024 12:23:23 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C815E446D1;
-	Mon, 16 Sep 2024 12:22:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44B0714B094;
+	Mon, 16 Sep 2024 12:23:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726489368; cv=none; b=K2BQTaysKGqdxwB9WWGeudg/HLF8vhKp4KSqnTaN4mxDDsqUxkhR9sDp+74/wgDSmn9Ggbfbs/7KlwRpQQpqmsJy/1FiVZ2Qj06mwlsfxatTeDIFbbJDKQ028ZYeC9MJTf7dpAOYjThp1C8qd25eD6NmyyUTNWIp/fGQucKbPGo=
+	t=1726489403; cv=none; b=Tl9zrrHPgWrckzz2esg3RpM4cBircyoGhaJJL0wq0LygoHz1u2keBnnlxfol8L4fafUA3rxr1b8tHfGM93uGIFVCCbUV7clSyLD4+bHC6tMB2XZtxVPvsucQbkKPb5KY3zx5nXOi7xAySv+HDtTi8eDAl2a65IqfLEo1teWy0h4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726489368; c=relaxed/simple;
-	bh=c9AiiezAPdeJA/5W/KzoQlDGuhF8uWLafjZpQwETSnE=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=IoEK5zTFugiQo4GiBxB2rueeT/g/C5uqmSrJxgP/+mgFgCdq1HgcY9jv4L3BI0GxUTiBrH46p14JpCJGfSI2p/17yRJTCMRzI4RUtq5KIRc4+XJFn7FNE+tQ7C/dNYhWy+4hdH9PHCKC7A+sWQAri8fqvB6T9v1iX/BF4toeyAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.41
+	s=arc-20240116; t=1726489403; c=relaxed/simple;
+	bh=SxLsXlxTP2H5dHNDB2XckZNzj6N1DE/5WRZf4FZZvsE=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Pbd+a9OQtMRyZUNOCX0bGjGMgGkkspCOEYV0pqQqz1XtgLzZjWdWRHR6SHcSWP6CZkaehsWwEcQXkM4zGK1l3LNQkR5scdvITzRyS5wYg9BgxrPCGs1WhhnXt2p7XLjbRxXDSjyAjFAuyhQSe9Tcigtmy47f+UZAGkpK0fWqdrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-374c3eef39eso2655454f8f.0;
-        Mon, 16 Sep 2024 05:22:46 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-42cb58d810eso33802115e9.0;
+        Mon, 16 Sep 2024 05:23:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726489365; x=1727094165;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GZBGRbBIGV5X5xLZ+rni4rJi5KtmpNZvI6X54qPGr6M=;
-        b=HUyqhj/Voty/DWOpvvuDaIwUOV0AF7u7mWQG9fMd+bQ89lzaxk0dcUcEq55nk1dS1q
-         FxSmGr5loYyRB32skUDRkhX0hhCOYRRZg0yAJhKdANAz8rVw0Gu/sz4NP2ASH9vXq/oQ
-         /k185IgQP4aYFdWZUWIN7blHufBOCvfNzC0h9Kxncby0DP8X//mWeexbopTmu8+F5em4
-         vgbG5Ix3s5arIWa5s8FEDYX7+YHuojrygy6Ad+4m0kdxYRDHz54UUTR+qF0ppjJnnNQH
-         IQNPeO7WCnwqLYqfw7xdjL+XorCtr/Cv8P5SpGySDToSAfFMej4FFp4WnEsDnOVth5VQ
-         vrOw==
-X-Forwarded-Encrypted: i=1; AJvYcCUh0Vd4/1y5Y64O4m1X0J4NRM8A0ZkPoCwxkjFH7t1tdQC8W42GGNc+vLSmwxrNj5mEGBRcUXwmwLaJ2KiD@vger.kernel.org, AJvYcCVgcmM1W1CZHFwLXFspSCp8KJ5svFm0IBEyo8p66+usF/aFHOkxiAFBTFaLcVxV5Z1p+ah8wc6C@vger.kernel.org
-X-Gm-Message-State: AOJu0YykBUU/HU0xb2+sw967bzCog8mM7WVa90hkYZzW/K7CdNadauFu
-	G8MDJUG8/bAp+IYTyYDGgrbtNEJPE4kwOEeo8l4tABP/GPA9GHDA
-X-Google-Smtp-Source: AGHT+IGnUnioaOxDZX1BUgvxFZDQXINgpAKMfpUC4aZJf56RSiMwVoLkPknPemhA8R9PyXrbvWBA7w==
-X-Received: by 2002:a5d:5747:0:b0:374:c4e2:3cad with SMTP id ffacd0b85a97d-378c2d5b237mr7952757f8f.52.1726489364668;
-        Mon, 16 Sep 2024 05:22:44 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1726489399; x=1727094199;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4XP7JYTPswuC1MNC97EWdOwUS12t/7UGSoTDEE9+Gmw=;
+        b=C+hgv4K/NN+msVfa3b8k3R4UuWMw0OrEMIaZrZKcLIb9Zv21XFRsfdd3AhQT6xtT3X
+         4Hlsz9k25T+6iZqmA2E2cjJmm3eJFTqsiiHx44HFCWZwjPGVZuw4f9FKusLf3gs1I2gl
+         8q8FlUq8LjmibKwCipBOpR9MHZu5FeGEdGCwYKAOp1290fFI1op07/7Yp3bDx27kLV+0
+         A+ujwXQTZyYHzVx5HmgIZygcfhpSG5iypJbziY7SmidHndCB/OMARuGz/UBoB/X5Es3a
+         VQCe0gC7ymwMl7a2z87aTbHQk7AhfQrsiIyPZm9m7iK/DZrXzUPo9w6cByP1mHcOdrBo
+         hZAA==
+X-Forwarded-Encrypted: i=1; AJvYcCWjjH04tq5GUaqCVWdoIROU5oEkp16TiIbTS4m/Z62g9sCc6bIuycvlx/uTOMp5/0hzuWBH7Bai@vger.kernel.org, AJvYcCXurA7z4eD2XwaEr9ZmqGWuwzlC1v9GTamN9DVg9aoxR7z2zBuQJDyDHOxZsinbCAoOIV/ju2F7vBc9EEcB@vger.kernel.org
+X-Gm-Message-State: AOJu0YxJUlVde4kSxNsWKmT8RkaVkxw4LMNUtoIn7DZZy3KtW8YRaKZV
+	GhKHqTd/J0skVIN7deTxmhAorf0hnRobVP1NgnX9IfQpuHzTdFI1
+X-Google-Smtp-Source: AGHT+IFNI4iYpjMKYAcaWjWoU/iNfgpzX74OJKJcuWhd59WCiBCwFyoNGw6iT8rIvbAFpRO0GYaD9w==
+X-Received: by 2002:a5d:4d51:0:b0:374:d2a3:d213 with SMTP id ffacd0b85a97d-378c27b4d25mr8711614f8f.18.1726489399460;
+        Mon, 16 Sep 2024 05:23:19 -0700 (PDT)
 Received: from costa-tp.. ([2a00:a041:e281:f300:ddd7:8878:b93d:7c0b])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-378e7800243sm7117272f8f.86.2024.09.16.05.22.40
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-378e7800243sm7117272f8f.86.2024.09.16.05.23.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Sep 2024 05:22:43 -0700 (PDT)
+        Mon, 16 Sep 2024 05:23:18 -0700 (PDT)
 From: Costa Shulyupin <costa.shul@redhat.com>
 To: longman@redhat.com,
 	ming.lei@redhat.com,
@@ -78,10 +80,12 @@ To: longman@redhat.com,
 	linuxppc-dev@lists.ozlabs.org,
 	linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org
-Subject: [RFC PATCH v3 0/3] genirq/cpuhotplug: Adjust managed interrupts according to change of housekeeping cpumask
-Date: Mon, 16 Sep 2024 15:20:41 +0300
-Message-ID: <20240916122044.3056787-1-costa.shul@redhat.com>
+Subject: [RFC PATCH v3 1/3] sched/isolation: Add infrastructure for dynamic CPU isolation
+Date: Mon, 16 Sep 2024 15:20:42 +0300
+Message-ID: <20240916122044.3056787-2-costa.shul@redhat.com>
 X-Mailer: git-send-email 2.45.0
+In-Reply-To: <20240916122044.3056787-1-costa.shul@redhat.com>
+References: <20240916122044.3056787-1-costa.shul@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -90,62 +94,97 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The housekeeping CPU masks, set up by the "isolcpus" and "nohz_full"
-boot command line options, are used at boot time to exclude selected
-CPUs from running some kernel housekeeping subsystems to minimize
-disturbance to latency sensitive userspace applications such as DPDK.
-This options can only be changed with a reboot. This is a problem for
-containerized workloads running on OpenShift/Kubernetes where a
-mix of low latency and "normal" workloads can be created/destroyed
-dynamically and the number of CPUs allocated to each workload is often
-not known at boot time.
+Introduce infrastructure function housekeeping_update() to change
+housekeeping_cpumask during runtime and adjust configurations of depended
+subsystems.
 
-Theoretically, complete CPU offlining/onlining could be used for
-housekeeping adjustments, but this approach is not practical.
-Telco companies use Linux to run DPDK in OpenShift/Kubernetes containers.
-DPDK requires isolated cpus to run real-time processes.
-Kubernetes manages allocation of resources for containers.
-Unfortunately Kubernetes doesn't support dynamic CPU offlining/onlining:
-https://github.com/kubernetes/kubernetes/issues/67500
-and is not planning to support it.
-Addressing this issue at the application level appears to be even
-less straightforward than addressing it at the kernel level.
+Configuration adjustments of subsystems follow in subsequent patches.
 
-This series of patches is based on series
-isolation: Exclude dynamically isolated CPUs from housekeeping masks:
+Parent patch:
+sched/isolation: Exclude dynamically isolated CPUs from housekeeping masks
 https://lore.kernel.org/lkml/20240821142312.236970-1-longman@redhat.com/
-Its purpose is to exclude dynamically isolated CPUs from some
-housekeeping masks so that subsystems that check the housekeeping masks
-at run time will not use those isolated CPUs.
 
-However, some of subsystems can use obsolete housekeeping CPU masks.
-Therefore, to prevent the use of these isolated CPUs, it is necessary to
-explicitly propagate changes of the housekeeping masks to all subsystems
-depending on the mask.
+Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
 
+---
 Changes in v2:
-- Focusing in this patch series on interrupts only.
+- remove unnecessary `err` variable
+- add for_each_clear_bit... to clear isolated CPUs
+- Address Gleixner's comments:
+- use WRITE_ONCE to change housekeeping.flags
+- use `struct cpumask *update` in signature of housekeeping_update
 
 v1:
-- https://lore.kernel.org/lkml/20240516190437.3545310-1-costa.shul@redhat.com/
+- https://lore.kernel.org/lkml/20240516190437.3545310-2-costa.shul@redhat.com/
+---
+ kernel/sched/isolation.c | 38 +++++++++++++++++++++++++++++++++++---
+ 1 file changed, 35 insertions(+), 3 deletions(-)
 
-References:
-- Linux Kernel Dynamic CPU Isolation: https://pretalx.com/devconf-us-2024/talk/AZBQLE/
-
-Costa Shulyupin (3):
-  sched/isolation: Add infrastructure for dynamic CPU isolation
-  genirq/cpuhotplug: Adjust managed irqs according to change of
-    housekeeping CPU
-  DO NOT MERGE: test for managed irqs adjustment
-
- include/linux/irq.h      |   2 +
- kernel/cgroup/cpuset.c   |   1 +
- kernel/irq/cpuhotplug.c  |  95 ++++++++++++++++++++++++++++++++
- kernel/sched/isolation.c |  46 ++++++++++++++--
- tests/managed_irq.sh     | 113 +++++++++++++++++++++++++++++++++++++++
- 5 files changed, 254 insertions(+), 3 deletions(-)
- create mode 100755 tests/managed_irq.sh
-
+diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+index 3018ba81eb65d..3f24921b929a0 100644
+--- a/kernel/sched/isolation.c
++++ b/kernel/sched/isolation.c
+@@ -124,6 +124,36 @@ static void __init housekeeping_setup_type(enum hk_type type,
+ 		     housekeeping_staging);
+ }
+ 
++/*
++ * housekeeping_update - change housekeeping.cpumasks[type] and propagate the
++ * change.
++ */
++static int housekeeping_update(enum hk_type type, const struct cpumask *update)
++{
++	struct {
++		struct cpumask changed;
++		struct cpumask enable;
++		struct cpumask disable;
++	} *masks;
++
++	masks = kmalloc(sizeof(*masks), GFP_KERNEL);
++	if (!masks)
++		return -ENOMEM;
++
++	lockdep_assert_cpus_held();
++	cpumask_xor(&masks->changed, housekeeping_cpumask(type), update);
++	cpumask_and(&masks->enable, &masks->changed, update);
++	cpumask_andnot(&masks->disable, &masks->changed, update);
++	cpumask_copy(housekeeping.cpumasks[type], update);
++	WRITE_ONCE(housekeeping.flags, housekeeping.flags | BIT(type));
++	if (!static_branch_unlikely(&housekeeping_overridden))
++		static_key_enable_cpuslocked(&housekeeping_overridden.key);
++
++	kfree(masks);
++
++	return 0;
++}
++
+ static int __init housekeeping_setup(char *str, unsigned long flags)
+ {
+ 	cpumask_var_t non_housekeeping_mask, housekeeping_staging;
+@@ -327,8 +357,11 @@ int housekeeping_exlude_isolcpus(const struct cpumask *isolcpus, unsigned long f
+ 		/*
+ 		 * Reset housekeeping to bootup default
+ 		 */
++
++		for_each_clear_bit(type, &boot_hk_flags, HK_TYPE_MAX)
++			housekeeping_update(type, cpu_possible_mask);
+ 		for_each_set_bit(type, &boot_hk_flags, HK_TYPE_MAX)
+-			cpumask_copy(housekeeping.cpumasks[type], boot_hk_cpumask);
++			housekeeping_update(type, boot_hk_cpumask);
+ 
+ 		WRITE_ONCE(housekeeping.flags, boot_hk_flags);
+ 		if (!boot_hk_flags && static_key_enabled(&housekeeping_overridden))
+@@ -355,9 +388,8 @@ int housekeeping_exlude_isolcpus(const struct cpumask *isolcpus, unsigned long f
+ 		cpumask_andnot(tmp_mask, src_mask, isolcpus);
+ 		if (!cpumask_intersects(tmp_mask, cpu_online_mask))
+ 			return -EINVAL;	/* Invalid isolated CPUs */
+-		cpumask_copy(housekeeping.cpumasks[type], tmp_mask);
++		housekeeping_update(type, tmp_mask);
+ 	}
+-	WRITE_ONCE(housekeeping.flags, boot_hk_flags | flags);
+ 	excluded = true;
+ 	if (!static_key_enabled(&housekeeping_overridden))
+ 		static_key_enable_cpuslocked(&housekeeping_overridden.key);
 -- 
 2.45.0
 
