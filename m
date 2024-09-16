@@ -1,68 +1,68 @@
-Return-Path: <cgroups+bounces-4889-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4890-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12BCC97A010
-	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2024 13:12:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A06F97A01C
+	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2024 13:16:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE5281F22DBE
-	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2024 11:12:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75DA0B216FF
+	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2024 11:16:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADA1814F11E;
-	Mon, 16 Sep 2024 11:12:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15443154C19;
+	Mon, 16 Sep 2024 11:16:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="xOKkjPAN"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="OyNWEs2G"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out203-205-221-221.mail.qq.com (out203-205-221-221.mail.qq.com [203.205.221.221])
+Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA9271514FB
-	for <cgroups@vger.kernel.org>; Mon, 16 Sep 2024 11:11:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.221
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C32E1465AB
+	for <cgroups@vger.kernel.org>; Mon, 16 Sep 2024 11:15:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726485121; cv=none; b=rVAV1tBbEM2fJnJreCYJGvnfXQaTId2/RA/qJecDS0jEdf9XKvTQd8aQ8ecEvYhi88MRA0ob0ksWXedRJIU4sJLLl2ISb54+IV3wkDW1YTpldr5Cb1Ih03NjpKc2hlLxy+jq8rdvemDEu9arnAWaHOhQLIvCBlGVkU7ZS/eY07c=
+	t=1726485360; cv=none; b=DWinSL0AtHx4I8TJCZJX9NdFbPmNUhJeyiSgo+ubMNP4mjyynxl9OSXPJVriIzywjc4F7wW8eH46s5ajBogL0AgHZ+cMmJv4VleM9MwZUpzJL7kMAz6vz3UFGzZ3mTqU3nz5jky6KF7xXB3I6EL6eNGh7bBMV5gWqgt10HwPp5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726485121; c=relaxed/simple;
-	bh=CqjTExi0nVJOYYGL4y1xlHEK5+lGpTDJkRCk+Iu/hDk=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version:Content-Type; b=D0jnl+y9B8PdwjidqsbmYjU6czFFrpMyEiqr6FuIUKCyR+Dwv+oUdtE03Lph/+w9ZEfkO6FpLW7E6GTqvCToSRXCWIPzMGPKM4PLzKGElFD2By6lux5I/E58Jd+locF4aH66t3Y+0pFcFBNCsI2qzhEGDDI7O7yNp5DLbfCZ++M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=xOKkjPAN; arc=none smtp.client-ip=203.205.221.221
+	s=arc-20240116; t=1726485360; c=relaxed/simple;
+	bh=9ip2Gi+SlPG9INN3tKG285VN2RWnZ9jcwyVbwVk0A24=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version:Content-Type; b=DcZfeK9yviqod9L+q1mwayxIJDxffrALykQfFYcMTFDpvjorzu3nl4frMH02qLEEMB/RbT5nXM18vCaRDwsPdIQ1kOpUgJ21nBFFlfQm2Z0/iDvyssdjPh9wuS3T/1KXgAlPz0dtk3SeM0hk3nR6T+EaGGlRcUKRqbLFIMBQyDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=OyNWEs2G; arc=none smtp.client-ip=162.62.58.216
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1726484786;
-	bh=d+5l5yBy7julBAMQ4hwQH0GuJOA3l2oUT47tpoixet4=;
+	s=s201512; t=1726485340;
+	bh=EvwJdIT9kTG0FJaJ+HjbXPR3Sgt88AbKUhVv3h3yY9o=;
 	h=From:To:Cc:Subject:Date;
-	b=xOKkjPANSapmLMn3/bWtxvNevz5/JCjqkNGpoBZR7/T7xQ3knzZkx49MTWYnzAHrE
-	 om71FEfkH71OnXR4LDYjd5Pbah1GmF06GYZWmtOD2btaxcdo8/aX6hjB2PjLOBFEM2
-	 E2t7REPVCVdV4OjWJzSe9fzjLWbb0VtW4NjMYvqQ=
+	b=OyNWEs2GY+EWyc7i1MoHoNLfmzJEKckFJ/ujf5W9+JaDQikTJXDWYMDRcWmcc/5xI
+	 CJpcOfWrteBGvGgfxkmDXSG6W1s2zAchv/rHW89E8AWB7GAN+Ri4ZRdNCPL6z74fkQ
+	 sBMbtz52KHpuW404RtSCZj3yyInn+Gc/7Y5hAfVw=
 Received: from liuweijie-Inspiron-5502.. ([180.213.133.106])
-	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
-	id 10B1961F; Mon, 16 Sep 2024 19:04:11 +0800
-X-QQ-mid: xmsmtpt1726484651trz6p6hyi
-Message-ID: <tencent_07DB577F971DBB31388C3A51807914977E08@qq.com>
-X-QQ-XMAILINFO: OcN56dxiYj5Th4I3yCsoOBoEjabTUrmF7TLiFFi/lkK5sxelnGZM78d2adpqlG
-	 XQZKxfThcoF4K7hBpNloSP8GoSOUeC2BewtGvhwFjM4JzNw9oCTU5K+RIkXWfWq62whMDNpw9wQ7
-	 zwZjT4o8IdQkrd+i09Euo4pG4Fo27DL6M4D1090aOUqINS5cXhTUKMzcdYtoqhtQ+9Xl7LLoKd9a
-	 w8T4Y/dkmogdGRAux3TZygLJO8pO0r71EjyUrxhC8AHbF2sedY7jy2AkI06g0+l4KZPQ3I3kNK5o
-	 sZDfSRAbZZACEih++tPcTh9yXOc/VUqsRELYbiivECjK0mDsbH0yHbZ2ybKAAZC55ramcwWf6gIb
-	 MdIFZfO+ALDj41IT2D0hVCKK9CmV5b6HqvI5JjuKCPDMWTa8RWX/6ayCD1vORKVyxjdIxJhbhLP0
-	 J8TdjMsHrbLT48oNUZiQsdMSXUrduE4GhCA1VKpAkC1taXCzXcibvufP/yPKzEzjP/MnS2BmPRKv
-	 8N8xWkwe1hdc2NDJhlMcSL/vILxfpFnCB6MmZ6M8aKmHr0mjeuOns88o7AXb92ipUAKzNq6HQAMq
-	 ZJpY+pyhpIuI47JBWkXmtYQedhTs1kY4IL2DnzqoYC4hBIuWm0NejR2qzUZnGWI3dI/U53gMY7xf
-	 KvD4ddulr9HHdpM2TJXMUtg5vPbG/UCE+MIaKqIsddyowgnT2SX6dgDEd9adGPcMQKvk4aJU+Hd8
-	 i7hJ1smZPp5y3LJZVo0VNpYvohjfDxYz8ysFbvEmLW22ii/FisbxAAA524KiWIk0tds31ZlwNDuY
-	 xcKaZ/O6ccV7MGrerT2yz37kPagQPIm/uAWO+lynVAgCg/zUKV1BNoksZjjLlvPVqDdQyvtKfv6J
-	 G3b3Wbyh8hBQHJ1j45TtghEo1/U+elr7fWDUxfJy7tALvT9CJCndkjR4jbOlVWdwcB+LzIdMgtvz
-	 JuykrJ89cYoVWiuLnXo+D4KmHIe+yE5d1KEMWr84C92nJa5hWaw386X0myHb3h0kJIQQsYDdMmZK
-	 RMm0jsH/wgG3DEv0r1yXbkzFlORq9rQxR2eY+Bo8aimzVwvXcmmgeTGZ9fURQ=
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
+	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
+	id 24781C2C; Mon, 16 Sep 2024 19:09:07 +0800
+X-QQ-mid: xmsmtpt1726484947tf90hzapk
+Message-ID: <tencent_267F5BF50FA3C336668111300A244FFA5205@qq.com>
+X-QQ-XMAILINFO: NQC/kJ+RyhsQSmRtdCJzqxQDong8+BnGRd4RlXxJYDn3kaK5yUVtrEhe9SC+gr
+	 Z835pkEbdxd90rtcgWLaPPZtZq1O7SoHXoRZpI43L/vzw080H5+eidkgo15WOxmWCsOIs7Jon5WE
+	 /W4om6WwEvfIYJ2ezw0d2felZxoTH3jquzwILI+0iTFgsj8Ry991RRol5A5wBKZL5w5YbdeETEtE
+	 HzTh3rldpESXabqbfxANyKqM/4bjy+ir/7lOoBXMRXVMA+QFu3e6EoOOjeh77Y89CTeZ+9bs8e+9
+	 Wbdd/4CUusa+L/TypZl1vpbzASwFRB4UaOouKOBLEC0l+FZKioh12868QnG9OFeUsFVnkNGUee8R
+	 mtsDW+GmDGxER6meXGUiBQ75aKM/SAIHOBGlTgW+Ekv4SR2jgQ+Q/pBOd8ThnVls+rbTGK5ugNmd
+	 9ssF1KinZy0f9cHuGkQMne8h6XYrOUswxPjUSP6P57cy7c8Bo+9jnHbkd7KEfLqM2ATff4pN0KUe
+	 ajR7W1moy50XziigMo3qHsEQQYWP9gmXoMx7uUSsxC9o+XW6Imy8GgAA5x89ijIhAyUANVU+qleh
+	 oNTW6YZD7xJEa8XODfiEyK5NgYYs+vt0DMz3LhcPiVI4PQ98+xTem53tufwdsrbhaYwCQSXJ0hVC
+	 Zhp/6EQLBh0O0z8gjufpNHPoWZnBCObrSdb17BLURM/ycehUhlZRO+MIw+tsN5Qf7xnhD8JT4VYD
+	 XopWncNtrX8GSqaKoRPGenFWT5zBfk7BIU8+o8/9XCrmxzH7I9B2D5onHYc1drIn3Wj1xCzV+k59
+	 US4v1vk4fWxMggwtoWgMJqKYphnrDDJJLjhuy9NBJzmCTuN1lubODsZALAqUDecsoDDoTAOuka3e
+	 moalqZbnS5gnM9RNeksU5cMAuZcs4TN7emOV96h2BXeUXKv8rYjc+5e0Qkx1HuLfsHRePgTmDBWB
+	 ed511MrDBaiDagfMyaXuGdNHsKyWgmJq7IP7yx3SOgwoIT8/pQK7w6qjJyoHW2kFwu7AZ79CRbZF
+	 K+0IrfLhdMS60Ny/6cQhyT8ytZ8udK8oanTB6tEdU08yEEz7MTUMu21B0HkZqAoiJhDeAUe2kPBu
+	 GZFZAWEIyveQZufgP4hImSzd507g==
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
 From: StanPlatinum <liuwj0129@foxmail.com>
 To: tj@kernel.org,
 	mhocko@kernel.org,
 	roman.gushchin@linux.dev,
-	shakeelb@google.com,
 	muchun.song@linux.dev
 Cc: cgroups@vger.kernel.org,
 	linux-mm@kvack.org,
@@ -71,8 +71,8 @@ Cc: cgroups@vger.kernel.org,
 	15086729272@163.com,
 	StanPlatinum <liuwj0129@foxmail.com>
 Subject: [PATCH] Proposal of Integrating Namespaces and Cgroups for Enhanced Resource Management
-Date: Mon, 16 Sep 2024 19:03:57 +0800
-X-OQ-MSGID: <20240916110357.7947-1-liuwj0129@foxmail.com>
+Date: Mon, 16 Sep 2024 19:09:06 +0800
+X-OQ-MSGID: <20240916110906.8001-1-liuwj0129@foxmail.com>
 X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -85,7 +85,7 @@ Content-Transfer-Encoding: 8bit
 
 Dear Tejun,
 
-Thank you for your feedback on our previous patch titled "<Integrating Namespaces and Cgroups for Enhanced Resource Management>". We have carefully reviewed the comments and have made the necessary adjustments to the patch to align with the Linux kernel development conventions.
+Thank you for your feedback on our previous patch titled "Integrating Namespaces and Cgroups for Enhanced Resource Management". We have carefully reviewed the comments and have made the necessary adjustments to the patch to align with the Linux kernel development conventions.
 
 Here are the main changes we have made:
 
