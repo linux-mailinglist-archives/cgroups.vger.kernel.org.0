@@ -1,61 +1,87 @@
-Return-Path: <cgroups+bounces-4893-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4894-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E53A097A1DE
-	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2024 14:11:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59B2897A217
+	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2024 14:22:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 141CC1C215F6
-	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2024 12:11:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D496285D13
+	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2024 12:22:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36E69155335;
-	Mon, 16 Sep 2024 12:11:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="sLYNvfuN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AF82154423;
+	Mon, 16 Sep 2024 12:22:48 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5D14149C57;
-	Mon, 16 Sep 2024 12:11:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C815E446D1;
+	Mon, 16 Sep 2024 12:22:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726488673; cv=none; b=IjqzL4N9IajvX+udPersw8F4ydt0BJyDApTY1UcxGsB6+44qutU5O7D++ANR+BOz99LGKLwdhGeyVlCCRny7yAxxRFqbT5DmxUK+q3dHbQ7DEh06Hn7zFuBWTjdD0oyaXNzvefAwgatlOVhTBP4ukdmSGzA8Fji06KdLiaFXOWg=
+	t=1726489368; cv=none; b=K2BQTaysKGqdxwB9WWGeudg/HLF8vhKp4KSqnTaN4mxDDsqUxkhR9sDp+74/wgDSmn9Ggbfbs/7KlwRpQQpqmsJy/1FiVZ2Qj06mwlsfxatTeDIFbbJDKQ028ZYeC9MJTf7dpAOYjThp1C8qd25eD6NmyyUTNWIp/fGQucKbPGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726488673; c=relaxed/simple;
-	bh=KF9V7WAKGEGo2sWoJRZr2rSfu6ylnZ/czmDbtV3+NuM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X1ki8RfssdIer3CmIIlgDo4tBa9cv+yT3O+cZrvCq2F5xlOJfOBrC6lmoKQ1QVN6/cJYfG3U5qDoeiZdxVYjx0TXHqsIrV/7kSQKJXhKdkzhTbSIAh237T1BZNgrbZ0fMJ5precGoufzS6+DCPmLHJBrn0Gsj0O+C0hpWtXjXtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=sLYNvfuN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70345C4CEC4;
-	Mon, 16 Sep 2024 12:11:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1726488672;
-	bh=KF9V7WAKGEGo2sWoJRZr2rSfu6ylnZ/czmDbtV3+NuM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sLYNvfuNaX79BLvbx/w7aPIaJ3zn9U4ql1S6620qUF7fO+lK2+btvb59dFpmQqabc
-	 h20zxoCCCiiHlffyv3i2A1QeMmxd3zd37vCdbsuhN5DfxbuakLrvMsc75hhbD9o6UU
-	 0T5G1/8hfBYTAv2Eka3dmGo4w8aBB1GpBbrC0uZA=
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: stable@vger.kernel.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	patches@lists.linux.dev,
-	cgroups@vger.kernel.org,
-	Nadia Pinaeva <n.m.pinaeva@gmail.com>,
-	Florian Westphal <fw@strlen.de>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.6 73/91] netfilter: nft_socket: make cgroupsv2 matching work with namespaces
-Date: Mon, 16 Sep 2024 13:44:49 +0200
-Message-ID: <20240916114226.881382740@linuxfoundation.org>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20240916114224.509743970@linuxfoundation.org>
-References: <20240916114224.509743970@linuxfoundation.org>
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
+	s=arc-20240116; t=1726489368; c=relaxed/simple;
+	bh=c9AiiezAPdeJA/5W/KzoQlDGuhF8uWLafjZpQwETSnE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=IoEK5zTFugiQo4GiBxB2rueeT/g/C5uqmSrJxgP/+mgFgCdq1HgcY9jv4L3BI0GxUTiBrH46p14JpCJGfSI2p/17yRJTCMRzI4RUtq5KIRc4+XJFn7FNE+tQ7C/dNYhWy+4hdH9PHCKC7A+sWQAri8fqvB6T9v1iX/BF4toeyAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-374c3eef39eso2655454f8f.0;
+        Mon, 16 Sep 2024 05:22:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726489365; x=1727094165;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GZBGRbBIGV5X5xLZ+rni4rJi5KtmpNZvI6X54qPGr6M=;
+        b=HUyqhj/Voty/DWOpvvuDaIwUOV0AF7u7mWQG9fMd+bQ89lzaxk0dcUcEq55nk1dS1q
+         FxSmGr5loYyRB32skUDRkhX0hhCOYRRZg0yAJhKdANAz8rVw0Gu/sz4NP2ASH9vXq/oQ
+         /k185IgQP4aYFdWZUWIN7blHufBOCvfNzC0h9Kxncby0DP8X//mWeexbopTmu8+F5em4
+         vgbG5Ix3s5arIWa5s8FEDYX7+YHuojrygy6Ad+4m0kdxYRDHz54UUTR+qF0ppjJnnNQH
+         IQNPeO7WCnwqLYqfw7xdjL+XorCtr/Cv8P5SpGySDToSAfFMej4FFp4WnEsDnOVth5VQ
+         vrOw==
+X-Forwarded-Encrypted: i=1; AJvYcCUh0Vd4/1y5Y64O4m1X0J4NRM8A0ZkPoCwxkjFH7t1tdQC8W42GGNc+vLSmwxrNj5mEGBRcUXwmwLaJ2KiD@vger.kernel.org, AJvYcCVgcmM1W1CZHFwLXFspSCp8KJ5svFm0IBEyo8p66+usF/aFHOkxiAFBTFaLcVxV5Z1p+ah8wc6C@vger.kernel.org
+X-Gm-Message-State: AOJu0YykBUU/HU0xb2+sw967bzCog8mM7WVa90hkYZzW/K7CdNadauFu
+	G8MDJUG8/bAp+IYTyYDGgrbtNEJPE4kwOEeo8l4tABP/GPA9GHDA
+X-Google-Smtp-Source: AGHT+IGnUnioaOxDZX1BUgvxFZDQXINgpAKMfpUC4aZJf56RSiMwVoLkPknPemhA8R9PyXrbvWBA7w==
+X-Received: by 2002:a5d:5747:0:b0:374:c4e2:3cad with SMTP id ffacd0b85a97d-378c2d5b237mr7952757f8f.52.1726489364668;
+        Mon, 16 Sep 2024 05:22:44 -0700 (PDT)
+Received: from costa-tp.. ([2a00:a041:e281:f300:ddd7:8878:b93d:7c0b])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-378e7800243sm7117272f8f.86.2024.09.16.05.22.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Sep 2024 05:22:43 -0700 (PDT)
+From: Costa Shulyupin <costa.shul@redhat.com>
+To: longman@redhat.com,
+	ming.lei@redhat.com,
+	pauld@redhat.com,
+	juri.lelli@redhat.com,
+	vschneid@redhat.com,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Naveen N Rao <naveen@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Costa Shulyupin <costa.shul@redhat.com>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org
+Subject: [RFC PATCH v3 0/3] genirq/cpuhotplug: Adjust managed interrupts according to change of housekeeping cpumask
+Date: Mon, 16 Sep 2024 15:20:41 +0300
+Message-ID: <20240916122044.3056787-1-costa.shul@redhat.com>
+X-Mailer: git-send-email 2.45.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -64,154 +90,63 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-6.6-stable review patch.  If anyone has any objections, please let me know.
+The housekeeping CPU masks, set up by the "isolcpus" and "nohz_full"
+boot command line options, are used at boot time to exclude selected
+CPUs from running some kernel housekeeping subsystems to minimize
+disturbance to latency sensitive userspace applications such as DPDK.
+This options can only be changed with a reboot. This is a problem for
+containerized workloads running on OpenShift/Kubernetes where a
+mix of low latency and "normal" workloads can be created/destroyed
+dynamically and the number of CPUs allocated to each workload is often
+not known at boot time.
 
-------------------
+Theoretically, complete CPU offlining/onlining could be used for
+housekeeping adjustments, but this approach is not practical.
+Telco companies use Linux to run DPDK in OpenShift/Kubernetes containers.
+DPDK requires isolated cpus to run real-time processes.
+Kubernetes manages allocation of resources for containers.
+Unfortunately Kubernetes doesn't support dynamic CPU offlining/onlining:
+https://github.com/kubernetes/kubernetes/issues/67500
+and is not planning to support it.
+Addressing this issue at the application level appears to be even
+less straightforward than addressing it at the kernel level.
 
-From: Florian Westphal <fw@strlen.de>
+This series of patches is based on series
+isolation: Exclude dynamically isolated CPUs from housekeeping masks:
+https://lore.kernel.org/lkml/20240821142312.236970-1-longman@redhat.com/
+Its purpose is to exclude dynamically isolated CPUs from some
+housekeeping masks so that subsystems that check the housekeeping masks
+at run time will not use those isolated CPUs.
 
-[ Upstream commit 7f3287db654395f9c5ddd246325ff7889f550286 ]
+However, some of subsystems can use obsolete housekeeping CPU masks.
+Therefore, to prevent the use of these isolated CPUs, it is necessary to
+explicitly propagate changes of the housekeeping masks to all subsystems
+depending on the mask.
 
-When running in container environmment, /sys/fs/cgroup/ might not be
-the real root node of the sk-attached cgroup.
+Changes in v2:
+- Focusing in this patch series on interrupts only.
 
-Example:
+v1:
+- https://lore.kernel.org/lkml/20240516190437.3545310-1-costa.shul@redhat.com/
 
-In container:
-% stat /sys//fs/cgroup/
-Device: 0,21    Inode: 2214  ..
-% stat /sys/fs/cgroup/foo
-Device: 0,21    Inode: 2264  ..
+References:
+- Linux Kernel Dynamic CPU Isolation: https://pretalx.com/devconf-us-2024/talk/AZBQLE/
 
-The expectation would be for:
+Costa Shulyupin (3):
+  sched/isolation: Add infrastructure for dynamic CPU isolation
+  genirq/cpuhotplug: Adjust managed irqs according to change of
+    housekeeping CPU
+  DO NOT MERGE: test for managed irqs adjustment
 
-  nft add rule .. socket cgroupv2 level 1 "foo" counter
+ include/linux/irq.h      |   2 +
+ kernel/cgroup/cpuset.c   |   1 +
+ kernel/irq/cpuhotplug.c  |  95 ++++++++++++++++++++++++++++++++
+ kernel/sched/isolation.c |  46 ++++++++++++++--
+ tests/managed_irq.sh     | 113 +++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 254 insertions(+), 3 deletions(-)
+ create mode 100755 tests/managed_irq.sh
 
-to match traffic from a process that got added to "foo" via
-"echo $pid > /sys/fs/cgroup/foo/cgroup.procs".
-
-However, 'level 3' is needed to make this work.
-
-Seen from initial namespace, the complete hierarchy is:
-
-% stat /sys/fs/cgroup/system.slice/docker-.../foo
-  Device: 0,21    Inode: 2264 ..
-
-i.e. hierarchy is
-0    1               2              3
-/ -> system.slice -> docker-1... -> foo
-
-... but the container doesn't know that its "/" is the "docker-1.."
-cgroup.  Current code will retrieve the 'system.slice' cgroup node
-and store its kn->id in the destination register, so compare with
-2264 ("foo" cgroup id) will not match.
-
-Fetch "/" cgroup from ->init() and add its level to the level we try to
-extract.  cgroup root-level is 0 for the init-namespace or the level
-of the ancestor that is exposed as the cgroup root inside the container.
-
-In the above case, cgrp->level of "/" resolved in the container is 2
-(docker-1...scope/) and request for 'level 1' will get adjusted
-to fetch the actual level (3).
-
-v2: use CONFIG_SOCK_CGROUP_DATA, eval function depends on it.
-    (kernel test robot)
-
-Cc: cgroups@vger.kernel.org
-Fixes: e0bb96db96f8 ("netfilter: nft_socket: add support for cgroupsv2")
-Reported-by: Nadia Pinaeva <n.m.pinaeva@gmail.com>
-Signed-off-by: Florian Westphal <fw@strlen.de>
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/netfilter/nft_socket.c | 41 +++++++++++++++++++++++++++++++++++---
- 1 file changed, 38 insertions(+), 3 deletions(-)
-
-diff --git a/net/netfilter/nft_socket.c b/net/netfilter/nft_socket.c
-index 765ffd6e06bc..12cdff640492 100644
---- a/net/netfilter/nft_socket.c
-+++ b/net/netfilter/nft_socket.c
-@@ -9,7 +9,8 @@
- 
- struct nft_socket {
- 	enum nft_socket_keys		key:8;
--	u8				level;
-+	u8				level;		/* cgroupv2 level to extract */
-+	u8				level_user;	/* cgroupv2 level provided by userspace */
- 	u8				len;
- 	union {
- 		u8			dreg;
-@@ -53,6 +54,28 @@ nft_sock_get_eval_cgroupv2(u32 *dest, struct sock *sk, const struct nft_pktinfo
- 	memcpy(dest, &cgid, sizeof(u64));
- 	return true;
- }
-+
-+/* process context only, uses current->nsproxy. */
-+static noinline int nft_socket_cgroup_subtree_level(void)
-+{
-+	struct cgroup *cgrp = cgroup_get_from_path("/");
-+	int level;
-+
-+	if (!cgrp)
-+		return -ENOENT;
-+
-+	level = cgrp->level;
-+
-+	cgroup_put(cgrp);
-+
-+	if (WARN_ON_ONCE(level > 255))
-+		return -ERANGE;
-+
-+	if (WARN_ON_ONCE(level < 0))
-+		return -EINVAL;
-+
-+	return level;
-+}
- #endif
- 
- static struct sock *nft_socket_do_lookup(const struct nft_pktinfo *pkt)
-@@ -174,9 +197,10 @@ static int nft_socket_init(const struct nft_ctx *ctx,
- 	case NFT_SOCKET_MARK:
- 		len = sizeof(u32);
- 		break;
--#ifdef CONFIG_CGROUPS
-+#ifdef CONFIG_SOCK_CGROUP_DATA
- 	case NFT_SOCKET_CGROUPV2: {
- 		unsigned int level;
-+		int err;
- 
- 		if (!tb[NFTA_SOCKET_LEVEL])
- 			return -EINVAL;
-@@ -185,6 +209,17 @@ static int nft_socket_init(const struct nft_ctx *ctx,
- 		if (level > 255)
- 			return -EOPNOTSUPP;
- 
-+		err = nft_socket_cgroup_subtree_level();
-+		if (err < 0)
-+			return err;
-+
-+		priv->level_user = level;
-+
-+		level += err;
-+		/* Implies a giant cgroup tree */
-+		if (WARN_ON_ONCE(level > 255))
-+			return -EOPNOTSUPP;
-+
- 		priv->level = level;
- 		len = sizeof(u64);
- 		break;
-@@ -209,7 +244,7 @@ static int nft_socket_dump(struct sk_buff *skb,
- 	if (nft_dump_register(skb, NFTA_SOCKET_DREG, priv->dreg))
- 		return -1;
- 	if (priv->key == NFT_SOCKET_CGROUPV2 &&
--	    nla_put_be32(skb, NFTA_SOCKET_LEVEL, htonl(priv->level)))
-+	    nla_put_be32(skb, NFTA_SOCKET_LEVEL, htonl(priv->level_user)))
- 		return -1;
- 	return 0;
- }
 -- 
-2.43.0
-
-
+2.45.0
 
 
