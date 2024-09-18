@@ -1,111 +1,79 @@
-Return-Path: <cgroups+bounces-4902-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4903-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EF5397B7E4
-	for <lists+cgroups@lfdr.de>; Wed, 18 Sep 2024 08:23:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3662697B901
+	for <lists+cgroups@lfdr.de>; Wed, 18 Sep 2024 10:10:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41C791C2217B
-	for <lists+cgroups@lfdr.de>; Wed, 18 Sep 2024 06:23:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09AAA2814B8
+	for <lists+cgroups@lfdr.de>; Wed, 18 Sep 2024 08:10:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ABC9163A97;
-	Wed, 18 Sep 2024 06:22:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CB3917A586;
+	Wed, 18 Sep 2024 08:10:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W+Hg6mF/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DOQ+QhLX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A0D0339A0;
-	Wed, 18 Sep 2024 06:22:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD43F176AAA;
+	Wed, 18 Sep 2024 08:10:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726640567; cv=none; b=T2uqAY189HX97I7F4E4BG0Zm4WtyvIr28YWcX0sRAIG/Gyu1zAOl8cC5iAqjrqA8WSXbvQvd0qSRc8MxwGOZBEKNqjl8qnThsXmhppzRLeqy8TeHoE9D9frcYBWTXHzCSS/Sm4TJcSCr1V//sdcSTVjS3/xkgbJoDb5Hgc7Bz7Q=
+	t=1726647004; cv=none; b=A/JwHMEmcLqQjMjzTzggTKXQv1JIXLefWlDZDiWhD/IDDqNtkgYlVReztCJJtPIUFxMAQAS5IqBzVbAmIjlce9hZcsjPOYmb0m/9hQ7qmlSL03l9GorooqneXrr7cHUz+dQQ8isph+xgg8W6lWGxDIzYURqputB6fFb8UrSgMfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726640567; c=relaxed/simple;
-	bh=2Nf2xXXqOPusb/SiXKCGS0TviajEiQ1Gtw/T5EX2xWg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GZhGOk0xLUF4QkOx3KN7H/D+pnBuqL1MEycjf2f9IEunp70TSzpC3xVUDrKvbFLAB3M/sqnHOSd0xw/K/rZhmc/iioXSlv10aUI+f6a9slI8lcv/MclpWUS3ni0sw52Njzi3xee4sbBj0HamzTvK5QoWyEvDgre+WOOAtNWnFNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W+Hg6mF/; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1726640566; x=1758176566;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2Nf2xXXqOPusb/SiXKCGS0TviajEiQ1Gtw/T5EX2xWg=;
-  b=W+Hg6mF/OI0H8sOOCIV2vSZwY/xqzEH3JYGa1omgxHietabF0O2pzMYZ
-   4nm57YSdik4Xk+ITe+KJ0+S9pBs82DRVQsUKTRyEHLSep1j4lSJxdi1l0
-   6gEQ1c0wZPtf8hg+a1j544nTj6b0CY3ysBFNaaziXL9tcOY54EQ33o5sq
-   DHvDi0Y/cKdwylv5uVgn3YXNoEuLyiMeumVaLtLMCiBfJJeOEYTlr8H49
-   o2D53UKDWVxtXDWw3uDOml8eCXm8CqapHzFy6RRBudhFfcEiDwHqpjObL
-   7XpSrelSNri2ZyKZS41JXZqXFsFlIk0Is01D/5FIF2MEzGO8VINmX/jd2
-   Q==;
-X-CSE-ConnectionGUID: js8VqP5pRIuIlSgrdn2OrQ==
-X-CSE-MsgGUID: Qr3n4ErGR3i8Oz8bmF0Xkw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11198"; a="25653554"
-X-IronPort-AV: E=Sophos;i="6.10,235,1719903600"; 
-   d="scan'208";a="25653554"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2024 23:22:38 -0700
-X-CSE-ConnectionGUID: vHY8YzuzRwC1U/FFOy8dKw==
-X-CSE-MsgGUID: BOsk7cVsQvCYWiTNiQ/SWQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,235,1719903600"; 
-   d="scan'208";a="69444540"
-Received: from ly-workstation.sh.intel.com (HELO ly-workstation) ([10.239.161.23])
-  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2024 23:22:35 -0700
-Date: Wed, 18 Sep 2024 14:21:25 +0800
-From: "Lai, Yi" <yi1.lai@linux.intel.com>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Felix Moessbauer <felix.moessbauer@siemens.com>, asml.silence@gmail.com,
-	linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-	cgroups@vger.kernel.org, dqminh@cloudflare.com, longman@redhat.com,
-	adriaan.schmidt@siemens.com, florian.bezdeka@siemens.com,
-	stable@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-	pengfei.xu@intel.com, yi1.lai@intel.com
-Subject: Re: [PATCH 1/1] io_uring/sqpoll: do not allow pinning outside of
- cpuset
-Message-ID: <ZupxZeILxuKqFsRq@ly-workstation>
-References: <20240909150036.55921-1-felix.moessbauer@siemens.com>
- <ZupPb3OH3tnM2ARj@ly-workstation>
- <5237b4c0-973f-44cc-a6ee-08302871fd19@kernel.dk>
+	s=arc-20240116; t=1726647004; c=relaxed/simple;
+	bh=Jqmk4ZvNkBfSW5OguoBnesTatLc/EdomM4uS56IpsoY=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=TjxhYsh3sRKx/vOINrI5vksGfQwx54vMXVadhmIi4YVypOlj04yegB6wOSDeKZxu0CjOpDATKZphhhITWINEWbf3hgKXrwnMGBp2CWM+0iybgVdyO0wu55xjFqYpOIa/Y328rubmxLPkfHhTHkvdXoJFsNy6HrvOALUHV8Y5/qg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DOQ+QhLX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC965C4CEC3;
+	Wed, 18 Sep 2024 08:10:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726647004;
+	bh=Jqmk4ZvNkBfSW5OguoBnesTatLc/EdomM4uS56IpsoY=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=DOQ+QhLXB3S+88eVIv4K21uHz8ewvr5NTJ2faXBMISEwiNj2KzMMirNDxatvMegSb
+	 bii70Mgzv4qIak7pofL5rE0GoprfGnRQmtULkoEAmPaLWK6qeo6OuT94NrLrW3Luvy
+	 Ax5SzOLHiTyAQzIje+c94jYKeJsikUJYj8HExNYmXEZqzt5HusSybrSa0YqY96NSz4
+	 hrXr7+7CR+r6z/ifw35IEesrHQxGAi0HmBwNJpQI96aeSbsOw18fCuwIFGK85q9l0O
+	 FaTG2FFrCsYYc4ZmxNP2cu4yWQF+YLx7wljr60dmfTEgWP3GNlqPXABL7LnFA7mUie
+	 B/2uDhgtb1i1A==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id AEBDF3806655;
+	Wed, 18 Sep 2024 08:10:07 +0000 (UTC)
+Subject: Re: [GIT PULL] cgroup: Changes for v6.12
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <ZuNVf1ocpQi03lkf@slm.duckdns.org>
+References: <ZuNVf1ocpQi03lkf@slm.duckdns.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZuNVf1ocpQi03lkf@slm.duckdns.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.12
+X-PR-Tracked-Commit-Id: af000ce85293b8e608f696f0c6c280bc3a75887f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 78567e2bc723b444228644d2e34ae5255d4ab8a0
+Message-Id: <172664700657.684502.763317521130186395.pr-tracker-bot@kernel.org>
+Date: Wed, 18 Sep 2024 08:10:06 +0000
+To: Tejun Heo <tj@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, Waiman Long <longman@redhat.com>, Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5237b4c0-973f-44cc-a6ee-08302871fd19@kernel.dk>
 
-Thanks for reply. I will include lkp into search database before sending
-out fuzzing findings.
+The pull request you sent on Thu, 12 Sep 2024 10:56:31 -1000:
 
-Regards,
-Yi Lai
+> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.12
 
-On Wed, Sep 18, 2024 at 12:16:41AM -0600, Jens Axboe wrote:
-> On 9/17/24 9:56 PM, Lai, Yi wrote:
-> > Hi Felix Moessbauer,
-> > 
-> > Greetings!
-> > 
-> > I used Syzkaller and found that there is KASAN: use-after-free Read in io_sq_offload_create in Linux-next tree - next-20240916.
-> > 
-> > After bisection and the first bad commit is:
-> > "
-> > f011c9cf04c0 io_uring/sqpoll: do not allow pinning outside of cpuset
-> > "
-> 
-> This is known and fixed:
-> 
-> https://git.kernel.dk/cgit/linux/commit/?h=for-6.12/io_uring&id=a09c17240bdf2e9fa6d0591afa9448b59785f7d4
-> 
-> -- 
-> Jens Axboe
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/78567e2bc723b444228644d2e34ae5255d4ab8a0
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
