@@ -1,213 +1,154 @@
-Return-Path: <cgroups+bounces-4905-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4906-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 897B097CAED
-	for <lists+cgroups@lfdr.de>; Thu, 19 Sep 2024 16:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B22297CEE2
+	for <lists+cgroups@lfdr.de>; Thu, 19 Sep 2024 23:52:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF37D284FE7
-	for <lists+cgroups@lfdr.de>; Thu, 19 Sep 2024 14:28:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63459283B5B
+	for <lists+cgroups@lfdr.de>; Thu, 19 Sep 2024 21:52:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14BB419F47A;
-	Thu, 19 Sep 2024 14:28:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B39EF18E053;
+	Thu, 19 Sep 2024 21:52:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="a06UjLzx"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CD3919E827
-	for <cgroups@vger.kernel.org>; Thu, 19 Sep 2024 14:28:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3DDE1946C2;
+	Thu, 19 Sep 2024 21:52:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726756104; cv=none; b=rUVPT7WEdwWRqsJzlF/Vghqz8eoTcqcWFDE7cyaOG/xvm6BWygxHzFfSb4erJ/GabHNl6AzAs7jK8haZ43taHP4kxDMO7tFHBG2SpAiX9WBOOklhknJ3FuK6G5Wkn3TDtiuAF7UKqdBFg5NMVWAkhc793cpq4+okpmIuK8HHhzo=
+	t=1726782755; cv=none; b=Y7ymDPtRr/CB529iyIsfEURVnYta+sgzB1PDW1galNHg9/TZphFqzqCGo21Sh5NGxJoKOaVoxNCvVTylZ8HYkzvK4Rjix0BAm/0GZloZhg51Y6NddMgu117fZsdibcMu/I3SuB1wtO6M1NRrAD8FQg6HCjTTGVe34cXoPZfGa4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726756104; c=relaxed/simple;
-	bh=ARkS/TdRTX1quJ/+KneNXaNfoRa+gSBSyw6INjFOF/Y=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=geLa7lsrv9F0gIkSI+tplKGenpBCQl1qofdjyTH+0+EFE7ndPqjg63Ks/ABZPmSxOe+Md+RbY9jh1SUTbvlMncpglscqOMcm0/JMg6Wi1XehUVtWw44SsbNgkXukpW4dPl50bNC03JhQq+MMDEe/hesCXPN4qiEwziYLysva+Kw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a0a4db9807so14771215ab.3
-        for <cgroups@vger.kernel.org>; Thu, 19 Sep 2024 07:28:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726756102; x=1727360902;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VhoKh0X8PkzpeoULm+kGqj4f92k1O+QVQGRIZuxdXLg=;
-        b=oUcy4mBL3GdFsu8TQNiljJOZHTvdpgztvVCmwhJsNE7hFzFIhK/b7GdLeh6oJgJfj3
-         t6kh01L2qUvjwGjfc5v7v+ctRqPZkBpa3SSEx6oW1qYPyG167yFuIq9ZMoNaz6rJY0Ka
-         rrjZPLa6J411JO/KleCEa/mSZX6CmiQ/phJlXtsiSMcFcHRV8SMfmOw7+eBmv2F6q2m1
-         hfHmQ32cijQIeV3cHmvZ0buNGplSeec67wy8U3FwnhPGoRHt02DRNPDUJQpuDQz8dBIS
-         cAkl91LehtvSlhSd3ShR/xmLfaE/dvDclBqS7EB6PpPJW8e3bondSr8kj3V1Ego4KwF4
-         kruA==
-X-Forwarded-Encrypted: i=1; AJvYcCWzB+KsEbA1v9r7yW2F3tSmFdMQf2xcD0aZ1z3eZPr8NSv0PrrWQQuoIorNwlLl3KopGb9NRQ1z@vger.kernel.org
-X-Gm-Message-State: AOJu0YzQcPYjIet5fpY2B2Mx9QHdjKHsjBczqHIWaaA6BN5lYxZo/5Xj
-	cwZGXmXysi0jmjju4M/VTtJwwYvMEfzIrxrTglFybg8jtgpiner+5NRfamFgJs2uUD0rmQHXD21
-	j8KDV13wZZIABU2qbr3cOjWPVy2lY3wC2Jv6E8ISCnKjc/KdFfXHFBDM=
-X-Google-Smtp-Source: AGHT+IEmWmlkU6TQc0eoIUQ2KVbgxtgRCiNv5E2vZEYIy31oMVG2AdhxLIjyKZOYLzsw5eIEbk6JaDkSir0WnjIE2Y9OOozyx7Hd
+	s=arc-20240116; t=1726782755; c=relaxed/simple;
+	bh=RHCftHVh0VYEKLZvIPJy7UQLlCOcdazq8yCwXdgPsvU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=vCZZ1AbXaV+8j8Mt3C7ARiqgvKVF2Oc/oWn+UCBjYyJpVGRC6Ur5CLqi0BuanE0CPcdxHWQ0CngGb9HDhGAsEGX9UUuN8yz6I2dJ5ZfUClP3NfTueo4NhlNelX4xsXeELseRW8B+D2eAFi5i5BDVdajJCzgTii27vABOiDkGcCg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=a06UjLzx; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1726782754; x=1758318754;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=RHCftHVh0VYEKLZvIPJy7UQLlCOcdazq8yCwXdgPsvU=;
+  b=a06UjLzxOfUuF9TmLf4PnaKl3F1PZXN8eNQRjfdLjV1+sR2BK69wp0Io
+   jn2+vC8cfoCzKVKFs8wCY3YJINhbZ5/q23mGfX25p4gSI+E+Ak0MkSbrP
+   FnP4rTlmC9ZAhiSdpYT+WX/BZxvCUylgaqwLDliih69fF27Yx+h+/Fyka
+   sT2HqBwF22vt1UNxaXVz4tdxl50L2brvnftaBuMnieCknhTucRyhTP4IJ
+   MKQFrg5QEDewsXyhAHgvVZ0Is8Xwdgc6hkXa6NFMad0qsuXDrSrOYOK+z
+   qzOooAF1CCX3j4KdvmJr8XgyBHbaVfuPsD2dj09xbee8ZIQ4aAyiyC5um
+   w==;
+X-CSE-ConnectionGUID: YMz+nwHgSqGTZworDVsn7Q==
+X-CSE-MsgGUID: jIYY2LYFTsSo/2WdSZaCEg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11200"; a="25870746"
+X-IronPort-AV: E=Sophos;i="6.10,243,1719903600"; 
+   d="scan'208";a="25870746"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2024 14:52:34 -0700
+X-CSE-ConnectionGUID: CGgwDlO/S7WcXIlSY+Y4ZA==
+X-CSE-MsgGUID: M+l5qJ78Tt+9fXBEU4UVMQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,243,1719903600"; 
+   d="scan'208";a="74862540"
+Received: from trevorcr-mobl.amr.corp.intel.com (HELO desk) ([10.125.147.197])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Sep 2024 14:52:33 -0700
+Date: Thu, 19 Sep 2024 14:52:31 -0700
+From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+To: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	David Kaplan <David.Kaplan@amd.com>,
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [PATCH RFC 0/2] Selective mitigation for trusted userspace
+Message-ID: <20240919-selective-mitigation-v1-0-1846cf41895e@linux.intel.com>
+X-B4-Tracking: v=1; b=H4sIAIyc7GYC/x3MTQqAIBBA4avErBNMpKht0AHaRgu1yQb6Q0WC8
+ O5Jy7f43gseHaGHrnjBYSRP15mjKgswmzotMlpyg+BC8rZqmccdTaCI7KBAVoUMWL1wYaTWuhE
+ aMr0drvT82wnGoYc5pQ/qSdgKawAAAA==
+X-Mailer: b4 0.14.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:194e:0:b0:3a0:979d:843 with SMTP id
- e9e14a558f8ab-3a0979d0a06mr126255195ab.9.1726756102390; Thu, 19 Sep 2024
- 07:28:22 -0700 (PDT)
-Date: Thu, 19 Sep 2024 07:28:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <66ec3506.050a0220.29194.002c.GAE@google.com>
-Subject: [syzbot] [cgroups?] [mm?] INFO: rcu detected stall in shmem_fault (6)
-From: syzbot <syzbot+4145b11cdf925264bff4@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, cgroups@vger.kernel.org, hughd@google.com, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hello,
+Hi,
 
-syzbot found the following issue on:
+This is an experimental series exploring the feasibility of selectively
+applying CPU vulnerability mitigations on a per-process basis. The
+motivation behind this work is to address the performance degradation
+experienced by trusted user-space applications due to system-wide CPU
+mitigations.
 
-HEAD commit:    0babf683783d Merge tag 'pinctrl-v6.11-4' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=162de407980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1c9e296880039df9
-dashboard link: https://syzkaller.appspot.com/bug?extid=4145b11cdf925264bff4
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+Currently, the mitigations are applied universally across the system,
+without discrimination between trusted and untrusted user-space processes.
+This results in a performance penalty for all applications, regardless of
+their trustworthiness. The proposed solution aims to provide a mechanism
+for system administrators to explicitly mark certain applications as
+trusted, allowing them to bypass these mitigations and regain lost
+performance.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+The series introduces a new cgroup attribute and a separate kernel
+entry/exit path that can be used to selectively disable CPU mitigations for
+processes that are deemed trustworthy by the system administrator. This
+approach provides a tool to the administrator who understands the security
+implications and is aware of trustworthiness of the applications that they
+care.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/5d6146edacfa/disk-0babf683.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/2593d4fb261a/vmlinux-0babf683.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a5e44e1e0eba/bzImage-0babf683.xz
+The rationale for choosing the cgroup interface over other potential
+interfaces, such as LSMs, is cgroup's inherent support for core scheduling.
+Core scheduling allows the grouping of tasks such that they are scheduled
+to run on the same cores. By leveraging core scheduling, we can minimize
+the performance overhead caused by the MSR writes during context switching
+between trusted and untrusted processes. With the end goal being trusted
+and untrusted processes run on separate cores, enhancing the security.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4145b11cdf925264bff4@syzkaller.appspotmail.com
+Patch 1 adds the unmitigated entry/exit path.
+Patch 2 provides a cgroup knob to bypass CPU mitigations.
 
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-rcu: 	Tasks blocked on level-0 rcu_node (CPUs 0-1): P9592/1:b..l
-rcu: 	(detected by 1, t=10502 jiffies, g=41797, q=358 ncpus=2)
-task:syz.1.962       state:R  running task     stack:24176 pid:9592  tgid:9589  ppid:9183   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5188 [inline]
- __schedule+0x17ae/0x4a10 kernel/sched/core.c:6529
- preempt_schedule_irq+0xfb/0x1c0 kernel/sched/core.c:6851
- irqentry_exit+0x5e/0x90 kernel/entry/common.c:354
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
-RIP: 0010:lock_acquire+0x264/0x550 kernel/locking/lockdep.c:5763
-Code: 2b 00 74 08 4c 89 f7 e8 ea e1 87 00 f6 44 24 61 02 0f 85 85 01 00 00 41 f7 c7 00 02 00 00 74 01 fb 48 c7 44 24 40 0e 36 e0 45 <4b> c7 44 25 00 00 00 00 00 43 c7 44 25 09 00 00 00 00 43 c7 44 25
-RSP: 0018:ffffc90003d47020 EFLAGS: 00000206
-RAX: 0000000000000001 RBX: 1ffff920007a8e10 RCX: baa91729e815a300
-RDX: dffffc0000000000 RSI: ffffffff8beae6e0 RDI: ffffffff8c3fbb00
-RBP: ffffc90003d47168 R08: ffffffff93fa6847 R09: 1ffffffff27f4d08
-R10: dffffc0000000000 R11: fffffbfff27f4d09 R12: 1ffff920007a8e0c
-R13: dffffc0000000000 R14: ffffc90003d47080 R15: 0000000000000246
- rcu_lock_acquire include/linux/rcupdate.h:326 [inline]
- rcu_read_lock include/linux/rcupdate.h:838 [inline]
- filemap_get_entry+0x144/0x3b0 mm/filemap.c:1837
- shmem_get_folio_gfp+0x29a/0x2370 mm/shmem.c:2104
- shmem_fault+0x252/0x6f0 mm/shmem.c:2388
- __do_fault+0x135/0x460 mm/memory.c:4672
- do_read_fault mm/memory.c:5078 [inline]
- do_fault mm/memory.c:5208 [inline]
- do_pte_missing mm/memory.c:3964 [inline]
- handle_pte_fault+0x321f/0x6fc0 mm/memory.c:5538
- __handle_mm_fault mm/memory.c:5681 [inline]
- handle_mm_fault+0x1056/0x1ad0 mm/memory.c:5849
- faultin_page mm/gup.c:1194 [inline]
- __get_user_pages+0x6ec/0x16a0 mm/gup.c:1493
- populate_vma_page_range+0x264/0x330 mm/gup.c:1932
- __mm_populate+0x27a/0x460 mm/gup.c:2035
- mm_populate include/linux/mm.h:3430 [inline]
- vm_mmap_pgoff+0x2c3/0x3d0 mm/util.c:593
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f848877def9
-RSP: 002b:00007f848949c038 EFLAGS: 00000246 ORIG_RAX: 0000000000000009
-RAX: ffffffffffffffda RBX: 00007f8488936058 RCX: 00007f848877def9
-RDX: b635773f06ebbeee RSI: 0000000000b36000 RDI: 0000000020000000
-RBP: 00007f84887f0b76 R08: ffffffffffffffff R09: 0000000000000000
-R10: 0000000000008031 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 00007f8488936058 R15: 00007ffd36b2c578
- </TASK>
-rcu: rcu_preempt kthread starved for 10184 jiffies! g41797 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x0 ->cpu=1
-rcu: 	Unless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.
-rcu: RCU grace-period kthread stack dump:
-task:rcu_preempt     state:R  running task     stack:26448 pid:17    tgid:17    ppid:2      flags:0x00004000
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5188 [inline]
- __schedule+0x17ae/0x4a10 kernel/sched/core.c:6529
- __schedule_loop kernel/sched/core.c:6606 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6621
- schedule_timeout+0x1be/0x310 kernel/time/timer.c:2581
- rcu_gp_fqs_loop+0x2df/0x1330 kernel/rcu/tree.c:2034
- rcu_gp_kthread+0xa7/0x3b0 kernel/rcu/tree.c:2236
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-rcu: Stack dump where RCU GP kthread last ran:
-CPU: 1 UID: 0 PID: 9590 Comm: syz.4.963 Not tainted 6.11.0-rc7-syzkaller-00149-g0babf683783d #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
-RIP: 0010:__bpf_trace_run kernel/trace/bpf_trace.c:2397 [inline]
-RIP: 0010:bpf_trace_run2+0x159/0x540 kernel/trace/bpf_trace.c:2447
-Code: 08 42 80 3c 30 00 74 08 48 89 df e8 81 a7 58 00 48 89 5c 24 38 48 8b 03 bb 01 00 00 00 65 0f c1 18 31 ff 89 de e8 f7 87 f4 ff <85> db 0f 85 b4 02 00 00 49 83 c5 70 4c 89 e8 48 c1 e8 03 42 80 3c
-RSP: 0018:ffffc9000318fde0 EFLAGS: 00000297
-RAX: 0000000000000002 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff888026beda00 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc9000318fec8 R08: ffffffff819f08a9 R09: 0000000000000000
-R10: ffffc9000318fe40 R11: fffff52000631fca R12: ffffc90003b05000
-R13: ffff888033723100 R14: dffffc0000000000 R15: ffffc9000318fe40
-FS:  00007fc00c8a16c0(0000) GS:ffff8880b8900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000110c3f657a CR3: 0000000088454000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- </IRQ>
- <TASK>
- trace_sys_enter+0x93/0xd0 include/trace/events/syscalls.h:18
- syscall_trace_enter+0xf8/0x150 kernel/entry/common.c:61
- syscall_enter_from_user_mode_work include/linux/entry-common.h:168 [inline]
- syscall_enter_from_user_mode include/linux/entry-common.h:198 [inline]
- do_syscall_64+0xcc/0x230 arch/x86/entry/common.c:79
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fc00bb19869
-Code: 64 c7 00 16 00 00 00 b8 ff ff ff ff c3 0f 1f 40 00 90 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 c7 c0 0f 00 00 00 0f 05 <0f> 1f 80 00 00 00 00 48 81 ec 48 01 00 00 49 89 d0 64 48 8b 04 25
-RSP: 002b:00007fc00c8a0b40 EFLAGS: 00000246 ORIG_RAX: 000000000000000f
-RAX: ffffffffffffffda RBX: 00007fc00bd35f88 RCX: 00007fc00bb19869
-RDX: 00007fc00c8a0b40 RSI: 00007fc00c8a0c70 RDI: 0000000000000011
-RBP: 00007fc00bd35f80 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007fc00bd35f8c
-R13: 0000000000000000 R14: 00007ffc51e12cf0 R15: 00007ffc51e12dd8
- </TASK>
+This series is lightly tested. Feedback and discussion are welcome.
 
+TODO:
+- Add CONFIG_MITIGATION_PER_PROCESS
+- Add support for skipping other mitigations like RSB filling.
+- Update suspend/resume paths to handle the new entry/exit path.
+- Should child processes inherit the parent's unmitigated status?
+- Add documentation.
 
+Signed-off-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Pawan Gupta (2):
+      x86/entry_64: Add a separate unmitigated entry/exit path
+      cpu/bugs: cgroup: Add a cgroup knob to bypass CPU mitigations
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+ arch/x86/entry/entry_64.S        | 66 +++++++++++++++++++++++++++++++++-------
+ arch/x86/include/asm/proto.h     | 15 ++++++---
+ arch/x86/include/asm/ptrace.h    | 15 ++++++---
+ arch/x86/include/asm/switch_to.h | 10 ++++++
+ arch/x86/kernel/cpu/bugs.c       | 21 +++++++++++++
+ arch/x86/kernel/cpu/common.c     |  2 +-
+ include/linux/cgroup-defs.h      |  3 ++
+ kernel/cgroup/cgroup.c           | 42 +++++++++++++++++++++++++
+ kernel/sched/core.c              |  2 +-
+ 9 files changed, 155 insertions(+), 21 deletions(-)
+---
+base-commit: 98f7e32f20d28ec452afb208f9cffc08448a2652
+change-id: 20240919-selective-mitigation-6d02c4bbb72b
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+-- 
+Thanks,
+Pawan
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
