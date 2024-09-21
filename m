@@ -1,118 +1,118 @@
-Return-Path: <cgroups+bounces-4926-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4927-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A5FD97DBFB
-	for <lists+cgroups@lfdr.de>; Sat, 21 Sep 2024 09:30:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 031C397DC06
+	for <lists+cgroups@lfdr.de>; Sat, 21 Sep 2024 09:51:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4360B282CD0
-	for <lists+cgroups@lfdr.de>; Sat, 21 Sep 2024 07:30:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1563B1C21137
+	for <lists+cgroups@lfdr.de>; Sat, 21 Sep 2024 07:51:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7D9814B960;
-	Sat, 21 Sep 2024 07:30:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB677152196;
+	Sat, 21 Sep 2024 07:51:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ObgtDunf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jKa8NzbE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74BB14290
-	for <cgroups@vger.kernel.org>; Sat, 21 Sep 2024 07:30:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F6D7134C4;
+	Sat, 21 Sep 2024 07:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726903821; cv=none; b=pUzrV6seoXjEkRTxjqj7R/VIZ5yz5NRQoxgogxffhaIBqHeaGCrQ8trLiYroC1qTbqrfzWkp8l1X3Dak5VWTv5FSsaNqEysU+aB6ACw2mo/8JUNC6OItsf1VtzCbO5sxSEXgwnkSjJkr/6tvdUnxKPNXWofWDyJPk+16leTsWPI=
+	t=1726905075; cv=none; b=gn8Z5ZrYXqbTeulWZMxLJnSeDwKkHxjOSYEQP2W8C9/7JsRhZcHANMjpPV+BZVuJIL2DjRUz4jq7L2UtiqTqpdGup58aiyrwQAQ+s9WJKWiLJcPXiAPkj7IFvZETCOWwnOMJph4DP8BlYdvdGk3aQmjPdoegrNXMDDz2k8Df+Pg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726903821; c=relaxed/simple;
-	bh=z+hccMl8T/g4EuK4dkYhejTd+uidfLcfUtyLjsHtcDw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jtDR08PRAk9MRy0wm5ljXvF1pw7cp0pnIDfBhrFJCZC0xoDwtGTmXEcN/IqTI+Ol9XYpDk/bZ+UoQ5umoIglYcu24937AEzv6mztQ/bODl78aXW2dmCqTEuIqxmnSnTvGUJeWW45Dp8MtuX1KHUc4rEtEuD/G9HTzXTpcXWBwqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ObgtDunf; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1726903818;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KzvMnsM+vzdU7NKDHCnrJ1kjDqhwnForMED4ERX1KeI=;
-	b=ObgtDunf5cHARSbxTz9O/jtc2m7ce6CiKOhvhksZ3Ytv1E7RVX4Ows4mZEHpMtwUEpEOgM
-	W23R2nCJTdNF4VdhHsJN519hNQerop4TmRXcTZqb7rLS0oKU9dH/wb0ls0F6ZsQc5SyHc9
-	Ek5S2lYtylyxuC2cGVaBVUQUQq/yZP4=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-648-xsEMrhcCOm6jF64Lgyb3jQ-1; Sat,
- 21 Sep 2024 03:30:16 -0400
-X-MC-Unique: xsEMrhcCOm6jF64Lgyb3jQ-1
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (unknown [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E9C3219137A7;
-	Sat, 21 Sep 2024 07:30:14 +0000 (UTC)
-Received: from [10.45.224.28] (unknown [10.45.224.28])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 7C68230001A1;
-	Sat, 21 Sep 2024 07:30:09 +0000 (UTC)
-Message-ID: <031a122c-f480-4dbc-8022-ca829f4ce500@redhat.com>
-Date: Sat, 21 Sep 2024 03:30:07 -0400
+	s=arc-20240116; t=1726905075; c=relaxed/simple;
+	bh=3dkVH2QbyIm7oZjw/33FsvLGZQhFnfzR0P63G8YGECk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qzNcLgIliMUtAGyz9MmXn1Y75vbyPN8ximpN5H+M9NKok28FRmLr5h8nAxKJVap20jcPKSY30o7so2U9Dfo/a195ZWW2DB1fVjzhqHcAzp8Tz+ktHXLbAswb/X6NzJMYpe2KwwjQ4Bigv/zSr+QdGKOINTlNiqyjTZkRaRwwGhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jKa8NzbE; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-718d91eef2eso1768062b3a.1;
+        Sat, 21 Sep 2024 00:51:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726905073; x=1727509873; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sBaYPDTXxYwaESqW8DBuiZi7wSnkr5v5D0zlShXrWOo=;
+        b=jKa8NzbEN8DaoZzDYyobjeX2VEc27QYMwBneGbJJFtaJujoiaGsNO4TsDaUOl1jO0E
+         Si+hQVNvdr+Jjb2qvoyk8qMCakdMLPMBZBzONGbvWLtVSZ2mB3Kv5d/2oSTZpfgjaO/c
+         RYYLronAohvVol0SyBhMrj9aorboJU4bJvX9ClGPvTdG8vO9gIx5nY07MYIctJDo2OeU
+         O7MYI6oyt2mkmeT2U2qyhImHEmu71ow1blfy3hnCejAcQwTyGvRdp5s/rFWTMK60uvKJ
+         vYl0/rvykoJJoKqtyS1vgc2p7xRswepCn2Swxn/+l3d6X8JthpW1kduBFqg4O1cXfify
+         6uxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726905073; x=1727509873;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sBaYPDTXxYwaESqW8DBuiZi7wSnkr5v5D0zlShXrWOo=;
+        b=hZBjsDScnVGYIOQvNLU6zmqvUC3QIWjQZNU2Bi2opBBCLy6lAzr6QSHzRWcP6hWkDP
+         kzU5EiPnhPYEcRIAMt3EecktdH3nQkcxOtjCQ4JtJOlGrra5m2cnXBc1rejqLoL/PpQP
+         o16nDWGMhdMAORHDvbkJ3wgT1Ddoe29hgiTTiUQRQKaCllX+q/wO4WE3MC9btXtN6t8O
+         YFTyNOWuct6uCQa0eUcu1A+VBIQYnnXNsOfJbnNWKXVdwYezV1UNfgdvLJ1TpZSe+RYi
+         vOY3hM1eFuy98W/+MZzKBcR1qm9teCHHdwHTnN1eqAsx1Ge5lBo39ABVdUg7G785l61l
+         ujQw==
+X-Forwarded-Encrypted: i=1; AJvYcCVTJmZliQTEHS1laR/wAkAmfZTeoTPZ9Gn7xhwGwtt/0mJFADQ5JdRBkw3QT5Eqwa0IjFxXvML7@vger.kernel.org, AJvYcCWh6cMXuU1UYHWRvb8o5bM4U+drkhAZUi7GuESE2d6QIeE/22JaFFWd5NL04org/UfDQ0y6iQXGiSJluU1D@vger.kernel.org
+X-Gm-Message-State: AOJu0YxzAahregUiuTfZcweKNc+0bVo8smia00JAaPRxDO14MKwdEZTw
+	Lq8g3iuSr3ko15UcFUUVhJByK/1vIch0/Dt3GJ/E4k10tzo1eFLnDHAmvww3Pnge+PbmtQyMnEj
+	ULuRsO6SopBWpIr/HAuDPetZ/u4Q=
+X-Google-Smtp-Source: AGHT+IGZwn+VHNRYjAYnGmPX5f/AYK0jICvMvI2FP0cILSB0OBhtqtYl0eEoesDVuPDwaZJvKMba0MvbHNyHr+foQC8=
+X-Received: by 2002:a05:6a00:660e:b0:717:98e7:3d0 with SMTP id
+ d2e1a72fcca58-7198e14025dmr12457725b3a.0.1726905073361; Sat, 21 Sep 2024
+ 00:51:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 2/2] cpu/bugs: cgroup: Add a cgroup knob to bypass CPU
- mitigations
-To: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Cc: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>,
- David Kaplan <David.Kaplan@amd.com>,
- Daniel Sneddon <daniel.sneddon@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>,
- Josh Poimboeuf <jpoimboe@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-References: <20240919-selective-mitigation-v1-0-1846cf41895e@linux.intel.com>
- <20240919-selective-mitigation-v1-2-1846cf41895e@linux.intel.com>
- <5f48073d-8b4e-4569-af4f-3a9b5586d7ad@redhat.com>
- <20240920075448.djesnjetefwa4yl4@desk>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240920075448.djesnjetefwa4yl4@desk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+References: <linuszeng@tencent.com> <20240913084453.3605621-1-jingxiangzeng.cas@gmail.com>
+ <20240916004134.0ef2f50862b59079e1ac2928@linux-foundation.org>
+In-Reply-To: <20240916004134.0ef2f50862b59079e1ac2928@linux-foundation.org>
+From: jingxiang zeng <jingxiangzeng.cas@gmail.com>
+Date: Sat, 21 Sep 2024 15:51:01 +0800
+Message-ID: <CAJqJ8iiVPhhyH1avxGujpYoCuh-0nQwBf3g6JPbg8ouqYgjW+w@mail.gmail.com>
+Subject: Re: [PATCH V2] mm/memcontrol: add per-memcg pgpgin/pswpin counter
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
+	linuszeng@tencent.com, linux-kernel@vger.kernel.org, mhocko@kernel.org, 
+	muchun.song@linux.dev, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
+	yosryahmed@google.com
+Content-Type: text/plain; charset="UTF-8"
 
+On Mon, 16 Sept 2024 at 15:41, Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Fri, 13 Sep 2024 16:44:53 +0800 Jingxiang Zeng <jingxiangzeng.cas@gmail.com> wrote:
+>
+> > From: Jingxiang Zeng <linuszeng@tencent.com>
+> >
+> > In proactive memory reclamation scenarios, it is necessary to estimate the
+> > pswpin and pswpout metrics of the cgroup to determine whether to continue
+> > reclaiming anonymous pages in the current batch.  This patch will collect
+> > these metrics and expose them.
+> >
+>
+> Please explain the differences between v1 and v2:
 
-On 9/20/24 03:54, Pawan Gupta wrote:
->>>    static int cpu_local_stat_show(struct seq_file *seq, void *v)
->>>    {
->>>    	struct cgroup __maybe_unused *cgrp = seq_css(seq)->cgroup;
->>> @@ -5290,6 +5326,12 @@ static struct cftype cgroup_base_files[] = {
->>>    		.name = "cpu.stat.local",
->>>    		.seq_show = cpu_local_stat_show,
->>>    	},
->>> +	{
->>> +		.name = "cpu.skip_mitigation",
->>> +		.flags = CFTYPE_NOT_ON_ROOT,
->>> +		.seq_show = cpu_skip_mitigation_show,
->>> +		.write = cgroup_skip_mitigation_write,
->>> +	},
->>>    	{ }	/* terminate */
->>>    };
->> Since this control knob is effective only for x86_64, should we enable this
->> only for this architecture?
-> This should be under a CONFIG option that depends on the architecture
-> selected. I don't see a reason why it will not be useful for other archs.
-
-Using a CONFIG option looks fine to me. I just want to make sure that 
-arches that don't support it won't have a useless control knob show up.
-
-Cheers,
-Longman
-
+Currently, the PSWPIN and PSWPOUT fields are only used in proactive memory
+reclamation scenarios, but memory.reclaim is only exposed in cgroup v2, so
+here we simply delete these fields in cgroup v1.
+>
+> --- a/mm/memcontrol-v1.c~mm-memcontrol-add-per-memcg-pgpgin-pswpin-counter-v2
+> +++ a/mm/memcontrol-v1.c
+> @@ -2729,8 +2729,6 @@ static const char *const memcg1_stat_nam
+>  static const unsigned int memcg1_events[] = {
+>         PGPGIN,
+>         PGPGOUT,
+> -       PSWPIN,
+> -       PSWPOUT,
+>         PGFAULT,
+>         PGMAJFAULT,
+>  };
+> _
+>
 
