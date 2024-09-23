@@ -1,42 +1,42 @@
-Return-Path: <cgroups+bounces-4931-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4932-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50B2D97EB0C
-	for <lists+cgroups@lfdr.de>; Mon, 23 Sep 2024 13:52:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06CFE97EB0E
+	for <lists+cgroups@lfdr.de>; Mon, 23 Sep 2024 13:53:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15ACF280E3A
-	for <lists+cgroups@lfdr.de>; Mon, 23 Sep 2024 11:52:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A0B111F21DE6
+	for <lists+cgroups@lfdr.de>; Mon, 23 Sep 2024 11:53:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EDAE198E63;
-	Mon, 23 Sep 2024 11:52:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 190861990D2;
+	Mon, 23 Sep 2024 11:52:38 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438D78002A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4388F1E487;
 	Mon, 23 Sep 2024 11:52:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727092357; cv=none; b=TXjbyc4Bz7P9kJT0zD33HP4I13fgAtIbfkiQCARJn1m3J3y5aFgCVPpZ+MdJarlPlJwKfDIVrR244YAAEd3RfMwiFQ3jHACHrS2zC46Vrbt2Z1TDPnWQbmpIa5e8ybyFMaO83fma6mzbMUCqX/WEBXO/aSuKXuBLFvFiCYw67Wk=
+	t=1727092357; cv=none; b=jwOv5wIScwq5rzqHXFbT6TU4ahFln3mD9XmypGq4IYpuUn1zo3jb4uQTxXXu2m2mAEsI754oxk7sYOq7kTse7ChYxLdf3Qvhylkq0goy/d0vbOi+uP1qd+eI6l5nJjLmNpDb6272A24hzQqwPU1boGJKk12c9sODRWkocdSwENQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1727092357; c=relaxed/simple;
-	bh=BBff3cyxB2P0r+iByxqTQCiR3m+KKIyM0RieOmJ1nBM=;
+	bh=DXjWKYOvianPpA+tLa3PnY1A5CKhCzCbcmyYGiVBebg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=anjAk+R9p77rX+9YFXX5HG2idsVuvz0w5UEOMy+Yrjd7fHW7QIH1L4wRL+DoY7w+OjelrAag27nBOrDYSfFyv2vWmeZqMkny4lxWdsFPvcS7EZ7D66KCdaEbYR0uUvBq3FrwZt25L7RdRQQIHSEPQLsGxLbNygw3QjWUdGadEZM=
+	 MIME-Version; b=p88jG/ujyIhx1IiVQ7XAENpGilMRJJEb/um6ML3JeLQg124ET/J44yTzZ1IeNeyx7pfFuj/WhmZCnpouH22ZBm2tqzmDJdUWPKuSCRcgTuaKU8wHA9WgVDylDI/+fSP2jfyreBf4knnhJNSzKDVoAGwtBSscSfnhijas0790fFE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XC1ZD67KYz4f3jq9;
-	Mon, 23 Sep 2024 19:52:20 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XC1Z71V0Sz4f3lDG;
+	Mon, 23 Sep 2024 19:52:15 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 00E4C1A0359;
-	Mon, 23 Sep 2024 19:52:31 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 0F35E1A018D;
+	Mon, 23 Sep 2024 19:52:32 +0800 (CST)
 Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP3 (Coremail) with SMTP id _Ch0CgCHKYZlVvFmONo3CA--.32773S4;
+	by APP3 (Coremail) with SMTP id _Ch0CgCHKYZlVvFmONo3CA--.32773S5;
 	Mon, 23 Sep 2024 19:52:31 +0800 (CST)
 From: Chen Ridong <chenridong@huaweicloud.com>
 To: tj@kernel.org,
@@ -47,9 +47,9 @@ To: tj@kernel.org,
 	chenridong@huawei.com
 Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 2/3] workqueue: doc: Add a note saturating the system_wq is not permitted
-Date: Mon, 23 Sep 2024 11:43:51 +0000
-Message-Id: <20240923114352.4001560-3-chenridong@huaweicloud.com>
+Subject: [PATCH v5 3/3] workqueue: Adjust WQ_MAX_ACTIVE from 512 to 2048
+Date: Mon, 23 Sep 2024 11:43:52 +0000
+Message-Id: <20240923114352.4001560-4-chenridong@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240923114352.4001560-1-chenridong@huaweicloud.com>
 References: <20240923114352.4001560-1-chenridong@huaweicloud.com>
@@ -60,13 +60,13 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgCHKYZlVvFmONo3CA--.32773S4
-X-Coremail-Antispam: 1UD129KBjvJXoWrKry3XF4UCFWUGry7tF43Wrg_yoW8JF17pr
-	WfCF1aqw1kJr12kas5JrnruFy7GF18CFsrGFs7t3yIvFn8Jr92gw1xKryFqas8JryfuFy8
-	ZF92q3s0y34jvrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:_Ch0CgCHKYZlVvFmONo3CA--.32773S5
+X-Coremail-Antispam: 1UD129KBjvJXoW7AF17GFy3WFyxAFW3tr1UJrb_yoW8Cr1DpF
+	Z3Cr48ta1fWFyYk34kJw1xJry8GayUCF4DKFZ2gr10v3W5ZrWv9F47Kr1Yva4kJryDZF95
+	uFW2grZ0y3yjvrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUU9Kb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
+	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
 	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
 	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
 	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
@@ -76,37 +76,51 @@ X-Coremail-Antispam: 1UD129KBjvJXoWrKry3XF4UCFWUGry7tF43Wrg_yoW8JF17pr
 	67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
 	8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
 	wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
-	v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcTmhUUUUU
+	v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUwhFxUUUUU
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 From: Chen Ridong <chenridong@huawei.com>
 
-If something is expected to generate large number of concurrent works,
-it should utilize its own dedicated workqueue rather than system wq.
-Because this may saturate system_wq and potentially block other's works.
-eg, cgroup release work. Let's document this as a note.
+WQ_MAX_ACTIVE is currently set to 512, which was established approximately
+15 yeas ago. However, with the significant increase in machine sizes and
+capabilities, the previous limit of 256 concurrent tasks is no longer
+sufficient. Therefore, we propose to increase WQ_MAX_ACTIVE to 2048.
+and WQ_DFL_ACTIVE is 1024 now.
 
 Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- Documentation/core-api/workqueue.rst | 5 +++++
- 1 file changed, 5 insertions(+)
+ Documentation/core-api/workqueue.rst | 4 ++--
+ include/linux/workqueue.h            | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/Documentation/core-api/workqueue.rst b/Documentation/core-api/workqueue.rst
-index 16f861c9791e..9de622188f2f 100644
+index 9de622188f2f..c6a8ac2530e9 100644
 --- a/Documentation/core-api/workqueue.rst
 +++ b/Documentation/core-api/workqueue.rst
-@@ -357,6 +357,11 @@ Guidelines
-   difference in execution characteristics between using a dedicated wq
-   and a system wq.
+@@ -245,8 +245,8 @@ CPU which can be assigned to the work items of a wq. For example, with
+ at the same time per CPU. This is always a per-CPU attribute, even for
+ unbound workqueues.
  
-+  Note: If something is expected to generate a large number of concurrent
-+  works, it should utilize its own dedicated workqueue rather than
-+  system wq. Because this may saturate system_wq and potentially lead
-+  to deadlock.
-+
- * Unless work items are expected to consume a huge amount of CPU
-   cycles, using a bound wq is usually beneficial due to the increased
-   level of locality in wq operations and work item execution.
+-The maximum limit for ``@max_active`` is 512 and the default value used
+-when 0 is specified is 256. These values are chosen sufficiently high
++The maximum limit for ``@max_active`` is 2048 and the default value used
++when 0 is specified is 1024. These values are chosen sufficiently high
+ such that they are not the limiting factor while providing protection in
+ runaway cases.
+ 
+diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
+index 59c2695e12e7..b0dc957c3e56 100644
+--- a/include/linux/workqueue.h
++++ b/include/linux/workqueue.h
+@@ -412,7 +412,7 @@ enum wq_flags {
+ };
+ 
+ enum wq_consts {
+-	WQ_MAX_ACTIVE		= 512,	  /* I like 512, better ideas? */
++	WQ_MAX_ACTIVE		= 2048,	  /* I like 2048, better ideas? */
+ 	WQ_UNBOUND_MAX_ACTIVE	= WQ_MAX_ACTIVE,
+ 	WQ_DFL_ACTIVE		= WQ_MAX_ACTIVE / 2,
+ 
 -- 
 2.34.1
 
