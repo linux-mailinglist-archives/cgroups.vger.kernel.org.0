@@ -1,135 +1,175 @@
-Return-Path: <cgroups+bounces-4929-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4930-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B43CF97E500
-	for <lists+cgroups@lfdr.de>; Mon, 23 Sep 2024 05:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D56497E57A
+	for <lists+cgroups@lfdr.de>; Mon, 23 Sep 2024 06:45:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5AFB1C20ED1
-	for <lists+cgroups@lfdr.de>; Mon, 23 Sep 2024 03:37:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A79931C20908
+	for <lists+cgroups@lfdr.de>; Mon, 23 Sep 2024 04:45:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C70CE2CA9;
-	Mon, 23 Sep 2024 03:37:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98C13DDA8;
+	Mon, 23 Sep 2024 04:45:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b3I0p6Wm"
 X-Original-To: cgroups@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20C77256E
-	for <cgroups@vger.kernel.org>; Mon, 23 Sep 2024 03:37:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B57CB17597;
+	Mon, 23 Sep 2024 04:45:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727062646; cv=none; b=VaHcI4lJkQPOiChSHlt91y1DY5leZwmj7KLPXMCOrJ+o0ghQpwm7DjmbVHp/xJAvXXIqCD65bCDenkaC1S9oVBlN+ZJkamIirSty0UFroJP0EXLenfIxZmeHlhdgEA3sQs4s6zHm0z0yB35uFFy0EMIyYcnN1JWKSFNHkII2jXk=
+	t=1727066713; cv=none; b=PEJKeC2IxScmS1I4JdWAHVyWzFVKzBtImcMcqMudS4mIu++qsJ5PZy39S2w4OWPNlzfKS1PamsEWu7Co9vbJ0uP0FTBEQHVBAHvEGM80boksFbIXWzh+7hG5u6uJHmzYhpaSczO5XxflC6CBE5Q4Vx55qmTbMndeYWR0Vk98lCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727062646; c=relaxed/simple;
-	bh=ur5YDFEeG9hSzNThhj3L5wKruJQXdOIJOuyTtA5FLcQ=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
-	 In-Reply-To:Content-Type; b=tHqwPDIX7Fr9/qvY/Dnb0X7JAzshH3bTmkBYIbZCZtDDBHRfM3ZsNHOh4AGxRBbloBbUerna3AkYHh+Qxg+9oJU7CGHjd0tVJjlwqGpOK2w1jQxQceM+IfnJWWp/nkr+xBRTy3DyCZat2TMMPU4suzhKTHBUq/ZtOrxftottZtg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4XBpZc68WwzQrRr;
-	Mon, 23 Sep 2024 11:36:56 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id CF3A01403D4;
-	Mon, 23 Sep 2024 11:37:15 +0800 (CST)
-Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Mon, 23 Sep
- 2024 11:37:15 +0800
-Message-ID: <d9a9186b-8b4b-4ead-8e39-83b173539f3e@huawei.com>
-Date: Mon, 23 Sep 2024 11:37:14 +0800
+	s=arc-20240116; t=1727066713; c=relaxed/simple;
+	bh=H4lW2GbrSxIbifL9QDRCmNx0sdIMaESBWAmbtjAnK4M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DAwZM69QBX7J3ysxQvVXNKWNDZBpvpcW5bb8uFXFigltBLv7mushEC7fOryJ+u94u+StCqGH0edh2/RbL3QGpoba8IjCHfvRUZqqGQsj9Vo/mAQ8W1BR9ZKQUGNdaIfHnXadDxEYEcoMtvhiSc3fkqaHtBh9VwVEiWhrI/UuNMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b3I0p6Wm; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-45821eb62daso25259931cf.3;
+        Sun, 22 Sep 2024 21:45:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727066710; x=1727671510; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W+UDAv8JUuD8CeMJd4evn90rK4F2VqQSJxb+UyTjTm0=;
+        b=b3I0p6WmNrwKGJ4sfxuW7MeXFGb3nn/OLfH/psGZ51qTb49NjXK7vD0PGVooXUgmMK
+         tDI3uEkbblLizqbU8ANdql0mxIlME2aMUlWIhcORNxn8pi3gCbNfuNmIEMwfDVszUkQB
+         ry/zxz3dIZwjVj+DfgkfEPmZW+stRw5zkigXalLyfoIMFb3wo+tALnnjbd/Fby9NmmlG
+         qg6/11btFxwURX7gIg0059dgdfk1u3V7yVVubRF0zAQdFND5RUC0tVVVO6rlD9mQzJmr
+         J5UFD6Nylf4QuxHWBWo84vn9/T7YT5cruaNq8vRnhYWrGciifMhbQgCHaN4qzizEDanw
+         SFuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727066710; x=1727671510;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W+UDAv8JUuD8CeMJd4evn90rK4F2VqQSJxb+UyTjTm0=;
+        b=SjxqGP08MimWLYrwZkN142GM+OVoG+OlDcfj4+q9SKKsD1pgTRjo/r03Q7e4Sqcii5
+         FKWkdta7RKSkgxQBvxFaKcbPBVHj3pIKXtGzF2PPTElJDVdjncqp68hAxJjNpTQgnqeZ
+         +A/a/FY7TrKDyER8FY1liwTG+STNydOqm/OuSbnSwZnbQGi58qpxaega/CxBjuUXVkjv
+         1pKsNRRTEX6VChqTk0J8SBwjBnN8R+6mF1cGMbq5IB7Y61J5NSPjx5RfzuxBXZIDn7Qv
+         s0fF22dz14W0Xpwkc/bq36VOHIJuc9BPFMhSJyqJezfASEFnJ86TQU/RI8VLRR0Tp3zn
+         iOYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUZux5oUGaLSjb1rMEajU/kZOC6LRrCEjJXaHdYS0D5PD/ewFBqtiLbO37Ob8z8/GwkaVrdQc+/@vger.kernel.org, AJvYcCXsEfTDMvm2kKlKoDBL8gigcg8gyMmyOJw0W464UoK4+3RfvThlPCCra6C0goIi0PQXetHKQzNGLG1W3uJoTQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzv5wniMrl6Wi6QJAirOkPBaPiOBQQ3kZiKaDMutRAJBwXCX4jS
+	K0lyjw8hXG3PFue83rP8HnO1pVk8cvi/PrOTI5zTQu82Mejpr4PyiBO7vHplQvVYnyGFLkgnv2j
+	LyFZzyPrZxjRWHsD0po7dW7yCPw0=
+X-Google-Smtp-Source: AGHT+IFCUNNKXhR8Wyqn9c0M40t2qOE+oiVeSi6DK0gS1TmMT+a2pTIlUG58PCLyvyT4IagFnjfHia6qd2C0LPYglKA=
+X-Received: by 2002:a05:622a:15d5:b0:453:1afe:c711 with SMTP id
+ d75a77b69052e-45b2050e59emr121771071cf.28.1727066710497; Sun, 22 Sep 2024
+ 21:45:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATHC v3 -next 0/3] Some optimizations about freezer
-From: chenridong <chenridong@huawei.com>
-To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
-	<longman@redhat.com>, <adityakali@google.com>, <sergeh@kernel.org>,
-	<mkoutny@suse.com>, <guro@fb.com>
-CC: <cgroups@vger.kernel.org>
-References: <20240915071307.1976026-1-chenridong@huawei.com>
-Content-Language: en-US
-In-Reply-To: <20240915071307.1976026-1-chenridong@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemd100013.china.huawei.com (7.221.188.163)
+References: <20240829165627.2256514-1-david@redhat.com> <20240829165627.2256514-2-david@redhat.com>
+In-Reply-To: <20240829165627.2256514-2-david@redhat.com>
+From: Lance Yang <ioworker0@gmail.com>
+Date: Mon, 23 Sep 2024 12:44:59 +0800
+Message-ID: <CABzRoyb3zNKPKCSWzdK8uy81pzf8MB_-4-kCCAoTeoPHD5tExA@mail.gmail.com>
+Subject: Re: [PATCH v1 01/17] mm: factor out large folio handling from
+ folio_order() into folio_large_order()
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	x86@kernel.org, linux-fsdevel@vger.kernel.org, 
+	Andrew Morton <akpm@linux-foundation.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Aug 30, 2024 at 12:57=E2=80=AFAM David Hildenbrand <david@redhat.co=
+m> wrote:
+>
+> Let's factor it out into a simple helper function. This helper will
+> also come in handy when working with code where we know that our
+> folio is large.
+>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
 
+LGTM. Feel feel to add:
 
-On 2024/9/15 15:13, Chen Ridong wrote:
-> I optimized the freezer to reduce redundant loops, and I add helper
-> to make code concise.
-> 
-> The following subtree was tested to prove whether my optimizations are
-> effective.
->     0
->   / | \ \
-> A  B C  1
->        / | \ \
->       A  B C  2
->          .....
-> 	         n
->                 / | \
->                A  B C
-> 
-> I tested by following steps:
-> 1. freeze 0
-> 2. unfreeze 0
-> 3. freeze 0
-> 4. freeze 1
-> 
-> And I measured the elapsed time(ns).
-> 
-> n=10
-> 	freeze 0	unfreeze 0	freeze 0	freeze 1
-> BEFORE	106179390	94016050	110423650	95063770
-> AFTER	96473608	91054188	94936398	93198510
-> 
-> n=50
-> 	freeze 0	unfreeze 0	freeze 0	freeze 1
-> BEFORE	109506660	105643800	105970220	96948940
-> AFTER	105244651	97357482	97517358	88466266
-> 
-> n=100
-> 	freeze 0	unfreeze 0	freeze 0	freeze 1
-> BEFORE	127944210	122049330	120988900	101232850
-> AFTER	117298106	107034146	105696895	91977833
-> 
-> As shown above, after optimizations, it can save elapsed time.
-> By freezing 0 and subsequently freezing 1, the elapsed time is consistent,
-> indicating that my optimizations are highly effective.
-> 
+Reviewed-by: Lance Yang <ioworker0@gmail.com>
+
+Thanks,
+Lance
+
 > ---
-> v3:
-> - fix build warnings reported-by kernel test robot.
-> 
-> v2:
-> - open code inside the loop of cgroup_freeze instead of inline function.
-> - add helper to make code concise.
-> - remove selftest script(There are hierarchy test in test_freeze.c, I
->    think that is enough for this series).
-> 
-> Chen Ridong (3):
->    cgroup/freezer: Reduce redundant traversal for cgroup_freeze
->    cgroup/freezer: Add cgroup CGRP_FROZEN flag update helper
->    cgroup/freezer: Reduce redundant propagation for
->      cgroup_propagate_frozen
-> 
->   include/linux/cgroup-defs.h |   6 +-
->   kernel/cgroup/freezer.c     | 110 ++++++++++++++++++------------------
->   2 files changed, 59 insertions(+), 57 deletions(-)
-> 
-
-Friendly ping.
-
-Best regards,
-Ridong
+>  include/linux/mm.h | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
+>
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index b31d4bdd65ad5..3c6270f87bdc3 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1071,6 +1071,11 @@ int vma_is_stack_for_current(struct vm_area_struct=
+ *vma);
+>  struct mmu_gather;
+>  struct inode;
+>
+> +static inline unsigned int folio_large_order(const struct folio *folio)
+> +{
+> +       return folio->_flags_1 & 0xff;
+> +}
+> +
+>  /*
+>   * compound_order() can be called without holding a reference, which mea=
+ns
+>   * that niceties like page_folio() don't work.  These callers should be
+> @@ -1084,7 +1089,7 @@ static inline unsigned int compound_order(struct pa=
+ge *page)
+>
+>         if (!test_bit(PG_head, &folio->flags))
+>                 return 0;
+> -       return folio->_flags_1 & 0xff;
+> +       return folio_large_order(folio);
+>  }
+>
+>  /**
+> @@ -1100,7 +1105,7 @@ static inline unsigned int folio_order(const struct=
+ folio *folio)
+>  {
+>         if (!folio_test_large(folio))
+>                 return 0;
+> -       return folio->_flags_1 & 0xff;
+> +       return folio_large_order(folio);
+>  }
+>
+>  #include <linux/huge_mm.h>
+> @@ -2035,7 +2040,7 @@ static inline long folio_nr_pages(const struct foli=
+o *folio)
+>  #ifdef CONFIG_64BIT
+>         return folio->_folio_nr_pages;
+>  #else
+> -       return 1L << (folio->_flags_1 & 0xff);
+> +       return 1L << folio_large_order(folio);
+>  #endif
+>  }
+>
+> @@ -2060,7 +2065,7 @@ static inline unsigned long compound_nr(struct page=
+ *page)
+>  #ifdef CONFIG_64BIT
+>         return folio->_folio_nr_pages;
+>  #else
+> -       return 1L << (folio->_flags_1 & 0xff);
+> +       return 1L << folio_large_order(folio);
+>  #endif
+>  }
+>
+> --
+> 2.46.0
+>
+>
 
