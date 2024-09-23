@@ -1,175 +1,113 @@
-Return-Path: <cgroups+bounces-4930-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4933-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D56497E57A
-	for <lists+cgroups@lfdr.de>; Mon, 23 Sep 2024 06:45:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 646BF97EB0F
+	for <lists+cgroups@lfdr.de>; Mon, 23 Sep 2024 13:53:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A79931C20908
-	for <lists+cgroups@lfdr.de>; Mon, 23 Sep 2024 04:45:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 285D4280C76
+	for <lists+cgroups@lfdr.de>; Mon, 23 Sep 2024 11:53:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98C13DDA8;
-	Mon, 23 Sep 2024 04:45:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b3I0p6Wm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 475881991BF;
+	Mon, 23 Sep 2024 11:52:38 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B57CB17597;
-	Mon, 23 Sep 2024 04:45:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4392680038;
+	Mon, 23 Sep 2024 11:52:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727066713; cv=none; b=PEJKeC2IxScmS1I4JdWAHVyWzFVKzBtImcMcqMudS4mIu++qsJ5PZy39S2w4OWPNlzfKS1PamsEWu7Co9vbJ0uP0FTBEQHVBAHvEGM80boksFbIXWzh+7hG5u6uJHmzYhpaSczO5XxflC6CBE5Q4Vx55qmTbMndeYWR0Vk98lCg=
+	t=1727092358; cv=none; b=Wmu+gqS7qoIpn7q9nKwLNfaj15Lkl1zCZRhSKr1vhCBQhw9PIOdMX+ewL00GKkyfyPDbouESgqcZqyUn/W03lbQ5blRqLZi+/1CUd58hCI7f/erdRM1mTNmhUCsCEzDWGd4exum66U8aTstJzqcVLhN+QxaHsahjyo8waPBbG4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727066713; c=relaxed/simple;
-	bh=H4lW2GbrSxIbifL9QDRCmNx0sdIMaESBWAmbtjAnK4M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DAwZM69QBX7J3ysxQvVXNKWNDZBpvpcW5bb8uFXFigltBLv7mushEC7fOryJ+u94u+StCqGH0edh2/RbL3QGpoba8IjCHfvRUZqqGQsj9Vo/mAQ8W1BR9ZKQUGNdaIfHnXadDxEYEcoMtvhiSc3fkqaHtBh9VwVEiWhrI/UuNMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b3I0p6Wm; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-45821eb62daso25259931cf.3;
-        Sun, 22 Sep 2024 21:45:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727066710; x=1727671510; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W+UDAv8JUuD8CeMJd4evn90rK4F2VqQSJxb+UyTjTm0=;
-        b=b3I0p6WmNrwKGJ4sfxuW7MeXFGb3nn/OLfH/psGZ51qTb49NjXK7vD0PGVooXUgmMK
-         tDI3uEkbblLizqbU8ANdql0mxIlME2aMUlWIhcORNxn8pi3gCbNfuNmIEMwfDVszUkQB
-         ry/zxz3dIZwjVj+DfgkfEPmZW+stRw5zkigXalLyfoIMFb3wo+tALnnjbd/Fby9NmmlG
-         qg6/11btFxwURX7gIg0059dgdfk1u3V7yVVubRF0zAQdFND5RUC0tVVVO6rlD9mQzJmr
-         J5UFD6Nylf4QuxHWBWo84vn9/T7YT5cruaNq8vRnhYWrGciifMhbQgCHaN4qzizEDanw
-         SFuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727066710; x=1727671510;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W+UDAv8JUuD8CeMJd4evn90rK4F2VqQSJxb+UyTjTm0=;
-        b=SjxqGP08MimWLYrwZkN142GM+OVoG+OlDcfj4+q9SKKsD1pgTRjo/r03Q7e4Sqcii5
-         FKWkdta7RKSkgxQBvxFaKcbPBVHj3pIKXtGzF2PPTElJDVdjncqp68hAxJjNpTQgnqeZ
-         +A/a/FY7TrKDyER8FY1liwTG+STNydOqm/OuSbnSwZnbQGi58qpxaega/CxBjuUXVkjv
-         1pKsNRRTEX6VChqTk0J8SBwjBnN8R+6mF1cGMbq5IB7Y61J5NSPjx5RfzuxBXZIDn7Qv
-         s0fF22dz14W0Xpwkc/bq36VOHIJuc9BPFMhSJyqJezfASEFnJ86TQU/RI8VLRR0Tp3zn
-         iOYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUZux5oUGaLSjb1rMEajU/kZOC6LRrCEjJXaHdYS0D5PD/ewFBqtiLbO37Ob8z8/GwkaVrdQc+/@vger.kernel.org, AJvYcCXsEfTDMvm2kKlKoDBL8gigcg8gyMmyOJw0W464UoK4+3RfvThlPCCra6C0goIi0PQXetHKQzNGLG1W3uJoTQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzv5wniMrl6Wi6QJAirOkPBaPiOBQQ3kZiKaDMutRAJBwXCX4jS
-	K0lyjw8hXG3PFue83rP8HnO1pVk8cvi/PrOTI5zTQu82Mejpr4PyiBO7vHplQvVYnyGFLkgnv2j
-	LyFZzyPrZxjRWHsD0po7dW7yCPw0=
-X-Google-Smtp-Source: AGHT+IFCUNNKXhR8Wyqn9c0M40t2qOE+oiVeSi6DK0gS1TmMT+a2pTIlUG58PCLyvyT4IagFnjfHia6qd2C0LPYglKA=
-X-Received: by 2002:a05:622a:15d5:b0:453:1afe:c711 with SMTP id
- d75a77b69052e-45b2050e59emr121771071cf.28.1727066710497; Sun, 22 Sep 2024
- 21:45:10 -0700 (PDT)
+	s=arc-20240116; t=1727092358; c=relaxed/simple;
+	bh=B86VIq0inyIrwQUi1LxfcSTlzGI3NY68FLTVbQhizAo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NCsbn4MavIzmJEws2PxqlSpyoBJFOe5zr7EDLjolYJF/LqwEQtjfbMtpZ3AHecKYabV+MqPTwJINvBtqlV1N6EuNHQyKSNPDggiW+0zd8oIVgJq1BewI/sIwyNKkZJbRHLtPuZFDSZcQuqCDet70Wl8NQEIkNFyuUGo7LE+sHXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XC1ZD5N8yz4f3jkj;
+	Mon, 23 Sep 2024 19:52:20 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id D96E61A092F;
+	Mon, 23 Sep 2024 19:52:31 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP3 (Coremail) with SMTP id _Ch0CgCHKYZlVvFmONo3CA--.32773S2;
+	Mon, 23 Sep 2024 19:52:29 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: tj@kernel.org,
+	lizefan.x@bytedance.com,
+	hannes@cmpxchg.org,
+	longman@redhat.com,
+	mkoutny@suse.com,
+	chenridong@huawei.com
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/3] add dedicated wq for cgroup bpf and adjust WQ_MAX_ACTIVE
+Date: Mon, 23 Sep 2024 11:43:49 +0000
+Message-Id: <20240923114352.4001560-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240829165627.2256514-1-david@redhat.com> <20240829165627.2256514-2-david@redhat.com>
-In-Reply-To: <20240829165627.2256514-2-david@redhat.com>
-From: Lance Yang <ioworker0@gmail.com>
-Date: Mon, 23 Sep 2024 12:44:59 +0800
-Message-ID: <CABzRoyb3zNKPKCSWzdK8uy81pzf8MB_-4-kCCAoTeoPHD5tExA@mail.gmail.com>
-Subject: Re: [PATCH v1 01/17] mm: factor out large folio handling from
- folio_order() into folio_large_order()
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	x86@kernel.org, linux-fsdevel@vger.kernel.org, 
-	Andrew Morton <akpm@linux-foundation.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
-	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_Ch0CgCHKYZlVvFmONo3CA--.32773S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtrWUCw15Zr4DWw1kWFW3Jrb_yoWkArXE93
+	97uFyvvrykJF1jqasxKFn3uFWvkr4UJr1rJF1UtrsFqFnxXrn3uFs3tr90va18Za40qry5
+	Aas3XrZ2qFnxJjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbzxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0E
+	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
+	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+	k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
+	xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Fri, Aug 30, 2024 at 12:57=E2=80=AFAM David Hildenbrand <david@redhat.co=
-m> wrote:
->
-> Let's factor it out into a simple helper function. This helper will
-> also come in handy when working with code where we know that our
-> folio is large.
->
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+From: Chen Ridong <chenridong@huawei.com>
 
-LGTM. Feel feel to add:
+The patch series add a dedicated workqueue for cgroup bpf destruction,
+add adjust WQ_MAX_ACTIVE from 512 to 2048.
 
-Reviewed-by: Lance Yang <ioworker0@gmail.com>
+v5:
+- use a dedicated workqueue for cgroup bpf destruction.
+- update some messages for TJ's feedbacks.
 
-Thanks,
-Lance
+v4:
+- add a patch to document that saturating the system_wq is not permitted.
+- add a patch to adjust WQ_MAX_ACTIVE from 512 to 2048.
 
-> ---
->  include/linux/mm.h | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
->
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index b31d4bdd65ad5..3c6270f87bdc3 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -1071,6 +1071,11 @@ int vma_is_stack_for_current(struct vm_area_struct=
- *vma);
->  struct mmu_gather;
->  struct inode;
->
-> +static inline unsigned int folio_large_order(const struct folio *folio)
-> +{
-> +       return folio->_flags_1 & 0xff;
-> +}
-> +
->  /*
->   * compound_order() can be called without holding a reference, which mea=
-ns
->   * that niceties like page_folio() don't work.  These callers should be
-> @@ -1084,7 +1089,7 @@ static inline unsigned int compound_order(struct pa=
-ge *page)
->
->         if (!test_bit(PG_head, &folio->flags))
->                 return 0;
-> -       return folio->_flags_1 & 0xff;
-> +       return folio_large_order(folio);
->  }
->
->  /**
-> @@ -1100,7 +1105,7 @@ static inline unsigned int folio_order(const struct=
- folio *folio)
->  {
->         if (!folio_test_large(folio))
->                 return 0;
-> -       return folio->_flags_1 & 0xff;
-> +       return folio_large_order(folio);
->  }
->
->  #include <linux/huge_mm.h>
-> @@ -2035,7 +2040,7 @@ static inline long folio_nr_pages(const struct foli=
-o *folio)
->  #ifdef CONFIG_64BIT
->         return folio->_folio_nr_pages;
->  #else
-> -       return 1L << (folio->_flags_1 & 0xff);
-> +       return 1L << folio_large_order(folio);
->  #endif
->  }
->
-> @@ -2060,7 +2065,7 @@ static inline unsigned long compound_nr(struct page=
- *page)
->  #ifdef CONFIG_64BIT
->         return folio->_folio_nr_pages;
->  #else
-> -       return 1L << (folio->_flags_1 & 0xff);
-> +       return 1L << folio_large_order(folio);
->  #endif
->  }
->
-> --
-> 2.46.0
->
->
+v3:
+- optimize commit msg.
+
+Link v1: https://lore.kernel.org/cgroups/20240607110313.2230669-1-chenridong@huawei.com/
+Link v2: https://lore.kernel.org/cgroups/20240719025232.2143638-1-chenridong@huawei.com/
+Link v3: https://lore.kernel.org/cgroups/20240817093334.6062-1-chenridong@huawei.com/
+
+
+
+Chen Ridong (3):
+  cgroup/bpf: use a dedicated workqueue for cgroup bpf destruction
+  workqueue: doc: Add a note saturating the system_wq is not permitted
+  workqueue: Adjust WQ_MAX_ACTIVE from 512 to 2048
+
+ Documentation/core-api/workqueue.rst |  9 +++++++--
+ include/linux/workqueue.h            |  2 +-
+ kernel/bpf/cgroup.c                  | 18 +++++++++++++++++-
+ 3 files changed, 25 insertions(+), 4 deletions(-)
+
+-- 
+2.34.1
+
 
