@@ -1,82 +1,84 @@
-Return-Path: <cgroups+bounces-4950-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4951-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEE8E9873D2
-	for <lists+cgroups@lfdr.de>; Thu, 26 Sep 2024 14:49:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02B339873DD
+	for <lists+cgroups@lfdr.de>; Thu, 26 Sep 2024 14:53:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B7331C2286D
-	for <lists+cgroups@lfdr.de>; Thu, 26 Sep 2024 12:49:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 339051C22A70
+	for <lists+cgroups@lfdr.de>; Thu, 26 Sep 2024 12:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6FFAD4B;
-	Thu, 26 Sep 2024 12:49:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 267C518035;
+	Thu, 26 Sep 2024 12:53:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Y2rUqbGJ"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gWSDKa2Y"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C97FB18035
-	for <cgroups@vger.kernel.org>; Thu, 26 Sep 2024 12:49:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12B9D2746D
+	for <cgroups@vger.kernel.org>; Thu, 26 Sep 2024 12:53:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727354986; cv=none; b=QIvVgOH7UE+ZqOd5+0fae6Y46d43fLREWT+zft4B/QAnMzWO+DWVdL6UbJDg+DhCtUOrYIuLhFfB75jJEc694p7BOasXMyd24JRofGaCXB4EIMm+X724iAhZj+WobeloUrEKUJR8B1PvC0Ssf9PcjjU4RZEDgBnL8n5pxpCohHc=
+	t=1727355231; cv=none; b=kXt8L7TsXpeFcs8V4g0dfqBCcjTNdo9UUQsJ9lijAFoNBukrJOIcU5Lh/FMULrVgHvTEtIgTY4qkuVtzCpl/iExAFdSOcT7ACFTq5JRK9M88h0slUqxoydoDkOrn8s943zBVIsZlMy9zOiSRPomB0XDzC+IzuK/GWVWpxOugUhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727354986; c=relaxed/simple;
-	bh=PcAQFQWF3yzOYCy67M0riQ3CDorxWvR8/K5Mqap2swo=;
+	s=arc-20240116; t=1727355231; c=relaxed/simple;
+	bh=X89xNk17G/8E9HbGDqrSspN3vndS+/7k3ckRAeR0/7k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EtslcOofP3rSOzs9oVRx6IS3vO7TleLMU5LuGs69tZfs3KtaDbXjixGqveEspA8MXzkIEIr7fUElAvZw3qv9D4QZIx5eP5v0Yq73NHKSHRzIVjGXayUPwPj8gUpCmmg18Wo+KFAF1bL5bTBo4WaS0BNPEbwCx304WBxoel2fJhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Y2rUqbGJ; arc=none smtp.client-ip=209.85.208.54
+	 Content-Type:Content-Disposition:In-Reply-To; b=hsKKU4Vu8tWnR4aZhWTRLYI+zby1APfH7o+95auk5HpO/2k4Qlw1kJbCByCMUsR5MgLRGPuab3ahvfwbRenw08FV8ukG8kHvZac+zvpuCdXwKqE57rdUrtI8X6qg0hCbIz9d9BCsBi84TX2EF1XPe0WrcAnHWnnsfWYR4QcPYIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gWSDKa2Y; arc=none smtp.client-ip=209.85.218.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5c718af3354so1094129a12.0
-        for <cgroups@vger.kernel.org>; Thu, 26 Sep 2024 05:49:44 -0700 (PDT)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a8d2b24b7a8so390227966b.1
+        for <cgroups@vger.kernel.org>; Thu, 26 Sep 2024 05:53:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1727354983; x=1727959783; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1727355228; x=1727960028; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MjJsOvgildp9H/xsUULy2gDxt7xA3HkFuJwBFtYzD/o=;
-        b=Y2rUqbGJ9qUCknmaN6j9ClDZN+q4Edfm819Rzm5JVvata0NDa8rBR4hHV6mry6+ND2
-         93JLjme4Y65aL84cV7kvoBQIhp+eD0RqpH9k7rMFOa3xWXqFXmOIJ+llDjAMs/aC2+YS
-         7Z6FU7Z8e2PU2VMUUeVeE/0psEQkRj4s2M19Lg4MP5ELwWbVBCellgUUX0h4tQxwXAQu
-         g2V5u/Yf9sBY665WuJ8L6EuDEkoW5DxWL7rhPH0TPT/0pEvfofTVORvDpmxXVdJVcX13
-         NeITXlHwkKLNtWQZm/jTK59RC3QDz/Kw+ghklxj3TiydkYcSdrm6PN1QGg/hNlIyVRvg
-         Ymvw==
+        bh=un2ZftB/QvIThKy8PygPlso/havi1tlGyYEDU34wreQ=;
+        b=gWSDKa2YgLJbvooReEVEaIYjeGmV9amptE/FLoVpcNzAtWzlOVTC/hBl/u0qkk3k4y
+         2vHu0WJX5hLa26aSf01mMMoi7FgcjDhqgCX75F+rVbCOOWNvRYplCwAr6t1tFF38DLdM
+         kcoWScgoUN53NqiL2xinm/V4Hx2ngDi7J8UFzqVOTqZ6EzfHmdMwWBCHNO62iH5rumoD
+         cPT2/Hw6T0GmXxmaANBK/iHR+jovfzNvX/HsEzGhi8eN0bZK5EJKfpDAfbvbETIp610L
+         BkFLCGMO/X6qwihF5CR05M0RlGnT8DCCfiw0lfMzxJqY7adKaOW37ixHyuPgo47WihX3
+         EDhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727354983; x=1727959783;
+        d=1e100.net; s=20230601; t=1727355228; x=1727960028;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MjJsOvgildp9H/xsUULy2gDxt7xA3HkFuJwBFtYzD/o=;
-        b=vBFPHtkhJgtjRx8hSEbNKuPtm3GJ11HJgCZ0wsSsw24Ly8DmKZ/24PaEn6hhOMNpoA
-         Lk6tjRdco0a+kSVuIRcRtrnJnXBJvqXRf4ydG6LCEgMpktg7LQSLI/59+ALDA/KtP/zM
-         4VzSpT1vQIm8Oh1jV4eTfJ2TbYfTlmLR9Z0lqBGJGK4s4/IAd5smQ0MonYVnYQtV7JP1
-         7alJ5IPbEaF87DzeW8SJBPyVQiHXuTO2Nrp9qCV0VNu6Za8mrVKwywUMvv4meLW0Xqis
-         ClkLxTpENVjloITwcU4GecWwMrEkQcsteXtcf5tXlujiCMjnCHQVL0yftWg3j++HWJU+
-         Lk3w==
-X-Forwarded-Encrypted: i=1; AJvYcCVs52t82dxtjjnnSnCrokGIQIUZUJlBxRscNohWNMvuXLb1fWpykQRTtXV/LxxT+c+HJf6Fl89E@vger.kernel.org
-X-Gm-Message-State: AOJu0YzMNjKg7T8L0ds2R6+SZFtP7SvDxzF1AihC0vgtIusgZiN/+t2h
-	qOEncp5aHDe/Nb3Hm9ab5QKkIkEr7XHZ1vPGR4BDF4iBfwbWsVrOwbHpI7u9QMU=
-X-Google-Smtp-Source: AGHT+IG5oXINx2+BHWwqkm9/6dgecwNYSEzGznLHq9dYTb8oZDl/WOd28v49JduwM7ansKFgf/vIqw==
-X-Received: by 2002:a17:907:31c8:b0:a7a:9144:e23a with SMTP id a640c23a62f3a-a93a063338bmr572804466b.43.1727354982994;
-        Thu, 26 Sep 2024 05:49:42 -0700 (PDT)
+        bh=un2ZftB/QvIThKy8PygPlso/havi1tlGyYEDU34wreQ=;
+        b=Pq9Pt5advc8LgOvX8/ZCKA8Pj3JXhxFOnaz/jN/pn4suYV1MzITnKPySelHuCE7I+i
+         gGb0vKaJAgsN9hOrVsgBZyW7Jb2BUEF6WjAz3QIBr8HyquvGGLESbNj8pJU7w3S+supJ
+         m5PQ+pQJ5OsnjDsyCNE8rXbEo+KxvLvoTgV8mVXVf6bqmwFOfMFha4d4XGhEQXtfu0sT
+         FPK00rvcNd1Cj4WmVl6/6/vKH2K1ThCroVK0HDMLcBQzUHwjUULVJq0gIxD9WOeSmlXs
+         qk4gpR4Q9t8D/f8yf+F7Xxb08lRrf57Dl9jn/XRToqHAae5CV/nLkVS0nU8NnRmvDh28
+         1a6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVhoQ9iOOcgLI2f4seIDohlKxHLb+Yb8bZ0qCzpgHwWghuIywfMDRPhi//GhLaxudRTiij9F4YA@vger.kernel.org
+X-Gm-Message-State: AOJu0YxIcfNbhLSggypZfNUn/LZlTpfqJQuIqOuXtWLtTnUFkp5pyV6p
+	7ZYFvBT2YQC3dA5jL+m4IcXSL0taxP61lwHvwlSPQBixxo6zOAe2RpXOF1EyaYE=
+X-Google-Smtp-Source: AGHT+IFic7O3nzCV5/Qb+u62Wfq9FpBMgDwA8rBfzwGPmA7j4RYSn01XdRM6mQGNEhGxnNV1lAkiXA==
+X-Received: by 2002:a17:907:3f26:b0:a8d:481a:563a with SMTP id a640c23a62f3a-a93b165ddd5mr316650066b.25.1727355228253;
+        Thu, 26 Sep 2024 05:53:48 -0700 (PDT)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93a1a8c71csm232348666b.87.2024.09.26.05.49.42
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93930cace4sm345927866b.117.2024.09.26.05.53.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Sep 2024 05:49:42 -0700 (PDT)
-Date: Thu, 26 Sep 2024 14:49:41 +0200
+        Thu, 26 Sep 2024 05:53:47 -0700 (PDT)
+Date: Thu, 26 Sep 2024 14:53:46 +0200
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org, 
-	longman@redhat.com, chenridong@huawei.com, cgroups@vger.kernel.org, 
+To: Hillf Danton <hdanton@sina.com>
+Cc: Chen Ridong <chenridong@huawei.com>, tj@kernel.org, 
+	cgroups@vger.kernel.org, Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
+	Boqun Feng <boqun.feng@gmail.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/3] workqueue: doc: Add a note saturating the
- system_wq is not permitted
-Message-ID: <ipabgusdd5zhnp5724ycc5t4vbraeblhh3ascyzmbkrxvwpqec@pdy3wk5hokru>
-References: <20240923114352.4001560-1-chenridong@huaweicloud.com>
- <20240923114352.4001560-3-chenridong@huaweicloud.com>
+Subject: Re: [PATCH v3 1/1] cgroup: fix deadlock caused by cgroup_mutex and
+ cpu_hotplug_lock
+Message-ID: <4fee4fydxuxzee5cb5ehiil7g7bnhxp5cmxxgg3zszc4vx4qyc@6t2qmltutcrh>
+References: <20240817093334.6062-1-chenridong@huawei.com>
+ <20240817093334.6062-2-chenridong@huawei.com>
+ <20240911111542.2781-1-hdanton@sina.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -84,49 +86,69 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3iq4bhwwm5dfsvhf"
+	protocol="application/pgp-signature"; boundary="gy2wjruyn6u7rypn"
 Content-Disposition: inline
-In-Reply-To: <20240923114352.4001560-3-chenridong@huaweicloud.com>
+In-Reply-To: <20240911111542.2781-1-hdanton@sina.com>
 
 
---3iq4bhwwm5dfsvhf
+--gy2wjruyn6u7rypn
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 23, 2024 at 11:43:51AM GMT, Chen Ridong <chenridong@huaweicloud.com> wrote:
-> +  Note: If something is expected to generate a large number of concurrent
-> +  works, it should utilize its own dedicated workqueue rather than
-> +  system wq. Because this may saturate system_wq and potentially lead
-> +  to deadlock.
+Hello Hillf.
 
-How does "large number of concurrent" translate practically?
+(sorry for later reply)
 
-The example with released cgroup_bpf from
-  cgroup_destroy_locked
-    cgroup_bpf_offline
-which is serialized under cgroup_mutex as argued previously. So this
-generates a single entry at a time and it wouldn't hint towards the
-creation of cgroup_bpf_destroy_wq.
+On Wed, Sep 11, 2024 at 07:15:42PM GMT, Hillf Danton <hdanton@sina.com> wro=
+te:
+> > However, there is no ordering between (I) and (II) so they can also hap=
+pen
+> > in opposite
+> >=20
+> > 	thread T					system_wq worker
+> >=20
+> > 	down(cpu_hotplug_lock.read)
+> > 	smp_call_on_cpu
+> > 	  queue_work_on(cpu, system_wq, scss) (I)
+> > 	  						lock(cgroup_mutex)  (II)
+> > 							...
+> > 							unlock(cgroup_mutex)
+> > 							scss.func
+> > 	  wait_for_completion(scss)
+> > 	up(cpu_hotplug_lock.read)
+> >=20
+> > And here the thread T + system_wq worker effectively call
+> > cpu_hotplug_lock and cgroup_mutex in the wrong order. (And since they're
+> > two threads, it won't be caught by lockdep.)
+> >=20
+> Given no workqueue work executed without being dequeued, any queued work,
+> regardless if they are more than 2048, that acquires cgroup_mutex could n=
+ot
+> prevent the work queued by thread-T from being executed, so thread-T can
+> make safe forward progress, therefore with no chance left for the ABBA=20
+> deadlock you spotted where lockdep fails to work.
 
-I reckon the argument could be something like the processing rate vs
-production rate of entry items should be such that number of active
-items is bound. But I'm not sure it's practical since users may not know
-the comparison result and they would end up always creating a dedicated
-workqueue.
+Is there a forgotten negation and did you intend to write: "any queued
+work ... that acquired cgroup_mutex could prevent"?
 
+Or if the negation is correct, why do you mean that processed work item
+is _not_ preventing thread T from running (in the case I left quoted
+above)?
 
+Thanks,
 Michal
 
---3iq4bhwwm5dfsvhf
+--gy2wjruyn6u7rypn
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZvVYYwAKCRAt3Wney77B
-ST+MAP0fDxXvbUEc5ey/TpWnTsLmyHSf/YiXugOiki+455jukQEAmF+vWJTMxP4R
-1GYHr3HW1PTyXSE4IM+96+DNdw9C3w0=
-=qxwb
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZvVZVwAKCRAt3Wney77B
+SdrvAQDdyAACNlgcJdQnyAt+OfXdAkktYdx4C6u8rnjrJAu51QD/YburBvJewCr3
+kvYZkYjeabzmop5dtSCAodkwILFEfA0=
+=ms1r
 -----END PGP SIGNATURE-----
 
---3iq4bhwwm5dfsvhf--
+--gy2wjruyn6u7rypn--
 
