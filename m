@@ -1,82 +1,82 @@
-Return-Path: <cgroups+bounces-4949-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4950-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44D8B9873D0
-	for <lists+cgroups@lfdr.de>; Thu, 26 Sep 2024 14:49:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEE8E9873D2
+	for <lists+cgroups@lfdr.de>; Thu, 26 Sep 2024 14:49:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FC1A1F21569
-	for <lists+cgroups@lfdr.de>; Thu, 26 Sep 2024 12:49:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B7331C2286D
+	for <lists+cgroups@lfdr.de>; Thu, 26 Sep 2024 12:49:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA95612B73;
-	Thu, 26 Sep 2024 12:49:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6FFAD4B;
+	Thu, 26 Sep 2024 12:49:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="IbY4Xff/"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Y2rUqbGJ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FF343AB9
-	for <cgroups@vger.kernel.org>; Thu, 26 Sep 2024 12:49:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C97FB18035
+	for <cgroups@vger.kernel.org>; Thu, 26 Sep 2024 12:49:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727354959; cv=none; b=SPJWqmZWMsl2GBTc7Kc8l/HstV2HgAPQh4G1UGWJlNfHKR9iamBZDzoz84pKxie1jnbNtHtki0B5jQ9Myhh8R5cxzDMUG8BOvspyYxvRcCUwjPkFGBUoDU9QNSAGQcfISt8ZGsxwKslBQO3JoK/7C8QytkMlKVKMtauBxIYHHqE=
+	t=1727354986; cv=none; b=QIvVgOH7UE+ZqOd5+0fae6Y46d43fLREWT+zft4B/QAnMzWO+DWVdL6UbJDg+DhCtUOrYIuLhFfB75jJEc694p7BOasXMyd24JRofGaCXB4EIMm+X724iAhZj+WobeloUrEKUJR8B1PvC0Ssf9PcjjU4RZEDgBnL8n5pxpCohHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727354959; c=relaxed/simple;
-	bh=0vFgW8iaVyfkEzvfu/sDFbw+qsP6jr/5nM6bnT35wsQ=;
+	s=arc-20240116; t=1727354986; c=relaxed/simple;
+	bh=PcAQFQWF3yzOYCy67M0riQ3CDorxWvR8/K5Mqap2swo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mQbP1tx1FfqvA6sykPpx4CYcQGRnm9sSTgpK0yf0u+BqtB561QuWAfcwk3Y/f9NHnjSQl+BTsp7RqxjmE60Eg7atq0Tr9i1EcL7mGRZEZ8v8HbC2v2WbaEps6XR7HsEjKy7Y511pkFgE5ISuMCOOp+A4S4XDIzUe91FFeMaWLcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=IbY4Xff/; arc=none smtp.client-ip=209.85.218.47
+	 Content-Type:Content-Disposition:In-Reply-To; b=EtslcOofP3rSOzs9oVRx6IS3vO7TleLMU5LuGs69tZfs3KtaDbXjixGqveEspA8MXzkIEIr7fUElAvZw3qv9D4QZIx5eP5v0Yq73NHKSHRzIVjGXayUPwPj8gUpCmmg18Wo+KFAF1bL5bTBo4WaS0BNPEbwCx304WBxoel2fJhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Y2rUqbGJ; arc=none smtp.client-ip=209.85.208.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a93b2070e0cso109738266b.3
-        for <cgroups@vger.kernel.org>; Thu, 26 Sep 2024 05:49:17 -0700 (PDT)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5c718af3354so1094129a12.0
+        for <cgroups@vger.kernel.org>; Thu, 26 Sep 2024 05:49:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1727354956; x=1727959756; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1727354983; x=1727959783; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uEzNs5X2U+4QjOcoEN5NdXTrAWb0DjjOJ5JvokADoHo=;
-        b=IbY4Xff/BQJKa93eli/SR3WOT2HV6g4ZeFdzI5J6a1AV+fbwEM50AedmgZ1n9hC8cT
-         4B4rtaG+EyLMoXht6AZumwDZxgdH4ISOGjvV+BbXxCawRMp09MqBxBfHuED/N8HWw4nD
-         JrmF7yF5iYwpTaL/KAyy1uwU5uPbkE2vAi3+UAyMIzB0g9jQF9ycQBGqd2Ph/Uy808UU
-         8dgmimVIGlKAXz1d0K13cxXQLGuWu1hxy9nUBj1lkERTBFRPTDthkaDsJNIm2Tf03LH4
-         pGsM9TuYNgdGuI47X/67IPwOp/cQOyx5T2A/jGVf9DeRJKXhIETnG912JZ55bfu4c98n
-         Lt0A==
+        bh=MjJsOvgildp9H/xsUULy2gDxt7xA3HkFuJwBFtYzD/o=;
+        b=Y2rUqbGJ9qUCknmaN6j9ClDZN+q4Edfm819Rzm5JVvata0NDa8rBR4hHV6mry6+ND2
+         93JLjme4Y65aL84cV7kvoBQIhp+eD0RqpH9k7rMFOa3xWXqFXmOIJ+llDjAMs/aC2+YS
+         7Z6FU7Z8e2PU2VMUUeVeE/0psEQkRj4s2M19Lg4MP5ELwWbVBCellgUUX0h4tQxwXAQu
+         g2V5u/Yf9sBY665WuJ8L6EuDEkoW5DxWL7rhPH0TPT/0pEvfofTVORvDpmxXVdJVcX13
+         NeITXlHwkKLNtWQZm/jTK59RC3QDz/Kw+ghklxj3TiydkYcSdrm6PN1QGg/hNlIyVRvg
+         Ymvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727354956; x=1727959756;
+        d=1e100.net; s=20230601; t=1727354983; x=1727959783;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uEzNs5X2U+4QjOcoEN5NdXTrAWb0DjjOJ5JvokADoHo=;
-        b=LPnzwmL4FpApi99uR4UnQbW2pUPutgQ0T48MdYdTHgO3S2k8O8OE5I7LbYT3N5pnU9
-         ybQkdQKUQIz3ObaUPoK2XvkM5NQLUqL/uFNIypkjMwN16Mzsn/CzmUdcoIctzDpI6g1U
-         el/jEdojCmLM5tI12JxxAEaLUXQe056q1E5UGBlKtT20O/t0ztlGFoBZpC7GF5oq5Yk/
-         Qhhl+DWfCU+ialm+Yl+DwAPzgWXWb8ac/Mtas+vpsxEyUZcL3E9nYAhX3BDnzUJ9uwnx
-         VoKJTKt0Lfm7o4kmbW6rnalMYNQqXIWP7oxlNQ2Ezzp597tySLZJVC9yRlc94WpGqmYc
-         V6Ug==
-X-Forwarded-Encrypted: i=1; AJvYcCUgrjBp/tSG8gBYvPaUFYx8Ew5eOfyehrxXr6vqCgX9aOonB1PPm24nPJKC2Mbe8FUlnHH9daWf@vger.kernel.org
-X-Gm-Message-State: AOJu0YygeMlOVGWvSSwx1HfTCPjFdfoHzESdDMPxQPxvAvOrFcmY9kxk
-	U471WMiXnxzrIJpR1vwHx+i3mlEMlEUzK8g0KT6VKHaSKYMCy7A3i1uYbpUdrQw=
-X-Google-Smtp-Source: AGHT+IHQL6L8P4lVbv+zBuFEYqMPsmJPuuAAnpGA8A07t/THwIG4m97Qhdhb4gKZs+R2fHDtX5g60w==
-X-Received: by 2002:a17:906:dc90:b0:a90:b73f:61ce with SMTP id a640c23a62f3a-a93a00ffb79mr491568766b.0.1727354955847;
-        Thu, 26 Sep 2024 05:49:15 -0700 (PDT)
+        bh=MjJsOvgildp9H/xsUULy2gDxt7xA3HkFuJwBFtYzD/o=;
+        b=vBFPHtkhJgtjRx8hSEbNKuPtm3GJ11HJgCZ0wsSsw24Ly8DmKZ/24PaEn6hhOMNpoA
+         Lk6tjRdco0a+kSVuIRcRtrnJnXBJvqXRf4ydG6LCEgMpktg7LQSLI/59+ALDA/KtP/zM
+         4VzSpT1vQIm8Oh1jV4eTfJ2TbYfTlmLR9Z0lqBGJGK4s4/IAd5smQ0MonYVnYQtV7JP1
+         7alJ5IPbEaF87DzeW8SJBPyVQiHXuTO2Nrp9qCV0VNu6Za8mrVKwywUMvv4meLW0Xqis
+         ClkLxTpENVjloITwcU4GecWwMrEkQcsteXtcf5tXlujiCMjnCHQVL0yftWg3j++HWJU+
+         Lk3w==
+X-Forwarded-Encrypted: i=1; AJvYcCVs52t82dxtjjnnSnCrokGIQIUZUJlBxRscNohWNMvuXLb1fWpykQRTtXV/LxxT+c+HJf6Fl89E@vger.kernel.org
+X-Gm-Message-State: AOJu0YzMNjKg7T8L0ds2R6+SZFtP7SvDxzF1AihC0vgtIusgZiN/+t2h
+	qOEncp5aHDe/Nb3Hm9ab5QKkIkEr7XHZ1vPGR4BDF4iBfwbWsVrOwbHpI7u9QMU=
+X-Google-Smtp-Source: AGHT+IG5oXINx2+BHWwqkm9/6dgecwNYSEzGznLHq9dYTb8oZDl/WOd28v49JduwM7ansKFgf/vIqw==
+X-Received: by 2002:a17:907:31c8:b0:a7a:9144:e23a with SMTP id a640c23a62f3a-a93a063338bmr572804466b.43.1727354982994;
+        Thu, 26 Sep 2024 05:49:42 -0700 (PDT)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93a5b82fbasm203728666b.103.2024.09.26.05.49.15
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93a1a8c71csm232348666b.87.2024.09.26.05.49.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Sep 2024 05:49:15 -0700 (PDT)
-Date: Thu, 26 Sep 2024 14:49:14 +0200
+        Thu, 26 Sep 2024 05:49:42 -0700 (PDT)
+Date: Thu, 26 Sep 2024 14:49:41 +0200
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
 To: Chen Ridong <chenridong@huaweicloud.com>
 Cc: tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org, 
 	longman@redhat.com, chenridong@huawei.com, cgroups@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/3] cgroup/bpf: use a dedicated workqueue for cgroup
- bpf destruction
-Message-ID: <24rp7n32rtzdszc7zxwmeitfmtib5yu7wo432b7uxjkvbdtrxp@kemt7l74yich>
+Subject: Re: [PATCH v5 2/3] workqueue: doc: Add a note saturating the
+ system_wq is not permitted
+Message-ID: <ipabgusdd5zhnp5724ycc5t4vbraeblhh3ascyzmbkrxvwpqec@pdy3wk5hokru>
 References: <20240923114352.4001560-1-chenridong@huaweicloud.com>
- <20240923114352.4001560-2-chenridong@huaweicloud.com>
+ <20240923114352.4001560-3-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -84,49 +84,49 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7ujd33ujj2wpmyg5"
+	protocol="application/pgp-signature"; boundary="3iq4bhwwm5dfsvhf"
 Content-Disposition: inline
-In-Reply-To: <20240923114352.4001560-2-chenridong@huaweicloud.com>
+In-Reply-To: <20240923114352.4001560-3-chenridong@huaweicloud.com>
 
 
---7ujd33ujj2wpmyg5
+--3iq4bhwwm5dfsvhf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-Hello.
+On Mon, Sep 23, 2024 at 11:43:51AM GMT, Chen Ridong <chenridong@huaweicloud.com> wrote:
+> +  Note: If something is expected to generate a large number of concurrent
+> +  works, it should utilize its own dedicated workqueue rather than
+> +  system wq. Because this may saturate system_wq and potentially lead
+> +  to deadlock.
 
-On Mon, Sep 23, 2024 at 11:43:50AM GMT, Chen Ridong <chenridong@huaweicloud.com> wrote:
-> +static int __init cgroup_bpf_wq_init(void)
-> +{
-> +	cgroup_bpf_destroy_wq = alloc_workqueue("cgroup_bpf_destroy", 0, 1);
-> +	WARN_ON_ONCE(!cgroup_bpf_destroy_wq);
-> +	return 0;
-> +}
-> +core_initcall(cgroup_bpf_wq_init);
+How does "large number of concurrent" translate practically?
 
-I think hard fail (panic() if you want to avoid BUG_ON) would be
-warranted here and mere warning would leave system exposed to worse
-errors later (and _ONCE in an initcall looks unnecessary).
+The example with released cgroup_bpf from
+  cgroup_destroy_locked
+    cgroup_bpf_offline
+which is serialized under cgroup_mutex as argued previously. So this
+generates a single entry at a time and it wouldn't hint towards the
+creation of cgroup_bpf_destroy_wq.
 
-Maybe look at other global wqs. I see that returning -ENOMEM might be an
-option, however, I don't see that initcall's return value would be
-processed anywhere currently :-/
+I reckon the argument could be something like the processing rate vs
+production rate of entry items should be such that number of active
+items is bound. But I'm not sure it's practical since users may not know
+the comparison result and they would end up always creating a dedicated
+workqueue.
 
-Besides this allocation failpath this is a sensible change to me.
 
-Thanks,
 Michal
 
---7ujd33ujj2wpmyg5
+--3iq4bhwwm5dfsvhf
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZvVYRwAKCRAt3Wney77B
-Sc5ZAQDIAIHbAI5dt6odKSDav3lvJqhWvF548b3q6BwxebKNdAEA76WvMEO6J3xy
-ihOXcWJdjwb1sxv9Yi42mX4HKCz1OwQ=
-=8iZS
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZvVYYwAKCRAt3Wney77B
+ST+MAP0fDxXvbUEc5ey/TpWnTsLmyHSf/YiXugOiki+455jukQEAmF+vWJTMxP4R
+1GYHr3HW1PTyXSE4IM+96+DNdw9C3w0=
+=qxwb
 -----END PGP SIGNATURE-----
 
---7ujd33ujj2wpmyg5--
+--3iq4bhwwm5dfsvhf--
 
