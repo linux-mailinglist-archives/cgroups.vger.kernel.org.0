@@ -1,82 +1,82 @@
-Return-Path: <cgroups+bounces-4948-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4949-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C11A9865EB
-	for <lists+cgroups@lfdr.de>; Wed, 25 Sep 2024 19:47:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44D8B9873D0
+	for <lists+cgroups@lfdr.de>; Thu, 26 Sep 2024 14:49:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 856A01F256DC
-	for <lists+cgroups@lfdr.de>; Wed, 25 Sep 2024 17:47:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FC1A1F21569
+	for <lists+cgroups@lfdr.de>; Thu, 26 Sep 2024 12:49:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F27ED12B176;
-	Wed, 25 Sep 2024 17:46:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA95612B73;
+	Thu, 26 Sep 2024 12:49:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="b7/BO43y"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="IbY4Xff/"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94D214962B
-	for <cgroups@vger.kernel.org>; Wed, 25 Sep 2024 17:46:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FF343AB9
+	for <cgroups@vger.kernel.org>; Thu, 26 Sep 2024 12:49:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727286417; cv=none; b=XpsdlSpZWALFo/B1cqqRqPDDpwMl6KmAYY1UvJrTa5IlZ+GmrVbV79v03aUPGejZUPZWIYyppwBj0YVKKfKAtdkbRAkC31/jJXqhB2VONJBqdvXnkWi8vNlufYL98PhW5f1FjkwplyAcBHhCJNKBWQinAVbu3jb8c/Pzn+wBIfs=
+	t=1727354959; cv=none; b=SPJWqmZWMsl2GBTc7Kc8l/HstV2HgAPQh4G1UGWJlNfHKR9iamBZDzoz84pKxie1jnbNtHtki0B5jQ9Myhh8R5cxzDMUG8BOvspyYxvRcCUwjPkFGBUoDU9QNSAGQcfISt8ZGsxwKslBQO3JoK/7C8QytkMlKVKMtauBxIYHHqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727286417; c=relaxed/simple;
-	bh=0cJiuSaHLjW8zYIryHFxfyf6Jc2GEXPEis6plAr88HA=;
+	s=arc-20240116; t=1727354959; c=relaxed/simple;
+	bh=0vFgW8iaVyfkEzvfu/sDFbw+qsP6jr/5nM6bnT35wsQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g2xgK/HSIsQlQsa2fhnjZBWWmMXm0e+BhFQl1GwAB/ESSPSZb7ca53KjUNQdUlyQRnx+eHXCJl+t6L1uhIAj/6MKbq0TPXpIVSKh5XRpbyj0uEOu7YnRWcHnQ5xGQNrekCYiVY0Sf76DeEPhAICQEDXhl69haTcZP9WvYcz//ig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=b7/BO43y; arc=none smtp.client-ip=209.85.218.65
+	 Content-Type:Content-Disposition:In-Reply-To; b=mQbP1tx1FfqvA6sykPpx4CYcQGRnm9sSTgpK0yf0u+BqtB561QuWAfcwk3Y/f9NHnjSQl+BTsp7RqxjmE60Eg7atq0Tr9i1EcL7mGRZEZ8v8HbC2v2WbaEps6XR7HsEjKy7Y511pkFgE5ISuMCOOp+A4S4XDIzUe91FFeMaWLcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=IbY4Xff/; arc=none smtp.client-ip=209.85.218.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-a8d60e23b33so16349766b.0
-        for <cgroups@vger.kernel.org>; Wed, 25 Sep 2024 10:46:55 -0700 (PDT)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a93b2070e0cso109738266b.3
+        for <cgroups@vger.kernel.org>; Thu, 26 Sep 2024 05:49:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1727286414; x=1727891214; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1727354956; x=1727959756; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mEP8vRBLzyHsoHKbcOs5cEs2gKA5aD96CPEST9Jmp4I=;
-        b=b7/BO43yAHpiJNRnM7fbr3BV9chK/HZAVnbuYRRTC+bVIhGG1LKrl5DgsOt+tcHTOl
-         GnvT4gkCjKwB6Ry/GqJSm6sIlYv7PNV7V3H7r9O5ZXQ8YgZ63+kfjo5rG2M8zvmJAbao
-         tcPgkLG/HnRKNIBj/AXYBPi3HFYz88YQBFmYrfBur51HAQ05l654TI8jJp/OA8A3UFm9
-         yetZSb4QvDC+8wu2u9RCet2lzKBN1R7VP3MQcgOTQO06vdPFxqDS71ZCqlsyTqmMiG/m
-         q/JiNIctK6xcNw5V7H7T+m0nGaW/9cZ8XpcGaCj21ubjKZpRpY9U/cUigTRpfgovSAep
-         GMAQ==
+        bh=uEzNs5X2U+4QjOcoEN5NdXTrAWb0DjjOJ5JvokADoHo=;
+        b=IbY4Xff/BQJKa93eli/SR3WOT2HV6g4ZeFdzI5J6a1AV+fbwEM50AedmgZ1n9hC8cT
+         4B4rtaG+EyLMoXht6AZumwDZxgdH4ISOGjvV+BbXxCawRMp09MqBxBfHuED/N8HWw4nD
+         JrmF7yF5iYwpTaL/KAyy1uwU5uPbkE2vAi3+UAyMIzB0g9jQF9ycQBGqd2Ph/Uy808UU
+         8dgmimVIGlKAXz1d0K13cxXQLGuWu1hxy9nUBj1lkERTBFRPTDthkaDsJNIm2Tf03LH4
+         pGsM9TuYNgdGuI47X/67IPwOp/cQOyx5T2A/jGVf9DeRJKXhIETnG912JZ55bfu4c98n
+         Lt0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727286414; x=1727891214;
+        d=1e100.net; s=20230601; t=1727354956; x=1727959756;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mEP8vRBLzyHsoHKbcOs5cEs2gKA5aD96CPEST9Jmp4I=;
-        b=sDoDaRlGIi2JCJ38wqCJvJstUYqzFeaxCAP2X6+NbowhbR2yyDsW518+q2wL7n7npb
-         wXl2HELSxjClauHqj9kSWkoOUiYt0A+q0K5xUOzt6TIdvSNpHSWGGqHOVom0+OwIgc2b
-         nwKwiFUFcN5/Ik2GLuQGRL9svcSRExnmXe/EWSQj1UfemAoxtghjkxP4VoEKqFTlV87Y
-         yb1gtbmvwvfnR4QZz3aa5xO0dd8ymQL5L9tWvMHjpi6l23/Xet/lV9wTKX+5HnS1JbC2
-         CNtk/wJPcaSM1M267va/I2+WDFtnB1OBAXLfb5MKUnf2DyNnfOO1ocRvibzULLAxYrVd
-         Nbuw==
-X-Forwarded-Encrypted: i=1; AJvYcCUoYDuds7Ozajj0itfI8lsSK+5JD5aDGdZ6IqMVyLyMg1beULJgY9NuvPHFrxrAE+bEfb7LnH0R@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx5eVKtes3ZQXkDb8S9jQwr7QxWlO8etxgjs5od91ozLnUbaBxg
-	sMmFV7RbymDGpDb5LrF+iw8QBmS8pZi3HgZzVNEBFQ7PAv+YfgXv+s8qycs+1xI=
-X-Google-Smtp-Source: AGHT+IFvS3zxUqhHTUHEBU+9gvZZiGo1tqJCqlGxyabmkeoNwWmh93XC4JI5Ou//T7dY9RwBvhi4Ug==
-X-Received: by 2002:a17:907:1c1f:b0:a8a:926a:d02a with SMTP id a640c23a62f3a-a93a05e7ea0mr314011966b.49.1727286413632;
-        Wed, 25 Sep 2024 10:46:53 -0700 (PDT)
+        bh=uEzNs5X2U+4QjOcoEN5NdXTrAWb0DjjOJ5JvokADoHo=;
+        b=LPnzwmL4FpApi99uR4UnQbW2pUPutgQ0T48MdYdTHgO3S2k8O8OE5I7LbYT3N5pnU9
+         ybQkdQKUQIz3ObaUPoK2XvkM5NQLUqL/uFNIypkjMwN16Mzsn/CzmUdcoIctzDpI6g1U
+         el/jEdojCmLM5tI12JxxAEaLUXQe056q1E5UGBlKtT20O/t0ztlGFoBZpC7GF5oq5Yk/
+         Qhhl+DWfCU+ialm+Yl+DwAPzgWXWb8ac/Mtas+vpsxEyUZcL3E9nYAhX3BDnzUJ9uwnx
+         VoKJTKt0Lfm7o4kmbW6rnalMYNQqXIWP7oxlNQ2Ezzp597tySLZJVC9yRlc94WpGqmYc
+         V6Ug==
+X-Forwarded-Encrypted: i=1; AJvYcCUgrjBp/tSG8gBYvPaUFYx8Ew5eOfyehrxXr6vqCgX9aOonB1PPm24nPJKC2Mbe8FUlnHH9daWf@vger.kernel.org
+X-Gm-Message-State: AOJu0YygeMlOVGWvSSwx1HfTCPjFdfoHzESdDMPxQPxvAvOrFcmY9kxk
+	U471WMiXnxzrIJpR1vwHx+i3mlEMlEUzK8g0KT6VKHaSKYMCy7A3i1uYbpUdrQw=
+X-Google-Smtp-Source: AGHT+IHQL6L8P4lVbv+zBuFEYqMPsmJPuuAAnpGA8A07t/THwIG4m97Qhdhb4gKZs+R2fHDtX5g60w==
+X-Received: by 2002:a17:906:dc90:b0:a90:b73f:61ce with SMTP id a640c23a62f3a-a93a00ffb79mr491568766b.0.1727354955847;
+        Thu, 26 Sep 2024 05:49:15 -0700 (PDT)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93931347e4sm234108366b.194.2024.09.25.10.46.52
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93a5b82fbasm203728666b.103.2024.09.26.05.49.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Sep 2024 10:46:52 -0700 (PDT)
-Date: Wed, 25 Sep 2024 19:46:51 +0200
+        Thu, 26 Sep 2024 05:49:15 -0700 (PDT)
+Date: Thu, 26 Sep 2024 14:49:14 +0200
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Chen Ridong <chenridong@huawei.com>
+To: Chen Ridong <chenridong@huaweicloud.com>
 Cc: tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org, 
-	longman@redhat.com, adityakali@google.com, sergeh@kernel.org, guro@fb.com, 
-	cgroups@vger.kernel.org
-Subject: Re: [PATHC v3 -next 3/3] cgroup/freezer: Reduce redundant
- propagation for cgroup_propagate_frozen
-Message-ID: <7j6zywvbd2lavlj5wc3yevc4s7ofrusjlpwcmuchhknlhp2mxo@77rwal3h2x65>
-References: <20240915071307.1976026-1-chenridong@huawei.com>
- <20240915071307.1976026-4-chenridong@huawei.com>
+	longman@redhat.com, chenridong@huawei.com, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/3] cgroup/bpf: use a dedicated workqueue for cgroup
+ bpf destruction
+Message-ID: <24rp7n32rtzdszc7zxwmeitfmtib5yu7wo432b7uxjkvbdtrxp@kemt7l74yich>
+References: <20240923114352.4001560-1-chenridong@huaweicloud.com>
+ <20240923114352.4001560-2-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -84,121 +84,49 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2mo7qcledrcidh3j"
+	protocol="application/pgp-signature"; boundary="7ujd33ujj2wpmyg5"
 Content-Disposition: inline
-In-Reply-To: <20240915071307.1976026-4-chenridong@huawei.com>
+In-Reply-To: <20240923114352.4001560-2-chenridong@huaweicloud.com>
 
 
---2mo7qcledrcidh3j
+--7ujd33ujj2wpmyg5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Sep 15, 2024 at 07:13:07AM GMT, Chen Ridong <chenridong@huawei.com>=
- wrote:
-> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-> index dd1ecab99eeb..41e4e5a7ae55 100644
-> --- a/include/linux/cgroup-defs.h
-> +++ b/include/linux/cgroup-defs.h
-> @@ -401,7 +401,9 @@ struct cgroup_freezer_state {
-> =20
->  	/* Fields below are protected by css_set_lock */
-> =20
-> -	/* Number of frozen descendant cgroups */
-> +	/* Aggregating frozen descendant cgroups, only when all
-> +	 * descendants of a child are frozen will the count increase.
-> +	 */
->  	int nr_frozen_descendants;
-> =20
->  	/*
-> diff --git a/kernel/cgroup/freezer.c b/kernel/cgroup/freezer.c
-> index bf1690a167dd..4ee33198d6fb 100644
-> --- a/kernel/cgroup/freezer.c
-> +++ b/kernel/cgroup/freezer.c
-> @@ -35,27 +35,34 @@ static bool cgroup_update_frozen_flag(struct cgroup *=
-cgrp, bool frozen)
->   */
->  static void cgroup_propagate_frozen(struct cgroup *cgrp, bool frozen)
->  {
-> -	int desc =3D 1;
-> -
-> +	int deta;
-            delta
+Hello.
 
-> +	struct cgroup *parent;
+On Mon, Sep 23, 2024 at 11:43:50AM GMT, Chen Ridong <chenridong@huaweicloud.com> wrote:
+> +static int __init cgroup_bpf_wq_init(void)
+> +{
+> +	cgroup_bpf_destroy_wq = alloc_workqueue("cgroup_bpf_destroy", 0, 1);
+> +	WARN_ON_ONCE(!cgroup_bpf_destroy_wq);
+> +	return 0;
+> +}
+> +core_initcall(cgroup_bpf_wq_init);
 
-I'd suggest here something like
+I think hard fail (panic() if you want to avoid BUG_ON) would be
+warranted here and mere warning would leave system exposed to worse
+errors later (and _ONCE in an initcall looks unnecessary).
 
-	/* root cgroup never changes freeze state */
-	if (WARN_ON(cgroup_parent(cgrp))
-		return;
+Maybe look at other global wqs. I see that returning -ENOMEM might be an
+option, however, I don't see that initcall's return value would be
+processed anywhere currently :-/
 
-so that the parent-> dereference below is explicitly safe.
-
->  	/*
->  	 * If the new state is frozen, some freezing ancestor cgroups may change
->  	 * their state too, depending on if all their descendants are frozen.
->  	 *
->  	 * Otherwise, all ancestor cgroups are forced into the non-frozen state.
->  	 */
-> -	while ((cgrp =3D cgroup_parent(cgrp))) {
-> +	for (; cgrp; cgrp =3D cgroup_parent(cgrp)) {
->  		if (frozen) {
-> -			cgrp->freezer.nr_frozen_descendants +=3D desc;
-> +			/* If freezer is not set, or cgrp has descendants
-> +			 * that are not frozen, cgrp can't be frozen
-> +			 */
->  			if (!test_bit(CGRP_FREEZE, &cgrp->flags) ||
->  			    (cgrp->freezer.nr_frozen_descendants !=3D
-> -			    cgrp->nr_descendants))
-> -				continue;
-> +			     cgrp->nr_descendants))
-> +				break;
-> +			deta =3D cgrp->freezer.nr_frozen_descendants + 1;
->  		} else {
-> -			cgrp->freezer.nr_frozen_descendants -=3D desc;
-> +			deta =3D -(cgrp->freezer.nr_frozen_descendants + 1);
-
-In this branch, if cgrp is unfrozen, delta =3D -1 is cgrp itself,
-however is delta =3D -cgrp->freezer.nr_frozen_descendants warranted?
-What if they are frozen empty children (of cgrp)? They likely shouldn't
-be subtracted from ancestors nf_frozen_descendants.
-
-(This refers to a situation when
-
-	C	CGRP_FREEZE is set
-	|\
-	D E	both CGRP_FREEZE is set
-
-and an unfrozen task is migrated into C which would make C (temporarily)
-unfrozen but not D nor E.)
-
-
->  		}
-> =20
-> -		if (cgroup_update_frozen_flag(cgrp, frozen))
-> -			desc++;
-> +		/* No change, stop propagate */
-> +		if (!cgroup_update_frozen_flag(cgrp, frozen))
-> +			break;
-> +
-> +		parent =3D cgroup_parent(cgrp);
-> +		parent->freezer.nr_frozen_descendants +=3D deta;
-
+Besides this allocation failpath this is a sensible change to me.
 
 Thanks,
 Michal
 
---2mo7qcledrcidh3j
+--7ujd33ujj2wpmyg5
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZvRMiAAKCRAt3Wney77B
-SQtPAPwJ/3CUMPiK0ylsiumLqJ8YE0Hq7cJiUqKVdFU4u+G4igD+LXTWjchM/JiY
-i8Tc+ajNJzz+it/eVCPn0Txz2T4DAQc=
-=ZAAK
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZvVYRwAKCRAt3Wney77B
+Sc5ZAQDIAIHbAI5dt6odKSDav3lvJqhWvF548b3q6BwxebKNdAEA76WvMEO6J3xy
+ihOXcWJdjwb1sxv9Yi42mX4HKCz1OwQ=
+=8iZS
 -----END PGP SIGNATURE-----
 
---2mo7qcledrcidh3j--
+--7ujd33ujj2wpmyg5--
 
