@@ -1,86 +1,83 @@
-Return-Path: <cgroups+bounces-4973-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4974-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B6E69887D6
-	for <lists+cgroups@lfdr.de>; Fri, 27 Sep 2024 17:02:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCD8998888F
+	for <lists+cgroups@lfdr.de>; Fri, 27 Sep 2024 17:52:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C5231C22FF4
-	for <lists+cgroups@lfdr.de>; Fri, 27 Sep 2024 15:02:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 752A81F2213B
+	for <lists+cgroups@lfdr.de>; Fri, 27 Sep 2024 15:52:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C47C11C0DEC;
-	Fri, 27 Sep 2024 15:01:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844421C0DFD;
+	Fri, 27 Sep 2024 15:52:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="LxutwokS"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="H4nkdAAo"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A8014A61A
-	for <cgroups@vger.kernel.org>; Fri, 27 Sep 2024 15:01:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF8213C914
+	for <cgroups@vger.kernel.org>; Fri, 27 Sep 2024 15:52:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727449317; cv=none; b=YAC24JbqmWraRrUtxapSRa8qZvBkBaJ9R+cZsicXKBfaxlrtjwBHGi1JiM1GN17gS7ue2+6wAjva+98GYMGnJLRCRuupwKa2wxBVwqzt9aZ8YoD7YpMz127AWyJAbBJRqw0SVy9y9fMObYuZ6nh09rRpvwAlkfXYh8YMnsXxWic=
+	t=1727452361; cv=none; b=qE1jN13PO/YPlDqu1kEG64di7loss0QGQJ4tngGgi2vok4f/jebjeUhpQM36rpQ4IrsSJd/wyRh86MoGvOgG27+H0CKcY0ncsfUjgX8iJx1gxHHvd0fBRNcp1QBfZZYxW7WI4WIPUMYu7C1mkP9B8DrzcwO3aFuar28RRGXgLXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727449317; c=relaxed/simple;
-	bh=W7N/EQeR/lhHhguPLRJprccZj2+9O2XDkauEROKyWh0=;
+	s=arc-20240116; t=1727452361; c=relaxed/simple;
+	bh=DCRTqeIGNLj6cpbf7pJD1veyOFDdaZUNMrsGE34kscU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aSXnP78WBSODleuKTAR7NQmhYBPrNXktg9jJZbL94yC6eEOsuyJiciWw9SwRjAmewi0jzVfZmRQoscdU/Q+3HSpppYnFG+x+doDI2YdUoDKurIJuqlHsCues3gFxLEz0Zsd7IM3yx6uIuWMkrQ04lagmVpmy7XX9cUF1KRptKPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=LxutwokS; arc=none smtp.client-ip=209.85.218.43
+	 Content-Type:Content-Disposition:In-Reply-To; b=HpqnGvJjonwDelD1hi0pv4h/LN5yel84bS73gK7BT9dQ2wmKUOhL6+GVTJg4tzOTtJtgajBBb/zA9MsBghRat73+f1+7h9hp9rt4LwPKjICE227GYxp25dZCSY3I7Y3JAS0xHYYrMv6s3+jWfghWaHwd/JErm/Qv9uhii8iOqXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=H4nkdAAo; arc=none smtp.client-ip=209.85.218.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a8b155b5e9eso326292566b.1
-        for <cgroups@vger.kernel.org>; Fri, 27 Sep 2024 08:01:55 -0700 (PDT)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a8d6d0fe021so361505166b.1
+        for <cgroups@vger.kernel.org>; Fri, 27 Sep 2024 08:52:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1727449314; x=1728054114; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1727452358; x=1728057158; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UUM+bpOv66Y9QgP1R8130p8o9XHECAN86pwWkNohE2g=;
-        b=LxutwokSHgNszQo9lkqG/jjuf0AsRpNh0yJG76HayBAC5YddOew9K5h4o5IrgGuPIM
-         PRYJi5zC66T4q81KPdfjmsrg3Z0yHY0WbFVUQUjGJh+p/dNe0bExNAOUd+jLxfHfaPDL
-         Se4dhvYRgHndlVL32TSN2rKxU/3jWbuyp6lvncySO+LCyfhiWaIaHAYfBS6OwlSj8jIN
-         HEV4HTavR0ip8Hk52XZzQ59P5Ao7dqYt80dXce6dz22AkawWj6qAxNVT+hgasuoNUosJ
-         bty0W99d9uz9r5gHxo9LRYrls3dzG+v4OQ1rEIT0LMrp+NhCjVfuFMj13oPbYwbgLDeE
-         h+Lw==
+        bh=DCRTqeIGNLj6cpbf7pJD1veyOFDdaZUNMrsGE34kscU=;
+        b=H4nkdAAoEMrYwhQ5K0y2bHfr/7kiqGTrIQp83JjUxh2YvXgWl1qohM47aDcPSFQFQh
+         6Dfp3kT7ERF3bgrWOHu93NZzL8FQVB1at5flYozt/vMCadUGj/x1nPVG2nz/Y2tExgYb
+         WpzyCtFqEIaF64YN4+qI6Q7e8eyH+NTAadWWyIYlN6jZvsy4QYXpUQSrGYxb+MED0iWP
+         PausL/HxXO8/+vKGn1MzR8HnGB4J4pba7kYE1ZDffOWM9R8ZAA3PEYy1lpEQquVJ0Fdw
+         iqm9HF0GL7Md0S//eTgzXUlcbFBG0/fpUA6iqJcBnxNUnTO8RcdyzBdYCMGuYK5RPaKF
+         rQkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727449314; x=1728054114;
+        d=1e100.net; s=20230601; t=1727452358; x=1728057158;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UUM+bpOv66Y9QgP1R8130p8o9XHECAN86pwWkNohE2g=;
-        b=vd3gewmx1i0xftYqKENS55BQfsSxmqBTOOnO2EBeuD6qcU8co9LKonecoCd7EemcuU
-         8CxN0jb8pKQ/IVfAQv6SKV5zIf0Sml6UBWJN2RZHjelBrkm35rI71Oa4qQhkwQZvDxcR
-         aqYEK4LiJwwP+qxLfWmhoVe1/loMZRhQBuVAtR2ExK06T02XAd2VCaHrUV6BP+Ee849+
-         TJb/y/AtrIsfLq1c4NNz48Lx+2/M4R2rU9mM2nw0ak/JBgSvfPHaxq6rDPeQCcdkJydU
-         1paXK6ZjoNSQyaAAK8CCqABRsBsw0ky6Gjkff9Vz6yq9j3bHeL7ylWaM8OIhtNoDdj/C
-         Sk7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXw0lpWJWXuj9LyoTuPQ24nt5pulVNclE4MZmSebBIBSIOAWBVA7m4wqvxrTa0IqmWEA/+HYgTd@vger.kernel.org
-X-Gm-Message-State: AOJu0YybT53CP9aj+5sB9jI68DSwymGs3p9BufE0Omp0YuM59iTUKK/m
-	g6L+Iiab1rFgrmXDBQ1JsXFs+PZHty/8TlxnmOH3wDXa0DyiN+hfSFFLW0qA7M4=
-X-Google-Smtp-Source: AGHT+IE7aH+/QOJ0USm8BISs8pFXjirWHHWPmNv3Lor3k3JqBdyLPa/XnrWJ/uRw2UIawMPkzVKemQ==
-X-Received: by 2002:a17:906:da88:b0:a93:c1dd:7952 with SMTP id a640c23a62f3a-a93c4c2839dmr343180166b.56.1727449313906;
-        Fri, 27 Sep 2024 08:01:53 -0700 (PDT)
+        bh=DCRTqeIGNLj6cpbf7pJD1veyOFDdaZUNMrsGE34kscU=;
+        b=e3aQCRD8krSTbMWA1bMov7m5e7s7rqm2KeZFQFbFvOI/Ed186KWX6JPL7mGpSxutZH
+         vi10NQWcqzQRK6qpFadeRVyhZdoQaz7tiOoxS9AMhZzA5Uf1kIu7UR35H4SlC73+2Ik0
+         OaOqiKm/1sotCned5DHNaGCt7/3GfHXoUTHx2loMZbxC5MF3PxxnBcziBWa9+j1DbgE3
+         AUyXy/Ki+SSc+39Jmvd0xoShkPG7TOPkhhvGmw+0AwhdwohIRuOqKJsOvJQFiYsn1nbf
+         Oji/Il7Tn9ZLVSGcP3YLqkznHCygNERw0dbnCi9ZEWVDBl35Pd1AiEyNmi2LqBZ3v+bU
+         YbnQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUVuA/osSLDiFy4zV1H5OoSlvhxwazP3+uLClr5bXj6zgfS57XH6bGxr5nDyaKN/Uycly/rFeTx@vger.kernel.org
+X-Gm-Message-State: AOJu0YzvimLnu75pLzeAsEmiXN1kn73jDCrWqth1KoCNvLclybPufSmj
+	6G4Lj70zk/b7UTYOjQDYkFAusErUmAWS0qy0mAuLru8Kqch5tdkO/V3kWCe1zSc=
+X-Google-Smtp-Source: AGHT+IEvGPXblsO0LHz8sVyMwKT714TDPpkSjLVXa7rJxqtJSZQCJc8zk5y+RKplxjkd5K7FpmpKnw==
+X-Received: by 2002:a17:907:3f2a:b0:a86:6d39:cbfd with SMTP id a640c23a62f3a-a93c4aee57dmr371271166b.57.1727452357764;
+        Fri, 27 Sep 2024 08:52:37 -0700 (PDT)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93c297b597sm142688066b.182.2024.09.27.08.01.52
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93c297a2absm147930366b.150.2024.09.27.08.52.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Sep 2024 08:01:53 -0700 (PDT)
-Date: Fri, 27 Sep 2024 17:01:51 +0200
+        Fri, 27 Sep 2024 08:52:37 -0700 (PDT)
+Date: Fri, 27 Sep 2024 17:52:35 +0200
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: Ivan Shapovalov <intelfx@intelfx.name>, linux-kernel@vger.kernel.org, 
-	Mike Yuan <me@yhndnzj.com>, Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Jonathan Corbet <corbet@lwn.net>, 
-	Yosry Ahmed <yosryahmed@google.com>, Chengming Zhou <chengming.zhou@linux.dev>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, Chris Li <chrisl@kernel.org>, cgroups@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] zswap: improve memory.zswap.writeback inheritance
-Message-ID: <5hnu3xa5hcusvmvg37m5ktsfcutghk2z3dh7lcoctyyfluabqv@u4ma5mafchpw>
-References: <20240926225531.700742-1-intelfx@intelfx.name>
- <CAKEwX=O=Qu4LZt79==FztxFjgBu2+q7C6EDji-ZmW5Ga38_dSg@mail.gmail.com>
+To: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
+Cc: Andy Lutomirski <luto@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, David Kaplan <David.Kaplan@amd.com>, 
+	Daniel Sneddon <daniel.sneddon@linux.intel.com>, x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH RFC 0/2] Selective mitigation for trusted userspace
+Message-ID: <ydu5mlvvvizkadyspu52afbdoyjq7akyx2665l3zit2tj6cs3s@4edufjodwmbu>
+References: <20240919-selective-mitigation-v1-0-1846cf41895e@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -88,42 +85,64 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="axzvv5m7sut2voab"
+	protocol="application/pgp-signature"; boundary="sz5e4e22rjmp6q7e"
 Content-Disposition: inline
-In-Reply-To: <CAKEwX=O=Qu4LZt79==FztxFjgBu2+q7C6EDji-ZmW5Ga38_dSg@mail.gmail.com>
+In-Reply-To: <20240919-selective-mitigation-v1-0-1846cf41895e@linux.intel.com>
 
 
---axzvv5m7sut2voab
+--sz5e4e22rjmp6q7e
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
 Hello.
 
-On Thu, Sep 26, 2024 at 07:28:08PM GMT, Nhat Pham <nphamcs@gmail.com> wrote:
-> API-design-wise, this seems a bit confusing... Using the value -1 to
-> indicate the cgroup should follow ancestor is not quite semantically
-> meaningful.
+On Thu, Sep 19, 2024 at 02:52:31PM GMT, Pawan Gupta <pawan.kumar.gupta@linu=
+x.intel.com> wrote:
+> This is an experimental series exploring the feasibility of selectively
+> applying CPU vulnerability mitigations on a per-process basis. The
+> motivation behind this work is to address the performance degradation
+> experienced by trusted user-space applications due to system-wide CPU
+> mitigations.
 
-What about assigning this semantic to an empty string ("")?
-That would be the default behavior and also the value shown when reading
-the file (to distinguish this for explicitly configured values).
+This is an interesting idea (like an extension of core scheduling).
 
-(The weirdness of 0, 1, -1, -1, -1  would remain. Maybe switching this
-via the mount option could satisfy any user. Admittedly, I tend to
-confuse this knob with swap.max.)
+> The rationale for choosing the cgroup interface over other potential
+> interfaces, such as LSMs, is cgroup's inherent support for core schedulin=
+g.
 
+You don't list prctl (and process inheritance) interface here.
+
+> Core scheduling allows the grouping of tasks such that they are scheduled
+> to run on the same cores.=20
+
+And that is actually the way how core scheduling is implemented AFAICS
+-- cookie creation and passing via prctls.
+Thus I don't find the implementation via a cgroup attribute ideal.
+
+(I'd also say that cgroups are more organization/resource domains but
+not so much security domains.)
+
+
+> - Should child processes inherit the parent's unmitigated status?
+
+Assuming turning off mitigations is a a privileged operation, the
+fork could preserve it. It would be upon parent to clear it up properly
+before handing over execution to a child (cf e.g. dropping uid=3D0).
+
+HTH,
 Michal
 
---axzvv5m7sut2voab
+--sz5e4e22rjmp6q7e
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZvbI3AAKCRAt3Wney77B
-SdcwAP9zU47ZgUAzX3AO5mbdpBmN640D27AJpW062yLgfBHb1AEA/fL2ZMKKBoOD
-BWyYV695rIq1IDleJ9alQhdyyvtfpgg=
-=4dtO
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZvbUwQAKCRAt3Wney77B
+Sf78AP44kyb0iSRv/PmB/kuKgun/B7LdHm51eP9p/zFrLFqKfwEAuHuJ11zCeECP
+TEqe4j35AlPUfTxUa9gbzH1OCr4/Gww=
+=OdKa
 -----END PGP SIGNATURE-----
 
---axzvv5m7sut2voab--
+--sz5e4e22rjmp6q7e--
 
