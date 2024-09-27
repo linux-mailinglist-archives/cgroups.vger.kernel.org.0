@@ -1,82 +1,81 @@
-Return-Path: <cgroups+bounces-4962-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4963-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D31B0987CBB
-	for <lists+cgroups@lfdr.de>; Fri, 27 Sep 2024 03:52:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 228B1987D07
+	for <lists+cgroups@lfdr.de>; Fri, 27 Sep 2024 04:28:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 948972851B7
-	for <lists+cgroups@lfdr.de>; Fri, 27 Sep 2024 01:52:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 961551F2482F
+	for <lists+cgroups@lfdr.de>; Fri, 27 Sep 2024 02:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 517341667F1;
-	Fri, 27 Sep 2024 01:52:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60AAB1667F1;
+	Fri, 27 Sep 2024 02:28:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nQ/KMT5o"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QsLnB2n0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F15614A60D;
-	Fri, 27 Sep 2024 01:52:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80690EAC6;
+	Fri, 27 Sep 2024 02:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727401973; cv=none; b=KHcrLV1CxadFKnEZuSeOus4EHs8FTJNwwo6CVZH/xztEpUonpuoeYk6a4f4heCDlfKwoMzKJwCOFBnTxLwiYYnKJaBbPaAMAHWM2L5yA5Y4ibK87Df+AxEnkWoOpDB96nZ/zq9T8POCoZGJ0EH+Ch5ewrBTmDHJNS4H6H7ye3Rg=
+	t=1727404102; cv=none; b=hu0iH2nLHvvanaoCS0JxZbHp7oV1wt6iSvaBo+1Cy/GK1X+5cwQIS/NW8YXl54sseUwjl7QwYHycFVXzA6F3bpgocKaMpYuv9liK+1hji3eiUGBYLEexgPaWZryjIO1PrLeW+TjDm3p6VsphPD0MAj45kzfOzmPYKi2ihEohZpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727401973; c=relaxed/simple;
-	bh=xAnrZRaJyD7HBPI7XnenJ3MGc9tNIxZl2rrNgLUBi3g=;
+	s=arc-20240116; t=1727404102; c=relaxed/simple;
+	bh=dPspyuPghP9GEiIwitpnKrG1ogn3PiVvy9w80zKIgMw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZyG5RHiDicUho7YivKIXLNLzqlwX4S3byO643urlzene4iDt3+6PhwwtN9nrI2q4tto4S6w49ipPx4gR9FDE4c6j1me1rcUHmCj9rBjIfT9BJL+wb8TrPdvEA9NlWKX3aiePWUTzdlR3YSKk/JDanESxunRRHZYxrTVrwUmAF+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nQ/KMT5o; arc=none smtp.client-ip=209.85.219.49
+	 To:Cc:Content-Type; b=i/NavAp53CrwgcNh+/g93jmkIUgu2tmm5M1NB8db8YYBt+Nkr71zlb2uM8S0L4gtP6yh6AEW1i5RuD7dlxbq+5Cwc+pj9gu1LVQz6Z5uX44Vt9xRPipclMGWUyfxhFDtYjBSwUHo31CAeTP8Ok5xBpwpdx8uvtLAxJaz3ER4zy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QsLnB2n0; arc=none smtp.client-ip=209.85.219.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-6cb2c5128d5so11175136d6.0;
-        Thu, 26 Sep 2024 18:52:51 -0700 (PDT)
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6cb2ad51162so11958086d6.3;
+        Thu, 26 Sep 2024 19:28:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727401970; x=1728006770; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1727404099; x=1728008899; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xAnrZRaJyD7HBPI7XnenJ3MGc9tNIxZl2rrNgLUBi3g=;
-        b=nQ/KMT5oaw578zvC8rNyPhWfeMoLYAlyEgU/9MacV7pOHnhDX0UmggCZAjAvx1ySUG
-         kCOHv1LokU/flAEjGMXzqTs7EM4vbQB/BegPm27NYJeLsiDdjQ5B+Oofp8raENoEqn7s
-         O5c1EQF0sY8ULqq0vjFnkbwW00yjT149kLE7ACCNusQCZXnde6tKHjI9QsDtQLvDvpZ0
-         TcDcyXfJJXK8k56uFXqHa1ha/EYsXlBwzUv7FMgsYUrZ4V1cxe7NbE84+MEc8AIqFiLE
-         eEcGHcwof7U0RF/Sr+cemjF4v3cKI66fBFoI5UyAAlHlywg73DYbqoCbr+vOdJ3iAINh
-         l7fA==
+        bh=C9O13VW6xIAn56yUlrhZA8RDOmDsOKO5QdexkzqK17I=;
+        b=QsLnB2n05C8HI07SFM5JqE/kIrPhCn2dU4mRAsMaf6PnYfMQ9w7h9VuQOmI5ILDLXA
+         uC7zMxOm7qUyH/9hSB3Sne1ouhMR9wnyUinm0s1rgTlKQlxHZMDKibt5yZPrRgojFtei
+         9rf5iw0i4x+m2+kJVKVWcfWQZiv0j5rCR0SlZna09FSF8vJc/I++ynD5r1xFes7W2C3o
+         K+YnYOkyQVlPFJ765R8KeoVOX6vhr8Ej5pI7gkGl5YiDwCq74aY7cm1MQdEzGZWD8PJz
+         3LZhrksJlJbJvVsKkFFbuDQsag/ncjWHPsql2T8tNkZ1vCQV/JuyxzA2NT0iodX+Ou0P
+         AILA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727401970; x=1728006770;
+        d=1e100.net; s=20230601; t=1727404099; x=1728008899;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xAnrZRaJyD7HBPI7XnenJ3MGc9tNIxZl2rrNgLUBi3g=;
-        b=vyDe5hwNbuqyS+LP6enNhTzpNeVDo2LHoZoOfSilV3LVSiomgmA1UpXSBiG1V5Fg+5
-         DPolIxy/FVeWCC9CJ853zFxph36bBJriGj/ZbXdCl2LSiXVjUY85wf4lzMt0Fbfi7X5u
-         UKiZKAKot6hqmApXLATvwZ3atCGCToSHRaC85W3EhlOy0NdC/vmcCSwDad5NSXttSNoN
-         HqrzkIjpHEFzR9jYX2q2as08xB6S2Gqh3kWp379e930fcL6T9q3eHZUJzDtmAWusRrTy
-         A0XKyKXfOC61Cl+pfA8Lip9oh7o22Tz4eEBEeImBzk2zZ47+4bGl7Hy2mitP36JSct4a
-         UuuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVjGDxQLdTGh+RAhRlU/tiBPBVKJXIm5p2RxI6zGnM/EOwBrTcWlaD6KCmJCF22PF15p+Dd+g/Uipxu@vger.kernel.org, AJvYcCX6H6Xp+ZHivEE1R7gM8z/7t/62MPh+qyvglo7Vlo9Jr2Db1c57FkpnxrlTapP9b2/Qpd1w4ZIz@vger.kernel.org
-X-Gm-Message-State: AOJu0YzJdBq7cSBmqHau2Bb0c2if1MjBnWKQiQSCMqxXQAnHq2D+BU5/
-	OnrBiR59t7ZP72v1ZE3H4Hu9ylQEdYx+vXHnkM4KRL6NIRvqI22HLBCv+3lUtO8fLlEFTr4zpl6
-	znTDMozQx5OhsJ8GItlZR5bR9gng=
-X-Google-Smtp-Source: AGHT+IHCPKsx7efhs3k311WYqpjW68lnnDe97yjX9qnvjdLXn0K9KjZ7hrrKjK7KTeq6a5vgyQ5IgQgX4WMdpOgg9FQ=
-X-Received: by 2002:ad4:4450:0:b0:6cb:3ba3:8eab with SMTP id
- 6a1803df08f44-6cb3ba38f1amr20584326d6.31.1727401970400; Thu, 26 Sep 2024
- 18:52:50 -0700 (PDT)
+        bh=C9O13VW6xIAn56yUlrhZA8RDOmDsOKO5QdexkzqK17I=;
+        b=B3MRPRdjiCnJ8O6SmBLtfCPN/O41u8BdrtrcE4ngT0Fv1+0INLy05LGRp91LDrnp8x
+         JNSIi60F9jNmKAsf2FfVsoN4TQ6tIeFhYl1XJ+yJPP+peVN930RSqXxXcRCTgzEO/FG/
+         tYskdQZr6dwkqZYKK3vzV8x+s9Fb8PXiOWZ3gxtxg7RvA9oNEXZ4tZ6stz1gTJf8EeTQ
+         1JIL8oJrRqwMO2gR5FDLaYc2Z4jBR4v1lEkwWMptSBFyeveqTGjYm8YW3+6Rg+gYu0bP
+         eA2vHfAQDk4MPa9ngrf2QmWSgOnwN/2eZt/TeZa5S14aKILQYALA0xOPPZ1U979vx+/j
+         1lgA==
+X-Forwarded-Encrypted: i=1; AJvYcCUALzzG/3T1rAiYNsGvpyUZjXitA54caiqRJfYJ59L/ZpmD3TVOJ5a7mdvga0qvEvoOzkWfP4+a@vger.kernel.org, AJvYcCUWHMa/xh1wgU38a0rxM+R/Jo2KHD3ETDk/WC61uDen/WPONutb4OMFeP93RWZ6OkBbx3r4lUGNuz2C@vger.kernel.org
+X-Gm-Message-State: AOJu0YygZDwzPjJUNLM0A9MTQUcSnvhWdq4pcI/MVlm8dd0jnX/2bgTe
+	PaHUrzsgtQEAlor1nOvwVAuOTlkk13CC/Hq7BSNEfMQf9gKJ0p0+Q9GeoU260QgEbs7I9oS05G9
+	W8M8BzaouUt9tpAdARYcehIe1Jmg=
+X-Google-Smtp-Source: AGHT+IGZQ4YR8rkdKsmI3FP4EUN0n7EV1ZNRkvjTMTTlL/e4iLP5LMwlmfhZW/1Gy6JYibHBAEdJQTwSXxsfxY+lr+U=
+X-Received: by 2002:a05:6214:570c:b0:6c7:c650:969b with SMTP id
+ 6a1803df08f44-6cb3b63daecmr26693046d6.27.1727404099230; Thu, 26 Sep 2024
+ 19:28:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240926225531.700742-1-intelfx@intelfx.name> <CAKEwX=MmCKrOkvDO5Yc_M8EB+k5U9AZ3boEiu4u2HUb7p0z+Kw@mail.gmail.com>
- <dba9d7d9542d4f3d979a89f88253418c1d8a9775.camel@intelfx.name>
-In-Reply-To: <dba9d7d9542d4f3d979a89f88253418c1d8a9775.camel@intelfx.name>
+References: <20240926225531.700742-1-intelfx@intelfx.name>
+In-Reply-To: <20240926225531.700742-1-intelfx@intelfx.name>
 From: Nhat Pham <nphamcs@gmail.com>
-Date: Thu, 26 Sep 2024 18:52:39 -0700
-Message-ID: <CAKEwX=N3m3cTkyh3ebA+79_oOEe4QMDbU2BxjEJCgfRanX9g9Q@mail.gmail.com>
+Date: Thu, 26 Sep 2024 19:28:08 -0700
+Message-ID: <CAKEwX=O=Qu4LZt79==FztxFjgBu2+q7C6EDji-ZmW5Ga38_dSg@mail.gmail.com>
 Subject: Re: [PATCH] zswap: improve memory.zswap.writeback inheritance
 To: Ivan Shapovalov <intelfx@intelfx.name>
 Cc: linux-kernel@vger.kernel.org, Mike Yuan <me@yhndnzj.com>, Tejun Heo <tj@kernel.org>, 
@@ -91,89 +90,109 @@ Cc: linux-kernel@vger.kernel.org, Mike Yuan <me@yhndnzj.com>, Tejun Heo <tj@kern
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 26, 2024 at 4:40=E2=80=AFPM Ivan Shapovalov <intelfx@intelfx.na=
+On Thu, Sep 26, 2024 at 3:55=E2=80=AFPM Ivan Shapovalov <intelfx@intelfx.na=
 me> wrote:
 >
-> On 2024-09-26 at 16:12 -0700, Nhat Pham wrote:
-> > On Thu, Sep 26, 2024 at 3:55=E2=80=AFPM Ivan Shapovalov <intelfx@intelf=
-x.name> wrote:
-> > >
-> > > Improve the inheritance behavior of the `memory.zswap.writeback` cgro=
-up
-> > > attribute introduced during the 6.11 cycle. Specifically, in 6.11 we
-> > > walk the parent cgroups until we find a _disabled_ writeback, which d=
-oes
-> > > not allow the user to selectively enable zswap writeback while having=
- it
-> > > disabled by default.
-> >
-> > Is there an actual need for this? This is a theoretical use case I
-> > thought of (and raised), but I don't think anybody actually wants
-> > this...?
+> Improve the inheritance behavior of the `memory.zswap.writeback` cgroup
+> attribute introduced during the 6.11 cycle. Specifically, in 6.11 we
+> walk the parent cgroups until we find a _disabled_ writeback, which does
+> not allow the user to selectively enable zswap writeback while having it
+> disabled by default.
 >
-> This is of course anecdata, but yes, it does solve a real use-case that
-> I'm having right now, as well as a bunch of my colleagues who recently
-> complained to me (in private) about pretty much the same use-case.
+> Instead, introduce a third value for the `memory.zswap.writeback` cgroup
+> attribute meaning "follow the parent", and use it as the default value
+> for all cgroups. Additionally, introduce a `zswap.writeback_disable`
+> module parameter which is used as the "parent" of the root cgroup,
+> thus making it the global default.
 >
-> The use-case is following: it turns out that it could be beneficial for
-> desktop systems to run with a pretty high swappiness and zswap
-> writeback globally disabled, to nudge the system to compress cold pages
-> but not actually write them back to the disk (which would happen pretty
-> aggressively if it was not disabled) to reduce I/O and latencies.
-> However, under this setup it is sometimes needed to re-enable zswap
-> writeback for specific memory-heavy applications that allocate a lot of
-> cold pages, to "allow" the kernel to actually swap those programs out.
-
-Out of pure curiosity (and to make sure I fully grasp the problem at
-hand), is this the capacity-based zswap writeback (i.e the one
-triggered by limits), or the memory pressure based dynamic shrinker?
-
-If you disable the latter and only rely on the former, it should not
-"write pages aggressively". Limits are rarely reached (IIUC, zswap.max
-are frequently used as binary knobs, and global limits are hard to
-reach), so usually pages that are going to disk swap are just pages
-zswap reject (i.e mostly just pages that fail to compress). This
-should be a very small category. You will still see "swap" usage due
-to a quirk in zswap architecture (which I'm working to fix), but there
-should rarely be any IOs. So the setup itself is not super necessary.
-
-If it's the latter then yeah I can kinda see the need for the setup.
-
+> Reads from `memory.zswap.writeback` cgroup attribute will be coerced to
+> 0 or 1 to maintain backwards compatilibity. However, it is possible to
+> write -1 to that attribute to make the cgroup follow the parent again.
 >
-> >
-> > Besides, most people who want this can just:
-> >
-> > 1. Enable zswap writeback on root cgroup (and all non-leaf cgroups).
-> >
-> > 2. Disable zswap writeback on leaf cgroups on creation by default.
-> >
-> > 3. Selectively enable zswap writeback for the leaf cgroups.
-> >
-> > All of this is quite doable in userspace. It's not even _that_ racy -
-> > just do this before adding tasks etc. to the cgroup?
+> Fixes: e39925734909 ("mm/memcontrol: respect zswap.writeback setting from=
+ parent cg too")
+> Fixes: 501a06fe8e4c ("zswap: memcontrol: implement zswap writeback disabl=
+ing")
+> Signed-off-by: Ivan Shapovalov <intelfx@intelfx.name>
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst | 17 +++++++++++------
+>  Documentation/admin-guide/mm/zswap.rst  |  9 ++++++++-
+>  include/linux/memcontrol.h              |  3 ++-
+>  include/linux/zswap.h                   |  6 ++++++
+>  mm/memcontrol.c                         | 24 +++++++++++++++++-------
+>  mm/zswap.c                              |  9 +++++++++
+>  6 files changed, 53 insertions(+), 15 deletions(-)
 >
-> Well, yes, it is technically doable from userspace, just like it was
-> technically doable prior to commit e39925734909 to have userspace
-> explicitly control the entire hierarchy of writeback settings.
-> However it _is_ pretty painful, and the flow you described would
-> essentially negate any benefits of that patch (it would require
-> userspace to, once again, manage the entire hierarchy explicitly
-> without any help from the kernel).
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admi=
+n-guide/cgroup-v2.rst
+> index 95c18bc17083..eea580490679 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1717,10 +1717,12 @@ The following nested keys are defined.
+>         entries fault back in or are written out to disk.
+>
+>    memory.zswap.writeback
+> -       A read-write single value file. The default value is "1".
+> -       Note that this setting is hierarchical, i.e. the writeback would =
+be
+> -       implicitly disabled for child cgroups if the upper hierarchy
+> -       does so.
+> +       A read-write single value file. The default is to follow the pare=
+nt
+> +       cgroup configuration, and the root cgroup follows the global
+> +       ``zswap.writeback_enabled`` module parameter (which is 1 by defau=
+lt).
+> +       Thus, this setting is hierarchical, i.e. the writeback setting fo=
+r
+> +       a child cgroup can be implicitly controlled at runtime by changin=
+g
+> +       any parent value or the global module parameter.
+>
+>         When this is set to 0, all swapping attempts to swapping devices
+>         are disabled. This included both zswap writebacks, and swapping d=
+ue
+> @@ -1729,8 +1731,11 @@ The following nested keys are defined.
+>         reclaim inefficiency after disabling writeback (because the same
+>         pages might be rejected again and again).
+>
+> -       Note that this is subtly different from setting memory.swap.max t=
+o
+> -       0, as it still allows for pages to be written to the zswap pool.
+> +       Note that this is different from setting memory.swap.max to 0,
+> +       as it still allows for pages to be written to the zswap pool.
+> +
+> +       This can also be set to -1, which would make the cgroup (and its
+> +       future children) follow the parent/global value again.
+>
 
-I think it's a tad different. In the case of the commit e39925734909,
-the hierarchical behavior of zswap.writeback knob is quite
-semantically confusing, almost counter-intuitive (and does not conform
-to the convention of other cgroup knobs, which use the most
-restrictive limit - check out zswap.max limit checking for example).
-That commit arguably fixes it for the "common" case (i.e you want the
-hierarchical enforcement to hold for the most part). That's why there
-were even conversations about cc-ing the stable mailing list for
-backporting it to older kernels.
+API-design-wise, this seems a bit confusing... Using the value -1 to
+indicate the cgroup should follow ancestor is not quite semantically
+meaningful. What does "follow the parent" here mean? Reading your
+code, it seems to be "find the first non negative from this memcg to
+root and just use it", but it's neither intuitive, nor deducable from
+the documentation.
 
-This is more of a "new use case" patch. It complicates the API, for
-something readily doable in userspace - the kernel does not do
-anything that userspace cannot achieve. So it should undergo stricter
-scrutiny. :)
+There are also ill-defined/poorly-defined behavior. What if we set -1
+to all cgroups? Should writeback be enabled or disabled?
 
-Anyway, Yosry, Johannes, how do you feel about this?
+The implementation also contradicts the "writeback setting for a child
+cgroup can be implicitly controlled at runtime by chaging any parent
+value or the global module parameter" part. What happens if we have
+the following sequence of zswap.writeback values, from root to current
+memcg:
+
+root.memcg.zswap.writeback =3D 0, 1, -1, -1, -1 =3D cur_memcg.zswap.writeba=
+ck
+
+Should we disable or enable cur_memcg's zswap.writeback? It's disabled
+at root, but the first non-negative ancestral value is 1, so this
+cgroup will follow it (even though that ancestor itself has zswap
+writeback disabled!!!)
+
+I think we should separate the values itself from the decision to
+check ancestors. The former should be indicated per-memcg, and the
+latter decision should only come into play when the memcg itself does
+prevent zswap.writeback. It might be less confusing to make the latter
+decision globally - perhaps through a mount option, analogous to
+memory_recursiveprot?
 
