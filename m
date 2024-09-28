@@ -1,170 +1,209 @@
-Return-Path: <cgroups+bounces-4977-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4978-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F988988C36
-	for <lists+cgroups@lfdr.de>; Sat, 28 Sep 2024 00:01:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23479988DDB
+	for <lists+cgroups@lfdr.de>; Sat, 28 Sep 2024 06:46:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3267F1C210F3
-	for <lists+cgroups@lfdr.de>; Fri, 27 Sep 2024 22:01:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F9FA1C21288
+	for <lists+cgroups@lfdr.de>; Sat, 28 Sep 2024 04:46:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C85CF18C024;
-	Fri, 27 Sep 2024 22:01:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B520B19A2A3;
+	Sat, 28 Sep 2024 04:46:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="X8d4K7nq"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="cX4/qXw4";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="cX4/qXw4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED1C315A862;
-	Fri, 27 Sep 2024 22:01:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB2501C6A5;
+	Sat, 28 Sep 2024 04:46:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727474474; cv=none; b=oat5tTDoa/QxagznIc0HqNZ1il7ZxfLHIAR2FkZtMdSdLx6G1aodbOn+SBvWIQdgNYw5GW7cZho2o+GK7q5KCtoiPNmMX4MJRoLTsp+zmwej3zs/vXI8hKAtFvxkpPdsawdZCiSVHTSCy3MPtFIT5Wz47siMcr9ChxV6+uKaCMU=
+	t=1727498768; cv=none; b=i6TtF07/zq7N/asS0CpYMIzds5JxuxymiEpX4nNUO6AGuYCbQXj/0gzkHdp50wxouni28rOH+wpki5X6OV4drvIa4K6XS0aLv8thBcQoJznuYoI6aU6YuAEr/Mx+xzvdx8RNAeCt4aRFne72mLQ/j+B91E0upEngi+E218vMCwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727474474; c=relaxed/simple;
-	bh=9X0fzPXpuWY6uETermwFXp9kKFGKXlOJI12bjA1yJX4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fzKxRSmMXNypGeMB9c6GmdpGNG56R6Yo78vJCZItGkOi9tR5b7h8Yd8fs0FZ+6PUJKktIHQEk8t6J2aos4lD9hduBO2UA6abT6NpI7tc2ZnzOJCrXl2VNO2S7CIyGzsT3x35WdaCe1Kcal8nGc6bKbFaikTXkLKv7Mxj5rym4y4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=X8d4K7nq; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1727474473; x=1759010473;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9X0fzPXpuWY6uETermwFXp9kKFGKXlOJI12bjA1yJX4=;
-  b=X8d4K7nqlF5hzWK1UjHE/fmuLQ7zr7ThR6KKh0SZ2fxSmkrHi5cV9kqn
-   ASIddT9FJvXDGDoC3Y5rm8aa4Z5bJfxR7IoSYZZp9n1k3fDfAEBfJp2ny
-   07mcIKey02JZLd5cAa3iDxrvCx9QVDuO7LIAej8UxdtEtM/TVFS07XNT/
-   ynga8Y3E1nMrkofRiYqXXAcRLNJmx7NIOJKI2PdRJLkZ3RN8WIaLdDeHd
-   GRhYomSVNFd83aEycM61AeIJHXR2oylVpMFPEn38Mpu0kDahBKgxNiSj0
-   CiIrykDk9I6btaBa95nvt7EuwtoQ0tCtD3EFB5NOi1qexcinDB54OKtVH
-   w==;
-X-CSE-ConnectionGUID: QaX1WJk9R4mz2LGKQmRytg==
-X-CSE-MsgGUID: eqet00APSrKWUY4DHdH+Jw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11208"; a="52048356"
-X-IronPort-AV: E=Sophos;i="6.11,159,1725346800"; 
-   d="asc'?scan'208";a="52048356"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2024 15:01:12 -0700
-X-CSE-ConnectionGUID: +Y7PZjtRRWGcXjPEgfmMaQ==
-X-CSE-MsgGUID: gmm8GACARMyI1yyGqSrfXA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,159,1725346800"; 
-   d="asc'?scan'208";a="110146848"
-Received: from cmatsuo-mobl.amr.corp.intel.com (HELO desk) ([10.125.147.237])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Sep 2024 15:01:12 -0700
-Date: Fri, 27 Sep 2024 15:01:04 -0700
-From: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Andy Lutomirski <luto@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	David Kaplan <David.Kaplan@amd.com>,
-	Daniel Sneddon <daniel.sneddon@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH RFC 0/2] Selective mitigation for trusted userspace
-Message-ID: <20240927220104.f7lgj6h2shjgcr35@desk>
-References: <20240919-selective-mitigation-v1-0-1846cf41895e@linux.intel.com>
- <ydu5mlvvvizkadyspu52afbdoyjq7akyx2665l3zit2tj6cs3s@4edufjodwmbu>
+	s=arc-20240116; t=1727498768; c=relaxed/simple;
+	bh=swj22psNBjQ40hMTU03U/9naZS1ekdn6yU2+3M4hs5M=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SqZPkrXThF4JD20Na96jK3xeaIvTXDi5kR2tSJs5MAUy5ZalJDLl2EPqCvqHD0KNDe+4dYqLXjaxhhLkvIhLm/joLT5axX1nlwt9920KurtuTgdClA8CD0sNJ9hjXaVqjZoRn3+gsgB4lPBRfUbfm0NM0O1jNr3e8eKN7l0cj+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=cX4/qXw4; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=cX4/qXw4; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id F20A31F8D7;
+	Sat, 28 Sep 2024 04:46:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1727498763; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8rnCt/V46QSqAx330W1615tslS9zKGk6eFgRTHFjKk0=;
+	b=cX4/qXw40cY2GcC3rqBQTQpi393Hfj51eqOCs1XiJZOVf0yVOrvna5ViG8Mu3AKuSttA18
+	are3zTUlDRz/Y5BQ1e5WrexLmIgpY2GvFsMWeu4okw8M9UdJJDx1xg4Rn4Wcb5N8wQC8tz
+	1L9uGZLSV9eeTUwwna2sG6iYaawcLn8=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1727498763; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8rnCt/V46QSqAx330W1615tslS9zKGk6eFgRTHFjKk0=;
+	b=cX4/qXw40cY2GcC3rqBQTQpi393Hfj51eqOCs1XiJZOVf0yVOrvna5ViG8Mu3AKuSttA18
+	are3zTUlDRz/Y5BQ1e5WrexLmIgpY2GvFsMWeu4okw8M9UdJJDx1xg4Rn4Wcb5N8wQC8tz
+	1L9uGZLSV9eeTUwwna2sG6iYaawcLn8=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C885513A6E;
+	Sat, 28 Sep 2024 04:45:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id zzp2IgeK92ZyDQAAD6G6ig
+	(envelope-from <wqu@suse.com>); Sat, 28 Sep 2024 04:45:59 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	akpm@linux-foundation.org,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	Michal Hocko <mhocko@suse.com>,
+	"Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+Subject: [PATCH] btrfs: root memcgroup for metadata filemap_add_folio()
+Date: Sat, 28 Sep 2024 14:15:56 +0930
+Message-ID: <b5fef5372ae454a7b6da4f2f75c427aeab6a07d6.1727498749.git.wqu@suse.com>
+X-Mailer: git-send-email 2.46.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xhb4rgc3473jqtpo"
-Content-Disposition: inline
-In-Reply-To: <ydu5mlvvvizkadyspu52afbdoyjq7akyx2665l3zit2tj6cs3s@4edufjodwmbu>
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
+[BACKGROUND]
+The function filemap_add_folio() charges the memory cgroup,
+as we assume all page caches are accessible by user space progresses
+thus needs the cgroup accounting.
 
---xhb4rgc3473jqtpo
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+However btrfs is a special case, it has a very large metadata thanks to
+its support of data csum (by default it's 4 bytes per 4K data, and can
+be as large as 32 bytes per 4K data).
+This means btrfs has to go page cache for its metadata pages, to take
+advantage of both cache and reclaim ability of filemap.
 
-On Fri, Sep 27, 2024 at 05:52:35PM +0200, Michal Koutn=C3=BD wrote:
-> Hello.
->=20
-> On Thu, Sep 19, 2024 at 02:52:31PM GMT, Pawan Gupta <pawan.kumar.gupta@li=
-nux.intel.com> wrote:
-> > This is an experimental series exploring the feasibility of selectively
-> > applying CPU vulnerability mitigations on a per-process basis. The
-> > motivation behind this work is to address the performance degradation
-> > experienced by trusted user-space applications due to system-wide CPU
-> > mitigations.
->=20
-> This is an interesting idea (like an extension of core scheduling).
->=20
-> > The rationale for choosing the cgroup interface over other potential
-> > interfaces, such as LSMs, is cgroup's inherent support for core schedul=
-ing.
->=20
-> You don't list prctl (and process inheritance) interface here.
+This has a tiny problem, that all btrfs metadata pages have to go through
+the memcgroup charge, even all those metadata pages are not
+accessible by the user space, and doing the charging can introduce some
+latency if there is a memory limits set.
 
-Apologies for the oversight. prctl is indeed the interface that Core
-scheduling uses to group tasks. Cgroup was the initially proposed interface
-but that later got changed to prctl.
+Btrfs currently uses __GFP_NOFAIL flag as a workaround for this cgroup
+charge situation so that metadata pages won't really be limited by
+memcgroup.
 
-> > Core scheduling allows the grouping of tasks such that they are schedul=
-ed
-> > to run on the same cores.=20
->=20
-> And that is actually the way how core scheduling is implemented AFAICS
-> -- cookie creation and passing via prctls.
-> Thus I don't find the implementation via a cgroup attribute ideal.
+[ENHANCEMENT]
+Instead of relying on __GFP_NOFAIL to avoid charge failure, use root
+memory cgroup to attach metadata pages.
 
-Problem with prctl is that a process can't set its own skip-mitigation
-status, unless it is privileged. So a privileged process has to spawn the
-workload that needs to be unmitigated. This is not ideal for an application
-that wants to selectively apply mitigations.
+Although this needs to export the symbol mem_root_cgroup for
+CONFIG_MEMCG, or define mem_root_cgroup as NULL for !CONFIG_MEMCG.
 
-> (I'd also say that cgroups are more organization/resource domains but
-> not so much security domains.)
+With root memory cgroup, we directly skip the charging part, and only
+rely on __GFP_NOFAIL for the real memory allocation part.
 
-Agree.
+Suggested-by: Michal Hocko <mhocko@suse.com>
+Suggested-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/extent_io.c       | 9 +++++++++
+ include/linux/memcontrol.h | 2 ++
+ mm/memcontrol.c            | 1 +
+ 3 files changed, 12 insertions(+)
 
-> > - Should child processes inherit the parent's unmitigated status?
->=20
-> Assuming turning off mitigations is a a privileged operation, the
-> fork could preserve it. It would be upon parent to clear it up properly
-> before handing over execution to a child (cf e.g. dropping uid=3D0).
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 9302fde9c464..a3a3fb825a47 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -2919,6 +2919,7 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+ 	struct address_space *mapping = fs_info->btree_inode->i_mapping;
+ 	const unsigned long index = eb->start >> PAGE_SHIFT;
+ 	struct folio *existing_folio = NULL;
++	struct mem_cgroup *old_memcg;
+ 	int ret;
+ 
+ 	ASSERT(found_eb_ret);
+@@ -2927,8 +2928,16 @@ static int attach_eb_folio_to_filemap(struct extent_buffer *eb, int i,
+ 	ASSERT(eb->folios[i]);
+ 
+ retry:
++	/*
++	 * Btree inode is a btrfs internal inode, and not exposed to any user.
++	 *
++	 * We do not want any cgroup limit on this inode, thus using
++	 * root_mem_cgroup for metadata filemap.
++	 */
++	old_memcg = set_active_memcg(root_mem_cgroup);
+ 	ret = filemap_add_folio(mapping, eb->folios[i], index + i,
+ 				GFP_NOFS | __GFP_NOFAIL);
++	set_active_memcg(old_memcg);
+ 	if (!ret)
+ 		goto finish;
+ 
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 0e5bf25d324f..efec74344a4d 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1067,6 +1067,8 @@ void split_page_memcg(struct page *head, int old_order, int new_order);
+ 
+ #define MEM_CGROUP_ID_SHIFT	0
+ 
++#define root_mem_cgroup		(NULL)
++
+ static inline struct mem_cgroup *folio_memcg(struct folio *folio)
+ {
+ 	return NULL;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index d563fb515766..2dd1f286364d 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -75,6 +75,7 @@ struct cgroup_subsys memory_cgrp_subsys __read_mostly;
+ EXPORT_SYMBOL(memory_cgrp_subsys);
+ 
+ struct mem_cgroup *root_mem_cgroup __read_mostly;
++EXPORT_SYMBOL(root_mem_cgroup);
+ 
+ /* Active memory cgroup to use from an interrupt context */
+ DEFINE_PER_CPU(struct mem_cgroup *, int_active_memcg);
+-- 
+2.46.1
 
-IIUC, skip-mitigation should be a capability that can be inherited by child
-processes, or can be set for an executable file. If we want to leverage
-Core scheduling, it will be callenging to have all trusted processes in the
-system have the same cookie. But, all child processes of a trusted process
-would inherit the skip-mitigation status and same cookie, so they can be
-co-sccheduled.
-
---xhb4rgc3473jqtpo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEhLB5DdoLvdxF3TZu/KkigcHMTKMFAmb3KyAACgkQ/KkigcHM
-TKOnfRAAgAKoG6u8MXYIXEsDzXvbjK5Rt4Absjt1c6cMJBTIUHwPjtojrVWt0nmu
-eH9v5ANey4LcZBbNa++2wTF1tTVtsNyyivHVgyKOqpB0zpKcwE7WtGyVnNi1Olle
-Scit2Wtv0XmjwcoOpQvaDhub2InhzF/ttg+AGADrLZ5vnFQJF+/h6/4IEv7801Lu
-PQU2aOjqodrE3f6T4CzS8bBn+YXYPiQzIzN8G1XU61bjCnTxntpwKksnHLCqVPhC
-CjHDY8RwnwMCsszA9x5dVrNFiUYdFC0TyAvZwNBl1I5RA87jfWzhtKmdlqkHNpRA
-0dC1RFUreRpTIKxY4kjtR7yxj1z55MMl+mX8TCYpmbD+TwZHKm87vG2n5X44EvxN
-O2fixmlyIomcRD+iQ62sCVP6AL3qpPJcc1Cyrkyib6wQRFarrUy5KEUAOcvV8mek
-f3jq24DdvtqRto2gCK8OvE8CpRdmqCuhhJGcxQLAXJ0Ps8l7O6xsiDFa8NKg2C7P
-kbPUg+QYfvoyYKBkWOt60zz1KnJsGRZO1LMqQEwnGgUnrG+q1YxphnygteJBV/Ay
-l2rhHREbaI2HPyyilWP73X6qkUwTJJaaeItxG8n18Fj0foFgU6w2CciZTHZx7Qhx
-JqXeLjrGJy6jXhXVLXehIlkBoMJjKGEVUTsZ6/jw38XKEOtgbxE=
-=RIGu
------END PGP SIGNATURE-----
-
---xhb4rgc3473jqtpo--
 
