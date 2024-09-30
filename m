@@ -1,116 +1,172 @@
-Return-Path: <cgroups+bounces-4990-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4991-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55CFD98AB0B
-	for <lists+cgroups@lfdr.de>; Mon, 30 Sep 2024 19:23:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F061C98ABA4
+	for <lists+cgroups@lfdr.de>; Mon, 30 Sep 2024 20:07:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E34842864E3
-	for <lists+cgroups@lfdr.de>; Mon, 30 Sep 2024 17:23:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88AC9B21F39
+	for <lists+cgroups@lfdr.de>; Mon, 30 Sep 2024 18:07:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CC05194C6A;
-	Mon, 30 Sep 2024 17:23:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1AD1198E77;
+	Mon, 30 Sep 2024 18:07:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="q2Go8nM9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YGUXn12M"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6640B286A1
-	for <cgroups@vger.kernel.org>; Mon, 30 Sep 2024 17:23:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04CC5192D7F;
+	Mon, 30 Sep 2024 18:07:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727717005; cv=none; b=gfAzwXppsun+Z5YWt7QKOso/jyzCfpd/cTLMZ93UsictYL/viingI+zlIx3q+r1PrXHQTlcJaS/LtSD2zc7+qZCdcPO03Bnq2oAQ+XgVCgzZy9eKnECcOn+ddaXFCiuPHBOQIVWHBXv4T7wa6KcguazZwdzFNGWI1fVHvG6Wm4g=
+	t=1727719659; cv=none; b=INFIxfqttR4NZmJ4aH82gtbnNMDROpV+yzpYxcWaTB8ZcZ/fvSpQA57Wlh+CbV1lIc9e7Wc7/UulNgi8iwxY25aMSrDRAWLMEU80NRpvbs99IkbgdcuOGcym/H2A0+eNYK1F/oGsgU96kvD9REUQBYrHoi0I8TlTr0SNVFgwKvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727717005; c=relaxed/simple;
-	bh=OIxfCBEGAvWEkdSEtEwxbO9TFJmwSb35nLFageeYab0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HN4N/2pD440vE05MI3fZpHX7zamUxC1I1Sr6XiMYtTtgkzJb4EaOzxPgCXc8D6G8qKeEA5tPsxQ+0J+8lTaUl2TAM6LvtNtd9wPF+ij39HggtnTMKK2ylz2bnBqe1zbyR5oFsZWWoqCPeEMjaieEYnbRVz0+cgAaQBaVGPOsbXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=q2Go8nM9; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 30 Sep 2024 10:23:16 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1727717001;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dzSxpLu+y25AB6WLpgOaZVb8gZEJ5dE5xNKaC6UmINQ=;
-	b=q2Go8nM9wbpL5b7RA1YB0iCsFwTZ6CAce/9vNZNG6Mk4ZjD6S0aLPFsVivVvC8y305Pbbe
-	wvIutYhV5fkHgYPMQ9wZVqb/oqnO4ugBFrAkOSB2qHnOmMM4EaC+9p2AfG/2L+jkhxGzp0
-	TUuHTiDXya7wNMce9rhp1+sYhAhUZxw=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org, 
-	roman.gushchin@linux.dev, muchun.song@linux.dev, akpm@linux-foundation.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, Michal Hocko <mhocko@suse.com>, 
-	"Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Subject: Re: [PATCH] btrfs: root memcgroup for metadata filemap_add_folio()
-Message-ID: <iwjlzsphxhqdpml5gn3t3qt5zhizgcmizel5vug7g7bwlkzeob@g2jlar2nynqb>
-References: <b5fef5372ae454a7b6da4f2f75c427aeab6a07d6.1727498749.git.wqu@suse.com>
+	s=arc-20240116; t=1727719659; c=relaxed/simple;
+	bh=/OQ1KrxkGaM4pmRJR4cp2j2Yxi9P63AE+31ryt6tBH4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Lc241VLZvKHvUUgaRJ+1mJd6WkdodsqYvG3wn2qoTA1dkR+YXhl/uChIuQMPNom9hRD1Ft2VPdzgA7/ST4Q6Zbl9LB/1vOKoQxbhTeIRjiit0X77xDyi9rnDiHoBKk4v2Vox9HtjsESLqPw+iqVZNK+zmM4wApqbkBU1xMQV0Xk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YGUXn12M; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5c87c7d6ad4so4539176a12.3;
+        Mon, 30 Sep 2024 11:07:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1727719654; x=1728324454; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KY0iwTLU6dMbnSBlFFGwESeicvDgtQgfBKe38KXMEGc=;
+        b=YGUXn12MKoY/2MveT676gci2o0QU0rXRR1R1OebPxjGpVvGpxr4wbO8vUvDFNVIzJ/
+         8F0L3Wp8kkdLv0d+2kO5GiSxgAbhhiDpBySQF2GOCVvFBBCqaqqww/bHoR9bon1RyASN
+         kG/fEyZs2h6rti2WTtdT6dGTbK6q6fo/wuvRthpa7ncbX0uWFjAJMcKmGYA6befWGupD
+         c0Bhs33u2Ydfon8b5+01157zH1gOZYPgRqGRCbSggbGewznZL77rR0BPsM1+mGjig82e
+         wv8F3Pr8gcgVfnSeBb1zwFkMOUzLB+Mn9gfTfF7Jqs9b6S17ZR7sCwXPliFm/u6/eLV+
+         m0hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727719654; x=1728324454;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KY0iwTLU6dMbnSBlFFGwESeicvDgtQgfBKe38KXMEGc=;
+        b=JkitAKs+LgXq/K+QORhk8nsw84I/Ao9ltyqHRIWjxsRZ6Ve/JVDEp0HOOIfh8aiB0V
+         TQuG+IeeKNdiQ/TkroeUYVsO2XSY12ZlsgQaVDkDzuDzrEHloXZxkDmCFEgUOIS6FXnE
+         IL/LVxpND1qr5drNosyZfhiSzbfzB6+uT4iZ3d3zHgHKim752g2s3OCDzHUujAUS2Re5
+         XH6Tkl2hLltUS+XmzZOMW4yE2ELwDUmxPN6+XZcyShLv46Lkvdfma4gq13wYx6uUMj0B
+         v4Xj/mPq6yXTQOSZJFTjEybqO41vn7cKiO251H1iqGOqNOzsqnT6yzqfCjAsYMT62eEl
+         5rNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUP0GziB5T4dPsw9m5xFKSDnQk0ztw+Rq19LB9FnMo+e4reNqQ5781xWxWdEUMXCxAl2A5JNWyNJf3hxV2d2J4D@vger.kernel.org, AJvYcCUXsSYpKHsGN/IFFsKfekoma7rbx+purGnDqwlnv2NZ/6E3mRvrBILlcsWU0+zsSxxdDWXVhyBS@vger.kernel.org, AJvYcCWYXWWahiXV/fuQ+4TQMAmVphLc6KfAg2nnLrYe0VZwohwSfr5wr8ydNynLWO2t1j/9poXKKIe0jSuvveCt@vger.kernel.org
+X-Gm-Message-State: AOJu0YykH+k3hixp+GWXxV9CeGuuyaYAY1VEHGE1FTNarwRDjK7t81a0
+	Tu1CJ/6e5YMpUboQo5qrgugyssSkx/zpOKqcUEkC5avclkEWtO5mdzY1t3a8CwR9X963ZY/f11B
+	sMgF7XfT+tYRqWIxUx/Tx5JgLAJI=
+X-Google-Smtp-Source: AGHT+IFP6WDNQPZ9jjVjlI/4U88hFaj1AgY82DAJT5+4CxUr5/y7oYHvgbttXNKqqMeFnisx/Fdz1kFN0xEIbYzbO7Y=
+X-Received: by 2002:a05:6402:2713:b0:5c8:9ee6:379a with SMTP id
+ 4fb4d7f45d1cf-5c89ee6397dmr1926054a12.30.1727719653955; Mon, 30 Sep 2024
+ 11:07:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b5fef5372ae454a7b6da4f2f75c427aeab6a07d6.1727498749.git.wqu@suse.com>
-X-Migadu-Flow: FLOW_OUT
+References: <20240923142006.3592304-1-joshua.hahnjy@gmail.com>
+ <20240923142006.3592304-3-joshua.hahnjy@gmail.com> <xmayvi6p6brlx3whqcgv2wzniggrfdfqq7wnl3ojzme5kvfwpy@65ijmy7s2tye>
+In-Reply-To: <xmayvi6p6brlx3whqcgv2wzniggrfdfqq7wnl3ojzme5kvfwpy@65ijmy7s2tye>
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+Date: Mon, 30 Sep 2024 14:07:22 -0400
+Message-ID: <CAN+CAwO8XEAkoBDc03Zveaci9hASaFvk8ybQ2Mwoy_VacqgRfA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] cgroup/rstat: Selftests for niced CPU statistics
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: tj@kernel.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	lizefan.x@bytedance.com, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Qu,
+On Thu, Sep 26, 2024 at 2:10=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
+>
+> On Mon, Sep 23, 2024 at 07:20:06AM GMT, Joshua Hahn <joshua.hahnjy@gmail.=
+com> wrote:
+> > +/*
+> > + * Creates a nice process that consumes CPU and checks that the elapse=
+d
+> > + * usertime in the cgroup is close to the expected time.
+> > + */
+> > +     user_usec =3D cg_read_key_long(cpucg, "cpu.stat", "user_usec");
+> > +     nice_usec =3D cg_read_key_long(cpucg, "cpu.stat", "nice_usec");
+> > +     if (user_usec !=3D 0 || nice_usec !=3D 0)
+> > +             goto cleanup;
+>
+> Can you please distinguish a check between non-zero nice_usec and
+> non-existent nice_usec (KSFT_FAIL vs KSFT_SKIP)? So that the selftest is
+> usable on older kernels too.
 
-On Sat, Sep 28, 2024 at 02:15:56PM GMT, Qu Wenruo wrote:
-> [BACKGROUND]
-> The function filemap_add_folio() charges the memory cgroup,
-> as we assume all page caches are accessible by user space progresses
-> thus needs the cgroup accounting.
-> 
-> However btrfs is a special case, it has a very large metadata thanks to
-> its support of data csum (by default it's 4 bytes per 4K data, and can
-> be as large as 32 bytes per 4K data).
-> This means btrfs has to go page cache for its metadata pages, to take
-> advantage of both cache and reclaim ability of filemap.
-> 
-> This has a tiny problem, that all btrfs metadata pages have to go through
-> the memcgroup charge, even all those metadata pages are not
-> accessible by the user space, and doing the charging can introduce some
-> latency if there is a memory limits set.
-> 
-> Btrfs currently uses __GFP_NOFAIL flag as a workaround for this cgroup
-> charge situation so that metadata pages won't really be limited by
-> memcgroup.
-> 
-> [ENHANCEMENT]
-> Instead of relying on __GFP_NOFAIL to avoid charge failure, use root
-> memory cgroup to attach metadata pages.
-> 
-> Although this needs to export the symbol mem_root_cgroup for
-> CONFIG_MEMCG, or define mem_root_cgroup as NULL for !CONFIG_MEMCG.
-> 
-> With root memory cgroup, we directly skip the charging part, and only
-> rely on __GFP_NOFAIL for the real memory allocation part.
-> 
+Yes, this sounds good to me -- I will include it in a v4, which I am
+hoping to send out soon.
 
-I have a couple of questions:
+> > +
+> > +     /*
+> > +      * We fork here to create a new process that can be niced without
+> > +      * polluting the nice value of other selftests
+> > +      */
+> > +     pid =3D fork();
+> > +     if (pid < 0) {
+> > +             goto cleanup;
+> > +     } else if (pid =3D=3D 0) {
+> > +             struct cpu_hog_func_param param =3D {
+> > +                     .nprocs =3D 1,
+> > +                     .ts =3D {
+> > +                             .tv_sec =3D usage_seconds,
+> > +                             .tv_nsec =3D 0,
+> > +                     },
+> > +                     .clock_type =3D CPU_HOG_CLOCK_PROCESS,
+> > +             };
+> > +
+> > +             /* Try to keep niced CPU usage as constrained to hog_cpu =
+as possible */
+> > +             nice(1);
+> > +             cg_run(cpucg, hog_cpus_timed, (void *)&param);
+>
+> Notice that cg_run() does fork itself internally.
+> So you can call hog_cpus_timed(cpucg, (void *)&param) directly, no
+> need for the fork with cg_run(). (Alternatively substitute fork in this
+> test with the fork in cg_run() but with extension of cpu_hog_func_params
+> with the nice value.)
+>
+> Thanks,
+> Michal
 
-1. Were you using __GFP_NOFAIL just to avoid ENOMEMs? Are you ok with
-oom-kills?
+Thank you for your feedback, Michal.
+The reason I used a fork in the testing is so that I could isolate the nice=
+d
+portion of the test to only the CPU hog. If I were to nice(1) --> cg_hog()
+in a single process without forking, this would mean that the cleanup porti=
+on
+of the test would also be run as a niced process, contributing to the stat =
+and
+potentially dirtying the value (which is tested for accuracy via
+`values_close`).
 
-2. What the normal overhead of these metadata in real world production
-environment? I see 4 to 32 bytes per 4k but what's the most used one and
-does it depend on the data of 4k or something else?
+The other thing that I considered when writing this was that while it is
+possible to make a process nicer, it is impossible to make a process less
+nice. This would mean that the comparison & cleanup portions would also be
+run nicely if I do not call fork().
 
-3. Most probably multiple metadata values are colocated on a single 4k
-page of the btrfs page cache even though the corresponding page cache
-might be charged to different cgroups. Is that correct?
+What do you think? Do you think that this increase in granularity /
+accuracy is worth the increase in code complexity? I do agree that it
+would be much easier to read if there was no fork.
 
-4. What is stopping us to use reclaimable slab cache for this metadata?
+Alternatively, I can add a new parameter to cpu_hog_func_param that
+takes in a nice value. For this however, I am afraid of changing the
+function signature of existing utility functions, since it would mean
+breaking support for older functions or others currently working on this.
 
-thanks,
-Shakeel
+Thank you for your detailed feedback again -- I will also change up the
+diffstat and indentation issues you brought up from the first part of the p=
+atch.
+
+Joshua
 
