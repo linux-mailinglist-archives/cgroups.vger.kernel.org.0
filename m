@@ -1,199 +1,133 @@
-Return-Path: <cgroups+bounces-4985-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-4988-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ACC1989D67
-	for <lists+cgroups@lfdr.de>; Mon, 30 Sep 2024 10:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 94A0598A373
+	for <lists+cgroups@lfdr.de>; Mon, 30 Sep 2024 14:50:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA2F11F21572
-	for <lists+cgroups@lfdr.de>; Mon, 30 Sep 2024 08:56:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AA5F1F2404E
+	for <lists+cgroups@lfdr.de>; Mon, 30 Sep 2024 12:50:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77D94185B6F;
-	Mon, 30 Sep 2024 08:56:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8073218E023;
+	Mon, 30 Sep 2024 12:50:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dd9OB9uA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66B5017F394;
-	Mon, 30 Sep 2024 08:56:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F9ADB65C
+	for <cgroups@vger.kernel.org>; Mon, 30 Sep 2024 12:50:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727686575; cv=none; b=eV5qW6AeVu4oCjwXJlLjZy686SqfjKVzhbQkwymkeZa25TR+rWpDNfNiJuA9YilNISQ2ZasHXIA/5DeWRFNpYTUrmAKPzuuQ8TBx4b0SORfEemqPVNwYUKRH3nt3BQfqvyFyb2orAK5UhFxD1BdV6Jt0B2D2pmLiFpLWUfqciqk=
+	t=1727700622; cv=none; b=gRIHDLZ5S3ok4fJ6zDcZ93tiemvE62D8M9nV5j7lu0U9PBC5hcBQN4ZwehfXsAr6u2LAOk4fEQHp56/nJRy51mtsavqX0CbSOuLBorxeuZVyluc9BPHO2hQ6R6wvW+RF2JLdBTOxW32aV/77poB5zG9teMIym3OUJYJv0w4Np60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727686575; c=relaxed/simple;
-	bh=RFIvMPwKm0xIVQzM4CMA7QmMFVA7grTf9FolwLFzK9c=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KQTwvU/Y+6CYDrEcAcDNDENgQHttuNzWYxGLkGLjJaOdU/dHq5aMq1RJslO+EI7uQZgWEu1lwO0HBcFG8oVw+VbLJmS4mel+xYbbsRIu22s2ZbfBsBH9Lo8myVcVpY9jDWwSQGXYIx245v2whqZcOo57FFBi/2RPGE1Uhcx4oq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XHFKW1lPmz4f3jkY;
-	Mon, 30 Sep 2024 16:55:59 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id A4C2A1A092F;
-	Mon, 30 Sep 2024 16:56:10 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgCn28emZ_pmgEUMCw--.63034S9;
-	Mon, 30 Sep 2024 16:56:10 +0800 (CST)
-From: Yu Kuai <yukuai1@huaweicloud.com>
-To: axboe@kernel.dk,
-	tj@kernel.org,
-	josef@toxicpanda.com
-Cc: linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	yukuai3@huawei.com,
-	yukuai1@huaweicloud.com,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH 5/5] blk-cgroup: use new helper blkg_print_dev_name()
-Date: Mon, 30 Sep 2024 16:53:02 +0800
-Message-Id: <20240930085302.1558217-6-yukuai1@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240930085302.1558217-1-yukuai1@huaweicloud.com>
-References: <20240930085302.1558217-1-yukuai1@huaweicloud.com>
+	s=arc-20240116; t=1727700622; c=relaxed/simple;
+	bh=Ae6fHVmCIfVJ4+AzMERz/YbJyUGo91QW663NFmx0Lvg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=f37XcXgCT0x5f+ulx+HZWrWt33g6HJIRvoxRMeoFtwesceRyw0Fb6YYI2OgiK9Vj/0iyMZG5lvTZR0BCZzvSCpCWjClAYLXO9kz4oP/pCuKOHCAXHZ/YRSlcMGUbNEJj1mNaZFCzsosr3WIs3Lu9XLb/Fh3zdT5yCQD8OMnlf0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dd9OB9uA; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-53991d05416so1447530e87.2
+        for <cgroups@vger.kernel.org>; Mon, 30 Sep 2024 05:50:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1727700618; x=1728305418; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ae6fHVmCIfVJ4+AzMERz/YbJyUGo91QW663NFmx0Lvg=;
+        b=dd9OB9uAvlzsCCff0RQAQt8XL6cZzRfUBdVwxxKOoQm7eQqf3BTO7iBSmYWOSF139T
+         ddebyQbRTuf8Mokq08VTI/NYt7mC+70GFJZLvvwxRqEuCM35OcAkljKJYpamso7epN/S
+         0CbQwngZgRzYaV/CE9V9dIkfsL4uDwhB4HPOmLPXfYh6zPujHlvYdrgYJg/9G1RNmzwk
+         qi9ErysU/9Niyv40urbwHYx6FD7zlLHMbmmylnVWhcn6szbYIrwi+MdjcbvMlh4ElauD
+         kxz9t/UbnEiY2/zyjitdOv2w4sPCxjkOz55KGrvgCR90Umr9mQP2oRxcEkfN5o0SI3Vo
+         Q6bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727700618; x=1728305418;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ae6fHVmCIfVJ4+AzMERz/YbJyUGo91QW663NFmx0Lvg=;
+        b=xJDZPDJ/mMyAufIyBVGCH8M4MiRbakeuZI6SoxRJZi+9+hCLPtB02qd8DLn0ZHejsv
+         OKUz2Ebh5wvz0E/ywHa7q5V1RB9xxLv8c52I2urjz5qaKq+G/j1qDjoZZx69A+D4fiWZ
+         2/aJK5OvKQdFNaUyYoaG6CXdHJVSewxi4kiDDaWK2ga/yABT3PhbHlU7aQ5EVCkgKFNC
+         tNSoiIle82kBO3MSGT6atiAPucxU8ess1Fc0F/pD3mFXiDIQwUueACxubfRYufQpE8oj
+         qhlZXeifRTu2s/tyeGekPyoKIImyF/XaBPGSYNpgPqTMv6yNJtztBRfXdG1E6Gn7CVIM
+         s+8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW22eqFcKW9Zz5b/SH6AckWKbeCZCJKJQqBI1/VX8i9p7koS7crr8tvxV6fvwMma9CWURuftsE7@vger.kernel.org
+X-Gm-Message-State: AOJu0YwePpijBZ/1dLO/qJTPQ6BHtrbLP4DovFxnB8KpkJ7S2/Pmz/zn
+	8qjbuqw3oUnVMlTgdmEkb3JOvLJ6xwY6C1OuKVEa1taRQjZLy/wfhpCgXDUlOaQ=
+X-Google-Smtp-Source: AGHT+IHNtGIRXS8i7sXXHufH8mFkbMkr6KqSwOLz+zsKlUefPFDs4E7VjtiNBZAlfADWmkKM/c304A==
+X-Received: by 2002:a05:6512:238f:b0:538:9e36:7b6a with SMTP id 2adb3069b0e04-5389fc4b91bmr8103339e87.32.1727700618292;
+        Mon, 30 Sep 2024 05:50:18 -0700 (PDT)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a93c297bc88sm535044166b.177.2024.09.30.05.50.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Sep 2024 05:50:17 -0700 (PDT)
+Date: Mon, 30 Sep 2024 14:50:16 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org, 
+	longman@redhat.com, chenridong@huawei.com, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] workqueue: doc: Add a note saturating the
+ system_wq is not permitted
+Message-ID: <hk4gfwg7cua6rbcly7qzpqah7bfxbzgndgwasmsqqzsim5uxzu@ofpo4e6koms2>
+References: <20240923114352.4001560-1-chenridong@huaweicloud.com>
+ <20240923114352.4001560-3-chenridong@huaweicloud.com>
+ <ipabgusdd5zhnp5724ycc5t4vbraeblhh3ascyzmbkrxvwpqec@pdy3wk5hokru>
+ <6a2f4e01-c9f5-4fb5-953e-2999e00a4b37@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCn28emZ_pmgEUMCw--.63034S9
-X-Coremail-Antispam: 1UD129KBjvJXoWxur4fCF18Jw4Uur4fKFy5XFb_yoW5uw1kpF
-	WayFnIk34akFnrZ3WYqa47Z34rJw40q3yag393C34a9F17ur1IkF1jk3sYq34ruFyfJrs8
-	XFn0vFyUKF4UKwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
-	bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-	AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI
-	42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
-	CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnI
-	WIevJa73UjIFyTuYvjfUOyIUUUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="u3msq2pqsn4nl45u"
+Content-Disposition: inline
+In-Reply-To: <6a2f4e01-c9f5-4fb5-953e-2999e00a4b37@huaweicloud.com>
 
-From: Yu Kuai <yukuai3@huawei.com>
 
-To avoid abuse of bdi_dev_name(), and remove blkg_dev_name() since it's
-not used anymore.
+--u3msq2pqsn4nl45u
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- block/blk-cgroup-rwstat.c | 13 +++++++------
- block/blk-cgroup.c        | 19 ++++---------------
- block/blk-cgroup.h        |  1 -
- 3 files changed, 11 insertions(+), 22 deletions(-)
+Hi.
 
-diff --git a/block/blk-cgroup-rwstat.c b/block/blk-cgroup-rwstat.c
-index a55fb0c53558..a0a1694572da 100644
---- a/block/blk-cgroup-rwstat.c
-+++ b/block/blk-cgroup-rwstat.c
-@@ -43,21 +43,22 @@ u64 __blkg_prfill_rwstat(struct seq_file *sf, struct blkg_policy_data *pd,
- 		[BLKG_RWSTAT_ASYNC]	= "Async",
- 		[BLKG_RWSTAT_DISCARD]	= "Discard",
- 	};
--	const char *dname = blkg_dev_name(pd->blkg);
- 	u64 v;
- 	int i;
- 
--	if (!dname)
-+	if (!pd->blkg->q->disk)
- 		return 0;
- 
--	for (i = 0; i < BLKG_RWSTAT_NR; i++)
--		seq_printf(sf, "%s %s %llu\n", dname, rwstr[i],
--			   rwstat->cnt[i]);
-+	for (i = 0; i < BLKG_RWSTAT_NR; i++) {
-+		blkg_print_dev_name(sf, pd->blkg);
-+		seq_printf(sf, " %s %llu\n", rwstr[i], rwstat->cnt[i]);
-+	}
- 
- 	v = rwstat->cnt[BLKG_RWSTAT_READ] +
- 		rwstat->cnt[BLKG_RWSTAT_WRITE] +
- 		rwstat->cnt[BLKG_RWSTAT_DISCARD];
--	seq_printf(sf, "%s Total %llu\n", dname, v);
-+	blkg_print_dev_name(sf, pd->blkg);
-+	seq_printf(sf, " Total %llu\n", v);
- 	return v;
- }
- EXPORT_SYMBOL_GPL(__blkg_prfill_rwstat);
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index e68c725cf8d9..475fb826d92b 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -682,13 +682,6 @@ static int blkcg_reset_stats(struct cgroup_subsys_state *css,
- 	return 0;
- }
- 
--const char *blkg_dev_name(struct blkcg_gq *blkg)
--{
--	if (!blkg->q->disk)
--		return NULL;
--	return bdi_dev_name(blkg->q->disk->bdi);
--}
--
- /**
-  * blkcg_print_blkgs - helper for printing per-blkg data
-  * @sf: seq_file to print to
-@@ -740,12 +733,10 @@ EXPORT_SYMBOL_GPL(blkcg_print_blkgs);
-  */
- u64 __blkg_prfill_u64(struct seq_file *sf, struct blkg_policy_data *pd, u64 v)
- {
--	const char *dname = blkg_dev_name(pd->blkg);
--
--	if (!dname)
-+	if (!blkg_print_dev_name(sf, pd->blkg))
- 		return 0;
- 
--	seq_printf(sf, "%s %llu\n", dname, (unsigned long long)v);
-+	seq_printf(sf, " %llu\n", (unsigned long long)v);
- 	return v;
- }
- EXPORT_SYMBOL_GPL(__blkg_prfill_u64);
-@@ -1144,18 +1135,16 @@ static void blkcg_print_one_stat(struct blkcg_gq *blkg, struct seq_file *s)
- {
- 	struct blkg_iostat_set *bis = &blkg->iostat;
- 	u64 rbytes, wbytes, rios, wios, dbytes, dios;
--	const char *dname;
- 	unsigned seq;
- 	int i;
- 
- 	if (!blkg->online)
- 		return;
- 
--	dname = blkg_dev_name(blkg);
--	if (!dname)
-+	if (!blkg_print_dev_name(s, blkg))
- 		return;
- 
--	seq_printf(s, "%s ", dname);
-+	seq_putc(s, ' ');
- 
- 	do {
- 		seq = u64_stats_fetch_begin(&bis->sync);
-diff --git a/block/blk-cgroup.h b/block/blk-cgroup.h
-index d62bcc2bae14..ab9365bc23ef 100644
---- a/block/blk-cgroup.h
-+++ b/block/blk-cgroup.h
-@@ -202,7 +202,6 @@ int blkcg_activate_policy(struct gendisk *disk, const struct blkcg_policy *pol);
- void blkcg_deactivate_policy(struct gendisk *disk,
- 			     const struct blkcg_policy *pol);
- 
--const char *blkg_dev_name(struct blkcg_gq *blkg);
- void blkcg_print_blkgs(struct seq_file *sf, struct blkcg *blkcg,
- 		       u64 (*prfill)(struct seq_file *,
- 				     struct blkg_policy_data *, int),
--- 
-2.39.2
+On Fri, Sep 27, 2024 at 04:08:26PM GMT, Chen Ridong <chenridong@huaweicloud.com> wrote:
+> How about:
+> Note: If something may generate works frequently, it may saturate the
+> system_wq and potentially lead to deadlock. It should utilize its own
+> dedicated workqueue rather than system wq.
 
+It doesn't depend only on generating frequency (in Tetsuo's example with
+slow works, the "high" would only be 256/s) and accurate information is
+likely only empirical, thus I'd refine it further:
+
+> Note: If something may generate more than @max_active outstanding
+> work items (do stress test your producers), it may saturate a system
+> wq and potentially lead to deadlock. It should utilize its own
+> dedicated workqueue rather than the system wq.
+
+(besides @max_active reference, I also changed generic system_wq to
+system wq as the surrounding text seems to refer to any of the
+system_*wq)
+
+Michal
+
+--u3msq2pqsn4nl45u
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZvqehQAKCRAt3Wney77B
+SR3xAP9PHT1jJtEbsiuiwo1WgbhnDVHPXZDXJhr8SjF3wOi6EwD/ZWIJTwmm3xwT
+R0QOL4IXDsaTHR3ZsKwx8/LBEtmwqgM=
+=h7W7
+-----END PGP SIGNATURE-----
+
+--u3msq2pqsn4nl45u--
 
