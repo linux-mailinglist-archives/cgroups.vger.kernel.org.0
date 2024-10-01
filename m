@@ -1,157 +1,111 @@
-Return-Path: <cgroups+bounces-5004-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5005-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9238D98BDE3
-	for <lists+cgroups@lfdr.de>; Tue,  1 Oct 2024 15:35:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0821898C4C8
+	for <lists+cgroups@lfdr.de>; Tue,  1 Oct 2024 19:50:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C11AB210C2
-	for <lists+cgroups@lfdr.de>; Tue,  1 Oct 2024 13:35:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3159E1C21CA1
+	for <lists+cgroups@lfdr.de>; Tue,  1 Oct 2024 17:50:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DF801C4623;
-	Tue,  1 Oct 2024 13:35:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE7621CB534;
+	Tue,  1 Oct 2024 17:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="BrFBQV5X"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TZncx9rm"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7C381C460E
-	for <cgroups@vger.kernel.org>; Tue,  1 Oct 2024 13:35:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103A81C242E;
+	Tue,  1 Oct 2024 17:50:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727789738; cv=none; b=lmllWXM8AFzaPioJjXjj97Pv62we7p/6RFmTljLkvGWPBSZsP5eGEI/HyuYumsiQwMBLJR5ZvHbl2xwFGYyhXtIGU9VE17ZjzID6BdtoyvRjgYr0VkwC+qDxeRouQfbkStGOI1AdnjjKKw9aGr+R9mTQX6rA7c1jhC3e2QuoDCA=
+	t=1727805027; cv=none; b=mxwQrFKZs8nPc9cHMh5+M9jGwTiTfrlcLE0Tk/y8v+Kh8mCBlIpwAAK9RPaLm467qw7XonG5pP//TIY5bEPLlJKIBZyv5HVWL3b0gPydL+ODUjOTKnkGz2bzobMPW7Fgjg32rnCjFXwARJO4BOHBqlhCt2qDE4Ji1WPB0siRv1U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727789738; c=relaxed/simple;
-	bh=+KoryTco6wBMzsWP6v3K3MzAAYCO8/g5hNEdQ/inc2Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Z7AlwgApTGyom9gpQ15zgLxLdmf7+Fx1k9XTNJ91721aBzbDUhaTewYa5J/fz2VZAUVT8pqGIp8ZWI2z0lOJ56Yv9+K29OYh8drcXsz6jFxLsKht2c7SuQFNRqptLU+1Kv53nJkq8Ck+d3otOeq1PVPJ+8xYiqlVesSEEpWlVB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=BrFBQV5X; arc=none smtp.client-ip=209.85.166.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-82ab349320fso232632339f.1
-        for <cgroups@vger.kernel.org>; Tue, 01 Oct 2024 06:35:35 -0700 (PDT)
+	s=arc-20240116; t=1727805027; c=relaxed/simple;
+	bh=LCWVpajAikQ+toPAXwPJaPLnAy7DAfal7nkQHKA9yws=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Bd3eb51sARYYf52flxX/W3jOuTI2TXd1/npQMzIiZr7+14f4SZoEviSaFbyyLpk+s8kDeDA/j9S66cfFC2eVzlNGCIs3bHpDBqQMzUyGpVNolJrRtWsDq05y34QGRX9KLzo16Kyi9df5qKva1RPsgKmNtyMZS8HJXX0+Y+uf86c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TZncx9rm; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5c87c7d6ad4so5986961a12.3;
+        Tue, 01 Oct 2024 10:50:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1727789735; x=1728394535; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OgL5rd3KvxVTO/uJOqBplF7gKZBP1S9mwJ5BPmOEOSk=;
-        b=BrFBQV5XgWm016xr/nZni++dQ2KFWys3YAiOKRKmyUFTyf3awNZHP4g40ekH4o5eCO
-         i+9atbHNcDnIBY5x7FS7pURc5SfkXocIcKQRf9ySzxGMprjlfO0r+FB0mYUxgoNs8eDn
-         9rT3PcbwLPA02bqFvB8O5oWsM/Tl+p9EOHsblepMiGeeSkNNuDcrMY4VmtQHw4El8Gbe
-         zsxLm2RvQoz+uKKgoCql2pqxDl+nk44K0JH448y0mucjAn8NeR93vihbIwFYNSH0LRWs
-         0PJbG+t6x13uvPtPlwpjI0D7n24T3jxY4j4n449k8qjihnjNFwGji7ltF1YlezECf6Wz
-         iivA==
+        d=gmail.com; s=20230601; t=1727805024; x=1728409824; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=LCWVpajAikQ+toPAXwPJaPLnAy7DAfal7nkQHKA9yws=;
+        b=TZncx9rmzCC3RsuKfMGEg7IYKTVJxeh62b4SN5sOlwHFs/WLa8XQYhHUb3aDcNZzjz
+         sgOOiN/g50/GqX4tH01mZNYZRe2eYyIQMwaCZosh1IALhNIn0KXih14fnSaSQtoUzhu7
+         Fanux1la9WZIeseBrcKmE8Ye5C8SDmTzalCXionLZJjGYPZwOTiTMgVJRlENYKQkrUhs
+         zYb71ctorNdJxzACffhWLkx81PhPkdVCCDEN9wXvIjO50bOImOzqCF/DVbVXX1gjOrmj
+         BrWfT0E6FjIZipMdbWzR4P+foua99px1nnMe3SaF2LVup20N+Uk1gH4axxACNkqEQ0a1
+         MRlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727789735; x=1728394535;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OgL5rd3KvxVTO/uJOqBplF7gKZBP1S9mwJ5BPmOEOSk=;
-        b=Stu1+LLAxkNRlray/sYlhElDal3Gbo42nkWG6S9JaYpqLiwm9ZfJFhdEFDHHdoqPAC
-         w/MUH4nSNRdRNxXsgOrcxFo9egeM86aA6JfD4fw16+jTUVIcQw9+u/zBC8PWVtGGHwii
-         mesZi9+gGGw/C8Ua51A2H9JmCalk5wCmXLWcQZ1qblrB4AvTpbj0csDTNw/QFQTdf6IK
-         +wT2pl2OFb/JD9EQ6eA+G/Fa1lQsHa2xV7v8SmmvHmdujWwXGl9DHFbivH26kFQ6Yvdo
-         ZRXyar0LeiiNn8xuSeSLTmla3TTV3ykkKV3DWA/CAFwd2B9pAnzrE00bpNd4VUeeW3gZ
-         Z34Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWbviOBJuQbJrHSG8ZwSPo23g+aFLlWj9WCIMIizdKT4TK2bSms4Q0hVfXKtoDcjXNnlr7Wpvev@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz2cyq/HKQHA6UDK3whDBR2webqwAg5iRVe43UKKDEuxYqY8kDZ
-	b+d365DZjc7VVo9Vp7EPxazyUMg8qpnSWmtsUSLCIZq+rW5KvtGcl9/vVuDvxyE=
-X-Google-Smtp-Source: AGHT+IHG5lToJh8LSYS16u7mBh+qtGBfzo1ovi31Kf1FK7684UVjTXOg2EW6WyrZ9o/eP4/O5KtDjg==
-X-Received: by 2002:a05:6602:2b04:b0:82d:96a:84f4 with SMTP id ca18e2360f4ac-8349318d38amr1668545339f.1.1727789734880;
-        Tue, 01 Oct 2024 06:35:34 -0700 (PDT)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4d88883518bsm2673695173.20.2024.10.01.06.35.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Oct 2024 06:35:34 -0700 (PDT)
-Message-ID: <f588a1dc-590f-46aa-8d0c-ac792606c662@kernel.dk>
-Date: Tue, 1 Oct 2024 07:35:32 -0600
+        d=1e100.net; s=20230601; t=1727805024; x=1728409824;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LCWVpajAikQ+toPAXwPJaPLnAy7DAfal7nkQHKA9yws=;
+        b=F177nG8PMomVlKLkCn0w9R1NjrFmkL3zUK3xKXLqZ7FdTl9Fps6CBRP1M/jtseuB2P
+         uZMBNRv+rnJHK+jw6MsQsWPed5DPbgvEygZ9kPYXY+XNt0pYh3eZRYUHAJuuGUHbSfNF
+         xF8fR4gnU2qYd7u3AFYVSmKxT71+CghwmViwBSlv7GcGpPhQerabOLsOjfmAgnTXHoDd
+         KqvtyR6PM6FTLDHVSfjgSyP6JYHiWpDjaYFTe4g8oyhDfea4o2IVgBqmdZZAQPM3MbA8
+         3P6dSreLv2WFYiZHRf7hY2BqAbRyNQRhkm+o242G0cj1/UumqVxb6ZUGT5i6xO14g9Mq
+         jYqA==
+X-Forwarded-Encrypted: i=1; AJvYcCUUjc/IsQnCTMzV+mu66lG2NMf8o/6YPloLNhzQ0Y6LArp0HRpkxXNcXN9d2rCJ1tu28VZHteIl6SbjwgsTWdWI@vger.kernel.org, AJvYcCUuicqR6EIWa9dVIYBI2Ns1Fe4L4z5X/4NiOVPUBWYXrzQHVUkfhLKa37VFtHbVjnoPnFLAzouhf6gRMDp5@vger.kernel.org, AJvYcCXVqqA3yGds0RzJ3N4Dr5MP6XTIEG1DK9Gi7JER2yviRqSMNOHcOlo8oz37y8N9p1kbky58snFC@vger.kernel.org
+X-Gm-Message-State: AOJu0YyxhK/lF00mXzQ/ZbGSSh/H7/d6g2lAniZQeDRIKgyt8wQWtgJn
+	zZR9uGN6yNkfu1ggxm0dgtHsXM7jqd4mkcksxGbGXEWHiNrVeh4fVntC0FpJi0DrHqE1DrVWtMa
+	z0DgaB3MGb0E2DG3cBtFBTdSQKnQ=
+X-Google-Smtp-Source: AGHT+IFgvIzj7DBl0y5N2epf79BbIYuUEEl/ozcyirEICsugUX7UEjuzXWtbCf1MWErSoG6HsTmK+nS4lMWP8PuwFYM=
+X-Received: by 2002:a05:6402:210f:b0:5c5:ba82:c3b1 with SMTP id
+ 4fb4d7f45d1cf-5c8b1b8b391mr139688a12.29.1727805024017; Tue, 01 Oct 2024
+ 10:50:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 0/2] io_uring/io-wq: respect cgroup cpusets
-To: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
- "MOESSBAUER, Felix" <felix.moessbauer@siemens.com>
-Cc: "Schmidt, Adriaan" <adriaan.schmidt@siemens.com>,
- "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
- "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
- "Bezdeka, Florian" <florian.bezdeka@siemens.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "longman@redhat.com" <longman@redhat.com>,
- "asml.silence@gmail.com" <asml.silence@gmail.com>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>,
- "dqminh@cloudflare.com" <dqminh@cloudflare.com>
-References: <20240911162316.516725-1-felix.moessbauer@siemens.com>
- <2024093053-gradient-errant-4f54@gregkh>
- <db8843979322b9a031b5d9523b6b07dca9c13546.camel@siemens.com>
- <2024100108-facing-mobile-1e4a@gregkh>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <2024100108-facing-mobile-1e4a@gregkh>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240923142006.3592304-1-joshua.hahnjy@gmail.com>
+ <20240923142006.3592304-3-joshua.hahnjy@gmail.com> <xmayvi6p6brlx3whqcgv2wzniggrfdfqq7wnl3ojzme5kvfwpy@65ijmy7s2tye>
+ <CAN+CAwO8XEAkoBDc03Zveaci9hASaFvk8ybQ2Mwoy_VacqgRfA@mail.gmail.com> <4l4afsuzqd6vowki7ldafoikpyw5sfwcvhhpeaezwhdmdj54bc@fhp6yt3ygq3r>
+In-Reply-To: <4l4afsuzqd6vowki7ldafoikpyw5sfwcvhhpeaezwhdmdj54bc@fhp6yt3ygq3r>
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+Date: Tue, 1 Oct 2024 13:50:12 -0400
+Message-ID: <CAN+CAwP048b_cbw1jQf4Z0eGatbkaVW=AbL2MqjaDnuDZM-1ig@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] cgroup/rstat: Selftests for niced CPU statistics
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: tj@kernel.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	lizefan.x@bytedance.com, shuah@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 10/1/24 1:50 AM, gregkh@linuxfoundation.org wrote:
-> On Tue, Oct 01, 2024 at 07:32:42AM +0000, MOESSBAUER, Felix wrote:
->> On Mon, 2024-09-30 at 21:15 +0200, Greg KH wrote:
->>> On Wed, Sep 11, 2024 at 06:23:14PM +0200, Felix Moessbauer wrote:
->>>> Hi,
->>>>
->>>> as discussed in [1], this is a manual backport of the remaining two
->>>> patches to let the io worker threads respect the affinites defined
->>>> by
->>>> the cgroup of the process.
->>>>
->>>> In 6.1 one worker is created per NUMA node, while in da64d6db3bd3
->>>> ("io_uring: One wqe per wq") this is changed to only have a single
->>>> worker.
->>>> As this patch is pretty invasive, Jens and me agreed to not
->>>> backport it.
->>>>
->>>> Instead we now limit the workers cpuset to the cpus that are in the
->>>> intersection between what the cgroup allows and what the NUMA node
->>>> has.
->>>> This leaves the question what to do in case the intersection is
->>>> empty:
->>>> To be backwarts compatible, we allow this case, but restrict the
->>>> cpumask
->>>> of the poller to the cpuset defined by the cgroup. We further
->>>> believe
->>>> this is a reasonable decision, as da64d6db3bd3 drops the NUMA
->>>> awareness
->>>> anyways.
->>>>
->>>> [1]
->>>> https://lore.kernel.org/lkml/ec01745a-b102-4f6e-abc9-abd636d36319@kernel.dk
->>>
->>> Why was neither of these actually tagged for inclusion in a stable
->>> tree?
->>
->> This is a manual backport of these patches for 6.1, as the subsystem
->> changed significantly between 6.1 and 6.2, making an automated backport
->> impossible. This has been agreed on with Jens in
->> https://lore.kernel.org/lkml/ec01745a-b102-4f6e-abc9-abd636d36319@kernel.dk/
->>
->>> Why just 6.1.y?  Please submit them for all relevent kernel versions.
->>
->> The original patch was tagged stable and got accepted in 6.6, 6.10 and
->> 6.11.
-> 
-> No they were not at all.  Please properly tag them in the future as per
-> the documentation if you wish to have things applied to the stable
-> trees:
->     https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+> My motivation comes from debugging cgroup selftests when strace is quite
+> useful and your implementation adds the unnecessary fork which makes the
+> strace (slightly) less readable.
 
-That's my bad, missed that one of them did not get marked for stable,
-the sqpoll one did.
+This makes sense, thank you for the context. I hadn't considered debugging
+considerations much, but I can imagine that it becomes harder to read
+once the code & strace becomes clogged up.
 
--- 
-Jens Axboe
+> > Do you think that this increase in granularity / accuracy is worth the
+> > increase in code complexity? I do agree that it would be much easier
+> > to read if there was no fork.
+>
+> I think both changes (no cg_run or cpu_hog_func_param extension) could
+> be reasonably small changes (existing usages of cpu_hog_func_param
+> extension would default to zero nice, so the actual change would only be
+> in hog_cpus_timed()).
+
+I think I will stick with the no cg_run option. Initially, I had
+wanted to use it
+to maintain the same style with the other selftests in test_cpu.c, but I think
+it creates more unnecessary unreadability.
+
+Thank you again,
+Joshua
 
