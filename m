@@ -1,123 +1,99 @@
-Return-Path: <cgroups+bounces-4999-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5000-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D3D998B619
-	for <lists+cgroups@lfdr.de>; Tue,  1 Oct 2024 09:50:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAC3498B828
+	for <lists+cgroups@lfdr.de>; Tue,  1 Oct 2024 11:19:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98E86281897
-	for <lists+cgroups@lfdr.de>; Tue,  1 Oct 2024 07:50:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 73F64282FF9
+	for <lists+cgroups@lfdr.de>; Tue,  1 Oct 2024 09:19:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B9061BDA85;
-	Tue,  1 Oct 2024 07:50:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5634219D887;
+	Tue,  1 Oct 2024 09:19:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="DLb2gS3l"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="uCHM/L5b"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E7063D;
-	Tue,  1 Oct 2024 07:50:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C40FC19CC36;
+	Tue,  1 Oct 2024 09:19:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727769012; cv=none; b=XSx/eiKnhkNJ/XiV4wA0WjHTaUih6YlpbY4lsh3BVUX2fHrEn/ik3SDNeLnEGaK0mDb6YSGROIFRj976dtSbFsS6QgJ/h2aAd01LT7ap6gCY1ZmKLMvIK+uBioDjbIQAFmt/+TzNQEglVoVpXMulmOPaC/KhVP75OB3LuBqdTWE=
+	t=1727774373; cv=none; b=n3w0Ou2Low3CSOHOot/N9O7Lq/V6/hd8cap2sJVMqw7DIJoL/m7JwVq17YlLRi4yweiq9HH/AUSd36dinGBOEi9AlVFyaDdatBOMIG1bnWC7n9wF8vkjBfefZ7QQsHiAbH90BOlI6jjDl0bgkH9TTOSFoIGwKAbUOHRpny5Ja1o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727769012; c=relaxed/simple;
-	bh=b45yf7L4WkxZYJGLw7J41JUR3kvqxzDmEvQaBCcHb6o=;
+	s=arc-20240116; t=1727774373; c=relaxed/simple;
+	bh=WwRctsRhl/y8+7NsQYrD+0vPTWZHJ/b4JRXktRlbz8U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EAua2HvwAZnc9DcG7PbOX6lELgVS2l1b1aASCwtPJHncdjit79ba8KEFK8i65KOLhRvESf2SIwFzRVwvj6Hd3CFPr3/jAaa8g4BVQCVihPEa7po3ZcRPa/qSpCnC3vgVoljkn1L5InEQnTTs5dyagMh3VyMit0c8wXY7hFheLMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=DLb2gS3l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61480C4CECE;
-	Tue,  1 Oct 2024 07:50:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1727769011;
-	bh=b45yf7L4WkxZYJGLw7J41JUR3kvqxzDmEvQaBCcHb6o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DLb2gS3l3OOZtE4xKvml4BpO6YzOqYyIyno6XXd9hUC9qgHuLFp8tzEoFAk/wucSx
-	 nFZoSLFigCo1f/ZV7iOV+3Gx5Pmo0mw59gWFFbS2sNG4izwR4qK1PmrFeffwkqlM2w
-	 mW3xkPmKteT4iz26NgbzbJoosDnrYwkzEhWDgXZE=
-Date: Tue, 1 Oct 2024 09:50:09 +0200
-From: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To: "MOESSBAUER, Felix" <felix.moessbauer@siemens.com>
-Cc: "Schmidt, Adriaan" <adriaan.schmidt@siemens.com>,
-	"io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-	"Bezdeka, Florian" <florian.bezdeka@siemens.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"axboe@kernel.dk" <axboe@kernel.dk>,
-	"longman@redhat.com" <longman@redhat.com>,
-	"asml.silence@gmail.com" <asml.silence@gmail.com>,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>,
-	"dqminh@cloudflare.com" <dqminh@cloudflare.com>
-Subject: Re: [PATCH 6.1 0/2] io_uring/io-wq: respect cgroup cpusets
-Message-ID: <2024100108-facing-mobile-1e4a@gregkh>
-References: <20240911162316.516725-1-felix.moessbauer@siemens.com>
- <2024093053-gradient-errant-4f54@gregkh>
- <db8843979322b9a031b5d9523b6b07dca9c13546.camel@siemens.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZM7pVqVSW+aI+XRl/edeJGqrjS4RgNcqoMjaPKpgUowh4wCTkH7EKctL8wT07mYbHay5dotxQMCTADzKbe5Fu9bQwyG+O1m47+wdsr74BcGCFMkfez1hTS2uzUK9U2oOT7FdWmgKNNkcxSyFIbfXkcztsiWepTnDvGmtKZF8gLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=uCHM/L5b; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=gILVLabc79RpkPeQ4dmYMKT20MxsXgyRp081PCwlXDo=; b=uCHM/L5byeVzJQCvKuaxwIT9IW
+	/nzpC/KiwJZU950wIWWPKb9BsCOSY76YALAuEHgMgFyU4Qy/5NuIBS8/Xps4E/5CjXeuZbp8rAaej
+	xvZyNkwRW+1eey6XkHE8p+x4drYKzULQSgYjwVVAqqBrgIFRIB4CWF8zCd8k1EMPB1aE6+JllfrK9
+	ctdFGU8IELogcAJb2eieRd3gF/nxCbngeZFyqSZdjBySlUU/k1kdxSH0wpEiUKLAwLxrAf6sGBl01
+	edGNEdLJHMOgrf3aw3DYHziagB+r5QQM61fLZ2W6FcoY8mwK5l1y7pNO7EoWpR/TNc2aUYzMu1Sh0
+	gJdJrNWw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1svZ2V-00000002Cst-3cT4;
+	Tue, 01 Oct 2024 09:19:27 +0000
+Date: Tue, 1 Oct 2024 02:19:27 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, akpm@linux-foundation.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	Michal Hocko <mhocko@suse.com>,
+	"Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+Subject: Re: [PATCH] btrfs: root memcgroup for metadata filemap_add_folio()
+Message-ID: <Zvu-n6NFL8wo4cOA@infradead.org>
+References: <b5fef5372ae454a7b6da4f2f75c427aeab6a07d6.1727498749.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <db8843979322b9a031b5d9523b6b07dca9c13546.camel@siemens.com>
+In-Reply-To: <b5fef5372ae454a7b6da4f2f75c427aeab6a07d6.1727498749.git.wqu@suse.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Tue, Oct 01, 2024 at 07:32:42AM +0000, MOESSBAUER, Felix wrote:
-> On Mon, 2024-09-30 at 21:15 +0200, Greg KH wrote:
-> > On Wed, Sep 11, 2024 at 06:23:14PM +0200, Felix Moessbauer wrote:
-> > > Hi,
-> > > 
-> > > as discussed in [1], this is a manual backport of the remaining two
-> > > patches to let the io worker threads respect the affinites defined
-> > > by
-> > > the cgroup of the process.
-> > > 
-> > > In 6.1 one worker is created per NUMA node, while in da64d6db3bd3
-> > > ("io_uring: One wqe per wq") this is changed to only have a single
-> > > worker.
-> > > As this patch is pretty invasive, Jens and me agreed to not
-> > > backport it.
-> > > 
-> > > Instead we now limit the workers cpuset to the cpus that are in the
-> > > intersection between what the cgroup allows and what the NUMA node
-> > > has.
-> > > This leaves the question what to do in case the intersection is
-> > > empty:
-> > > To be backwarts compatible, we allow this case, but restrict the
-> > > cpumask
-> > > of the poller to the cpuset defined by the cgroup. We further
-> > > believe
-> > > this is a reasonable decision, as da64d6db3bd3 drops the NUMA
-> > > awareness
-> > > anyways.
-> > > 
-> > > [1]
-> > > https://lore.kernel.org/lkml/ec01745a-b102-4f6e-abc9-abd636d36319@kernel.dk
-> > 
-> > Why was neither of these actually tagged for inclusion in a stable
-> > tree?
+On Sat, Sep 28, 2024 at 02:15:56PM +0930, Qu Wenruo wrote:
+> [BACKGROUND]
+> The function filemap_add_folio() charges the memory cgroup,
+> as we assume all page caches are accessible by user space progresses
+> thus needs the cgroup accounting.
 > 
-> This is a manual backport of these patches for 6.1, as the subsystem
-> changed significantly between 6.1 and 6.2, making an automated backport
-> impossible. This has been agreed on with Jens in
-> https://lore.kernel.org/lkml/ec01745a-b102-4f6e-abc9-abd636d36319@kernel.dk/
+> However btrfs is a special case, it has a very large metadata thanks to
+> its support of data csum (by default it's 4 bytes per 4K data, and can
+> be as large as 32 bytes per 4K data).
+> This means btrfs has to go page cache for its metadata pages, to take
+> advantage of both cache and reclaim ability of filemap.
+
+FYI, in general reclaims for metadata work much better with a shrinker
+than through the pagecache, because it can be object based and
+prioritized.
+
+> [ENHANCEMENT]
+> Instead of relying on __GFP_NOFAIL to avoid charge failure, use root
+> memory cgroup to attach metadata pages.
 > 
-> > Why just 6.1.y?  Please submit them for all relevent kernel versions.
+> Although this needs to export the symbol mem_root_cgroup for
+> CONFIG_MEMCG, or define mem_root_cgroup as NULL for !CONFIG_MEMCG.
 > 
-> The original patch was tagged stable and got accepted in 6.6, 6.10 and
-> 6.11.
+> With root memory cgroup, we directly skip the charging part, and only
+> rely on __GFP_NOFAIL for the real memory allocation part.
 
-No they were not at all.  Please properly tag them in the future as per
-the documentation if you wish to have things applied to the stable
-trees:
-    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+This looks pretty ugly.  What speaks against a version of
+filemap_add_folio that doesn't charge the memcg?
 
-thanks,
-
-greg k-h
 
