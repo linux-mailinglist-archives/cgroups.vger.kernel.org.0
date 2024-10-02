@@ -1,225 +1,101 @@
-Return-Path: <cgroups+bounces-5010-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5011-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F001698D0DB
-	for <lists+cgroups@lfdr.de>; Wed,  2 Oct 2024 12:09:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E55D798D183
+	for <lists+cgroups@lfdr.de>; Wed,  2 Oct 2024 12:46:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7DE131F2264B
-	for <lists+cgroups@lfdr.de>; Wed,  2 Oct 2024 10:09:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF94D28468A
+	for <lists+cgroups@lfdr.de>; Wed,  2 Oct 2024 10:46:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA4881E500A;
-	Wed,  2 Oct 2024 10:09:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06CD41E7665;
+	Wed,  2 Oct 2024 10:46:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="b26alOTI";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fA9Mcmqw"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zxS7cprL"
 X-Original-To: cgroups@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB801FA5;
-	Wed,  2 Oct 2024 10:09:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 219831E764C
+	for <cgroups@vger.kernel.org>; Wed,  2 Oct 2024 10:46:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727863782; cv=none; b=PP4AJ4ygdhAzzHOpRvm5+Yl/BoGZOqnDaWyzdZj5vqT7iLfZC7OMRAspIaHxPwYdDbvLFcLPT8ca9KbvfmF3kXd6B/JXPngNWS+2vxwZQb97eZ6czIs4QCkgrFTa+uzo2QIQrahJN+PG2NLULAshtV/lS44aM9L3iIgeZm6TrIc=
+	t=1727865968; cv=none; b=JAYKY/BCrd5bOjyF/UBHkIzzxeT7DdLOLiS/wmwWt2To5EZm5bUlIn8RWSL5FajpsTQSH9zveLAymJ7ghs1YkES0DjS185cn0HkolNjf2kNFALxt5r9g+rmJNDtSsP0wQQNd7tkPX7x/QlRc3ptiOZ3kZObUMfX6SkQGogiFVqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727863782; c=relaxed/simple;
-	bh=Y/9vQqpgJi3I0jIE80HY19tENyoegZHs3BQLz5bYcAs=;
-	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=t38kjXGpno2R7d4P57yx/1Kg28TeoxJFrYLnUoyNi+ZmyB9Zt7zWcdxUNed6acBNscdNzoJP/86E2KVJgi6ZD95ZX4aaPrMkosBTfs8cuVoCjJfqTEQN9CojgRnB3/SK7j0M2dlNyoyxEHoSI6rSx2PX6xJcmuYMx3fKxNggBLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=b26alOTI; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=fA9Mcmqw; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1727863778;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mb59KJjSNfWC20EAWGOc9Up2meyWMry61XLe9mm8SOA=;
-	b=b26alOTIwPE5WQO32GirhS4TLbLM6kdt4huW1uEKHWHg9REQ6vZVCPRpVuK+f0pQDmamCH
-	Lg4WAgXV/D9nzTHeP7fVXL2qUxgnrR2EstRe+oPdc3RsC7px9oJ80Ny0UG4F9kRLyYVjxx
-	mxRyuOcw7k+jIYgfANjqLbtcaoXnB//Fgakt/3JJ02yp0O60r3FO9QeF9wdN0p4EmqJZrR
-	itmId45Crqo8YFSybbpl/qvNb5YR4Wnl4e1x9GedI0QHoCV9dMsWo4jl09TsDW4uH2W/rz
-	6blpbcma4rsw+YpKUvjy/NH8r7vJJShlxRbTzNLfhyHEYW9QjswS1z5smu+yRQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1727863778;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mb59KJjSNfWC20EAWGOc9Up2meyWMry61XLe9mm8SOA=;
-	b=fA9McmqwiGJ2Uze93z7x2HZAlLxru5KvfJP6wS+2KS+YLtwYcvd0qpbxmQ2Rfx9rHbrjPO
-	MHvcSHCeSlTUSIBg==
-To: Costa Shulyupin <costa.shul@redhat.com>, longman@redhat.com,
- ming.lei@redhat.com, pauld@redhat.com, juri.lelli@redhat.com,
- vschneid@redhat.com, Michael Ellerman <mpe@ellerman.id.au>, Nicholas
- Piggin <npiggin@gmail.com>, Christophe Leroy
- <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, Zefan Li
- <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>, Johannes Weiner
- <hannes@cmpxchg.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
- Ingo Molnar
- <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Vincent Guittot
- <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel
- Gorman <mgorman@suse.de>, Costa Shulyupin <costa.shul@redhat.com>, Bjorn
- Helgaas <bhelgaas@google.com>, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH v3 2/3] genirq/cpuhotplug: Adjust managed irqs
- according to change of housekeeping CPU
-In-Reply-To: <20240916122044.3056787-3-costa.shul@redhat.com>
-References: <20240916122044.3056787-1-costa.shul@redhat.com>
- <20240916122044.3056787-3-costa.shul@redhat.com>
-Date: Wed, 02 Oct 2024 12:09:38 +0200
-Message-ID: <87h69uyfx9.ffs@tglx>
+	s=arc-20240116; t=1727865968; c=relaxed/simple;
+	bh=j1jipKhBpX/FlRTd/1TIChevsQmJqofboK5tmbX95yc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qauZIS0egcVMptRFFuu7xTKlTfXFy/q8ncEZTc6mnr+Id267EMssIahR31mXpLhCG2wXrbtF0Mzv9LuO833Xif5Mo7t5jal7J+1ALTMAIwzhEFZVc7r7mM7B895ksmiKPNfvvYfNZuyG1lKgfAW/F3WOLLtQGXxfGLlvdZaSRcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zxS7cprL; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-37ce14ab7eeso3372845f8f.2
+        for <cgroups@vger.kernel.org>; Wed, 02 Oct 2024 03:46:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1727865965; x=1728470765; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fk5hvgS0hGjJuo5sxC+sNtdExW//wukSgwsI+Pq5YRU=;
+        b=zxS7cprLvBQqL3tgqg7e0S+2wKvbGTQEfS9z9nNGe2Tc3IizJEbNAEnVNV1BlQhLSz
+         RzcYh04yDi87YUbNQrQdgPB/hN3BYsIlQdX0270iJXOAO3+DTIkRHEC5VrVKAaZfcSnl
+         ZeHwu8vVY1abgPLG0XT2rpOdiK+x8PlmiLJKONsdnjBDBg7gC6H3AApIkigiBxg1sLZX
+         q3rxSdJWExV4PaR7hOqY8bjdNpB/2BQ6IhyFM/1EEeNyOPeCPJSmOByi60JatiPKt+24
+         vZXCHgG0j4F2I/I8S9uW87H8AqH98d2luVrGd0sP5gmFmDQFibnI4Av8Mumkl7zd/2re
+         ohbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727865965; x=1728470765;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Fk5hvgS0hGjJuo5sxC+sNtdExW//wukSgwsI+Pq5YRU=;
+        b=BMsr07BRoXqCJwuILZ9K6A96P8J+ASpI3dWMI3HYFGIWyOw0t629briV+TAtjJ6x/q
+         KfE7IpldxHCrJ36QNEX5AdT4IAZbmniNxRU3mkPkpGeCaP6FMdaSoHJodCA5fF2ENOA8
+         MTWQ04t5+KfphavN5GHEXYpcA1HEMjP/pj8lnRGU4IYQWOQaGyJZ/yf13gpH1y4BWMoc
+         UYuHy5hZWyjZ0Tmepm7zrMZuRgksFl/OJ/0r+tQSaBGKd9u1NbWx7HpVn+ziInz2+F13
+         MXef1x3jVWQhssrNM6OO8TsAjeJpPcicLukTNcZ0ANDAIZM+X6GadhLk1vlwMyQ3i52/
+         rSZw==
+X-Forwarded-Encrypted: i=1; AJvYcCUgPzvf7nXI8utojgaWgu7y6vdDbvLpO7dxdNKhwtmDrtoX6r5tR+o1gZNplnmlkJ8sIEPlpabO@vger.kernel.org
+X-Gm-Message-State: AOJu0YzuBbj3Uah0gKZaq43KCsCb3j4SqVXteRTT4mkqEa3CQk7m52rN
+	o9C276+Uuf28Gk5byxLfdOfTP+ux54SByeHDTOB5OJBRaAXBkbBFpFf0mzUJ1Kg=
+X-Google-Smtp-Source: AGHT+IF/EJDPE+HOPHXbRDSTkeiUO+hzHFC+iz5emuBJaiUOpXAfIJKgswRfUyuHfngLDtPziZdOUA==
+X-Received: by 2002:adf:ec08:0:b0:37c:d1fb:82f4 with SMTP id ffacd0b85a97d-37cfba0a6cbmr2320172f8f.36.1727865965374;
+        Wed, 02 Oct 2024 03:46:05 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42f7a00bcb0sm15117345e9.43.2024.10.02.03.45.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Oct 2024 03:45:55 -0700 (PDT)
+Date: Wed, 2 Oct 2024 13:45:43 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Yu Kuai <yukuai3@huawei.com>, Tejun Heo <tj@kernel.org>,
+	Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
+	cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] blk_iocost: remove some dupicate irq disable/enables
+Message-ID: <7962c626-87d3-4c6e-8fac-16653cd2868d@stanley.mountain>
+References: <d6cc543a-e354-4500-b47b-aa7f9afa30de@stanley.mountain>
+ <Zv0MtvYFTHlff_zT@infradead.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zv0MtvYFTHlff_zT@infradead.org>
 
-On Mon, Sep 16 2024 at 15:20, Costa Shulyupin wrote:
+On Wed, Oct 02, 2024 at 02:04:54AM -0700, Christoph Hellwig wrote:
+> s/dupicate/duplicate/ in the subject.
+> 
+> Otherwise looks good:
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-> Interrupts disturb real-time tasks on affined cpus.
-> To ensure CPU isolation for real-time tasks, interrupt handling must
-> be adjusted accordingly.
-> Non-managed interrupts can be configured from userspace,
-> while managed interrupts require adjustments in kernelspace.
->
-> Adjust status of managed interrupts according change
-> of housekeeping CPUs to support dynamic CPU isolation.
+Thanks.  Let me fix that typo quickly in a v2.
 
-What means 'adjust status' ?
-
-> +
-> +/*
-> + * managed_irq_isolate() - Deactivate managed interrupts if necessary
-> + */
-> +// derived from migrate_one_irq, irq_needs_fixup, irq_fixup_move_pending
-
-If at all then this needs to be integrated with migrate_one_irq()
-
-> +static int managed_irq_isolate(struct irq_desc *desc)
-> +{
-> +	struct irq_data *d = irq_desc_get_irq_data(desc);
-> +	struct irq_chip *chip = irq_data_get_irq_chip(d);
-> +	const struct cpumask *a;
-> +	bool maskchip;
-> +	int err;
-> +
-> +	/*
-> +	 * Deactivate if:
-> +	 * - Interrupt is managed
-> +	 * - Interrupt is not per cpu
-> +	 * - Interrupt is started
-> +	 * - Effective affinity mask includes isolated CPUs
-> +	 */
-> +	if (!irqd_affinity_is_managed(d) || irqd_is_per_cpu(d) || !irqd_is_started(d)
-> +	    || cpumask_subset(irq_data_get_effective_affinity_mask(d),
-> +			      housekeeping_cpumask(HK_TYPE_MANAGED_IRQ)))
-> +		return 0;
-> +	// TBD: it is required?
-> +	/*
-> +	 * Complete an eventually pending irq move cleanup. If this
-> +	 * interrupt was moved in hard irq context, then the vectors need
-> +	 * to be cleaned up. It can't wait until this interrupt actually
-> +	 * happens and this CPU was involved.
-> +	 */
-> +	irq_force_complete_move(desc);
-> +
-> +	if (irqd_is_setaffinity_pending(d)) {
-> +		irqd_clr_move_pending(d);
-> +		if (cpumask_intersects(desc->pending_mask,
-> +		    housekeeping_cpumask(HK_TYPE_MANAGED_IRQ)))
-> +			a = irq_desc_get_pending_mask(desc);
-> +	} else {
-> +		a = irq_data_get_affinity_mask(d);
-> +	}
-> +
-> +	maskchip = chip->irq_mask && !irq_can_move_pcntxt(d) && !irqd_irq_masked(d);
-> +	if (maskchip)
-> +		chip->irq_mask(d);
-> +
-> +	if (!cpumask_intersects(a, housekeeping_cpumask(HK_TYPE_MANAGED_IRQ))) {
-> +		/*
-> +		 * Shut managed interrupt down and leave the affinity untouched.
-> +		 * The effective affinity is reset to the first online CPU.
-> +		 */
-> +		irqd_set_managed_shutdown(d);
-> +		irq_shutdown_and_deactivate(desc);
-> +		return 0;
-
-Seriously? The interrupt is active and the queue might have outstanding
-requests which will never complete because the interrupt is taken away.
-
-On CPU hotplug the related subsystem has shut down the device queue and
-drained all outstanding requests. But none of this happens here.
-
-> +	}
-> +
-> +	/*
-> +	 * Do not set the force argument of irq_do_set_affinity() as this
-> +	 * disables the masking of offline CPUs from the supplied affinity
-> +	 * mask and therefore might keep/reassign the irq to the outgoing
-> +	 * CPU.
-
-Which outgoing CPU?
-
-> +	 */
-> +	err = irq_do_set_affinity(d, a, false);
-> +	if (err)
-> +		pr_warn_ratelimited("IRQ%u: set affinity failed(%d).\n",
-> +				    d->irq, err);
-> +
-> +	if (maskchip)
-> +		chip->irq_unmask(d);
-> +
-> +	return err;
-> +}
-> +
-> +/** managed_irq_affinity_adjust() - Deactivate of restore managed interrupts
-> + * according to change of housekeeping cpumask.
-> + *
-> + * @enable_mask:	CPUs for which interrupts should be restored
-> + */
-> +int managed_irq_affinity_adjust(struct cpumask *enable_mask)
-> +{
-> +	unsigned int irq;
-> +
-> +	for_each_active_irq(irq) {
-
-What ensures that this iteration is safe?
-
-> +		struct irq_desc *desc = irq_to_desc(irq);
-
-And that the descriptor is valid?
-
-> +		unsigned int cpu;
-> +
-> +		for_each_cpu(cpu, enable_mask)
-> +			irq_restore_affinity_of_irq(desc, cpu);
-
-And what protects irq_restore_affinity_of_irq() against other operations
-on @desc?
-
-> +		raw_spin_lock(&desc->lock);
-
-What disables interrupts here in the runtime case?
-
-> +		managed_irq_isolate(desc);
-> +		raw_spin_unlock(&desc->lock);
-> +	}
-> +
-> +	return 0;
-
-That return value has which purpose?
-
-None of this can work at runtime.
-
-Thanks,
-
-        tglx
+regards,
+dan carpenter
 
