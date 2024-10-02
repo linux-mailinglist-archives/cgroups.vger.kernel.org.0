@@ -1,111 +1,166 @@
-Return-Path: <cgroups+bounces-5005-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5006-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0821898C4C8
-	for <lists+cgroups@lfdr.de>; Tue,  1 Oct 2024 19:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9005B98CDE1
+	for <lists+cgroups@lfdr.de>; Wed,  2 Oct 2024 09:41:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3159E1C21CA1
-	for <lists+cgroups@lfdr.de>; Tue,  1 Oct 2024 17:50:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC9871C21248
+	for <lists+cgroups@lfdr.de>; Wed,  2 Oct 2024 07:41:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE7621CB534;
-	Tue,  1 Oct 2024 17:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36F4319343B;
+	Wed,  2 Oct 2024 07:41:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TZncx9rm"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="lzRx7vNX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103A81C242E;
-	Tue,  1 Oct 2024 17:50:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F066E7F484;
+	Wed,  2 Oct 2024 07:41:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727805027; cv=none; b=mxwQrFKZs8nPc9cHMh5+M9jGwTiTfrlcLE0Tk/y8v+Kh8mCBlIpwAAK9RPaLm467qw7XonG5pP//TIY5bEPLlJKIBZyv5HVWL3b0gPydL+ODUjOTKnkGz2bzobMPW7Fgjg32rnCjFXwARJO4BOHBqlhCt2qDE4Ji1WPB0siRv1U=
+	t=1727854893; cv=none; b=caEnQMX8CH/3krJHg3hBo25vbSxtsDfg+Bt+1DnS6qjMTJ+RJWVCoQKaUw4TwuAkzYSaqhwnOXtnFSTXjaVEtJ7IFievf6SxlFsViEzop7Kg+Hhl6GHXMyCHRuLZEaOBIo655S270S/lCHwcdEJbh8nTfOnMO/Fm9/+x/vInT9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727805027; c=relaxed/simple;
-	bh=LCWVpajAikQ+toPAXwPJaPLnAy7DAfal7nkQHKA9yws=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Bd3eb51sARYYf52flxX/W3jOuTI2TXd1/npQMzIiZr7+14f4SZoEviSaFbyyLpk+s8kDeDA/j9S66cfFC2eVzlNGCIs3bHpDBqQMzUyGpVNolJrRtWsDq05y34QGRX9KLzo16Kyi9df5qKva1RPsgKmNtyMZS8HJXX0+Y+uf86c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TZncx9rm; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5c87c7d6ad4so5986961a12.3;
-        Tue, 01 Oct 2024 10:50:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727805024; x=1728409824; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LCWVpajAikQ+toPAXwPJaPLnAy7DAfal7nkQHKA9yws=;
-        b=TZncx9rmzCC3RsuKfMGEg7IYKTVJxeh62b4SN5sOlwHFs/WLa8XQYhHUb3aDcNZzjz
-         sgOOiN/g50/GqX4tH01mZNYZRe2eYyIQMwaCZosh1IALhNIn0KXih14fnSaSQtoUzhu7
-         Fanux1la9WZIeseBrcKmE8Ye5C8SDmTzalCXionLZJjGYPZwOTiTMgVJRlENYKQkrUhs
-         zYb71ctorNdJxzACffhWLkx81PhPkdVCCDEN9wXvIjO50bOImOzqCF/DVbVXX1gjOrmj
-         BrWfT0E6FjIZipMdbWzR4P+foua99px1nnMe3SaF2LVup20N+Uk1gH4axxACNkqEQ0a1
-         MRlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727805024; x=1728409824;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LCWVpajAikQ+toPAXwPJaPLnAy7DAfal7nkQHKA9yws=;
-        b=F177nG8PMomVlKLkCn0w9R1NjrFmkL3zUK3xKXLqZ7FdTl9Fps6CBRP1M/jtseuB2P
-         uZMBNRv+rnJHK+jw6MsQsWPed5DPbgvEygZ9kPYXY+XNt0pYh3eZRYUHAJuuGUHbSfNF
-         xF8fR4gnU2qYd7u3AFYVSmKxT71+CghwmViwBSlv7GcGpPhQerabOLsOjfmAgnTXHoDd
-         KqvtyR6PM6FTLDHVSfjgSyP6JYHiWpDjaYFTe4g8oyhDfea4o2IVgBqmdZZAQPM3MbA8
-         3P6dSreLv2WFYiZHRf7hY2BqAbRyNQRhkm+o242G0cj1/UumqVxb6ZUGT5i6xO14g9Mq
-         jYqA==
-X-Forwarded-Encrypted: i=1; AJvYcCUUjc/IsQnCTMzV+mu66lG2NMf8o/6YPloLNhzQ0Y6LArp0HRpkxXNcXN9d2rCJ1tu28VZHteIl6SbjwgsTWdWI@vger.kernel.org, AJvYcCUuicqR6EIWa9dVIYBI2Ns1Fe4L4z5X/4NiOVPUBWYXrzQHVUkfhLKa37VFtHbVjnoPnFLAzouhf6gRMDp5@vger.kernel.org, AJvYcCXVqqA3yGds0RzJ3N4Dr5MP6XTIEG1DK9Gi7JER2yviRqSMNOHcOlo8oz37y8N9p1kbky58snFC@vger.kernel.org
-X-Gm-Message-State: AOJu0YyxhK/lF00mXzQ/ZbGSSh/H7/d6g2lAniZQeDRIKgyt8wQWtgJn
-	zZR9uGN6yNkfu1ggxm0dgtHsXM7jqd4mkcksxGbGXEWHiNrVeh4fVntC0FpJi0DrHqE1DrVWtMa
-	z0DgaB3MGb0E2DG3cBtFBTdSQKnQ=
-X-Google-Smtp-Source: AGHT+IFgvIzj7DBl0y5N2epf79BbIYuUEEl/ozcyirEICsugUX7UEjuzXWtbCf1MWErSoG6HsTmK+nS4lMWP8PuwFYM=
-X-Received: by 2002:a05:6402:210f:b0:5c5:ba82:c3b1 with SMTP id
- 4fb4d7f45d1cf-5c8b1b8b391mr139688a12.29.1727805024017; Tue, 01 Oct 2024
- 10:50:24 -0700 (PDT)
+	s=arc-20240116; t=1727854893; c=relaxed/simple;
+	bh=WtgIyocaDj9pLxaBHI8F8FVKwq5gEupoBcq4dz/krKM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jBlngat+KsVsFUm1uJJa2IkkMUa6dyqjS5uAA7nzIX2FCfFgA9PcwfpwEJ98RuKSckjQR/lRou5fBIg2rcop+z96CyXhupHTM/ElLrLC5/2fn8OICVKerRRG2TOSAEHzVdgB8zjrYQLYdND71Zlyv72eyNT9WG56tHramYsNYg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=lzRx7vNX; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=RDkEkc0w+gYwp7xSlV1KZ6Rf1mdE1Ttpc76UXPk+EK0=; b=lzRx7vNXDb9uuvdCBx97PXZQ/A
+	agm1KxT936uEQFHFBu2E+I5SY6LT3G3t4TKMzOJtCHb0iwOTVQlUMIz55jSwjUaUSyMu9SNCBvqa7
+	pj4cWPSkbdwY3vilUHNPEjIJkDcgABu/8/cXuApHaRC9a1U0rOS9zPGKTZRBEKk0IQ62pLf/AI0op
+	CArZikmzzLX4YeNTmtr9k+uG9WQ+bFCTQRLhb6liFM88u6uyQXST9Cz82UCa+UdZ9/VHWfJ3eWNX8
+	1XJwIOsNETnJTpRyAZFpdyXXPt71kszy+ZOKzFI09v9OOO4gNfsRX0RtGBiQfNHBqBP8Uthg2WAzh
+	vy7a74+g==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1svtzF-000000053Dd-2pDW;
+	Wed, 02 Oct 2024 07:41:29 +0000
+Date: Wed, 2 Oct 2024 00:41:29 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>,
+	linux-btrfs@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, akpm@linux-foundation.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	Michal Hocko <mhocko@suse.com>,
+	"Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+Subject: Re: [PATCH] btrfs: root memcgroup for metadata filemap_add_folio()
+Message-ID: <Zvz5KfmB8J90TLmO@infradead.org>
+References: <b5fef5372ae454a7b6da4f2f75c427aeab6a07d6.1727498749.git.wqu@suse.com>
+ <Zvu-n6NFL8wo4cOA@infradead.org>
+ <5d3f4dca-f7f3-4228-8645-ad92c7a1e5ac@gmx.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240923142006.3592304-1-joshua.hahnjy@gmail.com>
- <20240923142006.3592304-3-joshua.hahnjy@gmail.com> <xmayvi6p6brlx3whqcgv2wzniggrfdfqq7wnl3ojzme5kvfwpy@65ijmy7s2tye>
- <CAN+CAwO8XEAkoBDc03Zveaci9hASaFvk8ybQ2Mwoy_VacqgRfA@mail.gmail.com> <4l4afsuzqd6vowki7ldafoikpyw5sfwcvhhpeaezwhdmdj54bc@fhp6yt3ygq3r>
-In-Reply-To: <4l4afsuzqd6vowki7ldafoikpyw5sfwcvhhpeaezwhdmdj54bc@fhp6yt3ygq3r>
-From: Joshua Hahn <joshua.hahnjy@gmail.com>
-Date: Tue, 1 Oct 2024 13:50:12 -0400
-Message-ID: <CAN+CAwP048b_cbw1jQf4Z0eGatbkaVW=AbL2MqjaDnuDZM-1ig@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] cgroup/rstat: Selftests for niced CPU statistics
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: tj@kernel.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	lizefan.x@bytedance.com, shuah@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5d3f4dca-f7f3-4228-8645-ad92c7a1e5ac@gmx.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-> My motivation comes from debugging cgroup selftests when strace is quite
-> useful and your implementation adds the unnecessary fork which makes the
-> strace (slightly) less readable.
+On Tue, Oct 01, 2024 at 07:10:07PM +0930, Qu Wenruo wrote:
+> > This looks pretty ugly.  What speaks against a version of
+> > filemap_add_folio that doesn't charge the memcg?
+> > 
+> 
+> Because there is so far only one caller has such requirement.
 
-This makes sense, thank you for the context. I hadn't considered debugging
-considerations much, but I can imagine that it becomes harder to read
-once the code & strace becomes clogged up.
+That is a good argument to review the reasons for an interface, but
+not a killer argument.
 
-> > Do you think that this increase in granularity / accuracy is worth the
-> > increase in code complexity? I do agree that it would be much easier
-> > to read if there was no fork.
->
-> I think both changes (no cg_run or cpu_hog_func_param extension) could
-> be reasonably small changes (existing usages of cpu_hog_func_param
-> extension would default to zero nice, so the actual change would only be
-> in hog_cpus_timed()).
+> Furthermore I believe the folio API doesn't prefer too many different
+> functions doing similar things.
+> 
+> E.g. the new folio interfaces only provides filemap_get_folio(),
+> filemap_lock_folio(), and the more generic __filemap_get_folio().
+> 
+> Meanwhile there are tons of page based interfaces, find_get_page(),
+> find_or_create_page(), find_lock_page() and flags version etc.
 
-I think I will stick with the no cg_run option. Initially, I had
-wanted to use it
-to maintain the same style with the other selftests in test_cpu.c, but I think
-it creates more unnecessary unreadability.
+That's a totally different argument, tough.  Those functions were
+trivial wrappers around a more versatile low-level function.
 
-Thank you again,
-Joshua
+While this is about adding clearly defined functionality, and
+more importantly not exporting totally random low-level data.
+
+What I'd propose is something like the patch below, plus proper
+documentation.  Note that this now does the uncharge on the unlocked
+folio in the error case.  From a quick look that should be fine, but
+someone who actually knows the code needs to confirm that.
+
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index 68a5f1ff3301c6..70da62cf32f6c3 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -1284,6 +1284,8 @@ int add_to_page_cache_lru(struct page *page, struct address_space *mapping,
+ 		pgoff_t index, gfp_t gfp);
+ int filemap_add_folio(struct address_space *mapping, struct folio *folio,
+ 		pgoff_t index, gfp_t gfp);
++int filemap_add_folio_nocharge(struct address_space *mapping,
++		struct folio *folio, pgoff_t index, gfp_t gfp);
+ void filemap_remove_folio(struct folio *folio);
+ void __filemap_remove_folio(struct folio *folio, void *shadow);
+ void replace_page_cache_folio(struct folio *old, struct folio *new);
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 36d22968be9a1e..0a1ae841e8c10f 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -958,20 +958,15 @@ noinline int __filemap_add_folio(struct address_space *mapping,
+ }
+ ALLOW_ERROR_INJECTION(__filemap_add_folio, ERRNO);
+ 
+-int filemap_add_folio(struct address_space *mapping, struct folio *folio,
+-				pgoff_t index, gfp_t gfp)
++int filemap_add_folio_nocharge(struct address_space *mapping,
++		struct folio *folio, pgoff_t index, gfp_t gfp)
+ {
+ 	void *shadow = NULL;
+ 	int ret;
+ 
+-	ret = mem_cgroup_charge(folio, NULL, gfp);
+-	if (ret)
+-		return ret;
+-
+ 	__folio_set_locked(folio);
+ 	ret = __filemap_add_folio(mapping, folio, index, gfp, &shadow);
+ 	if (unlikely(ret)) {
+-		mem_cgroup_uncharge(folio);
+ 		__folio_clear_locked(folio);
+ 	} else {
+ 		/*
+@@ -989,6 +984,22 @@ int filemap_add_folio(struct address_space *mapping, struct folio *folio,
+ 	}
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(filemap_add_folio_nocharge);
++
++int filemap_add_folio(struct address_space *mapping, struct folio *folio,
++		pgoff_t index, gfp_t gfp)
++{
++	int ret;
++
++	ret = mem_cgroup_charge(folio, NULL, gfp);
++	if (ret)
++		return ret;
++
++	ret = filemap_add_folio_nocharge(mapping, folio, index, gfp);
++	if (ret)
++		mem_cgroup_uncharge(folio);
++	return ret;
++}
+ EXPORT_SYMBOL_GPL(filemap_add_folio);
+ 
+ #ifdef CONFIG_NUMA
 
