@@ -1,111 +1,143 @@
-Return-Path: <cgroups+bounces-5013-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5014-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2C1C98D44A
-	for <lists+cgroups@lfdr.de>; Wed,  2 Oct 2024 15:17:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E40B98E1DD
+	for <lists+cgroups@lfdr.de>; Wed,  2 Oct 2024 19:50:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AB7FB20B6D
-	for <lists+cgroups@lfdr.de>; Wed,  2 Oct 2024 13:17:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5659A286787
+	for <lists+cgroups@lfdr.de>; Wed,  2 Oct 2024 17:50:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77F291D0418;
-	Wed,  2 Oct 2024 13:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 134FC1D1730;
+	Wed,  2 Oct 2024 17:50:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="taTGbIF7"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="irnXa1Ne"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E97C1CF284
-	for <cgroups@vger.kernel.org>; Wed,  2 Oct 2024 13:17:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B27C528FF
+	for <cgroups@vger.kernel.org>; Wed,  2 Oct 2024 17:49:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727875051; cv=none; b=ApaNqyESUqFpTgSvUI7JnDjyRm038uj5dUOKnkWucm3HuJGkp26+gqD9l9tDSiU6iDZJpVXVNGORd6qzSaqtdV6QSACmwGOXnL7pUxIBCTTKCXlib91YzbKUkXpXdtmJtcyrzzsUzKOeKv+PKeyUS0zxcp8MaZ0y9OsXTXred2w=
+	t=1727891401; cv=none; b=WVRcRGdIZvcs4BulN/k27RbsXK41Kp8IPKqJETRgFgLYU9rn+T7cWnm6iKuf8bHbnMEK7dR1FUtLzyzRUXefEJgClY7RB8IwPzlYaMQ0i33SL1xKOXzeEb+EoglRge0gzgPeFnG6O4HcQvCCVVXoLa9XjS56Q9XQ9ALzM911Y2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727875051; c=relaxed/simple;
-	bh=36nWme8y4GZ94wWNug6vyCXS0wdvEP/HfW+1E7YCpRk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=dizGQaAd832iSl0D4YIwF79PoIkjMdQii9UTeSJEhKK+Ock8KsXrTBRUB4shwf+nNHyK26Ji+8dE1g0hIw0BdY3wr4CIIUt6FTkXooBX3Kff1yJL/d4XPNbHWnAoQrpyp+mmmAubJJhdsDL1V+/jNdSKUUh9m+o+z/gqe2/NUg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=taTGbIF7; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3a1a3090f39so32692275ab.3
-        for <cgroups@vger.kernel.org>; Wed, 02 Oct 2024 06:17:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1727875048; x=1728479848; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fRW4Cz/ZHbTxTOnb6ZoyufUiDwCoy63jco0zbwWoTDE=;
-        b=taTGbIF7EiUE3jZ3URAk+jvyHeVim7xQQaRKn/zR65NBAQWKIUMYdfxiZy0KTvwJtt
-         SnCYzkb3g1dGoOK57Ub5atfiySbTLC6hqNl3+3WaGhcUst0iuMfo+AAr1gWV1owl5Z3T
-         qCEObT9Ic+lU441t+f0eFlwZB6XCX3j5KmeSYrk31kO8JfRhljVuMRuBnE2lCdbav7sZ
-         VgX0eoxh4T471MFLMQR5I67Ji7OsRef5o6FKMMFucWBLzyd9zrVYPz8nl5VeWiO6DdFn
-         ytkMHqPkmDfkAhGdFW4af1m+sL9FsjehaQD+A5dunq+3NC3ZCrUn1a9/nZ4UYmzoIxY1
-         QoMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727875048; x=1728479848;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fRW4Cz/ZHbTxTOnb6ZoyufUiDwCoy63jco0zbwWoTDE=;
-        b=vcCtjwF+NVlFoees9JlvF4fVTSkzGePz8KasbGsqoXnOxWtDKRK1X78vcPprIseQDv
-         TeGll5Lv6nV8XMQA/quaDHjRq0IYcTb4x/VHKEvNSJ1C4fy0SEbEUH7MTdQZo230Yg2E
-         5fJQu6IWi2h0Px0SrDw36UhqxKilr6J5gUWZf0VZzKMijxVyWmGdQ3O9kv1FrlG+KdYU
-         T3N4/EQLNrxd1v7qFwU/zf1ofgWsO6kqq/aL4hWHhBnGGVABX9I3HrEIzPuNc40yBfIE
-         hDguP2MZDKHb57SBajRn99WUc/lqBczutE/ilT5JWY7bPuMMt9tDgT2aT9a4gT1rD18j
-         au0w==
-X-Forwarded-Encrypted: i=1; AJvYcCXdITCY6tSm1i9xnhEly1O+85dhe0DQd7R+0lhQWjWtCVAPu67izUOvc9FyJR5DscyC3LVVHz6S@vger.kernel.org
-X-Gm-Message-State: AOJu0YzostI4OtAFHFfd1ajMp5QSTPPZ6GedRoYoHFOvs+AQLMtrtcaK
-	QXIx0cu+gbB8RDTZqnmlFJm9Jd4SYSVkHxt9ApOFYg/n9rITB9PXvdCboMmz3Sw=
-X-Google-Smtp-Source: AGHT+IHuxaPoCYtm3L1Gav3Ro6gdyVRIy6bPAZVe7gjGl0fcZClv9KzDyZ1fxfNnKo1x1TzHZQxr+Q==
-X-Received: by 2002:a05:6e02:1a8f:b0:3a3:6045:f8bd with SMTP id e9e14a558f8ab-3a3659156b1mr26379705ab.5.1727875048142;
-        Wed, 02 Oct 2024 06:17:28 -0700 (PDT)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-3a3678e3ea3sm3490625ab.87.2024.10.02.06.17.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 02 Oct 2024 06:17:27 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: Yu Kuai <yukuai3@huawei.com>, Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
- cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
- linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, 
- Christoph Hellwig <hch@lst.de>
-In-Reply-To: <Zv0kudA9xyGdaA4g@stanley.mountain>
-References: <Zv0kudA9xyGdaA4g@stanley.mountain>
-Subject: Re: [PATCH v2] blk_iocost: remove some duplicate irq
- disable/enables
-Message-Id: <172787504695.64996.11187205888353360431.b4-ty@kernel.dk>
-Date: Wed, 02 Oct 2024 07:17:26 -0600
+	s=arc-20240116; t=1727891401; c=relaxed/simple;
+	bh=G8eUrZlIVG7TYV7RHOBVqOqjuGM0Hl73kKf4GgFiZiQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ikpZo6lg5LMIrPpaW9/NHZRcLCO69nzGVMi8bcjbbb31atPfjRmhzocyqYB1UQJKdUt0Qp9iiZDGgoTL5BMGN/1GnGxmnChYNHOMNh6g+emA+teNbdv/y8HqblZwjJBvEgl06viYg4y2ayBE8icnOb4wl7q+LGR5jpq2uvX4Hrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=irnXa1Ne; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1727891398;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MwkeKst3DWJ0DI2DqyiFfxlozC5yjrQjEyPgNOk2nKM=;
+	b=irnXa1NeFpPOwgHUi3YjhUcNtZyS0HhZKsyU1GvCeaf3Pp4uyJdF2ISPn918X48UeUa3SJ
+	pnWYLFhhpoNny1V+8HOV1OsJsfWO0h1ZIdSAR+U3R/kWrTiHt9DT1f/u+PRlmfafzdrx+h
+	AXdBaEMhAj9qUR3xmtwpIMPQ4J4UAHg=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-642-YkkoW06CPkOED__BejJ5cA-1; Wed,
+ 02 Oct 2024 13:49:55 -0400
+X-MC-Unique: YkkoW06CPkOED__BejJ5cA-1
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 7CCF71955D97;
+	Wed,  2 Oct 2024 17:49:52 +0000 (UTC)
+Received: from [10.2.16.89] (unknown [10.2.16.89])
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id CFCA9195605F;
+	Wed,  2 Oct 2024 17:49:49 +0000 (UTC)
+Message-ID: <0a8fe25b-9b72-496d-b1fc-e8f773151e0a@redhat.com>
+Date: Wed, 2 Oct 2024 13:49:48 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] blk_iocost: remove some duplicate irq disable/enables
+To: Dan Carpenter <dan.carpenter@linaro.org>, Yu Kuai <yukuai3@huawei.com>
+Cc: Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+ Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+References: <Zv0kudA9xyGdaA4g@stanley.mountain>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <Zv0kudA9xyGdaA4g@stanley.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14.2-dev-648c7
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-
-On Wed, 02 Oct 2024 13:47:21 +0300, Dan Carpenter wrote:
+On 10/2/24 06:47, Dan Carpenter wrote:
 > These are called from blkcg_print_blkgs() which already disables IRQs so
 > disabling it again is wrong.  It means that IRQs will be enabled slightly
 > earlier than intended, however, so far as I can see, this bug is harmless.
-> 
-> 
+>
+> Fixes: 35198e323001 ("blk-iocost: read params inside lock in sysfs apis")
+> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> ---
+> v2: Fix typo in the subject
+>
+>   block/blk-iocost.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+> index 9dc9323f84ac..384aa15e8260 100644
+> --- a/block/blk-iocost.c
+> +++ b/block/blk-iocost.c
+> @@ -3166,7 +3166,7 @@ static u64 ioc_qos_prfill(struct seq_file *sf, struct blkg_policy_data *pd,
+>   	if (!dname)
+>   		return 0;
+>   
+> -	spin_lock_irq(&ioc->lock);
+> +	spin_lock(&ioc->lock);
+>   	seq_printf(sf, "%s enable=%d ctrl=%s rpct=%u.%02u rlat=%u wpct=%u.%02u wlat=%u min=%u.%02u max=%u.%02u\n",
+>   		   dname, ioc->enabled, ioc->user_qos_params ? "user" : "auto",
+>   		   ioc->params.qos[QOS_RPPM] / 10000,
+> @@ -3179,7 +3179,7 @@ static u64 ioc_qos_prfill(struct seq_file *sf, struct blkg_policy_data *pd,
+>   		   ioc->params.qos[QOS_MIN] % 10000 / 100,
+>   		   ioc->params.qos[QOS_MAX] / 10000,
+>   		   ioc->params.qos[QOS_MAX] % 10000 / 100);
+> -	spin_unlock_irq(&ioc->lock);
+> +	spin_unlock(&ioc->lock);
+>   	return 0;
+>   }
+>   
+> @@ -3366,14 +3366,14 @@ static u64 ioc_cost_model_prfill(struct seq_file *sf,
+>   	if (!dname)
+>   		return 0;
+>   
+> -	spin_lock_irq(&ioc->lock);
+> +	spin_lock(&ioc->lock);
+>   	seq_printf(sf, "%s ctrl=%s model=linear "
+>   		   "rbps=%llu rseqiops=%llu rrandiops=%llu "
+>   		   "wbps=%llu wseqiops=%llu wrandiops=%llu\n",
+>   		   dname, ioc->user_cost_model ? "user" : "auto",
+>   		   u[I_LCOEF_RBPS], u[I_LCOEF_RSEQIOPS], u[I_LCOEF_RRANDIOPS],
+>   		   u[I_LCOEF_WBPS], u[I_LCOEF_WSEQIOPS], u[I_LCOEF_WRANDIOPS]);
+> -	spin_unlock_irq(&ioc->lock);
+> +	spin_unlock(&ioc->lock);
+>   	return 0;
+>   }
+>   
 
-Applied, thanks!
+I would suggest adding a "lockdep_assert_irqs_disabled()" call before 
+spin_lock() to confirm that irq is indeed disabled just in case the 
+callers are changed in the future.
 
-[1/1] blk_iocost: remove some duplicate irq disable/enables
-      commit: 14d57ec3b86369d0037567f12caae0c9e9eaad9e
-
-Best regards,
--- 
-Jens Axboe
-
-
+Cheers,
+Longman
 
 
