@@ -1,74 +1,145 @@
-Return-Path: <cgroups+bounces-5008-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5009-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA97198CFC6
-	for <lists+cgroups@lfdr.de>; Wed,  2 Oct 2024 11:10:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A84598D05E
+	for <lists+cgroups@lfdr.de>; Wed,  2 Oct 2024 11:44:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93FCA28872E
-	for <lists+cgroups@lfdr.de>; Wed,  2 Oct 2024 09:10:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E85DB1F22370
+	for <lists+cgroups@lfdr.de>; Wed,  2 Oct 2024 09:44:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E537199231;
-	Wed,  2 Oct 2024 09:04:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF81C1E1313;
+	Wed,  2 Oct 2024 09:44:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="086sgpH4"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="WfstEY9P";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="E1m6jm20"
 X-Original-To: cgroups@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13182198826;
-	Wed,  2 Oct 2024 09:04:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A6A119882C;
+	Wed,  2 Oct 2024 09:44:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727859897; cv=none; b=GQ0a2Y57zMZ4Bmsa8vvO0T+H225zlZy/KgcLjtnR4mikebnDsHO3bVcUFNVnpz+jsnI65ZgVHCF7KZZfs1K7+SfO+W20CA09GUTlz0qRh8V5l3xA9TrVKZBOJUzReb1AIbPs6dhZK+lUdN+hhDGpTctQfLOlSfkFc8yvEnOpeyQ=
+	t=1727862265; cv=none; b=CwrLDiwgGuwA4nf4tM/D/ZeUxBIV4FLwMMEteVUqm4Y9kUrieUAZFVWoVBgNqJmC/D8GRQKYSY7a8yNs0dPUczknvRAqdrU/ttWlei3I0k8LQ/XSp/AnLMNmDD6vAxKSl1QjGO/DIl111HEB26p16yQgM3VsuTkGJ+j7rFuzrjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727859897; c=relaxed/simple;
-	bh=3L7o9w3ZnQ/XValc0MmlvvaVYAa1ifTnz4Mj6awX2tU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GXET3tQJBv3rJGk4oE2J6s8UwerI+s93I1A9RReC1AwgfTa+81tW7L3hCmsWcbRr99gLdoLGjwkj+hc4vsHAmlVijY4mNB7ex9OE9VhY7LVQlFryDWo7kB/y13sySrjbJCPOzZe/aGAcqBF8oxwpnFQoo0+ix5lE6myufUDDggM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=086sgpH4; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=3L7o9w3ZnQ/XValc0MmlvvaVYAa1ifTnz4Mj6awX2tU=; b=086sgpH45lqOLGq/hnIvGnN6a5
-	J4oQei/b7/CZsaDjr/iLeRaDTxxAmdct5jVhVAUgDrwWmrTeHVn4r2czFL8a+y0zMf9DxYj+zo3Qv
-	iByYQNSUAXBZn7BhmrgTsF4Upy/foXeNL0BBJvAZM2GDBfdOBfZWRV5UCdPEnMBf2dJLU4DeOs1Bt
-	mkHj0wnLfEdPkxUye8BUjxG5GDYKyXJpP9tOm5a9U+7RvKnfC0V93kCxvE4Je4SwP7oW4PT0AVdL/
-	DrDvnJpGUJSlLxizKqkQQgezsnMM3oPsrDOcLu3WbKOJT76Tkmk9Z6SLVQbZY0yrp9VIwQg2XOkoc
-	jo9Itq2g==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1svvHy-00000005GJH-189J;
-	Wed, 02 Oct 2024 09:04:54 +0000
-Date: Wed, 2 Oct 2024 02:04:54 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Yu Kuai <yukuai3@huawei.com>, Tejun Heo <tj@kernel.org>,
-	Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
-	cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] blk_iocost: remove some dupicate irq disable/enables
-Message-ID: <Zv0MtvYFTHlff_zT@infradead.org>
-References: <d6cc543a-e354-4500-b47b-aa7f9afa30de@stanley.mountain>
+	s=arc-20240116; t=1727862265; c=relaxed/simple;
+	bh=ckNRaqkBk8GiNP4s8N8LMRXmLRo/q8Kb7OZ0CWGxGxc=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=bb5mgKP3KUYXpUaVFUzarc7txKXbaEUacIpgTBD4iymjW53auZ3uuyHr3ivZ7VmVRKg2BnjkaWxf0vaxo2poEf5LREeMnLlxJNNDIpJZ5fHZdJ0HOGqvCDMvQ3+R7uDPWCrUSx2PsmOxujfV4NvniatcGGh1saXwvgRVoKaHG6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=WfstEY9P; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=E1m6jm20; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1727862262;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KbNeEOBRlBQ4W4QTFBiGzbZCYE8gT06BwQpa9ZprJWg=;
+	b=WfstEY9PzoFots3K8sjQFzkfjgmJ36EbTbOY3KCsRX+I7jfyn9lhennyOmf6CaW/WnN/Mp
+	ypz0utH0oCVCkl9xAoZzh+i1EZKgqkmrbtjFGWGCWCRK4ifaPzxdy9+Wro3hPywAyS1EdN
+	kalyXkjMAiE3CTYq6CNxpYsAD+/dyZP9KZ/zSjlDOEiaOLZKlbHpyKHe4pgafIIvGOsJJA
+	hVRvlXFWudfM6XMYkAIJKLdedfA7S9QR1EypbppSzpJGrNafiOrpsDAL5OX5BfAa3ex6Tt
+	ijt+DkUulNHeEzOWa9Q17JYhb1dUKrrcrQn6wy8PPfaOCOvmiYUgM77Viv+rng==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1727862262;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KbNeEOBRlBQ4W4QTFBiGzbZCYE8gT06BwQpa9ZprJWg=;
+	b=E1m6jm20jqxHfOCJ/Xt2T2iLoTRcMbXtWawTfdP8xBkMd/MowmPhKLCziAKxbsFzBr/BDr
+	lgV66gndQLwT+vDw==
+To: Costa Shulyupin <costa.shul@redhat.com>, longman@redhat.com,
+ ming.lei@redhat.com, pauld@redhat.com, juri.lelli@redhat.com,
+ vschneid@redhat.com, Michael Ellerman <mpe@ellerman.id.au>, Nicholas
+ Piggin <npiggin@gmail.com>, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, Naveen N Rao <naveen@kernel.org>, Zefan Li
+ <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>, Johannes Weiner
+ <hannes@cmpxchg.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+ Ingo Molnar
+ <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel
+ Gorman <mgorman@suse.de>, Costa Shulyupin <costa.shul@redhat.com>, Bjorn
+ Helgaas <bhelgaas@google.com>, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH v3 1/3] sched/isolation: Add infrastructure for
+ dynamic CPU isolation
+In-Reply-To: <20240916122044.3056787-2-costa.shul@redhat.com>
+References: <20240916122044.3056787-1-costa.shul@redhat.com>
+ <20240916122044.3056787-2-costa.shul@redhat.com>
+Date: Wed, 02 Oct 2024 11:44:22 +0200
+Message-ID: <87jzeqyh3d.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d6cc543a-e354-4500-b47b-aa7f9afa30de@stanley.mountain>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
 
-s/dupicate/duplicate/ in the subject.
+On Mon, Sep 16 2024 at 15:20, Costa Shulyupin wrote:
+> +/*
+> + * housekeeping_update - change housekeeping.cpumasks[type] and propagate the
+> + * change.
+> + */
+> +static int housekeeping_update(enum hk_type type, const struct cpumask *update)
+> +{
+> +	struct {
+> +		struct cpumask changed;
+> +		struct cpumask enable;
+> +		struct cpumask disable;
+> +	} *masks;
+> +
+> +	masks = kmalloc(sizeof(*masks), GFP_KERNEL);
+> +	if (!masks)
+> +		return -ENOMEM;
+> +
+> +	lockdep_assert_cpus_held();
+> +	cpumask_xor(&masks->changed, housekeeping_cpumask(type), update);
+> +	cpumask_and(&masks->enable, &masks->changed, update);
+> +	cpumask_andnot(&masks->disable, &masks->changed, update);
+> +	cpumask_copy(housekeeping.cpumasks[type], update);
+> +	WRITE_ONCE(housekeeping.flags, housekeeping.flags | BIT(type));
 
-Otherwise looks good:
+So this sets the bit for the type
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+> +	if (!static_branch_unlikely(&housekeeping_overridden))
+> +		static_key_enable_cpuslocked(&housekeeping_overridden.key);
 
+What's the point of doing this on every iteration?
+
+> +	kfree(masks);
+> +
+> +	return 0;
+> +}
+> +
+>  static int __init housekeeping_setup(char *str, unsigned long flags)
+>  {
+>  	cpumask_var_t non_housekeeping_mask, housekeeping_staging;
+> @@ -327,8 +357,11 @@ int housekeeping_exlude_isolcpus(const struct cpumask *isolcpus, unsigned long f
+>  		/*
+>  		 * Reset housekeeping to bootup default
+>  		 */
+> +
+> +		for_each_clear_bit(type, &boot_hk_flags, HK_TYPE_MAX)
+> +			housekeeping_update(type, cpu_possible_mask);
+
+Even for those which are clear
+
+>  		for_each_set_bit(type, &boot_hk_flags, HK_TYPE_MAX)
+> -			cpumask_copy(housekeeping.cpumasks[type], boot_hk_cpumask);
+> +			housekeeping_update(type, boot_hk_cpumask);
+>  
+>  		WRITE_ONCE(housekeeping.flags, boot_hk_flags);
+
+Just to overwrite them with boot_hk_flags afterwards. That does not make
+any sense at all.
+
+Thanks,
+
+        tglx
 
