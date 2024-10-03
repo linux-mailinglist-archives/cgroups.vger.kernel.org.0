@@ -1,87 +1,64 @@
-Return-Path: <cgroups+bounces-5032-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5033-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9F6D98F856
-	for <lists+cgroups@lfdr.de>; Thu,  3 Oct 2024 22:59:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C85498F8D1
+	for <lists+cgroups@lfdr.de>; Thu,  3 Oct 2024 23:22:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D5EE28348E
-	for <lists+cgroups@lfdr.de>; Thu,  3 Oct 2024 20:59:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 42BFD1C21B94
+	for <lists+cgroups@lfdr.de>; Thu,  3 Oct 2024 21:22:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 398991AD403;
-	Thu,  3 Oct 2024 20:59:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 870C51AF4EF;
+	Thu,  3 Oct 2024 21:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="3EgjLInr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I0I1mRUr"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1322012EBDB
-	for <cgroups@vger.kernel.org>; Thu,  3 Oct 2024 20:58:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B048748D;
+	Thu,  3 Oct 2024 21:22:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727989142; cv=none; b=QyiW5/wL2k9XIMr+xdmQ9a4u71P57j+ieFgvcBBsZkbiL40Iyic5v3XUjynB7KJcacHxquwQh/jCXK4jhjG9QIXNz2mZl1FTEsC3zrascnNo+IcuKE/P5owJRcusJ1T6orow0f1wjw9K86rrnUHhBInj5hcmtpNRo5zP2gZn0ws=
+	t=1727990531; cv=none; b=FO+Vz8Khi0D+XhBE60jZXFqbIiL3XqZOfgNUk3Jk8jbqt5+wORjXRSVWxR7THbXbSlOvCtixvW69phmYjypkQKBmnWztw2Nuukc+KZW4mS4uDKJIQNNEJG7yMw2WFl+HZoNKyQVEYwjqN1nAebF7aG+shm13lBYoGBjdNxVEpu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727989142; c=relaxed/simple;
-	bh=I0hJoQ1R2pHWQTrO2YiCpMRzVU+NIPw0xryCiD5S6uQ=;
+	s=arc-20240116; t=1727990531; c=relaxed/simple;
+	bh=myhzGuyZHVPOOzMuS6ujT2baNB9f6+kd036ZBWUO22w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GPrxT8VtFk+lo9nVKJGLEJGAopuhbgfWGohc4hoJJkegsJtIZE1871pNto+p4W9ZB4UZNaq1oJrn13b9PHX4mwMN7reP/RZS+tEuvo3ECXxtcKGzufuXXC28MNVIakIEZfYtKzuujuL4ewUCvLRJm5gu3IqYfrvuFNlWPsuCW0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=3EgjLInr; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-45812fdcd0aso21890161cf.0
-        for <cgroups@vger.kernel.org>; Thu, 03 Oct 2024 13:58:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1727989139; x=1728593939; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5ZXaVNUtp3cv0TgMLyzMW85dnq8vyvRLsPNscaJNJ0M=;
-        b=3EgjLInr9hdQGuxng1NiWszhu/HYCsho0VR2SgbJ/RrMu7v8Cwl0vpQa6wfgQ4hK92
-         un2tk7/szIF9ldClxeJtSZrnPgfI3XJH/JJgScKnbrkoIX8YTMErCaOBZq7C02s5A27G
-         40NlswQJZYqSbcg8tzFDrnD9iEo0OVDWYgaDWtv/oZqNRU2S/pxINw5Ig325iAHyGmVS
-         9NVJQ01p+eguJsCZ3zOFE3LYjUM0Y2IlUdnU47wsIby/dg3d3Ept7bDXzRRKtk9o+9K1
-         4eTUDYgWnmlaIUW5C0K7hk6MpjapKkXRccGcU+Y6XqKR9eFg6BN/e/HM3HfffRbLwKjw
-         dHnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727989139; x=1728593939;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5ZXaVNUtp3cv0TgMLyzMW85dnq8vyvRLsPNscaJNJ0M=;
-        b=fZP0Pm+sRF//lDqMxy1KFO6KitUw9ZR3L2sW3p0+IiGtnB2dzWTuw8UTtvL32G0g8h
-         EDt4g649A37d9Pgj8Ia20l9MLjQozp3XJ+WyS7tOadMkplxl7zBWUjRSmHQAar2a14fD
-         l/KaNfJl2WR201k/f8zRB1eFDs+NCVcxI3ViaHZFDvHBK+cNPrNasOraiCX6fqPV+18U
-         /RqYFfo51V64XOCtBpQsgcjejOoFmHH/Cg+qgXBVBxX78fthJCUKyaMagyEvUq2CwP7w
-         d8QTy/+q/sS/wA+lC40Jx7MBvIIJgq42e2xlQEQN/X4D5EfngIDz0Hf/tNRy0qZYY68t
-         ZfjA==
-X-Forwarded-Encrypted: i=1; AJvYcCXoPakM0Yun+NtD5IHCQb9Nx0xelSaXZzZ63GAmkezkILzRmc9WdLL5TzC4c5+MLs3Xlc/hDfFM@vger.kernel.org
-X-Gm-Message-State: AOJu0YwUCczI08vT1DnZEEVH+xveEyU1arUotUBe8BTezqnRbPE4+dXw
-	lzTF/rqtZ91bJo4I6Ptzmn+G3gotzXB0Yl3aZK+27e8M5AWq3/fV+/kz3YxnBx4=
-X-Google-Smtp-Source: AGHT+IFqZ3x3cdla1H4iADfwUbzy6NusyZ9jKFzj4CVsZRkDX6hRtbokMiNISp3XuUegPDtMOl49DQ==
-X-Received: by 2002:ac8:7f83:0:b0:45d:7eba:af80 with SMTP id d75a77b69052e-45d9bb1008amr8753561cf.25.1727989138824;
-        Thu, 03 Oct 2024 13:58:58 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-45d92e0fd0fsm8674721cf.24.2024.10.03.13.58.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Oct 2024 13:58:58 -0700 (PDT)
-Date: Thu, 3 Oct 2024 16:58:53 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-	linux-btrfs@vger.kernel.org, mhocko@kernel.org,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, akpm@linux-foundation.org,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	Michal Hocko <mhocko@suse.com>,
-	"Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Subject: Re: [PATCH] btrfs: root memcgroup for metadata filemap_add_folio()
-Message-ID: <20241003205853.GA1658449@cmpxchg.org>
-References: <b5fef5372ae454a7b6da4f2f75c427aeab6a07d6.1727498749.git.wqu@suse.com>
- <Zvu-n6NFL8wo4cOA@infradead.org>
- <5d3f4dca-f7f3-4228-8645-ad92c7a1e5ac@gmx.com>
- <Zvz5KfmB8J90TLmO@infradead.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gTX+R8tFm4Iwppk+SyphxuOSzpNO0wpAJR4bgmdHr83l1KIx1EGZhCe1pk9J+WcZTfvRQLlf5AYO6tz+38/y8iS7Yox6SIyQ9sDCIG1ASLVa5MbuPTz29GYhgm/Zj4kAj2fGZsSUqbCaLJMd3etWlCL3mkGnTpwpfBy6avuVUOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I0I1mRUr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A20A5C4CEC5;
+	Thu,  3 Oct 2024 21:22:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727990530;
+	bh=myhzGuyZHVPOOzMuS6ujT2baNB9f6+kd036ZBWUO22w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=I0I1mRUrF5WQkvwsAwVjK9ucFIwj5abD5OgkBMlmN2ZR9Bh/8XJmH57i8lhGObRmZ
+	 8jpYcPk9QY9ueQxrG91roKLdbr4KmbuVUKqGFa7m+qxwCS7Bhq6X4S/ZtvUQ4VN+aE
+	 4nLTSPEfDBL6c39CxmVNRLEZNauzDtpI1EQQw7Fy5HLJNs3Y25EqgWYK4bT1nGTtWN
+	 JdOd4u/351RIawkJii/27WI91Hr1O73Tg53NJQn8qacOwyGHahaGErmgMuP7UeDch4
+	 ZTTHr3WMx69jM6xzIKRAxHzvGvJ5VB+ZGjNwxZKGDQL9jspF9IuC/BI8IEbjWEFp0+
+	 HiFVa10GeHE1g==
+Date: Thu, 3 Oct 2024 11:22:09 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: Dan Carpenter <dan.carpenter@linaro.org>,
+	Waiman Long <longman@redhat.com>, Yu Kuai <yukuai3@huawei.com>,
+	Josef Bacik <josef@toxicpanda.com>, cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2] blk_iocost: remove some duplicate irq disable/enables
+Message-ID: <Zv8LAaeuJQkvscWF@slm.duckdns.org>
+References: <Zv0kudA9xyGdaA4g@stanley.mountain>
+ <0a8fe25b-9b72-496d-b1fc-e8f773151e0a@redhat.com>
+ <925f3337-cf9b-4dc1-87ea-f1e63168fbc4@stanley.mountain>
+ <df1cc7cb-bac6-4ec2-b148-0260654cc59a@redhat.com>
+ <3083c357-9684-45d3-a9c7-2cd2912275a1@stanley.mountain>
+ <fe7ce685-f7e3-4963-a0d3-b992354ea1d8@kernel.dk>
+ <68f3e5f8-895e-416b-88cf-284a263bd954@stanley.mountain>
+ <c26e5b36-d369-4353-a5a8-9c9b381ce239@kernel.dk>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -90,21 +67,52 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zvz5KfmB8J90TLmO@infradead.org>
+In-Reply-To: <c26e5b36-d369-4353-a5a8-9c9b381ce239@kernel.dk>
 
-On Wed, Oct 02, 2024 at 12:41:29AM -0700, Christoph Hellwig wrote:
-> > > This looks pretty ugly.  What speaks against a version of
-> > > filemap_add_folio that doesn't charge the memcg?
+Hello,
+
+On Thu, Oct 03, 2024 at 08:38:48AM -0600, Jens Axboe wrote:
+...
+> >>>   3144          spin_lock(&iocg->ioc->lock);
+> >>>
+> >>> But why is this not spin_lock_irq()?  I haven't analyzed this so maybe it's
+> >>> fine.
+> >>
+> >> That's a bug.
+> >>
+> > 
+> > I could obviously write this patch but I feel stupid writing the
+> > commit message. My level of understanding is Monkey See Monkey do.
+> > Could you take care of this?
 > 
-> What I'd propose is something like the patch below, plus proper
-> documentation.
+> Sure - or let's add Tejun who knows this code better. Ah he's already
+> added. Tejun?
 
-I like this much better as well.
+Yeah, that should be spin_lock_irq() for consistency but at the same time it
+doesn't look like anything is actually grabbing that lock (or blkcg->lock
+nesting outside of it) from an IRQ context, so no actual deadlock scenario
+exists and lockdep doesn't trigger.
 
-> Note that this now does the uncharge on the unlocked folio in the
-> error case.  From a quick look that should be fine, but someone who
-> actually knows the code needs to confirm that.
+> > So somewhere we're taking a lock in the IRQ handler and this can lead
+> > to a deadlock? I thought this would have been caught by lockdep?
+> 
+> It's nested inside blkcg->lock which is IRQ safe, that is enough. But
+> doing a quick scan of the file, the usage is definitely (widly)
+> inconsistent. Most times ioc->lock is grabbed disabling interrupts, but
 
-That's fine. For the same reason the non-atomic __folio_clear_locked()
-is fine in that case. The folio just has to be exclusive.
+Hmm... the only place I see is the one Dan pointed out.
+
+> there are also uses that doesn't disable interrupts, coming from things
+> like seq_file show paths which certainly look like they need it. lockdep
+> should certainly warn about this, only explanation I have is that nobody
+> bothered to do that :-)
+
+The locks are intended to be IRQ-safe but it looks like they don't need to
+be at least for now. I'll send a patch to update the ioc_weight_write()
+pair.
+
+Thanks.
+
+-- 
+tejun
 
