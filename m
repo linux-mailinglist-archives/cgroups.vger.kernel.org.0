@@ -1,88 +1,81 @@
-Return-Path: <cgroups+bounces-5035-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5036-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAC0098F98D
-	for <lists+cgroups@lfdr.de>; Fri,  4 Oct 2024 00:06:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86EE29901A6
+	for <lists+cgroups@lfdr.de>; Fri,  4 Oct 2024 12:53:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12BDD1F2356D
-	for <lists+cgroups@lfdr.de>; Thu,  3 Oct 2024 22:06:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E17728277B
+	for <lists+cgroups@lfdr.de>; Fri,  4 Oct 2024 10:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDAFF1C7B9C;
-	Thu,  3 Oct 2024 22:06:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4E0A156C78;
+	Fri,  4 Oct 2024 10:53:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Q+daZcbs"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y2R7lRzx"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 907061C5784
-	for <cgroups@vger.kernel.org>; Thu,  3 Oct 2024 22:06:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14665146D6F
+	for <cgroups@vger.kernel.org>; Fri,  4 Oct 2024 10:53:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727993193; cv=none; b=epQmU+cNqlv/y6JLTPP8IVFA2zSsX2nq4ApQ7y2SPZGG5VCMsHEBgYEc2RHV+Hy4xKTRJTBCH56BUl9/rtU8joG4KZIMBA+I1HWzPqt3WKnUGA1tg8Qi3/26kMuVBX+5B1HONrUtXzvFXBfeLJ1kh5idrSbH87+iHpdttrk8zro=
+	t=1728039213; cv=none; b=RpZH5vgW2bUq6WpPSnN1l1TNIc5aN7jBQjQ32jaOzZIxPoF47G8qLeeJeRbHkn5aF4DG5IKfb4VVhvSBkFZTjDFa6T27kghF5WHK0p9+84twoJthuKx1KTf6lrhH8zUu7FNtQCihODxBPkZYFm7AjKr0IaC9NNAsavYMCT9RWG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727993193; c=relaxed/simple;
-	bh=Pt1ZUSvFX87DVRXIwapbBHcWsvds+a/vkDyvcPIZRsE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SlXke6gjLR1rKxmMqdeRd4MxlUXNIT/gPeXXjyDsHFElWeppGrrS7RA55TCz8nyhJh/t2EJHc9QlFvKAJaRepGqY3S2SFyraNrpimFrIxeZFKoJ+A4LOiORHfdKkpwVsqy1yZeAN5Jjk59D9KbIvQZpA0G0bweGjFNQNAY/bXow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Q+daZcbs; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-20b9b35c7c3so14900305ad.3
-        for <cgroups@vger.kernel.org>; Thu, 03 Oct 2024 15:06:31 -0700 (PDT)
+	s=arc-20240116; t=1728039213; c=relaxed/simple;
+	bh=PzKdKo+6viG8ybT5p4aenEuVziOs5E1Eia4x/Wj74Vo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PqlHQ1bvXi5uLCDrg4Bs/zqCadEz7kSNZGhbr/d1NU8IGjkztmCTtmSu+zVg4WkSQl4zG6TJDGfNPn/6ypxG+em7aEpN7CIOGncX/n4jEDegrgzmB87ZRKMeR0O+egWT+iDWjVFbOv4sJod4EFsRh6Mq9TRU6A33cEaK20K0tRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=y2R7lRzx; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-37cc810ce73so1188341f8f.1
+        for <cgroups@vger.kernel.org>; Fri, 04 Oct 2024 03:53:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1727993191; x=1728597991; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/n+Bm+NK1yV3ykOPuXSmp/mRwlagEN1LGfqlR+znwqI=;
-        b=Q+daZcbsvqsmbadFRLjG6dF6/7BzcWDMhyc6RnMUaHPCpAHcHQGgRhc9T6r2rMWLSx
-         LSNGnYG1NrqN3AF0dAliwj0inSSv5yKaQRNDGKDj2vi992rHyxwYNFQ1lj8USvUOjdvt
-         SiuvSeLwZhzX2DmypLgunZM1R9Pt/YmL8nat1LDLlqLpSqeFsOHHV1ZhZWyg7oQqIq5o
-         56DQxD1daUlwTxnvWhuM9sSo8wRp85Nh5CneOgJ5pDa97xhR2y1xganV+DdpjNUNDX97
-         oLmFDb2duAqtkB5fJ/9h7H/SIx5t88rViVTpmdt8YKYzwk5ZgTIG4gYxk6IfTeqXsYaf
-         2wsA==
+        d=linaro.org; s=google; t=1728039209; x=1728644009; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ABWVEZnDfVLeVPAj/zUum6wdsVi6WG7u6OOY9X43WV4=;
+        b=y2R7lRzxr8Pw023GiX61Nv6KGlyPVEFGabjNDBVcVXNC1KuY4y0UUXdoeG95g8TpKm
+         0N/x3T37m5409q5ympbbfaADRHtgmgKbbEDR8CuDR/EBU1ScoyHnxif2PquzmMdcGCdP
+         sqTCRh1np/KXb3MmWkNUlFpPlT+gHZLtzojKIccD2CynlurUXDJGAmOGl5XCnYpfFYG7
+         uTNXrORyx3k4azi2rkpy2m26j1u2Tg5s63URCbFINfeKKCKcZrGvquRIFEVRKajPyN0N
+         yf/itP2XmoWDI1jdylicpkkpJROT4IwQtOTpM6m5+xjow4KPbCfr6bkN0Ig8PL11lfeB
+         Bx+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727993191; x=1728597991;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/n+Bm+NK1yV3ykOPuXSmp/mRwlagEN1LGfqlR+znwqI=;
-        b=IkcJLDcIv0YSrNR2V+UBxi3rqW50kVsOdR3aNDd4RV9knxagA5NAhH/M5mNEYppT67
-         SgZp1ls+0LzyjPFwba9DzvQfvWDx7wRxYXmlUGl5UGz+1hKgF8Cgeoi/yeUUQ3hoElGr
-         Vl8FEdbR5LZsC1A+GflHcu1+qdf/gTOvfKTXEOL4JOYfijHEvOyid1KSwc5eBNqHL0z1
-         wzdZ0gfUYE90HXBjGK0FgKmdLVx1YrguvZfl0BKElfmtI9wJtVi2tDsJDeQPSC+yLmqi
-         Dxkw3QzOrn87ufBmorEisunSMi16Ss/i7LQGfW+hi7MuFXBdl8RzeYzYaNuTCFko2ugn
-         IXEA==
-X-Forwarded-Encrypted: i=1; AJvYcCWYD7n+3LQoGBUQLnDOxNYrHWvyBtjXT/Ule2n4XObxoaxy33fqfGD558agIkQg0i6wVwBNnp3p@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxxa6fjUI1DUzMgVO4IppkggEccLVpV/WunO+HDcIH5qHCli7pA
-	HgP0ZGyUARDY+L2LFR2zUyzpYVzDkLIsdhEqzpj5cFBZl7S11y6Ih0TlZDd/g58=
-X-Google-Smtp-Source: AGHT+IG3Z3RoW+4gVwOQPtL97jDrvwXJXpPy+ySiF1kDHRm4DfIx6MZYfO3x19vUvzG8fbDYEx7ERQ==
-X-Received: by 2002:a17:902:f64c:b0:20b:982e:73f5 with SMTP id d9443c01a7336-20bfdf6b4d7mr8219805ad.3.1727993190942;
-        Thu, 03 Oct 2024 15:06:30 -0700 (PDT)
-Received: from [192.168.1.150] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20beeca2235sm13554225ad.105.2024.10.03.15.06.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 03 Oct 2024 15:06:30 -0700 (PDT)
-Message-ID: <d5b34514-aa3a-47dc-9521-d2774c1785a2@kernel.dk>
-Date: Thu, 3 Oct 2024 16:06:28 -0600
-Precedence: bulk
-X-Mailing-List: cgroups@vger.kernel.org
-List-Id: <cgroups.vger.kernel.org>
-List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] blk_iocost: remove some duplicate irq disable/enables
+        d=1e100.net; s=20230601; t=1728039209; x=1728644009;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ABWVEZnDfVLeVPAj/zUum6wdsVi6WG7u6OOY9X43WV4=;
+        b=aiduV2J+DOlGsjMaDiPZpokuU7in6kSulH45m7Gr5cLDcjlLivF5aOetAr/Tes/Cg0
+         ztO3i/NHMYFiwTTPq3DRj8RnIRb+yhcLX7Wp2vO2M+q3NURiY2yrOT2GJY2QWH4o7J4d
+         U+KU9yasplug5rlvSIdYOdu5Qzt+nwlqHubozyEqQXV8pDyQQCmGNFHMwlwlrGAWYkKZ
+         91uuEhZsCOMkgltuCnK7P92iUNAYsph9ELfAh2JyA85D+84bqA27roPC95LVHckP7REE
+         JL69+ZrvgQvbdizvLw+vVE/gOgaTwaWukyH/1dMXaipw5WUzLjDxceGFAbOGOphUpt4h
+         Q0aw==
+X-Forwarded-Encrypted: i=1; AJvYcCUDhT++gcUPUx0wvKx4a2e9B9gB0lsWx2+MxcD65wyVrp6ISTdOcEcw4xlrLirBeyVCwCsX0dvG@vger.kernel.org
+X-Gm-Message-State: AOJu0YyteTJqOcL5g+HqRqeJdfa50IPrTknY2h1CBXfDxFHAjNtMLf9Z
+	mlqIZ0ucPf1SGQp2G6+nQRi8jU0Pz4Oz0S7YHrxfq+Jq0u57KzOgQsiMO9TF1qg=
+X-Google-Smtp-Source: AGHT+IEkdLbehk6VGRk0CI7zwvonPN6LVZnevW4vIzHsEFitfQTuqEF+iuYKEYiJ2wMybm3F0oINLA==
+X-Received: by 2002:adf:ce8f:0:b0:371:8a3a:680a with SMTP id ffacd0b85a97d-37d0e782737mr1354874f8f.32.1728039209176;
+        Fri, 04 Oct 2024 03:53:29 -0700 (PDT)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d0826240csm2993941f8f.65.2024.10.04.03.53.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Oct 2024 03:53:28 -0700 (PDT)
+Date: Fri, 4 Oct 2024 13:53:15 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
 To: Tejun Heo <tj@kernel.org>
-Cc: Dan Carpenter <dan.carpenter@linaro.org>, Waiman Long
- <longman@redhat.com>, Yu Kuai <yukuai3@huawei.com>,
- Josef Bacik <josef@toxicpanda.com>, cgroups@vger.kernel.org,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel-janitors@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Cc: Jens Axboe <axboe@kernel.dk>, Waiman Long <longman@redhat.com>,
+	Yu Kuai <yukuai3@huawei.com>, Josef Bacik <josef@toxicpanda.com>,
+	cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+	Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2] blk_iocost: remove some duplicate irq disable/enables
+Message-ID: <43245907-0b08-4e18-b58c-a36ab0f804de@stanley.mountain>
 References: <Zv0kudA9xyGdaA4g@stanley.mountain>
  <0a8fe25b-9b72-496d-b1fc-e8f773151e0a@redhat.com>
  <925f3337-cf9b-4dc1-87ea-f1e63168fbc4@stanley.mountain>
@@ -91,27 +84,33 @@ References: <Zv0kudA9xyGdaA4g@stanley.mountain>
  <fe7ce685-f7e3-4963-a0d3-b992354ea1d8@kernel.dk>
  <68f3e5f8-895e-416b-88cf-284a263bd954@stanley.mountain>
  <c26e5b36-d369-4353-a5a8-9c9b381ce239@kernel.dk>
- <Zv8LAaeuJQkvscWF@slm.duckdns.org> <Zv8NBM4mOVoMoBQS@slm.duckdns.org>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
+ <Zv8LAaeuJQkvscWF@slm.duckdns.org>
+ <Zv8NBM4mOVoMoBQS@slm.duckdns.org>
+Precedence: bulk
+X-Mailing-List: cgroups@vger.kernel.org
+List-Id: <cgroups.vger.kernel.org>
+List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <Zv8NBM4mOVoMoBQS@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 10/3/24 3:30 PM, Tejun Heo wrote:
+On Thu, Oct 03, 2024 at 11:30:44AM -1000, Tejun Heo wrote:
 > On Thu, Oct 03, 2024 at 11:22:09AM -1000, Tejun Heo wrote:
->> Yeah, that should be spin_lock_irq() for consistency but at the same time it
->> doesn't look like anything is actually grabbing that lock (or blkcg->lock
->> nesting outside of it) from an IRQ context, so no actual deadlock scenario
->> exists and lockdep doesn't trigger.
+> > Yeah, that should be spin_lock_irq() for consistency but at the same time it
+> > doesn't look like anything is actually grabbing that lock (or blkcg->lock
+> > nesting outside of it) from an IRQ context, so no actual deadlock scenario
+> > exists and lockdep doesn't trigger.
 > 
 > Oh, wait, it's not that. blkg_conf_prep() implies queue_lock, so the IRQ is
 > disabled around it and adding _irq will trigger lockdep.
+> 
 
-Ah makes sense, didn't realize it was nested under the queue lock. Then it
-does look like it's just that one spot.
+Ugh...  Yeah.  Sorry for the noise on this.  I've fixed my checker to not
+print this warning any more.
 
--- 
-Jens Axboe
+regards,
+dan carpenter
 
 
