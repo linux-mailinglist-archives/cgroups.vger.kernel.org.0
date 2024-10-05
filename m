@@ -1,72 +1,72 @@
-Return-Path: <cgroups+bounces-5040-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5041-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECD69991AF8
-	for <lists+cgroups@lfdr.de>; Sat,  5 Oct 2024 23:50:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1D1E991AFD
+	for <lists+cgroups@lfdr.de>; Sat,  5 Oct 2024 23:50:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45965B21A54
-	for <lists+cgroups@lfdr.de>; Sat,  5 Oct 2024 21:50:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A761E2813C2
+	for <lists+cgroups@lfdr.de>; Sat,  5 Oct 2024 21:50:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8618016D4E6;
-	Sat,  5 Oct 2024 21:50:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ECDB16F0EC;
+	Sat,  5 Oct 2024 21:50:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BIc34CAo"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lkr43FEr"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA2891714CD;
-	Sat,  5 Oct 2024 21:50:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CDA4175D34;
+	Sat,  5 Oct 2024 21:50:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728165009; cv=none; b=QfWIEJMjBDu/pBpSBG67JbG9lWqbJXCwjxz76tty3vNk8qADBp/lZRa6NQ/NXK8hHCR3XSYJyfwOstPI8LdMx1ayOjxgL+VZ2vyssSzzxkICHFpoE9Occh7sggOwMgOV2guxg3Lp1KosVMxa85U6GZLstHDJEo8H5i3TCfetpaw=
+	t=1728165012; cv=none; b=rMaLk0zFGQgt0o9CBjdEkBz2Pkqqb5TXZ/SA8fk6VS5B9VLuxTTzew2BOVWsaI2L1UY6JIa9CFjcoKc3X3zkyM8NtDUTiMROXY86x9AEN2xhga9g3npxQOn+Lpfcv7f4WDdWrAHqMVc4n6+R/xwSpFgD0LkJxrtFDU6ACwa1uvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728165009; c=relaxed/simple;
-	bh=eIduj2a7RDmKLt4ahXC9kCLPei5SOm6je5RPRjT8kM4=;
+	s=arc-20240116; t=1728165012; c=relaxed/simple;
+	bh=aAgtS/55DGRhNRVzeHNfrp0NQH4YCxQhxRW5I5lgpBE=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RsscJJ71NGfrUk8VUrtIEddZscJOcb4pnXVlaNLWH4X7HMv/TpM2rd8k1PCQ7Av3bmf6dWjdNE4QaQZNDuBrZh19pg6xO5ji3A4xQL6+UGElvT0FPbS0gPaGVbORhM6sag7tnsA0aLHLd7TL7qEcMJVmKfTuTUvLsoJbsnW5WA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BIc34CAo; arc=none smtp.client-ip=209.85.214.180
+	 MIME-Version; b=Gd65VtgL8WJlteL6AFqn8SslYkh5GVucbNDZpZfQBglLhf+PijL+GZfCYFcKygEsutCNPGh8QtEPsjf1xMjlXDbhHWXL5370VdhBHCZfxIQChXlbgAih2uRW74PClrqX0vc45KoHqyeYW5iSEUlQy0kS9uxJumof4UNHm5GrJHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lkr43FEr; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-20b78ee6298so20847115ad.2;
-        Sat, 05 Oct 2024 14:50:07 -0700 (PDT)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-20b01da232aso25805585ad.1;
+        Sat, 05 Oct 2024 14:50:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728165007; x=1728769807; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1728165010; x=1728769810; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dcSg+3d0QR+rdWz/nC3iZVkACTYk5EHJ8llhpn/oIv4=;
-        b=BIc34CAonHpcX7omqIpDvk4jZMjAENbqD5lZEgUoH8+m/hiFmO0HDtt3no6x2hpE9B
-         IFZB6oWdbIKSbWmr0qAAvuJWtKtbQmP8eemazy4HoO8OaAk/Vbegl7tHMo4xAPwlSd1h
-         4FXWo8akEcelAYFQz9kYDewI5RuPJJzlmMKmRL8rvc/7fO4hv6KYpj8bgM2oeLAoe1vR
-         YPH7rlghj00QFJ3Oc97f4qiJtLRPQFBmnOyu81Y9Uv/OCyRPRNLDzrpw7hq0GleBwJKi
-         FpwnYOjylByKj4tOxKMiRtyQVLcDHSL3JLnjuaKzfO/qTVD2ZCWLI+P1daNh3engXySP
-         noHQ==
+        bh=e/RDd3OgykNkc6odsd6hV7b7AYM8gkhtHwhum24D1j4=;
+        b=lkr43FEraOaIYxSa8sPkuKRx1sKNpaJdKf/NR3IE/kN7w5eNphm1zpDrZid1YiD3mU
+         WFACPLvcf+yUaSdMtyGs2p0SGHeehaMcJ0KCtK8vDtnM4f40invhgDDlqgRhDDlhxdCK
+         G6NyYKauEGJm7khluSvBpD2R7arpi77kvyjwJLNFhU50OmuIji71A8ZvwtgE8ToVKM5x
+         699/rRn0++dlGAkNjkGOanLzxsDNg5FJYS/nsbgKIsmOfmaEQN8M2zqUbZuBDd+avPts
+         ZSpunJ7le1OXzwmH+b+g2VKIC254PEd5DHC0vZ5HXa09bEs3mbzXxs22iNLZjpNAfX9g
+         rgDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728165007; x=1728769807;
+        d=1e100.net; s=20230601; t=1728165010; x=1728769810;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dcSg+3d0QR+rdWz/nC3iZVkACTYk5EHJ8llhpn/oIv4=;
-        b=RGjTaEXjuEqbYEXHkZOQX9G6IcLO35kY872fY18JsqiOLbjbia5Drr3aXl/CKTWZtR
-         Ec05/8c3qAbhc82poBvCOdioTZJxy+GH2jCPxYunxJKxnYAux1GOSOlKJXZVg3pAEvn/
-         jVmUYCorCUsd/uNmeyxFQbXdlOfwjRQWucIwPTKRZ6R0FEVnf3ZikdpK/nIWduK+yUNK
-         +TqVGTQo2UgWJWCfaIdJavd0g3Hzm21FAL19mdmIWM224yCxPDlgYNZfHAeIG20KzxDw
-         Cbeh9hoE1LYhU5OfUVIBchqHDlaCHIzk3KNUKXz0pcK38+YAUbMuidOAHwAxl9CtdQTb
-         hJiw==
-X-Forwarded-Encrypted: i=1; AJvYcCU3Qvn4QXt82ntFs0WtMHjE9sM5hiAsB3UlXtewNF2HaUVP9a1MMeZFpzivMr10H4PZQJZtklp3+lPycKn0@vger.kernel.org, AJvYcCXeP3mtfa5y5rVP84mfD4lpqtocnh9tb7dkTjoSKoEp8THkDe+WvCVm5W9OVQx3U6KyXLBlGbG8@vger.kernel.org
-X-Gm-Message-State: AOJu0YzI4VpautJ9pjTiOLf4s25rPaIQyjDp/b+LsC7ReZ4ipmccTHnN
-	+e49ONbdJcu/Wi7XROky8MyvHhU6yCLZ+fhsRDAv2ZKU46rSbQhT
-X-Google-Smtp-Source: AGHT+IHvftSQJ5RfLJxXlqhYt4stFu9wgWyJ3Ff5j+BVn2RTShvzOQ1JRR1JY0RE3VOua2f1976QOw==
-X-Received: by 2002:a17:902:f60e:b0:20b:a41f:6e48 with SMTP id d9443c01a7336-20bfe011becmr139397605ad.27.1728165007055;
-        Sat, 05 Oct 2024 14:50:07 -0700 (PDT)
+        bh=e/RDd3OgykNkc6odsd6hV7b7AYM8gkhtHwhum24D1j4=;
+        b=CXvzu19kl7GDkhoym+TreED3/bR7UJjT7ecTc8zDFAJx0MCk5cYSKbUS6EiFHiD2tw
+         4osR07JSAYehsgRXY1oUSgqUgGR2lfckOseLJa2X1U+zOZXpxN4Qrpw7YsluBS7LY3Ty
+         IqPqUeK3DW9+hjTCCZx41dND9jNwyEo29mb8hMPI270l457aQds0DkSrq0TJxWSX0XtR
+         WGzCO+AouEuf/Y1ukWDsFC9ruZPhfq2tCppBTViLhwcqO37R2L+tXE3gHggD7wCcF7wK
+         l/zOa3EahhhSioPei0uPGziiieOWLxFXd8T+shQW6q+UN4VoKGWAe5zneGXK1xMCwmau
+         /4vQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWl+nmWE0rHnqSsTI62plgsul6KdfqiJiSU8TFspT2nReDOscCt3zr5RjPmRPU9eQ3un4QdfCtoM58SOyY5@vger.kernel.org, AJvYcCXzH39y0n3Y8isAzhTGF358XPpaRgW8sag0y6TY38r9/lqzDKEuQ64yW61ua4NVBD6r1CwPndBA@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw1vqvkQQZS5zyfn5f1mZLCvGPwXL65Yf5A1X099FUV/O5pLoqt
+	K+T9+OBgew1zqi6AhQcHxQ4AqDiaNCrC9o4r2zMmMNtTDw57igcb
+X-Google-Smtp-Source: AGHT+IHkN85dFaHZp7eUqo5HXHSdqmnGE12VAhz/SoR3WLlRAERNoJSPWeMi/AYuB1cCyrPrjJZMaQ==
+X-Received: by 2002:a17:903:1c9:b0:20b:5ef8:10a6 with SMTP id d9443c01a7336-20bff391262mr103385635ad.8.1728165010287;
+        Sat, 05 Oct 2024 14:50:10 -0700 (PDT)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c13931055sm17165135ad.139.2024.10.05.14.50.04
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c13931055sm17165135ad.139.2024.10.05.14.50.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Oct 2024 14:50:06 -0700 (PDT)
+        Sat, 05 Oct 2024 14:50:09 -0700 (PDT)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: xavier_qy@163.com,
 	longman@redhat.com,
@@ -79,9 +79,9 @@ Cc: jserv@ccns.ncku.edu.tw,
 	linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org,
 	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH 3/5] lib: Add KUnit tests for Union-Find implementation
-Date: Sun,  6 Oct 2024 05:49:36 +0800
-Message-Id: <20241005214938.2147393-4-visitorckw@gmail.com>
+Subject: [PATCH 4/5] lib/union_find: Optimize uf_find() with enhanced path compression
+Date: Sun,  6 Oct 2024 05:49:37 +0800
+Message-Id: <20241005214938.2147393-5-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241005214938.2147393-1-visitorckw@gmail.com>
 References: <20241005214938.2147393-1-visitorckw@gmail.com>
@@ -93,152 +93,50 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce a KUnit test suite for the Union-Find data structure. The
-tests verify the functionality and correctness of the union and find
-operations, including edge cases such as handling duplicate unions.
-The addition of KUnit tests enhances the robustness of the Union-Find
-implementation by ensuring its correctness under various scenarios.
+Optimize the uf_find() function to enhance its efficiency by
+implementing a more effective path compression strategy. The original
+implementation only updated the parent pointer of the current node to
+its grandparent, resulting in a relatively shallow tree.
+
+In the updated version, once the root of the node is identified, all
+nodes along the search path are updated to directly point to the root.
+This change minimizes the height of the tree and improves the
+efficiency for subsequent find operations, providing better performance
+for the Union-Find data structure.
 
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
-Regarding the changes to the MAINTAINERS file, I'm also happy to help
-maintain/review patches related to union find. If I am qualified
-enough, may I send another patch to add myself later? :)
+Note: Tested with the KUnit tests introduced in the previous patch.
 
- MAINTAINERS            |  1 +
- lib/Kconfig.debug      | 12 +++++++
- lib/Makefile           |  1 +
- lib/union_find_kunit.c | 74 ++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 88 insertions(+)
- create mode 100644 lib/union_find_kunit.c
+ lib/union_find.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5153c995d429..3b10ac1cdf63 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -23799,6 +23799,7 @@ F:	Documentation/core-api/union_find.rst
- F:	Documentation/translations/zh_CN/core-api/union_find.rst
- F:	include/linux/union_find.h
- F:	lib/union_find.c
-+F:	lib/union_find_kunit.c
+diff --git a/lib/union_find.c b/lib/union_find.c
+index a20678da0220..7c553fa622c8 100644
+--- a/lib/union_find.c
++++ b/lib/union_find.c
+@@ -13,14 +13,19 @@
+  */
+ struct uf_node *uf_find(struct uf_node *node)
+ {
++	struct uf_node *root = node;
+ 	struct uf_node *parent;
  
- UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER
- R:	Alim Akhtar <alim.akhtar@samsung.com>
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 7315f643817a..376c86d34253 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2841,6 +2841,18 @@ config SIPHASH_KUNIT_TEST
- 	  This is intended to help people writing architecture-specific
- 	  optimized versions.  If unsure, say N.
++	while (root->parent != root)
++		root = root->parent;
++
+ 	while (node->parent != node) {
+ 		parent = node->parent;
+-		node->parent = parent->parent;
++		node->parent = root;
+ 		node = parent;
+ 	}
+-	return node;
++
++	return root;
+ }
+ EXPORT_SYMBOL(uf_find);
  
-+config UNION_FIND_KUNIT_TEST
-+	tristate "KUnit Test for Union find"
-+	depends on KUNIT
-+	default KUNIT_ALL_TESTS
-+	help
-+	  This option enables the KUnit tests for the Union-Find data structure.
-+	  These tests verify the functionality and correctness of the Union-Find
-+	  implementation, including union and find operations, as well as
-+	  edge cases such as handling of duplicate unions.
-+
-+	  If unsure, say N
-+
- config USERCOPY_KUNIT_TEST
- 	tristate "KUnit Test for user/kernel boundary protections"
- 	depends on KUNIT
-diff --git a/lib/Makefile b/lib/Makefile
-index 773adf88af41..03da92faf9b8 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -388,6 +388,7 @@ CFLAGS_fortify_kunit.o += $(call cc-disable-warning, stringop-truncation)
- CFLAGS_fortify_kunit.o += $(DISABLE_STRUCTLEAK_PLUGIN)
- obj-$(CONFIG_FORTIFY_KUNIT_TEST) += fortify_kunit.o
- obj-$(CONFIG_SIPHASH_KUNIT_TEST) += siphash_kunit.o
-+obj-$(CONFIG_UNION_FIND_KUNIT_TEST) += union_find_kunit.o
- obj-$(CONFIG_USERCOPY_KUNIT_TEST) += usercopy_kunit.o
- 
- obj-$(CONFIG_GENERIC_LIB_DEVMEM_IS_ALLOWED) += devmem_is_allowed.o
-diff --git a/lib/union_find_kunit.c b/lib/union_find_kunit.c
-new file mode 100644
-index 000000000000..9bdf9e0e455e
---- /dev/null
-+++ b/lib/union_find_kunit.c
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <kunit/test.h>
-+#include <linux/module.h>
-+#include <linux/union_find.h>
-+
-+static void test_union_and_find(struct kunit *test)
-+{
-+	struct uf_node node1, node2, node3;
-+	struct uf_node *root1, *root2, *root3;
-+	bool merged;
-+
-+	/* Initialize the nodes */
-+	uf_node_init(&node1);
-+	uf_node_init(&node2);
-+	uf_node_init(&node3);
-+
-+	/* Check the initial parent and rank */
-+	KUNIT_ASSERT_PTR_EQ(test, uf_find(&node1), &node1);
-+	KUNIT_ASSERT_PTR_EQ(test, uf_find(&node2), &node2);
-+	KUNIT_ASSERT_PTR_EQ(test, uf_find(&node3), &node3);
-+	KUNIT_ASSERT_EQ(test, node1.rank, 0);
-+	KUNIT_ASSERT_EQ(test, node2.rank, 0);
-+	KUNIT_ASSERT_EQ(test, node3.rank, 0);
-+
-+	/* Union node1 and node2 */
-+	merged = uf_union(&node1, &node2);
-+	KUNIT_ASSERT_TRUE(test, merged);
-+
-+	/* Assert that one of the nodes is now the parent of the other */
-+	root1 = uf_find(&node1);
-+	root2 = uf_find(&node2);
-+	KUNIT_ASSERT_PTR_EQ(test, root1, root2);
-+
-+	/* Check rank after the first union */
-+	if (root1 == &node1) {
-+		KUNIT_ASSERT_EQ(test, node1.rank, 1);
-+		KUNIT_ASSERT_EQ(test, node2.rank, 0);
-+	} else {
-+		KUNIT_ASSERT_EQ(test, node1.rank, 0);
-+		KUNIT_ASSERT_EQ(test, node2.rank, 1);
-+	}
-+
-+	/* Attempt to union node1 and node2 again and check for false return */
-+	merged = uf_union(&node1, &node2);
-+	KUNIT_ASSERT_FALSE(test, merged);
-+
-+	/* Union node3 with the result of the previous union (node1 and node2) */
-+	uf_union(&node1, &node3);
-+
-+	/* Assert that all nodes have the same root */
-+	root3 = uf_find(&node3);
-+	KUNIT_ASSERT_PTR_EQ(test, root1, root3);
-+
-+	/* Check rank after the second union */
-+	KUNIT_ASSERT_EQ(test, root1->rank, 1);
-+	KUNIT_ASSERT_EQ(test, node3.rank, 0);
-+}
-+
-+static struct kunit_case union_find_test_cases[] = {
-+	KUNIT_CASE(test_union_and_find),
-+	{}
-+};
-+
-+static struct kunit_suite union_find_test_suite = {
-+	.name = "union_find_test_suite",
-+	.test_cases = union_find_test_cases,
-+};
-+
-+kunit_test_suites(&union_find_test_suite);
-+
-+MODULE_AUTHOR("Kuan-Wei Chiu <visitorckw@gmail.com>");
-+MODULE_DESCRIPTION("Union-find KUnit test suite");
-+MODULE_LICENSE("GPL");
 -- 
 2.34.1
 
