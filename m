@@ -1,72 +1,72 @@
-Return-Path: <cgroups+bounces-5050-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5051-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E203C99312D
-	for <lists+cgroups@lfdr.de>; Mon,  7 Oct 2024 17:30:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D147F99312F
+	for <lists+cgroups@lfdr.de>; Mon,  7 Oct 2024 17:31:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 686361F212CA
-	for <lists+cgroups@lfdr.de>; Mon,  7 Oct 2024 15:30:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E1AA1F231CF
+	for <lists+cgroups@lfdr.de>; Mon,  7 Oct 2024 15:31:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B76BF1DB528;
-	Mon,  7 Oct 2024 15:29:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF351DB95E;
+	Mon,  7 Oct 2024 15:29:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OV4ByXZ5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TlRX04vr"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11C7D1DB35A;
-	Mon,  7 Oct 2024 15:29:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17FA11DB555;
+	Mon,  7 Oct 2024 15:29:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728314943; cv=none; b=QVelFO6VADw5Ku5EW8//VTCJz4ezuhZYaNk9mEnGaNMHC/XmPXZyulChl5PlOoIoZPva7cv8C9oiP/TzuwMINVQmi6AWWxubogGif3Fijj2m+E31OfOBSn7VS60V7yvtVS6NT+NJBdpP4diHhkSoFH9rfPkN5vxE834cw+NgpoE=
+	t=1728314946; cv=none; b=f8bNzURNOy/dVtaVpXlWgJ7LG1ht51OEDxDavOaWySFdhltz/E8eh7pSrZ0DqrE3ZUIBTrjCh2ygmyveKWzC5wdd5x/e2hlfrapuZspl1t1OeWbLxJlPHVmwd2f6KnHfLVdwWqEwpUQO0iOv4S3Lg5NNAkehVBVywp2QcwDGKTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728314943; c=relaxed/simple;
-	bh=OMtfmt7UZCIHfOf7KAR4/uFdCOm7TfQjEgGNpTHnfL8=;
+	s=arc-20240116; t=1728314946; c=relaxed/simple;
+	bh=lAFXFSmVQdntEsKGiZXrEtWfDysFXzmsqFsCELUq0l8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Gwzgvfe+ugNd5gnwEFYGhDZbjSPzKX8/RhMl/WSKEDMAgO7840OjSA6rdkV981NeEarqJw3oNkbZENdeFAI9vN3G5k3FbKaMuvJymue5gDytDXQJKBHQpRfeZguuWTt/dHTXEpsWPJ3NKLuntU2tb+fOLZSuURkA7oNIMpOhza8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OV4ByXZ5; arc=none smtp.client-ip=209.85.167.178
+	 MIME-Version; b=iRWarEg+FaB1Qy+JhTl7p6oPwWPyiJsDptUz9V4DNh3nRXuoIAwTNMguCYYIL+jeykb+qEl0OHD7NhGgMwa2KwexPDqNDjvu7ijSTj4oNvdHhwRY4zxGTDFOmelxY7TW9rb1Ka01/C3k5oxZrfnVpBpHNPzQw1XXTBSp+utKOu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TlRX04vr; arc=none smtp.client-ip=209.85.210.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3e045525719so2843289b6e.2;
-        Mon, 07 Oct 2024 08:29:01 -0700 (PDT)
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-71def18fe1cso1674016b3a.0;
+        Mon, 07 Oct 2024 08:29:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728314941; x=1728919741; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1728314944; x=1728919744; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TUEA4tpkfLGZlVDysJGJlt9DafoclzzPF7zKuIYvfmQ=;
-        b=OV4ByXZ59kpI/G6LMUXx7St8TuvbCMpJdYwahud8TZ38RWvVV4RK3+FQp5xmoINDrl
-         Fto2aB1cswNXMxWBxegZi3jrwyT+n4OKjYzPQKfjWU9SyS8HojjA16gbVwyYulmbxKzz
-         91hVsM3QBcShN+SSx2J3ykoJ3klq0BfpHtDyiZhRzwxAIGIM2gCh1hLIsf3/Y1xb/XQs
-         Eg4zLreUXr9uP1/73IC1PYiY0mKqEn+syDkyampcgwZT8tn6g77vqyrbiFJDk9lpsdUT
-         h2n90R5sfSZNFckQ5qUGl39Sh9yeNhGqMH0lwffrtO+7IQBtlozjqX1SD20buNYHDBki
-         UECA==
+        bh=yzLZEFlScs6iq6xva3+0NW6bF6ERo7epGwi/efUM6jE=;
+        b=TlRX04vrt2JDmaaQYQRnOBF7mk8qQrNbBE+q3gk2r9NPx3nuaQnXIbbI302FP8srhS
+         7jgjzRQ3k/N+oPKcPTUNDLeRfVqBx/toTFNiLFoFyOAWxzFJNbMAz271hyPB0p0ODWDg
+         UIjdQ1aoJSJi51OeOB/CdgDfs6NLkb8ZZuR62TlEK32gqqZxpkmcaa1kVPUTv2SBnMGd
+         ABiQdQtBZjfrcQUtjT4YOwNy+/Ou7IqpJFha6JsncTQ4kdGJ3GLT+/6gppFSQHlQwPkw
+         ZJvqmxYt1Ivmi3zXe3zhByvexPIFHteaEtDCOPb1pJbpI+fEsWcOxc2WQZ3RXcTdwMF8
+         rgMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728314941; x=1728919741;
+        d=1e100.net; s=20230601; t=1728314944; x=1728919744;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TUEA4tpkfLGZlVDysJGJlt9DafoclzzPF7zKuIYvfmQ=;
-        b=gtU4uUY4YW9YJloBZeznltJAdlqo5pOT6q4J/V+FPxMlb3AkhMYPY9YM+RaVVFghVI
-         j19QidLx6g8LmyKFm8w8JYAlC47XHsuTgMepBdkAvBiX6hAxN34eP/VeGgKmeE3ZjjOl
-         0Ap4P18G9ciFOgKaAu5ikRmlc5LGcEL6DQyzPXSz/mMueQbluPekEAiv075tS/Z98rlB
-         OSderh8algRtoaRXquwoUD/KJxA329/mrTFSzbe7+94e/hy14CENlrFszhJmT7zVbMCH
-         2j91QYkrjuvNabTANQEFz4rqi5fu6wLBwUVor7vqp0Y/ks5Eu8/aZcQ8ckOaQoBrHeqo
-         Qxvw==
-X-Forwarded-Encrypted: i=1; AJvYcCWfqco+PE4CsUILSYsYsyH/xdI35SFmwRH7uwDvfqeP4bnWse8xfhZmUSrKsrXcC4PIIEgP8nq17VHYRCyg@vger.kernel.org, AJvYcCX6suzzdKSW9cvctMho2ioCNG2p3tVQ4Ru3uri66Yk5/rKaPQs1nKwbCpS9sCK8qG2melu2Kkdh@vger.kernel.org
-X-Gm-Message-State: AOJu0YyMeFnExeEMQ6pnWiB1cS06nk3LS7WSre5KG1hvofWH5pYLiIy3
-	XPyraGK9ZPI3ZfbVRAhOKrZaNEx+7/By2yif64jvpy8Bf+EayVTZliGcCA==
-X-Google-Smtp-Source: AGHT+IEbsvR2Q7CP/P+iNUTYbqnLzzq8TPA6J0V2in9TiXF4gmOs+v8wadba5eKZVpOf1AV5HpKv4A==
-X-Received: by 2002:a05:6808:3a10:b0:3db:3303:834c with SMTP id 5614622812f47-3e3c156c02emr7865565b6e.39.1728314941113;
-        Mon, 07 Oct 2024 08:29:01 -0700 (PDT)
+        bh=yzLZEFlScs6iq6xva3+0NW6bF6ERo7epGwi/efUM6jE=;
+        b=XPCWNgvmYFGhy9R1uo0fI2KtCtAmxRw0L8FluXnCKyX2eQ3nQgzrLDDNtw2KMMMIwF
+         MuTVo9O9hvUl0M6aqoq/zQ0fCsvbOegQC8J0qmfxTWqIwrClk4H6cmocK7kXl9/APDHg
+         gSkj7f4ZCTtcsd4BFKMjQLMzL43edrVgFwKcOFBZzqiAHEZ7r7jsbH3jE5fESG+muPZN
+         w7n6Lb6M3c+ModkqIaB3EZRdSmLjV4CyCx16JxEx2ihwn9IKN/9L7w6M10HOdmXyepzY
+         rgflrZDRKfZm2yXBcgunDUuFc5MuCt/IeSEUEr0i+/9SZhhLIXhWqzJu4OqwFzeaPvmm
+         t0hg==
+X-Forwarded-Encrypted: i=1; AJvYcCVC3F1ivrAbqrrlx5aDRQ3zZo1LcHrOryzwGjHLz5dtHtmF+Mh60+0Z1t1yeK6VldpP6gJ41VNN@vger.kernel.org, AJvYcCWw8pvSZKlEqWgOX79ErCaFO78IHHbxyMool7dctrUYmT26i91XTYkYGDYhTDOe0eQIwOiS2OI0v6Yx9jy4@vger.kernel.org
+X-Gm-Message-State: AOJu0YyScVL8UA0Ewr18iZB5mXJ2BU98DB5sdj6lRSxqruFpeqtraEdO
+	Vw1MgKFxSPg+zfv79cVlnB4szXU1IO/8PK71dNXFoj51+NpqFOh+
+X-Google-Smtp-Source: AGHT+IFmaJYCgfcqvpx9xMLTLS2Sq4+nITc7aHu4JzeIwZmZ/djVHsSyztw51ABu/SMp/FED+S4UpQ==
+X-Received: by 2002:a05:6a00:2286:b0:719:8f48:ff01 with SMTP id d2e1a72fcca58-71de239d691mr20702748b3a.6.1728314944374;
+        Mon, 07 Oct 2024 08:29:04 -0700 (PDT)
 Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7e9f6c4adeasm4360337a12.84.2024.10.07.08.28.58
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7e9f6c4adeasm4360337a12.84.2024.10.07.08.29.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Oct 2024 08:29:00 -0700 (PDT)
+        Mon, 07 Oct 2024 08:29:03 -0700 (PDT)
 From: Kuan-Wei Chiu <visitorckw@gmail.com>
 To: xavier_qy@163.com,
 	longman@redhat.com,
@@ -79,9 +79,9 @@ Cc: jserv@ccns.ncku.edu.tw,
 	linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org,
 	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH v2 5/6] cgroup/cpuset: Optimize domain counting using updated uf_union()
-Date: Mon,  7 Oct 2024 23:28:32 +0800
-Message-Id: <20241007152833.2282199-6-visitorckw@gmail.com>
+Subject: [PATCH v2 6/6] MAINTAINERS: Add Kuan-Wei as co-maintainer for union-find
+Date: Mon,  7 Oct 2024 23:28:33 +0800
+Message-Id: <20241007152833.2282199-7-visitorckw@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241007152833.2282199-1-visitorckw@gmail.com>
 References: <20241007152833.2282199-1-visitorckw@gmail.com>
@@ -93,57 +93,26 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Improve the efficiency of calculating the total number of scheduling
-domains by using the updated uf_union function, which now returns a
-boolean to indicate if a merge occurred. Previously, an additional loop
-was needed to count root nodes for distinct groups. With this change,
-each successful merge reduces the domain count (ndoms) directly,
-eliminating the need for the final loop and enhancing performance.
+I'm happy to help maintain and review patches for the union-find data
+structure. Add myself as a union-find maintainer.
 
 Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 ---
-Note: Tested with test_cpuset_prs.sh
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-Side note: I know this optimization provides limited efficiency
-improvements in this case, but since the union-find code is in the
-library and other users may need group counting in the future, and
-the required code change is minimal, I think it's still worthwhile.
-
- kernel/cgroup/cpuset.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index a4dd285cdf39..5e9301550d43 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -817,6 +817,8 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 	if (root_load_balance && (csn == 1))
- 		goto single_root_domain;
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e503802c1549..c3b1a5641765 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -23795,6 +23795,7 @@ F:	include/uapi/linux/cdrom.h
  
-+	ndoms = csn;
-+
- 	for (i = 0; i < csn; i++)
- 		uf_node_init(&csa[i]->node);
- 
-@@ -829,17 +831,11 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 				 * partition root cpusets.
- 				 */
- 				WARN_ON_ONCE(cgrpv2);
--				uf_union(&csa[i]->node, &csa[j]->node);
-+				ndoms -= uf_union(&csa[i]->node, &csa[j]->node);
- 			}
- 		}
- 	}
- 
--	/* Count the total number of domains */
--	for (i = 0; i < csn; i++) {
--		if (uf_find(&csa[i]->node) == &csa[i]->node)
--			ndoms++;
--	}
--
- 	/*
- 	 * Now we know how many domains to create.
- 	 * Convert <csn, csa> to <ndoms, doms> and populate cpu masks.
+ UNION-FIND
+ M:	Xavier <xavier_qy@163.com>
++M:	Kuan-Wei Chiu <visitorckw@gmail.com>
+ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/core-api/union_find.rst
 -- 
 2.34.1
 
