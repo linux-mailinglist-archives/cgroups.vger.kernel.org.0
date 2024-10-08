@@ -1,62 +1,84 @@
-Return-Path: <cgroups+bounces-5055-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5056-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D72C993E23
-	for <lists+cgroups@lfdr.de>; Tue,  8 Oct 2024 07:01:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3828B993EBE
+	for <lists+cgroups@lfdr.de>; Tue,  8 Oct 2024 08:33:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 335D01F224B6
-	for <lists+cgroups@lfdr.de>; Tue,  8 Oct 2024 05:01:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2A442857C7
+	for <lists+cgroups@lfdr.de>; Tue,  8 Oct 2024 06:33:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 597AB1369B6;
-	Tue,  8 Oct 2024 05:01:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C291F18BC3A;
+	Tue,  8 Oct 2024 06:19:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Mo2R9E0a"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NZ0OTjUS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCDE723A6;
-	Tue,  8 Oct 2024 05:01:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4336C17C7C6;
+	Tue,  8 Oct 2024 06:19:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728363679; cv=none; b=UMlepk1hspyOqPlSsXb/zGN/BnTiihBI/ReltdhCf9nDjIM1zkQci3sFMK1pXy4vZhaSOZRJ3L0MjywAa/bcaeAaf54KOEiFx4t4/mIN4qVSAyGBv6j0ytq+aVxQhQMHuXHoxecqytuSH4GjY933xZIV3KnrVlI8c21qD8XMW80=
+	t=1728368368; cv=none; b=PtZsOmhS2obuRycIHTgF4PF+LntwxVZHfw8dRY7jsw3CzWy/7LzjuIg/+tWcWYyswxr8nqLFE9lDZqKuBWlnWFKXHOopa9uc3O9TyK8ngUlF3RKnyoq70C19wNVHDmCjIIbwyvUjMHDtjZi45X7ppn7euglwupvXjhmKopwzAeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728363679; c=relaxed/simple;
-	bh=vUjlbtPij7dfv7xT5Zi5eQxxfKt1edeUy93PlruaS/g=;
+	s=arc-20240116; t=1728368368; c=relaxed/simple;
+	bh=XIXJA5CIAPoAB8tcE4ZYSl7tqzNOJcvqYDc7gIbAe4k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RHfx+tRJPLeGSWwpSpFoOGhCHdRDelj9FmLE9CCxE+NDg05BbTTRFvm3oDA05azzOpogMMpNBjfRN1Jqm2gK2PRurNiR6DK570yiRfGsaG7IO9X65oDkzlnfHlr7GVHEac+8uclX4uTW0x1mYVlWcxLom4Fvu1yzGAIdWcalKoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Mo2R9E0a; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
-	:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=EuATOjvebLdwzG9b6bXcZ4P8D8T60CsTrjqntsqyX44=; b=Mo2R9E0awieg8tJQtgVjxPtwtZ
-	qC8FSZiOrEu/dLRTjuIah5jjt/74vhpTFr2N2gAi0XB8CXQGbBlYbLGu1mW4ltEuRooE/C6uDzzq1
-	fBcxO1BSzpB5umAF9A7/CWGzHJhPuFXYVjyJHZYrbugCnNP4cDyjR796a9h88tH3uCqBLiEyI+gy1
-	lR/b41GsCcgJDJoDNyxDbmUQXJqsroiynIhqB7sp4XYvYQB3GGJolldmxDFUOnVuFtyYjWjytgEm/
-	gwfjnU9W/kRgekHXoGgahBQykK+2TwOO7d9tBkaHisNFEZhu+pFrKDJ8KklpVU1OyhN0HGvmB0wsc
-	OT3yTq5w==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1sy2LP-00000004WGl-1M3J;
-	Tue, 08 Oct 2024 05:01:11 +0000
-Date: Mon, 7 Oct 2024 22:01:11 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: Tejun Heo <tj@kernel.org>, axboe@kernel.dk, josef@toxicpanda.com,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
-	"yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: [PATCH v2 1/5] blk-cgroup: add a new helper blkg_print_dev_name()
-Message-ID: <ZwS8lwQ_fN2HY93p@infradead.org>
-References: <20240930085302.1558217-1-yukuai1@huaweicloud.com>
- <20240930085302.1558217-2-yukuai1@huaweicloud.com>
- <Zvrb0DXhtVHT2lfa@slm.duckdns.org>
- <ce2b9ed1-cf74-1d50-a72a-23733c0d1db0@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=GL81NjWhyK4pRD0eNpxV0596YVHF08H0i1BbBwSa+rQCPCM+gVueFwFawsd/qJt23j3K0Enly1usCmpABn7hBYXcMHgzCRGB7fAISMUEN74TvzoRenicVAHTQKZTQ4acG27Tei/FyJIJilulIP0OGVHgmpUPEVcjy6BgzVHLmgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NZ0OTjUS; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-20bc506347dso42142495ad.0;
+        Mon, 07 Oct 2024 23:19:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728368366; x=1728973166; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=EHxXhz7bzsxtMK4NRPqKJZF+dplL5x2geusUM8K+bKY=;
+        b=NZ0OTjUSPsaGX3hhBlAWrATOFwcQn7KqxdMp38o4WrkyaQ6sbusDf4CPFo1ZJenhqX
+         cJKO2o6yTUQONQUGRiGdTLXRZFWm7gNWH7pstIaKIj3CXbHWp7gnw57PAcrfYYng0mCH
+         RP1O1SaSvK+FaxxlG2VRD1MbTjD7xkHCxz9L0W1L1EalbJEopGtpObyggmJ/k2DFy7bE
+         s6X/N2+e7tmyXGTnGvkCKFPnMCtBG65+noQ6HQF3omkLBGwwyyaSQLYyX//GqpomX/R5
+         agYmScJ8XaS9n/sjIs7m2us3+2qJQBKqSmEb0rwtR03lEnFRwIcfXfNRQOGkWDyLEIM7
+         ZmKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728368366; x=1728973166;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EHxXhz7bzsxtMK4NRPqKJZF+dplL5x2geusUM8K+bKY=;
+        b=HcrxacqkEi2iKAnK38Ji3zNh7TaHLmmO70r2zQ7U1zRRqE+cyi3Xb9t+9SLES6RUVR
+         Qfy8fU8jLSTUixve4voeLc0wMLowjsEIYRDEa09SOQKxmxsqMfzrq5dj5oRPwtboVaT2
+         zB3NLDK8nflqHUMn8x/PEBannc1eCgvq6+gfirtIx+bJwi6rZ/In12ya54Hc2Dq2WOU1
+         yq1QMnOTPVa85lM6PmhBZIQMcKDbvHdxiV8fGpikpG0i9YH8JA7JGC5EWtgeAlhXZEP3
+         eVWFF94ZOU/9YWx1+pvkhCCg9eKzF4XzEWbJoVpQDEgDEdcXne0nXsdTQN1LhFiVUkWh
+         LCZg==
+X-Forwarded-Encrypted: i=1; AJvYcCVDeOYxq50g3L44LohK3gjj9CBCGjmloLbFHzvXWAv0RCQaKjfTSW3RKwK+qLfE/yEUpfa+IpiACANZQUWs@vger.kernel.org, AJvYcCWeDRYsawIvQhySmsu9JwNUrKgTf0+FwxqiEPx5ynDyFO+I1G9fHt1vEgLW01DFE2mFo9TnfQQ1@vger.kernel.org
+X-Gm-Message-State: AOJu0YygXiG3iRYpQF2tEdGebqGMKI3XGtrobHljUkOA0r3faEtW3abS
+	WT5yji8YTbSb6mByXgawu6kMLLAqjfGOkS7dwHTBPhcmpeboeHpx
+X-Google-Smtp-Source: AGHT+IFIYkVl3l59m2WMG9V6/zmfFRCN95pbOrzkqA+oh57ATV9A3W4zdKyFTbVKdHYg8OqfS41nEQ==
+X-Received: by 2002:a17:902:da8c:b0:205:861c:5c4a with SMTP id d9443c01a7336-20bff1ea9e7mr175220335ad.60.1728368366406;
+        Mon, 07 Oct 2024 23:19:26 -0700 (PDT)
+Received: from visitorckw-System-Product-Name ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c138afc71sm49222065ad.47.2024.10.07.23.19.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Oct 2024 23:19:25 -0700 (PDT)
+Date: Tue, 8 Oct 2024 14:19:21 +0800
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: xavier_qy@163.com, longman@redhat.com, lizefan.x@bytedance.com,
+	hannes@cmpxchg.org, mkoutny@suse.com, akpm@linux-foundation.org,
+	jserv@ccns.ncku.edu.tw, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] Enhance union-find with KUnit tests and
+ optimization improvements
+Message-ID: <ZwTO6c8fapOdGXGi@visitorckw-System-Product-Name>
+References: <20241007152833.2282199-1-visitorckw@gmail.com>
+ <ZwQJ_hQENEE7uj0q@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -66,35 +88,41 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ce2b9ed1-cf74-1d50-a72a-23733c0d1db0@huaweicloud.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <ZwQJ_hQENEE7uj0q@slm.duckdns.org>
 
-On Tue, Oct 08, 2024 at 09:39:05AM +0800, Yu Kuai wrote:
-> Hi,
+Hi Tejun,
+
+On Mon, Oct 07, 2024 at 06:19:10AM -1000, Tejun Heo wrote:
+> Hello,
 > 
-> 在 2024/10/01 1:11, Tejun Heo 写道:
-> > Hello,
-> > 
-> > On Mon, Sep 30, 2024 at 04:52:58PM +0800, Yu Kuai wrote:
-> > > +static inline bool blkg_print_dev_name(struct seq_file *sf,
-> > > +				       struct blkcg_gq *blkg)
-> > > +{
-> > > +	struct gendisk *disk = blkg->q->disk;
-> > > +
-> > > +	if (!disk)
-> > > +		return false;
-> > > +
-> > > +	seq_printf(sf, "%u:%u", disk->major, disk->first_minor);
-> > > +	return true;
-> > > +}
-> > > +
-> > 
-> > I wonder whether we just should add a name field to disk.
-> > 
+> On Mon, Oct 07, 2024 at 11:28:27PM +0800, Kuan-Wei Chiu wrote:
+> > This patch series adds KUnit tests for the union-find implementation
+> > and optimizes the path compression in the uf_find() function to achieve
+> > a lower tree height and improved efficiency. Additionally, it modifies
+> > uf_union() to return a boolean value indicating whether a merge
+> > occurred, enhancing the process of calculating the number of groups in
+> > the cgroup cpuset.
 > 
-> Of course we can, however, I'm not sure if this is better, because
-> this field is not used in the fast path.
+> I'm not necessarily against the patchset but this probably is becoming too
+> much polishing for something which is only used by cpuset in a pretty cold
+> path. It probably would be a good idea to concentrate on finding more use
+> cases.
+>
+I hesitated for a while before sending this patch series, as I was unsure
+if these optimizations were worthwhile. As you pointed out, it is only
+used in cpuset and isn't in a performance-critical path. However, since
+the union-find implementation is placed under lib/, I thought this
+suggested an expectation of more potential users in the future (otherwise,
+it might have been placed directly within cpuset). These patches might
+eventually benefit other users down the line. Additionally, except for the
+patch that adds kunit tests, the rest involve only small changes of fewer
+than 10 lines each. That’s why I decided to go ahead and submit them.
 
-Struct gendisk does have a (disk_)name field aleady.
+I agree that these changes would be more meaningful if more users could
+benefit from them, and I'll try to explore further use cases. I understand
+maintainers are busy, and if this patch series seems like unnecessary
+changes, I apologize for any wasted time.
 
+Regards,
+Kuan-Wei
 
