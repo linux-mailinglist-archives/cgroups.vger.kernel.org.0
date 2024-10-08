@@ -1,45 +1,82 @@
-Return-Path: <cgroups+bounces-5068-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5069-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C75DD9948C0
-	for <lists+cgroups@lfdr.de>; Tue,  8 Oct 2024 14:16:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F08B9950ED
+	for <lists+cgroups@lfdr.de>; Tue,  8 Oct 2024 16:02:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A3671F28CE0
-	for <lists+cgroups@lfdr.de>; Tue,  8 Oct 2024 12:16:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 450581F21D61
+	for <lists+cgroups@lfdr.de>; Tue,  8 Oct 2024 14:02:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 397EB1DED4E;
-	Tue,  8 Oct 2024 12:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 210A11DF750;
+	Tue,  8 Oct 2024 14:02:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IdjlPsU3"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3A5F17B4EC
-	for <cgroups@vger.kernel.org>; Tue,  8 Oct 2024 12:16:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F14E1D9A43
+	for <cgroups@vger.kernel.org>; Tue,  8 Oct 2024 14:02:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728389772; cv=none; b=lvfNd646eI7kgodpWDEo40SjTVYVOhpaPKRKASCJsObDJ7444Ho4RpzxJVsvpstg2tEdG3FvLnWLIz0T40vovzt99eaoejxTa8ebHjgAT6aj0s+b4xNEyrjsLyMBTHG8b18l69OWajshehZVfyNPFnwmV2E0iMuhbb2L0Vp69Ik=
+	t=1728396152; cv=none; b=KnL1VZxnWE9h5SzM2ZxNzhmV7sn5rvFgP0rjctn92yuwmVYuG5E+odWmS+4Tp/QOrVAb6zEcickVY5P2ar8+pMTiSvfUPAxiBBZ9DbDMu7IuNO/Z1Njj0YnJ6yDtSK33eP/DgC0R849NtxBWTarpoj8K99iDPBMXKN7CortVMDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728389772; c=relaxed/simple;
-	bh=0soBQhlX1ibkeLI9lHOOZtkrQRgS5RcPsK9+y3D/9r4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VH7tpI0XdR1k0GdwGCfrTuQpBjM0CebOvNlTENAOe2fm8e154VNsE3gJq3QWxHhyl/sBcEbfIrhbe2NhIXb7fGwzopbmpgZ7yazPqJU4xnks6Fv6eHsa2ajLhvEaUWtqYQmzK8WGP4nJtx27OU1rOpMWKZ1tmei8rG4n/WXAEO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XNFNM03jKz4f3jsT
-	for <cgroups@vger.kernel.org>; Tue,  8 Oct 2024 20:15:47 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id CCD271A0568
-	for <cgroups@vger.kernel.org>; Tue,  8 Oct 2024 20:16:03 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP4 (Coremail) with SMTP id gCh0CgCn2saCIgVnR78UDg--.44361S2;
-	Tue, 08 Oct 2024 20:16:03 +0800 (CST)
-Message-ID: <e9d520d7-562f-40c6-9a2b-ffa7e58815b8@huaweicloud.com>
-Date: Tue, 8 Oct 2024 20:16:02 +0800
+	s=arc-20240116; t=1728396152; c=relaxed/simple;
+	bh=tVu52BxrX0Q/TS1mAQWUKknA1md5JbYvFeD2hop2BQY=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=UWrKhVCKj7AIcronl6urJHdyVYtY1WID1hh1y/UM3TAT0HVh4L5jJJ31VA4CIZNSPReCCY7I9a62ILUKL8GRvBh9PomxDZS4dsD2luw999UY/1KPnOB6V2g/hdHraiy/6hVSrusCUwPWW48i2DlNGFdyaLQevHHbhgPFLo4on2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IdjlPsU3; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1728396150;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QVX/8OhpJstYMaQl1bgqrbw3GW6MUoKifRJkQWPgKpY=;
+	b=IdjlPsU3dKVlfaUVCPcy7/p7WJFrFlcnoSSmj/fZmeaRQbjPukjeVzYDbYKIk15OdL80y7
+	fu9bolGcaKm9ch5zwYxOEDu1wBoB1VdE97328pX6V9uos1y8hw9bbwMC3EN4H0aZee95vN
+	4QNl5LhktOXSwi0l1TlV+rzId0EEZAE=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-609-l4hRZem2NmWXGuA-3Y5KLg-1; Tue, 08 Oct 2024 10:02:27 -0400
+X-MC-Unique: l4hRZem2NmWXGuA-3Y5KLg-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-7a803adfe52so888289285a.1
+        for <cgroups@vger.kernel.org>; Tue, 08 Oct 2024 07:02:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728396147; x=1729000947;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QVX/8OhpJstYMaQl1bgqrbw3GW6MUoKifRJkQWPgKpY=;
+        b=GMMjnu4mi6xV9lI5cjfTOTfuI6cZIsoERz86UR+CibTauudU2Hyw0AN2PZlT/0ZdCC
+         3TiOkVtF7/p0Pwa3byD4Tmaz4eX10wkfLYXkj6JIA8jnRb1trZW9lQaXolsAKS0RRURd
+         3FxPYAqni50zBsa+mm0Ju7sH968TVqizuDtjKEBCumm5ollM8eiwm4XphDQ8W3FVcrmv
+         NeqESVHRf+D+F0BB5sW7UP4cmaqGuflbNjgGQGF1L7yNBGfOmsV8WEnUrDmH8OFdDMB6
+         0kJ8t2/5t6sK7g4WYmWKkZdIeZO/Oc4+4JBfW6ZO8URExI2X0SWg7P1pawOV94mx3QST
+         V2Ug==
+X-Forwarded-Encrypted: i=1; AJvYcCUpQakZm/UWiQagxYBUBsqLZ9sbdakYrIi7w1zlg/x16kmTYsUF6DH+blewDvoIjl9Y8NJmzlh/@vger.kernel.org
+X-Gm-Message-State: AOJu0YyoIXhTkqmWmcFFR18ZtPzUoGRaTuWFMhjowPJRgKQbbovOgiXY
+	+LevxKaf25AwmivT0PWeVhra4Fgb1BVS91wF+1XmFTmve60QBDe/D6lpuJVuYlJDEp4iZHnQzQZ
+	wbNfBWtt3DEe0dRn+r/YYS3S+deTeOgZ8gDq6gPetgNuVFSbwH3htGA8=
+X-Received: by 2002:a05:622a:5c8:b0:458:253b:4151 with SMTP id d75a77b69052e-45d9badafcbmr199469801cf.42.1728396146511;
+        Tue, 08 Oct 2024 07:02:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHEtistseQGcjlje3ffXmMjiGuX784aJwl7Av3+brMKWNfrqZdPUuw+U1bsc7Tic1TbGmHPjg==
+X-Received: by 2002:a05:622a:5c8:b0:458:253b:4151 with SMTP id d75a77b69052e-45d9badafcbmr199469401cf.42.1728396146117;
+        Tue, 08 Oct 2024 07:02:26 -0700 (PDT)
+Received: from ?IPV6:2601:188:ca00:a00:f844:fad5:7984:7bd7? ([2601:188:ca00:a00:f844:fad5:7984:7bd7])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-45f08714e3fsm720221cf.62.2024.10.08.07.02.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Oct 2024 07:02:25 -0700 (PDT)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <ef7f2495-06fc-4409-8233-062d2e884271@redhat.com>
+Date: Tue, 8 Oct 2024 10:02:23 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -47,180 +84,66 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATHC v3 -next 3/3] cgroup/freezer: Reduce redundant propagation
- for cgroup_propagate_frozen
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Chen Ridong <chenridong@huawei.com>
-Cc: tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
- longman@redhat.com, adityakali@google.com, sergeh@kernel.org, guro@fb.com,
+Subject: Re: [PATCH v2 5/6] cgroup/cpuset: Optimize domain counting using
+ updated uf_union()
+To: Kuan-Wei Chiu <visitorckw@gmail.com>, xavier_qy@163.com,
+ lizefan.x@bytedance.com, tj@kernel.org, hannes@cmpxchg.org,
+ mkoutny@suse.com, akpm@linux-foundation.org
+Cc: jserv@ccns.ncku.edu.tw, linux-kernel@vger.kernel.org,
  cgroups@vger.kernel.org
-References: <20240915071307.1976026-1-chenridong@huawei.com>
- <20240915071307.1976026-4-chenridong@huawei.com>
- <7j6zywvbd2lavlj5wc3yevc4s7ofrusjlpwcmuchhknlhp2mxo@77rwal3h2x65>
- <1bf886ad-10f4-435d-8fb1-ddd639cb3992@huaweicloud.com>
+References: <20241007152833.2282199-1-visitorckw@gmail.com>
+ <20241007152833.2282199-6-visitorckw@gmail.com>
 Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <1bf886ad-10f4-435d-8fb1-ddd639cb3992@huaweicloud.com>
+In-Reply-To: <20241007152833.2282199-6-visitorckw@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCn2saCIgVnR78UDg--.44361S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3WFykKr13WF18Kr4rCw1kuFg_yoW7ZF13pr
-	4kJF4UJrZ8Jr1ktr1Dt34jqrykJr4UJw1kGryUJFy8Jr47XryIqr1UZr90gr1UAr4xJr1U
-	Jr15Ar1UZr17JF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
+On 10/7/24 11:28 AM, Kuan-Wei Chiu wrote:
+> Improve the efficiency of calculating the total number of scheduling
+> domains by using the updated uf_union function, which now returns a
+> boolean to indicate if a merge occurred. Previously, an additional loop
+> was needed to count root nodes for distinct groups. With this change,
+> each successful merge reduces the domain count (ndoms) directly,
+> eliminating the need for the final loop and enhancing performance.
+>
+> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> ---
+> Note: Tested with test_cpuset_prs.sh
+>
+> Side note: I know this optimization provides limited efficiency
+> improvements in this case, but since the union-find code is in the
+> library and other users may need group counting in the future, and
+> the required code change is minimal, I think it's still worthwhile.
+>
+>   kernel/cgroup/cpuset.c | 10 +++-------
+>   1 file changed, 3 insertions(+), 7 deletions(-)
+>
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index a4dd285cdf39..5e9301550d43 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -817,6 +817,8 @@ static int generate_sched_domains(cpumask_var_t **domains,
+>   	if (root_load_balance && (csn == 1))
+>   		goto single_root_domain;
+>   
+> +	ndoms = csn;
+> +
+>   	for (i = 0; i < csn; i++)
+>   		uf_node_init(&csa[i]->node);
+>   
+> @@ -829,17 +831,11 @@ static int generate_sched_domains(cpumask_var_t **domains,
+>   				 * partition root cpusets.
+>   				 */
+>   				WARN_ON_ONCE(cgrpv2);
+> -				uf_union(&csa[i]->node, &csa[j]->node);
+> +				ndoms -= uf_union(&csa[i]->node, &csa[j]->node);
 
+You are taking the implicit assumption that a boolean true is casted to 
+int 1. That is the usual practice, but it is not part of the C standard 
+itself though it is for C++.  I will be more comfortable with the "if 
+(cond) ndoms++" form. It will also be more clear.
 
-On 2024/9/27 17:46, Chen Ridong wrote:
-> 
-> 
-> On 2024/9/26 1:46, Michal Koutný wrote:
->> On Sun, Sep 15, 2024 at 07:13:07AM GMT, Chen Ridong 
->> <chenridong@huawei.com> wrote:
->>> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
->>> index dd1ecab99eeb..41e4e5a7ae55 100644
->>> --- a/include/linux/cgroup-defs.h
->>> +++ b/include/linux/cgroup-defs.h
->>> @@ -401,7 +401,9 @@ struct cgroup_freezer_state {
->>>       /* Fields below are protected by css_set_lock */
->>> -    /* Number of frozen descendant cgroups */
->>> +    /* Aggregating frozen descendant cgroups, only when all
->>> +     * descendants of a child are frozen will the count increase.
->>> +     */
->>>       int nr_frozen_descendants;
->>>       /*
->>> diff --git a/kernel/cgroup/freezer.c b/kernel/cgroup/freezer.c
->>> index bf1690a167dd..4ee33198d6fb 100644
->>> --- a/kernel/cgroup/freezer.c
->>> +++ b/kernel/cgroup/freezer.c
->>> @@ -35,27 +35,34 @@ static bool cgroup_update_frozen_flag(struct 
->>> cgroup *cgrp, bool frozen)
->>>    */
->>>   static void cgroup_propagate_frozen(struct cgroup *cgrp, bool frozen)
->>>   {
->>> -    int desc = 1;
->>> -
->>> +    int deta;
->>              delta
->>
->>> +    struct cgroup *parent;
->>
->> I'd suggest here something like
->>
->>     /* root cgroup never changes freeze state */
->>     if (WARN_ON(cgroup_parent(cgrp))
->>         return;
->>
->> so that the parent-> dereference below is explicitly safe.
->>
->>>       /*
->>>        * If the new state is frozen, some freezing ancestor cgroups 
->>> may change
->>>        * their state too, depending on if all their descendants are 
->>> frozen.
->>>        *
->>>        * Otherwise, all ancestor cgroups are forced into the 
->>> non-frozen state.
->>>        */
->>> -    while ((cgrp = cgroup_parent(cgrp))) {
->>> +    for (; cgrp; cgrp = cgroup_parent(cgrp)) {
->>>           if (frozen) {
->>> -            cgrp->freezer.nr_frozen_descendants += desc;
->>> +            /* If freezer is not set, or cgrp has descendants
->>> +             * that are not frozen, cgrp can't be frozen
->>> +             */
->>>               if (!test_bit(CGRP_FREEZE, &cgrp->flags) ||
->>>                   (cgrp->freezer.nr_frozen_descendants !=
->>> -                cgrp->nr_descendants))
->>> -                continue;
->>> +                 cgrp->nr_descendants))
->>> +                break;
->>> +            deta = cgrp->freezer.nr_frozen_descendants + 1;
->>>           } else {
->>> -            cgrp->freezer.nr_frozen_descendants -= desc;
->>> +            deta = -(cgrp->freezer.nr_frozen_descendants + 1);
->>
->> In this branch, if cgrp is unfrozen, delta = -1 is cgrp itself,
->> however is delta = -cgrp->freezer.nr_frozen_descendants warranted?
->> What if they are frozen empty children (of cgrp)? They likely shouldn't
->> be subtracted from ancestors nf_frozen_descendants.
->>
->> (This refers to a situation when
->>
->>     C    CGRP_FREEZE is set
->>     |\
->>     D E    both CGRP_FREEZE is set
->>
->> and an unfrozen task is migrated into C which would make C (temporarily)
->> unfrozen but not D nor E.)
->>
-> Thank you, Michal.
-> 
-> I sorry I missed this situation.
-> If unfreezing a cgroup, it seems it has to propagate to the top.
-> 
-> After consideration, I modify this function.
-> the following is acceptable?
-> 
-> /*
->   * Propagate the cgroup frozen state upwards by the cgroup tree.
->   */
-> static void cgroup_propagate_frozen(struct cgroup *cgrp, bool frozen)
-> {
->      int deta = 0;
->      struct cgroup *parent;
->      /*
->       * case1: If the new state is frozen, some freezing ancestor 
-> cgroups may change
->       * their state too, depending on if all their descendants are frozen.
->       *
->       * case2: unfrozen, all ancestor cgroups are forced into the 
-> non-frozen state.
->       */
->      for (; cgrp; cgrp = cgroup_parent(cgrp)) {
->          if (frozen) {
->              /* If freezer is not set, or cgrp has descendants
->               * that are not frozen, cgrp can't be frozen
->               */
->              if (!test_bit(CGRP_FREEZE, &cgrp->flags) ||
->                  (cgrp->freezer.nr_frozen_descendants !=
->                   cgrp->nr_descendants))
->                  break;
->              /* No change, stop propagate */
->              if (!cgroup_update_frozen_flag(cgrp, frozen))
->                  break;
->              deta = cgrp->freezer.nr_frozen_descendants + 1;
->          } else {
->              /* case2: have to propagate all ancestor */
->              if (cgroup_update_frozen_flag(cgrp, frozen))
->                  deta++;
->          }
-> 
->          parent = cgroup_parent(cgrp);
->          parent->freezer.nr_frozen_descendants += deta;
->      }
-> }
-> 
-> Best regards,
-> Ridong
-> 
-Hi, Michal, Do you think this can be acceptable?
-I don't have a better idea, If you have a better a idea, please let me know.
-
-Best regards,
-Ridong
+Cheers,
+Longman
 
 
