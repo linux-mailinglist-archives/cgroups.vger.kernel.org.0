@@ -1,61 +1,55 @@
-Return-Path: <cgroups+bounces-5074-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5075-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1A29995719
-	for <lists+cgroups@lfdr.de>; Tue,  8 Oct 2024 20:48:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA570995724
+	for <lists+cgroups@lfdr.de>; Tue,  8 Oct 2024 20:51:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31227B21B63
-	for <lists+cgroups@lfdr.de>; Tue,  8 Oct 2024 18:48:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91282286B93
+	for <lists+cgroups@lfdr.de>; Tue,  8 Oct 2024 18:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA38212D19;
-	Tue,  8 Oct 2024 18:48:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9553212D34;
+	Tue,  8 Oct 2024 18:51:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ne3EUR/R"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lo9UT/hS"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 261D11CFEA8;
-	Tue,  8 Oct 2024 18:48:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64AD5212654;
+	Tue,  8 Oct 2024 18:51:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728413310; cv=none; b=DVj2cOmOQ/4SxFPnwC6EZ8XCLhGYY+/kK0hgRBlsnRfoGrQz9FFMbhvi4cTy0OixID466znmCKUTwiSdZSsTB33jaUwLKhZ7H1sCx4cU6VGWLG5X9mBJgzog4HtVcBVFCVCNavbYLWHHDZbQXCcZKn+EWNDA7jsE90fhivDcx7g=
+	t=1728413490; cv=none; b=JzxVAdLTuLn9Lfi2RyhYWf8I3ERCcjLDrDzSNGu+294uAi1OEfJEW4mhxyPp9+DB3lD8CxxoIz2zZAs0ba73xM9hPbr5ZI/1f+1YjKvJSLDI75m6RSLUMJwj8Dt33ozy2xOOcja4F78L9yJCSLbE+cX0KRQtgOZQOuDTVDrVzcE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728413310; c=relaxed/simple;
-	bh=KIUSnI4bSjcC/9tgO6G4ppN7X16GdeAUZEfsTxG69kY=;
+	s=arc-20240116; t=1728413490; c=relaxed/simple;
+	bh=bvXd7/Ofy4U3reurmuusRZXfA3U3m3e6EuBmRjjCKCc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r8BtpXs1k6wwtNY4U6wD3WthmZTXusXINJeWI7MzoIGFXdPnj+vzYLAYBmPJPE+Ndef+XPGZJ19IUfFZu7wpiDgBimA7eiwHGjF5R6UTxMoNsh1pzQHYJpA3jcoSPVOhq+3jf2NEzNu7Hy09yHBaxEciUXISX5slWigVRErR5Cs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ne3EUR/R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6A74C4CEC7;
-	Tue,  8 Oct 2024 18:48:29 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=LaT2oNlQibzyb1fmqIM/wtFBmjnca+yUpjgQ1Ef+zxHoOgdhunu/VlyNSRVbJLrQR0Khi59LIL1c7uOR2Ryidjk4HB7/Qbf1S1475cQjjvUp73iR3Ha8h2ezNiFw1Da83/us+2cQIK4F6yAiOLtSxVMVfHnADBIV+N0pimugI7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lo9UT/hS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5EC7C4CEC7;
+	Tue,  8 Oct 2024 18:51:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728413310;
-	bh=KIUSnI4bSjcC/9tgO6G4ppN7X16GdeAUZEfsTxG69kY=;
+	s=k20201202; t=1728413489;
+	bh=bvXd7/Ofy4U3reurmuusRZXfA3U3m3e6EuBmRjjCKCc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ne3EUR/RDYkQ6ZyWe7NpbgdY+rg23oRfmSg2W53zWCNY7CI90SbzJnN3Zvu/pwjTc
-	 MQViC91SnsgYq5UFcLQ6nWUR3uz1G8c9N3PWQbZi7np1ET1kxv91rn/8MLuZ9yRMrG
-	 u9vXiR6elqC7Q/FLDWzH0XcDkPSQ2UosqCxqTgk4Py71fQnJcDugxgv/dm3fInC79A
-	 8Q1i7apDtLPkRNrJiSh5aQKeM8chfTHvvfz6+0c5CfI/4mCpjhyS9g34QclHUacq1B
-	 fIjaYZh7CLd/ShVqRmfV6FwS3njidge1m7Nix2qBnjwjGkL35E+TkUFvW206z9sSGB
-	 mOE+V5JZqJS3g==
-Date: Tue, 8 Oct 2024 08:48:28 -1000
+	b=lo9UT/hSP5w9pBuppPXczkaUvjSl0eekGcfRTAGQXjk1j4dV1gScAsg/EEr5c+PHS
+	 QuFBs1CsF5urGos1AMaVkDv3bD+qdPWG3+0VLRtzQWgOxpJspYO8hiNS3avZ37DSLv
+	 XRknnggluneT+oqiDdEwv8gijmEwzM/bYfuV0JBJ/C2IkyU9IMjkCqJW6BADdJsafV
+	 lzxWW2c5d/pATD2sf9qMrXgWbUvDcwXVkfXRDnRNkNvvogVV510aSXU8mjYOsCpqLX
+	 1kLrFBKhrgz5scB2XO4ez/N+kFWyIe+XWkj+3V9/MlNO7GHK6dFalS5LZVzrTfq2cn
+	 QLkIx24M5lXAw==
+Date: Tue, 8 Oct 2024 08:51:28 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: martin.lau@linux.dev, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
-	yonghong.song@linux.dev, john.fastabend@gmail.com,
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-	jolsa@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-	roman.gushchin@linux.dev, mkoutny@suse.com, bpf@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	chenridong@huawei.com
-Subject: Re: [PATCH v6 3/3] workqueue: Adjust WQ_MAX_ACTIVE from 512 to 2048
-Message-ID: <ZwV-fOLWGbFcrF4f@slm.duckdns.org>
-References: <20241008112458.49387-1-chenridong@huaweicloud.com>
- <20241008112458.49387-4-chenridong@huaweicloud.com>
+To: Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: mkoutny@suse.com, cgroups@vger.kernel.org, hannes@cmpxchg.org,
+	linux-kernel@vger.org, linux-kselftest@vger.kernel.org,
+	lizefan.x@bytedance.com, shuah@kernel.org
+Subject: Re: [PATCH v4 0/2] Exposing nice CPU usage to userspace
+Message-ID: <ZwV_MGCQZoAXYBiN@slm.duckdns.org>
+References: <20241002184717.153302-1-joshua.hahnjy@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -64,20 +58,21 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241008112458.49387-4-chenridong@huaweicloud.com>
+In-Reply-To: <20241002184717.153302-1-joshua.hahnjy@gmail.com>
 
-On Tue, Oct 08, 2024 at 11:24:58AM +0000, Chen Ridong wrote:
-> From: Chen Ridong <chenridong@huawei.com>
-> 
-> WQ_MAX_ACTIVE is currently set to 512, which was established approximately
-> 15 yeas ago. However, with the significant increase in machine sizes and
-> capabilities, the previous limit of 256 concurrent tasks is no longer
-> sufficient. Therefore, we propose to increase WQ_MAX_ACTIVE to 2048.
-> and WQ_DFL_ACTIVE is 1024 now.
-> 
-> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+On Wed, Oct 02, 2024 at 11:47:15AM -0700, Joshua Hahn wrote:
+> Changes in v4
+> 	- Removed unnecessary forking from selftest.
+> 	- Style changes in rstat.c (fallthrough & indents)
+> 	- Fixed a selftest bug that raised false negatives, caused by
+> 		cputime_adjust sometimes adjusting utime below ntime.
+> 	- Reworded cover letter for clarity & motivation
+> Changes in v3
+> 	- Signed-off-by & renamed subject for clarity.
+> Changes in v2
+> 	- Edited commit messages for clarity.
 
-Applied 2-3 to wq/for-6.13.
+Applied to cgroup/for-6.13. If there are issues, let's iterate in tree.
 
 Thanks.
 
