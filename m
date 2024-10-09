@@ -1,82 +1,82 @@
-Return-Path: <cgroups+bounces-5084-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5085-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A0F2996ECA
-	for <lists+cgroups@lfdr.de>; Wed,  9 Oct 2024 16:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 81ABF996EDD
+	for <lists+cgroups@lfdr.de>; Wed,  9 Oct 2024 16:55:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 033FAB239EA
-	for <lists+cgroups@lfdr.de>; Wed,  9 Oct 2024 14:54:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 018ADB25BEB
+	for <lists+cgroups@lfdr.de>; Wed,  9 Oct 2024 14:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CB9319DF9E;
-	Wed,  9 Oct 2024 14:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6E6019FA93;
+	Wed,  9 Oct 2024 14:55:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Uv3COOX3"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GPKBd4uN"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDFD31A2564
-	for <cgroups@vger.kernel.org>; Wed,  9 Oct 2024 14:53:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C738199FB4
+	for <cgroups@vger.kernel.org>; Wed,  9 Oct 2024 14:55:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728485595; cv=none; b=RP/kW8iW/uK3VRc5eucfptHMMpfpniKhiKc8mshcCJIqBq2EHWoVotsDHUTuKzitBb67GOIXF0YLXZ5xTq4cFlBXBVl21xQprTtqma07M0knUTy+KbQqGup89A+b15zDvKz7zT2OuFH0uQ6vlsNmLmAF4N3Pu1f01MFZwr+xN9Q=
+	t=1728485730; cv=none; b=fJn/Jha5GnKDPAdaccGwAzNIPNypfpWwLGRKEegsjvI5KnUneQlGehEHb7fH1SY1Keb8KgGm+dZapwmFVoypArDLt95hWFGyHWGDFwxDb1ARFzanmHD4qAXE7GLqkExVXCn9Sng9Rwa9ExyzMIL3048tw/2A7ddBiptj3sCfCPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728485595; c=relaxed/simple;
-	bh=UBFEi1ZanyCIFF8STF3JBKUeL6Ye2vx3cesN3MY37M8=;
+	s=arc-20240116; t=1728485730; c=relaxed/simple;
+	bh=JJjBSLsJM0MtkjToBksCvCNTou91yqQ/NQj32mNHgr4=;
 	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=A/oBwsXYBh3hHDAosivLfgYo9PmlNggW6DyWGZh5JMCUqwZPOrux3a376H8z50ry24XYQfH361wez1tfg7mpR0A6J54kv+xBhpsDCRZkEmDWrBqnbA8odEDELVjkyYQqETDdVnC79orYtFfYiz4c2bQNAb7ACsZCGxX//AsFREA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Uv3COOX3; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=JC7MTJU3qFaPZiuYrXpS44V74DOFx9aZuk2lqKtcTrzNdXxGN5QJ7nIVWegBLcpXhcUp0p0qCHqCowDDxRDmqElFQM9CgnbR/YMO4UnlSQfZAppmS9dsi321XdkyDcybClUuf+STiiyUBczVmKY2KB9suUJ2OcrEgKpwGnUAKoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GPKBd4uN; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1728485592;
+	s=mimecast20190719; t=1728485728;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=MsdC7C06B7k23BEVtNiQKiVWI2syGR/GUAuS5PTFvrw=;
-	b=Uv3COOX3SlcLXAYeOIn+PRBwx81wRB2hk9h3ccBzCmwmSUOQaraGzWkmv6uMBH0Z6ZhcDI
-	UqSZ36VVn3LKhqMTGoGu6ZaxImXWC1ubbmRobhJLfxxzvmvwPxn3dzq4TBYol9H3/r4XpN
-	SiESOxope82SCHnwm1Cu3di5f70nA+4=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=Lr2GmdWLUrJakLB0PoxbR7hJosmYg4HJLWejQbVI9dM=;
+	b=GPKBd4uN1tUnK1Fb59kp8TXMsSyPEj7vjYvpwiw6CQM3imAmDDtztse2q7jM/NJ37gxwqf
+	5Lx4vmekOfFIxWL2HAmNDdZnRPsKs1IxAimTfz6PiCXbFHGk2k4Yqt3ltw+vA6KU2v13AV
+	ZhOraAqyzbr9WXDBRnzFCc2DpRAlLb0=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-643-uX7kadcbOZSbzrHOIlVOTA-1; Wed, 09 Oct 2024 10:53:11 -0400
-X-MC-Unique: uX7kadcbOZSbzrHOIlVOTA-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-7b10dafb779so127313485a.0
-        for <cgroups@vger.kernel.org>; Wed, 09 Oct 2024 07:53:11 -0700 (PDT)
+ us-mta-655-wheVwz4eOEqE66465qR3Sw-1; Wed, 09 Oct 2024 10:55:27 -0400
+X-MC-Unique: wheVwz4eOEqE66465qR3Sw-1
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-7aca86ee1bcso825455485a.2
+        for <cgroups@vger.kernel.org>; Wed, 09 Oct 2024 07:55:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728485591; x=1729090391;
+        d=1e100.net; s=20230601; t=1728485726; x=1729090526;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:user-agent:mime-version:date:message-id:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MsdC7C06B7k23BEVtNiQKiVWI2syGR/GUAuS5PTFvrw=;
-        b=mqthmsLl8eTgr5zJmJKeocefVKKp5Uh8T0CtoZKXhgBm3Jnrbami+7UCL+TvItPbN0
-         7TA1D7nE6VYoUSwTY3MKRK9EfpFoeTwniswQZHVZ0cUEXtMklTn9EF/p0J42r/kXKOoj
-         XVCaPcEYWrmWxo4b54laYq1+YgMBc8Hqvwd39oi/IgpoBTombbba8zPLfbr0aRXMVvD+
-         FrCk2MELmsrzOjoZhyMUrKavWkBKOO5I5OiEJM0NoQ4fzvP5INjVDX/WWQYLR505/3M/
-         tmjwZlJODBT6u0hcq/CpkvNSNFgdVYhAr0Y94RHM8xil/pnuzmuQQEGwjfoN4ZzZvcp/
-         P2SA==
-X-Forwarded-Encrypted: i=1; AJvYcCWqfl8T9iORieU+D0qSxeP69M6YM8X+dIjr85C/VaNeCFsWmqiBMP/e5Yl0wnJtPLZMafz8p95T@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw2uXTn4859EpPTxTGyO2JJNlsZAa7UsLVDZiX9DDGy4miBHlcR
-	osHhu1bTEKl3Wf3izQuLgpzYRNB/MINldsiLYuLj88Juizz2iLoyUgsis7eqHLyOrNsm8uMFDbq
-	W3V1BAJNaRYUIOWDM9DsZo0CsZy5R0qJ7IwupRmmN9+0BSS9EXdZ2XGfxlnaKwZuEmQ==
-X-Received: by 2002:a05:620a:49e:b0:7b1:e0f:bf80 with SMTP id af79cd13be357-7b10e0fc34emr256701885a.42.1728485590915;
-        Wed, 09 Oct 2024 07:53:10 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFXAlBvIZWz9PJb1pjw8gqt7q7KhU5Ab+Omw9uNCFTuXhTPuyOntGqUouutFwxlsNlJRpXcpA==
-X-Received: by 2002:a05:620a:49e:b0:7b1:e0f:bf80 with SMTP id af79cd13be357-7b10e0fc34emr256699585a.42.1728485590513;
-        Wed, 09 Oct 2024 07:53:10 -0700 (PDT)
+        bh=Lr2GmdWLUrJakLB0PoxbR7hJosmYg4HJLWejQbVI9dM=;
+        b=ZHKECYwYYTxNwp/GvYZe6HIp85NCWFwHoOGzxDzbPUfALu9l8O9w8V/M9YS6B9bOlr
+         vK54ypteEr9556RO5Fr2O8mgrtzm7pG5S/Smys4hnok9Epkwx8pSKJOs6kAbvK0X/rJX
+         fn7f+oyOYYdGmMfzvrPb1V4ubkXXII8szO9Cehpm5RuaXjn1Daa1bR96qr+1eR7UYcBQ
+         V/rMglXUjll8SFOsNmyZuqO3tPeCsq6TeNzRc0uNEBICEsk7jYA2aRs+la1V8OevqXoB
+         7vhBHz1hc8MNxKoSw6HGnJqDFkZ3ahjWawPG2PLTzfZoVOHjoNwWUoU+oeku7Z6Iwwig
+         aXEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXgqC8QDjLBnw/VrmH7oV00qKwFGGNApgFEsdowUgVI3PYmfNAUsXW54EvaAAbsoAljbB/VGXDH@vger.kernel.org
+X-Gm-Message-State: AOJu0YxRTb0511ATqxf5X0xSb1VL9njZmpUz6Fjf3GeNjU4wJWOhw2Bc
+	cDJomptgbFnv6Pn9NtJwm0v7+B8+bU333cyia7eJXcXTYoChd1VyECteblu9Hv9m/W0UZz5l1Ow
+	KlqnsK2ljvuwjnBzhR+z7mTNuromthqyJPx4OfJkJsG4GOSomhFlrJQA=
+X-Received: by 2002:a05:620a:471f:b0:7a9:ad65:f4a1 with SMTP id af79cd13be357-7b0795463ffmr334963385a.26.1728485726419;
+        Wed, 09 Oct 2024 07:55:26 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGmLDIV4eES9P+2ALaZiNFeGwuiPNW/l76dYT0Ylk2417i7g8oP+Vojxlobhj8QL3eJPwVZWA==
+X-Received: by 2002:a05:620a:471f:b0:7a9:ad65:f4a1 with SMTP id af79cd13be357-7b0795463ffmr334960885a.26.1728485725990;
+        Wed, 09 Oct 2024 07:55:25 -0700 (PDT)
 Received: from ?IPV6:2601:188:ca00:a00:f844:fad5:7984:7bd7? ([2601:188:ca00:a00:f844:fad5:7984:7bd7])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7afcd34d20fsm138713985a.114.2024.10.09.07.53.09
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7ae757627fdsm459735085a.100.2024.10.09.07.55.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 09 Oct 2024 07:53:09 -0700 (PDT)
+        Wed, 09 Oct 2024 07:55:25 -0700 (PDT)
 From: Waiman Long <llong@redhat.com>
 X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <1ccd6411-5002-4574-bb8e-3e64bba6a757@redhat.com>
-Date: Wed, 9 Oct 2024 10:53:08 -0400
+Message-ID: <39c0a1bf-ce23-4905-a014-0a9ba0dc24c8@redhat.com>
+Date: Wed, 9 Oct 2024 10:55:24 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -84,50 +84,58 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/6] Enhance union-find with KUnit tests and
- optimization improvements
-To: Kuan-Wei Chiu <visitorckw@gmail.com>,
- Christoph Hellwig <hch@infradead.org>
-Cc: xavier_qy@163.com, lizefan.x@bytedance.com, tj@kernel.org,
- hannes@cmpxchg.org, mkoutny@suse.com, akpm@linux-foundation.org,
- jserv@ccns.ncku.edu.tw, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] lib/union_find: Add EXPORT_SYMBOL() for uf_find()
+ and uf_union()
+To: Kuan-Wei Chiu <visitorckw@gmail.com>, xavier_qy@163.com,
+ lizefan.x@bytedance.com, tj@kernel.org, hannes@cmpxchg.org,
+ mkoutny@suse.com, akpm@linux-foundation.org
+Cc: jserv@ccns.ncku.edu.tw, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org
 References: <20241007152833.2282199-1-visitorckw@gmail.com>
- <ZwZIXxQLyJUL_nOW@infradead.org>
- <ZwaPdSOMWQzuoPWU@visitorckw-System-Product-Name>
+ <20241007152833.2282199-2-visitorckw@gmail.com>
 Content-Language: en-US
-In-Reply-To: <ZwaPdSOMWQzuoPWU@visitorckw-System-Product-Name>
+In-Reply-To: <20241007152833.2282199-2-visitorckw@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 10/9/24 10:13 AM, Kuan-Wei Chiu wrote:
-> On Wed, Oct 09, 2024 at 02:09:51AM -0700, Christoph Hellwig wrote:
->> On Mon, Oct 07, 2024 at 11:28:27PM +0800, Kuan-Wei Chiu wrote:
->>> This patch series adds KUnit tests for the union-find implementation
->>> and optimizes the path compression in the uf_find() function to achieve
->>> a lower tree height and improved efficiency. Additionally, it modifies
->>> uf_union() to return a boolean value indicating whether a merge
->>> occurred, enhancing the process of calculating the number of groups in
->>> the cgroup cpuset.
->> Given that this fairly special union find code is obly used in the
->> cpuset code, please move the code there rather adding more exports.
->> Even as-is it is bloating every kernel build even without cgroups
->> for no good reason.
->>
-> I noticed that it was Michal who originally suggested putting the
-> union-find code to lib/ in an earlier email thread [1]. Before I send a v3
-> patch moving it to cpuset, I'd like to hear Michal, Tejun, and Waiman’s
-> thoughts on this change.
+On 10/7/24 11:28 AM, Kuan-Wei Chiu wrote:
+> Add EXPORT_SYMBOL() for the uf_find() and uf_union() functions to allow
+> kernel modules, including the KUnit tests for the union-find data
+> structure, to use these functions. This enhances the usability of the
+> union-find implementation in a modular context, facilitating easier
+> testing and integration.
 >
-> [1]: https://lore.kernel.org/lkml/wu4m2m5igc752s5vrmtsnd7ekaq6opeqdtrzegs7oxlwgypdcx@qhcnow5txxiv/
+> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> ---
+>   lib/union_find.c | 3 +++
+>   1 file changed, 3 insertions(+)
 >
-> Regards,
-> Kuan-Wei
+> diff --git a/lib/union_find.c b/lib/union_find.c
+> index 413b0f8adf7a..c9fd30b8059c 100644
+> --- a/lib/union_find.c
+> +++ b/lib/union_find.c
+> @@ -1,4 +1,5 @@
+>   // SPDX-License-Identifier: GPL-2.0
+> +#include <linux/export.h>
+>   #include <linux/union_find.h>
+>   
+>   /**
+> @@ -21,6 +22,7 @@ struct uf_node *uf_find(struct uf_node *node)
+>   	}
+>   	return node;
+>   }
+> +EXPORT_SYMBOL(uf_find);
+>   
+>   /**
+>    * uf_union - Merge two sets, using union by rank
+> @@ -47,3 +49,4 @@ void uf_union(struct uf_node *node1, struct uf_node *node2)
+>   		root1->rank++;
+>   	}
+>   }
+> +EXPORT_SYMBOL(uf_union);
 
-The current union_find code is pretty small. Putting it there in lib 
-allows it to be used by other kernel subsystems when needed. I believe 
-it should stay in lib. If a slight increase in kernel size is a concern, 
-we can update the Makefile to make its build depend on CONFIG_CPUSETS 
-which can be taken out when it is being used by another kernel subsystem.
+BTW, we don't need to export these functions until the time a kernel 
+module starts to use it. That is the usual rule.
 
 Cheers,
 Longman
