@@ -1,83 +1,201 @@
-Return-Path: <cgroups+bounces-5089-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5090-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B42A997237
-	for <lists+cgroups@lfdr.de>; Wed,  9 Oct 2024 18:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 063649979AF
+	for <lists+cgroups@lfdr.de>; Thu, 10 Oct 2024 02:36:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F241DB23124
-	for <lists+cgroups@lfdr.de>; Wed,  9 Oct 2024 16:46:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F40CB20D25
+	for <lists+cgroups@lfdr.de>; Thu, 10 Oct 2024 00:36:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 011A81E1A29;
-	Wed,  9 Oct 2024 16:44:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E592911712;
+	Thu, 10 Oct 2024 00:36:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g76m+Nrd"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kBzn2ELn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEE6D1E1C15;
-	Wed,  9 Oct 2024 16:44:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83F61C144
+	for <cgroups@vger.kernel.org>; Thu, 10 Oct 2024 00:36:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728492268; cv=none; b=esgqRpjhmD7QC8CrWvoi0FmI2QSSezwM1i0gzyXjnCgj1YOved4BMDO9FTtpzcAucGl11cXCXkTXEKtrB3AcwCWtrgV7zBblySfcazMx2vtLLeGfCkO0+4IC6npnnauW4A5gHmMX9pZnHdTrijsia7LZOclGjQJ+ctWq9k1V/zM=
+	t=1728520594; cv=none; b=pML9JHJlQztrHZPkFq4nQVfy1+Kd5f4ehauRKfZoBMZ3y6LGUkfFKmmjO5gEGbxh60lYnpLR2wn0Nbl9AH8sHpt3Tn/gBA8UbRRASDTzAt23/S91XcfYDOkAgqdlbCWdXEz1BNtfZl/zjIYrSj8sl/5fYHb4iHUeeZry0+4Dh84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728492268; c=relaxed/simple;
-	bh=G2+jRbQspWwKdb+4Qze0UlJoaO50fcpAkKdefyDP0RA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fdn3+K3Nfy0s8BctYWB+F7Y119DWPq7bNVryZ0ZBDYA1KAfle1mwUDqtmTYV6Jr+inbqT7sUQiZ6s9VvzGrlOxMKaEewsxXF9Oqsm0gUhVpSdKeBRzuUZwvFL0heBpmYvcm64lhCuUayDxmaCvWgWrozXE3/xjQMo7arpgSAgu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g76m+Nrd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ED49C4CED9;
-	Wed,  9 Oct 2024 16:44:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728492268;
-	bh=G2+jRbQspWwKdb+4Qze0UlJoaO50fcpAkKdefyDP0RA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=g76m+NrdT1GZ7DAakDSWRX5BfmV/oJXbZj/QguP6+JDzHkKMDIPShV1HagQ4oFkv3
-	 yPYrPFaOtrNKcHSadGnMhjEdns8lR5964He+JFQJnQ7OcEYZ0MvkSRbovf9kjC/ORs
-	 cTfBmT10WyeJLf4NNeYW//KrKeBcPW9IWopSg53ikd7G9Tt1C2zIPk5qJUBJm6y6wj
-	 dSBs+s/DaDgmqZ3JwIQrLWRGZMhhoon36vu8V172tIZ+GvQWNMTB9NVg/1In/c2CQ8
-	 hTstklidvJjFClY57ku2ajEL17HAQ66Fm4ZftRL1MGqKWiS5OT0oVajKpPNXXxohxi
-	 XhfSKZ62/mQDg==
-Date: Wed, 9 Oct 2024 06:44:27 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: akpm@linux-foundation.org, hch@infradead.org, llong@redhat.com,
-	xavier_qy@163.com, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-	mkoutny@suse.com, jserv@ccns.ncku.edu.tw,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH] lib/Makefile: Make union-find compilation conditional on
- CONFIG_CPUSETS
-Message-ID: <Zway6wlr1m-6eQgQ@slm.duckdns.org>
-References: <20241009154022.2432662-1-visitorckw@gmail.com>
+	s=arc-20240116; t=1728520594; c=relaxed/simple;
+	bh=R+xzyQ94QsdT6lNQ0WgQFG0zxvIKIkFmW8mQuSTVZhU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pvZNH+9pvLY1ukJwwIuVLzTmQEqYw/5Ry3y2q2SM4ExjxD33bxPItYWnwbMsLQ6Wz7uGXESr922PyWCPUV6qSbUR4DADr5W2mxQCgc7Ta5wAqZb8pEYNGZ7Pnh5Nytm7Rk0mAH725NEDiPjUtKTxHuE9279/A1HF7z4XlAPFL68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kBzn2ELn; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728520588;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=E4azzCPSUP2ym5GbRLYr6Ea8ttlwwCo8y2/9zZR2OjY=;
+	b=kBzn2ELnca3IMfd44T9vN70huxNFinLsPBYXxBTonV6AZLRrQ/yXoCUIuADpphbCHwN+GV
+	eJQXbweYBN/8Vk8rrPstw9HqODQxcXxhf96pFu++SblmDmUJh6Oe7vaDHnzyeLxlCWVFrW
+	DTFZlrso4hRz/xaS4Qv6GJDamWGhc3U=
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	JP Kobryn <inwardvessel@gmail.com>,
+	Yosry Ahmed <yosryahmed@google.com>,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: [PATCH] memcg: add tracing for memcg stat updates
+Date: Wed,  9 Oct 2024 17:35:50 -0700
+Message-ID: <20241010003550.3695245-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241009154022.2432662-1-visitorckw@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Oct 09, 2024 at 11:40:22PM +0800, Kuan-Wei Chiu wrote:
-> Currently, cpuset is the only user of the union-find implementation.
-> Compiling union-find in all configurations unnecessarily increases the
-> code size when building the kernel without cgroup support. Modify the
-> build system to compile union-find only when CONFIG_CPUSETS is enabled.
-> 
-> Link: https://lore.kernel.org/lkml/1ccd6411-5002-4574-bb8e-3e64bba6a757@redhat.com/
-> Suggested-by: Waiman Long <llong@redhat.com>
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+The memcg stats are maintained in rstat infrastructure which provides
+very fast updates side and reasonable read side. However memcg added
+plethora of stats and made the read side, which is cgroup rstat flush,
+very slow. To solve that, threshold was added in the memcg stats read
+side i.e. no need to flush the stats if updates are within the
+threshold.
 
-Acked-by: Tejun Heo <tj@kernel.org>
+This threshold based improvement worked for sometime but more stats were
+added to memcg and also the read codepath was getting triggered in the
+performance sensitive paths which made threshold based ratelimiting
+ineffective. We need more visibility into the hot and cold stats i.e.
+stats with a lot of updates. Let's add trace to get that visibility.
 
-Andrew, can you please pick up this one?
+Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+---
+ include/trace/events/memcg.h | 59 ++++++++++++++++++++++++++++++++++++
+ mm/memcontrol.c              | 13 ++++++--
+ 2 files changed, 70 insertions(+), 2 deletions(-)
+ create mode 100644 include/trace/events/memcg.h
 
-Thanks.
-
+diff --git a/include/trace/events/memcg.h b/include/trace/events/memcg.h
+new file mode 100644
+index 000000000000..913db9aba580
+--- /dev/null
++++ b/include/trace/events/memcg.h
+@@ -0,0 +1,59 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM memcg
++
++#if !defined(_TRACE_MEMCG_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _TRACE_MEMCG_H
++
++#include <linux/memcontrol.h>
++#include <linux/tracepoint.h>
++
++
++DECLARE_EVENT_CLASS(memcg_rstat,
++
++	TP_PROTO(struct mem_cgroup *memcg, int item, int val),
++
++	TP_ARGS(memcg, item, val),
++
++	TP_STRUCT__entry(
++		__field(u64, id)
++		__field(int, item)
++		__field(int, val)
++	),
++
++	TP_fast_assign(
++		__entry->id = cgroup_id(memcg->css.cgroup);
++		__entry->item = item;
++		__entry->val = val;
++	),
++
++	TP_printk("memcg_id=%llu item=%d val=%d",
++		  __entry->id, __entry->item, __entry->val)
++);
++
++DEFINE_EVENT(memcg_rstat, mod_memcg_state,
++
++	TP_PROTO(struct mem_cgroup *memcg, int item, int val),
++
++	TP_ARGS(memcg, item, val)
++);
++
++DEFINE_EVENT(memcg_rstat, mod_memcg_lruvec_state,
++
++	TP_PROTO(struct mem_cgroup *memcg, int item, int val),
++
++	TP_ARGS(memcg, item, val)
++);
++
++DEFINE_EVENT(memcg_rstat, count_memcg_events,
++
++	TP_PROTO(struct mem_cgroup *memcg, int item, int val),
++
++	TP_ARGS(memcg, item, val)
++);
++
++
++#endif /* _TRACE_MEMCG_H */
++
++/* This part must be outside protection */
++#include <trace/define_trace.h>
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index c098fd7f5c5e..17af08367c68 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -71,6 +71,10 @@
+ 
+ #include <linux/uaccess.h>
+ 
++#define CREATE_TRACE_POINTS
++#include <trace/events/memcg.h>
++#undef CREATE_TRACE_POINTS
++
+ #include <trace/events/vmscan.h>
+ 
+ struct cgroup_subsys memory_cgrp_subsys __read_mostly;
+@@ -682,7 +686,9 @@ void __mod_memcg_state(struct mem_cgroup *memcg, enum memcg_stat_item idx,
+ 		return;
+ 
+ 	__this_cpu_add(memcg->vmstats_percpu->state[i], val);
+-	memcg_rstat_updated(memcg, memcg_state_val_in_pages(idx, val));
++	val = memcg_state_val_in_pages(idx, val);
++	memcg_rstat_updated(memcg, val);
++	trace_mod_memcg_state(memcg, idx, val);
+ }
+ 
+ /* idx can be of type enum memcg_stat_item or node_stat_item. */
+@@ -741,7 +747,9 @@ static void __mod_memcg_lruvec_state(struct lruvec *lruvec,
+ 	/* Update lruvec */
+ 	__this_cpu_add(pn->lruvec_stats_percpu->state[i], val);
+ 
+-	memcg_rstat_updated(memcg, memcg_state_val_in_pages(idx, val));
++	val = memcg_state_val_in_pages(idx, val);
++	memcg_rstat_updated(memcg, val);
++	trace_mod_memcg_lruvec_state(memcg, idx, val);
+ 	memcg_stats_unlock();
+ }
+ 
+@@ -832,6 +840,7 @@ void __count_memcg_events(struct mem_cgroup *memcg, enum vm_event_item idx,
+ 	memcg_stats_lock();
+ 	__this_cpu_add(memcg->vmstats_percpu->events[i], count);
+ 	memcg_rstat_updated(memcg, count);
++	trace_count_memcg_events(memcg, idx, count);
+ 	memcg_stats_unlock();
+ }
+ 
 -- 
-tejun
+2.43.5
+
 
