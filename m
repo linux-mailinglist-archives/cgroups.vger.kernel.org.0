@@ -1,124 +1,128 @@
-Return-Path: <cgroups+bounces-5099-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5100-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 052D2999C90
-	for <lists+cgroups@lfdr.de>; Fri, 11 Oct 2024 08:22:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CE49999F71
+	for <lists+cgroups@lfdr.de>; Fri, 11 Oct 2024 10:57:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33FE31C21EE2
-	for <lists+cgroups@lfdr.de>; Fri, 11 Oct 2024 06:22:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABCD11F21552
+	for <lists+cgroups@lfdr.de>; Fri, 11 Oct 2024 08:57:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3538720124B;
-	Fri, 11 Oct 2024 06:22:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16CE920C470;
+	Fri, 11 Oct 2024 08:56:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZTArbzVF"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ED902581;
-	Fri, 11 Oct 2024 06:22:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B650119413B;
+	Fri, 11 Oct 2024 08:56:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728627757; cv=none; b=J8jFllRPj4J+GNSHXmeE8tNye1cyordjzywsXpYPdVN329IKS6TGcJxTx2efvX8LkBLb3QtuKTxpEghSg1CHSclofoR1MItBM+ggycsoqyv9lSR5zmIz1L+d/N4YoLQlS19u/zphvdB3wGxb4WLWPcdAr1h1NUEaYvpG7O+2RTo=
+	t=1728637016; cv=none; b=PWXwwuVveH9+r1LGgUT8Ru4oettGPZ2kZy9uMRrCqCOlUjMLd5XUcVXnzYPP/Di5urqCUL3IIoecOK7TB3IIYkax9nH9EzNKwpZFj8wqWykKkylJmCK+36pFdcnd88gmHjHv1sqIL7Phj+vlXocqcI0qyNA3t/eisLH6AoO2n/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728627757; c=relaxed/simple;
-	bh=uS1vketAMn+QuN65fHsUsbaau8xZ+bb+fzaY0ejlOJE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=XNChDQKEoSn7jXt4TBAYw2TrJ9nUzU9mQS+aWs/GXyoUDQIabry7FJb/CxfrtHBvNZV09hy+5Fk1cFTe6/BLdAXVa7JI6YsDROr+NnSlZgTEwxYVQSywRM8SAS48bgLMJRaRCDg27GTLvAfi5jj8374bL+407UKXX6feydKAbKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XPxP04bvzz4f3kp8;
-	Fri, 11 Oct 2024 14:22:12 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 769061A06D7;
-	Fri, 11 Oct 2024 14:22:24 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.67.174.26])
-	by APP4 (Coremail) with SMTP id gCh0CgDXDMkfxAhnqG8ZDw--.5449S2;
-	Fri, 11 Oct 2024 14:22:24 +0800 (CST)
-From: Xiu Jianfeng <xiujianfeng@huaweicloud.com>
-To: tj@kernel.org,
-	lizefan.x@bytedance.com,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	shuah@kernel.org,
-	joshua.hahn6@gmail.com
-Cc: cgroups@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	xiujianfeng@huawei.com
-Subject: [PATCH -next] selftests/cgroup: Fix compile error in test_cpu.c
-Date: Fri, 11 Oct 2024 06:11:53 +0000
-Message-Id: <20241011061153.107208-1-xiujianfeng@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1728637016; c=relaxed/simple;
+	bh=O8UMgy4NK3I9Ac3Z4UxYDyPfUUZlGgk3rritssUgmSE=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=tARUZFXjkRilAgHZolZI8wwyzUbDh0CI/KW8wpDk9KE24GW/KY6Jv8mHIiUtXJbigOEXUPgOzZ5zMFXvo/sVA4VwsG0QxIpFxZrsNooxoa92JsY7TxLX3YvFRvPgoPNYEILUwhSKWdT7ed0yb4tyMFWZ2zT7v/rVg++4OttSb9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZTArbzVF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD7DBC4CEC3;
+	Fri, 11 Oct 2024 08:56:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1728637016;
+	bh=O8UMgy4NK3I9Ac3Z4UxYDyPfUUZlGgk3rritssUgmSE=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=ZTArbzVFqv+vzi6Ln/obGoDSQd75fU7AS/1J/rnwZ9ku7vVaqKOt4oBS7JFJl97LO
+	 yfC4gpjRIdwLUVcsR9aNXaQ6VxmcJjgqc03c2XxyAheP9pjPRqKKdIVrJRezZcmW7+
+	 u7ukKjQBckULxox8wj4bRRfYoIAOsNmJ8L6ZPg91RV4KwaOr43dORcPYh54BY6GKfA
+	 7jcHaXhmB6Yr6s1PdvDKz/PoD24aPBKaeXx1xn1bWJCfC7unyVJ9J60SyCACrCVTR6
+	 7nFcVxyZz16BTAgYSUOGucG0jGiJ+vlDb+LhwhTgc1Ntryp70OhvnjbNbVa8XXHbce
+	 XYBaxpbPM8g0g==
+Message-ID: <94166f32-7ff9-46d2-83c9-4df2a787fe25@kernel.org>
+Date: Fri, 11 Oct 2024 16:56:47 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDXDMkfxAhnqG8ZDw--.5449S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7AF1kGrykZr18CrWrAF1fZwb_yoW8Gw4Dpa
-	1kG34j9F4rKF17J3Z2vrW2gFyI9Fs7JFWjya18Xr9xZF1fJryIqrW7Kayjqry5ua95Z3sx
-	Aa4SqF1ag3WDJw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
-	n4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
-	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
-	tVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
-	CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvj
-	xUF1v3UUUUU
-X-CM-SenderInfo: x0lxyxpdqiv03j6k3tpzhluzxrxghudrp/
+User-Agent: Mozilla Thunderbird
+Cc: Chao Yu <chao@kernel.org>,
+ "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,
+ Theodore Ts'o <tytso@mit.edu>, Jonathan Corbet <corbet@lwn.net>,
+ Josef Bacik <josef@toxicpanda.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ "Darrick J . Wong" <djwong@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+ Tejun Heo <tj@kernel.org>, akpm@linux-foundation.org,
+ Christian Brauner <brauner@kernel.org>,
+ Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>,
+ Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+ cgroups@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
+ mcgrof@kernel.org, gost.dev@samsung.com, linux-doc@vger.kernel.org,
+ linux-xfs@vger.kernel.org, Pankaj Raghav <p.raghav@samsung.com>
+Subject: Re: [PATCH] fs/writeback: convert wbc_account_cgroup_owner to take a
+ folio
+To: Matthew Wilcox <willy@infradead.org>, Jaegeuk Kim <jaegeuk@kernel.org>
+References: <20240926140121.203821-1-kernel@pankajraghav.com>
+ <ZvVrmBYTyNL3UDyR@casper.infradead.org> <ZvstH7UHpdnnDxW6@google.com>
+Content-Language: en-US
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <ZvstH7UHpdnnDxW6@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Xiu Jianfeng <xiujianfeng@huawei.com>
+On 2024/10/1 6:58, Jaegeuk Kim wrote:
+> On 09/26, Matthew Wilcox wrote:
+>> On Thu, Sep 26, 2024 at 04:01:21PM +0200, Pankaj Raghav (Samsung) wrote:
+>>> Convert wbc_account_cgroup_owner() to take a folio instead of a page,
+>>> and convert all callers to pass a folio directly except f2fs.
+>>>
+>>> Convert the page to folio for all the callers from f2fs as they were the
+>>> only callers calling wbc_account_cgroup_owner() with a page. As f2fs is
+>>> already in the process of converting to folios, these call sites might
+>>> also soon be calling wbc_account_cgroup_owner() with a folio directly in
+>>> the future.
+>>
+>> I was hoping for more from f2fs.  I still don't have an answer from them
+>> whether they're going to support large folios.  There's all kinds of
+>> crud already in these functions like:
+>>
+>>          f2fs_set_bio_crypt_ctx(bio, fio->page->mapping->host,
+>>                          page_folio(fio->page)->index, fio, GFP_NOIO);
+>>
+>> and this patch is making it worse, not better.  A series of patches
+>> which at least started to spread folios throughout f2fs would be better.
+>> I think that struct f2fs_io_info should have its page converted to
+>> a folio, for example.  Although maybe not; perhaps this structure can
+>> carry data which doesn't belong to a folio that came from the page cache.
+>> It's very hard to tell because f2fs is so mind-numbingly complex and
+>> riddled with stupid abstraction layers.
+> 
+> Hah, I don't think it's too complex at all tho, there's a somewhat complexity to
+> support file-based encryption, compression, and fsverity, which are useful
 
-When compiling the cgroup selftests with the following command:
+I agree w/ Jaegeuk.
 
-make -C tools/testing/selftests/cgroup/
+> for Android users. Well, I don't see any strong needs to support large folio,
+> but some requests exist which was why we had to do some conversion.
+> 
+>>
+>> But I don't know what the f2fs maintainers have planned.  And they won't
+>> tell me despite many times of asking.
 
-the compiler complains as below:
+I supported large folio in f2fs by using a hacking way /w iomap fwk, it can
+only be enabled in very limited condition, after some seqread tests, I can
+see performance gain in server environment, but none in android device, and
+in addition, there is a memory leak bug which can cause out-of-memory issue.
+Unlucky, I have no slots to dig into these issues recently.
 
-test_cpu.c: In function ‘test_cpucg_nice’:
-test_cpu.c:284:39: error: incompatible type for argument 2 of ‘hog_cpus_timed’
-  284 |                 hog_cpus_timed(cpucg, param);
-      |                                       ^~~~~
-      |                                       |
-      |                                       struct cpu_hog_func_param
-test_cpu.c:132:53: note: expected ‘void *’ but argument is of type ‘struct cpu_hog_func_param’
-  132 | static int hog_cpus_timed(const char *cgroup, void *arg)
-      |                                               ~~~~~~^~~
+Thanks,
 
-Fix it by passing the address of param to hog_cpus_timed().
-
-Fixes: 2e82c0d4562a ("cgroup/rstat: Selftests for niced CPU statistics")
-Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
----
- tools/testing/selftests/cgroup/test_cpu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/cgroup/test_cpu.c b/tools/testing/selftests/cgroup/test_cpu.c
-index 201ce14cb422..a2b50af8e9ee 100644
---- a/tools/testing/selftests/cgroup/test_cpu.c
-+++ b/tools/testing/selftests/cgroup/test_cpu.c
-@@ -281,7 +281,7 @@ static int test_cpucg_nice(const char *root)
- 
- 		/* Try to keep niced CPU usage as constrained to hog_cpu as possible */
- 		nice(1);
--		hog_cpus_timed(cpucg, param);
-+		hog_cpus_timed(cpucg, &param);
- 		exit(0);
- 	} else {
- 		waitpid(pid, &status, 0);
--- 
-2.34.1
 
 
