@@ -1,103 +1,124 @@
-Return-Path: <cgroups+bounces-5098-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5099-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0D509999D0
-	for <lists+cgroups@lfdr.de>; Fri, 11 Oct 2024 03:49:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 052D2999C90
+	for <lists+cgroups@lfdr.de>; Fri, 11 Oct 2024 08:22:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 164BD1C22AAF
-	for <lists+cgroups@lfdr.de>; Fri, 11 Oct 2024 01:49:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 33FE31C21EE2
+	for <lists+cgroups@lfdr.de>; Fri, 11 Oct 2024 06:22:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D18F315E97;
-	Fri, 11 Oct 2024 01:49:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3538720124B;
+	Fri, 11 Oct 2024 06:22:37 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4581DFC0B;
-	Fri, 11 Oct 2024 01:49:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ED902581;
+	Fri, 11 Oct 2024 06:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728611381; cv=none; b=kRMHnIVV91qkvQPb8KapELi/jm0tyv2EMZOq2m7NaphmA3+644EUTTy3Tp3dU3RX2voKu42Zo/hna33j3kZtti1Oo+q9dBpo37GCCiUi1+WT2dvFWiqlxDziAN0OIk0rNnm7bDE5AIHRz0LGhpmQDagmob2cuCSOmmrPU3Nn/TI=
+	t=1728627757; cv=none; b=J8jFllRPj4J+GNSHXmeE8tNye1cyordjzywsXpYPdVN329IKS6TGcJxTx2efvX8LkBLb3QtuKTxpEghSg1CHSclofoR1MItBM+ggycsoqyv9lSR5zmIz1L+d/N4YoLQlS19u/zphvdB3wGxb4WLWPcdAr1h1NUEaYvpG7O+2RTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728611381; c=relaxed/simple;
-	bh=VzU/r74608DW8rwP3q/dNanxvdMrpgci97YcayLvb2k=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=j/LDe7by4ysvp8Rm1CPyruX4piXrVjluG+VMjupueZky9foL+dEQhgHW6ZH56K0RWfWTkKQkTjBLwgWnefRoFkaq+OibWtV9IS1q1/tGR4FEMtVoYNAKsKtQxNhUlhm3tw+7FqkEXujdqpPkwZd/aXuusoepUPQ0RCxkhFJ02vI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 49B1lclI040915;
-	Fri, 11 Oct 2024 09:47:38 +0800 (+08)
-	(envelope-from Xiuhong.Wang@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4XPq6d43yJz2RY1yf;
-	Fri, 11 Oct 2024 09:39:21 +0800 (CST)
-Received: from tj10379pcu.spreadtrum.com (10.5.32.15) by
- BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Fri, 11 Oct 2024 09:47:34 +0800
-From: Xiuhong Wang <xiuhong.wang@unisoc.com>
-To: <tj@kernel.org>, <josef@toxicpanda.com>, <axboe@kernel.dk>,
-        <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC: <niuzhiguo84@gmail.com>, <ke.wang@unisoc.com>, <xiuhong.wang.cn@gmail.com>
-Subject: [PATCH] Revert "blk-throttle: Fix IO hang for a corner case"
-Date: Fri, 11 Oct 2024 09:47:24 +0800
-Message-ID: <20241011014724.2199182-1-xiuhong.wang@unisoc.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1728627757; c=relaxed/simple;
+	bh=uS1vketAMn+QuN65fHsUsbaau8xZ+bb+fzaY0ejlOJE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=XNChDQKEoSn7jXt4TBAYw2TrJ9nUzU9mQS+aWs/GXyoUDQIabry7FJb/CxfrtHBvNZV09hy+5Fk1cFTe6/BLdAXVa7JI6YsDROr+NnSlZgTEwxYVQSywRM8SAS48bgLMJRaRCDg27GTLvAfi5jj8374bL+407UKXX6feydKAbKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XPxP04bvzz4f3kp8;
+	Fri, 11 Oct 2024 14:22:12 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 769061A06D7;
+	Fri, 11 Oct 2024 14:22:24 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.67.174.26])
+	by APP4 (Coremail) with SMTP id gCh0CgDXDMkfxAhnqG8ZDw--.5449S2;
+	Fri, 11 Oct 2024 14:22:24 +0800 (CST)
+From: Xiu Jianfeng <xiujianfeng@huaweicloud.com>
+To: tj@kernel.org,
+	lizefan.x@bytedance.com,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	shuah@kernel.org,
+	joshua.hahn6@gmail.com
+Cc: cgroups@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	xiujianfeng@huawei.com
+Subject: [PATCH -next] selftests/cgroup: Fix compile error in test_cpu.c
+Date: Fri, 11 Oct 2024 06:11:53 +0000
+Message-Id: <20241011061153.107208-1-xiujianfeng@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- BJMBX02.spreadtrum.com (10.0.64.8)
-X-MAIL:SHSQR01.spreadtrum.com 49B1lclI040915
+X-CM-TRANSID:gCh0CgDXDMkfxAhnqG8ZDw--.5449S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7AF1kGrykZr18CrWrAF1fZwb_yoW8Gw4Dpa
+	1kG34j9F4rKF17J3Z2vrW2gFyI9Fs7JFWjya18Xr9xZF1fJryIqrW7Kayjqry5ua95Z3sx
+	Aa4SqF1ag3WDJw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
+	n4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
+	tVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+	CY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvj
+	xUF1v3UUUUU
+X-CM-SenderInfo: x0lxyxpdqiv03j6k3tpzhluzxrxghudrp/
 
-This reverts commit 5b7048b89745c3c5fb4b3080fb7bced61dba2a2b.
+From: Xiu Jianfeng <xiujianfeng@huawei.com>
 
-The throtl_adjusted_limit function was removed after
-commit bf20ab538c81 ("blk-throttle: remove
-CONFIG_BLK_DEV_THROTTLING_LOW"), so the problem of not being
-able to scale after setting bps or iops to 1 will not occur.
-So revert this commit that bps/iops can be set to 1.
+When compiling the cgroup selftests with the following command:
 
-Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: Yu Kuai <yukuai3@huawei.com>
-Signed-off-by: Xiuhong Wang <xiuhong.wang@unisoc.com>
-Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
+make -C tools/testing/selftests/cgroup/
+
+the compiler complains as below:
+
+test_cpu.c: In function ‘test_cpucg_nice’:
+test_cpu.c:284:39: error: incompatible type for argument 2 of ‘hog_cpus_timed’
+  284 |                 hog_cpus_timed(cpucg, param);
+      |                                       ^~~~~
+      |                                       |
+      |                                       struct cpu_hog_func_param
+test_cpu.c:132:53: note: expected ‘void *’ but argument is of type ‘struct cpu_hog_func_param’
+  132 | static int hog_cpus_timed(const char *cgroup, void *arg)
+      |                                               ~~~~~~^~~
+
+Fix it by passing the address of param to hog_cpus_timed().
+
+Fixes: 2e82c0d4562a ("cgroup/rstat: Selftests for niced CPU statistics")
+Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
 ---
- block/blk-throttle.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ tools/testing/selftests/cgroup/test_cpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 2c4192e12efa..443d1f47c2ce 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -1485,13 +1485,13 @@ static ssize_t tg_set_limit(struct kernfs_open_file *of,
- 			goto out_finish;
+diff --git a/tools/testing/selftests/cgroup/test_cpu.c b/tools/testing/selftests/cgroup/test_cpu.c
+index 201ce14cb422..a2b50af8e9ee 100644
+--- a/tools/testing/selftests/cgroup/test_cpu.c
++++ b/tools/testing/selftests/cgroup/test_cpu.c
+@@ -281,7 +281,7 @@ static int test_cpucg_nice(const char *root)
  
- 		ret = -EINVAL;
--		if (!strcmp(tok, "rbps") && val > 1)
-+		if (!strcmp(tok, "rbps"))
- 			v[0] = val;
--		else if (!strcmp(tok, "wbps") && val > 1)
-+		else if (!strcmp(tok, "wbps"))
- 			v[1] = val;
--		else if (!strcmp(tok, "riops") && val > 1)
-+		else if (!strcmp(tok, "riops"))
- 			v[2] = min_t(u64, val, UINT_MAX);
--		else if (!strcmp(tok, "wiops") && val > 1)
-+		else if (!strcmp(tok, "wiops"))
- 			v[3] = min_t(u64, val, UINT_MAX);
- 		else
- 			goto out_finish;
+ 		/* Try to keep niced CPU usage as constrained to hog_cpu as possible */
+ 		nice(1);
+-		hog_cpus_timed(cpucg, param);
++		hog_cpus_timed(cpucg, &param);
+ 		exit(0);
+ 	} else {
+ 		waitpid(pid, &status, 0);
 -- 
-2.25.1
+2.34.1
 
 
