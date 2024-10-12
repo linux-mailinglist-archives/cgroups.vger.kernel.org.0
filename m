@@ -1,136 +1,124 @@
-Return-Path: <cgroups+bounces-5103-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5104-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D0FA99ADBD
-	for <lists+cgroups@lfdr.de>; Fri, 11 Oct 2024 22:51:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D351199B192
+	for <lists+cgroups@lfdr.de>; Sat, 12 Oct 2024 09:33:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73D1F1C226CC
-	for <lists+cgroups@lfdr.de>; Fri, 11 Oct 2024 20:51:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A5DE1F22CC1
+	for <lists+cgroups@lfdr.de>; Sat, 12 Oct 2024 07:33:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC3DF1CFEDC;
-	Fri, 11 Oct 2024 20:51:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b="c/tVfQuU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 352DC13C9C0;
+	Sat, 12 Oct 2024 07:33:51 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64BB2199231
-	for <cgroups@vger.kernel.org>; Fri, 11 Oct 2024 20:51:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBECD12C54D;
+	Sat, 12 Oct 2024 07:33:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728679883; cv=none; b=QjMis+J6SywOat5cbkUe2On0GCO/gM2XAd7W1WeTgz90S/kI0tY67/ji8+asQK7JJh95EIyL4j9Y+0Zu4Bsa6TLjWZ7ZNWWU8nsJRO5EGlU/WdZtZdjjx/mEGVokOxVvIlnQlpCZfWEHsUGz6I0VUi2V2y8EyFQZswnreFvLNRs=
+	t=1728718431; cv=none; b=tQzjU79FfqdRwR7FeEcodOy9yv4lDfPiSOtpqE1Uqmm58qpGlUDgVxgUqkZUe2G2hqSPtUjGZA++jy0VNCEzCv2+77wlQFsyrPINiRM/WODL362o+s2YlbnbZa65gDJ1OV/5T8srvGmyS0RxU1ic/Zvjhwm43h0I1DGzBwP+2Uc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728679883; c=relaxed/simple;
-	bh=8ffIk8qLEejL2TEgYMqhyAxPbW2pCrlgFQtGsvbbOAA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OabG4C9UOdHD3blZb/dseNWNwr4+OTUtcRz5K5hkzSKmySd32gHBGHOma+Uj760foLe3nyBAVN9nV+eIn4fQU0BIATbGK4k3DkWgpPGA/lOtbdAg7hB9+teZDIkoD0OTL4+Ek6rF2sQhMdk8/dIO8yH0A+3zwAZ0vSdZW2LSyrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu; spf=pass smtp.mailfrom=andrew.cmu.edu; dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b=c/tVfQuU; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=andrew.cmu.edu
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-4605674e9cdso4841311cf.2
-        for <cgroups@vger.kernel.org>; Fri, 11 Oct 2024 13:51:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.cmu.edu; s=google-2021; t=1728679878; x=1729284678; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8ffIk8qLEejL2TEgYMqhyAxPbW2pCrlgFQtGsvbbOAA=;
-        b=c/tVfQuUMIWEIwbytJCjffH0NeZ0w9Lb9AnKZOHown+inuzIZqGYdxrqCLTK8Sr/xD
-         BU5ZcRYN1+wYMtuI0/jHTVFT8quUApvsygD+ECwUuXOtx2u7WVSYTeQ+sdowlq46TJJQ
-         W+09+WWMbcJfbvrlms40Iw/90Ec/3pbGgVZNQjn+bl1STJVyZiHaN7Vv8cPjbCeXBHEV
-         S9CplQqQusoM+KTZa6IahzXP9kA2qUu6btcIL2zUpYpWWkpileWIRGbffAGapjNEfk7v
-         PKNJrJst1yqfhyeN0htfvjfg5jGaVEjcCILPz/9f6a8msquNKT+QlvVavr+Fs5BaZ+z7
-         J2zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728679878; x=1729284678;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8ffIk8qLEejL2TEgYMqhyAxPbW2pCrlgFQtGsvbbOAA=;
-        b=ZZmQKu+pW9Q8WtRtww6hxruod/jFc73BjmaEgLt/An9Sy9gimS2S8UX21eT1qS/Jkd
-         HpvmjrKQ96xDk5/hNwM3LwPx7cntcuxXIQNFQwtVKz58cvsc2ulk0TLrFh89FrAWIFEC
-         M9Nvx+7u0RLUwAMxQ3bQ2E7Dwha+/mb8dft0UVMghoaQx74/ZHJCqum1dKcjZJwgwe8V
-         L7tU35vBPpUTGDJpH5B3P6vJNdG7OielgTZZELuncUFpkP9P2mTXIN30NIFQohz1z4Om
-         MU4Niavn0gFXIfJeCm1BJF07CIBhanH0vFiIuMKKW0apdBXj5ugwRtHBr9EsHa0JEQ+g
-         gSYA==
-X-Forwarded-Encrypted: i=1; AJvYcCX1d0+Jm00p3mlbGl+W844K1vcXrW03JRyGucC4zN70b5MvjnMuwZutAbq14hnXI1YhCKXhOCtE@vger.kernel.org
-X-Gm-Message-State: AOJu0YzAl+U+dTzIl5+dhKRmNXsGJLTDJY6o+A33plxf80JFrdECY1sc
-	HbG1JQsyH78bZ6kLDAtN3X5V7ziKae3skTlQ3SbtcXjpTa/rjhsqdge1VER4PQ==
-X-Google-Smtp-Source: AGHT+IFa/p5rklltM72VcXSiT0sJgKLEoNQMSnYkUvIY0XGjJfYKAP2lNR7BNsEDJM+AZIAyotAuOA==
-X-Received: by 2002:ac8:5753:0:b0:45f:c8c9:dc26 with SMTP id d75a77b69052e-46058423974mr17690361cf.15.1728679878268;
-        Fri, 11 Oct 2024 13:51:18 -0700 (PDT)
-Received: from localhost.localhost (pool-74-98-231-160.pitbpa.fios.verizon.net. [74.98.231.160])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-460427dafddsm19144731cf.34.2024.10.11.13.51.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Oct 2024 13:51:17 -0700 (PDT)
-Date: Fri, 11 Oct 2024 20:51:15 +0000
-From: Kaiyang Zhao <kaiyang2@cs.cmu.edu>
-To: linux-mm@kvack.org, cgroups@vger.kernel.org
-Cc: roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
-	akpm@linux-foundation.org, mhocko@kernel.org, nehagholkar@meta.com,
-	abhishekd@meta.com, hannes@cmpxchg.org, weixugc@google.com,
-	rientjes@google.com, gourry@gourry.net
-Subject: Re: [RFC PATCH 0/4] memory tiering fairness by per-cgroup control of
- promotion and demotion
-Message-ID: <ZwmPwwWwJBm29Srb@localhost.localhost>
-References: <20240920221202.1734227-1-kaiyang2@cs.cmu.edu>
+	s=arc-20240116; t=1728718431; c=relaxed/simple;
+	bh=w+0T2IGafcUh9CVlp0OaufZqBPLEgPoMmmNkKvHgSU8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mlAZzM/KhKoLHv8KMHKIBwWbhHEF8oVeDXPc8rXeRx0IjEYYst9qzhpGn3rlyRJmy9zA8NNEHd1SW7Hr7Jo3V3zmvT85tUiqR7u1AvWCR5vV+oARicb4mfItItouLkZhlbskI6v5GwL/OOPW6GO6D0zqBPKRqZGI2r5w9EhtusA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XQZwf3QSCz4f3lCm;
+	Sat, 12 Oct 2024 15:33:22 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 31CAD1A058E;
+	Sat, 12 Oct 2024 15:33:40 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.67.174.26])
+	by APP4 (Coremail) with SMTP id gCh0CgBXjMhSJgpnHCx7Dw--.42768S2;
+	Sat, 12 Oct 2024 15:33:40 +0800 (CST)
+From: Xiu Jianfeng <xiujianfeng@huaweicloud.com>
+To: tj@kernel.org,
+	lizefan.x@bytedance.com,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	roman.gushchin@linux.dev
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	wangweiyang2@huawei.com
+Subject: [PATCH] cgroup: Fix potential overflow issue when checking max_depth
+Date: Sat, 12 Oct 2024 07:22:46 +0000
+Message-Id: <20241012072246.158766-1-xiujianfeng@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240920221202.1734227-1-kaiyang2@cs.cmu.edu>
+X-CM-TRANSID:gCh0CgBXjMhSJgpnHCx7Dw--.42768S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7CF1xCr1kuF18AF4DuF45Jrb_yoW8XFWfpF
+	s8Jry5J395GFZrKw4jyasFvFySg395JrW5C3Z0yw1rAr13Gw17XF9YyF1jqFyxXFWIgw42
+	qF4ay34akw4UKFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
+	7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UK2NtUUUUU=
+X-CM-SenderInfo: x0lxyxpdqiv03j6k3tpzhluzxrxghudrp/
 
-Adding some preliminary results from testing on a *real* system with CXL
-memory.
+From: Xiu Jianfeng <xiujianfeng@huawei.com>
 
-The system has 256GB local DRAM + 64GB CXL memory. We used a microbenchmark
-that allocates memory and accesses it at tunable hotness levels. We ran 3 such
-microbenchmarks in 3 cgroups. The first container has 2 times the access
-hotness than the second and the third container. All containers have a 100GB
-memory.low set, meaning that ~82GB of local DRAM usage is protected.
+cgroup.max.depth is the maximum allowed descent depth below the current
+cgroup. If the actual descent depth is equal or larger, an attempt to
+create a new child cgroup will fail. However due to the cgroup->max_depth
+is of int type and having the default value INT_MAX, the condition
+'level > cgroup->max_depth' will never be satisfied, and it will cause
+an overflow of the level after it reaches to INT_MAX.
 
-Case 1 Container 1: Uses 120GB Container 2: Uses 40GB Container 3: Uses 40GB
+Fix it by starting the level from 0 and using '>=' instead.
 
-Without fairness patch: same as with fairness.
+It's worth mentioning that this issue is unlikely to occur in reality,
+as it's impossible to have a depth of INT_MAX hierarchy, but should be
+be avoided logically.
 
-With fairness patch: Container 1 has 120GB in local DRAM. Container 2 and 3
-each have 40GB in local DRAM. As long as DRAM memory is not under pressure,
-containers can exceed the lower guarantee and put everything in DRAM.
+Fixes: 1a926e0bbab8 ("cgroup: implement hierarchy limits")
+Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
+---
+ kernel/cgroup/cgroup.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Case 2: Container 1: Uses 120GB Container 2: Uses 90GB Container 3: Uses 90GB
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 5886b95c6eae..044c7ba1cc48 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -5789,7 +5789,7 @@ static bool cgroup_check_hierarchy_limits(struct cgroup *parent)
+ {
+ 	struct cgroup *cgroup;
+ 	int ret = false;
+-	int level = 1;
++	int level = 0;
+ 
+ 	lockdep_assert_held(&cgroup_mutex);
+ 
+@@ -5797,7 +5797,7 @@ static bool cgroup_check_hierarchy_limits(struct cgroup *parent)
+ 		if (cgroup->nr_descendants >= cgroup->max_descendants)
+ 			goto fail;
+ 
+-		if (level > cgroup->max_depth)
++		if (level >= cgroup->max_depth)
+ 			goto fail;
+ 
+ 		level++;
+-- 
+2.34.1
 
-Without fairness patch: Container 1 gets 120GB in local DRAM, and Container 2
-and 3 are stuck with ~65GB in local DRAM since they have colder data.
-
-With fairness patch: Container 1 starts early and gets all 120GB in DRAM
-memory. As container 2 and 3 start, they initially each get ~65GB in DRAM and
-~25GB in CXL memory. Promotion attempts trigger local memory reclaim by kswapd,
-which trims the DRAM usage by container 1 and increases the DRAM usage of
-container 2 and 3. Eventually, the usage of DRAM memory for all 3 containers
-converges at ~82GB, and the excess unprotected usage of 3 containers is in CXL
-memory.
-
-Case 3:
-
-Container 1: Uses 120GB Container 2: Uses 70GB Container 3: Uses 70GB
-
-Without fairness patch: Container 1 gets 120GB in local DRAM, and Container 2
-and 3 are stuck with ~65GB in local DRAM since they have colder data.
-
-With fairness patch: While the total memory demand exceeds DRAM capacity, at
-the stable state, Container 1 is still able to get ~105GB in local DRAM, more
-than the lower guarantee. Meanwhile, all memory usage by Container 2 and 3 are
-protected from the noisy neighbor Container 1 and resides in DRAM only.
-
-We’re working on getting performance data from more benchmarks and also Meta’s
-production workloads. Stay tuned for more results!
 
