@@ -1,81 +1,142 @@
-Return-Path: <cgroups+bounces-5110-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5111-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFF2299BF85
-	for <lists+cgroups@lfdr.de>; Mon, 14 Oct 2024 07:55:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC1D299C7DC
+	for <lists+cgroups@lfdr.de>; Mon, 14 Oct 2024 13:00:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24DE71C216CB
-	for <lists+cgroups@lfdr.de>; Mon, 14 Oct 2024 05:55:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4ABDBB22A5C
+	for <lists+cgroups@lfdr.de>; Mon, 14 Oct 2024 11:00:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7D8413C690;
-	Mon, 14 Oct 2024 05:55:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="0Kg1ZjbQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C98C19E802;
+	Mon, 14 Oct 2024 10:59:38 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE89584A2F;
-	Mon, 14 Oct 2024 05:55:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BEEE19DF45;
+	Mon, 14 Oct 2024 10:59:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728885351; cv=none; b=SI9oong5ODbDO8VbbXfdX4NNtD/yWaNCuFwW26uIC5AA0hHnsfH9H8+iHMhZdXOoDZK9RBg/GLHcjy8InuS4TtNXIQbF2sySuDqjC+X033FBVXnyuUUWVmfooSGEWiobaSekXmbvKNX3Mi4ezwMFwAMi/EKSkI6cVRTotGBhB6I=
+	t=1728903578; cv=none; b=qdwR+xld8jCMrM2gqkRm8aGVzPuTmeNSvVFYIzRDxr0bQsGnVJPFhrqwXRUk9AtIXu9jRVJmvX9V4HIRi0I6iYUX/SLszmtmtfcVyPMAfsg8LefDlIzCQM0ROg2/tyq7GrtivmigHJyfTMLyMwI4e5MATxuKbK3LbXJkfLJM2TU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728885351; c=relaxed/simple;
-	bh=R73XglLBTODkUcUDXOPBGo1pDlnhmgyx3VPUbbJTNw8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i699JKZCGlOpNsHvaVB2JWZEL2hJrCNrfLsnbY9pY6Kf9o+1Xv6Ia/oSF/wxRY5E7fy5N7iT9kT9bq5YSCqvH/cY44hx3Jb9DAZBtnkhW8S/PB1/iOudRnk/n6QIXl4zOZnYETpknXq7Nbk8TSziU++lGpqyU6NXnVRA/1aoYNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=0Kg1ZjbQ; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=R73XglLBTODkUcUDXOPBGo1pDlnhmgyx3VPUbbJTNw8=; b=0Kg1ZjbQdYrGPe0e6wBGlszoEq
-	b0jukYasX90uH7i52GFM/gXLdplD7pnN3dat/YP00xsxMNTIPedzzidlWCWJ0mwPmpKpm+4abcf3Y
-	Zv2GMn+tcpzpP7SQuylXyxlQuRGOIEbS5z+uemvxADSXXfFToWcvRaE2TJI76dXJg1+djCz/DkRCz
-	vSm0qoj31kLSaXhFnIwpmH99QF9lEHJ9C1SkYc6Crq5aJAkDa8Cx+C5fM2MGJwm3Vx/Y6hhC0mN4h
-	WgEWCEJu79SkWJ6LAXoJosQ7lM3nKv7PuIEslR17JoVSObEeLI3Yy1UoEuO2l+ua89zEGqQ3g8uFo
-	V247bkqA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1t0E3R-00000003o96-1pjy;
-	Mon, 14 Oct 2024 05:55:41 +0000
-Date: Sun, 13 Oct 2024 22:55:41 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: akpm@linux-foundation.org, hch@infradead.org, llong@redhat.com,
-	xavier_qy@163.com, lizefan.x@bytedance.com, tj@kernel.org,
-	hannes@cmpxchg.org, mkoutny@suse.com, jserv@ccns.ncku.edu.tw,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v2] lib/Makefile: Make union-find compilation conditional
- on CONFIG_CPUSETS
-Message-ID: <ZwyyXei54M7ZPF_Q@infradead.org>
-References: <ZweggYOQtt5OUgHJ@infradead.org>
- <20241011141214.87096-1-visitorckw@gmail.com>
+	s=arc-20240116; t=1728903578; c=relaxed/simple;
+	bh=JMbTheclkDGS3S+GfD49eNwXVSfxy8z1/0qKFhP2pcQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=lJz3lfAMed96MxFW+5/58j5+oOhlk9lqFGLjEMhXNEOtkJkJhwyxMaj63A99fAE7fVIpHRQrSOGDGmi4kLbFMEnyuKqI2yckvNn6hg6xygf1JfKRJMHrMRbWfxx26bUIv51F0Rsjlx7rpgg4wiGNGPczW21e5XjpZgVZKnfk8LA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8FB151424;
+	Mon, 14 Oct 2024 04:00:05 -0700 (PDT)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.27])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E9C283F51B;
+	Mon, 14 Oct 2024 03:59:32 -0700 (PDT)
+From: Ryan Roberts <ryan.roberts@arm.com>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Anshuman Khandual <anshuman.khandual@arm.com>,
+	Ard Biesheuvel <ardb@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	David Hildenbrand <david@redhat.com>,
+	Greg Marsden <greg.marsden@oracle.com>,
+	Ivan Ivanov <ivan.ivanov@suse.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Kalesh Singh <kaleshsingh@google.com>,
+	Marc Zyngier <maz@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Matthias Brugger <mbrugger@suse.com>,
+	Michal Hocko <mhocko@kernel.org>,
+	Miroslav Benes <mbenes@suse.cz>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Will Deacon <will@kernel.org>
+Cc: Ryan Roberts <ryan.roberts@arm.com>,
+	cgroups@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: [RFC PATCH v1 03/57] mm/memcontrol: Fix seq_buf size to save memory when PAGE_SIZE is large
+Date: Mon, 14 Oct 2024 11:58:10 +0100
+Message-ID: <20241014105912.3207374-3-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20241014105912.3207374-1-ryan.roberts@arm.com>
+References: <20241014105514.3206191-1-ryan.roberts@arm.com>
+ <20241014105912.3207374-1-ryan.roberts@arm.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241011141214.87096-1-visitorckw@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 
-On Fri, Oct 11, 2024 at 10:12:14PM +0800, Kuan-Wei Chiu wrote:
-> Currently, cpuset is the only user of the union-find implementation.
-> Compiling union-find in all configurations unnecessarily increases the
-> code size when building the kernel without cgroup support. Modify the
-> build system to compile union-find only when CONFIG_CPUSETS is enabled.
+Previously the seq_buf used for accumulating the memory.stat output was
+sized at PAGE_SIZE. But the amount of output is invariant to PAGE_SIZE;
+If 4K is enough on a 4K page system, then it should also be enough on a
+64K page system, so we can save 60K om the static buffer used in
+mem_cgroup_print_oom_meminfo(). Let's make it so.
 
-Looks good:
+This also has the beneficial side effect of removing a place in the code
+that assumed PAGE_SIZE is a compile-time constant. So this helps our
+quest towards supporting boot-time page size selection.
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+---
+
+***NOTE***
+Any confused maintainers may want to read the cover note here for context:
+https://lore.kernel.org/all/20241014105514.3206191-1-ryan.roberts@arm.com/
+
+ mm/memcontrol.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index d563fb515766b..c5f9195f76c65 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -95,6 +95,7 @@ static DECLARE_WAIT_QUEUE_HEAD(memcg_cgwb_frn_waitq);
+ 
+ #define THRESHOLDS_EVENTS_TARGET 128
+ #define SOFTLIMIT_EVENTS_TARGET 1024
++#define SEQ_BUF_SIZE		SZ_4K
+ 
+ static inline bool task_is_dying(void)
+ {
+@@ -1519,7 +1520,7 @@ void mem_cgroup_print_oom_context(struct mem_cgroup *memcg, struct task_struct *
+ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
+ {
+ 	/* Use static buffer, for the caller is holding oom_lock. */
+-	static char buf[PAGE_SIZE];
++	static char buf[SEQ_BUF_SIZE];
+ 	struct seq_buf s;
+ 
+ 	lockdep_assert_held(&oom_lock);
+@@ -1545,7 +1546,7 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
+ 	pr_info("Memory cgroup stats for ");
+ 	pr_cont_cgroup_path(memcg->css.cgroup);
+ 	pr_cont(":");
+-	seq_buf_init(&s, buf, sizeof(buf));
++	seq_buf_init(&s, buf, SEQ_BUF_SIZE);
+ 	memory_stat_format(memcg, &s);
+ 	seq_buf_do_printk(&s, KERN_INFO);
+ }
+@@ -4158,12 +4159,12 @@ static int memory_events_local_show(struct seq_file *m, void *v)
+ int memory_stat_show(struct seq_file *m, void *v)
+ {
+ 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
+-	char *buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
++	char *buf = kmalloc(SEQ_BUF_SIZE, GFP_KERNEL);
+ 	struct seq_buf s;
+ 
+ 	if (!buf)
+ 		return -ENOMEM;
+-	seq_buf_init(&s, buf, PAGE_SIZE);
++	seq_buf_init(&s, buf, SEQ_BUF_SIZE);
+ 	memory_stat_format(memcg, &s);
+ 	seq_puts(m, buf);
+ 	kfree(buf);
+-- 
+2.43.0
 
 
