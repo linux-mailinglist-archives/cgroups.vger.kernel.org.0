@@ -1,124 +1,145 @@
-Return-Path: <cgroups+bounces-5104-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5105-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D351199B192
-	for <lists+cgroups@lfdr.de>; Sat, 12 Oct 2024 09:33:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A54BC99BDFA
+	for <lists+cgroups@lfdr.de>; Mon, 14 Oct 2024 05:11:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A5DE1F22CC1
-	for <lists+cgroups@lfdr.de>; Sat, 12 Oct 2024 07:33:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E4361F22278
+	for <lists+cgroups@lfdr.de>; Mon, 14 Oct 2024 03:11:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 352DC13C9C0;
-	Sat, 12 Oct 2024 07:33:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB4E8481D1;
+	Mon, 14 Oct 2024 03:11:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b7PDkj8N"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBECD12C54D;
-	Sat, 12 Oct 2024 07:33:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F6C38467;
+	Mon, 14 Oct 2024 03:11:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728718431; cv=none; b=tQzjU79FfqdRwR7FeEcodOy9yv4lDfPiSOtpqE1Uqmm58qpGlUDgVxgUqkZUe2G2hqSPtUjGZA++jy0VNCEzCv2+77wlQFsyrPINiRM/WODL362o+s2YlbnbZa65gDJ1OV/5T8srvGmyS0RxU1ic/Zvjhwm43h0I1DGzBwP+2Uc=
+	t=1728875472; cv=none; b=iEA+MGfVCtGOH8MEFqTk6hmeDdLWOCo6OY5OcQtufrp52PFRcRzFkHFQEPloLYLAz1nOgr9jDJ/mxpBgPiZP/JJhf416+D/7yCyzqOYD8vRSWaCcMv7eDjolf6J9wMmdfcE4kzOV4/cDk3aTJGifmm3l8Rl7gfMLhqkpve6gxHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728718431; c=relaxed/simple;
-	bh=w+0T2IGafcUh9CVlp0OaufZqBPLEgPoMmmNkKvHgSU8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mlAZzM/KhKoLHv8KMHKIBwWbhHEF8oVeDXPc8rXeRx0IjEYYst9qzhpGn3rlyRJmy9zA8NNEHd1SW7Hr7Jo3V3zmvT85tUiqR7u1AvWCR5vV+oARicb4mfItItouLkZhlbskI6v5GwL/OOPW6GO6D0zqBPKRqZGI2r5w9EhtusA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XQZwf3QSCz4f3lCm;
-	Sat, 12 Oct 2024 15:33:22 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 31CAD1A058E;
-	Sat, 12 Oct 2024 15:33:40 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.67.174.26])
-	by APP4 (Coremail) with SMTP id gCh0CgBXjMhSJgpnHCx7Dw--.42768S2;
-	Sat, 12 Oct 2024 15:33:40 +0800 (CST)
-From: Xiu Jianfeng <xiujianfeng@huaweicloud.com>
-To: tj@kernel.org,
-	lizefan.x@bytedance.com,
+	s=arc-20240116; t=1728875472; c=relaxed/simple;
+	bh=ezRnHF+hwap09liGZg22w1PqXOr8Pj038urUBteNnLU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=nNgzlbFmdTF67GIZPfMHlhEivAuJmKe7iMAq8t4jy2kWwBNA6mGE6hA9LGmDW/PrA0KXAWI9dTG2qERwLCbeGvIRMsKFaTXYVpqvmfHEqDqKbC8GPz5M2K8n4LGzQ+b0EqFa7BFNM+t/ziEYGLGAEHWo2jtcXcBkjPt2fKazAAk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b7PDkj8N; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-7ea7d509e61so184816a12.1;
+        Sun, 13 Oct 2024 20:11:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728875470; x=1729480270; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=noHeBIJrGMZqqAZVU4OziaGfvb3jHPcwbCf2WC+Ckow=;
+        b=b7PDkj8NxiYqI+NeqUuHH4IPw4MUfLrA9cJ+HjqEj/5V1pQwv8twkCi/CAEsAm480N
+         bOyXgEYr+A52URC1nNtvdW4qaJFnfNWhejf7yhjQkfQ7B2gED92OA3kpvyJsG/l/gk1k
+         UvGssMHoGlZGRWMNgbCgHWk+ysGSDWiMqBq5twkEUQ0sorx9tx6YmOHYk/mngLm94Luw
+         Y0g7UyQ7xZcnQQjpjZtbMGLxKwdcPL8f+oxnHO8mtnyeT2mP0dh3nsW/8EK48ImJpBnI
+         q/Lvmq002FpDBms47jh0AITwLVrKuEwZI6+U8E+TVKPNC7n8u6Xc1MuoIOci/kys3Q5i
+         gSeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728875470; x=1729480270;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=noHeBIJrGMZqqAZVU4OziaGfvb3jHPcwbCf2WC+Ckow=;
+        b=wYvNfK3UL5BSgF/7ZmiXeTtF1ouRFGN+Q+jtv9Kiavv4vjXU3x9qByvU/uJhbL2jqD
+         K6/KC1tC32QZKE35t20sEgnb7p6+G8BkE0NXNr5e+6XehRJLzfOaeKG9QJ44nOHh3Cdv
+         1O/6wh8BJBwAGfM+NphPtQ1BRz0NnSIRhuZBUQWS3P1kVHHT8g5CJ4UJ6wXnYTtb79ZL
+         nldg3+x/AMjuDfd9WqksLDBzLnvYdDKwLcBxVzNX7PAOfwSdZqTIfgfT3joFDxF/zAF4
+         YleZ2dSMNrqifTPTezuH1+75+TVQuIT+USJKX3Jz6ZY00HyFX3pHQvr5PxUr0eHdMFoK
+         pJbg==
+X-Forwarded-Encrypted: i=1; AJvYcCXSe8kRFjqhPbTNOsDdr8yKCd/QbmhIKqRKVkNV9aM0AAGZJkinegVWTUCMRM98aW6kR8EdC+eYm3Sk1Ls=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzWSwHw8doXjRI+TmhTywDnSJCZVm321I1J1qI0zVKp5TXvGIjP
+	zEy4T1ARFQKO2+25o0DXd9FqtbAKspsIycO5AoWbaxy08mQmZlop
+X-Google-Smtp-Source: AGHT+IF0zV9T0GAKGhfOz1Lf9+GOom3DPctq/23lmccWbpqeGuIYWYctIlZaOvvj+UFk/ITcfXYYeg==
+X-Received: by 2002:a05:6a20:c89c:b0:1d7:7ea:2f35 with SMTP id adf61e73a8af0-1d8bcefde00mr13807132637.5.1728875470378;
+        Sun, 13 Oct 2024 20:11:10 -0700 (PDT)
+Received: from localhost.localdomain ([39.144.103.177])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7ea6e396a71sm2987514a12.73.2024.10.13.20.11.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 13 Oct 2024 20:11:09 -0700 (PDT)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: mingo@redhat.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	mgorman@suse.de,
+	vschneid@redhat.com,
 	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	roman.gushchin@linux.dev
+	surenb@google.com
 Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	wangweiyang2@huawei.com
-Subject: [PATCH] cgroup: Fix potential overflow issue when checking max_depth
-Date: Sat, 12 Oct 2024 07:22:46 +0000
-Message-Id: <20241012072246.158766-1-xiujianfeng@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v3 bpf-next 0/4] sched: Fix irq accounting for CONFIG_IRQ_TIME_ACCOUNTING
+Date: Mon, 14 Oct 2024 11:10:53 +0800
+Message-Id: <20241014031057.8199-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBXjMhSJgpnHCx7Dw--.42768S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7CF1xCr1kuF18AF4DuF45Jrb_yoW8XFWfpF
-	s8Jry5J395GFZrKw4jyasFvFySg395JrW5C3Z0yw1rAr13Gw17XF9YyF1jqFyxXFWIgw42
-	qF4ay34akw4UKFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
-	7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UK2NtUUUUU=
-X-CM-SenderInfo: x0lxyxpdqiv03j6k3tpzhluzxrxghudrp/
 
-From: Xiu Jianfeng <xiujianfeng@huawei.com>
+After enabling CONFIG_IRQ_TIME_ACCOUNTING to track IRQ pressure in our
+container environment, we encountered several user-visible behavioral
+changes:
 
-cgroup.max.depth is the maximum allowed descent depth below the current
-cgroup. If the actual descent depth is equal or larger, an attempt to
-create a new child cgroup will fail. However due to the cgroup->max_depth
-is of int type and having the default value INT_MAX, the condition
-'level > cgroup->max_depth' will never be satisfied, and it will cause
-an overflow of the level after it reaches to INT_MAX.
+- Interrupted IRQ/softirq time is not accounted for in the cpuacct cgroup
 
-Fix it by starting the level from 0 and using '>=' instead.
+  This breaks userspace applications that rely on CPU usage data from
+  cgroups to monitor CPU pressure. This patchset resolves the issue by
+  ensuring that IRQ/softirq time is accounted for in the cgroup of the
+  interrupted tasks.
 
-It's worth mentioning that this issue is unlikely to occur in reality,
-as it's impossible to have a depth of INT_MAX hierarchy, but should be
-be avoided logically.
+- getrusage(2) does not include time interrupted by IRQ/softirq
 
-Fixes: 1a926e0bbab8 ("cgroup: implement hierarchy limits")
-Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
----
- kernel/cgroup/cgroup.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+  Some services use getrusage(2) to check if workloads are experiencing CPU
+  pressure. Since IRQ/softirq time is no longer charged to task runtime,
+  getrusage(2) can no longer reflect the CPU pressure caused by heavy
+  interrupts.
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 5886b95c6eae..044c7ba1cc48 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5789,7 +5789,7 @@ static bool cgroup_check_hierarchy_limits(struct cgroup *parent)
- {
- 	struct cgroup *cgroup;
- 	int ret = false;
--	int level = 1;
-+	int level = 0;
- 
- 	lockdep_assert_held(&cgroup_mutex);
- 
-@@ -5797,7 +5797,7 @@ static bool cgroup_check_hierarchy_limits(struct cgroup *parent)
- 		if (cgroup->nr_descendants >= cgroup->max_descendants)
- 			goto fail;
- 
--		if (level > cgroup->max_depth)
-+		if (level >= cgroup->max_depth)
- 			goto fail;
- 
- 		level++;
+This patchset addresses the first issue, which is relatively
+straightforward. However, the second issue remains unresolved, as there
+might be debate over whether interrupted time should be considered part of
+a task’s usage. Nonetheless, it is important to report interrupted time to
+the user via some metric, though that is a separate discussion.
+
+Changes:
+v2->v3:
+- Add a helper account_irqtime() to avoid redundant code (Johannes)
+
+v1->v2: https://lore.kernel.org/cgroups/20241008061951.3980-1-laoar.shao@gmail.com/
+- Fix lockdep issues reported by kernel test robot <oliver.sang@intel.com>
+
+v1: https://lore.kernel.org/all/20240923090028.16368-1-laoar.shao@gmail.com/
+
+Yafang Shao (4):
+  sched: Define sched_clock_irqtime as static key
+  sched: Don't account irq time if sched_clock_irqtime is disabled
+  sched, psi: Don't account irq time if sched_clock_irqtime is disabled
+  sched: Fix cgroup irq accounting for CONFIG_IRQ_TIME_ACCOUNTING
+
+ kernel/sched/core.c    | 78 +++++++++++++++++++++++++++++-------------
+ kernel/sched/cputime.c | 16 ++++-----
+ kernel/sched/psi.c     | 12 ++-----
+ kernel/sched/sched.h   |  1 +
+ kernel/sched/stats.h   |  7 ++--
+ 5 files changed, 69 insertions(+), 45 deletions(-)
+
 -- 
-2.34.1
+2.43.5
 
 
