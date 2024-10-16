@@ -1,106 +1,118 @@
-Return-Path: <cgroups+bounces-5145-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5146-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 613ED9A1048
-	for <lists+cgroups@lfdr.de>; Wed, 16 Oct 2024 19:04:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD1569A1072
+	for <lists+cgroups@lfdr.de>; Wed, 16 Oct 2024 19:17:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F41CEB235E9
-	for <lists+cgroups@lfdr.de>; Wed, 16 Oct 2024 17:04:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 644C11F21FF1
+	for <lists+cgroups@lfdr.de>; Wed, 16 Oct 2024 17:17:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CB9F206971;
-	Wed, 16 Oct 2024 17:04:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725AD18A933;
+	Wed, 16 Oct 2024 17:17:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g364JahB"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TvNrxYqO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A8E136358;
-	Wed, 16 Oct 2024 17:04:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FA9A188580
+	for <cgroups@vger.kernel.org>; Wed, 16 Oct 2024 17:17:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729098270; cv=none; b=B6ZFNKIgfvmzJBTuBUtsQBWIBhNDD+mcZHrq/HWcsxKAl9SOvaeXOV8xtbRtd8aHzabeYBL160i+Wg407W0W82IJahP2oKcTfqlx+CxlWyhNEsqGfHvjW8g1a0ow5tUgrG9czMUi0sFYNzM7/h81L1dqxYjneCLcMTFYD/K6LWI=
+	t=1729099058; cv=none; b=EhbWArS+B0ppLz6mydd4P+p+UA2Cf15BC2Fv4DdM0LdaeJ/7vtHCGyMYCXPFl0OItuN4eMrhdrK6F++/AzSVXt06qRFEplvMSdMQJ8plk5gWnDG8XkuUXSSQOWwNeiY/77iHjbo+9y/yyfyj5QDvaXtRJLCrkeCySru5J8wln0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729098270; c=relaxed/simple;
-	bh=CX9Vtd5JRZ6CUj4QoB0EX1rOR78R+P7OGs4cTTtUhI0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bKcCrWZXMKuKgWWwJIPI3OhQd1ig9wIF4Sz4T4f5E4P3N+JsnHzcaLO5doJXGCmwLGwFehU2Jgr8ur98aCjPBUxqpWnHEV8CqS7OZGj55JKPI2hyB8AcOr19MTw3Uf3Ke1aGPSAyGxvimQX+6p2QbA56wPDv24U78M60uwK+SMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g364JahB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 826E8C4CEC5;
-	Wed, 16 Oct 2024 17:04:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729098269;
-	bh=CX9Vtd5JRZ6CUj4QoB0EX1rOR78R+P7OGs4cTTtUhI0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=g364JahB/sCv2dpwVHTq9xHoZ3GytonbE9O0BaXmDiLo/QDpsa5qKPYXo+Uo2TDSH
-	 PMzNjkVvUd1vMkoaNtUzzqObCBJRnT4znktf4E2O6rloekXsbyZ/qRvSG9HZhvbTwu
-	 0hTLGfQr7rUcXFiMMd9vmdWvHYZ39rnCwOobBYlns2FysIv8rA5YeRd9oeDG6kXUzx
-	 spmXwBOF4LCxaMQQ4RPhUHlp/P5I6dYW0Ghun6DpyXanxFgzD/2aScpKdAjEfZIziC
-	 4BJS2Z/DrhaCLuZJGbscXnDBUp13ppXL6YkU4Tf6RxqyBDjE5fx8ayCqrd769NqR3g
-	 xNI2WUsMin+Jg==
-Date: Wed, 16 Oct 2024 07:04:28 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: Chen Ridong <chenridong@huaweicloud.com>, lizefan.x@bytedance.com,
-	hannes@cmpxchg.org, longman@redhat.com, john.fastabend@gmail.com,
-	roman.gushchin@linux.dev, quanyang.wang@windriver.com,
-	ast@kernel.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	chenridong@huawei.com, wangweiyang2@huawei.com
-Subject: Re: [PATCH] cgroup/bpf: fix NULL pointer dereference at
- cgroup_bpf_offline
-Message-ID: <Zw_yHEJCBwtYFJoR@slm.duckdns.org>
-References: <20241016093633.670555-1-chenridong@huaweicloud.com>
- <bidpqhgxflkaj6wzhkqj5fqoc2zumf3vcyidspz4mqm4erq3bu@r4mzs45sbe7g>
+	s=arc-20240116; t=1729099058; c=relaxed/simple;
+	bh=1qcDEKEXdEe+vXVETIwM5sey0mOwmtEmxTAsdaInNAI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LWQh44gLu0IPwomHbLvaYZz6VRpGtbz3VbWFzK2qrD0EXzR9BOKJlB675w8IzkHdj+0gSjiUI/N3L0sRCtebTGx4d1uo9qVO6RxvNqrzl81GLBv/WEmUpScIT3D1RqIhH2Ul2Oh9gsWSQcdLfIFs2pRf+Fk/7AutpqydiHiV80w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TvNrxYqO; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4608dddaa35so16921cf.0
+        for <cgroups@vger.kernel.org>; Wed, 16 Oct 2024 10:17:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1729099055; x=1729703855; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a6N/pHBmZnFXpVq6+UL3T9SWfEc3WQ8exbB8tpXp45E=;
+        b=TvNrxYqOY9m5dmlF1slyChDCFfA9jaz2iU0zRxrxaMA0jBXaAzcP7MXgc9RIBIuyz+
+         FjcM5FEME5GXlkPqxhKa4BIZWx2aE3E68YQCSsT9jbbCmc1kCu4dY+XH6iVPmU1FeP1O
+         06gHphuJhDx0X1V6UX4wW6WOZOdVqukZfBQtNrMWniF0o4uQjGrBiPQOPBAmjl/eCJDF
+         2ErUcbnLkZYlf/vgtiQENN0ZRDnHf+k8udDQdXfRCGYZ2NaO6i6vVKKhlnjY5qc+e6BR
+         3cZKyR5eJqRLyk29cHugoIJU8kg4oON3UDiHoR0/cVjL0hUWHkxVKhawTuAhHD5x94xJ
+         5SYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729099055; x=1729703855;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a6N/pHBmZnFXpVq6+UL3T9SWfEc3WQ8exbB8tpXp45E=;
+        b=pgcG4dGzKew4Py0pzEqEe3a2zYTtAmXcmvfzYiLYaVpQeVVr+5G84jCfWlMVIUKO7c
+         VPqEbe9/1ZArVE5Rejf/urk7E21ImCwlyz3mwpC44vAdLl0KHnkyEL31uKdmDqfkpQRP
+         mpVrxhUc8yJsXI5dSfDAZ3bFLmn9MM+v8q8f/ZqVvMiZtzFacjFpaxtnCoatsFzGbQfk
+         t4iFyLhxCn+Fy7ekiAmpfEoKl/NEMQRo459GQtJHbJcJzUEr1rxija0fQFmTE8ItevXD
+         fphoB8nOOS5/MbJSFZZqF7b+++17fPd2o8ccKOLhM/ohCW0Nyo18B94uVJQ383hqXvyY
+         M1vA==
+X-Forwarded-Encrypted: i=1; AJvYcCXo2nz2DTvE/scFM0fg+97FZOyEKm/cv0OnKvlHA/yLyMw8ljQl4HSnTJaTew3K8tm6rn42FfCE@vger.kernel.org
+X-Gm-Message-State: AOJu0YxYbKTh7BGrg08IcexDdMqadbK0FS8yPdr2smjHIY+NvO/MZUQ0
+	zlwsotTYa7K+1Hpzjnw91Nkvrup2rWpxcMrGcVrgjB+D3wUucjMME10u0bdGOR/678+Y4TeQ0Gh
+	8HVYmA2N2i7jfFQH2fPLpCPDeuhxBf1p3An/P
+X-Google-Smtp-Source: AGHT+IEePLBNjlQIEzNDgfNbNMSxGyKJwTaLZWj25xyJ0R8z1vqkjzL/pzKBBv0CgTEy+r6lEoCb5QFBcNuwTz3HKxI=
+X-Received: by 2002:a05:622a:a7c7:b0:460:48c3:c352 with SMTP id
+ d75a77b69052e-4608eaa4aa8mr5488141cf.1.1729099055385; Wed, 16 Oct 2024
+ 10:17:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bidpqhgxflkaj6wzhkqj5fqoc2zumf3vcyidspz4mqm4erq3bu@r4mzs45sbe7g>
+References: <20241015213721.3804209-1-shakeel.butt@linux.dev>
+In-Reply-To: <20241015213721.3804209-1-shakeel.butt@linux.dev>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Wed, 16 Oct 2024 10:17:22 -0700
+Message-ID: <CABdmKX3iqmPnmSDi=KCy+0QSws+PjLR1jLs8HL-JjorCARM02A@mail.gmail.com>
+Subject: Re: [PATCH v2] memcg: add tracing for memcg stat updates
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Steven Rostedt <rostedt@goodmis.org>, 
+	JP Kobryn <inwardvessel@gmail.com>, Yosry Ahmed <yosryahmed@google.com>, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Meta kernel team <kernel-team@meta.com>, Michal Hocko <mhocko@suse.com>, 
+	Muchun Song <songmuchun@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 16, 2024 at 03:13:52PM +0200, Michal Koutný wrote:
-> Hello.
-> 
-> On Wed, Oct 16, 2024 at 09:36:33AM GMT, Chen Ridong <chenridong@huaweicloud.com> wrote:
-> > As mentioned above, when cgroup_bpf_inherit returns an error in
-> > cgroup_setup_root, cgrp->bpf.refcnt has been exited. If cgrp->bpf.refcnt is
-> > killed again in the cgroup_kill_sb function, the data of cgrp->bpf.refcnt
-> > may have become NULL, leading to NULL pointer dereference.
-> > 
-> > To fix this issue, goto err when cgroup_bpf_inherit returns an error.
-> > Additionally, if cgroup_bpf_inherit returns an error after rebinding
-> > subsystems, the root_cgrp->self.refcnt is exited, which leads to
-> > cgroup1_root_to_use return 1 (restart) when subsystems is  mounted next.
-> > This is due to a failure trying to get the refcnt(the root is root_cgrp,
-> > without rebinding back to cgrp_dfl_root). So move the call to
-> > cgroup_bpf_inherit above rebind_subsystems in the cgroup_setup_root.
-> > 
-> > Fixes: 04f8ef5643bc ("cgroup: Fix memory leak caused by missing cgroup_bpf_offline")
-> > Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> 
-> Hm, I always thought that BPF progs can only be attached to the default
-> hierarchy (cgroup_bpf_prog_attach/cgroup_get_from_fd should prevent
-> that).
-> 
-> Thus I wonder whether cgroup_bpf_inherit (which is more like
-> cgroup_bpf_init in this case) needs to be called no v1 roots at all (and
-> with such a change, 04f8ef5643bc could be effectively reverted too).
-> 
-> Or can bpf data be used on v1 hierarchies somehow?
+On Tue, Oct 15, 2024 at 2:37=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
+v> wrote:
+>
+> The memcg stats are maintained in rstat infrastructure which provides ver=
+y
+> fast updates side and reasonable read side.  However memcg added plethora
+> of stats and made the read side, which is cgroup rstat flush, very slow.
+> To solve that, threshold was added in the memcg stats read side i.e.  no
+> need to flush the stats if updates are within the threshold.
+>
+> This threshold based improvement worked for sometime but more stats were
+> added to memcg and also the read codepath was getting triggered in the
+> performance sensitive paths which made threshold based ratelimiting
+> ineffective.  We need more visibility into the hot and cold stats i.e.
+> stats with a lot of updates.  Let's add trace to get that visibility.
+>
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Muchun Song <songmuchun@bytedance.com>
+> Cc: JP Kobryn <inwardvessel@gmail.com>
+> Cc: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
 
-We relaxed some of the usages (see cgroup_v1v2_get_from_fd()) but cgroup BPF
-progs can only be attached to v2.
-
-Thanks.
-
--- 
-tejun
+Reviewed-by: T.J. Mercier <tjmercier@google.com>
 
