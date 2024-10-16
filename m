@@ -1,112 +1,202 @@
-Return-Path: <cgroups+bounces-5136-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5137-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30E0A99FF08
-	for <lists+cgroups@lfdr.de>; Wed, 16 Oct 2024 04:47:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D5E399FFD9
+	for <lists+cgroups@lfdr.de>; Wed, 16 Oct 2024 06:00:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BD642B21B8D
-	for <lists+cgroups@lfdr.de>; Wed, 16 Oct 2024 02:47:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3ACF1F21B4E
+	for <lists+cgroups@lfdr.de>; Wed, 16 Oct 2024 04:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0E9C14D43D;
-	Wed, 16 Oct 2024 02:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEC51487A5;
+	Wed, 16 Oct 2024 04:00:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="STlkzjCG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFEE4433CB;
-	Wed, 16 Oct 2024 02:47:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCB493C2F
+	for <cgroups@vger.kernel.org>; Wed, 16 Oct 2024 04:00:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729046839; cv=none; b=QEjs54xaiLoTEVurp4O//KMG1G6/FcbS+X7gdMZJ3Qo5B0wkNGxMRJDZN4PChMjtq4C6oRyTiY4tVVJS7KwZB6/O3ce1XqG0krX9Rvmlby+duhQYUp2jpO9YMPJMcmdChp7kp3rDbHC5LIsslhKhFejjnCkZzBGdxZa1pt0bstI=
+	t=1729051234; cv=none; b=i3vLGHR0R5YDQ83UiHuLYd7NQQ9wq00PVIljudDzZ92UKJJddJo7cjjNIzXgtfsHhocfvF7VTzUQzBT9adZh7B5ykLTYua66hL1EsAlQ6GLavRlt4pQR/X2eKXHxnGmp71bHPB0v/14NnpYvzAPLssUaG8Oz7ZFfEIlPwp7wER4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729046839; c=relaxed/simple;
-	bh=5vhbPHK3Lf0vVi0FNmnj/Mq/QQhJ12Fqy9P86uNPUiI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=mXJS9yOpvaPZjWad+xqem4bMQevJhR2fplq+TaUxW8sURfPp8f8T1q0U2PnzTr4G0fP//X9fdMQx6ckXTjf60s+nMAWG6M6hyWHRRzRT6aZfM+SIsXIhkQdhqiEWYd0ir44hlnDUr5ui3ojQQ2JsNYSeJrCDXVIPDZBPRwmDeMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from SHSQR01.spreadtrum.com (localhost [127.0.0.2] (may be forged))
-	by SHSQR01.spreadtrum.com with ESMTP id 49G2lCuv090236;
-	Wed, 16 Oct 2024 10:47:12 +0800 (+08)
-	(envelope-from Xiuhong.Wang@unisoc.com)
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 49G2jGh1081782;
-	Wed, 16 Oct 2024 10:45:16 +0800 (+08)
-	(envelope-from Xiuhong.Wang@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx02.spreadtrum.com [10.0.64.8])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4XSwLB5Yyhz2PVftg;
-	Wed, 16 Oct 2024 10:45:06 +0800 (CST)
-Received: from tj10379pcu.spreadtrum.com (10.5.32.15) by
- BJMBX02.spreadtrum.com (10.0.64.8) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Wed, 16 Oct 2024 10:45:13 +0800
-From: Xiuhong Wang <xiuhong.wang@unisoc.com>
-To: <tj@kernel.org>, <josef@toxicpanda.com>, <axboe@kernel.dk>,
-        <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC: <niuzhiguo84@gmail.com>, <ke.wang@unisoc.com>, <xiuhong.wang.cn@gmail.com>
-Subject: [PATCH V2] Revert "blk-throttle: Fix IO hang for a corner case"
-Date: Wed, 16 Oct 2024 10:45:08 +0800
-Message-ID: <20241016024508.3340330-1-xiuhong.wang@unisoc.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1729051234; c=relaxed/simple;
+	bh=JsYGuMQjcI8VeUHTIcpNUZPNByPJcvSn88VYjYT1Sgs=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=CY1+AqFILz6ThI1Ik4huoYyvQaaDRjS3ia2afenzxTAVPMukVdD9CFNn0YTCW5bOGJJ2llHA282RhFBCzqEemF0J8yrdvmXLmRkbtMA2bXp/42BnkVhdakFV7ovdwrDxlpd5Pxed5JDD/fJBa+tW+oTpMO/rzXY5T6KHsfZlWn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=STlkzjCG; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1729051233; x=1760587233;
+  h=date:from:to:cc:subject:message-id;
+  bh=JsYGuMQjcI8VeUHTIcpNUZPNByPJcvSn88VYjYT1Sgs=;
+  b=STlkzjCGe1/q2w42gjypNWMf7DCdpmTpQDtqL3p7nMWKTFe3E4Mgzr2T
+   RHhYKoyaUM3XQPGjfHeRCFl7rTrMfCI/6/sgBYIoA1FaDODIaDlW0w0Ff
+   X8A7r/kwQRmGipN3QBH6LHqMClL0x1eskTSHHPvqjURwsQ/vnj7varg/I
+   EiBtLjBTnUxMH429sy2EOmhCIzS1zPOMxKIm0bUoc/28pzHbfZifTfIkF
+   /up5AjWiR3sEtaM0JXWMt0N0eKiOUbv+nICXuQjYObpR6KyBESW6Hw1qe
+   pWHSqc8fme30YIpTLMtroSPydWZqkuPlJyQCPGdnl3jqxm1V7Pkk5f6Vv
+   Q==;
+X-CSE-ConnectionGUID: wh0mb5zeTsGSpE2iINXwqw==
+X-CSE-MsgGUID: J58N+db1Rxq1rG6vb19a7w==
+X-IronPort-AV: E=McAfee;i="6700,10204,11225"; a="28677921"
+X-IronPort-AV: E=Sophos;i="6.11,207,1725346800"; 
+   d="scan'208";a="28677921"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2024 21:00:32 -0700
+X-CSE-ConnectionGUID: B0fn54BFQrWQW7Nl9RcKHQ==
+X-CSE-MsgGUID: +dvfau1TR7KroJ30+KDxgg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,207,1725346800"; 
+   d="scan'208";a="108843190"
+Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 15 Oct 2024 21:00:31 -0700
+Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1t0vD3-000KFr-03;
+	Wed, 16 Oct 2024 04:00:29 +0000
+Date: Wed, 16 Oct 2024 11:59:37 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ a6b3efd2cf3c743b528fed0ecc78712ee1aceb83
+Message-ID: <202410161125.fqG4EvLx-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
- BJMBX02.spreadtrum.com (10.0.64.8)
-X-MAIL:SHSQR01.spreadtrum.com 49G2jGh1081782
 
-This reverts commit 5b7048b89745c3c5fb4b3080fb7bced61dba2a2b.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: a6b3efd2cf3c743b528fed0ecc78712ee1aceb83  Merge branch 'for-6.13' into for-next
 
-The main purpose of this patch is cleanup.
-The throtl_adjusted_limit function was removed after
-commit bf20ab538c81 ("blk-throttle: remove
-CONFIG_BLK_DEV_THROTTLING_LOW"), so the problem of not being
-able to scale after setting bps or iops to 1 will not occur.
-So revert this commit that bps/iops can be set to 1.
+elapsed time: 1570m
 
-Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: Yu Kuai <yukuai3@huawei.com>
-Signed-off-by: Xiuhong Wang <xiuhong.wang@unisoc.com>
-Signed-off-by: Zhiguo Niu <zhiguo.niu@unisoc.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Reviewed-by: Yu Kuai <yukuai3@huawei.com>
----
-V1 -> V2: Updated description to clarify this is mostly a cleanup
----
- block/blk-throttle.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+configs tested: 109
+configs skipped: 3
 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 2c4192e12efa..443d1f47c2ce 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -1485,13 +1485,13 @@ static ssize_t tg_set_limit(struct kernfs_open_file *of,
- 			goto out_finish;
- 
- 		ret = -EINVAL;
--		if (!strcmp(tok, "rbps") && val > 1)
-+		if (!strcmp(tok, "rbps"))
- 			v[0] = val;
--		else if (!strcmp(tok, "wbps") && val > 1)
-+		else if (!strcmp(tok, "wbps"))
- 			v[1] = val;
--		else if (!strcmp(tok, "riops") && val > 1)
-+		else if (!strcmp(tok, "riops"))
- 			v[2] = min_t(u64, val, UINT_MAX);
--		else if (!strcmp(tok, "wiops") && val > 1)
-+		else if (!strcmp(tok, "wiops"))
- 			v[3] = min_t(u64, val, UINT_MAX);
- 		else
- 			goto out_finish;
--- 
-2.25.1
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+tested configs:
+alpha                             allnoconfig    gcc-14.1.0
+alpha                            allyesconfig    clang-20
+alpha                               defconfig    gcc-14.1.0
+arc                              allmodconfig    clang-20
+arc                               allnoconfig    gcc-14.1.0
+arc                              allyesconfig    clang-20
+arc                                 defconfig    gcc-14.1.0
+arc                        nsim_700_defconfig    clang-15
+arc                        vdk_hs38_defconfig    clang-15
+arm                              allmodconfig    clang-20
+arm                               allnoconfig    gcc-14.1.0
+arm                              allyesconfig    clang-20
+arm                     am200epdkit_defconfig    clang-15
+arm                         bcm2835_defconfig    clang-15
+arm                                 defconfig    gcc-14.1.0
+arm                            hisi_defconfig    clang-15
+arm                          sp7021_defconfig    clang-15
+arm64                            allmodconfig    clang-20
+arm64                             allnoconfig    gcc-14.1.0
+arm64                               defconfig    gcc-14.1.0
+csky                              allnoconfig    gcc-14.1.0
+csky                                defconfig    gcc-14.1.0
+hexagon                          allmodconfig    clang-20
+hexagon                           allnoconfig    gcc-14.1.0
+hexagon                          allyesconfig    clang-20
+hexagon                             defconfig    gcc-14.1.0
+i386                             alldefconfig    clang-15
+i386                             allmodconfig    clang-18
+i386                              allnoconfig    clang-18
+i386                             allyesconfig    clang-18
+i386        buildonly-randconfig-001-20241016    gcc-11
+i386        buildonly-randconfig-002-20241016    gcc-11
+i386        buildonly-randconfig-003-20241016    gcc-11
+i386        buildonly-randconfig-004-20241016    gcc-11
+i386        buildonly-randconfig-005-20241016    gcc-11
+i386        buildonly-randconfig-006-20241016    gcc-11
+i386                                defconfig    clang-18
+i386                  randconfig-001-20241016    gcc-11
+i386                  randconfig-002-20241016    gcc-11
+i386                  randconfig-003-20241016    gcc-11
+i386                  randconfig-004-20241016    gcc-11
+i386                  randconfig-005-20241016    gcc-11
+i386                  randconfig-006-20241016    gcc-11
+i386                  randconfig-011-20241016    gcc-11
+i386                  randconfig-012-20241016    gcc-11
+i386                  randconfig-013-20241016    gcc-11
+i386                  randconfig-014-20241016    gcc-11
+i386                  randconfig-015-20241016    gcc-11
+i386                  randconfig-016-20241016    gcc-11
+loongarch                        allmodconfig    gcc-14.1.0
+loongarch                         allnoconfig    gcc-14.1.0
+loongarch                           defconfig    gcc-14.1.0
+m68k                             allmodconfig    gcc-14.1.0
+m68k                              allnoconfig    gcc-14.1.0
+m68k                             allyesconfig    gcc-14.1.0
+m68k                                defconfig    gcc-14.1.0
+m68k                          sun3x_defconfig    clang-15
+microblaze                       allmodconfig    gcc-14.1.0
+microblaze                        allnoconfig    gcc-14.1.0
+microblaze                       allyesconfig    gcc-14.1.0
+microblaze                          defconfig    gcc-14.1.0
+mips                              allnoconfig    gcc-14.1.0
+mips                        vocore2_defconfig    clang-15
+nios2                             allnoconfig    gcc-14.1.0
+nios2                               defconfig    gcc-14.1.0
+openrisc                          allnoconfig    clang-20
+openrisc                         allyesconfig    gcc-14.1.0
+openrisc                            defconfig    gcc-12
+parisc                           allmodconfig    gcc-14.1.0
+parisc                            allnoconfig    clang-20
+parisc                           allyesconfig    gcc-14.1.0
+parisc                              defconfig    gcc-12
+parisc64                            defconfig    gcc-14.1.0
+powerpc                          allmodconfig    gcc-14.1.0
+powerpc                           allnoconfig    clang-20
+powerpc                          allyesconfig    gcc-14.1.0
+powerpc                     kmeter1_defconfig    clang-15
+powerpc                      pcm030_defconfig    clang-15
+powerpc                     ppa8548_defconfig    clang-15
+powerpc                      ppc44x_defconfig    clang-15
+powerpc                         ps3_defconfig    clang-15
+riscv                            allmodconfig    gcc-14.1.0
+riscv                             allnoconfig    clang-20
+riscv                            allyesconfig    gcc-14.1.0
+riscv                               defconfig    gcc-12
+s390                             allmodconfig    gcc-14.1.0
+s390                              allnoconfig    clang-20
+s390                             allyesconfig    gcc-14.1.0
+s390                                defconfig    gcc-12
+sh                               allmodconfig    gcc-14.1.0
+sh                                allnoconfig    gcc-14.1.0
+sh                               allyesconfig    gcc-14.1.0
+sh                                  defconfig    gcc-12
+sh                          urquell_defconfig    clang-15
+sparc                            allmodconfig    gcc-14.1.0
+sparc64                             defconfig    gcc-12
+um                               allmodconfig    clang-20
+um                                allnoconfig    clang-20
+um                               allyesconfig    clang-20
+um                                  defconfig    gcc-12
+um                             i386_defconfig    gcc-12
+um                           x86_64_defconfig    gcc-12
+x86_64                            allnoconfig    clang-18
+x86_64                           allyesconfig    clang-18
+x86_64                              defconfig    clang-18
+x86_64                                  kexec    clang-18
+x86_64                                  kexec    gcc-12
+x86_64                               rhel-8.3    gcc-12
+xtensa                            allnoconfig    gcc-14.1.0
+
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
