@@ -1,154 +1,133 @@
-Return-Path: <cgroups+bounces-5149-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5150-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60C1F9A1CA8
-	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 10:11:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54E8C9A2201
+	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 14:18:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D182F1F225DC
-	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 08:11:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09E851F28FB0
+	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 12:18:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAE551D31BA;
-	Thu, 17 Oct 2024 08:09:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h5dR7aqu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA8061DCB0D;
+	Thu, 17 Oct 2024 12:18:14 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B501D2F73;
-	Thu, 17 Oct 2024 08:09:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A1E1C695;
+	Thu, 17 Oct 2024 12:18:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729152541; cv=none; b=nEUxrjOhXZ++TXdI9X9BkCakZiSEMYaCgq8l2f2w35aBHe9JfeeHhfhxJNUAC2NHeG6P4FTeDHbLMbe0Zf5yYChRXkW6SJmXAVZ5AKrmXF0mGZ5a40X3PVKf0svrLejm8UD7Ubaiug8Lt9VifeHRF7j6NVS3WYGOC4WG9CQHxEM=
+	t=1729167494; cv=none; b=IwvPUTpAmgY9a3ioxLoYEcVwEpfUc/M5ujMeFPbXGPYzQqeq8/1Sjj1iznZRatg94zhLx+xG0pAbW6jt6Ceoe79H316IoviHdKSjkpGLODNFKr71M4qO+l6UKfkupFFnUs3uDnCcMjE0fOJtanTsXKRchEWEt3g0y3D2Yn47aUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729152541; c=relaxed/simple;
-	bh=WgV1yPsQEfLVgIf7sUsDgNd1OB+7mFrwh0VC/JNEuvE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XJDbOqmc8Sb/Gr3C+q3KrXuIxT3LoZ0nrKSxmw/pJYsLU21Ga4hrbvkM9SalKUGmPKo2Ii3RM43lKsAmY8J4yt/BJF7dhL1MwutjCs3AkoWEI0RoqfYSmMOQxWxtNZSnM7YLMF+yjj62AVour8HiVFX2YS2RvX/JdTfEpGthuVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h5dR7aqu; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-7db637d1e4eso687915a12.2;
-        Thu, 17 Oct 2024 01:09:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729152540; x=1729757340; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=kMCKUVNZZJ5h5SBjiPpT+h3myf20vmvFyCYHe1J3PsU=;
-        b=h5dR7aqu2AOKj0VzQio2C/XD8Y/4bmsU8lLDCffmZ6WCoICSJfOA9EHIVOGEX5fW6i
-         Z6yxNQpjtLy6dy/A6l/obBnDVQQvHskvfYtWJhanyZKrTxDJJztCucnzokSszUIf+BI+
-         /KjmRiG3m0mBALYKsmnjkGLgY6FPoX4DoFol1+RlBijugbhvjbkGOq5Us6kwwwQynMR/
-         29RfdlELWmqlcVpDo7W1gtwNBsjkclyLpMUIaNRT5zFU64opSSmlCJ+dfZVOWLgcGW07
-         rJSOMfIxQ7mn566uBFfY0WSbDHQKZRV3NpzOr1ss9x0Z9hY7hBAOrf6nyIMMItMcOsX9
-         62eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729152540; x=1729757340;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kMCKUVNZZJ5h5SBjiPpT+h3myf20vmvFyCYHe1J3PsU=;
-        b=VkXAV9RuJrWm1ARjGApNGh7uMLPgFVrkQIf5ouhjJVWlmiPVwQ6MXBZX9i8GOouIYI
-         52OpiRJKw3Yf2x0rPokjr1ORBU2rKppJqY9g4b5xz4s+bhM0Q+OUPci+JJELcj0wBeY7
-         1lvL3DAhT1qXdC+E/NWPKIzC8PZs7iPShfqvPEqP8xtVaC9pQny16E/wkDMUbUYWGTxW
-         0j6F06B0U+BZ4EZ7HYOxSTSeaplTCdT1Bg3gFsOmhwXiXhiBMWv+Uk/D9f2vc1rvSvvc
-         p+4NGS5NHCg8wfQrLJbbZq/bbEMmZ+2bqPFrs345stSUBuknpPOIp919bn1p7Gi/g9wV
-         m1bQ==
-X-Forwarded-Encrypted: i=1; AJvYcCURg1ANwDVh0LQu9arxGPTSSNyD6/SGRgTsqCXeuoKm73jZgREanYc5QORHuo3m+zyG9zaedyUkt9HW3eiD@vger.kernel.org, AJvYcCWQe7LtJlKna5r8aDsVxHiYiu4jdAXA3vIync2qdra7a389Vq1FlNELQK0hyd3SrToCG5rHtxvFfA==@vger.kernel.org, AJvYcCXIYJ5xayFaqiwbV4IUr4wFbsCGHjYqwFstOfsIX9xZJLqbVwSjQh1A8ADXCIrC8+JfjU8=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzl2aCtEtmwKKTRnyJoFiODPhbj92B/2DtDN+3LqdvIodQDX9hf
-	aL4mxoBmawetAk9i+NIoNos2UDeCkO1ScRgkhfr3FlV8Mxqj+qN+
-X-Google-Smtp-Source: AGHT+IGvD8b5wJYc30AU/sUF2r2o7tfDCtXDU2fL3wlXBG8Af8uuvrfgwFb9ZlCSNgycUFSSq2LAYA==
-X-Received: by 2002:a17:90a:5107:b0:2c9:5a85:f8dd with SMTP id 98e67ed59e1d1-2e3ab820d71mr7598872a91.18.1729152539590;
-        Thu, 17 Oct 2024 01:08:59 -0700 (PDT)
-Received: from [192.168.0.235] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e3e08d6b0csm1217487a91.31.2024.10.17.01.08.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Oct 2024 01:08:59 -0700 (PDT)
-Message-ID: <af842df1791423386f3aef25f3f94c5b39b5e332.camel@gmail.com>
-Subject: Re: Using union-find in BPF verifier (was: Enhance union-find with
- KUnit tests and optimization improvements)
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Shung-Hsi Yu <shung-hsi.yu@suse.com>, Kuan-Wei Chiu
- <visitorckw@gmail.com>,  bpf@vger.kernel.org
-Cc: Tejun Heo <tj@kernel.org>, xavier_qy@163.com, longman@redhat.com, 
- lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com, 
- akpm@linux-foundation.org, jserv@ccns.ncku.edu.tw,
- linux-kernel@vger.kernel.org,  cgroups@vger.kernel.org, Christoph Hellwig
- <hch@infradead.org>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
- <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>
-Date: Thu, 17 Oct 2024 01:08:54 -0700
-In-Reply-To: <aci6pn57bqjfcshbak7ekxb7zr5zz72u3rxyu4zbp5w3mvljx2@b4rn2e4rb4rl>
-References: <20241007152833.2282199-1-visitorckw@gmail.com>
-	 <ZwQJ_hQENEE7uj0q@slm.duckdns.org>
-	 <aci6pn57bqjfcshbak7ekxb7zr5zz72u3rxyu4zbp5w3mvljx2@b4rn2e4rb4rl>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+	s=arc-20240116; t=1729167494; c=relaxed/simple;
+	bh=8xOP+fyn8S9TsJvLes6SdW4DK+kDiUgc2CPyz+uilZc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qN3QgLrnzhRGXCDmihUhFlCkITz1y9SxdIKlbuziLIx2e9hiwOp/Yl0RCUtHmlnCHjyWGzbai14qr5NktjVR4mhJlY2ehfhSM9oD8ZioYA34ScRKoPiuY52DTEQTRiY7QAaeVd3A6DW7EfhZeBnK5bqhOmY27FJSgVFJr+gRZFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XTn0X3WzBz4f3lXV;
+	Thu, 17 Oct 2024 20:17:48 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 901B81A08DC;
+	Thu, 17 Oct 2024 20:18:00 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP4 (Coremail) with SMTP id gCh0CgB3q8d3ABFnPJpjEQ--.54302S2;
+	Thu, 17 Oct 2024 20:18:00 +0800 (CST)
+Message-ID: <12f57831-6b88-49db-bfb6-eabfc5e1d40c@huaweicloud.com>
+Date: Thu, 17 Oct 2024 20:17:58 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cgroup/bpf: fix NULL pointer dereference at
+ cgroup_bpf_offline
+To: Tejun Heo <tj@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>
+Cc: Chen Ridong <chenridong@huaweicloud.com>, lizefan.x@bytedance.com,
+ hannes@cmpxchg.org, longman@redhat.com, john.fastabend@gmail.com,
+ roman.gushchin@linux.dev, quanyang.wang@windriver.com, ast@kernel.org,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ wangweiyang2@huawei.com
+References: <20241016093633.670555-1-chenridong@huaweicloud.com>
+ <bidpqhgxflkaj6wzhkqj5fqoc2zumf3vcyidspz4mqm4erq3bu@r4mzs45sbe7g>
+ <Zw_yHEJCBwtYFJoR@slm.duckdns.org>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <Zw_yHEJCBwtYFJoR@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgB3q8d3ABFnPJpjEQ--.54302S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFWrGr1DurWrJw4UJw4kXrb_yoW8ZF15pr
+	savFnFk3Z5GrZ0yryvva4FvF15CF4Iq34UXrWUJry3AFnrWrWUtry2kFy5CF98AFn7Kr13
+	JrWYvrySk3yq93DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+	WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+	67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
+	IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF
+	0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
+	VjvjDU0xZFpf9x0JUd-B_UUUUU=
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Thu, 2024-10-17 at 15:10 +0800, Shung-Hsi Yu wrote:
-> Michal mentioned lib/union_find.c during a discussion. I think we may
-> have a use for in BPF verifier (kernel/bpf/verifier.c) that could
-> further simplify the code. Eduard (who wrote the code shown below)
-> probably would have a better idea.
->=20
-> On Mon, Oct 07, 2024 at 06:19:10AM GMT, Tejun Heo wrote:
-> > On Mon, Oct 07, 2024 at 11:28:27PM +0800, Kuan-Wei Chiu wrote:
-> > > This patch series adds KUnit tests for the union-find implementation
-> > > and optimizes the path compression in the uf_find() function to achie=
-ve
-> > > a lower tree height and improved efficiency. Additionally, it modifie=
-s
-> > > uf_union() to return a boolean value indicating whether a merge
-> > > occurred, enhancing the process of calculating the number of groups i=
-n
-> > > the cgroup cpuset.
-> >=20
-> > I'm not necessarily against the patchset but this probably is becoming =
-too
-> > much polishing for something which is only used by cpuset in a pretty c=
-old
-> > path. It probably would be a good idea to concentrate on finding more u=
-se
-> > cases.
 
-Hi Shung-Hsi,
 
-[...]
+On 2024/10/17 1:04, Tejun Heo wrote:
+> On Wed, Oct 16, 2024 at 03:13:52PM +0200, Michal Koutný wrote:
+>> Hello.
+>>
+>> On Wed, Oct 16, 2024 at 09:36:33AM GMT, Chen Ridong <chenridong@huaweicloud.com> wrote:
+>>> As mentioned above, when cgroup_bpf_inherit returns an error in
+>>> cgroup_setup_root, cgrp->bpf.refcnt has been exited. If cgrp->bpf.refcnt is
+>>> killed again in the cgroup_kill_sb function, the data of cgrp->bpf.refcnt
+>>> may have become NULL, leading to NULL pointer dereference.
+>>>
+>>> To fix this issue, goto err when cgroup_bpf_inherit returns an error.
+>>> Additionally, if cgroup_bpf_inherit returns an error after rebinding
+>>> subsystems, the root_cgrp->self.refcnt is exited, which leads to
+>>> cgroup1_root_to_use return 1 (restart) when subsystems is  mounted next.
+>>> This is due to a failure trying to get the refcnt(the root is root_cgrp,
+>>> without rebinding back to cgrp_dfl_root). So move the call to
+>>> cgroup_bpf_inherit above rebind_subsystems in the cgroup_setup_root.
+>>>
+>>> Fixes: 04f8ef5643bc ("cgroup: Fix memory leak caused by missing cgroup_bpf_offline")
+>>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>>
+>> Hm, I always thought that BPF progs can only be attached to the default
+>> hierarchy (cgroup_bpf_prog_attach/cgroup_get_from_fd should prevent
+>> that).
+>>
+>> Thus I wonder whether cgroup_bpf_inherit (which is more like
+>> cgroup_bpf_init in this case) needs to be called no v1 roots at all (and
+>> with such a change, 04f8ef5643bc could be effectively reverted too).
+>>
+>> Or can bpf data be used on v1 hierarchies somehow?
+> 
+> We relaxed some of the usages (see cgroup_v1v2_get_from_fd()) but cgroup BPF
+> progs can only be attached to v2.
+> 
+> Thanks.
+> 
 
-> Squinting a bit get_loop_entry() looks quite like uf_find() and
-> update_loop_entry() looks quite link uf_union(). So perhaps we could get
-> a straight-forward conversion here.
+So, should commit 04f8ef5643bc ("cgroup: Fix memory leak caused by 
+missing cgroup_bpf_offline") be reverted, and should cgroup_bpf_inherit 
+be only called in v2?
+Have I understood this correctly?
 
-I'll reply tomorrow, need to sleep on it.
-
-> ---
->=20
-> Another (comparatively worst) idea is to use it for tracking whether two
-> register has the same content (this is currently done with struct
-> bpf_reg_state.id).
-
-Given that union-find data structure does not support element deletion
-and only accumulates merged groups, for the following code:
-
-  0: r0 =3D random()
-  1: r1 =3D r0
-  2: r0 =3D random()
-
-It would be necessary to re-build sets of equivalent registers at
-instruction (2). I'm not sure about this use case, tbh.
-
-[...]
-
-Thanks,
-Eduard
+Best regards,
+Ridong
 
 
