@@ -1,136 +1,118 @@
-Return-Path: <cgroups+bounces-5151-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5152-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 836C19A221E
-	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 14:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F30039A27EB
+	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 18:04:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2AC11C24771
-	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 12:21:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 301FD1C211F4
+	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 16:04:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 727431DD0E0;
-	Thu, 17 Oct 2024 12:21:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7D5D1DE2A6;
+	Thu, 17 Oct 2024 16:04:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="OfuWY1fx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="La2duIdQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB8881DCB3F
-	for <cgroups@vger.kernel.org>; Thu, 17 Oct 2024 12:21:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D01213B797;
+	Thu, 17 Oct 2024 16:04:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729167692; cv=none; b=NoPGbgH7WA/+zL3rSeTfwrnRAAceL9KaXFAic+XnEp54lTRu32ZLpO43wn2G+VheexYiWl7UH0loNwDuUW4haXaB1sCYfH26Y/buC6epI+sMyI4Fb3JjeVdN2vgFB1A2bxnlBBiHNni0RaJmL4OQrfslioLAOOBaj+mXbzFkdVo=
+	t=1729181082; cv=none; b=Bhhj/on/ckkPQOls/JfwGdk8h8b1MqKRdOM6t6YFLikQr2s9D3CXf5UCWDi8QQEnTsPVeH4ASgde+WyxO4hXkLh1nOBrdLlaKNTKtCW2UMawE/40r1ZybIn1yTk78LrhR8sUNe++KZXgAwl1xTWPLBmHHyG5Ww5K3Egc58BAsJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729167692; c=relaxed/simple;
-	bh=dZiXlD5sbB2j6jzh26ifCQe+UHqF9fZSmuz2zam6EZg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YzvCTXAMY98bTm/J46oKQvpR8BCRD4WvKOoNwL1Vn/HhA9LGlxMKf7TUBY1UPU9COJSi9mVpaHsRdtwbxwVQ/NQQJgrLJpJXb2OoU37jlc3wKFOo73U0kRi+F2LPclI6H/PBwZqR2IkrRuEVZ7Dq3s8gTgH9SRr93unIf6v1V7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=OfuWY1fx; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5c9388a00cfso1030937a12.3
-        for <cgroups@vger.kernel.org>; Thu, 17 Oct 2024 05:21:27 -0700 (PDT)
+	s=arc-20240116; t=1729181082; c=relaxed/simple;
+	bh=SZv9Ge2gLPPyhzWPwz/aM196GoNOneNQoedvRLu3PBc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=W6Dyx1LhIAETI7JfzAR8Wwn/65wO/m7Uw3gZyCca/l4NX+vurADYyhK4pgh83/EeJ2fUtHr+gLL9mlFpBp4E1Xb6hrZz074yQAFavY4akr4WwYn+nFb8ilJx+SA+Ncaz4qCgEEQVolX5uI5trx/KcjfYcAjxh+vHfL3VwLZAOGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=La2duIdQ; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6e305c2987bso11440277b3.0;
+        Thu, 17 Oct 2024 09:04:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1729167686; x=1729772486; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=upV9IxmbyLh24y5KvmoZk8IuzsVT/v4PISDDNTLkG6M=;
-        b=OfuWY1fxb7KBr/PsajSOdYJSb2WYTVh4Bk+hg+/Dw70NMkYlSZ81jCaC/SoVhumcQ4
-         cSe/kOkWUkBbgf61Q/LAbRQeLzBJ1Z8fr5uyoUG5oKqBaDza6UVDR4EMKrDQimGG1wOE
-         a7prgsmTAy3wua8BQ8HlQfMBH4nSPayaEXt3hgfoRcqAtjcWtiKvu3rOGWmDTgk3RkTx
-         0405CPDrKuOyuNd+zKvKEMykc3K5F3LlFp1Tf5uwwngNFxEqBioPVR0f8T0gauH7sOx+
-         2nfzOs9U/SiBR1UFTofM3XDZ5CXx7H74fN5RkwR0Rjo+CuPWvEiEc6SlGkZ7KVTV+oPZ
-         D+0A==
+        d=gmail.com; s=20230601; t=1729181080; x=1729785880; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rQQfcVXhiZjyD5+Uuz4bB71/1uXjkNUShX25v17NHhI=;
+        b=La2duIdQt38pJFWm5Zh3eZDCBsAdn+qgICG1HDmoeP3Q9tic7AMIRXwuMuVYZr/igl
+         aHmQar13JfAqWl2zX8HBM/nLLfuQvcVwSdB1nFFFIUgwkpAG4RBuV7T4GrBiKRZfuzuS
+         jpACCB4SZmqYyPknvOC7WMtNHS/Y1q9ZM+Alg+TYKUZt8pQRV0TJU36UfT8XuKB3wrFW
+         QbYnfWn9XWqdl05kOR+39tmro4wVq2F1XlW/ZdvMq6DiBrLTeLnVPFvyL2dl8Tisf9Qq
+         ATeL6mjm6r4yofkzRs2At42nSx40AibeDgnv0rHvn54fYbZvouF45+qZH3vVcBZwobmF
+         pmZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729167686; x=1729772486;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=upV9IxmbyLh24y5KvmoZk8IuzsVT/v4PISDDNTLkG6M=;
-        b=GmMsj7pcubohlKUAT9VgeGxQXPWlvJS97oPcOgO6odKXunYBYUYWdxXecy5DtenN3S
-         CN9DFzjY6llJ6tSejR7u1uscq5uIDb1g5ji+claHPXy5iAXw4BrWsnPfylaytOR2O4dQ
-         zaP6bExvtj+W9deMK5v4o1D5ViAJmXfBw1wYudq278DqQtGD4tXE5wOcdH0xTKakGurR
-         aryNuNDENMryy/RGETXDGVDqh5OdbqTfLxdY2nZ6n+5QfKCFRxMBh8ioEvJzCJdc1jPV
-         bjsKOAZE+1WGUpOeRoGT6Fqop+4Lv7jdfibDztuyRL5IFy7/xI0cDnatRRGFr9Tt3QG+
-         7Qmg==
-X-Forwarded-Encrypted: i=1; AJvYcCUIEQ26E+6f8+hCR4tW3Aci8JLc9Ts4EoABAVq8r3Bv8IhNXD8uIJezAbO1n4qEABea5m6Eqs1Z@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy9Q0p0aq4T1F50l8zCmPx7McTfrticbO0MvcFIkLn52cH/A0/b
-	DoHk2Nw+DRvg5TLlzqy6CVPANKuFLr8Uq8h41ODW4ZOZKjClfWHOljkjwqB3aCY=
-X-Google-Smtp-Source: AGHT+IGq5ucbFHU1tVBUcI+q8DDYTzRsfdUSa7DEcY8Ig4Lc722w45PjwM12vp8ybtkKQFy10/mN6g==
-X-Received: by 2002:a05:6402:13cd:b0:5c9:3fe:c7b9 with SMTP id 4fb4d7f45d1cf-5c994e6dfd2mr5839341a12.0.1729167686207;
-        Thu, 17 Oct 2024 05:21:26 -0700 (PDT)
-Received: from localhost ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c98d5077e6sm2733482a12.48.2024.10.17.05.21.25
+        d=1e100.net; s=20230601; t=1729181080; x=1729785880;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rQQfcVXhiZjyD5+Uuz4bB71/1uXjkNUShX25v17NHhI=;
+        b=daCNzRrkPKcJJnEWZbQmgzJ6uISh/fLZPpNXdeyTADSvCKKUe1TdMZ5nO8iu4jFki4
+         1zfQiQSYzdTzRZTRxjDt5MaYLTBuSsZG++/bEyAWB9rzC9QEK7bUPbEmT3fXHZgIqKP+
+         xySBKku7xrPWUXM3t9UEPkYj7SgbTiUnLiTA89FX5DkOboRYKUQFbIhfKRcVePonpTRe
+         x5S4VMi5Ukmx5mrUufCeBG49wyxhZez483Vmxz3QNSVMyTNIdthkzGXMymDPG2tTW1IA
+         dkswxAT/o8eKj/kAUtN9Im3Nr2ulg4W5g1SFLcnF5YvYrIH68B8QxxSpWGZB5IpnQkJK
+         ss/g==
+X-Forwarded-Encrypted: i=1; AJvYcCVnj+CJWGndJT52/CVhJYXDO5rpWTtOZMNSMPmvyU3e0ZZYzwlp13b1icJukO7tBHz+HeKqJBSpQuMgHwA0@vger.kernel.org, AJvYcCW90SDa/6LUVaeoEVaFD8yofmPfdTab+XbdyCPDYMo4RQQWm/CztpiMrrbpHKqY4rRUf0uX8OCT@vger.kernel.org
+X-Gm-Message-State: AOJu0YxLsU6eQ4qSAH46AdFvuHAAB95Bevmnj3CgRkebW8ntArdVCWCs
+	2xuhefn7wbJCwQkd0G48MEYltuq2WlL9n41uhvZ2BaeZaGhqsfHqLd4h2g/3
+X-Google-Smtp-Source: AGHT+IGN/xdBom9ZZqdHTpsB+1NWpcYL8veo5a8BAcCHN4xw06eY7bO5RU2+0auKELs7aMZh0mSUqg==
+X-Received: by 2002:a05:690c:4c0f:b0:6e3:d4e3:b9b7 with SMTP id 00721157ae682-6e3d4e4fc02mr82899327b3.35.1729181079842;
+        Thu, 17 Oct 2024 09:04:39 -0700 (PDT)
+Received: from localhost (fwdproxy-frc-029.fbsv.net. [2a03:2880:21ff:1d::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6e3c5b370f8sm11770317b3.31.2024.10.17.09.04.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Oct 2024 05:21:25 -0700 (PDT)
-Date: Thu, 17 Oct 2024 14:21:25 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	David Hildenbrand <david@redhat.com>,
-	Greg Marsden <greg.marsden@oracle.com>,
-	Ivan Ivanov <ivan.ivanov@suse.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Kalesh Singh <kaleshsingh@google.com>,
-	Marc Zyngier <maz@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-	Matthias Brugger <mbrugger@suse.com>,
-	Miroslav Benes <mbenes@suse.cz>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Will Deacon <will@kernel.org>, cgroups@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [RFC PATCH v1 03/57] mm/memcontrol: Fix seq_buf size to save
- memory when PAGE_SIZE is large
-Message-ID: <ZxEBRd0jEtVEGWki@tiehlicka>
-References: <20241014105514.3206191-1-ryan.roberts@arm.com>
- <20241014105912.3207374-1-ryan.roberts@arm.com>
- <20241014105912.3207374-3-ryan.roberts@arm.com>
- <ghebtxz4xazx57nnujk6dw2qmskyc5fffaxuqk2oip7k2w2wuf@grnsquoevact>
- <315d4258-ea96-4008-8781-9205f41cec6c@arm.com>
+        Thu, 17 Oct 2024 09:04:39 -0700 (PDT)
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+To: hannes@cmpxchg.org
+Cc: nphamcs@gmail.com,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	akpm@linux-foundation.org,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	lnyng@meta.com
+Subject: [PATCH 0/1] memcg/hugetlb: Adding hugeTLB counters to memory controller
+Date: Thu, 17 Oct 2024 09:04:37 -0700
+Message-ID: <20241017160438.3893293-1-joshua.hahnjy@gmail.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <315d4258-ea96-4008-8781-9205f41cec6c@arm.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue 15-10-24 11:55:26, Ryan Roberts wrote:
-> On 14/10/2024 20:59, Shakeel Butt wrote:
-> > On Mon, Oct 14, 2024 at 11:58:10AM GMT, Ryan Roberts wrote:
-> >> Previously the seq_buf used for accumulating the memory.stat output was
-> >> sized at PAGE_SIZE. But the amount of output is invariant to PAGE_SIZE;
-> >> If 4K is enough on a 4K page system, then it should also be enough on a
-> >> 64K page system, so we can save 60K om the static buffer used in
-> >> mem_cgroup_print_oom_meminfo(). Let's make it so.
-> >>
-> >> This also has the beneficial side effect of removing a place in the code
-> >> that assumed PAGE_SIZE is a compile-time constant. So this helps our
-> >> quest towards supporting boot-time page size selection.
-> >>
-> >> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> > 
-> > Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
-> 
-> Thanks Shakeel and Johannes, for the acks. Given this patch is totally
-> independent, I'll plan to resubmit it on its own and hopefully we can get it in
-> independently of the rest of the series.
+HugeTLB usage is a metric that can provide utility for monitors hoping
+to get more insight into the memory usage patterns in cgroups. It also
+helps identify if large folios are being distributed efficiently across
+workloads, so that tasks that can take most advantage of reduced TLB
+misses are prioritized.
 
-Yes, this makes sense independent on the whole series. 
+While cgroupv2's hugeTLB controller does report this value, some users
+who wish to track hugeTLB usage might not want to take on the additional
+overhead or the features of the controller just to use the metric.
+This patch introduces hugeTLB usage in the memcg stats, mirroring the
+value in the hugeTLB controller and offering a more fine-grained
+cgroup-level breakdown of the value in /proc/meminfo.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
 
-Thanks!
+Joshua Hahn (1):
+  Adding hugeTLB counters to memory controller
+
+ include/linux/memcontrol.h | 3 +++
+ mm/hugetlb.c               | 5 +++++
+ mm/memcontrol.c            | 6 ++++++
+ 3 files changed, 14 insertions(+)
+
 -- 
-Michal Hocko
-SUSE Labs
+2.43.5
+
 
