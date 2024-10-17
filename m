@@ -1,118 +1,127 @@
-Return-Path: <cgroups+bounces-5146-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5147-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD1569A1072
-	for <lists+cgroups@lfdr.de>; Wed, 16 Oct 2024 19:17:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6ED59A1972
+	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 05:44:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 644C11F21FF1
-	for <lists+cgroups@lfdr.de>; Wed, 16 Oct 2024 17:17:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 895511F2326C
+	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 03:44:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725AD18A933;
-	Wed, 16 Oct 2024 17:17:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1BA71369B6;
+	Thu, 17 Oct 2024 03:44:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TvNrxYqO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fLoZdNLw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FA9A188580
-	for <cgroups@vger.kernel.org>; Wed, 16 Oct 2024 17:17:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0122C6BFC0;
+	Thu, 17 Oct 2024 03:44:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729099058; cv=none; b=EhbWArS+B0ppLz6mydd4P+p+UA2Cf15BC2Fv4DdM0LdaeJ/7vtHCGyMYCXPFl0OItuN4eMrhdrK6F++/AzSVXt06qRFEplvMSdMQJ8plk5gWnDG8XkuUXSSQOWwNeiY/77iHjbo+9y/yyfyj5QDvaXtRJLCrkeCySru5J8wln0A=
+	t=1729136689; cv=none; b=C2AlwlwOPP74/usTss9sBH3BAn1JDv1bKBMVfZwWRuK2cBlm9Iri5nB/j67jgkAQYL/ZOaeCpwMN4iRdrUp3ENKJ+Q9mBTKE+j2LUZYF4uW8yJgwvqZ7qIF5h953L2DQTzYUzMBcMpwRjXwW0mK/rDzb33aG20ACZnG/SBMZBLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729099058; c=relaxed/simple;
-	bh=1qcDEKEXdEe+vXVETIwM5sey0mOwmtEmxTAsdaInNAI=;
+	s=arc-20240116; t=1729136689; c=relaxed/simple;
+	bh=pRFPATnQENrImT54UxMxbwhpzy00PtA0DnAZUuGUA7A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LWQh44gLu0IPwomHbLvaYZz6VRpGtbz3VbWFzK2qrD0EXzR9BOKJlB675w8IzkHdj+0gSjiUI/N3L0sRCtebTGx4d1uo9qVO6RxvNqrzl81GLBv/WEmUpScIT3D1RqIhH2Ul2Oh9gsWSQcdLfIFs2pRf+Fk/7AutpqydiHiV80w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TvNrxYqO; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4608dddaa35so16921cf.0
-        for <cgroups@vger.kernel.org>; Wed, 16 Oct 2024 10:17:36 -0700 (PDT)
+	 To:Cc:Content-Type; b=FjBfZ+ba/2O7hBbOAeBmijxoiHfuhigElLggpBMUexzPqEjO+QNeyB+v0ldFskee7T58WQy8ExSvl7fhwyGQ8brOftLPPpU/0vO6A3uG3+qAvDLZyDfiStYg5UIl10MdGbHlkCSMAPDM9GlvVUNPub7fVcvRHyD0It02FAoYAlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fLoZdNLw; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5c93109d09aso87292a12.3;
+        Wed, 16 Oct 2024 20:44:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1729099055; x=1729703855; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1729136686; x=1729741486; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=a6N/pHBmZnFXpVq6+UL3T9SWfEc3WQ8exbB8tpXp45E=;
-        b=TvNrxYqOY9m5dmlF1slyChDCFfA9jaz2iU0zRxrxaMA0jBXaAzcP7MXgc9RIBIuyz+
-         FjcM5FEME5GXlkPqxhKa4BIZWx2aE3E68YQCSsT9jbbCmc1kCu4dY+XH6iVPmU1FeP1O
-         06gHphuJhDx0X1V6UX4wW6WOZOdVqukZfBQtNrMWniF0o4uQjGrBiPQOPBAmjl/eCJDF
-         2ErUcbnLkZYlf/vgtiQENN0ZRDnHf+k8udDQdXfRCGYZ2NaO6i6vVKKhlnjY5qc+e6BR
-         3cZKyR5eJqRLyk29cHugoIJU8kg4oON3UDiHoR0/cVjL0hUWHkxVKhawTuAhHD5x94xJ
-         5SYQ==
+        bh=pRFPATnQENrImT54UxMxbwhpzy00PtA0DnAZUuGUA7A=;
+        b=fLoZdNLwpw0X7Hji41xusrS4zZt/L87EWeo1ieECYOYP5ThLpOQxBC9QGydpZybP2i
+         c9ZWS0kW8Lph7el61EfohiAfAqpAHA5Cn3O9n4eRmMxfbb90owuw6PZ0owo5ExxWOpaE
+         Tde23EKgwCT926+9XXB7fgwHzUwWNHX7L26XD2SuXZeUmCRkA9MjxyaZrpfHr3nz0h28
+         /dHrq9nigywH1DLhJzLs1jZ55ah2h9QkmSn7yvndz14YWoIUMVN8cqkB/PYYN4libuy5
+         BsQCVTrukFb0qt7kCYuGHsGULep2DWP1SxDDsBNNmuUrXUptU+teZPieB3WiTDc3fQbK
+         yf2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729099055; x=1729703855;
+        d=1e100.net; s=20230601; t=1729136686; x=1729741486;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a6N/pHBmZnFXpVq6+UL3T9SWfEc3WQ8exbB8tpXp45E=;
-        b=pgcG4dGzKew4Py0pzEqEe3a2zYTtAmXcmvfzYiLYaVpQeVVr+5G84jCfWlMVIUKO7c
-         VPqEbe9/1ZArVE5Rejf/urk7E21ImCwlyz3mwpC44vAdLl0KHnkyEL31uKdmDqfkpQRP
-         mpVrxhUc8yJsXI5dSfDAZ3bFLmn9MM+v8q8f/ZqVvMiZtzFacjFpaxtnCoatsFzGbQfk
-         t4iFyLhxCn+Fy7ekiAmpfEoKl/NEMQRo459GQtJHbJcJzUEr1rxija0fQFmTE8ItevXD
-         fphoB8nOOS5/MbJSFZZqF7b+++17fPd2o8ccKOLhM/ohCW0Nyo18B94uVJQ383hqXvyY
-         M1vA==
-X-Forwarded-Encrypted: i=1; AJvYcCXo2nz2DTvE/scFM0fg+97FZOyEKm/cv0OnKvlHA/yLyMw8ljQl4HSnTJaTew3K8tm6rn42FfCE@vger.kernel.org
-X-Gm-Message-State: AOJu0YxYbKTh7BGrg08IcexDdMqadbK0FS8yPdr2smjHIY+NvO/MZUQ0
-	zlwsotTYa7K+1Hpzjnw91Nkvrup2rWpxcMrGcVrgjB+D3wUucjMME10u0bdGOR/678+Y4TeQ0Gh
-	8HVYmA2N2i7jfFQH2fPLpCPDeuhxBf1p3An/P
-X-Google-Smtp-Source: AGHT+IEePLBNjlQIEzNDgfNbNMSxGyKJwTaLZWj25xyJ0R8z1vqkjzL/pzKBBv0CgTEy+r6lEoCb5QFBcNuwTz3HKxI=
-X-Received: by 2002:a05:622a:a7c7:b0:460:48c3:c352 with SMTP id
- d75a77b69052e-4608eaa4aa8mr5488141cf.1.1729099055385; Wed, 16 Oct 2024
- 10:17:35 -0700 (PDT)
+        bh=pRFPATnQENrImT54UxMxbwhpzy00PtA0DnAZUuGUA7A=;
+        b=C41iQlvf4S97IbSOg8FqKCnuAXP1cRhMRciKp3cCpKTVO6AALWJxTIdA97W7u39qkU
+         J5dXLNv/jr0BFWqmVybxOAp7Rztjp+raOA2x8u49rIJrUNFHSW/JkY+A39CFC29MxeSS
+         fTG39Hn3EUuBpzYL6vL/3QVgTuiFTz/mqms7B7n7zo9J9k4aq1ywKXYYoUcTf3iuae9u
+         DJr/zsRJrDDxnC+Ce002LDgZ3ObTpx8anEJ7DxCWDKFfaGLkI+0UEQ/UCJ/xmxIHMihb
+         vAiDsE6hKoHW6R5hRlIfIKqGd0J/qI8Ck8hU78vY152mWuCWxoQOl1o2h/6bo9MY4947
+         3ywg==
+X-Forwarded-Encrypted: i=1; AJvYcCWPGErth19FJoXKTDjOixyRNGqxx++qhr3UAWgpFx0Y9SDnoRNUqxnjRYJMwNIC+hIlO0Uq5vjWP2iOJcC0@vger.kernel.org, AJvYcCXOfHImGqeayFN/Wjy8ASN68fruvP+cG2QDJcsovKYfNawGlyXPfuBgzDumF/QEo38F6wKSVWs1@vger.kernel.org
+X-Gm-Message-State: AOJu0YwN95FPoXZejPVMnJez+haFA+c4ldi5Qql5OYrZ7HpTyGKj3DCo
+	yt7232NEdJU/mLHkqHi7OoJEmFqAoLmwjKhxbY7akSBWZ9nM8SXhtjJzGLVEghxJ42f8Ebi3Zl9
+	AKnODMPs4y8WSDmy9yErOcJ6zesA=
+X-Google-Smtp-Source: AGHT+IEFgLajsy6XSLEQ76Vln1OyqkMRcgiOrfUAS9O6+JLWrOflA44s8/kAHwo1yRMd1o3hAusxeWfNsvSc0wuZtaY=
+X-Received: by 2002:a05:6402:5107:b0:5c3:eb29:50c5 with SMTP id
+ 4fb4d7f45d1cf-5c9997d3c9fmr1392040a12.9.1729136686031; Wed, 16 Oct 2024
+ 20:44:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241015213721.3804209-1-shakeel.butt@linux.dev>
-In-Reply-To: <20241015213721.3804209-1-shakeel.butt@linux.dev>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Wed, 16 Oct 2024 10:17:22 -0700
-Message-ID: <CABdmKX3iqmPnmSDi=KCy+0QSws+PjLR1jLs8HL-JjorCARM02A@mail.gmail.com>
-Subject: Re: [PATCH v2] memcg: add tracing for memcg stat updates
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Steven Rostedt <rostedt@goodmis.org>, 
-	JP Kobryn <inwardvessel@gmail.com>, Yosry Ahmed <yosryahmed@google.com>, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Meta kernel team <kernel-team@meta.com>, Michal Hocko <mhocko@suse.com>, 
-	Muchun Song <songmuchun@bytedance.com>
+References: <CAJg=8jwFexnoTfPLg=Yd44WFVn05wAn0UgH6=baipc53mDxgyQ@mail.gmail.com>
+ <CAJg=8jwrXQm19K9YpBuX=LQwwq1cDSpP6ez1XRRE7mAg_8_Xiw@mail.gmail.com> <CAG_fn=Ww=dZ82B0Or8OJfYm1KB7JGMUQ9ZwyjMNP6pN7BxmLQw@mail.gmail.com>
+In-Reply-To: <CAG_fn=Ww=dZ82B0Or8OJfYm1KB7JGMUQ9ZwyjMNP6pN7BxmLQw@mail.gmail.com>
+From: Marius Fleischer <fleischermarius@gmail.com>
+Date: Wed, 16 Oct 2024 20:44:34 -0700
+Message-ID: <CAJg=8jxjVZqQN-KcHEWAy2gfjOMZpt4wvLmQ-RF-fLZfhS5nvw@mail.gmail.com>
+Subject: Re: general protection fault in bio_associate_blkg_from_css
+To: Alexander Potapenko <glider@google.com>
+Cc: Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller@googlegroups.com, 
+	harrisonmichaelgreen@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 15, 2024 at 2:37=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
-v> wrote:
->
-> The memcg stats are maintained in rstat infrastructure which provides ver=
-y
-> fast updates side and reasonable read side.  However memcg added plethora
-> of stats and made the read side, which is cgroup rstat flush, very slow.
-> To solve that, threshold was added in the memcg stats read side i.e.  no
-> need to flush the stats if updates are within the threshold.
->
-> This threshold based improvement worked for sometime but more stats were
-> added to memcg and also the read codepath was getting triggered in the
-> performance sensitive paths which made threshold based ratelimiting
-> ineffective.  We need more visibility into the hot and cold stats i.e.
-> stats with a lot of updates.  Let's add trace to get that visibility.
->
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
-> Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Muchun Song <songmuchun@bytedance.com>
-> Cc: JP Kobryn <inwardvessel@gmail.com>
-> Cc: Steven Rostedt (Google) <rostedt@goodmis.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
+Hi Alexander,
+Thank you so much for the hint!
+I can confirm that the reproducer also triggers on version 6.12-rc3
+(commit 8e929cb546ee42c9a61d24fae60605e9e3192354 from the
+stable repo).
+Hope this helps!
+Best,
+Marius
 
-Reviewed-by: T.J. Mercier <tjmercier@google.com>
+On Wed, 16 Oct 2024 at 00:18, Alexander Potapenko <glider@google.com> wrote=
+:
+>
+> On Tue, Oct 15, 2024 at 8:24=E2=80=AFPM Marius Fleischer
+> <fleischermarius@gmail.com> wrote:
+> >
+> > Hi,
+> >
+> > Hope you are doing well!
+> >
+> > Quick update from our side: The reproducers from the previous email
+> > still trigger a general protection fault on v5.15 (commit hash
+> > 3a5928702e7120f83f703fd566082bfb59f1a57e). Happy to also test on
+> > other kernel versions if that helps.
+> >
+> > Please let us know if there is any other helpful information I can prov=
+ide.
+> >
+> > Wishing you a nice day!
+> >
+> > Best,
+> > Marius
+>
+> Hi Marius,
+>
+> Please consider only reporting bugs that are reproducible on the
+> upstream kernel:
+> https://github.com/google/syzkaller/blob/master/docs/linux/reporting_kern=
+el_bugs.md
+> 5.15 is almost three years old.
 
