@@ -1,170 +1,154 @@
-Return-Path: <cgroups+bounces-5148-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5149-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAC0C9A1B6D
-	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 09:11:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60C1F9A1CA8
+	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 10:11:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B7741C21213
-	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 07:11:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D182F1F225DC
+	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 08:11:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FF411CC8BD;
-	Thu, 17 Oct 2024 07:11:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAE551D31BA;
+	Thu, 17 Oct 2024 08:09:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="LvaDN6y4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h5dR7aqu"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFF641C2459
-	for <cgroups@vger.kernel.org>; Thu, 17 Oct 2024 07:11:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B501D2F73;
+	Thu, 17 Oct 2024 08:09:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729149068; cv=none; b=jBoHOn1YBkmlD4WxZQuIV3Mpp0khqv3MrX+Jn1IUZqOAgqKKi0GzoeLiBWoL+EhHMPlwvoxMXycw325CwRyD4hr2/n0HSMrRkvm+b2Uq8MOZcCFg2ArZjnBT+1uy/XXqhdSVCRHn//de4ltwRNKAog8ZQIEDbUn5l2ocdTGiyUA=
+	t=1729152541; cv=none; b=nEUxrjOhXZ++TXdI9X9BkCakZiSEMYaCgq8l2f2w35aBHe9JfeeHhfhxJNUAC2NHeG6P4FTeDHbLMbe0Zf5yYChRXkW6SJmXAVZ5AKrmXF0mGZ5a40X3PVKf0svrLejm8UD7Ubaiug8Lt9VifeHRF7j6NVS3WYGOC4WG9CQHxEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729149068; c=relaxed/simple;
-	bh=l3Uydk7duhpi48eTsX3h/4LpvTxOP5SMHvfOvswHse8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UGz4nmblsBaP4EAokCkm2CskxsulLEqSmDxHyeCHBI+pZm2pXOHDtBOM32Txu7ZC40WbnEfsubKwWB4bMX1CX8nIGKAB4J2ga1jIFKsku0t8VzhmxQDjvKstOLYEofaOpp6bM2STh/vNSWHTinqvZWvQcOOYnQweMbMssWx+j4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=LvaDN6y4; arc=none smtp.client-ip=209.85.128.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-43140cadeaaso6285705e9.0
-        for <cgroups@vger.kernel.org>; Thu, 17 Oct 2024 00:11:05 -0700 (PDT)
+	s=arc-20240116; t=1729152541; c=relaxed/simple;
+	bh=WgV1yPsQEfLVgIf7sUsDgNd1OB+7mFrwh0VC/JNEuvE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=XJDbOqmc8Sb/Gr3C+q3KrXuIxT3LoZ0nrKSxmw/pJYsLU21Ga4hrbvkM9SalKUGmPKo2Ii3RM43lKsAmY8J4yt/BJF7dhL1MwutjCs3AkoWEI0RoqfYSmMOQxWxtNZSnM7YLMF+yjj62AVour8HiVFX2YS2RvX/JdTfEpGthuVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h5dR7aqu; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-7db637d1e4eso687915a12.2;
+        Thu, 17 Oct 2024 01:09:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1729149064; x=1729753864; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0KdVXBGhFi7dGB+P4f8qZ3lXk3mjBstSPC2oOpH8z5Y=;
-        b=LvaDN6y4PNxtGDTKh51s54VGqaNcPrACs8sAhpUh7dfPbTp/CTgBLPFuXVCbZtYzCG
-         WGBUC0DWE0Ug1X5DfuwUIiqg4YUgeHu+Hjpsc+kLzNsWOc62PqAL/Vv3YaL5ylqOTmh+
-         cCkCKHQocEB0emmSTcE6AOheEPn1nO81855RfeW1vxGsLnjM6P2yFg77oiIOucqzcTIH
-         XDsFytXxwk7sqDSzy13UX71bcczLPUjeiQfiGAobIJ4W5Xi3IWyeWC4+XR7miJr905kV
-         SKJMI85dFEfq4k0h8WgzdYXb/1C9srgrsFj0h1xvkrdlyjSW3mcF/7yaFu7rDXWvzJxG
-         c3rg==
+        d=gmail.com; s=20230601; t=1729152540; x=1729757340; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=kMCKUVNZZJ5h5SBjiPpT+h3myf20vmvFyCYHe1J3PsU=;
+        b=h5dR7aqu2AOKj0VzQio2C/XD8Y/4bmsU8lLDCffmZ6WCoICSJfOA9EHIVOGEX5fW6i
+         Z6yxNQpjtLy6dy/A6l/obBnDVQQvHskvfYtWJhanyZKrTxDJJztCucnzokSszUIf+BI+
+         /KjmRiG3m0mBALYKsmnjkGLgY6FPoX4DoFol1+RlBijugbhvjbkGOq5Us6kwwwQynMR/
+         29RfdlELWmqlcVpDo7W1gtwNBsjkclyLpMUIaNRT5zFU64opSSmlCJ+dfZVOWLgcGW07
+         rJSOMfIxQ7mn566uBFfY0WSbDHQKZRV3NpzOr1ss9x0Z9hY7hBAOrf6nyIMMItMcOsX9
+         62eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729149064; x=1729753864;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0KdVXBGhFi7dGB+P4f8qZ3lXk3mjBstSPC2oOpH8z5Y=;
-        b=eXn2D0btD1IlkSGhW1CBbfZUsabM+o9ZVMK9CYB3gNUStA+zg8uJBXM/wqidLod19x
-         ZX+onmrpYcmGWVww9rHnqxqZIxPKbPTmthdPE7ozKJJGazYiJwfipCVGME5fUBMKMsuB
-         OTBu0V7IeIdOOWH1E6pb1PD+46pzeStlRQmuGb3u/qsgxbXyiVCq5T0ygwMCanvZtg/J
-         kgWD9ksviqwU0KfxPg6Ooylj49ldNhbR1ImLs3X9LANHT0A7lfzd7EtaTypj94bsXROb
-         Eh+k1OGE5p7NqFpDMqytQf9eLzF/2xIsSd/kdo872UCZRDOvNqNCcdjHeaWRtGPP+vy7
-         TgYA==
-X-Forwarded-Encrypted: i=1; AJvYcCU/vB03hgATfFgDZsJVhtP6XefZt3UnfLMVUVf0MBXEEU5K3vGLZi97pULVlSZMBogn0deq62DB@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy0HsNpwfijYeUaNTXSkDPiBrKyKO/2HyakVH5fTkcuKvh9FKU7
-	1vjV8jOmmU3tWVaVjgNqtdcK5i/S9nh+WLZG6CmNSL8cv7jmaKVWPQH6zJ9/UDg=
-X-Google-Smtp-Source: AGHT+IHS9c0AQj2cx/Fpyoxeg7T4HwlSFDWY1656nHRQ5XO23p1Tr4JtGzw0IsCtZe1nsYz0oAXgTw==
-X-Received: by 2002:a05:6000:1092:b0:375:c4c7:c7ac with SMTP id ffacd0b85a97d-37d552cb121mr14038233f8f.49.1729149064050;
-        Thu, 17 Oct 2024 00:11:04 -0700 (PDT)
-Received: from u94a (27-242-4-121.adsl.fetnet.net. [27.242.4.121])
-        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-3a3d714f027sm12231535ab.62.2024.10.17.00.10.55
+        d=1e100.net; s=20230601; t=1729152540; x=1729757340;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kMCKUVNZZJ5h5SBjiPpT+h3myf20vmvFyCYHe1J3PsU=;
+        b=VkXAV9RuJrWm1ARjGApNGh7uMLPgFVrkQIf5ouhjJVWlmiPVwQ6MXBZX9i8GOouIYI
+         52OpiRJKw3Yf2x0rPokjr1ORBU2rKppJqY9g4b5xz4s+bhM0Q+OUPci+JJELcj0wBeY7
+         1lvL3DAhT1qXdC+E/NWPKIzC8PZs7iPShfqvPEqP8xtVaC9pQny16E/wkDMUbUYWGTxW
+         0j6F06B0U+BZ4EZ7HYOxSTSeaplTCdT1Bg3gFsOmhwXiXhiBMWv+Uk/D9f2vc1rvSvvc
+         p+4NGS5NHCg8wfQrLJbbZq/bbEMmZ+2bqPFrs345stSUBuknpPOIp919bn1p7Gi/g9wV
+         m1bQ==
+X-Forwarded-Encrypted: i=1; AJvYcCURg1ANwDVh0LQu9arxGPTSSNyD6/SGRgTsqCXeuoKm73jZgREanYc5QORHuo3m+zyG9zaedyUkt9HW3eiD@vger.kernel.org, AJvYcCWQe7LtJlKna5r8aDsVxHiYiu4jdAXA3vIync2qdra7a389Vq1FlNELQK0hyd3SrToCG5rHtxvFfA==@vger.kernel.org, AJvYcCXIYJ5xayFaqiwbV4IUr4wFbsCGHjYqwFstOfsIX9xZJLqbVwSjQh1A8ADXCIrC8+JfjU8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzl2aCtEtmwKKTRnyJoFiODPhbj92B/2DtDN+3LqdvIodQDX9hf
+	aL4mxoBmawetAk9i+NIoNos2UDeCkO1ScRgkhfr3FlV8Mxqj+qN+
+X-Google-Smtp-Source: AGHT+IGvD8b5wJYc30AU/sUF2r2o7tfDCtXDU2fL3wlXBG8Af8uuvrfgwFb9ZlCSNgycUFSSq2LAYA==
+X-Received: by 2002:a17:90a:5107:b0:2c9:5a85:f8dd with SMTP id 98e67ed59e1d1-2e3ab820d71mr7598872a91.18.1729152539590;
+        Thu, 17 Oct 2024 01:08:59 -0700 (PDT)
+Received: from [192.168.0.235] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e3e08d6b0csm1217487a91.31.2024.10.17.01.08.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Oct 2024 00:11:02 -0700 (PDT)
-Date: Thu, 17 Oct 2024 15:10:50 +0800
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: Kuan-Wei Chiu <visitorckw@gmail.com>, bpf@vger.kernel.org, 
-	Eduard Zingerman <eddyz87@gmail.com>
+        Thu, 17 Oct 2024 01:08:59 -0700 (PDT)
+Message-ID: <af842df1791423386f3aef25f3f94c5b39b5e332.camel@gmail.com>
+Subject: Re: Using union-find in BPF verifier (was: Enhance union-find with
+ KUnit tests and optimization improvements)
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Shung-Hsi Yu <shung-hsi.yu@suse.com>, Kuan-Wei Chiu
+ <visitorckw@gmail.com>,  bpf@vger.kernel.org
 Cc: Tejun Heo <tj@kernel.org>, xavier_qy@163.com, longman@redhat.com, 
-	lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com, akpm@linux-foundation.org, 
-	jserv@ccns.ncku.edu.tw, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	Christoph Hellwig <hch@infradead.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: Using union-find in BPF verifier (was: Enhance union-find with KUnit
- tests and optimization improvements)
-Message-ID: <aci6pn57bqjfcshbak7ekxb7zr5zz72u3rxyu4zbp5w3mvljx2@b4rn2e4rb4rl>
+ lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com, 
+ akpm@linux-foundation.org, jserv@ccns.ncku.edu.tw,
+ linux-kernel@vger.kernel.org,  cgroups@vger.kernel.org, Christoph Hellwig
+ <hch@infradead.org>, Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko
+ <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>
+Date: Thu, 17 Oct 2024 01:08:54 -0700
+In-Reply-To: <aci6pn57bqjfcshbak7ekxb7zr5zz72u3rxyu4zbp5w3mvljx2@b4rn2e4rb4rl>
 References: <20241007152833.2282199-1-visitorckw@gmail.com>
- <ZwQJ_hQENEE7uj0q@slm.duckdns.org>
+	 <ZwQJ_hQENEE7uj0q@slm.duckdns.org>
+	 <aci6pn57bqjfcshbak7ekxb7zr5zz72u3rxyu4zbp5w3mvljx2@b4rn2e4rb4rl>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZwQJ_hQENEE7uj0q@slm.duckdns.org>
 
-Michal mentioned lib/union_find.c during a discussion. I think we may
-have a use for in BPF verifier (kernel/bpf/verifier.c) that could
-further simplify the code. Eduard (who wrote the code shown below)
-probably would have a better idea.
+On Thu, 2024-10-17 at 15:10 +0800, Shung-Hsi Yu wrote:
+> Michal mentioned lib/union_find.c during a discussion. I think we may
+> have a use for in BPF verifier (kernel/bpf/verifier.c) that could
+> further simplify the code. Eduard (who wrote the code shown below)
+> probably would have a better idea.
+>=20
+> On Mon, Oct 07, 2024 at 06:19:10AM GMT, Tejun Heo wrote:
+> > On Mon, Oct 07, 2024 at 11:28:27PM +0800, Kuan-Wei Chiu wrote:
+> > > This patch series adds KUnit tests for the union-find implementation
+> > > and optimizes the path compression in the uf_find() function to achie=
+ve
+> > > a lower tree height and improved efficiency. Additionally, it modifie=
+s
+> > > uf_union() to return a boolean value indicating whether a merge
+> > > occurred, enhancing the process of calculating the number of groups i=
+n
+> > > the cgroup cpuset.
+> >=20
+> > I'm not necessarily against the patchset but this probably is becoming =
+too
+> > much polishing for something which is only used by cpuset in a pretty c=
+old
+> > path. It probably would be a good idea to concentrate on finding more u=
+se
+> > cases.
 
-On Mon, Oct 07, 2024 at 06:19:10AM GMT, Tejun Heo wrote:
-> On Mon, Oct 07, 2024 at 11:28:27PM +0800, Kuan-Wei Chiu wrote:
-> > This patch series adds KUnit tests for the union-find implementation
-> > and optimizes the path compression in the uf_find() function to achieve
-> > a lower tree height and improved efficiency. Additionally, it modifies
-> > uf_union() to return a boolean value indicating whether a merge
-> > occurred, enhancing the process of calculating the number of groups in
-> > the cgroup cpuset.
-> 
-> I'm not necessarily against the patchset but this probably is becoming too
-> much polishing for something which is only used by cpuset in a pretty cold
-> path. It probably would be a good idea to concentrate on finding more use
-> cases.
+Hi Shung-Hsi,
 
-In BPF verifier we do the following to identify the outermost loop in a
-BPF program.
+[...]
 
-	static struct bpf_verifier_state *get_loop_entry(struct bpf_verifier_state *st)
-	{
-		struct bpf_verifier_state *topmost = st->loop_entry, *old;
-	
-		while (topmost && topmost->loop_entry && topmost != topmost->loop_entry)
-			topmost = topmost->loop_entry;
+> Squinting a bit get_loop_entry() looks quite like uf_find() and
+> update_loop_entry() looks quite link uf_union(). So perhaps we could get
+> a straight-forward conversion here.
 
-		while (st && st->loop_entry != topmost) {
-			old = st->loop_entry;
-			st->loop_entry = topmost;
-			st = old;
-		}
-		return topmost;
-	}
-	
-	static void update_loop_entry(struct bpf_verifier_state *cur, struct bpf_verifier_state *hdr)
-	{
-		struct bpf_verifier_state *cur1, *hdr1;
-	
-		cur1 = get_loop_entry(cur) ?: cur;
-		hdr1 = get_loop_entry(hdr) ?: hdr;
+I'll reply tomorrow, need to sleep on it.
 
-		if (hdr1->branches && hdr1->dfs_depth <= cur1->dfs_depth) {
-			cur->loop_entry = hdr;
-			hdr->used_as_loop_entry = true;
-		}
-	}
+> ---
+>=20
+> Another (comparatively worst) idea is to use it for tracking whether two
+> register has the same content (this is currently done with struct
+> bpf_reg_state.id).
 
-Squinting a bit get_loop_entry() looks quite like uf_find() and
-update_loop_entry() looks quite link uf_union(). So perhaps we could get
-a straight-forward conversion here.
+Given that union-find data structure does not support element deletion
+and only accumulates merged groups, for the following code:
 
----
+  0: r0 =3D random()
+  1: r1 =3D r0
+  2: r0 =3D random()
 
-Another (comparatively worst) idea is to use it for tracking whether two
-register has the same content (this is currently done with struct
-bpf_reg_state.id).
+It would be necessary to re-build sets of equivalent registers at
+instruction (2). I'm not sure about this use case, tbh.
 
-	r0 = random();
-	r1 = r0; /* r1 is the same as r0 */
+[...]
 
-However it doesn't seem like union-find would be as useful here, because
-1. registers might later be reassigned
-2. in addition to equivalence, BPF verifier also track whether content
-of two register differs by some value (see sync_linked_regs()).
+Thanks,
+Eduard
 
-	r0 = random();
-	r1 = r0 + 1; /* r1 differs r0 by 1 */
-
-So maybe not here, at least I don't see how union-find can make things
-simpler. But data structure and algorithm really isn't my strength and
-I'm happy to be proven wrong.
-
-
-Shung-Hsi
 
