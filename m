@@ -1,127 +1,170 @@
-Return-Path: <cgroups+bounces-5147-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5148-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6ED59A1972
-	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 05:44:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAC0C9A1B6D
+	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 09:11:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 895511F2326C
-	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 03:44:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B7741C21213
+	for <lists+cgroups@lfdr.de>; Thu, 17 Oct 2024 07:11:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1BA71369B6;
-	Thu, 17 Oct 2024 03:44:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FF411CC8BD;
+	Thu, 17 Oct 2024 07:11:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fLoZdNLw"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="LvaDN6y4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0122C6BFC0;
-	Thu, 17 Oct 2024 03:44:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFF641C2459
+	for <cgroups@vger.kernel.org>; Thu, 17 Oct 2024 07:11:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729136689; cv=none; b=C2AlwlwOPP74/usTss9sBH3BAn1JDv1bKBMVfZwWRuK2cBlm9Iri5nB/j67jgkAQYL/ZOaeCpwMN4iRdrUp3ENKJ+Q9mBTKE+j2LUZYF4uW8yJgwvqZ7qIF5h953L2DQTzYUzMBcMpwRjXwW0mK/rDzb33aG20ACZnG/SBMZBLo=
+	t=1729149068; cv=none; b=jBoHOn1YBkmlD4WxZQuIV3Mpp0khqv3MrX+Jn1IUZqOAgqKKi0GzoeLiBWoL+EhHMPlwvoxMXycw325CwRyD4hr2/n0HSMrRkvm+b2Uq8MOZcCFg2ArZjnBT+1uy/XXqhdSVCRHn//de4ltwRNKAog8ZQIEDbUn5l2ocdTGiyUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729136689; c=relaxed/simple;
-	bh=pRFPATnQENrImT54UxMxbwhpzy00PtA0DnAZUuGUA7A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FjBfZ+ba/2O7hBbOAeBmijxoiHfuhigElLggpBMUexzPqEjO+QNeyB+v0ldFskee7T58WQy8ExSvl7fhwyGQ8brOftLPPpU/0vO6A3uG3+qAvDLZyDfiStYg5UIl10MdGbHlkCSMAPDM9GlvVUNPub7fVcvRHyD0It02FAoYAlk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fLoZdNLw; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5c93109d09aso87292a12.3;
-        Wed, 16 Oct 2024 20:44:47 -0700 (PDT)
+	s=arc-20240116; t=1729149068; c=relaxed/simple;
+	bh=l3Uydk7duhpi48eTsX3h/4LpvTxOP5SMHvfOvswHse8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UGz4nmblsBaP4EAokCkm2CskxsulLEqSmDxHyeCHBI+pZm2pXOHDtBOM32Txu7ZC40WbnEfsubKwWB4bMX1CX8nIGKAB4J2ga1jIFKsku0t8VzhmxQDjvKstOLYEofaOpp6bM2STh/vNSWHTinqvZWvQcOOYnQweMbMssWx+j4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=LvaDN6y4; arc=none smtp.client-ip=209.85.128.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-43140cadeaaso6285705e9.0
+        for <cgroups@vger.kernel.org>; Thu, 17 Oct 2024 00:11:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729136686; x=1729741486; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pRFPATnQENrImT54UxMxbwhpzy00PtA0DnAZUuGUA7A=;
-        b=fLoZdNLwpw0X7Hji41xusrS4zZt/L87EWeo1ieECYOYP5ThLpOQxBC9QGydpZybP2i
-         c9ZWS0kW8Lph7el61EfohiAfAqpAHA5Cn3O9n4eRmMxfbb90owuw6PZ0owo5ExxWOpaE
-         Tde23EKgwCT926+9XXB7fgwHzUwWNHX7L26XD2SuXZeUmCRkA9MjxyaZrpfHr3nz0h28
-         /dHrq9nigywH1DLhJzLs1jZ55ah2h9QkmSn7yvndz14YWoIUMVN8cqkB/PYYN4libuy5
-         BsQCVTrukFb0qt7kCYuGHsGULep2DWP1SxDDsBNNmuUrXUptU+teZPieB3WiTDc3fQbK
-         yf2w==
+        d=suse.com; s=google; t=1729149064; x=1729753864; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0KdVXBGhFi7dGB+P4f8qZ3lXk3mjBstSPC2oOpH8z5Y=;
+        b=LvaDN6y4PNxtGDTKh51s54VGqaNcPrACs8sAhpUh7dfPbTp/CTgBLPFuXVCbZtYzCG
+         WGBUC0DWE0Ug1X5DfuwUIiqg4YUgeHu+Hjpsc+kLzNsWOc62PqAL/Vv3YaL5ylqOTmh+
+         cCkCKHQocEB0emmSTcE6AOheEPn1nO81855RfeW1vxGsLnjM6P2yFg77oiIOucqzcTIH
+         XDsFytXxwk7sqDSzy13UX71bcczLPUjeiQfiGAobIJ4W5Xi3IWyeWC4+XR7miJr905kV
+         SKJMI85dFEfq4k0h8WgzdYXb/1C9srgrsFj0h1xvkrdlyjSW3mcF/7yaFu7rDXWvzJxG
+         c3rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729136686; x=1729741486;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pRFPATnQENrImT54UxMxbwhpzy00PtA0DnAZUuGUA7A=;
-        b=C41iQlvf4S97IbSOg8FqKCnuAXP1cRhMRciKp3cCpKTVO6AALWJxTIdA97W7u39qkU
-         J5dXLNv/jr0BFWqmVybxOAp7Rztjp+raOA2x8u49rIJrUNFHSW/JkY+A39CFC29MxeSS
-         fTG39Hn3EUuBpzYL6vL/3QVgTuiFTz/mqms7B7n7zo9J9k4aq1ywKXYYoUcTf3iuae9u
-         DJr/zsRJrDDxnC+Ce002LDgZ3ObTpx8anEJ7DxCWDKFfaGLkI+0UEQ/UCJ/xmxIHMihb
-         vAiDsE6hKoHW6R5hRlIfIKqGd0J/qI8Ck8hU78vY152mWuCWxoQOl1o2h/6bo9MY4947
-         3ywg==
-X-Forwarded-Encrypted: i=1; AJvYcCWPGErth19FJoXKTDjOixyRNGqxx++qhr3UAWgpFx0Y9SDnoRNUqxnjRYJMwNIC+hIlO0Uq5vjWP2iOJcC0@vger.kernel.org, AJvYcCXOfHImGqeayFN/Wjy8ASN68fruvP+cG2QDJcsovKYfNawGlyXPfuBgzDumF/QEo38F6wKSVWs1@vger.kernel.org
-X-Gm-Message-State: AOJu0YwN95FPoXZejPVMnJez+haFA+c4ldi5Qql5OYrZ7HpTyGKj3DCo
-	yt7232NEdJU/mLHkqHi7OoJEmFqAoLmwjKhxbY7akSBWZ9nM8SXhtjJzGLVEghxJ42f8Ebi3Zl9
-	AKnODMPs4y8WSDmy9yErOcJ6zesA=
-X-Google-Smtp-Source: AGHT+IEFgLajsy6XSLEQ76Vln1OyqkMRcgiOrfUAS9O6+JLWrOflA44s8/kAHwo1yRMd1o3hAusxeWfNsvSc0wuZtaY=
-X-Received: by 2002:a05:6402:5107:b0:5c3:eb29:50c5 with SMTP id
- 4fb4d7f45d1cf-5c9997d3c9fmr1392040a12.9.1729136686031; Wed, 16 Oct 2024
- 20:44:46 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1729149064; x=1729753864;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0KdVXBGhFi7dGB+P4f8qZ3lXk3mjBstSPC2oOpH8z5Y=;
+        b=eXn2D0btD1IlkSGhW1CBbfZUsabM+o9ZVMK9CYB3gNUStA+zg8uJBXM/wqidLod19x
+         ZX+onmrpYcmGWVww9rHnqxqZIxPKbPTmthdPE7ozKJJGazYiJwfipCVGME5fUBMKMsuB
+         OTBu0V7IeIdOOWH1E6pb1PD+46pzeStlRQmuGb3u/qsgxbXyiVCq5T0ygwMCanvZtg/J
+         kgWD9ksviqwU0KfxPg6Ooylj49ldNhbR1ImLs3X9LANHT0A7lfzd7EtaTypj94bsXROb
+         Eh+k1OGE5p7NqFpDMqytQf9eLzF/2xIsSd/kdo872UCZRDOvNqNCcdjHeaWRtGPP+vy7
+         TgYA==
+X-Forwarded-Encrypted: i=1; AJvYcCU/vB03hgATfFgDZsJVhtP6XefZt3UnfLMVUVf0MBXEEU5K3vGLZi97pULVlSZMBogn0deq62DB@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy0HsNpwfijYeUaNTXSkDPiBrKyKO/2HyakVH5fTkcuKvh9FKU7
+	1vjV8jOmmU3tWVaVjgNqtdcK5i/S9nh+WLZG6CmNSL8cv7jmaKVWPQH6zJ9/UDg=
+X-Google-Smtp-Source: AGHT+IHS9c0AQj2cx/Fpyoxeg7T4HwlSFDWY1656nHRQ5XO23p1Tr4JtGzw0IsCtZe1nsYz0oAXgTw==
+X-Received: by 2002:a05:6000:1092:b0:375:c4c7:c7ac with SMTP id ffacd0b85a97d-37d552cb121mr14038233f8f.49.1729149064050;
+        Thu, 17 Oct 2024 00:11:04 -0700 (PDT)
+Received: from u94a (27-242-4-121.adsl.fetnet.net. [27.242.4.121])
+        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-3a3d714f027sm12231535ab.62.2024.10.17.00.10.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Oct 2024 00:11:02 -0700 (PDT)
+Date: Thu, 17 Oct 2024 15:10:50 +0800
+From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>, bpf@vger.kernel.org, 
+	Eduard Zingerman <eddyz87@gmail.com>
+Cc: Tejun Heo <tj@kernel.org>, xavier_qy@163.com, longman@redhat.com, 
+	lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com, akpm@linux-foundation.org, 
+	jserv@ccns.ncku.edu.tw, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	Christoph Hellwig <hch@infradead.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: Using union-find in BPF verifier (was: Enhance union-find with KUnit
+ tests and optimization improvements)
+Message-ID: <aci6pn57bqjfcshbak7ekxb7zr5zz72u3rxyu4zbp5w3mvljx2@b4rn2e4rb4rl>
+References: <20241007152833.2282199-1-visitorckw@gmail.com>
+ <ZwQJ_hQENEE7uj0q@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJg=8jwFexnoTfPLg=Yd44WFVn05wAn0UgH6=baipc53mDxgyQ@mail.gmail.com>
- <CAJg=8jwrXQm19K9YpBuX=LQwwq1cDSpP6ez1XRRE7mAg_8_Xiw@mail.gmail.com> <CAG_fn=Ww=dZ82B0Or8OJfYm1KB7JGMUQ9ZwyjMNP6pN7BxmLQw@mail.gmail.com>
-In-Reply-To: <CAG_fn=Ww=dZ82B0Or8OJfYm1KB7JGMUQ9ZwyjMNP6pN7BxmLQw@mail.gmail.com>
-From: Marius Fleischer <fleischermarius@gmail.com>
-Date: Wed, 16 Oct 2024 20:44:34 -0700
-Message-ID: <CAJg=8jxjVZqQN-KcHEWAy2gfjOMZpt4wvLmQ-RF-fLZfhS5nvw@mail.gmail.com>
-Subject: Re: general protection fault in bio_associate_blkg_from_css
-To: Alexander Potapenko <glider@google.com>
-Cc: Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller@googlegroups.com, 
-	harrisonmichaelgreen@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZwQJ_hQENEE7uj0q@slm.duckdns.org>
 
-Hi Alexander,
-Thank you so much for the hint!
-I can confirm that the reproducer also triggers on version 6.12-rc3
-(commit 8e929cb546ee42c9a61d24fae60605e9e3192354 from the
-stable repo).
-Hope this helps!
-Best,
-Marius
+Michal mentioned lib/union_find.c during a discussion. I think we may
+have a use for in BPF verifier (kernel/bpf/verifier.c) that could
+further simplify the code. Eduard (who wrote the code shown below)
+probably would have a better idea.
 
-On Wed, 16 Oct 2024 at 00:18, Alexander Potapenko <glider@google.com> wrote=
-:
->
-> On Tue, Oct 15, 2024 at 8:24=E2=80=AFPM Marius Fleischer
-> <fleischermarius@gmail.com> wrote:
-> >
-> > Hi,
-> >
-> > Hope you are doing well!
-> >
-> > Quick update from our side: The reproducers from the previous email
-> > still trigger a general protection fault on v5.15 (commit hash
-> > 3a5928702e7120f83f703fd566082bfb59f1a57e). Happy to also test on
-> > other kernel versions if that helps.
-> >
-> > Please let us know if there is any other helpful information I can prov=
-ide.
-> >
-> > Wishing you a nice day!
-> >
-> > Best,
-> > Marius
->
-> Hi Marius,
->
-> Please consider only reporting bugs that are reproducible on the
-> upstream kernel:
-> https://github.com/google/syzkaller/blob/master/docs/linux/reporting_kern=
-el_bugs.md
-> 5.15 is almost three years old.
+On Mon, Oct 07, 2024 at 06:19:10AM GMT, Tejun Heo wrote:
+> On Mon, Oct 07, 2024 at 11:28:27PM +0800, Kuan-Wei Chiu wrote:
+> > This patch series adds KUnit tests for the union-find implementation
+> > and optimizes the path compression in the uf_find() function to achieve
+> > a lower tree height and improved efficiency. Additionally, it modifies
+> > uf_union() to return a boolean value indicating whether a merge
+> > occurred, enhancing the process of calculating the number of groups in
+> > the cgroup cpuset.
+> 
+> I'm not necessarily against the patchset but this probably is becoming too
+> much polishing for something which is only used by cpuset in a pretty cold
+> path. It probably would be a good idea to concentrate on finding more use
+> cases.
+
+In BPF verifier we do the following to identify the outermost loop in a
+BPF program.
+
+	static struct bpf_verifier_state *get_loop_entry(struct bpf_verifier_state *st)
+	{
+		struct bpf_verifier_state *topmost = st->loop_entry, *old;
+	
+		while (topmost && topmost->loop_entry && topmost != topmost->loop_entry)
+			topmost = topmost->loop_entry;
+
+		while (st && st->loop_entry != topmost) {
+			old = st->loop_entry;
+			st->loop_entry = topmost;
+			st = old;
+		}
+		return topmost;
+	}
+	
+	static void update_loop_entry(struct bpf_verifier_state *cur, struct bpf_verifier_state *hdr)
+	{
+		struct bpf_verifier_state *cur1, *hdr1;
+	
+		cur1 = get_loop_entry(cur) ?: cur;
+		hdr1 = get_loop_entry(hdr) ?: hdr;
+
+		if (hdr1->branches && hdr1->dfs_depth <= cur1->dfs_depth) {
+			cur->loop_entry = hdr;
+			hdr->used_as_loop_entry = true;
+		}
+	}
+
+Squinting a bit get_loop_entry() looks quite like uf_find() and
+update_loop_entry() looks quite link uf_union(). So perhaps we could get
+a straight-forward conversion here.
+
+---
+
+Another (comparatively worst) idea is to use it for tracking whether two
+register has the same content (this is currently done with struct
+bpf_reg_state.id).
+
+	r0 = random();
+	r1 = r0; /* r1 is the same as r0 */
+
+However it doesn't seem like union-find would be as useful here, because
+1. registers might later be reassigned
+2. in addition to equivalence, BPF verifier also track whether content
+of two register differs by some value (see sync_linked_regs()).
+
+	r0 = random();
+	r1 = r0 + 1; /* r1 differs r0 by 1 */
+
+So maybe not here, at least I don't see how union-find can make things
+simpler. But data structure and algorithm really isn't my strength and
+I'm happy to be proven wrong.
+
+
+Shung-Hsi
 
