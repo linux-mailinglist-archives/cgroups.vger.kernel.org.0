@@ -1,164 +1,120 @@
-Return-Path: <cgroups+bounces-5167-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5168-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11FEF9A4A64
-	for <lists+cgroups@lfdr.de>; Sat, 19 Oct 2024 02:08:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 332269A517C
+	for <lists+cgroups@lfdr.de>; Sun, 20 Oct 2024 00:46:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2E641F23E2F
-	for <lists+cgroups@lfdr.de>; Sat, 19 Oct 2024 00:08:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2AFF1F21F37
+	for <lists+cgroups@lfdr.de>; Sat, 19 Oct 2024 22:46:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5784863C;
-	Sat, 19 Oct 2024 00:07:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5EE41922E9;
+	Sat, 19 Oct 2024 22:46:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X7RTEpQV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mesSAKLY"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AAEF36C;
-	Sat, 19 Oct 2024 00:07:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9030520E30B;
+	Sat, 19 Oct 2024 22:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729296474; cv=none; b=kJJRpVyk6rYfn2q8cIkNdqk1/R7eLG2kXeLdmUlXjs7yL8V1AtqIS+IhJjuayTlQSdsfqFHo0Mkj148hYIUO1w57/8t4167GrBjXHIfIJ5SuN77RzabDAiKYMZ1zhwTQvWY7/hKcsGuMwb22SZMOhzkD91b0ERLY88lESm4JXQ0=
+	t=1729377967; cv=none; b=mf2Zql84flPuKG1/g8kKM6loCYuNurZSbMvplVyAqpkGsy35/NKHP2lLH+1CYyjRGyp7Dksvv275ZtXmgwsBOLCXDXNw8kFy934BfuwarNgT0rIYyFQyefd6MKxw4UfVXWoauh9GfEsmn3ClqBTadV7P254cbKfAzx0hYOqnnsk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729296474; c=relaxed/simple;
-	bh=rxGO8n71gE4NXm8RNHonZK04dP5KDs9L8y93AC1yhGk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dMk7ZVZ0xXp2FTbAymXYmGna8hyZG3eTteqj87Maim5jO2gNho6k3HxGshPye6Lr9b6k7Ojrfk47c2+f2wLIf4Jjh/FfGdgiwYajjnput+LxzDbRTfuJ+yXngKkDaAJf0m/3HjrOpZnYZcqR+mMEl0z25ID0htBcsopnOrjhYg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X7RTEpQV; arc=none smtp.client-ip=209.85.216.45
+	s=arc-20240116; t=1729377967; c=relaxed/simple;
+	bh=HygObp9ZtTiCt4ruecN7jyPhUDu4WsEXYehExPiGj6g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=aWtdQh7IPCtXh9Ml6usxNkJuTaF44fvJ4KeO2tCdNdDFzoqCuB6lvlhb2W4rOjs9ItYu7wjYu8bRVNfwLN31HgKhac3hmsxwD3gqUyrQn8RjEQadCBjyPz4Qha4IUfU1JiYWif38MChfQdelmPGqh5Xn6DXC2nu30vSIbKjWgDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mesSAKLY; arc=none smtp.client-ip=209.85.208.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2e2e23f2931so2198367a91.0;
-        Fri, 18 Oct 2024 17:07:52 -0700 (PDT)
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-5c9150f9ed4so3842679a12.0;
+        Sat, 19 Oct 2024 15:46:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729296471; x=1729901271; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vOq9JGXcaDocJuZ1KtOthpD7efSsXOMiKeeRezgLqXg=;
-        b=X7RTEpQVsSQHYYnD73H5rz9m90K8qvuek8jnY63hL1AakDJ3d+YkdpfchZWK4cV+Nf
-         90Hj/U1Hwz/68ErooAUBz2wKpvUEy7gIjypzTKFgO5/BAU3QupJhOHYis4Kb2xMwn1Ao
-         iz8akEI5SLKKHGRrlDxdVkiGE7WHvxwdjWPPBwm7la1IYd/HIRb2IPVPbSjqCn+CmL3X
-         S76w7W6KQ5l+EJFKHUgxUGMqAZ6Q4AFE90iNJ8hkwYjLk0fIhpmfmuFp8+3RlJrsLpqc
-         CMwlmeDO3Wc2pmyh6fqb2AHRmzU6SIkQULTefyonjPPQrFE/anM75LqRT9pM0jDp0C12
-         bzpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729296471; x=1729901271;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1729377964; x=1729982764; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vOq9JGXcaDocJuZ1KtOthpD7efSsXOMiKeeRezgLqXg=;
-        b=kxBgXuql7A+yz0uep4X9jXKHnuw/6eb9ucLTbjU7s1ttpdF1KacYwHnH4fxR26iUgX
-         maZDeU1uH7DNX+CBqTRSwtZulzj+5k4wxb6Ud75rwGDwonL1O7pWvqDayRYqerxg9UNz
-         lGcMgsq41WrqthSe6PfeKq7T7wNyVAPRK8Pkt4H3gVZjGlxuhLrdYgv+259emhXj2mQp
-         fYGKskwJg0UP75BTvLbhiIS6/kuYszKyQBXJO2MV9YD07PdEZpydkEaCz4kjgk51n01i
-         lli3DYfzCbeQ6zKXtKb/rlDPhRGHjUsgJWRSlqknGh5YxfsDcX5DIRYuN0cTDSfqCopf
-         BCQA==
-X-Forwarded-Encrypted: i=1; AJvYcCVWadel0rXr1dHGtCV+GY1eHMIQolOBYdix5IJ5Kl3e5mSYzG+CkZHMO8VtL3NCMMvXq7YT9CCUwNObIaWw@vger.kernel.org, AJvYcCXcY3OJu4EQ3P4cwlSoZy1FNyCB1BZ8d8oLrpFzMwmt4s7TyQihXcYjhobW4fE2FXAa3QQY1lzJ@vger.kernel.org
-X-Gm-Message-State: AOJu0YxORcKMj4eNy6B72Jgoqds9GATeugPoMAQ6XXrxkW0FoQD5/lQo
-	d1c1J/qyXZ+SapM4OogNZ/BBDRMqIT1oMrX6BkkG2zwuJRwgBlT1
-X-Google-Smtp-Source: AGHT+IHXfvtGsTkBVNqQTw8XkMljnZJrpvcCLyH8qh23i3WeZEMZa4iLgKYt+lnbk69r0Ki7267nrQ==
-X-Received: by 2002:a17:90b:180a:b0:2e2:b204:90c8 with SMTP id 98e67ed59e1d1-2e561a11042mr4910116a91.34.1729296471335;
-        Fri, 18 Oct 2024 17:07:51 -0700 (PDT)
-Received: from visitorckw-System-Product-Name ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e561202a68sm2655529a91.31.2024.10.18.17.07.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Oct 2024 17:07:50 -0700 (PDT)
-Date: Sat, 19 Oct 2024 08:07:45 +0800
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc: bpf@vger.kernel.org, Eduard Zingerman <eddyz87@gmail.com>,
-	Tejun Heo <tj@kernel.org>, xavier_qy@163.com, longman@redhat.com,
-	lizefan.x@bytedance.com, hannes@cmpxchg.org, mkoutny@suse.com,
-	akpm@linux-foundation.org, jserv@ccns.ncku.edu.tw,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	Christoph Hellwig <hch@infradead.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: Re: Using union-find in BPF verifier (was: Enhance union-find with
- KUnit tests and optimization improvements)
-Message-ID: <ZxL4UTGzV1yd07jd@visitorckw-System-Product-Name>
-References: <20241007152833.2282199-1-visitorckw@gmail.com>
- <ZwQJ_hQENEE7uj0q@slm.duckdns.org>
- <aci6pn57bqjfcshbak7ekxb7zr5zz72u3rxyu4zbp5w3mvljx2@b4rn2e4rb4rl>
+        bh=HygObp9ZtTiCt4ruecN7jyPhUDu4WsEXYehExPiGj6g=;
+        b=mesSAKLYXXz7eGOyNudKVfprmwD+CiW02OoFacbqNxjDlk5br6bk++pCbXHex3HtCJ
+         ENWfv8NT87JkqGE+8rUS5UeMfVN/zh3qwEZ4QtaJRI5TCdOv8K4Bjk56Y6CKdP1QyYKj
+         umXF4gc+Ye53W/25ZdKklQsKVNrgSZDUYashjxwqGMz1CyouMal0mZ2gK+XTlvRAM9Au
+         v2OtcWRJrOSiPjVzyq9KBQ7tmZumRy07Uh6EnEouixsoQxHRo4prMYfln3+62QY6636o
+         uYbRy/aUKNW9qg7WwZsVotfHDYlUK3jv1Txeyjt9U+3F8I38YFwJlQg3f0P5Gt42R39J
+         g43A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729377964; x=1729982764;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HygObp9ZtTiCt4ruecN7jyPhUDu4WsEXYehExPiGj6g=;
+        b=Sm/xoz+xd0XJunvPmVNLtPNuJ1blNyUYV23NQGZ/cGQSnk+I/36jkjj71835Vgj2Xj
+         p2OOIy7pw88E/Hf37hXv+rzWO9Iom6EudaRKU5FSKxmLGgG3IAwQfkv18DOsHdb5Tons
+         bPdw3OxuZDV/fdwbBcUtAVi27GnxlerJlkRNJS//Wpx83FbxOZbSdshybfuOPZ2SWUlF
+         S0vwXGaSfknJnhSm3xBbAtcHZ6fr+UsArI9MYxl6zOwVPhO6dbLvgK5tKJyRaJlR9gHO
+         f0jvEcr1pBIYao1TkjrwDwm4KEVJlhZ1i5vxvNSK5mUahNJoOc/f+Pqy2tZeZ0hrD3uP
+         OJng==
+X-Forwarded-Encrypted: i=1; AJvYcCWLfmyrEoxmRvEcgMe02PrServlb0L1TDutRdA89hD3djGnxStUB7/5G4YiIvCDnauAZRyr/PpzoeIlTWay@vger.kernel.org, AJvYcCWWs1Eb9q61S+NrcZh+YkUPtFLm7vcFPcfTe1dtkBPfRNws+zYfDNuwz8+xEEET+FZcdPIonXry@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxvn2hZqo+ghYxUdHfTOXY19DF4I8FPYFE0F4ihme+lzmSALL2X
+	2YPLWxR0FjdWBvaxwj6Cl9zgISXo0T9e9LYVB/q0LA/dGog9SvHJW8SHLZS7UMmlzdvid9d0qaG
+	C+QD81wlWJQ5cliemBL1nee6Nf0Q0tw==
+X-Google-Smtp-Source: AGHT+IFAOoB+M7JjlLl7z0ntzCkGcHgGblt5gwhJG44WUxgPDR/KmYf5vV2JDcbJ5hpyN7kRwnm/R9a7HRoJZpMaskw=
+X-Received: by 2002:a05:6402:27d2:b0:5ca:14f3:2883 with SMTP id
+ 4fb4d7f45d1cf-5ca14f328ddmr2611149a12.4.1729377963447; Sat, 19 Oct 2024
+ 15:46:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aci6pn57bqjfcshbak7ekxb7zr5zz72u3rxyu4zbp5w3mvljx2@b4rn2e4rb4rl>
+References: <20241017160438.3893293-1-joshua.hahnjy@gmail.com>
+ <20241017160438.3893293-2-joshua.hahnjy@gmail.com> <bhcxyl2xir27ds7jlcsncajathj6fbpzo5hoymdvb7h6a44gfu@lxdsu5up344n>
+In-Reply-To: <bhcxyl2xir27ds7jlcsncajathj6fbpzo5hoymdvb7h6a44gfu@lxdsu5up344n>
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+Date: Sat, 19 Oct 2024 18:45:52 -0400
+Message-ID: <CAN+CAwNrijiP91_Hg6rTcGt3pQi0C2a4CSUtMjYfb_CP80KdcA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] memcg/hugetlb: Adding hugeTLB counters to memory controller
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: hannes@cmpxchg.org, nphamcs@gmail.com, mhocko@kernel.org, 
+	roman.gushchin@linux.dev, muchun.song@linux.dev, akpm@linux-foundation.org, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	lnyng@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Oct 17, 2024 at 03:10:50PM +0800, Shung-Hsi Yu wrote:
-> Michal mentioned lib/union_find.c during a discussion. I think we may
-> have a use for in BPF verifier (kernel/bpf/verifier.c) that could
-> further simplify the code. Eduard (who wrote the code shown below)
-> probably would have a better idea.
-> 
-> On Mon, Oct 07, 2024 at 06:19:10AM GMT, Tejun Heo wrote:
-> > On Mon, Oct 07, 2024 at 11:28:27PM +0800, Kuan-Wei Chiu wrote:
-> > > This patch series adds KUnit tests for the union-find implementation
-> > > and optimizes the path compression in the uf_find() function to achieve
-> > > a lower tree height and improved efficiency. Additionally, it modifies
-> > > uf_union() to return a boolean value indicating whether a merge
-> > > occurred, enhancing the process of calculating the number of groups in
-> > > the cgroup cpuset.
-> > 
-> > I'm not necessarily against the patchset but this probably is becoming too
-> > much polishing for something which is only used by cpuset in a pretty cold
-> > path. It probably would be a good idea to concentrate on finding more use
-> > cases.
-> 
-> In BPF verifier we do the following to identify the outermost loop in a
-> BPF program.
-> 
-> 	static struct bpf_verifier_state *get_loop_entry(struct bpf_verifier_state *st)
-> 	{
-> 		struct bpf_verifier_state *topmost = st->loop_entry, *old;
-> 	
-> 		while (topmost && topmost->loop_entry && topmost != topmost->loop_entry)
-> 			topmost = topmost->loop_entry;
-> 
-> 		while (st && st->loop_entry != topmost) {
-> 			old = st->loop_entry;
-> 			st->loop_entry = topmost;
-> 			st = old;
-> 		}
-> 		return topmost;
-> 	}
-> 	
-> 	static void update_loop_entry(struct bpf_verifier_state *cur, struct bpf_verifier_state *hdr)
-> 	{
-> 		struct bpf_verifier_state *cur1, *hdr1;
-> 	
-> 		cur1 = get_loop_entry(cur) ?: cur;
-> 		hdr1 = get_loop_entry(hdr) ?: hdr;
-> 
-> 		if (hdr1->branches && hdr1->dfs_depth <= cur1->dfs_depth) {
-> 			cur->loop_entry = hdr;
-> 			hdr->used_as_loop_entry = true;
-> 		}
-> 	}
-> 
-> Squinting a bit get_loop_entry() looks quite like uf_find() and
-> update_loop_entry() looks quite link uf_union(). So perhaps we could get
-> a straight-forward conversion here.
+On Fri, Oct 18, 2024 at 5:34=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
+v> wrote:
 >
-From a quick glance, it seems that there are still some differences
-between update_loop_entry() and uf_union(). If we want to use
-lib/union_find.c, we would need a new union function to ensure the
-merge order, i.e., ensuring that a.parent = b but not b.parent = a.
+> On Thu, Oct 17, 2024 at 09:04:38AM GMT, Joshua Hahn wrote:
+> > HugeTLB is added as a metric in memcg_stat_item, and is updated in the
+> > alloc and free methods for hugeTLB, after (un)charging has already been
+> > committed. Changes are batched and updated / flushed like the rest of
+> > the memcg stats, which makes additional overhead by the infrequent
+> > hugetlb allocs / frees minimal.
+> >
+> > Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
+>
+> I have an orthogonal cleanup request (i.e. after you are done with this
+> work). Hugetlb is the last user of try-charge + commit protocol for
+> memcg charging. I think we should just remove that and use a simple
+> charge interface. You will need to reorder couple of things like
+> allocating the folio first and then charge and you will need to do right
+> cleanup on charge failing but I think it will cleanup the error path of
+> alloc_hugetlb_folio() a lot.
 
-Additionally, used_as_loop_entry can be replaced with
-uf_find(a) == a && a->rank != 1.
+That sounds good to me. I was originally planning to include the
+hugeTLB accounting in the try charging mechanism (as to only include
+it in memory.stat if it is also accounted for in memory.current. I will
+think of another way to do this accounting so that cleanup becomes
+easier once this patch is finished. One way I can think of is just to
+check for the hugeTLB accounting config before adding the stats
+and accounting for them.
 
-However, I'm not entirely sure if this would make the code easier to
-understand compared to the current implementation.
+Thank you for your feedback!
 
-Regards,
-Kuan-Wei
+Joshua
 
