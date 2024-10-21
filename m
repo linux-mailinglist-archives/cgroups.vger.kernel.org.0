@@ -1,126 +1,165 @@
-Return-Path: <cgroups+bounces-5170-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5171-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AFC39A6964
-	for <lists+cgroups@lfdr.de>; Mon, 21 Oct 2024 15:00:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D68CE9A6CEA
+	for <lists+cgroups@lfdr.de>; Mon, 21 Oct 2024 16:52:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A19A1C228FB
-	for <lists+cgroups@lfdr.de>; Mon, 21 Oct 2024 13:00:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A74FB258FE
+	for <lists+cgroups@lfdr.de>; Mon, 21 Oct 2024 14:52:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71BA11EF083;
-	Mon, 21 Oct 2024 13:00:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A05D01F940C;
+	Mon, 21 Oct 2024 14:51:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YPZfC6/l"
 X-Original-To: cgroups@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CDF81D0F77;
-	Mon, 21 Oct 2024 13:00:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 564831F7092;
+	Mon, 21 Oct 2024 14:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729515639; cv=none; b=vGLnS9WF+R1KehPx3+M01LeOq9XkEfRFJVK8aGaCDWfefYUtdCnuDW9LMs3S6M60nAEIRosmoJY8stV+j2t7awnucoP7zIyfGUW5uWJE0ZCYYkrGm3grcKbmRn/CRGoSrYxG50QORtvAqiTOsZ3MnOz+C7R3RyHyv0/YhBTp6NM=
+	t=1729522319; cv=none; b=Opo6egG7auBF8CHPgNnIPGv0UvSaM5IQIrJ52mB2MSe0HIwc75xFKcFPMPuwdMx/R+vMJWtKuZK+COG47w7uCrTD8E6mO8cL17kBr2d3QfJ4hJ40G5hhpDrjeiWMdJTpvbtlQFfavB++Oso9oQ/gL4e5isWZAT2nvHNzuagvr6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729515639; c=relaxed/simple;
-	bh=sAssCSQak9kO8zSxwQR4fD3toTlDyHCeyHZpYyBznQ4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XSAexGQC4lU2O8qoC0GaDyv7IM5hafYQg+C/IqRX6s5WqgTvUrUCFIo4DYdvGRnMEKVNTLyDMqd2zFT476XntOpboOSpExksmCVOtO4tGhLs4Za5r3QbezhQMS55eMSY9a+BLsafbSiG4j3ylYL24Hp9ev9MdJj6iMitPScXsYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1BF0DDA7;
-	Mon, 21 Oct 2024 06:01:06 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.27])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C20A53F73B;
-	Mon, 21 Oct 2024 06:00:34 -0700 (PDT)
-From: Ryan Roberts <ryan.roberts@arm.com>
-To: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: Ryan Roberts <ryan.roberts@arm.com>,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Michal Hocko <mhocko@suse.com>
-Subject: [PATCH v2] mm/memcontrol: Fix seq_buf size to save memory when PAGE_SIZE is large
-Date: Mon, 21 Oct 2024 14:00:26 +0100
-Message-ID: <20241021130027.3615969-1-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1729522319; c=relaxed/simple;
+	bh=n/DqeEp3zB2caMk9GO1G5MCRJfgu3rzzsfIKp5PiEUQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=e8ZH7Ke3OGvQHBEpePy91tMwrriCx31WV/cGQm9pVMyd4CSdfsBtVFA5uq6PPzai0RfovBIHvwRftmwlKdJoOaAkQqLxzyJJYCyAoDEAJLwDVCvhw5Bb9bbXehMxs4L7GMBMJU8XAq8u7c7UDWROlfMC+lBthSRoW5NW6eLEcok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YPZfC6/l; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2fb443746b8so47019251fa.0;
+        Mon, 21 Oct 2024 07:51:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729522315; x=1730127115; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5eABMIx9lnMto4OhJZ3h1jo2zuiX/EYRQgb1Gk/pqN0=;
+        b=YPZfC6/lNtldf8GCVuCicYeAUG7ZqWFPri8yNWxZZBwQkin2g2sSLbYEQr8u1X0tt9
+         xwzCJy6zUQQaoEaQXKk8Eb63SS8PRledSeCJHN5o9r2WuqvYG5Yf2z8AHdtl1S7Ywh1a
+         J/XmRzE1OJDXD5guFTitdRQMHBzp+t3ue6mXx47vQHxtysqBHoRW9ZAV/6KuuMexGuK7
+         TR268AmjT0U9CFwLAnonL6DWnwhV/w2CU/qrY6igpgeanM3S2xI+XCfO454Z4B6Gw1Ku
+         hTut6AgJJy3L1Pr1H5cWHbYzjRtJMYgCU8VBH/OgCJS2EbBndziQid+Ka4Kqw6AjShrC
+         WAWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729522315; x=1730127115;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5eABMIx9lnMto4OhJZ3h1jo2zuiX/EYRQgb1Gk/pqN0=;
+        b=jLYYdzJFZmy2KjKnaMWtfHs0qc66QmWkMnVyFUxqkUXGYOToXvMJIivuEK8lkxMOMV
+         cbBnynKPMowAA+RZvebqI3xT+b5Mf83Ukwy+MpE/eKhty4hhPW4Y8Lxrpsl/ne7QJnPM
+         rq/jXrwSWcqvP85OglOHGC7zOh9LbcO/nTZj7SBBSPobHszivM00Z0a4s8ba86UJnHP1
+         XZlpB8Stpt+Th8vwqZCBh72P6QbTjguWE1UnY7+MY4WgtUppD778DYkalN027QxJIAEc
+         kYZgGkSXYnI5bBf2knflLVO+8AVdTW7IcRomzPzdEmK+QgefUSj95RdrCmzWxKlZO77+
+         6qug==
+X-Forwarded-Encrypted: i=1; AJvYcCWxFIPTJ/Uimd6HVwFUIxvXNTqkdA/F+ZPRyoWu1JKa0PGUMVVEXnwOfCs/5/2OH5tYzCcuf3mLHw8PwnUx@vger.kernel.org, AJvYcCXjqtxNW3GRfYpgFLnNvSPnEuQjG+7FOTSrnuKhXvEwHyv3DnfNffvWG4E8yiuODWDnPZed1App@vger.kernel.org
+X-Gm-Message-State: AOJu0YwXO9d/kno6ZEfDwtsBEREusTPRFCshPql9efcvopHMLX3PcbxB
+	nMS/cEcqZ0pJUjFv/xe3ksBi3B4LxxwPW/aLckz+OPxst9R6BkLJpjyD11lB7qe5utgnc3yspLK
+	KrEmtiBwoB6soCSKyMH4PoAqr90A=
+X-Google-Smtp-Source: AGHT+IFXPlzL373ISjpa3KTVBnHtlsi6xEMamxxcHC6fm0VA8xoQMx7OABNdmlt0t9yTrBxGrENWyIGVCihHQEte1SE=
+X-Received: by 2002:a2e:b987:0:b0:2fb:3bc0:9c7c with SMTP id
+ 38308e7fff4ca-2fb82eb3506mr45509321fa.25.1729522315068; Mon, 21 Oct 2024
+ 07:51:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20241017160438.3893293-1-joshua.hahnjy@gmail.com>
+ <ZxI0cBwXIuVUmElU@tiehlicka> <20241018123122.GB71939@cmpxchg.org>
+ <ZxJltegdzUYGiMfR@tiehlicka> <il346o3nahawquum3t5rzcuuntkdpyahidpm2ctmdibj3td7pm@2aqirlm5hrdh>
+ <CAN+CAwOHE_J3yO=uMjAGamNKHFc7WXETDutvU=uWzNv5d33zYg@mail.gmail.com> <ZxX_gvuo8hhPlzvb@tiehlicka>
+In-Reply-To: <ZxX_gvuo8hhPlzvb@tiehlicka>
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+Date: Mon, 21 Oct 2024 10:51:43 -0400
+Message-ID: <CAN+CAwMCbX1BAmfBxFC6t75i5k6GVNKPR_QPCB5DDnYwHeCbnA@mail.gmail.com>
+Subject: Re: [PATCH 0/1] memcg/hugetlb: Adding hugeTLB counters to memory controller
+To: Michal Hocko <mhocko@suse.com>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>, nphamcs@gmail.com, 
+	roman.gushchin@linux.dev, muchun.song@linux.dev, akpm@linux-foundation.org, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	lnyng@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Previously the seq_buf used for accumulating the memory.stat output was
-sized at PAGE_SIZE. But the amount of output is invariant to PAGE_SIZE;
-If 4K is enough on a 4K page system, then it should also be enough on a
-64K page system, so we can save 60K on the static buffer used in
-mem_cgroup_print_oom_meminfo(). Let's make it so.
+> On Mon, Oct 21, 2024 at 3:15=E2=80=AFAM Michal Hocko <mhocko@suse.com> wr=
+ote:
+> > On Fri 18-10-24 14:38:48, Joshua Hahn wrote:
+> > But even if we are okay with this, I think it might be overkill to
+> > enable the hugeTLB controller for the convenience of being able to insp=
+ect
+> > the hugeTLB usage for cgroups. This is especially true in workloads whe=
+re
+> > we can predict what usage patterns will be like, and we do not need to =
+enforce
+> > specific limits on hugeTLB usage.
+>
+> I am sorry but I do not understand the overkill part of the argument.
+> Is there any runtime or configuration cost that is visible?
 
-This also has the beneficial side effect of removing a place in the code
-that assumed PAGE_SIZE is a compile-time constant. So this helps our
-quest towards supporting boot-time page size selection.
+I think an argument could be made that any amount of incremental overhead
+is unnecessary. With that said however, I think a bigger reason why this is
+overkill is that a user who wishes to use the hugeTLB counter (which this
+patch achieves in ~10 lines) should not have to enable a ~1000 line feature=
+,
+as Johannes suggested.
 
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
----
- mm/memcontrol.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+A diligent user will have to spend time learning how the hugeTLB controller
+works and figuring out the settings that will basically make the controller
+do no enforcing (and basically, the same as if the feature was not enabled)=
+.
+A not-so-diligent user will not spend the time to make sure that the config=
+s
+make sense, and may run into unexpected & unwanted hugeTLB behavior [1].
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 17af08367c68..5c3a8629ef3e 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -118,6 +118,7 @@ struct mem_cgroup *vmpressure_to_memcg(struct vmpressure *vmpr)
- 	return container_of(vmpr, struct mem_cgroup, vmpressure);
- }
+> TL;DR
+> 1) you need to make the stats accounting aligned with the existing
+>    charge accounting.
+> 2) make the stat visible only when feature is enabled
+> 3) work more on the justification - i.e. changelog part and give us a
+>    better insight why a) hugetlb cgroup is seen is a bad choice and b) wh=
+y
+>    the original limitation hasn't proven good since the feature was
+>    introduced.
+>
+> Makes sense?
+> --
+> Michal Hocko
+> SUSE Labs
 
-+#define SEQ_BUF_SIZE SZ_4K
- #define CURRENT_OBJCG_UPDATE_BIT 0
- #define CURRENT_OBJCG_UPDATE_FLAG (1UL << CURRENT_OBJCG_UPDATE_BIT)
+Hi Michal,
 
-@@ -1527,7 +1528,7 @@ void mem_cgroup_print_oom_context(struct mem_cgroup *memcg, struct task_struct *
- void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
- {
- 	/* Use static buffer, for the caller is holding oom_lock. */
--	static char buf[PAGE_SIZE];
-+	static char buf[SEQ_BUF_SIZE];
- 	struct seq_buf s;
+Thank you for your input. Yes -- this makes sense to me. I apologize, as it
+seems that I definitely left a lot to be assumed & inferred, based on my
+original patch changelog.
 
- 	lockdep_assert_held(&oom_lock);
-@@ -1553,7 +1554,7 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
- 	pr_info("Memory cgroup stats for ");
- 	pr_cont_cgroup_path(memcg->css.cgroup);
- 	pr_cont(":");
--	seq_buf_init(&s, buf, sizeof(buf));
-+	seq_buf_init(&s, buf, SEQ_BUF_SIZE);
- 	memory_stat_format(memcg, &s);
- 	seq_buf_do_printk(&s, KERN_INFO);
- }
-@@ -4194,12 +4195,12 @@ static int memory_events_local_show(struct seq_file *m, void *v)
- int memory_stat_show(struct seq_file *m, void *v)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
--	char *buf = kmalloc(PAGE_SIZE, GFP_KERNEL);
-+	char *buf = kmalloc(SEQ_BUF_SIZE, GFP_KERNEL);
- 	struct seq_buf s;
+In my next version of this patch, I am planning to add the changes that hav=
+e
+been suggested by Johannes, write code with the try_charge cleanup that
+Shakeel suggested in mind, and change the behavior to make sense only when
+hugeTLB accounting is enabled, as you suggested as well. I'll also update
+the changelog & commit message and add any information that will hopefully
+make future reviewers aware of the motivation for this patch.
 
- 	if (!buf)
- 		return -ENOMEM;
--	seq_buf_init(&s, buf, PAGE_SIZE);
-+	seq_buf_init(&s, buf, SEQ_BUF_SIZE);
- 	memory_stat_format(memcg, &s);
- 	seq_puts(m, buf);
- 	kfree(buf);
---
-2.43.0
+Please let me know if you have any remaining concerns with the implementati=
+on
+or motivation, and I will be happy to incorporate your ideas into the next
+version as well.
 
+Joshua
+
+[1] Of course, this argument isn't really generalizable to *all* features,
+we can't make a separate config for every small feature that a user might
+want to enable with the smallest granularity. However, given that the exist=
+ing
+solution of enabling the hugeTLB controller is an imperfect solution that
+still leaves a discrepancy between memory.stat and memory.current when huge=
+TLB
+accounting is enabled, I think it is reasonable to isolate this feature.
 
