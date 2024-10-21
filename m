@@ -1,179 +1,138 @@
-Return-Path: <cgroups+bounces-5172-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5173-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24A4F9A6E81
-	for <lists+cgroups@lfdr.de>; Mon, 21 Oct 2024 17:44:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49E839A70C3
+	for <lists+cgroups@lfdr.de>; Mon, 21 Oct 2024 19:15:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4E491F2456C
-	for <lists+cgroups@lfdr.de>; Mon, 21 Oct 2024 15:44:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F3B91C22BFE
+	for <lists+cgroups@lfdr.de>; Mon, 21 Oct 2024 17:14:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89EBB1C4610;
-	Mon, 21 Oct 2024 15:44:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD3F91EBA05;
+	Mon, 21 Oct 2024 17:14:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gooxrjkp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AosBQXMP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB4871C460C
-	for <cgroups@vger.kernel.org>; Mon, 21 Oct 2024 15:44:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C581C330C;
+	Mon, 21 Oct 2024 17:14:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729525460; cv=none; b=TkUrLHWe9Bm7Rse4WjVW4F9K1B9lqhwpuW002KZZhlqUfFtU3lnrvjsFSKecq0I4TR4YiUpQQ+t64ZtBPK6RgZ6VuSbnf1gGakwx8bYotpeMyQnPB7HQwtu50ct4AqLwkPKsNUtOfE4Njbj0MXWZk7V3wimCkhJThlQXbjN++ug=
+	t=1729530896; cv=none; b=dylFkmmmS8AFB/yQw1eTynw/4XRipTIsYuXWF+jGrQGMZIuSZqv5UpVAl/Y9y4fk0dB53rFv7NrSMwYCmRwuPTCsx+I7BszehZ+OtA3uliFbAvA0fYLJdRzAgxJATaesWHwDsN/yCroWvecveaa1zHCqIZvwwYv1JSiLq5eejlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729525460; c=relaxed/simple;
-	bh=EZnS51w1QN9LnkZGC/VRErZHu7YzAVSf1COlI+bY0t0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B1IS3vRZhsKInchqLU2mA/LBEF01Lf47rzUImPCeCjvHOcYIWc3GNmQ/tp8n+x23O8V3RlSIZWjJ/WyK5nfchjWbcEvUpIO/3kTH+7I0VT4dYYjcxZphV731lldxVHBDe9VwqZMmA9imnkNXXxKaaq+zecqV+hJzlAKwFojBrPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gooxrjkp; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5c9428152c0so6271862a12.1
-        for <cgroups@vger.kernel.org>; Mon, 21 Oct 2024 08:44:17 -0700 (PDT)
+	s=arc-20240116; t=1729530896; c=relaxed/simple;
+	bh=B6n5AIigxmtSGMA2rqNWorBAT8emm7EL7dKIb9/88wU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cZYUQIWKrZXhAMVxTYZEGXzR0fIvjiZ4vr8A8A9oDwBE5y7stq3Zm6d8r0I9mSpAETmprMGbIm3WidkKp1k+YToivUTBAKWVnJWU7gUQVLRycz9fcukzJ/3P8jYVq1RA3V5FZ8ygClcVt/tiXnOOo8lUoRv5QedMFyN51U/rXrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AosBQXMP; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-37d3e8d923fso3268414f8f.0;
+        Mon, 21 Oct 2024 10:14:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1729525456; x=1730130256; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=TSEb+ymEnyGrSZp7cX2c6uEaBnPjBoaasTWPd/6WjFE=;
-        b=gooxrjkpSom//dg6mW8PJpkozg5Wfwa+Ozgos5nWJdXM//3uAgUOHDjNyU5L3yk3f/
-         jbvt3+hQpkV3/qeHot4ey4xDmHcg9T3pZqYvvu0P8GnszVfcdm4ixYSEuTsM55MYxN4x
-         RLYyWRFbggwbrMmkDCGlG84oFCMRZl+RYdk1NIcplSxKnGVvccT2yJclhJYCl6sbYzVc
-         +vQu+pA/8zdJbJh77a8ClruI39LNApLjzR9pJO4Q2cKns0sa2Ii8W+2jMqn8Glv21fQ9
-         U5ebuROpXRwEFRjLrG0Jr1ls6nVC9faO9ezuy/jVRaUyCawfLc3K/dKDXf/YY8TuTI8g
-         PS/Q==
+        d=gmail.com; s=20230601; t=1729530893; x=1730135693; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=B6n5AIigxmtSGMA2rqNWorBAT8emm7EL7dKIb9/88wU=;
+        b=AosBQXMPuu58VO4YcBuTH5DcWSLsC5v7y+Qmpar7o1G+/lVESNj+heKFga3Q1ojgJs
+         /BU1yizA37ROOSHwWbu299uQzQPjbXpg0j4eLwHlVapseSS1LzQ9WnhVQY2O4oqzYQpI
+         oFojfToydlLmr1OrRk05KqUTtkD1ACE1f7sHhbn+2WXfxHgNinE8+aLmUw/2Y63DHF7U
+         RK86vDzHS2qEN753JnKv3u6LE5sgnREJKdxDrCHjVTPwqup3DR2DNQLBvgJGIspQank8
+         q1a0lhqINz52RpA1JrJBXa6NIAiDaepvjh5nedoeHPfiZSbXkSgDjo0dHrzviM6X6T/O
+         lP+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729525456; x=1730130256;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TSEb+ymEnyGrSZp7cX2c6uEaBnPjBoaasTWPd/6WjFE=;
-        b=dzXqficcawQHuwKAEXzQpW4Yx6IdGUImKvwVLajqYfX/p7bUc2ND0+Iwpv/nCunGr3
-         TQRbge+r1FXeBU5G9eghc9xivwjwI0psss6VWi+Hnr13HmC5Azj3kOEEUZUwCXwMRYA/
-         22S58ayQrl+1trgvtEf30E+yowzzKLptgalLv8TtpX5k4Hj0jfDf7x90YBPXjYSy0hVZ
-         LEJf1/lpyyuUAp840X0jVH9vZxdCBpeXL9e48ORrJ4LaqJlpthGOuU589I8NuEAVvlNz
-         wqfqVXQNoGPljBPIS8yXvq+miRiv57cNEzVuNWrdnBkqSj1ef0D6ECLMDB5jnMI8P2TA
-         5jXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU6CEorkx1TBYUJJhl5KnKAYd1ZF9BieK0eDnH2f215nbKezFnGv9sz4phiZonqzOLEI5qxCQGv@vger.kernel.org
-X-Gm-Message-State: AOJu0YyEW+66UTdX9rsiW+uSsT+ukmjsU/5Y9aCQ8Mxq0qXGDmy7Y5lf
-	gX/WhaDuzXaO7hLGzRMDVjHooxlqrSMPe9n8I4BKKmGf5IWbkBVtMlkbTmr3AOA=
-X-Google-Smtp-Source: AGHT+IGj6Ce0bxqUPeEzNKA1yVTvwx2NhQ+jfM1ctq9xUAIhUZbv5kt1K1A/bnMh5GN+TfxgS7AQpA==
-X-Received: by 2002:a05:6402:3509:b0:5c8:9f3e:e57 with SMTP id 4fb4d7f45d1cf-5ca0ac628c2mr9720000a12.18.1729525455746;
-        Mon, 21 Oct 2024 08:44:15 -0700 (PDT)
-Received: from localhost (109-81-89-238.rct.o2.cz. [109.81.89.238])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5cb66c737c4sm2028599a12.96.2024.10.21.08.44.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Oct 2024 08:44:15 -0700 (PDT)
-Date: Mon, 21 Oct 2024 17:44:14 +0200
-From: Michal Hocko <mhocko@suse.com>
-To: Joshua Hahn <joshua.hahnjy@gmail.com>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>,
-	Johannes Weiner <hannes@cmpxchg.org>, nphamcs@gmail.com,
-	roman.gushchin@linux.dev, muchun.song@linux.dev,
-	akpm@linux-foundation.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, lnyng@meta.com
-Subject: Re: [PATCH 0/1] memcg/hugetlb: Adding hugeTLB counters to memory
- controller
-Message-ID: <ZxZ2zlQ7t6fLhL1R@tiehlicka>
-References: <20241017160438.3893293-1-joshua.hahnjy@gmail.com>
- <ZxI0cBwXIuVUmElU@tiehlicka>
- <20241018123122.GB71939@cmpxchg.org>
- <ZxJltegdzUYGiMfR@tiehlicka>
- <il346o3nahawquum3t5rzcuuntkdpyahidpm2ctmdibj3td7pm@2aqirlm5hrdh>
- <CAN+CAwOHE_J3yO=uMjAGamNKHFc7WXETDutvU=uWzNv5d33zYg@mail.gmail.com>
- <ZxX_gvuo8hhPlzvb@tiehlicka>
- <CAN+CAwMCbX1BAmfBxFC6t75i5k6GVNKPR_QPCB5DDnYwHeCbnA@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1729530893; x=1730135693;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B6n5AIigxmtSGMA2rqNWorBAT8emm7EL7dKIb9/88wU=;
+        b=hXtgxsTE9Yr8UNu33xXUqaBXfUZxlW+ejHlU1JhNwrRvwIY7k49qrk1xYToDc2por1
+         8f6xdN27sa+0NncaBV8b/C1KcwpxVV+jPkxJ+eXeP6Ems4w4CqIrYhWeMQu0SoFlYTEJ
+         3FUDuriQstoSjum2ntnSFGZfHXCDq/9hFy4JsUX++e5B65s46d3ucRwKG/N9waF72JNO
+         LUFuZhHqYifwJpRE4TiLK4TMQ4dA0xSoxgKP5Y2IGVvmsE+oLwMNZu2CW470X/qNj1b4
+         yFqaIiAOnb2QUkCuXdOBpF7o3dazRLa2btvVekNeeV7/U+rOHlhaJRNqtlkh/tXjWqvj
+         jwTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUa+zhyjDNN1VxN5siKS8wyd+XMyLGanouuI+ixA+cmryIN+ZpN2bCFEzdJbBgvTESPjjs=@vger.kernel.org, AJvYcCV+JgdM5U0RVjdhBkGB+lpWXSBpu+Zdu54ND3Vuu0GVcsPMJgdCP6SQPGI8PUAvcrtwrhQFyNAtmA==@vger.kernel.org, AJvYcCWMCWcCaC+4iAXxk/mJDcenNWGfSZqLqH3uQ2054dDB8dmAkLKLvDmnfTq4zZMl/jrdX6a1g/DjvjVjNGbF@vger.kernel.org
+X-Gm-Message-State: AOJu0YzBgwWU6SycZBBmcxLtH7DKhkmseBTznVdWS1IEeAxzJoRLDmR8
+	lpfhbLQ7wNJq2LOS2v6+pg5oHydH75mo4iXABH7K/ISUR2y7K6ew9L/Jn2B7E6HzlKHZwEHOT/Q
+	Tk9QqA1aPCHCL9afqx5pLN7D2L/gAmrek
+X-Google-Smtp-Source: AGHT+IHgxzWLkB3jf49EyTw342Xk24EJmgZq7abf/IdFQITy0RMxkGbtzrqCX8t9ox7L090ek+sufwflfK41Egy5TU4=
+X-Received: by 2002:a5d:67cd:0:b0:37d:4318:d8e1 with SMTP id
+ ffacd0b85a97d-37eab6e3db3mr7317838f8f.23.1729530891030; Mon, 21 Oct 2024
+ 10:14:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAN+CAwMCbX1BAmfBxFC6t75i5k6GVNKPR_QPCB5DDnYwHeCbnA@mail.gmail.com>
+References: <20241007152833.2282199-1-visitorckw@gmail.com>
+ <ZwQJ_hQENEE7uj0q@slm.duckdns.org> <aci6pn57bqjfcshbak7ekxb7zr5zz72u3rxyu4zbp5w3mvljx2@b4rn2e4rb4rl>
+ <af842df1791423386f3aef25f3f94c5b39b5e332.camel@gmail.com>
+In-Reply-To: <af842df1791423386f3aef25f3f94c5b39b5e332.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 21 Oct 2024 10:14:39 -0700
+Message-ID: <CAADnVQLSU5WDkjtFVLYqj8+AOUCz-Pi6v4VaexviQPy7DKtXDw@mail.gmail.com>
+Subject: Re: Using union-find in BPF verifier (was: Enhance union-find with
+ KUnit tests and optimization improvements)
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Shung-Hsi Yu <shung-hsi.yu@suse.com>, Kuan-Wei Chiu <visitorckw@gmail.com>, 
+	bpf <bpf@vger.kernel.org>, Tejun Heo <tj@kernel.org>, xavier_qy@163.com, 
+	Waiman Long <longman@redhat.com>, Zefan Li <lizefan.x@bytedance.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, jserv@ccns.ncku.edu.tw, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	"open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>, Christoph Hellwig <hch@infradead.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Mykola Lysenko <mykolal@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon 21-10-24 10:51:43, Joshua Hahn wrote:
-> > On Mon, Oct 21, 2024 at 3:15 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > On Fri 18-10-24 14:38:48, Joshua Hahn wrote:
-> > > But even if we are okay with this, I think it might be overkill to
-> > > enable the hugeTLB controller for the convenience of being able to inspect
-> > > the hugeTLB usage for cgroups. This is especially true in workloads where
-> > > we can predict what usage patterns will be like, and we do not need to enforce
-> > > specific limits on hugeTLB usage.
+On Thu, Oct 17, 2024 at 1:09=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Thu, 2024-10-17 at 15:10 +0800, Shung-Hsi Yu wrote:
+> > Michal mentioned lib/union_find.c during a discussion. I think we may
+> > have a use for in BPF verifier (kernel/bpf/verifier.c) that could
+> > further simplify the code. Eduard (who wrote the code shown below)
+> > probably would have a better idea.
 > >
-> > I am sorry but I do not understand the overkill part of the argument.
-> > Is there any runtime or configuration cost that is visible?
-> 
-> I think an argument could be made that any amount of incremental overhead
-> is unnecessary. With that said however, I think a bigger reason why this is
-> overkill is that a user who wishes to use the hugeTLB counter (which this
-> patch achieves in ~10 lines) should not have to enable a ~1000 line feature,
-> as Johannes suggested.
-> 
-> A diligent user will have to spend time learning how the hugeTLB controller
-> works and figuring out the settings that will basically make the controller
-> do no enforcing (and basically, the same as if the feature was not enabled).
-> A not-so-diligent user will not spend the time to make sure that the configs
-> make sense, and may run into unexpected & unwanted hugeTLB behavior [1].
+> > On Mon, Oct 07, 2024 at 06:19:10AM GMT, Tejun Heo wrote:
+> > > On Mon, Oct 07, 2024 at 11:28:27PM +0800, Kuan-Wei Chiu wrote:
+> > > > This patch series adds KUnit tests for the union-find implementatio=
+n
+> > > > and optimizes the path compression in the uf_find() function to ach=
+ieve
+> > > > a lower tree height and improved efficiency. Additionally, it modif=
+ies
+> > > > uf_union() to return a boolean value indicating whether a merge
+> > > > occurred, enhancing the process of calculating the number of groups=
+ in
+> > > > the cgroup cpuset.
+> > >
+> > > I'm not necessarily against the patchset but this probably is becomin=
+g too
+> > > much polishing for something which is only used by cpuset in a pretty=
+ cold
+> > > path. It probably would be a good idea to concentrate on finding more=
+ use
+> > > cases.
+>
+> Hi Shung-Hsi,
+>
+> [...]
+>
+> > Squinting a bit get_loop_entry() looks quite like uf_find() and
+> > update_loop_entry() looks quite link uf_union(). So perhaps we could ge=
+t
+> > a straight-forward conversion here.
+>
+> I'll reply tomorrow, need to sleep on it.
 
-Heh, a lazy user would just enable the controller and hope for the best.
-And it would actually worked out of the box because there is no limit
-imposed by default so the only downside is a theoretical overhead due to
-charging.
-
-Anyway, I get the point and I guess it is fair to say the half baked
-memcg accounting is not optimal because it only provides half baked
-insight and you aim to fix that. This is fair intentention and
-justification.
-
-I have to say I really disliked this extension to the memcg when it was
-proposed but it was claimed this was good enough for people who know
-what they are doing. 
-
-> > TL;DR
-> > 1) you need to make the stats accounting aligned with the existing
-> >    charge accounting.
-> > 2) make the stat visible only when feature is enabled
-> > 3) work more on the justification - i.e. changelog part and give us a
-> >    better insight why a) hugetlb cgroup is seen is a bad choice and b) why
-> >    the original limitation hasn't proven good since the feature was
-> >    introduced.
-> >
-> > Makes sense?
-> > --
-> > Michal Hocko
-> > SUSE Labs
-> 
-> Hi Michal,
-> 
-> Thank you for your input. Yes -- this makes sense to me. I apologize, as it
-> seems that I definitely left a lot to be assumed & inferred, based on my
-> original patch changelog.
-> 
-> In my next version of this patch, I am planning to add the changes that have
-> been suggested by Johannes, write code with the try_charge cleanup that
-> Shakeel suggested in mind, and change the behavior to make sense only when
-> hugeTLB accounting is enabled, as you suggested as well. I'll also update
-> the changelog & commit message and add any information that will hopefully
-> make future reviewers aware of the motivation for this patch.
-
-Thanks a lot!
-
-> Please let me know if you have any remaining concerns with the implementation
-> or motivation, and I will be happy to incorporate your ideas into the next
-> version as well.
-
-I think clarification and fixing the reporting is good enough. This
-still won't make the hugetlb sneaking into memcg more likeable to me but
-nothing that would force me awake during nights ;)
-
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+I don't like the idea.
+Let's keep get_loop_entry/update_loop_entry as-is.
 
