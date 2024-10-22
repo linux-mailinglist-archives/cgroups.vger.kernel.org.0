@@ -1,97 +1,98 @@
-Return-Path: <cgroups+bounces-5177-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5178-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAB2B9A9B0F
-	for <lists+cgroups@lfdr.de>; Tue, 22 Oct 2024 09:31:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E69E19AA13A
+	for <lists+cgroups@lfdr.de>; Tue, 22 Oct 2024 13:38:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 345BBB24A88
-	for <lists+cgroups@lfdr.de>; Tue, 22 Oct 2024 07:31:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B1741F2477C
+	for <lists+cgroups@lfdr.de>; Tue, 22 Oct 2024 11:38:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A9714EC73;
-	Tue, 22 Oct 2024 07:31:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="j9FxgkJG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73A8619B5AC;
+	Tue, 22 Oct 2024 11:38:35 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4493314D2BD
-	for <cgroups@vger.kernel.org>; Tue, 22 Oct 2024 07:30:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D529819AD86
+	for <cgroups@vger.kernel.org>; Tue, 22 Oct 2024 11:38:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729582261; cv=none; b=Q1wn0RvsnxyKAG1lqBUJ7QO1bc5n4ZZhyAfja2Q+0TZksKMWTLbr/s3hsWlEVKUZrHCwl1D69fgDNHDDhluHxvagvXD3SjoxgNU9TszPtevzCPgKsWb6bTKFfXb64wfNKxf3FPDfmzWKbP3x2lxCLRlfP8oCGpXgpurdz3ACU5E=
+	t=1729597115; cv=none; b=r6B3jmURCkll1jLbcCXnjtT2jRwUca6O+SX6pcI0PCppNwBAdPx6VH374VUoL8pqQVEsHj/2PflzxxiMvFEZ1s+ctl6wxufGRX1H7wW2paHwIPwZMumPebaxPpsA800/HqQ8aS2OMLp8Q7GaDWuCioQwyZJfHQIPC9UG004lJJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729582261; c=relaxed/simple;
-	bh=2Xx6/DUfUjwIUEo6DlYONJOsCqi0nWQlnwt/N08NSzQ=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=gB9RvUH1/CV/Ais68ZJQzoa6Mm1Qw32HSWGcY/+g7HXPAV3ssilKnNeTrF/4ny/8xnxita3Yeim5IYtJmIHB54dbn5erZGlTOyDlA1TbpckuxVwHXMrAzdaGdQQ4AN9raXRWI0QeZycWyXd+uzAfWKGepiPsUfpNJM5WhMElVSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=j9FxgkJG; arc=none smtp.client-ip=91.218.175.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Content-Type: text/plain;
-	charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729582256;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SwAyDyVKA/SOfuimo1rAiUn62XNNlwrTRrrwVlZsQwc=;
-	b=j9FxgkJGvCbzrhPbm9O6+LEBgxwozxYBsqijgU3wETTzsY9s5rVoaY/nYX/UnOxD1VCuqU
-	c5xJFBYYmPnpaucos/hjLjDDd+VdXDo9QXCcoKxaFFykjndC6sNPK110vfMash8gKvDfTA
-	8Bsyyxdjbp5md2pskvk8kVOKztvv/fI=
+	s=arc-20240116; t=1729597115; c=relaxed/simple;
+	bh=aLBckF07mkjO60Kkz61QCu2+ek57S2l8PjSQYDAI5ao=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=tkRPyknzX2Kl13v/c7mjiuQeDQo+IaT7InGUm3gH75FjT7tcbPhEKo72UHMWGvSToBOW0ab6e3/F24JKBo2KyYi53SCX2LNGvw6gCaX/BETOgRvJujZSZXgc8tdfUPbTOzOg8SFx5cQ5fCoqFS6REDbfnHCRCFEj6L5QPmzEcYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a3b7129255so53502285ab.2
+        for <cgroups@vger.kernel.org>; Tue, 22 Oct 2024 04:38:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1729597113; x=1730201913;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ouSLg3Ywt/0X+H9vWv6sMqAnUnp/8br5o1Ob9ipfFN4=;
+        b=Ak+lr2W8TdGhxeRCluhw7+geUq7GeyOlpcYXOKZDPj7G6FbQ4aK+L4XBjVkv6xCJHO
+         N9x26MqcCvdmsBQyaOk8BhEbRj9ACtB+CWhHBihi/PXLcqUOKAz3NpHV4GYPPbfMwF0v
+         r/etsgiOIBDN9IcA5u7vcvjAN7Ikt/jIS+yYcmVD0Ra5d80eCsOv5N4GFElURqdfrt4F
+         701mSArKKafzr9/A72l8XqjteIkUGQvwsASHe2BKHYcEKxEqzoakxRFsKARssOmMjv0l
+         vE1wWl49xJnK7j/lC2ayVCBmJhxySDht9sy/tBHPmI1LHbOgWdECoQKnIjK7a7FFC6B2
+         h8gw==
+X-Gm-Message-State: AOJu0Yx9a9qF3bwEQPSptmufnF3O0vD3C+tU58QIz87YDXHC4uHOcaBQ
+	nbNd6Kngb7KPY1xMy9d/SsOq4GJqwMGdddiwGMiiokcU7y4hXhhsk6xOamA69VW6XdEzMQS3Ziq
+	+wUPOfpqxnb6QXoT3oovbyO+r2hQv679Gj3FQXgcoxHHryZZMnn982tc=
+X-Google-Smtp-Source: AGHT+IE3pkqG3W1GjwJfvFFXB+gff8e7Fh4t9+OSbjt329ZL6nPvFVEzDDUEErjXgMMmJaxUpGZAW97QKS6HSljIljBS85PjRzqc
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3818.100.11.1.3\))
-Subject: Re: [PATCH v2] mm/memcontrol: Fix seq_buf size to save memory when
- PAGE_SIZE is large
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20241021130027.3615969-1-ryan.roberts@arm.com>
-Date: Tue, 22 Oct 2024 15:30:11 +0800
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>,
- cgroups@vger.kernel.org,
- linux-mm@kvack.org,
- linux-kernel@vger.kernel.org,
- Michal Hocko <mhocko@suse.com>
-Content-Transfer-Encoding: 7bit
-Message-Id: <4BEA4D18-A71B-40EB-82C0-6450B78C4627@linux.dev>
-References: <20241021130027.3615969-1-ryan.roberts@arm.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-X-Migadu-Flow: FLOW_OUT
+MIME-Version: 1.0
+X-Received: by 2002:a92:c248:0:b0:3a3:f95f:2dd with SMTP id
+ e9e14a558f8ab-3a3f95f0594mr89939355ab.19.1729597112998; Tue, 22 Oct 2024
+ 04:38:32 -0700 (PDT)
+Date: Tue, 22 Oct 2024 04:38:32 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67178eb8.050a0220.10f4f4.011b.GAE@google.com>
+Subject: [syzbot] Monthly cgroups report (Oct 2024)
+From: syzbot <syzbot+list3160ce3179308d795218@syzkaller.appspotmail.com>
+To: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
+Hello cgroups maintainers/developers,
 
+This is a 31-day syzbot report for the cgroups subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/cgroups
 
-> On Oct 21, 2024, at 21:00, Ryan Roberts <ryan.roberts@arm.com> wrote:
-> 
-> Previously the seq_buf used for accumulating the memory.stat output was
-> sized at PAGE_SIZE. But the amount of output is invariant to PAGE_SIZE;
-> If 4K is enough on a 4K page system, then it should also be enough on a
-> 64K page system, so we can save 60K on the static buffer used in
-> mem_cgroup_print_oom_meminfo(). Let's make it so.
-> 
-> This also has the beneficial side effect of removing a place in the code
-> that assumed PAGE_SIZE is a compile-time constant. So this helps our
-> quest towards supporting boot-time page size selection.
-> 
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 6 issues are still open and 38 have been fixed so far.
 
-Acked-by: Muchun Song <muchun.song@linux.dev>
+Some of the still happening issues:
 
-Thanks.
+Ref Crashes Repro Title
+<1> 2627    Yes   possible deadlock in console_flush_all (3)
+                  https://syzkaller.appspot.com/bug?extid=18cfb7f63482af8641df
+<2> 998     Yes   possible deadlock in task_rq_lock
+                  https://syzkaller.appspot.com/bug?extid=ca14b36a46a8c541b509
+<3> 35      Yes   possible deadlock in console_lock_spinning_enable (5)
+                  https://syzkaller.appspot.com/bug?extid=622acb507894a48b2ce9
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
