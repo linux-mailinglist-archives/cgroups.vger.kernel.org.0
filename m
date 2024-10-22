@@ -1,98 +1,117 @@
-Return-Path: <cgroups+bounces-5178-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5180-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E69E19AA13A
-	for <lists+cgroups@lfdr.de>; Tue, 22 Oct 2024 13:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA7389AA18F
+	for <lists+cgroups@lfdr.de>; Tue, 22 Oct 2024 13:58:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B1741F2477C
-	for <lists+cgroups@lfdr.de>; Tue, 22 Oct 2024 11:38:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF6D81F236A7
+	for <lists+cgroups@lfdr.de>; Tue, 22 Oct 2024 11:58:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73A8619B5AC;
-	Tue, 22 Oct 2024 11:38:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 647D619CCF5;
+	Tue, 22 Oct 2024 11:58:28 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D529819AD86
-	for <cgroups@vger.kernel.org>; Tue, 22 Oct 2024 11:38:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A973D19CC32
+	for <cgroups@vger.kernel.org>; Tue, 22 Oct 2024 11:58:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729597115; cv=none; b=r6B3jmURCkll1jLbcCXnjtT2jRwUca6O+SX6pcI0PCppNwBAdPx6VH374VUoL8pqQVEsHj/2PflzxxiMvFEZ1s+ctl6wxufGRX1H7wW2paHwIPwZMumPebaxPpsA800/HqQ8aS2OMLp8Q7GaDWuCioQwyZJfHQIPC9UG004lJJ8=
+	t=1729598308; cv=none; b=nuu8g5ODSFA4CsduBElwdjUvHFoISY8NUE8T7rUe5TuOvADEgevrn2GnMu/bEBoYpPAodqKQb0xA2cy04XbUHfBwP1jW0N6rzd/qX7V72gu70mtZgFVYZ1Q/QrEuHgxBDdRvP1Nyap1NOTKHq3Uste/cpo9voMdGm3PCq4Awcao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729597115; c=relaxed/simple;
-	bh=aLBckF07mkjO60Kkz61QCu2+ek57S2l8PjSQYDAI5ao=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=tkRPyknzX2Kl13v/c7mjiuQeDQo+IaT7InGUm3gH75FjT7tcbPhEKo72UHMWGvSToBOW0ab6e3/F24JKBo2KyYi53SCX2LNGvw6gCaX/BETOgRvJujZSZXgc8tdfUPbTOzOg8SFx5cQ5fCoqFS6REDbfnHCRCFEj6L5QPmzEcYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a3b7129255so53502285ab.2
-        for <cgroups@vger.kernel.org>; Tue, 22 Oct 2024 04:38:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729597113; x=1730201913;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ouSLg3Ywt/0X+H9vWv6sMqAnUnp/8br5o1Ob9ipfFN4=;
-        b=Ak+lr2W8TdGhxeRCluhw7+geUq7GeyOlpcYXOKZDPj7G6FbQ4aK+L4XBjVkv6xCJHO
-         N9x26MqcCvdmsBQyaOk8BhEbRj9ACtB+CWhHBihi/PXLcqUOKAz3NpHV4GYPPbfMwF0v
-         r/etsgiOIBDN9IcA5u7vcvjAN7Ikt/jIS+yYcmVD0Ra5d80eCsOv5N4GFElURqdfrt4F
-         701mSArKKafzr9/A72l8XqjteIkUGQvwsASHe2BKHYcEKxEqzoakxRFsKARssOmMjv0l
-         vE1wWl49xJnK7j/lC2ayVCBmJhxySDht9sy/tBHPmI1LHbOgWdECoQKnIjK7a7FFC6B2
-         h8gw==
-X-Gm-Message-State: AOJu0Yx9a9qF3bwEQPSptmufnF3O0vD3C+tU58QIz87YDXHC4uHOcaBQ
-	nbNd6Kngb7KPY1xMy9d/SsOq4GJqwMGdddiwGMiiokcU7y4hXhhsk6xOamA69VW6XdEzMQS3Ziq
-	+wUPOfpqxnb6QXoT3oovbyO+r2hQv679Gj3FQXgcoxHHryZZMnn982tc=
-X-Google-Smtp-Source: AGHT+IE3pkqG3W1GjwJfvFFXB+gff8e7Fh4t9+OSbjt329ZL6nPvFVEzDDUEErjXgMMmJaxUpGZAW97QKS6HSljIljBS85PjRzqc
+	s=arc-20240116; t=1729598308; c=relaxed/simple;
+	bh=vapUWn7Z/N1UbshnDpuCmPnFVPIPqQ9R8bkaqK6LUUU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ibWjhUq5iw4Vf7uwF6SWyNUepvouOzXRKwWPkXSS0z5vI6083b/XzXSAiqq/hXXH1M2A01a0u2p1P5jmRy4K+MNze4TazzJlH1Xud9Hccai/loRcMiBT4JuJ/FH+XcSEt0lhCYXK3/0+RzBWmsNNVARwRg6UMo2BpMWACDJT4LY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XXrKR2Hgfz4f3nV5
+	for <cgroups@vger.kernel.org>; Tue, 22 Oct 2024 19:58:03 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 7F8251A058E
+	for <cgroups@vger.kernel.org>; Tue, 22 Oct 2024 19:58:21 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP3 (Coremail) with SMTP id _Ch0CgAXtoJTkxdnHcucEg--.31107S2;
+	Tue, 22 Oct 2024 19:58:21 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: tj@kernel.org,
+	lizefan.x@bytedance.com,
+	hannes@cmpxchg.org,
+	longman@redhat.com,
+	adityakali@google.com,
+	sergeh@kernel.org,
+	mkoutny@suse.com,
+	guro@fb.com
+Cc: cgroups@vger.kernel.org,
+	chenridong@huawei.com,
+	wangweiyang2@huawei.com
+Subject: [PATCH -next v4 0/2] Some optimizations about freezer
+Date: Tue, 22 Oct 2024 11:49:44 +0000
+Message-Id: <20241022114946.811862-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c248:0:b0:3a3:f95f:2dd with SMTP id
- e9e14a558f8ab-3a3f95f0594mr89939355ab.19.1729597112998; Tue, 22 Oct 2024
- 04:38:32 -0700 (PDT)
-Date: Tue, 22 Oct 2024 04:38:32 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67178eb8.050a0220.10f4f4.011b.GAE@google.com>
-Subject: [syzbot] Monthly cgroups report (Oct 2024)
-From: syzbot <syzbot+list3160ce3179308d795218@syzkaller.appspotmail.com>
-To: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=y
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_Ch0CgAXtoJTkxdnHcucEg--.31107S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYm7kC6x804xWl14x267AKxVW8JVW5JwAF
+	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xv
+	wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+	x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wASzI0E
+	04IjxsIE14AKx2xKxwAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr
+	I_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0E
+	wIxGrwACI402YVCY1x02628vn2kIc2xKxwAKzVC20s0267AEwI8IwI0ExsIj0wCF04k20x
+	vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
+	3I0E7480Y4vE14v26r1j6r18MI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIx
+	AIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAI
+	cVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2js
+	IEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UQzVbUUUUU=
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-Hello cgroups maintainers/developers,
+From: Chen Ridong <chenridong@huawei.com>
 
-This is a 31-day syzbot report for the cgroups subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/cgroups
+The e_freeze flag has been changed to a bool type, which will reduce
+unnecessary looping when the freezer state does not change. This patch
+set adds helpers to make the code more concise.
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 6 issues are still open and 38 have been fixed so far.
-
-Some of the still happening issues:
-
-Ref Crashes Repro Title
-<1> 2627    Yes   possible deadlock in console_flush_all (3)
-                  https://syzkaller.appspot.com/bug?extid=18cfb7f63482af8641df
-<2> 998     Yes   possible deadlock in task_rq_lock
-                  https://syzkaller.appspot.com/bug?extid=ca14b36a46a8c541b509
-<3> 35      Yes   possible deadlock in console_lock_spinning_enable (5)
-                  https://syzkaller.appspot.com/bug?extid=622acb507894a48b2ce9
+Both patch 1 and patch 2 have been reviewed by Michal Koutný.
+The patch for v3 was dropped, because there was no good idea to make the
+code much more readable and reduce unesessary loops.
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+v4:
+- drop patch 3, which may make the "cgroup_propagate_frozen" function hard
+  to read.
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+v3:
+- fix build warnings reported-by kernel test robot.
 
-You may send multiple commands in a single email message.
+v2:
+- open code inside the loop of cgroup_freeze instead of inline function.
+- add helper to make code concise.
+- remove selftest script(There are hierarchy test in test_freeze.c, I
+  think that is enough for this series).
+
+Chen Ridong (2):
+  cgroup/freezer: Reduce redundant traversal for cgroup_freeze
+  cgroup/freezer: Add cgroup CGRP_FROZEN flag update helper
+
+ include/linux/cgroup-defs.h |  2 +-
+ kernel/cgroup/freezer.c     | 97 ++++++++++++++++++-------------------
+ 2 files changed, 47 insertions(+), 52 deletions(-)
+
+-- 
+2.34.1
+
 
