@@ -1,154 +1,143 @@
-Return-Path: <cgroups+bounces-5201-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5202-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2477C9AC94D
-	for <lists+cgroups@lfdr.de>; Wed, 23 Oct 2024 13:42:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4CDD9ACABD
+	for <lists+cgroups@lfdr.de>; Wed, 23 Oct 2024 15:09:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 53CD21C21344
-	for <lists+cgroups@lfdr.de>; Wed, 23 Oct 2024 11:42:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C8F61F21258
+	for <lists+cgroups@lfdr.de>; Wed, 23 Oct 2024 13:09:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD6611AAE3F;
-	Wed, 23 Oct 2024 11:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1D091ADFEB;
+	Wed, 23 Oct 2024 13:09:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MRWJpznj"
+	dkim=pass (2048-bit key) header.d=shutemov.name header.i=@shutemov.name header.b="O2j3YHFB";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="JAAX0Qiz"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a1-smtp.messagingengine.com (fout-a1-smtp.messagingengine.com [103.168.172.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 238D61AB500;
-	Wed, 23 Oct 2024 11:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC3C156C72;
+	Wed, 23 Oct 2024 13:09:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729683728; cv=none; b=jnV2m0hxrK+CJybBfgq5QocruGltEaoRgYpU0tw2Ohv0WbKojfUSqtIShqB/0Og53ZxVGqQ6tg15oISbOQQ2u17KJKzJfdwyn5tRLtfp0QixAlBgT/y/C/6Unxo3JQ84145Byu57T/52up900OoDEIWX908KW+knUDXpfhWI6tk=
+	t=1729688943; cv=none; b=ZyjDzREcEvNgKK9dBR7LXH+kI13gSIQZq6yK4HpdYqADF+4l2iv4+85BreFvEX5rBjnmv4awNM959xrIY2OgfKqBQjqYYSx1bxXLf+fI6XaTBktewqF7+rVZvLtYmWzuD9cWmNEP5V0GGdSffkNp0migQAj2PAmL38M90hB7Msc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729683728; c=relaxed/simple;
-	bh=Kl/727hkIBAfNUIf6aKw4VSF2L+SHsLM5p/SxuGaXFE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mpqEFL/nkqvkFVpeC5gs5HbZUgETKrXCp2nsoosk7KY7Xbj8faRmkeFfqMdqhD4UsqgbQDUQd1SxbFQWfTezc1RGiMHa3K7XTYzskcE/iRyuPaLeJuK5acm/0yvyyEQnrnAzc19YCX2fYzE+CIv5weGbIv2fYlWFtoDUUs646pM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MRWJpznj; arc=none smtp.client-ip=209.85.210.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-71809fe188cso3208642a34.0;
-        Wed, 23 Oct 2024 04:42:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729683726; x=1730288526; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=810jMYZ38CorSXHU8xsHT8NByFpeWcHAd148xEtzxXs=;
-        b=MRWJpznjCAObIYY4JoAFBnSU85phvo4og9dzPTfJfjtee/2tOE4Iim8+c1vYjzDfyr
-         rnV8KopsABgJgU7UsloBPXbtIGCRPZ7CqkEEfAVRj0jNkeZg5Us/vJ6IxntQehFQJuqr
-         IgfSEINuUxSth6Yn7Bg96RbxEI5n1rOnjaR1GrKcNTlqN7AcLvNwF6mphQFeqz/O7+kj
-         V1a+LbjyZeAi1YmpthnS7hxKRGokJl5oUG5ICizXaHuFyyZmB6iaue3G4RPhqSWVoZsb
-         ewvhjcaGodPWaJs/2AnLDATAtyAwCNlazbUUYf8PMCIYfqXLbywnnNTZuWCVWz/A67+M
-         8Dxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729683726; x=1730288526;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=810jMYZ38CorSXHU8xsHT8NByFpeWcHAd148xEtzxXs=;
-        b=lrMH4RFqktWuJC8Xjzyl0a+4mZ0PoQHIv8WE4KuFjKA/Ns4FmSq6c0cmOTX+aV4Boo
-         2FJ6HHRdwhSHEmGiA9QYisnhB/ZoNpBFydPa2vpklaeFxKMt/2n1HOmMbo3ejFPAPp6A
-         py+BOV6ltNmw0T8W9TNRI0KKovnlKNxG87nioiPRViuEVxouLogn/iQAQ0QtP9OHv6Nm
-         Fa/AyPGFxRa3NV1Qx60tjNLixRfEb8VlzJOyLs6BC7c/tLuU3dsXZ2cs9/gSft8eQTQh
-         u3o5i3hfeSrrhqI0kRbQvptIWEwpcClWItFIUT9yVKkBnSksLsU3TvEYm761NBOh0TG6
-         /bzw==
-X-Forwarded-Encrypted: i=1; AJvYcCWEYPCNm29nV1jEoF3CBJsRr8/iSldFODLbHFTGU1B3e1kYuljv4PFITfboiJtZD5Pj6w20wLweKgWXnZA=@vger.kernel.org
-X-Gm-Message-State: AOJu0YyikuN25BKCGQL/1XxwvigP6byL0moyCGufcva2W0hpLp8c//Z3
-	SnqNOjrxHo5RdWenl+2iwzUO4B07TqHK2oaN82c4ofKHfJisqNYwgNyWWuoSTz7AAF3561y1pdi
-	lgQn3C1iAAL1hmnt0WUnxWryy9Lk=
-X-Google-Smtp-Source: AGHT+IEketPSFTluFAD7YIo9JaQFBf8ItBBRxUt7lrpg7fw172rV9WYDVnqddy5fh2nd+JhwAN/6xHKV+ew7RyH86/g=
-X-Received: by 2002:a05:6830:658d:b0:718:1a11:79e2 with SMTP id
- 46e09a7af769-7184b2b51eemr2848546a34.13.1729683726160; Wed, 23 Oct 2024
- 04:42:06 -0700 (PDT)
+	s=arc-20240116; t=1729688943; c=relaxed/simple;
+	bh=tENVuhaiMyWWo1bW6uxzA9DO/LirYJrx5ICvbc2P/dU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GKCdyopmv9fYvQ8/IOiUmP/B9hRst0wXdtxPDxWzL5hwB4uLF907kuAG4VVEtZhFbMMiKtiEApG+pTFI2reIdZF5AeoYbJzwrdJXqFCvRY5auxQCQjiXKT2Ake2DwLjdYaQCpMTJfJngF6SusmDsZB9fYGin+kpU7AUuEBIoEi4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shutemov.name; spf=pass smtp.mailfrom=shutemov.name; dkim=pass (2048-bit key) header.d=shutemov.name header.i=@shutemov.name header.b=O2j3YHFB; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=JAAX0Qiz; arc=none smtp.client-ip=103.168.172.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shutemov.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shutemov.name
+Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
+	by mailfout.phl.internal (Postfix) with ESMTP id A060F1380776;
+	Wed, 23 Oct 2024 09:09:00 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-11.internal (MEProxy); Wed, 23 Oct 2024 09:09:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shutemov.name;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm1; t=1729688940; x=
+	1729775340; bh=I3dav51KrIVO/7ueeUGHNs6IvTQpAiHG0z7kAUnAVgc=; b=O
+	2j3YHFB1BAAXQgHxjDW9KPw5vrPUgbxUH7vT2rDFNCpfAuTd48A2u4wSUjsrA4gL
+	Cj7nDe1HtgKpOoycYe7BZsUiyjnm4g4gCNffR8kGD1x+moqdKLvT+HDy3wjRKTu7
+	lw4fKYYvB0R0WVl1hlV2Aqwx8Ea93QDqOpmhZOVXkjwfJApZSSvjwHwFzK4iV9fF
+	1Q1MB0UNDH3Z5HH/VHWtWV55vcSJNV3jqbtesNlC+NGTPeY6hORUrloUN/2ScXGl
+	rdMYxt4CZnbIijO7cvmdJCiZCKkJMe9A5T4VUsB5oVmcoNKFhY1o/ZOuHt4QbOtj
+	oFhaqqNDZzIzfvOSxJJbg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1729688940; x=1729775340; bh=I3dav51KrIVO/7ueeUGHNs6IvTQp
+	AiHG0z7kAUnAVgc=; b=JAAX0Qiz5T1hQD3oFlmv8IgnrOQWPDrcM6wt/fmjjpf8
+	j3DZ9Q6v3Exam5qg7CG5hLlb3yr6NsBUebDmfVdVBv5Y1VRCJV9cfXYJHl/+/ZM0
+	sy9L7xptV9N3ra3im8APonIdPxf76wJsgNVRTCjgqNGv9xGrbnxoCAdB+URi1jDh
+	C9MhbFTaZzM3G3hESH9Se/y8Etve5pjbFk+5+ywKR8Wo6udQJfxcRay85VmGn6e0
+	cTnfBb7xku7iNqYCCeQ+RkgTeUa13/w6EJuY4iIF0cZ7JbBEDiDlskmKxCvbPZf+
+	dA8HFAoKUpHRxrXE2lQsFjVbEVRFcGgwd8PJtEhF8g==
+X-ME-Sender: <xms:a_UYZ2kfUKz5DNTjeWswPhkePTgZ3ggYMLjpVO1G9IX1-uyjiiP4aA>
+    <xme:a_UYZ93RF6W9bLdb4g5BpWKoloTdiNbrSjpvkWQTsrravoRgUxCVPPryvZKtZHfQq
+    AIBCnfERKx8uhFEuuA>
+X-ME-Received: <xmr:a_UYZ0pBzcYz28tyOJ2XnhgLSRBSkbdyh0BULFM22KoMNTKVBGjQhmZ5ALCr0VYypdgxiw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdeijedgheelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtsfdttddtvden
+    ucfhrhhomhepfdfmihhrihhllhcutedrucfuhhhuthgvmhhovhdfuceokhhirhhilhhlse
+    hshhhuthgvmhhovhdrnhgrmhgvqeenucggtffrrghtthgvrhhnpeffvdevueetudfhhfff
+    veelhfetfeevveekleevjeduudevvdduvdelteduvefhkeenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkihhrihhllhesshhhuhhtvghmohhv
+    rdhnrghmvgdpnhgspghrtghpthhtohepudekpdhmohguvgepshhmthhpohhuthdprhgtph
+    htthhopegurghvihgusehrvgguhhgrthdrtghomhdprhgtphhtthhopehlihhnuhigqdhk
+    vghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqd
+    hmmheskhhvrggtkhdrohhrghdprhgtphhtthhopegtghhrohhuphhssehvghgvrhdrkhgv
+    rhhnvghlrdhorhhgpdhrtghpthhtohepgiekieeskhgvrhhnvghlrdhorhhgpdhrtghpth
+    htoheplhhinhhugidqfhhsuggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgt
+    phhtthhopegrkhhpmheslhhinhhugidqfhhouhhnuggrthhiohhnrdhorhhgpdhrtghpth
+    htohepfihilhhlhiesihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehtjheskhgv
+    rhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:a_UYZ6m0KK9HymSlJf0hp6Kp-duQ25K91PjWpGiAokNwM2DZs8yr6A>
+    <xmx:a_UYZ02GtHxO7rGuZT0_d0vFxl5AVCE48avVCnmdrC2w8xdw4t_VLg>
+    <xmx:a_UYZxv5aF9HHvmvcQcb24ecZ6xrWGa-wkEpPVA-O8Ltcxc6Sqz7XQ>
+    <xmx:a_UYZwXkAXGqLTpSbDOXIhRooUbtPSMK1N2Ji53GwtnVMj-BVrDgbA>
+    <xmx:bPUYZ7v3pMAXEHKN7HL-3Rg6P-sA4F0W1tI6b8petgWf4PTtAHp7oAnQ>
+Feedback-ID: ie3994620:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 23 Oct 2024 09:08:53 -0400 (EDT)
+Date: Wed, 23 Oct 2024 16:08:48 +0300
+From: "Kirill A. Shutemov" <kirill@shutemov.name>
+To: David Hildenbrand <david@redhat.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, x86@kernel.org, linux-fsdevel@vger.kernel.org, 
+	Andrew Morton <akpm@linux-foundation.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
+	Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Andy Lutomirski <luto@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH v1 08/17] mm/rmap: initial MM owner tracking for large
+ folios (!hugetlb)
+Message-ID: <v2lzmdkpdzuwwdnpgncitxenx7aalcjm5zokjgcienshdjfbrr@alnz7zseqxp3>
+References: <20240829165627.2256514-1-david@redhat.com>
+ <20240829165627.2256514-9-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241014031057.8199-1-laoar.shao@gmail.com>
-In-Reply-To: <20241014031057.8199-1-laoar.shao@gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Wed, 23 Oct 2024 19:41:30 +0800
-Message-ID: <CALOAHbCoAMofLm6NV_7mT6XPZbck8Y11BveWrLV-t242Z4pbOw@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 0/4] sched: Fix irq accounting for CONFIG_IRQ_TIME_ACCOUNTING
-To: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, hannes@cmpxchg.org, 
-	surenb@google.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240829165627.2256514-9-david@redhat.com>
 
-On Mon, Oct 14, 2024 at 11:11=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com>=
- wrote:
->
-> After enabling CONFIG_IRQ_TIME_ACCOUNTING to track IRQ pressure in our
-> container environment, we encountered several user-visible behavioral
-> changes:
->
-> - Interrupted IRQ/softirq time is not accounted for in the cpuacct cgroup
->
->   This breaks userspace applications that rely on CPU usage data from
->   cgroups to monitor CPU pressure. This patchset resolves the issue by
->   ensuring that IRQ/softirq time is accounted for in the cgroup of the
->   interrupted tasks.
->
-> - getrusage(2) does not include time interrupted by IRQ/softirq
->
->   Some services use getrusage(2) to check if workloads are experiencing C=
-PU
->   pressure. Since IRQ/softirq time is no longer charged to task runtime,
->   getrusage(2) can no longer reflect the CPU pressure caused by heavy
->   interrupts.
->
-> This patchset addresses the first issue, which is relatively
-> straightforward. However, the second issue remains unresolved, as there
-> might be debate over whether interrupted time should be considered part o=
-f
-> a task=E2=80=99s usage. Nonetheless, it is important to report interrupte=
-d time to
-> the user via some metric, though that is a separate discussion.
->
-> Changes:
-> v2->v3:
-> - Add a helper account_irqtime() to avoid redundant code (Johannes)
->
-> v1->v2: https://lore.kernel.org/cgroups/20241008061951.3980-1-laoar.shao@=
-gmail.com/
-> - Fix lockdep issues reported by kernel test robot <oliver.sang@intel.com=
->
->
-> v1: https://lore.kernel.org/all/20240923090028.16368-1-laoar.shao@gmail.c=
-om/
->
-> Yafang Shao (4):
->   sched: Define sched_clock_irqtime as static key
->   sched: Don't account irq time if sched_clock_irqtime is disabled
->   sched, psi: Don't account irq time if sched_clock_irqtime is disabled
->   sched: Fix cgroup irq accounting for CONFIG_IRQ_TIME_ACCOUNTING
->
->  kernel/sched/core.c    | 78 +++++++++++++++++++++++++++++-------------
->  kernel/sched/cputime.c | 16 ++++-----
->  kernel/sched/psi.c     | 12 ++-----
->  kernel/sched/sched.h   |  1 +
->  kernel/sched/stats.h   |  7 ++--
->  5 files changed, 69 insertions(+), 45 deletions(-)
->
-> --
-> 2.43.5
->
+On Thu, Aug 29, 2024 at 06:56:11PM +0200, David Hildenbrand wrote:
+> +#ifdef CONFIG_MM_ID
+> +/*
+> + * For init_mm and friends, we don't allocate an ID and use the dummy value
+> + * instead. Limit ourselves to 1M MMs for now: even though we might support
+> + * up to 4M PIDs, having more than 1M MM instances is highly unlikely.
+> + */
 
-Hello Peter, Hello Ingo,
+Hm. Should we lower PID_MAX_LIMIT limit then?
 
-Do you have comments or any suggestions on this fix?
+Also, do we really need IDA? Can't we derive the ID from mm_struct
+address?
 
---=20
-Regards
-Yafang
+> +#define MM_ID_DUMMY		0
+> +#define MM_ID_NR_BITS		20
+> +#define MM_ID_MIN		(MM_ID_DUMMY + 1)
+> +#define MM_ID_MAX		((1U << MM_ID_NR_BITS) - 1)
+> +#endif /* CONFIG_MM_ID */
+> +
+>  #define MM_MT_FLAGS	(MT_FLAGS_ALLOC_RANGE | MT_FLAGS_LOCK_EXTERN | \
+>  			 MT_FLAGS_USE_RCU)
+>  extern struct mm_struct init_mm;
+
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
 
