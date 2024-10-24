@@ -1,107 +1,159 @@
-Return-Path: <cgroups+bounces-5227-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5228-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C63B9AECA5
-	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 18:52:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD2B99AECC7
+	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 18:57:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 258B31F233A8
-	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 16:52:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1ADC01C20D3B
+	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 16:57:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 322921F8EE3;
-	Thu, 24 Oct 2024 16:51:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C0BA1BD504;
+	Thu, 24 Oct 2024 16:57:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="togMtEry"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="owGyNocO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2A2C16A94B
-	for <cgroups@vger.kernel.org>; Thu, 24 Oct 2024 16:51:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A381216A94B
+	for <cgroups@vger.kernel.org>; Thu, 24 Oct 2024 16:57:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729788717; cv=none; b=iXJh4WcAsiCX78QomsUdJbHf+PkNPU26EIM9X2oeQz+H/j5TNJdWWHQduax7n2mhIuoQwSfLhUTzM/4JOOZrU/UQ1uHkeBR8g4fAbacdhkgSeSj56R7Q0p3vwtB10k+OCKBQFmdaMKmRlaI/eCHcDO10aA2rOba9zYCLhKJtX+M=
+	t=1729789059; cv=none; b=Tq4EI9cBrd+VGPtX4JLRj/0HcDlYfgEbW1KuqLdRidntng9a4VRROWG0IupJ2CQMJlEhIogZ6UYAF06+JnGShy2SPfBAh97677qC1jWgCdqkxZar9jxPCE4MreVeEirfZ3Xb94DQg1DuLXNfGiUDh1NREoVkoIN1sdNTAXVR1Rw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729788717; c=relaxed/simple;
-	bh=EwwFUFK+3XJyQkCZ5q0IDSEAlV5PRkel+AvB4wcYCug=;
+	s=arc-20240116; t=1729789059; c=relaxed/simple;
+	bh=u0r2elEmcf82RWuFLhwW1IcF2hs+YQTwCXtM+8iBfQI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dkKRkkLA6H48Mhu1sp5LMQ4Jo14Ke3BDfRRBwbWqFlr4a1Fx3hSfK+f5n8TtggZzgXPPa3dUyjaPd9hm0XzQ4bA0HcV+WlLEkQ8A/bswnK26MA7U5jrHI07YPnWKAt/BnKpbf00757Ayau92Hs6h570q0YILH7xMgeg8llFvt+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=togMtEry; arc=none smtp.client-ip=91.218.175.186
+	 Content-Type:Content-Disposition:In-Reply-To; b=T2ZexLXN1yRdNz9C2muGhVsDcFij3ukCH94a188syDfEGhQKS4FxwIRMLBxr0rLR0ABAmevS6D+Z6wCdY9M3MWZHlH/Xyee6pP66flYYfQKbXOarIZWlvyJ7rSxOidx9fJecU0bM7tlDheATeOHGnLsQnWg8dhrcp7bmASNrMgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=owGyNocO; arc=none smtp.client-ip=95.215.58.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 24 Oct 2024 16:51:46 +0000
+Date: Thu, 24 Oct 2024 16:57:29 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729788712;
+	t=1729789054;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=p8/7V012aGi/ix5qvOdVjTsWOiWzv6xTtXKacFsTU9c=;
-	b=togMtEryYhBBovyKlcUefTizUP29zonGQZK02rvyNo3MZD8niYCcAv5iUBo8jvr3cM/qgP
-	CXgRL5XCGpgHnHWys39JomVl0su4ivTsgCrdQzMhQ3Tqk5pbB7gC17PIX0zcbP1cLCMZbE
-	FloTphrENDTDSPH//gah6eU/bg5B9W4=
+	bh=mCaGX0Dw13JORqruLEi+QcIAeT5FeKkNU9QsvnDs0Ww=;
+	b=owGyNocOmKSVHndKkPQkRarsyaMiVDCo+cYrm4e8VsM6Ua7BhfNk7K780dDlcqRylSF/Fd
+	uiFsup97K9z37za6QroPa6BJESknmXZNhbD9xygQ0tAyZlX3epA9UXOi3UjuesIcXEyaf9
+	BYOxxR0MWINLCNUKGADYvUETZn8C4mM=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [RFC PATCH 1/3] memcg-v1: fully deprecate
- move_charge_at_immigrate
-Message-ID: <Zxp7ItxIf744tFbD@google.com>
-References: <20241024065712.1274481-1-shakeel.butt@linux.dev>
- <20241024065712.1274481-2-shakeel.butt@linux.dev>
- <ZxoP2TLCGnSm9c8p@tiehlicka>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Joshua Hahn <joshua.hahnjy@gmail.com>, hannes@cmpxchg.org,
+	nphamcs@gmail.com, mhocko@kernel.org, roman.gushcin@linux.dev,
+	shakeel.butt@linux.dev, muchun.song@linux.dev, lnyng@meta.com,
+	akpm@linux-foundation.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] memcg/hugetlb: Adding hugeTLB counters to memcg
+Message-ID: <Zxp8eUk7ELSSP-B0@google.com>
+References: <20241023203433.1568323-1-joshua.hahnjy@gmail.com>
+ <CAJD7tkaxKG4P-DLEHQGTad1vbgZgf7nVJq6=824MRWxJ1si19A@mail.gmail.com>
+ <CAJD7tkak6F4nwZLWxNK8zKN5z6y=0MPCCHwfW7kOVKDmn08Ytg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZxoP2TLCGnSm9c8p@tiehlicka>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkak6F4nwZLWxNK8zKN5z6y=0MPCCHwfW7kOVKDmn08Ytg@mail.gmail.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Thu, Oct 24, 2024 at 11:14:01AM +0200, Michal Hocko wrote:
-> On Wed 23-10-24 23:57:10, Shakeel Butt wrote:
-> > Proceed with the complete deprecation of memcg v1's charge moving
-> > feature. The deprecation warning has been in the kernel for almost two
-> > years and has been ported to all stable kernel since. Now is the time to
-> > fully deprecate this feature.
-> > 
-> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+On Wed, Oct 23, 2024 at 02:17:27PM -0700, Yosry Ahmed wrote:
+> On Wed, Oct 23, 2024 at 2:15 PM Yosry Ahmed <yosryahmed@google.com> wrote:
+> >
+> > Hi Joshua,
+> >
+> > On Wed, Oct 23, 2024 at 1:34 PM Joshua Hahn <joshua.hahnjy@gmail.com> wrote:
+> > >
+> > > Changelog
+> > > v2:
+> > >   * Enables the feature only if memcg accounts for hugeTLB usage
+> > >   * Moves the counter from memcg_stat_item to node_stat_item
+> > >   * Expands on motivation & justification in commitlog
+> > >   * Added Suggested-by: Nhat Pham
+> >
+> > Changelogs usually go at the end, after ---, not as part of the commit
+> > log itself.
+> >
+> > >
+> > > This patch introduces a new counter to memory.stat that tracks hugeTLB
+> > > usage, only if hugeTLB accounting is done to memory.current. This
+> > > feature is enabled the same way hugeTLB accounting is enabled, via
+> > > the memory_hugetlb_accounting mount flag for cgroupsv2.
+> > >
+> > > 1. Why is this patch necessary?
+> > > Currently, memcg hugeTLB accounting is an opt-in feature [1] that adds
+> > > hugeTLB usage to memory.current. However, the metric is not reported in
+> > > memory.stat. Given that users often interpret memory.stat as a breakdown
+> > > of the value reported in memory.current, the disparity between the two
+> > > reports can be confusing. This patch solves this problem by including
+> > > the metric in memory.stat as well, but only if it is also reported in
+> > > memory.current (it would also be confusing if the value was reported in
+> > > memory.stat, but not in memory.current)
+> > >
+> > > Aside from the consistentcy between the two files, we also see benefits
+> >
+> > consistency*
+> >
+> > > in observability. Userspace might be interested in the hugeTLB footprint
+> > > of cgroups for many reasons. For instance, system admins might want to
+> > > verify that hugeTLB usage is distributed as expected across tasks: i.e.
+> > > memory-intensive tasks are using more hugeTLB pages than tasks that
+> > > don't consume a lot of memory, or is seen to fault frequently. Note that
+> >
+> > are* seen
+> >
+> > > this is separate from wanting to inspect the distribution for limiting
+> > > purposes (in which case, hugeTLB controller makes more sense).
+> > >
+> > > 2. We already have a hugeTLB controller. Why not use that?
+> > > It is true that hugeTLB tracks the exact value that we want. In fact, by
+> > > enabling the hugeTLB controller, we get all of the observability
+> > > benefits that I mentioned above, and users can check the total hugeTLB
+> > > usage, verify if it is distributed as expected, etc.
+> > >
+> > > With this said, there are 2 problems:
+> > >   (a) They are still not reported in memory.stat, which means the
+> > >       disparity between the memcg reports are still there.
+> > >   (b) We cannot reasonably expect users to enable the hugeTLB controller
+> > >       just for the sake of hugeTLB usage reporting, especially since
+> > >       they don't have any use for hugeTLB usage enforcing [2].
+> > >
+> > > [1] https://lore.kernel.org/all/20231006184629.155543-1-nphamcs@gmail.com/
+> > > [2] Of course, we can't make a new patch for every feature that can be
+> > >     duplicated. However, since the exsting solution of enabling the
+> >
+> > existing*
+> >
+> > >     hugeTLB controller is an imperfect solution that still leaves a
+> > >     discrepancy between memory.stat and memory.curent, I think that it
+> > >     is reasonable to isolate the feature in this case.
+> > >
+> > > Suggested-by: Nhat Pham <nphamcs@gmail.com>
+> > > Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
+> >
+> > You should also CC linux-mm on such patches.
 > 
-> I fine with this move, just one detail we might need to consider
-> [...]
-> > @@ -606,17 +606,7 @@ static int mem_cgroup_move_charge_write(struct cgroup_subsys_state *css,
-> >  		     "Please report your usecase to linux-mm@kvack.org if you "
-> >  		     "depend on this functionality.\n");
-> >  
-> > -	if (val & ~MOVE_MASK)
-> > -		return -EINVAL;
-> > -
-> > -	/*
-> > -	 * No kind of locking is needed in here, because ->can_attach() will
-> > -	 * check this value once in the beginning of the process, and then carry
-> > -	 * on with stale data. This means that changes to this value will only
-> > -	 * affect task migrations starting after the change.
-> > -	 */
-> > -	memcg->move_charge_at_immigrate = val;
-> > -	return 0;
-> > +	return -EINVAL;
+> +roman.gushchin@linux.dev
 > 
-> Would it make more sense to -EINVAL only if val != 0? The reason being
-> that some userspace might be just writing 0 here for whatever reason and
-> see the failure unexpected.
+> CCing Roman's correct email.
 
-I think it's a good idea.
 
-Thanks!
+Funny enough I suggested a similar functionality back to 2017:
+https://lkml.iu.edu/hypermail/linux/kernel/1711.1/04891.html ,
+but it was rejected at that time.
+So yeah, it still sounds like a good idea to me.
+
+As I understand, there is a new version of this patchset pending,
+I'll wait for it for the review.
+
+Thank you for looping me in!
 
