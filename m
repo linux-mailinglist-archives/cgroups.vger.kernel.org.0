@@ -1,159 +1,115 @@
-Return-Path: <cgroups+bounces-5228-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5229-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD2B99AECC7
-	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 18:57:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A911F9AED1A
+	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 19:06:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1ADC01C20D3B
-	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 16:57:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ECD95B22F6E
+	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 17:06:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C0BA1BD504;
-	Thu, 24 Oct 2024 16:57:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0549E1F9EC8;
+	Thu, 24 Oct 2024 17:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="owGyNocO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H67NQSuT"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A381216A94B
-	for <cgroups@vger.kernel.org>; Thu, 24 Oct 2024 16:57:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5EC11DD0D9;
+	Thu, 24 Oct 2024 17:06:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729789059; cv=none; b=Tq4EI9cBrd+VGPtX4JLRj/0HcDlYfgEbW1KuqLdRidntng9a4VRROWG0IupJ2CQMJlEhIogZ6UYAF06+JnGShy2SPfBAh97677qC1jWgCdqkxZar9jxPCE4MreVeEirfZ3Xb94DQg1DuLXNfGiUDh1NREoVkoIN1sdNTAXVR1Rw=
+	t=1729789597; cv=none; b=Mz9eWjmYQC1+BTSX0yL8RYfcrHfqgy1GyWIZ8cRt6VTQsjwtrVTVtP3rMiJiSEq/gwEPjkNPnId3OL1PCIuQpyn9lgMitnsRCrqZ5pVOivo1TBzDCjEWP1v2+cACabyU35JSlylQDgiCk72FfB+CGw2YYMzh0yva/QbS7rSGvas=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729789059; c=relaxed/simple;
-	bh=u0r2elEmcf82RWuFLhwW1IcF2hs+YQTwCXtM+8iBfQI=;
+	s=arc-20240116; t=1729789597; c=relaxed/simple;
+	bh=+U29CBBz+qyrBtOdbE4svz7p2WVJRzBvoR7WRuDzFdY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T2ZexLXN1yRdNz9C2muGhVsDcFij3ukCH94a188syDfEGhQKS4FxwIRMLBxr0rLR0ABAmevS6D+Z6wCdY9M3MWZHlH/Xyee6pP66flYYfQKbXOarIZWlvyJ7rSxOidx9fJecU0bM7tlDheATeOHGnLsQnWg8dhrcp7bmASNrMgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=owGyNocO; arc=none smtp.client-ip=95.215.58.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 24 Oct 2024 16:57:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729789054;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mCaGX0Dw13JORqruLEi+QcIAeT5FeKkNU9QsvnDs0Ww=;
-	b=owGyNocOmKSVHndKkPQkRarsyaMiVDCo+cYrm4e8VsM6Ua7BhfNk7K780dDlcqRylSF/Fd
-	uiFsup97K9z37za6QroPa6BJESknmXZNhbD9xygQ0tAyZlX3epA9UXOi3UjuesIcXEyaf9
-	BYOxxR0MWINLCNUKGADYvUETZn8C4mM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Joshua Hahn <joshua.hahnjy@gmail.com>, hannes@cmpxchg.org,
-	nphamcs@gmail.com, mhocko@kernel.org, roman.gushcin@linux.dev,
-	shakeel.butt@linux.dev, muchun.song@linux.dev, lnyng@meta.com,
-	akpm@linux-foundation.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] memcg/hugetlb: Adding hugeTLB counters to memcg
-Message-ID: <Zxp8eUk7ELSSP-B0@google.com>
-References: <20241023203433.1568323-1-joshua.hahnjy@gmail.com>
- <CAJD7tkaxKG4P-DLEHQGTad1vbgZgf7nVJq6=824MRWxJ1si19A@mail.gmail.com>
- <CAJD7tkak6F4nwZLWxNK8zKN5z6y=0MPCCHwfW7kOVKDmn08Ytg@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TNiAlCuSB9RM7IX6auecatC5mFHtuh96f08t9NUBAXquQdDRAtAa8oWmmvy5jFjrPlPSUZrahDfGpMewy3XRFDLhVtI/i+sSz+d4kz4l8zvFRfG8p8eDCYiyjLxiC60crbh68tv7CDEx5gb04NeHUsSVLr1YoNfrqR43u38s0b8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H67NQSuT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58187C4CEC7;
+	Thu, 24 Oct 2024 17:06:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1729789597;
+	bh=+U29CBBz+qyrBtOdbE4svz7p2WVJRzBvoR7WRuDzFdY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=H67NQSuT2jRkzudyo8hcBaXGPRd16RtbucKKIBDbfx8FkTwAr4zIhYlZeE6WCQ/kL
+	 pOKgojXUIUeRkXcF/JFapYxnKLfLT7nZKbkLAKrxpqPscdWWU/vZjnV9zgg6XNOwgL
+	 wzbEkT0znzv5FxmEY4Ik7sEPxZyKemenvHZVbJw9VzPtVg/PgDCFm0JQgIUZq58Or+
+	 5DfzEOvuXqappQSjGsEuZ0aK5qCv0QOW0YM94EAZUdRdzXgVozd7QdkrIs0W5Sk+Nu
+	 qXaSipjzcAFgRXjcGCCgHoU/+HUqUJSQmpfcF9fFh3O20JLZ5Ja/v/FZVntFobZCnF
+	 OY5WfqO8VubRg==
+Date: Thu, 24 Oct 2024 07:06:36 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Friedrich Vock <friedrich.vock@gmx.de>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [PATCH 0/7] kernel/cgroups: Add "dev" memory accounting cgroup.
+Message-ID: <Zxp-nLXOJXoSy8BN@slm.duckdns.org>
+References: <20241023075302.27194-1-maarten.lankhorst@linux.intel.com>
+ <ZxlRLMwkabTaOrjc@slm.duckdns.org>
+ <20241024-beautiful-spaniel-of-youth-f75b61@houat>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkak6F4nwZLWxNK8zKN5z6y=0MPCCHwfW7kOVKDmn08Ytg@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20241024-beautiful-spaniel-of-youth-f75b61@houat>
 
-On Wed, Oct 23, 2024 at 02:17:27PM -0700, Yosry Ahmed wrote:
-> On Wed, Oct 23, 2024 at 2:15 PM Yosry Ahmed <yosryahmed@google.com> wrote:
-> >
-> > Hi Joshua,
-> >
-> > On Wed, Oct 23, 2024 at 1:34 PM Joshua Hahn <joshua.hahnjy@gmail.com> wrote:
-> > >
-> > > Changelog
-> > > v2:
-> > >   * Enables the feature only if memcg accounts for hugeTLB usage
-> > >   * Moves the counter from memcg_stat_item to node_stat_item
-> > >   * Expands on motivation & justification in commitlog
-> > >   * Added Suggested-by: Nhat Pham
-> >
-> > Changelogs usually go at the end, after ---, not as part of the commit
-> > log itself.
-> >
-> > >
-> > > This patch introduces a new counter to memory.stat that tracks hugeTLB
-> > > usage, only if hugeTLB accounting is done to memory.current. This
-> > > feature is enabled the same way hugeTLB accounting is enabled, via
-> > > the memory_hugetlb_accounting mount flag for cgroupsv2.
-> > >
-> > > 1. Why is this patch necessary?
-> > > Currently, memcg hugeTLB accounting is an opt-in feature [1] that adds
-> > > hugeTLB usage to memory.current. However, the metric is not reported in
-> > > memory.stat. Given that users often interpret memory.stat as a breakdown
-> > > of the value reported in memory.current, the disparity between the two
-> > > reports can be confusing. This patch solves this problem by including
-> > > the metric in memory.stat as well, but only if it is also reported in
-> > > memory.current (it would also be confusing if the value was reported in
-> > > memory.stat, but not in memory.current)
-> > >
-> > > Aside from the consistentcy between the two files, we also see benefits
-> >
-> > consistency*
-> >
-> > > in observability. Userspace might be interested in the hugeTLB footprint
-> > > of cgroups for many reasons. For instance, system admins might want to
-> > > verify that hugeTLB usage is distributed as expected across tasks: i.e.
-> > > memory-intensive tasks are using more hugeTLB pages than tasks that
-> > > don't consume a lot of memory, or is seen to fault frequently. Note that
-> >
-> > are* seen
-> >
-> > > this is separate from wanting to inspect the distribution for limiting
-> > > purposes (in which case, hugeTLB controller makes more sense).
-> > >
-> > > 2. We already have a hugeTLB controller. Why not use that?
-> > > It is true that hugeTLB tracks the exact value that we want. In fact, by
-> > > enabling the hugeTLB controller, we get all of the observability
-> > > benefits that I mentioned above, and users can check the total hugeTLB
-> > > usage, verify if it is distributed as expected, etc.
-> > >
-> > > With this said, there are 2 problems:
-> > >   (a) They are still not reported in memory.stat, which means the
-> > >       disparity between the memcg reports are still there.
-> > >   (b) We cannot reasonably expect users to enable the hugeTLB controller
-> > >       just for the sake of hugeTLB usage reporting, especially since
-> > >       they don't have any use for hugeTLB usage enforcing [2].
-> > >
-> > > [1] https://lore.kernel.org/all/20231006184629.155543-1-nphamcs@gmail.com/
-> > > [2] Of course, we can't make a new patch for every feature that can be
-> > >     duplicated. However, since the exsting solution of enabling the
-> >
-> > existing*
-> >
-> > >     hugeTLB controller is an imperfect solution that still leaves a
-> > >     discrepancy between memory.stat and memory.curent, I think that it
-> > >     is reasonable to isolate the feature in this case.
-> > >
-> > > Suggested-by: Nhat Pham <nphamcs@gmail.com>
-> > > Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
-> >
-> > You should also CC linux-mm on such patches.
+Hello,
+
+On Thu, Oct 24, 2024 at 09:20:43AM +0200, Maxime Ripard wrote:
+...
+> > Yeah, let's not use "dev" name for this. As Waiman pointed out, it conflicts
+> > with the devices controller from cgroup1. While cgroup1 is mostly
+> > deprecated, the same features are provided through BPF in systemd using the
+> > same terminologies, so this is going to be really confusing.
 > 
-> +roman.gushchin@linux.dev
+> Yeah, I agree. We switched to dev because we want to support more than
+> just DRM, but all DMA-able memory. We have patches to support for v4l2
+> and dma-buf heaps, so using the name DRM didn't feel great either.
 > 
-> CCing Roman's correct email.
+> Do you have a better name in mind? "device memory"? "dma memory"?
 
+Maybe just dma (I think the term isn't used heavily anymore, so the word is
+kinda open)? But, hopefully, others have better ideas.
 
-Funny enough I suggested a similar functionality back to 2017:
-https://lkml.iu.edu/hypermail/linux/kernel/1711.1/04891.html ,
-but it was rejected at that time.
-So yeah, it still sounds like a good idea to me.
+> > What happened with Tvrtko's weighted implementation? I've seen many proposed
+> > patchsets in this area but as far as I could see none could establish
+> > consensus among GPU crowd and that's one of the reasons why nothing ever
+> > landed. Is the aim of this patchset establishing such consensus?
+> 
+> Yeah, we have a consensus by now I think. Valve, Intel, Google, and Red
+> Hat have been involved in that series and we all agree on the implementation.
 
-As I understand, there is a new version of this patchset pending,
-I'll wait for it for the review.
+That's great to hear.
 
-Thank you for looping me in!
+> Tvrtko aims at a different feature set though: this one is about memory
+> allocation limits, Tvrtko's about scheduling.
+> 
+> Scheduling doesn't make much sense for things outside of DRM (and even
+> for a fraction of all DRM devices), and it's pretty much orthogonal. So
+> i guess you can expect another series from Tvrtko, but I don't think
+> they should be considered equivalent or dependent on each other.
+
+Yeah, I get that this is about memory and that is about processing capacity,
+so the plan is going for separate controllers for each? Or would it be
+better to present both under the same controller interface? Even if they're
+going to be separate controllers, we at least want to be aligned on how
+devices and their configurations are presented in the two controllers.
+
+Thanks.
+
+-- 
+tejun
 
