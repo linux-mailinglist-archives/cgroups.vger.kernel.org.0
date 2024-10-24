@@ -1,180 +1,94 @@
-Return-Path: <cgroups+bounces-5212-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5214-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 698B99AD76B
-	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 00:17:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73E819ADCE4
+	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 08:58:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D94D283CFE
-	for <lists+cgroups@lfdr.de>; Wed, 23 Oct 2024 22:17:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A24091C240B7
+	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 06:58:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 570E21E2315;
-	Wed, 23 Oct 2024 22:17:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2557E18BB9B;
+	Thu, 24 Oct 2024 06:57:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gxDbuDy3"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TspUYcjf"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F291C3030
-	for <cgroups@vger.kernel.org>; Wed, 23 Oct 2024 22:17:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFBC518A6BA
+	for <cgroups@vger.kernel.org>; Thu, 24 Oct 2024 06:57:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729721867; cv=none; b=FN7KmeWePmfaVNtYhBWitdCDxJzSB3RrtGozkUD7ECyDB7PPRaaJzL60guyAtGHf1ZlRj33T0ErnM390ObZhy/jOssVhNj1AGzQbHGx7yu923lArPu3Sji0NlPkhfzbpK4CC2/byqpJ7copY0P7EGaB+rIjZE8WsLMoLsaLnle4=
+	t=1729753051; cv=none; b=ouGhkDEE8inEvZLBHaQoomj6Q6YlbwtGGcIWBVLGG59KAvK7p/DRBPLmCNHDYq4/ehAO5wELIjYkcB2HBozoahryxNRvKcH8+U+DmMh6x2vTrJKNZn3Fw4jFUazTIUQnemMUO4Tga3Xj0U0IFTC/VYfvmbzliDGGOMEXxseehDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729721867; c=relaxed/simple;
-	bh=nl/Fi0lK9nRLwlnTm9n7IsKNCuE4JyFYoeygcP5Serc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lItQcQR8oLNn0+vWmxcUjCeNstado8REXMWr3h+v7poGqNaRYR1klxP2KSxJdRVBTAyaH5/NozREt0jU2WHv/LcmMCveRoSW311jXHtLxePJo2cYFJGWHikjAalz1mvIFrjCyxGSWCJZ9oYxCf9QvoxfEsIZ1WfZn6juUJux/3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gxDbuDy3; arc=none smtp.client-ip=91.218.175.172
+	s=arc-20240116; t=1729753051; c=relaxed/simple;
+	bh=MZCtspQs47hvSHY7yN7jR56BOmefBpAyiy6rpcqVfT8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rs0DzfIpidrWoWnb0RUYPP+H5WcPdDWlbhYYll0q/XALntbmYe9WGTi7WJjxEYpyl9CZk5mA2eERr92HJSAaj8V5kyod5VqUD2pNt9l0fdRVpySN+Pbc6QNutM5qJ+xakKx0XDpYNXIj6wvgdfUeH2y84q0UBpj4EwlwX1d1Kr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TspUYcjf; arc=none smtp.client-ip=95.215.58.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 23 Oct 2024 15:17:34 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729721861;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YbJ/667kHqyaQ1rF1n2BRQKGCbmZnDfhN6bBeCoJSXo=;
-	b=gxDbuDy3+4DK9t/omshSIxPKIxPYROTS3pLFzMSaXNZj//qFz+EPt5g2aFpstP0MASaQW9
-	BLTzY5DNoNTozy9+h4bxKjD+IIu7K6XuN+1f+NhhL41twZFwkcgcsLinBKsufgdRhXbyBh
-	HLcEM5jy053N7uDVgeq3NatAL4KvvqQ=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729753043;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=KnFX2m6jkpkqkNftsFITtlFPeLSY1W41MMcnLCh4dYw=;
+	b=TspUYcjfzaIFDz5Rs6jj026nPmaG2edsEPEKCkjp3ZDuivc4FFk3OglfYNcH8yBRU0K19r
+	DOHBUG5p6nULP4uryvh9jv0x1srywC5TiN6UefeOlNmwrGRPR5FO/nis6SqJFP3JWX5isX
+	gCY4AN7HpRIAYkLnRsKPNKurkLs8l9g=
 From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Joshua Hahn <joshua.hahnjy@gmail.com>
-Cc: hannes@cmpxchg.org, nphamcs@gmail.com, mhocko@kernel.org, 
-	roman.gushcin@linux.dev, muchun.song@linux.dev, lnyng@meta.com, akpm@linux-foundation.org, 
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] memcg/hugetlb: Adding hugeTLB counters to memcg
-Message-ID: <acaahpfoyy3rci6ekfw2l3i2k5jpww6uzmc7dintpird7b4ayq@6cgrsqyy3xg6>
-References: <20241023203433.1568323-1-joshua.hahnjy@gmail.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Hugh Dickins <hughd@google.com>,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: [RFC PATCH 0/3] memcg-v1: fully deprecate charge moving
+Date: Wed, 23 Oct 2024 23:57:09 -0700
+Message-ID: <20241024065712.1274481-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241023203433.1568323-1-joshua.hahnjy@gmail.com>
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-On Wed, Oct 23, 2024 at 01:34:33PM GMT, Joshua Hahn wrote:
-> Changelog
-> v2:
->   * Enables the feature only if memcg accounts for hugeTLB usage
->   * Moves the counter from memcg_stat_item to node_stat_item
->   * Expands on motivation & justification in commitlog
->   * Added Suggested-by: Nhat Pham
-> 
-> This patch introduces a new counter to memory.stat that tracks hugeTLB
-> usage, only if hugeTLB accounting is done to memory.current. This
-> feature is enabled the same way hugeTLB accounting is enabled, via
-> the memory_hugetlb_accounting mount flag for cgroupsv2.
-> 
-> 1. Why is this patch necessary?
-> Currently, memcg hugeTLB accounting is an opt-in feature [1] that adds
-> hugeTLB usage to memory.current. However, the metric is not reported in
-> memory.stat. Given that users often interpret memory.stat as a breakdown
-> of the value reported in memory.current, the disparity between the two
-> reports can be confusing. This patch solves this problem by including
-> the metric in memory.stat as well, but only if it is also reported in
-> memory.current (it would also be confusing if the value was reported in
-> memory.stat, but not in memory.current)
-> 
-> Aside from the consistentcy between the two files, we also see benefits
-> in observability. Userspace might be interested in the hugeTLB footprint
-> of cgroups for many reasons. For instance, system admins might want to
-> verify that hugeTLB usage is distributed as expected across tasks: i.e.
-> memory-intensive tasks are using more hugeTLB pages than tasks that
-> don't consume a lot of memory, or is seen to fault frequently. Note that
-> this is separate from wanting to inspect the distribution for limiting
-> purposes (in which case, hugeTLB controller makes more sense).
-> 
-> 2. We already have a hugeTLB controller. Why not use that?
-> It is true that hugeTLB tracks the exact value that we want. In fact, by
-> enabling the hugeTLB controller, we get all of the observability
-> benefits that I mentioned above, and users can check the total hugeTLB
-> usage, verify if it is distributed as expected, etc.
-> 
-> With this said, there are 2 problems:
->   (a) They are still not reported in memory.stat, which means the
->       disparity between the memcg reports are still there.
->   (b) We cannot reasonably expect users to enable the hugeTLB controller
->       just for the sake of hugeTLB usage reporting, especially since
->       they don't have any use for hugeTLB usage enforcing [2].
-> 
-> [1] https://lore.kernel.org/all/20231006184629.155543-1-nphamcs@gmail.com/
-> [2] Of course, we can't make a new patch for every feature that can be
->     duplicated. However, since the exsting solution of enabling the
->     hugeTLB controller is an imperfect solution that still leaves a
->     discrepancy between memory.stat and memory.curent, I think that it
->     is reasonable to isolate the feature in this case.
-> 
-> Suggested-by: Nhat Pham <nphamcs@gmail.com>
-> Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
-> 
-> ---
->  include/linux/mmzone.h |  3 +++
->  mm/hugetlb.c           |  4 ++++
->  mm/memcontrol.c        | 11 +++++++++++
->  mm/vmstat.c            |  3 +++
->  4 files changed, 21 insertions(+)
-> 
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 17506e4a2835..d3ba49a974b2 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -215,6 +215,9 @@ enum node_stat_item {
->  #ifdef CONFIG_NUMA_BALANCING
->  	PGPROMOTE_SUCCESS,	/* promote successfully */
->  	PGPROMOTE_CANDIDATE,	/* candidate pages to promote */
-> +#endif
-> +#ifdef CONFIG_HUGETLB_PAGE
-> +	HUGETLB_B,
+The memcg v1's charge moving feature has been deprecated for almost 2
+years and the kernel warns if someone try to use it. This warning has
+been backported to all stable kernel and there have not been any report
+of the warning or the request to support this feature anymore. Let's
+proceed to fully deprecate this feature.
 
-As Yosry pointed out, this is in pages, not bytes. There is already
-functionality to display this bin ytes for the readers of the memory
-stats.
+Shakeel Butt (3):
+  memcg-v1: fully deprecate move_charge_at_immigrate
+  memcg-v1: remove charge move code
+  memcg-v1: remove memcg move locking code
 
-Also you will need to update Documentation/admin-guide/cgroup-v2.rst to
-include the hugetlb stats.
+ .../admin-guide/cgroup-v1/memory.rst          |  82 +-
+ fs/buffer.c                                   |   5 -
+ include/linux/memcontrol.h                    |  59 --
+ mm/filemap.c                                  |   1 -
+ mm/memcontrol-v1.c                            | 960 +-----------------
+ mm/memcontrol-v1.h                            |   6 -
+ mm/memcontrol.c                               |  14 -
+ mm/page-writeback.c                           |  21 +-
+ mm/rmap.c                                     |   1 -
+ mm/vmscan.c                                   |  11 -
+ 10 files changed, 8 insertions(+), 1152 deletions(-)
 
->  #endif
->  	/* PGDEMOTE_*: pages demoted */
->  	PGDEMOTE_KSWAPD,
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 190fa05635f4..055bc91858e4 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1925,6 +1925,8 @@ void free_huge_folio(struct folio *folio)
->  				     pages_per_huge_page(h), folio);
->  	hugetlb_cgroup_uncharge_folio_rsvd(hstate_index(h),
->  					  pages_per_huge_page(h), folio);
-> +	if (cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING)
-> +		lruvec_stat_mod_folio(folio, HUGETLB_B, -pages_per_huge_page(h));
+-- 
+2.43.5
 
-Please note that by you are adding this stat not only in memcg but also
-in global and per-node vmstat. This check will break those interfaces
-when this mount option is not used. You only need the check at the
-charging time. The uncharging and stats update functions will do the
-right thing as they check memcg_data attached to the folio.
-
->  	mem_cgroup_uncharge(folio);
->  	if (restore_reserve)
->  		h->resv_huge_pages++;
-> @@ -3094,6 +3096,8 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
->  	if (!memcg_charge_ret)
->  		mem_cgroup_commit_charge(folio, memcg);
->  	mem_cgroup_put(memcg);
-> +	if (cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING)
-
-Same here.
-
-> +		lruvec_stat_mod_folio(folio, HUGETLB_B, pages_per_huge_page(h));
->  
->  	return folio;
-  
 
