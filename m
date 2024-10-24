@@ -1,59 +1,59 @@
-Return-Path: <cgroups+bounces-5231-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5232-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD5EB9AEDDE
-	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 19:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EC1E59AEDF5
+	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 19:27:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72210288DC4
-	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 17:24:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1720287D99
+	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 17:27:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AF111FBF6A;
-	Thu, 24 Oct 2024 17:24:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BBEE1FE109;
+	Thu, 24 Oct 2024 17:26:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UuKber85"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pCmhJlLo"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1DFC1F76BF
-	for <cgroups@vger.kernel.org>; Thu, 24 Oct 2024 17:23:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D971118991B
+	for <cgroups@vger.kernel.org>; Thu, 24 Oct 2024 17:26:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729790643; cv=none; b=OqGn+T22bpfe17drT2HfGG8VNAbXliIaHItL/x/3Rw25aNSnpOJ15NVyLQbxsG0X+5LFPq+AzhyUF7B1vUZO79IkRnxKbPweKOTUJi3iOonH2G6k+yPGJxTGH8x1sIGLW4Byu7C+7Olyh+ItcgmLAtiMR0aVz2HPuZfkq/bfsxk=
+	t=1729790789; cv=none; b=u6N64UW5Cbavwvs/Rmo4QpADuUW+Q7JE6ECFSAe4tSOrJ28GncmjiWGTRRD+uH1591iIHfoYjqjduArbedK4Ijn90I5jsMy00krcNR9h/LZXvbax0tY2G1VkiRMLq5lKaxTIHvXQEbTGGh9gLMiGsMsNM+ZA1bC2q7uPPKKJR5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729790643; c=relaxed/simple;
-	bh=yazdF8DdqiUPcOFQKwHytvczCwtC7cFyM0Z8v2bzmH0=;
+	s=arc-20240116; t=1729790789; c=relaxed/simple;
+	bh=mZy3gH8hiW0A+IkBao8g6kJ+dPCUrqLtDAb39XcdETw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V8++Lu07453EIfeTtCwPGgByopkO6WHcDFbeZX76g7tIJ/SBhT0y35G+w281TV8tX8ICSt9rJdLiYgCfPsjITEHOxZYS8T9duijn9SZoxXPZRsQRB7CcK5cq4W/6Xq6LzZsa7yzpC2xESsAW79E+dznpmlZNY1aLmOf+u45vtBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UuKber85; arc=none smtp.client-ip=91.218.175.186
+	 Content-Type:Content-Disposition:In-Reply-To; b=QBalQqS6VGFLeQZ5r7P4EGDLjSqOeqeiY3COQQOKnIQFe7K/z0nj5nwJrqeeixW1DuQtNDI3zRg/kc1a2qO48W1CKuwnOMIqTgWH68ah0Y5WQone5/UWnwJJOoA6EYANtZpCLHtj/r+2bj09DOc/zfJwRir24v0fCU8JAy2UafI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pCmhJlLo; arc=none smtp.client-ip=95.215.58.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 24 Oct 2024 10:23:49 -0700
+Date: Thu, 24 Oct 2024 10:26:15 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1729790637;
+	t=1729790780;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=h74CK0tiJYaE5TPqN+PPqGm7CGDGWVsPWLsQQbpuBDU=;
-	b=UuKber85VwkZSQ0uYPSblgX0oKvL+orCwOdqfT1aRfWqgUsDFo3tklI+QJNJQ/vFfCHKQd
-	+ze9dP5ollYhnfKhRW8PwsStYGU8u9doQsOdbpoXT2+9oujfxZAIg+fZza76g3egQE5GkP
-	bDTQCy3b/bn/jX4m8oRvMGrYQwi8S7I=
+	bh=8R1hlFXC1iEAhNiTAY04zaD5qomPk8wLiMSHdfUvjQA=;
+	b=pCmhJlLo+awlJ1B+3t7IW8LaVA2tC/Qps/pAgSG+bCpusILq+Ruj7SJ7JKPnGAqKrv5PS+
+	59E6MzrcspYqHjiGVg8MNQzKvH6jXBn5h4scJe0DSYcr0dPkbgO96SYo2O7IR0U5Bl9L5J
+	BY8u54XjMBQQspmHOK1gwT1Tm9bKv8Q=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Michal Hocko <mhocko@suse.com>
+To: Roman Gushchin <roman.gushchin@linux.dev>
 Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
 	Muchun Song <muchun.song@linux.dev>, Hugh Dickins <hughd@google.com>, linux-mm@kvack.org, 
 	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
 	linux-doc@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
 Subject: Re: [RFC PATCH 3/3] memcg-v1: remove memcg move locking code
-Message-ID: <kr6fjny7aqni4habduj2uqfznusozkku3xeq62bjscb5ovwxog@ccgl3kxufmma>
+Message-ID: <7w4xusjyyobyvacm6ogc3q2l26r2vema5rxlb5oqlhs4hpqiu3@dfbde5arh3rg>
 References: <20241024065712.1274481-1-shakeel.butt@linux.dev>
  <20241024065712.1274481-4-shakeel.butt@linux.dev>
- <ZxoQhEPXmSkM7sH_@tiehlicka>
+ <Zxp63b9WlI4sTwWk@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -62,43 +62,20 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZxoQhEPXmSkM7sH_@tiehlicka>
+In-Reply-To: <Zxp63b9WlI4sTwWk@google.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Thu, Oct 24, 2024 at 11:16:52AM GMT, Michal Hocko wrote:
-> On Wed 23-10-24 23:57:12, Shakeel Butt wrote:
+On Thu, Oct 24, 2024 at 04:50:37PM GMT, Roman Gushchin wrote:
+> On Wed, Oct 23, 2024 at 11:57:12PM -0700, Shakeel Butt wrote:
 > > The memcg v1's charge move feature has been deprecated. There is no need
 > > to have any locking or protection against the moving charge. Let's
 > > proceed to remove all the locking code related to charge moving.
 > > 
 > > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> > ---
-> > -/**
-> > - * folio_memcg_lock - Bind a folio to its memcg.
-> > - * @folio: The folio.
-> > - *
-> > - * This function prevents unlocked LRU folios from being moved to
-> > - * another cgroup.
-> > - *
-> > - * It ensures lifetime of the bound memcg.  The caller is responsible
-> > - * for the lifetime of the folio.
-> > - */
-> > -void folio_memcg_lock(struct folio *folio)
-> > -{
-> > -	struct mem_cgroup *memcg;
-> > -	unsigned long flags;
-> > -
-> > -	/*
-> > -	 * The RCU lock is held throughout the transaction.  The fast
-> > -	 * path can get away without acquiring the memcg->move_lock
-> > -	 * because page moving starts with an RCU grace period.
-> > -         */
-> > -	rcu_read_lock();
 > 
-> Is it safe to remove the implicit RCU?
+> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
 
-Good question. I think it will be safe to keep the RCU in this patch and
-in the followup examine each place and decide to remove RCU or not.
-
-Thanks for the review.
+Thanks Roman for the review. Based on Michal's question, I am planning
+to keep the RCU locking in the next version of this patch and folowup
+with clear understanding where we really need RCU and where we don't.
 
