@@ -1,61 +1,61 @@
-Return-Path: <cgroups+bounces-5229-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5230-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A911F9AED1A
-	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 19:06:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBBE29AED86
+	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 19:17:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ECD95B22F6E
-	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 17:06:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 681FF1F23D96
+	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2024 17:17:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0549E1F9EC8;
-	Thu, 24 Oct 2024 17:06:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F7C1F9ED2;
+	Thu, 24 Oct 2024 17:17:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H67NQSuT"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FKGU0YC8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5EC11DD0D9;
-	Thu, 24 Oct 2024 17:06:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81CFF1F8191
+	for <cgroups@vger.kernel.org>; Thu, 24 Oct 2024 17:17:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729789597; cv=none; b=Mz9eWjmYQC1+BTSX0yL8RYfcrHfqgy1GyWIZ8cRt6VTQsjwtrVTVtP3rMiJiSEq/gwEPjkNPnId3OL1PCIuQpyn9lgMitnsRCrqZ5pVOivo1TBzDCjEWP1v2+cACabyU35JSlylQDgiCk72FfB+CGw2YYMzh0yva/QbS7rSGvas=
+	t=1729790229; cv=none; b=OTuxc2U2fJEl+D02FRaZhD3TOrM83JGBPfDdMRFPlN6Q6F2qeT8fCA//HufkYXQtAmp/5hTwL0mjGkBacVv3EViKTFJDKt+jmHb67wqts40vm9WSwwSLtmGf/wrMEySWeoBd/zJdBYAcssbyVGQ605D7TNPTk+YoTPW6vs8XAgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729789597; c=relaxed/simple;
-	bh=+U29CBBz+qyrBtOdbE4svz7p2WVJRzBvoR7WRuDzFdY=;
+	s=arc-20240116; t=1729790229; c=relaxed/simple;
+	bh=iOljpUiWFrtffYQ62z1//nC5+YML7iCZj+R+HVWyJAc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TNiAlCuSB9RM7IX6auecatC5mFHtuh96f08t9NUBAXquQdDRAtAa8oWmmvy5jFjrPlPSUZrahDfGpMewy3XRFDLhVtI/i+sSz+d4kz4l8zvFRfG8p8eDCYiyjLxiC60crbh68tv7CDEx5gb04NeHUsSVLr1YoNfrqR43u38s0b8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H67NQSuT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58187C4CEC7;
-	Thu, 24 Oct 2024 17:06:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729789597;
-	bh=+U29CBBz+qyrBtOdbE4svz7p2WVJRzBvoR7WRuDzFdY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=H67NQSuT2jRkzudyo8hcBaXGPRd16RtbucKKIBDbfx8FkTwAr4zIhYlZeE6WCQ/kL
-	 pOKgojXUIUeRkXcF/JFapYxnKLfLT7nZKbkLAKrxpqPscdWWU/vZjnV9zgg6XNOwgL
-	 wzbEkT0znzv5FxmEY4Ik7sEPxZyKemenvHZVbJw9VzPtVg/PgDCFm0JQgIUZq58Or+
-	 5DfzEOvuXqappQSjGsEuZ0aK5qCv0QOW0YM94EAZUdRdzXgVozd7QdkrIs0W5Sk+Nu
-	 qXaSipjzcAFgRXjcGCCgHoU/+HUqUJSQmpfcF9fFh3O20JLZ5Ja/v/FZVntFobZCnF
-	 OY5WfqO8VubRg==
-Date: Thu, 24 Oct 2024 07:06:36 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Friedrich Vock <friedrich.vock@gmx.de>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH 0/7] kernel/cgroups: Add "dev" memory accounting cgroup.
-Message-ID: <Zxp-nLXOJXoSy8BN@slm.duckdns.org>
-References: <20241023075302.27194-1-maarten.lankhorst@linux.intel.com>
- <ZxlRLMwkabTaOrjc@slm.duckdns.org>
- <20241024-beautiful-spaniel-of-youth-f75b61@houat>
+	 Content-Type:Content-Disposition:In-Reply-To; b=K8xEtbVqMu0FTXp5frkfc2EdX4t+7QaIKXM6XQvgmnIWRiEavcWZ7sh9yv3dzY5m+pledmKNuoZXdYfblLDD5fR5DAeg7DFZ4htGlqTw4cxJrbqfRVWWdylGsP/txLuU5mzTvcR8xEnFNpGXBfqyhtiyA+IOUGVecLqN/Ml7jaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FKGU0YC8; arc=none smtp.client-ip=91.218.175.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 24 Oct 2024 10:16:58 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1729790224;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=38joqWY7s8hm5BlhGDOYUHiPg6nN7sm6VmhGdHfvDLU=;
+	b=FKGU0YC8ovYh8vg0Y5gIjFH/7Df71GaJry0Zd93QQ48d5L/90kQ/X7iYvj0xMztxGPEnAn
+	769+1TJWAmUO0DkiSoz3m+QcZDV4dczhqOcXRUJ3pKR5f73YK1gV2+9a0QJ/6WAMRjsPh+
+	BG39YdZ4UPfOsJxzEin7y6qj5rKxGLk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Michal Hocko <mhocko@suse.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Muchun Song <muchun.song@linux.dev>, Hugh Dickins <hughd@google.com>, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
+Subject: Re: [RFC PATCH 1/3] memcg-v1: fully deprecate
+ move_charge_at_immigrate
+Message-ID: <hmvt2ydrluiwmautt63gf4w6kypytvb7dztc2c74b5rt5p4er3@v5an7gu462ff>
+References: <20241024065712.1274481-1-shakeel.butt@linux.dev>
+ <20241024065712.1274481-2-shakeel.butt@linux.dev>
+ <ZxoP2TLCGnSm9c8p@tiehlicka>
+ <Zxp7ItxIf744tFbD@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -64,52 +64,46 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241024-beautiful-spaniel-of-youth-f75b61@houat>
+In-Reply-To: <Zxp7ItxIf744tFbD@google.com>
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
-
-On Thu, Oct 24, 2024 at 09:20:43AM +0200, Maxime Ripard wrote:
-...
-> > Yeah, let's not use "dev" name for this. As Waiman pointed out, it conflicts
-> > with the devices controller from cgroup1. While cgroup1 is mostly
-> > deprecated, the same features are provided through BPF in systemd using the
-> > same terminologies, so this is going to be really confusing.
+On Thu, Oct 24, 2024 at 04:51:46PM GMT, Roman Gushchin wrote:
+> On Thu, Oct 24, 2024 at 11:14:01AM +0200, Michal Hocko wrote:
+> > On Wed 23-10-24 23:57:10, Shakeel Butt wrote:
+> > > Proceed with the complete deprecation of memcg v1's charge moving
+> > > feature. The deprecation warning has been in the kernel for almost two
+> > > years and has been ported to all stable kernel since. Now is the time to
+> > > fully deprecate this feature.
+> > > 
+> > > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> > 
+> > I fine with this move, just one detail we might need to consider
+> > [...]
+> > > @@ -606,17 +606,7 @@ static int mem_cgroup_move_charge_write(struct cgroup_subsys_state *css,
+> > >  		     "Please report your usecase to linux-mm@kvack.org if you "
+> > >  		     "depend on this functionality.\n");
+> > >  
+> > > -	if (val & ~MOVE_MASK)
+> > > -		return -EINVAL;
+> > > -
+> > > -	/*
+> > > -	 * No kind of locking is needed in here, because ->can_attach() will
+> > > -	 * check this value once in the beginning of the process, and then carry
+> > > -	 * on with stale data. This means that changes to this value will only
+> > > -	 * affect task migrations starting after the change.
+> > > -	 */
+> > > -	memcg->move_charge_at_immigrate = val;
+> > > -	return 0;
+> > > +	return -EINVAL;
+> > 
+> > Would it make more sense to -EINVAL only if val != 0? The reason being
+> > that some userspace might be just writing 0 here for whatever reason and
+> > see the failure unexpected.
 > 
-> Yeah, I agree. We switched to dev because we want to support more than
-> just DRM, but all DMA-able memory. We have patches to support for v4l2
-> and dma-buf heaps, so using the name DRM didn't feel great either.
+> I think it's a good idea.
 > 
-> Do you have a better name in mind? "device memory"? "dma memory"?
+> Thanks!
 
-Maybe just dma (I think the term isn't used heavily anymore, so the word is
-kinda open)? But, hopefully, others have better ideas.
-
-> > What happened with Tvrtko's weighted implementation? I've seen many proposed
-> > patchsets in this area but as far as I could see none could establish
-> > consensus among GPU crowd and that's one of the reasons why nothing ever
-> > landed. Is the aim of this patchset establishing such consensus?
-> 
-> Yeah, we have a consensus by now I think. Valve, Intel, Google, and Red
-> Hat have been involved in that series and we all agree on the implementation.
-
-That's great to hear.
-
-> Tvrtko aims at a different feature set though: this one is about memory
-> allocation limits, Tvrtko's about scheduling.
-> 
-> Scheduling doesn't make much sense for things outside of DRM (and even
-> for a fraction of all DRM devices), and it's pretty much orthogonal. So
-> i guess you can expect another series from Tvrtko, but I don't think
-> they should be considered equivalent or dependent on each other.
-
-Yeah, I get that this is about memory and that is about processing capacity,
-so the plan is going for separate controllers for each? Or would it be
-better to present both under the same controller interface? Even if they're
-going to be separate controllers, we at least want to be aligned on how
-devices and their configurations are presented in the two controllers.
-
-Thanks.
-
--- 
-tejun
+Thanks Michal and Roman for the review and I will make this change in
+the next version.
 
