@@ -1,72 +1,72 @@
-Return-Path: <cgroups+bounces-5258-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5259-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40AF89AFA6E
-	for <lists+cgroups@lfdr.de>; Fri, 25 Oct 2024 08:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AC6AB9AFA79
+	for <lists+cgroups@lfdr.de>; Fri, 25 Oct 2024 08:57:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 653821C21D5C
-	for <lists+cgroups@lfdr.de>; Fri, 25 Oct 2024 06:56:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE9981C2145A
+	for <lists+cgroups@lfdr.de>; Fri, 25 Oct 2024 06:57:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F9B71B0F3F;
-	Fri, 25 Oct 2024 06:56:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B44E71B3945;
+	Fri, 25 Oct 2024 06:57:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HGW+acVf"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="JttTjBEn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E72451AF0C6
-	for <cgroups@vger.kernel.org>; Fri, 25 Oct 2024 06:56:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 222D51B0F3F
+	for <cgroups@vger.kernel.org>; Fri, 25 Oct 2024 06:57:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729839380; cv=none; b=jAzIIX/IevztIE9ukZF7Jv483vdvKObmY7dJkuD5oubbLxW0TJRCGyMFYCVBn6g9tFeDuHPUoffkhWThvTNGbWJVbfyfei4EipX2mBkLjUZ55fs96J2h8Bh/um4ZjpVxmGXaom8R1/XTgVWV2ViY1zaw8ty5p3iXIdPAKwNw4Xc=
+	t=1729839456; cv=none; b=Q8fM6w9j9G4NPZiNiRJ3vXIkNzR9BKeXL1IcxEbRP5jTt8p+WnPOGLf5iQ2M8GmRqLBKCVKq24BT/5GkU9aSboWw8yXWz1S0/I+88RXJwYzg564XLJudsqmkwIH7jS7cnqbGAsast7x+BHC+JIHPXY5UtMIy5OJ3gSOkEv3SBh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729839380; c=relaxed/simple;
-	bh=25Jvv1dRU/CqZfXqsQG04QoTrrK/hfjJxNA716kXjgM=;
+	s=arc-20240116; t=1729839456; c=relaxed/simple;
+	bh=N3hO6RuGLcGpKz2OO7Qi0i9vgG5nLurEUPBaxGqGmX4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s8QBqDXYGI4Fc32W14dGRwuWIkCJrCBR5gTSHh1QORP+jrRGAf97l3j10gkhBVZdrJsKusT6zyMfeOza/LvKB/mFRYTQvt6vxxfJFw49gVlZACggv15gYDC1u7BBgX+hAY5V+OATjr6TUWPlILiaAo0jACVmPJsbTAsurHiqizc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HGW+acVf; arc=none smtp.client-ip=209.85.221.44
+	 Content-Type:Content-Disposition:In-Reply-To; b=iCswxVkEJaVv3+A4aQGbUHg0SKYqpwSbLyJl/T+pJNlmtQc2p/2o1Mjwj/V1CtNxaXYlB2Rht7L21ej/WSc4zJxcs2lBV3ghLu9yNNapPYl4K9mVEqRhQh5hmZb+SkOZMS44sh182xAaXGPdZAHUEtJjHLMwKJn0BG6dErfV2QA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=JttTjBEn; arc=none smtp.client-ip=209.85.221.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-37d4fd00574so1039507f8f.0
-        for <cgroups@vger.kernel.org>; Thu, 24 Oct 2024 23:56:16 -0700 (PDT)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-37d4b0943c7so1145839f8f.1
+        for <cgroups@vger.kernel.org>; Thu, 24 Oct 2024 23:57:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1729839375; x=1730444175; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1729839452; x=1730444252; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sTe9mW5h/PuKAECzVf3PYOF2hJitcmVtXP47DBZfOlw=;
-        b=HGW+acVf4NFa0+p9uMryqVu/sVPuqdMP3+S1xRJCEue1OyVIJY37J5szSk11SOQ/Ul
-         Grpk6Ls27CjqmDMpPG2tKSDyiiwVbNUOOBXfd+WpoduFhVID0Qer6YYxtbxbOKBDlCvR
-         PyCLXQpM+pZW74QDDA41Gc7UBdrRx+q34MLqKJnCpPkC6OLbVIF9CwSgjAXRK+EDRE0Z
-         nJ/pne1d+18H+EfnWFqKqbK5Hr2kbtwNywyGG7q6oNEKRJdh73mFz2wEZqq0Tc19sMdL
-         qzzfmnd0tDo1/u1P+QNs5gXqlNweYZ5m/NM8uoBdrqXNvymO4CCpL7z2CVN84PCW18Yn
-         ZTxQ==
+        bh=uIGhUUrvEJvBYTpVTQCf7vDRTHIN44D2R4RlMBTCdG4=;
+        b=JttTjBEnJc3j3mu5taK/E9ajpFN6lV/QSLhJLn7Ewr54rubjMg0hF5hFHPo0BZcDIg
+         QbiUc4gL0p4RX3NtsrahOd+A4wS9haGpdtfwrEhtVlp0bWGr7myv7pHa70z5T4wStZ5f
+         kSHJlXabymblrxf0vtKJH7zVzYAehw+TdlsDb8wSEEboybBHLa4gVRP9mmFRRU3pGRWd
+         BFKpglqBVAfCA62OvvuNaQnw90ywRGNQ1MTZ3nHx6w4+Fb6774KCgH97lEB4xSy4lWOd
+         OtNZ6bAiNkoWTH0SiBJ7KXAYYGAYS25Lmeq771TgIUucmLgCsOo4kiAnC6tK83UWSn9n
+         fsGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729839375; x=1730444175;
+        d=1e100.net; s=20230601; t=1729839452; x=1730444252;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sTe9mW5h/PuKAECzVf3PYOF2hJitcmVtXP47DBZfOlw=;
-        b=Fy1TU+cxlCr20xvRcK9vyf/ILfE+BhKw96Pgf2pZJQe53QGnMACg3Bz3QxMKftCkgL
-         i1l7WXYw3Nf9m1diV2bPq7v5WyJAee57ly8/fEKwXq3CC1mHKbAz5tp90CS1aJOZlnwy
-         VHv5unOSEAu1ptU0zL+zgjkZjXi6sgF3mXWQAxLY/qG/IzguSDDE7WMh0lr1tAqTmqkQ
-         T+zr66z2g8aoai27dTn+Lh53DM2Ta3+Ruz4z3fUi2Znqjiu77kb/3iXNuhBMm8ghxj91
-         8ri+WTDQwloV6W+2MIPmP4H+LA8cnxPu1FW5HaKSE8jqf1ndQEXDPXeDd4JYdL+jcBlE
-         jiYw==
-X-Forwarded-Encrypted: i=1; AJvYcCWeWvUaS8xuo0Def06sDOi7uPDj7QhduHfXvtvS7DAL3sDAgE8ESTTZcx8na7YqufaQ4Zh9TwNv@vger.kernel.org
-X-Gm-Message-State: AOJu0YzLvFEEPYXG208T9uLwmRY4vG9eg+VybjBZoakCXfg+caJqX9tJ
-	YYzTZ5QmHWxBK3XAwFpZWaPEnQGg9FgJo+ZyA/CB6H9JXNJhZUi0foTF3h87seA=
-X-Google-Smtp-Source: AGHT+IE0m4dKzQ0gdgNM1YMMDkWjtRcILPbXQDIuhEVhrT0m4N3QefoLH4rvCAehNcVFfiNMs0Kh8Q==
-X-Received: by 2002:adf:ec42:0:b0:37c:ffdd:6d5a with SMTP id ffacd0b85a97d-3803ab6710amr3757362f8f.6.1729839375159;
-        Thu, 24 Oct 2024 23:56:15 -0700 (PDT)
+        bh=uIGhUUrvEJvBYTpVTQCf7vDRTHIN44D2R4RlMBTCdG4=;
+        b=tav2+cjKM0EQvG34+tk0XrgKc5sN4Yh1gp/eYfsQNacznWpG+J8EF7fjOEFi/O0/WU
+         6tQU3GcSvh61h82pH7t/zZDCaCPKJnGSpkPoPy/cM52RAUaZi9t3U752hbq5ZsrAY4uR
+         dI6vWsxQZ/MyDtMg8m40kXyJkM1mJ0Err+vM6/WMXjMfVY1gHFArbeJCYraTF6UuBO6p
+         2yfdIxJJIFDpXWHJEXb+LvpSBul684VQIRFf8DHANuIcO+dnAJrwWO9nCQ0aKkCT6H11
+         Q1MO1Itu5Nr20bWrEvIiZ1AeVHbihPI4vTwomXbV7E8Pr4O3nYfsbGMcOxou0OOMpukQ
+         5cEw==
+X-Forwarded-Encrypted: i=1; AJvYcCUJYbxwhLzpFcN0eQ49nozv6wa0XrWXPJWHsHZZwK/mPRpnHzJ0KZSwl5wOaKUd6coN/Dz8t1Eq@vger.kernel.org
+X-Gm-Message-State: AOJu0YwWZrf5kXCs3YJhzZUI1uDWksznthk2XH70REiHfFByvMGDl45W
+	d5JTdDywqyjjXjCPSeavWtgkBnbHxAHR9Kxi4l5uZ98ir1RCSX0Red5gPONPU2E=
+X-Google-Smtp-Source: AGHT+IG5jRpCojmvKmj5tkta0HqMtVq7AqWJFDLy+BIjGm7NrH0ck5YQqqlaOo1BUh5vNwWV8SPF5w==
+X-Received: by 2002:adf:e808:0:b0:37d:4ebe:164b with SMTP id ffacd0b85a97d-380458ec1camr2763416f8f.44.1729839452483;
+        Thu, 24 Oct 2024 23:57:32 -0700 (PDT)
 Received: from localhost (109-81-81-105.rct.o2.cz. [109.81.81.105])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38058b70e0fsm745692f8f.73.2024.10.24.23.56.14
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38058b70f25sm749911f8f.67.2024.10.24.23.57.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Oct 2024 23:56:14 -0700 (PDT)
-Date: Fri, 25 Oct 2024 08:56:14 +0200
+        Thu, 24 Oct 2024 23:57:32 -0700 (PDT)
+Date: Fri, 25 Oct 2024 08:57:31 +0200
 From: Michal Hocko <mhocko@suse.com>
 To: Shakeel Butt <shakeel.butt@linux.dev>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -78,11 +78,11 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
 	Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH v1 3/6] memcg-v1: no need for memcg locking for dirty
+Subject: Re: [PATCH v1 4/6] memcg-v1: no need for memcg locking for writeback
  tracking
-Message-ID: <ZxtBDglHg0C8aRTT@tiehlicka>
+Message-ID: <ZxtBW9d4bkj9C7gY@tiehlicka>
 References: <20241025012304.2473312-1-shakeel.butt@linux.dev>
- <20241025012304.2473312-4-shakeel.butt@linux.dev>
+ <20241025012304.2473312-5-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -91,126 +91,63 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241025012304.2473312-4-shakeel.butt@linux.dev>
+In-Reply-To: <20241025012304.2473312-5-shakeel.butt@linux.dev>
 
-On Thu 24-10-24 18:23:00, Shakeel Butt wrote:
+On Thu 24-10-24 18:23:01, Shakeel Butt wrote:
 > During the era of memcg charge migration, the kernel has to be make sure
-> that the dirty stat updates do not race with the charge migration.
-> Otherwise it might update the dirty stats of the wrong memcg. Now with
-> the memcg charge migration deprecated, there is no more race for dirty
+> that the writeback stat updates do not race with the charge migration.
+> Otherwise it might update the writeback stats of the wrong memcg. Now
+> with the memcg charge migration deprecated, there is no more race for
 
-s@deprecated@gone@
+s@deprecated@gone
 
-> stat updates and the previous locking can be removed.
+> writeback stat updates and the previous locking can be removed.
 > 
 > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-LGTM otherwise
 Acked-by: Michal Hocko <mhocko@suse.com>
+Thanks!
 
 > ---
->  fs/buffer.c         |  5 -----
->  mm/page-writeback.c | 16 +++-------------
->  2 files changed, 3 insertions(+), 18 deletions(-)
+>  mm/page-writeback.c | 4 ----
+>  1 file changed, 4 deletions(-)
 > 
-> diff --git a/fs/buffer.c b/fs/buffer.c
-> index 1fc9a50def0b..88e765b0699f 100644
-> --- a/fs/buffer.c
-> +++ b/fs/buffer.c
-> @@ -736,15 +736,12 @@ bool block_dirty_folio(struct address_space *mapping, struct folio *folio)
->  	 * Lock out page's memcg migration to keep PageDirty
->  	 * synchronized with per-memcg dirty page counters.
->  	 */
-> -	folio_memcg_lock(folio);
->  	newly_dirty = !folio_test_set_dirty(folio);
->  	spin_unlock(&mapping->i_private_lock);
->  
->  	if (newly_dirty)
->  		__folio_mark_dirty(folio, mapping, 1);
->  
-> -	folio_memcg_unlock(folio);
-> -
->  	if (newly_dirty)
->  		__mark_inode_dirty(mapping->host, I_DIRTY_PAGES);
->  
-> @@ -1194,13 +1191,11 @@ void mark_buffer_dirty(struct buffer_head *bh)
->  		struct folio *folio = bh->b_folio;
->  		struct address_space *mapping = NULL;
->  
-> -		folio_memcg_lock(folio);
->  		if (!folio_test_set_dirty(folio)) {
->  			mapping = folio->mapping;
->  			if (mapping)
->  				__folio_mark_dirty(folio, mapping, 0);
->  		}
-> -		folio_memcg_unlock(folio);
->  		if (mapping)
->  			__mark_inode_dirty(mapping->host, I_DIRTY_PAGES);
->  	}
 > diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-> index 1d7179aba8e3..a76a73529fd9 100644
+> index a76a73529fd9..9c3317c3a615 100644
 > --- a/mm/page-writeback.c
 > +++ b/mm/page-writeback.c
-> @@ -2743,8 +2743,6 @@ EXPORT_SYMBOL(noop_dirty_folio);
->  /*
->   * Helper function for set_page_dirty family.
->   *
-> - * Caller must hold folio_memcg_lock().
-> - *
->   * NOTE: This relies on being atomic wrt interrupts.
->   */
->  static void folio_account_dirtied(struct folio *folio,
-> @@ -2777,7 +2775,6 @@ static void folio_account_dirtied(struct folio *folio,
->  /*
->   * Helper function for deaccounting dirty page without writeback.
->   *
-> - * Caller must hold folio_memcg_lock().
->   */
->  void folio_account_cleaned(struct folio *folio, struct bdi_writeback *wb)
->  {
-> @@ -2795,9 +2792,8 @@ void folio_account_cleaned(struct folio *folio, struct bdi_writeback *wb)
->   * If warn is true, then emit a warning if the folio is not uptodate and has
->   * not been truncated.
->   *
-> - * The caller must hold folio_memcg_lock().  It is the caller's
-> - * responsibility to prevent the folio from being truncated while
-> - * this function is in progress, although it may have been truncated
-> + * It is the caller's responsibility to prevent the folio from being truncated
-> + * while this function is in progress, although it may have been truncated
->   * before this function is called.  Most callers have the folio locked.
->   * A few have the folio blocked from truncation through other means (e.g.
->   * zap_vma_pages() has it mapped and is holding the page table lock).
-> @@ -2841,14 +2837,10 @@ void __folio_mark_dirty(struct folio *folio, struct address_space *mapping,
->   */
->  bool filemap_dirty_folio(struct address_space *mapping, struct folio *folio)
->  {
-> -	folio_memcg_lock(folio);
-> -	if (folio_test_set_dirty(folio)) {
-> -		folio_memcg_unlock(folio);
-> +	if (folio_test_set_dirty(folio))
->  		return false;
-> -	}
+> @@ -3083,7 +3083,6 @@ bool __folio_end_writeback(struct folio *folio)
+>  	struct address_space *mapping = folio_mapping(folio);
+>  	bool ret;
 >  
->  	__folio_mark_dirty(folio, mapping, !folio_test_private(folio));
+> -	folio_memcg_lock(folio);
+>  	if (mapping && mapping_use_writeback_tags(mapping)) {
+>  		struct inode *inode = mapping->host;
+>  		struct backing_dev_info *bdi = inode_to_bdi(inode);
+> @@ -3114,7 +3113,6 @@ bool __folio_end_writeback(struct folio *folio)
+>  	lruvec_stat_mod_folio(folio, NR_WRITEBACK, -nr);
+>  	zone_stat_mod_folio(folio, NR_ZONE_WRITE_PENDING, -nr);
+>  	node_stat_mod_folio(folio, NR_WRITTEN, nr);
 > -	folio_memcg_unlock(folio);
 >  
->  	if (mapping->host) {
->  		/* !PageAnon && !swapper_space */
-> @@ -2975,14 +2967,12 @@ void __folio_cancel_dirty(struct folio *folio)
->  		struct bdi_writeback *wb;
->  		struct wb_lock_cookie cookie = {};
+>  	return ret;
+>  }
+> @@ -3127,7 +3125,6 @@ void __folio_start_writeback(struct folio *folio, bool keep_write)
 >  
-> -		folio_memcg_lock(folio);
->  		wb = unlocked_inode_to_wb_begin(inode, &cookie);
+>  	VM_BUG_ON_FOLIO(folio_test_writeback(folio), folio);
 >  
->  		if (folio_test_clear_dirty(folio))
->  			folio_account_cleaned(folio, wb);
+> -	folio_memcg_lock(folio);
+>  	if (mapping && mapping_use_writeback_tags(mapping)) {
+>  		XA_STATE(xas, &mapping->i_pages, folio_index(folio));
+>  		struct inode *inode = mapping->host;
+> @@ -3168,7 +3165,6 @@ void __folio_start_writeback(struct folio *folio, bool keep_write)
 >  
->  		unlocked_inode_to_wb_end(inode, &cookie);
-> -		folio_memcg_unlock(folio);
->  	} else {
->  		folio_clear_dirty(folio);
->  	}
+>  	lruvec_stat_mod_folio(folio, NR_WRITEBACK, nr);
+>  	zone_stat_mod_folio(folio, NR_ZONE_WRITE_PENDING, nr);
+> -	folio_memcg_unlock(folio);
+>  
+>  	access_ret = arch_make_folio_accessible(folio);
+>  	/*
 > -- 
 > 2.43.5
 
