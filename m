@@ -1,81 +1,81 @@
-Return-Path: <cgroups+bounces-5290-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5291-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 616219B2CB1
-	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 11:22:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35B7F9B2D0F
+	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 11:40:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 850381C217BB
-	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 10:22:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E5F0A28176D
+	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 10:40:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B8CA1D278C;
-	Mon, 28 Oct 2024 10:22:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EDAE1D365B;
+	Mon, 28 Oct 2024 10:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gPkBnhCi"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KcqZOORp"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F34EA187876
-	for <cgroups@vger.kernel.org>; Mon, 28 Oct 2024 10:22:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D7071D2F62
+	for <cgroups@vger.kernel.org>; Mon, 28 Oct 2024 10:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730110932; cv=none; b=cMqwCntU8rX0SvYB4H92GqptUIh8ldQcioQhlaEdLFbyTKEGjfK99//e3v8/KdOibvEpaaxOmSvcAwinBWZHZO5O8f1zdB5vBv0BbK8s1cUPf3Xkum0obFdHxpK7VXrMWXjkZ38oEnLmuXdyUsRl5Ld39f6KTleCPnJ/4QkpHPs=
+	t=1730112030; cv=none; b=kqb9mOuNwoMQTaMwyxpYyiE2T/4Q8h91zIYcfZ7kCEbAD0YgMqXQdrDlQLgdZGNMHXUk7LgsluQWu2EeUqeDkWYn8p/K9b2nktRswqvUK+5IOKUvqaFOnH+VVpubwjkpZgBCmHtDRGtjscRiErG4/lqxdQop7pmHsJDJH0wIqRw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730110932; c=relaxed/simple;
-	bh=zzQI0ybI4KPvx0KGUmFyOvLHGQJA9P7/hFz4y1bc7uo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rL+AEHxRy+W/RThMPZk5FsxZiCr2/LTmiQ4yog78Ddif0Ta0Z81SHgpB960UJBjZsQgYdAR+yJKyhcKPFGMh2bXeoaKJnZGYaX0ElJpNEa1yMIB+/Smk5mL+mVmih+PCdXq5WqnqaaveQLz0tr4Af3Z5+MdWxDB01E4AtWXU5YM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gPkBnhCi; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1730112030; c=relaxed/simple;
+	bh=wgvOFR93MVO34Tw2IcLbYfyQPbmBhtl0ULhFWXPap/s=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=msMLqhxlHrs7Z4XvMG9T1keeS1FrbUUr2tB5sVauGPq+JCp7fCeplPHcctW0rWx095BiuGmENeqciVbZSoE2x0sI7vwbq5Kdmb4OcWkyaavFM4QPphURCQgW44sCnuYjWV0Cf+Eg2GAgIgUFN016uuDYVWeITTiIKAnbvQKBmqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KcqZOORp; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1730110929;
+	s=mimecast20190719; t=1730112028;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=fuiFSGsUISRZ4rT4df5tv8vlp7keS7frwhZev7086vY=;
-	b=gPkBnhCisucrm4IX8v99ZgTsJHBoULOq+6TNW3t+iv4KYfIuDGppP+CfWMpWlDDxEL2yk4
-	IxPbCk3gSUehMaTMHNBNKdzAcvY5+NyVb3xBCwPvKYvDKQjZKLfiVh7Yyx8YIox3v4v03r
-	2A8G25sblcOk2wtTPyt1YbF5LAfSlXU=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=BdaIiJhMXSQOqg5cTY+NEVANs9jRAw6a5nwQGChQ1Wk=;
+	b=KcqZOORpX9Krm7w0ft9S1G9oDIZ5bKgLA0Sh8iaGPRiBtlblVKHD9OxYwjKjJPuTlerja/
+	fnR/iTavqb5WSFyYfmaWLKVo/BDstDIlcxJMwJDsKsL1NyVSDnSEibgMkxNvkLYR92XM5e
+	ulP6o6FS6WMRApPEXDdYfuoPD+xnhRw=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-113-9oDceID2NoWIURwp8TDVFA-1; Mon, 28 Oct 2024 06:22:08 -0400
-X-MC-Unique: 9oDceID2NoWIURwp8TDVFA-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-37d5a3afa84so2271373f8f.3
-        for <cgroups@vger.kernel.org>; Mon, 28 Oct 2024 03:22:08 -0700 (PDT)
+ us-mta-509-WA8Cu59ONfSZVx68Oro0RQ-1; Mon, 28 Oct 2024 06:40:26 -0400
+X-MC-Unique: WA8Cu59ONfSZVx68Oro0RQ-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-37d662dd3c8so2236605f8f.1
+        for <cgroups@vger.kernel.org>; Mon, 28 Oct 2024 03:40:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730110927; x=1730715727;
+        d=1e100.net; s=20230601; t=1730112025; x=1730716825;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
+         :content-language:references:cc:to:from:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=fuiFSGsUISRZ4rT4df5tv8vlp7keS7frwhZev7086vY=;
-        b=sIAo8SCaaFGW8eKETpAjDy3IxYlnReqbT/MtnbXBSc7eXbvt5DqSZxre2/W01wXgKY
-         0DhT0AsnI+G2b67ecOgZF2cnaO6wCj+843h8r9naduRFKOm8ZRHEFdMCSkJxsRayFsB9
-         zxBZ5D/YXXkyO2vR9cV8qFDr7s6b+ZdYHhKnnSDPmmAeFpv/Sl+II5hM5gqGM29Gi3fL
-         jsEpgvj2Yv7dxTyHju/PHTyJWA6o9ul17zW5ZnMcFgbbqPBH4rm+kPiJiY0bFJobCNKv
-         dik94QkGSmZC/mWuJzQsYwN+xuLYtusfZT/soWunDNw9zVbLeAk6MdPO+MYZ9TAo5Dab
-         CR2A==
-X-Forwarded-Encrypted: i=1; AJvYcCUSbR1sfIhM4PcJZg8+vevSTqRO4JupOBQhhnz7IOrJosTvRXyLdb3rmKnPbaQQvsPem5Ut69rV@vger.kernel.org
-X-Gm-Message-State: AOJu0YwkaGt5CBEXG4ELzSkWIRbHOAR5nV+qZZVqc0mY9awBi4ibzdmD
-	ES4oXiGd3x6jsA4QqRWKvloJIk0nelZFPi07fc6AYIOYut7mhHsSLr6TfKHJ+VkItIYJoqSBDKr
-	yesCZHnGOX1oz0zs36KDcVtjYYNBhqnTawwEUJn41YcMJcRViw7kCA/8=
-X-Received: by 2002:adf:fbc4:0:b0:37d:461d:b1ea with SMTP id ffacd0b85a97d-380611ef3dbmr5454991f8f.48.1730110927298;
-        Mon, 28 Oct 2024 03:22:07 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGqHGN/n0Yj5v745GS9Jlm3ZDkDldCmmWyAXcowgeCBzN/fu8QX7Ognj41PjRQlj2fQuwJDiQ==
-X-Received: by 2002:adf:fbc4:0:b0:37d:461d:b1ea with SMTP id ffacd0b85a97d-380611ef3dbmr5454972f8f.48.1730110926867;
-        Mon, 28 Oct 2024 03:22:06 -0700 (PDT)
+        bh=BdaIiJhMXSQOqg5cTY+NEVANs9jRAw6a5nwQGChQ1Wk=;
+        b=WRYOnSwt+ltM5W7WRmK0rthH4eDapmF4iZTKRjmktA8Us3zTjCj1v31Q60mHl/d8fX
+         sY+bTm0zihNUr2nXnbS5+eorEeqnA1oH5MW8a0knKcEGbqB+xWPsQOMDP2zG9tYmtBmg
+         PBNt3eLHFbP+phUx58cP5KD/J/g1PafiRWIl06oGXbi7P2NP/Bnk/kTYzjk6yvu2Jae+
+         +H/wreRrFqWNy6XjPh0TBZ+zvToIoy59rw3BcYWNbgloW3CJRtIMltILxX1Ggwdre7bq
+         v8AMuXveYctiZCGPSiEt9aMK/6y+Ub+oycDsn7P5dBo6+dqYHK0HzNYS+w6v+uvpGbbj
+         WgaA==
+X-Forwarded-Encrypted: i=1; AJvYcCV/I7imYJroqlVfU0dHKYEoh3alkYrO2CuPeADi62SGeK7+I89rRdiguQHvGppJEBIdB6hjhe6f@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxbc8lfxL6nCB3oXLtH98zs+rxIBbsPssjaUDAhg1R/zI2dMdyD
+	B64Cx1ZnMv7IDE+rGarmjoBgYyKA/aOqyHunOBL/AnLhppCu3nog+Xz3879X2hqYKBtlqJGHVJQ
+	mENehMXd0j44opNb9gUwURGwmbw7Us7OffBIzvnqZPJHHlOfjwY5VvYw=
+X-Received: by 2002:a05:6000:10cc:b0:37c:cc4b:d1ea with SMTP id ffacd0b85a97d-380611f5ff0mr6235199f8f.53.1730112025333;
+        Mon, 28 Oct 2024 03:40:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGV0jRZSl++wHd4benXoWusxKV2hjEC/fjXGopqXIYY1Es/myN/5gcaoAwev1TcMGRGMWoTVw==
+X-Received: by 2002:a05:6000:10cc:b0:37c:cc4b:d1ea with SMTP id ffacd0b85a97d-380611f5ff0mr6235170f8f.53.1730112024946;
+        Mon, 28 Oct 2024 03:40:24 -0700 (PDT)
 Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38058b92f11sm9041515f8f.101.2024.10.28.03.22.05
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38058b71231sm9077127f8f.66.2024.10.28.03.40.23
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Oct 2024 03:22:06 -0700 (PDT)
-Message-ID: <f18fa492-5d59-4708-95f6-9878fffdf859@redhat.com>
-Date: Mon, 28 Oct 2024 11:22:05 +0100
+        Mon, 28 Oct 2024 03:40:24 -0700 (PDT)
+Message-ID: <071fa927-dcaf-4df2-b175-5ed6a200f112@redhat.com>
+Date: Mon, 28 Oct 2024 11:40:23 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -84,6 +84,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v1 2/6] memcg-v1: remove charge move code
+From: David Hildenbrand <david@redhat.com>
 To: Shakeel Butt <shakeel.butt@linux.dev>,
  Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
@@ -95,7 +96,7 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
  Meta kernel team <kernel-team@meta.com>, Michal Hocko <mhocko@suse.com>
 References: <20241025012304.2473312-1-shakeel.butt@linux.dev>
  <20241025012304.2473312-3-shakeel.butt@linux.dev>
-From: David Hildenbrand <david@redhat.com>
+ <f18fa492-5d59-4708-95f6-9878fffdf859@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -142,25 +143,28 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20241025012304.2473312-3-shakeel.butt@linux.dev>
+In-Reply-To: <f18fa492-5d59-4708-95f6-9878fffdf859@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-> -
-> -	pgdat = folio_pgdat(folio);
-> -	from_vec = mem_cgroup_lruvec(from, pgdat);
-> -	to_vec = mem_cgroup_lruvec(to, pgdat);
-> -
-> -	folio_memcg_lock(folio);
-> -
-> -	if (folio_test_anon(folio)) {
-> -		if (folio_mapped(folio)) {
-> -			__mod_lruvec_state(from_vec, NR_ANON_MAPPED, -nr_pages);
-> -			__mod_lruvec_state(to_vec, NR_ANON_MAPPED, nr_pages);
+On 28.10.24 11:22, David Hildenbrand wrote:
+>> -
+>> -	pgdat = folio_pgdat(folio);
+>> -	from_vec = mem_cgroup_lruvec(from, pgdat);
+>> -	to_vec = mem_cgroup_lruvec(to, pgdat);
+>> -
+>> -	folio_memcg_lock(folio);
+>> -
+>> -	if (folio_test_anon(folio)) {
+>> -		if (folio_mapped(folio)) {
+>> -			__mod_lruvec_state(from_vec, NR_ANON_MAPPED, -nr_pages);
+>> -			__mod_lruvec_state(to_vec, NR_ANON_MAPPED, nr_pages);
+> 
+> Good, because this code was likely wrong :) (-> partially mapped anon
+> folios)
 
-Good, because this code was likely wrong :) (-> partially mapped anon 
-folios)
-
+Staring at the code some more, mem_cgroup_move_charge_pte_range() refuses
+PTE-mapped large folios, so that might have done the right thing.
 
 -- 
 Cheers,
