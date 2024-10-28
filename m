@@ -1,874 +1,273 @@
-Return-Path: <cgroups+bounces-5298-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5299-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 390A39B3410
-	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 15:54:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 929CA9B3C73
+	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 22:05:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5923E2810CF
-	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 14:54:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E153B21A26
+	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 21:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D04A1DE2AA;
-	Mon, 28 Oct 2024 14:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 209C11E0E0D;
+	Mon, 28 Oct 2024 21:05:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=friedrich.vock@gmx.de header.b="pEF6pON2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="auQDsa9M"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95471DB360;
-	Mon, 28 Oct 2024 14:54:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FEEF18FC75;
+	Mon, 28 Oct 2024 21:05:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730127262; cv=none; b=CqkLvVKSvUB+Vz4q2zMqfex+byeUlZIIz/ntvL5jmhzYSsHEI/zRZDwdt4zZdFmQkR2ZE7Dw8yPFmG7SGaGF0JHLVmj5Za8PL/R+g2RJdCzNhc5zBS1D/AMFAD2PUDJ2YNs2f+8ggEb9aNhVMtgk7pBUNIsI2USvjDG6g6cF/aA=
+	t=1730149509; cv=none; b=uMWtCwT6/ThqSUtRmaEY71+M9eMxWpz8VHFPir/zjSMjG68afCyMt7IANQSqC0u0JO76Y4LcDZ9ueiGy93swtUvDSQvH10rIP89RYn0Sjr9NxJDTN8PTGl7CGrYXWxA5t9ynYjOhcXISG9icsKRZmyXlH3AitgoHDjiAJhUvoaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730127262; c=relaxed/simple;
-	bh=PQO0UD0eqxVMSC1iZPiGCbp7bMrjvVlRR2aXY5tIyGM=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=fbqXzJepgd1tsRFlyCVheDG2vx9kU0BPoN5vTp7putrhW+LO5bGIDjgB6DKrSec9Kz7DO6lR2/5VeUsTa6cOs6syEv25ssG1GtqP2EgKR1zaLOCkNr6pTz2fp2vWT/9Fl/FYrWYwl9677ZIFDegDOu9kD2gkE9gc4vcxLpUes7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=friedrich.vock@gmx.de header.b=pEF6pON2; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1730127226; x=1730732026; i=friedrich.vock@gmx.de;
-	bh=STUU9owkaaMERJZ2AXTBH+gorsSTFfmO6SNkJBMaIzo=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:From:Subject:To:
-	 Cc:References:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=pEF6pON2HRo3yZqSsDiSgFwCDYa/cj3JbLuXV2sy+J4HFnRaprrNwtQAkcRk3DHC
-	 hpdVQ5dJnqDlYuoPB2Ns0ZiGWK8sbmhBY71IfCyTD35t8RhgoyrU1FjyEadQabv8f
-	 3B1JcFiKsNQlQtF2qLjZQBt/DSHNfsNSR5orhKCKEtoRUEu3IMBGJ2Y60shPhWLJ3
-	 f6PUolsKNi6kkxTcHCIBkj4V4g1gZ3yws1RZSZGGY5rrMve/rKBm4joQFglXMQIfn
-	 25Z5obZus/TabDocDgvYR/Sl0QbrKLHcqfz9hu0Bokg7wUKnee+pauW6o8yZAyN1g
-	 u48bkkPdAYIWwyfADQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.0.3] ([109.91.201.165]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mkpap-1tj8uz2EAR-00hiM6; Mon, 28
- Oct 2024 15:53:46 +0100
-Message-ID: <91125995-3a33-4971-a581-e6e24ccf0b47@gmx.de>
-Date: Mon, 28 Oct 2024 15:53:43 +0100
+	s=arc-20240116; t=1730149509; c=relaxed/simple;
+	bh=/eqOJMR5/kRv1PZUjhCMyPYy8GBp0CAd6+vdfLRQbdI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Gkz1kV8NsMaJvfL14ryPE/WajsY/caB1/WnagiiT1D7tb6sFt0i0iTNnivSu3gc4FBkGxfpSGsGbGrWVYQyOIC0x2Ob6MFq2m5129THHADSzKcG+UoIabHi0136XMhKk4GKHZ5BSIXFE4pC4Cd9BATdXmfrpwzceX6hdKj9DL6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=auQDsa9M; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-6ea051d04caso12213177b3.0;
+        Mon, 28 Oct 2024 14:05:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730149506; x=1730754306; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aLEBUO3zgTSFGN59d665N/08QPwfc0hewb2QT9/bCXo=;
+        b=auQDsa9MSurdqhXqznEynN05nQULs+sEUrDUJtpCKqMJcAyDCYdAghDJI36+VRjffh
+         iRhvJfuaUjpeELxtMxY+S1o0gIp9ya5zxCGvMiCmdb+9fKDg3hYRcLo+Xn5FS4dM599P
+         M6YIG+sMnIgDwiDm4C3ci/r18EoaPs/pN664w3OcKrWrOhLWS1hpeTsWJAy2Vw8Rjczz
+         X7ycBRcs9akzzS6CgpobV54lCblm+xy9C8CWBWNTJa+gwD/1DeUFTqpP6YCMXCQBwK5j
+         ugzmOSaUT2IwHeLDAdeBWzKUs0UlvezccU+CZyisHywOWB44PqlZWWBBJn/04UEks5yz
+         wooQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730149506; x=1730754306;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aLEBUO3zgTSFGN59d665N/08QPwfc0hewb2QT9/bCXo=;
+        b=uBVRJmsnYw+wl6S3rCR9Z0LBxqPIOoRi3lJhfL9BNGrY82oW4bNfNdmNslyxLS7n29
+         JkF+QRWaRlVqIkegij8KOmRmrGvKwXjriT7lvCAbBYtRYeAL1rnJwWCJ2yrKDuGuHJDW
+         T61yoIQ3vYegh4OiRXTTH+9YzFQWqSWsG4ZQI99haaZ1WzMBWchLHtBNstQe005Akq5C
+         P5I2RcUUw3wkeeEotizbC3AFRK+rg7jou0i4A2Hx8bDbVmrEQCnR2VqrDG9A9fPvxwo1
+         rKkTZ1HK2Il5HeZ0utjTz4Eg0/2IlgUGff+D3xGZppoc9u7nwzEXnIA6VzD0nBLYp5S0
+         sjFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUTwQjDCeUc5+/q0jqqqGHrS5T5U+UBAcnkLWyYD62h25ex4NpwTEWvjocXFnI7mdZWqKBEyXQNKt6CFi0n@vger.kernel.org, AJvYcCV33y/D5GMiilnqJ7IFB8o100Pe03BEj9wO1s7+diM42+d988SpxdKnYa4FarZMX3J/5gyrrIQmchnQ@vger.kernel.org, AJvYcCWlOYOKC3CnCQXn7qpyFZehC/SNtZrBsKnLKM0jjrFBZPfCdeYKgdEY8hjIqoOWNBsdYX7NLpew@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy52Bw98U5zEF9e18SujQolLmO+/tbaZzoCfT6C54INHge2kfk8
+	yiNBPcixAcshGGhLmRA8oBgNnzEwP9Qw3uSdKfIXwiDiy7Oa4N0N
+X-Google-Smtp-Source: AGHT+IG+IPKm2Fw3hNr6RVtM0QZGyoPz7y6L5l00CFINrofIoAx5v5ae8AlvQ2HENfUdx2ayHL2eZA==
+X-Received: by 2002:a05:690c:6085:b0:6d5:7b2f:60a0 with SMTP id 00721157ae682-6e9d8afb26dmr97249987b3.34.1730149506371;
+        Mon, 28 Oct 2024 14:05:06 -0700 (PDT)
+Received: from localhost (fwdproxy-frc-034.fbsv.net. [2a03:2880:21ff:22::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6e9c6c76a07sm16223747b3.81.2024.10.28.14.05.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Oct 2024 14:05:06 -0700 (PDT)
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+To: hannes@cmpxchg.org
+Cc: nphamcs@gmail.com,
+	shakeel.butt@linux.dev,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	muchun.song@linux.dev,
+	tj@kernel.org,
+	lizefan.x@bytedance.com,
+	mkoutny@suse.com,
+	corbet@lwn.net,
+	lnyng@meta.com,
+	akpm@linux-foundation.org,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: [PATCH v3 1/1] memcg/hugetlb: Adding hugeTLB counters to memcg
+Date: Mon, 28 Oct 2024 14:05:05 -0700
+Message-ID: <20241028210505.1950884-1-joshua.hahnjy@gmail.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Friedrich Vock <friedrich.vock@gmx.de>
-Subject: Re: [PATCH 1/7] kernel/cgroup: Add "dev" memory accounting cgroup
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Tejun Heo <tj@kernel.org>,
- Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: cgroups@vger.kernel.org, linux-mm@kvack.org,
- Maxime Ripard <mripard@kernel.org>
-References: <20241023075302.27194-1-maarten.lankhorst@linux.intel.com>
- <20241023075302.27194-2-maarten.lankhorst@linux.intel.com>
-Content-Language: en-US
-Autocrypt: addr=friedrich.vock@gmx.de; keydata=
- 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
- f7+xmX0X3AMtWz/15Y+7cPO2
-In-Reply-To: <20241023075302.27194-2-maarten.lankhorst@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:pziIyt1R1k7EKHH++g4jENSEZPOXW7R1TbVzy/qL3Zt98EPFb/G
- UC1KNhpaWA6w8z+bwt12+Qk//PMsVk3DIkrgEIY9gaH0vDt1qEoCTPmSTTT1xwLXVYolhlx
- WB0gak4Qrl8MQX9HXG3C1I+irUhwr7JXtRKwWf3CfT4frSacG452+1/izgReGQkW9ml+0CG
- 9crfjeEX9Xj9dRI1NL4lw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:8dbEG3fUhP4=;fxXBKRd5JJFlZZ1+V+ksAOp+vkm
- bENoHSpcoHX3DKO2PGcL8WMXxuVBA9SNCzlWl6wDnW310Fj9G+Rt8oHZFhbFUQ2lLOvCavLyg
- l+FyMM+N7KAMVniya9kXLcX99bljQjpPzdUq17SuhyvNUff6qdc/U1zZKcL4q88WNFOjAomlU
- lJ5cC/hs9p2zwDnkPQuJlTFDI1CwbmIQRot7YkcZuxiCeEv4EKCQyOv/5+NDA3OcCFmvA9L+b
- B/1W8ZRbFCd+/va6Uo5OG0nBG11vn7ZV9IeSu501VEZ/G+/+qr/SAhLP0T8MSh/el5ejgJofq
- yiCZPkAey9jpD25tPNZMVgTuTREO2oxf7Oz3Av35zDvGD4cBlckXjL1to21kKe/+NmjJl7U0l
- ZuvWK9mDyxzYmxuul/AkRNMttQVRSXpq7d7aaCIZ0j5+d3hl4X4yorC2V6E9/VTd8LLvfODXN
- nPsgYB536LSliT7zIW4zR8i1Chhmpl3GgFXMq2pi5LXJngVuxdU/n/A+uQaR1podFqEiLeToe
- tpPuiqZ3V7ysGy9SVHfhfD8+W7ELrkY1FcbNn8MjV37YBDQXclNJbjtuBxnfUAdPFUzQTlchq
- KqWrQdfXlHKELzq431RtkM4i00Vn1LDhWJuSNRsgIY1t8DSVcB1t2Q3kIgyMNvFGGEZO8tCvQ
- Shu8UsyaRN7tModJJHwALmXMS6pTu5VAX+/3QTwZ9wsOQ/gVQOjPgXwLC1KeExVWR4UZnXb1w
- UI2KSA77xLCVAgCx78A5U2G499j8viQz4kyA+cB+94ntczKEdEW4A4dSief9vk+gtQykVLSfL
- 2g2yzKOqlWOq8+VGULRpP8/A==
+Content-Transfer-Encoding: 8bit
 
-On 23.10.24 09:52, Maarten Lankhorst wrote:
-> The initial version was based roughly on the rdma and misc cgroup
-> controllers, with a lot of the accounting code borrowed from rdma.
->
-> The current version is a complete rewrite with page counter; it uses
-> the same min/low/max semantics as the memory cgroup as a result.
->
-> There's a small mismatch as TTM uses u64, and page_counter long pages.
-> In practice it's not a problem. 32-bits systems don't really come with
->> =3D4GB cards and as long as we're consistently wrong with units, it's
-> fine. The device page size may not be in the same units as kernel page
-> size, and each region might also have a different page size (VRAM vs GAR=
-T
-> for example).
->
-> The interface is simple:
-> - populate dev_cgroup_try_charge->regions[..] name and size for each act=
-ive
->    region, set num_regions accordingly.
-> - Call (dev,drmm)_cgroup_register_device()
-> - Use dev_cgroup_try_charge to check if you can allocate a chunk of memo=
-ry,
->    use dev_cgroup__uncharge when freeing it. This may return an error co=
-de,
->    or -EAGAIN when the cgroup limit is reached. In that case a reference
->    to the limiting pool is returned.
-> - The limiting cs can be used as compare function for
->    dev_cgroup_state_evict_valuable.
-> - After having evicted enough, drop reference to limiting cs with
->    dev_cgroup_pool_state_put.
->
-> This API allows you to limit device resources with cgroups.
-> You can see the supported cards in /sys/fs/cgroup/dev.region.capacity
-> You need to echo +dev to cgroup.subtree_control, and then you can
-> partition memory.
->
-> Co-developed-by: Friedrich Vock <friedrich.vock@gmx.de>
-> Signed-off-by: Friedrich Vock <friedrich.vock@gmx.de>
-> Co-developed-by: Maxime Ripard <mripard@kernel.org>
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> ---
->   Documentation/admin-guide/cgroup-v2.rst |  51 ++
->   Documentation/core-api/cgroup.rst       |   9 +
->   Documentation/core-api/index.rst        |   1 +
->   Documentation/gpu/drm-compute.rst       |  54 ++
->   include/linux/cgroup_dev.h              |  91 +++
->   include/linux/cgroup_subsys.h           |   4 +
->   include/linux/page_counter.h            |   2 +-
->   init/Kconfig                            |   7 +
->   kernel/cgroup/Makefile                  |   1 +
->   kernel/cgroup/dev.c                     | 893 ++++++++++++++++++++++++
->   mm/page_counter.c                       |   4 +-
->   11 files changed, 1114 insertions(+), 3 deletions(-)
->   create mode 100644 Documentation/core-api/cgroup.rst
->   create mode 100644 Documentation/gpu/drm-compute.rst
->   create mode 100644 include/linux/cgroup_dev.h
->   create mode 100644 kernel/cgroup/dev.c
->
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/adm=
-in-guide/cgroup-v2.rst
-> index 69af2173555fb..e8fe79244af9c 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -2612,6 +2612,57 @@ RDMA Interface Files
->   	  mlx4_0 hca_handle=3D1 hca_object=3D20
->   	  ocrdma1 hca_handle=3D1 hca_object=3D23
->
-> +DEV
-> +----
-> +
-> +The "dev" controller regulates the distribution and accounting of
-> +device resources, currently only memory regions. Because each memory
-> +region may have its own page size, which does not have to be equal
-> +to the system page size. the units are in bytes.
-> +
-> +DEV Interface Files
-> +~~~~~~~~~~~~~~~~~~~~
-> +
-> +  dev.region.max, dev.region.min, dev.region.low
-> +	A readwrite nested-keyed file that exists for all the cgroups
-> +	except root that describes current configured resource limit
-> +	for a device.
-> +
-> +	Lines are keyed by device name and are not ordered.
-> +	Each line contains space separated resource name and its configured
-> +	limit that can be distributed.
-> +
-> +	The following nested keys are defined.
-> +
-> +	  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +	  *	 	Maximum amount of bytes that allocatable in this region
-> +	  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +	An example for xe follows::
-> +
-> +	  drm/0000:03:00.0 vram0=3D1073741824 stolen=3Dmax
-> +
-> +	The semantics are the same as for the memory cgroup controller, and ar=
-e
-> +	calculated in the same way.
-> +
-> +  dev.region.capacity
-> +	A read-only file that describes maximum region capacity.
-> +	It only exists on the root cgroup. Not all memory can be
-> +	allocated by cgroups, as the kernel reserves some for
-> +	internal use.
-> +
-> +	An example for xe follows::
-> +
-> +	  drm/0000:03:00.0 vram0=3D8514437120 stolen=3D67108864
-> +
-> +  dev.region.current
-> +	A read-only file that describes current resource usage.
-> +	It exists for all the cgroup except root.
-> +
-> +	An example for xe follows::
-> +
-> +	  drm/0000:03:00.0 vram0=3D12550144 stolen=3D8650752
-> +
->   HugeTLB
->   -------
->
-> diff --git a/Documentation/core-api/cgroup.rst b/Documentation/core-api/=
-cgroup.rst
-> new file mode 100644
-> index 0000000000000..475b32255bd68
-> --- /dev/null
-> +++ b/Documentation/core-api/cgroup.rst
-> @@ -0,0 +1,9 @@
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +Cgroup Kernel APIs
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +Device Cgroup API (devcg)
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-> +.. kernel-doc:: kernel/cgroup/dev.c
-> +   :export:
-> +
-> diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/i=
-ndex.rst
-> index 6a875743dd4b7..dbd6c4f9a6313 100644
-> --- a/Documentation/core-api/index.rst
-> +++ b/Documentation/core-api/index.rst
-> @@ -108,6 +108,7 @@ more memory-management documentation in Documentatio=
-n/mm/index.rst.
->      dma-isa-lpc
->      swiotlb
->      mm-api
-> +   cgroup
->      genalloc
->      pin_user_pages
->      boot-time-mm
-> diff --git a/Documentation/gpu/drm-compute.rst b/Documentation/gpu/drm-c=
-ompute.rst
-> new file mode 100644
-> index 0000000000000..116270976ef7a
-> --- /dev/null
-> +++ b/Documentation/gpu/drm-compute.rst
-> @@ -0,0 +1,54 @@
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +Long running workloads and compute
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +Long running workloads (compute) are workloads that will not complete i=
-n 10
-> +seconds. (The time let the user wait before he reaches for the power bu=
-tton).
-> +This means that other techniques need to be used to manage those worklo=
-ads,
-> +that cannot use fences.
-> +
-> +Some hardware may schedule compute jobs, and have no way to pre-empt th=
-em, or
-> +have their memory swapped out from them. Or they simply want their work=
-load
-> +not to be preempted or swapped out at all.
-> +
-> +This means that it differs from what is described in driver-api/dma-buf=
-.rst.
-> +
-> +As with normal compute jobs, dma-fence may not be used at all. In this =
-case,
-> +not even to force preemption. The driver with is simply forced to unmap=
- a BO
-> +from the long compute job's address space on unbind immediately, not ev=
-en
-> +waiting for the workload to complete. Effectively this terminates the w=
-orkload
-> +when there is no hardware support to recover.
-> +
-> +Since this is undesirable, there need to be mitigations to prevent a wo=
-rkload
-> +from being terminated. There are several possible approach, all with th=
-eir
-> +advantages and drawbacks.
-> +
-> +The first approach you will likely try is to pin all buffers used by co=
-mpute.
-> +This guarantees that the job will run uninterrupted, but also allows a =
-very
-> +denial of service attack by pinning as much memory as possible, hogging=
- the
-> +all GPU memory, and possibly a huge chunk of CPU memory.
-> +
-> +A second approach that will work slightly better on its own is adding a=
-n option
-> +not to evict when creating a new job (any kind). If all of userspace op=
-ts in
-> +to this flag, it would prevent cooperating userspace from forced termin=
-ating
-> +older compute jobs to start a new one.
-> +
-> +If job preemption and recoverable pagefaults are not available, those a=
-re the
-> +only approaches possible. So even with those, you want a separate way o=
-f
-> +controlling resources. The standard kernel way of doing so is cgroups.
-> +
-> +This creates a third option, using cgroups to prevent eviction. Both GP=
-U and
-> +driver-allocated CPU memory would be accounted to the correct cgroup, a=
-nd
-> +eviction would be made cgroup aware. This allows the GPU to be partitio=
-ned
-> +into cgroups, that will allow jobs to run next to each other without
-> +interference.
-> +
-> +The interface to the cgroup would be similar to the current CPU memory
-> +interface, with similar semantics for min/low/high/max, if eviction can
-> +be made cgroup aware. For now only max is implemented.
-> +
-> +What should be noted is that each memory region (tiled memory for examp=
-le)
-> +should have its own accounting, using $card key0 =3D value0 key1 =3D va=
-lue1.
-> +
-> +The key is set to the regionid set by the driver, for example "tile0".
-> +For the value of $card, we use drmGetUnique().
-> diff --git a/include/linux/cgroup_dev.h b/include/linux/cgroup_dev.h
-> new file mode 100644
-> index 0000000000000..c6311d1d3ce48
-> --- /dev/null
-> +++ b/include/linux/cgroup_dev.h
-> @@ -0,0 +1,91 @@
-> +/* SPDX-License-Identifier: MIT */
-> +/*
-> + * Copyright =C2=A9 2023 Intel Corporation
-> + */
-> +
-> +#ifndef _CGROUP_DEV_H
-> +#define _CGROUP_DEV_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/llist.h>
-> +
-> +struct dev_cgroup_pool_state;
-> +
-> +/*
-> + * Use 8 as max, because of N^2 lookup when setting things, can be bump=
-ed if needed
-> + * Identical to TTM_NUM_MEM_TYPES to allow simplifying that code.
-> + */
-> +#define DEVICE_CGROUP_MAX_REGIONS 8
-> +
-> +/* Public definition of cgroup device, should not be modified after _re=
-gister() */
-> +struct dev_cgroup_device {
-> +	struct {
-> +		u64 size;
-> +		const char *name;
-> +	} regions[DEVICE_CGROUP_MAX_REGIONS];
-> +
-> +	int num_regions;
-> +
-> +	/* used by cgroups, do not use */
-> +	void *priv;
-> +};
-> +
-> +#if IS_ENABLED(CONFIG_CGROUP_DEV)
-> +int dev_cgroup_register_device(struct dev_cgroup_device *cgdev,
-> +			       const char *name);
-> +void dev_cgroup_unregister_device(struct dev_cgroup_device *cgdev);
-> +int dev_cgroup_try_charge(struct dev_cgroup_device *cgdev,
-> +			  u32 index, u64 size,
-> +			  struct dev_cgroup_pool_state **ret_pool,
-> +			  struct dev_cgroup_pool_state **ret_limit_pool);
-> +void dev_cgroup_uncharge(struct dev_cgroup_pool_state *pool,
-> +			 u32 index, u64 size);
-> +bool dev_cgroup_state_evict_valuable(struct dev_cgroup_device *dev, int=
- index,
-> +				     struct dev_cgroup_pool_state *limit_pool,
-> +				     struct dev_cgroup_pool_state *test_pool,
-> +				     bool ignore_low, bool *ret_hit_low);
-> +
-> +void dev_cgroup_pool_state_put(struct dev_cgroup_pool_state *pool);
-> +#else
-> +static inline int
-> +dev_cgroup_register_device(struct dev_cgroup_device *cgdev,
-> +			   const char *name)
-> +{
-> +	return 0;
-> +}
-> +
-> +static inline void dev_cgroup_unregister_device(struct dev_cgroup_devic=
-e *cgdev)
-> +{
-> +}
-> +
-> +static int int dev_cgroup_try_charge(struct dev_cgroup_device *cgdev,
-> +				     u32 index, u64 size,
-> +				     struct dev_cgroup_pool_state **ret_pool,
-> +				     struct dev_cgroup_pool_state **ret_limit_pool);
-> +{
-> +	*ret_pool =3D NULL;
-> +
-> +	if (ret_limit_pool)
-> +		*ret_limit_pool =3D NULL;
-> +
-> +	return 0;
-> +}
-> +
-> +static inline void dev_cgroup_uncharge(struct dev_cgroup_pool_state *po=
-ol,
-> +				       u32 index, u64 size)
-> +{ }
-> +
-> +static inline
-> +bool dev_cgroup_state_evict_valuable(struct dev_cgroup_device *dev, int=
- index,
-> +				     struct dev_cgroup_pool_state *limit_pool,
-> +				     struct dev_cgroup_pool_state *test_pool,
-> +				     bool ignore_low, bool *ret_hit_low)
-> +{
-> +	return true;
-> +}
-> +
-> +static inline void dev_cgroup_pool_state_put(struct dev_cgroup_pool_sta=
-te *pool)
-> +{ }
-> +
-> +#endif
-> +#endif	/* _CGROUP_DEV_H */
-> diff --git a/include/linux/cgroup_subsys.h b/include/linux/cgroup_subsys=
-.h
-> index 4452354872307..898340cfe5843 100644
-> --- a/include/linux/cgroup_subsys.h
-> +++ b/include/linux/cgroup_subsys.h
-> @@ -65,6 +65,10 @@ SUBSYS(rdma)
->   SUBSYS(misc)
->   #endif
->
-> +#if IS_ENABLED(CONFIG_CGROUP_DEV)
-> +SUBSYS(dev)
-> +#endif
-> +
->   /*
->    * The following subsystems are not supported on the default hierarchy=
-.
->    */
-> diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
-> index 79dbd8bc35a72..d75376a1694ee 100644
-> --- a/include/linux/page_counter.h
-> +++ b/include/linux/page_counter.h
-> @@ -96,7 +96,7 @@ static inline void page_counter_reset_watermark(struct=
- page_counter *counter)
->   	counter->watermark =3D usage;
->   }
->
-> -#ifdef CONFIG_MEMCG
-> +#if IS_ENABLED(CONFIG_MEMCG) || IS_ENABLED(CONFIG_CGROUP_DEVICE)
->   void page_counter_calculate_protection(struct page_counter *root,
->   				       struct page_counter *counter,
->   				       bool recursive_protection);
-> diff --git a/init/Kconfig b/init/Kconfig
-> index 530a382ee0feb..2da595facd97f 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -1123,6 +1123,13 @@ config CGROUP_RDMA
->   	  Attaching processes with active RDMA resources to the cgroup
->   	  hierarchy is allowed even if can cross the hierarchy's limit.
->
-> +config CGROUP_DEV
-> +	bool "Device controller"
-> +	help
-> +	  Provides the device subsystem controller.
-> +
-> +	  ...
-> +
->   config CGROUP_FREEZER
->   	bool "Freezer controller"
->   	help
-> diff --git a/kernel/cgroup/Makefile b/kernel/cgroup/Makefile
-> index a5c9359d516f8..441d346fdc51f 100644
-> --- a/kernel/cgroup/Makefile
-> +++ b/kernel/cgroup/Makefile
-> @@ -7,4 +7,5 @@ obj-$(CONFIG_CGROUP_RDMA) +=3D rdma.o
->   obj-$(CONFIG_CPUSETS) +=3D cpuset.o
->   obj-$(CONFIG_CPUSETS_V1) +=3D cpuset-v1.o
->   obj-$(CONFIG_CGROUP_MISC) +=3D misc.o
-> +obj-$(CONFIG_CGROUP_DEV) +=3D dev.o
->   obj-$(CONFIG_CGROUP_DEBUG) +=3D debug.o
-> diff --git a/kernel/cgroup/dev.c b/kernel/cgroup/dev.c
-> new file mode 100644
-> index 0000000000000..e422ccbfbc444
-> --- /dev/null
-> +++ b/kernel/cgroup/dev.c
-> @@ -0,0 +1,893 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright 2023-2024 Intel Corporation (Maarten Lankhorst <dev@lankho=
-rst.se>)
-> + * Copyright 2024 Red Hat (Maxime Ripard <mripard@kernel.org>)
-> + * Partially based on the rdma and misc controllers, which bear the fol=
-lowing copyrights:
-> + *
-> + * Copyright 2020 Google LLC
-> + * Copyright (C) 2016 Parav Pandit <pandit.parav@gmail.com>
-> + */
-> +
-> +#include <linux/cgroup.h>
-> +#include <linux/cgroup_dev.h>
-> +#include <linux/list.h>
-> +#include <linux/mutex.h>
-> +#include <linux/page_counter.h>
-> +#include <linux/parser.h>
-> +#include <linux/slab.h>
-> +
-> +struct devcg_device {
-> +	/**
-> +	 * @ref: References keeping the device alive.
-> +	 * Keeps the device reference alive after a succesful RCU lookup.
-> +	 */
-> +	struct kref ref;
-> +
-> +	/** @rcu: RCU head for freeing */
-> +	struct rcu_head rcu;
-> +
-> +	/**
-> +	 * @dev_node: Linked into &devcg_devices list.
-> +	 * Protected by RCU and global spinlock.
-> +	 */
-> +	struct list_head dev_node;
-> +
-> +	/**
-> +	 * @pools: List of pools linked to this device.
-> +	 * Protected by global spinlock only
-> +	 */
-> +	struct list_head pools;
-> +
-> +	/**
-> +	 * @base: Copy of the struct passed on register.
-> +	 * A copy is made to prevent lifetime issues. devcg_device may
-> +	 * be kept alive when changing cgroups values concurrently through
-> +	 * rcu lookups.
-> +	 */
-> +	struct dev_cgroup_device base;
-> +
-> +	/** @name: Name describing the node, set by dev_cgroup_register_device=
- */
-> +	const char *name;
-> +
-> +	/**
-> +	 * @unregistered: Whether the device is unregistered by its caller.
-> +	 * No new pools should be added to the device afterwards.
-> +	 */
-> +	bool unregistered;
-> +};
-> +
-> +struct devcg_state {
-> +	struct cgroup_subsys_state css;
-> +
-> +	struct list_head pools;
-> +};
-> +
-> +struct dev_cgroup_pool_state {
-> +	struct devcg_device *device;
-> +	struct devcg_state *cs;
-> +
-> +	/* css node, RCU protected against device teardown */
-> +	struct list_head	css_node;
-> +
-> +	/* dev node, no RCU protection required */
-> +	struct list_head	dev_node;
-> +
-> +	int num_res, inited;
-> +	struct rcu_head rcu;
-> +
-> +	struct devcg_pool_res {
-> +		struct page_counter cnt;
-> +	} resources[];
-> +};
-> +
-> +/*
-> + * 3 operations require locking protection:
-> + * - Registering and unregistering device to/from list, requires global=
- lock.
-> + * - Adding a dev_cgroup_pool_state to a CSS, removing when CSS is free=
-d.
-> + * - Adding a dev_cgroup_pool_state to a device list.
-> + *
-> + * Since for the most common operations RCU provides enough protection,=
- I
-> + * do not think more granular locking makes sense. Most protection is o=
-ffered
-> + * by RCU and the lockless operating page_counter.
-> + */
-> +static DEFINE_SPINLOCK(devcg_lock);
-> +static LIST_HEAD(devcg_devices);
-> +
-> +static inline struct devcg_state *
-> +css_to_devcs(struct cgroup_subsys_state *css)
-> +{
-> +	return container_of(css, struct devcg_state, css);
-> +}
-> +
-> +static inline struct devcg_state *get_current_devcs(void)
-> +{
-> +	return css_to_devcs(task_get_css(current, dev_cgrp_id));
-> +}
-> +
-> +static struct devcg_state *parent_devcs(struct devcg_state *cg)
-> +{
-> +	return cg->css.parent ? css_to_devcs(cg->css.parent) : NULL;
-> +}
-> +
-> +static void free_cg_pool(struct dev_cgroup_pool_state *pool)
-> +{
-> +	list_del(&pool->dev_node);
-> +	kfree(pool);
-> +}
-> +
-> +static void
-> +set_resource_min(struct dev_cgroup_pool_state *pool, int i, u64 val)
-> +{
-> +	page_counter_set_min(&pool->resources[i].cnt, val);
-> +}
-> +
-> +static void
-> +set_resource_low(struct dev_cgroup_pool_state *pool, int i, u64 val)
-> +{
-> +	page_counter_set_low(&pool->resources[i].cnt, val);
-> +}
-> +
-> +static void
-> +set_resource_max(struct dev_cgroup_pool_state *pool, int i, u64 val)
-> +{
-> +	page_counter_set_max(&pool->resources[i].cnt, val);
-> +}
-> +
-> +static u64 get_resource_low(struct dev_cgroup_pool_state *pool, int idx=
-)
-> +{
-> +	return pool ? READ_ONCE(pool->resources[idx].cnt.low) : 0;
-> +}
-> +
-> +static u64 get_resource_min(struct dev_cgroup_pool_state *pool, int idx=
-)
-> +{
-> +	return pool ? READ_ONCE(pool->resources[idx].cnt.min) : 0;
-> +}
-> +
-> +static u64 get_resource_max(struct dev_cgroup_pool_state *pool, int idx=
-)
-> +{
-> +	return pool ? READ_ONCE(pool->resources[idx].cnt.max) : PAGE_COUNTER_M=
-AX;
-> +}
-> +
-> +static u64 get_resource_current(struct dev_cgroup_pool_state *pool, int=
- idx)
-> +{
-> +	return pool ? page_counter_read(&pool->resources[idx].cnt) : 0;
-> +}
-> +
-> +static void reset_all_resource_limits(struct dev_cgroup_pool_state *rpo=
-ol)
-> +{
-> +	int i;
-> +
-> +	for (i =3D 0; i < rpool->num_res; i++) {
-> +		set_resource_min(rpool, i, 0);
-> +		set_resource_low(rpool, i, 0);
-> +		set_resource_max(rpool, i, PAGE_COUNTER_MAX);
-> +	}
-> +}
-> +
-> +static void devcs_offline(struct cgroup_subsys_state *css)
-> +{
-> +	struct devcg_state *devcs =3D css_to_devcs(css);
-> +	struct dev_cgroup_pool_state *pool;
-> +
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(pool, &devcs->pools, css_node)
-> +		reset_all_resource_limits(pool);
-> +	rcu_read_unlock();
-> +}
-> +
-> +static void devcs_free(struct cgroup_subsys_state *css)
-> +{
-> +	struct devcg_state *devcs =3D css_to_devcs(css);
-> +	struct dev_cgroup_pool_state *pool, *next;
-> +
-> +	spin_lock(&devcg_lock);
-> +	list_for_each_entry_safe(pool, next, &devcs->pools, css_node) {
-> +		/*
-> +		 *The pool is dead and all references are 0,
-> +		 * no need for RCU protection with list_del_rcu or freeing.
-> +		 */
-> +		list_del(&pool->css_node);
-> +		free_cg_pool(pool);
-> +	}
-> +	spin_unlock(&devcg_lock);
-> +
-> +	kfree(devcs);
-> +}
-> +
-> +static struct cgroup_subsys_state *
-> +devcs_alloc(struct cgroup_subsys_state *parent_css)
-> +{
-> +	struct devcg_state *devcs =3D kzalloc(sizeof(*devcs), GFP_KERNEL);
-> +	if (!devcs)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	INIT_LIST_HEAD(&devcs->pools);
-> +	return &devcs->css;
-> +}
-> +
-> +static struct dev_cgroup_pool_state *
-> +find_cg_pool_locked(struct devcg_state *devcs, struct devcg_device *dev=
-)
-> +{
-> +	struct dev_cgroup_pool_state *pool;
-> +
-> +	list_for_each_entry_rcu(pool, &devcs->pools, css_node, spin_is_locked(=
-&devcg_lock))
-> +		if (pool->device =3D=3D dev)
-> +			return pool;
-> +
-> +	return NULL;
-> +}
-> +
-> +static struct dev_cgroup_pool_state *pool_parent(struct dev_cgroup_pool=
-_state *pool)
-> +{
-> +	if (!pool->resources[0].cnt.parent)
-> +		return NULL;
-> +
-> +	return container_of(pool->resources[0].cnt.parent, typeof(*pool), reso=
-urces[0].cnt);
-> +}
-> +
-> +/**
-> + * dev_cgroup_state_evict_valuable() - Check if we should evict from te=
-st_pool
-> + * @dev: &dev_cgroup_device
-> + * @index: The index number of the region being tested.
-> + * @limit_pool: The pool for which we hit limits
-> + * @test_pool: The pool for which to test
-> + * @ignore_low: Whether we have to respect low watermarks.
-> + * @ret_hit_low: Pointer to whether it makes sense to consider low wate=
-rmark.
-> + *
-> + * This function returns true if we can evict from @test_pool, false if=
- not.
-> + * When returning false and @ignore_low is false, @ret_hit_low may
-> + * be set to true to indicate this function can be retried with @ignore=
-_low
-> + * set to true.
-> + *
-> + * Return: bool
-> + */
-> +bool dev_cgroup_state_evict_valuable(struct dev_cgroup_device *dev, int=
- index,
-> +				     struct dev_cgroup_pool_state *limit_pool,
-> +				     struct dev_cgroup_pool_state *test_pool,
-> +				     bool ignore_low, bool *ret_hit_low)
-> +{
-> +	struct dev_cgroup_pool_state *pool =3D test_pool;
-> +	struct page_counter *climit, *ctest;
-> +	u64 used, min, low;
-> +
-> +	/* Can always evict from current pool, despite limits */
-> +	if (limit_pool =3D=3D test_pool)
-> +		return true;
-> +
-> +	if (limit_pool) {
-> +		if (!parent_devcs(limit_pool->cs))
-> +			return true;
-> +
-> +		for (pool =3D test_pool; pool && limit_pool !=3D pool; pool =3D pool_=
-parent(pool))
-> +			{}
-> +
-> +		if (!pool)
-> +			return false;
-> +	} else {
-> +		/*
-> +		 * If there is no cgroup limiting memory usage, use the root
-> +		 * cgroup instead for limit calculations.
-> +		 */
-> +		for (limit_pool =3D test_pool; pool_parent(limit_pool); limit_pool =
-=3D pool_parent(limit_pool))
-> +			{}
-> +	}
-> +
-> +	climit =3D &limit_pool->resources[index].cnt;
-> +	ctest =3D &test_pool->resources[index].cnt;
-> +
-> +	page_counter_calculate_protection(climit, ctest, true);
+This patch introduces a new counter to memory.stat that tracks hugeTLB
+usage, only if hugeTLB accounting is done to memory.current. This
+feature is enabled the same way hugeTLB accounting is enabled, via
+the memory_hugetlb_accounting mount flag for cgroupsv2.
 
-I realized we can't do this. As the documentation for
-page_counter_calculate_protection states:
+1. Why is this patch necessary?
+Currently, memcg hugeTLB accounting is an opt-in feature [1] that adds
+hugeTLB usage to memory.current. However, the metric is not reported in
+memory.stat. Given that users often interpret memory.stat as a breakdown
+of the value reported in memory.current, the disparity between the two
+reports can be confusing. This patch solves this problem by including
+the metric in memory.stat as well, but only if it is also reported in
+memory.current (it would also be confusing if the value was reported in
+memory.stat, but not in memory.current)
 
-> WARNING: This function is not stateless! It can only be used as part
->          of a top-down tree iteration, not for isolated queries.
+Aside from the consistency between the two files, we also see benefits
+in observability. Userspace might be interested in the hugeTLB footprint
+of cgroups for many reasons. For instance, system admins might want to
+verify that hugeTLB usage is distributed as expected across tasks: i.e.
+memory-intensive tasks are using more hugeTLB pages than tasks that
+don't consume a lot of memory, or are seen to fault frequently. Note that
+this is separate from wanting to inspect the distribution for limiting
+purposes (in which case, hugeTLB controller makes more sense).
 
-I authored a fix with [1], though I'm not super happy with having to
-iterate through the entire (sub-)hierarchy like this every time we
-consider eviction. If anyone has a better idea, feel free to propose it.
+2. We already have a hugeTLB controller. Why not use that?
+It is true that hugeTLB tracks the exact value that we want. In fact, by
+enabling the hugeTLB controller, we get all of the observability
+benefits that I mentioned above, and users can check the total hugeTLB
+usage, verify if it is distributed as expected, etc.
 
-This branch also contains another idea [2][3] I've been playing around
-with. Essentially, what I'm trying to solve is TTM preferring to use
-system memory over evicting VRAM, even if the new VRAM allocation would
-be protected from eviction by low/min memory protection. In my testing,
-it leads to a better experience to try evicting unprotected allocations
-immediately in that case. I'm fine with this being follow-up work, but
-given that the patchset is still in a rather early stage I thought I'd
-pitch this now.
+With this said, there are 2 problems:
+(a) They are still not reported in memory.stat, which means the
+    disparity between the memcg reports are still there.
+(b) We cannot reasonably expect users to enable the hugeTLB controller
+    just for the sake of hugeTLB usage reporting, especially since
+    they don't have any use for hugeTLB usage enforcing [2].
 
-Thanks,
-Friedrich
+[1] https://lore.kernel.org/all/20231006184629.155543-1-nphamcs@gmail.com/
+[2] Of course, we can't make a new patch for every feature that can be
+    duplicated. However, since the existing solution of enabling the
+    hugeTLB controller is an imperfect solution that still leaves a
+    discrepancy between memory.stat and memory.curent, I think that it
+    is reasonable to isolate the feature in this case.
+ 
+Suggested-by: Nhat Pham <nphamcs@gmail.com>
+Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
+Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
 
-[1] https://gitlab.freedesktop.org/pixelcluster/linux/-/commit/1adc35adc2a=
-7d05260275d69f139450c8af5dc3b
-[2] https://gitlab.freedesktop.org/pixelcluster/linux/-/commit/3d2cdd25d62=
-c539d80055d615bd0912e5907f639
-[3] https://gitlab.freedesktop.org/pixelcluster/linux/-/commit/54446cc696f=
-b8b2cab27b3dcc992a6738f5392ad
+---
+Changelog
+v3:
+  * Removed check for whether CGRP_ROOT_HUGETLB_ACCOUNTING is on, since
+    this check is already handled by lruvec_stat_mod (and doing the
+    check in hugetlb.c actually breaks the build if MEMCG is not
+    enabled.
+  * Because there is now only one check for the flags, I've opted to
+    do all of the cleanup in a separate patch series.
+  * Added hugetlb information in cgroup-v2.rst
+  * Added Suggested-by: Shakeel Butt
+v2:
+  * Enables the feature only if memcg accounts for hugeTLB usage
+  * Moves the counter from memcg_stat_item to node_stat_item
+  * Expands on motivation & justification in commitlog
+  * Added Suggested-by: Nhat Pham
+
+ Documentation/admin-guide/cgroup-v2.rst |  5 +++++
+ include/linux/mmzone.h                  |  3 +++
+ mm/hugetlb.c                            |  2 ++
+ mm/memcontrol.c                         | 11 +++++++++++
+ mm/vmstat.c                             |  3 +++
+ 5 files changed, 24 insertions(+)
+
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 69af2173555f..bd7e81c2aa2b 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1646,6 +1646,11 @@ The following nested keys are defined.
+ 	  pgdemote_khugepaged
+ 		Number of pages demoted by khugepaged.
+ 
++	  hugetlb
++		Amount of memory used by hugetlb pages. This metric only shows
++		up if hugetlb usage is accounted for in memory.current (i.e.
++		cgroup is mounted with the memory_hugetlb_accounting option).
++
+   memory.numa_stat
+ 	A read-only nested-keyed file which exists on non-root cgroups.
+ 
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 17506e4a2835..972795ae5946 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -220,6 +220,9 @@ enum node_stat_item {
+ 	PGDEMOTE_KSWAPD,
+ 	PGDEMOTE_DIRECT,
+ 	PGDEMOTE_KHUGEPAGED,
++#ifdef CONFIG_HUGETLB_PAGE
++	NR_HUGETLB,
++#endif
+ 	NR_VM_NODE_STAT_ITEMS
+ };
+ 
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 190fa05635f4..fbb10e52d7ea 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1925,6 +1925,7 @@ void free_huge_folio(struct folio *folio)
+ 				     pages_per_huge_page(h), folio);
+ 	hugetlb_cgroup_uncharge_folio_rsvd(hstate_index(h),
+ 					  pages_per_huge_page(h), folio);
++	lruvec_stat_mod_folio(folio, NR_HUGETLB, -pages_per_huge_page(h));
+ 	mem_cgroup_uncharge(folio);
+ 	if (restore_reserve)
+ 		h->resv_huge_pages++;
+@@ -3093,6 +3094,7 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
+ 
+ 	if (!memcg_charge_ret)
+ 		mem_cgroup_commit_charge(folio, memcg);
++	lruvec_stat_mod_folio(folio, NR_HUGETLB, pages_per_huge_page(h));
+ 	mem_cgroup_put(memcg);
+ 
+ 	return folio;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 7845c64a2c57..5444d0e7bb64 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -310,6 +310,9 @@ static const unsigned int memcg_node_stat_items[] = {
+ 	PGDEMOTE_KSWAPD,
+ 	PGDEMOTE_DIRECT,
+ 	PGDEMOTE_KHUGEPAGED,
++#ifdef CONFIG_HUGETLB_PAGE
++	NR_HUGETLB,
++#endif
+ };
+ 
+ static const unsigned int memcg_stat_items[] = {
+@@ -1346,6 +1349,9 @@ static const struct memory_stat memory_stats[] = {
+ 	{ "unevictable",		NR_UNEVICTABLE			},
+ 	{ "slab_reclaimable",		NR_SLAB_RECLAIMABLE_B		},
+ 	{ "slab_unreclaimable",		NR_SLAB_UNRECLAIMABLE_B		},
++#ifdef CONFIG_HUGETLB_PAGE
++	{ "hugetlb",			NR_HUGETLB			},
++#endif
+ 
+ 	/* The memory events */
+ 	{ "workingset_refault_anon",	WORKINGSET_REFAULT_ANON		},
+@@ -1441,6 +1447,11 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+ 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
+ 		u64 size;
+ 
++#ifdef CONFIG_HUGETLB_PAGE
++		if (unlikely(memory_stats[i].idx == NR_HUGETLB) &&
++		    !(cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING))
++			continue;
++#endif
+ 		size = memcg_page_state_output(memcg, memory_stats[i].idx);
+ 		seq_buf_printf(s, "%s %llu\n", memory_stats[i].name, size);
+ 
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index b5a4cea423e1..871566b04b79 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1273,6 +1273,9 @@ const char * const vmstat_text[] = {
+ 	"pgdemote_kswapd",
+ 	"pgdemote_direct",
+ 	"pgdemote_khugepaged",
++#ifdef CONFIG_HUGETLB_PAGE
++	"nr_hugetlb",
++#endif
+ 	/* system-wide enum vm_stat_item counters */
+ 	"nr_dirty_threshold",
+ 	"nr_dirty_background_threshold",
+-- 
+2.43.5
+
 
