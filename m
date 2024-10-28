@@ -1,119 +1,105 @@
-Return-Path: <cgroups+bounces-5292-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5293-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 940059B3032
-	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 13:28:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF3A39B3238
+	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 14:54:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA391B24797
-	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 12:28:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF6071C219FD
+	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 13:54:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD1491D9A52;
-	Mon, 28 Oct 2024 12:27:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6F161DC18F;
+	Mon, 28 Oct 2024 13:53:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YOSHXXAD"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="dk9vHumB"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 734771D934B;
-	Mon, 28 Oct 2024 12:27:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27EC11D88B1
+	for <cgroups@vger.kernel.org>; Mon, 28 Oct 2024 13:53:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730118453; cv=none; b=YVZqgiqRHxrfFRmIsXsAxSosTAHjjkF7ryAeH8qjtR90GAp3Ot+UXQ+Co1a7zYDy/PKiXBkW3r/mW11PNbOpjq/RPucVTm8mWklY0yn9/2O5FvSPYW48J7d0t7ucIzLVGiYOCP+F5aLRP+Lcq0MY4vFw/4GK13WMG97xvU7CC38=
+	t=1730123634; cv=none; b=QcYkIOaV66ZCvPEl9gHlYsXbAjGXWYaIiyyf/6LCWlri9VhcylWT/LVZKHUmXOi6UersF4myx1/tdtlY5IXnAuVwFjda61NALETuImjjMZJiFiEeptDJMrpqBz8hPGXnmbS2ZF8Q76rp50P9DrNcr3WiSBSGL7Of8/eMyl60oZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730118453; c=relaxed/simple;
-	bh=dBjKbQ72OiI43nKphYScHzSn1tB9+kybe2uOdPkKmfk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nSBmDG+2HdQmwQ2bppGfWOST9Iqy9hWtahu58E+ehTOUGHT3tRICJ4bWXOKz07enHV2oaqZoTfjG+E9hEPXZIOaAhOOVMGc0GZd9EN1jdRWDnNtD+8PSpUSEvRx+oyNPb4dkJs/udpzrQik0BiMoKskeXmidm9FTxA254zNv6Bg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YOSHXXAD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F37D2C4CEC3;
-	Mon, 28 Oct 2024 12:27:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730118452;
-	bh=dBjKbQ72OiI43nKphYScHzSn1tB9+kybe2uOdPkKmfk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YOSHXXADjGIBHyQ2Iftg3bbghvOAJhq4EiqJMrhlWca7rTdICjxerGGqjybHz8Qbc
-	 1qq4wiHrRsAx7igB0qYo6Fqnnd4v2M9lfSoJiAEGsptqUmxJ3sPaIMsxPQFCXqFOFL
-	 G+8gnI756fFPrU5ye1iVoLnZitTPARuyPmAm5Zr5zW9eEIWd87YAkF5UWbkl8dzTD2
-	 Uyg1eVjUX/UcLLTT43Tpkx9dTMBwIE6R8L9X9vh1BDbi0Yg/K36rlQ2o1QGqS89eCT
-	 w666gTjX8lDiJQgsvbQmQAEqb5SeAZ7EXAbq3j/7n7enXbhgYmzw0IOiEXpI0DWbHu
-	 erUXacxTtG8bQ==
-From: Christian Brauner <brauner@kernel.org>
-To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	cgroups@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org,
-	mcgrof@kernel.org,
-	gost.dev@samsung.com,
-	linux-doc@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	Pankaj Raghav <p.raghav@samsung.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Chao Yu <chao@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	willy@infradead.org,
-	Josef Bacik <josef@toxicpanda.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Tejun Heo <tj@kernel.org>,
-	akpm@linux-foundation.org,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	Chris Mason <clm@fb.com>,
-	David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH] fs/writeback: convert wbc_account_cgroup_owner to take a folio
-Date: Mon, 28 Oct 2024 13:27:12 +0100
-Message-ID: <20241028-jazzclub-kulant-81ce918f186d@brauner>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240926140121.203821-1-kernel@pankajraghav.com>
-References: <20240926140121.203821-1-kernel@pankajraghav.com>
+	s=arc-20240116; t=1730123634; c=relaxed/simple;
+	bh=L5IFAGdxLKk4RP5WLTAZCi65fPYxfWuR27gxz1ekNPo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=opt7Px9UmfChNi/9pPTkCe3ldmBy/BBWJoky5NxmkcU/oUWJEjjlGKTpYOkwIV0dKyF+MSbnQ86vMmvUR+V8EQnLL5ekicse/Ow3IYP6SvI5qoVgSiQjHSMKyUFjo199zcTa0RKq2wMQ3wnQp4n4ClLFt1w6VE+46KesPBGwxNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=dk9vHumB; arc=none smtp.client-ip=209.85.222.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-7b152a23e9aso338026685a.0
+        for <cgroups@vger.kernel.org>; Mon, 28 Oct 2024 06:53:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1730123631; x=1730728431; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UrmsujUgQJ5BlGaZvf5rEXiek96RGTOcx92GlV6YM4Q=;
+        b=dk9vHumBp4Ou8nakV4bmZm2GVSphMZEAsG/abqDET5MBRnNg4LnVTWtih80bMJwMOz
+         Ir59+SLDTczbS3cwJyjQXlq5NNq8DNSeDsDE9bGSaVVHD4EhBWMJFucJW8ZAJn47OW5Q
+         vHQNyNCn4xLPCHIkX7hAxvY6T4UDIC+u7JWKhdhn8WW6lFANLoAQdIAuNGYd51BGHgCZ
+         d+ewLqcIiGb9ctsMvs4WAygBLbaReRR34AP5qIyeg7m6xn9JvFtGOng9KexL/gOyehdz
+         G6qnvFcsjIRh/QiiC/74WvWHnWKoi1t9EigKkh6WYTFp2NxfEq2v510F25ne8igPXDAW
+         d3lg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730123631; x=1730728431;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UrmsujUgQJ5BlGaZvf5rEXiek96RGTOcx92GlV6YM4Q=;
+        b=bffkq6r8nQahK0mjsuFdAyTEpDmiPXYRmuCZ6L2Fx3SebQtCvf1bYrt09l8QzrVyZf
+         QmCEMqllSUHu0HYSmoOyGSv2b7ew0m0qjsuMimVdkQCUEUJKIXRWSm21173kpIouylQg
+         BuyKUwS6e9AWRxvqkKGrvSkaTFNgz+9rdQzDQZwBhxSB3tSoJQIUpmwm/+xpQFC3eSyP
+         slCG6cec4diiQqb2o+jRQILGGWNp8KUtm3o2GBjfPU70agpWrJ+vWugko/7ByGxp2NBQ
+         IAB3uzaTucVQKzSjSLea6rSPn3x4V59KTucGbt9JqMDfJ29z/gaA1q0Y0oP7f6LZu5DP
+         LE3w==
+X-Forwarded-Encrypted: i=1; AJvYcCV7QfQVHIl8mcaoNR7oky0jn7cFfn1R83AAyA+t/niP+n/LXEP9967kSMjaxK/YSAEsZyBjQ3pL@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw+xYfoiOPZplHmx6kpRNlT4qjBSg41P1oE/jBrwSqzz1V1kTSB
+	fsUnKAvcifPeEORED0jauz+YdSHXffa//gDmpdUv6uavePrrm8AIEUBePawAZsY=
+X-Google-Smtp-Source: AGHT+IH40KuDHrVOWhkEyQxVYIBNRcqoqm2Gc7OFJ7y7QxKdJ+GlPWy+DCSBDUatY4TQu0/pwXFjgQ==
+X-Received: by 2002:a05:620a:1709:b0:7a9:783e:3fb1 with SMTP id af79cd13be357-7b193efb057mr1458081785a.23.1730123630974;
+        Mon, 28 Oct 2024 06:53:50 -0700 (PDT)
+Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b18d2930ddsm319958485a.42.2024.10.28.06.53.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Oct 2024 06:53:49 -0700 (PDT)
+Date: Mon, 28 Oct 2024 09:53:45 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Hugh Dickins <hughd@google.com>,
+	Yosry Ahmed <yosryahmed@google.com>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH v1 1/6] memcg-v1: fully deprecate move_charge_at_immigrate
+Message-ID: <20241028135345.GA10985@cmpxchg.org>
+References: <20241025012304.2473312-1-shakeel.butt@linux.dev>
+ <20241025012304.2473312-2-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1219; i=brauner@kernel.org; h=from:subject:message-id; bh=dBjKbQ72OiI43nKphYScHzSn1tB9+kybe2uOdPkKmfk=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTLN2uu+DzdfEnhecaTkubfhQ409WjqduxOmMF7KdigI N+yyLeio5SFQYyLQVZMkcWh3SRcbjlPxWajTA2YOaxMIEMYuDgFYCI68xn+WZ87u07/2LedTZON LEs8muedMzWVfFfzOC1n1XFJ7/Ypcgz//bxEjzupHb2h6ccRwHzg3uLVWQlS/A75P0Ptmaw/fzr GBwA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241025012304.2473312-2-shakeel.butt@linux.dev>
 
-On Thu, 26 Sep 2024 16:01:21 +0200, Pankaj Raghav (Samsung) wrote:
-> Most of the callers of wbc_account_cgroup_owner() are converting a folio
-> to page before calling the function. wbc_account_cgroup_owner() is
-> converting the page back to a folio to call mem_cgroup_css_from_folio().
+On Thu, Oct 24, 2024 at 06:22:58PM -0700, Shakeel Butt wrote:
+> Proceed with the complete deprecation of memcg v1's charge moving
+> feature. The deprecation warning has been in the kernel for almost two
+> years and has been ported to all stable kernel since. Now is the time to
+> fully deprecate this feature.
 > 
-> Convert wbc_account_cgroup_owner() to take a folio instead of a page,
-> and convert all callers to pass a folio directly except f2fs.
-> 
-> [...]
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
 
-Applied to the vfs.misc branch of the vfs/vfs.git tree.
-Patches in the vfs.misc branch should appear in linux-next soon.
-
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
-
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.misc
-
-[1/1] fs/writeback: convert wbc_account_cgroup_owner to take a folio
-      https://git.kernel.org/vfs/vfs/c/30dac24e14b5
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
