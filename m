@@ -1,72 +1,72 @@
-Return-Path: <cgroups+bounces-5294-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5295-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BD119B323F
-	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 14:55:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EC029B3254
+	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 15:00:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E32F28194C
-	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 13:55:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC0B2B21165
+	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 14:00:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FFA01DC1A5;
-	Mon, 28 Oct 2024 13:55:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A04FD1DD540;
+	Mon, 28 Oct 2024 14:00:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="VqeQRIaf"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="aNe4lK9f"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1829D1D2B1B
-	for <cgroups@vger.kernel.org>; Mon, 28 Oct 2024 13:55:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E8C91DB372
+	for <cgroups@vger.kernel.org>; Mon, 28 Oct 2024 14:00:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730123703; cv=none; b=AGmHlRG4+l/VXOXQLFimKbnZtn/B0xEwjPDVJnVRLghrMtYquz5WCrlixSjIcuA/DspRgiDlJ3nI2v7M1hRe4k6oRndhWv4FVCsSoKdMux6+hJ6JcVUnAnEmKtJWl2dN47inI3oUqlDgeHaJkF7Gu8ctml+8DFgxOwly7xjxd/g=
+	t=1730124022; cv=none; b=YlsFHuADyP6Rjx0f/wXnFhj5PdcRB3tkTzbUyhJNwBG94UYwVlim77pOD1ZmVX9ovHGZuus+Y66tVt6IVbG63csnZfnjA3TSHXfVc3kC095EbqjW5Uo3QTN9SwJ0pK3pdZt7YNj8SCFKVdXIVHzjRp77snNvT45nU5lmkgP8ZH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730123703; c=relaxed/simple;
-	bh=qL02jNM6QmkzSbt2ixQNsK3JzmKMePb8iL5x5oQAhv8=;
+	s=arc-20240116; t=1730124022; c=relaxed/simple;
+	bh=v2HK0A45xfCW6LF3YFD2TPmEq4ihQfGG/Qxy38acCAU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jTxAW9JndtOCZpOlRHxpVcu7PfxsCqscOF65SdGW72B6TSSS/OCIhw2YNl7bRk4e3wuL0motaJFHhFhpsJK68PIDavFJyXCX72NurE/2E0wjDEOWvsS70I2WlUQkWbw7EE6LRSqEoh/SdI/RZsvdQCiwoVuvKghYr+YDdV0eGe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=VqeQRIaf; arc=none smtp.client-ip=209.85.160.179
+	 Content-Type:Content-Disposition:In-Reply-To; b=Cc2NO7LEpSLOwMPEZ6Uhp4eHvZKoshmuP2vtXHt7zEsfAsufv1bwk+7NSWS1Gv0nxAwWlmAt8JNHOYMs1/yUUD9c+E9eMF7m8xfehHerRfGlj2KVKD5W2oQWR9Uo0Ha53uvVAuQSvAbEL5xMPvRXmIOdBWe7SNqkQ7AyANyF12E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=aNe4lK9f; arc=none smtp.client-ip=209.85.167.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-460dce6fff9so32723311cf.1
-        for <cgroups@vger.kernel.org>; Mon, 28 Oct 2024 06:55:00 -0700 (PDT)
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3e605ffe10cso2603769b6e.3
+        for <cgroups@vger.kernel.org>; Mon, 28 Oct 2024 07:00:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1730123700; x=1730728500; darn=vger.kernel.org;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1730124018; x=1730728818; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XdtW+9c27laTcra3rAzShsDaFJHdIeIenw692lRPhns=;
-        b=VqeQRIaffq4EvXZks2ytrJaf97/g6QwUiOjEuIvJEErEjcr+rE1wAihHKj42i7IXjT
-         cKN35Rto5W06O00htQJTcgOsq9vMjlcigDhgnNNWtzGtHkbGT01/tLMZH9JECoGBZv1z
-         0+oGJ1iGBQ5TPbGFAymYT2qXBB6TqpPMLyAjYhoohvpDH/9FeVGy8vFjk3Wfw8/82Bx+
-         8JLXg7gm2atdlb7qDjGFPrIk+l8melaxCAJJBQ1JXdhfTqUbx91ck4ZacHSNQy5tPkXf
-         nW4b3rDG6NBFFJl9mZXejGtuVOmHuwluhoRkT7Vrtup4t6rGvUXM8w9eQOaeHFe3Y2Hl
-         /YfQ==
+        bh=FihaM4IoEI/TwOyPoeUguS8WS7IqmB9x82K637EGe5Y=;
+        b=aNe4lK9fRYs0brgi0ZiIPyRw8NmUo0obkPXCawojqJlIMKj/ka38Ak0yvj7cXS6rn+
+         Aslkr30lDPMowwatyN1o8R6nLDEE2Iptq+JvpIfHgLQ06WztZ0Ej91IjhGRXMVgmazth
+         1c2ru7VoW6pOEf5n6ho4RLcA3aoOMuDdAYB5rH++aZ7+F8DDM2X2StdcJ0ksAbBzH/g1
+         TUp13wwYymwEa/oGDc5avaEQWbQxAef4xkIgSUgqv2r2gt4LSjduLYpbjEca8iXgWNJw
+         nyc0XOw1SgCyV99O5388VKEtKVun3p9OtdOpB1C8nQPUobFjmcceqSz4QTtz3YVHsHLz
+         odhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730123700; x=1730728500;
+        d=1e100.net; s=20230601; t=1730124018; x=1730728818;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=XdtW+9c27laTcra3rAzShsDaFJHdIeIenw692lRPhns=;
-        b=Serek4uL/4n11QtC/zjHT8ck/SFsPMgAYT5a/kXFnAFiwjtwe9LcGfA5OyIbqS83CO
-         rA0mBs63fupNXnckpj8TzooaQBSccZRmxYvfTwJ3yNJZYIYwGXm+6j96oXJQxqV1ZeyW
-         ssa5shEMDX7uUTe4PdC+J900dvlz6gi0ziqzgqDFWsdlxPkKQV5sO2kv2th4/15NAiS9
-         oQm3Xw2Sa0M1eg+cfdFbcUfl9lSiYLCfEoEY+BgUaNqvLUC6oLXXT+cfYOHwXgFAPfA9
-         jA07xYAeqTU3f0wlHLlC3jcKcvWglUvhVYk8vihTQKR1+XsP2ri8MPtIBE6aOrTVkLt/
-         Jlxw==
-X-Forwarded-Encrypted: i=1; AJvYcCXufo99j3JZ6xx/ySoi7XtP2td8FQJVXIoO7CoqLI+NvwJjBTMa9vQA0A+vF3LmJgvoCaMc2DrT@vger.kernel.org
-X-Gm-Message-State: AOJu0YxNgPsRKTVEDcZAUBZOwtun1Y+IwiBCg8lp6rdq61bQO3Xq2tRJ
-	10Q8xPai+h1bokkAByGEW0Z76fhHe42qHyWTQY/yCLg+15/6pW//wkQA+jbsFeY=
-X-Google-Smtp-Source: AGHT+IGbX3q3h5Rj5AEwNGKx4zq0zvgm4jApVpmYWXOD0GBg1g5E9PSQsj0MoWVji8f6oOFjZAjUlA==
-X-Received: by 2002:a05:622a:341:b0:460:adce:bfe9 with SMTP id d75a77b69052e-4613bfdc4b6mr141463971cf.4.1730123699937;
-        Mon, 28 Oct 2024 06:54:59 -0700 (PDT)
+        bh=FihaM4IoEI/TwOyPoeUguS8WS7IqmB9x82K637EGe5Y=;
+        b=d7L5DRt5uUf9rUajF2BJYG5JVTrnmL/i7Rj6xmeI9vWck1EPvTCE5KJkqOyd3adKPN
+         lK+2xalzFpprvclKLJIuL7YiM0W2xtaUn4MKfB/rJzYekGeXVquIBjK98nhLpxKgrQ6W
+         uYcba2ZrgpKxQIJpdZEf1ZJYYt/kqpHTLrmJieq2ILnky3mpcUlKSOg1FaaN9IhsDVRz
+         dZpqkinpea6lX4XQGmQ4Onu6lB+PjzlKTJ2aqw7nmaJZefHUQ5asWOLwO1I8yk81Uw0o
+         az3bmVJdgGJiKg+E8Mhbl26fIrM/IR5tBLPM3p5eX3wXuN+ducU0dbiC5gdWB2J8It8e
+         fIVw==
+X-Forwarded-Encrypted: i=1; AJvYcCXqHRhzDqt+wJw1TV2ps298jyKrL11UKrlYLHSjfbQdOvisfE3Q4x9JR/4nQeJdAXyn4XGe7Vtf@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz9dvryMKgr5fpYKJkDxOuyr/7ZaK2HetMUJnfcGnB3mP1xj/Sa
+	1FksGW9TDVbLhO9vcRQeGPFdcXQ82qr0GxR14YP9bA56iKvBftPttYE80c3jYqY=
+X-Google-Smtp-Source: AGHT+IH9co64vboTin+h8OS63UgFbBeD4w6rdjM3nCxgpXXvLvMDezoy7l2Ep0U63nuT2u+Cay9MJQ==
+X-Received: by 2002:a05:6808:444c:b0:3e6:4c48:8942 with SMTP id 5614622812f47-3e64c488acamr1321455b6e.35.1730124017959;
+        Mon, 28 Oct 2024 07:00:17 -0700 (PDT)
 Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4613214d426sm34785721cf.36.2024.10.28.06.54.59
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d17972f5d5sm32494226d6.23.2024.10.28.07.00.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Oct 2024 06:54:59 -0700 (PDT)
-Date: Mon, 28 Oct 2024 09:54:58 -0400
+        Mon, 28 Oct 2024 07:00:17 -0700 (PDT)
+Date: Mon, 28 Oct 2024 10:00:16 -0400
 From: Johannes Weiner <hannes@cmpxchg.org>
 To: Shakeel Butt <shakeel.butt@linux.dev>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -77,12 +77,12 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Yosry Ahmed <yosryahmed@google.com>, linux-mm@kvack.org,
 	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>,
-	Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v1 2/6] memcg-v1: remove charge move code
-Message-ID: <20241028135458.GB10985@cmpxchg.org>
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH v1 3/6] memcg-v1: no need for memcg locking for dirty
+ tracking
+Message-ID: <20241028140016.GC10985@cmpxchg.org>
 References: <20241025012304.2473312-1-shakeel.butt@linux.dev>
- <20241025012304.2473312-3-shakeel.butt@linux.dev>
+ <20241025012304.2473312-4-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -91,15 +91,16 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241025012304.2473312-3-shakeel.butt@linux.dev>
+In-Reply-To: <20241025012304.2473312-4-shakeel.butt@linux.dev>
 
-On Thu, Oct 24, 2024 at 06:22:59PM -0700, Shakeel Butt wrote:
-> The memcg-v1 charge move feature has been deprecated completely and
-> let's remove the relevant code as well.
+On Thu, Oct 24, 2024 at 06:23:00PM -0700, Shakeel Butt wrote:
+> During the era of memcg charge migration, the kernel has to be make sure
+> that the dirty stat updates do not race with the charge migration.
+> Otherwise it might update the dirty stats of the wrong memcg. Now with
+> the memcg charge migration deprecated, there is no more race for dirty
+> stat updates and the previous locking can be removed.
 > 
 > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
 
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
