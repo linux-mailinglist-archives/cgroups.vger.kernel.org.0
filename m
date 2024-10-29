@@ -1,82 +1,82 @@
-Return-Path: <cgroups+bounces-5305-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5306-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 233C29B4098
-	for <lists+cgroups@lfdr.de>; Tue, 29 Oct 2024 03:43:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E33499B4099
+	for <lists+cgroups@lfdr.de>; Tue, 29 Oct 2024 03:45:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5539282F4A
-	for <lists+cgroups@lfdr.de>; Tue, 29 Oct 2024 02:43:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 200F81C21DD8
+	for <lists+cgroups@lfdr.de>; Tue, 29 Oct 2024 02:45:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BAC81DFE24;
-	Tue, 29 Oct 2024 02:43:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D80261F426C;
+	Tue, 29 Oct 2024 02:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eAK86i5b"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ysfqQ2Ul"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D523FBF0
-	for <cgroups@vger.kernel.org>; Tue, 29 Oct 2024 02:43:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97D461E1326
+	for <cgroups@vger.kernel.org>; Tue, 29 Oct 2024 02:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730169824; cv=none; b=jJxuadxhZg26FbNKbty4btl39wzMaGjzJ8ocCorflhNug7ODUzd07GFOeIwiCcF52pRaY8qHDJG4cPQVUWjYc774ZE+XY5IAPZc/NaNx1W89s9HGs4v4A7OTGwKrOvNE0dha7BvgmqWIYlsO+httVUJkEHZpjuf/o/00mAMCzoM=
+	t=1730169905; cv=none; b=DpBSN22nPF8A7wgN6YORMFDJs67NXgeKQtN8W8mkGEGLYm53fV1jP10PbUu7hJ9X7N8ePdPs2x5OIDCDfHI9/hv8zOFJD3PM45g1Lk1aSPoOVAKF7ZBPfp+cH5mT6DbTxaMP4HjT6+6xm8qZPO1UmFImX5b13Awy7sV99/UkFuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730169824; c=relaxed/simple;
-	bh=vM4Tj8f/QUb6PrJ3UJsaisB6N6p+FM22CmVOQ5aSIqQ=;
+	s=arc-20240116; t=1730169905; c=relaxed/simple;
+	bh=pdsv2be4YefjpePCTFKVChgVxBfYJhO3wAqEmnHMSVk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hIxsSSVVewws9RxBbs6mK4cdYzBF14VaJAozTX6LlBeXnlh/HkhfNWKxcjVKJhQ9SGx+G+oGb8++Bqqf1WqhbSestGDXPqRdgeL/GcdRLlX4/xiuVGABOBhZRIWJ/mBjgvv2MZC9zrHSdHCkuAnA5G5zwndyNGpBUALwzKsJbAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eAK86i5b; arc=none smtp.client-ip=209.85.219.44
+	 To:Cc:Content-Type; b=CDx0A8qox85O2WmXyonEkeQnCO9t4aJDTAy2ET36ksc85LjJsR1slKtvbEDWnxKocjFw0KHrG8e3HdmiftNipECcFnTmfA046V2CS/rinsVb1H6DYEL3yiRQVTEZQ36V+gcYg5eCbeekxp0FucrutZBbwJnyKNND9juwR4QWBcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ysfqQ2Ul; arc=none smtp.client-ip=209.85.219.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6cbf2fc28feso31715446d6.0
-        for <cgroups@vger.kernel.org>; Mon, 28 Oct 2024 19:43:41 -0700 (PDT)
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-6cbd00dd21cso30818836d6.3
+        for <cgroups@vger.kernel.org>; Mon, 28 Oct 2024 19:45:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1730169821; x=1730774621; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1730169902; x=1730774702; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0r0u/BybG7849PH2O8N2VQGNwjrvyp+wg7FV5E19Pv0=;
-        b=eAK86i5bS3i1AgxNPzJbpI/C9QCNnvTmjjPt+lepflRE/uUveYdaNoMaZ5TObekp5F
-         vtez1C/NSMitWHeQydvKlLTyoj1i1x+Kez4Jn9ff6INK93woy9NSlq/jWXcFn6s8bOoA
-         EQuhqFQWnmDiV1JAa3A68yJabtymfZSUUKywDMyGE2Hxy+MHhGe4m6Txtqs2mnzYwNJ2
-         qvTnMr4hesaaCXNZ1MFW3FSW/Jykb7Fa5/bO9iokCZajf/vuKJxWT2k32VKywULgZPTb
-         qwWXPuFgYuUbhvLKHUgF5h17bQ59fZaoLMxqeQ+ZUP6N8hXYGbcd9wv+CBkbrlFOghe+
-         Iajw==
+        bh=uEFOlJ3Dcj7i1Bu5K/HHn2QPSZuGacR1Km4lfVuIo74=;
+        b=ysfqQ2UlLlaz7Bp51y8F3WltzqwcjKOgDF0MDJMc/S+Xp6GiwFIN4xXKixrBFYqclH
+         6jUArVtOpjUbfR/Q8dQrRLrGZcCN6x/dg5WSCkJIRsUluxNcwpIdkxoEIq/KUF9F8Q9b
+         aynSbTR7JnBjIPzrTzb/EIriU9zB2LvpnBsXIka0maAtG47vx2lh4oeWfOib7fD1JoEn
+         VjJZcgU64SyKjUK5ji8WLGn/jGueCP3XNDrx1B1oXpaukyv9Aa5fX3VhBPEvzcJvM4Cn
+         mn5KF8FWGL/H5nWDNnRoZwlVixoQ4JKAlJo+7jqomut1TriVUx4RMsjS9P1zLJ0FWpCf
+         YCvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730169821; x=1730774621;
+        d=1e100.net; s=20230601; t=1730169902; x=1730774702;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0r0u/BybG7849PH2O8N2VQGNwjrvyp+wg7FV5E19Pv0=;
-        b=ei10pCQChteYPnhz3riHfVc27Mgtf8zVFhZtJYE4Xfd9BNuOBNhQ0nCHO0Au5+f7yq
-         ilSkxyktIgVkTH2aQaj9EAME81RK1XBY12kzUeuyrbSgjZjgK0OVOL46lGi2Zq65kpEO
-         emrawlmfHjMK4niGPlnsuW5V69lMhe3B5UxaRKA0UVDg3O/LTyruWl854goZiStjDsQW
-         EnTC2K9q/BLxYde0enuM8xuDdv41vyyP0oSrOnfZrZWOfUGtMg2x5nwKRlpHyQwNT/9i
-         IY0Avib63LH5UAGFzxNFBGrnacNAM+RIbU6OHFsFEeCB7g5+W0BS8BEF1O246llh5TBR
-         Dgmg==
-X-Forwarded-Encrypted: i=1; AJvYcCXjnwRKEfL0aRNKySz/ZBSl1ffqD0FQ2Mt+HeeSzskzfonpFOdXKTA1lqTF0tzhhJtC+Avbv1ye@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy9Dy8NtmB9AebjPNPQDZO5STGh7Vc7BO9RgnY86xaqDiTrZcka
-	rwrvxeDZxLKsC1/d3QER20Cr0B76AW4ZQi7lElcxK7o3KlH6/QbIv9mR4MumkFiOLKGh523hN+N
-	LAsH+UAeAVcMT+Oa9KeCUN9G+4/Pl4cCl1/ZG
-X-Google-Smtp-Source: AGHT+IGYQ9AudrdXVaFld8PnZP3WMiTL5Ndbl97BDIv4DLNb3oqHt0DqRhLWLRP5dANnBHtCRZb3R3esCAEjmN+Dcv0=
-X-Received: by 2002:a05:6214:5f03:b0:6cb:f7c7:803a with SMTP id
- 6a1803df08f44-6d18585e936mr179900696d6.46.1730169820716; Mon, 28 Oct 2024
- 19:43:40 -0700 (PDT)
+        bh=uEFOlJ3Dcj7i1Bu5K/HHn2QPSZuGacR1Km4lfVuIo74=;
+        b=JkCqbJ3q3+LfgbsufIspvBOG+nWp3j1BSmxoE1Qjis0gY5LdopGLuU+RI5GG4hFciN
+         BleF7nrJsMQT4eVepUBuQnluFG9Cu5m2oeefztYntQUGVjvtH+5CzUUUHg9I4wKj+x47
+         QFHqZ3dp9wTZoRcGyeCEGI9063ArQj/xtgmrUDQ/LUsLrpsTBIinnafBuMU9cK09Ps6f
+         YCJsPv/qqKAlmAF7ct/ZqpB8IWBBuRbavdawTeoMax4QcvA6RNyq12N03MiYkOeDZ4X/
+         OWh26XoKs4DdsEUhWNhE4n0SgHrg+AzviOab7OdU8SxqPiEuVk7MLerSJcWlWOhbJHsg
+         k+7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXI0Qp06cCYHYIAG6uOabCv9CSj9ZdHNHBDfF+3pZSv1jlzKeeKokv9tTR1kedQxMWHxEdy8RhE@vger.kernel.org
+X-Gm-Message-State: AOJu0YxR3jJ2zcj9knV4JVhD7GFcS/IfuUIUa+JaDUMARM4YtXNftYHr
+	kDM5nkUIftxjdMdbODEfnhFLXTum6IOcYVNbKc5vpNxqA6Q2XLyhVAcil0b/9LarleMJm0UV8L3
+	bY3PfmvefXxXiUZUGQLvcovWrJs8gellaiRDi
+X-Google-Smtp-Source: AGHT+IHTw+1l4kal7Bv7qZ7wvC2+kvhvsc/LAHM0Zuw4nFe9XqKPu/1wDnPR1J6Mf9j/jTHeIvYP9hl/h3LgMVKFAVE=
+X-Received: by 2002:a05:6214:31a0:b0:6cb:27e6:393f with SMTP id
+ 6a1803df08f44-6d18587e82bmr157493876d6.36.1730169902229; Mon, 28 Oct 2024
+ 19:45:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241029021106.25587-1-inwardvessel@gmail.com> <20241029021106.25587-2-inwardvessel@gmail.com>
-In-Reply-To: <20241029021106.25587-2-inwardvessel@gmail.com>
+References: <20241029021106.25587-1-inwardvessel@gmail.com> <20241029021106.25587-3-inwardvessel@gmail.com>
+In-Reply-To: <20241029021106.25587-3-inwardvessel@gmail.com>
 From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 28 Oct 2024 19:43:04 -0700
-Message-ID: <CAJD7tkZo0oAh1L7OVGZkLi+EDw0pjQ8dpsC1oQbLQS6KNvymKw@mail.gmail.com>
-Subject: Re: [PATCH 1/2 v3] memcg: rename do_flush_stats and add force flag
+Date: Mon, 28 Oct 2024 19:44:25 -0700
+Message-ID: <CAJD7tkb+Qx+0NCn5BcSv31Hq8TKhSRFfQKQ9BFBE2kNATyswPQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2 v3] memcg: add flush tracepoint
 To: JP Kobryn <inwardvessel@gmail.com>
 Cc: shakeel.butt@linux.dev, hannes@cmpxchg.org, akpm@linux-foundation.org, 
 	rostedt@goodmis.org, linux-mm@kvack.org, cgroups@vger.kernel.org
@@ -86,78 +86,85 @@ Content-Transfer-Encoding: quoted-printable
 On Mon, Oct 28, 2024 at 7:11=E2=80=AFPM JP Kobryn <inwardvessel@gmail.com> =
 wrote:
 >
-> Change the name to something more consistent with others in the file and
-> use double unders to signify it is associated with the
-> mem_cgroup_flush_stats() API call. Additionally include a new flag that
-> call sites use to indicate a forced flush; skipping checks and flushing
-> unconditionally. There are no changes in functionality.
+> This tracepoint gives visibility on how often the flushing of memcg stats
+> occurs and contains info on whether it was forced, skipped, and the value=
+ of
+> stats updated. It can help with understanding how readers are affected by
+> having to perform the flush, and the effectiveness of the flush by inspec=
+ting
+> the number of stats updated. Paired with the recently added tracepoints f=
+or
+> tracing rstat updates, it can also help show correlation where stats exce=
+ed
+> thresholds frequently.
 >
 > Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
 
 Reviewed-by: Yosry Ahmed <yosryahmed@google.com>
 
 > ---
->  mm/memcontrol.c | 17 ++++++++---------
->  1 file changed, 8 insertions(+), 9 deletions(-)
+>  include/trace/events/memcg.h | 25 +++++++++++++++++++++++++
+>  mm/memcontrol.c              |  7 ++++++-
+>  2 files changed, 31 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/trace/events/memcg.h b/include/trace/events/memcg.h
+> index 8667e57816d2..dfe2f51019b4 100644
+> --- a/include/trace/events/memcg.h
+> +++ b/include/trace/events/memcg.h
+> @@ -74,6 +74,31 @@ DEFINE_EVENT(memcg_rstat_events, count_memcg_events,
+>         TP_ARGS(memcg, item, val)
+>  );
+>
+> +TRACE_EVENT(memcg_flush_stats,
+> +
+> +       TP_PROTO(struct mem_cgroup *memcg, s64 stats_updates,
+> +               bool force, bool needs_flush),
+> +
+> +       TP_ARGS(memcg, stats_updates, force, needs_flush),
+> +
+> +       TP_STRUCT__entry(
+> +               __field(u64, id)
+> +               __field(s64, stats_updates)
+> +               __field(bool, force)
+> +               __field(bool, needs_flush)
+> +       ),
+> +
+> +       TP_fast_assign(
+> +               __entry->id =3D cgroup_id(memcg->css.cgroup);
+> +               __entry->stats_updates =3D stats_updates;
+> +               __entry->force =3D force;
+> +               __entry->needs_flush =3D needs_flush;
+> +       ),
+> +
+> +       TP_printk("memcg_id=3D%llu stats_updates=3D%lld force=3D%d needs_=
+flush=3D%d",
+> +               __entry->id, __entry->stats_updates,
+> +               __entry->force, __entry->needs_flush)
+> +);
+>
+>  #endif /* _TRACE_MEMCG_H */
 >
 > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 18c3f513d766..59f6f247fc13 100644
+> index 59f6f247fc13..c3d6163aaa1c 100644
 > --- a/mm/memcontrol.c
 > +++ b/mm/memcontrol.c
-> @@ -588,8 +588,11 @@ static inline void memcg_rstat_updated(struct mem_cg=
+> @@ -590,7 +590,12 @@ static inline void memcg_rstat_updated(struct mem_cg=
 roup *memcg, int val)
->         }
->  }
 >
-> -static void do_flush_stats(struct mem_cgroup *memcg)
-> +static void __mem_cgroup_flush_stats(struct mem_cgroup *memcg, bool forc=
+>  static void __mem_cgroup_flush_stats(struct mem_cgroup *memcg, bool forc=
 e)
 >  {
-> +       if (!force && !memcg_vmstats_needs_flush(memcg->vmstats))
-> +               return;
+> -       if (!force && !memcg_vmstats_needs_flush(memcg->vmstats))
+> +       bool needs_flush =3D memcg_vmstats_needs_flush(memcg->vmstats);
 > +
+> +       trace_memcg_flush_stats(memcg, atomic64_read(&memcg->vmstats->sta=
+ts_updates),
+> +               force, needs_flush);
+> +
+> +       if (!force && !needs_flush)
+>                 return;
+>
 >         if (mem_cgroup_is_root(memcg))
->                 WRITE_ONCE(flush_last_time, jiffies_64);
->
-> @@ -613,8 +616,7 @@ void mem_cgroup_flush_stats(struct mem_cgroup *memcg)
->         if (!memcg)
->                 memcg =3D root_mem_cgroup;
->
-> -       if (memcg_vmstats_needs_flush(memcg->vmstats))
-> -               do_flush_stats(memcg);
-> +       __mem_cgroup_flush_stats(memcg, false);
->  }
->
->  void mem_cgroup_flush_stats_ratelimited(struct mem_cgroup *memcg)
-> @@ -630,7 +632,7 @@ static void flush_memcg_stats_dwork(struct work_struc=
-t *w)
->          * Deliberately ignore memcg_vmstats_needs_flush() here so that f=
-lushing
->          * in latency-sensitive paths is as cheap as possible.
->          */
-> -       do_flush_stats(root_mem_cgroup);
-> +       __mem_cgroup_flush_stats(root_mem_cgroup, true);
->         queue_delayed_work(system_unbound_wq, &stats_flush_dwork, FLUSH_T=
-IME);
->  }
->
-> @@ -5281,11 +5283,8 @@ bool obj_cgroup_may_zswap(struct obj_cgroup *objcg=
-)
->                         break;
->                 }
->
-> -               /*
-> -                * mem_cgroup_flush_stats() ignores small changes. Use
-> -                * do_flush_stats() directly to get accurate stats for ch=
-arging.
-> -                */
-> -               do_flush_stats(memcg);
-> +               /* Force flush to get accurate stats for charging */
-> +               __mem_cgroup_flush_stats(memcg, true);
->                 pages =3D memcg_page_state(memcg, MEMCG_ZSWAP_B) / PAGE_S=
-IZE;
->                 if (pages < max)
->                         continue;
 > --
 > 2.47.0
 >
