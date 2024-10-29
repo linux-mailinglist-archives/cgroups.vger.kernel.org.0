@@ -1,58 +1,58 @@
-Return-Path: <cgroups+bounces-5310-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5311-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ECE79B491E
-	for <lists+cgroups@lfdr.de>; Tue, 29 Oct 2024 13:08:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E075F9B4924
+	for <lists+cgroups@lfdr.de>; Tue, 29 Oct 2024 13:09:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F286B1F241C1
-	for <lists+cgroups@lfdr.de>; Tue, 29 Oct 2024 12:08:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AD3CB2238F
+	for <lists+cgroups@lfdr.de>; Tue, 29 Oct 2024 12:09:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFB85205AD9;
-	Tue, 29 Oct 2024 12:08:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0573205AAA;
+	Tue, 29 Oct 2024 12:09:06 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41CB5204F86;
-	Tue, 29 Oct 2024 12:08:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 877CB204081;
+	Tue, 29 Oct 2024 12:09:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730203701; cv=none; b=lANNsTg2TygYg21YyH5U1w5JH0tirwH4n/q/ZF64gz/FB1vYGZa23R8ZTHe3h4VSAxZEqPXvWJEcdnzVh37UsU9rWbNCBGSIH16E5klLkAMHq7nfrZalX7fHxjCbwT8wZroBWMV8jNVFnmKsHExoUpM/p9phZDXZpEe13UpWEG8=
+	t=1730203746; cv=none; b=HlPLrBdjlcW3aQvsQShaiH1F81u9bXjJfNhe0bjbImNAwayW7QDTIb4zzO4leRv2vdWYYMVgoiYGht34g9L7jDosx+sWQTOOX6hg70renaaE5xMdkVjJ49XhQeHzs49FltkWpK5b7yj4MPLuZGrcaH1QRWxxLfHn61bJ24kjzFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730203701; c=relaxed/simple;
-	bh=yhVG5qNlNEhyRuC366cKshL752zvtXuaIHp+GLquotc=;
+	s=arc-20240116; t=1730203746; c=relaxed/simple;
+	bh=j79bw2l/RWyBaQykVpAFDmJZBz9ig+N0nkspQFvtrao=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ADWTo5aVNmr3q54IZpLdrhHBi8sz/L2DZKKUBFBqEXjAkjCRMoOgcvcUi9c4t81GtBqCNJa/nW3OUeHTrmT/OCxkDRC6W3s/j+r6mLw5Tp7in4xwiOxvKgMhuNvcZWQi9xZGnpInFvDvTBeOYpMjDTFcoM6tL6WZK9WhICiD64w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.51
+	 MIME-Version; b=WovjOPEYQr4/cgmow2Lq8N3psOGtjvZkJ/nL0TjsolNVrJv3yREtZBQz5qOaWrGFIKqrfv6R0XkG5lJZkjLjtBTklRmACrQjmq5kvRYajpUARa+w5djoABVvi0zr4+5Ur6hkEuSz+GBJ5JPP0zFYgfeV3jd+0ZUBE3rRLyCDOzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-37d5aedd177so3592922f8f.1;
-        Tue, 29 Oct 2024 05:08:18 -0700 (PDT)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-37d533b5412so3801057f8f.2;
+        Tue, 29 Oct 2024 05:09:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730203697; x=1730808497;
+        d=1e100.net; s=20230601; t=1730203743; x=1730808543;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=prK/FNQOXsCO8+FRi41kJ4Qt9n8SlNOaBxb4/L845wI=;
-        b=OTlM5ffaqSdBiL4GnYrS1ZDUMcgLDoCs+Q+7NPgMdK4zrvBeQVlhs699bzccvBVUht
-         5Qiod+zn7aQsJRNKXA9nrWTvyaVq++XgBliDHFKXAIFIQSydECzxFpxYJndZo8ZEmrK6
-         YVtenZtTcL6u06cGounxnG+RWFdk9tFfg+BlMr7ZLZ1ZLcX9Ca6Oc8gG1+KLf+IpFYLw
-         zr6jxYhTAdcRCGLyX4prV40CtNdGAghTa+qeF7g5+XNhIZr/gYyPMFUAZ4WQyI8Fqj4r
-         BzXBnRw9Ma30Uy76BiZkEtM8qWe11ZbJD7YDdox2yn6yT2QtV+xuxl3TrqyhKmHMlk/Q
-         Pk3g==
-X-Forwarded-Encrypted: i=1; AJvYcCVUnZu0nGnjuVJmHnXXF0e/OLu7+N5T+ZbPmp3dwp1HiJhbwO57/0iIx+Wv5abmpHAmqW/nx4CdT2f0R0I=@vger.kernel.org, AJvYcCXiqMzOJ54vL+TKT61/dVvCKbJtF9oKXF38b2CClp+nYFl3S05eJX2N+DBlTzh1rXlkRqNOeEgE@vger.kernel.org, AJvYcCXjWTWLvSFJ9fAjjPt00SctFZAwKlcCE2H2raB6v5t25IrjLsfyFbfxmfHyuIiC95V9HikxSGpjji7ouGlC@vger.kernel.org
-X-Gm-Message-State: AOJu0YyVwjeKjpQ2Vc+zWHS0Tl8mokVn4i9FHWISPBjxVcgmElErprg9
-	ON/GDjWG1SGshKVrKRZxafotlkGgJl/8EOBDqRcVDcor8aAOJ6lH
-X-Google-Smtp-Source: AGHT+IHwsoGWZEaN44ytc/ZUqOt4oJ7DIzAf8N/MgcTN2KjnWFB44hdq8RqxlB0iW0UmlwsMQdM6mg==
-X-Received: by 2002:a5d:5549:0:b0:37d:5282:1339 with SMTP id ffacd0b85a97d-38061138083mr8364744f8f.22.1730203697294;
-        Tue, 29 Oct 2024 05:08:17 -0700 (PDT)
+        bh=tqMogqCHlSB+L5Oy6ZFZuAxGnTRIJtpF7lZ2PQwJRT0=;
+        b=s9UoFpuxtgIqOXBQNEJv+rfGB4i09FnwrWQChiKmd3TQZnP9egOQQ2lAHeN68Mw5Rz
+         sKNqQGNON+vPQSFjp5YMCzlI0G+P9zyVw9U3VxgF47jUtzM2636qsetY52bVha0lisN/
+         bxRjp05v1bZBmbwOSAdmSjp0a6lFXCZEPOlPwDU4QlKMC19z8KSYVq1U1qyOCvPwqv6j
+         9iiuALndNWO6E/Fhi85cBbZZdUMC35C+UTrDlzQudb3PGtsJlEynpf568jrOc6DcHaTG
+         0LMW/pKXm/Zzhx902Gh7CSthzqipkVDtjIe4NZsjfcPWwMphRYM18/9eUm0QPS0WOvxT
+         rblg==
+X-Forwarded-Encrypted: i=1; AJvYcCUG6VtqmM3vDXHCtJOI/ojD/pO1OVwaQ0AF89ztclu/cX5koLSV5oIZuuqEzJdJk5EVrGQmXuhvyPynDiPl@vger.kernel.org, AJvYcCVa4U1CpikbWLjt6SQpAxpGjE8rUHQ8ZxIfbVA3aX1ZpdyUGAM4mcGXF2gSHUwqimy8kk93byMq@vger.kernel.org, AJvYcCWG/W8QdNArYZTNI854PaKOuWHZuH4FmxyA/K9duM6PC1DDdT8hmtE9PrRDSWp64UseXbEbZHf3WUU6EsM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxYpkvm2pW2v6lcEMbrzP2V1z/9qWfj62dtjWa6JIHFU92kBvvA
+	lgnbUY2fC9sRLKlgwBDjBIUtCHgYslJVEBJ3SoXQ1U5CaFzAHw0A
+X-Google-Smtp-Source: AGHT+IEZF/m2ZWDHm+VRDPNBJO+ciCivoYsSilaHhnv+srjjZLAVrZtF+6FJzV3Yfw6REKrmoTWQyw==
+X-Received: by 2002:a05:6000:dcc:b0:37d:3e6d:3c2f with SMTP id ffacd0b85a97d-38061200b35mr9079468f8f.47.1730203742751;
+        Tue, 29 Oct 2024 05:09:02 -0700 (PDT)
 Received: from costa-tp.bos2.lab ([2a00:a041:e281:f300:ddd7:8878:b93d:7c0b])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38058b13309sm12362152f8f.3.2024.10.29.05.08.15
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38058b13309sm12362152f8f.3.2024.10.29.05.09.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Oct 2024 05:08:16 -0700 (PDT)
+        Tue, 29 Oct 2024 05:09:02 -0700 (PDT)
 From: Costa Shulyupin <costa.shul@redhat.com>
 To: longman@redhat.com,
 	ming.lei@redhat.com,
@@ -76,9 +76,9 @@ To: longman@redhat.com,
 	linux-block@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org
-Subject: [RFC PATCH v3 1/3] sched/isolation: Add infrastructure for dynamic CPU isolation
-Date: Tue, 29 Oct 2024 14:05:32 +0200
-Message-ID: <20241029120534.3983734-2-costa.shul@redhat.com>
+Subject: [RFC PATCH v3 2/3] DO NOT MERGE: test for managed irqs adjustment
+Date: Tue, 29 Oct 2024 14:05:33 +0200
+Message-ID: <20241029120534.3983734-3-costa.shul@redhat.com>
 X-Mailer: git-send-email 2.47.0
 In-Reply-To: <20241029120534.3983734-1-costa.shul@redhat.com>
 References: <20241029120534.3983734-1-costa.shul@redhat.com>
@@ -90,112 +90,155 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce the infrastructure function housekeeping_update()
-to modify housekeeping_cpumask at runtime and update the
-configurations of dependent subsystems accordingly in
-following patches.
+shell script for testing managed interrupts
+status adjustments.
 
-Parent patch:
-sched/isolation: Exclude dynamically isolated CPUs from housekeeping masks
-https://lore.kernel.org/lkml/20240821142312.236970-1-longman@redhat.com/
+Targets: managed_irq_affinity_adjust(),
+	irq_restore_affinity_of_irq(), managed_irq_isolate()
+
+Managed interrupts can be created in various ways. One of them:
+
+qemu-img create -f qcow2 test.qcow2 100M
+virtme-ng -v --cpus 4 --rw --user root \
+	--qemu-opts '\-drive id=d1,if=none,file=test.qcow2 \
+	\-device nvme,id=i1,drive=d1,serial=1,bootindex=2'
 
 Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
 
 ---
 
-Note: In theory, updating housekeeping.flags only once is possible.
-However, this approach would make this and following code less clear
-and harder to follow and review.
-
-Changes in v3:
-- Remove redundant WRITE_ONCE. The first WRITE_ONCE is located
-in housekeeping_update() because this function will
-update dependent subsystems with changes of the housekeeping masks.
-
 Changes in v2:
-- remove unnecessary `err` variable
-- add for_each_clear_bit... to clear isolated CPUs
-- Address Gleixner's comments:
-- use WRITE_ONCE to change housekeeping.flags
-- use `struct cpumask *update` in signature of housekeeping_update
+- use shell script only
 
 v1:
-- https://lore.kernel.org/lkml/20240516190437.3545310-2-costa.shul@redhat.com/
+- https://lore.kernel.org/lkml/20240516190437.3545310-8-costa.shul@redhat.com/
 ---
- kernel/sched/isolation.c | 43 ++++++++++++++++++++++++++++++++++++----
- 1 file changed, 39 insertions(+), 4 deletions(-)
+ tests/managed_irq.sh | 116 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 116 insertions(+)
+ create mode 100755 tests/managed_irq.sh
 
-diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 2ee47bc25aea..ebbb215505e8 100644
---- a/kernel/sched/isolation.c
-+++ b/kernel/sched/isolation.c
-@@ -127,6 +127,40 @@ static void __init housekeeping_setup_type(enum hk_type type,
- 		     housekeeping_staging);
- }
- 
-+/*
-+ * housekeeping_update - change housekeeping.cpumasks[type] and propagate the
-+ * change.
-+ */
-+static int housekeeping_update(enum hk_type type, const struct cpumask *update)
+diff --git a/tests/managed_irq.sh b/tests/managed_irq.sh
+new file mode 100755
+index 000000000000..14bc2f4b13c5
+--- /dev/null
++++ b/tests/managed_irq.sh
+@@ -0,0 +1,116 @@
++#!/bin/zsh
++
++# shell script for testing IRQ status adjustment.
++# Targets: managed_irq_affinity_adjust(),
++# 	irq_restore_affinity_of_irq(), managed_irq_isolate()
++
++# cpu# to isolate
++#
++isolate=1
++
++managed_affined=$(
++	cd /sys/kernel/debug/irq/irqs/;
++	grep -l -e "affinity: $isolate$" /dev/null $(grep -l IRQD_AFFINITY_MANAGED *) |
++		head -n1
++)
++test_irq=${managed_affined%% *}
++
++[ -z $test_irq ] && { echo No managed IRQs found;exit 1}
++
++rm -rf 0.irqs
++cp -R /sys/kernel/debug/irq/irqs 0.irqs
++
++cd /sys/fs/cgroup/
++echo +cpuset > cgroup.subtree_control
++mkdir -p test
++echo isolated > test/cpuset.cpus.partition
++
++effective_affinity=/proc/irq/$test_irq/effective_affinity
++test_irq_debug=/sys/kernel/debug/irq/irqs/$test_irq
++
++errors=0
++
++check()
 +{
-+	struct {
-+		struct cpumask changed;
-+		struct cpumask enable;
-+		struct cpumask disable;
-+	} *masks;
-+
-+	masks = kmalloc(sizeof(*masks), GFP_KERNEL);
-+	if (!masks)
-+		return -ENOMEM;
-+
-+	lockdep_assert_cpus_held();
-+	cpumask_xor(&masks->changed, housekeeping_cpumask(type), update);
-+	cpumask_and(&masks->enable, &masks->changed, update);
-+	cpumask_andnot(&masks->disable, &masks->changed, update);
-+	cpumask_copy(housekeeping.cpumasks[type], update);
-+	WRITE_ONCE(housekeeping.flags, housekeeping.flags | BIT(type));
-+	if (!static_branch_unlikely(&housekeeping_overridden))
-+		static_key_enable_cpuslocked(&housekeeping_overridden.key);
-+
-+	/* Add here code to update dependent subsystems with
-+	 * changes of the housekeeping masks.
-+	 */
-+
-+	kfree(masks);
-+
-+	return 0;
++	local _status=$?
++	if [[ $_status == 0 ]]
++	then
++		echo PASS
++	else
++		let errors+=1
++		echo FAIL:
++		cat $test_irq_debug
++	fi
++	return $_status
 +}
 +
- static int __init housekeeping_setup(char *str, unsigned long flags)
- {
- 	cpumask_var_t non_housekeeping_mask, housekeeping_staging;
-@@ -330,10 +364,12 @@ int housekeeping_exlude_isolcpus(const struct cpumask *isolcpus, unsigned long f
- 		/*
- 		 * Reset housekeeping to bootup default
- 		 */
++check_activated()
++{
++	echo "Check normal irq affinity"
++	test 0 -ne $((0x$(cat $effective_affinity) & 1 << $isolate))
++	check
++	grep -q IRQD_ACTIVATED $test_irq_debug
++	check
++	grep -q IRQD_IRQ_STARTED $test_irq_debug
++	check
++	! grep -q IRQD_IRQ_DISABLED $test_irq_debug
++	check
++	! grep -q IRQD_IRQ_MASKED $test_irq_debug
++	check
++	! grep -q IRQD_MANAGED_SHUTDOWN $test_irq_debug
++	check
++}
 +
-+		for_each_clear_bit(type, &boot_hk_flags, HK_TYPE_MAX)
-+			housekeeping_update(type, cpu_possible_mask);
- 		for_each_set_bit(type, &boot_hk_flags, HK_TYPE_MAX)
--			cpumask_copy(housekeeping.cpumasks[type], boot_hk_cpumask);
-+			housekeeping_update(type, boot_hk_cpumask);
- 
--		WRITE_ONCE(housekeeping.flags, boot_hk_flags);
- 		if (!boot_hk_flags && static_key_enabled(&housekeeping_overridden))
- 			static_key_disable_cpuslocked(&housekeeping_overridden.key);
- 		return 0;
-@@ -358,9 +394,8 @@ int housekeeping_exlude_isolcpus(const struct cpumask *isolcpus, unsigned long f
- 		cpumask_andnot(tmp_mask, src_mask, isolcpus);
- 		if (!cpumask_intersects(tmp_mask, cpu_online_mask))
- 			return -EINVAL;	/* Invalid isolated CPUs */
--		cpumask_copy(housekeeping.cpumasks[type], tmp_mask);
-+		housekeeping_update(type, tmp_mask);
- 	}
--	WRITE_ONCE(housekeeping.flags, boot_hk_flags | flags);
- 	excluded = true;
- 	if (!static_key_enabled(&housekeeping_overridden))
- 		static_key_enable_cpuslocked(&housekeeping_overridden.key);
++check_shutdown()
++{
++	echo "Check that irq affinity doesn't contain isolated cpu."
++	test 0 -eq $((0x$(cat $effective_affinity) & 1 << $isolate))
++	check
++	! grep -q IRQD_ACTIVATED $test_irq_debug
++	check
++	! grep -q IRQD_IRQ_STARTED $test_irq_debug
++	check
++	grep -q IRQD_IRQ_DISABLED $test_irq_debug
++	check
++	grep -q IRQD_IRQ_MASKED $test_irq_debug
++	check
++	grep -q IRQD_MANAGED_SHUTDOWN $test_irq_debug
++	check
++}
++
++echo "Isolating CPU #$isolate"
++echo $isolate > test/cpuset.cpus
++
++check_shutdown
++
++echo Reset cpuset
++echo "" > test/cpuset.cpus
++
++check_activated
++
++echo "Isolating CPU #$isolate again"
++echo $isolate > test/cpuset.cpus
++
++check_shutdown()
++
++echo "Isolating CPU #3 and restore CPU #$isolate"
++echo 3 > test/cpuset.cpus
++
++check_activated
++
++echo Reset cpuset
++echo "" > test/cpuset.cpus
++
++rmdir test
++cd -
++
++rm -rf final.irqs
++cp -R /sys/kernel/debug/irq/irqs final.irqs
++
++if ! diff -r --ignore-matching-lines=Vector: 0.irqs final.irqs; then
++	echo diff failed;
++	let errors+=1
++fi
++
++echo errors=$errors
++(return $errors)
 -- 
 2.47.0
 
