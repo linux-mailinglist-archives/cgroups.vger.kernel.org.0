@@ -1,88 +1,56 @@
-Return-Path: <cgroups+bounces-5315-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5316-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3A7D9B5433
-	for <lists+cgroups@lfdr.de>; Tue, 29 Oct 2024 21:43:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F1EA9B546A
+	for <lists+cgroups@lfdr.de>; Tue, 29 Oct 2024 21:49:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 721302851DA
-	for <lists+cgroups@lfdr.de>; Tue, 29 Oct 2024 20:43:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6713B23FF4
+	for <lists+cgroups@lfdr.de>; Tue, 29 Oct 2024 20:48:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ECC6208223;
-	Tue, 29 Oct 2024 20:38:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C60B207A01;
+	Tue, 29 Oct 2024 20:47:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="TUO09Zr1"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="T4So5nMX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79217207A26
-	for <cgroups@vger.kernel.org>; Tue, 29 Oct 2024 20:38:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65CFA1DEFD0
+	for <cgroups@vger.kernel.org>; Tue, 29 Oct 2024 20:47:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730234323; cv=none; b=CBR+MfS7RFI9bhEn4Tlw2kInfw1e6FfvJir2Sv6wp5kvSb6foqUnypJJy9RKn1Kl9AScuBpYkipy5o73sploTHKTRkEQevpukXGJ7D0kNI+4Qcb0UpYh7kubP2ejkRacuPQ6NGAcKKfJPCd/ilGqqib7uAn9jlfgGvJL36Xx5L0=
+	t=1730234827; cv=none; b=T4ZnEZcv/O/yQZ1z/8mqNOwzvrFdgyihDiom+mIo4Qr+8dTW7FEHqYkVafTJ01RH6QrXBWtLE7ayLmNDGWAOrE2Y/ii8ewKtCI+B8bd4XgajyNgsNCL+8BezF2fVUYwOnUtKXBPYS4YDBIPHeWDqPuzfm6n7QFy80csdEODhDfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730234323; c=relaxed/simple;
-	bh=PntJ7QKi3digXuH8oXnq/Fq/esGixZhxoXn7meGNK5c=;
+	s=arc-20240116; t=1730234827; c=relaxed/simple;
+	bh=HIZKISJgrxkG2N88EO5pSJ+y2bVsJ22O5oKaSEAvL30=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fRccyOmcvFAM6Rqmu4dAhC9LgxfGd03YTDsryjVPH+6Xn0lZ7LTAaKmLIthQ5RssZfOkk332nHwh9xFwMsjxlVkW95gbwkArXvWK3VEQgvpBmtdAe4wwpNfKJdePHzmcvAmHtG8F7+5WrKAcv2uejtX8FV+L72D3Yb2zfEM0P+4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=TUO09Zr1; arc=none smtp.client-ip=209.85.219.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6cbf340fccaso2159426d6.1
-        for <cgroups@vger.kernel.org>; Tue, 29 Oct 2024 13:38:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1730234319; x=1730839119; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UHhE7+FsFDchxD8LtVUn2ccYddeUr5QRSaFaIZpCbLM=;
-        b=TUO09Zr1KwcwvweMm1qYW5p4WDcGiBizVUFEtxz+41deVmilIDQKgbXMBxOwk8iiFV
-         iA/Pv7D7t/UogEgsy4tRJd467Sy+KM/yiNeY9IZ3v7cOqM3DQ9jZCHyp4ObD9pLv5Qh9
-         l1bkwH480/npCfLMZMxQXVuKJp0KZp1tnNtfzzIR7R3tVES1yc3yMIuVWbzyfCukvsTH
-         EG4UcZHp4AhUybwCgb8o+fu6Y5CNjLjFAOvjrgx+1h3PNyjYVPfsrY09eup1FqoxC+nI
-         A97hiSpOXjfQD2ugw+L6V9TVuPestJZ5cF3TRE49OfPWINu7IA6tkUcZdhReIxtn1USe
-         ib3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730234319; x=1730839119;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UHhE7+FsFDchxD8LtVUn2ccYddeUr5QRSaFaIZpCbLM=;
-        b=cIj4S/qs/8wq0vFzlvtcVgo3x8YerdmQjSW6Xn76ZCmdAJNqzpeVTbys8PnI8A4aRn
-         3BZ9UL2cUefJfb17vp3GxqV94ZIGIVoGxurbUxnygD+VSIWeDEXrgeBoFqPyK1M8/cWf
-         2MRoKBwzPonxJXKgBgb757zFzKcd0cJcS4PrM6u6+JDcxdInxkIPg5EwCDC/cg0dJ+Yt
-         7JM+bTQzMTNFPbY/iebQh5bZWak+13QAqFQZPCLW5/0Rba5MRURSlmfn6WtU7GODh25J
-         rt+HgJNvfZMpg0HvEm7ktkStEHyv+kd9D8cCLL4Y4FhglHIc5aGgNGIfp9ubCQdSOj3p
-         LK5g==
-X-Forwarded-Encrypted: i=1; AJvYcCX2Q+FvyL1XvlmhLkMjfaEYFxyJ+lGG6YEnqUUemBUa2Pf4oddLDydZpeda4VL/5ljdf5aIyB9S@vger.kernel.org
-X-Gm-Message-State: AOJu0YxSxW/gqp/KmrcTxHYFUqjG/JL6PeG3Z1zHBikKN9eTj7C/IOdg
-	tk/JpE5heCgOwvA/VX0PhGcj3Z2elQzVMM6vgXzoZbQ69DoHC2aIyYaWZ1l+5zY=
-X-Google-Smtp-Source: AGHT+IGIGf+fLyqvRxEZUSRr0al4OL6PJFH2Lr2FvVUL+VpF7BsP3nR5JjnLPEDC4jbvktWXK39Ngg==
-X-Received: by 2002:a05:6214:5d8f:b0:6d1:7455:9b0d with SMTP id 6a1803df08f44-6d2e7225ddcmr51294016d6.16.1730234319248;
-        Tue, 29 Oct 2024 13:38:39 -0700 (PDT)
-Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d1798a838fsm45773516d6.30.2024.10.29.13.38.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Oct 2024 13:38:38 -0700 (PDT)
-Date: Tue, 29 Oct 2024 16:38:34 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, Zefan Li <lizefan.x@bytedance.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Friedrich Vock <friedrich.vock@gmx.de>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH 0/7] kernel/cgroups: Add "dev" memory accounting cgroup.
-Message-ID: <20241029203834.GA636494@cmpxchg.org>
-References: <20241023075302.27194-1-maarten.lankhorst@linux.intel.com>
- <ZxlRLMwkabTaOrjc@slm.duckdns.org>
- <20241024-beautiful-spaniel-of-youth-f75b61@houat>
- <Zxp-nLXOJXoSy8BN@slm.duckdns.org>
- <20241028-meaty-mega-nuthatch-3d74b1@houat>
+	 Content-Type:Content-Disposition:In-Reply-To; b=h+qdTf/oklpJcYxXC9U8xETJUEPgFW60lFbll7ksgf7w3I1BVgFutHxpHTnOXdgHzk2E+bZd4PyR5P3Rp7ou4MTDVWH2QirO4s7TY1Ec71VdxfpbyA1nDa3Khn0aCNUlRc+r/Hli/KCePi/tTuII4IW69M5Hm22dA/78CICkhG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=T4So5nMX; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 29 Oct 2024 20:46:58 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1730234823;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=l/2LPEt/GHvSW+prhbuDKrfCdaeE2xMrTD+7LuJoga4=;
+	b=T4So5nMXk0y/J5dityKbFBMsLaxhJL2jPe1YQ97P16JSrC6sNevgm2glXkZDER2qZJEnY5
+	bUMEeBD9Iqxxf11ZN2Zb74u1FLHz5zwz7nEkcMaDO29V9wRXIKzpYo8Mjzu4fOsnk7N5Yp
+	P/UTN/Hk8jy9XuM92vL0MDqBPZwH1lk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Tejun Heo <tj@kernel.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Luca Boccassi <bluca@debian.org>,
+	kvm@vger.kernel.org, cgroups@vger.kernel.org,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: cgroup2 freezer and kvm_vm_worker_thread()
+Message-ID: <ZyFJwtPzmKsx5EdI@google.com>
+References: <ZyAnSAw34jwWicJl@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -91,76 +59,95 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241028-meaty-mega-nuthatch-3d74b1@houat>
+In-Reply-To: <ZyAnSAw34jwWicJl@slm.duckdns.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Oct 28, 2024 at 11:05:48AM +0100, Maxime Ripard wrote:
-> On Thu, Oct 24, 2024 at 07:06:36AM -1000, Tejun Heo wrote:
-> > Hello,
-> > 
-> > On Thu, Oct 24, 2024 at 09:20:43AM +0200, Maxime Ripard wrote:
-> > ...
-> > > > Yeah, let's not use "dev" name for this. As Waiman pointed out, it conflicts
-> > > > with the devices controller from cgroup1. While cgroup1 is mostly
-> > > > deprecated, the same features are provided through BPF in systemd using the
-> > > > same terminologies, so this is going to be really confusing.
-> > > 
-> > > Yeah, I agree. We switched to dev because we want to support more than
-> > > just DRM, but all DMA-able memory. We have patches to support for v4l2
-> > > and dma-buf heaps, so using the name DRM didn't feel great either.
-> > > 
-> > > Do you have a better name in mind? "device memory"? "dma memory"?
-> > 
-> > Maybe just dma (I think the term isn't used heavily anymore, so the word is
-> > kinda open)? But, hopefully, others have better ideas.
-> > 
-> > > > What happened with Tvrtko's weighted implementation? I've seen many proposed
-> > > > patchsets in this area but as far as I could see none could establish
-> > > > consensus among GPU crowd and that's one of the reasons why nothing ever
-> > > > landed. Is the aim of this patchset establishing such consensus?
-> > > 
-> > > Yeah, we have a consensus by now I think. Valve, Intel, Google, and Red
-> > > Hat have been involved in that series and we all agree on the implementation.
-> > 
-> > That's great to hear.
-> > 
-> > > Tvrtko aims at a different feature set though: this one is about memory
-> > > allocation limits, Tvrtko's about scheduling.
-> > > 
-> > > Scheduling doesn't make much sense for things outside of DRM (and even
-> > > for a fraction of all DRM devices), and it's pretty much orthogonal. So
-> > > i guess you can expect another series from Tvrtko, but I don't think
-> > > they should be considered equivalent or dependent on each other.
-> > 
-> > Yeah, I get that this is about memory and that is about processing capacity,
-> > so the plan is going for separate controllers for each? Or would it be
-> > better to present both under the same controller interface? Even if they're
-> > going to be separate controllers, we at least want to be aligned on how
-> > devices and their configurations are presented in the two controllers.
+On Mon, Oct 28, 2024 at 02:07:36PM -1000, Tejun Heo wrote:
+11;rgb:fcc2/f732/e5d0> Hello,
 > 
-> It's still up in the air, I think.
+> Luca is reporting that cgroups which have kvm instances inside never
+> complete freezing. This can be trivially reproduced:
 > 
-> My personal opinion is that there's only DRM (and accel) devices that
-> really care about scheduling constraints anyway, so it wouldn't (have
-> to) be as generic as this one.
-
-If they represent different resources that aren't always controlled in
-conjunction, it makes sense to me to have separate controllers as well.
-
-Especially if a merged version would have separate control files for
-each resource anyway (dev.region.*, dev.weight etc.)
-
-> And if we would call it dma, then the naming becomes a bit weird since
-> DMA doesn't have much to do with scheduling.
+>   root@test ~# mkdir /sys/fs/cgroup/test
+>   root@test ~# echo $fish_pid > /sys/fs/cgroup/test/cgroup.procs
+>   root@test ~# qemu-system-x86_64 --nographic -enable-kvm
 > 
-> But I guess it's just another instance of the "naming is hard" problem :)
+> and in another terminal:
+> 
+>   root@test ~# echo 1 > /sys/fs/cgroup/test/cgroup.freeze
+>   root@test ~# cat /sys/fs/cgroup/test/cgroup.events
+>   populated 1
+>   frozen 0
+>   root@test ~# for i in (cat /sys/fs/cgroup/test/cgroup.threads); echo $i; cat /proc/$i/stack; end 
+>   2070
+>   [<0>] do_freezer_trap+0x42/0x70
+>   [<0>] get_signal+0x4da/0x870
+>   [<0>] arch_do_signal_or_restart+0x1a/0x1c0
+>   [<0>] syscall_exit_to_user_mode+0x73/0x120
+>   [<0>] do_syscall_64+0x87/0x140
+>   [<0>] entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>   2159
+>   [<0>] do_freezer_trap+0x42/0x70
+>   [<0>] get_signal+0x4da/0x870
+>   [<0>] arch_do_signal_or_restart+0x1a/0x1c0
+>   [<0>] syscall_exit_to_user_mode+0x73/0x120
+>   [<0>] do_syscall_64+0x87/0x140
+>   [<0>] entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>   2160
+>   [<0>] do_freezer_trap+0x42/0x70
+>   [<0>] get_signal+0x4da/0x870
+>   [<0>] arch_do_signal_or_restart+0x1a/0x1c0
+>   [<0>] syscall_exit_to_user_mode+0x73/0x120
+>   [<0>] do_syscall_64+0x87/0x140
+>   [<0>] entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>   2161
+>   [<0>] kvm_nx_huge_page_recovery_worker+0xea/0x680
+>   [<0>] kvm_vm_worker_thread+0x8f/0x2b0
+>   [<0>] kthread+0xe8/0x110
+>   [<0>] ret_from_fork+0x33/0x40
+>   [<0>] ret_from_fork_asm+0x1a/0x30
+>   2164
+>   [<0>] do_freezer_trap+0x42/0x70
+>   [<0>] get_signal+0x4da/0x870
+>   [<0>] arch_do_signal_or_restart+0x1a/0x1c0
+>   [<0>] syscall_exit_to_user_mode+0x73/0x120
+>   [<0>] do_syscall_64+0x87/0x140
+>   [<0>] entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> 
+> The cgroup freezing happens in the signal delivery path but
+> kvm_vm_worker_thread() thread never call into the signal delivery path while
+> joining non-root cgroups, so they never get frozen. Because the cgroup
+> freezer determines whether a given cgroup is frozen by comparing the number
+> of frozen threads to the total number of threads in the cgroup, the cgroup
+> never becomes frozen and users waiting for the state transition may hang
+> indefinitely.
+> 
+> There are two paths that we can take:
+> 
+> 1. Make kvm_vm_worker_thread() call into signal delivery path.
+>    io_wq_worker() is in a similar boat and handles signal delivery and can
+>    be frozen and trapped like regular threads.
+> 
+> 2. Keep the count of threads which can't be frozen per cgroup so that cgroup
+>    freezer can ignore these threads.
+> 
+> #1 is better in that the cgroup will actually be frozen when reported
+> frozen. However, the rather ambiguous criterion we've been using for cgroup
+> freezer is whether the cgroup can be safely snapshotted whil frozen and as
+> long as the workers not being frozen doesn't break that, we can go for #2
+> too.
+> 
+> What do you guys think?
 
-Yes it would be good to have something catchy, easy on the eyes, and
-vaguely familiar. devcomp(ute), devproc, devcpu, devcycles all kind of
-suck. drm and gpu seem too specific for a set that includes npus and
-potentially other accelerators in the future.
+The general assumption (which is broken here) is that kernel threads are
+belonging to the root cgroup, but also they are not safe to freeze, so we're
+fine unless a user moves them to another cgroup, which is generally not a good
+idea for many reasons.
 
-I don't think we want to go full devspace & devtime, either, though.
+However in this case we have a kthread which we want to freeze and which belongs
+to a non-root cgroup, so I think the option #1 is preferable. Option #2 brings
+a notion of special non-freezable threads into a user facing API. Idk if we
+really need this, so I'd avoid this.
 
-How about dmem for this one, and dpu for the other one. For device
-memory and device processing unit, respectively.
+Thanks!
 
