@@ -1,57 +1,55 @@
-Return-Path: <cgroups+bounces-5300-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5301-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DE3C9B3DE6
-	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 23:38:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E6859B3ED6
+	for <lists+cgroups@lfdr.de>; Tue, 29 Oct 2024 01:07:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 268A6B21846
-	for <lists+cgroups@lfdr.de>; Mon, 28 Oct 2024 22:38:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E741E283A21
+	for <lists+cgroups@lfdr.de>; Tue, 29 Oct 2024 00:07:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66C7A1F12E1;
-	Mon, 28 Oct 2024 22:38:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30A097E1;
+	Tue, 29 Oct 2024 00:07:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gfPXs3DI"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D6Z4hoJv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E3AA1EE00E
-	for <cgroups@vger.kernel.org>; Mon, 28 Oct 2024 22:38:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDE981361;
+	Tue, 29 Oct 2024 00:07:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730155111; cv=none; b=P4A27EthrYX0pr+PFgeCdWLIuS//0vr06xfieZc1PoGU2uWGiUck8bDE3wOvKcTK++zj/fxZaIgnpbNhI8h0sbvm8km7N5/ukJmf0H2uZd/c8vOixQfxpGhqj3+vo+9lmh1eS9I/y9NHu+tK6TIaN2CCyYlIezR0TYHabmJrDMo=
+	t=1730160458; cv=none; b=gjFDuDII6nLoLuIw0MRc2j9dLtyWN25z6R2XwRqQHG27KFekKGE7ZJBV3T03N2lJCtUsYAXMCy6Iwq3I9yFtp0fgQHbUaD4bKk5ut5NERpF1U8Rojgj2Zih2KFBUQ1PaX18KK0uWZ4ESxkQg6RdcpONKjzt4xTTbL2O3kCz9ayY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730155111; c=relaxed/simple;
-	bh=3kAJ5fLNsvxbUusp/GUr3EXaxom87TbU8FVUXa8qNpU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r7EG+zGipMJUu4r/1mvixCrMDxa8Wny1Cxx7cOwUQyxq9T/grPdLmpi1WWh2ItHJCcZhSE9ohPLfzwoi0nCbuWNDfWfxI7N9UuZnVXAT81NrqEDTEmJZs3bgfSCuIyMPA/4ppuv2IdBGREt9KrtxxrVk0QrWiJ7CEU2pwXxRf7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gfPXs3DI; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 28 Oct 2024 15:38:12 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1730155103;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bwLK6C+LIHsSNngRkDjly76woCmDfdoJJBIoyZxpefk=;
-	b=gfPXs3DIE87maV//JfRwM0t7efKE41bpOiF3xgjdXE/I3w+No0ES7jpsFkVQ8JF2bZfBYd
-	tBk1G4DPwru2/rXmlMfertXT43xysWl6HChbe9n70TskUmM5pvWSJYBZkE5EVbeALnGS6X
-	oXyc/tfy1W8TdE63D367dqpHaIltCCE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Joshua Hahn <joshua.hahnjy@gmail.com>
-Cc: hannes@cmpxchg.org, nphamcs@gmail.com, mhocko@kernel.org, 
-	roman.gushchin@linux.dev, muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com, 
-	mkoutny@suse.com, corbet@lwn.net, lnyng@meta.com, akpm@linux-foundation.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v3 1/1] memcg/hugetlb: Adding hugeTLB counters to memcg
-Message-ID: <t5t72ygnlnb2oobagh35a5nyg7h4n4ir6dcm5mkebzbzj3ph7d@37i64rldiw5j>
-References: <20241028210505.1950884-1-joshua.hahnjy@gmail.com>
+	s=arc-20240116; t=1730160458; c=relaxed/simple;
+	bh=KptdeRRbU7AnepZinMT4SpFDd5VqMpOu7a8/xVk6MK4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Md38/4u/pkoYHguG84e4Uq5lfSJwLI6oAcWGajEkgeA6rv3S9Yy0EXYeKuI1QBfzy8zvy/sOXGcr6x1wvDDTPwyj/m1Q/s4RtwBQFKZMMm/ra3ccbYUHy1SnfHwMpR3FaTHVcDVR0mF4wJu375nREKV0O+c0YEMrQ9vlyyQovbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D6Z4hoJv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99BF1C4CEC3;
+	Tue, 29 Oct 2024 00:07:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730160457;
+	bh=KptdeRRbU7AnepZinMT4SpFDd5VqMpOu7a8/xVk6MK4=;
+	h=Date:From:To:Cc:Subject:From;
+	b=D6Z4hoJvuhwdU6BN12XsAPkOdT8qQOy2s/6Mz48u0SWvK/ahHhi4JTD7lbdNvbhqG
+	 Xm7gGykod2Uc7jTvvQm5kfE9kFRrbpRV5kZHoXnCCyGKMgCJ137HAtTs6QFMQ8mS5c
+	 kyfuw4mE+NooBFilKTDILkam9WXAODVCr8SnCf21eEjMOuIa80MoXcIZSysYBghwhr
+	 3T9arPC/Xjf1XwyF1p8ddk4cflUPHIDrSX5Ck5UZt80lPWbKb19vRJsZraiUbfErN9
+	 zLQUD2IyT78WTsjG72CVpZ37NHjdfJiCTX9o6N3CXSFziA2rbYc8t8bIF6iBirOH7i
+	 WLyCX2RLcNPVQ==
+Date: Mon, 28 Oct 2024 14:07:36 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Paolo Bonzini <pbonzini@redhat.com>, Luca Boccassi <bluca@debian.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>
+Cc: kvm@vger.kernel.org, cgroups@vger.kernel.org,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	linux-kernel@vger.kernel.org
+Subject: cgroup2 freezer and kvm_vm_worker_thread()
+Message-ID: <ZyAnSAw34jwWicJl@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -60,57 +58,85 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241028210505.1950884-1-joshua.hahnjy@gmail.com>
-X-Migadu-Flow: FLOW_OUT
 
-On Mon, Oct 28, 2024 at 02:05:05PM GMT, Joshua Hahn wrote:
-> This patch introduces a new counter to memory.stat that tracks hugeTLB
-> usage, only if hugeTLB accounting is done to memory.current. This
-> feature is enabled the same way hugeTLB accounting is enabled, via
-> the memory_hugetlb_accounting mount flag for cgroupsv2.
-> 
-> 1. Why is this patch necessary?
-> Currently, memcg hugeTLB accounting is an opt-in feature [1] that adds
-> hugeTLB usage to memory.current. However, the metric is not reported in
-> memory.stat. Given that users often interpret memory.stat as a breakdown
-> of the value reported in memory.current, the disparity between the two
-> reports can be confusing. This patch solves this problem by including
-> the metric in memory.stat as well, but only if it is also reported in
-> memory.current (it would also be confusing if the value was reported in
-> memory.stat, but not in memory.current)
-> 
-> Aside from the consistency between the two files, we also see benefits
-> in observability. Userspace might be interested in the hugeTLB footprint
-> of cgroups for many reasons. For instance, system admins might want to
-> verify that hugeTLB usage is distributed as expected across tasks: i.e.
-> memory-intensive tasks are using more hugeTLB pages than tasks that
-> don't consume a lot of memory, or are seen to fault frequently. Note that
-> this is separate from wanting to inspect the distribution for limiting
-> purposes (in which case, hugeTLB controller makes more sense).
-> 
-> 2. We already have a hugeTLB controller. Why not use that?
-> It is true that hugeTLB tracks the exact value that we want. In fact, by
-> enabling the hugeTLB controller, we get all of the observability
-> benefits that I mentioned above, and users can check the total hugeTLB
-> usage, verify if it is distributed as expected, etc.
-> 
-> With this said, there are 2 problems:
-> (a) They are still not reported in memory.stat, which means the
->     disparity between the memcg reports are still there.
-> (b) We cannot reasonably expect users to enable the hugeTLB controller
->     just for the sake of hugeTLB usage reporting, especially since
->     they don't have any use for hugeTLB usage enforcing [2].
-> 
-> [1] https://lore.kernel.org/all/20231006184629.155543-1-nphamcs@gmail.com/
-> [2] Of course, we can't make a new patch for every feature that can be
->     duplicated. However, since the existing solution of enabling the
->     hugeTLB controller is an imperfect solution that still leaves a
->     discrepancy between memory.stat and memory.curent, I think that it
->     is reasonable to isolate the feature in this case.
->  
-> Suggested-by: Nhat Pham <nphamcs@gmail.com>
-> Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
+Hello,
 
-Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+Luca is reporting that cgroups which have kvm instances inside never
+complete freezing. This can be trivially reproduced:
+
+  root@test ~# mkdir /sys/fs/cgroup/test
+  root@test ~# echo $fish_pid > /sys/fs/cgroup/test/cgroup.procs
+  root@test ~# qemu-system-x86_64 --nographic -enable-kvm
+
+and in another terminal:
+
+  root@test ~# echo 1 > /sys/fs/cgroup/test/cgroup.freeze
+  root@test ~# cat /sys/fs/cgroup/test/cgroup.events
+  populated 1
+  frozen 0
+  root@test ~# for i in (cat /sys/fs/cgroup/test/cgroup.threads); echo $i; cat /proc/$i/stack; end 
+  2070
+  [<0>] do_freezer_trap+0x42/0x70
+  [<0>] get_signal+0x4da/0x870
+  [<0>] arch_do_signal_or_restart+0x1a/0x1c0
+  [<0>] syscall_exit_to_user_mode+0x73/0x120
+  [<0>] do_syscall_64+0x87/0x140
+  [<0>] entry_SYSCALL_64_after_hwframe+0x76/0x7e
+  2159
+  [<0>] do_freezer_trap+0x42/0x70
+  [<0>] get_signal+0x4da/0x870
+  [<0>] arch_do_signal_or_restart+0x1a/0x1c0
+  [<0>] syscall_exit_to_user_mode+0x73/0x120
+  [<0>] do_syscall_64+0x87/0x140
+  [<0>] entry_SYSCALL_64_after_hwframe+0x76/0x7e
+  2160
+  [<0>] do_freezer_trap+0x42/0x70
+  [<0>] get_signal+0x4da/0x870
+  [<0>] arch_do_signal_or_restart+0x1a/0x1c0
+  [<0>] syscall_exit_to_user_mode+0x73/0x120
+  [<0>] do_syscall_64+0x87/0x140
+  [<0>] entry_SYSCALL_64_after_hwframe+0x76/0x7e
+  2161
+  [<0>] kvm_nx_huge_page_recovery_worker+0xea/0x680
+  [<0>] kvm_vm_worker_thread+0x8f/0x2b0
+  [<0>] kthread+0xe8/0x110
+  [<0>] ret_from_fork+0x33/0x40
+  [<0>] ret_from_fork_asm+0x1a/0x30
+  2164
+  [<0>] do_freezer_trap+0x42/0x70
+  [<0>] get_signal+0x4da/0x870
+  [<0>] arch_do_signal_or_restart+0x1a/0x1c0
+  [<0>] syscall_exit_to_user_mode+0x73/0x120
+  [<0>] do_syscall_64+0x87/0x140
+  [<0>] entry_SYSCALL_64_after_hwframe+0x76/0x7e
+
+The cgroup freezing happens in the signal delivery path but
+kvm_vm_worker_thread() thread never call into the signal delivery path while
+joining non-root cgroups, so they never get frozen. Because the cgroup
+freezer determines whether a given cgroup is frozen by comparing the number
+of frozen threads to the total number of threads in the cgroup, the cgroup
+never becomes frozen and users waiting for the state transition may hang
+indefinitely.
+
+There are two paths that we can take:
+
+1. Make kvm_vm_worker_thread() call into signal delivery path.
+   io_wq_worker() is in a similar boat and handles signal delivery and can
+   be frozen and trapped like regular threads.
+
+2. Keep the count of threads which can't be frozen per cgroup so that cgroup
+   freezer can ignore these threads.
+
+#1 is better in that the cgroup will actually be frozen when reported
+frozen. However, the rather ambiguous criterion we've been using for cgroup
+freezer is whether the cgroup can be safely snapshotted whil frozen and as
+long as the workers not being frozen doesn't break that, we can go for #2
+too.
+
+What do you guys think?
+
+Thanks.
+
+-- 
+tejun
 
