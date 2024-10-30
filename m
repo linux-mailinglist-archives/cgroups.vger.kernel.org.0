@@ -1,133 +1,129 @@
-Return-Path: <cgroups+bounces-5330-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5331-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FD309B61F0
-	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2024 12:35:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43D619B628A
+	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2024 13:05:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B7FE1F2491B
-	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2024 11:35:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE9281F21A1B
+	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2024 12:05:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B831E4929;
-	Wed, 30 Oct 2024 11:35:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFCA21E882A;
+	Wed, 30 Oct 2024 12:05:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="XjLDP5HO"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N/q3N7ou"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 296021E4937
-	for <cgroups@vger.kernel.org>; Wed, 30 Oct 2024 11:35:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0AFF1E8824
+	for <cgroups@vger.kernel.org>; Wed, 30 Oct 2024 12:05:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730288130; cv=none; b=RwiY0sjsTxIgxYTWFdl8dQCCATyf1ip/jkjrXOG7lEcdf1Si15ykj1Of+lylyuCoExI7kYy3NG5NfK5H6AbBZ0/cVI9y4Lk3HfX2wmx+FDW+TOMZ8tglAJvQwjnn/kcTDJDWOfTCUjEPrVJStuWRIk+Ko7+Pzp74+6Ih5mWztVY=
+	t=1730289935; cv=none; b=ospZzZdbcWt61DfDDFN2eZfp17we7jpowUQkDp7NNzKUOISIzJhxStRPF1wGOz7sUyce+FwS3UBVBESmaNDnOn3pAgMVlWWbNRxY8kC9S/dwEfsD/n7MvzfYQq9zasQX5ErZA1R/UZ26ZyDljrS9Vj+8TphfQmHiiP690izph/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730288130; c=relaxed/simple;
-	bh=1fyz08x/Kfb96WrpapF+TWctlqmSXy+pjOmTfAbWKgQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mVxrGaA63y3V5YmcKLi54ODMzhnYcMgva3I+CJMXM3nKwCFs+27vkPH6PKWLhfxUusH4vwThs0jllcTkdTt2tdZP7Y7cRPotYjfePdETo0s2TvuzO+Q6tjBi6Q8sE4zVaUyw4jjPdFgfj4WEbYrFYRTn2L/USQDI0gPyij+dPrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=XjLDP5HO; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-5c9388a00cfso7491375a12.3
-        for <cgroups@vger.kernel.org>; Wed, 30 Oct 2024 04:35:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1730288126; x=1730892926; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=P6sR+aml3UxyTUx7NT7wVuDjaBfNaFGGHSlzNTNXs/8=;
-        b=XjLDP5HONNG9cLow71h+Nn5VS6utY8Am4mjYDywzDczSXwtXh+0NjqpmbZA3+C7CkB
-         FMLJEDMtZHaIATi+yL7Mq3+LkTSsFOHiNHkNrwBnJtgzJq7zFIqq9S/LX+QaXHumatc5
-         arebOkkiAq0KlGi2btCjpsCfJSHtBrTzUpjycGvrCbgAnywxsY5VM1San14DYXVmhO6O
-         fbEJzG0X0p9Tk2SMZpUqpXhx4tQ9EJ9ZBX16pzBK1mjrdMRO+yiq4FzaewL1+NMLqew3
-         v0SXlYt3T8b5WNB7R+8ostMEy0knf3PgskyatvCdjhr0yUdXIhPuXyXOA99Ixy2Lcsjg
-         NRoQ==
+	s=arc-20240116; t=1730289935; c=relaxed/simple;
+	bh=s2jIZKjVASSagWv7J8y2mCoPBBGL1TgH2aw6o/mzsms=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Sk/RXOO6YwKhsqfi+g8MWplUXBdl0ixkyxFLEY2+kZ69Flg+72hz+xpYY0jVentdIgWEiEJxfQ8qsfJzBrFxCEKfFF3pLjc7Ol/+s0KjifwCi93F/0Wtf7YVCKS/wzEDDUyitSizZTyUnoZkxZA6/9Iiw2uUBgQXfItgXfp+Owk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N/q3N7ou; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1730289930;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zN9Omir7RGktU56FM49D9j8ooMAVlCcEhdMTzZ3iJDM=;
+	b=N/q3N7ous+sZt/NqO/3gLq7xes7a6VYv+yopqr0uPd1DiStCc66ha5UKxKVWc+Ol0prHlh
+	l9BhNqoe1aQo744z+IL6ANhFpR/c5bC7RDgYvCjTxjBtTLRF+T0JAxsYdhyyI4I5N15OH0
+	NOcr9UA3S3dDk/e2JAL0MSkviC5MrJ4=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-245-apGzo8QMOw-KWhFFZ6pdmg-1; Wed, 30 Oct 2024 08:05:29 -0400
+X-MC-Unique: apGzo8QMOw-KWhFFZ6pdmg-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4316138aff6so48991385e9.1
+        for <cgroups@vger.kernel.org>; Wed, 30 Oct 2024 05:05:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730288126; x=1730892926;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P6sR+aml3UxyTUx7NT7wVuDjaBfNaFGGHSlzNTNXs/8=;
-        b=uN6jRPpYl+qXEdAIMkJSaapL0CG9Cvrz0lJcGAz0MDX7YG+dot4syIuAC+0fAIbeYJ
-         P1atbVT48JSh1LA4gXY3enGjoQ0cjVJON+tQ6+pwMROcMs3ajf/r92j5NkaUweZ5hCF4
-         n9NRaHRLIzLTZzONHOv1wq/Rj+KQpJGyfWnKhdrrpLid1WqLD61+fklX74tetfC/VifK
-         Grm1ashyyz7QQk3e7yYxwazJOUSg0FJ6CJUnIHs9qQ+1mfmLb6HpngFub7AMgNComGDs
-         UpQWAMpfP2bW0mcL0mejqhN6D6zOjocTWvnT4tm1KR47fDWFdFqBiEEkf59dL3jy84UX
-         gfUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUumBimZCo4YcprqtF1MCcjAQfyp7IB9FC35QqP8s8qE3sZfO69T08vDTjvAjgR+h7KzfvcRW3j@vger.kernel.org
-X-Gm-Message-State: AOJu0YyXr785P+RW0g/P5Lds1ulJug904CfB4AsnlRBHvUGPn3JVKYs9
-	xNpSa8GPIjGfvcjRuLiKiGraMuw6wDeJATOWdaiRdutUc/n7pYNud/XNP/DKXwo=
-X-Google-Smtp-Source: AGHT+IF1UTGG2OAepUDBUpyfkcQLgws5vfUoxVF55Jzoc7e5WgTf3wnHDi9okD0LZFzSuEMoKEAu+w==
-X-Received: by 2002:a17:906:f597:b0:a99:ebcc:bfbe with SMTP id a640c23a62f3a-a9de5d992f1mr1459936866b.27.1730288126292;
-        Wed, 30 Oct 2024 04:35:26 -0700 (PDT)
-Received: from localhost (109-81-81-105.rct.o2.cz. [109.81.81.105])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9b1f298319sm556719966b.105.2024.10.30.04.35.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Oct 2024 04:35:26 -0700 (PDT)
-Date: Wed, 30 Oct 2024 12:35:25 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Joshua Hahn <joshua.hahnjy@gmail.com>
-Cc: hannes@cmpxchg.org, nphamcs@gmail.com, shakeel.butt@linux.dev,
-	roman.gushchin@linux.dev, muchun.song@linux.dev, tj@kernel.org,
-	lizefan.x@bytedance.com, mkoutny@suse.com, corbet@lwn.net,
-	lnyng@meta.com, akpm@linux-foundation.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v3 1/1] memcg/hugetlb: Adding hugeTLB counters to memcg
-Message-ID: <ZyIZ_Sq9D_v5v43l@tiehlicka>
-References: <20241028210505.1950884-1-joshua.hahnjy@gmail.com>
+        d=1e100.net; s=20230601; t=1730289928; x=1730894728;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zN9Omir7RGktU56FM49D9j8ooMAVlCcEhdMTzZ3iJDM=;
+        b=pg+GIkxZrUIJsIT7/vDJAljO0UjJkpvNtrEmWrnHEXJIjyspsX7Wf8dv4mgCjCNS1Y
+         Jpx5q8JSFqF+cd3vBuTsCrtJlReossQrKKZlo5h6JdNBwKgVswp31w2Rzhp5Zhnu7L4n
+         bvTbNDIfffj9Qy+y/EMcrtyNQzdLz1yEa1DnKsfdgSVTfEELmFRE0r7NcboFwo0THHXf
+         Xx5fHj8FMz34rCrhA+KZ5F29QI6/NbJmGVu3x/dbSv2+nGthiMJwxOlSjrIaCwZdXh06
+         sw9TKlnDs8UxW7NqjBsmwElIa/bbtC1TAD46JqOnPsxuPHUd/50/4kKpsx556egdOrDQ
+         BHeA==
+X-Forwarded-Encrypted: i=1; AJvYcCW48dQL7E2jvVHHWrgYWqnmpUwAB85qt8XfHOO4mElOxVT+7IliK1gCGX2Ng6f4nDjTpKXII2Vh@vger.kernel.org
+X-Gm-Message-State: AOJu0YzDecFskOwnlkMynYSbuNqZpavdszsF+/k7Aih9n0Ag0MJ/Nmfd
+	f+o1RsUh+kpWWC9Ma3nxC5N9Wuqp+PtBIpzMnktP9fLCfnoD66aSreUEeBxYn11VnU2ZFsJ4sQQ
+	4EQKbQuRmxyIu0UfcRYU2zF1/Xo/AdOksRVPjru5nJ9Bt4fstlPpoRcMfaE5ZNLxDaDnWpVPn5d
+	q+YQkaVlCyaw/KZ5VwQimZkeC4DhRp0A==
+X-Received: by 2002:a05:600c:4f03:b0:42c:ba83:3f0e with SMTP id 5b1f17b1804b1-4319ac7078dmr138182545e9.7.1730289928269;
+        Wed, 30 Oct 2024 05:05:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGPOcTvI2OpHfBdeRHGM/CwVAnnPo4nT0ZvRaeeOvD/HvCljKuLnaVP9aPLTQINmXKlAk/UDwLwIy9SKX5EhrI=
+X-Received: by 2002:a05:600c:4f03:b0:42c:ba83:3f0e with SMTP id
+ 5b1f17b1804b1-4319ac7078dmr138182275e9.7.1730289927895; Wed, 30 Oct 2024
+ 05:05:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241028210505.1950884-1-joshua.hahnjy@gmail.com>
+References: <ZyAnSAw34jwWicJl@slm.duckdns.org> <1998a069-50a0-46a2-8420-ebdce7725720@redhat.com>
+ <ZyF858Ruj-jgdLLw@slm.duckdns.org>
+In-Reply-To: <ZyF858Ruj-jgdLLw@slm.duckdns.org>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Wed, 30 Oct 2024 13:05:16 +0100
+Message-ID: <CABgObfYR6e0XV94USugVOO5XcOfyctr1rAm+ZWJwfu9AHYPtiA@mail.gmail.com>
+Subject: Re: cgroup2 freezer and kvm_vm_worker_thread()
+To: Tejun Heo <tj@kernel.org>
+Cc: Luca Boccassi <bluca@debian.org>, Roman Gushchin <roman.gushchin@linux.dev>, kvm@vger.kernel.org, 
+	cgroups@vger.kernel.org, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon 28-10-24 14:05:05, Joshua Hahn wrote:
-[...]
-> Changelog
-> v3:
->   * Removed check for whether CGRP_ROOT_HUGETLB_ACCOUNTING is on, since
->     this check is already handled by lruvec_stat_mod (and doing the
->     check in hugetlb.c actually breaks the build if MEMCG is not
->     enabled.
-[...]
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 190fa05635f4..fbb10e52d7ea 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -1925,6 +1925,7 @@ void free_huge_folio(struct folio *folio)
->  				     pages_per_huge_page(h), folio);
->  	hugetlb_cgroup_uncharge_folio_rsvd(hstate_index(h),
->  					  pages_per_huge_page(h), folio);
-> +	lruvec_stat_mod_folio(folio, NR_HUGETLB, -pages_per_huge_page(h));
->  	mem_cgroup_uncharge(folio);
->  	if (restore_reserve)
->  		h->resv_huge_pages++;
-> @@ -3093,6 +3094,7 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
->  
->  	if (!memcg_charge_ret)
->  		mem_cgroup_commit_charge(folio, memcg);
-> +	lruvec_stat_mod_folio(folio, NR_HUGETLB, pages_per_huge_page(h));
->  	mem_cgroup_put(memcg);
->  
->  	return folio;
+On Wed, Oct 30, 2024 at 1:25=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
+> > I'm not sure if the KVM worker thread should process signals.  We want =
+it
+> > to take the CPU time it uses from the guest, but otherwise it's not run=
+ning
+> > on behalf of userspace in the way that io_wq_worker() is.
+>
+> I see, so io_wq_worker()'s handle signals only partially. It sets
+> PF_USER_WORKER which ignores fatal signals, so the only signals which tak=
+e
+> effect are STOP/CONT (and friends) which is handled in do_signal_stop()
+> which is also where the cgroup2 freezer is implemented.
 
-I do not see any specific checks for CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING
-in these paths. I guess you wanted to say that you rely on
-mem_cgroup_commit_charge setting memcg pointer which then __lruvec_stat_mod_folio
-relies on when updating stats.
+What about SIGKILL? That's the one that I don't want to have for KVM
+workers, because they should only stop when the file descriptor is
+closed.
 
-I suspect this all is done because you want a global counter to be
-updated as well, right? Changelog doesn't say anything about that
-though. Why is this needed when /proc/meminfo already describes the
-global hugetlb usage?
--- 
-Michal Hocko
-SUSE Labs
+(Replying to Luca: the kthreads are dropping some internal data
+structures that KVM had to "de-optimize" to deal with processor bugs.
+They allow the data structures to be rebuilt in the optimal way using
+large pages).
+
+> Given that the kthreads are tied to user processes, I think it'd be bette=
+r
+> to behave similarly to user tasks as possible in this regard if userspace
+> being able to stop/cont these kthreads are okay.
+
+Yes, I totally agree with you on that, I'm just not sure of the best
+way to do it.
+
+I will try keeping the kthread and adding allow_signal(SIGSTOP).  That
+should allow me to process the SIGSTOP via get_signal().
+
+Paolo
+
 
