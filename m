@@ -1,129 +1,126 @@
-Return-Path: <cgroups+bounces-5331-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5332-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43D619B628A
-	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2024 13:05:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8154A9B635F
+	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2024 13:51:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE9281F21A1B
-	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2024 12:05:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 462E52823F3
+	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2024 12:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFCA21E882A;
-	Wed, 30 Oct 2024 12:05:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N/q3N7ou"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92AC71EABAD;
+	Wed, 30 Oct 2024 12:51:12 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0AFF1E8824
-	for <cgroups@vger.kernel.org>; Wed, 30 Oct 2024 12:05:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BDD31E32D8;
+	Wed, 30 Oct 2024 12:51:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730289935; cv=none; b=ospZzZdbcWt61DfDDFN2eZfp17we7jpowUQkDp7NNzKUOISIzJhxStRPF1wGOz7sUyce+FwS3UBVBESmaNDnOn3pAgMVlWWbNRxY8kC9S/dwEfsD/n7MvzfYQq9zasQX5ErZA1R/UZ26ZyDljrS9Vj+8TphfQmHiiP690izph/8=
+	t=1730292672; cv=none; b=a/LRJpVJwnCFAMbvI6bnD8ulB2+Xsa2172/c6CZRZSPMasjKTh2QByzeGXSNcrvf+zia93o4RYOXidSyKC38cv882/13QTFJyYvh4FseH8B/bGphs18fCZ0Ep5rqf3dxaiJNz1DbafnuxRpcnGOCji/ukQCnVSu98yUoJ8+7rsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730289935; c=relaxed/simple;
-	bh=s2jIZKjVASSagWv7J8y2mCoPBBGL1TgH2aw6o/mzsms=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Sk/RXOO6YwKhsqfi+g8MWplUXBdl0ixkyxFLEY2+kZ69Flg+72hz+xpYY0jVentdIgWEiEJxfQ8qsfJzBrFxCEKfFF3pLjc7Ol/+s0KjifwCi93F/0Wtf7YVCKS/wzEDDUyitSizZTyUnoZkxZA6/9Iiw2uUBgQXfItgXfp+Owk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N/q3N7ou; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1730289930;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zN9Omir7RGktU56FM49D9j8ooMAVlCcEhdMTzZ3iJDM=;
-	b=N/q3N7ous+sZt/NqO/3gLq7xes7a6VYv+yopqr0uPd1DiStCc66ha5UKxKVWc+Ol0prHlh
-	l9BhNqoe1aQo744z+IL6ANhFpR/c5bC7RDgYvCjTxjBtTLRF+T0JAxsYdhyyI4I5N15OH0
-	NOcr9UA3S3dDk/e2JAL0MSkviC5MrJ4=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-245-apGzo8QMOw-KWhFFZ6pdmg-1; Wed, 30 Oct 2024 08:05:29 -0400
-X-MC-Unique: apGzo8QMOw-KWhFFZ6pdmg-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4316138aff6so48991385e9.1
-        for <cgroups@vger.kernel.org>; Wed, 30 Oct 2024 05:05:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730289928; x=1730894728;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zN9Omir7RGktU56FM49D9j8ooMAVlCcEhdMTzZ3iJDM=;
-        b=pg+GIkxZrUIJsIT7/vDJAljO0UjJkpvNtrEmWrnHEXJIjyspsX7Wf8dv4mgCjCNS1Y
-         Jpx5q8JSFqF+cd3vBuTsCrtJlReossQrKKZlo5h6JdNBwKgVswp31w2Rzhp5Zhnu7L4n
-         bvTbNDIfffj9Qy+y/EMcrtyNQzdLz1yEa1DnKsfdgSVTfEELmFRE0r7NcboFwo0THHXf
-         Xx5fHj8FMz34rCrhA+KZ5F29QI6/NbJmGVu3x/dbSv2+nGthiMJwxOlSjrIaCwZdXh06
-         sw9TKlnDs8UxW7NqjBsmwElIa/bbtC1TAD46JqOnPsxuPHUd/50/4kKpsx556egdOrDQ
-         BHeA==
-X-Forwarded-Encrypted: i=1; AJvYcCW48dQL7E2jvVHHWrgYWqnmpUwAB85qt8XfHOO4mElOxVT+7IliK1gCGX2Ng6f4nDjTpKXII2Vh@vger.kernel.org
-X-Gm-Message-State: AOJu0YzDecFskOwnlkMynYSbuNqZpavdszsF+/k7Aih9n0Ag0MJ/Nmfd
-	f+o1RsUh+kpWWC9Ma3nxC5N9Wuqp+PtBIpzMnktP9fLCfnoD66aSreUEeBxYn11VnU2ZFsJ4sQQ
-	4EQKbQuRmxyIu0UfcRYU2zF1/Xo/AdOksRVPjru5nJ9Bt4fstlPpoRcMfaE5ZNLxDaDnWpVPn5d
-	q+YQkaVlCyaw/KZ5VwQimZkeC4DhRp0A==
-X-Received: by 2002:a05:600c:4f03:b0:42c:ba83:3f0e with SMTP id 5b1f17b1804b1-4319ac7078dmr138182545e9.7.1730289928269;
-        Wed, 30 Oct 2024 05:05:28 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGPOcTvI2OpHfBdeRHGM/CwVAnnPo4nT0ZvRaeeOvD/HvCljKuLnaVP9aPLTQINmXKlAk/UDwLwIy9SKX5EhrI=
-X-Received: by 2002:a05:600c:4f03:b0:42c:ba83:3f0e with SMTP id
- 5b1f17b1804b1-4319ac7078dmr138182275e9.7.1730289927895; Wed, 30 Oct 2024
- 05:05:27 -0700 (PDT)
+	s=arc-20240116; t=1730292672; c=relaxed/simple;
+	bh=amtuKIZRAbExp3+zXPKGfjQ5RMpg7nZEIXnnYLkh6os=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ApDoL4fjRD3Wv/uyKX4kvD1ooARG4iawAhGff3AB/eXmtpjirQVjriiQA9VFsG+tgvcO10WkofsPxwWM3RchFny/HAW1hliWrDQjwcO+09ff0WOg5im+urtJ5Zu/xNPMeO+pQoV0j7a6DPkLbgpf0NnQOzs9aIx2VAf3jAn3VHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Xdn1G6lGqz6GDn7;
+	Wed, 30 Oct 2024 20:46:10 +0800 (CST)
+Received: from mscpeml500003.china.huawei.com (unknown [7.188.49.51])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0915F140429;
+	Wed, 30 Oct 2024 20:51:02 +0800 (CST)
+Received: from [10.123.123.154] (10.123.123.154) by
+ mscpeml500003.china.huawei.com (7.188.49.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Wed, 30 Oct 2024 15:51:01 +0300
+Message-ID: <770bf300-1dbb-42fc-8958-b9307486178e@huawei-partners.com>
+Date: Wed, 30 Oct 2024 15:51:00 +0300
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZyAnSAw34jwWicJl@slm.duckdns.org> <1998a069-50a0-46a2-8420-ebdce7725720@redhat.com>
- <ZyF858Ruj-jgdLLw@slm.duckdns.org>
-In-Reply-To: <ZyF858Ruj-jgdLLw@slm.duckdns.org>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Wed, 30 Oct 2024 13:05:16 +0100
-Message-ID: <CABgObfYR6e0XV94USugVOO5XcOfyctr1rAm+ZWJwfu9AHYPtiA@mail.gmail.com>
-Subject: Re: cgroup2 freezer and kvm_vm_worker_thread()
-To: Tejun Heo <tj@kernel.org>
-Cc: Luca Boccassi <bluca@debian.org>, Roman Gushchin <roman.gushchin@linux.dev>, kvm@vger.kernel.org, 
-	cgroups@vger.kernel.org, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/3] Cgroup-based THP control
+To: Michal Hocko <mhocko@suse.com>
+CC: <akpm@linux-foundation.org>, <david@redhat.com>, <ryan.roberts@arm.com>,
+	<baohua@kernel.org>, <willy@infradead.org>, <peterx@redhat.com>,
+	<hannes@cmpxchg.org>, <hocko@kernel.org>, <roman.gushchin@linux.dev>,
+	<shakeel.butt@linux.dev>, <muchun.song@linux.dev>, <cgroups@vger.kernel.org>,
+	<linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+	<stepanov.anatoly@huawei.com>, <alexander.kozhevnikov@huawei-partners.com>,
+	<guohanjun@huawei.com>, <weiyongjun1@huawei.com>,
+	<wangkefeng.wang@huawei.com>, <judy.chenhui@huawei.com>,
+	<yusongping@huawei.com>, <artem.kuzin@huawei.com>, <kang.sun@huawei.com>
+References: <20241030083311.965933-1-gutierrez.asier@huawei-partners.com>
+ <ZyHwgjK8t8kWkm9E@tiehlicka>
+Content-Language: en-US
+From: Gutierrez Asier <gutierrez.asier@huawei-partners.com>
+In-Reply-To: <ZyHwgjK8t8kWkm9E@tiehlicka>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: mscpeml500003.china.huawei.com (7.188.49.51) To
+ mscpeml500003.china.huawei.com (7.188.49.51)
 
-On Wed, Oct 30, 2024 at 1:25=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
-> > I'm not sure if the KVM worker thread should process signals.  We want =
-it
-> > to take the CPU time it uses from the guest, but otherwise it's not run=
-ning
-> > on behalf of userspace in the way that io_wq_worker() is.
->
-> I see, so io_wq_worker()'s handle signals only partially. It sets
-> PF_USER_WORKER which ignores fatal signals, so the only signals which tak=
-e
-> effect are STOP/CONT (and friends) which is handled in do_signal_stop()
-> which is also where the cgroup2 freezer is implemented.
 
-What about SIGKILL? That's the one that I don't want to have for KVM
-workers, because they should only stop when the file descriptor is
-closed.
 
-(Replying to Luca: the kthreads are dropping some internal data
-structures that KVM had to "de-optimize" to deal with processor bugs.
-They allow the data structures to be rebuilt in the optimal way using
-large pages).
+On 10/30/2024 11:38 AM, Michal Hocko wrote:
+> On Wed 30-10-24 16:33:08, gutierrez.asier@huawei-partners.com wrote:
+>> From: Asier Gutierrez <gutierrez.asier@huawei-partners.com>
+>>
+>> Currently THP modes are set globally. It can be an overkill if only some
+>> specific app/set of apps need to get benefits from THP usage. Moreover, various
+>> apps might need different THP settings. Here we propose a cgroup-based THP
+>> control mechanism.
+>>
+>> THP interface is added to memory cgroup subsystem. Existing global THP control
+>> semantics is supported for backward compatibility. When THP modes are set
+>> globally all the changes are propagated to memory cgroups. However, when a
+>> particular cgroup changes its THP policy, the global THP policy in sysfs remains
+>> the same.
+> 
+> Do you have any specific examples where this would be benefitial?
 
-> Given that the kthreads are tied to user processes, I think it'd be bette=
-r
-> to behave similarly to user tasks as possible in this regard if userspace
-> being able to stop/cont these kthreads are okay.
+Now we're mostly focused on database scenarios (MySQL, Redis).  
 
-Yes, I totally agree with you on that, I'm just not sure of the best
-way to do it.
+The main idea is to avoid using a global THP setting that can potentially waste 
+overall resource and have per cgroup granularity.
 
-I will try keeping the kthread and adding allow_signal(SIGSTOP).  That
-should allow me to process the SIGSTOP via get_signal().
+Besides THP are being beneficial for DB performance, we observe high THP 
+"over-usage" by some unrelated apps/services, when "always" mode is enabled 
+globally.
 
-Paolo
+With cgroup-THP, we're able to specify exact "THP-users", and plan to introduce
+an ability to limit the amount of THPs per-cgroup.
+
+We suppose it should be beneficial for some container-based workloads, when 
+certain containers can have different THP-policies, but haven't looked into 
+this case yet.
+
+>> New memcg files are exposed: memory.thp_enabled and memory.thp_defrag, which
+>> have completely the same format as global THP enabled/defrag.
+>>
+>> Child cgroups inherit THP settings from parent cgroup upon creation. Particular
+>> cgroup mode changes aren't propagated to child cgroups.
+> 
+> So this breaks hierarchical property, doesn't it? In other words if a
+> parent cgroup would like to enforce a certain policy to all descendants
+> then this is not really possible. 
+
+The first idea was to have some flexibility when changing THP policies. 
+
+I will submit a new patch set which will enforce the cgroup hierarchy and change all
+the children recursively.
+
+-- 
+Asier Gutierrez
+Huawei
 
 
