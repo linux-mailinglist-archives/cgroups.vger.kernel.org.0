@@ -1,135 +1,155 @@
-Return-Path: <cgroups+bounces-5338-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5339-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D63F39B66B2
-	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2024 15:58:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DDA59B66C5
+	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2024 16:01:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 812A41F22192
-	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2024 14:58:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 617091C21741
+	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2024 15:01:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 839111F4710;
-	Wed, 30 Oct 2024 14:58:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7939B12D1FA;
+	Wed, 30 Oct 2024 15:01:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="vnFqCP7T"
 X-Original-To: cgroups@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D27B43173;
-	Wed, 30 Oct 2024 14:58:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B702D1F12E5
+	for <cgroups@vger.kernel.org>; Wed, 30 Oct 2024 15:01:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730300291; cv=none; b=Eg9nc1N+7wVZ4z2rQnxzWiPeIOp5SWQImyomqUZxqyZMKJDwUidEgQA44Xic9fjEOj26BGpkcTgDz/QvMaQGrbfej8ALSGYsdH05s35THDpFiCIvaSqg2uuav8h5q8fxQqWd1Ob9kLEy36QFbkmxbjmnvSpeG8B6EmWr+igvgeU=
+	t=1730300471; cv=none; b=RFst9KQu0X3U0GhTtv0haVgEVaPD/0K6rOtfpLL81W1Q9YYcTG/PI0QswS/uLtLWHjbkzyyP/2QnfVIYKneiLJDhBOnUr5T5JRYC6goIDfUSUmZQKGqCg4kNUZZQRMqqacuiz2BCY3KOfyR8xza8aWAHoM0HOau6jjqzqEop+z4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730300291; c=relaxed/simple;
-	bh=WcIB+KKO5hJsYai/GyBGuuWhmswlEVCGJdwusoHNSx4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ptp/dqfm3At9B96kV9hFapCU7+y41f665YBWoBWNCBHogP5V+ADLCDlaWcWphYugMFegIoqeYSQltmYh55bALdglb/423QbtoDHlLs4ct4SebKm9OGOhAanggdWEXX58QeYhW9Mwm239BjaJPZ5Iu2BMLyHEbr8WmgR5PxCw8rA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com; spf=pass smtp.mailfrom=huawei-partners.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei-partners.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei-partners.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Xdqvy6zmCz6HJg7;
-	Wed, 30 Oct 2024 22:56:46 +0800 (CST)
-Received: from mscpeml500003.china.huawei.com (unknown [7.188.49.51])
-	by mail.maildlp.com (Postfix) with ESMTPS id 52EAE140A35;
-	Wed, 30 Oct 2024 22:58:05 +0800 (CST)
-Received: from [10.123.123.154] (10.123.123.154) by
- mscpeml500003.china.huawei.com (7.188.49.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Wed, 30 Oct 2024 17:58:04 +0300
-Message-ID: <b74b8995-3d24-47a9-8dff-6e163690621e@huawei-partners.com>
-Date: Wed, 30 Oct 2024 17:58:04 +0300
+	s=arc-20240116; t=1730300471; c=relaxed/simple;
+	bh=lpvecm1f5pu4GtEx3sl9tf4tvgcFxrIcvbcBaG9U6AE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UdyU6AV3nAcgeOwTThDfx0Egg9lt0/rE/8EYqtOJ5rQ95O5YDUwXOolbbMI4VR7ukhHoOUvo9FhCUdtdo2CcReymtCQujbrvczoC3Yhnl/4BZwJXNRxQG1PmDvLhf9fwapLEb7gNsFKXnFccaDeFY/1LAG9N6B8U6+gMwquoNMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=vnFqCP7T; arc=none smtp.client-ip=209.85.210.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-718119fc061so3724665a34.2
+        for <cgroups@vger.kernel.org>; Wed, 30 Oct 2024 08:01:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1730300468; x=1730905268; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9L+h3DakvrHLU0Mvs5EKdTAhMxHYKDitGx80mazmNoE=;
+        b=vnFqCP7TRxmBq/1uDIIU7xrvKrfeNavTDVCK9hIvEDPW7zwsKbHPnSN2pq7gsds+nA
+         vmtAEifumKq/Jb8nvqdSPeFBXVjiwqK2K/kUDShTAAYd9+aAgxeuNvKbXPszGU2npur+
+         LFhV9gEBivYYX+VPJjik230D1XUwHm+Z9ZwzeeCD1cAQ2Tm0f33xR6yhQARWU+EviCuP
+         X5aXCyPD/7C9A7f6cfo8jjZNlZjCxV8oywr4Y+a4eVHH4ReJqPJdxS/7CUwSHEpPCunF
+         RpSU9/aD7zoowY6PQWIUOvOR1Q/i7V+QKVLckdsxN90V157MFPbmkzs69v6L/ONEjwOm
+         Wz9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730300468; x=1730905268;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9L+h3DakvrHLU0Mvs5EKdTAhMxHYKDitGx80mazmNoE=;
+        b=hZChbWvG9we7saNh/laIsMM8yzYg31xFlHGHIcAg24wCXXxXvCu/zzeLQVvrK7S9fs
+         Vgy5rTTk6Idua4AH8+rAgDq9uTKGbrhfAqRybMB2MmbpK63+cfJlvn4slmDQu9dlcL9P
+         rZjXeHsyMS/W2UEWQz0GjUj3Lvlt9GzsbEaMtRz3wKcoy/K8BwU+GPWfP/CV10JayMrr
+         aR/2krT4l1TwyfNGkbMwim8OHjH5LE/YynbKRk0Er21ohhkIKyDXj8TZl3EFDVLx9Nmd
+         o+db9MkYhAt7g1gNsUPZXwMndBxCFTV0K++/LO8YlNHUqoSU9jkyKX8tMO4bZqJOVDwE
+         OwwA==
+X-Forwarded-Encrypted: i=1; AJvYcCVW37ia6eEDY4fFpHrKA0jznLmmm9GiSp9NCQbFHbgH4HkopgGqshUMIRW3RbyDqFsTuySf+1Da@vger.kernel.org
+X-Gm-Message-State: AOJu0YweuYbjPvIdWSC8I5vlBCfxOHpBWUuw54h4nXeObhklFVNE1msU
+	UBhC+OwU16HEEorTiE3yhOVZGJiwoNJggsol06hiWN5OSEw94pFSeCCol3qOySM=
+X-Google-Smtp-Source: AGHT+IG158ptjqLIj0gjGFfB685gOEBJUFjuG7Y8dRLeCk9VafXrmZFUa5vVNmgGQg2umHSprc+JtQ==
+X-Received: by 2002:a05:6358:729c:b0:1c5:e2eb:2fba with SMTP id e5c5f4694b2df-1c5e2eb32admr285161955d.18.1730300467658;
+        Wed, 30 Oct 2024 08:01:07 -0700 (PDT)
+Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-461323a1bf3sm55265351cf.81.2024.10.30.08.01.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Oct 2024 08:01:06 -0700 (PDT)
+Date: Wed, 30 Oct 2024 11:01:02 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Michal Hocko <mhocko@suse.com>
+Cc: Joshua Hahn <joshua.hahnjy@gmail.com>, nphamcs@gmail.com,
+	shakeel.butt@linux.dev, roman.gushchin@linux.dev,
+	muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+	mkoutny@suse.com, corbet@lwn.net, lnyng@meta.com,
+	akpm@linux-foundation.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH v3 1/1] memcg/hugetlb: Adding hugeTLB counters to memcg
+Message-ID: <20241030150102.GA706616@cmpxchg.org>
+References: <20241028210505.1950884-1-joshua.hahnjy@gmail.com>
+ <ZyIZ_Sq9D_v5v43l@tiehlicka>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/3] Cgroup-based THP control
-To: Michal Hocko <mhocko@suse.com>
-CC: <akpm@linux-foundation.org>, <david@redhat.com>, <ryan.roberts@arm.com>,
-	<baohua@kernel.org>, <willy@infradead.org>, <peterx@redhat.com>,
-	<hannes@cmpxchg.org>, <hocko@kernel.org>, <roman.gushchin@linux.dev>,
-	<shakeel.butt@linux.dev>, <muchun.song@linux.dev>, <cgroups@vger.kernel.org>,
-	<linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-	<stepanov.anatoly@huawei.com>, <alexander.kozhevnikov@huawei-partners.com>,
-	<guohanjun@huawei.com>, <weiyongjun1@huawei.com>,
-	<wangkefeng.wang@huawei.com>, <judy.chenhui@huawei.com>,
-	<yusongping@huawei.com>, <artem.kuzin@huawei.com>, <kang.sun@huawei.com>
-References: <20241030083311.965933-1-gutierrez.asier@huawei-partners.com>
- <ZyHwgjK8t8kWkm9E@tiehlicka>
- <770bf300-1dbb-42fc-8958-b9307486178e@huawei-partners.com>
- <ZyI0LTV2YgC4CGfW@tiehlicka>
-Content-Language: en-US
-From: Gutierrez Asier <gutierrez.asier@huawei-partners.com>
-In-Reply-To: <ZyI0LTV2YgC4CGfW@tiehlicka>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: mscpeml500003.china.huawei.com (7.188.49.51) To
- mscpeml500003.china.huawei.com (7.188.49.51)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZyIZ_Sq9D_v5v43l@tiehlicka>
 
-
-
-On 10/30/2024 4:27 PM, Michal Hocko wrote:
-> On Wed 30-10-24 15:51:00, Gutierrez Asier wrote:
->>
->>
->> On 10/30/2024 11:38 AM, Michal Hocko wrote:
->>> On Wed 30-10-24 16:33:08, gutierrez.asier@huawei-partners.com wrote:
->>>> From: Asier Gutierrez <gutierrez.asier@huawei-partners.com>
->>>>
->>>> Currently THP modes are set globally. It can be an overkill if only some
->>>> specific app/set of apps need to get benefits from THP usage. Moreover, various
->>>> apps might need different THP settings. Here we propose a cgroup-based THP
->>>> control mechanism.
->>>>
->>>> THP interface is added to memory cgroup subsystem. Existing global THP control
->>>> semantics is supported for backward compatibility. When THP modes are set
->>>> globally all the changes are propagated to memory cgroups. However, when a
->>>> particular cgroup changes its THP policy, the global THP policy in sysfs remains
->>>> the same.
->>>
->>> Do you have any specific examples where this would be benefitial?
->>
->> Now we're mostly focused on database scenarios (MySQL, Redis).  
-> 
-> That seems to be more process than workload oriented. Why the existing
-> per-process tuning doesn't work?
-> 
+On Wed, Oct 30, 2024 at 12:35:25PM +0100, Michal Hocko wrote:
+> On Mon 28-10-24 14:05:05, Joshua Hahn wrote:
 > [...]
-
-1st Point
-
-We're trying to provide a transparent mechanism, but all the existing per-process
-methods require to modify an app itself (MADV_HUGE, MADV_COLLAPSE, hugetlbfs)
-
-Moreover we're using file-backed THPs too (for .text mostly), which make it for
-user-space developers even more complicated.
-
->>>> Child cgroups inherit THP settings from parent cgroup upon creation. Particular
->>>> cgroup mode changes aren't propagated to child cgroups.
->>>
->>> So this breaks hierarchical property, doesn't it? In other words if a
->>> parent cgroup would like to enforce a certain policy to all descendants
->>> then this is not really possible. 
->>
->> The first idea was to have some flexibility when changing THP policies. 
->>
->> I will submit a new patch set which will enforce the cgroup hierarchy and change all
->> the children recursively.
+> > Changelog
+> > v3:
+> >   * Removed check for whether CGRP_ROOT_HUGETLB_ACCOUNTING is on, since
+> >     this check is already handled by lruvec_stat_mod (and doing the
+> >     check in hugetlb.c actually breaks the build if MEMCG is not
+> >     enabled.
+> [...]
+> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> > index 190fa05635f4..fbb10e52d7ea 100644
+> > --- a/mm/hugetlb.c
+> > +++ b/mm/hugetlb.c
+> > @@ -1925,6 +1925,7 @@ void free_huge_folio(struct folio *folio)
+> >  				     pages_per_huge_page(h), folio);
+> >  	hugetlb_cgroup_uncharge_folio_rsvd(hstate_index(h),
+> >  					  pages_per_huge_page(h), folio);
+> > +	lruvec_stat_mod_folio(folio, NR_HUGETLB, -pages_per_huge_page(h));
+> >  	mem_cgroup_uncharge(folio);
+> >  	if (restore_reserve)
+> >  		h->resv_huge_pages++;
+> > @@ -3093,6 +3094,7 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
+> >  
+> >  	if (!memcg_charge_ret)
+> >  		mem_cgroup_commit_charge(folio, memcg);
+> > +	lruvec_stat_mod_folio(folio, NR_HUGETLB, pages_per_huge_page(h));
+> >  	mem_cgroup_put(memcg);
+> >  
+> >  	return folio;
 > 
-> What is the expected semantics then?
+> I do not see any specific checks for CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING
+> in these paths. I guess you wanted to say that you rely on
+> mem_cgroup_commit_charge setting memcg pointer which then __lruvec_stat_mod_folio
+> relies on when updating stats.
 
-2nd point (on semantics)
-1. Children inherit the THP policy upon creation
-2. Parent's policy changes are propagated to all the children
-3. Children can set the policy independently
+Yes, this is what Shakeel pointed out here:
 
--- 
-Asier Gutierrez
-Huawei
+https://lore.kernel.org/lkml/il346o3nahawquum3t5rzcuuntkdpyahidpm2ctmdibj3td7pm@2aqirlm5hrdh/
 
+> I suspect this all is done because you want a global counter to be
+> updated as well, right? Changelog doesn't say anything about that
+> though. Why is this needed when /proc/meminfo already describes the
+> global hugetlb usage?
+
+Sigh.
+
+vmstats is the preferred framework for cgroup stats. It makes stat
+items consistent between global and cgroup. It provides a per-node
+breakdown as well which is useful. It avoids proliferating
+cgroup-specific hooks in generic MM code.
+
+It was a ton of work to integrate cgroup stats into vmstats and get
+rid of all the memcg special casing everywhere. You were there for all
+of it. We're not adding cgroup-specific stats unless unavoidable.
+
+Duplication doesn't matter, either. We have plenty of overlap between
+vmstat and meminfo. By all means, send a follow-up patch to have the
+meminfo one sourced from global_node_page_state().
+
+But you know all this. I'm having a hard time seeing the way you are,
+and have been, engaging with this patch as good-faithed.
 
