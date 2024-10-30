@@ -1,77 +1,76 @@
-Return-Path: <cgroups+bounces-5340-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5341-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 570099B66F0
-	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2024 16:05:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E32E9B6704
+	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2024 16:09:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0079E1F2193E
-	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2024 15:05:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8189B1C21570
+	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2024 15:09:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 576D91FEFC8;
-	Wed, 30 Oct 2024 15:05:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B241E21313F;
+	Wed, 30 Oct 2024 15:08:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Z9qzvw2q"
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="gT0SwvO2"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D7B1FAC26
-	for <cgroups@vger.kernel.org>; Wed, 30 Oct 2024 15:04:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E766A213120
+	for <cgroups@vger.kernel.org>; Wed, 30 Oct 2024 15:08:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730300700; cv=none; b=b2r05QiNgnKJ7taqfdnCfvG9ieVaPTdQARMy4vuS2hQ+6e46qKdYxHiQuY7+RJinAT54LNUA5rUXIRVXS6abX7xRNU9FZchOpR/oDRCFlH8VYeuidn9lwsSzS/qQKG6BTE331hDgwC5oFpQ791VeBb5iqQTjtsLX6cVABXoD6LU=
+	t=1730300937; cv=none; b=JgD4Sjym29d8MJQ3+XLT26m11y575jZmSExlvVAqMz9wNnyMyNQ/+sPlsVbN2YAN0KVaPzSC4jRzubf3pnrxi+LN7BfZI0unbpEM30xbXj7RXFj7q+EICsqoR8829PYmr6Anu3nTn6B97N17TInZKGyb+gkmpsV0EDo0oyAgpgg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730300700; c=relaxed/simple;
-	bh=WLSXttbBN+Nchtr3DXS0Di4OQPiMn1CjhtNhKfp8TH8=;
+	s=arc-20240116; t=1730300937; c=relaxed/simple;
+	bh=TYohSDsujhbdiHKtNselbHdfdVVcQ9T6HSEHpSNmHMM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RS8/ns4ib1Fu8R7P13rv3km4VZCQIO8aRMt8q9wjhTXrTqjrCg3crdVz3lqh4KTJCTy3x8ZnZiCpRTd7Uni2YJRGfLjFkn89w3J7KK5cO29MEsbkht1tYHT+EXZ3i3gPFnsSa//Fk4czropjS9XAcoHjk0+EpAccXT+UCJrlPIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Z9qzvw2q; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a99e3b3a411so159819966b.0
-        for <cgroups@vger.kernel.org>; Wed, 30 Oct 2024 08:04:57 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ODnpW/88x0UD1xWGK1K19/Oq4ysbrnHcPVXUTxn6Jk4LyYACyTr7SYltRHuWnw5lZdQE5E6+JAPz1n+7GXXZ30t9/7PXqPywDjUVU7dgbRLrBw1rRDsNQ0rZ8IIAbpSu5GUCQkgx5qPudO5BsgJFhTUkFKjb6wkDU32rXN7ZLaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=gT0SwvO2; arc=none smtp.client-ip=209.85.222.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-7b1507c42faso80896285a.0
+        for <cgroups@vger.kernel.org>; Wed, 30 Oct 2024 08:08:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1730300696; x=1730905496; darn=vger.kernel.org;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1730300934; x=1730905734; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wvVdPi8ansOXvDJXtgFjdjSxu3XdMpqKtWClsI507QM=;
-        b=Z9qzvw2q8Q9LNwJnIK8knRzPFiDU0Zg09LBpCY5GqxZvUVV3OxNYN3e30lrqsYQDld
-         KwV9MNGKDqpaPQveVdjyF9R4c6mXPXp5OuxA9cJiF3+6oXUQ5rXDv7lDm35+0gTJMWsT
-         ovMDAH9fT3wzZZo/drhGjIhfEiQdahiqEhgLI1UWwEiwXq69UfcXV/xHCd4u1xZ8pQ6L
-         AkTdePyW+gVObvZse+fkuhB+tHCcx/UCv2Cs2kLuDAm560soq3Q7NxRVyXwS/xwoCaQ8
-         sIZnQGm04CvpoJsHW8I4pbp6fmsCZAEIlsu+C0HdwIj3d9Lej7iDy9kUkaPYW8ZNltJs
-         rV8A==
+        bh=A7/6UYbf7ybZ6VNcKsjEex4GMkaYamVw7s21C2iJmhI=;
+        b=gT0SwvO2hckBavtjZEg/VUbS7NKpXnpw7v83lx3N74JEE6sQPG+xpb4jI2giLGlVE7
+         2gz9ixeM3fabE35uqln+bS2hSZk5KTg4sVqlIKiBHJ+j02TAmNkzNEOMXSSz6HdPd92l
+         pFV+mBiQh/sHk4Z2Iwj2ZTMMu24Zz+EOP7AK987nmfe11AUTLHo1vQrXXPNFbfWVuT8v
+         d0Wkk547Ou60pDkafNti+gXnrqBn27wZ7MS402/h6gsoZwzbQQIPMEQNjU64iexI7zrs
+         p5BH8tg66FDHpTHarB2XTf4BWhQaqWUb4YJizTmxJNn7Tbe1sL8sN15l6X+Jkl1gp2hm
+         wuhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730300696; x=1730905496;
+        d=1e100.net; s=20230601; t=1730300934; x=1730905734;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wvVdPi8ansOXvDJXtgFjdjSxu3XdMpqKtWClsI507QM=;
-        b=OX5mAmESGAu7VvWxZLqN6oL/jz3AG/F51/cQe6n35J7Rw/NsNUNj23WjCFs33V9LW7
-         mpWEzmzvSZZd9qWYdgVnyfJRnTauRIhqoplM0blFIWmPVxolh2eiJiWgrqrcL7hvESBH
-         EdsRpPZj6/CT5l1KBnwbwXOArt6xFHM+KBy9+sdkmfyFk/hO9ARjAm7b/d9X2RvbAJOU
-         q4Rwar944/4ysbDPNew42Xo55XWXthr+dxCaGSFnaPvTFtoX5CndtQnI1kAhUAsb/OMG
-         LYQEiHwcqortn4uge40gJd6UsSVhp6qKI1XdcHLY0oPnw5uBjxcvQyMvcD8RlrK8t+lu
-         v7ug==
-X-Forwarded-Encrypted: i=1; AJvYcCW+SFT9A0sMc2JWgjpousP7bYw3hNMXgeRCSfuq5dSqpuB5N9L2ZBmDygi9lkHnisRKSe5fqZvc@vger.kernel.org
-X-Gm-Message-State: AOJu0YyqhY5gVtE89+wxIhWDUwStfv6agOpMFL/PgMElmlS5rhkDa/4y
-	I24xPmAeBD/jYMPOj3sMitBuBm+umfDG8JK3V+qm3DC5lhJXEeFPmYZFcHE7Ebk=
-X-Google-Smtp-Source: AGHT+IGPlZuIqSn11jkgKQPEzOuv92CbR8SdcSXqv4p+sYZbAqsDGdMUGuu2IPloDxzpWtDzRrTRrQ==
-X-Received: by 2002:a17:907:2d86:b0:a9a:130e:11fd with SMTP id a640c23a62f3a-a9e40b99491mr228194566b.5.1730300695909;
-        Wed, 30 Oct 2024 08:04:55 -0700 (PDT)
-Received: from localhost (109-81-81-105.rct.o2.cz. [109.81.81.105])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9b1e75ff3bsm576041266b.1.2024.10.30.08.04.55
+        bh=A7/6UYbf7ybZ6VNcKsjEex4GMkaYamVw7s21C2iJmhI=;
+        b=Oeyq1pcpMMOq8UXoHkx4C1r1Wr+9ybZvS5Y1PwEYWv5zdG9NEAt0Xj3N/ZKtsqoXzH
+         +bOMmJ7INETgtQaDtSKd251kjLiNbM/pqA+p8U+kK1JNIxBogcGbW3SHIyEkX467YvpP
+         FH8cHSHv7ic8V0BNl0OSzLkG+mhNmkWnToL6NS+CFqxLGsb+FS+V24ytOdn2i9d/BJAC
+         fBDKQQBNyW6kqoWNG0QtK3CHuXRDWUHOmiscTt5Jk94z7Vh4uEoK6TKlX/0Jv6Iz5UC4
+         +Zj2cIsC8SFNLw6d40vPtIRmwbyp7EWJgoIzPm2efp7pVaK7fVVs2NviEH66zNYSS1x3
+         RN8w==
+X-Forwarded-Encrypted: i=1; AJvYcCX2BA7Kv67VXEty1VBRDhxnyNLIMI2hoGgdS6kAN4IhS2bVfPZUoAnzpaA140QzW0dpJDDnDxhq@vger.kernel.org
+X-Gm-Message-State: AOJu0YzJMVFUvXaalObR1hj32Zyom4rcPGrKbKvIZRLgJfqZhNBld1Hy
+	sagtYvWNa7pv1ynDvdT24JGcFEw4b460uNYG1TBVW0n3/kURLt00X8dPhtAFoOM=
+X-Google-Smtp-Source: AGHT+IEL0dQXvbpBYl4+++/Sj921xMYBN2z8f0z/Fw6yy1eHF/5+LTCuLkRdPXctroNbHp8klXSWdA==
+X-Received: by 2002:a05:620a:f07:b0:7b1:4783:aa2 with SMTP id af79cd13be357-7b1a9cc0e7fmr1135432585a.7.1730300933470;
+        Wed, 30 Oct 2024 08:08:53 -0700 (PDT)
+Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b18d2940f7sm519976985a.37.2024.10.30.08.08.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Oct 2024 08:04:55 -0700 (PDT)
-Date: Wed, 30 Oct 2024 16:04:54 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Chris Down <chris@chrisdown.name>
-Cc: gutierrez.asier@huawei-partners.com, akpm@linux-foundation.org,
-	david@redhat.com, ryan.roberts@arm.com, baohua@kernel.org,
-	willy@infradead.org, peterx@redhat.com, hannes@cmpxchg.org,
+        Wed, 30 Oct 2024 08:08:52 -0700 (PDT)
+Date: Wed, 30 Oct 2024 11:08:51 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: gutierrez.asier@huawei-partners.com
+Cc: akpm@linux-foundation.org, david@redhat.com, ryan.roberts@arm.com,
+	baohua@kernel.org, willy@infradead.org, peterx@redhat.com,
 	hocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
 	muchun.song@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org, stepanov.anatoly@huawei.com,
@@ -80,9 +79,8 @@ Cc: gutierrez.asier@huawei-partners.com, akpm@linux-foundation.org,
 	judy.chenhui@huawei.com, yusongping@huawei.com,
 	artem.kuzin@huawei.com, kang.sun@huawei.com
 Subject: Re: [RFC PATCH 0/3] Cgroup-based THP control
-Message-ID: <ZyJLFv8TgoTyo5SH@tiehlicka>
+Message-ID: <20241030150851.GB706616@cmpxchg.org>
 References: <20241030083311.965933-1-gutierrez.asier@huawei-partners.com>
- <ZyJGhKu1FL1ZfCcs@chrisdown.name>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -91,30 +89,33 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZyJGhKu1FL1ZfCcs@chrisdown.name>
+In-Reply-To: <20241030083311.965933-1-gutierrez.asier@huawei-partners.com>
 
-On Wed 30-10-24 14:45:24, Chris Down wrote:
-> gutierrez.asier@huawei-partners.com writes:
-> > New memcg files are exposed: memory.thp_enabled and memory.thp_defrag, which
-> > have completely the same format as global THP enabled/defrag.
+On Wed, Oct 30, 2024 at 04:33:08PM +0800, gutierrez.asier@huawei-partners.com wrote:
+> From: Asier Gutierrez <gutierrez.asier@huawei-partners.com>
 > 
-> cgroup controls exist because there are things we want to do for an entire
-> class of processes (group OOM, resource control, etc). Enabling or disabling
-> some specific setting is generally not one of them, hence why we got rid of
-> things like per-cgroup vm.swappiness. We know that these controls do not
-> compose well and have caused a lot of pain in the past. So my immediate
-> reaction is a nack on the general concept, unless there's some absolutely
-> compelling case here.
+> Currently THP modes are set globally. It can be an overkill if only some
+> specific app/set of apps need to get benefits from THP usage. Moreover, various
+> apps might need different THP settings. Here we propose a cgroup-based THP
+> control mechanism.
 > 
-> I talked a little at Kernel Recipes last year about moving away from sysctl
-> and other global interfaces and making things more granular. Don't get me
-> wrong, I think that is a good thing (although, of course, a very large
-> undertaking) -- but it is a mistake to overload the amount of controls we
-> expose as part of the cgroup interface.
+> THP interface is added to memory cgroup subsystem. Existing global THP control
+> semantics is supported for backward compatibility. When THP modes are set
+> globally all the changes are propagated to memory cgroups. However, when a
+> particular cgroup changes its THP policy, the global THP policy in sysfs remains
+> the same.
+> 
+> New memcg files are exposed: memory.thp_enabled and memory.thp_defrag, which
+> have completely the same format as global THP enabled/defrag.
+> 
+> Child cgroups inherit THP settings from parent cgroup upon creation. Particular
+> cgroup mode changes aren't propagated to child cgroups.
 
-Completely agreed!
+Cgroups are for hierarchical resource distribution. It's tempting to
+add parameters you would want for flat collections of processes, but
+it gets weird when it comes to inheritance and hiearchical semantics
+inside the cgroup tree - like it does here. So this is not a good fit.
 
--- 
-Michal Hocko
-SUSE Labs
+On this particular issue, I agree with what Willy and David: let's not
+proliferate THP knobs; let's focus on making them truly transparent.
 
