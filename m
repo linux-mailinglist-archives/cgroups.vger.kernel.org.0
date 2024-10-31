@@ -1,112 +1,148 @@
-Return-Path: <cgroups+bounces-5349-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5350-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B12A9B7604
-	for <lists+cgroups@lfdr.de>; Thu, 31 Oct 2024 09:04:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D02629B7619
+	for <lists+cgroups@lfdr.de>; Thu, 31 Oct 2024 09:13:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3D03281DC0
-	for <lists+cgroups@lfdr.de>; Thu, 31 Oct 2024 08:04:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 722DE1F2315A
+	for <lists+cgroups@lfdr.de>; Thu, 31 Oct 2024 08:13:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 335EF14D6E1;
-	Thu, 31 Oct 2024 08:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A286154449;
+	Thu, 31 Oct 2024 08:12:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="YkTGwZd6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41FC312CDB6;
-	Thu, 31 Oct 2024 08:04:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 181101514CE
+	for <cgroups@vger.kernel.org>; Thu, 31 Oct 2024 08:12:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730361850; cv=none; b=tKlfUvLP8jSLwYh7RMdlY/gWNnKfkCwCOLTJ3rxsBnx1uhzhfCMy6V+0Yx6Od/gPef/4k2Q0mtGjjcMw1dGYyvHhjcq7WSSYWpw5IudHooiKu+7Ie9W9jusmESzzB/RRmLuHfehvmaxY/M2wAKfgAdIuwsNTEBhurZ9RSfQ8A2Q=
+	t=1730362372; cv=none; b=gAn1mlg5O5BcJ+Gzn2Prq1v6/OxcR1ipSkR1OuJGkWwur1XGRv3iIwBHZ0PXh5Xg3wpq1nw6OIZcye2PYAGVU25VyenetgKzhlNgvZe6NvFpqLlWQUGimzsFKEdmyfTMYaRbZO8a9Bre0AFarTQ8qnyt+WTMjU+ZGNemtnsGv0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730361850; c=relaxed/simple;
-	bh=M2HXVbpzDsTg+HwYe96n52wNzDV2Oii+fM5cd4T49Nk=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=S1gvo8SeCT/p0neCx8MSse6y6Z3a+Ue3PpJfNCz5RKIAGDyWfTWWDj2T71bQwq6MZkcPAv6tNhJOFdT/m5C8j1GZ0ei6rk+GCW8YpTXn83DDaoymZLMyralZ3VqlO3POVJM4qZW/f/u3BPBqf5B7evyKF2NL4c1nGa567m5PZ9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XfGht543zz4f3lfg;
-	Thu, 31 Oct 2024 16:03:42 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 4275D1A018C;
-	Thu, 31 Oct 2024 16:04:01 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP4 (Coremail) with SMTP id gCh0CgCHYobwOSNnHfjGAQ--.59788S3;
-	Thu, 31 Oct 2024 16:04:01 +0800 (CST)
-Subject: Re: [PATCH v2 1/5] blk-cgroup: add a new helper blkg_print_dev_name()
-To: Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, yi.zhang@huawei.com,
- yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20240930085302.1558217-1-yukuai1@huaweicloud.com>
- <20240930085302.1558217-2-yukuai1@huaweicloud.com>
- <Zvrb0DXhtVHT2lfa@slm.duckdns.org>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <33183043-335f-fd07-1068-c873656f51d6@huaweicloud.com>
-Date: Thu, 31 Oct 2024 16:04:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1730362372; c=relaxed/simple;
+	bh=dklUTvxcoZQ19Ejb/he4j0SPUhxKOWxWCHjH3frzbvg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QlXTDyiZB8i+j/d7rQwpw/fY3OVFjgLrRi9sksW4TIbLdqdXDjZ7N0Jpj+/C8mrGjCj5oV7xLaqK8y9VmD8r+oT/+ZYL8MtENHmYs9k94oN1iIcsGIzqB+cw6+eRFAPbID8BFI8+A6TVwRDwAlcyWZTlA+gaPKnNByVkOr7pEnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=YkTGwZd6; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a9a3dc089d8so99763566b.3
+        for <cgroups@vger.kernel.org>; Thu, 31 Oct 2024 01:12:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1730362367; x=1730967167; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=1NsFGdhFHt7vNHkeF4Op7bN0bdu6mqlOlf3mw5K16Yo=;
+        b=YkTGwZd6OwFKvJ90DPsrAQ9v2fHOG4UyzuZuqAhFFkdF3RCSV9y5fefzSDGAkLN4Ow
+         UAdSohUG+O+iCPUwUJGnTRbdHad9ACB6BvVQoGl6MlISBrvKZKM9Lp2XhUWbKJJJYY/o
+         uuzLNOTxUj3s1flyPn383Sehy6EJli/6V7GdT8w1QRKlvQE+GIpAaM2hd6FoTfHYJ1kT
+         iLouf9O8ByTMMkaEUucHcsLlrxVIIwjCMBuy/Po95A7v4j4rTcr6bT/J/rTlP1ApwO+g
+         B2S1/2PZbPrRZmU+Iy2+q4jv9KuzjvbNzrxXcqzlqeF4X+fg5pVtz7B4FQYYK5DzojgQ
+         flmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730362367; x=1730967167;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1NsFGdhFHt7vNHkeF4Op7bN0bdu6mqlOlf3mw5K16Yo=;
+        b=G9nXXfgeppO8DnbJaD/DqKJKh5kvMKXCxEFCbNBFW+Prl7HCyuBzbZhLlHeptYQPTA
+         F3wuEFsF1rbigB1wE1WJ9Xw86v6wJLeHmCNWfNjz6GYDeiBRbIC5//dYHQsRJrwv6ETX
+         2qjGAXDB1j+OlOJMPFCOTluWMDtKzLZCXiBFmO665Q0lqhqKJKiMK6IyWLwksJIsinTH
+         eYX2PGjSmI3diI5dV3UP1DonMvyNrN4XndtbiMR9ox3JPkjkeACKIVKpY8TOyLvScwDx
+         Or2jMVGJHzuaqH522yWLGbYcxirFQr+6If1Bfr220N/rdGsq8eHPkLmB9aK16Pq7tohf
+         FFkg==
+X-Forwarded-Encrypted: i=1; AJvYcCWeG9Z9yUx42918ixuxMhtzF9pFqnUTxHjPFPkuKR+qBdwAS+WwJgPEM3Rspqx9j+uxnV9pHl0x@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz415M43d3PXKO9cKvqdzjeIO27LYY9aRNzZG9dvFJWl6FeR02e
+	w9yGt0ZYkZt4/dr3l1wwb33h0DRYpcijNU4jHu0Tx4aSLqeJDuqkqsRW271ofng=
+X-Google-Smtp-Source: AGHT+IErqAcDPZr221CAovWq14T0+yAWNPysXadW1rVCxC28+QsDk01at4oQ+oc4iW1WxHhAWm19ug==
+X-Received: by 2002:a17:907:94c1:b0:a99:4ca4:4ff4 with SMTP id a640c23a62f3a-a9de5d98002mr1492014866b.23.1730362367461;
+        Thu, 31 Oct 2024 01:12:47 -0700 (PDT)
+Received: from localhost (109-81-81-105.rct.o2.cz. [109.81.81.105])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9e564c55ffsm39587566b.59.2024.10.31.01.12.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Oct 2024 01:12:47 -0700 (PDT)
+Date: Thu, 31 Oct 2024 09:12:46 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, nphamcs@gmail.com,
+	shakeel.butt@linux.dev, roman.gushchin@linux.dev,
+	muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+	mkoutny@suse.com, corbet@lwn.net, lnyng@meta.com,
+	akpm@linux-foundation.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH v3 1/1] memcg/hugetlb: Adding hugeTLB counters to memcg
+Message-ID: <ZyM7_i1HFnFfUmIR@tiehlicka>
+References: <20241028210505.1950884-1-joshua.hahnjy@gmail.com>
+ <ZyIZ_Sq9D_v5v43l@tiehlicka>
+ <20241030150102.GA706616@cmpxchg.org>
+ <ZyJQaXAZSMKkFVQ2@tiehlicka>
+ <20241030183044.GA706387@cmpxchg.org>
+ <CAN+CAwM1FJCaGrdBMarD2YthX8jcBEKx9Sd07yj-ZcpDxinURQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <Zvrb0DXhtVHT2lfa@slm.duckdns.org>
-Content-Type: text/plain; charset=gbk; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCHYobwOSNnHfjGAQ--.59788S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYK7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
-	6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-	kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8I
-	cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87
-	Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
-	6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72
-	CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4II
-	rI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr4
-	1l4c8EcI0Ec7CjxVAaw2AFwI0_Jw0_GFyl4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAq
-	x4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r
-	43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF
-	7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxV
-	W8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU
-	F9a9DUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+In-Reply-To: <CAN+CAwM1FJCaGrdBMarD2YthX8jcBEKx9Sd07yj-ZcpDxinURQ@mail.gmail.com>
 
-Hi, Tejun!
-
-ÔÚ 2024/10/01 1:11, Tejun Heo Ð´µÀ:
-> Hello,
+On Wed 30-10-24 16:43:42, Joshua Hahn wrote:
+> On Wed, Oct 30, 2024 at 2:30â€¯PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > Joshua, can you please include something like this at the end:
+> >
+> > lruvec_stat_mod_folio() keys off of folio->memcg linkage, which is
+> > only set up if CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING is switched
+> > on. This ensures that memory.stat::hugetlb is in sync with the hugetlb
+> > share of memory.current.
 > 
-> On Mon, Sep 30, 2024 at 04:52:58PM +0800, Yu Kuai wrote:
->> +static inline bool blkg_print_dev_name(struct seq_file *sf,
->> +				       struct blkcg_gq *blkg)
->> +{
->> +	struct gendisk *disk = blkg->q->disk;
->> +
->> +	if (!disk)
->> +		return false;
->> +
->> +	seq_printf(sf, "%u:%u", disk->major, disk->first_minor);
->> +	return true;
->> +}
->> +
+> Hello Andrew,
 > 
-> I wonder whether we just should add a name field to disk.
-
-And suggestions on this set now? I guess add a name filed is not
-appropriate. :(
-
-Thanks,
-Kuai
-
+> I saw that it was merged into mm-unstable earlier yesterday. Would it
+> be possible
+> to add this block of text to the patch description right before the footnotes?
 > 
-> Thanks.
-> 
+> 3. Implementation Details:
+> In the alloc / free hugetlb functions, we call lruvec_stat_mod_folio
+> regardless of whether memcg accounts hugetlb. lruvec_stat_mod_folio
+> keys off of folio->memcg which is only set up if the
+> CGRP_ROOT_MEMORY_HUGETLB_ACCOUTING cgroup mount option is used, so
+> it will not try to accumulate hugetlb unless the flag is set.
 
+Thanks for the update and sorry for being pitbull here but this is
+is a bit confusing. Let me try to reformulate as per my understanding
+
+In the alloc / free hugetlb functions, we call lruvec_stat_mod_folio
+regardless of whether memcg accounts hugetlb.  mem_cgroup_commit_charge
+called from alloc_hugetlb_folio will set memcg for folio only if
+CGRP_ROOT_MEMORY_HUGETLB_ACCOUTING is enabled so lruvec_stat_mod_folio
+accounts per memcg hugetlb counter only if the feature is enabled.
+Regardless of the memcg accounting, though, the newly added global
+counter is updated and shown in /proc/vmstat.
+
+I would also add the following
+
+The global counter is added because vmstats is the preferred framework
+for cgroup stats. It makes stat items consistent between global and
+cgroup. It provides a per-node breakdown as well which is useful. It
+avoids proliferating cgroup-specific hooks in generic MM code.
+
+I will leave up to you whether to add above paragraphs but I believe
+they clarify the intention and the implementation.
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+Thanks!
+-- 
+Michal Hocko
+SUSE Labs
 
