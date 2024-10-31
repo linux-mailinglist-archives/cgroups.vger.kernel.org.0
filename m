@@ -1,70 +1,70 @@
-Return-Path: <cgroups+bounces-5358-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5357-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A42169B863C
-	for <lists+cgroups@lfdr.de>; Thu, 31 Oct 2024 23:47:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6D5F9B863B
+	for <lists+cgroups@lfdr.de>; Thu, 31 Oct 2024 23:47:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ECB39B21CD8
-	for <lists+cgroups@lfdr.de>; Thu, 31 Oct 2024 22:47:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 098821C20FF0
+	for <lists+cgroups@lfdr.de>; Thu, 31 Oct 2024 22:47:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B0471E2829;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F19C1E25FB;
 	Thu, 31 Oct 2024 22:47:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vtLUuDIc"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hrCEItuH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6F021A0BD1
-	for <cgroups@vger.kernel.org>; Thu, 31 Oct 2024 22:46:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505FE1BBBED
+	for <cgroups@vger.kernel.org>; Thu, 31 Oct 2024 22:46:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730414822; cv=none; b=uv2m6z6LkD/4PSPVMYS07ElK8fFxJTIP90kle0x51yulV/HD+NB0oPx5jzopOqc8gAhfyNwwXjQW8SbQAc88xU+U7hV8bGsMgBG75LSGA0lUnCD5leaOI8k1J2v6e8nkudg71KGxplxCOJF/8Vyi4DasEjtSiGGuAYrd8YNG5aI=
+	t=1730414822; cv=none; b=NscH18umbHeE9k21ux4/KyuO8Fu0ARVJHMXvj+ZtmqU7yUNr74I9lHQs7c8odetIdl78oUKFVTLL3+XwH+Hy5Wd1JrSTCcTgux9l6cA1efe4Fqnm+n7Lrt4Cn4syu1IZZIst37BfhrER9GOiS6ZzKEOCNdxb9u27l0ioLZJ9H04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1730414822; c=relaxed/simple;
-	bh=gpNhkl8JRQNQcbUpwHiXhYHWR7awIPV7sOfZto9Xxl4=;
+	bh=04KvvfgHt4U76Y7cMYLzYC1kJSgpABtfwHo8vWKZHTo=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=T9kCcEU/5pMgwBIWNg/73zalwSQYIImUyGytMqVNlzN4pHGbf5eYq5e7fAzwNDDrLpHDkeHjUCWNzM4+y4i0H/BZ+xNofMNQwDTIHnEpoU9V0zWUxXdyZybJkKcjpBawvfDQhy3tI07ltbbNg+pJowbo5fmM8LJOR1jWH4PH4q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kinseyho.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vtLUuDIc; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=IEtiYbSjaNj4leZk+MubwZ6+eWXaB30u5Ef9m06QXPtqov4gt0LgsQY2D77j0g9udcOHBgFmw0blbDNkrHrG2aN3Xctcd2If25VYohlfuUOsGdCzoXZ1dFSVM5okhd7if3bDUCPZBg3cxo7g3y/X6LgWXpMQ44/7TyQNa+f7n5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kinseyho.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hrCEItuH; arc=none smtp.client-ip=209.85.215.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kinseyho.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6ea6aa3b68bso1370097b3.3
-        for <cgroups@vger.kernel.org>; Thu, 31 Oct 2024 15:46:54 -0700 (PDT)
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-7ea0069a8b0so1490254a12.0
+        for <cgroups@vger.kernel.org>; Thu, 31 Oct 2024 15:46:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1730414814; x=1731019614; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1730414816; x=1731019616; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=guCTOxzKlbAV7mFNRx7TvPMOy3sTYQa/R9Du6hcfImY=;
-        b=vtLUuDIciTIdNaFrLiq8Ur8VsFUei7GaZIT9ePSik7jWTqdAJpzlbnvUGoAltaal8C
-         eCHcQlYgR1YYg7zxglaANb4tWbG/bELvWs/D1wavBciRrzgK6NqRmtODPOXvMNGo0LPM
-         qSFLgbds4GOp7VhJQCvFwmbkF+Q3Ot6711TUYesN9X3e8LwN7G5Mbxmy3RCCDJtyRgKW
-         i4L2VEYAnoCCOrg216jaLaGWt/mOxIaqMA73JWuzi3oYpNtJnnn8NFe8bIrk+aCwmH7N
-         Bn3Nynyikd1tR8buGM0mUywCMYBpwohaMHA1Fd2LHYnNiokC5il5upbdUerUI95Bkfub
-         bN0Q==
+        bh=xsh0ecj9Etn04xB/gBU/50JDS6BBsG2RgrIM+NKe2T8=;
+        b=hrCEItuHj0gaHJOSLsiz9a6G9n5EaeDUIgvd5SPoiX4w6CJ9UXgG7Mi7n3YsV2h1q/
+         izFcnd6/GKm1bvwXJzKe6WVoqsYdmPRtWY5nCIHJRNEWODloKh0mUEbEZW2afPPLGFWT
+         +R+YgSV8sWiwySx0wGUYOcL/Lgz4X4FL0UeFg7YjSW9gmOCxM1pIeiohYE8eAbtIk0GD
+         t7K4gRDtadQewUho6+/iGL1SeYg5nMQ/bKKSrIJM+2Wj+k5DFpBTZq/L3vMMymQARejf
+         DL+PTp9Ol/VIEo0ho9eFj8blJHYXI1csHvumfp0Tfn+IdhIht7gz/w0/DW5gk1DPlKjG
+         z5YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730414814; x=1731019614;
+        d=1e100.net; s=20230601; t=1730414816; x=1731019616;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=guCTOxzKlbAV7mFNRx7TvPMOy3sTYQa/R9Du6hcfImY=;
-        b=gsDmzY+bKTwnr/iVXXrAKjgF+k8TXdd/9JKY9+fq89wOlIzLGI8xpJt3i25XL7IVhr
-         drOWC3+s/nuWmNJgLwqz27arGaLteeXnIDdzIhTqDoozEr2syfw1URjsM1EtwF6M5exu
-         ipxx83FnkMIS+yjkKHJ5uYA4xNZG6dKMaFl4Mq8wtrXj9L8LAmJmGlLH1Y7/GTLj6R7D
-         4n8wUsSIjl56o8iKE16z1MmEWE0gnjrRQH/lF5u8Zc7uDUgwcdopEXawIYm4bJPpEAJg
-         xKUinnwMWSeiqips9j8R9hYlPnyv3X2HA+n4D4qyFhIx11KAicLnXhCtnQq2gKx7kqRG
-         OKbA==
-X-Forwarded-Encrypted: i=1; AJvYcCXXbSxHsedOgfGkDRw4rXTlKLA42J6mETMZy5l/T4iku0Bq2Ich9coIyj3TkJI+b+mrjS3X8NAj@vger.kernel.org
-X-Gm-Message-State: AOJu0YyLpDGA5YyRM80nL3/h9Or1STtKguIj/p7Tl29WT6EOHHWfA5eK
-	vhWtrR9ufVdm3w9LTCSuwsJuU8WQgT9D59udWC6GTxB3WW1zKz9wdfk7lN7UG7Gri7YousxtBtK
-	5Ayzw2RHfog==
-X-Google-Smtp-Source: AGHT+IGA5sjZe8vpyl9lON3SR0LDoe9B+CE24eA4rKmGB1vEzw7Pi4vx0K181caj3vNLVFXCXdibXtjqBQbgGQ==
+        bh=xsh0ecj9Etn04xB/gBU/50JDS6BBsG2RgrIM+NKe2T8=;
+        b=vjObUYW4XG2zGit2Yj5QsLO4egqZ6yn7NpGSgfShyENLOs/ONL9aqS/yksPxzX17LC
+         /Ae7vO+e8WS0Td6bs+5uXtv/VoiqXNe8Tfw2zx/lDszeORNOGQjbAQteuhM+UTT6+RUg
+         5fqWpkOzGDW2K7Pg2RQR/ZFrx6B8VnRSfrQrQP286OfKSvRGwR27iB/EVwH+cmL6nrfX
+         Dyz8BGTIAHpsWc2dM6+UpUNSz5yyZWTo+2FLY9H+V+PwMhgyljuQmP1aGKBcLhNE05KO
+         cYFE+MWf7orrGulfAcxG35KnbFVAiDl7r9UfhBzKMXpmXZDDs7Ug4DCfR2rvxQ9e1FsA
+         Y1Og==
+X-Forwarded-Encrypted: i=1; AJvYcCWdK2xazdLfRVzw1H1xpxz1zE0pk0x04tKDPlRMwvZM7n1zlAi8Vx/M3P+ojTUqXgJ5IbZuO2jt@vger.kernel.org
+X-Gm-Message-State: AOJu0YyCVS/GNjHgQmRAgk4vLI12HknVwqkwJ7pLK2KMKc1RvmIhP8oY
+	9T3zeFWyPcxcknWWQCYr9SDa9iUYiZAB5uvO9gr/UmyZlSZdq/9WAXBtYzr1w92qkLXY1d8ZdDG
+	lrWHZzKybUw==
+X-Google-Smtp-Source: AGHT+IHArSVwIyggeWsU6JRSK21WNKSRntcwjMdlKacSUh+G18VKzCn39+gQ7DKViVCf1aeNUXLCZjBpRJnC0A==
 X-Received: from kinseyct.c.googlers.com ([fda3:e722:ac3:cc00:a1:836b:ac13:31a5])
- (user=kinseyho job=sendgmr) by 2002:a25:6b49:0:b0:e0e:8b26:484e with SMTP id
- 3f1490d57ef6-e30e5b41dffmr2685276.8.1730414813939; Thu, 31 Oct 2024 15:46:53
+ (user=kinseyho job=sendgmr) by 2002:a63:34c1:0:b0:7ea:c554:d831 with SMTP id
+ 41be03b00d2f7-7ee290c2030mr8465a12.7.1730414815657; Thu, 31 Oct 2024 15:46:55
  -0700 (PDT)
-Date: Thu, 31 Oct 2024 22:45:50 +0000
+Date: Thu, 31 Oct 2024 22:45:51 +0000
 In-Reply-To: <20241031224551.1736113-1-kinseyho@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -74,8 +74,9 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20241031224551.1736113-1-kinseyho@google.com>
 X-Mailer: git-send-email 2.47.0.163.g1226f6d8fa-goog
-Message-ID: <20241031224551.1736113-2-kinseyho@google.com>
-Subject: [PATCH mm-unstable v1 1/2] mm: add generic system-wide page counters
+Message-ID: <20241031224551.1736113-3-kinseyho@google.com>
+Subject: [PATCH mm-unstable v1 2/2] mm, swap: add pages allocated for struct
+ swap_cgroup to vmstat
 From: Kinsey Ho <kinseyho@google.com>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
@@ -88,120 +89,65 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
 	cgroups@vger.kernel.org, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 
-commit f4cb78af91e3 ("mm: add system wide stats items category") and
-commit 9d8573111024 ("mm: don't account memmap per-node") renamed
-NR_VM_WRITEBACK_STAT_ITEMS to NR_VM_STAT_ITEMS to track
-memmap/memmap_boot pages system wide.
-
-Extend the implementation so that the system wide page statistics can
-be tracked using a generic interface. This patch is in preparation for
-the next patch which adds a rarely modified system wide vmstat.
-
-Note that this implementation uses global atomic fields with no per-cpu
-optimizations as the existing usecase (memmap pages) is rarely modified
-as well.
+Export the number of pages allocated for storing struct swap_cgroup in
+vmstat using global system-wide counters.
 
 Signed-off-by: Kinsey Ho <kinseyho@google.com>
 ---
- include/linux/vmstat.h |  8 ++++++++
- mm/vmstat.c            | 32 +++++++++++++++++++++++---------
- 2 files changed, 31 insertions(+), 9 deletions(-)
+ include/linux/vmstat.h | 3 +++
+ mm/swap_cgroup.c       | 3 +++
+ mm/vmstat.c            | 3 +++
+ 3 files changed, 9 insertions(+)
 
 diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
-index d2761bf8ff32..ac4d42c4fabd 100644
+index ac4d42c4fabd..227e951d1219 100644
 --- a/include/linux/vmstat.h
 +++ b/include/linux/vmstat.h
-@@ -145,6 +145,11 @@ extern atomic_long_t vm_zone_stat[NR_VM_ZONE_STAT_ITEMS];
- extern atomic_long_t vm_node_stat[NR_VM_NODE_STAT_ITEMS];
- extern atomic_long_t vm_numa_event[NR_VM_NUMA_EVENT_ITEMS];
+@@ -41,6 +41,9 @@ enum vm_stat_item {
+ 	NR_DIRTY_BG_THRESHOLD,
+ 	NR_MEMMAP_PAGES,	/* page metadata allocated through buddy allocator */
+ 	NR_MEMMAP_BOOT_PAGES,	/* page metadata allocated through boot allocator */
++#if defined(CONFIG_MEMCG) && defined(CONFIG_SWAP)
++	NR_SWAP_CGROUP_PAGES,	/* allocated to store struct swap_cgroup */
++#endif
+ 	NR_VM_STAT_ITEMS,
+ };
  
-+/*
-+ * Global page accounting (no per cpu differentials).
-+ */
-+extern atomic_long_t vm_global_stat[NR_VM_STAT_ITEMS];
+diff --git a/mm/swap_cgroup.c b/mm/swap_cgroup.c
+index da1278f0563b..82eda8a3efe1 100644
+--- a/mm/swap_cgroup.c
++++ b/mm/swap_cgroup.c
+@@ -53,6 +53,8 @@ static int swap_cgroup_prepare(int type)
+ 		if (!(idx % SWAP_CLUSTER_MAX))
+ 			cond_resched();
+ 	}
++	mod_global_page_state(NR_SWAP_CGROUP_PAGES, ctrl->length);
 +
- #ifdef CONFIG_NUMA
- static inline void zone_numa_event_add(long x, struct zone *zone,
- 				enum numa_stat_item item)
-@@ -491,6 +496,9 @@ static inline void node_stat_sub_folio(struct folio *folio,
- 	mod_node_page_state(folio_pgdat(folio), item, -folio_nr_pages(folio));
+ 	return 0;
+ not_enough_page:
+ 	max = idx;
+@@ -228,6 +230,7 @@ void swap_cgroup_swapoff(int type)
+ 			if (!(i % SWAP_CLUSTER_MAX))
+ 				cond_resched();
+ 		}
++		mod_global_page_state(NR_SWAP_CGROUP_PAGES, -length);
+ 		vfree(map);
+ 	}
  }
- 
-+void mod_global_page_state(enum vm_stat_item item, long nr);
-+unsigned long global_page_state(enum vm_stat_item item);
-+
- extern const char * const vmstat_text[];
- 
- static inline const char *zone_stat_name(enum zone_stat_item item)
 diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 22a294556b58..e5a6dd5106c2 100644
+index e5a6dd5106c2..259574261ec1 100644
 --- a/mm/vmstat.c
 +++ b/mm/vmstat.c
-@@ -161,9 +161,11 @@ void vm_events_fold_cpu(int cpu)
-  */
- atomic_long_t vm_zone_stat[NR_VM_ZONE_STAT_ITEMS] __cacheline_aligned_in_smp;
- atomic_long_t vm_node_stat[NR_VM_NODE_STAT_ITEMS] __cacheline_aligned_in_smp;
-+atomic_long_t vm_global_stat[NR_VM_STAT_ITEMS] __cacheline_aligned_in_smp;
- atomic_long_t vm_numa_event[NR_VM_NUMA_EVENT_ITEMS] __cacheline_aligned_in_smp;
- EXPORT_SYMBOL(vm_zone_stat);
- EXPORT_SYMBOL(vm_node_stat);
-+EXPORT_SYMBOL(vm_global_stat);
- 
- #ifdef CONFIG_NUMA
- static void fold_vm_zone_numa_events(struct zone *zone)
-@@ -1033,22 +1035,34 @@ unsigned long node_page_state(struct pglist_data *pgdat,
- }
- #endif
- 
-+void mod_global_page_state(enum vm_stat_item item, long nr)
-+{
-+	atomic_long_add(nr, &vm_global_stat[item]);
-+}
-+
-+unsigned long global_page_state(enum vm_stat_item item)
-+{
-+	long x = atomic_long_read(&vm_global_stat[item]);
-+#ifdef CONFIG_SMP
-+	if (x < 0)
-+		x = 0;
+@@ -1295,6 +1295,9 @@ const char * const vmstat_text[] = {
+ 	"nr_dirty_background_threshold",
+ 	"nr_memmap_pages",
+ 	"nr_memmap_boot_pages",
++#if defined(CONFIG_MEMCG) && defined(CONFIG_SWAP)
++	"nr_swap_cgroup_pages",
 +#endif
-+	return x;
-+}
-+
- /*
-  * Count number of pages "struct page" and "struct page_ext" consume.
-- * nr_memmap_boot_pages: # of pages allocated by boot allocator
-- * nr_memmap_pages: # of pages that were allocated by buddy allocator
-+ * NR_MEMMAP_BOOT_PAGES: # of pages allocated by boot allocator
-+ * NR_MEMMAP_PAGES: # of pages that were allocated by buddy allocator
-  */
--static atomic_long_t nr_memmap_boot_pages = ATOMIC_LONG_INIT(0);
--static atomic_long_t nr_memmap_pages = ATOMIC_LONG_INIT(0);
--
- void memmap_boot_pages_add(long delta)
- {
--	atomic_long_add(delta, &nr_memmap_boot_pages);
-+	mod_global_page_state(NR_MEMMAP_BOOT_PAGES, delta);
- }
  
- void memmap_pages_add(long delta)
- {
--	atomic_long_add(delta, &nr_memmap_pages);
-+	mod_global_page_state(NR_MEMMAP_PAGES, delta);
- }
- 
- #ifdef CONFIG_COMPACTION
-@@ -1880,8 +1894,8 @@ static void *vmstat_start(struct seq_file *m, loff_t *pos)
- 
- 	global_dirty_limits(v + NR_DIRTY_BG_THRESHOLD,
- 			    v + NR_DIRTY_THRESHOLD);
--	v[NR_MEMMAP_PAGES] = atomic_long_read(&nr_memmap_pages);
--	v[NR_MEMMAP_BOOT_PAGES] = atomic_long_read(&nr_memmap_boot_pages);
-+	for (int i = NR_MEMMAP_PAGES; i < NR_VM_STAT_ITEMS; i++)
-+		v[i] = global_page_state(i);
- 	v += NR_VM_STAT_ITEMS;
- 
- #ifdef CONFIG_VM_EVENT_COUNTERS
+ #if defined(CONFIG_VM_EVENT_COUNTERS) || defined(CONFIG_MEMCG)
+ 	/* enum vm_event_item counters */
 -- 
 2.47.0.163.g1226f6d8fa-goog
 
