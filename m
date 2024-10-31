@@ -1,138 +1,108 @@
-Return-Path: <cgroups+bounces-5355-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5356-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C5DF9B8304
-	for <lists+cgroups@lfdr.de>; Thu, 31 Oct 2024 20:03:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13EE59B8637
+	for <lists+cgroups@lfdr.de>; Thu, 31 Oct 2024 23:47:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCA5C1F229B8
-	for <lists+cgroups@lfdr.de>; Thu, 31 Oct 2024 19:03:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4237A1C211CA
+	for <lists+cgroups@lfdr.de>; Thu, 31 Oct 2024 22:47:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 872DF1C9DFC;
-	Thu, 31 Oct 2024 19:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FBC21CDFCD;
+	Thu, 31 Oct 2024 22:46:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RNvtUg4c"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="peAe1Elf"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42D2C80BF8;
-	Thu, 31 Oct 2024 19:03:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05B0F13D8AC
+	for <cgroups@vger.kernel.org>; Thu, 31 Oct 2024 22:46:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730401432; cv=none; b=LaOVD8+rzhImT8iKtFRa46OwlGQ2adJ6hGxIZJHf0oxUrj90NLrUgCNdDirRxAU8dyJXdrT3QCAyrYbSt7VCWw01le/BjdPzMpFmwUmaNJ015iu8sSjkhZFsfe6RoGBlToYnXNiV9+OVTHVMQG8cs8Nft2IokhKaCYtp/9RY7XE=
+	t=1730414818; cv=none; b=LHnv9zPY3ImFviGf7dMCnTZxuosADkHuhsGoTG8kD2MVgZjlYjAYR5eo5geBJzwp+Cl2xR8NkxUV3/HIfj+ZdajCLqZl0m+4nm1MzsRUosTfIfAf80T01YFzR3AhFxXVF5QHZhQva2nOviwbBGRIuT+kikBMjllRHr9tDonkWYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730401432; c=relaxed/simple;
-	bh=uZESYCwSy02piR+29ifqwWC+ET5V5TOOXfN7NXL/460=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ANyzSGnhcCdAAqFSoVhTK+C15EgHAqVlKeIp9T7h8Ija9Jck8YHRAbTKuzK5VCWr6lJfIKdS6fI77cDGnv3NkslKe4bpuLBy8Rfus4kjhn5cNWNNVfg+V3Z2zAOBzGZ8OPsNoRgegNhLqYsYZW8BkX/wqW+6JxXCQJs683Y6yj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RNvtUg4c; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5c94c4ad9d8so1673957a12.2;
-        Thu, 31 Oct 2024 12:03:49 -0700 (PDT)
+	s=arc-20240116; t=1730414818; c=relaxed/simple;
+	bh=Z8tJTDavu88IoBsq3a64RtQ+t4O96S/lMc2DeVsidf0=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=oITsiGWfbRHWSchnsf8wRI+nHA7yqaT8EFeoKhZ7AXutDgA087GK6l8jfvCGzudHvOD12N9lIPYMJkzGnJOr7KqOT38ADl14aAVix7B+XySSNVGBkFB2ZJgZuEY6RMN/U4VDoJc8IEnUTz/OynjlKkGbNHhfL7Al4OgraBiyhoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kinseyho.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=peAe1Elf; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kinseyho.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2e3984f50c3so1823332a91.1
+        for <cgroups@vger.kernel.org>; Thu, 31 Oct 2024 15:46:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730401428; x=1731006228; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uZESYCwSy02piR+29ifqwWC+ET5V5TOOXfN7NXL/460=;
-        b=RNvtUg4cXEsaH/wvEbZ/V9m472OJ/YniYkFDGCixHMXYOidIff1ZxrNYbytkCTn+H1
-         vSs43DTIFmLBQw5Rev40DBldL+jNsZB4jsVQWgP+S5wBt8Gxre3tMVBg8SvIzu5CFGdG
-         4fVs+4n53T0m+7Y/FSGGYT3d/vZNUyAn6h7LGkMohlH9r3qFKBj97xCj6hdIPzXGUuMi
-         cMy1SGG8q1D9+DgNQQNXfQ7Gwvl3um1H7PwuJ/XG6MzIEFRCvjCqTc0aW9ebKvZbsqDp
-         Srzya2d0WSIksMrIAPon1nCLfRdjElmLtTYYpnpLFJUHjfDLoij790q+2Ono4Wvmiocq
-         AHUA==
+        d=google.com; s=20230601; t=1730414812; x=1731019612; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=wWNqofTpO3McnA/xoHsMP4AewEwxFw4lNZTCusoRC/Q=;
+        b=peAe1Elf8cxw//DNRCpCGP8Lu+0+2G9VwAo0bN/q4LS4W0iT2+YgfphKfATEEP7s1w
+         grrIYZnd+Q18BbnSB0/IxOHsKs4edCrJs++SqoJJL8hS9/EaRb5Gg4rwyNUhBYEpHFt3
+         GmlxLLy2gXusmmOcysPDdXKrViClj2ShsCTeLXj/PQcSZ4l7Z16VLZp2CZ/yEkeIfxeC
+         IJi82jiNsZCZPNbs2KCgMG6Cw+CkGA9KcA/uy12X6Dnb1g2SwMNiQhXIBuEMHLitW2XN
+         E7l+V330M82dosfZET3X76q4iFObaeXdvWv1VrBnOqa1OpLW10h+MjF3eb0yOkS4wuGA
+         pWfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730401428; x=1731006228;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uZESYCwSy02piR+29ifqwWC+ET5V5TOOXfN7NXL/460=;
-        b=w8GN85WcjM/EU6Oi08pPWZ+9DP+c4Ui4CkL/q3x/HMs6Ezi2+mXQ4XNPXr8suXgq2w
-         l91BPPw3xMjNWs/AtBEGkkNmE5QZ5D950EJriFVHXlvgG7hcGZpscLy+cDsWV/TpgOn+
-         rYrWYL+xciy4xh+Ho8f9hnSPiUcr/QUdSZYFtpZkn2NdmpNm+v5x1wajfcNSyoKk/sme
-         yH/JvGBhRjdQI4+BDf9pl+QndIyE2GQ49gkapGMzE72OufZ0auuck89hQvv6fBcvlsyO
-         fzgJbQNCJr9Ruo2lrdKa0GzHYCPR6T65tvYXA17x4hLlUBmQWJ6i5kg/DaK3esFoTK6+
-         nYjg==
-X-Forwarded-Encrypted: i=1; AJvYcCV9fjfNCPzQ60v6Yg4LeOTKWmIRyjCGmjx8OwgD5SUPgGgl7gPYuoMBZaj5Ipan6PES6eUZmfpA@vger.kernel.org, AJvYcCVNu78HFgAMF4kg+mciBDO0pIgj7fcMBhpI2B2X7OEqre0hS7foBHt7Y4INXretbQT8sFYMVodAuIcsGEbP@vger.kernel.org, AJvYcCVYLe1ay78FQ0QyHl3IvQ9Qrsqm+JO2KuTbuEDv4OP1czduvP96+H1n4ekS9x6r282v4WJKT+8D2L8b@vger.kernel.org
-X-Gm-Message-State: AOJu0YwB1s7vcYBwLvXdeNMAMEQhoX+oRewOF6UM2VfA71wQywYkEwsv
-	Z1BK+dSaJmiTPILdiZA/VjRuGndFem+0tTYSAHw1NCrv4q/wqTfqTJGQkWh0YHGn1ZV7Zo69deC
-	Sa1O3Su5VjGenvoC7TUFoAKecYsw=
-X-Google-Smtp-Source: AGHT+IFrpwGE0LJQq69tNQQsCndtpIAHUJ6FP3dpoTvWpaJX4mOBqsgxY7fkpk4UaRiczuaoWI/jB/OMed7/7+JLSic=
-X-Received: by 2002:a05:6402:354f:b0:5c9:4a35:7a20 with SMTP id
- 4fb4d7f45d1cf-5cea967920amr3734778a12.14.1730401428267; Thu, 31 Oct 2024
- 12:03:48 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1730414812; x=1731019612;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wWNqofTpO3McnA/xoHsMP4AewEwxFw4lNZTCusoRC/Q=;
+        b=IAzBSj8R2ppmDtbpbXh/PuyN2DYRs1T26RCUuS5TInk1BSuSDi1yENa/xupFIb9Pyu
+         ph42pi4tt3zU4icwhiFUpb6GBDkN4zrk00/U6QbpWsoH66r5u5qzS1hyYkn2lGby7Cjg
+         cf2HJjbpx2Zwr0rqpGoei5hoa0f7NoPiS8Ie7AOLtiMaI83SBLoN66WLkX8boBWVHN4y
+         3f5uKtOVEsOnI4SPzOu85NInqKaKBBHS0esxA6UlL4P/iK4GqcAB1QOdvWGYmK2NM8t+
+         Ru6p/eLKYrFYW4Z1tZdDmO0VpSWF9h5f2Ht0jM/LpYFo9Lx1N5i36LthUXJ7Du7WiBo8
+         Uo9w==
+X-Forwarded-Encrypted: i=1; AJvYcCWDI0FbH0E9pTLIeDQWSHIkqwrCoWzPJOKp/1niZfLckHWIgwbEvT0X9G9bOmySHNmK6t0rvawz@vger.kernel.org
+X-Gm-Message-State: AOJu0YxSn1PNgasdrUNVmM2zbYAlQ43Jl4C9sXJLzQju8buAc2tdho7H
+	GN1VAxmQhbYuLfZkR8RI7IUKSIcUNBPa/z2ByRa2gaMobAU/18qLMceAxRAITG3YKCN9DgqejoY
+	Dw3JvKUqqng==
+X-Google-Smtp-Source: AGHT+IGaJ2rgqbyyP31Xev0nRBvN2Idh0SQ5a+6516/dGsyioBAnn294ogITAzGgIXJXIh34+WTXqMYsm0jW5g==
+X-Received: from kinseyct.c.googlers.com ([fda3:e722:ac3:cc00:a1:836b:ac13:31a5])
+ (user=kinseyho job=sendgmr) by 2002:a17:90b:3e82:b0:2e9:4660:ac84 with SMTP
+ id 98e67ed59e1d1-2e94c53ab03mr1455a91.8.1730414812264; Thu, 31 Oct 2024
+ 15:46:52 -0700 (PDT)
+Date: Thu, 31 Oct 2024 22:45:49 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20241028210505.1950884-1-joshua.hahnjy@gmail.com>
- <ZyIZ_Sq9D_v5v43l@tiehlicka> <20241030150102.GA706616@cmpxchg.org>
- <ZyJQaXAZSMKkFVQ2@tiehlicka> <20241030183044.GA706387@cmpxchg.org>
- <CAN+CAwM1FJCaGrdBMarD2YthX8jcBEKx9Sd07yj-ZcpDxinURQ@mail.gmail.com> <ZyM7_i1HFnFfUmIR@tiehlicka>
-In-Reply-To: <ZyM7_i1HFnFfUmIR@tiehlicka>
-From: Joshua Hahn <joshua.hahnjy@gmail.com>
-Date: Thu, 31 Oct 2024 15:03:34 -0400
-Message-ID: <CAN+CAwMioguv6itTSYVUO9__kQVv6HZO2-i0NWt10-x7f6JVSQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] memcg/hugetlb: Adding hugeTLB counters to memcg
-To: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, nphamcs@gmail.com, shakeel.butt@linux.dev, 
-	roman.gushchin@linux.dev, muchun.song@linux.dev, tj@kernel.org, 
-	lizefan.x@bytedance.com, mkoutny@suse.com, corbet@lwn.net, lnyng@meta.com, 
-	akpm@linux-foundation.org, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-team@meta.com
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.47.0.163.g1226f6d8fa-goog
+Message-ID: <20241031224551.1736113-1-kinseyho@google.com>
+Subject: [PATCH mm-unstable v1 0/2] Track pages allocated for struct
+From: Kinsey Ho <kinseyho@google.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Pasha Tatashin <pasha.tatashin@soleen.com>, 
+	David Rientjes <rientjes@google.com>, willy@infradead.org, Vlastimil Babka <vbabka@suse.cz>, 
+	David Hildenbrand <david@redhat.com>, Kinsey Ho <kinseyho@google.com>, 
+	Joel Granados <joel.granados@kernel.org>, Kaiyang Zhao <kaiyang2@cs.cmu.edu>, 
+	Sourav Panda <souravpanda@google.com>, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Michal,
+We noticed high overhead for pages allocated for struct swap_cgroup in
+our fleet. This patchset adds the number of pages allocated for struct
+swap_cgroup to vmstat. This can be a useful metric for identifying
+unneeded overhead on systems which configure swap.
 
-On Thu, Oct 31, 2024 at 4:12=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
->
-> I would also add the following
->
-> The global counter is added because vmstats is the preferred framework
-> for cgroup stats. It makes stat items consistent between global and
-> cgroup. It provides a per-node breakdown as well which is useful. It
-> avoids proliferating cgroup-specific hooks in generic MM code.
->
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Thanks!
-> --
-> Michal Hocko
-> SUSE Labs
+Before adding the new stat, Patch 1 introduces a generic system-wide
+counting interface. 
 
-Thank you for your feedback and review. I think this makes sense,
-I will add a new paragraph to the implementation details section!
+Kinsey Ho (2):
+  mm: add generic system-wide page counters
+  mm, swap: add pages allocated for struct swap_cgroup to vmstat
 
-Andrew -- I am sorry to ask again, but do you think you can replace
-the 3rd section in the patch (3. Implementation Details) with the
-following paragraphs? Thank you so much!
+ include/linux/vmstat.h | 11 +++++++++++
+ mm/swap_cgroup.c       |  3 +++
+ mm/vmstat.c            | 35 ++++++++++++++++++++++++++---------
+ 3 files changed, 40 insertions(+), 9 deletions(-)
 
-In the alloc / free hugetlb functions, we call lruvec_stat_mod_folio
-regardless of whether memcg accounts hugetlb. mem_cgroup_commit_charge
-which is called from alloc_hugetlb_folio will set memcg for the folio
-only if the CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING cgroup mount option is
-used, so lruvec_stat_mod_folio accounts per-memcg hugetlb counters
-only if the feature is enabled. Regardless of whether memcg accounts
-for hugetlb, the newly added global counter is updated and shown
-in /proc/vmstat.
+-- 
+2.47.0.163.g1226f6d8fa-goog
 
-The global counter is added because vmstats is the preferred framework
-for cgroup stats. It makes stat items consistent between global and
-cgroups. It also provides a per-node breakdown, which is useful.
-Because it does not use cgroup-specific hooks, we also keep generic
-MM code separate from memcg code.
-
-Thank you Johannes & Michal for your continued feedback and interest
-in my work, and thank you Andrew for reviewing and allowing me to
-fix the patch messages.
-
-I hope you all have a great rest of your day!
-Joshua
 
