@@ -1,70 +1,72 @@
-Return-Path: <cgroups+bounces-5361-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5362-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A29059B89E1
-	for <lists+cgroups@lfdr.de>; Fri,  1 Nov 2024 04:18:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23D579B89E3
+	for <lists+cgroups@lfdr.de>; Fri,  1 Nov 2024 04:18:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67826282E5D
-	for <lists+cgroups@lfdr.de>; Fri,  1 Nov 2024 03:18:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5D56282F16
+	for <lists+cgroups@lfdr.de>; Fri,  1 Nov 2024 03:18:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3711214265F;
-	Fri,  1 Nov 2024 03:18:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C1FB145324;
+	Fri,  1 Nov 2024 03:18:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="afPAUHNw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ID4ph9Pl"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CF0983CD2;
-	Fri,  1 Nov 2024 03:18:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7776146596;
+	Fri,  1 Nov 2024 03:18:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730431089; cv=none; b=qsL8rYGA/dPvVq/300MAzoGosX8N+LezjRQKD4n5/M4s+VA0BK1JXTUtHAIzTxVvo5brjP8pICoQABJ6GDCW9R6D+nm56X5pGe/GqPV+6ivV8RCxpRRzItR/rSjLNoDHcj8mWUYV6zOAWYausGhhqZ10tDIi4W62N8SNG9Vp0Mw=
+	t=1730431093; cv=none; b=MbwgtBCHWkzpT37dUX5v942WUng1VyPAuC+wD1A/Fxj2dPWlDL4iMEQ+0heCEVNjntjDS2UNr9DsshALM6PIMhOSbBLGNN1FwS38j6N1xac3VwBtZo1ztOIj384H5LB4gNqeSUbbl/aQ0vsZDVxsmpMfvSwRLkNDb90FRrrHRuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730431089; c=relaxed/simple;
-	bh=kE0b6SqaagtclZDAvD5IA6BEvD9BDVsLYL9M/3H5k9Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ZJTgdqoHy0uH7pJUquaNBfjXdOPqLUV/9PlQt8AfOEMyd1CPlJVOSWmu79+Pv03Il2KWGKPZ9Jyd35IzxQo8RXZbhmqgNwjGiwB8O10Xf7tlUjVOTJ5GtHaaiZUFPJWiGd6eXJMbji+3bOqdVYfoauPtGndBOs1uI/3QKeAVEi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=afPAUHNw; arc=none smtp.client-ip=209.85.210.172
+	s=arc-20240116; t=1730431093; c=relaxed/simple;
+	bh=hoBYOBwvRWg95nA71vWiykGK7mKakjibn+uJFK9Yvu8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Fc7EpEHWrnodLGIqi/43HjU3VRcwjrYHvo8WM7tTrhmDl5U+fO9jwBUpSm/t0LHHkLQ8617QL//e9CK9G28Oe2llZa7NsnAEos+v4SIKpzNu1LjsI7KebS7VpBVea6PQEAwFgL+ifeCMnidbFySOxhzD6SeUSQLudi6TK9/CcoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ID4ph9Pl; arc=none smtp.client-ip=209.85.210.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-71e8235f0b6so1355613b3a.3;
-        Thu, 31 Oct 2024 20:18:06 -0700 (PDT)
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-720be27db74so930297b3a.1;
+        Thu, 31 Oct 2024 20:18:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730431086; x=1731035886; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pQpaHB9cW5qSxiTYZJ7mCfzun8xsjg3NUKsyTSEGsCE=;
-        b=afPAUHNwosaXFwz0adi9oLkFNPDukAJVBMQq2g1nWy3e68bRR2AnDBV9WBziElxnKq
-         pbojBtut0Vg/FwW7tJKQUUasSVuYjrSi2Xf5BhpysSxq2qKBqbxAdRPRVhEmcRSBKJ0+
-         ZPMDsyuwSZkc2uw+eb8GRMWjPgl2aRHY+JaFdmoG1y9cDq1NvT5T1SPhqoKkhQaNiPZH
-         XWc5pLdwthd/PPeJuO0i4gbSrWBG3xpHa69nbKn9hoFEcvXwsFUjrVIFt4A2xtiCeXKS
-         uWhFsWJxMl66v80pNu4w/VD78tsz3iVQeuO7GXqrYNEC/asDna7xHjnn32RNIANyhYyC
-         VRig==
+        d=gmail.com; s=20230601; t=1730431091; x=1731035891; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ImL5gbpH80k/RQVQHmGfObnVHocW+7l6/wYsDpcrN+I=;
+        b=ID4ph9PlzKe7EONZLkY1A317CJo0634cv63r5UfRS2UIX7jLGYq4qhcvwU1ihmAWqK
+         ZypLn+WzsI7MDaFPbOcJUgreyHOCQunkk9xMuKtJ9xMPl+msqnR1sMutMsljCZTX84QU
+         Hnk6G/0A93E1Ea3a+0wZSDctbPtVeXEcHD6zaX1LoORda1HWKHG7/1UGrteOfzMlnR4c
+         hBLdGGohimlY6L3xmOX4hOG0hRiyyMG706GL+sczPx0I528+A4invdB8ZkF8Ai3fxMOo
+         FS2wK421xMu7bvco4c3UckW+hlmNmisHqxUhWZwjlISMp8yw3ITmQMUDKyiPtjL8kt11
+         LaMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730431086; x=1731035886;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pQpaHB9cW5qSxiTYZJ7mCfzun8xsjg3NUKsyTSEGsCE=;
-        b=BVhlQZ/6+t6UAOlreR3MyZRhO1a9vQhhlc7PWXy9KHpw49Plnb0lA0flDJKN/jVhB+
-         q/nQaCgwFOF84j6zbBalekPBRDnw9p9jVze45nJbx19G/EsjpTperUNA9yppCBg/8cPp
-         kI3xGcZi0pZ2yzWPS4b1BCDkO/wGGMhUHA2szILwQFmLwOdrNaHeCxs3jAePuVePOqt/
-         HoyWzK/c4na1SvPr1VleCz7YcBU14R+C7rKY1c/+CNKGJIUmKaKi2r//Iip2OzShWIxa
-         RVZ+hUJpVImlegikQRcZHQDv6TJlNfogmPm8v2KjB8xsgVQFwFqqvGbh+jmln22SqIOk
-         QnCA==
-X-Forwarded-Encrypted: i=1; AJvYcCWWfAzwK1XTI5E2wmjQJdLqU7Q+sdcLomaurg0b8nrryjOUqrLLxaSt0bs5oCgAp+IfPJ5oCjIL9UVvRFa3@vger.kernel.org, AJvYcCX0EBZXbsZiuN25qO43yqM4uPWmgOi3+B/cW+41g4gFwpqN+My4NCQat7o1Wvq3+uVvKhbP/9go@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy4JwQaKUelaw7jbNOnbxYBPLIwqbuONb50XDugRjeiO+yGC6Pp
-	FXLxe/5KbZwd494eHadol5GB58CEENl4+QPT9HkdhgXibd41R79l
-X-Google-Smtp-Source: AGHT+IHyuoHMjkWnhaqKRDMJ/0/qGiq0vmELtZbkjk7xCR/XlIqGXDu9PE1AiH7jKcO824hvVwz19Q==
-X-Received: by 2002:a05:6a21:4610:b0:1d9:22c1:1231 with SMTP id adf61e73a8af0-1db91dec20amr6098607637.29.1730431086263;
-        Thu, 31 Oct 2024 20:18:06 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1730431091; x=1731035891;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ImL5gbpH80k/RQVQHmGfObnVHocW+7l6/wYsDpcrN+I=;
+        b=MStRHpO+04qACnoGrukWblFNV+1DQIw2vU7dw5TmdkQSDNlsC+WJoOBcYi7og7lckP
+         LdLrtsrzupl0GQqIFDKCyClbCky16W7QmjK11g0hAS3MddM1OpFwJuQdfNyqIRKDLPif
+         CIJ09Tn2LyCC51hrpZY3IuNQYg9Kr0eKP6B1gONkn9xKcydskTHyu2BkwvQViT++cLvh
+         WX/fk8ExwGfh3QZXYVZhL+kMcbjMvs4+yo1D5mfLc2hTTswXrHDUzwkgwYek5zWQx92/
+         Bq8TOvNP7U6dISQ9+/Ok1Kc6DwaPI0lvxr1fXDliUkR9VQIfix0vcHHdTZ3YJ5Ti31PL
+         nmsg==
+X-Forwarded-Encrypted: i=1; AJvYcCVBCZMy/vSCvEx63hvDdOeABYx/MjA/5O6mxNtbqi1Mlu2BaivmToshiRna6lCC1dgW3izEcpm4@vger.kernel.org, AJvYcCVu/Ovbtzai2ryJbSxGu0YyqsbDDdMZ2RASf+I30ehjsnKXwOZrkA82fZy3I7oA8XHcMJ46gkjoZ8+mmExy@vger.kernel.org
+X-Gm-Message-State: AOJu0YyjPgI0Hp3syGdQchrTFC5SU1d82l1OCQjLeb/DFkz/3n9FUUaq
+	EQr8vp4FNvUsddjIzPe50UL9IZfuvuP3QKrI/sbPTTaaS3Xtn+aLcPgWmle1qvzCNw==
+X-Google-Smtp-Source: AGHT+IEnuOkWfX4734hR4p6OeZwydqRMrrRS2qoM/A7bvcA7g5CbgJMYrMjsD+XsNHcf/w/9l6Qp5w==
+X-Received: by 2002:a05:6a20:3544:b0:1d9:761:8ad8 with SMTP id adf61e73a8af0-1db95056f28mr6822894637.21.1730431091084;
+        Thu, 31 Oct 2024 20:18:11 -0700 (PDT)
 Received: from localhost.localdomain ([39.144.44.206])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-720bc31af9dsm1854445b3a.217.2024.10.31.20.18.01
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-720bc31af9dsm1854445b3a.217.2024.10.31.20.18.06
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 31 Oct 2024 20:18:04 -0700 (PDT)
+        Thu, 31 Oct 2024 20:18:09 -0700 (PDT)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: mingo@redhat.com,
 	peterz@infradead.org
@@ -80,68 +82,109 @@ Cc: juri.lelli@redhat.com,
 	cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v4 0/4] sched: Fix irq accounting for CONFIG_IRQ_TIME_ACCOUNTING
-Date: Fri,  1 Nov 2024 11:17:46 +0800
-Message-Id: <20241101031750.1471-1-laoar.shao@gmail.com>
+Subject: [PATCH v4 1/4] sched: Define sched_clock_irqtime as static key
+Date: Fri,  1 Nov 2024 11:17:47 +0800
+Message-Id: <20241101031750.1471-2-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+In-Reply-To: <20241101031750.1471-1-laoar.shao@gmail.com>
+References: <20241101031750.1471-1-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-After enabling CONFIG_IRQ_TIME_ACCOUNTING to track IRQ pressure in our
-container environment, we encountered several user-visible behavioral
-changes:
+Since CPU time accounting is a performance-critical path, let's define
+sched_clock_irqtime as a static key to minimize potential overhead.
 
-- Interrupted IRQ/softirq time is not accounted for in the cpuacct cgroup
-
-  This breaks userspace applications that rely on CPU usage data from
-  cgroups to monitor CPU pressure. This patchset resolves the issue by
-  ensuring that IRQ/softirq time is accounted for in the cgroup of the
-  interrupted tasks.
-
-- getrusage(2) does not include time interrupted by IRQ/softirq
-
-  Some services use getrusage(2) to check if workloads are experiencing CPU
-  pressure. Since IRQ/softirq time is no longer charged to task runtime,
-  getrusage(2) can no longer reflect the CPU pressure caused by heavy
-  interrupts.
-
-This patchset addresses the first issue, which is relatively
-straightforward. However, the second issue remains unresolved, as there
-might be debate over whether interrupted time should be considered part of
-a task’s usage. Nonetheless, it is important to report interrupted time to
-the user via some metric, though that is a separate discussion.
-
-Changes:
-v3->v4:
-- Rebase
-
-v2->v3:
-- Add a helper account_irqtime() to avoid redundant code (Johannes)
-
-v1->v2: https://lore.kernel.org/cgroups/20241008061951.3980-1-laoar.shao@gmail.com/
-- Fix lockdep issues reported by kernel test robot <oliver.sang@intel.com>
-
-v1: https://lore.kernel.org/all/20240923090028.16368-1-laoar.shao@gmail.com/
-
-Yafang Shao (4):
-  sched: Define sched_clock_irqtime as static key
-  sched: Don't account irq time if sched_clock_irqtime is disabled
-  sched, psi: Don't account irq time if sched_clock_irqtime is disabled
-  sched: Fix cgroup irq accounting for CONFIG_IRQ_TIME_ACCOUNTING
-
- kernel/sched/core.c    | 77 +++++++++++++++++++++++++++++-------------
- kernel/sched/cputime.c | 16 ++++-----
- kernel/sched/psi.c     | 11 ++----
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+---
+ kernel/sched/cputime.c | 16 +++++++---------
  kernel/sched/sched.h   |  1 +
- kernel/sched/stats.h   |  7 ++--
- 5 files changed, 68 insertions(+), 44 deletions(-)
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
+diff --git a/kernel/sched/cputime.c b/kernel/sched/cputime.c
+index 0bed0fa1acd9..d0b6ea737d04 100644
+--- a/kernel/sched/cputime.c
++++ b/kernel/sched/cputime.c
+@@ -7,6 +7,8 @@
+  #include <asm/cputime.h>
+ #endif
+ 
++DEFINE_STATIC_KEY_FALSE(sched_clock_irqtime);
++
+ #ifdef CONFIG_IRQ_TIME_ACCOUNTING
+ 
+ /*
+@@ -22,16 +24,14 @@
+  */
+ DEFINE_PER_CPU(struct irqtime, cpu_irqtime);
+ 
+-static int sched_clock_irqtime;
+-
+ void enable_sched_clock_irqtime(void)
+ {
+-	sched_clock_irqtime = 1;
++	static_branch_enable(&sched_clock_irqtime);
+ }
+ 
+ void disable_sched_clock_irqtime(void)
+ {
+-	sched_clock_irqtime = 0;
++	static_branch_disable(&sched_clock_irqtime);
+ }
+ 
+ static void irqtime_account_delta(struct irqtime *irqtime, u64 delta,
+@@ -57,7 +57,7 @@ void irqtime_account_irq(struct task_struct *curr, unsigned int offset)
+ 	s64 delta;
+ 	int cpu;
+ 
+-	if (!sched_clock_irqtime)
++	if (!static_branch_likely(&sched_clock_irqtime))
+ 		return;
+ 
+ 	cpu = smp_processor_id();
+@@ -90,8 +90,6 @@ static u64 irqtime_tick_accounted(u64 maxtime)
+ 
+ #else /* CONFIG_IRQ_TIME_ACCOUNTING */
+ 
+-#define sched_clock_irqtime	(0)
+-
+ static u64 irqtime_tick_accounted(u64 dummy)
+ {
+ 	return 0;
+@@ -478,7 +476,7 @@ void account_process_tick(struct task_struct *p, int user_tick)
+ 	if (vtime_accounting_enabled_this_cpu())
+ 		return;
+ 
+-	if (sched_clock_irqtime) {
++	if (static_branch_likely(&sched_clock_irqtime)) {
+ 		irqtime_account_process_tick(p, user_tick, 1);
+ 		return;
+ 	}
+@@ -507,7 +505,7 @@ void account_idle_ticks(unsigned long ticks)
+ {
+ 	u64 cputime, steal;
+ 
+-	if (sched_clock_irqtime) {
++	if (static_branch_likely(&sched_clock_irqtime)) {
+ 		irqtime_account_idle_ticks(ticks);
+ 		return;
+ 	}
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 081519ffab46..038ce65d6635 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -3179,6 +3179,7 @@ struct irqtime {
+ };
+ 
+ DECLARE_PER_CPU(struct irqtime, cpu_irqtime);
++DECLARE_STATIC_KEY_FALSE(sched_clock_irqtime);
+ 
+ /*
+  * Returns the irqtime minus the softirq time computed by ksoftirqd.
 -- 
 2.43.5
 
