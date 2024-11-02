@@ -1,301 +1,262 @@
-Return-Path: <cgroups+bounces-5387-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5388-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91C419B999D
-	for <lists+cgroups@lfdr.de>; Fri,  1 Nov 2024 21:44:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A7D29B9CD1
+	for <lists+cgroups@lfdr.de>; Sat,  2 Nov 2024 06:02:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15DB51F220C5
-	for <lists+cgroups@lfdr.de>; Fri,  1 Nov 2024 20:44:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 159BA1C21283
+	for <lists+cgroups@lfdr.de>; Sat,  2 Nov 2024 05:02:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05BF91E0DE9;
-	Fri,  1 Nov 2024 20:44:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BEC5148826;
+	Sat,  2 Nov 2024 05:02:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DopupVo9"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="FYAkBL3j"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D2E9168DA;
-	Fri,  1 Nov 2024 20:44:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF50921364;
+	Sat,  2 Nov 2024 05:02:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730493846; cv=none; b=qGK3CV8eOu9H8/svmdxLdLoa7ik+goP669DSPVcPNHHUFbSvUjVlQ1akCaSVoM1AwMKPMjr+9YbzTMFKQ8zXB+II5IHK+ZfAyvMqyPswZfYBSmuvEc/Lngiq/AA8AQ4Je1KtdLq1YkaL5fDES64/qXtC+GaU0nWnSdcVR9qSzY4=
+	t=1730523746; cv=none; b=Vx53yh3Bp9vZtqgmRf04Tlw/lYpMBtpeHkS7mYMC3B5CVHzhXvG3R1jDg+B9RB6/JsfGuhzr32P/ZayoXp81vxe+A3WEqFbIlRWsDaIYYK4J9GAVL6ZSFxEeXO/NTOckGE5m9/Ku8uzO9oxDFWlv2bkXIX7FqVrAdQr8TxkY3aI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730493846; c=relaxed/simple;
-	bh=kZgWT+E+imGucwM5FYY+x2OMrD6FaStxjjPGQVYzOuk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=iFgpO165XEjRddiericuEuSqR70to3OL6X9kpU5mSeGTcZJNOeua5Qg7anpmrK5l4qP+LicyT9nexmsa6Ix4qZzNr9V8V4lFTv+GBVj7CjwXSkiTjdwjYp5IMaO5COGVsFT4WIBNzstSy+ibl0pVF168Y1jtFiTLP5Q9i60vzSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DopupVo9; arc=none smtp.client-ip=209.85.219.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e29267b4dc4so2175747276.0;
-        Fri, 01 Nov 2024 13:44:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730493844; x=1731098644; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tCM+fKsGzk5AZDxT4A2dewBEVdVNNm2ySi8AOsEK/l0=;
-        b=DopupVo9r7dS5G16picQQmYfaWbV7cnYFKXGhlVOCgsGcrQy4YhX1+lnZeb0mZEMV8
-         6ZZFxTj9VJqLUC6JEeeOTmgGwBpXe/SWZ6EjXO5EMlJvgBgFQbZp/korgWGM71wn3FMr
-         kH52ekqIelY4BkNHmKY7sZAiGA4zKZ+jFkX1n4WLq7TZA21nIMQMPz47Z9yhZkQvYyDK
-         UNnBPD7I9UoVkvMLJvhe3rr2mdlQ1zyPHKQhhHXF4cRgR6HFBwyCg63a7GubU/PXlTBp
-         ptflkiFG7gNtwhSGX3Itz/aHrHEOkx03m+6YFUyqiJd2bi5HlaEDXntzoaFXNbJbt/D1
-         mDhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730493844; x=1731098644;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tCM+fKsGzk5AZDxT4A2dewBEVdVNNm2ySi8AOsEK/l0=;
-        b=sVLzmhiteHg5KjAwBUZ5I2/s684K+fFGqc9CRMV53s8xTAAbjbbKTQpA3UiQFxUQTK
-         +3Tjaa7DV1C7DV+fAy6ghLRryCCyLzNC2fbj5jvfIOqUgLYwiahs2YlnvA6V39VITNEK
-         UIBJADYbjBcRtVio8UOYZXyaOIukZZVbrBNKk2J0PGtv5hnE1LiblHOPNBqLUZW4Txjg
-         cqmGmwlnw22sv6L9oldIMSPfkOjyPz1AaWNBYB4BE7nAdnIuvYBhP9CCtXx0ce9LUcDK
-         IWzfJ6GA4jA8zp0J4BcLUaGP0PWtKgKII2g0ey1odvWQGDCJw2+/1hytQRVcTkRMHGif
-         SOXA==
-X-Forwarded-Encrypted: i=1; AJvYcCUi2VDf8aK2XXnDdqUcVSA9Y7Ug6VrbNXIxpvhc8pvoFrf80kRur0zhFTAIwb+mqZFSWlwt9xFW/2Ib@vger.kernel.org, AJvYcCUztViepbTMkDiTqd/OZ0DMiqS2YWNdMvZ9Ez57OFlJo7jsCFj+3KeraszfQMAt0aJ78XsegQlgN2jBl3IZ@vger.kernel.org, AJvYcCWRJ6vAxG5TsVPg1UMow129caJ/cjGAzSrbyvxWE3mIPT8WKP7YAx9N6bCjsVtZHtCtxHmeN7N1@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx8LWG0OHtfJ62BtVb4ao/ejl1GLMgVN7iEDpZTG80gvx1eQsS2
-	XYfb99+D+HnK/S3FmTVFZzGIbLxTGHLWVZUdgPsxpLPYXpvzhr3m
-X-Google-Smtp-Source: AGHT+IEkuzO5zxQKkn/65x1uoWoqfWH/QbZaag/6vrSeC1yuyVpynp5j/emFlwaPWuvpnu0ognHsMA==
-X-Received: by 2002:a05:6902:b0e:b0:e30:cbde:1252 with SMTP id 3f1490d57ef6-e330266ec61mr3601095276.36.1730493843734;
-        Fri, 01 Nov 2024 13:44:03 -0700 (PDT)
-Received: from localhost (fwdproxy-frc-022.fbsv.net. [2a03:2880:21ff:16::face:b00c])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e30e8a61797sm871280276.12.2024.11.01.13.44.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Nov 2024 13:44:03 -0700 (PDT)
-From: Joshua Hahn <joshua.hahnjy@gmail.com>
-To: akpm@linux-foundation.org,
-	hannes@cmpxchg.org
-Cc: nphamcs@gmail.com,
-	shakeel.butt@linux.dev,
-	roman.gushchin@linux.dev,
-	muchun.song@linux.dev,
-	chris@chrisdown.name,
-	tj@kernel.org,
-	lizefan.x@bytedance.com,
-	mkoutny@suse.com,
-	corbet@lwn.net,
-	lnyng@meta.com,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH v4 1/1] memcg/hugetlb: Add hugeTLB counters to memcg
-Date: Fri,  1 Nov 2024 13:44:02 -0700
-Message-ID: <20241101204402.1885383-1-joshua.hahnjy@gmail.com>
-X-Mailer: git-send-email 2.43.5
+	s=arc-20240116; t=1730523746; c=relaxed/simple;
+	bh=kGFVdWWgwPLcOLv8kFKbF4hiZI3g7hWOKWCfBJ6i/74=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mBZK+xz0gE1xMNXUtOpRJCSs1WsJ/IoKauGRi2YIOFa18TKYvzv8piiiXKOzv0x9GNIwpV3VI1k3Bp9U4daYRvC133QgfBnAoXAanqn0WrOwy9fdCNoSFAagrVe92hmJ1DoVI5NAX1s0w3WIEJbzmUg3iep7hVNzJ08G8C/0U/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=FYAkBL3j; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=4F81d0sfC46fv7mW68t4r9q10n8w2Wf3N+b7YkMfZcQ=; b=FYAkBL3jYvwYpguF4eLYSfb7zT
+	P6ET9B2Jt4g2a4LqeRIOLimsSVFygi4X4/yqAx+/rhY07xj583Ml5H17IJRimfUUbzUGKM5AqpBoW
+	L64IaZ15GjEraP8g4jb/XEfeqxlLV09SUuAcKU5+qGKhTGOY9X3TLzzhWsmLvqllzRbcUWh6Q9SnJ
+	YxdzVoCIx5C/Ji7wJNfwTesquTABLh9GslqN+o4hsddwDCuSAcbu301wY/i36GWT8g7Hr5YCly0vR
+	XLfowyRmFWUWlV+0LrfDbdFv85FVZvZMagaClR+oxsNmyh5UgFaoiujac8VaDMOOBc3f0qg3Fj3M+
+	OTqpoBcw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1t76HD-0000000AHep-3tWz;
+	Sat, 02 Nov 2024 05:02:19 +0000
+Date: Sat, 2 Nov 2024 05:02:19 +0000
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: linux-fsdevel@vger.kernel.org
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Christian Brauner <brauner@kernel.org>, kvm@vger.kernel.org,
+	cgroups@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCHSET v3] struct fd and memory safety
+Message-ID: <20241102050219.GA2450028@ZenIV>
+References: <20240730050927.GC5334@ZenIV>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240730050927.GC5334@ZenIV>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-This patch introduces a new counter to memory.stat that tracks hugeTLB
-usage, only if hugeTLB accounting is done to memory.current. This
-feature is enabled the same way hugeTLB accounting is enabled, via
-the memory_hugetlb_accounting mount flag for cgroupsv2.
+	struct fd stuff got rebased (with fairly minor conflicts), branch
+lives in the same place -
+	git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.fd
 
-1. Why is this patch necessary?
-Currently, memcg hugeTLB accounting is an opt-in feature [1] that adds
-hugeTLB usage to memory.current. However, the metric is not reported in
-memory.stat. Given that users often interpret memory.stat as a breakdown
-of the value reported in memory.current, the disparity between the two
-reports can be confusing. This patch solves this problem by including
-the metric in memory.stat as well, but only if it is also reported in
-memory.current (it would also be confusing if the value was reported in
-memory.stat, but not in memory.current)
+	Changes since the previous version:
+* branch rebased to 6.12-rc2
+* the fixes gone into mainline.
+* so's the conversion to new layout and accessors.
+* bpf side of things (with modifications) is gone into mainline (via bpf tree).
+* struct fderr side dropped - overlayfs doesn't need that anymore and while it's
+possible that use cases show up, for now there's none.
+* coda_parse_fd() part dropped - no longer valid due to mainline changes.
+* fs/xattr.c and fs/stat.c changes moved to separate branches (#work.xattr2 and
+#work.statx2 resp.)
 
-Aside from the consistency between the two files, we also see benefits
-in observability. Userspace might be interested in the hugeTLB footprint
-of cgroups for many reasons. For instance, system admins might want to
-verify that hugeTLB usage is distributed as expected across tasks: i.e.
-memory-intensive tasks are using more hugeTLB pages than tasks that
-don't consume a lot of memory, or are seen to fault frequently. Note that
-this is separate from wanting to inspect the distribution for limiting
-purposes (in which case, hugeTLB controller makes more sense).
+Individual patches in followups; review and testing would be welcome.
+If no objections materialize, I'm going to put that into #for-next on
+Monday.
 
-2. We already have a hugeTLB controller. Why not use that?
-It is true that hugeTLB tracks the exact value that we want. In fact, by
-enabling the hugeTLB controller, we get all of the observability
-benefits that I mentioned above, and users can check the total hugeTLB
-usage, verify if it is distributed as expected, etc.
+Diffstat:
+ arch/alpha/kernel/osf_sys.c                |   5 +-
+ arch/arm/kernel/sys_oabi-compat.c          |  10 +-
+ arch/powerpc/kvm/book3s_64_vio.c           |  21 +-
+ arch/powerpc/kvm/powerpc.c                 |  24 +--
+ arch/powerpc/platforms/cell/spu_syscalls.c |  68 +++----
+ arch/x86/kernel/cpu/sgx/main.c             |  10 +-
+ arch/x86/kvm/svm/sev.c                     |  39 ++--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_sched.c  |  23 +--
+ drivers/gpu/drm/drm_syncobj.c              |   9 +-
+ drivers/infiniband/core/ucma.c             |  19 +-
+ drivers/infiniband/core/uverbs_cmd.c       |   8 +-
+ drivers/media/mc/mc-request.c              |  18 +-
+ drivers/media/rc/lirc_dev.c                |  13 +-
+ drivers/vfio/group.c                       |   6 +-
+ drivers/vfio/virqfd.c                      |  16 +-
+ drivers/virt/acrn/irqfd.c                  |  13 +-
+ drivers/xen/privcmd.c                      |  28 +--
+ fs/btrfs/ioctl.c                           |   5 +-
+ fs/eventfd.c                               |   9 +-
+ fs/eventpoll.c                             |  38 ++--
+ fs/ext4/ioctl.c                            |  21 +-
+ fs/f2fs/file.c                             |  15 +-
+ fs/fcntl.c                                 |  42 ++--
+ fs/fhandle.c                               |   5 +-
+ fs/fsopen.c                                |  19 +-
+ fs/fuse/dev.c                              |   6 +-
+ fs/ioctl.c                                 |  23 +--
+ fs/kernel_read_file.c                      |  12 +-
+ fs/locks.c                                 |  15 +-
+ fs/namei.c                                 |  13 +-
+ fs/namespace.c                             |  47 ++---
+ fs/notify/fanotify/fanotify_user.c         |  44 ++---
+ fs/notify/inotify/inotify_user.c           |  38 ++--
+ fs/ocfs2/cluster/heartbeat.c               |  24 +--
+ fs/open.c                                  |  61 +++---
+ fs/quota/quota.c                           |  12 +-
+ fs/read_write.c                            | 145 +++++---------
+ fs/readdir.c                               |  28 +--
+ fs/remap_range.c                           |  11 +-
+ fs/select.c                                |  48 ++---
+ fs/signalfd.c                              |   9 +-
+ fs/smb/client/ioctl.c                      |  11 +-
+ fs/splice.c                                |  78 +++-----
+ fs/statfs.c                                |  12 +-
+ fs/sync.c                                  |  29 ++-
+ fs/timerfd.c                               |  40 ++--
+ fs/utimes.c                                |  11 +-
+ fs/xfs/xfs_exchrange.c                     |  18 +-
+ fs/xfs/xfs_handle.c                        |  16 +-
+ fs/xfs/xfs_ioctl.c                         |  69 ++-----
+ include/linux/cleanup.h                    |   2 +-
+ include/linux/file.h                       |   7 +-
+ include/linux/netlink.h                    |   2 +-
+ io_uring/sqpoll.c                          |  29 +--
+ ipc/mqueue.c                               | 109 +++--------
+ kernel/cgroup/cgroup.c                     |  21 +-
+ kernel/events/core.c                       |  63 ++----
+ kernel/module/main.c                       |  15 +-
+ kernel/nsproxy.c                           |   5 +-
+ kernel/pid.c                               |  20 +-
+ kernel/signal.c                            |  29 +--
+ kernel/sys.c                               |  15 +-
+ kernel/taskstats.c                         |  18 +-
+ kernel/watch_queue.c                       |   6 +-
+ mm/fadvise.c                               |  10 +-
+ mm/filemap.c                               |  17 +-
+ mm/memcontrol-v1.c                         |  44 ++---
+ mm/readahead.c                             |  17 +-
+ net/core/net_namespace.c                   |  10 +-
+ net/netlink/af_netlink.c                   |   9 +-
+ net/socket.c                               | 303 +++++++++++++----------------
+ security/integrity/ima/ima_main.c          |   7 +-
+ security/landlock/syscalls.c               |  45 ++---
+ security/loadpin/loadpin.c                 |   8 +-
+ sound/core/pcm_native.c                    |   2 +-
+ virt/kvm/eventfd.c                         |  15 +-
+ virt/kvm/vfio.c                            |  14 +-
+ 77 files changed, 751 insertions(+), 1395 deletions(-)
 
-With this said, there are 2 problems:
-(a) They are still not reported in memory.stat, which means the
-    disparity between the memcg reports are still there.
-(b) We cannot reasonably expect users to enable the hugeTLB controller
-    just for the sake of hugeTLB usage reporting, especially since
-    they don't have any use for hugeTLB usage enforcing [2].
+Shortlog and commit summaries:
 
-3. Implementation Details:
-In the alloc / free hugetlb functions, we call lruvec_stat_mod_folio
-regardless of whether memcg accounts hugetlb. mem_cgroup_commit_charge
-which is called from alloc_hugetlb_folio will set memcg for the folio
-only if the CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING cgroup mount option is
-used, so lruvec_stat_mod_folio accounts per-memcg hugetlb counters
-only if the feature is enabled. Regardless of whether memcg accounts
-for hugetlb, the newly added global counter is updated and shown
-in /proc/vmstat.
+01/28) net/socket.c: switch to CLASS(fd)
+	Get rid of the sockfd_lookup_light() and associated irregularities;
+fput_light() gone, old users of sockfd_lookup_light() switched to CLASS(fd) +
+sock_from_file().
 
-The global counter is added because vmstats is the preferred framework
-for cgroup stats. It makes stat items consistent between global and
-cgroups. It also provides a per-node breakdown, which is useful.
-Because it does not use cgroup-specific hooks, we also keep generic
-MM code separate from memcg code.
+02/28) regularize emptiness checks in fini_module(2) and vfs_dedupe_file_range()
 
-[1] https://lore.kernel.org/all/20231006184629.155543-1-nphamcs@gmail.com/
-[2] Of course, we can't make a new patch for every feature that can be
-    duplicated. However, since the existing solution of enabling the
-    hugeTLB controller is an imperfect solution that still leaves a
-    discrepancy between memory.stat and memory.curent, I think that it
-    is reasonable to isolate the feature in this case.
- 
-Suggested-by: Nhat Pham <nphamcs@gmail.com>
-Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
-Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Acked-by: Chris Down <chris@chrisdown.name>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
-Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
+Getting rid of passing struct fd by reference:
+03/28) timerfd: switch to CLASS(fd, ...)
+04/28) get rid of perf_fget_light(), convert kernel/events/core.c to CLASS(fd)
 
----
-Changelog
-v4:
-  * Added {acked,suggested,reviewed}-by to the list
-  * Added an extra section detailing why having no checks for mount
-    options or configs is ok (handled by lruvec_stat_mod_folio). Also
-    includes justifications for adding a global counter
-v3:
-  * Removed check for whether CGRP_ROOT_HUGETLB_ACCOUNTING is on, since
-    this check is already handled by lruvec_stat_mod (and doing the
-    check in hugetlb.c actually breaks the build if MEMCG is not
-    enabled.
-  * Because there is now only one check for the flags, I've opted to
-    do all of the cleanup in a separate patch series.
-  * Added hugetlb information in cgroup-v2.rst
-  * Added Suggested-by: Shakeel Butt
-v2:
-  * Enables the feature only if memcg accounts for hugeTLB usage
-  * Moves the counter from memcg_stat_item to node_stat_item
-  * Expands on motivation & justification in commitlog
-  * Added Suggested-by: Nhat Pham
+do_mq_notify() regularization:
+05/28) switch netlink_getsockbyfilp() to taking descriptor
+06/28) do_mq_notify(): saner skb freeing on failures
+07/28) do_mq_notify(): switch to CLASS(fd, ...)
 
- Documentation/admin-guide/cgroup-v2.rst |  5 +++++
- include/linux/mmzone.h                  |  3 +++
- mm/hugetlb.c                            |  2 ++
- mm/memcontrol.c                         | 11 +++++++++++
- mm/vmstat.c                             |  3 +++
- 5 files changed, 24 insertions(+)
+After that the weirdness with reassignments in do_mq_notify() is gone
+(and, IMO, the result is easier to follow).
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 69af2173555f..bd7e81c2aa2b 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1646,6 +1646,11 @@ The following nested keys are defined.
- 	  pgdemote_khugepaged
- 		Number of pages demoted by khugepaged.
- 
-+	  hugetlb
-+		Amount of memory used by hugetlb pages. This metric only shows
-+		up if hugetlb usage is accounted for in memory.current (i.e.
-+		cgroup is mounted with the memory_hugetlb_accounting option).
-+
-   memory.numa_stat
- 	A read-only nested-keyed file which exists on non-root cgroups.
- 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 17506e4a2835..972795ae5946 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -220,6 +220,9 @@ enum node_stat_item {
- 	PGDEMOTE_KSWAPD,
- 	PGDEMOTE_DIRECT,
- 	PGDEMOTE_KHUGEPAGED,
-+#ifdef CONFIG_HUGETLB_PAGE
-+	NR_HUGETLB,
-+#endif
- 	NR_VM_NODE_STAT_ITEMS
- };
- 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 190fa05635f4..fbb10e52d7ea 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1925,6 +1925,7 @@ void free_huge_folio(struct folio *folio)
- 				     pages_per_huge_page(h), folio);
- 	hugetlb_cgroup_uncharge_folio_rsvd(hstate_index(h),
- 					  pages_per_huge_page(h), folio);
-+	lruvec_stat_mod_folio(folio, NR_HUGETLB, -pages_per_huge_page(h));
- 	mem_cgroup_uncharge(folio);
- 	if (restore_reserve)
- 		h->resv_huge_pages++;
-@@ -3093,6 +3094,7 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
- 
- 	if (!memcg_charge_ret)
- 		mem_cgroup_commit_charge(folio, memcg);
-+	lruvec_stat_mod_folio(folio, NR_HUGETLB, pages_per_huge_page(h));
- 	mem_cgroup_put(memcg);
- 
- 	return folio;
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 7845c64a2c57..5444d0e7bb64 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -310,6 +310,9 @@ static const unsigned int memcg_node_stat_items[] = {
- 	PGDEMOTE_KSWAPD,
- 	PGDEMOTE_DIRECT,
- 	PGDEMOTE_KHUGEPAGED,
-+#ifdef CONFIG_HUGETLB_PAGE
-+	NR_HUGETLB,
-+#endif
- };
- 
- static const unsigned int memcg_stat_items[] = {
-@@ -1346,6 +1349,9 @@ static const struct memory_stat memory_stats[] = {
- 	{ "unevictable",		NR_UNEVICTABLE			},
- 	{ "slab_reclaimable",		NR_SLAB_RECLAIMABLE_B		},
- 	{ "slab_unreclaimable",		NR_SLAB_UNRECLAIMABLE_B		},
-+#ifdef CONFIG_HUGETLB_PAGE
-+	{ "hugetlb",			NR_HUGETLB			},
-+#endif
- 
- 	/* The memory events */
- 	{ "workingset_refault_anon",	WORKINGSET_REFAULT_ANON		},
-@@ -1441,6 +1447,11 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
- 		u64 size;
- 
-+#ifdef CONFIG_HUGETLB_PAGE
-+		if (unlikely(memory_stats[i].idx == NR_HUGETLB) &&
-+		    !(cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING))
-+			continue;
-+#endif
- 		size = memcg_page_state_output(memcg, memory_stats[i].idx);
- 		seq_buf_printf(s, "%s %llu\n", memory_stats[i].name, size);
- 
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index b5a4cea423e1..871566b04b79 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1273,6 +1273,9 @@ const char * const vmstat_text[] = {
- 	"pgdemote_kswapd",
- 	"pgdemote_direct",
- 	"pgdemote_khugepaged",
-+#ifdef CONFIG_HUGETLB_PAGE
-+	"nr_hugetlb",
-+#endif
- 	/* system-wide enum vm_stat_item counters */
- 	"nr_dirty_threshold",
- 	"nr_dirty_background_threshold",
--- 
-2.43.5
+08/28) simplify xfs_find_handle() a bit
+	Massage to get rid of reassignment there; simplifies control flow...
 
+Making sure that fdget() and fdput() are done in the same function:
+09/28) convert vmsplice() to CLASS(fd, ...)
+
+Deal with fdget_raw() and fdget_pos() users - all trivial to convert.
+10/28) fdget_raw() users: switch to CLASS(fd_raw, ...)
+11/28) introduce "fd_pos" class, convert fdget_pos() users to it.
+
+Prep for fdget() conversions:
+12/28) o2hb_region_dev_store(): avoid goto around fdget()/fdput()
+13/28) privcmd_ioeventfd_assign(): don't open-code eventfd_ctx_fdget()
+
+14/28) fdget(), trivial conversions.
+	Big one: all callers that have fdget() done the first thing in
+scope, with all matching fdput() immediately followed by leaving the
+scope.  All of those are trivial to convert.
+15/28) fdget(), more trivial conversions
+	Same, except that fdget() is preceded by some work.  All fdput()
+are still immediately followed by leaving the scope.  These are also
+trivial to convert, and along with the previous commit that takes care
+of the majority of fdget() calls.
+
+16/28) convert do_preadv()/do_pwritev()
+	fdput() is transposable with everything done after it (inc_syscw()
+et.al.)
+17/28) convert cachestat(2)
+	fdput() is transposable with copy_to_user() downstream of it.
+
+18/28) switch spufs_calls_{get,put}() to CLASS() use
+19/28) convert spu_run(2)
+	fdput() used to be followed by spufs_calls_put(); we could transpose
+those two, but spufs_calls_get()/spufd_calls_put() itself can be converted
+to CLASS() use and it's cleaner that way.
+
+20/28) convert media_request_get_by_fd()
+	fdput() is transposable with debugging printk
+
+21/28) convert cifs_ioctl_copychunk()
+	fdput() moved past mnt_drop_file_write(); harmless, if somewhat
+cringeworthy.  Reordering could be avoided either by adding an explicit
+scope or by making mnt_drop_file_write() called via __cleanup...
+
+22/28) convert vfs_dedupe_file_range()
+	fdput() is followed by checking fatal_signal_pending() (and aborting
+the loop in such case).  fdput() is transposable with that check.
+Yes, it'll probably end up with slightly fatter code (call after the
+check has returned false + call on the almost never taken out-of-line path
+instead of one call before the check), but it's not worth bothering with
+explicit extra scope there (or dragging the check into the loop condition,
+for that matter).
+
+23/28) convert do_select()
+	take the logics from fdget() to fdput() into an inlined helper -
+with existing wait_key_set() subsumed into that.
+24/28) do_pollfd(): convert to CLASS(fd)
+	lift setting ->revents into the caller, so that failure exits
+(including the early one) would be plain returns.
+
+25/28) assorted variants of irqfd setup: convert to CLASS(fd)
+	fdput() is transposable with kfree(); some reordering
+is required in one of those (we do fdget() a bit earlier there).
+26/28) memcg_write_event_control(): switch to CLASS(fd)
+	similar to the previous.  As the matter of fact, there
+might be a missing common helper or two hiding in both...
+
+27/28) css_set_fork(): switch to CLASS(fd_raw, ...)
+	could be separated from the series; its use of fget_raw()
+could be converted to fdget_raw(), with the result convertible to
+CLASS(fd_raw)
+
+28/28) deal with the last remaing boolean uses of fd_file()
+	most of them had been converted to fd_empty() by now; pick
+the few remaining strugglers.
 
