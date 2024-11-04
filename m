@@ -1,90 +1,99 @@
-Return-Path: <cgroups+bounces-5430-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5431-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBB3A9BC0C0
-	for <lists+cgroups@lfdr.de>; Mon,  4 Nov 2024 23:18:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B19E9BC0E2
+	for <lists+cgroups@lfdr.de>; Mon,  4 Nov 2024 23:28:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0DF62841F7
-	for <lists+cgroups@lfdr.de>; Mon,  4 Nov 2024 22:18:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00109B2152C
+	for <lists+cgroups@lfdr.de>; Mon,  4 Nov 2024 22:28:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1D891FDFAE;
-	Mon,  4 Nov 2024 22:18:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E0D91FCF69;
+	Mon,  4 Nov 2024 22:27:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="cTVpqxqx"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kpMl9DZ0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7721A1FDF9B;
-	Mon,  4 Nov 2024 22:18:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECF8C1D5CE7
+	for <cgroups@vger.kernel.org>; Mon,  4 Nov 2024 22:27:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730758715; cv=none; b=XrPlFkiKQhkM2y9N3svjUhx3hUBbbEYRzhp0n5P5dyz88L/gKyaM4XWnb1ElQWDtXO2jOnwUgRB2GtTf1ECZW230XvO+wqSTXF98JlfBpcnrMs13A1sTHLkv1iQZph+08/JiJ2OMUEL5r44HFnQGOIqFtzLw2Pi/Fj4RHTt5mf8=
+	t=1730759278; cv=none; b=e/1z4O/1SOp6GsRg2Iedrleqwi9LV/GQmhrdFHgdiCmCcI7Inyc9w8IVZHJFRiBGkp0cKtsbMCweZtf3k9WL4GHSABpjgMtYjwrbsNrIdQmgbjbeP+5Gnsuqalw2QK5LhyYBDkVC1LNxkf7nOtwCfizFiIZr2LjnYbkhNh7k/bo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730758715; c=relaxed/simple;
-	bh=bZVCcEDLTWFLC6Yv2DcTeKjA09yueP5Uek2v1WAoKK8=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=XNI6cHMLytvGMAcAdddMZV/8b8jWsCpugvlN2eDai0pKGg7bOr/rPyxBxI4mCCxwsVi96VrRl3vSXmcWV123GR4UJgTlwlpWYXANDB3yuIRjqWzHsYafYYXbge55r2dGDcthocL1XLlJ5p9kVlZ34wmUAKTYlcL4v+0rWQXYZy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=cTVpqxqx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B596C4CECE;
-	Mon,  4 Nov 2024 22:18:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1730758715;
-	bh=bZVCcEDLTWFLC6Yv2DcTeKjA09yueP5Uek2v1WAoKK8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=cTVpqxqx/q3YShRhLM9GTA7g+G5oQJJqAFH5cmmF351bScmptSfdAzmnQu0Eviefp
-	 ZWIlpcocv68SUxF+DKJnxcDcbEHCr3t2FO33ROeT32VbFbxmEs9QOCUItO1mi4PnDG
-	 Ddjm2AgM/XPSqQzttet1pSi0ATh3sY0mzoNaC5zU=
-Date: Mon, 4 Nov 2024 14:18:34 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Yu Zhao <yuzhao@google.com>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner
- <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, Roman Gushchin
- <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, Hugh
- Dickins <hughd@google.com>, Yosry Ahmed <yosryahmed@google.com>,
- linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, Meta kernel team
- <kernel-team@meta.com>
-Subject: Re: [PATCH v1 5/6] memcg-v1: no need for memcg locking for MGLRU
-Message-Id: <20241104141834.fc30ea90bbc80446d0fcf1f0@linux-foundation.org>
-In-Reply-To: <CAOUHufZ=SMN=GWMjvpDxiXxyMAvDDc4eEzYvAWP4=7atT7SX7g@mail.gmail.com>
-References: <20241025012304.2473312-1-shakeel.butt@linux.dev>
-	<20241025012304.2473312-6-shakeel.butt@linux.dev>
-	<iwmabnye3nl4merealrawt3bdvfii2pwavwrddrqpraoveet7h@ezrsdhjwwej7>
-	<CAOUHufZexpg-m5rqJXUvkCh5nS6RqJYcaS9b=xra--pVnHctPA@mail.gmail.com>
-	<ZykEtcHrQRq-KrBC@google.com>
-	<20241104133834.e0e138038a111c2b0d20bdde@linux-foundation.org>
-	<CAOUHufbA6GN=k3baYdvLN_xSQvX0UgA7OCeqT8TsWLEW7o=y9w@mail.gmail.com>
-	<CAOUHufZ=SMN=GWMjvpDxiXxyMAvDDc4eEzYvAWP4=7atT7SX7g@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1730759278; c=relaxed/simple;
+	bh=TvzIPlQ5D61Fv05UDW0gkeINVQdDASr4ry+iQ28HvLo=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=pkWPiIWo7+EYAWG23v0DoeYJB5BYuMCkBpxdQSysR8KalnT8P12PYQdQyDbKzqKIAYLf99X4Fg0qw/q6EE5C6jKR7Vr6pyfaZX8OAufyv3NQ3nyN4AqvC7uT9RADfNr3qEyjmQfGIZ2NdGFWRMye8obSmCpw5lbIssjOTVK+X8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kerensun.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kpMl9DZ0; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kerensun.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6ea8a5e862eso24362967b3.0
+        for <cgroups@vger.kernel.org>; Mon, 04 Nov 2024 14:27:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1730759276; x=1731364076; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=eLnYMXR0eJ0WVOXHu5ohmzLISM/yif+XEsN4c7cAuuw=;
+        b=kpMl9DZ0UbCoxaOwgiYVtpYbyQKBnzNVs14AIggjGskr+hXM+iFbrQ/xJfv2mVWcOQ
+         qBznlE5kye0fasx91ydlggIYREzeikW+aooAu3v4EOLQESuitwpjrrhjbTuxqOuFTBsy
+         OM5r6AFAasHa5pu+Um+pjvLaCCwZb62Pr7QBq/mIBsmDQGhVEOaAMLMK91OI0grcCvQn
+         sysvyynGCWQ9jsbo3q8PNqsrHV2fcukRhd1YRuaAWS7JXc0eVTKV6mYxyBK/HAFXY1qt
+         3Lee4YJvwGSYNwDstptc1KhD93nmhp+LF07aieDDkLgUj0IlSUNl1GaXiIYDTkhC4VMZ
+         2cHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730759276; x=1731364076;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eLnYMXR0eJ0WVOXHu5ohmzLISM/yif+XEsN4c7cAuuw=;
+        b=QWDg+vi24qR3liPW5Hc3ovLdmuWgQXy9g/fbdtcLhCJDA/1PXvF4R/02OhZ0EGXG/z
+         8e0YogGgHlAlKO4lb+au1F/JhtW6FTSqBRRDZ9MvIazLkDJdTgb6G3GE2I0wDsP9CsjB
+         g5OS378VC1pc60J0F6jdk+UCKEUvsFHlEXRcJxYdI3LOn2piiarV14hiU9BkQ+OE9CGM
+         7YMSh1PZ1hTHnWqyDDc+PIxLf73z4rUK94vzRN/jaLBpt5JZDT2e62CksLsFFO9WW8Gh
+         jwjvh2ndi113t9C42XTaReANrnYns67YAKmE/49zXL/ZG7jsuWY6gBbW61Rkptist787
+         g0vA==
+X-Forwarded-Encrypted: i=1; AJvYcCUB/DQxeuP6pA55ULa0nyGjtA6KXCAbNOdo0IeHeDx/+3wer6ck93c1e1h1IFVc9aBMo10UmwiJ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx9OxjX61uv+1uWqe/1BpnnBxAXzlyqaqKeocaC1FWWKdLq9TTw
+	Pm9xnMAAuG7NaUuWBiYy8VTZYLKTh6OAmyuOcTNF/jSNsjh3cH68eBmtlbQKwtfcnGi/hiCigdp
+	Juzql6sA3VQ==
+X-Google-Smtp-Source: AGHT+IH47mWu7tl+7jg9xhI8qwcAtywVoHaauR6iyeePJxOJs2WneI4NavVt60+ZcgqgGKJ9n9EcOYgF7JbeEg==
+X-Received: from kerensun.svl.corp.google.com ([2620:15c:2c5:11:2520:b863:90ba:85bc])
+ (user=kerensun job=sendgmr) by 2002:a05:690c:7004:b0:620:32ea:e1d4 with SMTP
+ id 00721157ae682-6ea554802ffmr2326227b3.0.1730759276104; Mon, 04 Nov 2024
+ 14:27:56 -0800 (PST)
+Date: Mon,  4 Nov 2024 14:27:33 -0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Mailer: git-send-email 2.47.0.199.ga7371fff76-goog
+Message-ID: <20241104222737.298130-1-kerensun@google.com>
+Subject: [PATCH 0/4] mm: fix checkpatch.pl warnings in memcg v1 code
+From: Keren Sun <kerensun@google.com>
+To: akpm@linux-foundation.org
+Cc: roman.gushchin@linux.dev, hannes@cmpxchg.org, mhocko@kernel.org, 
+	shakeel.butt@linux.dev, muchun.song@linux.dev, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Keren Sun <kerensun@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 4 Nov 2024 15:08:09 -0700 Yu Zhao <yuzhao@google.com> wrote:
+The patch series fixes 1 error and 27 warnings found by checkpatch.pl in the
+memcg1 code.
 
-> > The assertion was caused by the patch in this thread. It used to
-> > assert that a folio must be protected from charge migration. Charge
-> > migration is removed by this series, and as part of the effort, this
-> > patch removes the RCU lock.
-> >
-> > > And a link to the sysbot report?
-> >
-> > https://syzkaller.appspot.com/bug?extid=24f45b8beab9788e467e
-> 
-> Or this link would work better:
-> 
-> https://lore.kernel.org/lkml/67294349.050a0220.701a.0010.GAE@google.com/
+Keren Sun (4):
+  mm: fix quoted strings spliting across lines
+  mm: Fix minor formatting issues for mm control
+  mm: Prefer 'unsigned int' to bare use of 'unsigned'
+  mm: Replace simple_strtoul() with kstrtoul()
 
-Thanks, I pasted everyone's everything in there, so it will all be
-accessible by the sufficiently patient.
+ mm/memcontrol-v1.c | 63 +++++++++++++++++-----------------------------
+ 1 file changed, 23 insertions(+), 40 deletions(-)
+
+-- 
+2.47.0.163.g1226f6d8fa-goog
 
 
