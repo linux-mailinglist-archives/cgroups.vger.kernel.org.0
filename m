@@ -1,81 +1,81 @@
-Return-Path: <cgroups+bounces-5448-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5449-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86F5B9BD366
-	for <lists+cgroups@lfdr.de>; Tue,  5 Nov 2024 18:30:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 91DA09BD376
+	for <lists+cgroups@lfdr.de>; Tue,  5 Nov 2024 18:35:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EF031F22D83
-	for <lists+cgroups@lfdr.de>; Tue,  5 Nov 2024 17:30:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F94E1F2351F
+	for <lists+cgroups@lfdr.de>; Tue,  5 Nov 2024 17:35:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 524EC15C144;
-	Tue,  5 Nov 2024 17:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02F4A1E1C11;
+	Tue,  5 Nov 2024 17:35:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="R67Cl5UV"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="efT2tFFg"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BB4C5674D
-	for <cgroups@vger.kernel.org>; Tue,  5 Nov 2024 17:30:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 227CB1D9A71
+	for <cgroups@vger.kernel.org>; Tue,  5 Nov 2024 17:35:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730827828; cv=none; b=iwutEBuoJiLs6vfQWhjT8tdUHfZIsyeLhkojJ3AHftLL9OYgB8cH3f/s3P5I7qjrjdNHjk5qKuhHVxeMmelX0Aw284mKuGpWfNxHaK97D4HnlOn5cTjjhmft7DUrS1uzZtzYbyEYSRUrSSGH/NY9h7Q27EWoVIRwkg0ehiym0ig=
+	t=1730828105; cv=none; b=ZBxu6XrFmpM+RZs3+3MUkxldnoHpEmFoDrLrlAjYc7knCHHoJTXUeEvOc3xkFgPRVBFi1sTW0sQwvpK860shnCy34nmDXfLUlbuKyK+13BMRNjbanyCHlQKqRTTYpjcDQZmCYGCAo+hCGYkI0I5d9zCDJyzwmXkhGwV4pEpZg2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730827828; c=relaxed/simple;
-	bh=n4wi/7q185bnU/y1qeM2QA7cQeA5J4BA8yvFxnx8lwM=;
+	s=arc-20240116; t=1730828105; c=relaxed/simple;
+	bh=LOZTuliOS2gtQij5+GoflF8AmSxZNSmB9lITIQs5krQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dSPWaN+fp3dyy7wB4Lt4+H2kg0IqqNPz61qbLw6avOyBeCMpslSg+b7KuycfIznKSSl5KHJjSogagYXkZeJFZQBEUuklUACjtCr7ruwzQziN6Gi4Uhpomhu78gjYaEpEhz8EQpMJKN1Zb/FdPoBpZORpwAO0AL1V+hyzQAKdO6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=R67Cl5UV; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=KZmI9ktlFaS3diE0ZQ0o2po4mruy+6vfeioBQNF+fcILaFgtXPD25m+/FluYVTHDJDMfPZWKo3LBDlAlL+ZJnEay+X66KWeAojj4mdmGdpv65WUo5unzn+WM+NB7wLAc4ho+8lp2UFGQSONxo66+cvSRlCsGz4WKnzz+J532a2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=efT2tFFg; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1730827825;
+	s=mimecast20190719; t=1730828103;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=afEv9GEFv9ZYOvN0eXrvv63Lz1O4DC9pouw/Ti/HkAE=;
-	b=R67Cl5UVdOQb9+qGjWb8P8Ulq6rsIr4zqm4jDIAh4R+fhtrmckDAr6saKn1DcXsjmLm4J4
-	82GSQyJOVWcULe165JFqD2cg7FzK7AkLPnlnrDE6igxQGV23XaZPTtYYsxxc53VvDN219u
-	Tg6PAzpgGuuuOapK27Rz+y0SUhNnIIY=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=1mUnNkdhUU0vKrW5HhuOr6BbhCUcWOAVXK2JluGYHBw=;
+	b=efT2tFFgXHMVvzbNGd3G8EJB7h0rRsj1wUgTjs4eLduTXY+m3ecKgANzXHWPra0mjtGoVw
+	rmM5BoyOaCXKC7BPpkOfYZyyPK0igGZOo1E/L8njNThs4D8FOsaBV9uCMb5y8CyWQS6Ntw
+	KYRlb0iG+/LRNiup4FNhQp/JTp5oaIw=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-67-qA539jxEMBen8plBalolyw-1; Tue, 05 Nov 2024 12:30:24 -0500
-X-MC-Unique: qA539jxEMBen8plBalolyw-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4316e2dde9eso48794185e9.2
-        for <cgroups@vger.kernel.org>; Tue, 05 Nov 2024 09:30:23 -0800 (PST)
+ us-mta-551-0sT9TpaFOv6KXrW2rlAYEA-1; Tue, 05 Nov 2024 12:35:01 -0500
+X-MC-Unique: 0sT9TpaFOv6KXrW2rlAYEA-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-37d47fdbbd6so3185735f8f.3
+        for <cgroups@vger.kernel.org>; Tue, 05 Nov 2024 09:35:01 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730827823; x=1731432623;
+        d=1e100.net; s=20230601; t=1730828100; x=1731432900;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=afEv9GEFv9ZYOvN0eXrvv63Lz1O4DC9pouw/Ti/HkAE=;
-        b=i+hEZxkijzklLcaiFa3oPIPdxmElFNAUhAEhJD6yc0pe5TZzkENnQPAxhC9xoNwlbb
-         0wmoU7w/ZYGUEcDaSj6tGcI+Td6O4Uckddhsc4cVhdYqJVwbIW2l7QeLoVwFJfWI3ULx
-         ViQcLqfpP4tNQqLuKNpezt0I3NneXQOLopGkoQRmcY+had72/TSMVoLyg/63U/fOxWky
-         RCP4l7LzYg8zlwVzwHO0URnMUdAA5Yq8Bg9MixgaDD7d+VymLBtQ+4EMjVpQyo1k1Rfu
-         e3jsPtRU5kFmIy0DRsoV9vuoMMCmuNAeP1U0u2HgyR8LmDdIeKunbAqfDLPyf4FbQOMM
-         OCpg==
-X-Forwarded-Encrypted: i=1; AJvYcCVlvHz9Sr5dChG0fsBfiGsdGR2q/2GSJ7gYrtW/Mqd7XI1dgzJ9cGZ6UeQP7MAj3qFnrmtUwXiV@vger.kernel.org
-X-Gm-Message-State: AOJu0YzOPWamxoWNMVcVeIyYjf3FpMgwhoY+4iUoLHCxqs20S140Bu/R
-	tVLV5J/3JCgNMVsrQBOPHfqloFhaEmeFmSqJrAGOHSc/et27b+8MbWuIozYvHSOJfUZbSHYr9X5
-	SKshmDEF0yM5+mea6atSzyGMr6eeYL0L0au2kEzko2YuCtCihtNeqxltLPa04Yg8=
-X-Received: by 2002:a05:6000:2ce:b0:37d:52fc:edf9 with SMTP id ffacd0b85a97d-381c7a5cf91mr16782773f8f.20.1730827822893;
-        Tue, 05 Nov 2024 09:30:22 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEfbmKWhZJf5mJv47Dm8DcJ0zBX0x3r/SrUb57O3943S/LTobo7w+YYS2O6RSnBG3ychpCp+g==
-X-Received: by 2002:a05:6000:2ce:b0:37d:52fc:edf9 with SMTP id ffacd0b85a97d-381c7a5cf91mr16782741f8f.20.1730827822458;
-        Tue, 05 Nov 2024 09:30:22 -0800 (PST)
+        bh=1mUnNkdhUU0vKrW5HhuOr6BbhCUcWOAVXK2JluGYHBw=;
+        b=clR2PFuai3a3K4iAUYPpG6L/kQwt7JhTOEbh/tnTYhMX0xg99reT8Br/oR5wWV2ZWR
+         T8cM75tzf7tVZgBR0UM6r+aNk3Ybt72oYJff0epfhkxPsnRFDDCxbftXDj9ndnZvK7KU
+         oORHEnE+yEO9WTD/69kpdJrAUjJQQu2NuODr98CoyRR7jBFnmoIBIBQM4w0uGb2I7lor
+         l16W88HSg1hx5u6Q3dAC5msgDoGnybdzzKxGlnBM7kaj+1ajBPXwQAm4LL4VCWARGGVt
+         ipGf0ldY00o7BuEX5ySJ7MB/roh4epnRdVQOUWZrRszjOiKOvuIyeL+85GqVz+7ue/JX
+         gl8A==
+X-Forwarded-Encrypted: i=1; AJvYcCXl9Dn5os1PbyJ3jEvzxFtNOako3Nikx0IUlGirGq5oerpNIeo8JpoT7NZLz1GsZaUvd7RQ4E1Z@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzng6nbfTsiSIGZa2X1TYBYJ/TRmFJLT6OS+Qdf6YA6EdR/NygJ
+	8DkV5j+xUNWGhNkGXb7l5cUm5EzyhQMn5udyLGnJlf54368cQPtY5uPMppVwgJmEl2EA7PcTJIF
+	xrxuwcFTaRu3G9xp35d2KgsTZ4bZch6Vw+2xOzOLhfjn9kE291M+0pQ8=
+X-Received: by 2002:a5d:59a4:0:b0:37e:f8a1:596e with SMTP id ffacd0b85a97d-381be7ad255mr18796238f8f.11.1730828100535;
+        Tue, 05 Nov 2024 09:35:00 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEb67RXG7gg4reG9aH+APrEu5DU88SXNov5UkfGKKI1PQMJ8lrhhXBBktuE4+XOvNor+097fw==
+X-Received: by 2002:a5d:59a4:0:b0:37e:f8a1:596e with SMTP id ffacd0b85a97d-381be7ad255mr18796216f8f.11.1730828100155;
+        Tue, 05 Nov 2024 09:35:00 -0800 (PST)
 Received: from ?IPV6:2003:cb:c73b:db00:b0d7:66ca:e3e9:6528? (p200300cbc73bdb00b0d766cae3e96528.dip0.t-ipconnect.de. [2003:cb:c73b:db00:b0d7:66ca:e3e9:6528])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-381c10b7a9esm16701247f8f.21.2024.11.05.09.30.20
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4327d698405sm200578605e9.41.2024.11.05.09.34.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Nov 2024 09:30:22 -0800 (PST)
-Message-ID: <85f36754-a05d-40b7-b606-2515ac921c82@redhat.com>
-Date: Tue, 5 Nov 2024 18:30:20 +0100
+        Tue, 05 Nov 2024 09:34:59 -0800 (PST)
+Message-ID: <ecbbf668-0122-41cb-a0b9-3e287b280776@redhat.com>
+Date: Tue, 5 Nov 2024 18:34:57 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -83,8 +83,7 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] mm: Opencode split_page_memcg() in
- __split_huge_page()
+Subject: Re: [PATCH 2/3] mm: Simplify split_page_memcg()
 To: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
  Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
  Roman Gushchin <roman.gushchin@linux.dev>,
@@ -92,7 +91,7 @@ To: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
 Cc: Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
  linux-mm@kvack.org
 References: <20241104210602.374975-1-willy@infradead.org>
- <20241104210602.374975-2-willy@infradead.org>
+ <20241104210602.374975-3-willy@infradead.org>
 From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
@@ -140,48 +139,83 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20241104210602.374975-2-willy@infradead.org>
+In-Reply-To: <20241104210602.374975-3-willy@infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 04.11.24 22:05, Matthew Wilcox (Oracle) wrote:
-> This is in preparation for only handling kmem pages in
-> __split_huge_page().
-
-Did you mean "in split_page_memcg()"?
-
+> The last argument to split_page_memcg() is now always 0, so remove it,
+> effectively reverting commit b8791381d7ed.
 > 
 > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 > ---
->   mm/huge_memory.c | 11 +++++++++--
->   1 file changed, 9 insertions(+), 2 deletions(-)
+>   include/linux/memcontrol.h |  4 ++--
+>   mm/memcontrol.c            | 26 ++++++++++++++------------
+>   mm/page_alloc.c            |  4 ++--
+>   3 files changed, 18 insertions(+), 16 deletions(-)
 > 
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index f92068864469..44d25a74b611 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -3234,6 +3234,10 @@ static void __split_huge_page_tail(struct folio *folio, int tail,
->   		folio_set_large_rmappable(new_folio);
->   	}
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 5502aa8e138e..a787080f814f 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -1044,7 +1044,7 @@ static inline void memcg_memory_event_mm(struct mm_struct *mm,
+>   	rcu_read_unlock();
+>   }
 >   
-> +#ifdef CONFIG_MEMCG
-> +	new_folio->memcg_data = folio->memcg_data;
- > +#endif> +
->   	/* Finally unfreeze refcount. Additional reference from page cache. */
->   	page_ref_unfreeze(page_tail,
->   		1 + ((!folio_test_anon(folio) || folio_test_swapcache(folio)) ?
-> @@ -3267,8 +3271,11 @@ static void __split_huge_page(struct page *page, struct list_head *list,
->   	int order = folio_order(folio);
->   	unsigned int nr = 1 << order;
+> -void split_page_memcg(struct page *head, int old_order, int new_order);
+> +void split_page_memcg(struct page *first, int order);
 >   
-> -	/* complete memcg works before add pages to LRU */
-> -	split_page_memcg(head, order, new_order);
-> +#ifdef CONFIG_MEMCG
-> +	if (folio_memcg_charged(folio))
+>   #else /* CONFIG_MEMCG */
+>   
+> @@ -1463,7 +1463,7 @@ void count_memcg_event_mm(struct mm_struct *mm, enum vm_event_item idx)
+>   {
+>   }
+>   
+> -static inline void split_page_memcg(struct page *head, int old_order, int new_order)
+> +static inline void split_page_memcg(struct page *first, int order)
+>   {
+>   }
+>   #endif /* CONFIG_MEMCG */
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 5e44d6e7591e..506439a5dcfe 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3034,25 +3034,27 @@ void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+>   }
+>   
+>   /*
+> - * Because folio_memcg(head) is not set on tails, set it now.
+> + * The memcg data is only set on the first page, now transfer it to all the
+> + * other pages.
+>    */
+> -void split_page_memcg(struct page *head, int old_order, int new_order)
+> +void split_page_memcg(struct page *first, int order)
+>   {
+> -	struct folio *folio = page_folio(head);
+> +	unsigned long memcg_data = first->memcg_data;
+> +	struct obj_cgroup *objcg;
+>   	int i;
+> -	unsigned int old_nr = 1 << old_order;
+> -	unsigned int new_nr = 1 << new_order;
+> +	unsigned int nr = 1 << order;
+>   
+> -	if (mem_cgroup_disabled() || !folio_memcg_charged(folio))
+> +	if (!memcg_data)
+>   		return;
+ >   > -	for (i = new_nr; i < old_nr; i += new_nr)
+> -		folio_page(folio, i)->memcg_data = folio->memcg_data;
+> +	VM_BUG_ON_PAGE((memcg_data & OBJEXTS_FLAGS_MASK) != MEMCG_DATA_KMEM,
+> +			first);
+> +	objcg = (void *)(memcg_data & ~OBJEXTS_FLAGS_MASK);
 
-Do we have the mem_cgroup_disabled() call here?
+I'm not sure if dropping the
 
-Apart from that LGTM.
+	if (mem_cgroup_disabled() || !folio_memcg_charged(folio))
+
+end adding that OBJEXTS_FLAGS_MASK magic here is the right thing to do.
+
+It also isn't really part of a revert of b8791381d7ed.
+
 
 -- 
 Cheers,
