@@ -1,68 +1,68 @@
-Return-Path: <cgroups+bounces-5441-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5442-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30F4B9BC461
-	for <lists+cgroups@lfdr.de>; Tue,  5 Nov 2024 05:39:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 948E99BC481
+	for <lists+cgroups@lfdr.de>; Tue,  5 Nov 2024 06:01:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7316D1F2203F
-	for <lists+cgroups@lfdr.de>; Tue,  5 Nov 2024 04:39:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D157B21D1E
+	for <lists+cgroups@lfdr.de>; Tue,  5 Nov 2024 05:01:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CEE3187843;
-	Tue,  5 Nov 2024 04:39:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D8BF1B6D0B;
+	Tue,  5 Nov 2024 05:01:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="S+9PvnRG"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cfjY4M4p"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68C7818EAD;
-	Tue,  5 Nov 2024 04:39:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7AD51B5EA4;
+	Tue,  5 Nov 2024 05:01:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730781550; cv=none; b=eCEtB/BMNfLpgjUGbUjceNPHinf8p0IihJ7WD5DUcUPoVePOmwTSPhhje5xfppHQb3j8c7Y8E5lw1e6BI4aJMpv6uFFIBpNIPWVemwx1ZqCP+zwu/vGzK6VFz100xwlbRa1m2Kszuye9hojhgu8ZY9GZ2BhxJn24Qrz3nlOCy1g=
+	t=1730782874; cv=none; b=hn0AwFVN2mctqJEevs6tsDF04nO5hadIE73q0/tuVnMKZL0lgPwd/BmLGpalW1JWMichyUNZkthURyZ8FhMOarDqB4Jm54mFujHUZQM3hwuTH1jy/TM5NSLLib8FBeXp61KFmqIUQwPVhj/sVGY+rK0A5iLOqJ3ESV+LCWW6Go8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730781550; c=relaxed/simple;
-	bh=/obr6y8FYd0XJDGH7gU8iti3w+QV8rGZbnU2PQFDq+o=;
+	s=arc-20240116; t=1730782874; c=relaxed/simple;
+	bh=u6bRqQE/rACICogM0u4/js7LHshRVSLExADHVgfgOx4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qg6b42jUc50gxhQYfHqvvPEKG0ueYkJ1dkS5lk9Rw5LBU3F9PN1wyctNslQbHNCBKjZY2vQFy0RC4pL4vkjg9Fca6/Qr7bFAmS/Yj4EQMY99K3uuhQm+/ns38cSn29slBL2RmGCIN2mwhy7LckGSPCIhkz0NKHJATwm1VMekTzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=S+9PvnRG; arc=none smtp.client-ip=198.175.65.20
+	 Content-Type:Content-Disposition:In-Reply-To; b=DOk3k7TjCN86HmkMFcmsgxuD68bIK7g4C9DQYADlZxARwBGx/tdWkil9B3TRGfQoh0v3IHpBrKTUh6/yHCUmYsF5T72CJ4dTNKn69UAQ8wtvLNQ7f99G1vNbNWR/kgDjP27hlZB0plGRq8Tva7bDEU4vmfrYGJyoVsP6kJsh4kQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cfjY4M4p; arc=none smtp.client-ip=192.198.163.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1730781548; x=1762317548;
+  t=1730782872; x=1762318872;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=/obr6y8FYd0XJDGH7gU8iti3w+QV8rGZbnU2PQFDq+o=;
-  b=S+9PvnRGYgBVG3PU+coBr6JBzy2r6ut6BJMmRi5DgIp+6/Cjzd2RDvHi
-   Mc29k+ID9Qhfzywn1mSM23QU6RCyNkMYcG48EJ6x8K1tQlnEmfxnNS+3M
-   ug4QN8CMxgE3Cgdh4kHKh9BrOnR/1XR0TBPVTEMG2FhMxUEDpVqfQKqk8
-   T+rwqR4ANo0D/5+38re2DC6wfV4JRv26X9+6zwlHfAGFugaomUtAhxzdA
-   T4qlS0dbVc4tT4SG+D0mZ8NW/vUjIExB4zCzDYxtgryoZdbzWGQscv7hE
-   +dGUjRghjpPsoM8SDy0K+MC0rwzPo/HistYaox71Uj7elqqdMSLGWVVKA
-   w==;
-X-CSE-ConnectionGUID: 2OVd+IpKSBSKN+ej6naaug==
-X-CSE-MsgGUID: x+tx+DtsQJyNkTKc03TBKw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="30281920"
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="30281920"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2024 20:39:08 -0800
-X-CSE-ConnectionGUID: O9EYPC1wReGwuguM+CaVDw==
-X-CSE-MsgGUID: LdyfWCsdT9iEqgQHHG/+cw==
+  bh=u6bRqQE/rACICogM0u4/js7LHshRVSLExADHVgfgOx4=;
+  b=cfjY4M4pmWfPgLRpMz2nDs0dopduYgZ+oHpIoCrq26mHYfP5qXVW6rwO
+   1C39IwnD7F86VVCMuquO/CUzc0apFMUONvzn6lf3j0tRMJZdQVXCsg/3U
+   1zyAnNEK5Y+lPEI78S09YpyoaZ2ArfhoS/GpL+ETFEipJhSx2VLXffudg
+   O1Rd8IvDIGb78z5xKYMfyWwgp7/q/TCcDQfrCf8lwIEvFtqqfZ2rTXxha
+   uj3cO3V7APMYejikmMg5WXMCgbDrA91whVUjdfXwWcJPM3lmJ2+uG+a5E
+   4SBjTSfNwdgJbVQXN4PyYtiSWkdckp1oSd8Kfx1bzL7Lb3Oe6dvH/4+mA
+   Q==;
+X-CSE-ConnectionGUID: HP2DuI3FQ8+TPOT/3KLEig==
+X-CSE-MsgGUID: rIH9bsGOQHWhdm3MklwXJQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11246"; a="33347599"
+X-IronPort-AV: E=Sophos;i="6.11,259,1725346800"; 
+   d="scan'208";a="33347599"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Nov 2024 21:01:11 -0800
+X-CSE-ConnectionGUID: O2lx8TIdTeu6hNByHNJPYA==
+X-CSE-MsgGUID: Fp+vrJckSvqSTOSJWCnivA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.11,259,1725346800"; 
-   d="scan'208";a="87803568"
+   d="scan'208";a="84688056"
 Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by fmviesa003.fm.intel.com with ESMTP; 04 Nov 2024 20:39:05 -0800
+  by orviesa008.jf.intel.com with ESMTP; 04 Nov 2024 21:01:08 -0800
 Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1t8BLL-000lcv-0Q;
-	Tue, 05 Nov 2024 04:39:03 +0000
-Date: Tue, 5 Nov 2024 12:39:00 +0800
+	id 1t8Bge-000ldx-1z;
+	Tue, 05 Nov 2024 05:01:04 +0000
+Date: Tue, 5 Nov 2024 13:00:32 +0800
 From: kernel test robot <lkp@intel.com>
 To: Keren Sun <kerensun@google.com>, akpm@linux-foundation.org
 Cc: oe-kbuild-all@lists.linux.dev, roman.gushchin@linux.dev,
@@ -70,7 +70,7 @@ Cc: oe-kbuild-all@lists.linux.dev, roman.gushchin@linux.dev,
 	muchun.song@linux.dev, cgroups@vger.kernel.org, linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org, Keren Sun <kerensun@google.com>
 Subject: Re: [PATCH 4/4] mm: Replace simple_strtoul() with kstrtoul()
-Message-ID: <202411051219.uj1XBcp1-lkp@intel.com>
+Message-ID: <202411051248.C33eJ43V-lkp@intel.com>
 References: <20241104222737.298130-5-kerensun@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -84,10 +84,10 @@ In-Reply-To: <20241104222737.298130-5-kerensun@google.com>
 
 Hi Keren,
 
-kernel test robot noticed the following build warnings:
+kernel test robot noticed the following build errors:
 
-[auto build test WARNING on v6.12-rc6]
-[also build test WARNING on linus/master]
+[auto build test ERROR on v6.12-rc6]
+[also build test ERROR on linus/master]
 [cannot apply to akpm-mm/mm-everything next-20241104]
 [If your patch is applied to the wrong git tree, kindly drop us a note.
 And when submitting patch, we suggest to use '--base' as documented in
@@ -97,19 +97,19 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Keren-Sun/mm-fix-quoted-s
 base:   v6.12-rc6
 patch link:    https://lore.kernel.org/r/20241104222737.298130-5-kerensun%40google.com
 patch subject: [PATCH 4/4] mm: Replace simple_strtoul() with kstrtoul()
-config: arc-randconfig-001-20241105 (https://download.01.org/0day-ci/archive/20241105/202411051219.uj1XBcp1-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241105/202411051219.uj1XBcp1-lkp@intel.com/reproduce)
+config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20241105/202411051248.C33eJ43V-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 14.1.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241105/202411051248.C33eJ43V-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202411051219.uj1XBcp1-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202411051248.C33eJ43V-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
+All errors (new ones prefixed by >>):
 
    mm/memcontrol-v1.c: In function 'memcg_write_event_control':
->> mm/memcontrol-v1.c:1926:27: warning: passing argument 3 of 'kstrtoul' makes pointer from integer without a cast [-Wint-conversion]
+>> mm/memcontrol-v1.c:1926:27: error: passing argument 3 of 'kstrtoul' makes pointer from integer without a cast [-Wint-conversion]
     1926 |         kstrtoul(buf, 10, efd);
          |                           ^~~
          |                           |
@@ -118,7 +118,7 @@ All warnings (new ones prefixed by >>):
    include/linux/kstrtox.h:30:90: note: expected 'long unsigned int *' but argument is of type 'unsigned int'
       30 | static inline int __must_check kstrtoul(const char *s, unsigned int base, unsigned long *res)
          |                                                                           ~~~~~~~~~~~~~~~^~~
-   mm/memcontrol-v1.c:1931:27: warning: passing argument 3 of 'kstrtoul' makes pointer from integer without a cast [-Wint-conversion]
+   mm/memcontrol-v1.c:1931:27: error: passing argument 3 of 'kstrtoul' makes pointer from integer without a cast [-Wint-conversion]
     1931 |         kstrtoul(buf, 10, cfd);
          |                           ^~~
          |                           |
@@ -126,21 +126,15 @@ All warnings (new ones prefixed by >>):
    include/linux/kstrtox.h:30:90: note: expected 'long unsigned int *' but argument is of type 'unsigned int'
       30 | static inline int __must_check kstrtoul(const char *s, unsigned int base, unsigned long *res)
          |                                                                           ~~~~~~~~~~~~~~~^~~
->> mm/memcontrol-v1.c:1918:15: warning: unused variable 'endp' [-Wunused-variable]
+   mm/memcontrol-v1.c:1918:15: warning: unused variable 'endp' [-Wunused-variable]
     1918 |         char *endp;
          |               ^~~~
->> mm/memcontrol-v1.c:1926:9: warning: ignoring return value of 'kstrtoul' declared with attribute 'warn_unused_result' [-Wunused-result]
+   mm/memcontrol-v1.c:1926:9: warning: ignoring return value of 'kstrtoul' declared with attribute 'warn_unused_result' [-Wunused-result]
     1926 |         kstrtoul(buf, 10, efd);
          |         ^~~~~~~~~~~~~~~~~~~~~~
    mm/memcontrol-v1.c:1931:9: warning: ignoring return value of 'kstrtoul' declared with attribute 'warn_unused_result' [-Wunused-result]
     1931 |         kstrtoul(buf, 10, cfd);
          |         ^~~~~~~~~~~~~~~~~~~~~~
->> mm/memcontrol-v1.c:1926:9: warning: 'efd' is used uninitialized [-Wuninitialized]
-    1926 |         kstrtoul(buf, 10, efd);
-         |         ^~~~~~~~~~~~~~~~~~~~~~
-   mm/memcontrol-v1.c:1913:22: note: 'efd' was declared here
-    1913 |         unsigned int efd, cfd;
-         |                      ^~~
 
 
 vim +/kstrtoul +1926 mm/memcontrol-v1.c
@@ -166,7 +160,7 @@ vim +/kstrtoul +1926 mm/memcontrol-v1.c
   1915		struct fd cfile;
   1916		struct dentry *cdentry;
   1917		const char *name;
-> 1918		char *endp;
+  1918		char *endp;
   1919		int ret;
   1920	
   1921		if (IS_ENABLED(CONFIG_PREEMPT_RT))
@@ -179,7 +173,7 @@ vim +/kstrtoul +1926 mm/memcontrol-v1.c
   1928			return -EINVAL;
   1929		buf++;
   1930	
-> 1931		kstrtoul(buf, 10, cfd);
+  1931		kstrtoul(buf, 10, cfd);
   1932		if (*buf == ' ')
   1933			buf++;
   1934		else if (*buf != '\0')
