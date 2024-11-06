@@ -1,131 +1,142 @@
-Return-Path: <cgroups+bounces-5460-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5461-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E35379BF9D8
-	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 00:18:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A58C59BF9E2
+	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 00:22:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 960321F2283D
-	for <lists+cgroups@lfdr.de>; Wed,  6 Nov 2024 23:18:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B389281B6A
+	for <lists+cgroups@lfdr.de>; Wed,  6 Nov 2024 23:22:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 088D120CCFA;
-	Wed,  6 Nov 2024 23:18:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RXSFROyD"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D08F820D4F2;
+	Wed,  6 Nov 2024 23:21:57 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B14C1DE2CD
-	for <cgroups@vger.kernel.org>; Wed,  6 Nov 2024 23:18:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 206CE201110;
+	Wed,  6 Nov 2024 23:21:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730935087; cv=none; b=ucmB1rmr8nwKhngarVY90w+2psBmvYJ3C7wpwUKWmgwqPcY/GK7/C0IQuwUxGRTa0lv0zUOTdOGirszhGCLvv54j5lo3EmUh6ZhoJf5IYPtgcK3JpaPLR6WVp4nxCyss9xbxOUpSIaQ66Xuk/+xKOywNJBkgqB8kUdQFrPrfK/Q=
+	t=1730935317; cv=none; b=q1+S61mrSKcCMNKfQRTpgrJY7fJ1ogtQGhv1BZcN87xVvcpkXuSFoRma7UCwdiCaXiDvB1SIvSS1C1Z16tyqqBztQcnM7jImhVg6WdMNKGR2jnbXVYn7P3/7P3DtGg6FadIgymG6VTdGjqU8Bo+aPT8BlQnB/sjAqJn9UEPvtoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730935087; c=relaxed/simple;
-	bh=PUmzDhC+uKnfHyfhNP+/2eA5FZ8D+PqVS/ZGZ8V4VNE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mb07mDxM4IzR+zyenFUA/1XmWBTp7WatM7LDFtWlglUpPdMqGV8Y13Ih0ZHz/NFDJcb9h1cBRVmm+O3hAH3JoqY66D4lYjB6pvIXRpoRzcnkH2trh4Y6QmJRXeIcoH8nkD+AmrbNx9OwrOvCPosa7iZ7r7U0ksAfM3VQSo5mIpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RXSFROyD; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 6 Nov 2024 15:17:57 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1730935083;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HVNrxnOTWHw6OWmvKt8/LXHQA09+jId2msib6dundh4=;
-	b=RXSFROyDzEB9tUKffr0Rj0kBDUtbDnAtgKjs9ckhRQ1I7+9NsVePjXPKvOIBfqi2r+hNxB
-	5IUHUCbcZfffV48SVsy7X44NDu4qctGk0L5nzcfrJDnFep62Tl0XQ3/J7qUFFLtpACn+fs
-	PB2mvdhWZpcOasvmNMWvQuZxEZW6hw4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Joshua Hahn <joshua.hahnjy@gmail.com>
-Cc: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
-	muchun.song@linux.dev, akpm@linux-foundation.org, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH 1/2] memcg/hugetlb: Introduce memcg_accounts_hugetlb
-Message-ID: <xy4c7ts7ijnyowurayb5qpw2cnrbcouypw47ka7cbvxkbbukgt@srna4jid2qxq>
-References: <20241106221434.2029328-1-joshua.hahnjy@gmail.com>
- <20241106221434.2029328-2-joshua.hahnjy@gmail.com>
+	s=arc-20240116; t=1730935317; c=relaxed/simple;
+	bh=zNW1PkJb8oTMYdvD6wQ28czWu/t5wPxE88GgXumzFsI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=H721+PDRk5jibvG0DLFw/6ar1+aX645OwaumeFTKKDdCrrepd8pzOrwGu8rJ6PZNbRUlH/3i3AhshVvos/Uk3PSKgH7coBPKvcB+MHH7HJ06F9y+jStegLYR84eHDxwdESM/buPkBWae3WFBeHiTf0ylygzAu//3VMvLxywXiBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-e290222fdd0so379216276.2;
+        Wed, 06 Nov 2024 15:21:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730935315; x=1731540115;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mr7I/DCsBa7zp/nLt0wZ2PXjhJ/fsQvKBF0WA8i4t9c=;
+        b=b1zKIl6HQW+e9DuftWdFNi/oiAWvTaPM98O34I/5GfOd8d9DVrvWBq4sSLNskeHcFA
+         q9vy2ohHdloX9G6sZSKbCWCeZWaSq93wV9PMGcT+BHh7Kz7EWuCFO8Ops/c/ZN/0EpTA
+         0y0iIRAeXyRGEMFbHsF2OusxHo+ItqqNJBRa1WB1t2rXylRZgHcGdCJCZnd0XySPVHTn
+         C3pW4uU5cys8qKjmUctbDEEdDW8AvL2M8qSMBVGV0aH+40ovR7ORgMnH/H3D7maVn/Dc
+         fiLU7MluQQXI83fyqfj7g35QO4ub0Mo5sA48SNzAS9/ZZRAHtdKSNCj63dIs2SabFmv3
+         +FxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV2M+mtLfzr4aa9PmShB9XenWt0EZVCe928u3kgpyE8zeKrJvHUboClwVhtI38jGTZLOXGt@vger.kernel.org, AJvYcCV9NccFOuf2qxqUX+ggBWjjv66SzQBxNat25HZPo6mDcaBfPizfuFwShuWv3deSTqEY/LRasjEC4y0mSr9w@vger.kernel.org, AJvYcCX00M5LiN3Ynzkqti0Cq2K77+23qQnEodQsh3hUM6BcQidZhbsyakFs5rIwg1xWKv8D8NrFwjKh@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz7CH5zPvfrZ4z/DSvQnwMI340aXP+6zyTGeWQdnWOCCcsMmqsX
+	c0sK0l4r9b5nT7jOkUyeEYQmzsGDfwZjya5ho+puRtyMrEbBF/75Jg9KWw==
+X-Google-Smtp-Source: AGHT+IGJjB3lEXI1jdfkqW5oz3WLZbO/nFQitm3Pad7mcqyXbxOEfRo0S6IFYVUUqvugxF9LVRiB9g==
+X-Received: by 2002:a05:6902:154f:b0:e29:2f53:9e15 with SMTP id 3f1490d57ef6-e3087b86ed6mr33952137276.29.1730935314959;
+        Wed, 06 Nov 2024 15:21:54 -0800 (PST)
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e336f1f204esm7749276.60.2024.11.06.15.21.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Nov 2024 15:21:54 -0800 (PST)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-e30d212b6b1so352469276.0;
+        Wed, 06 Nov 2024 15:21:54 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVOso+HBQzVXGMQcLv8v+bBwFdb1ziB10sqQrGKBd2k/AsiIp2vFQ8lcMrULApzfL4fWjlE@vger.kernel.org, AJvYcCVdCJoggbYoi6VtV/RB2PKWjO7GfUanNzQ38s4/4mDUPycrelEdUjSZCACpwUmbf2iyLNisX2mCVUqanWV1@vger.kernel.org, AJvYcCW8wy6ijRiwduQTal7X+XQeBcnsU4aPuDz3lHNjMr11pomMYTpJOkXAXxT13syGtEibihMCeQ5d@vger.kernel.org
+X-Received: by 2002:a05:690c:c94:b0:6e3:2cfb:9a86 with SMTP id
+ 00721157ae682-6e9d89970dfmr459496897b3.26.1730935313939; Wed, 06 Nov 2024
+ 15:21:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241106221434.2029328-2-joshua.hahnjy@gmail.com>
-X-Migadu-Flow: FLOW_OUT
+References: <ZyAnSAw34jwWicJl@slm.duckdns.org> <1998a069-50a0-46a2-8420-ebdce7725720@redhat.com>
+ <ZyF858Ruj-jgdLLw@slm.duckdns.org> <CABgObfYR6e0XV94USugVOO5XcOfyctr1rAm+ZWJwfu9AHYPtiA@mail.gmail.com>
+ <ZyJ3eG8YHeyxqOe_@slm.duckdns.org>
+In-Reply-To: <ZyJ3eG8YHeyxqOe_@slm.duckdns.org>
+From: Luca Boccassi <bluca@debian.org>
+Date: Wed, 6 Nov 2024 23:21:43 +0000
+X-Gmail-Original-Message-ID: <CAMw=ZnQk5ttytEKO6pK+VLEhSO9diRAqE9DEUwjXnQkz+Vf7kA@mail.gmail.com>
+Message-ID: <CAMw=ZnQk5ttytEKO6pK+VLEhSO9diRAqE9DEUwjXnQkz+Vf7kA@mail.gmail.com>
+Subject: Re: cgroup2 freezer and kvm_vm_worker_thread()
+To: Tejun Heo <tj@kernel.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Roman Gushchin <roman.gushchin@linux.dev>, kvm@vger.kernel.org, 
+	cgroups@vger.kernel.org, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 06, 2024 at 02:14:33PM -0800, Joshua Hahn wrote:
-> This patch isolates the check for whether memcg accounts hugetlb.
-> This condition can only be true if the memcg mount option
-> memory_hugetlb_accounting is on, which includes hugetlb usage
-> in memory.current.
-> 
-> Signed-of-by: Joshua Hahn <joshua.hahnjy@gmail.com>
-> 
-> ---
->  include/linux/memcontrol.h |  2 ++
->  mm/memcontrol.c            | 12 ++++++++++--
->  2 files changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 34d2da05f2f1..25761d55799e 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -694,6 +694,8 @@ static inline int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm,
->  	return __mem_cgroup_charge(folio, mm, gfp);
->  }
->  
-> +bool memcg_accounts_hugetlb(void);
-> +
->  int mem_cgroup_hugetlb_try_charge(struct mem_cgroup *memcg, gfp_t gfp,
->  		long nr_pages);
->  
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 5444d0e7bb64..59dea0122579 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -4497,6 +4497,15 @@ int __mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp)
->  	return ret;
->  }
->  
-> +bool memcg_accounts_hugetlb(void)
+On Wed, 30 Oct 2024 at 18:14, Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Wed, Oct 30, 2024 at 01:05:16PM +0100, Paolo Bonzini wrote:
+> > On Wed, Oct 30, 2024 at 1:25=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote=
+:
+> > > > I'm not sure if the KVM worker thread should process signals.  We w=
+ant it
+> > > > to take the CPU time it uses from the guest, but otherwise it's not=
+ running
+> > > > on behalf of userspace in the way that io_wq_worker() is.
+> > >
+> > > I see, so io_wq_worker()'s handle signals only partially. It sets
+> > > PF_USER_WORKER which ignores fatal signals, so the only signals which=
+ take
+> > > effect are STOP/CONT (and friends) which is handled in do_signal_stop=
+()
+> > > which is also where the cgroup2 freezer is implemented.
+> >
+> > What about SIGKILL? That's the one that I don't want to have for KVM
+> > workers, because they should only stop when the file descriptor is
+> > closed.
+>
+> I don't think SIGKILL does anything for PF_USER_WORKER threads. Those are
+> all handled in the fatal: label in kernel/signal.c::get_signal() and the
+> function just returns for PF_USER_WORKER threads. I haven't used it mysel=
+f
+> but looking at io_uring usage, it seems pretty straightforward.
+>
+> > (Replying to Luca: the kthreads are dropping some internal data
+> > structures that KVM had to "de-optimize" to deal with processor bugs.
+> > They allow the data structures to be rebuilt in the optimal way using
+> > large pages).
+> >
+> > > Given that the kthreads are tied to user processes, I think it'd be b=
+etter
+> > > to behave similarly to user tasks as possible in this regard if users=
+pace
+> > > being able to stop/cont these kthreads are okay.
+> >
+> > Yes, I totally agree with you on that, I'm just not sure of the best
+> > way to do it.
+> >
+> > I will try keeping the kthread and adding allow_signal(SIGSTOP).  That
+> > should allow me to process the SIGSTOP via get_signal().
+>
+> I *think* you can just copy what io_wq_worker() is doing.
+>
+> Thanks.
+>
+> --
+> tejun
 
-If this is only used in memcontrol.c then no need to add in the header,
-just make it static here.
+Hi,
 
-> +{
-> +#ifdef CONFIG_HUGETLB_PAGE
-> +	return cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING;
-> +#else
-> +	return false;
-> +#endif
-> +}
-> +
->  /**
->   * mem_cgroup_hugetlb_try_charge - try to charge the memcg for a hugetlb folio
->   * @memcg: memcg to charge.
-> @@ -4522,8 +4531,7 @@ int mem_cgroup_hugetlb_try_charge(struct mem_cgroup *memcg, gfp_t gfp,
->  	 * but do not attempt to commit charge later (or cancel on error) either.
->  	 */
->  	if (mem_cgroup_disabled() || !memcg ||
-> -		!cgroup_subsys_on_dfl(memory_cgrp_subsys) ||
-> -		!(cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING))
-
-Why not replace in mem_cgroup_hugetlb_try_charge() as well?
-
-> +		!cgroup_subsys_on_dfl(memory_cgrp_subsys) || !memcg_accounts_hugetlb())
->  		return -EOPNOTSUPP;
->  
->  	if (try_charge(memcg, gfp, nr_pages))
-> -- 
-> 2.43.5
-> 
+Any update on this? We keep getting reports of this issue, so it would
+be great if there was a fix for 6.12. Thanks!
 
