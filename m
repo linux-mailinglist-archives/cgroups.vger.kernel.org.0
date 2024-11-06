@@ -1,158 +1,252 @@
-Return-Path: <cgroups+bounces-5462-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5463-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 898969BF9E9
-	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 00:23:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D63AB9BFA73
+	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 00:50:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFB3CB22824
-	for <lists+cgroups@lfdr.de>; Wed,  6 Nov 2024 23:23:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FCAD284588
+	for <lists+cgroups@lfdr.de>; Wed,  6 Nov 2024 23:50:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD70A20D51B;
-	Wed,  6 Nov 2024 23:22:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F17B820D4FE;
+	Wed,  6 Nov 2024 23:50:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HNld1z1C"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="q2mAxqyV"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6E7E20D505
-	for <cgroups@vger.kernel.org>; Wed,  6 Nov 2024 23:22:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D19B1DE8A6
+	for <cgroups@vger.kernel.org>; Wed,  6 Nov 2024 23:50:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730935378; cv=none; b=dyHS5PH0QU043AZ7eNPC5zxe6QoqOHK1F7MpOPpfUekBlr18L67dQdijxSsOCkGu/C7J1C5KogTH9WZqv8whsxfD4iJO3CXLVqFAfXe2BxTC8C8Y8Jm1QIga8a3vRIAndKVi4R7CECeSZ2/LoYDE3Yw4zjatrQiPZIyf4XSSYFk=
+	t=1730937020; cv=none; b=jfxMDRrSjAzLhuNwDyPOWOzwK29OSdBPVSsHzwo3WboSyC1IJeRVZogVqSgnA/EzzjIurM2X/LiLvZu55VNRlfAgO+lcmxhEW3MD899GPGM99T7ELvF+/l5LLBCZIPYboqEV6J+A3xSJrmAhqjSuKyqfl7LMH0Fop8WkjmQWZII=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730935378; c=relaxed/simple;
-	bh=ZRsZKSpD8AGeF9GYcFFMhOlvqYru3RCE/Zuw/Pjv2mc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TV0i7aElZ4MGh9Jx7xTyvp+byH6bYiSOiTyUxB5V77poOOZZyjNUr4Xba64ww/nO3jS6be+dG4RsRhLXGQte9d8Tnjzj1+BUO5gKI91cshMY3VpEF7FK3OaL4xs0u7KuLZoWUy8HIJJ/xKbM3oRCj0hPLGEP+4DAvPrMu2qUYW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HNld1z1C; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1730935375;
+	s=arc-20240116; t=1730937020; c=relaxed/simple;
+	bh=o/1mJP6iyNuvjV8FxTsbxQ0X0cvhyb0dNuVHKSR69AM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uoKwhhI0RA9IUNYTq3riwbWFt9Pdr18tIDFOaeq08NEWbrxtad9sog5Sa8SwJi6Vs7Rgy1XQJ4P1acMmleogZztLkvWfskx2Q5YcspQKz9ALz33vFPQP83ZduoMpOTozdNnJbZtTV0l7nkK5v9HNmYMhVnZ3VMP3T9vXzhlq9YI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=q2mAxqyV; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 6 Nov 2024 15:50:05 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1730937014;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DlAJxXvAaicdmQcRjbPL9yT3IVxGMViMrr8OkJo1fpo=;
-	b=HNld1z1CzOsS7ycye5sdJyi6Fmpwgc3mWs4KEa8JEgR7KhlhK28u7P3AXSfJcSjNplWA1p
-	1za1R+wbr+9Hg8YIssAh9Zf+fCpPanL34W0OKBMZE4kysW85/x7mbBdiiI/oFkeLShu2+z
-	iAWll1MjxL4/fyWgcoEYncKFkrAZ0h4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-442-B4s6VWCfMeGmLqybkFOTQg-1; Wed, 06 Nov 2024 18:22:54 -0500
-X-MC-Unique: B4s6VWCfMeGmLqybkFOTQg-1
-X-Mimecast-MFC-AGG-ID: B4s6VWCfMeGmLqybkFOTQg
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-37d458087c0so843558f8f.1
-        for <cgroups@vger.kernel.org>; Wed, 06 Nov 2024 15:22:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730935373; x=1731540173;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DlAJxXvAaicdmQcRjbPL9yT3IVxGMViMrr8OkJo1fpo=;
-        b=Fu0lv7PX5k+q6BjATNh3wivH2i5k42cXSU7PDfoxqkxL2O660sdiAJK4TDzJZYDzrs
-         CvLExrSH+C0vWgUTU2BPmhfKrS0hfiJgX7XKwRynqD2gRWeM3F72+RF9nTQF02Vw1CQ8
-         S680fTC1rDEoYGFq5RZ2IT9alVDF6O3Q0MAwP/IQ6DgPTNI3uJbd5sVsaQ+JdJv7ZYZh
-         i0xbT5X/NXdMaRLI/EGDlWN7s5th58eJQwx9oSwoCrRsiC+eo+BJeOvCfC//xZj/88OI
-         pbbxvihlg2nerujJgiRc6HwKXIEpyQ3CouD8D0Uyvp1+MeP2J0CRm3RnpSLA0c7gvtQy
-         tPTw==
-X-Forwarded-Encrypted: i=1; AJvYcCW6z+paho6/O8nJb4/xpnSCJHc3OGwo7/K6DqXHX9GeF13fUhLdeN0gRIQ2XZLm6qnb3BU6NxMa@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywl5UwUsRGJ/dDeQnKLVpdpOuHjt4/jskDvSNhco1TmrceW8JWQ
-	aLrwA9rpwA6e3fQTuwYvy1p8S6xG7c3EMvn3NiIZAVF0WZl63XxHlNG2my/9ZsYkJAdun/sNzmy
-	oL8fnft6HM9axmmCqIdAAptCZRqzMZpKCnxZcCFGlEl8zOPR3Lsj63tFsYjzltF0dMm4/Sss9XB
-	8nmdEs8KxsVjhjMym81zWAolz40uoPCQ==
-X-Received: by 2002:a5d:6d04:0:b0:37c:fdc8:77ab with SMTP id ffacd0b85a97d-381ec5d2a25mr750633f8f.7.1730935373111;
-        Wed, 06 Nov 2024 15:22:53 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IED8dbEfyAL8ooo8GPjsYUR6b8v06yZSyJJBhEN0YD0lcZceYOU0DyiocvCsAGXa+6yihn58aU4AvlD9ufSOHo=
-X-Received: by 2002:a5d:6d04:0:b0:37c:fdc8:77ab with SMTP id
- ffacd0b85a97d-381ec5d2a25mr750625f8f.7.1730935372755; Wed, 06 Nov 2024
- 15:22:52 -0800 (PST)
+	bh=Gg2GvaE+yzZyVFg0LFOVZxNsyEO3RamNhvSGqKggQhQ=;
+	b=q2mAxqyVW0UCvM1RaGeV38bhLQ7TyItjbQ1TtJuQ3PqusZI/nOuATgQroM6kw4U3Oh9qT2
+	zD8AVKu6rt0VN1UgtMQyxSbnZ9a9yUW2J/w8GYbChQB880hB7TBca+sAftYtldOGMeGrUg
+	ofsWvwFGfKzk/Y2RPGpuFYPTQ5+s4PE=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	muchun.song@linux.dev, akpm@linux-foundation.org, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH 2/2] memcg/hugetlb: Deprecate hugetlb memcg
+ try-commit-cancel charging
+Message-ID: <o7dpwewfztqpkidrhvpdm57ikid4yswygag5gkjplfwdfkl54l@bs6oh2t4jp7z>
+References: <20241106221434.2029328-1-joshua.hahnjy@gmail.com>
+ <20241106221434.2029328-3-joshua.hahnjy@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZyAnSAw34jwWicJl@slm.duckdns.org> <1998a069-50a0-46a2-8420-ebdce7725720@redhat.com>
- <ZyF858Ruj-jgdLLw@slm.duckdns.org> <CABgObfYR6e0XV94USugVOO5XcOfyctr1rAm+ZWJwfu9AHYPtiA@mail.gmail.com>
- <ZyJ3eG8YHeyxqOe_@slm.duckdns.org> <CAMw=ZnQk5ttytEKO6pK+VLEhSO9diRAqE9DEUwjXnQkz+Vf7kA@mail.gmail.com>
-In-Reply-To: <CAMw=ZnQk5ttytEKO6pK+VLEhSO9diRAqE9DEUwjXnQkz+Vf7kA@mail.gmail.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Thu, 7 Nov 2024 00:22:33 +0100
-Message-ID: <CABgObfYrX8O-Vj5g7t8DD=6_twedXToajNtLedLgtKR6+G9_Hg@mail.gmail.com>
-Subject: Re: cgroup2 freezer and kvm_vm_worker_thread()
-To: Luca Boccassi <bluca@debian.org>
-Cc: Tejun Heo <tj@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, kvm@vger.kernel.org, 
-	cgroups@vger.kernel.org, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241106221434.2029328-3-joshua.hahnjy@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Nov 7, 2024 at 12:21=E2=80=AFAM Luca Boccassi <bluca@debian.org> wr=
-ote:
->
-> On Wed, 30 Oct 2024 at 18:14, Tejun Heo <tj@kernel.org> wrote:
-> >
-> > Hello,
-> >
-> > On Wed, Oct 30, 2024 at 01:05:16PM +0100, Paolo Bonzini wrote:
-> > > On Wed, Oct 30, 2024 at 1:25=E2=80=AFAM Tejun Heo <tj@kernel.org> wro=
-te:
-> > > > > I'm not sure if the KVM worker thread should process signals.  We=
- want it
-> > > > > to take the CPU time it uses from the guest, but otherwise it's n=
-ot running
-> > > > > on behalf of userspace in the way that io_wq_worker() is.
-> > > >
-> > > > I see, so io_wq_worker()'s handle signals only partially. It sets
-> > > > PF_USER_WORKER which ignores fatal signals, so the only signals whi=
-ch take
-> > > > effect are STOP/CONT (and friends) which is handled in do_signal_st=
-op()
-> > > > which is also where the cgroup2 freezer is implemented.
-> > >
-> > > What about SIGKILL? That's the one that I don't want to have for KVM
-> > > workers, because they should only stop when the file descriptor is
-> > > closed.
-> >
-> > I don't think SIGKILL does anything for PF_USER_WORKER threads. Those a=
-re
-> > all handled in the fatal: label in kernel/signal.c::get_signal() and th=
-e
-> > function just returns for PF_USER_WORKER threads. I haven't used it mys=
-elf
-> > but looking at io_uring usage, it seems pretty straightforward.
-> >
-> > > (Replying to Luca: the kthreads are dropping some internal data
-> > > structures that KVM had to "de-optimize" to deal with processor bugs.
-> > > They allow the data structures to be rebuilt in the optimal way using
-> > > large pages).
-> > >
-> > > > Given that the kthreads are tied to user processes, I think it'd be=
- better
-> > > > to behave similarly to user tasks as possible in this regard if use=
-rspace
-> > > > being able to stop/cont these kthreads are okay.
-> > >
-> > > Yes, I totally agree with you on that, I'm just not sure of the best
-> > > way to do it.
-> > >
-> > > I will try keeping the kthread and adding allow_signal(SIGSTOP).  Tha=
-t
-> > > should allow me to process the SIGSTOP via get_signal().
-> >
-> > I *think* you can just copy what io_wq_worker() is doing.
->
-> Any update on this? We keep getting reports of this issue, so it would
-> be great if there was a fix for 6.12. Thanks!
+On Wed, Nov 06, 2024 at 02:14:34PM -0800, Joshua Hahn wrote:
+> This patch deprecates the memcg try-{commit,cancel} logic used in hugetlb.
+> Instead of having three points of error for memcg accounting, the error
+> patch is reduced to just one point at the end, and shares the same path
+> with the hugeTLB controller as well.
+> 
+> Please note that the hugeTLB controller still uses the try_charge to 
+> {commit/cancel} protocol. 
+> 
+> Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
+> 
+> ---
+>  include/linux/memcontrol.h |  3 +--
+>  mm/hugetlb.c               | 35 ++++++++++++-----------------------
+>  mm/memcontrol.c            | 37 +++++++++----------------------------
+>  3 files changed, 22 insertions(+), 53 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 25761d55799e..0024634d161f 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -696,8 +696,7 @@ static inline int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm,
+>  
+>  bool memcg_accounts_hugetlb(void);
+>  
+> -int mem_cgroup_hugetlb_try_charge(struct mem_cgroup *memcg, gfp_t gfp,
+> -		long nr_pages);
+> +int mem_cgroup_charge_hugetlb(struct folio *folio, gfp_t gfp);
 
-No, did not have time yet.
+Please cleanup mem_cgroup_cancel_charge() and mem_cgroup_commit_charge()
+as well as there will be no users after this patch.
 
-Paolo
+>  
+>  int mem_cgroup_swapin_charge_folio(struct folio *folio, struct mm_struct *mm,
+>  				  gfp_t gfp, swp_entry_t entry);
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index fbb10e52d7ea..db9801b16d13 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -2967,21 +2967,13 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
+>  	struct hugepage_subpool *spool = subpool_vma(vma);
+>  	struct hstate *h = hstate_vma(vma);
+>  	struct folio *folio;
+> -	long map_chg, map_commit, nr_pages = pages_per_huge_page(h);
+> +	long map_chg, map_commit;
+>  	long gbl_chg;
+> -	int memcg_charge_ret, ret, idx;
+> +	int ret, idx;
+>  	struct hugetlb_cgroup *h_cg = NULL;
+> -	struct mem_cgroup *memcg;
+>  	bool deferred_reserve;
+>  	gfp_t gfp = htlb_alloc_mask(h) | __GFP_RETRY_MAYFAIL;
+>  
+> -	memcg = get_mem_cgroup_from_current();
+> -	memcg_charge_ret = mem_cgroup_hugetlb_try_charge(memcg, gfp, nr_pages);
+> -	if (memcg_charge_ret == -ENOMEM) {
+> -		mem_cgroup_put(memcg);
+> -		return ERR_PTR(-ENOMEM);
+> -	}
+> -
+>  	idx = hstate_index(h);
+>  	/*
+>  	 * Examine the region/reserve map to determine if the process
+> @@ -2989,12 +2981,8 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
+>  	 * code of zero indicates a reservation exists (no change).
+>  	 */
+>  	map_chg = gbl_chg = vma_needs_reservation(h, vma, addr);
+> -	if (map_chg < 0) {
+> -		if (!memcg_charge_ret)
+> -			mem_cgroup_cancel_charge(memcg, nr_pages);
+> -		mem_cgroup_put(memcg);
+> +	if (map_chg < 0)
+>  		return ERR_PTR(-ENOMEM);
+> -	}
+>  
+>  	/*
+>  	 * Processes that did not create the mapping will have no
+> @@ -3056,6 +3044,12 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
+>  		/* Fall through */
+>  	}
+>  
+> +	ret = mem_cgroup_charge_hugetlb(folio, gfp);
 
+You can not call this with hugetlb_lock held.
+
+> +	if (ret == -ENOMEM)
+> +		goto free_folio;
+> +	else if (!ret)
+> +		lruvec_stat_mod_folio(folio, NR_HUGETLB, pages_per_huge_page(h));
+> +
+>  	hugetlb_cgroup_commit_charge(idx, pages_per_huge_page(h), h_cg, folio);
+>  	/* If allocation is not consuming a reservation, also store the
+>  	 * hugetlb_cgroup pointer on the page.
+> @@ -3092,13 +3086,11 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
+>  		}
+>  	}
+>  
+> -	if (!memcg_charge_ret)
+> -		mem_cgroup_commit_charge(folio, memcg);
+> -	lruvec_stat_mod_folio(folio, NR_HUGETLB, pages_per_huge_page(h));
+> -	mem_cgroup_put(memcg);
+> -
+>  	return folio;
+>  
+> +free_folio:
+> +	spin_unlock_irq(&hugetlb_lock);
+> +	free_huge_folio(folio);
+>  out_uncharge_cgroup:
+>  	hugetlb_cgroup_uncharge_cgroup(idx, pages_per_huge_page(h), h_cg);
+>  out_uncharge_cgroup_reservation:
+> @@ -3110,9 +3102,6 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
+>  		hugepage_subpool_put_pages(spool, 1);
+>  out_end_reservation:
+>  	vma_end_reservation(h, vma, addr);
+> -	if (!memcg_charge_ret)
+> -		mem_cgroup_cancel_charge(memcg, nr_pages);
+> -	mem_cgroup_put(memcg);
+>  	return ERR_PTR(-ENOSPC);
+>  }
+>  
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 59dea0122579..3b728635d6aa 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1448,8 +1448,7 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+>  		u64 size;
+>  
+>  #ifdef CONFIG_HUGETLB_PAGE
+> -		if (unlikely(memory_stats[i].idx == NR_HUGETLB) &&
+> -		    !(cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING))
+> +		if (unlikely(memory_stats[i].idx == NR_HUGETLB) && !memcg_accounts_hugetlb())
+>  			continue;
+>  #endif
+>  		size = memcg_page_state_output(memcg, memory_stats[i].idx);
+> @@ -4506,37 +4505,19 @@ bool memcg_accounts_hugetlb(void)
+>  #endif
+>  }
+>  
+> -/**
+> - * mem_cgroup_hugetlb_try_charge - try to charge the memcg for a hugetlb folio
+> - * @memcg: memcg to charge.
+> - * @gfp: reclaim mode.
+> - * @nr_pages: number of pages to charge.
+> - *
+> - * This function is called when allocating a huge page folio to determine if
+> - * the memcg has the capacity for it. It does not commit the charge yet,
+> - * as the hugetlb folio itself has not been obtained from the hugetlb pool.
+> - *
+> - * Once we have obtained the hugetlb folio, we can call
+> - * mem_cgroup_commit_charge() to commit the charge. If we fail to obtain the
+> - * folio, we should instead call mem_cgroup_cancel_charge() to undo the effect
+> - * of try_charge().
+> - *
+> - * Returns 0 on success. Otherwise, an error code is returned.
+> - */
+> -int mem_cgroup_hugetlb_try_charge(struct mem_cgroup *memcg, gfp_t gfp,
+> -			long nr_pages)
+> +int mem_cgroup_charge_hugetlb(struct folio *folio, gfp_t gfp)
+>  {
+> -	/*
+> -	 * If hugetlb memcg charging is not enabled, do not fail hugetlb allocation,
+> -	 * but do not attempt to commit charge later (or cancel on error) either.
+> -	 */
+> -	if (mem_cgroup_disabled() || !memcg ||
+> -		!cgroup_subsys_on_dfl(memory_cgrp_subsys) || !memcg_accounts_hugetlb())
+> +	struct mem_cgroup *memcg = get_mem_cgroup_from_current();
+
+Leaking the above reference in error paths.
+
+> +
+> +	if (mem_cgroup_disabled() || !memcg_accounts_hugetlb() ||
+> +			!memcg || !cgroup_subsys_on_dfl(memory_cgrp_subsys))
+>  		return -EOPNOTSUPP;
+>  
+> -	if (try_charge(memcg, gfp, nr_pages))
+> +	if (charge_memcg(folio, memcg, gfp))
+>  		return -ENOMEM;
+>  
+> +	mem_cgroup_put(memcg);
+> +
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.43.5
+> 
 
