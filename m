@@ -1,56 +1,55 @@
-Return-Path: <cgroups+bounces-5450-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5451-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F0CC9BDA13
-	for <lists+cgroups@lfdr.de>; Wed,  6 Nov 2024 01:09:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F4359BDE93
+	for <lists+cgroups@lfdr.de>; Wed,  6 Nov 2024 07:11:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 604A2284753
-	for <lists+cgroups@lfdr.de>; Wed,  6 Nov 2024 00:09:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07519B23D4E
+	for <lists+cgroups@lfdr.de>; Wed,  6 Nov 2024 06:11:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AF1136C;
-	Wed,  6 Nov 2024 00:09:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A1C51922DC;
+	Wed,  6 Nov 2024 06:10:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mUzz7W4L"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Ovgt2lzU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 687A5EEA8
-	for <cgroups@vger.kernel.org>; Wed,  6 Nov 2024 00:09:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50697191F99;
+	Wed,  6 Nov 2024 06:10:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730851771; cv=none; b=S4E3UCCEMIMSWjq6Oo2ZwxXwCRSNXcMmejctUYX3qQp+wdrNG5cNp1NY2NVKykWSXQEQ69DZjDjz9oP1lW9B4A3XLRZKF+84uyTwDMu9tfLpyQiQmdT5CRUaDU/eqR9QxkEHN9moJxtYBSPg2S67CGcHCF/4RtRvvySc/qDTImI=
+	t=1730873458; cv=none; b=TFqJiCUHhyE+w/ox3ttNLkvmWCFqTzodZHWk0YxKhS0SSUon9LX4TR0O3I6tTINRpqMcT1JGYGmFB5tfH9NhhUCjtNgGteO4eOsGCYkOVb2FTWtjXCmq7qImBpPN1eXI22hFml9VMho97G4Qbi74LonaAQZ33mZiuHy7Crdhzjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730851771; c=relaxed/simple;
-	bh=4x4dbB5xBnztGpUfm9GVitYhLA818tvcvCZ8d0Ht6D4=;
+	s=arc-20240116; t=1730873458; c=relaxed/simple;
+	bh=ZIkhSG3SWSWDdb9gBg4UsYaD7jsdzVUXEoG0AgAwFSc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=umi8WWk3IF0NEw90aTJqhsjjssMHZkJOGWJwqWJ1/8czCtCRLTFlQybneRcqqorP97d8rKb+lfoO5AW59s/zqSGYaOOoqVpfdhQ1P2X5V80o4iEhlU6XIscjfEgpuYkfv4y6qJ1Fnsl5eNHtpafK2RFLwnPxJfpq7hDWvIQ3sfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mUzz7W4L; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 6 Nov 2024 00:09:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1730851765;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=p43JMorGZwxO3G3AwweIH/hxNsCPTiwkqmZv7WGPuZQ=;
-	b=mUzz7W4LkFRUTP6NoaXPaBhm+AUJUmRmz+BBGRv6P/QxfW+UFW/8+Nk6ckU+ZQmgLLEf7y
-	q5ihcCy8WGwkOLarbdjE5gOJqswQ3khRSbdx8qgn5L8z40+KAtGcB6mi4KOm84eC1+mJPg
-	udMq5lt+i7/153/M6qJQuJIXFgh+I98=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH 0/3] Introduce acctmem
-Message-ID: <ZyqzrPpFiV7me5Ca@google.com>
-References: <20241104210602.374975-1-willy@infradead.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=SInMeccylVCHmAhVAzNkAhgFa4RETn9bAr24whGgk+4wIT4KV3YDdxVDCCjvnsT5NS7Bs5hOTyCVBr4fC+i1O3R3D7ZdcrKGuIqedpGydHaU9eRcDWGT3wJWCzkG9DaaaOrcGDrzZpNI84/3na1BBklOf3NkIH/3FeWNlaQbHSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Ovgt2lzU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48340C4CECD;
+	Wed,  6 Nov 2024 06:10:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1730873457;
+	bh=ZIkhSG3SWSWDdb9gBg4UsYaD7jsdzVUXEoG0AgAwFSc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ovgt2lzUBOZfLk7pABtIhToyXGkdTqkJKx+TNiQeY6ezEdfO3b7xC91czETuNOpMB
+	 y18w3iJ4nddoGe+2vGtUuaDePpLfPqI7yX7irQnJK/z17/blNFLDXyj+aF3cWdyT6l
+	 Ro+sUpdmvGt/ahk0ofPJbvb0pS2ucMFF9aJZH7Vc=
+Date: Wed, 6 Nov 2024 07:10:39 +0100
+From: "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To: Siddh Raman Pant <siddh.raman.pant@oracle.com>
+Cc: "sashal@kernel.org" <sashal@kernel.org>,
+	"stable@vger.kernel.org" <stable@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+	"shivani.agarwal@broadcom.com" <shivani.agarwal@broadcom.com>
+Subject: Re: 5.10.225 stable kernel cgroup_mutex not held assertion failure
+Message-ID: <2024110612-lapping-rebate-ed25@gregkh>
+References: <20240920092803.101047-1-shivani.agarwal@broadcom.com>
+ <4f827551507ed31b0a876c6a14cdca3209c432ae.camel@oracle.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -59,27 +58,31 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241104210602.374975-1-willy@infradead.org>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <4f827551507ed31b0a876c6a14cdca3209c432ae.camel@oracle.com>
 
-On Mon, Nov 04, 2024 at 09:05:57PM +0000, Matthew Wilcox wrote:
-> As a step towards shrinking struct page, we need to remove all references
-> to page->memcg_data.  The model I'm working towards is described at
-> https://kernelnewbies.org/MatthewWilcox/Memdescs
+On Wed, Oct 30, 2024 at 07:29:38AM +0000, Siddh Raman Pant wrote:
+> Hello maintainers,
 > 
-> In working on this series, I'm dissatisfied with how much I've assumed
-> that every page belongs to a folio.  There will need to be more changes
-> in order to split struct acctmem from struct folio in the future.
-> The first two patches take some steps in that direction, but I'm not
-> going to do any more than that in this series.
+> On Fri, 20 Sep 2024 02:28:03 -0700, Shivani Agarwal wrote:
+> > Thanks Fedor.
+> > 
+> > Upstream commit 1be59c97c83c is merged in 5.4 with commit 10aeaa47e4aa and
+> > in 4.19 with commit 27d6dbdc6485. The issue is reproducible in 5.4 and 4.19
+> > also.
+> > 
+> > I am sending the backport patch of d23b5c577715 and a7fb0423c201 for 5.4 and
+> > 4.19 in the next email.
+> 
+> Please backport these changes to stable.
+> 
+> "cgroup/cpuset: Prevent UAF in proc_cpuset_show()" has already been
+> backported and bears CVE-2024-43853. As reported, we may already have
+> introduced another problem due to the missing backport.
 
-Is this series supposed to be merged in the current form or it's an rfc?
+What exact commits are needed here?  Please submit backported and tested
+commits and we will be glad to queue them up.
 
-The code looks good to me and the approach makes sense, but the series
-needs a bit more formal commit logs and series description.
+thanks,
 
-Also, it would be great to have at least a short description of
-the high-level design in place, without a link to an external site.
-
-Thanks!
+greg k-h
 
