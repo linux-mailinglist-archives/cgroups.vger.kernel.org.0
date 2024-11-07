@@ -1,122 +1,103 @@
-Return-Path: <cgroups+bounces-5471-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5472-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BA739C0DB9
-	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 19:28:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 622819C0E1B
+	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 19:54:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 397111F22AE8
-	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 18:28:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 198FD2849E3
+	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 18:54:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92938216A15;
-	Thu,  7 Nov 2024 18:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 024CF21731C;
+	Thu,  7 Nov 2024 18:54:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UHc/Vz3C"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KTwoAU7h"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB6F8215C6D;
-	Thu,  7 Nov 2024 18:28:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A936316419;
+	Thu,  7 Nov 2024 18:54:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731004088; cv=none; b=aNE5L4Kib3tdhX9XGryh6fsO5CQ+jZfKRvEvPFG9iRFoOTPC1KIe3jzFkmUltejD2Q1VBuQbavMkNKME9Z3x8mUGOnhSz7PtyajK1qotBakZBP+8aqO2GOdb7Wv96z1MIkWuAxRTxMGtCERRc2RxdQqY1uRr7S+ZXWyUXl3rffw=
+	t=1731005688; cv=none; b=IQWP1wcU26cFICS9SwQwuqyqzdjvdMa8ChS/KCvq19Pv1MNOw+0IUg4SY0xdBLzLc/HOCgAAt52iQ1g57Dyv+9cPf8qUGGpAE27ILr1TwvLjC1pDpNSAo8gBAXHZtRRn4XfcofrpZ8+aPS4S7HCfPjM2+FVGaDMtMJD4bISqEYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731004088; c=relaxed/simple;
-	bh=q0y9Ud73LqQhwuyN5EYgcTOcG4RR/oexyr3NTsuez9M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fi65drhnLHnSHZJ8Oyl5nVgWG/ov0gBGIqAaACPRan28gDZqRtLcvmoLXDkSm4TCLTm59EKF07ugkMd6222lwFK9lj60VS84/NrWBKNTIVHQZuZYxHT4urK8pZFi14ZH8WbCZ1aaUM+TfBMBrGJSY5bEfkkDWlV2pfRXbwJCPcE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UHc/Vz3C; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a9a6b4ca29bso172649866b.3;
-        Thu, 07 Nov 2024 10:28:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731004085; x=1731608885; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BVfDmuHs5p+fa/eZewzS61BcpvU/96M31o+p3JFZkE4=;
-        b=UHc/Vz3CibD4VZ/PQK8TjHY3HQYciIJFwE0t3BY4tnAK71e7+3lwL6t24u3ctMq1vU
-         OU11Do4FVdpy8bqKwcvFOGsPQLtzGq2wQJnsLTeFFYFBAqsXN4T4u+IsAl5EbkS6zFvO
-         DWlFNN6Uand2MH26rtqZ/UL4tzFLrUukNAJG8L8NlU9afRyztI7G2Vf5zIl7xGQhV825
-         BhcjpS2sblMGF3A3czLtRmkR7voQHJwQtnZeC62itu18+xUKFqAumzMjF6eVvigZJha7
-         ANrpKnICUTkZdYz6OnpQfls8DZh9MEIujiiTypdQHs96lWNkHhnLJQxwN3nj2B7bjO1x
-         Reyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731004085; x=1731608885;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BVfDmuHs5p+fa/eZewzS61BcpvU/96M31o+p3JFZkE4=;
-        b=SrACeHOq1eUCainOyx0P1j5WAqJECmIVg0p63AYUBmViz7HEiFc+qj8ve163UZpslB
-         fv6r9/C/Uk0qNsjy10UqL5nsLnyU1cTvLqKtCGc6G+ax6pG/oqeNaiifPQpTDoUuZAHS
-         I0iyxWhmfnAT727+2GXFVZbsE0jBUPECX7uvLzszdzNITT6d0SVthhgyCzC3ikWc0XJj
-         wvmHI5n/GEpN+0syZSsPD2/fRufwY6y3Ri5cCQpYfg6Mr+4HqTiNzQzs+RmT8a/P5w0s
-         /RXWDS2S0mcyVH/ecL71YTfMw1FQSYBC0+dM/d7cvio0ahkQ50xkPbHiX8Om1r274rl1
-         04jw==
-X-Forwarded-Encrypted: i=1; AJvYcCWFZEF8Sga07UgZbPMpgKitOJqJjhrlUoDVrgeMtXXXl+tGkJwfzXM8dddUJx+m5hAtsAJAtMDd@vger.kernel.org, AJvYcCWbhaHE8yKzwxnm6W3KTE1exzFv3t6aZzcb7wF5enlq5ZdPrc3cWqJlqJtFXLT5ID8vzyGn1d2beAoMS3OO@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw+F1DIzvFH+CLFgtImtFr9J46MsJwBBOfnYsFe/uo2rCHt/CdU
-	BAcRbPpkBCL1hXNci1CKi+oUglVUmsuUqNWtpv3UCovCyROmem6AUKr3vWGdYGJ/72G2BGNMGEh
-	VfiSTmSBarpyltzBinZa6pl7+rX6wyFFg
-X-Google-Smtp-Source: AGHT+IGslwSAq9MKLCz5wDbzj4kAH/gRj6dZGwgC/ErBas1EoEfksgehPaVh61S2Yyo9MRL9FoNIMTkD5gDBNsZaKPA=
-X-Received: by 2002:a17:907:31c3:b0:a9a:522a:eddd with SMTP id
- a640c23a62f3a-a9eeae9b963mr113080266b.11.1731004084816; Thu, 07 Nov 2024
- 10:28:04 -0800 (PST)
+	s=arc-20240116; t=1731005688; c=relaxed/simple;
+	bh=MhCtJqMxCesP9UetCsJ3TB7513bZMiDxVKi77MUHvmg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C1UStdIOw15SZwWN186PSEiDewMBujdDwXEzR4F6mYf0xg46UEB0OzcjH9be6IjejucMZc5eXrwYexIPpqO9VgqbwgEn6Wx24v1ugL3qz0CZWjga7kjafb1ZVth22QBiCc6CzjI/cBnFEa5VsZCVi7fG4itdFasAY6vIXPEymAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KTwoAU7h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24081C4CECC;
+	Thu,  7 Nov 2024 18:54:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731005688;
+	bh=MhCtJqMxCesP9UetCsJ3TB7513bZMiDxVKi77MUHvmg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KTwoAU7hfKTnCJkvgb//e6A5EICdebjw0RCS1bna2xXVZUfDSvLgLDw7fOaZG5r6z
+	 mbi+Tt22FcAxPtRsJXdbxhCip1EJsA6zfPPmiQTW5DtqCteTrVrGbW+zesHMDB8uVq
+	 ujiB4MUFD6PV99zsP1qwg/WeS2rwsgR5in4w6iAOVkuYVi4SnT1pIoXghVlCATKwqF
+	 Yof03QLPdwGLBQDhJ2PmKZ87VgLJ4rjkeySioNdOwrodHMmUtp5dfeo+D/s8dOLtUL
+	 7rKAQn4ThNQCU/3EkDrydMwhZbw3D947As6U2Pf7/gto3RYnZOmfT6zJCmOYYp/uvH
+	 3QZ4HanGX8ReQ==
+Date: Thu, 7 Nov 2024 08:54:47 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Luca Boccassi <bluca@debian.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>, kvm@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: cgroup2 freezer and kvm_vm_worker_thread()
+Message-ID: <Zy0M9yv7xIiKB_Xi@slm.duckdns.org>
+References: <ZyAnSAw34jwWicJl@slm.duckdns.org>
+ <nlcen6mwyduof423wzfyf3gmvt77uqywzikby2gionpu4mz6za@635i633henks>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241106221434.2029328-1-joshua.hahnjy@gmail.com>
- <20241106221434.2029328-3-joshua.hahnjy@gmail.com> <o7dpwewfztqpkidrhvpdm57ikid4yswygag5gkjplfwdfkl54l@bs6oh2t4jp7z>
-In-Reply-To: <o7dpwewfztqpkidrhvpdm57ikid4yswygag5gkjplfwdfkl54l@bs6oh2t4jp7z>
-From: Joshua Hahn <joshua.hahnjy@gmail.com>
-Date: Thu, 7 Nov 2024 13:27:53 -0500
-Message-ID: <CAN+CAwNSMXP-Z5PVL_Q129nN-aP80XB0Y-Sm+C-XdHBinvWoxw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] memcg/hugetlb: Deprecate hugetlb memcg
- try-commit-cancel charging
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
-	muchun.song@linux.dev, akpm@linux-foundation.org, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <nlcen6mwyduof423wzfyf3gmvt77uqywzikby2gionpu4mz6za@635i633henks>
 
-On Wed, Nov 6, 2024 at 6:50=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.dev=
-> wrote:
->
-> Please cleanup mem_cgroup_cancel_charge() and mem_cgroup_commit_charge()
-> as well as there will be no users after this patch.
->
+Hello,
 
-Hi Shakeel,
+On Thu, Nov 07, 2024 at 07:05:46PM +0100, Michal Koutný wrote:
+...
+> I'd first ask why the kvm_vm_worker_thread needs to be in the KVM task's
+> cgroup (and copy its priority at creation time but no later adjustments)?
+> 
+> If it can remain inside root cgroup (like any other good kthread) its
+> job may be even chunked into periodic/deferred workqueue pieces with no
+> kthread per KVM at all.
 
-Thank you for your feedback. Unfortunately, it seems like even after this
-patch removes the references from hugetlb.c, there are still some
-references from other files.
+That'd be better but I suppose kvm wants them in the same cgroup for a
+reason.
 
-mem_cgroup_cancel_charge:
-  - memcontrol-v1.c~__mem_cgroup_clear_mc(void)
+> If there are resource control/charging concerns, I was thinking about
+> the approach of cloning from the KVM task and never returning to
+> userspace, which I see you already discussed with PF_USER_WORKER (based
+> on #1). All context would be regularly inherited and no migration would
+> be needed.
+> 
+> (I remember issues with the kvm_vm_worker_thread surviving lifespan of
+> KVM task and preventing removal of the cgroup. Not sure if that was only
+> a race or there's real need for doing some cleanups on an exited task.)
+> 
+> As for #2, I'm not sure there's a good criterion for what to ignore.
+> Here it could possibly be PF_KTHREAD or PF_NOFREEZE (I get the latter
+> has purpose for system-wide (or v1) freezer). Generally, we can't tell
+> what's the effect of thread's liveliness so it seems better to
+> conservatively treat the cgroup as unfrozen.
 
-mem_cgroup_commit_charge:
-  - memcontrol.c~charge_memcg(struct folio *folio, struct mem_cgroup...)
+It'd have to be a separate flag which explicitly says that the task is
+exempt from cgroup2 freezer, so yeah, it'd be best if we can avoid this
+option.
 
-In fact, in my patch, I add an extra call to charge_memcg. I think for this
-case, it makes sense to just extract out the functionality from
-mem_cgroup_commit_charge (3 lines) and expand it out inside charge_memcg,
-and get rid of mem_cgroup_commit_charge.
+Thanks.
 
-On the other hand, handling mem_cgroup_cancel_charge seems to be a bit
-different. Now, all of its references are purely in memcontrol-v1.c.
-I think in this case, it makes sense to migrate the function declaration
-& definition into memcontrol-v1.c, and remove it from memcontrol.c.
-Perhaps at a later date, a cleanup in memcontrol-v1 may find that it makes
-sense to remove the function, but for now, I think we should just move it.
-
-I hope this makes sense. Thank you again for your feedback!
-Joshua
+-- 
+tejun
 
