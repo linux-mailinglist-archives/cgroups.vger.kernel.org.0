@@ -1,154 +1,122 @@
-Return-Path: <cgroups+bounces-5470-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5471-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B47249C0D74
-	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 19:05:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BA739C0DB9
+	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 19:28:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 738FE2836C4
-	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 18:05:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 397111F22AE8
+	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 18:28:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43CC72170A3;
-	Thu,  7 Nov 2024 18:05:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92938216A15;
+	Thu,  7 Nov 2024 18:28:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WrylWrsn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UHc/Vz3C"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 203792161E6
-	for <cgroups@vger.kernel.org>; Thu,  7 Nov 2024 18:05:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB6F8215C6D;
+	Thu,  7 Nov 2024 18:28:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731002752; cv=none; b=dHeJbEFXX+t0NjOVzLE7p4OVCKlRgfQ4W53+h+uD131rhQv7fc3aO8LB0nCIWJZyHfP7/9YViO0nrUxYtxKnT2Fm1b2daUx1aarDZZngBoevPzS7Gk57Cd9pOih9OqqSS1875bKqJ5m0ObCsfyJM6NMcwsYjoP6Yq6pMMKnnaWc=
+	t=1731004088; cv=none; b=aNE5L4Kib3tdhX9XGryh6fsO5CQ+jZfKRvEvPFG9iRFoOTPC1KIe3jzFkmUltejD2Q1VBuQbavMkNKME9Z3x8mUGOnhSz7PtyajK1qotBakZBP+8aqO2GOdb7Wv96z1MIkWuAxRTxMGtCERRc2RxdQqY1uRr7S+ZXWyUXl3rffw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731002752; c=relaxed/simple;
-	bh=KUxyXwz3ijMwI9yruBeARGSaKdWcNDBaCOKWP0VGGm8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TOvaQsVfZjBhau9/OsiOlAcGhbyy+4y6/mM4KPteMdgCQJEw6Ik0l9Vp7NF0YYf7EPst9WMgyiBsL1ojXJSyhP1RB3a8ytQZfS4kLBf5vUucozGdxy9XWtn5eBGdF56RCbq1XaDPoMjuX+sEbBd6KJAqbnPk2VS8e/ev/AklvDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WrylWrsn; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a9a2209bd7fso194964566b.2
-        for <cgroups@vger.kernel.org>; Thu, 07 Nov 2024 10:05:49 -0800 (PST)
+	s=arc-20240116; t=1731004088; c=relaxed/simple;
+	bh=q0y9Ud73LqQhwuyN5EYgcTOcG4RR/oexyr3NTsuez9M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fi65drhnLHnSHZJ8Oyl5nVgWG/ov0gBGIqAaACPRan28gDZqRtLcvmoLXDkSm4TCLTm59EKF07ugkMd6222lwFK9lj60VS84/NrWBKNTIVHQZuZYxHT4urK8pZFi14ZH8WbCZ1aaUM+TfBMBrGJSY5bEfkkDWlV2pfRXbwJCPcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UHc/Vz3C; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a9a6b4ca29bso172649866b.3;
+        Thu, 07 Nov 2024 10:28:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1731002748; x=1731607548; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zSbrYYBrI/p/5x0d2n3UNYuWW/+v5ncY+edUOAUibFk=;
-        b=WrylWrsn+dmnKPImq81fa+6sZpwIF5WozWtdbebYEyjW8lBhqZSrovghVy0jKE44IY
-         OZPyFwz6+wfGa6tPmfRdRyiujvOUh5lU+JSHGxf3FBAkIb3UKbw4w4co8KxldlngJtuP
-         JsJuMOxFDQKSshcxzTzERdisOcrUUkmhhSwQw/f/YM9nj6Hh/c7aKUFAFFkixz6Im6YE
-         3x/pwwoypVA22RzxQgx7tXgtqSLuVBnruWVnUB7ahY5EkCpfuLPQJDhSnEE2iyMFd8Xl
-         MVT5iwepusXCviU9k0Ggr8GCVEu+xyUOBn0zjxU+kgEWFy7++YrO0VNV0i3om5QPNTTz
-         EDrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731002748; x=1731607548;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1731004085; x=1731608885; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zSbrYYBrI/p/5x0d2n3UNYuWW/+v5ncY+edUOAUibFk=;
-        b=mHerJPOO/fQjRc+k0aZP5zD/Fx8uagpzs7+u88vhxuJgAzXt1SzxxyIuqLsqmJPyJU
-         Q7VPhomM4Sp2gkAoib8FX9WzI40Pk90o3kRBPu2qSiKyNg45vSrbZbrokyltOykp5qQZ
-         fKMrpVhRVcjGktqOmtnW7KnUo7gKcvN37aZwaiQTMjSiKsX9E2+deuFXWKv0GXV5XQE4
-         h1/Ge8iMD9KOGjpjwtXm/mPxLVOQ8Zqeb3SfihZSEw7YpcxeFEXj9B8k2X0mCZFg9+mq
-         FAsGmcMWGotVsnF5YRaBAk5xuT2A5XZtrlDiplQjFVixVkBShRK0pB6skAnDVDHHPl/Z
-         pjSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXdFg+saS8RdHFi8mYY94Z68JlRg1vcR1U2rhGPZ/auxdUdVsNy/Ue80nVTWEN9kH6uvP9EYYc9@vger.kernel.org
-X-Gm-Message-State: AOJu0YwvsekTLc9lKe8wbd5RRReIwDAdV3fVScGZyaXPC2cbhZG8umLv
-	gW7cXdz5sZy55I3G/h5rble3jSYwOMtOoBfsJKE4Fi4fSLzG559sWiFYfFPBgqc=
-X-Google-Smtp-Source: AGHT+IH/KWT01CAzD8ky5ouYbcYfN5C3FED8l6ogIpQP/5B/enmGcQM4WkUVsaO/f92hCV5EgwfPEA==
-X-Received: by 2002:a17:907:3f02:b0:a9a:e0b8:5b7c with SMTP id a640c23a62f3a-a9de5c91d25mr4463270266b.7.1731002748381;
-        Thu, 07 Nov 2024 10:05:48 -0800 (PST)
-Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee0abf305sm126140866b.86.2024.11.07.10.05.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Nov 2024 10:05:47 -0800 (PST)
-Date: Thu, 7 Nov 2024 19:05:46 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Luca Boccassi <bluca@debian.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, kvm@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: cgroup2 freezer and kvm_vm_worker_thread()
-Message-ID: <nlcen6mwyduof423wzfyf3gmvt77uqywzikby2gionpu4mz6za@635i633henks>
-References: <ZyAnSAw34jwWicJl@slm.duckdns.org>
+        bh=BVfDmuHs5p+fa/eZewzS61BcpvU/96M31o+p3JFZkE4=;
+        b=UHc/Vz3CibD4VZ/PQK8TjHY3HQYciIJFwE0t3BY4tnAK71e7+3lwL6t24u3ctMq1vU
+         OU11Do4FVdpy8bqKwcvFOGsPQLtzGq2wQJnsLTeFFYFBAqsXN4T4u+IsAl5EbkS6zFvO
+         DWlFNN6Uand2MH26rtqZ/UL4tzFLrUukNAJG8L8NlU9afRyztI7G2Vf5zIl7xGQhV825
+         BhcjpS2sblMGF3A3czLtRmkR7voQHJwQtnZeC62itu18+xUKFqAumzMjF6eVvigZJha7
+         ANrpKnICUTkZdYz6OnpQfls8DZh9MEIujiiTypdQHs96lWNkHhnLJQxwN3nj2B7bjO1x
+         Reyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731004085; x=1731608885;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BVfDmuHs5p+fa/eZewzS61BcpvU/96M31o+p3JFZkE4=;
+        b=SrACeHOq1eUCainOyx0P1j5WAqJECmIVg0p63AYUBmViz7HEiFc+qj8ve163UZpslB
+         fv6r9/C/Uk0qNsjy10UqL5nsLnyU1cTvLqKtCGc6G+ax6pG/oqeNaiifPQpTDoUuZAHS
+         I0iyxWhmfnAT727+2GXFVZbsE0jBUPECX7uvLzszdzNITT6d0SVthhgyCzC3ikWc0XJj
+         wvmHI5n/GEpN+0syZSsPD2/fRufwY6y3Ri5cCQpYfg6Mr+4HqTiNzQzs+RmT8a/P5w0s
+         /RXWDS2S0mcyVH/ecL71YTfMw1FQSYBC0+dM/d7cvio0ahkQ50xkPbHiX8Om1r274rl1
+         04jw==
+X-Forwarded-Encrypted: i=1; AJvYcCWFZEF8Sga07UgZbPMpgKitOJqJjhrlUoDVrgeMtXXXl+tGkJwfzXM8dddUJx+m5hAtsAJAtMDd@vger.kernel.org, AJvYcCWbhaHE8yKzwxnm6W3KTE1exzFv3t6aZzcb7wF5enlq5ZdPrc3cWqJlqJtFXLT5ID8vzyGn1d2beAoMS3OO@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw+F1DIzvFH+CLFgtImtFr9J46MsJwBBOfnYsFe/uo2rCHt/CdU
+	BAcRbPpkBCL1hXNci1CKi+oUglVUmsuUqNWtpv3UCovCyROmem6AUKr3vWGdYGJ/72G2BGNMGEh
+	VfiSTmSBarpyltzBinZa6pl7+rX6wyFFg
+X-Google-Smtp-Source: AGHT+IGslwSAq9MKLCz5wDbzj4kAH/gRj6dZGwgC/ErBas1EoEfksgehPaVh61S2Yyo9MRL9FoNIMTkD5gDBNsZaKPA=
+X-Received: by 2002:a17:907:31c3:b0:a9a:522a:eddd with SMTP id
+ a640c23a62f3a-a9eeae9b963mr113080266b.11.1731004084816; Thu, 07 Nov 2024
+ 10:28:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2flxw46ilch26h54"
-Content-Disposition: inline
-In-Reply-To: <ZyAnSAw34jwWicJl@slm.duckdns.org>
-
-
---2flxw46ilch26h54
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20241106221434.2029328-1-joshua.hahnjy@gmail.com>
+ <20241106221434.2029328-3-joshua.hahnjy@gmail.com> <o7dpwewfztqpkidrhvpdm57ikid4yswygag5gkjplfwdfkl54l@bs6oh2t4jp7z>
+In-Reply-To: <o7dpwewfztqpkidrhvpdm57ikid4yswygag5gkjplfwdfkl54l@bs6oh2t4jp7z>
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+Date: Thu, 7 Nov 2024 13:27:53 -0500
+Message-ID: <CAN+CAwNSMXP-Z5PVL_Q129nN-aP80XB0Y-Sm+C-XdHBinvWoxw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] memcg/hugetlb: Deprecate hugetlb memcg
+ try-commit-cancel charging
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	muchun.song@linux.dev, akpm@linux-foundation.org, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 28, 2024 at 02:07:36PM GMT, Tejun Heo <tj@kernel.org> wrote:
-> There are two paths that we can take:
->=20
-> 1. Make kvm_vm_worker_thread() call into signal delivery path.
->    io_wq_worker() is in a similar boat and handles signal delivery and can
->    be frozen and trapped like regular threads.
->=20
-> 2. Keep the count of threads which can't be frozen per cgroup so that cgr=
-oup
->    freezer can ignore these threads.
->=20
-> #1 is better in that the cgroup will actually be frozen when reported
-> frozen. However, the rather ambiguous criterion we've been using for cgro=
-up
-> freezer is whether the cgroup can be safely snapshotted whil frozen and as
-> long as the workers not being frozen doesn't break that, we can go for #2
-> too.
->=20
-> What do you guys think?
+On Wed, Nov 6, 2024 at 6:50=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.dev=
+> wrote:
+>
+> Please cleanup mem_cgroup_cancel_charge() and mem_cgroup_commit_charge()
+> as well as there will be no users after this patch.
+>
 
-I'd first ask why the kvm_vm_worker_thread needs to be in the KVM task's
-cgroup (and copy its priority at creation time but no later adjustments)?
+Hi Shakeel,
 
-If it can remain inside root cgroup (like any other good kthread) its
-job may be even chunked into periodic/deferred workqueue pieces with no
-kthread per KVM at all.
+Thank you for your feedback. Unfortunately, it seems like even after this
+patch removes the references from hugetlb.c, there are still some
+references from other files.
 
-If there are resource control/charging concerns, I was thinking about
-the approach of cloning from the KVM task and never returning to
-userspace, which I see you already discussed with PF_USER_WORKER (based
-on #1). All context would be regularly inherited and no migration would
-be needed.
+mem_cgroup_cancel_charge:
+  - memcontrol-v1.c~__mem_cgroup_clear_mc(void)
 
-(I remember issues with the kvm_vm_worker_thread surviving lifespan of
-KVM task and preventing removal of the cgroup. Not sure if that was only
-a race or there's real need for doing some cleanups on an exited task.)
+mem_cgroup_commit_charge:
+  - memcontrol.c~charge_memcg(struct folio *folio, struct mem_cgroup...)
 
-As for #2, I'm not sure there's a good criterion for what to ignore.
-Here it could possibly be PF_KTHREAD or PF_NOFREEZE (I get the latter
-has purpose for system-wide (or v1) freezer). Generally, we can't tell
-what's the effect of thread's liveliness so it seems better to
-conservatively treat the cgroup as unfrozen.
+In fact, in my patch, I add an extra call to charge_memcg. I think for this
+case, it makes sense to just extract out the functionality from
+mem_cgroup_commit_charge (3 lines) and expand it out inside charge_memcg,
+and get rid of mem_cgroup_commit_charge.
 
+On the other hand, handling mem_cgroup_cancel_charge seems to be a bit
+different. Now, all of its references are purely in memcontrol-v1.c.
+I think in this case, it makes sense to migrate the function declaration
+& definition into memcontrol-v1.c, and remove it from memcontrol.c.
+Perhaps at a later date, a cleanup in memcontrol-v1 may find that it makes
+sense to remove the function, but for now, I think we should just move it.
 
-HTH,
-Michal
-
---2flxw46ilch26h54
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZy0BdwAKCRAt3Wney77B
-SYLIAQCuNDE3wTgZN3p9SAWDtSNXhwYcoK26f77RKTJcTmBEUwD8Cs/j4rnKyut3
-wTfnUQ9EoseHo9YzGHkO2Hhuq3vjTgY=
-=An9+
------END PGP SIGNATURE-----
-
---2flxw46ilch26h54--
+I hope this makes sense. Thank you again for your feedback!
+Joshua
 
