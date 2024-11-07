@@ -1,103 +1,101 @@
-Return-Path: <cgroups+bounces-5472-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5473-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 622819C0E1B
-	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 19:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A38029C0E2B
+	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 19:58:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 198FD2849E3
-	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 18:54:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 695AC284A39
+	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 18:58:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 024CF21731C;
-	Thu,  7 Nov 2024 18:54:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D66F7217453;
+	Thu,  7 Nov 2024 18:58:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KTwoAU7h"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lt/XvT3v"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A936316419;
-	Thu,  7 Nov 2024 18:54:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83DB82170DA
+	for <cgroups@vger.kernel.org>; Thu,  7 Nov 2024 18:58:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731005688; cv=none; b=IQWP1wcU26cFICS9SwQwuqyqzdjvdMa8ChS/KCvq19Pv1MNOw+0IUg4SY0xdBLzLc/HOCgAAt52iQ1g57Dyv+9cPf8qUGGpAE27ILr1TwvLjC1pDpNSAo8gBAXHZtRRn4XfcofrpZ8+aPS4S7HCfPjM2+FVGaDMtMJD4bISqEYk=
+	t=1731005909; cv=none; b=L3fxTzarc70di9HwTNytbh5+btea12ZnHtfhaTSVn+lDOPOISkWaHSd2bETZmNuTYebZDC9Rx1skVBUeUuVFA3Ocmjxw6/8QDli63uu63m3PeBloROkjasBXUlFCeLq3b5DvcR5+pTcV3seeSYH95gDS4tflJ8lPgR/0pLtOe/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731005688; c=relaxed/simple;
-	bh=MhCtJqMxCesP9UetCsJ3TB7513bZMiDxVKi77MUHvmg=;
+	s=arc-20240116; t=1731005909; c=relaxed/simple;
+	bh=9fMixngrHAM/325reFg6t7w02F445Bowh3c/p/itGUY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C1UStdIOw15SZwWN186PSEiDewMBujdDwXEzR4F6mYf0xg46UEB0OzcjH9be6IjejucMZc5eXrwYexIPpqO9VgqbwgEn6Wx24v1ugL3qz0CZWjga7kjafb1ZVth22QBiCc6CzjI/cBnFEa5VsZCVi7fG4itdFasAY6vIXPEymAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KTwoAU7h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24081C4CECC;
-	Thu,  7 Nov 2024 18:54:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731005688;
-	bh=MhCtJqMxCesP9UetCsJ3TB7513bZMiDxVKi77MUHvmg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KTwoAU7hfKTnCJkvgb//e6A5EICdebjw0RCS1bna2xXVZUfDSvLgLDw7fOaZG5r6z
-	 mbi+Tt22FcAxPtRsJXdbxhCip1EJsA6zfPPmiQTW5DtqCteTrVrGbW+zesHMDB8uVq
-	 ujiB4MUFD6PV99zsP1qwg/WeS2rwsgR5in4w6iAOVkuYVi4SnT1pIoXghVlCATKwqF
-	 Yof03QLPdwGLBQDhJ2PmKZ87VgLJ4rjkeySioNdOwrodHMmUtp5dfeo+D/s8dOLtUL
-	 7rKAQn4ThNQCU/3EkDrydMwhZbw3D947As6U2Pf7/gto3RYnZOmfT6zJCmOYYp/uvH
-	 3QZ4HanGX8ReQ==
-Date: Thu, 7 Nov 2024 08:54:47 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Luca Boccassi <bluca@debian.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>, kvm@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: cgroup2 freezer and kvm_vm_worker_thread()
-Message-ID: <Zy0M9yv7xIiKB_Xi@slm.duckdns.org>
-References: <ZyAnSAw34jwWicJl@slm.duckdns.org>
- <nlcen6mwyduof423wzfyf3gmvt77uqywzikby2gionpu4mz6za@635i633henks>
+	 Content-Type:Content-Disposition:In-Reply-To; b=EB3oWNHIF+D54Mz7SK01L73gnj2pmk45RvXlUPo0Ci4XuPurRGCVdgUGnt5SL9cSykRq6g12ootYqtQhfyOaT5dFebOtPjcJJE3+NSjV1VPaF0jfZHaRUK63E4c/YAULqys6cso/SYL4GkgNUsl4ohEe6hbbMyRGEkKcA9ummFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lt/XvT3v; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 7 Nov 2024 10:58:17 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731005903;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=oOrEHRshDF9blVgV66yZ84VAGXSGB+VroUL5spNDfyI=;
+	b=lt/XvT3viqqoO4qw155IHqD/uzvQ8lQGEBq4ok96xykQQflmLF+gKGfpOiwZ5o2M+/fmhd
+	Znl3cQI/dA9BGrheuG8Y+SLtTNe+r1c/7gA04JpVWkmMQWGrOdk6Q8Ne0avPzFdgStcKPQ
+	lWqD8OJVLsK7Ers/IZG4RfrL0k+Zk6E=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	muchun.song@linux.dev, akpm@linux-foundation.org, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH 2/2] memcg/hugetlb: Deprecate hugetlb memcg
+ try-commit-cancel charging
+Message-ID: <sb56cs5tsnuwkfkfxvp34o2rt5r4z6b5l4jukrst2htvpvb62l@axbbmg4lpf5l>
+References: <20241106221434.2029328-1-joshua.hahnjy@gmail.com>
+ <20241106221434.2029328-3-joshua.hahnjy@gmail.com>
+ <o7dpwewfztqpkidrhvpdm57ikid4yswygag5gkjplfwdfkl54l@bs6oh2t4jp7z>
+ <CAN+CAwNSMXP-Z5PVL_Q129nN-aP80XB0Y-Sm+C-XdHBinvWoxw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <nlcen6mwyduof423wzfyf3gmvt77uqywzikby2gionpu4mz6za@635i633henks>
+In-Reply-To: <CAN+CAwNSMXP-Z5PVL_Q129nN-aP80XB0Y-Sm+C-XdHBinvWoxw@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
-
-On Thu, Nov 07, 2024 at 07:05:46PM +0100, Michal Koutný wrote:
-...
-> I'd first ask why the kvm_vm_worker_thread needs to be in the KVM task's
-> cgroup (and copy its priority at creation time but no later adjustments)?
+On Thu, Nov 07, 2024 at 01:27:53PM -0500, Joshua Hahn wrote:
+> On Wed, Nov 6, 2024 at 6:50â€¯PM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> >
+> > Please cleanup mem_cgroup_cancel_charge() and mem_cgroup_commit_charge()
+> > as well as there will be no users after this patch.
+> >
 > 
-> If it can remain inside root cgroup (like any other good kthread) its
-> job may be even chunked into periodic/deferred workqueue pieces with no
-> kthread per KVM at all.
-
-That'd be better but I suppose kvm wants them in the same cgroup for a
-reason.
-
-> If there are resource control/charging concerns, I was thinking about
-> the approach of cloning from the KVM task and never returning to
-> userspace, which I see you already discussed with PF_USER_WORKER (based
-> on #1). All context would be regularly inherited and no migration would
-> be needed.
+> Hi Shakeel,
 > 
-> (I remember issues with the kvm_vm_worker_thread surviving lifespan of
-> KVM task and preventing removal of the cgroup. Not sure if that was only
-> a race or there's real need for doing some cleanups on an exited task.)
+> Thank you for your feedback. Unfortunately, it seems like even after this
+> patch removes the references from hugetlb.c, there are still some
+> references from other files.
 > 
-> As for #2, I'm not sure there's a good criterion for what to ignore.
-> Here it could possibly be PF_KTHREAD or PF_NOFREEZE (I get the latter
-> has purpose for system-wide (or v1) freezer). Generally, we can't tell
-> what's the effect of thread's liveliness so it seems better to
-> conservatively treat the cgroup as unfrozen.
+> mem_cgroup_cancel_charge:
+>   - memcontrol-v1.c~__mem_cgroup_clear_mc(void)
 
-It'd have to be a separate flag which explicitly says that the task is
-exempt from cgroup2 freezer, so yeah, it'd be best if we can avoid this
-option.
+__mem_cgroup_clear_mc() is gone. No more reference to
+mem_cgroup_cancel_charge after your patch.
 
-Thanks.
+> 
+> mem_cgroup_commit_charge:
+>   - memcontrol.c~charge_memcg(struct folio *folio, struct mem_cgroup...)
+> 
+> In fact, in my patch, I add an extra call to charge_memcg. I think for this
+> case, it makes sense to just extract out the functionality from
+> mem_cgroup_commit_charge (3 lines) and expand it out inside charge_memcg,
+> and get rid of mem_cgroup_commit_charge.
 
--- 
-tejun
+Yup just inline mem_cgroup_commit_charge into charge_memcg and remove
+mem_cgroup_commit_charge.
+
 
