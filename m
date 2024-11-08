@@ -1,116 +1,183 @@
-Return-Path: <cgroups+bounces-5475-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5476-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72F069C100D
-	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 21:48:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C07409C162B
+	for <lists+cgroups@lfdr.de>; Fri,  8 Nov 2024 06:50:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1BCB0B2337B
-	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2024 20:48:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58C4AB22436
+	for <lists+cgroups@lfdr.de>; Fri,  8 Nov 2024 05:50:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E117218319;
-	Thu,  7 Nov 2024 20:48:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BJzsrIto"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45FF01CF5F4;
+	Fri,  8 Nov 2024 05:50:01 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A86562178E3
-	for <cgroups@vger.kernel.org>; Thu,  7 Nov 2024 20:48:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D7B81CB333;
+	Fri,  8 Nov 2024 05:49:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731012498; cv=none; b=hTl8V0Fd+2TgKtsT96hImkmAcd6bEyOlZAnoYXYYwmj/tXeRciErOJ8/w6RqLzrjRybXumVB3zVcjT2fU4kjk+uyCLZftusHzYYRk9RO/Tu/npJ1dAr/SzD2Z1sDiAEOzMgDp/7Af4S7IBB5XIXminmDlHaedB6udsXeK6HVVqk=
+	t=1731045001; cv=none; b=qgP478Myi7CBjFvx9l1UBLH/GEivaVK7rivnYfCAY25rn8BYO2Er0+0BP2snFuBObIuWX9u4CBMnrV6ekF2Hfjn1V9409zVycJLoQ0gE0O096AFFQnnR3W0zP4TR2XHQ1uDiteci4qp8HfX1suEAp6SeJ6BBWni1y1uQRAU6rpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731012498; c=relaxed/simple;
-	bh=L2JnZy+FpJjZq2hoDPKEQjvM+JNDSZhn7qTteDh5tWc=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=sJ13yhO0oLm5x/lpTqTTN8mu6+tlxTfvIGn/Ydz73bFDvaMhK4kQhyZx2ebEor86RutemHJUYiShKATeTdYsXRehCL647aKsKZCxW0r6wKjcnG8V6yILnpxLpMFsnauwhCFXgac8S+iR4hUCcBeo3IlQ3rDf9tG2vr0XiOM/A2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BJzsrIto; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-e330f65bcd9so2184184276.1
-        for <cgroups@vger.kernel.org>; Thu, 07 Nov 2024 12:48:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1731012496; x=1731617296; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9tgFF/vf8m24mqzX/IMYi9zJNPzKWJ3qSX08ShIAreE=;
-        b=BJzsrIto3s5ikwCRMHSF8x3wyY327ru3E/5+3rP7pPPY3Qu69rNhp0bAvaIUr0/aBf
-         pMZN490nMoRb6qq73qtxtTczc4XHYSzx0cIyMpJtGW25ekytIO7EmpT24V8ewbg9i0kU
-         QpmBCNnsyspc0IuuPqOVPtFzZJTWlLnaGaAeLU2vQ2wF2R/Sg3wVkhb4A0+FezLnP6C+
-         95OmlPULcl5O1CcwId2+KHThlxmrBVwNSwwA6wGFjxDUlJSwTC//WUfCk/cZjyWJP0j6
-         JeENibGLeGcNcVvCpQw6WFrzF4yqTx1U0jfLqULw3fK4JgI9KAz8uquW3IufVw44aWdD
-         QmNg==
+	s=arc-20240116; t=1731045001; c=relaxed/simple;
+	bh=4xR53PDd98NzuHtm+coyCSCBhYZ8NGUQWuYXvFMdskQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eD8SP7VdmJhJS/IgRdpNv9PTvzHSnSXH301X1GRuCi29+P+m25uXIWXH4/e9/L6BhKGMOhhjiOOBVxKVdwsUwq4mFs8Ecbqcub2GUxkWUwBY36EjpaI/kvWR+1iUx/DtDM5EXjuzqHoOfJ89q49HhwdTdeE7FqmBBXFQwrZMhJs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4315abed18aso15432005e9.2;
+        Thu, 07 Nov 2024 21:49:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731012496; x=1731617296;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=9tgFF/vf8m24mqzX/IMYi9zJNPzKWJ3qSX08ShIAreE=;
-        b=RTtAmooaBhSnd5eE4BKxo6Lodnn4wd9RyVP9NCHjgPBSXmOUuXFrlCxd/9bay4AhVk
-         KaxYlThqgRwrR/PRkgMaAYWAcyZ//pB4UOkqdPGIzePB5StSpBfiSWDhaRXXuCha4Bti
-         xyVPWFn3WmTNq2BqnJjEYBxJKd0nFjCqSIuQVFnKwgy1yIRCES2LExK2e3n9T6gY0ouL
-         T9RAKPTdcXVvIS7wdeoiqLNeNBdEUjRmnW5vk1Ks5HZOGUafcZFFCOxuvlxUTijpcYjQ
-         eu7HFlA5qMriZJV/mSnrtn5043nCEwhD+Fw/2/g9UiB5F6WlRTbpIcCmvyX2gnvrgF2T
-         mFGA==
-X-Forwarded-Encrypted: i=1; AJvYcCUHt2eZNn5pRLFasslKaYgsP/LpaKKWVx1VYHq4GGuyblKN0jAWHYNi2SCPKlhgKtt6Td8Q19AD@vger.kernel.org
-X-Gm-Message-State: AOJu0YzF/A0r/NLuniywjT6MlCgo4YEdKPBlm2WCT2D9YaEVFYY6sdxQ
-	MMxO7Ca1P8sLHKNuPIWapZ1v3P2iY1oBS6ffFEwxgX61ckE5GXLPbup61JHopBW2ja9yuOjbN78
-	uyQ==
-X-Google-Smtp-Source: AGHT+IGS34K7Djy3aJITzLWueG1h/SQAZjPBoQvYGi8UH9Cq6cPlMxmMBI4tn55IpfbmvQ570TOXglQxxzg=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:9d:3983:ac13:c240])
- (user=seanjc job=sendgmr) by 2002:a25:c584:0:b0:e0b:f6aa:8088 with SMTP id
- 3f1490d57ef6-e337fd8c39bmr619276.1.1731012495813; Thu, 07 Nov 2024 12:48:15
- -0800 (PST)
-Date: Thu, 7 Nov 2024 12:48:14 -0800
-In-Reply-To: <Zy0M9yv7xIiKB_Xi@slm.duckdns.org>
+        d=1e100.net; s=20230601; t=1731044997; x=1731649797;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yjrFbWx5GMxfzojIwOC1+rm9ruecZ0O8uYiOirOduV4=;
+        b=lk5++fyipn5yUAby0jDAHMsntnxlf1XKhjOVNmAzai+LkW/Wrlk8HWPq+UlEMMcx//
+         J3gBHK+IeilUvik6VQ6KJ9URcFgQWbJPSUgFCB9dsapSMukAe+P6Y1RKtHJt06XBGQ4I
+         2uCfnvEUJJOuhXyiGt7weXvU89Sw1O2JAiLPNoSNP617DCKrgFfAMDNFrPK8gI500L16
+         uCn+RdyxECGYz5VvCBGajq4vaLMs4fr1Jz7qa0iyyOAO9WtnJVjZCdu2NuM5z8hc1TUP
+         DSLw70WEmt9PKChJKidDrwse2lynH7wHhN5LEL5drWm2wsg4bE76XcjSdmkqqpXxoj0Q
+         CWEw==
+X-Forwarded-Encrypted: i=1; AJvYcCW5LDzcjSwQ83GMtGIMkJ3Kg0Puhx7Kn3vTwsjTHI38+3Rf2jWmH4N20dUHxV9z6rstQex2s285@vger.kernel.org, AJvYcCWMEsV2+rbOUnA+8mamXUIcAdVarfgWBKiaJn+/vza86om9pDyuFgYyBrFc1zu4YnZU6paYJNmLoyc/3tH9@vger.kernel.org, AJvYcCX4EcyoryQvFD8Q64u0MTCE5aWTcBz7Ri1o5jDbxM9poUsZngYadubn4OjkMEa5Y1caydAOSh8488uFzZU=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxk8Hw9+47n7PQ1f6zbecPT91UDEpBoR0KKJ9tO+VGQGSvlufVS
+	eRcUqZVWFMTt3n1MGYoRs3jex/GJYM5lwOMOt4bANhoEau8olIc0yGwvbVXeYJk=
+X-Google-Smtp-Source: AGHT+IFzviccxJHzJWJN3Rz0zs35SXPPkUsqbCz5gPgCEJvg2M+bZQVPkHvz/bBLz2AFkrOMflrFOA==
+X-Received: by 2002:a05:6000:470f:b0:37d:5113:cdff with SMTP id ffacd0b85a97d-381f18805c8mr1209692f8f.37.1731044997106;
+        Thu, 07 Nov 2024 21:49:57 -0800 (PST)
+Received: from costa-tp.redhat.com ([2a00:a041:e280:5300:9068:704e:a31a:c135])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-432b05c26e3sm50505655e9.33.2024.11.07.21.49.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Nov 2024 21:49:55 -0800 (PST)
+From: Costa Shulyupin <costa.shul@redhat.com>
+To: ming.lei@redhat.com,
+	Jens Axboe <axboe@kernel.dk>,
+	Waiman Long <longman@redhat.com>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org
+Cc: Costa Shulyupin <costa.shul@redhat.com>
+Subject: [RFC PATCH v1] blk-mq: isolate CPUs from hctx
+Date: Fri,  8 Nov 2024 07:48:30 +0200
+Message-ID: <20241108054831.2094883-3-costa.shul@redhat.com>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <ZyAnSAw34jwWicJl@slm.duckdns.org> <nlcen6mwyduof423wzfyf3gmvt77uqywzikby2gionpu4mz6za@635i633henks>
- <Zy0M9yv7xIiKB_Xi@slm.duckdns.org>
-Message-ID: <Zy0njoaJGS9310eR@google.com>
-Subject: Re: cgroup2 freezer and kvm_vm_worker_thread()
-From: Sean Christopherson <seanjc@google.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: "Michal =?utf-8?Q?Koutn=C3=BD?=" <mkoutny@suse.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Luca Boccassi <bluca@debian.org>, Roman Gushchin <roman.gushchin@linux.dev>, kvm@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu, Nov 07, 2024, Tejun Heo wrote:
-> Hello,
->=20
-> On Thu, Nov 07, 2024 at 07:05:46PM +0100, Michal Koutn=C3=BD wrote:
-> ...
-> > I'd first ask why the kvm_vm_worker_thread needs to be in the KVM task'=
-s
-> > cgroup (and copy its priority at creation time but no later adjustments=
-)?
-> >=20
-> > If it can remain inside root cgroup (like any other good kthread) its
-> > job may be even chunked into periodic/deferred workqueue pieces with no
-> > kthread per KVM at all.
->=20
-> That'd be better but I suppose kvm wants them in the same cgroup for a
-> reason.
+The housekeeping CPU masks, set up by the "isolcpus" and "nohz_full"
+boot command line options, are used at boot time to exclude selected
+CPUs from running some kernel housekeeping subsystems to minimize
+disturbance to latency sensitive userspace applications such as DPDK.
+This options can only be changed with a reboot. This is a problem for
+containerized workloads running on OpenShift/Kubernetes where a
+mix of low latency and "normal" workloads can be created/destroyed
+dynamically and the number of CPUs allocated to each workload is often
+not known at boot time.
 
-Yes.  The one and only user of kvm_vm_create_worker_thread() does non-trivi=
-al
-work on behalf of the VM, and so we want all of the CPU time consumed by th=
-at
-work to be charged to the VM's container, e.g. so that a VM that is generat=
-ing
-a lot of work doesn't negatively impact other VMs on the same host (the amo=
-unt
-of work done is directly affected by how the guest is accessing its memory)=
-.
+Cgroups allow configuring isolated_cpus at runtime.
+However, blk-mq may still use managed interrupts on the
+newly isolated CPUs.
+
+Rebuild hctx->cpumask considering isolated CPUs to avoid
+managed interrupts on those CPUs and reclaim non-isolated ones.
+
+The patch is based on
+isolation: Exclude dynamically isolated CPUs from housekeeping masks:
+https://lore.kernel.org/lkml/20240821142312.236970-1-longman@redhat.com/
+
+Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+---
+ block/blk-mq.c         | 30 ++++++++++++++++++++++++++++++
+ include/linux/blk-mq.h |  1 +
+ kernel/cgroup/cpuset.c |  2 ++
+ 3 files changed, 33 insertions(+)
+
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 12ee37986331..d5786b953d17 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -4145,6 +4145,36 @@ static void blk_mq_map_swqueue(struct request_queue *q)
+ 	}
+ }
+ 
++/**
++ * blk_mq_isolate_cpus() - rebuild hctx->cpumask considering isolated CPUs
++ * to avoid managed interrupts on those CPUs.
++ */
++
++void blk_mq_isolate_cpus(const struct cpumask *isolcpus)
++{
++	struct class_dev_iter iter;
++	struct device *dev;
++
++	class_dev_iter_init(&iter, &block_class, NULL, &disk_type);
++	while ((dev = class_dev_iter_next(&iter))) {
++		struct request_queue *q = bdev_get_queue(dev_to_bdev(dev));
++		struct blk_mq_hw_ctx *hctx;
++		unsigned long i;
++
++		if (!queue_is_mq(q))
++			continue;
++
++		blk_mq_map_swqueue(q);
++		/*
++		 * Postcondition:
++		 * cpumask must not intersect with isolated CPUs.
++		 */
++		queue_for_each_hw_ctx(q, hctx, i)
++			WARN_ON_ONCE(cpumask_intersects(hctx->cpumask, isolcpus));
++	}
++	class_dev_iter_exit(&iter);
++}
++
+ /*
+  * Caller needs to ensure that we're either frozen/quiesced, or that
+  * the queue isn't live yet.
+diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
+index 2035fad3131f..a1f57b5ad46d 100644
+--- a/include/linux/blk-mq.h
++++ b/include/linux/blk-mq.h
+@@ -924,6 +924,7 @@ void blk_freeze_queue_start_non_owner(struct request_queue *q);
+ 
+ void blk_mq_map_queues(struct blk_mq_queue_map *qmap);
+ void blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set, int nr_hw_queues);
++void blk_mq_isolate_cpus(const struct cpumask *isolcpus);
+ 
+ void blk_mq_quiesce_queue_nowait(struct request_queue *q);
+ 
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 5066397899c9..cad17f3f3315 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -41,6 +41,7 @@
+ #include <linux/sched/isolation.h>
+ #include <linux/wait.h>
+ #include <linux/workqueue.h>
++#include <linux/blk-mq.h>
+ 
+ #undef pr_fmt
+ #define pr_fmt(fmt)    "%s:%d: %s " fmt, __FILE__, __LINE__, __func__
+@@ -1317,6 +1318,7 @@ static void update_isolation_cpumasks(bool isolcpus_updated)
+ 		return;
+ 	ret = housekeeping_exlude_isolcpus(isolated_cpus, HOUSEKEEPING_FLAGS);
+ 	WARN_ON_ONCE((ret < 0) && (ret != -EOPNOTSUPP));
++	blk_mq_isolate_cpus(isolated_cpus);
+ }
+ 
+ /**
+-- 
+2.47.0
+
 
