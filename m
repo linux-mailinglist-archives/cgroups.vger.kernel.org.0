@@ -1,183 +1,193 @@
-Return-Path: <cgroups+bounces-5476-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5477-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C07409C162B
-	for <lists+cgroups@lfdr.de>; Fri,  8 Nov 2024 06:50:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A17729C1DFE
+	for <lists+cgroups@lfdr.de>; Fri,  8 Nov 2024 14:29:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58C4AB22436
-	for <lists+cgroups@lfdr.de>; Fri,  8 Nov 2024 05:50:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 978EC1F217B2
+	for <lists+cgroups@lfdr.de>; Fri,  8 Nov 2024 13:29:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45FF01CF5F4;
-	Fri,  8 Nov 2024 05:50:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9043C1EC001;
+	Fri,  8 Nov 2024 13:29:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DEZTbB/2"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D7B81CB333;
-	Fri,  8 Nov 2024 05:49:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9FA71EBA18;
+	Fri,  8 Nov 2024 13:29:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731045001; cv=none; b=qgP478Myi7CBjFvx9l1UBLH/GEivaVK7rivnYfCAY25rn8BYO2Er0+0BP2snFuBObIuWX9u4CBMnrV6ekF2Hfjn1V9409zVycJLoQ0gE0O096AFFQnnR3W0zP4TR2XHQ1uDiteci4qp8HfX1suEAp6SeJ6BBWni1y1uQRAU6rpM=
+	t=1731072557; cv=none; b=j8qw6yM/8z7FIzTt3/mdtcYAhJnnVYIs7NEg8SrwAu9VWXgto9eLXHg99jKkoLcvsJPwovzZSnnKcs4WkLwp3JrdqKUu4TUTC+Q2qffZaBNFklE5gu7ajsAYfIXW4Std//K2A887zlcYNZYfhLKfoTx1PYU7ElpbKa2iYA8otiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731045001; c=relaxed/simple;
-	bh=4xR53PDd98NzuHtm+coyCSCBhYZ8NGUQWuYXvFMdskQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eD8SP7VdmJhJS/IgRdpNv9PTvzHSnSXH301X1GRuCi29+P+m25uXIWXH4/e9/L6BhKGMOhhjiOOBVxKVdwsUwq4mFs8Ecbqcub2GUxkWUwBY36EjpaI/kvWR+1iUx/DtDM5EXjuzqHoOfJ89q49HhwdTdeE7FqmBBXFQwrZMhJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+	s=arc-20240116; t=1731072557; c=relaxed/simple;
+	bh=c30E1/lld3o/ZHf7kUJhQ3IIdEvfGMT4NT58P1RW7lg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=GdNuURPM9+A8mMzSgyPIBeF7PII51+TYj9wB2juMaAcmc+sBa2ERTvdWcTO5JIHS5m++nukPT687hIWMWOa7qY7FENOtAv4rdFs4Sn+ZAe63ZSx2i/LdamgA5tN4WlnwpImQVm8vHN7is+C/bPPvSOZDMgdEGW0p6k9w/nDj5tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DEZTbB/2; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4315abed18aso15432005e9.2;
-        Thu, 07 Nov 2024 21:49:58 -0800 (PST)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-720b2d8bb8dso1532027b3a.1;
+        Fri, 08 Nov 2024 05:29:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731072555; x=1731677355; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ytmxS4QcqOH2tK4MkIoNkfKYtFlgq0b1sTj7YW/3eik=;
+        b=DEZTbB/28KdYHpMZ28T/cmje/QFQ0WSBGmr/fU54qcvPfNEL6ihBg/4k5lyqexMFKz
+         I31fcpc+B/+1WTl+w53fvO464hpCCnAaXI8tftZM54U6lrnZzNWwpKdaHV/KAG18S3Ac
+         MB1Aox3o5HILI6AQrxvqzFSh1PcQhVC1m84i2n/jjEeRf2bFIbsI4IfJx3pBPWawl/P/
+         S1x6nNnl5OUh7DtUp177Cte4YIsCxz8JO2U38gTccZYrXA9AcMOPdfwCYMkeNvTdk5qL
+         bUmNKcGgOgI8NfdeuTPCrNDmRWg1MHnn95K1D/hHSw+z5659MBm2DbJ/cZPsizfssUn9
+         pisQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731044997; x=1731649797;
+        d=1e100.net; s=20230601; t=1731072555; x=1731677355;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=yjrFbWx5GMxfzojIwOC1+rm9ruecZ0O8uYiOirOduV4=;
-        b=lk5++fyipn5yUAby0jDAHMsntnxlf1XKhjOVNmAzai+LkW/Wrlk8HWPq+UlEMMcx//
-         J3gBHK+IeilUvik6VQ6KJ9URcFgQWbJPSUgFCB9dsapSMukAe+P6Y1RKtHJt06XBGQ4I
-         2uCfnvEUJJOuhXyiGt7weXvU89Sw1O2JAiLPNoSNP617DCKrgFfAMDNFrPK8gI500L16
-         uCn+RdyxECGYz5VvCBGajq4vaLMs4fr1Jz7qa0iyyOAO9WtnJVjZCdu2NuM5z8hc1TUP
-         DSLw70WEmt9PKChJKidDrwse2lynH7wHhN5LEL5drWm2wsg4bE76XcjSdmkqqpXxoj0Q
-         CWEw==
-X-Forwarded-Encrypted: i=1; AJvYcCW5LDzcjSwQ83GMtGIMkJ3Kg0Puhx7Kn3vTwsjTHI38+3Rf2jWmH4N20dUHxV9z6rstQex2s285@vger.kernel.org, AJvYcCWMEsV2+rbOUnA+8mamXUIcAdVarfgWBKiaJn+/vza86om9pDyuFgYyBrFc1zu4YnZU6paYJNmLoyc/3tH9@vger.kernel.org, AJvYcCX4EcyoryQvFD8Q64u0MTCE5aWTcBz7Ri1o5jDbxM9poUsZngYadubn4OjkMEa5Y1caydAOSh8488uFzZU=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxk8Hw9+47n7PQ1f6zbecPT91UDEpBoR0KKJ9tO+VGQGSvlufVS
-	eRcUqZVWFMTt3n1MGYoRs3jex/GJYM5lwOMOt4bANhoEau8olIc0yGwvbVXeYJk=
-X-Google-Smtp-Source: AGHT+IFzviccxJHzJWJN3Rz0zs35SXPPkUsqbCz5gPgCEJvg2M+bZQVPkHvz/bBLz2AFkrOMflrFOA==
-X-Received: by 2002:a05:6000:470f:b0:37d:5113:cdff with SMTP id ffacd0b85a97d-381f18805c8mr1209692f8f.37.1731044997106;
-        Thu, 07 Nov 2024 21:49:57 -0800 (PST)
-Received: from costa-tp.redhat.com ([2a00:a041:e280:5300:9068:704e:a31a:c135])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-432b05c26e3sm50505655e9.33.2024.11.07.21.49.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Nov 2024 21:49:55 -0800 (PST)
-From: Costa Shulyupin <costa.shul@redhat.com>
-To: ming.lei@redhat.com,
-	Jens Axboe <axboe@kernel.dk>,
-	Waiman Long <longman@redhat.com>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	linux-block@vger.kernel.org,
+        bh=ytmxS4QcqOH2tK4MkIoNkfKYtFlgq0b1sTj7YW/3eik=;
+        b=ZICZZ3Iqh/LsMHJLh3xrmpzxwbz6P+UVthwBYohZJTy8WGjcdK80xvdeJwIVC/TOtm
+         vaUT0mETERqTsPeb6xpGutKpQuU3Wp0t+2FZLWHBtdP+lYXpcbr9+Qc3IAdCxzpZ9idO
+         dKspEUJ3HNgUiYlGLzGImY/B6+sA4SPlv4op/QJKjb1rUF0cLyx09sTC1XollPZoC1Gd
+         mCR1jIj1MSv6UYf0NzqNawsnlKeTixpGNFZMrZMPB++kP49tZx3BQwk1cGg87E3WxFvP
+         tSN9BEaiu6HblLM1xCQcNeyZW/6PB7tsgr91wkhbWLYK2xENdIGFlnJknqN/g3o4E1sq
+         22DQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWSTsmm6zCGGN5zlziwRd9zACTl8JDwy5s1Rxqyyrc+8zCAI6NoZQXCGYB8Zhv1WY6vnF4KaeUxSu2Hv6Lx@vger.kernel.org, AJvYcCXtJTI943bYo4mOETv38EMLteT6vin4RmvNJLNV123e8SD5FGtBMTntSz4Teg3U1mt70vtuMvpo@vger.kernel.org
+X-Gm-Message-State: AOJu0YxQR7IUmV1s346RhJAA5JeCekDOl7oLtJb7bITF2D0BpFeeUZ0v
+	U+F2LqTFmO0zmLmQuJoi1Nb/yOklTKM1TIrm6x/aRwE6F3SHDv4p
+X-Google-Smtp-Source: AGHT+IFCHrupnA9dGQ3nTX/CJT4uBx1j1t/FKeaGHa4H42gUeFgoHNvWLX+AAGqRwueMnpMHfwVMxw==
+X-Received: by 2002:a05:6a21:1690:b0:1d9:aa1:23e3 with SMTP id adf61e73a8af0-1dc22b664d3mr4031210637.32.1731072555057;
+        Fri, 08 Nov 2024 05:29:15 -0800 (PST)
+Received: from localhost.localdomain ([183.193.178.50])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724078ce169sm3642561b3a.86.2024.11.08.05.29.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 08 Nov 2024 05:29:14 -0800 (PST)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: mingo@redhat.com,
+	peterz@infradead.org
+Cc: juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	mgorman@suse.de,
+	vschneid@redhat.com,
+	hannes@cmpxchg.org,
+	surenb@google.com,
+	cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org
-Cc: Costa Shulyupin <costa.shul@redhat.com>
-Subject: [RFC PATCH v1] blk-mq: isolate CPUs from hctx
-Date: Fri,  8 Nov 2024 07:48:30 +0200
-Message-ID: <20241108054831.2094883-3-costa.shul@redhat.com>
-X-Mailer: git-send-email 2.47.0
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v5 0/4] sched: Fix missing irq time when CONFIG_IRQ_TIME_ACCOUNTING is enabled 
+Date: Fri,  8 Nov 2024 21:29:00 +0800
+Message-Id: <20241108132904.6932-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The housekeeping CPU masks, set up by the "isolcpus" and "nohz_full"
-boot command line options, are used at boot time to exclude selected
-CPUs from running some kernel housekeeping subsystems to minimize
-disturbance to latency sensitive userspace applications such as DPDK.
-This options can only be changed with a reboot. This is a problem for
-containerized workloads running on OpenShift/Kubernetes where a
-mix of low latency and "normal" workloads can be created/destroyed
-dynamically and the number of CPUs allocated to each workload is often
-not known at boot time.
+After enabling CONFIG_IRQ_TIME_ACCOUNTING to track IRQ pressure in our
+container environment, we encountered several user-visible behavioral
+changes:
 
-Cgroups allow configuring isolated_cpus at runtime.
-However, blk-mq may still use managed interrupts on the
-newly isolated CPUs.
+- Interrupted IRQ/softirq time is excluded in the cpuacct cgroup
 
-Rebuild hctx->cpumask considering isolated CPUs to avoid
-managed interrupts on those CPUs and reclaim non-isolated ones.
+  This breaks userspace applications that rely on CPU usage data from
+  cgroups to monitor CPU pressure. This patchset resolves the issue by
+  ensuring that IRQ/softirq time is included in the cgroup of the
+  interrupted tasks.
 
-The patch is based on
-isolation: Exclude dynamically isolated CPUs from housekeeping masks:
-https://lore.kernel.org/lkml/20240821142312.236970-1-longman@redhat.com/
+- getrusage(2) does not include time interrupted by IRQ/softirq
 
-Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
----
- block/blk-mq.c         | 30 ++++++++++++++++++++++++++++++
- include/linux/blk-mq.h |  1 +
- kernel/cgroup/cpuset.c |  2 ++
- 3 files changed, 33 insertions(+)
+  Some services use getrusage(2) to check if workloads are experiencing CPU
+  pressure. Since IRQ/softirq time is no longer included in task runtime,
+  getrusage(2) can no longer reflect the CPU pressure caused by heavy
+  interrupts.
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 12ee37986331..d5786b953d17 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -4145,6 +4145,36 @@ static void blk_mq_map_swqueue(struct request_queue *q)
- 	}
- }
- 
-+/**
-+ * blk_mq_isolate_cpus() - rebuild hctx->cpumask considering isolated CPUs
-+ * to avoid managed interrupts on those CPUs.
-+ */
-+
-+void blk_mq_isolate_cpus(const struct cpumask *isolcpus)
-+{
-+	struct class_dev_iter iter;
-+	struct device *dev;
-+
-+	class_dev_iter_init(&iter, &block_class, NULL, &disk_type);
-+	while ((dev = class_dev_iter_next(&iter))) {
-+		struct request_queue *q = bdev_get_queue(dev_to_bdev(dev));
-+		struct blk_mq_hw_ctx *hctx;
-+		unsigned long i;
-+
-+		if (!queue_is_mq(q))
-+			continue;
-+
-+		blk_mq_map_swqueue(q);
-+		/*
-+		 * Postcondition:
-+		 * cpumask must not intersect with isolated CPUs.
-+		 */
-+		queue_for_each_hw_ctx(q, hctx, i)
-+			WARN_ON_ONCE(cpumask_intersects(hctx->cpumask, isolcpus));
-+	}
-+	class_dev_iter_exit(&iter);
-+}
-+
- /*
-  * Caller needs to ensure that we're either frozen/quiesced, or that
-  * the queue isn't live yet.
-diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
-index 2035fad3131f..a1f57b5ad46d 100644
---- a/include/linux/blk-mq.h
-+++ b/include/linux/blk-mq.h
-@@ -924,6 +924,7 @@ void blk_freeze_queue_start_non_owner(struct request_queue *q);
- 
- void blk_mq_map_queues(struct blk_mq_queue_map *qmap);
- void blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set, int nr_hw_queues);
-+void blk_mq_isolate_cpus(const struct cpumask *isolcpus);
- 
- void blk_mq_quiesce_queue_nowait(struct request_queue *q);
- 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 5066397899c9..cad17f3f3315 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -41,6 +41,7 @@
- #include <linux/sched/isolation.h>
- #include <linux/wait.h>
- #include <linux/workqueue.h>
-+#include <linux/blk-mq.h>
- 
- #undef pr_fmt
- #define pr_fmt(fmt)    "%s:%d: %s " fmt, __FILE__, __LINE__, __func__
-@@ -1317,6 +1318,7 @@ static void update_isolation_cpumasks(bool isolcpus_updated)
- 		return;
- 	ret = housekeeping_exlude_isolcpus(isolated_cpus, HOUSEKEEPING_FLAGS);
- 	WARN_ON_ONCE((ret < 0) && (ret != -EOPNOTSUPP));
-+	blk_mq_isolate_cpus(isolated_cpus);
- }
- 
- /**
+This patchset addresses the first issue, which is relatively
+straightforward. Once this solution is accepted, I will address the second
+issue in a follow-up patchset.
+
+Enabling CONFIG_IRQ_TIME_ACCOUNTING results in the CPU
+utilization metric excluding the time spent in IRQs. This means we
+lose visibility into how long the CPU was actually interrupted in
+comparison to its total utilization. Currently, the only ways to
+monitor interrupt time are through IRQ PSI or the IRQ time recorded in
+delay accounting. However, these metrics are independent of CPU
+utilization, which makes it difficult to combine them into a single,
+unified measure
+
+CPU utilization is a critical metric for almost all workloads, and
+it's problematic if it fails to reflect the full extent of system
+pressure. This situation is similar to iowait: when a task is in
+iowait, it could be due to other tasks performing I/O. It doesn’t
+matter if the I/O is being done by one of your tasks or by someone
+else's; what matters is that your task is stalled and waiting on I/O.
+Similarly, a comprehensive CPU utilization metric should reflect all
+sources of pressure, including IRQ time, to provide a more accurate
+representation of workload behavior.
+
+One of the applications impacted by this issue is our Redis load-balancing
+service. The setup operates as follows:
+
+                   ----------------
+                   | Load Balancer|
+                   ----------------
+                /    |      |        \
+               /     |      |         \ 
+          Server1 Server2 Server3 ... ServerN
+
+Although the load balancer's algorithm is complex, it follows some core
+principles:
+
+- When server CPU utilization increases, it adds more servers and deploys
+  additional instances to meet SLA requirements.
+- When server CPU utilization decreases, it scales down by decommissioning
+  servers and reducing the number of instances to save on costs.
+
+The load balancer is malfunctioning due to the exclusion of IRQ time from
+CPU utilization calculations.
+
+Changes:
+v4->v5:
+- Don't use static key in the IRQ_TIME_ACCOUNTING=n case (Peter)
+- Rename psi_irq_time to irq_time (Peter)
+- Use CPUTIME_IRQ instead of CPUTIME_SOFTIRQ (Peter)
+
+v3->v4: https://lore.kernel.org/all/20241101031750.1471-1-laoar.shao@gmail.com/
+- Rebase
+
+v2->v3:
+- Add a helper account_irqtime() to avoid redundant code (Johannes)
+
+v1->v2: https://lore.kernel.org/cgroups/20241008061951.3980-1-laoar.shao@gmail.com/
+- Fix lockdep issues reported by kernel test robot <oliver.sang@intel.com>
+
+v1: https://lore.kernel.org/all/20240923090028.16368-1-laoar.shao@gmail.com/
+
+
+
+Yafang Shao (4):
+  sched: Define sched_clock_irqtime as static key
+  sched: Don't account irq time if sched_clock_irqtime is disabled
+  sched, psi: Don't account irq time if sched_clock_irqtime is disabled
+  sched: Fix cgroup irq time for CONFIG_IRQ_TIME_ACCOUNTING
+
+ kernel/sched/core.c    | 77 +++++++++++++++++++++++++++++-------------
+ kernel/sched/cputime.c | 16 ++++-----
+ kernel/sched/psi.c     | 11 ++----
+ kernel/sched/sched.h   | 15 +++++++-
+ kernel/sched/stats.h   |  7 ++--
+ 5 files changed, 81 insertions(+), 45 deletions(-)
+
 -- 
-2.47.0
+2.43.5
 
 
