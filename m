@@ -1,144 +1,145 @@
-Return-Path: <cgroups+bounces-5483-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5484-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 237269C254D
-	for <lists+cgroups@lfdr.de>; Fri,  8 Nov 2024 20:02:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1D959C2701
+	for <lists+cgroups@lfdr.de>; Fri,  8 Nov 2024 22:29:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDD7A1F25914
-	for <lists+cgroups@lfdr.de>; Fri,  8 Nov 2024 19:02:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3C26282E49
+	for <lists+cgroups@lfdr.de>; Fri,  8 Nov 2024 21:29:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63104233D86;
-	Fri,  8 Nov 2024 19:02:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FC811E0489;
+	Fri,  8 Nov 2024 21:29:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b="TLUeNCbH"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tu6CS6UU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38CE3233D80
-	for <cgroups@vger.kernel.org>; Fri,  8 Nov 2024 19:02:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67218199E89;
+	Fri,  8 Nov 2024 21:29:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731092566; cv=none; b=UMjOjPjLxbtP6f+t1z1fgLwkoSzGpiNzV3M09fIXph8y+LOpM2GXeW7eUKqHHHWH7QJNLL7sGWIpoDASNJLcdSPfS+d2UfM1aZf2ArO1N5yzuC8H9G9FuCWdfhs3yoarbZ6S/26/04cVC02krpe70ymC4Ky4/pxb6I49b9hxgVA=
+	t=1731101389; cv=none; b=bto4rN7J7y8o4WSa30qYFCUIwK5eJMib1xcO9t1cnOrK/qOeN8cuP4lXv+6E5ozIoVGoxEcsmyuCWl++ewoSFdeQNcZgN3srHr9e5xqAqNBNCR7e5nOzdT83+6lFP+Yv5tc84Z0ZlgYKZ9aMlUBF4GTPI3UIoCipQIL/Yaf3xfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731092566; c=relaxed/simple;
-	bh=J3Z26vWJ0Ua0F35/x/+Ws2PE3zLemr5ygJ/FVE2QBG8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LDZJ2KpDzKxNu8aWAJHpNXEYV6AqYFt75UnasyU+jymUlbbKsK796u1T0EkjjW03H1y5fwfpT87QB/vXUB7aXyHoHQkerygPHG3or0bb4WC9zp6cbUcyBuHzcOwE/hL3ncnVKaMSBqKv0e9vTasMpS55eydG0bUeQYdlckLFOY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu; spf=pass smtp.mailfrom=andrew.cmu.edu; dkim=pass (2048-bit key) header.d=cs.cmu.edu header.i=@cs.cmu.edu header.b=TLUeNCbH; arc=none smtp.client-ip=209.85.219.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cs.cmu.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=andrew.cmu.edu
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-6d18dff41cdso14539696d6.0
-        for <cgroups@vger.kernel.org>; Fri, 08 Nov 2024 11:02:41 -0800 (PST)
+	s=arc-20240116; t=1731101389; c=relaxed/simple;
+	bh=fUGnG+U391rhvKc9ZaaOxUVTkfaVIFyXHg0gcdzzQo8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qsN2wFiEaTiw41vCgoHKTP0kgibTZq1hsKfD2Ne1Aq6y9lUxiJUCn1+PFSisuk+XYhWUa5CX423R2GlLc1TPCK7vxZqCsflyNESvUj88Fj+PLQhsz8WTPgNBTmWScDyN0g5/1pl6ueS258vP5ljFvgdzICmsqq4jS4nLZxxf/00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tu6CS6UU; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-e2bd7d8aaf8so2705591276.3;
+        Fri, 08 Nov 2024 13:29:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.cmu.edu; s=google-2021; t=1731092561; x=1731697361; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=81ZMx+RGiqmljfOo8CBnJJ2cfz2vJRL0QuZfzXnhKEw=;
-        b=TLUeNCbHUdcjbKj2p5y+x08tADtkqIb5U1w99nbPbRQT1+mw+dwrwM00Eo3x+REYjl
-         YXomRjRjTkaIglhNfAi1PpY4SrhPDSSCEYbppaVr12kHWLJiAMujduxGnLBnwPMi5Pag
-         6s0KRU0BhKJdTI2u729X4NNf7as5a9BUY1F0Wcg4bOSKfB0DU+KxX1gqGC7nlurQxrY5
-         w8Yf1MYWBvuAhXjvtQRm9rvP/ReyTLvrnCr3sqB51+bJaVbEXaVEUm+EgICo40T0ixZD
-         W3Tw6YqUJELyEtlLk8dNjdkPZoDuCQcRiA/H8j7Q2eFLZ1pF4ZN8EZzoioXFtlxGWDsl
-         DBsw==
+        d=gmail.com; s=20230601; t=1731101387; x=1731706187; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oMoVwyKx9EibI93AzasoaRWiT17pCAJ8KSTbCwA4rwI=;
+        b=Tu6CS6UUzK5Kfa4aC9H/oQAm3VsxQASLwg6CePcAa+VLRBD9oSdvgUzhpQnlS3RpPi
+         e8n0A17zu0iYIE05PBvR5G+sjvzbLJCIqFFEhleDbzdeF0C9StVWaa/zdSO7Nsz0dJSh
+         aTVRvXh0+Avuev8VFarRwUNB2HR1v/1gA4bUJU+BS3fMTtt4l/SAD5H1JeXevD5GF7aV
+         ZJy1bf+YcDOOY3Q+wbdHSZq+9uORCk1uU74LgeQ8oslvh22i+RVLvg7xLEU7uAMxD2+c
+         cNlKMCY0jKjSxwYcMkixu9fsHvkEE/alKND727ggrmfHW737XvXGYsZxaWaL/p0QVNvX
+         FKcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731092561; x=1731697361;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=81ZMx+RGiqmljfOo8CBnJJ2cfz2vJRL0QuZfzXnhKEw=;
-        b=PLnrwEjtwFCsILjxDYATvPXhCYSeWztcEZ/nTxEheHLMLk+0Du2M4EUoH4tHRwqe2e
-         Yy5xm/itDwjsSt/LRBjadEq9uIqOoQHnmurfUnLcAKssfJxdA6aRjVxAn4igw7OIR85k
-         ScyEPfoxaVsvsaMR9z32hLtzmmW+KpbliiMR5RF65koKZh84CeIZEnRRhAfVghngTpLw
-         ahp/JGto/a7NwBY9E1a03Nc4YY4Y6poJFB1AAPDdmvwuh+UC9jmll7MbdkrbU4BeoDqB
-         0CmaT3NDuOQM5bmiv5OEtHMJRLje4gOBA3nKqWgJj3jHOBFfj+/L6BvPm9cRw2RJ8lFo
-         2/OQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWTSaETR6Ak8uNKin0MhOMovU9Szec1L5OYNCOLXBqhi26OE3wRCBIrT/T+yqvMj54khnyr2mwX@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzm5eShgl9eTUkbVcGfGdg3DzqGHB/ZgRK5f3r8bLDbUOaJkXRR
-	Tey6/KdoKcLVmCLx7XXqyTsiELEXUG9BsW5UTXXRsDBdNIzEoiAmbLt9ILeEQQ==
-X-Google-Smtp-Source: AGHT+IFXvTD+JCQH3xCv42hH5FsEM2PDtDsiGfaxLcdpCYJgiL0EpAKzrCx6enhhTbUIpMOoZ64rbg==
-X-Received: by 2002:a05:6214:5d8c:b0:6d1:8755:5cbe with SMTP id 6a1803df08f44-6d39e166ce0mr47184606d6.8.1731092561074;
-        Fri, 08 Nov 2024 11:02:41 -0800 (PST)
-Received: from localhost (pool-74-98-231-160.pitbpa.fios.verizon.net. [74.98.231.160])
-        by smtp.gmail.com with UTF8SMTPSA id 6a1803df08f44-6d3961df2desm22447296d6.21.2024.11.08.11.02.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Nov 2024 11:02:40 -0800 (PST)
-From: kaiyang2@cs.cmu.edu
-To: linux-mm@kvack.org,
-	cgroups@vger.kernel.org
-Cc: roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
+        d=1e100.net; s=20230601; t=1731101387; x=1731706187;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oMoVwyKx9EibI93AzasoaRWiT17pCAJ8KSTbCwA4rwI=;
+        b=sft8Fgcg+3Q/kqXCodzkzmNH12Hiy0u/kevEAwDuAEaT8BnPBpMV0M6W1Jt7UIqnZr
+         GLmON8tdBEJMlMbZIX5ZsrPPk1RPwX5qsI0E0g2s84siDQBiXLS5kzWWQw0Hb61Zh4aW
+         /YIgyG8KudHgKz2IPdlJAXfQi3yOeO+5URHpfuPpjCRizYdOUUBhx1rJEjHRi7bUZLLr
+         f3PjtrRh371c4O6ggnO5cEz1Xg+K7KNMLPZoHGRwQJwZxoceQVM5QNKbzLy4NOo1atp1
+         msBAzd2ImHVTwNaREy0NnBFIMZyM37CudeOGMEpQEDvtLpnT1gLxA1TjLajsQuwvySKG
+         qstQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUrUlPxydRYIHqfkcOdac/CKSg1Bqcq3Y4i+jrXFYmk1allKUEbMVccIi6MvtSLm4ETT2+UqTcbCEl2d+fP@vger.kernel.org, AJvYcCXInhhbRsMWQXXXPwuzTU8EJBnTIftcVGklnnJvoYxRzC+dmPtpf1yJpkZ9c8cY6bJhJbViFwdW@vger.kernel.org
+X-Gm-Message-State: AOJu0YxOGMVimBzrAZGY+zqpgsCeMKnb1p/OpDz2U38O2u/lIp9AISG3
+	+1Zo+08zxE9ypPle9WGgjVGOkqRja1Y4SpFkkErP6z6OBUaGbDKiZGw/QA==
+X-Google-Smtp-Source: AGHT+IHwMeuH9AhWabEeGAZIaMw/d1MyU/3YuOvKGu/9O7X4oRAyW6t81YL0CaXeGHwWDLTrTna9RQ==
+X-Received: by 2002:a05:690c:7282:b0:6ea:47cb:c870 with SMTP id 00721157ae682-6eadde44dd0mr57163067b3.33.1731101387352;
+        Fri, 08 Nov 2024 13:29:47 -0800 (PST)
+Received: from localhost (fwdproxy-frc-013.fbsv.net. [2a03:2880:21ff:d::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6eaceb9025fsm8615747b3.130.2024.11.08.13.29.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Nov 2024 13:29:46 -0800 (PST)
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+To: shakeel.butt@linux.dev
+Cc: hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
 	muchun.song@linux.dev,
 	akpm@linux-foundation.org,
-	mhocko@kernel.org,
-	nehagholkar@meta.com,
-	abhishekd@meta.com,
-	hannes@cmpxchg.org,
-	weixugc@google.com,
-	rientjes@google.com,
-	gourry@gourry.net,
-	Kaiyang Zhao <kaiyang2@cs.cmu.edu>
-Subject: Re: [RFC PATCH 0/4] memory tiering fairness by per-cgroup control of promotion and demotion
-Date: Fri,  8 Nov 2024 19:01:51 +0000
-Message-ID: <20241108190152.3587484-1-kaiyang2@cs.cmu.edu>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240920221202.1734227-1-kaiyang2@cs.cmu.edu>
-References: 
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: [PATCH 0/3] memcg/hugetlb: Rework memcg hugetlb charging
+Date: Fri,  8 Nov 2024 13:29:43 -0800
+Message-ID: <20241108212946.2642085-1-joshua.hahnjy@gmail.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Kaiyang Zhao <kaiyang2@cs.cmu.edu>
+This series cleans up memcg's hugetlb charging logic by deprecating the
+current memcg hugetlb try-charge + {commit, cancel} logic present in
+alloc_hugetlb_folio. A single function mem_cgroup_charge_hugetlb takes
+its place instead. This makes the code more maintainable by simplifying
+the error path and reduces memcg's footprint in hugetlb logic.
 
-Adding some performance results from testing on a *real* system with CXL memory
-to demonstrate the values of the patches.
+This patch introduces a few changes in the hugetlb folio allocation
+error path:
+(a) Instead of having multiple return points, we consolidate them to
+    two: one for reaching the memcg limit or running out of memory
+    (-ENOMEM) and one for hugetlb allocation fails / limit being
+    reached (-ENOSPC).
+(b) Previously, the memcg limit was checked before the folio is acquired,
+    meaning the hugeTLB folio isn't acquired if the limit is reached.
+    This patch performs the charging after the folio is reached, meaning
+    if memcg's limit is reached, the acquired folio is freed right away.
 
-The system has 256GB local DRAM + 64GB CXL memory. We stack two workloads
-together in two cgroups. One is a microbenchmark that allocates memory and
-accesses it at tunable hotness levels. It allocates 256GB of memory and
-accesses it in sequential passes with a very hot access pattern (~1 second per
-pass). The other workload is 64 instances of 520.omnetpp_r from SPEC CPU 2017,
-which uses about 14GB of memory in total. We apply memory bandwidth limits (1
-Gbps memory bandwidth per logical core) and LLC contention mitigation by
-setting cpuset for each cgroup.
+This patch builds on two earlier patch series: [2] which adds memcg
+hugeTLB counters, and [3] which deprecates charge moving and removes the
+last references to mem_cgroup_cancel_charge. The request for this cleanup
+can be found in [2].
 
-Case 1: omnetpp running without the microbenchmark.
-It is able to use all local memory and without resource contention. This is
-the optimal case.
-Avg rate reported by SPEC= 84.7
+Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
+Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
 
-Case 2: Running two workloads stacked without the fairness patches and start
-the microbenchmark first.
-Avg= 62.7 (-25.9%)
+[1] https://lore.kernel.org/all/20231006184629.155543-1-nphamcs@gmail.com/
+[2] https://lore.kernel.org/all/20241101204402.1885383-1-joshua.hahnjy@gmail.com/
+[3] https://lore.kernel.org/linux-mm/20241025012304.2473312-1-shakeel.butt@linux.dev/
 
-Case 3: Set memory.low = 19GB for both workloads This is enough memory local
-low protection for the entire memory usage of omnetpp.
-Avg = 75.3 (-11.1%)
-Analysis: omnetpp still uses significant CXL memory (up to 3GB) by the time it
-finishes because the hint faults for it only triggers for a few seconds in the
-~20 minute runtime. Due to the short runtime of the workload and how tiering
-currently works, it finishes before the memory usage converges to the point
-where all its memory use is local. However, this still represents a significant
-improvement over case 2.
+---
+Changelog
+v2:
+  * Removed declaration of memcg_accounts_hugetlb from memcontrol.h
+  * Moved second call to memcg_accounts_hugetlb from 2nd patch to 1st
+  * Changed error behavior in alloc_hugetlb_folio: v1 included a bug
+    that uncharged hugetlb_cgroup twice when memecg's limit was reached
+  * mem_cgroup_charge_hugetlb no longer called with hugetlb_lock held
+  * Moved mem_cgroup_hugetlb_{try, charge} deprecation to patch 3
+  * mem_cgroup_charge_hugetlb always decrements memcg's refcount
+  * Fully cleaned up mem_cgroup_{cancel,commit}_charge
+  * Fixed typos
+Joshua Hahn (3):
+  memcg/hugetlb: Introduce memcg_accounts_hugetlb
+  memcg/hugetlb: Introduce mem_cgroup_charge_hugetlb
+  memcg/hugetlb: Deprecate memcg hugetlb try-commit-cancel protocol
 
-Case 4: Set memory.low = 19GB for both workloads. Set memory.high = 257GB for
-the microbenchmark. 
-Avg= 84.0 (<1% difference with case 1)
-Analysis: by setting both memory.low and memory.high, the usage of local memory
-is essentially provisioned for the microbenchmark. Therefore, even if the
-microbenchmark starts first, when omnetpp starts it can get all local memory
-from the very beginning and achieve near non-colocated performance.
+ include/linux/memcontrol.h | 22 +---------
+ mm/hugetlb.c               | 34 +++++----------
+ mm/memcontrol.c            | 89 +++++++++++++-------------------------
+ 3 files changed, 43 insertions(+), 102 deletions(-)
 
-We’re working on getting performance data from Meta’s production workloads.
-Stay tuned for more results.
- 
+-- 
+2.43.5
+
 
