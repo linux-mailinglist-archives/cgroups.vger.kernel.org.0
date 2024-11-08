@@ -1,320 +1,258 @@
-Return-Path: <cgroups+bounces-5481-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5482-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B050D9C1E14
-	for <lists+cgroups@lfdr.de>; Fri,  8 Nov 2024 14:30:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A2889C2004
+	for <lists+cgroups@lfdr.de>; Fri,  8 Nov 2024 16:06:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BD5F1F2133B
-	for <lists+cgroups@lfdr.de>; Fri,  8 Nov 2024 13:30:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EA05283F1E
+	for <lists+cgroups@lfdr.de>; Fri,  8 Nov 2024 15:06:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEB8D1F1319;
-	Fri,  8 Nov 2024 13:29:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 678111F4706;
+	Fri,  8 Nov 2024 15:06:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MKJqoFqm"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="hlW+7xSn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2083.outbound.protection.outlook.com [40.107.244.83])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE3521F1308;
-	Fri,  8 Nov 2024 13:29:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731072581; cv=none; b=pMYNsh37S0Qoyh+J5Uh8hzCyGZUde3JlW00cGRKneBFUVZRiJWZNEMZ1VOCJKdxKHERX23/80kaqApKahFrRfMqKha6JRqL+NVq31JstsmbX+jOvr5h0CVeVxRI3SchWe6H+a5e2a3vLJmWdq9Th9B3SkQ1PbZXyB6XqA6Z9CQ4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731072581; c=relaxed/simple;
-	bh=p4IdLRBAI4i4tclu8JnMt2nvytFeCZIaKF2dwGdnWjk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JnJanf+SwHxhQzuSoO0XHs6NGJw1kdMRKpCmjFQKLGZ2n2z9Cg5vkby0Jo7fntxiXMpIS2Si+A0uClHY4UJD0QWgefl99fKGpz+XCFXQrPEh1HkCNE53QOhz7dkcDQhyp5d63NJ3uhF3+WoPkv//TzTlv4PlEi3qMa7+qDU3uzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MKJqoFqm; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-720c2db824eso2208883b3a.0;
-        Fri, 08 Nov 2024 05:29:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731072579; x=1731677379; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Qwj397Wxnt9kp22qzTuTHo57hB6xPUyU9ek/jjGs02U=;
-        b=MKJqoFqm5u/qjZKuKqRkjfCE1NeVt1Iy1OM8iSYsEPzIqLfJUfMQegFIZw2FwVTgkA
-         2y3+4reGpWnLH1UEFqPudFmsscdLlU2IKw178VI0vGKwPKhfNxufJwc9FRS4c3e/9kai
-         cBMMLDzLHTsl8mfnevHLBZ3sFkCV21JVqSTD9SjlhrMUUl4zA0JySgLCX9hScHE+C8TC
-         weCUnvkQ2zoE2aJdjLjeLF6JMg6p9W4zfdh5+JiDvJvoM1hT7LgJF7933WrVRNwFSVRQ
-         M7HeMIv2fvzX+oZwE4OPzLLSADwkmGBX8wW8FQai/iSoh5bTqygk9QmFWG5MDlNJaA6L
-         uePg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731072579; x=1731677379;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Qwj397Wxnt9kp22qzTuTHo57hB6xPUyU9ek/jjGs02U=;
-        b=lHwyXHcCH+nPVozLevyVECz8wogNjvYBV7EGsf9ByzvDY/y7NwOxNXPTvxcMyiDiZ/
-         4tCvpMzT4tI37uSHINyZs3ncck/zeMeW7d7Ol48NZyxXVn9QFLkhdQULwSPzEvMcssJB
-         QlhsZMCEAWT2ZVZ4TU3wSn0gO0zC9/5PEqdYaEEJ3+yMA8YCrzV5MxYuyj3FZu6CzNSA
-         DnL5vDRj8DerSCIa3Iw1tx3IAPngOyQet3XiC62hMhQKvH/pH3cqlhadRAjX0/zjGvSY
-         CLE73cegBPVUKLXC9985+Jk/W165uFXvXnGwKpaEh8nwtyMMXM3gPybd8rPY8jMTqFaG
-         0HxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWg4N+vFcDBI5x3V8Zuji5a+B0brsnupNdcMcggGa15UOvgF2u7tRQYa4HxiQt3CZHR49kZQ+DM@vger.kernel.org, AJvYcCXzlq9SOuxztLl0j7YU80hw37S3kFD8z6pG1Rza4+4UGiq+uBVFMfjRgq90eKcNpX4cS0VGwSAUvc1zo4ws@vger.kernel.org
-X-Gm-Message-State: AOJu0YxEafUF0NapGLFaaq2qjM47GL12lDwyArDJr9y1Aqr767ux4x87
-	mQUiR1WuW3Q2wMbvP/kyFlDuDm/aNeemSrrredLCfil2ntMdiAqs
-X-Google-Smtp-Source: AGHT+IFUDoeABPnImbn3piDnHO/WytS+iVznYw2BlqmngWWX5JNqpLZU6n/owlQl3ABz7QXviJwloA==
-X-Received: by 2002:a05:6a00:1307:b0:71e:6728:72d5 with SMTP id d2e1a72fcca58-724132c1a44mr3850160b3a.15.1731072579060;
-        Fri, 08 Nov 2024 05:29:39 -0800 (PST)
-Received: from localhost.localdomain ([183.193.178.50])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724078ce169sm3642561b3a.86.2024.11.08.05.29.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 08 Nov 2024 05:29:38 -0800 (PST)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: mingo@redhat.com,
-	peterz@infradead.org
-Cc: juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com,
-	mgorman@suse.de,
-	vschneid@redhat.com,
-	hannes@cmpxchg.org,
-	surenb@google.com,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v5 4/4] sched: Fix cgroup irq time for CONFIG_IRQ_TIME_ACCOUNTING
-Date: Fri,  8 Nov 2024 21:29:04 +0800
-Message-Id: <20241108132904.6932-5-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-In-Reply-To: <20241108132904.6932-1-laoar.shao@gmail.com>
-References: <20241108132904.6932-1-laoar.shao@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F60A1D0400
+	for <cgroups@vger.kernel.org>; Fri,  8 Nov 2024 15:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.83
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1731078391; cv=fail; b=K1ZQJdzrYk0VMwX+2iBpPJVsQLuz9vFRXssUZbCzeg5GtfU/2MwE9rpCcvIYCcKkTqLY1YImCubc1bcd7xUY68mpkdcNa2tm03UY9d4aStKeT8DptVYxDBqsR/xToryvViIbwXUsn7k1pOS53f9r3JyXVWQZbmDBGVxOFN+22/g=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1731078391; c=relaxed/simple;
+	bh=Q41W6tpbVhdSCHKqH7igVdyAOcj8GDXDOHJu+vJr4A4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=d5phHZjxgRLUg+bUSq8OboazniJ+DtBftlIfx9KUTH2iPwc7Gh2qBCFFU+5Zt7fFmA/XOcjV60GUsF60BXB8osmQ0Lev9GIU7MN+iWemH9nqdrNgZW9JMKxvCGOyX4CahYcLu7xe/4LPW+4Joj5msPIKHtqC3ko/BT6U2jmOEAo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=hlW+7xSn; arc=fail smtp.client-ip=40.107.244.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=ELBEjeTxpjBbXnWwVX2XdI6DL8L0oxku7wGnbY8c/rxyp/H+wrRGx1L9nto/qkFEzDq/hUeTZD7qypieBkpSgzmfdx9z3O3/I+2zhLBWUtlvyLi6pLQA8V6wNLjKexHq5tSydI4IM6p8UereRgGrqLT2Cmj5+7Vd0kCnN4gXr1XQeNVaviqSywXp5R721BKBrKZHoQy+JATnNMFjwV9jW5PV2dLZbFemVZReRBsZ8fPTKHzdHpmxSs5FqxDcC34wIieJaTfMOU6ZtgF02UO5CRT2NtqCpVEqsqtAst+stDBEWSBxqsZDV+dHzv2UbjzQAyVB3YIT1mbxJGRfVOg97A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IFeVaG3uGKI6DpxQBvXve0iBOzk7f55IoxByTrJ+Lqw=;
+ b=iXpmU38JiYkT6h+sxjk+ej84uqRTx8I8LBRWwjDEoWNU1a5OC6C/eCpnWLXeqba37ON56Xv7NNbjnkNLtbG3ZU4YVItSRmq7TyHrDc9EAMiopujSTVNnicpbpQ3bqs4kUjK930s/P30+Y1qKO2xErV0h7vcOMyrS9XHuL8So1w7hfXStab0tTCFgoxkzayqC14rqTNvfiJtF+pHbvJkhYz42hmzHJ6z0zsOBah1mFc3UXOzAFZBTL6EY0NsnH6tTKZjSEsValP36vKODneO90ldo+XhwLtuoMbkfLFtiOMHzGpLCkUZK5m5s5VQPOWsu6AzMaZrvI+tsp88jH3R8kQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IFeVaG3uGKI6DpxQBvXve0iBOzk7f55IoxByTrJ+Lqw=;
+ b=hlW+7xSn36oNwpUkq36SkJwZetVSbidlr6ZL+gWk77CVr1H9WG+KGUfMlUnR5+6iLWA6HLUOYJDr4uRQGDpv/fLpAVLHULHTqCLtq2KHIIOVw/hViEKgCgwz105ReB9M0CFng/5xCWsCoRyle6F/fSB/nGiZUm9CdvhwxDEDMIoj90ZRpIQlExE8ApaxnfqNcKsl51DL6Yk1rvpJTNGOzjq/IMazxr9DRXxCu5Eep3kNuOyu/EFVWKa+iCG8zZrJHua5i2RUcW4JHvYe7DYu7XcYYp+ix2KvplLJM1GnL1Vc2eQhhtbmXzD75TERKWY18XVt9SSxSu9jcoe8wIUOsg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB9473.namprd12.prod.outlook.com (2603:10b6:8:252::5) by
+ LV3PR12MB9257.namprd12.prod.outlook.com (2603:10b6:408:1b7::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8137.19; Fri, 8 Nov
+ 2024 15:06:25 +0000
+Received: from DS7PR12MB9473.namprd12.prod.outlook.com
+ ([fe80::5189:ecec:d84a:133a]) by DS7PR12MB9473.namprd12.prod.outlook.com
+ ([fe80::5189:ecec:d84a:133a%7]) with mapi id 15.20.8137.019; Fri, 8 Nov 2024
+ 15:06:25 +0000
+From: Zi Yan <ziy@nvidia.com>
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 2/3] mm: Simplify split_page_memcg()
+Date: Fri, 08 Nov 2024 10:06:23 -0500
+X-Mailer: MailMate (1.14r6065)
+Message-ID: <3F94EF44-A68D-45A9-A07D-7CAF32F520E5@nvidia.com>
+In-Reply-To: <20241104210602.374975-3-willy@infradead.org>
+References: <20241104210602.374975-1-willy@infradead.org>
+ <20241104210602.374975-3-willy@infradead.org>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_22CD0F45-0F44-44FE-8218-62207CDC0868_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-ClientProxiedBy: BL1PR13CA0312.namprd13.prod.outlook.com
+ (2603:10b6:208:2c1::17) To DS7PR12MB9473.namprd12.prod.outlook.com
+ (2603:10b6:8:252::5)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB9473:EE_|LV3PR12MB9257:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3c22b1c4-ddb1-44ed-42a9-08dd0006ea13
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?hHUhxJiBzxUGjsPpX/dYBbs9IhJ/mOgxugMfi+l+avTjLaTZYeFmL5QGxyC9?=
+ =?us-ascii?Q?zdjSaCIy0p3dmYYYI+xUHAlQrsTwnw2aPELLE7libkDxDny3kIuzEzkoA/8p?=
+ =?us-ascii?Q?zJbIs38UCVDCnPnc1gKJCcPipyzANqyrVtCxTBV3WDOEasZNOADSR+aBToRe?=
+ =?us-ascii?Q?mvChdztJlijj+UtM9rOfvTa8wNJEETqpb/R9ptP5k4Zo9NJN+HtL/E36nfpB?=
+ =?us-ascii?Q?35UWHFLUNL0+aTjcPGTXLRjywvGS/HazpbEU2uMkFwAc86/+DG7Nc6lE1aL7?=
+ =?us-ascii?Q?lW+Zb697jpOy6QGJZ5e9Z8Hb0iDuDU+QMvL+/jNEwR8Mxg2FfcRS4nVmSBJp?=
+ =?us-ascii?Q?qT31YCkbIpdvkdLtkQvNyEzb2ZZ3QF2f4F9CeyzwYQCISypI1f4I55a51331?=
+ =?us-ascii?Q?CRWu+JkXEVNhmrPoxkQmsAjbUH+KwQMOMkxPpDpgB2uAesmAeZzsOMfT+8hR?=
+ =?us-ascii?Q?z4wPN5buidCaglf4T7Wy8Ttq6J1jctPhBN7J3i7V3E/38XtWW15YHt0et0HR?=
+ =?us-ascii?Q?afCWqUz8VybY46I0gomyY1UzKoTtlPFwictz3NTStzaLJGVQYg1ku8W67tRs?=
+ =?us-ascii?Q?xGuUg56BHn+hkRByxlLSouXXuQ6BIMZEWMMFpGcZlaW4pHD1naw7ZsdIbC/P?=
+ =?us-ascii?Q?8b8vAezUHnI1GpIIHEZJ+JI9oU5TFkVzZQkJgHSyPYgKIIq1s/Sev6iMGLgB?=
+ =?us-ascii?Q?7dMuq9IRBBLsIxZIk1W4y8oqHXcn7gfXZOGKN+8xh341Yuag+wmbTg9ajLGz?=
+ =?us-ascii?Q?EKolEQR2YgVMs3HRoQ9+fWU5831uw6YQEf5CR4YMnPjk/O0AMUoZsu2W4DP2?=
+ =?us-ascii?Q?YxLyOTd1JtkWFllLcOmX9LFpdZlO4Cuu38xwOkpS/HGU425LdUT6ZxfFbtkK?=
+ =?us-ascii?Q?/H531YgPRnFzfdcS5qzx/OSHw+lBoFwd3lt0IJIwFI68ZIgvpHndtz76Pvyj?=
+ =?us-ascii?Q?xxKEb3hp7j3+imQTxP35+pVBlFEZOVXRne+97/h6SDhVpo2XxQoBilf0fMAX?=
+ =?us-ascii?Q?ez7T9nbqLCBNm8BTofWRvwygugE1zavPkMB1WLuVD6cXF/j8q6YLaECqGtNA?=
+ =?us-ascii?Q?MCT7IHV0oQJ5lmWwsDpn1ayoePvFN6qQpzaDmrsAIOP6/dPTThx2P1gKe//s?=
+ =?us-ascii?Q?v30hQ5hQUx+kpQavhDLvx46BiF/5jOI5Sarfn/iqc8QzZgwcAk69KJmHTiei?=
+ =?us-ascii?Q?5pJhJ6hhowC5m+lVcqjFeziD4gQPuetF612SMGDwWOl6euUsSJhV1Kwf87Gz?=
+ =?us-ascii?Q?qBZrAnFThf39gNWDj60/Khbfsaa2/TjPVr2h8GN/lwRUpituCZlsl9b0Rf8B?=
+ =?us-ascii?Q?OsNF5L2BCvhxOtM1/eISwyzt?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB9473.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?PTH8SfBOC9sjzkuQFMhgfiXxSSgJFjEmuicEpq2/WqG4vNBUCoOn70Ds6ch2?=
+ =?us-ascii?Q?318Eg5T06mUsXfbGEaTwHhaonlIO51vyOowfNULP0o4rqTxGA+2BqTPwxaPx?=
+ =?us-ascii?Q?XgGvUPkriBiaJvc6I8TN8zpEUGhGeIyOR7dm7MZuAYo7DyNpT84l6/TpBR0u?=
+ =?us-ascii?Q?tJO//BAdx5SSiecjc4kCnDyvfTR3FTnSIMaWzTEfjL2Gj4KeqggdbqUeKFL9?=
+ =?us-ascii?Q?o24tGugwiHK/1PxfDQAv13+zjkyU+tehRVnvfPyc+KA4u4ZigCx5Q5sftECZ?=
+ =?us-ascii?Q?uaDDIHqmMmdS28vBxw2CPlvMe5jyOWyBFPbyBqCDj8n4a0eyu4+henQAIwDS?=
+ =?us-ascii?Q?9jsOpUyfp0FvirnpGgujLNewCbbQ0+Ltm3Cgcr+/cwbcjFnD243/OGEz+KBC?=
+ =?us-ascii?Q?Q5fRY4Z1oBtASaREjpkRZjJWv1vcYTalaScgm4Pw+r3VGjx4uhB83K2ksDiw?=
+ =?us-ascii?Q?F1MG7gdPUC3VLmlNLOxfbppmuTDkEo7ck1w+CaFAn53LPLWG/QRNb6DyFpuv?=
+ =?us-ascii?Q?3yzBs+3/8n+JmNJ3DFooNi41fi7ecIiXB3+a/c85uFL9mboZ0pscaMLq+rd4?=
+ =?us-ascii?Q?FUVXFf47AVdxr8FqI2q8O8zQHNN06XTlvTOV3PcdBfXxa+Lw8qR2y5eXVxuK?=
+ =?us-ascii?Q?VYjIGMW/6thCyn2yTdrqTDduPF8xIZD77yF3t6vHaGRSyF1ui0fdfxAs+XnG?=
+ =?us-ascii?Q?yPZhQ9L1Szx1j/quQ41tuo9lA/R3mM42pmy6fU6IqVWKUDTrkQbeeq6mP6g0?=
+ =?us-ascii?Q?dCAa1LOr2IcGm82NNZLHr1WktemvHmYBtft9o3wR05VUiHL8X7dhLQBX/f4u?=
+ =?us-ascii?Q?rN6GLBeUIiFcnPOClI6Ve2VGNZPk6mD1MM93jdO1my8R5x91hxgXMiRyHzNL?=
+ =?us-ascii?Q?hT4CIn7TFVZX3rulbewLQ7AIpISLw8aaGalrsvTrrWVhmkJasWu0BDGrvGhf?=
+ =?us-ascii?Q?zmbrFHaUkc3GY4opoo61i0f8kWoK+1zGCJNzsXB8LzhzyuLD7XoNjn9dQxkh?=
+ =?us-ascii?Q?JzmCOG2wEQG4o5t+gwv1/TCFGOVLL379X4+zN5k3j3OrRZfPCeBkgavHwAkh?=
+ =?us-ascii?Q?uZ4+nFioKhX1/mqrKD+BuiDpjENPtuw5II6j98YAuezID5Kql+1s20urF8ur?=
+ =?us-ascii?Q?fgClnyKO4aVujqM6c8GcWDya5K1vSVfzP6I/MOOHLy/hzqQqQ1jx6XNj/eD2?=
+ =?us-ascii?Q?oqC5h0aCUPnAznHdt6IgFbePpYQfUhN/FVlxKky58GYX6PEMMHeBj4OVZBl+?=
+ =?us-ascii?Q?1lZx98/uRmFtf6Z3Vj/8iWF2/0QbZj7vLnFjEzfsjjtSe5A312y2OLkt5exD?=
+ =?us-ascii?Q?Lm1q8HyM83i76MwcU54C2EaekKl0w+N/omcWC1uI8qLPVTvMahqujve2r3LO?=
+ =?us-ascii?Q?8TUi5S5KbHZlsHa1DCOB0A++XVRDzV6/s95qV3sSabs1Rsrn+Af8U7Wpyh5+?=
+ =?us-ascii?Q?GBNo28GNrd4VnajyqfPOzjgsGOLeow0OFD4nfEEWelVuOWMIJoWMBkasQ3HU?=
+ =?us-ascii?Q?e22hjRM25THWtXqgjXIJ94erXsCcn2vEfhDjfH5LXYXNS0Dk065PmAmeezPW?=
+ =?us-ascii?Q?zjrhvSbzpAQIgqWGJefLeR60Hgu/TwRE7xwlvR+C?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c22b1c4-ddb1-44ed-42a9-08dd0006ea13
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB9473.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2024 15:06:25.5198
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: u5tU2O1fc5cakCMm8KAcIP8Wdhbt2ft7fJBkhVAxIu6agl2pQb6nQQaZ+frwxM/1
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR12MB9257
 
-After enabling CONFIG_IRQ_TIME_ACCOUNTING to monitor IRQ pressure in our
-container environment, we observed several noticeable behavioral changes.
+--=_MailMate_22CD0F45-0F44-44FE-8218-62207CDC0868_=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-One of our IRQ-heavy services, such as Redis, reported a significant
-reduction in CPU usage after upgrading to the new kernel with
-CONFIG_IRQ_TIME_ACCOUNTING enabled. However, despite adding more threads
-to handle an increased workload, the CPU usage could not be raised. In
-other words, even though the container’s CPU usage appeared low, it was
-unable to process more workloads to utilize additional CPU resources, which
-caused issues.
+On 4 Nov 2024, at 16:05, Matthew Wilcox (Oracle) wrote:
 
-This behavior can be demonstrated using netperf:
+> The last argument to split_page_memcg() is now always 0, so remove it,
+> effectively reverting commit b8791381d7ed.
 
-  function start_server() {
-      for j in `seq 1 3`; do
-          netserver -p $[12345+j] > /dev/null &
-      done
-  }
+You forgot to cc me about this.
 
-  server_ip=$1
-  function start_client() {
-    # That applies to cgroup2 as well.
-    mkdir -p /sys/fs/cgroup/cpuacct/test
-    echo $$ > /sys/fs/cgroup/cpuacct/test/cgroup.procs
-    for j in `seq 1 3`; do
-        port=$[12345+j]
-        taskset -c 0 netperf -H ${server_ip} -l ${run_time:-30000}   \
-                -t TCP_STREAM -p $port -- -D -m 1k -M 1K -s 8k -S 8k \
-                > /dev/null &
-    done
-  }
+>
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  include/linux/memcontrol.h |  4 ++--
+>  mm/memcontrol.c            | 26 ++++++++++++++------------
+>  mm/page_alloc.c            |  4 ++--
+>  3 files changed, 18 insertions(+), 16 deletions(-)
+>
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 5502aa8e138e..a787080f814f 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -1044,7 +1044,7 @@ static inline void memcg_memory_event_mm(struct m=
+m_struct *mm,
+>  	rcu_read_unlock();
+>  }
+>
+> -void split_page_memcg(struct page *head, int old_order, int new_order)=
+;
+> +void split_page_memcg(struct page *first, int order);
+>
+>  #else /* CONFIG_MEMCG */
+>
+> @@ -1463,7 +1463,7 @@ void count_memcg_event_mm(struct mm_struct *mm, e=
+num vm_event_item idx)
+>  {
+>  }
+>
+> -static inline void split_page_memcg(struct page *head, int old_order, =
+int new_order)
+> +static inline void split_page_memcg(struct page *first, int order)
+>  {
+>  }
+>  #endif /* CONFIG_MEMCG */
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 5e44d6e7591e..506439a5dcfe 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3034,25 +3034,27 @@ void __memcg_slab_free_hook(struct kmem_cache *=
+s, struct slab *slab,
+>  }
+>
+>  /*
+> - * Because folio_memcg(head) is not set on tails, set it now.
+> + * The memcg data is only set on the first page, now transfer it to al=
+l the
+> + * other pages.
+>   */
+> -void split_page_memcg(struct page *head, int old_order, int new_order)=
 
-  start_server
-  start_client
+> +void split_page_memcg(struct page *first, int order)
 
-We can verify the CPU usage of the test cgroup using cpuacct.stat. The
-output shows:
+So split_page_memcg() only handles kmem pages, it is better to rename it
+to split_kmem_page_memcg() to avoid confusion. Especially if this patchse=
+t
+is merged before my folio_split() patchset and I did not notice it, my
+patchset would cause memcg issues, since I was still using split_page_mem=
+cg()
+during folio split.
 
-  system: 53
-  user: 2
 
-The CPU usage of the cgroup is relatively low at around 55%, but this usage
-doesn't increase, even with more netperf tasks. The reason is that CPU0 is
-at 100% utilization, as confirmed by mpstat:
+--
+Best Regards,
+Yan, Zi
 
-  02:56:22 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
-  02:56:23 PM    0    0.99    0.00   55.45    0.00    0.99   42.57    0.00    0.00    0.00    0.00
+--=_MailMate_22CD0F45-0F44-44FE-8218-62207CDC0868_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
 
-  02:56:23 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
-  02:56:24 PM    0    2.00    0.00   55.00    0.00    0.00   43.00    0.00    0.00    0.00    0.00
+-----BEGIN PGP SIGNATURE-----
 
-It is clear that the %soft is excluded in the cgroup of the interrupted
-task. This behavior is unexpected. We should include IRQ time in the
-cgroup to reflect the pressure the group is under.
+iQJDBAEBCgAtFiEE6rR4j8RuQ2XmaZol4n+egRQHKFQFAmcuKO8PHHppeUBudmlk
+aWEuY29tAAoJEOJ/noEUByhUr9wP+wahoBpnsWPzlCDrPqxyrZEW2+93KiVIJWx2
+PIY5jMFDg5ows3q0HX9a1Mt5YY9m/yxVkBcpF3XacXhB5Ldf1SJM7fz7mkpByh9W
+lwmQij4zGrALiI9/OEAR+E0fHliGjEMIVI2atUHwnyaHaenrpl3IdbC6IfFJ7HwF
+1YP7ZZdHqCpweogRk7GoqqjJuJ4UCvsDjJYSXuwxh+hB9LZHI1sl+6E4bMiw7pFa
+RpnQ/hyf81albKYW2E6INkhrbYAgMSpGDoUunKYyUD+ZTdVHNPm8LQ4rTo6eNviH
+j3mT8nd+Hlr5mn5ki8aWVjVpnCeIVlvLAVpM39f+uyH0hNsu6nr+OvmjVivXC/rK
+ggmMG2k0F5SSuc6pr0XJlRdJYPmzcXstDgg6pvDFOyN4M09n4Z9335bBr5/blbz4
+6iSUV2pQGgf2p3x6KskURlsaua/svoEEFghEPotZVSGQiCoJS5L57DP7ww6kFawK
+380GYFDRILZScUC+qwnDOUxn9mT8xEFH9HSA7c2Mg3Q9Yog2tX+Xx+HkMr8PYTRr
+lQkPfitf8wA12Ub59aynBoHOsLzNKyUGouRrnkTuWojQQgD4i4qO74A9uHHliY1H
+Tcjx4K0KBovnQYRF7uxiuC9Ll/DxrwgnL6uiSBKEo2Bcz4kCxna11bdwJsBSjgh+
+gktw7rmY
+=JtZQ
+-----END PGP SIGNATURE-----
 
-After a thorough analysis, I discovered that this change in behavior is due
-to commit 305e6835e055 ("sched: Do not account irq time to current task"),
-which altered whether IRQ time should be charged to the interrupted task.
-While I agree that a task should not be penalized by random interrupts, the
-task itself cannot progress while interrupted. Therefore, the interrupted
-time should be reported to the user.
-
-The system metric in cpuacct.stat is crucial in indicating whether a
-container is under heavy system pressure, including IRQ/softirq activity.
-Hence, IRQ/softirq time should be included in the cpuacct system usage,
-which also applies to cgroup2’s rstat.
-
-The reason it doesn't just add the cgroup_account_*() to
-irqtime_account_irq() is that it might result in performance hit to hold
-the rq_lock in the critical path. Taking inspiration from
-commit ddae0ca2a8fe ("sched: Move psi_account_irqtime() out of
-update_rq_clock_task() hotpath"), I've now adapted the approach to handle
-it in a non-critical path, reducing the performance impact.
-
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
----
- kernel/sched/core.c  | 33 +++++++++++++++++++++++++++++++--
- kernel/sched/psi.c   | 13 +++----------
- kernel/sched/sched.h |  2 +-
- kernel/sched/stats.h |  7 ++++---
- 4 files changed, 39 insertions(+), 16 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index a75dad9be4b9..61545db8ca4b 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -5579,6 +5579,35 @@ __setup("resched_latency_warn_ms=", setup_resched_latency_warn_ms);
- static inline u64 cpu_resched_latency(struct rq *rq) { return 0; }
- #endif /* CONFIG_SCHED_DEBUG */
- 
-+#ifdef CONFIG_IRQ_TIME_ACCOUNTING
-+static void account_irqtime(struct rq *rq, struct task_struct *curr,
-+			    struct task_struct *prev)
-+{
-+	int cpu = smp_processor_id();
-+	s64 delta;
-+	u64 irq;
-+
-+	if (!irqtime_enabled())
-+		return;
-+
-+	irq = irq_time_read(cpu);
-+	delta = (s64)(irq - rq->irq_time);
-+	if (delta < 0)
-+		return;
-+
-+	rq->irq_time = irq;
-+	psi_account_irqtime(rq, curr, prev, delta);
-+	cgroup_account_cputime(curr, delta);
-+	/* We account both softirq and irq into CPUTIME_IRQ */
-+	cgroup_account_cputime_field(curr, CPUTIME_IRQ, delta);
-+}
-+#else
-+static inline void account_irqtime(struct rq *rq, struct task_struct *curr,
-+				   struct task_struct *prev)
-+{
-+}
-+#endif
-+
- /*
-  * This function gets called by the timer code, with HZ frequency.
-  * We call it with interrupts disabled.
-@@ -5600,7 +5629,7 @@ void sched_tick(void)
- 	rq_lock(rq, &rf);
- 
- 	curr = rq->curr;
--	psi_account_irqtime(rq, curr, NULL);
-+	account_irqtime(rq, curr, NULL);
- 
- 	update_rq_clock(rq);
- 	hw_pressure = arch_scale_hw_pressure(cpu_of(rq));
-@@ -6683,7 +6712,7 @@ static void __sched notrace __schedule(int sched_mode)
- 		++*switch_count;
- 
- 		migrate_disable_switch(rq, prev);
--		psi_account_irqtime(rq, prev, next);
-+		account_irqtime(rq, prev, next);
- 		psi_sched_switch(prev, next, block);
- 
- 		trace_sched_switch(preempt, prev, next, prev_state);
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index 210aec717dc7..1adb41b2ae1d 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -990,15 +990,14 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
- }
- 
- #ifdef CONFIG_IRQ_TIME_ACCOUNTING
--void psi_account_irqtime(struct rq *rq, struct task_struct *curr, struct task_struct *prev)
-+void psi_account_irqtime(struct rq *rq, struct task_struct *curr, struct task_struct *prev,
-+			 s64 delta)
- {
- 	int cpu = task_cpu(curr);
- 	struct psi_group *group;
- 	struct psi_group_cpu *groupc;
--	s64 delta;
--	u64 irq;
- 
--	if (static_branch_likely(&psi_disabled) || !irqtime_enabled())
-+	if (static_branch_likely(&psi_disabled))
- 		return;
- 
- 	if (!curr->pid)
-@@ -1009,12 +1008,6 @@ void psi_account_irqtime(struct rq *rq, struct task_struct *curr, struct task_st
- 	if (prev && task_psi_group(prev) == group)
- 		return;
- 
--	irq = irq_time_read(cpu);
--	delta = (s64)(irq - rq->psi_irq_time);
--	if (delta < 0)
--		return;
--	rq->psi_irq_time = irq;
--
- 	do {
- 		u64 now;
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 0c83ab35256e..690fc6f9d97c 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1223,7 +1223,7 @@ struct rq {
- 
- #ifdef CONFIG_IRQ_TIME_ACCOUNTING
- 	u64			prev_irq_time;
--	u64			psi_irq_time;
-+	u64			irq_time;
- #endif
- #ifdef CONFIG_PARAVIRT
- 	u64			prev_steal_time;
-diff --git a/kernel/sched/stats.h b/kernel/sched/stats.h
-index 767e098a3bd1..17eefe5876a5 100644
---- a/kernel/sched/stats.h
-+++ b/kernel/sched/stats.h
-@@ -111,10 +111,11 @@ void psi_task_change(struct task_struct *task, int clear, int set);
- void psi_task_switch(struct task_struct *prev, struct task_struct *next,
- 		     bool sleep);
- #ifdef CONFIG_IRQ_TIME_ACCOUNTING
--void psi_account_irqtime(struct rq *rq, struct task_struct *curr, struct task_struct *prev);
-+void psi_account_irqtime(struct rq *rq, struct task_struct *curr,
-+			 struct task_struct *prev, s64 delta);
- #else
- static inline void psi_account_irqtime(struct rq *rq, struct task_struct *curr,
--				       struct task_struct *prev) {}
-+				       struct task_struct *prev, s64 delta) {}
- #endif /*CONFIG_IRQ_TIME_ACCOUNTING */
- /*
-  * PSI tracks state that persists across sleeps, such as iowaits and
-@@ -215,7 +216,7 @@ static inline void psi_sched_switch(struct task_struct *prev,
- 				    struct task_struct *next,
- 				    bool sleep) {}
- static inline void psi_account_irqtime(struct rq *rq, struct task_struct *curr,
--				       struct task_struct *prev) {}
-+				       struct task_struct *prev, s64 delta) {}
- #endif /* CONFIG_PSI */
- 
- #ifdef CONFIG_SCHED_INFO
--- 
-2.43.5
-
+--=_MailMate_22CD0F45-0F44-44FE-8218-62207CDC0868_=--
 
