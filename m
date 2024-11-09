@@ -1,169 +1,145 @@
-Return-Path: <cgroups+bounces-5499-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5500-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A89729C2F3E
-	for <lists+cgroups@lfdr.de>; Sat,  9 Nov 2024 19:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FB009C2F5B
+	for <lists+cgroups@lfdr.de>; Sat,  9 Nov 2024 20:39:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C52CFB21376
-	for <lists+cgroups@lfdr.de>; Sat,  9 Nov 2024 18:59:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5601B21451
+	for <lists+cgroups@lfdr.de>; Sat,  9 Nov 2024 19:39:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D945719EED3;
-	Sat,  9 Nov 2024 18:59:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E73919F115;
+	Sat,  9 Nov 2024 19:38:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OxwCLhFS"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=toralf.foerster@gmx.de header.b="PSRM/Tuz"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9ACD15746F;
-	Sat,  9 Nov 2024 18:58:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA361537C9
+	for <cgroups@vger.kernel.org>; Sat,  9 Nov 2024 19:38:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731178740; cv=none; b=c/yTqW+DtCXPsqs0xJC9wlNB2N4oPBcNMAy1fAXJYoMxholR9bIyBMi2PFQhYVy7+xEHfTZMXfP5ibeAQRhhevl5ExZ4MKDjpGm+6ZVVHQvA9OJ4b5LbXnFUnqpBTFdebwQEbSK5mKMdvd6brFyJagEipqNO97I6hehWnb5awrM=
+	t=1731181139; cv=none; b=Kpw9MSIo3NmY7Cky4XrCWBOMzUgNUrC6f16oX2vYN6ctaloDFSyGQQJzdwTeRJvIYLH0RJlmyBi48kpsdAQ7GFnFRTETCXAF7glQ5Ytn/rUsN9rrTt14ag2EKIFwAYgib7rrFiip2D+3t3oZHYLpoM71cFCXuJCIvfDx9UvZivk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731178740; c=relaxed/simple;
-	bh=dLqzm3ZitTZ8L4sHAmqE3K5A9i0Tg0n1djx0dR+vM54=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CLmiTMbqWZNlBKgNe4uMt88ja/O2SWhfFQ7jwMXCWptTph4JycFtsNvBrQ+Qkq1YD7fb4KbNM9fw0nktP9lINjkphGwELAx6ENUlOwLrvcci8u/YxOCGOwA9zLj3D1c1yPrlxM6D1aYjkGvyc9oyOdHR8wl3U6J/6/N5Q78zoWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OxwCLhFS; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a9acafdb745so649355266b.0;
-        Sat, 09 Nov 2024 10:58:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731178737; x=1731783537; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YkXlVsWL0LDP2pYZSQamK9+dqruXX3tJOG4uBlgHeNY=;
-        b=OxwCLhFS6jmfdhgX78PUZJbb4NavHOsR0CpPexnZkMWkgqFKcqbf9ECg+zTcpxdchg
-         cbSkgl4cF8s0tGbuUTAPrXVPU1ZDP4X0PJwUkq4iG/f7K8NQCOodPFxVLudSVpYYZdVf
-         hKTF0GmAunzNsPNoXFaqc0MDkmDZZTJSVNpKTJe9z733tLpRCFWaedkeTM7o+qjx3gkX
-         L4j2adL/Qc+l7FcSfR/zlK271TDOzp4NZO5iuWUhBs32K+5gu733zNr1ESETIa4bHwtr
-         D+d5cMBVgaD++rhKynp2NLuYbeDxQkQhwC6wDDYM3Am0DF9xAvi/s4/FfoCWNHTXEb6m
-         kYJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731178737; x=1731783537;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YkXlVsWL0LDP2pYZSQamK9+dqruXX3tJOG4uBlgHeNY=;
-        b=iWfy5we+5ywz/7qW4TTLXjVDP5qm6Phbq9Fckc1MRL/ZBVUxF7CkzFYUmEqAn1Fz41
-         jpfXAr+7cwcZrKFDuIg9q6GaXHJC+6/YMcPAwSuLSSWMYoWgapIQ2S8HtGYL9nLPEKCi
-         nMf6ArwQ5VUJKiFq3nzqr/rS4bzvAM0GVk/FSiQklWQ/EgR+/WDxyBFqAfd4KvpCg1ZO
-         NTqZep5omFhEIKbl6eJINfMcRgQW/4tgCNQ44ajhG6c0czjLKqocVd866LvcXqCOb+f/
-         L0lowIEVLScrnlZsUQB+j906jysc0w3VrFoF9XeFcontcHHwtkppfldpaJu3EQtPOvNx
-         ZZRw==
-X-Forwarded-Encrypted: i=1; AJvYcCVV/MCcEXNbHtOhDn2BMegU1qkKp1jPJ1d84XX7sK0UpqmFgayT21vaAVw7jDjjmiF7ubAGXvXW@vger.kernel.org, AJvYcCVeQhILrX33WL3iWZD3tgQkrSCnSyfXO8LFHzsYBfHjwE2xpK6N14B+EC+rm0YogyWRdGULipG0O57mhxp9@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywk7A+sBhCdsJscUk5uJ2u2EJT0kl9l022VkClkbjbfaEdruYSn
-	I6wnnVgJl3HGYTzpYv9KdpdihPKZPYI6sTYG+dDSOodlNYIpt5H4VbByvkzbFK0nD9dITqIXo8t
-	4q7ZtT2DNDhWCV+aBYifZH9wzkMkMvg==
-X-Google-Smtp-Source: AGHT+IEMHnjxHRVQ6HWzYS26PEZzRqHV3qeSPEb7/kPtEKJPdNiw7SS5CEd5p4EzAj7+0bt3ktx36WVY1m/0KKac/QY=
-X-Received: by 2002:a17:907:9455:b0:a9a:b818:521d with SMTP id
- a640c23a62f3a-a9eec9cf03dmr802199566b.18.1731178736956; Sat, 09 Nov 2024
- 10:58:56 -0800 (PST)
+	s=arc-20240116; t=1731181139; c=relaxed/simple;
+	bh=FeA9WAXqp4bAFji2TrJz36pKDcbCxkOI3Ko0PDWkIJU=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=GwjNGoCYFGD3fx6fQ08+qJ9o3u5xlCPB+f4Hlizkupa8kuVwKfk3ZN5w/MbBxdtwB1MvS5BSKCGzh4lfXM728Rh7NfJZv+tIwMRTMZ1vAgq0EgREDVB68tsYBNjwIAWMPmkTuHxhJAH84ewwqc3BLLAXv8t0VUrdR9NuziWOESs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=toralf.foerster@gmx.de header.b=PSRM/Tuz; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1731181134; x=1731785934; i=toralf.foerster@gmx.de;
+	bh=FeA9WAXqp4bAFji2TrJz36pKDcbCxkOI3Ko0PDWkIJU=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
+	 Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=PSRM/TuzX+xlrKF7voBKlI9/2d2l9CWehrk5zCFp+uEkhYVSb6s4NhuJjVleMruy
+	 bo6aO+c4r7bkCKF3a2OB8mI6cQgrGFTDHn5hmtp+2wNepicrrqp7nq6ocpgbJOkBx
+	 Doo6XeLwQ4vBOKvRg/e5CrxdhwF2GjeMch5F7AMMQTuFIWgklJs47REPFIGRvyqeN
+	 vnxAU7PCvoCSlixcEzrvbL1MOlpPpxeaNl81i8mqh+sq2eec9/hInNMl/RbGHBl9A
+	 6R1XY0Wzhyp1cmGnWhtjkUu4KpN4B13MdtpsecOYembNMFQkgtFKrdKZC4isTrF3S
+	 oRNe9kq0iaHLU5gomw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.178.33] ([77.8.6.193]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mo6qp-1tbQxR1Xwp-00cCMA for
+ <cgroups@vger.kernel.org>; Sat, 09 Nov 2024 20:38:54 +0100
+Message-ID: <e0dccc65-3446-4563-8a0d-1ebda4bd7b81@gmx.de>
+Date: Sat, 9 Nov 2024 20:38:54 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241108212946.2642085-1-joshua.hahnjy@gmail.com>
- <20241108212946.2642085-3-joshua.hahnjy@gmail.com> <kpxl646zwhqcyrq23kfnslqdjgqy5s72vlq2uoc6vhfvwza2ld@yjyj3j6rnlag>
-In-Reply-To: <kpxl646zwhqcyrq23kfnslqdjgqy5s72vlq2uoc6vhfvwza2ld@yjyj3j6rnlag>
-From: Joshua Hahn <joshua.hahnjy@gmail.com>
-Date: Sat, 9 Nov 2024 13:58:46 -0500
-Message-ID: <CAN+CAwN34zQdjuOhH0Vm0k6=im9=vVvwH_yCh_z4zvuMzPSjTg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] memcg/hugetlb: Introduce mem_cgroup_charge_hugetlb
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
-	muchun.song@linux.dev, akpm@linux-foundation.org, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: cgroups@vger.kernel.org
+From: =?UTF-8?Q?Toralf_F=C3=B6rster?= <toralf.foerster@gmx.de>
+Subject: process running under Cgroup2 control is OOM'ed if its stdout goes to
+ a file at at tmpfs filesystem
+Autocrypt: addr=toralf.foerster@gmx.de; keydata=
+ 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
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:oP6eqTS+X2Y9jWcTH3FhsZszdDuAyNtpk8pXK2xrCI/Fmx61fn/
+ M4h1fs2czURS6f1DDt/NRbpNfGTXFD65iaIiEm6Rb13t+iF749uxCUAp/VQIgKQyzqE011O
+ 1muQITTjnf3NO1GLyzbXMaztAlOO1prOynorLTzwcNCC8teehGGIS39o1Ug5L6LwKhUIB3E
+ Q69LrVXgmJE5QexfOXD7A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:kn+mHrXqlAQ=;1V6W6DvfR19NzXjud8ieqhJMd3r
+ isGW0CnZywAk68UI4FqxtRJDBV4dKnPU4O9GRqVGhSkG7BddKU4rtAjNWBJT9NJJ6Wt6b7K1b
+ LH3OicQUvI31hIEKyPZ2I1+RMCFOmjO1OJDdA6GpfD7SO095zT3g3k2KOhOTDy7OHjrvnxmkd
+ Sg1PZq+zdkJxMpa6lqWna6HD8VQSfjgAT0Lo/CT3u2t6GZj1u5gwF0W7KlldQZR1Is15ujQx1
+ fDtTnvI2z57lx1WQxy0ornJM1iJ7/vf3/diNRxTXtJ6W8TCRpgl+S1RDTmzUK1DLkrIsWoNQF
+ gb5VNjbignLCPo5M9Gy2Op6xYJtlC8PBMrep1GfB23abgLdPytARc1QqFCT6o81ZEmOjXvKmb
+ Y8CFYAKutd9u07pOJN8AK74URfyZq3IDDD0Z/qFhgZzwft79XHvERoZruJxkTtpclf1q2tQga
+ c81iOPcX6X6lvO36dJrfiRDAQqKjOANfj5idachuwyxw+hNeKQ5O1YB0bI9c16JCih1ZNHR9U
+ 1m1/7unRC+P2QMLmL2iOhhRF/TyZiSIC9ire08cjL0Wrbfylcvj8JtONOvK69cgkocDBNJLwl
+ aFwtbiOoX7FK2rGBYes1W2tKsmgqLEpL9feIkXO7CXFQFbEnTJ+8bGz2susk+ZsO//KOKiOJ4
+ o9OOgrDYM6OFe7PCa5ze5vLyrzhvwMzrB14dl+2IYujXDXKUmnKhMDa/bHE8uemtnO80YkhGL
+ F55xzU55tHEsf1Ik2oAr/a2sSdu3vzgM+wxsclkvsWJ3alqnYvbUZjsnpf+rI5EqDolo/T0Ek
+ L/Mii+BrqnN6wQMwcfX+1X/Q==
 
-Hello Shakeel, thank you for reviewing my patch!
+The reproducer in [1] shows that a process running under Cgroup2 control
+is OOM'ed if its stdout goes to a file at at tmpfs filesystem.
+For a regular file system that behaviour is not reproduced here.
 
-On Fri, Nov 8, 2024 at 5:43=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.dev=
-> wrote:
->
-> On Fri, Nov 08, 2024 at 01:29:45PM -0800, Joshua Hahn wrote:
-> > This patch introduces mem_cgroup_charge_hugetlb, which combines the
-> > logic of mem_cgroup{try,commit}_hugetlb. This reduces the footprint of
-> > memcg in hugetlb code, and also consolidates the error path that memcg
-> > can take into just one point.
-> >
-> > Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
-> > -     if (!memcg_charge_ret)
-> > -             mem_cgroup_commit_charge(folio, memcg);
-> > -     lruvec_stat_mod_folio(folio, NR_HUGETLB, pages_per_huge_page(h));
-> > -     mem_cgroup_put(memcg);
-> > +     ret =3D mem_cgroup_charge_hugetlb(folio, gfp);
-> > +     if (ret =3D=3D -ENOMEM) {
-> > +             spin_unlock_irq(&hugetlb_lock);
->
-> spin_unlock_irq??
+I do wonder if this is a feature?
 
-Thank you for the catch. I completely missed this after I
-swapped the position of mem_cgroup_charge_hugetlb
-to be called without the lock. I will fix this.
+[1] https://gist.github.com/toralf/0dbb422c0889c594165a8be69e610a86
 
-> > +             free_huge_folio(folio);
->
-> free_huge_folio() will call lruvec_stat_mod_folio() unconditionally but
-> you are only calling it on success. This may underflow the metric.
+TIA
+=2D-
+Toralf
 
-I was actually thinking about this too. I was wondering what would
-make sense -- in the original draft of this patch, I had the charge
-increment be called unconditionally as well. The idea was that
-even though it would not make sense to have the stat incremented
-when there is an error, it would eventually be corrected by
-free_huge_folio's decrement. However, because there is nothing
-stopping the user from checking the stat in this period, they may
-temporarily see that the value is incremented in memory.stat,
-even though they were not able to obtain this page.
-
-With that said, maybe it makes sense to increment unconditionally,
-if free also decrements unconditionally. This race condition is
-not something that will cause a huge problem for the user,
-although users relying on userspace monitors for memory.stat
-to handle memory management may see some problems.
-
-Maybe what would make the most sense is to do both
-incrementing & decrementing conditionally as well.
-Thank you for your feedback, I will iterate on this for the next version!
-
-> > +int mem_cgroup_charge_hugetlb(struct folio *folio, gfp_t gfp)
-> > +{
-> > +     struct mem_cgroup *memcg =3D get_mem_cgroup_from_current();
-> > +     int ret =3D 0;
-> > +
-> > +     if (mem_cgroup_disabled() || !memcg_accounts_hugetlb() ||
-> > +             !memcg || !cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
-> > +             ret =3D -EOPNOTSUPP;
->
-> why EOPNOTSUPP? You need to return 0 here. We do want
-> lruvec_stat_mod_folio() to be called.
-
-In this case, I was just preserving the original code's return statements.
-That is, in mem_cgroup_hugetlb_try_charge, the intended behavior
-was to return -EOPNOTSUPP if any of these conditions were met.
-If I understand the code correctly, calling lruvec_stat_mod_folio()
-on this failure will be a noop, since either memcg doesn't account
-hugetlb folios / there is no memcg / memcg is disabled.
-
-With all of this said, I think your feedback makes the most sense
-here, given the new semantics of the function: if there is no
-memcg or memcg doesn't account hugetlb, then there is no
-way that the limit can be reached! I will go forward with returning 0,
-and calling lruvec_stat_mod_folio (which will be a noop).
-
-Thank you for your detailed feedback. I wish I had caught these
-errors myself, thank you for your time in reviewing my patch.
-
-I hope you have a great rest of your weekend!
-Joshua
 
