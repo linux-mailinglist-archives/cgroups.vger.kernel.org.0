@@ -1,77 +1,77 @@
-Return-Path: <cgroups+bounces-5494-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5495-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A47569C29C1
-	for <lists+cgroups@lfdr.de>; Sat,  9 Nov 2024 04:43:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 708DD9C2A4D
+	for <lists+cgroups@lfdr.de>; Sat,  9 Nov 2024 06:25:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06654B2205B
-	for <lists+cgroups@lfdr.de>; Sat,  9 Nov 2024 03:43:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 466DF1C20F98
+	for <lists+cgroups@lfdr.de>; Sat,  9 Nov 2024 05:25:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4B8913A863;
-	Sat,  9 Nov 2024 03:43:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0944113C9D9;
+	Sat,  9 Nov 2024 05:25:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J84mkEXf"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j2NZaIko"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D16D1EEE9;
-	Sat,  9 Nov 2024 03:43:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D4F613B2A2;
+	Sat,  9 Nov 2024 05:25:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731123816; cv=none; b=UFZkFvRBzEM9MrfIAKRe/83tECVgw0DpkYxBrCdQsyrJkRdEi1Czx3rlGGUuzybohusGJna97EaJ7SVZSmNzYltT6om+IGC5nqNBkh3Ev7BWxXN9rjsUuwPSlBWxjPWSrNzomWo911c2HOwCJHjPsfkAIdagMRq1utVuJCVgjsI=
+	t=1731129938; cv=none; b=BTv0BAi5wKundKNQ65fG8ZCxDJSIzWUDjvZqWcIKLWfbMjDYyaY9UXwwwK3DIjU1TYdMuoXP4uRkVp3xsJblFwpgsupBkkxomEHcw573I/DJjnE8RLWd+gk3jmPMKlox0IQK+SwWIyHH2oyL3hYcwwdo055kZqqsFT64LKVt8Yc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731123816; c=relaxed/simple;
-	bh=Y8gRkvKe4SZgufdVa38PVa6F32tIaLfPt8fCTz17p8c=;
+	s=arc-20240116; t=1731129938; c=relaxed/simple;
+	bh=V7Rias5c3jg1UeLsuYAuYQvGfeJT4hPJeYrmiPdzrs0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gzOoygDpzphBnd/Dsi9vBrCKiF7YBxKZUBunQUrQ0AcUzAk803Dz79bm4S6Oa35qQTdabiYQGVol8U6hMq+it0ZylV/Bw9M/M/kknRpeqZ/cL6RxVy5SEHnLI4ZwtcMhozhNoJcNvfKf6rDC3A6dyRRDXvJfcCT5eIGD/Hl9DXk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J84mkEXf; arc=none smtp.client-ip=198.175.65.17
+	 Content-Type:Content-Disposition:In-Reply-To; b=XaiWafMB8gTVv38X0frLCWMDtSVBhq53ev/1ztogoM1/MPY93IEwvMC2/xdfMuossRWqTldKsFd95IbWNBf2uDgxzAh7hrYzemgrTnBlp5POFZlY7emVXGspx7A/wi5A13JtBanQopXoI3rGK97AwV/AsbwJ6RFUF82pXS3/Y6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=j2NZaIko; arc=none smtp.client-ip=192.198.163.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1731123814; x=1762659814;
+  t=1731129936; x=1762665936;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=Y8gRkvKe4SZgufdVa38PVa6F32tIaLfPt8fCTz17p8c=;
-  b=J84mkEXfHJBRTs6IcrMmgigJClIAf2ZxcBCmvkzvqKwEiKhm7QPYH0k2
-   v2N0p7Ew5/Efxq6QymW4qDOK7uMrSqCAyT9rulx500CHkLmd7xovPfCC6
-   FP/HYu6KNbaarllpQ3Pu8BOrkIMPX8fzfh6lD5TnR6s64PqttbwCEpDKn
-   3HrNwxAcCdpFsuv1sPFYzUO8Cn3YX1yoP3kCVAF4jJL9/iHtgeUNUT3Ty
-   Xnl/49CILIVwyibCHQ+OtO4anPauaC5bXbEmNw3mbPsmOZF8RZsHSlf7s
-   5kblxKgOgiMzcdQUBGtCXB1xCQUy8B3ureEGJRg3kX6qX4EaDHt6Pk9Rf
-   A==;
-X-CSE-ConnectionGUID: Wmdnyq1qQGODQxM0DsayTA==
-X-CSE-MsgGUID: JxFQc5dXRsiucm+fsw50Aw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11250"; a="31119795"
-X-IronPort-AV: E=Sophos;i="6.12,139,1728975600"; 
-   d="scan'208";a="31119795"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2024 19:43:34 -0800
-X-CSE-ConnectionGUID: DQEC6TZSTMOTmE2o2Y8U8w==
-X-CSE-MsgGUID: ncml/TeXT0KH3hsYQspbEw==
+  bh=V7Rias5c3jg1UeLsuYAuYQvGfeJT4hPJeYrmiPdzrs0=;
+  b=j2NZaIkoxFeG3x3X0cZUZ9CZ5PDp6U24NXKLuQDeIVCGeBKMfKRaW7Pj
+   j2aj2KoF6LmSKsCvf0KW0j7rGM3dirVDJykblFEC967mM6qWaAIO6JxkV
+   S8se4QymOu+woD5ymLIY4SQDpDjtrVSBId0BAJ5ErIPXTfNww9e8/r7sX
+   M40Mte0YQRh2mrY3S8BCsszSx5GaT+8b+x6Ge06BT58uhv0QMFHpUYtpf
+   gOWHHSM1UvS+hDhCIUojM7zO1BLZD4Ye2yyxZv7rZB1uLTHt1fNti3qyi
+   yPmCakAQn3Rwz/dk+Ha/cHQr6hJAX2p95cTK93z+GECDcmxS3GgjI5rLd
+   g==;
+X-CSE-ConnectionGUID: L1KHj/mPSyidEGSDA+1Cmw==
+X-CSE-MsgGUID: QwsjFY0JSQCEdkliqvcOUg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11250"; a="31244370"
+X-IronPort-AV: E=Sophos;i="6.12,140,1728975600"; 
+   d="scan'208";a="31244370"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Nov 2024 21:25:35 -0800
+X-CSE-ConnectionGUID: u1xmh9p1SpC3dBpK8TB6yA==
+X-CSE-MsgGUID: s4hlyDFJQem3BV+GLbwc2Q==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,139,1728975600"; 
-   d="scan'208";a="90956920"
+X-IronPort-AV: E=Sophos;i="6.12,140,1728975600"; 
+   d="scan'208";a="109196451"
 Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 08 Nov 2024 19:43:30 -0800
+  by fmviesa002.fm.intel.com with ESMTP; 08 Nov 2024 21:25:32 -0800
 Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1t9cNk-000s2w-0i;
-	Sat, 09 Nov 2024 03:43:28 +0000
-Date: Sat, 9 Nov 2024 11:42:43 +0800
+	id 1t9dyU-000s6K-1e;
+	Sat, 09 Nov 2024 05:25:30 +0000
+Date: Sat, 9 Nov 2024 13:24:40 +0800
 From: kernel test robot <lkp@intel.com>
 To: Joshua Hahn <joshua.hahnjy@gmail.com>, shakeel.butt@linux.dev
-Cc: oe-kbuild-all@lists.linux.dev, hannes@cmpxchg.org, mhocko@kernel.org,
-	roman.gushchin@linux.dev, muchun.song@linux.dev,
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, hannes@cmpxchg.org,
+	mhocko@kernel.org, roman.gushchin@linux.dev, muchun.song@linux.dev,
 	akpm@linux-foundation.org, cgroups@vger.kernel.org,
 	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
 	kernel-team@meta.com
 Subject: Re: [PATCH 2/3] memcg/hugetlb: Introduce mem_cgroup_charge_hugetlb
-Message-ID: <202411091159.y6yDCkdf-lkp@intel.com>
+Message-ID: <202411091344.51lAbqmY-lkp@intel.com>
 References: <20241108212946.2642085-3-joshua.hahnjy@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -98,26 +98,40 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Joshua-Hahn/memcg-hugetlb
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
 patch link:    https://lore.kernel.org/r/20241108212946.2642085-3-joshua.hahnjy%40gmail.com
 patch subject: [PATCH 2/3] memcg/hugetlb: Introduce mem_cgroup_charge_hugetlb
-config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20241109/202411091159.y6yDCkdf-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-12) 11.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241109/202411091159.y6yDCkdf-lkp@intel.com/reproduce)
+config: x86_64-buildonly-randconfig-002-20241109 (https://download.01.org/0day-ci/archive/20241109/202411091344.51lAbqmY-lkp@intel.com/config)
+compiler: clang version 19.1.3 (https://github.com/llvm/llvm-project ab51eccf88f5321e7c60591c5546b254b6afab99)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241109/202411091344.51lAbqmY-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202411091159.y6yDCkdf-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202411091344.51lAbqmY-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
-   mm/hugetlb.c: In function 'alloc_hugetlb_folio':
->> mm/hugetlb.c:3083:15: error: implicit declaration of function 'mem_cgroup_charge_hugetlb'; did you mean 'mem_cgroup_charge_skmem'? [-Werror=implicit-function-declaration]
+   In file included from mm/hugetlb.c:8:
+   In file included from include/linux/mm.h:2211:
+   include/linux/vmstat.h:518:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+     518 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
+         |                               ~~~~~~~~~~~ ^ ~~~
+   In file included from mm/hugetlb.c:37:
+   include/linux/mm_inline.h:47:41: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+      47 |         __mod_lruvec_state(lruvec, NR_LRU_BASE + lru, nr_pages);
+         |                                    ~~~~~~~~~~~ ^ ~~~
+   include/linux/mm_inline.h:49:22: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+      49 |                                 NR_ZONE_LRU_BASE + lru, nr_pages);
+         |                                 ~~~~~~~~~~~~~~~~ ^ ~~~
+>> mm/hugetlb.c:3083:8: error: call to undeclared function 'mem_cgroup_charge_hugetlb'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
     3083 |         ret = mem_cgroup_charge_hugetlb(folio, gfp);
-         |               ^~~~~~~~~~~~~~~~~~~~~~~~~
-         |               mem_cgroup_charge_skmem
-   cc1: some warnings being treated as errors
+         |               ^
+   mm/hugetlb.c:3083:8: note: did you mean 'mem_cgroup_charge_skmem'?
+   include/linux/memcontrol.h:1613:6: note: 'mem_cgroup_charge_skmem' declared here
+    1613 | bool mem_cgroup_charge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages,
+         |      ^
+   3 warnings and 1 error generated.
 
 
-vim +3083 mm/hugetlb.c
+vim +/mem_cgroup_charge_hugetlb +3083 mm/hugetlb.c
 
   2963	
   2964	struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
