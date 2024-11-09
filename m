@@ -1,70 +1,70 @@
-Return-Path: <cgroups+bounces-5496-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5497-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A6489C2F28
-	for <lists+cgroups@lfdr.de>; Sat,  9 Nov 2024 19:31:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AEE19C2F2B
+	for <lists+cgroups@lfdr.de>; Sat,  9 Nov 2024 19:35:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89F881C21530
-	for <lists+cgroups@lfdr.de>; Sat,  9 Nov 2024 18:31:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9CE3BB21979
+	for <lists+cgroups@lfdr.de>; Sat,  9 Nov 2024 18:35:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ED1F19ABAB;
-	Sat,  9 Nov 2024 18:31:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 894FF19ABAB;
+	Sat,  9 Nov 2024 18:34:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XddECZ3D"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dV6taRWo"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF6AF4086A;
-	Sat,  9 Nov 2024 18:31:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4C7E13BACB;
+	Sat,  9 Nov 2024 18:34:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731177092; cv=none; b=r9/gyk/ZwlZJjkRB5F4x8ly8p8ciLfeIOCcUx8QLLjcwMtW78tagv5zSXotNyQlBcmDuP/0r2ti3KJp7wJUzX1m2ij0d8tJ1BHx8NQUrbUu8pRIqoIYWuwb9lA3zKnOBNa8q4ghJn8zWLvGuF0e9XkQsriy2NTAsiq5J8Rn0Iho=
+	t=1731177294; cv=none; b=VT0Xytokg6Rd378N1HfvnBAPbqVwj1BBn2z0QI4/ZBhR0Fr6RwukpmVVuteE9v/Gd2NUT7vvBS6kkETPT5b0+ez07XHOpNPfAV+z6icPoxBomOnsXEvd0AtATdJSqYS/f26o7oRlv4oLC3bSHmXhpNuuyDCARS+1skbsNQqk4F4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731177092; c=relaxed/simple;
-	bh=k2DGsCYAdqZAvOnbgZKLhHDCTayax/zRf/CgqK6OKBs=;
+	s=arc-20240116; t=1731177294; c=relaxed/simple;
+	bh=Y9UwVErHmVJvfwqmBtKpEzqsP0sdSI7VmMWVCV0njN8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Elb13czyw2w41ctsvyMzVfKQ0YgI9GRFXYaJbMLpJzGYeAbGPsuwTAv6Iu4OUKzT9sXxK8plJVdqclWSLltkFNqkjDUIGGATv7ueMX0KrxpZPcntBQrSbkAodvTT1ad4YOUAdQ2kGF1qXkvs8zCTU6T1lmVx1LJ+iE4/uZD0FQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XddECZ3D; arc=none smtp.client-ip=209.85.128.43
+	 To:Cc:Content-Type; b=BClInbQb7wj+WUtZV9Xx5/QNCVOayOd2WmLchMeUrgtFENFPPeGbMnU7r79Qs9SjaAihvLUBzQXkZ5pJ7t9BWfmLpGST2ZfUYT54YDXqi209//qFa0zBt2RsSzMPwQPc57b8JR9ElJGEIyxNy9yoUlOuQeGSFxM9YhUnXCM84xs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dV6taRWo; arc=none smtp.client-ip=209.85.218.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4314b316495so26615535e9.2;
-        Sat, 09 Nov 2024 10:31:30 -0800 (PST)
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a9a0ef5179dso546026566b.1;
+        Sat, 09 Nov 2024 10:34:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731177089; x=1731781889; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1731177291; x=1731782091; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nfzWuC2VKQci1LCs0LoMNHQCT/EDdpW8OmOePIav1QE=;
-        b=XddECZ3D3t4GEXCV42XJJTECCI0kVfmxmGcbs08+1bibsgyzkEvANVNbcp08RvKskF
-         Mk6dQy17RYDD8Y8+kbJfooE4M9Bz2Kdq815B1WQg7zEnbwvotIJhttnbrv3Kigm8+rEs
-         PNHpm2bFLiU2eWLb0lxHaGDfAocuQx5L0Pt3UfBkr8oObpxTEF3tSK7LWoFDoORx38B1
-         I8mOMRBgF+WD0OpN33uTJ6SsUamJqOaHlIsYmCQB1bCFSCaBKhU8PonObW09Drh8Yvg3
-         rYQqfh85gUmofGRZNLfgt/qifocmfHdTqOO6rWjFvJYwySER9Evc/7QV24csnSf/wCm0
-         DAuA==
+        bh=Y9UwVErHmVJvfwqmBtKpEzqsP0sdSI7VmMWVCV0njN8=;
+        b=dV6taRWosDW1LmN7IJVFDgb6EAFSizbN9/mu+AOj6YRZUZiMYC2wH9BoNaQ9yB3ZZO
+         a2m0epIZ7tmyQ/k6tq/Xf5pI2q/QG48L0z40BjnQ3KWi7U4QYqm5nkj1be9vKZsPtf4c
+         XwR3ai4clKFXJlTQDT/L+BiChdHTLjzSAcfm+NuU3/iftSrFGV+Y/UfOwxBezSY2+Gcy
+         3ZBFwYI/vwDpJNiEBr6N6ZV+6/+0uye8IUN/YCWSzZLCVZgf6mxPf4RtiKnBCxTNR6CI
+         ghXtwYw2eCe9kbIN07PgHW6o9c6gj2iA8II5Loato+/lIUy182HU+L0bDL6KxWc2YFg1
+         U4oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731177089; x=1731781889;
+        d=1e100.net; s=20230601; t=1731177291; x=1731782091;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nfzWuC2VKQci1LCs0LoMNHQCT/EDdpW8OmOePIav1QE=;
-        b=Riii1lN5dBVrL8pccH0eFZ1AanecKowHBbzbdwRrOBHlNrNYIxBdjBrmkjRbd7IFPR
-         HGKPCu7ghXmEi/r7MFQDz5kobVH0ZfKmasX+vK/FDvqQbuvXH5PU4P/c8KeQ1+AWR/de
-         8EAylBrPn20KDxlL4cqaf1zVWuXdv+dqpz71WQVe1bQgpxjWbRtxLHhhutgKHpvYGRLL
-         FXNFqG1arF5u/E49su4H0AZbBy1NL04hz45GbkN4jdYDCTEvS9i6g5LQ1YX/ssjT0R0E
-         YJ9FaEj9GqyPHkXXDyRoC9NzBfbbDJgwmrLiLHqs0q0iOK6Cgr/PEBszxpYi6zzj59+f
-         BwUw==
-X-Forwarded-Encrypted: i=1; AJvYcCV5IFebpDD5DrHnrYarLUVCMzyiN3OFwAH0T7vOF6gBRzfJoOVIRWKRE1RMz76Bkbk+J15ApF1T@vger.kernel.org, AJvYcCVNbbuJ6QqHNXEuj1fTjNOsS+YhGdsqUT7UFvf3X+AGOfQtkNGyZWiyQ5fYHFPQeP9m2CSufY6rUTXtkWNF@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6ECbNeRbZcjF/Kt+Fqpcz+jl8Ic8uUJYToq9/iY0VMd40/CJa
-	67Fzbw7DE6YWvSE8ip3usgbhFnH/K4e8wHSYY1r7POh2rD5VsE/JHy1nTXGSEGGvgwXfPsijZ6s
-	UeAXAYssLARsbi0mDzEGIUx4zfqLPqw==
-X-Google-Smtp-Source: AGHT+IF0NLYn7BIi/5HfOrx5IQ1AKJhnHgQtzt5a3COJdCArMWWpavCEutjEHDS7K1qQAzfml+9qN8xV04WAvvqwTsA=
-X-Received: by 2002:a50:8adc:0:b0:5cf:f20:2b34 with SMTP id
- 4fb4d7f45d1cf-5cf0f202b52mr4319002a12.17.1731177078136; Sat, 09 Nov 2024
- 10:31:18 -0800 (PST)
+        bh=Y9UwVErHmVJvfwqmBtKpEzqsP0sdSI7VmMWVCV0njN8=;
+        b=T4BbRM1RmNnRQm1fRdfjHdLqJYMJzwqkBuQCHsd+vn8QYoHY84HAaoSwHRURVa4Muu
+         AhB185lf9b0hfZgddTwHSnqfb83coO5wULL1rBayK67662x9i6/TmEkmynGW2Iikl/3B
+         sd52n3oqsYoqGPm53/zpss1DY1eK1QSqphSvZpr+xvLmJQ9Gf0TDsaY81tBkXzHoNXVU
+         wwbmhgHA+tXs39vYvdO9vSQ9B4E5+k/dYl2IJ0PYmNxXxIcejLQ15wgLAzTgAewBRUnd
+         kj9STInUaRIdTR13TU7SaWHiH57GOU80y3ylMxC2o7j7IBINHNo8DPRRbeFOhLHy9ety
+         rwXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUStZFn+y4xpbvdUuPfpJedRFlx07UQdzMgqptxdo5AChOk5VU1HYnlw8Ugj+BlOzAaG0W7AArpb2b5vExW@vger.kernel.org, AJvYcCXJBFkkguHpXtwoeqquUJ1vHflhX+HVCqXL/uTyh0k/JoDvhQo358jH0KxQGjnFD/Bgmmycbu3H@vger.kernel.org
+X-Gm-Message-State: AOJu0YzeB8QYoXpvG50LodVwrRkUxhfWgwMSBHSqrV41wpHx/seFkTnM
+	5+0gkFs9LzyB71/sNwL5xePhqLWg+3sUB7qsbsWl2s8xuAcsgn/Rtora295zc5h6l/gSOh7K2RQ
+	d3e714W3KFcvS0hFZ/pMDVYsc7lc=
+X-Google-Smtp-Source: AGHT+IHXb1Fi848c0NJ3KrNiUrX9EnIwnwvCobZKUoqzJV31JvxaGAsQV9fqaCb5MlSzG/o/oz2VVcvFt5pYuFzZvnU=
+X-Received: by 2002:a17:907:26c2:b0:a9e:c442:2c15 with SMTP id
+ a640c23a62f3a-a9eefff1869mr760216366b.38.1731177290630; Sat, 09 Nov 2024
+ 10:34:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -72,71 +72,51 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20241108212946.2642085-1-joshua.hahnjy@gmail.com>
- <20241108212946.2642085-2-joshua.hahnjy@gmail.com> <elww7lzpj4htuhgdeu2e3j5mhogi54x6w75fk5sodaptletk3x@r2fnnh7gz72h>
- <CAJD7tkYdSeBDnR7rxpTJ5ZGVvLKbMcv_yH_U05Z_ycDWn8AQOg@mail.gmail.com>
-In-Reply-To: <CAJD7tkYdSeBDnR7rxpTJ5ZGVvLKbMcv_yH_U05Z_ycDWn8AQOg@mail.gmail.com>
+ <20241108212946.2642085-4-joshua.hahnjy@gmail.com> <CAJD7tkaKzLu0DfMynvPg+-78YAZNMCcEoM3wXPx9qfcAxZzUgg@mail.gmail.com>
+In-Reply-To: <CAJD7tkaKzLu0DfMynvPg+-78YAZNMCcEoM3wXPx9qfcAxZzUgg@mail.gmail.com>
 From: Joshua Hahn <joshua.hahnjy@gmail.com>
-Date: Sat, 9 Nov 2024 13:31:07 -0500
-Message-ID: <CAN+CAwMMXxBdZQ+vQOsQAtrkEPyq_a=7Y6GQbfuzyUci--N=HQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] memcg/hugetlb: Introduce memcg_accounts_hugetlb
+Date: Sat, 9 Nov 2024 13:34:39 -0500
+Message-ID: <CAN+CAwOKUP7QAfzRAY53VT=qCHoVPT_RG4FMyxvha3XTg1xX6g@mail.gmail.com>
+Subject: Re: [PATCH 3/3] memcg/hugetlb: Deprecate memcg hugetlb
+ try-commit-cancel protocol
 To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, hannes@cmpxchg.org, mhocko@kernel.org, 
+Cc: shakeel.butt@linux.dev, hannes@cmpxchg.org, mhocko@kernel.org, 
 	roman.gushchin@linux.dev, muchun.song@linux.dev, akpm@linux-foundation.org, 
 	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
 	kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 8, 2024 at 6:03=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com> =
+On Fri, Nov 8, 2024 at 6:08=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com> =
 wrote:
 >
-> On Fri, Nov 8, 2024 at 2:21=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.d=
-ev> wrote:
+> On Fri, Nov 8, 2024 at 1:30=E2=80=AFPM Joshua Hahn <joshua.hahnjy@gmail.c=
+om> wrote:
 > >
-> > On Fri, Nov 08, 2024 at 01:29:44PM -0800, Joshua Hahn wrote:
-> > > This patch isolates the check for whether memcg accounts hugetlb.
-> > > This condition can only be true if the memcg mount option
-> > > memory_hugetlb_accounting is on, which includes hugetlb usage
-> > > in memory.current.
-> > >
-> > > Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
-> > >
-> > > ---
-> > >  mm/memcontrol.c | 17 ++++++++++++++---
-> > >  1 file changed, 14 insertions(+), 3 deletions(-)
-> > > +/* Forward declaration */
-> > > +bool memcg_accounts_hugetlb(void);
+> > This patch fully deprecates the mem_cgroup_{try, commit, cancel} charge
+> > functions, as well as their hugetlb variants. Please note that this
+> > patch relies on [1], which removes the last references (from memcg-v1)
+> > to some of these functions.
+>
+> Nit: We are not really "deprecating" them, we are removing them.
+> Deprecation is usually tied to user-visible APIs that we cannot just
+> remove, at least not right away. Please rephrase the subject and
+> commit log accordingly.
+>
 > >
-> > No need for forward declaration. Just define it here and make it static=
-.
->
-> Also please pull the #ifdef outside the function definition, e.g.
->
-> #ifdef CONFIG_HUGETLB_PAGE
-> static bool memcg_accounts_hugetlb(void)
-> {
->      return cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING;
-> }
-> #else /* CONFIG_HUGETLB_PAGE */
-> static bool memcg_accounts_hugetlb(void) { return false; }
-> {
->      return false;
-> }
-> #endif /* CONFIG_HUGETLB_PAGE */
->
+> > Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
+> >
+> > [1] https://lore.kernel.org/linux-mm/20241025012304.2473312-1-shakeel.b=
+utt@linux.dev/
 
-Hello Shakeel and Yosry,
+Hi Yosry,
 
-Thank you for taking the time to review my patch.
-Yes -- I will just declare the function & make it static. It was my
-intention to group the new memcg charging functions together,
-and in that effort I just made a forward declaration above.
-However, I think that it does make the code look a bit more
-messy, which is against the spirit of this patch series!
+Thank you for letting me know. To be completely honest, I think
+I have been misusing the word in that case. You are correct,
+the goal was to try and not change any functionality from the
+user perspective, so I think removing is a better word, as you
+suggested. I will make this change in the v3!
 
-And Yosry, thank you for your feedback, I will separate the
-definitions based on the #ifdef.
-
-Thank you both, I hope you have a great day!
+Have a great day,
 Joshua
 
