@@ -1,164 +1,143 @@
-Return-Path: <cgroups+bounces-5508-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5509-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A32C9C3AD8
-	for <lists+cgroups@lfdr.de>; Mon, 11 Nov 2024 10:28:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E5229C3C7D
+	for <lists+cgroups@lfdr.de>; Mon, 11 Nov 2024 11:56:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6F261F210AE
-	for <lists+cgroups@lfdr.de>; Mon, 11 Nov 2024 09:28:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00E451F220A8
+	for <lists+cgroups@lfdr.de>; Mon, 11 Nov 2024 10:56:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48C23170A0B;
-	Mon, 11 Nov 2024 09:28:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CB5517799F;
+	Mon, 11 Nov 2024 10:56:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Lq1aoUAi"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZMcRH4tH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20BB81684B4;
-	Mon, 11 Nov 2024 09:28:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B7D15B554
+	for <cgroups@vger.kernel.org>; Mon, 11 Nov 2024 10:56:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731317300; cv=none; b=Pc1MftpbEh1VFzgqpvpE+0qhLPYjw8qqCcn43jnR3Ti6FZu8dJ11n1J4N91bw+ERzy+/IkgrxHCqLxCq0BQwc+EOcljQuyonDF0QlmZxfj/5B8K54CCeeiXmN2N4VZn/Rb/zQKqbGA7T4qemypC8ssKa5xTBGB3ABwfULrx/uDE=
+	t=1731322597; cv=none; b=LjjH3iST8j5WtvhgCvF4l9JYpm7Qf45ckPchoMvStxWjChSV50fBK7WuPIUfp5rAwaGiK/ZieYgQbP5ZuaFezJprF9JtjVfp2CbUGYW7QsYU5yEMwxJf45tZ5Qp7iLUTRIwYb6lxFgg0emAgkb2D1WdgCCLGqSOcRUIdhc09ShQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731317300; c=relaxed/simple;
-	bh=+SBAacjvUsQOBkoIHgArPsT8A8OVUexjcQWHe3IJnow=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XVPl7ZUuz0tQ1wwogZAlYyyzV/3D6vCii6DmrO8BGRJoZDrwG2rFfVLj0zUgjiSH/e8/jOZlhgy1Cpbkyi0tjotKylwU+g9pmjZlThkFcVfGSn8AUj+Rnu0eRTZASNORJfDPAp2D4MDz23trj3jGl0dCTBzeYi9aiPRIlyVIVrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Lq1aoUAi; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1731317298; x=1762853298;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=+SBAacjvUsQOBkoIHgArPsT8A8OVUexjcQWHe3IJnow=;
-  b=Lq1aoUAiQJSWkzPvw3yj0zcjviffLYux13/OBRhYEu5I/EARFx22embi
-   U3QTTCkSvd3/x7FV3EJYw7hWA+TZ4NVgCR6OCsXBVqTyrUUOfTndOc/kR
-   HMzTBf1IhUnJ8oWHE0DPEjLwZRhE8PodHnymvXzsBjX1ldZLddkA6tauA
-   j/7t3Ph7fG2MWvDq1IRGj5dFK4R4eHUeWWZf15Zsq/tl3r0YwBKV0toLO
-   f4Fv/bTSA4NZbd9lA2sTGUR82VukwuQ+nYkrLRbYtD/h9v5vaEmWKjFCi
-   co1LHsj8w35RRj5qb/KfAj5L0KoF6BoCAXdlcD0icMz7sD7KguTnBvN3e
-   A==;
-X-CSE-ConnectionGUID: F/xn/7WZR9WJp7kH5YjDrQ==
-X-CSE-MsgGUID: bwdr/PVBRgCx1zguMh5BWQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11222"; a="42213212"
-X-IronPort-AV: E=Sophos;i="6.11,199,1725346800"; 
-   d="scan'208";a="42213212"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2024 01:28:17 -0800
-X-CSE-ConnectionGUID: 9XbZoz18Tn2Q4+fN1Oe4ww==
-X-CSE-MsgGUID: P6Jt0NSkQg6jvR5zvXnVWw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,144,1728975600"; 
-   d="scan'208";a="86583250"
-Received: from pgcooper-mobl3.ger.corp.intel.com (HELO [10.245.244.88]) ([10.245.244.88])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Nov 2024 01:28:14 -0800
-Message-ID: <2ddaf010-ce31-4957-bc4f-7f4c1bfe0826@linux.intel.com>
-Date: Mon, 11 Nov 2024 10:28:11 +0100
+	s=arc-20240116; t=1731322597; c=relaxed/simple;
+	bh=xyu2W+AkhEUFrLCZO/aFXuBzwn1sWoS3HvpP6+mglTo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bJz/gKdIhFBhawGsiCzu/ZhvfVOX3nC9FtEIRHQ7RLkthxbEEKrLvfMUjN5n52ioISHP5VROnADp8GWsE3oFKbtSf2mgy7+JAGQT2KmlYuu1ITej8PKFaSGYURHNAVD2PCUjVQeJYp1XFIlRl/PuiAb4L8J+ICBXg/2cFEHQGuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZMcRH4tH; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1731322594;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PzxqFjD6NsHew4NyK62jDoA1MQuiNh2M1h/kJUKkO+w=;
+	b=ZMcRH4tHGUoAPoFdNe78Iy5xG0pVlHxqdFLfhF0OqkHcDicM4OHY2C9H6Fg+p2+tbpFev7
+	8J0bfjq7aOe/I9bgrzv0A4izQffTxWdyW/LafwcHsxDzu4Hyt+U6mKNukclAnPV8ZTRtmT
+	5TPAZn3PmhT1SmI46C4kPCR5vuIYyM8=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-212-nqgLUa2MNgyvnQ4tsy87CQ-1; Mon, 11 Nov 2024 05:56:33 -0500
+X-MC-Unique: nqgLUa2MNgyvnQ4tsy87CQ-1
+X-Mimecast-MFC-AGG-ID: nqgLUa2MNgyvnQ4tsy87CQ
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-37d45de8bbfso3611655f8f.3
+        for <cgroups@vger.kernel.org>; Mon, 11 Nov 2024 02:56:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731322592; x=1731927392;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PzxqFjD6NsHew4NyK62jDoA1MQuiNh2M1h/kJUKkO+w=;
+        b=kmu5PNZIbGhwGYPjvVCckU8aXrmHKIQFPff9sOD6GCi7dkeRmffjovyRIy9eCf+7Cu
+         OzjHaRFMSemGTi9n4yNU3HqdlkI8+Rg0vfRjgLd9gKRuMzP6x7ZfKEwmqJIpOKJ0xqQD
+         Rugb6HpgU+9Nu/VaKNMqI2EFkujpgKUnVMZTpDXIg0PJOvukvbsGM6xQa1BBoLg7Y7e3
+         BBoJo18T0S0mQkr3ywUKDrrQmnZDtqtSA4qVrtlNkBo4coGyQOg58pQ1mDh8FFr5Jyhm
+         /bXiE+6dG4Smc3wGa903gokAEDjc4P0JHMEAsZMPIq3GSR38cyO0E+5JsPH+xnplTiY9
+         UrZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWVBpULOXcUZAL5CVNaQi2ovBVYNk5fynYe67SRCYulSjwyJmI7u9QER5WRVJaYgA/C9lAXruec@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywm35QWX9uaBAKogUd9wmlieb7t9VFknjKtn/weHVKDkATA8bEv
+	Pu/b2Hm3fbZc/w4nwWuqeZqENaucgxNnRz9DMFlBVEB6sGT+tyrmz4vB3gH7HFB5Hr3f3z1roOf
+	ww2NHdIejtpi8Wx5GS6G9WYxN4mxaJBQbfSreuJn6qF+7nV7GU+AK2ow=
+X-Received: by 2002:a05:6000:782:b0:37d:612c:5e43 with SMTP id ffacd0b85a97d-381f1838df9mr13309460f8f.0.1731322591717;
+        Mon, 11 Nov 2024 02:56:31 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH4fjQnzFja0IJnI8AD28pvo7qsfh9Pd6dcZnWBKwZ9TR9z3dtExcl6hKH6mrCYf74gr9Y9+w==
+X-Received: by 2002:a05:6000:782:b0:37d:612c:5e43 with SMTP id ffacd0b85a97d-381f1838df9mr13309436f8f.0.1731322591400;
+        Mon, 11 Nov 2024 02:56:31 -0800 (PST)
+Received: from jlelli-thinkpadt14gen4.remote.csb (host-89-240-117-250.as13285.net. [89.240.117.250])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-381ed9f8984sm12792910f8f.71.2024.11.11.02.56.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Nov 2024 02:56:30 -0800 (PST)
+Date: Mon, 11 Nov 2024 10:56:29 +0000
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Waiman Long <longman@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] cgroup/cpuset: Enforce at most one
+ rebuild_sched_domains_locked() call per operation
+Message-ID: <ZzHi3VIQAx4AJ3lP@jlelli-thinkpadt14gen4.remote.csb>
+References: <20241110025023.664487-1-longman@redhat.com>
+ <20241110025023.664487-3-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/7] kernel/cgroup: Add "dev" memory accounting cgroup
-To: Waiman Long <llong@redhat.com>, intel-xe@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Johannes Weiner <hannes@cmpxchg.org>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Friedrich Vock <friedrich.vock@gmx.de>, cgroups@vger.kernel.org,
- linux-mm@kvack.org, Maxime Ripard <mripard@kernel.org>
-References: <20241023075302.27194-1-maarten.lankhorst@linux.intel.com>
- <20241023075302.27194-2-maarten.lankhorst@linux.intel.com>
- <813cc1d5-1648-4900-ae56-5405e52926df@redhat.com>
-Content-Language: en-US
-From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-In-Reply-To: <813cc1d5-1648-4900-ae56-5405e52926df@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241110025023.664487-3-longman@redhat.com>
 
+Hi,
 
-
-Den 2024-10-23 kl. 17:26, skrev Waiman Long:
-> On 10/23/24 3:52 AM, Maarten Lankhorst wrote:
->> The initial version was based roughly on the rdma and misc cgroup
->> controllers, with a lot of the accounting code borrowed from rdma.
->>
->> The current version is a complete rewrite with page counter; it uses
->> the same min/low/max semantics as the memory cgroup as a result.
->>
->> There's a small mismatch as TTM uses u64, and page_counter long pages.
->> In practice it's not a problem. 32-bits systems don't really come with
->>> =4GB cards and as long as we're consistently wrong with units, it's
->> fine. The device page size may not be in the same units as kernel page
->> size, and each region might also have a different page size (VRAM vs GART
->> for example).
->>
->> The interface is simple:
->> - populate dev_cgroup_try_charge->regions[..] name and size for each 
->> active
->>    region, set num_regions accordingly.
->> - Call (dev,drmm)_cgroup_register_device()
->> - Use dev_cgroup_try_charge to check if you can allocate a chunk of 
->> memory,
->>    use dev_cgroup__uncharge when freeing it. This may return an error 
->> code,
->>    or -EAGAIN when the cgroup limit is reached. In that case a reference
->>    to the limiting pool is returned.
->> - The limiting cs can be used as compare function for
->>    dev_cgroup_state_evict_valuable.
->> - After having evicted enough, drop reference to limiting cs with
->>    dev_cgroup_pool_state_put.
->>
->> This API allows you to limit device resources with cgroups.
->> You can see the supported cards in /sys/fs/cgroup/dev.region.capacity
->> You need to echo +dev to cgroup.subtree_control, and then you can
->> partition memory.
->>
->> Co-developed-by: Friedrich Vock <friedrich.vock@gmx.de>
->> Signed-off-by: Friedrich Vock <friedrich.vock@gmx.de>
->> Co-developed-by: Maxime Ripard <mripard@kernel.org>
->> Signed-off-by: Maxime Ripard <mripard@kernel.org>
->> Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
->> ---
->>   Documentation/admin-guide/cgroup-v2.rst |  51 ++
->>   Documentation/core-api/cgroup.rst       |   9 +
->>   Documentation/core-api/index.rst        |   1 +
->>   Documentation/gpu/drm-compute.rst       |  54 ++
->>   include/linux/cgroup_dev.h              |  91 +++
->>   include/linux/cgroup_subsys.h           |   4 +
->>   include/linux/page_counter.h            |   2 +-
->>   init/Kconfig                            |   7 +
->>   kernel/cgroup/Makefile                  |   1 +
->>   kernel/cgroup/dev.c                     | 893 ++++++++++++++++++++++++
->>   mm/page_counter.c                       |   4 +-
->>   11 files changed, 1114 insertions(+), 3 deletions(-)
->>   create mode 100644 Documentation/core-api/cgroup.rst
->>   create mode 100644 Documentation/gpu/drm-compute.rst
->>   create mode 100644 include/linux/cgroup_dev.h
->>   create mode 100644 kernel/cgroup/dev.c
+On 09/11/24 21:50, Waiman Long wrote:
+> Since commit ff0ce721ec21 ("cgroup/cpuset: Eliminate unncessary
+> sched domains rebuilds in hotplug"), there is only one
+> rebuild_sched_domains_locked() call per hotplug operation. However,
+> writing to the various cpuset control files may still casue more than
+> one rebuild_sched_domains_locked() call to happen in some cases.
 > 
-> Just a general comment.
+> Juri had found that two rebuild_sched_domains_locked() calls in
+> update_prstate(), one from update_cpumasks_hier() and another one from
+> update_partition_sd_lb() could cause cpuset partition to be created
+> with null total_bw for DL tasks. IOW, DL tasks may not be scheduled
+> correctly in such a partition.
 > 
-> Cgroup v1 has a legacy device controller in security/device_cgroup.c 
-> which is no longer available in cgroup v2. So if you use the name device 
-> controller, the documentation must be clear that it is completely 
-> different and have no relationship from the device controller in cgroup v1.
-Hey,
+> A sample command sequence that can reproduce null total_bw is as
+> follows.
+> 
+>   # echo Y >/sys/kernel/debug/sched/verbose
+>   # echo +cpuset >/sys/fs/cgroup/cgroup.subtree_control
+>   # mkdir /sys/fs/cgroup/test
+>   # echo 0-7 > /sys/fs/cgroup/test/cpuset.cpus
+>   # echo 6-7 > /sys/fs/cgroup/test/cpuset.cpus.exclusive
+>   # echo root >/sys/fs/cgroup/test/cpuset.cpus.partition
+> 
+> Fix this double rebuild_sched_domains_locked() calls problem
+> by replacing existing calls with cpuset_force_rebuild() except
+> the rebuild_sched_domains_cpuslocked() call at the end of
+> cpuset_handle_hotplug(). Checking of the force_sd_rebuild flag is
+> now done at the end of cpuset_write_resmask() and update_prstate()
+> to determine if rebuild_sched_domains_locked() should be called or not.
+> 
+> The cpuset v1 code can still call rebuild_sched_domains_locked()
+> directly as double rebuild_sched_domains_locked() calls is not possible.
+> 
+> Reported-by: Juri Lelli <juri.lelli@redhat.com>
+> Closes: https://lore.kernel.org/lkml/ZyuUcJDPBln1BK1Y@jlelli-thinkpadt14gen4.remote.csb/
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-Thanks for noticing. I didn't know there was such a controller. Seems 
-weird to have one for managing access to opening devnodes instead of a
-security module.
+This indeed works for me and fixes things with the test above (on v2).
 
-I'll update the documentation in the next version to make it more clear.
+Tested-by: Juri Lelli <juri.lelli@redhat.com>
 
-Cheers,
-~Maarten
+Thanks!
+Juri
+
 
