@@ -1,79 +1,87 @@
-Return-Path: <cgroups+bounces-5520-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5515-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFCF19C6105
-	for <lists+cgroups@lfdr.de>; Tue, 12 Nov 2024 20:08:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 817989C617D
+	for <lists+cgroups@lfdr.de>; Tue, 12 Nov 2024 20:31:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 850532853C0
-	for <lists+cgroups@lfdr.de>; Tue, 12 Nov 2024 19:08:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0103EB227AE
+	for <lists+cgroups@lfdr.de>; Tue, 12 Nov 2024 16:00:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0841421832A;
-	Tue, 12 Nov 2024 19:08:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B40C206074;
+	Tue, 12 Nov 2024 15:57:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="du6wzgQA"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1XkK2chC";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2Z7Qx0DP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1904207212;
-	Tue, 12 Nov 2024 19:08:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F6A8206072;
+	Tue, 12 Nov 2024 15:57:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731438509; cv=none; b=RYCEUP1Y28kE2Vp1zNoAdoFhBNAZNt39z/VtEJNb4S10Xiz9FVVL/Yg5GPoXQE9dnUN4vvINh7MhqYP4x/YHXhNlBDFNJ2SKLSiueCClhrIW6Sai9M0TmvhV/kWGtl3buF+/KDzIji54A9mgXYTnxLLQj8bAhJW2tvuly1AzZAs=
+	t=1731427040; cv=none; b=bgOCgG6wpXvjn4VIrAjA3477iGUkp2wTBnKSxquDam+Gsyr4VJpr7hy8YLcdj5nGR6nUddHMjVEPwgJ07S0sf994zrokD4YL9Ex/WrnLhAP2ugkIdXmkdYnOtDjFqdvlIlcBhustI8vGmluyxgu7OmrSN8RDttwMq4XW4W7lzH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731438509; c=relaxed/simple;
-	bh=qvf55bd6aibk12ZnaIORjrXt39F6ExkPJK5maKjA7Wg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=guT64Hn8T39eEct7WjutpWT20w95AsRyfegvo2ZCCuQStA3PSDG50jspCZ3TY780Y6NQR4pXmg3nwyukz/aa8q9ygAGAS2/BnHqrwQDINYS++phPndM6omgzNVg5+N6+H+OqkbZDxuTzSzq3eCriglhaHo9umB0VA3CcX4fdv2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=du6wzgQA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEB61C4CECD;
-	Tue, 12 Nov 2024 19:08:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731438507;
-	bh=qvf55bd6aibk12ZnaIORjrXt39F6ExkPJK5maKjA7Wg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=du6wzgQA0DrEscYRYnaXLCfykKE9TyaHbLw6Xpc0ietw+EHmlRDiTcNEmqWw0qNes
-	 Wq8ih4SrJPeqQ/mQT8VuHffVmkuoT8p8FqZjkOtkwQCSixBuPKDz9nyvg6TEJcTrOU
-	 Guq+TitJOpcZ55hxTYhBpRMt9mImj35RZ1hN6NfYbsjgtkhE2Te90P10SqeH0gqzWY
-	 Fr4jdICaA9phAIhq72B2Fp/9iMu5lOchgOgE2SGizP2DAkhCFMVdPrN4yC/AzwOz3i
-	 FUOy0RegLzmKDY4A5/8yRxCb7FIIE4eTJJdr+MgNNA9l61yNg5nU0H/I5O3JTKRc9J
-	 Y0SbTf1BkpWqA==
-Date: Tue, 12 Nov 2024 09:08:26 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [PATCH 0/3] cgroup/cpuset: Remove redundant
- rebuild_sched_domains_locked() calls
-Message-ID: <ZzOnqqu-Wg3V3z1z@slm.duckdns.org>
-References: <20241110025023.664487-1-longman@redhat.com>
+	s=arc-20240116; t=1731427040; c=relaxed/simple;
+	bh=cYjUup2uaMpA9UuyvnE2JFhxRMV85caWvV2SGSO/p4s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dWiwZjZ6nG/gH9EmHT5reB6gCJqfNRFkNjlSbZy2pz4mFZ0xfqDhQRn53GCY2cGDiDoiGqLSrqLVtUwQLtCZ0LWETR9MuxA8OX/lltzolynekY3JV25YkkcPvNb93DUf7BQTNFuYNUZ9pEni3VJvZgxprcP/ISgVVFjRTWLaEdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1XkK2chC; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=2Z7Qx0DP; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1731427037;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=evCvo/GOJRf/mT7vzTMHE19/uCRerVB33FykyHO2fsg=;
+	b=1XkK2chCrBnmVGrseS40oUiNk+8K5zP5W08ov84PzwkndswHNbjmrIudETAI3FcGE4xFaa
+	YLziVeUGWyxizL/uHv5U61bqEl50zNRXaxwlUhKzfajzJhHqmSq3UdJh1qqlGiKonbucfb
+	FxvXhIFXhLVBCYOBCYFO7wy8EmT4CdTUjfG376mC5NRpbx3X91cjiabLysj5i7PmCRhCKa
+	unz4JZpoKtpLrhIntPDk6LceW0c6jvA45nCH00aRyw4tsqtAmLbygY8P2ppbXgPEFtwM3k
+	BPXJUqByPEl0XU67fGLWST4J9+uQLnaVvaSz/Bi851ySmZcd7UhEMEWc+F4dKw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1731427037;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=evCvo/GOJRf/mT7vzTMHE19/uCRerVB33FykyHO2fsg=;
+	b=2Z7Qx0DP8rlB5zFylKD1ZE8A0BTUimr4t4U9rJ4L3M7tLolXEA01QGWcfpzHBt32vJ2TMO
+	mDCQMuzkmKiKKdBA==
+To: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Hillf Danton <hdanton@sina.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Marco Elver <elver@google.com>,
+	Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	tglx@linutronix.de
+Subject: [PATCH v2 0/2] Let cgroup use RCU for kernfs_node::name lookup.
+Date: Tue, 12 Nov 2024 16:52:37 +0100
+Message-ID: <20241112155713.269214-1-bigeasy@linutronix.de>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241110025023.664487-1-longman@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Nov 09, 2024 at 09:50:20PM -0500, Waiman Long wrote:
-> Waiman Long (3):
->   cgroup/cpuset: Revert "Allow suppression of sched domain rebuild in
->     update_cpumasks_hier()"
->   cgroup/cpuset: Enforce at most one rebuild_sched_domains_locked() call
->     per operation
->   cgroup/cpuset: Further optimize code if CONFIG_CPUSETS_V1 not set
+This is a follow up to Hillf/syzbot report. The thread started at
+  https://lore.kernel.org/all/20241102001224.2789-1-hdanton@sina.com/
 
-Applied to cgroup/for-6.13.
+v1=E2=80=A6v2 https://lore.kernel.org/all/20241108222406.n5azgO98@linutroni=
+x.de
+  - Use RCU lookup only for ::name and only for cgroup.
 
-Thanks.
+Sebastian
 
--- 
-tejun
 
