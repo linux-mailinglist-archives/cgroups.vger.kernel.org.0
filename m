@@ -1,67 +1,65 @@
-Return-Path: <cgroups+bounces-5545-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5546-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D58D9C7B37
-	for <lists+cgroups@lfdr.de>; Wed, 13 Nov 2024 19:32:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 905ED9C7C2B
+	for <lists+cgroups@lfdr.de>; Wed, 13 Nov 2024 20:31:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A4ED287D44
-	for <lists+cgroups@lfdr.de>; Wed, 13 Nov 2024 18:32:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7723EB26E6B
+	for <lists+cgroups@lfdr.de>; Wed, 13 Nov 2024 19:18:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D69E74BED;
-	Wed, 13 Nov 2024 18:29:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB949203712;
+	Wed, 13 Nov 2024 19:18:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SF91YXhY"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nsZ3C5Xj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBFFA1FAC53;
-	Wed, 13 Nov 2024 18:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA341FF7BD
+	for <cgroups@vger.kernel.org>; Wed, 13 Nov 2024 19:18:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731522591; cv=none; b=aOXNbOzS2vjuM+vTx5xyDBIrzKXOMOF8INyoFgFDuYZ7A2RZ/DB58H8wnhga869/NhwDpcAPcZvZYOFI4OGtOA9lP7Sc7+4vXdKXtv67vrBhTtHKYXmEtwn3nNuCI00dN25/Ogx+N7bbGCoReNuYh8/MN/C2T6ZlEQKvHFkrjnE=
+	t=1731525523; cv=none; b=e9KQHDl7L0QnngsnHo0fA69U/xn1XHinIQ9un18DVBz0lYucyQanKuW30XrjB7jfpxIcGW4GLQkNpQSLWMXwRsFMf1ego5ffJ1R/256o7pVwj4UofOkNk1ClThdbNFz1GzMFlgdVjPBfmfu4D34WgcXYKCDzzwzvlBNnHC3apvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731522591; c=relaxed/simple;
-	bh=PVDbYbNqRERQaA9TjMSh0em+KssXtcnQxggmRi2efsA=;
+	s=arc-20240116; t=1731525523; c=relaxed/simple;
+	bh=cl48UEXjbsnFfZCp8OqkLCcLDcDbf68SMHRoxCqbqZM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nWr35q1lW7R26hWVNYMTIM//slGwlPNh4py4OZomJ9q4UF6+g5ULQ1q1XMeUn8zJHeUYapwYW4BuvJFSWtw9oJqtj5gvX6N4nuSl5yPIyxZtkVTP4GAmlG2n/31JRpO4EFLCckFGViSzmKJDAspCqI+twnYOzxXrW8UjjdeyIzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SF91YXhY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D7AAC4CEC3;
-	Wed, 13 Nov 2024 18:29:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731522591;
-	bh=PVDbYbNqRERQaA9TjMSh0em+KssXtcnQxggmRi2efsA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SF91YXhY1ySElLg5xEuFdftyqMktNaZoSUkruyuHZoowwUycaGNLPUqGWb09MNvrR
-	 mnZGqEYkGbbTvW5+eoUub02HkOItVXZrB7yk7vCmLpH2VbNoqxmkW0JfncyFqoKhOt
-	 7j22irKZUJktZwKD4+E4jbBXrOJGI6XEi0OASSdNXiK1z1B6q/fJsUcfRZBQZDS+1j
-	 LQGtr8NTpkv4vdBJj8pY/bUWrlWE3K0WJxcqfbzdxqmySHRuqfIp00NxXjDbtURheQ
-	 9ovB/IYK3C8btkjtlNL4E5pYKroQZapAQTpn9vHO6bO5ClaT8LecQlNyQYn1HyNmUf
-	 lkugInU8/bm6g==
-Date: Wed, 13 Nov 2024 08:29:50 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, Zefan Li <lizefan.x@bytedance.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Friedrich Vock <friedrich.vock@gmx.de>, cgroups@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH 0/7] kernel/cgroups: Add "dev" memory accounting cgroup.
-Message-ID: <ZzTwHr3ah-MOPdx0@slm.duckdns.org>
-References: <20241023075302.27194-1-maarten.lankhorst@linux.intel.com>
- <ZxlRLMwkabTaOrjc@slm.duckdns.org>
- <20241024-beautiful-spaniel-of-youth-f75b61@houat>
- <Zxp-nLXOJXoSy8BN@slm.duckdns.org>
- <20241028-meaty-mega-nuthatch-3d74b1@houat>
- <20241029203834.GA636494@cmpxchg.org>
- <20241106-vivacious-eagle-of-gaiety-44a419@houat>
- <ZyuzeIhTgXU5CCk0@slm.duckdns.org>
- <d6c57862-1593-44ff-a192-7af308cac94b@linux.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=XX7/3LjKCz6XZaxur7QEf2iOsCLUKHACtlVJjsf3PYNMDNbCvmBErZN4UQwWRI00nt3j5v1Ykrryhji1ML7vJpN3k1aTXc8UTA0UIOMf2tV1q0Q64Jp/MdYq8mf7xNPnIiD/EPexlb/KwIbQONew6k3X432d5EA4dS/a7PB0TZI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nsZ3C5Xj; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 13 Nov 2024 19:18:32 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731525519;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i9Dr4PPzgMybXoYmK3wfTXND+6Gc0LfaAn22+IErLaA=;
+	b=nsZ3C5Xjhtcf+/WPJJWQgf5ujRoQ/1TPonCA6O8ly4bDKEXgvQMDNQ9y6xxlXeS5H8jXHm
+	gvTeGq2aFuK3AwRhdTaYzgOWnaDkQj39nBB4295oAAo7H0y6ItiFLKtfmEZx3cPDYU+P/1
+	hNhm3YqqwrvAy3o77IIBOYn3FsnVnbs=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Kinsey Ho <kinseyho@google.com>, Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Pasha Tatashin <pasha.tatashin@soleen.com>,
+	David Rientjes <rientjes@google.com>, willy@infradead.org,
+	Vlastimil Babka <vbabka@suse.cz>,
+	David Hildenbrand <david@redhat.com>,
+	Joel Granados <joel.granados@kernel.org>,
+	Kaiyang Zhao <kaiyang2@cs.cmu.edu>,
+	Sourav Panda <souravpanda@google.com>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH mm-unstable v1 0/2] Track pages allocated for struct
+Message-ID: <ZzT7iL_2G1ftdlzZ@google.com>
+References: <20241031224551.1736113-1-kinseyho@google.com>
+ <20241031160604.bcd5740390f05a01409b64f3@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -70,26 +68,27 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d6c57862-1593-44ff-a192-7af308cac94b@linux.intel.com>
+In-Reply-To: <20241031160604.bcd5740390f05a01409b64f3@linux-foundation.org>
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
-
-On Wed, Nov 13, 2024 at 03:58:25PM +0100, Maarten Lankhorst wrote:
-...
-> Thanks for all feedback and discussion. I checked mostly on patchwork so I
-> missed the discussion here. Fortunately it's only been about naming. :)
+On Thu, Oct 31, 2024 at 04:06:04PM -0700, Andrew Morton wrote:
+> hm.
 > 
-> I'm thinking of adding a 'high' knob as well, that will work similarly to
-> high in normal mem controller. (so not proportionally calculated like 'max',
-> but (usage + allocated) < max = ok.
+> On Thu, 31 Oct 2024 22:45:49 +0000 Kinsey Ho <kinseyho@google.com> wrote:
 > 
-> Recursively of course.
+> > We noticed high overhead for pages allocated for struct swap_cgroup in
+> > our fleet.
+> 
+> This is scanty.  Please describe the problem further.
+> 
+> > This patchset adds the number of pages allocated for struct
+> > swap_cgroup to vmstat. This can be a useful metric for identifying
+> > unneeded overhead on systems which configure swap.
+> 
+> Possibly dumb question: can we switch swap_cgroup_prepare to kmalloc()
+> (or kmem-cache_alloc()) and use slab's accounting to satisfy this
+> requirement?
 
-I'd be cautious about adding knobs. These being published API, it's easy to
-paint oneself into a corner. I suggest starting with what's essential.
-
-Thanks.
-
--- 
-tejun
+Or vzalloc/kvmalloc(), which are used for allocating the rest of swap-related
+meta-data.
 
