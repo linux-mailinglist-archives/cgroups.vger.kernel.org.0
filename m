@@ -1,235 +1,179 @@
-Return-Path: <cgroups+bounces-5529-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5530-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8872A9C6FEC
-	for <lists+cgroups@lfdr.de>; Wed, 13 Nov 2024 13:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 940F29C7076
+	for <lists+cgroups@lfdr.de>; Wed, 13 Nov 2024 14:23:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48C0728B52E
-	for <lists+cgroups@lfdr.de>; Wed, 13 Nov 2024 12:59:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54BF528198B
+	for <lists+cgroups@lfdr.de>; Wed, 13 Nov 2024 13:23:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD202022F3;
-	Wed, 13 Nov 2024 12:57:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C7AE1DFE35;
+	Wed, 13 Nov 2024 13:23:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ixtGG0Oy"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="G9NWScQ+";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4RoD3RD3"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF9631F77A2
-	for <cgroups@vger.kernel.org>; Wed, 13 Nov 2024 12:57:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66E417DA7F;
+	Wed, 13 Nov 2024 13:23:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731502670; cv=none; b=HKaGTaqVT6SUkp07Ghotgk9X4l/AenJFXjwDZH5dysU625lHsxzmZEVVCpuxNRdfIaPlKcxdMO3hlLUpuQBONh1X7XVZbaCPtKpi4lB41DIHOxQSaCqm+grfqKssQCt2vMqgyLWD5LDUvVbwC27Ang3INsheWB+eBkld/rmvYOA=
+	t=1731504220; cv=none; b=C/DPhToQ+jK49bncusT3MbPnmXHn0VBUDcuyczuYxWaSFJYBhfokqaQDM67uHIc/f9NP6qhJNZOgCitGqGcxqp4zS8/HrNRYZk83Hh5wdA9xp3OrOCjT/8Y95hCH4gnVky7IZ9ma2SAsBTl8nUWITamMs7ky5pfxHrqxnXNCJMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731502670; c=relaxed/simple;
-	bh=YmiEgT/yi/9glvt++sRIcz8wFH0eUrfmtf5tjePm8dU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HOBSwg8FQZvHwBR0QtmpXk8p2Kwy3taMVfPo16EXsyugNi3VC+IOW/2FOVUxoVHmMCmwebBIiByPimspwEKytygSHyFYO8UuKx4mMMoH9lgiKBqnOkkRO9pNMY1GRLJDXCcrFH5ZYzEbbaNdaO2QsMaGBVTDFKuEJNU3ZcHHem0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ixtGG0Oy; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1731502667;
+	s=arc-20240116; t=1731504220; c=relaxed/simple;
+	bh=oJ+wYZpfQraGBqNcl6Q7s6PJOt/vw7COqPrbFQl5D74=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JZe0x9gy5HJ8Vi6SPhssaxPm44zaXqgBoUDGRCSB5q4Fx565+22zCPN0mtS0ROkDC2aDv5NMWgdNE2sgIdlqFma3ps0YCVRajwuAb7I1aUseigMZB/LvvWHyGUohR9nrO2P7glUvu4Xp9HjWlURzX4jxFlZaKVYTsRmAx2UBs0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=G9NWScQ+; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4RoD3RD3; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 13 Nov 2024 14:23:33 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1731504215;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QrrjP0KEDM8lqL2NE1SqjbzvwUoKziuZjRGMfoLwWGw=;
-	b=ixtGG0Oyc6iMxyjX0pkS6ltIDdPBM0gJ0XJoU4OBHHm8xhiuBA8iXDhy8Ah1yCr66Lr2hV
-	pvHbDzfFpe9VuwlMv2hfJ1pgmqMQBwcrHz8l9BzHYwCaTSuCeyuhJHqyDsYAXxd/P2Kyie
-	uBgqkdJdJxRYQehj+YxqZDqCAxonoJM=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-681-HcUmAQxMOGGAzQAY3VcE-A-1; Wed, 13 Nov 2024 07:57:46 -0500
-X-MC-Unique: HcUmAQxMOGGAzQAY3VcE-A-1
-X-Mimecast-MFC-AGG-ID: HcUmAQxMOGGAzQAY3VcE-A
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-37d4a211177so3858639f8f.0
-        for <cgroups@vger.kernel.org>; Wed, 13 Nov 2024 04:57:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731502666; x=1732107466;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QrrjP0KEDM8lqL2NE1SqjbzvwUoKziuZjRGMfoLwWGw=;
-        b=qE+iYCfOTMFodbueX6Js53GgcVzzGdELi6iqbLjrlxgoEG8LVGSMCTwL3PuH6E+DTp
-         /dDI5EzZse/XZMHTB+E2mHJjANpWwvXakFFJiy2k3RgkEt1foooF4dvpIlE/ojLL8qwe
-         +eqVJAEISWTSVSBrvG7/Eqpm4gz4b6oaRrKYwW4FZgtTN/q3n1pZl9o/jSsLevw1xgw5
-         nk/KUaHPYDwIPkm5n/F66I1yVqzIVvJ+aiwk+0MXQqPLfKY598v7rdlckVicx5YgIZ7l
-         PUJWUyVyrWDYXs9o/eCjqCRWxjenznm39IZjn13VguJxQI1s0602WNJx0SvOMNUVyqMm
-         j4+g==
-X-Forwarded-Encrypted: i=1; AJvYcCVoj2ML2WUsGpTRq3qt6hh+HJgmJ6JNgIet4IJWxVdoEJbRmzyQpEnikxXWigohMDbJC8uI3cRP@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx4dkkxT+oKHjwpSCzPM0cW3u5iyIZ2h8rDAyDARXO7WGqfeY5D
-	OPRjQ7/ddF2agkOZ4N6g9THyDy6oNvB17j3ZWnozM8ZjRmNxVxUWOjbZIn9rIHGKknA4mJxan98
-	8l7CA7WvAFUUgvOtEfqYzcEiNkFPMZN9Ta9D+9/+jaMamw3NEdKqCtKc=
-X-Received: by 2002:a05:6000:2ce:b0:37d:4647:154e with SMTP id ffacd0b85a97d-381f1867241mr17448842f8f.9.1731502665560;
-        Wed, 13 Nov 2024 04:57:45 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEy2VCUb/YrhOG4sJTtOcm8JAiO69Hn4t+8LeX63EXs9a8zmjJu8QPDcpAHA0nH0c6/qEeDDA==
-X-Received: by 2002:a05:6000:2ce:b0:37d:4647:154e with SMTP id ffacd0b85a97d-381f1867241mr17448812f8f.9.1731502665137;
-        Wed, 13 Nov 2024 04:57:45 -0800 (PST)
-Received: from jlelli-thinkpadt14gen4.remote.csb (host-80-47-4-194.as13285.net. [80.47.4.194])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-381ed997391sm18486834f8f.45.2024.11.13.04.57.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 Nov 2024 04:57:43 -0800 (PST)
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Waiman Long <longman@redhat.com>,
-	Tejun Heo <tj@kernel.org>,
+	bh=Vq82xxGccfTUf0BQBNGrBV96lp9tQcpfVRLDXa8nGOY=;
+	b=G9NWScQ+2uzuncOkgdUm8GAMFMTqObnPB24j2drzxUq/1IqhpYK6PyP+xl7HRo/XPEtNNo
+	RpbnXV1LBtblAuQYx5tbzElJR18d7U1KwR6JMQHQO1ZYSLHA4Yh7UEHvSx8px5kqDnpVNb
+	4DxfHC21XbPY/nW7jIRfjk0I8M+eJ57C2CLNPY5vEfwjrnbanqIBEtjrkUpMB61kV93unM
+	Aec/dF9mNW7T9obn6BAuOInmvh2IFwHhFN/nxQyKrXWmfoHV8AIoTCPy4A+7FYO0zoLAdN
+	W3ZaJlKZbxGiXUr80d/3VP9j0BwS69cvAUN9fXmVTgxdDXnNhF+dqulEdCL8hA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1731504215;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Vq82xxGccfTUf0BQBNGrBV96lp9tQcpfVRLDXa8nGOY=;
+	b=4RoD3RD3M45L+l1WkcikHcDj4wgVDsOKu9HyYHKh9ddcO+hpKMig47m9/95xfwjYwJW3/u
+	dhWmZ4qSUF3rc1BA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Hillf Danton <hdanton@sina.com>,
 	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Koutny <mkoutny@suse.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>
-Cc: Qais Yousef <qyousef@layalina.io>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
-	Suleiman Souhlal <suleiman@google.com>,
-	Aashish Sharma <shraash@google.com>,
-	Shin Kawamura <kawasin@google.com>,
-	Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	Juri Lelli <juri.lelli@redhat.com>
-Subject: [PATCH 2/2] sched/deadline: Correctly account for allocated bandwidth during hotplug
-Date: Wed, 13 Nov 2024 12:57:23 +0000
-Message-ID: <20241113125724.450249-3-juri.lelli@redhat.com>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20241113125724.450249-1-juri.lelli@redhat.com>
-References: <20241113125724.450249-1-juri.lelli@redhat.com>
+	Marco Elver <elver@google.com>, tglx@linutronix.de,
+	syzbot+6ea37e2e6ffccf41a7e6@syzkaller.appspotmail.com
+Subject: Re: [PATCH v2 2/2] cgroup, kernfs: Move cgroup to the RCU interface
+ for name lookups
+Message-ID: <20241113132333.ayhH2ZH-@linutronix.de>
+References: <20241112155713.269214-1-bigeasy@linutronix.de>
+ <20241112155713.269214-3-bigeasy@linutronix.de>
+ <ZzOlhANLYxFaIix2@slm.duckdns.org>
+ <20241113074331.B48iqBgp@linutronix.de>
+ <20241113120706.rotCvUqt@linutronix.de>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20241113120706.rotCvUqt@linutronix.de>
 
-For hotplug operations, DEADLINE needs to check that there is still enough
-bandwidth left after removing the CPU that is going offline. We however
-fail to do so currently.
+- Zefan Li
 
-Restore the correct behavior by restructuring dl_bw_manage() a bit, so
-that overflow conditions (not enough bandwidth left) are properly
-checked. Also account for dl_server bandwidth, i.e. discount such
-bandwidht in the calculation since NORMAL tasks will be anyway moved
-away from the CPU as a result of the hotplug operation.
+On 2024-11-13 13:07:08 [+0100], To Tejun Heo wrote:
+> On 2024-11-13 08:43:32 [+0100], To Tejun Heo wrote:
+> > On 2024-11-12 08:59:16 [-1000], Tejun Heo wrote:
+> > > Hello,
+> > 
+> > Hi,
+> > 
+> > > On Tue, Nov 12, 2024 at 04:52:39PM +0100, Sebastian Andrzej Siewior wrote:
+> > > ...
+> > > >  /**
+> > > > - * pr_cont_kernfs_name - pr_cont name of a kernfs_node
+> > > > + * pr_cont_kernfs_name_rcu - pr_cont name of a kernfs_node
+> > > >   * @kn: kernfs_node of interest
+> > > >   *
+> > > > - * This function can be called from any context.
+> > > > + * This function can be called from any context. The root node must be with
+> > > > + * KERNFS_ROOT_SAME_PARENT.
+> > > >   */
+> > > > -void pr_cont_kernfs_name(struct kernfs_node *kn)
+> > > > +void pr_cont_kernfs_name_rcu(struct kernfs_node *kn)
+> > > 
+> > > Having to split the interface all the way up isn't great. While there are
+> > > also downsides, I wonder whether a better approach here is just making the
+> > > backend function (kernfs_path_from_node()) automatically use RCU locking if
+> > > the flag is set rather than propagating the difference by splitting the
+> > > interface. The distinction doesn't mean anything to most users after all.
+> > 
+> > Indeed.
+> 
+> Now I see what the problems are. If we merge both into one, then I get
+> this:
+> | int kernfs_name(struct kernfs_node *kn, char *buf, size_t buflen)
+> | {
+> |         struct kernfs_root *root;
+> |         bool rcu_lookup;
+> |
+> |         if (!kn)
+> |                 return strscpy(buf, "(null)", buflen);
+> |
+> |         root = kernfs_root(kn);
+> 
+> This is the tricky part. For KERNFS_ROOT_INVARIANT_PARENT I don't worry
+> that the parent goes away and I need it to get a reference to the
+> kernfs_root node. For the !KERNFS_ROOT_INVARIANT_PARENT I need the lock
+> for kernfs_root() so I put the guard/ lock at the top.
+> 
+> I think that is why you suggested the two functions (or this is what I
+> understood). Looking at the remaining bits:
+> 
+> |         rcu_lookup = root->flags & KERNFS_ROOT_INVARIANT_PARENT;
+> |         if (rcu_lookup) {
+> |                 guard(rcu)();
+> |                 return strscpy(buf, kn->parent ? rcu_dereference(kn->name) : "/", buflen);
+> |         }
+> |         guard(read_lock_irqsave)(&kernfs_rename_lock);
+> |         return strscpy(buf, kn->parent ? rcu_dereference(kn->name) : "/", buflen);
+> | }
+> 
+> This could collapse into the RCU version because read_lock_irqsave()
+> implies RCU protection. And since ->name is always RCU assigned/
+> deallocated I don't really need the lock here, RCU would be enough.
+> Except for the parent. The kn->parent does not matter here (it should be
+> always be != NULL if assigned), the problematic part is kernfs_root()
+> which checks the parent for the root node.
+> 
+> To make this simple I could avoid kernfs_root lookup and just have:
+> | int kernfs_name(struct kernfs_node *kn, char *buf, size_t buflen)
+> | {       
+> |         if (!kn)
+> |                 return strscpy(buf, "(null)", buflen);
+> |         
+> |         guard(rcu)();
+> |         return strscpy(buf, kn->parent ? rcu_dereference(kn->name) : "/", buflen);
+> | }                             
+> 
+> That is the easy part. kernfs_path_from_node() is different as it
+> requires the parent pointer. In order to distinguish the RCU from the
+> non-RCU version I need kernfs_root for the flag and depending on it, the
+> lock so the parent does not go away.
+> 
+> Would it work to add the pointer to kernfs_root into kernfs_node? This
+> would shrink kernfs_elem_dir by a pointer but the union would remain the
+> same size due to kernfs_elem_attr so the struct would grow.
 
-Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
----
- kernel/sched/core.c     |  2 +-
- kernel/sched/deadline.c | 33 ++++++++++++++++++++++++---------
- kernel/sched/sched.h    |  2 +-
- 3 files changed, 26 insertions(+), 11 deletions(-)
+The kernfs_node is released via RCU. That means if the RCU read section
+starts before kernfs_root() then we should always get a stable pointer,
+pointing to the same kernfs_root node since it is always the same one.
+Even if the `parent' pointer is replaced. Wouldn't we need __rcu
+annotation then for the `parent' pointer then?
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 43e453ab7e20..d1049e784510 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8057,7 +8057,7 @@ static void cpuset_cpu_active(void)
- static int cpuset_cpu_inactive(unsigned int cpu)
- {
- 	if (!cpuhp_tasks_frozen) {
--		int ret = dl_bw_check_overflow(cpu);
-+		int ret = dl_bw_deactivate(cpu);
- 
- 		if (ret)
- 			return ret;
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index e53208a50279..609685c5df05 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -3467,29 +3467,31 @@ int dl_cpuset_cpumask_can_shrink(const struct cpumask *cur,
- }
- 
- enum dl_bw_request {
--	dl_bw_req_check_overflow = 0,
-+	dl_bw_req_deactivate = 0,
- 	dl_bw_req_alloc,
- 	dl_bw_req_free
- };
- 
- static int dl_bw_manage(enum dl_bw_request req, int cpu, u64 dl_bw)
- {
--	unsigned long flags;
-+	unsigned long flags, cap;
- 	struct dl_bw *dl_b;
- 	bool overflow = 0;
-+	u64 fair_server_bw = 0;
- 
- 	rcu_read_lock_sched();
- 	dl_b = dl_bw_of(cpu);
- 	raw_spin_lock_irqsave(&dl_b->lock, flags);
- 
--	if (req == dl_bw_req_free) {
-+	cap = dl_bw_capacity(cpu);
-+	switch (req) {
-+	case dl_bw_req_free:
- 		__dl_sub(dl_b, dl_bw, dl_bw_cpus(cpu));
--	} else {
--		unsigned long cap = dl_bw_capacity(cpu);
--
-+		break;
-+	case dl_bw_req_alloc:
- 		overflow = __dl_overflow(dl_b, cap, 0, dl_bw);
- 
--		if (req == dl_bw_req_alloc && !overflow) {
-+		if (!overflow) {
- 			/*
- 			 * We reserve space in the destination
- 			 * root_domain, as we can't fail after this point.
-@@ -3498,6 +3500,19 @@ static int dl_bw_manage(enum dl_bw_request req, int cpu, u64 dl_bw)
- 			 */
- 			__dl_add(dl_b, dl_bw, dl_bw_cpus(cpu));
- 		}
-+		break;
-+	case dl_bw_req_deactivate:
-+		/*
-+		 * cpu is going offline and NORMAL tasks will be moved away
-+		 * from it. We can thus discount dl_server bandwidth
-+		 * contribution as it won't need to be servicing tasks after
-+		 * the cpu is off.
-+		 */
-+		if (cpu_rq(cpu)->fair_server.dl_server)
-+			fair_server_bw = cpu_rq(cpu)->fair_server.dl_bw;
-+
-+		overflow = __dl_overflow(dl_b, cap, fair_server_bw, 0);
-+		break;
- 	}
- 
- 	raw_spin_unlock_irqrestore(&dl_b->lock, flags);
-@@ -3506,9 +3521,9 @@ static int dl_bw_manage(enum dl_bw_request req, int cpu, u64 dl_bw)
- 	return overflow ? -EBUSY : 0;
- }
- 
--int dl_bw_check_overflow(int cpu)
-+int dl_bw_deactivate(int cpu)
- {
--	return dl_bw_manage(dl_bw_req_check_overflow, cpu, 0);
-+	return dl_bw_manage(dl_bw_req_deactivate, cpu, 0);
- }
- 
- int dl_bw_alloc(int cpu, u64 dl_bw)
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index b1c3588a8f00..1fee840f1bab 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -362,7 +362,7 @@ extern void __getparam_dl(struct task_struct *p, struct sched_attr *attr);
- extern bool __checkparam_dl(const struct sched_attr *attr);
- extern bool dl_param_changed(struct task_struct *p, const struct sched_attr *attr);
- extern int  dl_cpuset_cpumask_can_shrink(const struct cpumask *cur, const struct cpumask *trial);
--extern int  dl_bw_check_overflow(int cpu);
-+extern int  dl_bw_deactivate(int cpu);
- extern s64 dl_scaled_delta_exec(struct rq *rq, struct sched_dl_entity *dl_se, s64 delta_exec);
- /*
-  * SCHED_DEADLINE supports servers (nested scheduling) with the following
--- 
-2.47.0
-
+> > > Thanks.
+> 
+Sebastian
 
