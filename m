@@ -1,66 +1,82 @@
-Return-Path: <cgroups+bounces-5538-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5539-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AD799C78BC
-	for <lists+cgroups@lfdr.de>; Wed, 13 Nov 2024 17:23:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45C199C790B
+	for <lists+cgroups@lfdr.de>; Wed, 13 Nov 2024 17:41:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 42B311F230BD
-	for <lists+cgroups@lfdr.de>; Wed, 13 Nov 2024 16:23:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B6F92858AE
+	for <lists+cgroups@lfdr.de>; Wed, 13 Nov 2024 16:41:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDFA81632DA;
-	Wed, 13 Nov 2024 16:23:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 188CC1DF272;
+	Wed, 13 Nov 2024 16:41:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EnsttQ18"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PBYZ9iqA"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0801616088F
-	for <cgroups@vger.kernel.org>; Wed, 13 Nov 2024 16:23:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C120167296
+	for <cgroups@vger.kernel.org>; Wed, 13 Nov 2024 16:40:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731514996; cv=none; b=WyaUSPbW62XK/4xmZzl9omb4d0TUHjP85dv1TKGkENAhxJF2nyLmuMJFMYys1b8FjjIbwG3vmydnXiSfOClZ8pWrij5jIovLOZBYgXoAnLTPWq18kECX8IkLRPhMGSzjlhE+C4c+/Y5rvP5zt7SU3WsAGLdJalRgfS4dzGOk6uY=
+	t=1731516059; cv=none; b=m8IRZkRhbcXNUjtGNw9LkxuMlyJv6bdF9HbTmEKYNJ04idB0D0sI+rkrLTNqyJdoRHNK/428kkZxMg05LVcleR4yJiRWqP8BCcefI0S4rBPn94Z34zNWEhOjCO93e0cByR1Ko1b4tiBVMU6j/zT5Z2fInLJG5yOEF5s/a/xF4Bo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731514996; c=relaxed/simple;
-	bh=ILvq6iNvezbN5hyeS4cFP9EsIKXnczJpSfJnBlbgllw=;
+	s=arc-20240116; t=1731516059; c=relaxed/simple;
+	bh=0Q7kh3jskOrlE/pCHXTHHbNGNC4794SLr5kSLYmIDjU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XcZr8KOgwS7RWzJ15Fhap1MLRtsqfYqln/4dhRVwozFTSEiIRCKH9AFI13YTF4l6UUi1sg4Vs+NokWBWH/wI3kuWXvZBp6ltHuaSi8gPG8IJPAL2ERv8Sk2cdukQ/7Fhg/7ozj2oyVOXdiZZRhV6XVMKQACoaEnUR1XBGo8PJ9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EnsttQ18; arc=none smtp.client-ip=170.10.129.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=CNrEA9knxKLe/+b0fk7+0IbirSimEO5OgGy+inRZ2zq1+t5ludYIMrd2ijHmI91J6b8e2X7wqqXk/yeoCwKPk+uWAj2X8jJeaCTKzJ25+NhDvQDG1M2sGsO5G+1RMkHTTA95S658k/WIrJtkzgbcP4Jg3IR1T028AHbp0vonCNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PBYZ9iqA; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1731514993;
+	s=mimecast20190719; t=1731516057;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=0i5JZQNBT2nQgVVIZnUtd5qJVO8cAjUL1gi6Yy6QyBs=;
-	b=EnsttQ18rabho3h6gv83Qjt1uz/RDZdL0ofN4r3v8aYwbgUdSj8LAipZzbklD+EQK1mSLe
-	0HEVqny1WhciSygEAsoD422q74WxakZ6jYUeWhxM9DSPBVhjvIKrFDUv6jdgc4bZfwEuTh
-	oIOfG2pLOR+DHB/7Sl2qQ26X4kCqTUo=
-Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-175-KTtZl-DqPlyTr_Md41KiCg-1; Wed,
- 13 Nov 2024 11:23:09 -0500
-X-MC-Unique: KTtZl-DqPlyTr_Md41KiCg-1
-X-Mimecast-MFC-AGG-ID: KTtZl-DqPlyTr_Md41KiCg
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 56E431953948;
-	Wed, 13 Nov 2024 16:23:04 +0000 (UTC)
-Received: from pauld.westford.csb (unknown [10.22.80.158])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B176230001A2;
-	Wed, 13 Nov 2024 16:22:58 +0000 (UTC)
-Date: Wed, 13 Nov 2024 11:22:44 -0500
-From: Phil Auld <pauld@redhat.com>
-To: Juri Lelli <juri.lelli@redhat.com>
-Cc: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
+	bh=0Q7kh3jskOrlE/pCHXTHHbNGNC4794SLr5kSLYmIDjU=;
+	b=PBYZ9iqAgsqHvcFng8IDu09dvFpC52hqi65F+49mKrcgyq593jTQ1iDId2W4PZUadjl3/r
+	rZJVzVJa8al8IS+ZSMC5KT3yEuBm7HcnHTHF/15Fi+n7ZsULbotf4dgVUtdqFUd7Y0XGza
+	uVuqDZ0X0rx+m9wu7M0k59uqy/3yMyU=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-213-5SL2-3a9Nn-iwywEum3-PQ-1; Wed, 13 Nov 2024 11:40:56 -0500
+X-MC-Unique: 5SL2-3a9Nn-iwywEum3-PQ-1
+X-Mimecast-MFC-AGG-ID: 5SL2-3a9Nn-iwywEum3-PQ
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4314c6ca114so54050165e9.1
+        for <cgroups@vger.kernel.org>; Wed, 13 Nov 2024 08:40:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731516054; x=1732120854;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0Q7kh3jskOrlE/pCHXTHHbNGNC4794SLr5kSLYmIDjU=;
+        b=Sm6HGXjTO/+EKUO2nc2DUE9zUaGqLfGjjikp3WlpLKBdsPb80r+DhXE2anS0uiPV3E
+         2duKJ6vwClxWwKD54ivIYxrks2HP4bls+oTyL3hBfYWXKl+aE+Pgb5WdXjCtwWcK7Phu
+         7tf9bkiqlNJ4StF9TOObCuvtIQvI8pSz/KNExe44esX0v3LhelgGlCTplav7aBWLdyt7
+         3ue7v/tpkRFY1K63KVyl/Kc+Ld8k1qps0JeI4SigjSK0McnkssJueiLKFxR0lcjb404D
+         0xeasDjFrL7+DCcMFi9wYa6uGGDTYI2KH3EUxDYbM0IjfeTQqOpoz6OVqQJRED1fDitl
+         ADeg==
+X-Forwarded-Encrypted: i=1; AJvYcCXHzEq6L3aKhHJgq/6nkdFgqHJ+5RzeOsMwwMGKNRRaSSYeReBWvwcwukB/TEDPcceLglz6SQWD@vger.kernel.org
+X-Gm-Message-State: AOJu0YwZsDiD2+hINRVtpb/a83QLoSklRI4AtByKT8snrT5UFJ8MUMyz
+	VF7ghSkeC2Nf3XXNtoovzPriYVNtCJZkN2IdPBp2IvMAss/Gf9w59+qOtYp6MGAnk7gMd7ga2RR
+	VZeRpp+c9MgyBKDqvfelhL6NJf2AWhcfyxxvDSBjbHQ0UW1a3zzXa8pU=
+X-Received: by 2002:a05:600c:3d05:b0:431:7c78:b885 with SMTP id 5b1f17b1804b1-432d4aaa11emr34935245e9.4.1731516053767;
+        Wed, 13 Nov 2024 08:40:53 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHFQ7t1MLzge6g1NzYJfsmBrzfLmhfNgwB0NjnWV3vCzt5pLtHkQ7sgmX7XneDTPBcDj64hAw==
+X-Received: by 2002:a05:600c:3d05:b0:431:7c78:b885 with SMTP id 5b1f17b1804b1-432d4aaa11emr34934985e9.4.1731516053473;
+        Wed, 13 Nov 2024 08:40:53 -0800 (PST)
+Received: from jlelli-thinkpadt14gen4.remote.csb (host-80-47-4-194.as13285.net. [80.47.4.194])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-432d5557332sm29571735e9.43.2024.11.13.08.40.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Nov 2024 08:40:52 -0800 (PST)
+Date: Wed, 13 Nov 2024 16:40:49 +0000
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Waiman Long <llong@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
 	Michal Koutny <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Vincent Guittot <vincent.guittot@linaro.org>,
@@ -78,11 +94,10 @@ Cc: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
 	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
 Subject: Re: [PATCH 2/2] sched/deadline: Correctly account for allocated
  bandwidth during hotplug
-Message-ID: <20241113162244.GC402105@pauld.westford.csb>
+Message-ID: <ZzTWkZJktDMlwQEW@jlelli-thinkpadt14gen4.remote.csb>
 References: <20241113125724.450249-1-juri.lelli@redhat.com>
  <20241113125724.450249-3-juri.lelli@redhat.com>
- <20241113134908.GB402105@pauld.westford.csb>
- <ZzS-ncIOnEgrOlte@jlelli-thinkpadt14gen4.remote.csb>
+ <8e55c640-c931-4b9c-a501-c5b0a654a420@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -91,51 +106,22 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZzS-ncIOnEgrOlte@jlelli-thinkpadt14gen4.remote.csb>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+In-Reply-To: <8e55c640-c931-4b9c-a501-c5b0a654a420@redhat.com>
 
-On Wed, Nov 13, 2024 at 02:58:37PM +0000 Juri Lelli wrote:
-> Hi Phil,
-> 
-> On 13/11/24 08:49, Phil Auld wrote:
-> > 
-> > Hi Juri,
-> > 
-> > On Wed, Nov 13, 2024 at 12:57:23PM +0000 Juri Lelli wrote:
-> > > For hotplug operations, DEADLINE needs to check that there is still enough
-> > > bandwidth left after removing the CPU that is going offline. We however
-> > > fail to do so currently.
-> > > 
-> > > Restore the correct behavior by restructuring dl_bw_manage() a bit, so
-> > > that overflow conditions (not enough bandwidth left) are properly
-> > > checked. Also account for dl_server bandwidth, i.e. discount such
-> > > bandwidht in the calculation since NORMAL tasks will be anyway moved
-> > 
-> > "bandwidth"  :)
-> 
-> Grrrr. :)
->
+On 13/11/24 11:06, Waiman Long wrote:
 
-Yeah, those are just minor nits.   Maybe Peter can fix them on the
-way by...
+...
 
+> This part can still cause a failure in one of test cases in my cpuset
+> partition test script. In this particular case, the CPU to be offlined is an
+> isolated CPU with scheduling disabled. As a result, total_bw is 0 and the
+> __dl_overflow() test failed. Is there a way to skip the __dl_overflow() test
+> for isolated CPUs? Can we use a null total_bw as a proxy for that?
 
-Cheers,
-Phil
+Can you please share the repro script? Would like to check locally what
+is going on.
 
-> > 
-> > 
-> > > away from the CPU as a result of the hotplug operation.
-> > >
-> > 
-> > LGTM.
-> > 
-> > Reviewed-by: Phil Auld <pauld@redhat.com>
-> 
-> Thanks!
-> Juri
-> 
-
--- 
+Thanks!
+Juri
 
 
