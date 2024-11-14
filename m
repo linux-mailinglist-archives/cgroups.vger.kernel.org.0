@@ -1,102 +1,65 @@
-Return-Path: <cgroups+bounces-5561-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5562-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F137E9C8F73
-	for <lists+cgroups@lfdr.de>; Thu, 14 Nov 2024 17:14:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87E6B9C8FEC
+	for <lists+cgroups@lfdr.de>; Thu, 14 Nov 2024 17:37:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF39C289B90
-	for <lists+cgroups@lfdr.de>; Thu, 14 Nov 2024 16:14:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3527C1F26143
+	for <lists+cgroups@lfdr.de>; Thu, 14 Nov 2024 16:37:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9970214E2D6;
-	Thu, 14 Nov 2024 16:14:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40CA817BED0;
+	Thu, 14 Nov 2024 16:36:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TqX5sU7c"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cxCzKR6q"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B596076026
-	for <cgroups@vger.kernel.org>; Thu, 14 Nov 2024 16:14:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 385681684A5
+	for <cgroups@vger.kernel.org>; Thu, 14 Nov 2024 16:36:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731600848; cv=none; b=h1I5lFj8MminVDtTYQtlji4DtcNJ12ykBf/aiNYzBSEeAOIhype6LFdZRVoqkB+9/N+jL//OTB9gq4CAtM4ZoyLgoVWDBXwcdXQIabbcsuU7/RZBfqugoQXKm/sAo+u/Bl59txQjiv/1gVFX8Hfy/NasISkx/dDGJltcyUf2I+4=
+	t=1731602200; cv=none; b=lkazd7QsA2y8H0V1KcyyVzjcZUljJRkIVgbqeSKP2f7lYvbw9hIky52mZjgLQCOD2tUvGwLqoq9Uprw2Gfq409kY2v2SzMl4oMzplZ+wGIRPz1ywTOYy+WV9Xxpobz8HSdLn2Y4vujlnWlYu2nta564iSY2R96nGk24Tnop31p8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731600848; c=relaxed/simple;
-	bh=1RN7tyr/xpi1Iyz9+0tasAurFfALZXmSFk2Z51jBvn0=;
+	s=arc-20240116; t=1731602200; c=relaxed/simple;
+	bh=Mqb4B5PP2gj2jgKl2pBH6/2Mvv5aone4vE1svJche7U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XBOqaE7llYluRrt7PvWoSZH9pQNfJwQDnOZfCioRcLFJrDj9d6N+JeZAGiVLvUsWAAaZO8fSsVeESyUHlvofL/ehbHsmTlE6LdZcWooFwFq5sZG1K6xU+w5ayjmdiqCeyVzJxT5mZgla9/U2+icsEQYhU2xCUgVXZTdYylyARUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TqX5sU7c; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1731600845;
+	 Content-Type:Content-Disposition:In-Reply-To; b=EJqrKKvcBXdPDCNv+k1qIq1CgLb2F7TgzYSmiUNKfMxOfhrZeVl8t6xxXWo52U472QMWbmRDmNrAAzl2phaOEismKuF2s5t+upGpmmBiG/JA5e4xwZk6lHwMWvZv+DQEIOfPgy8VENp+O/XOjOKRh/Dz0QyOQokY+CCAQs21YsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cxCzKR6q; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 14 Nov 2024 16:36:28 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731602196;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZaWMQRDcdpd2bCtg+kKRN9VG9vMpZyor3XYx/XAZPJQ=;
-	b=TqX5sU7cIXQ2wfJ6ZNuEBb4BkXE6R9C4jWeXV60I0lY8DdkoH6dNTGFLnGXg2ONX+vmPHf
-	cdMspCzn+8NaKNq0j6o1iGP02fiVvJNrK6nzzJrehW2Fm/vnUGgAvuFRr9cle6e7AxDWyK
-	GhsrpCFqId8rCFQ0gvFiQQ7PIu4vdYg=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-103-jSBDEq8LOiuDRGIZu6Mwlg-1; Thu, 14 Nov 2024 11:14:04 -0500
-X-MC-Unique: jSBDEq8LOiuDRGIZu6Mwlg-1
-X-Mimecast-MFC-AGG-ID: jSBDEq8LOiuDRGIZu6Mwlg
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-37d603515cfso424729f8f.1
-        for <cgroups@vger.kernel.org>; Thu, 14 Nov 2024 08:14:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731600843; x=1732205643;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZaWMQRDcdpd2bCtg+kKRN9VG9vMpZyor3XYx/XAZPJQ=;
-        b=Y3ek7cf7q2ODrViCnkT59L4h8rp1xuBimLNsUEHQS8Yu7xtzyhYXOKidmmKu92Sp/v
-         l/Bv9RT1J/nMJCZP3AFq+amjq4sC2oOX6F/C05kbch/vFQY9eRvwfqJLwbigVj4VCkQU
-         7bKq3CumvPgLzLH0ZCEMPg3f563BCK0uC/854gdyNukCoX/uQj5ZHPnxQvMq3jPTSLnv
-         PzNq6Pwo5HP1zT6swdTb0v4f4n4eCbwpdhtJAEkc5GawSZojGaIc4JPty0D08rtbev3G
-         wHTfo0hY62/Mj8spMRsNm3YjqqGNNTjKujkG+b+vBDF/tusc2pixhKfh+5yf7svVgw/J
-         NhGw==
-X-Forwarded-Encrypted: i=1; AJvYcCUPAvQKaTFRrYeQGW1bBTum8gECvfgDA/oZncWfdmwq6xwj8lkaEQzFnW1QAWDzSbVGqifdR/D+@vger.kernel.org
-X-Gm-Message-State: AOJu0YzVWi5cGie0J6hspqtGnrmD4u+yzzAA8vlfRvFDHp3+YMldextv
-	hBWyE1hjM47RzMwHnle1JsPPxtAa3CyrOvjoXQFR1ILWKh2wBkDnSzSDJF6fIwNE0ScDDHmUZH5
-	9MF0Z1zJPqV2+a3+l6mV5nq8algWE68hTur8I3aqhn2CRfmkGFQeouws=
-X-Received: by 2002:a05:6000:4711:b0:378:7f15:d51e with SMTP id ffacd0b85a97d-38218538e3amr1984783f8f.43.1731600843190;
-        Thu, 14 Nov 2024 08:14:03 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFUIYjCdU1AwFvWay9cBvZfF3w9KboS3jI296juNq/s23tFCuYm+rB8xd5g8if1KJ/qTUtszw==
-X-Received: by 2002:a05:6000:4711:b0:378:7f15:d51e with SMTP id ffacd0b85a97d-38218538e3amr1984757f8f.43.1731600842791;
-        Thu, 14 Nov 2024 08:14:02 -0800 (PST)
-Received: from jlelli-thinkpadt14gen4.remote.csb (host-80-47-4-194.as13285.net. [80.47.4.194])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3821adbbc44sm1879839f8f.45.2024.11.14.08.14.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Nov 2024 08:14:02 -0800 (PST)
-Date: Thu, 14 Nov 2024 16:14:00 +0000
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Koutny <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Phil Auld <pauld@redhat.com>
-Cc: Qais Yousef <qyousef@layalina.io>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
-	Suleiman Souhlal <suleiman@google.com>,
-	Aashish Sharma <shraash@google.com>,
-	Shin Kawamura <kawasin@google.com>,
-	Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] Fix DEADLINE bandwidth accounting in root domain
- changes and hotplug
-Message-ID: <ZzYhyOQh3OAsrPo9@jlelli-thinkpadt14gen4.remote.csb>
-References: <20241114142810.794657-1-juri.lelli@redhat.com>
+	bh=Vup4/bVsV8OYHJC5w1hijbOlf10IE8njUoT5stNuyaQ=;
+	b=cxCzKR6qu2fmZZHZi0xd9UwRhtEz6Uh5DSVlrqUq5NE5ncuW6eARUNpYNthIMAUxWN2Tf2
+	sKGasxz49LX254Zx0AJyCarnxPJi1ipeXLr6HwD8ftCxsf/iYBsT9z1dlxnA5yZ8u6cfeP
+	OobwuVlz+TdlSzfU8iUaG3PYbltV7yk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: David Rientjes <rientjes@google.com>,
+	Joshua Hahn <joshua.hahnjy@gmail.com>, akpm@linux-foundation.org,
+	nphamcs@gmail.com, shakeel.butt@linux.dev, muchun.song@linux.dev,
+	chris@chrisdown.name, tj@kernel.org, lizefan.x@bytedance.com,
+	mkoutny@suse.com, corbet@lwn.net, lnyng@meta.com,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH v4 1/1] memcg/hugetlb: Add hugeTLB counters to memcg
+Message-ID: <ZzYnDPzOKdEOfrTM@google.com>
+References: <20241101204402.1885383-1-joshua.hahnjy@gmail.com>
+ <72688d81-24db-70ba-e260-bd5c74066d27@google.com>
+ <CAN+CAwPSCiAuyO2o7z20NmVUeAUHsNQacV1JvdoLeyNB4LADsw@mail.gmail.com>
+ <eb4aada0-f519-02b5-c3c2-e6c26d468d7d@google.com>
+ <c41adcce-473d-c1a7-57a1-0c44ea572679@google.com>
+ <20241114052624.GD1564047@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -105,108 +68,57 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241114142810.794657-1-juri.lelli@redhat.com>
+In-Reply-To: <20241114052624.GD1564047@cmpxchg.org>
+X-Migadu-Flow: FLOW_OUT
 
-Thanks Waiman and Phil for the super quick review/test of this v2!
+On Thu, Nov 14, 2024 at 12:26:24AM -0500, Johannes Weiner wrote:
+> On Wed, Nov 13, 2024 at 02:42:29PM -0800, David Rientjes wrote:
+> > On Mon, 11 Nov 2024, David Rientjes wrote:
+> > 
+> > > > The reason that I opted not to include a breakdown of each hugetlb
+> > > > size in memory.stat is only because I wanted to keep the addition that
+> > > > this patch makes as minimal as possible, while still addressing
+> > > > the goal of bridging the gap between memory.stat and memory.current.
+> > > > Users who are curious about this breakdown can see how much memory
+> > > > is used by each hugetlb size by enabling the hugetlb controller as well.
+> > > > 
+> > > 
+> > > While the patch may be minimal, this is solidifying a kernel API that 
+> > > users will start to count on.  Users who may be interested in their 
+> > > hugetlb usage may not have control over the configuration of their kernel?
+> > > 
+> > > Does it make sense to provide a breakdown in memory.stat so that users can 
+> > > differentiate between mapping one 1GB hugetlb page and 512 2MB hugetlb 
+> > > pages, which are different global resources?
+> > > 
+> > > > It's true that this is the case as well for total hugeltb usage, but
+> > > > I felt that not including hugetlb memory usage in memory.stat when it
+> > > > is accounted by memory.current would cause confusion for the users
+> > > > not being able to see that memory.current = sum of memory.stat. On the
+> > > > other hand, seeing the breakdown of how much each hugetlb size felt more
+> > > > like an optimization, and not a solution that bridges a confusion.
+> > > > 
+> > > 
+> > > If broken down into hugetlb_2048kB and hugetlb_1048576kB on x86, for 
+> > > example, users could still do sum of memory.stat, no?>
+> > > 
+> > 
+> > Friendly ping on this, would there be any objections to splitting the 
+> > memory.stat metrics out to be per hugepage size?
+> 
+> I don't think it has to be either/or. We can add the total here, and a
+> per-size breakdown in a separate patch (with its own changelog)?
+> 
+> That said, a per-size breakdown might make more sense in the hugetlb
+> cgroup controller. You're mentioning separate global resources, which
+> suggests this is about more explicitly controlled hugetlb use.
 
-On 14/11/24 14:28, Juri Lelli wrote:
++1
 
-...
+> From a memcg POV, all hugetlb is the same. It's just (non-swappable)
+> memory consumed by the cgroup.
 
-> In all honesty, I still see intermittent issues that seems to however be
-> related to the dance we do in sched_cpu_deactivate(), where we first
-> turn everything related to a cpu/rq off and revert that if
-> cpuset_cpu_inactive() reveals failing DEADLINE checks. But, since these
-> seem to be orthogonal to the original discussion we started from, I
-> wanted to send this out as an hopefully meaningful update/improvement
-> since yesterday. Will continue looking into this.
+And here too.
 
-About this that I mentioned, it looks like the below cures it (and
-hopefully doesn't regress wrt the other 2 patches).
-
-What do everybody think?
-
----
-Subject: [PATCH] sched/deadline: Check bandwidth overflow earlier for hotplug
-
-Currently we check for bandwidth overflow potentially due to hotplug
-operations at the end of sched_cpu_deactivate(), after the cpu going
-offline has already been removed from scheduling, active_mask, etc.
-This can create issues for DEADLINE tasks, as there is a substantial
-race window between the start of sched_cpu_deactivate() and the moment
-we possibly decide to roll-back the operation if dl_bw_deactivate()
-returns failure in cpuset_cpu_inactive(). An example is a throttled
-task that sees its replenishment timer firing while the cpu it was
-previously running on is considered offline, but before
-dl_bw_deactivate() had a chance to say no and roll-back happened.
-
-Fix this by directly calling dl_bw_deactivate() first thing in
-sched_cpu_deactivate() and do the required calculation in the former
-function considering the cpu passed as an argument as offline already.
-
-Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
----
- kernel/sched/core.c     |  9 +++++----
- kernel/sched/deadline.c | 12 ++++++++++--
- 2 files changed, 15 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index d1049e784510..43dfb3968eb8 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8057,10 +8057,6 @@ static void cpuset_cpu_active(void)
- static int cpuset_cpu_inactive(unsigned int cpu)
- {
- 	if (!cpuhp_tasks_frozen) {
--		int ret = dl_bw_deactivate(cpu);
--
--		if (ret)
--			return ret;
- 		cpuset_update_active_cpus();
- 	} else {
- 		num_cpus_frozen++;
-@@ -8128,6 +8124,11 @@ int sched_cpu_deactivate(unsigned int cpu)
- 	struct rq *rq = cpu_rq(cpu);
- 	int ret;
- 
-+	ret = dl_bw_deactivate(cpu);
-+
-+	if (ret)
-+		return ret;
-+
- 	/*
- 	 * Remove CPU from nohz.idle_cpus_mask to prevent participating in
- 	 * load balancing when not active
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 267ea8bacaf6..6e988d4cd787 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -3505,6 +3505,13 @@ static int dl_bw_manage(enum dl_bw_request req, int cpu, u64 dl_bw)
- 		}
- 		break;
- 	case dl_bw_req_deactivate:
-+		/*
-+		 * cpu is not off yet, but we need to do the math by
-+		 * considering it off already (i.e., what would happen if we
-+		 * turn cpu off?).
-+		 */
-+		cap -= arch_scale_cpu_capacity(cpu);
-+
- 		/*
- 		 * cpu is going offline and NORMAL tasks will be moved away
- 		 * from it. We can thus discount dl_server bandwidth
-@@ -3522,9 +3529,10 @@ static int dl_bw_manage(enum dl_bw_request req, int cpu, u64 dl_bw)
- 		if (dl_b->total_bw - fair_server_bw > 0) {
- 			/*
- 			 * Leaving at least one CPU for DEADLINE tasks seems a
--			 * wise thing to do.
-+			 * wise thing to do. As said above, cpu is not offline
-+			 * yet, so account for that.
- 			 */
--			if (dl_bw_cpus(cpu))
-+			if (dl_bw_cpus(cpu) - 1)
- 				overflow = __dl_overflow(dl_b, cap, fair_server_bw, 0);
- 			else
- 				overflow = 1;
-
+Thanks!
 
