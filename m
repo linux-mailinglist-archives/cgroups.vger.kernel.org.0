@@ -1,70 +1,70 @@
-Return-Path: <cgroups+bounces-5588-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5589-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6203E9CFB60
-	for <lists+cgroups@lfdr.de>; Sat, 16 Nov 2024 00:58:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AC119CFB62
+	for <lists+cgroups@lfdr.de>; Sat, 16 Nov 2024 00:58:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 18E4C1F247D3
-	for <lists+cgroups@lfdr.de>; Fri, 15 Nov 2024 23:58:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5264284EB9
+	for <lists+cgroups@lfdr.de>; Fri, 15 Nov 2024 23:58:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE8DC1CEE91;
-	Fri, 15 Nov 2024 23:58:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6D171E0E0A;
+	Fri, 15 Nov 2024 23:58:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="D2Zj4AtC"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fel6xbRW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A801B85C5
-	for <cgroups@vger.kernel.org>; Fri, 15 Nov 2024 23:58:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2399E1E0DD7
+	for <cgroups@vger.kernel.org>; Fri, 15 Nov 2024 23:58:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731715084; cv=none; b=BIOC4qmb6Q7mUrXOB84uhH+0oM7eTGp4Rx0VOiiRfe/3G7mk29ROASLiskTb4M5PZ+3RlkJL6BCYFrcygmj94+ZkFyLq1/cS3PSazbCD/eIBiyzxM0YbcOfxoaGwlgQ5hjwNRGnYfpXuVoc03CIBWvHV4xA7oetBlGT0Y7/nmzM=
+	t=1731715089; cv=none; b=fWCw2vsPIC+4nMpC/d1w50+0FRlI966otVmj9iWeTXOfxbYu9elGA5Rd7Yw0selX8NHuS2N3ZbXPuMpIPoKtQ/sgqk3xf45wQuM3F8tWluWX7/JVquIqXTQADw22jOFlXiGNLTKhVscuclrW3L3EZK96ntCE29YBJ3OBOs8IYGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731715084; c=relaxed/simple;
-	bh=aP9KdYcSoNMdOUbsyZNNuuKycbYgRNHovCSpVZzhg2g=;
+	s=arc-20240116; t=1731715089; c=relaxed/simple;
+	bh=Pw3c2RN7eyECjfKplynfRokR3DtRXubdMSw2fJ+25ls=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=jQrcwZXBwy8jlDS/1+0Lwzqw2n5eo6kbU23rdAVVRpBVtMDxH3Hf7DmBWUDd5c+56ai2BV6hZxWu7nZNV298XaGh7an/nU9LxlWxf0vBjWHMpzqpgIk34TkvR4DF9MVjbHemNEnjTtCAaYI/PFVPh39fD9uOHMprt9aiThNHkHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kerensun.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=D2Zj4AtC; arc=none smtp.client-ip=209.85.128.202
+	 To:Cc:Content-Type; b=dvEvSWDIF6HlUhQ2TyuYI3R4m+iWUhp6l1UP2/ZKPt7iYJ6xEBBFKXjlubk+TIljXCykiTWE4rgguitjhczRxqWmJNPixF4/AoAZhL9C71K3HMUA9a/Do/4ocTifgkFzvoDAprhmT9uBZG8z0GZKBPG8ty3663pIlgzt+yGNDU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kerensun.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fel6xbRW; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kerensun.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6ea8a5e86e9so22653247b3.2
-        for <cgroups@vger.kernel.org>; Fri, 15 Nov 2024 15:58:02 -0800 (PST)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-e3877744e45so1196015276.1
+        for <cgroups@vger.kernel.org>; Fri, 15 Nov 2024 15:58:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1731715082; x=1732319882; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1731715087; x=1732319887; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LrEBNSRkiEojOqX+4gfP8RZsafc+q1NaKoMa79m2RXU=;
-        b=D2Zj4AtCb6dY8/k3/pIhW1LX2c6hDVNX7sHTsb318hb+1GMrULOZOfqaGON0fCkFCB
-         9jFf9WLr8oGE5RUgfdXhm5bwRKBVuwOKs1/N100GfpbYyEA2rfEziCFXv/Gr1Nq6NoiU
-         62T3ytB+WiDlWeyhORJAKWyvSXw0OE+zcjfFi0jbFD0l7pW2i6aiqtGn6YpHsU4S+gJc
-         Afvpoj62oO5yTc4vaCfWT3942OGeNn4POKowR6YJwCF+zVcB3s8UT3ZwB3X23UdD/l3S
-         Xwe50Noeavgvn2kHJr0tjwNk/nxoaby4Ka/FYtpFSj/WzDKi2ao2LpEbD0ftvO0f1Y7A
-         o4qw==
+        bh=o1RIpUDtZXSgBRqjmugzkaN5U5eWQ9w7S4LovaiX8vs=;
+        b=fel6xbRW843q98uxnPXgw2OvJ2PxXDBJ0bLmepsHSCLwucnfWNC/r1XvnmPhOFk7OE
+         wFsy4gYFRIk2aISrzywUfLXJd/HCUstPnXjb9jSJQHHsvP+kj4017WjMlRo1Vx3P9e2V
+         IduE+G+ypTODkY5QhumswaXUwUMfq0+dAx5URqZn1leCQcy8ctDiV/+0yLNQFFM1Rp7n
+         AwIQgOxwwWdFFwp9Q1nrQUqMOORq/EaF8CBoAL+OPe+wbVrUQuhI9vmF0UHDZmTmZg6d
+         8bK1lUteMoWQizcQBzWr0cLY6UF2Z9V/php5NcJ2EprA0AhOo36Pv+XLRtnDcSPbrcpp
+         JffQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731715082; x=1732319882;
+        d=1e100.net; s=20230601; t=1731715087; x=1732319887;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LrEBNSRkiEojOqX+4gfP8RZsafc+q1NaKoMa79m2RXU=;
-        b=FebvRkMnuo8VLshu17DcYCRCBzoLgqk6J1+k8dyDfFufhiCUz7sr2DRkDG8rsuLhOR
-         qjNsr1yEGlPYfmCVE53inRYuimrebqvo3ybQhJ6aV4dpyD1Dvpuz2SDeBDskU6mwuB9Z
-         kHbVT7AJDZzUVm65nkxGz266LKV2wBQkiqjCBNAQ4XOd/SxAM6HV1fUlIBkdGgd2kJWA
-         NkI9thHBOOpkjt3DAleoJQ0O59ir7GJ6lMvoHgJ/+wIfWAR4y7ToPT88yEyGRv5M6Ozy
-         WrDQsuSRnoxRKelgYU/P5BpwjFKPXG9wjwkyRMCLQDwBbqEBforjviytOGrjjyzgQYQs
-         wQMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUiUYAZIw2V9Pl9dCP6PflHwGV2lMhlMTC0yr60k589wPTS4o6qdTf3UAtE8If+ATG9wmEhAiG6@vger.kernel.org
-X-Gm-Message-State: AOJu0Yycx7Y/2wvLQX6xKweUQX/VcnWmhygqLK+4wMn6AKO/pPEWnCYN
-	AEmuvq72H0m/LpCtRVltBcuuO319oIFoKUySWgIy64y92sHwMNSdvDiXHucu8Zc/laalwAGxZNQ
-	Dg3ZTDEacag==
-X-Google-Smtp-Source: AGHT+IEj4KClsgSqXktbEj+ARf/VjHaKN8ZOK6NA9iO0b53n0H+SstnU5eqFIIEUIzmZZO9P0LaXRT13p0uoWw==
+        bh=o1RIpUDtZXSgBRqjmugzkaN5U5eWQ9w7S4LovaiX8vs=;
+        b=EcPkV0t1U1uUwOfdWTCAx/GBqWPDDgURzEqnaGnoKSSfYqfhocOEfbbBm3Bx2W7VTx
+         l+tcE8iFwKRafAGQ5r1T4jnNt74HAGjC2j0HrSliHSHcK/MjBmVvoruFeMKNoWwHwLP7
+         fU9mlPl9clDRC/NvkaCERYGrWl14WHBR8sqBQ4Uxv37QWq+T8eDLhoK96LfdNXtiyJ8D
+         ajNKmxJdOeq/1sJ72wTBOVU7PogsaQU9zhVP4fwiV4K/NtNVT7RpK1XuWgyzCOatI67N
+         ZlDNYaBAR4OP5FY07hyzuRYOQ20UdqQ4bY4FY60+/GpAA16wfewH2/2IcmxrqmKn7zcE
+         OiGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW/npvcuxyqixtMkuda60h4Jd6FqT/v6nwC3051VWCJER9gbAFZO9hW4Ms4xGH/o09dfKZSg7BW@vger.kernel.org
+X-Gm-Message-State: AOJu0YzN13vIGLEfmk8/P+4Q02awydEeg8MqKCH0skmawAWuoxhmyHzS
+	KxitxXxgRB7Xl0EUN0X6MDoPK3OkiEvm0O01k7QMzfbZBqBpdAtw+XKHRX2mT7y2yW7vI0Bt9xS
+	6ozSWdF4Pww==
+X-Google-Smtp-Source: AGHT+IFHD4awoAKkBJnBwCEuXy6ozkFUMt2EYzDoJvjoWIITqKtBMoKHRd36j2A63QZEq6HL+REkETq/YEWdvA==
 X-Received: from kerensun.svl.corp.google.com ([2620:15c:2c5:11:f2d6:8e6c:5a90:ef1e])
- (user=kerensun job=sendgmr) by 2002:a25:b001:0:b0:e33:104c:fac8 with SMTP id
- 3f1490d57ef6-e38263b7b7emr3194276.7.1731715082063; Fri, 15 Nov 2024 15:58:02
+ (user=kerensun job=sendgmr) by 2002:a25:bb0e:0:b0:e38:2136:9482 with SMTP id
+ 3f1490d57ef6-e3826614e75mr3790276.10.1731715087375; Fri, 15 Nov 2024 15:58:07
  -0800 (PST)
-Date: Fri, 15 Nov 2024 15:57:43 -0800
+Date: Fri, 15 Nov 2024 15:57:44 -0800
 In-Reply-To: <20241115235744.1419580-1-kerensun@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -74,8 +74,8 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20241115235744.1419580-1-kerensun@google.com>
 X-Mailer: git-send-email 2.47.0.338.g60cca15819-goog
-Message-ID: <20241115235744.1419580-3-kerensun@google.com>
-Subject: [PATCH 2/3] mm: remove unnecessary whitespace before a quoted newline
+Message-ID: <20241115235744.1419580-4-kerensun@google.com>
+Subject: [PATCH 3/3] mm: remove the non-useful else after a break in a if statement
 From: Keren Sun <kerensun@google.com>
 To: akpm@linux-foundation.org
 Cc: roman.gushchin@linux.dev, hannes@cmpxchg.org, mhocko@kernel.org, 
@@ -84,42 +84,30 @@ Cc: roman.gushchin@linux.dev, hannes@cmpxchg.org, mhocko@kernel.org,
 	Keren Sun <kerensun@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Remove whitespaces before newlines for strings in pr_warn_once()
+Remove the else block since there is already a break in the statement of
+if (iter->oom_lock), just set iter->oom_lock true after the if block
+ends.
 
 Signed-off-by: Keren Sun <kerensun@google.com>
 ---
- mm/memcontrol-v1.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ mm/memcontrol-v1.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
-index 465201ef40b7..4cbbced0c8a1 100644
+index 4cbbced0c8a1..423c861acdd8 100644
 --- a/mm/memcontrol-v1.c
 +++ b/mm/memcontrol-v1.c
-@@ -1043,13 +1043,13 @@ static ssize_t memcg_write_event_control(struct kernfs_open_file *of,
- 	} else if (!strcmp(name, "memory.oom_control")) {
- 		pr_warn_once("oom_control is deprecated and will be removed. "
- 			     "Please report your usecase to linux-mm-@kvack.org"
--			     " if you depend on this functionality. \n");
-+			     " if you depend on this functionality.\n");
- 		event->register_event = mem_cgroup_oom_register_event;
- 		event->unregister_event = mem_cgroup_oom_unregister_event;
- 	} else if (!strcmp(name, "memory.pressure_level")) {
- 		pr_warn_once("pressure_level is deprecated and will be removed. "
- 			     "Please report your usecase to linux-mm-@kvack.org "
--			     "if you depend on this functionality. \n");
-+			     "if you depend on this functionality.\n");
- 		event->register_event = vmpressure_register_event;
- 		event->unregister_event = vmpressure_unregister_event;
- 	} else if (!strcmp(name, "memory.memsw.usage_in_bytes")) {
-@@ -1895,7 +1895,7 @@ static int mem_cgroup_oom_control_write(struct cgroup_subsys_state *css,
+@@ -1148,8 +1148,8 @@ static bool mem_cgroup_oom_trylock(struct mem_cgroup *memcg)
+ 			failed = iter;
+ 			mem_cgroup_iter_break(memcg, iter);
+ 			break;
+-		} else
+-			iter->oom_lock = true;
++		}
++		iter->oom_lock = true;
+ 	}
  
- 	pr_warn_once("oom_control is deprecated and will be removed. "
- 		     "Please report your usecase to linux-mm-@kvack.org if you "
--		     "depend on this functionality. \n");
-+		     "depend on this functionality.\n");
- 
- 	/* cannot set to root cgroup and only 0 and 1 are allowed */
- 	if (mem_cgroup_is_root(memcg) || !((val == 0) || (val == 1)))
+ 	if (failed) {
 -- 
 2.47.0.338.g60cca15819-goog
 
