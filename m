@@ -1,111 +1,171 @@
-Return-Path: <cgroups+bounces-5578-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5579-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E79839CF3F0
-	for <lists+cgroups@lfdr.de>; Fri, 15 Nov 2024 19:29:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D86509CF33C
+	for <lists+cgroups@lfdr.de>; Fri, 15 Nov 2024 18:47:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3E4DB426A5
-	for <lists+cgroups@lfdr.de>; Fri, 15 Nov 2024 17:33:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D5241F23DE7
+	for <lists+cgroups@lfdr.de>; Fri, 15 Nov 2024 17:47:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392DB1D61A3;
-	Fri, 15 Nov 2024 17:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27E07165F1E;
+	Fri, 15 Nov 2024 17:47:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2N6ztpfK";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3uwaxwfc"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VbADT9PW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A14E15573A;
-	Fri, 15 Nov 2024 17:32:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 322A01D435C
+	for <cgroups@vger.kernel.org>; Fri, 15 Nov 2024 17:47:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731691981; cv=none; b=BJ7Se97mXDt2DP4Zx4LGKcISxQOgrUuDMdysEIau6s8qtZgSWgvPKUivzSvitlLd7PND+fknqsOJbrplI9qZ+ZkKkRym5shCscvKozC0vtB7C6YpYsCnkVdr+3DadGfcNw04X1/pYZoivNsWXv5Cpg1RoyZvpA7uS+GrADeH+W4=
+	t=1731692845; cv=none; b=dTM5S0xJ788DjtIRWNkvphQFbXqUswURPtN86xzsYFSPDJVM4lrQj41IoL5qFiTVKADZpxW2SYa7RPuA1stMkWQpZ3NvCyI2SUu3/AMhpQy6b/wQOZ8BGHiLM0FAj4hPJeFkEIfcZCvedqcgdwaKOlJy/+L7IDy74+SvUoBl0ds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731691981; c=relaxed/simple;
-	bh=OX0CjJ0yRVQ5QY/1AzjxsV+ThfM1ZrQMWDEm+bfFHDg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dmcSxTdS4qs4H98bTYTTXnZmKWaOxvbe38KXn0Rf/WPbypKA+sRmgepB6kueNSDmnCaylXuMwfyd6m2Y9CdkEKc24BdAY9buh8jKB0Y4SUexmtE2O6Iw+mgcy87bcejZoG1DOKwRP8YzAj7k7eB0NfTkVMhxbM1AX5LseZ3RSs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=2N6ztpfK; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3uwaxwfc; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 15 Nov 2024 18:32:56 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1731691977;
+	s=arc-20240116; t=1731692845; c=relaxed/simple;
+	bh=M8pwNvD9B/yuT7abi8lk/RZ9h5awT0wqPUfRZxaGERk=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=B8L1KwwajOvP3qRyv1+fi4fDT5FJc6aTF59rtQaM1vSi5oFjti+Rr6VxgySWF18gl6hp50AOkue00WlpVxN33L36j1Kf4wUqB7qG6fdRZl7Rftw9k9JoG4LoySPNDCScrW8GNIQHTmngeeBDw/91lTlNfzIkQy2sRvmd3eKBH5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VbADT9PW; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1731692843;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Cst6lniwObgDlwMDtSbUQUqE/oz2DK6DpaC3A0s78Ao=;
-	b=2N6ztpfKKMxnn5MrxcXLtr7Ktj224kySb1o630qokx1WcJXxo+h4dZBrAwXlsKtCWVEdns
-	OA+ygUKHL6slzn0tNwlT1C7gO859wTZteW2tHfOqq/JyB8cWz8wUhthtW8lwyDBZnGlRAs
-	5eTmHxBJEMFx5Tn3vkC+Sx8AJJbDbuGXQ0GM8jFR8lslUg2s2vFgafgChww5mJbiraGXbS
-	6LpbuiLSRQuGVfgnpfgXfozzu01ugJ3wB5vv3BCsK1mecdK4KUh8KX7on6DlJkj7kV/OpC
-	RYYVCBTBSCUE0ZlMKyzX98CSUSDN09VbHil8pZonTFmoa6pBxaILMJMV8QcBlg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1731691977;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Cst6lniwObgDlwMDtSbUQUqE/oz2DK6DpaC3A0s78Ao=;
-	b=3uwaxwfcofOyQ2ZocVOfPqE/NVlnUjFDAJNPt9ilGo6xl0gzQJe0gdquotyDdQTf8tdDBe
-	VZPzL8fRH1pGdfAA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Hillf Danton <hdanton@sina.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Marco Elver <elver@google.com>, Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>, tglx@linutronix.de
-Subject: Re: [PATCH v2 1/2] kernfs: Make it possible to use RCU for
- kernfs_node::name lookup.
-Message-ID: <20241115173256.13IVHFNn@linutronix.de>
-References: <20241112155713.269214-1-bigeasy@linutronix.de>
- <20241112155713.269214-2-bigeasy@linutronix.de>
- <u7h5zfjxz7yo6e2ukrlnznj4ug66pgu2cel4jqejjji4lzphv7@2b4ntlfl7q2g>
+	bh=m9Ta/CtP5pjWn4bPuxT4gm+0qsnrJMxo3ASMZDuEf1k=;
+	b=VbADT9PWk6VF02MOvhNueIt6V3dPVurHAl3UV5V8sqmn4OtP/Y4WCoDSOovdwpjmbrZy5f
+	lTTqofqQjSN1M08ZB4lw33x4H02pQHnADFpP4fQxMsGLuYsONQUWb3EtnQGbt34BCGCopg
+	zfR6+9/snaCmmV2/1muosEK/w5ACBdE=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-290-jir7CPodPRe707Ivl28OZA-1; Fri, 15 Nov 2024 12:47:21 -0500
+X-MC-Unique: jir7CPodPRe707Ivl28OZA-1
+X-Mimecast-MFC-AGG-ID: jir7CPodPRe707Ivl28OZA
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-71a3da16d58so1926544a34.3
+        for <cgroups@vger.kernel.org>; Fri, 15 Nov 2024 09:47:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731692840; x=1732297640;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=m9Ta/CtP5pjWn4bPuxT4gm+0qsnrJMxo3ASMZDuEf1k=;
+        b=PG+issuRnrRq13YfVZR4IhCJyq5HFbeMqYpiEmOw7GtUj3yAyogGK+9e+r9npPv3l8
+         +aBpRBlRqcs3o2WH6yc7/EZC2MJ6h8ELPXcQ92yz5RWKJ/uIdsWgtlv/GyxC7i7R9BDn
+         ek9EkryBQqTjSWzXu1SZt6SWzBeZN7gZfI0IDreaUsCbmLxrC5Qu1jsF0dqeLHLVesE4
+         NCBjOv06rnpYaWYMN7yRHjZMBRtDKer99Fmk3pCBVZ/3NUnCISHM1QqtBWrvIB8w1J4g
+         LD13OhK2Lu4Yq2Y888ilMa9uJOTHXLQPfDBkNmbLRLp3nkWo/7Fm2gn1hk4/sx6UaUjR
+         AmRg==
+X-Forwarded-Encrypted: i=1; AJvYcCWqyDGhxi6qgK4PPLgxguS7bBLjyxQNuIiX+8TNx+fl7huheL7OvnlVlsxwPSgGSdlxf1PMpkTG@vger.kernel.org
+X-Gm-Message-State: AOJu0YxhFaLAKQJAHSUEnZhy2bvFp3KHXOWDmIiXsMJNM1Xo7nKvoUiP
+	QpOQ7o9sSGZDawg/LcmCEWVknZMUUeJoI82r+3jcqSP7RYiXUXvigHU7QkdBIsZlrKJFeQP6Irb
+	M/RHhdVzeKDnZVtXqxl9o+sDfbcfbuiX4Pd3bfkFMFE8B7WJngTHL13GlR7Y5L+Y=
+X-Received: by 2002:a05:6359:7996:b0:1aa:c492:1d34 with SMTP id e5c5f4694b2df-1c6cd297293mr274638655d.23.1731692840153;
+        Fri, 15 Nov 2024 09:47:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHbQZYj5r/0Y4qwHog4+zSYSxfUMed5vkN6uvv9z59ZF8VnJ2WLqn2tQa49TSKP40O4bTNprA==
+X-Received: by 2002:a05:6359:7996:b0:1aa:c492:1d34 with SMTP id e5c5f4694b2df-1c6cd297293mr274635855d.23.1731692839820;
+        Fri, 15 Nov 2024 09:47:19 -0800 (PST)
+Received: from ?IPV6:2601:188:ca00:a00:f844:fad5:7984:7bd7? ([2601:188:ca00:a00:f844:fad5:7984:7bd7])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d3ee7d207csm19972696d6.70.2024.11.15.09.47.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Nov 2024 09:47:19 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <bfbedc6a-9f04-472f-afe9-828efe0387e6@redhat.com>
+Date: Fri, 15 Nov 2024 12:47:18 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <u7h5zfjxz7yo6e2ukrlnznj4ug66pgu2cel4jqejjji4lzphv7@2b4ntlfl7q2g>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Additional issue with cpuset isolated partitions?
+To: Juri Lelli <juri.lelli@redhat.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, Michal Koutny <mkoutny@suse.com>
+Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+References: <Zzd3G67_UwBUJaRt@jlelli-thinkpadt14gen4.remote.csb>
+Content-Language: en-US
+In-Reply-To: <Zzd3G67_UwBUJaRt@jlelli-thinkpadt14gen4.remote.csb>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 2024-11-14 14:48:16 [+0100], Michal Koutn=C3=BD wrote:
-> On Tue, Nov 12, 2024 at 04:52:38PM GMT, Sebastian Andrzej Siewior <bigeas=
-y@linutronix.de> wrote:
-> > --- a/include/linux/kernfs.h
-> > +++ b/include/linux/kernfs.h
-> > @@ -147,6 +147,11 @@ enum kernfs_root_flag {
-> >  	 * Support user xattrs to be written to nodes rooted at this root.
-> >  	 */
-> >  	KERNFS_ROOT_SUPPORT_USER_XATTR		=3D 0x0008,
-> > +
-> > +	/*
-> > +	 * Renames must not change the parent node.
-> > +	 */
-> > +	KERNFS_ROOT_SAME_PARENT			=3D 0x0010,
->=20
-> FTR, cgroup v2 doesn't even define renames and the full rename
-> (different parent) is only used by resctrl filesystem AFAICS.
-> I'm only mentioning it in the case you wanted to replace the flag with
-> two different rename methods in kernfs_syscall_ops.
+On 11/15/24 11:30 AM, Juri Lelli wrote:
+> Hello,
+>
+> While working on the recent cpuset/deadline fixes [1], I encountered
+> what looks like an issue to me. What I'm doing is (based on one of the
+> tests of test_cpuset_prs.sh):
+>
+> # echo Y >/sys/kernel/debug/sched/verbose
+> # echo +cpuset >cgroup/cgroup.subtree_control
+> # mkdir cgroup/A1
+> # echo 0-3 >cgroup/A1/cpuset.cpus
+> # echo +cpuset >cgroup/A1/cgroup.subtree_control
+> # mkdir cgroup/A1/A2
+> # echo 1-3 >cgroup/A1/A2/cpuset.cpus
+> # echo +cpuset >cgroup/A1/A2/cgroup.subtree_control
+> # mkdir cgroup/A1/A2/A3
+> # echo 2-3 >cgroup/A1/A2/A3/cpuset.cpus
+> # echo 2-3 >cgroup/A1/cpuset.cpus.exclusive
+> # echo 2-3 >cgroup/A1/A2/cpuset.cpus.exclusive
+> # echo 2-3 >cgroup/A1/A2/A3/cpuset.cpus.exclusive
+> # echo isolated >cgroup/A1/A2/A3/cpuset.cpus.partition
+>
+> and with this, on my 8 CPUs system, I correctly get a root domain for
+> 0-1,4-7 and 2,3 are left isolated (attached to default root domain).
+>
+> I now put the shell into the A1/A2/A3 cpuset
+>
+> # echo $$ >cgroup/A1/A2/A3/cgroup.procs
+>
+> and hotplug CPU 2,3
+>
+> # echo 0 >/sys/devices/system/cpu/cpu2/online
+> # echo 0 >/sys/devices/system/cpu/cpu3/online
+>
+> guess the shell is moved to the non-isolated domain. So far so good
+> then, only that if I turn CPUs 2,3 back on they are attached to the root
+> domain containing the non-isolated cpus
+A valid partition must have CPUs associated with it. If no CPU is 
+available, it becomes invalid and fall back to use the CPUs from the 
+parent cgroup.
+>
+> # echo 1 >/sys/devices/system/cpu/cpu2/online
+> ...
+> [  990.133593] root domain span: 0-2,4-7
+> [  990.134480] rd 0-2,4-7
+>
+> # echo 1 >/sys/devices/system/cpu/cpu3/online
+> ...
+> [ 1082.858992] root domain span: 0-7
+> [ 1082.859530] rd 0-7
+>
+> And now the A1/A2/A3 partition is not valid anymore
+>
+> # cat cgroup/A1/A2/A3/cpuset.cpus.partition
+> isolated invalid (Invalid cpu list in cpuset.cpus.exclusive)
+>
+> Is this expected? It looks like one need to put at least one process in
+> the partition before hotplugging its cpus for the above to reproduce
+> (hotpluging w/o processes involved leaves CPUs 2,3 in the default domain
+> and isolated).
 
-Thanks. I think I have enough clues for a v3 now. I wanted to do
-something today but didn't manage it yet.
+Once a partition becomes invalid, there is no self recovery if the CPUs 
+become online again. Users have to explicitly re-enable it. It is really 
+a very rare case and so we don't spend effort to do that.
 
-> Thanks for fixing this locking situation in general,
-> Michal
+If only one of 2 CPUs are offline and then online again, the full 2-CPU 
+isolated partition can be recovered.
 
-Sebastian
+Please let me know if you have further question.
+
+Cheers,
+Longman
+
 
