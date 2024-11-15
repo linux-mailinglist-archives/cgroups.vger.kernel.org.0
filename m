@@ -1,229 +1,128 @@
-Return-Path: <cgroups+bounces-5572-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5573-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A90D9CDDB7
-	for <lists+cgroups@lfdr.de>; Fri, 15 Nov 2024 12:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 08FE49CDEAE
+	for <lists+cgroups@lfdr.de>; Fri, 15 Nov 2024 13:52:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B6131F22479
-	for <lists+cgroups@lfdr.de>; Fri, 15 Nov 2024 11:48:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4CB41F24250
+	for <lists+cgroups@lfdr.de>; Fri, 15 Nov 2024 12:52:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7AB91B6D17;
-	Fri, 15 Nov 2024 11:48:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 313621BCA05;
+	Fri, 15 Nov 2024 12:52:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="i7XF5kcK"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Eut80KLk"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4938352F9E
-	for <cgroups@vger.kernel.org>; Fri, 15 Nov 2024 11:48:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AC201BC9FF
+	for <cgroups@vger.kernel.org>; Fri, 15 Nov 2024 12:52:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731671318; cv=none; b=KpCTd0oSuVWCK4xwk9wNnYpzPenr0UiMoSXKtJ8JgQypTS9YesYFMD2EW8uQVAj6onqiqa4Qn91EMUznq7eZ1LbOLDEI0XUbGP4yl4BZn3tLxsnmu2rV+WpsV4O0CmFIaHnfM61C6DrG2arkE4MdHJz3GcjquPY+8K0174Da7BY=
+	t=1731675149; cv=none; b=P2O63YRI4vzCC31C7UacZXp7su4x9AR55hBzjZ0vy+v+dLHY8FhzDC0gpHik6gJ4jqnyjUHHx/B5141CKH/VIqqnT9fvBzSFiZob45yNfYn3lhrC89u4MqDEadrk8J94H9XKPhjvPC+Ggh5HWeErgrD+HsBn9GvraHxWCcbtXUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731671318; c=relaxed/simple;
-	bh=UAoDimOwp13wZS34aCKx3iW2aQwgJV3zOt5qRLLTOAw=;
+	s=arc-20240116; t=1731675149; c=relaxed/simple;
+	bh=O9b1S7Wa8pDEKhTXu1e0njgl4QX3+67067qzucvDaj8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S+m0Pfx8nq9fRlUo5WjlFcqSiyGRvcLTjwuQ8YVCz0tqFxxWh3jd2yDQG/pphBLPQA9xvn2K7yOyZG/5FktaG9d+KuPFUj0wd27vMTHE5u2BMZYji6hyQh7n3pUkfCTFxOhQzfC3r8S3vGD9/jaP8HgjWTcdJW+hXowcjpFmk80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=i7XF5kcK; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1731671315;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=U5Myvkj760K68jN4/CxybPiP+G9N9utEoeb8mQtoXFA=;
-	b=i7XF5kcKsmPZHg7nbu4H7zAs+JRk71nXjPR1kKTcJrwXjdTvOsacv/MnYRy+9YRZDz4t0j
-	YsLJy76wqPHNjWiDcVbEwNcTttcmIk8t83zUa0g5ZyXYc1uUnAWqTbkvKEyefASx00kQ/G
-	97nW+cxZe3uY20EO9XyuEdrs5G/hu7g=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-536-bcbqgUKAM-CG4iOtx1iRuQ-1; Fri, 15 Nov 2024 06:48:34 -0500
-X-MC-Unique: bcbqgUKAM-CG4iOtx1iRuQ-1
-X-Mimecast-MFC-AGG-ID: bcbqgUKAM-CG4iOtx1iRuQ
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-381e8cf69a6so1023527f8f.1
-        for <cgroups@vger.kernel.org>; Fri, 15 Nov 2024 03:48:33 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=sFfdH2HYSaJsR5eBesoiVrinCJsO75NbUwGV+jZE7be5im6iTxshXYx7WbjWSQkdMwotytTd+hfydFDTONWvRiA5/dr+MpkTqewGETZiT68GAJ/OlZDVqurz50GIN592GpdifnSkXxAv7zt3EUyd+HQRQByDgHxR/PqKKYZI7Eg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Eut80KLk; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4315e9e9642so5570395e9.0
+        for <cgroups@vger.kernel.org>; Fri, 15 Nov 2024 04:52:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1731675145; x=1732279945; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=O9b1S7Wa8pDEKhTXu1e0njgl4QX3+67067qzucvDaj8=;
+        b=Eut80KLkbvBwnT4Sg8Y2/bOY+eigOuxCXl5a1nW6OR0hERaT6qML9EecG27SemW0cW
+         pRaRDhPPkCaSntwkNgKqJN4/VjxICPaIKPbRbKuSPNCsdiNoujAQg6cZ8hmuBg1PhAVt
+         KH4f9nLwzOjxW4AwduwjhRpxvXwj/TpcPbiPYrJdWuNLdMkLuNlsvDkA/I7l2pSsxO7N
+         Bew9e7rHI+Qobjgyt9UObPFngi7liXInBbiT3hv/SMBWg5bjtHqi2SmfkG0hbKIUa6de
+         c4he47IVDjR+6nFHaog6QB8xNMoIE0TEuTqtdxVq2+usieLZm8YKcGZudmiW23fCOb+A
+         gY8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731671313; x=1732276113;
+        d=1e100.net; s=20230601; t=1731675145; x=1732279945;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=U5Myvkj760K68jN4/CxybPiP+G9N9utEoeb8mQtoXFA=;
-        b=k4RnZdZczz+pZsn0BgR5MMxYxvW7lu21aagcKZ1YgAXhY5wnqI4oL05jGi3M7qo2K1
-         3djHwYVrctZywYFD7IxR6vpdnHOcvWmqz0ismNF+jJmtfgK0Nw2U1gQrENHmVL4IgFp2
-         E1BmaYww3LVvH8HRjZ4nedXWF5NT7JusKjKiWo2Eme9d6FtVU2HJLW5HR4nUVkQz8n07
-         BzKaeYgW7RMt5SnhomuS94B/ETpWW+8lxrrYYH7C3dkCFGQZObPey5y8GhD3/qoJ7gU5
-         nx6+qY+1rX3WCro8ozKghmNoDL25UpWDahGUYeAm05WFS7cPuyfLy3BCSDz2bnZYNBqd
-         Qaew==
-X-Forwarded-Encrypted: i=1; AJvYcCVayEYy6gR0jQ2TTgoUJGJlvt7gPh8RRTMpt4rsZv3gnOiqypA9i81I67To7m5cLIxf5dYeZFQQ@vger.kernel.org
-X-Gm-Message-State: AOJu0YxFxC774R+La7eszu0LaoGvt3FG8uex4rwiNT1qatvjhLco60nO
-	j7M8erZ1gifCAwjgL8ft7dIhyz7ElRjDAZFs5l2a6D4FIO0h0fbF6P1RiiEj94VyuFpYKUehk1j
-	lIQ0/5d6lt2lL0iRxxltV/Xz3uMKzGIhwb1YRwvHs29mFI0k/6/O3tpc=
-X-Received: by 2002:a05:6000:1863:b0:382:1c00:d47a with SMTP id ffacd0b85a97d-38225a91de7mr1970147f8f.36.1731671312704;
-        Fri, 15 Nov 2024 03:48:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGkdaxF08qnytbdOrAtWS1OCHChT9d+cqHL0CIRbJlmylx2cropfzqREiAIuunfvnBv8d922w==
-X-Received: by 2002:a05:6000:1863:b0:382:1c00:d47a with SMTP id ffacd0b85a97d-38225a91de7mr1970123f8f.36.1731671312264;
-        Fri, 15 Nov 2024 03:48:32 -0800 (PST)
-Received: from jlelli-thinkpadt14gen4.remote.csb (host-80-47-4-194.as13285.net. [80.47.4.194])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3821adbeb7dsm4100827f8f.58.2024.11.15.03.48.31
+        bh=O9b1S7Wa8pDEKhTXu1e0njgl4QX3+67067qzucvDaj8=;
+        b=H8XPql83iuj8PlWFbNbhqWPy9Fbw5lj6kLAwK7oQFU8Z8QXBlgOjbWaeqxhEOHEb+6
+         Kl+x94uCGDTR7sE9jQAgm+fJ+uvRKhRoIyAJtBxU09G2AGWP+LdpaGfTL7f7VA3SYSdx
+         Of0r7yDhIDtmda5ZfD2dfZ4Lv+qh1Qq+P7im3TCfO6Q7RiVcbBijgI7Ohjdx4kBIFeeK
+         FngyN9d2oj8sd2DMDZ42wmKU7mJxGmOL4MLTLLEj6BVxlfvOKnOmDV+lEthSYBlY0A/g
+         mmr8cexiprAUQ+R8OlGFYfc1Qyrc2ICWskqVwg46lM/661ZiHEubfCUigj8NS9F5Veo5
+         Fotw==
+X-Gm-Message-State: AOJu0YyldquHxHaNH4Kw2uKqazzQrTwQXMTIbvS4C72gX7Nhf7ZYNvWo
+	mznSQlbpmZdDCwFqb5B08FGtSj/bO0kkdL4TKr04VgOEPTHU3LvC/5MgYVDi1VA=
+X-Google-Smtp-Source: AGHT+IEoYzFkjMiNiG/421KbmVNBg/OqYzJv6S+4VQbzAsFIYzCPHCz3awHF6FuVlSvOgAHZZTIUow==
+X-Received: by 2002:a5d:47a1:0:b0:381:df72:52cd with SMTP id ffacd0b85a97d-38225a0c616mr1820482f8f.23.1731675144752;
+        Fri, 15 Nov 2024 04:52:24 -0800 (PST)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3821ae161cdsm4370391f8f.79.2024.11.15.04.52.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Nov 2024 03:48:31 -0800 (PST)
-Date: Fri, 15 Nov 2024 11:48:29 +0000
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Koutny <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Phil Auld <pauld@redhat.com>
-Cc: Qais Yousef <qyousef@layalina.io>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
-	Suleiman Souhlal <suleiman@google.com>,
-	Aashish Sharma <shraash@google.com>,
-	Shin Kawamura <kawasin@google.com>,
-	Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [PATCH v2 3/2] sched/deadline: Check bandwidth overflow earlier for
- hotplug
-Message-ID: <Zzc1DfPhbvqDDIJR@jlelli-thinkpadt14gen4.remote.csb>
-References: <20241114142810.794657-1-juri.lelli@redhat.com>
- <ZzYhyOQh3OAsrPo9@jlelli-thinkpadt14gen4.remote.csb>
+        Fri, 15 Nov 2024 04:52:24 -0800 (PST)
+Date: Fri, 15 Nov 2024 13:52:22 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Toralf =?utf-8?Q?F=C3=B6rster?= <toralf.foerster@gmx.de>
+Cc: cgroups@vger.kernel.org
+Subject: Re: process running under Cgroup2 control is OOM'ed if its stdout
+ goes to a file at at tmpfs filesystem
+Message-ID: <tuvclkyjpsulysyz6hjxgpyrlku5zuov6gyyhjzvadrqt4qpse@bwmb7ddutwzj>
+References: <e0dccc65-3446-4563-8a0d-1ebda4bd7b81@gmx.de>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="zgip7uiyufq6jnj7"
 Content-Disposition: inline
-In-Reply-To: <ZzYhyOQh3OAsrPo9@jlelli-thinkpadt14gen4.remote.csb>
+In-Reply-To: <e0dccc65-3446-4563-8a0d-1ebda4bd7b81@gmx.de>
 
-Currently we check for bandwidth overflow potentially due to hotplug
-operations at the end of sched_cpu_deactivate(), after the cpu going
-offline has already been removed from scheduling, active_mask, etc.
-This can create issues for DEADLINE tasks, as there is a substantial
-race window between the start of sched_cpu_deactivate() and the moment
-we possibly decide to roll-back the operation if dl_bw_deactivate()
-returns failure in cpuset_cpu_inactive(). An example is a throttled
-task that sees its replenishment timer firing while the cpu it was
-previously running on is considered offline, but before
-dl_bw_deactivate() had a chance to say no and roll-back happened.
 
-Fix this by directly calling dl_bw_deactivate() first thing in
-sched_cpu_deactivate() and do the required calculation in the former
-function considering the cpu passed as an argument as offline already.
+--zgip7uiyufq6jnj7
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-By doing so we also simplify sched_cpu_deactivate(), as there is no need
-anymore for any kind of roll-back if we fail early.
+Hello.
 
-Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
----
-Thanks Waiman and Phil for testing and reviewing the scratch version of
-this change. I think the below might be better, as we end up with a
-clean-up as well.
+On Sat, Nov 09, 2024 at 08:38:54PM GMT, Toralf F=F6rster <toralf.foerster@g=
+mx.de> wrote:
+> The reproducer in [1] shows that a process running under Cgroup2 control
+> is OOM'ed if its stdout goes to a file at at tmpfs filesystem.
 
-Please take another look when you/others have time.
----
- kernel/sched/core.c     | 22 +++++++---------------
- kernel/sched/deadline.c | 12 ++++++++++--
- 2 files changed, 17 insertions(+), 17 deletions(-)
+The (writer) process allocates new backing pages for the tmpfs and it's
+charged to that process' cgroup.
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index d1049e784510..e2c6eacf793e 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -8054,19 +8054,14 @@ static void cpuset_cpu_active(void)
- 	cpuset_update_active_cpus();
- }
- 
--static int cpuset_cpu_inactive(unsigned int cpu)
-+static void cpuset_cpu_inactive(unsigned int cpu)
- {
- 	if (!cpuhp_tasks_frozen) {
--		int ret = dl_bw_deactivate(cpu);
--
--		if (ret)
--			return ret;
- 		cpuset_update_active_cpus();
- 	} else {
- 		num_cpus_frozen++;
- 		partition_sched_domains(1, NULL, NULL);
- 	}
--	return 0;
- }
- 
- static inline void sched_smt_present_inc(int cpu)
-@@ -8128,6 +8123,11 @@ int sched_cpu_deactivate(unsigned int cpu)
- 	struct rq *rq = cpu_rq(cpu);
- 	int ret;
- 
-+	ret = dl_bw_deactivate(cpu);
-+
-+	if (ret)
-+		return ret;
-+
- 	/*
- 	 * Remove CPU from nohz.idle_cpus_mask to prevent participating in
- 	 * load balancing when not active
-@@ -8173,15 +8173,7 @@ int sched_cpu_deactivate(unsigned int cpu)
- 		return 0;
- 
- 	sched_update_numa(cpu, false);
--	ret = cpuset_cpu_inactive(cpu);
--	if (ret) {
--		sched_smt_present_inc(cpu);
--		sched_set_rq_online(rq, cpu);
--		balance_push_set(cpu, false);
--		set_cpu_active(cpu, true);
--		sched_update_numa(cpu, true);
--		return ret;
--	}
-+	cpuset_cpu_inactive(cpu);
- 	sched_domains_numa_masks_clear(cpu);
- 	return 0;
- }
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 267ea8bacaf6..6e988d4cd787 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -3505,6 +3505,13 @@ static int dl_bw_manage(enum dl_bw_request req, int cpu, u64 dl_bw)
- 		}
- 		break;
- 	case dl_bw_req_deactivate:
-+		/*
-+		 * cpu is not off yet, but we need to do the math by
-+		 * considering it off already (i.e., what would happen if we
-+		 * turn cpu off?).
-+		 */
-+		cap -= arch_scale_cpu_capacity(cpu);
-+
- 		/*
- 		 * cpu is going offline and NORMAL tasks will be moved away
- 		 * from it. We can thus discount dl_server bandwidth
-@@ -3522,9 +3529,10 @@ static int dl_bw_manage(enum dl_bw_request req, int cpu, u64 dl_bw)
- 		if (dl_b->total_bw - fair_server_bw > 0) {
- 			/*
- 			 * Leaving at least one CPU for DEADLINE tasks seems a
--			 * wise thing to do.
-+			 * wise thing to do. As said above, cpu is not offline
-+			 * yet, so account for that.
- 			 */
--			if (dl_bw_cpus(cpu))
-+			if (dl_bw_cpus(cpu) - 1)
- 				overflow = __dl_overflow(dl_b, cap, fair_server_bw, 0);
- 			else
- 				overflow = 1;
--- 
-2.47.0
+> For a regular file system that behaviour is not reproduced here.
 
+Your reproducer disables swap, so there's no option to write out the
+anonymous memory. OTOH, regular page cache can be written out to the
+backing persistent filesystem and free up RAM.
+
+> I do wonder if this is a feature?
+
+It's how tmpfs memory is charged.
+
+HTH,
+Michal
+
+--zgip7uiyufq6jnj7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZzdEBAAKCRAt3Wney77B
+SYsGAQDCEaH9ZYOYDXrbzRDiSECTGjSarKonoDSRbPCLgGlYywEA5AUGgYdn6qcP
+bsyBXqEwJlW9Ql9HIE8y5OF1dJDylAg=
+=Yzcq
+-----END PGP SIGNATURE-----
+
+--zgip7uiyufq6jnj7--
 
