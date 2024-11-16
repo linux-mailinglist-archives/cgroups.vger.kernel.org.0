@@ -1,72 +1,72 @@
-Return-Path: <cgroups+bounces-5594-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5595-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3923C9D002F
-	for <lists+cgroups@lfdr.de>; Sat, 16 Nov 2024 19:00:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86FE49D0035
+	for <lists+cgroups@lfdr.de>; Sat, 16 Nov 2024 19:00:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81B2C1F21ADB
-	for <lists+cgroups@lfdr.de>; Sat, 16 Nov 2024 18:00:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC019B25494
+	for <lists+cgroups@lfdr.de>; Sat, 16 Nov 2024 18:00:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7F1F199EA8;
-	Sat, 16 Nov 2024 17:59:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75CDA1ABEA8;
+	Sat, 16 Nov 2024 17:59:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="uxU1GykK"
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="O+VnJ8kt"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06B41946AA
-	for <cgroups@vger.kernel.org>; Sat, 16 Nov 2024 17:59:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0039E198E80
+	for <cgroups@vger.kernel.org>; Sat, 16 Nov 2024 17:59:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731779971; cv=none; b=FFPk8Uo8YMvCBviFmQ32UF2MudcRWL6DT3iu0fi8frl0zOpih1X07rrAWqo+PajTs0lIv2cCVb+XZgnSxqHiSE8epRwii2VYIA+o2QYusiYnJcTA6mwUEkyvTSaGOQYvSMtSIY1a823KYMHx67WMgIze+fH7r5gN2verb76ab+k=
+	t=1731779973; cv=none; b=WcIU3gkiOBQFtI1J/sLqnPJ6gRSqu//MKTQWH+kcY+zfESzWBeoBmAr4aU8XbeaAfm4QcSaz3Vh+TcALOgBq9B1u3Vzq0GHtuMLnxXSn39ri25+nvALM1BH5Do7ki3KOQ14Ou8+Xl6AxFYU7KwR5uK2ik8DJYSRLxf1gdsNzPT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731779971; c=relaxed/simple;
-	bh=bIwDxueUJud+n2/mIeUPWBecNLHhmDU7Xn2mmiUGf6s=;
+	s=arc-20240116; t=1731779973; c=relaxed/simple;
+	bh=A/eMaK4QwZ9hjbeO9HV9UZXJqXekh8pTRkBamgc9JYY=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=G/NczYSdpCS3z5haIzbeCn629jx6i/XvaN7XGlZ5Os19wFCCqcRQTWcJ7OOe0Paxl5rFMOVjOFdiwNG7HTSnL8bfthM+Z5AVjQr7cDPNSFPSb8RlMWtTAOuXV03mB05Ewyu1pE2N2OQzFyH+wPHdbkeKqh9QMypOrWx7UJfelYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=uxU1GykK; arc=none smtp.client-ip=209.85.219.48
+	 MIME-Version; b=jA6w0CSjFTcZG4ok9m3JOiDJHilor93JzmUfKkNJafsC/dB+5z6B7B2zCvFOaS3K4qTGcluOcQmd4+vCA7ZR9yZ5JnoV5iGAl3DnabXLsPp7JsjaOXSwd2vp+3jVtz74J5wQAW642VbTbgIMoHKKMO4EB1Aru16Z/iwAP60V704=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=O+VnJ8kt; arc=none smtp.client-ip=209.85.222.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-6d3f52bb704so14417126d6.1
-        for <cgroups@vger.kernel.org>; Sat, 16 Nov 2024 09:59:29 -0800 (PST)
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-7b1511697a5so173883485a.2
+        for <cgroups@vger.kernel.org>; Sat, 16 Nov 2024 09:59:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1731779969; x=1732384769; darn=vger.kernel.org;
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1731779970; x=1732384770; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8NgfUO+bQWj6bU8BgCVOh0fIa47vMCexDt60Dq7gXNk=;
-        b=uxU1GykKNMZCbWxpjzqobztisCh9k6Tx6uWhHxXDuyD+rXG48SF4MUVGkr0KkfMDwl
-         qzZAop8JzhtNcpREH+mcVL92W0+hSfPBkUt9iju8Izy1dJuI4okjTgyNs0qcAr7zhC31
-         sjwoOKFCcMxj6cMFpEVKHFLZjkjOGRoPc2BolRWiSUO3bmVVB+WUoS7NoHUwUgenHoRA
-         5mt8Kb4SKK1Vb1U1G+5J45gy1L+cDlPB/6ye2wugK5PnYUHmh2FydpbweLslJ0E6yeWH
-         aq89LNXrEaARk499i9WTH3nLaxZFM9q+DCSTgqtLH8fYzKiP1Y02rsYespE1knE3ux0z
-         0jAQ==
+        bh=O+zqV+yymXPy0a+WK0KlfZbpXJ50Be1gsnAxvt14Xcw=;
+        b=O+VnJ8ktm442R9PDCcUAQp7g4R2wDqeZNzur6+CuVdmVz+mZX6wEsCfxBnOZqHKbIo
+         5rCzugQZCPaZ5CGFhWXJDBTqOlFxXb47bug0UddsyiXrCCHWu1Z+rBcJQeljyH9mLhsE
+         iiMoExWi2vf4sQBnCvqRlPRQ7o9XjADlVaW6oUEVc3myck82H4wDvasbZuBVx7i1zYmr
+         UCpgnzqG1hM7HEnuWwgbI353cJicmFDxWv3ff426Gs1VHKxpN1jrN56aKOrP9kx2E0JL
+         /NPK7tIx6VtnDjYzrKkCk7+3aSYTP9xSw1U5pQK3ARbBjqz60RAdy0vgHvMoAkGriHva
+         raKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731779969; x=1732384769;
+        d=1e100.net; s=20230601; t=1731779970; x=1732384770;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8NgfUO+bQWj6bU8BgCVOh0fIa47vMCexDt60Dq7gXNk=;
-        b=Q39moorpukeYiimBg8ObVUHtoU5EL+cE1/Jv8c7B8Gfr1/MDM3n+FGhNy/C7EPnTfU
-         MdYWTEnF67PP0J/Jb3l8CACpYYWwSgL1g1XL0zEdsxxtl63gUwmmK29lmo1vKMQpQSK5
-         dZ/63OjgthgsCaxCxziv47MvQvqeKBzyD48NyvWLqAvjGLBfSAhns2dGETu9klMGwndf
-         0VMMTV+Z6U+nma2QyFTvrOMgCMXQH+hpGjKtFHITeESQgCnYXOqiCPR3XkVi/jbnhrW4
-         bjj7AqcRYLWRY3nBrOkd4iXHkCuCvZ2dgt5GHNN3aW33RYToHfqcDBqXpgHb+lrW043T
-         EbCA==
-X-Forwarded-Encrypted: i=1; AJvYcCXlWcEHJL5967qD3Dh7XHZ8E3zEj/7vIjYZQbDxGIwjOCLQbptfcg3HgHWHYpAqKyVoAo1AAvb5@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx8bF2GXVI3hnHqZ14yMn0DbHmCtgo0pyIbkCRvamwn3DP8m3ua
-	LgrUmXMt21YfOleWtVhwPvaVmgVoqymMW8GrlztVL7JfTa5MAoV0OV2Rq8ppUt4=
-X-Google-Smtp-Source: AGHT+IEMOLNEsp5sqgIkt52tiSL0kf4hziLkF3l6oWPXAHVLzfNvt2ajo6yR1l9MnxJe6dgs1UWO0g==
-X-Received: by 2002:a05:6214:5d0a:b0:6cb:e6b2:4a84 with SMTP id 6a1803df08f44-6d3fb7cc924mr77641716d6.14.1731779968837;
-        Sat, 16 Nov 2024 09:59:28 -0800 (PST)
+        bh=O+zqV+yymXPy0a+WK0KlfZbpXJ50Be1gsnAxvt14Xcw=;
+        b=PP7/mGKUSL3yWAdKe48NzHdx4qwOHKuuYtMmTDDrBojhM+OVrc5JxtqF6TuQbObHsX
+         wfBq75Uvg4MO/Lw0wQb9AyRERZSLGV7gnXHfkB1xXTXfvzFAgDzsaHEcV3QYKHevVxGd
+         AfoNIjCSrODZ8vm/vb3FJDNBAd1t6Bn1ghoKglOJe4vlo5S4drjaOCPRfyyhJccoVh6H
+         A6+SShFh5qXjv152039Vo72icBIjXEk/5Dbrzfrl5lvZvJ1EPXFODKn/NUFOjSJVspdo
+         BxFJbOoVqKP7LxjGeSaHaxmYfx81De0HLHW5eBeN7Ctn8mpJrqyZfVaS8laVMDG47q/B
+         0mJg==
+X-Forwarded-Encrypted: i=1; AJvYcCXlghqNTMdXvnKLcWwzjhiQknm+pFU/0X/T1QuHI5nAv7vjcQvxmmbvAa/y1Jx4IZlnnBvrPXMo@vger.kernel.org
+X-Gm-Message-State: AOJu0YzGCTEizs4GLzN3BX/42dEYL1WHTg4kP/c9VpV4gyzMF2roYQ3G
+	0XNU6ORLNAQir84q4vIOqDnYFD9j5gC86I3c6mvZiO8du8VvjrNK5/byc7K6gNY=
+X-Google-Smtp-Source: AGHT+IFM6KBibOKfJYXQZBFVrr3w+/SZOQZsHgHNA1kQveXXhFr8pkzrxC/81+yPU1STXi1ZMpKadw==
+X-Received: by 2002:a05:620a:4507:b0:7b1:4762:65 with SMTP id af79cd13be357-7b3622b4a6bmr766363285a.20.1731779970003;
+        Sat, 16 Nov 2024 09:59:30 -0800 (PST)
 Received: from soleen.c.googlers.com.com (51.57.86.34.bc.googleusercontent.com. [34.86.57.51])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b35ca309d6sm280530085a.94.2024.11.16.09.59.27
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b35ca309d6sm280530085a.94.2024.11.16.09.59.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Nov 2024 09:59:28 -0800 (PST)
+        Sat, 16 Nov 2024 09:59:29 -0800 (PST)
 From: Pasha Tatashin <pasha.tatashin@soleen.com>
 To: pasha.tatashin@soleen.com,
 	linux-kernel@vger.kernel.org,
@@ -109,9 +109,9 @@ To: pasha.tatashin@soleen.com,
 	tandersen@netflix.com,
 	rientjes@google.com,
 	gthelen@google.com
-Subject: [RFCv1 2/6] pagewalk: Add a page table walker for init_mm page table
-Date: Sat, 16 Nov 2024 17:59:18 +0000
-Message-ID: <20241116175922.3265872-3-pasha.tatashin@soleen.com>
+Subject: [RFCv1 3/6] mm: Add a dump_page variant that accept log level argument
+Date: Sat, 16 Nov 2024 17:59:19 +0000
+Message-ID: <20241116175922.3265872-4-pasha.tatashin@soleen.com>
 X-Mailer: git-send-email 2.47.0.338.g60cca15819-goog
 In-Reply-To: <20241116175922.3265872-1-pasha.tatashin@soleen.com>
 References: <20241116175922.3265872-1-pasha.tatashin@soleen.com>
@@ -123,80 +123,221 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Page Detective will use it to walk the kernel page table. Make this
-function accessible from modules, and also while here make
-walk_page_range() accessible from modules, so Page Detective could
-use it to walk user page tables.
+Page Detective uses info level, while dump_page() uses warn level.
+Add a new function dump_page_lvl() that accepts  log level argument
+to be able to dump pages at specific level. Also, this enables adding
+a modules specific prefix to output of this function.
 
 Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 ---
- include/linux/pagewalk.h |  2 ++
- mm/pagewalk.c            | 32 ++++++++++++++++++++++++++++++++
- 2 files changed, 34 insertions(+)
+ fs/inode.c              | 18 +++++++-------
+ include/linux/fs.h      |  2 +-
+ include/linux/mmdebug.h |  1 +
+ mm/debug.c              | 53 ++++++++++++++++++++++-------------------
+ 4 files changed, 39 insertions(+), 35 deletions(-)
 
-diff --git a/include/linux/pagewalk.h b/include/linux/pagewalk.h
-index f5eb5a32aeed..ff25374470f0 100644
---- a/include/linux/pagewalk.h
-+++ b/include/linux/pagewalk.h
-@@ -124,6 +124,8 @@ int walk_page_range_novma(struct mm_struct *mm, unsigned long start,
- int walk_page_range_vma(struct vm_area_struct *vma, unsigned long start,
- 			unsigned long end, const struct mm_walk_ops *ops,
- 			void *private);
-+int walk_page_range_kernel(unsigned long start, unsigned long end,
-+			   const struct mm_walk_ops *ops, void *private);
- int walk_page_vma(struct vm_area_struct *vma, const struct mm_walk_ops *ops,
- 		void *private);
- int walk_page_mapping(struct address_space *mapping, pgoff_t first_index,
-diff --git a/mm/pagewalk.c b/mm/pagewalk.c
-index 5f9f01532e67..050790aeb15f 100644
---- a/mm/pagewalk.c
-+++ b/mm/pagewalk.c
-@@ -478,6 +478,7 @@ int walk_page_range(struct mm_struct *mm, unsigned long start,
- 	} while (start = next, start < end);
- 	return err;
+diff --git a/fs/inode.c b/fs/inode.c
+index 8dabb224f941..1114319d82b2 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -603,7 +603,7 @@ void __remove_inode_hash(struct inode *inode)
  }
-+EXPORT_SYMBOL_GPL(walk_page_range);
+ EXPORT_SYMBOL(__remove_inode_hash);
  
- /**
-  * walk_page_range_novma - walk a range of pagetables not backed by a vma
-@@ -541,6 +542,37 @@ int walk_page_range_novma(struct mm_struct *mm, unsigned long start,
- 	return walk_pgd_range(start, end, &walk);
+-void dump_mapping(const struct address_space *mapping)
++void dump_mapping(const char *loglvl, const struct address_space *mapping)
+ {
+ 	struct inode *host;
+ 	const struct address_space_operations *a_ops;
+@@ -619,31 +619,31 @@ void dump_mapping(const struct address_space *mapping)
+ 	 */
+ 	if (get_kernel_nofault(host, &mapping->host) ||
+ 	    get_kernel_nofault(a_ops, &mapping->a_ops)) {
+-		pr_warn("invalid mapping:%px\n", mapping);
++		printk("%sinvalid mapping:%px\n", loglvl, mapping);
+ 		return;
+ 	}
+ 
+ 	if (!host) {
+-		pr_warn("aops:%ps\n", a_ops);
++		printk("%saops:%ps\n", loglvl, a_ops);
+ 		return;
+ 	}
+ 
+ 	if (get_kernel_nofault(dentry_first, &host->i_dentry.first) ||
+ 	    get_kernel_nofault(ino, &host->i_ino)) {
+-		pr_warn("aops:%ps invalid inode:%px\n", a_ops, host);
++		printk("%saops:%ps invalid inode:%px\n", loglvl, a_ops, host);
+ 		return;
+ 	}
+ 
+ 	if (!dentry_first) {
+-		pr_warn("aops:%ps ino:%lx\n", a_ops, ino);
++		printk("%saops:%ps ino:%lx\n", loglvl, a_ops, ino);
+ 		return;
+ 	}
+ 
+ 	dentry_ptr = container_of(dentry_first, struct dentry, d_u.d_alias);
+ 	if (get_kernel_nofault(dentry, dentry_ptr) ||
+ 	    !dentry.d_parent || !dentry.d_name.name) {
+-		pr_warn("aops:%ps ino:%lx invalid dentry:%px\n",
+-				a_ops, ino, dentry_ptr);
++		printk("%saops:%ps ino:%lx invalid dentry:%px\n",
++		       loglvl, a_ops, ino, dentry_ptr);
+ 		return;
+ 	}
+ 
+@@ -653,8 +653,8 @@ void dump_mapping(const struct address_space *mapping)
+ 	 * Even if strncpy_from_kernel_nofault() succeeded,
+ 	 * the fname could be unreliable
+ 	 */
+-	pr_warn("aops:%ps ino:%lx dentry name(?):\"%s\"\n",
+-		a_ops, ino, fname);
++	printk("%saops:%ps ino:%lx dentry name(?):\"%s\"\n",
++	       loglvl, a_ops, ino, fname);
  }
  
-+/**
-+ * walk_page_range_kernel - walk a range of pagetables of kernel/init_mm
-+ * @start:	start address of the virtual address range
-+ * @end:	end address of the virtual address range
-+ * @ops:	operation to call during the walk
-+ * @private:	private data for callbacks' usage
-+ *
-+ * Similar to walk_page_range_novma() but specifically walks init_mm.pgd table.
-+ *
-+ * Note: This function takes two looks: get_online_mems(), and mmap_read, this
-+ * is to prevent kernel page tables from being freed while walking.
-+ */
-+int walk_page_range_kernel(unsigned long start, unsigned long end,
-+			   const struct mm_walk_ops *ops, void *private)
-+{
-+		get_online_mems();
-+		if (mmap_read_lock_killable(&init_mm)) {
-+			put_online_mems();
-+			return -EAGAIN;
-+		}
-+
-+		walk_page_range_novma(&init_mm, start, end, ops,
-+				      init_mm.pgd, private);
-+
-+		mmap_read_unlock(&init_mm);
-+		put_online_mems();
-+
-+		return 0;
-+}
-+EXPORT_SYMBOL_GPL(walk_page_range_kernel);
-+
- int walk_page_range_vma(struct vm_area_struct *vma, unsigned long start,
- 			unsigned long end, const struct mm_walk_ops *ops,
- 			void *private)
+ void clear_inode(struct inode *inode)
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index a25b72397af5..fa2b04bed9d6 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3137,7 +3137,7 @@ extern void unlock_new_inode(struct inode *);
+ extern void discard_new_inode(struct inode *);
+ extern unsigned int get_next_ino(void);
+ extern void evict_inodes(struct super_block *sb);
+-void dump_mapping(const struct address_space *);
++void dump_mapping(const char *loglvl, const struct address_space *);
+ 
+ /*
+  * Userspace may rely on the inode number being non-zero. For example, glibc
+diff --git a/include/linux/mmdebug.h b/include/linux/mmdebug.h
+index 39a7714605a7..69849d457f4c 100644
+--- a/include/linux/mmdebug.h
++++ b/include/linux/mmdebug.h
+@@ -11,6 +11,7 @@ struct mm_struct;
+ struct vma_iterator;
+ 
+ void dump_page(const struct page *page, const char *reason);
++void dump_page_lvl(const char *loglvl, const struct page *page);
+ void dump_vma(const struct vm_area_struct *vma);
+ void dump_mm(const struct mm_struct *mm);
+ void vma_iter_dump_tree(const struct vma_iterator *vmi);
+diff --git a/mm/debug.c b/mm/debug.c
+index aa57d3ffd4ed..0df242c77c7c 100644
+--- a/mm/debug.c
++++ b/mm/debug.c
+@@ -67,36 +67,38 @@ static const char *page_type_name(unsigned int page_type)
+ 	return page_type_names[i];
+ }
+ 
+-static void __dump_folio(struct folio *folio, struct page *page,
+-		unsigned long pfn, unsigned long idx)
++static void __dump_folio(const char *loglvl, struct folio *folio,
++			 struct page *page, unsigned long pfn,
++			 unsigned long idx)
+ {
+ 	struct address_space *mapping = folio_mapping(folio);
+ 	int mapcount = atomic_read(&page->_mapcount);
+ 	char *type = "";
+ 
+ 	mapcount = page_mapcount_is_type(mapcount) ? 0 : mapcount + 1;
+-	pr_warn("page: refcount:%d mapcount:%d mapping:%p index:%#lx pfn:%#lx\n",
+-			folio_ref_count(folio), mapcount, mapping,
+-			folio->index + idx, pfn);
++	printk("%spage: refcount:%d mapcount:%d mapping:%p index:%#lx pfn:%#lx\n",
++	       loglvl, folio_ref_count(folio), mapcount, mapping,
++	       folio->index + idx, pfn);
+ 	if (folio_test_large(folio)) {
+-		pr_warn("head: order:%u mapcount:%d entire_mapcount:%d nr_pages_mapped:%d pincount:%d\n",
+-				folio_order(folio),
+-				folio_mapcount(folio),
+-				folio_entire_mapcount(folio),
+-				folio_nr_pages_mapped(folio),
+-				atomic_read(&folio->_pincount));
++		printk("%shead: order:%u mapcount:%d entire_mapcount:%d nr_pages_mapped:%d pincount:%d\n",
++		       loglvl,
++		       folio_order(folio),
++		       folio_mapcount(folio),
++		       folio_entire_mapcount(folio),
++		       folio_nr_pages_mapped(folio),
++		       atomic_read(&folio->_pincount));
+ 	}
+ 
+ #ifdef CONFIG_MEMCG
+ 	if (folio->memcg_data)
+-		pr_warn("memcg:%lx\n", folio->memcg_data);
++		printk("%smemcg:%lx\n", loglvl, folio->memcg_data);
+ #endif
+ 	if (folio_test_ksm(folio))
+ 		type = "ksm ";
+ 	else if (folio_test_anon(folio))
+ 		type = "anon ";
+ 	else if (mapping)
+-		dump_mapping(mapping);
++		dump_mapping(loglvl, mapping);
+ 	BUILD_BUG_ON(ARRAY_SIZE(pageflag_names) != __NR_PAGEFLAGS + 1);
+ 
+ 	/*
+@@ -105,22 +107,22 @@ static void __dump_folio(struct folio *folio, struct page *page,
+ 	 * state for debugging, it should be fine to accept a bit of
+ 	 * inaccuracy here due to racing.
+ 	 */
+-	pr_warn("%sflags: %pGp%s\n", type, &folio->flags,
+-		is_migrate_cma_folio(folio, pfn) ? " CMA" : "");
++	printk("%s%sflags: %pGp%s\n", loglvl, type, &folio->flags,
++	       is_migrate_cma_folio(folio, pfn) ? " CMA" : "");
+ 	if (page_has_type(&folio->page))
+ 		pr_warn("page_type: %x(%s)\n", folio->page.page_type >> 24,
+ 				page_type_name(folio->page.page_type));
+ 
+-	print_hex_dump(KERN_WARNING, "raw: ", DUMP_PREFIX_NONE, 32,
+-			sizeof(unsigned long), page,
+-			sizeof(struct page), false);
++	print_hex_dump(loglvl, "raw: ", DUMP_PREFIX_NONE, 32,
++		       sizeof(unsigned long), page,
++		       sizeof(struct page), false);
+ 	if (folio_test_large(folio))
+-		print_hex_dump(KERN_WARNING, "head: ", DUMP_PREFIX_NONE, 32,
+-			sizeof(unsigned long), folio,
+-			2 * sizeof(struct page), false);
++		print_hex_dump(loglvl, "head: ", DUMP_PREFIX_NONE, 32,
++			       sizeof(unsigned long), folio,
++			       2 * sizeof(struct page), false);
+ }
+ 
+-static void __dump_page(const struct page *page)
++void dump_page_lvl(const char *loglvl, const struct page *page)
+ {
+ 	struct folio *foliop, folio;
+ 	struct page precise;
+@@ -149,22 +151,23 @@ static void __dump_page(const struct page *page)
+ 	if (idx > nr_pages) {
+ 		if (loops-- > 0)
+ 			goto again;
+-		pr_warn("page does not match folio\n");
++		printk("%spage does not match folio\n", loglvl);
+ 		precise.compound_head &= ~1UL;
+ 		foliop = (struct folio *)&precise;
+ 		idx = 0;
+ 	}
+ 
+ dump:
+-	__dump_folio(foliop, &precise, pfn, idx);
++	__dump_folio(loglvl, foliop, &precise, pfn, idx);
+ }
++EXPORT_SYMBOL_GPL(dump_page_lvl);
+ 
+ void dump_page(const struct page *page, const char *reason)
+ {
+ 	if (PagePoisoned(page))
+ 		pr_warn("page:%p is uninitialized and poisoned", page);
+ 	else
+-		__dump_page(page);
++		dump_page_lvl(KERN_WARNING, page);
+ 	if (reason)
+ 		pr_warn("page dumped because: %s\n", reason);
+ 	dump_page_owner(page);
 -- 
 2.47.0.338.g60cca15819-goog
 
