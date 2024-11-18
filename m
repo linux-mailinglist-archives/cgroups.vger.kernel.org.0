@@ -1,77 +1,119 @@
-Return-Path: <cgroups+bounces-5619-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5620-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18AF19D166E
-	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 17:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 15CE99D16BF
+	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 18:08:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF4B4B27FEB
-	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 16:57:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78DBBB242D4
+	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 17:08:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C42F1BE852;
-	Mon, 18 Nov 2024 16:56:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C99CA1BD4E2;
+	Mon, 18 Nov 2024 17:08:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XAa5sqiS"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ji3S5ROg"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8505E1B5EA4
-	for <cgroups@vger.kernel.org>; Mon, 18 Nov 2024 16:56:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFE74198A17
+	for <cgroups@vger.kernel.org>; Mon, 18 Nov 2024 17:08:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731949000; cv=none; b=HIwrnfcoaZ/TUganF9x/2vX8rI8Pgat+jN+j3ILTdWsVAeuoH6zCPBQvDdBjfsmLdohM8QJfbbcuwYTm7Ft4fXP+EtS9X2khC93MIJQ0hdr/yryPhKbt0zWUvKOO/c87GSBYgpWEY9Te81ViC0rbPiQIawndvLhNOLcVw9rCNQM=
+	t=1731949683; cv=none; b=lulo8L3EGkPa3NV9hC0oRbmwifin2Kquub0TzuWGUFmIrvqWGEmPJScqhenU919VBFnI5e39QbPbiCn+lzCzethlPszk3H0kTl8qmgUKFLe7oTGt6X4BItzoeGZQiD1hcyuL2WghCABrXjQe6dccTjU3dD1BN0pcH3hJsZT3h2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731949000; c=relaxed/simple;
-	bh=m4HVZ3+6RXsvVWE65C+L+Ujbbo6+dMR0YMemergLGyk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BnXdlFZkw+kM0E84AfpXC8mHtwMROQykrZiB10WSn7Nl3KF4zVPeetXlnpXOt45I7vWLYdRoM8haUXC/7qa1gs0cIcZbCsG8HEZm1OW7gkS63BmSKTGF4UTeYITiaouY7+QSI/WYfgRD+aZ5kRLjkY4wrU+cW0T3vLsjBqb+/+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XAa5sqiS; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 18 Nov 2024 16:56:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1731948996;
+	s=arc-20240116; t=1731949683; c=relaxed/simple;
+	bh=/8iy2Yxv8jn8YuzzWY1ivqBayFy4kmiCLetXx9i6t6g=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=gDG8E8UGQnTFG8BZ9FqU0FK9XXiYMAMJKR4AjdN3TEiVwuK9laSoe58ZvuGGyDA38tkzvw/bcl7YoJRBmwYOscyzKw1+PwikKXucdRz1S8T9iMwJDDsLHhy5BhaL3tssb9OVYmmM6ynKmF1G/YGGF71lpJALmSRjePBWyi6kcbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ji3S5ROg; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1731949680;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=59zS/1A05nM4M6tWzQtKALV91pOAZt9Z4V177dGFIA4=;
-	b=XAa5sqiSA09ONIFQdTjTyerzgYSOFcQHoT32a0p2NLv3tpiBjMSfZwJ6W6St+SW7dMXSOV
-	wzDOpyS2hU71eVWoIhWLa1gA6nvq+lvfxxBdOzicUd8TBCTb0n1IJ3af6Qv8Bl8jSqRK/c
-	NcjQ+xtGFxNUs/8M0AwzOm5jwQF8Tkc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Roman Gushchin <roman.gushchin@linux.dev>
-To: Keren Sun <kerensun@google.com>
-Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
-	shakeel.butt@linux.dev, muchun.song@linux.dev,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mm: remove the non-useful else after a break in a if
- statement
-Message-ID: <Zztxv0OAq5DmNhgl@google.com>
-References: <20241115235744.1419580-1-kerensun@google.com>
- <20241115235744.1419580-4-kerensun@google.com>
+	bh=xOy6TWYOIIvmQVw4uDICe421PFT8nzfxjKb662ixvBs=;
+	b=Ji3S5ROgBbTnllonfgCeFC6/gsjxXqqaiSJPCL4qPHQ3byir6juP0HNCfn1gvkClEh2TOj
+	IZ+lvTJctXAnwXP92kxNCE0fV9lD7iARKc/2UA3iKiLVPVXavQuV+OLoEbg4FuMiKMM9mX
+	mzlL0DGs6KTMJ8Nwjq94/ymMWf4txBQ=
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
+ [209.85.166.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-539-8kT8PlXTNQG9JbUOMuviwg-1; Mon, 18 Nov 2024 12:07:59 -0500
+X-MC-Unique: 8kT8PlXTNQG9JbUOMuviwg-1
+X-Mimecast-MFC-AGG-ID: 8kT8PlXTNQG9JbUOMuviwg
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a7634d8538so12254455ab.0
+        for <cgroups@vger.kernel.org>; Mon, 18 Nov 2024 09:07:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731949678; x=1732554478;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xOy6TWYOIIvmQVw4uDICe421PFT8nzfxjKb662ixvBs=;
+        b=hdqb6T8+IuDVmCjlEfTepUHCKvyDZQL5LZez0RGKupJMG2WF0RHYcIl1LDuGlcuhQe
+         DwZPL44jf3Q50HcXuiU/vmDU6NIZI9J8+4xplF6vJPiCA1bYCJamhUaqF8AY2OKGETcv
+         Hn42BrD5+c49wBn9d0j/EhjuyiGDEVrxfAbvDv5pim8bcsGg6JN9w22wYjq0o/IMCxMO
+         6k+EcRnxAvPb47qaB/klAaGzyeKYZ+i6ihd+NU2SbNT6CzwKQM4XW1Fc7NyxcGdCS9p7
+         6C4cuHF2rsSyaAYPYZ3yLNhdREQWuF4OWwh51uowhI6ntJerU58WqbIHIX9vW2QWCsAX
+         fgVA==
+X-Gm-Message-State: AOJu0Yy4ri6wqjAI60JXeQ5kRIkdFhHhfvhQ6twuGu/eS7IO27PN1iic
+	bdjmeAH52GxWI+eJGWaKUqumIw0Y3Cn1NEVN/+mg9Fdo/BmBueV0ewwjILvdWpr7WmxLuxFGFhI
+	S4quAeeUxBJZG+Ljez71ne3updzKVV2FnMz8Wqb+SHvv2+XldaAx0m+8=
+X-Received: by 2002:a05:6e02:16c5:b0:3a7:6e34:9219 with SMTP id e9e14a558f8ab-3a76e34940dmr24436115ab.14.1731949678615;
+        Mon, 18 Nov 2024 09:07:58 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHAKvJiGb4caXR0IRCgAiaUyPAaZovWIXbMcnmJE1HwamF9spGAbpKczjnwv+bpeqGZuo18dA==
+X-Received: by 2002:a05:6e02:16c5:b0:3a7:6e34:9219 with SMTP id e9e14a558f8ab-3a76e34940dmr24435945ab.14.1731949678367;
+        Mon, 18 Nov 2024 09:07:58 -0800 (PST)
+Received: from ?IPV6:2601:188:ca00:a00:f844:fad5:7984:7bd7? ([2601:188:ca00:a00:f844:fad5:7984:7bd7])
+        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4e0756daf89sm2304031173.129.2024.11.18.09.07.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Nov 2024 09:07:57 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <caee0ba5-b223-4d66-8db3-4a12ac8156d3@redhat.com>
+Date: Mon, 18 Nov 2024 12:07:56 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241115235744.1419580-4-kerensun@google.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: process running under Cgroup2 control is OOM'ed if its stdout
+ goes to a file at at tmpfs filesystem
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ =?UTF-8?Q?Toralf_F=C3=B6rster?= <toralf.foerster@gmx.de>
+Cc: cgroups@vger.kernel.org
+References: <e0dccc65-3446-4563-8a0d-1ebda4bd7b81@gmx.de>
+ <tuvclkyjpsulysyz6hjxgpyrlku5zuov6gyyhjzvadrqt4qpse@bwmb7ddutwzj>
+ <c77e4607-6710-4256-9aac-26251813450f@gmx.de>
+ <ro4p7iarm43po64rkfy7l7mpqncelmoyztwchf6zdcnqerwbm6@z3ubeedjvcbo>
+Content-Language: en-US
+In-Reply-To: <ro4p7iarm43po64rkfy7l7mpqncelmoyztwchf6zdcnqerwbm6@z3ubeedjvcbo>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Nov 15, 2024 at 03:57:44PM -0800, Keren Sun wrote:
-> Remove the else block since there is already a break in the statement of
-> if (iter->oom_lock), just set iter->oom_lock true after the if block
-> ends.
-> 
-> Signed-off-by: Keren Sun <kerensun@google.com>
+On 11/18/24 7:16 AM, Michal Koutný wrote:
+> On Sat, Nov 16, 2024 at 05:04:06PM GMT, Toralf Förster <toralf.foerster@gmx.de> wrote:
+>> I removed any limitation for memory.swap.max and have set memory.max to
+>> the RAM which is needed for the fuzzer.
+>> That should make it, right?
+> It depends on the workload
+> With memory.max cgroup OOM is still possible, e.g. if you run out of the
+> swap space.
+> I'm not sure that's the answer you expect ¯\_(ツ)_/¯
 
-Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
+By default, tmpfs sets the filesystem size limit to half of the 
+available RAM. So unless the the processes in the cgroup also consume a 
+lot of memory besides those for tmpfs, tmpfs write error due to lack of 
+space will happen first before OOM.
 
-Thanks!
+Cheers,
+Longman
+
 
