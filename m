@@ -1,161 +1,121 @@
-Return-Path: <cgroups+bounces-5612-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5613-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B7079D106A
-	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 13:12:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2876E9D1076
+	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 13:16:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01E9428365E
-	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 12:12:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D50711F222BA
+	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 12:16:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F4D01991B4;
-	Mon, 18 Nov 2024 12:12:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BC13194A51;
+	Mon, 18 Nov 2024 12:16:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SDGuTZPc"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gzRNbH/7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B80213A89A;
-	Mon, 18 Nov 2024 12:12:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2433B73477
+	for <cgroups@vger.kernel.org>; Mon, 18 Nov 2024 12:16:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731931962; cv=none; b=rdhI2Y7/hYn3dZ16AFSfsjyuYoEBldv9+JaKWarA/9a3tTJRHLn+pxnW1l6sfo7VIelv/d0GVGn6nJ0w1b4W2BQsG1Yq+OJ22/ox2gswOXKqRM/tj7sN8EZh1Ucn0dW7lbXerBAebCYVYyiuBsKvszavotgxhiwtaatliKQdTpI=
+	t=1731932195; cv=none; b=uP4CyHggoXPL/f9+pSeIIxo0kX9y3iQ0dDuFU7BbRIkwL9+PYJughDWKbUio0Udbhh1AYNTjdBdA6B1Kqd/XMGY3z0wfr1vpTTa/rtUOmxkjzOelrrLmnlgEWjMQm8kVWUOraI1LgfLWKnfvL2adAo8UeU7OEjO01/BJ/4Abxfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731931962; c=relaxed/simple;
-	bh=T6Q+nXARivglHsvGHeBPk9iFZbpmIxxAASYhY3OWCZ8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=haTd/Pm6M9E4Q/IsQEJrNqFDtOi6sBLyYSAOf+sqAMERdDo99KCqyqDAbF8rXulAPK4UYN5DGVmMYpgkRrMkQkSmuIWb8rN6D5qo8EUeSruocC2MoHEwsiEOzTW/Zwggz86GkHlhAQgMw09oaYVedcvldu42lo6VTfpjHeQdzDE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SDGuTZPc; arc=none smtp.client-ip=209.85.167.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3e619057165so2142729b6e.1;
-        Mon, 18 Nov 2024 04:12:40 -0800 (PST)
+	s=arc-20240116; t=1731932195; c=relaxed/simple;
+	bh=IWwLEV5QRf4HYXkSK9kWrSqetc1/yuz1W5owMeylWKM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nTb114hfLlzz41O+SPva9ZUeUORLrg/kCpqzedN3sq6QixWoU7XnVb9Ybkx6OX5F4gapvpinaRKzRIyklwQBH4eqcJuyKtZr/nQ5I6qpGWiUx1yUQWwalQiwwXf3GFVTSuIPI4ABvxVmLQbrkySXRJpqrzaCxn7L5E9A1WUSM9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gzRNbH/7; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3824709ee03so628906f8f.2
+        for <cgroups@vger.kernel.org>; Mon, 18 Nov 2024 04:16:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731931959; x=1732536759; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/olhmA/cAyzIED08CJMv1lbWYqEKq8K1fPAedpvt5Xc=;
-        b=SDGuTZPc8UJfjjgqsk/sXIvb80LZO/5Hwrh+6LyxgXeCFjoWuAXC810Rk74h/3C+dS
-         0bp/Wu1DAZ0cXfW9oEUVeny4kruojcFTb9KdshqoB6LGTv20WkDT3tWloR5EX5rFBYV6
-         MsJwaeFRZ75S9wqFc+VSxfffnv3OCb8neADYlWLyZWKCbGq2msXqkL53qMdIl+vFtJwV
-         kLi1IxCdmsTvo+93oFVByXBgenhmXxWS90I1F3W1/MqEzkr5qXt1hTZ228daD01jdH0Y
-         WBZxX2CRBu6/XhozuG7OD1vmpgj+4EWV5at0Q5tIa1cFGRvnC0Au+LPgom1Fzx3sZurt
-         jHPA==
+        d=suse.com; s=google; t=1731932190; x=1732536990; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IWwLEV5QRf4HYXkSK9kWrSqetc1/yuz1W5owMeylWKM=;
+        b=gzRNbH/72tQAAScPsgTOkeW5WEFE2ZZkBUcqbXGRvpHIbAoGRfoeUY3CuQyg1UIWHW
+         Pzqpq8p3di5ELjM/hq2M89DuvQt8xSfGpfF92KdvDCE/4yjVedjBNyqFaLzk9knBSOOd
+         Mc/eoCPS4DRS9HRkRQ2AM5TvsfMSxZmwNEsMU6eA4SvfcdDRwLA88S06JH9LMKFbCk6D
+         YqJ8XtPqd1rsfGBCR/YJTt4tB+VrEa4/B3KXplKN0hOuoLWOtQftyj8bzjjzQS/IC/2y
+         mCAdj/NgXB4ra/obFCjptCnOg+OfQ7H77zZ4cFVtzPcqqeVXGUvSsJwQqx82Se9XwaOl
+         eo6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731931959; x=1732536759;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/olhmA/cAyzIED08CJMv1lbWYqEKq8K1fPAedpvt5Xc=;
-        b=ppTHJgpAjFKvYy5nz8qhxl0GeaX/ViovMdOO3Dsb7gIYdqNw9FADRzP8kVeRjxmAhS
-         LhiCCIJ7rz9oTgk1q363HOHYCh9ys/xUVC6i/x4iy8WPyu0EHqFz8pKqh4gJSxmZMTNy
-         f0Zj9uLjS1XzX+0JJkbfGlGd7yS2E8fdOjvvRQ7yjsvhSiL6uYECJo/wHb7Tn9UL7KjX
-         VlP4CspmfKDd5zwwywNJgAq9Jjl/jgkjfVrycptwG7QFKv3oHoFRZGxB1JTc8fXIDXS5
-         iX553BTFqrJIQOo+p/FablqMrcI/+2jv/HQza2ct4YR9a/l7MYR0ODU6ZhbyZ9rO3Lxj
-         zfLg==
-X-Forwarded-Encrypted: i=1; AJvYcCXI2CwFOhiMsF5sCqZnXcK1EGpBRVRXAmTWuX1z/xhLBFTr9ZH3fLaRaMos+P7ttqb2n2KNn3iVvSYYrkV9@vger.kernel.org, AJvYcCXM7pqaEH21p/hc//PVtY6AFIKX+NQH3wF7CNpGLzvw901930YR8Raoe2WWiL8dBnK0a15jo5k0@vger.kernel.org
-X-Gm-Message-State: AOJu0YyU1SM+OjM7G/ghP6o8fSQ0WF0TeJ9oPEntY84A35fDoOP5ccu2
-	bC9BPxVivSRATHtlvPg/r2cQFi+uoOK3Mwi9YVVjZgV//OOa/MsGmk5X0kB7ypHyao29JgkgXfm
-	KDUGquhVDG1I1Ch5pDhSL+YAJ7lo=
-X-Google-Smtp-Source: AGHT+IFO19vZxD55Hjt3qfUJDbjiruvU6huL3TsuJuYAYyRtuhKWKRry1+SUR8gDPK7UPKBSFRmZms8myzeig3cDfF4=
-X-Received: by 2002:a05:6808:1302:b0:3e6:5358:5385 with SMTP id
- 5614622812f47-3e7bc7a8f4fmr10012219b6e.6.1731931959605; Mon, 18 Nov 2024
- 04:12:39 -0800 (PST)
+        d=1e100.net; s=20230601; t=1731932190; x=1732536990;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IWwLEV5QRf4HYXkSK9kWrSqetc1/yuz1W5owMeylWKM=;
+        b=a5Iq1ZdlfcphW2FjrrWoFc8TQsqLQ73xQt66vBZxjvEDaJacICZe1RIYJ0a71LcZqE
+         rzlv2sWlpci6We7LI6hBrTOi4i0bPb9gzszsmE948jAiSpaS70gUh7tG+NPqGMvn7Pr7
+         whHYtkQ9xTSFnNYAWOdloo17xh58S/AAIxbV1sjxnaBGQkmwLPXrUjrjVP0JPqwtnecY
+         eifiGOHM/rjubWtHGOjxWBiTh9sHmH9eX6yR0A3GeR36idfe3mEiMKllau7pqSZktJF0
+         j5UvWN44XsFBQ6rMidh5Rs9863NVwq/joYMSbKhoIN6JwFJwxi0omUIIQLndGeqYvUHB
+         ykXw==
+X-Gm-Message-State: AOJu0YxloFPpT9MHrCCBRbRLR8M4s6zP1mE/C8TSMw/S8iYX6iOVOuQ5
+	Rml1A8AREiUek8Ggvm01h6sInWYHvFjrHDVZTjvcX2/WoUdHJRisXiGemLhKqUZwBGkhi5ikTGc
+	Q
+X-Google-Smtp-Source: AGHT+IFqSFBTGFwp78Ipf+Q2fpYLTzJ6DLzVs/RlLK5BJ76iNS/Mc0MRSSZm2a1TBIdiCkizgh03bQ==
+X-Received: by 2002:a5d:5d8a:0:b0:37d:51bc:3229 with SMTP id ffacd0b85a97d-38225ad5e80mr10033369f8f.51.1731932190340;
+        Mon, 18 Nov 2024 04:16:30 -0800 (PST)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3821adbbc65sm12638286f8f.49.2024.11.18.04.16.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Nov 2024 04:16:30 -0800 (PST)
+Date: Mon, 18 Nov 2024 13:16:28 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Toralf =?utf-8?Q?F=C3=B6rster?= <toralf.foerster@gmx.de>
+Cc: cgroups@vger.kernel.org
+Subject: Re: process running under Cgroup2 control is OOM'ed if its stdout
+ goes to a file at at tmpfs filesystem
+Message-ID: <ro4p7iarm43po64rkfy7l7mpqncelmoyztwchf6zdcnqerwbm6@z3ubeedjvcbo>
+References: <e0dccc65-3446-4563-8a0d-1ebda4bd7b81@gmx.de>
+ <tuvclkyjpsulysyz6hjxgpyrlku5zuov6gyyhjzvadrqt4qpse@bwmb7ddutwzj>
+ <c77e4607-6710-4256-9aac-26251813450f@gmx.de>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241108132904.6932-1-laoar.shao@gmail.com> <dmibxkog4sdbuddotjslmyv6zgyptgbq5voujhfnitdag2645m@bl4jphfz3xzg>
- <CALOAHbC54QZ6ZrRBHHKKz8F79C1J8fYcA1q59iwotuBBKtFGmA@mail.gmail.com> <20241118101023.GI39245@noisy.programming.kicks-ass.net>
-In-Reply-To: <20241118101023.GI39245@noisy.programming.kicks-ass.net>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Mon, 18 Nov 2024 20:12:03 +0800
-Message-ID: <CALOAHbCX7YaKNddUmkCvEAejqsvDSM7-HXv1jdHEw0oS9xgBaA@mail.gmail.com>
-Subject: Re: [PATCH v5 0/4] sched: Fix missing irq time when
- CONFIG_IRQ_TIME_ACCOUNTING is enabled
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, mingo@redhat.com, 
-	juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, 
-	hannes@cmpxchg.org, surenb@google.com, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="7pkhzqcika3su5fo"
+Content-Disposition: inline
+In-Reply-To: <c77e4607-6710-4256-9aac-26251813450f@gmx.de>
+
+
+--7pkhzqcika3su5fo
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 18, 2024 at 6:10=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
->
-> On Sun, Nov 17, 2024 at 10:56:21AM +0800, Yafang Shao wrote:
-> > On Fri, Nov 15, 2024 at 9:41=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@sus=
-e.com> wrote:
->
-> > > > The load balancer is malfunctioning due to the exclusion of IRQ tim=
-e from
-> > > > CPU utilization calculations.
-> > >
-> > > Could this be fixed by subtracting (global) IRQ time from (presumed
-> > > total) system capacity that the balancer uses for its decisions? (i.e=
-.
-> > > without exact per-cgroup breakdown of IRQ time)
-> >
-> > The issue here is that the global IRQ time may include the interrupted
-> > time of tasks outside the target cgroup. As a result, I don't believe
-> > it's possible to find a reliable solution without modifying the
-> > kernel.
->
-> Since there is no relation between the interrupt and the interrupted
-> task (and through that its cgroup) -- all time might or might not be
-> part of your cgroup of interest. Consider it a random distribution if
-> you will.
->
-> What Michael suggests seems no less fair, and possible more fair than
-> what you propose:
->
->  \Sum cgroup =3D total - IRQ
+On Sat, Nov 16, 2024 at 05:04:06PM GMT, Toralf F=C3=B6rster <toralf.foerste=
+r@gmx.de> wrote:
+> I removed any limitation for memory.swap.max and have set memory.max to
+> the RAM which is needed for the fuzzer.
+> That should make it, right?
 
-The key issue here is determining how to reliably get the IRQ. I don't
-believe there is a dependable way to achieve this.
+It depends on the workload=20
+With memory.max cgroup OOM is still possible, e.g. if you run out of the
+swap space.
+I'm not sure that's the answer you expect =C2=AF\_(=E3=83=84)_/=C2=AF
 
-For example, consider a server with 16 CPUs. My cgroup contains 4
-threads that can freely migrate across CPUs, while other tasks are
-also running on the system simultaneously. In this scenario, how can
-we accurately determine the IRQ to subtract?
+Michal
 
->
-> As opposed to what you propose:
->
->  \Sum (cgroup + cgroup-IRQ) =3D total - remainder-IRQ
->
-> Like I argued earlier, if you have two cgroups, one doing a while(1)
-> loop (proxy for doing computation) and one cgroup doing heavy IO or
-> networking, then per your accounting the computation cgroup will get a
-> significant amount of IRQ time 'injected', even though it is effidently
-> not of that group.
+--7pkhzqcika3su5fo
+Content-Type: application/pgp-signature; name="signature.asc"
 
-That is precisely what the user wants. If my tasks are frequently
-interrupted by IRQs, it indicates that my service may be experiencing
-poor quality. In response, I would likely reduce the traffic sent to
-it. If the issue persists and IRQ interruptions remain high, I would
-then consider migrating the service to other servers.
+-----BEGIN PGP SIGNATURE-----
 
->
-> Injecting 'half' of the interrupts in the computation group, and missing
-> 'half' of the interrupts from the network group will get 'wrong'
-> load-balance results too.
->
-> I remain unconvinced that any of this makes sense.
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZzswGgAKCRAt3Wney77B
+SRlDAP4nqMm1iiFGsW98KLH4Itzz9CQy3DhlGxD69jI9N1uo6AD7BAHweWAknHOQ
+wkCmGcuZ9iIrA4/jY9sRHKSFhG3o8QM=
+=TnUu
+-----END PGP SIGNATURE-----
 
-If we are uncertain about which choice makes more sense, it might be
-better to align this behavior with the case where
-CONFIG_IRQ_TIME_ACCOUNTING=3Dn.
-
---=20
-Regards
-Yafang
+--7pkhzqcika3su5fo--
 
