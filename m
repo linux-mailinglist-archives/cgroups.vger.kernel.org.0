@@ -1,54 +1,57 @@
-Return-Path: <cgroups+bounces-5616-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5617-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 339F89D1508
-	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 17:06:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F1469D1620
+	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 17:54:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC8D3284783
-	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 16:06:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60469282ACE
+	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 16:54:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA8491BD01F;
-	Mon, 18 Nov 2024 16:06:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91C5B1B6CFC;
+	Mon, 18 Nov 2024 16:54:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hAAQfv9Q"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nwE6SKbQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69631199EBB;
-	Mon, 18 Nov 2024 16:06:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E76A71A00F8;
+	Mon, 18 Nov 2024 16:54:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731945989; cv=none; b=shVm0iu/dH56ppJkYPXjpejbf6O9FdqUd+YfZiC1Sm6GVGNR7vOYgiK2xzYHUipvbvndnD8cq4ibYQdLq/WNhwku3QzZysf4PrO7yZwNeLGHH2oWUrKUz1yktodebyKV1awZxJexCNjjZc+QTXUKUAwU5VI3sb7XTnGacxmdK0E=
+	t=1731948880; cv=none; b=R1b/l+DRVThSxJ40Qne/97v0sE/0qthdzTWFg35g+6InMGErmMjknw6CPWDwwIF0xepQhXu4M3D8noAd8vnXODJq1RYPchgRlP17U4sb7Gx84hnM212P0HXXJtH3Tp1kJ9Vr5WMZoYQVPjqSFo9CbnY0ow0G5qlYm8eOHQnB8KA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731945989; c=relaxed/simple;
-	bh=rhz37qIrqDoRA45wbU+7TmbyRU4Eu00BRP/vhreoaTY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=M49NnFT1kAlDhbH0dzUT/6/+Bfjov92n9cF7vN7AE4bsKeAdELO5ApoJP2iUYwypqZkgzW6bxVxrlhskFzdC1wuO/tTti1RwVXVVaGW9p6v0uAVLY0toOw++8hDkQ00lf9l0nHzI4NMRNz2Y8PM/pIxOCglASa/pEJ+gUZc3pzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hAAQfv9Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C91B4C4CECC;
-	Mon, 18 Nov 2024 16:06:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1731945988;
-	bh=rhz37qIrqDoRA45wbU+7TmbyRU4Eu00BRP/vhreoaTY=;
-	h=Date:From:To:Cc:Subject:From;
-	b=hAAQfv9QlRP3ao6rZXTe+f8ggYOpQfTQRv87RFSkL/FkFU34KkY6J0B1bXndnaYGm
-	 DiB+BsIMEKgJ+UJNJ2dfDlkkTnpJEN9Did68uaLHNbBNwauu9IhidxYvr98jvaNIcQ
-	 Z4UwqV49KtAfOjd4GFCY/YwJXNMroLTJy5GFqUlvSHePMy5kY5ddurR0KSHK78rdIw
-	 Pl1bd2GE9sdEmX5tfnmzXlbdK9R0FEDOEjtSF+F+krNphOZWGXsBDXhiIF4VxNtg3L
-	 5t6JQghsNH1Udwo+jONpqAnuHe5vgONMBes7Pgc0xTOJvlz9TQkts7M5lbbzGP5nQB
-	 aOOHH3ehZmC5g==
-Date: Mon, 18 Nov 2024 06:06:27 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Subject: [GIT PULL] cgroup: Changes for v6.13
-Message-ID: <ZztmA9FyfqLtPy47@slm.duckdns.org>
+	s=arc-20240116; t=1731948880; c=relaxed/simple;
+	bh=zPj/dC98kkRn+UKiK2vA5JU2TJ53OmJyxLTKysXIbmc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nqAHBo83QH30pxauibTHQp98n5bxXxMnlho0YkBHZpih8CJIw1QvY+nf5S/CdqtxCVbGhkmHS0whkZBuEwcLZzr96MFQhH99VAo5+j/+NN7Agxu9RBhiocrldaHxVgudt+S0DbESDnsD3HV+nJ+0c5e1ETpvG0EUmtqXNV67+jE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nwE6SKbQ; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 18 Nov 2024 16:54:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1731948875;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7reLWwmTn1z5R7AVGPER+NDMgklm9tqFwDlMhXCXMPo=;
+	b=nwE6SKbQGlEXsiLlOIPmBPT9alBQzKvp9gQnn3qacGfc3ApieCYGqsqJpzDNzW2KeJPmU6
+	CM2n7M43mumhCI/t3mnn8obZfpm32o0t0x4BQqfp2u0mkH8bUTLu/97sVEmX4AuMSqdcPs
+	YrQ2r0V0aq1wPr6M0NzyTo3ObbEzCQM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Keren Sun <kerensun@google.com>
+Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
+	shakeel.butt@linux.dev, muchun.song@linux.dev,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] mm: prefer 'unsigned int' to bare use of 'unsigned'
+Message-ID: <ZztxRbTVAbvh-9kb@google.com>
+References: <20241115235744.1419580-1-kerensun@google.com>
+ <20241115235744.1419580-2-kerensun@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -57,64 +60,20 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20241115235744.1419580-2-kerensun@google.com>
+X-Migadu-Flow: FLOW_OUT
 
-The following changes since commit 9852d85ec9d492ebef56dc5f229416c925758edc:
+On Fri, Nov 15, 2024 at 03:57:42PM -0800, Keren Sun wrote:
+> Change the param 'mode' from type 'unsigned' to 'unsigned int' in
+> memcg_event_wake() and memcg_oom_wake_function(), and for the param
+> 'nid' in VM_BUG_ON().
+> 
+> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Signed-off-by: Keren Sun <kerensun@google.com>
 
-  Linux 6.12-rc1 (2024-09-29 15:06:19 -0700)
+A small nit: Acked-by tags should follow your signature.
 
-are available in the Git repository at:
+Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.13
-
-for you to fetch changes up to fbfbf86685b3270dc27d1c5d6108532334aaf329:
-
-  cgroup/cpuset: Disable cpuset_cpumask_can_shrink() test if not load balancing (2024-11-14 08:44:03 -1000)
-
-----------------------------------------------------------------
-cgroup: Changes for v6.13
-
-- cpu.stat now also shows niced CPU time.
-
-- Freezer and cpuset optimizations.
-
-- Other misc changes.
-
-----------------------------------------------------------------
-Chen Ridong (4):
-      Revert "cgroup: Fix memory leak caused by missing cgroup_bpf_offline"
-      cgroup/bpf: only cgroup v2 can be attached by bpf programs
-      cgroup/freezer: Reduce redundant traversal for cgroup_freeze
-      cgroup/freezer: Add cgroup CGRP_FROZEN flag update helper
-
-Joshua Hahn (2):
-      cgroup/rstat: Tracking cgroup-level niced CPU time
-      cgroup/rstat: Selftests for niced CPU statistics
-
-Waiman Long (4):
-      cgroup/cpuset: Revert "Allow suppression of sched domain rebuild in update_cpumasks_hier()"
-      cgroup/cpuset: Enforce at most one rebuild_sched_domains_locked() call per operation
-      cgroup/cpuset: Further optimize code if CONFIG_CPUSETS_V1 not set
-      cgroup/cpuset: Disable cpuset_cpumask_can_shrink() test if not load balancing
-
-Xiu Jianfeng (1):
-      selftests/cgroup: Fix compile error in test_cpu.c
-
-Zefan Li (1):
-      MAINTAINERS: remove Zefan Li
-
-everestkc (1):
-      cgroup/cpuset: Fix spelling errors in file kernel/cgroup/cpuset.c
-
- CREDITS                                   |   3 +
- MAINTAINERS                               |   2 -
- include/linux/cgroup-defs.h               |   3 +-
- kernel/cgroup/cgroup.c                    |  21 ++--
- kernel/cgroup/cpuset.c                    | 157 +++++++++++++++++-------------
- kernel/cgroup/freezer.c                   |  97 +++++++++---------
- kernel/cgroup/rstat.c                     |  19 +++-
- tools/testing/selftests/cgroup/test_cpu.c |  75 ++++++++++++++
- 8 files changed, 239 insertions(+), 138 deletions(-)
-
--- 
-tejun
+Thanks!
 
