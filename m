@@ -1,70 +1,70 @@
-Return-Path: <cgroups+bounces-5623-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5624-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FFD29D19A2
-	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 21:27:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7FA59D19BF
+	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 21:41:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B5851F2142A
-	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 20:27:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADD9F282D1A
+	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 20:41:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A78BC1E7653;
-	Mon, 18 Nov 2024 20:27:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 703A41E6DFF;
+	Mon, 18 Nov 2024 20:41:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="B/G1UJ6J"
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="UO9T7WTU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A0C21E5732
-	for <cgroups@vger.kernel.org>; Mon, 18 Nov 2024 20:27:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CDD51E571A
+	for <cgroups@vger.kernel.org>; Mon, 18 Nov 2024 20:41:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731961662; cv=none; b=En+obCM53URZdgHNUh5DUhp216KiNggVU7/yqZv7TB6LAPBNsNW+iv4337T/uZ/fwcji/0ueo5q/Ib3RHbElbbO5nusLbqumLfWBTwvrAAuRvzB/nlRxHEv3zFDQaMQi3/XV/4N0uzamKg7FHxYKAwlUd2LZEoW9NHhdQGIFT64=
+	t=1731962496; cv=none; b=RlbPk6YpItaw9XEYS5tBeaoPCDbOFh8ky8D0EWwIHcDLjQXSpRiW2bY/nivsSahXdIwQLPpCGE7iwy/i9l6GtEeLiYRbDvrk9Su2dnrzOWxOfOBs/OjM6sQpli4lUZR0Ffu4SAY4To99yZggEDQPqAoiKZkYWAkfG4gun6CnqnI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731961662; c=relaxed/simple;
-	bh=a3QVwlKH8NJSHaPzE4WZjNX233TZpQNVSY/HX3mH8+s=;
+	s=arc-20240116; t=1731962496; c=relaxed/simple;
+	bh=DuvqVex8v4I85GuvRnBvX/iPfLueakya1eGiH+YOOtE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QZOa+0R/hoMMjLLiJgN8JVqZr/t2Ew3mWZapPXNWMwUusaRiBvA2QZvj7n3izncLzvpPBVwjS59hQWmqvLobc+Ra0O57pMXMxuyg1d5yDXzcGBA3zp/Xs2Sra+yGMRuoiPAgzN5FHYTMqlpBSxtz9Km0lCUz+Lui1+MMxBVinx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=B/G1UJ6J; arc=none smtp.client-ip=209.85.160.169
+	 To:Cc:Content-Type; b=qa70yXTVMv/m1JDa/e8g1aiN844cz4JicHyhHyrRyYn7SLXKpwyJB9e7uzOpDxg4nei1KnQiQgpyAdpBLpj69NI98nWrzX9gBaLUbcLS8BFJYnzO4c6Ju4Cte1cfmXsVqb1HJaUoFzM1UIbA8K5PbN5vkgziYCDqF94kd3S75bs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=UO9T7WTU; arc=none smtp.client-ip=209.85.160.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-463575c6e51so34354621cf.0
-        for <cgroups@vger.kernel.org>; Mon, 18 Nov 2024 12:27:39 -0800 (PST)
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-460ad98b043so37304601cf.1
+        for <cgroups@vger.kernel.org>; Mon, 18 Nov 2024 12:41:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1731961658; x=1732566458; darn=vger.kernel.org;
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1731962493; x=1732567293; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o3nxx+7qrTCUTgF8wRPbLSF+iqg1a4HrwDqR95ENSuQ=;
-        b=B/G1UJ6JpLfkHNgTDh16udNu/k0klQPnRsX1gkuYuueecFF5cXnpo4Vkox1CnCKoIZ
-         dJEPRctptZB6URlXdXLgDUSrAdbC/Jp6hyC55R85DO7ngBq5L16igBUCLohVM9CPxvYn
-         9KAJrRjRwmJ5U5r9GH7YxfnQo/FHSAOrAuF3MnszELVBZOa3Nt2B60iuadyFmx15mn99
-         TYzJuvvfnj8reiJAzVsqHy9HAlGdv86HUtRDKco0E3llKuOdwKP9yt93XxktQSLmr38b
-         C0NCgbc5ZjsNGA8s0LoQHVa2v33zdv0+WaGcNphoaoKRA9XrwvQRhsx4RH/EEkNCN0ve
-         Y7Ww==
+        bh=h7QbYKH9VPj+hOiY2fMyzgFnxLdVIg0zx+W2Cj3yPZY=;
+        b=UO9T7WTUDkhbZzKSGNAgMPqSL2FJKrlluBn16jaI7Z7W02xelaVf3zSf4v0Vg3m2Zd
+         jZ8UKlzpfw8sT76bv5k9nyPEjxvH5Mw5s43ndQAbMYjySAilDFSdGW5Eklg9QDzNOJSU
+         1F/5BjJtJuRpj5lWIzRrqQFi+j5jx6Qsv9neF7yffyrnMiooTAj+F5BgueZDV49TjLzD
+         T8mbKEfCbtic9fi+TQcUz5xadT0RlFn1dAnxaKDt9zxPl9n1P3eX/GeshCumXEdFdtJT
+         +vbIrmdHtUtq8G4fxOiitmV+lOeCUgc4hRTxOzhNdNgByUDfOhe8jCnh5bixJYvObpXh
+         1new==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731961658; x=1732566458;
+        d=1e100.net; s=20230601; t=1731962493; x=1732567293;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=o3nxx+7qrTCUTgF8wRPbLSF+iqg1a4HrwDqR95ENSuQ=;
-        b=mV4IEqf+gv8IxvdrYpSRV4LVC/qz4TyHrmfpnA3aEXh6W3NxRb6nHT1QheRx59Qbl/
-         8Vx0sQOwdj8l+vrgli3uIDFTtmOOYs//qj66TNYVOd8C+eFqQUYECZs3o47wH7YgTxJk
-         nhR2l0U8lsEZCReYChZ3DVEkYhG2d5eg9Swdytj2ajZBM72ZYV8lDhc2fCRhwr44eQhl
-         cDw/GRSrkwxW3pG3bFnE3dXSAhmpzbTwH62806UodWLc7alHCEGiFBShfHmBnuWk0eNh
-         LENEjn5geTtWXl4tQjtbohJ8L7x+JpWyC+2NMdabw7D4gOqMwFQv5iXTjKOAJkBmcME0
-         oHOQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUhnD24+dr8f6Aj9tGJ9NfJ7UZnzwnzeANyoWT0h8iajkX1r67Rm8h4aOgK4FRxpHkEgakaPtah@vger.kernel.org
-X-Gm-Message-State: AOJu0YwKeVLjHqIz4yeAL8OnvLIqO4GLNLVsi15h/Oxp0dLBCkkF1zPr
-	l10Meg8qaJCElcgCAkJaP40ka3yVTk8a9QInUxBS5D8bW7dU3EOMNs+HzlIZfBRFOrmlWAHmnVw
-	z4p+i1N+9v9t+NUPJdzJ1z+8ihcEuP7OaGerbZA==
-X-Google-Smtp-Source: AGHT+IEVnem2aUWUfWPU86vXVaI52L5T1uqMRPM6WN6TPqoknhSkQ2b3QpTvZt2EMklkAGUIuUVQ4/bXMBR3sUHYFxI=
-X-Received: by 2002:a05:622a:4c8c:b0:463:4be4:b03f with SMTP id
- d75a77b69052e-46392d6cbffmr14403641cf.11.1731961658470; Mon, 18 Nov 2024
- 12:27:38 -0800 (PST)
+        bh=h7QbYKH9VPj+hOiY2fMyzgFnxLdVIg0zx+W2Cj3yPZY=;
+        b=OC6EdV/6jplyyZT2YTmD6lAk9s99dzNJUVwIVkNj6uxqpT2hSJBkRMJRmBNgKG1KAH
+         lSB43lGy/aDJ4xoJwu71MJDBplnK4Qga3z1SILA/jLphsOe3/8e8A6g58VgMVL/MNbxs
+         geG+TO1kGgYK8gFQgYVQrkkZN3anrXtWfAeaxdacLSLNxcyLsNA7m/Gq14c5aHz3jEI5
+         yEsXsX93MUb3ElQos2FuCJVPcM58GLaMXR5nUWxaUlAN9cNCGIBZ42GOOLeIpvI71heX
+         HmUCu0SrYkgyqmlen+6BbIKEocQ1SCpXjzFlQXUv6zYbPCTPhXIcsV/PB3v1gxwBwWIz
+         ChAw==
+X-Forwarded-Encrypted: i=1; AJvYcCUJr+ycYrVrnHl40U/wbnLV9No6gB/2dSZCdPn/uJYv/gfKufcxKWyySt/gE72C62sAq3E+C/nl@vger.kernel.org
+X-Gm-Message-State: AOJu0YwwqYkeSVRGXa0LwURqyITxv7RW4FzM0X8ZdBqL+fRrCDp+a2fh
+	hLFeTsMUwpbBNTE15QtZfGeBo24EaXZroUHy1Jmou9XDKs+JythAhAGJRSYi+j3v0XHMi7YRmZ+
+	pkkdOn3dlTqPVpXulHQqHmsZPoN7PyOS1aLQM+A==
+X-Google-Smtp-Source: AGHT+IHPkTMdVsfpp0/RKbPrlEoVV8KzVq6dWNp5U77zumURe2jy0UVz6GBnOpAbjSuf9hSbp1U2atu8BDg1WdqwOVQ=
+X-Received: by 2002:a05:622a:1916:b0:460:854f:a1c with SMTP id
+ d75a77b69052e-46392e19039mr13350021cf.27.1731962493580; Mon, 18 Nov 2024
+ 12:41:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -72,14 +72,13 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20241116175922.3265872-1-pasha.tatashin@soleen.com>
- <20241116175922.3265872-7-pasha.tatashin@soleen.com> <9868242c-ce91-421c-8f55-1185a66657ce@collabora.com>
-In-Reply-To: <9868242c-ce91-421c-8f55-1185a66657ce@collabora.com>
+ <20241116175922.3265872-2-pasha.tatashin@soleen.com> <8871d4b3-0cd8-4499-afe6-38a9c3426527@lucifer.local>
+In-Reply-To: <8871d4b3-0cd8-4499-afe6-38a9c3426527@lucifer.local>
 From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Mon, 18 Nov 2024 15:27:01 -0500
-Message-ID: <CA+CK2bBfi5pgkVbdTDw-r7xym3FDsb66LL3qiMpujHTsbN8KXg@mail.gmail.com>
-Subject: Re: [RFCv1 6/6] selftests/page_detective: Introduce self tests for
- Page Detective
-To: Muhammad Usama Anjum <Usama.Anjum@collabora.com>
+Date: Mon, 18 Nov 2024 15:40:57 -0500
+Message-ID: <CA+CK2bBqi7+RExARBq5m91kaxC+w+nLYnLf4wyM_MJjaxr2rAw@mail.gmail.com>
+Subject: Re: [RFCv1 1/6] mm: Make get_vma_name() function public
+To: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>
 Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
 	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
 	cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org, 
@@ -88,46 +87,70 @@ Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
 	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz, tj@kernel.org, 
 	hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
 	shakeel.butt@linux.dev, muchun.song@linux.dev, Liam.Howlett@oracle.com, 
-	lorenzo.stoakes@oracle.com, vbabka@suse.cz, jannh@google.com, 
-	shuah@kernel.org, vegard.nossum@oracle.com, vattunuru@marvell.com, 
-	schalla@marvell.com, david@redhat.com, willy@infradead.org, osalvador@suse.de, 
+	vbabka@suse.cz, jannh@google.com, shuah@kernel.org, vegard.nossum@oracle.com, 
+	vattunuru@marvell.com, schalla@marvell.com, david@redhat.com, 
+	willy@infradead.org, osalvador@suse.de, usama.anjum@collabora.com, 
 	andrii@kernel.org, ryan.roberts@arm.com, peterx@redhat.com, oleg@redhat.com, 
 	tandersen@netflix.com, rientjes@google.com, gthelen@google.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Nov 17, 2024 at 1:25=E2=80=AFAM Muhammad Usama Anjum
-<Usama.Anjum@collabora.com> wrote:
+On Mon, Nov 18, 2024 at 5:27=E2=80=AFAM Lorenzo Stoakes
+<lorenzo.stoakes@oracle.com> wrote:
 >
-> On 11/16/24 10:59 PM, Pasha Tatashin wrote:
-> > Add self tests for Page Detective, it contains testing of several memor=
-y
-> > types, and also some negative/bad input tests.
+> On Sat, Nov 16, 2024 at 05:59:17PM +0000, Pasha Tatashin wrote:
+> > Page Detective will be using get_vma_name() that is currently used by
+> > fs/proc to show names of VMAs in /proc/<pid>/smaps for example.
 > >
-> > Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
-> > ---
-> >  MAINTAINERS                                   |   1 +
-> >  tools/testing/selftests/Makefile              |   1 +
-> >  .../selftests/page_detective/.gitignore       |   1 +
-> No need to add a new directory. Please just add the tests in
-> selftests/mm/ directory.
+> > Move this function to mm/vma.c, and make it accessible by modules.
+>
+> This is incorrect.
+>
+> mm/vma.c is for internal VMA implementation details, whose interface is
+> explicitly mm/vma.h. This is so we can maintain the internal mechanism
+> separate from interfaces and, importantly, are able to userland unit test
+> VMA functionality.
+>
+> I think this _should_ be in mm/vma.c, but if it were to be exported it
+> would need to be via a wrapper function in mm/mmap.c or somewhere like
+> this.
 
-Thanks, I will move this to selftests/mm/ directory in the next version.
+Ok, I can do that in the next version.
 
 >
-> >  .../testing/selftests/page_detective/Makefile |   7 +
-> >  tools/testing/selftests/page_detective/config |   4 +
-> >  .../page_detective/page_detective_test.c      | 727 ++++++++++++++++++
-> >  6 files changed, 741 insertions(+)
-> >  create mode 100644 tools/testing/selftests/page_detective/.gitignore
-> >  create mode 100644 tools/testing/selftests/page_detective/Makefile
-> >  create mode 100644 tools/testing/selftests/page_detective/config
-> >  create mode 100644 tools/testing/selftests/page_detective/page_detecti=
-ve_test.c
+> Also you broke the vma tests, go run make in tools/testing/vma/...
+
+Hm interesting, I will take a look, this is surprising, as this patch
+should not really change the behavior of anything. I guess it would be
+because of the out of kernel vma.c build?
+
 >
-> --
-> BR,
-> Muhammad Usama Anjum
+> Your patch also does not apply against Andrew's tree and the mm-unstable
+> branch (i.e. against 6.13 in other words) which is what new mm patches
+> should be based upon.
 >
+> Maybe I'll comment on the cover letter, but I don't agree you should be
+> doing mm implementation details in a driver.
 >
+> The core of this should be in mm rather than exporting a bunch of stuff a=
+nd
+> have a driver do it. You're exposing internal implementation details
+> unnecessarily.
+
+This is not a problem, I will convert Page Detective to be in core mm.
+
+> > @@ -3474,6 +3474,9 @@ void setattr_copy(struct mnt_idmap *, struct inod=
+e *inode,
+> >
+> >  extern int file_update_time(struct file *file);
+> >
+> > +void get_vma_name(struct vm_area_struct *vma, const struct path **path=
+,
+> > +               const char **name, const char **name_fmt);
+> > +
+>
+> You're putting something in an mm/ C-file and the header in fs.h? Eh?
+
+This is done so we do not have to include struct path into vma.h. fs.h
+already has some vma functions like: vma_is_dax() and vma_is_fsdax().
 
