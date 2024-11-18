@@ -1,88 +1,91 @@
-Return-Path: <cgroups+bounces-5605-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5606-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5CC09D0B6C
-	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 10:11:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A813E9D0BF1
+	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 10:39:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75F941F22365
-	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 09:11:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54E8E1F20FE6
+	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2024 09:39:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0905E1885BF;
-	Mon, 18 Nov 2024 09:11:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7948186E46;
+	Mon, 18 Nov 2024 09:39:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dr46EKwS"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Kgvzt5m6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B307D153836
-	for <cgroups@vger.kernel.org>; Mon, 18 Nov 2024 09:11:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1185152160
+	for <cgroups@vger.kernel.org>; Mon, 18 Nov 2024 09:39:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731921072; cv=none; b=sfB9wcPv57tDnhoJyhgdc3xVktZP0CtkNWwrl74kDheqofHPOBQWukDknxZnl7ADTuNyklSsEVCq/Hjk7Y+UX0ZXmc7eiZqEVW6EFkqExdTnv4o9vn7QQdVkaTOYiTDzCzauFnJUbGjgQ30zBmcbC7EeHm3sld7tKyX/S4QCw5I=
+	t=1731922776; cv=none; b=oSsHZ5jGjh67Qk6JkuSvxc+9Ap87DW8Unq/kfYtpmY8lrSUgXAgZQCOoJewPcTdlbNR8sMirH5SoxhIn9b1i4xmb+WALhBkIJ/kHgWW/DF9LORKBdpNWDfHTRHi1M54tzsk8cmOK6hmvV/eWv5KC9GC68SuVMjPFHPTfsAg0zB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731921072; c=relaxed/simple;
-	bh=DwR7VXUazf58wWSPiH9dmeN+GYZK9jzN2V6DznCGx6k=;
+	s=arc-20240116; t=1731922776; c=relaxed/simple;
+	bh=ASfy3ZmkJlDJivURpQuQX8Ww/zzWEUu+7CDd1iXeFdg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VKy+iiKWaq/UT4wsGWc5fIna5Qoru+Hcs7O/zQ6zvl5nEyMYHKutI7Ew6hLeKioSwlAXyzo8I7aoDVeJtGRydDUm6dHsVjmDNaRii2FTiXtNANnc5A+P9PEwQlkAXwxtxAO9n5TlByDQ1sfMzLfJPR4Q0+khrGzALFhZcEoQBVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dr46EKwS; arc=none smtp.client-ip=170.10.129.124
+	 Content-Type:Content-Disposition:In-Reply-To; b=BgSxQT9sxraHbblvsaHCP5/CVka0/Gf4Ug67rmCV71+Y6SX0imE0zHBJRPYm2HYZxkThD1kaM+ErVi+u2R/fHUGLx7bCGZu4I4YbzkgaeBFTv6pxQqjMO5uH9tUlhDFU2jBRy+Xek859J5PdXNCYULOi+p8lUZfGa0qilK7woOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Kgvzt5m6; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1731921069;
+	s=mimecast20190719; t=1731922773;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zaPvO86EJKOHufTcTTk7TOivaHoUoSkP3MPU2pK0O34=;
-	b=dr46EKwSEVsBIJtN5mPfsxNXq7eLLBVx8KtMJD/4mJvhPOQY0qVQZnHUOv03SsMQuVyZO6
-	vb7bn8/8v2UNeMPmc2cXw9/4AcGKvj2JbCuUL3tZWJkHMgnWG9tooS4UiwFR3/nWjM6YjU
-	VYcpA1W3QQws95LOEunOXY1b/LUAbbE=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=SCTWIW9+3Ez/dT5JWYg8kZzlPGcdYEYTLifRWAR2waM=;
+	b=Kgvzt5m6jb7OenCKB2hRv4kZZaQtn3YHYPY1AYXv9wxhCUW2a+FyIh5fr/EVrP/C1AceRp
+	nNA4m4z3mvnMMZTJwwntnYlp8H7lV4MiRizFdP0/eRyzPJ4zP4HVwk5sqjh1eRwhQed5Uk
+	24wYX+Z6eScxHUNCNq8vGRJc6YwtPAo=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-417-whSMbX83MSSfCgg1WvfC9g-1; Mon, 18 Nov 2024 04:11:08 -0500
-X-MC-Unique: whSMbX83MSSfCgg1WvfC9g-1
-X-Mimecast-MFC-AGG-ID: whSMbX83MSSfCgg1WvfC9g
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-382450d158fso501303f8f.1
-        for <cgroups@vger.kernel.org>; Mon, 18 Nov 2024 01:11:08 -0800 (PST)
+ us-mta-122-_ibd_1j0Oz2b1ewnTT9O-g-1; Mon, 18 Nov 2024 04:39:32 -0500
+X-MC-Unique: _ibd_1j0Oz2b1ewnTT9O-g-1
+X-Mimecast-MFC-AGG-ID: _ibd_1j0Oz2b1ewnTT9O-g
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4315dd8fe7fso18157915e9.3
+        for <cgroups@vger.kernel.org>; Mon, 18 Nov 2024 01:39:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731921067; x=1732525867;
+        d=1e100.net; s=20230601; t=1731922771; x=1732527571;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zaPvO86EJKOHufTcTTk7TOivaHoUoSkP3MPU2pK0O34=;
-        b=dFlsxo9Z4FMwyfsVO1jsSGoqNXIOb/GobMZFkunPiMtzuLVKFHN6epkHrlzg/w2XqF
-         nDn2ZTvHpjlJ/HLAcjcHE9dGnH3YgQWDsLd7oku9AUOLSopsfz8yiFH/0iYLPH0CszOY
-         40pk7fRrxCU1a3xysepOC0QIgjkux08r06iCC6DwkJ1AGzDzF7bajC+iSFOZB5qGtevu
-         tIpuQuikrNdPk30r/LrY371/witbkhpX84D4i9y1AmeQ6cRhXtNHco9rNuY83N1PbC1y
-         yi9u8/4JhhCGKrrdnVlAh00xalS1AejWy/fAMXhyXngW0fah4wCvYyxNBsdHoLXsiBEp
-         Rkzg==
-X-Forwarded-Encrypted: i=1; AJvYcCWwcXtIBRtUzt9te7k4wguUlHgwGODcFUD/eJ4g6Bit/wI1XTYuCBEtZjhXYVrbPKhkewHXDoPB@vger.kernel.org
-X-Gm-Message-State: AOJu0YyD5JurttvzAwH+qMXHeb5GgiQmTkL0tyoHc1LvDLLaBLAcxw4E
-	cYfEOKOTGDrkoJHoPwSnOnXK0K6dea+TcjddWBa+Gns2OIKjG0VpXhbTBSbYE7ZWnLn2iIRM+Q4
-	sNhwNpDnIMS+nBmd3UIyTCanEXy3fN/lxrEDDsjXPgMs1lgA06wHpwyQ=
-X-Received: by 2002:a05:6000:697:b0:382:4aeb:91c7 with SMTP id ffacd0b85a97d-3824aeb965emr175651f8f.18.1731921067330;
-        Mon, 18 Nov 2024 01:11:07 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHBFkYfubeKYO+1/Zbi1MMMRab+sljXJXFMhFzqShUuBgkM4JE8RmYzuikIvzc3S/jxthVH+A==
-X-Received: by 2002:a05:6000:697:b0:382:4aeb:91c7 with SMTP id ffacd0b85a97d-3824aeb965emr175635f8f.18.1731921066975;
-        Mon, 18 Nov 2024 01:11:06 -0800 (PST)
+        bh=SCTWIW9+3Ez/dT5JWYg8kZzlPGcdYEYTLifRWAR2waM=;
+        b=rAxAl5NN909zLRI1Klf1K7e6jaDhr86ry/nmXwxxsL4MMKXsRCkBQE11AEE7OKvj+f
+         8AqA3OKDAiho6cvvaxGhQqKplZ/CJxqd0q1HEhv8hxLyDpMGOMCIFOrz6sz3doUpXqdm
+         v2g5ZiuA4/46ulS2mcuf5Pg+KdWffQNBJcxL+MgWCJYEe1N/MXeQlk85kbUbg55a+VIa
+         /fvo28u6xg2u2beiGPaA4LfnuoLKIxn1ELnhMU7a25tnqj/fZRQjbkL0g40jBi1ro1aI
+         kO1CSa/82bNOFviDeVjAaDVTtdsp1vc/NZ+Y7udTOyVDMYq1oYNZyya3RVQEN3bJgoCQ
+         WeEg==
+X-Forwarded-Encrypted: i=1; AJvYcCXBpf5ddO8iBhNInW7aLmDkHGtUqJ2JuPzlbpMC7yrjOmrjRin5Pv4kQKp7q1dfHaUPwXnE8qPV@vger.kernel.org
+X-Gm-Message-State: AOJu0YwyTKLzjvXUFwOGrqusTFs2y0i7gVNlagL3xlWYyFBpAfsJIxem
+	NxcHjn2mX9CNjz8W6wLPOtmp6bOWcwj3e12M3fSbHvserU+3J9PfGvqoZ9kDEfKA6yEqdIKUuM+
+	491dxIsGEqQXqqbF4rxKDCxdaZYAcJi9AFoibyVTy2YWf7Vd6Gm+bTbE=
+X-Received: by 2002:a05:600c:34d0:b0:431:6083:cd30 with SMTP id 5b1f17b1804b1-432df7229f6mr121513835e9.6.1731922769573;
+        Mon, 18 Nov 2024 01:39:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGc6yVpDr/TaAuyJ9tO0NDlNPWZ/GE7BRdiwq0stPKiYiB6rMVLY2MnHX6hc4DRwRnWcOGDEA==
+X-Received: by 2002:a05:600c:34d0:b0:431:6083:cd30 with SMTP id 5b1f17b1804b1-432df7229f6mr121512985e9.6.1731922767768;
+        Mon, 18 Nov 2024 01:39:27 -0800 (PST)
 Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.74.235])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3823a0e8f26sm5942270f8f.31.2024.11.18.01.11.04
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-432dab807d4sm148437785e9.21.2024.11.18.01.39.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Nov 2024 01:11:05 -0800 (PST)
-Date: Mon, 18 Nov 2024 10:11:03 +0100
+        Mon, 18 Nov 2024 01:39:26 -0800 (PST)
+Date: Mon, 18 Nov 2024 10:39:24 +0100
 From: Juri Lelli <juri.lelli@redhat.com>
 To: Waiman Long <llong@redhat.com>
 Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Koutny <mkoutny@suse.com>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org
-Subject: Re: Additional issue with cpuset isolated partitions?
-Message-ID: <ZzsEpyU99iRLvK_3@jlelli-thinkpadt14gen4.remote.csb>
-References: <Zzd3G67_UwBUJaRt@jlelli-thinkpadt14gen4.remote.csb>
- <bfbedc6a-9f04-472f-afe9-828efe0387e6@redhat.com>
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Phil Auld <pauld@redhat.com>
+Subject: Re: [PATCH] cgroup/cpuset: Disable cpuset_cpumask_can_shrink() test
+ if not load balancing
+Message-ID: <ZzsLTLEAPMljtaIK@jlelli-thinkpadt14gen4.remote.csb>
+References: <20241114181915.142894-1-longman@redhat.com>
+ <ZzcoZj90XeYj3TzG@jlelli-thinkpadt14gen4.remote.csb>
+ <1515c439-32ef-4aee-9f69-c5af1fca79e3@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -91,97 +94,54 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bfbedc6a-9f04-472f-afe9-828efe0387e6@redhat.com>
+In-Reply-To: <1515c439-32ef-4aee-9f69-c5af1fca79e3@redhat.com>
 
-On 15/11/24 12:47, Waiman Long wrote:
-> On 11/15/24 11:30 AM, Juri Lelli wrote:
-> > Hello,
+On 15/11/24 12:55, Waiman Long wrote:
+> On 11/15/24 5:54 AM, Juri Lelli wrote:
+> > Hi Waiman,
 > > 
-> > While working on the recent cpuset/deadline fixes [1], I encountered
-> > what looks like an issue to me. What I'm doing is (based on one of the
-> > tests of test_cpuset_prs.sh):
-> > 
-> > # echo Y >/sys/kernel/debug/sched/verbose
-> > # echo +cpuset >cgroup/cgroup.subtree_control
-> > # mkdir cgroup/A1
-> > # echo 0-3 >cgroup/A1/cpuset.cpus
-> > # echo +cpuset >cgroup/A1/cgroup.subtree_control
-> > # mkdir cgroup/A1/A2
-> > # echo 1-3 >cgroup/A1/A2/cpuset.cpus
-> > # echo +cpuset >cgroup/A1/A2/cgroup.subtree_control
-> > # mkdir cgroup/A1/A2/A3
-> > # echo 2-3 >cgroup/A1/A2/A3/cpuset.cpus
-> > # echo 2-3 >cgroup/A1/cpuset.cpus.exclusive
-> > # echo 2-3 >cgroup/A1/A2/cpuset.cpus.exclusive
-> > # echo 2-3 >cgroup/A1/A2/A3/cpuset.cpus.exclusive
-> > # echo isolated >cgroup/A1/A2/A3/cpuset.cpus.partition
-> > 
-> > and with this, on my 8 CPUs system, I correctly get a root domain for
-> > 0-1,4-7 and 2,3 are left isolated (attached to default root domain).
-> > 
-> > I now put the shell into the A1/A2/A3 cpuset
-> > 
-> > # echo $$ >cgroup/A1/A2/A3/cgroup.procs
-> > 
-> > and hotplug CPU 2,3
-> > 
-> > # echo 0 >/sys/devices/system/cpu/cpu2/online
-> > # echo 0 >/sys/devices/system/cpu/cpu3/online
-> > 
-> > guess the shell is moved to the non-isolated domain. So far so good
-> > then, only that if I turn CPUs 2,3 back on they are attached to the root
-> > domain containing the non-isolated cpus
-> A valid partition must have CPUs associated with it. If no CPU is available,
-> it becomes invalid and fall back to use the CPUs from the parent cgroup.
+> > On 14/11/24 13:19, Waiman Long wrote:
+> > > With some recent proposed changes [1] in the deadline server code,
+> > > it has caused a test failure in test_cpuset_prs.sh when a change
+> > > is being made to an isolated partition. This is due to failing
+> > > the cpuset_cpumask_can_shrink() check for SCHED_DEADLINE tasks at
+> > > validate_change().
+> > What sort of change is being made to that isolated partition? Which test
+> > is failing from the test_cpuset_prs.sh collection? Asking because I now
+> > see "All tests PASSED" running that locally (with all my 3 patches on
+> > top of cgroup/for-6.13 w/o this last patch from you).
+> 
+> The failing test isn't an isolated partition. The actual test failure is
+> 
+> Test TEST_MATRIX[62] failed result check!
+> C0-4:X2-4:S+ C1-4:X2-4:S+:P2 C2-4:X4:P1 . . X5 . . 0 A1:0-4,A2:1-4,A3:2-4
+> A1:P0,A2:P-2,A3:P-1
+> 
+> In this particular case, cgroup A3 has the following setting before the X5
+> operation.
+> 
+> A1/A2/A3/cpuset.cpus: 2-4
+> A1/A2/A3/cpuset.cpus.exclusive: 4
+> A1/A2/A3/cpuset.cpus.effective: 4
+> A1/A2/A3/cpuset.cpus.exclusive.effective: 4
+> A1/A2/A3/cpuset.cpus.partition: root
 
-Hummm, OK. But, if I don't put any process in the partition the behavior
-is different, in that the partition still reads as correctly isolated
-and CPUs are not moved to the root domain after hotplug, i.e.,
+Right, and is this problematic already?
 
-# echo 0 >/sys/devices/system/cpu/cpu2/online
-# echo 0 >/sys/devices/system/cpu/cpu3/online
+Then the test, I believe, does
+
+# echo 5 >cgroup/A1/A2/cpuset.cpus.exclusive
+
+and that goes through and makes the setup invalid - root domain reconf
+and the following
+
+# cat cgroup/A1/cpuset.cpus.partition
+member
+# cat cgroup/A1/A2/cpuset.cpus.partition
+isolated invalid (Parent is not a partition root)
 # cat cgroup/A1/A2/A3/cpuset.cpus.partition
-isolated
-# echo 1 >/sys/devices/system/cpu/cpu2/online
-# echo 1 >/sys/devices/system/cpu/cpu3/online
-# cat cgroup/A1/A2/A3/cpuset.cpus.partition
-isolated
+root invalid (Parent is an invalid partition root)
 
-This is what puzzled me, the difference in behavior w/ or w/o a process
-in the cgroup.
-
-> > # echo 1 >/sys/devices/system/cpu/cpu2/online
-> > ...
-> > [  990.133593] root domain span: 0-2,4-7
-> > [  990.134480] rd 0-2,4-7
-> > 
-> > # echo 1 >/sys/devices/system/cpu/cpu3/online
-> > ...
-> > [ 1082.858992] root domain span: 0-7
-> > [ 1082.859530] rd 0-7
-> > 
-> > And now the A1/A2/A3 partition is not valid anymore
-> > 
-> > # cat cgroup/A1/A2/A3/cpuset.cpus.partition
-> > isolated invalid (Invalid cpu list in cpuset.cpus.exclusive)
-> > 
-> > Is this expected? It looks like one need to put at least one process in
-> > the partition before hotplugging its cpus for the above to reproduce
-> > (hotpluging w/o processes involved leaves CPUs 2,3 in the default domain
-> > and isolated).
-> 
-> Once a partition becomes invalid, there is no self recovery if the CPUs
-> become online again. Users have to explicitly re-enable it. It is really a
-> very rare case and so we don't spend effort to do that.
-> 
-> If only one of 2 CPUs are offline and then online again, the full 2-CPU
-> isolated partition can be recovered.
-> 
-> Please let me know if you have further question.
-
-I see the point, but please see above my only remaining question. :)
-
-Thanks,
-Juri
+Is this what shouldn't happen?
 
 
