@@ -1,153 +1,151 @@
-Return-Path: <cgroups+bounces-5636-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5637-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EF109D1FDC
-	for <lists+cgroups@lfdr.de>; Tue, 19 Nov 2024 07:03:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBC949D2667
+	for <lists+cgroups@lfdr.de>; Tue, 19 Nov 2024 14:08:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC86F1F21F00
-	for <lists+cgroups@lfdr.de>; Tue, 19 Nov 2024 06:03:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30A6FB2DC85
+	for <lists+cgroups@lfdr.de>; Tue, 19 Nov 2024 12:53:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 616C513C8EA;
-	Tue, 19 Nov 2024 06:03:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A1D81CC890;
+	Tue, 19 Nov 2024 12:52:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NjWAMEsv"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RvT4NPz5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555D7135A63
-	for <cgroups@vger.kernel.org>; Tue, 19 Nov 2024 06:03:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5AAC1CC175
+	for <cgroups@vger.kernel.org>; Tue, 19 Nov 2024 12:52:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731996193; cv=none; b=tBj9sTDtQTSbKN911gvNPKJSPJUectziXiNkz16+DRGpJ/eLjQE3F495faUaqKdlHJV0N12+BKXc2b8imZNsMhbH8VyhFsvD2Ru7QJ4L8Ahw+BDEv7PFWsRNAMUXsDiMBK74qkwPffJ4as89U7tVudDlJ7fwLi84t8uphvOP9P8=
+	t=1732020761; cv=none; b=N52lZbr2X7pYUyxHW3nrju5VPkwbcM7a708NUXQkAJDGSBn9VX7YYNUu6XG4e38AJF3rJR/KxYelqcB4BscKEJ76bmMLaAF+8XG2B8m7jBshzstkQJhN4Xw2UqzyoneTnDU1Y5/Y4WUKq/UJGb4iBzw/jd2lIwf8UgqVWshsSGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731996193; c=relaxed/simple;
-	bh=Mlb24BR91olr/c0PnTtI9xuV2wUp7nrG4b18G/p3hGg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j/KooZYOe+5/8U5skFoAYmQxOqu1o60PBDOvKR6aEun1dZsehrAZ/va68HL4ozV+C4qwFPhDoaYyOW6hM6/d1I/O7P3SKsVRp6eusiSmA0xJjJVkm4cq043xDqzc/h6E0EpSLXvrQiRfLD6vLfRP72s7+S2Vkx5LKQ2cSNS00kQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NjWAMEsv; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1731996190;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AVNYyqpnD/KRHanFC8wz+cSrFTnAk34SdUd5nLIOvCk=;
-	b=NjWAMEsvO855dvBw+/neaKoY4x/9O87BevKM2tnQR/Xf/pAZ/RzuhjKLO5nFL94zrV/ySw
-	gOioxdEJsESFPiLdc+Qyg8MqxiSY1rAMDaIzcvtp6rWkAK+9SyQBamlPlu/fF59ezz6qRI
-	2mALurgtj/kHRL9/8grZCTJguO4USSY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-687-ClfgKcAzNSOU83VN1C118Q-1; Tue, 19 Nov 2024 01:03:08 -0500
-X-MC-Unique: ClfgKcAzNSOU83VN1C118Q-1
-X-Mimecast-MFC-AGG-ID: ClfgKcAzNSOU83VN1C118Q
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4315ad4938fso4018075e9.0
-        for <cgroups@vger.kernel.org>; Mon, 18 Nov 2024 22:03:08 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731996187; x=1732600987;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1732020761; c=relaxed/simple;
+	bh=yRauzgQtwAabGE/huRKr8PjySPrqwLknQlRBGuzARcE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TPsaKfXCpLa96l/uIUhCiujnYm3n3ZYFQHb+gvjQ1V+gNl+hooC16JNeP94MEF6dwgznmHEJYJeyr3XTlq4TNisDtODycbARzUz0v/3OzAbSPBwkMQR3TfYQUR6FuxcU9qcQQzool9wWmkjw/9PeQdbb27dRC8h211vc2kkmozs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RvT4NPz5; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5cfc264b8b6so9584a12.0
+        for <cgroups@vger.kernel.org>; Tue, 19 Nov 2024 04:52:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1732020758; x=1732625558; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AVNYyqpnD/KRHanFC8wz+cSrFTnAk34SdUd5nLIOvCk=;
-        b=Ihp1AWDZ2cwAdaXsoiL2FbcrUca5g/1QfLXlqWuy+vTcJbNjQjpwfJkmkN1OrBO99d
-         gaxCRuyY04KWGwqSv1PAyuwJBhbwyvPgUSJDINqNAVUMq3FQb0nr47dI/L81Sci8pCs2
-         2yNg61SGkya/JOhgPCGi2WqV9WzbJ6/TXBRbHq1WgifRg3Nie5rBXy1rmS4uMOVKL9xE
-         8vpEMpNiOMdJQd7+jhaXQLjaXLvmrUr3emDwWTUpFm2Q2imYmERPV8wQ362kwMja29fi
-         kGmLQ+yFvr3mANV1QvnJG920VBrnJxax0BcJMypcX5knqX0LCAj8HUZkUQWLCohY+rRj
-         dW2g==
-X-Forwarded-Encrypted: i=1; AJvYcCU2ve/Iu6j84w76vhMdt3flyPmu8O+o8J1ADkKgNSATmXsZtxmnLbLEu5qsGu84KTZ8XluHWWz/@vger.kernel.org
-X-Gm-Message-State: AOJu0YziqXlA1arfFQ8y8p9LVYbe4QeQg9yD8rSvFuasgs/NOFZRAzEk
-	OzZr6iDrrd/2dorXR7bPP/Iib0McAJS753vskwKbFqtUspX4XYwF0RK/4DFiprghV1iyT3xonGG
-	4oaARGXZD6hGUYegja3xnxEun21fZu38eJkNA+0LODSKhc29FcgWACuA=
-X-Received: by 2002:a05:600c:b8f:b0:431:561b:b32a with SMTP id 5b1f17b1804b1-432df74cd6fmr127476855e9.19.1731996187380;
-        Mon, 18 Nov 2024 22:03:07 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFohqQmUxnR8N9/g+dNimT9dXzE/ioMgWVayD6md4T0F7iMNpwZ/ZqX5QIL5sixzMqeMnItFw==
-X-Received: by 2002:a05:600c:b8f:b0:431:561b:b32a with SMTP id 5b1f17b1804b1-432df74cd6fmr127476655e9.19.1731996186994;
-        Mon, 18 Nov 2024 22:03:06 -0800 (PST)
-Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.74.235])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-432dab80869sm179708965e9.22.2024.11.18.22.03.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Nov 2024 22:03:05 -0800 (PST)
-Date: Tue, 19 Nov 2024 07:03:02 +0100
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Waiman Long <llong@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Phil Auld <pauld@redhat.com>
-Subject: Re: [PATCH] cgroup/cpuset: Disable cpuset_cpumask_can_shrink() test
- if not load balancing
-Message-ID: <ZzwqFkzGACnbiTJW@jlelli-thinkpadt14gen4.remote.csb>
-References: <20241114181915.142894-1-longman@redhat.com>
- <ZzcoZj90XeYj3TzG@jlelli-thinkpadt14gen4.remote.csb>
- <1515c439-32ef-4aee-9f69-c5af1fca79e3@redhat.com>
- <ZzsLTLEAPMljtaIK@jlelli-thinkpadt14gen4.remote.csb>
- <5a878687-9d08-472e-a387-02b2a150d2df@redhat.com>
- <c3354d87-a856-421b-a03e-cda2f1346095@redhat.com>
+        bh=yRauzgQtwAabGE/huRKr8PjySPrqwLknQlRBGuzARcE=;
+        b=RvT4NPz5IIaqR7prkmVJ8Sgp5VpdKTUwU47DZs+UBZzbbib344Z2g4YntUaZg9giCP
+         rVb7hRmfuCXsw/y9rCsyQyTQGsLOqqcNmFDecylZsZnBGJipOpnnQvzj8fJ2JC8DqTEg
+         l+Vfo/7gRDqNTSAoqeT3nEbvV7rlHynmMFt94jqjTHeqUN4xueoE8wdzAarJ/jVCJ4Oe
+         klkyv/iIT0vaQKaNwKLFHLlW+Kwyx5McFHZm6uoJUieglyAgFdIhfJ89mEACBF9yWVHT
+         e4Vyyme71D9eG8SQUXTlyt3YshjSS0TxFvFMXr9rgFTdOrAoCSnXodsCkaCtfkhyHQ5w
+         eZDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732020758; x=1732625558;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yRauzgQtwAabGE/huRKr8PjySPrqwLknQlRBGuzARcE=;
+        b=a056hNgjGVMNgOjzgRI75oUaqIa0mJnCOWYbVMjOm7QCLAN8VPo9l1XFVi3ZUE6Zg5
+         ERVaehqDxBdQM88E9OhEq9fgfL5cHts2bfGhQLKjGYYUW5RPmt4lS1o5vd1RhrZWo2X5
+         SCL5q80u44OgfC8lIUy5HoiriLh1Eh8/so13ISePaeVIYjS/zbOWP3hWupB1qcnMFQcQ
+         4VohcdQiaBFbngS6mRR2dKJIoN9nAhItMglUec0ukTT1or/wPy/gbesVkpNt2kgPYBzS
+         oReOj31qFNY1WUEv7U+0rETcmpBUpV46fgB6E/hsy8cPmnN4aD9fM0dKRkPrZ2JmFJDl
+         5kiw==
+X-Forwarded-Encrypted: i=1; AJvYcCWpzzoTkYSZwX870PjluST4YZY3w0vd35SCclloatEQCa7NbSl7kjomVIOkIH5EP0Gicc5Zgik+@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKEwBhHSKVJTuZq+NGQ82PKK0iXU9K+hQokc6Y1ue7YmNSEjir
+	eQGBRhmjPMDJedEUIPbP9+MyHY5wJL0+EE8rs7kh74WLSJj1Pekh1u4BKpohTX6vRgYN90d09LT
+	zDPMU2fW5jr0AqB7xZ6iwgIZaWB1caqbXlBIs
+X-Gm-Gg: ASbGnctChbRxoS9XCUho51/zXbuVspXInh70XRFS4su/VxpA3DrBe0KX2KeeKh+j2RT
+	IL9sA+0QdyGvXZJPi/wMAXudPFi+k+HT0qVNnoguKYKOOKGau8Hy6qAF5YOE=
+X-Google-Smtp-Source: AGHT+IHrO5qfRHSlmQCwNzrJObJ8F+5vL3isZu6sEndbtNy8+TOZx/SUWI/RHP6UiYngvZBnewRWzZBX4xLAvWC6WJw=
+X-Received: by 2002:a05:6402:1351:b0:5cf:bd9a:41ec with SMTP id
+ 4fb4d7f45d1cf-5cfdec244d3mr70875a12.2.1732020757739; Tue, 19 Nov 2024
+ 04:52:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c3354d87-a856-421b-a03e-cda2f1346095@redhat.com>
+References: <20241116175922.3265872-1-pasha.tatashin@soleen.com>
+ <a0372f7f-9a85-4d3e-ba20-b5911a8189e3@lucifer.local> <CAG48ez2vG0tr=H8csGes7HN_5HPQAh4WZU8U1G945K1GKfABPg@mail.gmail.com>
+ <CA+CK2bB0w=i1z78AJbr2gZE9ybYki4Vz_s53=8URrxwyPvvB+A@mail.gmail.com>
+ <CAG48ez1KFFXzy5qcYVZLnUEztaZxDGY2+4GvwYq7Hb=Y=3FBxQ@mail.gmail.com> <CA+CK2bCBwZFomepG-Pp6oiAwHQiKdsTLe3rYtE3hFSQ5spEDww@mail.gmail.com>
+In-Reply-To: <CA+CK2bCBwZFomepG-Pp6oiAwHQiKdsTLe3rYtE3hFSQ5spEDww@mail.gmail.com>
+From: Jann Horn <jannh@google.com>
+Date: Tue, 19 Nov 2024 13:52:00 +0100
+Message-ID: <CAG48ez0NzMbwnbvMO7KbUROZq5ne7fhiau49v7oyxwPrYL=P6Q@mail.gmail.com>
+Subject: Re: [RFCv1 0/6] Page Detective
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	akpm@linux-foundation.org, corbet@lwn.net, derek.kiernan@amd.com, 
+	dragan.cvetic@amd.com, arnd@arndb.de, gregkh@linuxfoundation.org, 
+	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz, tj@kernel.org, 
+	hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	shakeel.butt@linux.dev, muchun.song@linux.dev, Liam.Howlett@oracle.com, 
+	vbabka@suse.cz, shuah@kernel.org, vegard.nossum@oracle.com, 
+	vattunuru@marvell.com, schalla@marvell.com, david@redhat.com, 
+	willy@infradead.org, osalvador@suse.de, usama.anjum@collabora.com, 
+	andrii@kernel.org, ryan.roberts@arm.com, peterx@redhat.com, oleg@redhat.com, 
+	tandersen@netflix.com, rientjes@google.com, gthelen@google.com, 
+	linux-hardening@vger.kernel.org, 
+	Kernel Hardening <kernel-hardening@lists.openwall.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 18/11/24 22:28, Waiman Long wrote:
-> On 11/18/24 8:58 AM, Waiman Long wrote:
-> > > > The failing test isn't an isolated partition. The actual test
-> > > > failure is
-> > > > 
-> > > > Test TEST_MATRIX[62] failed result check!
-> > > > C0-4:X2-4:S+ C1-4:X2-4:S+:P2 C2-4:X4:P1 . . X5 . . 0
-> > > > A1:0-4,A2:1-4,A3:2-4
-> > > > A1:P0,A2:P-2,A3:P-1
-> > > > 
-> > > > In this particular case, cgroup A3 has the following setting
-> > > > before the X5
-> > > > operation.
-> > > > 
-> > > > A1/A2/A3/cpuset.cpus: 2-4
-> > > > A1/A2/A3/cpuset.cpus.exclusive: 4
-> > > > A1/A2/A3/cpuset.cpus.effective: 4
-> > > > A1/A2/A3/cpuset.cpus.exclusive.effective: 4
-> > > > A1/A2/A3/cpuset.cpus.partition: root
-> > > Right, and is this problematic already?
-> > We allow nested partition setup. So there can be a child partition
-> > underneath a parent partition. So this is OK.
-> > > 
-> > > Then the test, I believe, does
-> > > 
-> > > # echo 5 >cgroup/A1/A2/cpuset.cpus.exclusive
-> > > 
-> > > and that goes through and makes the setup invalid - root domain reconf
-> > > and the following
-> > > 
-> > > # cat cgroup/A1/cpuset.cpus.partition
-> > > member
-> > > # cat cgroup/A1/A2/cpuset.cpus.partition
-> > > isolated invalid (Parent is not a partition root)
-> > > # cat cgroup/A1/A2/A3/cpuset.cpus.partition
-> > > root invalid (Parent is an invalid partition root)
-> > > 
-> > > Is this what shouldn't happen?
-> > > 
-> > A3 should become invalid because none of the CPUs in
-> > cpuset.cpus.exclusive can be granted. However A2 should remain a valid
-> > partition. I will look further into that. Thank for spotting this
-> > inconsistency.
-> 
-> Sorry, I misread the test. The X5 entry above refers to "echo 5 >
-> A1/A2/cpuset.cpus.exclusive" not to A3. This invalidates the A2 partition
-> which further invalidates the child A3 partition. So the result is correct.
+On Tue, Nov 19, 2024 at 2:30=E2=80=AFAM Pasha Tatashin
+<pasha.tatashin@soleen.com> wrote:
+> > Can you point me to where a refcounted reference to the page comes
+> > from when page_detective_metadata() calls dump_page_lvl()?
+>
+> I am sorry, I remembered incorrectly, we are getting reference right
+> after dump_page_lvl() in page_detective_memcg() -> folio_try_get(); I
+> will move the folio_try_get() to before dump_page_lvl().
+>
+> > > > So I think dump_page() in its current form is not something we shou=
+ld
+> > > > expose to a userspace-reachable API.
+> > >
+> > > We use dump_page() all over WARN_ONs in MM code where pages might not
+> > > be locked, but this is a good point, that while even the existing
+> > > usage might be racy, providing a user-reachable API potentially makes
+> > > it worse. I will see if I could add some locking before dump_page(),
+> > > or make a dump_page variant that does not do dump_mapping().
+> >
+> > To be clear, I am not that strongly opposed to racily reading data
+> > such that the data may not be internally consistent or such; but this
+> > is a case of racy use-after-free reads that might end up dumping
+> > entirely unrelated memory contents into dmesg. I think we should
+> > properly protect against that in an API that userspace can invoke.
+> > Otherwise, if we race, we might end up writing random memory contents
+> > into dmesg; and if we are particularly unlucky, those random memory
+> > contents could be PII or authentication tokens or such.
+> >
+> > I'm not entirely sure what the right approach is here; I guess it
+> > makes sense that when the kernel internally detects corruption,
+> > dump_page doesn't take references on pages it accesses to avoid
+> > corrupting things further. If you are looking at a page based on a
+> > userspace request, I guess you could access the page with the
+> > necessary locking to access its properties under the normal locking
+> > rules?
+>
+> I will take reference, as we already do that for memcg purpose, but
+> have not included dump_page().
 
-OK, makes sense to me. But so, the test doesn't actually fail? Sorry,
-guess I'm confused. :)
-
+Note that taking a reference on the page does not make all of
+dump_page() fine; in particular, my understanding is that
+folio_mapping() requires that the page is locked in order to return a
+stable pointer, and some of the code in dump_mapping() would probably
+also require some other locks - probably at least on the inode and
+maybe also on the dentry, I think? Otherwise the inode's dentry list
+can probably change concurrently, and the dentry's name pointer can
+change too.
 
