@@ -1,79 +1,131 @@
-Return-Path: <cgroups+bounces-5658-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5659-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D90579D420E
-	for <lists+cgroups@lfdr.de>; Wed, 20 Nov 2024 19:33:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D61889D426E
+	for <lists+cgroups@lfdr.de>; Wed, 20 Nov 2024 20:16:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 45254B25232
-	for <lists+cgroups@lfdr.de>; Wed, 20 Nov 2024 18:33:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82ACB1F21D1E
+	for <lists+cgroups@lfdr.de>; Wed, 20 Nov 2024 19:16:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F2CC1C3052;
-	Wed, 20 Nov 2024 18:31:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 699E61BC9F7;
+	Wed, 20 Nov 2024 19:16:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KzfU4OSO"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PCnzGdn5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFAD21C3036;
-	Wed, 20 Nov 2024 18:31:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7635715820C;
+	Wed, 20 Nov 2024 19:16:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732127518; cv=none; b=ic3ifX/Y0vCCbJrVdeKbjl81+TNoUHOqD5LRLSXTokFJ1wHlaK+BzWqRK5XhayYnyKKqlP/k55j5F28feBV8bzXhXGa5iLSWi2622sf9Ncy5EMhut5jgX4/aHRzHBt6fWGNdJaumavon/mo7nkzitBueignJU7Qns+nE1niPlmU=
+	t=1732130167; cv=none; b=VnL8WITJdAkT/l7vx5WZX2iEomL0zYDJsAKLF4Acq0+taXoDyDZ9ns48OHZeiUxvrpFLQJ9F1DuvmyligaCsqttVDFaN7RJIsCpGfrCpKSXOAs+So8SMGB9BaA4VTtn4dCo6iZ7wSnUTC05+cGTL83q9gbMQwgA0Z9W65b/uhGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732127518; c=relaxed/simple;
-	bh=wiQHWUVRnWWWNnYvUe3pNE9QqWhHWDv/nYqlujf7RTI=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=MGycC4aLauT0nWoekQT21Ppkdl1PdkcQNwK1kU3qfUFRW2IH9ZXZe/LxQm+tx+xKW0GfY84iSECHS4NBgYPeIqJWJbhROOJzf+JIBylDdoh7pQuePjRHOM8bI1tJbUolpl2/Za/BtLP2tEO4MGaKEvYRxt3ZXL8tPEMoihnP6ZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KzfU4OSO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0A3FC4CECD;
-	Wed, 20 Nov 2024 18:31:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732127518;
-	bh=wiQHWUVRnWWWNnYvUe3pNE9QqWhHWDv/nYqlujf7RTI=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=KzfU4OSOtOTv37ZsolzUVM5aGC8SEpPW74kj1c9LqdSb1FwUwwG8hFA/8JeewCIU+
-	 M8r22Y+/8jrt6RBzuraH8JBkAa91X6vQLhacgsUl7mtOJD25hihM5e45Nvh6cc+34G
-	 stLGJEq+S2O0OhrJm11koX8bAUkNYORKfRP70Na5V5dhv8bt6XslgXOsSw3Sk1TPQo
-	 qvP1ufv5tm7pg0cMTLjX+p5DbbwYjrYoPSyq9fQdepnhCXp+CVjDehqjA6zbhyE+FX
-	 eb+M5D2v2zFoe2vwq3q/cs8hq+ouTEuneOWEqFZoaGhQy1l7aguYB84PdkYbSmyHBF
-	 xfx1b0GUSq9hw==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id ADD103809A80;
-	Wed, 20 Nov 2024 18:32:11 +0000 (UTC)
-Subject: Re: [GIT PULL] cgroup: Changes for v6.13
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <ZztmA9FyfqLtPy47@slm.duckdns.org>
-References: <ZztmA9FyfqLtPy47@slm.duckdns.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZztmA9FyfqLtPy47@slm.duckdns.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.13
-X-PR-Tracked-Commit-Id: fbfbf86685b3270dc27d1c5d6108532334aaf329
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7586d5276515a54656bc46530b32e10913c44b1f
-Message-Id: <173212753034.1310468.13429092980593562929.pr-tracker-bot@kernel.org>
-Date: Wed, 20 Nov 2024 18:32:10 +0000
-To: Tejun Heo <tj@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>, Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+	s=arc-20240116; t=1732130167; c=relaxed/simple;
+	bh=PFaks9fXNUj0aLJFNESbShumb8AdVbhevzkOzTwjIWE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b4JvMdZosbhlQislnd+jJYY8+9aVEY4eaTtBj+HoK9tWJi51H7w3zeS11LIPpX7tVf5DYEssoAGcUNmBwhA/5ZnTjRgBWbfPi5XcBybF1LK2QQ6kKd5pNpQaE/LGwBw1aKUtG4W4LuhKG4aTD4F2ZDwzV5dXKYc+iERwLYKybGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PCnzGdn5; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1732130166; x=1763666166;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=PFaks9fXNUj0aLJFNESbShumb8AdVbhevzkOzTwjIWE=;
+  b=PCnzGdn5Ffe8h0Ph7mBLSzCKEEPx28PdEX0kr6ifjb8rB1KOtWq8na1G
+   4h5nwkqf+Ksy18bVBoCaDbSdyvu2p8RYbrsMtSqUlXjPf0dhTcbzIJcFp
+   yYU+RZjZRK00XwZXRZRyKG7iT+pMuGR0V67dQUyLVfqHrTmCddFEtOnuh
+   FE0uMDrHmB4QBh7QJ5W68ED3RPYZ0HpqWTtd6ZyD3VTEc7gewFhHfXkBD
+   MOyt1zx++nxs2Sv/U3/qmLeaiM2WZKJ5yVFUZDvddO3KPjNJjjVl7vyWp
+   SRTCXX5e3TC5PK+hs2fJai5352nEG4mvBWOOSyTGrI16DjyCk6jGUDsaE
+   Q==;
+X-CSE-ConnectionGUID: WVVBGy2dSWaiqlVhwrtGoA==
+X-CSE-MsgGUID: b7baHkIRRyehFZY/82lamg==
+X-IronPort-AV: E=McAfee;i="6700,10204,11262"; a="57608215"
+X-IronPort-AV: E=Sophos;i="6.12,170,1728975600"; 
+   d="scan'208";a="57608215"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2024 11:16:05 -0800
+X-CSE-ConnectionGUID: 6uwrWOb8QsmRBRQNFKzWPw==
+X-CSE-MsgGUID: 056/sa7STnqg1YzmOmukiw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.12,170,1728975600"; 
+   d="scan'208";a="89591297"
+Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Nov 2024 11:16:04 -0800
+Date: Wed, 20 Nov 2024 11:14:49 -0800
+From: Andi Kleen <ak@linux.intel.com>
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	akpm@linux-foundation.org, corbet@lwn.net, derek.kiernan@amd.com,
+	dragan.cvetic@amd.com, arnd@arndb.de, gregkh@linuxfoundation.org,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+	tj@kernel.org, hannes@cmpxchg.org, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, Liam.Howlett@oracle.com,
+	lorenzo.stoakes@oracle.com, vbabka@suse.cz, jannh@google.com,
+	shuah@kernel.org, vegard.nossum@oracle.com, vattunuru@marvell.com,
+	schalla@marvell.com, david@redhat.com, willy@infradead.org,
+	osalvador@suse.de, usama.anjum@collabora.com, andrii@kernel.org,
+	ryan.roberts@arm.com, peterx@redhat.com, oleg@redhat.com
+Subject: Re: [RFCv1 0/6] Page Detective
+Message-ID: <Zz41KbB4b86eQ1jj@tassilo>
+References: <20241116175922.3265872-1-pasha.tatashin@soleen.com>
+ <87wmgxvs81.fsf@linux.intel.com>
+ <CA+CK2bDTKXuTHq7EOvErWFRe9XRGq9UF5L-LmzX3jhWd40_KbQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+CK2bDTKXuTHq7EOvErWFRe9XRGq9UF5L-LmzX3jhWd40_KbQ@mail.gmail.com>
 
-The pull request you sent on Mon, 18 Nov 2024 06:06:27 -1000:
+> - Quickly identify all user processes mapping a given page.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/ tags/cgroup-for-6.13
+Can be done with /proc/*/pagemap today. Maybe it's not "quick"
+because it won't use the rmap chains, but is that a serious
+issue?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7586d5276515a54656bc46530b32e10913c44b1f
+> - Determine if and where the kernel maps the page, which is also
+> important given the opportunity to remove guest memory from the kernel
+> direct map (as discussed at LPC'24).
 
-Thank you!
+At least x86 already has a kernel page table dumper in debugfs
+that can be used for this. The value of a second redundant
+one seems low.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> We also plan to extend this functionality to include KVM and IOMMU
+> page tables in the future.
+
+Yes dumpers for those would likely be useful.
+
+(at least for the case when one hand is tied behind your back
+by security policies forbidding /proc/kcore access)
+
+> <pagemap> provides an interface to traversing through user page
+> tables, but the other information cannot be extracted using the
+> existing interfaces.
+
+Like what? You mean the reference counts?
+
+/proc/k* doesn't have any reference counts, and no space
+for full counts, but I suspect usually all you need to know is a
+few states like (>1, 1, 0, maybe negative) which could be mapped to a
+few spare kpageflags bits.
+
+That said I thought Willy wanted to move a lot of these
+elsewhere anyways with the folio revolution, so it might 
+be a short lived interface anyways.
+
+-Andi
 
