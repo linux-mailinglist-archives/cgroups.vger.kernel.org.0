@@ -1,70 +1,69 @@
-Return-Path: <cgroups+bounces-5655-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5656-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37EC59D4148
-	for <lists+cgroups@lfdr.de>; Wed, 20 Nov 2024 18:40:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3569F9D41AB
+	for <lists+cgroups@lfdr.de>; Wed, 20 Nov 2024 18:51:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 323C6B25FAD
-	for <lists+cgroups@lfdr.de>; Wed, 20 Nov 2024 17:34:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B6978B2A09A
+	for <lists+cgroups@lfdr.de>; Wed, 20 Nov 2024 17:47:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 741F81B0109;
-	Wed, 20 Nov 2024 17:33:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93A7F1B6CEE;
+	Wed, 20 Nov 2024 17:47:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="obHVI5SC"
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="yQ66ORCi"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E102487BE
-	for <cgroups@vger.kernel.org>; Wed, 20 Nov 2024 17:33:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C620C1474B8
+	for <cgroups@vger.kernel.org>; Wed, 20 Nov 2024 17:47:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732124039; cv=none; b=OsHFCo4/LJKivD+FrhgYAnVOa173jICAU3HJCCJJMM5B1dqrDr7xxq7Pz5zVwFNkx0LzHuNAE5hrAi87n3TBOrUXxInL5pRCm+gftRXamxKl5G0RPZKsTPyDSnxK7oFkapFrBC+DcExKGYWJqrhbbKm8oA/y5MmAutpnW2IdLWI=
+	t=1732124857; cv=none; b=XdSf2+/URvubJCVmanr3zyRWKi59eu1kC0amTnWNHriECZOko/9/v/KZcmtICyQLitctEPsjFl3hva4zjFSRwb+Yn6FtuRk1rxp1klphv6sX8J136wZwiJORQorFt3k6QSMhjsRr4b7tOVyUt05njD4MvisYrF/9h2yvsp2WNmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732124039; c=relaxed/simple;
-	bh=Qpu/AFEa2uG9HdS1pBVJ6cUxEzFgxChSm6OIAK9vj0U=;
+	s=arc-20240116; t=1732124857; c=relaxed/simple;
+	bh=u99IqIWwuXfqqVllQi6t586j+rI6T6G2LFrOGmNlgvM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AnmgltBpLqUqMRqGbJPaF76sXuomrUmIx5LJyy4eGXP5fZn1Xo+gMBb8LQR0m7rNjaLz6apQ6AvSYdpa9Hd7fbT6CuxVhESaKw+gnEdbnwjmzuO5bB+3r85bRDckIvVGFRJPRkc/ky0IuPt7tVkpk4jDSOjmi/cVFfKX1TLesFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=obHVI5SC; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-6eebae6f013so17008717b3.0
-        for <cgroups@vger.kernel.org>; Wed, 20 Nov 2024 09:33:57 -0800 (PST)
+	 To:Cc:Content-Type; b=oh2bMQB+TNWsg69GsNCc9n/823OB4CkVnHoiYdnF5F2BCVrTvOFH3t0ySudNUcGSY6loScOt0Jv/DJTfWR6YISUcA37tcrSDgOKxwpHdDfS8Be0TwiCRes7uuon3atdajyMo/ppCRKY5IPUV76kkKATNl/nol60iCbqFDMjNZp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=yQ66ORCi; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-4609e784352so264661cf.0
+        for <cgroups@vger.kernel.org>; Wed, 20 Nov 2024 09:47:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1732124036; x=1732728836; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tYCCxRwoo4/e9pvHHukibz0lUEYL/K5Rpqldo2LsKi0=;
-        b=obHVI5SC7ryDI3ZPz/Lt1cMnmqG1LNQ1B39f1RAePE4ygf1p8k76SIv2MQe3G5bY77
-         vwZTERRU592Rt/qpSDFw0+GD/nvAc5TWGbN9Vwv6KQmyB70SYqhxGyRjJ3uqihyhsCX4
-         /e69eLbgEGx2FBIX8D4uDBWuFrBQ1Sdwu/IwBydDNV1C0nRoMlcO8OTnBmrcUPvtEKS+
-         a/Acmeh7QV3orGYhTO1ySwVo47Pchsc7+T/7McZD5JW//ry0YfMpiqraa1QyRk476SFe
-         Avbzkk0VN3wxBsYSgEikCHlUED/MUyncXLk6OIRB/HOAb4inj8qsWpU6wlkIw62ZihF4
-         h12A==
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1732124855; x=1732729655; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=UaFYnoy6vIIc+NNFw3dXMBs61SIsGb7xxVzTfcYyYis=;
+        b=yQ66ORCidijal9Md6ogoyqmn3A3Oo02nTqw9YZoP1pMTj67QBkOagb/7QIwqVq/FDl
+         MTGYXWOYMINrjMsrCaGEcKSSVb9iHwZCSYLpByfDPoX6TAsL87/Qu8axmWRQ9hzx4v+u
+         71413HHBBRPeaALZVrrEi+iny+36Go0ea47b42TdwgFN0fJ81kUmJ59z0Lw23WIAGqUZ
+         d/o8oapSH39LwlOlHCBmv9h3ONJ7lbQJTjsj4kA7hCYxmFGcGlfcai3ROa1yyjSouf0y
+         bHbKuL9+ANMzFi+1lzqDObF4WQfKQwAh7hgMiW2DJdKyYHNNJcpD8wHceRLhbdyJxNpd
+         QKxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732124036; x=1732728836;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tYCCxRwoo4/e9pvHHukibz0lUEYL/K5Rpqldo2LsKi0=;
-        b=fHEup10D8kqiOrcawtDi38GkQCQ8kRqRE8LjRzQ+usEYo0epNxJH1VJibjc2QPWvyb
-         ugGFbvAB2HsIS3ncGGs/NU/R7uiSNxO5tI46McoHbYUCUy5OcfSLnGb+RJfbOh0a67t4
-         Zz3iwUe3rc0MslXDJIVwMDf1vIaBVn/IRaETZnzDCP67VMHAxahfACYLuBYN6PRFtTgI
-         KxYAGdAbzWpGcp7HGMFS0pmN1CVI6G4YRXTbsKH6eGlHvu/QCVDP4U2MiiPwP4kkF/4e
-         02PXfWxGNqNsaVfqqWpTm6VcDx0bzmbUsGwzHXSKfmx1r6hHK4v6EDbkOozc1e5Szr2e
-         W3vg==
-X-Forwarded-Encrypted: i=1; AJvYcCWPsAw8CkN3ZvXO6AQdQpr8EUGEPCJ7x3G1309i4plEPzcOSKGTejKBNP80b0lt+mOagI+dGiUI@vger.kernel.org
-X-Gm-Message-State: AOJu0YxeoshqQB1lJOXitZTsdcsS20c0Jz8nqren2TFsh2IQPAyPqxkr
-	lpMfDXJb/WOrG/NXc+baMgt1XnDFMTa4Zy49Mf2TlfEDl79OL8Jjuo7aanx2cHubG6DQe5YOgis
-	PV4WcGQ0yiGx2cG55dG59J+PUMV896bOBG4HC
-X-Google-Smtp-Source: AGHT+IHXzlZzV1HDFKFSLMAjhmGRty1hJSXHMpkrUSLDMTXo54lPb8SEMTegLCJ8chntFke9JfMyqGqm2lxUKSFEZ3Y=
-X-Received: by 2002:a05:690c:4911:b0:6ea:5da9:34cc with SMTP id
- 00721157ae682-6eebd141ed6mr33197707b3.7.1732124034964; Wed, 20 Nov 2024
- 09:33:54 -0800 (PST)
+        d=1e100.net; s=20230601; t=1732124855; x=1732729655;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UaFYnoy6vIIc+NNFw3dXMBs61SIsGb7xxVzTfcYyYis=;
+        b=mxpGDpfsG6q8ymYXJTpgpU9y+AiUKXfIeE+1mj5VGGOWAeajvB0O7Wm0DNWF0/vcKa
+         4/OGIXaC9vOV5XiHW7ML0u6DbZAvdA5S1drzB8Dtu8AM856hGv+UOfZUxJhuTGdHs/tO
+         ZoWaQi+Fdd73oM+1QzWrZKu9+TB1P/W+Uym4PIKrtXFEj3JuLRRuYxaN4wcfxqAoePGA
+         TCLFSiDFNulGvms6GIy3YgAU+wRlrNJGbG+Js+Uza+Hl2X+86sX1lczwu4irNjGXrLYI
+         i49lDu/B8iIqzBbnwb4DVbHGMSZ1zprai2Zx586bOuLHsxe3kX4E8L9YNzuaj1dkeoS5
+         ZjEw==
+X-Forwarded-Encrypted: i=1; AJvYcCWL6zNIwWo3O04OQclUtuB+N6SLXrW3FJ/JIOve3GX/ypyH76Quo+9Zn5miT61TorkbRGCwnKte@vger.kernel.org
+X-Gm-Message-State: AOJu0YwkiJ2LxN8WQTvgn7b4fVprGyKGxylHGiTquN8tzURZAOYWnR5w
+	cugDMLi8MIODnkouwfgE4exjRDwGM5MzUZMjziRFwswitsgII45J5QnsdMWNDtZpOLcY+sASg58
+	LR7j//x6CRa+sudBggTZ5ZL021BZyyLTCMTC1MA==
+X-Google-Smtp-Source: AGHT+IETZYeQkb0s7u5Wf9yV4Cku4EiSNu5qCpIOez8ZpXMAHom6F/sK07PgTzdhYiGYrI8j7GVXlIMLnKbJrLP6RZU=
+X-Received: by 2002:a05:622a:2d5:b0:460:ebb5:5fe5 with SMTP id
+ d75a77b69052e-464782a740bmr36717931cf.10.1732124854779; Wed, 20 Nov 2024
+ 09:47:34 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -75,13 +74,14 @@ References: <20241116175922.3265872-1-pasha.tatashin@soleen.com>
  <ZzuRSZc8HX9Zu0dE@google.com> <CA+CK2bAAigxUv=HGpxoV-PruN_AhisKW675SxuG_yVi+vNmfSQ@mail.gmail.com>
  <2024111938-anointer-kooky-d4f9@gregkh> <CA+CK2bD88y4wmmvzMCC5Zkp4DX5ZrxL+XEOX2v4UhBxet6nwSA@mail.gmail.com>
  <ZzzXqXGRlAwk-H2m@google.com> <CA+CK2bD4zcXVATVhcUHBsA7Adtmh9LzCStWRDQyo_DsXxTOahA@mail.gmail.com>
- <CAJD7tkZDSZ4QjLhkWQ3RV_vEwzTfCMtFcWX_Fx8mj-q0Zg2cOw@mail.gmail.com> <CA+CK2bC-jNxUgp9JB=H9GsMu1FrxyqXxCe_v1G-43A1-eed0VA@mail.gmail.com>
-In-Reply-To: <CA+CK2bC-jNxUgp9JB=H9GsMu1FrxyqXxCe_v1G-43A1-eed0VA@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 20 Nov 2024 09:33:18 -0800
-Message-ID: <CAJD7tkaYuJpxijOp6se+mWHO6djaz_7KaoXjf=Rdo6nJubwB2w@mail.gmail.com>
+ <CAJD7tkZDSZ4QjLhkWQ3RV_vEwzTfCMtFcWX_Fx8mj-q0Zg2cOw@mail.gmail.com>
+ <CA+CK2bC-jNxUgp9JB=H9GsMu1FrxyqXxCe_v1G-43A1-eed0VA@mail.gmail.com> <CAJD7tkaYuJpxijOp6se+mWHO6djaz_7KaoXjf=Rdo6nJubwB2w@mail.gmail.com>
+In-Reply-To: <CAJD7tkaYuJpxijOp6se+mWHO6djaz_7KaoXjf=Rdo6nJubwB2w@mail.gmail.com>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Wed, 20 Nov 2024 12:46:57 -0500
+Message-ID: <CA+CK2bB9P0gVFVETh_zBfhnShYTJK8EX-vNfVjFY7QEKi_Gpmg@mail.gmail.com>
 Subject: Re: [RFCv1 0/6] Page Detective
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
+To: Yosry Ahmed <yosryahmed@google.com>
 Cc: Roman Gushchin <roman.gushchin@linux.dev>, Greg KH <gregkh@linuxfoundation.org>, 
 	linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-doc@vger.kernel.org, 
 	linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org, 
@@ -96,80 +96,21 @@ Cc: Roman Gushchin <roman.gushchin@linux.dev>, Greg KH <gregkh@linuxfoundation.o
 	andrii@kernel.org, ryan.roberts@arm.com, peterx@redhat.com, oleg@redhat.com, 
 	tandersen@netflix.com, rientjes@google.com, gthelen@google.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 20, 2024 at 8:14=E2=80=AFAM Pasha Tatashin
-<pasha.tatashin@soleen.com> wrote:
->
-> On Tue, Nov 19, 2024 at 2:36=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
+> >         /* Use static buffer, for the caller is holding oom_lock. */
+> >         static char buf[PAGE_SIZE];
+> >         ....
+> >         seq_buf_init(&s, buf, sizeof(buf));
+> >         memory_stat_format(memcg, &s);
+> >         seq_buf_do_printk(&s, KERN_INFO);
+> > }
 > >
-> > On Tue, Nov 19, 2024 at 11:30=E2=80=AFAM Pasha Tatashin
-> > <pasha.tatashin@soleen.com> wrote:
-> > >
-> > > On Tue, Nov 19, 2024 at 1:23=E2=80=AFPM Roman Gushchin <roman.gushchi=
-n@linux.dev> wrote:
-> > > >
-> > > > On Tue, Nov 19, 2024 at 10:08:36AM -0500, Pasha Tatashin wrote:
-> > > > > On Mon, Nov 18, 2024 at 8:09=E2=80=AFPM Greg KH <gregkh@linuxfoun=
-dation.org> wrote:
-> > > > > >
-> > > > > > On Mon, Nov 18, 2024 at 05:08:42PM -0500, Pasha Tatashin wrote:
-> > > > > > > Additionally, using crash/drgn is not feasible for us at this=
- time, it
-> > > > > > > requires keeping external tools on our hosts, also it require=
-s
-> > > > > > > approval and a security review for each script before deploym=
-ent in
-> > > > > > > our fleet.
-> > > > > >
-> > > > > > So it's ok to add a totally insecure kernel feature to your fle=
-et
-> > > > > > instead?  You might want to reconsider that policy decision :)
-> > > > >
-> > > > > Hi Greg,
-> > > > >
-> > > > > While some risk is inherent, we believe the potential for abuse h=
-ere
-> > > > > is limited, especially given the existing  CAP_SYS_ADMIN requirem=
-ent.
-> > > > > But, even with root access compromised, this tool presents a smal=
-ler
-> > > > > attack surface than alternatives like crash/drgn. It exposes less
-> > > > > sensitive information, unlike crash/drgn, which could potentially
-> > > > > allow reading all of kernel memory.
-> > > >
-> > > > The problem here is with using dmesg for output. No security-sensit=
-ive
-> > > > information should go there. Even exposing raw kernel pointers is n=
-ot
-> > > > considered safe.
-> > >
-> > > I am OK in writing the output to a debugfs file in the next version,
-> > > the only concern I have is that implies that dump_page() would need t=
-o
-> > > be basically duplicated, as it now outputs everything via printk's.
-> >
-> > Perhaps you can refactor the code in dump_page() to use a seq_buf,
-> > then have dump_page() printk that seq_buf using seq_buf_do_printk(),
-> > and have page detective output that seq_buf to the debugfs file?
+> > This is a callosal stack allocation, given that our fleet only has 8K
+> > stacks. :-)
 >
-> Good idea, I will look into modifying it this way.
->
-> > We do something very similar with memory_stat_format(). We use the
->
-> void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
-> {
->         /* Use static buffer, for the caller is holding oom_lock. */
->         static char buf[PAGE_SIZE];
->         ....
->         seq_buf_init(&s, buf, sizeof(buf));
->         memory_stat_format(memcg, &s);
->         seq_buf_do_printk(&s, KERN_INFO);
-> }
->
-> This is a callosal stack allocation, given that our fleet only has 8K
-> stacks. :-)
+> That's a static allocation though :)
 
-That's a static allocation though :)
+Ah right, did not notice it was static (and ignored the comment)
+
+Pasha
 
