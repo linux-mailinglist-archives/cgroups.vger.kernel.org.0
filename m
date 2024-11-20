@@ -1,92 +1,99 @@
-Return-Path: <cgroups+bounces-5647-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5648-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFF439D318A
-	for <lists+cgroups@lfdr.de>; Wed, 20 Nov 2024 01:57:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D5B29D3200
+	for <lists+cgroups@lfdr.de>; Wed, 20 Nov 2024 03:06:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 403C61F2356A
-	for <lists+cgroups@lfdr.de>; Wed, 20 Nov 2024 00:57:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C252F283EC1
+	for <lists+cgroups@lfdr.de>; Wed, 20 Nov 2024 02:06:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B636CA932;
-	Wed, 20 Nov 2024 00:56:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A20041E86E;
+	Wed, 20 Nov 2024 02:06:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="jY0VaqoR"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8F1D17F7;
-	Wed, 20 Nov 2024 00:56:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D561DBA4B
+	for <cgroups@vger.kernel.org>; Wed, 20 Nov 2024 02:06:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732064214; cv=none; b=KTxyBV6GWgGpuRfyBPXmtB4zeVrS9fcj3AV/zX06ktkb6kCvdEuY4WF1vDNiKwQEGkaqNqi+hAOA5m3UIK7Vs4QeAH0EjbDjpN79+GOnI9Wmvidcu/A8rABFlxiTERLIaGRs+/xzWu2sWm7M3bOnMI5/8LmHr7D2bUFzCYQ78jw=
+	t=1732068365; cv=none; b=SoXzGguKQYVX/CyW5hoONLSz3MKmLzpgZ9u1bE+J1RD/T3TBMeV40QGphJbpIsUDXVkufJ+9F9KTdutMl1Lv05weMcZhyTr/OK6c1jh+QqMfBVBMFvIM5gANHHllGyMCo2NGEmZVQgGM3odlWbq9tuf6Wlf1T//ZWbwKhFIFE4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732064214; c=relaxed/simple;
-	bh=y6nY4il7pvYAVZByBzwvlvx9Y/rEsE/Rgek8Mcxjurc=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=K6MQnw1aQVf97kjmxQre871KcQ/VAmlu77mXPcDHvD7gdV/bGQQ9x9bu4yk6QZZa0AwK4biQ4VmbjYIAb3qnN3RyBiamp4iaGIDTTcNDvxuz68NVHfKRVCJQnGge6dyXqznREoT+yAn/t3moj1abXlyBET0nqfW+SwPwH1Bgseo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XtNGh1vp1z4f3kF4;
-	Wed, 20 Nov 2024 08:56:28 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id BDB161A0197;
-	Wed, 20 Nov 2024 08:56:46 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP4 (Coremail) with SMTP id gCh0CgDHo4fMMz1n1p0hCQ--.55723S3;
-	Wed, 20 Nov 2024 08:56:46 +0800 (CST)
-Subject: Re: [PATCH] Revert "block, bfq: merge bfq_release_process_ref() into
- bfq_put_cooperator()"
-To: Zach Wade <zachwade.k@gmail.com>, tj@kernel.org, josef@toxicpanda.com,
- axboe@kernel.dk, cgroups@vger.kernel.org, linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Ding Hui <dinghui@sangfor.com.cn>, "yukuai (C)" <yukuai3@huawei.com>
+	s=arc-20240116; t=1732068365; c=relaxed/simple;
+	bh=NrXZS7z6piojoTKtIuFW8W4hz5WtNP/lPOiq5PK25Rk=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=k9nCKkZT0CK1PGpjIfmGYnv7UxCiYgD30jcbvY2xZUQAnTGutfa/cXCQj4ad1/y8rm7v+RNhGjrC+SkVB0chPQwoZvg4lggRAq+0tRFlGuP4gBsqNDpokaoV/qpiFILFwC3AkFAAtLrl1TJuW+XWxTq3DlnqaixrsqVxSl+067k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=jY0VaqoR; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-21116b187c4so28362715ad.3
+        for <cgroups@vger.kernel.org>; Tue, 19 Nov 2024 18:06:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1732068363; x=1732673163; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Os1la1Kb6FjtkBbLXARGU7KzNa7W0YtNDjjutSJCWzU=;
+        b=jY0VaqoRPSqUGNUNs5D8+Zf17bM2hDDRZSunMFl1dElHwD+grbHpW8ccVNzcRO4aJB
+         4YpwmKJ3neIcgzp5WHS6xuDhjM+dkgFVfvk2rqwPj73Hulb+6Xgywssh+dHOnXN9aWPa
+         Li7y1zDFUJnZgUhqMeY4CyBsL1e7EIDv1qEoc3a2NapxLIbjY2qNwlWXppTaraAMPKYN
+         LJZzgF+Un5PhrXV1mvxIpRHeEYK8QIoJKb0l9gexmrGfToLxeytaAVEph8cwMWsee3VL
+         a5jk7qIZy+4OQHFpeg63E39V6qNyNfTue8geaS3jnNhBuNg1gL97GYWTaFL5m6e+SBbS
+         zcWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732068363; x=1732673163;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Os1la1Kb6FjtkBbLXARGU7KzNa7W0YtNDjjutSJCWzU=;
+        b=XJZsKjiWJiB95ByKiNSPJzEAjx8jsnmAfQp/wrASrO3QF7ydsQanATFE1J2I8qr3Wk
+         LqP9JCUhPIrpeFElAVLRlBovbohBEGvlufXTpxDtylbibQdPfnjF8QlN3Wt3IhT6e7pU
+         VyCEAb26ZURu//ktCO57nhM+6tUqCEhGpYfMhj288q6FlO3hOG9Zkyl01G2RcEJriTpp
+         BQ93zP5xIZSBl09hLXxgpUAcosxXqlh55L+7Eg/lF/wOPGva+n21xf28xnawGYHBgl9O
+         23d8EJVnQy9Sp7K9hHgcCWYdpLqyWqITGzjs4mYjIjPGycj+oPUazlJ/U8QdpumHMrXU
+         uYsA==
+X-Forwarded-Encrypted: i=1; AJvYcCW062mx1cdTgIRB7kBFvVVspvdqsugL0OUBEn7CySP9Johe3cyAdVv85bywM0VWBmiA0N0F+kjM@vger.kernel.org
+X-Gm-Message-State: AOJu0YxEWv2plySh1rZAXcVi5KBYbSNnK0Ohu+LfRpD76CRFXfKrKDw3
+	PNQxmmUbkytr843UubrwD8+XUHokX1Lrl9eNQ3Z9eJkhnfUVxa9F1jYXkjfqEoE=
+X-Google-Smtp-Source: AGHT+IExO5AA2SJHZ0fyOFEFuJdgfrqhsLfJNIIGUa5+Wrgez4ddbtnOOHd/GLgTucKNdDTsUxnhtQ==
+X-Received: by 2002:a17:902:dac7:b0:212:40e0:9553 with SMTP id d9443c01a7336-2126a41ad3emr14887915ad.32.1732068363103;
+        Tue, 19 Nov 2024 18:06:03 -0800 (PST)
+Received: from [127.0.0.1] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ead0311078sm120983a91.8.2024.11.19.18.06.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Nov 2024 18:06:02 -0800 (PST)
+From: Jens Axboe <axboe@kernel.dk>
+To: yukuai3@huawei.com, tj@kernel.org, josef@toxicpanda.com, 
+ cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Zach Wade <zachwade.k@gmail.com>
+Cc: Ding Hui <dinghui@sangfor.com.cn>
+In-Reply-To: <20241119153410.2546-1-zachwade.k@gmail.com>
 References: <20241119153410.2546-1-zachwade.k@gmail.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <07acc3f6-7926-790b-d888-19b303e137e3@huaweicloud.com>
-Date: Wed, 20 Nov 2024 08:56:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+Subject: Re: [PATCH] Revert "block, bfq: merge bfq_release_process_ref()
+ into bfq_put_cooperator()"
+Message-Id: <173206836183.183392.14838257909819889976.b4-ty@kernel.dk>
+Date: Tue, 19 Nov 2024 19:06:01 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20241119153410.2546-1-zachwade.k@gmail.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDHo4fMMz1n1p0hCQ--.55723S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxuw1xXF1DZFWkWrykZryrJFb_yoWfCw4Dpr
-	nFyFWxCr4rKryUZrsrGw18XFyxJrW8C3WjqrWIyw1xJ348WasIqFyDKF1UX3Wqkw1kurya
-	q3WDGws0qF1UGw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UAwI
-	DUUUUU=
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14.3-dev-86319
 
-Hi,
 
-ÔÚ 2024/11/19 23:34, Zach Wade Ð´µÀ:
+On Tue, 19 Nov 2024 23:34:10 +0800, Zach Wade wrote:
 > This reverts commit bc3b1e9e7c50e1de0f573eea3871db61dd4787de.
 > 
 > The bic is associated with sync_bfqq, and bfq_release_process_ref cannot
 > be put into bfq_put_cooperator.
-
-This descrption is not clear to me.
 > 
 > kasan report:
 > [  400.347277] ==================================================================
@@ -183,19 +190,11 @@ This descrption is not clear to me.
 > [  400.356238]  do_user_addr_fault+0x324/0x970
 > [  400.356248]  exc_page_fault+0x76/0xf0
 > [  400.356258]  asm_exc_page_fault+0x26/0x30
-
-I get it now, the root cause is that bfqq is freed by
-bfq_release_process_ref(), and later bic_set_bfqq() will trigger
-above uaf.
-
-LGTM
-Reviewed-by: Yu Kuai <yukuai3@huawei.com>
-
 > [  400.356266]
 > [  400.356269] The buggy address belongs to the object at ffff88881cab7bc0
->                  which belongs to the cache bfq_queue of size 576
+>                 which belongs to the cache bfq_queue of size 576
 > [  400.356276] The buggy address is located 416 bytes inside of
->                  freed 576-byte region [ffff88881cab7bc0, ffff88881cab7e00)
+>                 freed 576-byte region [ffff88881cab7bc0, ffff88881cab7e00)
 > [  400.356285]
 > [  400.356287] The buggy address belongs to the physical page:
 > [  400.356292] page: refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88881cab0b00 pfn:0x81cab0
@@ -219,57 +218,17 @@ Reviewed-by: Yu Kuai <yukuai3@huawei.com>
 > [  400.356409]  ffff88881cab7e00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
 > [  400.356413] ==================================================================
 > 
-> Fixes: bc3b1e9e7c50 ("block, bfq: merge bfq_release_process_ref() into bfq_put_cooperator()")
-> Signed-off-by: Zach Wade <zachwade.k@gmail.com>
-> Cc: Ding Hui <dinghui@sangfor.com.cn>
-> ---
->   block/bfq-cgroup.c  | 1 +
->   block/bfq-iosched.c | 6 ++++--
->   2 files changed, 5 insertions(+), 2 deletions(-)
-> 
-> diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-> index e831aedb4643..9fb9f3533150 100644
-> --- a/block/bfq-cgroup.c
-> +++ b/block/bfq-cgroup.c
-> @@ -736,6 +736,7 @@ static void bfq_sync_bfqq_move(struct bfq_data *bfqd,
->   		 */
->   		bfq_put_cooperator(sync_bfqq);
->   		bic_set_bfqq(bic, NULL, true, act_idx);
-> +		bfq_release_process_ref(bfqd, sync_bfqq);
->   	}
->   }
->   
-> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-> index 0747d9d0e48c..28c2bb06e859 100644
-> --- a/block/bfq-iosched.c
-> +++ b/block/bfq-iosched.c
-> @@ -5434,8 +5434,6 @@ void bfq_put_cooperator(struct bfq_queue *bfqq)
->   		bfq_put_queue(__bfqq);
->   		__bfqq = next;
->   	}
-> -
-> -	bfq_release_process_ref(bfqq->bfqd, bfqq);
->   }
->   
->   static void bfq_exit_bfqq(struct bfq_data *bfqd, struct bfq_queue *bfqq)
-> @@ -5448,6 +5446,8 @@ static void bfq_exit_bfqq(struct bfq_data *bfqd, struct bfq_queue *bfqq)
->   	bfq_log_bfqq(bfqd, bfqq, "exit_bfqq: %p, %d", bfqq, bfqq->ref);
->   
->   	bfq_put_cooperator(bfqq);
-> +
-> +	bfq_release_process_ref(bfqd, bfqq);
->   }
->   
->   static void bfq_exit_icq_bfqq(struct bfq_io_cq *bic, bool is_sync,
-> @@ -6734,6 +6734,8 @@ bfq_split_bfqq(struct bfq_io_cq *bic, struct bfq_queue *bfqq)
->   	bic_set_bfqq(bic, NULL, true, bfqq->actuator_idx);
->   
->   	bfq_put_cooperator(bfqq);
-> +
-> +	bfq_release_process_ref(bfqq->bfqd, bfqq);
->   	return NULL;
->   }
->   
-> 
+> [...]
+
+Applied, thanks!
+
+[1/1] Revert "block, bfq: merge bfq_release_process_ref() into bfq_put_cooperator()"
+      commit: cf5a60d971c7b59efb89927919404be655a9e35a
+
+Best regards,
+-- 
+Jens Axboe
+
+
 
 
