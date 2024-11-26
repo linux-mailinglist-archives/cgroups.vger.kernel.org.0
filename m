@@ -1,220 +1,92 @@
-Return-Path: <cgroups+bounces-5685-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5686-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8E059D9536
-	for <lists+cgroups@lfdr.de>; Tue, 26 Nov 2024 11:11:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B59D09D9E08
+	for <lists+cgroups@lfdr.de>; Tue, 26 Nov 2024 20:29:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D221B27879
-	for <lists+cgroups@lfdr.de>; Tue, 26 Nov 2024 10:08:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8C5F286794
+	for <lists+cgroups@lfdr.de>; Tue, 26 Nov 2024 19:29:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48A9D1C07EA;
-	Tue, 26 Nov 2024 10:08:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BD711DE8A0;
+	Tue, 26 Nov 2024 19:29:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Oq/8LgXz"
 X-Original-To: cgroups@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8299F19340F;
-	Tue, 26 Nov 2024 10:08:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE34E1DE880
+	for <cgroups@vger.kernel.org>; Tue, 26 Nov 2024 19:29:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732615722; cv=none; b=q/0SOyTNvfexWAAWgmnWuoE+aIc39k5TP+op85qz1er4O9iBrm7ASY4eF2Y85ZX8sTLPSsdIUvYYgxNnjmyluLtj/0qIf9mzabPsRcq3feg/LKz4HyTBfZINHIk1nm9nDSkExycBTfhunWT4zIBBPQeIlM05m9NE1YsNKuKwdTs=
+	t=1732649368; cv=none; b=SdOTMvvb6fm5xgbhAr9ZloYBHyaedc56zJDKyUlmnYe1HZsrFz/VjiycxU6yA6NSTBNo6+r/AIflzlOImHHSZGV4bk5qOtiVykM8XZBt98dD/RHmz+RuPmrn56gCVRqyyCLUwwWqcEU0SudxqXOau4aU3GrgOLjm0rQ6715uxKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732615722; c=relaxed/simple;
-	bh=pIt8Uh7XfClRERpzHEdF1fpO0FNx1DOyLTgTCn5QUQE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AJWfZw/BMDhxKrM66J8tv8eZraCksi9tqEngh77TEdip9jV5CzjdnqACKUqb8R3lYMHvi6OXZKN5WqOCHbcGWM1Bh6/hIMor6iLmESz5ikdTI9nLQMZby/6SNaBZCTk0qzb5ZWypmF8b1iQTkwTPOzscmoj8HHczviMTit0EDoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D90021682;
-	Tue, 26 Nov 2024 02:09:08 -0800 (PST)
-Received: from [10.57.89.250] (unknown [10.57.89.250])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 002A03F5A1;
-	Tue, 26 Nov 2024 02:08:34 -0800 (PST)
-Message-ID: <7a674595-5392-4b5b-9614-79a3e9fd2773@arm.com>
-Date: Tue, 26 Nov 2024 10:08:33 +0000
+	s=arc-20240116; t=1732649368; c=relaxed/simple;
+	bh=oA/qdV6gyIyfl9AXAgDB9I+NgI2XOp2Rl5kd2AhTO+s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=slaKOrXvlFd/Vkov5PQX5CVUtSKdT/QeS6u7xscUNaGVwDofHJtJvq5U4go+Hoa/L7XeAaBH858pox9DlaXwNw4V+P+JcquE2uKeJJ2kKt6FDH97HHFcxOZYT5N1umjHxapw5YFsPcTGb7KCUlc+GznKd0N6DjCw2wJjHfSKcI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Oq/8LgXz; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 26 Nov 2024 19:29:14 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1732649360;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zEUa6tKt5tK0Kb57WdB49xzZN3WpeLv/SaNRuQje//8=;
+	b=Oq/8LgXzoMjfOZGiAo69b54cDx2xC/O33Xxq1O86CuJtUgIufZdOmePR93HnrRUHRdmbPW
+	O1JsUBDgqxRMNuWYBpulfNrAyOJERwusIbg02U7UrDx0ktcQprdT5e4uphkNjGxdX1B3cy
+	vtyMCjWyLxYfq0FYXNfpaWuxHp+8IOk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Muchun Song <muchun.song@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH v2] mm: mmap_lock: optimize mmap_lock tracepoints
+Message-ID: <Z0Yhivws5XSeme68@google.com>
+References: <20241125171617.113892-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v1 06/57] mm: Remove PAGE_SIZE compile-time constant
- assumption
-Content-Language: en-GB
-To: Vlastimil Babka <vbabka@suse.cz>,
- Andrew Morton <akpm@linux-foundation.org>,
- Anshuman Khandual <anshuman.khandual@arm.com>,
- Ard Biesheuvel <ardb@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
- Christoph Lameter <cl@linux.com>, David Hildenbrand <david@redhat.com>,
- David Rientjes <rientjes@google.com>, Greg Marsden
- <greg.marsden@oracle.com>, Ivan Ivanov <ivan.ivanov@suse.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Kalesh Singh <kaleshsingh@google.com>, Marc Zyngier <maz@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Matthias Brugger <mbrugger@suse.com>,
- Michal Hocko <mhocko@kernel.org>, Miquel Raynal <miquel.raynal@bootlin.com>,
- Miroslav Benes <mbenes@suse.cz>, Pekka Enberg <penberg@kernel.org>,
- Richard Weinberger <richard@nod.at>, Shakeel Butt <shakeel.butt@linux.dev>,
- Vignesh Raghavendra <vigneshr@ti.com>, Will Deacon <will@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, linux-mtd@lists.infradead.org
-References: <20241014105514.3206191-1-ryan.roberts@arm.com>
- <20241014105912.3207374-1-ryan.roberts@arm.com>
- <20241014105912.3207374-6-ryan.roberts@arm.com>
- <d9089ef0-3abd-4148-949c-cab66890b98b@suse.cz>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <d9089ef0-3abd-4148-949c-cab66890b98b@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241125171617.113892-1-shakeel.butt@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-Hi Vlastimil,
+On Mon, Nov 25, 2024 at 09:16:17AM -0800, Shakeel Butt wrote:
+> We are starting to deploy mmap_lock tracepoint monitoring across our
+> fleet and the early results showed that these tracepoints are consuming
+> significant amount of CPUs in kernfs_path_from_node when enabled.
+> 
+> It seems like the kernel is trying to resolve the cgroup path in the
+> fast path of the locking code path when the tracepoints are enabled. In
+> addition for some application their metrics are regressing when
+> monitoring is enabled.
+> 
+> The cgroup path resolution can be slow and should not be done in the
+> fast path. Most userspace tools, like bpftrace, provides functionality
+> to get the cgroup path from cgroup id, so let's just trace the cgroup
+> id and the users can use better tools to get the path in the slow path.
+> 
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-Sorry about the slow response to your review of this series - I'm just getting
-to it now. Comment's below...
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
 
-On 14/11/2024 10:17, Vlastimil Babka wrote:
-> On 10/14/24 12:58, Ryan Roberts wrote:
->> To prepare for supporting boot-time page size selection, refactor code
->> to remove assumptions about PAGE_SIZE being compile-time constant. Code
->> intended to be equivalent when compile-time page size is active.
->>
->> Refactor "struct vmap_block" to use a flexible array for used_mmap since
->> VMAP_BBMAP_BITS is not a compile time constant for the boot-time page
->> size case.
->>
->> Update various BUILD_BUG_ON() instances to check against appropriate
->> page size limit.
->>
->> Re-define "union swap_header" so that it's no longer exactly page-sized.
->> Instead define a flexible "magic" array with a define which tells the
->> offset to where the magic signature begins.
->>
->> Consider page size limit in some CPP condditionals.
->>
->> Wrap global variables that are initialized with PAGE_SIZE derived values
->> using DEFINE_GLOBAL_PAGE_SIZE_VAR() so their initialization can be
->> deferred for boot-time page size builds.
->>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>
->> ***NOTE***
->> Any confused maintainers may want to read the cover note here for context:
->> https://lore.kernel.org/all/20241014105514.3206191-1-ryan.roberts@arm.com/
->>
->>  drivers/mtd/mtdswap.c         |  4 ++--
->>  include/linux/mm.h            |  2 +-
->>  include/linux/mm_types_task.h |  2 +-
->>  include/linux/mmzone.h        |  3 ++-
->>  include/linux/slab.h          |  7 ++++---
->>  include/linux/swap.h          | 17 ++++++++++++-----
->>  include/linux/swapops.h       |  6 +++++-
->>  mm/memcontrol.c               |  2 +-
->>  mm/memory.c                   |  4 ++--
->>  mm/mmap.c                     |  2 +-
->>  mm/page-writeback.c           |  2 +-
->>  mm/slub.c                     |  2 +-
->>  mm/sparse.c                   |  2 +-
->>  mm/swapfile.c                 |  2 +-
->>  mm/vmalloc.c                  |  7 ++++---
->>  15 files changed, 39 insertions(+), 25 deletions(-)
->>
-> 
->> --- a/include/linux/swap.h
->> +++ b/include/linux/swap.h
->> @@ -132,10 +132,17 @@ static inline int current_is_kswapd(void)
->>   * bootbits...
->>   */
->>  union swap_header {
->> -	struct {
->> -		char reserved[PAGE_SIZE - 10];
->> -		char magic[10];			/* SWAP-SPACE or SWAPSPACE2 */
->> -	} magic;
->> +	/*
->> +	 * Exists conceptually, but since PAGE_SIZE may not be known at compile
->> +	 * time, we must access through pointer arithmetic at run time.
->> +	 *
->> +	 * struct {
->> +	 * 	char reserved[PAGE_SIZE - 10];
->> +	 * 	char magic[10];			   SWAP-SPACE or SWAPSPACE2
->> +	 * } magic;
->> +	 */
->> +#define SWAP_HEADER_MAGIC	(PAGE_SIZE - 10)
->> +	char magic[1];
-> 
-> I wonder if it makes sense to even keep this magic field anymore.
-> 
->>  	struct {
->>  		char		bootbits[1024];	/* Space for disklabel etc. */
->>  		__u32		version;
->> @@ -201,7 +208,7 @@ struct swap_extent {
->>   * Max bad pages in the new format..
->>   */
->>  #define MAX_SWAP_BADPAGES \
->> -	((offsetof(union swap_header, magic.magic) - \
->> +	((SWAP_HEADER_MAGIC - \
->>  	  offsetof(union swap_header, info.badpages)) / sizeof(int))
->>  
->>  enum {
-> 
-> <snip>
-> 
->> --- a/mm/swapfile.c
->> +++ b/mm/swapfile.c
->> @@ -2931,7 +2931,7 @@ static unsigned long read_swap_header(struct swap_info_struct *p,
->>  	unsigned long swapfilepages;
->>  	unsigned long last_page;
->>  
->> -	if (memcmp("SWAPSPACE2", swap_header->magic.magic, 10)) {
->> +	if (memcmp("SWAPSPACE2", &swap_header->magic[SWAP_HEADER_MAGIC], 10)) {
-> 
-> I'd expect static checkers to scream here because we overflow the magic[1]
-> both due to copying 10 bytes into 1 byte array and also with the insane
-> offset. Hence my suggestion to drop the field and use purely pointer arithmetic.
-
-Yeah, good point. I'll remove magic[] and use pointer arithmetic.
-
-> 
->>  		pr_err("Unable to find swap-space signature\n");
->>  		return 0;
->>  	}
->> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
->> index a0df1e2e155a8..b4fbba204603c 100644
-> 
-> Hm I'm actually looking at yourwip branch which also has:
-> 
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -969,7 +969,7 @@ static inline int get_order_from_str(const char *size_str)
->         return -EINVAL;
->  }
-> 
-> -static char str_dup[PAGE_SIZE] __initdata;
-> +static char str_dup[PAGE_SIZE_MAX] __initdata;
->  static int __init setup_thp_anon(char *str)
->  {
->         char *token, *range, *policy, *subtoken;
-> 
-> Why PAGE_SIZE_MAX? Isn't this the same case as "mm/memcontrol: Fix seq_buf
-> size to save memory when PAGE_SIZE is large"
-
-Hmm, you're probably right. I had a vague notion that "str", as passed into the
-function, was guarranteed to be no bigger than PAGE_SIZE (perhaps I'm wrong). So
-assumed that's where the original definition of str_dup[PAGE_SIZE] was coming from.
-
-But I think your real question is "should the max size of str be a function of
-PAGE_SIZE?". I think it could; there are more page orders that can legitimately
-be described when the page size is bigger (at least for arm64). But in practice,
-I'd expect any sane string for any page size to be easily within 4K.
-
-So on that basis, I'll take your advice; changing this buffer to be 4K always.
-
-Thanks,
-Ryan
-
-
+Thanks!
 
