@@ -1,70 +1,70 @@
-Return-Path: <cgroups+bounces-5694-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5695-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A72B9DA0E8
-	for <lists+cgroups@lfdr.de>; Wed, 27 Nov 2024 03:59:17 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3307F9DA0EF
+	for <lists+cgroups@lfdr.de>; Wed, 27 Nov 2024 03:59:44 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DED8228405F
-	for <lists+cgroups@lfdr.de>; Wed, 27 Nov 2024 02:59:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5A19168F21
+	for <lists+cgroups@lfdr.de>; Wed, 27 Nov 2024 02:59:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A69614A60A;
-	Wed, 27 Nov 2024 02:57:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 631931547E8;
+	Wed, 27 Nov 2024 02:58:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eNoog/aa"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RElf2k7h"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+Received: from mail-oa1-f73.google.com (mail-oa1-f73.google.com [209.85.160.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53AA3145B03
-	for <cgroups@vger.kernel.org>; Wed, 27 Nov 2024 02:57:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 259FD149E1A
+	for <cgroups@vger.kernel.org>; Wed, 27 Nov 2024 02:57:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732676279; cv=none; b=Z1x2H5COZl1ZUr6WzaXe33LlZc9MJ9dwWBkcwK2qjT2wp/Oo+kg3gjdIq+WVJpZ5Er0iegwphdR4JSO91MaoqzHHI0+SDQJ+ICDITrY/MtboUY25DDAWGBx4oKmsZld7DoIU4NGeDJfB8pb4kvdmQADN15H3KuPYOvOb9yC+TOI=
+	t=1732676282; cv=none; b=vCuNZuC2aS4W0qVXG5eyEHvw5mqOyAzokUFGFGdndoldxy8dn0zrVGYVGOqK6SXOuLeBZmy8bDbRNADQIsSDb8M6SmYJ/JZ/NAxGXNFICFJI3cfmzrIA8fGphgddhkZRJ/ebA2kbEqhV/hxXtmQh6ohj40YCkxXGeaa7ZC57XTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732676279; c=relaxed/simple;
-	bh=qleIIFAwfTwv5qoVB4dJO6WTQiIO1s+7ceRpumwVu1w=;
+	s=arc-20240116; t=1732676282; c=relaxed/simple;
+	bh=n3v2ZTKy4XayzWP8FCTYHWj0NyVizXv/4ojexhsmJFw=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=NcgolKAtZqHnbtyXgd4t4JOJ18CGBL9LNvg6c47AI3B8sf+BOomffXN2ru0Wg7irZPqFxqHwKvtJjXaKT2DSUw0hti94XerVq9OGsoTHAzh75LgZ7mvzF0Y/aWRJU57KVhggHprmqWD9A5XNtehb1Aw6VTMJeOPYOLjeNz8ppuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yuanchu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eNoog/aa; arc=none smtp.client-ip=209.85.216.74
+	 To:Cc:Content-Type; b=O8qhLjxDW1mhcMLq4iX1VJyb4lhXmoGQWo+MC68uOUZldm6oNvBC+lKg1ESCclQvNhtoZ8+cxOKkkppy9Xv2qLMl6rsz+lil8vN5Opw2aQUSuaEetGZ04vUmZABsdsnjbYWnoHb0gS2+8ws3T/tREtFYAbM3L1F1EemCTElGbAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yuanchu.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RElf2k7h; arc=none smtp.client-ip=209.85.160.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yuanchu.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2ee0c9962daso342529a91.2
-        for <cgroups@vger.kernel.org>; Tue, 26 Nov 2024 18:57:57 -0800 (PST)
+Received: by mail-oa1-f73.google.com with SMTP id 586e51a60fabf-29678d451b1so3433447fac.3
+        for <cgroups@vger.kernel.org>; Tue, 26 Nov 2024 18:57:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1732676276; x=1733281076; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1732676278; x=1733281078; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FdWbI+s0p0wBgh+VsWAydrlLqfgeB+x4CgOEMGbe8TM=;
-        b=eNoog/aaskHAOAAiARJN/HRdDhAXTPDkWMMUozqnIr/YU7DpKxtxWhZuLCTAizdzls
-         L0tsmd57aJFuCtPQmP/FXrzQYo+53C4NzGnb56eKVlNBsGvmgQOEjrXddbABNNrYBXXI
-         6DfVpMLXqAKXrFR+fHhP7hIaOovH8Fdxl6PsfWraMp5bXpQqyE/ZvhrCNaIXfrTMtTT+
-         pFzcSidV6cZ0sqwcMxSRbk2PF5EIrgalNVIqWQXcf0CLU/54wBYlLIpXVO7Hq+Jcjpks
-         +kt6VMXq0Nw01yar8eYkcl2gTi3jeY+WlOxBM4e5rZWT60qVUOiT987aDSF6/biDsgyO
-         Ui/Q==
+        bh=PZpBMHL8IdsZHMO87vdTflNT6N6icPZfEjrZz1n0oFE=;
+        b=RElf2k7hxC2lnn71XaZXdrFRxNlEO3cTvLQINs6bpLOLmMzYSMkopjpOmMPFIjFY3d
+         uHC/1EUEbCavJrX/h6mv/BrVxzNUjSOcWbLr5PPSgtAe0DQN9pHF0ZMeBPINB0kF+bfx
+         1+jK9flgY6W5UOzr/UpUkR+dDJIW/Z5pIQBPUd53eROs5RVLu4nRznVg+NIs4lOPf/Cf
+         UH2tb64f9J4QV6uL64fMeLA3qr9dGKEPdzwN4fhsbdMhuV2jxnIk38ImmA+k1G4xCtck
+         3QBkCK98BA1OYQNtwbpOVHF30BzJSLqhn0XZqfs4wkuOxZyMS/IhAWr5Vxy51mo7PGX0
+         LXBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732676276; x=1733281076;
+        d=1e100.net; s=20230601; t=1732676278; x=1733281078;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FdWbI+s0p0wBgh+VsWAydrlLqfgeB+x4CgOEMGbe8TM=;
-        b=GeTUMvq8o/cdabP4IDIlfsVqVKZEzh6UMm897WzbENQw1XBY6vVqMBNEgLdi4jD/tv
-         YwSCco3XvpOMqLEErmVGci8SL5izZUIR59RHHcBjdKPW7wWheSor5+zGNTduvn544Wyn
-         m2DcZVV52ecZvlTexQglRlryqOXecUZKOsATcGn6jZqin607aafZJvhW4ijeisxqUCrK
-         PereKlmb0j7D1oYsY7NMvGSBZMMpHhKoAAKJspgdSln26G70CoAWCCHJmEpsFTReEIAa
-         Jf7Kx9d1RckFsJ3M1RYSKeWntqZKeUgcxzITcM6eD7Xi4XAYvbdWFHItEL1XcdvBOZ1e
-         GS4A==
-X-Forwarded-Encrypted: i=1; AJvYcCXsae0W7HAsKextycJfGOkRyw8y31uqpB9DPVrLHTTJ4OtymoNE4hczV2dtQ4V0EnwkjHXt6KzA@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz6+uqUNT8Kt5joWtAYsNn+pAQyGBrk/2KSP/0gxCsw5l3Baszm
-	pMn40fpjn/9pSW8irpPeQNYawEgO/fiJ80fcKV386AX1Va6KdIDOkUgfd8XOqleQZHAKmQN0Kl+
-	cjqlxXw==
-X-Google-Smtp-Source: AGHT+IGwhfii5+MtQdbRihMKL41ITlobJS3ldyPZjP/ITZaiG2+mPbpCQb3KZbCSJSGpnWkssvQZr9R3iWRd
-X-Received: from pjbok13.prod.google.com ([2002:a17:90b:1d4d:b0:2da:ac73:93e5])
- (user=yuanchu job=prod-delivery.src-stubby-dispatcher) by 2002:a17:90b:1d10:b0:2ea:aa56:4b0
- with SMTP id 98e67ed59e1d1-2ee08e99941mr2057809a91.3.1732676276518; Tue, 26
- Nov 2024 18:57:56 -0800 (PST)
-Date: Tue, 26 Nov 2024 18:57:26 -0800
+        bh=PZpBMHL8IdsZHMO87vdTflNT6N6icPZfEjrZz1n0oFE=;
+        b=gYjtSVdPOobIFmdhHTl65nuqMsTVwOaj6jd6STvmGhe23EnCB8+BqmnzQAd8fGq4vF
+         yymf6Es0w7omCkHwMDeY3MxX5B7sKG50ztFt2oMSeULDO5ewTOl7Qm7lADoI5X6BqAdp
+         L4Uy14bM34a+EC7StvJW3Y011OVDOIVGqj3fjH/HLvo+1SJnKMvvHibL7UBjtLz4AmQ7
+         GwNu6tW7t4clTmf26QULcxo7K3ZuQQeb5vCMXwGgfq6zd1Sa9W80RbQn58qtU0jzgSPj
+         aQgN236QZ0Xk9eJYcEr1Zfse/PjzwaXqZL5xHqV+hBoaR97j16OVal45OGn+oZ2fBHfF
+         E7Qw==
+X-Forwarded-Encrypted: i=1; AJvYcCXWBJyuiQHZfH2urcIidpsUXCFypY9z2VwuWTY42+KpJMlcYQh7uxDbgz8+FIpzh7G1ApWQTHOG@vger.kernel.org
+X-Gm-Message-State: AOJu0YyaZttKGR8VXXWYn7ZOliTW1BkEHGtfE/WIWrQEjfub94rY3mEE
+	Rcno6H+rgrQ1gnIbOmTWdeo4Hz1ltgO+LbhbHRoNV8KP3TBP3E7KmDXFVCeHLwqt/Iu7dfGpndw
+	mR+ck8w==
+X-Google-Smtp-Source: AGHT+IFKHf2rAZNzRLIYi5pyoUxBdmbZ99C2meBLNg4KMzGEhTQ6C34gvUg4FAtRwQPJnnGabMdsTk0k6Rq/
+X-Received: from oabuz16.prod.google.com ([2002:a05:6870:af90:b0:295:ebc2:deb2])
+ (user=yuanchu job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6870:5d8f:b0:297:270c:575
+ with SMTP id 586e51a60fabf-29dc40097dbmr1170968fac.16.1732676278453; Tue, 26
+ Nov 2024 18:57:58 -0800 (PST)
+Date: Tue, 26 Nov 2024 18:57:27 -0800
 In-Reply-To: <20241127025728.3689245-1-yuanchu@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -74,9 +74,8 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20241127025728.3689245-1-yuanchu@google.com>
 X-Mailer: git-send-email 2.47.0.338.g60cca15819-goog
-Message-ID: <20241127025728.3689245-8-yuanchu@google.com>
-Subject: [PATCH v4 7/9] Docs/admin-guide/mm/workingset_report: document sysfs
- and memcg interfaces
+Message-ID: <20241127025728.3689245-9-yuanchu@google.com>
+Subject: [PATCH v4 8/9] Docs/admin-guide/cgroup-v2: document workingset reporting
 From: Yuanchu Xie <yuanchu@google.com>
 To: Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@redhat.com>, 
 	"Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>, Khalid Aziz <khalid.aziz@oracle.com>, 
@@ -99,137 +98,60 @@ Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
 Content-Type: text/plain; charset="UTF-8"
 
 Add workingset reporting documentation for better discoverability of
-its sysfs and memcg interfaces. Also document the required kernel
-config to enable workingset reporting.
+its memcg interfaces. Point the memcg documentation to
+Documentation/admin-guide/mm/workingset_report.rst for more details.
 
 Signed-off-by: Yuanchu Xie <yuanchu@google.com>
 ---
- Documentation/admin-guide/mm/index.rst        |   1 +
- .../admin-guide/mm/workingset_report.rst      | 105 ++++++++++++++++++
- 2 files changed, 106 insertions(+)
- create mode 100644 Documentation/admin-guide/mm/workingset_report.rst
+ Documentation/admin-guide/cgroup-v2.rst | 35 +++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-diff --git a/Documentation/admin-guide/mm/index.rst b/Documentation/admin-guide/mm/index.rst
-index 8b35795b664b..61a2a347fc91 100644
---- a/Documentation/admin-guide/mm/index.rst
-+++ b/Documentation/admin-guide/mm/index.rst
-@@ -41,4 +41,5 @@ the Linux memory management.
-    swap_numa
-    transhuge
-    userfaultfd
-+   workingset_report
-    zswap
-diff --git a/Documentation/admin-guide/mm/workingset_report.rst b/Documentation/admin-guide/mm/workingset_report.rst
-new file mode 100644
-index 000000000000..0969513705c4
---- /dev/null
-+++ b/Documentation/admin-guide/mm/workingset_report.rst
-@@ -0,0 +1,105 @@
-+.. SPDX-License-Identifier: GPL-2.0
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 2cb58daf3089..67a183f08245 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1784,6 +1784,41 @@ The following nested keys are defined.
+ 	Shows pressure stall information for memory. See
+ 	:ref:`Documentation/accounting/psi.rst <psi>` for details.
+ 
++  memory.workingset.page_age
++	A read-only histogram which exists on non-root cgroups.
 +
-+=================
-+Workingset Report
-+=================
-+Workingset report provides a view of memory coldness in user-defined
-+time intervals, e.g. X bytes are Y milliseconds cold. It breaks down
-+the user pages in the system per-NUMA node, per-memcg, for both
-+anonymous and file pages into histograms that look like:
-+::
++	This breaks down the cgroup's memory footprint into different
++	types of memory and groups them per-node into user-defined coldness
++	bins.
 +
-+    1000 anon=137368 file=24530
-+    20000 anon=34342 file=0
-+    30000 anon=353232 file=333608
-+    40000 anon=407198 file=206052
-+    9223372036854775807 anon=4925624 file=892892
++	The output format of memory.workingset.page_age is::
 +
-+The workingset reports can be used to drive proactive reclaim, by
-+identifying the number of cold bytes in a memcg, then writing to
-+``memory.reclaim``.
++	  N0
++	  <interval 0 of node 0> type=<type bytes in interval 0 of node 0>
++	  <interval 1 of node 0> type=<type bytes in interval 1 of node 0>
++	  ...
++	  18446744073709551615 type=<the rest of type bytes of node 0>
 +
-+Quick start
-+===========
-+Build the kernel with the following configurations. The report relies
-+on Multi-gen LRU for page coldness.
++	The type of memory can be anon, file, or new types added later.
++	Don't rely on the types remaining fixed.  See
++	:ref:`Documentation/admin-guide/mm/workingset_report.rst <workingset_report>`
++	for details.
 +
-+* ``CONFIG_LRU_GEN=y``
-+* ``CONFIG_LRU_GEN_ENABLED=y``
-+* ``CONFIG_WORKINGSET_REPORT=y``
++  memory.workingset.refresh_interval
++	A read-write nested-keyed file which exists on non-root cgroups.
 +
-+Optionally, the aging kernel daemon can be enabled with the following
-+configuration.
-+* ``CONFIG_WORKINGSET_REPORT_AGING=y``
++	Setting it to a non-zero value for any node enables working set
++	reporting for that node.  The default is 0 for each node.   See
++	:ref:`Documentation/admin-guide/mm/workingset_report.rst <workingset_report>`
++	for details.
 +
-+Sysfs interfaces
-+================
-+``/sys/devices/system/node/nodeX/workingset_report/page_age`` provides
-+a per-node page age histogram, showing an aggregate of the node's lruvecs.
-+Reading this file causes a hierarchical aging of all lruvecs, scanning
-+pages and creates a new Multi-gen LRU generation in each lruvec.
-+For example:
-+::
++  memory.workingset.report_threshold
++	A read-write nested-keyed file which exists on non-root cgroups.
 +
-+    1000 anon=0 file=0
-+    2000 anon=0 file=0
-+    100000 anon=5533696 file=5566464
-+    18446744073709551615 anon=0 file=0
-+
-+``/sys/devices/system/node/nodeX/workingset_report/page_age_intervals``
-+is a comma-separated list of time in milliseconds that configures what
-+the page age histogram uses for aggregation. For the above histogram,
-+the intervals are::
-+
-+    1000,2000,100000
-+
-+``/sys/devices/system/node/nodeX/workingset_report/refresh_interval``
-+defines the amount of time the report is valid for in milliseconds.
-+When a report is still valid, reading the ``page_age`` file shows
-+the existing valid report, instead of generating a new one.
-+
-+``/sys/devices/system/node/nodeX/workingset_report/report_threshold``
-+specifies how often the userspace agent can be notified for node
-+memory pressure, in milliseconds. When a node reaches its low
-+watermarks and wakes up kswapd, programs waiting on ``page_age`` are
-+woken up so they can read the histogram and make policy decisions.
-+
-+Memcg interface
-+===============
-+While ``page_age_interval`` is defined per-node in sysfs, ``page_age``,
-+``refresh_interval`` and ``report_threshold`` are available per-memcg.
-+
-+``/sys/fs/cgroup/.../memory.workingset.page_age``
-+The memcg equivalent of the sysfs workingset page age histogram
-+breaks down the workingset of this memcg and its children into
-+page age intervals. Each node is prefixed with a node header and
-+a newline. Non-proactive direct reclaim on this memcg can also
-+wake up userspace agents that are waiting on this file.
-+E.g.
-+::
-+
-+    N0
-+    1000 anon=0 file=0
-+    2000 anon=0 file=0
-+    3000 anon=0 file=0
-+    4000 anon=0 file=0
-+    5000 anon=0 file=0
-+    18446744073709551615 anon=0 file=0
-+
-+``/sys/fs/cgroup/.../memory.workingset.refresh_interval``
-+The memcg equivalent of the sysfs refresh interval. A per-node
-+number of how much time a page age histogram is valid for, in
-+milliseconds.
-+E.g.
-+::
-+
-+    echo N0=2000 > memory.workingset.refresh_interval
-+
-+``/sys/fs/cgroup/.../memory.workingset.report_threshold``
-+The memcg equivalent of the sysfs report threshold. A per-node
-+number of how often userspace agent waiting on the page age
-+histogram can be woken up, in milliseconds.
-+E.g.
-+::
-+
-+    echo N0=1000 > memory.workingset.report_threshold
++	The amount of milliseconds to wait before reporting the working
++	set again.  The default is 0 for each node.  See
++	:ref:`Documentation/admin-guide/mm/workingset_report.rst <workingset_report>`
++	for details.
+ 
+ Usage Guidelines
+ ~~~~~~~~~~~~~~~~
 -- 
 2.47.0.338.g60cca15819-goog
 
