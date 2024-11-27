@@ -1,173 +1,120 @@
-Return-Path: <cgroups+bounces-5700-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5701-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97D0B9DADFA
-	for <lists+cgroups@lfdr.de>; Wed, 27 Nov 2024 20:40:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EAF959DAE53
+	for <lists+cgroups@lfdr.de>; Wed, 27 Nov 2024 21:10:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F75E1645C8
-	for <lists+cgroups@lfdr.de>; Wed, 27 Nov 2024 19:40:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C241165DEB
+	for <lists+cgroups@lfdr.de>; Wed, 27 Nov 2024 20:10:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3781F201279;
-	Wed, 27 Nov 2024 19:40:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CF6620127F;
+	Wed, 27 Nov 2024 20:10:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y4OdQFkp"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="l2YGRm9g"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D32A8201029;
-	Wed, 27 Nov 2024 19:40:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E3314A604
+	for <cgroups@vger.kernel.org>; Wed, 27 Nov 2024 20:10:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732736443; cv=none; b=Y+W1I2jSqCURNE2RhdUXC2MFb3Dm+dhjHv77mPeBz6DEV705br8qL2SV1+Tvqz8nQz6smi+Ec3tQaUT9qqiyIpxEy9y8/lnMmuBj0oPXeIuHuZYwPtNPnI4dplyR2tfzidfw34+uVBrU+n3HkPp65QyEmmtF5nsGpFDKc+Ub0MU=
+	t=1732738222; cv=none; b=dzi0oNHc60eBx8XajdlrRkm9msc6IViI6ouA60q+yacZH51fD+CBUddNOkzuOYuMJx3tLwqp21BHRX2mwxOlorMUZvv840IoMLqTMjo4EEI9b2ym61O3FOQcIWcG/pN4SwpICWnG0kmunLfPg8y5Hc3omr3Kp0muzylKfxClJp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732736443; c=relaxed/simple;
-	bh=FNpsPBymSvEX1rHGNSh2J+QjHOLtO8xKZwskRMfxD8A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ml0rorp8PFSyXPj5pByRryRAlUke8xraZGozdhQs9tRMG1ITDaOCb3i2B8OTPYPiSnMqhPxxMrUzIhgiK8tH1/vMj1QvcGdhFqbkc6FAYxBF+RcbGwZXiJsKIKZZJLQPxSVRuAiE3yAohUeietKviaq4Czyi45idcQeegAUrPVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y4OdQFkp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EF0AC4CECC;
-	Wed, 27 Nov 2024 19:40:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732736441;
-	bh=FNpsPBymSvEX1rHGNSh2J+QjHOLtO8xKZwskRMfxD8A=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Y4OdQFkp2nt/VvgqWAzMb+U036mIXv7j2LJHKF/dpUn954h4y4SzH9pfQm5Llm4xC
-	 Xn3EHI2RFYk+gF5oK9ediPguZG96lc468mGXVKDVabS6zPzl3wbCS/MnXPq9wNWUoD
-	 88QCHf1aG6/UUPTBoYdYVcG4036FWpAv+gaqp53RLXgsDDy3Z7Nu4AVunbRKleiL8c
-	 4+D8sjtuIsIxt+phU4/VoCafcBznr1o2zDnmKGhv34cusEtthtKdEUJGBXWRWILSOo
-	 OA57OHPSkfugMlhiW2Ny9LvwIpITFIFKLXiw77pynSGgenHRCGTb3GbcimZ9kP5jMT
-	 7BPLErjejFueQ==
-From: SeongJae Park <sj@kernel.org>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: SeongJae Park <sj@kernel.org>,
-	Yuanchu Xie <yuanchu@google.com>,
-	David Hildenbrand <david@redhat.com>,
-	"Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-	Khalid Aziz <khalid.aziz@oracle.com>,
-	Henry Huang <henry.hj@antgroup.com>,
-	Yu Zhao <yuzhao@google.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Gregory Price <gregory.price@memverge.com>,
-	Huang Ying <ying.huang@intel.com>,
-	Lance Yang <ioworker0@gmail.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	Tejun Heo <tj@kernel.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Mike Rapoport <rppt@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Daniel Watson <ozzloy@each.do>,
-	cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	damon@lists.linux.dev
-Subject: Re: [PATCH v4 0/9] mm: workingset reporting
-Date: Wed, 27 Nov 2024 11:40:38 -0800
-Message-Id: <20241127194038.84382-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20241127072604.GA2501036@cmpxchg.org>
-References: 
+	s=arc-20240116; t=1732738222; c=relaxed/simple;
+	bh=hUBcNXvuvLbYXhYdraBI3VWzdlKOrSFOIJZwTLRZEZw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Nd1d4qlxb600IFANnSviNfX9o+WJWjKHXpxYJQN13qm7yMejICM9db2n8zJHnHsYp5PcNV2TbRakyE8WISLV0Nk7YWyHXh4NrE/kQNs1S5VJN3KLksm5Tu1IQrInkfFYEHMdHre7ThK4bVUTkWa4vQm0gk8JoiyqVi8qv2vkaEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=l2YGRm9g; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-434a9f9a225so4335e9.1
+        for <cgroups@vger.kernel.org>; Wed, 27 Nov 2024 12:10:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1732738219; x=1733343019; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hUBcNXvuvLbYXhYdraBI3VWzdlKOrSFOIJZwTLRZEZw=;
+        b=l2YGRm9gPz0ZsEhi8TnCA9kznf2WGM+FRitcXjQA40wZNRpg1+GHIc7J+bJq0UmgW+
+         +997SmxG7Ei1vpqfjjvPPN4bDgi/ARVac/AeyZmG9Y+jTv8Na+EcXUMK53rjXqJVIDuz
+         /81AHUDLGMxxftFghEmcELMiyM/XkJDuRVV4/Qrb3wlR7mYqOeLAA98y3BfkHO5dT7TG
+         ufPRfEi/V+NX/GAxTnNOW2XFSSqpDlqVgLZqSepsz1jPqD6CLr3LDwGNIwlhwrl+tMiR
+         qTQI/ffoUpOKYI1Yl3RJYcJj2lHBibtQ8hgaIMEVkJxGrpbgTZdQ+aIkWkgaB4hLPcmS
+         F+LQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732738219; x=1733343019;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hUBcNXvuvLbYXhYdraBI3VWzdlKOrSFOIJZwTLRZEZw=;
+        b=utlIZhXD/wwmtJ0AoehCgRKSWGOYQyWStB5PH7oebn6Gp4xki4beqyFrI1lrq1k8Ky
+         E/bwERZ+d9UNVmfv7hVEoRYVNifb2sEFK5wus0amydHJP34pLa4KUnJ9UIHwljjiZ41Z
+         1wckJ7wg2EZuxlDW0xdf7WPD+FpV0vL5xGcEpHwitkRd3iW8sJoJidor4BtuRQ/by9P0
+         /4EWL30HaPJpwW+6+5XX835y7cFN8JIcliXbSshtbHQP9af5eCbBV9ugW8JwcWyMMZv6
+         XFakS9xtSsyRZs1GzIyLqb+rK5RZ/NwvShdhi4qwlZYVJ/ZWpaDyoeoDyz93MyggyG3e
+         imag==
+X-Forwarded-Encrypted: i=1; AJvYcCWu+cpQryaN7hTzZw9oX89HEq+eQr61LUQ4SjIK/Eo/JQyNwQ1TRMi/oGPPzQXSIyp6PPZ1viN+@vger.kernel.org
+X-Gm-Message-State: AOJu0YxEAvYgdXRwuQ1Mkgeu8nKg1KcXqWt63bIwyQDx6THx0eBk+UKR
+	i54jIvgFuzPSaNePxfBrGV5lQBX4HC1WEyqGaqgYGHogZUgPDcF8mXtxpzF43XfVDSFZEKFvlOC
+	skOZhboOQKp0I1qBVASbR0680r7nV+iSw+YK0
+X-Gm-Gg: ASbGncuv2D3tfmIobbZH9WykcdNXUjqfjHzhO4dhBIbtohH8uzvmBmC34Zu7zCku5hw
+	DN1R6AVsMIIqMaZ6cmz2vJZ7ocZjrNlz+JYf+m1ibR6/SWDvBT3rW40NP9bg=
+X-Google-Smtp-Source: AGHT+IG+kehlB4s0M5dWyJKGLHeYyY36EY44ty+lp0Mvoe5e9HkKe9gEegCulaT0+L4A1Oxd2n33hHXL6WkpLXJ43p4=
+X-Received: by 2002:a05:600c:3b28:b0:42b:8ff7:bee2 with SMTP id
+ 5b1f17b1804b1-434b066ec64mr85985e9.5.1732738218634; Wed, 27 Nov 2024 12:10:18
+ -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20241125171617.113892-1-shakeel.butt@linux.dev> <Z0Yhivws5XSeme68@google.com>
+In-Reply-To: <Z0Yhivws5XSeme68@google.com>
+From: Axel Rasmussen <axelrasmussen@google.com>
+Date: Wed, 27 Nov 2024 12:09:42 -0800
+Message-ID: <CAJHvVcg_mHiGvMpaM5XX8F7cvsxxGc9oOdCsy4zjMJAd9kX8-A@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: mmap_lock: optimize mmap_lock tracepoints
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Muchun Song <muchun.song@linux.dev>, Vlastimil Babka <vbabka@suse.cz>, 
+	Steven Rostedt <rostedt@goodmis.org>, Suren Baghdasaryan <surenb@google.com>, 
+	Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-+ damon@lists.linux.dev
+No objections. :)
 
-I haven't thoroughly read any version of this patch series due to my laziness,
-sorry.  So I may saying something completely wrong.  My apology in advance, and
-please correct me in the case.
-
-> On Tue, Nov 26, 2024 at 06:57:19PM -0800, Yuanchu Xie wrote:
-> > This patch series provides workingset reporting of user pages in
-> > lruvecs, of which coldness can be tracked by accessed bits and fd
-> > references.
-
-DAMON provides data access patterns of user pages.  It is not exactly named as
-workingset but a superset of the information.  Users can therefore get the
-workingset from DAMON-provided raw data.  So I feel I have to ask if DAMON can
-be used for, or help at achieving the purpose of this patch series.
-
-Depending on the detailed definition of workingset, of course, the workingset
-we can get from DAMON might not be technically same to what this patch series
-aim to provide, and the difference could be somewhat that makes DAMON unable to
-be used or help here.  But I cannot know if this is the case with only this
-cover letter.
-
-> > However, the concept of workingset applies generically to
-> > all types of memory, which could be kernel slab caches, discardable
-> > userspace caches (databases), or CXL.mem. Therefore, data sources might
-> > come from slab shrinkers, device drivers, or the userspace.
-> > Another interesting idea might be hugepage workingset, so that we can
-> > measure the proportion of hugepages backing cold memory. However, with
-> > architectures like arm, there may be too many hugepage sizes leading to
-> > a combinatorial explosion when exporting stats to the userspace.
-> > Nonetheless, the kernel should provide a set of workingset interfaces
-> > that is generic enough to accommodate the various use cases, and extensible
-> > to potential future use cases.
-
-This again sounds similar to what DAMON aims to provide, to me.  DAMON is
-designed to be easy to extend for vairous use cases and internal mechanisms.
-Specifically, it separates access check mechanisms and core logic into
-different layers, and provides an interface to use for implementing extending
-DAMON with new mechanisms.  DAMON's two access check mechanisms for virtual
-address spaces and the physical address space are made using the interface,
-indeed.  Also there were RFC patch series extending DAMON for NUMA-specific and
-write-only access monitoring using NUMA hinting fault and soft-dirty PTEs as
-the internal mechanisms.
-
-My humble understanding of the major difference between DAMON and workingset
-reporting is the internal mechanism.  Workingset reporting uses MGLRU as the
-access check mechanism, while current access check mechanisms for DAMON are
-using page table accessed bits checking as the major mechanism.  I think DAMON
-can be extended to use MGLRU as its another internal access check mechanism,
-but I understand that there could be many things that I overseeing.
-
-Yuanchu, I think it would help me and other reviewers better understand this
-patch series if you could share that.  And I will also be more than happy to
-help you and others better understanding what DAMON can do or not with the
-discussion.
-
-> 
-> Doesn't DAMON already provide this information?
-> 
-> CCing SJ.
-
-Thank you for adding me, Johannes :)
-
-[...]
-> It does provide more detailed insight into userspace memory behavior,
-> which could be helpful when trying to make sense of applications that
-> sit on a rich layer of libraries and complicated runtimes. But here a
-> comparison to DAMON would be helpful.
-
-100% agree.
+Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
 
 
-Thanks,
-SJ
-
-[...]
+On Tue, Nov 26, 2024 at 11:29=E2=80=AFAM Roman Gushchin
+<roman.gushchin@linux.dev> wrote:
+>
+> On Mon, Nov 25, 2024 at 09:16:17AM -0800, Shakeel Butt wrote:
+> > We are starting to deploy mmap_lock tracepoint monitoring across our
+> > fleet and the early results showed that these tracepoints are consuming
+> > significant amount of CPUs in kernfs_path_from_node when enabled.
+> >
+> > It seems like the kernel is trying to resolve the cgroup path in the
+> > fast path of the locking code path when the tracepoints are enabled. In
+> > addition for some application their metrics are regressing when
+> > monitoring is enabled.
+> >
+> > The cgroup path resolution can be slow and should not be done in the
+> > fast path. Most userspace tools, like bpftrace, provides functionality
+> > to get the cgroup path from cgroup id, so let's just trace the cgroup
+> > id and the users can use better tools to get the path in the slow path.
+> >
+> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+>
+> Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+>
+> Thanks!
 
