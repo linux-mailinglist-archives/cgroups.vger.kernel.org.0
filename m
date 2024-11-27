@@ -1,120 +1,111 @@
-Return-Path: <cgroups+bounces-5701-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5702-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAF959DAE53
-	for <lists+cgroups@lfdr.de>; Wed, 27 Nov 2024 21:10:26 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E8A09DAEBE
+	for <lists+cgroups@lfdr.de>; Wed, 27 Nov 2024 22:05:14 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C241165DEB
-	for <lists+cgroups@lfdr.de>; Wed, 27 Nov 2024 20:10:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C00EBB215E0
+	for <lists+cgroups@lfdr.de>; Wed, 27 Nov 2024 21:05:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CF6620127F;
-	Wed, 27 Nov 2024 20:10:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF44E202F6E;
+	Wed, 27 Nov 2024 21:05:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="l2YGRm9g"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="POdWqnXe"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E3314A604
-	for <cgroups@vger.kernel.org>; Wed, 27 Nov 2024 20:10:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB73114AD29
+	for <cgroups@vger.kernel.org>; Wed, 27 Nov 2024 21:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732738222; cv=none; b=dzi0oNHc60eBx8XajdlrRkm9msc6IViI6ouA60q+yacZH51fD+CBUddNOkzuOYuMJx3tLwqp21BHRX2mwxOlorMUZvv840IoMLqTMjo4EEI9b2ym61O3FOQcIWcG/pN4SwpICWnG0kmunLfPg8y5Hc3omr3Kp0muzylKfxClJp0=
+	t=1732741506; cv=none; b=PcWETU4y37ykrz3l9vfpdtMT+Oo2pP/kk5vicMkMVjGgTqXvsfUj1wp6gFJ4AywzfCj5vJ5tVNqy+sDjjfnk+bjxZTAGowO1Dh0M1Us4pVWhocCJUAZGvG/LWt64Dwbv5Tiy++Dc8ot1o3O0uvXHJA7BbO79tof/dmkQ7WCvvyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732738222; c=relaxed/simple;
-	bh=hUBcNXvuvLbYXhYdraBI3VWzdlKOrSFOIJZwTLRZEZw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Nd1d4qlxb600IFANnSviNfX9o+WJWjKHXpxYJQN13qm7yMejICM9db2n8zJHnHsYp5PcNV2TbRakyE8WISLV0Nk7YWyHXh4NrE/kQNs1S5VJN3KLksm5Tu1IQrInkfFYEHMdHre7ThK4bVUTkWa4vQm0gk8JoiyqVi8qv2vkaEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=l2YGRm9g; arc=none smtp.client-ip=209.85.128.54
+	s=arc-20240116; t=1732741506; c=relaxed/simple;
+	bh=6biYp+6ZfGUjL/SgAvSogDVcmG5MlG7Zq/OJYvvtXBw=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=I2z6nFwHdaKa18WstyBdnwCK2lQK7DVZRN7oPcX5LmJK+1SP7FdkTkBAE1k+KkUn6ozqAC0cmU984i6T2U0ItHGTTsliIleGo3mhpoBg1UY8E1eTgc9KnKgNH2BgZodzCr3HypO/i9uL8i0s56ssye7aBh7nEjUZt6EEocNqplM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=POdWqnXe; arc=none smtp.client-ip=209.85.221.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-434a9f9a225so4335e9.1
-        for <cgroups@vger.kernel.org>; Wed, 27 Nov 2024 12:10:20 -0800 (PST)
+Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-382378f359dso125076f8f.1
+        for <cgroups@vger.kernel.org>; Wed, 27 Nov 2024 13:05:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1732738219; x=1733343019; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hUBcNXvuvLbYXhYdraBI3VWzdlKOrSFOIJZwTLRZEZw=;
-        b=l2YGRm9gPz0ZsEhi8TnCA9kznf2WGM+FRitcXjQA40wZNRpg1+GHIc7J+bJq0UmgW+
-         +997SmxG7Ei1vpqfjjvPPN4bDgi/ARVac/AeyZmG9Y+jTv8Na+EcXUMK53rjXqJVIDuz
-         /81AHUDLGMxxftFghEmcELMiyM/XkJDuRVV4/Qrb3wlR7mYqOeLAA98y3BfkHO5dT7TG
-         ufPRfEi/V+NX/GAxTnNOW2XFSSqpDlqVgLZqSepsz1jPqD6CLr3LDwGNIwlhwrl+tMiR
-         qTQI/ffoUpOKYI1Yl3RJYcJj2lHBibtQ8hgaIMEVkJxGrpbgTZdQ+aIkWkgaB4hLPcmS
-         F+LQ==
+        d=google.com; s=20230601; t=1732741503; x=1733346303; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6biYp+6ZfGUjL/SgAvSogDVcmG5MlG7Zq/OJYvvtXBw=;
+        b=POdWqnXeKGMNU4VUevAKmKUJEXYyfv7sqNVyGKgLJw7TPjfcTZSULBQ7zI5cxjslbK
+         +ogbHh69w09Yc0tKzCw4hhg6KCPLVmokbVvVKFfQTy9LKSU8XBSHbZIFB/i9DkvLvYh6
+         XyM6QbusuSVUrzRjlxRjJm4AyGQogjLqGIDqPlh4bPi+QDn3neGzV4de9suFr/SL3t1r
+         gPX8ADI3VznXsg+IXdSZ1PDEQFjNZMZLOE3LskM+Lu2YehD8YcnQ5r1laVXlwPtne3pG
+         JujDq/iie3FLtUxuLSyEY8LOWxDNyeIXyvJf3La+WvukyjXS+sD2NT6IfZwAEVwD0gao
+         Xahw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732738219; x=1733343019;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hUBcNXvuvLbYXhYdraBI3VWzdlKOrSFOIJZwTLRZEZw=;
-        b=utlIZhXD/wwmtJ0AoehCgRKSWGOYQyWStB5PH7oebn6Gp4xki4beqyFrI1lrq1k8Ky
-         E/bwERZ+d9UNVmfv7hVEoRYVNifb2sEFK5wus0amydHJP34pLa4KUnJ9UIHwljjiZ41Z
-         1wckJ7wg2EZuxlDW0xdf7WPD+FpV0vL5xGcEpHwitkRd3iW8sJoJidor4BtuRQ/by9P0
-         /4EWL30HaPJpwW+6+5XX835y7cFN8JIcliXbSshtbHQP9af5eCbBV9ugW8JwcWyMMZv6
-         XFakS9xtSsyRZs1GzIyLqb+rK5RZ/NwvShdhi4qwlZYVJ/ZWpaDyoeoDyz93MyggyG3e
-         imag==
-X-Forwarded-Encrypted: i=1; AJvYcCWu+cpQryaN7hTzZw9oX89HEq+eQr61LUQ4SjIK/Eo/JQyNwQ1TRMi/oGPPzQXSIyp6PPZ1viN+@vger.kernel.org
-X-Gm-Message-State: AOJu0YxEAvYgdXRwuQ1Mkgeu8nKg1KcXqWt63bIwyQDx6THx0eBk+UKR
-	i54jIvgFuzPSaNePxfBrGV5lQBX4HC1WEyqGaqgYGHogZUgPDcF8mXtxpzF43XfVDSFZEKFvlOC
-	skOZhboOQKp0I1qBVASbR0680r7nV+iSw+YK0
-X-Gm-Gg: ASbGncuv2D3tfmIobbZH9WykcdNXUjqfjHzhO4dhBIbtohH8uzvmBmC34Zu7zCku5hw
-	DN1R6AVsMIIqMaZ6cmz2vJZ7ocZjrNlz+JYf+m1ibR6/SWDvBT3rW40NP9bg=
-X-Google-Smtp-Source: AGHT+IG+kehlB4s0M5dWyJKGLHeYyY36EY44ty+lp0Mvoe5e9HkKe9gEegCulaT0+L4A1Oxd2n33hHXL6WkpLXJ43p4=
-X-Received: by 2002:a05:600c:3b28:b0:42b:8ff7:bee2 with SMTP id
- 5b1f17b1804b1-434b066ec64mr85985e9.5.1732738218634; Wed, 27 Nov 2024 12:10:18
- -0800 (PST)
+        d=1e100.net; s=20230601; t=1732741503; x=1733346303;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6biYp+6ZfGUjL/SgAvSogDVcmG5MlG7Zq/OJYvvtXBw=;
+        b=jxA1ccTKLnXsmQmUqa29OUBq03Nk2007O5QtVsscQ7RBKMcp2+YKSSllJmgF8+ziFB
+         9SP6ZsKdwobXSZmYqzBjk43VMm3Uggcna8w3MjWXc7rHFWX9X0n6WeM/FtjDr3WPSUrm
+         rJ2sLH1whSbz6ikWkzqJvoO2yJx4agNn1k/28lkLDrEyjQ24TffbfAuzQ3pPOTELIht1
+         4YFVtd5tv0V27tygFYYwqsq7BuvjAuiID5L1chdz+Q3n5L5whYgnHnmNxpqAWwUNgRky
+         GUjIES7m9OdRf0MBSpZIbcXI18PvJntEAr5Tv3D0vOTSSguTDF6OOqldc3pIWB0tgrkg
+         ZFLA==
+X-Forwarded-Encrypted: i=1; AJvYcCWyghLMrFMh1dnGDPtrIGBo84njXoCO+eb1DSEIC8FM1AIPAVEKXpdejoeGeCiwHcn3FRkESmZE@vger.kernel.org
+X-Gm-Message-State: AOJu0YyElpfQNIBe+ca59h/WcA4xODIMwN0jHMh+0idfFwYneUYo7zYO
+	dQfvjTKl07zh5WAijO1stVPX9IAovBuBxmhnokKRgbdudxBc+CBcra88Pps6Wr4tV+3y7avlwq3
+	G4Cc+LbpT4Tw+yICYmSck6pjGYYaV8+K/zEfH
+X-Gm-Gg: ASbGncsV621cE0FJHyQBsi0vLV7YhDuQWqXxEuhbP2o3N9WFUaWdY3yTwPvUjQU61CY
+	pqDV3BdYaNS+1SS4yhHFrjcG2+e0kFY+G
+X-Google-Smtp-Source: AGHT+IGdFse4RAD6QkqDKI9fg4urdam3vMe+wtZk8AzXAJMsg+euTEP9GHYvdmww+9BiM+6zarTRyeFOqpLdC56Zyyk=
+X-Received: by 2002:a5d:6481:0:b0:382:415e:a139 with SMTP id
+ ffacd0b85a97d-385c6cca2a1mr2970566f8f.7.1732741503292; Wed, 27 Nov 2024
+ 13:05:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241125171617.113892-1-shakeel.butt@linux.dev> <Z0Yhivws5XSeme68@google.com>
-In-Reply-To: <Z0Yhivws5XSeme68@google.com>
-From: Axel Rasmussen <axelrasmussen@google.com>
-Date: Wed, 27 Nov 2024 12:09:42 -0800
-Message-ID: <CAJHvVcg_mHiGvMpaM5XX8F7cvsxxGc9oOdCsy4zjMJAd9kX8-A@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: mmap_lock: optimize mmap_lock tracepoints
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Muchun Song <muchun.song@linux.dev>, Vlastimil Babka <vbabka@suse.cz>, 
-	Steven Rostedt <rostedt@goodmis.org>, Suren Baghdasaryan <surenb@google.com>, 
-	Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Wed, 27 Nov 2024 22:04:51 +0100
+Message-ID: <CAH5fLghFWi=xbTgaG7oFNJo_7B7zoMRLCzeJLXd_U5ODVGaAUA@mail.gmail.com>
+Subject: [QUESTION] What memcg lifetime is required by list_lru_add?
+To: Dave Chinner <david@fromorbit.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>
+Cc: Qi Zheng <zhengqi.arch@bytedance.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Linux Memory Management List <linux-mm@kvack.org>, 
+	Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>, cgroups@vger.kernel.org, 
+	open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-No objections. :)
+Dear SHRINKER and MEMCG experts,
 
-Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
+When using list_lru_add() and list_lru_del(), it seems to be required
+that you pass the same value of nid and memcg to both calls, since
+list_lru_del() might otherwise try to delete it from the wrong list /
+delete it while holding the wrong spinlock. I'm trying to understand
+the implications of this requirement on the lifetime of the memcg.
 
+Now, looking at list_lru_add_obj() I noticed that it uses rcu locking
+to keep the memcg object alive for the duration of list_lru_add().
+That rcu locking is used here seems to imply that without it, the
+memcg could be deallocated during the list_lru_add() call, which is of
+course bad. But rcu is not enough on its own to keep the memcg alive
+all the way until the list_lru_del_obj() call, so how does it ensure
+that the memcg stays valid for that long? And if there is a mechanism
+to keep the memcg alive for the entire duration between add and del,
+why is rcu locking needed? I don't see any refcounts being taken on
+the memcg.
 
-On Tue, Nov 26, 2024 at 11:29=E2=80=AFAM Roman Gushchin
-<roman.gushchin@linux.dev> wrote:
->
-> On Mon, Nov 25, 2024 at 09:16:17AM -0800, Shakeel Butt wrote:
-> > We are starting to deploy mmap_lock tracepoint monitoring across our
-> > fleet and the early results showed that these tracepoints are consuming
-> > significant amount of CPUs in kernfs_path_from_node when enabled.
-> >
-> > It seems like the kernel is trying to resolve the cgroup path in the
-> > fast path of the locking code path when the tracepoints are enabled. In
-> > addition for some application their metrics are regressing when
-> > monitoring is enabled.
-> >
-> > The cgroup path resolution can be slow and should not be done in the
-> > fast path. Most userspace tools, like bpftrace, provides functionality
-> > to get the cgroup path from cgroup id, so let's just trace the cgroup
-> > id and the users can use better tools to get the path in the slow path.
-> >
-> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
->
-> Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
->
-> Thanks!
+Is it because the memcg could be replaced by another memcg that has
+the same value of memcg_kmem_id(memcg)?
+
+tl;dr: what does list_lru_add actually require from the memcg
+pointer's lifetime?
+
+Alice
 
