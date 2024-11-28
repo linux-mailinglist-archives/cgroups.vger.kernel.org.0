@@ -1,209 +1,207 @@
-Return-Path: <cgroups+bounces-5708-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5709-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F6749DB73A
-	for <lists+cgroups@lfdr.de>; Thu, 28 Nov 2024 13:12:39 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92E409DB787
+	for <lists+cgroups@lfdr.de>; Thu, 28 Nov 2024 13:27:23 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61805B21375
-	for <lists+cgroups@lfdr.de>; Thu, 28 Nov 2024 12:12:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B709163310
+	for <lists+cgroups@lfdr.de>; Thu, 28 Nov 2024 12:27:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A255619AD86;
-	Thu, 28 Nov 2024 12:12:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DFC119CC11;
+	Thu, 28 Nov 2024 12:27:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ev7phKaB"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3yHmpf2z"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C5519AD87
-	for <cgroups@vger.kernel.org>; Thu, 28 Nov 2024 12:12:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 566A04F20C
+	for <cgroups@vger.kernel.org>; Thu, 28 Nov 2024 12:27:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732795951; cv=none; b=KOQaJkDsoIidHQc++2/whGoFe17h5jRMOCVpai54JUjzgSq8Py4KctWOQYqxb7O92hHJ8ySHleP5UqyUDD2s7bJp9Wt70soT4V5RBfCECO3V75eID4dqosx8b7m/XUUkgAxuu480agB88uI9HNO0211ZT/OukPW0DTcgDZcaqi0=
+	t=1732796838; cv=none; b=ZDhwXNHmSii4jFlFFiZ3UYXJOZQxiWEUrL9s2yfrYriCIfck3sXOf1t0H9ONupPfXk4swGEWAiU7QZxlb5TuqaRpcsH823HUDlVUiX5SDSa/td6Rq7ohOUypFrK+jV4TvA426Vl9sdmY0uDDCD8vqV22ljqMHKsZT+oMd0SBq3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732795951; c=relaxed/simple;
-	bh=/LGrZOzJI+6kS93veQaIwzlwY/GP+eS2PE8NhODdl4Q=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=ZGqcvBYcXmKJsFjq/+RLTm5wNjQ3d/jLY9+pCDz7lkul39sMXYa/VQJVPMooUwwuNj/7O8uqYU8J0XCIYrjXILmUsemyITP0s3L4dBoi6ha6AXv8L9ucYfZRaN44523L+pwEp0iDnqiNaHdNwsxgzFLgshupKPfs4etPsrWXZPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ev7phKaB; arc=none smtp.client-ip=209.85.221.74
+	s=arc-20240116; t=1732796838; c=relaxed/simple;
+	bh=6XDxPEty34eTGMSNtMJUSsKWzjr3QkiT/ZY1/OxWTew=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sBkhoB5gopaox7fQH6vQkkhPoiI9PnNvnrf1/BASEIJlj1G5nTHFOQdArRJAn+B52kfg3ZnDhB5y7xmo71I+lR34Y8Ky5v/IeiZnpPebB7OUvfMzEQAreFFkmr9U5bCU4in+qq5iGLGsS3Js7wqj0y6Shgl2X8ZzbACgvDcix4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3yHmpf2z; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-3825a721afaso466160f8f.0
-        for <cgroups@vger.kernel.org>; Thu, 28 Nov 2024 04:12:29 -0800 (PST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-434a90fed23so6682635e9.1
+        for <cgroups@vger.kernel.org>; Thu, 28 Nov 2024 04:27:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1732795948; x=1733400748; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=xv9Mnsqw0yP552va4yFfmGxxYoQFMLmXfy+o8MwyuvI=;
-        b=ev7phKaBLwqggggwB8mIZBHdin5kO0Ofu3E2OvrJ24o2zcNHDEFgkhkDgCeTMV/kct
-         Pl/47BRzs1kGusksJiW38tcMd838I+A9hEMsuxc6PaG8so/KeiraEuw/5XbCpiyN68Lg
-         vniW1b3nlk2JWbQMcIH5kM3WtLTeTldtBtXEBlWFY6n1cTlJL0o5R3uE0ZzVP1pDPvya
-         DVaDD92wFN+eiTAkBbLKAvp2f4TXGZUkyzriCCa6PlzBNWu2QirFatofq2Ws8hs73Db8
-         8beX7aQT0aFBnNU3oeFMYPphAiDDp6SxkmbjUNZLfz8lTwSytsN4nBdpYLNCzDoK/XV5
-         ptWg==
+        d=google.com; s=20230601; t=1732796835; x=1733401635; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kARs3OMR7SZwBtW0TWcyLkFWqc6w0sy3+x2iKM9UqcY=;
+        b=3yHmpf2zqpiF+3ZU53B47pyKB9nvk+d4ekgQeHvyS5EOvY8znz8JC6RIZ7PgSoJurH
+         JUEntzlWwg9/fKKk7WRNdo+f6MT4kE9ghVcpmUslMkYe/ea6waxUiJufdJws66pg3hD+
+         dv5b79kz9iYSqRfImaLIRynHckdJLiNa7y4QKoGIS/BoNARfDSMwyK+JzkJuO4UglTyv
+         l8adfPgm6QVauRaYFwtt7ORSqVBtEK+Q6EJgi0nCpyhe11Dt6wY452tSV9DBVFKYg7jt
+         j2EO9UYFgOx1q7RONnsaA6ZAbn7g52IrGS7OdqyFzlZnK3gto+tCH9/BVGH1v+1UUY07
+         ePKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732795948; x=1733400748;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xv9Mnsqw0yP552va4yFfmGxxYoQFMLmXfy+o8MwyuvI=;
-        b=NgMnO5aeviiq7qlxxw8Ql+3ZnVbpvxPy/icSmMrWxKFxToRvIXCh0pd7AfA8Z1TkQ4
-         lWAW+EH3Yon1zNf9OX29FtYPqZKG9JIdQUqw3nt5iZr/6ZVlXS/xYgSVL+2ltvlAg8va
-         /toCHa7gSzaBj6zHfoUMFwGOcoGq2IBOD4/uLLzffzeRPUu/K31tq3i7Mew8BInaS9PK
-         k8Nt93YVn+BCn7lTTpPSpuU8uVz+aDExMuHV+OjKV6Qj8OI5G/AyjuU5ZqfQaylIaVR0
-         rcDj+gISsdPiLxYRJXKEuaPR7MjG19YsxYqDM7bmXfxhlv8N6TUgM+Ham/Q3UplpVVP2
-         Snlw==
-X-Forwarded-Encrypted: i=1; AJvYcCVUypkdC+Jd2aymD7OXH9cVYwEaRTjFEGshH5C4lpCUxWKk+Sk/q1cf5BUxKFQ2f2mTChTN6ZnY@vger.kernel.org
-X-Gm-Message-State: AOJu0YzdgswtHjzsqM0j8A1+mhX9Sc8a+hOuvn2MFdhm+S/QKJPb9zI0
-	imSLk8TwWaFASuWz0Z2mRFjOKVf5sCg+zbJXtpA1wFok7VIMVsWmUxcVMV850RZbUlqboQDom9b
-	pYpVOIRXEse7rjg==
-X-Google-Smtp-Source: AGHT+IE8+KYnkF58GMuTj0VAu4E6cZL1TCWj/R8Fz3NdRbDJvaqchxbrbwH7siNgqYgBqqkBkJUSkwuvPxhg4xI=
-X-Received: from wmpk41.prod.google.com ([2002:a05:600c:829:b0:434:a2fb:effe])
- (user=aliceryhl job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6000:1543:b0:382:4f6e:a57a with SMTP id ffacd0b85a97d-385c6edc83emr6304046f8f.54.1732795948065;
- Thu, 28 Nov 2024 04:12:28 -0800 (PST)
-Date: Thu, 28 Nov 2024 12:12:11 +0000
+        d=1e100.net; s=20230601; t=1732796835; x=1733401635;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kARs3OMR7SZwBtW0TWcyLkFWqc6w0sy3+x2iKM9UqcY=;
+        b=XKubG7pp3Uzczw5LXBbcqc/PkG5DKqptFQzmBTJsfhyzJ5DcePgJLea9TGbabtG1dO
+         yD3DYKSExEKkhWkNtg6qAO+5yoF0yVFRWmDERDdjGzM38T8ddvMU9AcpQTHhhjoU33Ut
+         krXHsxkP9YLW303XDiG2HoST3YUDLFnutVCDpHWJZTRyV56oE5tWqnGbNZsuQ9BglOsn
+         zkDcnSqvyAfxDjA1HWrjbs2NZmJ2MMbz6ecWhv5eo9Yr/ao9yYdzZJxd6G6YMB61LU72
+         7jgqVa5xB91ONGTWFVLhrnJYar3ofhhueetxnNTnV85sWi95SGtB0hEujjmkQgLBRZzp
+         gPyw==
+X-Forwarded-Encrypted: i=1; AJvYcCXPhec7FiKi3BPKMsdNN7zEApGvqy6cC4UxI+JlXkoWRubJE8eDBQAqG0/gNRaGJ+SFeKhV5WkL@vger.kernel.org
+X-Gm-Message-State: AOJu0YzLfCDTsnRAHKwa6QCB5DInLMNzBK0w44v6ChwX5mDH6WR2q+3w
+	P9i5+i3qLkbKHRf19RC0IBFYj66oJMd8IN8pFcnMfJ4lxR3qBRZ+Y+M8Z4kctm4gbhfaNvWMPpP
+	d74SuM1i5VX/DDwo9zf+MVn9zOW8YA3+JLx+x
+X-Gm-Gg: ASbGnctcnrsmtsJfByoePvoClRT+Lu/0O/04xxmTsyCae4GDlir9BJXa+VSaeEq5NRZ
+	qWkZp9QcOcsUEV9GA5XRi18nrALPchqW+6RrICT1iW2ZM08ca8WMvDaktvZYh
+X-Google-Smtp-Source: AGHT+IEkERCIeGBJ8BGltoa6+wRnWijLPp8bL9sP35PNF9jXvEWnjvqtbJxvc4qLxkfCVrgrzjnipQiAdSGpxRUopa4=
+X-Received: by 2002:a05:600c:1988:b0:434:a239:d2fe with SMTP id
+ 5b1f17b1804b1-434a9df7dadmr50709745e9.28.1732796834639; Thu, 28 Nov 2024
+ 04:27:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIABpeSGcC/x3MSwqAMAwA0atI1hZMFSteRaRIG2vAH42KIN7d4
- vItZh4QikwCbfZApIuFtzUB8wzcNKyBFPtk0IWuEHWjZpbDzvG0Cy0uWL85Ud6UNaFvcDAjpHK PNPL9X7v+fT/wu1jwZQAAAA==
-X-Developer-Key: i=aliceryhl@google.com; a=openpgp; fpr=49F6C1FAA74960F43A5B86A1EE7A392FDE96209F
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5452; i=aliceryhl@google.com;
- h=from:subject:message-id; bh=/LGrZOzJI+6kS93veQaIwzlwY/GP+eS2PE8NhODdl4Q=;
- b=owEBbQKS/ZANAwAKAQRYvu5YxjlGAcsmYgBnSF4idTCr3X7DVYiatk5PpMqpcyL1UCi/4Liig
- TTZhVH50k6JAjMEAAEKAB0WIQSDkqKUTWQHCvFIvbIEWL7uWMY5RgUCZ0heIgAKCRAEWL7uWMY5
- RlfoEAC2nrOfgVrSgeKaMotPVEFfEs1t+E8RZVYdgNMXJlR9wKJeRs/IhzKbfMPKaJaxHkDfK6u
- ZShkjb6U/pHHXN8N3ZnpC1xTj1rnlEhny0ocAfqDVNNZyygvGlc1ZcpxlKq6LCndOYQ0s/Dv1fB
- KKOlQV0yB7p5k1wA7Phun42TnzLBPZwz664FT+92i04GYq5j6nMQJe0l8jDnO8PqYgVhBYbIeMz
- pQKbJZeMhsYQ4T1iDlSPYIPgRZ/VBCAiBsNtQzEMmUjD14Rcia5uZszmKK/ogQXt+HYnAAWSlkb
- D52cTuFqsvGsFzUG7wPgoXYs0SvOVCWNRsGHqXsFYM2a2ayv/KionikvwCQlhvAKB7bi2jMC/x5
- QiYLRoQGPt/S4ih1zHj56BUc8Xa+jwgdtz5txJhQ6uUkFFcK15LkeOousMyWJQiWizccZpAnZTo
- r96pEaZKPbSGOr/aPCDIpX0cyYxaW5iajzkYR1bBlDz4RD9Nb1FHcfjebYqJpFxZHKxRF6Ausax
- iKQKah8XTF25idJ9cmT7TD3WzLTnI402VrO+2jYH2vgXAUHYup1R5FZBitPcShJLDfAj+QNTX4y
- LezjQ7WkYc+mxHnTgAzNEcUR3PlEgpgsSpH8o5Vkpo9uld9MOjLkkpvZnHrfBE4msertzBYHWpa bPXky9OsM8tPadQ==
-X-Mailer: b4 0.13.0
-Message-ID: <20241128-list_lru_memcg_docs-v1-1-7e4568978f4e@google.com>
-Subject: [PATCH] list_lru: expand list_lru_add() docs with info about sublists
+MIME-Version: 1.0
+References: <CAH5fLghFWi=xbTgaG7oFNJo_7B7zoMRLCzeJLXd_U5ODVGaAUA@mail.gmail.com>
+ <Z0eXrllVhRI9Ag5b@dread.disaster.area>
+In-Reply-To: <Z0eXrllVhRI9Ag5b@dread.disaster.area>
 From: Alice Ryhl <aliceryhl@google.com>
-To: Dave Chinner <david@fromorbit.com>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>, 
-	Qi Zheng <zhengqi.arch@bytedance.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Michal Hocko <mhocko@kernel.org>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Alice Ryhl <aliceryhl@google.com>
-Content-Type: text/plain; charset="utf-8"
+Date: Thu, 28 Nov 2024 13:27:03 +0100
+Message-ID: <CAH5fLggKrb4LZk6JL5A0jJODA1zJs+94AU5NMmyV9ksraigF7A@mail.gmail.com>
+Subject: Re: [QUESTION] What memcg lifetime is required by list_lru_add?
+To: Dave Chinner <david@fromorbit.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Nhat Pham <nphamcs@gmail.com>, Qi Zheng <zhengqi.arch@bytedance.com>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Linux Memory Management List <linux-mm@kvack.org>, Michal Hocko <mhocko@kernel.org>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, cgroups@vger.kernel.org, 
+	open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The documentation for list_lru_add() and list_lru_del() has not been
-updated since lru lists were originally introduced by commit
-a38e40824844 ("list: add a new LRU list type"). Back then, list_lru
-stored all of the items in a single list, but the implementation has
-since been expanded to use many sublists internally.
+On Wed, Nov 27, 2024 at 11:05=E2=80=AFPM Dave Chinner <david@fromorbit.com>=
+ wrote:
+>
+> On Wed, Nov 27, 2024 at 10:04:51PM +0100, Alice Ryhl wrote:
+> > Dear SHRINKER and MEMCG experts,
+> >
+> > When using list_lru_add() and list_lru_del(), it seems to be required
+> > that you pass the same value of nid and memcg to both calls, since
+> > list_lru_del() might otherwise try to delete it from the wrong list /
+> > delete it while holding the wrong spinlock. I'm trying to understand
+> > the implications of this requirement on the lifetime of the memcg.
+> >
+> > Now, looking at list_lru_add_obj() I noticed that it uses rcu locking
+> > to keep the memcg object alive for the duration of list_lru_add().
+> > That rcu locking is used here seems to imply that without it, the
+> > memcg could be deallocated during the list_lru_add() call, which is of
+> > course bad. But rcu is not enough on its own to keep the memcg alive
+> > all the way until the list_lru_del_obj() call, so how does it ensure
+> > that the memcg stays valid for that long?
+>
+> We don't care if the memcg goes away whilst there are objects on the
+> LRU. memcg destruction will reparent the objects to a different
+> memcg via memcg_reparent_list_lrus() before the memcg is torn down.
+> New objects should not be added to the memcg LRUs once the memcg
+> teardown process starts, so there should never be add vs reparent
+> races during teardown.
+>
+> Hence all the list_lru_add_obj() function needs to do is ensure that
+> the locking/lifecycle rules for the memcg object that
+> mem_cgroup_from_slab_obj() returns are obeyed.
+>
+> > And if there is a mechanism
+> > to keep the memcg alive for the entire duration between add and del,
+>
+> It's enforced by the -complex- state machine used to tear down
+> control groups.
+>
+> tl;dr: If the memcg gets torn down, it will reparent the objects on
+> the LRU to it's parent memcg during the teardown process.
+>
+> This reparenting happens in the cgroup ->css_offline() method, which
+> only happens after the cgroup reference count goes to zero and is
+> waited on via:
+>
+> kill_css
+>   percpu_ref_kill_and_confirm(css_killed_ref_fn)
+>     <wait>
+>     css_killed_ref_fn
+>       offline_css
+>         mem_cgroup_css_offline
+>           memcg_offline_kmem
+>             {
+>             .....
+>             memcg_reparent_objcgs(memcg, parent);
+>
+>         /*
+>          * After we have finished memcg_reparent_objcgs(), all list_lrus
+>          * corresponding to this cgroup are guaranteed to remain empty.
+>          * The ordering is imposed by list_lru_node->lock taken by
+>          * memcg_reparent_list_lrus().
+>          */
+>             memcg_reparent_list_lrus(memcg, parent)
+>             }
+>
+> Then the cgroup teardown control code then schedules the freeing
+> of the memcg container via a RCU work callback when the reference
+> count is globally visible as killed and the reference count has gone
+> to zero.
+>
+> Hence the cgroup infrastructure requires RCU protection for the
+> duration of unreferenced cgroup object accesses. This allows for
+> subsystems to perform operations on the cgroup object without
+> needing to holding cgroup references for every access. The complex,
+> multi-stage teardown process allows for cgroup objects to release
+> objects that it tracks hence avoiding the need for every object the
+> cgroup tracks to hold a reference count on the cgroup.
+>
+> See the comment above css_free_rwork_fn() for more details about the
+> teardown process:
+>
+> /*
+>  * css destruction is four-stage process.
+>  *
+>  * 1. Destruction starts.  Killing of the percpu_ref is initiated.
+>  *    Implemented in kill_css().
+>  *
+>  * 2. When the percpu_ref is confirmed to be visible as killed on all CPU=
+s
+>  *    and thus css_tryget_online() is guaranteed to fail, the css can be
+>  *    offlined by invoking offline_css().  After offlining, the base ref =
+is
+>  *    put.  Implemented in css_killed_work_fn().
+>  *
+>  * 3. When the percpu_ref reaches zero, the only possible remaining
+>  *    accessors are inside RCU read sections.  css_release() schedules th=
+e
+>  *    RCU callback.
+>  *
+>  * 4. After the grace period, the css can be freed.  Implemented in
+>  *    css_free_rwork_fn().
+>  *
+>  * It is actually hairier because both step 2 and 4 require process conte=
+xt
+>  * and thus involve punting to css->destroy_work adding two additional
+>  * steps to the already complex sequence.
+>  */
 
-Thus, update the docs to mention that the requirements about not using
-the item with several lists at the same time also applies not using
-different sublists. Also mention that list_lru items are reparented when
-the memcg is deleted as discussed on the LKML [1].
+Thanks a lot Dave, this clears it up for me.
 
-Link: https://lore.kernel.org/all/Z0eXrllVhRI9Ag5b@dread.disaster.area/ [1]
-Signed-off-by: Alice Ryhl <aliceryhl@google.com>
----
- include/linux/list_lru.h | 48 +++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 35 insertions(+), 13 deletions(-)
+I sent a patch containing some additional docs for list_lru:
+https://lore.kernel.org/all/20241128-list_lru_memcg_docs-v1-1-7e4568978f4e@=
+google.com/
 
-diff --git a/include/linux/list_lru.h b/include/linux/list_lru.h
-index 05c166811f6b..d4fc967247ae 100644
---- a/include/linux/list_lru.h
-+++ b/include/linux/list_lru.h
-@@ -91,15 +91,26 @@ void memcg_reparent_list_lrus(struct mem_cgroup *memcg, struct mem_cgroup *paren
-  * @memcg: the cgroup of the sublist to add the item to.
-  *
-  * If the element is already part of a list, this function returns doing
-- * nothing. Therefore the caller does not need to keep state about whether or
-- * not the element already belongs in the list and is allowed to lazy update
-- * it. Note however that this is valid for *a* list, not *this* list. If
-- * the caller organize itself in a way that elements can be in more than
-- * one type of list, it is up to the caller to fully remove the item from
-- * the previous list (with list_lru_del() for instance) before moving it
-- * to @lru.
-+ * nothing. This means that it is not necessary to keep state about whether or
-+ * not the element already belongs in the list. That said, this logic only
-+ * works if the item is in *this* list. If the item might be in some other
-+ * list, then you cannot rely on this check and you must remove it from the
-+ * other list before trying to insert it.
-  *
-- * Return: true if the list was updated, false otherwise
-+ * The lru list consists of many sublists internally; the @nid and @memcg
-+ * parameters are used to determine which sublist to insert the item into.
-+ * It's important to use the right value of @nid and @memcg when deleting the
-+ * item, since it might otherwise get deleted from the wrong sublist.
-+ *
-+ * This also applies when attempting to insert the item multiple times - if
-+ * the item is currently in one sublist and you call list_lru_add() again, you
-+ * must pass the right @nid and @memcg parameters so that the same sublist is
-+ * used.
-+ *
-+ * You must ensure that the memcg is not freed during this call (e.g., with
-+ * rcu or by taking a css refcnt).
-+ *
-+ * Return value: true if the item was added, false otherwise
-  */
- bool list_lru_add(struct list_lru *lru, struct list_head *item, int nid,
- 		    struct mem_cgroup *memcg);
-@@ -113,7 +124,7 @@ bool list_lru_add(struct list_lru *lru, struct list_head *item, int nid,
-  * memcg of the sublist is determined by @item list_head. This assumption is
-  * valid for slab objects LRU such as dentries, inodes, etc.
-  *
-- * Return value: true if the list was updated, false otherwise
-+ * Return value: true if the item was added, false otherwise
-  */
- bool list_lru_add_obj(struct list_lru *lru, struct list_head *item);
- 
-@@ -125,10 +136,21 @@ bool list_lru_add_obj(struct list_lru *lru, struct list_head *item);
-  * @memcg: the cgroup of the sublist to delete the item from.
-  *
-  * This function works analogously as list_lru_add() in terms of list
-- * manipulation. The comments about an element already pertaining to
-- * a list are also valid for list_lru_del().
-+ * manipulation.
-+ *
-+ * The comments in list_lru_add() about an element already being in a list are
-+ * also valid for list_lru_del(), that is, you can delete an item that has
-+ * already been removed or never been added. However, if the item is in a
-+ * list, it must be in *this* list, and you must pass the right value of @nid
-+ * and @memcg so that the right sublist is used.
-+ *
-+ * You must ensure that the memcg is not freed during this call (e.g., with
-+ * rcu or by taking a css refcnt). When a memcg is deleted, list_lru entries
-+ * are automatically moved to the parent memcg. This is done in a race-free
-+ * way, so during deletion of an memcg both the old and new memcg will resolve
-+ * to the same sublist internally.
-  *
-- * Return: true if the list was updated, false otherwise
-+ * Return value: true if the item was removed, false otherwise
-  */
- bool list_lru_del(struct list_lru *lru, struct list_head *item, int nid,
- 		    struct mem_cgroup *memcg);
-@@ -142,7 +164,7 @@ bool list_lru_del(struct list_lru *lru, struct list_head *item, int nid,
-  * memcg of the sublist is determined by @item list_head. This assumption is
-  * valid for slab objects LRU such as dentries, inodes, etc.
-  *
-- * Return value: true if the list was updated, false otherwise.
-+ * Return value: true if the item was removed, false otherwise.
-  */
- bool list_lru_del_obj(struct list_lru *lru, struct list_head *item);
- 
-
----
-base-commit: b86545e02e8c22fb89218f29d381fa8e8b91d815
-change-id: 20241128-list_lru_memcg_docs-d736e1d81a7f
-
-Best regards,
--- 
-Alice Ryhl <aliceryhl@google.com>
-
+Alice
 
