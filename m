@@ -1,168 +1,124 @@
-Return-Path: <cgroups+bounces-5718-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5719-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EEEE9DF4E0
-	for <lists+cgroups@lfdr.de>; Sun,  1 Dec 2024 07:52:23 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34DA1162DEB
-	for <lists+cgroups@lfdr.de>; Sun,  1 Dec 2024 06:52:20 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45CF3D3B8;
-	Sun,  1 Dec 2024 06:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="rIh2oIaQ"
-X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 869879DF583
+	for <lists+cgroups@lfdr.de>; Sun,  1 Dec 2024 13:43:01 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F0BFE552;
-	Sun,  1 Dec 2024 06:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AA2728150B
+	for <lists+cgroups@lfdr.de>; Sun,  1 Dec 2024 12:43:00 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6365B1B0F2B;
+	Sun,  1 Dec 2024 12:42:58 +0000 (UTC)
+X-Original-To: cgroups@vger.kernel.org
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C8A1ABEB4;
+	Sun,  1 Dec 2024 12:42:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733035938; cv=none; b=mws3KQdS4HVgo2lKYy8/0PqpX1UXRGZ814PyElvRqF9Q5zEchhgS/VaFuV087WN8tWiGIVBkz9mVzbXUCKsgkclHXdWGPdbM0FAn/izLeqQqyk/yeQiS7QCWGLipqFDa7WLFecnQUv+TWrdV0SLryNQrWB9Grkp2c8pi088mNIs=
+	t=1733056978; cv=none; b=BndP9eXh0kkHaWNATSyHJxCHPvbyPHrTgT985NS7xyEmVVP9Dae5wdttMK8lrl5U/4cyc9dCUahkl87E3QRJEnBMuc8lW5yRrbB91Klki/0L5KkU8MZu2krmpPA/1AeebHgcYE06Q5yop+U03F6SvW9K00eo06b7mhFfh1FJRnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733035938; c=relaxed/simple;
-	bh=LlAIxB8N/0m2snCylgWlUAAyLHpPp5k+nBPFKFA41Ic=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=WKmyUzc4FF3D0FdoofjAJaIGMapRsi3VWT5TZHmU+mbsIk+R2qV4/3kqynObLMK610YZKXJtepqkEtEmszANF06GPFevkHrVd9XjKJ9Nbcrp/1xnXnUqG7TwKcWwC9/I7CfJdp1MjxO9E0Si2RQml3JFOIMUxT8qo2gCTSMwke0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=rIh2oIaQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA0AFC4CECF;
-	Sun,  1 Dec 2024 06:52:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1733035938;
-	bh=LlAIxB8N/0m2snCylgWlUAAyLHpPp5k+nBPFKFA41Ic=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=rIh2oIaQhCt58+TnxD62w8JKisKb9VciI8ivfsm7Sxm4DZpIFD5vY5ITRmpO89vQ9
-	 KZLjISKRT7drej/nBlQj+2ESs/ndpOFv0ZtyQklHxwXxv5zyvwjasB78cBM2uOIu02
-	 jZPIuDNXi3imwpVWMfIVn2gBgDVsTqqk1H8TN8OU=
-Date: Sat, 30 Nov 2024 22:52:17 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Xiu Jianfeng <xiujianfeng@huawei.com>
-Cc: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
- <corbet@lwn.net>, <cgroups@vger.kernel.org>, <linux-doc@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-Subject: Re: [PATCH -next] mm/hugetlb_cgroup: introduce peak and rsvd.peak
- to v2
-Message-Id: <20241130225217.6949f9f87d3f7fbbc1748948@linux-foundation.org>
-In-Reply-To: <20240702125728.2743143-1-xiujianfeng@huawei.com>
-References: <20240702125728.2743143-1-xiujianfeng@huawei.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1733056978; c=relaxed/simple;
+	bh=sGDqa+/61tyT40gjawpHwToPxxji73WCCz7yKsesY18=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=CrWaWlkqW368W2oQkDZA/Wxj0aC9R5d3X5e8mXmwtHrU3o+h7YSM0FsKUEW667tY35QJarM+CTsNupDEwScSTDp1jgy6aMFXEo+Qh9LVRVRndoOcv29N5a+smWCvGNzai+cm4tl6oFkm27Zh/MtxydZyvPC3LuPzEc2fFTkP1Dk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-385e5db74d3so622327f8f.0;
+        Sun, 01 Dec 2024 04:42:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733056975; x=1733661775;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=trrR/KwI3DUl9tlQBEhNM3AQg27dHjgUiWJjFITFwg4=;
+        b=dnxc316+J8+dHHluYbAk0uPtjF/bLnxW/y/uywSn/DNfC0EUp3P5jLr8rndCTl+WFk
+         OLscOgPR2Tp/PcatqGCUzE/t7O2jsOat+IalaRLTMZMz4w+KJHUeksl8juKMOvA4byo8
+         Y8k8nmAPFyw57lNlfGhZBTnnIJY+nbGsCetUhlDW1a1EkBCi5kCnwOdgpOoenQqZy9hQ
+         WNqclrCJWhKNjibhayBN/KL0B6DIIw2BXg1yD7tOjjRqEsLXa7WVTUEwJ4V4MLuOyuAp
+         64hy3xmu0Y/vzEq8QFCo3wjlhp5pMzV+jfk4bocbF2TdQg5i47FaA0gcvWqRGKxhMkju
+         LV6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU4tvN9u+DGccWuPDjsoeZ4YHODQZDlhJzfcjp4SFdxhX1nyqGDyOOLqjqsxfWRMiaPHtNHxy5mR2MvKqqZ@vger.kernel.org, AJvYcCUsjyXbN/qxzl85n3piiZGk3d11eEJjQ6zd9ib1q8z97BMf80by23FTkqvqQ4nWwoYNZIMZOPKF@vger.kernel.org
+X-Gm-Message-State: AOJu0YyUVmAJQpzCM2p6oPDRCsSmejwJagneTv9SCuRm9JmF+xPVTcTJ
+	/r2ViCEC21IuNhn5LOMMVK3EuwggJOE2CMGUSPTN46mYwhZTyKik
+X-Gm-Gg: ASbGnctnep+Ac+jBNTrQhGS/dTICx1YV9ZdSPCHHSAxgsEZd+8mF5ullplgdLI8jju2
+	s0CZwR+TA4o+z3z4ob32w1tbbvUVAqcTuWkMlJEEqbNWSS6x/5sRxZgAJVKRf58Q0PFHPbPgpaz
+	1icqhCPyssIe9anFxxlLSZE4Z327cwxC00rBdraCtbdqMiT/DEw3qAY4bCaU7yKKIGq4rcPBIRX
+	yboA0Ci7EiDwHL1HcwAlOXvA+Sb+Nns4HB700ofelcMdrqG4wUw1MJ8SLt5A0op4V8=
+X-Google-Smtp-Source: AGHT+IFJfUks9BU4dt3NylYQm1WxOiBri7F/IBaOS2k3VwS4+KEmGbGmxqazgBfjUk80DbN1YKpXrQ==
+X-Received: by 2002:a05:6000:401f:b0:382:4f50:be64 with SMTP id ffacd0b85a97d-385c6ec0e53mr17817993f8f.25.1733056974718;
+        Sun, 01 Dec 2024 04:42:54 -0800 (PST)
+Received: from costa-tp.redhat.com ([2a00:a041:e280:5300:9068:704e:a31a:c135])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434b0f70d91sm114434985e9.39.2024.12.01.04.42.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Dec 2024 04:42:54 -0800 (PST)
+From: Costa Shulyupin <costa.shul@redhat.com>
+To: longman@redhat.com,
+	ming.lei@redhat.com,
+	pauld@redhat.com,
+	juri.lelli@redhat.com,
+	vschneid@redhat.com,
+	Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Costa Shulyupin <costa.shul@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org
+Subject: [RFC PATCH v4 0/4] genirq/cpuhotplug: Adjust managed interrupts according to change of housekeeping cpumask
+Date: Sun,  1 Dec 2024 14:42:40 +0200
+Message-ID: <20241201124244.997754-1-costa.shul@redhat.com>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Tue, 2 Jul 2024 12:57:28 +0000 Xiu Jianfeng <xiujianfeng@huawei.com> wrote:
+This series of patches is based on series
+isolation: Exclude dynamically isolated CPUs from housekeeping masks:
+https://lore.kernel.org/lkml/20240821142312.236970-1-longman@redhat.com/
+Its purpose is to exclude dynamically isolated CPUs from some
+housekeeping masks so that subsystems that check the housekeeping masks
+at run time will not use those isolated CPUs.
 
-> Introduce peak and rsvd.peak to v2 to show the historical maximum
-> usage of resources, as in some scenarios it is necessary to configure
-> the value of max/rsvd.max based on the peak usage of resources.
-> 
+However, some of subsystems can use obsolete housekeeping CPU masks.
+Therefore, to prevent the use of these isolated CPUs, it is necessary to
+explicitly propagate changes of the housekeeping masks to all subsystems
+depending on the mask.
 
-The review for this patch was not compelling, so I'll drop this copy
-for now.  If you continue to believe that we should add this to Linux,
-please resend, perhaps with additional changelog details to help
-convince others.
+Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
 
-
-From: Xiu Jianfeng <xiujianfeng@huawei.com>
-Subject: mm/hugetlb_cgroup: introduce peak and rsvd.peak to v2
-Date: Tue, 2 Jul 2024 12:57:28 +0000
-
-Introduce peak and rsvd.peak to v2 to show the historical maximum usage of
-resources, as in some scenarios it is necessary to configure the value of
-max/rsvd.max based on the peak usage of resources.
-
-Since HugeTLB doesn't support page reclaim, enforcing the limit at page
-fault time implies that, the application will get SIGBUS signal if it
-tries to fault in HugeTLB pages beyond its limit.  Therefore the
-application needs to know exactly how many HugeTLB pages it uses before
-hand, and the sysadmin needs to make sure that there are enough available
-on the machine for all the users to avoid processes getting SIGBUS.
-
-When running some open-source software, it may not be possible to know the
-exact amount of hugetlb it consumes, so cannot correctly configure the max
-value.  If there is a peak metric, we can run the open-source software
-first and then configure the max based on the peak value.  In cgroup v1,
-the hugetlb controller provides the max_usage_in_bytes and
-rsvd.max_usage_in_bytes interface to display the historical maximum usage,
-so introduce peak and rsvd.peak to v2 to address this issue.
-
-Link: https://lkml.kernel.org/r/20240702125728.2743143-1-xiujianfeng@huawei.com
-Signed-off-by: Xiu Jianfeng <xiujianfeng@huawei.com>
-Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Zefan Li <lizefan.x@bytedance.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 ---
 
- Documentation/admin-guide/cgroup-v2.rst |    8 ++++++++
- mm/hugetlb_cgroup.c                     |   19 +++++++++++++++++++
- 2 files changed, 27 insertions(+)
+v4:
+- Use CPU hotplug as recommended by Thomas Gleixner.
 
---- a/Documentation/admin-guide/cgroup-v2.rst~mm-hugetlb_cgroup-introduce-peak-and-rsvdpeak-to-v2
-+++ a/Documentation/admin-guide/cgroup-v2.rst
-@@ -2659,6 +2659,14 @@ HugeTLB Interface Files
-         hugetlb pages of <hugepagesize> in this cgroup.  Only active in
-         use hugetlb pages are included.  The per-node values are in bytes.
- 
-+  hugetlb.<hugepagesize>.peak
-+	Show historical maximum usage for "hugepagesize" hugetlb.  It exists
-+        for all the cgroup except root.
-+
-+  hugetlb.<hugepagesize>.rsvd.peak
-+	Show historical maximum usage for "hugepagesize" hugetlb reservations.
-+        It exists for all the cgroup except root.
-+
- Misc
- ----
- 
---- a/mm/hugetlb_cgroup.c~mm-hugetlb_cgroup-introduce-peak-and-rsvdpeak-to-v2
-+++ a/mm/hugetlb_cgroup.c
-@@ -583,6 +583,13 @@ static int hugetlb_cgroup_read_u64_max(s
- 		else
- 			seq_printf(seq, "%llu\n", val * PAGE_SIZE);
- 		break;
-+	case RES_RSVD_MAX_USAGE:
-+		counter = &h_cg->rsvd_hugepage[idx];
-+		fallthrough;
-+	case RES_MAX_USAGE:
-+		val = (u64)counter->watermark;
-+		seq_printf(seq, "%llu\n", val * PAGE_SIZE);
-+		break;
- 	default:
- 		BUG();
- 	}
-@@ -739,6 +746,18 @@ static struct cftype hugetlb_dfl_tmpl[]
- 		.seq_show = hugetlb_cgroup_read_u64_max,
- 		.flags = CFTYPE_NOT_ON_ROOT,
- 	},
-+	{
-+		.name = "peak",
-+		.private = RES_MAX_USAGE,
-+		.seq_show = hugetlb_cgroup_read_u64_max,
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+	},
-+	{
-+		.name = "rsvd.peak",
-+		.private = RES_RSVD_MAX_USAGE,
-+		.seq_show = hugetlb_cgroup_read_u64_max,
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+	},
- 	{
- 		.name = "events",
- 		.seq_show = hugetlb_events_show,
-_
+v3:
+- Address the comments by Thomas Gleixner.
+
+v2:
+- Focus in this patch series on managed interrupts only.
+
+Costa Shulyupin (4):
+  cgroup/cpuset: Add HK_TYPE_MANAGED_IRQ to HOUSEKEEPING_FLAGS
+  genirq/cpuhotplug: Dynamically isolate CPUs from managed interrupts
+  cgroup/cpuset: Restart CPUs whose isolated_cpus bits have changed
+  DO NOT MERGE: Test CPU isolation from managed interrupts
+
+ MAINTAINERS             |   2 +
+ kernel/cgroup/cpuset.c  |  36 +++++++++++
+ kernel/irq/cpuhotplug.c |   3 +
+ tests/managed_irq.sh    | 135 ++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 176 insertions(+)
+ create mode 100755 tests/managed_irq.sh
+
+-- 
+2.47.0
 
 
