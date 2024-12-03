@@ -1,87 +1,88 @@
-Return-Path: <cgroups+bounces-5739-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5742-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0A8C9E18EB
-	for <lists+cgroups@lfdr.de>; Tue,  3 Dec 2024 11:10:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B32519E18FA
+	for <lists+cgroups@lfdr.de>; Tue,  3 Dec 2024 11:15:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C8A5B37942
-	for <lists+cgroups@lfdr.de>; Tue,  3 Dec 2024 10:01:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 791612814CA
+	for <lists+cgroups@lfdr.de>; Tue,  3 Dec 2024 10:15:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C90971E04BD;
-	Tue,  3 Dec 2024 10:01:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 010BC1E0E17;
+	Tue,  3 Dec 2024 10:15:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="JrcEo5/W"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="YiyPPPMi"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2DB91E009A
-	for <cgroups@vger.kernel.org>; Tue,  3 Dec 2024 10:01:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D25171DE4D7
+	for <cgroups@vger.kernel.org>; Tue,  3 Dec 2024 10:15:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733220098; cv=none; b=ju6U+uekxudRjoTf4Bm80Yg1FrCcy8b6rmVWynCGqhfgrpE89lC1LUWfMexDJ7DGeeYOIK6oEAHzCfhrLnZNOXBtqf7dTcH6Q94VWR3md0RGTs85uRH7hlP8mAr91OIvnFfuk9bDcsh23qchE6JEnvcf41piNU+CyavL/Qhq6NQ=
+	t=1733220930; cv=none; b=R9MlOlyn3PIdF+C0hW3isozz34k8hzMxVjrxC00B9iGN+vTbmzFJLPPkIgB60vSUtH3O8GSsAAS5fCPYTCTL2BhGe64K7B4EMrk9RbJOEpFeI7rEUHGijh9SeGdxLopa1KDUbD1ZshGX2D0rQgaDLvW3vbSVzPUAO7fzVMNmqUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733220098; c=relaxed/simple;
-	bh=sTaUZHI2tA84h8s1smjIA8SchVj4beLWUzNFEdnsLGA=;
+	s=arc-20240116; t=1733220930; c=relaxed/simple;
+	bh=G0sj8PY6ADW3aET+hb+E7GMb/SqAJl8FiJH7t0gVTnE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f1Y+BeYj1j1moNYwg9ym0VlPoQ3YGnHQF6nlKCgxnUxTBfdCMN+Xs6JkNrXS9tL5zyyYfl4xEvxlerwTE+pZG4ZKVrtebFRBZbODiv+tZs50OYBlxDMU3TmfBLap88Pw9n9Av1JqsDujdl1laYUk/XeGH1NxGIfmNARe8rf6usA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=JrcEo5/W; arc=none smtp.client-ip=209.85.128.43
+	 Content-Type:Content-Disposition:In-Reply-To; b=P8ghP8IZ857RcCPMgrC4MjKOTt6hEGHKYjvV9OIzIQO0J2vmmg5MXNfCB5/K01qM+qUj/8AvMU54XbIYymRPMGviFwomSpn9XXHYv93oUmDwdPYUMPx04vB+92hX/L07aMRIR+lPPxXF0rCr6qKii7f/1VZixOTxJoB3bqlk76Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=YiyPPPMi; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-434a1639637so49438565e9.1
-        for <cgroups@vger.kernel.org>; Tue, 03 Dec 2024 02:01:36 -0800 (PST)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-385dfb168cbso2541450f8f.1
+        for <cgroups@vger.kernel.org>; Tue, 03 Dec 2024 02:15:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1733220095; x=1733824895; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1733220927; x=1733825727; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RhTW3NC1pbn/g5iDVajml/TzAYdzfRHRj7mqxdaAUTg=;
-        b=JrcEo5/WIv5Y9slnLjpi/tW3KI5MOSebxJKEa1pKNvnxP7V45KTywrZEpAyV+MO+h6
-         P+HFFvS/OvRo2a2UTRC/5BZqi2M4p7keEErCrp07MRCXW6qksy3UmoPWE2oQIUtGwPEq
-         ezwqftIybC1xeHnQ05tif/2y7yXAG+rjVp+SJ4NEO16SMIfV/FYTpRo/NY5b/Ar5ONqN
-         rJ05Tk/cDGZYM+Fj0QtP/ZnCsnIOHr6Xp2TtEnhpBtFyLHJJPLRysjvDPjOVSgiMbgBB
-         ej0VPLItBX1FiOet0tH0GQ1wdG/5rPV7VBlseKeuKX21I8pyUmwx+q/JE5lfUHkitm8m
-         n/PA==
+        bh=1oL/Eu1oFnM7Lq/a9MADW9dd1D0ZuUMkh3bz7/dA41Y=;
+        b=YiyPPPMiYl2teojVGTnN3euHxVo3Ei0VTzhwP3CJBRoS/pvHiMPwEbS9NzToxJ5cjG
+         286vxWQmQUffhxvIpOQrpNbgAQ1QUFVh409diZRUfyRfVdYPrTSS6Ok6ML+TyxDgwjn9
+         456fT9A+d6UYdGXo8Wy6zV1SYxoQxnbtntZShuiNrcVtOAFBlF2iut0IXT7mGvHztPCU
+         ZIhdgKmlP8jHb+UoSMvzP+bhRYXoNlIz+SzGoJzgYLjZLnyVwXcHFyRT2iRMWsGkt45x
+         JslA1LiRvzNWaK7l4iWDn9tcjnEruJS0W1beRmAfuH214LvcSTFj08wM+RpvjFUXQpyz
+         ulDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733220095; x=1733824895;
+        d=1e100.net; s=20230601; t=1733220927; x=1733825727;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RhTW3NC1pbn/g5iDVajml/TzAYdzfRHRj7mqxdaAUTg=;
-        b=cVERQaJLZSzcnnDCep4wgk4RnbMNsPmiTXOELTVnxsxsjgCfmnnmz1JU4DIc8Sv4Im
-         UCWdQ2yY6G5L+evD+ISQfT7UMy6RxOf199o3Y+3UbAbhQf4K94d99bl61RKNI3j5EwTj
-         hA3HZuqYwA4O+aVchUvNMSJPnSOmOytSGhfRld5Jh9iubCTX49PqtCZMPa6y0bKttyxt
-         AmdU45fUw2wwfdlkC9e1wJ6i9loV2eaKL/HGsJ4I33UY8q7AYgFDs8xJP/o9l+mfUwJd
-         /ql9vMiUFOOH5uZ8rVhJkD3hcMUZFgAKVGCpWeQSfDxIgi/TNXvh8iAALw9M9dBGipHF
-         ix3A==
-X-Forwarded-Encrypted: i=1; AJvYcCUMCnGNvDfwDh3nZu4vLix7m4Hcb/U+PG+ft24/fkdKug3sENmPsN+lhB2SZYY1egdZqPcXh50F@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz1g5/UEOaQlibWaev32Hj72V0m/dJBFI8+3mrJzJfXMVXx4BcL
-	QF/ssbeElFmdCmoDBkJDDq/45zIf8HvNgF0GmFqwbBuBIhlUykyp5NXXEyf++aE=
-X-Gm-Gg: ASbGnctoxsMYA2tzcjVbey24dugA/JGFnm6TSJyD+kywQMp06bbecYHMrDwMSerSeYD
-	bZHaAR9KrYLU2KxSWIhTxmJtbDfOeWyBsfCcme0v/DsvivIEzoWfKT0z7iOUeO0QR+SuhVied3J
-	f8th3OrtF8G3Daxd1S4YVHO0fRpZ2zzYpA/zDAQje+nA3Oqil3XO7UyvT5R5QVJLB1jtvAjwY77
-	hgWaNxf/A9ni0U4VRlpKjvbR0uQXJ/u3t/eAqxdy+2mUkf6jbBU
-X-Google-Smtp-Source: AGHT+IGq5X9mSPxxsAFmS7My9jVFZsDOIyBErQpUdlf+4yk/lCrnKIeVD1Y0clKPxw7cqtpmcqfo2g==
-X-Received: by 2002:a05:600c:4748:b0:431:59ab:15cf with SMTP id 5b1f17b1804b1-434d09c37bcmr15948935e9.19.1733220095018;
-        Tue, 03 Dec 2024 02:01:35 -0800 (PST)
+        bh=1oL/Eu1oFnM7Lq/a9MADW9dd1D0ZuUMkh3bz7/dA41Y=;
+        b=C/bVr63Jyi3dWe39ColYrZXj9NRlilhXj2ALlgSAAi8/GUYTuLDQigG0zRCfS4fTT6
+         mi65esoILKelWCawTU2T/P9yzf7t+L2Umzzu1dpczfEKvEX1HZAmzXnrhZ1w8rZd++dh
+         avN3Nn4FFJH5pJazIBrUsVKlbsR3VysXJiisPgm++S1EQdafOw9czDbBP3FKtq/1FNLl
+         cR2hpuTTQ3Yb4AyMT84mlcxn4JTzMELHGQKB+WH7AjYmzKo3L18LRN9KetBeOQRkgC+k
+         QUKG6kuaPZu2ubw8z0laMtExh5cWDWNbik78boKQqbvWoankEU9fhuI6OReFXkl1NIE0
+         x1Gg==
+X-Forwarded-Encrypted: i=1; AJvYcCWiHFhYttYcs/3mybUHGMcidPbXCyt4wihZIWYXYXKIriHD76XeKl2lUHupJBlRKNYmzNMn+Qee@vger.kernel.org
+X-Gm-Message-State: AOJu0YzNZVeE8Tpgy+3BpgMSa7TJSsF/VIjpKLUH2J36F7A4OLuIk6Hj
+	vGJbaP07vV/TPJ5XeikiWRVfH6uPLhXZvBMkrh86P8figNfXbXXTMcTBzBGzZgw=
+X-Gm-Gg: ASbGncuYMEv73FTTu0pBejX7Gkeh4d7QFH4cm3GAtp/lNhDglQwkXPcjUowiXR4M1a5
+	qqWSk0hDq5wy2vSLhNWSyyOJ0HcWCKAQX5Z2HGyfgPTTOegeRBVEGsm+t0VEWk5VmZrdzB/j2Ga
+	+WOPjkIUgF3qmx/imWlPMycPSyYFfdfA+gYdHMisvqsgTZ8fHVBOd9yxyaNAQkhNWq/MSM4Dxar
+	RusudUiv6jlFPUnWiOsHfVZP1+Ox0AoPr3qAlyedgpWKx98PQCP
+X-Google-Smtp-Source: AGHT+IGP+wf/uT+o8vDXMwC1hvUzbUJpXqnj3ziNpYlS/jQFsv7zchrVLXRh0KKHa1usVlCFg2O3Cw==
+X-Received: by 2002:a05:6000:78d:b0:385:fd26:f6e0 with SMTP id ffacd0b85a97d-385fd3cd5c6mr1704607f8f.18.1733220927155;
+        Tue, 03 Dec 2024 02:15:27 -0800 (PST)
 Received: from blackdock.suse.cz ([193.86.92.181])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434b0d9bc91sm188449525e9.9.2024.12.03.02.01.34
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434aa7d25c5sm214564325e9.28.2024.12.03.02.15.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Dec 2024 02:01:34 -0800 (PST)
-Date: Tue, 3 Dec 2024 11:01:33 +0100
+        Tue, 03 Dec 2024 02:15:26 -0800 (PST)
+Date: Tue, 3 Dec 2024 11:15:24 +0100
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
 To: Yafang Shao <laoar.shao@gmail.com>
 Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
 	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
 	bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, hannes@cmpxchg.org, 
 	surenb@google.com, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 2/4] sched: Don't account irq time if
+Subject: Re: [PATCH v5 3/4] sched, psi: Don't account irq time if
  sched_clock_irqtime is disabled
-Message-ID: <odrc34bhhsgvrbpwenhppuhoqonhwzd7gboiib27lkwdcblbd7@sp2nukpotx3u>
+Message-ID: <ghu7irmizgbyso5hjemwsgscfoigdtzufpfckxkvdqibeo63uo@kvzncpy2rlit>
 References: <20241108132904.6932-1-laoar.shao@gmail.com>
- <20241108132904.6932-3-laoar.shao@gmail.com>
+ <20241108132904.6932-4-laoar.shao@gmail.com>
+ <7pad3qmmmy2hgr5yqwwytj3wyjm3d5ebbqy4ix6boxkd34fc7c@ebdjg75tfgiq>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -89,41 +90,52 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ea4zwagibntp3e67"
+	protocol="application/pgp-signature"; boundary="efb3qc5jht7fzdid"
 Content-Disposition: inline
-In-Reply-To: <20241108132904.6932-3-laoar.shao@gmail.com>
+In-Reply-To: <7pad3qmmmy2hgr5yqwwytj3wyjm3d5ebbqy4ix6boxkd34fc7c@ebdjg75tfgiq>
 
 
---ea4zwagibntp3e67
+--efb3qc5jht7fzdid
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 08, 2024 at 09:29:02PM GMT, Yafang Shao <laoar.shao@gmail.com> =
+On Tue, Dec 03, 2024 at 11:01:41AM GMT, Michal Koutn=FD <mkoutny@suse.com> =
 wrote:
-> sched_clock_irqtime may be disabled due to the clock source, in which case
-> IRQ time should not be accounted. Let's add a conditional check to avoid
-> unnecessary logic.
+> On Fri, Nov 08, 2024 at 09:29:03PM GMT, Yafang Shao <laoar.shao@gmail.com=
+> wrote:
+> > sched_clock_irqtime may be disabled due to the clock source. When disab=
+led,
+> > irq_time_read() won't change over time, so there is nothing to account.=
+ We
+> > can save iterating the whole hierarchy on every tick and context switch.
+> >=20
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> > ---
+> >  kernel/sched/psi.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
 >=20
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> ---
->  kernel/sched/core.c | 44 +++++++++++++++++++++++---------------------
->  1 file changed, 23 insertions(+), 21 deletions(-)
+> Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
 
-This is actually a good catch!
+On second thought, similar guard may be useful in psi_show() too. Since
+there's a difference between zero pressure and unmeasured pressure (it'd
+fail with EOPNOTSUPP).
 
-Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
+(How common is it actually that tsc_init fails?)
 
---ea4zwagibntp3e67
+Michal
+
+--efb3qc5jht7fzdid
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ07W+wAKCRAt3Wney77B
-SUToAP0bf3KX+N5xm3vm8owfdlzAy/cVhQL1fm1fSrhXqDheCQD+Ks6ccQNENKEb
-o0qFsPqS2NnoPMupbIr+Hyuox4gA+As=
-=N/M7
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ07aOgAKCRAt3Wney77B
+SQp6AQDCofeL+RYVr6OoZ5Ku/ryrsGjAU/xUYeRLREz6RNOLswD+Mqy1fxDBv3bL
+jyX2QbOi3rrBurYl8eDsySO0VMuwIwk=
+=B8Jh
 -----END PGP SIGNATURE-----
 
---ea4zwagibntp3e67--
+--efb3qc5jht7fzdid--
 
