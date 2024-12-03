@@ -1,125 +1,123 @@
-Return-Path: <cgroups+bounces-5747-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5746-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81C449E2A76
-	for <lists+cgroups@lfdr.de>; Tue,  3 Dec 2024 19:11:15 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57AEA166CE7
-	for <lists+cgroups@lfdr.de>; Tue,  3 Dec 2024 18:11:12 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EF871FC7F0;
-	Tue,  3 Dec 2024 18:11:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OMujLNoO"
-X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 665649E2C29
+	for <lists+cgroups@lfdr.de>; Tue,  3 Dec 2024 20:38:30 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 880101FC0FD
-	for <cgroups@vger.kernel.org>; Tue,  3 Dec 2024 18:11:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88600B2B9B8
+	for <lists+cgroups@lfdr.de>; Tue,  3 Dec 2024 17:21:38 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11EB51FA240;
+	Tue,  3 Dec 2024 17:21:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="KX/JK9dn"
+X-Original-To: cgroups@vger.kernel.org
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4D311FA14D
+	for <cgroups@vger.kernel.org>; Tue,  3 Dec 2024 17:21:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733249468; cv=none; b=qtQDGy2pFHaR1ISvWTsJ53Ig/iKwBQhmyXyC9bEpcOKSKvrX2ltRx6MzSv3dKc4UC9rlPDdQeyh38otYZn6QaiBhh3UvVjORDeqTQzDZUJJh2Jhr6/HOepdT4sdGSe+uh6drI+E+lsDY2RBPXi5/AWe1xStPizu3GUS7Ssp45sM=
+	t=1733246493; cv=none; b=pWwI6NvMtz4yzzEeDWTKQ6LT+7rEs1Hzw8zc6RS0Slnhp7j3DEYvv53RkK2MKU4jQS0spBZIUu1Pe7K1ZAk46534r3DoaZhl4CbXvgnoTxtEywCxnmCQHcP4mnXlOzJP4wqECt9lCP2f/oV//AS3/h55TJm961pHheIXIXjHp2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733249468; c=relaxed/simple;
-	bh=k3VzcsYJANMAGGk69XkEJ1vmKo5QHfC/+lJZ4baayBQ=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=fx/siZlSgwTOUZ+Gcf7NsSyQtQ6umRsyKXX1Tw5J+V7KQ8RkMzaYiG0c53RaBJOdNXYCKkE5tbYrygtnj3Oi+Vl5IvDNKan24rcc6h2UhHgEuFBfkyZzbs29QaoMz9o300MXLPpvuA/r06fT0MWrSHOvBAkye557LYaGN+qdXSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OMujLNoO; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1733249465;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YNRcjw/KekyabOo7RK4b+13ZweRHEdK3B7dyQF8BEAk=;
-	b=OMujLNoOg67IFOJP3ajh+w8QByokAI7xPmcH8crcxGc7mMsisHkXAMcXOCIblXOjCpV9it
-	7wxauyhU65UeM3UHVA/VjoLNP8rTHJ+WB3iQHhVwoxcYYJJuD8krMLDs8u2G/Q6kJJYyL5
-	nyzibXD7MrxbCa7pDzHbtqG3ev/GMVM=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-624-r4-cXU2TNyOef7V8pYPcRA-1; Tue, 03 Dec 2024 13:11:04 -0500
-X-MC-Unique: r4-cXU2TNyOef7V8pYPcRA-1
-X-Mimecast-MFC-AGG-ID: r4-cXU2TNyOef7V8pYPcRA
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-6d886eb8e6dso69074946d6.2
-        for <cgroups@vger.kernel.org>; Tue, 03 Dec 2024 10:11:04 -0800 (PST)
+	s=arc-20240116; t=1733246493; c=relaxed/simple;
+	bh=UabdAmxW4iE3HCj923Mvs/XV3GeZRVmEV4euSp39PTI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KV26IM3/u3VHva7kb+vxthzv38V75OGOwHSaVSVGoGCPTTibgEv1uRrITxRMWtGIV6gvt+UBL61UPRbniXdtwWgpX3KQ5s3pe1H6tpFtOsW/tjPlA5wvE++5v45b4L67wsSvMHYKWMnewxcBsY3foT9gFkJHRZJpcHVf1wX11+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=KX/JK9dn; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-385e3621518so2876146f8f.1
+        for <cgroups@vger.kernel.org>; Tue, 03 Dec 2024 09:21:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1733246490; x=1733851290; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UabdAmxW4iE3HCj923Mvs/XV3GeZRVmEV4euSp39PTI=;
+        b=KX/JK9dnNw8P/YQqyowMXw5y7s4z9hn+6nmeRHba86UIEuDPJgZQy4R13rqCBREZ1o
+         4VwKgGyPbyYBaTSxmOklQnpGmS0dg79SlqelRBcN0btizg6HHuAkqInS/XVCJtAB7e1Y
+         1I0tXoDsozdjYRaF57OVuTJ55TYcOMHq0dNjGaQ2dFFXs1JLik8FzThowrrxtb1rUQ/s
+         4rKHYYMPpOaOXwXPWZGCuc8U4UoeOZ5qRH0wfTAheFnfgaskSk569cPI1ajpurwqXuIR
+         ekZkdR6CFxEc/bhXbZ+qvuY52oor0AUILZZeinZXddXu2cWlUin17r+Wy88Wb0raJXuZ
+         oBFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733249464; x=1733854264;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YNRcjw/KekyabOo7RK4b+13ZweRHEdK3B7dyQF8BEAk=;
-        b=NZULjNqG47nyRvpPC30ZVKO0zkjnJvzXKyAlvrYSqub1oObqaHDvymMXbSiDw1bqls
-         J4X305Lu3PRV9iqAPsoYt430vtmFoOfIv2KInfLzKs64epMK79g5FbQi4zFDg2EbiXI3
-         AmsVwc49H/8JsMPKx2WtDDVGmf6wQfRAwrhe1jK57bZbsZJJkpiZSKQTm/eb21d3cEDE
-         EnPlqMCsul3A/xU7wuzKKXrP8CBj0dSMTjQsk286ZQNPS/DaNj22IChI1AGXKoa3M3yl
-         p55UfVb6cIsP05XvJNbfHUGsfvOutzLowOEhbEdH/qBpU7/uIYv+cHR1szSI0m9vwxCs
-         CpEg==
-X-Forwarded-Encrypted: i=1; AJvYcCXtvhQz53hM36hJTDGZh2/I6kiCUXfAUGhK3wlmDcnPggEV0a5S8LE61bzeRPHH7kNhxEt7oSDt@vger.kernel.org
-X-Gm-Message-State: AOJu0YzXkxWcue/HoNhMZ0ejSmP7cagfn7tg6IMM1cE8ilqcLDUZnKdb
-	LXlWFVmEyLTh4QGO2fB1OEoauB2KSEREupR4ewp88tv3Qi8++BwBnFcfn6nDSzpEnmle8oXNqmI
-	91wSS6rgKvfJ/NGCvbRm7be4XitPE3p7wDHgH/KAyUAOVixb+CVIXixY=
-X-Gm-Gg: ASbGncshUYohAwxsDHFUn+MfzLZHBhPBJw8tcC/6Mv4yqY0zoxnQnlNLAWElIkXYR8d
-	JygcBpoxRPNIiNKc4bnfbwy7Wf1MLA5MGEI0Nbokh13pjeHSV5ml9vkvgPcz7UvWLG3u0gnGHKW
-	0wbhH4emsJfY3Yt+CwLj6RM6PBZPtI4RZfFViprAMOPYgjA4YkH6sSaIsMbaoHd45pG0z8pbmbG
-	RUbGvpdIrhpoC05nUUvBSLwNZuy/o3ZCJ6CGKQOF97/t7rTSbBtMJ2Op2T0Mz408+zP0Wu7BVsI
-	ivthdsOY09xXoDNXSQ==
-X-Received: by 2002:a05:6214:2683:b0:6d4:27fd:a99d with SMTP id 6a1803df08f44-6d8b736bf12mr55393966d6.19.1733249463828;
-        Tue, 03 Dec 2024 10:11:03 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHItFz5pbgu6NiS3RK7eDf2oYnjAmEEXaSpaC5Xaf8OxQN0zjiZG2K1X0Qdl+wi3VOAPQfNrQ==
-X-Received: by 2002:a05:6214:2683:b0:6d4:27fd:a99d with SMTP id 6a1803df08f44-6d8b736bf12mr55391666d6.19.1733249461923;
-        Tue, 03 Dec 2024 10:11:01 -0800 (PST)
-Received: from ?IPV6:2601:188:ca00:a00:f844:fad5:7984:7bd7? ([2601:188:ca00:a00:f844:fad5:7984:7bd7])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d88c634940sm47830456d6.130.2024.12.03.10.11.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Dec 2024 10:11:01 -0800 (PST)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <6f31fcdd-82d3-4d37-a730-607ad7ada260@redhat.com>
-Date: Tue, 3 Dec 2024 13:10:59 -0500
+        d=1e100.net; s=20230601; t=1733246490; x=1733851290;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UabdAmxW4iE3HCj923Mvs/XV3GeZRVmEV4euSp39PTI=;
+        b=pzZS4mCen9MbZCVS7qVjLwCQv90Uutz2gmAJl1ufvz3HIcnZsfIiSlcgmxACdtbSIv
+         xVoYF90nAh9tEw8jrJpkJzQMfVQVaNhlN25hfUsJy/MtSGPKpRuUmGnsiWtmDNHJ+vlh
+         rr/tZmEIGHD0dFMLks5Ym355MXP7PJYtz34CR03yVJN4walieiLDQVB6UKiEEURRpH9p
+         B+vitq60OFXCTVnr07peNaDYX72B26FFtxYZfBvHDX8+2a61FG/H7knfvcRJ7Sm8eUDJ
+         eHOvFhAF/8nCTxGG3KcwW/e5monpsZu494d6UJwJ5jSUbDKpxr9IfVzXljv5zqm6wIL0
+         ntRw==
+X-Forwarded-Encrypted: i=1; AJvYcCWARMMlLy+g0sTDbFgBGTLXhl3YJLnDyCscPjnHOEPbjScLOWtJBm2jEVDwFlJqIZ/Tox8suhLW@vger.kernel.org
+X-Gm-Message-State: AOJu0YzfGw39bBBwkKXI2Gzx3hZ6P77W+/OwBtJnP134x2b0ewu+TDnl
+	AehsXh1Lu4Vljj3eNmGvZeGjuH9HSp+12UfHbA8JUAZ1olvuvDdNnfJDtWs0Fp8=
+X-Gm-Gg: ASbGncucDFaNErskEVlikg7W+RRIs2tLUdQB7/U/CVJ0kbb499ZgIWuvOxIRLTxTsU7
+	1uvm+dBgIzm4H2U9ERYnh+lTpnmCHRYv8V5dnlMU2QPlyjbJJ23gXhml7iDcvFwHFopVFpcVuMi
+	zfSuZIJUNAAHUAIScBHRRdnmdaEbQ4CEh8yuA0P8CLpuioaONtYUwgi68rvhazS2s3C8T3Y+0QR
+	LAR3itMuj18O87wiIeFjktt7N3XKmGPdoD+6A6rnPHNTlCDoEbt
+X-Google-Smtp-Source: AGHT+IFAVLeR/VCqDDivv5WBkU6ndwqS+HtMqvj1VsZPkcypvVdGfMDVfTRGiVRLl8k2UTyFOb34pQ==
+X-Received: by 2002:a05:6000:1f88:b0:385:fb34:d585 with SMTP id ffacd0b85a97d-385fd422f21mr3008006f8f.34.1733246490004;
+        Tue, 03 Dec 2024 09:21:30 -0800 (PST)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-385deeb6acdsm13557678f8f.81.2024.12.03.09.21.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Dec 2024 09:21:29 -0800 (PST)
+Date: Tue, 3 Dec 2024 18:21:28 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Waiman Long <llong@redhat.com>
+Cc: Costa Shulyupin <costa.shul@redhat.com>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup/cpuset: Remove stale text
+Message-ID: <hjyhaosr2c5dsldlgzzsqedxzy3xd2e74ibtpxguz6ymbzqu2g@zs436iuhlnll>
+References: <20241203095414.164750-2-costa.shul@redhat.com>
+ <8a50e837-a1a0-4636-802b-4573c3779aca@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cgroup/cpuset: Remove stale text
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Waiman Long <llong@redhat.com>
-Cc: Costa Shulyupin <costa.shul@redhat.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20241203095414.164750-2-costa.shul@redhat.com>
- <8a50e837-a1a0-4636-802b-4573c3779aca@redhat.com>
- <hjyhaosr2c5dsldlgzzsqedxzy3xd2e74ibtpxguz6ymbzqu2g@zs436iuhlnll>
-Content-Language: en-US
-In-Reply-To: <hjyhaosr2c5dsldlgzzsqedxzy3xd2e74ibtpxguz6ymbzqu2g@zs436iuhlnll>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ni7zsj6n6jf2dduc"
+Content-Disposition: inline
+In-Reply-To: <8a50e837-a1a0-4636-802b-4573c3779aca@redhat.com>
 
 
-On 12/3/24 12:21 PM, Michal Koutný wrote:
-> On Tue, Dec 03, 2024 at 10:43:26AM GMT, Waiman Long <llong@redhat.com> wrote:
->> Thank for noticing the stale comment. There is actually no task's cpuset
->> pointer anymore.
-> Yeah, that likely evolved into task_struct.cgroup css_set pointer. The
-> "guidelines" for it are in sched.h/task_struct comments + comments for
-> struct cgroup_subsys_state.
-> Also, users may need css_get()/css_put() if they needs subsys state for
-> longer. (This info isn't actually cpuset specific.)
+--ni7zsj6n6jf2dduc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Yes, that is likely the case though I didn't trace back the git log to 
-figure out its exact evolution. Anyway, these information are optional 
-as it is not cpuset specific.
+On Tue, Dec 03, 2024 at 10:43:26AM GMT, Waiman Long <llong@redhat.com> wrote:
+> Thank for noticing the stale comment. There is actually no task's cpuset
+> pointer anymore.
 
-Cheers,
-Longman
+Yeah, that likely evolved into task_struct.cgroup css_set pointer. The
+"guidelines" for it are in sched.h/task_struct comments + comments for
+struct cgroup_subsys_state.
+Also, users may need css_get()/css_put() if they needs subsys state for
+longer. (This info isn't actually cpuset specific.)
 
+HTH,
+Michal
+
+--ni7zsj6n6jf2dduc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ08+FQAKCRAt3Wney77B
+SSKCAQD5u/68QHfqvtaQT1vC4ECCc5Ost7uNOG2bAMS6QeICqgD/XS/xB3P7ys1f
+mM4dOhUm6qULlkY1+KSiTv0mjwdkWQI=
+=Vuho
+-----END PGP SIGNATURE-----
+
+--ni7zsj6n6jf2dduc--
 
