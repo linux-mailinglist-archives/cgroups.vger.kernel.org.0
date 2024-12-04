@@ -1,31 +1,31 @@
-Return-Path: <cgroups+bounces-5757-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5753-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53B589E3BBA
-	for <lists+cgroups@lfdr.de>; Wed,  4 Dec 2024 14:53:29 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D179F9E3B88
+	for <lists+cgroups@lfdr.de>; Wed,  4 Dec 2024 14:44:31 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EC151644D1
-	for <lists+cgroups@lfdr.de>; Wed,  4 Dec 2024 13:53:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96A76285E3A
+	for <lists+cgroups@lfdr.de>; Wed,  4 Dec 2024 13:44:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90E701F668C;
-	Wed,  4 Dec 2024 13:53:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A8FC1E0E18;
+	Wed,  4 Dec 2024 13:44:27 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 917671F666A;
-	Wed,  4 Dec 2024 13:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B17621DFE1E;
+	Wed,  4 Dec 2024 13:44:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.105.120.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733320403; cv=none; b=NUJa7QkD1oQTGcULkJTtvRMWhD80+/5XjehAAS8kl+PFAa9JffcGpMe6xp9D+rK3xjuWa5AlhW4Cz+HRjewSuNFGeGDRcYEAjaRuQejYW7/xF7ex1VBPga5LoLAoDv/xXcWQE06VwckDFsaOmwRrCo3bpW3ODedr5DuZ7aW8rNU=
+	t=1733319866; cv=none; b=WS92T1ppHqU4cm+sLFu1E1BfqtxV56dD2ZM4kubmfJTuVqpvcOndeSutG25q+3rZrRRS15hQKtO5f7mojhmNoPluxv0TQVDnnvwwNSf/ndqKAUSZQOEM6tHeIKiou6rjnP7CTcR9rMrymMeeO1stnquTaz9hR73t9c6u7RQaT8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733320403; c=relaxed/simple;
-	bh=GIwdFJJPvtSLrhir3NZrvBk+WjaZYHX/SzE1gNK/0AQ=;
+	s=arc-20240116; t=1733319866; c=relaxed/simple;
+	bh=GN3wl70fzI/9qRoIrW148xySg7joMZwESyLvaLXIApM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QSyBUZAEG92bxnjirhot4e0EqKpo23V9QDlvVH9OX9VSc+67v6skk2TVEsbDURlZf5C3E7eFsBMpBD1+m5pAOTlAxjwpDEzQ9OO5st29uWwC6QskRVGqt+FcFu5wqFl19/DJzF2sFrFv0KIMcTSpJVY2TQiQHqqjvvPaFFFh3kM=
+	 MIME-Version; b=rtJLoOD5lE0ZxPRIvDsG7f2ejErNlbCtcrR47PbZBfJ4qmm61BuM+5VVFR8yNsjoZRzVR27yIQG4S+ShJysmer8163bbAtTB5zepdNf+mmSsbP28VhyOe7E81Ah9aLLyCtfqM3ApBjSSqC5lE9GHGapYhdohK59r8mIuGch3/9c=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lankhorst.se; spf=none smtp.mailfrom=mblankhorst.nl; arc=none smtp.client-ip=141.105.120.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lankhorst.se
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mblankhorst.nl
@@ -43,9 +43,9 @@ Cc: cgroups@vger.kernel.org,
 	linux-mm@kvack.org,
 	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
 	Maarten Lankhorst <dev@lankhorst.se>
-Subject: [PATCH v2 4/7] drm/xe: Implement cgroup for vram
-Date: Wed,  4 Dec 2024 14:44:04 +0100
-Message-ID: <20241204134410.1161769-5-dev@lankhorst.se>
+Subject: [PATCH v2 5/7] drm/amdgpu: Add cgroups implementation
+Date: Wed,  4 Dec 2024 14:44:05 +0100
+Message-ID: <20241204134410.1161769-6-dev@lankhorst.se>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241204134410.1161769-1-dev@lankhorst.se>
 References: <20241204134410.1161769-1-dev@lankhorst.se>
@@ -57,43 +57,37 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add vram based cgroup eviction to Xe.
-Most hardware with VRAM uses TTM for its management, and can be
-similarly trivially enabled.
+Similar to xe, enable some simple management of VRAM only.
 
 Co-developed-by: Maxime Ripard <mripard@kernel.org>
 Signed-off-by: Maxime Ripard <mripard@kernel.org>
 Signed-off-by: Maarten Lankhorst <dev@lankhorst.se>
 ---
- drivers/gpu/drm/xe/xe_ttm_vram_mgr.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/gpu/drm/xe/xe_ttm_vram_mgr.c b/drivers/gpu/drm/xe/xe_ttm_vram_mgr.c
-index c95728c45ea48..f4a16e5fa7700 100644
---- a/drivers/gpu/drm/xe/xe_ttm_vram_mgr.c
-+++ b/drivers/gpu/drm/xe/xe_ttm_vram_mgr.c
-@@ -5,6 +5,7 @@
-  */
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
+index 7d26a962f811c..f1703a746cadd 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c
+@@ -24,6 +24,7 @@
  
- #include <drm/drm_managed.h>
+ #include <linux/dma-mapping.h>
+ #include <drm/ttm/ttm_range_manager.h>
 +#include <drm/drm_drv.h>
  
- #include <drm/ttm/ttm_placement.h>
- #include <drm/ttm/ttm_range_manager.h>
-@@ -311,6 +312,13 @@ int __xe_ttm_vram_mgr_init(struct xe_device *xe, struct xe_ttm_vram_mgr *mgr,
+ #include "amdgpu.h"
+ #include "amdgpu_vm.h"
+@@ -908,6 +909,9 @@ int amdgpu_vram_mgr_init(struct amdgpu_device *adev)
  	struct ttm_resource_manager *man = &mgr->manager;
  	int err;
  
-+	if (mem_type != XE_PL_STOLEN) {
-+		const char *name = mem_type == XE_PL_VRAM0 ? "vram0" : "vram1";
-+		man->cg = drmm_cgroup_register_region(&xe->drm, name, size);
-+		if (IS_ERR(man->cg))
-+			return PTR_ERR(man->cg);
-+	}
-+
- 	man->func = &xe_ttm_vram_mgr_func;
- 	mgr->mem_type = mem_type;
- 	mutex_init(&mgr->lock);
++	man->cg = drmm_cgroup_register_region(adev_to_drm(adev), "vram", adev->gmc.real_vram_size);
++	if (IS_ERR(man->cg))
++		return PTR_ERR(man->cg);
+ 	ttm_resource_manager_init(man, &adev->mman.bdev,
+ 				  adev->gmc.real_vram_size);
+ 
 -- 
 2.43.0
 
