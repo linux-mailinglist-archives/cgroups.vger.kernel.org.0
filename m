@@ -1,85 +1,86 @@
-Return-Path: <cgroups+bounces-5750-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5751-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEA439E3151
-	for <lists+cgroups@lfdr.de>; Wed,  4 Dec 2024 03:18:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD45A9E315F
+	for <lists+cgroups@lfdr.de>; Wed,  4 Dec 2024 03:23:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D4B728747A
-	for <lists+cgroups@lfdr.de>; Wed,  4 Dec 2024 02:18:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38BE2B26D80
+	for <lists+cgroups@lfdr.de>; Wed,  4 Dec 2024 02:23:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62BF94EB51;
-	Wed,  4 Dec 2024 02:18:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 726F5848C;
+	Wed,  4 Dec 2024 02:23:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P+Q5Q/lh"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hk40L39Y"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com [209.85.219.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 949E62207A;
-	Wed,  4 Dec 2024 02:18:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A45D127453;
+	Wed,  4 Dec 2024 02:23:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733278714; cv=none; b=WZF59pDpGF2l1jzLp8wuJyJOlLX1C4NBiJksgWTnmhyB3+gvvIfwYadTKoCiW3g61+mg1V5mjv6ATf6N2oPINsh7fKAcMfqeyb19Zb9IzD2xUZCpYZefBLPmZn/DuPITP+RaPMrsPK1PyKxtK3NBDrd6RHgmcnvYhn4uGGTYAYk=
+	t=1733279021; cv=none; b=Z8KvFUt3MgfUKQ9PjyInzUeYXRMDCbGmgGhdKWCoWGE61K2ErSPYY4iGG6wyMceCd4YaTDZg95dnJ4E47e9Y16EhkvvHDbeDYDZzdR7/3idmeWEwy7SIlV/4uPlKq33X5zJ/ojjpQ6USJD8PgqZstb8HFoRsfwRYDQFYlDr+VS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733278714; c=relaxed/simple;
-	bh=a0Bu9rksufnsC4TmSv2GlG7C+X9KP7+t7rn0T3X5jJQ=;
+	s=arc-20240116; t=1733279021; c=relaxed/simple;
+	bh=55obrpIWgWy3J7/RbHbslApWkwqDE0PRWcjgLrlPw1I=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qBKUFsuTiJz0qowyjxnLgJIo/L6n3/XFHJar4t/9OLxNUFJroMawnqoI/h/x4wLGt1ZoTYCm09zDIOj0yP4FyFyjt0sfp+I+3gspyxL//F8IdMo406t18tx8SoTstjatNX/bTWobcfUJw56hl36c66FcaDCQRf5XH/KPfqfj1AA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P+Q5Q/lh; arc=none smtp.client-ip=209.85.219.53
+	 To:Cc:Content-Type; b=u3iGgqqzp597f0whNdVwPjejRQhiCf4HIp9qXLiQ1JvzZkvEX+tGCETuDR/Ln5NEyf7wYoh5AECwHfECWFMdXUGE3IFMrz3nDQswLx7TwW7hGhVa6EzoWoIVbCJn0wtjshUDhgFVuejivcAK9N2lddXdBoocQbbB5WgCZrajxWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hk40L39Y; arc=none smtp.client-ip=209.85.219.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6d8843c44cfso38771716d6.3;
-        Tue, 03 Dec 2024 18:18:32 -0800 (PST)
+Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6d8a7c1a579so18729496d6.1;
+        Tue, 03 Dec 2024 18:23:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733278711; x=1733883511; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733279018; x=1733883818; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=921iFcZNiyLxlZsenifClJ5i3QMrxCT5CBYEvG5L/hA=;
-        b=P+Q5Q/lhXeFDsereSbDrk43CdB2+NkAAW0Krohq7XKmlGiKvI19tu6Iu0jsGd0o0Ex
-         MYRdyJPH/u6A4WjdTxBlhFpV2MOe3cIsyX5vAtHMxLxGDP2thJDOJUBqtLKxUvbm0hrS
-         oh3bp2C46iQiNTRrLgNQ4Vm/9bUL12exCgv6Rskz3OXoyoBmANMvUBJlirpJ+a8cMyKz
-         DumRCW9o6Z/odQcatMvoReAVdut4Rzqohs00ZfB4yBuWXFTBSmsQhYXxift0y7gcsntQ
-         tPk3DxuqpYML4fIi+FEVpbGb/HzGvyv34J142oK2ngL2q3UYDycWoSrKATxcgmbSrq5I
-         LZzQ==
+        bh=V5eTGbVG1HfhIoKlt720PIeFcwXBaYyG1vENHl85c38=;
+        b=hk40L39Ytj8ngVPrWrgk6TZXHRAsX9AtLEgLB9LRdRub3k2Tk0j4BnC+AMB/FYVtSJ
+         eR8fQj1i5AaYldudqJQOtvjSPjlSHT3uJFqMVeKC8kq56SiM9oh/N6vIKX5suaInsY+F
+         3Yr8EIcziRdoRTNcjThZjCE7YBTFaiONDA0qWx/+3Ywe6r011gqKMHjhNzsQ9wf73VFQ
+         pGuiKlck4bhPAyYtT64+ljat7t9AqrN1FiwfSl/t0Zu86KVw3jybERUs+zrpzn27VRE6
+         F7MHaQW/4Oj1UaXGTuahDiDou1T/vD/lyXBGS74de1bcjBmOSmab+I5pjtpZiZsblF0f
+         c7jA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733278711; x=1733883511;
+        d=1e100.net; s=20230601; t=1733279018; x=1733883818;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=921iFcZNiyLxlZsenifClJ5i3QMrxCT5CBYEvG5L/hA=;
-        b=oIvHfSXCGukd+jc491Vfl2vEeRhz++lJ/eaSFIXWgu0f1VeKATd+DU8xPKPLDE7ac4
-         h+ZCR+nLzLR2NjDFF1o1oE4VEXq8sfpwjaOR2ugl9+wA20i7X8o0Y1tgk8D7Jc5je67C
-         MS/nsB7cw6q9ZIaOWsE6mfiMvZHKdnu3UwHPm50yjkGtZEX//rmp7fymRV6iFbimstow
-         VnU+hHbQ1Ph6R8xwLY/+hrLrslqYSSdaUV0xTmuZsLHaLOiU7pEYs0h6LSla8wrXz3y5
-         lKz1bo+NgbLb52//YCrdVKvJZlCg9ed/TWZ0hmWNYudEciEVFAygqjRnfJ9LQBYsQoZs
-         atxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVaJ0td7KQc1RMCqo6O1L9dvz8RvHHOr0AZ9V98u3iRr6cCU0wZMIS6DFrJROqeQztzGraAGWfsEAvrkc3g@vger.kernel.org, AJvYcCWZM7U6ECYqEfnkUTOgPdHYgEU2PocwuLR62o//BOCaChF2G1M6UtNyLAci8ywXOxDXfsDwT+b2@vger.kernel.org
-X-Gm-Message-State: AOJu0YxfwS/hExlfS2GjSpqSvcTLEgDb5/oVi7ex67us2VKtkhtUfG1M
-	VtypRvGgWdBw6j7rXRRYgifAQ4hKzgfEIP5VIY9KMCDYNRo8yLxpmoo6bFuw2tfAx75TZld3CYh
-	dMoQ43KNfVZ0S8/Q4dx48UV61EO0=
-X-Gm-Gg: ASbGncuZbO259C2s0oGbV/lOyILE1WIJvJB4OqY1rywn0GG5qG13tyqwqGFLHj4mlLU
-	WY8zSdDVPZdhVwyEGbNobRvgwJqWT3rJZ8A==
-X-Google-Smtp-Source: AGHT+IEL+W7xOVc87A3x0bzwCX3ANnSN8X7bvCIVQR0YcB3PiNo/ti7TJSBIMqmvrgNi9FHyr6ZDySa9Cn9EVCQ7+pQ=
-X-Received: by 2002:a05:6214:4001:b0:6d8:899e:c3be with SMTP id
- 6a1803df08f44-6d8b741cd6dmr65750856d6.49.1733278711440; Tue, 03 Dec 2024
- 18:18:31 -0800 (PST)
+        bh=V5eTGbVG1HfhIoKlt720PIeFcwXBaYyG1vENHl85c38=;
+        b=Fi8PzXR6RmDB7oNC6GGd09IxXO+Btsz5VzPDlGyBETBGFJ2HIHSmZrf38rYJ/iG1+/
+         tCZfnCRjx1tx727M3fqC8LMOK506E46LhVe29GhWSs6i9YU2voGw9e047+xtX4n9a+lN
+         e3Y6kx3Rjcyg0KrsmXeqcWHCn8l/3MlU7+xeoPen/HBZ33mxytllFObfAGt1/5O7ujPL
+         59Qutg4bugK9NbGq++zHWgDhzO7iCZlsNVrnpUln622/jruJAVXuoo6YzZTnhpf7vOhU
+         eQ/C1NFPO3au/mslosqSMKZPZGsX+XUVQfHyaaV2lTpkabaYJ0AMeSodvj+y1iHbe8Ig
+         YjEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWfmkFSiUeOG02sxXHrMVhVWuLLc8ESSUNSbx0loEHMQwFVz/BRqHcHJTL0RNIfK5eiqaGdkziK@vger.kernel.org, AJvYcCWoAurDYSUQSiGUs6MOLsNmXR8BKYKDbWRLW//PE5b+rY+ABPeEtCY0D5xHM6AOPBFII0VeysAIA66oTbBl@vger.kernel.org
+X-Gm-Message-State: AOJu0YyQVn1CVn1LP8vEpmVneRl1Io8une1M4Ihmsr0ATjFClroPi+dB
+	hwniPlx/6UzSDsEM/ybfFPPV5b72gdh/u9MbFH95q8WTn4AUvDnoqDmlwt2tLZTzI+q0Y3LIV7/
+	fKbUjQecP6UJRsKEiTIKhOubue3E=
+X-Gm-Gg: ASbGncsqdV/RR39Y7AKu1zOoZyvCCU0GCNdwD9lceeqBKAKxUhYCZjkSUdiZXlYZnBq
+	85lF91tugCRgq5Xs+H4gyoAvIfJAdlkvYyQ==
+X-Google-Smtp-Source: AGHT+IGdbbr+2LKvySUkG3K5Nao9hhs5gdvjzsl9x1b7AJuxomG8ixaN/jFIs2swyo2ayS6V/BmRCpOW37QTtc51fyg=
+X-Received: by 2002:ad4:5ca8:0:b0:6d8:b229:7b3d with SMTP id
+ 6a1803df08f44-6d8b6f4ab95mr72977006d6.0.1733279017385; Tue, 03 Dec 2024
+ 18:23:37 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241108132904.6932-1-laoar.shao@gmail.com> <20241108132904.6932-5-laoar.shao@gmail.com>
- <os5wmuytn2hg2bhbb2x4j3zzj6cpqropgop6lhwlxwqh2ufise@2pbrsxjyt6ct>
-In-Reply-To: <os5wmuytn2hg2bhbb2x4j3zzj6cpqropgop6lhwlxwqh2ufise@2pbrsxjyt6ct>
+References: <20241108132904.6932-1-laoar.shao@gmail.com> <20241108132904.6932-4-laoar.shao@gmail.com>
+ <7pad3qmmmy2hgr5yqwwytj3wyjm3d5ebbqy4ix6boxkd34fc7c@ebdjg75tfgiq> <ghu7irmizgbyso5hjemwsgscfoigdtzufpfckxkvdqibeo63uo@kvzncpy2rlit>
+In-Reply-To: <ghu7irmizgbyso5hjemwsgscfoigdtzufpfckxkvdqibeo63uo@kvzncpy2rlit>
 From: Yafang Shao <laoar.shao@gmail.com>
-Date: Wed, 4 Dec 2024 10:17:55 +0800
-Message-ID: <CALOAHbCSo3qcbPwGQBxc0dY=aTHLd6pw-Lpva0tS+gkU+x0K8Q@mail.gmail.com>
-Subject: Re: [PATCH v5 4/4] sched: Fix cgroup irq time for CONFIG_IRQ_TIME_ACCOUNTING
+Date: Wed, 4 Dec 2024 10:23:01 +0800
+Message-ID: <CALOAHbAmQ_4c7EuOb-7CT5g10hH12-jYm5_1joeWkcADg40g0g@mail.gmail.com>
+Subject: Re: [PATCH v5 3/4] sched, psi: Don't account irq time if
+ sched_clock_irqtime is disabled
 To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
 Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
 	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
@@ -88,77 +89,39 @@ Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 3, 2024 at 6:01=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.com=
+On Tue, Dec 3, 2024 at 6:15=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.com=
 > wrote:
 >
-> On Fri, Nov 08, 2024 at 09:29:04PM GMT, Yafang Shao <laoar.shao@gmail.com=
-> wrote:
-> > The system metric in cpuacct.stat is crucial in indicating whether a
-> > container is under heavy system pressure, including IRQ/softirq activit=
-y.
-> > Hence, IRQ/softirq time should be included in the cpuacct system usage,
-> > which also applies to cgroup2=E2=80=99s rstat.
->
-> (snipped from cover letter thread)
->
-> On Mon, Nov 18, 2024 at 08:12:03PM GMT, Yafang Shao <laoar.shao@gmail.com=
-> wrote:
-> > The key issue here is determining how to reliably get the IRQ. I don't
-> > believe there is a dependable way to achieve this.
+> On Tue, Dec 03, 2024 at 11:01:41AM GMT, Michal Koutn=C3=BD <mkoutny@suse.=
+com> wrote:
+> > On Fri, Nov 08, 2024 at 09:29:03PM GMT, Yafang Shao <laoar.shao@gmail.c=
+om> wrote:
+> > > sched_clock_irqtime may be disabled due to the clock source. When dis=
+abled,
+> > > irq_time_read() won't change over time, so there is nothing to accoun=
+t. We
+> > > can save iterating the whole hierarchy on every tick and context swit=
+ch.
+> > >
+> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> > > ---
+> > >  kernel/sched/psi.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
 > >
-> > For example, consider a server with 16 CPUs. My cgroup contains 4
-> > threads that can freely migrate across CPUs, while other tasks are
-> > also running on the system simultaneously. In this scenario, how can
-> > we accurately determine the IRQ to subtract?
+> > Reviewed-by: Michal Koutn=C3=BD <mkoutny@suse.com>
 >
-> I understand there's some IRQ noise which is a property of CPU (noise is
-> a function of cpu).
->
-> Then there're cgroup workloads, on a single CPU impact per-cgroup
-> depends how much that given cgroup runs on the CPU (it's more exposed).
-> Whole cgroup's impact is sum of these (i.e. it's kind of scalar product
-> between that IRQ noise per-cpu and cgroup's CPU consuption per-cpu).
->
-> (In your usage, there's some correlation of IRQ noise with CPU
-> consumption).
->
-> > That is precisely what the user wants. If my tasks are frequently
-> > interrupted by IRQs, it indicates that my service may be experiencing
-> > poor quality. In response, I would likely reduce the traffic sent to
-> > it. If the issue persists and IRQ interruptions remain high, I would
-> > then consider migrating the service to other servers.
->
-> If I look at
->         52b1364ba0b10 ("sched/psi: Add PSI_IRQ to track IRQ/SOFTIRQ press=
-ure")
-> (where it's clearer than after
->         ddae0ca2a8fe1 ("sched: Move psi_account_irqtime() out of update_r=
-q_clock_task() hotpath")
-> )
->
-> the IRQ pressure accounting takes into account the task (its cgroup) vs
-> IRQ time (~multiplication) and then its summed a) over time
-> (psi_account_irqtime()), b) over CPUs (collect_percpu_times()) so it's
-> the scalar product (squinting) I mentioned above.
->
-> Therefore I think irq.pressure provides exactly the information that's
-> relevant for your scheduling decisions and the info cannot be fit into
-> cpuacct.stat.
->
-> Or what is irq.pressure missing or distorting for your scenario?
+> On second thought, similar guard may be useful in psi_show() too. Since
+> there's a difference between zero pressure and unmeasured pressure (it'd
+> fail with EOPNOTSUPP).
 
-irq.pressure is a metric that operates independently of CPU
-utilization. It can be used to monitor whether latency spikes in a
-cgroup are caused by high IRQ pressure=E2=80=94this is exactly how we utili=
-ze
-it in our production environment.
+I'll update the psi_show() function in the next version.
 
-However, this metric alone doesn=E2=80=99t provide clear guidance on whethe=
-r
-to add or reduce CPUs for a workload. To address this, we=E2=80=99ve attemp=
-ted
-to combine irq.pressure with CPU utilization into a unified metric,
-but achieving this has proven to be challenging.
+>
+> (How common is it actually that tsc_init fails?)
+
+This is not a common scenario, but it can occur randomly across a large fle=
+et.
 
 --
 Regards
