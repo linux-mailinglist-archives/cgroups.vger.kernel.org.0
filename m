@@ -1,138 +1,112 @@
-Return-Path: <cgroups+bounces-5752-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5759-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B72D9E3838
-	for <lists+cgroups@lfdr.de>; Wed,  4 Dec 2024 12:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 325CE9E3BC1
+	for <lists+cgroups@lfdr.de>; Wed,  4 Dec 2024 14:53:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7783416239A
-	for <lists+cgroups@lfdr.de>; Wed,  4 Dec 2024 11:04:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07A30164003
+	for <lists+cgroups@lfdr.de>; Wed,  4 Dec 2024 13:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E7B01B218B;
-	Wed,  4 Dec 2024 11:04:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BD781F7583;
+	Wed,  4 Dec 2024 13:53:24 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0DFD16F851;
-	Wed,  4 Dec 2024 11:04:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 917C21F6673;
+	Wed,  4 Dec 2024 13:53:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.105.120.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733310292; cv=none; b=AzEh0tYoU+NxZny4t8gtR5J64g9pWEzMezveMDjrfgyn0tp7LRi/vYxnZOkuYVQFIsFE1LEXal3ASQ4p6Abruc/QQy1aPJUqIo/C6LtVpF2viLBvuWWayAUSON7OZLbyhh9463XkFtXv7bjhJ25II1LKcm+QI4o2zQYYq9KtDHY=
+	t=1733320404; cv=none; b=WkqK45/Vxe5ZMbla10UgL95JCfeYC6C7gw5knKWnP//XVWD+rrE5/0V89wciOjRhpYmEHqhSOFIhEe1gP1EC4q5TSZvPC7vwRbtmbQQMGLlPS7Avw+gM0++mZhSnhNf/NBFe0L3fyndpW6U0vLcKv42GzsqZWCQZa+G/mKHzkDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733310292; c=relaxed/simple;
-	bh=pfdWCCU3zg2HoIKV9BlVcVjxYju5eAMX7FU0CJL+T7U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=p/4xDpL6lhZYfcWx+AQVP+iBzqAWuN2ErCxpEvpFDV6JDESnEWQDHinOYTR5HNfYFBjZn2lDMSX3EI+2Q1SZTZxCG2NmXTpe4WW7cu59j2dQDDAm1Flzm7WosBjTnWzUDX5vlbV3S+yjZE1LcjieXA7VXV9H6k/6mXLHsRf10NE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4349f160d62so54606225e9.2;
-        Wed, 04 Dec 2024 03:04:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733310289; x=1733915089;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5nWpVhGiEzkzR14cfmahgSoPpiD27clH2JUCpX9Y4GI=;
-        b=VMChLEWPK/3Gx4Tl8eAHXY8+KTHb6ktnXG2Y+Ddr0+A81UF9uPKNl3elJxaa6omJlq
-         zD+uH5EOEDLVZC0VyJaAFzHfdfoHuL8FyzKMiactkN+3CItPXvpwq3Hj2PdSnl0iTWNg
-         a+zgBawJgwLZ7L8nQ6YChMG1r22ToDQVtv5WGNfnf949H+M706enf7sU9pfKlHObG9OY
-         PiihAOCYOLtuNjXLV31ITITRjZ+BpVsLXt3+gvC7XhJeXY9DZdpzDDHaPLTDhKVxDanF
-         h7MNcS80MCprQ8KegPDAG+uT2wtg9cHYQ6jvmt+qUl8rDd/64l3IvJsz5tVM6zXZqNwN
-         KmmA==
-X-Forwarded-Encrypted: i=1; AJvYcCVRAt9Lt9D89M59HNM6dlp3V7X4Ql4QpJCblziDjej3TEodk3J/IYv82x38L6MAhrypONnKUk4rkoBPx0DW@vger.kernel.org, AJvYcCXFDCNKs529MjVQ1tZea5Nz8JN0C1XGWPFUKbLmi0GS3EJQzd0k41QbPvXT2e8IZeiLtDJk0PI9@vger.kernel.org
-X-Gm-Message-State: AOJu0YyT4SRtgTRQgos1vspw/nLl1RJWyaASMo5e+pg1Aobgn0DuqlVb
-	HyfL3XTqGuE/MiuCrbg4Ce5WBobs6EqCzwrP9UPL4QZmtAo03Pjb8+kdrmPjV8A=
-X-Gm-Gg: ASbGnct48p80TV2MCFlh1qYDQW06DjWh+lbKB8jqv0iLDj8yaJ9IgpVODC89NEyHWvP
-	8g7aF8LiNOLSepdmi/wZ/UQ8I86l+COz8BLzc4+uKLFpod4XfaV3QICy4coZKS2vpXKljvo44gC
-	onR0+N7AdNyJefMku86JevmTq1rX/PycQJfZtcOWXewBGPIPpThVtNcmFKnNz/dOhiWylYysd6L
-	Pg49edpcdNnTQdJoT0HA6fB08xuuEJfQvfduZBeTxjOuye7N/2WQVVF+VtKpe9fZLs=
-X-Google-Smtp-Source: AGHT+IF11i6X+UX63otizZi1hsbf9AYk/HOswsNDjbQusJRV2va98zAhq1wnwgU2U2BVZkKnLxd0kA==
-X-Received: by 2002:a05:6000:2aa:b0:385:ef2f:92ad with SMTP id ffacd0b85a97d-385fd3c5699mr5634068f8f.10.1733310288788;
-        Wed, 04 Dec 2024 03:04:48 -0800 (PST)
-Received: from costa-tp.redhat.com ([2a00:a041:e280:5300:9068:704e:a31a:c135])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-385de98d618sm15410843f8f.90.2024.12.04.03.04.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Dec 2024 03:04:48 -0800 (PST)
-From: Costa Shulyupin <costa.shul@redhat.com>
-To: Waiman Long <longman@redhat.com>,
+	s=arc-20240116; t=1733320404; c=relaxed/simple;
+	bh=PEDJuVP8trf41FCvKtNf3IJuUbqCJyuI8yDfBms9yGA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HlMyGczg2NGEJ0MxlT398T/Jsf9Oe75K3APw1awEYOviZhPXjvdiNpC/OwV/uSiSbGjgxPjIz3vyFEOxNQmrZhfmOrRcMtZOIQIHb7ye8a8xvE0LYRqayEdp32bCnv/ws7Xzo8vbDY2bBcm+0NGS5GVbW5F3Il27rlrOycfLArY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lankhorst.se; spf=none smtp.mailfrom=mblankhorst.nl; arc=none smtp.client-ip=141.105.120.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lankhorst.se
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mblankhorst.nl
+From: Maarten Lankhorst <dev@lankhorst.se>
+To: linux-kernel@vger.kernel.org,
+	intel-xe@lists.freedesktop.org,
+	dri-devel@lists.freedesktop.org,
 	Tejun Heo <tj@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
 	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Costa Shulyupin <costa.shul@redhat.com>
-Subject: [PATCH v2] cgroup/cpuset: Remove stale text
-Date: Wed,  4 Dec 2024 13:04:41 +0200
-Message-ID: <20241204110442.348402-1-costa.shul@redhat.com>
-X-Mailer: git-send-email 2.47.0
+	Andrew Morton <akpm@linux-foundation.org>,
+	Friedrich Vock <friedrich.vock@gmx.de>,
+	Maxime Ripard <mripard@kernel.org>
+Cc: cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maarten Lankhorst <dev@lankhorst.se>
+Subject: [PATCH v2 0/7] kernel/cgroups: Add "dmem" memory accounting cgroup.
+Date: Wed,  4 Dec 2024 14:44:00 +0100
+Message-ID: <20241204134410.1161769-1-dev@lankhorst.se>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Task's cpuset pointer was removed by
-commit 8793d854edbc ("Task Control Groups: make cpusets a client of cgroups")
+New update. Instead of calling it the 'dev' cgroup, it's now the 'dmem' cgroup.
 
-Paragraph "The task_lock() exception ...." was removed by
-commit 2df167a300d7 ("cgroups: update comments in cpuset.c")
+Because it only deals with memory regions, the UAPI has been updated to use dmem.min/low/max/current, and to make the API cleaner, the names are changed too.
 
-Remove stale text:
+dmem.current could contain a line like:
+"drm/0000:03:00.0/vram0 1073741824"
 
- We also require taking task_lock() when dereferencing a
- task's cpuset pointer. See "The task_lock() exception", at the end of this
- comment.
+But I think using "drm/card0/vram0" instead of PCIID would perhaps be good too. I'm open to changing it to that based on feedback.
 
- Accessing a task's cpuset should be done in accordance with the
- guidelines for accessing subsystem state in kernel/cgroup.c
+I've created an IGT test for min and max, and found the changes
+from Friedrich Vock sent as feedback were needed.
+I've integrated those into the first patch.
 
-and reformat.
+Maarten Lankhorst (5):
+  kernel/cgroup: Add "dmem" memory accounting cgroup
+  drm/ttm: Handle cgroup based eviction in TTM
+  drm/xe: Implement cgroup for vram
+  drm/amdgpu: Add cgroups implementation
+  drm/xe: Hack to test with mapped pages instead of vram.
 
-Co-developed-by: Michal Koutný <mkoutny@suse.com>
-Co-developed-by: Waiman Long <longman@redhat.com>
-Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+Maxime Ripard (2):
+  drm/drv: Add drmm managed registration helper for dmem cgroups.
+  drm/gem: Add cgroup memory accounting for VRAM helper.
 
----
-v2: Address comments
+ Documentation/admin-guide/cgroup-v2.rst       |  58 +-
+ Documentation/core-api/cgroup.rst             |   9 +
+ Documentation/core-api/index.rst              |   1 +
+ Documentation/gpu/drm-compute.rst             |  54 ++
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c  |   4 +
+ drivers/gpu/drm/drm_drv.c                     |  32 +
+ drivers/gpu/drm/drm_gem_vram_helper.c         |  15 +-
+ drivers/gpu/drm/ttm/tests/ttm_bo_test.c       |  18 +-
+ .../gpu/drm/ttm/tests/ttm_bo_validate_test.c  |   4 +-
+ drivers/gpu/drm/ttm/tests/ttm_resource_test.c |   2 +-
+ drivers/gpu/drm/ttm/ttm_bo.c                  |  54 +-
+ drivers/gpu/drm/ttm/ttm_resource.c            |  23 +-
+ drivers/gpu/drm/xe/xe_ttm_sys_mgr.c           |   5 +
+ drivers/gpu/drm/xe/xe_ttm_vram_mgr.c          |   8 +
+ include/drm/drm_drv.h                         |   5 +
+ include/drm/ttm/ttm_resource.h                |  12 +-
+ include/linux/cgroup_dmem.h                   |  67 ++
+ include/linux/cgroup_subsys.h                 |   4 +
+ include/linux/page_counter.h                  |   2 +-
+ init/Kconfig                                  |  10 +
+ kernel/cgroup/Makefile                        |   1 +
+ kernel/cgroup/dmem.c                          | 861 ++++++++++++++++++
+ mm/page_counter.c                             |   4 +-
+ 23 files changed, 1219 insertions(+), 34 deletions(-)
+ create mode 100644 Documentation/core-api/cgroup.rst
+ create mode 100644 Documentation/gpu/drm-compute.rst
+ create mode 100644 include/linux/cgroup_dmem.h
+ create mode 100644 kernel/cgroup/dmem.c
 
----
- kernel/cgroup/cpuset.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index d5d2b4036314..ee62207fee9f 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -207,10 +207,8 @@ static struct cpuset top_cpuset = {
- 
- /*
-  * There are two global locks guarding cpuset structures - cpuset_mutex and
-- * callback_lock. We also require taking task_lock() when dereferencing a
-- * task's cpuset pointer. See "The task_lock() exception", at the end of this
-- * comment.  The cpuset code uses only cpuset_mutex. Other kernel subsystems
-- * can use cpuset_lock()/cpuset_unlock() to prevent change to cpuset
-+ * callback_lock. The cpuset code uses only cpuset_mutex. Other kernel
-+ * subsystems can use cpuset_lock()/cpuset_unlock() to prevent change to cpuset
-  * structures. Note that cpuset_mutex needs to be a mutex as it is used in
-  * paths that rely on priority inheritance (e.g. scheduler - on RT) for
-  * correctness.
-@@ -239,9 +237,6 @@ static struct cpuset top_cpuset = {
-  * The cpuset_common_seq_show() handlers only hold callback_lock across
-  * small pieces of code, such as when reading out possibly multi-word
-  * cpumasks and nodemasks.
-- *
-- * Accessing a task's cpuset should be done in accordance with the
-- * guidelines for accessing subsystem state in kernel/cgroup.c
-  */
- 
- static DEFINE_MUTEX(cpuset_mutex);
 -- 
-2.47.0
-
+2.43.0
 
