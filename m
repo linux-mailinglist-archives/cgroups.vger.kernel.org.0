@@ -1,42 +1,42 @@
-Return-Path: <cgroups+bounces-5773-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5769-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0F3F9E638B
-	for <lists+cgroups@lfdr.de>; Fri,  6 Dec 2024 02:45:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F0EB9E6382
+	for <lists+cgroups@lfdr.de>; Fri,  6 Dec 2024 02:45:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BD01316A3CA
-	for <lists+cgroups@lfdr.de>; Fri,  6 Dec 2024 01:45:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03F1816A352
+	for <lists+cgroups@lfdr.de>; Fri,  6 Dec 2024 01:45:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8753613D278;
-	Fri,  6 Dec 2024 01:45:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BDA9145A18;
+	Fri,  6 Dec 2024 01:45:09 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B77214A604;
-	Fri,  6 Dec 2024 01:45:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8FD313C677;
+	Fri,  6 Dec 2024 01:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733449513; cv=none; b=dC8atcsZsyUlUKN/qGTQnfH6+x+WMyLZsHqgnRU+Lrfv/dln+ZSA5sMW6woFCbWtZe5f5tUm4oUVOnCIaFNpAyeW9V/ais3lS+fwOQpojH1Bq8qtqS5VVUP8wzj9a8ocJnSsdrvYQYUt3/3D1AcSYOOFrDMbxvvnSkJKo/6hTx4=
+	t=1733449509; cv=none; b=Z7UhNtc16ElIK+TN4Sz+RQ+POSUHhm4g9b6t9TfUpn/kTh6UKSUKUdl88y9NNIS/KUNtU7j2JjTXbm11w1yNwaqAWbIVmV9KmHAGgCNyBoZ2WzaXzheaPOPvDzzFUUK3CHf5msA90dw9WoMhvwRmrb05jyxkRNL6s5MhkeB85ZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733449513; c=relaxed/simple;
-	bh=5NIVHoNTYmy53iA2xRTjTNUa/52SwZ1MYgL3VSs7M1E=;
+	s=arc-20240116; t=1733449509; c=relaxed/simple;
+	bh=BVAAda1tLg5pIMwh4c9Z4Tb7TM1e9QabNLUmbZrnPNA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=N5n0c6ZpwklNIOFgIPiwMSuRqnJfLOYcFgOamOb8z4SdcMSMg3kPTwHUKbJkJzwUB41qFsDF77vdExpgcSAEBmB/0lhVau/HzRCAZc4M4Dg2vNrJLgMcZ95IcEAaHi59kcmvoUca8PMj0azxuiXOiaGle+Yoi+3kSrs7QcbUifI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=rXRKpCdpefW2mUikSv12CgGKgfXJZ+uQP1bhIybtRDc36NLJxBSGQq7aFiFT+tcO0Kt1n264YFJmc2QrABXwkperQHUVMhreKNBg6VPTeib0Bv0oWyr8ROyIR3hhm3vMBjtM07WPhgsbcoz54FaYXR8StkpdtWiTYfEqHecn8Yc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Y4Db45DVXz4f3jqx;
-	Fri,  6 Dec 2024 09:44:48 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Y4DZz5760z4f3jR1;
+	Fri,  6 Dec 2024 09:44:43 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id C39491A07B6;
+	by mail.maildlp.com (Postfix) with ESMTP id BBCAD1A018D;
 	Fri,  6 Dec 2024 09:45:02 +0800 (CST)
 Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP4 (Coremail) with SMTP id gCh0CgD30oYKV1JnkkskDw--.31315S4;
+	by APP4 (Coremail) with SMTP id gCh0CgD30oYKV1JnkkskDw--.31315S5;
 	Fri, 06 Dec 2024 09:45:02 +0800 (CST)
 From: Chen Ridong <chenridong@huaweicloud.com>
 To: akpm@linux-foundation.org,
@@ -53,9 +53,9 @@ Cc: linux-mm@kvack.org,
 	cgroups@vger.kernel.org,
 	chenridong@huawei.com,
 	wangweiyang2@huawei.com
-Subject: [next -v1 2/5] memcg: call the free function when allocation of pn fails
-Date: Fri,  6 Dec 2024 01:35:09 +0000
-Message-Id: <20241206013512.2883617-3-chenridong@huaweicloud.com>
+Subject: [next -v1 3/5] memcg: simplify the mem_cgroup_update_lru_size function
+Date: Fri,  6 Dec 2024 01:35:10 +0000
+Message-Id: <20241206013512.2883617-4-chenridong@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20241206013512.2883617-1-chenridong@huaweicloud.com>
 References: <20241206013512.2883617-1-chenridong@huaweicloud.com>
@@ -66,12 +66,12 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgD30oYKV1JnkkskDw--.31315S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7WFWUuFykKFWktw1xCr13CFg_yoW8uF13pa
-	nxta45Z3y5Jr4UWa1fKa4jva4rAa18Xw4UW34xtr1SkFnIqwnYqr12vw1S9ry5CFyfXrnr
-	tr98Aw1xK39FkrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmlb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
+X-CM-TRANSID:gCh0CgD30oYKV1JnkkskDw--.31315S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxJryftr4ruw4ftw4xGFWrGrg_yoW8Jw1Upw
+	srCa4Fya4rZry3XwnrtFn8uayfAa18tay8A343Xw13Jr13K340934DKrW8WFW7Xa4kCF43
+	XFWDJr4ft3yDZr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUmGb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
 	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
 	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
 	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
@@ -81,79 +81,56 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7WFWUuFykKFWktw1xCr13CFg_yoW8uF13pa
 	0_Jw0_GFyl42xK82IYc2Ij64vIr41l4c8EcI0Ec7CjxVAaw2AFwI0_Jw0_GFyl4I8I3I0E
 	4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
 	WUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
-	Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rV
-	WUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4U
-	JbIYCTnIWIevJa73UjIFyTuYvjxUob18DUUUU
+	Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6xAIw20EY4v20xvaj4
+	0_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8
+	JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbd-BtUUUUU==
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 From: Chen Ridong <chenridong@huawei.com>
 
-The 'free_mem_cgroup_per_node_info' function is used to free
-the 'mem_cgroup_per_node' struct. Using 'pn' as the input for the
-free_mem_cgroup_per_node_info function will be much clearer.
-Call 'free_mem_cgroup_per_node_info' when 'alloc_mem_cgroup_per_node_info'
-fails, to free 'pn' as a whole, which makes the code more cohesive.
+In the `mem_cgroup_update_lru_size` function, the `lru_size` should be
+updated by adding `nr_pages` regardless of whether `nr_pages` is greater
+than 0 or less than 0. To simplify this function, add a check for
+`nr_pages` == 0. When `nr_pages` is not equal to 0, perform the same
+actions.
 
 Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- mm/memcontrol.c | 27 ++++++++++++---------------
- 1 file changed, 12 insertions(+), 15 deletions(-)
+ mm/memcontrol.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index fc18633aba5d..da6e4e9bd0fa 100644
+index da6e4e9bd0fa..f977e0be1c04 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -3434,6 +3434,16 @@ struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino)
+@@ -1280,15 +1280,14 @@ void mem_cgroup_update_lru_size(struct lruvec *lruvec, enum lru_list lru,
+ 	unsigned long *lru_size;
+ 	long size;
+ 
+-	if (mem_cgroup_disabled())
++	if (mem_cgroup_disabled() || !nr_pages)
+ 		return;
+ 
+ 	mz = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+ 	lru_size = &mz->lru_zone_size[zid][lru];
+ 
+-	if (nr_pages < 0)
+-		*lru_size += nr_pages;
+ 
++	*lru_size += nr_pages;
+ 	size = *lru_size;
+ 	if (WARN_ONCE(size < 0,
+ 		"%s(%p, %d, %d): lru_size %ld\n",
+@@ -1296,9 +1295,6 @@ void mem_cgroup_update_lru_size(struct lruvec *lruvec, enum lru_list lru,
+ 		VM_BUG_ON(1);
+ 		*lru_size = 0;
+ 	}
+-
+-	if (nr_pages > 0)
+-		*lru_size += nr_pages;
  }
- #endif
  
-+static void free_mem_cgroup_per_node_info(struct mem_cgroup_per_node *pn)
-+{
-+	if (!pn)
-+		return;
-+
-+	free_percpu(pn->lruvec_stats_percpu);
-+	kfree(pn->lruvec_stats);
-+	kfree(pn);
-+}
-+
- static bool alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
- {
- 	struct mem_cgroup_per_node *pn;
-@@ -3458,23 +3468,10 @@ static bool alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
- 	memcg->nodeinfo[node] = pn;
- 	return true;
- fail:
--	kfree(pn->lruvec_stats);
--	kfree(pn);
-+	free_mem_cgroup_per_node_info(pn);
- 	return false;
- }
- 
--static void free_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
--{
--	struct mem_cgroup_per_node *pn = memcg->nodeinfo[node];
--
--	if (!pn)
--		return;
--
--	free_percpu(pn->lruvec_stats_percpu);
--	kfree(pn->lruvec_stats);
--	kfree(pn);
--}
--
- static void __mem_cgroup_free(struct mem_cgroup *memcg)
- {
- 	int node;
-@@ -3482,7 +3479,7 @@ static void __mem_cgroup_free(struct mem_cgroup *memcg)
- 	obj_cgroup_put(memcg->orig_objcg);
- 
- 	for_each_node(node)
--		free_mem_cgroup_per_node_info(memcg, node);
-+		free_mem_cgroup_per_node_info(memcg->nodeinfo[node]);
- 	memcg1_free_events(memcg);
- 	kfree(memcg->vmstats);
- 	free_percpu(memcg->vmstats_percpu);
+ /**
 -- 
 2.34.1
 
