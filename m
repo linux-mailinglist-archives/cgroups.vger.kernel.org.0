@@ -1,84 +1,208 @@
-Return-Path: <cgroups+bounces-5782-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5783-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C88129E7AF0
-	for <lists+cgroups@lfdr.de>; Fri,  6 Dec 2024 22:28:48 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D9C11889DEB
-	for <lists+cgroups@lfdr.de>; Fri,  6 Dec 2024 21:26:12 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0A921A951;
-	Fri,  6 Dec 2024 21:20:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LPQ7V0FC"
-X-Original-To: cgroups@vger.kernel.org
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69A1B9E84F9
+	for <lists+cgroups@lfdr.de>; Sun,  8 Dec 2024 13:16:04 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F99421A94C
-	for <cgroups@vger.kernel.org>; Fri,  6 Dec 2024 21:20:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AF742811D7
+	for <lists+cgroups@lfdr.de>; Sun,  8 Dec 2024 12:16:03 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17E0B142624;
+	Sun,  8 Dec 2024 12:16:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=friedrich.vock@gmx.de header.b="EdKPHgJw"
+X-Original-To: cgroups@vger.kernel.org
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CD38BA4B;
+	Sun,  8 Dec 2024 12:15:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733520034; cv=none; b=atVCt/tiYX/2dUXivbMU80W87gy4KzzlAppzur1o1fi/4kyCJQodL4md97zYSplMJHpqIhvcbYcs1XN8F+GcezLpwT+OhfTt7lrZgzZOgNFREjXn2+CFnVLbqrNvH4CkyjNeD2MRFLRDL2BOM/dHdGpYkHEUDh3FCHUqAJyzG1o=
+	t=1733660159; cv=none; b=jnkj5rlF3iJhHKueo/oK2hJs1UfviStEhyMQSrbvLsdEo/7TU+Rg4HRIHPqblFXRjKZfJDHJUAIopE1hODY828tNh15JKvxP4IgJrd+VbR2uLtY2IcPbDQZ2MSiru8HVVd+0RiyfmGtYF2XT9H6hUZgmntsnsZTDdqGxikgblOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733520034; c=relaxed/simple;
-	bh=/94yjHWQ3G8tlIAynio7AeBwA+RiSutb49WEv1QueHU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FEuiJFStkdJVWPsq7sw6s+OIhZxryViv++GatgfEb7lTZKoQTVVnwqPXpBohjx4d5ShQ2kLnVBXdsbiAWfl6GQJam6VFmgGQPBP8Az9cC0DA+IEVDu0wP6+fqRfznyVwMB8DQEuvYODLCmnUx0HN/j+GEAYfn/2z0m04tiw0Fr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LPQ7V0FC; arc=none smtp.client-ip=95.215.58.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 6 Dec 2024 13:20:23 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1733520030;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XrpWAnhs6ZQvQvyxIqn9Hy0WnK1+L1jfbuNM5R/qsyM=;
-	b=LPQ7V0FCg8YdnNhBd1fDSqLT45vBjJiaBvCuucjXf4BCu1dGQTSDHnScayMny9j48hDHox
-	cMHoYhYDC8O3UzonV0esj2hOmy3KGZqQxnI8CRpK6ZBe6bJCp8a9vpPb7dXD6FETnLMFVQ
-	msrNSQ9M2mtxUkzXSpF3vLLgKwTCras=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Hugh Dickins <hughd@google.com>
-Cc: Chen Ridong <chenridong@huaweicloud.com>, Yu Zhao <yuzhao@google.com>, 
-	akpm@linux-foundation.org, mhocko@kernel.org, hannes@cmpxchg.org, yosryahmed@google.com, 
-	roman.gushchin@linux.dev, muchun.song@linux.dev, davidf@vimeo.com, vbabka@suse.cz, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	chenridong@huawei.com, wangweiyang2@huawei.com
-Subject: Re: [next -v1 3/5] memcg: simplify the mem_cgroup_update_lru_size
- function
-Message-ID: <xuhsdsl2bhlrlaghar3ru7nhlhjsmaiyjxayryogylsordbwcx@e2jxsb2qdbhd>
-References: <20241206013512.2883617-1-chenridong@huaweicloud.com>
- <20241206013512.2883617-4-chenridong@huaweicloud.com>
- <CAOUHufbCCkOBGcSPZqNY+FXcrH8+U7_nRvftzOzKUBS4hn+kuQ@mail.gmail.com>
- <897b04c9-dba3-44ae-8113-145ca3457cb3@huaweicloud.com>
- <edab8d46-7c03-4bf5-fe1c-0150cdf4d96a@google.com>
+	s=arc-20240116; t=1733660159; c=relaxed/simple;
+	bh=n3hMlh35N4fAdrNPeUjRyYjFwN7yyswQbJ1QgvMueA8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uDhuh8+yG1BK95nOE8j1K5nVr7GxdgSyuTGFl1eg6V8QgZjujINiwwWnnWZD+lad9PExiQBF10Kxqw8U421vm9jEk3DS8kx+s4qULXryTiajLFJmbH+jQFnfBcwR2bFczGOHZd+E8Qw3ImuyqS6+9iX8foyw5hJhxIWV4loJPT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=friedrich.vock@gmx.de header.b=EdKPHgJw; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1733660136; x=1734264936; i=friedrich.vock@gmx.de;
+	bh=BLAbvkpLslpLzb0lubH4OtDMnvi3SfW5XkcUzyWKVW4=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=EdKPHgJwS5oEAs0DAmTwgWExnkDV5Fyrkrfdr3HuVZRRQ4ipNlKrXM683f54O279
+	 lg4oKYcyFlZj1wAro+5mYBUskrd6bgpm4HmRCP3AKEs3zwk69mOEtle59yU5D9o1l
+	 9YL45oRUXhtxpeI6ZQnjydmQ3lWwYOwCe5g9OU8o5QD0h1EBrZoc7Adz3skxPrac8
+	 47ZYSs0RqVg1g4uCdZ9uLsIzyZj6dsGoIjXogGNqx944VxQrLV2/rUg691Od1mGXN
+	 wB8ec3e7zrKQM4ale9+vbW9UgQEsy/YOSIO7dPDh2wmRtG8TFnvj42ZjGQygMcA5L
+	 v0BILk4yK1/8jgGcLg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.0.3] ([109.91.201.165]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MMGRA-1t2B5C1wYg-00W7PB; Sun, 08
+ Dec 2024 13:15:36 +0100
+Message-ID: <29a71119-04de-4c76-a98a-d0fcb906390f@gmx.de>
+Date: Sun, 8 Dec 2024 13:15:34 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <edab8d46-7c03-4bf5-fe1c-0150cdf4d96a@google.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/7] kernel/cgroups: Add "dmem" memory accounting
+ cgroup.
+To: Maarten Lankhorst <dev@lankhorst.se>, linux-kernel@vger.kernel.org,
+ intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Andrew Morton <akpm@linux-foundation.org>, Maxime Ripard <mripard@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-mm@kvack.org,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+References: <20241204134410.1161769-1-dev@lankhorst.se>
+Content-Language: en-US
+From: Friedrich Vock <friedrich.vock@gmx.de>
+Autocrypt: addr=friedrich.vock@gmx.de; keydata=
+ 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
+ f7+xmX0X3AMtWz/15Y+7cPO2
+In-Reply-To: <20241204134410.1161769-1-dev@lankhorst.se>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:w7dNuTyuZ4TNQ5hpfnJCIfhCruXm3YA39650Wbp2o5G6DWCPayq
+ sCwH/Q8UJcrIfs3y6+NDLqeid9rkeIEahxaG1ltE49BO7ujXuBXCwKwLwq+NCLasDjS5NRi
+ IE2VsH5P2rOXkUlkIxtLeeSZcX0KhPODBYfGFFuXGjWwTnDgtNbOn3ex0XCa7ulELX8KyvN
+ 3HgPrbl0Jo4hXtdv1cOWw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:9AqCQq5rpO0=;GNb/YoPjSN5jUZMfQmXl+Q8muWw
+ YCQilh65p8v4u4FtDBZBA/ZJKBkeZjc7k0GEYS0gUa7alSHCINprxzUASsKjfGYudWSYEV919
+ 5mmvR7nQUa/A9+chPJp/SKgvj6GlErKyVTtZnl9gMKKA9R06LL/3EEsTvtKIJ+lrwg6bfu7qb
+ C4QTFXg3BCZhT/Fl+fJVLOgGGtFJwFXHCfnRXtkFBqiahb/jtSqd4sasTBFNJmxqyfwN281mK
+ 0Hu5Jvd0Uggj3usvC3+WFZUMTIFu2qWVf2IcNV1eVlb/0ZhVuf6YQwXOWFtFYKVcDKewLbVa1
+ Un7fE62Phs282W9TzCeEnMog0IM+nI8oXi2sh/5ecHxQW0cnvluhrTLZ4iZ5jXXbugyVRE0yp
+ 90hcBXzOcNGH8QQsfsxamh3a9LBiHFMzh9KLoKAGKUNgywSwIFWfYWH02Yeipmvq/IaHO9eK7
+ uTytnvA7D9866hkwqGWTVdrXgfrGfLyNkiwRFoqO4zCz+fk+J27fqKdIEHZbvbLak8HbtyImn
+ KIlbZUJOab3cqMmXdc7tNGFoEtGN6wvS5QR+xuyMFACkurMe47MQrWQ24v3BOk/Pyd5YPlW4w
+ YdGLQAfAqA4j3zIHEZzcMc/5tQp+mvJE0guUuLLLaJ2rexsQM13nM6N20pjKFblV5L/FtRcln
+ 99QH35FHhhbV3DY9odCK6sMCXEjlgEbnN9pUvNol8GYQKTU2Fc//m94RApjgq4iWZUiVa251P
+ 5CF3tD1YxdvDzKoJts9pA6D367FSv2o1Zvgwi45MvyoU4tBN1JAe1qcBq99rEpSlznErWiig3
+ 9JYtUrsEWI1+Hr4hywoiRFI0F73EO9CFylWlUIZq7fNZd24uN9Jv3ad3u1INVf5Y58AOwX9Dw
+ fOHvCLY0CNGTw1PxAIFEsnIzAX/X0m2iulXrTaukhFaFmynO7gQvncdy/ajPETytpCd5wWtYh
+ Fbf9E+5QsDPHFUGuGNJeeZoWI+AUzQL88jFMoj1AT63Qwdc2tsUiE7jORxC+6pbtlIOfWY9F0
+ YvGmGIFcuIyYVS7xIoLL8lohTEns6FT6wNGIavEUBywKHpCfs1ZWQWirJdMkr6PpPlENlzQvW
+ o5ozclGn3Q+LK5M6jf7AINUSTIcmFN
 
-On Fri, Dec 06, 2024 at 12:24:54AM -0800, Hugh Dickins wrote:
-[...]
-> Another thing to understand: it's called before adding folio to list,
-> but after removing folio from list: when it can usefully compare whether
-> the emptiness of the list correctly matches lru_size 0.
+Hi,
 
-I think one source of confusion might be that this "emptiness" check has
-been removed by commit b4536f0c829c because of maintaining the list size
-per-zone and actual list is shared between zones of a node.
+On 04.12.24 14:44, Maarten Lankhorst wrote:
+> New update. Instead of calling it the 'dev' cgroup, it's now the 'dmem' =
+cgroup.
 
-> It cannot do so
-> when adding if you "simplify" it in the way that you did.
-> 
+Thanks! I think this version looks pretty good.
+
+>
+> Because it only deals with memory regions, the UAPI has been updated to =
+use dmem.min/low/max/current, and to make the API cleaner, the names are c=
+hanged too.
+>
+> dmem.current could contain a line like:
+> "drm/0000:03:00.0/vram0 1073741824"
+>
+> But I think using "drm/card0/vram0" instead of PCIID would perhaps be go=
+od too. I'm open to changing it to that based on feedback.
+
+Agree, allowing userspace to reference DRM devices via "cardN" syntax
+sounds good. What about other subsystems potentially using dmem cgroups?
+I'm not familiar with the media subsystem, but I imagine we might be
+dealing with things like USB devices there? Is something like a
+"deviceN" possible there as well, or would device IDs look completely
+different?
+
+Regards,
+Friedrich
+
+>
+> I've created an IGT test for min and max, and found the changes
+> from Friedrich Vock sent as feedback were needed.
+> I've integrated those into the first patch.
+>
+> Maarten Lankhorst (5):
+>    kernel/cgroup: Add "dmem" memory accounting cgroup
+>    drm/ttm: Handle cgroup based eviction in TTM
+>    drm/xe: Implement cgroup for vram
+>    drm/amdgpu: Add cgroups implementation
+>    drm/xe: Hack to test with mapped pages instead of vram.
+>
+> Maxime Ripard (2):
+>    drm/drv: Add drmm managed registration helper for dmem cgroups.
+>    drm/gem: Add cgroup memory accounting for VRAM helper.
+>
+>   Documentation/admin-guide/cgroup-v2.rst       |  58 +-
+>   Documentation/core-api/cgroup.rst             |   9 +
+>   Documentation/core-api/index.rst              |   1 +
+>   Documentation/gpu/drm-compute.rst             |  54 ++
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c  |   4 +
+>   drivers/gpu/drm/drm_drv.c                     |  32 +
+>   drivers/gpu/drm/drm_gem_vram_helper.c         |  15 +-
+>   drivers/gpu/drm/ttm/tests/ttm_bo_test.c       |  18 +-
+>   .../gpu/drm/ttm/tests/ttm_bo_validate_test.c  |   4 +-
+>   drivers/gpu/drm/ttm/tests/ttm_resource_test.c |   2 +-
+>   drivers/gpu/drm/ttm/ttm_bo.c                  |  54 +-
+>   drivers/gpu/drm/ttm/ttm_resource.c            |  23 +-
+>   drivers/gpu/drm/xe/xe_ttm_sys_mgr.c           |   5 +
+>   drivers/gpu/drm/xe/xe_ttm_vram_mgr.c          |   8 +
+>   include/drm/drm_drv.h                         |   5 +
+>   include/drm/ttm/ttm_resource.h                |  12 +-
+>   include/linux/cgroup_dmem.h                   |  67 ++
+>   include/linux/cgroup_subsys.h                 |   4 +
+>   include/linux/page_counter.h                  |   2 +-
+>   init/Kconfig                                  |  10 +
+>   kernel/cgroup/Makefile                        |   1 +
+>   kernel/cgroup/dmem.c                          | 861 ++++++++++++++++++
+>   mm/page_counter.c                             |   4 +-
+>   23 files changed, 1219 insertions(+), 34 deletions(-)
+>   create mode 100644 Documentation/core-api/cgroup.rst
+>   create mode 100644 Documentation/gpu/drm-compute.rst
+>   create mode 100644 include/linux/cgroup_dmem.h
+>   create mode 100644 kernel/cgroup/dmem.c
+>
+
 
