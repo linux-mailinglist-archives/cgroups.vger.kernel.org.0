@@ -1,181 +1,191 @@
-Return-Path: <cgroups+bounces-5784-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5785-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2508C9E9201
-	for <lists+cgroups@lfdr.de>; Mon,  9 Dec 2024 12:20:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB5479E989C
+	for <lists+cgroups@lfdr.de>; Mon,  9 Dec 2024 15:20:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 975AF1881D6A
-	for <lists+cgroups@lfdr.de>; Mon,  9 Dec 2024 11:20:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE6C3161346
+	for <lists+cgroups@lfdr.de>; Mon,  9 Dec 2024 14:20:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9693C218820;
-	Mon,  9 Dec 2024 11:20:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7C561ACED7;
+	Mon,  9 Dec 2024 14:20:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="d3e7UMIx"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49D3218597
-	for <cgroups@vger.kernel.org>; Mon,  9 Dec 2024 11:20:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10C831798F
+	for <cgroups@vger.kernel.org>; Mon,  9 Dec 2024 14:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733743222; cv=none; b=MBH5eWeXFqeWZy73qseH2WewJGy+65uWBiZ6hVRUm7P/0xauCLNaD2mFDz/rwxvT02ErSEz1u6XrBDlMajluBVvddg9F32NyoXo4tZsdS1cFKmhOSzWMRy2IpjbW7kAV/LpFdvcJLGmQfJTQ0nRosiWdGrlUf1JguTIo1SAtsSc=
+	t=1733754016; cv=none; b=f+0kCCGUJJqftBz5MVaYsF/fv+EKZlbEucBH7XXp3+rrcBds+V72BlttlzT9BOEY4WvxIy6AUqbV9WgmFD0VKFfvXDE4A7XVl95hzsdVTcbm7JYoSMzUlu8fsGI2BtNvioAM2ZdscTldoZVDN0HZekaol9ZJraBTypr0rIItfrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733743222; c=relaxed/simple;
-	bh=zS6eQlvu6POYh106NznQN1z38cHhi49hUjktKNh5TWM=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=lvK2oMfXsJdpri/O47HkLKdMS0Hm5lIqBqCvfVfJ7bHFcIRXQoN6LM3TzGVy9uiRAI49VkXPx5fCQ+LfAZpaNH0bMzT1+h79wlkfSWAW17npRnjhmp04ERx1H9/TQu7aOAQLX4618udznqRYPmgTAboWmXLXrDYXy9vm41QvVDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-841a9ae0f26so783925939f.3
-        for <cgroups@vger.kernel.org>; Mon, 09 Dec 2024 03:20:20 -0800 (PST)
+	s=arc-20240116; t=1733754016; c=relaxed/simple;
+	bh=5LxPzkwXbkWs8QADAY0HXIgv9Pxu1uooRAocU3GSwZ4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZTc55jc0mm01Ml8VUfhEq23RgjkZyBUYhI8tUNlVVCVustmagBq+kP0ewXzvfVrHvkuFGkr0bJfe4Rmmrt0vAwcrhU4YRbsov2VJDlnauoydplmW2pqf0gaFRHvim0Jd/Qfg6AnlO5vo89yRHX0Ol36BvetUtjGwfVzr6z46JL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=d3e7UMIx; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1733754014;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uUafJPITbFDpJxN3Yx+BE2RB7iQ7hbigXZ4vj14KZBU=;
+	b=d3e7UMIxfABm2rtETcxR5qBAKD/s1ZldQ46Hvo0qthOD73GnlGlbihjWEXRt7DIJn5g781
+	yKNN2AjjNetROuwsXZucjE7xelfKHWHm0YXfNMQPJeyqGWAUOx2rKXBjZGPHtT7a63K53W
+	83svar6ZMdHIaBIOJxOW9DYun2Zsirc=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-588-NYxfuHOzNSGKl9mokm4bHw-1; Mon, 09 Dec 2024 09:20:13 -0500
+X-MC-Unique: NYxfuHOzNSGKl9mokm4bHw-1
+X-Mimecast-MFC-AGG-ID: NYxfuHOzNSGKl9mokm4bHw
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-3862be3bfc9so1666743f8f.3
+        for <cgroups@vger.kernel.org>; Mon, 09 Dec 2024 06:20:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733743220; x=1734348020;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=V6tHxk/lkXQjrFAbnpG2zrsTprcmq/H1iKz8IcZ7hO4=;
-        b=notb1jx+nAsY5A71BM4I6O3Ki7j1Uh67jWoBFbr4oilrBHoDMC65p68bKHkm72m52v
-         0x0tdR8c7sMOC4MlWYYiT8Ru6kU94j9GePDqXVizhTVXY3XWUlIuzjus+x9Xao6KZ6LC
-         mf0notwk5bhUkJ+R57bd7TBQbah3VxcL8IWyyTdkdsc7wNUYfizw6AAh4Yx78pcwKMtS
-         Q47dwEgolFa+tbIzomL1qIuC/NXReAjNIYtflZ6s9cCLagFAvAUWRWBBTKl8i4rcFwAp
-         D+C6mKSpbDxfmlSbLInfHbrljzTOuX0gugEK4xGbmwvxEZ4Fc4g4s0xAodeSVtaG5t0u
-         irIg==
-X-Forwarded-Encrypted: i=1; AJvYcCViu3kx3hHjfetZYwTV2DsM6iKKUgAKnscIJW6ZqSvWEKwRab5/qQiiLH52F7s6j3Sd3u6Zg6gS@vger.kernel.org
-X-Gm-Message-State: AOJu0YzT+QDUmUHnJbX4Ap06eem3ZHsPCUz3KQEvcca2i7IZgXX0sN9j
-	U2A8+dgXtzCGJ73nP1JRB3eedVrzNEcbq93b2RJr9ayB1iQEhnJ9yvnXS6fahkGSaKvraAaOquK
-	3gOTu2CbGGa4HU3D1N78QFsrkP40x4nhBVT1i4G1WD4VqreJCRtKyi6o=
-X-Google-Smtp-Source: AGHT+IGGONomxVVNylsUaJOOJ21mYYAMOrhrYz2DbbnAF9e/2pOW7o9cheSh7sFgmDiA865x+Wh93NztehNoWf6nZ24gQ2dnvedi
+        d=1e100.net; s=20230601; t=1733754012; x=1734358812;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uUafJPITbFDpJxN3Yx+BE2RB7iQ7hbigXZ4vj14KZBU=;
+        b=uxAajxmrM/Sr6NoFIOOEuBXVIcGhN6EgAKaNxFpyMvOPwU8IgUo1J+lEeFXK78HV9e
+         a5bzn1GdD39/kDqQdRaGPt1smaUtJhWqedTV3sg2Q86sACbrZx1ux/hQE/NDHUSBPLmw
+         7N7q3s5WWrxqQLifyIoZlu+Kv797CYOAhdKbUACl1sSjblsKV1N65A90mzrjyYEN2SBu
+         SoDq9CbwM+Ts+k9p7JuD/5VVu3dlznDdFJLyw4Ob2KpI+jbCFVpv5zn+2yWPDzQrf7/X
+         ccACV1oqU+T7J0v1Jszur8cYHHyHM6LhLv+rLpfiGSxfj9BBtGolFT1pTCbA6uVbFoHc
+         zo6w==
+X-Forwarded-Encrypted: i=1; AJvYcCWa6eO3GGnsxZ7gIKoOhzrOzb54vrqJU2Pw76h+lp4xB3dKWr1wAu/C7ShzXBSmRh4+8sH9V4Ev@vger.kernel.org
+X-Gm-Message-State: AOJu0YxMJPsD+pjeXXNPQbUsNlg0NgLLHbiiss3GkXWGgXotm0Ds/2Xj
+	xTsqFITYVgGSpFXr8dyedds1GHvkhXkFNevNjDqy+rouCJFf46OSm0m/niwXszah2d1cP7A+2XK
+	P35sekNuFeVba1gfFHglsLXhNLGshwFE6JKBl8Gfs9wZ8XQfTM+bKo3s=
+X-Gm-Gg: ASbGnctACdz85yObZuEdMRl61/uoxeU5ucinRLGbm8Nc7KY6qx+45hzRO4ujbT38It6
+	U6SQ5lfDMiiGIwYvLiMtnwtvML4VA6cj3vQt7XIKd4jqSu2JIW+Aw9NLa2tiRUbjjkEXjuiSN0N
+	xzLlrjdxcGHjHiEBzDwrtUED5GA1VBEyXYofqT2Kvemuh8mRN1n3u1zZHdDzuKCMo2vKJJ5pleJ
+	gCeNH1Lj6r2PMJDKOVaTJ5j2m+snJSBI4oDJI/rcivdeEHWUwjioyKQu15ynsGhQTQxIkg6kOmI
+	DYJI9l0xpprJEmyI/izxy3MFyg7UHokY+w==
+X-Received: by 2002:a5d:47aa:0:b0:385:e9ca:4e18 with SMTP id ffacd0b85a97d-3862b345322mr9501059f8f.1.1733754011614;
+        Mon, 09 Dec 2024 06:20:11 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEimI6Ui0mKxeYiiQzQnI7rasXWcvol+mQTx49rmAZ0iGqXOJRujNGaWhnPX9VCfJ4Dtk3eDQ==
+X-Received: by 2002:a5d:47aa:0:b0:385:e9ca:4e18 with SMTP id ffacd0b85a97d-3862b345322mr9501019f8f.1.1733754011212;
+        Mon, 09 Dec 2024 06:20:11 -0800 (PST)
+Received: from jlelli-thinkpadt14gen4.remote.csb (host-2-102-14-117.as13285.net. [2.102.14.117])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-434f063357csm77489715e9.22.2024.12.09.06.20.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Dec 2024 06:20:10 -0800 (PST)
+Date: Mon, 9 Dec 2024 14:20:08 +0000
+From: Juri Lelli <juri.lelli@redhat.com>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Koutny <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Phil Auld <pauld@redhat.com>, Qais Yousef <qyousef@layalina.io>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
+	Suleiman Souhlal <suleiman@google.com>,
+	Aashish Sharma <shraash@google.com>,
+	Shin Kawamura <kawasin@google.com>,
+	Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] sched/deadline: Correctly account for allocated
+ bandwidth during hotplug
+Message-ID: <Z1b8mGctDusOZPA8@jlelli-thinkpadt14gen4.remote.csb>
+References: <20241114142810.794657-1-juri.lelli@redhat.com>
+ <20241114142810.794657-3-juri.lelli@redhat.com>
+ <cb188000-f0e1-4b0a-9b5a-d725b754c353@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3707:b0:3a7:9670:7abb with SMTP id
- e9e14a558f8ab-3a811e073a4mr132071805ab.15.1733743220157; Mon, 09 Dec 2024
- 03:20:20 -0800 (PST)
-Date: Mon, 09 Dec 2024 03:20:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6756d274.050a0220.2477f.003e.GAE@google.com>
-Subject: [syzbot] [cgroups?] [mm?] BUG: unable to handle kernel paging request
- in memcg_rstat_updated
-From: syzbot <syzbot+c62387c3885ca12e1255@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, 
-	muchun.song@linux.dev, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cb188000-f0e1-4b0a-9b5a-d725b754c353@stanley.mountain>
 
-Hello,
+Hi,
 
-syzbot found the following issue on:
+On 06/12/24 13:43, Dan Carpenter wrote:
+> On Thu, Nov 14, 2024 at 02:28:10PM +0000, Juri Lelli wrote:
+> >  static int dl_bw_manage(enum dl_bw_request req, int cpu, u64 dl_bw)
+> >  {
+> > -	unsigned long flags;
+> > +	unsigned long flags, cap;
+> >  	struct dl_bw *dl_b;
+> >  	bool overflow = 0;
+> > +	u64 fair_server_bw = 0;
+>         ^^^^^^^^^^^^^^^^^^
+> This is a u64.
+> 
+> >  
+> >  	rcu_read_lock_sched();
+> >  	dl_b = dl_bw_of(cpu);
+> >  	raw_spin_lock_irqsave(&dl_b->lock, flags);
+> >  
+> > -	if (req == dl_bw_req_free) {
+> > +	cap = dl_bw_capacity(cpu);
+> > +	switch (req) {
+> > +	case dl_bw_req_free:
+> >  		__dl_sub(dl_b, dl_bw, dl_bw_cpus(cpu));
+> > -	} else {
+> > -		unsigned long cap = dl_bw_capacity(cpu);
+> > -
+> > +		break;
+> > +	case dl_bw_req_alloc:
+> >  		overflow = __dl_overflow(dl_b, cap, 0, dl_bw);
+> >  
+> > -		if (req == dl_bw_req_alloc && !overflow) {
+> > +		if (!overflow) {
+> >  			/*
+> >  			 * We reserve space in the destination
+> >  			 * root_domain, as we can't fail after this point.
+> > @@ -3501,6 +3503,34 @@ static int dl_bw_manage(enum dl_bw_request req, int cpu, u64 dl_bw)
+> >  			 */
+> >  			__dl_add(dl_b, dl_bw, dl_bw_cpus(cpu));
+> >  		}
+> > +		break;
+> > +	case dl_bw_req_deactivate:
+> > +		/*
+> > +		 * cpu is going offline and NORMAL tasks will be moved away
+> > +		 * from it. We can thus discount dl_server bandwidth
+> > +		 * contribution as it won't need to be servicing tasks after
+> > +		 * the cpu is off.
+> > +		 */
+> > +		if (cpu_rq(cpu)->fair_server.dl_server)
+> > +			fair_server_bw = cpu_rq(cpu)->fair_server.dl_bw;
+> > +
+> > +		/*
+> > +		 * Not much to check if no DEADLINE bandwidth is present.
+> > +		 * dl_servers we can discount, as tasks will be moved out the
+> > +		 * offlined CPUs anyway.
+> > +		 */
+> > +		if (dl_b->total_bw - fair_server_bw > 0) {
+>                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Since this subtraction is unsigned the condition is equivalent to:
+> 
+>         if (dl_b->total_bw != fair_server_bw)
+> 
+> but it feels like maybe it was intended to be:
+> 
+>         if (dl_b->total_bw > fair_server_bw) {
 
-HEAD commit:    7b1d1d4cfac0 Merge remote-tracking branch 'iommu/arm/smmu'..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=17642de8580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9bc44a6de1ceb5d6
-dashboard link: https://syzkaller.appspot.com/bug?extid=c62387c3885ca12e1255
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
+I actually believe they are equivalent for this case, as if there is a
+dl_server total_bw is either equal or bigger than fair_server_bw, so
+checking for it to be different than fair_server_bw should still be OK
+(even though confusing maybe).
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Thanks,
+Juri
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/4d4a0162c7c3/disk-7b1d1d4c.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a8c47a4be472/vmlinux-7b1d1d4c.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/0e173b91f83e/Image-7b1d1d4c.gz.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c62387c3885ca12e1255@syzkaller.appspotmail.com
-
-Unable to handle kernel paging request at virtual address f2c1800000000000
-KASAN: maybe wild-memory-access in range [0x9610000000000000-0x9610000000000007]
-Mem abort info:
-  ESR = 0x0000000096000004
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x04: level 0 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[f2c1800000000000] address between user and kernel address ranges
-Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 0 UID: 0 PID: 8456 Comm: syz.4.287 Not tainted 6.12.0-syzkaller-g7b1d1d4cfac0 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-pstate: 804000c5 (Nzcv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : memcg_rstat_updated+0xe4/0x288 mm/memcontrol.c:575
-lr : memcg_rstat_updated+0x7c/0x288 mm/memcontrol.c:573
-sp : ffff80009c567900
-x29: ffff80009c567900 x28: 12c2000000000000 x27: ffff80008f8cd000
-x26: 00000000000006d8 x25: 1ffff00011f19abd x24: 0000000000000001
-x23: dfff800000000000 x22: fffffdffbf72c000 x21: 0000000000000001
-x20: 9610000000000000 x19: 0000000000000001 x18: ffff0000f46d2240
-x17: 0000000000000000 x16: ffff800083161638 x15: 0000000000000001
-x14: 1fffe000366c41c1 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000080000 x10: 0000000000ff0100 x9 : 0000000000000003
-x8 : 0000000000000000 x7 : ffff80008051ba0c x6 : 0000000000000000
-x5 : 0000000000000001 x4 : 0000000000000001 x3 : ffff80008036f2b8
-x2 : 0000000000000001 x1 : 0000000000000080 x0 : 0000000000000000
-Call trace:
- memcg_rstat_updated+0xe4/0x288 mm/memcontrol.c:575 (P)
- memcg_rstat_updated+0x7c/0x288 mm/memcontrol.c:573 (L)
- __mod_memcg_lruvec_state+0x370/0x57c mm/memcontrol.c:746
- __mod_objcg_mlstate+0x160/0x23c mm/memcontrol.c:2405
- drain_obj_stock+0x178/0x350 mm/memcontrol.c:2811
- refill_obj_stock+0xe8/0x2d8 mm/memcontrol.c:2860
- obj_cgroup_charge+0x17c/0x238 mm/memcontrol.c:2920
- __memcg_slab_post_alloc_hook+0x238/0x7fc mm/memcontrol.c:2979
- memcg_slab_post_alloc_hook mm/slub.c:2156 [inline]
- slab_post_alloc_hook mm/slub.c:4095 [inline]
- slab_alloc_node mm/slub.c:4134 [inline]
- __do_kmalloc_node mm/slub.c:4263 [inline]
- __kmalloc_node_noprof+0x368/0x4dc mm/slub.c:4270
- __kvmalloc_node_noprof+0x88/0x24c mm/util.c:658
- groups_alloc kernel/groups.c:18 [inline]
- __do_sys_setgroups kernel/groups.c:208 [inline]
- __se_sys_setgroups kernel/groups.c:198 [inline]
- __arm64_sys_setgroups+0x130/0x5a0 kernel/groups.c:198
- __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:744
- el0t_64_sync_handler+0x84/0x108 arch/arm64/kernel/entry-common.c:762
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
-Code: b4000c14 d343fe9c 12000a89 11000d29 (38f76b88) 
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	b4000c14 	cbz	x20, 0x180
-   4:	d343fe9c 	lsr	x28, x20, #3
-   8:	12000a89 	and	w9, w20, #0x7
-   c:	11000d29 	add	w9, w9, #0x3
-* 10:	38f76b88 	ldrsb	w8, [x28, x23] <-- trapping instruction
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
