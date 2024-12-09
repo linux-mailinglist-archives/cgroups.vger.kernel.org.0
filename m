@@ -1,208 +1,181 @@
-Return-Path: <cgroups+bounces-5783-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5784-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69A1B9E84F9
-	for <lists+cgroups@lfdr.de>; Sun,  8 Dec 2024 13:16:04 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2508C9E9201
+	for <lists+cgroups@lfdr.de>; Mon,  9 Dec 2024 12:20:27 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AF742811D7
-	for <lists+cgroups@lfdr.de>; Sun,  8 Dec 2024 12:16:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 975AF1881D6A
+	for <lists+cgroups@lfdr.de>; Mon,  9 Dec 2024 11:20:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17E0B142624;
-	Sun,  8 Dec 2024 12:16:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=friedrich.vock@gmx.de header.b="EdKPHgJw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9693C218820;
+	Mon,  9 Dec 2024 11:20:22 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CD38BA4B;
-	Sun,  8 Dec 2024 12:15:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49D3218597
+	for <cgroups@vger.kernel.org>; Mon,  9 Dec 2024 11:20:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733660159; cv=none; b=jnkj5rlF3iJhHKueo/oK2hJs1UfviStEhyMQSrbvLsdEo/7TU+Rg4HRIHPqblFXRjKZfJDHJUAIopE1hODY828tNh15JKvxP4IgJrd+VbR2uLtY2IcPbDQZ2MSiru8HVVd+0RiyfmGtYF2XT9H6hUZgmntsnsZTDdqGxikgblOo=
+	t=1733743222; cv=none; b=MBH5eWeXFqeWZy73qseH2WewJGy+65uWBiZ6hVRUm7P/0xauCLNaD2mFDz/rwxvT02ErSEz1u6XrBDlMajluBVvddg9F32NyoXo4tZsdS1cFKmhOSzWMRy2IpjbW7kAV/LpFdvcJLGmQfJTQ0nRosiWdGrlUf1JguTIo1SAtsSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733660159; c=relaxed/simple;
-	bh=n3hMlh35N4fAdrNPeUjRyYjFwN7yyswQbJ1QgvMueA8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uDhuh8+yG1BK95nOE8j1K5nVr7GxdgSyuTGFl1eg6V8QgZjujINiwwWnnWZD+lad9PExiQBF10Kxqw8U421vm9jEk3DS8kx+s4qULXryTiajLFJmbH+jQFnfBcwR2bFczGOHZd+E8Qw3ImuyqS6+9iX8foyw5hJhxIWV4loJPT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=friedrich.vock@gmx.de header.b=EdKPHgJw; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1733660136; x=1734264936; i=friedrich.vock@gmx.de;
-	bh=BLAbvkpLslpLzb0lubH4OtDMnvi3SfW5XkcUzyWKVW4=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=EdKPHgJwS5oEAs0DAmTwgWExnkDV5Fyrkrfdr3HuVZRRQ4ipNlKrXM683f54O279
-	 lg4oKYcyFlZj1wAro+5mYBUskrd6bgpm4HmRCP3AKEs3zwk69mOEtle59yU5D9o1l
-	 9YL45oRUXhtxpeI6ZQnjydmQ3lWwYOwCe5g9OU8o5QD0h1EBrZoc7Adz3skxPrac8
-	 47ZYSs0RqVg1g4uCdZ9uLsIzyZj6dsGoIjXogGNqx944VxQrLV2/rUg691Od1mGXN
-	 wB8ec3e7zrKQM4ale9+vbW9UgQEsy/YOSIO7dPDh2wmRtG8TFnvj42ZjGQygMcA5L
-	 v0BILk4yK1/8jgGcLg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.0.3] ([109.91.201.165]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MMGRA-1t2B5C1wYg-00W7PB; Sun, 08
- Dec 2024 13:15:36 +0100
-Message-ID: <29a71119-04de-4c76-a98a-d0fcb906390f@gmx.de>
-Date: Sun, 8 Dec 2024 13:15:34 +0100
+	s=arc-20240116; t=1733743222; c=relaxed/simple;
+	bh=zS6eQlvu6POYh106NznQN1z38cHhi49hUjktKNh5TWM=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=lvK2oMfXsJdpri/O47HkLKdMS0Hm5lIqBqCvfVfJ7bHFcIRXQoN6LM3TzGVy9uiRAI49VkXPx5fCQ+LfAZpaNH0bMzT1+h79wlkfSWAW17npRnjhmp04ERx1H9/TQu7aOAQLX4618udznqRYPmgTAboWmXLXrDYXy9vm41QvVDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-841a9ae0f26so783925939f.3
+        for <cgroups@vger.kernel.org>; Mon, 09 Dec 2024 03:20:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733743220; x=1734348020;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=V6tHxk/lkXQjrFAbnpG2zrsTprcmq/H1iKz8IcZ7hO4=;
+        b=notb1jx+nAsY5A71BM4I6O3Ki7j1Uh67jWoBFbr4oilrBHoDMC65p68bKHkm72m52v
+         0x0tdR8c7sMOC4MlWYYiT8Ru6kU94j9GePDqXVizhTVXY3XWUlIuzjus+x9Xao6KZ6LC
+         mf0notwk5bhUkJ+R57bd7TBQbah3VxcL8IWyyTdkdsc7wNUYfizw6AAh4Yx78pcwKMtS
+         Q47dwEgolFa+tbIzomL1qIuC/NXReAjNIYtflZ6s9cCLagFAvAUWRWBBTKl8i4rcFwAp
+         D+C6mKSpbDxfmlSbLInfHbrljzTOuX0gugEK4xGbmwvxEZ4Fc4g4s0xAodeSVtaG5t0u
+         irIg==
+X-Forwarded-Encrypted: i=1; AJvYcCViu3kx3hHjfetZYwTV2DsM6iKKUgAKnscIJW6ZqSvWEKwRab5/qQiiLH52F7s6j3Sd3u6Zg6gS@vger.kernel.org
+X-Gm-Message-State: AOJu0YzT+QDUmUHnJbX4Ap06eem3ZHsPCUz3KQEvcca2i7IZgXX0sN9j
+	U2A8+dgXtzCGJ73nP1JRB3eedVrzNEcbq93b2RJr9ayB1iQEhnJ9yvnXS6fahkGSaKvraAaOquK
+	3gOTu2CbGGa4HU3D1N78QFsrkP40x4nhBVT1i4G1WD4VqreJCRtKyi6o=
+X-Google-Smtp-Source: AGHT+IGGONomxVVNylsUaJOOJ21mYYAMOrhrYz2DbbnAF9e/2pOW7o9cheSh7sFgmDiA865x+Wh93NztehNoWf6nZ24gQ2dnvedi
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/7] kernel/cgroups: Add "dmem" memory accounting
- cgroup.
-To: Maarten Lankhorst <dev@lankhorst.se>, linux-kernel@vger.kernel.org,
- intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
- Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
- Johannes Weiner <hannes@cmpxchg.org>,
- Andrew Morton <akpm@linux-foundation.org>, Maxime Ripard <mripard@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-mm@kvack.org,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-References: <20241204134410.1161769-1-dev@lankhorst.se>
-Content-Language: en-US
-From: Friedrich Vock <friedrich.vock@gmx.de>
-Autocrypt: addr=friedrich.vock@gmx.de; keydata=
- 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
- f7+xmX0X3AMtWz/15Y+7cPO2
-In-Reply-To: <20241204134410.1161769-1-dev@lankhorst.se>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:w7dNuTyuZ4TNQ5hpfnJCIfhCruXm3YA39650Wbp2o5G6DWCPayq
- sCwH/Q8UJcrIfs3y6+NDLqeid9rkeIEahxaG1ltE49BO7ujXuBXCwKwLwq+NCLasDjS5NRi
- IE2VsH5P2rOXkUlkIxtLeeSZcX0KhPODBYfGFFuXGjWwTnDgtNbOn3ex0XCa7ulELX8KyvN
- 3HgPrbl0Jo4hXtdv1cOWw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:9AqCQq5rpO0=;GNb/YoPjSN5jUZMfQmXl+Q8muWw
- YCQilh65p8v4u4FtDBZBA/ZJKBkeZjc7k0GEYS0gUa7alSHCINprxzUASsKjfGYudWSYEV919
- 5mmvR7nQUa/A9+chPJp/SKgvj6GlErKyVTtZnl9gMKKA9R06LL/3EEsTvtKIJ+lrwg6bfu7qb
- C4QTFXg3BCZhT/Fl+fJVLOgGGtFJwFXHCfnRXtkFBqiahb/jtSqd4sasTBFNJmxqyfwN281mK
- 0Hu5Jvd0Uggj3usvC3+WFZUMTIFu2qWVf2IcNV1eVlb/0ZhVuf6YQwXOWFtFYKVcDKewLbVa1
- Un7fE62Phs282W9TzCeEnMog0IM+nI8oXi2sh/5ecHxQW0cnvluhrTLZ4iZ5jXXbugyVRE0yp
- 90hcBXzOcNGH8QQsfsxamh3a9LBiHFMzh9KLoKAGKUNgywSwIFWfYWH02Yeipmvq/IaHO9eK7
- uTytnvA7D9866hkwqGWTVdrXgfrGfLyNkiwRFoqO4zCz+fk+J27fqKdIEHZbvbLak8HbtyImn
- KIlbZUJOab3cqMmXdc7tNGFoEtGN6wvS5QR+xuyMFACkurMe47MQrWQ24v3BOk/Pyd5YPlW4w
- YdGLQAfAqA4j3zIHEZzcMc/5tQp+mvJE0guUuLLLaJ2rexsQM13nM6N20pjKFblV5L/FtRcln
- 99QH35FHhhbV3DY9odCK6sMCXEjlgEbnN9pUvNol8GYQKTU2Fc//m94RApjgq4iWZUiVa251P
- 5CF3tD1YxdvDzKoJts9pA6D367FSv2o1Zvgwi45MvyoU4tBN1JAe1qcBq99rEpSlznErWiig3
- 9JYtUrsEWI1+Hr4hywoiRFI0F73EO9CFylWlUIZq7fNZd24uN9Jv3ad3u1INVf5Y58AOwX9Dw
- fOHvCLY0CNGTw1PxAIFEsnIzAX/X0m2iulXrTaukhFaFmynO7gQvncdy/ajPETytpCd5wWtYh
- Fbf9E+5QsDPHFUGuGNJeeZoWI+AUzQL88jFMoj1AT63Qwdc2tsUiE7jORxC+6pbtlIOfWY9F0
- YvGmGIFcuIyYVS7xIoLL8lohTEns6FT6wNGIavEUBywKHpCfs1ZWQWirJdMkr6PpPlENlzQvW
- o5ozclGn3Q+LK5M6jf7AINUSTIcmFN
+X-Received: by 2002:a05:6e02:3707:b0:3a7:9670:7abb with SMTP id
+ e9e14a558f8ab-3a811e073a4mr132071805ab.15.1733743220157; Mon, 09 Dec 2024
+ 03:20:20 -0800 (PST)
+Date: Mon, 09 Dec 2024 03:20:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6756d274.050a0220.2477f.003e.GAE@google.com>
+Subject: [syzbot] [cgroups?] [mm?] BUG: unable to handle kernel paging request
+ in memcg_rstat_updated
+From: syzbot <syzbot+c62387c3885ca12e1255@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, 
+	muchun.song@linux.dev, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+Hello,
 
-On 04.12.24 14:44, Maarten Lankhorst wrote:
-> New update. Instead of calling it the 'dev' cgroup, it's now the 'dmem' =
-cgroup.
+syzbot found the following issue on:
 
-Thanks! I think this version looks pretty good.
+HEAD commit:    7b1d1d4cfac0 Merge remote-tracking branch 'iommu/arm/smmu'..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=17642de8580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9bc44a6de1ceb5d6
+dashboard link: https://syzkaller.appspot.com/bug?extid=c62387c3885ca12e1255
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
 
->
-> Because it only deals with memory regions, the UAPI has been updated to =
-use dmem.min/low/max/current, and to make the API cleaner, the names are c=
-hanged too.
->
-> dmem.current could contain a line like:
-> "drm/0000:03:00.0/vram0 1073741824"
->
-> But I think using "drm/card0/vram0" instead of PCIID would perhaps be go=
-od too. I'm open to changing it to that based on feedback.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Agree, allowing userspace to reference DRM devices via "cardN" syntax
-sounds good. What about other subsystems potentially using dmem cgroups?
-I'm not familiar with the media subsystem, but I imagine we might be
-dealing with things like USB devices there? Is something like a
-"deviceN" possible there as well, or would device IDs look completely
-different?
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/4d4a0162c7c3/disk-7b1d1d4c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a8c47a4be472/vmlinux-7b1d1d4c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/0e173b91f83e/Image-7b1d1d4c.gz.xz
 
-Regards,
-Friedrich
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c62387c3885ca12e1255@syzkaller.appspotmail.com
 
->
-> I've created an IGT test for min and max, and found the changes
-> from Friedrich Vock sent as feedback were needed.
-> I've integrated those into the first patch.
->
-> Maarten Lankhorst (5):
->    kernel/cgroup: Add "dmem" memory accounting cgroup
->    drm/ttm: Handle cgroup based eviction in TTM
->    drm/xe: Implement cgroup for vram
->    drm/amdgpu: Add cgroups implementation
->    drm/xe: Hack to test with mapped pages instead of vram.
->
-> Maxime Ripard (2):
->    drm/drv: Add drmm managed registration helper for dmem cgroups.
->    drm/gem: Add cgroup memory accounting for VRAM helper.
->
->   Documentation/admin-guide/cgroup-v2.rst       |  58 +-
->   Documentation/core-api/cgroup.rst             |   9 +
->   Documentation/core-api/index.rst              |   1 +
->   Documentation/gpu/drm-compute.rst             |  54 ++
->   drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c  |   4 +
->   drivers/gpu/drm/drm_drv.c                     |  32 +
->   drivers/gpu/drm/drm_gem_vram_helper.c         |  15 +-
->   drivers/gpu/drm/ttm/tests/ttm_bo_test.c       |  18 +-
->   .../gpu/drm/ttm/tests/ttm_bo_validate_test.c  |   4 +-
->   drivers/gpu/drm/ttm/tests/ttm_resource_test.c |   2 +-
->   drivers/gpu/drm/ttm/ttm_bo.c                  |  54 +-
->   drivers/gpu/drm/ttm/ttm_resource.c            |  23 +-
->   drivers/gpu/drm/xe/xe_ttm_sys_mgr.c           |   5 +
->   drivers/gpu/drm/xe/xe_ttm_vram_mgr.c          |   8 +
->   include/drm/drm_drv.h                         |   5 +
->   include/drm/ttm/ttm_resource.h                |  12 +-
->   include/linux/cgroup_dmem.h                   |  67 ++
->   include/linux/cgroup_subsys.h                 |   4 +
->   include/linux/page_counter.h                  |   2 +-
->   init/Kconfig                                  |  10 +
->   kernel/cgroup/Makefile                        |   1 +
->   kernel/cgroup/dmem.c                          | 861 ++++++++++++++++++
->   mm/page_counter.c                             |   4 +-
->   23 files changed, 1219 insertions(+), 34 deletions(-)
->   create mode 100644 Documentation/core-api/cgroup.rst
->   create mode 100644 Documentation/gpu/drm-compute.rst
->   create mode 100644 include/linux/cgroup_dmem.h
->   create mode 100644 kernel/cgroup/dmem.c
->
+Unable to handle kernel paging request at virtual address f2c1800000000000
+KASAN: maybe wild-memory-access in range [0x9610000000000000-0x9610000000000007]
+Mem abort info:
+  ESR = 0x0000000096000004
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+  FSC = 0x04: level 0 translation fault
+Data abort info:
+  ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[f2c1800000000000] address between user and kernel address ranges
+Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+Modules linked in:
+CPU: 0 UID: 0 PID: 8456 Comm: syz.4.287 Not tainted 6.12.0-syzkaller-g7b1d1d4cfac0 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+pstate: 804000c5 (Nzcv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : memcg_rstat_updated+0xe4/0x288 mm/memcontrol.c:575
+lr : memcg_rstat_updated+0x7c/0x288 mm/memcontrol.c:573
+sp : ffff80009c567900
+x29: ffff80009c567900 x28: 12c2000000000000 x27: ffff80008f8cd000
+x26: 00000000000006d8 x25: 1ffff00011f19abd x24: 0000000000000001
+x23: dfff800000000000 x22: fffffdffbf72c000 x21: 0000000000000001
+x20: 9610000000000000 x19: 0000000000000001 x18: ffff0000f46d2240
+x17: 0000000000000000 x16: ffff800083161638 x15: 0000000000000001
+x14: 1fffe000366c41c1 x13: 0000000000000000 x12: 0000000000000000
+x11: 0000000000080000 x10: 0000000000ff0100 x9 : 0000000000000003
+x8 : 0000000000000000 x7 : ffff80008051ba0c x6 : 0000000000000000
+x5 : 0000000000000001 x4 : 0000000000000001 x3 : ffff80008036f2b8
+x2 : 0000000000000001 x1 : 0000000000000080 x0 : 0000000000000000
+Call trace:
+ memcg_rstat_updated+0xe4/0x288 mm/memcontrol.c:575 (P)
+ memcg_rstat_updated+0x7c/0x288 mm/memcontrol.c:573 (L)
+ __mod_memcg_lruvec_state+0x370/0x57c mm/memcontrol.c:746
+ __mod_objcg_mlstate+0x160/0x23c mm/memcontrol.c:2405
+ drain_obj_stock+0x178/0x350 mm/memcontrol.c:2811
+ refill_obj_stock+0xe8/0x2d8 mm/memcontrol.c:2860
+ obj_cgroup_charge+0x17c/0x238 mm/memcontrol.c:2920
+ __memcg_slab_post_alloc_hook+0x238/0x7fc mm/memcontrol.c:2979
+ memcg_slab_post_alloc_hook mm/slub.c:2156 [inline]
+ slab_post_alloc_hook mm/slub.c:4095 [inline]
+ slab_alloc_node mm/slub.c:4134 [inline]
+ __do_kmalloc_node mm/slub.c:4263 [inline]
+ __kmalloc_node_noprof+0x368/0x4dc mm/slub.c:4270
+ __kvmalloc_node_noprof+0x88/0x24c mm/util.c:658
+ groups_alloc kernel/groups.c:18 [inline]
+ __do_sys_setgroups kernel/groups.c:208 [inline]
+ __se_sys_setgroups kernel/groups.c:198 [inline]
+ __arm64_sys_setgroups+0x130/0x5a0 kernel/groups.c:198
+ __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
+ el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:744
+ el0t_64_sync_handler+0x84/0x108 arch/arm64/kernel/entry-common.c:762
+ el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
+Code: b4000c14 d343fe9c 12000a89 11000d29 (38f76b88) 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	b4000c14 	cbz	x20, 0x180
+   4:	d343fe9c 	lsr	x28, x20, #3
+   8:	12000a89 	and	w9, w20, #0x7
+   c:	11000d29 	add	w9, w9, #0x3
+* 10:	38f76b88 	ldrsb	w8, [x28, x23] <-- trapping instruction
 
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
