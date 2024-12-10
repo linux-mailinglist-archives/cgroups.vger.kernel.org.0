@@ -1,111 +1,234 @@
-Return-Path: <cgroups+bounces-5789-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5790-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC6389EAFFC
-	for <lists+cgroups@lfdr.de>; Tue, 10 Dec 2024 12:35:58 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAD1D162228
-	for <lists+cgroups@lfdr.de>; Tue, 10 Dec 2024 11:35:55 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27A54210F7F;
-	Tue, 10 Dec 2024 11:35:52 +0000 (UTC)
-X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D997E9EBA23
+	for <lists+cgroups@lfdr.de>; Tue, 10 Dec 2024 20:30:59 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D0DB2080D2;
-	Tue, 10 Dec 2024 11:35:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A46B7282551
+	for <lists+cgroups@lfdr.de>; Tue, 10 Dec 2024 19:30:57 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B615214221;
+	Tue, 10 Dec 2024 19:30:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="rDBNZkHt"
+X-Original-To: cgroups@vger.kernel.org
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FFD423ED5E;
+	Tue, 10 Dec 2024 19:30:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733830551; cv=none; b=Ktb/5iwpM3y3/PkwkRNVd3zvz3ZcUXVd4/6E4AGdeC5jgeD1lS9ShV1nNEJoFMAkB0lpsTmhcYFVGyVwfTrR+0puCxoVxSES22JeN9U3Ld545PGkBjlRO5S0fJRLHmlifjKMgzmyETrvMG2lqLzfnY+wm6/NYyMJzElbN24aNaI=
+	t=1733859053; cv=none; b=IlGZPv/e14Euit9G3bVKdZOzB6HSTyjQxkKwAkImhMxX8mVom2Y9SLpxPuUYkIqESVG0JuwOtFl5nekgfYVsR60FVreLkRLrqy1aVmkZ06mSsE9f0c7qd2OrUYvvLykRSf5cawovUWo37DeLPrNu2VfEpnFutyxMqMLM+2zIdG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733830551; c=relaxed/simple;
-	bh=DBCKw02zjg9Ixa3L9GiBlWaE+1cfhfx80IV1vktGJTY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ApyUwllu41tfLYdSnK5Tg8bsdxF1tOrwPM9o20jVNPn0FcXeggCW7wE8v9W0c3W8xe01Gb8nwR6bkEqbWAQO21IjP5rTMQMZyYoL2izB8lKPJnxKgjvoMm44mMmy9ZAxUvOARbgUebHD76tXMIt92H4s4LgfFMo7GlRGO2PQKQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Y6xVq26WFz4f3l85;
-	Tue, 10 Dec 2024 19:35:31 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 7EB5B1A058E;
-	Tue, 10 Dec 2024 19:35:45 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP2 (Coremail) with SMTP id Syh0CgC3Y+CPJ1hnBTauEA--.27259S2;
-	Tue, 10 Dec 2024 19:35:45 +0800 (CST)
-Message-ID: <b78b8183-4dbc-4163-a84b-f74f5af97e84@huaweicloud.com>
-Date: Tue, 10 Dec 2024 19:35:43 +0800
+	s=arc-20240116; t=1733859053; c=relaxed/simple;
+	bh=XHkr+D5CWCTDO3Sy3h/8lTJcESkx2lMrmo8oJeli1rg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lH9g5j6wUgYzoZPxOsxWl13RgckKsZgaxJu7ZHiZMthHvHA/AwTf3LcVjMG6sL+/2hgMmSzt4dCCFvurCPeIKg/4I6GhKaXfDBMx+/f4JVHKuX/lHZokX3xTBRg1OQ1XUFKzACernp7k+LjAPgT9snSZPENm07Ncb4A2j8Mddvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=rDBNZkHt; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=8ZZbLSs3MA6+WgR36r/MUKldi5ntVBvwc7EFblthVBw=; b=rDBNZkHtxQ3A2vmMi5WlMQEUXC
+	K2VL4cbY8FElYJb3gEydzXgrn3xDDpN1v9JwNfaNBWotqZvIorT7+1cL8zIl0JpemyCm8jLC2GkTR
+	ra8UaX5puPkleVbicv+rgiuZkZc+uH57BQQD6ZJA7Cz0gnsbaSk9UA3hcq5+xj9QRfQ3ZYHjDDfRW
+	lBa7tjD/19MVYDxhhOpY0HdNdlkVcCgJAz/eDEPa6lZJXjCjHVEEwzgpldTgFhMLNCfDYhwZe7/Qy
+	EoEy7WV1IHH8e5jYCTw8zkkQN9Mainx7ZdiK4UtnZTMYad0lO2v9d/5vjBoMbCQe27SOKyoBCZhNs
+	WIipZ2Hg==;
+Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1tL5wU-0000000BBsP-1JoR;
+	Tue, 10 Dec 2024 19:30:46 +0000
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Christoph Hellwig <hch@lst.de>,
+	linux-mm@kvack.org,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	cgroups@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH] vmalloc: Move memcg logic into memcg code
+Date: Tue, 10 Dec 2024 19:30:33 +0000
+Message-ID: <20241210193035.2667005-1-willy@infradead.org>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [next -v1 3/5] memcg: simplify the mem_cgroup_update_lru_size
- function
-To: Shakeel Butt <shakeel.butt@linux.dev>, Hugh Dickins <hughd@google.com>
-Cc: Yu Zhao <yuzhao@google.com>, akpm@linux-foundation.org,
- mhocko@kernel.org, hannes@cmpxchg.org, yosryahmed@google.com,
- roman.gushchin@linux.dev, muchun.song@linux.dev, davidf@vimeo.com,
- vbabka@suse.cz, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, chenridong@huawei.com, wangweiyang2@huawei.com
-References: <20241206013512.2883617-1-chenridong@huaweicloud.com>
- <20241206013512.2883617-4-chenridong@huaweicloud.com>
- <CAOUHufbCCkOBGcSPZqNY+FXcrH8+U7_nRvftzOzKUBS4hn+kuQ@mail.gmail.com>
- <897b04c9-dba3-44ae-8113-145ca3457cb3@huaweicloud.com>
- <edab8d46-7c03-4bf5-fe1c-0150cdf4d96a@google.com>
- <xuhsdsl2bhlrlaghar3ru7nhlhjsmaiyjxayryogylsordbwcx@e2jxsb2qdbhd>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <xuhsdsl2bhlrlaghar3ru7nhlhjsmaiyjxayryogylsordbwcx@e2jxsb2qdbhd>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgC3Y+CPJ1hnBTauEA--.27259S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZw1DZr43ZF4xJF4rZw4DCFg_yoWxtFb_Wr
-	ZYqFsrKwsxXanrZw4kKrnY9rWkXw4jvFnrAry0qFsrZr13CF4DGFWDGr4xZrZ8KF4vkF13
-	AFWrJwsI9wnrCjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUb4AYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267
-	AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80
-	ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4
-	AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS14v2
-	6r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
-	AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCI
-	c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
-	AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_
-	Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU17KsU
-	UUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Transfer-Encoding: 8bit
 
+Today we account each page individually to the memcg, which works well
+enough, if a little inefficiently (N atomic operations per page instead
+of N per allocation).  Unfortunately, the stats can get out of sync when
+i915 calls vmap() with VM_MAP_PUT_PAGES.  The pages being passed were not
+allocated by vmalloc, so the MEMCG_VMALLOC counter was never incremented.
+But it is decremented when the pages are freed with vfree().
 
+Solve all of this by tracking the memcg at the vm_struct level.
+This logic has to live in the memcontrol file as it calls several
+functions which are currently static.
 
-On 2024/12/7 5:20, Shakeel Butt wrote:
-> On Fri, Dec 06, 2024 at 12:24:54AM -0800, Hugh Dickins wrote:
-> [...]
->> Another thing to understand: it's called before adding folio to list,
->> but after removing folio from list: when it can usefully compare whether
->> the emptiness of the list correctly matches lru_size 0.
-> 
-> I think one source of confusion might be that this "emptiness" check has
-> been removed by commit b4536f0c829c because of maintaining the list size
-> per-zone and actual list is shared between zones of a node.
-> 
+Fixes: b944afc9d64d (mm: add a VM_MAP_PUT_PAGES flag for vmap)
+Cc: stable@vger.kernel.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ include/linux/memcontrol.h |  7 ++++++
+ include/linux/vmalloc.h    |  3 +++
+ mm/memcontrol.c            | 46 ++++++++++++++++++++++++++++++++++++++
+ mm/vmalloc.c               | 14 ++++++------
+ 4 files changed, 63 insertions(+), 7 deletions(-)
 
-Agree.
-Maybe it doesn't have to distinguish between  "size > 0" and "size < 0" now?
-
-Thanks,
-Ridong
->> It cannot do so
->> when adding if you "simplify" it in the way that you did.
->>
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 5502aa8e138e..83ebcadebba6 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1676,6 +1676,10 @@ static inline struct obj_cgroup *get_obj_cgroup_from_current(void)
+ 
+ int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size);
+ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size);
++int obj_cgroup_charge_vmalloc(struct obj_cgroup **objcgp,
++		unsigned int nr_pages, gfp_t gfp);
++void obj_cgroup_uncharge_vmalloc(struct obj_cgroup *objcgp,
++		unsigned int nr_pages);
+ 
+ extern struct static_key_false memcg_bpf_enabled_key;
+ static inline bool memcg_bpf_enabled(void)
+@@ -1756,6 +1760,9 @@ static inline void __memcg_kmem_uncharge_page(struct page *page, int order)
+ {
+ }
+ 
++/* Must be macros to avoid dereferencing objcg in vm_struct */
++#define obj_cgroup_charge_vmalloc(objcgp, nr_pages, gfp)	0
++#define obj_cgroup_uncharge_vmalloc(objcg, nr_pages)	do { } while (0)
+ static inline struct obj_cgroup *get_obj_cgroup_from_folio(struct folio *folio)
+ {
+ 	return NULL;
+diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+index 31e9ffd936e3..ec7c2d607382 100644
+--- a/include/linux/vmalloc.h
++++ b/include/linux/vmalloc.h
+@@ -60,6 +60,9 @@ struct vm_struct {
+ #endif
+ 	unsigned int		nr_pages;
+ 	phys_addr_t		phys_addr;
++#ifdef CONFIG_MEMCG
++	struct obj_cgroup	*objcg;
++#endif
+ 	const void		*caller;
+ };
+ 
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 7b3503d12aaf..629bffc3e26d 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5472,4 +5472,50 @@ static int __init mem_cgroup_swap_init(void)
+ }
+ subsys_initcall(mem_cgroup_swap_init);
+ 
++/**
++ * obj_cgroup_charge_vmalloc - Charge vmalloc memory
++ * @objcgp: Pointer to an object cgroup
++ * @nr_pages: Number of pages
++ * @gfp: Memory allocation flags
++ *
++ * Return: 0 on success, negative errno on failure.
++ */
++int obj_cgroup_charge_vmalloc(struct obj_cgroup **objcgp,
++		unsigned int nr_pages, gfp_t gfp)
++{
++	struct obj_cgroup *objcg;
++	int err;
++
++	if (mem_cgroup_disabled() || !(gfp & __GFP_ACCOUNT))
++		return 0;
++
++	objcg = current_obj_cgroup();
++	if (!objcg)
++		return 0;
++
++	err = obj_cgroup_charge_pages(objcg, gfp, nr_pages);
++	if (err)
++		return err;
++	obj_cgroup_get(objcg);
++	mod_memcg_state(obj_cgroup_memcg(objcg), MEMCG_VMALLOC, nr_pages);
++	*objcgp = objcg;
++
++	return 0;
++}
++
++/**
++ * obj_cgroup_uncharge_vmalloc - Uncharge vmalloc memory
++ * @objcg: The object cgroup
++ * @nr_pages: Number of pages
++ */
++void obj_cgroup_uncharge_vmalloc(struct obj_cgroup *objcg,
++		unsigned int nr_pages)
++{
++	if (!objcg)
++		return;
++	mod_memcg_state(objcg->memcg, MEMCG_VMALLOC, 0L - nr_pages);
++	obj_cgroup_uncharge_pages(objcg, nr_pages);
++	obj_cgroup_put(objcg);
++}
++
+ #endif /* CONFIG_SWAP */
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index f009b21705c1..438995d2f9f8 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -3374,7 +3374,6 @@ void vfree(const void *addr)
+ 		struct page *page = vm->pages[i];
+ 
+ 		BUG_ON(!page);
+-		mod_memcg_page_state(page, MEMCG_VMALLOC, -1);
+ 		/*
+ 		 * High-order allocs for huge vmallocs are split, so
+ 		 * can be freed as an array of order-0 allocations
+@@ -3383,6 +3382,7 @@ void vfree(const void *addr)
+ 		cond_resched();
+ 	}
+ 	atomic_long_sub(vm->nr_pages, &nr_vmalloc_pages);
++	obj_cgroup_uncharge_vmalloc(vm->objcg, vm->nr_pages);
+ 	kvfree(vm->pages);
+ 	kfree(vm);
+ }
+@@ -3536,6 +3536,9 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+ 	struct page *page;
+ 	int i;
+ 
++	/* Accounting handled in caller */
++	gfp &= ~__GFP_ACCOUNT;
++
+ 	/*
+ 	 * For order-0 pages we make use of bulk allocator, if
+ 	 * the page array is partly or not at all populated due
+@@ -3669,12 +3672,9 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+ 		node, page_order, nr_small_pages, area->pages);
+ 
+ 	atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
+-	if (gfp_mask & __GFP_ACCOUNT) {
+-		int i;
+-
+-		for (i = 0; i < area->nr_pages; i++)
+-			mod_memcg_page_state(area->pages[i], MEMCG_VMALLOC, 1);
+-	}
++	ret = obj_cgroup_charge_vmalloc(&area->objcg, gfp_mask, area->nr_pages);
++	if (ret)
++		goto fail;
+ 
+ 	/*
+ 	 * If not enough pages were obtained to accomplish an
+-- 
+2.45.2
 
 
