@@ -1,64 +1,91 @@
-Return-Path: <cgroups+bounces-5826-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5827-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B17699ED733
-	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 21:25:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BDEA9ED75C
+	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 21:40:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5F7E7161190
-	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 20:25:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C362F1884392
+	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 20:40:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD365200BA9;
-	Wed, 11 Dec 2024 20:25:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5507C2288D5;
+	Wed, 11 Dec 2024 20:39:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="PE2iUvat"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JDCmpg0q"
 X-Original-To: cgroups@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2DE7259497;
-	Wed, 11 Dec 2024 20:25:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7B62288C1;
+	Wed, 11 Dec 2024 20:39:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733948747; cv=none; b=spmaPhxe8XEyVKPfBzvH2v8YX+5ZoIYTBAqVhR43XPDDg8koD9IXuel/fJM1hWTlcTE/9JTe9mu63bp/KaRXbKIPewOEEnvrxtnultIrskzQLG7Wr3PnC4o/r9DeUbr1Pwxr8aX+D5IZ0Wc1WZp7Hfmsxe3Oz7T1jWmha387bKg=
+	t=1733949596; cv=none; b=ES4Hm2XnD7fcasfgr5ME3s/8Gd+KbajVj3av9of6JqrAhtcm+aa+XO6EzW3qtGC/dtlRf8hjrv3+CgIghKs+MvYrAJQUxWdaROdgST+T79UQDUIB/I8riBH3KtrbXL6ni9kAPq26fB6hCKPaSH9+uGNumE+2mZ87i3s7aAp6KcA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733948747; c=relaxed/simple;
-	bh=soAMBMvgU/tT6YJ3xdIXaARhZWCrAD20pN5MT+kg2Wg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h5wAGGZ7IeneAIuFg+RlOJoCKGHyGGODMZE/OnSMgdPn6JQLwXABXYbhzoNAEIkUatjwYQK83MT+vEiIGcJspOuAgIEvJGh2EeqAlW6opCkPdxuthJITfJC73zV8o0jJjCcyy883hsAjAt81mHI+VhpuqnYlwGUugttSrbEb5a4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=PE2iUvat; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:In-Reply-To:References;
-	bh=ksbtM9EHkNTzFRsceNZ/+H1YFyjHaIe3HxlpDQ6sOig=; b=PE2iUvatkvAM0U3FfNWu9Q34sD
-	QEwOEaRn+40VhLdDC4lTxR10Bl0STlZVb0cXb3bsmEN5ON2HfJiDi65DYpjc8dIggWSDHCPNJPJHb
-	WL4bn/rUIrhjEBMi08fNnr/WdWhLXfj0pamIp0GydLbDhFZBwPSJueoUhPMysF8jV5uousKrG9jhH
-	Qlz2sRaoSEPnJXGkD/HifohhmmQ6KRxFBvJDOKxZuVa5czhR5turirXB6I3vcB4luzkVarvCE8FzX
-	y9VDdqHFWeNLHFpJ4LaOrC1fC3Imc9l3l6xZMGvizu7VvbqT47MIEgDGm39U9w8GdxJ976hq9RSwW
-	w0YVn1IQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tLTHA-00000000hop-2yNF;
-	Wed, 11 Dec 2024 20:25:40 +0000
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Christoph Hellwig <hch@lst.de>,
-	linux-mm@kvack.org,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
+	s=arc-20240116; t=1733949596; c=relaxed/simple;
+	bh=NsVgViKJ2o/Ngqlz4oa/6i5zFbvUyUEX4Z7xd7ZNgfI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=icO/vs+IE70oDEpi3wmKpPVQwuZKb6X2bjOO9sb49sZJ4d8g/xxP8aBD2wwLA9x3PpWGlLY3nWjuJChovf4F1BQPi40BpvZXhcdsWLj085UqTYxLkfNacOfLNufwgvMu/Mh8boQi9tYdi1UOTANjkNKiN1EbSYwx+oZy/gM5NmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JDCmpg0q; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-e39fb8548e2so5775437276.3;
+        Wed, 11 Dec 2024 12:39:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733949593; x=1734554393; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qpv4gbVjIHmmmrd0tjmZ84YUQmgZGdnFqXfZCW5dIrs=;
+        b=JDCmpg0qwm7aW+NPPDFSe18oOHtiuGH3jPxQmto5K8kqTjqlG8B4Sff0ohkvePyQ4V
+         1hk2tUENXhBy+5Lrzusq7HUVAEdHK1pf+6JuiJFMmw4AuO0TpZ8TCgfswTvP840m+Afd
+         kkep4/pf5qrIah1KZGM+6BT6v9Uz9iOqnGPI8sUvk2f/KHdDhHuuenHS5D7ba9Vq/Pi1
+         H8XjNwvHlVCNIolbeSxPtmLh3kzg81mKuZShcouHOU9EHx6O6TAkFsmfSfQ/yloJ0Kb4
+         oTgmZPI39BDPWOKbfJdy0hJ9QlO2CU0c3Gck1/GXaSpz/DoJopF5XTnShbdLq3JNLkAP
+         EoUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733949593; x=1734554393;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Qpv4gbVjIHmmmrd0tjmZ84YUQmgZGdnFqXfZCW5dIrs=;
+        b=GU8+cnOsipLy+BmSip9X/2mFCQH7E3eGiTE/GL2ksZw4Xen3K4mvtAD+vh6NJjMIKj
+         npdnV5rOx3tPbGG0UFrXlmWnVpFudjx1Ojltn9p7vifN0I+v0rXUogbSaFO45b6kPz0p
+         aTdCl5y2iNM2RpiURICzKkjvZ0NYjsqiR7G0S/WN0R1jrMa48YO0yayKEQpFt6y8rirp
+         F7r8btE9jCsiklLe4aWrbHnxc5gxQHh9KOdBIguX1NkyOcaH6SkKiuj3/wDoPacZ1YZ0
+         5clp1wkS6UjOQ/cuPfziPyBZ6wp/2iKLpd03/5G2WcS8YqJXMaoXwDSFHVS/7RQejjuH
+         V5NA==
+X-Forwarded-Encrypted: i=1; AJvYcCWcjVrqjZbALHLix2zATzlJrqsRSVRq2S4gXK6aGJBSr9Ob5L3xo4A5Wqe9vc6D43H46UFw04Nk+ONyHbLb@vger.kernel.org, AJvYcCX4Y1FYfxlc7oKdJi2wllssVuxYTENWk/hPeARFmcr54MYlVfBus3OFNFDzZHZQDUQ7WJRUbLwI@vger.kernel.org
+X-Gm-Message-State: AOJu0YzNbtDXZdZw8lPuLhoQhRvneYuZpT5sq/eglzfBJ/N1TjzgF/mI
+	vcdbYemTOwPV0zsiG6wE8bqbbdmlHz/QRb4RxV5tSrwRvHiQNBDQ
+X-Gm-Gg: ASbGncupsd5isb0+6Spij6cGCnfmbrkCy/HHf/LilD+fIeUAenjmbf+byDzzxHEC866
+	ksFdpUvdXackh34MovNFJl+Ca76Z/8chOJAxqfwFxsXaBhvoRVojvqSiP2SKTd+l/MdIHRNjwbd
+	eQWz297TTlGWmQwflRlcT5Ze9yYy0OMLhOyBrhppymLRaLhXyNXCBFLzv2psC5iIDLXb38tfGIZ
+	4xQr9QCuO6SFJBwcFkIHneAmbghED0+Qi4xTztQ/7lIk+0ImAzQyx6vCDb2ATVV9bmfBt6UbUnm
+	beGTTJcg0u6CvJ8=
+X-Google-Smtp-Source: AGHT+IHbf62wVMPJS0UI+IgyDaQhHsKZkWwBm5K0XGEL/q3qn17Z/C6mJh+RR0ftqbG79OOrbQ+WJA==
+X-Received: by 2002:a05:6902:2309:b0:e3a:9d9:bf59 with SMTP id 3f1490d57ef6-e3da324c3femr626276276.40.1733949592992;
+        Wed, 11 Dec 2024 12:39:52 -0800 (PST)
+Received: from localhost (fwdproxy-nha-113.fbsv.net. [2a03:2880:25ff:71::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e3c949c7022sm457262276.23.2024.12.11.12.39.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Dec 2024 12:39:52 -0800 (PST)
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+To: shakeel.butt@linux.dev
+Cc: hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	muchun.song@linux.dev,
+	akpm@linux-foundation.org,
+	sj@kernel.org,
 	cgroups@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH v3] vmalloc: Fix accounting with i915
-Date: Wed, 11 Dec 2024 20:25:37 +0000
-Message-ID: <20241211202538.168311-1-willy@infradead.org>
-X-Mailer: git-send-email 2.47.1
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: [v3 PATCH 0/3] memcg/hugetlb: Rework memcg hugetlb charging
+Date: Wed, 11 Dec 2024 12:39:48 -0800
+Message-ID: <20241211203951.764733-1-joshua.hahnjy@gmail.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -67,45 +94,74 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If the caller of vmap() specifies VM_MAP_PUT_PAGES (currently only the
-i915 driver), we will decrement nr_vmalloc_pages and MEMCG_VMALLOC in
-vfree().  These counters are incremented by vmalloc() but not by vmap()
-so this will cause an underflow.  Check the VM_MAP_PUT_PAGES flag before
-decrementing either counter.
+This series cleans up memcg's hugetlb charging logic by deprecating the
+current memcg hugetlb try-charge + {commit, cancel} logic present in
+alloc_hugetlb_folio. A single function mem_cgroup_charge_hugetlb takes
+its place instead. This makes the code more maintainable by simplifying
+the error path and reduces memcg's footprint in hugetlb logic.
 
-Fixes: b944afc9d64d (mm: add a VM_MAP_PUT_PAGES flag for vmap)
-Cc: stable@vger.kernel.org
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+This patch introduces a few changes in the hugetlb folio allocation
+error path:
+(a) Instead of having multiple return points, we consolidate them to
+    two: one for reaching the memcg limit or running out of memory
+    (-ENOMEM) and one for hugetlb allocation fails / limit being
+    reached (-ENOSPC).
+(b) Previously, the memcg limit was checked before the folio is acquired,
+    meaning the hugeTLB folio isn't acquired if the limit is reached.
+    This patch performs the charging after the folio is reached, meaning
+    if memcg's limit is reached, the acquired folio is freed right away.
+
+This patch builds on two earlier patch series: [2] which adds memcg
+hugeTLB counters, and [3] which deprecates charge moving and removes the
+last references to mem_cgroup_cancel_charge. The request for this cleanup
+can be found in [2].
+
+Suggested-by: Shakeel Butt <shakeel.butt@linux.dev>
+Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
+
+[1] https://lore.kernel.org/all/20231006184629.155543-1-nphamcs@gmail.com/
+[2] https://lore.kernel.org/all/20241101204402.1885383-1-joshua.hahnjy@gmail.com/
+[3] https://lore.kernel.org/linux-mm/20241025012304.2473312-1-shakeel.butt@linux.dev/
+
 ---
- mm/vmalloc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Changelog
+v3:
+  * Fixed build error where mem_cgroup_charge_hugetlb was defined inside
+    an #ifdef CONFIG_MEMCG. It is now defined in the #else case as well.
+  * memcg_accounts_hugetlb is no longer forward-declared, just
+    statically defined earlier.
+  * The #ifdef is moved outside memcg_accounts_hugetlb's definition.
+  * lruvec_stat_mod_folio() is now called only except when memcg
+    charging fails. That is, even when memcg is not supported or memcg
+    does not account hugetlb, we still update the (global) stats.
+    * For this to happen, memcg_charge_hugetlb no longer returns
+      -EOPNOTSUPP, just returns 0 when it is not supported.
+  * kernel-doc comment added for mem_cgroup_charge_hugetlb
+  * s/deprecate/remove in commit messages for clarity.
+  * Thank you Shakeel, Yosry, and SJ for your input!
+v2:
+  * Removed declaration of memcg_accounts_hugetlb from memcontrol.h
+  * Moved second call to memcg_accounts_hugetlb from 2nd patch to 1st
+  * Changed error behavior in alloc_hugetlb_folio: v1 included a bug
+    that uncharged hugetlb_cgroup twice when memecg's limit was reached
+  * mem_cgroup_charge_hugetlb no longer called with hugetlb_lock held
+  * Moved mem_cgroup_hugetlb_{try, charge} deprecation to patch 3
+  * mem_cgroup_charge_hugetlb always decrements memcg's refcount
+  * Fully cleaned up mem_cgroup_{cancel,commit}_charge
+  * Fixed typos
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index f009b21705c1..5c88d0e90c20 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -3374,7 +3374,8 @@ void vfree(const void *addr)
- 		struct page *page = vm->pages[i];
- 
- 		BUG_ON(!page);
--		mod_memcg_page_state(page, MEMCG_VMALLOC, -1);
-+		if (!(vm->flags & VM_MAP_PUT_PAGES))
-+			mod_memcg_page_state(page, MEMCG_VMALLOC, -1);
- 		/*
- 		 * High-order allocs for huge vmallocs are split, so
- 		 * can be freed as an array of order-0 allocations
-@@ -3382,7 +3383,8 @@ void vfree(const void *addr)
- 		__free_page(page);
- 		cond_resched();
- 	}
--	atomic_long_sub(vm->nr_pages, &nr_vmalloc_pages);
-+	if (!(vm->flags & VM_MAP_PUT_PAGES))
-+		atomic_long_sub(vm->nr_pages, &nr_vmalloc_pages);
- 	kvfree(vm->pages);
- 	kfree(vm);
- }
+Joshua Hahn (3):
+  memcg/hugetlb: Introduce memcg_accounts_hugetlb
+  memcg/hugetlb: Introduce mem_cgroup_charge_hugetlb
+  memcg/hugetlb: Remove memcg hugetlb try-commit-cancel protocol
+
+ include/linux/memcontrol.h | 21 ++-------
+ mm/hugetlb.c               | 35 ++++++---------
+ mm/memcontrol.c            | 92 ++++++++++++++++----------------------
+ 3 files changed, 56 insertions(+), 92 deletions(-)
+
 -- 
-2.45.2
+base-commit: 9f16d5e6f220661f73b36a4be1b21575651d8833
+2.43.5
 
 
