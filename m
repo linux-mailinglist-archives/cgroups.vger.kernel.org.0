@@ -1,111 +1,92 @@
-Return-Path: <cgroups+bounces-5794-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5795-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D90799EC420
-	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 06:06:17 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4C58D188B210
-	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 05:06:16 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB5E51BEF91;
-	Wed, 11 Dec 2024 05:06:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nRHMXtVh"
-X-Original-To: cgroups@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0F029EC4E6
+	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 07:39:15 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3D156F30C
-	for <cgroups@vger.kernel.org>; Wed, 11 Dec 2024 05:06:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58B08282716
+	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 06:39:14 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C40E1C4610;
+	Wed, 11 Dec 2024 06:39:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ucaVq7pq"
+X-Original-To: cgroups@vger.kernel.org
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C69126DCE1;
+	Wed, 11 Dec 2024 06:39:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733893570; cv=none; b=nOqHCpHpclP/2hoscAXlw3FI7w1JyHsinD5O7RCHv569jzACG27REmZ/87xUX3qGOYo/J8tRwkGyqaih9XCjdlLpvriImUHHFh7eD7aNUFwfSPbl4CpNiuSxtxD86sfhhyRNiMPrOZQ6eofIkhHUIB6hNrSMVWbvNaqwb8Fn4Kw=
+	t=1733899150; cv=none; b=JRdUAE0C+wgtnZLu5DXipgaW7nQWnANxiEtzBihemhYBTdhROvB/u5cP36UfzxkQ257kCj3328I2jYKVObpHH67d0Mp/nzjgdJasIwt/N/AT/D2HZcVWWlt3ih7iFFI6CiHI7fJ839L8/NsalOJqhyFsMSVDPRZ+YCLmR9d5nGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733893570; c=relaxed/simple;
-	bh=o/WWiYugsJIwauItRCFdRG28LLtzcz8vjgTvpF0SxY4=;
+	s=arc-20240116; t=1733899150; c=relaxed/simple;
+	bh=a7Xg0S1Jly5/05RvJ5drEAApmT9tg80lqVKE2mqedmo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CRWjRfTqCfqA7LCghwCQ2nvlEchAsRQoreaQoNyiFOnZ2kHPfooW3HVdn9W2qPHjUCaBoyuesiXYkrgq3II3KTyDeYUtnoxAxbhcGM0AiD3PFwxYFukptHccFZ4QFOkU56mP9GzDy/dXAy97VoHHPsHYoqXjI1iCBlPEvtD3Ogs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nRHMXtVh; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 10 Dec 2024 21:06:00 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1733893565;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JPb00wfkIgOVCDhI/4b1eMraMt3MwKHLazM/Qku2T0I=;
-	b=nRHMXtVhDX2vUhA8f9Nf3P8o6/Kz/krM6cQoAEAksxbK8dsoKeNimZPA3sTZ9CEmQerwsY
-	ZMw2aGYVh6tZSyWjTzON9uGhSH8zSeHkpBclvaHQuWchKv/F+mQ0ZzbIF86pY9aJWbh5U6
-	9ZT2kecvbzmllwqqCm90pG5Hyrb7y6A=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 2/2] vmalloc: Account memcg per vmalloc
-Message-ID: <txdwd3r7wwyhdntqfzlqrtyoo4hui2ltlhkzi7ysjvhojtgatu@zsk6dkavlgxz>
-References: <20241211043252.3295947-1-willy@infradead.org>
- <20241211043252.3295947-2-willy@infradead.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZLhRXDOatUT+jl2VEr8OPHLv6+Gjt59sivUtaecBH7EF6LodsTH0u3L+ojtN6ZS1C0IZDEAzpTfytGZqohIqMpGuaiaO1Vcp1Ie8y13RfFMQI+rYiKkk6nsEZj0hd4gyZ4c2ByemDKJwAQcy07/Kkqce1aN2QRbnoSDiR2es2Ts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ucaVq7pq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C38DC4CED2;
+	Wed, 11 Dec 2024 06:39:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733899150;
+	bh=a7Xg0S1Jly5/05RvJ5drEAApmT9tg80lqVKE2mqedmo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ucaVq7pqP3yD5KTEXYpa5uDTAABxclEnm5g8WOIphoB258hbi5aaQJ2735+zMTMte
+	 s5CFeZFci3F4px6jXWW4cT3ScGRzvs6gJjzSEl3Baj7W9dzJ6w0g6KL5fJYcZekcZE
+	 sltEDF16Ytrs0slDwqhtGWvBhOgoOFWFcREz+h4VuPznNqjy5Z7cFOiSFELbZRNSkI
+	 dnK6g6JW2Dw87ERebkWj38gn8VYKnc7i9EDFgA2HXiKgTG9XVc5T/MmBt66G1+MtWc
+	 xsWeI7ysR1AZoJFwv6zUmtogCujKi20Cxd3SgoRSC6tf6ISSB997rjSOTYCDzWpLoR
+	 jpofYy74saalQ==
+Date: Tue, 10 Dec 2024 20:39:09 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Costa Shulyupin <costa.shul@redhat.com>
+Cc: Waiman Long <longman@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] cgroup/cpuset: Remove stale text
+Message-ID: <Z1kzjcYmH-a6_SxW@slm.duckdns.org>
+References: <20241204110442.348402-1-costa.shul@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20241211043252.3295947-2-willy@infradead.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20241204110442.348402-1-costa.shul@redhat.com>
 
-On Wed, Dec 11, 2024 at 04:32:50AM +0000, Matthew Wilcox (Oracle) wrote:
-[...]
-> +int obj_cgroup_charge_vmalloc(struct obj_cgroup **objcgp,
-> +		unsigned int nr_pages, gfp_t gfp)
-> +{
-> +	struct obj_cgroup *objcg;
-> +	int err;
-> +
-> +	if (mem_cgroup_disabled() || !(gfp & __GFP_ACCOUNT))
-> +		return 0;
-> +
-> +	objcg = current_obj_cgroup();
-> +	if (!objcg)
-> +		return 0;
-> +
-> +	err = obj_cgroup_charge_pages(objcg, gfp, nr_pages);
-> +	if (err)
-> +		return err;
-> +	obj_cgroup_get(objcg);
-> +	mod_memcg_state(obj_cgroup_memcg(objcg), MEMCG_VMALLOC, nr_pages);
+On Wed, Dec 04, 2024 at 01:04:41PM +0200, Costa Shulyupin wrote:
+> Task's cpuset pointer was removed by
+> commit 8793d854edbc ("Task Control Groups: make cpusets a client of cgroups")
+> 
+> Paragraph "The task_lock() exception ...." was removed by
+> commit 2df167a300d7 ("cgroups: update comments in cpuset.c")
+> 
+> Remove stale text:
+> 
+>  We also require taking task_lock() when dereferencing a
+>  task's cpuset pointer. See "The task_lock() exception", at the end of this
+>  comment.
+> 
+>  Accessing a task's cpuset should be done in accordance with the
+>  guidelines for accessing subsystem state in kernel/cgroup.c
+> 
+> and reformat.
+> 
+> Co-developed-by: Michal Koutný <mkoutny@suse.com>
+> Co-developed-by: Waiman Long <longman@redhat.com>
+> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
 
-obj_cgroup_memcg() needs to be within rcu. See MEMCG_PERCPU_B as an
-example.
+Applied to cgroup/for-6.13-fixes.
 
-> +	*objcgp = objcg;
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * obj_cgroup_uncharge_vmalloc - Uncharge vmalloc memory
-> + * @objcg: The object cgroup
-> + * @nr_pages: Number of pages
-> + */
-> +void obj_cgroup_uncharge_vmalloc(struct obj_cgroup *objcg,
-> +		unsigned int nr_pages)
-> +{
-> +	if (!objcg)
-> +		return;
-> +	mod_memcg_state(objcg->memcg, MEMCG_VMALLOC, 0L - nr_pages);
+Thanks.
 
-Please use obj_cgroup_memcg() above instead of objcg->memcg and within
-rcu lock.
-
-Overall the patch looks good.
+-- 
+tejun
 
