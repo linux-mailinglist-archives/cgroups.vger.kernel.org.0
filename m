@@ -1,68 +1,57 @@
-Return-Path: <cgroups+bounces-5835-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5836-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D2CD9ED81E
-	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 22:08:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B2339ED950
+	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 23:05:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3077F18843BD
-	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 21:08:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AB831882455
+	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 22:05:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68671DDC28;
-	Wed, 11 Dec 2024 21:08:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23F501E9B3C;
+	Wed, 11 Dec 2024 22:05:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="i/aHBbt/"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="U1h6E/oK"
 X-Original-To: cgroups@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 160286DCE1;
-	Wed, 11 Dec 2024 21:08:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BB731C4A20
+	for <cgroups@vger.kernel.org>; Wed, 11 Dec 2024 22:05:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733951320; cv=none; b=pQoPwyxl0+qvlyKtolD2iY87Irt4Li9wnfCD+Uwf0hRiAiq50khhf41X1V+8vBDDWTyYubToqL3ym/aCD4zGkW4sxUyrfq94KMlERRmkzQt32ndxtB21M+K9FbXqNNktA7yZXBd50t5uHVynpdFi6tJ+SkMxuOAnrU645oQnMaI=
+	t=1733954740; cv=none; b=TLGUEkyXgBgnpmy0xekFQC6aZ0uEF4xrNjMobKzcS6U19ZgjmmQ4mgjeNV4zUtaTZ0znxb3sqrmjlB8FqM3njoqWtIoTo54qD/lx9a6Wfsbg9n8O//mDO5otc7J6WryCfb3+fS9AutoWBnZZOKeuTJHLsm4yEGH8nk6K+ZxP3ss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733951320; c=relaxed/simple;
-	bh=UO3YXZW47gWv3SCpmfMBDpDp2RV79jQ3vkDyXRysnF4=;
+	s=arc-20240116; t=1733954740; c=relaxed/simple;
+	bh=EM6RN1Y8fkV2+aD2fnXXYb+/aGWtN4RVenYfbRsp9UA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KbEU96OGxX8UNosQ8FG7up+oISfF6halSxrG3+nnJKSiCvXgti1kN8ST9uLqyDMSkfOmvQmWN+PBzkZxd+HfMlLLUu5qlK7j17INF36ozdNYE2kZeQqJlAWRYHnNrrVehNBCXt655tw78bvfYiaiqvDSPIeTA4U3DVBHzDeo0RE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=i/aHBbt/; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=T8mUFcmECrP/TteQEvTLst+33uFFcr5m63mDPK2C7ag=; b=i/aHBbt/A3ipc3S0CUjrXE02Ek
-	NM/36ZwFnHhMum1HqAUvD7xs807eOMn8yDHD1fh18M0pFyfa8NhadZE74kGtjp56SssmS1rtri4aJ
-	Ft0Kfp+SV7O8iEYAOBMf4uc0E9PLIj5kZlg13twWxFBBP521xpz2I6VUY5nkQyq3qG9TMngq0HZ25
-	WlzHwno1loUFkGG2SUE6TdJa0emkxw5CGfsXpxzT4hyPQjtVfuPT9jLsJVzYPDKKKGRmtjfMrgPh7
-	dWKwK3aJIr4JtTZ2TkOXLc/rOLayW/C3qYxg44s3fbQrkkupxUxsa3attNbnGxlKDVhsa6JWENx9z
-	XTCoAcDg==;
-Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tLTwf-00000000v5U-3ApR;
-	Wed, 11 Dec 2024 21:08:33 +0000
-Date: Wed, 11 Dec 2024 21:08:33 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH 2/2] vmalloc: Account memcg per vmalloc
-Message-ID: <Z1n_UXwvj27-AUHS@casper.infradead.org>
-References: <20241211043252.3295947-1-willy@infradead.org>
- <20241211043252.3295947-2-willy@infradead.org>
- <20241211160956.GB3136251@cmpxchg.org>
- <Z1nC3138biX0J1DJ@casper.infradead.org>
- <keho5no2wg666yjtkb5lflxwezgbzavue5ytydqm7pm7w62ctt@q6zg7t56gf4b>
- <Z1n0FFZ_oMYKcUiP@casper.infradead.org>
- <3bgedgrbu73dovgcy2keqjud6jafqxenceihtyre2hkego7oyb@opc5u53jef5a>
+	 Content-Type:Content-Disposition:In-Reply-To; b=tyc2L3qnUOzZ6e92zhvT5z0AUJy8j9nLqICz0gI0pkAAI9y0v6utbdS3wVwszzhhYnzKrpLu6m0EDPGG2MlBhRzv3IYo8pWGa1itfN7fNJuiyEHxd7xt5l5qN65Cvb865bMFKTBwqrAPfGwj8VFEMIuKj6G+haOTuXG7JdY9roU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=U1h6E/oK; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 11 Dec 2024 14:05:27 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1733954735;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RVgcEuCnW7ND1Ke1KnD/NQ5ObPzdolVfXNZnx8wq/xk=;
+	b=U1h6E/oKYfOvkpzKYmiAIz7NbTTiJfsV7+9Z4bDhou7RmNWpAltHNBj8GnkSLbTYy2+BoJ
+	E6QP2JRnUqTnPuS5ouOBDG5YW5QJDsgFMl498fEFnRHRvxY5cJizW3LhrLkaFJu4kYBmx6
+	VzsSeAAYGLO7TdGFLdF3qJIuyyKk8ok=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	muchun.song@linux.dev, akpm@linux-foundation.org, sj@kernel.org, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	kernel-team@meta.com
+Subject: Re: [v3 PATCH 1/3] memcg/hugetlb: Introduce memcg_accounts_hugetlb
+Message-ID: <mi54ropabzamou2aluq6qzyxjmxrml7i7xpdpzsikhgm4gawhd@fyx7ig6s7rvm>
+References: <20241211203951.764733-1-joshua.hahnjy@gmail.com>
+ <20241211203951.764733-2-joshua.hahnjy@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -71,56 +60,16 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3bgedgrbu73dovgcy2keqjud6jafqxenceihtyre2hkego7oyb@opc5u53jef5a>
+In-Reply-To: <20241211203951.764733-2-joshua.hahnjy@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Dec 11, 2024 at 12:58:36PM -0800, Shakeel Butt wrote:
-> On Wed, Dec 11, 2024 at 08:20:36PM +0000, Matthew Wilcox wrote:
-> > Umm, I don't think you know which vmalloc allocation a page came from
-> > today?  I've sent patches to add that information before, but they were
-> > rejected. 
+On Wed, Dec 11, 2024 at 12:39:49PM -0800, Joshua Hahn wrote:
+> This patch isolates the check for whether memcg accounts hugetlb.
+> This condition can only be true if the memcg mount option
+> memory_hugetlb_accounting is on, which includes hugetlb usage
+> in memory.current.
 > 
-> Do you have a link handy for that discussion?
+> Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
 
-It's not really relevant any more ...
-
-https://lore.kernel.org/linux-mm/20180518194519.3820-18-willy@infradead.org/
-
-and subsequent discussion:
-
-https://lore.kernel.org/linux-mm/20180611121129.GB12912@bombadil.infradead.org/
-
-It all predates memdesc.
-
-> Yes you are correct. At the moment it is a guesswork and exhaustive
-> search into multiple sources.
-
-At least I should be able to narrow it down somewhat if we have a
-PGTY_vmalloc.
-
-> > I actually want to improve this, without adding additional overhead.
-> > What I'm working on right now (before I got waylaid by this bug) is:
-> > 
-> > +struct choir {
-> > +       struct kref refcount;
-> > +       unsigned int nr;
-> > +       struct page *pages[] __counted_by(nr);
-> > +};
-> > 
-> > and rewriting vmalloc to be based on choirs instead of its own pages.
-> > One thing I've come to realise today is that the obj_cgroup pointer
-> > needs to be in the choir and not in the vm_struct so that we uncharge the
-> > allocation when the choir refcount drops to 0, not when the allocation
-> > is unmapped.
-> 
-> What/who else can take a reference on a choir?
-
-The first user is remap_vmalloc_range() which today takes a
-mapcount+refcount on the page underlying the vmalloc inside
-vm_insert_page().
-
-But I see choirs being useful more widely; for example in the XFS buffer
-cache (which wouldn't be mappable to userspace).  They might even be
-the right approach for zswap, replacing zpdesc.  Haven't looked into
-that in enough detail yet.
-
+Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 
