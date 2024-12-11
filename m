@@ -1,77 +1,77 @@
-Return-Path: <cgroups+bounces-5829-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5830-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F107B9ED760
-	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 21:40:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24BB39ED762
+	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 21:40:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95C77163FC5
-	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 20:40:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7068188451B
+	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 20:40:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEDFB211A11;
-	Wed, 11 Dec 2024 20:39:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BA22229679;
+	Wed, 11 Dec 2024 20:39:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FaRYoimu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="guaxL6dW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06D5C20B814;
-	Wed, 11 Dec 2024 20:39:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E5672288EF;
+	Wed, 11 Dec 2024 20:39:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733949597; cv=none; b=vERLb6nDFrExDxcYZwsm5R521GbrA3pW891O0lBL/z9GvvwLjmAe/eRL8+vuOQOqJzqXElx+Qou1rfq2pPDbqD5OrNGleYC7QCzLLI0FzFFYWFmVQlNHK3s8zQZC6aAIV7/gRNMB6s2cZW1yAj43BilAfL8Y3FknrBU9U2kxlTw=
+	t=1733949598; cv=none; b=cjoXnkhcb8svgR7alZJOkMU9srY+OzVunUfCl4AGpvMzCpiNa34lB0YL6j0WcRavjS+508DcrCUt3AifRh7T69gS6lOcdRyT6IYph1eXNZwHnkgk2f58qumBhflOiXX3q6wIam+GVhTzXdSEtjPJlIJ5SProIeCphMdYeZ2Z8qI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733949597; c=relaxed/simple;
-	bh=AMF98hLGCzXV3uQ3vwmyZ1DrjpwjRU+6QG+eTj8OkyQ=;
+	s=arc-20240116; t=1733949598; c=relaxed/simple;
+	bh=WLwynhVDcI3vfVE61poQ/NqrgK1s6dKzdDUa9svjbqI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VlC97Y34wOzi8e8yox7XRsOQtKxWRH0+ZBwvddJ5lLJ1vjDDx6MSRsxLMwqcKSu+E7qUNUDqYoe0yRKBL3rKeTwx+BzCx3/rncHYpZKq+rlOzdjoVMuZZBCHbXLkwJIB9ppPCOk7nchIshAsDTH90UoGX1LNqGAzhwuKVPahCZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FaRYoimu; arc=none smtp.client-ip=209.85.128.174
+	 MIME-Version; b=j24RWxn6879BqahRaFFdrrBYT0VJ8cFFeJIAnlWnpyjp+CM7pKNCqUE7mMOG5aKuNwHjtYHTMhBJhlxrpftX9i3q0skDrrJOw1U7YPb2mBI8uV3GC0y025632IrIYqHB4SYtN3lsknNROYSIj48pp97KAP0MVeyCIHPLF09BV+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=guaxL6dW; arc=none smtp.client-ip=209.85.128.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6f006748fd1so38519667b3.3;
-        Wed, 11 Dec 2024 12:39:55 -0800 (PST)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-6eff4f0d627so41036667b3.1;
+        Wed, 11 Dec 2024 12:39:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1733949595; x=1734554395; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1733949596; x=1734554396; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=etyn39dYkYYqxl1MOdPR2a9G+AL/gyYbItp4iRGm6Gk=;
-        b=FaRYoimusqmsan+E3uZILZalhaW3MwCstftpzKwPlgm8N3BKS4dtfQA9IfYi2KupGp
-         tLIwMDKb1yoTNpxbv+fKf1jRWUB1LuF5SpD5P4DjhNIXvXISQoBdaFeV+vcQrfrm2nF7
-         /mIhROytpmmWpZ6hUpQ4Fngx3EdrdqqLFSz9siulqretWHG4ua85Uoadx1hU1Ct6e6hB
-         4/GgwYf3cd0Il6xwtzCG5rgsmK3l25eBQki0r2/ZNtmqJV68AlvDt6spstq+D9IZrwvX
-         BnxMkV61o86uDIvlD3hcGy+nR4pRkyq9dV02FAJMYeR01Prm/YBsmCYmJ0elq+wj77P2
-         jlSA==
+        bh=TB7w562sxA4ON1zeYB8I14khwhTIPTHUGFUW2mmo+w4=;
+        b=guaxL6dW80b2SmMCzEUCOSqmpk6W12+0A7jCKqn9YGO1OfMlPdKgR9fh1s1LpnvjKR
+         B+rg9KU8fYez1ca2nnFtQi4+ka57Q4HTdcFo2H1h4BjxWiQbtZhK+jKWjnac5nTa9s3F
+         t9sLYyMxJUiL77dBtouo6MaFwsjwlBA+lveapOLBIX93rKtP8KRZrWr5ra3ObnxwUQKQ
+         uuXoOgE/OXZQdjb60e2fcCRM5MpvoZSv9rgMEsR8Q4PU+nl+J0A9szgkrStsBq3wGinu
+         ceIVT0pCmF5j1d7c+cdJ82Pjv5iN2L1OgGAGKoa7N+V8uiJ6Ny5f8klu9s1Won/3L4PD
+         Wb6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733949595; x=1734554395;
+        d=1e100.net; s=20230601; t=1733949596; x=1734554396;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=etyn39dYkYYqxl1MOdPR2a9G+AL/gyYbItp4iRGm6Gk=;
-        b=pBjfxC5ssdtDvdsElI0mJtfSHNdxMaP7ctaKwf8vqdcf01uWrc5qnuIB+ld38/hJjK
-         MPyQ+arvlQYfbhSrrsapYhgPyoNxhqo8KDRL+uqwtNmSd3r9X8yKGGpOTZtmUK/WDTga
-         hUTIHNMJRRhuqdMmHdpq2M+OdWBRQxrw2bPCFtqdNTgmPgk6YqIwc30q869CB4+9zDWP
-         M8Wpait7nShomsIr+QWIoAwUhr6/xz1GiVz2OgzpmC+YB4g3J+Tca1JY0qPMATCn7oNj
-         jrA4J0sjZ6YrAr9ybkGHJzK6vnR9M7qJhMw13J8yrq75vDF4V/cIxvkE6HNt6jHl/HB6
-         ADkw==
-X-Forwarded-Encrypted: i=1; AJvYcCVRd58fG0eACnAwVQXyU0Ebgeq6Y3TtUyspfMbRZiW/r2euo262zTWS42exC/KGijcAiNF3Txlb@vger.kernel.org, AJvYcCVWtzY3YiotIFaFXswtOMcJ4XJqIuNHuVa+NXXG+AXQvvFfWIdv8Xyes0X8tH5xyPGL25c+jYu1cXb8ZzUv@vger.kernel.org
-X-Gm-Message-State: AOJu0YyT1FoYvcGKuaveASX210c6hZAiaoFhT04G7zmjet5drg94zLPZ
-	fu4DPtilNyUSqr8rc7VdNs2/ZMhAhTRbnC8VcZYAbZc72O/5lCJA
-X-Gm-Gg: ASbGncsLIwr9xlShCW04N3v5kfhfT4PjhLUPmei6Vg8sQAlzq5plg3jPcrILcxg/xPC
-	GkSkMq0wnaLzNQXWIoKc4N5Zp6VsuJgWZ5UiI3fLp+b933EbxyD/BBEwLvmoTMVeCvwfsH8ujoI
-	fsQdtI/SffC0J4ub0vP1n6xYmhcX3cm/N2hjXec4QrQlMQN/V9+zi2zROR3GKuQqo75L9sriPLV
-	jr6GO2fGKKFV18sge9aIMR7BgiPNPHqmKCp7iiZYvNBMyPWLMakLUWHt/f8y3ScglZrCuN9if0i
-	fVKVPvxaN2hyRg==
-X-Google-Smtp-Source: AGHT+IHiKNGpDGljLutgpDps2QixRf6dKOvZDYWteW4cFSGFlQb0IBB4jIkNpQKhnKnsth+eROjXLA==
-X-Received: by 2002:a05:690c:9a01:b0:6ef:7312:d05c with SMTP id 00721157ae682-6f1a4f68714mr11743177b3.2.1733949595078;
-        Wed, 11 Dec 2024 12:39:55 -0800 (PST)
-Received: from localhost (fwdproxy-nha-010.fbsv.net. [2a03:2880:25ff:a::face:b00c])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6f14cebffeesm4012667b3.126.2024.12.11.12.39.54
+        bh=TB7w562sxA4ON1zeYB8I14khwhTIPTHUGFUW2mmo+w4=;
+        b=iplAcdA6RcNkGSoOERDRmW/1vU66EH8Sq43n9AGsT5CIN1kkA6CrWb2lpAD7U32flu
+         9YcNGzEGt+beT3VN3xcITSGxayUTs/5smT0WSweKfO86awshiIJks67I6jmdj59VVFSF
+         8UrsepMq1tJoDZCxjP86Qdu2lVb6EjkaWbPS6N5y62nm9DifvcGGWUrCDi2CXkk89P3u
+         KMwISFyWFQtYRdzmdDhKUmdh9RyRzgNk+EHoiIr4lE4MvtmBOUFf44P01+JDJQqJrzwE
+         rojQOwO9/w4CSPBjf3HA2khJlsXxP0FWIWZSe72Oe3bchtWjlFur7f1KaUUmYVSlNCu3
+         1wZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUn70iFr2n4d1LMMZkWXYAfiShKKuz2cE1N7yUHO6KBf8Jay3jaaZzypTLEvO/oCKbPD6flI+Dq1ttdzUsa@vger.kernel.org, AJvYcCXEETj4IzzhsBDc3IXYSeB5u53LWD1aD7AfPA8rWuByjAZuafyaTCTm7SjbAww7qkpw0tI0sWHU@vger.kernel.org
+X-Gm-Message-State: AOJu0YwtfMdVSgMd5IPTqkh3W2ZrSl9Q/YPxBgnuZx2rKW32TD+dRyBP
+	SoSES9jPNUj/po283+RvQ4mHQCsKtuOLZHZ9E3PnrdlKP05dilMW
+X-Gm-Gg: ASbGnctdvUe/u0tOEASX5Td2fwivnRmJ25YV7/3+TlQuidho5xKaw6XNJry9vO4bko+
+	NE0VuM+tf0FQU477rrf8VUBtrKz5/Ir2bqScl+dSzGcTGttjIQaFaYfssOLivhGYwEfdSeVvYhM
+	jVqd2uVwKTcXuCw2xEWtCPWMM0w8A3yTL5Gq4pzUGM8vpbgFWmsrG+P446elW/agWPSd6GHN4jA
+	aJWavedpMFxYn0hZoDOPNisN1oN5KD9nmZRv9XVmPrXD3h5EkGwmWPgpEQ0PauVkNsp6ydi9uJC
+	Luy2Y4bMMRVR0w==
+X-Google-Smtp-Source: AGHT+IHKldzU41mVArIiVR43SbQPj9lPuiGmJL7kSl+CvnB5gG8KxKv/VPEhLHgXKWwXvwNSDfRJ8g==
+X-Received: by 2002:a05:690c:6610:b0:6ef:504e:a50a with SMTP id 00721157ae682-6f198a3cf33mr14425157b3.2.1733949596093;
+        Wed, 11 Dec 2024 12:39:56 -0800 (PST)
+Received: from localhost (fwdproxy-nha-002.fbsv.net. [2a03:2880:25ff:2::face:b00c])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e3c94b436f9sm455633276.42.2024.12.11.12.39.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Dec 2024 12:39:54 -0800 (PST)
+        Wed, 11 Dec 2024 12:39:55 -0800 (PST)
 From: Joshua Hahn <joshua.hahnjy@gmail.com>
 To: shakeel.butt@linux.dev
 Cc: hannes@cmpxchg.org,
@@ -84,9 +84,9 @@ Cc: hannes@cmpxchg.org,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	kernel-team@meta.com
-Subject: [v3 PATCH 2/3] memcg/hugetlb: Introduce mem_cgroup_charge_hugetlb
-Date: Wed, 11 Dec 2024 12:39:50 -0800
-Message-ID: <20241211203951.764733-3-joshua.hahnjy@gmail.com>
+Subject: [PATCH 3/3] memcg/hugetlb: Remove memcg hugetlb try-commit-cancel protocol
+Date: Wed, 11 Dec 2024 12:39:51 -0800
+Message-ID: <20241211203951.764733-4-joshua.hahnjy@gmail.com>
 X-Mailer: git-send-email 2.43.5
 In-Reply-To: <20241211203951.764733-1-joshua.hahnjy@gmail.com>
 References: <20241211203951.764733-1-joshua.hahnjy@gmail.com>
@@ -98,164 +98,181 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch introduces mem_cgroup_charge_hugetlb which combines the logic
-of mem_cgroup_hugetlb_try_charge / mem_cgroup_hugetlb_commit_charge and
-removes the need for mem_cgroup_hugetlb_cancel_charge. It also reduces
-the footprint of memcg in hugetlb code and consolidates all memcg
-related error paths into one.
+This patch fully removes the mem_cgroup_{try, commit, cancel}_charge
+functions, as well as their hugetlb variants.
 
 Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
+Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 
 ---
- include/linux/memcontrol.h |  7 +++++++
- mm/hugetlb.c               | 35 ++++++++++++++---------------------
- mm/memcontrol.c            | 34 ++++++++++++++++++++++++++++++++++
- 3 files changed, 55 insertions(+), 21 deletions(-)
+ include/linux/memcontrol.h | 22 -------------
+ mm/memcontrol.c            | 65 ++------------------------------------
+ 2 files changed, 3 insertions(+), 84 deletions(-)
 
 diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 5502aa8e138e..f4271cfdba92 100644
+index d1ee98dc3a38..e1a9998d8add 100644
 --- a/include/linux/memcontrol.h
 +++ b/include/linux/memcontrol.h
-@@ -649,6 +649,8 @@ static inline int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm,
- int mem_cgroup_hugetlb_try_charge(struct mem_cgroup *memcg, gfp_t gfp,
- 		long nr_pages);
+@@ -620,8 +620,6 @@ static inline bool mem_cgroup_below_min(struct mem_cgroup *target,
+ 		page_counter_read(&memcg->memory);
+ }
  
-+int mem_cgroup_charge_hugetlb(struct folio* folio, gfp_t gfp);
-+
+-void mem_cgroup_commit_charge(struct folio *folio, struct mem_cgroup *memcg);
+-
+ int __mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp);
+ 
+ /**
+@@ -646,9 +644,6 @@ static inline int mem_cgroup_charge(struct folio *folio, struct mm_struct *mm,
+ 	return __mem_cgroup_charge(folio, mm, gfp);
+ }
+ 
+-int mem_cgroup_hugetlb_try_charge(struct mem_cgroup *memcg, gfp_t gfp,
+-		long nr_pages);
+-
+ int mem_cgroup_charge_hugetlb(struct folio* folio, gfp_t gfp);
+ 
  int mem_cgroup_swapin_charge_folio(struct folio *folio, struct mm_struct *mm,
- 				  gfp_t gfp, swp_entry_t entry);
+@@ -679,7 +674,6 @@ static inline void mem_cgroup_uncharge_folios(struct folio_batch *folios)
+ 	__mem_cgroup_uncharge_folios(folios);
+ }
  
-@@ -1152,6 +1154,11 @@ static inline int mem_cgroup_hugetlb_try_charge(struct mem_cgroup *memcg,
+-void mem_cgroup_cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages);
+ void mem_cgroup_replace_folio(struct folio *old, struct folio *new);
+ void mem_cgroup_migrate(struct folio *old, struct folio *new);
+ 
+@@ -1137,23 +1131,12 @@ static inline bool mem_cgroup_below_min(struct mem_cgroup *target,
+ 	return false;
+ }
+ 
+-static inline void mem_cgroup_commit_charge(struct folio *folio,
+-		struct mem_cgroup *memcg)
+-{
+-}
+-
+ static inline int mem_cgroup_charge(struct folio *folio,
+ 		struct mm_struct *mm, gfp_t gfp)
+ {
  	return 0;
  }
  
-+static inline int mem_cgroup_charge_hugetlb(struct folio* folio, gfp_t gfp)
-+{
-+        return 0;
-+}
-+
+-static inline int mem_cgroup_hugetlb_try_charge(struct mem_cgroup *memcg,
+-		gfp_t gfp, long nr_pages)
+-{
+-	return 0;
+-}
+-
  static inline int mem_cgroup_swapin_charge_folio(struct folio *folio,
  			struct mm_struct *mm, gfp_t gfp, swp_entry_t entry)
  {
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index ea2ed8e301ef..f0f0ffae30a3 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -2967,21 +2967,13 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
- 	struct hugepage_subpool *spool = subpool_vma(vma);
- 	struct hstate *h = hstate_vma(vma);
- 	struct folio *folio;
--	long map_chg, map_commit, nr_pages = pages_per_huge_page(h);
-+	long map_chg, map_commit;
- 	long gbl_chg;
--	int memcg_charge_ret, ret, idx;
-+	int ret, idx;
- 	struct hugetlb_cgroup *h_cg = NULL;
--	struct mem_cgroup *memcg;
- 	bool deferred_reserve;
- 	gfp_t gfp = htlb_alloc_mask(h) | __GFP_RETRY_MAYFAIL;
- 
--	memcg = get_mem_cgroup_from_current();
--	memcg_charge_ret = mem_cgroup_hugetlb_try_charge(memcg, gfp, nr_pages);
--	if (memcg_charge_ret == -ENOMEM) {
--		mem_cgroup_put(memcg);
--		return ERR_PTR(-ENOMEM);
--	}
--
- 	idx = hstate_index(h);
- 	/*
- 	 * Examine the region/reserve map to determine if the process
-@@ -2989,12 +2981,8 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
- 	 * code of zero indicates a reservation exists (no change).
- 	 */
- 	map_chg = gbl_chg = vma_needs_reservation(h, vma, addr);
--	if (map_chg < 0) {
--		if (!memcg_charge_ret)
--			mem_cgroup_cancel_charge(memcg, nr_pages);
--		mem_cgroup_put(memcg);
-+	if (map_chg < 0)
- 		return ERR_PTR(-ENOMEM);
--	}
- 
- 	/*
- 	 * Processes that did not create the mapping will have no
-@@ -3092,10 +3080,18 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
- 		}
- 	}
- 
--	if (!memcg_charge_ret)
--		mem_cgroup_commit_charge(folio, memcg);
-+	ret = mem_cgroup_charge_hugetlb(folio, gfp);
-+	/*
-+	 * Unconditionally increment NR_HUGETLB here. If it turns out that
-+	 * mem_cgroup_charge_hugetlb failed, then immediately free the page and
-+	 * decrement NR_HUGETLB.
-+	 */
- 	lruvec_stat_mod_folio(folio, NR_HUGETLB, pages_per_huge_page(h));
--	mem_cgroup_put(memcg);
-+
-+	if (ret == -ENOMEM) {
-+		free_huge_folio(folio);
-+		return ERR_PTR(-ENOMEM);
-+	}
- 
- 	return folio;
- 
-@@ -3110,9 +3106,6 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
- 		hugepage_subpool_put_pages(spool, 1);
- out_end_reservation:
- 	vma_end_reservation(h, vma, addr);
--	if (!memcg_charge_ret)
--		mem_cgroup_cancel_charge(memcg, nr_pages);
--	mem_cgroup_put(memcg);
- 	return ERR_PTR(-ENOSPC);
+@@ -1172,11 +1155,6 @@ static inline void mem_cgroup_uncharge_folios(struct folio_batch *folios)
+ {
  }
  
+-static inline void mem_cgroup_cancel_charge(struct mem_cgroup *memcg,
+-		unsigned int nr_pages)
+-{
+-}
+-
+ static inline void mem_cgroup_replace_folio(struct folio *old,
+ 		struct folio *new)
+ {
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b25eab9c933e..c903e260a830 100644
+index c903e260a830..7ddbb2d12eb9 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -4561,6 +4561,40 @@ int mem_cgroup_hugetlb_try_charge(struct mem_cgroup *memcg, gfp_t gfp,
+@@ -2383,21 +2383,6 @@ int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
  	return 0;
  }
  
-+/**
-+ * mem_cgroup_charge_hugetlb - charge the memcg for a hugetlb folio
-+ * @folio: folio being charged
-+ * @gfp: reclaim mode
-+ *
-+ * This function is called when allocating a huge page folio, after the page has
-+ * already been obtained and charged to the appropriate hugetlb cgroup
-+ * controller (if it is enabled).
-+ *
-+ * Returns ENOMEM if the memcg is already full.
-+ * Returns 0 if either the charge was successful, or if we skip the charging.
-+ */
-+int mem_cgroup_charge_hugetlb(struct folio *folio, gfp_t gfp)
-+{
-+	struct mem_cgroup *memcg = get_mem_cgroup_from_current();
-+	int ret = 0;
-+
-+	/*
-+	 * Even memcg does not account for hugetlb, we still want to update
-+	 * system-level stats via lruvec_stat_mod_folio. Return 0, and skip
-+	 * charging the memcg.
-+	 */
-+	if (mem_cgroup_disabled() || !memcg_accounts_hugetlb() ||
-+		!memcg || !cgroup_subsys_on_dfl(memory_cgrp_subsys))
-+		goto out;
-+
-+	if (charge_memcg(folio, memcg, gfp))
-+		ret = -ENOMEM;
-+
-+out:
-+	mem_cgroup_put(memcg);
-+	return ret;
-+}
-+
+-/**
+- * mem_cgroup_cancel_charge() - cancel an uncommitted try_charge() call.
+- * @memcg: memcg previously charged.
+- * @nr_pages: number of pages previously charged.
+- */
+-void mem_cgroup_cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
+-{
+-	if (mem_cgroup_is_root(memcg))
+-		return;
+-
+-	page_counter_uncharge(&memcg->memory, nr_pages);
+-	if (do_memsw_account())
+-		page_counter_uncharge(&memcg->memsw, nr_pages);
+-}
+-
+ static void commit_charge(struct folio *folio, struct mem_cgroup *memcg)
+ {
+ 	VM_BUG_ON_FOLIO(folio_memcg_charged(folio), folio);
+@@ -2411,18 +2396,6 @@ static void commit_charge(struct folio *folio, struct mem_cgroup *memcg)
+ 	folio->memcg_data = (unsigned long)memcg;
+ }
+ 
+-/**
+- * mem_cgroup_commit_charge - commit a previously successful try_charge().
+- * @folio: folio to commit the charge to.
+- * @memcg: memcg previously charged.
+- */
+-void mem_cgroup_commit_charge(struct folio *folio, struct mem_cgroup *memcg)
+-{
+-	css_get(&memcg->css);
+-	commit_charge(folio, memcg);
+-	memcg1_commit_charge(folio, memcg);
+-}
+-
+ static inline void __mod_objcg_mlstate(struct obj_cgroup *objcg,
+ 				       struct pglist_data *pgdat,
+ 				       enum node_stat_item idx, int nr)
+@@ -4510,7 +4483,9 @@ static int charge_memcg(struct folio *folio, struct mem_cgroup *memcg,
+ 	if (ret)
+ 		goto out;
+ 
+-	mem_cgroup_commit_charge(folio, memcg);
++	css_get(&memcg->css);
++	commit_charge(folio, memcg);
++	memcg1_commit_charge(folio, memcg);
+ out:
+ 	return ret;
+ }
+@@ -4527,40 +4502,6 @@ int __mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp)
+ 	return ret;
+ }
+ 
+-/**
+- * mem_cgroup_hugetlb_try_charge - try to charge the memcg for a hugetlb folio
+- * @memcg: memcg to charge.
+- * @gfp: reclaim mode.
+- * @nr_pages: number of pages to charge.
+- *
+- * This function is called when allocating a huge page folio to determine if
+- * the memcg has the capacity for it. It does not commit the charge yet,
+- * as the hugetlb folio itself has not been obtained from the hugetlb pool.
+- *
+- * Once we have obtained the hugetlb folio, we can call
+- * mem_cgroup_commit_charge() to commit the charge. If we fail to obtain the
+- * folio, we should instead call mem_cgroup_cancel_charge() to undo the effect
+- * of try_charge().
+- *
+- * Returns 0 on success. Otherwise, an error code is returned.
+- */
+-int mem_cgroup_hugetlb_try_charge(struct mem_cgroup *memcg, gfp_t gfp,
+-			long nr_pages)
+-{
+-	/*
+-	 * If hugetlb memcg charging is not enabled, do not fail hugetlb allocation,
+-	 * but do not attempt to commit charge later (or cancel on error) either.
+-	 */
+-	if (mem_cgroup_disabled() || !memcg ||
+-		!cgroup_subsys_on_dfl(memory_cgrp_subsys) || !memcg_accounts_hugetlb())
+-		return -EOPNOTSUPP;
+-
+-	if (try_charge(memcg, gfp, nr_pages))
+-		return -ENOMEM;
+-
+-	return 0;
+-}
+-
  /**
-  * mem_cgroup_swapin_charge_folio - Charge a newly allocated folio for swapin.
-  * @folio: folio to charge.
+  * mem_cgroup_charge_hugetlb - charge the memcg for a hugetlb folio
+  * @folio: folio being charged
 -- 
 2.43.5
 
