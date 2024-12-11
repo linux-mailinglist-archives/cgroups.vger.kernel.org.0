@@ -1,179 +1,84 @@
-Return-Path: <cgroups+bounces-5812-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5813-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADEBB9ED173
-	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 17:27:01 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1C5B9ED1A9
+	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 17:29:47 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A0C41659EB
-	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 16:26:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83DDB28791A
+	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 16:29:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 549591DC197;
-	Wed, 11 Dec 2024 16:26:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ktgtvp/1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBB8A1DD880;
+	Wed, 11 Dec 2024 16:28:52 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F2D1DC1B7
-	for <cgroups@vger.kernel.org>; Wed, 11 Dec 2024 16:26:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E5B1DD873;
+	Wed, 11 Dec 2024 16:28:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.67.55.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733934415; cv=none; b=hwVhpXQYRbFiw5xt/TEO0UDfb+VBnA/ZAz27aefgE8Vf3CNzbby7c0Gkk626APyEbvdI/kamh7q+bOpXILXV4biRcqqwKaXLg27BHb9LgI532TiHQTMalsN0pwedvvM+mRqGI7018v24Q77zct4pZQVrQmPyn9rhnl2EKPEY2PQ=
+	t=1733934532; cv=none; b=nqFoebT4nwEgYoGJj6D1tZrvysNC4t6ng6XEzWR4hOzbvum62R1zAeY6vzL7ySMu56zVpdZyePz6CUicEbKU+dLdw5NNAeXsAr2n6WeuQdn6rhs/hDvAF0ikpkVqN8s0ckVXHPjiSKuQqvt/H1iRutK3ikpJUoQZd9KWD/+LrUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733934415; c=relaxed/simple;
-	bh=ShhdYxV8zR6qkEZNaZDMdE03lN1uAff7+JisyXxmeAA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KORoChayyEljyeXt9mia59WBalUC9NEP4w63lL+fQS+8muqUyk3zM4GPw7jNNHGGee7sc6ku1NwhVUV1yA0YIgs2YMAVPyMYTxW556h9HO8qo7MTtEXNwiSiU8Xch0XRHd79dgYUab+yXF4X1WAYmfVVqazpHi+y+bbz16SHg8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ktgtvp/1; arc=none smtp.client-ip=209.85.222.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-7b6d6fe8b16so300665985a.1
-        for <cgroups@vger.kernel.org>; Wed, 11 Dec 2024 08:26:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1733934412; x=1734539212; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VmF7B4UdiNqGoqgVNbUdDqAU3iWrVv8dqPWk1iyMjhc=;
-        b=ktgtvp/1spCj9VlipIPZ0pXDHV/b6QB+gXhQM3hqDYIyZguyvpxe12v6gOG93QIfz7
-         NiCrKebC7q7jLQlU9CrMPAsDrstW4TNgbV0EUSVlPNvhaHfFMQOLt/VTZJe+dSYZwV4+
-         O3u3hIuVxQIxurbLIEQgKfAc/Kn+C8Pt0dx/qp5JWTHk5jMH/mx2lUgmYQcsjDceGzXf
-         60tAaOVG5+CdKcLaTfEn2hpVCFQpjXElPnqSJFLmaVQJehc0HelxJh8cB8QqHCBmyooC
-         BSf5ibhfJYshm9UzSZS7T7/FUdF9Om7sny/g8b+2V6JH7YF0BlwC0Dq99hjad6Cv7+nY
-         3ulg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733934412; x=1734539212;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VmF7B4UdiNqGoqgVNbUdDqAU3iWrVv8dqPWk1iyMjhc=;
-        b=h0oVCTOsyyU+IwXvMJJ6HwO0qfoqZ29wpi8G6HMrAGetgHD+RCpYFca2VmJA19sfWV
-         tjRXfezvtevIS23imyHaORXmnV0VDMJ8qAkj8fqx0lmpl3jeg1kPzQljL/SBznKSz8E8
-         lpIR3iK7NyriPvJTqRJKj/2xpsslZdrZf6wvFMVBsFR5V2s+3n72G9iNOWPqiSsZBS1m
-         pvJgi5a+xfBrj8v2PtWcTsD2w/tm4H9Y2F3HKmlXRdNHHNz5Q1Pw/Qh2hQ0kMeYXld7t
-         V8mD3g/WbY4eo3gDJWjaZWklSGl0OUnouKGfk5Bvgeqx724oqk8RigyCuPzNRHLLkPkC
-         taJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXhzAxfm+HLjOArgPGCvQ9of0w5k/lHd//DL3Z/QiuSNNRmdd2tRvUrCG0N6IT9qLb7SNETBMKs@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyz517FMcznR7YsFK2tFNLLqpYf7f42RwoAT/e0rPMX0EzmQXzz
-	YU8jnr/T1Q+9cV+QerEodTdwu0kVN58iP7iF/GvNdIe1SoygFU/5bDBIKffZT4v6piEU0Nj2qdM
-	lA3Akfv+Uz0imJh3hL/6yFD5o8QFlJ0YwOGPn
-X-Gm-Gg: ASbGncvRF4tqiiRj/eLv46eJOm+tW7GPQoMobpXkmKJQITdeqpp+YpcQw+6E48ckG7/
-	poPUo2BZsm8/MImNlbLoaKWoJvqnRchXI
-X-Google-Smtp-Source: AGHT+IE7hqAxeY1BamlWjBEdDx9LHupCMPUOLWWQnkrSePi0bDITuoK8qiLThq9KLPMhxghkKeLR+aQPtsiS3x8RJ6U=
-X-Received: by 2002:a05:6214:27e4:b0:6d4:36ff:4356 with SMTP id
- 6a1803df08f44-6d934ae9b33mr52733116d6.19.1733934412169; Wed, 11 Dec 2024
- 08:26:52 -0800 (PST)
+	s=arc-20240116; t=1733934532; c=relaxed/simple;
+	bh=OQRzu+e6XwhsooUrpJyOmagNflsiCNtMo0gU3jCRydA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Wc1UyG1pMpuSuwsN6fmw3JrbeAjfa6knDI30neBMaE+7/iYKFYqKUziPblmwbILQVSeWrzQBD8JZECUmLDjWPF8LRVlBPZGDlWj9V1enxyPQsL8urNOdx8ht+f4GrKx1ogNvQHn7HsRGzTCOcQpxoiJaiKlyxZoWmuO83dzt/3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=surriel.com; spf=pass smtp.mailfrom=shelob.surriel.com; arc=none smtp.client-ip=96.67.55.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=surriel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shelob.surriel.com
+Received: from fangorn.home.surriel.com ([10.0.13.7])
+	by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.97.1)
+	(envelope-from <riel@shelob.surriel.com>)
+	id 1tLPZU-000000000Vm-20UB;
+	Wed, 11 Dec 2024 11:28:20 -0500
+Message-ID: <c6cd075de18a277116a8908de6e0e4841a2dcae8.camel@surriel.com>
+Subject: Re: [PATCH] mm: allow exiting processes to exceed the memory.max
+ limit
+From: Rik van Riel <riel@surriel.com>
+To: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, kernel-team@meta.com, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, Roman Gushchin	
+ <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, Muchun
+ Song	 <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	cgroups@vger.kernel.org
+Date: Wed, 11 Dec 2024 11:28:19 -0500
+In-Reply-To: <Z1cyExTkg3OoaJy5@tiehlicka>
+References: <20241209124233.3543f237@fangorn> <Z1cyExTkg3OoaJy5@tiehlicka>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.54.1 (3.54.1-1.fc41) 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241211105336.380cb545@fangorn>
-In-Reply-To: <20241211105336.380cb545@fangorn>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Wed, 11 Dec 2024 08:26:15 -0800
-X-Gm-Features: AbW1kvbRB3RiEDwpv3a-k_lbcdWn-0ivQPHXBpRrjUl4XTlgbAVnAmY8nCI6va4
-Message-ID: <CAJD7tkboc5a4MDHvF7K4zx5WP0DE4rsGW_24s16Hx+Vvy2RQLQ@mail.gmail.com>
-Subject: Re: [PATCH] memcg: allow exiting tasks to write back data to swap
-To: Rik van Riel <riel@surriel.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	kernel-team@meta.com, Nhat Pham <nphamcs@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Sender: riel@surriel.com
 
-On Wed, Dec 11, 2024 at 7:54=E2=80=AFAM Rik van Riel <riel@surriel.com> wro=
-te:
->
-> A task already in exit can get stuck trying to allocate pages, if its
-> cgroup is at the memory.max limit, the cgroup is using zswap, but
-> zswap writeback is enabled, and the remaining memory in the cgroup is
-> not compressible.
->
-> This seems like an unlikely confluence of events, but it can happen
-> quite easily if a cgroup is OOM killed due to exceeding its memory.max
-> limit, and all the tasks in the cgroup are trying to exit simultaneously.
->
-> When this happens, it can sometimes take hours for tasks to exit,
-> as they are all trying to squeeze things into zswap to bring the group's
-> memory consumption below memory.max.
->
-> Allowing these exiting programs to push some memory from their own
-> cgroup into swap allows them to quickly bring the cgroup's memory
-> consumption below memory.max, and exit in seconds rather than hours.
->
-> Loading this fix as a live patch on a system where a workload got stuck
-> exiting allowed the workload to exit within a fraction of a second.
->
-> Signed-off-by: Rik van Riel <riel@surriel.com>
-> ---
->  mm/memcontrol.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 7b3503d12aaf..03d77e93087e 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5371,6 +5371,15 @@ bool mem_cgroup_zswap_writeback_enabled(struct mem=
-_cgroup *memcg)
->         if (!zswap_is_enabled())
->                 return true;
->
-> +       /*
-> +        * Always allow exiting tasks to push data to swap. A process in
-> +        * the middle of exit cannot get OOM killed, but may need to push
-> +        * uncompressible data to swap in order to get the cgroup memory
-> +        * use below the limit, and make progress with the exit.
-> +        */
-> +       if ((current->flags & PF_EXITING) && memcg =3D=3D mem_cgroup_from=
-_task(current))
-> +               return true;
-> +
+On Mon, 2024-12-09 at 19:08 +0100, Michal Hocko wrote:
+> On Mon 09-12-24 12:42:33, Rik van Riel wrote:
+> > It is possible for programs to get stuck in exit, when their
+> > memcg is at or above the memory.max limit, and things like
+> > the do_futex() call from mm_release() need to page memory in.
+> >=20
+> > This can hang forever, but it really doesn't have to.
+>=20
+> Are you sure this is really happening?
 
-I have a few questions:
-(a) If the task is being OOM killed it should be able to charge memory
-beyond memory.max, so why do we need to get the usage down below the
-limit?
+The stuck is happening, albeit not stuck forever, but exit
+taking hours before finally completing.
 
-Looking at the other thread with Michal, it looks like it's because we
-have to go into reclaim first before we get to the point of force
-charging for dying tasks, and we spend too much time in reclaim. Is
-that correct?
+However, the fix may be to just allow the exiting task
+to bypass "zswap no writeback" settings and write some
+of the memory of its own cgroup to swap to get out of
+the livelock:
 
-If that's the case, I am wondering if the real problem is that we
-check  mem_cgroup_zswap_writeback_enabled() too late in the process.
-Reclaim ages the LRUs, isolates pages, unmaps them, allocates swap
-entries, only to realize it cannot swap in swap_writepage().
+https://lkml.org/lkml/2024/12/11/10102
 
-Should we check for this in can_reclaim_anon_pages()? If zswap
-writeback is disabled and we are already at the memcg limit (or zswap
-limit for that matter), we should avoid scanning anon memory to begin
-with. The problem is that if we race with memory being freed we may
-have some extra OOM kills, but I am not sure how common this case
-would be.
-
-(b) Should we use mem_cgroup_is_descendant() or mm_match_memcg() in
-case we are reclaiming from an ancestor and we hit the limit of that
-ancestor?
-
-(c) mem_cgroup_from_task() should be called in an RCU read section (or
-we need something like rcu_access_point() if we are not dereferencing
-the pointer).
-
-
->         for (; memcg; memcg =3D parent_mem_cgroup(memcg))
->                 if (!READ_ONCE(memcg->zswap_writeback))
->                         return false;
-> --
-> 2.47.0
->
->
->
+--=20
+All Rights Reversed.
 
