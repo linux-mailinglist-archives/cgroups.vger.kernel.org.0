@@ -1,213 +1,128 @@
-Return-Path: <cgroups+bounces-5823-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5824-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D0759ED6D5
-	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 20:53:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 676CA9ED725
+	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 21:20:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E30F1615D0
-	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 19:53:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 482C81674D1
+	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 20:20:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11BF5202F88;
-	Wed, 11 Dec 2024 19:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC671DE3B3;
+	Wed, 11 Dec 2024 20:20:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fH/EZ2AE"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="htCtK7J5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B16EF1C3F27;
-	Wed, 11 Dec 2024 19:53:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD3E31DD866;
+	Wed, 11 Dec 2024 20:20:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733946813; cv=none; b=XmC+aKajN7IA45K0VCb2RBx5A/+mbfk/KWxa3U+Oj+gjTgwB35qgkQshSZNsghCl2FJOBCo5l9j7wtpW8RIg6lqqYqmyhcCDHX3cCdH4/zHlWpJYweQ1ARf05tcURQxgwbe6D7o9jhZHJbSYLgLIhqvrfA/XpOrtqeclvSmrPj8=
+	t=1733948444; cv=none; b=muI/BhOIWOANupfIcWH9UA8QD5ztN6N+uBta5N3u7QRBGTnuqF4UeY+7+AOeMWc0cMO5rBdtwQHH4tKWYApiysCAYc8cY5lV6BbR49WpcTJ0nmTt8gQ6rhU7TTYuREYEQUt8pMnTM7ymYUcx+Xz6nou8RuoyRGZUfhQMMqpOaLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733946813; c=relaxed/simple;
-	bh=/Islhx5QPnsZFTF/qi0yWZBLeMxaGO8x2YhrOZpsYTw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=csMhw6pnwor5oBuraItcCkliGCCwZUekZ22Yf4YMLU7DxRPig8SbyzjVpfJAbkYcYAwmDjjfK1mUz66EEjJP63zFS9ooQjGacgliJp3BKGr4p4VEnTF9N3TQFt8LtqeCrFKMqKOL0WobsaHhsM6zhGzij7UZAzpESuWunKpqdg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fH/EZ2AE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F412C4CED2;
-	Wed, 11 Dec 2024 19:53:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1733946813;
-	bh=/Islhx5QPnsZFTF/qi0yWZBLeMxaGO8x2YhrOZpsYTw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fH/EZ2AE2pqH53MRSScd31eG/ObA/GfsrmQtufCSl4yPoy+MCOaa72mq2tTkS/Ptt
-	 MElV3mKuCIyouF7O4TeLksAGyBsjRyyLeNIyCIB3ew5+d2s/AoWfVhNt6/nEerEueP
-	 lsEbi36/ME73ZGwcBD9JV1emQNX/HjB79qiLo2p2jp4Vd5vSmEtM1AlVEEISmjaB/v
-	 g4N+HiAvMqiueLdx51+uGAUPUuNsOAH5p5tavAZcJm5094U4UxAJwv9624a8nmihmv
-	 POMTYqt3LTct+4Fgrr5FfhhslujOt5dVSWkZOavas1KrgLzaRfknHtIs9GeNbFzjQX
-	 QNnQ+32ufo7aw==
-From: SeongJae Park <sj@kernel.org>
-To: Yuanchu Xie <yuanchu@google.com>
-Cc: SeongJae Park <sj@kernel.org>,
-	David Hildenbrand <david@redhat.com>,
-	"Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-	Khalid Aziz <khalid.aziz@oracle.com>,
-	Henry Huang <henry.hj@antgroup.com>,
-	Yu Zhao <yuzhao@google.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Gregory Price <gregory.price@memverge.com>,
-	Huang Ying <ying.huang@intel.com>,
-	Lance Yang <ioworker0@gmail.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	Tejun Heo <tj@kernel.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowang@redhat.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	=?UTF-8?q?Eugenio=20P=C3=A9rez?= <eperezma@redhat.com>,
+	s=arc-20240116; t=1733948444; c=relaxed/simple;
+	bh=lhQ/otwxrpWe4K/yMoHNTqlA8T1qx+cBbQBsRJKCSxM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=E/ZXtV+NRFWvlwnEEBl4vsuji8yRtUBhk7CyVNThdyvgKjv+LEtRIMgQw1JOMl8NBmuhq+MBTfPVk31zaw4+SZxspXwhrSEeANbJKn0jJLuk/E+EgfA/+G3LRGanQPC2IcZ9zLpwxcTJCuZW+meLDldAzuf0u/ImBPfTxmh89Ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=htCtK7J5; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=t1WFEmjVsxcDNS6E0UsJx7pO3Iuf1D+O0LkgcXU/hok=; b=htCtK7J52uvo/vXzjM3f68XAAR
+	ggYQAta8fi9ApWQIqGQHqdxViphK3BuJ0BmUZf3/oLLg355tTecNomnDGwFbZGL61PC4YME5QYl35
+	UXj3YqAMd3Ok3jIebDZT7b0V+w5yqSEQRFJ/eqXc6sMhhXZeXpZkhwC9ye6GhHbuLBy/9Hma5QoKA
+	eDYqsQlyxPXaBYdujLstccmeO4QBhQnSKClgqooGEhEwnPKU9RFDpMfmJfX3ZizL2td6/I882uMAk
+	NuZMShxOUo+DJT2LAejbmjBhWp5xTlTXDf0gNG0yoFvdrzXo5wDLZ4l5GZ9Bd7Cei6taEEZIfrHSv
+	iEG5RGzg==;
+Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1tLTCH-00000000g8e-0szL;
+	Wed, 11 Dec 2024 20:20:37 +0000
+Date: Wed, 11 Dec 2024 20:20:36 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
 	Michal Hocko <mhocko@kernel.org>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Mike Rapoport <rppt@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Daniel Watson <ozzloy@each.do>,
-	cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	virtualization@lists.linux.dev,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v4 0/9] mm: workingset reporting
-Date: Wed, 11 Dec 2024 11:53:29 -0800
-Message-Id: <20241211195329.60224-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <CAJj2-QFdP6DKVQJ4Tw6rdV+XtgDihe=UOnvm4cm-q61K0hq6CQ@mail.gmail.com>
-References: 
+	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH 2/2] vmalloc: Account memcg per vmalloc
+Message-ID: <Z1n0FFZ_oMYKcUiP@casper.infradead.org>
+References: <20241211043252.3295947-1-willy@infradead.org>
+ <20241211043252.3295947-2-willy@infradead.org>
+ <20241211160956.GB3136251@cmpxchg.org>
+ <Z1nC3138biX0J1DJ@casper.infradead.org>
+ <keho5no2wg666yjtkb5lflxwezgbzavue5ytydqm7pm7w62ctt@q6zg7t56gf4b>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <keho5no2wg666yjtkb5lflxwezgbzavue5ytydqm7pm7w62ctt@q6zg7t56gf4b>
 
-On Fri, 6 Dec 2024 11:57:55 -0800 Yuanchu Xie <yuanchu@google.com> wrote:
-
-> Thanks for the response Johannes. Some replies inline.
+On Wed, Dec 11, 2024 at 11:32:13AM -0800, Shakeel Butt wrote:
+> On Wed, Dec 11, 2024 at 04:50:39PM +0000, Matthew Wilcox wrote:
+> > Perhaps you'd be more persuaded by:
+> > 
+> > (a) If we clear __GFP_ACCOUNT then alloc_pages_bulk() will work, and
+> > that's a pretty significant performance win over calling alloc_pages()
+> > in a loop.
+> > 
+> > (b) Once we get to memdescs, calling alloc_pages() with __GFP_ACCOUNT
+> > set is going to require allocating a memdesc to store the obj_cgroup
+> > in, so in the future we'll save an allocation.
+> > 
+> > Your proposed alternative will work and is way less churn.  But it's
+> > not preparing us for memdescs ;-)
 > 
-> On Tue, Nov 26, 2024 at 11:26\u202fPM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Tue, Nov 26, 2024 at 06:57:19PM -0800, Yuanchu Xie wrote:
-> > > This patch series provides workingset reporting of user pages in
-> > > lruvecs, of which coldness can be tracked by accessed bits and fd
-> > > references. However, the concept of workingset applies generically to
-> > > all types of memory, which could be kernel slab caches, discardable
-> > > userspace caches (databases), or CXL.mem. Therefore, data sources might
-> > > come from slab shrinkers, device drivers, or the userspace.
-> > > Another interesting idea might be hugepage workingset, so that we can
-> > > measure the proportion of hugepages backing cold memory. However, with
-> > > architectures like arm, there may be too many hugepage sizes leading to
-> > > a combinatorial explosion when exporting stats to the userspace.
-> > > Nonetheless, the kernel should provide a set of workingset interfaces
-> > > that is generic enough to accommodate the various use cases, and extensible
-> > > to potential future use cases.
-> >
-> > Doesn't DAMON already provide this information?
-> >
-> > CCing SJ.
-> Thanks for the CC. DAMON was really good at visualizing the memory
-> access frequencies last time I tried it out!
-
-Thank you for this kind acknowledgement, Yuanchu!
-
-> For server use cases,
-> DAMON would benefit from integrations with cgroups.  The key then would be a
-> standard interface for exporting a cgroup's working set to the user.
-
-I show two ways to make DAMON supports cgroups for now.  First way is making
-another DAMON operations set implementation for cgroups.  I shared a rough idea
-for this before, probably on kernel summit.  But I haven't had a chance to
-prioritize this so far.  Please let me know if you need more details.  The
-second way is extending DAMOS filter to provide more detailed statistics per
-DAMON-region, and adding another DAMOS action that does nothing but only
-accounting the detailed statistics.  Using the new DAMOS action, users will be
-able to know how much of specific DAMON-found regions are filtered out by the
-given filter.  Because we have DAMOS filter type for cgroups, we can know how
-much of workingset (or, warm memory) belongs to specific groups.  This can be
-applied to not only cgroups, but for any DAMOS filter types that exist (e.g.,
-anonymous page, young page).
-
-I believe the second way is simpler to implement while providing information
-that sufficient for most possible use cases.  I was anyway planning to do this.
-
-> It would be good to have something that will work for different
-> backing implementations, DAMON, MGLRU, or active/inactive LRU.
-
-I think we can do this using the filter statistics, with new filter types.  For
-example, we can add new DAMOS filter that filters pages if it is for specific
-range of MGLRU-gen of the page, or whether the page belongs to active or
-inactive LRU lists.
-
+> We can make alloc_pages_bulk() work with __GFP_ACCOUNT but your second
+> argument is more compelling.
 > 
-> >
-> > > Use cases
-> > > ==========
-[...]
-> > Access frequency is only half the picture. Whether you need to keep
-> > memory with a given frequency resident depends on the speed of the
-> > backing device.
-[...]
-> > > Benchmarks
-> > > ==========
-> > > Ghait Ouled Amar Ben Cheikh has implemented a simple policy and ran Linux
-> > > compile and redis benchmarks from openbenchmarking.org. The policy and
-> > > runner is referred to as WMO (Workload Memory Optimization).
-> > > The results were based on v3 of the series, but v4 doesn't change the core
-> > > of the working set reporting and just adds the ballooning counterpart.
-> > >
-> > > The timed Linux kernel compilation benchmark shows improvements in peak
-> > > memory usage with a policy of "swap out all bytes colder than 10 seconds
-> > > every 40 seconds". A swapfile is configured on SSD.
-[...]
-> > You can do this with a recent (>2018) upstream kernel and ~100 lines
-> > of python [1]. It also works on both LRU implementations.
-> >
-> > [1] https://github.com/facebookincubator/senpai
-> >
-> > We use this approach in virtually the entire Meta fleet, to offload
-> > unneeded memory, estimate available capacity for job scheduling, plan
-> > future capacity needs, and provide accurate memory usage feedback to
-> > application developers.
-> >
-> > It works over a wide variety of CPU and storage configurations with no
-> > specific tuning.
-> >
-> > The paper I referenced above provides a detailed breakdown of how it
-> > all works together.
-> >
-> > I would be curious to see a more in-depth comparison to the prior art
-> > in this space. At first glance, your proposal seems more complex and
-> > less robust/versatile, at least for offloading and capacity gauging.
-> We have implemented TMO PSI-based proactive reclaim and compared it to
-> a kstaled-based reclaimer (reclaiming based on 2 minute working set
-> and refaults). The PSI-based reclaimer was able to save more memory,
-> but it also caused spikes of refaults and a lot higher
-> decompressions/second. Overall the test workloads had better
-> performance with the kstaled-based reclaimer. The conclusion was that
-> it was a trade-off.
+> I am trying to think of what will we miss if we remove this per-page
+> memcg metadata. One thing I can think of is debugging a live system
+> or kdump where I need to track where a given page came from. I think
 
-I agree it is only half of the picture, and there could be tradeoff.  Motivated
-by those previous works, DAMOS provides PSI-based aggressiveness auto-tuning to
-use both ways.
+Umm, I don't think you know which vmalloc allocation a page came from
+today?  I've sent patches to add that information before, but they were
+rejected.  In fact, I don't think we know even _that_ a page belongs to
+vmalloc today, do we?  Yes, we know that the page is accounted, and
+which memcg it belongs to ... but nothing more.
 
-> I do agree there's not a good in-depth comparison
-> with prior art though.
+I actually want to improve this, without adding additional overhead.
+What I'm working on right now (before I got waylaid by this bug) is:
 
-I would be more than happy to help the comparison work agains DAMON of current
-implementation and future plans, and any possible collaborations.
++struct choir {
++       struct kref refcount;
++       unsigned int nr;
++       struct page *pages[] __counted_by(nr);
++};
 
+and rewriting vmalloc to be based on choirs instead of its own pages.
+One thing I've come to realise today is that the obj_cgroup pointer
+needs to be in the choir and not in the vm_struct so that we uncharge the
+allocation when the choir refcount drops to 0, not when the allocation
+is unmapped.
 
-Thanks,
-SJ
+A regular choir allocation will (today) mark the pages in it as being
+allocated to a choir (and thus not having their own refcount / mapcount),
+but I'll give vmalloc a way to mark the pages as specifically being
+from vmalloc.
+
+There's a lot of moving parts to this ... it's proving quite tricky!
+
+> I think we can go with Johannes' solution for stable and discuss the
+> future direction more separately.
+
+OK, I'll send a patch to do that.
 
