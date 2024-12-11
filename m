@@ -1,143 +1,179 @@
-Return-Path: <cgroups+bounces-5811-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5812-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 560F99ED0E4
-	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 17:10:16 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADEBB9ED173
+	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 17:27:01 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6C70288C6C
-	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 16:10:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A0C41659EB
+	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2024 16:26:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB191D9A70;
-	Wed, 11 Dec 2024 16:10:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 549591DC197;
+	Wed, 11 Dec 2024 16:26:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="S+pe8beD"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ktgtvp/1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39AA61D5CDD
-	for <cgroups@vger.kernel.org>; Wed, 11 Dec 2024 16:10:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F2D1DC1B7
+	for <cgroups@vger.kernel.org>; Wed, 11 Dec 2024 16:26:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733933406; cv=none; b=JgrvpgozMinrUfV8pRHDXCCIS7Ckn/HxrStAibPYKekKjjWZ27vrvb8w6QyLQ4Wx/a6e8IzcZjcINDc2mLUiueeQfRhx6kB8ga9DnVvJlA5Oa0ohZW4JaxihAXlHe/Dm9MOQCcDARGwwb32T/pL5LKT4nWphti7zayOMXRmIMuw=
+	t=1733934415; cv=none; b=hwVhpXQYRbFiw5xt/TEO0UDfb+VBnA/ZAz27aefgE8Vf3CNzbby7c0Gkk626APyEbvdI/kamh7q+bOpXILXV4biRcqqwKaXLg27BHb9LgI532TiHQTMalsN0pwedvvM+mRqGI7018v24Q77zct4pZQVrQmPyn9rhnl2EKPEY2PQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733933406; c=relaxed/simple;
-	bh=17vLRmRqENYSYUK2jmWxRWMQPaMn8mxRYzFR8+i4nZM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d36QDwGdtKBpAQS416q9KhQLzcOqpqNSiEQrOZQAX2RwQpaydKuqpcQ3dnV+kw2rzDJ79MH9f0l7uqJFUu8O0ih2LHWzSBe4EVafYhCfAQHGkMaGqDhfc5Fn7V8qh/Rx9MN7z/b4UDwGPlgVDHONYrtpAuwa0pw8DmMGYd09qTs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=S+pe8beD; arc=none smtp.client-ip=209.85.219.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-6d8f544d227so29646676d6.1
-        for <cgroups@vger.kernel.org>; Wed, 11 Dec 2024 08:10:02 -0800 (PST)
+	s=arc-20240116; t=1733934415; c=relaxed/simple;
+	bh=ShhdYxV8zR6qkEZNaZDMdE03lN1uAff7+JisyXxmeAA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KORoChayyEljyeXt9mia59WBalUC9NEP4w63lL+fQS+8muqUyk3zM4GPw7jNNHGGee7sc6ku1NwhVUV1yA0YIgs2YMAVPyMYTxW556h9HO8qo7MTtEXNwiSiU8Xch0XRHd79dgYUab+yXF4X1WAYmfVVqazpHi+y+bbz16SHg8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ktgtvp/1; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-7b6d6fe8b16so300665985a.1
+        for <cgroups@vger.kernel.org>; Wed, 11 Dec 2024 08:26:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1733933402; x=1734538202; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZUp3RhBBfdr/dtfuqHm+FsIlOBYLF3QZPu3JwNbarhc=;
-        b=S+pe8beDkSWStjiw3V0quGUjsw9ti7S4pFC83EwOwB1/eKpbenOwqSAI5aDAdGP57d
-         M9PTjcRQ6kboVZ+C9vWSCeU7CWpR17dd12mEzOTI16yms/sI41Yg3B9SrDVYduKzVxuv
-         5NPLiUGDsUEYNhdCPJL3lwKVloWC3g30lDy2lXt267DJ02J82d7MBc3mhCRz2D8CNKiu
-         GQwWn+thUojcS35D4XCGKQxmORRss+zggMew9GKdq98jwBxAMP8L5+0i4Rt4sN9FAOlF
-         4Ymr5PwLKRS+KiV+ywpv4Zw2Xk2crQmfXVTu/4Zpo7y+QRZdtJWrqV53jcDHd1KoNvsp
-         o8Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733933402; x=1734538202;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1733934412; x=1734539212; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZUp3RhBBfdr/dtfuqHm+FsIlOBYLF3QZPu3JwNbarhc=;
-        b=sroqAgJMYNr8vBey2L7jYPB7/OkTsesq17xxONoRLxTVMPb9sbiHjna0bSyitrZoXr
-         nB9aSreC8VmSpcyAX4y9k949Dg3M4dtePzUSk+Bux4VT50NRsgYlgLKMw9mBtk24QAbs
-         EyxIfpYOhzjdK8fvcORSi+WKMjznf9KkQPHsZm9QAEsBSp1x2rFMZ3VUO39X0OSGCXH7
-         /hBZZxTX8v7yITVTatWyQB+4GDmR++Qbdd4x4JANaaR07yBgzNZ6tGo020X5d5EtFiU2
-         c8LQJ4oWVE3U/MI0sbYoYbZunfbm+3nBsvNMM777EUt4GvatfDpLtdLoaiCeRBoChP+b
-         ODZw==
-X-Forwarded-Encrypted: i=1; AJvYcCVSIwLe0XHBSRIo7dNbFPoLWZuk0R91YnoUfLOIXl4ogYF51DZ+YrIEg1iiG8gtK2+z5OPlg0sC@vger.kernel.org
-X-Gm-Message-State: AOJu0YzFHFqr1GPM2tiSuzNkDTcErcxRdStBpqsApJEixzNKpyjD/rJr
-	BHSsEkzt7I3rHplP1xKdXjGS4dc0nkjy261AMF+lk4pZlZZjmMLA1olWq4e/js8=
-X-Gm-Gg: ASbGncs456x1qa5xVbfBX2a7ZP+jTB0XcEu83BAHnb1/XYP+EavvetKVYLGztgbf0fj
-	nn+wuJlT7FoD+Pks/zNAjZ5gzLofKZmcXpgVXwR6pf2e8sfj5yQV+05+jndLMOxrRNsSIS7yH6L
-	uGnXllMcdm0Wd6l+Jq6w91MyikupuVad3Tly2j3wGkIl+ErPbi6QSRowe5dHZUG9264x9dRET8m
-	GZGx/sFHPQc2ORpJPJLAnla5TDEunMUAkPSGtrp27YZcmNY0wDB
-X-Google-Smtp-Source: AGHT+IHCFur8c2yRjAwCiXsHUZUv9CFzmKzR3fV7Tyv8vhH9XqzcHHhtRhxQu8/ilDdv1ZOYjn4iJA==
-X-Received: by 2002:a05:6214:1d2b:b0:6d8:8a60:ef2c with SMTP id 6a1803df08f44-6dae29c185bmr4727736d6.2.1733933401867;
-        Wed, 11 Dec 2024 08:10:01 -0800 (PST)
-Received: from localhost ([2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d8f5af294asm52335306d6.48.2024.12.11.08.10.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Dec 2024 08:10:01 -0800 (PST)
-Date: Wed, 11 Dec 2024 11:09:56 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, cgroups@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: Re: [PATCH 2/2] vmalloc: Account memcg per vmalloc
-Message-ID: <20241211160956.GB3136251@cmpxchg.org>
-References: <20241211043252.3295947-1-willy@infradead.org>
- <20241211043252.3295947-2-willy@infradead.org>
+        bh=VmF7B4UdiNqGoqgVNbUdDqAU3iWrVv8dqPWk1iyMjhc=;
+        b=ktgtvp/1spCj9VlipIPZ0pXDHV/b6QB+gXhQM3hqDYIyZguyvpxe12v6gOG93QIfz7
+         NiCrKebC7q7jLQlU9CrMPAsDrstW4TNgbV0EUSVlPNvhaHfFMQOLt/VTZJe+dSYZwV4+
+         O3u3hIuVxQIxurbLIEQgKfAc/Kn+C8Pt0dx/qp5JWTHk5jMH/mx2lUgmYQcsjDceGzXf
+         60tAaOVG5+CdKcLaTfEn2hpVCFQpjXElPnqSJFLmaVQJehc0HelxJh8cB8QqHCBmyooC
+         BSf5ibhfJYshm9UzSZS7T7/FUdF9Om7sny/g8b+2V6JH7YF0BlwC0Dq99hjad6Cv7+nY
+         3ulg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733934412; x=1734539212;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VmF7B4UdiNqGoqgVNbUdDqAU3iWrVv8dqPWk1iyMjhc=;
+        b=h0oVCTOsyyU+IwXvMJJ6HwO0qfoqZ29wpi8G6HMrAGetgHD+RCpYFca2VmJA19sfWV
+         tjRXfezvtevIS23imyHaORXmnV0VDMJ8qAkj8fqx0lmpl3jeg1kPzQljL/SBznKSz8E8
+         lpIR3iK7NyriPvJTqRJKj/2xpsslZdrZf6wvFMVBsFR5V2s+3n72G9iNOWPqiSsZBS1m
+         pvJgi5a+xfBrj8v2PtWcTsD2w/tm4H9Y2F3HKmlXRdNHHNz5Q1Pw/Qh2hQ0kMeYXld7t
+         V8mD3g/WbY4eo3gDJWjaZWklSGl0OUnouKGfk5Bvgeqx724oqk8RigyCuPzNRHLLkPkC
+         taJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXhzAxfm+HLjOArgPGCvQ9of0w5k/lHd//DL3Z/QiuSNNRmdd2tRvUrCG0N6IT9qLb7SNETBMKs@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyz517FMcznR7YsFK2tFNLLqpYf7f42RwoAT/e0rPMX0EzmQXzz
+	YU8jnr/T1Q+9cV+QerEodTdwu0kVN58iP7iF/GvNdIe1SoygFU/5bDBIKffZT4v6piEU0Nj2qdM
+	lA3Akfv+Uz0imJh3hL/6yFD5o8QFlJ0YwOGPn
+X-Gm-Gg: ASbGncvRF4tqiiRj/eLv46eJOm+tW7GPQoMobpXkmKJQITdeqpp+YpcQw+6E48ckG7/
+	poPUo2BZsm8/MImNlbLoaKWoJvqnRchXI
+X-Google-Smtp-Source: AGHT+IE7hqAxeY1BamlWjBEdDx9LHupCMPUOLWWQnkrSePi0bDITuoK8qiLThq9KLPMhxghkKeLR+aQPtsiS3x8RJ6U=
+X-Received: by 2002:a05:6214:27e4:b0:6d4:36ff:4356 with SMTP id
+ 6a1803df08f44-6d934ae9b33mr52733116d6.19.1733934412169; Wed, 11 Dec 2024
+ 08:26:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241211043252.3295947-2-willy@infradead.org>
+References: <20241211105336.380cb545@fangorn>
+In-Reply-To: <20241211105336.380cb545@fangorn>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Wed, 11 Dec 2024 08:26:15 -0800
+X-Gm-Features: AbW1kvbRB3RiEDwpv3a-k_lbcdWn-0ivQPHXBpRrjUl4XTlgbAVnAmY8nCI6va4
+Message-ID: <CAJD7tkboc5a4MDHvF7K4zx5WP0DE4rsGW_24s16Hx+Vvy2RQLQ@mail.gmail.com>
+Subject: Re: [PATCH] memcg: allow exiting tasks to write back data to swap
+To: Rik van Riel <riel@surriel.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	kernel-team@meta.com, Nhat Pham <nphamcs@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 11, 2024 at 04:32:50AM +0000, Matthew Wilcox (Oracle) wrote:
-> Today we account each page individually to the memcg, which works well
-> enough, if a little inefficiently (N atomic operations per page instead
-> of N per allocation).  Unfortunately, the stats can get out of sync when
-> i915 calls vmap() with VM_MAP_PUT_PAGES.  The pages being passed were not
-> allocated by vmalloc, so the MEMCG_VMALLOC counter was never incremented.
-> But it is decremented when the pages are freed with vfree().
+On Wed, Dec 11, 2024 at 7:54=E2=80=AFAM Rik van Riel <riel@surriel.com> wro=
+te:
 >
-> Solve all of this by tracking the memcg at the vm_struct level.
-> This logic has to live in the memcontrol file as it calls several
-> functions which are currently static.
+> A task already in exit can get stuck trying to allocate pages, if its
+> cgroup is at the memory.max limit, the cgroup is using zswap, but
+> zswap writeback is enabled, and the remaining memory in the cgroup is
+> not compressible.
 >
-> Fixes: b944afc9d64d (mm: add a VM_MAP_PUT_PAGES flag for vmap)
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> This seems like an unlikely confluence of events, but it can happen
+> quite easily if a cgroup is OOM killed due to exceeding its memory.max
+> limit, and all the tasks in the cgroup are trying to exit simultaneously.
+>
+> When this happens, it can sometimes take hours for tasks to exit,
+> as they are all trying to squeeze things into zswap to bring the group's
+> memory consumption below memory.max.
+>
+> Allowing these exiting programs to push some memory from their own
+> cgroup into swap allows them to quickly bring the cgroup's memory
+> consumption below memory.max, and exit in seconds rather than hours.
+>
+> Loading this fix as a live patch on a system where a workload got stuck
+> exiting allowed the workload to exit within a fraction of a second.
+>
+> Signed-off-by: Rik van Riel <riel@surriel.com>
 > ---
->  include/linux/memcontrol.h |  7 ++++++
->  include/linux/vmalloc.h    |  3 +++
->  mm/memcontrol.c            | 46 ++++++++++++++++++++++++++++++++++++++
->  mm/vmalloc.c               | 14 ++++++------
->  4 files changed, 63 insertions(+), 7 deletions(-)
+>  mm/memcontrol.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 7b3503d12aaf..03d77e93087e 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5371,6 +5371,15 @@ bool mem_cgroup_zswap_writeback_enabled(struct mem=
+_cgroup *memcg)
+>         if (!zswap_is_enabled())
+>                 return true;
+>
+> +       /*
+> +        * Always allow exiting tasks to push data to swap. A process in
+> +        * the middle of exit cannot get OOM killed, but may need to push
+> +        * uncompressible data to swap in order to get the cgroup memory
+> +        * use below the limit, and make progress with the exit.
+> +        */
+> +       if ((current->flags & PF_EXITING) && memcg =3D=3D mem_cgroup_from=
+_task(current))
+> +               return true;
+> +
 
-This would work, but it seems somewhat complicated. The atomics in
-memcg charging and the vmstat updates are batched, and the per-page
-overhead is for the most part cheap per-cpu ops. Not an issue per se.
+I have a few questions:
+(a) If the task is being OOM killed it should be able to charge memory
+beyond memory.max, so why do we need to get the usage down below the
+limit?
 
-You could do for MEMCG_VMALLOC what you did for nr_vmalloc_pages:
+Looking at the other thread with Michal, it looks like it's because we
+have to go into reclaim first before we get to the point of force
+charging for dying tasks, and we spend too much time in reclaim. Is
+that correct?
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 634162271c00..a889bb04405c 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -3353,7 +3353,11 @@ void vfree(const void *addr)
- 		struct page *page = vm->pages[i];
- 
- 		BUG_ON(!page);
--		mod_memcg_page_state(page, MEMCG_VMALLOC, -1);
-+
-+		/* Pages were allocated elsewhere */
-+		if (!(vm->flags & VM_MAP_PUT_PAGES))
-+			mod_memcg_page_state(page, MEMCG_VMALLOC, -1);
-+
- 		/*
- 		 * High-order allocs for huge vmallocs are split, so
- 		 * can be freed as an array of order-0 allocations
+If that's the case, I am wondering if the real problem is that we
+check  mem_cgroup_zswap_writeback_enabled() too late in the process.
+Reclaim ages the LRUs, isolates pages, unmaps them, allocates swap
+entries, only to realize it cannot swap in swap_writepage().
 
+Should we check for this in can_reclaim_anon_pages()? If zswap
+writeback is disabled and we are already at the memcg limit (or zswap
+limit for that matter), we should avoid scanning anon memory to begin
+with. The problem is that if we race with memory being freed we may
+have some extra OOM kills, but I am not sure how common this case
+would be.
+
+(b) Should we use mem_cgroup_is_descendant() or mm_match_memcg() in
+case we are reclaiming from an ancestor and we hit the limit of that
+ancestor?
+
+(c) mem_cgroup_from_task() should be called in an RCU read section (or
+we need something like rcu_access_point() if we are not dereferencing
+the pointer).
+
+
+>         for (; memcg; memcg =3D parent_mem_cgroup(memcg))
+>                 if (!READ_ONCE(memcg->zswap_writeback))
+>                         return false;
+> --
+> 2.47.0
+>
+>
+>
 
