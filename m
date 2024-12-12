@@ -1,131 +1,181 @@
-Return-Path: <cgroups+bounces-5871-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5872-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A3B89EFB79
-	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 19:49:14 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D42359EFCE5
+	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 21:01:00 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB3A716D8AB
-	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 18:49:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9540B286E97
+	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 20:00:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F28A1891A9;
-	Thu, 12 Dec 2024 18:48:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="ZGr9K8KF"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D4071917D6;
+	Thu, 12 Dec 2024 20:00:56 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6623A188A0E
-	for <cgroups@vger.kernel.org>; Thu, 12 Dec 2024 18:48:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 620C118732A;
+	Thu, 12 Dec 2024 20:00:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.67.55.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734029331; cv=none; b=FcCvMUF8HmJERdJeNm6KpnDwucYBYeg3ioXOW0SnMGDD04FIhaXgUfWWDmadBPSu/xJOB6DTTPw+lcSYiS4kRud0f9rqA5dluAV+0CYK1fiTwGRXUqdObtb9GJ5xLQMLkj0lnGeRBUJg7K5Or6xouE6KXBhoOy/OwBf2u/VNqQQ=
+	t=1734033656; cv=none; b=VqVgvLQljxGWlfZOjPVMb7Ie4Hsu08f5y38AQ0kqsJQ2kLfmk6rRerHfd7VING8vXmzTAyzUm/+AHhjkaxV3eF+gBZUVzDtQlZCLlG3BbYMILHwAKJYNUvDdHyyzwcl7+pQNjPFmQUUkQ4RXtkByiAyFCNnCZgDZqh8VbW0nMhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734029331; c=relaxed/simple;
-	bh=QKQL4MS5nZa+ROMEXkXGLP2EpoqfuvY8r+Y2F7K489w=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=p5C69l/rpJfs8vXt1nEu3NiT/nPy78oFVS2JgBhGGOwbtFCHXwte7Tvv3LkBcGKuE1Xi4wUmMuHdnyLYQzIEVdGs0BnG99F6CPCUJxLMenGAg9b8PgjnofiE2JZSfJZgca5uzekg1piWOyj9RV2bg/cfTQ/QJKwZ/WSewwoQcEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=ZGr9K8KF; arc=none smtp.client-ip=209.85.166.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-844d7f81dd1so38625739f.2
-        for <cgroups@vger.kernel.org>; Thu, 12 Dec 2024 10:48:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1734029326; x=1734634126; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+NEanoTkIUxCO+RPtP6A6ijL8u3YML6PUoYR1PXvvOM=;
-        b=ZGr9K8KF6jzbh4QlihwqRMvktw/IL6nKVyTHU1qyW2/CU1xdPuAOV1PRyeVtu3tTCd
-         zZJDaqZFsyRsYX6Pg6GzSppdxe+2q6jZQV387vx1Uw3NBjfMZ6qKuZpNc6TucqwahFtr
-         ef7lZwP1DWziBEWUdeWRCN5mV+Gv9pCfHw3X3SIr0OAScNQ+d3ewVYRzGhPjlS0TVa79
-         Kvc13rsbpWOfvxySgOm9zER29oZARlI6Wz/5uD0NDeWx3x685Q0Pqf+bp4DEpJD5+5Pr
-         ND3e8pJ9CeW2L7ZH0o19oMohC8dP2X76W0c/AnerMrlc9g5X9xuKM+HZbF/cqe7qaj5e
-         NwWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734029326; x=1734634126;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+NEanoTkIUxCO+RPtP6A6ijL8u3YML6PUoYR1PXvvOM=;
-        b=P6IeVR5Sji/UIsDIiVPsWG0TEeh5hmjeNsx7tpUgSjB0poQl6CU5H3CLzmH37gkgyY
-         toVteRJs85Fe7Yb/go+HUVllX3b8Ytn/EGoQxJidO9SI0/eZB6aTCG+VzmRkimgB8Exj
-         kEF1nw1CStSFLf9NbIozRSqSh9l0IHI/BEpra1hgkgFbpmB7OyA056PLgvZ3b1UDQ6pd
-         RJfomB3zfLKSdn62YbXI1TkzR5BfIp8zT1YNMwox4USzDzVh17mwfN0HOoBfPQYi0c9N
-         eKpOqnQd7hsDw4vJ3ve96IN0BdWGJrgHcjLSXxSumFSs4I7A1dLLnzCBQzCMMwnQdYn1
-         KupA==
-X-Gm-Message-State: AOJu0YymXYFbeiD8U61U5gKDU+oTbfvtuymLgzlK8CvjGb1ECTm0JYHv
-	YdA34qTp47+Dalsz97p1ij2e/v36O9coaS4lVOv5UdlAOomHu7DfotDqsoPOhAXGo7qcAseNTEb
-	S
-X-Gm-Gg: ASbGncv5Sxa6kAPAnm7Q4r+tQn2wf4o2TYMaRb04Riaa/SuNDAzbbV34jjgZKXr7R/N
-	ZqyWF0xNABHIvhDJ6HMmXBamFtqR39qOkVdWYgtlvAwxK2MC+X0xjGRPlzFs2IrKYDU08JzJaF5
-	FoluhGHgkBYHtblgUJvU6vwfzKRxzCR2pDOvIQ19x1yiBUe0wdM1FxDA2ambqNhhAWnp6d6f23n
-	LQsckLCg9SGvePeFc8NmfheTHY4g5sqYEcZeWX3QAUN16o=
-X-Google-Smtp-Source: AGHT+IGhhvkFg5+OlRRW7dAh+LXxFzeHxLNLeGbrpzVSX1Hr5klBw9D+P9RZ3N63ZKwQ7KiNLlXZng==
-X-Received: by 2002:a05:6e02:1707:b0:3a7:fe8c:b015 with SMTP id e9e14a558f8ab-3ae5953b1fdmr15053365ab.24.1734029326669;
-        Thu, 12 Dec 2024 10:48:46 -0800 (PST)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-3a819dd4ac9sm33682775ab.12.2024.12.12.10.48.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2024 10:48:45 -0800 (PST)
-From: Jens Axboe <axboe@kernel.dk>
-To: Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
- Nathan Chancellor <nathan@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
- llvm@lists.linux.dev, patches@lists.linux.dev, 
- David Laight <david.laight@aculab.com>, 
- Linux Kernel Functional Testing <lkft@linaro.org>, 
- kernel test robot <lkp@intel.com>
-In-Reply-To: <20241212-blk-iocost-fix-clamp-error-v1-1-b925491bc7d3@kernel.org>
-References: <20241212-blk-iocost-fix-clamp-error-v1-1-b925491bc7d3@kernel.org>
-Subject: Re: [PATCH] blk-iocost: Avoid using clamp() on inuse in
- __propagate_weights()
-Message-Id: <173402932544.982680.529127077152903218.b4-ty@kernel.dk>
-Date: Thu, 12 Dec 2024 11:48:45 -0700
+	s=arc-20240116; t=1734033656; c=relaxed/simple;
+	bh=C6FWikZm72Ancdbls6hbPHy08YLRfdVq4svvr1jLri8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WILMFxGDO8ImnvguArpf6jA9DwZVWIkDnrwdUDy/Nhpvg9mROxz/VCOsAjrTlQLviVTncEFi6aaVmUElvjl2qUPFRK08vWbf1JUNnjxFYaXX3QSPWVyZtsGXv+NjrKGQC6XZZT3jG/UeuiQvPxEmOdY//s9mh4GuxOfVfkQReZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=surriel.com; spf=pass smtp.mailfrom=shelob.surriel.com; arc=none smtp.client-ip=96.67.55.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=surriel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shelob.surriel.com
+Received: from [2601:18c:9101:a8b6:82e7:cf5d:dfd9:50ef] (helo=fangorn)
+	by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.97.1)
+	(envelope-from <riel@shelob.surriel.com>)
+	id 1tLpLv-000000000vW-3YTZ;
+	Thu, 12 Dec 2024 15:00:03 -0500
+Date: Thu, 12 Dec 2024 15:00:03 -0500
+From: Rik van Riel <riel@surriel.com>
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Yosry Ahmed <yosryahmed@google.com>, Balbir Singh <balbirs@nvidia.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ hakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+ Nhat Pham <nphamcs@gmail.com>
+Subject: Re: [PATCH v2] memcg: allow exiting tasks to write back data to
+ swap
+Message-ID: <20241212150003.1a0ed845@fangorn>
+In-Reply-To: <Z1ssHQYI-Wyc1adP@google.com>
+References: <20241212115754.38f798b3@fangorn>
+	<Z1ssHQYI-Wyc1adP@google.com>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.43; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14.3-dev-86319
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+Sender: riel@surriel.com
 
+On Thu, 12 Dec 2024 18:31:57 +0000
+Roman Gushchin <roman.gushchin@linux.dev> wrote:
 
-On Thu, 12 Dec 2024 10:13:29 -0700, Nathan Chancellor wrote:
-> After a recent change to clamp() and its variants [1] that increases the
-> coverage of the check that high is greater than low because it can be
-> done through inlining, certain build configurations (such as s390
-> defconfig) fail to build with clang with:
-> 
->   block/blk-iocost.c:1101:11: error: call to '__compiletime_assert_557' declared with 'error' attribute: clamp() low limit 1 greater than high limit active
->    1101 |                 inuse = clamp_t(u32, inuse, 1, active);
->         |                         ^
->   include/linux/minmax.h:218:36: note: expanded from macro 'clamp_t'
->     218 | #define clamp_t(type, val, lo, hi) __careful_clamp(type, val, lo, hi)
->         |                                    ^
->   include/linux/minmax.h:195:2: note: expanded from macro '__careful_clamp'
->     195 |         __clamp_once(type, val, lo, hi, __UNIQUE_ID(v_), __UNIQUE_ID(l_), __UNIQUE_ID(h_))
->         |         ^
->   include/linux/minmax.h:188:2: note: expanded from macro '__clamp_once'
->     188 |         BUILD_BUG_ON_MSG(statically_true(ulo > uhi),                            \
->         |         ^
-> 
-> [...]
+> Is it about a single task or groups of tasks or the entire cgroup?
+> If former, why it's a problem? A tight memcg limit can slow things down
+> in general and I don't see why we should treat the exit() path differentl=
+y.
+>=20
+I think the exit path does need to be treated a little differently,
+since this exit may be the only way such a cgroup can free up memory.
 
-Applied, thanks!
+> If it's about the entire cgroup and we have essentially a deadlock,
+> I feel like we need to look into the oom reaper side.
 
-[1/1] blk-iocost: Avoid using clamp() on inuse in __propagate_weights()
-      commit: 57e420c84f9ab55ba4c5e2ae9c5f6c8e1ea834d2
+You mean something like the below?
 
-Best regards,
--- 
-Jens Axboe
+I have not tested it yet, because we don't have any stuck
+cgroups right now among the workloads that I'm monitoring.
 
+---8<---
 
+=46rom c0e545fd45bd3ee24cd79b3d3e9b375e968ef460 Mon Sep 17 00:00:00 2001
+From: Rik van Riel <riel@surriel.com>
+Date: Thu, 12 Dec 2024 14:50:49 -0500
+Subject: [PATCH] memcg,oom: speed up reclaim for exiting tasks
+
+When a memcg reaches its memory limit, and reclaim becomes unavailable
+or slow for some reason, for example only zswap is available, but zswap
+writeback is disabled, it can take a long time for tasks to exit, and
+for the cgroup to get back to normal (or cleaned up).
+
+Speed up memcg reclaim for exiting tasks by limiting how much work
+reclaim does, and by invoking the OOM reaper if reclaim does not
+free up enough memory to allow the task to make progress.
+
+Signed-off-by: Rik van Riel <riel@surriel.com>
+---
+ include/linux/oom.h |  8 ++++++++
+ mm/memcontrol.c     | 11 +++++++++++
+ mm/oom_kill.c       |  6 +-----
+ 3 files changed, 20 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/oom.h b/include/linux/oom.h
+index 1e0fc6931ce9..b2d9cf936664 100644
+--- a/include/linux/oom.h
++++ b/include/linux/oom.h
+@@ -111,4 +111,12 @@ extern void oom_killer_enable(void);
+=20
+ extern struct task_struct *find_lock_task_mm(struct task_struct *p);
+=20
++#ifdef CONFIG_MMU
++extern void queue_oom_reaper(struct task_struct *tsk);
++#else
++static intern void queue_oom_reaper(struct task_struct *tsk)
++{
++}
++#endif
++
+ #endif /* _INCLUDE_LINUX_OOM_H */
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 7b3503d12aaf..21f42758d430 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2231,6 +2231,9 @@ int try_charge_memcg(struct mem_cgroup *memcg, gfp_t =
+gfp_mask,
+ 	if (!gfpflags_allow_blocking(gfp_mask))
+ 		goto nomem;
+=20
++	if (unlikely(current->flags & PF_EXITING))
++		gfp_mask |=3D __GFP_NORETRY;
++
+ 	memcg_memory_event(mem_over_limit, MEMCG_MAX);
+ 	raised_max_event =3D true;
+=20
+@@ -2284,6 +2287,14 @@ int try_charge_memcg(struct mem_cgroup *memcg, gfp_t=
+ gfp_mask,
+ 		goto retry;
+ 	}
+ nomem:
++	/*
++	 * We ran out of memory while inside exit. Maybe the OOM
++	 * reaper can help reduce cgroup memory use and get things
++	 * moving again?
++	 */
++	if (unlikely(current->flags & PF_EXITING))
++		queue_oom_reaper(current);
++
+ 	/*
+ 	 * Memcg doesn't have a dedicated reserve for atomic
+ 	 * allocations. But like the global atomic pool, we need to
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index 1c485beb0b93..8d5278e45c63 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -686,7 +686,7 @@ static void wake_oom_reaper(struct timer_list *timer)
+  * before the exit path is able to wake the futex waiters.
+  */
+ #define OOM_REAPER_DELAY (2*HZ)
+-static void queue_oom_reaper(struct task_struct *tsk)
++void queue_oom_reaper(struct task_struct *tsk)
+ {
+ 	/* mm is already queued? */
+ 	if (test_and_set_bit(MMF_OOM_REAP_QUEUED, &tsk->signal->oom_mm->flags))
+@@ -735,10 +735,6 @@ static int __init oom_init(void)
+ 	return 0;
+ }
+ subsys_initcall(oom_init)
+-#else
+-static inline void queue_oom_reaper(struct task_struct *tsk)
+-{
+-}
+ #endif /* CONFIG_MMU */
+=20
+ /**
+--=20
+2.47.0
 
 
