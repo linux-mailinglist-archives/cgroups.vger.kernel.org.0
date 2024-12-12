@@ -1,125 +1,124 @@
-Return-Path: <cgroups+bounces-5864-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5865-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E0C69EF8FB
-	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 18:47:18 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3681C9EFA1F
+	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 18:58:01 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EB9228EE17
-	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 17:47:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1885016BD92
+	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 17:52:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95D34229686;
-	Thu, 12 Dec 2024 17:44:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31EBD22541D;
+	Thu, 12 Dec 2024 17:52:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AZ/lQM3Z"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FDLiiZDb"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D808225A21;
-	Thu, 12 Dec 2024 17:44:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0118C223C7B
+	for <cgroups@vger.kernel.org>; Thu, 12 Dec 2024 17:51:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734025489; cv=none; b=gosvCpc09dkOQsPYLSaurKO59YTEiEZIYgkgqoxsAuQMwSzh/zq5fKKV3VPe8SiDdMXyLqAbdbdPFYjeOV1mEJKIOfTRNz1YZ4cAYKdzPDhftKFKsmIX6jWeNU1zlrT+/ATILhzB37ThcBNY0DVhHCr/F1j++RHM5FC7LwOs2r8=
+	t=1734025922; cv=none; b=fNEuN+pGMG2+teYhsuxJFH8u+BrWODM3t3emLaziJSwY0gON+BAvRprzmQf1j0MkGmgOET5sMq4cMoMsBGDJMjem9QSMw7mHVg+uAmNtNSdgAsxV206TbljaFyVOPBetgmLiQqTQKfQo1MrjmvXmRUpd2I/npphqhPIMo++Oxqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734025489; c=relaxed/simple;
-	bh=9tKjhSY0qkGEtTedwIdJnqlX2zVR0a9N/gnmnBVr8Xg=;
+	s=arc-20240116; t=1734025922; c=relaxed/simple;
+	bh=RFNKVw5SAUUJiiJDpqRQ01TJM9B1+0nfwbZ4M7WdyOA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BStbIw/mfA6PsMPcSof8VvpOHmOplCypNzT035tBA/MQjl4qtr6Jt+D2K86ivP1CNW7bXAfNpBx2UvHhhWkEMZt6yBh0Ftk+w87yyuBbIRgcHusCZ4tfOc0l42/UdZfE/1l6KkW/4EH6xkJLsYJwEqHOysfJL4uu12bBz7AG/eg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AZ/lQM3Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0240C4CECE;
-	Thu, 12 Dec 2024 17:44:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734025489;
-	bh=9tKjhSY0qkGEtTedwIdJnqlX2zVR0a9N/gnmnBVr8Xg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AZ/lQM3ZxOQj99+ru5U9GsTlZXmtrv+GycdFGABcKJfO9Q+DJwIQDnhUhtIo2WGDD
-	 0O7N12jymgot0QCYpOQsOQWkA4IlP7n5+kS1u5HGaRIFZ1n+TlnqoEHJaE2cNyM1GK
-	 yVDuEx5J3ZBDI5UfdmEWkDJtHEr/xuOCwvKbCHKdkPj0BFq+CIhRji3Jj/I+Tu4rOr
-	 F2jaTLwG29mt7Yf1PjVYwms8TI08NDirPHha8hmieFpPg+CpkSphA8Jw1gojDo1txk
-	 PNfR0bmasi8JPKfolBueyWqBpfWZ3NKX9O/Jzq/1wFXsLhprLL+bdrMv/ZbX9lfv9u
-	 3cOKTDkWORYJw==
-Date: Thu, 12 Dec 2024 10:44:44 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>,
-	cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-	llvm@lists.linux.dev, patches@lists.linux.dev,
-	David Laight <david.laight@aculab.com>,
-	Linux Kernel Functional Testing <lkft@linaro.org>,
-	kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] blk-iocost: Avoid using clamp() on inuse in
- __propagate_weights()
-Message-ID: <20241212174444.GB2149156@ax162>
-References: <20241212-blk-iocost-fix-clamp-error-v1-1-b925491bc7d3@kernel.org>
- <Z1sbG2zh8xmb-lxu@slm.duckdns.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z4/kIbxbpFipf29HKkjD/86If15Uem+igu75CRz9kkBJ28lIhHbop9xhxY13zG+gl6tUSxm8dwyu5UQu8BmGBzBPR8hzIFMHaYUHJmkcfgvxOzL8/K4AEuiKUK68/uaUkGcGCFtdR/+lk9QNKJ29D4UXo7eGctW0ksyt0U9U3b8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FDLiiZDb; arc=none smtp.client-ip=91.218.175.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 12 Dec 2024 09:51:49 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1734025916;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eZZXEGYkGK4kAXvmT4RcWMA7K4KCrvzXjT7TqPR9oKs=;
+	b=FDLiiZDbmR2mvO0cLFZVa9/knfz5jtMYG6PcDqxA+IE2383+ypIPrAlGRiAe+XF1PuCT/j
+	WGGiuIieOLGHmnJXgcnBb27oh3hJ8iRM8BXkzC7T+UHptrpXKZD59vPY3ttLbTTkb34li7
+	PT7UhnSSnMHKjBRrQbRObqRl+ejP4Mc=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Rik van Riel <riel@surriel.com>, Balbir Singh <balbirs@nvidia.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, kernel-team@meta.com, Nhat Pham <nphamcs@gmail.com>
+Subject: Re: [PATCH v2] memcg: allow exiting tasks to write back data to swap
+Message-ID: <4oxovutecmn7mkbbmbk3rhqudilivf6fkedvmcbcttmcspwebl@fp6pv2a45x6n>
+References: <20241212115754.38f798b3@fangorn>
+ <CAJD7tkY=bHv0obOpRiOg4aLMYNkbEjfOtpVSSzNJgVSwkzaNpA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Z1sbG2zh8xmb-lxu@slm.duckdns.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkY=bHv0obOpRiOg4aLMYNkbEjfOtpVSSzNJgVSwkzaNpA@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, Dec 12, 2024 at 07:19:23AM -1000, Tejun Heo wrote:
-> On Thu, Dec 12, 2024 at 10:13:29AM -0700, Nathan Chancellor wrote:
-> > After a recent change to clamp() and its variants [1] that increases the
-> > coverage of the check that high is greater than low because it can be
-> > done through inlining, certain build configurations (such as s390
-> > defconfig) fail to build with clang with:
-> > 
-> >   block/blk-iocost.c:1101:11: error: call to '__compiletime_assert_557' declared with 'error' attribute: clamp() low limit 1 greater than high limit active
-> >    1101 |                 inuse = clamp_t(u32, inuse, 1, active);
-> >         |                         ^
-> >   include/linux/minmax.h:218:36: note: expanded from macro 'clamp_t'
-> >     218 | #define clamp_t(type, val, lo, hi) __careful_clamp(type, val, lo, hi)
-> >         |                                    ^
-> >   include/linux/minmax.h:195:2: note: expanded from macro '__careful_clamp'
-> >     195 |         __clamp_once(type, val, lo, hi, __UNIQUE_ID(v_), __UNIQUE_ID(l_), __UNIQUE_ID(h_))
-> >         |         ^
-> >   include/linux/minmax.h:188:2: note: expanded from macro '__clamp_once'
-> >     188 |         BUILD_BUG_ON_MSG(statically_true(ulo > uhi),                            \
-> >         |         ^
-> > 
-> > __propagate_weights() is called with an active value of zero in
-> > ioc_check_iocgs(), which results in the high value being less than the
-> > low value, which is undefined because the value returned depends on the
-> > order of the comparisons.
-> > 
-> > The purpose of this expression is to ensure inuse is not more than
-> > active and at least 1. This could be written more simply with a ternary
-> > expression that uses min(inuse, active) as the condition so that the
-> > value of that condition can be used if it is not zero and one if it is.
-> > Do this conversion to resolve the error and add a comment to deter
-> > people from turning this back into clamp().
-> > 
-> > Link: https://lore.kernel.org/r/34d53778977747f19cce2abb287bb3e6@AcuMS.aculab.com/ [1]
-> > Suggested-by: David Laight <david.laight@aculab.com>
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > Closes: https://lore.kernel.org/llvm/CA+G9fYsD7mw13wredcZn0L-KBA3yeoVSTuxnss-AEWMN3ha0cA@mail.gmail.com/
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > Closes: https://lore.kernel.org/oe-kbuild-all/202412120322.3GfVe3vF-lkp@intel.com/
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+On Thu, Dec 12, 2024 at 09:06:25AM -0800, Yosry Ahmed wrote:
+> On Thu, Dec 12, 2024 at 8:58 AM Rik van Riel <riel@surriel.com> wrote:
+> >
+> > A task already in exit can get stuck trying to allocate pages, if its
+> > cgroup is at the memory.max limit, the cgroup is using zswap, but
+> > zswap writeback is enabled, and the remaining memory in the cgroup is
+> > not compressible.
+> >
+> > This seems like an unlikely confluence of events, but it can happen
+> > quite easily if a cgroup is OOM killed due to exceeding its memory.max
+> > limit, and all the tasks in the cgroup are trying to exit simultaneously.
+> >
+> > When this happens, it can sometimes take hours for tasks to exit,
+> > as they are all trying to squeeze things into zswap to bring the group's
+> > memory consumption below memory.max.
+> >
+> > Allowing these exiting programs to push some memory from their own
+> > cgroup into swap allows them to quickly bring the cgroup's memory
+> > consumption below memory.max, and exit in seconds rather than hours.
+> >
+> > Signed-off-by: Rik van Riel <riel@surriel.com>
 > 
-> Acked-by: Tejun Heo <tj@kernel.org>
-
-Thanks for the quick response!
-
-> This likely deserves:
+> Thanks for sending a v2.
 > 
-> Fixes: 7caa47151ab2 ("blkcg: implement blk-iocost")
-> Cc: stable@vger.kernel.org # v5.4+
-
-Thanks, I was wondering if I should have provided those. I'll carry them
-forward on any future revisions, as I assume Jens can pick those up with
-your tag if this is good enough.
-
+> I still think maybe this needs to be fixed on the memcg side, at least
+> by not making exiting tasks try really hard to reclaim memory to the
+> point where this becomes a problem. IIUC there could be other reasons
+> why reclaim may take too long, but maybe not as pathological as this
+> case to be fair. I will let the memcg maintainers chime in for this.
 > 
-> -- 
-> tejun
+> If there's a fundamental reason why this cannot be fixed on the memcg
+> side, I don't object to this change.
 > 
+> Nhat, any objections on your end? I think your fleet workloads were
+> the first users of this interface. Does this break their expectations?
+> 
+
+Let me give my personal take. This seems like a stopgap or a quick hack
+to resolve the very specific situation happening in real world. I am ok
+with having this solution but only temporarily. The reason why I think
+this is short term fix or a quick hack is because it is not specifically
+solving the fundamental issue here. The same situation can reoccur if
+let's say the swap storage was slow or stuck or contended. A somewhat
+similar situation is when there are lot of unreclaimable memory either
+through pinning or maybe mlock.
+
+The fundamental issue is that the exiting process (killed by oomd or
+simple exit) has to allocated memory but the cgroup is at limit and the
+reclaim is very very slow.
+
+I can see attacking this issue with multiple angles. Some mixture of
+reusing kernel's oom reaper and some buffer to allow the exiting process
+to go over the limit. Let's brainstorm and explore this direction.
+
+In the meantime, I think we can have this stopgap solution.
 
