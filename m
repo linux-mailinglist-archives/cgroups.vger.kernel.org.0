@@ -1,212 +1,199 @@
-Return-Path: <cgroups+bounces-5876-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5877-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 929CF9EFE87
-	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 22:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C0BEF9F0046
+	for <lists+cgroups@lfdr.de>; Fri, 13 Dec 2024 00:40:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9BC141699B8
-	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 21:41:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C73121673E2
+	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 23:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E901D88DB;
-	Thu, 12 Dec 2024 21:41:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 941681DED4C;
+	Thu, 12 Dec 2024 23:39:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="KIDvSdYW"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="WUE+UqX4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2040.outbound.protection.outlook.com [40.107.237.40])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D16B11CEAAC
-	for <cgroups@vger.kernel.org>; Thu, 12 Dec 2024 21:41:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734039705; cv=none; b=FaioaZDVfzMBIGfgZarS9xtiCMMf6o5qLXMymoo7lA+39QIqHbhG8z6paBcx+dMa74GC4d6PN8nJvx+d+MpoAWheHseuQgE19YW4uW3SEjRcuLtzkqwfJJnL4ecvScpgqpNl+zglz497u/vw9BasJtDkGfH+irN7OHCJ5JlykmM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734039705; c=relaxed/simple;
-	bh=LE9OFiqu8JETZcBBVbs3BGj1PQAvXWnvYreow3dhXuU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ckWjqjQxULCeoj0c/RmJC0MlhSJNhbVS3IzfOFFomO9He3TRWb+gXrWJ88tBZPQr8f/0Fm9efbt9SsqkcgXkJRaKpB+kVzXitIBpeUt5j86X8jNy9HUN/H+wMHrAnaq2Nb6QaE8sHzn6xcNkWc7POQxitCfDUVrNrHbnle9clhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=KIDvSdYW; arc=none smtp.client-ip=209.85.219.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6d8f1505045so9399876d6.1
-        for <cgroups@vger.kernel.org>; Thu, 12 Dec 2024 13:41:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1734039703; x=1734644503; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NndNSRUhbnWB5FGgPp/6wuTx8RdsrYqkoIBIFndV9tQ=;
-        b=KIDvSdYWQMXSV5zuzujOqwPO0jXoJRwPQzagSXjHq03RY7TovW+cQP2GYdvnoW4niG
-         zZ8xjHHz+07SfcodvLtwrg8P5cOjPtYfPjAAWSweR4i7OT18bXzE+wWZMtDW+T4YPN3P
-         MOQhBfTm8GrFQV8xBjvt0TncNxar5N2h8Skkhi8TxmApw91WYktbiIHrtcFf99D6TDVR
-         0T8YMPJvjqfU9molaRSMRb0aL/LDX3WCQaZY1zbeH0vQjJDD4wm2syec0Uc/qxf6N8Nz
-         x/Y01fKMdUtMn1XY3tAGIvVNsMclWuK7K8sGNmB9gEez8do0FMo8jEzbO6UdPVP2xugX
-         QeMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734039703; x=1734644503;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NndNSRUhbnWB5FGgPp/6wuTx8RdsrYqkoIBIFndV9tQ=;
-        b=Lxr0VCKSHC2hpNkWhqHcum6QBJrmvA+hbl1g4N3l57VMLgTHbKSk8fOJHmbFDjxvhN
-         ZLE8pz3ULjhRT2lq72WQym5qRLKu9Jan1y2EyfUti4Pln6TIXMlS68XtNpPo+TjHDeBA
-         qtbU5nQ4Yc+rLwIBaICDdtO3VRa1+kJJS4D18zDIxDP8i01/Voln2kIU09AZh4r12TCT
-         3UGiBoB9MrttC5rI1gCiYDkuhG7o2cc8/59dRUMdz4VvD4a3hij5y61JFJK4c0gwl2zv
-         nfgsmxTSSrggqXihTMnxViBcWapgOh+UNh+7vwoz/6P2B7+/aZGU/IawytwUFck1Pe3K
-         6uAg==
-X-Forwarded-Encrypted: i=1; AJvYcCUgP6DgsrHuBlhMP15Wi1NcCNZhmNKGlBU56SMK+BkqsVo+oHIfmrC5ihPxHxM8kZZ4SbZgPXOm@vger.kernel.org
-X-Gm-Message-State: AOJu0YzAi4v/QE9PJdBfynJgp/J/PXTPNTYHXhiroweZh+Cm4Q8qwQQb
-	WkOE2pvi1nRpIG+2WcL0UckpFT1HmpVjMmRGig355wgV/X+FdYd0EbJU9Zfq2Gu4awqK2yf78ni
-	oUJFNxY6ZUFEBHfiI3Anf+WNhnyMM5TVIhcO+
-X-Gm-Gg: ASbGncs+rrAESCo5Klou7V5VTYk5z2GbBvxnFL/FQO1IBIADE77TU4L/q5fEaC8r/d3
-	qDCCI3R7YFT0WqsoygiKFyn/6/NDk8dvLkck=
-X-Google-Smtp-Source: AGHT+IEiN0OqoDo2mRZ6+j4V/MCj+UFVGvVBvwOOn5R3E0vFpV1L+QCjP2VAtummDoAgR/xmNi0aDKjZs9bA7K2Lcgs=
-X-Received: by 2002:a05:6214:29e8:b0:6d8:a027:9077 with SMTP id
- 6a1803df08f44-6dc8ca3da18mr2385996d6.5.1734039702507; Thu, 12 Dec 2024
- 13:41:42 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C72941547F5;
+	Thu, 12 Dec 2024 23:39:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1734046799; cv=fail; b=VaPI7JOWq+hWBtM94PNkWKk/4RoYOKw77XgvvHlfn39p68VFUqyE+afy7eBXba7glC7kAMQQ5Qfo2GWlOSF55Szhi556fp84pAvVAyAuEfLVLaqgfGhwZF3evYJ65RD7t1jApJPyY6xtY+35qe4Yo10ykViEFSnlcv5GfWqC5ks=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1734046799; c=relaxed/simple;
+	bh=N/sLrKshGmWLJBK1yeDw9E1nkCnqKZWHbKRgfOdvUsc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=l3FHjQaLeYJPKg8+n+wLW+0+PPWD3HXBYIkDgE1iut1JUYV5ent2ysmcZ4BQ2RqAIRPjLYtbiAmrzvn9XpJq7yakqkCJs/uNDDRdJq3x5vb7Chdh4VzhfAOAVSqMrp0M8Qy+RP0GZnRB6QwuuBCaBav97gh7Gqi/duUvKlE15xo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=WUE+UqX4; arc=fail smtp.client-ip=40.107.237.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=o4xSIaHaMP5yMJiRv1yt+btWwHAhhogx/+0d2RXBLkqhzkxmTfXdvb9Zp9OZk9qEtUsas1vH8W4D8qSLb0U7xW3frv9xirwrtZkHaPumqqRX47W4HimNHRlLq194bWkxW9rhfb85xqlp9yG/MuHm3npbkGtcRF/QDEfzwYvmZkskF4gt2Ak2e9xcu0XGyNBTIDrfz/vjhVkzzaDgUEOzLSZzuC+ydx4gnjSW6r4sm9+mlVS7r+MtHZ0ApXq36GI5hWV/F7csJfi0tvatNmwLa0pw/JUbi4h8nvVGjwGPsa+ykPj5BGf/H5hlZyEbrdJ8D/Qeum7z2tFrGNKARshPiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nuCv3oWHsjcFfVq6RLHaa7B7l47QFtvwAGj3IVWrSng=;
+ b=fDZhhsFv7PByuuTTcImXKQS6eOFN26aE6vHd32ZTS5lVKMBe796nX3hlbQ6I4SwICkbAflqVhj2r4Bgnat/iDS2/EIa3rwguPkzDe4T/6Czy7XmH0kyG4kRQ9KBXI5g2X7HMpImSqBvXIbi16lKy5tfMIqus8gkxqPyEK80L+KXUmOT+mKR0z6BiATXh0E/e6PyBe0N06XWg/bz1UZ54vcbsuz33lZiROiB/mxrJ286zikUGgQtyou3yzkvoRWXvFm6fL210NVIzNHER2+Z3jhqW8IcImfLBtfjTArObX1yIhZ7aG9ylq28M8E9IFQx2xzdP6tTY9NrQ2yxBWrhMeA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nuCv3oWHsjcFfVq6RLHaa7B7l47QFtvwAGj3IVWrSng=;
+ b=WUE+UqX4jjl7PgkbKoVKUo6KApfquhylCHw5BAW6LgUcWwePNkqFUpL9w71TRmjaYByAGwd5kL/gBnEqLoyCQruJX9teR7m8v65t0I5gZ3Zaq0M6ce/cdjWE+X711s/ppPJhxR7knDtU8y9H6o1i+1aYbNiKciTttgS+RtYglZAKNcfN1A58e0pzLzvBi8xo3cAyXr5YOUfM0xz8FHnWKbRV8isMKqPUmCVChmN70LFTTsuGF8nIQb0IujBUgcWEVWx98iq0/W62pzmfbAAXCErMLZ9SQU1ZgcJlYis+IEg1rwi5VRhdWy7YC3tDz/V0mCegIK+DcJduCp5psDb9RA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from PH8PR12MB7277.namprd12.prod.outlook.com (2603:10b6:510:223::13)
+ by CH3PR12MB8073.namprd12.prod.outlook.com (2603:10b6:610:126::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8230.18; Thu, 12 Dec
+ 2024 23:39:54 +0000
+Received: from PH8PR12MB7277.namprd12.prod.outlook.com
+ ([fe80::3a4:70ea:ff05:1251]) by PH8PR12MB7277.namprd12.prod.outlook.com
+ ([fe80::3a4:70ea:ff05:1251%4]) with mapi id 15.20.8251.015; Thu, 12 Dec 2024
+ 23:39:54 +0000
+Message-ID: <778ce6c8-9d77-4d85-9954-a930c5b84311@nvidia.com>
+Date: Fri, 13 Dec 2024 10:39:48 +1100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] memcg: allow exiting tasks to write back data to swap
+Content-Language: en-GB
+To: Rik van Riel <riel@surriel.com>, Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, kernel-team@meta.com,
+ Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>
+References: <20241211105336.380cb545@fangorn>
+ <766a28a1-c82b-46fd-b3b0-fe3b6024f462@nvidia.com>
+ <1764e2fc8cff5b07aa9df1ae90a13986a3949250.camel@surriel.com>
+ <1974c064-4c17-403c-a0a0-a799cbdae2f9@nvidia.com>
+ <06afcaa995425c3c8b743485c6374ad92934f5de.camel@surriel.com>
+From: Balbir Singh <balbirs@nvidia.com>
+In-Reply-To: <06afcaa995425c3c8b743485c6374ad92934f5de.camel@surriel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SA0PR11CA0174.namprd11.prod.outlook.com
+ (2603:10b6:806:1bb::29) To PH8PR12MB7277.namprd12.prod.outlook.com
+ (2603:10b6:510:223::13)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241212115754.38f798b3@fangorn> <CAJD7tkY=bHv0obOpRiOg4aLMYNkbEjfOtpVSSzNJgVSwkzaNpA@mail.gmail.com>
- <20241212183012.GB1026@cmpxchg.org> <pr5llphyxbbvv3fgn63crohd7y3vsxdif2emst2ac2p3qvkeg6@ny7d43mgmp3k>
-In-Reply-To: <pr5llphyxbbvv3fgn63crohd7y3vsxdif2emst2ac2p3qvkeg6@ny7d43mgmp3k>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Thu, 12 Dec 2024 13:41:06 -0800
-X-Gm-Features: AbW1kvYrG3xeIYEdjZ61h5ymWOc_3UboGjPg4dvUyfO_e07qePepWjfMDNNQN3s
-Message-ID: <CAJD7tkYMwrLTvcORnXVjQ4s+UMSTZD5jddv78awOPw_DqYFufA@mail.gmail.com>
-Subject: Re: [PATCH v2] memcg: allow exiting tasks to write back data to swap
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Rik van Riel <riel@surriel.com>, 
-	Balbir Singh <balbirs@nvidia.com>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, kernel-team@meta.com, 
-	Nhat Pham <nphamcs@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR12MB7277:EE_|CH3PR12MB8073:EE_
+X-MS-Office365-Filtering-Correlation-Id: f7269fcb-39d6-4d20-5982-08dd1b064780
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|376014|7416014;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?VGhScVJWQm9ZTDRkdC9MMHZHSEU4L2xQYlBUS3VMOVNKY0JOWks2UjJJS04r?=
+ =?utf-8?B?RkdJWmFQVlY2NGgzVFFHZVNzUTVZK0Y0Mm01WU16ZXNsYlYzNVZWdjU4Vndo?=
+ =?utf-8?B?K0krako0NlA2M3ZCdktLWHA3MnpJMUx5N1RUQ2JnNEJUbDJxT1kzbXhEeE5m?=
+ =?utf-8?B?cERDY1FEU3RIWVdMZHJTZWZTRk0xTFZncTAxZW1TOFBvZ01wajlwNTF3Q0Qw?=
+ =?utf-8?B?d2p3ZUdhQnJwdmQxMVlYY3E1MlU3UkdmYnN0OUNwS1dvb1BycVQ4OGNtTmRG?=
+ =?utf-8?B?eEZ5eUg5RHBjYkw4bnk1eG03RklJeE8vL2FVYUlsaHgrWlR6M3VnNFF4dmVI?=
+ =?utf-8?B?bFpKQWxQU3ppclhoNDF4bUxOZFdNR1JTK05iUEdDcVpLTWc1dTBVMUh1UUZn?=
+ =?utf-8?B?MERydFBESnlqbkxFbGtBelZSUVJ6Z0kwSVluOG0vaCtIM1g0SVBlTXo2amNn?=
+ =?utf-8?B?SnlOVm5nWW1FaDMxY0E2RXptOXMwV2FaeHZTRFBOeUFwNEhwVUN0NndxUDA4?=
+ =?utf-8?B?bWFLNUZZemNSRll2Um1xYlQxMFNWWGl3QXN1UkRoVkUva3Z4RjR5NUpBUFd5?=
+ =?utf-8?B?L3diS3lPb0RUTFZpNENWWEV1V0Z6SHNXOHJiOWVEeUJ1MEphVkE0Z3piU1hM?=
+ =?utf-8?B?V1NrVENJTk5scldFQmZycitDYWRLUjJmREQ4UDJ1YWtwRENDMUY5Y284TjlD?=
+ =?utf-8?B?YTdvaHRzbGtMQWxlYkNmMkVLVUJJWU90bG9jaitmY1hVQ1pYR0ljbTlramFx?=
+ =?utf-8?B?czVKZmw0bVRaZjJ5a2lEOHRCeWpEMFhTREpPYmZRY3VqUXJiNmROY2ZZckl6?=
+ =?utf-8?B?NjNZYi9uNFUrZGlNS09JdG1PV2VuekpHQUg5bnBXRU5IUlNwVTkyYUlnYUlJ?=
+ =?utf-8?B?bWxoUEt2a1ZyTFhhRUZ4MHBDeWV2NENUdk16MCtBUUlPSmNKdWFCZ1k2SGNJ?=
+ =?utf-8?B?MzUwc09XZEszU2hWbEZEdzFLRjBKWXdqVGQ0SnFaTit2THNGU2gvTklhTjBi?=
+ =?utf-8?B?cmdCZnczd3F3a2dBNWdvMW56WHBRSHVzVVBkU1ZZQW1nc3E5UDg1TW1xWlgw?=
+ =?utf-8?B?bCtTMXhYZnlwMDRQL01LTnpQQUI3ODBseE1ReU95dVNKZlBuSGN1MXNheFZp?=
+ =?utf-8?B?M2NwNTF1dEszR1NvZkZYM0hQQkU2WU5xeHliVk1hS3hkc2tscHBUWmswWXkr?=
+ =?utf-8?B?L25BdU5KTUtTdEJJVG9YQ1U1aWpkYVdoYjNZQ3ZFVkN5cGtYQWtWVm13SDNi?=
+ =?utf-8?B?dmRrRklTdkhUTzFXdlVjTlNJcHlnQnYrQ3M0ZDJ4eEtkYTRyRzVpTGJKdkVD?=
+ =?utf-8?B?RWNLeG1vUGtLaFpHSFlUSzVZVFo4V2RxZFZxUlN5VlRkL2hadUc2UWZyUmlL?=
+ =?utf-8?B?ZUZEbUQ0QnJIYTh4U0hrZG9GNzdkcW41TmNQUDV1UWtJNFBVUXVBVU1LY0x0?=
+ =?utf-8?B?KzNlTlM5d2xLQnZ1NjVUTHZyU2RBRGpReXoyb0RGZVpNa0E5Vkp4UDVocjRw?=
+ =?utf-8?B?QjR5enlibm5wbnVoYlhuU1puMCtzS1JiR0NobUFPdHUxRzhCTkZGY2N5UDFh?=
+ =?utf-8?B?VnFpM1lhVGVZeVhLSTRnNTdpZXNkdWFaRmx6V3lJa2VYb09WdzFhYXZQeTgx?=
+ =?utf-8?B?c3NhKysvcWl5TkI2YzhFcHpta1VhZDNXWWF0R3dxbzErOFNtNlN5SEhpeDlH?=
+ =?utf-8?B?REJpZnZ2L29mOUMzUkZqYllHbVAvUVRHYTRIQUpJTHcrc0s3ZG5HN0tpbXZZ?=
+ =?utf-8?B?REx5eGZTWURWU1J2RCt1SENOZmE1bGpWRzMxcjhhNXluTkE2elVGRGZJbkpN?=
+ =?utf-8?B?bXJ6cC9BMzFYbWZNYkF5UT09?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR12MB7277.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(376014)(7416014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Q1dRUGtRYkIwRU5KS1R3M0hvUHJ6Rmx1L01TSEdOQmtoL2JsOGlRTldOU3J5?=
+ =?utf-8?B?ZTRKZUpxNWlKVi9JK0x3TDBZOGNSUDF5WmhrbEI4WUFGOFdRdHA1OXFNU0dQ?=
+ =?utf-8?B?SmMvZUJPa05nY2diRVRmaFNjcG9aWlpiUGNaSWg5YnlnOHRTcTdTWEd3NFIy?=
+ =?utf-8?B?QzZraEtxU0lsRlNUZThwdHFZN3RFS3UxT0FFSnk1aDBDUXRCak4yUkt3bjRP?=
+ =?utf-8?B?SUdjQVVxSjBEb3ZnWGJJWkNaalIyclJOa0VwVE44OFBoQVlyU2gyeHA4YSta?=
+ =?utf-8?B?TllQQVVuclhxNDVQd291aWVabmFmeWFFUFVqakljaEVQQ01ZVXA3alVwRTE3?=
+ =?utf-8?B?c0RHOVhwZ0swOVZuNFFoRldiT2xPc0pMMU53UUFldWJISWY3L2tXTG5iQlly?=
+ =?utf-8?B?Z2lIdjJCeVBOWEJGOURFalI3ckdwb05EUGpJeDlhNFNvOG9SMjB4R3U1WjVl?=
+ =?utf-8?B?QTZCcThEazh4T0hVQnc2Q2RtMlZVUmlOOFQrSTVLdnBPanZHUmJOdXo5UFNj?=
+ =?utf-8?B?cGE0TE81R2J4RkRhLzVFTitHOXFjZHRnWlFFa2IyaERxbGdDcklueGxjekM3?=
+ =?utf-8?B?eDBsSG85Tkw2emhydTkxT2Z5VkR6OFVQUTQ3dXo4TVlyWWNVQ05ZR0VoRzBj?=
+ =?utf-8?B?Rk1YWThPdnRqdDdjbHI3cURuZkJVWXN5d3JTNGMzdUtrcDh1cDFIRkRzVmJ0?=
+ =?utf-8?B?c0d1azhKUml4cFR3am1TR29sUCt0VERxTXlRY2o3UElVR005emlscWRRMXNp?=
+ =?utf-8?B?SDYzUnRLdW9PMzRsRVg1dWR6d3k4TTU5eVFwYjlHSDlEb0xjbzZjd1Q5NFEw?=
+ =?utf-8?B?Y2t1d3RRUDBPNUh4U2FrMktMUjdHNFhwbFJiaTVHWjYwMVRtQzdmZFhSak9l?=
+ =?utf-8?B?dEE0VmF6UUl4eUE1cFZMblZ1SVBYUWR3dlUzaXVNVmJmRlhzSU1hRUxXbHBG?=
+ =?utf-8?B?Szkrb2VaTlZSS0hvSnF3V05qQ205bThsdTlvSlgveS85bkxzNTlma1hwWXYw?=
+ =?utf-8?B?cml3VXVlUnI3MnZFbGtLWWZOSUNVeFpnanBLblF2d0NJZmFOL1paNkR6NHRR?=
+ =?utf-8?B?OFVBNWNCU09HQ09SSHUwYUVkQWdzb0ZBa0pqekNwcFcxUnlXYkJ0Tmd0aS9T?=
+ =?utf-8?B?MGs0d1RwT3FTczhUUW9veExUQ291SFR3cVE5L2tTL21aSzlZR2Q3K01DNXow?=
+ =?utf-8?B?clpjZUd5ckhzRERHOVZOTlF2OVdVZkF1cU4vRmY2aFV0SFpJbklBSzZUUkJp?=
+ =?utf-8?B?TGNEb1B3ZUxoa3g2alpGUlBqTGpZbFRKQ1g0blluV0xpSjREU0wwVUlJTVRo?=
+ =?utf-8?B?Tlh4YVM1VDk1OUVwUDdZanRmVThROU1KL3NKK0RocVoxUzlvQXRQVG8vUnBS?=
+ =?utf-8?B?M0xvb3V2NDNHY2FPNWRlZ1MvanM0ZmNkNXA5bkdkaGQ4cFhndU1SR0pVa254?=
+ =?utf-8?B?NndUYWZSOEd6ZzE4WlBQNzc0bk1kY05pdXU3R1dKeXNZcnlLVU8xQllwNXNl?=
+ =?utf-8?B?eGdXWmNLazdRRVcyNzl4ckxOdmcvY1lMckNRdEpwcWFuejV3dkZpV1dLbDRZ?=
+ =?utf-8?B?NStZdUxFZEtFQXk4V3ZqaWM1ZGRmVWg2NytVMVlBdXc3b1ZIbUtZMEFpNzBE?=
+ =?utf-8?B?VzVab0xRTW9hQ0ZmSVBDYndEMGRDMTVyTjhkTFJxbFA0NzErWlJ4bnYvTWJC?=
+ =?utf-8?B?ZUJ4R0JxaFJGempIajZhaTVkaGFlTVN2MHBrU0krSXk1Y0g4RGxXREdkOHh6?=
+ =?utf-8?B?RE9PTFcxbVJTaW1yNjZ4cUpNajRIV1VLU3dVdUZERjVuWFJhSFFja3pqSXRp?=
+ =?utf-8?B?cThXQ3ovWTlvRFdlcWFiRjlZL0dxZ0JjR2tqY1ZRVVlvWkpaK21UR0o0dDdS?=
+ =?utf-8?B?TWJ1THVuMWE5S3dZc1VnVDVmdHY1eFZtSWc1OWh0M1BxV0lSWGt2OUFxUmV2?=
+ =?utf-8?B?THFBbi9BeDhhTENvSTdmMW43aGVlUXhZU1pNVklGZDBMcVZhRjJsK042TzZa?=
+ =?utf-8?B?cXdtSEVxc2tWaXBvais4SGVpK1FJaUJsbGN5cERHa21lU3hvYlo4Vmg1d0M1?=
+ =?utf-8?B?TER3RFd4QWpwNmEreXpWRkl2czBGZ3dYSHZoL2l3ZXZ0MDhPUGk2MTV6d2pX?=
+ =?utf-8?Q?fyQ4XUh/d2C3HTCFDdDW9FqsK?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f7269fcb-39d6-4d20-5982-08dd1b064780
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR12MB7277.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Dec 2024 23:39:54.1675
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4kSBDHNEyJAb48LM78wSqNF116JBgtr9BBeqRXfZ3xkOVfV83yEu3CXqUaukSmcZupxjy7AMmCc7gQFI7kV81A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8073
 
-On Thu, Dec 12, 2024 at 1:35=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.de=
-v> wrote:
->
-> On Thu, Dec 12, 2024 at 01:30:12PM -0500, Johannes Weiner wrote:
-> > On Thu, Dec 12, 2024 at 09:06:25AM -0800, Yosry Ahmed wrote:
-> > > On Thu, Dec 12, 2024 at 8:58=E2=80=AFAM Rik van Riel <riel@surriel.co=
-m> wrote:
-> > > >
-> > > > A task already in exit can get stuck trying to allocate pages, if i=
-ts
-> > > > cgroup is at the memory.max limit, the cgroup is using zswap, but
-> > > > zswap writeback is enabled, and the remaining memory in the cgroup =
-is
-> > > > not compressible.
-> > > >
-> > > > This seems like an unlikely confluence of events, but it can happen
-> > > > quite easily if a cgroup is OOM killed due to exceeding its memory.=
-max
-> > > > limit, and all the tasks in the cgroup are trying to exit simultane=
-ously.
-> > > >
-> > > > When this happens, it can sometimes take hours for tasks to exit,
-> > > > as they are all trying to squeeze things into zswap to bring the gr=
-oup's
-> > > > memory consumption below memory.max.
-> > > >
-> > > > Allowing these exiting programs to push some memory from their own
-> > > > cgroup into swap allows them to quickly bring the cgroup's memory
-> > > > consumption below memory.max, and exit in seconds rather than hours=
-.
-> > > >
-> > > > Signed-off-by: Rik van Riel <riel@surriel.com>
-> > >
-> > > Thanks for sending a v2.
-> > >
-> > > I still think maybe this needs to be fixed on the memcg side, at leas=
-t
-> > > by not making exiting tasks try really hard to reclaim memory to the
-> > > point where this becomes a problem. IIUC there could be other reasons
-> > > why reclaim may take too long, but maybe not as pathological as this
-> > > case to be fair. I will let the memcg maintainers chime in for this.
-> > >
-> > > If there's a fundamental reason why this cannot be fixed on the memcg
-> > > side, I don't object to this change.
-> > >
-> > > Nhat, any objections on your end? I think your fleet workloads were
-> > > the first users of this interface. Does this break their expectations=
-?
-> >
-> > Yes, I don't think we can do this, unfortunately :( There can be a
-> > variety of reasons for why a user might want to prohibit disk swap for
-> > a certain cgroup, and we can't assume it's okay to make exceptions.
-> >
-> > There might also not *be* any disk swap to overflow into after Nhat's
-> > virtual swap patches. Presumably zram would still have the issue too.
->
-> Very good points.
->
-> >
-> > So I'm also inclined to think this needs a reclaim/memcg-side fix. We
-> > have a somewhat tumultous history of policy in that space:
-> >
-> > commit 7775face207922ea62a4e96b9cd45abfdc7b9840
-> > Author: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> > Date:   Tue Mar 5 15:46:47 2019 -0800
-> >
-> >     memcg: killed threads should not invoke memcg OOM killer
-> >
-> > allowed dying tasks to simply force all charges and move on. This
-> > turned out to be too aggressive; there were instances of exiting,
-> > uncontained memcg tasks causing global OOMs. This lead to that:
-> >
-> > commit a4ebf1b6ca1e011289677239a2a361fde4a88076
-> > Author: Vasily Averin <vasily.averin@linux.dev>
-> > Date:   Fri Nov 5 13:38:09 2021 -0700
-> >
-> >     memcg: prohibit unconditional exceeding the limit of dying tasks
-> >
-> > which reverted the bypass rather thoroughly. Now NO dying tasks, *not
-> > even OOM victims*, can force charges. I am not sure this is correct,
-> > either:
-> >
-> > If we return -ENOMEM to an OOM victim in a fault, the fault handler
-> > will re-trigger OOM, which will find the existing OOM victim and do
-> > nothing, then restart the fault. This is a memory deadlock. The page
-> > allocator gives OOM victims access to reserves for that reason.
-> >
-> > Actually, it looks even worse. For some reason we're not triggering
-> > OOM from dying tasks:
-> >
-> >         ret =3D task_is_dying() || out_of_memory(&oc);
-> >
-> > Even though dying tasks are in no way privileged or allowed to exit
-> > expediently. Why shouldn't they trigger the OOM killer like anybody
-> > else trying to allocate memory?
->
-> This is a very good point and actually out_of_memory() will mark the
-> dying process as oom victim and put it in the oom reaper's list which
-> should help further in such situation.
->
-> >
-> > As it stands, it seems we have dying tasks getting trapped in an
-> > endless fault->reclaim cycle; with no access to the OOM killer and no
-> > access to reserves. Presumably this is what's going on here?
-> >
-> > I think we want something like this:
->
-> The following patch looks good to me. Let's test this out (hopefully Rik
-> will be able to find a live impacted machine) and move forward with this
-> fix.
+On 12/13/24 01:03, Rik van Riel wrote:
+> On Thu, 2024-12-12 at 14:25 +1100, Balbir Singh wrote:
+>>
+>> I was asking about this change (this patch), I know that the return
+>> true will help avoid the PAGE_ACTIVATE path, but I am not sure why
+>> this function will return false if CONFIG_ZSWAP is enabled (unless
+>> zswap_writeback is turned off in one of the groups)
+>>
+> Some workloads are fine with incurring the latency
+> from zswap, but do not want the latency of actual
+> block device backed swap.
+> 
+> Having zswap enabled, with writeback disabled, has
+> been beneficial to a number of workloads.
+> 
 
-I agree with this too. As Shakeel mentioned, this seemed like a
-stopgap and not an actual fix for the underlying problem. Johannes
-further outlined how the stopgap can be problematic.
+Thanks, that was the missing bit
 
-Let's try to fix this on the memcg/reclaim/OOM side, and properly
-treat dying tasks instead of forcing them into potentially super slow
-reclaim paths. Hopefully Johannes's patch fixes this.
+Balbir
 
