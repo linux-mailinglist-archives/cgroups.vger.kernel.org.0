@@ -1,54 +1,54 @@
-Return-Path: <cgroups+bounces-5852-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5853-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3A5E9EE7DE
-	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 14:41:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 059089EE7E8
+	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 14:41:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0A7F18888F1
-	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 13:40:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6BB8161D8C
+	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 13:41:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF86021505C;
-	Thu, 12 Dec 2024 13:40:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49C11216E12;
+	Thu, 12 Dec 2024 13:40:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b="EdhlcaKD"
+	dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b="RtVUp5Y7"
 X-Original-To: cgroups@vger.kernel.org
 Received: from st43p00im-ztfb10071701.me.com (st43p00im-ztfb10071701.me.com [17.58.63.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10FD12144C2
-	for <cgroups@vger.kernel.org>; Thu, 12 Dec 2024 13:40:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78BD92144DE
+	for <cgroups@vger.kernel.org>; Thu, 12 Dec 2024 13:40:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.58.63.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734010811; cv=none; b=kcZR1Sd+Xb5pIdJsQDdqM759m6qZ+aUN7NnXZm4GtPTjjw72s4D4R2qCqXc2oG6aevBbRKFFBWfDS9ONxHO8QFea5v+fTYFTK1q47K5+zY5rZY7j5yM0ixW2dOoKaG7vmWzfxGVQkcJb3u1XGi7leQ+hoRTmH93BU96ieER4gZ0=
+	t=1734010823; cv=none; b=EvVn3wE3Fw2icOjlvbxdkd9r70DtIRryRS+TGga/W24CUmtKDKpZpYJiru3vt7xjjBcycWRBAbhGy4wUEblRdWSoLQfoPptVT1WG7nFHEBjcOnuO51ExuUYLH1dhaD5yOhEigL1YzMAFJiJDS9N+2m13cVoGeZZMSXPSX2fsuiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734010811; c=relaxed/simple;
-	bh=R8VIFdyqapZyJOl/BHNlTI5vngCzvR6PKVHcwc9zcVI=;
+	s=arc-20240116; t=1734010823; c=relaxed/simple;
+	bh=xTs0tfRiGxLqlQU1bZPA1WOpD5NDj3sC2kJdgPus4Qw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=nwA3ThX68Xw6UyTRcYiLxRwFyKJxr0P51OiQpQqihUuksrVYVC/TamFGpqiERQuuKDy28/CZBDQZccHF54hP8bOL49E4LmgigIXBAPNsZurqkVgkHOaU4DS3lfO1fW4k3AEMh3T+ihmMj7VjiL027UDI4kuvOMIK8OV5gfXdghU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com; spf=pass smtp.mailfrom=icloud.com; dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b=EdhlcaKD; arc=none smtp.client-ip=17.58.63.173
+	 In-Reply-To:To:Cc; b=affmZL1kf1vLEavrDmULqwUYyWULmWLtFFm1BJcvboEiCsSJN4kaHuXXXIOwiz+xQ1Hqp2FFil+mcQE5dIboVCZKfV+Yh2sonN3WGi6fXhwq30kruZCUNBxSU34bhszoIwCjgHglzl0slAqcE/RLmDme12BFdaIP/yuaRYkntik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com; spf=pass smtp.mailfrom=icloud.com; dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b=RtVUp5Y7; arc=none smtp.client-ip=17.58.63.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=icloud.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-	s=1a1hai; t=1734010809;
-	bh=ybt5vh1QaA/axSj+u1J5wKyDXeYgnZy6kLh7TPuQ6Tg=;
+	s=1a1hai; t=1734010820;
+	bh=PJ+USCXikXXOIa5sjtReFqqyn2Z79RPqI/MdeM0TEeQ=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:
 	 x-icloud-hme;
-	b=EdhlcaKDlwBjGmboSo9N7IX33tBRzPxC9/Sax05kB/pjdUj/fq1blxVxXzlB2zGfV
-	 f2BDRV5DqsC8NOm0Efzl27MRUnO2bd205kSJdydfvKg0Qj+G9Bz+wmuHgfhHI43vR6
-	 6aHHpo6sHCwoRN3rB02NYbmsMUEeJwE3MtuGHKW4UirnDrO+GcQRZgJQRkhtVkFIXn
-	 TLVgYZa1i8Ri9QVPL50t7eoN/4cFOyRmi5J8Nn/Gr2BXXDZeqaK4ty5pSy7MfZ7FjL
-	 ZT+BUXKYsU1N1NTGvdUndJYIAj/tUAxNppDe2C3S5CRAqoQYwty+2iigNuGcegvGks
-	 RvZeJ9WfQxT1Q==
+	b=RtVUp5Y7CwHrlKUHFRw4PblS7dSf3gZ+tfFnNCWCI0Xr4eRWYZQcdll0m4a5SDypT
+	 HcA3ZSvYiPfCU5w28LcWcUbl3lJqBx3qhV6m8X0ZmcgfEAkvRVNQ2GMAIekT3/KyFm
+	 3vczs6AJ2QbP3iCETnT8h8rlY1SFVZEFVlRWWMjMZnuMLBEFSLqTZH9Oxdgm9Ye617
+	 29jvghvmp4HykRDugD5dC/iPazC7elqEtW7wpyhrpClIcrICez0lc+3EPZQ/tI7WXK
+	 zoIOu0RhWDZ9VSQ9/avBKAz0MsqhPhXXX7pOB11Nxs519NtS+j9h/QU3xDuFvAlmH7
+	 nQddK34voHR0g==
 Received: from [192.168.1.26] (st43p00im-dlb-asmtp-mailmevip.me.com [17.42.251.41])
-	by st43p00im-ztfb10071701.me.com (Postfix) with ESMTPSA id 5857ACC052C;
-	Thu, 12 Dec 2024 13:39:59 +0000 (UTC)
+	by st43p00im-ztfb10071701.me.com (Postfix) with ESMTPSA id 27A94CC05A8;
+	Thu, 12 Dec 2024 13:40:09 +0000 (UTC)
 From: Zijun Hu <zijun_hu@icloud.com>
-Date: Thu, 12 Dec 2024 21:38:41 +0800
-Subject: [PATCH v3 5/9] driver core: Move true expression out of if
- condition in API device_find_child()
+Date: Thu, 12 Dec 2024 21:38:42 +0800
+Subject: [PATCH v3 6/9] driver core: Rename declaration parameter name for
+ API device_find_child() cluster
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -57,7 +57,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20241212-class_fix-v3-5-04e20c4f0971@quicinc.com>
+Message-Id: <20241212-class_fix-v3-6-04e20c4f0971@quicinc.com>
 References: <20241212-class_fix-v3-0-04e20c4f0971@quicinc.com>
 In-Reply-To: <20241212-class_fix-v3-0-04e20c4f0971@quicinc.com>
 To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
@@ -73,8 +73,8 @@ Cc: Zijun Hu <zijun_hu@icloud.com>, linux-kernel@vger.kernel.org,
  cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
  linux-cxl@vger.kernel.org, Zijun Hu <quic_zijuhu@quicinc.com>
 X-Mailer: b4 0.14.2
-X-Proofpoint-GUID: C_R3DRM13jgyUA-8TDHIoyiorACvbERK
-X-Proofpoint-ORIG-GUID: C_R3DRM13jgyUA-8TDHIoyiorACvbERK
+X-Proofpoint-GUID: -X7mVsDv8xUXYZmJRACbgXBbnBOV2epq
+X-Proofpoint-ORIG-GUID: -X7mVsDv8xUXYZmJRACbgXBbnBOV2epq
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
  definitions=2024-12-12_09,2024-12-12_01,2024-11-22_01
@@ -86,33 +86,44 @@ X-Apple-Remote-Links: v=1;h=KCk=;charset=UTF-8
 
 From: Zijun Hu <quic_zijuhu@quicinc.com>
 
-For device_find_child(), get_device() in the if condition always returns
-true, move it to if body to make the API's logic more clearer.
+For APIs:
+device_find_child()
+device_for_each_child()
+device_for_each_child_reverse()
+
+Their declaration has parameter name 'dev', but their defination
+changes the name to 'parent'.
+
+Rename declaration name to defination 'parent' to make both have
+the same name.
 
 Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
 ---
- drivers/base/core.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ include/linux/device.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 8bdbc9e657e832a063542391426f570ccb5c18b9..69bb6bf4bd12395226ee3c99e2f63d15c7e342a5 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -4089,9 +4089,12 @@ struct device *device_find_child(struct device *parent, const void *data,
- 		return NULL;
+diff --git a/include/linux/device.h b/include/linux/device.h
+index 0e0bc9bfe0d15a8734bf3d34106300f4df6b5364..a9d928398895b062094b94f2c188cbe9951d7ac1 100644
+--- a/include/linux/device.h
++++ b/include/linux/device.h
+@@ -1074,14 +1074,14 @@ void device_del(struct device *dev);
  
- 	klist_iter_init(&parent->p->klist_children, &i);
--	while ((child = next_device(&i)))
--		if (match(child, data) && get_device(child))
-+	while ((child = next_device(&i))) {
-+		if (match(child, data)) {
-+			get_device(child);
- 			break;
-+		}
-+	}
- 	klist_iter_exit(&i);
- 	return child;
- }
+ DEFINE_FREE(device_del, struct device *, if (_T) device_del(_T))
+ 
+-int device_for_each_child(struct device *dev, void *data,
++int device_for_each_child(struct device *parent, void *data,
+ 			  int (*fn)(struct device *dev, void *data));
+-int device_for_each_child_reverse(struct device *dev, void *data,
++int device_for_each_child_reverse(struct device *parent, void *data,
+ 				  int (*fn)(struct device *dev, void *data));
+ int device_for_each_child_reverse_from(struct device *parent,
+ 				       struct device *from, const void *data,
+ 				       int (*fn)(struct device *, const void *));
+-struct device *device_find_child(struct device *dev, const void *data,
++struct device *device_find_child(struct device *parent, const void *data,
+ 				 device_match_t match);
+ struct device *device_find_child_by_name(struct device *parent,
+ 					 const char *name);
 
 -- 
 2.34.1
