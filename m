@@ -1,163 +1,147 @@
-Return-Path: <cgroups+bounces-5860-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5861-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A64C69EF462
-	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 18:08:15 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F01F19EF603
+	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 18:21:48 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ADC4D17EA00
+	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 17:14:13 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E07D21E086;
+	Thu, 12 Dec 2024 17:13:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IMAxf+2N"
+X-Original-To: cgroups@vger.kernel.org
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04D8D28CA00
-	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2024 17:08:14 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DE4F2210E5;
-	Thu, 12 Dec 2024 17:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MV4nfPeY"
-X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD2FD4F218
-	for <cgroups@vger.kernel.org>; Thu, 12 Dec 2024 17:07:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F34712144C0;
+	Thu, 12 Dec 2024 17:13:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734023225; cv=none; b=hFtT2X6SI1SG2ostInh+VGKOEG6mFnHwNC6n6fr7rSnmZdmbuh1hprHDtb7I32i2zt0X1gebrRhrFqrEA3o7BoqaYglmgli0ZklAbQvbHJzNdSOT2whE6JPYutMQ+0krzrypKV4rCAlqOysIY6KyHBO09+h1atFERx7s5xkAMC8=
+	t=1734023619; cv=none; b=KtQgSuXXaA69l2QivACevPEdxGOWClDxQAvUR3NwfCLvZlgqx5pDrrnKLX6rAr44UN3c8RW+DV7ePRzS/nxtQzlPR0NndMuDudUEFkyQvl+8ocf/pcimwKVHc2+0l9EUP3AN68B5UnQOske5vq9h43AqpalaEtUBX6si1a00chY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734023225; c=relaxed/simple;
-	bh=6x6ZloTOP8xG7QluZoqD1vHcIrDmSAcWjBCNgzaKeTI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hh9P0VKF3Mjebh6kIueJmAKnL/w5fGcZG+2v4DpY7kmMqL+HjEh0owjLwBbu/eZGNjQCsNUSM1OXYoobmKGR9+LrVL4ZHbHWpzg81nvx+WpRAEg6lU/hJmcwB/tstVejdAc28Nkg2X/68CF0VSWf2lH91PnleNsfk5gu1GuE7qY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MV4nfPeY; arc=none smtp.client-ip=209.85.219.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6d8ece4937fso6246166d6.2
-        for <cgroups@vger.kernel.org>; Thu, 12 Dec 2024 09:07:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1734023222; x=1734628022; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gCU6Io7K5lloOjr5AqAuJ1H3CWWQOcWOOH73iAc8mqI=;
-        b=MV4nfPeYWQRMNACsO0m5W8xd9jqjrj3aXmUDAWGS4eqylzIPbs8mfSBTaYFPGXUNjF
-         jZh8Lu5ceTmR12aztjrXui1HdHLCC1B1RXDsOTJB38Yoq7yn8WgM+CIvdF2xDJYu9lUH
-         DWWd/EPU8TuuIUesTzM4o4/YjdgdVQQiBDIaNgmSFCLZz0s7XPORuuwpFg3PXrGWTkuL
-         RqoIBwjwl4C1hZJCRKtbJW7JaN3RdK+tdFSJF0f829y3vh9f8vz6mXSesCCnKEjBzs3I
-         pwi2KbFNdLBD/9LDMOvdKLkj7WOLga1q4Dqzkx+viiPvtZeNymav6M1H4W3UMKSyW/Np
-         Nc2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734023222; x=1734628022;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gCU6Io7K5lloOjr5AqAuJ1H3CWWQOcWOOH73iAc8mqI=;
-        b=LEdWORwXXK6vNI7eM3qRzL8lsMknXchEp/L47kCc/x1Ba2+t74rNaA1Qb6C/cp8pAR
-         V8KQbu1/MowRPke0EN+bk/ZgLf8QYN8i4PiZzCjxsKtLr8kHo7xRBbLft/5qlDsaT8HA
-         3QTEHhGKiQ+Uj5Obj55HDz0R/iddsv/ofpPp3zIzexj38rdkGqq9JmMTgSrNs0eY7aJp
-         twFVXsRAPYu+b+qBKAeGnQ6RKa1DZ9qMwVxtRMBX9t+hstFPJ6jUFkjmEZuthSZZLUWK
-         iWdbjEa00PVryoUIxA9/X1PcOV0RQj8JnuUr/gaNZWnZf6QLrlZcnLGpC9au0+auZwQf
-         oofw==
-X-Forwarded-Encrypted: i=1; AJvYcCUue5+dLS8mteewScaQj8KVFphN3KxyBMTED2magpGubDtH94tc7/nz/da2o6F8a1U7tjPbh3PX@vger.kernel.org
-X-Gm-Message-State: AOJu0YyBmFSji9tqRnaKYWZDeX2PUxdFkzfo2Mqx1JgGWuPx3FzQGlT9
-	vKEDm4Vyzpr/umOuyZwaXHYSwMiJOwMSMrLl8rLwozXqBc9eHssu19CH7H5p5Q7bNkhveJYZGkn
-	gzIglB0AfXfDtvlBITi2Q6lJH3HklSoYnmBfc
-X-Gm-Gg: ASbGncs+AR4QIITxuIgKx64jU5rL25J9lLz/+zWms3hMx9ryovKvzvgjdpBkCaIctJv
-	8bzV+65M5B4jOFctESgeHFNEolOYCyGrEsDI=
-X-Google-Smtp-Source: AGHT+IEWYnxKGd+UY4guVytg68DPFmVI424eT9T154/j96Ckzc2xwC/UXvDBjuCYYXtvEZKkQodesHCobvjymkaBzwE=
-X-Received: by 2002:a05:6214:1d04:b0:6cb:edd7:ac32 with SMTP id
- 6a1803df08f44-6db0f744d63mr13338916d6.12.1734023222307; Thu, 12 Dec 2024
- 09:07:02 -0800 (PST)
+	s=arc-20240116; t=1734023619; c=relaxed/simple;
+	bh=kf4S/jdgQYOx7jCwcwrana0ZODUIAqThGt9H4Hm4324=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=YV+u/GFuZ88rgTk1+n7hZCLAUypgo/k9m9UWtrVwJmL9HP9M1gRl2ckxjRAO/h+qoI4h55cGMrpZMrd9NMnYksOzV68FO4FgUZ+RDlKq4sTZMaPu8MKMJFNmkxza+X32mpjNKxaQatEZoFA+YmHIvV+amb3EiKCm/iApCDnxMYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IMAxf+2N; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 954EAC4CECE;
+	Thu, 12 Dec 2024 17:13:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734023618;
+	bh=kf4S/jdgQYOx7jCwcwrana0ZODUIAqThGt9H4Hm4324=;
+	h=From:Date:Subject:To:Cc:From;
+	b=IMAxf+2NXf6cOxfAjK2pBt6kSjL0ENFAac1a4rRl3X/RH6NFI1XMEpQOi5cuA/1f3
+	 OJmfwfyMGIptlIzfwRCrMXliwnZ+iHMNqptzHupR4toYsCnco/iGtwDX5k9JfRJohV
+	 yTnDklKp0SW/qLlQXIfUDe/L7H5b6QUtyED3TqhiojbAU1PHYDl7vmzdrPNM2Wqb53
+	 VDjKg5TFvu69HFU/Rsbo6uEj6Vc0rVSZjsR/tw27d2tSud6BxEwi1oHihGxgOAtNzx
+	 ckuySj9yYcAfVvfEaER5dqcK2pghWn3snvZk0W0zklnwDH8e5tJKd7OxDgbMC2UUFM
+	 YKZ5cPxtWAcBw==
+From: Nathan Chancellor <nathan@kernel.org>
+Date: Thu, 12 Dec 2024 10:13:29 -0700
+Subject: [PATCH] blk-iocost: Avoid using clamp() on inuse in
+ __propagate_weights()
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241212115754.38f798b3@fangorn>
-In-Reply-To: <20241212115754.38f798b3@fangorn>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Thu, 12 Dec 2024 09:06:25 -0800
-X-Gm-Features: AbW1kvYqCkeLbtm1kn4Hmr1w3G_jj-nRHwu7-NDzHzt7kzJ52IijDm_4rEdM63c
-Message-ID: <CAJD7tkY=bHv0obOpRiOg4aLMYNkbEjfOtpVSSzNJgVSwkzaNpA@mail.gmail.com>
-Subject: Re: [PATCH v2] memcg: allow exiting tasks to write back data to swap
-To: Rik van Riel <riel@surriel.com>
-Cc: Balbir Singh <balbirs@nvidia.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	hakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, kernel-team@meta.com, 
-	Nhat Pham <nphamcs@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20241212-blk-iocost-fix-clamp-error-v1-1-b925491bc7d3@kernel.org>
+X-B4-Tracking: v=1; b=H4sIALgZW2cC/x3MSwqAMAwA0atI1gZsUCleRVxojRr8VFIRQXp3i
+ 8sHw7wQWIUDNNkLyrcE8UeCyTNwS3/MjDImAxVUGjKEw7aieOfDhZM86LZ+P5FVvWJlTe0KsgO
+ VFaTBqZySf952MX4dJ3UsbAAAAA==
+X-Change-ID: 20241212-blk-iocost-fix-clamp-error-5816c028b245
+To: Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
+ Jens Axboe <axboe@kernel.dk>
+Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
+ llvm@lists.linux.dev, patches@lists.linux.dev, 
+ David Laight <david.laight@aculab.com>, 
+ Linux Kernel Functional Testing <lkft@linaro.org>, 
+ kernel test robot <lkp@intel.com>, Nathan Chancellor <nathan@kernel.org>
+X-Mailer: b4 0.15-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3356; i=nathan@kernel.org;
+ h=from:subject:message-id; bh=kf4S/jdgQYOx7jCwcwrana0ZODUIAqThGt9H4Hm4324=;
+ b=owGbwMvMwCUmm602sfCA1DTG02pJDOnRkgeWXVvwy/7p05+M7BMiM6Rm8Lcelvq4+LrsrhNfT
+ h/WODSPqaOEhUGMi0FWTJGl+rHqcUPDOWcZb5yaBDOHlQlkCAMXpwBM5M9nhh+7pHu5g1ekGE32
+ /mT8tjMr+KnBuxNPy5advBz8OdpgQwzDP4XHOVcrqwKWT4t+EFa80esXS8smpXl55q1HGpwj9qm
+ UcQMA
+X-Developer-Key: i=nathan@kernel.org; a=openpgp;
+ fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
 
-On Thu, Dec 12, 2024 at 8:58=E2=80=AFAM Rik van Riel <riel@surriel.com> wro=
-te:
->
-> A task already in exit can get stuck trying to allocate pages, if its
-> cgroup is at the memory.max limit, the cgroup is using zswap, but
-> zswap writeback is enabled, and the remaining memory in the cgroup is
-> not compressible.
->
-> This seems like an unlikely confluence of events, but it can happen
-> quite easily if a cgroup is OOM killed due to exceeding its memory.max
-> limit, and all the tasks in the cgroup are trying to exit simultaneously.
->
-> When this happens, it can sometimes take hours for tasks to exit,
-> as they are all trying to squeeze things into zswap to bring the group's
-> memory consumption below memory.max.
->
-> Allowing these exiting programs to push some memory from their own
-> cgroup into swap allows them to quickly bring the cgroup's memory
-> consumption below memory.max, and exit in seconds rather than hours.
->
-> Signed-off-by: Rik van Riel <riel@surriel.com>
+After a recent change to clamp() and its variants [1] that increases the
+coverage of the check that high is greater than low because it can be
+done through inlining, certain build configurations (such as s390
+defconfig) fail to build with clang with:
 
-Thanks for sending a v2.
+  block/blk-iocost.c:1101:11: error: call to '__compiletime_assert_557' declared with 'error' attribute: clamp() low limit 1 greater than high limit active
+   1101 |                 inuse = clamp_t(u32, inuse, 1, active);
+        |                         ^
+  include/linux/minmax.h:218:36: note: expanded from macro 'clamp_t'
+    218 | #define clamp_t(type, val, lo, hi) __careful_clamp(type, val, lo, hi)
+        |                                    ^
+  include/linux/minmax.h:195:2: note: expanded from macro '__careful_clamp'
+    195 |         __clamp_once(type, val, lo, hi, __UNIQUE_ID(v_), __UNIQUE_ID(l_), __UNIQUE_ID(h_))
+        |         ^
+  include/linux/minmax.h:188:2: note: expanded from macro '__clamp_once'
+    188 |         BUILD_BUG_ON_MSG(statically_true(ulo > uhi),                            \
+        |         ^
 
-I still think maybe this needs to be fixed on the memcg side, at least
-by not making exiting tasks try really hard to reclaim memory to the
-point where this becomes a problem. IIUC there could be other reasons
-why reclaim may take too long, but maybe not as pathological as this
-case to be fair. I will let the memcg maintainers chime in for this.
+__propagate_weights() is called with an active value of zero in
+ioc_check_iocgs(), which results in the high value being less than the
+low value, which is undefined because the value returned depends on the
+order of the comparisons.
 
-If there's a fundamental reason why this cannot be fixed on the memcg
-side, I don't object to this change.
+The purpose of this expression is to ensure inuse is not more than
+active and at least 1. This could be written more simply with a ternary
+expression that uses min(inuse, active) as the condition so that the
+value of that condition can be used if it is not zero and one if it is.
+Do this conversion to resolve the error and add a comment to deter
+people from turning this back into clamp().
 
-Nhat, any objections on your end? I think your fleet workloads were
-the first users of this interface. Does this break their expectations?
+Link: https://lore.kernel.org/r/34d53778977747f19cce2abb287bb3e6@AcuMS.aculab.com/ [1]
+Suggested-by: David Laight <david.laight@aculab.com>
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Closes: https://lore.kernel.org/llvm/CA+G9fYsD7mw13wredcZn0L-KBA3yeoVSTuxnss-AEWMN3ha0cA@mail.gmail.com/
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202412120322.3GfVe3vF-lkp@intel.com/
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ block/blk-iocost.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-> ---
-> v2: use mm_match_cgroup as suggested by Yosry Ahmed
->
->  mm/memcontrol.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 7b3503d12aaf..ba1cd9c04a02 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5371,6 +5371,18 @@ bool mem_cgroup_zswap_writeback_enabled(struct mem=
-_cgroup *memcg)
->         if (!zswap_is_enabled())
->                 return true;
->
-> +       /*
-> +        * Always allow exiting tasks to push data to swap. A process in
-> +        * the middle of exit cannot get OOM killed, but may need to push
-> +        * uncompressible data to swap in order to get the cgroup memory
-> +        * use below the limit, and make progress with the exit.
-> +        */
-> +       if (unlikely(current->flags & PF_EXITING)) {
-> +               struct mm_struct *mm =3D READ_ONCE(current->mm);
-> +               if (mm && mm_match_cgroup(mm, memcg))
-> +                       return true;
-> +       }
-> +
->         for (; memcg; memcg =3D parent_mem_cgroup(memcg))
->                 if (!READ_ONCE(memcg->zswap_writeback))
->                         return false;
-> --
-> 2.47.0
->
->
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index 384aa15e8260bd4d83b00f1c03efb87829950327..a5894ec9696e7e8c1011cbda1d849562e1732d31 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -1098,7 +1098,14 @@ static void __propagate_weights(struct ioc_gq *iocg, u32 active, u32 inuse,
+ 		inuse = DIV64_U64_ROUND_UP(active * iocg->child_inuse_sum,
+ 					   iocg->child_active_sum);
+ 	} else {
+-		inuse = clamp_t(u32, inuse, 1, active);
++		/*
++		 * It may be tempting to turn this into a clamp expression with
++		 * a lower limit of 1 but active may be 0, which cannot be used
++		 * as an upper limit in that situation. This expression allows
++		 * active to clamp inuse unless it is 0, in which case inuse
++		 * becomes 1.
++		 */
++		inuse = min(inuse, active) ?: 1;
+ 	}
+ 
+ 	iocg->last_inuse = iocg->inuse;
+
+---
+base-commit: 3e42dc9229c5950e84b1ed705f94ed75ed208228
+change-id: 20241212-blk-iocost-fix-clamp-error-5816c028b245
+
+Best regards,
+-- 
+Nathan Chancellor <nathan@kernel.org>
+
 
