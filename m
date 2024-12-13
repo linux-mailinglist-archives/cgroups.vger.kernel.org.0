@@ -1,133 +1,117 @@
-Return-Path: <cgroups+bounces-5883-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5884-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B68EB9F0A90
-	for <lists+cgroups@lfdr.de>; Fri, 13 Dec 2024 12:13:38 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D36B6163FBB
-	for <lists+cgroups@lfdr.de>; Fri, 13 Dec 2024 11:13:35 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35F761D9592;
-	Fri, 13 Dec 2024 11:13:34 +0000 (UTC)
-X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C5109F0CE6
+	for <lists+cgroups@lfdr.de>; Fri, 13 Dec 2024 14:03:57 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC2311CEEAB;
-	Fri, 13 Dec 2024 11:13:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1A752830C8
+	for <lists+cgroups@lfdr.de>; Fri, 13 Dec 2024 13:03:55 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9128D1DF97D;
+	Fri, 13 Dec 2024 13:03:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="muRbWLIT"
+X-Original-To: cgroups@vger.kernel.org
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C05A1A8F85;
+	Fri, 13 Dec 2024 13:03:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734088414; cv=none; b=BDoy+lJMcMYczHnAdihw2/UkZOFA0urdcOiwzMb/QZkD9Pm8JM6Wqkq7em/6psJoMY3ha3f55wFuSpUY0bUNSUOAJ74FNpWdYD3yAvjApzDMQQ3xseM30Zkgph4nQ0HAzmT+KXuitatyDvfhH5lifWJRfnugrXxICy6mbvzHSw0=
+	t=1734095032; cv=none; b=BGu+8Ta8esTR/Y48Th70CwjVGcThDuEZszRobBdhw9g5BTmpF83AopdLMDCqE6eFJuVzOUqAphuXN9vklShMEK2yqaFd9HfNap4DSsTuru8X/u3yJ8Gq/eegOSTxNND4lFeyn1v/62hTg7fvQrKWVjzpeYo+Z/Ipy/nT1vKEW/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734088414; c=relaxed/simple;
-	bh=XSRw7MTv2+fiEhaS2zLrpA3fW4ALi9WgNTf/e9sl/28=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LHl4FaoPE+Q8dpQzrDbd849lRXyaOI8OThferV7SWVvRNo4rrENRYHJhme6sAvLyOBCv7lVkla5f7GMPFh2cPzK6/o5+QlOz4eBnTsnViuAT0fC8AgBz1JnXWQrWh2RcQeUaq3RbfM+GsV74sV1ryfkgzjwcWMqQF/2khusZHkQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Y8msY2Zc3z4f3l24;
-	Fri, 13 Dec 2024 19:13:05 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id B12901A0568;
-	Fri, 13 Dec 2024 19:13:25 +0800 (CST)
-Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP4 (Coremail) with SMTP id gCh0CgCng4fIFlxnia3pEQ--.50048S2;
-	Fri, 13 Dec 2024 19:13:25 +0800 (CST)
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: mingo@redhat.com,
-	peterz@infradead.org,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com,
-	mgorman@suse.de,
-	vschneid@redhat.com,
-	tj@kernel.org,
-	mkoutny@suse.com,
-	roman.gushchin@linux.dev
-Cc: linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	chenridong@huawei.com,
-	wangweiyang2@huawei.com
-Subject: [PATCH v2] freezer, sched: report the frozen task stat as 'D'
-Date: Fri, 13 Dec 2024 11:03:32 +0000
-Message-Id: <20241213110332.3105932-1-chenridong@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1734095032; c=relaxed/simple;
+	bh=E8l4/W5Vj6WHbW+ezaL5t0klk/Ev76XzGMo/Shf8G/8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VPyKc27qWwY8TOjL/DYJg1o0huAMGuZ2F7jpyDYJFZnlGYibSrjKIx/7KCTNvoG1816tsSry/mrCjV4+RdIXH1NIlLTnjRagHx7jZbfkwDvzZBezOgawNIbG30DBacoHhmjFAlvdEA2po5UysdtSIzuyU8usd1WfmxpaLDB8CI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=muRbWLIT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B099C4CED0;
+	Fri, 13 Dec 2024 13:03:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734095031;
+	bh=E8l4/W5Vj6WHbW+ezaL5t0klk/Ev76XzGMo/Shf8G/8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=muRbWLITHPb5lwoB/0q0VOTFMIQl2ch9xucudEk9J1F2K7B7nX9DdQVQqKiCYhaWO
+	 dstxCA+16QH3U5/B/j5RQ2HtPiLB9hGyHQ8+jSjlI4wnIdVMlIa+xPaOddKuEwfAdi
+	 oBN8WuhypVIbW2ihzmkaE5+vz/QE9ADSlp6lIp0miMY4tKyt6tdwklE445koHYXedY
+	 o0o2JaptVxtZVtilanL8m/gXUOZJyMpYXBEhZpQJpbckK8S42pw/OxzOmT1OnoPoG3
+	 EGOohYwj83z7uZiLv/JZCNoHcz0c48grsG8a8xuSoBuXjawDGqX9OSzxiUJSQHEcVx
+	 wl9252A6VG8aw==
+Date: Fri, 13 Dec 2024 14:03:49 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Maarten Lankhorst <dev@lankhorst.se>
+Cc: linux-kernel@vger.kernel.org, intel-xe@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Friedrich Vock <friedrich.vock@gmx.de>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: Re: [PATCH v2 0/7] kernel/cgroups: Add "dmem" memory accounting
+ cgroup.
+Message-ID: <20241213-proud-kind-uakari-df3a70@houat>
+References: <20241204134410.1161769-1-dev@lankhorst.se>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCng4fIFlxnia3pEQ--.50048S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFy7Zw4UKFy3Zry8ur4rKrg_yoW8WF1Dpa
-	9xur47Ga4IkFyUCrnFy3W7Wa48Wanrtr12kFZ0gF47JFy5X3WY9rn2vr98Kr45ArWFyFWU
-	AFs8Kr97CayDA3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
-	n4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
-	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8
-	ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
-	CY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IU17KsUUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: multipart/signed; micalg=pgp-sha384;
+	protocol="application/pgp-signature"; boundary="qnhyf4plgwmkdxao"
+Content-Disposition: inline
+In-Reply-To: <20241204134410.1161769-1-dev@lankhorst.se>
 
-From: Chen Ridong <chenridong@huawei.com>
 
-Before the commit f5d39b020809 ("freezer,sched: Rewrite core freezer
-logic"), the frozen task stat was reported as 'D' in cgroup v1.
-However, after rewriting core freezer logic, the frozen task stat is
-reported as 'R'. This is confusing, especially when a task with stat of
-'S' is frozen.
+--qnhyf4plgwmkdxao
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2 0/7] kernel/cgroups: Add "dmem" memory accounting
+ cgroup.
+MIME-Version: 1.0
 
-This can be reproduced as bellow step:
-cd /sys/fs/cgroup/freezer/
-mkdir test
-sleep 1000 &
-[1] 739         // task whose stat is 'S'
-echo 739 > test/cgroup.procs
-echo FROZEN > test/freezer.state
-ps -aux | grep 739
-root     739  0.1  0.0   8376  1812 pts/0    R    10:56   0:00 sleep 1000
+Hi,
 
-As shown above, a task whose stat is 'S' was changed to 'R' when it was
-frozen. To solve this issue, simply maintain the same reported state as
-before the rewrite.
+Thanks for the new update!
 
-Fixes: f5d39b020809 ("freezer,sched: Rewrite core freezer logic")
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- include/linux/sched.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On Wed, Dec 04, 2024 at 02:44:00PM +0100, Maarten Lankhorst wrote:
+> New update. Instead of calling it the 'dev' cgroup, it's now the
+> 'dmem' cgroup.
+>=20
+> Because it only deals with memory regions, the UAPI has been updated
+> to use dmem.min/low/max/current, and to make the API cleaner, the
+> names are changed too.
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index d380bffee2ef..dbe0cb97461f 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1630,8 +1630,9 @@ static inline unsigned int __task_state_index(unsigned int tsk_state,
- 	 * We're lying here, but rather than expose a completely new task state
- 	 * to userspace, we can make this appear as if the task has gone through
- 	 * a regular rt_mutex_lock() call.
-+	 * Report the frozen task uninterruptible.
- 	 */
--	if (tsk_state & TASK_RTLOCK_WAIT)
-+	if (tsk_state & TASK_RTLOCK_WAIT || tsk_state & TASK_FROZEN)
- 		state = TASK_UNINTERRUPTIBLE;
- 
- 	return fls(state);
--- 
-2.34.1
+The API is much nicer, and fits much better into other frameworks too.
 
+> dmem.current could contain a line like:
+> "drm/0000:03:00.0/vram0 1073741824"
+>=20
+> But I think using "drm/card0/vram0" instead of PCIID would perhaps be
+> good too. I'm open to changing it to that based on feedback.
+
+Do we have any sort of guarantee over the name card0 being stable across
+reboots?
+
+I also wonder if we should have a "total" device that limits the amount
+of memory we can allocate from any region?
+
+Maxime
+
+--qnhyf4plgwmkdxao
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJUEABMJAB0WIQTkHFbLp4ejekA/qfgnX84Zoj2+dgUCZ1wwtAAKCRAnX84Zoj2+
+dubaAX422121RCTAGgG1ZhjlmSQKxIe/7lpqNfOY43zO3XA2J1x2bouiIlciUVOf
+5N6YqssBf0N8tl9+MriuHzFtTkKuEwIZ2qRWklYOh61j1RkGgiz/2sorYylAXlYp
+4KKGLABCEw==
+=ehhw
+-----END PGP SIGNATURE-----
+
+--qnhyf4plgwmkdxao--
 
