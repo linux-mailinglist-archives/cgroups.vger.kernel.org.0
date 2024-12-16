@@ -1,159 +1,122 @@
-Return-Path: <cgroups+bounces-5903-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5904-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3859E9F2441
-	for <lists+cgroups@lfdr.de>; Sun, 15 Dec 2024 14:51:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BA57E9F2893
+	for <lists+cgroups@lfdr.de>; Mon, 16 Dec 2024 04:04:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E5CF18863C7
-	for <lists+cgroups@lfdr.de>; Sun, 15 Dec 2024 13:51:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C9C21885E5C
+	for <lists+cgroups@lfdr.de>; Mon, 16 Dec 2024 03:04:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7EA718EFED;
-	Sun, 15 Dec 2024 13:51:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C2B42F852;
+	Mon, 16 Dec 2024 03:03:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g8KY3Eo5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mgF7vdVV"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB3C71865FA;
-	Sun, 15 Dec 2024 13:51:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA68F847B;
+	Mon, 16 Dec 2024 03:03:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734270711; cv=none; b=cxND3HB04k5v0TWmoRN4ZZRoFLPvuBdrpUuFHz1f5QyhyxO1YwVjSieBlivE19miKkMtnTGpdtENlarLQaKxeGEil3DSpYaU7YBQXRcxL6IDBndUiashB2mwOl7W4HQHePMbGHwjcXhmx4NEItMmcNhxvf31TuKIxYjhej/Oe44=
+	t=1734318234; cv=none; b=dpp/bmupFxbd2vQ3E6E7q9SZiJFk5UDNyKgt0VZ5GREPuGp05fZRRMfDHZiWNau2QBXgUigysxH5qV7zbuDyoFaKmRZNM4kvnWbQCASxJ7unlEEOPXY50bVAmrZUFj2AEWQCFhRzCLkEEHmO6P42St1RKyozSdjUQk7/hh/FNo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734270711; c=relaxed/simple;
-	bh=2LWjmtPJFDOKIXDan6DkpQm4ooohv4Sn4+uq85iaUG4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rQuOZ9eEEdkcfzGvVU86ZaRRyjY9hYklvQWcCog7tCCFTZJH3F2IWGEVbkl6D7mWMlEfgbT+A6CuLIlXhcKDC1syrZWe70nFrVS0jUFdsmRscSf9UTi9y5FnbV6+gpYPC3lSgT8uEw/sdriyUT+yXdyE4yFsYtto9CfMK/wWUHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g8KY3Eo5; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1734270709; x=1765806709;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2LWjmtPJFDOKIXDan6DkpQm4ooohv4Sn4+uq85iaUG4=;
-  b=g8KY3Eo5+NLSVGCZERuV5xTW+y4FlsutEfvEtwnbSxDfvbkckgJTjMSa
-   /LDj8tnY9ph/uThalRMDVYQKuC/bBDdE+BKlz1Fk/DnhMHYHCafWA/DUt
-   OqIMaJy1IhSlUZS3Go7HePkj85yuazZ1ZkhBHu2t5X5mYAItQuk7Nxkdt
-   8PC9deJX8gf/TcR7tBnkolkisT2+tMx89K9fjIydFpj4F3z/dTnADHgv7
-   6vXNzZrfPsVBGVN0F0lFwXS4rCYN2zET5P9PXR2qcZPOc3B2KxfeD5ocU
-   bdoEHeXjIoL6VjbE5j+E7r+kG1wJv7DwKC+fsOee/cuHw+HYDGz8E5c2y
-   Q==;
-X-CSE-ConnectionGUID: FIxEZu9zTpysf8W0T+/PyA==
-X-CSE-MsgGUID: AcqCQ6iRQ5eConOnOIQVNw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11278"; a="46061200"
-X-IronPort-AV: E=Sophos;i="6.12,214,1728975600"; 
-   d="scan'208";a="46061200"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Dec 2024 05:51:49 -0800
-X-CSE-ConnectionGUID: mVxlGRFjR76uOYep9V2vew==
-X-CSE-MsgGUID: C2uK/3F0TXCdvEqBaL9gcg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,236,1728975600"; 
-   d="scan'208";a="101991422"
-Received: from lkp-server01.sh.intel.com (HELO 82a3f569d0cb) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 15 Dec 2024 05:51:42 -0800
-Received: from kbuild by 82a3f569d0cb with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tMp23-000Ddy-2A;
-	Sun, 15 Dec 2024 13:51:39 +0000
-Date: Sun, 15 Dec 2024 21:50:48 +0800
-From: kernel test robot <lkp@intel.com>
-To: Yafang Shao <laoar.shao@gmail.com>, mingo@redhat.com,
-	peterz@infradead.org, mkoutny@suse.com, hannes@cmpxchg.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, vschneid@redhat.com, surenb@google.com,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH v7 3/4] sched, psi: Don't account irq time if
- sched_clock_irqtime is disabled
-Message-ID: <202412152115.zQ6k9tVk-lkp@intel.com>
-References: <20241215032315.43698-4-laoar.shao@gmail.com>
+	s=arc-20240116; t=1734318234; c=relaxed/simple;
+	bh=nW4I2WiA+4WrJMHFwlF7cjzMLILGpsCxP43T09AbwpQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=imgt3qxyFdkGPp1t13drxyfAT+nAVEYLsxVLsW+CCiRQsS5GCWS/IAXO8F2niXe65msLtt1tvkMA8KgglPQBz1WFGl68g9jvaMBL0GseRDTZKojyR+5vlCt3syiow00uG16YrOpI2EWdyHi8MUN1yq78cWwPv0hSb03lTy5YSoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mgF7vdVV; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7b6f19a6c04so300414185a.0;
+        Sun, 15 Dec 2024 19:03:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734318232; x=1734923032; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X0RSxzZtHLWa5Q+6kfO5E00es+t4Wzex0lnuHig+VTU=;
+        b=mgF7vdVV5J81nIY80Z1zQtXrt1HcCTWgmrZ/GWwXELnTn14nt3jh1JJJ/hdlOF2iGh
+         bSUpKQAceHTpMe11JMmGwYvgEw1AD0ZhTqWKdmWvNeSXgn39GGXjNmM5o8/qi+jUjddt
+         5Kk3KjV99ga67gkTCLyQC9BHd7kCHODg+6mp2fbhV+OBmI4y62HW6xou8/Xc976X3utS
+         KTiZhPZjeXs/8atLpnfSDzI7uxuvttR4ASYpzRMBj7KTbJgX5YVR22BYklHQk+74barR
+         O/4yZOgBTnEUYm2W/oHF0f1HNDXJwZgWR0uo6sOVS73Clb5ibw2Enbp8s/DEq1aohPF+
+         0vDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734318232; x=1734923032;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=X0RSxzZtHLWa5Q+6kfO5E00es+t4Wzex0lnuHig+VTU=;
+        b=LN3oRiWxSODKbbAxB9Aec5Gg4/Y1yKA0F0dc/ZpgiPQGgWrdCVe3wdciEBWs6m+FjI
+         iOYnlPAWBbtl8x2M6CVttpVx4klym4yflQJfu3+aS72JWbM8nYmSTvC/i5qhI5tdvoys
+         Auc/jgYdVz/QCah+vzCjdWWYTbtRs7fLgPO1Bp2SREX0lhKplvjtGUpmvF6TZKQGYfAo
+         5LzZxS3RxZhwCcCNkdMDRcdbEz9yOhNYOvfdPDB5efyDBOyumBmvrN7j4j0Xzm+n2zBX
+         1AaKZ2fxdsXJthMJ6RutRafjxFJT2su02/LfM6mEQ+mQa+vFP79TLecQHOZo5glc+0oD
+         mKOA==
+X-Forwarded-Encrypted: i=1; AJvYcCWPyOiYvEsKcNsGKGEEKmbf3mKRLCbgUx0Kh4cGzqJATzS1oqFawexGhpZZtSpnL8vUmOZPargoYJv//3Ga@vger.kernel.org, AJvYcCWwgMmUlmf1oKO2/+K4n77bdjlFnooNGw+ZBzmlNtF3OPohyebhFGh3ecpiwW5Sy3EevqYLm0pa@vger.kernel.org
+X-Gm-Message-State: AOJu0YyIT6FRlP13aC3xHhrt9q67ib4KCHMuUay/rQxJm4v33FvbEuKN
+	b8en1oap1ep6BeRAUYKSZGOOXFhYmeXW0HMvCxu/96Ab75OUf3a5
+X-Gm-Gg: ASbGncuy5YSBorolLEjOYLmNtypnSHtGuiSgCkYB5jP6H4CZIWAKNc4EeQxz2J7E6D4
+	jhP+tBpYm93cy15PrkvfaK67yZLljUIgEKz6uWF+JwTB2wDX4EPnhoLUT4y/o95PXc5k4KqfQnr
+	esHG6K53I7C6blLTnP8Vy1EpTmdexITg3xZ8BANvmgCwG0pyUcNXJaoC7cd8hXqd5T7TpVGzjsK
+	B9MQLPI4dHf6AIi273J/NIHpwU5BoFNgMjwLAPI8yf6y8nh/x3R3Za0rBJVFnrtfXTdu2btydzG
+	aeiUGuL0V3qLs3yU
+X-Google-Smtp-Source: AGHT+IEgGr6llNIbgCkW+wlMTYHSK75qH4lyoJdXb5GGtlfZesaVqBcr5S7ibU40jBNCadwGzXMBjg==
+X-Received: by 2002:a05:620a:a111:b0:7b7:142d:53cb with SMTP id af79cd13be357-7b7142d56aemr274928585a.61.1734318231755;
+        Sun, 15 Dec 2024 19:03:51 -0800 (PST)
+Received: from Joshuas-MBP-58.lan ([2603:7000:4900:4c2f:acd6:8447:bbd5:68c7])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b7048d1c9csm184387385a.123.2024.12.15.19.03.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Dec 2024 19:03:50 -0800 (PST)
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: Joshua Hahn <joshua.hahnjy@gmail.com>,
+	shakeel.butt@linux.dev,
+	hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	muchun.song@linux.dev,
+	akpm@linux-foundation.org,
+	sj@kernel.org,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH 3/3] memcg/hugetlb: Remove memcg hugetlb try-commit-cancel protocol
+Date: Sun, 15 Dec 2024 22:03:46 -0500
+Message-Id: <20241216030346.99263-1-joshua.hahnjy@gmail.com>
+X-Mailer: git-send-email 2.39.0
+In-Reply-To: <CAKEwX=NjwuTZ21ZiTsT+qJFUHURrWGUbN0C+B48-cCDTOOyBYg@mail.gmail.com>
+References: 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241215032315.43698-4-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Yafang,
+On Fri, 13 Dec 2024 17:30:34 -0800 Nhat Pham <nphamcs@gmail.com> wrote:
 
-kernel test robot noticed the following build errors:
+> On Wed, Dec 11, 2024 at 12:40 PM Joshua Hahn <joshua.hahnjy@gmail.com> wrote:
+> 
+> I'm assuming this is V3?
 
-[auto build test ERROR on tip/sched/core]
-[also build test ERROR on peterz-queue/sched/core linus/master v6.13-rc2 next-20241213]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Hi Nhat,
+Sorry, the subject should contain v3. Thank you for the catch : -)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yafang-Shao/sched-Define-sched_clock_irqtime-as-static-key/20241215-112638
-base:   tip/sched/core
-patch link:    https://lore.kernel.org/r/20241215032315.43698-4-laoar.shao%40gmail.com
-patch subject: [PATCH v7 3/4] sched, psi: Don't account irq time if sched_clock_irqtime is disabled
-config: arm-randconfig-001-20241215 (https://download.01.org/0day-ci/archive/20241215/202412152115.zQ6k9tVk-lkp@intel.com/config)
-compiler: clang version 20.0.0git (https://github.com/llvm/llvm-project 2dc22615fd46ab2566d0f26d5ba234ab12dc4bf8)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20241215/202412152115.zQ6k9tVk-lkp@intel.com/reproduce)
+Joshua
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202412152115.zQ6k9tVk-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from kernel/sched/build_utility.c:15:
-   In file included from include/linux/sched/isolation.h:5:
-   In file included from include/linux/cpuset.h:17:
-   In file included from include/linux/mm.h:2223:
-   include/linux/vmstat.h:518:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     518 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
-   In file included from kernel/sched/build_utility.c:96:
->> kernel/sched/psi.c:1243:35: error: use of undeclared identifier 'PSI_IRQ'; did you mean 'PSI_IO'?
-    1243 |         if (!irqtime_enabled() && res == PSI_IRQ)
-         |                                          ^~~~~~~
-         |                                          PSI_IO
-   include/linux/psi_types.h:42:2: note: 'PSI_IO' declared here
-      42 |         PSI_IO,
-         |         ^
-   1 warning and 1 error generated.
-
-
-vim +1243 kernel/sched/psi.c
-
-  1233	
-  1234	int psi_show(struct seq_file *m, struct psi_group *group, enum psi_res res)
-  1235	{
-  1236		bool only_full = false;
-  1237		int full;
-  1238		u64 now;
-  1239	
-  1240		if (static_branch_likely(&psi_disabled))
-  1241			return -EOPNOTSUPP;
-  1242	
-> 1243		if (!irqtime_enabled() && res == PSI_IRQ)
-  1244			return -EOPNOTSUPP;
-  1245	
-  1246		/* Update averages before reporting them */
-  1247		mutex_lock(&group->avgs_lock);
-  1248		now = sched_clock();
-  1249		collect_percpu_times(group, PSI_AVGS, NULL);
-  1250		if (now >= group->avg_next_update)
-  1251			group->avg_next_update = update_averages(group, now);
-  1252		mutex_unlock(&group->avgs_lock);
-  1253	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> > This patch fully removes the mem_cgroup_{try, commit, cancel}_charge
+> > functions, as well as their hugetlb variants.
+> >
+> > Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
+> > Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+> 
+> Reviewed-by: Nhat Pham <nphamcs@gmail.com>
 
