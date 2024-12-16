@@ -1,154 +1,216 @@
-Return-Path: <cgroups+bounces-5913-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5914-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 996D99F34A0
-	for <lists+cgroups@lfdr.de>; Mon, 16 Dec 2024 16:36:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7703B9F34AF
+	for <lists+cgroups@lfdr.de>; Mon, 16 Dec 2024 16:39:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A7B577A1734
-	for <lists+cgroups@lfdr.de>; Mon, 16 Dec 2024 15:36:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1D751888133
+	for <lists+cgroups@lfdr.de>; Mon, 16 Dec 2024 15:39:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8A031459F7;
-	Mon, 16 Dec 2024 15:36:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4399B1494DC;
+	Mon, 16 Dec 2024 15:39:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="bQWQIoGN"
 X-Original-To: cgroups@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58A55360;
-	Mon, 16 Dec 2024 15:36:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B6E91494CF
+	for <cgroups@vger.kernel.org>; Mon, 16 Dec 2024 15:39:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734363378; cv=none; b=OIppoqvEoE6hnyr8bF9SjjOrnipa8jzg4C9P65dHv95YC8vePDNssao2zX+B4ir32ljcheMKEOcP1Up/s5zh5C8av8+gc7Rw245flZNGn+v4KZjXhhPcWxqYRQrZSC4e3WpsP6hl75igCeBxcH3TkK9/pAaQcZrCTqLSVt4I96Q=
+	t=1734363558; cv=none; b=gjFGTpQI9gdKq3s/olwaduwRCy2vW0JL1+/6ad9kJ5WYPqh1/c3/WlGGA5JgvmBrF/Mr8Sxz1Tr7+143FsGcKzEDL4BYVjk+yQtAjY/Vx2uNzyrotyAGn5nv5mAe9MR5sOao+VVVi1SseozBbym0KcTwEpV0RRcQOO+bTlzJzoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734363378; c=relaxed/simple;
-	bh=aVJwPXYV8smhlm+7YHShsDvbuRDDKCVinkc4KwZWYag=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jpX2C9JMgWf5S5A63VQRHAXTyeV2F6nOIO4jkoxN4wd1g1KjHX6SozZoLotRA7Ltcu2y36sI5XxKQIoCrDdS4jXsFoYpg0J+UVjIBV98/zGAbBufqkBQWkGPelMUkokdFtBYE1sOL3ASXksGxa1uXK6LUyA3hAYSa3bwUrUpK5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4YBkTl6c2cz6JB2C;
-	Mon, 16 Dec 2024 23:32:43 +0800 (CST)
-Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5AE51140C98;
-	Mon, 16 Dec 2024 23:36:14 +0800 (CST)
-Received: from localhost (10.203.177.66) by frapeml500008.china.huawei.com
- (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Mon, 16 Dec
- 2024 16:36:13 +0100
-Date: Mon, 16 Dec 2024 15:36:11 +0000
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-To: Zijun Hu <zijun_hu@icloud.com>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
-	<rafael@kernel.org>, Tejun Heo <tj@kernel.org>, Josef Bacik
-	<josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>, Boris Burkov
-	<boris@bur.io>, Davidlohr Bueso <dave@stgolabs.net>, Dave Jiang
-	<dave.jiang@intel.com>, Alison Schofield <alison.schofield@intel.com>, Vishal
- Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>, Dan
- Williams <dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>,
-	<cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-	<linux-cxl@vger.kernel.org>, Zijun Hu <quic_zijuhu@quicinc.com>
-Subject: Re: [PATCH v3 1/9] driver core: class: Fix wild pointer
- dereferences in API class_dev_iter_next()
-Message-ID: <20241216153611.00007f26@huawei.com>
-In-Reply-To: <20241212-class_fix-v3-1-04e20c4f0971@quicinc.com>
-References: <20241212-class_fix-v3-0-04e20c4f0971@quicinc.com>
-	<20241212-class_fix-v3-1-04e20c4f0971@quicinc.com>
-X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
+	s=arc-20240116; t=1734363558; c=relaxed/simple;
+	bh=b6PN9Nh4fmOqeYnSlL9UJcIoOtZBnZueDxzv5gnseBM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JYw5EaeNBnXcX43x43Dv8K0kAoaE6en4+o/JWwkx42skV4e1d+TC6ECQ9TXbGm0XZyn+Aabc4vFVpVsI3409qHLj/2dh/tiSLG0T5O9z+0J5jjd0c3753+JCESue2ev3osCEvv1Pwc2pk6+Km9rQ2fLCVRLSKPNHT4do5v07oDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=bQWQIoGN; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-aa692211331so812805566b.1
+        for <cgroups@vger.kernel.org>; Mon, 16 Dec 2024 07:39:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1734363554; x=1734968354; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=k20My130rzARwyOvgTU0vCNVESW9H6oT+V38TS25XZ8=;
+        b=bQWQIoGNjLx/aO9vdDuvNpIde07aJ2j8s+LqIm6EQYiChX7SPGm8Psn4aHh4RUSzxw
+         BmHEupXH2GM3XyGq5JyFiujvnZj+YgIBxxCQblHHgjNzs9dQwrDrap5ILv67wFiPbCps
+         v/HXxAkqilZUo5kBh7b5zWBCu+eJlW3hAwhjpqeI+S7bkInlpq6dcMurBayMihFaYzLO
+         HnPypPZIF1Il1pU5SvgGLUJ/ka+Mw5O41e0vy8ToSIWjMFZFK/V4cu5cq0L9k2SYk+Py
+         9dxj/PnV+DaSAxBgBt8H7lHh6pZ1511LugxFN+42uUI1ld0P/9/SQHXvxVL5CDOPMxvJ
+         Cuxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734363554; x=1734968354;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k20My130rzARwyOvgTU0vCNVESW9H6oT+V38TS25XZ8=;
+        b=rsbmspgGFpK/Grp3INlL83HMmIsz9NJHKOWOYQ8l7s/bb5AqTZWf/ETY8vJgsfFgLN
+         7OHpLjHpOzypnkKI0YjzvvBo+HwQJLHEUpn2Bl6QuKsGEKRUr7LB768eJfNdEevlyKpJ
+         hf706sULxoXq7H6SdKG3Tm5q8mzUZmTpwM4Qg4mgUkU88y20LVOBb420Gt6IWnat0r/i
+         oi3Hye14d47L41JGbxg/1a5dPnE6B/yYZYZYUF/RBCAH1BU0r9dhTyV/XFu1xt3Qx/L2
+         aEfxClGfsYbEPhHKNw3BQSWNNZYcCNy55MRLb47vtOztXF9Z+ezaAop3OyXk3MfqO1E7
+         IaCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWmIu69xRV3cz+ZAi8XSf7vKWnBhwwyJuXOPiVU+rfrRuhNPuDYLtNHcN36eM4P6yqCPW3ot3t/@vger.kernel.org
+X-Gm-Message-State: AOJu0YwdIVOJiJ7BaNql5CWn8NxPhNcU+dlYXaLxyJMKwc4flbhyr1UK
+	jBE7kfNiU2fcDRs1AZX6JLG1qtEoFQxd6+T1awKq1qR69NS1pNYZceto3we0OOc=
+X-Gm-Gg: ASbGncsku5ynhNdqAzbgfgGUAjc4er8wgnh3/bdrGUmu/RvhgNTnKKHZO4jtrHEEvP4
+	xr+K1a+DY3bcqAVccXI5rXilACZnoQDmoNpsWXERPa3ZKGG493Q7EeXRkVIPaew+WSvEq1X0cGE
+	Zvw3Cns8Cv69/KKu617BaTbH8xWB0PypnKKrAtTSc7okpDZ5QJU9aL+CggMnlpommV7gZf5wnMT
+	EE1AIqr0LJKaxhzrA0saUOWEVI61tELN6ZNPBzbhs2VMszbhXCafs+sjGXR4Iy2154=
+X-Google-Smtp-Source: AGHT+IFtdy6Z+Mdf9GGMuy0jIu5mLADOTup4p6tdMqMZcd7gLMcs48qXum9ADc9H8rCu/BNEGRvYfw==
+X-Received: by 2002:a17:906:32d0:b0:aab:da38:1293 with SMTP id a640c23a62f3a-aabda381364mr40185266b.4.1734363553856;
+        Mon, 16 Dec 2024 07:39:13 -0800 (PST)
+Received: from localhost (109-81-89-64.rct.o2.cz. [109.81.89.64])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aab96359e50sm348643666b.126.2024.12.16.07.39.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Dec 2024 07:39:13 -0800 (PST)
+Date: Mon, 16 Dec 2024 16:39:12 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Yosry Ahmed <yosryahmed@google.com>, Rik van Riel <riel@surriel.com>,
+	Balbir Singh <balbirs@nvidia.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	hakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	kernel-team@meta.com, Nhat Pham <nphamcs@gmail.com>
+Subject: Re: [PATCH v2] memcg: allow exiting tasks to write back data to swap
+Message-ID: <Z2BJoDsMeKi4LQGe@tiehlicka>
+References: <20241212115754.38f798b3@fangorn>
+ <CAJD7tkY=bHv0obOpRiOg4aLMYNkbEjfOtpVSSzNJgVSwkzaNpA@mail.gmail.com>
+ <20241212183012.GB1026@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
- frapeml500008.china.huawei.com (7.182.85.71)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241212183012.GB1026@cmpxchg.org>
 
-On Thu, 12 Dec 2024 21:38:37 +0800
-Zijun Hu <zijun_hu@icloud.com> wrote:
+On Thu 12-12-24 13:30:12, Johannes Weiner wrote:
+[...]
+> So I'm also inclined to think this needs a reclaim/memcg-side fix. We
+> have a somewhat tumultous history of policy in that space:
+> 
+> commit 7775face207922ea62a4e96b9cd45abfdc7b9840
+> Author: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> Date:   Tue Mar 5 15:46:47 2019 -0800
+> 
+>     memcg: killed threads should not invoke memcg OOM killer
+> 
+> allowed dying tasks to simply force all charges and move on. This
+> turned out to be too aggressive; there were instances of exiting,
+> uncontained memcg tasks causing global OOMs. This lead to that:
+> 
+> commit a4ebf1b6ca1e011289677239a2a361fde4a88076
+> Author: Vasily Averin <vasily.averin@linux.dev>
+> Date:   Fri Nov 5 13:38:09 2021 -0700
+> 
+>     memcg: prohibit unconditional exceeding the limit of dying tasks
+> 
+> which reverted the bypass rather thoroughly. Now NO dying tasks, *not
+> even OOM victims*, can force charges. I am not sure this is correct,
+> either:
 
-> From: Zijun Hu <quic_zijuhu@quicinc.com>
-> 
-> There are a potential wild pointer dereferences issue regarding APIs
-> class_dev_iter_(init|next|exit)(), as explained by below typical usage:
-> 
-> // All members of @iter are wild pointers.
-> struct class_dev_iter iter;
-> 
-> // class_dev_iter_init(@iter, @class, ...) checks parameter @class for
-> // potential class_to_subsys() error, and it returns void type and does
-> // not initialize its output parameter @iter, so caller can not detect
-> // the error and continues to invoke class_dev_iter_next(@iter) even if
-> // @iter still contains wild pointers.
-> class_dev_iter_init(&iter, ...);
-> 
-> // Dereference these wild pointers in @iter here once suffer the error.
-> while (dev = class_dev_iter_next(&iter)) { ... };
-> 
-> // Also dereference these wild pointers here.
-> class_dev_iter_exit(&iter);
-> 
-> Actually, all callers of these APIs have such usage pattern in kernel tree.
-> Fix by:
-> - Initialize output parameter @iter by memset() in class_dev_iter_init()
->   and give callers prompt by pr_crit() for the error.
-> - Check if @iter is valid in class_dev_iter_next().
-> 
-> Fixes: 7b884b7f24b4 ("driver core: class.c: convert to only use class_to_subsys")
-> Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
+IIRC the reason going this route was a lack of per-memcg oom reserves.
+Global oom victims are getting some slack because the amount of reserves
+be bound. This is not the case for memcgs though.
 
-This looks fine in general, but over to the core device model folk for which
-element they think should be used as the sentinel and whether zeroing the
-whole thing makes sense or just the one being used as a flag, or even setting
-it to an error pointer.
+> If we return -ENOMEM to an OOM victim in a fault, the fault handler
+> will re-trigger OOM, which will find the existing OOM victim and do
+> nothing, then restart the fault.
 
+IIRC the task will handle the pending SIGKILL if the #PF fails. If the
+charge happens from the exit path then we rely on ENOMEM returned from
+gup as a signal to back off. Do we have any caller that keeps retrying
+on ENOMEM?
+
+> This is a memory deadlock. The page
+> allocator gives OOM victims access to reserves for that reason.
+
+> Actually, it looks even worse. For some reason we're not triggering
+> OOM from dying tasks:
 > 
-> ---
-> Alternative fix solutions ever thought about:
+>         ret = task_is_dying() || out_of_memory(&oc);
 > 
-> 1) Use BUG_ON(!sp) instead of error return in class_dev_iter_init().
-> 2) Change class_dev_iter_init()'s type to int, lots of jobs to do.
+> Even though dying tasks are in no way privileged or allowed to exit
+> expediently. Why shouldn't they trigger the OOM killer like anybody
+> else trying to allocate memory?
+
+Good question! I suspect this early bail out is based on an assumption
+that a dying task will free up the memory soon so oom killer is
+unnecessary.
+
+> As it stands, it seems we have dying tasks getting trapped in an
+> endless fault->reclaim cycle; with no access to the OOM killer and no
+> access to reserves. Presumably this is what's going on here?
+
+As mentioned above this seems really surprising and it would indicate
+that something in the exit path would keep retrying when getting ENOMEM
+from gup or GFP_ACCOUNT allocation. GFP_NOFAIL requests are allowed to
+over-consume.
+
+> I think we want something like this:
 > 
-> This issue is APIs themself issues, and regardless of how various API
-> users use them, and silent wild pointer dereferences are not what API
-> users expect for the error absolutely.
-> ---
->  drivers/base/class.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/base/class.c b/drivers/base/class.c
-> index 582b5a02a5c410113326601fe00eb6d7231f988f..d57f277978dc9033fba3484b4620bcf884a4029f 100644
-> --- a/drivers/base/class.c
-> +++ b/drivers/base/class.c
-> @@ -323,8 +323,12 @@ void class_dev_iter_init(struct class_dev_iter *iter, const struct class *class,
->  	struct subsys_private *sp = class_to_subsys(class);
->  	struct klist_node *start_knode = NULL;
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 53db98d2c4a1..be6b6e72bde5 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1596,11 +1596,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	if (mem_cgroup_margin(memcg) >= (1 << order))
+>  		goto unlock;
 >  
-> -	if (!sp)
-> +	memset(iter, 0, sizeof(*iter));
-> +	if (!sp) {
-> +		pr_crit("%s: class %p was not registered yet\n",
-> +			__func__, class);
->  		return;
-> +	}
+> -	/*
+> -	 * A few threads which were not waiting at mutex_lock_killable() can
+> -	 * fail to bail out. Therefore, check again after holding oom_lock.
+> -	 */
+> -	ret = task_is_dying() || out_of_memory(&oc);
+> +	ret = out_of_memory(&oc);
+
+I am not against this as it would allow to do an async oom_reaper memory
+reclaim in the worst case. This could potentially reintroduce the "No
+victim available" case described by 7775face2079 ("memcg: killed threads
+should not invoke memcg OOM killer") but that seemed to be a very
+specific and artificial usecase IIRC.
+
 >  
->  	if (start)
->  		start_knode = &start->p->knode_class;
-> @@ -351,6 +355,9 @@ struct device *class_dev_iter_next(struct class_dev_iter *iter)
->  	struct klist_node *knode;
->  	struct device *dev;
+>  unlock:
+>  	mutex_unlock(&oom_lock);
+> @@ -2198,6 +2194,9 @@ int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	if (unlikely(current->flags & PF_MEMALLOC))
+>  		goto force;
 >  
-> +	if (!iter->sp)
-> +		return NULL;
+> +	if (unlikely(tsk_is_oom_victim(current)))
+> +		goto force;
 > +
->  	while (1) {
->  		knode = klist_next(&iter->ki);
->  		if (!knode)
-> 
+>  	if (unlikely(task_in_memcg_oom(current)))
+>  		goto nomem;
 
+This is more problematic as it doesn't cap a potential runaway and
+eventual global OOM which is not really great. In the past this could be
+possible through vmalloc which didn't bail out early for killed tasks.
+That risk has been mitigated by dd544141b9eb ("vmalloc: back off when
+the current task is OOM-killed"). I would like to keep some sort of
+protection from those runaways. Whether that is a limited "reserve" for
+oom victims that would be per memcg or do no let them consume above the
+hard limit at all. Fundamentally a limited reserves doesn't solve the
+underlying problem, it just make it less likely so the latter would be
+preferred by me TBH.
+
+Before we do that it would be really good to understand the source of
+those retries. Maybe I am missing something really obvious but those
+shouldn't really happen. 
+
+-- 
+Michal Hocko
+SUSE Labs
 
