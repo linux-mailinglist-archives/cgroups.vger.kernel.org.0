@@ -1,57 +1,69 @@
-Return-Path: <cgroups+bounces-5947-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5948-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CBA99F55E7
-	for <lists+cgroups@lfdr.de>; Tue, 17 Dec 2024 19:20:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C29989F5605
+	for <lists+cgroups@lfdr.de>; Tue, 17 Dec 2024 19:23:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B870162E7A
-	for <lists+cgroups@lfdr.de>; Tue, 17 Dec 2024 18:20:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D85316E41C
+	for <lists+cgroups@lfdr.de>; Tue, 17 Dec 2024 18:23:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EBD11F8925;
-	Tue, 17 Dec 2024 18:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECE1C1F8903;
+	Tue, 17 Dec 2024 18:23:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wyz1PN7J"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zg0NbAka"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B2BB1448DC
-	for <cgroups@vger.kernel.org>; Tue, 17 Dec 2024 18:19:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA7868F5A;
+	Tue, 17 Dec 2024 18:23:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734459589; cv=none; b=kF18oMVZe16113+HfFHilCVbMEMMPNO7sKvP7+MAIgefEjfbbtuNis2czzrSjys607Y7DTAM/OlpsgHazs8dlguV0rbALl2782z2fLTsw54roPbwhZgm58O9ob2/wtAvFGO1ovKC/6r6wvzGmk8YqjGs7KsPShSsR/+HvBL4dXs=
+	t=1734459820; cv=none; b=mHifmSkTO8/UFN71/GJjwIu2tQ5VN1zTh6q3CEFTFFH2HUTnvSH/1iONyMDL+Z8sZDfXAi9fxeK604X0ftcCU+E2nFWMUEkNFyrQU27UUhKTAFK00IZRe6Ie95d7fWuS0KRwQEUGaIRKenxiW4/u9S3uOGHNnkMkbj5BRAdMdC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734459589; c=relaxed/simple;
-	bh=69b/sBPshrHOq+7LUEEnEYu/4ajNrLpJyMCfWAJDpQc=;
+	s=arc-20240116; t=1734459820; c=relaxed/simple;
+	bh=seqaTS+B/Yvq2Zz8QYWQ8AUjQjPku14beCw+oXyf0fQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tZMIjjCtIV575oF5g31TnqN2cAi6yKmx/AaNga8H6CTNaP1SfueicHNMRMAa0lsnLOf3M3emkOMsR1ghM1VDSHIPdl5/oH/FzttBjOxO4MybCKU/rMaDMG8UXebFDKCDNBCXqS/tnhS0IB9l/cWJcl9Nnm0ye9yzgcs7eOg2UhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wyz1PN7J; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 17 Dec 2024 10:19:38 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1734459585;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=90cmCkJH8sbTboIFC394aI8JGeyjUNZJnQeP7FThfM4=;
-	b=wyz1PN7JIA6uNzud5GRqCX2eaXCis/C7BrkZhH1eKxmlPyM4bbVu2v7u5c4YMpFJgMfnsb
-	OvNzlZhgGvWjIs5V/EFZCZXMJhL0ijrBq6gyXwdxGHpMwZadpWke2qAzeW1amQrhd88G4L
-	7eIONPeJRYnLgoIz/eW9UOe2Z07I1lc=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: akpm@linux-foundation.org, mhocko@kernel.org, hannes@cmpxchg.org, 
-	yosryahmed@google.com, roman.gushchin@linux.dev, muchun.song@linux.dev, 
-	davidf@vimeo.com, vbabka@suse.cz, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, chenridong@huawei.com, wangweiyang2@huawei.com
-Subject: Re: [next -v1 4/5] memcg: factor out the __refill_obj_stock function
-Message-ID: <q7k5vqzeit4ib6joowtib6mlpwu2zdnrzse5kx44wx7jhmb6ta@w6deef6omz3d>
-References: <20241206013512.2883617-1-chenridong@huaweicloud.com>
- <20241206013512.2883617-5-chenridong@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qLkOHbVyrXImm1qh3mSoXKZQRtHNvEEzdKYPkzPgPRk8k3y7IvupSeZpMCVdi0rV8pyZ6ZOWUfgWVZFt1x/6j0Kot+ntjN8ze0ROAj5LE5SLSRP5R920B/6618eG4CaPPVtKqIf3eDGvMl502rwpJWQcQ+lXC+6JDbn+ld+asHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zg0NbAka; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34677C4CED7;
+	Tue, 17 Dec 2024 18:23:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734459820;
+	bh=seqaTS+B/Yvq2Zz8QYWQ8AUjQjPku14beCw+oXyf0fQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Zg0NbAkaqSVYJo0rwXVva0ubr0lourBVfpN5/mBCzcihaP16z1+uAcYh0LbyDrFln
+	 Md/oP7CkhdJFp9WbOVo7eM0G+lPytUIGF67xhK4SNsEF9UWj9KbIHZ/hICcv1kJGt2
+	 UhUD7hSPeexLUVUQHJsdc5Qx8rsltHK7GeTh6E2Je+ij7y4wez6HezL5SY5IG2jCtn
+	 HcQiup0NgN1nFtJ2rmvf4J2FC2PPQTUA6t//MU8lheUmDfnP87YHeoWcqrB/eIFNbd
+	 z5DML9mKi6cVhMQnNPv11p80I0hzzNFKnWXFcUlYO9Ao3B/Eud7NCn823itluC6I+s
+	 T+7VvSo4+2IRQ==
+Date: Tue, 17 Dec 2024 08:23:38 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Maarten Lankhorst <dev@lankhorst.se>
+Cc: Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org,
+	intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Friedrich Vock <friedrich.vock@gmx.de>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: Re: [PATCH v2 0/7] kernel/cgroups: Add "dmem" memory accounting
+ cgroup.
+Message-ID: <Z2HBqtKDSTkd1lST@slm.duckdns.org>
+References: <20241204134410.1161769-1-dev@lankhorst.se>
+ <20241213-proud-kind-uakari-df3a70@houat>
+ <80c49a80-d49c-4ca5-9568-9f7950618275@lankhorst.se>
+ <20241213-gentle-glittering-salamander-22addf@houat>
+ <5a50a992-9286-4179-8031-ffb514bca34f@lankhorst.se>
+ <20241217-meek-bullfinch-of-luck-2c3468@houat>
+ <a69a3500-be17-4899-bdb9-c6a63bf8dc81@lankhorst.se>
+ <Z2GwpOQDVshpv-ml@slm.duckdns.org>
+ <c0a539e7-0f1b-496a-9848-73a7ada66bfb@lankhorst.se>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -60,82 +72,35 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241206013512.2883617-5-chenridong@huaweicloud.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <c0a539e7-0f1b-496a-9848-73a7ada66bfb@lankhorst.se>
 
-On Fri, Dec 06, 2024 at 01:35:11AM +0000, Chen Ridong wrote:
-> From: Chen Ridong <chenridong@huawei.com>
-> 
-> Factor out the '__refill_obj_stock' function to make the code more
-> cohesive.
-> 
-> Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> ---
->  mm/memcontrol.c | 31 ++++++++++++++++++-------------
->  1 file changed, 18 insertions(+), 13 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index f977e0be1c04..0c9331d7b606 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2697,6 +2697,21 @@ void __memcg_kmem_uncharge_page(struct page *page, int order)
->  	obj_cgroup_put(objcg);
->  }
->  
-> +/* If the cached_objcg was refilled, return true; otherwise, return false */
-> +static bool __refill_obj_stock(struct memcg_stock_pcp *stock,
-> +		struct obj_cgroup *objcg, struct obj_cgroup **old_objcg)
-> +{
-> +	if (READ_ONCE(stock->cached_objcg) != objcg) {
+Hello,
 
-Keep the above check in the calling functions and make this a void
-function. Also I think we need a better name.
+On Tue, Dec 17, 2024 at 06:37:22PM +0100, Maarten Lankhorst wrote:
+> Den 2024-12-17 kl. 18:11, skrev Tejun Heo:
+> > On Tue, Dec 17, 2024 at 03:28:50PM +0100, Maarten Lankhorst wrote:
+> > > Now that all patches look good, what is needed to merge the series? Without
+> > > patch 6/7 as it is a hack for testing.
+> > 
+> > There were some questions raised about device naming. One thing we want to
+> > get right from the beginning is the basic interface.
+> > 
+> > Thanks.
+> > 
+> I believe it was solved. The conclusion appears to be that we go with how we
+> defined it in this series. drm/$pciid/$regionname. With the only regions
+> defined now being VRAM. Main memory will be a followup, but requires some
+> discussions on hwo to be prevent double accounting, and what to do with the
+> limited amount of mappable memory.
 
-> +		*old_objcg = drain_obj_stock(stock);
-> +		obj_cgroup_get(objcg);
-> +		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
-> +				? atomic_xchg(&objcg->nr_charged_bytes, 0) : 0;
-> +		WRITE_ONCE(stock->cached_objcg, objcg);
-> +		return true;
-> +	}
-> +	return false;
-> +}
-> +
->  static void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
->  		     enum node_stat_item idx, int nr)
->  {
-> @@ -2713,12 +2728,7 @@ static void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
->  	 * accumulating over a page of vmstat data or when pgdat or idx
->  	 * changes.
->  	 */
-> -	if (READ_ONCE(stock->cached_objcg) != objcg) {
-> -		old = drain_obj_stock(stock);
-> -		obj_cgroup_get(objcg);
-> -		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
-> -				? atomic_xchg(&objcg->nr_charged_bytes, 0) : 0;
-> -		WRITE_ONCE(stock->cached_objcg, objcg);
-> +	if (__refill_obj_stock(stock, objcg, &old)) {
->  		stock->cached_pgdat = pgdat;
->  	} else if (stock->cached_pgdat != pgdat) {
->  		/* Flush the existing cached vmstat data */
-> @@ -2871,14 +2881,9 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
->  	local_lock_irqsave(&memcg_stock.stock_lock, flags);
->  
->  	stock = this_cpu_ptr(&memcg_stock);
-> -	if (READ_ONCE(stock->cached_objcg) != objcg) { /* reset if necessary */
-> -		old = drain_obj_stock(stock);
-> -		obj_cgroup_get(objcg);
-> -		WRITE_ONCE(stock->cached_objcg, objcg);
-> -		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
-> -				? atomic_xchg(&objcg->nr_charged_bytes, 0) : 0;
-> +	if (__refill_obj_stock(stock, objcg, &old))
->  		allow_uncharge = true;	/* Allow uncharge when objcg changes */
-> -	}
-> +
->  	stock->nr_bytes += nr_bytes;
->  
->  	if (allow_uncharge && (stock->nr_bytes > PAGE_SIZE)) {
-> -- 
-> 2.34.1
-> 
+Provided Johannes is okay with the series, how do you want to route the
+series? If you want to route it through drm, that's fine by me and please
+feel free to add:
+
+ Acked-by: Tejun Heo <tj@kernel.org>
+
+Thanks.
+
+-- 
+tejun
 
