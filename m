@@ -1,113 +1,86 @@
-Return-Path: <cgroups+bounces-5941-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5942-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E88069F5173
-	for <lists+cgroups@lfdr.de>; Tue, 17 Dec 2024 17:56:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CDBE9F51D9
+	for <lists+cgroups@lfdr.de>; Tue, 17 Dec 2024 18:11:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B672162CC6
-	for <lists+cgroups@lfdr.de>; Tue, 17 Dec 2024 16:56:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C74A47A20C8
+	for <lists+cgroups@lfdr.de>; Tue, 17 Dec 2024 17:11:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D1EA1F76A4;
-	Tue, 17 Dec 2024 16:55:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6217B1F6671;
+	Tue, 17 Dec 2024 17:11:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b="faVa79fQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r7e6Ky0X"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2BE31F76A1
-	for <cgroups@vger.kernel.org>; Tue, 17 Dec 2024 16:55:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E0F2149DFA;
+	Tue, 17 Dec 2024 17:11:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734454538; cv=none; b=mffnLmHnDmHsOcxomRdXAw+2eJXzrkMVo+zC51X+JCOKorC/JnmonacMXnBv1KVPHz29Dtyh58M9ML7GBBTmvPYNZ6FczezNsyfzV0LucMQLubYpdsoPnXVleWUuXETNRZjtQmuPhXL6qlom0Er3w/5M5fkk3MroPl5KY51YvfE=
+	t=1734455462; cv=none; b=MMwjF8gJVOcd5kxzIAPGZtAbIzoTDPI9Ib7j6wkMYViL4RdWyBva8hj1FXheRD1OqTJgjFuPDZunX3u/ka9DGCO3oaX4rniR3sPhIMTxcxWarHnNQjfoyOjKkd+dPUtEZG5wpj+TBD96uw0rHbNDFxb+ovcPCkMtAdvvp0jeKTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734454538; c=relaxed/simple;
-	bh=XzT/xUZAUanRvCOhUsAPqlePaF6oL7aiyeWhFHrlYwY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lxuGgDakWeR0J7rBtgYn3YoKoKtPLnwzD4M9JjK31jTpK2y58/Fl8Iv7ocUmxup91/jcUkyYxFqr+djqoQH56JxaL2Xd6jUss1IkRjtSItIhWeSIgIr9l1k5fq88d1ePNqtXtIoSyi9giJVOHLymEW4/Z1T7vjsZmiq4rn23HWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com; spf=fail smtp.mailfrom=vimeo.com; dkim=pass (1024-bit key) header.d=vimeo.com header.i=@vimeo.com header.b=faVa79fQ; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=vimeo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=vimeo.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-7273967f2f0so5958065b3a.1
-        for <cgroups@vger.kernel.org>; Tue, 17 Dec 2024 08:55:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vimeo.com; s=google; t=1734454536; x=1735059336; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Wq9UHSArzdY1x5xMk9wsFWdAq1adG27eAgZz0mkA3mM=;
-        b=faVa79fQ75B1lWKXauw3tya+hVu/RD9KU4iAUd5sjzXRkHQ+ejhunkvJpdyh5xhiUS
-         WdGr/mqywvMMtKPvYx6N0N10xdsU5Vz8nJA1ZaPEvzKs6xozhouX2J7XQ4oMxdoIJlYR
-         VRZ7BDzzmOknUAsJMlnuRCFSKY6ow4/imJU3s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734454536; x=1735059336;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Wq9UHSArzdY1x5xMk9wsFWdAq1adG27eAgZz0mkA3mM=;
-        b=mNQWqh7KMpKaQIgVZuTNptidwrb0d0p/63GEwYc84avixydQ0po1Rhedc9dGKFdQqX
-         4TCbQJE+TN+RhZOgQ7MZbFTpWeI2dKZIswEIEdrNR4dIHEWhJaBUI4iugSmFzyaHkWMB
-         swGyKufyjGYM5s+V9mgG55SEmDWlmhrE0nYlQROBkPpaQpQpVQGSUrDX2IDmIZK1uqyI
-         kdkh9QfyH+6yBalKQTA6z3+Jw8owjWswZd3/JwAZ0B3Qf9VUlbW8xSt3n64I/pgVCogS
-         nht3qvM2LvyuuxJ6Z3xFsd+CfetypruZ/eTnM7/OjrpoKjWcaltvwW6j8NJFHzeF81X+
-         yFzA==
-X-Forwarded-Encrypted: i=1; AJvYcCV5ImycKM0QL1MqWp8jisUFtP/Eg1aN8uJEdod3rtcPC543qPhM0VX8QAsTK61fLUhUKo57GJGF@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy5gSkQBHDD9GPV1DKURmXvOJ0h7aPdyzZaOn07dodHfO9IrHZN
-	YkNqe4860m1gpmoph8OK/bAARyTXZhmvBqHEkii+/6AcXMAO1oyVvPL/FJW96KVWZ2WzlS+wrnA
-	YkjQuEmkjMG1V1mssLBN8P5uDdSwaWKjLkQI/ew==
-X-Gm-Gg: ASbGncuFnPbVAYNxUfItnhfG8uRvqViH8LZViEUOEAbRn/SpMcUMrNThH/IOA+Gyg91
-	x/cSIElWauafjpjm04oNYJywbPRwHGvyW0ykF2w==
-X-Google-Smtp-Source: AGHT+IHKncR9EoH0iJhXzbKgdPiVLUBVaha1G+ueMtYPu1wQd6YTTMUeYDXJTRwatcecZhKP17PwXowcBskrWJlo5uU=
-X-Received: by 2002:a05:6a00:4fcd:b0:725:ef4b:de33 with SMTP id
- d2e1a72fcca58-7290be785a3mr24935897b3a.0.1734454535913; Tue, 17 Dec 2024
- 08:55:35 -0800 (PST)
+	s=arc-20240116; t=1734455462; c=relaxed/simple;
+	bh=fWEKQkxXI884vG+WF4qLVHpsT7vM3EElPdmXZ5tnPrI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WV+TAV28OSRF/KhcCDe+VnIcU+PdjSQScrFpmi8UDcNgj85x4+h2nA4ymzJLSm713M9sjMA6Jq4x9UfKyN45hdhSBzZcDt7W5K9KRFqmcgZztiW66AY5QSuEEkiC+9CyaBWNuXip2U3pduVJJxsaFXu+xyyUSzgWaUujBH1bmxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r7e6Ky0X; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C84EDC4CED7;
+	Tue, 17 Dec 2024 17:11:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1734455461;
+	bh=fWEKQkxXI884vG+WF4qLVHpsT7vM3EElPdmXZ5tnPrI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=r7e6Ky0X5QW7vVRBN3FDwoKg+K/J3+YB7JETZWQdy/reod6qL10Z3Zz1xE9c+SafF
+	 dcb53XesfsCBLt411HlUfmfkK0Ux4NCwN20GZWYtfE0JP7fANUdxHsoiWUGaC2c0Ov
+	 VuNX65kVwM6AtY1zumfEQErppZ+E7NpU1hEi5ekJ+G05/DaifNK4BSUA79WHXemtb5
+	 6NP4qyNX6WbhycT2kxk3T67x6m+idCj76G5ubK7D6ReDAX5kgCgXObmJ7r8y4mUihD
+	 knish44Q5fMeULq55tljoYm6uIbRiLBvAfK7OLjKzBclCLsIWY+SkobffKgkFzsPnu
+	 82OZ0/fBrF3ag==
+Date: Tue, 17 Dec 2024 07:11:00 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Maarten Lankhorst <dev@lankhorst.se>
+Cc: Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org,
+	intel-xe@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Friedrich Vock <friedrich.vock@gmx.de>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: Re: [PATCH v2 0/7] kernel/cgroups: Add "dmem" memory accounting
+ cgroup.
+Message-ID: <Z2GwpOQDVshpv-ml@slm.duckdns.org>
+References: <20241204134410.1161769-1-dev@lankhorst.se>
+ <20241213-proud-kind-uakari-df3a70@houat>
+ <80c49a80-d49c-4ca5-9568-9f7950618275@lankhorst.se>
+ <20241213-gentle-glittering-salamander-22addf@houat>
+ <5a50a992-9286-4179-8031-ffb514bca34f@lankhorst.se>
+ <20241217-meek-bullfinch-of-luck-2c3468@houat>
+ <a69a3500-be17-4899-bdb9-c6a63bf8dc81@lankhorst.se>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241206013512.2883617-1-chenridong@huaweicloud.com>
- <20241206013512.2883617-2-chenridong@huaweicloud.com> <eydeud7il4oe24xa4uvs2gistzrkphzq6bfiunwn73ipd2cxsx@kyisofhuivp6>
-In-Reply-To: <eydeud7il4oe24xa4uvs2gistzrkphzq6bfiunwn73ipd2cxsx@kyisofhuivp6>
-From: David Finkel <davidf@vimeo.com>
-Date: Tue, 17 Dec 2024 11:55:25 -0500
-Message-ID: <CAFUnj5MdCj-TqvnuOaxBDRWSXzPo=WHO6-FN8ZQHz7S+2V1H0Q@mail.gmail.com>
-Subject: Re: [next -v1 1/5] memcg: use OFP_PEAK_UNSET instead of -1
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Chen Ridong <chenridong@huaweicloud.com>, akpm@linux-foundation.org, 
-	mhocko@kernel.org, hannes@cmpxchg.org, yosryahmed@google.com, 
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev, 
-	vbabka@suse.cz, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, chenridong@huawei.com, wangweiyang2@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a69a3500-be17-4899-bdb9-c6a63bf8dc81@lankhorst.se>
 
-On Tue, Dec 17, 2024 at 7:27=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.co=
-m> wrote:
->
-> On Fri, Dec 06, 2024 at 01:35:08AM GMT, Chen Ridong <chenridong@huaweiclo=
-ud.com> wrote:
-> > From: Chen Ridong <chenridong@huawei.com>
-> >
-> > The 'OFP_PEAK_UNSET' has been defined, use it instead of '-1'.
-> >
-> > Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> > ---
-> >  mm/memcontrol.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> Reviewed-by: Michal Koutn=C3=BD <mkoutny@suse.com>
+On Tue, Dec 17, 2024 at 03:28:50PM +0100, Maarten Lankhorst wrote:
+> Now that all patches look good, what is needed to merge the series? Without
+> patch 6/7 as it is a hack for testing.
 
-Thanks for cleaning this up!
+There were some questions raised about device naming. One thing we want to
+get right from the beginning is the basic interface.
 
-Acked-By: David Finkel <davidf@vimeo.com>
+Thanks.
 
-
---=20
-David Finkel
-Senior Principal Software Engineer, Core Services
+-- 
+tejun
 
