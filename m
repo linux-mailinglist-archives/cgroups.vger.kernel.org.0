@@ -1,173 +1,130 @@
-Return-Path: <cgroups+bounces-5959-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5960-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1E8F9F5B10
-	for <lists+cgroups@lfdr.de>; Wed, 18 Dec 2024 01:07:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC0B49F5F8E
+	for <lists+cgroups@lfdr.de>; Wed, 18 Dec 2024 08:44:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 106A47A41EB
-	for <lists+cgroups@lfdr.de>; Wed, 18 Dec 2024 00:07:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BB197A3250
+	for <lists+cgroups@lfdr.de>; Wed, 18 Dec 2024 07:44:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0465919DF81;
-	Wed, 18 Dec 2024 00:03:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b="MRPctL5d"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D43415B54A;
+	Wed, 18 Dec 2024 07:44:45 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mr85p00im-ztdg06011201.me.com (mr85p00im-ztdg06011201.me.com [17.58.23.181])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50CEE19D07E
-	for <cgroups@vger.kernel.org>; Wed, 18 Dec 2024 00:03:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.58.23.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D8B6156238;
+	Wed, 18 Dec 2024 07:44:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734480195; cv=none; b=Pz0oBUf0IhEwXvm+rEEWepmliYNdxBAfox4TcI7YLZDUiu/TH7pSisdNrZz3pZ9Qbwh0flftxLhYix7RAPGNJTxVd1h2XPR8TSYIJK7vcwUKV8yxmcUSGMv6RWuYoA6poIAn/3NKpp1N9I8PIRD2dDEdRXjcyjbhQ5w5lb7fudc=
+	t=1734507885; cv=none; b=srE3ohNegbnqmwWDjQ65NJ4/EqtpGIIIv6u/7MTQ3aFQRCQ1KR6jb/qbWRPTBbrckHQr2QfadZhYnAykhkfo/SI0jWoEVuqDI2SnOq5ML/h9fq+k+zs5lC9KKbGz0htOgkQ8z/uOaEwol8/fFg8jWjjjd4UHB0+XJiUT2OT5QZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734480195; c=relaxed/simple;
-	bh=7c0hWaDRO0lYYPUw3fSJwZidpoLlvEvnQjd/RkahQfY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=K8mCP2rAypuKtUYtS+y8jOTquxydoXtXa0oqKBtQvHr6ijiR4zAKzEcLu5UBOVgbF29BUdhOddF7/1EutrYnynOrlt2K1LSfbUXWo+QLCfqbCuG/d1qMR2qB+zuSHUttnZpOhXitB9vuoJo554bSsjI88gdd5mV9LXQpO7UPqhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com; spf=pass smtp.mailfrom=icloud.com; dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b=MRPctL5d; arc=none smtp.client-ip=17.58.23.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=icloud.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-	s=1a1hai; t=1734480194;
-	bh=dqP9qynvc8yZXa+bnipKSS5T9b0BbFcof3abx8Gc0z8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:
-	 x-icloud-hme;
-	b=MRPctL5dFoYQ3LiwnmvxriiGc1QwXzo77zQ8JdWaoYlb27NF2n6sH3ScmReaHbiLq
-	 7WCQ76VcTlQU8AccwKGQYO5H8qogJ/e43Ko0yRgPEZrvKGw+U1/YZ2DCsoB/mbCNqL
-	 rABYg5d9XKnu58OLaNEooQ5le6l9CCwkZkN4sUgu9alT56VobjIuOgznGWiqVwJvNO
-	 camcNBZ03VQC2wyFoHcHtCj47iEZQC9lEcz28hc7HjVPzde7souSaOxe7yKSWGy/G3
-	 /ov97PmMYTfEu6rEN3UvCXey+DvbSVGSGph7dSzK0qutYFeRTG/DdpMh8XllvhriSM
-	 cJbLQV4/fqwIw==
-Received: from [192.168.1.26] (mr38p00im-dlb-asmtp-mailmevip.me.com [17.57.152.18])
-	by mr85p00im-ztdg06011201.me.com (Postfix) with ESMTPSA id C0DA896019F;
-	Wed, 18 Dec 2024 00:03:07 +0000 (UTC)
-From: Zijun Hu <zijun_hu@icloud.com>
-Date: Wed, 18 Dec 2024 08:01:38 +0800
-Subject: [PATCH v4 8/8] driver core: Move 2 one line device finding APIs to
- header
+	s=arc-20240116; t=1734507885; c=relaxed/simple;
+	bh=IdyihadgNR+5UxpgY8g5lLqKPMNyg0Rp30nU1UQvWAM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bKt78XzGEXUAk5t/1RhhesSuglR7ftGwww0ClR67hLW9fovKrlTnHjtxEi9YPDoFCTUK+0Knviq0YP43rfKgyfO4rTAJRv+HC3unR+DBiORlq63fBTAd6MqcbuiE71b8XN6WpylV0eguLMS2Lc+6GzJi7FH4jxuJWMAnpGMEsMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YCm0H5MDrz4f3lVb;
+	Wed, 18 Dec 2024 15:44:15 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 47E1D1A0194;
+	Wed, 18 Dec 2024 15:44:36 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP2 (Coremail) with SMTP id Syh0CgDnk+BifWJnef6VEw--.45928S2;
+	Wed, 18 Dec 2024 15:44:35 +0800 (CST)
+Message-ID: <872c5042-01d6-4ff3-94bc-8df94e1e941c@huaweicloud.com>
+Date: Wed, 18 Dec 2024 15:44:34 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] memcg: fix soft lockup in the OOM process
+To: Michal Hocko <mhocko@suse.com>
+Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, yosryahmed@google.com,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ davidf@vimeo.com, vbabka@suse.cz, handai.szj@taobao.com,
+ rientjes@google.com, kamezawa.hiroyu@jp.fujitsu.com, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ chenridong@huawei.com, wangweiyang2@huawei.com
+References: <20241217121828.3219752-1-chenridong@huaweicloud.com>
+ <Z2F0ixNUW6kah1pQ@tiehlicka>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <Z2F0ixNUW6kah1pQ@tiehlicka>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20241218-class_fix-v4-8-3c40f098356b@quicinc.com>
-References: <20241218-class_fix-v4-0-3c40f098356b@quicinc.com>
-In-Reply-To: <20241218-class_fix-v4-0-3c40f098356b@quicinc.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Rafael J. Wysocki" <rafael@kernel.org>, Tejun Heo <tj@kernel.org>, 
- Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>, 
- Boris Burkov <boris@bur.io>, Davidlohr Bueso <dave@stgolabs.net>, 
- Jonathan Cameron <jonathan.cameron@huawei.com>, 
- Dave Jiang <dave.jiang@intel.com>, 
- Alison Schofield <alison.schofield@intel.com>, 
- Vishal Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>, 
- Dan Williams <dan.j.williams@intel.com>
-Cc: Zijun Hu <zijun_hu@icloud.com>, linux-kernel@vger.kernel.org, 
- cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
- linux-cxl@vger.kernel.org, Zijun Hu <quic_zijuhu@quicinc.com>
-X-Mailer: b4 0.14.2
-X-Proofpoint-ORIG-GUID: iQ8-mg4aEfHHSs5wuAPGnOfDbU92wXlr
-X-Proofpoint-GUID: iQ8-mg4aEfHHSs5wuAPGnOfDbU92wXlr
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
- definitions=2024-12-17_12,2024-12-17_03,2024-11-22_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
- malwarescore=0 adultscore=0 bulkscore=0 clxscore=1015 spamscore=0
- mlxlogscore=999 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2308100000 definitions=main-2412170183
-X-Apple-Remote-Links: v=1;h=KCk=;charset=UTF-8
+X-CM-TRANSID:Syh0CgDnk+BifWJnef6VEw--.45928S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tFW3ur4kJw1DWrWkJr1xAFb_yoW8Xr48pa
+	95WayaywsYyFWFqr1Ivw4vqry3Z3yIkrWagr4jkr1rKrn8Wa4S9Fyjy3y3JrWfuFn2yF12
+	9r4q9rnrJrs0yaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-From: Zijun Hu <quic_zijuhu@quicinc.com>
 
-The following device finding APIs only have one line code in function body
-device_find_child_by_name()
-device_find_any_child()
 
-Move them to header as static inline function.
+On 2024/12/17 20:54, Michal Hocko wrote:
+> On Tue 17-12-24 12:18:28, Chen Ridong wrote:
+> [...]
+>> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+>> index 1c485beb0b93..14260381cccc 100644
+>> --- a/mm/oom_kill.c
+>> +++ b/mm/oom_kill.c
+>> @@ -390,6 +390,7 @@ static int dump_task(struct task_struct *p, void *arg)
+>>  	if (!is_memcg_oom(oc) && !oom_cpuset_eligible(p, oc))
+>>  		return 0;
+>>  
+>> +	cond_resched();
+>>  	task = find_lock_task_mm(p);
+>>  	if (!task) {
+>>  		/*
+> 
+> This is called from RCU read lock for the global OOM killer path and I
+> do not think you can schedule there. I do not remember specifics of task
+> traversal for crgoup path but I guess that you might need to silence the
+> soft lockup detector instead or come up with a different iteration
+> scheme.
 
-Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
----
- drivers/base/core.c    | 32 --------------------------------
- include/linux/device.h | 14 +++++++++++---
- 2 files changed, 11 insertions(+), 35 deletions(-)
+Thank you, Michal.
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 930e43a970952b20cd1c71856bdef889698f51b4..3f37a2aecb1d11561f4edd72e973a1c43368de04 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -4100,38 +4100,6 @@ struct device *device_find_child(struct device *parent, const void *data,
- }
- EXPORT_SYMBOL_GPL(device_find_child);
- 
--/**
-- * device_find_child_by_name - device iterator for locating a child device.
-- * @parent: parent struct device
-- * @name: name of the child device
-- *
-- * This is similar to the device_find_child() function above, but it
-- * returns a reference to a device that has the name @name.
-- *
-- * NOTE: you will need to drop the reference with put_device() after use.
-- */
--struct device *device_find_child_by_name(struct device *parent,
--					 const char *name)
--{
--	return device_find_child(parent, name, device_match_name);
--}
--EXPORT_SYMBOL_GPL(device_find_child_by_name);
--
--/**
-- * device_find_any_child - device iterator for locating a child device, if any.
-- * @parent: parent struct device
-- *
-- * This is similar to the device_find_child() function above, but it
-- * returns a reference to a child device, if any.
-- *
-- * NOTE: you will need to drop the reference with put_device() after use.
-- */
--struct device *device_find_any_child(struct device *parent)
--{
--	return device_find_child(parent, NULL, device_match_any);
--}
--EXPORT_SYMBOL_GPL(device_find_any_child);
--
- int __init devices_init(void)
- {
- 	devices_kset = kset_create_and_add("devices", &device_uevent_ops, NULL);
-diff --git a/include/linux/device.h b/include/linux/device.h
-index 36d1a1607712f5a6b0668ac02a6cf6b2d0651a2d..d1871a764be62e6857595bc10b9e54862c99dfa2 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -1083,9 +1083,17 @@ int device_for_each_child_reverse_from(struct device *parent,
- 				       device_iter_t fn);
- struct device *device_find_child(struct device *parent, const void *data,
- 				 device_match_t match);
--struct device *device_find_child_by_name(struct device *parent,
--					 const char *name);
--struct device *device_find_any_child(struct device *parent);
-+
-+static inline struct device *device_find_child_by_name(struct device *parent,
-+						       const char *name)
-+{
-+	return device_find_child(parent, name, device_match_name);
-+}
-+
-+static inline struct device *device_find_any_child(struct device *parent)
-+{
-+	return device_find_child(parent, NULL, device_match_any);
-+}
- 
- int device_rename(struct device *dev, const char *new_name);
- int device_move(struct device *dev, struct device *new_parent,
+I made a mistake. I added cond_resched in the mem_cgroup_scan_tasks
+function below the fn, but after reconsideration, it may cause
+unnecessary scheduling for other callers of mem_cgroup_scan_tasks.
+Therefore, I moved it into the dump_task function. However, I missed the
+RCU lock from the global OOM.
 
--- 
-2.34.1
+I think we can use touch_nmi_watchdog in place of cond_resched, which
+can silence the soft lockup detector. Do you think that is acceptable?
+
+
+@@ -390,7 +391,7 @@ static int dump_task(struct task_struct *p, void *arg)
+        if (!is_memcg_oom(oc) && !oom_cpuset_eligible(p, oc))
+                return 0;
+
++       touch_nmi_watchdog();
+        task = find_lock_task_mm(p);
+
+Best regards,
+Ridong
 
 
