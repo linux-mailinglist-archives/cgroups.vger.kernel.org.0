@@ -1,147 +1,175 @@
-Return-Path: <cgroups+bounces-5961-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5962-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE7829F5FBA
-	for <lists+cgroups@lfdr.de>; Wed, 18 Dec 2024 08:56:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 778819F6099
+	for <lists+cgroups@lfdr.de>; Wed, 18 Dec 2024 10:01:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1719A16748D
-	for <lists+cgroups@lfdr.de>; Wed, 18 Dec 2024 07:56:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 608261885B4F
+	for <lists+cgroups@lfdr.de>; Wed, 18 Dec 2024 09:01:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45D331586DB;
-	Wed, 18 Dec 2024 07:56:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Z6OyPX/X"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07590158208;
+	Wed, 18 Dec 2024 09:00:48 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4221157472
-	for <cgroups@vger.kernel.org>; Wed, 18 Dec 2024 07:56:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 153081922F6;
+	Wed, 18 Dec 2024 09:00:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734508587; cv=none; b=hlJsc5YBV2kPWqagXC/RoXdQMWr4IOpUQsWWPgySsxpd+HeNByTKVHKkN0THcFQyn3EpGoucaLbXktULmSwcIwdqLEONCpkldPkP55yEPs9fA1DHidAblJDCZrXHn2hZnoUcfF3NYRnPzedrzIZQFKr0j9WM1e8Hmwo6uW1DgK4=
+	t=1734512447; cv=none; b=mco8bXgsSnlV9dyaICp7B6eH/FTWUgfjUKpi6Ny43/YnsStO7Wv15LOEnq2+me2w2wQ0Wi2XOLYOfFYQD15mhhES3mthgZLox4/opUIymETrHqGaCGFnAQOpUltUySeMHRoLSFib24LbTB2y6C6MmC1/j3ieufbvSf4cTIE2Uuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734508587; c=relaxed/simple;
-	bh=cjl0Cdu1nU64p1FBadrj6cML7s4f100BVHDG+dqkhvQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MycEWa56B1mr4oBfjPj9TFIK9TaLvZmgjr0GI9zAwf8qVseLDViVMCU97jq5X6vpZcWFTwPZ/FABtDqQGdYhfLIVWNf8w+0KvACTR8jbhuuUmHLejoz/j50+bYkFPFTpxfUWjR43ESJWUvWsI9XbTHvgBAnCFcX1WIBPmgPygsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Z6OyPX/X; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a9a0ec0a94fso966180366b.1
-        for <cgroups@vger.kernel.org>; Tue, 17 Dec 2024 23:56:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1734508583; x=1735113383; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YQN0wm71xAkj0p1Q/NdDLgt+KxZdFC6f+ofVO1dsHQo=;
-        b=Z6OyPX/X228/2LtFOFEz3yj3mbOTnRdYG+yclJq9uAPSz56wcpprB6YupxGu70nSXW
-         AkI/IeLYEN4bHfoacQhPnPHEG6xuTkhio1zyX3jR0KHzKgWD7CyTe07SI8umsfdNDTyQ
-         3GRmMaiF4ka5bI/jyOhaXEwB2C5n4HbSpiL3wSjVNYqYjFVTsr283WI4g9XhGE0dui0r
-         /t6YYNvLRm2iHjykXQyDaQGOyzo0fQZm9yiEHO2RzlAmdhHIadv4vUZ3oVKdssrFJcZo
-         QK3NhqiYmpo7b4KpeRfrK4sHWBi2WVIUU42G9EjXE8hOLvmuOHSR/ZbRo4IP20QV/o/m
-         fypQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734508583; x=1735113383;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YQN0wm71xAkj0p1Q/NdDLgt+KxZdFC6f+ofVO1dsHQo=;
-        b=bZlepKCrlybYV9h+yCQqwSI7tUbxPqOFYbTldGgpZc+37GJEuNOpepsxGScHR2zaHg
-         OcUJDAfzlTcV24bt7zbGu0AQrLIglI0O2Fb+14kUJxTDuZ1qeyDNyq9rg/DapKYbmuoN
-         ghkHtvV3tNRmuHvbOw9aI3WgQhV+kj3iysVVmahx7nqRWMK7JE7YtoV1YMEa1avqj0Js
-         L1/6chhMWzVHv1jclqz4ekVhjltN4Xcx39vlHJmRxKDQlKBt/Y2SdXaBh+0mlJH12FfZ
-         5uQmwXcrfkYFW1v1rwR5iKuuq6lFThYPKhYz07MdXN8CiR2aEeMx914Y4h5p6BmVUvyw
-         MJqw==
-X-Forwarded-Encrypted: i=1; AJvYcCUgXnYoYmleciU0SRbr/0Kfs/Nigxy/Bk1JER2HU/kwLsiiHd2nquuDCfO2+IRhyIVvY/7vZweZ@vger.kernel.org
-X-Gm-Message-State: AOJu0YxjHHvk0mIDQgHTyP+AfGoAEumNh9y7TH2W6E70iFB6+uX4+gqR
-	75CmW0cFryTHZh9T6lVWHUWhsN0UBCzJlq+WXTpfew1WHjrjWOTI40HPb+5VK60=
-X-Gm-Gg: ASbGncsWieFXJTQpwVFT3H70NWWJS0zvT+bUavOswdcSLdiXAAKyPd/Oo8iciBt9pLd
-	eX5twlr1jD0j/n5TKxPntscs3fuzmXad+rdVEqf7CPPcjv7m8giLHCYEBDkPlbC2aZbHQ3GZmKO
-	U6LkM05XgqOsoLsIIKG2MuNctxbidzaLxdBPXW4PVdEwk0u4DLrI1BsA8C4huqmtQrqlMrDEGf6
-	xz4Q4XjBh0sljCwj7q+8facyjEMZe5X2Miix1pChWVSNsKY0wUcyvE8cskFqKLnl80=
-X-Google-Smtp-Source: AGHT+IG9nTkGC+v0t17oJVqtodNfTCv4+bFZC7mXaRTkfBgwdIfAwM2qjG+K5/ZQ0hmsRv1dwYdgbA==
-X-Received: by 2002:a17:906:3145:b0:aa6:b4b3:5923 with SMTP id a640c23a62f3a-aabf47baa14mr132241166b.33.1734508583140;
-        Tue, 17 Dec 2024 23:56:23 -0800 (PST)
-Received: from localhost (109-81-89-64.rct.o2.cz. [109.81.89.64])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5d652ae1127sm5304774a12.42.2024.12.17.23.56.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2024 23:56:22 -0800 (PST)
-Date: Wed, 18 Dec 2024 08:56:21 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, yosryahmed@google.com,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, davidf@vimeo.com, vbabka@suse.cz,
-	handai.szj@taobao.com, rientjes@google.com,
-	kamezawa.hiroyu@jp.fujitsu.com, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	chenridong@huawei.com, wangweiyang2@huawei.com
-Subject: Re: [PATCH v1] memcg: fix soft lockup in the OOM process
-Message-ID: <Z2KAJZ4TKZnGxsOM@tiehlicka>
-References: <20241217121828.3219752-1-chenridong@huaweicloud.com>
- <Z2F0ixNUW6kah1pQ@tiehlicka>
- <872c5042-01d6-4ff3-94bc-8df94e1e941c@huaweicloud.com>
+	s=arc-20240116; t=1734512447; c=relaxed/simple;
+	bh=iHVkWEtt4j2t063KxaEE/3ClKaWQq0T/VndFs9JQEf8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NGrP/BIshAi5jpL+ak+ZB6xJytFfVyJuKqEo7Pp7bD5M9MR2dHCAOBband1BAmT2OUfz/XF+ZyZaPx1dQMnNvVzBrZHT2jE/00zpfjPdn7sFZFLLb221JS/kABNWCkwVHQ4ywSB7jx8ivARsCix/6S3SbF5zI+gN4UlASfnNRQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YCnh345Rtz4f3lVs;
+	Wed, 18 Dec 2024 17:00:19 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 1FA991A07BA;
+	Wed, 18 Dec 2024 17:00:40 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP1 (Coremail) with SMTP id cCh0CgAHr7A2j2JnGiFEEw--.54528S2;
+	Wed, 18 Dec 2024 17:00:39 +0800 (CST)
+Message-ID: <02f7d744-f123-4523-b170-c2062b5746c8@huaweicloud.com>
+Date: Wed, 18 Dec 2024 17:00:38 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <872c5042-01d6-4ff3-94bc-8df94e1e941c@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] memcg: fix soft lockup in the OOM process
+To: Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>
+Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, yosryahmed@google.com,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ davidf@vimeo.com, vbabka@suse.cz, handai.szj@taobao.com,
+ rientjes@google.com, kamezawa.hiroyu@jp.fujitsu.com, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ chenridong@huawei.com, wangweiyang2@huawei.com
+References: <20241217121828.3219752-1-chenridong@huaweicloud.com>
+ <Z2F0ixNUW6kah1pQ@tiehlicka>
+ <872c5042-01d6-4ff3-94bc-8df94e1e941c@huaweicloud.com>
+ <Z2KAJZ4TKZnGxsOM@tiehlicka>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <Z2KAJZ4TKZnGxsOM@tiehlicka>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgAHr7A2j2JnGiFEEw--.54528S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXF18ZFyrCr4kZw1fur1rJFb_yoW5Cr1fpF
+	yDWasFyws8uay0qrnFvw1vvr1Sy392kF4jgr4ktryFyrn0qw1Svryjy3y3uryfZFn2yF12
+	vF4j9w17Wr1jvFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Wed 18-12-24 15:44:34, Chen Ridong wrote:
-> 
-> 
-> On 2024/12/17 20:54, Michal Hocko wrote:
-> > On Tue 17-12-24 12:18:28, Chen Ridong wrote:
-> > [...]
-> >> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
-> >> index 1c485beb0b93..14260381cccc 100644
-> >> --- a/mm/oom_kill.c
-> >> +++ b/mm/oom_kill.c
-> >> @@ -390,6 +390,7 @@ static int dump_task(struct task_struct *p, void *arg)
-> >>  	if (!is_memcg_oom(oc) && !oom_cpuset_eligible(p, oc))
-> >>  		return 0;
-> >>  
-> >> +	cond_resched();
-> >>  	task = find_lock_task_mm(p);
-> >>  	if (!task) {
-> >>  		/*
-> > 
-> > This is called from RCU read lock for the global OOM killer path and I
-> > do not think you can schedule there. I do not remember specifics of task
-> > traversal for crgoup path but I guess that you might need to silence the
-> > soft lockup detector instead or come up with a different iteration
-> > scheme.
-> 
-> Thank you, Michal.
-> 
-> I made a mistake. I added cond_resched in the mem_cgroup_scan_tasks
-> function below the fn, but after reconsideration, it may cause
-> unnecessary scheduling for other callers of mem_cgroup_scan_tasks.
-> Therefore, I moved it into the dump_task function. However, I missed the
-> RCU lock from the global OOM.
-> 
-> I think we can use touch_nmi_watchdog in place of cond_resched, which
-> can silence the soft lockup detector. Do you think that is acceptable?
 
-It is certainly a way to go. Not the best one at that though. Maybe we
-need different solution for the global and for the memcg OOMs. During
-the global OOM we rarely care about latency as the whole system is
-likely to struggle. Memcg ooms are much more likely. Having that many
-tasks in a memcg certainly requires a further partitioning so if
-configured properly the OOM latency shouldn't be visible much. But I am
-wondering whether the cgroup task iteration could use cond_resched while
-the global one would touch_nmi_watchdog for every N iterations. I might
-be missing something but I do not see any locking required outside of
-css_task_iter_*.
--- 
-Michal Hocko
-SUSE Labs
+
+On 2024/12/18 15:56, Michal Hocko wrote:
+> On Wed 18-12-24 15:44:34, Chen Ridong wrote:
+>>
+>>
+>> On 2024/12/17 20:54, Michal Hocko wrote:
+>>> On Tue 17-12-24 12:18:28, Chen Ridong wrote:
+>>> [...]
+>>>> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+>>>> index 1c485beb0b93..14260381cccc 100644
+>>>> --- a/mm/oom_kill.c
+>>>> +++ b/mm/oom_kill.c
+>>>> @@ -390,6 +390,7 @@ static int dump_task(struct task_struct *p, void *arg)
+>>>>  	if (!is_memcg_oom(oc) && !oom_cpuset_eligible(p, oc))
+>>>>  		return 0;
+>>>>  
+>>>> +	cond_resched();
+>>>>  	task = find_lock_task_mm(p);
+>>>>  	if (!task) {
+>>>>  		/*
+>>>
+>>> This is called from RCU read lock for the global OOM killer path and I
+>>> do not think you can schedule there. I do not remember specifics of task
+>>> traversal for crgoup path but I guess that you might need to silence the
+>>> soft lockup detector instead or come up with a different iteration
+>>> scheme.
+>>
+>> Thank you, Michal.
+>>
+>> I made a mistake. I added cond_resched in the mem_cgroup_scan_tasks
+>> function below the fn, but after reconsideration, it may cause
+>> unnecessary scheduling for other callers of mem_cgroup_scan_tasks.
+>> Therefore, I moved it into the dump_task function. However, I missed the
+>> RCU lock from the global OOM.
+>>
+>> I think we can use touch_nmi_watchdog in place of cond_resched, which
+>> can silence the soft lockup detector. Do you think that is acceptable?
+> 
+> It is certainly a way to go. Not the best one at that though. Maybe we
+> need different solution for the global and for the memcg OOMs. During
+> the global OOM we rarely care about latency as the whole system is
+> likely to struggle. Memcg ooms are much more likely. Having that many
+> tasks in a memcg certainly requires a further partitioning so if
+> configured properly the OOM latency shouldn't be visible much. But I am
+> wondering whether the cgroup task iteration could use cond_resched while
+> the global one would touch_nmi_watchdog for every N iterations. I might
+> be missing something but I do not see any locking required outside of
+> css_task_iter_*.
+
+Do you mean like that:
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index d9061bd55436..9d197a731841 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -5023,7 +5023,7 @@ struct task_struct *css_task_iter_next(struct
+css_task_iter *it)
+        }
+
+        spin_unlock_irqrestore(&css_set_lock, irqflags);
+-
++       cond_resched();
+        return it->cur_task;
+ }
+
+@@ -433,8 +433,10 @@ static void dump_tasks(struct oom_control *oc)
+                struct task_struct *p;
+
+                rcu_read_lock();
+-               for_each_process(p)
++               for_each_process(p) {
++                       touch_nmi_watchdog();
+                        dump_task(p, oc);
++               }
+                rcu_read_unlock();
+        }
+
+
+The 'css_task_iter_*' functions are used in many places. We should be
+very careful when adding cond_resched within these functions. I don't
+see any RCU or spinlock usage outside of css_task_iter_*, except for
+mutex locks, such as in cgroup_do_freeze.
+
+And perhaps Tj will have some opinions on this?
+
+Best regards,
+Ridong
+
 
