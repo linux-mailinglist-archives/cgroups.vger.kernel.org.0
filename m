@@ -1,174 +1,207 @@
-Return-Path: <cgroups+bounces-5967-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5968-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 167819F7265
-	for <lists+cgroups@lfdr.de>; Thu, 19 Dec 2024 03:02:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 009A39F7673
+	for <lists+cgroups@lfdr.de>; Thu, 19 Dec 2024 08:57:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFAFF16E637
-	for <lists+cgroups@lfdr.de>; Thu, 19 Dec 2024 01:58:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAD871882506
+	for <lists+cgroups@lfdr.de>; Thu, 19 Dec 2024 07:57:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A33CB4DA04;
-	Thu, 19 Dec 2024 01:54:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57CF82165EE;
+	Thu, 19 Dec 2024 07:57:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gJD4Af7t"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B88A4207F;
-	Thu, 19 Dec 2024 01:54:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04FB9149DF4
+	for <cgroups@vger.kernel.org>; Thu, 19 Dec 2024 07:57:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734573298; cv=none; b=fQbiyz2YK0FpBe/YZ6PoKew3R/8ZEqeuRHUAw5iBVEJzGNS5uROjLyI63wDPkyEgSkDwAMP0RSCXJ9gMfvCU3jGvdnVBoAYXdQt25vzFVL94GAp9gc6zdnT/NZ5UgDQwneyNEb2d5cos27BTLc2asaAknyIXYajpLJzsDhzNzho=
+	t=1734595027; cv=none; b=n1aHNxqjmBCgbXjWRRXQl851BfkI45OdsPfus2pLZHIf0oFx+TxSukJ5hcqZA7/IUDds6nom5vVz3q68W4dERuwOKUWBVppdp8Y+oMAw0V2krElPSI2yYKTJ6dFP0m4P9PF03GbqI5heO78VRi58A3a4TVgKnKA1LrmlfBeMfd8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734573298; c=relaxed/simple;
-	bh=wtu2vnxn9r/J/OcgjmetgtV5zs3hVNSiC8XkruQ6fN0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hSLYqxmll9VEnZEAP+zwAYRLlJpw1RCQ6rVpE7KoLRCJChTmsgwg+fqSlwy1dPhIkBfXXx/bf5G/gMt4e+zme7H9mcft5QFzNwCXRLVQMGfNenfdfuqwpyPq5V48Z2gE13zf9dePjTq2tRB6/JJSJyx2aMKHVkNAbvV+IGnD8zM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YDDBJ2n1Qz4f3jXc;
-	Thu, 19 Dec 2024 09:54:32 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id E38FB1A0359;
-	Thu, 19 Dec 2024 09:54:51 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP4 (Coremail) with SMTP id gCh0CgCXcobqfGNndZsDFA--.17867S2;
-	Thu, 19 Dec 2024 09:54:51 +0800 (CST)
-Message-ID: <2a28dc42-bd9c-4799-9fe8-0298f5341093@huaweicloud.com>
-Date: Thu, 19 Dec 2024 09:54:50 +0800
+	s=arc-20240116; t=1734595027; c=relaxed/simple;
+	bh=N2tKNLtLJtOHWoOrsE9lz6kDRGWmZBcTqhq1ZmtwoYY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XoBC96g8/LFFb3UF/F43xWsGUR5hsIVnOItPclmwfQxlxfyQ4lZZVeA4qaTiMw/Ds0Xyy2s18VYNctiOp3rEwc4aDyacRLYGqaTKV6k86+AtIsOpnoaaD7M3Dtg4FAcMfejDc2r8+Hes8m/SYMCy4y7aTqoIQOo+rmp7TznbbME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gJD4Af7t; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-aab925654d9so94033866b.2
+        for <cgroups@vger.kernel.org>; Wed, 18 Dec 2024 23:57:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1734595023; x=1735199823; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JEx8BhRUkkgkswMHP6Lmd6KXutJJvSq42c8tbR5W3Eo=;
+        b=gJD4Af7tUvVBbWqMlIHXGHCdgKNAuadpMuqoq/sTzizUs/VC2xc8jQnG5WCfy6z04G
+         5U9euoDHkJA3Nb/aZWBHGu8+LyEugQICLmmGNVgza8unCSo4m8JLP58u0yPk9GRHejeM
+         ctLuwM7GuST9qtX9mwr2WknjymKBkioVq4pfJOiid0kD5txy5PbOUKH7fo3Xjd9o9RHe
+         BVV+lmgN2ccm9DhJXWRmolb+vIyK2U+I7/NeO+s8xGkkWwu4bebtf5H5m4vVNO3CAVsB
+         JOnYi6yN9ZN79/qFRGwden9+Dkcriws/xXgdoJizVZYw9bE/msvu9sCbwEkktMKptGZF
+         QFtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734595023; x=1735199823;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JEx8BhRUkkgkswMHP6Lmd6KXutJJvSq42c8tbR5W3Eo=;
+        b=U3Pc5I8pjsVW8tW1kUbIipFHxRQI/FTcoS9ycdLFf9jiwVDl082I8Xe6R8gmgbuuXI
+         VohpuGEbrLK5EcBjGSdv/X5LZx/93CqVce106a+1CDZ/ggfM9Hj+4xJJCXL6S6R9wxoO
+         rUm+XoeM9fdvg9go/Ocz28b/1FLwQy0Lxbe5lUmEYqEuBVwd9BJGOl2ycNmehurcMGq9
+         G+6sXIJjRdgHH7TNQ/AOCNB717+BNc4VZs8A24zpwSPe301bzPPLrQtevJCmy7PKukRl
+         eUsn/giXmTl4HKVO7Ct1/Rrrs14OA/PPtWEv4CiN2oK8o9KD4bGYC8tqdWxfWStCQZI6
+         oHkw==
+X-Forwarded-Encrypted: i=1; AJvYcCWMhdODWjzAVdSg9/tYzxVGB4vNBIFosELwa4tFSDtmmJaNq1c0c3au+4ieeIBS1oUX489xNo1t@vger.kernel.org
+X-Gm-Message-State: AOJu0YzRxGzI3znrJlkmabJp+rmQSw5P+UqrnJNZYbJtuKM5sarkSIZP
+	ZNPFrM9FtHSwxG3/UE3dV6MhML5aH3/d8MCdag0VBXe8lLle6XmyUcYpQHA1fQY=
+X-Gm-Gg: ASbGnculAgNl7amVEBsL8NPMnUeeTbU0t70EMe9RVi5x4Kgf5ke3w0qaOGZhhxCxje+
+	TSwHyVhtnNrkkdaM06HQC92zeXnXedqPq4+SL5X/ORV51q/3wJoTdqaXvnxDLVXiB9dFJuXOXUL
+	HR1/NK9Qo+EkMycw96Y5ajRjLS/nT9/DlcTW1hG4MxtHrp1vBK1EnyFa7YRHn3bP86lWUTnynvV
+	IZD/TG6B8begFTCviYj2uwmOosNiKBDeboJaTeacxTXAOh3BMz0ddftP6PxVwxl
+X-Google-Smtp-Source: AGHT+IFObg+BLSYVoCnWrejO/CfDsPWEnBJkisYPPT/XL+9HTYPC53Xic1aTpZCg0MxeBKFnmi/9Og==
+X-Received: by 2002:a17:907:9555:b0:aab:a0d4:ec9f with SMTP id a640c23a62f3a-aabf4758f2amr406629166b.21.1734595023224;
+        Wed, 18 Dec 2024 23:57:03 -0800 (PST)
+Received: from localhost (109-81-88-1.rct.o2.cz. [109.81.88.1])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0e89537dsm37406766b.54.2024.12.18.23.57.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 18 Dec 2024 23:57:02 -0800 (PST)
+Date: Thu, 19 Dec 2024 08:57:01 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: Tejun Heo <tj@kernel.org>, akpm@linux-foundation.org,
+	hannes@cmpxchg.org, yosryahmed@google.com, roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev, muchun.song@linux.dev, davidf@vimeo.com,
+	vbabka@suse.cz, handai.szj@taobao.com, rientjes@google.com,
+	kamezawa.hiroyu@jp.fujitsu.com, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	chenridong@huawei.com, wangweiyang2@huawei.com
+Subject: Re: [PATCH v1] memcg: fix soft lockup in the OOM process
+Message-ID: <Z2PRzf0EU_wGwEVI@tiehlicka>
+References: <20241217121828.3219752-1-chenridong@huaweicloud.com>
+ <Z2F0ixNUW6kah1pQ@tiehlicka>
+ <872c5042-01d6-4ff3-94bc-8df94e1e941c@huaweicloud.com>
+ <Z2KAJZ4TKZnGxsOM@tiehlicka>
+ <02f7d744-f123-4523-b170-c2062b5746c8@huaweicloud.com>
+ <Z2KichB-NayQbzmd@tiehlicka>
+ <7d7b3c01-4977-41fa-a19c-4e6399117e8e@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [next -v1 4/5] memcg: factor out the __refill_obj_stock function
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: akpm@linux-foundation.org, mhocko@kernel.org, hannes@cmpxchg.org,
- yosryahmed@google.com, roman.gushchin@linux.dev, muchun.song@linux.dev,
- davidf@vimeo.com, vbabka@suse.cz, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- chenridong@huawei.com, wangweiyang2@huawei.com
-References: <20241206013512.2883617-1-chenridong@huaweicloud.com>
- <20241206013512.2883617-5-chenridong@huaweicloud.com>
- <q7k5vqzeit4ib6joowtib6mlpwu2zdnrzse5kx44wx7jhmb6ta@w6deef6omz3d>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <q7k5vqzeit4ib6joowtib6mlpwu2zdnrzse5kx44wx7jhmb6ta@w6deef6omz3d>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCXcobqfGNndZsDFA--.17867S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWr45JrWfGFWUZF1DAw43ZFb_yoW5ur1rpr
-	ZrWa4UKw48ZrW2grsI9F47Zr1rZr4vqFnFkr4Iq34xCFna9Fn0qryjka4jya48Jr93tF4x
-	Jr4qvFn2kF4UGa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7d7b3c01-4977-41fa-a19c-4e6399117e8e@huaweicloud.com>
 
-
-
-On 2024/12/18 2:19, Shakeel Butt wrote:
-> On Fri, Dec 06, 2024 at 01:35:11AM +0000, Chen Ridong wrote:
->> From: Chen Ridong <chenridong@huawei.com>
->>
->> Factor out the '__refill_obj_stock' function to make the code more
->> cohesive.
->>
->> Signed-off-by: Chen Ridong <chenridong@huawei.com>
->> ---
->>  mm/memcontrol.c | 31 ++++++++++++++++++-------------
->>  1 file changed, 18 insertions(+), 13 deletions(-)
->>
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index f977e0be1c04..0c9331d7b606 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -2697,6 +2697,21 @@ void __memcg_kmem_uncharge_page(struct page *page, int order)
->>  	obj_cgroup_put(objcg);
->>  }
->>  
->> +/* If the cached_objcg was refilled, return true; otherwise, return false */
->> +static bool __refill_obj_stock(struct memcg_stock_pcp *stock,
->> +		struct obj_cgroup *objcg, struct obj_cgroup **old_objcg)
->> +{
->> +	if (READ_ONCE(stock->cached_objcg) != objcg) {
+On Thu 19-12-24 09:27:52, Chen Ridong wrote:
 > 
-> Keep the above check in the calling functions and make this a void
-> function. Also I think we need a better name.
 > 
+> On 2024/12/18 18:22, Michal Hocko wrote:
+> > On Wed 18-12-24 17:00:38, Chen Ridong wrote:
+> >>
+> >>
+> >> On 2024/12/18 15:56, Michal Hocko wrote:
+> >>> On Wed 18-12-24 15:44:34, Chen Ridong wrote:
+> >>>>
+> >>>>
+> >>>> On 2024/12/17 20:54, Michal Hocko wrote:
+> >>>>> On Tue 17-12-24 12:18:28, Chen Ridong wrote:
+> >>>>> [...]
+> >>>>>> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> >>>>>> index 1c485beb0b93..14260381cccc 100644
+> >>>>>> --- a/mm/oom_kill.c
+> >>>>>> +++ b/mm/oom_kill.c
+> >>>>>> @@ -390,6 +390,7 @@ static int dump_task(struct task_struct *p, void *arg)
+> >>>>>>  	if (!is_memcg_oom(oc) && !oom_cpuset_eligible(p, oc))
+> >>>>>>  		return 0;
+> >>>>>>  
+> >>>>>> +	cond_resched();
+> >>>>>>  	task = find_lock_task_mm(p);
+> >>>>>>  	if (!task) {
+> >>>>>>  		/*
+> >>>>>
+> >>>>> This is called from RCU read lock for the global OOM killer path and I
+> >>>>> do not think you can schedule there. I do not remember specifics of task
+> >>>>> traversal for crgoup path but I guess that you might need to silence the
+> >>>>> soft lockup detector instead or come up with a different iteration
+> >>>>> scheme.
+> >>>>
+> >>>> Thank you, Michal.
+> >>>>
+> >>>> I made a mistake. I added cond_resched in the mem_cgroup_scan_tasks
+> >>>> function below the fn, but after reconsideration, it may cause
+> >>>> unnecessary scheduling for other callers of mem_cgroup_scan_tasks.
+> >>>> Therefore, I moved it into the dump_task function. However, I missed the
+> >>>> RCU lock from the global OOM.
+> >>>>
+> >>>> I think we can use touch_nmi_watchdog in place of cond_resched, which
+> >>>> can silence the soft lockup detector. Do you think that is acceptable?
+> >>>
+> >>> It is certainly a way to go. Not the best one at that though. Maybe we
+> >>> need different solution for the global and for the memcg OOMs. During
+> >>> the global OOM we rarely care about latency as the whole system is
+> >>> likely to struggle. Memcg ooms are much more likely. Having that many
+> >>> tasks in a memcg certainly requires a further partitioning so if
+> >>> configured properly the OOM latency shouldn't be visible much. But I am
+> >>> wondering whether the cgroup task iteration could use cond_resched while
+> >>> the global one would touch_nmi_watchdog for every N iterations. I might
+> >>> be missing something but I do not see any locking required outside of
+> >>> css_task_iter_*.
+> >>
+> >> Do you mean like that:
+> > 
+> > I've had something like this (untested) in mind
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 7b3503d12aaf..37abc94abd2e 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -1167,10 +1167,14 @@ void mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
+> >  	for_each_mem_cgroup_tree(iter, memcg) {
+> >  		struct css_task_iter it;
+> >  		struct task_struct *task;
+> > +		unsigned int i = 0
+> >  
+> >  		css_task_iter_start(&iter->css, CSS_TASK_ITER_PROCS, &it);
+> > -		while (!ret && (task = css_task_iter_next(&it)))
+> > +		while (!ret && (task = css_task_iter_next(&it))) {
+> >  			ret = fn(task, arg);
+> > +			if (++i % 1000)
+> > +				cond_resched();
+> > +		}
+> >  		css_task_iter_end(&it);
+> >  		if (ret) {
+> >  			mem_cgroup_iter_break(memcg, iter);
+> 
+> Thank you for your patience.
+> 
+> I had this idea in mind as well.
+> However, there are two considerations that led me to reconsider it:
+> 
+> 1. I wasn't convinced about how we should call cond_resched every N
+> iterations. Should it be 1000 or 10000?
 
-Thank you for your review。
+Sure, there will likely not be any _right_ value. This is mostly to
+mitigate the overhead of cond_resched which is not completely free.
+Having a system with 1000 tasks is not completely uncommon and we do not
+really need cond_resched now.
 
-How about keeping the check in the calling functions and renaming like that:
-/* Replace the stock objcg with objcg, return the old objcg */
-static obj_cgroup *replace_stock_objcg (struct memcg_stock_pcp *stock,
-struct obj_cgroup *objcg)
+More importantly we can expect cond_resched will eventually go away with
+the PREEMPT_LAZY (or what is the current name of that) so I wouldn't
+overthink this.
 
-Best regards,
-Ridong
+> 2. I don't think all callers of mem_cgroup_scan_tasks need cond_resched.
+> Only fn is expensive (e.g., dump_tasks), and it needs cond_resched. At
+> least, I have not encountered any other issue except except when fn is
+> dump_tasks.
 
->> +		*old_objcg = drain_obj_stock(stock);
->> +		obj_cgroup_get(objcg);
->> +		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
->> +				? atomic_xchg(&objcg->nr_charged_bytes, 0) : 0;
->> +		WRITE_ONCE(stock->cached_objcg, objcg);
->> +		return true;
->> +	}
->> +	return false;
->> +}
->> +
->>  static void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
->>  		     enum node_stat_item idx, int nr)
->>  {
->> @@ -2713,12 +2728,7 @@ static void mod_objcg_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
->>  	 * accumulating over a page of vmstat data or when pgdat or idx
->>  	 * changes.
->>  	 */
->> -	if (READ_ONCE(stock->cached_objcg) != objcg) {
->> -		old = drain_obj_stock(stock);
->> -		obj_cgroup_get(objcg);
->> -		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
->> -				? atomic_xchg(&objcg->nr_charged_bytes, 0) : 0;
->> -		WRITE_ONCE(stock->cached_objcg, objcg);
->> +	if (__refill_obj_stock(stock, objcg, &old)) {
->>  		stock->cached_pgdat = pgdat;
->>  	} else if (stock->cached_pgdat != pgdat) {
->>  		/* Flush the existing cached vmstat data */
->> @@ -2871,14 +2881,9 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
->>  	local_lock_irqsave(&memcg_stock.stock_lock, flags);
->>  
->>  	stock = this_cpu_ptr(&memcg_stock);
->> -	if (READ_ONCE(stock->cached_objcg) != objcg) { /* reset if necessary */
->> -		old = drain_obj_stock(stock);
->> -		obj_cgroup_get(objcg);
->> -		WRITE_ONCE(stock->cached_objcg, objcg);
->> -		stock->nr_bytes = atomic_read(&objcg->nr_charged_bytes)
->> -				? atomic_xchg(&objcg->nr_charged_bytes, 0) : 0;
->> +	if (__refill_obj_stock(stock, objcg, &old))
->>  		allow_uncharge = true;	/* Allow uncharge when objcg changes */
->> -	}
->> +
->>  	stock->nr_bytes += nr_bytes;
->>  
->>  	if (allow_uncharge && (stock->nr_bytes > PAGE_SIZE)) {
->> -- 
->> 2.34.1
->>
-
+See above. I wouldn't really overthink this.
+-- 
+Michal Hocko
+SUSE Labs
 
