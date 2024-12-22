@@ -1,186 +1,227 @@
-Return-Path: <cgroups+bounces-5983-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5984-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B2479F9F11
-	for <lists+cgroups@lfdr.de>; Sat, 21 Dec 2024 08:28:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A1869FA37E
+	for <lists+cgroups@lfdr.de>; Sun, 22 Dec 2024 03:48:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2AA916BABF
-	for <lists+cgroups@lfdr.de>; Sat, 21 Dec 2024 07:28:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1267166ED3
+	for <lists+cgroups@lfdr.de>; Sun, 22 Dec 2024 02:48:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05D651EC4D8;
-	Sat, 21 Dec 2024 07:28:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B592E1AAC9;
+	Sun, 22 Dec 2024 02:47:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="eIszqlFX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fwhx3mN6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0172D18A6A6
-	for <cgroups@vger.kernel.org>; Sat, 21 Dec 2024 07:28:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECC5E847C;
+	Sun, 22 Dec 2024 02:47:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734766098; cv=none; b=jye1EknFycdE27Fsit49VT+K077vHGSuP8MwNE2e2tVaKehVnj5lbNZJqvz+pVK8/SVzHZqbxJOznGF4c7f+ufw6vZ2RXBNK+7+Nw7McXpiGbCW8jMnOP4Isslx3QA9UtUc6bhwIBFI1ydq+dB6lhWIcEHfVs57NrkZZnbvkTWo=
+	t=1734835676; cv=none; b=KMDXYR27ye53r+pInycR/WLNXwilQWBi79QNATI5OoZpPMWMK2kjw4KhUwlNFQbh7bJtPTFGdvu+nmyPFg8XQMNz6MgCqp4StOAyheABBFgXEt3rgNTgdFtMEWfkdPFgu3rpiqciFGqllooA3Xrr9GtStNROg+nXu4QGcWqfK6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734766098; c=relaxed/simple;
-	bh=1f9p+y4d/GY9dmYzXSe4n28/ksqkQiyNWLPnNNm9qnw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JJc/QYybGHHuHpd2OCJCAk6zdCJ2tQGHi5a8rLHVkHu8o9NMiMuKPfih+y39u/SZglv4Fs+U1NbC+I+BjbLP1fx9uSF0juPVYeRpcVj5CPnpEOqlTKg7vndPeRQ3d5UDWoij3gjs1Dy/rOGpim2JtMoZTROTckLBbB2VyjbDLQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=eIszqlFX; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a9a68480164so440445766b.3
-        for <cgroups@vger.kernel.org>; Fri, 20 Dec 2024 23:28:15 -0800 (PST)
+	s=arc-20240116; t=1734835676; c=relaxed/simple;
+	bh=FlRgg2fiWfBRl1IuZ32hwgRopiOwpnTM7bcJNBlLz0I=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=FtsQ9eOkApIbAy0QtH1WwWA/al4yPrWG6rArgirwx5VnShOlcy4CCDxAwiOBPgf8xCmMuvqUvZsS9ONWh9T0At+RQw9sn95ZRAbp0z7b0WF6CFNsq5Sxn3cf85lCF9ToCKL5ntRFppqgG6f9X2RNRNPagYQoK4Y0bjTjVRQzKcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fwhx3mN6; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-725ce7b82cbso3707650b3a.0;
+        Sat, 21 Dec 2024 18:47:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1734766094; x=1735370894; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZfsGErZKjmGQuLFmm6/I8+C/KfUfqFh+6QS5YvZcZGo=;
-        b=eIszqlFXn8zX//UGm8sWcLN5Jh6bVdt1nHzJ6vCYYDDivvxS/QWRTv8GsvuffS8Bag
-         /fVLoiKH3qm48SwCjqKt5oAp2LAOPu8/8MUfhBCQILBD05eXRaggL6MSEZYcmExNrW1k
-         d32h96ezBioYXydLxJ0ZgFxzqYh1obSLk4Mz/IIaIde7jKxJlOBXcXbZwCompW2IO+wi
-         6E8w2sd7hhADvacppNiHbQFJJEPb2uVc3hacUGHUSFTWGWASPyjxri69E9BH/9horpjN
-         hQkwQR6AVRmeW2Xo1ouKtvXF4ajBQS/Cv0tVTu76A9T1xFsI3yHkyj846UOHPg4njOEu
-         YsWg==
+        d=gmail.com; s=20230601; t=1734835674; x=1735440474; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FO8rInDOu2JFbZe/K9RwLg7QhRtOMGb19Km8CUvAsg0=;
+        b=Fwhx3mN6xCDmBfGbOnDVUKWwpLoBILg72oPau9ooFWJUCjQw2nmSi15nP2T6XpY5q2
+         MYsKu+7MP12eIFE/WQ3txjLRdgdUXM7TghodT3OggIe44SuJ/q8LY+8YZE8huuWd1ZDO
+         NS86e91eaBVXxN3roeJM4tXD4OdpEImElpYtqo97m8j5xmQxfJPTh9MeiYaaMsp1DYA4
+         yD5sT0tRfukL8WCgy+eDAWPHOVieDlzP+f0I5gyX1S7RyZLLW3kPp0oR5PB1TzaKu5iw
+         /wX3ly900cL01LcvCEH6oqwF2w/U7FgVLUUQcbpL66Z1eiNzhzFOte8LHFO24yLj+d2a
+         QkGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734766094; x=1735370894;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZfsGErZKjmGQuLFmm6/I8+C/KfUfqFh+6QS5YvZcZGo=;
-        b=xTqtHR/U8ZvEEhOVmPLQR+mughisdY9AratPIrUXyQFVTYYgo5QL4LXF06T9XKHXij
-         A7VNkObM8ZE7lS85qlDq9Gq1gCHiQMWext1JLoXHpzGk4ITq+5MQaYohVGl+Zan81ctN
-         MZuTe15FwcXy7Vx9Qm4ZXXR4pyDRp21B+pA1pCMtZjoDykNk0gOQsk3HRqyAxqAhmi3o
-         mhYWUaYom0q81ewHlZVsHbs56PDlwMgwVKRLqRm979mgMlq44iUwEtrbu+LqHwSIBMA4
-         CTVDunbvX6PLKR3cuxJWd78fqv2IVrdWhw+/8StoCbM8oh7/hhNTomEBekQGAsRMBGE9
-         QFrA==
-X-Forwarded-Encrypted: i=1; AJvYcCVrn4esVVn02i3S5Ox4/7MElZYxD6b0YHs3nsmFdygFmyiBi3Cjv/FYWgYki4jrBcnUscjIfDgO@vger.kernel.org
-X-Gm-Message-State: AOJu0YzF6+92bZWU1HfJvc14f4ii4U6M2ZwZa52OXdeYG1pB8ZDnf6Mu
-	AYhi8YbW25o/oWXl/fqRCIivamXI+2ZCjfYrI85mAOqJBAz/57az8/CVHuBCdec=
-X-Gm-Gg: ASbGnct5sL+HCAsY1QfoNk9Wk9LuaBwEMM82byBQWQ90ZhBYjJEIXF4NvlQkF7DaQoi
-	+vN9a822kd3bAQaQnv9sZWoZEgfFbC+/KN67aQE8C4NUq6uv4hucdHqQgtAgaclEU8c7JSOnKrQ
-	arBGDWQ11WTF2nsHNIS9CacrfgqLzGN46CkZWlzCaax0YjynFYmcOJFs3wUInW3WUugOfxdCjic
-	dcwcxbl31cNKW6P7v3kufZ/jArBCuZb3FjhUiDCrS4KcWHtI0Z6a1YkZrkuLPcM
-X-Google-Smtp-Source: AGHT+IFHzrzntAhwZIjd/yc/QVtZxcJtWRq2cNvhXhZieIi32xjE4dR2rFr7xEc0wZQva/G+/Hck9g==
-X-Received: by 2002:a17:907:7208:b0:aa5:43c4:da78 with SMTP id a640c23a62f3a-aac33685dfemr503281866b.51.1734766094208;
-        Fri, 20 Dec 2024 23:28:14 -0800 (PST)
-Received: from localhost (109-81-88-1.rct.o2.cz. [109.81.88.1])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aac0efe46b3sm252247466b.99.2024.12.20.23.28.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Dec 2024 23:28:13 -0800 (PST)
-Date: Sat, 21 Dec 2024 08:28:13 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Chen Ridong <chenridong@huaweicloud.com>, hannes@cmpxchg.org,
-	yosryahmed@google.com, roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev, muchun.song@linux.dev, davidf@vimeo.com,
-	vbabka@suse.cz, handai.szj@taobao.com, rientjes@google.com,
-	kamezawa.hiroyu@jp.fujitsu.com, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	chenridong@huawei.com, wangweiyang2@huawei.com
-Subject: Re: [PATCH v2] memcg: fix soft lockup in the OOM process
-Message-ID: <Z2ZuDTYu3PwV1JmT@tiehlicka>
-References: <20241220103123.3677988-1-chenridong@huaweicloud.com>
- <20241220144734.05d62ef983fa92e96e29470d@linux-foundation.org>
+        d=1e100.net; s=20230601; t=1734835674; x=1735440474;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FO8rInDOu2JFbZe/K9RwLg7QhRtOMGb19Km8CUvAsg0=;
+        b=eQF7Bh1Om30VEzmZAEECjl09sqIrYBKGmQeevpFd5TNQ18JW/Kjs911ZqR88aGWRHT
+         389kEGJgfg7PRFUds5phjRJhtfXjtAZ7DmrTOFevZ6ZWAVUwqq0Qzin8eJBQXo/VJaTa
+         sGIDQOrKlMz7WqF/qBADgJFYmM/neC20tFZx6z1g2yQLHHkgRR+n6rlu7G/mNO4KKLWD
+         8EJcHLkq0jz90J6L0yCITAIg4En5ziIEMRj6Uc9yyvQjWNHjAtYo8p93mYF6Xa6XDcVb
+         VKYcn76qwrH9SULpjt9HY8IcZZVc0pX78C3Cnv+OgLshJNedV8wEMnjhrGfUlIcHWRIn
+         Gkiw==
+X-Forwarded-Encrypted: i=1; AJvYcCUYTkZuvEnBCMruhuu9zmnupWCynr2Jwg/FFC23jGYm1pkpoKw9QTXEg64Y+Of31608QaUQ/VsA@vger.kernel.org, AJvYcCW1eq4zgCowSek/JDh4bgXJlDS+Ahb+scY7QEIjRRBQLJToocnW4W3OBg7w3jvupZt+stmjRQO2lsAZM2sN@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKKw+qe0N/e4OlPynVSsm3u1NzzJHPySbw0oveou5I/TmDkKFI
+	f1GbYn7PUsABn18Ovl+FY6bRgAGcT93l8S6llSvjK/iPwoWmuEHd
+X-Gm-Gg: ASbGncurdfmUFsx3A7PVr2KWxlMQkZBvvXng1mbRBnO8rce/3l4wlAjKyjfwkdSiAP5
+	SZu5obLyAP82t/H+phPCY4Fdl9O/ZK7kgOyCVUP8eAnuiJsx2zSQxmAGkZUNLRSAChaUHwlKWYx
+	uDDLz8fnUtYuF7e8ghV55/heA4ow05C5kkm2NvgK87VvlxfHBqqtIMn+U+G6VVcyGQx8Nw4+viD
+	HsjVVAkeknQC6HnS8oqeIwcUMvbZDkr+Xj8S6lffAhD4GLuCulq3kWI9CDW7TxZTJNjLrKXNaSM
+	6itE/J4=
+X-Google-Smtp-Source: AGHT+IFGrCem6z5j8K4EFgotVihfBEeuRQUgl/QAeOkJis0wFjXRq24SRbQNQupejcfgdgm2cZ9D7A==
+X-Received: by 2002:a05:6a21:e8d:b0:1e1:adcd:eae5 with SMTP id adf61e73a8af0-1e5e0846948mr12974405637.42.1734835674072;
+        Sat, 21 Dec 2024 18:47:54 -0800 (PST)
+Received: from localhost.localdomain ([180.159.118.224])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-842b1ce01b8sm4219265a12.20.2024.12.21.18.47.50
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Sat, 21 Dec 2024 18:47:53 -0800 (PST)
+From: Yafang Shao <laoar.shao@gmail.com>
+To: mingo@redhat.com,
+	peterz@infradead.org,
+	mkoutny@suse.com,
+	hannes@cmpxchg.org
+Cc: juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	mgorman@suse.de,
+	vschneid@redhat.com,
+	surenb@google.com,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	lkp@intel.com,
+	Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v8 0/4] sched: Fix missing irq time when CONFIG_IRQ_TIME_ACCOUNTING is enabled
+Date: Sun, 22 Dec 2024 10:47:30 +0800
+Message-Id: <20241222024734.63894-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241220144734.05d62ef983fa92e96e29470d@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri 20-12-24 14:47:34, Andrew Morton wrote:
-> On Fri, 20 Dec 2024 10:31:23 +0000 Chen Ridong <chenridong@huaweicloud.com> wrote:
-> 
-> > From: Chen Ridong <chenridong@huawei.com>
-> > 
-> > A soft lockup issue was found in the product with about 56,000 tasks were
-> > in the OOM cgroup, it was traversing them when the soft lockup was
-> > triggered.
-> > 
-> > ...
-> >
-> > This is because thousands of processes are in the OOM cgroup, it takes a
-> > long time to traverse all of them. As a result, this lead to soft lockup
-> > in the OOM process.
-> > 
-> > To fix this issue, call 'cond_resched' in the 'mem_cgroup_scan_tasks'
-> > function per 1000 iterations. For global OOM, call
-> > 'touch_softlockup_watchdog' per 1000 iterations to avoid this issue.
-> > 
-> > ...
-> >
-> > --- a/include/linux/oom.h
-> > +++ b/include/linux/oom.h
-> > @@ -14,6 +14,13 @@ struct notifier_block;
-> >  struct mem_cgroup;
-> >  struct task_struct;
-> >  
-> > +/* When it traverses for long time,  to prevent softlockup, call
-> > + * cond_resched/touch_softlockup_watchdog very 1000 iterations.
-> > + * The 1000 value  is not exactly right, it's used to mitigate the overhead
-> > + * of cond_resched/touch_softlockup_watchdog.
-> > + */
-> > +#define SOFTLOCKUP_PREVENTION_LIMIT 1000
-> 
-> If this is to have potentially kernel-wide scope, its name should
-> identify which subsystem it belongs to.  Maybe OOM_KILL_RESCHED or
-> something.
-> 
-> But I'm not sure that this really needs to exist.  Are the two usage
-> sites particularly related?
+After enabling CONFIG_IRQ_TIME_ACCOUNTING to track IRQ pressure in our
+container environment, we encountered several user-visible behavioral
+changes:
 
-Yes, I do not think this needs to pretend to be a more generic mechanism
-to prevent soft lockups. The number of iterations highly depends on the
-operation itself.
+- Interrupted IRQ/softirq time is excluded in the cpuacct cgroup
 
-> 
-> >  enum oom_constraint {
-> >  	CONSTRAINT_NONE,
-> >  	CONSTRAINT_CPUSET,
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 5c373d275e7a..f4c12d6e7b37 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -1161,6 +1161,7 @@ void mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
-> >  {
-> >  	struct mem_cgroup *iter;
-> >  	int ret = 0;
-> > +	int i = 0;
-> >  
-> >  	BUG_ON(mem_cgroup_is_root(memcg));
-> >  
-> > @@ -1169,8 +1170,11 @@ void mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
-> >  		struct task_struct *task;
-> >  
-> >  		css_task_iter_start(&iter->css, CSS_TASK_ITER_PROCS, &it);
-> > -		while (!ret && (task = css_task_iter_next(&it)))
-> > +		while (!ret && (task = css_task_iter_next(&it))) {
-> >  			ret = fn(task, arg);
-> > +			if (++i % SOFTLOCKUP_PREVENTION_LIMIT)
-> 
-> And a modulus operation is somewhat expensive.
+  This breaks userspace applications that rely on CPU usage data from
+  cgroups to monitor CPU pressure. This patchset resolves the issue by
+  ensuring that IRQ/softirq time is included in the cgroup of the
+  interrupted tasks.
 
-This is a cold path used during OOM. While we can make it more optimal I
-doubt it matters in practice so we should aim at readbility. I do not
-mind either way, I just wanted to note that this is not performance
-sensitive.
+- getrusage(2) does not include time interrupted by IRQ/softirq
 
-> 
-> Perhaps a simple
-> 
-> 		/* Avoid potential softlockup warning */
-> 		if ((++i & 1023) == 0)
-> 
-> at both sites will suffice.  Opinions might vary...
-> 
+  Some services use getrusage(2) to check if workloads are experiencing CPU
+  pressure. Since IRQ/softirq time is no longer included in task runtime,
+  getrusage(2) can no longer reflect the CPU pressure caused by heavy
+  interrupts.
+
+This patchset addresses the first issue, which is relatively
+straightforward. Once this solution is accepted, I will address the second
+issue in a follow-up patchset.
+
+Enabling CONFIG_IRQ_TIME_ACCOUNTING results in the CPU
+utilization metric excluding the time spent in IRQs. This means we
+lose visibility into how long the CPU was actually interrupted in
+comparison to its total utilization. The user will misleadlingly
+consider the *interrupted irq time* as *sleep time* as follows,
+
+  |<----Runtime---->|<----Sleep---->|<----Runtime---->|<---Sleep-->|
+
+While actually it is:
+
+  |<----Runtime---->|<--Interrupted time-->|<----Runtime---->|<---Sleep-->|
+
+Currently, the only ways to monitor interrupt time are through IRQ PSI or
+the IRQ time recorded in delay accounting. However, these metrics are
+independent of CPU utilization, which makes it difficult to combine them
+into a single, unified measure
+
+CPU utilization is a critical metric for almost all workloads, and
+it's problematic if it fails to reflect the full extent of system
+pressure. This situation is similar to iowait: when a task is in
+iowait, it could be due to other tasks performing I/O. It doesn’t
+matter if the I/O is being done by one of your tasks or by someone
+else's; what matters is that your task is stalled and waiting on I/O.
+Similarly, a comprehensive CPU utilization metric should reflect all
+sources of pressure, including IRQ time, to provide a more accurate
+representation of workload behavior.
+
+One of the applications impacted by this issue is our Redis load-balancing
+service. The setup operates as follows:
+
+                   ----------------
+                   | Load Balancer|
+                   ----------------
+                /    |      |        \
+               /     |      |         \ 
+          Server1 Server2 Server3 ... ServerN
+
+Although the load balancer's algorithm is complex, it follows some core
+principles:
+
+- When server CPU utilization increases, it adds more servers and deploys
+  additional instances to meet SLA requirements.
+- When server CPU utilization decreases, it scales down by decommissioning
+  servers and reducing the number of instances to save on costs.
+
+On our servers, the majority of IRQ/softIRQ activity originates from
+network traffic, and we consistently enable Receive Flow Steering
+(RFS) [0]. This configuration ensures that softIRQs are more likely to
+interrupt the tasks responsible for processing the corresponding
+packets. As a result, the distribution of softIRQs is not random but
+instead closely aligned with the packet-handling tasks.
+
+The load balancer is malfunctioning due to the exclusion of IRQ time from
+CPU utilization calculations. What's worse, there is no effective way to
+add the irq time back into the CPU utilization based on current
+available metrics. Therefore, we have to change the kernel code.
+
+Link: https://lwn.net/Articles/381955/ [0]
+
+Changes:
+v7->v8:
+- Fix a build failure report by kernel test robot
+
+v6->v7: https://lore.kernel.org/all/20241215032315.43698-1-laoar.shao@gmail.com/
+- Fix psi_show() (Michal)
+
+v5->v6: https://lore.kernel.org/all/20241211131729.43996-1-laoar.shao@gmail.com/
+- Return EOPNOTSUPP in psi_show() if irqtime is disabled (Michal)
+- Collect Reviewed-by from Michal 
+
+v4->v5: https://lore.kernel.org/all/20241108132904.6932-1-laoar.shao@gmail.com/
+- Don't use static key in the IRQ_TIME_ACCOUNTING=n case (Peter)
+- Rename psi_irq_time to irq_time (Peter)
+- Use CPUTIME_IRQ instead of CPUTIME_SOFTIRQ (Peter)
+
+v3->v4: https://lore.kernel.org/all/20241101031750.1471-1-laoar.shao@gmail.com/
+- Rebase
+
+v2->v3:
+- Add a helper account_irqtime() to avoid redundant code (Johannes)
+
+v1->v2: https://lore.kernel.org/cgroups/20241008061951.3980-1-laoar.shao@gmail.com/
+- Fix lockdep issues reported by kernel test robot <oliver.sang@intel.com>
+
+v1: https://lore.kernel.org/all/20240923090028.16368-1-laoar.shao@gmail.com/
+
+Yafang Shao (4):
+  sched: Define sched_clock_irqtime as static key
+  sched: Don't account irq time if sched_clock_irqtime is disabled
+  sched, psi: Don't account irq time if sched_clock_irqtime is disabled
+  sched: Fix cgroup irq time for CONFIG_IRQ_TIME_ACCOUNTING
+
+ kernel/sched/core.c    | 77 +++++++++++++++++++++++++++++-------------
+ kernel/sched/cputime.c | 16 ++++-----
+ kernel/sched/psi.c     | 16 ++++-----
+ kernel/sched/sched.h   | 15 +++++++-
+ kernel/sched/stats.h   |  7 ++--
+ 5 files changed, 86 insertions(+), 45 deletions(-)
 
 -- 
-Michal Hocko
-SUSE Labs
+2.43.5
+
 
