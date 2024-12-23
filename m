@@ -1,328 +1,232 @@
-Return-Path: <cgroups+bounces-5988-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5989-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3332C9FA386
-	for <lists+cgroups@lfdr.de>; Sun, 22 Dec 2024 03:49:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 933B49FA93F
+	for <lists+cgroups@lfdr.de>; Mon, 23 Dec 2024 03:13:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37D7A1884A19
-	for <lists+cgroups@lfdr.de>; Sun, 22 Dec 2024 02:49:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E40347A2054
+	for <lists+cgroups@lfdr.de>; Mon, 23 Dec 2024 02:13:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5F4F2AF11;
-	Sun, 22 Dec 2024 02:48:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GDcTzrkk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F708179A3;
+	Mon, 23 Dec 2024 02:13:12 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3C4313B5B6;
-	Sun, 22 Dec 2024 02:48:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCC612F3E;
+	Mon, 23 Dec 2024 02:13:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734835692; cv=none; b=PkbIS2CfjN/FMZnH7YevavX5b5/xFpBMYOPI8XzKj1IVNKtd5ZLd38POALl8HU1tZ9oBxlg8k+1bNa3QvuVjF/hrPHpfx+jvj3qAdvvxAUWqqEmWM6J1idmZbflqyKaBdt7hNA3WMySowLBjjxhXMLQnk6BNY+0dQIyxkxNye80=
+	t=1734919991; cv=none; b=DTiJh8iGga9tZPxRL4wVWQocNerjPb50Ermz31VvcjDdl1ZpzbLqLh1EVzx3JSk1jM+cCvaPJfcZ1149ZgyJCKWaA+8pF3JSQ6BSmOczXHr8zK+t9plJLgJifvu3X0VMdvhlzMU8AP7dPvPYR49yx+h82Hv4pTdR8+wsidQ3XAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734835692; c=relaxed/simple;
-	bh=KEU7CWczGDLyD7YwHYxR3y7xe8tazXwkEwl9zxlXFls=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aXJhHi0mGVwVjgOYLz01pKWxLTLgej0jTXnLuhv4CowRECzVp/ec1BJx1cMgqukYoBgPev5hIvy5gMFo1yQz6GpctEkevsgmF1/z+1A4oFy1L/991uGFHoDbHOmU74EVvP2bOQkqfFlxEP1RE0XEpviie/Uiu0w0NNIGkRz75u0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GDcTzrkk; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-728e1799d95so3612609b3a.2;
-        Sat, 21 Dec 2024 18:48:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734835690; x=1735440490; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=avljg6opUL/YIQ884XhrX8PNb9qrQzwcO+9J8KL8WNo=;
-        b=GDcTzrkk2BCdC1Lzjkr5KLMgUtIop+kpeQA5qB3wYg5GMF5rqjx0VUb5U2HMoyQ75r
-         8GGV/sDFW/8PFwp2rugcy1l1Ik5g7jikYMNlDBSnH4TXIHm6EcoJ1SbArXLPU9ASVg5J
-         VJGp4iPnn1PlHtbL/UFTzanSifHnZq1w04tiN4TW4JZofoNodBSdxBp/wjpf+8g6TXYu
-         BcsCnoHde8W/hyEYDF82S2fjuSJieN5qrI8wIRI30GzdKpHOQ90ZHRPBtitW5pwxhDHt
-         GsJWmK4HDq4exMg/k3BeJfgGmGSz2bUVMH4Qnzy9uvMzNQ/wCfE/dmWD3hyQuzZblqXQ
-         wTtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734835690; x=1735440490;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=avljg6opUL/YIQ884XhrX8PNb9qrQzwcO+9J8KL8WNo=;
-        b=udRIH1HuWFD1ECKYTMkHD8GRVhkYp4eQsVkD++RSzZURvHlkHJz/22wgML3q/4GQak
-         IdGnxV6/C7DySTMpiWpB5WTLkeTzmhguiCy4lDHl/M8chGlptzsfmOm3LvS0RkqnizfZ
-         k8mMy5MhFc3pFyexj3RZo1XwnhDm1/gGCWXsKgDTASqS0w9l++qc2vLOaO2xKFht3HdA
-         0jcRaRTEwfSXEVStV112ZHSZDiIu+qXw54ACyxAl93CGrMRrk6CxepkUqRy4/DZ87bwQ
-         ccpU9o3ho4JTGTeRpDfyh70OxHbHv/c3ylWGkK4V7Mbg3wfBZ7sRTLzGXyHGolLp00HW
-         O9hQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV8Q5ovUrYfa0jRJQMNbd+BrZI1fXQj+S/N/SXM5bcM+9KO8owGYJ5jiR9RnHHPuG4zqRnmwNQc@vger.kernel.org, AJvYcCVU0HtLvlaX00zFmUfM3Ut+X3mUt0C14hOiaIAxemvcAPnsPczP0np1uquqL0weWZsH4x0UkJW0gM00+PwE@vger.kernel.org
-X-Gm-Message-State: AOJu0YwbPv0DZxNuRavCAl2uYAwLeUNnGXlZLm4Wnx8PIKLUwbfy61GQ
-	XZNfic3/BFAo0jFQgF2rOXwmxgF+5M2Sgsd9OvqpPHfcgjq4pI15
-X-Gm-Gg: ASbGncvnmZeHqKERno4M67gSpIl4lh/6k6uolaGMYYsuqCvmMFtvxBZpmDbmlrXg9Tq
-	TxAvR++K0/y4Eaft/6y+3h5hXrFJ7jX94kaj7/cGic41JT3+vTQM8ndLVwYSTEawdv1hrR1ga3u
-	nMW84/U8XdrOyYQtgl2pmd4896a4YDPnFKVLQY4Jwoj77gvfKBRd46qchO9SA13kml4NHLk4Ris
-	6rF8zyfG2K+b0OVBM6YcL71qEBnnojB5Wp/nnBzJEWxn6OAnMA90RnoZZ2Wr/iVQSv2tgDuzVSQ
-	8zwIQ9A=
-X-Google-Smtp-Source: AGHT+IFf8XlfAi+sn7o2pUxzdMKTLaI9sN8E5bgBRuXrtamE6qeCcZfnQHLd3QSFgUmU/9Fq1ZbPlg==
-X-Received: by 2002:a05:6a00:410d:b0:727:3c37:d5fb with SMTP id d2e1a72fcca58-72abde8461bmr11296650b3a.16.1734835690209;
-        Sat, 21 Dec 2024 18:48:10 -0800 (PST)
-Received: from localhost.localdomain ([180.159.118.224])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-842b1ce01b8sm4219265a12.20.2024.12.21.18.48.06
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Sat, 21 Dec 2024 18:48:09 -0800 (PST)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: mingo@redhat.com,
-	peterz@infradead.org,
-	mkoutny@suse.com,
-	hannes@cmpxchg.org
-Cc: juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com,
-	mgorman@suse.de,
-	vschneid@redhat.com,
-	surenb@google.com,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	lkp@intel.com,
-	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v8 4/4] sched: Fix cgroup irq time for CONFIG_IRQ_TIME_ACCOUNTING
-Date: Sun, 22 Dec 2024 10:47:34 +0800
-Message-Id: <20241222024734.63894-5-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
-In-Reply-To: <20241222024734.63894-1-laoar.shao@gmail.com>
-References: <20241222024734.63894-1-laoar.shao@gmail.com>
+	s=arc-20240116; t=1734919991; c=relaxed/simple;
+	bh=HAUFFnigoXZZ0EhyUp3oMUZQFk/P5bYp5vcwl1a1LC0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=W/ui1efc1WtbYIU/pV2RCHN/d29NC/Z9vmWogYVQ/AFqh1FsMSGpfyHxxCwpFcPOXBEegdgccz4FgZVVkt4zgP2rgNZLlztlGy0Pj1fSsezqquQxRseIPE2vAWISQSwpgxYL9Hbz8hQ9nmGD2kuujsZ1NSmlUwOmQ2i2l5ndvH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YGhPM257Xz4f3lVL;
+	Mon, 23 Dec 2024 10:12:39 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 015BC1A018C;
+	Mon, 23 Dec 2024 10:13:00 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP2 (Coremail) with SMTP id Syh0CgD3ot8qx2hnyCdVFQ--.17863S2;
+	Mon, 23 Dec 2024 10:12:59 +0800 (CST)
+Message-ID: <ffa385b8-861f-4779-b3f0-462468193cf1@huaweicloud.com>
+Date: Mon, 23 Dec 2024 10:12:58 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] cgroup/cpuset: remove kernfs active break
+To: Waiman Long <llong@redhat.com>, chenridong <chenridong@huawei.com>,
+ tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, roman.gushchin@linux.dev
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, wangweiyang2@huawei.com
+References: <20241220013106.3603227-1-chenridong@huaweicloud.com>
+ <5c48f188-0059-46a2-9ccd-aad6721d96bb@redhat.com>
+ <cafb38a5-0832-4af4-a3b2-cca32ce63d10@huawei.com>
+ <61b5749b-3e75-4cf6-9acb-23b63f78d859@redhat.com>
+ <d3ebff6a-9866-40e2-a1ff-07bd77d20187@huaweicloud.com>
+ <5cb32477-7346-4417-a49e-de2b7dda7401@redhat.com>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <5cb32477-7346-4417-a49e-de2b7dda7401@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgD3ot8qx2hnyCdVFQ--.17863S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Xr1kAr45WF13tr43AF15twb_yoWxuF1rpF
+	1kGF1UKrWrGr18Cw4Utr1UXry8tw47Aa4UXrn7JF10va9Fkr1q9r17Xrs0gryUJr4fJry2
+	yr15J342vr1UAw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUF1
+	v3UUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-After enabling CONFIG_IRQ_TIME_ACCOUNTING to monitor IRQ pressure in our
-container environment, we observed several noticeable behavioral changes.
 
-One of our IRQ-heavy services, such as Redis, reported a significant
-reduction in CPU usage after upgrading to the new kernel with
-CONFIG_IRQ_TIME_ACCOUNTING enabled. However, despite adding more threads
-to handle an increased workload, the CPU usage could not be raised. In
-other words, even though the container’s CPU usage appeared low, it was
-unable to process more workloads to utilize additional CPU resources, which
-caused issues.
 
-This behavior can be demonstrated using netperf:
+On 2024/12/20 23:13, Waiman Long wrote:
+> On 12/20/24 1:11 AM, Chen Ridong wrote:
+>>
+>> On 2024/12/20 12:16, Waiman Long wrote:
+>>> On 12/19/24 11:07 PM, chenridong wrote:
+>>>> On 2024/12/20 10:55, Waiman Long wrote:
+>>>>> On 12/19/24 8:31 PM, Chen Ridong wrote:
+>>>>>> From: Chen Ridong <chenridong@huawei.com>
+>>>>>>
+>>>>>> A warning was found:
+>>>>>>
+>>>>>> WARNING: CPU: 10 PID: 3486953 at fs/kernfs/file.c:828
+>>>>>> CPU: 10 PID: 3486953 Comm: rmdir Kdump: loaded Tainted: G
+>>>>>> RIP: 0010:kernfs_should_drain_open_files+0x1a1/0x1b0
+>>>>>> RSP: 0018:ffff8881107ef9e0 EFLAGS: 00010202
+>>>>>> RAX: 0000000080000002 RBX: ffff888154738c00 RCX: dffffc0000000000
+>>>>>> RDX: 0000000000000007 RSI: 0000000000000004 RDI: ffff888154738c04
+>>>>>> RBP: ffff888154738c04 R08: ffffffffaf27fa15 R09: ffffed102a8e7180
+>>>>>> R10: ffff888154738c07 R11: 0000000000000000 R12: ffff888154738c08
+>>>>>> R13: ffff888750f8c000 R14: ffff888750f8c0e8 R15: ffff888154738ca0
+>>>>>> FS:  00007f84cd0be740(0000) GS:ffff8887ddc00000(0000)
+>>>>>> knlGS:0000000000000000
+>>>>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>>>> CR2: 0000555f9fbe00c8 CR3: 0000000153eec001 CR4: 0000000000370ee0
+>>>>>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>>>>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>>>>> Call Trace:
+>>>>>>     kernfs_drain+0x15e/0x2f0
+>>>>>>     __kernfs_remove+0x165/0x300
+>>>>>>     kernfs_remove_by_name_ns+0x7b/0xc0
+>>>>>>     cgroup_rm_file+0x154/0x1c0
+>>>>>>     cgroup_addrm_files+0x1c2/0x1f0
+>>>>>>     css_clear_dir+0x77/0x110
+>>>>>>     kill_css+0x4c/0x1b0
+>>>>>>     cgroup_destroy_locked+0x194/0x380
+>>>>>>     cgroup_rmdir+0x2a/0x140
+>>>>> Were you using cgroup v1 or v2 when this warning happened?
+>>>> I was using cgroup v1.
+>>> Thanks for the confirmation.
+>>>>>> It can be explained by:
+>>>>>> rmdir                 echo 1 > cpuset.cpus
+>>>>>>                   kernfs_fop_write_iter // active=0
+>>>>>> cgroup_rm_file
+>>>>>> kernfs_remove_by_name_ns    kernfs_get_active // active=1
+>>>>>> __kernfs_remove                      // active=0x80000002
+>>>>>> kernfs_drain            cpuset_write_resmask
+>>>>>> wait_event
+>>>>>> //waiting (active == 0x80000001)
+>>>>>>                   kernfs_break_active_protection
+>>>>>>                   // active = 0x80000001
+>>>>>> // continue
+>>>>>>                   kernfs_unbreak_active_protection
+>>>>>>                   // active = 0x80000002
+>>>>>> ...
+>>>>>> kernfs_should_drain_open_files
+>>>>>> // warning occurs
+>>>>>>                   kernfs_put_active
+>>>>>>
+>>>>>> This warning is caused by 'kernfs_break_active_protection' when it is
+>>>>>> writing to cpuset.cpus, and the cgroup is removed concurrently.
+>>>>>>
+>>>>>> The commit 3a5a6d0c2b03 ("cpuset: don't nest cgroup_mutex inside
+>>>>>> get_online_cpus()") made cpuset_hotplug_workfn asynchronous, which
+>>>>>> grabs
+>>>>>> the cgroup_mutex. To avoid deadlock. the commit 76bb5ab8f6e3
+>>>>>> ("cpuset:
+>>>>>> break kernfs active protection in cpuset_write_resmask()") added
+>>>>>> 'kernfs_break_active_protection' in the cpuset_write_resmask. This
+>>>>>> could
+>>>>>> lead to this warning.
+>>>>>>
+>>>>>> After the commit 2125c0034c5d ("cgroup/cpuset: Make cpuset hotplug
+>>>>>> processing synchronous"), the cpuset_write_resmask no longer needs to
+>>>>>> wait the hotplug to finish, which means that cpuset_write_resmask
+>>>>>> won't
+>>>>>> grab the cgroup_mutex. So the deadlock doesn't exist anymore.
+>>>>>> Therefore,
+>>>>>> remove kernfs_break_active_protection operation in the
+>>>>>> 'cpuset_write_resmask'
+>>>>> The hotplug operation itself is now being done synchronously, but task
+>>>>> transfer (cgroup_transfer_tasks()) because of lacking online CPUs is
+>>>>> still being done asynchronously. So kernfs_break_active_protection()
+>>>>> will still be needed for cgroup v1.
+>>>>>
+>>>>> Cheers,
+>>>>> Longman
+>>>>>
+>>>>>
+>>>> Thank you, Longman.
+>>>> IIUC, The commit 2125c0034c5d ("cgroup/cpuset: Make cpuset hotplug
+>>>> processing synchronous") deleted the 'flush_work(&cpuset_hotplug_work)'
+>>>> in the cpuset_write_resmask. And I do not see any process within the
+>>>> cpuset_write_resmask that will grab cgroup_mutex, except for
+>>>> 'flush_work(&cpuset_hotplug_work)'.
+>>>>
+>>>> Although cgroup_transfer_tasks() is asynchronous, the
+>>>> cpuset_write_resmask will not wait any work that will grab
+>>>> cgroup_mutex.
+>>>> Consequently, the deadlock does not exist anymore.
+>>>>
+>>>> Did I miss something?
+>>> Right. The flush_work() call is still needed for a different work
+>>> function. cpuset_write_resmask() will not need to grab cgroup_mutex, but
+>>> the asynchronously executed cgroup_transfer_tasks() will. I will work on
+>>> a patch to fix that issue.
+>>>
+>>> Cheers,
+>>> Longman
+>> If flush_work() is added back, this warning still exists. Do you have a
+>> idea to fix this warning?
+> 
+> I was wrong. The flush_work() call isn't needed in this case and we
+> shouldn't need to break kernfs protection. However, your patch
+> description isn't quite right.
+> 
+>> After the commit 2125c0034c5d ("cgroup/cpuset: Make cpuset hotplug
+>> processing synchronous"), the cpuset_write_resmask no longer needs to
+>> wait the hotplug to finish, which means that cpuset_write_resmask won't
+>> grab the cgroup_mutex. So the deadlock doesn't exist anymore.
+> 
+> cpuset_write_resmask() never needs to grab the cgroup_mutex. The act of
+> calling flush_work() can create a multiple processes circular locking
+> dependency that involve cgroup_mutex which can cause a deadlock. After
+> making cpuset hotplug synchronous, concurrent hotplug and cpuset
+> operations are no longer possible. However, concurrent task transfer out
+> of a previously empty CPU cpuset and adding CPU back to that cpuset is
+> possible. This will result in what the comment said "keep removing tasks
+> added
+> after execution capability is restored". That should be rare though and
+> we should probably add a check in cgroup_transfer_tasks() to detect such
+> a case and break out of it.
+> 
+> Cheers,
+> Longman
 
-  function start_server() {
-      for j in `seq 1 3`; do
-          netserver -p $[12345+j] > /dev/null &
-      done
-  }
+Hi, Longman, sorry the confused message. Do you mean this patch is
+acceptable if I update the message?
 
-  server_ip=$1
-  function start_client() {
-    # That applies to cgroup2 as well.
-    mkdir -p /sys/fs/cgroup/cpuacct/test
-    echo $$ > /sys/fs/cgroup/cpuacct/test/cgroup.procs
-    for j in `seq 1 3`; do
-        port=$[12345+j]
-        taskset -c 0 netperf -H ${server_ip} -l ${run_time:-30000}   \
-                -t TCP_STREAM -p $port -- -D -m 1k -M 1K -s 8k -S 8k \
-                > /dev/null &
-    done
-  }
+I don't think we need to add a check in the cgroup_transfer_tasks
+function. Because no process(except for writing cpuset.cpus, which has
+been reoved) will need 'kn->active' to involve cgroup_transfer_tasks now.
 
-  start_server
-  start_client
-
-We can verify the CPU usage of the test cgroup using cpuacct.stat. The
-output shows:
-
-  system: 53
-  user: 2
-
-The CPU usage of the cgroup is relatively low at around 55%, but this usage
-doesn't increase, even with more netperf tasks. The reason is that CPU0 is
-at 100% utilization, as confirmed by mpstat:
-
-  02:56:22 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
-  02:56:23 PM    0    0.99    0.00   55.45    0.00    0.99   42.57    0.00    0.00    0.00    0.00
-
-  02:56:23 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
-  02:56:24 PM    0    2.00    0.00   55.00    0.00    0.00   43.00    0.00    0.00    0.00    0.00
-
-It is clear that the %soft is excluded in the cgroup of the interrupted
-task. This behavior is unexpected. We should include IRQ time in the
-cgroup to reflect the pressure the group is under.
-
-After a thorough analysis, I discovered that this change in behavior is due
-to commit 305e6835e055 ("sched: Do not account irq time to current task"),
-which altered whether IRQ time should be charged to the interrupted task.
-While I agree that a task should not be penalized by random interrupts, the
-task itself cannot progress while interrupted. Therefore, the interrupted
-time should be reported to the user.
-
-The system metric in cpuacct.stat is crucial in indicating whether a
-container is under heavy system pressure, including IRQ/softirq activity.
-Hence, IRQ/softirq time should be included in the cpuacct system usage,
-which also applies to cgroup2’s rstat.
-
-The reason it doesn't just add the cgroup_account_*() to
-irqtime_account_irq() is that it might result in performance hit to hold
-the rq_lock in the critical path. Taking inspiration from
-commit ddae0ca2a8fe ("sched: Move psi_account_irqtime() out of
-update_rq_clock_task() hotpath"), I've now adapted the approach to handle
-it in a non-critical path, reducing the performance impact.
-
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Koutný <mkoutny@suse.com>
----
- kernel/sched/core.c  | 33 +++++++++++++++++++++++++++++++--
- kernel/sched/psi.c   | 13 +++----------
- kernel/sched/sched.h |  2 +-
- kernel/sched/stats.h |  7 ++++---
- 4 files changed, 39 insertions(+), 16 deletions(-)
-
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 22dfcd3e92ed..7faacf320af9 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -5622,6 +5622,35 @@ __setup("resched_latency_warn_ms=", setup_resched_latency_warn_ms);
- static inline u64 cpu_resched_latency(struct rq *rq) { return 0; }
- #endif /* CONFIG_SCHED_DEBUG */
- 
-+#ifdef CONFIG_IRQ_TIME_ACCOUNTING
-+static void account_irqtime(struct rq *rq, struct task_struct *curr,
-+			    struct task_struct *prev)
-+{
-+	int cpu = smp_processor_id();
-+	s64 delta;
-+	u64 irq;
-+
-+	if (!irqtime_enabled())
-+		return;
-+
-+	irq = irq_time_read(cpu);
-+	delta = (s64)(irq - rq->irq_time);
-+	if (delta < 0)
-+		return;
-+
-+	rq->irq_time = irq;
-+	psi_account_irqtime(rq, curr, prev, delta);
-+	cgroup_account_cputime(curr, delta);
-+	/* We account both softirq and irq into CPUTIME_IRQ */
-+	cgroup_account_cputime_field(curr, CPUTIME_IRQ, delta);
-+}
-+#else
-+static inline void account_irqtime(struct rq *rq, struct task_struct *curr,
-+				   struct task_struct *prev)
-+{
-+}
-+#endif
-+
- /*
-  * This function gets called by the timer code, with HZ frequency.
-  * We call it with interrupts disabled.
-@@ -5644,7 +5673,7 @@ void sched_tick(void)
- 	rq_lock(rq, &rf);
- 	donor = rq->donor;
- 
--	psi_account_irqtime(rq, donor, NULL);
-+	account_irqtime(rq, donor, NULL);
- 
- 	update_rq_clock(rq);
- 	hw_pressure = arch_scale_hw_pressure(cpu_of(rq));
-@@ -6751,7 +6780,7 @@ static void __sched notrace __schedule(int sched_mode)
- 		++*switch_count;
- 
- 		migrate_disable_switch(rq, prev);
--		psi_account_irqtime(rq, prev, next);
-+		account_irqtime(rq, prev, next);
- 		psi_sched_switch(prev, next, block);
- 
- 		trace_sched_switch(preempt, prev, next, prev_state);
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index bb56805e3d47..6fa3233fcba9 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -990,15 +990,14 @@ void psi_task_switch(struct task_struct *prev, struct task_struct *next,
- }
- 
- #ifdef CONFIG_IRQ_TIME_ACCOUNTING
--void psi_account_irqtime(struct rq *rq, struct task_struct *curr, struct task_struct *prev)
-+void psi_account_irqtime(struct rq *rq, struct task_struct *curr, struct task_struct *prev,
-+			 s64 delta)
- {
- 	int cpu = task_cpu(curr);
- 	struct psi_group *group;
- 	struct psi_group_cpu *groupc;
--	s64 delta;
--	u64 irq;
- 
--	if (static_branch_likely(&psi_disabled) || !irqtime_enabled())
-+	if (static_branch_likely(&psi_disabled))
- 		return;
- 
- 	if (!curr->pid)
-@@ -1009,12 +1008,6 @@ void psi_account_irqtime(struct rq *rq, struct task_struct *curr, struct task_st
- 	if (prev && task_psi_group(prev) == group)
- 		return;
- 
--	irq = irq_time_read(cpu);
--	delta = (s64)(irq - rq->psi_irq_time);
--	if (delta < 0)
--		return;
--	rq->psi_irq_time = irq;
--
- 	do {
- 		u64 now;
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 7e8c73110884..570cc19a0060 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1227,7 +1227,7 @@ struct rq {
- 
- #ifdef CONFIG_IRQ_TIME_ACCOUNTING
- 	u64			prev_irq_time;
--	u64			psi_irq_time;
-+	u64			irq_time;
- #endif
- #ifdef CONFIG_PARAVIRT
- 	u64			prev_steal_time;
-diff --git a/kernel/sched/stats.h b/kernel/sched/stats.h
-index 8ee0add5a48a..b9ed9fea5ab7 100644
---- a/kernel/sched/stats.h
-+++ b/kernel/sched/stats.h
-@@ -111,10 +111,11 @@ void psi_task_change(struct task_struct *task, int clear, int set);
- void psi_task_switch(struct task_struct *prev, struct task_struct *next,
- 		     bool sleep);
- #ifdef CONFIG_IRQ_TIME_ACCOUNTING
--void psi_account_irqtime(struct rq *rq, struct task_struct *curr, struct task_struct *prev);
-+void psi_account_irqtime(struct rq *rq, struct task_struct *curr,
-+			 struct task_struct *prev, s64 delta);
- #else
- static inline void psi_account_irqtime(struct rq *rq, struct task_struct *curr,
--				       struct task_struct *prev) {}
-+				       struct task_struct *prev, s64 delta) {}
- #endif /*CONFIG_IRQ_TIME_ACCOUNTING */
- /*
-  * PSI tracks state that persists across sleeps, such as iowaits and
-@@ -224,7 +225,7 @@ static inline void psi_sched_switch(struct task_struct *prev,
- 				    struct task_struct *next,
- 				    bool sleep) {}
- static inline void psi_account_irqtime(struct rq *rq, struct task_struct *curr,
--				       struct task_struct *prev) {}
-+				       struct task_struct *prev, s64 delta) {}
- #endif /* CONFIG_PSI */
- 
- #ifdef CONFIG_SCHED_INFO
--- 
-2.43.5
+Best regards,
+Ridong
 
 
