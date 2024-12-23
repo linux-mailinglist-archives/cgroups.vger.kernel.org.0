@@ -1,198 +1,153 @@
-Return-Path: <cgroups+bounces-5991-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5992-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A90CF9FA95F
-	for <lists+cgroups@lfdr.de>; Mon, 23 Dec 2024 03:38:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EAA659FB4DF
+	for <lists+cgroups@lfdr.de>; Mon, 23 Dec 2024 21:09:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1BA01885E81
-	for <lists+cgroups@lfdr.de>; Mon, 23 Dec 2024 02:38:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DDE71884DEF
+	for <lists+cgroups@lfdr.de>; Mon, 23 Dec 2024 20:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31AAC26AFC;
-	Mon, 23 Dec 2024 02:37:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A4C1C245C;
+	Mon, 23 Dec 2024 20:09:49 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F884C70;
-	Mon, 23 Dec 2024 02:37:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03B6F80038;
+	Mon, 23 Dec 2024 20:09:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734921477; cv=none; b=pfvNXT5rlVKq39yYCxI3KjgJK7ooGt599FFFTNN3Xy7azvuPA82iFP2BWAYaHex8sk4+uc5G4n44/CeOhyUc5uJql7PDg1FE4B+DK9jD8gPurZw5OA7CczhUykQpP718pVs83uSC7zNd3QyMpsDu8tQMiKb1u6kuiJSFk9JKDvY=
+	t=1734984589; cv=none; b=VIScEjZ+KDTBgPZuQaxFJvzz2nJpx1ijL8nNJpFu2Y2GxemAnWFpLZR4RA9Z6BsZi+vPoIeHklPQQ8tz1ev0nORexvvueklATnvkbB2IesJdEoh9Z/9uHejKWHjjb3hrcFuj4Hud1JKqjgJze0aLKfKeAE3AX8wuE9pjbl/AGTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734921477; c=relaxed/simple;
-	bh=0BFbEn6rqkjPQvwWSZd/1FHgZLkXqsP/umyf3XazmZk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cUgZuTDuddmUrPPjAYuyzUcc0sQyIjJ4iwLdAbVHLCLe5yzUsFyA28AM3t9zcbSftIRM2URXwfnh2/3/EwJ87QVFy93/nQ13hPo2mZiVBHjDg4BvOgjE1IxVTh1pewL1WfZdgbj/WidSu5R8teN4g+1dLw5DX1TEzSggCcStzeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YGhy21PCHz4f3lW3;
-	Mon, 23 Dec 2024 10:37:30 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id DE3B11A06D7;
-	Mon, 23 Dec 2024 10:37:50 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP1 (Coremail) with SMTP id cCh0CgCXP7H9zGhnOl_7FA--.63463S2;
-	Mon, 23 Dec 2024 10:37:50 +0800 (CST)
-Message-ID: <acb8ff3b-8c7a-4e31-a566-35c5427ba951@huaweicloud.com>
-Date: Mon, 23 Dec 2024 10:37:49 +0800
+	s=arc-20240116; t=1734984589; c=relaxed/simple;
+	bh=81UA24LqZ8J7XSELWPUkBUYpX3qWlvv6jH/ArLGdSNo=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dNhZmFSJ2y4rPfbUiTpJJlNQg4lH06NdwwzM8F50eeByoLVzIei282ean86CLI5cZ8+pNj45VhZ84h160IL5cGj4NvIFzuPIGP/K7WAaR1L6JK/aiMew7b66q/LaxX973qpMXENpJ3Hy40JTQ7G7WP05zCLp57Hxv/5ltrDwQqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4YH8Gm3lKfz6L77J;
+	Tue, 24 Dec 2024 04:08:32 +0800 (CST)
+Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
+	by mail.maildlp.com (Postfix) with ESMTPS id C7B7B140B3C;
+	Tue, 24 Dec 2024 04:09:44 +0800 (CST)
+Received: from localhost (10.47.75.118) by frapeml500008.china.huawei.com
+ (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Mon, 23 Dec
+ 2024 21:09:43 +0100
+Date: Mon, 23 Dec 2024 20:09:41 +0000
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+To: Zijun Hu <zijun_hu@icloud.com>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
+	<rafael@kernel.org>, Tejun Heo <tj@kernel.org>, Josef Bacik
+	<josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>, Boris Burkov
+	<boris@bur.io>, Davidlohr Bueso <dave@stgolabs.net>, Dave Jiang
+	<dave.jiang@intel.com>, Alison Schofield <alison.schofield@intel.com>, Vishal
+ Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>, Dan
+ Williams <dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>,
+	<cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+	<linux-cxl@vger.kernel.org>, Zijun Hu <quic_zijuhu@quicinc.com>
+Subject: Re: [PATCH v4 1/8] driver core: class: Fix wild pointer
+ dereferences in API class_dev_iter_next()
+Message-ID: <20241223200941.00000111@huawei.com>
+In-Reply-To: <20241218-class_fix-v4-1-3c40f098356b@quicinc.com>
+References: <20241218-class_fix-v4-0-3c40f098356b@quicinc.com>
+	<20241218-class_fix-v4-1-3c40f098356b@quicinc.com>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] memcg: fix soft lockup in the OOM process
-To: Michal Hocko <mhocko@suse.com>, Andrew Morton <akpm@linux-foundation.org>
-Cc: hannes@cmpxchg.org, yosryahmed@google.com, roman.gushchin@linux.dev,
- shakeel.butt@linux.dev, muchun.song@linux.dev, davidf@vimeo.com,
- vbabka@suse.cz, handai.szj@taobao.com, rientjes@google.com,
- kamezawa.hiroyu@jp.fujitsu.com, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- chenridong@huawei.com, wangweiyang2@huawei.com
-References: <20241220103123.3677988-1-chenridong@huaweicloud.com>
- <20241220144734.05d62ef983fa92e96e29470d@linux-foundation.org>
- <Z2ZuDTYu3PwV1JmT@tiehlicka>
- <6319a3df-b19c-4e35-a46c-c4a5ea003a6b@huaweicloud.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <6319a3df-b19c-4e35-a46c-c4a5ea003a6b@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCXP7H9zGhnOl_7FA--.63463S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGryUKw1fury7GFykJr4Dtwb_yoW5uFy3pF
-	ZrWa1Uta1rJryUXr12v34Iq3s2y3yfWr1UXrn8Jr12kr9xKr1xGr1UKr15CFyrZF1akFyS
-	vr4jv34xurWDA3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	bAw3UUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100010.china.huawei.com (7.191.174.197) To
+ frapeml500008.china.huawei.com (7.182.85.71)
 
+On Wed, 18 Dec 2024 08:01:31 +0800
+Zijun Hu <zijun_hu@icloud.com> wrote:
 
+> From: Zijun Hu <quic_zijuhu@quicinc.com>
+> 
+> There are a potential wild pointer dereferences issue regarding APIs
+> class_dev_iter_(init|next|exit)(), as explained by below typical usage:
+> 
+> // All members of @iter are wild pointers.
+> struct class_dev_iter iter;
+> 
+> // class_dev_iter_init(@iter, @class, ...) checks parameter @class for
+> // potential class_to_subsys() error, and it returns void type and does
+> // not initialize its output parameter @iter, so caller can not detect
+> // the error and continues to invoke class_dev_iter_next(@iter) even if
+> // @iter still contains wild pointers.
+> class_dev_iter_init(&iter, ...);
+> 
+> // Dereference these wild pointers in @iter here once suffer the error.
+> while (dev = class_dev_iter_next(&iter)) { ... };
+> 
+> // Also dereference these wild pointers here.
+> class_dev_iter_exit(&iter);
+> 
+> Actually, all callers of these APIs have such usage pattern in kernel tree.
+> Fix by:
+> - Initialize output parameter @iter by memset() in class_dev_iter_init()
+>   and give callers prompt by pr_crit() for the error.
+> - Check if @iter is valid in class_dev_iter_next().
+> 
+> Fixes: 7b884b7f24b4 ("driver core: class.c: convert to only use class_to_subsys")
+> Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
 
-On 2024/12/23 10:23, Chen Ridong wrote:
-> 
-> 
-> On 2024/12/21 15:28, Michal Hocko wrote:
->> On Fri 20-12-24 14:47:34, Andrew Morton wrote:
->>> On Fri, 20 Dec 2024 10:31:23 +0000 Chen Ridong <chenridong@huaweicloud.com> wrote:
->>>
->>>> From: Chen Ridong <chenridong@huawei.com>
->>>>
->>>> A soft lockup issue was found in the product with about 56,000 tasks were
->>>> in the OOM cgroup, it was traversing them when the soft lockup was
->>>> triggered.
->>>>
->>>> ...
->>>>
->>>> This is because thousands of processes are in the OOM cgroup, it takes a
->>>> long time to traverse all of them. As a result, this lead to soft lockup
->>>> in the OOM process.
->>>>
->>>> To fix this issue, call 'cond_resched' in the 'mem_cgroup_scan_tasks'
->>>> function per 1000 iterations. For global OOM, call
->>>> 'touch_softlockup_watchdog' per 1000 iterations to avoid this issue.
->>>>
->>>> ...
->>>>
->>>> --- a/include/linux/oom.h
->>>> +++ b/include/linux/oom.h
->>>> @@ -14,6 +14,13 @@ struct notifier_block;
->>>>  struct mem_cgroup;
->>>>  struct task_struct;
->>>>  
->>>> +/* When it traverses for long time,  to prevent softlockup, call
->>>> + * cond_resched/touch_softlockup_watchdog very 1000 iterations.
->>>> + * The 1000 value  is not exactly right, it's used to mitigate the overhead
->>>> + * of cond_resched/touch_softlockup_watchdog.
->>>> + */
->>>> +#define SOFTLOCKUP_PREVENTION_LIMIT 1000
->>>
->>> If this is to have potentially kernel-wide scope, its name should
->>> identify which subsystem it belongs to.  Maybe OOM_KILL_RESCHED or
->>> something.
->>>
->>> But I'm not sure that this really needs to exist.  Are the two usage
->>> sites particularly related?
->>
->> Yes, I do not think this needs to pretend to be a more generic mechanism
->> to prevent soft lockups. The number of iterations highly depends on the
->> operation itself.
->>
-> 
-> Thanks， I will update.
-> 
->>>
->>>>  enum oom_constraint {
->>>>  	CONSTRAINT_NONE,
->>>>  	CONSTRAINT_CPUSET,
->>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->>>> index 5c373d275e7a..f4c12d6e7b37 100644
->>>> --- a/mm/memcontrol.c
->>>> +++ b/mm/memcontrol.c
->>>> @@ -1161,6 +1161,7 @@ void mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
->>>>  {
->>>>  	struct mem_cgroup *iter;
->>>>  	int ret = 0;
->>>> +	int i = 0;
->>>>  
->>>>  	BUG_ON(mem_cgroup_is_root(memcg));
->>>>  
->>>> @@ -1169,8 +1170,11 @@ void mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
->>>>  		struct task_struct *task;
->>>>  
->>>>  		css_task_iter_start(&iter->css, CSS_TASK_ITER_PROCS, &it);
->>>> -		while (!ret && (task = css_task_iter_next(&it)))
->>>> +		while (!ret && (task = css_task_iter_next(&it))) {
->>>>  			ret = fn(task, arg);
->>>> +			if (++i % SOFTLOCKUP_PREVENTION_LIMIT)
->>>
->>> And a modulus operation is somewhat expensive.
->>
->> This is a cold path used during OOM. While we can make it more optimal I
->> doubt it matters in practice so we should aim at readbility. I do not
->> mind either way, I just wanted to note that this is not performance
->> sensitive.
->>
-> 
-> I think '(++i & 1023)' is much better, I will update.
-> Thank you all gays.
-> 
-So sorry for wrong spelling
-Sorry sorry.
+Your reply to earlier review made sense to me so I'm happy with this.
 
-Thank you all guys.
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Best regards
-Ridong
-
-> Best regards
-> Ridong
 > 
->>>
->>> Perhaps a simple
->>>
->>> 		/* Avoid potential softlockup warning */
->>> 		if ((++i & 1023) == 0)
->>>
->>> at both sites will suffice.  Opinions might vary...
->>>
->>
+> ---
+> Alternative fix solutions ever thought about:
+> 
+> 1) Use BUG_ON(!sp) instead of error return in class_dev_iter_init().
+> 2) Change class_dev_iter_init()'s type to int, lots of jobs to do.
+> 
+> This issue is APIs themself issues, and regardless of how various API
+> users use them, and silent wild pointer dereferences are not what API
+> users expect for the error absolutely.
+> ---
+>  drivers/base/class.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/class.c b/drivers/base/class.c
+> index 582b5a02a5c410113326601fe00eb6d7231f988f..d57f277978dc9033fba3484b4620bcf884a4029f 100644
+> --- a/drivers/base/class.c
+> +++ b/drivers/base/class.c
+> @@ -323,8 +323,12 @@ void class_dev_iter_init(struct class_dev_iter *iter, const struct class *class,
+>  	struct subsys_private *sp = class_to_subsys(class);
+>  	struct klist_node *start_knode = NULL;
+>  
+> -	if (!sp)
+> +	memset(iter, 0, sizeof(*iter));
+> +	if (!sp) {
+> +		pr_crit("%s: class %p was not registered yet\n",
+> +			__func__, class);
+>  		return;
+> +	}
+>  
+>  	if (start)
+>  		start_knode = &start->p->knode_class;
+> @@ -351,6 +355,9 @@ struct device *class_dev_iter_next(struct class_dev_iter *iter)
+>  	struct klist_node *knode;
+>  	struct device *dev;
+>  
+> +	if (!iter->sp)
+> +		return NULL;
+> +
+>  	while (1) {
+>  		knode = klist_next(&iter->ki);
+>  		if (!knode)
 > 
 
 
