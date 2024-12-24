@@ -1,161 +1,128 @@
-Return-Path: <cgroups+bounces-5993-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-5994-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 615CD9FB4E5
-	for <lists+cgroups@lfdr.de>; Mon, 23 Dec 2024 21:12:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A94669FB827
+	for <lists+cgroups@lfdr.de>; Tue, 24 Dec 2024 02:14:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 318781884F1C
-	for <lists+cgroups@lfdr.de>; Mon, 23 Dec 2024 20:12:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0603E18849EB
+	for <lists+cgroups@lfdr.de>; Tue, 24 Dec 2024 01:14:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 107F11CBEAC;
-	Mon, 23 Dec 2024 20:12:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71D3C8BE5;
+	Tue, 24 Dec 2024 01:14:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="daxRv1St"
 X-Original-To: cgroups@vger.kernel.org
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 667181C8FD4;
-	Mon, 23 Dec 2024 20:11:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D375C372
+	for <cgroups@vger.kernel.org>; Tue, 24 Dec 2024 01:14:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734984719; cv=none; b=MX1VQzKqhXUWj6qJMW/D5lj80viSBaZ7jh2t6mbDpEJw8IPP+KB3QbJdKYH4p1mFnsTcvuLGmD8ST4FZ/gJjNVvzl/3pQJ7AhI9BIlm3pk3I3N7W0v4l7uG2aLSsEjW/bR2gZnRSI4bYKDQ76/Fu7EnktcWCvEstuEDh2pr4y3I=
+	t=1735002856; cv=none; b=B+jWA1+e/hVhxPoV/RtU2qyuKaBJ+hm4Uz1caa3JdmJc0tgFcJdj2ChiiHPecKvawTa7g/UQWxATK0l2ashqO9M+54BCbRKMCEDpCHmAwdro+YSwevO48lcBM/aw9MLFKbRBcOll3QEGcc4nPMVoHaArPuDhE1BuAL0jTivDRXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734984719; c=relaxed/simple;
-	bh=XBbkxOifQiAr7mo2u9j1cvd2Aa4i4eRw8SG7rt1c0cg=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=I3ICXuPmSd4zZfcs3sB5K1MklzNiLUZR1F0Y0vTEUUy4U0TufdcG7pFlug6PKl3YwzU/pitHBb6PRDNtZ/XtHwOhfGy/deTadNeHvZ+SCGPH2+GYMqcAGQ10hqV0PH/0y7t82NyRNxz93M623MYyr9Ka6hGNKf8xy6pfreFeyAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4YH8GD4LMCz6K8yp;
-	Tue, 24 Dec 2024 04:08:04 +0800 (CST)
-Received: from frapeml500008.china.huawei.com (unknown [7.182.85.71])
-	by mail.maildlp.com (Postfix) with ESMTPS id 831BD140517;
-	Tue, 24 Dec 2024 04:11:55 +0800 (CST)
-Received: from localhost (10.47.75.118) by frapeml500008.china.huawei.com
- (7.182.85.71) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Mon, 23 Dec
- 2024 21:11:54 +0100
-Date: Mon, 23 Dec 2024 20:11:52 +0000
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-To: Zijun Hu <zijun_hu@icloud.com>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
-	<rafael@kernel.org>, Tejun Heo <tj@kernel.org>, Josef Bacik
-	<josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>, Boris Burkov
-	<boris@bur.io>, Davidlohr Bueso <dave@stgolabs.net>, Dave Jiang
-	<dave.jiang@intel.com>, Alison Schofield <alison.schofield@intel.com>, Vishal
- Verma <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>, Dan
- Williams <dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>,
-	<cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-	<linux-cxl@vger.kernel.org>, Zijun Hu <quic_zijuhu@quicinc.com>
-Subject: Re: [PATCH v4 8/8] driver core: Move 2 one line device finding APIs
- to header
-Message-ID: <20241223201152.000012d1@huawei.com>
-In-Reply-To: <20241218-class_fix-v4-8-3c40f098356b@quicinc.com>
-References: <20241218-class_fix-v4-0-3c40f098356b@quicinc.com>
-	<20241218-class_fix-v4-8-3c40f098356b@quicinc.com>
-X-Mailer: Claws Mail 4.3.0 (GTK 3.24.42; x86_64-w64-mingw32)
+	s=arc-20240116; t=1735002856; c=relaxed/simple;
+	bh=UHrfprCYcFC+DP46GPOTFZ4pskqcJDJPojF27UOX+eQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rqaWP0eTl6QmxHyOf0cXCqTgNGFv2VBTPb/LE7Hw6WgFWUp4LCFeqm9wvPxe9C6r0qB6YXawVI6ndfZZJN6VAN2sDVD2sJcr/NfzPCEAo7l4Aj3B1atBqShucttQoOJPmNeTOca5OCMXJyggBcbqDKghcrWfzoCah8e4z7XkVeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=daxRv1St; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2164b662090so40612545ad.1
+        for <cgroups@vger.kernel.org>; Mon, 23 Dec 2024 17:14:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1735002853; x=1735607653; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=EMZgjPOKDWbIFdVRAa452Jjp52BzjoU4BJ4SQLn/om4=;
+        b=daxRv1SteZVy8ImRdXu1hWa40Ya+44Lrqh0Oof5ph+D/7pG/YXgL3vc5e4/GdpzswO
+         JDoeC54z0iGqL8TMu+o1rTWyKGgXMkCq6rEULTAxpbjY1DIbVNerz4SSrp1PVM/6nP5q
+         2R6dopizfMlSt0pfB/yE1Ajq5uTO+Z+8xIcuCybswnBp3kOz4mVa9Xp8MmgUXFo3ATvO
+         MNSV5kmr2Y2/TWNOg/gPPdwRlpX6vvongz+ktmOU032qOgjy5SbbPsHJUkQ2bphSUVnE
+         UCkRvjYk8s0cKQapMNnq2K8gpPqx3qM/TiJabR3Uxr9JIg/7i46A3wYrcEdEHIZpXldH
+         ptlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735002853; x=1735607653;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EMZgjPOKDWbIFdVRAa452Jjp52BzjoU4BJ4SQLn/om4=;
+        b=sWFIlB/Q2EedCPsSCtpbr49kPyCQMAaFbZNkNQFuBcqkalmoD8c7yComwH5QagmMay
+         Gv6LAD+Z9OX0idCdCgpa7plJH/qX1xyI7ExnxMPfEX8POrlAzhT92wq6NoE/3UK4N5Eo
+         j4z9NU9kQh0lm1UeILH26kI5IdFp4/sRwo6Q9K1oBXQo9Z1vfrMlxOLDyBNlPO6x1JyG
+         D9gntLQE6CwXf7V5DoLY5zgcQSygHPRWBMDGq+DA1VxEm5KmC4a1rGf2o37fwKW7HwC0
+         j6GFWQzkiKCDdc1n9VAFeYjkZrZ0o1MCObzzQRhZeP6KIod9R8cOQJqkfdZyMKcV9FVT
+         oGmw==
+X-Forwarded-Encrypted: i=1; AJvYcCUCaSElFQ0SZcPpqRlO1EGrEreONInLOdWis4PujgquKUDyYTmDIwqd+SMv2DX42WSt/YPQB5Eb@vger.kernel.org
+X-Gm-Message-State: AOJu0YzovF8a23NTjzFokyjy4Sr+Kn0fdrMGsx+4fqH34DywlEH5MhNf
+	AatL6L1L/CmPS1rrLvfnpG8gzd57Pd6zo2aUYhkAbsjz7xPEevtm
+X-Gm-Gg: ASbGncsbxM9+s4lDwUjEiR/poEQnKEPvD+NhINHVbs4GAJdJ8cjzXgRm2+ufEXiSha0
+	J80K3y1nBeGJD7VcQOVraVLoaBaizyrITWGCbZhffmgNgEdCIdr+8q7P6QizG1yi78aa9bipqP1
+	gHKkASCMDyKpsVWLpJuLaH2mAk29m9NvFt4K0LQ21GRqiehscKosCEh8iMUmtgB79qL+meBPqo/
+	VEBaPFnelrs8xBcLnT07IvEdnLtePy2RTpHV0RXUMTBWfHm1eCLajEvUD1w0k0C4RTALCITS6k2
+	fMI6qx0RgNuJuf+FQA==
+X-Google-Smtp-Source: AGHT+IGtHv4OrGiGjKLT1wx4ZC9Ze9zsXK63XwMVjaldX2r8rMkvgsNt28FtHFcLAimEPnWDhWEEIg==
+X-Received: by 2002:a17:903:2449:b0:216:50fb:5dfc with SMTP id d9443c01a7336-219e6e8c3admr222954205ad.9.1735002853261;
+        Mon, 23 Dec 2024 17:14:13 -0800 (PST)
+Received: from saturn.. (c-67-188-127-15.hsd1.ca.comcast.net. [67.188.127.15])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc970c84sm79541255ad.58.2024.12.23.17.14.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Dec 2024 17:14:12 -0800 (PST)
+From: JP Kobryn <inwardvessel@gmail.com>
+To: shakeel.butt@linux.dev,
+	hannes@cmpxchg.org,
+	yosryahmed@google.com,
+	akpm@linux-foundation.org
+Cc: linux-mm@kvack.org,
+	cgroups@vger.kernel.org
+Subject: [PATCH 0/9 RFC] cgroup: separate rstat trees
+Date: Mon, 23 Dec 2024 17:13:53 -0800
+Message-ID: <20241224011402.134009-1-inwardvessel@gmail.com>
+X-Mailer: git-send-email 2.47.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100010.china.huawei.com (7.191.174.197) To
- frapeml500008.china.huawei.com (7.182.85.71)
+Content-Transfer-Encoding: 8bit
 
-On Wed, 18 Dec 2024 08:01:38 +0800
-Zijun Hu <zijun_hu@icloud.com> wrote:
+I've been experimenting with these changes to allow for separate
+updating/flushing of cgroup stats per-subsystem. The idea was instead of having
+a single per-cpu rstat tree for managing stats across all subsystems, we could
+maybe split up the rstat trees into separate trees for each subsystem. So each
+cpu would have individual trees for each subsystem. It would allow subsystems
+to update and flush their stats without having any contention with others, i.e.
+the io subsystem would not have to wait for an in progress memory subsystem
+flush to finish. The core change is moving the rstat entities off of the cgroup
+struct and onto the cgroup_subsystem_state struct. Every patch revolves around
+that concept.
 
-> From: Zijun Hu <quic_zijuhu@quicinc.com>
-> 
-> The following device finding APIs only have one line code in function body
-> device_find_child_by_name()
-> device_find_any_child()
-> 
-> Move them to header as static inline function.
-Why drop the docs?
+I reached a point where this started to feel stable in my local testing, so I
+wanted to share and get feedback on this approach.
 
-> 
-> Signed-off-by: Zijun Hu <quic_zijuhu@quicinc.com>
-> ---
->  drivers/base/core.c    | 32 --------------------------------
->  include/linux/device.h | 14 +++++++++++---
->  2 files changed, 11 insertions(+), 35 deletions(-)
-> 
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 930e43a970952b20cd1c71856bdef889698f51b4..3f37a2aecb1d11561f4edd72e973a1c43368de04 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -4100,38 +4100,6 @@ struct device *device_find_child(struct device *parent, const void *data,
->  }
->  EXPORT_SYMBOL_GPL(device_find_child);
->  
-> -/**
-> - * device_find_child_by_name - device iterator for locating a child device.
-> - * @parent: parent struct device
-> - * @name: name of the child device
-> - *
-> - * This is similar to the device_find_child() function above, but it
-> - * returns a reference to a device that has the name @name.
-> - *
-> - * NOTE: you will need to drop the reference with put_device() after use.
-> - */
-> -struct device *device_find_child_by_name(struct device *parent,
-> -					 const char *name)
-> -{
-> -	return device_find_child(parent, name, device_match_name);
-> -}
-> -EXPORT_SYMBOL_GPL(device_find_child_by_name);
-> -
-> -/**
-> - * device_find_any_child - device iterator for locating a child device, if any.
-> - * @parent: parent struct device
-> - *
-> - * This is similar to the device_find_child() function above, but it
-> - * returns a reference to a child device, if any.
-> - *
-> - * NOTE: you will need to drop the reference with put_device() after use.
-> - */
-> -struct device *device_find_any_child(struct device *parent)
-> -{
-> -	return device_find_child(parent, NULL, device_match_any);
-> -}
-> -EXPORT_SYMBOL_GPL(device_find_any_child);
-> -
->  int __init devices_init(void)
->  {
->  	devices_kset = kset_create_and_add("devices", &device_uevent_ops, NULL);
-> diff --git a/include/linux/device.h b/include/linux/device.h
-> index 36d1a1607712f5a6b0668ac02a6cf6b2d0651a2d..d1871a764be62e6857595bc10b9e54862c99dfa2 100644
-> --- a/include/linux/device.h
-> +++ b/include/linux/device.h
-> @@ -1083,9 +1083,17 @@ int device_for_each_child_reverse_from(struct device *parent,
->  				       device_iter_t fn);
->  struct device *device_find_child(struct device *parent, const void *data,
->  				 device_match_t match);
-> -struct device *device_find_child_by_name(struct device *parent,
-> -					 const char *name);
-> -struct device *device_find_any_child(struct device *parent);
-> +
-> +static inline struct device *device_find_child_by_name(struct device *parent,
-> +						       const char *name)
-> +{
-> +	return device_find_child(parent, name, device_match_name);
-> +}
-> +
-> +static inline struct device *device_find_any_child(struct device *parent)
-> +{
-> +	return device_find_child(parent, NULL, device_match_any);
-> +}
->  
->  int device_rename(struct device *dev, const char *new_name);
->  int device_move(struct device *dev, struct device *new_parent,
-> 
+JP Kobryn (8):
+  change cgroup to css in rstat updated and flush api
+  change cgroup to css in rstat internal flush and lock funcs
+  change cgroup to css in rstat init and exit api
+  split rstat from cgroup into separate css
+  separate locking between base css and others
+  isolate base stat flush
+  remove unneeded rcu list
+  remove bpf rstat flush from css generic flush
+
+ block/blk-cgroup.c              |   4 +-
+ include/linux/cgroup-defs.h     |  35 ++---
+ include/linux/cgroup.h          |   8 +-
+ kernel/cgroup/cgroup-internal.h |   4 +-
+ kernel/cgroup/cgroup.c          |  79 ++++++-----
+ kernel/cgroup/rstat.c           | 225 +++++++++++++++++++-------------
+ mm/memcontrol.c                 |   4 +-
+ 7 files changed, 203 insertions(+), 156 deletions(-)
+
+-- 
+2.47.1
 
 
