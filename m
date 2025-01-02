@@ -1,187 +1,259 @@
-Return-Path: <cgroups+bounces-6020-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6021-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF70C9FC4B5
-	for <lists+cgroups@lfdr.de>; Wed, 25 Dec 2024 11:08:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 177739FFB0D
+	for <lists+cgroups@lfdr.de>; Thu,  2 Jan 2025 16:38:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 942A7163DE7
-	for <lists+cgroups@lfdr.de>; Wed, 25 Dec 2024 10:08:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07A773A13EF
+	for <lists+cgroups@lfdr.de>; Thu,  2 Jan 2025 15:38:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 080BF1946CC;
-	Wed, 25 Dec 2024 10:07:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A89E61AD41F;
+	Thu,  2 Jan 2025 15:38:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="T98LwY9l"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DAD413211A
-	for <cgroups@vger.kernel.org>; Wed, 25 Dec 2024 10:07:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB3FB610D
+	for <cgroups@vger.kernel.org>; Thu,  2 Jan 2025 15:38:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735121241; cv=none; b=ZjlaeNkvk2kKTYjeHmb0JxhdM1n1/CMpPqJrJqyJyLi3EJDRjoq+yKN9IHnbaFIQoM0K1DO8jrmHhlPsqFfpgUB1ueCyZm5QeyU5FLhObFnGcetMBMfj6CfW73YQnrjHFO2skvZ/WFgkyIUpUbrQCfNCNlQlt2c4NwdSETKU1kc=
+	t=1735832305; cv=none; b=e3f4Sf60s8wBTXrexL0WOL3216MHmGUCcmlwA3u/W3owW3G5RePxKNDG0i7IgnnanI/NKZ25TR8+QkMmI4ZV6jcO0NIxb1SK3B9ypdF3ZDFxEqse2NtSBGu83uOhcsUqE8Xh7NcJ7IMdJoFZ0/fL9M4v/ERXwVrNHVPW88XZrQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735121241; c=relaxed/simple;
-	bh=e5c7aCkDtfs9yOx2nY7qQv/BoGNAxI3sn7ks4rF9u2o=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=KPO3SHPaVQQ7CQ1l28S4dCJYmZy4QchNoVQozZToHkPfdY/5dkwtFFmmoUFVqd6/fw+E0tZd/puSZihKmm63Ip6rFyLNssJJE3vybwuS260GDfM7eus0xu7otZVEsiBUhg/PNCfqHYjYNYAkaeDRhmWaq5iQgWbw8BdK+Qcu9Pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3a9cc5c246bso52809895ab.2
-        for <cgroups@vger.kernel.org>; Wed, 25 Dec 2024 02:07:19 -0800 (PST)
+	s=arc-20240116; t=1735832305; c=relaxed/simple;
+	bh=yvjH7949LaAEyvIaQ77110qTLyO9X6fbB95HqVGAV9s=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=RsEs8vFS6LntYWMleRy5iqeQKoUStijSvUcGu3R9OU530ICvFC8KCGdUh4hvUgwhrsSLLlaFvJQhT/t5FxzdRDj+zbgT7Y8UcPEInJWtj3JAclHh0bBN1oQ0jQ3WcdYbr64Cm97CQWaclHvca7EqYHleB3n6uDPOnwHBVVlKuvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=T98LwY9l; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1735832302;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tzu3c+PufhksktlwwL2rOytPumyykNC+KnQdtJRJP4c=;
+	b=T98LwY9lmerDH3nOQ45rxzobwrtEhvgYRWX7JhQJ7HPUkixr9EuvGSufBXrIon50339mny
+	vdQ7xrsuVpUuQ18vy+8J9+x0AIHMxSbJIZFcVXIPaAivdqbYLJQ+i7y7cxYsysZKICoC21
+	UOGnfXF/KnRsWQdyjR0yi/F5wBeMgCE=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-474-AlsregQNNZSxAuZD2aDFlg-1; Thu, 02 Jan 2025 10:38:21 -0500
+X-MC-Unique: AlsregQNNZSxAuZD2aDFlg-1
+X-Mimecast-MFC-AGG-ID: AlsregQNNZSxAuZD2aDFlg
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-7b6f2515eb3so1161266685a.0
+        for <cgroups@vger.kernel.org>; Thu, 02 Jan 2025 07:38:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735121239; x=1735726039;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dDL/79LPU/Y7cyq2fqSebT41KpMh+KVmbUEwMqTIpwI=;
-        b=Dd2YcCzyR71AKY8SE68QqHOuCT2gVGubSZzSgGEWiE2HNqbqX6z2iGYpCR1dJqeDe2
-         QsUBwSye39aeEz6832HwvMY3qaHAotiFYKrgMSrVUVeNlKu8gLRu2QL0FQ2Krg0azjyA
-         q+3pGHCz4KAiLFexViMJE4ewzRB9fhmhxKtGw151icHr3x6kS9Bf6DNGstJc49KHKsKe
-         +SIcvfVjsL4Td8qrlYCLNydTIY9VjGU8VmN7ZGjq3f8oT39UGZ+YdLUcvgGo/CmqSFtX
-         b1m9AZN2rhMNSVpuZS4k7KX07rTk438aCV7d0cQP1LHvxOHMjVQ0sMyPbOFRkJAwMH8p
-         qXCA==
-X-Forwarded-Encrypted: i=1; AJvYcCXRNvxe0Jg58iLd3pYw2+DWqPJqKCntRmd3ZXycc57ck3hosFcORolElLz+/z3oWP0YiyqlVT18@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywf1PIm9Q1htUNbO5kCPdyf1tJcrANn5ZzC+QioVsSaF/itHkS/
-	SoXaYigXj0yrxOtJfrPSOmCZ33rF4g+WlMBI+NCO870BoqHgUnxAnA1gInHGA7xoNmfRmkifyUY
-	Wsd5LO2WjsXD2QzPhwcNR37D+WWc12MEZEJs3OpExIwQQrzm75x36Fd4=
-X-Google-Smtp-Source: AGHT+IFUlEI7qdBAZa8TdlxkXq9qEmj6fjjDYvQGQ2wt/4H9VEaG8w9bTglQuLwDy7Jp2+tGvhXpYqzYwxVSCBHA1G3fmzUcKZDB
+        d=1e100.net; s=20230601; t=1735832301; x=1736437101;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tzu3c+PufhksktlwwL2rOytPumyykNC+KnQdtJRJP4c=;
+        b=JsJ13Mj5g7wITL1yr97RP8WWDZ1lFDokQfLnyQwzLfoABXgTKvt68ue7ZCiKbOvHe7
+         0bzZ2IoW2dAvqrayQvNWeoDIGXYsPpgf/YcnDqUblIQSegxLjiroXl19OtBges0tFu1I
+         ofL7QDWqLADDGJcXziL4GC9C2sXrKk5319+Z1TM353/27OMOoHJ9xAZubTD2iNEjvtsG
+         PhEr5CsFXcvaYC9plgLAZlZkiEGG1g7m307iEijO6taPW+BIhR+Hpmk3QiS+Nq8OEuov
+         N1dB/v88AyyfppDWA0ocAKaMmAg2/8m1b48PdUx/j+E9jHrI/5NmbCk1EJfnlDBJghiJ
+         JH7w==
+X-Gm-Message-State: AOJu0YwZbyQRob5bghr/RGqzauicOXrbQUGiX3YlJu/F1eNW3Cm8wObj
+	Lrf6HmQ7ebautNbqaGRDKLrHqp9R8NE0S6ez9b3wLcUfkRhamn9+oDQiGN5T+IXf6louiM+QJXm
+	GBfbcsmot4z0XshJfZhcNeHeIeBOkL5qCZNyC4wed81V0CBrOPPlN6DY=
+X-Gm-Gg: ASbGncsfiJ8TN9H1T/lIHcWc2622sikaHehh6BIARLr0SOi94I+gyEXSiuKY9E2IlTK
+	zwwjKFOGWs0Y7uAls9SYb3/o+0nLKGqKQXIWae/aidAnLY2yhtVyxBsMfNwOAKWsNifG9rcdtip
+	Nosf1cD0Lpxv7JCuq2EVvV2KUK2G4/Qq1tFs7Tmx/yx7gxMn2SMktNbmKx2Q6nrjx7ZbzG+J+1t
+	D9MJK4lojCPE68hGs+lLAQLbog3lN+sxqH842UoJyE34l6RDfAfkeGKl87gYTerSUsz6Wt4JUVP
+	tSt4pvzcxiOqbWZygamAzJvQ
+X-Received: by 2002:a05:620a:2991:b0:7b6:773f:4bd5 with SMTP id af79cd13be357-7b9ba743a18mr7163228885a.20.1735832301026;
+        Thu, 02 Jan 2025 07:38:21 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFmwtbxtZupT/7iNXXpy4HA+O+TZIo5rbMBflA367FOuM4yjhsc22b6T/ySCGEC78vHvDFlhg==
+X-Received: by 2002:a05:620a:2991:b0:7b6:773f:4bd5 with SMTP id af79cd13be357-7b9ba743a18mr7163223985a.20.1735832300560;
+        Thu, 02 Jan 2025 07:38:20 -0800 (PST)
+Received: from ?IPV6:2601:188:ca00:a00:f844:fad5:7984:7bd7? ([2601:188:ca00:a00:f844:fad5:7984:7bd7])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7b9ac2bbb7dsm1195829985a.5.2025.01.02.07.38.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Jan 2025 07:38:19 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <0ab514d5-6611-4a6f-82ff-e71eb8af5f5d@redhat.com>
+Date: Thu, 2 Jan 2025 10:38:18 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:156d:b0:3ab:1b7a:593e with SMTP id
- e9e14a558f8ab-3c2d514f9ebmr184804185ab.19.1735121239346; Wed, 25 Dec 2024
- 02:07:19 -0800 (PST)
-Date: Wed, 25 Dec 2024 02:07:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <676bd957.050a0220.2f3838.02e1.GAE@google.com>
-Subject: [syzbot] [cgroups?] [mm?] general protection fault in __memcg_kmem_charge_page
-From: syzbot <syzbot+6c87d9f0b4ba556c9d83@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, 
-	muchun.song@linux.dev, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    e9b8ffafd20a Merge tag 'usb-6.13-rc4' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1788dcf8580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c22efbd20f8da769
-dashboard link: https://syzkaller.appspot.com/bug?extid=6c87d9f0b4ba556c9d83
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/1e4fdb0e4f25/disk-e9b8ffaf.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0d81695cd1d6/vmlinux-e9b8ffaf.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/976c7fc4c5da/bzImage-e9b8ffaf.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6c87d9f0b4ba556c9d83@syzkaller.appspotmail.com
-
-Oops: general protection fault, probably for non-canonical address 0xdffffc0000000007: 0000 [#1] PREEMPT SMP KASAN PTI
-KASAN: null-ptr-deref in range [0x0000000000000038-0x000000000000003f]
-CPU: 0 UID: 0 PID: 9346 Comm: syz.4.804 Not tainted 6.13.0-rc3-syzkaller-00193-ge9b8ffafd20a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-RIP: 0010:__memcg_kmem_charge_page+0x1c5/0x2b0 mm/memcontrol.c:2676
-Code: ad 00 00 00 4c 89 e7 be 01 00 00 00 49 83 cc 02 e8 60 1c ff ff 48 8d 7b 38 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 cf 00 00 00 4c 89 63 38 e9 5f ff ff ff 48 3b 2d
-RSP: 0018:ffffc900195afa80 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc900195afa00
-RDX: 0000000000000007 RSI: ffffffff8b4cd480 RDI: 0000000000000038
-RBP: ffff888028d10000 R08: 0000000000000000 R09: fffffbfff2039c72
-R10: ffffffff901ce397 R11: 0000000000000000 R12: ffff888031d4df82
-R13: 0000000000000001 R14: 0000000000000cc0 R15: dffffc0000000000
-FS:  00005555870d9500(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fe63461cd58 CR3: 00000000250b4000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- memcg_kmem_charge_page include/linux/memcontrol.h:1697 [inline]
- memcg_charge_kernel_stack kernel/fork.c:265 [inline]
- memcg_charge_kernel_stack+0xc3/0x1f0 kernel/fork.c:256
- alloc_thread_stack_node kernel/fork.c:299 [inline]
- dup_task_struct kernel/fork.c:1121 [inline]
- copy_process+0x5a3/0x6f20 kernel/fork.c:2225
- kernel_clone+0xfd/0x960 kernel/fork.c:2807
- __do_sys_clone3+0x1f9/0x270 kernel/fork.c:3111
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fe6337ba589
-Code: 1b 08 00 48 8d 3d 9c 1b 08 00 e8 12 29 f6 ff 66 90 b8 ea ff ff ff 48 85 ff 74 2c 48 85 d2 74 27 49 89 c8 b8 b3 01 00 00 0f 05 <48> 85 c0 7c 18 74 01 c3 31 ed 48 83 e4 f0 4c 89 c7 ff d2 48 89 c7
-RSP: 002b:00007ffc6268d038 EFLAGS: 00000206 ORIG_RAX: 00000000000001b3
-RAX: ffffffffffffffda RBX: 00007fe63373c9a0 RCX: 00007fe6337ba589
-RDX: 00007fe63373c9a0 RSI: 0000000000000058 RDI: 00007ffc6268d080
-RBP: 00007fe63461c6c0 R08: 00007fe63461c6c0 R09: 00007ffc6268d167
-R10: 0000000000000008 R11: 0000000000000206 R12: ffffffffffffffa8
-R13: 000000000000006e R14: 00007ffc6268d080 R15: 00007ffc6268d168
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__memcg_kmem_charge_page+0x1c5/0x2b0 mm/memcontrol.c:2676
-Code: ad 00 00 00 4c 89 e7 be 01 00 00 00 49 83 cc 02 e8 60 1c ff ff 48 8d 7b 38 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 cf 00 00 00 4c 89 63 38 e9 5f ff ff ff 48 3b 2d
-RSP: 0018:ffffc900195afa80 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc900195afa00
-RDX: 0000000000000007 RSI: ffffffff8b4cd480 RDI: 0000000000000038
-RBP: ffff888028d10000 R08: 0000000000000000 R09: fffffbfff2039c72
-R10: ffffffff901ce397 R11: 0000000000000000 R12: ffff888031d4df82
-R13: 0000000000000001 R14: 0000000000000cc0 R15: dffffc0000000000
-FS:  00005555870d9500(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f4aaa7452d8 CR3: 00000000250b4000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	ad                   	lods   %ds:(%rsi),%eax
-   1:	00 00                	add    %al,(%rax)
-   3:	00 4c 89 e7          	add    %cl,-0x19(%rcx,%rcx,4)
-   7:	be 01 00 00 00       	mov    $0x1,%esi
-   c:	49 83 cc 02          	or     $0x2,%r12
-  10:	e8 60 1c ff ff       	call   0xffff1c75
-  15:	48 8d 7b 38          	lea    0x38(%rbx),%rdi
-  19:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  20:	fc ff df
-  23:	48 89 fa             	mov    %rdi,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2e:	0f 85 cf 00 00 00    	jne    0x103
-  34:	4c 89 63 38          	mov    %r12,0x38(%rbx)
-  38:	e9 5f ff ff ff       	jmp    0xffffff9c
-  3d:	48                   	rex.W
-  3e:	3b                   	.byte 0x3b
-  3f:	2d                   	.byte 0x2d
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] cgroup/cpuset: remove kernfs active break
+To: Chen Ridong <chenridong@huaweicloud.com>, Waiman Long <llong@redhat.com>,
+ chenridong <chenridong@huawei.com>, tj@kernel.org, hannes@cmpxchg.org,
+ mkoutny@suse.com, roman.gushchin@linux.dev
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, wangweiyang2@huawei.com
+References: <20241220013106.3603227-1-chenridong@huaweicloud.com>
+ <5c48f188-0059-46a2-9ccd-aad6721d96bb@redhat.com>
+ <cafb38a5-0832-4af4-a3b2-cca32ce63d10@huawei.com>
+ <61b5749b-3e75-4cf6-9acb-23b63f78d859@redhat.com>
+ <d3ebff6a-9866-40e2-a1ff-07bd77d20187@huaweicloud.com>
+ <5cb32477-7346-4417-a49e-de2b7dda7401@redhat.com>
+ <ffa385b8-861f-4779-b3f0-462468193cf1@huaweicloud.com>
+Content-Language: en-US
+In-Reply-To: <ffa385b8-861f-4779-b3f0-462468193cf1@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 12/22/24 9:12 PM, Chen Ridong wrote:
+>
+> On 2024/12/20 23:13, Waiman Long wrote:
+>> On 12/20/24 1:11 AM, Chen Ridong wrote:
+>>> On 2024/12/20 12:16, Waiman Long wrote:
+>>>> On 12/19/24 11:07 PM, chenridong wrote:
+>>>>> On 2024/12/20 10:55, Waiman Long wrote:
+>>>>>> On 12/19/24 8:31 PM, Chen Ridong wrote:
+>>>>>>> From: Chen Ridong <chenridong@huawei.com>
+>>>>>>>
+>>>>>>> A warning was found:
+>>>>>>>
+>>>>>>> WARNING: CPU: 10 PID: 3486953 at fs/kernfs/file.c:828
+>>>>>>> CPU: 10 PID: 3486953 Comm: rmdir Kdump: loaded Tainted: G
+>>>>>>> RIP: 0010:kernfs_should_drain_open_files+0x1a1/0x1b0
+>>>>>>> RSP: 0018:ffff8881107ef9e0 EFLAGS: 00010202
+>>>>>>> RAX: 0000000080000002 RBX: ffff888154738c00 RCX: dffffc0000000000
+>>>>>>> RDX: 0000000000000007 RSI: 0000000000000004 RDI: ffff888154738c04
+>>>>>>> RBP: ffff888154738c04 R08: ffffffffaf27fa15 R09: ffffed102a8e7180
+>>>>>>> R10: ffff888154738c07 R11: 0000000000000000 R12: ffff888154738c08
+>>>>>>> R13: ffff888750f8c000 R14: ffff888750f8c0e8 R15: ffff888154738ca0
+>>>>>>> FS:  00007f84cd0be740(0000) GS:ffff8887ddc00000(0000)
+>>>>>>> knlGS:0000000000000000
+>>>>>>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>>>>> CR2: 0000555f9fbe00c8 CR3: 0000000153eec001 CR4: 0000000000370ee0
+>>>>>>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>>>>>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>>>>>> Call Trace:
+>>>>>>>      kernfs_drain+0x15e/0x2f0
+>>>>>>>      __kernfs_remove+0x165/0x300
+>>>>>>>      kernfs_remove_by_name_ns+0x7b/0xc0
+>>>>>>>      cgroup_rm_file+0x154/0x1c0
+>>>>>>>      cgroup_addrm_files+0x1c2/0x1f0
+>>>>>>>      css_clear_dir+0x77/0x110
+>>>>>>>      kill_css+0x4c/0x1b0
+>>>>>>>      cgroup_destroy_locked+0x194/0x380
+>>>>>>>      cgroup_rmdir+0x2a/0x140
+>>>>>> Were you using cgroup v1 or v2 when this warning happened?
+>>>>> I was using cgroup v1.
+>>>> Thanks for the confirmation.
+>>>>>>> It can be explained by:
+>>>>>>> rmdir                 echo 1 > cpuset.cpus
+>>>>>>>                    kernfs_fop_write_iter // active=0
+>>>>>>> cgroup_rm_file
+>>>>>>> kernfs_remove_by_name_ns    kernfs_get_active // active=1
+>>>>>>> __kernfs_remove                      // active=0x80000002
+>>>>>>> kernfs_drain            cpuset_write_resmask
+>>>>>>> wait_event
+>>>>>>> //waiting (active == 0x80000001)
+>>>>>>>                    kernfs_break_active_protection
+>>>>>>>                    // active = 0x80000001
+>>>>>>> // continue
+>>>>>>>                    kernfs_unbreak_active_protection
+>>>>>>>                    // active = 0x80000002
+>>>>>>> ...
+>>>>>>> kernfs_should_drain_open_files
+>>>>>>> // warning occurs
+>>>>>>>                    kernfs_put_active
+>>>>>>>
+>>>>>>> This warning is caused by 'kernfs_break_active_protection' when it is
+>>>>>>> writing to cpuset.cpus, and the cgroup is removed concurrently.
+>>>>>>>
+>>>>>>> The commit 3a5a6d0c2b03 ("cpuset: don't nest cgroup_mutex inside
+>>>>>>> get_online_cpus()") made cpuset_hotplug_workfn asynchronous, which
+>>>>>>> grabs
+>>>>>>> the cgroup_mutex. To avoid deadlock. the commit 76bb5ab8f6e3
+>>>>>>> ("cpuset:
+>>>>>>> break kernfs active protection in cpuset_write_resmask()") added
+>>>>>>> 'kernfs_break_active_protection' in the cpuset_write_resmask. This
+>>>>>>> could
+>>>>>>> lead to this warning.
+>>>>>>>
+>>>>>>> After the commit 2125c0034c5d ("cgroup/cpuset: Make cpuset hotplug
+>>>>>>> processing synchronous"), the cpuset_write_resmask no longer needs to
+>>>>>>> wait the hotplug to finish, which means that cpuset_write_resmask
+>>>>>>> won't
+>>>>>>> grab the cgroup_mutex. So the deadlock doesn't exist anymore.
+>>>>>>> Therefore,
+>>>>>>> remove kernfs_break_active_protection operation in the
+>>>>>>> 'cpuset_write_resmask'
+>>>>>> The hotplug operation itself is now being done synchronously, but task
+>>>>>> transfer (cgroup_transfer_tasks()) because of lacking online CPUs is
+>>>>>> still being done asynchronously. So kernfs_break_active_protection()
+>>>>>> will still be needed for cgroup v1.
+>>>>>>
+>>>>>> Cheers,
+>>>>>> Longman
+>>>>>>
+>>>>>>
+>>>>> Thank you, Longman.
+>>>>> IIUC, The commit 2125c0034c5d ("cgroup/cpuset: Make cpuset hotplug
+>>>>> processing synchronous") deleted the 'flush_work(&cpuset_hotplug_work)'
+>>>>> in the cpuset_write_resmask. And I do not see any process within the
+>>>>> cpuset_write_resmask that will grab cgroup_mutex, except for
+>>>>> 'flush_work(&cpuset_hotplug_work)'.
+>>>>>
+>>>>> Although cgroup_transfer_tasks() is asynchronous, the
+>>>>> cpuset_write_resmask will not wait any work that will grab
+>>>>> cgroup_mutex.
+>>>>> Consequently, the deadlock does not exist anymore.
+>>>>>
+>>>>> Did I miss something?
+>>>> Right. The flush_work() call is still needed for a different work
+>>>> function. cpuset_write_resmask() will not need to grab cgroup_mutex, but
+>>>> the asynchronously executed cgroup_transfer_tasks() will. I will work on
+>>>> a patch to fix that issue.
+>>>>
+>>>> Cheers,
+>>>> Longman
+>>> If flush_work() is added back, this warning still exists. Do you have a
+>>> idea to fix this warning?
+>> I was wrong. The flush_work() call isn't needed in this case and we
+>> shouldn't need to break kernfs protection. However, your patch
+>> description isn't quite right.
+>>
+>>> After the commit 2125c0034c5d ("cgroup/cpuset: Make cpuset hotplug
+>>> processing synchronous"), the cpuset_write_resmask no longer needs to
+>>> wait the hotplug to finish, which means that cpuset_write_resmask won't
+>>> grab the cgroup_mutex. So the deadlock doesn't exist anymore.
+>> cpuset_write_resmask() never needs to grab the cgroup_mutex. The act of
+>> calling flush_work() can create a multiple processes circular locking
+>> dependency that involve cgroup_mutex which can cause a deadlock. After
+>> making cpuset hotplug synchronous, concurrent hotplug and cpuset
+>> operations are no longer possible. However, concurrent task transfer out
+>> of a previously empty CPU cpuset and adding CPU back to that cpuset is
+>> possible. This will result in what the comment said "keep removing tasks
+>> added
+>> after execution capability is restored". That should be rare though and
+>> we should probably add a check in cgroup_transfer_tasks() to detect such
+>> a case and break out of it.
+>>
+>> Cheers,
+>> Longman
+> Hi, Longman, sorry the confused message. Do you mean this patch is
+> acceptable if I update the message?
+Sorry for the late reply. Yes, the patch is acceptable, but the patch 
+description isn't quite right. Please sent out a v2.
+>
+> I don't think we need to add a check in the cgroup_transfer_tasks
+> function. Because no process(except for writing cpuset.cpus, which has
+> been reoved) will need 'kn->active' to involve cgroup_transfer_tasks now.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+I agree that we don't need to add a check in cgroup_transfer_tasks().
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Cheers,
+Longman
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
