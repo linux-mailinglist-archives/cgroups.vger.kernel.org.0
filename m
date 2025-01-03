@@ -1,77 +1,77 @@
-Return-Path: <cgroups+bounces-6030-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6031-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5011AA00287
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 02:50:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92AA9A00288
+	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 02:50:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A2423A3B66
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 01:50:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 546D9162E7A
+	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 01:50:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86037187848;
-	Fri,  3 Jan 2025 01:50:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B10E14901B;
+	Fri,  3 Jan 2025 01:50:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UOxF2oTt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nk2hzu0t"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E46243232
-	for <cgroups@vger.kernel.org>; Fri,  3 Jan 2025 01:50:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 644501527AC
+	for <cgroups@vger.kernel.org>; Fri,  3 Jan 2025 01:50:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735869041; cv=none; b=FJhkeU3qIOm8dDsdhj5+mYf2iIl1uHbprAn+AN0+mjFFR8DLYTB3hL8e/R2sZugjpr7faLRqJA/tZXyqLbqv6wPr7uW8dCfMTEHIwLTfYXc9IPOLfG1tAwIVvnUJDhdp9SiIQFkm5If7kbtP/jJ8Hj42gT3EiwNpPERI7uGiwiw=
+	t=1735869042; cv=none; b=gnWA/im6jkyXJIY0fsUGxX9ewcuLIs7CnbOAUDhGnxXx5lce+BViSVBCpQGavcEqCgAi/MQ8TgjxZk+G20J2jbx+tccztCMA79P9NFvbOUMxvEJf+ztduDWCL7gVR/tWnBzNOtKDDPWjDQL5ILe88bT9935Xu72jf2rbzmyNl4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735869041; c=relaxed/simple;
-	bh=rnN3mFL8ZrDpyVrDtSl3MQE2KldHX9mBK/9aAC5f8WI=;
+	s=arc-20240116; t=1735869042; c=relaxed/simple;
+	bh=gXN3TibGv5kJZOsMfwqbVSh76NDC2QcGmd4SlDLDZbs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Dy+IHI55uDNoCuFDztWXJ6CM/pBB1A+0PI48fp4G6xlSEqkd2M8B6v0tQEmg4ffVP+6J7arxtSV+yQvEr2opr0Rep57+FCHcsSUVRtw4HlqidmvbWTQwpXgbXvyHPcYGQiX+BJmpRxA2xkwELw4hyEPh0DBpK0haTAJ2uh+cBwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UOxF2oTt; arc=none smtp.client-ip=209.85.214.182
+	 MIME-Version; b=eIG4XbcdSFtS4MNrri0Ncms2nZo8l05b2MZReyZCVtjMQYCpQVEVSskK9T/95EP8q1M+ddkKi0IS1HHZbzH+vzdpI9Buyb9Tjm6QD+UUtD1NIc46x3H8X+WdjFLat4bXNkypQ3guzk9v0HwcqJmWEzA9t8frmeYcVA6gFmf+q/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nk2hzu0t; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2166651f752so189386085ad.3
-        for <cgroups@vger.kernel.org>; Thu, 02 Jan 2025 17:50:39 -0800 (PST)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-21654fdd5daso152566665ad.1
+        for <cgroups@vger.kernel.org>; Thu, 02 Jan 2025 17:50:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735869039; x=1736473839; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1735869040; x=1736473840; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ov79tpw4GuAmAWp+brDBEww96U26TW/4D2kYy+uPe/w=;
-        b=UOxF2oTtL+MaqLEyKEB/U+RfGL59P/ttviiRh+NdM4TDCA1vdzyjhbLrIdhz2mkl8N
-         Pd32a0PNTD/FJyg8tpBEggG7W2goLNVi+CnVzI5qjr7RE7u2e1PHzOxzJa9SraCZJe2G
-         2RNyJtjN+OrMDwt031aY0dEkIghPtqVUsNvVahGIZFook0VHqP5wXaGiwD3xVca0oZiI
-         /FyFQlb9Ge8VvKD1wguAjWAaPmEGjCgH/rmy5QP0vD0cP0Kx7Yq58RU/M7K0SYhsoKx8
-         7O/1cUEcFYcBZYx2x9N1RvZA2/2j35AMkEEZKcqsnkFDFnuHiVK/4zb08ghRpSjyUZZq
-         G8WQ==
+        bh=z0/95vxHq4AbTjjm1qqTnNQIEsjcgRpvj31jjZiEdxU=;
+        b=nk2hzu0tmR51mQGoIqWCAhvufaULQ1zriaC4bwVpWzh71OFCPeW1+/w8WBxh3VmNpq
+         WMphq0+JkA1M57pFyYmg46dAWDE0ScW9IiRBTMEXBRlbC28vRYboyhVCLgGxZmB3dnY0
+         CCotISP7JkQSG7Kc3RiWrKZlLoJoErk9QPao/gCFaVp/AwjaIArqd8u44yXRX3PdNDrA
+         T/L+GGD8M5ycNDaZkrGSp4I6ZTlptLeMZj/XENa55XvZVhPLSgAyAXtDD5fhd8MZXHJ+
+         9Hdx3s0c7kjo+6rFzUqnJfG51ruSOLyRYcrAFtw5K1Rk4hHRK/PAicKG+1fLgezQeLqi
+         CrBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735869039; x=1736473839;
+        d=1e100.net; s=20230601; t=1735869040; x=1736473840;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ov79tpw4GuAmAWp+brDBEww96U26TW/4D2kYy+uPe/w=;
-        b=nWQq7TnhtqLFRlxFUt/E4pqhqaYRK541pbhZVRe5F9UdJQwFfZxEfRuuku1gQ9BJl3
-         dX/9OV2BC78vWPzhNhdnddkKbkC3v9rXHuZjE1MoXSezz8cvi+RmQ/4q7HBVkBX8TKre
-         S+/bG8Tk6ZUCUB+1SAFj3+KQ6WZOLK9gZJf9NDGncMU0Dqa4pD2QVMfUNAuUZ9Ax7PRP
-         jFH5R9I0BFJKq1+dOhqUwdyzfA13aV1vEA+1eHOCB5B65hXcNyvRibKQ6f6GY2OJ0s4+
-         e9OP2FvgQ8R7tiVhLlsMcDDYv65Z6h2wwqE4V++bNlJUvncM83woea4HizE/BlO0mkNX
-         0cHw==
-X-Forwarded-Encrypted: i=1; AJvYcCXK824mkfyj4qrAB+gqwDSdONwTejL1638WiidmyJ+REZKEgAxqCrm5EGKWMXSnWRic3Linydn9@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxc5UsWHiSES79CKpXY13iTVRX6mgS7y4H9n7ydWCVjSeS9KWEO
-	xv0XCaxIKQrzqkjWchpbG5F480YxOrKyw8h0hPVODurcnOjcZ/t7
-X-Gm-Gg: ASbGnctQ0HDoYbuHB4B2+JXpUJhN+YlLhlp4xRYZuY8niQy+7vXoVynmFe5Cv6Xi44D
-	Mi3OpfSuO246NARMrglNTRh0Eo9abihTe0CVPcP9FZUYMZLbP2sZOVAmwf+4hwe19Ce4VGlDBxW
-	y4h2Xc9NZJX1BCQDPbDfWBTcIwtVQPAoyS1rNbe66UoxFGB3zMwj6ozVHccfxLoliAgBGIRjcy0
-	6A3zxPOGSB/TQXnZ+Eb28bqHdpYJkcwN62m4Fg4p3zyu9CVsm6vpXpBcqi0RenyJ2bC4/bo19bG
-	vP198VIxoM98ECeAFQ==
-X-Google-Smtp-Source: AGHT+IHLu3wo59GI10fAuqab6yxqPVBVuB+WZNMyKnuCfl4ZNRDH7NjVsB8okoZW+Ytc6M8DT1bsCQ==
-X-Received: by 2002:a17:903:2449:b0:215:3a42:dc17 with SMTP id d9443c01a7336-219e6e8bbabmr593714305ad.7.1735869039266;
-        Thu, 02 Jan 2025 17:50:39 -0800 (PST)
+        bh=z0/95vxHq4AbTjjm1qqTnNQIEsjcgRpvj31jjZiEdxU=;
+        b=M1FkspvVVwuAgqUs8YMU21cTR8Yl0puBtcPOYSjs22LZLTQjzyoqG0RL2+tRqO3D9o
+         thGwggwEEbYiOxyWCDd0DtmOaIICNXiwND8r7PKPX3d7kzq025ALFxcypUAxa35h5lQr
+         B5lq8zu1bMEr2oAg0SW4opuV42mELkA/7HQ67Psi1IdQ1oZL6Qn6BPRQXT8kEg2G9B2q
+         pnkYmysQnoW4cEr3M74FyaNsPjHjVRWq0R76Qs6MjQ3NUuQbG5Hld/D3BxQoDxazVOvE
+         ubDguAopjK2Y/an1yDLGinIcXyQdnVW7xP9VIsky/l8EAYVlHGEcDrhP1tOl/W7A5ySF
+         3M2A==
+X-Forwarded-Encrypted: i=1; AJvYcCVOT6T+X/dQqapYgRMOcCx2dF7YqrIaYgr/LW9cl04PBJBMgjcmvH9d6M7f4tm1EuxKrsMlZAQz@vger.kernel.org
+X-Gm-Message-State: AOJu0YzibmNBIBk1BxlbtbdLUW/2FjwLgDiLTdEy7yeEncB+n7swTSWn
+	eXy87orGcuCqth0NNd09SrKIhTbp7RG60+DMXQMo1P40I+0sG3HX
+X-Gm-Gg: ASbGncubUDDQ0be1QjGx5Vr69E3+yDTUjDliI6RuBw2erBwHFTHR43Gph0nN63hokF7
+	iLPsnbUmq7CBJvOQQwQd7xq66KIxrkB4YunbMWQgf/3AyhSbf/wlp+b73QmaKjYCFfgsJhgm6jR
+	3Ia9nhXxVyWLuO/YXCwXXZ+z574fdwc6g8MflEhFiCJGH4r4CL9vjRnfLhlVzWhARPPQzGLjHQg
+	acR1f+I8Uuao6jO3cOPSuGYmsL4ZXFY+dBeukAWEBw3InpyWYaxdmp58p4Y0m1sHbJX371P4j73
+	REQdCYEMRAp5yGXHUg==
+X-Google-Smtp-Source: AGHT+IHpW6kPJoz3uQ31McNNuWFPISD9A55LMmIKwxPMCRkUhBP25MkbHaNyVJ9vNwtjAbpRrI4k1w==
+X-Received: by 2002:a17:902:f64b:b0:216:779a:d5f3 with SMTP id d9443c01a7336-219e6ea1c00mr709992435ad.14.1735869040635;
+        Thu, 02 Jan 2025 17:50:40 -0800 (PST)
 Received: from saturn.. (c-67-188-127-15.hsd1.ca.comcast.net. [67.188.127.15])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dca04ce7sm228851505ad.283.2025.01.02.17.50.38
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dca04ce7sm228851505ad.283.2025.01.02.17.50.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jan 2025 17:50:38 -0800 (PST)
+        Thu, 02 Jan 2025 17:50:40 -0800 (PST)
 From: JP Kobryn <inwardvessel@gmail.com>
 To: shakeel.butt@linux.dev,
 	tj@kernel.org,
@@ -81,9 +81,9 @@ To: shakeel.butt@linux.dev,
 	akpm@linux-foundation.org
 Cc: linux-mm@kvack.org,
 	cgroups@vger.kernel.org
-Subject: [RFC PATCH 6/9 v2] cgroup: isolate base stat flush
-Date: Thu,  2 Jan 2025 17:50:17 -0800
-Message-ID: <20250103015020.78547-7-inwardvessel@gmail.com>
+Subject: [RFC PATCH 7/9 v2] cgroup: remove unneeded rcu list
+Date: Thu,  2 Jan 2025 17:50:18 -0800
+Message-ID: <20250103015020.78547-8-inwardvessel@gmail.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20250103015020.78547-1-inwardvessel@gmail.com>
 References: <20250103015020.78547-1-inwardvessel@gmail.com>
@@ -95,51 +95,133 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Remove the base stat flushing from the generic css flushing routine. Provide a
-direct way to flush the base stats and make use of it when the cpu stats are
-read.
+Since the cgroup_subsystem_state now owns the rstat tree, the list management
+previously done on the cgroup to keep track of which subsystem states are
+participating in rstat is no longer needed.
 
 Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
 ---
- kernel/cgroup/rstat.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ include/linux/cgroup-defs.h | 11 -----------
+ kernel/cgroup/cgroup.c      | 20 +-------------------
+ kernel/cgroup/rstat.c       |  9 +--------
+ 3 files changed, 2 insertions(+), 38 deletions(-)
 
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index 4d87519ff023..836260c422a0 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -182,14 +182,6 @@ struct cgroup_subsys_state {
+ 
+ 	/* per-cpu recursive resource statistics */
+ 	struct cgroup_rstat_cpu __percpu *rstat_cpu;
+-	struct list_head rstat_css_list;
+-
+-	/*
+-	 * Add padding to separate the read mostly rstat_cpu and
+-	 * rstat_css_list into a different cacheline from the following
+-	 * rstat_flush_next and *bstat fields which can have frequent updates.
+-	 */
+-	CACHELINE_PADDING(_pad_);
+ 
+ 	/*
+ 	 * A singly-linked list of cgroup structures to be rstat flushed.
+@@ -198,9 +190,6 @@ struct cgroup_subsys_state {
+ 	 */
+ 	struct cgroup_subsys_state *rstat_flush_next;
+ 
+-	/* flush target list anchored at cgrp->rstat_css_list */
+-	struct list_head rstat_css_node;
+-
+ 	/*
+ 	 * PI: Subsys-unique ID.  0 is unused and root is always 1.  The
+ 	 * matching css can be looked up using css_from_id().
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 96a2d15fe5e9..a36ed3995c6f 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -1826,7 +1826,6 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
+ 		struct cgroup_root *src_root = ss->root;
+ 		struct cgroup *scgrp = &src_root->cgrp;
+ 		struct cgroup_subsys_state *css = cgroup_css(scgrp, ss);
+-		struct cgroup_subsys_state *dcss = cgroup_css(dcgrp, ss);
+ 		struct css_set *cset, *cset_pos;
+ 		struct css_task_iter *it;
+ 
+@@ -1864,13 +1863,6 @@ int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
+ 		}
+ 		spin_unlock_irq(&css_set_lock);
+ 
+-		if (ss->css_rstat_flush) {
+-			list_del_rcu(&css->rstat_css_node);
+-			synchronize_rcu();
+-			list_add_rcu(&css->rstat_css_node,
+-				     &dcss->rstat_css_list);
+-		}
+-
+ 		/* default hierarchy doesn't enable controllers by default */
+ 		dst_root->subsys_mask |= 1 << ssid;
+ 		if (dst_root == &cgrp_dfl_root) {
+@@ -5491,11 +5483,7 @@ static void css_release_work_fn(struct work_struct *work)
+ 	if (ss) {
+ 		struct cgroup *parent_cgrp;
+ 
+-		/* css release path */
+-		if (!list_empty(&css->rstat_css_node)) {
+-			cgroup_rstat_flush(css);
+-			list_del_rcu(&css->rstat_css_node);
+-		}
++		cgroup_rstat_flush(css);
+ 
+ 		cgroup_idr_replace(&ss->css_idr, NULL, css->id);
+ 		if (ss->css_released)
+@@ -5569,8 +5557,6 @@ static void init_and_link_css(struct cgroup_subsys_state *css,
+ 	css->id = -1;
+ 	INIT_LIST_HEAD(&css->sibling);
+ 	INIT_LIST_HEAD(&css->children);
+-	INIT_LIST_HEAD(&css->rstat_css_list);
+-	INIT_LIST_HEAD(&css->rstat_css_node);
+ 	css->serial_nr = css_serial_nr_next++;
+ 	atomic_set(&css->online_cnt, 0);
+ 
+@@ -5579,9 +5565,6 @@ static void init_and_link_css(struct cgroup_subsys_state *css,
+ 		css_get(css->parent);
+ 	}
+ 
+-	if (ss->css_rstat_flush)
+-		list_add_rcu(&css->rstat_css_node, &css->rstat_css_list);
+-
+ 	BUG_ON(cgroup_css(cgrp, ss));
+ }
+ 
+@@ -5687,7 +5670,6 @@ static struct cgroup_subsys_state *css_create(struct cgroup *cgrp,
+ err_list_del:
+ 	list_del_rcu(&css->sibling);
+ err_free_css:
+-	list_del_rcu(&css->rstat_css_node);
+ 	INIT_RCU_WORK(&css->destroy_rwork, css_free_rwork_fn);
+ 	queue_rcu_work(cgroup_destroy_wq, &css->destroy_rwork);
+ 	return ERR_PTR(err);
 diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index 958bdccf0359..92a46b960be1 100644
+index 92a46b960be1..c52e8429c75d 100644
 --- a/kernel/cgroup/rstat.c
 +++ b/kernel/cgroup/rstat.c
-@@ -320,6 +320,14 @@ static inline void __cgroup_rstat_unlock(struct cgroup_subsys_state *css,
- 	spin_unlock_irq(lock);
- }
+@@ -347,15 +347,8 @@ static void cgroup_rstat_flush_locked(struct cgroup_subsys_state *css)
+ 		struct cgroup_subsys_state *pos = cgroup_rstat_updated_list(css, cpu);
  
-+static void cgroup_rstat_base_flush_locked(struct cgroup *cgrp)
-+{
-+	int cpu;
-+
-+	for_each_possible_cpu(cpu)
-+		cgroup_base_stat_flush(cgrp, cpu);
-+}
-+
- /* see cgroup_rstat_flush() */
- static void cgroup_rstat_flush_locked(struct cgroup_subsys_state *css)
- 	__releases(&css->ss->rstat_lock) __acquires(&css->ss->rstat_lock)
-@@ -341,7 +349,6 @@ static void cgroup_rstat_flush_locked(struct cgroup_subsys_state *css)
  		for (; pos; pos = pos->rstat_flush_next) {
- 			struct cgroup_subsys_state *css_iter;
- 
--			cgroup_base_stat_flush(pos->cgroup, cpu);
+-			struct cgroup_subsys_state *css_iter;
+-
  			bpf_rstat_flush(pos->cgroup, cgroup_parent(pos->cgroup), cpu);
+-
+-			rcu_read_lock();
+-			list_for_each_entry_rcu(css_iter, &pos->rstat_css_list,
+-						rstat_css_node)
+-				css_iter->ss->css_rstat_flush(css_iter, cpu);
+-			rcu_read_unlock();
++			pos->ss->css_rstat_flush(pos, cpu);
+ 		}
  
- 			rcu_read_lock();
-@@ -408,7 +415,7 @@ static void cgroup_rstat_base_flush_hold(struct cgroup_subsys_state *css)
- {
- 	might_sleep();
- 	__cgroup_rstat_lock(css, &cgroup_rstat_base_lock, -1);
--	cgroup_rstat_flush_locked(css);
-+	cgroup_rstat_base_flush_locked(css->cgroup);
- }
- 
- /**
+ 		/* play nice and yield if necessary */
 -- 
 2.47.1
 
