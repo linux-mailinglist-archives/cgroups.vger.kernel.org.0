@@ -1,133 +1,174 @@
-Return-Path: <cgroups+bounces-6033-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6034-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96451A0028A
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 02:50:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A69CA002AF
+	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 03:22:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 816B63A3B34
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 01:50:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A54BD1883D09
+	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 02:22:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B8A7154BF0;
-	Fri,  3 Jan 2025 01:50:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dXey1Z0J"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2800A153BD7;
+	Fri,  3 Jan 2025 02:22:47 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 106B3148FE6
-	for <cgroups@vger.kernel.org>; Fri,  3 Jan 2025 01:50:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39B2728E8;
+	Fri,  3 Jan 2025 02:22:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735869045; cv=none; b=WrO1kQFIhViv7OY4auj4KEFb8FWYNN1tTD7jUUvfJALPLyk/jVJpkv1uK6E5PFCuv/kWIN2SiQGJiC1KTBG4adLyDYmCMUif70LgFSIr7kJoXGdEY8roDGOSXSWu05HfjxfVBu2DQWf55R8cBDY1YCmr29Lnd+KamDDoALM2jdA=
+	t=1735870967; cv=none; b=m/+VR/ISIqEf4X0c7PALHqdHAIdWN6BUH9AvtWU2o73rLKOHaM6hK5dV/t3s91a1TQL0o71f5ugvJzcC78Sc4U1XpTgIrbg5K8ealJ2ZjjWxtEniyE+UpGHrox/TODQGMpL0qYHkE/IT6J2f3ksijLQU4xlyWuHM+oQ45KP4XRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735869045; c=relaxed/simple;
-	bh=Vn7b+Y0pLjinf6VkyTXTXYx3cD/eYx/5hEYE2FtMyQE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lZK3RYNMGRc+T73Aj6GsfP/YbUMgKI4xCH7hKB4YVSsYTFPnqbMtqhA9ASqcQDex869bHxJ5A3nz+xYLQ+4MOqsUiFmrYd96XKWk2GuE/3ao4oYcFXE3kvHVEeYebnNJbADeyo/eJkZ1CHrKOn9CdX3CbT5liXqVBIKi5Qhj1mE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dXey1Z0J; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2163b0c09afso160420585ad.0
-        for <cgroups@vger.kernel.org>; Thu, 02 Jan 2025 17:50:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735869043; x=1736473843; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZpckZ+t0825F6IGB976GW0oaJ6tqis13qibxlRS1UMw=;
-        b=dXey1Z0JW+ClH3nEm+/1tWlAXSKx0rX+BU69q11ogtLvcfG3GeaIRKExKNfnwXKO2O
-         akcRu8bOgSgCd3r+E0SAxAz4OE6aWwIvgQD3A17GwfzvZ6EeCrAxLBRPi06otIAxebPY
-         oBtat/rqXGIii6kpFLkMJtwzyOaAGcnSC05wG0ZgdaNqBwejYNFF5BJuuOKwYxCm+4r2
-         lnrS3RTHrrGDPvEPhormGrnJcWTzwPk8cT4rokDfgyRtyRQaYoRAtmF+/A9qOKFJxRgp
-         7a4YAyR+lLp0zixu3bxVbvb322a5KHT6V2o+eRX+Tmpn8zt9wWIEjSVXkQ/0ITlI0V9q
-         xHUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735869043; x=1736473843;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZpckZ+t0825F6IGB976GW0oaJ6tqis13qibxlRS1UMw=;
-        b=Uxx/OD+UbZJ5NMbLXMQNe4LHqIa9e+rSDUEaqcvA/Og5M8rqi/xVQdVCdh3EBZTn73
-         7V4Ggv8i/+hQatxkwDon2Ft66mr1HbbT4LpOIyWyQw9q6vvp3IpRZ5BJtHoah0QkUHpk
-         6UEEcOO19pUt9LNStbeahanteM465UWYMkjloSOy+l77fGbWAxgkLUCXUsGLRTB+kjM5
-         /tyT4Bn/y764J0kPU2AMwNobbVma+U5AvRdzRPbB87M6cIdCEXCvcap+LfS0oN55sJBI
-         B+4ZAs1wNW7tDx73XlgUQk0VYBEuFwX3yClXZVNqEh8JD673RI7L44GtIpalLlpj/o9Y
-         GXaw==
-X-Forwarded-Encrypted: i=1; AJvYcCUg0sFOCH4K/Ni98gieWnvrpoFo3uK4c2ZmmM/+zqCUXMRKx1Q/9AtrqjTIJe/AUurgTK/19Mrf@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzf7efbdWk307cOArAkaKtGeCsbKGkGI1zqtCDGPLyWDL0Wq/pb
-	N/MC+Aza2aPL46op/Tpqb02Ko6lDyaz8C4PHTHB7Kon7LQvtBiW2
-X-Gm-Gg: ASbGncvRshYe9tYiF86QDRdw5iT+0qyj0zm2i1BVpRXE3hqHsw2Z0ct3IN6c2NS3pyB
-	/og0Gk9SzCKm/Hq3Xq4tVbIvSD/tnabAR/k2dTRc1GmCfS3OPQ0TFX+fjI5WCnKssWFN3ZBKKFw
-	EO2wc4/eg5XVNBiFlXi1JCliS5gTz/9fUCif4ZHLdV9WzUBecHNqcwn3d3A13cQkgDu1HScyvO0
-	xruqgp3e1VMMt2jslOVSqI3xcXc5z8Xic14mS98t64plh5+XGS0Qo56APiuYVxoIsJeL+UpChdC
-	V1jiGXBcpDhb8Dh/eg==
-X-Google-Smtp-Source: AGHT+IFdazoj6fte8hxpaNLnC8unSV/ywRTEJ0Kh0HqeY1Q7I7MuHrhSeeZdyfL7DZejliHH6GwWqA==
-X-Received: by 2002:a17:902:c947:b0:20c:9821:6998 with SMTP id d9443c01a7336-219e6e858b4mr607012025ad.10.1735869043451;
-        Thu, 02 Jan 2025 17:50:43 -0800 (PST)
-Received: from saturn.. (c-67-188-127-15.hsd1.ca.comcast.net. [67.188.127.15])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dca04ce7sm228851505ad.283.2025.01.02.17.50.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Jan 2025 17:50:42 -0800 (PST)
-From: JP Kobryn <inwardvessel@gmail.com>
-To: shakeel.butt@linux.dev,
-	tj@kernel.org,
-	mhocko@kernel.org,
-	hannes@cmpxchg.org,
-	yosryahmed@google.com,
-	akpm@linux-foundation.org
-Cc: linux-mm@kvack.org,
-	cgroups@vger.kernel.org
-Subject: [RFC PATCH 9/9 v2] cgroup: avoid allocating rstat when flush func not present
-Date: Thu,  2 Jan 2025 17:50:20 -0800
-Message-ID: <20250103015020.78547-10-inwardvessel@gmail.com>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20250103015020.78547-1-inwardvessel@gmail.com>
-References: <20250103015020.78547-1-inwardvessel@gmail.com>
+	s=arc-20240116; t=1735870967; c=relaxed/simple;
+	bh=Lndl1TH8Q7cKgpkINXNw96lhj+AlocwSiTQNlkteB50=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=e9IuhWD8yHAYSGdLJcRj28mtca+U5NnBcoXRgqtsNNgsjpUIX9VhEqX3lJgo9ywDxnFCk2DDm35J/savUwe6+GvcIuPssfoST3xh8pggL4SZDSSSFfxLy6GHQvNSYKEX/kjPCjb43ODeL3b7s8Ridd0ATQxaJCNzuq55HdTRRDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YPS5M1zcXz4f3jMy;
+	Fri,  3 Jan 2025 10:22:15 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 455741A0EF3;
+	Fri,  3 Jan 2025 10:22:35 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP1 (Coremail) with SMTP id cCh0CgCHMbPpSXdnS2P4GA--.44915S2;
+	Fri, 03 Jan 2025 10:22:35 +0800 (CST)
+Message-ID: <6bdac218-a18a-4cb5-b10e-c369d90b502c@huaweicloud.com>
+Date: Fri, 3 Jan 2025 10:22:33 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] cgroup/cpuset: remove kernfs active break
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, longman@redhat.com,
+ roman.gushchin@linux.dev, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, chenridong@huawei.com,
+ wangweiyang2@huawei.com
+References: <20241220013106.3603227-1-chenridong@huaweicloud.com>
+ <6zxqs3ms52uvgsyryubna64xy5a6zxogssomsgiyhzishwmfbd@lylwjd6cdkli>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <6zxqs3ms52uvgsyryubna64xy5a6zxogssomsgiyhzishwmfbd@lylwjd6cdkli>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgCHMbPpSXdnS2P4GA--.44915S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw45KrWDKrykXr13XrW8JFb_yoW5uF4DpF
+	yvkFy3KFs7Jr1UC39rJr4xZ34Yq397JFW7Xw13GwnYvaya93Wvy34UWFs8ZrWjgrs8trWY
+	vay2q390q3W5Cw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
+	v3UUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-If a given subsystem is not the base type and does not have a flush func, do
-not perform any rstat allocation.
 
-Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
----
- kernel/cgroup/rstat.c | 6 ++++++
- 1 file changed, 6 insertions(+)
 
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index 03effaaf09a4..4feefa37fa46 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -423,6 +423,9 @@ int cgroup_rstat_init(struct cgroup_subsys_state *css)
- {
- 	int cpu;
- 
-+	if (css->ss && !css->ss->css_rstat_flush)
-+		return 0;
-+
- 	/* the root cgrp css has rstat_cpu preallocated */
- 	if (!css->rstat_cpu) {
- 		css->rstat_cpu = alloc_percpu(struct cgroup_rstat_cpu);
-@@ -445,6 +448,9 @@ void cgroup_rstat_exit(struct cgroup_subsys_state *css)
- {
- 	int cpu;
- 
-+	if (css->ss && !css->ss->css_rstat_flush)
-+		return;
-+
- 	cgroup_rstat_flush(css);
- 
- 	/* sanity check */
--- 
-2.47.1
+On 2025/1/3 0:02, Michal Koutný wrote:
+> On Fri, Dec 20, 2024 at 01:31:06AM +0000, Chen Ridong <chenridong@huaweicloud.com> wrote:
+>> RIP: 0010:kernfs_should_drain_open_files+0x1a1/0x1b0
+> 
+> I assume it's this
+> 	WARN_ON_ONCE(atomic_read(&kn->active) != KN_DEACTIVATED_BIAS);
+> 
+Right.
+
+>> It can be explained by:
+>> rmdir 				echo 1 > cpuset.cpus
+>> 				kernfs_fop_write_iter // active=0
+>> cgroup_rm_file
+>> kernfs_remove_by_name_ns	kernfs_get_active // active=1
+>> __kernfs_remove					  // active=0x80000002
+>> kernfs_drain			cpuset_write_resmask
+>> wait_event
+>> //waiting (active == 0x80000001)
+>> 				kernfs_break_active_protection
+>> 				// active = 0x80000001
+>> // continue
+>> 				kernfs_unbreak_active_protection
+>> 				// active = 0x80000002
+>> ...
+>> kernfs_should_drain_open_files
+>> // warning occurs
+>> 				kernfs_put_active
+> 
+> Thanks for this breakdown.
+> 
+>> To avoid deadlock. the commit 76bb5ab8f6e3 ("cpuset:
+>> break kernfs active protection in cpuset_write_resmask()") added
+>> 'kernfs_break_active_protection' in the cpuset_write_resmask. This could
+>> lead to this warning.
+> 
+> The deadlock cycle included cpuset_hotplug_work and since that was
+> removed in the said commit, there shouldn't be same deadlock possible.
+> 
+> Ridong, have you run your patch with CONFIG_LOCKDEP to check that
+> eventuality?
+> 
+
+Yes, I tested.
+
+>> After the commit 2125c0034c5d ("cgroup/cpuset: Make cpuset hotplug
+>> processing synchronous"), the cpuset_write_resmask no longer needs to
+>> wait the hotplug to finish, which means that cpuset_write_resmask won't
+>> grab the cgroup_mutex. So the deadlock doesn't exist anymore. Therefore,
+>> remove kernfs_break_active_protection operation in the
+>> 'cpuset_write_resmask'
+>>
+>> Fixes: 76bb5ab8f6e3 ("cpuset: break kernfs active protection in cpuset_write_resmask()")
+> 
+> This commit alone isn't sufficient to cause the warning you observed,
+> right?
+
+I think the commit 76bb5ab8f6e3 ("cpuset: break kernfs active protection
+in cpuset_write_resmask()") is causing the warning I observed.
+
+This warning was observed when removing a cpuset cgroup and writing to
+cpuset.cpus concurrently. Unlike the cgroup_kn_lock_live functions,
+which break active protection and grab the cgroup_mutex immediately to
+avoid concurrent removal, writing to 'cpuset_write_resmask' cannot avoid
+concurrent removal of the cgroup directory. Therefore, this could cause
+the warning.
+
+> As I read kernfs_break_active_protection() comment, I don't see cpuset
+> code violating its conditions:
+> a) it's broken/unbroken from withing a kernfs file operation handler,
+> b) it pins the needed struct cpuset independently of kernfs_node (it's
+>    ok to be removed)
+> 
+I am not sure if it is safe to call
+kernfs_unbreak_active_protection(atomic_inc(&kn->active)); after the
+'kn' has been removed. I don't know much about this. However, I have not
+seen any Use-After-Free (UAF) issues so far.
+
+I would be grateful if you could provide more information.
+
+Best regards
+Ridong
+
+> All in all -- I think the particular break/unbreak pair is unncecessary
+> nowadays and the warning implemented with hiding/showing kernfs files
+> didn't take temporary breakage into account (only based on quick
+> searching and vague memories).
+> 
+> Thanks,
+> Michal
 
 
