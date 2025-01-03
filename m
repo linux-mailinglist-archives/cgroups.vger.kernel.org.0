@@ -1,184 +1,143 @@
-Return-Path: <cgroups+bounces-6041-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6042-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EA91A009F3
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 14:32:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70C41A00BEE
+	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 17:18:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 083C23A3B47
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 13:32:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E00747A0802
+	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 16:18:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C8151FA15D;
-	Fri,  3 Jan 2025 13:32:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B7FD1FAC5A;
+	Fri,  3 Jan 2025 16:18:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="CtEHh+Mx"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="QeGN5OqR"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DD021CC8AD
-	for <cgroups@vger.kernel.org>; Fri,  3 Jan 2025 13:32:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F78E1FA8F2
+	for <cgroups@vger.kernel.org>; Fri,  3 Jan 2025 16:18:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735911160; cv=none; b=s/KOfRQl8YmuchqOHOlqjhB27UD8ujhVTJ+YUAM5TvlJ3HrMrSzq5FiJDBJ2BjcZFpLKq7KHPq11sAaZJiMU3K7/qJIKdB7x61yNvjsBKXDKQyQ2nGhc3qY76YDS5Ofht2Uio+oNx3K6+DHNwJk3syu4qe6Zkb2lL5KJEXnCNgE=
+	t=1735921126; cv=none; b=jhuTbQj7W1jh1PC0feJhVxoX8oCtmys9IzA279PFwhfV3FwU7CJecZki7yENYqYbbi/9fvkCmEcaE3mTv571d/uL8wPRCI1X7i5pzx8VhKwIQNYmdy/Pv8Q9LxJgnHdWcaPpf3qTH+BZFDYoXTefRA8YaCGaOmdPT16G4xI95Qk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735911160; c=relaxed/simple;
-	bh=411FE6wYuiVCu0zud/g7Wy+JWGgXQDsNoe73bCONKxk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K7h5wpXpecHGLKUz2MrZc7F7pWYsQBZld5BoouBVDUzeX1/yenUnYg0qs9VznOe6E3JjfTgQagQKYbZUIWBg0UytCQeCVuYvAG9eZxKITg6X+i+Ykbx1hajS59iL47NNh6rOM3e+vAxn+KICoqTKKYoPdEv1E2MrjmS335ajwqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=CtEHh+Mx; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2f4409fc8fdso14618956a91.1
-        for <cgroups@vger.kernel.org>; Fri, 03 Jan 2025 05:32:38 -0800 (PST)
+	s=arc-20240116; t=1735921126; c=relaxed/simple;
+	bh=mGl7IDmigx3zQggt1eavJUJ+CpeAtg+Kk/l2kAGJTFc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H+vwrN7Q9riz694izafhNgvYqtMOMW/2eOeqop0t6uaUFqtbzbTHXeEszgm7T2pqhg2WGIQbpuKG2LTlu+Qog0eobGBQ9YqRU5FRCf1tstLuJVFYFeV2iObiB350z1p6KI0zFQp1ySWJUuU68xKNOvJUnXsp7N3dwuYVJUlRUSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=QeGN5OqR; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4368a293339so87438925e9.3
+        for <cgroups@vger.kernel.org>; Fri, 03 Jan 2025 08:18:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1735911158; x=1736515958; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9FYoZq3d9zdweOOSviewMn7sCHFG7N0CI+Xi+w9rKcU=;
-        b=CtEHh+MxXFGRPC85gEjSr25XoQlVRlWJkUB8lAZpgQmPdlcVnRbJuTuoCRyd7wOwLu
-         sgYaIUa2aSWRbF+nciR0GZz942A1npoNCnxcCJyEY0JRmV+eSsinK1R92cbB5DmiXXNk
-         Ka9gPF6612epVt8xp9XQiYUKu9NTVpX6jjh3gSzBV8H9zfcSnaOYyFEVaEIQyNetIAUE
-         NqtsGHPBp86xm/6jTQgKo/vbUB865nK/wgkVV+iN1DFG4WQ2NN99zcIHQV8zf53rfe8t
-         NDymFgozJaap4H2h4k8bpv4UCfu47RHSgSoGN3C8RzadrpeOVNFJW7z0RgqmjeDbLS4P
-         xb0Q==
+        d=suse.com; s=google; t=1735921122; x=1736525922; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mGl7IDmigx3zQggt1eavJUJ+CpeAtg+Kk/l2kAGJTFc=;
+        b=QeGN5OqR/5S0H0lhnje4iM5jnDdU+WZI6lZOU30G83x5TWiK6jQ5hmmO7o5Latml1w
+         rcXgQwLV0D7zU30i/i82TTLo7V0ew3G+sjYnq4U6hwiz6XRifcL+MeFHVX8Be8ON/2nR
+         WDAIh/9kWbIQZ6fQckWchzR/aDJM5tT9VM3zxjg/CBqLt5476V5S0knJfeXIo5Nc1u72
+         P7FJ2sFQthLS2NqRKKXRLnqA7FXhffm3tEkbjwAqyiW7vcsu9GNzJKJjkbdx7ix7pzv1
+         Jxb55FAbpYkXgjhVTJsKmt/CIvRZ6P99sLlrahDaQO2xg+GlW9jsk4VUpewaWekHwKfx
+         NFTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735911158; x=1736515958;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9FYoZq3d9zdweOOSviewMn7sCHFG7N0CI+Xi+w9rKcU=;
-        b=oleZJTJjgwRVN12rjgueg02S8SbXA3HWRCbY5RVTabJG5fYJ9MJlFm/g51I6uq1akz
-         3RBQbgeYQXl9KfII9bWNk9mGGTPxvjuJi6ynk26VNqE406aNSPPVgzymj7MrWaXFfwTE
-         tBS2QkZUqrXis4bd34P1Fc0VI/il5Ll9YyNlZRiUXDaXcDbViaVqv3FbPFrkjsdyVQoL
-         rFqWHrh+cq1nvKYpQ7w41pBtr9o65Pn8clSRAWtJQA4e+rK2Nu73bIBWLo3XNong0UX8
-         3tc6Q2Bl7MGjbhursBVkdkV2WrUSEbBwjVTq5wQLV4oH5gAlkVQi6j40EpQr+ZuExmgJ
-         AnNg==
-X-Forwarded-Encrypted: i=1; AJvYcCXr8+6GVVY3xab149Eka7I3Q4AdSAnjlifYnhDSaWmqVvkL6DKggH6yS0e53bw4EaOCkNycC04Z@vger.kernel.org
-X-Gm-Message-State: AOJu0YyN4br4ui50bwR27+g9tHz7EsgBIJ+7y3d2rthEeKVg+dtQeoo7
-	mxlqh4ukax1qjkIEolrwSHRnWsoz/ke71lyw/XjcXOkcVmv4A7PxGNA6oTnff6Tfpn9nuDUKBoF
-	6dsCyefEigNc1d2bxaakFZUQj02iWKTSuDoiI4A==
-X-Gm-Gg: ASbGncsrOpTNmZw1KWGXBTjDRUcpwsa9UVAW8ruRpqG5EPcr68JCY5VhU6DtZFOJ/7N
-	vEEogqceo2A2k73QNIypLmn1JNTiw4+IXdOxaF0HGmgzcffImhydGMzyMZaPg7rSee0U=
-X-Google-Smtp-Source: AGHT+IGgpoccmei/5iNok99VDx2QL9RzBy5ntmOh5agnn/+QppnDFUQE2tG/64dRjimBEN5+y2Jpdut/Zs38a8zf9VM=
-X-Received: by 2002:a17:90b:540c:b0:2f2:e905:d5ff with SMTP id
- 98e67ed59e1d1-2f453634cb5mr69986064a91.6.1735911157723; Fri, 03 Jan 2025
- 05:32:37 -0800 (PST)
+        d=1e100.net; s=20230601; t=1735921122; x=1736525922;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mGl7IDmigx3zQggt1eavJUJ+CpeAtg+Kk/l2kAGJTFc=;
+        b=Va6G5QGSyHVXzM2pp6DV82gRdernKQ7U6hvyEDdOj2+HP7nW8Dm/dICpXwMkCRDJ0H
+         vzSQWTqJLZEABnHoFGuUGHnv83GsGi+9iTdAuif8a3u+SjcOWVXpXuk1LIGFdAtyi+7s
+         9hqzwrCFjQ9Hl0Qyx3SfIlGvoRwPaYVZsYS1qZOXiUzwYv80pcKQqwP66yH5j6uKglYp
+         zPdCOZROYlwoxE/eW1Bt6I1nE3YlVGPx/tC0DdbeLsji1q6k7DEELI1wZfbhuZHxT+Yb
+         bshfy7lBq6lWn5a8XnTJQyku36A6CGrCgKUdTz4a+59+/vaNG0BVasKI39qs7bQtH8+h
+         r7VQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWt3xiijZ/x36ZNgbaoU96HLuskMzOBtgyOvOp5QzDsAKd3LXfwv9yOfNr2Yb/uEHbVJsN8+zSz@vger.kernel.org
+X-Gm-Message-State: AOJu0YzWt7lzWmvOVzTjOAgZbPjrkEInjPudVcqLiQy5jxSt+5YY3NIA
+	Frf8a3fFjf1AQtr/tTgf2YMWu5bErY1CWwmaP5xMUnaWI4728VkjmPuhFg/SR5A=
+X-Gm-Gg: ASbGncv3rNTBAa8W9ixqYlwGRuv2rbhqvSRh99qnwbRRAxnwx/IBvomrpNxykdWe91C
+	/8YUAs31dDMTTX0D9/NJ3hu0xt1LARn4cM4N6rDdUaO1FBCwJhWdDTmbnnWavPxKKVLSwTCeMRf
+	D2XLnOSuYd7ji6+if/hM+fg8Ce6aT4wyfy9DM/hIk6FnrdtMmF0GMuHyNNqbLYU8iZ0ipNMuTyK
+	zjlTwAnENiLp5Y8H4DEa6T/IQ67sKsrfK/5zMm6cWhk+nFB0Bs2kaoyUYs=
+X-Google-Smtp-Source: AGHT+IFZmx/yuSj7je3QvEfpEwHUC2Ub/Ijj9UXZaGazHtmp4gTMiO1ry5deD/sKAYCmTXX2fl2X3Q==
+X-Received: by 2002:a05:600c:4509:b0:436:1971:2a4 with SMTP id 5b1f17b1804b1-4366864722emr457280065e9.17.1735921122307;
+        Fri, 03 Jan 2025 08:18:42 -0800 (PST)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c8289a0sm42135554f8f.7.2025.01.03.08.18.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Jan 2025 08:18:41 -0800 (PST)
+Date: Fri, 3 Jan 2025 17:18:40 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: akpm@linux-foundation.org, mhocko@kernel.org, hannes@cmpxchg.org, 
+	yosryahmed@google.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
+	muchun.song@linux.dev, davidf@vimeo.com, vbabka@suse.cz, handai.szj@taobao.com, 
+	rientjes@google.com, kamezawa.hiroyu@jp.fujitsu.com, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, chenridong@huawei.com, 
+	wangweiyang2@huawei.com
+Subject: Re: [PATCH v3] memcg: fix soft lockup in the OOM process
+Message-ID: <ilnyxm3qdk5ix75tfketinbhm6ubrkklrafbvmcwrsnjlgnh35@sjltlqp434fv>
+References: <20241224025238.3768787-1-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250103022409.2544-1-laoar.shao@gmail.com> <20250103022409.2544-3-laoar.shao@gmail.com>
-In-Reply-To: <20250103022409.2544-3-laoar.shao@gmail.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Fri, 3 Jan 2025 14:32:26 +0100
-Message-ID: <CAKfTPtBXA87V=ZnKxnyku7LWe1+UOzsnkDwCENNxoC3DyTVqcA@mail.gmail.com>
-Subject: Re: [PATCH v8 2/4] sched: Don't account irq time if
- sched_clock_irqtime is disabled
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: peterz@infradead.org, mingo@redhat.com, mkoutny@suse.com, 
-	hannes@cmpxchg.org, juri.lelli@redhat.com, dietmar.eggemann@arm.com, 
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, 
-	surenb@google.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	lkp@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="rcupueyfrbzf4mc7"
+Content-Disposition: inline
+In-Reply-To: <20241224025238.3768787-1-chenridong@huaweicloud.com>
+
+
+--rcupueyfrbzf4mc7
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v3] memcg: fix soft lockup in the OOM process
+MIME-Version: 1.0
 
-On Fri, 3 Jan 2025 at 03:24, Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> sched_clock_irqtime may be disabled due to the clock source, in which cas=
-e
-> IRQ time should not be accounted. Let's add a conditional check to avoid
-> unnecessary logic.
->
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Reviewed-by: Michal Koutn=C3=BD <mkoutny@suse.com>
+Hello.
 
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+On Tue, Dec 24, 2024 at 02:52:38AM +0000, Chen Ridong <chenridong@huaweiclo=
+ud.com> wrote:
+> A soft lockup issue was found in the product with about 56,000 tasks were
+> in the OOM cgroup, it was traversing them when the soft lockup was
+> triggered.
 
+Why is this softlockup a problem?=20
+It's lot of tasks afterall and possibly a slow console (given looking
+for a victim among the comparable number didn't trigger it).
 
-> ---
->  kernel/sched/core.c | 44 +++++++++++++++++++++++---------------------
->  1 file changed, 23 insertions(+), 21 deletions(-)
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 84902936a620..22dfcd3e92ed 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -740,29 +740,31 @@ static void update_rq_clock_task(struct rq *rq, s64=
- delta)
->         s64 __maybe_unused steal =3D 0, irq_delta =3D 0;
->
->  #ifdef CONFIG_IRQ_TIME_ACCOUNTING
-> -       irq_delta =3D irq_time_read(cpu_of(rq)) - rq->prev_irq_time;
-> +       if (irqtime_enabled()) {
-> +               irq_delta =3D irq_time_read(cpu_of(rq)) - rq->prev_irq_ti=
-me;
->
-> -       /*
-> -        * Since irq_time is only updated on {soft,}irq_exit, we might ru=
-n into
-> -        * this case when a previous update_rq_clock() happened inside a
-> -        * {soft,}IRQ region.
-> -        *
-> -        * When this happens, we stop ->clock_task and only update the
-> -        * prev_irq_time stamp to account for the part that fit, so that =
-a next
-> -        * update will consume the rest. This ensures ->clock_task is
-> -        * monotonic.
-> -        *
-> -        * It does however cause some slight miss-attribution of {soft,}I=
-RQ
-> -        * time, a more accurate solution would be to update the irq_time=
- using
-> -        * the current rq->clock timestamp, except that would require usi=
-ng
-> -        * atomic ops.
-> -        */
-> -       if (irq_delta > delta)
-> -               irq_delta =3D delta;
-> +               /*
-> +                * Since irq_time is only updated on {soft,}irq_exit, we =
-might run into
-> +                * this case when a previous update_rq_clock() happened i=
-nside a
-> +                * {soft,}IRQ region.
-> +                *
-> +                * When this happens, we stop ->clock_task and only updat=
-e the
-> +                * prev_irq_time stamp to account for the part that fit, =
-so that a next
-> +                * update will consume the rest. This ensures ->clock_tas=
-k is
-> +                * monotonic.
-> +                *
-> +                * It does however cause some slight miss-attribution of =
-{soft,}IRQ
-> +                * time, a more accurate solution would be to update the =
-irq_time using
-> +                * the current rq->clock timestamp, except that would req=
-uire using
-> +                * atomic ops.
-> +                */
-> +               if (irq_delta > delta)
-> +                       irq_delta =3D delta;
->
-> -       rq->prev_irq_time +=3D irq_delta;
-> -       delta -=3D irq_delta;
-> -       delayacct_irq(rq->curr, irq_delta);
-> +               rq->prev_irq_time +=3D irq_delta;
-> +               delta -=3D irq_delta;
-> +               delayacct_irq(rq->curr, irq_delta);
-> +       }
->  #endif
->  #ifdef CONFIG_PARAVIRT_TIME_ACCOUNTING
->         if (static_key_false((&paravirt_steal_rq_enabled))) {
-> --
-> 2.43.5
->
+> To fix this issue, call 'cond_resched' in the 'mem_cgroup_scan_tasks'
+> function per 1000 iterations. For global OOM, call
+> 'touch_softlockup_watchdog' per 1000 iterations to avoid this issue.
+
+This only hides the issue. It could be similarly fixed by simply
+decreasing loglevel=3D ;-)
+
+cond_resched() in the memcg case may be OK but the arbitrary touch for
+global situation may hide possibly useful troubleshooting information.
+(Yeah, cond_resched() won't fit inside RCU section as in other global
+task iterations.)
+
+0.02=E2=82=AC,
+Michal
+
+--rcupueyfrbzf4mc7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ3gN3QAKCRAt3Wney77B
+Sa6zAQC54Sd7KuanLbmfLaGOXxG7G6FlPC6aPzF++JEaooFm7gEA8z9Hl5K+ruKY
+SyVpErXNAh4+caqnmTT99iRdkx6hdAE=
+=DTHm
+-----END PGP SIGNATURE-----
+
+--rcupueyfrbzf4mc7--
 
