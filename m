@@ -1,77 +1,77 @@
-Return-Path: <cgroups+bounces-6037-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6038-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5E09A002B6
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 03:24:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FF6EA002B8
+	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 03:25:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EFDA16284B
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 02:24:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AB463A3412
+	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 02:25:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ED5819F12A;
-	Fri,  3 Jan 2025 02:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D370148FF2;
+	Fri,  3 Jan 2025 02:24:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ShxseopL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XcOBfX3N"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 848AF1459F7;
-	Fri,  3 Jan 2025 02:24:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1CD84D34;
+	Fri,  3 Jan 2025 02:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735871080; cv=none; b=cUqJ/hA6wJi71Ex6YT5+mW+Gb+xyC3W2Brrjv+e644oz/LBOsV6h2sSQbedHgFjuo/l9J/ueUUOvpASMxY6ANKWcwf9AgdAzPq/9wI9Y5ZGMXz3nRvvu4yO24PvlNHMz9xg+RTV/hQBJE2M0IzNjyBIfsZgsKETnEfBK22B01cQ=
+	t=1735871087; cv=none; b=mZHyDCmaCehWZ6KH1p3rB9Q7J1n9T1LYAcZFl3dnGOA6dBXc4WBQULVz9QMEkCQ50WDsXYDNgCdlkejVIZXDddXidwvI/ACeT58o05XGp+THNJWn0sDliDoOhQ+8qyKsGpPw1u5Yo72zuwt08alvPmoB/d7QrfHK+ma2QHxSXV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735871080; c=relaxed/simple;
-	bh=p623LhB5/pgHGul4CMWJvgPu3Z/w63bVmRJAxgcQvok=;
+	s=arc-20240116; t=1735871087; c=relaxed/simple;
+	bh=9hkP9CNLB1Zz6HKgM9bvLOyCa2y3jW0g8uuQlxjgwmY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SbndelySfxk/L1zPHT36Bc3ZDJ268TfCmmpioQHWAsmf8QvRYB+6Uc7+PiYhmJdFF3RL/oinO3jX61pO5Pqsdfcg0gNT28WlJaxblTyQaDicKEPbfy09l/6pHK2tjDCDvSINTbkTdxdaA05JsWGwIiIoCgNRRhearouFMN6BLik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ShxseopL; arc=none smtp.client-ip=209.85.214.176
+	 MIME-Version:Content-Type; b=DsiuCv/6uyXjBXsQRnbJfGy9wr/FMftPJWdKWdQIPUTTDThB8WDoDuQDHE2K9MTVKwjcGcaBTYInCUolRs6kjTzZUVEGcrdgRVU4rEH8E12PTH7ixHHhjUVQrBQc97meKLTRn8q3xfo3fvX9Z5nXhOfi9BYaePdmcM2G6VfKNZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XcOBfX3N; arc=none smtp.client-ip=209.85.214.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2163bd70069so65173015ad.0;
-        Thu, 02 Jan 2025 18:24:38 -0800 (PST)
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-21669fd5c7cso165646475ad.3;
+        Thu, 02 Jan 2025 18:24:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735871078; x=1736475878; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1735871085; x=1736475885; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6pfOoxJev37uPhhhtmnxcIpBCI1zYq5lZd98FYyO5K4=;
-        b=ShxseopLyUnfa38lRIgcFmC2ejH0v4dm6Hn4XuvBMNJnCVWToiNex1SSjcAuB9D5U0
-         NSF66sGm/VFdMJGPqAoAUqZqp/3gcyxySD1K1bomnPFU67XTZYC31mvrcJHhwcRC6/Ua
-         +cTIKuOg6Xwdj4m5QW0uKvlwkwNOqmRa92SLfYZAMLyPn7XB3oeVJfmZqVYRYcDKoJTf
-         qrfLSkN1ywTsMWSavFooD9rDnbFfdMj3+NS8B9vl5JyLxuAqLj7U4VCEW32mSzprGH+e
-         T1smc5iNfAOmpvjgTSPyj79a4AdytgFOVHtyJJzC86/CSAUxaW3OGhIADDgxoIkRSBFk
-         cScg==
+        bh=yWIE+8nwQHpR1+w81wvyLMSrJdm6DucI0YocL1dx8X8=;
+        b=XcOBfX3NmUkrbLy9te8a8/NPH9x3KOS4LeZ0XbnhqGH15qpNG3WGIfhgOPUGeEZA6v
+         MjYNHW4zOIsuJnDljWpLDuKjle7yrOYlLShZ66PSykr0CkblND2Pr3gC8JZHZkUEhMbi
+         ejsxBUAKKcyal6kQLJJxwZRPzBHJX17t7U4JVCEI0BuHZq2ItPyRYjIf21URPK9b6nl3
+         uHlVcnmKSDhCpA6QfAbCBKX9YFJBBYOMkQ8nSd7R2Z4nlsRiZnup0K3fHpsyz2ponZgP
+         o5E+YQOJ0XsYFbFhyUf9SDBr97m5qWFZKhUPWrpxGzyQI3yFAbILK/mmm5L28BR8b0lT
+         VTdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735871078; x=1736475878;
+        d=1e100.net; s=20230601; t=1735871085; x=1736475885;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6pfOoxJev37uPhhhtmnxcIpBCI1zYq5lZd98FYyO5K4=;
-        b=RZTtLDPptk4TgZF5XLw/eYDlY5kgRLLt5T2anLuoctGLgoyanMmMsPgHUMJ7/+ncpv
-         XhlwF9LimO0JtyvSkd5ChxfVHP/LzORbJ0lcT6sT3OgLipREIm8w22ZU1k3Cf51uMREb
-         fuDqsF1zO/VzCTsIbh3QsrJYKgPdFu18FTKoE2e0oO4QNpzpmBF5wPHeGHtaAmZp8pXi
-         qbKsUFSOvgb9OR6TIIHKS1g2Tn+w+uOnb26Shqxkvgx7NMoENitOD/9+nLKPI0v4sbVu
-         1sY8ejYCZ5CpnP0cB8AUe/C+4iwussObEsY/lZRTjB0QmxMfre8MEiII+KpK2+6z5sma
-         BCqg==
-X-Forwarded-Encrypted: i=1; AJvYcCUnrzZcPsMZ74SJzfNa5KtdFzw4CAmRDfKq5n+0yMiNkKS8W/OSl4wYcJgWJkvzriZOXKlFc+g6Mp35eOVu@vger.kernel.org, AJvYcCWRUbjUG39OSE9pBe+0eFSrDM6pAr5gKmIZtWOEUsB0kJkqcu/vBAdnjaimI1GWokx3Gx7hxWHl@vger.kernel.org
-X-Gm-Message-State: AOJu0YwiLZK96hvyqtQFgRpPg3NxQdWCmk+nXAsJQKrEDlDdLRnNRpYn
-	Yz9ces3Pl54brQW/FQHw+gMuSiYxu+AeFxBFl2lJbv8HbRLsCcBJ
-X-Gm-Gg: ASbGncsL3Nd36EokBPmq3AZqIKZd6CZQKeUPGVYGBFCZwnmNtYcro6xtUHgZgVonfP6
-	Q9deAedn/O73VudfY9LwRtdG3oNtxwPOHTOmwFDATyqXqxpyiukTXBnP5FUVty1D8sMyxnWuDyf
-	KtHdatryji4RD4dOI49LQjudAP78ZIlVmMq/rxKnNNR5m81h3Y9NiEsEVc4w6kUHCF92kb6qszn
-	iyo8N2sKYJAeEiv+3BD6aGq4a/W4yv6aKjvUy5KxT56OPV7iH84YJQYvOgfmbOc/qPJ0nSKHsdY
-	QvA6tdk=
-X-Google-Smtp-Source: AGHT+IFjV4O/xJ4uaqSufRAEt3pchg5BDxp7Rwle86ok33kSe8uitOTPdv/zDJMB1OW96j7KNrpwYw==
-X-Received: by 2002:a17:903:22cc:b0:216:50c6:6b47 with SMTP id d9443c01a7336-219e6f266bdmr658362965ad.46.1735871077603;
-        Thu, 02 Jan 2025 18:24:37 -0800 (PST)
+        bh=yWIE+8nwQHpR1+w81wvyLMSrJdm6DucI0YocL1dx8X8=;
+        b=GVZqz1Z9DUV26cV5+hQVCHwRzE2lmtxT9B9F+gCT2HohQDQb4kbXxCIV1OkyGJAlzF
+         k4m4ekN4WeZIr+O4vd2SY7q1PaRyXKcrTEVg14DnDjOgkJ+9Rg8u9mrUIlSTs6069ElM
+         JSJPjFsDz+2fafd2D65QHVwq5cDN5lWQ/XAtz3Io+Y/DLoTaNufag4sfLssigfGnCBJQ
+         DsvvYGci5UBoS/X+/1VjlKerXnYLuJfXc/bIctAUrXqNpLtmGNE/bsnNkSYMAhKRb2/D
+         POw+yQd6vNxnIY5wyjUfQtKeQ7SNBergDa38ZCbmJ3CWOAzY5gQY2tV/ole5GDia+tp0
+         LLag==
+X-Forwarded-Encrypted: i=1; AJvYcCVID2DsVGi6vSVGawyYS7EYlQTrTWcDJESL7BwEUiUrsBYGi0oTrM8KFZ7hxoKwCs88hWAz3FDG@vger.kernel.org, AJvYcCVcEXlZ/b7ha3ZObQni/D7rVg2PTF55gnhRhs0ljf0UNBylMR3z/tFaNnQcDy2kmGpNF4FIhcHslf3ws+Zp@vger.kernel.org
+X-Gm-Message-State: AOJu0YxfJREJWmBlCMfl9uuianJThJxfBGM4imKf+pdkvAc1qHSVRigd
+	3LeQ3bqHANAB42RzH2UVKbnyvc4BgOQA8V6ktRYazYZ47jO/XJZZ
+X-Gm-Gg: ASbGncv0Q9TF//6yukUjfXxsHZIu1QEcd5BArlLf3WGeW0Y5nvgeXgZ9WqA0OViyj1Q
+	qMwRCRjYlntPmwqjo67i+LJmSypkomi8xaHX+1K5BsWnN1wVlgooKbDIKpHvHQ4w3kuzI0Ap6DW
+	BOX+w1eDdF9wVM9euPWaF9SiOmo0z7E1cvpO0zNqi79EoDzSSG/lY1IINnfE1sLJ724hvAlkJqw
+	s0z/fDaul5twEagvbdFTjV7+2LDn0IW+1Sgsxc77KhlKEbwdgKTP9d6p/QXo5p/i63X6Acvh4lo
+	C84qcFs=
+X-Google-Smtp-Source: AGHT+IGoep/6dfNw3Hd9Fb43f/Z7Syxbr1uL7dDLZJ1mEXIKN7hrQDCZeoslkNaWGJGikMtU1psqDA==
+X-Received: by 2002:a17:903:1209:b0:216:36ff:ba33 with SMTP id d9443c01a7336-219e6ebcfc7mr624597085ad.26.1735871085003;
+        Thu, 02 Jan 2025 18:24:45 -0800 (PST)
 Received: from localhost.localdomain ([180.159.118.224])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dca007f3sm234184145ad.228.2025.01.02.18.24.30
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dca007f3sm234184145ad.228.2025.01.02.18.24.38
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Thu, 02 Jan 2025 18:24:37 -0800 (PST)
+        Thu, 02 Jan 2025 18:24:44 -0800 (PST)
 From: Yafang Shao <laoar.shao@gmail.com>
 To: peterz@infradead.org,
 	mingo@redhat.com
@@ -89,9 +89,9 @@ Cc: mkoutny@suse.com,
 	cgroups@vger.kernel.org,
 	lkp@intel.com,
 	Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v8 2/4] sched: Don't account irq time if sched_clock_irqtime is disabled
-Date: Fri,  3 Jan 2025 10:24:07 +0800
-Message-Id: <20250103022409.2544-3-laoar.shao@gmail.com>
+Subject: [PATCH v8 3/4] sched, psi: Don't account irq time if sched_clock_irqtime is disabled
+Date: Fri,  3 Jan 2025 10:24:08 +0800
+Message-Id: <20250103022409.2544-4-laoar.shao@gmail.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 In-Reply-To: <20250103022409.2544-1-laoar.shao@gmail.com>
 References: <20250103022409.2544-1-laoar.shao@gmail.com>
@@ -104,73 +104,43 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-sched_clock_irqtime may be disabled due to the clock source, in which case
-IRQ time should not be accounted. Let's add a conditional check to avoid
-unnecessary logic.
+sched_clock_irqtime may be disabled due to the clock source. When disabled,
+irq_time_read() won't change over time, so there is nothing to account. We
+can save iterating the whole hierarchy on every tick and context switch.
 
 Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 Reviewed-by: Michal Koutný <mkoutny@suse.com>
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- kernel/sched/core.c | 44 +++++++++++++++++++++++---------------------
- 1 file changed, 23 insertions(+), 21 deletions(-)
+ kernel/sched/psi.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 84902936a620..22dfcd3e92ed 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -740,29 +740,31 @@ static void update_rq_clock_task(struct rq *rq, s64 delta)
- 	s64 __maybe_unused steal = 0, irq_delta = 0;
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 84dad1511d1e..bb56805e3d47 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -998,7 +998,7 @@ void psi_account_irqtime(struct rq *rq, struct task_struct *curr, struct task_st
+ 	s64 delta;
+ 	u64 irq;
  
- #ifdef CONFIG_IRQ_TIME_ACCOUNTING
--	irq_delta = irq_time_read(cpu_of(rq)) - rq->prev_irq_time;
-+	if (irqtime_enabled()) {
-+		irq_delta = irq_time_read(cpu_of(rq)) - rq->prev_irq_time;
+-	if (static_branch_likely(&psi_disabled))
++	if (static_branch_likely(&psi_disabled) || !irqtime_enabled())
+ 		return;
  
--	/*
--	 * Since irq_time is only updated on {soft,}irq_exit, we might run into
--	 * this case when a previous update_rq_clock() happened inside a
--	 * {soft,}IRQ region.
--	 *
--	 * When this happens, we stop ->clock_task and only update the
--	 * prev_irq_time stamp to account for the part that fit, so that a next
--	 * update will consume the rest. This ensures ->clock_task is
--	 * monotonic.
--	 *
--	 * It does however cause some slight miss-attribution of {soft,}IRQ
--	 * time, a more accurate solution would be to update the irq_time using
--	 * the current rq->clock timestamp, except that would require using
--	 * atomic ops.
--	 */
--	if (irq_delta > delta)
--		irq_delta = delta;
-+		/*
-+		 * Since irq_time is only updated on {soft,}irq_exit, we might run into
-+		 * this case when a previous update_rq_clock() happened inside a
-+		 * {soft,}IRQ region.
-+		 *
-+		 * When this happens, we stop ->clock_task and only update the
-+		 * prev_irq_time stamp to account for the part that fit, so that a next
-+		 * update will consume the rest. This ensures ->clock_task is
-+		 * monotonic.
-+		 *
-+		 * It does however cause some slight miss-attribution of {soft,}IRQ
-+		 * time, a more accurate solution would be to update the irq_time using
-+		 * the current rq->clock timestamp, except that would require using
-+		 * atomic ops.
-+		 */
-+		if (irq_delta > delta)
-+			irq_delta = delta;
+ 	if (!curr->pid)
+@@ -1240,6 +1240,11 @@ int psi_show(struct seq_file *m, struct psi_group *group, enum psi_res res)
+ 	if (static_branch_likely(&psi_disabled))
+ 		return -EOPNOTSUPP;
  
--	rq->prev_irq_time += irq_delta;
--	delta -= irq_delta;
--	delayacct_irq(rq->curr, irq_delta);
-+		rq->prev_irq_time += irq_delta;
-+		delta -= irq_delta;
-+		delayacct_irq(rq->curr, irq_delta);
-+	}
- #endif
- #ifdef CONFIG_PARAVIRT_TIME_ACCOUNTING
- 	if (static_key_false((&paravirt_steal_rq_enabled))) {
++#ifdef CONFIG_IRQ_TIME_ACCOUNTING
++	if (!irqtime_enabled() && res == PSI_IRQ)
++		return -EOPNOTSUPP;
++#endif
++
+ 	/* Update averages before reporting them */
+ 	mutex_lock(&group->avgs_lock);
+ 	now = sched_clock();
 -- 
 2.43.5
 
