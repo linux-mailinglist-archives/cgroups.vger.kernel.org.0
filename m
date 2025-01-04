@@ -1,86 +1,122 @@
-Return-Path: <cgroups+bounces-6044-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6045-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE5F9A01016
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 23:08:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D238A01165
+	for <lists+cgroups@lfdr.de>; Sat,  4 Jan 2025 01:52:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B81E21880623
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jan 2025 22:08:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D886D164184
+	for <lists+cgroups@lfdr.de>; Sat,  4 Jan 2025 00:52:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB4E11BBBC8;
-	Fri,  3 Jan 2025 22:08:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MVCXXo8q"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EA1C134BD;
+	Sat,  4 Jan 2025 00:52:43 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77EB81BD9C2
-	for <cgroups@vger.kernel.org>; Fri,  3 Jan 2025 22:08:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68CD6211C;
+	Sat,  4 Jan 2025 00:52:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735942121; cv=none; b=fBQNrj8JDL91EUqpG2P5Mi7ReQJScE3Or820SbHmQVkC/ylkHw5S6eonM2XOBKpco18+bDe0gM13OpEBinfyOiJv/PSEgRNly/sFe9nI1WkayfWGOp0FiEhjyXGRaTL74A7yZ1yGSGaOfC3PH4Qd8OKeXkfLXiZyeKGYPKXLkuw=
+	t=1735951963; cv=none; b=k9OXaF9VA0KzxMqSY8bvrk6bynBtKlLMaJ4nGzzG3HIkezNCt/On0Xnas6VdCNvC/czBddfhIS5mtaAxCHFHt8iiv8mFrUNR+KIE4qTaQaMwPISrgK3KCTC4KVtvIAL2oLFo0NxunRlyROjDzvruN8TrpGvqJl5hZTks5W0669M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735942121; c=relaxed/simple;
-	bh=z0IUODBzNUCfkmaZkBEcaHInVsvsGewoZ9K9C+Qw58Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WTC4AJIZykjVg87WURGmLQdOo0PPG8a/5WzwKblI6ZIX+/Lh1cjv40gb+dL9zDtQRyoMH9pHocq4NvUYi5LHW48sp5psETowOeSc0PCTl1gxB/UcS6D+yKVVHmZsKNHm//Ap1fW/Z8U7bOnJIpo9D5EFUhv3Q1PPMGA1Am6HcSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MVCXXo8q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3B43C4CECE;
-	Fri,  3 Jan 2025 22:08:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1735942120;
-	bh=z0IUODBzNUCfkmaZkBEcaHInVsvsGewoZ9K9C+Qw58Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MVCXXo8qbijgMJiVJjdi+tOp7fKoZMjcNnpd/ZKA0NTQOTF0cIpopgNnS/WcLD/iH
-	 Dx5AALPAKSLi+txuOy8+siut8dRp27+Sea26gpN1WB4mFiW1aUMe2tp/lsn4A/4MTp
-	 tab9Rp4F5tZhRhfSTTa/+tMTj3ZJMTRVhXThRKwksvYqcQ51gUrHS4x/ZrGeW9s1tq
-	 NP34DKw/z5hg1bb22Xw5k0/6RIaYgP9d7vjikZXyZtG6ikohGl7YgMtN5jODkiqqGn
-	 HdqqHL45uRz9n9PxHm5fWNRLSqXggYEAVYipYC+Vdw6WjEgr9PGbHE9w157zhTlVC9
-	 PIdijT129JaXQ==
-Date: Fri, 3 Jan 2025 12:08:39 -1000
-From: Tejun Heo <tj@kernel.org>
-To: JP Kobryn <inwardvessel@gmail.com>
-Cc: shakeel.butt@linux.dev, mhocko@kernel.org, hannes@cmpxchg.org,
-	yosryahmed@google.com, akpm@linux-foundation.org,
-	linux-mm@kvack.org, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH 0/9 v2] cgroup: separate per-subsystem rstat trees
-Message-ID: <Z3hf5wrRuw0KylTh@slm.duckdns.org>
-References: <20250103015020.78547-1-inwardvessel@gmail.com>
+	s=arc-20240116; t=1735951963; c=relaxed/simple;
+	bh=G+2nzB6z7pR2xs6/A4xWFQ+pgRYiWhQC+Hh1tQDdl4c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QE/xs1V+gAEWnKRBKHWRHbK7Htufku61j19Dg0CCF1rtJ15YRvp4c8qi5JTlQWnukSYlqk/KWpqKVMpCyjLo4Y7PKcSDjA32FBOJXdQZ13z3toHC0+XTPmJV/g3EFy3NXyGOaiIEjY2uOuD+jRcAc4w0OI3RkqNOdAQSK/lnkGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YQ23B0tWyz4f3jqs;
+	Sat,  4 Jan 2025 08:52:22 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 04C471A1455;
+	Sat,  4 Jan 2025 08:52:37 +0800 (CST)
+Received: from [10.67.109.79] (unknown [10.67.109.79])
+	by APP2 (Coremail) with SMTP id Syh0CgDXN+RThnhnkcy2GQ--.55130S2;
+	Sat, 04 Jan 2025 08:52:36 +0800 (CST)
+Message-ID: <362f274a-70ae-4588-afb3-e75ade66ea42@huaweicloud.com>
+Date: Sat, 4 Jan 2025 08:52:35 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250103015020.78547-1-inwardvessel@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] memcg: fix soft lockup in the OOM process
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: akpm@linux-foundation.org, mhocko@kernel.org, hannes@cmpxchg.org,
+ yosryahmed@google.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+ muchun.song@linux.dev, davidf@vimeo.com, vbabka@suse.cz,
+ handai.szj@taobao.com, rientjes@google.com, kamezawa.hiroyu@jp.fujitsu.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ chenridong@huawei.com, wangweiyang2@huawei.com
+References: <20241224025238.3768787-1-chenridong@huaweicloud.com>
+ <ilnyxm3qdk5ix75tfketinbhm6ubrkklrafbvmcwrsnjlgnh35@sjltlqp434fv>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <ilnyxm3qdk5ix75tfketinbhm6ubrkklrafbvmcwrsnjlgnh35@sjltlqp434fv>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgDXN+RThnhnkcy2GQ--.55130S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cr1fGF4rWFyUur1ruFyfJFb_yoW8Gr1rpF
+	ZYg3W7t3Z7J3ZYgrnrZ392gF45uw4rGr43trWDur10v3sxWr1Fvr12kr4Yv398AF1Sv34j
+	9rs09w1xKr1YkaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIa
+	0PDUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-Hello,
 
-On Thu, Jan 02, 2025 at 05:50:11PM -0800, JP Kobryn wrote:
-...
-> I reached a point where this started to feel stable in my local testing, so I
-> wanted to share and get feedback on this approach.
 
-The rationale for using one tree to track all subsystems was that if one
-subsys has been active (e.g. memory), it's likely that other subsyses have
-been active too (e.g. cpu) and thus we might as well flush the whole thing
-together. The approach can be useful for reducing the amount of work done
-when e.g. there are a lot of cgroups which are only active periodically but
-has drawbacks when one subsystem's stats are read a lot more actively than
-others as you pointed out.
+On 2025/1/4 0:18, Michal Koutný wrote:
+> Hello.
+> 
+> On Tue, Dec 24, 2024 at 02:52:38AM +0000, Chen Ridong <chenridong@huaweicloud.com> wrote:
+>> A soft lockup issue was found in the product with about 56,000 tasks were
+>> in the OOM cgroup, it was traversing them when the soft lockup was
+>> triggered.
+> 
+> Why is this softlockup a problem? 
+> It's lot of tasks afterall and possibly a slow console (given looking
+> for a victim among the comparable number didn't trigger it).
+> 
 
-Intuitions go only so far and it's difficult to judge whether splitting the
-trees would be a good idea without data. Can you please provide some
-numbers along with rationales for the test setups?
+It's not a slow console, but rather 'console pressure'. When a lot of
+tasks apply to the console, it can make 'pr_info' slow. In my case,
+these tasks will apply to the console. I reproduced this issue using a
+test ko that creates many tasks, all of which just call 'pr_info'.
 
-Thanks.
+Best regards,
+Ridong
 
--- 
-tejun
+>> To fix this issue, call 'cond_resched' in the 'mem_cgroup_scan_tasks'
+>> function per 1000 iterations. For global OOM, call
+>> 'touch_softlockup_watchdog' per 1000 iterations to avoid this issue.
+> 
+> This only hides the issue. It could be similarly fixed by simply
+> decreasing loglevel= ;-)
+> 
+> cond_resched() in the memcg case may be OK but the arbitrary touch for
+> global situation may hide possibly useful troubleshooting information.
+> (Yeah, cond_resched() won't fit inside RCU section as in other global
+> task iterations.)
+> 
+> 0.02€,
+> Michal
+
 
