@@ -1,108 +1,157 @@
-Return-Path: <cgroups+bounces-6063-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6064-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57A50A03777
-	for <lists+cgroups@lfdr.de>; Tue,  7 Jan 2025 06:48:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9846BA043E0
+	for <lists+cgroups@lfdr.de>; Tue,  7 Jan 2025 16:13:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDA1E1884A3C
-	for <lists+cgroups@lfdr.de>; Tue,  7 Jan 2025 05:48:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8CF33A4930
+	for <lists+cgroups@lfdr.de>; Tue,  7 Jan 2025 15:13:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30E2719750B;
-	Tue,  7 Jan 2025 05:48:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB021F2C46;
+	Tue,  7 Jan 2025 15:13:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WL8idOBo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OC56uEAI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99A3C86333;
-	Tue,  7 Jan 2025 05:48:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE1331F2C39;
+	Tue,  7 Jan 2025 15:13:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736228911; cv=none; b=hyCSpA5BLyPTtWMpK3dQ6kIA3+gpK3zOlAfV77l62zUzNTTNy2tLdvTWpM1tgXNZH0sC6dl0NqOkB0IIockuLA3WGmLU9/sndVf+dzi7rzgav3P78Iyc+tC0UQsXAoYjhRB2jD35zewMa1sdogzwd23wq6wcjbwiedPHj0xZPME=
+	t=1736262812; cv=none; b=q0R6ICtmenTXJLpQjzhv+Q4bIm84NACGnNGRsHWGhtcpDMT0KW4BRZ4eZTcNP1qasZac6cnU8t9dLFb1nJMq9yLSXluXj0nYiaCGbWHaX3J+cefoqbRoodiHdmAuidY0x1ncFQlyXizk52Zg2PE4yabSfP3tZ6VQ9C3WVPMdIS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736228911; c=relaxed/simple;
-	bh=ti+5XE6tfC4JKKtGReFhK914eu9ZIodcBuEMcVGtWsY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qcH5FTGfKPbUUiH+QXeTxpd08GwX283IzIaJgSdupMi9aM84KmICi6ZTIJVUE78xpG7NblAh9VPvPbLby8BQyaB6Qp+IcztlSIrpNWYUo5U/+H+OtwsP3TG8Hx4Qpf4Usb3pQSid54z20rJjVNMURpVyCdeRSgtKFd7IuJVjA3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WL8idOBo; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-21619108a6bso204791205ad.3;
-        Mon, 06 Jan 2025 21:48:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736228907; x=1736833707; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bb8vDpP0ne9342d9v8Y2G2jn/m3HiJMLqSWtTPbylfI=;
-        b=WL8idOBolLrLUOsZ7jxbgVIiq0J/V9RNXFL+EvM2xSMU1peHpifGJU6D7tsN5PfQJa
-         GQjEaJ5wPPnhqoQNPGj4MB3C5tE9fUcL7xANy2SGzZSqhy9IZnmFdtqePJV9oN+ArkGP
-         /lkk910QZo3fS6Inqug4x0+31ySbxLVYgJgX876AZgtGkNSV8Gg22OEF3X9HZ9ReLatX
-         qy/yWd2aO6+lc1BhE8R6mILADw7F8RoACKQ3Y7ZZmUi4hPKVq4L9i6nxYFPNZuxJxv+O
-         udjZpo2rNap29dejmA7uWChoXA+blFargn2u5ktb8KdbwiF+Cj/xmD2b1UQN+tCAeArK
-         WjUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736228907; x=1736833707;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bb8vDpP0ne9342d9v8Y2G2jn/m3HiJMLqSWtTPbylfI=;
-        b=sh4qxw/gjEk7gpQJxTiP2SMfwwT+9Qqj0qKXQrDKWVAh6y0AejSmHwU8ZVoLXoXSdr
-         l6M31AJ5CpAKd6PNJqX6gc6VrYtvrv5U1s09Dja217qdwZ3uXAB9O5uWc2oYUEsdYOI+
-         dJg0bQa3/s5dIT8JPKuMuLUQVX9giC+ML6s9xKhiYPb3eO3Dq4jLvj/CYcg2iAHWmSri
-         303w56uPhcT0ygKZp/f1pcOzSNBpoqb+GTJLQM6M9gNyzSt7qlEwxPJI9nFD4EJHSKef
-         POS5V3maQ1+Hcllpb9nonDu+Xxj/V/dTjentCP6e6ElwiWDvVzQe80rvv9zVmhsRjhQU
-         YH0g==
-X-Forwarded-Encrypted: i=1; AJvYcCVjzZXRw6CQVCZWD+mN/m9TJkPObJn55sYHJRjPlWpXt4QdZ/8KBL8N8ab5joUs0lb5j4jBgWdQzdvtQ92a@vger.kernel.org, AJvYcCWnfKeMYQLCzEmNFvBJw3y7eHALETCjwnxDc/5YVCJNpA51xYedJaysBol8cjJVus4XUSsP6Iuj@vger.kernel.org
-X-Gm-Message-State: AOJu0YyojMSzWtriBmxG4GWfSgILTfHFGB8isIDZcq/cYMbw/XUd2rCN
-	cbtNWZ2qZ9ZLiH4xK5dvV3oUi0oDKaZECN1kVIWUlYnZ2WyN8w1b
-X-Gm-Gg: ASbGncuBP8EIVRSB+SdegjoZc5mjd8oG+zue7gbJ6fbjLd9/EgXgG12zorwULEX1hCe
-	EBA52L3tOHOxXmUuCPgJt7Bf1Fs+Cl0BCrwXby57lzD+8PNsvWsW4D6stjvg9Qpb9Dhevv6nyv1
-	kaR/10Wjkf84BMhEbrCorNL0lNShGmQgnksvVR24Zcr78m1V50ZmzsGZXvRDY+NTs+X5LdCMuDt
-	OuaqQY9Kndx+o4vdgb4i4KFsRvbeAVB2bqmJ/PvOo+BJQynpp4xLs2/a/x2lNnyTFYRk6wEig75
-	wZNe23cnnfgUS9rJHGRF3GRDgJ4=
-X-Google-Smtp-Source: AGHT+IHkTL3SbYfX6L+Tuct4Rbi2QdqSQ9V6GLY1TbWXikdQiMAGP8zFdP+8lz5Tt6B5qHzinX+fUQ==
-X-Received: by 2002:a17:902:f687:b0:215:b473:1dc9 with SMTP id d9443c01a7336-219e6f0e62dmr751340975ad.46.1736228906833;
-        Mon, 06 Jan 2025 21:48:26 -0800 (PST)
-Received: from mm2dtv09.. (60-251-198-229.hinet-ip.hinet.net. [60.251.198.229])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc9f738asm296897285ad.205.2025.01.06.21.48.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jan 2025 21:48:26 -0800 (PST)
-From: Kenny Cheng <chao.shun.cheng.tw@gmail.com>
-To: viro@zeniv.linux.org.uk
-Cc: c.s.cheng@realtek.com,
-	cgroups@vger.kernel.org,
-	chao.shun.cheng.tw@gmail.com,
-	hannes@cmpxchg.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	muchun.song@linux.dev
-Subject: Re: [PATCH] mm: avoid implicit type conversion
-Date: Tue,  7 Jan 2025 13:48:17 +0800
-Message-Id: <20250107054817.3278424-1-chao.shun.cheng.tw@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20250107040631.GN1977892@ZenIV>
-References: <20250107040631.GN1977892@ZenIV>
+	s=arc-20240116; t=1736262812; c=relaxed/simple;
+	bh=VsVYm09H19ojgrIIsfyk9qwaXLbxKyDUg5Eo18dSfkQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FGy5ttsDSSTRJshSRmjQVNSzxi7CoM5Wmb3xdTl6r/9kbEE5vDuAkbrYPXIiFxXJ5pqQU6hlMNLqCcStg0wj8Pl8SpM8CPue51TPUFXF/gZ5qrXKQ+z6ueQKsDJooktep6CKaovvVwbsu3dd9mf+efniwB2PSFYizuQrFISZtkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OC56uEAI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26162C4CEE1;
+	Tue,  7 Jan 2025 15:13:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736262811;
+	bh=VsVYm09H19ojgrIIsfyk9qwaXLbxKyDUg5Eo18dSfkQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OC56uEAI6rUyWA3b2XO+3g/RB//+0QMApISXjr0YQEFwdb+GoqKPNXWn43vOM2uD8
+	 T4BE4XGaxGGEeb9TRRhVFJoizC5D1CuiVt1WWCP8vMZFcunXz2cjgqgToOSEFVHjX7
+	 Mfc0f5uxoydD2u1HF/nbXtudFp4upG1S+vTfJ+EZwK735emOepfwvC/JWmWOQTBAuK
+	 UOfUipHfOMZpdF2TC0eo6lUBjXV1EyoS0YAlXLbk41GK72npSkgarU9NbjMlhss7Ts
+	 VWtoU/ZWBwNtOY1V8bXnCnl25bNH4cyOJqnvp0GDQAiZ7rfdlygwOLZ10jidH1NwJd
+	 tHfi3OSrb57Nw==
+Date: Tue, 7 Jan 2025 16:13:29 +0100
+From: Maxime Ripard <mripard@kernel.org>
+To: Maarten Lankhorst <dev@lankhorst.se>
+Cc: Tejun Heo <tj@kernel.org>, Simona Vetter <simona.vetter@ffwll.ch>, 
+	Dave Airlie <airlied@gmail.com>, linux-kernel@vger.kernel.org, intel-xe@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, Zefan Li <lizefan.x@bytedance.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Friedrich Vock <friedrich.vock@gmx.de>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Subject: Re: [PATCH v2 0/7] kernel/cgroups: Add "dmem" memory accounting
+ cgroup.
+Message-ID: <20250107-aquamarine-nautilus-of-freedom-bc2208@houat>
+References: <20241213-proud-kind-uakari-df3a70@houat>
+ <80c49a80-d49c-4ca5-9568-9f7950618275@lankhorst.se>
+ <20241213-gentle-glittering-salamander-22addf@houat>
+ <5a50a992-9286-4179-8031-ffb514bca34f@lankhorst.se>
+ <20241217-meek-bullfinch-of-luck-2c3468@houat>
+ <a69a3500-be17-4899-bdb9-c6a63bf8dc81@lankhorst.se>
+ <Z2GwpOQDVshpv-ml@slm.duckdns.org>
+ <c0a539e7-0f1b-496a-9848-73a7ada66bfb@lankhorst.se>
+ <Z2HBqtKDSTkd1lST@slm.duckdns.org>
+ <61b95c08-a3c2-4f92-b6e5-df77fd2491e2@lankhorst.se>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha384;
+	protocol="application/pgp-signature"; boundary="pv3xxe53a32ls35b"
+Content-Disposition: inline
+In-Reply-To: <61b95c08-a3c2-4f92-b6e5-df77fd2491e2@lankhorst.se>
 
-> That makes no sense.  Do you have bool (or _Bool) defined or typedefed
-> to unsigned char somewhere?  If so, that's the bug that needs to be
-> fixed.
 
-Yes, you're right!
+--pv3xxe53a32ls35b
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2 0/7] kernel/cgroups: Add "dmem" memory accounting
+ cgroup.
+MIME-Version: 1.0
 
-It has defined in the other header file which is the root cause of 
-compiled error.
+On Tue, Dec 17, 2024 at 09:17:24PM +0100, Maarten Lankhorst wrote:
+> Hey,
+>=20
+> Den 2024-12-17 kl. 19:23, skrev Tejun Heo:
+> > Hello,
+> >=20
+> > On Tue, Dec 17, 2024 at 06:37:22PM +0100, Maarten Lankhorst wrote:
+> > > Den 2024-12-17 kl. 18:11, skrev Tejun Heo:
+> > > > On Tue, Dec 17, 2024 at 03:28:50PM +0100, Maarten Lankhorst wrote:
+> > > > > Now that all patches look good, what is needed to merge the serie=
+s? Without
+> > > > > patch 6/7 as it is a hack for testing.
+> > > >=20
+> > > > There were some questions raised about device naming. One thing we =
+want to
+> > > > get right from the beginning is the basic interface.
+> > > >=20
+> > > > Thanks.
+> > > >=20
+> > > I believe it was solved. The conclusion appears to be that we go with=
+ how we
+> > > defined it in this series. drm/$pciid/$regionname. With the only regi=
+ons
+> > > defined now being VRAM. Main memory will be a followup, but requires =
+some
+> > > discussions on hwo to be prevent double accounting, and what to do wi=
+th the
+> > > limited amount of mappable memory.
+> >=20
+> > Provided Johannes is okay with the series, how do you want to route the
+> > series? If you want to route it through drm, that's fine by me and plea=
+se
+> > feel free to add:
+> >=20
+> >   Acked-by: Tejun Heo <tj@kernel.org>
+> >=20
+> > Thanks.
+> >=20
+>=20
+> Thank you!
+>=20
+> I've discussed this with the DRM maintainers. What was suggested is to
+> create a topic branch, merge it to drm-misc whichwhere it will be picked =
+up
+> into drm.git during the next pull request. At the same time the topic bra=
+nch
+> can be also be merged into the cgroup tree if needed.
+>=20
+> The drm-misc tree already handles dma-buf and fbdev core, think DMEM could
+> fit in there too.
 
-This patch can be ignored, thank you.
+FTR, I sent the PR Maarten mentioned yesterday:
+
+https://lore.kernel.org/dri-devel/20250106-shaggy-solid-dogfish-e88ebc@houa=
+t/
+
+Maxime
+
+--pv3xxe53a32ls35b
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJUEABMJAB0WIQTkHFbLp4ejekA/qfgnX84Zoj2+dgUCZ31EmAAKCRAnX84Zoj2+
+dgqwAXkBqOY80d6YfAI9M6lwC4qCdnkRHsUmVYNK6lBeBimVK5KwjQEv+0pvSl1N
+asN42usBf2tjGAs/PAC3dEudEYLnkyhZxzTjSTWkr9DSpNuRWLC+kJP4KCBWKJTK
+BxZ7dZiYdA==
+=aJ4q
+-----END PGP SIGNATURE-----
+
+--pv3xxe53a32ls35b--
 
