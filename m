@@ -1,212 +1,125 @@
-Return-Path: <cgroups+bounces-6060-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6061-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A800A03333
-	for <lists+cgroups@lfdr.de>; Tue,  7 Jan 2025 00:13:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BBC4A036B3
+	for <lists+cgroups@lfdr.de>; Tue,  7 Jan 2025 04:55:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E47531634C7
-	for <lists+cgroups@lfdr.de>; Mon,  6 Jan 2025 23:13:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 868493A60B6
+	for <lists+cgroups@lfdr.de>; Tue,  7 Jan 2025 03:55:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C90DA1E0DFD;
-	Mon,  6 Jan 2025 23:13:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A5D31E22FC;
+	Tue,  7 Jan 2025 03:52:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bM2kIo10"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U1Ev526+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB641C69D
-	for <cgroups@vger.kernel.org>; Mon,  6 Jan 2025 23:13:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70F871E3DC5;
+	Tue,  7 Jan 2025 03:52:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736205226; cv=none; b=lIl1DZGItTcwpSEU4Lmrz+wZ6NI7mU22BhUtJdw4uNhCdqsWm7UBvrTFCGgyStcxpAw5ic7JYSMk6I5T1nXAqnuI3LVt7McquyMjFN0zlZo2JIAe1h2viAlkyDFNOc+X+GX01oGS70qJHG5MxcV1MNo9t8/DXZkbah0gST5/3+o=
+	t=1736221937; cv=none; b=NiYT9BJ60GOvR7XoqXhNxc+t2ttn+7+KRXWQwiqoIiaw81HVnFDHj4ieeYr34tB36+fJsnVqsCLD4q3XJJXemKKg13aPjLUSs76f4w0qlbKH2eyLQGtTRcKn0ZttEfYCmFD/HXd1rTRImSL4Q/O4VAWEH1TAS+KUudY2COfMhtk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736205226; c=relaxed/simple;
-	bh=i23iAS6JrIxT16mD2Q/2YXsTbRhScbe6dgRDxxW5wUg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mWiQgtx1WFuaVkJRo3lh6ybB1Nnwix6qUpbvPZq2P6eBYSDyS/zSiU8PYWX8Pxevxz+2NYvZZmW6TQNGFKF5RBJm6Bruv0p1s/H/m/8v4hwTfpxAYqE3jWBGV94csh8EO7fDHw1sVZztvFnwND0Zy2QoxXyMWevoE9P/mxj8VsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bM2kIo10; arc=none smtp.client-ip=209.85.222.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-7b6c3629816so768360585a.1
-        for <cgroups@vger.kernel.org>; Mon, 06 Jan 2025 15:13:44 -0800 (PST)
+	s=arc-20240116; t=1736221937; c=relaxed/simple;
+	bh=SB2ZRokZ4gvfRjMTn5gnLODEpOxEfJQkDTJScLurBoA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=EzpH5aOh1Ia8m8uBKLMnsAaSoeQt/B69eIs6XTknabSfSe/pagUouR/Gh11aG8J3zxDFk/D4l41TkUVPd0GSxJfDmWGjfmHGbb642CvtoUptjG3QBiu5WP4HPK8otgSvzznBY768jGsAvaT6tFPbdiMpAamvxn13JZ4mbcaXHR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U1Ev526+; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-21634338cfdso24187735ad.2;
+        Mon, 06 Jan 2025 19:52:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1736205223; x=1736810023; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Uwp+vRjxgRIF9zCRQ8EF3eMxpCJjfxIuCjiuC1fjLTc=;
-        b=bM2kIo10rUMFtSh/beUtkZ93mTucRe0w6vSYWdy5qHiTFDI81feWbKAQ74mprl0YYh
-         x3hNa2iqr+GOEBp1L1yne4TrIEY8rrwGRXX5dnuklYh7yReyYZ8PGvxYFbKIkga+zLP8
-         E4mvQG/4pIL/AiqcBpc6c/DXMvVp1XEdwTMPac5d7lWE/wcm9wKX60KW3Xbpo1lOay+C
-         fjP5I4kaTgJFvfdHqfB2L+26g/xofLVqb/dO7k/49fBjhKck2FvAyUV3pXPcoh4jkH6K
-         4mKgJPilbINevh1nZJENj7J2VigoZB1BHTtJE1J/RnWRI+2Xzzmdz8WoPGrH61IfldzJ
-         M7gg==
+        d=gmail.com; s=20230601; t=1736221936; x=1736826736; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rybZPDGa7aeomBfiapsYPjWOJP0BhmUMg778ab/RNWg=;
+        b=U1Ev526+EoO+72jFBsi09csjc+Iq5cM83AKyRFr/Hd4blaCzXbhA72I/y4bOtsI10N
+         hLpuFrbAAde5MrPY7pSXByZEMHzfhDxWBRKIJbueIJ+1f4Ay8TWuFDcJ5pGF/XZYS/l5
+         +owRWfTVVlhC8gT0bI7o1kBg4mAmaMqqlEbwv1Uct7SrnH5itF5+ONHrD5gMRzIEAn+k
+         tryxTKR7RgZmNXVILgATpcVf+6GTh8nNEs+I6xyfIqn2XYrU0XndezGD37intuxUFgjM
+         deSs3y1HHyMbU/Ht9bDXep++9Hjwx4Eq0MIVdsxbh7biF0Upka3ixjX8XjunILSRNjvr
+         YsBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736205223; x=1736810023;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Uwp+vRjxgRIF9zCRQ8EF3eMxpCJjfxIuCjiuC1fjLTc=;
-        b=rqtW6p6PLbCid7msG7XtjhJl1TgeIxH6OAuBM+IYQKbyCTmayikq4Czm4RXjiBefkS
-         pSRBuYK+w8eSulxk/UZndv0ODXb2IO2YocW9JcCqbaa6P/efR689pVQBvTII8FdE+rbr
-         XXziTEcZl12FqHmJPZVCBeYWyvSFBMg7IgfgCQtpMtNyC/QGX5LnC7KnyL0SxNREVerj
-         eUDocvexhkBm+IZKf/JZaCJqvArgH4SJyL6wtz8dHGkj69lNFQEIH0i+kEFkQGkMldZm
-         JeeuZplQLMhIEwbC21AZXT5QFzxFwjvj0StA65WN7guxySy9AhxYudbTp+Kn+edSbbyE
-         Q/pg==
-X-Forwarded-Encrypted: i=1; AJvYcCVuKzSWJV7sxIOQOLpT3zo66ZAumi8K7qXv7Kp5+Ot5buWojZX4iaJIHyaVyPgSDQgrFSwhMwQA@vger.kernel.org
-X-Gm-Message-State: AOJu0YxizwtO3Y3PJpraPwV1BqDub4Z45WaIv779f1FxkOCAjw6CSvAs
-	2ZXxHFIApSqrjrsRpq5m50gMlxST7b0sN2jgXs+n92meujAGFJMvRAJ6oioMlDLwcNgKwdOvykw
-	GSDQdF97TyczSSSD+S1I14UxsDZze8v2ct+JjGuG1hNq5C42Kqywx
-X-Gm-Gg: ASbGnctyuuFsgU6oQDTqU3Q49sHdkCdZgyX+2RJkU1uoetECfbUvWIaa1ZS0ITS2lJy
-	muRGYvm3V9kNrHt/h0RMw428qJ8TaLKzEguk=
-X-Google-Smtp-Source: AGHT+IFTmheYQkfNiE+wJra3WcyiDIXlm/GreXbGIHMXplrOAJC93cASbVnS3x6U6C1tSzdpOkSdnIfbGx+i2SwafTE=
-X-Received: by 2002:a05:620a:4103:b0:7b6:f0e4:d9a0 with SMTP id
- af79cd13be357-7b9ba7aa42dmr7541193985a.33.1736205223411; Mon, 06 Jan 2025
- 15:13:43 -0800 (PST)
+        d=1e100.net; s=20230601; t=1736221936; x=1736826736;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rybZPDGa7aeomBfiapsYPjWOJP0BhmUMg778ab/RNWg=;
+        b=X41hceQKAv7f9bJTW8W6/v+NllRAWVdwh7ya2JL2EP4SglrCnbbHgWhDvOmVd2/jGS
+         ne4lfz7vGyA7Kyk63LFmN22GDhIExUJUNaEg/QHIZCoj28JdK02Eih6+IiaxVYtvtTh3
+         IBtcerxH+yET4Ro8FPmqoVSml7WXcO0TbHyQNtDL0A5lIH9RN18zUH4crxJHmh8MNfO5
+         iJ9zZpD986fFdAUU96zv05Zl52CAvCf03cCrBqsnZh0zsiOmlL1DhrcoKVlVs0Qv81AN
+         53JVL2iK5ETSwMYhiZt6s8PUqmLe+7x0ZSxSX8Z+qkvUe3e0hG0h2GeDOBIqwvb9+S3i
+         mUMw==
+X-Forwarded-Encrypted: i=1; AJvYcCW/O5hMHcst0DHCqeZJn93Okup0Gy5zOeURBGPIU6ocU3feWWo8JbVqyQZNJzxv4rf5Nu2OvkQ/GCVo1BM=@vger.kernel.org
+X-Gm-Message-State: AOJu0YzXPTENwUD1DIoVgYknlF9YNT2gwcOujEWsd0zD/yDQSih4hcsJ
+	2S7vqDq1v919NxW8q0Txe3dGfDil5nPUYB+02uFqlOox7S1WQmwe2TyMqHCozQI=
+X-Gm-Gg: ASbGncvlE+JM+fSCd/UBoU/nTxc8/0W80a+tfjwZZStP0FLq2r7ontG0zYIKLd0u0Yy
+	VqCIAFTHGR93R/kkkw/jljdFOabiSJqIGlIzjmRyY/OOl4PblIcLwXXZugjbdloSXSdcXcyrFtH
+	aagcclVGZhmiHIoG/xKVuZpPjFGXyYJtv9V/tSQJBueL2tqeD4nIWbCpffoqHO2X48n+0GRnfMN
+	opoRMz5z7dR1rXhpoOKSyg/89VsGW38gfNsa11KIJn4MkN9SwDJsszkBUruvc1HbKNW48obUKpc
+	UilhZFeHwEjvaJOyGH+hgzytd8E=
+X-Google-Smtp-Source: AGHT+IE7kzSJJggL6Z8KiIHBRhsXBS9mADY4GGN8p4TBnMlDpGNKsc5uJ8wb8XO4YzWO7Ps2FK1ZkA==
+X-Received: by 2002:a17:903:22c6:b0:216:2474:3c9f with SMTP id d9443c01a7336-219e6f38177mr898724415ad.52.1736221935819;
+        Mon, 06 Jan 2025 19:52:15 -0800 (PST)
+Received: from mm2dtv09.. (60-251-198-229.hinet-ip.hinet.net. [60.251.198.229])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc9f6251sm293848655ad.207.2025.01.06.19.52.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 Jan 2025 19:52:15 -0800 (PST)
+From: Kenny Cheng <chao.shun.cheng.tw@gmail.com>
+To: hannes@cmpxchg.org,
+	muchun.song@linux.dev
+Cc: cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	c.s.cheng@realtek.com,
+	Kenny Cheng <chao.shun.cheng.tw@gmail.com>
+Subject: [PATCH] mm: avoid implicit type conversion
+Date: Tue,  7 Jan 2025 11:51:41 +0800
+Message-Id: <20250107035141.2858582-1-chao.shun.cheng.tw@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20250103015020.78547-1-inwardvessel@gmail.com>
-In-Reply-To: <20250103015020.78547-1-inwardvessel@gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 6 Jan 2025 15:13:07 -0800
-X-Gm-Features: AbW1kvYCXQfp5C1npainbuqrtpNxN9kB7R6ptH2Kber27aGZVMvx59IyF5hLLxk
-Message-ID: <CAJD7tkY=bQEY0TuOixXYRERO7Z1xE_j7airy+FK5m7u0DD4MXg@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/9 v2] cgroup: separate per-subsystem rstat trees
-To: JP Kobryn <inwardvessel@gmail.com>
-Cc: shakeel.butt@linux.dev, tj@kernel.org, mhocko@kernel.org, 
-	hannes@cmpxchg.org, akpm@linux-foundation.org, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 2, 2025 at 5:50=E2=80=AFPM JP Kobryn <inwardvessel@gmail.com> w=
-rote:
->
-> The current rstat model is set up to keep track of cgroup stats on a per-=
-cpu
-> basis. When a stat (of any subsystem) is updated, the updater notes this =
-change
-> using the cgroup_rstat_updated() API call. This change is propagated to t=
-he
-> cpu-specific rstat tree, by appending the updated cgroup to the tree (unl=
-ess
-> it's already on the tree). So for each cpu, an rstat tree will consist of=
- the
-> cgroups that reported one or more updated stats. Later on when a flush is
-> requested via cgroup_rstat_flush(), each per-cpu rstat tree is traversed
-> starting at the requested cgroup and the subsystem-specific flush callbac=
-ks
-> (via css_rstat_flush) are invoked along the way. During the flush, the se=
-ction
-> of the tree starting at the requested cgroup through its descendants are
-> removed.
->
-> Using the cgroup struct to represent nodes of change means that the chang=
-es
-> represented by a given tree are heterogeneous - the tree can consist of n=
-odes
-> that have changes from different subsystems; i.e. changes in stats from t=
-he
-> memory subsystem and the io subsystem can coexist in the same tree. The
-> implication is that when a flush is requested, usually in the context of =
-a
-> single subsystem, all other subsystems need to be flushed along with it. =
-This
-> seems to have become a drawback due to how expensive the flushing of the
-> memory-specific stats have become [0][1]. Another implication is when upd=
-ates
-> are performed, subsystems may contend with each other over the locks invo=
-lved.
->
-> I've been experimenting with an idea that allows for isolating the updati=
-ng and
-> flushing of cgroup stats on a per-subsystem basis. The idea was instead o=
-f
-> having a per-cpu rstat tree for managing stats across all subsystems, we =
-could
-> split up the per-cpu trees into separate trees for each subsystem. So eac=
-h cpu
-> would have separate trees for each subsystem. It would allow subsystems t=
-o
-> update and flush their stats without any contention or extra overhead fro=
-m
-> other subsystems. The core change is moving ownership of the the rstat en=
-tities
-> from the cgroup struct onto the cgroup_subsystem_state struct.
->
-> To complement the ownership change, the lockng scheme was adjusted. The g=
-lobal
-> cgroup_rstat_lock for synchronizing updates and flushes was replaced with
-> subsystem-specific locks (in the cgroup_subsystem struct). An additional =
-global
-> lock was added to allow the base stats pseudo-subsystem to be synchronize=
-d in a
-> similar way. The per-cpu locks called cgroup_rstat_cpu_lock have changed =
-to a
-> per-cpu array of locks which is indexed by subsystem id. Following suit, =
-there
-> is also a per-cpu array of locks dedicated to the base subsystem. The ded=
-icated
-> locks for the base stats was added since the base stats have a NULL subsy=
-stem
-> so it did not fit the subsystem id index approach.
->
-> I reached a point where this started to feel stable in my local testing, =
-so I
-> wanted to share and get feedback on this approach.
+The function 'task_in_memcg_oom' returns a 'struct mem_cgroup *' type.
+If the compiler does not inline this function, a compile error occurs,
+as shown below:
 
-I remember discussing this with Shakeel and Michal Koutn=C3=BD in LPC two
-years ago. I suggested it multiple times over the last few years, most
-recently in: https://lore.kernel.org/lkml/CAJD7tkbpFu8z1HaUgkaE6bup_fsD39QL=
-PmgNyOnaTrm+hZ_9hA@mail.gmail.com/.
+./include/linux/memcontrol.h:961:9: error: incompatible pointer to 
+integer conversion returning 'struct mem_cgroup *' from a function with
+result type 'unsigned char' [-Wint-conversion]
 
-I think it conceptually makes sense, and I took a stab at it when I
-was working on fixing the hard lockups due to atomic flushing, but the
-system I was working on was using cgroup v1, so different subsystems
-had different hierarchies (and hence different trees) anyway, so it
-wouldn't have helped.
+This patch avoids the implicit type conversion by ensuring the return
+type is correct.
 
-This is especially true for the MM subsystem, which apparently flushes
-most often and has the most expensive flushes, so other subsystems are
-probably being unnecessarily taxed.
+Signed-off-by: Kenny Cheng <chao.shun.cheng.tw@gmail.com>
+---
+ include/linux/memcontrol.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> [0] https://lore.kernel.org/all/CAOm-9arwY3VLUx5189JAR9J7B=3DMiad9nQjjet_=
-VNdT3i+J+5FA@mail.gmail.com/
-> [1] https://github.blog/engineering/debugging-network-stalls-on-kubernete=
-s/
->
-> Changelog
-> v2: updated cover letter and some patch text. no code changes.
->
-> JP Kobryn (8):
->   change cgroup to css in rstat updated and flush api
->   change cgroup to css in rstat internal flush and lock funcs
->   change cgroup to css in rstat init and exit api
->   split rstat from cgroup into separate css
->   separate locking between base css and others
->   isolate base stat flush
->   remove unneeded rcu list
->   remove bpf rstat flush from css generic flush
->
->  block/blk-cgroup.c              |   4 +-
->  include/linux/cgroup-defs.h     |  35 ++---
->  include/linux/cgroup.h          |   8 +-
->  kernel/cgroup/cgroup-internal.h |   4 +-
->  kernel/cgroup/cgroup.c          |  79 ++++++-----
->  kernel/cgroup/rstat.c           | 225 +++++++++++++++++++-------------
->  mm/memcontrol.c                 |   4 +-
->  7 files changed, 203 insertions(+), 156 deletions(-)
->
-> --
-> 2.47.1
->
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 5502aa8e138e..47acf1e4f5a7 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1826,7 +1826,7 @@ bool mem_cgroup_oom_synchronize(bool wait);
+ 
+ static inline bool task_in_memcg_oom(struct task_struct *p)
+ {
+-	return p->memcg_in_oom;
++	return !!p->memcg_in_oom;
+ }
+ 
+ static inline void mem_cgroup_enter_user_fault(void)
+-- 
+2.34.1
+
 
