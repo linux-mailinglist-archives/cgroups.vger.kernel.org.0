@@ -1,104 +1,185 @@
-Return-Path: <cgroups+bounces-6078-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-6079-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91844A06AB8
-	for <lists+cgroups@lfdr.de>; Thu,  9 Jan 2025 03:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A5851A073A6
+	for <lists+cgroups@lfdr.de>; Thu,  9 Jan 2025 11:47:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4A733A726B
-	for <lists+cgroups@lfdr.de>; Thu,  9 Jan 2025 02:08:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E3AAE3A601C
+	for <lists+cgroups@lfdr.de>; Thu,  9 Jan 2025 10:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD128136327;
-	Thu,  9 Jan 2025 02:07:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 166852594BA;
+	Thu,  9 Jan 2025 10:47:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="J0IWlA9G"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE23B126BF1;
-	Thu,  9 Jan 2025 02:07:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91FF21506F
+	for <cgroups@vger.kernel.org>; Thu,  9 Jan 2025 10:47:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736388473; cv=none; b=KpK0q7kryXYE/xnVW8EzZzRnrzxjS36/O+sQkXX51RLPFUFvi79Gwr0z208xydxd8hgKiYskdfyEjAznOuvkxGEkFlyL1s0mp+PBR3iLjwVpwbf5vfpQhX3QeRfmgydq05ToQxVxZKgNP6rDNbohbdGpRSJlhwSjmHbuSwHR5IE=
+	t=1736419623; cv=none; b=NI5MUqhfyL8bhNzU3tKPZXdR/lQos/8RJpgKEt4bmD8RRHPAjABTu0kIsa0CTwXNJGtaolcVnY8ppfSQ2RtttK/+Eval7xg24QXg+GOnUj8NWU9j5vp9++8jtWBu6ecF0m1gxTdw0NPDDxhHf0pvzQQaWkXqMW8LKzkAfsgwh2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736388473; c=relaxed/simple;
-	bh=jvopal6yRvBvAAy8DyZ3R/vsuC13Uh/84R6gXtzoy9s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GRzdMwwau3hH7MsWweW2sk58Jcye0VSQZ73tGKQRa/6xFiFwTsP7v05w7uCHkLYS1UCcacPm2Nhce1A3xn1zHwITYH65XwIeopg5TWewtyoYNj2RF9gCIUO+R6nlzqllS/fEXXmaE/jjMRiiUTylNLFoSwWEBKC/Yv8XE4b0p3k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YT7TX2prCz4f3kFL;
-	Thu,  9 Jan 2025 10:07:28 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 918A91A1ABF;
-	Thu,  9 Jan 2025 10:07:48 +0800 (CST)
-Received: from [10.67.109.79] (unknown [10.67.109.79])
-	by APP1 (Coremail) with SMTP id cCh0CgDnS3xzL39n3Bm7AQ--.5839S2;
-	Thu, 09 Jan 2025 10:07:48 +0800 (CST)
-Message-ID: <ad9802d1-b5e2-4866-b494-499e9e05aa5e@huaweicloud.com>
-Date: Thu, 9 Jan 2025 10:07:47 +0800
+	s=arc-20240116; t=1736419623; c=relaxed/simple;
+	bh=YaTjFKHqb0eYCggzba+80j9ajP1gtBUKtQjjqOR6ol8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tI2MBY0BjYAAuNRNmQfcvSGFE1Rl2mesyMIzslb09VsOKl+fZsvDs1WMhtCzbWSFsfDH+dGT1bcyTy3Ln7Rtdc+1hZKvV6eB8RoFtTMwFwIvpJKDRqe2+uvobhoR7hFMpkwww71Nf3zSq7lX8Qr8B9zqZdGqE0M44mmjju7azwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=J0IWlA9G; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-436281c8a38so5778365e9.3
+        for <cgroups@vger.kernel.org>; Thu, 09 Jan 2025 02:47:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1736419620; x=1737024420; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PisggeSxz9WPsHynjIqyoNqe/mEw35ksLFMqnPG/2iI=;
+        b=J0IWlA9GNruFbMP64CBH1c/IO76HQZHAgYRZA+8Tn71sNEF9nf1triFV2v4zBVeuXG
+         coLapMCRO/AuhIsmK10dy4ejB4Fn5NIfON+dozmzriFmpTjgTVoNyobhqd9jRwmd12/y
+         B1jmNYmXBfJ4DORynxavSz0TpRljjjvxEMO3rFTFK0N66z7PuMETUajsh2YVR+VpJpog
+         jg6aCUVP9lysU2xBBH8LQ4mp0LlIH6TNOnyFFtgA6q2rNKViG3PqSaR116KfhVxoVAJB
+         AmooRbSh8aAwlWrcM/WfyfUYkjOyJUyqlKseeFly8nn/sOKuj1qnXn54dPOgITClx+f8
+         Digw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736419620; x=1737024420;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PisggeSxz9WPsHynjIqyoNqe/mEw35ksLFMqnPG/2iI=;
+        b=APUs3Zt5B6VZy5939JJioA04y7j5j5LQHyc2mZl/wFko3Vn2VEvCluT/SYj/LueH4C
+         YIRcFwbLgxFf1gOFsxX5FkUQsP4u/tcyBtvMSIUrqHGRqRywE8mgcAsuX3z4N0y/mGC5
+         gpEY+6NrdoCbKisEbYLoTWSOC/ovcRYtm5VjytIEjw/BfE0h51ctv3b9DfwLzYjx3pFL
+         kriz2jsu/RkGsa3Rm0RO7f+yIPdU2+77ALqRoStjMujk3ewhbO8mRLWRP+BnPUeJr0Ux
+         f6BB1/bsH3yhgMvpo03sOLSDcAhqiNO/VjX4UtLUKN/aLW/QXs3qiVyRj9EltE9feHRz
+         Rh9g==
+X-Forwarded-Encrypted: i=1; AJvYcCXtmax0j4fxFVkk9+TnK62wrwpwGuQvISun+GEpudSFAr60n6pQ/b/09QBMeJG6ytD029gYmpHE@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5RXu/sXaR0ODrmryIwAVGSruAL0jECI2N/6+0pwC4+/c6ZvKp
+	8bvPhX3bF91WP1DjX/ul3jKcnuTrn5vMAiqvLSpvltWgsXIAqDXVVMPTJKMVWFo=
+X-Gm-Gg: ASbGncuNVFS49lY0yx+Ugdy9OoRDZ3gKJo/MH80RY2R/rnzoIgtS8nm+gSNDBCCyXQl
+	J24kLhKqCJ4ovUbnsCXTfJRKy+agyOczGDVXTl59shvCVZLsgVTYa/z+ZilPquSXjVNoMECB9et
+	+rlH0+ng663Bny2eetrTisB+3r+RP8uJPZLrrW8nbSEAN2CaAl4kKyTrW/QampZpOGO3u+iRm2q
+	sbtqBiNhsEHI54xfuVJ3bxJL9pQYFOYTU3uhER6ct2Nlpdwfc/v1ujf4PY=
+X-Google-Smtp-Source: AGHT+IHJZBeekHgr7X9DA5qBFzdYNArZCU54b3MrC0kMa86cbA2OIJe831SInjKuuTIFIbuoYzNQug==
+X-Received: by 2002:adf:9793:0:b0:385:f631:612 with SMTP id ffacd0b85a97d-38a87303f9dmr4489293f8f.17.1736419620103;
+        Thu, 09 Jan 2025 02:47:00 -0800 (PST)
+Received: from blackdock.suse.cz ([193.86.92.181])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a8e38f176sm1488264f8f.63.2025.01.09.02.46.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Jan 2025 02:46:59 -0800 (PST)
+Date: Thu, 9 Jan 2025 11:46:58 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: peterz@infradead.org, mingo@redhat.com, hannes@cmpxchg.org, 
+	juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, 
+	surenb@google.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	lkp@intel.com
+Subject: Re: [PATCH v8 4/4] sched: Fix cgroup irq time for
+ CONFIG_IRQ_TIME_ACCOUNTING
+Message-ID: <z2s55zx724rsytuyppikxxnqrxt23ojzoovdpkrk3yc4nwqmc7@of7dq2vj7oi3>
+References: <20250103022409.2544-1-laoar.shao@gmail.com>
+ <20250103022409.2544-5-laoar.shao@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] cgroup/cpuset: remove kernfs active break
-To: Tejun Heo <tj@kernel.org>
-Cc: Waiman Long <longman@redhat.com>, hannes@cmpxchg.org, mkoutny@suse.com,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250106081904.721655-1-chenridong@huaweicloud.com>
- <Z37Qxd79eLqzYpZU@slm.duckdns.org>
- <9250b4e8-8ef8-4a85-af24-14a34cc72e3b@huaweicloud.com>
- <Z38sopf57DAusY9I@slm.duckdns.org>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <Z38sopf57DAusY9I@slm.duckdns.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgDnS3xzL39n3Bm7AQ--.5839S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFW8AFykZF13Ary8tw1xAFb_yoW3JrbEv3
-	98ta4I93W7Xa1xGa43Jr4Fkw4vq3WjvrsrJw48Ww42gr93J397Wr4rZ395W3WkG343Crsr
-	Aa1rtr4qk34a9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbz8YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-	14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU7IJmUUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ghv2oajmipitqsyp"
+Content-Disposition: inline
+In-Reply-To: <20250103022409.2544-5-laoar.shao@gmail.com>
 
 
+--ghv2oajmipitqsyp
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v8 4/4] sched: Fix cgroup irq time for
+ CONFIG_IRQ_TIME_ACCOUNTING
+MIME-Version: 1.0
 
-On 2025/1/9 9:55, Tejun Heo wrote:
-> On Thu, Jan 09, 2025 at 09:29:59AM +0800, Chen Ridong wrote:
->> Hi, Tj and Longman, I am sorry, the fix tag is not exactly right. I just
->> failed to reproduce this issue at the version 5.10, and I found this
->> warning was added with the commit bdb2fd7fc56e ("kernfs: Skip
->> kernfs_drain_open_files() more aggressively"), which is at version 6.1.
->> I believe it should both fix  bdb2fd7fc56e ("kernfs: Skip
->> kernfs_drain_open_files() more aggressively") and 76bb5ab8f6e3 ("cpuset:
->> break kernfs active protection in cpuset_write_resmask()"). Should I
->> resend a new patch?
-> 
-> No worries. I updated the commit in place.
-> 
-> Thanks.
-> 
+Hello Yafang.
 
-Thank you very much.
+I consider the runtimization you did in the first three patches
+sensible, however, this fourth patch is a hard sell.
 
-Best regards,
-Ridong
+On Fri, Jan 03, 2025 at 10:24:09AM +0800, Yafang Shao <laoar.shao@gmail.com=
+> wrote:
+> However, despite adding more threads to handle an increased workload,
+> the CPU usage could not be raised.=20
 
+(Is that behavior same in both CONFIG_IRQ_TIME_ACCOUNTING and
+!CONFIG_IRQ_TIME_ACCOUNTING cases?)
+
+> In other words, even though the container=E2=80=99s CPU usage appeared lo=
+w, it
+> was unable to process more workloads to utilize additional CPU
+> resources, which caused issues.
+
+Hm, I think this would be worth documenting in the context of
+CONFIG_IRQ_TIME_ACCOUNTING and irq.pressure.
+
+> The CPU usage of the cgroup is relatively low at around 55%, but this usa=
+ge
+> doesn't increase, even with more netperf tasks. The reason is that CPU0 is
+> at 100% utilization, as confirmed by mpstat:
+>=20
+>   02:56:22 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %stea=
+l  %guest  %gnice   %idle
+>   02:56:23 PM    0    0.99    0.00   55.45    0.00    0.99   42.57    0.0=
+0    0.00    0.00    0.00
+>=20
+>   02:56:23 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %stea=
+l  %guest  %gnice   %idle
+>   02:56:24 PM    0    2.00    0.00   55.00    0.00    0.00   43.00    0.0=
+0    0.00    0.00    0.00
+>=20
+> It is clear that the %soft is excluded in the cgroup of the interrupted
+> task. This behavior is unexpected. We should include IRQ time in the
+> cgroup to reflect the pressure the group is under.
+
+What is irq.pressure shown in this case?
+
+> The system metric in cpuacct.stat is crucial in indicating whether a
+> container is under heavy system pressure, including IRQ/softirq activity.
+> Hence, IRQ/softirq time should be included in the cpuacct system usage,
+> which also applies to cgroup2=E2=80=99s rstat.
+
+But this only works for you where cgroup's workload induces IRQ on
+itself but generally it'd be confusing (showing some sys time that
+originates out of the cgroup). irq.pressure covers this universally (or
+it should).
+
+On Fri, Jan 03, 2025 at 10:24:05AM +0800, Yafang Shao <laoar.shao@gmail.com=
+> wrote:
+> The load balancer is malfunctioning due to the exclusion of IRQ time from
+> CPU utilization calculations. What's worse, there is no effective way to
+> add the irq time back into the CPU utilization based on current
+> available metrics. Therefore, we have to change the kernel code.
+
+That's IMO what irq.pressure (PSI) should be useful for. Adjusting
+cgroup's CPU usage with irq.pressue (perhaps not as simple as
+multiplication, Johannes may step in here) should tell you info for load
+balancer.
+
+Regards,
+Michal
+
+--ghv2oajmipitqsyp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZ3+pHwAKCRAt3Wney77B
+ScWgAQC6xfF9zln4v3fJDZI3N68Wfy+1lAK1yGVyMts7qjrnZAEA/LwTfgVja5RS
+zrKtzC5hysNvKAnmUD7EN/lW6KB9aQk=
+=qx/H
+-----END PGP SIGNATURE-----
+
+--ghv2oajmipitqsyp--
 
